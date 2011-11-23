@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project basedir="." default="default" name="upgrade">
+
+  <target name="default" depends="clean, update-dependencies, unzip, clean"/>
+   
+    <property name="appname" value="${ant.project.name}"/>
+    <property name="org" value="eInnovation, inc."/>
+    <property name="build" location="./tmp/oe_upgrade"/>
+    <property name="wardir" location="${build}/wartmp"/>
+    <property name="webinf" location="WEB-INF"/>
+   
+  <target name="clean">
+  	 <delete dir="${build}" />
+  </target>
+ 	
+  <target name="update-dependencies" depends="clean">
+		<mkdir dir="${build}"/>
+		<get src="http://dev.entermediasoftware.com/jenkins/job/app-emshare/lastSuccessfulBuild/artifact/deploy/app-emshare.zip" dest="${build}/emshare.zip" />	
+  </target>
+    
+  <target name="unzip" depends="update-dependencies">
+    <unzip  src="${build}/emshare.zip" dest=".." />
+  </target>
+ 
+</project>
