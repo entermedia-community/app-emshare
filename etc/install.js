@@ -20,8 +20,8 @@ unziper.unzip(  tmp + "/" + appname + ".zip",  tmp );
 
 var files = new FileUtils();
 log.add("3. UPGRADE BASE DIR");
-files.deleteAll( root + "/" + appname);
-files.copyFiles( tmp + "/" + appname, root + "/" + appname + "/");
+files.deleteAll( root + "/WEB-INF/base" + appname);
+files.copyFiles( tmp + "/" + appname, root + "/WEB-INF/base" + appname + "/");
 
 log.add("4. CLEAN UP");
 files.deleteAll(tmp);
