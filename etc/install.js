@@ -3,8 +3,9 @@ importPackage( Packages.java.util );
 importPackage( Packages.java.lang );
 importPackage( Packages.com.openedit.modules.update );
 
-var appname = "emshare";
+var appname = "em-share";
 
+//http://dev.entermediasoftware.com/jenkins/job/app-emshare/lastSuccessfulBuild/artifact/deploy/app-emshare.zip
 var zip = "http://dev.entermediasoftware.com/jenkins/job/" + appname + "/lastSuccessfulBuild/artifact/deploy/" + appname + ".zip";
 
 var root = moduleManager.getBean("root").getAbsolutePath();
