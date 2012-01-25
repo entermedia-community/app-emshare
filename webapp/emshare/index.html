@@ -2,6 +2,8 @@
 	#set( $hit = $hits.first() )
 	#set( $asset = $mediaarchive.getAssetBySourcePath($hit.sourcepath) )
 	$context.putPageValue("asset",$asset)
+	$mediaarchive.loadAssetPermissions($hit.sourcepath,$context)
+	
 	$pages.include("$themeprefix/layouts/mediaviewer.html",$context)
 #else
 	<p>Please upload a video.</p>
