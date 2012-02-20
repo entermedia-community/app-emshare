@@ -2149,7 +2149,7 @@ body .user-input-area h3 {
 #attach-file h3 {
 	margin-top: 0;
 }
-body .user-input-area input[type="text"], body .user-input-area textarea {
+body .user-input-area input[type="text"], body .user-input-area textarea, #tree input[type="text"] {
 	background: #f7f7f7; /* Old browsers */
 	background: -moz-linear-gradient(top, #f7f7f7 0%, #ffffff 42%); /* FF3.6+ */
 	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f7f7f7), color-stop(42%,#ffffff)); /* Chrome,Safari4+ */
@@ -2161,7 +2161,11 @@ body .user-input-area input[type="text"], body .user-input-area textarea {
 	border: 1px solid #8bcbdf;
 	border-radius: 5px;
 	box-shadow: 0 1px 0 0 #fff;
-	color: #fff;
+	color: #999;
+}
+body .user-input-area input[type="text"]:focus, body .user-input-area textarea:focus, #tree input[type="text"]:focus {
+	color: #444;
+	border-color: #37b0d6;
 }
 .upload-file {
 	background: #fff;
@@ -2236,10 +2240,17 @@ table.emdata th {
 	font-size: 11px;
 }
 #tree ul li div {
-	padding: 10px 0 10px 20px;
+	padding: 0 0 0 20px;
 	border-bottom: 1px solid #E2EFF4;
+	height: 34px;
+	line-height: 34px;
 	display: block;
 	cursor: pointer;
+}
+#tree ul li div.selected {
+	background: #c9e8f2;
+}#tree ul li div.selected:hover {
+	background: #c9e8f2;
 }
 #tree ul li ul li div {
 	padding-left: 40px;
@@ -2256,6 +2267,13 @@ table.emdata th {
 #tree ul li div:hover {
 	background: #c9e8f2;
 }
+#tree ul li div span a.btn {
+	line-height: 11px;
+	margin-left: 5px;
+}
+#tree ul li div span input[type="text"] {
+	padding: 5px 10px 3px 10px;
+}
 .actions {
 	float: right;
 	display: none;
@@ -2263,6 +2281,26 @@ table.emdata th {
 }
 #tree ul li div:hover .actions {
 	display: inline;
+}
+#tree ul li div .actions a {
+	float: left;
+	margin-left: 5px;
+	opacity: 0.7;
+}
+#tree ul li div .actions a:hover {
+	opacity: 1.0;
+}
+#tree ul li div .actions a.add {
+	background: url('../images/add.gif') 0 11px no-repeat;
+	width: 15px;
+}
+#tree ul li div .actions a.edit {
+	background: url('../images/edit.gif') 0 11px no-repeat;
+	width: 15px;
+}
+#tree ul li div .actions a.delete {
+	background: url('../images/delete.gif') 0 11px no-repeat;
+	width: 15px;
 }
 #tree .arrow {
 	width: 0;
@@ -2288,6 +2326,9 @@ table.emdata th {
 }
 #tree .arrow.down + .name.folder {
 	background: url('../images/folder-open.gif') 14px -1px no-repeat;
+}
+#tree .add {
+	background: url('../images/add.gif') 13px 1px no-repeat;
 }
 #tree ul {
 	display: none;
