@@ -13,30 +13,27 @@
 
 #if($canviewbasket)
 <li #if($section=="basket") class="navselected"  #end  style="float: right;">
-
-$pages.include("$apphome/components/basket/menuitem.html")
- 
+	$pages.include("$apphome/components/basket/menuitem.html")
 </li>
 #end
-#if ( $canmaximize )
-	<li style="float: right">
-		<a id="maximize">Maximize</a>
-	</li>
-#end	
+
  </ul>
  	<script>
  		$('#maximize').click( function(){
  			html = $('#maximize').html()
- 			if ( html == 'Maximize' ) {
- 				$('#embody').addClass('maximize');
+ 			if ( (html == ' Maximize ') || (html == 'Maximize') ) {
+ 				$('#embody').addClass('max');
  				$('#maximize').html('Minimize');
  			} else {
- 				$('#embody').removeClass('maximize');
+ 				$('#embody').removeClass('max');
  				$('#maximize').html('Maximize');
  			}
+ 			toggleUserProperty("maximize_screen");
+ 			
  		});		
+
  	</script>
- 
+
 <div style="float:right; margin-top:-30px;">
 
 #if ($canquicksearch)
