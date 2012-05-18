@@ -4,8 +4,32 @@
 #set( $section = $content.section)
 
 #if ($user)
-<li #if( $section == "home" ) class="navselected" #end><a  href="$home$apphome/index.html">Home</a></li>
+
+<li><a id="module" class="flat-right" href="$home$apphome/index.html">Assets</a><a id="module-dropdown" class="flat-left" href="#"><span></span></a>
+	<ul id="module-list" style="display: none;">
+		<li><a href="">Assets</a></li>
+		<li><a href="">Contacts</a></li>
+		<li><a href="">Publications</a></li>
+		<li><a href="">Submissions</a></li>
+	</ul>
+</li>
+
 #end
+
+
+
+<script>
+	$('#module-dropdown').click(function(e){
+		e.stopPropagation();
+		if ( $(this).hasClass('active') ) {
+			$(this).removeClass('active');
+			$('#module-list').hide();
+		} else {
+			$(this).addClass('active');
+			$('#module-list').show();
+		}
+	});
+</script>
 
 #if( $canviewupload )
  <li #if( $section == "upload" ) class="navselected" #end><a href="$home$apphome/views/upload/index.html" >Upload Media</a></li>
