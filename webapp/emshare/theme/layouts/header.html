@@ -1,7 +1,8 @@
       
      <!-- <a href="$home$apphome/index.html"><img class="logo" src="/emshare/theme/images/logo.png" alt="EnterMedia Share" /></a> -->
       
-      <a href="$home$apphome/index.html"><img class="logo" src="$themeprefix/images/logo.png" alt="EnterMedia Share" /></a>
+      #set($module = $searcherManager.getData($catalogid, "module", $context.findValue("module") ))
+      <a href="$apphome$module.href"><img class="logo" src="$themeprefix/images/logo.png" alt="EnterMedia Share" /></a>
       
       <span class="navlinks">
        
@@ -13,7 +14,7 @@
 #end	 
  			
  #if($canviewsettings)
-|	<a href="$home$apphome/views/settings/index.html">Settings</a>
+|	<a #if ( $module ) href="$home$apphome/views/settings/modules/$module.id/index.html" #else href="$home$apphome/views/settings/index.html" #end>Settings</a>
 |	<a href="$home/manager/index.html">Manager</a>
 #end
  			

@@ -1,16 +1,16 @@
  
  <ul class="emheaderbuttons" >
-
+#set($module = $searcherManager.getData($catalogid, "module", $context.findValue("module") ))
 #set( $section = $content.section)
 
 #if ($user)
 
-<li><a id="module" class="flat-right" href="$home$apphome/index.html">Assets</a><a id="module-dropdown" class="flat-left"><span></span></a>
+<li><a id="module" class="flat-right" href="$home$apphome/views/modules/${module.id}/index.html">#if ( $module ) ${module} #else Assets #end</a><a id="module-dropdown" class="flat-left" href="#"><span></span></a>
 	<ul id="module-list" style="display: none;">
-		<li><a href="$apphome/views/modules/assets/index.html">Assets</a></li>
-		<li><a href="$apphome/views/modules/contact/index.html">Contacts</a></li>
-		<li><a href="$apphome/views/modules/publications/index.html">Publications</a></li>
-		<li><a href="$apphome/views/modules/submissions/index.html">Submissions</a></li>
+		#set ( $modules = $searcherManager.getList($catalogid, "module") )
+		#foreach ( $module in $modules )
+			<li><a href="$apphome$module.href">$module</a></li>
+		#end
 	</ul>
 </li>
 
