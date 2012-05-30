@@ -1,15 +1,18 @@
  
  <ul class="emheaderbuttons" >
-#set($module = $searcherManager.getData($catalogid, "module", $content.module ))
-#set( $section = $content.section)
+ 	#set ($lastselected = $content.module )
+ 	#if(!$lastselected)
+ 		#set($lastselected = $userprofile.last_selected_module )
+ 	#end
+#set($module = $searcherManager.getData($catalogid, "module", $lastselected ) )
+
 
 #if ($user)
-
 <li><a id="module" class="flat-right" #if ( $module ) href="$apphome$module.href" #else  href="$home$apphome/index.html" #end>#if ( $module ) ${module}s #else Home #end</a><a id="module-dropdown" class="flat-left" href="#"><span></span></a>
 	<ul id="module-list" style="display: none;">
 		#set ( $modules = $searcherManager.getList($catalogid, "module") )
 		#foreach ( $module in $modules )
-			<li><a href="$apphome$module.href">$module</a></li>
+			<li><a href="$apphome$module.href?field=last_selected_module&last_selected_module.value=${module.id}">$module</a></li>
 		#end
 	</ul>
 </li>
