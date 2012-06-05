@@ -1,35 +1,24 @@
  
  <ul class="emheaderbuttons" >
+ 	#set ($lastselected = $content.module )
+ 	#if(!$lastselected)
+ 		#set($lastselected = $userprofile.last_selected_module )
+ 	#end
+#set($module = $searcherManager.getData($catalogid, "module", $lastselected ) )
 
-#set( $section = $content.section)
 
 #if ($user)
-
-<li><a id="module" class="flat-right" href="$home$apphome/index.html">Assets</a><a id="module-dropdown" class="flat-left"><span></span></a>
+<li><a id="module" class="flat-right" #if ( $module ) href="$apphome$module.href" #else  href="$home$apphome/index.html" #end>#if ( $module ) ${module}s #else Home #end</a><a id="module-dropdown" class="flat-left" href="#"><span></span></a>
 	<ul id="module-list" style="display: none;">
-		<li><a href="$apphome/views/modules/assets/index.html">Assets</a></li>
-		<li><a href="$apphome/views/modules/contact/index.html">Contacts</a></li>
-		<li><a href="$apphome/views/modules/publications/index.html">Publications</a></li>
-		<li><a href="$apphome/views/modules/submissions/index.html">Submissions</a></li>
+		#set ( $modules = $searcherManager.getList($catalogid, "module") )
+		#foreach ( $module in $modules )
+			<li><a href="$apphome$module.href?field=last_selected_module&last_selected_module.value=${module.id}">$module</a></li>
+		#end
 	</ul>
 </li>
 
 #end
 
-
-
-<script>
-	$('#module-dropdown').click(function(e){
-		e.stopPropagation();
-		if ( $(this).hasClass('active') ) {
-			$(this).removeClass('active');
-			$('#module-list').hide();
-		} else {
-			$(this).addClass('active');
-			$('#module-list').show();
-		}
-	});
-</script>
 
 #if( $canviewupload )
  <li #if( $section == "upload" ) class="navselected" #end><a href="$home$apphome/views/upload/index.html" >Upload Media</a></li>
@@ -42,33 +31,7 @@
 #end
 
  </ul>
- 	<script>
- 		$('#maximize').click( function(){
- 			html = $('#maximize').html()
- 			if ( (html == ' Maximize ') || (html == 'Maximize') ) {
- 				$('#embody').addClass('max');
- 				$('#maximize').html('Minimize');
- 				$('#maximize').attr('title', 'Minimize the application.');
-				var w = $('#data').width() - 35;
-				$('#asset-data').width(w);
- 			} else {
- 				$('#embody').removeClass('max');
- 				$('#maximize').html('Maximize');
- 				$('#maximize').attr('title', 'Maximize the application.')
- 				var w = 594;
- 				$('#asset-data').width('594');
- 			}
- 			toggleUserProperty("maximize_screen");
- 			
- 		});		
- 		$(document).ready(function(){
- 			if ( $('#embody').hasClass('max') ) {
- 				var w = $('#data').width() - 35;
-				$('#asset-data').width(w);
- 			}
- 		})
 
- 	</script>
 
 <div style="float:right; margin-top:-30px;">
 
