@@ -10,7 +10,8 @@
 	
     <property name="build" location="${basedir}/build"/>
     <property name="webapp" location="${basedir}/webapp"/>
-	
+	<property name="branch" value="" />
+
 	<!-- 
 		========================================================================
 		Anthill build server properties.  These properties will be passed in
@@ -38,8 +39,12 @@
 	   
 	<target name="publish" depends="zip">
 		<!-- publish results to anthill -->
-	 	<copy file="${etc}/install.js" overwrite="true"
-	        tofile="${deployDir}/install.js"/>
+		<copy overwrite="true"  file="${etc}/install.js" 
+		    tofile="${deployDir}/install.js">
+		 		 <filterset>
+		 		      <filter token="BRANCH" value="${branch}"/>
+		 		    </filterset>
+		 	</copy>	
 	 	<copy file="${etc}/install.xml" overwrite="true"
 	        tofile="${deployDir}/install.xml"/>
 	</target>
