@@ -7,7 +7,7 @@ var appname = "app-emshare";
 var foldername = "emshare";
 
 //http://dev.entermediasoftware.com/jenkins/job/app-emshare/lastSuccessfulBuild/artifact/deploy/app-emshare.zip
-var zip = "http://dev.entermediasoftware.com/jenkins/job/" + appname + "/lastSuccessfulBuild/artifact/deploy/" + appname + ".zip";
+var zip = "http://dev.entermediasoftware.com/jenkins/job/@BRANCH@" + appname + "/lastSuccessfulBuild/artifact/deploy/" + appname + ".zip";
 
 var root = moduleManager.getBean("root").getAbsolutePath();
 var tmp = root + "/WEB-INF/tmp";
