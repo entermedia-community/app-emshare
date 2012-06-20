@@ -8,11 +8,18 @@
 
 
 #if ($user)
-<li><a id="module" class="flat-right" #if ( $module ) href="$apphome$module.href" #else  href="$home$apphome/index.html" #end>#if ( $module ) ${module} #else Home #end</a><a id="module-dropdown" class="flat-left" href="#"><span></span></a>
+
+#if( $module && $content.path.contains("modules/settings") )
+	#set( $url = "$home$apphome/views/settings/modules/${module.id}/index.html" )
+#else
+	#set( $url = "$home$apphome/views/modules/${module.id}/index.html" )
+#end
+
+<li><a id="module" class="flat-right" #if ( $module ) href="$url" #else  href="$home$apphome/index.html" #end>#if ( $module ) ${module} #else Home #end</a><a id="module-dropdown" class="flat-left" href="#"><span></span></a>
 	<ul id="module-list" style="display: none;">
 		#set ( $modules = $searcherManager.getList($catalogid, "module") )
 		#foreach ( $module in $modules )
-			<li><a href="$apphome$module.href?field=last_selected_module&last_selected_module.value=${module.id}">$module</a></li>
+			<li><a href="$home$apphome/views/modules/${module.id}/index.html?field=last_selected_module&last_selected_module.value=${module.id}">$module</a></li>
 		#end
 	</ul>
 </li>
