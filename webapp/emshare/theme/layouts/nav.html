@@ -14,15 +14,20 @@
 #else
 	#set( $urlbase = "$home$apphome/views/modules" )
 #end
+		#set ( $modules = $searcherManager.getList($catalogid, "module") )
 
+#if( $modules.size() > 1)
 <li><a id="module" class="flat-right" #if ( $module ) href="$home$apphome/views/modules/${module.getId()}/index.html" #else  href="$home$apphome/index.html" #end>#if ( $module ) ${module} #else Home #end</a><a id="module-dropdown" class="flat-left" href="#"><span></span></a>
 	<ul id="module-list" style="display: none;">
-		#set ( $modules = $searcherManager.getList($catalogid, "module") )
 		#foreach ( $module in $modules )
 			<li><a href="$urlbase/${module.id}/index.html?field=last_selected_module&last_selected_module.value=${module.id}">$module</a></li>
 		#end
 	</ul>
 </li>
+#else
+<li><a id="module"  href="$home$apphome/index.html"> Home </a></li>
+#end
+
 
 #end
 
