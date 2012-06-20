@@ -9,17 +9,17 @@
 
 #if ($user)
 
-#if( $module && $content.path.contains("modules/settings") )
-	#set( $url = "$home$apphome/views/settings/modules/${module.id}/index.html" )
+#if( $module && $content.path.contains("/views/settings") )
+	#set( $urlbase = "$home$apphome/views/settings/modules" )
 #else
-	#set( $url = "$home$apphome/views/modules/${module.id}/index.html" )
+	#set( $urlbase = "$home$apphome/views/modules" )
 #end
 
-<li><a id="module" class="flat-right" #if ( $module ) href="$url" #else  href="$home$apphome/index.html" #end>#if ( $module ) ${module} #else Home #end</a><a id="module-dropdown" class="flat-left" href="#"><span></span></a>
+<li><a id="module" class="flat-right" #if ( $module ) href="$home$apphome/views/modules/${module.getId()}/index.html" #else  href="$home$apphome/index.html" #end>#if ( $module ) ${module} #else Home #end</a><a id="module-dropdown" class="flat-left" href="#"><span></span></a>
 	<ul id="module-list" style="display: none;">
 		#set ( $modules = $searcherManager.getList($catalogid, "module") )
 		#foreach ( $module in $modules )
-			<li><a href="$home$apphome/views/modules/${module.id}/index.html?field=last_selected_module&last_selected_module.value=${module.id}">$module</a></li>
+			<li><a href="$urlbase/${module.id}/index.html?field=last_selected_module&last_selected_module.value=${module.id}">$module</a></li>
 		#end
 	</ul>
 </li>
