@@ -4,32 +4,48 @@
  	#if(!$lastselected)
  		#set($lastselected = $userprofile.last_selected_module )
  	#end
+ 	#if(!$lastselected)
+        #set($lastselected = "asset" )
+    #end
 #set($module = $searcherManager.getData($catalogid, "module", $lastselected ) )
 
 
 #if ($user)
-<li><a id="module" class="flat-right" #if ( $module ) href="$apphome$module.href" #else  href="$home$apphome/index.html" #end>#if ( $module ) ${module}s #else Home #end</a><a id="module-dropdown" class="flat-left" href="#"><span></span></a>
-	<ul id="module-list" style="display: none;">
+
+#if( $module && $content.path.contains("/views/settings") )
+	#set( $urlbase = "$home$apphome/views/settings/modules" )
+#else
+	#set( $urlbase = "$home$apphome/views/modules" )
+#end
 		#set ( $modules = $searcherManager.getList($catalogid, "module") )
+
+#if( $modules.size() > 1)
+<li><a id="module" class="flat-right" #if ( $module ) href="$home$apphome/views/modules/${module.getId()}/index.html" #else  href="$home$apphome/index.html" #end>#if ( $module ) ${module} #else Home #end</a><a id="module-dropdown" class="flat-left" href="#"><span></span></a>
+	<ul id="module-list" style="display: none;">
 		#foreach ( $module in $modules )
-			<li><a href="$apphome$module.href?field=last_selected_module&last_selected_module.value=${module.id}">$module</a></li>
+			<li><a href="$urlbase/${module.id}/index.html?field=last_selected_module&last_selected_module.value=${module.id}">$module</a></li>
 		#end
 	</ul>
 </li>
+#elseif( $canviewhomelink )
 
+<li><a id="module"  href="$home$apphome/views/modules/${module.getId()}/index.html"> Home </a></li>
 #end
 
 
-#if( $canviewupload )
- <li #if( $section == "upload" ) class="navselected" #end><a href="$home$apphome/views/upload/index.html" >Upload Media</a></li>
 #end
 
-#if($canviewbasket)
-<li #if($section=="basket") class="navselected"  #end  style="float: right;">
-	$pages.include("$apphome/components/basket/menuitem.html")
-</li>
-#end
+#if ( $$lastselected == "asset" )
+    #if( $canviewupload )
+     <li #if( $section == "upload" ) class="navselected" #end><a href="$home$apphome/views/upload/index.html" >Upload Media</a></li>
+    #end
 
+    #if($canviewbasket)
+    <li #if($section=="basket") class="navselected"  #end  style="float: right;">
+    	$pages.include("$apphome/components/basket/menuitem.html")
+    </li>
+    #end
+#end
  </ul>
 
 
