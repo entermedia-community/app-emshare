@@ -7,17 +7,16 @@
  	#if(!$lastselected)
         #set($lastselected = "asset" )
     #end
+    
+    
 #set($module = $searcherManager.getData($catalogid, "module", $lastselected ) )
+
 
 
 #if ($user)
 
-#if( $module && $content.path.contains("/views/settings") )
-	#set( $urlbase = "$home$apphome/views/settings/modules" )
-#else
 	#set( $urlbase = "$home$apphome/views/modules" )
-#end
-		#set ( $modules = $searcherManager.getList($catalogid, "module") )
+	#set ( $modules = $searcherManager.getList($catalogid, "module") )
 
 #if( $modules.size() > 1)
 <li><a id="module" class="flat-right" #if ( $module ) href="$home$apphome/views/modules/${module.getId()}/index.html" #else  href="$home$apphome/index.html" #end>#if ( $module ) ${module} #else Home #end</a><a id="module-dropdown" class="flat-left" href="#"><span></span></a>
@@ -52,13 +51,13 @@
 <div style="float:right; margin-top:-30px;">
 
 #if ($canquicksearch)
-<div id="searchform">
+<div id="searchform" class="">
 <form id="search_form" action="$apphome/views/search/search.html" class="em-widget-content">
 	<input type="hidden" name="field" value="description" />
 	<input type="hidden" name="operation" value="startswith" />
 	#set( $input = "Search...")
 	#set( $input = $hits.getInput("description") )
-    <input type="text"  id="assetsearchinput" initialtext="Search..."  class="initialtext" name="description.value" value="$input" />
+    <input type="text"  id="assetsearchinput" initialtext="Search..."  class="suggestsearchinput initialtext " name="description.value" value="$input" />
 </form>
 </div>
 #end
