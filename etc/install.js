@@ -22,7 +22,7 @@ unziper.unzip(  tmp + "/" + appname + ".zip",  tmp );
 
 var files = new FileUtils();
 log.add("3. UPGRADE BASE DIR");
-files.deleteAll( root + "/WEB-INF/base" + foldername);
+files.deleteAll( root + "/WEB-INF/base/" + foldername);
 files.copyFiles( tmp + "/" + foldername, root + "/WEB-INF/base/" + foldername + "/");
 
 log.add("4. CLEAN UP");
