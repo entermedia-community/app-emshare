@@ -19,7 +19,12 @@
 	#set ( $modules = $searcherManager.getList($catalogid, "module") )
 
 #if( $modules.size() > 1)
-<li><a id="module" class="flat-right" #if ( $module ) href="$home$apphome/views/modules/${module.getId()}/index.html" #else  href="$home$apphome/index.html" #end>#if ( $module ) ${module} #else Home #end</a><a id="module-dropdown" class="flat-left" href="#"><span></span></a>
+
+#set( $hitssessionid = $context.getRequestParameter("hitssessionid") )
+#if( !$hitssessionid )
+	#set( $hitssessionid = $hits.getSessionId() )
+#end
+<li><a id="module" class="flat-right" #if ( $module ) href="$home$apphome/views/modules/${module.getId()}/index.html?hitssessionid=$!hitssessionid" #else  href="$home$apphome/index.html" #end>#if ( $module ) ${module} #else Home #end</a><a id="module-dropdown" class="flat-left" href="#"><span></span></a>
 	<ul id="module-list" style="display: none;">
 		#foreach ( $module in $modules )
 			<li><a href="$urlbase/${module.id}/index.html?field=last_selected_module&last_selected_module.value=${module.id}">$module</a></li>
