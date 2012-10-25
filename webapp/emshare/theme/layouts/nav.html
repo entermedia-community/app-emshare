@@ -1,40 +1,46 @@
  
  <ul class="emheaderbuttons" >
- 	#set ($lastselected = $content.module )
- 	#if(!$lastselected)
- 		#set($lastselected = $userprofile.last_selected_module )
- 	#end
- 	#if(!$lastselected)
-        #set($lastselected = "asset" )
-    #end
-    
-    
-#set($module = $searcherManager.getData($catalogid, "module", $lastselected ) )
+
+#set( $hitssessionid = $context.getRequestParameter("hitssessionid") )
+#if( !$hitssessionid )
+	#set( $hitssessionid = $hits.getSessionId() )
+#end
+
+#if( $canviewhomelink )
+<li><a id="module"  href="$home$apphome/index.html"> Home </a></li>
+#end
+
+#set ($lastselected = $content.module )
+#if(!$lastselected)
+	#set($lastselected = $userprofile.last_selected_module )
+#end
+#if(!$lastselected)
+      #set($lastselected = "asset" )
+#end   
 
 
+#if( $userprofile.getModules().size() > 1 )
 
-#if ($user)
+    #set($module = $searcherManager.getData($catalogid, "module", $lastselected ) )
+	#if( !$module ) 
+		##in case they deleted an old selected module 
+	    #set($module = $searcherManager.getData($catalogid, "module", "asset" ) )
+	#end
 
 	#set( $urlbase = "$home$apphome/views/modules" )
-	#set ( $modules = $searcherManager.getList($catalogid, "module") )
 
-#if( $modules.size() > 1)
-<li><a id="module" class="flat-right" #if ( $module ) href="$home$apphome/views/modules/${module.getId()}/index.html" #else  href="$home$apphome/index.html" #end>#if ( $module ) ${module} #else Home #end</a><a id="module-dropdown" class="flat-left" href="#"><span></span></a>
+
+<li><a id="module" class="flat-right" href="$home$apphome/views/modules/${module.getId()}/index.html?hitssessionid=$!hitssessionid">${module}</a><a id="module-dropdown" class="flat-left" href="#"><span></span></a>
 	<ul id="module-list" style="display: none;">
-		#foreach ( $module in $modules )
-			<li><a href="$urlbase/${module.id}/index.html?field=last_selected_module&last_selected_module.value=${module.id}">$module</a></li>
+		#foreach ( $amodule in $userprofile.getModules() )
+			<li><a href="$urlbase/${amodule.id}/index.html?field=last_selected_module&last_selected_module.value=${amodule.id}">$amodule</a></li>
 		#end
 	</ul>
 </li>
-#elseif( $canviewhomelink )
-
-<li><a id="module"  href="$home$apphome/views/modules/${module.getId()}/index.html"> Home </a></li>
 #end
 
 
-#end
-
-#if ( $$lastselected == "asset" )
+#if ( $lastselected == "asset" )
     #if( $canviewupload )
      <li #if( $section == "upload" ) class="navselected" #end><a href="$home$apphome/views/upload/index.html" >Upload Media</a></li>
     #end
@@ -52,7 +58,7 @@
 
 #if ($canquicksearch)
 <div id="searchform" class="">
-<form id="search_form" action="$apphome/views/search/search.html" class="em-widget-content">
+<form id="search_form" action="$home$apphome/views/search/search.html" class="em-widget-content">
 	<input type="hidden" name="field" value="description" />
 	<input type="hidden" name="operation" value="startswith" />
 	#set( $input = "Search...")
