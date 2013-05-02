@@ -2,11 +2,20 @@
 
 <page>
   	<property name="fallbackdirectory">/WEB-INF/base/emfrontend</property>
+  	
+  	<property name="assetviewerlink">/${applicationid}/views/modules/asset/editor/viewer/index.html</property>
+  	<property name="asseteditlink">/${applicationid}/views/modules/asset/editor/generalinformation/index.html</property>
+
   	<path-action name="MediaArchiveModule.loadApplicationId" />
+  	
   	
 	<path-action name="ProfileModule.loadUserProfile" />
     <path-action alltypes="true" name="MediaArchiveModule.getMediaArchive"/>
 	<path-action bean="searcherManager" name="PageValue.loadPageVariable" allowduplicates="true" />
+	
+		<path-action bean="replacer" name="PageValue.loadPageVariable" class="com.openedit.util.Replacer" />
+	
+	
 	<path-action bean="userManager" name="PageValue.loadPageVariable" allowduplicates="true" />
     <property name="recentactivityid">${parentapplicationid}</property>
  
@@ -78,8 +87,6 @@
   
  
   <property name="title">EM Share</property>
-  <property name="showremoveselections">false</property>
-  <property name="showaddselections">true</property>
  <!--
   <property name="mastergroup">video</property>
  -->
@@ -345,6 +352,14 @@
   <permission name="develop">
 		   <userprofile property="viewdevelopertools" equals="true" />
 </permission>
+
+
+
+  <permission name="togglesidebar">
+		   <userprofile property="togglesidebar" equals="true" />
+</permission>
+
+
 
    <permission name="filterbyassettype">
 		<userprofile property="filterbyassettype" equals="true" />
