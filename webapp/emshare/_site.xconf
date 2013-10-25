@@ -48,14 +48,18 @@
  	<property name="themeprefix">/${applicationid}/theme</property>
 
 
-  <style id="mediaplayer" href="${themeprefix}/styles/pages/mediaplayer.css"/>
+ <style id="mediaplayer" href="${themeprefix}/styles/pages/mediaplayer.css"/>
   <style id="categorypicker" href="${themeprefix}/styles/pages/categorypicker.css"/>
   <style id="layout" href="${themeprefix}/styles/layout.css"/>
   <style id="jqueryui" href="${themeprefix}/styles/jquery-ui.css"/>
   <style id="colors" href="${themeprefix}/styles/colors.css"/>
   <style id="app-css" href="${themeprefix}/styles/theme.css"/>
+  
+  <!-- deprecated font selector
   <style id="fontselector-css" href="/${applicationid}/components/javascript/fontselector/fontselector.css"/>
-    
+  -->
+  <style id="fontselector-css" href="/${applicationid}/components/javascript/enhanced-fontselector/fontselector.css"/>
+  
   <script id="jquery" src="/${applicationid}/components/javascript/jquery-1.7.1.min.js"/>
   <script id="jquery-ui" src="/${applicationid}/components/javascript/jquery-ui-1.8.12.custom.min.js"/>
   <script id="jquery-ui-i18n" src="/${applicationid}/components/javascript/ui/i18n/jquery-ui-i18n.js"/>
@@ -77,7 +81,14 @@
   <script id="validateandedit" src="/${applicationid}/components/javascript/validateandedit.js">     </script>
   <script id="theme-js" src="/${applicationid}/components/javascript/ui-components.js"/>
   <script id="emtree" src="/${applicationid}/components/javascript/emtree/emtree.js"/>
+  <!-- jcrop tool -->
+  <script id="jcrop" src="/${applicationid}/components/javascript/jcrop/jquery.Jcrop.min.js"/>
+  <style id="jcrop" href="/${applicationid}/components/javascript/jcrop/jquery.Jcrop.min.css"/>
+  
+  <!-- deprecated fontselector
   <script id="fontselector" src="/${applicationid}/components/javascript/fontselector/jquery.fontselector.js"/>
+  -->
+  
   <script id="detaileditor" src="/${applicationid}/components/xml/detaileditor.js"/>
   
   <script id="select2" src="/${applicationid}/components/javascript/select2/select2.js"/>
@@ -170,7 +181,10 @@
 	<permission name="viewfatwire">
 		<userprofile property="viewfatwire" equals="true" />
 	</permission>	
-
+	
+	<permission name="viewfatwirecrop">
+		<userprofile property="viewfatwirecrop" equals="true" />
+	</permission>
 
 
 	<permission name="comment">
@@ -350,7 +364,10 @@
   </permission>
   
   <permission name="viewerrors">
-     <userprofile property="viewerrors" equals="true" />
+	  <or>
+		<group name="administrators" />
+     	<userprofile property="viewerrors" equals="true" />
+	  </or>  
   </permission>
 
   <permission name="editlists">
