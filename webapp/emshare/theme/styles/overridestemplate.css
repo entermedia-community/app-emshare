@@ -288,6 +288,15 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='$color1', end
 border-right-color: $solidcolor;
 }
 
+#nav .navlinks {
+#if ($template.navlinksbackgroundcolor)
+#set($solidcolor = $template.navlinksbackgroundcolor)
+#else
+#set($solidcolor = "")
+#end
+background: $solidcolor;
+}
+
 #embody {
 #set($tile = $mediaarchive.getAsset(${template.tileupload}))
 #if($tile)
@@ -331,6 +340,9 @@ box-shadow: none;
 #end
 #if($template.contentbackgroundcolor)
 color: $template.contentbackgroundcolor;
+#end
+#if($template.leftcolumnbackgroundcolor)
+background: $template.leftcolumnbackgroundcolor;
 #end
 }
 
@@ -400,3 +412,59 @@ color: $template.navfontcolor;
 #end
 }
 
+#emcontainer #emselectable #tableheader, #emcontainer .emdata tr.tableheader {
+#set($solidcolor = $template.tableheadercolor)
+#set($color1 = $template.tableheadercolorgradienthi)
+#set($color2 = $template.tableheadercolorgradientlo)
+#if ($solidcolor)
+background: $solidcolor; /* Old browsers */ 
+#end
+#if($color1 && $color2)
+background: -moz-linear-gradient(top, $color1 0%, $color2 100%); /* FF3.6+ */
+background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,$color1), color-stop(100%,$color2)); /* Chrome,Safari4+ */
+background: -webkit-linear-gradient(top, $color1 0%,$color2 100%); /* Chrome10+,Safari5.1+ */
+background: -o-linear-gradient(top, $color1 0%,$color2 100%); /* Opera 11.10+ */
+background: -ms-linear-gradient(top, $color1 0%,$color2 100%); /* IE10+ */
+background: linear-gradient(top, $color1 0%,$color2 100%); /* W3C */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='$color1', endColorstr='$color2',GradientType=0 ); /* IE6-9 */
+#end
+}
+
+#de-side-nav li.current a, #de-side-nav li.current a:hover {
+
+#set($solidcolor = $template.assetdetailsselectedtabcolor)
+#set($color1 = $template.assetdetailsselectedtabgradientcolorhi)
+#set($color2 = $template.assetdetailsselectedtabgradientcolorlo)
+#if ($solidcolor)
+background: $solidcolor; /* Old browsers */ 
+#end
+#if($color1 && $color2)
+background: -moz-linear-gradient(top, $color1 0%, $color2 100%); /* FF3.6+ */
+background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,$color1), color-stop(100%,$color2)); /* Chrome,Safari4+ */
+background: -webkit-linear-gradient(top, $color1 0%,$color2 100%); /* Chrome10+,Safari5.1+ */
+background: -o-linear-gradient(top, $color1 0%,$color2 100%); /* Opera 11.10+ */
+background: -ms-linear-gradient(top, $color1 0%,$color2 100%); /* IE10+ */
+background: linear-gradient(top, $color1 0%,$color2 100%); /* W3C */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='$color1', endColorstr='$color2',GradientType=0 ); /* IE6-9 */
+#end
+
+}
+
+#de-side-nav ul li.current::after, #pdf-thumbnail-sidebar ul li.current::after {
+
+#set($solidcolor = $template.assetdetailsselectedtabcolor)
+#set($color1 = $template.assetdetailsselectedtabgradientcolorhi)
+#set($color2 = $template.assetdetailsselectedtabgradientcolorlo)
+#if ($solidcolor)
+border-left-color: $solidcolor;
+#elseif ($color2)
+border-left-color: $color2;
+#end
+
+}
+
+.search-list li.current a.search-href, .sidebar-list li.current a {
+#if ($template.settingsmenuselectioncolor)
+background: $template.settingsmenuselectioncolor;
+#end
+}
