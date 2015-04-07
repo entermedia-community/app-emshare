@@ -371,6 +371,10 @@ opacity: ${theme.pfontopacity};
 #if($theme.backgroundoppacity)
 opacity: $theme.backgroundoppacity;
 #end
+
+#if($theme.widgetbordercolor)
+border: 1px solid $theme.widgetbordercolor;
+#end
 }
 
 #main{
@@ -416,9 +420,40 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='$color1', end
 #if($theme.navfontcolor)
 color: $theme.navfontcolor;
 #end
+
+}
+
+.ui-widget-header
+{
+	
+#if ($theme.navcolor)
+#set($solidcolor = $theme.navcolor)
+#else
+#set($solidcolor = "")
+#end
+#if($theme.navcolorgradienthi && $theme.navcolorgradienthi!="" && $theme.navcolorgradientlo && $theme.navcolorgradientlo!="")
+#set($color1 = $theme.navcolorgradienthi)
+#set($color2 = $theme.navcolorgradientlo)
+#else
+#set($color1 = "")
+#set($color2 = "")
+#end
+#if ($solidcolor && $solidcolor!="")
+background: $solidcolor; /* Old browsers */ 
+#end
+#if($color1 && $color1!="" && $color2 && $color2!="")
+background: -moz-linear-gradient(top, $color1 0%, $color2 100%); /* FF3.6+ */
+background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,$color1), color-stop(100%,$color2)); /* Chrome,Safari4+ */
+background: -webkit-linear-gradient(top, $color1 0%,$color2 100%); /* Chrome10+,Safari5.1+ */
+background: -o-linear-gradient(top, $color1 0%,$color2 100%); /* Opera 11.10+ */
+background: -ms-linear-gradient(top, $color1 0%,$color2 100%); /* IE10+ */
+background: linear-gradient(top, $color1 0%,$color2 100%); /* W3C */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='$color1', endColorstr='$color2',GradientType=0 ); /* IE6-9 */
+#end
 }
 
 #left-col .ui-widget-content {
+
 #if($theme.disableshadows == "true")
 box-shadow: none;
 #end
@@ -426,8 +461,9 @@ box-shadow: none;
 #if($theme.widgetbordercolor)
 border-color: $theme.widgetbordercolor;
 #end
-
+	
 }
+
 
 #help-content .ui-widget-header {
 #if ($theme.navcolor)
@@ -459,7 +495,8 @@ color: $theme.navfontcolor;
 #end
 }
 
-#emcontainer #emselectable #tableheader, #emcontainer .emdata tr.tableheader {
+#emcontainer #emselectable #main-results-table #tableheader th, .settings-table #tableheader th {
+
 #set($solidcolor = $theme.tableheadercolor)
 #set($color1 = $theme.tableheadercolorgradienthi)
 #set($color2 = $theme.tableheadercolorgradientlo)
@@ -469,14 +506,13 @@ background: $solidcolor; /* Old browsers */
 
 #if($color1 && $color2)
 
-background: -moz-linear-gradient(top, $color1 0%, $color2 100%); /* FF3.6+ */
+background: -moz-linear-gradient(top,  $color1 0%, $color2 100%); /* FF3.6+ */
 background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,$color1), color-stop(100%,$color2)); /* Chrome,Safari4+ */
-background: -webkit-linear-gradient(top, $color1 0%,$color2 100%); /* Chrome10+,Safari5.1+ */
-background: -o-linear-gradient(top, $color1 0%,$color2 100%); /* Opera 11.10+ */
-background: -ms-linear-gradient(top, $color1 0%,$color2 100%); /* IE10+ */
-background: linear-gradient(top, $color1 0%,$color2 100%); /* W3C */
+background: -webkit-linear-gradient(top,  $color1 0%,$color2 100%); /* Chrome10+,Safari5.1+ */
+background: -o-linear-gradient(top,  $color1 0%,$color2 100%); /* Opera 11.10+ */
+background: -ms-linear-gradient(top,  $color1 0%,$color2 100%); /* IE10+ */
+background: linear-gradient(to bottom,  $color1 0%,$color2 100%); /* W3C */
 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='$color1', endColorstr='$color2',GradientType=0 ); /* IE6-9 */
-
 
 #end
 }
@@ -563,12 +599,18 @@ background: $theme.tablemenuhovercolor;
 
 #right-col {
 #if($theme.tablebordercolor)
-border-left: 1px solid #80b5c6;
+border-left: 1px solid $theme.tablebordercolor;
 #end
 }
 
 /* Table Hover Color */
 #emcontainer #emselectable table tr.emborderhover, #main-results-table tr:hover {
+#if($theme.tablehovercolor)
+background: $theme.tablehovercolor;
+#end
+}
+
+.sidebar-media li.currentsubtle {
 #if($theme.tablehovercolor)
 background: $theme.tablehovercolor;
 #end
