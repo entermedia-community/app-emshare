@@ -1,23 +1,30 @@
 #embody {
-#if( ${theme.tileupload})
-	#set($asset = $mediaarchive.getAsset(${theme.tileupload}))
-	#set($backgroundpath = $mediaarchive.asLinkToOriginal($asset) )
+
+#if($theme.bodybackgroundcolor)
+	background: $theme.bodybackgroundcolor;
 #else
-	#set($backgroundpath = $theme.backgroundpath)
-#end
-#if(!$backgroundpath && $theme.backgroundstyle)
-	#set($backgroundpath = "/${content.applicationid}/theme/images/backgrounds/${theme.backgroundstyle}" )
-#end
-#if($backgroundpath)
-	background-image: url('$backgroundpath');
-	#if($theme.backgroundtile == "true")
-		background-repeat:repeat;
+	#if( ${theme.tileupload})
+		#set($asset = $mediaarchive.getAsset(${theme.tileupload}))
+		#set($backgroundpath = $mediaarchive.asLinkToOriginal($asset) )
 	#else
-	background-position:center top;
-	background-repeat: no-repeat;
-	background-size: 100%;		
+		#set($backgroundpath = $theme.backgroundpath)
 	#end
+	#if(!$backgroundpath && $theme.backgroundstyle)
+		#set($backgroundpath = "/${content.applicationid}/theme/images/backgrounds/${theme.backgroundstyle}" )
+	#end
+	#if($backgroundpath)
+		background-image: url('$backgroundpath');
+		#if($theme.backgroundtile == "true")
+			background-repeat:repeat;
+		#else
+		background-position:center top;
+		background-repeat: no-repeat;
+		background-size: 100%;		
+		#end
+	#end
+
 #end
+
 }
 
 #header {
@@ -358,11 +365,7 @@ opacity: ${theme.pfontopacity};
 #end
 }
 
-#embody {
-#if($theme.bodybackgroundcolor)
-background: $theme.bodybackgroundcolor;
-#end
-}
+
 
 #emcontent {
 #if($theme.backgroundoppacity)
@@ -419,6 +422,11 @@ color: $theme.navfontcolor;
 #if($theme.disableshadows == "true")
 box-shadow: none;
 #end
+
+#if($theme.widgetbordercolor)
+border-color: $theme.widgetbordercolor;
+#end
+
 }
 
 #help-content .ui-widget-header {
@@ -474,11 +482,16 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='$color1', end
 }
 
 /* Table Colors */
-#eml-tab-subnav ul, #sub-nav {
+
+#eml-tab-subnav ul li a, #sub-nav li a {
 
 #if($theme.tablemenufontcolor)
 color: $theme.tablemenufontcolor;
 #end
+
+}
+
+#eml-tab-subnav ul, #sub-nav {
 
 #if($theme.tablebordercolor)
 border-bottom: $theme.tablebordercolor;
@@ -505,6 +518,8 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='$color1', end
 #end
 }
 
+
+
 ul#sub-nav li:hover ul li a {
 #set($solidcolor = $theme.tablemenubackgroundcolor)
 #set($color1 = $theme.tablemenubackgroundcolorhi)
@@ -524,6 +539,12 @@ background: -ms-linear-gradient(top, $color1 0%,$color2 100%); /* IE10+ */
 background: linear-gradient(top, $color1 0%,$color2 100%); /* W3C */
 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='$color1', endColorstr='$color2',GradientType=0 ); /* IE6-9 */
 
+#end
+}
+
+#eml-tab-subnav ul li.current a, #sub-nav li.current a:hover {
+#if($theme.settingsmenuselectioncolor)
+background: $theme.settingsmenuselectioncolor;
 #end
 }
 
