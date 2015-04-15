@@ -1,5 +1,8 @@
 #embody {
 
+#set($color1 = "")
+#set($color2 = "")
+
 #if($theme.bodybackgroundcolor)
 	background: $theme.bodybackgroundcolor;
 #else
@@ -33,11 +36,10 @@
 box-shadow: none;
 #end
 
-#set($solidcolor = $theme.headercolor)
-#set($color1 = $theme.headercolorgradienthi)
-#set($color2 = $theme.headercolorgradientlo)
-#if ($solidcolor)
-background: $solidcolor; /* Old browsers */ 
+#set($color1 = $theme.headercolor)
+#set($color2 = $theme.headercolorgradient)
+#if ($color1 && $color2=="")
+background: $color1; /* Old browsers */ 
 #end
 #if($color1 && $color2)
 background: -moz-linear-gradient(top, $color1 0%, $color2 100%); /* FF3.6+ */
@@ -48,6 +50,10 @@ background: -ms-linear-gradient(top, $color1 0%,$color2 100%); /* IE10+ */
 background: linear-gradient(top, $color1 0%,$color2 100%); /* W3C */
 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='$color1', endColorstr='$color2',GradientType=0 ); /* IE6-9 */
 #end
+
+#set($color1 = "")
+#set($color2 = "")
+
 }
 
 
@@ -65,6 +71,7 @@ font-size: ${theme.headerfontsize}px;
 #if($theme.headerfontopacity)
 opacity: ${theme.headerfontopacity};
 #end
+
 }
 
 #if( ${theme.logoasset})
@@ -100,22 +107,14 @@ opacity: ${theme.headerfontopacity};
 	background: url('$theme.navbackgroundpath');
 #else
 	
-	#if ($theme.navcolor)
-	#set($solidcolor = $theme.navcolor)
-	#else
-	#set($solidcolor = "")
+	#set($color1 = $theme.navcolor)
+	#set($color2 = $theme.navcolorgradient)
+	
+	#if ($color1 && $color2=="")
+	background: $color1; /* Old browsers */ 
 	#end
-	#if($theme.navcolorgradienthi && $theme.navcolorgradienthi!="" && $theme.navcolorgradientlo && $theme.navcolorgradientlo!="")
-	#set($color1 = $theme.navcolorgradienthi)
-	#set($color2 = $theme.navcolorgradientlo)
-	#else
-	#set($color1 = "")
-	#set($color2 = "")
-	#end
-	#if ($solidcolor && $solidcolor!="")
-	background: $solidcolor; /* Old browsers */ 
-	#end
-	#if($color1 && $color1!="" && $color2 && $color2!="")
+
+	#if($color1 && $color2)
 	background: -moz-linear-gradient(top, $color1 0%, $color2 100%); /* FF3.6+ */
 	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,$color1), color-stop(100%,$color2)); /* Chrome,Safari4+ */
 	background: -webkit-linear-gradient(top, $color1 0%,$color2 100%); /* Chrome10+,Safari5.1+ */
@@ -124,6 +123,10 @@ opacity: ${theme.headerfontopacity};
 	background: linear-gradient(top, $color1 0%,$color2 100%); /* W3C */
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='$color1', endColorstr='$color2',GradientType=0 ); /* IE6-9 */
 	#end
+
+	#set($color1 = "")
+	#set($color2 = "")
+
 #end	
 }
 
@@ -135,22 +138,13 @@ opacity: ${theme.headerfontopacity};
 #end
 
 #nav li a {
-#if ($theme.navbuttoncolor)
-#set($solidcolor = $theme.navbuttoncolor)
-#else
-#set($solidcolor = "")
+#set($color1 = $theme.navbuttoncolor)
+#set($color2 = $theme.navbuttoncolorgradient)
+
+#if ($color1 && $color2=="")
+background: $color1; /* Old browsers */ 
 #end
-#if($theme.navbuttoncolorgradienthi && $theme.navbuttoncolorgradienthi!="" && $theme.navbuttoncolorgradientlo && $theme.navbuttoncolorgradientlo!="")
-#set($color1 = $theme.navbuttoncolorgradienthi)
-#set($color2 = $theme.navbuttoncolorgradientlo)
-#else
-#set($color1 = "")
-#set($color2 = "")
-#end
-#if ($solidcolor && $solidcolor!="")
-background: $solidcolor; /* Old browsers */ 
-#end
-#if($color1 && $color1!="" && $color2 && $color2!="")
+#if($color1 && $color2)
 background: -moz-linear-gradient(top, $color1 0%, $color2 100%); /* FF3.6+ */
 background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,$color1), color-stop(100%,$color2)); /* Chrome,Safari4+ */
 background: -webkit-linear-gradient(top, $color1 0%,$color2 100%); /* Chrome10+,Safari5.1+ */
@@ -177,6 +171,10 @@ box-shadow: none;
 #if( $theme.navbuttonbordercolor )
 border-color: $theme.navbuttonbordercolor;
 #end
+
+#set($color1 = "")
+#set($color2 = "")
+
 }
 
 #nav li a:hover {
@@ -192,22 +190,14 @@ color: ${theme.navhoverfontcolor};
 #if($theme.navhoverfontopacity)
 opacity: ${theme.navhoverfontopacity};
 #end
-#if ($theme.navbuttonhovercolor)
-#set($solidcolor = $theme.navbuttonhovercolor)
-#else
-#set($solidcolor = "")
+
+#set($color1 = $theme.navbuttonhovercolor)
+#set($color2 = $theme.navbuttonhovercolorgradient)
+
+#if ($color1 && $color2=="")
+background: $color1; /* Old browsers */ 
 #end
-#if($theme.navbuttonhovercolorgradienthi && $theme.navbuttonhovercolorgradienthi!="" && $theme.navbuttonhovercolorgradientlo && $theme.navbuttonhovercolorgradientlo!="")
-#set($color1 = $theme.navbuttonhovercolorgradienthi)
-#set($color2 = $theme.navbuttonhovercolorgradientlo)
-#else
-#set($color1 = "")
-#set($color2 = "")
-#end
-#if ($solidcolor && $solidcolor!="")
-background: $solidcolor; /* Old browsers */ 
-#end
-#if($color1 && $color1!="" && $color2 && $color2!="")
+#if($color1 && $color2)
 background: -moz-linear-gradient(top, $color1 0%, $color2 100%); /* FF3.6+ */
 background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,$color1), color-stop(100%,$color2)); /* Chrome,Safari4+ */
 background: -webkit-linear-gradient(top, $color1 0%,$color2 100%); /* Chrome10+,Safari5.1+ */
@@ -216,27 +206,23 @@ background: -ms-linear-gradient(top, $color1 0%,$color2 100%); /* IE10+ */
 background: linear-gradient(top, $color1 0%,$color2 100%); /* W3C */
 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='$color1', endColorstr='$color2',GradientType=0 ); /* IE6-9 */
 #end
+
+#set($color1 = "")
+#set($color2 = "")
+
 }
 
 
 
 #nav li.navselected a, #nav li a:active, #module-dropdown.active, #module-dropdown.active:hover {
-#if ($theme.navbuttonhovercolor)
-#set($solidcolor = $theme.navbuttonhovercolor)
-#else
-#set($solidcolor = "")
+
+#set($color1 = $theme.navbuttonhovercolor)
+#set($color2 = $theme.navbuttonhovercolorgradient)
+
+#if ($color1 && $color2=="")
+background: $color1 !important; /* Old browsers */ 
 #end
-#if($theme.navbuttonhovercolorgradienthi && $theme.navbuttonhovercolorgradienthi!="" && $theme.navbuttonhovercolorgradientlo && $theme.navbuttonhovercolorgradientlo!="")
-#set($color1 = $theme.navbuttonhovercolorgradienthi)
-#set($color2 = $theme.navbuttonhovercolorgradientlo)
-#else
-#set($color1 = "")
-#set($color2 = "")
-#end
-#if ($solidcolor && $solidcolor!="")
-background: $solidcolor !important; /* Old browsers */ 
-#end
-#if($color1 && $color1!="" && $color2 && $color2!="")
+#if($color1 && $color2)
 background: -moz-linear-gradient(top, $color1 0%, $color2 100%) !important; /* FF3.6+ */
 background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,$color1), color-stop(100%,$color2)) !important; /* Chrome,Safari4+ */
 background: -webkit-linear-gradient(top, $color1 0%,$color2 100%) !important; /* Chrome10+,Safari5.1+ */
@@ -245,15 +231,16 @@ background: -ms-linear-gradient(top, $color1 0%,$color2 100%) !important; /* IE1
 background: linear-gradient(top, $color1 0%,$color2 100%) !important; /* W3C */
 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='$color1', endColorstr='$color2',GradientType=0 ) !important; /* IE6-9 */
 #end
+
+#set($color1 = "")
+#set($color2 = "")
+
 }
 
 #nav .flat-right {
 #if ($theme.navbuttoncolor)
-#set($solidcolor = $theme.navbuttoncolor)
-#else
-#set($solidcolor = "")
+border-right-color: $theme.navbuttoncolor;
 #end
-border-right-color: $solidcolor;
 }
 
 #header .navlinks {
@@ -395,22 +382,13 @@ background: $theme.leftcolumnbackgroundcolor;
 }
 
 #left-col .ui-widget-header {
-#if ($theme.navcolor)
-#set($solidcolor = $theme.navcolor)
-#else
-#set($solidcolor = "")
+#set($color1 = $theme.navcolor)
+#set($color2 = $theme.navcolorgradient)
+
+#if ($color1 && $color2=="")
+background: $color1; /* Old browsers */ 
 #end
-#if($theme.navcolorgradienthi && $theme.navcolorgradienthi!="" && $theme.navcolorgradientlo && $theme.navcolorgradientlo!="")
-#set($color1 = $theme.navcolorgradienthi)
-#set($color2 = $theme.navcolorgradientlo)
-#else
-#set($color1 = "")
-#set($color2 = "")
-#end
-#if ($solidcolor && $solidcolor!="")
-background: $solidcolor; /* Old browsers */ 
-#end
-#if($color1 && $color1!="" && $color2 && $color2!="")
+#if($color1 && $color2)
 background: -moz-linear-gradient(top, $color1 0%, $color2 100%); /* FF3.6+ */
 background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,$color1), color-stop(100%,$color2)); /* Chrome,Safari4+ */
 background: -webkit-linear-gradient(top, $color1 0%,$color2 100%); /* Chrome10+,Safari5.1+ */
@@ -423,27 +401,21 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='$color1', end
 color: $theme.navfontcolor;
 #end
 
+#set($color1 = "")
+#set($color2 = "")
+
 }
 
 .ui-widget-header
 {
 
-#if ($theme.navcolor)
-#set($solidcolor = $theme.navcolor)
-#else
-#set($solidcolor = "")
+#set($color1 = $theme.navcolor)
+#set($color2 = $theme.navcolorgradient)
+
+#if ($color1 && $color2=="")
+background: $color1; /* Old browsers */ 
 #end
-#if($theme.navcolorgradienthi && $theme.navcolorgradienthi!="" && $theme.navcolorgradientlo && $theme.navcolorgradientlo!="")
-#set($color1 = $theme.navcolorgradienthi)
-#set($color2 = $theme.navcolorgradientlo)
-#else
-#set($color1 = "")
-#set($color2 = "")
-#end
-#if ($solidcolor && $solidcolor!="")
-background: $solidcolor; /* Old browsers */ 
-#end
-#if($color1 && $color1!="" && $color2 && $color2!="")
+#if($color1 && $color2)
 background: -moz-linear-gradient(top, $color1 0%, $color2 100%); /* FF3.6+ */
 background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,$color1), color-stop(100%,$color2)); /* Chrome,Safari4+ */
 background: -webkit-linear-gradient(top, $color1 0%,$color2 100%); /* Chrome10+,Safari5.1+ */
@@ -452,6 +424,10 @@ background: -ms-linear-gradient(top, $color1 0%,$color2 100%); /* IE10+ */
 background: linear-gradient(top, $color1 0%,$color2 100%); /* W3C */
 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='$color1', endColorstr='$color2',GradientType=0 ); /* IE6-9 */
 #end
+
+#set($color1 = "")
+#set($color2 = "")
+
 }
 
 #left-col .ui-widget-content {
@@ -468,22 +444,14 @@ border-color: $theme.widgetbordercolor;
 
 
 #help-content .ui-widget-header {
-#if ($theme.navcolor)
-#set($solidcolor = $theme.navcolor)
-#else
-#set($solidcolor = "")
+
+#set($color1 = $theme.navcolor)
+#set($color2 = $theme.navcolorgradient)
+
+#if ($color1 && $color2=="")
+background: $color1; /* Old browsers */ 
 #end
-#if($theme.navcolorgradienthi && $theme.navcolorgradienthi!="" && $theme.navcolorgradientlo && $theme.navcolorgradientlo!="")
-#set($color1 = $theme.navcolorgradienthi)
-#set($color2 = $theme.navcolorgradientlo)
-#else
-#set($color1 = "")
-#set($color2 = "")
-#end
-#if ($solidcolor && $solidcolor!="")
-background: $solidcolor; /* Old browsers */ 
-#end
-#if($color1 && $color1!="" && $color2 && $color2!="")
+#if($color1 && $color2)
 background: -moz-linear-gradient(top, $color1 0%, $color2 100%); /* FF3.6+ */
 background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,$color1), color-stop(100%,$color2)); /* Chrome,Safari4+ */
 background: -webkit-linear-gradient(top, $color1 0%,$color2 100%); /* Chrome10+,Safari5.1+ */
@@ -492,18 +460,22 @@ background: -ms-linear-gradient(top, $color1 0%,$color2 100%); /* IE10+ */
 background: linear-gradient(top, $color1 0%,$color2 100%); /* W3C */
 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='$color1', endColorstr='$color2',GradientType=0 ); /* IE6-9 */
 #end
+
 #if($theme.navfontcolor)
 color: $theme.navfontcolor;
 #end
+
+#set($color1 = "")
+#set($color2 = "")
+
 }
 
 #emcontainer #emselectable #main-results-table #tableheader th, .settings-table #tableheader th {
 
-#set($solidcolor = $theme.tableheadercolor)
-#set($color1 = $theme.tableheadercolorgradienthi)
-#set($color2 = $theme.tableheadercolorgradientlo)
-#if ($solidcolor)
-background: $solidcolor; /* Old browsers */ 
+#set($color1 = $theme.tableheadercolor)
+#set($color2 = $theme.tableheadercolorgradient)
+#if ($color1 && $color2=="")
+background: $color1; /* Old browsers */ 
 #end
 
 #if($color1 && $color2)
@@ -517,6 +489,10 @@ background: linear-gradient(to bottom,  $color1 0%,$color2 100%); /* W3C */
 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='$color1', endColorstr='$color2',GradientType=0 ); /* IE6-9 */
 
 #end
+
+#set($color1 = "")
+#set($color2 = "")
+
 }
 
 /* Table Colors */
@@ -535,12 +511,11 @@ color: $theme.tablemenufontcolor;
 border-bottom: $theme.tablebordercolor;
 #end
 
-#set($solidcolor = $theme.tablemenubackgroundcolor)
-#set($color1 = $theme.tablemenubackgroundcolorhi)
-#set($color2 = $theme.tablemenubackgroundcolorlo)
+#set($color1 = $theme.tablemenubackgroundcolor)
+#set($color2 = $theme.tablemenubackgroundcolorgradient)
 
-#if ($solidcolor)
-	background: $solidcolor; /* Old browsers */ 
+#if ($color1 && $color2=="")
+	background: $color1; /* Old browsers */ 
 #end
 
 #if($color1 && $color2)
@@ -554,17 +529,21 @@ background: linear-gradient(top, $color1 0%,$color2 100%); /* W3C */
 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='$color1', endColorstr='$color2',GradientType=0 ); /* IE6-9 */
 
 #end
+
+#set($color1 = "")
+#set($color2 = "")
+
 }
 
 
 
 ul#sub-nav li:hover ul li a {
-#set($solidcolor = $theme.tablemenubackgroundcolor)
-#set($color1 = $theme.tablemenubackgroundcolorhi)
-#set($color2 = $theme.tablemenubackgroundcolorlo)
 
-#if ($solidcolor)
-	background: $solidcolor; /* Old browsers */ 
+#set($color1 = $theme.tablemenubackgroundcolor)
+#set($color2 = $theme.tablemenubackgroundcolorgradient)
+
+#if ($color1 && $color2=="")
+	background: $color1; /* Old browsers */ 
 #end
 
 #if($color1 && $color2)
@@ -578,6 +557,10 @@ background: linear-gradient(top, $color1 0%,$color2 100%); /* W3C */
 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='$color1', endColorstr='$color2',GradientType=0 ); /* IE6-9 */
 
 #end
+
+#set($color1 = "")
+#set($color2 = "")
+
 }
 
 #eml-tab-subnav ul li.current a, #sub-nav li.current a:hover {
@@ -620,13 +603,12 @@ background: $theme.tablehovercolor;
 
 #de-side-nav li.current a, #de-side-nav li.current a:hover {
 
-#set($solidcolor = $theme.assetdetailsselectedtabcolor)
-#set($color1 = $theme.assetdetailsselectedtabgradientcolorhi)
-#set($color2 = $theme.assetdetailsselectedtabgradientcolorlo)
-#if ($solidcolor)
-background: $solidcolor; /* Old browsers */
-border-bottom: 1px solid $solidcolor;
-border-top: 1px solid $solidcolor;
+#set($color1 = $theme.assetdetailsselectedtabcolor)
+#set($color2 = $theme.assetdetailsselectedtabcolorgradient)
+#if ($color1 && $color2=="")
+background: $color1; /* Old browsers */
+border-bottom: 1px solid $color1;
+border-top: 1px solid $color1;
 #end
 #if($color1 && $color2)
 background: -moz-linear-gradient(left,  $color1 0%, $color2 100%); /* FF3.6+ */
@@ -642,32 +624,35 @@ border-top: 1px solid $color2;
 
 #end
 
-  
+#set($color1 = "")
+#set($color2 = "")
 
 }
 
 #de-side-nav ul li.current::after, #pdf-thumbnail-sidebar ul li.current::after {
 
-#set($solidcolor = $theme.assetdetailsselectedtabcolor)
-#set($color2 = $theme.assetdetailsselectedtabgradientcolorlo)
-#if ($solidcolor)
-border-left-color: $solidcolor;
-#elseif ($color2)
+#set($color1 = $theme.assetdetailsselectedtabcolor)
+#set($color2 = $theme.assetdetailsselectedtabcolorgradient)
+#if ($color1 && $color2=="")
+border-left-color: $color1;
+#elseif ($color1 && $color2)
 border-left-color: $color2;
 #end
+
+#set($color1 = "")
+#set($color2 = "")
 
 }
 
 .title-bar {
 	
-#set($solidcolor = $theme.assetdetailsselectedtabcolor)
-#set($color1 = $theme.assetdetailsselectedtabgradientcolorhi)
-#set($color2 = $theme.assetdetailsselectedtabgradientcolorlo)
-#if ($solidcolor)
-background: $solidcolor; /* Old browsers */
-border-left: $solidcolor;
-border-right: $solidcolor;
-border-bottom: $solidcolor;
+#set($color1 = $theme.assetdetailsselectedtabcolor)
+#set($color2 = $theme.assetdetailsselectedtabcolorgradient)
+#if ($color1 && $color2=="")
+background: $color1; /* Old browsers */
+border-left: $color1;
+border-right: $color1;
+border-bottom: $color1;
 #end
 #if($color1 && $color2)
 background: -moz-linear-gradient(top, $color1 0%, $color2 100%); /* FF3.6+ */
@@ -681,6 +666,9 @@ border-left: $color2;
 border-right: $color2;
 border-bottom: $color2;
 #end
+
+#set($color1 = "")
+#set($color2 = "")
 
 }
 
