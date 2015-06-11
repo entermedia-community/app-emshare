@@ -30,6 +30,14 @@
 
 }
 
+/* Special thing for openinstitute? May not want to commit
+
+#embody.max {
+	background-size: 125%;
+}
+
+*/
+
 #header {
 
 #if($theme.disableshadows == "true")
@@ -142,7 +150,7 @@ opacity: ${theme.headerfontopacity};
 #set($color2 = $theme.navbuttoncolorgradient)
 
 #if ($color1 && $color2=="")
-background: $color1; /* Old browsers */ 
+background: $color1 !important; /* Old browsers */ 
 #end
 #if($color1 && $color2)
 background: -moz-linear-gradient(top, $color1 0%, $color2 100%); /* FF3.6+ */
@@ -212,7 +220,17 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='$color1', end
 
 }
 
+#module-dropdown span {
+#if ($theme.navfontcolor)
+  color: $theme.navfontcolor;
+#end
+}
 
+#module-dropdown span:hover {
+#if ($theme.navhoverfontcolor)
+  color: $theme.navhoverfontcolor;
+#end
+}
 
 #nav li.navselected a, #nav li a:active, #module-dropdown.active, #module-dropdown.active:hover {
 
@@ -239,6 +257,12 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='$color1', end
 #set($color1 = "")
 #set($color2 = "")
 
+}
+
+#module-list {
+#if($theme.navdropdownbackgroundcolor)
+	background: $theme.navdropdownbackgroundcolor;
+#end
 }
 
 #nav .flat-right {
@@ -386,8 +410,8 @@ background: $theme.leftcolumnbackgroundcolor url('../images/sidebar-shadow.png')
 }
 
 #left-col .ui-widget-header {
-#set($color1 = $theme.navcolor)
-#set($color2 = $theme.navcolorgradient)
+#set($color1 = $theme.leftcolumnnavcolor)
+#set($color2 = $theme.leftcolumnnavcolorgradient)
 
 #if ($color1 && $color2=="")
 background: $color1; /* Old browsers */ 
@@ -401,7 +425,9 @@ background: -ms-linear-gradient(top, $color1 0%,$color2 100%); /* IE10+ */
 background: linear-gradient(top, $color1 0%,$color2 100%); /* W3C */
 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='$color1', endColorstr='$color2',GradientType=0 ); /* IE6-9 */
 #end
-#if($theme.navfontcolor)
+#if($theme.leftcolumnnavfontcolor)
+color: $theme.leftcolumnnavfontcolor;
+#elseif($theme.navfontcolor)
 color: $theme.navfontcolor;
 #end
 
@@ -600,8 +626,8 @@ background: $theme.tablehovercolor;
 }
 
 .sidebar-media li.currentsubtle {
-#if($theme.tablehovercolor)
-background: $theme.tablehovercolor;
+#if($theme.detailsrightcolumnselectedcolor)
+background: $theme.detailsrightcolumnselectedcolor;
 #end
 }
 
