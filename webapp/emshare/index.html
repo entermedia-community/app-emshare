@@ -1,10 +1,75 @@
-#if($hits.size() > 0)
-	#set( $hit = $hits.first() )
-	#set( $asset = $mediaarchive.getAssetBySourcePath($hit.sourcepath) )
-	$context.putPageValue("asset",$asset)
-	$mediaarchive.loadAssetPermissions($hit.sourcepath,$context)
+<div style="margin:0px;padding: 50px 50px 100px 50px;">		
+					
+
+			<div class="well well-lg" style="max-width:500px; margin: auto auto; background-color: #888; padding: 50px 50px 100px 50px;">
+
+<h2 style="color: white;">[[Media Dashboard]]</h2>
+	<div class="list-group" style="margin: 10px 0 10px 0;">
 	
-	$pages.include("$themeprefix/layouts/mediaviewer.html",$context)
-#else
-	<p>Please upload a video.</p>
-#end
+	#set( $searcher = $mediaarchive.getAssetSearcher())
+	#set( $results = $searcher.getAllHits($context) )
+						<a class="list-group-item" href="$home$apphome/views/modules/asset/index.html?sortby=assetaddeddateDown"><span class="badge">$results.size()</span>
+							Total Assets Available</a>
+	#set( $results = $searcher.query().match("editstatus","1").since("recordmodificationdate",30).named("pending").search($context,1) )
+						<a class="list-group-item" href="$home$apphome/views/search/search.html?field=editstatus&editstatus.value=1&operation=matches&field=recordmodificationdate&operation=before30&sortby=recordmodificationdateDown"><span class="badge">$results.size()</span>
+							Assets Pending Approval</a>	
+	#set( $results = $searcher.query().since("assetaddeddate",30).named("pending").search($context,1) )
+						<a class="list-group-item" href="$home$apphome/views/search/search.html?field=assetaddeddate&operation=before30&sortby=assetaddeddateDown"><span class="badge">$results.size()</span>
+							Assets Recently Added</a>
+	#set( $results = $searcher.query().since("recordmodificationdate",30).named("recent").search($context,1) )
+						<a class="list-group-item" href="$home$apphome/views/search/search.html?field=recordmodificationdate&operation=before30&sortby=recordmodificationdateDown"><span class="badge">$results.size()</span>
+							Assets Recently Edited</a>
+	#set( $results = $searcher.query().match("owner",$context.getUserName()).named("owner").search($context,1) )
+						<a class="list-group-item" href="$home$apphome/views/search/search.html?field=owner&owner.value=$context.getUserName()&operation=matches&sortby=assetaddeddateDown"><span class="badge">$results.size()</span>
+							Assets Owned By You</a>
+	#set( $results = $mediaarchive.getSearcher("assetpreviewLog").query().match("assetid","*").named("views").search($context,1) )
+						<a class="list-group-item" href="$home$apphome/views/search/search.html?field=id&id.value=*&operation=matches&sortby=assetviewsDown"><span class="badge">$results.size()</span>
+						 Total Asset Views</a>	
+	#set( $results = $mediaarchive.getSearcher("assetvotes").query().match("id","*").named("ranking").search($context,1) )
+						<a class="list-group-item" href="$home$apphome/views/search/search.html?field=id&id.value=*&operation=matches&sortby=assetvotesDown"><span class="badge">$results.size()</span>
+							Total Asset Votes</a>				
+	</ul>
+
+<p style="color: white;margin:30px">Welcome to your media database, a centralized media storage and searching interface. Please select a search type.</p>
+
+
+			
+
+ <a class="pull-right" href="http://entermediasoftware.com/knowledge/json-rest-api/"><img src="$home$apphome/theme/images/welcomelogo.png" />
+</a>
+</div>
+			<!-- 
+			<div class="panel panel-default" style="margin: 20px auto 10px auto;">
+				<div class="panel-heading">
+					<h3 class="panel-title">All Assets</h3>
+				</div>
+				<div class="panel-body media-carousel">
+					<a class="previous" href="#previous"> <svg
+							class="icon icon-arrow-left" viewBox="0 0 32 32">
+							<use xlink:href="#icon-arrow-left"></use></svg>
+					</a>
+					<div class="carousel-window">
+						<ul>
+							#set( $uploads = $mediaarchive.getAssetSearcher().query().sort("assetaddeddate").named("uploads").search($context,5) )
+							#foreach( $hit in $uploads )
+							<li class="clearfix"><a id="thumb${hit.id}}" class="thumb">
+									<img src="$home$apphome/views/modules/asset/downloads/preview/thumb/${hit.sourcepath}/thumb.jpg" />
+							</a></li> 
+							#end
+						</ul>
+					</div>
+					<a class="next icon-arrow-right" href="#next"> <svg
+							class="icon icon-arrow-right" viewBox="0 0 32 32">
+							<use xlink:href="#icon-arrow-right"></use></svg>
+					</a>
+				</div>
+			</div>
+			 -->
+			 
+					
+			</div>
+		</div>
+	</div>
+		
+
+
