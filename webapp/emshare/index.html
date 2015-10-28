@@ -1,3 +1,4 @@
+<!--  new page here
 <div style="margin: 0px; padding: 20px;" class="row">
 	<div class="col-md-3">
 		<div class="well well-lg"
@@ -42,3 +43,19 @@
 	$pages.include("$apphome/components/collectionfeed/index.html")
 	</div>
 </div>
+-->
+
+<!--  old content below -->
+#if($hits.size() > 0)
+	#set( $hit = $hits.first() )
+	#set( $asset = $mediaarchive.getAssetBySourcePath($hit.sourcepath) )
+	$context.putPageValue("asset",$asset)
+	$mediaarchive.loadAssetPermissions($hit.sourcepath,$context)
+	
+	$pages.include("$themeprefix/layouts/mediaviewer.html",$context)
+#else
+	<p>Please upload a video.</p>
+#end
+
+
+
