@@ -6,9 +6,10 @@
 <li><a id="module"  href="$home$apphome/index.html">[[ Home ]]</a></li>
 #end
 
-#set ($lastselected = $content.module )
+#set($lastselected = $userprofile.last_selected_module )
+
 #if(!$lastselected)
-	#set($lastselected = $userprofile.last_selected_module )
+	#set ($lastselected = $content.module )
 #end
 #if(!$lastselected)
       #set($lastselected = "asset" )
@@ -28,7 +29,7 @@
 	#set( $urlbase = "$home$apphome/views/modules" )
 #end
 
-<li><a id="module" class="flat-right" href="$home$apphome/views/modules/${module.getId()}/index.html">${module}</a><a id="module-dropdown" class="flat-left" href="#"><span></span></a>
+<li><a id="module" class="flat-right" href="$home$apphome/views/modules/${module.getId()}/index.html?page=1">${module}</a><a id="module-dropdown" class="flat-left" href="#"><span></span></a>
 	<ul id="module-list" style="display: none;">
 		#foreach ( $amodule in $userprofile.getModules() )
 			<li><a href="$urlbase/${amodule.id}/index.html?field=last_selected_module&last_selected_module.value=${amodule.id}">$amodule</a></li>
