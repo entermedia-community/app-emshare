@@ -6,16 +6,23 @@
 <li><a class="navbutton" id="module"  href="$home$apphome/index.html"> [[Home]] </a></li>
 #end
 
+
+#if( $canviewopencollections)
 <li>
-##if ($canquicksearch)
-$pages.include("$apphome/components/advancedsearch/topsearch.html")
-##end
+<div id="collectionpicker">
+$pages.include("$apphome/components/libraries/pickcollection.html")
+</div>
 </li>
-    #if($canviewbasket)
-    <li #if($section=="basket") class="navselected"  #end  style="float: right;">
-    	$pages.include("$apphome/components/basket/menuitem.html")
-    </li>
-    #end
+#elseif( $canviewupload)
+<li><a class="navbutton" id="module"  href="$home$apphome/views/upload/create/createnewstart.html"> [[Add Media]] </a></li>
+#end
+
+
+#if($canviewbasket)
+<li #if($section=="basket") class="navselected"  #end  style="float: right;">
+	$pages.include("$apphome/components/basket/menuitem.html")
+</li>
+#end
 
     
 
