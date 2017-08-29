@@ -6,16 +6,15 @@
 <li><a class="navbutton" id="module"  href="$home$apphome/index.html"> [[Home]] </a></li>
 #end
 
-
 #if( $canviewopencollections)
 <li>
 <div id="collectionpicker">
 $pages.include("$apphome/components/libraries/pickcollection.html")
 </div>
 </li>
-#elseif( $canviewupload)
-<li><a class="navbutton" id="module"  href="$home$apphome/views/upload/create/createnewstart.html"> [[Add Media]] </a></li>
 #end
+
+
 
 
 #if($canviewbasket)
@@ -23,6 +22,14 @@ $pages.include("$apphome/components/libraries/pickcollection.html")
 	$pages.include("$apphome/components/basket/menuitem.html")
 </li>
 #end
+
+
+#if( $canviewupload)
+<li style="float: right;"><a class="navbutton" id="module"  href="$home$apphome/views/upload/create/createnewstart.html" > [[Add Media]] </a></li>
+#end
+
+
+
 
     
 
@@ -33,19 +40,6 @@ $pages.include("$apphome/components/libraries/pickcollection.html")
 
 
 
-<div style="float:right; margin-top:-20px;">
-
-#if ($canquicksearch)
-<div id="searchform" class="">
-<form id="search_form" action="$home$apphome/views/search/search.html" class="em-widget-content">
-	<input type="hidden" name="field" value="description" />
-	<input type="hidden" name="operation" value="freeform" />
-	#set( $input = "[[Search...]]")
-	#set( $input = $hits.getInput("description") )
-    <input type="text"  id="assetsearchinput" initialtext="[[Search...]]"  class="suggestsearchinput initialtext " name="description.value" value="$input" />
-</form>
-</div>
-#end
 
 
-</div>
+
