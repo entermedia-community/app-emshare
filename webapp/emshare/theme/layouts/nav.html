@@ -20,9 +20,11 @@ $pages.include("$apphome/components/libraries/pickcollection.html")
 <form id="search_form" action="$home$apphome/views/search/search.html" class="em-widget-content">
 	<input type="hidden" name="field" value="description" />
 	<input type="hidden" name="operation" value="freeform" />
+	<input type="hidden" name="quicksearched" value="true" />
+	
 	#set( $input = "[[Asset Search...]]")
 	#set( $input = $hits.getInput("description") )
-    <input type="text"  id="assetsearchinput" initialtext="[[Asset Search...]]"  class="suggestsearchinput initialtext " name="description.value" value="$input" />
+    <input type="text"  id="assetsearchinput" data-quicksearched='$!context.getRequestParameter("quicksearched")' initialtext="[[Asset Search...]]"  class="suggestsearchinput initialtext " name="description.value" value="$input" />
 </form>
 </div>
 </li>
