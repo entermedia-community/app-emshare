@@ -22,8 +22,10 @@ $pages.include("$apphome/components/libraries/pickcollection.html")
 	<input type="hidden" name="operation" value="freeform" />
 	<input type="hidden" name="quicksearched" value="true" />
 	
-	#set( $input = "[[Asset Search...]]")
 	#set( $input = $hits.getInput("description") )
+	#if( !$input )
+		#set( $input = "[[Asset Search...]]")
+	#end
     <input type="text"  id="assetsearchinput" data-quicksearched='$!context.getRequestParameter("quicksearched")' initialtext="[[Asset Search...]]"  class="suggestsearchinput initialtext " name="description.value" value="$input" />
 </form>
 </div>
@@ -41,7 +43,9 @@ $pages.include("$apphome/components/libraries/pickcollection.html")
 
 
 #if( $canviewupload)
+#if($mediaarchive.getCatalogSettingTrue("show_add_media_on_nav") )
 <li style="float: right;"><a class="navbutton" id="module"  href="$home$apphome/views/upload/create/createnewstart.html" > [[Add Media]] </a></li>
+#end
 #end
 
 
