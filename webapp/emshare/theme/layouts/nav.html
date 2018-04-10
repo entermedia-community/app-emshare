@@ -22,9 +22,12 @@ $pages.include("$apphome/components/libraries/pickcollection.html")
 	<input type="hidden" name="operation" value="freeform" />
 	<input type="hidden" name="quicksearched" value="true" />
 	
-	#set( $input = "[[Asset Search...]]")
+	
 	#set( $input = $hits.getInput("description") )
-    <input type="text"  id="assetsearchinput" data-quicksearched='$!context.getRequestParameter("quicksearched")' initialtext="[[Asset Search...]]"  class="suggestsearchinput initialtext " name="description.value" value="$input" />
+	#if (!$input) 
+		#set( $input = "")
+	#end
+    <input type="text"  id="assetsearchinput" data-quicksearched='$!context.getRequestParameter("quicksearched")' placeholder="[[Asset Search...]]"  class="suggestsearchinput initialtext " name="description.value" value="$input" />
 </form>
 </div>
 </li>
