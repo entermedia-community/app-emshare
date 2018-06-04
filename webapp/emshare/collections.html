@@ -1,1 +1,27 @@
-$pages.include("$apphome/components/collectionfeed/index.html")
+<div class="emcontainer" style="padding:20px">
+<h2>[[Navigate Collections]]</h2>
+
+#set( $searcher = $mediaarchive.getSearcher("librarycollection") )
+#set( $hits = $searcher.query().all().enduser(true).search($context) )
+
+<div class="card card-mini" style="float:left; width:260px; height:80px;box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2); margin:0 20px 20px 0;padding:15px 10px">
+  <div class="card-body" style="font-size:120%">
+    <a href="$apphome/index.html" title="[[All Assets]]" style="background:url('$apphome/theme/images/icons/all-assets.png') top 2px left 0 no-repeat; display:block; padding-left:25px; line-height:24px;"><strong>[[All Assets]]</strong></a>
+  </div>
+</a>  
+</div>
+
+#foreach($collection in $hits.getPageOfHits())
+<div class="card card-mini" style="float:left; width:260px; height:80px;box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2); margin:0 20px 20px 0;padding:15px 10px">
+  <div class="card-body" style="font-size:120%">
+    <a href="$apphome/views/modules/librarycollection/media/index.html?selectedlibrary=&collectionid=${collection.id}" title="$collection" style="background:url('$apphome/theme/images/icons/box.png') top 2px left 0 no-repeat; display:block; padding-left:25px; line-height:24px;"><strong>$collection</strong></a>
+  </div>
+</a>  
+</div>
+#end
+
+<div class="clearfix"></div>
+<hr>
+<a href="$home$apphome/components/libraries/pickcollectionaddnew.html?searchtype=librarycollection&targetdiv=collectionpicker&library.value=$!library.getId()" class="emdialog btn navbutton">[[Add New Collection]]</a>
+
+</div>
