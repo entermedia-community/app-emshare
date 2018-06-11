@@ -1,0 +1,66 @@
+#if($content.isPropertyTrue("shownav")) 
+
+<ul class="emheaderbuttons" >
+
+#if( $canviewhomelink )
+<li><a class="navbutton" id="module"  href="$home$apphome/index.html"> [[Home]] </a></li>
+#end
+
+#if( $canviewopencollections)
+<li>
+<div id="collectionpicker">
+$pages.include("$apphome/components/libraries/pickcollection.html")
+</div>
+</li>
+#end
+
+#if ($canquicksearch)
+<li>
+<div id="searchform" >
+<form id="search_form" action="$home$apphome/views/search/search.html" class="em-widget-content">
+	<input type="hidden" name="field" value="description" />
+	<input type="hidden" name="operation" value="freeform" />
+	<input type="hidden" name="quicksearched" value="true" />
+	
+	
+	#set( $input = $hits.getInput("description") )
+	#if (!$input) 
+		#set( $input = "")
+	#end
+    <input type="text"  id="assetsearchinput" data-quicksearched='$!context.getRequestParameter("quicksearched")' placeholder="[[Asset Search...]]"  class="suggestsearchinput initialtext " name="description.value" value="$input" />
+</form>
+</div>
+</li>
+
+#end
+
+
+
+#if($canviewbasket)
+<li #if($section=="basket") class="navselected"  #end  style="float: right;">
+	$pages.include("$apphome/components/basket/menuitem.html")
+</li>
+#end
+
+
+#if( $canviewupload)
+#if($mediaarchive.isCatalogSettingTrue("show_add_media_on_nav") )
+<li style="float: right;"><a class="navbutton" id="module"  href="$home$apphome/views/upload/create/createnewstart.html" > [[Add Media]] </a></li>
+#end
+#end
+
+
+
+
+    
+
+ </ul>
+
+
+#end
+
+
+
+
+
+
