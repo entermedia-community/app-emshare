@@ -1,0 +1,38 @@
+<div class="emcontainer" style="padding:20px">
+<div class="float_center">
+<div class="float_child">
+
+#set( $searcher = $mediaarchive.getAssetSearcher() )
+#set( $totalassets = $searcher.query().all().search() )		
+#set( $totalassetscount = $totalassets.size() ) 
+
+
+<div class="card card-mini card-collections card-collections-all">
+  <div class="card-body" style="font-size:120%">
+    <a href="$apphome/views/modules/asset/index.html" title="[[All Assets]]" style="background:url('$apphome/theme/images/icons/all-assets.png') top 2px left 0 no-repeat;">
+    <strong>[[All Assets]] #if ($totalassetscount) ($totalassetscount)#end</strong></a>
+  </div>
+  
+</div>
+
+#set( $searcher = $mediaarchive.getSearcher("librarycollection") )
+#set( $hits = $searcher.query().all().enduser(true).search($context) )
+
+#foreach($collection in $hits.getPageOfHits())
+<div class="card card-mini card-collections">
+  <div class="card-body" style="font-size:120%">
+    <a href="$apphome/views/modules/librarycollection/media/index.html?selectedlibrary=&collectionid=${collection.id}" title="$collection" style="background:url('$apphome/theme/images/icons/box.png') top 2px left 0 no-repeat;">
+    <strong>$collection</strong></a>
+  </div>
+ 
+</div>
+#end
+</div>
+</div>
+
+
+<div class="clearfix"></div>
+<hr>
+<a href="$home$apphome/components/libraries/pickcollectionaddnew.html?searchtype=librarycollection&targetdiv=collectionpicker&library.value=$!library.getId()" class="emdialog btn navbutton">[[Add New Collection]]</a>
+
+</div>
