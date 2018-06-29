@@ -1,0 +1,33 @@
+<br>
+
+<div class="card mx-auto" style="margin:40px;max-width:600px;text-align:left;">
+  <div class="card-header">
+    [[Volunteers]]
+  </div>
+  <div class="card-block" style="padding:20px;text-align:center">
+  
+  #set( $searcher = $mediaarchive.getSearcher("librarycollectionshares") )
+
+   <ul class="list-group list-group-flush w-100 align-items-stretch">
+        <li class="list-group-item text-center d-inline-block">
+   			$!mediaarchive.getUser($librarycol.owner)
+   		</li>
+   		
+  #foreach( $hit in $searcher.query().exact("librarycollection",$librarycol.getId()).search($context) )
+        <li class="list-group-item text-center d-inline-block">
+        	#set( $followeruser = $mediaarchive.getUser($hit.followeruser) )
+        	<span class="username">$followeruser.getAnonNickName()</span> 
+        	#if($hit.note)    	<span class="usernote">-"#esc($hit.note)"</span>#end
+        	#if( $hit.whatsappnumber ) <span class="whatsapp">$hit.whatsappnumber </span>#end
+        </li>
+  #end
+  </ul>
+        <div class="card-block">
+        <br>
+        #set( $found = $searcher.query().exact("followeruser",$user.getId()).exact("librarycollection",$librarycol.getId()).searchOne() )
+        #if( !$found)	
+			 <a href="addnew.html?collectionid=$librarycol.getId()" class="emdialog btn btn-primary">[[Join Up]]</a>
+		#end	 
+        </div>
+  </div>
+</div>

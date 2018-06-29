@@ -1,0 +1,34 @@
+#if(!$task)
+#set( $taskid = $context.getRequestParameter("taskid"))
+#set( $task = $mediaarchive.getData("goaltask",$taskid) )
+#end
+<div id="$task.id" class="card-task changetaskstatus pull-left card card-mini ui-draggable ui-draggable-handle" 
+	style="float:left;width:205px;margin:5px;" 
+	data-taskid="$task.id"
+	data-savepath="$apphome/project/goals/tasksave.html"  >
+	
+	#set( $selectedcat = $mediaarchive.getCategory($task.projectdepartment))
+    	<div class="card-task-header 
+    				#if( $task.taskstatus == "1" ) alert-warning #end
+    				#if( $task.taskstatus == "2" ) alert-error #end
+    				#if( $task.taskstatus == "3" ) alert-success #end" title="$selectedcat.getCategoryPath()">
+    		<i class="fas fa-flag"></i> $task.name 
+    		#if( $caneditdata )
+    		<a class="ajax confirm" data-confirm="Are you sure?"
+    			 targetdiv="editgoal" 
+    			href="$apphome/project/goals/taskdelete.html?collectionid=$librarycol.getId()&goalid=$selectedgoal.id&taskid=$task.id"><i class="fas fa-minus-circle"></i></a> 
+    		#end
+    	</div>
+  		<div class="card-task-body #if( $task.taskstatus == "3" ) taskcomplete #end" >
+  			<select  name="actionstatus" style="width:100%;" >
+			  <option value="blank" ></option>
+			  #set( $options = $mediaarchive.getList("taskstatus"))
+			  #foreach( $option in $options)
+			  <option value="$option.id" #if( $task.taskstatus == $option.id) selected #end >$option.getName()</option>
+			  #end
+			</select>
+  			#if( $task.taskstatus == "3" )<span class="completedby">[[By]]: $!mediaarchive.getUser($task.completedby).getAnonNickName()#end</span>
+
+		$pages.include("$apphome/project/goals/comments/listcomments.html?taskid=$task.id")
+  		</div>
+</div>

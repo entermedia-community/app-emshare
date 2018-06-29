@@ -1,0 +1,29 @@
+#set( $taskid = $context.getRequestParameter("taskid"))
+#set( $commentsearcher = $mediaarchive.getSearcher("goaltaskcomments") )
+#set( $comments = $commentsearcher.query().exact("goaltaskid",$taskid).sort("dateDown").search() )
+<div   id="commentsarea_${taskid}">
+#if($comments)
+	<div class="goal-comments-container">
+		<div class="goal-comments-scroll">
+			#foreach($comment in $comments)	
+				<div class="goal-comment" data-toggle="tooltip" data-placement="top" title="$context.getDateTime($comment.date)">
+					<span class="goal-commentauthor" title="$!mediaarchive.getUser(${comment.author}).getAnonNickName()"><i class="fas fa-user"></i> 
+					</span>
+					<span class="goal-commenttext">$comment.commenttext</span>
+			#if( $caneditdata )
+					<span class="goal-delete">
+    					<a class="ajax confirm" data-confirm="Are you sure?"
+    			 targetdiv="commentsarea_${taskid}" 
+    			href="$apphome/project/goals/comments/commentdelete.html?taskid=$taskid&id=$comment.id"><i class="fas fa-times"></i></a> 
+    		#end
+				</div>
+			#end
+		</div>
+	</div>
+#end	
+<div id="commentaddarea_${taskid}" class="card-task-footer">
+#if( $caneditdata )
+<a class="ajax btn btn-sm btn-primary" targetdiv="commentaddarea_${taskid}" href="$apphome/project/goals/comments/newcomment.html?taskid=$taskid&oemaxlevel=1" title=[[Add comment]]>[[Add comment]]</a>
+#end
+</div>
+</div>

@@ -1,0 +1,36 @@
+<div id="resultsdiv">
+
+<h4>[[Closed Goals]]:</h4>
+
+<ul class="projectgoals ui-sortable" data-categoryid="$selectedcategory.id" data-savepath="$apphome/project/goals/savecategorysort.html">
+
+#foreach( $goal in $closedgoals )  
+
+<li class="card card-mini #if( $caneditdata) ui-draggable ui-draggable-handle #end card-goal" data-goalid="$goal.id">
+    <a href="$apphome/project/goals/editgoal.html?id=${goal.id}&collectionid=$librarycol.getId()"
+    	title="Goal Details" class="emdialog"  data-width="900" >
+
+    	<div class="goal-body"><i class="showonhover fas fa-arrows-alt"></i> 
+    	$goal.name
+    	</div>
+	</a>
+		#set( $teams = $mediaarchive.getSearcher("goaltask").query().exact("projectgoal", $goal.getId()).not("taskstatus","complete").search() )
+		#if ($teams)
+			<div class="goal-footer"> 
+			#foreach($team in $teams)
+				#set($goalcolor = "btn-light")
+				#if($team.taskstatus==2)
+					#set($goalcolor = "btn-success")
+				#end
+				<a href="$apphome/project/goals/index.html?collectionid=$librarycol.getId()&nodeID=$team.projectdepartment" class="btn btn-xs ${goalcolor}" title="${team}">$team</a>
+				
+			#end
+			</div>
+		#end
+</li>
+#end
+
+</ul>
+<div class="clear"></div>
+
+</div>

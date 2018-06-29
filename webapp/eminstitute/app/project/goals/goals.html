@@ -1,0 +1,93 @@
+<div id="resultsdiv">
+#if( $selectedcat && $topgoals)
+<h4>$selectedcat goals:</h4>
+#elseif( $topgoals)
+<h4>[[All Goals]]:</h4>
+#end
+
+#if( !$topgoals && $caneditdata)
+
+<div class="clearfix"></div>
+ <a class="btn btn-secondary btn-sm emdialog pull-left" 
+ 	title="[[New Goal]]" 
+ 	data-width="700"
+ 	href="$apphome/project/goals/editgoal.html?collectionid=$librarycol.getId()&categoryid=$!selectedcat.getId()" ><i class="fas fa-plus"></i> New Goal</a>
+
+#end
+
+
+<div class="clearfix"></div>
+#set( $col = 0)
+#foreach( $row in $topgoals )
+
+#set( $col = $col + 1)
+
+<div class="goals-column-container">
+<div class="goals-column">
+#if( $selectedcat )
+<div class="goals-column-header">
+
+	#if( $col == 1)
+	[[High Priority]] 
+		##if( $caneditdata)	
+		 <a class="btn btn-secondary btn-sm emdialog pull-left" 
+		 	title="[[New Goal]]" 
+		 	data-width="700"
+		 	href="$apphome/project/goals/editgoal.html?collectionid=$librarycol.getId()&categoryid=$!selectedcat.getId()" ><i class="fas fa-plus"></i></a>
+		 ##end	
+	#elseif( $col == 2)
+	[[Medium]]
+	#else
+	[[Lower Priority]]
+	#end
+</div>
+#end
+
+<ul class="projectgoals ui-sortable" data-collectionid="$librarycol.getId()" data-categoryid="$!selectedcat.id" data-savepath="$apphome/project/goals/savecategorysort.html">
+
+#foreach( $goal in $row )  
+
+<li class="card card-mini #if( $caneditdata) ui-draggable ui-draggable-handle #end card-goal" data-goalid="$goal.id">
+    <a href="$apphome/project/goals/editgoal.html?id=${goal.id}&collectionid=$librarycol.getId()&categoryid=$!selectedcat.getId()"
+    	title="Goal Details" class="emdialog"  data-width="900" >
+
+    	<div class="goal-body"><i class="showonhover fas fa-arrows-alt"></i> 
+    	$goal.name
+    	</div>
+	</a>
+		#set( $teams = $mediaarchive.getSearcher("goaltask").query().exact("projectgoal", $goal.getId()).not("taskstatus","complete").search() )
+		#if ($teams)
+			<div class="goal-footer"> 
+			#foreach($team in $teams)
+				#set($goalcolor = "btn-info")
+				#if($team.taskstatus==2)
+					#set($goalcolor = "btn-danger")
+				#elseif($team.taskstatus==3)
+					#set($goalcolor = "btn-success")
+				#end
+				<a href="$apphome/project/goals/index.html?collectionid=$librarycol.getId()&nodeID=$team.projectdepartment" class="btn btn-xs ${goalcolor}" title="${team}">$team</a>
+				
+			#end
+			</div>
+		#end
+</li>
+#end
+
+</ul>
+
+</div>
+</div>
+#end
+
+<div class="clearfix"></div>
+
+#if( $closedgoals.size() > 0)
+<a class="btn" href="goalclosedsearch.html?collectionid=$librarycol.id">	View Closed Goals ($closedgoals.size()) </a>
+#end
+#if( $nextpage )
+
+<a class="btn" href="goals.html?collectionid=$librarycol.id&nodeID=${selectedcat.id}&page=$nextpage"> View more goals ($nextpage) </a>
+
+#end
+
+</div>

@@ -1,0 +1,109 @@
+<div style="background:#cec5b3; padding:1px; color:#3e4553;text-align:center; border-top:solid 10px #3e4553;">
+    <h1>[[World Wide Projects]]</h1>
+</div>
+
+  #set( $searcher = $mediaarchive.getSearcher("librarycollection") )
+
+  #set( $hits = $searcher.query().all().enduser(true).search($context) )
+  
+<div id="resultsdiv" data-hitssessionid="$hits.getSessionId()" data-pagenum="$hits.getPage()"  data-totalpages="$hits.getTotalPages()">
+
+#set( $showtoolbar = $page.isPropertyTrue("showtoolbar"))
+$context.putPageValue("showtoolbar",  $showtoolbar)
+
+##Search by: <input name="formatted_address" />
+
+#set( $n = $hits.setHitsPerPage(1000))
+
+#set( $geofilter = $hits.getSearchQuery().getTermByDetailId("geo_point"))
+#if( $geofilter)
+<div style="padding:10px;background:#eee;">
+#set( $found = $geofilter.getParameter("formatted_address") )
+Found $hits.size() results searching within $geofilter.getDistance() [[meters]] of $!found  
+</div>
+#end
+
+<script type="text/javascript">
+#set( $counted = 0)
+jQuery(document).ready(function(){ 
+
+// var map = new google.maps.Map(document.getElementById('map'), {
+ //         zoom: 3
+ //       });
+   var uluru = {lat: 14.7260212, lng: -91.2577558};
+   var map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 3,
+          center: uluru
+        });
+
+ var markers = [];
+ 
+	#foreach($location in $hits.getPageOfHits())
+	#set( $geopoint = $location.geo_point )
+	#if($geopoint)
+		 markers.push(['$location.id','$location.name',  $geopoint]);
+     #end   
+     #end
+ 
+
+ for( i = 0; i < markers.length; i++ ) {
+	 	marker = new google.maps.Marker({
+            position: markers[i][2],
+            map: map,
+            title: markers[i][1]
+        });
+         // Allow each marker to have an info window    
+        google.maps.event.addListener(marker, 'click', (function(marker, i) {
+            return function() 
+            {
+				jQuery.get("$apphome/browse/mapbubble.html?id=" + markers[i][0], function (contentString)
+	 			{
+		 			 var infowindow = new google.maps.InfoWindow({
+    	      			content: contentString
+				 	});
+	 			 	infowindow.open(map, marker);
+		 		});                
+            }
+        })(marker, i));
+   } 
+
+});
+    </script>
+    
+    
+<div id="map" style="width: 100%; height: 600px;">
+  <p class="card-text">[[Sign Up to create our own program or donate to existing ones, or both!]]</p>
+
+</div>
+
+</div>
+
+<div class="oicontainer">
+<div class="oicontent">
+<h2>[[Navigate Projects]]</h2>
+#foreach($collection in $hits.getPageOfHits())
+<div class="card card-mini-project">
+  <div class="card-body">
+  
+  <a href="$apphome/project/feed/${collection.id}.html" title="$collection">
+#set( $logo = $mediaarchive.getAsset($collection.assetportrait))
+		<div class="logo"
+			#if( $logo)
+				style='background: url("/$mediaarchive.getMediaDbId()/services/module/asset/downloads/preset/${logo.sourcepath}/image200x200.jpg") no-repeat center;'
+			#end
+			 > </div>
+			 </a>
+  
+  <a href="$apphome/project/feed/${collection.id}/#urlencode($collection.name).html" title="$collection">
+    <p class="card-text"><strong>$collection</strong> <br>
+    #set( $foundrow = $searcherManager.getData($catalogid,"country",$collection.country) )  
+	#set($label = $foundrow.getName($context.getLanguage()))
+	#esc($!label)
+    </p>
+    </a>
+  </div>
+</a>  
+</div>
+#end
+</div>
+</div>
