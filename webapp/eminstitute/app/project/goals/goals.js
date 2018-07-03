@@ -205,5 +205,27 @@ jQuery(document).ready(function(url,params)
 		});
 					
 	});
+
+	$("#changestatus").livequery(function()
+	{
+		var div = $(this);
+		var select = div.find("select");
+		select.on("change",function()
+		{
+			var path = div.data("path");
+			var params = {}; //div.data();
+			params['taskstatus'] = select.val();
+			params['collectionid'] = div.data("collectionid");
+			params['oemaxlevel'] = "1";
+			console.log(path,params);
+			jQuery.get(path, params, function(data) 
+			{
+				var statusviewer = $("#statusviewer");
+				statusviewer.replaceWith(data);
+			});
+		});
+					
+	});
+
 	
 });
