@@ -52,25 +52,42 @@ jQuery(document).ready(function(url,params)
 					{
 						drop: function(event, ui) 
 						{
-							console.log("dropped");
-						
-							var goalid = ui.draggable.data("goalid"); //Drag onto a category
 							var node = $(this);
 							var categoryid = node.parent().data("nodeid");
-
 							node.removeClass("selected");
-							var params = $(".projectgoals").data();
-							params['goalid'] = goalid;
-							params['targetcategoryid'] = categoryid;
-							params['nodeID'] = $(".projectgoals").data("categoryid");
-							
-							jQuery.get(apphome + "/project/goals/drop/addtocategory.html", 
-									params,
-									function(data) 
-									{
-										$("#goaleditor").replaceWith(data);
-									}
-							);
+
+							var goalid = ui.draggable.data("goalid"); //Drag onto a category
+							if( goalid )
+							{					
+								var params = $(".projectgoals").data();
+								params['goalid'] = goalid;
+								params['targetcategoryid'] = categoryid;
+								params['nodeID'] = $(".projectgoals").data("categoryid");
+								
+								jQuery.get(apphome + "/project/goals/drop/addtocategory.html", 
+										params,
+										function(data) 
+										{
+											$("#goaleditor").replaceWith(data);
+										}
+								);
+							}	
+							else
+							{
+								//move category
+								var params = $(".treeclickparameters").data();
+								params['categoryid'] = ui.draggable.data("nodeid");//Remove from self
+								params['categoryid2'] = categoryid;
+								params['oemaxlevel'] = "1";
+								
+								jQuery.get(apphome + "/project/goals/drop/movecategory.html", 
+										params,
+										function(data) 
+										{
+											$("#treeeditor").replaceWith(data);
+										}
+								);	
+							}
 						},
 						tolerance: 'pointer',
 						over: outlineSelectionCol,
