@@ -1,0 +1,31 @@
+<div class="modal-dialog" style="max-width:80%;margin: 5px;" >
+	<div class="modal-content">
+	<div  class="modal-header" >
+	    <h4 class="modal-title">[[Monthly Dashboard]]</h4>
+	    <p>Starting From: $context.getDateTime($since) <a class="btn" href="./dashboard.html?collectionid=$librarycol.id&monthsback=$monthsback"> [Go Back ${monthsback} Month]</a></p>
+	</div>
+	<div class="modal-body">
+#foreach($person in $users)
+	<div id="$task.id" class="card-task pull-left card card-mini" style="margin:5px;"> 
+    	<div class="card-task-header" >$person</div>
+  		<div class="card-task-body " >
+			#set( $totalpoints = 0)
+  			<table class="striped" style="width:100%">
+  				<tr><th>Task</th><th>Points</th><th>Time</th></tr>
+  		#foreach($task in $byperson.get($person.getId()))
+  				#set( $selectedcat = $mediaarchive.getCategory($task.projectdepartment))
+				#set( $points = $selectedcat.getValue("goalpoints"))
+				#set( $totalpoints = $totalpoints + $points)
+  				<tr><td><a href="$apphome/project/goals/editgoal.html?id=$task.projectgoal&collectionid=$librarycol.id&nodeID=$selectedcat.id">$mediaarchive.getData("projectgoal",$task.projectgoal) / $task.name</a></td>
+  					<td>$points</td><td>$context.getDateTime($task.getDate("completedon"))</td>
+  				</tr>
+  		#end
+  			</table>
+  			Total: $totalpoints
+  		</div>
+	</div>
+#end
+	</div>
+	</div>
+</div>
+	
