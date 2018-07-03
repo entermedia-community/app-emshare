@@ -12,7 +12,7 @@
 			#set( $totalpoints = 0)
 			#set( $counted = 0)
   			<table class="striped" style="width:100%">
-  				<tr><th>Task</th><th>Points</th><th>Time</th></tr>
+  				<tr><th>Task</th><th>Closed On</th><th>Points</th></tr>
   		#foreach($task in $byperson.get($person.getId()))
   				#set( $selectedcat = $mediaarchive.getCategory($task.projectdepartment))
 				#set( $points = $selectedcat.getValue("goalpoints"))
@@ -22,10 +22,11 @@
 				#set( $counted = $counted +1)
 				#set( $totalpoints = $totalpoints + $points)
   				<tr><td><a href="$apphome/project/goals/editgoal.html?id=$task.projectgoal&collectionid=$librarycol.id&nodeID=$selectedcat.id">$mediaarchive.getData("projectgoal",$task.projectgoal) / $task.name</a></td>
-  					<td>$points</td><td>$context.getDateTime($task.getDate("completedon"))</td>
+  					<td>$context.getDateTime($task.getDate("completedon"))</td><td>$points</td>
   				</tr>
   		#end
   			</table>
+  			<br>
   			  $counted Tasks = $totalpoints Points
 
   		</div>
