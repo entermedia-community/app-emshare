@@ -1,49 +1,11 @@
-
-<div id="editgoal">
-#set( $searcher = $mediaarchive.getSearcher("projectgoal") )
-$context.putPageValue("searcher",$searcher)
-#if( $data.id )
-$context.putPageValue("view", "projectgoal/edit")
-#else
-$context.putPageValue("view", "projectgoal/addnew")
-#end
-<form name="saveproject" enctypeXX="multipart/form-data" id="saveproject" method="post" 
-	
-#if( $data.id)
-	action="/$applicationid/project/goals/goalsave.html" >
-#else
-	action="/$applicationid/project/goals/goalsavenew.html" >
-#end
-#if( $caneditdata)
-<input type="hidden" name="save" value="true" />
-#end
-<input type="hidden" name="searchtype" value="projectgoal" />
-<input type="hidden" name="collectionid" value="$librarycol.id" />
-<input type="hidden" name="field" value="collectionid" />
-<input type="hidden" name="collectionid.value" value="$librarycol.id" />
-#if( $data.id)
-<input type="hidden" name="id" value="$!data.id" />
-#else
-<input type="hidden" name="field" value="owner" />
-<input type="hidden" name="owner.value" value="$user.id" />
-<input type="hidden" name="field" value="creationdate" />
-<input type="hidden" name="creationdate.value" value="$storeddate" />
-#end
-#set( $categoryid = $context.getRequestParameter("categoryid"))
-<input type="hidden" name="categoryid" value="$!categoryid" />
-
-$pages.include("/$applicationid/components/xml/detaileditor4.html", $context)
-
-</form>
-#if( $tasklist.getSortedTasks().size() > 0)
-	<div class="goals-tasks-container">
-		<h4 class="subheaderbackground">[[Collaboration]]</h4>
-		
-		#foreach( $task in $tasklist.getSortedTasks())
-			$context.putPageValue("task",$task)
-			$pages.include("./tasklisting.html",$context)
-		#end
-	<div class="clearfix"></div>
+<div class="modal-dialog" style="max-width:80%;margin: 5px;" >
+	<div class="modal-content">
+	<div  class="modal-header" >
+	    <h4 class="modal-title">[[Goal Details]]</h4>
 	</div>
-#end
+	<div class="modal-body">
+$pages.include("./editgoalpanel.html")
+	</div>
+	</div>
 </div>
+	

@@ -11,7 +11,7 @@
  <a class="btn btn-secondary btn-sm emdialog pull-left" 
  	title="[[New Goal]]" 
  	data-width="700"
- 	href="$apphome/project/goals/editgoal.html?collectionid=$librarycol.getId()&categoryid=$!selectedcat.getId()" ><i class="fas fa-plus"></i> New Goal</a>
+ 	href="$apphome/project/goals/editgoalpanel.html?collectionid=$librarycol.getId()&categoryid=$!selectedcat.getId()" ><i class="fas fa-plus"></i> New Goal</a>
 
 #end
 
@@ -33,7 +33,7 @@
 		 <a class="btn btn-secondary btn-sm emdialog pull-left" 
 		 	title="[[New Goal]]" 
 		 	data-width="700"
-		 	href="$apphome/project/goals/editgoal.html?collectionid=$librarycol.getId()&categoryid=$!selectedcat.getId()" ><i class="fas fa-plus"></i></a>
+		 	href="$apphome/project/goals/editgoalpanel.html?collectionid=$librarycol.getId()&categoryid=$!selectedcat.getId()" ><i class="fas fa-plus"></i></a>
 		 ##end	
 	#elseif( $col == 2)
 	[[Medium]]
@@ -48,25 +48,21 @@
 #foreach( $goal in $row )  
 
 <li class="card card-mini #if( $caneditdata) ui-draggable ui-draggable-handle #end card-goal" data-goalid="$goal.id">
-    <a href="$apphome/project/goals/editgoal.html?id=${goal.id}&collectionid=$librarycol.getId()&categoryid=$!selectedcat.getId()"
-    	title="Goal Details" class="emdialog"  data-width="900" >
-
-    	<div class="goal-body"><i class="showonhover fas fa-arrows-alt"></i> 
-    	$goal.name
+    	<div class="goal-body">
+		    <a href="$apphome/project/goals/editgoal.html?id=${goal.id}&collectionid=$librarycol.getId()&categoryid=$!selectedcat.getId()"
+		    	title="[[Full Screen]]" class="editgoalopen" >
+	    		<i class="fas fa-expand"></i> 
+			</a>
+		    <a href="$apphome/project/goals/editgoalpanel.html?id=${goal.id}&collectionid=$librarycol.getId()&categoryid=$!selectedcat.getId()"
+		    	title="[[Goal Editor]]" class="emdialog editgoalshow"  data-width="900" >
+		    	$goal.name
+			</a>
     	</div>
-	</a>
-		#set( $teams = $mediaarchive.getSearcher("goaltask").query().exact("projectgoal", $goal.getId()).not("taskstatus","complete").search() )
-		#if ($teams)
+		#set( $tasks = $mediaarchive.getSearcher("goaltask").query().exact("projectgoal", $goal.getId()).not("taskstatus","complete").search() )
+		#if ($tasks)
 			<div class="goal-footer"> 
-			#foreach($team in $teams)
-				#set($goalcolor = "btn-info")
-				#if($team.taskstatus==2)
-					#set($goalcolor = "btn-danger")
-				#elseif($team.taskstatus==3)
-					#set($goalcolor = "btn-success")
-				#end
-				<a href="$apphome/project/goals/index.html?collectionid=$librarycol.getId()&nodeID=$team.projectdepartment" class="btn btn-xs ${goalcolor}" title="${team}">$team</a>
-				
+			#foreach($task in $tasks)
+				<a href="$apphome/project/goals/index.html?collectionid=$librarycol.getId()&nodeID=$task.projectdepartment" class="btn btn-xs taskcomplete$!{task.taskstatus}" title="${task}">$task</a>
 			#end
 			</div>
 		#end

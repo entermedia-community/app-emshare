@@ -1,0 +1,19 @@
+#if(!$selectedgoal)
+#set( $goalid = $context.getRequestParameter("goalid"))
+#set( $selectedgoal = $mediaarchive.getData("projectgoal",$goalid) )
+#end
+
+<div id="tasklist" data-goalid="$selectedgoal.id">
+
+#if( $tasklist.getSortedTasks().size() > 0)
+	<div class="goals-tasks-container">
+		<h4 class="subheaderbackground">[[Collaboration]]</h4>
+		
+		#foreach( $task in $tasklist.getSortedTasks())
+			$context.putPageValue("task",$task)
+			$pages.include("$apphome/project/goals/tasklisting.html",$context)
+		#end
+	<div class="clearfix"></div>
+	</div>
+#end
+</div>

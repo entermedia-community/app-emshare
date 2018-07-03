@@ -34,7 +34,6 @@ jQuery(document).ready(function(url,params)
 	//categorydroparea
 	if( jQuery.fn.droppable )
 	{
-		console.log("droppable");
 		
     	jQuery(".categorydroparea").livequery(
 			function()
@@ -81,7 +80,7 @@ jQuery(document).ready(function(url,params)
 			}
 		); //category
 		
-		
+		//Sort Goals
 		 jQuery(".card-goal").livequery(
 			function()
 			{
@@ -124,8 +123,54 @@ jQuery(document).ready(function(url,params)
 				);
 			}
 		);
+
+		 //Sort tasks
+		 jQuery("#editgoal .card-task").livequery(
+			function()
+			{
+				outlineSelectionCol = function(event, ui)
+				{
+					jQuery(this).addClass("dragoverselected");
+				}
+					
+				unoutlineSelectionCol = function(event, ui)
+				{
+					jQuery(this).removeClass("dragoverselected");
+				}
+			
+				console.log("initi droppable");
+				
+				jQuery(this).droppable(
+					{
+						drop: function(event, ui) 
+						{
+							console.log("dropped");
+						
+							var taskid = ui.draggable.data("taskid"); //Drag onto a category
+							var card = $(this);
+							var targettaskid = card.data("taskid");
+							
+							var params = $("#tasklist").data();
+							params['taskid'] = taskid;
+							params['targettaskid'] = targettaskid;
+							
+							jQuery.get(apphome + "/project/goals/drop/taskinsert.html", params ,
+									function(data) 
+									{
+										//Reload goalist
+										$("#tasklist").replaceWith(data);
+									}
+							);
+						},
+						tolerance: 'pointer',
+						over: outlineSelectionCol,
+						out: unoutlineSelectionCol
+					}
+				);
+			}
+		); //Sort goals
 		
-		} //droppable
+	} //droppable
 	
 	$("#commentsave").livequery("click",function()
 	{
