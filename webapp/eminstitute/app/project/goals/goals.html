@@ -1,6 +1,11 @@
 <div id="resultsdiv">
 #if( $selectedcat && $topgoals)
-<h4>$selectedcat goals:</h4>
+<div class="category"  style="padding:8px 6px 3px 20px;">					
+	#foreach( $parent in $selectedcat.getParentCategoriesFrom(1))
+	#if( ${foreach.count} > 1) \ #end
+	<a  href="$apphome/project/goals/index.html?categoryid=${parent.id}&nodeID=${parent.id}&collectionid=$librarycol.getId()">$parent</a>
+	#end
+</div>
 #elseif( $topgoals)
 <h4>[[All Goals]]:</h4>
 #end
