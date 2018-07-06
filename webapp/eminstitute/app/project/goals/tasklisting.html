@@ -9,10 +9,10 @@
 	
 	#set( $selectedcat = $mediaarchive.getCategory($task.projectdepartment))
     	<div class="card-task-header taskcomplete$!{task.taskstatus}" title="$selectedcat.getCategoryPath()">
-    		<a href="$apphome/project/goals/index.html?collectionid=$librarycol.getId()&nodeID=$task.projectdepartment"><i class="fas fa-flag" #if($selectedcat.goalpoints) title="${selectedcat.goalpoints} points"#end"></i></a>
+    		<a href="$apphome/project/goals/index.html?collectionid=$librarycol.getId()&nodeID=$task.projectdepartment" class="taskinfopoints"><i class="fas fa-flag" #if($selectedcat.goalpoints) title="${selectedcat.goalpoints} points"#end"></i></a>
     		 $task.name 
     		#if( $caneditdata )
-    		<a class="ajax confirm" data-confirm="Are you sure?"
+    		<a class="ajax confirm tasklistdelete" data-confirm="Are you sure?"
     			 targetdiv="editgoal" title="Remove task"
     			href="$apphome/project/goals/taskdelete.html?collectionid=$librarycol.getId()&goalid=$selectedgoal.id&taskid=$task.id"><i class="fas fa-minus-circle"></i></a> 
     		#end
