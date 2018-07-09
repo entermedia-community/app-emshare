@@ -2,18 +2,20 @@
 #set( $taskid = $context.getRequestParameter("taskid"))
 #set( $task = $mediaarchive.getData("goaltask",$taskid) )
 #end
-<div id="$task.id" class="card-task changetaskstatus pull-left card card-mini ui-draggable ui-droppable ui-draggable-handle" 
-	style="float:left;width:250px;height: 280px; margin:5px;" 
-	data-taskid="$task.id"
-	data-savepath="$apphome/project/goals/tasksave.html"  >
+<div id="$task.id" class="card-task changetaskstatus pull-left card card-mini " data-taskid="$task.id" >
 	
 	#set( $selectedcat = $mediaarchive.getCategory($task.projectdepartment))
-    	<div class="card-task-header taskcomplete$!{task.taskstatus}" title="$selectedcat.getCategoryPath()">
+    	<div class="card-task-header taskcomplete$!{task.taskstatus} ui-draggable ui-droppable ui-draggable-handle"
+    	 title="$selectedcat.getCategoryPath()"
+    	 data-taskid="$task.id"
+    	 data-cloneparentid="$task.id"
+	data-savepath="$apphome/project/goals/tasksave.html"
+    	 >
     		<a href="$apphome/project/goals/index.html?collectionid=$librarycol.getId()&nodeID=$task.projectdepartment" class="taskinfopoints">
     		<i class="fas fa-hands-helping" #if($selectedcat.goalpoints) title="${selectedcat.goalpoints} points"#end"></i></a>
     		 $task.name 
     		#if( $caneditdata )
-    		<a class="ajax confirm tasklistdelete" data-confirm="Are you sure?"
+    		<a class="ajax tasklistdelete" data-confirm="Are you sure?"
     			 targetdiv="editgoal" title="Remove task"
     			href="$apphome/project/goals/taskdelete.html?collectionid=$librarycol.getId()&goalid=$selectedgoal.id&taskid=$task.id"><i class="fas fa-minus-circle"></i></a> 
     		#end

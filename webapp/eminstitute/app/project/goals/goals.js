@@ -20,8 +20,17 @@ jQuery(document).ready(function(url,params)
 					{ 
 						helper: function()
 						{
-							var cloned = $(this).clone();
-							//TODO: Make transparent and remove white area
+							var target = $(this).data("cloneparentid");
+							var cloned = null;
+							if( target )
+							{
+								cloned = $(this).closest("#" + target).clone();
+							}
+							else
+							{
+								cloned = $(this).clone();
+							}	
+							cloned.css("z-index","10000");
 							return cloned;
 						}
 						,
@@ -98,7 +107,7 @@ jQuery(document).ready(function(url,params)
 		); //category
 		
 		//Sort Goals
-		 jQuery(".card-goal").livequery(
+		 jQuery(".goalheader").livequery(
 			function()
 			{
 				outlineSelectionCol = function(event, ui)
@@ -120,18 +129,20 @@ jQuery(document).ready(function(url,params)
 							var goalid = ui.draggable.data("goalid"); //Drag onto a category
 							var card = $(this);
 							var targetgoalid = card.data("goalid");
-							
-							var params = $(".projectgoals").data();
-							params['goalid'] = goalid;
-							params['targetgoalid'] = targetgoalid;
-							
-							jQuery.get(apphome + "/project/goals/drop/goalinsert.html", params ,
-									function(data) 
-									{
-										//Reload goalist
-										$("#resultsdiv").replaceWith(data);
-									}
-							);
+							if( targetgoalid )
+							{
+								var params = $(".projectgoals").data();
+								params['goalid'] = goalid;
+								params['targetgoalid'] = targetgoalid;
+								
+								jQuery.get(apphome + "/project/goals/drop/goalinsert.html", params ,
+										function(data) 
+										{
+											//Reload goalist
+											$("#resultsdiv").replaceWith(data);
+										}
+								);
+							}	
 						},
 						tolerance: 'pointer',
 						over: outlineSelectionCol,
@@ -165,7 +176,7 @@ jQuery(document).ready(function(url,params)
 						
 							var taskid = ui.draggable.data("taskid"); //Drag onto a category
 							var card = $(this);
-							var targettaskid = card.data("taskid");
+							var targettaskid = card.closest(".card-task").data("taskid");
 							
 							var params = $("#tasklist").data();
 							params['taskid'] = taskid;
