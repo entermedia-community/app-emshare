@@ -228,7 +228,7 @@ jQuery(document).ready(function(url,params)
 			
 			jQuery.get(path, params, function(data) 
 			{
-				div.replaceWith(data);
+				div.closest(".card-task").replaceWith(data);
 			});
 		});
 					
