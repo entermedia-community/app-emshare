@@ -51,27 +51,8 @@
 <ul class="projectgoals ui-sortable" data-collectionid="$librarycol.getId()" data-categoryid="$!selectedcat.id" data-savepath="$apphome/project/goals/savecategorysort.html">
 
 #foreach( $goal in $row )  
-
-<li class="card card-mini #if( $caneditdata) ui-draggable ui-draggable-handle #end card-goal" data-goalid="$goal.id">
-    	<div class="goal-body">
-		    <a href="$apphome/project/goals/editgoal.html?id=${goal.id}&collectionid=$librarycol.getId()&categoryid=$!selectedcat.getId()"
-		    	title="[[Full Screen]]" class="editgoalopen" >
-	    		<i class="fas fa-expand"></i> 
-			</a>
-		    <a href="$apphome/project/goals/editgoalpanel.html?id=${goal.id}&collectionid=$librarycol.getId()&categoryid=$!selectedcat.getId()"
-		    	title="[[Goal Editor]]" class="emdialog editgoalshow"  data-width="900" >
-		    	$goal.name
-			</a>
-    	</div>
-		#set( $tasks = $mediaarchive.getSearcher("goaltask").query().exact("projectgoal", $goal.getId()).not("taskstatus","complete").search() )
-		#if ($tasks)
-			<div class="goal-footer"> 
-			#foreach($task in $tasks)
-				<a href="$apphome/project/goals/index.html?collectionid=$librarycol.getId()&nodeID=$task.projectdepartment" class="btn btn-xs taskcomplete$!{task.taskstatus}" title="${task}">$task</a>
-			#end
-			</div>
-		#end
-</li>
+$context.putPageValue("goal",$goal)
+$pages.include("$apphome/project/goals/goalrow.html",$context)
 #end
 
 </ul>

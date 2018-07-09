@@ -3,13 +3,14 @@
 #set( $task = $mediaarchive.getData("goaltask",$taskid) )
 #end
 <div id="$task.id" class="card-task changetaskstatus pull-left card card-mini ui-draggable ui-droppable ui-draggable-handle" 
-	style="float:left;width:205px;margin:5px;" 
+	style="float:left;width:250px;height: 280px; margin:5px;" 
 	data-taskid="$task.id"
 	data-savepath="$apphome/project/goals/tasksave.html"  >
 	
 	#set( $selectedcat = $mediaarchive.getCategory($task.projectdepartment))
     	<div class="card-task-header taskcomplete$!{task.taskstatus}" title="$selectedcat.getCategoryPath()">
-    		<a href="$apphome/project/goals/index.html?collectionid=$librarycol.getId()&nodeID=$task.projectdepartment" class="taskinfopoints"><i class="fas fa-flag" #if($selectedcat.goalpoints) title="${selectedcat.goalpoints} points"#end"></i></a>
+    		<a href="$apphome/project/goals/index.html?collectionid=$librarycol.getId()&nodeID=$task.projectdepartment" class="taskinfopoints">
+    		<i class="fas fa-hands-helping" #if($selectedcat.goalpoints) title="${selectedcat.goalpoints} points"#end"></i></a>
     		 $task.name 
     		#if( $caneditdata )
     		<a class="ajax confirm tasklistdelete" data-confirm="Are you sure?"
@@ -18,15 +19,16 @@
     		#end
     	</div>
   		<div class="card-task-body " >
-  			<select  name="actionstatus" style="width:100%;" >
+  			<select  name="actionstatus" style="width:100%" >
 			  <option value="" ></option>
 			  #set( $options = $mediaarchive.getList("taskstatus"))
 			  #foreach( $option in $options)
 			  <option value="$option.id" #if( $task.taskstatus == $option.id) selected #end >$option.getName()</option>
 			  #end
 			</select>
+			<div>
   			#if( $task.taskstatus == "3" )<span class="completedby">[[By]]: $!mediaarchive.getUser($task.completedby).getAnonNickName()#end</span>
-
+			</div>
 		$pages.include("$apphome/project/goals/comments/listcomments.html?taskid=$task.id")
   		</div>
 </div>

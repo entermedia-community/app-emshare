@@ -1,0 +1,18 @@
+<span id="goal$goal.getId()">
+		#set( $users = $goal.getValues("userlikes"))
+  <a href="$apphome/project/goals/like.html?goalid=${goal.id}"
+  	title="[[Make Priority]]" class="editgoallike ajax" targetdiv="goal$goal.id" 
+  	 	#if( $users && $users.contains($user.getId()) ) 
+  			style="color:red"
+  		#elseif( $users.size() > 1)
+   			style="color:yellow"
+   		#else
+   			style="color:#aaa"
+   		#end 
+   		>
+   		#foreach($us in $users)
+   			$!mediaarchive.getUser($us)
+   		#end
+  		<i class="fas fa-exclamation-circle"></i>
+</a>
+</span>
