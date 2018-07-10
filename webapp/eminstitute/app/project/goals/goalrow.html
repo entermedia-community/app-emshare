@@ -24,7 +24,10 @@
 				#set( $tree =  $mediaarchive.getCategory($task.projectdepartment))
 				<a href="$apphome/project/goals/index.html?collectionid=$librarycol.getId()&nodeID=$task.projectdepartment" 
 					class="btn btn-xs taskcomplete$!{task.taskstatus}" title="$tree.getCategoryPath()">
-					#if( $task.startedby )
+					#if( $task.completedby )
+						#set( $completedby = $mediaarchive.getUser($task.completedby) )
+						$completedby.getAnonNickName() :
+					#else( $task.startedby )
 						#set( $startedby = $mediaarchive.getUser($task.startedby) )
 						$startedby.getAnonNickName() :
 					#end	
