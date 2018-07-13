@@ -27,7 +27,7 @@
 
 #set( $col = $col + 1)
 
-<div class="goals-column-container">
+<div class="goals-column-container" #if( $topgoals.size() == 4) style="width:25%;" #end>
 <div class="goals-column">
 #if( $selectedcat )
 <div class="goals-column-header">
@@ -42,8 +42,14 @@
 		 #end	
 	#elseif( $col == 2)
 	[[Medium]]
-	#else
+	#elseif( $col == 3)
 	[[Lower Priority]]
+	#else
+	#if($row.size() > 10)
+		[[Requires Closing]]
+	#else
+		[[Completed]]
+	#end
 	#end
 </div>
 #end
