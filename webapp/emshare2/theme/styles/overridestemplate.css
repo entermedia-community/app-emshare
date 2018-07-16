@@ -149,34 +149,36 @@ opacity: ${theme.headerfontopacity};
 #set($color2 = $theme.navbuttoncolorgradient)
 
 #if ($color1 && $color2=="")
-background: $color1 !important; /* Old browsers */ 
+	background: $color1 !important; /* Old browsers */ 
 #end
 #if($color1 && $color2)
-background: -moz-linear-gradient(top, $color1 0%, $color2 100%); /* FF3.6+ */
-background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,$color1), color-stop(100%,$color2)); /* Chrome,Safari4+ */
-background: -webkit-linear-gradient(top, $color1 0%,$color2 100%); /* Chrome10+,Safari5.1+ */
-background: -o-linear-gradient(top, $color1 0%,$color2 100%); /* Opera 11.10+ */
-background: -ms-linear-gradient(top, $color1 0%,$color2 100%); /* IE10+ */
-background: linear-gradient(top, $color1 0%,$color2 100%); /* W3C */
-filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='$color1', endColorstr='$color2',GradientType=0 ); /* IE6-9 */
-#end
-#if ( $theme.navfont )
-font-family: $theme.navfont;
-#end
-#if( $theme.navfontsize )
-font-size: ${theme.navfontsize}px;
+	background: -moz-linear-gradient(top, $color1 0%, $color2 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,$color1), color-stop(100%,$color2)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top, $color1 0%,$color2 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top, $color1 0%,$color2 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top, $color1 0%,$color2 100%); /* IE10+ */
+	background: linear-gradient(top, $color1 0%,$color2 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='$color1', endColorstr='$color2',GradientType=0 ); /* IE6-9 */
+	#end
+	#if ( $theme.navfont )
+	font-family: $theme.navfont;
+	#end
+	#if( $theme.navfontsize )
+	font-size: ${theme.navfontsize}px;
 #end
 #if( $theme.navfontcolor )
-color: ${theme.navfontcolor};
+	color: ${theme.navfontcolor};
 #end
 #if($theme.navfontopacity)
-opacity: ${theme.navfontopacity};
+	opacity: ${theme.navfontopacity};
 #end
 #if($theme.disableshadows == "true")
-box-shadow: none;
+	box-shadow: none;
+#else
+	box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, .2);
 #end
 #if( $theme.navbuttonbordercolor )
-border-color: $theme.navbuttonbordercolor;
+	border-color: $theme.navbuttonbordercolor;
 #end
 
 #set($color1 = "")
@@ -185,7 +187,8 @@ border-color: $theme.navbuttonbordercolor;
 }
 
 #nav li a.navbutton:hover,
-.tageditor-viewer a:hover {
+.tageditor-viewer a:hover,
+#nav li.navselected a, #nav li a:active, #module-dropdown.active, #module-dropdown.active:hover {
 #if ( $theme.navhoverfont )
 font-family: $theme.navhoverfont;
 #end
@@ -193,26 +196,30 @@ font-family: $theme.navhoverfont;
 font-size: ${theme.navhoverfontsize}px;
 #end
 #if( $theme.navhoverfontcolor )
-color: ${theme.navhoverfontcolor};
+	color: ${theme.navhoverfontcolor};
 #end
 #if($theme.navhoverfontopacity)
-opacity: ${theme.navhoverfontopacity};
+	opacity: ${theme.navhoverfontopacity};
 #end
 
 #set($color1 = $theme.navbuttonhovercolor)
 #set($color2 = $theme.navbuttonhovercolorgradient)
 
 #if ($color1 && $color2=="")
-background: $color1; /* Old browsers */ 
+	background: $color1; /* Old browsers */ 
 #end
 #if($color1 && $color2)
-background: -moz-linear-gradient(top, $color1 0%, $color2 100%); /* FF3.6+ */
-background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,$color1), color-stop(100%,$color2)); /* Chrome,Safari4+ */
-background: -webkit-linear-gradient(top, $color1 0%,$color2 100%); /* Chrome10+,Safari5.1+ */
-background: -o-linear-gradient(top, $color1 0%,$color2 100%); /* Opera 11.10+ */
-background: -ms-linear-gradient(top, $color1 0%,$color2 100%); /* IE10+ */
-background: linear-gradient(top, $color1 0%,$color2 100%); /* W3C */
-filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='$color1', endColorstr='$color2',GradientType=0 ); /* IE6-9 */
+	background: -moz-linear-gradient(top, $color1 0%, $color2 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,$color1), color-stop(100%,$color2)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top, $color1 0%,$color2 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top, $color1 0%,$color2 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top, $color1 0%,$color2 100%); /* IE10+ */
+	background: linear-gradient(top, $color1 0%,$color2 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='$color1', endColorstr='$color2',GradientType=0 ); /* IE6-9 */
+#end
+
+#if( $theme.navbuttonhoverbordercolor )
+	border-color: $theme.navbuttonhoverbordercolor;
 #end
 
 #set($color1 = "")
@@ -233,20 +240,18 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='$color1', end
 }
 
 #nav li.navselected a, #nav li a:active, #module-dropdown.active, #module-dropdown.active:hover {
+	#if($theme.disableshadows == "false")
+		box-shadow: 0px 2px 2px 1px rgba(0, 0, 0, .2);
+	#end
+	#if( $theme.navbuttonhoverbordercolor )
+		border-color: $theme.navbuttonhoverbordercolor;
+	#end
 
-#set($color1 = $theme.navbuttonhovercolor)
-#set($color2 = $theme.navbuttonhovercolorgradient)
-
-
-#if($theme.navbuttonbordercolor)
-	border: 2px solid $theme.navbuttonbordercolor;
-	padding: 1px;
-#end
+}
 
 #set($color1 = "")
 #set($color2 = "")
 
-}
 
 #module-list {
 #if($theme.navdropdownbackgroundcolor)
