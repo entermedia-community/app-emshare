@@ -43,14 +43,14 @@
 			#set ($viewtype = "booleansearch")
 		#end
 
-		#if( $hits.getSearchQuery() )
+		#if( $goalhits.getSearchQuery() )
 			#set( $value = "$!hits.getSearchQuery().getInput($detail.id)" )
 			#set( $values = "$!hits.getSearchQuery().getInputs($detail.id)" )
-			#set( $term = $hits.getSearchQuery().getTermByDetailId($detail.id) )
+			#set( $term = $goalhits.getSearchQuery().getTermByDetailId($detail.id) )
 			$context.putPageValue("term",$term)			
 			$context.putPageValue("val",$value)
 			$context.putPageValue("values",$values)
-			$context.putPageValue("data",$hits.getSearchQuery())			
+			$context.putPageValue("data",$goalhits.getSearchQuery())			
 		#end	
 		
 		$pages.include("/${applicationid}/components/xml/types/${viewtype}.html", $context)

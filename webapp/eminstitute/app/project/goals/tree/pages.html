@@ -1,14 +1,14 @@
 
-#if( $hits && $hits.getTotalPages() >  1  )
+#if( $goalhits && $goalhits.getTotalPages() >  1  )
 	#if($categorycarousel == "true" && $category)
 		#set($categoryid = $category)
 	#else
 		#set($categoryid = "")
 	#end
 	#set($module = $content.module)
-	#set($resultsPage = "$home$apphome/components/categories/search/results.html?hitssessionid=$hits.sessionId&searchtype=categories&hitsperpage=$!hits.hitsPerPage&oemaxlevel=1")
+	#set($resultsPage = "$home$apphome/components/categories/search/results.html?hitssessionid=$goalhits.sessionId&searchtype=categories&hitsperpage=$!hits.hitsPerPage&oemaxlevel=1")
 	#set($resultsPage = "$resultsPage&page")
-	#set($thispage = $hits.getPage())
+	#set($thispage = $goalhits.getPage())
 	
 	
 	
@@ -16,17 +16,17 @@
 	#set($targetdiv = "categoryresults")
 	<div id="pages">
 		<ul>
-			#if( $hits.prevPage() )
-				<li class="pagenav"><a class="ajax" targetdiv="$targetdiv" href="$resultsPage=$hits.prevPage()" title="Previous ( alt p enter)" accesskey="p" ><span class="glyphicon glyphicon-triangle-left"></span></a></li>
+			#if( $goalhits.prevPage() )
+				<li class="pagenav"><a class="ajax" targetdiv="$targetdiv" href="$resultsPage=$goalhits.prevPage()" title="Previous ( alt p enter)" accesskey="p" ><span class="glyphicon glyphicon-triangle-left"></span></a></li>
 			#end
-			#set( $befores = $hits.linksBefore() )					
+			#set( $befores = $goalhits.linksBefore() )					
 			#if($befores.size()!=0)
 			  #if($befores.get(0)>1)
 				<li><a class="ajax" targetdiv="$targetdiv" href="$resultsPage=1" >1</a></li>	
 			    <li class="ellipsis">...</li>
 			   #end
 			#end
-			#set( $afters = $hits.linksAfter() )
+			#set( $afters = $goalhits.linksAfter() )
 			#foreach( $before in $befores )
 				<li><a class="ajax" targetdiv="$targetdiv" href="$resultsPage=$before" >$before</a></li>		
 			#end
@@ -37,13 +37,13 @@
 			#set($size=${afters.size()})
 			#set( $size = $size - 1 )
 			#if($size>0)
-				#if ($afters.get($size)< $hits.getTotalPages() )
+				#if ($afters.get($size)< $goalhits.getTotalPages() )
 					<li class="ellipsis">...</li>
-					<li><a  class="ajax" targetdiv="$targetdiv" href="$resultsPage=$hits.getTotalPages()" >$hits.getTotalPages()</a></li>	
+					<li><a  class="ajax" targetdiv="$targetdiv" href="$resultsPage=$goalhits.getTotalPages()" >$goalhits.getTotalPages()</a></li>	
 				#end
 			#end
-			#if ( $hits.nextPage() )
-				<li class="pagenav"><a id="next" class="ajax" targetdiv="$targetdiv" href="$resultsPage=$hits.nextPage()" title="Next (alt n enter)" accesskey="n"><span class="glyphicon glyphicon-triangle-right"></span></a></li>
+			#if ( $goalhits.nextPage() )
+				<li class="pagenav"><a id="next" class="ajax" targetdiv="$targetdiv" href="$resultsPage=$goalhits.nextPage()" title="Next (alt n enter)" accesskey="n"><span class="glyphicon glyphicon-triangle-right"></span></a></li>
 			#end
 		</ul>
 	</div>
