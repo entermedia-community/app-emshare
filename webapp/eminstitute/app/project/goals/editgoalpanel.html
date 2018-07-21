@@ -1,23 +1,28 @@
-
 <div id="editgoal">
+#set( $categoryid = $context.getRequestParameter("categoryid"))
+#set( $hitssessionid = $context.getRequestParameter("hitssessionid"))
+
 #set( $searcher = $mediaarchive.getSearcher("projectgoal") )
 $context.putPageValue("searcher",$searcher)
 #if( $data.id )
 $context.putPageValue("view", "projectgoal/edit")
-#else
-$context.putPageValue("view", "projectgoal/addnew")
-#end
-
 <div style="float:right;margin:0px 20px 5px 0">
 $pages.include("$apphome/project/goals/like.html")
 </div>
 
+#else
+$context.putPageValue("view", "projectgoal/addnew")
+#end
+
 <div class="clearfix"></div>
 
 <form name="saveproject" enctypeXX="multipart/form-data" id="saveproject" method="post" 
-	
 #if( $data.id)
+	#if($categoryid)
+	action="/$applicationid/project/goals/actions/goalsave.html" >
+	#else
 	action="/$applicationid/project/goals/goalsave.html" >
+	#end
 #else
 	action="/$applicationid/project/goals/goalsavenew.html" >
 #end
@@ -36,8 +41,8 @@ $pages.include("$apphome/project/goals/like.html")
 <input type="hidden" name="field" value="creationdate" />
 <input type="hidden" name="creationdate.value" value="$storeddate" />
 #end
-#set( $categoryid = $context.getRequestParameter("categoryid"))
 <input type="hidden" name="categoryid" value="$!categoryid" />
+<input type="hidden" name="hitssessionid" value="$!hitssessionid" />
 
 #if( $caneditdata )
 $pages.include("/$applicationid/components/xml/detaileditor4.html", $context)

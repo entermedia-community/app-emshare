@@ -1,14 +1,16 @@
 <span id="goal$goal.getId()">
 		#set( $users = $goal.getValues("userlikes"))
-  <a href="$apphome/project/goals/like.html?goalid=${goal.id}"
-  	title="[[Make Priority]]" class="editgoallike ajax" targetdiv="goal$goal.id" 
-  	 	#if( $users.size() > 0)
-   			style="color:#da5d3d"
-   		#end 
-   		>
-   		#foreach($us in $users)
-   			$!mediaarchive.getUser($us).getAnonNickName()
-   		#end
-  		<i class="fas fa-exclamation-circle"></i>
-</a>
+	 #if( $users )
+	  <a href="$apphome/project/goals/like.html?goalid=${goal.id}"
+	  	title="[[Make Priority]]" class="editgoallike ajax" targetdiv="goal$goal.id" 
+	  	 	#if( $users.size() > 0)
+	   			style="color:#da5d3d"
+	   		#end 
+	   		>
+	   		#foreach($us in $users)
+	   			$!mediaarchive.getUser($us).getAnonNickName()
+	   		#end
+	  		<i class="fas fa-exclamation-circle"></i>
+	</a>
+	#end
 </span>

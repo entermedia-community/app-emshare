@@ -139,7 +139,7 @@ jQuery(document).ready(function(url,params)
 										function(data) 
 										{
 											//Reload goalist
-											$("#resultsdiv").replaceWith(data);
+											$("#goalresultsdiv").replaceWith(data);
 										}
 								);
 							}	
