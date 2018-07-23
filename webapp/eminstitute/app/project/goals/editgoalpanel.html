@@ -1,7 +1,10 @@
 <div id="editgoal">
 #set( $categoryid = $context.getRequestParameter("categoryid"))
 #set( $hitssessionid = $context.getRequestParameter("hitssessionid"))
-
+#set( $goalfolder = $context.getRequestParameter("goalfolder"))
+#if(!$goalfolder)
+	#set( $goalfolder = $context.findValue("goalfolder") )
+#end
 #set( $searcher = $mediaarchive.getSearcher("projectgoal") )
 $context.putPageValue("searcher",$searcher)
 #if( $data.id )
@@ -18,17 +21,9 @@ $context.putPageValue("view", "projectgoal/addnew")
 
 <form name="saveproject" enctypeXX="multipart/form-data" id="saveproject" method="post" 
 #if( $data.id)
-	#if($categoryid)
-	action="/$applicationid/project/goals/actions/goalsave.html" >
-	#else
-	action="/$applicationid/project/goals/goalsave.html" >
-	#end
+	action="/$applicationid/project/goals/${goalfolder}/goalsave.html" >
 #else
-	#if($categoryid)
-		action="/$applicationid/project/goals/actions/goalsavenew.html" >
-	#else
-		action="/$applicationid/project/goals/goalsavenew.html" >
-	#end	
+	action="/$applicationid/project/goals/${goalfolder}/goalsavenew.html" >
 #end
 #if( $caneditdata)
 <input type="hidden" name="save" value="true" />
@@ -46,6 +41,8 @@ $context.putPageValue("view", "projectgoal/addnew")
 <input type="hidden" name="creationdate.value" value="$storeddate" />
 #end
 <input type="hidden" name="categoryid" value="$!categoryid" />
+<input type="hidden" name="nodeID" value="$!categoryid" />
+
 <input type="hidden" name="hitssessionid" value="$!hitssessionid" />
 
 #if( $caneditdata )

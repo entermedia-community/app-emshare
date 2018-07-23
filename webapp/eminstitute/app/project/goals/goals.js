@@ -105,9 +105,9 @@ jQuery(document).ready(function(url,params)
 				);
 			}
 		); //category
-		
-		//Sort Goals
-		 jQuery(".goalheader").livequery(
+	
+		//Drop on column	
+		 jQuery(".goals-column-container").livequery(
 			function()
 			{
 				outlineSelectionCol = function(event, ui)
@@ -124,22 +124,28 @@ jQuery(document).ready(function(url,params)
 					{
 						drop: function(event, ui) 
 						{
-							console.log("dropped");
-						
 							var goalid = ui.draggable.data("goalid"); //Drag onto a category
-							var card = $(this);
-							var targetgoalid = card.data("goalid");
-							if( targetgoalid )
+							var column = $(this);
+							var columnid = column.data("col");
+							//Make sure we are not already inthis column
+							if( columnid != undefined )
 							{
-								var params = $(".projectgoals").data();
+								var params = {};
 								params['goalid'] = goalid;
-								params['targetgoalid'] = targetgoalid;
+								params['col'] = columnid;
 								
-								jQuery.get(apphome + "/project/goals/drop/goalinsert.html", params ,
+								jQuery.get(apphome + "/project/goals/drop/movetocolumn.html", params ,
 										function(data) 
 										{
 											//Reload goalist
-											$("#goalresultsdiv").replaceWith(data);
+											var li = $(".projectgoals #goal" + goalid );
+											li.detach();
+											
+											var ul = column.find("ul.projectgoals");
+											li.prependTo(ul);
+											
+											$(".goals-column-container").removeClass(".dragoverselected");
+											
 										}
 								);
 							}	
@@ -151,7 +157,8 @@ jQuery(document).ready(function(url,params)
 				);
 			}
 		);
-
+		
+		
 		 //Sort tasks
 		 jQuery("#editgoal .card-task").livequery(
 			function()

@@ -6,27 +6,28 @@
  <a class="btn btn-secondary btn-sm emdialog pull-left" 
  	title="[[New Goal]]" 
  	data-width="900"
- 	href="$apphome/project/goals/editgoalpanel.html?collectionid=$librarycol.getId()&categoryid=$!selectedcat.getId()" ><i class="fas fa-plus"></i> New Goal</a>
+ 	href="$apphome/project/goals/editgoalpanel.html?collectionid=$librarycol.getId()&categoryid=$!selectedcat.getId()&goalfolder=search" ><i class="fas fa-plus"></i> New Goal</a>
 <br><br>
 #end
 
 #set( $col = 0)
 #foreach( $priority in ["0","1","2"] )
 
-<div class="goals-column-container" >
+<div class="goals-column-container"  data-col="$priority">
 <div class="goals-column">
 <div class="goals-column-header">
 
 	#if( $priority == "0")
-	[[High Priority]] 
+	[[Newest]] 
 	#elseif( $priority == "1")
-	[[Medium]]
+	[[In Progress]]
 	#elseif( $priority == "2")
-	[[Lower Priority]]
+	[[Backlog]]
 	#end
 </div>
 
-<ul class="projectgoals ui-sortable" data-collectionid="$librarycol.getId()" data-categoryid="$!selectedcat.id" 
+<ul class="projectgoals ui-sortable"
+data-oemaxlevel="2"  data-collectionid="$librarycol.getId()" data-categoryid="$!selectedcat.id" 
 	data-savepath="$apphome/project/goals/goalmovepriority.html">
 #set( $hits = $context.getPageValue("goalhits${priority}"))
 #if( $hits )
@@ -38,6 +39,12 @@ $pages.include("$apphome/project/goals/search/goalrow.html",$context)
 </ul>
 
 </div>
+</div>
+#end
+
+#if( $toomanygoals)
+ <div class="alert alert-primary" role="alert">
+  Goal limit reached. Please close older goals
 </div>
 #end
 

@@ -3,7 +3,7 @@
 <div class="category"  style="padding:8px 6px 3px 20px;">					
 	#foreach( $parent in $selectedcat.getParentCategoriesFrom(1))
 	#if( ${foreach.count} > 1) \ #end
-	<a  href="$apphome/project/goals/index.html?categoryid=${parent.id}&nodeID=${parent.id}&collectionid=$librarycol.getId()">$parent</a>
+	<a  href="$apphome/project/goals/actions/index.html?categoryid=${parent.id}&nodeID=${parent.id}&collectionid=$librarycol.getId()">$parent</a>
 	#end
 </div>
 #elseif( $topgoals)
@@ -17,44 +17,37 @@
  	title="[[New Goal]]" 
  	data-width="900"
  	href="$apphome/project/goals/editgoalpanel.html?collectionid=$librarycol.getId()&categoryid=$!selectedcat.getId()" ><i class="fas fa-plus"></i> New Goal</a>
-
 #end
 
-
 <div class="clearfix"></div>
-#set( $col = 0)
+<div id="goalecolumnarea">
+
 #foreach( $row in $topgoals )
 
-#set( $col = $col + 1)
-
-<div class="goals-column-container" #if( $topgoals.size() == 4) style="width:25%;" #end>
+#set( $col = $foreach.count - 1)
+<div class="goals-column-container" data-col="$col" #if( $topgoals.size() == 4) style="width:25%;" #end>
 <div class="goals-column">
 #if( $selectedcat )
 <div class="goals-column-header">
 
-	#if( $col == 1)
-	[[High Priority]] 
+	#if( $col == 0)
+	[[New]] 
 		#if( $caneditdata)	
 		 <a class="btn btn-secondary btn-sm emdialog pull-left" 
 		 	title="[[New Goal]]" 
 		 	data-width="900"
 		 	href="$apphome/project/goals/editgoalpanel.html?collectionid=$librarycol.getId()&categoryid=$!selectedcat.getId()" ><i class="fas fa-plus"></i></a>
 		 #end	
+	#elseif( $col == 1)
+	[[In Progress]]
 	#elseif( $col == 2)
-	[[Medium]]
-	#elseif( $col == 3)
-	[[Lower Priority]]
-	#else
-	#if($row.size() > 10)
-		[[Requires Closing]]
-	#else
-		[[Completed]]
-	#end
+	[[Backlog]]
 	#end
 </div>
 #end
 
-<ul class="projectgoals ui-sortable" data-collectionid="$librarycol.getId()" data-categoryid="$!selectedcat.id" data-savepath="$apphome/project/goals/savecategorysort.html">
+<ul class="projectgoals ui-sortable" data-collectionid="$librarycol.getId()"
+	 data-categoryid="$!selectedcat.id" data-oemaxlevel="2"  data-savepath="$apphome/project/goals/savecategorysort.html">
 
 #foreach( $goal in $row )  
 $context.putPageValue("goal",$goal)
@@ -70,8 +63,9 @@ $pages.include("$apphome/project/goals/search/goalrow.html",$context)
 <div class="clearfix"></div>
 
 #if( $closedgoals.size() > 0)
-<form name="viewclosed" method="post" action="$apphome/project/goals/goalclosedsearch.html?collectionid=$librarycol.id&nodeID=${selectedcat.id}">
+<form name="viewclosed" method="post" class="ajaxform" targetdiv="goalresultsdiv" action="$apphome/project/goals/actions/goalclosedsearch.html?collectionid=$librarycol.id&nodeID=${selectedcat.id}">
 	<input name="ids" type="hidden" value="$closedids" />
+	<input name="oemaxlevel" type="hidden" value="1" />
 	<input type="submit" class="btn" value="View Closed Goals ($closedgoals.size())" />
 </form>
 #end
@@ -80,5 +74,6 @@ $pages.include("$apphome/project/goals/search/goalrow.html",$context)
 <a class="btn" href="$apphome/project/goals/actions/goalcolumns.html?collectionid=$librarycol.id&nodeID=${selectedcat.id}&page=$nextpage"> View more goals ($nextpage) </a>
 
 #end
+</div>
 
 </div>
