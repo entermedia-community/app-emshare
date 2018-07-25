@@ -1,12 +1,10 @@
-<div style="background:#cec5b3; padding:1px; color:#3e4553;text-align:center; border-top:solid 10px #3e4553;">
-    <h1>[[World Wide Projects]]</h1>
-</div>
+ #set( $searcher = $mediaarchive.getSearcher("librarycollection") )
+<div class="oicontainerX" style="margin: 0;padding:0px;width:100%; position:relative;"  >
 
-  #set( $searcher = $mediaarchive.getSearcher("librarycollection") )
-
-  #set( $hits = $searcher.query().all().enduser(true).search($context) )
-  
-<div id="resultsdiv" data-hitssessionid="$hits.getSessionId()" data-pagenum="$hits.getPage()"  data-totalpages="$hits.getTotalPages()">
+<div class="row" style="margin: 0; ">
+<div id="mapholder" class="col-8" style="padding:0;margin: 0;" >
+<div id="resultsdiv" data-hitssessionid="$hits.getSessionId()" 
+data-pagenum="$hits.getPage()"  data-totalpages="$hits.getTotalPages()">
 
 #set( $showtoolbar = $page.isPropertyTrue("showtoolbar"))
 $context.putPageValue("showtoolbar",  $showtoolbar)
@@ -69,41 +67,53 @@ jQuery(document).ready(function(){
 
 });
     </script>
-    
-    
-<div id="map" style="width: 100%; height: 600px;">
+<div id="map" style="min-height: 900px;">
   <p class="card-text">[[Sign Up to create our own program or donate to existing ones, or both!]]</p>
-
+</div>
 </div>
 
 </div>
+<div id="projectresultholder" class="col-4" style="padding:0;margin: 0;">
+<form class="" style="padding:5px 15px 5px 15px;" >
+	<input type="hidden" name="field" value="name" />
+	<input type="hidden" name="operation" value="contains" />
+  	<input type="search" name="name.value" class="form-control ds-input" id="search-input" placeholder="Project Search..." 
+  		style="width: 100%; vertical-align: top;" value='$!hits.getInput("name")'>
+</form>
+#set( $n = $hits.setHitsPerPage(12))
 
-<div class="oicontainer">
-<div class="oicontent">
-<h2>[[Navigate Projects]]</h2>
 #foreach($collection in $hits.getPageOfHits())
-<div class="card card-mini-project">
-  <div class="card-body">
-  
-  <a href="$apphome/project/feed/${collection.id}.html" title="$collection">
-#set( $logo = $mediaarchive.getAsset($collection.assetportrait))
-		<div class="logo"
+<div class="card-mini-project" >
+<div class="card" style="margin:10px;">
+  <a href="$apphome/project/home/${collection.id}/#urlencode($collection.name).html" title="$collection">
+  <div class="card-body container" style="padding: 6px" >
+  	<div class="row" style="">
+  	<div class="col-5" style="padding: 0px 0 0 10px];">
+	#set( $logo = $mediaarchive.getAsset($collection.assetportrait))
+		<img style="width:100px" 
 			#if( $logo)
-				style='background: url("/$mediaarchive.getMediaDbId()/services/module/asset/downloads/preset/${logo.sourcepath}/image200x200.jpg") no-repeat center;'
+				src="/$mediaarchive.getMediaDbId()/services/module/asset/downloads/preset/${logo.sourcepath}/image200x200.jpg"
+			#else	
+				src="$apphome/theme/oi/logo.png"
 			#end
-			 > </div>
-			 </a>
-  
-  <a href="$apphome/project/feed/${collection.id}/#urlencode($collection.name).html" title="$collection">
-    <p class="card-text"><strong>$collection</strong> <br>
+		 > 
+	</div>
+  	<div class="col-7" style="padding: 0px;">
+    <p><strong>$collection</strong></p> 
     #set( $foundrow = $searcherManager.getData($catalogid,"country",$collection.country) )  
 	#set($label = $foundrow.getName($context.getLanguage()))
-	#esc($!label)
-    </p>
-    </a>
+	<i>#esc($!label)</i>
+    </div>
+    </div>
   </div>
-</a>  
+</div>
 </div>
 #end
+#if($hits.getPages() > 1 )
+	Next page
+#end
+
+</div>
+
 </div>
 </div>

@@ -6,11 +6,16 @@ $pages.include("$apphome/project/logo.html")
 
 <div class="profile-sidebar">
 	<div class="profile-usermenu">
-					<ul > #set( $section = $content.section)
+					<ul > #set( $section = $content.subsection)
 						<li id="home" #if($section == "home") class="active" #end>
-							<a href="$apphome/project/feed/${librarycol.id}/#urlencode($librarycol.name).html" >
+							<a href="$apphome/project/home/${librarycol.id}/#urlencode($librarycol.name).html" >
 							<i class="fa fa-home"></i>
 							Home Page </a>
+						</li>
+						<li id="blog" #if($section == "blog") class="active" #end>
+							<a href="$apphome/project/feed/${librarycol.id}/#urlencode($librarycol.name).html" >
+							<i class="fa fa-calendar"></i>
+							Blog </a>
 						</li>
 						<li id="donate" #if($section == "donate") class="active" #end>
  <a  title="[[Donate to]] $librarycol" data-width="500"  
@@ -26,20 +31,17 @@ $pages.include("$apphome/project/logo.html")
 						<li id="members"  #if($section == "members") class="active" #end>
 							<a href="$apphome/project/members/index.html?collectionid=${librarycol.id}" >
 							<i class="fa fa-user-friends"></i>
-							[[Members]] </a>
+							[[Followers]] </a>
 						</li>
 						<li id="tasks"  #if($section == "tasks") class="active" #end>
-							<a href="$apphome/project/goals/index.html?collectionid=${librarycol.id}" >
+							<a href="$apphome/project/goals/priorities/index.html?collectionid=${librarycol.id}" >
 							<i class="fa fa-flag"></i>
-							[[Goals]] </a>
+							[[Task Manager]] </a>
 						</li>
 					</ul>
 	</div>
 	</div>
 <div class="projectdetails">
-	#if ($!librarycol.projectdescription)
-		<p>$!librarycol.projectdescription</p>
-	#end
 	
 	#set( $country = $mediaarchive.getData("country",$librarycol.country))
 	#if ($country)

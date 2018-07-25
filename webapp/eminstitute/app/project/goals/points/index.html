@@ -1,0 +1,39 @@
+<div class="modal-dialog" style="max-width:80%;padding: 30px; margin:0px;" >
+	<div class="modal-content">
+	<div  class="modal-header" >
+	    <h4 class="modal-title">[[Points Report]]</h4>
+	    <p>Month: $context.getDateTime($since) <a class="btn" href="./dashboard.html?collectionid=$librarycol.id&monthsback=$monthsback"> [Go Back ${monthsback} Month]</a></p>
+	</div>
+	<div class="modal-body">
+#foreach($person in $users)
+	<div class="pull-left card card-mini" style="margin:5px;"> 
+    	<div class="card-task-header" >$person</div>
+  		<div class="card-task-body " >
+			#set( $totalpoints = 0)
+			#set( $counted = 0)
+  			<table class="striped" style="width:100%">
+  				<tr><th>Task</th><th>Closed On</th><th>Points</th></tr>
+  		#foreach($task in $byperson.get($person.getId()))
+  				#set( $selectedcat = $mediaarchive.getCategory($task.projectdepartment))
+				#set( $points = $selectedcat.getValue("goalpoints"))
+				#if( !$points || $points == 0)
+					#set( $points = 10 )
+				#end
+				#set( $counted = $counted +1)
+				#set( $totalpoints = $totalpoints + $points)
+  				<tr><td><a class="emdialog" data-width="900"
+		 	 title="Goal Details" href="$apphome/project/goals/editgoalpanel.html?id=$task.projectgoal&collectionid=$librarycol.id&nodeID=$selectedcat.id&goalfolder=$content.goalfolder">$mediaarchive.getData("projectgoal",$task.projectgoal) / $task.name</a></td>
+  					<td>$context.getDateTime($task.getDate("completedon"))</td><td>$points</td>
+  				</tr>
+  		#end
+  			</table>
+  			<br>
+  			  $counted Tasks = $totalpoints Points
+
+  		</div>
+	</div>
+#end
+	</div>
+	</div>
+</div>
+	
