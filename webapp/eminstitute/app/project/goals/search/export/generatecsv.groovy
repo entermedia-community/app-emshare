@@ -65,7 +65,6 @@ for (Iterator iteratorgoal = hits.iterator(); iteratorgoal.hasNext();)
 		fieldcount++;
 	}
 	HitTracker tasks = tasksearcher.query().exact("projectgoal", hit.getId()).search();
-	writer.writeNext(nextrow);
 	StringBuffer out = new StringBuffer();
 	int points = 0;
 	for (Iterator iterator = tasks.iterator(); iterator.hasNext();)
@@ -87,6 +86,10 @@ for (Iterator iteratorgoal = hits.iterator(); iteratorgoal.hasNext();)
 			int gcount = selectedcat.getInt("goalpoints");
 			if( gcount == 0) gcount = 10 
 			points = points + gcount; 
+		}
+		else
+		{
+			points = points + 10;
 		}
 		/*
 		Collection comments = commentsearcher.query().exact("goaltaskid",task.getId()).sort("dateDown").search();
