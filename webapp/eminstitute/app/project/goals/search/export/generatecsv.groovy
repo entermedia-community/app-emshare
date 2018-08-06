@@ -1,3 +1,4 @@
+import org.entermediadb.asset.Category
 import org.entermediadb.asset.util.CSVWriter
 import org.openedit.Data
 import org.openedit.data.*
@@ -21,7 +22,7 @@ details = searcher.getPropertyDetails();
 //StringWriter output  = new StringWriter();
 CSVWriter writer  = new CSVWriter(context.getWriter());
 int count = 0;
-headers = new String[details.size() + 1];
+headers = new String[details.size() + 2];
 for (Iterator iterator = details.iterator(); iterator.hasNext();)
 {
 	PropertyDetail detail = (PropertyDetail) iterator.next();
@@ -29,6 +30,7 @@ for (Iterator iterator = details.iterator(); iterator.hasNext();)
 	count++;
 }
 headers[details.size()] = "Tasks";
+headers[details.size() + 1] = "Points";
 writer.writeNext(headers);
 log.info("about to start: " + hits.size());
 
@@ -37,7 +39,7 @@ for (Iterator iteratorgoal = hits.iterator(); iteratorgoal.hasNext();)
 	hit =  iteratorgoal.next();
 	Data hit = searcher.loadData(hit);  //why do we need to load every record?
 
-	nextrow = new String[details.size() + 1];//make an extra spot for c
+	nextrow = new String[details.size() + 2];//make an extra spot for tasks
 	int fieldcount = 0;
 	for (Iterator detailiter = details.iterator(); detailiter.hasNext();)
 	{
@@ -65,6 +67,7 @@ for (Iterator iteratorgoal = hits.iterator(); iteratorgoal.hasNext();)
 	HitTracker tasks = tasksearcher.query().exact("projectgoal", hit.getId()).search();
 	writer.writeNext(nextrow);
 	StringBuffer out = new StringBuffer();
+	int points = 0;
 	for (Iterator iterator = tasks.iterator(); iterator.hasNext();)
 	{
 		Data task = iterator.next();
@@ -77,6 +80,13 @@ for (Iterator iteratorgoal = hits.iterator(); iteratorgoal.hasNext();)
 			String userlabel = mediaarchive.getUser(auser).getAnonNickName();
 			out.append( "Completed By:" + userlabel + " ");
 			out.append("\n");
+		}
+		Category selectedcat = mediaarchive.getCategory(task.get("projectdepartment"));
+		if( selectedcat != null)
+		{
+			int gcount = selectedcat.getInt("goalpoints");
+			if( gcount == 0) gcount = 10 
+			points = points + gcount; 
 		}
 		/*
 		Collection comments = commentsearcher.query().exact("goaltaskid",task.getId()).sort("dateDown").search();
@@ -96,6 +106,7 @@ for (Iterator iteratorgoal = hits.iterator(); iteratorgoal.hasNext();)
 		*/
 	}
 	nextrow[details.size()] = out.toString();
+	nextrow[details.size() +1 ] = points;
 	writer.writeNext(nextrow);
 	
 }
