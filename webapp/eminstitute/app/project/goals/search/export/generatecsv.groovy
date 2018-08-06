@@ -42,7 +42,8 @@ for (Iterator iteratorgoal = hits.iterator(); iteratorgoal.hasNext();)
 	for (Iterator detailiter = details.iterator(); detailiter.hasNext();)
 	{
 		PropertyDetail detail = (PropertyDetail) detailiter.next();
-		String value = hit.get(detail.getId());
+		Object v = hit.getValue(detail.getId());
+		String value = context.getText(v);
 		//do special logic here
 		if(detail.isList()){
 			Data remote  = searcherManager.getData( detail.getListCatalogId(),detail.getListId(), value);
