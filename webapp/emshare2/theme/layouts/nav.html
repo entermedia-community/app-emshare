@@ -1,4 +1,4 @@
-#if($content.isPropertyTrue("shownav")) 
+#if($content.isPropertyTrue("shownav"))
 <ul class="emheaderbuttons" >
 
 #set( $module = $content.module )
@@ -24,13 +24,16 @@
 	<input type="hidden" name="field" value="description" />
 	<input type="hidden" name="operation" value="freeform" />
 	<input type="hidden" name="quicksearched" value="true" />
-	
-	
+
+
 	#set( $input = $hits.getInput("description") )
-	#if (!$input) 
+	#if (!$input)
 		#set( $input = "")
 	#end
-    <input type="text"  id="assetsearchinput" data-quicksearched='$!context.getRequestParameter("quicksearched")' placeholder="[[Asset Search...]]"  class="suggestsearchinput initialtext " name="description.value" value="$input" />
+	<div class="form-group has-success has-feedback">
+		<input type="text"  id="assetsearchinput" data-quicksearched='$!context.getRequestParameter("quicksearched")' placeholder="[[Asset Search...]]"  class="suggestsearchinput form-control " name="description.value" value="$input" />
+		<span class="glyphicon glyphicon-search form-control-feedback submitform" style="pointer-events: initial;"></span>
+	</div>
 </form>
 </div>
 </li>
@@ -55,15 +58,9 @@
 
 
 
-    
+
 
  </ul>
 
 
 #end
-
-
-
-
-
-
