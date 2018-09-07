@@ -29,8 +29,8 @@ for (Iterator iterator = details.iterator(); iterator.hasNext();)
 	headers[count] = detail.getText(context);
 	count++;
 }
-headers[details.size()] = "Tasks";
-headers[details.size() + 1] = "Points";
+headers[details.size()] = "Completed Tasks";
+headers[details.size() + 1] = "Total Points";
 writer.writeNext(headers);
 log.info("about to start: " + hits.size());
 
@@ -78,7 +78,6 @@ for (Iterator iteratorgoal = hits.iterator(); iteratorgoal.hasNext();)
 			out.append( "Completed On:" + task.get("completedon") + " ");
 			String userlabel = mediaarchive.getUser(auser).getAnonNickName();
 			out.append( "Completed By:" + userlabel + " ");
-			out.append("\n");
 		}
 		Category selectedcat = mediaarchive.getCategory(task.get("projectdepartment"));
 		if( selectedcat != null)
@@ -86,11 +85,20 @@ for (Iterator iteratorgoal = hits.iterator(); iteratorgoal.hasNext();)
 			int gcount = selectedcat.getInt("goalpoints");
 			if( gcount == 0) gcount = 10 
 			points = points + gcount; 
+			if( auser != null)
+			{
+				out.append( "Points:" + gcount + " ");
+			}
 		}
 		else
 		{
 			points = points + 10;
+			if( auser != null)
+			{
+				out.append( "Points: 10");
+			}
 		}
+		out.append("\n");
 		/*
 		Collection comments = commentsearcher.query().exact("goaltaskid",task.getId()).sort("dateDown").search();
 		for (Iterator iterator2 = comments.iterator(); iterator2.hasNext();)

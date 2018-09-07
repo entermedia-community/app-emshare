@@ -1,0 +1,39 @@
+<div class="card mx-auto" style="margin:40px;max-width:800px;text-align:left;">
+  <div class="card-header">
+   $user Join the team! 
+  </div>
+  <div class="card-block" style="padding:20px;">
+
+#set( $searcher = $mediaarchive.getSearcher("librarycollectionshares") )
+$context.putPageValue("searcher",$searcher)
+$context.putPageValue("view", "librarycollectionshares/addnew")
+<form name="saveproject" id="saveproject" action="addsave.html" method="post">
+
+#set( $found = $searcher.query().exact("followeruser",$user.getId()).exact("librarycollection",$librarycol.getId()).searchOne() )
+
+#if( $found )
+
+	You are already a member of this project
+
+#elseif( $user)
+<input type="hidden" name="save" value="true" />
+#else
+  <a href="$apphome/authentication/login.html?loginokpage=$content.path" class="btn btn-primary">Login</button>
+#end  
+
+<input type="hidden" name="searchtype" value="librarycollectionshares" />
+
+<input type="hidden" name="field" value="followeruser" />
+<input type="hidden" name="followeruser.value" value="$user.getId()" />
+
+<input type="hidden" name="field" value="librarycollection" />
+<input type="hidden" name="librarycollection.value" value="$librarycol.getId()" />
+<input type="hidden" name="collectionid" value="$librarycol.getId()" />
+ 
+$pages.include("/$applicationid/components/xml/detaileditor4.html", $context)
+
+</form>
+
+
+  </div>
+</div>
