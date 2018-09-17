@@ -1,95 +1,25 @@
- #set( $searcher = $mediaarchive.getSearcher("librarycollection") )
-<div class="oicontainerX" style="margin: 0;padding:0px;width:100%; position:relative;"  >
+ #set( $searcher = $mediaarchive.getSearcher("collective") )
+<div id="projectresultholder" style="padding:10px 0 0 20px;margin: 0;">
+<div class="row" style="margin:0px;">
+  	<div class="col-10" style="padding: 0px 0 0 10px;">
 
-<div class="row" style="margin: 0; ">
-<div id="mapholder" class="col-8" style="padding:0;margin: 0;" >
-<div id="resultsdiv" data-hitssessionid="$hits.getSessionId()" 
-data-pagenum="$hits.getPage()"  data-totalpages="$hits.getTotalPages()">
-
-#set( $showtoolbar = $page.isPropertyTrue("showtoolbar"))
-$context.putPageValue("showtoolbar",  $showtoolbar)
-
-##Search by: <input name="formatted_address" />
-
-#set( $n = $hits.setHitsPerPage(1000))
-
-#set( $geofilter = $hits.getSearchQuery().getTermByDetailId("geo_point"))
-#if( $geofilter)
-<div style="padding:10px;background:#eee;">
-#set( $found = $geofilter.getParameter("formatted_address") )
-Found $hits.size() results searching within $geofilter.getDistance() [[meters]] of $!found  
-</div>
-#end
-
-<script type="text/javascript">
-#set( $counted = 0)
-jQuery(document).ready(function(){ 
-
-// var map = new google.maps.Map(document.getElementById('map'), {
- //         zoom: 3
- //       });
-   var uluru = {lat: 14.7260212, lng: -91.2577558};
-   var map = new google.maps.Map(document.getElementById('map'), {
-          zoom: 3,
-          center: uluru
-        });
-
- var markers = [];
- 
-	#foreach($location in $hits.getPageOfHits())
-	#set( $geopoint = $location.geo_point )
-	#if($geopoint)
-		 markers.push(['$location.id','$location.name',  $geopoint]);
-     #end   
-     #end
- 
-
- for( i = 0; i < markers.length; i++ ) {
-	 	marker = new google.maps.Marker({
-            position: markers[i][2],
-            map: map,
-            title: markers[i][1]
-        });
-         // Allow each marker to have an info window    
-        google.maps.event.addListener(marker, 'click', (function(marker, i) {
-            return function() 
-            {
-				jQuery.get("$apphome/browse/mapbubble.html?id=" + markers[i][0], function (contentString)
-	 			{
-		 			 var infowindow = new google.maps.InfoWindow({
-    	      			content: contentString
-				 	});
-	 			 	infowindow.open(map, marker);
-		 		});                
-            }
-        })(marker, i));
-   } 
-
-});
-    </script>
-<div id="map" style="min-height: 900px;">
-  <p class="card-text">[[Sign Up to create our own program or donate to existing ones, or both!]]</p>
-</div>
-</div>
-
-</div>
-<div id="projectresultholder" class="col-4" style="padding:0;margin: 0;">
-<form class="" style="padding:5px 15px 5px 15px;" >
+<form class="emcontainer" style="padding:5px 15px 5px 15px;" >
 	<input type="hidden" name="field" value="name" />
 	<input type="hidden" name="operation" value="contains" />
-  	<input type="search" name="name.value" class="form-control ds-input" id="search-input" placeholder="Team Search..." 
-  		style="width: 100%; vertical-align: top;" value='$!hits.getInput("name")'>
-</form>
+  	<input type="search" name="name.value" class="form-control ds-input" id="search-input" placeholder="Search Collectives..." 
+  		style="width: 80%; max-width: 500px;vertical-align: top;" value='$!hits.getInput("name")'>
+</form>	
 #set( $n = $hits.setHitsPerPage(12))
 
-#foreach($collection in $hits.getPageOfHits())
+#foreach($collective in $hits.getPageOfHits())
 <div class="card-mini-project" >
 <div class="card" style="margin:10px;">
-  <a href="$apphome/project/home/${collection.id}/#urlencode($collection.name).html" title="$collection">
   <div class="card-body container" style="padding: 6px" >
   	<div class="row" style="">
-  	<div class="col-5" style="padding: 0px 0 0 10px];">
-	#set( $logo = $mediaarchive.getAsset($collection.assetportrait))
+  	<div class="col-4" style="padding: 0px 0 0 10px; margin: 8px">
+
+  <a href="$apphome/collective/home/${collective.id}/#urlencode($collective.name).html" title="$collective">
+	#set( $logo = $mediaarchive.getAsset($collective.assetportrait))
 		<img style="width:100px" 
 			#if( $logo)
 				src="/$mediaarchive.getMediaDbId()/services/module/asset/downloads/preset/${logo.sourcepath}/image200x200.jpg"
@@ -97,10 +27,15 @@ jQuery(document).ready(function(){
 				src="$apphome/theme/oi/team.png"
 			#end
 		 > 
+  </a>
 	</div>
   	<div class="col-7" style="padding: 0px;">
-    <p><strong>$collection</strong></p> 
-    #set( $foundrow = $searcherManager.getData($catalogid,"country",$collection.country) )  
+    <p><strong>$collective</strong></p> 
+   	<p>
+   	#foreach( $usertag in $collective.getValues("usertags") )
+    <span class="categories-tag">$usertag</span>
+    #end
+    </p>
 	#set($label = $foundrow.getName($context.getLanguage()))
 	<i>#esc($!label)</i>
     </div>
@@ -112,8 +47,11 @@ jQuery(document).ready(function(){
 #if($hits.getPages() > 1 )
 	Next page
 #end
-
 </div>
-
+<div class="col-2" style="padding: 0px 20px 20px 20px;">
+	<img src="$apphome/theme/oi/Google-Group.png" />
+	<p>Join a collective or start a new one. Be part of a team actively bringing changes to the world.</p>
+  		<a href="$apphome/browse/add/addnew.html" class="btn btn-primary" >Start New Collective</a>	
+</div>
 </div>
 </div>
