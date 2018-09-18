@@ -1,66 +1,60 @@
 #if($content.isPropertyTrue("shownav"))
-<ul class="emheaderbuttons" >
+<nav class="navbar navbar-expand-lg">
+<div class="collapse navbar-collapse" id="emshareNavbar">
+	<ul class="navbar-nav" >
+		#set( $module = $content.module )
+		#if( $canviewhomelink )
+			<li class="nav-item"><a class="nav-link navbutton" id="module"  href="$home$apphome/index.html"> [[Home]] </a></li>
+		#else
+			<li class="nav-item #if($module == 'librarycollection') navselected #end"><a class="nav-link navbutton"  href="$apphome/index.html"> [[Home]] </a></li>
+			<li class="nav-item #if($module == 'asset') navselected #end"><a class="nav-link navbutton" href="$apphome/views/modules/asset/index.html"> [[Assets]] </a></li>
+		#end
+	   </ul>
+		#if( $canviewopencollections)
+		
+		<div id="collectionpicker" class="nav-form">
+			$pages.include("$apphome/components/libraries/pickcollection.html")
+		</div>
+		
+		#end
+		
+		
+		#if ($canquicksearch)
+		
+		<form id="search_form" action="$home$apphome/views/search/search.html" class="form-inline em-widget-content">
+			<input type="hidden" name="field" value="description" />
+			<input type="hidden" name="operation" value="freeform" />
+			<input type="hidden" name="quicksearched" value="true" />
+		
+		
+			#set( $input = $hits.getInput("description") )
+			#if (!$input)
+				#set( $input = "")
+			#end
+			<div class="has-success has-feedback">
+				<input type="text"  id="assetsearchinput" data-quicksearched='$!context.getRequestParameter("quicksearched")' placeholder="[[Asset Search...]]"  class="suggestsearchinput form-control " name="description.value" value="$input" />
+				<span class="glyphicon glyphicon-search form-control-feedback submitform" style="pointer-events: initial;"></span>
+			</div>
+		</form>
+		
+		
+		#end
+		
 
-#set( $module = $content.module )
-#if( $canviewhomelink )
-	<li><a class="navbutton" id="module"  href="$home$apphome/index.html"> [[Home]] </a></li>
-#else
-	<li class="#if($module == 'librarycollection') navselected #end"><a class="navbutton"  href="$apphome/index.html"> [[Home]] </a></li>
-	<li class="#if($module == 'asset') navselected #end"><a class="navbutton" href="$apphome/views/modules/asset/index.html"> [[Assets]] </a></li>
-#end
-
-#if( $canviewopencollections)
-	<li>
-	<div id="collectionpicker">
-	$pages.include("$apphome/components/libraries/pickcollection.html")
-	</div>
-	</li>
-#end
-
-#if ($canquicksearch)
-<li>
-<div id="searchform" >
-<form id="search_form" action="$home$apphome/views/search/search.html" class="em-widget-content">
-	<input type="hidden" name="field" value="description" />
-	<input type="hidden" name="operation" value="freeform" />
-	<input type="hidden" name="quicksearched" value="true" />
-
-
-	#set( $input = $hits.getInput("description") )
-	#if (!$input)
-		#set( $input = "")
-	#end
-	<div class="has-success has-feedback">
-		<input type="text"  id="assetsearchinput" data-quicksearched='$!context.getRequestParameter("quicksearched")' placeholder="[[Asset Search...]]"  class="suggestsearchinput form-control " name="description.value" value="$input" />
-		<span class="glyphicon glyphicon-search form-control-feedback submitform" style="pointer-events: initial;"></span>
-	</div>
-</form>
+		<ul class="navbar-nav ml-auto">
+			#if($canviewbasket)
+			<li class="nav-item #if($section=="basket") navselected  #end">
+				$pages.include("$apphome/components/basket/menuitem.html")
+			</li>
+			#end
+	
+	
+			#if( $canviewupload)
+			#if($mediaarchive.isCatalogSettingTrue("show_add_media_on_nav") )
+			<li class="nav-item"><a class="nav-link navbutton" href="$home$apphome/views/upload/create/createnewstart.html" > [[Add Media]] </a></li>
+			#end
+		#end
+	</ul>
 </div>
-</li>
-
-#end
-
-
-
-#if($canviewbasket)
-<li #if($section=="basket") class="navselected"  #end  style="float: right;">
-	$pages.include("$apphome/components/basket/menuitem.html")
-</li>
-#end
-
-
-#if( $canviewupload)
-#if($mediaarchive.isCatalogSettingTrue("show_add_media_on_nav") )
-<li style="float: right;"><a class="navbutton" id="module"  href="$home$apphome/views/upload/create/createnewstart.html" > [[Add Media]] </a></li>
-#end
-#end
-
-
-
-
-
-
- </ul>
-
-
+</nav>
 #end
