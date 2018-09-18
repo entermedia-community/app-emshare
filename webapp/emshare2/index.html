@@ -1,12 +1,12 @@
-<div class="emcontainer" style="padding:20px">
+<div class="collectionshomecontent">
 
 #set( $searcher = $mediaarchive.getSearcher("librarycollection") )
 #set( $hits = $searcher.query().all().enduser(true).sort("name").search($context) )
 
 #foreach($collection in $hits.getPageOfHits())
 <div class="card card-mini card-collections">
-  <div class="card-body" style="font-size:120%">
-    <a href="$apphome/views/modules/librarycollection/media/index.html?selectedlibrary=&collectionid=${collection.id}" title="$collection" style="background:url('$apphome/theme/images/icons/box.png') top 2px left 0 no-repeat;">
+  <div class="card-body">
+    <a href="$apphome/views/modules/librarycollection/media/index.html?selectedlibrary=&collectionid=${collection.id}" title="$collection" class="card-name collectionbox">
     <strong>$collection</strong></a>
   </div>
  
@@ -17,6 +17,6 @@
 <div class="clearfix"></div>
 #if($canaddnewcollection)
 <hr>
-<a href="$home$apphome/components/libraries/pickcollectionaddnew.html?searchtype=librarycollection&targetdiv=collectionpicker&library.value=$!library.getId()" class="emdialog btn navbutton">[[Add New Collection]]</a>
+<a href="$home$apphome/components/libraries/pickcollectionaddnew.html?searchtype=librarycollection&targetdiv=collectionpicker&library.value=$!library.getId()" class="emdialog btn btn-sm btn-primary navbutton">[[Add New Collection]]</a>
 #end
 </div>
