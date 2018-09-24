@@ -13,7 +13,7 @@ jQuery(document).ready(function(url,params)
 	
 	if( jQuery.fn.draggable )
 	{
-		jQuery(".ui-draggable").livequery( 
+		lQuery(".ui-draggable").livequery( 
 			function()
 			{	
 				jQuery(this).draggable( 
@@ -44,7 +44,7 @@ jQuery(document).ready(function(url,params)
 	if( jQuery.fn.droppable )
 	{
 		
-    	jQuery(".categorydroparea").livequery(
+    	lQuery(".categorydroparea").livequery(
 			function()
 			{
 				outlineSelectionCol = function(event, ui)
@@ -107,7 +107,7 @@ jQuery(document).ready(function(url,params)
 		); //category
 	
 		//Drop on column	
-		 jQuery(".goals-column-container").livequery(
+    	lQuery(".goals-column-container").livequery(
 			function()
 			{
 				outlineSelectionCol = function(event, ui)
@@ -160,7 +160,7 @@ jQuery(document).ready(function(url,params)
 		
 		
 		 //Sort tasks
-		 jQuery("#editgoal .card-task").livequery(
+    	lQuery("#editgoal .card-task").livequery(
 			function()
 			{
 				outlineSelectionCol = function(event, ui)
@@ -207,7 +207,7 @@ jQuery(document).ready(function(url,params)
 		
 	} //droppable
 	
-	$("#commentsave").livequery("click",function()
+	lQuery("#commentsave").livequery("click",function()
 	{
 		var comment = $(this);
 		var path = comment.data("savepath");
@@ -222,7 +222,7 @@ jQuery(document).ready(function(url,params)
 					
 	});
 	
-	$(".changetaskstatus").livequery(function()
+	lQuery(".changetaskstatus").livequery(function()
 	{
 		var div = $(this);
 		var select = div.find("select");
@@ -241,7 +241,7 @@ jQuery(document).ready(function(url,params)
 					
 	});
 
-	$("#changestatus").livequery(function()
+	lQuery("#changestatus").livequery(function()
 	{
 		var div = $(this);
 		var select = div.find("select");

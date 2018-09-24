@@ -1,14 +1,14 @@
 jQuery(document).ready(function() 
 { 
 
-$(".uploaddescription").livequery("focusin",function()
+lQuery(".uploaddescription").livequery("focusin",function()
 {
 	$(".showonfocus").show();
 	//$(".uploaddescription").attr("placeholder","Start typing");
 
 });
 
-$("#autofinishbutton").livequery("click",function(e)
+lQuery("#autofinishbutton").livequery("click",function(e)
 {
 	e.preventDefault(); 
 	var button = $(this);
@@ -27,13 +27,13 @@ $("#autofinishbutton").livequery("click",function(e)
 });
 
 
-$(".sidebartogglebtn").livequery("click",function(e)
+lQuery(".sidebartogglebtn").livequery("click",function(e)
 {
 	e.stopPropagation()
 	$(this).toggle();
 	$("#oisidebar").toggleClass('sidebaractive');
 });
-$(".sidebartogglebtnout").livequery("click",function(e)
+lQuery(".sidebartogglebtnout").livequery("click",function(e)
 		{
 			e.stopPropagation()
 			$("#oisidebar").toggleClass('sidebaractive');
