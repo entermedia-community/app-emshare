@@ -1,72 +1,66 @@
 $pages.include("$apphome/collective/logo.html")
 <div class="projectname">
-	<h4>$collective</h4>
+	<h4>$librarycol</h4>
+	#if( $librarycol.collectivedescription)
+	<p>
+	$librarycol.collectivedescription
+	</p>
+	#end
 </div>
+	#if( $librarycol.owner == $user.getId() || $canviewsettings )
+<p style="text-align: right;">	 <a class="btn btn-light btn-sm emdialog" title="[[Project Details]]" data-width="500" 
+	 	href="$apphome/collective/edit.html?collectionid=$librarycol.getId()"><i class="fas fa-edit"></i> [[Change]]</a>
+</p>
+	#end	
+
 
 <div class="profile-sidebar">
 	<div class="profile-usermenu">
 					<ul > #set( $section = $content.subsection)
 						<li id="home" #if($section == "home") class="active" #end>
-							<a href="$apphome/collective/home/${collective.id}/#urlencode($collective.name).html" >
+							<a href="$apphome/collective/home/${librarycol.id}/#urlencode($librarycol.name).html" >
 							<i class="fa fa-home"></i>
-							[[Projects]] </a>
+							[[Collective Home]] </a>
 						</li>
 						<li id="blog" #if($section == "blog") class="active" #end>
-							<a href="$apphome/collective/feed/${collective.id}/#urlencode($collective.name).html" >
-							<i class="fa fa-calendar"></i>
+							<a href="$apphome/collective/feed/${librarycol.id}/#urlencode($librarycol.name).html" >
+							<i class="fa fa-user-friends"></i>
 							[[Chat]] </a>
 						</li>
 						<li id="donate" #if($section == "donate") class="active" #end>
  <a  title="[[Donate to]] $librarycol" data-width="500"  
- href="$apphome/collective/donate/donate.html?collectiveid=${collective.id}">
+ href="$apphome/collective/donate/donate.html?collectionid=${librarycol.id}">
 							<i class="fa fa-hand-holding-usd"></i>
 							[[Donate]] </a>
 						</li>
 						<li id="contact"  #if($section == "contact") class="active" #end>
-							<a href="$apphome/collective/contact/contact.html?collectiveid=${collective.id}" >
+							<a href="$apphome/collective/contact/contact.html?collectionid=${librarycol.id}" >
 							<i class="fa fa-user"></i>
 							[[Contact]] </a>
 						</li>
 						<li id="members"  #if($section == "members") class="active" #end>
-							<a href="$apphome/collective/subscribers/index.html?collectiveid=${collective.id}" >
+							<a href="$apphome/collective/subscribers/index.html?collectionid=${librarycol.id}" >
 							<i class="fa fa-user-friends"></i>
 							[[Subscribers]] </a>
 						</li>
+						<li id="projects"  #if($section == "members") class="active" #end>
+							<a href="$apphome/collective/projects/index.html?collectionid=${librarycol.id}" >
+							<i class="fa fa-calendar"></i>
+							[[Projects]] </a>
+						</li>
 						<li id="tasks"  #if($section == "tasks") class="active" #end>
-							<a href="$apphome/collective/goals/priorities/index.html?collectiveid=${collective.id}" >
+							<a href="$apphome/collective/goals/priorities/index.html?collectionid=${librarycol.id}" >
 							<i class="fa fa-flag"></i>
 							[[Goals]] </a>
 						</li>
 					</ul>
 	</div>
 	</div>
-<div class="projectdetails">
-	
-	#set( $country = $mediaarchive.getData("country",$librarycol.country))
-	#if ($country)
-		<p>[[Country]]: $country</p>
-	#end
-	#if ($!librarycol.facebooklink)
-<p>
-		<a href="$!librarycol.facebooklink"><i class="fab fa-facebook-square"></i> Facebook</a>
-</p>
-	#end
-	
-	#if ($!librarycol.websitelink)
-		<a href="$!librarycol.websitelink"><i class="fas fa-link"></i> Web Site</a>
-	#end
-	
-	#if( $librarycol.owner == $user.getId() || $canviewsettings )
-</p>
-	 <a class="btn btn-light btn-sm emdialog" title="[[Project Details]]" data-width="500" 
-	 	href="$apphome/collective/edit.html?collectiveid=$librarycol.getId()"><i class="fas fa-edit"></i> [[Edit]]</a>
-</p>
-	#end	
 </div>	
 
 	#if( $hits.size() > 0)
 	<div class="projectdetails">
-		<p><a href="$apphome/collective/media/${collective.id}.html">$hits.size()  [[Uploads]]</a></p>
+		<p><a href="$apphome/collective/media/${librarycol.id}.html">$hits.size()  [[Uploads]]</a></p>
 	</div>
 		#if( $content.showmedia )
 			$pages.include("$apphome/components/advancedsearch/sidebar.html")

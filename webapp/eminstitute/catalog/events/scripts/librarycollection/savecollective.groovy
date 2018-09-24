@@ -10,64 +10,31 @@ public void init()
 {
 	MediaArchive mediaArchive = context.getPageValue("mediaarchive");//Search for all files looking for videos
 	BaseSearcher collectionsearcher = mediaArchive.getSearcher("librarycollection");
-	String  id = context.getRequestParameter("dataid");
-	if( id == null )
-	{
-		id = data.getId();
-	}
-	LibraryCollection data = (LibraryCollection)collectionsearcher.searchById(id);
-
-	if( data.getValue("geo_point") != null && data.getValue("library") != null)
-	{
-		return;
-	}
+	String  id = data.getId();
+	LibraryCollection collection = (LibraryCollection)collectionsearcher.searchById(id);
 	Searcher librarysearcher = mediaArchive.getSearcher("library");
-
-
 	log.info("User is: " + user.getId() );
 
 	
-	Data library = librarysearcher.searchByField("owner", user.getId());
+	Data library = librarysearcher.searchById("collectives");
 	if( library == null)
 	{
 		library = librarysearcher.createNewData();
-		library.setValue("owner", user.getId());
-		library.setName(user.getScreenName());
+		library.setId("collectives");
+		library.setValue("owner", "admin");
+		library.setName("Collectives");
 		librarysearcher.saveData(library);
 	}
-	data.setValue("library",library.getId());
-	if( data.get("owner") == null )
+	collection.setValue("library",library.getId());
+	if( collection.get("owner") == null )
 	{
-		data.setValue("owner",user.getId());
+		collection.setValue("owner",user.getId());
 	}	
+
+	collectionsearcher.saveData(collection);
 	
-//	org.entermediadb.asset.Category root = mediaArchive.getProjectManager().createRootCategory(mediaArchive,data);
-//	data.getRootCategoryId(root.getId();
+	mediaArchive.getProjectManager().getRootCategory(mediaArchive,collection);
 	
-	//Search Google and put point on map
-	String location = "";
-	if (data.get("street")) {
-		location = data.get("street");
-	}
-	if (data.get("city")) {
-		location += " " + data.get("city");
-	}
-	Data country = mediaArchive.getData("country", data.get("country"));
-	if (country) {
-		location += " " + country;
-	} 
-	
-	if (location != "")
-	{
-		//location = location.replaceAll("null","");
-		Position p = (Position)collectionsearcher.getGeoCoder().findFirstPosition(location);
-		if( p != null)
-		{
-			data.setValue("geo_point",p);
-			data.setValue("geo_point_formatedaddress",p.getFormatedAddress());
-		}	
-	}
-	collectionsearcher.saveData(data);
 	
 }
 
