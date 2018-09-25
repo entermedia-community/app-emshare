@@ -8,7 +8,7 @@
   
   #set( $searcher = $mediaarchive.getSearcher("collectivesubscribers") )
 
-   		#set( $subs = $searcher.query().exact("collectiveid",$collective.getId()).search($context))
+   		#set( $subs = $searcher.query().exact("collectiveid",$librarycol.getId()).search($context))
    		#if( $subs.isEmpty()) <p>No subscribers yet</p> #end
    <ul class="list-group list-group-flush w-100 align-items-stretch">
    		
@@ -23,12 +23,12 @@
   </ul>
         <div class="card-block">
         <br>
-        #set( $found = $searcher.query().exact("followeruser",$user.getId()).exact("collectiveid",$collective.getId()).searchOne() )
+        #set( $found = $searcher.query().exact("followeruser",$user.getId()).exact("collectiveid",$librarycol.getId()).searchOne() )
         #if( !$found)	
-			 <a href="$apphome/collective/subscribers/addnew.html?collectiveid=$collective.getId()" 
+			 <a href="$apphome/collective/subscribers/addnew.html?collectionid=$librarycol.getId()" 
 			 class="emdialog btn btn-primary">[[Subscribe Yourself]]</a>
 		#end	 
-			 <a href="$apphome/collective/subscribers/addnew.html?collectiveid=$collective.getId()" 
+			 <a href="$apphome/collective/subscribers/addnew.html?collectionid=$librarycol.getId()" 
 			 class="emdialog btn btn-primary">[[Invite Others]]</a>
         </div>
   </div>

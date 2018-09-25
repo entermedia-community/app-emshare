@@ -1,6 +1,6 @@
 <div class="goals-sidebar filters-sidebar">
 
-$pages.include("$apphome/project/goals/search/advanced.html",$context)
+$pages.include("$apphome/collective/goals/search/advanced.html",$context)
 #set( $searcher = $goalhits.getSearcher())
 <div class="ui-widget uipanel" id="left-col-search" style="padding-top: 10px;" >
 <div  class="ui-widget-content" id="filterscontent" #if($userprofile.minimizefilterscontent == "true" && $cantogglesidebar) style="display: none;" #end>
@@ -11,7 +11,7 @@ $pages.include("$apphome/project/goals/search/advanced.html",$context)
 	#foreach( $selectedfilter in $goalhits.getSearchQuery().getFilters() )
 			#set( $detail = $searcher.getDetail($selectedfilter.getId() ) )
 	<li><a class="ajax" title="$detail.getText($context)" targetdiv="goaleditor" 
-			href="$home$apphome/project/goals/search/goalsearchfilter.html?collectionid=$!librarycol.getId()&removefilter=$selectedfilter.getId()&hitssessionid=$!goalhits.sessionId&searchtype=$searcher.searchType&oemaxlevel=2" >
+			href="$home$apphome/collective/goals/search/goalsearchfilter.html?collectionid=$!librarycol.getId()&removefilter=$selectedfilter.getId()&hitssessionid=$!goalhits.sessionId&searchtype=$searcher.searchType&oemaxlevel=2" >
 			$detail: 
 			#if( $detail.isMultiLanguage() )
 			$context.getText( $selectedfilter )
@@ -25,7 +25,7 @@ $pages.include("$apphome/project/goals/search/advanced.html",$context)
 
 #set($facets = $goalhits.getFilterOptions())
 <form class="ajaxform" targetdiv="goaleditor" 
-	action="$home$apphome/project/goals/search/goalsearchfilter.html" 
+	action="$home$apphome/collective/goals/search/goalsearchfilter.html" 
 	target="_parent" name="dontshowgoal" id="dontshowgoal" valign="middle">
     <input type="hidden" name="collectionid" value="$!librarycol.getId()" />
     <input type="hidden" name="oemaxlevel" value="2" />

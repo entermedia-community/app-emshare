@@ -3,7 +3,7 @@
 <div class="category"  style="padding:8px 6px 3px 20px;">					
 	#foreach( $parent in $selectedcat.getParentCategoriesFrom(1))
 	#if( ${foreach.count} > 1) \ #end
-	<a  href="$apphome/project/goals/actions/index.html?categoryid=${parent.id}&nodeID=${parent.id}&collectionid=$librarycol.getId()">$parent</a>
+	<a  href="$apphome/collective/goals/actions/index.html?categoryid=${parent.id}&nodeID=${parent.id}&collectionid=$librarycol.getId()">$parent</a>
 	#end
 </div>
 #elseif( $topgoals)
@@ -16,7 +16,7 @@
  <a class="btn btn-secondary btn-sm emdialog pull-left" 
  	title="[[New Goal]]" 
  	data-width="900"
- 	href="$apphome/project/goals/editgoalpanel.html?collectionid=$librarycol.getId()&categoryid=$!selectedcat.getId()" ><i class="fas fa-plus"></i> New Goal</a>
+ 	href="$apphome/collective/goals/editgoalpanel.html?collectionid=$librarycol.getId()&categoryid=$!selectedcat.getId()" ><i class="fas fa-plus"></i> New Goal</a>
 #end
 
 <div class="clearfix"></div>
@@ -36,7 +36,7 @@
 		 <a class="btn btn-secondary btn-sm emdialog pull-left" 
 		 	title="[[New Goal]]" 
 		 	data-width="900"
-		 	href="$apphome/project/goals/editgoalpanel.html?collectionid=$librarycol.getId()&categoryid=$!selectedcat.getId()" ><i class="fas fa-plus"></i></a>
+		 	href="$apphome/collective/goals/editgoalpanel.html?collectionid=$librarycol.getId()&categoryid=$!selectedcat.getId()" ><i class="fas fa-plus"></i></a>
 		 #end	
 	#elseif( $col == 1)
 	[[Pending]]
@@ -47,11 +47,11 @@
 #end
 
 <ul class="projectgoals ui-sortable" data-collectionid="$librarycol.getId()"
-	 data-categoryid="$!selectedcat.id" data-oemaxlevel="2"  data-savepath="$apphome/project/goals/savecategorysort.html">
+	 data-categoryid="$!selectedcat.id" data-oemaxlevel="2"  data-savepath="$apphome/collective/goals/savecategorysort.html">
 
 #foreach( $goal in $row )  
 $context.putPageValue("goal",$goal)
-$pages.include("$apphome/project/goals/search/goalrow.html",$context)
+$pages.include("$apphome/collective/goals/search/goalrow.html",$context)
 #end
 
 </ul>
@@ -63,7 +63,7 @@ $pages.include("$apphome/project/goals/search/goalrow.html",$context)
 <div class="clearfix"></div>
 
 #if( $closedgoals.size() > 0)
-<form name="viewclosed" method="post" class="ajaxform" targetdiv="goalresultsdiv" action="$apphome/project/goals/actions/goalclosedsearch.html?collectionid=$librarycol.id&nodeID=${selectedcat.id}">
+<form name="viewclosed" method="post" class="ajaxform" targetdiv="goalresultsdiv" action="$apphome/collective/goals/actions/goalclosedsearch.html?collectionid=$librarycol.id&nodeID=${selectedcat.id}">
 	<input name="ids" type="hidden" value="$closedids" />
 	<input name="oemaxlevel" type="hidden" value="1" />
 	<input type="submit" class="btn" value="View Closed Goals ($closedgoals.size())" />
@@ -71,7 +71,7 @@ $pages.include("$apphome/project/goals/search/goalrow.html",$context)
 #end
 #if( $nextpage )
 
-<a class="btn" href="$apphome/project/goals/actions/goalcolumns.html?collectionid=$librarycol.id&nodeID=${selectedcat.id}&page=$nextpage"> View more goals ($nextpage) </a>
+<a class="btn" href="$apphome/collective/goals/actions/goalcolumns.html?collectionid=$librarycol.id&nodeID=${selectedcat.id}&page=$nextpage"> View more goals ($nextpage) </a>
 
 #end
 </div>

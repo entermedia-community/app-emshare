@@ -1,11 +1,32 @@
 jQuery(document).ready(function() 
 { 
 
-lQuery(".uploaddescription").livequery("focusin",function()
+lQuery(".attachfile").livequery("click",function()
 {
-	$(".showonfocus").show();
+	$(".showonfocus").toggle();
 	//$(".uploaddescription").attr("placeholder","Start typing");
 
+});
+
+lQuery(".uploaddescription").livequery("keyup",function(e)
+{
+	//submit
+	var targetdiv = $(this).data("targetdiv");
+	if( e.keyCode == "13" )
+	{
+		var form = jQuery("#uploaddata");
+		form.ajaxSubmit({
+			error: function(data ) {
+				alert("error");
+				$("#" + targetdiv).html(data);
+				//$("#" + targetdiv).replaceWith(data);
+			},
+			success : function(result, status, xhr, $form) {
+	        	$("#" + targetdiv).replaceWith(result);
+	    	},
+			data: { oemaxlevel: 1 }
+		 });
+	} 
 });
 
 lQuery("#autofinishbutton").livequery("click",function(e)

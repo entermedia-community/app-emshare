@@ -1,57 +1,32 @@
- #set( $searcher = $mediaarchive.getSearcher("collectiveprojects") )
-<div id="projectresultholder" style="padding:10px 0 0 20px;margin: 0;">
-<div class="row" style="margin:0px;">
-  	<div class="col-10" style="padding: 0px 0 0 10px;">
+<br>
 
-
-#set( $hits = $searcher.query().exact("parentcollectionid",$librarycol.getId()).sort("name").search())
-#if($hits.isEmpty() )
-<div style=" margin: 200px;">
-<p>Start your first project</p>
-  		<a href="$apphome/collective/addproject/addnew.html?collectiveid=$collective.getId()" class="btn btn-primary" >New Project</a>	
-</div>
-#end
-#foreach($col in $hits.getPageOfHits())
-<div class="card-mini-project" >
-<div class="card" style="margin:10px;">
-  <div class="card-body container" style="padding: 6px" >
-  	<div class="row" style="">
-  	<div class="col-4" style="padding: 0px 0 0 10px; margin: 8px">
-
-  <a href="$apphome/project/home/${col.id}/#urlencode($col.name).html" title="$col">
-	#set( $logo = $mediaarchive.getAsset($col.assetportrait))
-		<img style="width:100px" 
-			#if( $logo)
-				src="/$mediaarchive.getMediaDbId()/services/module/asset/downloads/preset/${logo.sourcepath}/image200x200.jpg"
-			#else	
-				src="$apphome/theme/oi/logo.png"
-			#end
-		 > 
-  </a>
-	</div>
-  	<div class="col-7" style="padding: 0px;">
-    <p><strong>$col</strong></p> 
-   	<p>
-   	#foreach( $usertag in $col.getValues("usertags") )
-    <span class="categories-tag">$usertag</span>
-    #end
-    </p>
-    </div>
-    </div>
+<div class="card mx-auto" style="margin:40px;max-width:900px;text-align:left;">
+  <div class="card-header">
+    [[Projects]]
   </div>
-</div>
-</div>
-#end
-#if($hits.getPages() > 1 )
-	Next page
-#end
-</div>
-#if(!$hits.isEmpty() )
-<div class="col-2" style="padding: 0px 20px 20px 20px;">
-	<img src="$apphome/theme/oi/logo.png" />
-	<p>Start a project and get organized</p>
-  		<a href="$apphome/collective/addproject/addnew.html?collectiveid=$collective.getId()" class="btn btn-primary" >New Project</a>	
-</div>
-#end
-</div>
+  <div class="card-block" style="padding:20px;text-align:center">
+  
+  #set( $searcher = $mediaarchive.getSearcher("collectiveproject") )
+  
+   		#set( $subs = $searcher.query().match("parentcollectionid",$librarycol.getId()).search())
+   		#if( $subs.isEmpty()) <p>No projects started</p> #end
+   <table class="" width="100%">
+   		
+  #foreach( $hit in $subs)
+        <tr class="list-group-item text-center d-inline-block">
+        	<td class="whatsapp" style="min-width:100px;">$hit.name </td>
+        	#set( $followeruser = $mediaarchive.getUser($hit.owner) )
+        	<td class="username">$followeruser.getAnonNickName()</td> 
+        	<td class="usernote">Added:  $context.getDateTime( $hit.getValue("creationdate") )</td>
+        </tr>
+  #end
+  </table>
+        <div class="card-block">
+        <br>
+        #if( $caneditdata)	
+			 <a href="$apphome/collective/projects/addnew.html?collectionid=$librarycol.getId()" 
+			 class="emdialog btn btn-primary">[[Add New Project]]</a>
+		#end	 
+        </div>
+  </div>
 </div>

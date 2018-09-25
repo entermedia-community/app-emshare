@@ -10,7 +10,7 @@ $context.putPageValue("searcher",$searcher)
 #if( $data.id )
 $context.putPageValue("view", "projectgoal/edit")
 <div style="float:right;margin:0px 20px 5px 0">
-$pages.include("$apphome/project/goals/like.html")
+$pages.include("$apphome/collective/goals/like.html")
 </div>
 
 #else
@@ -21,9 +21,9 @@ $context.putPageValue("view", "projectgoal/addnew")
 
 <form name="saveproject" enctypeXX="multipart/form-data" id="saveproject" method="post" 
 #if( $data.id)
-	action="/$applicationid/project/goals/${goalfolder}/goalsave.html" >
+	action="/$applicationid/collective/goals/${goalfolder}/goalsave.html" >
 #else
-	action="/$applicationid/project/goals/${goalfolder}/goalsavenew.html" >
+	action="/$applicationid/collective/goals/${goalfolder}/goalsavenew.html" >
 #end
 #if( $caneditdata)
 <input type="hidden" name="save" value="true" />
@@ -47,6 +47,26 @@ $context.putPageValue("view", "projectgoal/addnew")
 
 #if( $caneditdata )
 $pages.include("/$applicationid/components/xml/detaileditor4.html", $context)
+
+<div class="form-group row">
+    <label for="exampleTextarea" class="col-2 col-form-label">Project</label>
+    <div class="col-10">
+<div class="emfield-list">
+	<input type="hidden" value="goaltrackercolumn" name="field">
+<div id="listdetail_project" class="listdetailpicker">
+	<select id="list-project" data-placeholder=" " name="goaltrackercolumn.value" class="listdropdown choose-select detail-select form-control autosubmited " listid="project" data-listid="project" data-searchtype="$searchtype" onchange="if( typeof updatelisteners == 'function' )updatelisteners('site/catalog','$searchtype','','project');">
+	<option value=""></option>
+	#set( $projects = $mediaarchive.query("collectiveproject").match("parentcollectionid",$librarycol.getId()).search())
+	#foreach( $project in $projects)
+		<option value="$project.getId()" #if( $data.goaltrackercolumn == $project.getId() ) selected #end>$project</option>
+	#end
+   </select>
+		<a class="emdialog addnewitem" href="/site/app/views/settings/lists/datamanager/edit/inline.html?searchtype=project&amp;update=list-project" title="Add New Project" data-hidefooter="true">+ New Project</a>
+</div>
+</div>
+    </div>
+    </div>
+
 #set( $fullscreen = $context.getRequestParameter("fullscreen"))
 #if( $fullscreen == "true")
 	<input class="btn" type="submit" value="Save"></input><br><br>
@@ -58,5 +78,5 @@ $pages.include("/$applicationid/components/xml/detaileditorcss.html?detailsreado
 </form>
 
 <div class="clearfix"></div>
-$pages.include("$apphome/project/goals/tasks.html")
+$pages.include("$apphome/collective/goals/tasks.html")
 </div>

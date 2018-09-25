@@ -1,0 +1,60 @@
+<div id="goalresultsdiv">
+<div class="clearfix"></div>
+
+#if( $caneditdata)
+ <a class="btn btn-secondary btn-sm emdialog pull-left" 
+ 	title="[[New Goal]]" 
+ 	data-width="900"
+ 	style="margin-left: 30px;"
+ 	href="$apphome/project/goals/editgoalpanel.html?collectionid=$librarycol.getId()&categoryid=$!selectedcat.getId()&goalfolder=search" ><i class="fas fa-plus"></i> Add Goal</a>
+ #if( $goalhits )
+ <a class="btn btn-secondary btn-sm pull-left" 
+ 	title="[[Export Results]]" 
+ 	data-width="900"
+ 	style="margin-left: 30px;"
+ 	href="$apphome/project/goals/search/export/projectgoals.csv?hitssessionid=$goalhits.getSessionId()" ><i class="fas fa-download"></i> Export</a>
+#end
+<br><br>
+#end
+
+#set( $col = 0)
+#foreach( $priority in ["0","1","2"] )
+
+<div class="goals-column-container"  data-col="$priority">
+<div class="goals-column">
+<div class="goals-column-header">
+
+	#if( $priority == "0")
+	[[Sales]] 
+	#elseif( $priority == "1")
+	[[Support]]
+	#elseif( $priority == "2")
+	[[Consulting]]
+	#end
+	( $!hits.size() )
+</div>
+
+<ul class="projectgoals ui-sortable"
+data-oemaxlevel="2"  data-collectionid="$librarycol.getId()" data-categoryid="$!selectedcat.id" 
+	data-savepath="$apphome/project/goals/goalmovepriority.html">
+#set( $hits = $context.getPageValue("goalhits${priority}"))
+#if( $hits )
+#foreach( $goal in $hits )  
+$context.putPageValue("goal",$goal)
+$pages.include("$apphome/project/goals/search/goalrow.html",$context)
+#end
+#end
+</ul>
+
+</div>
+</div>
+#end
+
+#if( $toomanygoals)
+ <div class="alert alert-primary" style="float:left;" role="alert">
+  Goal limit reached. Please close older goals
+</div>
+#end
+
+
+</div>

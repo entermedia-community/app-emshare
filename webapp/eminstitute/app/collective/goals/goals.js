@@ -73,7 +73,7 @@ jQuery(document).ready(function(url,params)
 								params['targetcategoryid'] = categoryid;
 								params['nodeID'] = $(".projectgoals").data("categoryid");
 								
-								jQuery.get(apphome + "/project/goals/drop/addtocategory.html", 
+								jQuery.get(apphome + "/collective/goals/drop/addtocategory.html", 
 										params,
 										function(data) 
 										{
@@ -89,7 +89,7 @@ jQuery(document).ready(function(url,params)
 								params['categoryid2'] = categoryid;
 								params['oemaxlevel'] = "1";
 								
-								jQuery.get(apphome + "/project/goals/drop/movecategory.html", 
+								jQuery.get(apphome + "/collective/goals/drop/movecategory.html", 
 										params,
 										function(data) 
 										{
@@ -134,7 +134,7 @@ jQuery(document).ready(function(url,params)
 								params['goalid'] = goalid;
 								params['col'] = columnid;
 								
-								jQuery.get(apphome + "/project/goals/drop/movetocolumn.html", params ,
+								jQuery.get(apphome + "/collective/goals/drop/movetocolumn.html", params ,
 										function(data) 
 										{
 											//Reload goalist
@@ -189,7 +189,7 @@ jQuery(document).ready(function(url,params)
 							params['taskid'] = taskid;
 							params['targettaskid'] = targettaskid;
 							
-							jQuery.get(apphome + "/project/goals/drop/taskinsert.html", params ,
+							jQuery.get(apphome + "/collective/goals/drop/taskinsert.html", params ,
 									function(data) 
 									{
 										//Reload goalist
