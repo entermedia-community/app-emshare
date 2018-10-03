@@ -1,0 +1,9 @@
+#set($hits = $mediaarchive.getList("clienthours"))
+$context.putPageValue("hits", $hits)
+$context.putPageValue("searcher", $mediaarchive.getSearcher("clienthours"))
+
+$context.putPageValue("view", "clienthours/clienthoursresultstable")
+
+<div class="table-component" data-searchtype="clienthours" data-currentpage="0" data-hitssessionid="$hits.sessionid">
+$pages.include("$apphome/components/xml/inline/table.html", $context)
+</div>
