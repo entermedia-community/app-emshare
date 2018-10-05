@@ -1,9 +1,12 @@
 <li id="goal$goal.id" class="card card-mini card-goal goalstatus$!{goal.projectstatus}" data-goalid="$goal.id">
-   	<div class="goalheader #if( $caneditdata) ui-draggable ui-draggable-handle #end " 
-   		 data-goalid="$goal.id" data-cloneparentid="goal$goal.id">
+   	<div class="goalheader #if( $caneditdata) ui-draggable ui-draggable-handle #end "
+   		  
+   		 data-goalid="$goal.id" 
+   		 data-cloneparentid="goal$goal.id">
     		$pages.include("$apphome/collective/goals/like.html",$context)
+    		#set( $goallink = "$apphome/collective/goals/editgoalpanel.html?id=${goal.id}&collectionid=$librarycol.getId()&categoryid=$!selectedcat.getId()&hitssessionid=$!{goalhits.getSessionId()}&goalfolder=$content.goalfolder")
 			<div >
-		    <a href="$apphome/collective/goals/editgoalpanel.html?id=${goal.id}&collectionid=$librarycol.getId()&categoryid=$!selectedcat.getId()&hitssessionid=$!{goalhits.getSessionId()}&goalfolder=$content.goalfolder"
+		    <a href="$goallink"
 		    	title="$goal.name" class="emdialog editgoalshow"  data-width="900" >
 		    	$goal.name
 			</a>
@@ -19,8 +22,11 @@
 				#set( $c = $tree.getInt("goalpoints") )
 				#if( $c == 0)#set( $c = 10)#end
 				#set($points = $points + $c)
-				<a href="$apphome/collective/goals/actions/index.html?collectionid=$librarycol.getId()&nodeID=$task.projectdepartment" 
-					class="btn btn-xs taskcomplete$!{task.taskstatus}" title="$tree.getCategoryPath()">
+				##<a href="$apphome/collective/goals/actions/index.html?collectionid=$librarycol.getId()&nodeID=$task.projectdepartment" 
+				<a href="$goallink"
+					data-focuson="$task.id"
+					data-width="900"
+					class="btn btn-xs taskcomplete$!{task.taskstatus} emdialog" title="$tree.getCategoryPath()" >
 					#if( $task.completedby )
 						#set( $completedby = $mediaarchive.getUser($task.completedby) )
 						$!completedby.getAnonNickName() :

@@ -1,5 +1,10 @@
 <div id="goalresultsdiv">
-<div class="clearfix"></div>
+
+
+#set($projects = $mediaarchive.getSearcher("collectiveproject").query().match("parentcollectionid",$librarycol.getId()).search($context) )
+#if( $projects.isEmpty() )
+	Create a new project to get started
+#end
 
 #if( $caneditdata)
  <a class="btn btn-secondary btn-sm emdialog pull-left" 
@@ -18,14 +23,11 @@
 #end
 
 #set( $col = 0)
-#set($projects = $mediaarchive.getSearcher("collectiveproject").query().match("parentcollectionid",$librarycol.getId()).search($context) )
-#if( $projects.isEmpty() )
-	Create a new project to get started
-#end
 
+<div class="clearfix"></div>
 #foreach( $project in $projects )
+<div class="goals-column-container"  data-col="$project.id">
 
-<div class="goals-column-container"  data-col="$priority">
 <div class="goals-column">
 <div class="goals-column-header">
 #set( $priority = $project.getId())
