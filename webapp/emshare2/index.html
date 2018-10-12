@@ -2,22 +2,39 @@
 
 
 ##search
-
 #set( $searcher = $mediaarchive.getSearcher("librarycollection") )
-#set( $hits = $searcher.query().all().enduser(true).sort("name").search($context) )
-
-#foreach($collection in $hits.getPageOfHits())
-<div class="card card-mini card-collections">
-  <div class="card-body">
-    <a href="$apphome/views/modules/librarycollection/media/index.html?selectedlibrary=&collectionid=${collection.id}" title="$collection" class="card-name collectionbox">
-    <strong>$collection</strong></a>
-  </div>
- 
-</div>
-#end
-
-
+$context.putPageValue("searcher",$searcher)
+#set ($details = $searcher.getDetailsForView("librarycollection/librarysearchcollection", $userprofile))
+<form  id="colsearchform" class="autosubmit"  data-targetdiv="collectionresults" action="$home$apphome/components/opencollections/searchcollectionresultshomepage.html">
+	
+		<input type="hidden" name="searchtype" value="librarycollection" />
+		<input type="hidden" name="sortby" value="name" />
+		<table>
+		<tr>
+		<td width="100%">
+		<div  class="row inlinesearch" >
+		$context.putPageValue("autocomplete","off")
+			#foreach( $detail in $details)
+			<div class="col">
+					$context.putPageValue("detail", $detail)
+					$pages.include("/${applicationid}/components/advancedsearch/detaileditinline.html", $context)
+			</div>
+			#if( $counter == 4)
+				</div>
+				<div  class="row" >
+			#end	
+			#end
+		</div>	
+		</td>
+		</tr>
+		</table>
+	</form>
+	
+<div id="collectionresults">
+$pages.include("$home$apphome/components/opencollections/searchcollectionresultshomepage.html") ##initial search
+</div>	
 <div class="clearfix"></div>
+
 #if($canaddnewcollection)
 <hr>
 <a href="$home$apphome/components/libraries/pickcollectionaddnew.html?searchtype=librarycollection&targetdiv=collectionpicker&library.value=$!library.getId()" class="emdialog btn btn-sm btn-primary navbutton">[[Add New Collection]]</a>
