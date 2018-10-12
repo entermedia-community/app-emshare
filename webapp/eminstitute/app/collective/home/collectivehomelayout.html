@@ -1,53 +1,49 @@
-##Show nice home page
-
-#if($librarycol.manifesto)
-
-   
-    <div class="oe-editable" id="edit-$librarycol.id" data-dataid="$librarycol.id" data-field="manifesto" data-searchtype="librarycollection">$!librarycol.manifesto</div>
-
-
-#else
- <div class="oe-editable" id="edit-$librarycol.id" data-dataid="$librarycol.id" data-field="manifesto" data-searchtype="librarycollection">$pages.include("$apphome/collective/home/manifesto.html")</div>
-
-#end 
-
-<div style="text-align: center">
- <a class="oe-dataedit btn btn-light btn-sm " data-target="#edit-$librarycol.id" title="[[Project Details]]" data-width="500" 
-	 	href="#"><i class="fas fa-edit"></i> [[Edit]]</a>
-</div>	 	
-  
-<div class="projectdetails">
-	
+<div style="margin: auto; max-width: 900px;">
+<div class="row">
+ <div class="col-md-auto">
+ <h1 style="font-size:6em;margin: 50px 50px 50px 0px;">$librarycol.name</h1>
+ </div>
+ <div class="col col-lg-4">	
+  <div class="projectdetails">
 	#set( $country = $mediaarchive.getData("country",$librarycol.country))
 	#if ($country)
 		<p>[[Country]]: $country</p>
 	#end
 	#if ($!librarycol.facebooklink)
-<p>
+	<p>
 		<a href="$!librarycol.facebooklink"><i class="fab fa-facebook-square"></i> Facebook</a>
-</p>
+	</p>
 	#end
-	
 	#if ($!librarycol.websitelink)
 		<a href="$!librarycol.websitelink"><i class="fas fa-link"></i> Web Site</a>
 	#end
+ </div>
+</div>	
+</div>
+
+<div class="row">
+ <div class="col col-lg-6">
+	<h2>Mission</h2>
+	#if($librarycol.manifesto)
+	   <div class="oe-editable" id="edit-$librarycol.id" data-dataid="$librarycol.id" data-field="manifesto" data-searchtype="librarycollection">$!librarycol.manifesto</div>
+	#else
+	   <div class="oe-editable" id="edit-$librarycol.id" data-dataid="$librarycol.id" data-field="manifesto" data-searchtype="librarycollection">$pages.include("$apphome/collective/home/manifesto.html")</div>
+	#end 
+	 <a class="oe-dataedit btn btn-light btn-sm " data-target="#edit-$librarycol.id" title="[[Project Details]]" data-width="500" 
+	 	href="#"><i class="fas fa-edit"></i> [[Edit]]</a>
 	
-	#if( $librarycol.owner == $user.getId() || $canviewsettings )
-</p>
-	
-</p>
-	#end	
+ </div>
+ <div class="col col-lg-6">	
+	<h2>Vision</h2>
+	#if($librarycol.vision)
+		<div class="oe-editable" id="editvision-$librarycol.id" data-dataid="$librarycol.id" data-field="vision" data-searchtype="librarycollection">$!librarycol.manifesto</div>
+	#else
+	   <div class="oe-editable" id="editvision-$librarycol.id" data-dataid="$librarycol.id" data-field="vision" data-searchtype="librarycollection">$pages.include("$apphome/collective/home/vision.html")</div>
+	#end
+	 <a class="oe-dataedit btn btn-light btn-sm " data-target="#editvision-$librarycol.id" title="[[Edit Vision]]" data-width="500" 
+	 	href="#"><i class="fas fa-edit"></i> [[Edit]]</a>
+	 
+  </div>  
 </div>	
 
-
-	#if( $hits.size() > 0)
-		<div class="projectdetails">
-			<p><a href="$apphome/collective/media/${librarycol.id}.html">$hits.size()  [[Uploads]]</a></p>
-		</div>
-		#if( $content.showmedia )
-			$pages.include("$apphome/components/advancedsearch/sidebar.html")
-			$pages.include("$apphome/components/categories/sidebar.html")
-			
-		#end
-		$pages.include("$apphome/components/dontshow/index.html")
-	#end
+</div>

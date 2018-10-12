@@ -1,32 +1,23 @@
-<br>
-
-<div class="card mx-auto" style="margin:40px;max-width:900px;text-align:left;">
-  <div class="card-header">
-    [[Projects]]
-  </div>
-  <div class="card-block" style="padding:20px;text-align:center">
-  
-  #set( $searcher = $mediaarchive.getSearcher("collectiveproject") )
-  
-   		#set( $subs = $searcher.query().match("parentcollectionid",$librarycol.getId()).search())
-   		#if( $subs.isEmpty()) <p>No projects started</p> #end
-   <table class="" width="100%">
-   		
+#set( $searcher = $mediaarchive.getSearcher("collectiveproject") )
+#set( $subs = $searcher.query().match("parentcollectionid",$librarycol.getId()).search())
+#if( $subs.isEmpty()) <p>No projects started</p> #end
+<div class="row">
   #foreach( $hit in $subs)
-        <tr class="list-group-item text-center d-inline-block">
-        	<td class="whatsapp" style="min-width:100px;">$hit.name </td>
-        	#set( $followeruser = $mediaarchive.getUser($hit.owner) )
-        	<td class="username">$followeruser.getAnonNickName()</td> 
-        	<td class="usernote">Added:  $context.getDateTime( $hit.getValue("creationdate") )</td>
-        </tr>
-  #end
-  </table>
-        <div class="card-block">
-        <br>
-        #if( $caneditdata)	
-			 <a href="$apphome/collective/projects/addnew.html?collectionid=$librarycol.getId()" 
-			 class="emdialog btn btn-primary">[[Add New Project]]</a>
-		#end	 
+  <div class="col-md-4">
+    <div class="thumbnail">
+		#set( $asset = $mediaarchive.query("asset").match("collectiveproject",$hit.id).searchOne() )
+     #if( $asset)
+      <a href="/w3images/lights.jpg">
+        <img src="/site/mediadb/services/module/asset/downloads/preset/${asset.sourcepath}/image200x200.jpg" alt="Lights" style="width:100%">
+        <div class="caption">
+          <p>$hit.name</p>
         </div>
+      </a>
+      #else
+         <p>$hit.name</p>
+       
+      #end
+    </div>
   </div>
+  #end
 </div>

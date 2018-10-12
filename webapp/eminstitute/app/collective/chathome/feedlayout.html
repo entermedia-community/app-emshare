@@ -1,0 +1,27 @@
+<div class="oifeedlayout-content" id="chatfeedlayout">
+#set ($librarycolid = $librarycol.getId())
+#if( $caneditdata )
+$pages.include("$apphome/collective/chat/addnewupload.html")
+<br>
+#end
+#set($topuploads = $mediaarchive.getSearcher("userupload").query().exact("librarycollection", $librarycolid).sort("uploaddateDown").search() )
+$topuploads.setHitsPerPage(20)
+
+#foreach( $upload in $topuploads.getPageOfHits())
+	<div class="card oi-feedcard">
+		<div class="card-header">$upload.longdescription</div>
+		<div class="card-block oi-feedgallery">
+			$context.putPageValue("upload",$upload)
+			$pages.include("$apphome/collective/chat/images.html",$context)
+		</div>
+		 <div class="card-footer">
+		 <div class="float-left">[[Uploads]]: $context.getDateTime( $upload.uploaddate ) [[by]] $userManager.getScreenName($upload.owner)</div>
+		 <div class="float-right">
+		     <a  class="emdialog btn btn-sm btn-primary"  data-width="900" data-hidefooter="true" data-librarycol="${librarycol.getId()}" data-uploadid="${upload.id}" 
+		     	 href="$home$apphome/project/feed/share.html?collectionid=${librarycol.getId()}" >[[Share]]</a>
+			 <a href="$apphome/project/media/category/${librarycolid}/${upload.uploadcategory}.html" class="btn btn-sm btn-primary">[[View]]</a>
+			 </div>
+		</div>
+	</div>
+#end
+</div>
