@@ -1,39 +1,46 @@
 <div class="collectionshomecontent">
 
 
-##search
-#set( $searcher = $mediaarchive.getSearcher("librarycollection") )
-$context.putPageValue("searcher",$searcher)
-#set ($details = $searcher.getDetailsForView("librarycollection/librarysearchcollection", $userprofile))
-<form  id="colsearchform" class="autosubmit"  data-targetdiv="collectionresults" action="$home$apphome/components/opencollections/searchcollectionresultshomepage.html">
-	
-		<input type="hidden" name="searchtype" value="librarycollection" />
-		<input type="hidden" name="sortby" value="name" />
-		<table>
-		<tr>
-		<td width="100%">
-		<div  class="row inlinesearch" >
-		$context.putPageValue("autocomplete","off")
-			#foreach( $detail in $details)
-			<div class="col">
-					$context.putPageValue("detail", $detail)
-					$pages.include("/${applicationid}/components/advancedsearch/detaileditinline.html", $context)
-			</div>
-			#if( $counter == 4)
-				</div>
-				<div  class="row" >
-			#end	
-			#end
+##search Libraries
+#set( $searcher = $mediaarchive.getSearcher("library") )
+#set( $hits = $searcher.query().all().enduser(true).sort("name").search($context) )
+
+#foreach($library in $hits.getPageOfHits())
+	<div class="collectionshome">
+		<div class="collectionshome-header">
+			<h3 class="float-left">$library</h3>
+			#set( $searcher = $mediaarchive.getSearcher("librarycollection") )
+			$context.putPageValue("searcher",$searcher)
+			##set ($details = $searcher.getDetailsForView("librarycollection/librarysearchcollectionhome", $userprofile))
+			<form  id="lib_${library.id}_colsearchform" class="autosubmit form-inline float-right"  data-targetdiv="lib_${library.id}_collectionresults" action="$home$apphome/components/opencollections/searchcollectionresultshomepage.html">
+				
+					<input type="hidden" name="searchtype" value="librarycollection" />
+					<input type="hidden" name="sortby" value="name" />
+						$context.putPageValue("autocomplete","off")
+						<input name="operation" value="contains" type="hidden">
+						<input name="field" value="$searcher.getCatalogId():$view:name" type="hidden">
+						<input type="text" 
+								class="form-control detail_name textinput autosubmited " 
+								autocomplete="off" 
+								value="" 
+								id="name.value" 
+								name="name.value"
+								placeholder="[[Search Collections]]...">
+						
+			</form>
+			<div class="clearfix"></div>
+		</div>
+		
+		
+		
+			
+		<div id="lib_${library.id}_collectionresults" class="collectionshomeresults">
+		$pages.include("$home$apphome/components/opencollections/searchcollectionresultshomepage.html") ##initial search
 		</div>	
-		</td>
-		</tr>
-		</table>
-	</form>
-	
-<div id="collectionresults">
-$pages.include("$home$apphome/components/opencollections/searchcollectionresultshomepage.html") ##initial search
-</div>	
-<div class="clearfix"></div>
+		<div class="clearfix"></div>
+	</div>
+#end
+
 
 #if($canaddnewcollection)
 <hr>
