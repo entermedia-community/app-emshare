@@ -7,33 +7,30 @@
 		<li class="nav-item #if($module == 'asset') navselected #end"><a class="nav-link navbutton" href="$apphome/views/modules/asset/index.html"> [[Assets]] </a></li>
 	   </ul>
 		#if( $canviewopencollections)
-		
-		<div id="collectionpicker" class="nav-form">
 			$pages.include("$apphome/components/libraries/pickcollection.html")
-		</div>
-		
 		#end
 		
 		
 		#if ($canquicksearch)
-		
-		<form id="search_form" action="$home$apphome/views/search/search.html" class="form-inline em-widget-content">
-			<input type="hidden" name="field" value="description" />
-			<input type="hidden" name="operation" value="freeform" />
-			<input type="hidden" name="quicksearched" value="true" />
-		
-		
-			#set( $input = $hits.getInput("description") )
-			#if (!$input)
-				#set( $input = "")
-			#end
-			<div class="has-success has-feedback">
-				<input type="text"  id="assetsearchinput" data-quicksearched='$!context.getRequestParameter("quicksearched")' placeholder="[[Asset Search...]]"  class="suggestsearchinput form-control " name="description.value" value="$input" />
-				<span class="glyphicon glyphicon-search form-control-feedback submitform" style="pointer-events: initial;"></span>
-			</div>
-		</form>
-		
-		
+		<div class="nav-form nav-quicksearch">
+			<form id="search_form" action="$home$apphome/views/search/search.html" class="form-inline em-widget-content">
+				<input type="hidden" name="field" value="description" />
+				<input type="hidden" name="operation" value="freeform" />
+				<input type="hidden" name="quicksearched" value="true" />
+				#set( $input = $hits.getInput("description") )
+				#if (!$input)
+					#set( $input = "")
+				#end
+				<div class="input-group">
+					<input class="suggestsearchinput form-control border-right-0 border" type="text"  id="assetsearchinput" data-quicksearched='$!context.getRequestParameter("quicksearched")' placeholder="[[Asset Search...]]"   name="description.value" value="$input" />
+					##<span class="fas fa-search form-control-feedback submitform" ></span>
+					
+		                  <div class="input-group-addon submitform" style="pointer-events: initial;"><i class="fa fa-search"></i></div>
+		            
+				</div>
+				
+			</form>
+		</div>
 		#end
 		
 
