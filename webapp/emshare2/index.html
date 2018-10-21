@@ -5,14 +5,10 @@
 #set( $searcher = $mediaarchive.getSearcher("library") )
 #set( $hits = $searcher.query().all().enduser(true).sort("name").search($context) )
 
-#foreach($library in $hits.getPageOfHits())
-	<div class="collectionshome">
-		<div class="collectionshome-header">
-			<h3 class="float-left">$library</h3>
 			#set( $searcher = $mediaarchive.getSearcher("librarycollection") )
 			$context.putPageValue("searcher",$searcher)
 			##set ($details = $searcher.getDetailsForView("librarycollection/librarysearchcollectionhome", $userprofile))
-			<form  id="lib_${library.id}_colsearchform" class="autosubmit form-inline float-right"  data-targetdiv="lib_${library.id}_collectionresults" action="$home$apphome/components/opencollections/searchcollectionresultshomepage.html">
+			<form  id="lib_${library.id}_colsearchform" class="autosubmit form-inline float-right"  data-targetdiv="collectionresults" action="$home$apphome/components/opencollections/searchcollectionresultshomepage.html">
 				
 					<input type="hidden" name="searchtype" value="librarycollection" />
 					<input type="hidden" name="sortby" value="name" />
@@ -28,6 +24,12 @@
 								placeholder="[[Search Collections]]...">
 						
 			</form>
+<div id="collectionresults">
+
+#foreach($library in $hits.getPageOfHits())
+	<div class="collectionshome">
+		<div class="collectionshome-header">
+			<h3 class="float-left">$library</h3>
 			<div class="clearfix"></div>
 		</div>
 		
@@ -46,4 +48,5 @@
 <hr>
 <a href="$home$apphome/components/libraries/pickcollectionaddnew.html?searchtype=librarycollection&targetdiv=collectionpicker&library.value=$!library.getId()" class="emdialog btn btn-sm btn-primary navbutton">[[Add New Collection]]</a>
 #end
+</div>
 </div>
