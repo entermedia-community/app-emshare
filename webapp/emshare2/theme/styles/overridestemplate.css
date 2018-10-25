@@ -107,37 +107,68 @@ opacity: ${theme.headerfontopacity};
 
 
 .emnav {
-#if( ${theme.navbackgroundpath})
-	background: url('$theme.navbackgroundpath');
-#else
+	#if( ${theme.navbackgroundpath})
+		background: url('$theme.navbackgroundpath');
+	#else
+		
+		#set($color1 = $theme.navcolor)
+		#set($color2 = $theme.navcolorgradient)
+		
+		#if ($color1 && $color2=="")
+			background: $color1; /* Old browsers */ 
+		#end
 	
-	#set($color1 = $theme.navcolor)
-	#set($color2 = $theme.navcolorgradient)
+		#if($color1 && $color2)
+			background: -moz-linear-gradient(top, $color1 0%, $color2 100%); /* FF3.6+ */
+			background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,$color1), color-stop(100%,$color2)); /* Chrome,Safari4+ */
+			background: -webkit-linear-gradient(top, $color1 0%,$color2 100%); /* Chrome10+,Safari5.1+ */
+			background: -o-linear-gradient(top, $color1 0%,$color2 100%); /* Opera 11.10+ */
+			background: -ms-linear-gradient(top, $color1 0%,$color2 100%); /* IE10+ */
+			background: linear-gradient(top, $color1 0%,$color2 100%); /* W3C */
+			filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='$color1', endColorstr='$color2',GradientType=0 ); /* IE6-9 */
+		#end
 	
-	#if ($color1 && $color2=="")
-		background: $color1; /* Old browsers */ 
-	#end
-
-	#if($color1 && $color2)
-		background: -moz-linear-gradient(top, $color1 0%, $color2 100%); /* FF3.6+ */
-		background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,$color1), color-stop(100%,$color2)); /* Chrome,Safari4+ */
-		background: -webkit-linear-gradient(top, $color1 0%,$color2 100%); /* Chrome10+,Safari5.1+ */
-		background: -o-linear-gradient(top, $color1 0%,$color2 100%); /* Opera 11.10+ */
-		background: -ms-linear-gradient(top, $color1 0%,$color2 100%); /* IE10+ */
-		background: linear-gradient(top, $color1 0%,$color2 100%); /* W3C */
-		filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='$color1', endColorstr='$color2',GradientType=0 ); /* IE6-9 */
-	#end
-
-	#set($color1 = "")
-	#set($color2 = "")
+		#set($color1 = "")
+		#set($color2 = "")
 
 #end	
+}
+@media (max-width: 768px) {
+	.navbar-quicksearch {
+		#if( ${theme.navbackgroundpath})
+			background: url('$theme.navbackgroundpath');
+		#else
+			
+			#set($color1 = $theme.navcolor)
+			#set($color2 = $theme.navcolorgradient)
+			
+			#if ($color1 && $color2=="")
+				background: $color1; /* Old browsers */ 
+			#end
+		
+			#if($color1 && $color2)
+				background: -moz-linear-gradient(top, $color1 0%, $color2 100%); /* FF3.6+ */
+				background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,$color1), color-stop(100%,$color2)); /* Chrome,Safari4+ */
+				background: -webkit-linear-gradient(top, $color1 0%,$color2 100%); /* Chrome10+,Safari5.1+ */
+				background: -o-linear-gradient(top, $color1 0%,$color2 100%); /* Opera 11.10+ */
+				background: -ms-linear-gradient(top, $color1 0%,$color2 100%); /* IE10+ */
+				background: linear-gradient(top, $color1 0%,$color2 100%); /* W3C */
+				filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='$color1', endColorstr='$color2',GradientType=0 ); /* IE6-9 */
+			#end
+		
+			#set($color1 = "")
+			#set($color2 = "")
+	  #end										
+	}
+	
 }
 
 
 
 
-.emnav a.nav-link {
+.emnav a.nav-link,
+#header a.nav-link,
+#header .navbar-toggler  {
 	#set($color1 = $theme.navbuttoncolor)
 	#set($color2 = $theme.navbuttoncolorgradient)
 	
@@ -181,10 +212,12 @@ opacity: ${theme.headerfontopacity};
 }
 
 .emnav a.nav-link:hover,
+#header a.nav-link:hover,
 .emnav li.navselected a.nav-link, 
 .emnav li a:active, 
 #module-dropdown.active, 
-#module-dropdown.active:hover {
+#module-dropdown.active:hover ,
+#header .navbar-toggler:hover {
 	
 	#if ( $theme.navhoverfont )
 	font-family: $theme.navhoverfont;
