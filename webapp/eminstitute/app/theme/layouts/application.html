@@ -37,10 +37,10 @@
     <link href='https://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
     <link href='https://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700' rel='stylesheet' type='text/css'>
 
-	$pages.include("$apphome/theme/layouts/includes.html")
+	$pages.include("/${applicationid}/theme/layouts/includes.html")
 	
 	#if($content.usemap == "true")
-		$pages.include("$apphome/components/map/includes.html")
+		$pages.include("/${applicationid}/components/map/includes.html")
 	#end
 
     <link rel="Shortcut Icon" type="image/x-icon" href="$apphome/theme/images/favicon.ico" />
@@ -49,7 +49,7 @@
 
 <body id="page-top">
 <div id="application" data-home="$home" data-apphome="$apphome" data-themeprefix="${themeprefix}" data-browserlanguage="$!{browserlanguage}" data-mediadbappid="$!mediaarchive.getMediaDbId()">
-
+$apphome
   <!-- Navigation -->
   	<div class="oiheader">
   	<div class="oicontainer">
@@ -99,6 +99,17 @@
 	</div>
 	
 </div>
+<Footer>##Show pencils
+#if( $canopeneditdirectedit)
+ <a class="oe-enableedit" title="[[Edit]]"  
+	 	href="#"><i class="fas fa-edit">Edit Page</i></a>
+	 #if($user.get("oe_edit_mode") == "postedit")
+	 <style>
+	 	.oe-editable { border: 1px dashed black}
+	 </style>	
+	 #end
+#end	
+</Footer>
 </body>
 
 </html>
