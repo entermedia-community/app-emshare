@@ -101,21 +101,18 @@ position: relative;
 #end
 
 ##background-color: #565656;
-.emnav,
-.table #tableheader,
-.emdata .tableheader,
-#emcontainer #emselectable #tableheader,
-.settings-table .tableheader th,
-.settings-table #tableheader th,
-#table-container li.header {
+.emnav {
 	#if( ${theme.navbackgroundpath})
 		background: url('$theme.navbackgroundpath');
 	#else
 		#set($color1 = $theme.navcolor)
 		#set($color2 = $theme.navcolorgradient)
-		#if($color1 && $color2)
-			border-bottom: 1px solid $color1;
+		#if($color1)
+			background:none;
 			background-color: $color1;
+			border-bottom: 1px solid $color1;
+		#end
+		#if($color1 && $color2)
 			background: -moz-linear-gradient(top, $color1 0%, $color2 100%); /* FF3.6+ */
 			background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,$color1), color-stop(100%,$color2)); /* Chrome,Safari4+ */
 			background: -webkit-linear-gradient(top, $color1 0%,$color2 100%); /* Chrome10+,Safari5.1+ */
@@ -128,7 +125,6 @@ position: relative;
 		#set($color1 = "")
 		#set($color2 = "")
 		
-		color:#fff; /*Text Color*/
 	#end;
 }
 
@@ -186,8 +182,8 @@ position: relative;
 	#if( $theme.navfontsize )
 		font-size: ${theme.navfontsize}px;
 	#end
-	#if( $theme.navfontcolor )
-		color: ${theme.navfontcolor};
+	#if( $theme.navbuttontext )
+		color: ${theme.navbuttontext};
 	#end
 	#if($theme.navfontopacity)
 		opacity: ${theme.navfontopacity};
@@ -199,9 +195,10 @@ position: relative;
 	#end
 	#if( $theme.navbuttonbordercolor )
 		border:1px solid $theme.navbuttonbordercolor;
+		border-bottom:0 none;
 	#end
 	#if($theme.disableshadows == "false")
-		box-shadow: -inset 0 10px 10px -10px rgba(0,0,0,0.5);
+		box-shadow: inset 0 10px 10px -10px rgba(0,0,0,0.5);
 	#end
 	
 	#set($color1 = "")
@@ -212,13 +209,14 @@ position: relative;
 ##background-color: #C4C4C4;
 /*EMNav Tabs Hover*/
 .emnav .navtabs li a.navtabitem:hover,
-#sub-nav a:hover,
-#sub-nav li:hover a {
+.emnav .navtabs li.navactive a.navtabitem,
+#side-nav-inner ul li.current a {
 	#set($color1 = $theme.navbuttonhovercolor)
 	#set($color2 = $theme.navbuttonhovercolorgradient)
 	
-	#if ($color1 && $color2=="")
-		background: $color1; /* Old browsers */ 
+	#if ($color1)
+		background:none;
+		background-color: $color1; /* Old browsers */ 
 	#end
 	#if($color1 && $color2)
 		background: -moz-linear-gradient(top, $color1 0%, $color2 100%); /* FF3.6+ */
@@ -236,10 +234,10 @@ position: relative;
 		font-family: $theme.navhoverfont;
 	#end
 	#if( $theme.navhoverfontsize )
-	f	ont-size: ${theme.navhoverfontsize}px;
+		font-size: ${theme.navhoverfontsize}px;
 	#end
-	#if( $theme.navhoverfontcolor )
-		color: ${theme.navhoverfontcolor};
+	#if( $theme.navbuttontexthover )
+		color: ${theme.navbuttontexthover};
 	#end
 	#if($theme.navhoverfontopacity)
 		opacity: ${theme.navhoverfontopacity};
@@ -248,6 +246,15 @@ position: relative;
 	#set($color1 = "")
 	#set($color2 = "")
 }
+#if($theme.navfontcolor)
+.emnav .navtabsright li a {
+	color:$theme.navfontcolor;
+}
+.emnav .navtabsright a:hover {
+	color:$theme.navfontcolor;
+}
+
+#end
 
 #if( $theme.navbuttonbordercolor )
 	.emnav .librarycollectionpicker,
@@ -255,14 +262,24 @@ position: relative;
 		border-left: 1px solid $theme.navbuttonbordercolor;
 	}
 #end
-
-#header .navlinks,
-#header .dropdown-menu {
-	#if ($theme.navlinksbackgroundcolor)
+#if ($theme.navlinksbackgroundcolor)
+	#header .navlinks,
+	#header .dropdown-menu {
 		background-color: $theme.navlinksbackgroundcolor;
-	#end
-    color: #fff;   /*FALTA NAVLINKS FONT COLOR?*/
-}
+	}
+#end
+#if ($theme.navlinkfontcolor)
+	#header .navlinks li>a,
+	#header .navlinks .dropdown-item {
+    	color:$theme.navlinkfontcolor;
+    	background-color: $theme.navlinksbackgroundcolor;
+	}
+#end
+#if ($theme.navlinkfontcolorhover)
+	#header .navlinks li a:hover {
+    	color:$theme.navlinkfontcolorhover;
+	}
+#end
 
 h1 {
 #if ( $theme.h1font )
@@ -346,23 +363,23 @@ p {
 	opacity: $theme.backgroundoppacity;
 #end
 
-#if($theme.widgetbordercolor)
-	border: 1px solid $theme.widgetbordercolor;
-#end
 }
 
 .col-sidebar {
-	#if ($theme.leftcolumnbackgroundcolor)
+	#set($color1 = $theme.leftcolumnbackgroundcolor)
+	#set($color2 = $theme.leftcolumnbackgroundgradient)
+	#if ($color1)
 	background:none;
-    background-color: $theme.leftcolumnbackgroundcolor; /* Old browsers */
+    background-color: $color1; /* Old browsers */
     #end
-    
-	##background: -moz-linear-gradient(left, #d5d5d5 79%, #A2A2A2 100%); /* FF3.6-15 */
-	##background: -webkit-linear-gradient(left, #d5d5d5 79%,#A2A2A2 100%); /* Chrome10-25,Safari5.1-6 */
-	##background: linear-gradient(to right, #d5d5d5 79%,#A2A2A2 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
-	##filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#d5d5d5', endColorstr='#A2A2A2',GradientType=1 ); /* IE6-9 */
-	
-
+    #if ($color1 && $color2)
+		background: -moz-linear-gradient(left, $color1 79%, $color2 100%); /* FF3.6-15 */
+		background: -webkit-linear-gradient(left, $color1 79%,$color2 100%); /* Chrome10-25,Safari5.1-6 */
+		background: linear-gradient(to right, $color1 79%,$color2 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+		filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='$color1', endColorstr='$color2',GradientType=1 ); /* IE6-9 */
+	#end
+	#set($color1 = "")
+	#set($color2 = "")
 }
 .ui-widget-header {
 	#if($theme.widgetbordercolor)
@@ -455,117 +472,166 @@ color: $theme.navfontcolor;
 
 }
 
-.emresultstable .tableheader th,
-.emresultstable #tableheader th, 
-.settings-table #tableheader th {
-
-#set($color1 = $theme.tableheadercolor)
-#set($color2 = $theme.tableheadercolorgradient)
-#if ($color1 && $color2=="")
-background: $color1; /* Old browsers */ 
-#end
-
-#if($color1 && $color2)
-
-background: -moz-linear-gradient(top,  $color1 0%, $color2 100%); /* FF3.6+ */
-background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,$color1), color-stop(100%,$color2)); /* Chrome,Safari4+ */
-background: -webkit-linear-gradient(top,  $color1 0%,$color2 100%); /* Chrome10+,Safari5.1+ */
-background: -o-linear-gradient(top,  $color1 0%,$color2 100%); /* Opera 11.10+ */
-background: -ms-linear-gradient(top,  $color1 0%,$color2 100%); /* IE10+ */
-background: linear-gradient(to bottom,  $color1 0%,$color2 100%); /* W3C */
-filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='$color1', endColorstr='$color2',GradientType=0 ); /* IE6-9 */
-
-#end
-
-#set($color1 = "")
-#set($color2 = "")
+.table #tableheader,
+.emdata .tableheader,
+#emcontainer #emselectable #tableheader,
+.settings-table .tableheader th,
+.settings-table #tableheader th,
+#table-container li.header {
+	#set($color1 = $theme.tableheadercolor)
+	#set($color2 = $theme.tableheadercolorgradient)
+	#if ($color1)
+		background:none;
+		background-color: $color1; /* Old browsers */ 
+	#end
+	#if($color1 && $color2)
+		background: -moz-linear-gradient(top,  $color1 0%, $color2 100%); /* FF3.6+ */
+		background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,$color1), color-stop(100%,$color2)); /* Chrome,Safari4+ */
+		background: -webkit-linear-gradient(top,  $color1 0%,$color2 100%); /* Chrome10+,Safari5.1+ */
+		background: -o-linear-gradient(top,  $color1 0%,$color2 100%); /* Opera 11.10+ */
+		background: -ms-linear-gradient(top,  $color1 0%,$color2 100%); /* IE10+ */
+		background: linear-gradient(to bottom,  $color1 0%,$color2 100%); /* W3C */
+		filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='$color1', endColorstr='$color2',GradientType=0 ); /* IE6-9 */
+	#end
+	
+	#set($color1 = "")
+	#set($color2 = "")
 
 }
 
 /* Table Colors */
-#if($theme.tablemenufontcolor)
-#eml-tab-subnav ul li a, #sub-nav li a {
-	color: $theme.tablemenufontcolor;
+#if($theme.tableheaderfont)
+.table #tableheader,
+.emdata .tableheader,
+#emcontainer #emselectable #tableheader,
+.settings-table .tableheader th,
+.settings-table #tableheader th,
+#table-container li.header,
+#tableheader th,
+#tableheader th a,
+.tableheader th,
+.tableheader th a
+ {
+	color: $theme.tableheaderfont;
 }
-#eml-tab-subnav span.text, #sub-nav span.text {
-	color: $theme.tablemenufontcolor;
-}
+#end
+#if($theme.tableheaderfonthover)
+	#tableheader th a:hover,
+	.tableheader th a:hover {
+		color: $theme.tableheaderfonthover;
+	}
 #end
 
-#eml-tab-subnav ul, #sub-nav {
-
-#if($theme.tablebordercolor)
-border-bottom: $theme.tablebordercolor;
-#end
-
-#set($color1 = $theme.tablemenubackgroundcolor)
-#set($color2 = $theme.tablemenubackgroundcolorgradient)
-
-#if ($color1 && $color2=="")
-	background: $color1; /* Old browsers */ 
-#end
-
-#if($color1 && $color2)
-
-background: -moz-linear-gradient(top, $color1 0%, $color2 100%); /* FF3.6+ */
-background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,$color1), color-stop(100%,$color2)); /* Chrome,Safari4+ */
-background: -webkit-linear-gradient(top, $color1 0%,$color2 100%); /* Chrome10+,Safari5.1+ */
-background: -o-linear-gradient(top, $color1 0%,$color2 100%); /* Opera 11.10+ */
-background: -ms-linear-gradient(top, $color1 0%,$color2 100%); /* IE10+ */
-background: linear-gradient(top, $color1 0%,$color2 100%); /* W3C */
-filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='$color1', endColorstr='$color2',GradientType=0 ); /* IE6-9 */
-
-#end
-
-#set($color1 = "")
-#set($color2 = "")
-}
-
-
-
-ul#sub-nav li:hover ul li a {
-
-#set($color1 = $theme.tablemenubackgroundcolor)
-#set($color2 = $theme.tablemenubackgroundcolorgradient)
-
-#if ($color1 && $color2=="")
-	background: $color1; /* Old browsers */ 
-#end
-
-#if($color1 && $color2)
-
-background: -moz-linear-gradient(top, $color1 0%, $color2 100%); /* FF3.6+ */
-background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,$color1), color-stop(100%,$color2)); /* Chrome,Safari4+ */
-background: -webkit-linear-gradient(top, $color1 0%,$color2 100%); /* Chrome10+,Safari5.1+ */
-background: -o-linear-gradient(top, $color1 0%,$color2 100%); /* Opera 11.10+ */
-background: -ms-linear-gradient(top, $color1 0%,$color2 100%); /* IE10+ */
-background: linear-gradient(top, $color1 0%,$color2 100%); /* W3C */
-filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='$color1', endColorstr='$color2',GradientType=0 ); /* IE6-9 */
-
-#end
-
-#set($color1 = "")
-#set($color2 = "")
-
+#eml-tab-subnav ul, 
+#sub-nav {
+	#if($theme.tablebordercolor)
+		border-bottom: $theme.tablebordercolor;
+	#end
+	
+	#set($color1 = $theme.tablemenubackgroundcolor)
+	#set($color2 = $theme.tablemenubackgroundcolorgradient)
+	
+	#if ($color1)
+		background:none;
+		background-color: $color1; /* Old browsers */ 
+	#end
+	#if($color1 && $color2)
+		background: -moz-linear-gradient(top, $color1 0%, $color2 100%); /* FF3.6+ */
+		background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,$color1), color-stop(100%,$color2)); /* Chrome,Safari4+ */
+		background: -webkit-linear-gradient(top, $color1 0%,$color2 100%); /* Chrome10+,Safari5.1+ */
+		background: -o-linear-gradient(top, $color1 0%,$color2 100%); /* Opera 11.10+ */
+		background: -ms-linear-gradient(top, $color1 0%,$color2 100%); /* IE10+ */
+		background: linear-gradient(top, $color1 0%,$color2 100%); /* W3C */
+		filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='$color1', endColorstr='$color2',GradientType=0 ); /* IE6-9 */
+	#end
+	
+	#set($color1 = "")
+	#set($color2 = "")
 }
 
-#eml-tab-subnav ul li.current a, #sub-nav li.current a:hover {
 #if($theme.settingsmenuselectioncolor)
-background: $theme.settingsmenuselectioncolor;
+/*TR Hovers*/
+tr.emborderhover td,
+.opencollections ul li:hover,
+.table-hover tbody tr:hover,
+#side-nav-inner ul li a:hover,
+#workarea ul li:hover,
+.search-list li.current a.search-href, 
+.sidebar-list li.current a,
+.search-list li:hover a.search-href, 
+.sidebar-list a:hover,
+.emtree .checkbox .field, .emtree .treerow:hover, .emtree .treerow.selected, .emtree .treerow.selected:hover {
+	background: $theme.settingsmenuselectioncolor;
+}
+#end
+
+
+
+.emsubnav,
+.emsubnav .nav-link,
+.emtabs li.emtabselected a,
+.emtabs li a:hover,
+.emtabs li a, #eml-tab-subnav ul li a {
+	#set($color1 = $theme.tablemenubackgroundcolor)
+	#set($color2 = $theme.tablemenubackgroundcolorgradient)
+	
+	#if ($color1)
+		background:none;
+		background-color: $color1; /* Old browsers */ 
+	#end
+	
+	#if($color1 && $color2)
+	
+	background: -moz-linear-gradient(top, $color1 0%, $color2 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,$color1), color-stop(100%,$color2)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top, $color1 0%,$color2 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top, $color1 0%,$color2 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top, $color1 0%,$color2 100%); /* IE10+ */
+	background: linear-gradient(top, $color1 0%,$color2 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='$color1', endColorstr='$color2',GradientType=0 ); /* IE6-9 */
+	
+	#end
+	#if($theme.tablemenufontcolor)
+		color:$theme.tablemenufontcolor;
+	#end
+	
+	#set($color1 = "")
+	#set($color2 = "")
+
+}
+
+.emsubnav .nav-link:hover,
+#sub-nav a:hover,
+.emsubnav .nav-item:hover .nav-link,
+.emsubnav .nav-item:hover .nav-link:hover, 
+.emsubnav .dropdown-menu,
+#eml-tab-subnav ul li a:hover {
+	#if($theme.tablemenuhovercolor)
+		background-color: $theme.tablemenuhovercolor!important;
+	#end
+	#if($theme.tablemenufontcolorhover)
+		color:$theme.tablemenufontcolorhover;
+	#end
+}
+.emtabs li a {
+	#if($theme.tablemenuhovercolor)
+		background-color: $theme.tablemenuhovercolor;
+	#end
+}
+
+#sub-nav li:hover ul li a:hover {
+#if($theme.tablemenuhovercolor)
+	background-color: $theme.tablemenuhovercolor;
 #end
 }
 
-#eml-tab-subnav ul li a:hover, #sub-nav li a:hover, #sub-nav li:hover a, #sub-nav li.edit-columns:hover #column-editor {
-#if($theme.tablemenuhovercolor)
-background: $theme.tablemenuhovercolor;
-#end
+#if($theme.tablemenufontcolor)
+#sub-nav a { 
+	color:$theme.tablemenufontcolor;
 }
+#end
 
-ul#sub-nav li:hover ul li a:hover {
-#if($theme.tablemenuhovercolor)
-background: $theme.tablemenuhovercolor;
-#end
-}
+
 
 
 #right-col {
