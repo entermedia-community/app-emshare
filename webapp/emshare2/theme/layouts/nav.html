@@ -1,12 +1,16 @@
+#set( $moduleid = $context.findValue("module") )
 #if($content.isPropertyTrue("shownav"))
-<div class="navbar navbar-expand" id="nav">
-<div class="collapse navbar-collapse" id="emshareNavbar">
-		<ul class="navbar-nav" >
-		#set( $module = $content.module )
-		<li class="nav-item #if($module == 'librarycollection') navselected #end"><a class="nav-link navbutton"  href="$apphome/index.html"> [[Collections]] </a></li>
-		<li class="nav-item #if($module == 'asset') navselected #end"><a class="nav-link navbutton" href="$apphome/views/modules/asset/index.html"> [[Assets]] </a></li>
-	   </ul>
-	   <div class="navbar-quicksearch">
+<ul class=" navtabs">
+	<li class="#if($moduleid == 'librarycollection') navactive #end">
+	<a class="navtabitem" href="$apphome/index.html"> [[Collections]] </a>
+	</li>
+	<li class="#if($moduleid == 'asset') navactive #end">
+	<a  class="navtabitem" href="$apphome/views/modules/asset/index.html"> [[Assets]]</a>
+	</li>
+</ul>
+#end
+
+<div class="navbar-quicksearch" id="nav-quicksearch">
 		#if( $canviewopencollections)
 			$pages.include("$apphome/components/libraries/pickcollection.html")
 		#end
@@ -34,26 +38,26 @@
 		</div>
 		#end
 		</div>
-	   <ul class="navbar-nav ml-auto">
-			#if($canviewbasket)
-			<li class="nav-item #if($section=="basket") navselected  #end">
+
+#if( $canviewupload && $mediaarchive.isCatalogSettingTrue("show_add_media_on_nav"))
+	#set($showaddmedia = true)
+#end
+#if($canviewbasket)
+	#set($showbasket = true)
+#end
+#if ($showaddmedia || $showbasket)
+	<ul class=" navtabsright">
+		#if($showbasket)
+			<li class="nav-item #if($section=="basket") navactive  #end">
 				$pages.include("$apphome/components/basket/menuitem.html")
 			</li>
-			#end
-	
-	
-			#if( $canviewupload)
-			#if($mediaarchive.isCatalogSettingTrue("show_add_media_on_nav") )
-			<li class="nav-item"><a class="nav-link navbutton" href="$home$apphome/views/upload/create/createnewstart.html" > [[Add Media]] </a></li>
-			#end
 		#end
-		</ul>
-		#if ($canshowcollectionpicker || $canshowlibrarypicker || $canquicksearch)
-		<a class="quicksearch-toggler nav-link navbutton" data-toggle="collapse" data-target="navbarQuickSearch" aria-controls="navbarQuickSearch" aria-expanded="false" aria-label="Toggle Quick Search">
-		    <span class="fas fa-search"></span>
-		</a>
+		#if ($showaddmedia)
+		<li class="navtabright">
+			<a class="navrighttabitem" href="$home$apphome/views/upload/create/createnewstart.html" ><i class="fas fa-plus"></i><span class="navtabsright-text">[[Add Media]]</span></a>
+		</li>
 		#end
-</div>
 		
-</div>
+</ul>
 #end
+<div class="clearfix"></div>

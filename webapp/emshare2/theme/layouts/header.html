@@ -11,6 +11,10 @@
 #end
 
 #set($module = $searcherManager.getData($catalogid, "module", $lastselected ) )
+#if( !$module ) 
+	##in case they deleted an old selected module 
+    #set($module = $searcherManager.getData($catalogid, "module", "asset" ) )
+#end
 
 #set($logourl = "$home$themeprefix/images/logo.png")
 
@@ -64,11 +68,6 @@
 	      #set($lastselected = "asset" )
 	#end   
 	#if( $userprofile.getModules().size() > 1 )
-	    #set($module = $searcherManager.getData($catalogid, "module", $lastselected ) )
-		#if( !$module ) 
-			##in case they deleted an old selected module 
-		    #set($module = $searcherManager.getData($catalogid, "module", "asset" ) )
-		#end
 	#set( $urlbase = "$home$apphome/views/modules" )
 	<li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">$module.getName($context.locale)</a> 
 		<div id="module-bar-select" class="dropdown-menu">
