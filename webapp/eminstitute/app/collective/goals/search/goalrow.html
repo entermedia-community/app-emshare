@@ -15,18 +15,19 @@
 	</div>
 <div class="clearfix"></div>
     	<div class="goal-body">
-			<div class="goal-footer"> 
+			<div class="goal-footerX"> 
 			#set($points = 0)
 			#foreach($task in $tasks)
 				#set( $tree =  $mediaarchive.getCategory($task.projectdepartment))
 				#set( $c = $tree.getInt("goalpoints") )
 				#if( $c == 0)#set( $c = 10)#end
 				#set($points = $points + $c)
-				##<a href="$apphome/collective/goals/actions/index.html?collectionid=$librarycol.getId()&nodeID=$task.projectdepartment" 
-				<a href="$goallink"
+    			#set( $edittask = "$apphome/collective/goals/task/taskedit.html?id=${task.id}&collectionid=$librarycol.getId()")
+				<a href="$edittask"
 					data-focuson="$task.id"
 					data-width="900"
-					class="btn btn-xs taskcomplete$!{task.taskstatus} emdialog" title="$tree.getCategoryPath()" >
+					id="task$task.getId()"
+					class="btn btn-xs taskcomplete$!{task.taskstatus} ajax" data-targetdiv="task$task.getId()" data-oemaxlevel="1" title="$tree.getCategoryPath()" >
 					#if( $task.completedby )
 						#set( $completedby = $mediaarchive.getUser($task.completedby) )
 						$!completedby.getAnonNickName() :
