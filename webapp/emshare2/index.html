@@ -8,22 +8,30 @@
 			#set( $searcher = $mediaarchive.getSearcher("librarycollection") )
 			$context.putPageValue("searcher",$searcher)
 			##set ($details = $searcher.getDetailsForView("librarycollection/librarysearchcollectionhome", $userprofile))
-			<form  id="lib_${library.id}_colsearchform" class="autosubmit form-inline float-right collectionshomeform"  data-targetdiv="collectionresults" action="$home$apphome/components/opencollections/searchcollectionresultshomepage.html">
+			<div class="collectionshomeform-container">
+			<form  id="lib_${library.id}_colsearchform" class="autosubmit form-inline collectionshomeform"  data-targetdiv="collectionresults" action="$home$apphome/components/opencollections/searchcollectionresultshomepage.html">
 				
 					<input type="hidden" name="searchtype" value="librarycollection" />
 					<input type="hidden" name="sortby" value="name" />
 						$context.putPageValue("autocomplete","off")
 						<input name="operation" value="contains" type="hidden">
 						<input name="field" value="$searcher.getCatalogId():$view:name" type="hidden">
-						<input type="text" 
-								class="form-control detail_name textinput autosubmited " 
-								autocomplete="off" 
-								value="" 
-								id="name.value" 
-								name="name.value"
-								placeholder="[[Search Collections]]...">
+						
+								
+						<div class="input-group">
+							<input class="autosubmited detail_name form-control border-right-0 border "
+									id="name.calue"
+									name="name.value" 
+									type="text" id="assetsearchinput" 
+									data-quicksearched="" 
+									placeholder="[[Search Collections]]..." 
+									value="" 
+									autocomplete="off">
+		                  	<div class="input-group-addon submitform" style="pointer-events: initial;"><i class="fa fa-search"></i></div>
+		           		</div>
 						
 			</form>
+			</div>
 <div id="collectionresults">
 	#foreach($library in $hits.getPageOfHits())
 		$context.putPageValue("library",$library)
