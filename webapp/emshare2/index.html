@@ -2,12 +2,15 @@
 
 
 ##search Libraries
-#set( $searcher = $mediaarchive.getSearcher("library") )
-#set( $hits = $searcher.query().all().enduser(true).sort("name").search($context) )
+##set( $searcher = $mediaarchive.getSearcher("library") )
+##set( $hits = $searcher.query().all().enduser(true).sort("name").search($context) )
+
+##Featured Collections
+#set( $searcher = $mediaarchive.getSearcher("librarycollection") )
 
 			#set( $searcher = $mediaarchive.getSearcher("librarycollection") )
 			$context.putPageValue("searcher",$searcher)
-			##set ($details = $searcher.getDetailsForView("librarycollection/librarysearchcollectionhome", $userprofile))
+			
 			<div class="collectionshomeform-container">
 			<form  id="lib_${library.id}_colsearchform" class="autosubmit form-inline collectionshomeform"  data-targetdiv="collectionresults" action="$home$apphome/components/opencollections/searchcollectionresultshomepage.html">
 				
@@ -33,10 +36,30 @@
 			</form>
 			</div>
 <div id="collectionresults">
-	#foreach($library in $hits.getPageOfHits())
-		$context.putPageValue("library",$library)
-		$pages.include("$home$apphome/components/opencollections/searchcollectionresultshomepage.html") ##initial search
-			
+	
+	
+	#set( $feturedhits = $mediaarchive.query("librarycollection").exact("featuredcollection", "true").enduser(true).sort("name").search($context) )
+	#if( !$feturedhits.isEmpty() )
+	<div class="collectionshome">
+		<div class="collectionshome-header">
+			<h3 class="text-center">[[Featured Collections]]</h3>
+		</div>
+		<div id="" class="collectionshomeresults">		
+			$context.putPageValue("hits",$feturedhits)
+			$pages.include("${apphome}/components/collections/cards.html", $context)
+		</div>
+	</div>
+	#end
+	#if( $usercollections )
+	<div class="collectionshome">
+		<div class="collectionshome-header">
+			<h3 class="text-center">[[Recent Collections]]</h3>
+		</div>
+		<div id="" class="collectionshomeresults">		
+			$context.putPageValue("hits",$usercollections)
+			$pages.include("${apphome}/components/collections/cards.html", $context)
+		</div>
+	</div>
 	#end
 </div>
 <div class="clearfix"></div>
