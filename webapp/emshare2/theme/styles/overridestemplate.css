@@ -156,7 +156,6 @@ position: relative;
 	
 }
 
-##background-color:#D5D5D5;
 /*EMNav Tabs*/
 .emnav .navtabs .navtabitem,
 #header .navbar-toggler  {
@@ -204,9 +203,23 @@ position: relative;
 }
 
 
-##background-color: #C4C4C4;
 /*EMNav Tabs Hover*/
-.emnav .navtabs li a.navtabitem:hover,
+.emnav .navtabs li.navactive a.navtabitem {
+	#if($theme.disableshadows == "false")
+		box-shadow: inset 0 10px 10px -10px rgba(255,255,255,0.5);
+	#end
+	#if( $theme.navbuttontexthover )
+		color: ${theme.navbuttontexthover};
+	#end
+}
+.emnav .navtabs li a:hover {
+	#if($theme.disableshadows == "false")
+		box-shadow: inset 0 10px 10px -10px rgba(255,255,255,0.5);
+	#end
+	#if( $theme.navbuttontexthover )
+		color: ${theme.navbuttontexthover};
+	#end
+}
 .emnav .navtabs li.navactive a.navtabitem,
 #side-nav-inner ul li.current a {
 	#set($color1 = $theme.navbuttonhovercolor)
@@ -356,9 +369,13 @@ p {
 #end
 }
 
-#if ($theme.leftcolumnbackgroundcolor) 
+#if ($theme.navbuttonhovercolorgradient) 
 	.collectionshomecontent {
-		background-color: $theme.leftcolumnbackgroundcolor;
+		background-color: $theme.navbuttonhovercolorgradient;
+	}
+#elseif ($theme.navbuttonhovercolor) 
+	.collectionshomecontent {
+		background-color: $theme.navbuttonhovercolor;
 	}
 #end
 
@@ -376,9 +393,9 @@ p {
     background-color: $color1; /* Old browsers */
     #end
     #if ($color1 && $color2)
-		background: -moz-linear-gradient(left, $color1 79%, $color2 100%); /* FF3.6-15 */
-		background: -webkit-linear-gradient(left, $color1 79%,$color2 100%); /* Chrome10-25,Safari5.1-6 */
-		background: linear-gradient(to right, $color1 79%,$color2 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+		background: -moz-linear-gradient(left, $color1 -10%, $color2 100%); /* FF3.6-15 */
+		background: -webkit-linear-gradient(left, $color1 -10%,$color2 100%); /* Chrome10-25,Safari5.1-6 */
+		background: linear-gradient(to right, $color1 -10%,$color2 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
 		filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='$color1', endColorstr='$color2',GradientType=1 ); /* IE6-9 */
 	#end
 	#set($color1 = "")
@@ -441,9 +458,9 @@ p {
 	box-shadow: 2px 2px 4px 0px rgba(0, 0, 0, .1);
 #end
 
-#if($theme.widgetbordercolor)
-	border-color: $theme.widgetbordercolor;
-#end
+##if($theme.widgetbordercolor)
+##border-color: $theme.widgetbordercolor;
+##end
 	
 }
 
@@ -612,6 +629,7 @@ tr.emborderhover td,
 .emsubnav .nav-item:hover .nav-link,
 .emsubnav .nav-item:hover .nav-link:hover, 
 .emsubnav .dropdown-menu,
+#sub-nav .dropdown-item,
 #eml-tab-subnav ul li a:hover {
 	#if($theme.tablemenuhovercolor)
 		background-color: $theme.tablemenuhovercolor!important;
