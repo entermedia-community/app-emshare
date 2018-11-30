@@ -1,0 +1,50 @@
+<div id="goalresultsdiv">
+
+#set( $categoryid = $context.getRequestParameter("categoryid"))
+#set( $category = $mediaarchive.getCategory($categoryid))
+
+
+##Exising ones 
+##No existing programs found.
+
+<div class="card mx-auto" style="margin:40px;max-width:800px;text-align:left;">
+  <div class="card-header">
+    [[Action Editor]]
+  </div>
+<div class="card-block" style="padding:20px;">
+
+#set( $searcher = $mediaarchive.getSearcher("category") )
+#set( $xmledithome  = "$apphome/components/xml")
+$context.putPageValue("searcher",$searcher)
+<form name="saveproject" class="ajaxform" data-targetdiv="actionstabpanel" data-oemaxlevel="2" id="saveproject" action="savecategory.html"
+	 method="post">
+
+<input type="hidden" name="save" value="true" />
+<input type="hidden" name="searchtype" value="category" />
+<input type="hidden" name="id" value="$!category.id" />
+
+<input type="hidden" name="field" value="owner" />
+<input type="hidden" name="owner.value" value="$user.getId()" />
+
+<input type="hidden" name="collectionid" value="$librarycol.getId()" />
+<input type="hidden" name="nodeID" value="$category.id" />
+<input type="hidden" name="reloadtree" value="true" />
+
+
+#if( !$category.getValue("goalpoints") )
+	$category.setValue("goalpoints","10")
+#end
+$context.putPageValue("searcher",$searcher)
+$context.putPageValue("view", "category/editpoints")
+$context.putPageValue("data", $category)
+ 
+$pages.include("/$applicationid/components/xml/detaileditor4.html", $context)
+
+  <button type="submit" class="btn btn-primary">[[Save]]</button>
+</form>
+
+</div>
+</div>
+		
+
+</div>

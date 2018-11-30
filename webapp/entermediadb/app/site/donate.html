@@ -1,0 +1,160 @@
+<h1>[[Donate to Project]]</h1>
+#if($mediaarchive.getCatalogSettingValue("productionmode") == "test")
+<p>Site is in test mode.  Credit card is 4242 4242 4242 4242 any expiry.  Add your keys to catalog settings and switch to production mode to take credit cards.</p>
+#end
+$mediaarchive.getCatalogSettingValue("productionmode")
+
+<div class="card">
+<div class="card-header">
+	<div class="row" style="border-bottom:1px solidc ">
+		<div class="col-sm-10"> 
+		[[All major Credit Cards Accepted]]
+		</div>
+	
+		<div class="col-sm-2">                            
+		<img class="img-fluid" src="http://i76.imgup.net/accepted_c22e0.png">
+		</div>
+	</div>
+</div>
+
+
+ <div class="card-block" style="padding:20px 21px;">                      
+       	<form action="$apphome/project/donatefinish.html" method="post" id="payment-form">
+             	
+             	<div class="form-group row">
+   				<label for="staticEmail" class="col-sm-2 col-form-label">[[Card Info]]:</label>
+   			 	<div class="col-sm-9">
+					<div id="card-element" style="width: 100%">
+					<!-- a Stripe Element will be inserted here. -->
+					</div>      
+			    </div>
+   			</div>
+   			
+   			
+   		
+   			
+   			
+   			
+   			<div class="form-group row">
+   				<label for="staticEmail" class="col-sm-2 col-form-label">Amount:</label>
+   			 	<div class="col-sm-9">
+					      <input type="text" class="form-control" name="totalprice.value">
+			    </div>
+   			</div>
+   			
+   				
+   			<input type="hidden" name="field" value="collectionid"/>
+   			<input type="hidden" name="collectionid.value" value="$librarycol.id"/>
+   			
+   			   			<input type="hidden" name="collectionid" value="$librarycol.id"/>
+   			
+   			
+   			<input type="hidden" name="field" value="totalprice"/>
+             	##<input type="submit" id="btnSubmit" class="submit" value="Submit Payment">
+             	
+            <div class="form-group row">
+   				<label for="staticEmail" class="col-sm-2 col-form-label">[[Donation Type]]:</label>
+   			 	<div class="col-sm-9">
+					        <select class="form-control" name="frequency">
+  <option></option>
+
+  <option value="">[[Once]]</option>
+  <option value="weekly">[[Weekly]]</option>
+  <option value="monthly">[[Monthly]]</option>
+  <option value="yearly">[[Yearly]]</option>
+</select>
+			    </div>
+   			</div>
+            
+            
+          
+            
+             	
+             	<!-- Used to display form errors -->
+		  	<div id="card-errors" role="alert"></div>
+	  	<input type="submit" value="[[Donate]]" class="btn btn-primary"/>
+		</form>
+</div>
+</div>
+</div>
+
+<script type="text/javascript">
+  // This identifies your website in the createToken call below
+ 
+	  	// This identifies your website in the createToken call below
+	  	  #if($mediaarchive.isCatalogSettingTrue("productionmode"))
+	  		console.log('production');
+	  		#set($publishkey = $mediaarchive.getCatalogSettingValue("stripe_publishable_key"))
+	  	  	
+	  	  	
+	  	 #else
+	  		#set($publishkey = $mediaarchive.getCatalogSettingValue("stripe_test_publishable_key"))
+	  	  	 
+	  	  		 
+	  	 #end
+	  	var stripe = Stripe("$publishkey");
+	   	var elements = stripe.elements();
+
+
+	  	
+	   	var style = {
+	   		  base: {
+	   		    // Add your base input styles here. For example:
+	   		    fontSize: '18px',
+	   		    color: "#495057"
+	   		    
+	   		  }
+	   		};
+
+	   		// Create an instance of the card Element.
+	   		var card = elements.create('card', {style: style});
+
+	 // Add an instance of the card Element into the `card-element` <div>
+	 card.mount('#card-element');
+
+	 // Handle real-time validation errors from the card Element.
+	 card.addEventListener('change', function(event) {
+	   var displayError = document.getElementById('card-errors');
+	   if (event.error) {
+	     displayError.textContent = event.error.message;
+	   } else {
+	     displayError.textContent = '';
+	   }
+	 });
+
+	 var form = document.getElementById('payment-form');
+	 form.addEventListener('submit', function(event) {
+	   event.preventDefault();
+	   stripe.createToken(card).then(function(result) {
+	     if (result.error) {
+	       // Inform the user if there was an error
+	       var errorElement = document.getElementById('card-errors');
+	       errorElement.textContent = result.error.message;
+	     } else {
+	       // Send the token to your server
+	       stripeResponseHandler(result);
+
+	     }
+	   });
+	 });
+	  	
+	 stripeResponseHandler = function( response){
+		  
+		 
+		 
+		 var form = document.getElementById('payment-form');
+		  var hiddenInput = document.createElement('input');
+		  hiddenInput.setAttribute('type', 'hidden');
+		  hiddenInput.setAttribute('name', 'stripeToken');
+		  hiddenInput.setAttribute('value', response.token.id);
+		  form.appendChild(hiddenInput);
+
+		  // Submit the form
+		  form.submit();
+		 
+		
+		  
+	  }
+  
+  
+</script>

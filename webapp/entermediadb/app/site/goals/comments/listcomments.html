@@ -1,0 +1,41 @@
+#set( $taskid = $context.getRequestParameter("taskid"))
+#set( $commentsearcher = $mediaarchive.getSearcher("goaltaskcomments") )
+#set( $comments = $commentsearcher.query().exact("goaltaskid",$taskid).sort("dateDown").search() )
+<div   id="commentsarea_${taskid}">
+<div id="commentaddarea_${taskid}" >
+#if( $caneditdata )
+<a class="ajax btn btn-xs btn-primary" targetdiv="commentaddarea_${taskid}" href="$apphome/site/goals/comments/newcomment.html?taskid=$taskid&oemaxlevel=1" title=[[Add comment]]>[[Add comment]]</a>
+#end
+</div>
+
+#if($comments)
+	<div class="goal-comments-container">
+		<div class="goal-comments-scroll">
+			#foreach($comment in $comments)	
+				<div class="goal-comment #if( $comment.statuschange ) goal-comment-status #end"   data-toggle="tooltip" data-placement="top" title="$context.getDateTime($comment.date)">
+					<span class="goal-commentauthor" title="$!mediaarchive.getUser(${comment.author}).getAnonNickName()">
+					#if( $comment.statuschange )
+					<i class="fas fa-flag"></i>
+					#else
+					<i class="fas fa-user"></i> 
+					#end
+					</span>
+					<span class="goal-commenttext">
+						#if( $comment.statuschange )
+							$!context.getDataText("taskstatus",$comment.statuschange)
+						#else
+						$comment.commenttext
+						#end
+					</span>
+			#if( $caneditdata && !$comment.statuschange  )
+					<span class="goal-delete">
+    					<a class="ajax" data-confirm="Are you sure?"
+    			 targetdiv="commentsarea_${taskid}" 
+    			href="$apphome/site/goals/comments/commentdelete.html?taskid=$taskid&id=$comment.id"><i class="fas fa-times"></i></a> 
+    		#end
+				</div>
+			#end
+		</div>
+	</div>
+#end	
+</div>

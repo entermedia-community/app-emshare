@@ -1,0 +1,33 @@
+<div class="card mx-auto" style="margin:0 40px 20px 40px;max-width:800px;text-align:left;">
+  <div class="card-block" style="padding:20px;">
+
+#set( $searcher = $mediaarchive.getSearcher("librarycollection") )
+$context.putPageValue("searcher",$searcher)
+$context.putPageValue("view", "librarycollection/edithome")
+$context.putPageValue("data", $librarycol)
+
+<form name="saveproject" enctype="multipart/form-data" id="saveproject" action="/$applicationid/site/home/save.html" method="post">
+
+<input type="hidden" name="save" value="true" />
+<input type="hidden" name="searchtype" value="librarycollection" />
+<input type="hidden" name="id" value="$librarycol.id" />
+<input type="hidden" name="collectionid" value="$librarycol.id" />
+
+ 
+$pages.include("/$applicationid/components/xml/detaileditor4.html", $context)
+
+</form>
+
+<script type="text/javascript">
+
+jQuery(document).ready(function()
+{ 
+	lQuery("#list-country").livequery("blur", function()
+	{
+		
+	});
+});
+
+</script>
+  </div>
+</div>

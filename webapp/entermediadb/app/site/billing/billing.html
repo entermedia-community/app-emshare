@@ -1,0 +1,324 @@
+<div class="oicontent">
+<h2>[[Billing]]</h2>
+
+<div class="card">
+<div class="card-header">
+	<div class="row" style="border-bottom:1px solidc ">
+		<div class="col-sm-10"> 
+		<h4>[[Invoices]]</h4>
+		</div>
+	</div>
+	<div class="row" style="border-bottom:1px solidc ">
+		<div class="col-sm-12"> 
+			<table class="table table-stripped">
+				<thead>
+					<tr>
+						<td></td>
+						<td></td>
+						<td></td>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td><b>#EM101</b></td>
+						<td>$299USD</td>
+						<td><a href="#" onclick="showPayment()" title="Pay">Unpaid</a></td>
+					</tr>
+					<tr>
+						<td><b>#EM101</b></td>
+						<td>$299USD</td>
+						<td>Paid</td>
+					</tr>
+					<tr>
+						<td><b>#EM101</b></td>
+						<td>$299USD</td>
+						<td>Paid</td>
+					</tr>
+				</tbody>
+			<table>
+		</div>
+
+	</div>
+</div>
+
+<a href="#" onclick="refreshTable()">[[Reload]]</a>
+
+<!-- <a href="#" onclick="loadEditor()">[[Add New]]</a>
+ -->
+
+
+<div id="component" class="table-component" data-view="clientinvoice/clientinvoiceresultstable" data-searchtype="clientinvoice" data-page="1" data-hitssessionid="$!hits.sessionid" >
+
+
+</div>
+
+
+
+
+
+<div id="payment-method" style="display:none;">
+	<div class="card">
+	<div class="card-header">
+		<div class="row" style="border-bottom:1px solidc ">
+			<div class="col-sm-10"> 
+			[[All major Credit Cards Accepted]]
+			</div>
+		
+			<div class="col-sm-2">                            
+			<img class="img-fluid" src="http://i76.imgup.net/accepted_c22e0.png">
+			</div>
+		</div>
+	</div>
+	
+	 <div class="card-block" style="padding:20px 21px;">                      
+	       	<form action="$apphome/site/billing/billingfinish.html" method="post" id="payment-form">
+	             	
+	             	<div class="form-group row">
+	   				<label for="staticEmail" class="col-sm-2 col-form-label">[[Card Info]]:</label>
+	   			 	<div class="col-sm-9">
+						<div id="card-element" style="width: 100%">
+						<!-- a Stripe Element will be inserted here. -->
+						</div>      
+				    </div>
+	   			</div>
+	   			
+	   			<div class="form-group row">
+	   				<label for="staticEmail" class="col-sm-2 col-form-label">[[Amount]]:</label>
+	   			 	<div class="col-sm-9">
+						      <input type="text" class="form-control" name="totalprice.value">
+				    </div>
+	   			</div>
+	   				
+	   			<input type="hidden" name="field" value="siteid"/>
+	   			<input type="hidden" name="siteid.value" value="$site.id"/>
+	   			<input type="hidden" name="siteid" value="$site.id"/>
+	   			
+	   			<input type="hidden" name="field" value="totalprice"/>
+	             	
+	            <div class="form-group row">
+	   				<label for="staticEmail" class="col-sm-2 col-form-label">[[Billing Type]]:</label>
+	   			 	<div class="col-sm-9">
+						        <select class="form-control" name="frequency">
+	  <option></option>
+	
+	  <option value="">[[Once]]</option>
+	  <option value="weekly">[[Weekly]]</option>
+	  <option value="monthly">[[Monthly]]</option>
+	  <option value="yearly">[[Yearly]]</option>
+	</select>
+				    </div>
+	   			</div>
+	            
+	             	
+	             	<!-- Used to display form errors -->
+			  	<div id="card-errors" role="alert"></div>
+		  	<input type="submit" value="[[Pay]]" class="btn btn-primary" style="margin-left: 88%;"/>
+			</form>
+	</div>
+	</div>
+</div>
+</div>
+</div>
+<script>
+function showPayment() {
+    var x = document.getElementById("payment-method");
+    if (x.style.display === "none") {
+        x.style.display = "block";
+    } else {
+        x.style.display = "none";
+    }
+}
+</script>
+
+<script type="text/javascript">
+  // This identifies your website in the createToken call below
+ 
+	  	// This identifies your website in the createToken call below
+	  	  #if($mediaarchive.isCatalogSettingTrue("productionmode"))
+	  		console.log('production');
+	  		#set($publishkey = $mediaarchive.getCatalogSettingValue("stripe_publishable_key"))
+	  	  	
+	  	  	
+	  	 #else
+	  		#set($publishkey = $mediaarchive.getCatalogSettingValue("stripe_test_publishable_key"))
+	  	  	 
+	  	  		 
+	  	 #end
+	  	var stripe = Stripe("$publishkey");
+	   	var elements = stripe.elements();
+
+
+	  	
+	   	var style = {
+	   		  base: {
+	   		    // Add your base input styles here. For example:
+	   		    fontSize: '18px',
+	   		    color: "#495057"
+	   		    
+	   		  }
+	   		};
+
+	   		// Create an instance of the card Element.
+	   		var card = elements.create('card', {style: style});
+
+	 // Add an instance of the card Element into the `card-element` <div>
+	 card.mount('#card-element');
+
+	 // Handle real-time validation errors from the card Element.
+	 card.addEventListener('change', function(event) {
+	   var displayError = document.getElementById('card-errors');
+	   if (event.error) {
+	     displayError.textContent = event.error.message;
+	   } else {
+	     displayError.textContent = '';
+	   }
+	 });
+
+	 var form = document.getElementById('payment-form');
+	 form.addEventListener('submit', function(event) {
+	   event.preventDefault();
+	   stripe.createToken(card).then(function(result) {
+	     if (result.error) {
+	       // Inform the user if there was an error
+	       var errorElement = document.getElementById('card-errors');
+	       errorElement.textContent = result.error.message;
+	     } else {
+	       // Send the token to your server
+	       stripeResponseHandler(result);
+
+	     }
+	   });
+	 });
+	  	
+	 stripeResponseHandler = function( response){
+		  
+		 
+		 
+		 var form = document.getElementById('payment-form');
+		  var hiddenInput = document.createElement('input');
+		  hiddenInput.setAttribute('type', 'hidden');
+		  hiddenInput.setAttribute('name', 'stripeToken');
+		  hiddenInput.setAttribute('value', response.token.id);
+		  form.appendChild(hiddenInput);
+
+		  // Submit the form
+		  form.submit();
+		 
+		
+		  
+	  }
+  
+  
+</script>
+
+
+<script type="text/javascript">
+var component = $( "#component" );
+var editing = false;
+
+loadEditor = function (id) {
+	var urls =  "$apphome/components/xml/inline/edit.html";
+	var mydata = component.data();
+	if(id){
+		mydata.id = id;
+	}
+	
+	
+	jQuery.get( urls, mydata, function( data ) {
+		
+		
+		var editarea =  component.find(".data-editor");
+		
+		if(id){
+			editarea =  jQuery('tr[data-rowid="' + id + '"]');		
+			
+		}
+		
+		var table = component.closest(".table-component");
+		var headercount = table.find("tr:first th").length;
+		
+		editarea.html('<td colspan="' + headercount + '">' + data + '</td>') ;
+		
+		editing = true;
+	});
+
+}
+
+
+refreshTable = function () {
+	var urls =  "$apphome/components/xml/inline/table.html";
+	var mydata = $( "#component" ).data();
+	jQuery.get( urls, mydata, function( data ) {
+		  $( "#component" ).html( data );
+			editing = false;
+
+
+	});
+	
+	editing = false;
+
+}
+
+jumpToPage = function(page){
+	  $( "#component" ).data( "page", page );
+	  refreshTable();
+}
+
+lQuery(".changepage").livequery("click", function(){
+	var link = jQuery(this);
+	var table = link.closest(".table-component");
+	var page = link.data("page");
+	jumpToPage(page);	
+}
+);
+
+
+lQuery(".changesort").livequery("click", function()
+{
+	var link = jQuery(this);
+	var table = link.closest(".table-component");
+	var sort = link.data("sort");
+	table.data("sortby", sort);
+	refreshTable();
+}
+);
+
+lQuery(".table-editable-row td").livequery("click", function(){
+	if(editing == true){
+		return;
+	}
+	var link = jQuery(this);
+	var row = link.closest("tr");
+	var id = row.data("rowid");
+	loadEditor(id);
+
+}
+);
+
+
+
+lQuery(".table-save").livequery("click", function(){
+	var forminfo = jQuery(this).closest('.editor-details');
+	var urls =  "$apphome/components/xml/inline/save.html?";
+
+	
+	var params = forminfo.find('input[name],select[name],textarea[name]').serialize();
+
+	urls = urls + params;
+	jQuery.get( urls, function( data ) {
+
+		var editarea =  component.find(".data-editor");
+		editarea.html('') ;
+		refreshTable();
+
+
+	});
+	
+	
+
+}
+);
+
+refreshTable();
+
+</script>

@@ -1,0 +1,36 @@
+<div class="card mx-auto" style="margin:40px;max-width:800px;text-align:left;">
+  <div class="card-header">
+  Create projects to track
+  </div>
+  <div class="card-block" style="padding:20px;">
+
+#set( $searcher = $mediaarchive.getSearcher("collectiveproject") )
+$context.putPageValue("searcher",$searcher)
+$context.putPageValue("view", "collectiveproject/addnew")
+<form name="saveproject" id="saveproject" action="addsave.html" method="post">
+
+#if( $user)
+<input type="hidden" name="save" value="true" />
+#else
+ You must first <a href="$apphome/authentication/login.html?loginokpage=$content.path&collectionid=$librarycol.getId()" class="btn btn-primary">Login</button>
+#end  
+
+<input type="hidden" name="searchtype" value="collectiveproject" />
+
+<input type="hidden" name="field" value="owner" />
+<input type="hidden" name="owner.value" value="$user.getId()" />
+
+<input type="hidden" name="field" value="creationdate" />
+<input type="hidden" name="creationdate.value" value="$storeddate" />
+
+<input type="hidden" name="field" value="parentcollectionid" />
+<input type="hidden" name="parentcollectionid.value" value="$librarycol.getId()" />
+<input type="hidden" name="collectionid" value="$librarycol.getId()" />
+ 
+$pages.include("/$applicationid/components/xml/detaileditor4.html", $context)
+
+</form>
+
+
+  </div>
+</div>

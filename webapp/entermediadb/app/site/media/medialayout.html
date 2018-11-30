@@ -1,0 +1,29 @@
+$context.putPageValue("showhover", "false")
+$context.putPageValue("showcaption", "true")
+$context.putPageValue("hideheader", "true")
+#set( $downloadsearcher = $mediaarchive.getSearcher("librarycollectiondownloads") )
+#set( $downloads = $downloadsearcher.query().match("librarycollection",$librarycol.getId()).sort("date").search() )
+
+#if(!$category)
+	#set($categoryid = $context.getRequestParameter("categoryid"))
+	#if($categoryid)
+		#set($category = $mediaarchive.getData("category",$categoryid))
+		#if($category)
+			$context.putPageValue("category",$category)
+		#end
+	#end
+#end
+	
+	<div id="viewassets">		
+		$context.putPageValue("showcaption", false)
+		$context.putPageValue("showhover", "false")
+		$context.putPageValue("thumbsize", "medium")
+		$context.putPageValue("showcaption", "false")
+		$context.putPageValue("hideheader", "false")
+		$context.putPageValue("pickable", false )
+		<div id="emresultscontent">
+		$pages.include("$apphome/components/results/stackedgallery.html", $context)
+		</div>	
+	</div>
+
+
