@@ -1,13 +1,12 @@
-<a href="#" onclick="refreshTable()">Reload</a>
-
-<a href="#" onclick="loadEditor()">Add New</a>
-
-
-
+<div style="padding: 20px">
 <div id="component" class="table-component" data-view="clienthours/clienthoursresultstable" data-searchtype="clienthours" data-page="1" data-hitssessionid="$!hits.sessionid" >
 
 
 </div>
+
+<a href="#" onclick="refreshTable()">Reload</a>
+
+<a href="#" onclick="loadEditor()">Add New</a>
 
 
 
@@ -23,9 +22,8 @@ loadEditor = function (id) {
 		mydata.id = id;
 	}
 	
-	
-	jQuery.get( urls, mydata, function( data ) {
-		
+	jQuery.post( urls, mydata, function( data ) 
+	{
 		
 		var editarea =  component.find(".data-editor");
 		
@@ -43,12 +41,22 @@ loadEditor = function (id) {
 	});
 
 }
-
+var ConvertFormToJSON = function(form){
+    var json = $( "#component" ).data();
+    
+    var array = jQuery(form).serializeArray();
+    jQuery.each(array, function() {
+        json[this.name] = this.value || '';
+    });
+    
+    return json;
+}
 
 refreshTable = function () {
+	var jsondata = ConvertFormToJSON("#searchquery");
+
 	var urls =  "$apphome/components/xml/inline/table.html";
-	var mydata = $( "#component" ).data();
-	jQuery.get( urls, mydata, function( data ) {
+	jQuery.post( urls, jsondata, function( data ) {
 		  $( "#component" ).html( data );
 			editing = false;
 
@@ -58,6 +66,12 @@ refreshTable = function () {
 	editing = false;
 
 }
+
+
+lQuery(".changepage").livequery("click", function(){
+	var link = jQuery(this);
+	refreshTable();
+});
 
 jumpToPage = function(page){
 	  $( "#component" ).data( "page", page );
@@ -137,3 +151,4 @@ refreshTable();
 
 </script>
 
+</div>
