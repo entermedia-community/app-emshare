@@ -1,11 +1,13 @@
 #set( $moduleid = $context.findValue("module") )
+#set( $sectiontab = $context.findValue("sectiontab") )
+
 #if($content.isPropertyTrue("shownav"))
 <ul class=" navtabs">
 	<li class="#if($moduleid == 'librarycollection') navactive #end">
-	<a class="navtabitem" href="$apphome/index.html"> [[Collections]] </a>
+	<a class="navtabitem" href="$apphome/index.html"><i class="fas fa-th-large"></i> [[Collections]]</a>
 	</li>
-	<li class="#if($moduleid == 'asset') navactive #end">
-	<a  class="navtabitem" href="$apphome/views/modules/asset/index.html?hitssessionid=$!hits.getSessionId()" title="[[All Assets]]"> [[Assets]]</a>
+	<li class="#if($moduleid == 'asset' && $sectiontab == '') navactive #end">
+	<a  class="navtabitem" href="$apphome/views/modules/asset/index.html?hitssessionid=$!hits.getSessionId()" title="[[All Assets]]"><i class="fas fa-images"></i> [[Assets]]</a>
 	</li>
 </ul>
 #end
@@ -46,24 +48,29 @@
 	#set($showbasket = true)
 #end
 #if ($showaddmedia || $showbasket)
-	<ul class=" navtabsright">
-		#if($showbasket)
-			<li class="nav-item #if($section=="basket") navactive  #end">
-				$pages.include("$apphome/components/basket/menuitem.html")
-			</li>
-		#end
+
+	<ul class="navtabs float-right">
 		#if ($showaddmedia)
-		<li class="navtabright">
-			<a class="navrighttabitem" href="$home$apphome/views/modules/asset/add/start.html"  title="[[Add Assets]]" ><i class="fas fa-plus"></i><span class="navtabsright-text">[[Add Media]]</span></a>
+		<li class="#if($moduleid == 'asset' && $sectiontab == 'assetadd') navactive #end">
+			<a class="navtabitem" href="$home$apphome/views/modules/asset/add/start.html"  title="[[Add Assets]]" ><i class="fas fa-plus"></i> <span class="">[[Add Media]]</span></a>
 		</li>
 		#end
 		#if( $user )
-    	#if( $canviewmyaccount ) 
-		<li class="navtabright">
-			<a class="navrighttabitem" id="module" href="$home$apphome/views/myaccount/orders/index.html"> [[My Orders]] </a>
-		</li>
+	    	#if( $canviewmyaccount ) 
+			<li  class="#if($sectiontab == 'myorders') navactive #end">
+				<a class="navtabitem" id="module" href="$home$apphome/views/myaccount/orders/index.html"><i class="fas fa-list"></i> [[My Orders]] </a>
+			</li>
+			#end
 		#end
-		#end		
+		#if($showbasket)
+			<li class="#if($moduleid == 'asset' && $sectiontab == 'basket') navactive #end">
+				$pages.include("$apphome/components/basket/menuitem.html")
+			</li>
+		#end
+		
+				
 </ul>
 #end
 <div class="clearfix"></div>
+
+
