@@ -294,80 +294,6 @@ position: relative;
 	}
 #end
 
-h1 {
-#if ( $theme.h1font )
-	font-family: $theme.h1font;
-#end
-#if( $theme.h1fontsize )
-	font-size: ${theme.h1fontsize}px;
-#end
-#if( $theme.h1fontcolor )
-	color: ${theme.h1fontcolor};
-#end
-#if($theme.h1fontopacity)
-	opacity: ${theme.h1fontopacity};
-#end
-}
-
-h2 {
-#if ( $theme.h2font )
-	font-family: $theme.h2font;
-#end
-#if( $theme.h2fontsize )
-	font-size: ${theme.h2fontsize}px;
-#end
-#if( $theme.h2fontcolor )
-	color: ${theme.h2fontcolor};
-#end
-#if($theme.h2fontopacity)
-	opacity: ${theme.h2fontopacity};
-#end
-}
-
-h3 {
-#if ( $theme.h3font )
-	font-family: $theme.h3font;
-#end
-#if( $theme.h3fontsize )
-	font-size: ${theme.h3fontsize}px;
-#end
-#if( $theme.h3fontcolor )
-	color: ${theme.h3fontcolor};
-#end
-#if($theme.h3fontopacity)
-	opacity: ${theme.h3fontopacity};
-#end
-}
-
-h4 {
-#if ( $theme.h4font )
-font-family: $theme.h4font;
-#end
-#if( $theme.h4fontsize )
-font-size: ${theme.h4fontsize}px;
-#end
-#if( $theme.h4fontcolor )
-color: ${theme.h4fontcolor};
-#end
-#if($theme.h4fontopacity)
-opacity: ${theme.h4fontopacity};
-#end
-}
-
-p {
-#if ( $theme.pfont )
-	font-family: $theme.pfont;
-#end
-#if( $theme.pfontsize )
-	font-size: ${theme.pfontsize}px;
-#end
-#if( $theme.pfontcolor )
-	color: ${theme.pfontcolor};
-#end
-#if($theme.pfontopacity)
-	opacity: ${theme.pfontopacity};
-#end
-}
 
 #if ($theme.navbuttonhovercolorgradient) 
 	.Xcollectionshomecontent,
@@ -388,88 +314,24 @@ p {
 #end
 
 
-/* Table Hover Color */
-#emcontainer #main-results-table tr.emborderhover, #main-results-table tr:hover {
-#if($theme.tablehovercolor)
-background: $theme.tablehovercolor;
+#if ($theme.contenthighlightbackground) 
+.emsubnav .nav-btn, 
+.col-sidebar-header h2,
+.emresultstable .badge-primary {
+	background-color:$theme.contenthighlightbackground;
+	color:$theme.contenthighlightcolor;
+} 
 #end
-}
-
-.sidebar-media li.currentsubtle {
-#if($theme.detailsrightcolumnselectedcolor)
-background: $theme.detailsrightcolumnselectedcolor;
+#if ($theme.contenthighlightbackgroundhover) 
+.emsubnav .nav-btn:hover,  
+.col-sidebar-header h2:hover,
+.emresultstable .badge-primary:hover,
+.emresultstable .badge-primary[href]:focus, 
+.emresultstable .badge-primary[href]:hover {
+	background-color:$theme.contenthighlightbackgroundhover;
+	color:$theme.contenthighlightcolorhover;
+} 
 #end
-}
-
-#de-side-nav li.current a, #de-side-nav li.current a:hover {
-
-#set($color1 = $theme.assetdetailsselectedtabcolor)
-#set($color2 = $theme.assetdetailsselectedtabcolorgradient)
-#if ($color1 && $color2=="")
-background: $color1; /* Old browsers */
-border-bottom: 1px solid $color1;
-border-top: 1px solid $color1;
-#end
-#if($color1 && $color2)
-background: -moz-linear-gradient(left,  $color1 0%, $color2 100%); /* FF3.6+ */
-background: -webkit-gradient(linear, left top, right top, color-stop(0%,$color1), color-stop(100%,$color2)); /* Chrome,Safari4+ */
-background: -webkit-linear-gradient(left,  $color1 0%,$color2 100%); /* Chrome10+,Safari5.1+ */
-background: -o-linear-gradient(left,  $color1 0%,$color2 100%); /* Opera 11.10+ */
-background: -ms-linear-gradient(left,  $color1 0%,$color2 100%); /* IE10+ */
-background: linear-gradient(to right,  $color1 0%,$color2 100%); /* W3C */
-filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='$color1', endColorstr='$color2',GradientType=1 ); /* IE6-9 */
-
-border-bottom: 1px solid $color1;
-border-top: 1px solid $color1;
-
-#end
-
-#set($color1 = "")
-#set($color2 = "")
-}
-
-#de-side-nav ul li.current::after, 
-#pdf-thumbnail-sidebarX ul li.current::after {
-
-#set($color1 = $theme.assetdetailsselectedtabcolor)
-#set($color2 = $theme.assetdetailsselectedtabcolorgradient)
-#if ($color1 && $color2=="")
-border-left-color: $color1;
-#elseif ($color1 && $color2)
-border-left-color: $color2;
-#end
-
-#set($color1 = "")
-#set($color2 = "")
-}
-
-.title-bar {
-	
-#set($color1 = $theme.assetdetailsselectedtabcolor)
-#set($color2 = $theme.assetdetailsselectedtabcolorgradient)
-#if ($color1 && $color2=="")
-background: $color1; /* Old browsers */
-border-left: $color1;
-border-right: $color1;
-border-bottom: $color1;
-#end
-#if($color1 && $color2)
-background: -moz-linear-gradient(top, $color1 0%, $color2 100%); /* FF3.6+ */
-background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,$color1), color-stop(100%,$color2)); /* Chrome,Safari4+ */
-background: -webkit-linear-gradient(top, $color1 0%,$color2 100%); /* Chrome10+,Safari5.1+ */
-background: -o-linear-gradient(top, $color1 0%,$color2 100%); /* Opera 11.10+ */
-background: -ms-linear-gradient(top, $color1 0%,$color2 100%); /* IE10+ */
-background: linear-gradient(top, $color1 0%,$color2 100%); /* W3C */
-filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='$color1', endColorstr='$color2',GradientType=0 ); /* IE6-9 */
-border-left: $color2;
-border-right: $color2;
-border-bottom: $color2;
-#end
-
-#set($color1 = "")
-#set($color2 = "")
-}
-
 .search-list li.current a.search-href, .sidebar-list li.current a {
 #if ($theme.settingsmenuselectioncolor)
 background: $theme.settingsmenuselectioncolor;
