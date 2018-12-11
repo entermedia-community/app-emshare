@@ -45,24 +45,38 @@ var ConvertFormToJSON = function(form){
     var json = $( "#component" ).data();
     
     var array = jQuery(form).serializeArray();
-    jQuery.each(array, function() {
-        json[this.name] = this.value || '';
-    });
+    if (array) {
+	    jQuery.each(array, function() {
+	        json[this.name] = this.value || '';
+	    });
+    }
     
     return json;
 }
 
 refreshTable = function () {
 	var jsondata = ConvertFormToJSON("#searchquery");
-
-	var urls =  "$apphome/components/xml/inline/table.html";
-	jQuery.post( urls, jsondata, function( data ) {
-		  $( "#component" ).html( data );
-			editing = false;
-
-
-	});
 	
+	var jsondata2 = $("#searchquery").serialize();
+
+	if (jsondata2!="") {
+		var urls =  "$apphome/components/xml/inline/table.html?" + jsondata2;
+		jQuery.post( urls, jsondata, function( data ) {
+			  $( "#component" ).html( data );
+				editing = false;
+	
+	
+		});
+	}
+	else {
+		var urls =  "$apphome/components/xml/inline/table.html";
+		jQuery.post( urls, jsondata, function( data ) {
+			  $( "#component" ).html( data );
+				editing = false;
+	
+	
+		});
+	}
 	editing = false;
 
 }
