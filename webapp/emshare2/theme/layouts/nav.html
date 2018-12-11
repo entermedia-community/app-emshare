@@ -12,8 +12,9 @@
 </ul>
 #end
 
-<div class="navbar-quicksearch" id="nav-quicksearch">
-		#if( $canviewopencollections)
+	#if ($canquicksearch || $canshowcollectionpicker || $canshowlibrarypicker)
+	<div class="navbar-quicksearch" id="nav-quicksearch">
+		#if( $canshowcollectionpicker || $canshowlibrarypicker)
 			$pages.include("$apphome/components/libraries/pickcollection.html")
 		#end
 		
@@ -31,15 +32,15 @@
 				<div class="input-group">
 					<input class="suggestsearchinput form-control border-right-0 border" type="text"  id="assetsearchinput" data-quicksearched='$!context.getRequestParameter("quicksearched")' placeholder="[[Asset Search...]]"   name="description.value" value="$input" />
 					##<span class="fas fa-search form-control-feedback submitform" ></span>
-					
-		                  <div class="input-group-addon submitform" style="pointer-events: initial;"><i class="fa fa-search"></i></div>
+					<div class="input-group-addon submitform" style="pointer-events: initial;"><i class="fa fa-search"></i></div>
 		            
 				</div>
 				
 			</form>
 		</div>
 		#end
-		</div>
+	</div>
+	#end
 
 #if( $canviewupload && $mediaarchive.isCatalogSettingTrue("show_add_media_on_nav"))
 	#set($showaddmedia = true)
