@@ -1,23 +1,23 @@
 <div id="goalresultsdiv">
 <div class="goals-header-actions">
  	<a class="btn btn-secondary btn-sm emdialog" 
- 	title="[[New Goal]]" 
+ 	title="[[New Ticket]]" 
  	data-width="900"
  	style="margin-left: 10px;"
- 	href="$apphome/collective/goals/editgoalpanel.html?collectionid=$librarycol.getId()&categoryid=$!selectedcat.getId()&goalfolder=search" ><i class="fas fa-plus"></i> Add Goal</a>
+ 	href="$apphome/collective/goals/editgoalpanel.html?collectionid=$librarycol.getId()&categoryid=$!selectedcat.getId()&goalfolder=search" ><i class="fas fa-plus"></i> [[Add Ticket]]</a>
 <div class="clearfix"></div>
 </div>
 
 #set( $col = 0)
 <div class="goals-columns">
 
-#foreach( $auser in $users )
+#foreach( $type in $tickettypes )
 
 <div class="goals-column-container" >
 <div class="goals-column">
 <div class="goals-column-header"> 
-#set( $hits = $context.getPageValue("goalhits${auser.getId()}"))
-	$auser.name	( $!hits.size() ) 
+	#set( $hits = $tickets.get($type.getId()))
+	$type	( $!hits.size() ) 
 </div>
 
 <ul class="projectgoals"
