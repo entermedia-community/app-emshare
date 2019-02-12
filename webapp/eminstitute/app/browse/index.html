@@ -12,13 +12,13 @@
 #set( $n = $hits.setHitsPerPage(12))
 
 #foreach($collective in $hits.getPageOfHits())
+ <a href='#urlencode("$apphome/collective/home/${collective.id}/${collective.name}.html")' title="$collective">
+
 <div class="card-mini-project" >
 <div class="card" style="margin:10px;">
   <div class="card-body container" style="padding: 6px" >
   	<div class="row" style="">
   	<div class="col-4" style="padding: 0px 0 0 10px; margin: 8px">
-
-  <a href="$apphome/collective/home/${collective.id}/#urlencode($collective.name).html" title="$collective">
 	#set( $logo = $mediaarchive.getAsset($collective.assetportrait))
 		<img style="width:100px" 
 			#if( $logo)
@@ -27,7 +27,6 @@
 				src="$apphome/theme/oi/team.png"
 			#end
 		 > 
-  </a>
 	</div>
   	<div class="col-7" style="padding: 0px;">
     <p><strong>$collective</strong></p> 
@@ -43,6 +42,8 @@
   </div>
 </div>
 </div>
+ </a>
+
 #end
 #if($hits.getPages() > 1 )
 	Next page

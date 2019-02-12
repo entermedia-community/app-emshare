@@ -1,5 +1,6 @@
 <div id="editgoal">
 #set( $categoryid = $context.getRequestParameter("categoryid"))
+#set( $userlikes = $context.getRequestParameter("userlikes"))
 #set( $hitssessionid = $context.getRequestParameter("hitssessionid"))
 #set( $goalfolder = $context.getRequestParameter("goalfolder"))
 #if(!$goalfolder)
@@ -44,6 +45,11 @@ $context.putPageValue("view", "projectgoal/addnew")
 <input type="hidden" name="nodeID" value="$!categoryid" />
 
 <input type="hidden" name="hitssessionid" value="$!hitssessionid" />
+
+#if( $userlikes )
+<input type="hidden" name="field" value="userlikes" />
+<input type="hidden" name="userlikes.value" value="$userlikes" />
+#end
 
 #if( $caneditdata )
 $pages.include("/$applicationid/components/xml/detaileditor4.html", $context)
