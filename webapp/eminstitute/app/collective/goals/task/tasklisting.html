@@ -40,8 +40,10 @@
     			href="$apphome/collective/goals/taskdelete.html?collectionid=$librarycol.getId()&goalid=$selectedgoal.id&taskid=$task.id"><i class="fas fa-minus-circle"></i></a> 
     		#end
     	</div>
-  		<div class="card-task-body changetaskstatus" 	data-taskid="$task.id" data-savepath="$apphome/collective/goals/task/tasksave.html" >
-  			<select  name="actionstatus" style="width:100%" >
+  		<div class="card-task-body changetaskstatus" 	data-taskid="$task.id"  >
+	    	<form id="someform" class="ajaxform" data-targetdiv="$task.id" data-oemaxlevel="1" action="$apphome/collective/goals/task/tasksave.html" >
+	    	<input type="hidden" name="taskid" value="$task.id" />
+  			<select  name="taskstatus" style="width:100%" >
 			  <option value="" ></option>
 			  #set( $options = $mediaarchive.getList("taskstatus"))
 			  #foreach( $option in $options)
@@ -49,8 +51,20 @@
 			  #end
 			</select>
 			<div>
-  			#if( $task.taskstatus == "3" )<span class="completedby">[[By]]: $!mediaarchive.getUser($task.completedby).getAnonNickName()#end</span>
+  			#if( $task.taskstatus == "3" )<span class="completedby">[[By]]: 
+  			
+  			<select  name="completedby" style="width:100%" >
+			  <option value="" ></option>
+			  #set( $users = $mediaarchive.getList("user"))
+			  #foreach( $auser in $users)
+			  <option value="$auser.id" #if( $task.completedby == $auser.id) selected #end >$auser.getName()</option>
+			  #end
+			</select>
+  			##$!mediaarchive.getUser($task.completedby).getAnonNickName()
+  			
+  			#end</span>
 			</div>
+			</form>
 		$pages.include("$apphome/collective/goals/comments/listcomments.html?taskid=$task.id")
   		</div>
 </div>

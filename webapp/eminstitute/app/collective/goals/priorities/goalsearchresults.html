@@ -5,6 +5,16 @@
  	data-width="900"
  	style="margin-left: 10px;"
  	href="$apphome/collective/goals/editgoalpanel.html?collectionid=$librarycol.getId()&categoryid=$!selectedcat.getId()&goalfolder=priorities&userlikes=$user.id" ><i class="fas fa-plus"></i> [[Add Ticket]]</a>
+ 	
+ 	Total Priorities: $totallikes Open: $totalopen Closed: $totalclosed
+
+#set( $opengoalid = $context.getRequestParameter("opengoalid"))
+#if( $opengoalid )
+    #set( $goal = $mediaarchive.getData("projectgoal",$opengoalid))
+    #set( $goallink = "$apphome/collective/goals/editgoalpanel.html?id=${goal.id}&collectionid=$librarycol.getId()&categoryid=$!selectedcat.getId()&hitssessionid=$!{goalhits.getSessionId()}&goalfolder=$content.goalfolder")
+    <a href="$goallink" title="$goal.name" class="emdialog editgoalshow openemdialog" style="display: cnone" >Goal link</a>	
+#end	
+ 	
 <div class="clearfix"></div>
 </div>
 

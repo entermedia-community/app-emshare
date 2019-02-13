@@ -221,24 +221,16 @@ jQuery(document).ready(function(url,params)
 		});
 					
 	});
-	
+
 	lQuery(".changetaskstatus").livequery(function()
 	{
 		var div = $(this);
 		var select = div.find("select");
 		select.on("change",function()
 		{
-			var path = div.data("savepath");
-			var params = {}; //div.data();
-			params['taskstatus'] = select.val();
-			params['taskid'] = div.data("taskid");
-			
-			jQuery.get(path, params, function(data) 
-			{
-				div.closest(".card-task").replaceWith(data);
-			});
+			var form = select.closest("form");
+			form.trigger("submit");	
 		});
-					
 	});
 
 	lQuery("#changestatus").livequery(function()
