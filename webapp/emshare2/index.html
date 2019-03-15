@@ -12,7 +12,13 @@
 			$context.putPageValue("searcher",$searcher)
 			
 			<div class="collectionshomeform-container">
-			<form  id="lib_${library.id}_colsearchform" class="autosubmit form-inline collectionshomeform "  data-targetdiv="collectionresults" action="$home$apphome/components/opencollections/searchcollectionresultshomepage.html">
+                <div class="float-right"  style="border-left:1px solid #999; margin-left:10px; padding-left:5px">
+                #if($canaddnewcollection)
+                    <a  class="emdialog btn btn-primary" style="margin-left:5px;" href="$home$apphome/components/libraries/pickcollectionaddnew.html?searchtype=librarycollection&targetdiv=collectionpicker&library.value=$!library.getId()"><i class="fa fa-plus-square"></i></a>
+                #end
+                <a class="emdialog btn btn-primary" style="margin-left:2px;" data-hidefooter="true" href="$home$apphome/components/opencollections/searchcollection.html"><i class="fa fa-folder-open"></i></a>
+                </div>
+			<form  id="lib_${library.id}_colsearchform" class="autosubmit form-inline collectionshomeform float-right"  data-targetdiv="collectionresults" action="$home$apphome/components/opencollections/searchcollectionresultshomepage.html">
 				
 					<input type="hidden" name="searchtype" value="librarycollection" />
 					<input type="hidden" name="sortby" value="name" />
@@ -30,11 +36,15 @@
 									placeholder="[[Search Collections]]..." 
 									value="" 
 									autocomplete="off">
-		                  	<div class="input-group-addon" style="pointer-events: initial;"><a class="emdialog" " data-hidefooter="true" href="$home$apphome/components/opencollections/searchcollection.html"><i class="fa fa-search"></i></a></div>
-		           		</div>
-						
-			</form>
-			</div>
+
+                           </div>
+					
+            </form>
+            
+            <div class="clearfix"></div>
+            </div>
+
+
 <div id="collectionresults">
 	
 	
@@ -63,9 +73,5 @@
 	#end
 </div>
 <div class="clearfix"></div>
-#if($canaddnewcollection)
-<hr>
-<a href="$home$apphome/components/libraries/pickcollectionaddnew.html?searchtype=librarycollection&targetdiv=collectionpicker&library.value=$!library.getId()" class="emdialog btn btn-sm btn-primary">[[Add New Collection]]</a>
-#end
 
 </div>
