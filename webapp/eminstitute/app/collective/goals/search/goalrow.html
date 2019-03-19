@@ -3,19 +3,20 @@
    		  
    		 data-goalid="$goal.id" 
    		 data-cloneparentid="goal$goal.id">
-    		$pages.include("$apphome/collective/goals/like.html",$context)
     		#set( $goallink = "$apphome/collective/goals/editgoalpanel.html?id=${goal.id}&collectionid=$librarycol.getId()&categoryid=$!selectedcat.getId()&hitssessionid=$!{goalhits.getSessionId()}&goalfolder=$content.goalfolder")
 			<div >
 		    <a href="$goallink"
 		    	title="$goal.name" class="emdialog editgoalshow" data-urlbar="$apphome/collective/goals/priorities/index.html?collectionid=$librarycol.getId()&opengoalid=${goal.id}" data-width="900" >
-			#set( $project = $mediaarchive.getData("collectiveproject",$goal.goaltrackercolumn) ) 
+			#set( $project = $!mediaarchive.getData("collectiveproject",$goal.goaltrackercolumn) ) 
 		    	$!{project}: $goal.name 
 			</a>
-			<span class="headersubtext">$!goal.getAge() ago - $mediaarchive.getData("tickettype",$goal.tickettype) added by $!mediaarchive.getUser($goal.owner).getAnonNickName()</span>
+			<span class="headersubtext">$!mediaarchive.getData("tickettype",$goal.tickettype) added $!goal.getAge() ago - by $!mediaarchive.getUser($goal.owner).getAnonNickName()</span>
+    			$pages.include("$apphome/collective/goals/like.html",$context)
+<div class="clearfix"></div>
 				#if($goal.projectstatus != "completed")
 				<a href="$apphome/collective/goals/search/resolvegoal.html?goalid=$goal.id" data-targetdiv="goal$goal.id" 
 				data-oemaxlevel="1"
-				class="ajax btn btn-xs pull-right" 
+				class="ajax btn btn-xs" 
 					style="background-color:#ffd4007a;float:right;margin-top:5px" > Resolve
 
 				</a>
