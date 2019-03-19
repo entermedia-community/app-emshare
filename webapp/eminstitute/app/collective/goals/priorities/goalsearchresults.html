@@ -5,6 +5,14 @@
  	data-width="900"
  	style="margin-left: 10px;"
  	href="$apphome/collective/goals/editgoalpanel.html?collectionid=$librarycol.getId()&categoryid=$!selectedcat.getId()&goalfolder=priorities&userlikes=$user.id" ><i class="fas fa-plus"></i> [[Add Ticket]]</a>
+
+    <a href="" class="btn btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown">[[Staff]]</a>
+    <div class="dropdown-menu">
+    #foreach( $auser in $mediaarchive.getList("user") )
+    <a class="dropdown-item" href="$apphome/collective/goals/priorities/index.html?collectionid=$librarycol.getId()&goaltrackerstaff=$auser.getId()">$auser</a>
+    #end
+    </div>
+
  	
  	Total Priorities: $totallikes Open: $totalopen Closed: $totalclosed
 
@@ -20,25 +28,23 @@
 
 #set( $col = 0)
 <div class="goals-columns">
-
-#foreach( $type in $tickettypes )
+#set( $days = ["Mon", "Tue", "Wed", "Thu","Fri"] )
+#foreach( $daygoals in $week )
 
 <div class="goals-column-container" >
 <div class="goals-column">
-<div class="goals-column-header"> 
-	#set( $hits = $tickets.get($type.getId()))
-	$type	( $!hits.size() ) 
+	#set( $dayofweek0 = $foreach.count - 1)
+<div class="goals-column-header" #if( $dayofweek0 == $selectedday0) style="border-top:solid yellow 2px" #end>
+	$days.get($dayofweek0)
 </div>
 
 <ul class="projectgoals"
 data-oemaxlevel="2"  data-collectionid="$librarycol.getId()" data-categoryid="$!selectedcat.id" 
-	data-savepath="$apphome/collective/goals/goalmovepriority.html">
-#if( $hits )
-	#foreach( $goal in $hits )  
+	data-savepath="$apphome/collective/goals/goalmovepriority.html">  ##set a completed date
+	#foreach( $goal in $daygoals )  
 		$context.putPageValue("goal",$goal)
 		$pages.include("$apphome/collective/goals/search/goalrow.html",$context)
 	#end
-#end
 </ul>
 
 </div>
