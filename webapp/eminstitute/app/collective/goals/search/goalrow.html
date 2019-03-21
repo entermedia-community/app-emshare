@@ -8,11 +8,10 @@
 		    <a href="$goallink"
 		    	title="$goal.name" class="emdialog editgoalshow" data-urlbar="$apphome/collective/goals/priorities/index.html?collectionid=$librarycol.getId()&opengoalid=${goal.id}" data-width="900" >
 			#set( $project = $!mediaarchive.getData("collectiveproject",$goal.goaltrackercolumn) ) 
-		    	$!{project}: $goal.name 
-			</a>
+		    	<div style="font-weight:bold;" >$!{project}: $goal.name</div> 
 			<span class="headersubtext">$!mediaarchive.getData("tickettype",$goal.tickettype) added $!goal.getAge() ago - by $!mediaarchive.getUser($goal.owner).getAnonNickName()</span>
+			</a>
     			$pages.include("$apphome/collective/goals/like.html",$context)
-<div class="clearfix"></div>
 				#if($goal.projectstatus != "completed")
 				<a href="$apphome/collective/goals/search/resolvegoal.html?goalid=$goal.id" data-targetdiv="goal$goal.id" 
 				data-oemaxlevel="1"
@@ -22,7 +21,6 @@
 				</a>
 					#if( $goal.resolveddate)<div> Due by $context.getDateTime($goal.resolveddate) </div>#end				
 				#end
-			</div>
 	</div>
 <div class="clearfix"></div>
     	<div class="goal-body">
