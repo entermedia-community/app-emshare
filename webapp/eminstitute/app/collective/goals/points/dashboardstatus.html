@@ -12,13 +12,23 @@
 			  #end
 			</select>
 	</div>
-	<div class="modal-body">
-	#if($byperson.isEmpty()) [[No Results Found]] #end
+	<div class="modal-body">$users
+	#if($users.isEmpty()) [[No Results Found]] #end
 #foreach($person in $users)
 	<div class="pull-left card card-mini" style="margin:5px;"> 
     	<div class="card-task-header" >$person</div>
   		<div class="card-task-body " >
 			#set( $totalpoints = 0)
+			#set( $counted = 0)
+			<table class="striped" style="width:100%">
+  				<tr><th>Ticket</th><th>Points</th><th>Completed On</th></tr>
+  			#foreach($ticket in $bypersontickets.get($person.getId()))
+				<tr><td>$ticket.name</td><td>$ticket.getValue("points")</td><td>!context.getDateTime($ticket.getDate("completedon"))</td></tr>
+				#set( $counted = $counted +1)
+				#set( $totalpoints = $totalpoints + $ticket.points)
+			#end
+			</table>
+			$counted Tickets = $totalpoints Points
 			#set( $counted = 0)
   			<table class="striped" style="width:100%">
   				<tr><th>Task</th><th>Points</th><th>Started On</th></tr>

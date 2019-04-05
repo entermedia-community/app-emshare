@@ -9,14 +9,17 @@
 	<div class="pull-left card card-mini" style="margin:5px;"> 
     	<div class="card-task-header" >$person</div>
   		<div class="card-task-body " >
-  		#set( $weeks = $byperson.get($person.getId()).byWeeks() )
+  		#set( $completed = $byperson.get($person.getId()))
+  		#set( $weeks = $completed.weeksIn($since) )
+
 			<table class="striped" style="width:100%">
   			<tr><th>Task</th><th style="width:280px;">Closed On</th><th style="width:80px;">Points</th></tr>
   			#set( $monthlypoints = 0)
+  			
   		#foreach( $week in $weeks)
 			#set( $totalpoints = 0)
 			#set( $counted = 0)
-  		    #foreach($task in $week)
+  		    #foreach($task in $completed.getTasksForWeek($week))
   				#set( $selectedcat = $mediaarchive.getCategory($task.projectdepartment))
 				#set( $points = $selectedcat.getValue("goalpoints"))
 				#if( !$points || $points == 0)
@@ -30,7 +33,21 @@
   					<td>$context.getDateTime($task.getDate("completedon"))</td><td>$points</td>
   				</tr>
   		    #end
-  			<tr><td></td><td>$counted Tasks  $totalpoints Points =</td><td style="text-align:right;">$monthlypoints</td></tr>
+  		    
+  		    #set($tickets = $completed.getTicketsForWeek($week))
+  		    
+  		    #set( $countedtickets = 0)
+  		    #if($tickets)
+  		    <tr><td></td><td>Tickets Closed</td><td>$tickets.size()</td></tr>
+  		    #foreach($ticket in $tickets)
+  		   		#set( $points = $ticket.getValue("points"))
+  		    	<tr><td>$ticket.name</td><td>$points</td><td>!context.getDateTime($ticket.getDate("resolveddate"))</td></tr>
+				#set( $counted = $counted +1)
+				#set( $totalpoints = $totalpoints + $ticket.points)
+				#set( $monthlypoints = $monthlypoints + $points)
+  		    #end
+  		    #end
+  			<tr><td></td><td>$counted Tasks $countedtickets Tickets  $totalpoints Points =</td><td style="text-align:right;">$monthlypoints</td></tr>
 		#end
   			</table>
   		</div>
