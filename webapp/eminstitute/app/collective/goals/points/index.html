@@ -9,9 +9,7 @@
 	<div class="pull-left card card-mini" style="margin:5px;"> 
     	<div class="card-task-header" >$person</div>
   		<div class="card-task-body " >
-  		#set( $completed = $byperson.get($person.getId()))
-  		#set( $weeks = $completed.weeksIn($since) )
-
+  		#set( $weeks = $completed.weeksInMonth($since) )
 			<table class="striped" style="width:100%">
   			<tr><th>Task</th><th style="width:280px;">Closed On</th><th style="width:80px;">Points</th></tr>
   			#set( $monthlypoints = 0)
@@ -19,7 +17,8 @@
   		#foreach( $week in $weeks)
 			#set( $totalpoints = 0)
 			#set( $counted = 0)
-  		    #foreach($task in $completed.getTasksForWeek($week))
+			#set($tasks = $completed.getTasksForWeek($person,$week))
+  		    #foreach($task in $tasks)
   				#set( $selectedcat = $mediaarchive.getCategory($task.projectdepartment))
 				#set( $points = $selectedcat.getValue("goalpoints"))
 				#if( !$points || $points == 0)
@@ -28,8 +27,8 @@
 				#set( $counted = $counted +1)
 				#set( $totalpoints = $totalpoints + $points)
 				#set( $monthlypoints = $monthlypoints + $points)
-  				<tr><td><a class="emdialog" data-width="900"
-		 	 title="Ticket Details" href="$apphome/collective/goals/editgoalpanel.html?id=$task.projectgoal&collectionid=$librarycol.id&nodeID=$selectedcat.id&goalfolder=$content.goalfolder">$mediaarchive.getData("projectgoal",$task.projectgoal) / $task.name</a></td>
+  				<tr><td>$task.class<a class="emdialog" data-width="900"
+		 	 	title="Ticket Details" href="$apphome/collective/goals/editgoalpanel.html?id=$task.projectgoal&collectionid=$librarycol.id&nodeID=$selectedcat.id&goalfolder=$content.goalfolder">$mediaarchive.getData("projectgoal",$task.projectgoal) / $task.name</a></td>
   					<td>$context.getDateTime($task.getDate("completedon"))</td><td>$points</td>
   				</tr>
   		    #end
@@ -37,7 +36,7 @@
   		    #set($tickets = $completed.getTicketsForWeek($week))
   		    
   		    #set( $countedtickets = 0)
-  		    #if($tickets)
+  		    #if(!$tickets.isEmpty())
   		    <tr><td></td><td>Tickets Closed</td><td>$tickets.size()</td></tr>
   		    #foreach($ticket in $tickets)
   		   		#set( $points = $ticket.getValue("points"))
@@ -47,7 +46,9 @@
 				#set( $monthlypoints = $monthlypoints + $points)
   		    #end
   		    #end
+  		    #if( $totalpoints > 0)
   			<tr><td></td><td>$counted Tasks $countedtickets Tickets  $totalpoints Points =</td><td style="text-align:right;">$monthlypoints</td></tr>
+  			#end
 		#end
   			</table>
   		</div>
