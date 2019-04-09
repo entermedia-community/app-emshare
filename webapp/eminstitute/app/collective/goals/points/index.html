@@ -2,7 +2,8 @@
 	<div class="modal-content">
 	<div  class="modal-header" >
 	    <h4 class="modal-title">[[Weekly Points Report]]</h4>
-	    <p>Month: $context.getDateTime($since) <a class="btn" href="./index.html?collectionid=$librarycol.id&monthsback=$monthsback"> [Go Back ${monthsback} Month]</a></p>
+	    <p>Month: $context.getDateTime($since) 
+	    <a class="btn" href="./index.html?collectionid=$librarycol.id&monthsback=$monthsback"> [Go Back ${monthsback} Month]</a></p>
 	</div>
 	<div class="modal-body">
 #foreach($person in $users)
@@ -11,7 +12,7 @@
   		<div class="card-task-body " >
   		#set( $weeks = $completed.weeksInMonth($since) )
 			<table class="striped" style="width:100%">
-  			<tr><th>Task</th><th style="width:280px;">Closed On</th><th style="width:80px;">Points</th></tr>
+  			<tr><th>Tickets and Tasks</th><th style="width:280px;">Closed On</th><th style="width:80px;">Points</th></tr>
   			#set( $monthlypoints = 0)
   			
   		#foreach( $week in $weeks)
@@ -27,27 +28,31 @@
 				#set( $counted = $counted +1)
 				#set( $totalpoints = $totalpoints + $points)
 				#set( $monthlypoints = $monthlypoints + $points)
-  				<tr><td>$task.class<a class="emdialog" data-width="900"
-		 	 	title="Ticket Details" href="$apphome/collective/goals/editgoalpanel.html?id=$task.projectgoal&collectionid=$librarycol.id&nodeID=$selectedcat.id&goalfolder=$content.goalfolder">$mediaarchive.getData("projectgoal",$task.projectgoal) / $task.name</a></td>
+  				<tr><td>Task: <a class="emdialog" data-width="900"
+		 	 	title="Ticket Details" href="$apphome/collective/goals/editgoalpanel.html?id=$task.projectgoal&collectionid=$librarycol.id&nodeID=$selectedcat.id&goalfolder=$content.goalfolder">$!mediaarchive.getData("projectgoal",$task.projectgoal) / $task.name</a></td>
   					<td>$context.getDateTime($task.getDate("completedon"))</td><td>$points</td>
   				</tr>
   		    #end
   		    
-  		    #set($tickets = $completed.getTicketsForWeek($week))
+  		    #set($tickets = $completed.getTicketsForWeek($person,$week))
   		    
   		    #set( $countedtickets = 0)
   		    #if(!$tickets.isEmpty())
-  		    <tr><td></td><td>Tickets Closed</td><td>$tickets.size()</td></tr>
   		    #foreach($ticket in $tickets)
   		   		#set( $points = $ticket.getValue("points"))
-  		    	<tr><td>$ticket.name</td><td>$points</td><td>!context.getDateTime($ticket.getDate("resolveddate"))</td></tr>
+  		    	<tr><td>
+  		    	#set( $goallink = "$apphome/collective/goals/editgoalpanel.html?id=${ticket.id}&collectionid=$librarycol.getId()&goalfolder=search")
+  		    	  <a href="$goallink"
+		    	title="$ticket.name" class="emdialog editgoalshow" 
+		    	data-urlbar="$apphome/collective/goals/search/index.html?collectionid=$librarycol.getId()&opengoalid=${ticket.id}" data-width="900" >
+  			Project: $mediaarchive.getData("collectiveproject",$ticket.goaltrackercolumn) Ticket: $ticket.name </a></td><td>$!context.getDateTime($ticket.getDate("resolveddate"))</td><td>$points</td></tr>
 				#set( $counted = $counted +1)
 				#set( $totalpoints = $totalpoints + $ticket.points)
 				#set( $monthlypoints = $monthlypoints + $points)
   		    #end
   		    #end
   		    #if( $totalpoints > 0)
-  			<tr><td></td><td>$counted Tasks $countedtickets Tickets  $totalpoints Points =</td><td style="text-align:right;">$monthlypoints</td></tr>
+  			<tr><td colspan="2" style="padding-left: 50px;"> </td><td style="text-align:right;">$monthlypoints</td></tr>
   			#end
 		#end
   			</table>

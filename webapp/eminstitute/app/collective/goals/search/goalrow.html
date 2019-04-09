@@ -3,12 +3,16 @@
    		  
    		 data-goalid="$goal.id" 
    		 data-cloneparentid="goal$goal.id">
-    		#set( $goallink = "$apphome/collective/goals/editgoalpanel.html?id=${goal.id}&collectionid=$librarycol.getId()&categoryid=$!selectedcat.getId()&hitssessionid=$!{goalhits.getSessionId()}&goalfolder=$content.goalfolder")
 			<div >
+			#set( $project = $!mediaarchive.getData("collectiveproject",$goal.goaltrackercolumn) ) 
+		    <a 
+		    	title="$goal.name" style="float:right" class="" href="$apphome/collective/goals/search/index.html?collectionid=$librarycol.getId()&goaltrackercolumn.value=${project.id}&operation=matches&field=goaltrackercolumn">
+			$!{project}
+			</a>
+    		#set( $goallink = "$apphome/collective/goals/editgoalpanel.html?id=${goal.id}&collectionid=$librarycol.getId()&categoryid=$!selectedcat.getId()&hitssessionid=$!{goalhits.getSessionId()}&goalfolder=$content.goalfolder")
 		    <a href="$goallink"
 		    	title="$goal.name" class="emdialog editgoalshow" data-urlbar="$apphome/collective/goals/priorities/index.html?collectionid=$librarycol.getId()&opengoalid=${goal.id}" data-width="900" >
-			#set( $project = $!mediaarchive.getData("collectiveproject",$goal.goaltrackercolumn) ) 
-		    	<div style="font-weight:bold;" >$!{project}: $goal.name</div> 
+		    	<div style="font-weight:bold;" > $goal.name</div> 
 			<span class="headersubtext">$!mediaarchive.getData("tickettype",$goal.tickettype) added $!goal.getAge() ago - by $!mediaarchive.getUser($goal.owner).getAnonNickName()</span>
 			</a>
     			$pages.include("$apphome/collective/goals/like.html",$context)
