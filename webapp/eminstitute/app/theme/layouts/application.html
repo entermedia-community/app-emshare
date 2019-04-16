@@ -3,37 +3,11 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-#if( $librarycol )
-#if( $userupload)
-<meta property="og:url" content="${context.siteRoot}$apphome/project/media/category/${librarycol.getId()}/${userupload.uploadcategory}.html" />
-<meta property="og:title" content="$!userupload.longdescription" />
-<meta property="og:description" content="$librarycol $!mediaarchive.getUserManager().getScreenName($userupload.owner)" />
-#if($hits)
-#set( $asset = $hits.first())
-<meta property="og:image" content="${context.siteRoot}/$mediaarchive.getMediaDbId()/services/module/asset/downloads/preset/${asset.sourcepath}/image1024x768.jpg" />
-<meta property="og:image:width" content="1024" />
-<meta property="og:image:height" content="768" />
-#end
-#else
-<meta property="og:url" content="${context.siteRoot}$apphome/project/feed/${librarycol.getId()}.html" />
-<meta property="og:title" content="$librarycol" />
-<meta property="og:description" content="Open Institute" />
-#set( $logo = $mediaarchive.getAsset($librarycol.assetportrait))
-<meta property="og:image" content="${context.siteRoot}/$mediaarchive.getMediaDbId()/services/module/asset/downloads/preset/${logo.sourcepath}/image1024x768.jpg" />
-<meta property="og:image:width" content="1024" />
-<meta property="og:image:height" content="768" />
-#end
-#end
-<meta name="description" content="">
-<meta property="og:type"               content="article" />
+
 
     <title>#if( $librarycol ) $librarycol - #end OpenInstitute</title>
-    <!-- Custom fonts for this template -->
-    <link href="$themeprefix/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
-    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
-    <link href='https://fonts.googleapis.com/css?family=Kaushan+Script' rel='stylesheet' type='text/css'>
-    <link href='https://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
-    <link href='https://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700' rel='stylesheet' type='text/css'>
+
+	<link rel="stylesheet" type="text/css" href="/site/app/theme/css/oi.css" />
 
 	$pages.include("/${applicationid}/theme/layouts/includes.html")
 	
@@ -51,12 +25,14 @@
 	data-editmode='$!user.get("oe_edit_mode")' 
 	data-mediadbappid="$!mediaarchive.getMediaDbId()"
 	data-componenthome="$!componenthome"
+	class="container" 
 	>
   <!-- Navigation -->
-  	<div class="oiheader">
+  	<div class="oiheader"> 
   	<div class="oicontainer">
     <a class="navbar-brand" href="$apphome" style="float:rightX;">  
-    	<img style="height: 60px;" src="$apphome/theme/images/Homepage-Layer-Files_0000s_0000_Logo-Black.png" alt=""></a>
+    	<img style="height: 60px;" src="$apphome/theme/images/OI.png" alt=""></a>
+
     <nav id="mainNav" class="navbar  navbar-fixed-top navbar-expand-sm nav-project-page">    
       <div class="">
         <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
@@ -66,15 +42,11 @@
         <div class="collapse navbar-collapse" id="navbarResponsive">
           <ul class="navbar-nav  ml-auto">
           	#set($section = $content.section) 
-            <li class="nav-item #if($section == "home")active#end" >
-              <a class="nav-link js-scroll-trigger" href="$apphome/index.html">[[Home]]</a>
-            </li>
+            
             <li class="nav-item #if($section == "projects")active#end" >
               <a class="nav-link js-scroll-trigger" href="$apphome/browse/index.html">[[Collectives]]</a>
             </li>
-            <li class="nav-item #if($section == "profiles")active#end" >
-              <a class="nav-link js-scroll-trigger" href="$apphome/profiles/index.html">[[Profiles]]</a>
-            </li>
+            
             <li class="nav-item #if($section == "contact")active#end" >
               <a class="nav-link js-scroll-trigger" href="$apphome/contact/contact.html">[[Contact]]</a>
             </li>
