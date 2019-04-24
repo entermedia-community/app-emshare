@@ -1,6 +1,3 @@
-#if ($librarycol.getId() == 'AWommeDxILULDJ2B8Rft')
-	$pages.include("$apphome/collective/collective-01.html")
-#else
 
 <div class="container">
 
@@ -8,7 +5,36 @@
 		<div class="col-md-12">
 			<nav class="navbar navbar-expand-lg navbar-light">
 				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"><span class="navbar-toggler-icon"></span></button> 
-				<a class="navbar-brand" href="$apphome/collective/home/${librarycol.id}/#urlencode($librarycol.name).html"><div class="headerlogo">$!librarycol.name</div></a>
+				<a class="navbar-brand" href="$apphome/collective/home/${librarycol.id}/#urlencode($librarycol.name).html">
+				<div class="headerlogo">$!librarycol.name</div>
+				</a>
+					<div class="collection-header-actions">
+						<a href="#" class="dropdown-toggle dropdown-noarrow" data-toggle="dropdown" title="[[Collection Actions]]">
+						<i class="fas fa-ellipsis-v"></i></a>
+							<div class="dropdown-menu">
+								#if($caneditcollection)
+								  #set( $link = "$home$apphome/views/modules/librarycollection/share.html?collectionid=${librarycol.getId()}")
+								  <a class="dropdown-item emdialog"  id="sharetab"  href="$link" data-hidefooter="true" title="[[Collection Followers]]"><i class="dropdown-item-icon fas fa-user-friends"></i> [[Followers]]</a>
+								   #set( $link = "$home$apphome/views/modules/librarycollection/permissions.html?collectionid=${librarycol.getId()}")
+								  <a class="dropdown-item emdialog" id="permissionstab" href="$link" data-hidefooter="true" title="[[View Permissions]]"><i class="dropdown-item-icon fas fa-user-lock"></i> [[View Permissions]]</a>
+								  #set( $editlink = "$home$apphome/views/modules/librarycollection/edit/settings.html?collectionid=${librarycol.getId()}")
+							 	  <a class="dropdown-item emdialog"  data-allwaysloadpage="true" data-hidefooter="true"   href="$editlink" title="[[Collection Properties]]"><i class="dropdown-item-icon fas fa-cogs"></i> [[Properties]]</a>
+								  #set( $link = "$home$apphome/views/modules/librarycollection/datapermissions/index.html?collectionid=${librarycol.getId()}&id=${librarycol.getId()}")
+								  <a class="dropdown-item emdialog" id="permissionstab" href="$link" data-hidefooter="true" title="[[Collection Permissions]] (${librarycol})"><i class="dropdown-item-icon fas fa-user-lock"></i> [[Collection Permissions]]</a>
+					              #set( $link = "$home$apphome/views/modules/library/datapermissions/index.html?id=${librarycol.get('library')}")
+								  <a class="dropdown-item emdialog" id="permissionstab" href="$link" data-hidefooter="true" title="$librarycol.library [[Library Permissions]]"><i class="dropdown-item-icon fas fa-user-lock"></i>  [[ Library Permissions]]</a>
+					
+					
+							   	#else
+								   	#set( $editlink = "$home$apphome/views/modules/librarycollection/edit/settings.html?collectionid=${librarycol.getId()}")
+								 	<a class="dropdown-item emdialog"  data-allwaysloadpage="true" data-hidefooter="true"   href="$editlink" title="[[Collection Properties]]"><i class="dropdown-item-icon fas fa-cogs"></i> [[Properties]]</a>
+								#end
+							 	## #if($cansharecollection && !$librarycol.isVisibility("3") )
+								## 	#set( $editlink = "$home$apphome/views/modules/librarycollection/sharecollection.html?collectionid=${librarycol.getId()}")
+								## 	<a class="dropdown-item emdialog" data-allwaysloadpage="true" data-hidefooter="true"   href="$editlink" title="[[Sharing Collection]]"><i class="dropdown-item-icon fas fa-share-alt"></i> [[Sharing]]</a>
+							 	## #end
+							</div>
+						</div>
 				<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 					$pages.include("$apphome/collective/menu.html", $context)
 				</div>
@@ -29,4 +55,3 @@
 	</div>
 </div>
 
-#end
