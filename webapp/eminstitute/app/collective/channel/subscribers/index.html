@@ -1,16 +1,29 @@
-<br>
+<div class="suscribe-area">
+#set( $found = $searcher.query().exact("followeruser",$user.getId()).exact("collectiveid",$librarycol.getId()).searchOne() )
+#if( !$found)	
+	 <a href="$apphome/collective/channel/subscribers/addnew.html?collectionid=$librarycol.getId()" 
+	 class="emdialog btn btn-primary">[[Subscribe]]</a>
+#end
+##<a href="$apphome/channel/subscribers/addnew.html?collectionid=$librarycol.getId()" class="emdialog btn btn-primary">[[Invite Others]]</a>
 
-<div class="card mx-auto" style="margin:40px;max-width:600px;text-align:left;">
-  <div class="card-header">
-    [[Subscribers]]
-  </div>
-  <div class="card-block" style="padding:20px;text-align:center">
-  
-  #set( $searcher = $mediaarchive.getSearcher("collectivesubscribers") )
+<div class="suscribe-title">
+Join the Collective
+</div>
+<div class="suscribe-headline">
+Meet our team & Community and become a co-creator, sponsor or influencer
+</div>	
+</div>
 
-   		#set( $subs = $searcher.query().exact("collectiveid",$librarycol.getId()).search($context))
-   		#if( $subs.isEmpty()) <p>No subscribers yet</p> #end
-   <ul class="list-group list-group-flush w-100 align-items-stretch">
+
+<div class="community-area">
+<h3>[[Community]]</h3>
+
+#set( $searcher = $mediaarchive.getSearcher("collectivesubscribers") )
+#set( $subs = $searcher.query().exact("collectiveid",$librarycol.getId()).search($context))
+#if( $subs.isEmpty()) 
+	<p>No subscribers yet</p>
+#else
+<ul class="list-group list-group-flush w-100 align-items-stretch">
    		
   #foreach( $hit in $subs)
         <li class="list-group-item text-center d-inline-block">
@@ -21,15 +34,7 @@
         </li>
   #end
   </ul>
-        <div class="card-block">
-        <br>
-        #set( $found = $searcher.query().exact("followeruser",$user.getId()).exact("collectiveid",$librarycol.getId()).searchOne() )
-        #if( !$found)	
-			 <a href="$apphome/collective/subscribers/addnew.html?collectionid=$librarycol.getId()" 
-			 class="emdialog btn btn-primary">[[Subscribe Yourself]]</a>
-		#end	 
-			 <a href="$apphome/collective/subscribers/addnew.html?collectionid=$librarycol.getId()" 
-			 class="emdialog btn btn-primary">[[Invite Others]]</a>
-        </div>
-  </div>
+ 
+#end
 </div>
+        
