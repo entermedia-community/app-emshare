@@ -1,11 +1,13 @@
 <div class="oifeedlayout-content">
 #set ($librarycolid = $librarycol.getId())
 #if( $caneditdata )
-$pages.include("$apphome/project/upload/addnewupload.html")
+$pages.include("$apphome/collective/channel/addnewupload.html")
 <br>
 #end
 #set($topuploads = $mediaarchive.getSearcher("userupload").query().exact("librarycollection", $librarycolid).sort("uploaddateDown").search() )
 $topuploads.setHitsPerPage(20)
+
+##TODO add pages
 
 #foreach( $upload in $topuploads.getPageOfHits())
 	<div class="card oi-feedcard">
@@ -24,4 +26,6 @@ $topuploads.setHitsPerPage(20)
 		</div>
 	</div>
 #end
+
+$pages.include("$apphome/collective/channel/subscribers/index.html")
 </div>
