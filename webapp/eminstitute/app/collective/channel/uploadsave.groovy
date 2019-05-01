@@ -21,7 +21,7 @@ public void init()
 	upload.setValue("owner",context.getUserName());
 	upload.setValue("librarycollection",context.getRequestParameter("collectionid"));
 	upload.setValue("uploadcategory",defaultcat);
-	upload.setValue("usertags",context.getRequestParameters("usertags.value"));
+	upload.setValue("usertags",context.getRequestParameters("keywords.value"));
 	upload.setValue("longdescription",context.getRequestParameters("uploaddescription"));
 	searcher.saveData(upload);
 		

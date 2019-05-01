@@ -24,6 +24,12 @@
 				 ##<a href="$apphome/project/media/category/${librarycolid}/${upload.uploadcategory}.html" class="btn btn-sm btn-primary">[[View]]</a>
 				</div>
 				<div class="clearfix"></div>
+				#if($upload.usertags)
+					#set( $tags = $upload.usertags.split("\s*\|\s*") )
+					#foreach( $tag in $tags )
+						<a href="#" class="badge badge-tags" title="#esc($tag)">#esc($tag)</a>
+					#end
+				#end
 			</div>
 		</div>
 	#end
@@ -31,7 +37,7 @@
 
 
 </div>	
- <div class="col col-lg-3 collective-sidebar">
+ <div class="col col-lg-4 collective-sidebar">
 	$pages.include("$apphome/collective/channel/subscribers/index.html")
  </div>
 </div>
