@@ -1,31 +1,40 @@
-<div class="oifeedlayout-content">
-#set ($librarycolid = $librarycol.getId())
-#if( $caneditdata )
-$pages.include("$apphome/collective/channel/addnewupload.html")
-<br>
-#end
-#set($topuploads = $mediaarchive.getSearcher("userupload").query().exact("librarycollection", $librarycolid).sort("uploaddateDown").search() )
-$topuploads.setHitsPerPage(20)
-
-##TODO add pages
-
-#foreach( $upload in $topuploads.getPageOfHits())
-	<div class="card oi-feedcard">
-		<div class="card-header">$upload.longdescription</div>
-		<div class="card-block oi-feedgallery">
-			$context.putPageValue("upload",$upload)
-			$pages.include("$apphome/collective/channel/images.html",$context)
+<div class="row " style="min-height: 100%;";>
+ <div class="col">
+	#set ($librarycolid = $librarycol.getId())
+	#if( $caneditdata )
+		$pages.include("$apphome/collective/channel/addnewupload.html")
+	#end
+	#set($topuploads = $mediaarchive.getSearcher("userupload").query().exact("librarycollection", $librarycolid).sort("uploaddateDown").search() )
+	$topuploads.setHitsPerPage(20)
+	
+	##TODO add pages
+	
+	#foreach( $upload in $topuploads.getPageOfHits())
+		<div class="feedcard">
+			<div class="feedcard-media">
+				$context.putPageValue("upload",$upload)
+				$pages.include("$apphome/collective/channel/images.html",$context)
+			</div>
+			<div class="feedcard-title">$upload.longdescription</div>
+			 <div class="feedcard-footer">
+			 	<div class="float-left">$context.getDateTime( $upload.uploaddate ) [[by]] $userManager.getScreenName($upload.owner)</div>
+			 	<div class="float-right">
+			     <a  class="emdialog"  data-width="900" data-hidefooter="true" data-librarycol="${librarycol.getId()}" data-uploadid="${upload.id}" 
+			     	 href="$home$apphome/collective/channel/share.html?collectionid=${librarycol.getId()}" ><i class="fas fa-share-alt"></i></a>
+				 ##<a href="$apphome/project/media/category/${librarycolid}/${upload.uploadcategory}.html" class="btn btn-sm btn-primary">[[View]]</a>
+				</div>
+				<div class="clearfix"></div>
+			</div>
 		</div>
-		 <div class="card-footer">
-		 <div class="float-left">[[Uploads]]: $context.getDateTime( $upload.uploaddate ) [[by]] $userManager.getScreenName($upload.owner)</div>
-		 <div class="float-right">
-		     <a  class="emdialog btn btn-sm btn-primary"  data-width="900" data-hidefooter="true" data-librarycol="${librarycol.getId()}" data-uploadid="${upload.id}" 
-		     	 href="$home$apphome/project/feed/share.html?collectionid=${librarycol.getId()}" >[[Share]]</a>
-			 <a href="$apphome/project/media/category/${librarycolid}/${upload.uploadcategory}.html" class="btn btn-sm btn-primary">[[View]]</a>
-			 </div>
-		</div>
-	</div>
-#end
+	#end
 
-$pages.include("$apphome/collective/channel/subscribers/index.html")
+
+
+</div>	
+ <div class="col col-lg-3 collective-sidebar">
+	$pages.include("$apphome/collective/channel/subscribers/index.html")
+ </div>
 </div>
+
+
+
