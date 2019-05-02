@@ -22,8 +22,11 @@ public void init()
 	upload.setValue("librarycollection",context.getRequestParameter("collectionid"));
 	upload.setValue("uploadcategory",defaultcat);
 	upload.setValue("usertags",context.getRequestParameters("keywords.value"));
+	upload.setValue("title",context.getRequestParameters("uploadtitle"));
 	upload.setValue("longdescription",context.getRequestParameters("uploaddescription"));
 	searcher.saveData(upload);
+	
+	//context.redirect("/"+$applicationid+"/collective/channel/");
 		
 }
 

@@ -1,9 +1,11 @@
 jQuery(document).ready(function() 
 { 
 
-lQuery(".attachfile").livequery("click",function()
+lQuery("#feed-add-btn ").livequery("click",function(e)
 {
+	e.preventDefault();
 	$(".showonfocus").toggle();
+	$(this).hide();
 	//$(".uploaddescription").attr("placeholder","Start typing");
 
 });
