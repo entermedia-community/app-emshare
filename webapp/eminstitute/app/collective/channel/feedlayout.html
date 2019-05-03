@@ -11,29 +11,28 @@
 	
 	#foreach( $upload in $topuploads.getPageOfHits())
 		<div class="feedcard">
-			<div class="feedcard-media">
-				$context.putPageValue("upload",$upload)
-				$pages.include("$apphome/collective/channel/images.html",$context)
-			</div>
+
 			<div class="row no-gutters">
 					<div class="col">
 						#if($upload.title)
 							<div class="feedcard-title">$upload.title</div>
 						#end
-					<div class="feedcard-author">[[by]] $userManager.getScreenName($upload.owner)</div>
+					<div class="feedcard-author text-left">[[Published on ]]<a href="#">$librarycol</a>, <a href="#">Entermedia</a> $context.getAge($upload.getDate("uploaddate")) [[ago]]  [[by]] $userManager.getScreenName($upload.owner) |  
+					<a  class="emdialog"  data-width="900" data-hidefooter="true" data-librarycol="${librarycol.getId()}" data-uploadid="${upload.id}" 
+			     	 href="$home$apphome/collective/channel/share.html?collectionid=${librarycol.getId()}" ><i class="fas fa-share-alt"></i></a>
+					</div> 
 					</div>
-				
-					<div class="col-sm-2">
-					<div class="feedcard-date">$context.getDateTime( $upload.uploaddate )</div> 
-					</div>
+
+					
+			</div>
+			
+						<div class="feedcard-media">
+				$context.putPageValue("upload",$upload)
+				$pages.include("$apphome/collective/channel/images.html",$context)
 			</div>
 			<div class="feedcard-body">$upload.longdescription</div>
 			 <div class="feedcard-footer">
-			 	<div class="float-right">
-			     <a  class="emdialog"  data-width="900" data-hidefooter="true" data-librarycol="${librarycol.getId()}" data-uploadid="${upload.id}" 
-			     	 href="$home$apphome/collective/channel/share.html?collectionid=${librarycol.getId()}" ><i class="fas fa-share-alt"></i></a>
-				 ##<a href="$apphome/project/media/category/${librarycolid}/${upload.uploadcategory}.html" class="btn btn-sm btn-primary">[[View]]</a>
-				</div>
+			 	
 				<div class="clearfix"></div>
 				#if($upload.usertags)
 					#set( $tags = $upload.usertags.split("\s*\|\s*") )
