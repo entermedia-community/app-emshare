@@ -2,11 +2,8 @@
 #set( $searcher = $mediaarchive.getSearcher("userupload") )
 $context.putPageValue("searcher",$searcher)
 #set( $xmledithome  = "$apphome/components/xml")
-
-<a href="#" id="feed-add-btn" class="feed-add-btn float-right"><i class="fas  fa-plus"></i></a>
-
-<div class="clearfix"></div>
-<div class="feed-upload-box showonfocus" id="feeduploadbox" style="display:none;">
+<div class="feedcardX">
+<div class="feed-upload-box " id="feeduploadbox">
 <form id="uploaddata" name="wizard" method="post" data-targetdiv="chatfeedlayout" 
 	action="$apphome/collective/channel/upload.html" 
 	data-finishaction="$apphome/collective/channel/uploadsave.html"
@@ -15,26 +12,30 @@ $context.putPageValue("searcher",$searcher)
 <div class="card-uploader" style="margin-bottom: 20px;">
 		<div class="feedupload">
 			<div class="attachtext">				 	
-				<input class="attachtext-textbox uploaddescription" name="uploadtitle"  id="uploadtitle" placeholder="[[Title]]"  />
-				<textarea class="attachtext-textbox" name="uploaddescription" id="uploaddescription" placeholder="[[Message]]" ></textarea>
+				<input class="attachtext-textbox uploaddescription" name="uploadtitle"  id="uploadtitle" placeholder="[[Post Title]]"  />
+				<textarea class="attachtext-textbox" name="uploaddescription" id="uploaddescription" placeholder="[[Description]]" ></textarea>
 			</div>
+			##<a href="#" id="feed-add-btn" class="feed-add-btn"><i class="fas  fa-plus"></i></a>
+
+			##<a href="$apphome/collective/channel/${librarycol.id}/#urlencode($librarycol.name).html" 
+			##	class="feed-add-btn"><i class="fas  fa-plus"></i>Cancel</a>
 			
-				
 		</div>	
-		<div class="feedupload-uploader" style="padding: 20px;">
+		<div class="feedupload-uploader showonfocus" style="padding: 20px;display:none;">
 		 	<div class="container">
 		 	<div class="row">
 			    <div class="col-sm-4">
 			    
 					<div class="uploadinstructions">	  
-			             <div id="drop-area">
-							<div class="drop-over"></div>
-							<div class="hints">[[Or]]...</div>
-						</div>
-					</div>	
-					<div style="text-align:center;">
+										<div style="text-align:center;">
 						<a class="btn btn-primary btn-sm" href="#" id="filePicker">[[Choose Files]]</a>
 					</div>
+							<div class="hints">[[Or drag files here]]...</div>
+					
+			             <div id="drop-area">
+							<div class="drop-over"></div>
+						</div>
+					</div>	
 					
 			        <div id="progress_report_template" style="display:none;">
 				        <li class="uploadprogressrow">
@@ -76,11 +77,11 @@ $context.putPageValue("searcher",$searcher)
 	    </div> 
 		<div class="float-right">
 				<div id="uploadinstructionsafter">
-		           <a class="btn btn-primary btn-sm" id="startbutton" data-complete="[[Upload Complete]]" href="#">[[Upload]]</a>
+		           <a class="btn btn-primary btn-sm" id="startbutton" data-complete="[[Upload Complete]]" href="#">[[Post]]</a>
 			    </div>
 		</div>
 		<div class="float-right" style="padding-right:20px">
-		 		<a class="btn btn-secondary btn-sm cancel" href="">[[Cancel]]</a>
+		 		<a class="btn btn-secondary btn-sm cancel" href="$apphome/collective/channel/${librarycol.id}/#urlencode($librarycol.name).html" >[[Cancel]]</a>
 		 	</div>
 			<div class="clearfix"></div>
 		</div> 
@@ -91,6 +92,7 @@ $context.putPageValue("searcher",$searcher)
 		</div>
 </div>	
 </form>
+</div>
 </div>
 
 	

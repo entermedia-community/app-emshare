@@ -1,6 +1,12 @@
 jQuery(document).ready(function() 
 { 
 
+lQuery(".attachtext input,.attachtext textarea").livequery("click",function(e)
+{
+	$(".showonfocus").show();
+
+});
+
 lQuery("#feed-add-btn ").livequery("click",function(e)
 {
 	e.preventDefault();
