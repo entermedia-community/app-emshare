@@ -1,0 +1,36 @@
+<div class="card mx-auto" style="margin:40px;max-width:800px;text-align:left;">
+  <div class="card-header">
+   [[Receive important email updates and support us]]
+  </div>
+  <div class="card-block" style="padding:20px;">
+
+#set( $searcher = $mediaarchive.getSearcher("sitesubscribers") )
+$context.putPageValue("searcher",$searcher)
+$context.putPageValue("view", "sitesubscribers/addnew")
+<form name="saveproject" id="saveproject" action="addsave.html" method="post">
+
+#if( $user)
+<input type="hidden" name="save" value="true" />
+#else
+ [[You must first]] <a href="$apphome/authentication/login.html?loginokpage=$content.path" class="btn btn-primary">[[Login]]</button>
+#end  
+
+<input type="hidden" name="searchtype" value="sitesubscribers" />
+
+<input type="hidden" name="field" value="followeruser" />
+<input type="hidden" name="followeruser.value" value="$user.getId()" />
+
+<input type="hidden" name="field" value="addeddate" />
+<input type="hidden" name="addeddate.value" value="$storeddate" />
+
+<input type="hidden" name="field" value="siteid" />
+<input type="hidden" name="siteid.value" value="$site.getId()" />
+<input type="hidden" name="siteid" value="$site.getId()" />
+ 
+$pages.include("/$applicationid/components/xml/detaileditor4.html", $context)
+
+</form>
+
+
+  </div>
+</div>

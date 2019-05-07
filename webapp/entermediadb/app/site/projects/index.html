@@ -1,0 +1,23 @@
+#set( $searcher = $mediaarchive.getSearcher("collectiveproject") )
+#set( $subs = $searcher.query().match("parentcollectionid",$librarycol.getId()).search())
+#if( $subs.isEmpty()) <p>No projects started</p> #end
+<div class="row">
+  #foreach( $hit in $subs)
+  <div class="col-md-4">
+    <div class="thumbnail">
+		#set( $asset = $mediaarchive.query("asset").match("collectiveproject",$hit.id).searchOne() )
+     #if( $asset)
+      <a href="/w3images/lights.jpg">
+        <img src="/site/mediadb/services/module/asset/downloads/preset/${asset.sourcepath}/image200x200.jpg" alt="Lights" style="width:100%">
+        <div class="caption">
+          <p>$hit.name</p>
+        </div>
+      </a>
+      #else
+         <p>$hit.name</p>
+       
+      #end
+    </div>
+  </div>
+  #end
+</div>

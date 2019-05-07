@@ -1,0 +1,33 @@
+<div id="mediaviewer" class="assetviewer">
+     <div id="mp-asset-title">
+     	#set(  $tostring = $asset.toString($context.locale))
+     	<h3 class="name" title="$tostring">$tostring</h3> 
+
+
+     	#if( $totalpages > 1 ) <span class="pagenum">([[Page]] $pagenum of $totalpages)</span> #end
+  	</div>
+  	
+	<div class="row">
+		<div class="col-sm-5">
+			$pages.include("$apphome/components/mediaviewer/player/preview_player.html", $context)
+		</div>
+		<div class="col-sm-7">
+			$pages.include("$apphome/components/mediaviewer/data/preview_data.html", $context)
+		</div>
+		
+	</div>
+ </div>
+
+	#set( $ismultifine = $asset.id.startsWith("multiedit:") )
+	#if($ismultifine )
+	        <h2>[[Editing across $asset.size() records]]</h2>
+	#else
+        <div id="mediaplayer" class="media-player">
+            
+        </div>
+	          
+	    <div id="mediadata" class="media-data-table">
+	          
+	    </div>
+    #end        
+   	#set( $root = "$!prefix$home$page.directory")

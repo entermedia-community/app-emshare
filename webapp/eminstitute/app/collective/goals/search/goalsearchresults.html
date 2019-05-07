@@ -1,0 +1,80 @@
+<div id="goalresultsdiv">
+#set( $allprojects = $mediaarchive.getSearcher("collectiveproject").query().match("parentcollectionid",$librarycol.getId()).sort("name").search($context) )
+#set( $projectid = $context.getRequestParameter("projectid"))
+
+#if(!$projectids)
+#set( $projectids = $userprofile.getValues("goaltrackercolumns") )
+#end
+
+#if( $projects.isEmpty() )
+	Create a new project to get started
+#end
+
+#if( $caneditdata)
+<div class="goals-header-actions">
+    #if(!$allprojects.isEmpty() )
+    <a href="" class="btn btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown">[[Projects]]</a>
+    <div class="dropdown-menu">
+    <a class="dropdown-item" href="#">[[Open Projects]]</a>
+    #foreach( $project in $allprojects )
+    <a class="dropdown-item" href="openproject.html?collectionid=$librarycol.getId()&profilepreference=goaltrackercolumns&profilepreference.value=$project.id">$project.name</a>
+    #end
+    </div>
+    #end
+ 	<a class="btn btn-secondary btn-sm emdialog" 
+ 	title="[[New Ticket]]" 
+ 	data-width="900"
+ 	style="margin-left: 10px;"
+ 	href="$apphome/collective/goals/editgoalpanel.html?collectionid=$librarycol.getId()&categoryid=$!selectedcat.getId()&goalfolder=search" ><i class="fas fa-plus"></i> Add Ticket</a>
+	 #if( $goalhits )
+	 <a class="btn btn-secondary btn-sm" 
+	 	title="[[Export Results]]" 
+	 	data-width="900"
+	 	style="margin-left: 10px;"
+	 	href="$apphome/collective/goals/search/export/projectgoals.csv?hitssessionid=$goalhits.getSessionId()" ><i class="fas fa-download"></i> Export</a>
+	#end
+<div class="clearfix"></div>
+</div>
+#end
+
+#set( $col = 0)
+<div class="goals-columns">
+
+#foreach( $projectid in $projectids )
+
+#set( $project = $mediaarchive.getData("collectiveproject",$projectid))
+<div class="goals-column-container" style="width:33%" data-col="$project.id">
+
+<div class="goals-column">
+<div class="goals-column-header"> 
+#set( $hits = $context.getPageValue("goalhits${projectid}"))
+#if(!$project) $projectid missing #end
+	$!project.name	( $!hits.size() ) 
+	<a class="goals-column-header-close" href="closeproject.html?collectionid=$librarycol.getId()&profilepreference=goaltrackercolumns&profilepreference.value=$project.id"><i class="fas fa-times"></i></a>
+	<div class="clearfix"></div>
+</div>
+
+<ul class="projectgoals ui-sortable"
+data-oemaxlevel="2"  data-collectionid="$librarycol.getId()" data-categoryid="$!selectedcat.id" 
+	data-savepath="$apphome/collective/goals/goalmovepriority.html">
+#if( $hits )
+	#foreach( $goal in $hits )  
+		$context.putPageValue("goal",$goal)
+		$pages.include("$apphome/collective/goals/search/goalrow.html",$context)
+	#end
+#end
+</ul>
+
+</div>
+</div>
+#end
+</div>
+
+#if( $toomanygoals)
+ <div class="alert alert-primary" style="float:left;" role="alert">
+  Ticket limit reached. Please close older tickets
+</div>
+#end
+
+
+</div>

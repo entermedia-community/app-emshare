@@ -1,0 +1,39 @@
+<div id="goalresultsdiv">
+<div class="goals-header-actions">
+ 	<a class="btn btn-secondary btn-sm emdialog" 
+ 	title="[[New Goal]]" 
+ 	data-width="900"
+ 	style="margin-left: 10px;"
+ 	href="$apphome/site/goals/editgoalpanel.html?collectionid=$librarycol.getId()&categoryid=$!selectedcat.getId()&goalfolder=search" ><i class="fas fa-plus"></i> [[Add Goal]]</a>
+<div class="clearfix"></div>
+</div>
+
+#set( $col = 0)
+<div class="goals-columns">
+
+#foreach( $auser in $users )
+
+<div class="goals-column-container" >
+<div class="goals-column">
+<div class="goals-column-header"> 
+#set( $hits = $context.getPageValue("goalhits${auser.getId()}"))
+	$auser.name	( $!hits.size() ) 
+</div>
+
+<ul class="projectgoals"
+data-oemaxlevel="2"  data-collectionid="$librarycol.getId()" data-categoryid="$!selectedcat.id" 
+	data-savepath="$apphome/site/goals/goalmovepriority.html">
+#if( $hits )
+	#foreach( $goal in $hits )  
+		$context.putPageValue("goal",$goal)
+		$pages.include("$apphome/site/goals/search/goalrow.html",$context)
+	#end
+#end
+</ul>
+
+</div>
+</div>
+#end
+</div>
+
+</div>

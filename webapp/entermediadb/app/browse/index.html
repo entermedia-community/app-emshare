@@ -1,0 +1,57 @@
+ #set( $searcher = $mediaarchive.getSearcher("librarycollection") )
+<div id="projectresultholder" style="padding:10px 0 0 20px;margin: 0;">
+<div class="row" style="margin:0px;">
+  	<div class="col-10" style="padding: 0px 0 0 10px;">
+
+<form class="emcontainer" style="padding:5px 15px 5px 15px;" >
+	<input type="hidden" name="field" value="name" />
+	<input type="hidden" name="operation" value="contains" />
+  	<input type="search" name="name.value" class="form-control ds-input" id="search-input" placeholder="[[Search Sites]]..." 
+  		style="width: 80%; max-width: 500px;vertical-align: top;" value='$!hits.getInput("name")'>
+</form>	
+#set( $n = $hits.setHitsPerPage(12))
+
+#foreach($site in $hits.getPageOfHits())
+<div class="card-mini-project" >
+<div class="card" style="margin:10px;">
+  <div class="card-body container" style="padding: 6px" >
+  	<div class="row" style="">
+  	<div class="col-4" style="padding: 0px 0 0 10px; margin: 8px">
+
+  <a href="$apphome/site/home/${site.id}/#urlencode($site.name).html" title="$site">
+	#set( $logo = $mediaarchive.getAsset($site.assetportrait))
+		<img style="width:100px" 
+			#if( $logo)
+				src="/$mediaarchive.getMediaDbId()/services/module/asset/downloads/preset/${logo.sourcepath}/image200x200.jpg"
+			#else	
+				src="$apphome/theme/oi/team.png"
+			#end
+		 > 
+  </a>
+	</div>
+  	<div class="col-7" style="padding: 0px;">
+    <p><strong>$site</strong></p> 
+   	<p>
+   	#foreach( $usertag in $site.getValues("usertags") )
+    <span class="categories-tag">$usertag</span>
+    #end
+    </p>
+	#set($label = $foundrow.getName($context.getLanguage()))
+	<i>#esc($!label)</i>
+    </div>
+    </div>
+  </div>
+</div>
+</div>
+#end
+#if($hits.getPages() > 1 )
+	Next page
+#end
+</div>
+<div class="col-2" style="padding: 0px 20px 20px 20px;">
+	<img src="$apphome/theme/oi/Google-Group.png" />
+	<p>[[Join a site or start a new one. Be part of a team actively bringing changes to the world.]]</p>
+  		<a href="$apphome/browse/add/addnew.html" class="btn btn-primary" >[[Start New Site]]</a>	
+</div>
+</div>
+</div>

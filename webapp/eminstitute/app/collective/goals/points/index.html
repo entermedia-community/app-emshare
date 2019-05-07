@@ -1,0 +1,67 @@
+<div class="modal-dialog" style="max-width:80%;padding: 30px; margin:0px;" >
+	<div class="modal-content">
+	<div  class="modal-header" >
+	    <h4 class="modal-title">[[Weekly Points Report]]</h4>
+	    <p>Month: $context.getDateTime($since) 
+	    <a class="btn" href="./index.html?collectionid=$librarycol.id&monthsback=$monthsback"> [Go Back ${monthsback} Month]</a></p>
+	</div>
+	<div class="modal-body">
+#foreach($person in $users)
+	<div class="pull-left card card-mini" style="margin:5px;"> 
+    	<div class="card-task-header" >$person</div>
+  		<div class="card-task-body " >
+  		#set( $weeks = $completed.weeksInMonth($since) )
+			<table class="striped" style="width:100%">
+  			<tr><th>Tickets and Tasks</th><th style="width:280px;">Closed On</th><th style="width:80px;">Points</th></tr>
+			#set( $totalpoints = 0)  			
+  		#foreach( $week in $weeks)
+			#set( $counted = 0)
+			#set( $weekpoints = 0)  	
+			#set($tasks = $completed.getTasksForWeek($person,$week))
+  		    #foreach($task in $tasks)
+  				#set( $selectedcat = $mediaarchive.getCategory($task.projectdepartment))
+				#set( $points = $selectedcat.getValue("goalpoints"))
+				#if( !$points || $points == 0)
+					#set( $points = 10 )
+				#end
+				#set( $counted = $counted +1)
+				#set( $totalpoints = $totalpoints + $points)
+				#set( $weekpoints = $weekpoints + $points)
+  				<tr><td>Task: <a class="emdialog" data-width="900"
+		 	 	title="Ticket Details" href="$apphome/collective/goals/editgoalpanel.html?id=$task.projectgoal&collectionid=$librarycol.id&nodeID=$selectedcat.id&goalfolder=$content.goalfolder">$!mediaarchive.getData("projectgoal",$task.projectgoal) / $task.name</a></td>
+  					<td>$context.getDateTime($task.getDate("completedon"))</td><td>$points</td>
+  				</tr>
+  		    #end
+  		    
+  		    #set($tickets = $completed.getTicketsForWeek($person,$week))
+  		    
+  		    #set( $countedtickets = 0)
+  		    #if(!$tickets.isEmpty())
+  		    #foreach($ticket in $tickets)
+  		   		#set( $points = $ticket.getValue("points"))
+  		    	<tr><td>
+  		    	#set( $goallink = "$apphome/collective/goals/editgoalpanel.html?id=${ticket.id}&collectionid=$librarycol.getId()&goalfolder=search")
+  		    	  <a href="$goallink"
+		    	title="$ticket.name" class="emdialog editgoalshow" 
+		    	data-urlbar="$apphome/collective/goals/search/index.html?collectionid=$librarycol.getId()&opengoalid=${ticket.id}" data-width="900" >
+  			Project: $mediaarchive.getData("collectiveproject",$ticket.goaltrackercolumn) Ticket: $ticket.name </a></td><td>$!context.getDateTime($ticket.getDate("resolveddate"))</td><td>$points</td></tr>
+				#set( $counted = $counted +1)
+				#set( $weekpoints = $weekpoints + $points)
+				#set( $totalpoints = $totalpoints + $points)
+  		    #end
+  		    #end
+  		    #if( $weekpoints > 0)
+  			<tr><td colspan="2" style="padding-left: 50px;"> </td><td style="text-align:right;">$weekpoints</td></tr>
+  			#end
+		#end
+ 		    #if( $totalpoints > 0)
+ 			<tr><td colspan="2" style="padding-left: 50px;"> </td><td style="text-align:right;">$totalpoints</td></tr>
+ 			#end
+  			</table>
+  		</div>
+	</div>
+#end
+	</div>
+	</div>
+</div>
+	

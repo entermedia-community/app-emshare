@@ -1,0 +1,14 @@
+A new request has been received.  Details:
+
+#set($contactsearcher = $searcherManager.getSearcher($catalogid,"contactrequest"))
+    #set($details = $contactsearcher.getDetailsForView("contactrequest/mobileform"))
+    #foreach($detail in $details)
+  	  	#if($detail.id == "subject")
+  	  		#set($val = "Request Info - $!data.address1")
+  	  	#end
+  	    $detail.text: $val <br/>
+  	
+  		
+    
+    
+<a href="$content.siteroot$home$apphome/views/modules/contactrequest/edit/edit.html?id=$data.id">Click here to review</a>

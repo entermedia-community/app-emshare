@@ -1,0 +1,99 @@
+<div class="goals-sidebar filters-sidebar">
+
+$pages.include("$apphome/collective/goals/search/advanced.html",$context)
+#set( $searcher = $goalhits.getSearcher())
+<div class="ui-widget uipanel" id="left-col-search" style="padding-top: 10px;" >
+<div  class="ui-widget-content" id="filterscontent" #if($userprofile.minimizefilterscontent == "true" && $cantogglesidebar) style="display: none;" #end>
+ 
+ <ul id="filters-sidebar-selected">
+ #if( $goalhits.getSearchQuery().hasFilters() )
+ ##<h4>Selected</h4>
+	#foreach( $selectedfilter in $goalhits.getSearchQuery().getFilters() )
+			#set( $detail = $searcher.getDetail($selectedfilter.getId() ) )
+	<li><a class="ajax" title="$detail.getText($context)" targetdiv="goaleditor" 
+			href="$home$apphome/collective/goals/search/goalsearchfilter.html?collectionid=$!librarycol.getId()&removefilter=$selectedfilter.getId()&hitssessionid=$!goalhits.sessionId&searchtype=$searcher.searchType&oemaxlevel=2" >
+			$detail: 
+			#if( $detail.isMultiLanguage() )
+			$context.getText( $selectedfilter )
+			#else
+			$selectedfilter
+			#end
+			 <span style="float: right; margin-top: -2px; margin-right: 5px;" class="ui-icon ui-icon-closethick"></span></a></li>
+	#end
+#end	
+</ul>
+
+#set($facets = $goalhits.getFilterOptions())
+<form class="ajaxform" targetdiv="goaleditor" 
+	action="$home$apphome/collective/goals/search/goalsearchfilter.html" 
+	target="_parent" name="dontshowgoal" id="dontshowgoal" valign="middle">
+    <input type="hidden" name="collectionid" value="$!librarycol.getId()" />
+    <input type="hidden" name="oemaxlevel" value="2" />
+
+#foreach($type in $facets )
+#set( $viewpermission = $context.getPageValue("canviewfilter${type.getId()}") )
+#ifnull($viewpermission)
+	#set( $viewpermission = true)
+#end
+
+#if( $viewpermission )
+	#if(!$goalhits.isChildFacetSelected($type))
+	<h4>$type.getName($context.getLocale())</h4>
+	<ul class="filters-sidebar">
+	#foreach($entry in $type.children)
+		#if( ${foreach.count} == 10 )
+		</ul>
+		<a class="toggle-visible morelink" href="#" data-targetdiv="showmore${type.getId()}" data-showlabel="[[Show More]]" 
+			data-hidelabel="[[Show Less]]"><span>[[Show More]]</span></a>
+		<ul id="showmore${type.getId()}" class="filters-sidebar morefilters">
+		#end
+		<li>
+			<a class="addgoalfilter" 
+				data-filtertype="$type.getId()" data-filtervalue="$entry.getId()" data-filterlabel="$context.getText($entry.getName())" href="#">
+			<span> $entry.getText($context) ($entry.count)</span>
+			</a>
+		</li>
+	#end
+	</ul>
+    #end
+#end
+#end
+    <input type="hidden" name="catalogid" value="$!catalogid" />
+    <input type="hidden" name="searchtype" value="$searcher.searchType" />
+    <input type="hidden" id="filtertype" name="filtertype" value="" />
+    <input type="hidden" id="filtervalue" name="filtervalue" value="" />
+    <input type="hidden" id="filterlabel" name="filterlabel" value="" />
+    <input type="hidden" name="hitssessionid" value="$!goalhits.sessionId" /> ##TODO: reload on ajax reloads
+</form>
+
+</div></div>
+	
+
+
+<script type="text/javascript">
+
+jQuery(document).ready(function() 
+{ 
+
+	lQuery('#dontshowgoal .addgoalfilter').livequery('click',function(e)
+	{	
+		e.preventDefault();
+		//TODO: Why not update the results with new data like VD does?
+			var link = $(this);
+			var picked = link.data("filtertype");
+			jQuery('#dontshowgoal #filtertype').val(picked);
+			var value = link.data("filtervalue");
+			jQuery('#dontshowgoal #filtervalue').val(value);
+			var label = link.data("filterlabel");
+			jQuery('#dontshowgoal #filterlabel').val(label);
+
+			link.closest('#dontshowgoal').trigger("submit");
+			
+	});
+});
+</script>
+
+
+
+
+</div>

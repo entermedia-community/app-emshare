@@ -1,0 +1,21 @@
+#set( $searcher = $mediaarchive.getSearcher("collectiveproject") )
+#set( $subs = $searcher.query().match("parentcollectionid",$librarycol.getId()).search())
+
+<div class="collaborate-content collaborate-channels" >
+<h3>[[Topics]]
+#if( $caneditdata)	
+	 <a href="$apphome/collective/community/addnew.html?collectionid=$librarycol.getId()" 
+	 class="emdialog community-add-btn float-right" style=""><i class="fas fa-plus"></i></a>
+#end
+</h3>
+#if( $subs.isEmpty()) 
+	<span>[[No topics started]]</span>
+#else 
+	<ul class="">
+	  #foreach( $hit in $subs)
+	     <li><a href=""><i class="fas fa-lock"></i> $hit.name</a></li>
+	  #end
+	</ul>
+#end
+
+</div>

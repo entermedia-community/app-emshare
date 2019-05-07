@@ -1,0 +1,25 @@
+<div style="background:#cec5b3; padding:1px; color:#3e4553;text-align:center; border-top:solid 10px #3e4553;">
+    <h1>[[Welcome]] $data</h1>
+</div>
+
+
+<div class="card mx-auto" style="margin:40px;max-width:800px;text-align:left;">
+  <div class="card-block" style="padding:20px;">
+
+#set( $searcher = $mediaarchive.getSearcher("collective") )
+$context.putPageValue("searcher",$searcher)
+#set( $librarycol = $data)
+	<div  style="padding: 0px;">
+    <p><strong>$librarycol</strong></p> 
+   	<p>
+   	#foreach( $usertag in $librarycol.getValues("usertags") )
+    <span class="categories-tag">$usertag</span>
+    #end
+    </p>
+	#set($label = $foundrow.getName($context.getLanguage()))
+	<i>#esc($!label)</i>
+    </div>
+
+<a class="btn btn-primary text-uppercase" style="margin-left: 300px" href="$apphome/collective/subscribers/${collective.id}/#urlencode($collective.name).html">Invite Subscribers</a>
+  </div>
+</div>

@@ -1,0 +1,71 @@
+<div class="suscribe-area">
+#if( $user )
+	#set( $found = $searcher.query().exact("followeruser",$user.getId()).exact("collectiveid",$librarycol.getId()).searchOne() )
+#end	
+#if( !$found)
+<div class="suscribe-title">
+Join the Collective
+</div>	
+	 <a href="$apphome/collective/channel/subscribers/addnew.html?collectionid=$librarycol.getId()" 
+	 class="emdialog btn suscribe-btn">[[Subscribe]]</a>
+#end
+##<a href="$apphome/channel/subscribers/addnew.html?collectionid=$librarycol.getId()" class="emdialog btn btn-primary">[[Invite Others]]</a>
+
+
+<div class="suscribe-headline">
+Meet our team & Community and become a co-creator, sponsor or influencer
+</div>	
+
+<div class="suscribers-box">
+<div class="suscribers-box-box">
+	<div class="box-content" style="border-right:1px solid #ddd">
+	<strong>Sponsors</strong>
+	<div class="box-number">4</div>
+	</div>
+</div> 
+<div class="suscribers-box-box">
+	<div class="box-content" style="border-right:1px solid #ddd">
+	<strong>Team</strong>
+	<div class="box-number">10</div>
+	</div>
+</div>  
+<div class="suscribers-box-box">
+	<div class="box-content">
+	<strong>Share</strong>
+	<div class="box-icons">
+		<a href=""><i class="fab fa-facebook-f"></i></a>
+		<a href=""><i class="fab fa-instagram"></i></a>
+		<a href=""><i class="fas fa-envelope"></i></a>
+	</div>
+	</div>
+</div>  
+<div class="clearfix"></div>
+</div>
+
+</div>
+
+
+<div class="community-area">
+<h3>[[Sponsors]]</h3>
+
+#set( $searcher = $mediaarchive.getSearcher("collectivesubscribers") )
+#set( $subs = $searcher.query().exact("collectiveid",$librarycol.getId()).search($context))
+#if( $subs.isEmpty()) 
+	<p>No subscribers yet</p>
+#else
+<ul class="list-group list-group-flush w-100 align-items-stretch">
+   		
+  #foreach( $hit in $subs)
+        <li class="list-group-item text-center d-inline-block">
+        	#set( $followeruser = $mediaarchive.getUser($hit.followeruser) )
+        	<span class="username">$followeruser.getAnonNickName()</span> 
+        	    	<span class="usernote">Added:  $context.getDateTime( $hit.getValue("addeddate") )</span>
+        	#if( $hit.whatsappnumber ) <span class="whatsapp">$hit.whatsappnumber </span>#end
+        </li>
+  #end
+  </ul>
+ 
+#end
+<h3>[[Team]]</h3>
+</div>
+        

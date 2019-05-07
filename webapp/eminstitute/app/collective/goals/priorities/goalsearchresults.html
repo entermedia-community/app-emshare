@@ -1,0 +1,55 @@
+<div id="goalresultsdiv">
+<div class="goals-header-actions">
+ 	<a class="btn btn-secondary btn-sm emdialog" 
+ 	title="[[New Ticket]]" 
+ 	data-width="900"
+ 	style="margin-left: 10px;"
+ 	href="$apphome/collective/goals/editgoalpanel.html?collectionid=$librarycol.getId()&categoryid=$!selectedcat.getId()&goalfolder=priorities&userlikes=$user.id" ><i class="fas fa-plus"></i> [[Add Ticket]]</a>
+
+    <a href="" class="btn btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown">[[Staff]]</a>
+    <div class="dropdown-menu">
+    #foreach( $auser in $mediaarchive.getList("user") )
+    <a class="dropdown-item" href="$apphome/collective/goals/priorities/index.html?collectionid=$librarycol.getId()&goaltrackerstaff=$auser.getId()">$auser</a>
+    #end
+    </div>
+
+ 	
+ 	Total Priorities: $totallikes Open: $totalopen Closed: $totalclosed
+
+#set( $opengoalid = $context.getRequestParameter("opengoalid"))
+#if( $opengoalid )
+    #set( $goal = $mediaarchive.getData("projectgoal",$opengoalid))
+    #set( $goallink = "$apphome/collective/goals/editgoalpanel.html?id=${goal.id}&collectionid=$librarycol.getId()&categoryid=$!selectedcat.getId()&hitssessionid=$!{goalhits.getSessionId()}&goalfolder=$content.goalfolder")
+    <a href="$goallink" title="$goal.name" class="emdialog editgoalshow openemdialog" style="display: cnone" >Goal link</a>	
+#end	
+ 	
+<div class="clearfix"></div>
+</div>
+
+#set( $col = 0)
+<div class="goals-columns">
+#set( $days = ["Mon", "Tue", "Wed", "Thu","Fri"] )
+#foreach( $daygoals in $week )
+
+<div class="goals-column-container" >
+<div class="goals-column">
+	#set( $dayofweek0 = $foreach.count - 1)
+<div class="goals-column-header" #if( $dayofweek0 == $selectedday0) style="border-top:solid yellow 2px" #end>
+	$days.get($dayofweek0)
+</div>
+
+<ul class="projectgoals"
+data-oemaxlevel="2"  data-collectionid="$librarycol.getId()" data-categoryid="$!selectedcat.id" 
+	data-savepath="$apphome/collective/goals/goalmovepriority.html">  ##set a completed date
+	#foreach( $goal in $daygoals )  
+		$context.putPageValue("goal",$goal)
+		$pages.include("$apphome/collective/goals/search/goalrow.html",$context)
+	#end
+</ul>
+
+</div>
+</div>
+#end
+</div>
+
+</div>

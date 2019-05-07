@@ -1,0 +1,43 @@
+<div style="background:#cec5b3; padding:1px; color:#3e4553;text-align:center; border-top:solid 10px #3e4553;">
+    <h1>[[New Site]]</h1>
+</div>
+
+##Exising ones 
+##No existing programs found.
+
+<div class="card mx-auto" style="margin:40px;max-width:800px;text-align:left;">
+  <div class="card-header">
+    [[Add a new site and work on projects]]
+  </div>
+  <div class="card-block" style="padding:20px;">
+
+#set( $searcher = $mediaarchive.getSearcher("librarycollection") )
+#set( $xmledithome  = "$apphome/components/xml")
+$context.putPageValue("searcher",$searcher)
+<form name="saveproject" id="saveproject" action="$apphome/site/welcome.html" method="post">
+
+#if(!$user)
+
+<div  class="alert alert-success"> 
+	  <strong>[[Login Required]]</strong> 
+</div>
+
+#end
+
+<input type="hidden" name="save" value="true" />
+<input type="hidden" name="searchtype" value="librarycollection" />
+
+<input type="hidden" name="field" value="owner" />
+<input type="hidden" name="owner.value" value="$user.getId()" />
+
+#set( $searcher = $mediaarchive.getSearcher("site") )
+$context.putPageValue("searcher",$searcher)
+$context.putPageValue("view", "site/addnew")
+
+$pages.include("/$applicationid/components/xml/detaileditor4.html", $context)
+
+  <button type="submit" class="btn btn-primary">[[Submit]]</button>
+</form>
+
+  </div>
+</div>

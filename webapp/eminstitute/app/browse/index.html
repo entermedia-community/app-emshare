@@ -1,0 +1,62 @@
+#set( $searcher = $mediaarchive.getSearcher("librarycollection") )
+<div id="projectresultholder" style="margin-top:40px;">
+<div class="row">
+  	<div class="col-10">
+
+<form class="emcontainer" style="" >
+	<input type="hidden" name="field" value="name" />
+	<input type="hidden" name="operation" value="contains" />
+  	<input type="search" name="name.value" class="form-control ds-input" id="search-input" placeholder="Search Collectives..." 
+  		style="width: 80%; max-width: 500px;vertical-align: top;" value='$!hits.getInput("name")'>
+</form>	
+#set( $n = $hits.setHitsPerPage(50))
+
+<div class="row">
+#foreach($collective in $hits.getPageOfHits())
+#set($collurl = "$apphome/collective/channel/"+$collective.id+"/"+$collective.name+".html")
+<div class=" col-sm-6 col-md-4">
+ 
+
+<div class="card-mini-project" >
+<div class="card" style="margin:10px;">
+  <div class="card-body container" style="padding: 10px; position:relative" >
+  	
+  	<div style="position: absolute; width:100px;">
+	#set( $logo = $mediaarchive.getAsset($collective.assetportrait)) 
+			#if( $logo)
+			#set($logourl ="/$mediaarchive.getMediaDbId()/services/module/asset/downloads/preset/${logo.sourcepath}/image200x200.jpg")
+			#else	
+		        #set($logourl="$apphome/theme/oi/team.png")
+			#end
+	<a href="#urlencode($collurl)" style="display:inline-block; height:100px"><img src="$logourl" class="img-fluid align-middle" style="position:relative; top:50%; transform: translateY(-50%);"></a>
+	</div>
+  	<div style="margin-left:120px; height:100px; position:relative;">
+    <div  style="position:relative; top:50%; transform: translateY(-50%);"><a href="#urlencode($collurl)" title="$collective"><strong>$collective</strong></a></div> 
+   	<div>
+   	#foreach( $usertag in $collective.getValues("usertags") )
+            <span class="categories-tag">$usertag</span>
+        #end
+        </div>
+	#set($label = $foundrow.getName($context.getLanguage()))
+	<i>#esc($!label)</i>
+    </div>
+    
+  </div>
+</div>
+</div>
+ 
+</div>
+#end
+</div>
+
+#if($hits.getPages() > 1 )
+	Next page
+#end
+</div>
+<div class="col-2">
+	<img src="$apphome/theme/oi/Google-Group.png" class="img-fluid" />
+	<p>Join a collective or start a new one. Be part of a team actively bringing changes to the world.</p>
+  		<a href="$apphome/browse/add/addnew.html" class="btn btn-primary" >Start New Collective</a>	
+</div>
+</div>
+</div>

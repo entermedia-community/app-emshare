@@ -1,0 +1,54 @@
+<div style="background:#cec5b3; padding:1px; color:#3e4553;text-align:center; border-top:solid 10px #3e4553;">
+    <h1>[[New Project]]</h1>
+</div>
+
+##Exising ones 
+##No existing programs found.
+
+<div class="card mx-auto" style="margin:40px;max-width:800px;text-align:left;">
+  <div class="card-header">
+    Add a new project or program
+  </div>
+  <div class="card-block" style="padding:20px;">
+
+#set( $searcher = $mediaarchive.getSearcher("librarycollection") )
+#set( $xmledithome  = "$apphome/components/xml")
+$context.putPageValue("searcher",$searcher)
+<form name="saveproject" id="saveproject" action="addsave.html" method="post">
+
+
+<input type="hidden" name="save" value="true" />
+<input type="hidden" name="searchtype" value="librarycollection" />
+
+<input type="hidden" name="field" value="owner" />
+<input type="hidden" name="owner.value" value="$user.getId()" />
+
+<input type="hidden" name="field" value="collectiveid" />
+<input type="hidden" name="collectiveid.value" value="$collective.getId()" />
+<input type="hidden" name="collectiveid" value="$collective.getId()" />
+
+#set( $searcher = $mediaarchive.getSearcher("librarycollection") )
+$context.putPageValue("searcher",$searcher)
+$context.putPageValue("view", "librarycollection/addnew")
+$context.putPageValue("data", $librarycol)
+
+ 
+$pages.include("/$applicationid/components/xml/detaileditor4.html", $context)
+
+
+  <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+
+<script type="text/javascript">
+
+jQuery(document).ready(function()
+{ 
+	lQuery("#list-country").livequery("blur", function()
+	{
+		
+	});
+});
+
+</script>
+  </div>
+</div>

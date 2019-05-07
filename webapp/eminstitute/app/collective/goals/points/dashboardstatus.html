@@ -1,0 +1,57 @@
+<div id="statusviewer" class="modal-dialog" style="max-width:80%;margin: 5px;" >
+	#set($taskstatus = $context.getRequestParameter("taskstatus") )
+
+	<div class="modal-content">
+	<div  id="changestatus" data-targetdiv="statusviewer" data-collectionid="$librarycol.id" data-path="$apphome/collective/goals/dashboardstatus.html" class="modal-header" >
+	    <h4 class="modal-title">[[Tasks By Status]]</h4>
+   			<select  name="opentaskstatus" >
+			  <option value="" ></option>
+			  #set( $options = $mediaarchive.getList("taskstatus"))
+			  #foreach( $option in $options)
+			  <option value="$option.id" #if( $taskstatus == $option.id) selected #end >$option.getName()</option>
+			  #end
+			</select>
+	</div>
+	<div class="modal-body">$users
+	#if($users.isEmpty()) [[No Results Found]] #end
+#foreach($person in $users)
+	<div class="pull-left card card-mini" style="margin:5px;"> 
+    	<div class="card-task-header" >$person</div>
+  		<div class="card-task-body " >
+			#set( $totalpoints = 0)
+			#set( $counted = 0)
+			<table class="striped" style="width:100%">
+  				<tr><th>Ticket</th><th>Points</th><th>Completed On</th></tr>
+  			#foreach($ticket in $bypersontickets.get($person.getId()))
+				<tr><td>$ticket.name</td><td>$ticket.getValue("points")</td><td>!context.getDateTime($ticket.getDate("completedon"))</td></tr>
+				#set( $counted = $counted +1)
+				#set( $totalpoints = $totalpoints + $ticket.points)
+			#end
+			</table>
+			$counted Tickets = $totalpoints Points
+			#set( $counted = 0)
+  			<table class="striped" style="width:100%">
+  				<tr><th>Task</th><th>Points</th><th>Started On</th></tr>
+  		#foreach($task in $byperson.get($person.getId()))
+  				#set( $selectedcat = $mediaarchive.getCategory($task.projectdepartment))
+				#set( $points = $selectedcat.getValue("goalpoints"))
+				#if( $points == 0)
+					#set( $points = 10 )
+				#end
+				#set( $totalpoints = $totalpoints + $points)
+				#set( $counted = $counted +1)
+  				<tr><td><a class="emdialog"  data-width="900" data-hidefooter="true" data-librarycol="${librarycol.getId()}" 
+  				href="$apphome/collective/goals/editgoalpanel.html?id=$task.projectgoal&collectionid=$librarycol.id&nodeID=$selectedcat.id">$mediaarchive.getData("projectgoal",$task.projectgoal) / $task.name</a>
+  				</td>
+  					<td>$points</td><td>$!context.getDateTime($task.getDate("startedon"))</td>
+  				</tr>
+  		#end
+  			</table>
+  			$counted Tasks = $totalpoints Points
+  		</div>
+	</div>
+#end
+	</div>
+	</div>
+</div>
+	

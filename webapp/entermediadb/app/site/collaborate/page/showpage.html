@@ -1,0 +1,39 @@
+##//loop over the page of results sorted by date
+##//Always Jump to the last page so the index 
+#set( $channel = $context.getRequestParameter("channel"))
+<div class="chatterbox" data-channel="$channel" data-user="${user.id}" data-catalogid="${catalogid}">
+	<div class="card-body chatterbox-container">
+	  	<div class="chatterbox-body"><div class="chatterbox-body-inside">
+			<div class="chatterbox-message-list">
+#set( $pagenum = $hits.getPage() )
+#if( $pagenum > 1)
+	#set( $pagenum = $pagenum - 1) 
+	<a href="../$pagenum/index.html">Previous Page</a><br>
+#end
+#foreach($message in $messages)
+<div class="alert alert-success" role="alert" id="chatter-message-AWb6AgwhXXDlTxNKLz9l">
+  <strong>Asset was approved</strong> $message
+  <span class="badge badge-pill badge-primary float-right">November 9, 2018 2:45:30 PM EST</span>
+</div>
+#end
+			</div>
+		</div></div>
+	 </div>	
+	 <div class="chatterbox-inputarea">
+			<div class="chatterbox-inputarea-inside">
+				<div class="form-row">
+	    			<div class="col  col-md-9">
+				  		<input type="text" class="form-control chatter-text" id="chatter-msg" placeholder="" aria-label="" aria-describedby="basic-addon1">
+				  	</div>
+				  	<div class="col">
+					  <button class="btn btn-primary btn-sm chatter-send float-left" data-command="messagereceived" type="button">Send</button>
+					  <div class="dropdown  float-left" style="margin-left:10px;">
+					  <button class="btn btn-secondary  btn-sm dropdown-toggle" type="button" id="dropdownChatterMenuActions" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					    Approve
+					  </button>
+					  </div>
+					</div>
+				</div>
+			</div>
+		</div>
+</div>

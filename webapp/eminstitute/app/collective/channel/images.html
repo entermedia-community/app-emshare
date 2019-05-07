@@ -1,0 +1,60 @@
+#ifnull( $upload )
+	#set( $uploadid = $context.getRequestParameter("uploadid"))
+	#set( $upload = $mediaarchive.getData("userupload",$uploadid))
+#end
+
+#set( $assets = $mediaarchive.getAssetSearcher().query().exact("category-exact",$upload.uploadcategory).hitsPerPage(3).search() )
+#if( $assets.size() == 0)
+	<div id="status$upload.getId()"  class="ajaxstatus"  ajaxpath="$home$apphome/collective/channel/images.html?uploadid=$upload.id" >
+		[[loading]] $assets.size() 
+	</div>
+#end
+
+#set ( $stilloading = false)	
+#if( $assets.size() > 0 && $assets.size() < 4)
+	#if( $assets.size() > 0)
+		#foreach($hit in $assets.getPageOfHits())
+			#if ($hit.importstatus!="complete")
+				#set ($stilloading = true)
+			#end
+		#end
+	#end
+	<div id="status$upload.getId()"  class="#if ($stilloading) ajaxstatus #end"  ajaxpath="$home$apphome/collective/channel/images.html?uploadid=$upload.id" >
+#end
+#if( $assets.size() > 1)
+	<ul class="feed-gallery">
+	#foreach($hit in $assets.getPageOfHits())
+		<li class="center-cropped">
+		
+		 $context.putPageValue("hit", $hit)
+	     #set( $type = $mediaarchive.getMediaRenderType($hit.fileformat))
+
+		 #if( $type =="audio")
+	   	    #set( $type = "mime" )
+	   	 #else
+		     $context.putPageValue("thumbsize", "postsize" )
+	   	 #end
+	        $pages.include("$apphome/components/results/thumbnails/${type}.html", $context)
+	        
+		</li>
+	#end
+	</ul>
+
+#elseif ($assets.size()==1)
+	 #set($hit = $assets[0])
+	 $context.putPageValue("hit", $hit)
+     #set( $type = $mediaarchive.getMediaRenderType($hit.fileformat))
+     
+     #if( $type =="audio")
+	   	    #set( $type = "mime" )
+	   	 #else
+		     $context.putPageValue("thumbsize", "postsize" )
+	   	 #end
+   	 <div class="center-cropped">
+        $pages.include("$apphome/components/results/thumbnails/${type}.html", $context)
+     </div> 
+#end
+
+#if( $assets.size() > 0 && $assets.size() < 4)
+</div>
+#end
