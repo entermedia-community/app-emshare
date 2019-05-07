@@ -1,78 +1,109 @@
-<div class="oicontent">
-<h2>[[Donate to Project]]</h2>
-<div class="card">
-<div class="card-header">
-	<div class="row" style="border-bottom:1px solidc ">
-		<div class="col-sm-10"> 
-		[[All major Credit Cards Accepted]]
-		</div>
-	
-		<div class="col-sm-2">                            
-		<img class="img-fluid" src="http://i76.imgup.net/accepted_c22e0.png">
+<div class="container">
+	<div class="row">
+		<div class="col contentcolumn">
+			<div class="">
+			<h1>[[Donate to Project]]</h1>
+			#if( $caneditdata)
+				<a class="oe-dataedit showeditonright" data-target="#editdonatedescription-$librarycol.id" title="[[Edit Donation Description]]" data-width="500"	href="#"><i class="fas fa-edit"></i></a>
+			#end
+			<div class="oe-editable" id="editdonatedescription-$librarycol.id" data-dataid="$librarycol.id" data-field="donatedescription" data-searchtype="librarycollection">
+		   		#if($librarycol.donatedescription) 
+					$!librarycol.donatedescription
+				#else
+				<p>
+				[[Become a Donator.]]
+				</p> 
+				#end
+			</div>
+			
+			
+			<div class="card donatecard">
+			
+			
+			 <div class="card-block" style="padding:20px 21px;">                      
+			       	<form action="$apphome/project/donate/donatefinish.html" method="post" id="payment-form" class="form">
+		             	<div class="row"><div class="col">
+		             	<div class="form-group">
+		   					<label for="staticEmail">[[Card Info]]:</label>
+		   			 		<div class="form-control">
+								<div id="card-element" style="width: 100%">
+								<!-- Stripe . -->
+								</div>      
+					    	</div>
+		   				</div>
+		             	</div></div>
+
+						<div class="row">
+							<div class="col-md-6">
+								<div class="">
+									<label for="staticEmail">[[Amount]]:</label>
+									<div class="input-group">
+									<div class="input-group-prepend">
+								      <div class="input-group-text">$</div>
+								    </div>
+				   			 		<input type="text" class="form-control" name="totalprice.value">
+									</div>
+				   				</div>
+							</div>							
+							<div class="col-md-6">
+								<div class="form-group">
+				   					<label for="staticEmail">[[Donation Type]]:</label>
+							        <select class="form-control" name="frequency">
+									  <option value="">[[Once]]</option>
+									  <option value="weekly">[[Weekly]]</option>
+									  <option value="monthly">[[Monthly]]</option>
+									  <option value="yearly">[[Yearly]]</option>
+									</select>
+				   				</div>
+							</div>
+						</div>
+						
+						<div id="card-errors" class="donateformerror" role="alert"></div>
+						
+			   			
+						<div class="row">
+							<div class="col-md-6">
+							<input type="submit" value="[[Donate]]" class="btn btn-success"/>
+							</div>
+							<div class="col-md-6">
+							<div class="donate-secure text-right"><i class="fas fa-lock"></i> [[Secure payment]]</div>
+							</div>
+						</div>
+			
+			   				
+			   				
+			   			<input type="hidden" name="field" value="collectiveid"/>
+			   			<input type="hidden" name="collectiveid.value" value="$collective.id"/>
+			   			<input type="hidden" name="collectiveid" value="$collective.id"/>
+			   			<input type="hidden" name="field" value="totalprice"/>
+			             	
+	 
+					  	
+				  	
+					</form>
+			</div>
+			</div>
+			</div>
+			</div>
+			
+			 <div class="col col-lg-4 collective-sidebar">
+				$pages.include("$apphome/collective/channel/subscribers/index.html")
+			 </div>
+			
 		</div>
 	</div>
 </div>
-
-
- <div class="card-block" style="padding:20px 21px;">                      
-       	<form action="$apphome/project/donate/donatefinish.html" method="post" id="payment-form">
-             	
-             	<div class="form-group row">
-   				<label for="staticEmail" class="col-sm-2 col-form-label">[[Card Info]]:</label>
-   			 	<div class="col-sm-9">
-					<div id="card-element" style="width: 100%">
-					<!-- a Stripe Element will be inserted here. -->
-					</div>      
-			    </div>
-   			</div>
-   			
-   			<div class="form-group row">
-   				<label for="staticEmail" class="col-sm-2 col-form-label">Amount:</label>
-   			 	<div class="col-sm-9">
-					      <input type="text" class="form-control" name="totalprice.value">
-			    </div>
-   			</div>
-   				
-   			<input type="hidden" name="field" value="collectiveid"/>
-   			<input type="hidden" name="collectiveid.value" value="$collective.id"/>
-   			<input type="hidden" name="collectiveid" value="$collective.id"/>
-   			
-   			<input type="hidden" name="field" value="totalprice"/>
-             	
-            <div class="form-group row">
-   				<label for="staticEmail" class="col-sm-2 col-form-label">[[Donation Type]]:</label>
-   			 	<div class="col-sm-9">
-					        <select class="form-control" name="frequency">
-  <option></option>
-
-  <option value="">[[Once]]</option>
-  <option value="weekly">[[Weekly]]</option>
-  <option value="monthly">[[Monthly]]</option>
-  <option value="yearly">[[Yearly]]</option>
-</select>
-			    </div>
-   			</div>
-            
-             	
-             	<!-- Used to display form errors -->
-		  	<div id="card-errors" role="alert"></div>
-	  	<input type="submit" value="[[Donate]]" class="btn btn-primary"/>
-		</form>
-</div>
-</div>
-</div>
-</div>
-
 <script type="text/javascript">
   // This identifies your website in the createToken call below
  
 	  	// This identifies your website in the createToken call below
 	  	  #if($mediaarchive.isCatalogSettingTrue("productionmode"))
-	  		console.log('production');
+	  		console.log('Production');
 	  		#set($publishkey = $mediaarchive.getCatalogSettingValue("stripe_publishable_key"))
 	  	  	
 	  	  	
 	  	 #else
+			console.log('Test Publishkey');
 	  		#set($publishkey = $mediaarchive.getCatalogSettingValue("stripe_test_publishable_key"))
 	  	  	 
 	  	  		 
@@ -101,7 +132,7 @@
 	 card.addEventListener('change', function(event) {
 	   var displayError = document.getElementById('card-errors');
 	   if (event.error) {
-	     displayError.textContent = event.error.message;
+	     $(displayError).html('<div class="errormsg">'+event.error.message+'</div>');
 	   } else {
 	     displayError.textContent = '';
 	   }
@@ -114,7 +145,7 @@
 	     if (result.error) {
 	       // Inform the user if there was an error
 	       var errorElement = document.getElementById('card-errors');
-	       errorElement.textContent = result.error.message;
+	       $(errorElement).html('<div class="errormsg">'+result.error.message+'</div>');
 	     } else {
 	       // Send the token to your server
 	       stripeResponseHandler(result);

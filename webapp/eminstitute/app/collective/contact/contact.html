@@ -1,13 +1,25 @@
-
-                         
-<div class="oicontent">
-    <!--Section heading-->
-    <h2>[[Contact us]]</h2>
+<div class="container">
+<div class="row">
+<div class="col contentcolumn" style="margin-right:-15px;">
+    
+    <h1>[[Contact us]]</h1>
 	
 
     <div class="row">
         <div class="col-md-6">
-			<p class="section-description">Do you have any questions? Please do not hesitate to contact us.</p>		
+			#if( $caneditdata)
+				<a class="oe-dataedit showeditonright" data-target="#editcontactdescription-$librarycol.id" title="[[Edit Contact Description]]" data-width="500"	href="#"><i class="fas fa-edit"></i></a>
+			#end
+			<div class="oe-editable" id="editcontactdescription-$librarycol.id" data-dataid="$librarycol.id" data-field="contactdescription" data-searchtype="librarycollection">
+		   		#if($librarycol.contactdescription) 
+					$!librarycol.contactdescription
+				#else
+				<p>
+				[[Do you have any questions? Please do not hesitate to contact us.]]
+				</p> 
+				#end
+			</div>
+					
             <form id="contact-form" name="contact-form" action="sent.html" method="POST">
 
 				<input type="hidden" name="to" value="${collective.contactemail}" />
@@ -68,7 +80,9 @@
         
 		</div>
 		<div class="col-md-6">
-		#if( $caneditdata)<a class="oe-dataedit showeditonright" data-target="#editcontactinfo-$librarycol.id" title="[[Project Video]]" data-width="500"	href="#"><i class="fas fa-edit"></i></a>#end
+		#if( $caneditdata)
+		<a class="oe-dataedit showeditonright" data-target="#editcontactinfo-$librarycol.id" title="[[Edit Contact Information]]" data-width="500"	href="#"><i class="fas fa-edit"></i></a>
+		#end
 		<div class="oe-editable" id="editcontactinfo-$librarycol.id" data-dataid="$librarycol.id" data-field="contactinfo" data-searchtype="librarycollection">
 		   		#if($librarycol.contactinfo) $!librarycol.contactinfo #end
 		</div>
@@ -76,4 +90,6 @@
         
 
     </div>
+</div>
+</div>
 </div>
