@@ -1,21 +1,21 @@
-#set($collectiveid = )
+#set($collectiveid = $context.getRequestParameter("collectiveid"))
+#if ($collectiveid)
+#if( !$user)
+	#set($loginok = "$apphome/collective/channel/$collectiveid/")
+ [[You must first]]: <a href="$apphome/authentication/login.html?loginokpage=$loginok" class="btn btn-primary">[[Login]]</a>
+#else
+<div id="addnewsuscriber">
+<p>Receive important email updates and support us</p>
 
-<div class="card mx-auto" style="margin:40px;max-width:800px;text-align:left;">
-  <div class="card-header">
-   Receive important email updates and support us
-  </div>
-  <div class="card-block" style="padding:20px;">
 
 #set( $searcher = $mediaarchive.getSearcher("collectivesubscribers") )
 $context.putPageValue("searcher",$searcher)
 $context.putPageValue("view", "collectivesubscribers/addnew")
-<form name="saveproject" id="saveproject" action="addsave.html" method="post">
+<form name="saveproject" id="saveproject" action="$apphome/collective/channel/subscribers/addsave.html" method="post" class="ajaxform" data-targetdiv="addnewsuscriber">
 
-#if( $user)
+
 <input type="hidden" name="save" value="true" />
-#else
- You must first <a href="$apphome/authentication/login.html?loginokpage=$content.path" class="btn btn-primary">Login</button>
-#end  
+
 
 <input type="hidden" name="searchtype" value="collectivesubscribers" />
 
@@ -26,13 +26,13 @@ $context.putPageValue("view", "collectivesubscribers/addnew")
 <input type="hidden" name="addeddate.value" value="$storeddate" />
 
 <input type="hidden" name="field" value="collectiveid" />
-<input type="hidden" name="collectiveid.value" value="$collective.getId()" />
-<input type="hidden" name="collectiveid" value="$collective.getId()" />
+<input type="hidden" name="collectiveid.value" value="$collectiveid" />
+<input type="hidden" name="collectiveid" value="$collectiveid" />
  
 $pages.include("/$applicationid/components/xml/detaileditor4.html", $context)
 
 </form>
-
-
-  </div>
 </div>
+#end
+#end  
+

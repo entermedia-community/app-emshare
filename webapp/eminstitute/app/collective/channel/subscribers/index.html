@@ -1,13 +1,18 @@
+#set($collectiveid = $librarycol.getId())
+
 <div class="suscribe-area">
 #if( $user )
-	#set( $found = $searcher.query().exact("followeruser",$user.getId()).exact("collectiveid",$librarycol.getId()).searchOne() )
+	#set( $searcher = $mediaarchive.getSearcher("collectivesubscribers") )
+	#set( $found = $searcher.query().exact("followeruser",$user.getId()).exact("collectiveid",$collectiveid).searchOne() )
 #end	
 #if( !$found)
 <div class="suscribe-title">
 Join the Collective
 </div>	
-	 <a href="$apphome/collective/channel/subscribers/addnew.html?collectionid=$librarycol.getId()" 
+	 <a href="$apphome/collective/channel/subscribers/addnew.html?collectiveid=$librarycol.getId()" 
 	 class="emdialog btn suscribe-btn">[[Subscribe]]</a>
+#else
+<div class="suscribe-title">Hey $user.name!</div>
 #end
 ##<a href="$apphome/channel/subscribers/addnew.html?collectionid=$librarycol.getId()" class="emdialog btn btn-primary">[[Invite Others]]</a>
 
