@@ -21,7 +21,7 @@
 			
 			
 			 <div class="card-block" style="padding:20px 21px;">                      
-			       	<form action="$apphome/project/donate/donatefinish.html" method="post" id="payment-form" class="form">
+			       	<form action="$apphome/collective/donate/donatefinish.html" method="post" id="payment-form" class="form">
 		             	<div class="row"><div class="col">
 		             	<div class="form-group">
 		   					<label for="staticEmail">[[Card Info]]:</label>
@@ -35,13 +35,13 @@
 
 						<div class="row">
 							<div class="col-md-6">
-								<div class="">
+								<div class="form-group">
 									<label for="staticEmail">[[Amount]]:</label>
 									<div class="input-group">
 									<div class="input-group-prepend">
 								      <div class="input-group-text">$</div>
 								    </div>
-				   			 		<input type="text" class="form-control" name="totalprice.value">
+				   			 		<input type="text" class="form-control" name="totalprice.value" id="donationamount">
 									</div>
 				   				</div>
 							</div>							
@@ -139,20 +139,36 @@
 	 });
 
 	 var form = document.getElementById('payment-form');
-	 form.addEventListener('submit', function(event) {
-	   event.preventDefault();
-	   stripe.createToken(card).then(function(result) {
-	     if (result.error) {
-	       // Inform the user if there was an error
-	       var errorElement = document.getElementById('card-errors');
-	       $(errorElement).html('<div class="errormsg">'+result.error.message+'</div>');
-	     } else {
-	       // Send the token to your server
-	       stripeResponseHandler(result);
+	 $(form).validate({
+		  rules: {
+		    "totalprice.value": {
+		      required: true,
+		      number: true
+		    }
+		  },
+		  submitHandler: function(form) {
+		    stripe.createToken(card).then(function(result) {
+		     if (result.error) {
+		       // Inform the user if there was an error
+		       var errorElement = document.getElementById('card-errors');
+		       $(errorElement).html('<div class="errormsg">'+result.error.message+'</div>');
+		     } else {
+		       // Send the token to your server
+		       stripeResponseHandler(result);
+	
+		     }
+		   });
+		  },
+		  errorElement: "div",
+		  errorClass: "errormsg",
+		  errorPlacement: function(error, element) {
+			  error.appendTo( element.closest(".form-group").parent() );
+		      //$("#card-errors").html('<div class="errormsg">'+error.html()+'</div>');
+			}
+		});
+	 
 
-	     }
-	   });
-	 });
+
 	  	
 	 stripeResponseHandler = function( response){
 		  
