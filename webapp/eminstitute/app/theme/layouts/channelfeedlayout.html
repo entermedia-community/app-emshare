@@ -1,10 +1,17 @@
+#set ($librarycolid = $librarycol.getId())
 <div class="container" style="min-height: 100%;";>
 <div id="channelcontainer" class="row " style="min-height: 100%;";>
  <div class="col feed-maincol">
-	#set ($librarycolid = $librarycol.getId())
+
+	<div class="feed-topics">
+	<a href="">#Topic 1</a> <a href="">#Topic 2</a>
+	</div>
+
+
 	#if( $caneditdata )
 		$pages.include("$apphome/collective/channel/addnewupload.html")
 	#end
+
 	#set($topuploads = $mediaarchive.getSearcher("userupload").query().exact("librarycollection", $librarycolid).sort("uploaddateDown").search() )
 	$topuploads.setHitsPerPage(20)
 	
