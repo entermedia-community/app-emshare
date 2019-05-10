@@ -40,6 +40,7 @@ public void init()
 	newproject.setName("General");
 	newproject.setValue("parentcollectionid",collection.getId());
 	colectivesearcher.saveData( newproject );
+	context.putPageValue("librarycol",collection);
 }
 
 init();
