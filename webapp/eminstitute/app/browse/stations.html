@@ -1,0 +1,33 @@
+#set($libraryid = $context.getRequestParameter("libraryid"))
+
+<div class="wrapper">
+    <!-- Sidebar -->
+    <nav id="sidebar">
+        <div class="sidebar-header">
+            <h3>Stations</h3>
+        </div>
+
+        <ul class="list-unstyled components">
+            <li #if( !$libraryid || $libraryid == "*" ) class="active" #end>
+                <a href="$apphome/browse/stations/all.html?libraryid=*" >All Channels (21)</a>
+            </li>
+            <li >
+                <a href="#">Your Subscriptions</a>
+            </li>
+            #set($libraries = $mediaarchive.getList("library"))
+		#foreach( $library in $libraries)
+            <li #if( $libraryid == $library.id) class="active" #end >
+                <a href="$apphome/browse/stations/${library.name}.html?libraryid=$library.id" >$library</a>
+            </li>		
+		#end
+           
+        </ul>
+    </nav>
+
+</div>
+<div style="padding-top:40px">
+	<p>Create a new channel and change your world.
+	<img src="$apphome/theme/oi/Google-Group.png" class="img-fluid" />
+	</p>
+  		<a href="$apphome/browse/add/addnew.html" class="btn btn-primary" >Start New Channel</a>	
+</div>
