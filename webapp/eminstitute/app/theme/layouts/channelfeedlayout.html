@@ -3,14 +3,16 @@
 <div id="channelcontainer" class="row " style="min-height: 100%;";>
  <div class="col feed-maincol">
 
-	<div class="feed-topics">
-	<a href="">#Topic 1</a> <a href="">#Topic 2</a>
-	</div>
 
 
 	#if( $caneditdata )
 		$pages.include("$apphome/collective/channel/addnewupload.html")
 	#end
+	
+	<div class="feed-topics">
+	<a href="" class="topicselected">#All</a> <a href="">#Topic 1</a> <a href="">#Topic 2</a>
+	</div>
+
 
 	#set($topuploads = $mediaarchive.getSearcher("userupload").query().exact("librarycollection", $librarycolid).sort("uploaddateDown").search() )
 	$topuploads.setHitsPerPage(20)
