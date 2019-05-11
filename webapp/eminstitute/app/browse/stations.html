@@ -7,19 +7,20 @@
             <h3>Stations</h3>
         </div>
 
-        <ul class="list-unstyled components">
+        <ul class="list-unstyled list-stations">
             <li #if( !$libraryid || $libraryid == "*" ) class="active" #end>
-                <a href="$apphome/browse/stations/all.html?libraryid=*" >All Channels</a> 
-                	<a href="$apphome/browse/stations/all.html?libraryid=*&grid=true" ><i class="fas fa-th-large"></i></a>
+                <a href="$apphome/browse/stations/all.html?libraryid=*" class="stationlink">All Channels</a> 
+                <a href="$apphome/browse/stations/all.html?libraryid=*&grid=true" class="channelslink"><i class="fas fa-th-large"></i></a>
             </li>
             <li >
-                <a href="#">Your Subscriptions</a>
+                <a href="#"  class="stationlink">Your Subscriptions</a>
+				<a href="#" class="channelslink"><i class="fas fa-th-large"></i></a>
             </li>
             #set($libraries = $mediaarchive.getList("library"))
 		#foreach( $library in $libraries)
             <li #if( $libraryid == $library.id) class="active" #end >
-                <a href="$apphome/browse/stations/${library.name}.html?libraryid=$library.id" >$library</a>
-                <a href="$apphome/browse/stations/${library.name}.html?libraryid=$library.id&grid=true" ><i class="fas fa-th-large"></i></a>
+                <a href="$apphome/browse/stations/${library.name}.html?libraryid=$library.id" class="stationlink">$library</a>
+                <a href="$apphome/browse/stations/${library.name}.html?libraryid=$library.id&grid=true" class="channelslink"><i class="fas fa-th-large"></i></a>
             </li>		
 		#end
            
@@ -27,7 +28,7 @@
     </nav>
 
 </div>
-<div style="padding-top:40px">
+<div style="padding:40px 20px; text-align:center;">
 	<p>Create a new channel and change your world.
 	<img src="$apphome/theme/oi/Google-Group.png" class="img-fluid" />
 	</p>

@@ -1,17 +1,18 @@
 #set($libraryid = $context.getRequestParameter("libraryid"))
-<div id="projectresultholder" style="margin-top:40px;">
+<div id="projectresultholder">
+<div class="contentcolumn">
 <form class="emcontainer" style="float:right;" >
 	<input type="hidden" name="field" value="name" />
 	<input type="hidden" name="operation" value="contains" />
   	<input type="search" name="name.value" class="form-control ds-input" id="search-input" placeholder="Search Collectives..." 
-  		style="width: 80%; max-width: 500px;vertical-align: top;" value='$!hits.getInput("name")'>
+  		style="width: 100%; max-width: 500px;vertical-align: top;" value='$!hits.getInput("name")'>
 </form>	
 #if($libraryid == "*")
 #set($hits = $mediaarchive.query("librarycollection").all().sort("name").search())
-<h3>All</h3>
+<h1>All</h1>
 #else
 #set( $library = $mediaarchive.getData("library",$libraryid) ) 
-<h3>$library</h3>
+<h1>$library</h1>
 #set($hits = $mediaarchive.query("librarycollection").exact("library",$library.getId()).sort("name").search())
 #end
 
@@ -20,7 +21,7 @@
 <div class="row">
 #foreach($collective in $hits.getPageOfHits())
 #set($collurl = "$apphome/collective/channel/"+$collective.id+"/"+$collective.name+".html")
-<div class=" col-sm-6 col-md-4">
+<div class=" col-sm-6 col-md-6">
  
 
 <div class="card-mini-project" >
@@ -58,6 +59,7 @@
 #if($hits.getPages() > 1 )
 	Next page
 #end
+</div>
 </div>
 
 
