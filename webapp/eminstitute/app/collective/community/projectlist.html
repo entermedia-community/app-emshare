@@ -1,10 +1,8 @@
-###set( $searcher = $mediaarchive.getSearcher("collectiveproject") )
-###set( $subs = $searcher.query().match("parentcollectionid",$librarycol.getId()).search())
-
 #set($collectiveid = $context.getRequestParameter("collectionid"))
+#set( $searcher = $mediaarchive.getSearcher("collectiveproject") )
+#set( $alltopics = $searcher.query().match("parentcollectionid",$collectiveid).sort("name").search($context) )
 
 <div class="collaborate-content collaborate-channels" >
-#set( $alltopics = $mediaarchive.getSearcher("collectiveproject").query().match("parentcollectionid",$collectiveid).sort("name").search($context) )
 <h3>[[Topics]]
 #if( $caneditcollection)	
 	 <a href="$apphome/collective/community/addnew.html?collectionid=$librarycol.getId()" 

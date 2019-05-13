@@ -1,4 +1,13 @@
-#set($collectiveid = $context.getRequestParameter('collectionid'))
+#set( $collectiveid = $context.getRequestParameter('collectionid'))
+#set( $topicid = $context.getRequestParameter("topicid"))
+#set( $searcher = $mediaarchive.getSearcher("collectiveproject") )
+
+#if($topicid)
+	#set( $currenttopic = $searcher.query().match("parentcollectionid",$collectiveid).exact("id",$topicid).searchOne() )
+#else
+	#set( $currenttopic = $searcher.query().match("parentcollectionid",$collectiveid).searchOne() )
+#end
+
 <div class="container" >
 <div class="row h-100" >
  <div class="col community-maincol">
@@ -29,8 +38,8 @@
   <div class="col">	
 		<div class="chatterbox h-100" 
 		data-collectionid="$collectiveid" 
-		data-assetid="$asset.id" 
-		data-channel="${asset.id}" 
+		 
+		data-channel="${currenttopic.getId()}" 
 		data-channeltype="community" 
 		data-user="${user.id}" 
 		data-catalogid="${catalogid}"></div>
