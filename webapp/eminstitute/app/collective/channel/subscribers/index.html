@@ -3,7 +3,7 @@
 <div class="suscribe-area">
 #if( $user )
 	#set( $searcher = $mediaarchive.getSearcher("collectivesubscribers") )
-	#set( $found = $searcher.query().exact("followeruser",$user.getId()).exact("collectiveid",$collectionid).searchOne() )
+	#set( $found = $searcher.query().exact("followeruser",$user.getId()).exact("collectionid",$collectionid).searchOne() )
 #end	
 #if( !$found)
 <div class="suscribe-title">
@@ -16,8 +16,8 @@ Join the Collective
 <input type="hidden" name="followeruser.value" value="$user.getId()" />
 <input type="hidden" name="field" value="addeddate" />
 <input type="hidden" name="addeddate.value" value="$storeddate" />
-<input type="hidden" name="field" value="collectiveid" />
-<input type="hidden" name="collectiveid.value" value="$collectionid" />
+<input type="hidden" name="field" value="collectionid" />
+<input type="hidden" name="collectionid.value" value="$collectionid" />
 <input type="hidden" name="collectionid" value="$collectionid" />
 <input type="submit" class="btn suscribe-btn" value="[[Subscribe]]" />
 </form>
@@ -36,7 +36,7 @@ Meet our team & Community and become a co-creator, sponsor or influencer
 <div class="suscribers-box-box">
 	<div class="box-content" style="border-right:1px solid #ddd">
 	<strong>Subscribers</strong>
-	#set( $found = $searcher.query().exact("collectiveid",$collectionid).search($context) )
+	#set( $found = $searcher.query().exact("collectionid",$collectionid).search($context) )
 	<div class="box-number"><a class="emdialog" title="View Subscribers" href="$apphome/collective/channel/subscribers/subscriberslist.html?collectionid=$librarycol.getId()">$found.size()</a></div>
 	</div>
 </div> 
@@ -70,7 +70,7 @@ Meet our team & Community and become a co-creator, sponsor or influencer
 <h3>[[Sponsors]]</h3>
 
 #set( $searcher = $mediaarchive.getSearcher("collectivesubscribers") )
-#set( $subs = $searcher.query().exact("collectiveid",$librarycol.getId()).search($context))
+#set( $subs = $searcher.query().exact("collectionid",$librarycol.getId()).search($context))
 #if( $subs.isEmpty()) 
 	<p>No subscribers yet</p>
 #else
