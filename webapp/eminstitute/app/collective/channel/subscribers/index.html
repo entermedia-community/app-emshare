@@ -1,25 +1,37 @@
-#set($collectiveid = $librarycol.getId())
+#set($collectionid = $librarycol.getId())
 
 <div class="suscribe-area">
 #if( $user )
 	#set( $searcher = $mediaarchive.getSearcher("collectivesubscribers") )
-	#set( $found = $searcher.query().exact("followeruser",$user.getId()).exact("collectiveid",$collectiveid).searchOne() )
+	#set( $found = $searcher.query().exact("followeruser",$user.getId()).exact("collectiveid",$collectionid).searchOne() )
 #end	
 #if( !$found)
 <div class="suscribe-title">
 Join the Collective
 </div>	
-	 <a href="$apphome/collective/channel/subscribers/addnew.html?collectiveid=$librarycol.getId()" 
-	 class="emdialog btn suscribe-btn">[[Subscribe]]</a>
-#else
-<div class="suscribe-title">Hey $user.name!</div>
-#end
-##<a href="$apphome/channel/subscribers/addnew.html?collectionid=$librarycol.getId()" class="emdialog btn btn-primary">[[Invite Others]]</a>
 
-
+<form name="saveproject" id="saveproject" action="$apphome/collective/channel/subscribers/addsave.html" method="post">
+<input type="hidden" name="save" value="true" />
+<input type="hidden" name="field" value="followeruser" />
+<input type="hidden" name="followeruser.value" value="$user.getId()" />
+<input type="hidden" name="field" value="addeddate" />
+<input type="hidden" name="addeddate.value" value="$storeddate" />
+<input type="hidden" name="field" value="collectiveid" />
+<input type="hidden" name="collectiveid.value" value="$collectionid" />
+<input type="hidden" name="collectionid" value="$collectionid" />
+<input type="submit" class="btn suscribe-btn" value="[[Subscribe]]" />
+</form>
 <div class="suscribe-headline">
 Meet our team & Community and become a co-creator, sponsor or influencer
 </div>	
+#else
+<div class="suscribe-title">You are subscribed</div>
+	 <a href="$apphome/collective/channel/subscribers/unsubscribe.html?id=${found.getId()}&collectionid=$librarycol.getId()" 
+		>[[Un-Subscribe]]</a>
+
+#end
+##<a href="$apphome/channel/subscribers/addnew.html?collectionid=$librarycol.getId()" class="emdialog btn btn-primary">[[Invite Others]]</a>
+
 
 <div class="suscribers-box">
 <div class="suscribers-box-box">
