@@ -11,8 +11,7 @@
 						#end
 					<div class="feedcard-author text-left">[[Published on ]]
 					#set($collurl = "$apphome/collective/channel/"+$librarycol.id+"/"+$librarycol.name+".html")
-					
-					<a href="$collurl">$librarycol</a>, <a href="#">Entermedia</a> 
+					<a href="$collurl">$librarycol</a>
 					
 					$context.getAge($upload.getDate("uploaddate")) [[ago]]  [[by]] $userManager.getScreenName($upload.owner) |  
 					<a  class="emdialog"  data-width="900" data-hidefooter="true" data-librarycol="${librarycol.getId()}" data-uploadid="${upload.id}" 
@@ -27,16 +26,21 @@
 				$context.putPageValue("upload",$upload)
 				$pages.include("$apphome/collective/channel/images.html",$context)
 			</div>
+			#if ($upload.longdescription)
 			<div class="feedcard-body">$upload.longdescription</div>
+			#end
+			<div class="clearfix"></div>
 			 <div class="feedcard-footer">
-			 	
-				<div class="clearfix"></div>
 				#if($upload.usertags)
 					#set( $tags = $upload.usertags.split("\s*\|\s*") )
 					#foreach( $tag in $tags )
 						<a href="#" class="badge badge-tags" title="#esc($tag)">#esc($tag)</a>
 					#end
 				#end
+				<div class="clearfix"></div>
+				<div class="feedcard-comments">
+				$pages.include("$apphome/collective/channel/comments.html",$context)
+				</div>
 			</div>
 		</div>
 	#end
