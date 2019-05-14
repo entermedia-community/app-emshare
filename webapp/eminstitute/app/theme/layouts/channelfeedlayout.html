@@ -11,10 +11,10 @@
 	<strong>[[Topics]]:</strong> <a href="" class="topicselected">#All</a>
 	#set( $allprojects = $mediaarchive.getSearcher("collectiveproject").query().match("parentcollectionid",$librarycolid).sort("name").search($context) )
 	#foreach( $project in $allprojects )
-	<a href="#$project.getId()" #if($projectid == $project.getId()) selected #end>$project</a>
+	<a href="$apphome/collective/channel/${librarycolid}/topics.html?topic=${project.getId()}.html" class="#if($projectid == $project.getId()) topicselected #end">$project</a>
 	#end
 
-	<a href="$apphome/collective/projects/edit.html?collectionid=${librarycolid}" class="topicselected float-right emdialog" title="[[Edit Topics]]" style="margin-left:5px;"><i class="fas fa-ellipsis-v"></i></a> 
+	<a href="$apphome/collective/projects/edit.html?collectionid=${librarycolid}" class="topicselected float-right emdialog" data-cancelsubmit="true" title="[[Edit Topics]]" style="margin-left:5px;"><i class="fas fa-ellipsis-v"></i></a> 
 	<a href="$apphome/collective/projects/addnew.html?collectionid=${librarycolid}" class="topicselected  emdialog" title="[[Add a Topic]]"><i class="fas fa-plus"></i></a>
 	
 	</div>
