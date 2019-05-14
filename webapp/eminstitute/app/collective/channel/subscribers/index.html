@@ -36,14 +36,16 @@ Meet our team & Community and become a co-creator, sponsor or influencer
 <div class="suscribers-box-box">
 	<div class="box-content" style="border-right:1px solid #ddd">
 	<strong>Subscribers</strong>
-	#set( $found = $searcher.query().exact("collectionid",$collectionid).search($context) )
-	<div class="box-number"><a class="emdialog" title="View Subscribers" href="$apphome/collective/channel/subscribers/subscriberslist.html?collectionid=$librarycol.getId()">$found.size()</a></div>
+	#set( $subscribers = $searcher.query().exact("collectionid",$collectionid).search($context) )
+	<div class="box-number"><a class="emdialog" title="View Subscribers" href="$apphome/collective/channel/subscribers/subscriberslist.html?collectionid=$librarycol.getId()">$subscribers.size()</a></div>
 	</div>
 </div> 
 <div class="suscribers-box-box">
 	<div class="box-content" style="border-right:1px solid #ddd">
 	<strong>Team</strong>
-	<div class="box-number">10</div>
+	#set( $team = $searcher.query().exact("collectionid",$collectionid).exact("ontheteam",true).search($context) )
+	
+	<div class="box-number">$team.size()</div>
 	</div>
 </div>  
 <div class="suscribers-box-box">
@@ -67,26 +69,36 @@ Meet our team & Community and become a co-creator, sponsor or influencer
 
 
 <div class="community-area">
-<h3>[[Sponsors]]</h3>
+<h3>[[Team]]</h3>
 
-#set( $searcher = $mediaarchive.getSearcher("collectivesubscribers") )
-#set( $subs = $searcher.query().exact("collectionid",$librarycol.getId()).search($context))
-#if( $subs.isEmpty()) 
-	<p>No subscribers yet</p>
+#if( $team.isEmpty()) 
+	<p>No Team yet</p>
 #else
-<ul class="list-group list-group-flush w-100 align-items-stretch">
-   		
-  #foreach( $hit in $subs)
-        <li class="list-group-item text-center d-inline-block">
+  #foreach( $hit in $team)
         	#set( $followeruser = $mediaarchive.getUser($hit.followeruser) )
-        	<span class="username">$followeruser.getAnonNickName()</span> 
-        	    	<span class="usernote">Added:  $context.getDateTime( $hit.getValue("addeddate") )</span>
-        	#if( $hit.whatsappnumber ) <span class="whatsapp">$hit.whatsappnumber </span>#end
-        </li>
+<div class="card" style="margin:10px;">
+  <div class="card-body container" style="padding: 5px; position:relative">
+  	
+  	<div style="position: absolute; width:60px;">
+	<a href="/site/app/collective/channel/AWgpZepCq0yu2yuq7lr3/Books.html" style="display:inline-block; height:100px">
+	<img  src="/site/app/theme/images/user.svg"  title="$!followeruser.getAnonNickName()" class="img-fluid align-middle feed-comments-usericon" 
+		style="position:relative; top:50%; transform: translateY(-50%);"></a>
+	</div>
+  	<div style="margin-left:120px; height:100px; position:relative;">
+    <div style="position:relative; top:50%; transform: translateY(-50%);">
+    	<a href="/site/app/collective/channel/AWgpZepCq0yu2yuq7lr3/Books.html" title="Books">$!followeruser.getAnonNickName()</a></div> 
+   	<div>
+        </div>
+	<i></i>
+    </div>
+    
+  </div>
+</div>
   #end
-  </ul>
  
 #end
-<h3>[[Team]]</h3>
+
+<h3>[[Sponsors]]</h3>
+
 </div>
         
