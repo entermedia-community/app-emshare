@@ -1,36 +1,51 @@
 #set($libraryid = $context.getRequestParameter("libraryid"))
+#set($grid = $context.getRequestParameter("grid"))
 
 <div class="wrapper">
     <!-- Sidebar -->
     <nav id="sidebar">
         <div class="sidebar-header">
+            <div class="float-right" style="padding: 15px 15px 0 0">
+            	<a  style="color: white;" 
+            	#if( $grid == "true")
+            		href="$apphome/browse/stations/All.html?libraryid=*&grid=false" title="View Feed" ><i class="fas fa-images"></i>
+            	#else
+            		href="$apphome/browse/stations/All.html?libraryid=*&grid=true" title="View Channels" ><i class="fas fa-th-large"></i>            	
+            	#end	
+            	</a>
+            </div>
             <h3>Stations</h3>
         </div>
 
         <ul class="list-unstyled list-stations">
             <li #if( !$libraryid || $libraryid == "*" ) class="active" #end>
-                <a href="$apphome/browse/stations/all.html?libraryid=*" class="stationlink">All Channels</a> 
-                <a href="$apphome/browse/stations/all.html?libraryid=*&grid=true" class="channelslink"><i class="fas fa-th-large"></i></a>
-            </li>
-            <li >
-                <a href="#"  class="stationlink">Your Subscriptions</a>
-				<a href="#" class="channelslink"><i class="fas fa-th-large"></i></a>
+                <a href="$apphome/browse/stations/all.html?libraryid=*&grid=$!grid" class="stationlink">All</a> 
+                ##<a href="$apphome/browse/stations/all.html?libraryid=*&grid=true" class="channelslink"><i class="fas fa-th-large"></i></a>
             </li>
             #set($libraries = $mediaarchive.getList("library"))
 		#foreach( $library in $libraries)
             <li #if( $libraryid == $library.id) class="active" #end >
-                <a href="$apphome/browse/stations/${library.name}.html?libraryid=$library.id" class="stationlink">$library</a>
-                <a href="$apphome/browse/stations/${library.name}.html?libraryid=$library.id&grid=true" class="channelslink"><i class="fas fa-th-large"></i></a>
+                <a href="$apphome/browse/stations/${library.name}.html?libraryid=$library.id&grid=$!grid" class="stationlink">$library</a>
+                ##<a href="$apphome/browse/stations/${library.name}.html?libraryid=$library.id&grid=true" class="channelslink"><i class="fas fa-th-large"></i></a>
             </li>		
 		#end
+            <li >
+                <a href="$apphome/browse/stations/all.html?libraryid=subscription&grid=$!grid"  class="stationlink">Your Subscriptions</a>
+				##<a href="#" class="channelslink"><i class="fas fa-th-large"></i></a>
+            </li>
            
         </ul>
     </nav>
 
 </div>
 <div style="padding:40px 20px; text-align:center;">
-	<p>Create a new channel and change your world.
 	<img src="$apphome/theme/oi/Google-Group.png" class="img-fluid" />
+	<p>
+	Change the world...
 	</p>
-  		<a href="$apphome/browse/add/addnew.html" class="btn btn-primary" >Start New Channel</a>	
+  		<a #if( $user )href="$apphome/browse/add/addnew.html"
+  			#else
+  			href="$apphome/authentication/login.html?loginokpage=$apphome/browse/add/addnew.html"
+  			#end
+  		 class="btn btn-primary" >Start New Channel</a>	
 </div>
