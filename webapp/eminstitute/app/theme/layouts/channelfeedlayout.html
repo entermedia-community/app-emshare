@@ -1,15 +1,22 @@
 #set ($librarycolid = $librarycol.getId())
-<div class="container" style="min-height: 100%;";>
-<div id="channelcontainer" class="row " style="min-height: 100%;";>
+<div id="channelcontainer" class="container" style="min-height: 100%;";>
+<div class="row " style="min-height: 100%;";>
  <div class="col feed-maincol">
 
-	#if( $caneditdata )
+	#if( $caneditcollection )
 		$pages.include("$apphome/collective/channel/addnewupload.html")
 	#end
 	
 	<div class="feed-topics">
-	<a href="" class="topicselected">#All</a> <a href="">#Topic 1</a> <a href="">#Topic 2</a>
-	<a href=""  class="topicselected float-right" title="[[Add a Topic]]"><i class="fas fa-plus"></i></a>
+	<strong>[[Topics]]:</strong> <a href="" class="topicselected">#All</a>
+	#set( $allprojects = $mediaarchive.getSearcher("collectiveproject").query().match("parentcollectionid",$librarycolid).sort("name").search($context) )
+	#foreach( $project in $allprojects )
+	<a href="#$project.getId()" #if($projectid == $project.getId()) selected #end>$project</a>
+	#end
+
+	<a href="$apphome/collective/projects/edit.html?collectionid=${librarycolid}" class="topicselected float-right emdialog" title="[[Edit Topics]]" style="margin-left:5px;"><i class="fas fa-ellipsis-v"></i></a> 
+	<a href="$apphome/collective/projects/addnew.html?collectionid=${librarycolid}" class="topicselected  emdialog" title="[[Add a Topic]]"><i class="fas fa-plus"></i></a>
+	
 	</div>
 
 
