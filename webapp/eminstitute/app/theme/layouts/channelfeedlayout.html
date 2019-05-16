@@ -26,16 +26,18 @@
 	##TODO add pages
 	
 	#foreach( $upload in $topuploads.getPageOfHits())
+		#set($collurl = "$apphome/collective/channel/"+$librarycol.id+"/"+$librarycol.name+".html")
 		<div class="feedcard">
-
 			<div class="row no-gutters">
 					<div class="col">
 						#if($upload.title)
 							<div class="feedcard-title">$upload.title</div>
 						#end
-					<div class="feedcard-author text-left">[[Published on]] 
-					#set($collurl = "$apphome/collective/channel/"+$librarycol.id+"/"+$librarycol.name+".html")
-					<a href="$collurl">$librarycol</a>
+						##if ($librarycol)
+						##<div class="feedcard-collective"><a href="$collurl">$librarycol</a></div>
+						##end
+					<div class="feedcard-author text-left">[[Published]] 
+					
 					$context.getAge($upload.getDate("uploaddate")) [[ago]]  [[by]] $userManager.getScreenName($upload.owner) |  
 					<a  class="emdialog"  data-width="900" data-hidefooter="true" data-librarycol="${librarycol.getId()}" data-uploadid="${upload.id}" 
 			     	 href="$home$apphome/collective/channel/share.html?collectionid=${librarycol.getId()}" ><i class="fas fa-share-alt"></i></a>
@@ -71,8 +73,10 @@
 
 
 </div>	
- <div class="col col-lg-4 collective-sidebar">
+ <div class="col col-lg-4 ">
+<div class="collective-sidebar">
 	$pages.include("$apphome/collective/channel/subscribers/index.html")
+</div>
  </div>
 </div>
 </div>
