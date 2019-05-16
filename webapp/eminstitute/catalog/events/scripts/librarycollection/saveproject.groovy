@@ -26,16 +26,20 @@ public void init()
 
 	log.info("User is: " + user.getId() );
 
-	
-	Data library = librarysearcher.searchByField("owner", user.getId());
-	if( library == null)
+	/*
+	if( data.getValue("library") == null )
 	{
-		library = librarysearcher.createNewData();
-		library.setValue("owner", user.getId());
-		library.setName(user.getScreenName());
-		librarysearcher.saveData(library);
+		Data library = librarysearcher.searchByField("owner", user.getId());
+		if( library == null)
+		{
+			library = librarysearcher.createNewData();
+			library.setValue("owner", user.getId());
+			library.setName(user.getScreenName());
+			librarysearcher.saveData(library);
+		}
+		data.setValue("library",library.getId());
 	}
-	data.setValue("library",library.getId());
+	*/	
 	if( data.get("owner") == null )
 	{
 		data.setValue("owner",user.getId());
