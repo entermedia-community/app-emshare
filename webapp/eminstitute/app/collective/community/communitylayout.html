@@ -1,5 +1,5 @@
 #set( $collectiveid = $context.getRequestParameter('collectionid'))
-#set( $topicid = $context.getRequestParameter("topicid"))
+#set( $topicid = $context.getRequestParameter("topic"))
 #set( $searcher = $mediaarchive.getSearcher("collectiveproject") )
 
 #if($topicid)
@@ -8,20 +8,20 @@
 	#set( $currenttopic = $searcher.query().match("parentcollectionid",$collectiveid).searchOne() )
 #end
 
-<div class="container" >
+$context.putPageValue("currenttopic", $currenttopic)
+
+<div class="container h-100"  style="max-height: calc(100% - 290px)" >
 <div class="row h-100" >
  <div class="col community-maincol">
 
 <div class="row no-gutters h-100">
  <div class="col col-lg-3 collaborate-sidebar">
 
-	<div class="collaborate-search">
-	
-	</div>
 
-	
-	$pages.include("$apphome/collective/community/projectlist.html")
-	
+
+	$pages.include("$apphome/collective/community/projectlist.html", $context)
+	     
+       
 	<div class="collaborate-content" >	
 	<h3>[[Direct Messages]]<a href="#" 
 	 class="emdialog community-add-btn float-right"><i class="fas fa-plus"></i></a></h3>
@@ -35,22 +35,30 @@
 	
 	
  </div>
-  <div class="col">	
+	<div class="collaborate-channel col h-100">
+		<div class="collaborate-channel-header">
+			<div class="channel-name float-left">$currenttopic</div>
+			<div class="channel-actions float-right"><a href=""><i class="fas fa-cog"></i></a></div>	
+		</div>
+	
+  			
 		<div class="chatterbox h-100" 
 		data-collectionid="$collectiveid" 
 		 
 		data-channel="${currenttopic.getId()}" 
 		data-channeltype="community" 
 		data-user="${user.id}" 
-		data-catalogid="${catalogid}"></div>
-		##$pages.includeContent()
+		data-catalogid="${catalogid}">
+		</div>
+		
+	
 	</div>
 </div>	
 
 
 </div>	
  <div class="col col-lg-4 collective-sidebar">
-	$pages.include("$apphome/collective/channel/subscribers/index.html")
+	$pages.include("$apphome/collective/channel/subscribers/index.html", $context)
  </div>
 </div>
 </div>

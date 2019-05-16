@@ -1,6 +1,8 @@
-#set($collectiveid = $context.getRequestParameter("collectionid"))
+#set( $collectiveid = $context.getRequestParameter("collectionid"))
 #set( $searcher = $mediaarchive.getSearcher("collectiveproject") )
 #set( $alltopics = $searcher.query().match("parentcollectionid",$collectiveid).sort("name").search($context) )
+
+
 
 <div class="collaborate-content collaborate-channels" >
 <h3>[[Topics]]
@@ -14,7 +16,7 @@
 #else 
 	<ul class="">
 	  #foreach( $hit in $alltopics)
-	     <li><a href="$apphome/collective/community/index.html?collectionid=$collectiveid&topiclid=$hit.getId()"><i class="fas fa-lock"></i> $hit.name</a></li>
+	     <li class="#if($currenttopic.getId()==$hit.getId()) current #end"><a href="$apphome/collective/community/index.html?collectionid=$collectiveid&topic=$hit.getId()"><i class="fas fa-lock"></i> $hit.name</a></li>
 	  #end
 	</ul>
 #end
