@@ -1,9 +1,32 @@
 #set($grid = $context.getRequestParameter("grid"))
+#set($libraryid = $context.getRequestParameter("libraryid"))
+#if( !$libraryid)
+#set($libraryid = "*")
+#else
+ #set($library = $mediaarchive.getData("library",$libraryid))
+#end
 
 <div id="projectresultholder" style="margin-top:40px;">
 <div class="row no-gutters">
 
 <div class="col-8">
+    <div class="float-right" style="padding: 15px 15px 0 0">
+     	<a  style="color: white;" 
+     	#if( $grid == "true")
+     		href="$apphome/browse/stations/All.html?libraryid=$libraryid&grid=false" title="View Feed" ><i class="fas fa-images"></i>
+     	#else
+     		href="$apphome/browse/stations/All.html?libraryid=$libraryid&grid=true" title="View Channels" ><i class="fas fa-th-large"></i>            	
+     	#end	
+     	</a>
+     </div>
+
+#if( $library)
+<h3>$library</h3>
+#else
+##<h3>All</h3>
+#end
+
+ 
 	#if($grid && $grid == "true")
 	$pages.include("$apphome/browse/channellist.html",$context) 
 		#else
