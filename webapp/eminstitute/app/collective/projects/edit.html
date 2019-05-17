@@ -1,45 +1,28 @@
 #set( $searcher = $mediaarchive.getSearcher("collectiveproject") )
 $context.putPageValue("searcher",$searcher)
 $context.putPageValue("view", "collectiveproject/addnew")
-
+#set($collectionid = $context.getRequestParameter("collectionid"))
 <div class="cardx mx-auto" style="margin:20px;max-width:800px;text-align:left;">
   <div class="row">
-   <div class="col-md-3">
-		<div class="emsearchfield" style="background-color: #eee; padding:6px"> 
-			Select Project 
-		</div>
+   <div class="col-md-3" style="border-right:1px solid #dee2e6; padding-right:0;">
+		
 	#set( $allprojects = $searcher.query().match("parentcollectionid",$librarycol.getId()).sort("name").search($context) )
-	<ul  class="list-group list-group-flush ">
+	<table class="table table-striped">
+	<thead>
+		<tr><th><strong>[[Select Topic]]</strong></th>		</tr>
+	</thead>
 	#foreach( $project in $allprojects )
-	<li class="list-group-item  list-group-item-action"><a href="" class="#if($projectid == $project.getId()) topicselected #end">$project</a></li>
+	<tr><td >
+		<a href="$apphome/collective/projects/editform.html?collectionid=$collectionid&id=$project.getId()" 
+		class="ajax" style="display:block" data-targetdiv="editproject">$project</a>
+	</td></tr>
 	#end
-	</ul>
+	</table>
    </div>
    <div class="col-md-9">
-<form name="saveproject" id="saveproject" action="$apphome/collective/projects/addsave.html" method="post">
-
-#if( $user)
-<input type="hidden" name="save" value="true" />
-#else
- You must first <a href="$apphome/authentication/login.html?loginokpage=$content.path&collectionid=$librarycol.getId()" class="btn btn-primary">Login</button>
-#end  
-
-<input type="hidden" name="searchtype" value="collectiveproject" />
-
-<input type="hidden" name="field" value="owner" />
-<input type="hidden" name="owner.value" value="$user.getId()" />
-
-<input type="hidden" name="field" value="creationdate" />
-<input type="hidden" name="creationdate.value" value="$storeddate" />
-
-<input type="hidden" name="field" value="parentcollectionid" />
-<input type="hidden" name="parentcollectionid.value" value="$librarycol.getId()" />
-<input type="hidden" name="collectionid" value="$librarycol.getId()" />
- 
-$pages.include("/$applicationid/components/xml/detaileditor4.html", $context)
-
+<form name="saveproject" id="saveproject" action="$apphome/collective/edit/save.html" method="post">
+	<div id="editproject"></div>
 </form>
-
    </div>
 
 

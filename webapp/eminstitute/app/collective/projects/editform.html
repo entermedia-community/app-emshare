@@ -1,0 +1,22 @@
+#set( $searcher = $mediaarchive.getSearcher("collectiveproject") )
+$context.putPageValue("searcher",$searcher)
+$context.putPageValue("view", "collectiveproject/addnew")
+#set($collectionid = $context.getRequestParameter("collectionid"))
+#set($projectid = $context.getRequestParameter("id"))
+<div id="editproject">
+
+	<input type="hidden" name="searchtype" value="collectiveproject" />
+	<input type="hidden" name="field" value="owner" />
+	<input type="hidden" name="owner.value" value="$user.getId()" />
+	<input type="hidden" name="field" value="creationdate" />
+	<input type="hidden" name="creationdate.value" value="$storeddate" />
+	
+	<input type="hidden" name="field" value="parentcollectionid" />
+	<input type="hidden" name="parentcollectionid.value" value="$collectionid" />
+	<input type="hidden" name="collectionid" value="$collectionid" />
+	<input type="hidden" name="id" value="$projectid" />
+	<input type="hidden" name="save" value="true" />
+	 
+	$pages.include("/$applicationid/components/xml/detaileditor4.html", $context)
+
+</div>
