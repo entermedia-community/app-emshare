@@ -6,7 +6,18 @@
 		<div  class="container" >
 				<div class="row justify-content-md-center">
 				<div class="col text-center">
-					<a class="collectivelogo"  href="$apphome/collective/channel/${librarycol.id}/#urlencode($librarycol.name).html">
+				#set($homelink = "$apphome/collective/channel/${librarycol.id}/#urlencode($librarycol.name).html")
+				#set( $logo = $mediaarchive.getAsset($librarycol.assetportrait) )
+				#if($logo)
+				<div  style="padding: 10px 0 0 10px;">
+					<a style="display:block; margin: 0 auto" href="$homelink">
+						<img style="width:200px" 
+								src="/$mediaarchive.getMediaDbId()/services/module/asset/downloads/preset/${logo.sourcepath}/image200x200.jpg"
+						 > 
+					</a>
+				</div>
+				#end				
+					<a class="collectivelogo"  href="$homelink">
 					$!librarycol.name
 					</a>
 				
@@ -19,8 +30,8 @@
 								  <a class="dropdown-item emdialog"  id="sharetab"  href="$link" data-hidefooter="true" title="[[Collection Followers]]"><i class="dropdown-item-icon fas fa-user-friends"></i> [[Followers]]</a>
 								   #set( $link = "$home$apphome/views/modules/librarycollection/permissions.html?collectionid=${librarycol.getId()}")
 								  <a class="dropdown-item emdialog" id="permissionstab" href="$link" data-hidefooter="true" title="[[View Permissions]]"><i class="dropdown-item-icon fas fa-user-lock"></i> [[View Permissions]]</a>
-								  #set( $editlink = "$home$apphome/views/modules/librarycollection/edit/settings.html?collectionid=${librarycol.getId()}")
-							 	  <a class="dropdown-item emdialog"  data-allwaysloadpage="true" data-hidefooter="true"   href="$editlink" title="[[Collection Properties]]"><i class="dropdown-item-icon fas fa-cogs"></i> [[Properties]]</a>
+								  #set( $editlink = "$home$apphome/collective/edit/editcollective.html?collectionid=${librarycol.getId()}")
+							 	  <a class="dropdown-item emdialog"  data-allwaysloadpage="true" href="$editlink" title="[[Collective Properties]]"><i class="dropdown-item-icon fas fa-cogs"></i> [[Properties]]</a>
 								  #set( $link = "$home$apphome/views/modules/librarycollection/datapermissions/index.html?collectionid=${librarycol.getId()}&id=${librarycol.getId()}")
 								  <a class="dropdown-item emdialog" id="permissionstab" href="$link" data-hidefooter="true" title="[[Collection Permissions]] (${librarycol})"><i class="dropdown-item-icon fas fa-user-lock"></i> [[Collection Permissions]]</a>
 					              #set( $link = "$home$apphome/views/modules/library/datapermissions/index.html?id=${librarycol.get('library')}")

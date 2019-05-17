@@ -20,40 +20,48 @@
 #foreach($collective in $hits.getPageOfHits())
  #set($collective = $mediaarchive.getSearcher("librarycollection").loadData($collective) )
 #set($collurl = "$apphome/collective/channel/"+$collective.id+"/"+$collective.name+".html")
-<div class=" col-sm-6 col-md-6">
+<div class=" col-sm-12 col-md-12">
  
 
 <div class="card-mini-project" >
 <div class="card" style="margin:10px;">
-  <div class="card-body container" style="padding: 10px; position:relative" >
-  	
-  	<div style="position: absolute; width:100px;">
+<div class="card-body container" style="padding: 20px;min-height:120px;" >
+<div class="row">
+<div class="col-sm-2 col-md-2">
+  	<div style="">
 	#set( $logo = $mediaarchive.getAsset($collective.assetportrait)) 
-			#if( $logo)
-			#set($logourl ="/$mediaarchive.getMediaDbId()/services/module/asset/downloads/preset/${logo.sourcepath}/image200x200.jpg")
-			#else	
-		        #set($logourl="$apphome/theme/oi/team.png")
-			#end
-	<a href="#urlencode($collurl)" style="display:inline-block; height:100px"><img src="$logourl" class="img-fluid align-middle" style="position:relative; top:50%; transform: translateY(-50%);"></a>
+	#if( $logo)
+		#set($logourl ="/$mediaarchive.getMediaDbId()/services/module/asset/downloads/preset/${logo.sourcepath}/image200x200.jpg")
+	#else	
+	    #set($logourl="$apphome/theme/oi/team.png")
+	#end
+	<a href="#urlencode($collurl)" ><img src="$logourl" class="img-fluid align-middle" style="">
+	</a>
 	</div>
-  	<div style="margin-left:120px; height:100px; position:relative;">
-		#set($label = $collective.getName($context.getLanguage()))
-    	<div ><a href="#urlencode($collurl)" title="$label"><strong>$label</strong></a></div> 
-   	#foreach( $usertag in $collective.getValues("usertags") )
+</div>
+<div class="col-sm-10 col-md-10">
+		<div class="feedcard-collective">		
+	#foreach($library in $collective.getLibraries())
+			<a href="$apphome/browse/stations/index.html?libraryid=$library.getId()&grid=true">$library</a> 
+	#end
+		</div>	
+
+	  	<div style="">
+			#set($label = $collective.getName($context.getLanguage()))
+	    	<div ><a href="#urlencode($collurl)" title="$label" style="font-size:1.3em;"><strong>$label</strong></a></div> 
+	   	#foreach( $usertag in $collective.getValues("usertags") )
             <span class="categories-tag">$usertag</span>
-        #end
-		<p>#foreach($library in $collective.getLibraries())
-		<span class="categories-tag">$library</span> 
-		#end
-		</p>
-        </div>
-   	<div>
-    </div>
-    
-  </div>
+	    #end
+	    </div>
+	    <p>
+    	$!collective.collectivedescription
+    	</p>
+</div>   
+</div>
+
 </div>
 </div>
- 
+</div>
 </div>
 #end
 </div>
