@@ -4,27 +4,36 @@
 	<p>No subscribers yet</p>
 #else
 
-<ul class="list-group list-group-flush w-100 align-items-stretch">
-   		
+<table class="table table-striped table-hover">
+   		<thead>
+		<tr class="tableheader">
+		<th>[[User]]</th>
+		<th>[[Added]]</th>
+		<th></th>
+		</tr>
+   		</thead>
   #foreach( $hit in $subs)
-        <li class="list-group-item text-center d-inline-block">
+        <tr>
         	#set( $followeruser = $mediaarchive.getUser($hit.followeruser) )
-        	<span class="username">$followeruser.getAnonNickName()</span> 
-        	<span class="usernote">Added:  $context.getDateTime( $hit.getValue("addeddate") )</span>
+        	<td><span class="username">$followeruser.getAnonNickName()</span></td> 
+        	<td><span class="usernote">$context.getDateTime( $hit.getValue("addeddate") )</span></td>
         	#if( $hit.whatsappnumber ) <span class="whatsapp">$hit.whatsappnumber </span>#end
-       		#if( $caneditcollection )
-        	 <span class="whatsapp" id="team${hit.followeruser}">
-        	 	<a class="ajax" data-targetdiv="team${hit.followeruser}" data-oemaxlevel="1"
+       		
+        	<td class="text-center">
+				#if( $caneditcollection )
+				<span class="whatsapp" id="team${hit.followeruser}">
+        	 	<a class="ajax btn btn-primary btn-sm " data-targetdiv="team${hit.followeruser}" data-oemaxlevel="1"
         	 		href="$apphome/collective/channel/subscribers/teamtoggle.html?collectionid=$librarycol.getId()&userid=$followeruser.getId()">
         	 		#if( $hit.getBoolean("ontheteam"))
-        	 		remove from team
+        	 			[[Remove from team]]
         	 		#else
-					add to team        	 		
+						[[Add to team]]        	 		
         	 		#end</a></span>
-        	#elseif( $hit.getBoolean("ontheteam"))
+        		#elseif( $hit.getBoolean("ontheteam"))
         	   	 <span class="whatsapp">(On The Team)</span>
-        	#end        	
-        </li>
+        		#end
+        	</td>        	
+        </tr>
   #end
-  </ul>
+  </table>
 #end

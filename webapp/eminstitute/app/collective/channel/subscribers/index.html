@@ -9,7 +9,7 @@
 <div class="suscribe-title">
 Join the Collective
 </div>	
-
+#if ($user && !$found)
 <form name="saveproject" id="saveproject" action="$apphome/collective/channel/subscribers/addsave.html" method="post">
 <input type="hidden" name="save" value="true" />
 <input type="hidden" name="field" value="followeruser" />
@@ -21,6 +21,10 @@ Join the Collective
 <input type="hidden" name="collectionid" value="$collectionid" />
 <input type="submit" class="btn suscribe-btn" value="[[Subscribe]]" />
 </form>
+#else
+#set($loginok = "$apphome/collective/channel/$collectionid/")
+<a href="$apphome/authentication/login.html?loginokpage=$!loginok" class="btn suscribe-btn">[[Login to Subscribe]]</a>
+#end
 <div class="suscribe-headline">
 Meet our team & Community and become a co-creator, sponsor or influencer
 </div>	
@@ -35,9 +39,9 @@ Meet our team & Community and become a co-creator, sponsor or influencer
 <div class="suscribers-box">
 <div class="suscribers-box-box">
 	<div class="box-content" style="border-right:1px solid #ddd">
-	<strong>Subscribers</strong>
+	<strong>[[Subscribers]]</strong>
 	#set( $subscribers = $searcher.query().exact("collectionid",$collectionid).search($context) )
-	<div class="box-number"><a class="emdialog" title="View Subscribers" href="$apphome/collective/channel/subscribers/subscriberslist.html?collectionid=$librarycol.getId()">$subscribers.size()</a></div>
+	<div class="box-number"><a class="emdialog" data-cancelsubmit="true" title="View Subscribers" href="$apphome/collective/channel/subscribers/subscriberslist.html?collectionid=$librarycol.getId()">$subscribers.size()</a></div>
 	</div>
 </div> 
 <div class="suscribers-box-box">
