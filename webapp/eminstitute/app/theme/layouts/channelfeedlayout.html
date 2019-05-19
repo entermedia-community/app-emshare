@@ -19,12 +19,14 @@
 	
 	</div>
 
-
+	#if( $librarycol.streamurl)
+		$pages.include("$apphome/components/streaming/play.html",$context)
+	#end
 	#set($topuploads = $mediaarchive.getSearcher("userupload").query().exact("librarycollection", $librarycolid).sort("uploaddateDown").search() )
 	$topuploads.setHitsPerPage(20)
 	
-	##TODO add pages
-	
+		
+
 	#foreach( $upload in $topuploads.getPageOfHits())
 		#set($collurl = "$apphome/collective/channel/"+$librarycol.id+"/"+$librarycol.name+".html")
 		<div class="feedcard">
