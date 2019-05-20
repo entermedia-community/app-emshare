@@ -1,0 +1,28 @@
+<div class="feedcard-comments">
+
+#foreach( $comment in $comments)
+  <div class="comment">
+	<div class="comment-body">$comment.commenttext</div> 
+	<div class="comment-poster">
+	  <a class="usertypelink" href="">
+	  <span><img src="$apphome/theme/images/user.svg" class="feed-comments-usericon"></span>
+	  <span>${comment.getUserLabel()}</span> 
+	  </a>
+	 <span class="comment-timestamp">$comment.getShortDate($context)</span>
+		#if( $comment.canEdit($user) )
+	        #if ( $comment.isVisible() )
+	        	#set ( $actionText = "Unpublish" )
+	        #else
+	        	#set ( $actionText = "Publish" )
+	        #end
+	        [<a href="$bloghome/useradmin/publishcomment.html?entryId=${entry.id}&commentId=${comment.id}&origURL=$content.path">$actionText</a>]
+	        [<a href="$bloghome/useradmin/deletecomment.html?entryId=${entry.id}&commentId=${comment.id}&origURL=$content.path">Delete</a>]
+	    #end
+	</div>
+  </div>						
+#end
+
+<img src="$apphome/theme/images/user.svg" class="feed-comments-usericon">
+<input type="text"  name="commenttext" data-useruploadid="$upload.id" data-collectionid="$librarycol.id" class="commentadder form-control feed-comments-textinput" placeholder="[[Write a comment]]">
+
+</div>
