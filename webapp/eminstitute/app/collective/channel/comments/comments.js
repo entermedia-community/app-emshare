@@ -10,7 +10,7 @@ initcomments = function()
 		var div = input.closest(".feedcard-comments");
 		var code = e.which; // recommended to use e.which, it's normalized across browsers
 	    if(code==13)e.preventDefault();
-	    if(code==32||code==13||code==188||code==186)
+	    if(code==13)
 	    {
 	     	//Submit repaint
 	     	var options = input.data();
