@@ -1,12 +1,14 @@
+#if(!$librarycol)
+	#set( $librarycol = $mediaarchive.getData("librarycollection",$upload.librarycollection) )
+#end
 		#set($collurl = "$apphome/collective/channel/"+$librarycol.id+"/"+$librarycol.name+".html")
 		<div class="feedcard">
 				<div class="feedcard-header">
 						#if($upload.title)
 							<div class="feedcard-title">$upload.title</div>
 						#end
-						##if ($librarycol)
-						##<div class="feedcard-collective"><a href="$collurl">$librarycol</a></div>
-						##end
+						<div class="feedcard-collective"><a href="$collurl" title="$librarycol">$librarycol</a></div>
+						<div class="clearfix"></div>
 					<div class="feedcard-author text-left">[[Published]] 
 					
 					$context.getAge($upload.getDate("uploaddate")) [[ago]]  [[by]] $userManager.getScreenName($upload.owner) |  
