@@ -1,23 +1,27 @@
 <div class="feedcard-comments">
 
 #foreach( $comment in $comments)
-  <div class="comment">
-	<div class="comment-body">$comment.commenttext</div> 
-	<div class="comment-poster">
-	  <a class="usertypelink" href="">
-	  <span><img src="$apphome/theme/images/user.svg" class="feed-comments-usericon"></span>
-	  <span>${comment.getUserLabel()}</span> 
+  <div class="feedcard-comment">
+	<div class="">
+	  <a href="" title="${comment.getUserLabel()}">
+	  <img src="$apphome/theme/images/user.svg" class="feed-comments-usericon">
 	  </a>
-	 <span class="comment-timestamp">$comment.getShortDate($context)</span>
-		#if( $comment.canEdit($user) )
-	        #if ( $comment.isVisible() )
-	        	#set ( $actionText = "Unpublish" )
-	        #else
-	        	#set ( $actionText = "Publish" )
-	        #end
-	        [<a href="$bloghome/useradmin/publishcomment.html?entryId=${entry.id}&commentId=${comment.id}&origURL=$content.path">$actionText</a>]
-	        [<a href="$bloghome/useradmin/deletecomment.html?entryId=${entry.id}&commentId=${comment.id}&origURL=$content.path">Delete</a>]
-	    #end
+	  <div class="comment-content">
+		  <a class="comment-poster" href="" title="${comment.getUserLabel()}"><strong>${comment.getUserLabel()}</strong></a>
+		  <span class="comment-body">$comment.commenttext</span> 
+		  <div class="comment-timestamp">$comment.getShortDate($context)</div>
+			#if( $comment.canEdit($user) )
+		        #if ( $comment.isVisible() )
+		        	#set ( $actionText = "Unpublish" )
+		        #else
+		        	#set ( $actionText = "Publish" )
+		        #end
+		        [<a href="$bloghome/useradmin/publishcomment.html?entryId=${entry.id}&commentId=${comment.id}&origURL=$content.path">$actionText</a>]
+		        [<a href="$bloghome/useradmin/deletecomment.html?entryId=${entry.id}&commentId=${comment.id}&origURL=$content.path">Delete</a>]
+		    #end
+			
+		</div>
+		
 	</div>
   </div>						
 #end
