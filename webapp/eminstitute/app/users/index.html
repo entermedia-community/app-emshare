@@ -1,23 +1,25 @@
 ##Exising ones 
 ##No existing programs found.
 <div class="">
-   <h3 class="text-center"> [[Channels]]</h3>
+   <h3 class="text-center"> [[Subscriptions]]</h3>
   
   <div class="" style="padding-top:20px;">
-	  #set( $searcher = $mediaarchive.getSearcher("librarycollection") )
-	  
-	  #foreach( $hit in $searcher.query().exact("owner",$selecteduser.getId()).enduser(true).search($context) )
-			#set($collective = $mediaarchive.getSearcher("librarycollection").loadData($hit) )
+	  #set( $subscriptions = $mediaarchive.query("librarycollectionusers").exact("followeruser",$selecteduser.getId()).sort("isonteam").search() )
+
+	  #foreach( $hit in $subscriptions )
 			
+			#set($collective = $mediaarchive.getCachedData("librarycollection",$hit.collectionid) )
+			$context.putPageValue("subscribed","true")
+			$context.putPageValue("ontheteam",$hit.ontheteam)
 			$context.putPageValue("collective", $collective)
 			$pages.include("$apphome/browse/collectivelisting.html", $context)
 
 	  #end
-	  
+	 #if( $selecteduser.getId() == $user.getId()) 
 	<div style="margin-top:20px;">
   		<a href="$apphome/browse/add/addnew.html" class="btn btn-sm btn-primary">[[Create New Channel]]</a>
 	</div>
-        
+     #end   
   </div>
 </div>
 
