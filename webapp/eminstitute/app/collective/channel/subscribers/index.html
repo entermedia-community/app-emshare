@@ -104,9 +104,17 @@ Meet our team & Community and become a co-creator, sponsor or influencer
 	</div>
 #end
 
-<h3>[[Sponsors]]</h3>
-##TODO list sponsors
+#set( $donations = $mediaarchive.query("transaction").exact("collectionid",$collectionid).sort("paymentdate").search($context) )
+#if( !$donations.isEmpty() )	
+<h3>[[Recent Donations]]</h3>
+<table>
+	#foreach($transaction in $donations)
+	 	#set( $selecteduser = $mediaarchive.getUser($transaction.userid) )
 
+		<tr><td><a href="">$selecteduser</a></td><td> $transaction.totalprice</td></tr>		
+	#end
+</table>	
+#end	
 <h3>[[Stations]]</h3>
 		<div class="">		
 	#foreach($library in $librarycol.getLibraries())
