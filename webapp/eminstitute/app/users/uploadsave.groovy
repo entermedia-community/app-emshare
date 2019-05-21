@@ -14,7 +14,13 @@ public void init2()
 		User edituser =  context.getPageValue("selecteduser");
 		edituser.setValue("assetportrait",onefile.getId());
 		archive.saveData("user",edituser);
-	}		
+		if( edituser.getId().equals(  context.getUser().getId() ) )
+		{
+				String catalogid = context.findValue("catalogid");
+				context.putSessionValue(catalogid + "user",edituser);
+				context.putPageValue("user",edituser);
+		}
+	}	
 }
 
 init2();
