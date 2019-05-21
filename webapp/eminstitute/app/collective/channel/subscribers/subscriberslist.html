@@ -4,7 +4,7 @@
 	<p>No subscribers yet</p>
 #else
 
-<table class="table table-striped table-hover">
+<table class="table table-striped table-hover table-suscribers">
    		<thead>
 		<tr class="tableheader">
 		<th>[[User]]</th>
@@ -15,7 +15,18 @@
   #foreach( $hit in $subs)
         <tr>
         	#set( $followeruser = $mediaarchive.getUser($hit.followeruser) )
-        	<td><span class="username">$followeruser.getAnonNickName()</span></td> 
+		    #set( $userlink = "$apphome/users/${followeruser.getId()}/${followeruser.getAnonNickName()}.html")
+			#set( $userimageurl = $mediaarchive.asLinkToProfile($followeruser.assetportrait) )
+			#if(!$userimageurl)
+				#set( $userimageurl = "$apphome/theme/images/user.svg" )
+			#end
+
+			
+        	<td>
+			<a href="#esc($userlink)" title="$!followeruser.getAnonNickName()">
+			<img src="${userimageurl}"  title="$!followeruser.getAnonNickName()" class="img-fluid align-middle usericon"> <span class="username">$followeruser.getAnonNickName()</span>
+			</a>
+			</td> 
         	<td><span class="usernote">#if ($hit.getValue("addeddate")) $context.getDateTime( $hit.getValue("addeddate") )</span> #end</td>
         	
        		

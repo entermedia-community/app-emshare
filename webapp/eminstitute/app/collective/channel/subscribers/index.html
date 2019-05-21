@@ -83,18 +83,17 @@ Meet our team & Community and become a co-creator, sponsor or influencer
 	
   	#set( $followeruser = $mediaarchive.getUser($hit.followeruser) )
     #set( $userlink = "$apphome/users/${followeruser.getId()}/${followeruser.getAnonNickName()}.html")
-	#set( $userimage = $mediaarchive.getCachedAsset($followeruser.assetportrait) )
-	#if($userimage)
-		#set( $userimageurl = $mediaarchive.asLinkToPreview($userimage,"image200x200.jpg") )
-	#else
+	#set( $userimageurl = $mediaarchive.asLinkToProfile($followeruser.assetportrait) )
+	#if(!$userimageurl)
 		#set( $userimageurl = "$apphome/theme/images/user.svg" )
 	#end
+
 	<div class="col-md-6" >
 	  <div class="" style="padding: 2px 2px 5px; position:relative">
 	  	
 	  	<div style="position: absolute; width:40px;">
 		<a href="#esc($userlink)" style="display:inline-block; height:40px">
-		<img  src="${userimageurl}"  title="$!followeruser.getAnonNickName()" class="img-fluid align-middle feed-comments-usericon" 
+		<img  src="${userimageurl}"  title="$!followeruser.getAnonNickName()" class="img-fluid align-middle usericon" 
 			style="position:relative; top:50%; transform: translateY(-50%);"></a>
 		</div>
 	  	<div style="margin-left:35px; height:40px; position:relative;">

@@ -1,14 +1,12 @@
 #set( $chatuser = $mediaarchive.getUser($chat.user) )
 #set( $userlink = "$apphome/users/${chatuser.getId()}/${chatuser.getAnonNickName()}.html")
-#set( $userimage = $mediaarchive.getCachedAsset($chatuser.assetportrait) )
-#if($userimage)
-	#set( $userimageurl = $mediaarchive.asLinkToPreview($userimage,"image200x200.jpg") )
-#else
+#set( $userimageurl = $mediaarchive.asLinkToProfile($chatuser.assetportrait) )
+#if(!$userimageurl)
 	#set( $userimageurl = "$apphome/theme/images/user.svg" )
 #end
 <div class="chatterbox-chat" role="alert" id="chatter-message-$chat.id">
 	<div class="chat-icon">
-	<a href="#esc($userlink)" title="$chatuser.getAnonNickName()"><img src="${userimageurl}" class="img-fluid chat-icon-usr"></a>
+	<a href="#esc($userlink)" title="$chatuser.getAnonNickName()"><img src="${userimageurl}" class="img-fluid usericon"></a>
 	</div>
 	<div class="chat-msg">
 	<a href="#esc($userlink)" title="$context.getDateTime($chat.date)"><strong> $chatuser.getAnonNickName()</strong></a><br>

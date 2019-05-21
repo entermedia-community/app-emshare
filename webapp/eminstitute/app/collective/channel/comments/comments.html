@@ -6,13 +6,11 @@
 	  #set($commentuser = $comment.getUser())
 	  #set($userlink = "$apphome/users/${commentuser.getId()}/${commentuser.getAnonNickName()}.html")
 	  <a href="#urlescape($userlink)" title="${comment.getUserLabel()}">
-		#set( $userimage = $mediaarchive.getCachedAsset($commentuser.assetportrait) )
-		#if($userimage)
-			#set( $userimageurl = $mediaarchive.asLinkToPreview($userimage,"image200x200.jpg") )
-		#else
+		#set( $userimageurl = $mediaarchive.asLinkToProfile($commentuser.assetportrait) )
+		#if(!$userimageurl)
 			#set( $userimageurl = "$apphome/theme/images/user.svg" )
 		#end
-	  <img src="$userimageurl" class="feed-comments-usericon">
+	  <img src="$userimageurl" class="usericon">
 	  </a>
 	  <div class="comment-content">
 		  <a class="comment-poster" href="#urlescape($userlink)" title="${comment.getUserLabel()}"><strong>${comment.getUserLabel()}</strong></a>
@@ -34,12 +32,11 @@
   </div>						
 #end
 #if ($user)
-#set( $userimage = $mediaarchive.getCachedAsset($user.assetportrait) )
-#if($userimage)
-	#set( $userimageurl = $mediaarchive.asLinkToPreview($userimage,"image200x200.jpg") )
-#else
+#set( $userimageurl = $mediaarchive.asLinkToProfile($user.assetportrait) )
+#if(!$userimageurl)
 	#set( $userimageurl = "$apphome/theme/images/user.svg" )
 #end
+
 <img src="$userimageurl" class="feed-comments-usericon">
 <input type="text"  name="commenttext" data-useruploadid="$upload.id" data-collectionid="$librarycol.id" class="commentadder form-control feed-comments-textinput" placeholder="[[Write a comment]]">
 #else
