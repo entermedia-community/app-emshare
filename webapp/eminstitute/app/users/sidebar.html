@@ -1,25 +1,26 @@
 <div class="profile-sidebar">
-	#set( $userimage = $mediaarchive.getAsset($user.assetportrait) )
-	#if(!$userimage)
-			#set( $userimage = "$apphome/theme/images/user.svg" )
+	#set( $userimage = $mediaarchive.getCachedAsset($selecteduser.assetportrait) )
+	#if($userimage)
+		#set( $userimageurl = $mediaarchive.asLinkToPreview($userimage,"image200x200.jpg") )
+	#else
+		#set( $userimageurl = "$apphome/theme/images/user.svg" )
 	#end
 	
+#if( $user.getId() == $selecteduser.getId())
 	<div class="profile-username">
 		<div class="profile-userimage">
-			<img src="$userimage" >
+			<img src="$userimageurl" width="200" >
 			<a href="#" id="filePicker" class="btn btn-sm btn-light profileeditimage" title="[[Edit profile image]]"><i class="fas fa-image"></i> [[Edit]]</a>
 		</div>
 		<form id="uploaddata" 
 	name="wizard" 
 	method="post" 
-	data-targetdiv="chatfeedlayout" 
-	action="$apphome/collective/channel/upload.html" 
-	data-finishaction="$apphome/collective/channel/uploadsave.html?oemaxlevel=2"
-	class="validate showonselect autofinishaction"
-	data-finishtargetdiv="channelcontainer"
+	enctype="multipart/form-data"
+	action="$apphome/users/uploadsave.html" 
 	>
-	<input id="upload_field" type="file" style="position:absolute; top:-1000px;" >
-		
+	<input type="hidden" name="userid" value="$selecteduser.getId()" />
+	<input type="hidden" name="sourcepath" value="userprofiles/$selecteduser.getId()/" />
+	<input id="upload_field" name="file" type="file" style="position:absolute; top:-1000px;" >
 		</form>
 		<script>
 			$('#upload_field').change(function() {
@@ -28,8 +29,11 @@
 		</script>
 	$user.getAnonNickName()
 	</div>
-
 <div class="text-center">
 	<a href="$apphome/users/edit/edit.html?userid=$selecteduser.getId()" class="btn btn-sm btn-primary emdialog">[[Edit]]</a></div>
-
 </div>
+#else
+	<div class="profile-username">
+	$user.getAnonNickName()
+	</div>
+#end		
