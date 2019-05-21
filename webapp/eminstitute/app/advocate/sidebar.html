@@ -7,7 +7,25 @@
 	<div class="profile-username">
 		<div class="profile-userimage">
 			<img src="$userimage" >
+			<a href="#" id="filePicker" class="btn btn-sm btn-light profileeditimage" title="[[Edit profile image]]"><i class="fas fa-image"></i> [[Edit]]</a>
 		</div>
+		<form id="uploaddata" 
+	name="wizard" 
+	method="post" 
+	data-targetdiv="chatfeedlayout" 
+	action="$apphome/collective/channel/upload.html" 
+	data-finishaction="$apphome/collective/channel/uploadsave.html?oemaxlevel=2"
+	class="validate showonselect autofinishaction"
+	data-finishtargetdiv="channelcontainer"
+	>
+	<input id="upload_field" type="file" style="position:absolute; top:-1000px;" >
+		
+		</form>
+		<script>
+			$('#upload_field').change(function() {
+			  $('#uploaddata').submit();
+			});
+		</script>
 	$user.getAnonNickName()
 	</div>
 
