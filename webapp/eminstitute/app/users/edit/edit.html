@@ -4,13 +4,14 @@
 #set( $searcher = $mediaarchive.getSearcher("user") )
 $context.putPageValue("searcher",$searcher)
 $context.putPageValue("view", "user/myaccount")
-$context.putPageValue("data", $user)
+$context.putPageValue("data", $selecteduser)
 <form name="saveproject" enctype="multipart/form-data" id="saveproject"
-	 action="$apphome/advocate/edit/save.html" method="post">
+	 action="$apphome/users/edit/save.html" method="post">
 
 <input type="hidden" name="save" value="true" />
-<input type="hidden" name="searchtype" value="librarycollection" />
-<input type="hidden" name="id" value="$user.getId()" />
+<input type="hidden" name="searchtype" value="user" />
+<input type="hidden" name="id" value="$selecteduser.getId()" />
+<input type="hidden" name="username" value="$selecteduser.getId()" />
 
  
 $pages.include("/$applicationid/components/xml/detaileditor4.html", $context)
