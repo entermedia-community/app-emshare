@@ -2,31 +2,21 @@
 ##No existing programs found.
 <div class="">
   
-   <h3 class="text-center"> [[Collectives]]</h3>
+   <h3 class="text-center"> [[Channels]]</h3>
   
-  <div class="collective-grid-container" style="padding-top:20px;">
+  <div class="" style="padding-top:20px;">
 	  #set( $searcher = $mediaarchive.getSearcher("librarycollection") )
-	  <ul class="collective-grid">
+	  
 	  #foreach( $hit in $searcher.query().exact("owner",$user.getId()).enduser(true).search($context) )
-			#set( $logo = $mediaarchive.getAsset($hit.assetportrait))
-			#set( $collurl = "$apphome/collective/channel/"+$hit.id+"/"+$hit.name+".html") 
-			#if( $logo)
-				#set($logourl ="/$mediaarchive.getMediaDbId()/services/module/asset/downloads/preset/${logo.sourcepath}/image200x200.jpg")
-			#else	
-			    #set($logourl="$apphome/theme/oi/team100.png")
-			#end
-			<li>
-			<a href="#urlencode($collurl)">
-			<div  class="collective-grid-logo" style="background-image: url($logourl)"></div>
-			<div class="collective-grid-name">
-	        $hit.name
-			</div>
-			</a>
-			</li>
+			#set($collective = $mediaarchive.getSearcher("librarycollection").loadData($hit) )
+			
+			$context.putPageValue("collective", $collective)
+			$pages.include("$apphome/browse/collectivelisting.html", $context)
+
 	  #end
-	  </ul>
+	  
 	<div style="margin-top:20px;">
-  		<a href="addnew.html" class="btn btn-sm btn-primary">[[Add Project]]</a>
+  		<a href="$apphome/browse/add/addnew.html" class="btn btn-sm btn-primary">[[Create New Channel]]</a>
 	</div>
         
   </div>
