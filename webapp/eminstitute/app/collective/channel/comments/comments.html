@@ -3,11 +3,19 @@
 #foreach( $comment in $comments)
   <div class="feedcard-comment">
 	<div class="">
-	  <a href="" title="${comment.getUserLabel()}">
-	  <img src="$apphome/theme/images/user.svg" class="feed-comments-usericon">
+	  #set($commentuser = $comment.getUser())
+	  #set($userlink = "$apphome/users/${commentuser.getId()}/${commentuser.getAnonNickName()}.html")
+	  <a href="#urlescape($userlink)" title="${comment.getUserLabel()}">
+		#set( $userimage = $mediaarchive.getCachedAsset($commentuser.assetportrait) )
+		#if($userimage)
+			#set( $userimageurl = $mediaarchive.asLinkToPreview($userimage,"image200x200.jpg") )
+		#else
+			#set( $userimageurl = "$apphome/theme/images/user.svg" )
+		#end
+	  <img src="$userimageurl" class="feed-comments-usericon">
 	  </a>
 	  <div class="comment-content">
-		  <a class="comment-poster" href="" title="${comment.getUserLabel()}"><strong>${comment.getUserLabel()}</strong></a>
+		  <a class="comment-poster" href="#urlescape($userlink)" title="${comment.getUserLabel()}"><strong>${comment.getUserLabel()}</strong></a>
 		  <span class="comment-body">#esc($comment.commenttext)</span> 
 		  <div class="comment-timestamp">$comment.getShortDate($context)</div>
 			#if( $comment.canEdit($user) )
@@ -25,8 +33,19 @@
 	</div>
   </div>						
 #end
-
-<img src="$apphome/theme/images/user.svg" class="feed-comments-usericon">
+#if ($user)
+#set( $userimage = $mediaarchive.getCachedAsset($user.assetportrait) )
+#if($userimage)
+	#set( $userimageurl = $mediaarchive.asLinkToPreview($userimage,"image200x200.jpg") )
+#else
+	#set( $userimageurl = "$apphome/theme/images/user.svg" )
+#end
+<img src="$userimageurl" class="feed-comments-usericon">
 <input type="text"  name="commenttext" data-useruploadid="$upload.id" data-collectionid="$librarycol.id" class="commentadder form-control feed-comments-textinput" placeholder="[[Write a comment]]">
+#else
+#set($loginok = "$apphome/collective/channel/$collectionid/")
+<a href="$apphome/authentication/login.html?loginokpage=$!loginok" class="btn suscribe-btn">[[Login to Chat]]</a>
 
+
+#end
 </div>

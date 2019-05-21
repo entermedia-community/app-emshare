@@ -1,9 +1,17 @@
+#set( $chatuser = $mediaarchive.getUser($chat.user) )
+#set( $userlink = "$apphome/users/${chatuser.getId()}/${chatuser.getAnonNickName()}.html")
+#set( $userimage = $mediaarchive.getCachedAsset($chatuser.assetportrait) )
+#if($userimage)
+	#set( $userimageurl = $mediaarchive.asLinkToPreview($userimage,"image200x200.jpg") )
+#else
+	#set( $userimageurl = "$apphome/theme/images/user.svg" )
+#end
 <div class="chatterbox-chat" role="alert" id="chatter-message-$chat.id">
 	<div class="chat-icon">
-	<img src="/$applicationid/theme/images/user.svg" class="img-fluid chat-icon-usr">
+	<a href="#esc($userlink)" title="$chatuser.getAnonNickName()"><img src="${userimageurl}" class="img-fluid chat-icon-usr"></a>
 	</div>
 	<div class="chat-msg">
-	<a href="" title="$context.getDateTime($chat.date)"><strong> $mediaarchive.getUser($chat.user)</strong></a><br>
+	<a href="#esc($userlink)" title="$context.getDateTime($chat.date)"><strong> $chatuser.getAnonNickName()</strong></a><br>
 	$!chat.message  
 	#if($candeletecomments)
 		<a class="em-delete float-right" data-id="${chat.id}" data-target="#chatter-message-$chat.id" data-searchtype="chatterbox"  href="#"><i class="fas fa-times"></i></a>
