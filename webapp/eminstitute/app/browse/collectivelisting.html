@@ -2,20 +2,22 @@
 <div class="card" style="margin:10px 0 20px;">
 		<div class="card-body feedcollective" style="padding: 20px;min-height:120px;" >
 			<div class="row">
-				<div class="col-sm-2 col-md-2">
-				  	<div style="">
+				<div class="col-md-3">
+				  	<div class="text-center">
 					#set( $logo = $mediaarchive.getAsset($collective.assetportrait)) 
 					#if( $logo)
 						#set($logourl ="/$mediaarchive.getMediaDbId()/services/module/asset/downloads/preset/${logo.sourcepath}/image200x200.jpg")
 					#else	
 					    #set($logourl="$apphome/theme/oi/team.png")
 					#end
-					<a href="#urlencode($collurl)" ><img src="$logourl" class="img-fluid align-middle" style="">
-					#if( $ontheteam && $ontheteam == "true")[[Team Member]]#end
+					<a href="#urlencode($collurl)" title="$!collective" ><img src="$logourl" class="img-fluid align-middle"></a>
+					#if( $ontheteam && $ontheteam == "true")
+						<a href="#urlencode($collurl)" title="$!collective" class="isteammeber"><i class="fas fa-star"></i> [[Team Member]]</a>
+					#end
 					</a>
 					</div>
 				</div>
-				<div class="col-sm-10 col-md-10">
+				<div class="col-md-9">
 						<div class="feedcard-collective">		
 							#foreach($library in $collective.getLibraries())
 							<a class="collectivetag" href="$apphome/browse/stations/index.html?libraryid=$library.getId()&grid=true">$library</a> 
