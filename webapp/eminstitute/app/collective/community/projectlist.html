@@ -1,7 +1,7 @@
 #set( $collectiveid = $context.getRequestParameter("collectionid"))
 #set( $searcher = $mediaarchive.getSearcher("collectiveproject") )
-#set ($ontheteam = $context.ontheteam)
-#if($ontheteam)
+
+#if($caneditcollection)
 	#set( $alltopics = $searcher.query().match("parentcollectionid",$collectiveid).sort("name").search($context) )
 #else
 	#set( $alltopics = $searcher.query().match("parentcollectionid",$collectiveid).exact("teamproject","false").sort("name").search($context) )
@@ -20,7 +20,7 @@
 	  #foreach( $hit in $alltopics)
 	     <li class="#if($currenttopic.getId()==$hit.getId()) current #end">
 		<a href="$apphome/collective/community/index.html?collectionid=$collectiveid&topic=$hit.getId()">
-		#if($ontheteam)
+		#if($caneditcollection)
 			#if ($hit.teamproject == "true")
 				<i class="fas fa-lock"></i>
 			#else 

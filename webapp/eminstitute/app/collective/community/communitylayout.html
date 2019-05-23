@@ -2,15 +2,6 @@
 #set( $topicid = $context.getRequestParameter("topic"))
 #set( $searcher = $mediaarchive.getSearcher("collectiveproject") )
 
-##Is Team Memeber?
-#if ($user)
-	#set( $subscription = $mediaarchive.query("librarycollectionusers").exact("followeruser",$user.getId()).exact("collectionid",$collectiveid).searchOne() )
-	#if ($subscription && $subscription.ontheteam)
-		#set ($ontheteam = "true")
-		$context.putPageValue("ontheteam", $ontheteam)
-	#end	
-#end
-
 
 #if($topicid)
 	#set( $currenttopic = $searcher.query().match("parentcollectionid",$collectiveid).exact("id",$topicid).searchOne() )
