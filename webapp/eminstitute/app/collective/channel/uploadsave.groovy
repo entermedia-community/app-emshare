@@ -5,7 +5,6 @@ import org.entermediadb.asset.MediaArchive
 import org.openedit.Data
 import org.openedit.data.Searcher
 
-
 public void init()
 {
 	MediaArchive archive = context.getPageValue("mediaarchive");
@@ -21,9 +20,15 @@ public void init()
 	upload.setValue("owner",context.getUserName());
 	upload.setValue("librarycollection",context.getRequestParameter("collectionid"));
 	upload.setValue("uploadcategory",defaultcat);
+	String[] topics = context.getRequestParameters("collectiveproject.value");
+	if( topics != null && topics.length > 0)
+	{
+		upload.setValues("collectiveproject",Arrays.asList(topics) );
+	}
 	upload.setValue("usertags",context.getRequestParameters("keywords.value"));
 	upload.setValue("title",context.getRequestParameters("uploadtitle"));
-	upload.setValue("longdescription",context.getRequestParameters("uploaddescription"));
+	String desc = context.getRequestParameters("uploaddescription");
+	upload.setValue("longdescription",desc);
 	searcher.saveData(upload);
 	
 	//context.redirect("/"+$applicationid+"/collective/channel/");
