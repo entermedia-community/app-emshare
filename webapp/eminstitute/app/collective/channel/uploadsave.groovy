@@ -27,7 +27,7 @@ public void init()
 	}
 	upload.setValue("usertags",context.getRequestParameters("keywords.value"));
 	upload.setValue("title",context.getRequestParameters("uploadtitle"));
-	String desc = context.getRequestParameters("uploaddescription");
+	String desc = context.getRequestParameter("uploaddescription");
 	upload.setValue("longdescription",desc);
 	searcher.saveData(upload);
 	
