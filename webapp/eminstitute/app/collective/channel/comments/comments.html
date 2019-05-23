@@ -33,21 +33,16 @@
 #end
 
 #if ($user)
-#set( $userimageurl = $mediaarchive.asLinkToProfile($user.assetportrait) )
-#if(!$userimageurl)
-	#set( $userimageurl = "$apphome/theme/images/user.svg" )
-#end
+	#set( $userimageurl = $mediaarchive.asLinkToProfile($user.assetportrait) )
+	#if(!$userimageurl)
+		#set( $userimageurl = "$apphome/theme/images/user.svg" )
+	#end
 
-<img src="$userimageurl" class="usericon">
-<input type="text"  name="commenttext" data-useruploadid="$upload.id" data-collectionid="$librarycol.id" class="commentadder form-control feed-comments-textinput" placeholder="[[Write a comment]]">
+	<img src="$userimageurl" class="usericon">
+	<input type="text"  name="commenttext" data-useruploadid="$upload.id" data-collectionid="$librarycol.id" class="commentadder form-control feed-comments-textinput" placeholder="[[Write a comment]]">
 #else
-#set( $userimageurl = "$apphome/theme/images/user.svg" )
-
-
-#set($loginok = "$apphome/collective/channel/${librarycol.id}/${librarycol.name}.html")
-<img src="$userimageurl" class="usericon"><a href="$apphome/authentication/login.html?loginokpage=$!loginok" style="padding-left:40px;" >
-[[Login to comment]]</a>
-
-
+	#set($loginok = "$apphome/collective/channel/${librarycol.id}/${librarycol.name}.html")
+	<a href="$apphome/authentication/login.html?loginokpage=$!loginok" class="btn btn-sm btn-primary" >
+	[[Login to comment]]</a>
 #end
 </div>

@@ -2,12 +2,29 @@
 #set( $topicid = $context.getRequestParameter("topic"))
 #set( $searcher = $mediaarchive.getSearcher("collectiveproject") )
 
+##Is Team Memeber?
+#if ($user)
+	#set( $subscription = $mediaarchive.query("librarycollectionusers").exact("followeruser",$user.getId()).exact("collectionid",$collectiveid).searchOne() )
+	#if ($subscription && $subscription.ontheteam)
+		#set ($ontheteam = "true")
+		$context.putPageValue("ontheteam", $ontheteam)
+	#end	
+#end
+
+
 #if($topicid)
 	#set( $currenttopic = $searcher.query().match("parentcollectionid",$collectiveid).exact("id",$topicid).searchOne() )
 #else
-	#set( $currenttopic = $searcher.query().match("parentcollectionid",$collectiveid).searchOne() )
+	#set( $currenttopic = $searcher.query().match("parentcollectionid",$collectiveid).match("teamproject","false").searchOne() )
 #end
 
+
+
+#if($currenttopic.teamproject == "true" && !$ontheteam)
+	#set($currenttopic = "")
+#end
+
+#if($currenttopic)
 $context.putPageValue("currenttopic", $currenttopic)
 
 <div class="container h-100"  style="max-height: calc(100% - 290px)" >
@@ -18,16 +35,16 @@ $context.putPageValue("currenttopic", $currenttopic)
  <div class="col col-lg-3 collaborate-sidebar">
 
 
-
 	$pages.include("$apphome/collective/community/projectlist.html", $context)
 	     
-       
+    #if ($user)   
 	<div class="collaborate-content" >	
 	<h3>[[Direct Messages]]<a href="#" 
 	 class="emdialog community-add-btn float-right"><i class="fas fa-plus"></i></a></h3>
 	##<h4>[[Team]]</h4>
 	##<h4>[[Suscribers]]</h4>
 	</div>	 
+	#end
 	
 	<div class="collaborate-content" >
 	
@@ -76,5 +93,5 @@ scrollToChat();
 
 
 </script>
-
+#end
 
