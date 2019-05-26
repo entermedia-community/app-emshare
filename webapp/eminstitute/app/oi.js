@@ -69,5 +69,143 @@ lQuery(".sidebartogglebtnout").livequery("click",function(e)
 			$(".sidebartogglebtn").toggle();
 		});
 
+	lQuery(".channelviewer").livequery("click",function(e)
+	{
+			e.stopPropagation();
+			var clicked = $(this);
+			if(clicked.attr("noclick") =="true") {
+				return true;
+			}
+			
+			e.preventDefault();
+			e.stopPropagation()
+			
+			//var feedarea = clicked.closest(".feedcard");
+			var uploadid = clicked.data("uploadid");
+			showUpload(uploadid);
+	});
+	lQuery("#hiddenoverlay").livequery("click",function(e)
+	{
+			e.stopPropagation();
+			 var $caller = $(e.target);
+             if( $caller.prop("id") == "hiddenoverlay" )
+             {
+				hideOIOverlayDiv();
+			 }
+	});
+
+	lQuery(".overlay-close").livequery("click",function(e)
+	{
+			e.stopPropagation();
+			hideOIOverlayDiv();
+	});
+	
+	showUpload = function(uploadid)
+	{
+		window.location.hash = 'showupload-' + uploadid;
+	
+		var href = $("#application").data("viewertemplate");
+		var params = {};
+		
+		params["showupload"] = uploadid;
+		params["oemaxlevel"] = 1;
+		$.get(href, params, function(data) 
+		{
+			var overlay = getOIOverlay();
+			overlay.html(data);
+			showOIOverlayDiv();
+		});
+	};	
+
+	getOIOverlay = function()
+	{
+		var hidden = $("#hiddenoverlay");
+		if( hidden.length == 0 )
+		{
+			$('body').prepend('<div id="hiddenoverlay"></div>');	
+			initKeyBindings();	
+		}
+		hidden = $("#hiddenoverlay");
+		return hidden;
+    }
+
+	showOIOverlayDiv = function()
+	{
+		var overlay = getOIOverlay();
+		stopautoscroll = true;
+		$("body").css({ overflow: 'hidden' })
+		overlay.show();
+		var lastscroll = $(window).scrollTop();
+		overlay.data("lastscroll",lastscroll);
+	}
+
+	initKeyBindings = function()
+	{
+		var hidden = getOIOverlay();
+		$(document).keydown(function(e)
+		{
+			if( !hidden.is(":visible") )
+			{
+				return;
+			}
+			var target  = e.target;
+			if ($(target).is('input') || $(target).is('.form-control') ) {
+				return;
+			}
+		    switch(e.which) 
+		    {
+		        // TODO: background window.scrollTo the .masonry-grid-cell we view, so we can reload hits
+		        case 27: // esc
+	        		hideOIOverlayDiv();
+		        break;
+		
+		
+		        default: return; // exit this handler for other keys
+		    }
+		    e.preventDefault(); // prevent the default action (scroll / move caret)
+		});
+	}
+	OIdisposevideos = function()
+	{
+		//Stop/Dispose Videos
+		$('.video-js, .video-player').each(function () {
+			if (this.id) {
+				videojs(this.id).dispose();
+			}
+		});
+	}
+	
+	hideOIOverlayDiv = function()
+	{
+		var hidden = getOIOverlay();
+		OIdisposevideos();
+		stopautoscroll = false;
+		$("body").css({ overflow: 'auto' })
+		hidden.hide();
+		var lastscroll = hidden.data("lastscroll");
+		//remove Asset #hash
+		history.replaceState(null, null, ' '); 
+		$(window).scrollTop( lastscroll );
+	}
+	
+	var showuploadid = $("#application").data("showuploadid");	
+	if( showuploadid )
+	{
+	   showUpload(showuploadid);
+	}
+	else
+	{
+	  var hash = window.location.hash;
+	  if (hash && hash.startsWith('#showupload-'))
+      {
+        var uploadid = hash.substring(12,hash.length);
+        if (uploadid)
+        {
+            showUpload(uploadid);
+        }
+      }
+    }
+	
+	
 });
 
