@@ -168,7 +168,7 @@ lQuery(".sidebartogglebtnout").livequery("click",function(e)
 	OIdisposevideos = function()
 	{
 		//Stop/Dispose Videos
-		$('.video-js, .video-player').each(function () {
+		$('#hiddenoverlay .video-js, #hiddenoverlay .video-player').each(function () {
 			if (this.id) {
 				videojs(this.id).dispose();
 			}
