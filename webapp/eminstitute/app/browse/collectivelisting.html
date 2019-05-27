@@ -1,12 +1,21 @@
 #set($collurl = "$apphome/collective/channel/"+$collective.id+"/"+$collective.name+".html")
 <div class="card" style="margin:10px 0 20px;">
-		<div class="card-body feedcollective" style="padding: 20px;min-height:120px;" >
+		#if ($collective.assetbanner)
+			#set( $banner= $mediaarchive.getAsset($collective.assetbanner) )
+		#end
+		<div class="card-body feedcollective" style="padding: 20px;min-height:120px;
+				#if($banner)
+					#set ($bannerurl = "/$mediaarchive.getMediaDbId()/services/module/asset/downloads/preset/${banner.sourcepath}/banner.jpg")
+					background-image:url($bannerurl)
+				#end
+				"
+			>
 			<div class="row">
 				<div class="col-md-3">
 				  	<div class="text-center">
 					#set( $logo = $mediaarchive.getAsset($collective.assetportrait)) 
 					#if( $logo)
-						#set($logourl ="/$mediaarchive.getMediaDbId()/services/module/asset/downloads/preset/${logo.sourcepath}/image200x200.jpg")
+						#set($logourl ="/$mediaarchive.getMediaDbId()/services/module/asset/downloads/preset/${logo.sourcepath}/image200x200.png")
 					#else	
 					    #set($logourl="$apphome/theme/oi/team.png")
 					#end
@@ -26,7 +35,7 @@
 				
 					  	<div style="">
 							#set($label = $collective.getName($context.getLanguage()))
-					    	<div ><a href="#urlencode($collurl)" title="$label" style="font-size:1.3em;"><strong>$label</strong></a></div> 
+					    	<div class="listcollectivename"><a href="#urlencode($collurl)" title="$label" style="font-size:1.3em;"><strong>$label</strong></a></div> 
 					   		#foreach( $usertag in $collective.getValues("usertags") )
 				            	<span class="categories-tag">$usertag</span>
 					    	#end
