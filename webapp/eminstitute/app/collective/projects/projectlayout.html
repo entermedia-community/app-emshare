@@ -1,11 +1,30 @@
-<div class="container">
-<div class="row">
-<div class="col" style="padding:0;" id="main">
-<div id="collectiontoplevel" class="collectiontoplevel" data-collectionid="$librarycol.id">
+##Sidebars
+#if( $canviewcategorynav || ( $librarycol && $canviewcategorynavcollections ) )
+	#set( $leftbarstatus = $userprofile.get("leftbarstatus"))
+#else
+	#set( $leftbarstatus = false)
+#end
+#set( $filtersbarstatus = $userprofile.get("filtersbarstatus"))
+$pages.getWebPageRequest().putPageValue("leftbarstatus", $leftbarstatus)
+$pages.getWebPageRequest().putPageValue("filtersbarstatus", $filtersbarstatus)
 
-$pages.includeContent()
-
-</div>
-</div>
-</div>
+<div class="container-fluid">
+	<div class="row">
+		<div class="col" style="padding:0;" id="main">
+			<div id="collectiontoplevel" class="collectiontoplevel" data-collectionid="$librarycol.id">
+			
+			$pages.includeContent()
+			
+			#if( $canviewcategorynav || ( $librarycol && $canviewcategorynavcollections ) )
+			<div class="col-main col-left #if ($leftbarstatus!=false) leftopen #end " id="col-left">
+				<div class="col-main-inner">
+					$context.putPageValue("treeurlprefix", "$apphome/collective/projects/index.html")
+					$pages.include("$apphome/components/sidebars/standard-left.html", $context)
+				</div>
+			</div>
+			#end
+			
+			</div>
+		</div>
+	</div>
 </div>
