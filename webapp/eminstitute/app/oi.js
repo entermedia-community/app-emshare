@@ -94,10 +94,10 @@ lQuery(".sidebartogglebtnout").livequery("click",function(e)
 			 }
 	});
 
-	lQuery(".overlay-close").livequery("click",function(e)
+	lQuery(".OIoverlay-close").livequery("click", function(e)
 	{
-			e.stopPropagation();
 			hideOIOverlayDiv();
+			e.stopPropagation();
 	});
 	
 	showUpload = function(uploadid)
@@ -123,7 +123,7 @@ lQuery(".sidebartogglebtnout").livequery("click",function(e)
 		if( hidden.length == 0 )
 		{
 			$('body').prepend('<div id="hiddenoverlay"></div>');	
-			initKeyBindings();	
+			initOIKeyBindings();	
 		}
 		hidden = $("#hiddenoverlay");
 		return hidden;
@@ -139,12 +139,12 @@ lQuery(".sidebartogglebtnout").livequery("click",function(e)
 		overlay.data("lastscroll",lastscroll);
 	}
 
-	initKeyBindings = function()
+	initOIKeyBindings = function(hidden)
 	{
-		var hidden = getOIOverlay();
+		
 		$(document).keydown(function(e)
 		{
-			if( !hidden.is(":visible") )
+			if( hidden && !hidden.is(":visible") )
 			{
 				return;
 			}
@@ -177,6 +177,7 @@ lQuery(".sidebartogglebtnout").livequery("click",function(e)
 	
 	hideOIOverlayDiv = function()
 	{
+		
 		var hidden = getOIOverlay();
 		OIdisposevideos();
 		stopautoscroll = false;
