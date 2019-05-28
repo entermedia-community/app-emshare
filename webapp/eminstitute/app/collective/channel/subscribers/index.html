@@ -116,8 +116,9 @@ Meet our team & Community and become a co-creator, sponsor or influencer
 #end
 
 #set( $donations = $mediaarchive.query("transaction").exact("collectionid",$collectionid).sort("paymentdate").search($context) )
-#if( !$donations.isEmpty() )	
+	
 <h3>[[Recent Donations]]</h3>
+#if( !$donations.isEmpty() )
 <table>
 	#foreach($transaction in $donations)
 		#if ($transaction.userid)
@@ -137,7 +138,11 @@ Meet our team & Community and become a co-creator, sponsor or influencer
 			</td></tr>
 		#end		
 	#end
-</table>	
+</table>
+#else
+<div class="text-center">
+	<a href="$apphome/collective/donate/donate.html?collectionid=$collectionid" class="btn suscribe-btn">[[Donate Now]]</a>
+</div>
 #end	
 <h3>[[Stations]]</h3>
 		<div class="">		

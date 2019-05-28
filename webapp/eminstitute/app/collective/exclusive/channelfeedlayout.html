@@ -1,27 +1,36 @@
 <div id="channelcontainer" class="container" style="min-height: 100%;";>
-<h1>Exclusive Content Area</h1>
-#if($topuploads.isEmpty())
+<div class="row " style="min-height: 100%;";>
+ <div class="col feed-maincol">
 
-<p>[[No exclusive content has been uploaded]]</p>
-
-#else
-
-#if( $caneditcollection)
-
-	$pages.include("$apphome/collective/exclusive/showuploads.html", $context)
-
-#else
-	#set( $donations = $mediaarchive.query("transaction").exact("collectionid",$collectionid).exact("userid",$user.getId()).searchOne() )
-	#if(!$donations)
-
-		[[Must be a sponsor or team member for exclusive access]]
-		
+	<h1 style="margin-top:0;">Exclusive Content Area</h1>
+	#if($topuploads.isEmpty())
+	
+	<p>[[No exclusive content has been uploaded]]</p>
+	
 	#else
-		
+	
+	#if( $caneditcollection)
+	
 		$pages.include("$apphome/collective/exclusive/showuploads.html", $context)
+	
+	#else
+		#set( $donations = $mediaarchive.query("transaction").exact("collectionid",$collectionid).exact("userid",$user.getId()).searchOne() )
+		#if(!$donations)
+	
+			[[Must be a sponsor or team member for exclusive access]]
+			
+		#else
+			
+			$pages.include("$apphome/collective/exclusive/showuploads.html", $context)
+		#end
 	#end
-#end
-
-#end
-
+	
+	#end
+</div>	
+ <div class="col col-lg-4 ">
+	<div class="collective-sidebar">
+	$pages.include("$apphome/collective/channel/subscribers/index.html", $context)
+	</div>
+ </div>
+</div>
 </div>
