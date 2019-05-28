@@ -101,7 +101,7 @@ Meet our team & Community and become a co-creator, sponsor or influencer
 		<img  src="${userimageurl}"  title="$!followeruser.getAnonNickName()" class="img-fluid align-middle usericon" 
 			style="position:relative; top:50%; transform: translateY(-50%);"></a>
 		</div>
-	  	<div style="margin-left:35px; height:40px; position:relative;">
+	  	<div style="margin-left:40px; height:40px; position:relative;">
 	    <div style="position:relative; top:50%; transform: translateY(-50%);">
 	    	<a href="#esc($userlink)" title="$!followeruser.getAnonNickName()">$!followeruser.getAnonNickName()</a></div> 
 	   	<div>
@@ -120,9 +120,22 @@ Meet our team & Community and become a co-creator, sponsor or influencer
 <h3>[[Recent Donations]]</h3>
 <table>
 	#foreach($transaction in $donations)
+		#if ($transaction.userid)
 	 	#set( $selecteduser = $mediaarchive.getUser($transaction.userid) )
-
-		<tr><td><a href="">$selecteduser</a></td><td> $transaction.totalprice</td></tr>		
+		#set( $userlink = "$apphome/users/${selecteduser.getId()}/${selecteduser.getAnonNickName()}.html")
+		#set( $userimageurl = $mediaarchive.asLinkToProfile($selecteduser.assetportrait) )
+		#if(!$userimageurl)
+			#set( $userimageurl = "$apphome/theme/images/user.svg" )
+		#end
+		<tr>
+			<td style="width:40px">
+			<a href="#esc($userlink)" title="$!selecteduser.getAnonNickName()"><img  src="${userimageurl}"  alt="$!selecteduser.getAnonNickName()" class="img-fluid align-middle usericon" 
+			style="position:relative;"></a></td>
+			<td> 
+			<span style="font-size:1rem"><strong>$$transaction.totalprice</strong></span><br>
+			<a href="#esc($userlink)" title="$!selecteduser.getAnonNickName()">$selecteduser.getAnonNickName()</a>
+			</td></tr>
+		#end		
 	#end
 </table>	
 #end	
