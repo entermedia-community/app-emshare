@@ -19,6 +19,12 @@ public void init()
 	upload.setValue("uploaddate",new Date());
 	upload.setValue("owner",context.getUserName());
 	upload.setValue("librarycollection",context.getRequestParameter("collectionid"));
+	String exclusivecontent = context.getRequestParameter("exclusivecontent");
+	if(exclusivecontent != null)
+	{
+		upload.setValue("exclusivecontent",exclusivecontent);
+	}	
+	
 	upload.setValue("uploadcategory",defaultcat);
 	String[] topics = context.getRequestParameters("collectiveproject.value");
 	if( topics != null && topics.length > 0)

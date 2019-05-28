@@ -45,11 +45,11 @@
 					              #set( $link = "$home$apphome/views/modules/library/datapermissions/index.html?id=${librarycol.get('library')}")
 								  <a class="dropdown-item emdialog" id="permissionstab" href="$link" data-hidefooter="true" title="$librarycol.library [[Library Permissions]]"><i class="dropdown-item-icon fas fa-user-lock"></i>  [[ Library Permissions]]</a>
 					
-					
+						#if( $userprofile.isInRole("administrators") )
 							   	
 								   	#set( $editlink = "$home$apphome/views/modules/librarycollection/edit/settings.html?collectionid=${librarycol.getId()}")
 								 	<a class="dropdown-item emdialog"  data-allwaysloadpage="true" data-hidefooter="true"   href="$editlink" title="[[Collection Properties]]"><i class="dropdown-item-icon fas fa-cogs"></i> [[Properties]]</a>
-								
+						#end		
 							 	## #if($cansharecollection && !$librarycol.isVisibility("3") )
 								## 	#set( $editlink = "$home$apphome/views/modules/librarycollection/sharecollection.html?collectionid=${librarycol.getId()}")
 								## 	<a class="dropdown-item emdialog" data-allwaysloadpage="true" data-hidefooter="true"   href="$editlink" title="[[Sharing Collection]]"><i class="dropdown-item-icon fas fa-share-alt"></i> [[Sharing]]</a>
