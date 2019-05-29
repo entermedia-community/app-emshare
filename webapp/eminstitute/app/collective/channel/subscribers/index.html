@@ -7,7 +7,7 @@
 #end	
 #if( !$found)
 <div class="suscribe-title">
-Join the Collective
+[[Join the Collective]]
 </div>	
 #if ($user && !$found)
 <form name="saveproject" id="saveproject" action="$apphome/collective/channel/subscribers/addsave.html" method="post">
@@ -26,10 +26,23 @@ Join the Collective
 <a href="$apphome/authentication/login.html?loginokpage=$!loginok" class="btn suscribe-btn">[[Login to Subscribe]]</a>
 #end
 <div class="suscribe-headline">
-Meet our team & Community and become a co-creator, sponsor or influencer
+	#if( $caneditcollection)
+	<a class="oe-dataedit showeditonright" data-target="#editjoincollectivetext-$librarycol.id" title="[[Edit Join Collective Text]]" data-width="500"	href="#"><i class="fas fa-edit"></i></a>
+	
+	#end
+	<div class="oe-editable" id="editjoincollectivetext-$librarycol.id" data-dataid="$librarycol.id" data-field="joincollectivetext" data-searchtype="librarycollection">
+	   		#if($librarycol.joincollectivetext) 
+				$!librarycol.joincollectivetext
+			#else
+			<p>
+			[[Meet our team & Community and become a co-creator, sponsor or influencer]]
+			</p> 
+			#end
+			</div>
+
 </div>	
 #else
-<div class="suscribe-title">You are subscribed</div>
+<div class="suscribe-title">[[You are subscribed]]</div>
 	 <a href="$apphome/collective/channel/subscribers/unsubscribe.html?id=${found.getId()}&collectionid=$librarycol.getId()" 
 		>[[Un-Subscribe]]</a>
 
@@ -54,7 +67,7 @@ Meet our team & Community and become a co-creator, sponsor or influencer
 </div>  
 <div class="suscribers-box-box">
 	<div class="box-content">
-	<strong>Share</strong>
+	<strong>[[Share]]</strong>
 	<div class="box-icons">
 	#if ($librarycol.facebooklink)
 			<a href="https://www.facebook.com/${librarycol.facebooklink}"><i class="fab fa-facebook-f"></i></a>
