@@ -1,23 +1,36 @@
 <!-- Navigation -->
-  	<div class="oiheader"> 
-	<div class="container">
-  	<div class="oiheaderow">
+<div class="oiheader"> 
+<div class="container">
+<div class="oiheaderow">
     
 
     <nav id="mainOINav" class="navbar navbar-fixed-top navbar-expand-sm nav-project-page">    
       
         
-<a class="navbar-brand" href="$apphome">  
-    	<img style="height: 50px;" src="$apphome/theme/images/OI.png" alt=""></a>
-
+	<a class="navbar-brand" href="$apphome" title="Open Institute"><img style="height: 50px;" src="$apphome/theme/images/OI.png" alt="Open Institute"></a>
+	<div style="width:250px;">
+		
+			<select  id="collectivesearch" 
+				name="collectionid" 
+				class="form-control autosubmitedZ" 
+				placeholder="[[Search Collectives]]"
+				data-url="$apphome/collective/channel/"
+			>
+			<option></option>
+			#set( $collectives = $mediaarchive.query("librarycollection").search() )
+			#foreach( $collective in $collectives )
+				<option value="$collective.getId()">#esc($collective.name)</option>
+			#end
+		   </select>
+		
+	</div>
 		<button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
           [[Account]]
           <i class="fa fa-bars"></i>
         </button>
         <div class="collapse navbar-collapse" id="navbarResponsive">
-          <ul class="navbar-nav  ml-auto">
-          	#set($oisection = $content.oisection) 
-            
+			#set($oisection = $content.oisection)          
+			<ul class="navbar-nav  ml-auto">
             <li class="nav-item #if($oisection == "browse")active#end" >
               <a class="nav-link js-scroll-trigger" href="$apphome/browse/index.html">[[Home]]</a>
             </li>

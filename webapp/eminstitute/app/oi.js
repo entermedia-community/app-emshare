@@ -62,6 +62,7 @@ lQuery(".sidebartogglebtn").livequery("click",function(e)
 	$(this).toggle();
 	$("#oisidebar").toggleClass('sidebaractive');
 });
+
 lQuery(".sidebartogglebtnout").livequery("click",function(e)
 		{
 			e.stopPropagation()
@@ -208,5 +209,27 @@ lQuery(".sidebartogglebtnout").livequery("click",function(e)
     }
 	
 	
+
+lQuery("#collectivesearch").livequery(function() {
+		var theinput = $(this);
+		theinput.select2({
+			theme : "bootstrap4",
+			placeholder : '',
+			allowClear : false,
+			minimumInputLength : 0
+		}).on('select2:select', function (e) {
+			var data = e.params.data;
+			if (data) {
+				var collectivepage = $(this).data("url")+data.id+"/"+data.text+'.html';
+				console.log(collectivepage);
+				window.location.href = collectivepage;
+			}			
+		});
 });
+	
+	
+
+	
+});
+
 
