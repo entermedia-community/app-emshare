@@ -212,14 +212,18 @@ lQuery(".sidebartogglebtnout").livequery("click",function(e)
 
 lQuery("#collectivesearch").livequery(function() {
 		var theinput = $(this);
+		var placeholder= $(this).data("placeholder");
 		theinput.select2({
 			theme : "bootstrap4",
-			placeholder : '',
 			allowClear : false,
-			minimumInputLength : 0
+			minimumInputLength : 0,
+			placeholder: placeholder
 		}).on('select2:select', function (e) {
 			var data = e.params.data;
-			if (data) {
+			if (data.id) {
+				if (data.text == '') {
+					data.text = 'collective';
+				}
 				var collectivepage = $(this).data("url")+data.id+"/"+data.text+'.html';
 				console.log(collectivepage);
 				window.location.href = collectivepage;
