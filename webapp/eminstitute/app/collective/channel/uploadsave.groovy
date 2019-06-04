@@ -4,6 +4,8 @@ import org.entermediadb.asset.Category
 import org.entermediadb.asset.MediaArchive
 import org.openedit.Data
 import org.openedit.data.Searcher
+import java.util.regex.Matcher
+import java.util.regex.Pattern
 
 public void init()
 {
@@ -34,6 +36,9 @@ public void init()
 	upload.setValue("usertags",context.getRequestParameters("keywords.value"));
 	upload.setValue("title",context.getRequestParameters("uploadtitle"));
 	String desc = context.getRequestParameter("uploaddescription");
+	
+	//log.info("--Matched: "+desc.matches("(https?://)?(www\\.)?(yotu\\.be/|youtube\\.com/)?((.+/)?(watch(\\?v=|.+&v=))?(v=)?)([\\w_-]{11})(&.+)?"));
+		
 	upload.setValue("longdescription",desc);
 	searcher.saveData(upload);
 	
