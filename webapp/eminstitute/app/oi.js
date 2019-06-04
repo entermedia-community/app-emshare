@@ -40,6 +40,7 @@ jQuery(document).ready(function()
 	lQuery("#autofinishbutton").livequery("click",function(e)
 	{
 		e.preventDefault(); 
+		debugger;
 		var button = $(this);
 		var href = button.attr('href');
 		var args = button.data();
@@ -55,48 +56,7 @@ jQuery(document).ready(function()
 		});
 	});
 	
-	//Detect Youtube Link
-	$("#uploaddescription").on("keyup", function() {
-		var input = $("#uploaddescription");
-		var inputtext = input.val();
-		var targetdiv = input.data("targetdiv");
-		var targeturl = home+"/collective/channel/addnewlink.html";
-		delay(function () {
-			var p = /(https:\/\/www\.(yotu\.be\/|youtube\.com)\/)(?:(?:.+\/)?(?:watch(?:\?v=|.+&v=))?(?:v=)?)([\w_-]{11})(&\.+)?/;
-		    if(inputtext.match(p)){
-				var videoURL = inputtext.match(p)[0];
-				var videoID = inputtext.match(p)[3];
-				var removelink = inputtext.replace(p, "");
-				input.val(removelink);
-				
-				$("#"+targetdiv).load(targeturl+'?fetchfrom=youtube&videoID='+videoID);
-				
-				
-				//Todo
-				$("#uploaddata").attr('action', home+'/collective/channel/uploadsavelink.html');
-				$("#uploaddata").removeClass("autofinishaction");
-				//--
-		    }            
-			else {
-				p = /(https:\/\/vimeo\.com\/)?([\w_-]{9})(&\.+)?/;
-				if(inputtext.match(p)){
-					var videoURL = inputtext.match(p)[0];
-					var videoID = inputtext.match(p)[2];
-					var removelink = inputtext.replace(p, "");
-					input.val(removelink);
-				
-					$("#"+targetdiv).load(targeturl+'?fetchfrom=vimeo&videoID='+videoID);
-				
-					//Todo
-					$("#uploaddata").attr('action', home+'/collective/channel/uploadsavelink.html');
-					$("#uploaddata").removeClass("autofinishaction");
-					//--
-		    	}	
-			}
-        	            
-    	}, 500);
 	
-	});
 	
 	
 	lQuery(".sidebartogglebtn").livequery("click",function(e)
@@ -274,7 +234,52 @@ jQuery(document).ready(function()
 			});
 	});
 	
+
+
+	//Detect Youtube Link
+	$("#uploaddescription").on("keyup", function() {
+		var input = $("#uploaddescription");
+		var inputtext = input.val();
+		var targetdiv = input.data("targetdiv");
+		var targeturl = home+"/collective/channel/addnewlink.html";
+		delay(function () {
+			var p = /(https:\/\/www\.(yotu\.be\/|youtube\.com)\/)(?:(?:.+\/)?(?:watch(?:\?v=|.+&v=))?(?:v=)?)([\w_-]{11})(&\.+)?/;
+		    if(inputtext.match(p)){
+				var videoURL = inputtext.match(p)[0];
+				var videoID = inputtext.match(p)[3];
+				var removelink = inputtext.replace(p, "");
+				input.val(removelink);
+				
+				$("#"+targetdiv).load(targeturl+'?fetchfrom=youtube&videoID='+videoID);
+				
+				
+				//Todo
+				$("#uploaddata").attr('action', home+'/collective/channel/uploadlink.html');
+				
+				//$("#uploaddata").data('finishaction', home+'/collective/channel/uploadsavelink.html?oemaxlevel=2');
+				//$("#uploaddata").removeClass("autofinishaction");
+				//--
+		    }            
+			else {
+				p = /(https:\/\/vimeo\.com\/)?([\w_-]{9})(&\.+)?/;
+				if(inputtext.match(p)){
+					var videoURL = inputtext.match(p)[0];
+					var videoID = inputtext.match(p)[2];
+					var removelink = inputtext.replace(p, "");
+					input.val(removelink);
+				
+					$("#"+targetdiv).load(targeturl+'?fetchfrom=vimeo&videoID='+videoID);
+				
+					//Todo
+					$("#uploaddata").attr('action', home+'/collective/channel/uploadlink.html');
+					//$("#uploaddata").removeClass("autofinishaction");
+					//--
+		    	}	
+			}
+        	            
+    	}, 500);
 	
+	});	
 
 	
 });

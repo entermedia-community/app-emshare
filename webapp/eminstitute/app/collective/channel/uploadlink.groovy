@@ -34,7 +34,7 @@ String fetchthumb = null;
 String linkurl = null;
 
 if (externalmediaid != null) {
-	
+	log.info("Remote Link from " + externalmediaservice);
 	if(externalmediaservice == 'youtube') {
 		fetchthumb = "http://img.youtube.com/vi/" + externalmediaid + "/hqdefault.jpg";
 		linkurl = "https://www.youtube.com/embed/"+externalmediaid;
