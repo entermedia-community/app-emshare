@@ -12,6 +12,8 @@
 </form>	
 #if($libraryid == "*")
 #set($hits = $mediaarchive.query("librarycollection").all().sort("name").search())
+#elseif( $libraryid == "subscriptions")
+#set($hits = $mediaarchive.getProjectManager().listCollectionsForFollower($user))
 #else
 #set($hits = $mediaarchive.query("librarycollection").exact("library",$libraryid).sort("name").search())
 #set( $library = $mediaarchive.getData("library",$libraryid) ) 
