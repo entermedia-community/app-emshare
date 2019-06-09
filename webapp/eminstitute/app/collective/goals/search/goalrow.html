@@ -1,18 +1,21 @@
 <li id="goal$goal.id" class="card card-mini card-goal goalstatus$!{goal.projectstatus}" data-goalid="$goal.id">
    	<div class="goalheader #if( $caneditcollection) ui-draggable ui-draggable-handle #end "
-   		  
    		 data-goalid="$goal.id" 
    		 data-cloneparentid="goal$goal.id">
 			<div >
 			#set( $project = $!mediaarchive.getData("collectiveproject",$goal.goaltrackercolumn) ) 
-		    <a 
-		    	title="$goal.name" style="float:right" class="" href="$apphome/collective/goals/search/index.html?collectionid=$librarycol.getId()&goaltrackercolumn.value=${project.id}&operation=matches&field=goaltrackercolumn">
-			$!{project}
-			</a>
+	    	<div  style="float:right">
+		    	#if( $goal.ticketlevel)<i class="ticketlevel"> $mediaarchive.getData("ticketlevel",$goal.ticketlevel) </i><br>#end				
+			    <a title="$goal.name" class="" href="$apphome/collective/goals/search/index.html?collectionid=$librarycol.getId()&goaltrackercolumn.value=${project.id}&operation=matches&field=goaltrackercolumn">
+				$!{project}
+				</a>
+			</div>
     		#set( $goallink = "$apphome/collective/goals/editgoalpanel.html?id=${goal.id}&collectionid=$librarycol.getId()&categoryid=$!selectedcat.getId()&hitssessionid=$!{goalhits.getSessionId()}&goalfolder=$content.goalfolder")
 		    <a href="$goallink"
 		    	title="$goal.name" class="emdialog editgoalshow" data-urlbar="$apphome/collective/goals/priorities/index.html?collectionid=$librarycol.getId()&opengoalid=${goal.id}" data-width="900" >
-		    	<div style="font-weight:bold;" > $goal.name</div> 
+		    	<div style="font-weight:bold;" >	 
+		    	 $goal.name
+		    	 </div> 
 			<span class="headersubtext">$!mediaarchive.getData("tickettype",$goal.tickettype) added $!goal.getAge() ago - by $!mediaarchive.getUser($goal.owner).getAnonNickName()</span>
 			</a>
     			$pages.include("$apphome/collective/goals/like.html",$context)
@@ -23,7 +26,7 @@
 					style="background-color:#ffd4007a;float:right;margin-top:5px" > Resolve
 
 				</a>
-					#if( $goal.resolveddate)<div> Due by $context.getDateTime($goal.resolveddate) </div>#end				
+					#if( $goal.resolveddate)<div> Due by $context.getDateTime($goal.resolveddate) </div>#end
 				#end
 	</div>
 <div class="clearfix"></div>
