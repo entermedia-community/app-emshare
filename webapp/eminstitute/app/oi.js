@@ -243,25 +243,21 @@ jQuery(document).ready(function()
 		var targetdiv = input.data("targetdiv");
 		var targeturl = home+"/collective/channel/addnewlink.html";
 		delay(function () {
-			var p = /(https:\/\/www\.(yotu\.be\/|youtube\.com)\/)(?:(?:.+\/)?(?:watch(?:\?v=|.+&v=))?(?:v=)?)([\w_-]{11})(&\.+)?/;
+			var p = /(https:\/\/www\.(yotu\.be\/|youtube\.com)\/)+(?:(?:.+\/)?(?:watch(?:\?v=|.+&v=))?(?:v=)?)([\w_-]{11})+(\&.+)?/;
 		    if(inputtext.match(p)){
 				var videoURL = inputtext.match(p)[0];
 				var videoID = inputtext.match(p)[3];
 				var removelink = inputtext.replace(p, "");
 				input.val(removelink);
 				
-				$("#"+targetdiv).load(targeturl+'?fetchfrom=youtube&videoID='+videoID);
+				$("#"+targetdiv).load(targeturl+'?fetchfrom=youtube&videoID='+videoID);	
 				
+				$("#uploaddata").attr('action', home+'/collective/channel/uploadlink.html?oemaxlevel=2');
+				$("#uploaddata").addClass('ajaxform');
 				
-				//Todo
-				$("#uploaddata").attr('action', home+'/collective/channel/uploadlink.html');
-				
-				//$("#uploaddata").data('finishaction', home+'/collective/channel/uploadsavelink.html?oemaxlevel=2');
-				//$("#uploaddata").removeClass("autofinishaction");
-				//--
 		    }            
 			else {
-				p = /(https:\/\/vimeo\.com\/)?([\w_-]{9})(&\.+)?/;
+				p = /(https:\/\/vimeo\.com\/)+([\w_-]{9})(&\.+)?/;
 				if(inputtext.match(p)){
 					var videoURL = inputtext.match(p)[0];
 					var videoID = inputtext.match(p)[2];
@@ -270,10 +266,9 @@ jQuery(document).ready(function()
 				
 					$("#"+targetdiv).load(targeturl+'?fetchfrom=vimeo&videoID='+videoID);
 				
-					//Todo
-					$("#uploaddata").attr('action', home+'/collective/channel/uploadlink.html');
-					//$("#uploaddata").removeClass("autofinishaction");
-					//--
+					$("#uploaddata").attr('action', home+'/collective/channel/uploadlink.html?oemaxlevel=2');
+					$("#uploaddata").addClass('ajaxform');
+	
 		    	}	
 			}
         	            
