@@ -1,0 +1,42 @@
+<div style="padding: 20px">
+
+#set( $results = $mediaarchive.query("statuschanges").exact("userid", $user.getId()).sort("date").search() )
+
+##cledar notoifieds
+
+<table width="100%">
+#foreach($activity in $results)
+
+<tr>
+#set( $goal = $mediaarchive.getData("projectgoal",$activity.goalid) )
+
+<td style="border:1px solid #444;">
+ $mediaarchive.getData("collectiveproject",$goal.goaltrackercolumn)
+</td>
+
+<td style="border:1px solid #444;">
+<a href="$apphome/collective/goals/editgoalpanel.html?id=$goal.id&collectionid=$librarycol.getId()&goalfolder=search" 
+	title="" class="emdialog editgoalshow" data-urlbar="$apphome/collective/goals/editgoalpanel.html?id=$goal.id&collectionid=$librarycol.getId()&opengoalid=AWs9VXR1fsnO52OamiNQ" 
+	data-width="900">$goal.name
+</a>
+</td>
+<td style="border:1px solid #444;">
+	$!goal.details
+</td>
+
+<td style="border:1px solid #444;">
+	$!mediaarchive.getData("projectstatus",$goal.projectstatus)
+</td>
+
+
+
+<td style="border:1px solid #444;">
+
+$context.getDateTime($activity.getValue("date"))
+</td>
+
+</tr>
+
+#end
+</table>
+</div>
