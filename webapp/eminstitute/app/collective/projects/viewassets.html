@@ -6,14 +6,17 @@ $context.putPageValue("hideheader", "true")
 
 #if(!$category)
 	#set($categoryid = $context.getRequestParameter("categoryid"))
+	#if (!$categoryid)
+		#set($categoryid = $context.getRequestParameter("nodeID"))
+	#end
 	#if($categoryid)
 		#set($category = $mediaarchive.getData("category",$categoryid))
 		#if($category)
 			$context.putPageValue("category",$category)
 		#end
 	#end
+	
 #end
-
 #if($hits.size() == 0 && $mediaarchive.isCatalogSettingTrue("autopopulatecollections"))
     $pages.include("$apphome/components/results/header.html",$context)
     $pages.include("$apphome/components/createmedia/copycategory/index.html?autorun=true", $context)

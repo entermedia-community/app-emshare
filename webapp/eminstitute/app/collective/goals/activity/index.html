@@ -3,40 +3,49 @@
 #set( $results = $mediaarchive.query("statuschanges").exact("userid", $user.getId()).sort("date").search() )
 
 ##cledar notoifieds
-
-<table width="100%">
+<div class="emdata">
+<table width="100%" class="table table-striped">
+<thead>
+<tr class="tableheader">
+	<th>[[Project]]</th>
+	<th>[[Goal]]</th>
+	<th>[[Details]]</th>
+	<th>[[Status]]</th>
+	<th>[[Time]]</th>
+</tr>
+</thead>
 #foreach($activity in $results)
-
-<tr>
-#set( $goal = $mediaarchive.getData("projectgoal",$activity.goalid) )
-
-<td style="border:1px solid #444;">
- $mediaarchive.getData("collectiveproject",$goal.goaltrackercolumn)
-</td>
-
-<td style="border:1px solid #444;">
-<a href="$apphome/collective/goals/editgoalpanel.html?id=$goal.id&collectionid=$librarycol.getId()&goalfolder=search" 
-	title="" class="emdialog editgoalshow" data-urlbar="$apphome/collective/goals/editgoalpanel.html?id=$goal.id&collectionid=$librarycol.getId()&opengoalid=AWs9VXR1fsnO52OamiNQ" 
-	data-width="900">$goal.name
-</a>
-</td>
-<td style="border:1px solid #444;">
-	$!goal.details
-</td>
-
-<td style="border:1px solid #444;">
-	$!mediaarchive.getData("projectstatus",$goal.projectstatus)
-</td>
-
-
-
-<td style="border:1px solid #444;">
-
-$context.getDateTime($activity.getValue("date"))
-</td>
+	
+	<tr>
+	#set( $goal = $mediaarchive.getData("projectgoal",$activity.goalid) )
+	
+	<td >
+	 $mediaarchive.getData("collectiveproject",$goal.goaltrackercolumn)
+	</td>
+	
+	<td >
+	<a href="$apphome/collective/goals/editgoalpanel.html?id=$goal.id&collectionid=$librarycol.getId()&goalfolder=search" 
+		title="" class="emdialog editgoalshow" style="text-decoration:underline;" data-urlbar="$apphome/collective/goals/editgoalpanel.html?id=$goal.id&collectionid=$librarycol.getId()&opengoalid=AWs9VXR1fsnO52OamiNQ" 
+		data-width="900">$goal.name</a>
+	</td>
+	<td >
+		$!goal.details
+	</td>
+	
+	<td class="text-center" >
+		$!mediaarchive.getData("projectstatus",$goal.projectstatus)
+	</td>
+	
+	
+	
+	<td class="text-right" >
+	
+	$context.getDateTime($activity.getValue("date"))
+	</td>
 
 </tr>
 
 #end
 </table>
+</div>
 </div>
