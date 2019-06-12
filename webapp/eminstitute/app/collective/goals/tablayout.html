@@ -1,3 +1,4 @@
+#set($goalssection = $content.goalssection)
 #if( $librarycol )
 
 <div id="collectiontoplevel" data-collectionid='$librarycol.getId()' data-catalogid='$catalogid'	class="goal-tabs">
@@ -15,13 +16,13 @@
   		 <li class=""><a  id="hourstab"  data-alwaysreloadpage="true"  
 		  href="$apphome/collective/goals/hours/index.html?collectionid=${librarycol.getId()}" >[[Time]]</a></li>
 		  <li>
- 		 <li class="">
+ 		 <li class=#if($goalssection == "activity") emtabselected #end>
 	 		$pages.include("$apphome/collective/goals/activity/link.html")
 		 </li>
 		</ul>
 		<div class="clearfix"></div>
 		<div id="goals-tab-content">
-		  <div class="tab-pane" id="loadedpanel" style="overflow: hidden; padding-bottom:20px; background: white;">
+		  <div class="tab-pane" id="loadedpanel" style="overflow: hidden; padding-bottom:20px;">
 	  			$pages.includeContent()
 		  </div>
 		</div>
