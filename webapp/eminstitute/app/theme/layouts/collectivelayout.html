@@ -1,14 +1,14 @@
 #set($collectionid = $librarycol.getId())
 #set($fullwidth = $content.fullwidth)
+<div class="container#if($fullwidth)-fluid#end">
 
 	#if ($librarycol.assetbanner)
 		#set( $banner= $mediaarchive.getAsset($librarycol.assetbanner) )
 	#end
-	<div id="topbanner" class="#if ($fullwidth) topbannerfullwidth #end">
-	<div class="topbannercontainer"  >
+	
 		<div class="row justify-content-md-center">
-			<div class="col text-center">
-			<div class="collectivebanner"
+			
+			<div class="collectivebanner text-center"
 				#if($banner)
 					#set ($bannerurl = "/$mediaarchive.getMediaDbId()/services/module/asset/downloads/preset/${banner.sourcepath}/banner.jpg")
 					style="background-image:url($bannerurl)"
@@ -33,7 +33,7 @@
 						<a href="#" class="collectiveactions dropdown-toggle dropdown-noarrow" data-toggle="dropdown" title="[[Collection Actions]]">
 						<i class="fas fa-ellipsis-v"></i></a>
 							<div class="dropdown-menu">
-								
+									
 								  #set( $link = "$home$apphome/views/modules/librarycollection/share.html?collectionid=${librarycol.getId()}")
 								  <a class="dropdown-item emdialog"  id="sharetab"  href="$link" data-hidefooter="true" title="[[Collection Followers]]"><i class="dropdown-item-icon fas fa-user-friends"></i> [[Followers]]</a>
 								   #set( $link = "$home$apphome/views/modules/librarycollection/permissions.html?collectionid=${librarycol.getId()}")
@@ -59,15 +59,14 @@
 							#end
 					$pages.include("$apphome/collective/menu.html", $context)
 				</div>
-				</div>
-				</div>
+				
+				
 			
-		</div>
 	</div>
-
+<div class="row">
 	$pages.includeContent()	
-
-
+</div>
+</div>
 <div class="container">
 	
 		<div class="collective-social text-center">
