@@ -4,7 +4,7 @@
 
 ##cledar notoifieds
 <div class="emdata">
-<table width="100%" class="table table-striped">
+<table width="100%" class="table">
 <thead>
 <tr class="tableheader">
 	<th>[[Project]]</th>
@@ -12,14 +12,14 @@
 	<th>[[Team]]</th>
 	<th>[[Details]]</th>
 	<th>[[Status]]</th>
-	<th>[[Created]]</th>
+	<th style="min-width:350px">[[Created]]</th>
 	
 </tr>
 </thead>
 #foreach($activity in $results)
 	
 	#set( $goal = $mediaarchive.getData("projectgoal",$activity.goalid) )
-	<tr #if( $goal.projectstatus == "closed") style="background-color:#2966221c" #end>
+	<tr class="goalstatus$!{goal.projectstatus}" >
 	$context.putPageValue("goal",$goal)
 	<td >
 	#set( $project= $!mediaarchive.getData("collectiveproject",$goal.goaltrackercolumn) )
@@ -46,10 +46,10 @@
 	
 	<td class="text-right" >
 			<span class="headersubtext">
-				Added $!mediaarchive.getData("tickettype",$goal.tickettype) $!goal.getAge() ago - by $!mediaarchive.getUser($goal.owner).getAnonNickName()
-			</span>
+				Added $!mediaarchive.getData("tickettype",$goal.tickettype) $!goal.getAge() ago <br> by $!mediaarchive.getUser($goal.owner).getAnonNickName()
+			</span><br>
  			<span class="headersubtext">
-				Modified on $context.getDateTime($activity.getValue("date")) by $!mediaarchive.getUser($activity.editedbyid).getAnonNickName()
+				Modified on $context.getDateTime($activity.getValue("date")) <br>by $!mediaarchive.getUser($activity.editedbyid).getAnonNickName()
 		    </span>
  			
 	</td>
