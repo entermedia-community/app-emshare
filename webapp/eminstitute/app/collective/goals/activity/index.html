@@ -1,6 +1,6 @@
 <div style="padding: 20px">
 
-#set( $results = $mediaarchive.query("statuschanges").exact("userid", $user.getId()).sort("date").search() )
+#set( $results = $mediaarchive.query("statuschanges").exact("userid", $user.getId()).sort("dateDown").search() )
 
 ##cledar notoifieds
 <div class="emdata">
@@ -9,38 +9,49 @@
 <tr class="tableheader">
 	<th>[[Project]]</th>
 	<th>[[Goal]]</th>
+	<th>[[Team]]</th>
 	<th>[[Details]]</th>
 	<th>[[Status]]</th>
-	<th>[[Time]]</th>
+	<th>[[Created]]</th>
+	
 </tr>
 </thead>
 #foreach($activity in $results)
 	
-	<tr>
 	#set( $goal = $mediaarchive.getData("projectgoal",$activity.goalid) )
-	
+	<tr #if( $goal.projectstatus == "closed") style="background-color:#2966221c" #end>
+	$context.putPageValue("goal",$goal)
 	<td >
-	 $mediaarchive.getData("collectiveproject",$goal.goaltrackercolumn)
+	#set( $project= $!mediaarchive.getData("collectiveproject",$goal.goaltrackercolumn) )
+	<a href="$apphome/collective/goals/search/search.html?collectionid=$librarycol.getId()&field=goaltrackercolumn&operation=matches&goaltrackercolumn.value=$project.id">
+	$!project
+	</a>
 	</td>
-	
+
 	<td >
 	<a href="$apphome/collective/goals/editgoalpanel.html?id=$goal.id&collectionid=$librarycol.getId()&goalfolder=search" 
 		title="" class="emdialog editgoalshow" style="text-decoration:underline;" data-urlbar="$apphome/collective/goals/editgoalpanel.html?id=$goal.id&collectionid=$librarycol.getId()&opengoalid=AWs9VXR1fsnO52OamiNQ" 
 		data-width="900">$goal.name</a>
 	</td>
 	<td >
-		$!goal.details
+  			$pages.include("$apphome/collective/goals/like.html",$context)
+	</td>	
+	<td >
+		$!goal.details 		
 	</td>
-	
 	<td class="text-center" >
 		$!mediaarchive.getData("projectstatus",$goal.projectstatus)
 	</td>
 	
 	
-	
 	<td class="text-right" >
-	
-	$context.getDateTime($activity.getValue("date"))
+			<span class="headersubtext">
+				Added $!mediaarchive.getData("tickettype",$goal.tickettype) $!goal.getAge() ago - by $!mediaarchive.getUser($goal.owner).getAnonNickName()
+			</span>
+ 			<span class="headersubtext">
+				Modified on $context.getDateTime($activity.getValue("date")) by $!mediaarchive.getUser($activity.editedbyid).getAnonNickName()
+		    </span>
+ 			
 	</td>
 
 </tr>
