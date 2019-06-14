@@ -25,6 +25,11 @@ $context.putPageValue("view", "collectiveproject/addnew")
 <input type="hidden" name="field" value="parentcollectionid" />
 <input type="hidden" name="parentcollectionid.value" value="$librarycol.getId()" />
 <input type="hidden" name="collectionid" value="$librarycol.getId()" />
+#set($collectionroot = $context.getRequestParameter("collectionroot"))
+#if (!$collectionroot)
+	#set($collectionroot = "/${applicationid}/collective/channel")
+#end
+<input type="hidden" name="collectionroot" value="$collectionroot" />
  
 $pages.include("/$applicationid/components/xml/detaileditor4.html", $context)
 

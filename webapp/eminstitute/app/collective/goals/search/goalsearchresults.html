@@ -13,21 +13,24 @@
 #if( $caneditcollection)
 <div class="goals-header-actions">
     #if(!$allprojects.isEmpty() )
-    <a href="" class="btn btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown">[[Topics]]</a>
-    <div class="dropdown-menu">
-    <a class="dropdown-item" href="#">[[Open Topics]]</a>
-    #foreach( $project in $allprojects )
-    <a class="dropdown-item" href="openproject.html?collectionid=$librarycol.getId()&profilepreference=goaltrackercolumns&profilepreference.value=$project.id">$project.name</a>
+	    <a href="" class=" btn-toolbar dropdown-toggle" data-toggle="dropdown">[[Topics]]</a>
+	    <div class="dropdown-menu">
+	    <a class="dropdown-item" href="#">[[Open Topics]]</a>
+	    #foreach( $project in $allprojects )
+	    	<a class="dropdown-item" href="openproject.html?collectionid=$librarycol.getId()&profilepreference=goaltrackercolumns&profilepreference.value=$project.id">$project.name</a>
+	    #end
+	    </div>
+		#if($caneditcollection)
+			<a href="$apphome/collective/projects/addnew.html?collectionid=$librarycol.getId()&Xcollectionroot=$apphome/collective/goals/search" class="btn-toolbar  emdialog" title="[[Add a Topic]]"><i class="fas fa-plus"></i></a>
+		#end
     #end
-    </div>
-    #end
- 	<a class="btn btn-secondary btn-sm emdialog" 
+ 	<a class="btn-toolbar emdialog" 
  	title="[[New Task]]" 
  	data-width="900"
  	style="margin-left: 10px;"
  	href="$apphome/collective/goals/editgoalpanel.html?collectionid=$librarycol.getId()&categoryid=$!selectedcat.getId()&goalfolder=search" ><i class="fas fa-plus"></i> [[Add Task]]</a>
 	 #if( $goalhits )
-	 <a class="btn btn-secondary btn-sm float-right" 
+	 <a class="btn-toolbar float-right" 
 	 	title="[[Export Results]]" 
 	 	data-width="900"
 	 	style="margin-left: 10px;"
