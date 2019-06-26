@@ -1,4 +1,8 @@
 #set( $selectedtab = $userprofile.get("last_selected_collectionsearch"))
-#if( !$selectedtab)  #set( $selectedtab = "featured") #end
+#if($canviewfeaturedcollections)
+	#if( !$selectedtab)  #set( $selectedtab = "featured") #end
+#else
+	#if( !$selectedtab)  #set( $selectedtab = "allcollections") #end
+#end	
 
 $pages.include("${apphome}/views/collections/${selectedtab}.html", $context)
