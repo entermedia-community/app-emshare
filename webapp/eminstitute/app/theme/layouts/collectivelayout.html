@@ -1,13 +1,13 @@
 #set($collectionid = $librarycol.getId())
 #set($fullwidth = $content.fullwidth)
-<div class="container#if($fullwidth)-fluid#end">
+	<div class="container#if($fullwidth)-fluid#end">
 
-	#if ($librarycol.assetbanner)
-		#set( $banner= $mediaarchive.getAsset($librarycol.assetbanner) )
-	#end
+		#if ($librarycol.assetbanner)
+			#set( $banner= $mediaarchive.getAsset($librarycol.assetbanner) )
+		#end
 	
 		<div class="row justify-content-md-center">
-			
+			<div class="col">
 			<div class="collectivebanner #if($fullwidth)collectivebanner-fullwidth#end text-center"
 				#if($banner)
 					#set ($bannerurl = "/$mediaarchive.getMediaDbId()/services/module/asset/downloads/preset/${banner.sourcepath}/banner.jpg")
@@ -59,14 +59,12 @@
 							#end
 					$pages.include("$apphome/collective/menu.html", $context)
 				</div>
-				
-				
-			
+			</div>
+		</div>
+		<div class="row">
+			$pages.includeContent()	
+		</div>
 	</div>
-<div class="row">
-	$pages.includeContent()	
-</div>
-</div>
 <div class="container">
 	
 		<div class="collective-social text-center">
