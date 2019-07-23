@@ -234,6 +234,24 @@ jQuery(document).ready(function()
 			});
 	});
 	
+	lQuery(".autosubmitlink").livequery(function() {
+			var theinput = $(this);
+			var placeholder= $(this).data("placeholder");
+			theinput.select2({
+				theme : "bootstrap4",
+				allowClear : false,
+				minimumInputLength : 0,
+				placeholder: placeholder
+			}).on('select2:select', function (e) {
+				var data = e.params.data;
+				if (data.id) {
+					var collectivepage = $(this).data("url")+data.id;
+					console.log(collectivepage);
+					window.location.href = collectivepage;
+				}			
+			});
+	});
+	
 
 
 	//Detect Youtube Link
@@ -275,6 +293,25 @@ jQuery(document).ready(function()
     	}, 500);
 	
 	});	
+
+
+lQuery(".chatter-send").livequery("click", function(){
+		var button = jQuery(this);
+		var chatter = button.closest(".chatterbox");
+		var data = chatter.data();
+	    var content = document.getElementById("chatter-msg").value;
+	    data.content = content;
+	    data.command= button.data("command");
+	    //var json = JSON.stringify(data);
+	    content.value="";
+
+		var nextpage = data.notifylink;
+		$.get(nextpage, data, function(data) {
+			
+		});
+	    	
+	});
+
 
 	
 });
