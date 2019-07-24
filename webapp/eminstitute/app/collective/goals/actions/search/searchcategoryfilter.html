@@ -1,10 +1,10 @@
 #set( $nodeID = $context.getRequestParameter("nodeID"))
 #set( $searcher = $mediaarchive.getSearcher("category") )
-#set( $results = $searcher.query().exact("parents",$nodeID).sort("categorypathUp").search($context) )
+#set( $results = $searcher.query().exact("parentid",$nodeID).sort("categorypathUp").search($context) )
 $context.putPageValue("hits",$results)
 $context.putPageValue("searcher",$searcher)
 #set ($details = $searcher.getDetailsForView("category/searchcategory", $userprofile))
-	<form id="autosubmitfilter" name="autosubmitfilter" class="autosubmit" autocomplete="off"  data-targetdiv="goalscategoryresults" 
+	<form id="dialogautosubmitfilter" name="autosubmitfilter" class="autosubmit" autocomplete="off"  data-targetdiv="goalscategoryresults" 
 	action="$apphome/collective/goals/actions/search/searchpath.html">
 		
 			<input type="hidden" name="searchtype" value="category" />

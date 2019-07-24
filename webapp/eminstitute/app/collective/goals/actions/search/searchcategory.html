@@ -24,10 +24,6 @@
 	#set( $rootnode = "tasks${librarycol.getId()}")
 #end
 
-#set( $link = "$apphome/components/emtree/tree.html")
-#set( $link = "${link}?tree-name=tasks&tasksroot=$rootnode&targetdiv=goalscategoryresults" )
-#set( $link = "${link}&editabletree=true&clearselection=true&expandroots=1")
-
 <div id="search-catgories">
 <table width="100%">
 <tr><td style="width:30%;padding-right:6px;vertical-align:top;">
@@ -35,14 +31,17 @@
 			[[Tasks]] 
 		</div>
 	<div class="assetdropcategory assetdropcategorymove" style="padding:0px;overflow-x:auto;width:300px">  
-		$pages.include($link,$context)
+		#set( $link = "$apphome/components/emtree/tree.html")
+		#set( $link = "${link}?tree-name=dialogTasksTree&dialogTasksTreeroot=$rootnode&editabletree=false&clearselection=true" )
+		#set( $link = "${link}&targetdiv=taskssearchareacontent" )
+		$pages.include($link, $context) 
 	</div>
 </td>
 <td style="vertical-align:top;">
 	<div class="emsearchfield" style="background-color: #eee; padding:6px; margin-bottom:4px"> 
 			[[Search]] 
 		</div>
-	<div id="searchareacontent" > 
+	<div id="taskssearchareacontent" > 
 	$pages.include("$apphome/collective/goals/actions/search/searchcategoryfilter.html?nodeID=${rootnode}&existingcategories=$!categories",$context)
 	</div>
 
@@ -60,12 +59,13 @@ $('[data-id="${categoryid}"]').addClass("emrowselected");
 
 $(document).on("emtreeselect",function(event) 
 {
+	event.stopPropagation();
 	var selectednode = event.nodeid;
 	$("#parentfilter").val(selectednode);
 	//trigger("submit");
 	//$("#autosubmitfilter").trigger("submit");
 	//$("#autosubmitfilter").submit();
-	$("#autosubmitfilter").ajaxSubmit({
+	$("#dialogautosubmitfilter").ajaxSubmit({
 		target:"#goalscategoryresults",
 		success: paintselected 
 	});
