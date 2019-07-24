@@ -19,8 +19,11 @@
 	#set( $categories = $context.getRequestParameter("category-exact.values") )
 #end	
 
+#set($rootnode = $context.findValue("rootactionscategory"))
+#if(!$rootnode)
+	#set( $rootnode = "tasks${librarycol.getId()}")
+#end
 
-#set( $rootnode = "tasks${librarycol.getId()}")
 #set( $link = "$apphome/components/emtree/tree.html")
 #set( $link = "${link}?tree-name=tasks&tasksroot=$rootnode&targetdiv=goalresultsdiv" )
 #set( $link = "${link}&editabletree=true&clearselection=true&expandroots=1")

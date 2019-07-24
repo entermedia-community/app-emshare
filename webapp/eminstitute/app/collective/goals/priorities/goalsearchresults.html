@@ -1,14 +1,16 @@
 <div id="goalresultsdiv">
 <div class="goals-header-actions">
  	<a class="btn-toolbar emdialog" 
- 	title="[[New Task]]" 
+ 	title="[[New Ticket]]" 
  	data-width="900"
  	style="margin-left: 10px;"
- 	href="$apphome/collective/goals/editgoalpanel.html?collectionid=$librarycol.getId()&categoryid=$!selectedcat.getId()&goalfolder=priorities&userlikes=$user.id" ><i class="fas fa-plus"></i> [[Add Task]]</a>
+ 	href="$apphome/collective/goals/editgoalpanel.html?collectionid=$librarycol.getId()&categoryid=$!selectedcat.getId()&goalfolder=priorities&userlikes=$user.id" ><i class="fas fa-plus"></i> [[Add Ticket]]</a>
 
     <a href="" class="btn-toolbar dropdown-toggle" data-toggle="dropdown">[[Staff]]</a>
     <div class="dropdown-menu">
-    #foreach( $auser in $mediaarchive.getList("user") )
+    #set( $allmembers = $mediaarchive.getSearcher("librarycollectionusers").query().match("collectionid",$librarycol.getId()).sort("name").search($context) )
+    #foreach( $member in $allmembers )
+		#set($auser = $mediaarchive.getUser($member.followeruser))
     <a class="dropdown-item" href="$apphome/collective/goals/priorities/index.html?collectionid=$librarycol.getId()&goaltrackerstaff=$auser.getId()">$auser</a>
     #end
     </div>
