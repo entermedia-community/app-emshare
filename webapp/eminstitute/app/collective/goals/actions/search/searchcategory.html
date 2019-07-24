@@ -19,13 +19,13 @@
 	#set( $categories = $context.getRequestParameter("category-exact.values") )
 #end	
 
-#set($rootnode = $context.findValue("rootactionscategory"))
+#set($rootnode = $content.rootactionscategory)
 #if(!$rootnode)
 	#set( $rootnode = "tasks${librarycol.getId()}")
 #end
 
 #set( $link = "$apphome/components/emtree/tree.html")
-#set( $link = "${link}?tree-name=tasks&tasksroot=$rootnode&targetdiv=goalresultsdiv" )
+#set( $link = "${link}?tree-name=tasks&tasksroot=$rootnode&targetdiv=goalscategoryresults" )
 #set( $link = "${link}&editabletree=true&clearselection=true&expandroots=1")
 
 <div id="search-catgories">
@@ -42,8 +42,8 @@
 	<div class="emsearchfield" style="background-color: #eee; padding:6px; margin-bottom:4px"> 
 			[[Search]] 
 		</div>
-	<div id="searchareacontent" >
-	$pages.include("$apphome/components/categories/search/searchcategoryfilter.html?nodeID=${rootnode}&existingcategories=$!categories",$context)
+	<div id="searchareacontent" > 
+	$pages.include("$apphome/collective/goals/actions/search/searchcategoryfilter.html?nodeID=${rootnode}&existingcategories=$!categories",$context)
 	</div>
 
 </td></tr>	
@@ -66,7 +66,7 @@ $(document).on("emtreeselect",function(event)
 	//$("#autosubmitfilter").trigger("submit");
 	//$("#autosubmitfilter").submit();
 	$("#autosubmitfilter").ajaxSubmit({
-		target:"#categoryresults",
+		target:"#goalscategoryresults",
 		success: paintselected 
 	});
 	return false;
