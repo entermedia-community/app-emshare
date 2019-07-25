@@ -4,7 +4,7 @@
    		 data-cloneparentid="goal$goal.id">
 			<div >
 			#set( $project = $!mediaarchive.getData("collectiveproject",$goal.goaltrackercolumn) ) 
-	    	<div  style="float:right">
+	    	<div  style="float:right;" class="text-right">
 		    	#if( $goal.ticketlevel)<i class="ticketlevel"> $mediaarchive.getData("ticketlevel",$goal.ticketlevel) </i><br>#end				
 			    <a title="$goal.name" class="" href="$apphome/collective/goals/search/index.html?collectionid=$librarycol.getId()&goaltrackercolumn.value=${project.id}&operation=matches&field=goaltrackercolumn">
 				$!{project}
@@ -16,17 +16,17 @@
 		    	<div style="font-weight:bold;" >	 
 		    	 $goal.name
 		    	 </div> 
-			<span class="headersubtext">$!mediaarchive.getData("tickettype",$goal.tickettype) added $!goal.getAge() ago - by $!mediaarchive.getUser($goal.owner).getAnonNickName()</span>
+			<span class="headersubtext">$!mediaarchive.getData("tickettype",$goal.tickettype) [[added]] $!goal.getAge() [[ago]] - [[by]] $!mediaarchive.getUser($goal.owner).getAnonNickName()</span>
 			</a>
     			$pages.include("$apphome/collective/goals/like.html",$context)
 				#if($goal.projectstatus != "completed")
 				<a href="$apphome/collective/goals/search/resolvegoal.html?goalid=$goal.id" data-targetdiv="goal$goal.id" 
 				data-oemaxlevel="1"
 				class="ajax btn btn-xs" 
-					style="background-color:#ffd4007a;float:right;margin-top:5px" > Resolve
+					style="background-color:#ffd4007a;float:right;margin-top:5px" > [[Resolve]]
 
 				</a>
-					#if( $goal.resolveddate)<div> Due by $context.getDateTime($goal.resolveddate) </div>#end
+					#if( $goal.resolveddate)<div> [[Due by]] $context.getDateTime($goal.resolveddate) </div>#end
 				#end
 	</div>
 <div class="clearfix"></div>
@@ -35,9 +35,11 @@
 			#set($points = 0)
 			#foreach($task in $tasks)
 				#set( $tree =  $mediaarchive.getCategory($task.projectdepartment))
-				#set( $c = $tree.getInt("goalpoints") )
-				#if( $c == 0)#set( $c = 10)#end
-				#set($points = $points + $c)
+				#if($tree)
+					#set( $c = $tree.getInt("goalpoints") )
+					#if( $c == 0)#set( $c = 10)#end
+					#set($points = $points + $c)
+				#end
     			#set( $edittask = "$apphome/collective/goals/task/taskedit.html?id=${task.id}&collectionid=$librarycol.getId()")
 				<a href="$edittask"
 					data-focuson="$task.id"
@@ -53,6 +55,7 @@
 					#end	
 					$task</a>
 			#end
+			#if($canviewsettings)
 			<a class="emdialog"
 				title="Add Tasks"
 				data-cancelsubmit="true"
@@ -67,6 +70,11 @@
 				data-action="$apphome/collective/goals/actions/search/categorypicked.html"
 				href="$apphome/collective/goals/actions/search/searchcategory.html?targetdiv=goal${goal.id}&clearselection=&detailid=category-exact"
 				 ><i class="fas fa-plus-circle"></i> $points</a>
+			#else
+				$points
+			#end
+			
+			
 			</div>
 		</div>
 		
