@@ -1,24 +1,27 @@
+#if($caneditcollection)
 #set($goalssection = $content.goalssection)
 #if( $librarycol )
 
 <div id="collectiontoplevel" data-collectionid='$librarycol.getId()' data-catalogid='$catalogid'	class="goal-tabs">
 		<ul class="ui-tabs-nav nav emtabs" data-defaulttab="${content.goalfolder}tab" data-targetdiv="goals-tab-content" >
-		  <li class=""><a  id="searchtab" data-alwaysreloadpage="true" 
-		  	href="$apphome/collective/goals/search/index.html?collectionid=${librarycol.getId()}" >[[Open Tasks]]</a></li>
-		  <li class=""><a  id="prioritiestab" data-alwaysreloadpage="true" 
-		  	href="$apphome/collective/goals/priorities/index.html?collectionid=${librarycol.getId()}" >[[Calendar]]</a></li>
-		  	
-		  <li class=""><a  id="pointstab"  data-alwaysreloadpage="true"  
-		  href="$apphome/collective/goals/points/index.html?collectionid=${librarycol.getId()}" >[[Completed]]</a></li>
-  		 <li class=""><a  id="hourstab"  data-alwaysreloadpage="true"  
-		  href="$apphome/collective/goals/hours/index.html?collectionid=${librarycol.getId()}" >[[Time]]</a></li>
-		  <li>
- 		 <li class=#if($goalssection == "activity") emtabselected #end>
+		<li class=""><a  id="prioritiestab" data-alwaysreloadpage="true" 	
+		 	href="$apphome/collective/goals/priorities/index.html?collectionid=${librarycol.getId()}&goaltrackerstaff=*" >[[Open Tickets]]</a></li>
+		<li class=""><a  id="searchtab" data-alwaysreloadpage="true" 
+				  	href="$apphome/collective/goals/search/index.html?collectionid=${librarycol.getId()}" >[[Search]]</a></li>		  
+		<li class=#if($goalssection == "activity") emtabselected #end>
 	 		$pages.include("$apphome/collective/goals/activity/link.html")
 		 </li>
+		  
+		  <li class=""><a  id="pointstab"  data-alwaysreloadpage="true"  
+		  href="$apphome/collective/goals/points/index.html?collectionid=${librarycol.getId()}" >[[Completed]]</a></li>
+ 			
+  		 ##<li class=""><a  id="hourstab"  data-alwaysreloadpage="true"  
+		 ## href="$apphome/collective/goals/hours/index.html?collectionid=${librarycol.getId()}" >[[Time]]</a></li>
+	     
+
 		
 		</ul>
-		#if( $caneditcollection )
+		#if( $canviewsettings )
 		  	<a  id="actionstab"  
 				data-alwaysreloadpage="true"
 				class="goalsactions"
@@ -36,5 +39,11 @@
 #else
 
 $pages.includeContent()
+
+#end
+
+#else
+
+$pages.include("$apphome/collective/channel/subscribers/index.html")
 
 #end

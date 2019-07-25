@@ -14,18 +14,18 @@
 	<input name="collectionid" value="$collectionid" type="hidden" />
 	
     <select class="listdropdown autosubmited form-control-sm" name="goaltrackerstaff" data-placeholder="[[Staff]]">
-		<option value=""></option>
+		<option value="*">[[All Staff]]</option>
     #set( $allmembers = $mediaarchive.getList("user") )
     #foreach( $member in $allmembers )
-   		<option value="$member.getId()">$member</option>
+   		<option value="$member.getId()" #if($member.getId()==$selecteduser.getId()) selected="selected" #end >$member</option>
     #end
     </select>
 </form>
 
  	
  	<div style="float:left; line-height: 2;">
-	  	[[Showing]]: <strong>#if($selecteduser) $selecteduser.getScreenName() #else [[All Users]]</strong> #end 
-		[[Total Priorities]]: <strong>$totallikes</strong> [[Open]]: <strong>$totalopen</strong> [[Closed]]: <strong>$totalclosed</strong></div>
+		[[Total Priorities]]: <strong>$totallikes</strong> [[Open]]: <strong>$totalopen</strong> [[Closed]]: <strong>$totalclosed</strong>
+	</div>
 
 #set( $opengoalid = $context.getRequestParameter("opengoalid"))
 #if( $opengoalid )

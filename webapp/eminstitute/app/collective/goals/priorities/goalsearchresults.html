@@ -1,23 +1,36 @@
+#set($collectionid = $context.getRequestParameter("collectionid"))
 <div id="goalresultsdiv">
 <div class="goals-header-actions">
- 	<a class="btn-toolbar emdialog" 
+ 	<a class="btn btn-success emdialog" 
  	title="[[New Ticket]]" 
  	data-width="900"
  	style="margin-left: 10px;"
  	href="$apphome/collective/goals/editgoalpanel.html?collectionid=$collectionid&categoryid=$!selectedcat.getId()&goalfolder=priorities&userlikes=$user.id" ><i class="fas fa-plus"></i> [[Add Ticket]]</a>
 
-#set($collectionid = $context.getRequestParameter("collectionid"))
-    <a href="" class="btn-toolbar dropdown-toggle" data-toggle="dropdown">[[Staff]]</a>
-    <div class="dropdown-menu">
+
+
+
+<form name="user" action="$apphome/collective/goals/priorities/index.html" class="autosubmitform form-inline" style="width:200px; float:left; padding-right:20px;">
+
+	<input name="collectionid" value="$collectionid" type="hidden" />
+	
+    <select class="listdropdown autosubmited form-control-sm" name="goaltrackerstaff" data-placeholder="[[Staff]]">
+		<option value="*">[[All Staff]]</option>
     #set( $allmembers = $mediaarchive.getSearcher("librarycollectionusers").query().match("collectionid",$collectionid).sort("name").search($context) )
     #foreach( $member in $allmembers )
 		#set($auser = $mediaarchive.getUser($member.followeruser))
-    <a class="dropdown-item" href="$apphome/collective/goals/priorities/index.html?collectionid=$collectionid&goaltrackerstaff=$auser.getId()">$auser</a>
+   		<option value="$auser.getId()" #if($auser.getId()==$selecteduser.getId()) selected="selected" #end >$auser.getScreenName()</option>
     #end
-    </div>
+    </select>
+</form>
 
  	
- 	[[Total Priorities]]: $totallikes [[Open]]: $totalopen [[Closed]]: $totalclosed
+ 	<div style="float:left; line-height: 2;">
+	  	
+		[[Total Priorities]]: <strong>$totallikes</strong> [[Open]]: <strong>$totalopen</strong> [[Closed]]: <strong>$totalclosed</strong>
+	</div>
+
+
 
 #set( $opengoalid = $context.getRequestParameter("opengoalid"))
 #if( $opengoalid )
