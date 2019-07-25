@@ -11,7 +11,7 @@
 				$!{project}
 				</a>
 			</div>
-    		#set( $goallink = "$apphome/collective/goals/editgoalpanel.html?id=${goal.id}&collectionid=$librarycol.getId()&categoryid=$!selectedcat.getId()&hitssessionid=$!{goalhits.getSessionId()}&goalfolder=$content.goalfolder")
+    		#set( $goallink = "$apphome/collective/goals/editgoalpanel.html?id=${goal.id}&collectionid=$goal.collectionid&categoryid=$!selectedcat.getId()&hitssessionid=$!{goalhits.getSessionId()}&goalfolder=$content.goalfolder")
 		    <a href="$goallink"
 		    	title="$goal.name" class="emdialog editgoalshow" data-urlbar="$apphome/collective/goals/priorities/index.html?collectionid=$goal.collectionid&opengoalid=${goal.id}" data-width="900" >
 		    	<div style="font-weight:bold;" >	 
@@ -41,7 +41,7 @@
 					#if( $c == 0)#set( $c = 10)#end
 					#set($points = $points + $c)
 				#end
-    			#set( $edittask = "$apphome/collective/goals/task/taskedit.html?id=${task.id}&collectionid=$librarycol.getId()")
+    			#set( $edittask = "$apphome/collective/goals/task/taskedit.html?id=${task.id}&collectionid=$goal.collectionid")
 				<a href="$edittask"
 					data-focuson="$task.id"
 					data-width="900"
@@ -56,7 +56,7 @@
 					#end	
 					$task</a>
 			#end
-			#if($canviewsettings)
+			#if($canviewsettings  && $librarycol.getId())
 			<a class="emdialog"
 				title="Add Tasks"
 				data-cancelsubmit="true"
