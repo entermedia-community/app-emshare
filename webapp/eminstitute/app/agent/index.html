@@ -1,23 +1,27 @@
+<div id="goaleditor" class="goals-container">
+
+
 <div id="goalresultsdiv">
 <div class="goals-header-actions">
- 	<a class="btn-toolbar emdialog" 
- 	title="[[New Ticket]]" 
- 	data-width="900"
- 	style="margin-left: 10px;"
- 	href="$apphome/collective/goals/editgoalpanel.html?collectionid=$collectionid&categoryid=$!selectedcat.getId()&goalfolder=priorities&userlikes=$user.id" ><i class="fas fa-plus"></i> [[Add Ticket]]</a>
+
 
 #set($collectionid = $context.getRequestParameter("collectionid"))
-    <a href="" class="btn-toolbar dropdown-toggle" data-toggle="dropdown">[[Staff]]</a>
-    <div class="dropdown-menu">
-    #set( $allmembers = $mediaarchive.getSearcher("librarycollectionusers").query().match("collectionid",$collectionid).sort("name").search($context) )
+
+<form name="user" action="$apphome/agent/index.html" class="autosubmitform form-inline" style="width:200px; float:left; padding-right:20px;">
+
+	<input name="collectionid" value="$collectionid" type="hidden" />
+	
+    <select class="listdropdown autosubmited form-control-sm" name="goaltrackerstaff" data-placeholder="[[Staff]]">
+		<option value=""></option>
+    #set( $allmembers = $mediaarchive.getList("user") )
     #foreach( $member in $allmembers )
-		#set($auser = $mediaarchive.getUser($member.followeruser))
-    <a class="dropdown-item" href="$apphome/collective/goals/priorities/index.html?collectionid=$collectionid&goaltrackerstaff=$auser.getId()">$auser</a>
+   		<option value="$member.getId()">$member</option>
     #end
-    </div>
+    </select>
+</form>
 
  	
- 	[[Total Priorities]]: $totallikes [[Open]]: $totalopen [[Closed]]: $totalclosed
+ 	<div style="float:left; line-height: 2;">[[Showing]]: <strong>$selecteduser.getScreenName()</strong> [[Total Priorities]]: <strong>$totallikes</strong> [[Open]]: <strong>$totalopen</strong> [[Closed]]: <strong>$totalclosed</strong></div>
 
 #set( $opengoalid = $context.getRequestParameter("opengoalid"))
 #if( $opengoalid )
@@ -59,3 +63,6 @@ data-oemaxlevel="2"  data-collectionid="$collectionid" data-categoryid="$!select
 
 
 
+
+
+</div>
