@@ -1,3 +1,13 @@
+#set( $goalfolder = $context.getRequestParameter("goalfolder"))
+
+#if(!$goalfolder)
+	#set( $goalfolder = $context.getPageValue("goalfolder") )
+#end
+
+#if(!$goalfolder)
+	#set( $goalfolder = "search" )
+#end
+
 
 <li id="goal$goal.id" class="card card-mini card-goal goalstatus$!{goal.projectstatus}" data-goalid="$goal.id">
    	<div class="goalheader #if( $caneditcollection) ui-draggable ui-draggable-handle #end "
@@ -11,7 +21,7 @@
 				$!{project}
 				</a>
 			</div>
-    		#set( $goallink = "$apphome/collective/goals/editgoalpanel.html?id=${goal.id}&collectionid=$goal.collectionid&categoryid=$!selectedcat.getId()&hitssessionid=$!{goalhits.getSessionId()}&goalfolder=$content.goalfolder")
+    		#set( $goallink = "$apphome/collective/goals/editgoalpanel.html?id=${goal.id}&collectionid=$goal.collectionid&categoryid=$!selectedcat.getId()&hitssessionid=$!{goalhits.getSessionId()}&goalfolder=$!goalfolder")
 		    <a href="$goallink"
 		    	title="$goal.name" class="emdialog editgoalshow" data-urlbar="$apphome/collective/goals/priorities/index.html?collectionid=$goal.collectionid&opengoalid=${goal.id}" data-width="900" >
 		    	<div style="font-weight:bold;" >	 
@@ -65,7 +75,7 @@
 				data-collectionid="$librarycol.getId()"
 				data-categoryid="$!selectedcat.getId()"
 				data-hitssessionid="$!{goalhits.getSessionId()}"
-				data-goalfolder="$content.goalfolder" ##tabs
+				data-goalfolder="$!goalfolder" ##tabs
 				data-pickone="true"
 				data-goalid="$goal.id"
 				data-action="$apphome/collective/goals/actions/search/categorypicked.html"

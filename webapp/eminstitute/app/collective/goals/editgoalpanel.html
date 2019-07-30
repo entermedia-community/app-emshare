@@ -3,9 +3,11 @@
 #set( $userlikes = $context.getRequestParameter("userlikes"))
 #set( $hitssessionid = $context.getRequestParameter("hitssessionid"))
 #set( $goalfolder = $context.getRequestParameter("goalfolder"))
+
 #if(!$goalfolder)
 	#set( $goalfolder = $context.findValue("goalfolder") )
 #end
+
 #set( $searcher = $mediaarchive.getSearcher("projectgoal") )
 $context.putPageValue("searcher",$searcher)
 #if( $data.id )
@@ -18,6 +20,8 @@ $pages.include("$apphome/collective/goals/like.html")
 $context.putPageValue("view", "projectgoal/addnew")
 #end
 
+
+
 #set($projectname = $mediaarchive.getData("librarycollection",$data.collectionid))
 #if ($projectname)
 <a href="$apphome/collective/goals/search/index.html?collectionid=$data.collectionid">$projectname</a>
@@ -26,7 +30,11 @@ $context.putPageValue("view", "projectgoal/addnew")
 
 <form name="saveproject" enctypeXX="multipart/form-data" id="saveproject" method="post" 
 #if( $data.id)
-	action="/$applicationid/collective/goals/${goalfolder}/goalsave.html" >
+	#if($goalfolder=="agentcalendar")
+		action="/$applicationid/agent/goalsave.html" >
+	#else
+		action="/$applicationid/collective/goals/${goalfolder}/goalsave.html" >
+	#end
 #else
 	action="/$applicationid/collective/goals/${goalfolder}/goalsavenew.html" >
 #end
