@@ -14,12 +14,19 @@
    		 data-goalid="$goal.id" 
    		 data-cloneparentid="goal$goal.id">
 			<div >
-			#set( $project = $!mediaarchive.getData("collectiveproject",$goal.goaltrackercolumn) ) 
-	    	<div  style="float:right;" class="text-right">
-		    	#if( $goal.ticketlevel)<i class="ticketlevel"> $mediaarchive.getData("ticketlevel",$goal.ticketlevel) </i><br>#end				
-			    <a title="$goal.name" class="" href="$apphome/collective/goals/search/index.html?collectionid=$goal.collectionid&goaltrackercolumn.value=${project.id}&operation=matches&field=goaltrackercolumn">
+			#set( $project = $!mediaarchive.getData("collectiveproject",$goal.goaltrackercolumn) )
+			#set( $collection = $!mediaarchive.getData("librarycollection",$goal.collectionid) )  
+	    	<div  class="text-right">
+		    	#if( $goal.ticketlevel)<i class="ticketlevel"> $mediaarchive.getData("ticketlevel",$goal.ticketlevel)</i>: #end
+				#if ($goalfolder=='agentcalendar' && $collection)
+				<a title="$collection" class="" href="$apphome/collective/goals/priorities/index.html?collectionid=$goal.collectionid&goaltrackerstaff=*">
+				$!{collection}
+				</a> >
+				#end
+				<a title="$goal.name" class="" href="$apphome/collective/goals/search/index.html?collectionid=$goal.collectionid&goaltrackercolumn.value=${project.id}&operation=matches&field=goaltrackercolumn">
 				$!{project}
-				</a>
+				</a>				
+			    
 			</div>
     		#set( $goallink = "$apphome/collective/goals/editgoalpanel.html?id=${goal.id}&collectionid=$goal.collectionid&categoryid=$!selectedcat.getId()&hitssessionid=$!{goalhits.getSessionId()}&goalfolder=$!goalfolder")
 		    <a href="$goallink"
