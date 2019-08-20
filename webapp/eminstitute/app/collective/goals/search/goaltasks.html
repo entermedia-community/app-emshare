@@ -1,0 +1,58 @@
+#if(!$goalfolder)
+	#set( $goalfolder = $context.getRequestParameter("goalfolder"))
+	
+	#if(!$goalfolder)
+		#set( $goalfolder = $context.getPageValue("goalfolder") )
+	#end
+	
+	#if(!$goalfolder)
+		#set( $goalfolder = "search" )
+	#end
+#end
+#set( $indialog = $context.getRequestParameter("indialog"))
+
+#set( $target = "tasklist$!indialog#iesc($goal.id)")
+<div id="$target">
+			#set($points = 0)
+			#foreach($task in $tasks)
+				#set( $tree =  $mediaarchive.getCategory($task.projectdepartment))
+				#if($tree)
+					#set( $c = $tree.getInt("goalpoints") )
+					#if( $c == 0)#set( $c = 10)#end
+					#set($points = $points + $c)
+				#end
+    			#set( $edittask = "$apphome/collective/goals/task/taskedit.html?id=${task.id}&collectionid=$goal.collectionid")
+				<a href="$edittask"
+					id="task$task.getId()"
+					data-focuson="$task.id"
+					data-width="900"
+					class="btn btn-xs taskcomplete$!{task.taskstatus} ajax" data-targetdiv="task$task.getId()" data-oemaxlevel="1" title="$tree.getCategoryPath()" >
+					#if( $task.completedby )
+						#set( $completedby = $mediaarchive.getUser($task.completedby) )
+						$!completedby.getAnonNickName() :
+					#elseif( $task.startedby )
+						#set( $startedby = $mediaarchive.getUser($task.startedby) )
+						$!startedby.getAnonNickName() :
+					#end	
+					$task</a>
+			#end
+			#if($canviewsettings  && $librarycol.getId())
+			<a class="emdialog"
+				title="Add Tasks"
+				data-cancelsubmit="true"
+				data-parameterdata="categoryvalues"
+				data-width="1000" 
+				data-collectionid="$librarycol.getId()"
+				data-categoryid="$!selectedcat.getId()"
+				data-hitssessionid="$!{goalhits.getSessionId()}"
+				data-goalfolder="$!goalfolder" ##tabs
+				data-pickone="true"
+				data-goalid="$goal.id"
+				data-dialogid="picktask"
+				data-action="$apphome/collective/goals/actions/search/categorypicked.html"
+				href="$apphome/collective/goals/actions/search/searchcategory.html?targetdiv=$target&clearselection=&detailid=category-exact"
+				 ><i class="fas fa-plus-circle"></i> $points</a>
+			#else
+				$points
+			#end
+</div>			

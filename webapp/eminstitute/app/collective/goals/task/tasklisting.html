@@ -20,7 +20,7 @@
 					$task</a>
 #else
 
-<div id="$task.id" class="card-task  pull-left card card-mini " data-taskid="$task.id" >
+<div id="opentask$task.getId()" class="card-task  pull-left card card-mini " data-taskid="$task.id" >
 	
 	#set( $selectedcat = $mediaarchive.getCategory($task.projectdepartment))
     	<div class="card-task-header taskcomplete$!{task.taskstatus} ui-draggable ui-droppable ui-draggable-handle"
@@ -29,10 +29,8 @@
     	 data-cloneparentid="$task.id"
 		 data-savepath="$apphome/collective/goals/task/tasksave.html"
     	 >
-    		<a href="$apphome/collective/goals/actions/index.html?collectionid=$librarycol.getId()&nodeID=$task.projectdepartment" class="taskinfopoints">
-    		<i class="fas fa-hands-helping" #if($selectedcat.goalpoints) title="${selectedcat.goalpoints} points"#end"></i></a>
-    		<a class="ajax" data-targetdiv="$task.id" href="$apphome/collective/goals/task/taskedit.html?id=${task.id}&collectionid=$librarycol.getId()&editclose=true">
-    		 $task.name 
+    		<a class="ajax" data-targetdiv="opentask$task.id" href="$apphome/collective/goals/task/taskedit.html?id=${task.id}&collectionid=$librarycol.getId()&editclose=true">
+    		<i class="fas fa-hands-helping" #if($selectedcat.goalpoints) title="${selectedcat.goalpoints} points"#end"></i>		 $task.name 
     		</a> 
     		#if( $caneditcollection )
     		<a class="ajax tasklistdelete" data-confirm="Are you sure?"
@@ -41,7 +39,7 @@
     		#end
     	</div>
   		<div class="card-task-body changetaskstatus" 	data-taskid="$task.id"  >
-	    	<form id="someform" class="ajaxform" data-targetdiv="$task.id" data-oemaxlevel="1" action="$apphome/collective/goals/task/tasksave.html" >
+	    	<form id="someform" class="ajaxform" data-targetdiv="opentask$task.id" data-oemaxlevel="1" action="$apphome/collective/goals/task/tasksave.html" >
 	    	<input type="hidden" name="taskid" value="$task.id" />
   			<select  name="taskstatus" style="width:100%" >
 			  <option value="" ></option>
