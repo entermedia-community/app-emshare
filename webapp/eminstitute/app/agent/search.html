@@ -1,0 +1,70 @@
+<div class="maincontent">
+
+$hits.size() hits
+
+
+##cledar notoifieds
+<div class="emdata">
+<table width="100%" class="table">
+<thead>
+<tr class="tableheader">
+	<th>[[Project]]</th>
+	<th>[[Topic]]</th>
+	<th>[[Goal]]</th>
+	<th>[[Team]]</th>
+	<th>[[Details]]</th>
+	<th>[[Status]]</th>
+	<th style="min-width:350px">[[Created]]</th>
+	
+</tr>
+</thead>
+#foreach($goal in $hits)
+	#set( $goal = $mediaarchive.getSearcher("projectgoal").loadData($goal))
+	<tr class="goalstatus$!{goal.projectstatus}" >
+	$context.putPageValue("goal",$goal)
+	<td >
+	#set( $project= $!mediaarchive.getData("librarycollection",$goal.collectionid) )
+	<a href="$sitelink/app/collective/goals/priorities/index.html?collectionid=$activity.collectionid"
+	style="text-decoration:underline;" >
+	$!project
+	</a>
+	</td>
+	<td >
+	#set( $project= $!mediaarchive.getData("collectiveproject",$goal.goaltrackercolumn) )
+	<a href="$sitelink/app/collective/goals/search/search.html?collectionid=$activity.collectionid&field=goaltrackercolumn&operation=matches&goaltrackercolumn.value=$project.id" 
+	style="text-decoration:underline;" >
+	$!project
+	</a>
+	</td>
+
+	<td >
+	<a href="$sitelink/app/collective/goals/editgoalpanel.html?id=$goal.id&collectionid=$activity.collectionid&goalfolder=search" 
+		title="" class="emdialog editgoalshow" style="text-decoration:underline;" data-urlbar="$apphome/collective/goals/editgoalpanel.html?id=$goal.id&collectionid=$activity.collectionid&opengoalid=$goal.id" 
+		data-width="900">$goal.name</a>
+	</td>
+	<td >
+  			$pages.include("$apphome/collective/goals/like.html",$context)
+	</td>	
+	<td >
+		$!goal.details 		
+	</td>
+	<td class="text-center" >
+		$!mediaarchive.getData("projectstatus",$goal.projectstatus)
+	</td>
+	
+	
+	<td class="text-right" >
+		<span class="headersubtext">
+			$!mediaarchive.getData("tickettype",$goal.tickettype) $!goal.getAge() [[ago]] [[by]] $!mediaarchive.getUser($goal.owner).getAnonNickName()
+		</span><br>
+	</td>
+
+</tr>
+
+#end
+</table>
+</div>
+</div>
+
+
+
