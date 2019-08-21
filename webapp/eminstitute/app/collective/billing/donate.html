@@ -1,0 +1,195 @@
+<div class="container">
+	<div class="row">
+		<div class="col">
+			<div class="contentcolumn">
+			<h1>[[Donate to Project]]</h1>
+			#if( $caneditcollection)
+				<a class="oe-dataedit showeditonright" data-target="#editdonatedescription-$librarycol.id" title="[[Edit Donation Description]]" data-width="500"	href="#"><i class="fas fa-edit"></i></a>
+			#end
+			<div class="oe-editable" id="editdonatedescription-$librarycol.id" data-dataid="$librarycol.id" data-field="donatedescription" data-searchtype="librarycollection">
+		   		#if($librarycol.donatedescription) 
+					$!librarycol.donatedescription
+				#else
+				<p>
+				[[Become a Donator.]]
+				</p> 
+				#end
+			</div>
+			
+			
+			<div class="card donatecard">
+			
+			
+			 <div class="card-block" style="padding:20px 21px;">                      
+			       	<form action="$apphome/collective/donate/donatefinish.html" method="post" id="payment-form" class="form">
+		             	<div class="row"><div class="col">
+		             	<div class="form-group">
+		   					<label for="staticEmail">[[Card Info]]:</label>
+		   			 		<div class="form-control">
+								<div id="card-element" style="width: 100%">
+								<!-- Stripe . -->
+								</div>      
+					    	</div>
+		   				</div>
+		             	</div></div>
+
+						<div class="row">
+							<div class="col-md-6">
+								<div class="form-group">
+									<label for="staticEmail">[[Amount]]:</label>
+									<div class="input-group">
+									<div class="input-group-prepend">
+								      <div class="input-group-text">$</div>
+								    </div>
+				   			 		<input type="text" class="form-control" name="totalprice.value" id="donationamount">
+									</div>
+				   				</div>
+							</div>							
+							<div class="col-md-6">
+								<div class="form-group">
+				   					<label for="staticEmail">[[Donation Type]]:</label>
+							        <select class="form-control" name="frequency">
+									  <option value="">[[Once]]</option>
+									  <option value="weekly">[[Weekly]]</option>
+									  <option value="monthly">[[Monthly]]</option>
+									  <option value="yearly">[[Yearly]]</option>
+									</select>
+				   				</div>
+							</div>
+						</div>
+						
+						<div id="card-errors" class="donateformerror" role="alert"></div>
+						
+			   			
+						<div class="row">
+							<div class="col-md-6">
+							<input type="submit" value="[[Donate]]" class="btn btn-success"/>
+							</div>
+							<div class="col-md-6">
+							<div class="donate-secure text-right"><i class="fas fa-lock"></i> [[Secure payment]]</div>
+							</div>
+						</div>
+			
+			   				
+			   				
+			   			<input type="hidden" name="field" value="collectionid"/>
+			   			<input type="hidden" name="collectionid.value" value="$librarycol.getId()"/>
+			   			<input type="hidden" name="collectionid" value="$librarycol.getId()"/>
+			   			<input type="hidden" name="field" value="totalprice"/>
+			             	
+	 					<input type="hidden" name="field" value="userid"/>
+			   			<input type="hidden" name="userid.value" value="$user.getId()"/>
+					  	
+				  	
+					</form>
+			</div>
+			</div>
+			</div>
+			</div>
+			
+			 <div class="col col-lg-4 ">
+		<div class="collective-sidebar">
+				$pages.include("$apphome/collective/channel/subscribers/index.html")
+		</div>
+			 </div>
+			
+		</div>
+	</div>
+
+<script type="text/javascript">
+  // This identifies your website in the createToken call below
+ 
+	  	// This identifies your website in the createToken call below
+	  	  #if($mediaarchive.isCatalogSettingTrue("productionmode"))
+	  		console.log('Production');
+	  		#set($publishkey = $mediaarchive.getCatalogSettingValue("stripe_publishable_key"))
+	  	  	
+	  	  	
+	  	 #else
+			console.log('Test Publishkey');
+	  		#set($publishkey = $mediaarchive.getCatalogSettingValue("stripe_test_publishable_key"))
+	  	  	 
+	  	  		 
+	  	 #end
+	  	var stripe = Stripe("$publishkey");
+	   	var elements = stripe.elements();
+
+
+	  	
+	   	var style = {
+	   		  base: {
+	   		    // Add your base input styles here. For example:
+	   		    fontSize: '18px',
+	   		    color: "#495057"
+	   		    
+	   		  }
+	   		};
+
+	   		// Create an instance of the card Element.
+	   		var card = elements.create('card', {style: style});
+
+	 // Add an instance of the card Element into the `card-element` <div>
+	 card.mount('#card-element');
+
+	 // Handle real-time validation errors from the card Element.
+	 card.addEventListener('change', function(event) {
+	   var displayError = document.getElementById('card-errors');
+	   if (event.error) {
+	     $(displayError).html('<div class="errormsg">'+event.error.message+'</div>');
+	   } else {
+	     displayError.textContent = '';
+	   }
+	 });
+
+	 var form = document.getElementById('payment-form');
+	 $(form).validate({
+		  rules: {
+		    "totalprice.value": {
+		      required: true,
+		      number: true
+		    }
+		  },
+		  submitHandler: function(form) {
+		    stripe.createToken(card).then(function(result) {
+		     if (result.error) {
+		       // Inform the user if there was an error
+		       var errorElement = document.getElementById('card-errors');
+		       $(errorElement).html('<div class="errormsg">'+result.error.message+'</div>');
+		     } else {
+		       // Send the token to your server
+		       stripeResponseHandler(result);
+	
+		     }
+		   });
+		  },
+		  errorElement: "div",
+		  errorClass: "errormsg",
+		  errorPlacement: function(error, element) {
+			  error.appendTo( element.closest(".form-group").parent() );
+		      //$("#card-errors").html('<div class="errormsg">'+error.html()+'</div>');
+			}
+		});
+	 
+
+
+	  	
+	 stripeResponseHandler = function( response){
+		  
+		 
+		 
+		 var form = document.getElementById('payment-form');
+		  var hiddenInput = document.createElement('input');
+		  hiddenInput.setAttribute('type', 'hidden');
+		  hiddenInput.setAttribute('name', 'stripeToken');
+		  hiddenInput.setAttribute('value', response.token.id);
+		  form.appendChild(hiddenInput);
+
+		  // Submit the form
+		  form.submit();
+		 
+		
+		  
+	  }
+  
+  
+</script>

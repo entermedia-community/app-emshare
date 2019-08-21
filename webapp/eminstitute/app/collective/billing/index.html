@@ -1,0 +1,68 @@
+#set($collectionid = $context.getRequestParameter("collectionid"))
+
+<div class=" h-100"  style="max-height: calc(100% - 290px); width:100%;" >
+<div class="row h-100" >
+<div class="col">
+<div class="maincontent h-100">
+
+<h2>EnterMediaDb [[Billing]]</h2>
+
+--Drop down of products/service to buy (shows some description, ajax?)
+--Add to cart button, will take us to the Credit Card form. 
+		--Collection id
+		--Productid (We will pass product Amount and Transaction Type)
+		-- Will look like an invoice.
+--Transaction happens.
+		--
+
+##Search instances in these organizations
+		#set( $instances = $mediaarchive.query("entermedia_instances").match("librarycollection", $collectionid).search() )
+			#if ($instances)
+				<div class="emdata">
+			    <table class="table table-striped">
+			        <thead>
+			            <tr class="tableheader">
+			                <th>[[Server Name]]</th>
+			                <th>[[Status]]</th>
+							<th>[[Created]]</th>
+							
+			                <th>URL</th>
+							
+			            </tr>
+			        </thead>
+					#foreach($hit in $instances)
+						#if ($hit.instance_status == "active")
+							#set($instancescount = $instancescount+1)
+						#end
+						<tr>
+				            <td>$hit.name</td>
+							<td style="text-align: center;">$hit.instance_status	</td>
+				            <td style="text-align: center;">#if($!hit.datestart) $context.getDate($!hit.datestart) #end</td>
+							
+				            <td>
+								#if ($hit.instanceurl)
+									<a href="$hit.instanceurl" style="text-decoration: underline" targe="_blank">$hit.instanceurl</a>
+								#else
+									$hit.instanceprefix
+								#end
+							</td>
+				        </tr>
+					
+					#end
+			    </table>
+		    	</div>
+			#end
+	#if( $caneditcollection )
+	<a href="/entermediadb/app/site/sitedeployer/createsite.html?organizationid=$collectionid" class="btn btn-secondary btn-sm">[[Deploy New Server]]</a>
+	#end
+</div>	
+</div>
+ <div class="col-lg-3 ">
+	<div class="collective-sidebar">
+		$pages.include("$apphome/collective/channel/subscribers/index.html", $context)
+	</div>
+ </div>
+</div>		
+
+</div>
+			
