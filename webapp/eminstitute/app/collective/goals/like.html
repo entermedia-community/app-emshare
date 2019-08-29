@@ -1,14 +1,16 @@
-<div id="like${goal.id}" >
+#set( $users = $goal.getValues("userlikes"))
+<div id="like${goal.id}" class="goallike" >
 	  <a href="$apphome/collective/goals/like.html?goalid=${goal.id}"
-	  	title="[[Make Priority]]" class="editgoallike ajax" targetdiv="like$goal.id" 
-		#set( $users = $goal.getValues("userlikes"))
+	  	title="[[Make Priority]]" 
+		class="editgoallike ajax" targetdiv="like$goal.id" 
 	  	 #if( $users )
 	  	 	#if( $users.contains($context.getUserName()))
-	   			style="color:#4354ab;"
+	   			style="font-weight:bold;"
 	   		#else
 	   			
 	   		#end 
-	   		>		<i class="fas fa-user"></i>
+	   		>		
+			<i class="fas fa-user"></i>
 	   			
 	   		#foreach($us in $users)
 	   			#if( $foreach.count > 1)|#end $!mediaarchive.getUser($us).getAnonNickName() 

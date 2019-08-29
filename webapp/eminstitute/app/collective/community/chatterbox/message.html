@@ -1,7 +1,17 @@
+#set( $goalfolder = $context.getRequestParameter("goalfolder"))
+
+#if(!$goalfolder)
+	#set( $goalfolder = $context.getPageValue("goalfolder") )
+#end
+
+#if(!$goalfolder)
+	#set( $goalfolder = "search" )
+#end
 #set( $chatuser = $mediaarchive.getUser($chat.user) ) 
 #set( $userlink = "$apphome/users/${chatuser.getId()}/${chatuser.getAnonNickName()}.html")
 #set( $userimageurl = $mediaarchive.asLinkToProfile($chatuser.assetportrait) )
 #if(!$userimageurl) #set( $userimageurl = "$apphome/theme/images/user.svg" ) #end
+
 <div class="chatterbox-chat" role="alert"
 	id="chatter-message-$chat.id">
 	<div class="chat-icon">
@@ -23,22 +33,38 @@
 	#set( $goal = $mediaarchive.query("projectgoal").exact("chatparentid",$chat.getId() ).searchOne() )
 	#if( $goal)
 		$context.putPageValue("goal",$goal)
-		<div style="background-color:yellow;margin-left:60px;"> 
-		<span class="headersubtext">$!mediaarchive.getData("tickettype",$goal.tickettype) [[added]] $!goal.getAge() [[ago]] - [[by]] $!mediaarchive.getUser($goal.owner).getAnonNickName()</span>
-  			$pages.include("$apphome/collective/goals/like.html",$context)
+		<div class="goalstatus goalstatus$!{goal.projectstatus}"> 
+		
+		#set( $goallink = "$apphome/collective/goals/editgoalpanel.html?id=${goal.id}&collectionid=$goal.collectionid&hitssessionid=$!{goalhits.getSessionId()}&goalfolder=$!goalfolder")
+		<a href="$goallink"
+		    title="$goal.name" 
+			class="emdialog goalticket-level" 
+			data-urlbar="$apphome/collective/goals/priorities/index.html?collectionid=$goal.collectionid&opengoalid=${goal.id}" data-width="900" >
+				<i class="fas fa-flag"></i> $!mediaarchive.getData("ticketlevel",$goal.ticketlevel) [[Ticket]]: 
+				$mediaarchive.getData("projectstatus", $goal.projectstatus)
+		</a>
+		
+		<div class="float-right">
+		$pages.include("$apphome/collective/goals/like.html",$context)
+		
+		</div>
+		
+		$pages.include("$apphome/collective/goals/search/goaltasks.html?indialog=true&onlyopen=true",$context)
+  		
 		#if($goal.projectstatus != "completed")
 			<a href="$apphome/collective/goals/search/resolvegoal.html?goalid=$goal.id" data-targetdiv="goal$goal.id" 
-			data-oemaxlevel="1"	class="ajax btn btn-xs"	style="background-color:#ffd4007a;float:right;margin-top:5px" > [[Resolve]]
+			data-oemaxlevel="1"	class="ajax btn btn-xs btn-warning btn-resolve"	
+			><i class="fas fa-check"></i> [[Resolve]]
 			</a>
-		#else 
-			reopen
+		
 		#end
-		$pages.include("$apphome/collective/goals/search/goaltasks.html?indialog=true",$context)
+		
+		<div class="clearfix"></div>
 		</div>
 	#else
-		<div style="margin-left:60px;">
-		<a class="ajax"  data-targetdiv="chatter-message-$chat.id"
-	href="$applink/collective/community/chatterbox/makegoal.html?collectionid=$librarycol.getId()&messageid=$chat.id" title="Make ticket"><i class="fas fa-box"></i></a>
+		<div class="" style="margin-left:40px;">
+		<a class="ajax maketicket" style="color:#ccc"  data-targetdiv="chatter-message-$chat.id"
+	href="$applink/collective/community/chatterbox/makegoal.html?collectionid=$librarycol.getId()&messageid=$chat.id" title="[[Make ticket]]"><i class="fas fa-flag"></i></a>
 		</div>
 	#end
 </div>

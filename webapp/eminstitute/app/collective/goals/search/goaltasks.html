@@ -10,49 +10,75 @@
 	#end
 #end
 #set( $indialog = $context.getRequestParameter("indialog"))
-
 #set( $target = "tasklist$!indialog#eid($goal.id)")
-<div id="$target">
-			#set($points = 0)
-			#foreach($task in $tasks)
-				#set( $tree =  $mediaarchive.getCategory($task.projectdepartment))
-				#if($tree)
-					#set( $c = $tree.getInt("goalpoints") )
-					#if( $c == 0)#set( $c = 10)#end
-					#set($points = $points + $c)
-				#end
-    			#set( $edittask = "$apphome/collective/goals/task/taskedit.html?id=${task.id}&collectionid=$goal.collectionid")
-				<a href="$edittask"
-					id="task$task.getId()"
-					data-focuson="$task.id"
-					data-width="900"
-					class="btn btn-xs taskcomplete$!{task.taskstatus} ajax" data-targetdiv="task$task.getId()" data-oemaxlevel="1" title="$tree.getCategoryPath()" >
-					#if( $task.completedby )
-						#set( $completedby = $mediaarchive.getUser($task.completedby) )
-						$!completedby.getAnonNickName() :
-					#elseif( $task.startedby )
-						#set( $startedby = $mediaarchive.getUser($task.startedby) )
-						$!startedby.getAnonNickName() :
-					#end	
-					$task</a>
+#set( $onlyopen = $context.getRequestParameter("onlyopen"))
+<div id="$target" class="goalstaskcontainer">
+	#set($points = 0)
+	#foreach($task in $tasks)
+		#set( $tree =  $mediaarchive.getCategory($task.projectdepartment))
+		#if($tree)
+			#set( $c = $tree.getInt("goalpoints") )
+			#if( $c == 0)#set( $c = 10)#end
+			#set($points = $points + $c)
+		#end
+		#set( $edittask = "$apphome/collective/goals/task/taskedit.html?id=${task.id}&collectionid=$goal.collectionid&onlyopen=$!onlyopen")
+		#if ($onlyopen)
+			$context.putPageValue("task", $task)
+			$pages.include($edittask, $context)
+		#else
+		<a href="$edittask"
+			id="task$task.getId()"
+			data-focuson="$task.id"
+			data-width="900"
+			class="btn btn-xs btn-task taskcomplete$!{task.taskstatus} ajax" 
+			data-targetdiv="task$task.getId()" data-oemaxlevel="1" title="$tree.getCategoryPath()" >
+			$task 
+			
+			#set( $comment = $mediaarchive.query("goaltaskcomments").exact("goaltaskid",$task.id).match("commenttext","*").sort("dateDown").searchOne() )
+			#if ($comment)
+				&nbsp;<i class="fas fa-comment"></i>
+				##<div>
+				##<span class="goal-commentauthor" title="$!mediaarchive.getUser(${comment.author}).getAnonNickName()">
+
+				##$!mediaarchive.getUser(${comment.author}).getAnonNickName():
+				
+				##</span>
+				##<span class="goal-commenttext">
+				##	#if( $comment.statuschange )
+				##		$!context.getDataText("taskstatus",$comment.statuschange)
+				##	#else
+				##	$comment.commenttext
+				##	#end
+				##</span>
+				##</div>
 			#end
-			#if($canviewsettings  && $goal.collectionid)
-			<a class="emdialog"
-				title="Add Tasks"
-				data-cancelsubmit="true"
-				data-parameterdata="categoryvalues"
-				data-width="1000" 
-				data-collectionid="$goal.collectionid"
-				data-categoryid="$!selectedcat.getId()"
-				data-hitssessionid="$!{goalhits.getSessionId()}"
-				data-goalfolder="$!goalfolder" ##tabs
-				data-pickone="true"
-				data-goalid="$goal.id"
-				data-dialogid="picktask"
-				data-action="$apphome/collective/goals/actions/search/categorypicked.html"
-				href="$apphome/collective/goals/actions/search/searchcategory.html?targetdiv=$target&clearselection=&detailid=category-exact"
-				 ><i class="fas fa-plus-circle"></i> $points</a>
-			#else
-				$points
-			#end
+			</a>
+		#end
+	#end
+	<div class="clearfix"></div>	
+			
+			
+	#if($canviewsettings  && $goal.collectionid)
+	<a class="emdialog"
+		title="[[Add Tasks]]"
+		data-cancelsubmit="true"
+		data-parameterdata="categoryvalues"
+		data-width="1000" 
+		data-collectionid="$goal.collectionid"
+		data-categoryid="$!selectedcat.getId()"
+		data-hitssessionid="$!{goalhits.getSessionId()}"
+		data-goalfolder="$!goalfolder" ##tabs
+		data-pickone="true"
+		data-goalid="$goal.id"
+		data-dialogid="picktask"
+		data-action="$apphome/collective/goals/actions/search/categorypicked.html"
+		href="$apphome/collective/goals/actions/search/searchcategory.html?targetdiv=$target&clearselection=&detailid=category-exact&onlyopen=$!onlyopen"
+		 ><i class="fas fa-plus-circle"></i> 
+		</a>
+	
+	#end
+	#if (!$onlyopen)
+		$points
+	#end
+	
 </div>			

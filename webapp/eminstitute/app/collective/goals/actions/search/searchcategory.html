@@ -24,6 +24,8 @@
 	#set( $rootnode = "tasks${librarycol.getId()}")
 #end
 
+#set( $onlyopen = $context.getRequestParameter("onlyopen"))
+
 <div id="search-catgories">
 <table width="100%">
 <tr><td style="width:30%;padding-right:6px;vertical-align:top;">
@@ -87,6 +89,9 @@ $(".pickedcategoryform").submit(function(event)
 			params["categoryid"] =  $("#selectedcategories").val();
 			params["goalid"] = "$goalid";
 			params["collectionid"] = "$collectionid";
+			#if ($onlyopen)
+			params["onlyopen"] = "$onlyopen";
+			#end
 			jQuery.get("$action", params, function(data) 
 			{
 				$("#$targetdiv").replaceWith(data);

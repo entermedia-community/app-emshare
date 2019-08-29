@@ -1,10 +1,14 @@
 #set( $taskid = $context.getRequestParameter("taskid"))
 #set( $commentsearcher = $mediaarchive.getSearcher("goaltaskcomments") )
 #set( $comments = $commentsearcher.query().exact("goaltaskid",$taskid).sort("dateDown").search() )
-<div   id="commentsarea_${taskid}">
+
+<div id="commentsarea_${taskid}" class="#if ($comments.size()>1) goal-commentsarea-scroll #else goal-commentsarea #end">
 <div id="commentaddarea_${taskid}" >
 #if( $caneditcollection )
-<a class="ajax btn btn-xs btn-primary" targetdiv="commentaddarea_${taskid}" href="$apphome/collective/goals/comments/newcomment.html?taskid=$taskid&oemaxlevel=1" title=[[Add comment]]>[[Add comment]]</a>
+<a class="ajax btn btn-xs btn-secondary" 
+	targetdiv="commentaddarea_${taskid}" 
+	href="$apphome/collective/goals/comments/newcomment.html?taskid=$taskid&oemaxlevel=1" 
+	title="[[Add comment]]"><i class="fas fa-comment"></i> [[Comment]]</a>
 #end
 </div>
 
@@ -12,7 +16,10 @@
 	<div class="goal-comments-container">
 		<div class="goal-comments-scroll">
 			#foreach($comment in $comments)	
-				<div class="goal-comment #if( $comment.statuschange ) goal-comment-status #end"   data-toggle="tooltip" data-placement="top" title="$context.getDateTime($comment.date)">
+				<div class="goal-comment #if( $comment.statuschange ) goal-comment-status #end"   
+					data-toggle="tooltip" 
+					data-placement="top" 
+					title="$context.getDateTime($comment.date)">
 					<span class="goal-commentauthor" title="$!mediaarchive.getUser(${comment.author}).getAnonNickName()">
 					#if( $comment.statuschange )
 					<i class="fas fa-flag"></i>
@@ -29,9 +36,11 @@
 					</span>
 			#if( $caneditcollection && !$comment.statuschange  )
 					<span class="goal-delete">
-    					<a class="ajax" data-confirm="Are you sure?"
-    			 targetdiv="commentsarea_${taskid}" 
-    			href="$apphome/collective/goals/comments/commentdelete.html?taskid=$taskid&id=$comment.id"><i class="fas fa-times"></i></a> 
+    					<a class="ajax" data-confirm="[[Are you sure?]]"
+    			 		targetdiv="commentsarea_${taskid}" 
+						title="[[Delete Comment]]"
+    					href="$apphome/collective/goals/comments/commentdelete.html?taskid=$taskid&id=$comment.id">
+				<i class="fas fa-times"></i></a> 
     		#end
 				</div>
 			#end
