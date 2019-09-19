@@ -7,13 +7,37 @@
 
 <h2>EnterMediaDb [[Billing]]</h2>
 
---Drop down of products/service to buy (shows some description, ajax?)
---Add to cart button, will take us to the Credit Card form. 
-		--Collection id
-		--Productid (We will pass product Amount and Transaction Type)
-		-- Will look like an invoice.
---Transaction happens.
-		--
+<p>Select the service you want to pay:</p>
+
+
+#set( $products = $mediaarchive.query("em_products").search() )
+#if($products)
+<form action="./payment.html" method="POST">
+<div class="row">
+<div class="col">
+		<select name="product" id="product" class="form-control ajax" 
+			data-targetdiv="productdescription"
+			data-href="./productdescription.html?product=">
+		<option></option>
+		#foreach($product on $products)
+			<option value="$product.id">
+			$product.name ($${product.amount}USD $mediaarchive.getData("em_products_frequency",$product.frequency))</option>
+		#end
+		</select>
+		<div id="productdescription"></div>
+</div>
+<div class="col-md-2">
+		<input type="hidden" name="collectionid" value="$collectionid" />
+		<input type="submit" class="btn  btn-primary" value="[[Continue]]" />
+</div>
+</div>
+</form>
+
+#end
+
+<hr>
+
+
 
 ##Search instances in these organizations
 		#set( $instances = $mediaarchive.query("entermedia_instances").match("librarycollection", $collectionid).search() )
@@ -52,9 +76,6 @@
 			    </table>
 		    	</div>
 			#end
-	#if( $caneditcollection )
-	<a href="/entermediadb/app/site/sitedeployer/createsite.html?organizationid=$collectionid" class="btn btn-secondary btn-sm">[[Deploy New Server]]</a>
-	#end
 </div>	
 </div>
  <div class="col-lg-3 ">
