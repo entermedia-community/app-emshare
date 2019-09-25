@@ -4,37 +4,34 @@
 <div class="col">
 <div class="maincontent h-100">
 
-<h2>EnterMediaDb [[Servers]]</h2>
+<h2>Products and Services</h2>
 ##Search instances in these organizations
-		#set( $instances = $mediaarchive.query("collectiveproduct").match("collectionid", $collectionid).search() )
-			#if ($instances)
+		#set( $products = $mediaarchive.query("collectiveproduct").match("collectionid", $collectionid).search() )
+			#if ($products)
 				<div class="emdata">
 			    <table class="table table-striped">
 			        <thead>
 			            <tr class="tableheader">
-			                <th>[[Server Name]]</th>
-			                <th>[[Status]]</th>
-							<th>[[Created]]</th>
-							
-			                <th>URL</th>
-							
+			            
+			                <th>[[Name]]</th>
+			         		<th>[[Price]]</th>
+			                <th>[[Description]]</th>
+										                
 			            </tr>
 			        </thead>
-					#foreach($hit in $instances)
+					#foreach($hit in $products)
 						#if ($hit.instance_status == "active")
 							#set($instancescount = $instancescount+1)
 						#end
 						<tr>
 				            <td>$hit.name</td>
-							<td style="text-align: center;">$hit.instance_status	</td>
-				            <td style="text-align: center;">#if($!hit.datestart) $context.getDate($!hit.datestart) #end</td>
+							<td style="text-align: center;">$!hit.price	</td>
+				            <td style="text-align: center;">$!hit.productdescription</td>
 							
-				            <td>
-								#if ($hit.instanceurl)
-									<a href="$hit.instanceurl" style="text-decoration: underline" targe="_blank">$hit.instanceurl</a>
-								#else
-									$hit.instanceprefix
-								#end
+				            
+							<td>
+								<a href="$applink/collective/services/addtoinvoice.html?collectionid=${collectionid}&productid=${hit.id}" class=" btn btn-sm btn-primary" title="[[Add a Project]]">[[Buy Now]]</a>
+							
 							</td>
 				        </tr>
 					
@@ -48,7 +45,6 @@
 
 	#end
 </div>	
-</div>
  <div class="col-lg-3 ">
 	<div class="collective-sidebar">
 		$pages.include("$apphome/collective/channel/subscribers/index.html", $context)
