@@ -17,29 +17,9 @@
 		#if( $canshowcollectionpicker || $canshowlibrarypicker)
 			$pages.include("$apphome/components/libraries/pickcollection.html")
 		#end
-		
-		
+
 		#if ($canquicksearch)
-		<div class="nav-form nav-quicksearch">
-			<form id="search_form" action="$home$apphome/views/modules/asset/search.html" class="form-inline em-widget-content">
-				<input type="hidden" name="field" value="description" />
-				<input type="hidden" name="operation" value="freeform" />
-				<input type="hidden" name="quicksearched" value="true" />
-				#set( $input = $hits.getInput("description") )
-				#if (!$input)
-					#set( $input = "")
-				#end
-				<div class="input-group">
-					<input class="suggestsearchinput form-control border-right-0 border" type="text"  id="assetsearchinput" data-quicksearched='$!context.getRequestParameter("quicksearched")' placeholder="[[Asset Search...]]"   name="description.value" value="$input" />
-					##<span class="fas fa-search form-control-feedback submitform" ></span>
-					<div class="input-group-addon submitform" style="pointer-events: initial;">
-					<a><i class="fa fa-search"></i></a>
-					</div>
-		            
-				</div>
-				
-			</form>
-		</div>
+			$pages.include("$apphome/components/quicksearch/navbar.html")
 		#end
 	</div>
 	#end
