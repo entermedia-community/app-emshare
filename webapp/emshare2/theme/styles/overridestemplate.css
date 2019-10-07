@@ -1,10 +1,8 @@
 #set( $apphome = $context.findValue("applicationid") )
 #set( $apphome = "/${apphome}" )
 #embody {
-
-#set($color1 = "")
-#set($color2 = "")
-
+	#set($color1 = "")
+	#set($color2 = "")
 #if($theme.bodybackgroundcolor)
 	background: $theme.bodybackgroundcolor;
 #else
@@ -98,7 +96,6 @@ position: relative;
 }
 #end
 
-##background-color: #565656;
 .emnav {
 	#if( ${theme.navbackgroundpath})
 		background: url('$theme.navbackgroundpath');
@@ -250,12 +247,6 @@ position: relative;
 
 #end
 
-#if( $theme.navbuttonbordercolor )
-	.emnav .librarycollectionpicker,
-	.emnav .nav-quicksearch {
-		/*border-left: 1px solid $theme.navbuttonbordercolor;*/
-	}
-#end
 #if ($theme.navlinksbackgroundcolor)
 	#header .navlinks,
 	#header .dropdown-menu {
@@ -266,7 +257,7 @@ position: relative;
 	}
 #end
 #if ($theme.navlinkfontcolor)
-	#header .navlinks li>a,f
+	#header .navlinks li>a,
 	#header .navlinks .dropdown-item {
     	color:$theme.navlinkfontcolor;
     	background-color: $theme.navlinksbackgroundcolor;
@@ -275,19 +266,6 @@ position: relative;
 #if ($theme.navlinkfontcolorhover)
 	#header .navlinks li a:hover {
     	color:$theme.navlinkfontcolorhover;
-	}
-#end
-
-
-#if ($theme.navbuttonhovercolorgradient) 
-	.Xcollectionshomecontent,
-	.Xcreatemediapanel {
-		background-color: $theme.navbuttonhovercolorgradient;
-	}
-#elseif ($theme.navbuttonhovercolor) 
-	.Xcollectionshomecontent,
-	.Xcreatemediapanel {
-		background-color: $theme.navbuttonhovercolor;
 	}
 #end
 
@@ -322,7 +300,9 @@ position: relative;
 .col-sidebar-header h2:hover,
 .col-sidebar-header h2:hover a  {
 	background-color:$theme.sidebarheaderbackgroundhover;
-	color:$theme.sidebarheadercolorhover;
+	#if ($theme.sidebarheadercolorhover)
+		color:$theme.sidebarheadercolorhover;
+	#end
 } 
 #end
 
