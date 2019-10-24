@@ -1,0 +1,25 @@
+#set( $collectionid = $context.getRequestParameter('collectionid'))
+#set( $topicid = $context.getRequestParameter("topic"))
+#set( $searcher = $mediaarchive.getSearcher("collectiveproject") )
+
+#if($topicid)
+	#set( $currenttopic = $searcher.query().match("parentcollectionid",$collectionid).exact("id",$topicid).searchOne() )
+#else
+	##set( $currenttopic = $searcher.query().match("parentcollectionid",$collectionid).match("teamproject","false").searchOne() )
+	#set( $currenttopic = $searcher.query().match("parentcollectionid",$collectionid).sort("name").searchOne() )
+#end
+
+#if( !$currenttopic)
+##No topics found
+#set( $currenttopic = $searcher.createNewData() )
+$currenttopic.setValue("parentcollectionid",$collectionid)
+$currenttopic.setName("General")
+$searcher.saveData($currenttopic)
+#end
+
+$context.putPageValue("currenttopic", $currenttopic)
+<div class="collaborate-channel h-100">
+
+$pages.include("$apphome/collective/community/chatbox.html", $context)
+	
+</div>
