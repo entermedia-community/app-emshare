@@ -20,14 +20,27 @@
 	</div>
 	#if($candeletecomments)
 		<div class="float-right" >
-	 <a class="" title="Delete message"
-		data-id="${chat.id}" data-target="#chatter-message-$chat.id"
-		data-searchtype="chatterbox" href="#"><i class="fas fa-times"></i></a>
+	
+		  <a class="ajax maketicket" style="color:#ccc"  data-targetdiv="chatter-message-$chat.id"
+	href="$applink/collective/community/chatterbox/makegoal.html?collectionid=$librarycol.getId()&messageid=$chat.id" title="[[Flag as ticket]]"><i class="fas fa-flag"></i></a>
+
+	<!-- 	 <a class="confirm" data-confirm="Are you sure?" title="Delete message"
+			data-id="${chat.id}" data-target="#chatter-message-$chat.id"
+			data-searchtype="chatterbox" href="#"><i class="fas fa-times"></i></a>
+		 -->
+		
 		</div>
 	#end
 	<div class="chat-msg">
 		<a href="#esc($userlink)" title="$context.getDateTime($chat.date)"><strong>
-				$chatuser.getAnonNickName()</strong></a><br> $!chat.message
+				$chatuser.getAnonNickName()</strong></a><br> 
+#if($chat.message)
+	#if( $chat.message.startsWith("http"))
+		<a href="$chat.message">$chat.message</a>
+	#else
+			$chat.message
+	#end
+#end			
 	</div>
 	<div class="clearfix"></div>
 	#set( $goal = $mediaarchive.query("projectgoal").exact("chatparentid",$chat.getId() ).searchOne() )
@@ -60,11 +73,6 @@
 		#end
 		
 		<div class="clearfix"></div>
-		</div>
-	#else
-		<div class="" style="margin-left:40px;">
-		<a class="ajax maketicket" style="color:#ccc"  data-targetdiv="chatter-message-$chat.id"
-	href="$applink/collective/community/chatterbox/makegoal.html?collectionid=$librarycol.getId()&messageid=$chat.id" title="[[Make ticket]]"><i class="fas fa-flag"></i></a>
 		</div>
 	#end
 </div>
