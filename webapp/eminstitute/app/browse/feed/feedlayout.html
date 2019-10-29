@@ -1,3 +1,4 @@
+#set($grid = $context.getRequestParameter("grid"))
 #set($libraryid = $context.getRequestParameter("libraryid"))
 #if( !$libraryid)
 	#set($libraryid = "*")
@@ -7,23 +8,16 @@
 <div id="projectresultholder" style="margin-top:40px;">
 <div class="row">
 <div class="col-3 ">
-$pages.include("$apphome/browse/stations.html",$context) 
+$pages.include("$apphome/browse/stations.html?feed=true",$context) 
 </div>	
 
 <div class="col-md-9">
 	<div class="stations-header">
-    <div class="float-right" style="padding: 10px 5px 0 5px">
-     </div>
-
-		#if( $library)
-		<h1>$library [[Projects]]</h1>
-		#else
-		<h1>[[All Projects]]</h1>
-		#end
+		<h1>[[Project Uploads]]</h1>
 	</div>
- 
-		$pages.include("$apphome/browse/channellist.html",$context) 
+ 		$pages.include("$apphome/browse/channelfeed.html",$context) 
 </div>
 	
 </div>
 
+</div>

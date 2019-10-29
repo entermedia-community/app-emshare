@@ -1,46 +1,42 @@
 #set($libraryid = $context.getRequestParameter("libraryid"))
-#set($grid = $context.getRequestParameter("grid"))
-#if(!$grid)
-#set($grid = "true")
-#end
+#set($oisection = $content.oisection)          
 <div class="oisidebar">
     <!-- Sidebar -->
     <nav id="sidebar">
-        <div class="sidebar-header">
-            <h3>[[Public Stations]]</h3>
-        </div>
+       
 
         <ul class="list-unstyled list-stations">
             <li #if( !$libraryid || $libraryid == "*" ) class="active" #end>
-                <a href="$apphome/browse/stations/all.html?libraryid=*&grid=$!grid" class="stationlink">[[All]]</a> 
-                ##<a href="$apphome/browse/stations/all.html?libraryid=*&grid=true" class="channelslink"><i class="fas fa-th-large"></i></a>
+                <a href="$apphome/browse/${oisection}/all.html?libraryid=*&grid=$!grid" class="stationlink">[[All]]</a> 
+                ##<a href="$apphome/browse/${oisection}/all.html?libraryid=*&grid=true" class="channelslink"><i class="fas fa-th-large"></i></a>
             </li>
             #set($libraries = $mediaarchive.getList("library"))
 		#foreach( $library in $libraries)
             <li #if( $libraryid == $library.id) class="active" #end >
-                <a href="$apphome/browse/stations/${library.name}.html?libraryid=$library.id&grid=$!grid" class="stationlink">$library</a>
-                ##<a href="$apphome/browse/stations/${library.name}.html?libraryid=$library.id&grid=true" class="channelslink"><i class="fas fa-th-large"></i></a>
+                <a href="$apphome/browse/${oisection}/${library.name}.html?libraryid=$library.id&grid=$!grid" class="stationlink">$library</a>
+                ##<a href="$apphome/browse/${oisection}/${library.name}.html?libraryid=$library.id&grid=true" class="channelslink"><i class="fas fa-th-large"></i></a>
             </li>		
 		#end
-            <li #if( !$libraryid || $libraryid == "subscriptions" ) class="active" #end>
-                <a href="$apphome/browse/stations/all.html?libraryid=subscriptions&grid=$!grid"  class="stationlink">[[Your Subscriptions]]</a>
-				##<a href="#" class="channelslink"><i class="fas fa-th-large"></i></a>
-            </li>
+##            <li #if( !$libraryid || $libraryid == "subscriptions" ) class="active" #end>
+##                <a href="$apphome/browse/${oisection}/all.html?libraryid=subscriptions&grid=$!grid"  class="stationlink">[[Your Subscriptions]]</a>
+##				##<a href="#" class="channelslink"><i class="fas fa-th-large"></i></a>
+##            </li>
            
         </ul>
     </nav>
 
 
-<div style="padding:40px 20px; text-align:center;">
-	<img src="$apphome/theme/oi/Google-Group.png" class="img-fluid" />
-	<p>
+<div style="padding:40px 20px;" >
+	<p style="color:#999;">
 	[[Change the world]]...
+
+	<img src="$apphome/theme/oi/Google-Group.png" class="img-fluid" />
 	</p>
   		<a #if( $user )href="$apphome/browse/add/addnew.html"
   			#else
   			href="$apphome/authentication/login.html?loginokpage=$apphome/browse/add/addnew.html"
   			#end
 			title="[[Start New Channel]]"
-  		 	class="btn btn-primary" >[[Start New Channel]]</a>	
+  		 	class="btn btn-primary" >[[Start New Project]]</a>	
 </div>
 </div>

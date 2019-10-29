@@ -8,7 +8,7 @@
 <form class="emcontainer" style="float:right;" >
 	<input type="hidden" name="field" value="name" />
 	<input type="hidden" name="operation" value="contains" />
-  	<input type="search" name="name.value" class="form-control ds-input" id="search-input" placeholder="Search Collectives..." 
+  	<input type="search" name="name.value" class="form-control ds-input" id="search-input" placeholder="[[Search For Project]]..." 
   		style="width: 100%; max-width: 500px;vertical-align: top;" value='$!hits.getInput("name")'>
 </form>	
 #if($libraryid == "*")
@@ -23,6 +23,8 @@
 #set( $n = $hits.setHitsPerPage(50))
 <div class="clearfix"></div>
 <div class="">
+
+
 #foreach($collective in $hits.getPageOfHits())
  	#set($collective = $mediaarchive.getSearcher("librarycollection").loadData($collective) )
 	
@@ -30,7 +32,6 @@
 	$pages.include("$apphome/browse/collectivelisting.html", $context)
 
 #end
-</div>
 
 #if($hits.getPages() > 1 )
 	Next page
