@@ -1,10 +1,10 @@
-#set( $collectiveid = $context.getRequestParameter("collectionid"))
+#set( $collectionid = $context.getRequestParameter("collectionid"))
 #set( $searcher = $mediaarchive.getSearcher("collectiveproject") )
 
 #if($caneditcollection)
-	#set( $alltopics = $searcher.query().match("parentcollectionid",$collectiveid).sort("name").search($context) )
+	#set( $alltopics = $searcher.query().match("parentcollectionid",$collectionid).sort("name").search($context) )
 #else
-	#set( $alltopics = $searcher.query().match("parentcollectionid",$collectiveid).exact("teamproject","false").sort("name").search($context) )
+	#set( $alltopics = $searcher.query().match("parentcollectionid",$collectionid).exact("teamproject","false").sort("name").search($context) )
 #end
 <div class="collaborate-content collaborate-channels" >
 <h3>[[Topics]]
@@ -21,7 +21,7 @@
 	<ul class="">
 	  #foreach( $hit in $alltopics)
 	     <li class="#if($currenttopic.getId()==$hit.getId()) current #end">
-		<a href="$apphome/collective/community/index.html?collectionid=$collectiveid&topic=$hit.getId()">
+		<a href="$apphome/collective/community/index.html?collectionid=$collectionid&topic=$hit.getId()">
 		#if($caneditcollection)
 			#if ($hit.teamproject == "true")
 				<i class="fas fa-lock"></i>
