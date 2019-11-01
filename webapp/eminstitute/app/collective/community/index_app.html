@@ -29,11 +29,18 @@ $context.putPageValue("currenttopic", $currenttopic)
 		#if($alltopics.size()>1)
 		<div class="dropdown show">
 		<a href="#" class=" dropdown-toggl" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+		#if($caneditcollection)
+			#if ($currenttopic.teamproject == "true")
+				<i class="fas fa-lock chanel-teamonly"></i>
+			#else 
+				<i class="fas fa-lock-open  chanel-teamonly"></i>
+			#end
+		#end
 		$currenttopic <i class="fas fa-caret-down"></i>
 		</a>
 		<div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
 		 #foreach( $hit in $alltopics)
-		    
+		    #if ($hit.id != $currenttopic.id)
 			<a href="$apphome/collective/community/index_app.html?collectionid=$collectionid&topic=$hit.getId()"
 				class="dropdown-item">
 				#if($caneditcollection)
@@ -45,6 +52,7 @@ $context.putPageValue("currenttopic", $currenttopic)
 				#end 
 				$hit.name
 			</a>
+			#end
 		  #end
 		</div>
 		</div>
