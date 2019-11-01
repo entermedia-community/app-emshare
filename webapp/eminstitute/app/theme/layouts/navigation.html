@@ -11,14 +11,28 @@
 	<a class="navbar-brand" href="$apphome" title="Open Institute"><img style="height: 50px;" src="$apphome/theme/oi/OI.png" alt="Open Institute"></a>
 	
 		<button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-          [[Account]]
+          
           <i class="fa fa-bars"></i>
         </button>
         <div class="collapse navbar-collapse" id="navbarResponsive">
 			#set($oisection = $content.oisection)          
 			<ul class="navbar-nav  ml-auto">
-            <li class="nav-item #if($oisection == "feed")active#end" >
-              <a class="nav-link js-scroll-trigger" href="$sitelink/app/browse/feed/index.html">[[Activity]]</a>
+			<li class="searchcollectivescontainer">
+			<select  id="collectivesearch" 
+				name="collectionid" 
+				class="form-control autosubmitedZ" 
+				data-placeholder="[[Search Collectives]]"
+				data-url="$apphome/collective/channel/"
+			>
+			<option></option>
+			#set( $collectives = $mediaarchive.query("librarycollection").search() )
+			#foreach( $collective in $collectives )
+				<option value="$collective.getId()">#esc($collective.name)</option>
+			#end
+		   </select>
+		   </li>
+            <li class="nav-item #if($oisection == "browse")active#end" >
+              <a class="nav-link js-scroll-trigger" href="$sitelink/app/browse/index.html">[[Home]]</a>
             </li>
             <li class="nav-item #if($oisection == "stations")active#end" >
               <a class="nav-link js-scroll-trigger" href="$sitelink/app/browse/stations/index.html">[[Projects]]</a>
@@ -58,24 +72,6 @@
     </div>
 </div>
 
-<div id="searchcollectivescontainer">
-	<div class="container">
-		<div class="searchcollectivescontainer">
-			<select  id="collectivesearch" 
-				name="collectionid" 
-				class="form-control autosubmitedZ" 
-				data-placeholder="[[Projects]]"
-				data-url="$apphome/collective/channel/"
-			>
-			<option></option>
-			#set( $collectives = $mediaarchive.query("librarycollection").search() )
-			#foreach( $collective in $collectives )
-				<option value="$collective.getId()">#esc($collective.name)</option>
-			#end
-		   </select>
-		</div>
-	</div>	
-</div>
 
 </div>
 
