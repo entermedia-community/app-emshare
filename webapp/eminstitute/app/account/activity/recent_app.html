@@ -7,7 +7,6 @@
 <tr class="tableheader">
 	<th>[[Project]]</th>
 	<th>[[Details]]</th>
-	<th style="width:97px;">[[Status]]</th>
 </tr>
 </thead>
 #foreach($activity in $recentactivities.getPageOfHits() )
@@ -26,6 +25,12 @@
 	style="text-decoration:underline;" >
 	/ $!topic
 	</a>
+	<br>	
+		$pages.include("$apphome/agent/resolvebutton.html",$context)
+		<span >
+			[[Edited by]] $!mediaarchive.getUser($activity.editedbyid).getAnonNickName()
+			[[on]] $context.getDateTime($activity.getValue("date")) 
+		</span>	
 	</td>
 
 	<td >
@@ -35,15 +40,6 @@
 
 		$!goal.details 		
 		$pages.include("$apphome/collective/goals/like.html",$context)
-		</td>
-	
-	<td class="" >
-		$pages.include("$apphome/agent/resolvebutton.html",$context)
-		<span >
-			[[Edited by]] $!mediaarchive.getUser($activity.editedbyid).getAnonNickName()
-			[[on]] $context.getDateTime($activity.getValue("date")) 
-		</span><br>
-
 	</td>
 
 </tr>
