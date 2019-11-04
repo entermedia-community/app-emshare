@@ -2,34 +2,48 @@
 #if ($collectionid)
 #if( !$user)
 	#set($loginok = "$apphome/collective/channel/$collectionid/")
- [[You must first]]: <a href="$apphome/authentication/login.html?loginokpage=$loginok" class="btn btn-primary">[[Login]]</a>
+	[[You must first]]: <a href="$apphome/authentication/login.html?loginokpage=$loginok" class="btn btn-primary">[[Login]]</a>
 #else
 <div id="addnewsuscriber">
-<p>Receive important email updates and support us</p>
 
-
-#set( $searcher = $mediaarchive.getSearcher("librarycollectionusers") )
+#set( $searcher = $searcherManager.getSearcher($catalogid,"user"))
+##set( $searcher = $mediaarchive.getSearcher("user") )
 $context.putPageValue("searcher",$searcher)
-$context.putPageValue("view", "librarycollectionusers/addnew")
+$context.putPageValue("view", "user/addnew")
+
 <form name="saveproject" id="saveproject" action="$apphome/collective/channel/subscribers/addsave.html" method="post">
-
-
-<input type="hidden" name="save" value="true" />
-
-
-<input type="hidden" name="searchtype" value="librarycollectionusers" />
-
-<input type="hidden" name="field" value="followeruser" />
-<input type="hidden" name="followeruser.value" value="$user.getId()" />
-
-<input type="hidden" name="field" value="addeddate" />
-<input type="hidden" name="addeddate.value" value="$storeddate" />
-
-<input type="hidden" name="field" value="collectionid" />
-<input type="hidden" name="collectiveid.value" value="$collectionid" />
-<input type="hidden" name="collectionid" value="$collectionid" />
- 
-$pages.include("/$applicationid/components/xml/detaileditor4.html", $context)
+	<input type="hidden" name="save" value="true" />
+	<input type="hidden" name="searchtype" value="user" />
+	
+	<input type="hidden" name="field" value="followeruser" />
+	<input type="hidden" name="followeruser.value" value="$user.getId()" />
+	
+	<input type="hidden" name="field" value="addeddate" />
+	<input type="hidden" name="addeddate.value" value="$storeddate" />
+	
+	<input type="hidden" name="field" value="collectionid" />
+	<input type="hidden" name="collectiveid.value" value="$collectionid" />
+	<input type="hidden" name="collectionid" value="$collectionid" />
+	
+	<div class="row">
+		<div class="col">[[First Name]]:
+			<br>
+			<input type="hidden" name="field" value="firstName" />
+			<input type="text" class="form-control" name="firstName.value" />
+		</div>
+		<div class="col">[[Last Name]]:
+			<br>
+			<input type="hidden" name="field" value="lastName" />
+			<input type="text" class="form-control" name="lastName.value" />
+		</div>
+		<div class="col-12" style="margin-top:5px;">[[Email Address]]:
+			<br>
+			<input type="hidden" name="field" value="email" />
+			<input type="text" class="form-control required" name="email.value" required />
+		</div>
+	</div>
+	 
+	##$pages.include("/$applicationid/components/xml/detaileditor4.html", $context)
 
 </form>
 </div>
