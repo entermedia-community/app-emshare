@@ -1,0 +1,31 @@
+#set( $collectionid = $librarycol.getId() )	
+#set( $topicid = $context.getRequestParameter("topic"))
+#set( $searcher = $mediaarchive.getSearcher("collectiveproject") )
+
+
+#if($topicid)
+	#set( $currenttopic = $searcher.query().match("parentcollectionid",$collectionid).exact("id",$topicid).searchOne() )
+#end
+
+$context.putPageValue("currenttopic", $currenttopic)
+
+<div class=" h-100"  style="max-height: calc(100% - 202px); width:100%;" >
+<div class="community-maincol h-100">
+<div class="row no-gutters h-100">
+
+<div class="col-lg-2 collaborate-sidebar">
+	$pages.include("$apphome/messages/topics.html", $context)
+</div>
+
+<div class="collaborate-channel col h-100">
+
+	$pages.include("$apphome/messages/index.html", $context)
+
+</div>
+
+</div>	
+</div>
+
+</div>	
+
+
