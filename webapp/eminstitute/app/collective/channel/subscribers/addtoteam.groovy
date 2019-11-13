@@ -17,6 +17,7 @@ public void init()
 	String lastName = context.getRequestParameter("lastName.value");
 	String email = context.getRequestParameter("email.value");
 	String teamuserid = context.getRequestParameter("teamuserid");
+	String addtoteam = context.getRequestParameter("addtoteam");
 	
 	User teamuser = null;
 	if (teamuserid != null) {
@@ -42,7 +43,7 @@ public void init()
 	if (subscription != null)
 	{
 		//exists, but is ontheteam?
-		if (subscription.getValue("ontheteam") != "true") {
+		if (subscription.getValue("ontheteam") != "true" && addtoteam == "true") {
 			subscription.setValue("ontheteam",true);
 			archive.getSearcher("librarycollectionusers").saveData(subscription);
 		} 
@@ -52,7 +53,9 @@ public void init()
 		subscription = archive.getSearcher("librarycollectionusers").createNewData();
 		subscription.setValue("collectionid",collectionid);
 		subscription.setValue("followeruser",teamuser.getId());
-		subscription.setValue("ontheteam",true);
+		if (addtoteam == "true") {
+			subscription.setValue("ontheteam",true);
+		}
 		subscription.setValue("addeddate",new Date());
 		archive.getSearcher("librarycollectionusers").saveData(subscription);
 	}
