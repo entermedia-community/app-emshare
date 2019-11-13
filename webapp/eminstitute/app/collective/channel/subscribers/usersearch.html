@@ -1,0 +1,70 @@
+#set( $searcher = $mediaarchive.getSearcher("user") )
+#set($collectionid = $context.getRequestParameter("collectionid"))
+$context.putPageValue("searcher",$searcher)
+
+#set($targetdiv = "suscriberssidebar")
+<div  id="search-collections" >
+	<div id="searcharea" >
+		#set($viewid = "usersearch")
+		#set($viewpath = "user/${viewid}")
+		#set($details = $searcher.getDetailsForView($viewpath, $userprofile))
+		
+	<form  id="dialogsearchform" style="margin-bottom:10px;" class="autosubmit" data-targetdiv="resultsdialog" action="$apphome/collective/channel/subscribers/usersearchresults.html">
+		<input type="hidden" name="searchtype" value="user" />
+		<input type="hidden" name="sortby" value="firstName" />
+		<table style="width:100%;">
+		<tr>
+		<td>
+
+		<div  class="row inlinesearch" >
+		<div class="col">
+			<input name="operation" value="contains" type="hidden">
+			<input name="field" value="firstName" type="hidden">
+			<input type="text" class="form-control detail_name textinput autosubmited " 
+					autocomplete="off" 
+					value="" 
+					id="name.value" 
+					name="firstName.value">
+		</div>	
+		</div>
+		</td>
+##		#if($canviewsettings)
+##		<td style="width:20px; padding:0; position:relative">
+##			<a style="position:absolute; top:3px; right:3px;"
+##				class=" edit-icon"
+##				href="$apphome/views/settings/modules/librarycollection/metadata/viewssystem/index.html?viewid=${viewid}&viewpath=${viewpath}"
+##				title="[[Edit Search Form Fields]]">
+##			<i class="fas fa-edit"></i>
+##			</a>
+##		</td>
+##		#end
+		</tr>
+		</table>
+	</form>
+	
+
+	
+	<div id="resultsdialog">
+		<div class="clearfix"></div>
+	</div>
+	</div>
+<script>
+lQuery("#resultsdialog .rowclick").livequery("click", function(e) {
+	e.preventDefault();
+	$(this).closest(".modal").modal("hide");
+	var rowid = $(this).attr("rowid");
+	#if ($targetdiv && $collectionid)
+		##Update targetdiv only
+		var targetdiv = $("#${targetdiv}");
+		var nextpage = '$home$apphome/collective/channel/subscribers/addsave.html?hitssessionid=$hits.sessionId';
+		var options = targetdiv.data();
+		options.teamuserid = rowid;
+		options.collectionid = "${collectionid}";
+		$.get(nextpage, options, function(data) {
+			targetdiv.replaceWith(data);
+		});
+	#end
+
+});
+</script>
+</div>	

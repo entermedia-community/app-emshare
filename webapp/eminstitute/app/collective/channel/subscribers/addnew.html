@@ -1,9 +1,6 @@
 #set($collectionid = $context.getRequestParameter("collectionid"))
 #if ($collectionid)
-#if( !$user)
-	#set($loginok = "$apphome/collective/channel/$collectionid/")
-	[[You must first]]: <a href="$apphome/authentication/login.html?loginokpage=$loginok" class="btn btn-primary">[[Login]]</a>
-#else
+
 <div id="addnewsuscriber">
 
 #set( $searcher = $searcherManager.getSearcher($catalogid,"user"))
@@ -11,10 +8,10 @@
 $context.putPageValue("searcher",$searcher)
 $context.putPageValue("view", "user/addnew")
 
-<form name="saveproject" id="saveproject" action="$apphome/collective/channel/subscribers/addsave.html" method="post">
-	
+<form name="saveproject" id="saveproject" class="ajaxform autocloseform" data-targetdiv="suscriberssidebar" action="$apphome/collective/channel/subscribers/addsave.html" method="post">
 	<input type="hidden" name="collectionid" value="$collectionid" />
-	
+	<input type="hidden" name="oemaxlevel" value="1" />
+
 	<div class="row">
 		<div class="col">[[First Name]]:
 			<br>
@@ -38,5 +35,4 @@ $context.putPageValue("view", "user/addnew")
 </form>
 </div>
 #end
-#end  
 
