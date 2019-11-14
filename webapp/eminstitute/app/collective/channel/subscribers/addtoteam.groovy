@@ -10,15 +10,23 @@ import org.openedit.users.authenticate.PasswordGenerator
 
 public void init()
 {
-
+	MediaArchive archive = context.getPageValue("mediaarchive");
+	
 	String collectionid = context.getRequestParameter("collectionid");
 	String firstName = context.getRequestParameter("firstName.value");
 	String lastName = context.getRequestParameter("lastName.value");
 	String email = context.getRequestParameter("email.value");
+	String teamuserid = context.getRequestParameter("teamuserid");
+	String addtoteam = context.getRequestParameter("addtoteam");
 	
-	
-	MediaArchive archive = context.getPageValue("mediaarchive");
-	User teamuser = archive.getUserManager().getUserByEmail(email);
+	User teamuser = null;
+	if (teamuserid != null) {
+		teamuser = archive.getUserManager().getUser(teamuserid);
+		
+	}
+	else if (email != null) {
+		teamuser = archive.getUserManager().getUserByEmail(email);
+	}
 	if( teamuser == null)
 	{
 		String	password = new PasswordGenerator().generate();
@@ -30,19 +38,30 @@ public void init()
 		archive.getUserManager().saveUser(teamuser);
 	}
 	
-	Data subscription = archive.query("librarycollectionusers").exact("followeruser", teamuser.getId()).searchOne();
-	if (subscription == null)
+	
+	Data subscription = archive.query("librarycollectionusers").exact("followeruser", teamuser.getId()).exact("collectionid", collectionid).searchOne();
+	if (subscription != null)
+	{
+		//exists, but is ontheteam?
+		if (subscription.getValue("ontheteam") != "true" && addtoteam == "true") {
+			subscription.setValue("ontheteam",true);
+			archive.getSearcher("librarycollectionusers").saveData(subscription);
+		} 
+	}
+	else
 	{
 		subscription = archive.getSearcher("librarycollectionusers").createNewData();
 		subscription.setValue("collectionid",collectionid);
 		subscription.setValue("followeruser",teamuser.getId());
-		subscription.setValue("ontheteam",true);
+		if (addtoteam == "true") {
+			subscription.setValue("ontheteam",true);
+		}
 		subscription.setValue("addeddate",new Date());
 		archive.getSearcher("librarycollectionusers").saveData(subscription);
 	}
 	context.putPageValue("subscription",subscription);
 	
-	//collection-count-modifed
+
 	String template = context.findValue("apphome") + "/theme/emails/collection-add-teammember.html";
 
 	WebEmail templatemail = archive.createSystemEmail(teamuser, template);

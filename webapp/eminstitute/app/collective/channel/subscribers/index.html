@@ -1,5 +1,5 @@
 #set($collectionid = $librarycol.getId())
-
+<div id="suscriberssidebar">
 <div class="suscribe-area">
 #if( $user )
 	#set( $searcher = $mediaarchive.getSearcher("librarycollectionusers") )
@@ -10,10 +10,10 @@
 [[Join the Collective]]
 </div>	
 #if ($user && !$found)
-<form name="saveproject" id="saveproject" action="$apphome/collective/channel/subscribers/addsave.html" method="post">
+<form name="saveproject" id="saveproject" class="ajaxform" data-targetdiv="suscriberssidebar" action="$apphome/collective/channel/subscribers/addsave.html" method="post">
 <input type="hidden" name="save" value="true" />
-<input type="hidden" name="field" value="followeruser" />
-<input type="hidden" name="followeruser.value" value="$user.getId()" />
+
+<input type="hidden" name="teamuserid" value="$user.getId()" />
 <input type="hidden" name="field" value="addeddate" />
 <input type="hidden" name="addeddate.value" value="$storeddate" />
 <input type="hidden" name="field" value="collectionid" />
@@ -126,7 +126,18 @@
 	</div>
   #end
 	</div>
+	
 #end
+
+	#if( $caneditcollection)
+	<a href="$applink/collective/channel/subscribers/addnew.html?collectionid=${collectionid}" class="emdialog btn btn-sm btn-light" title="[[Add New User to Project]]">
+	<i class="fas fa-plus"></i> [[New User]]
+	</a>
+	
+	<a href="$applink/collective/channel/subscribers/usersearch.html?collectionid=${collectionid}" class="emdialog  btn btn-sm btn-light" title="[[Search Existing User]]">
+	<i class="fas fa-search"></i> [[Existing User]]
+	</a>
+	#end
 
 #set( $donations = $mediaarchive.query("transaction").exact("collectionid",$collectionid).sort("paymentdate").search($context) )
 	
@@ -165,5 +176,6 @@
 		</div>	
 
 
+</div>
 </div>
         
