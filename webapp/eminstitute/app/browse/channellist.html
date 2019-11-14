@@ -1,6 +1,8 @@
 #set($libraryid = $context.getRequestParameter("libraryid"))
 #if(!$libraryid)
 	#set($libraryid= "*")
+#else
+	#set( $library = $mediaarchive.getData("library",$libraryid) ) 
 #end
 
 <div id="projectresultholder">
@@ -8,7 +10,8 @@
 <form class="emcontainer" style="float:right;" >
 	<input type="hidden" name="field" value="name" />
 	<input type="hidden" name="operation" value="contains" />
-  	<input type="search" name="name.value" class="form-control ds-input" id="search-input" placeholder="[[Search For Project]]..." 
+  	<input type="search" name="name.value" class="form-control ds-input" id="search-input" 
+  		placeholder="[[Search For Project]]..." 
   		style="width: 100%; max-width: 500px;vertical-align: top;" value='$!hits.getInput("name")'>
 </form>	
 #if($libraryid == "*")
@@ -17,7 +20,6 @@
 	#set($hits = $mediaarchive.getProjectManager().listCollectionsForFollower($user))
 #else
 	#set($hits = $mediaarchive.query("librarycollection").exact("library",$libraryid).sort("name").search())
-	#set( $library = $mediaarchive.getData("library",$libraryid) ) 
 #end
 
 #set( $n = $hits.setHitsPerPage(50))

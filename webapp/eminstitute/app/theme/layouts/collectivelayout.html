@@ -30,33 +30,10 @@
 					</a>
 				
 						#if($caneditcollection)
-						<a href="#" class="collectiveactions dropdown-toggle dropdown-noarrow" data-toggle="dropdown" title="[[Collection Actions]]">
-						<i class="fas fa-ellipsis-v"></i></a>
-							<div class="dropdown-menu">
-									
-								  #set( $link = "$home$apphome/views/modules/librarycollection/share.html?collectionid=${librarycol.getId()}")
-								  <a class="dropdown-item emdialog"  id="sharetab"  href="$link" data-hidefooter="true" title="[[Collection Followers]]"><i class="dropdown-item-icon fas fa-user-friends"></i> [[Followers]]</a>
-								   #set( $link = "$home$apphome/views/modules/librarycollection/permissions.html?collectionid=${librarycol.getId()}")
-								  <a class="dropdown-item emdialog" id="permissionstab" href="$link" data-hidefooter="true" title="[[View Permissions]]"><i class="dropdown-item-icon fas fa-user-lock"></i> [[View Permissions]]</a>
-								  #set( $editlink = "$home$apphome/collective/edit/editcollective.html?collectionid=${librarycol.getId()}")
-							 	  <a class="dropdown-item emdialog"  data-allwaysloadpage="true" href="$editlink" title="[[Collective Settings]]"><i class="dropdown-item-icon fas fa-sliders-h"></i> [[Settings]]</a>
-								  #set( $link = "$home$apphome/views/modules/librarycollection/datapermissions/index.html?collectionid=${librarycol.getId()}&id=${librarycol.getId()}")
-								  <a class="dropdown-item emdialog" id="permissionstab" href="$link" data-hidefooter="true" title="[[Collection Permissions]] (${librarycol})"><i class="dropdown-item-icon fas fa-user-lock"></i> [[Collection Permissions]]</a>
-					              #set( $link = "$home$apphome/views/modules/library/datapermissions/index.html?id=${librarycol.get('library')}")
-								  <a class="dropdown-item emdialog" id="permissionstab" href="$link" data-hidefooter="true" title="$librarycol.library [[Library Permissions]]"><i class="dropdown-item-icon fas fa-user-lock"></i>  [[ Library Permissions]]</a>
-					
-						#if( $userprofile.isInRole("administrators") )
-							   	
-								   	#set( $editlink = "$home$apphome/views/modules/librarycollection/edit/settings.html?collectionid=${librarycol.getId()}")
-								 	<a class="dropdown-item emdialog"  data-allwaysloadpage="true" data-hidefooter="true"   href="$editlink" title="[[Collection Properties]]"><i class="dropdown-item-icon fas fa-cogs"></i> [[Properties]]</a>
-						#end		
-							 	## #if($cansharecollection && !$librarycol.isVisibility("3") )
-								## 	#set( $editlink = "$home$apphome/views/modules/librarycollection/sharecollection.html?collectionid=${librarycol.getId()}")
-								## 	<a class="dropdown-item emdialog" data-allwaysloadpage="true" data-hidefooter="true"   href="$editlink" title="[[Sharing Collection]]"><i class="dropdown-item-icon fas fa-share-alt"></i> [[Sharing]]</a>
-							 	## #end
-							
-							</div>
-							#end
+<span style="padding-left:20px;">
+<a class="emdialog" data-allwaysloadpage="true" href="$applink/collective/edit/editcollective.html?collectionid=$librarycol.getId()" title="[[Project Settings]]"><i class="fas fa-sliders-h"></i></a>
+</span>
+#end
 					$pages.include("$apphome/collective/menu.html", $context)
 				</div>
 			</div>
@@ -65,18 +42,6 @@
 			$pages.includeContent()	
 		##</div>
 	</div>
-<div class="container">
-	
-		<div class="collective-social text-center">
-		#if ($librarycol.facebooklink)
-			<a href="https://www.facebook.com/$librarycol.facebooklink"><i class="fab fa-facebook-f"></i> Facebook</a>
-		#end
-		#if ($librarycol.instagramlink)
-			<a href="https://www.facebook.com/$librarycol.instagramlink">Instagram</a>
-		#end
-		</div>
-	
-</div>
 	
 
 

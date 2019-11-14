@@ -12,28 +12,39 @@
 <table class="table">
   <thead class="thead-dark">
     <tr>
-      <th scope="col">#</th>
-      <th scope="col">First</th>
-      <th scope="col">Last</th>
+      <th scope="col"></th>
+      <th scope="col">Screen Name</th>
       #if( $user)
-      <th scope="col">Email</th>
-      <th scope="col">Phone</th>
-      <th scope="col">Social</th>
+      <th scope="col">Social Link</th>
       #end
     </tr>
   </thead>
   <tbody class="table-striped">
    	#foreach($hit in $hits)
+
+#set( $auser = $mediaarchive.getUser($hit.getId()))
+  #set($userlink = "$apphome/users/${auser.getId()}/${auser.getAnonNickName()}.html")
     <tr>
-      <th scope="row">${foreach.count}</th>
-      <td>$!hit.firstName</td>
-      <td>$!hit.lastName</td>
+		<td>
+		  <a href="#urlescape($userlink)" title="${comment.getUserLabel()}">
+			#set( $userimageurl = $mediaarchive.asLinkToProfile($auser.assetportrait) )
+			#if(!$userimageurl)
+				#set( $userimageurl = "$apphome/theme/images/user.svg" )
+			#end
+		  <img src="$userimageurl" class="">
+		  </a>
+		</td>
+      <td>
+      		  <a href="#urlescape($userlink)" title="${comment.getUserLabel()}">
+      $auser.getAnonNickName()
+      </a>
+      </td>
       #if( $user)
-      <td>$!hit.email</td>
-      <td>$!hit.phone</td>
       <td>$!hit.sociallink</td>
       #end
     </tr>
+		  </a>
+
    #end
   </tbody>
 </table>
