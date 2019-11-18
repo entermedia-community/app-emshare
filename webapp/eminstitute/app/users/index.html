@@ -1,36 +1,77 @@
-##Exising ones 
-##No existing programs found.
-
-<div  style="margin:60px;">
-  <h3 class=text-center>[[Donations Made]]</h3>
-  
-  <div class="" style="padding:10px;text-align:center">
-	[[No donations made]]
-
-  </div>
-</div>
-
-<div class="">
-   <h3 class="text-center"> [[Likes]]</h3>
-  
-  <div class="" style="padding-top:20px;">
-	  #set( $subscriptions = $mediaarchive.query("librarycollectionusers").exact("followeruser",$selecteduser.getId()).sort("isonteam").search() )
-
-	  #foreach( $hit in $subscriptions )
-			
-			#set($collective = $mediaarchive.getCachedData("librarycollection",$hit.collectionid) )
-			$context.putPageValue("subscribed","true")
-			$context.putPageValue("ontheteam",$hit.ontheteam)
-			$context.putPageValue("collective", $collective)
-			$pages.include("$apphome/browse/collectivelisting.html", $context)
-
-	  #end
-	 #if( $selecteduser.getId() == $user.getId()) 
-	<div style="margin-top:20px;">
-  		<a href="$apphome/browse/add/addnew.html" class="btn btn-sm btn-primary">[[Create New Channel]]</a>
+<div class="maincontent">
+<div class="row">
+	<div class="col-md-3">
+	
+		#if( $user.getId() == $selecteduser.getId())
+			#set($canedituserinfo = true)
+		#end
+	
+		#set( $userimageurl = $mediaarchive.asLinkToProfile($selecteduser.assetportrait) )
+		#if(!$userimageurl)
+			#set( $userimageurl = "$apphome/theme/images/user.svg" )
+		#end
+	
+		
+	
+		<div class="profile-username">
+			<div class="profile-userimage">
+				<img src="$userimageurl" alt="$selecteduser.getAnonNickName()" style="max-height: 100px;" />
+					#if($canedituserinfo)
+						<br>
+						<a href="#" id="filePicker" class="btn btn-sm btn-light profileeditimage" title="[[Upload square image for better results]]">
+						<i class="fas fa-image"></i> [[Edit]]
+						</a>
+					#end
+			</div>
+			#if($canedituserinfo)
+			<form id="uploaddata" 
+				name="wizard" 
+				method="post" 
+				enctype="multipart/form-data"
+				action="$apphome/users/uploadsave.html" 
+				>
+				<input type="hidden" name="userid" value="$selecteduser.getId()" />
+				<input type="hidden" name="sourcepath" value="userprofiles/$selecteduser.getId()/" />
+				<input id="upload_field" name="file" type="file" style="position:absolute; top:-1000px;" >
+			</form>
+			<script>
+				$('#upload_field').change(function() {
+				  $('#uploaddata').submit();
+				});
+			</script>
+			#end
+			<p>
+			<i class="far fa-user"></i> <strong>$user.getAnonNickName()</strong><br>
+			<i class="far fa-envelope"></i> $user.email
+			#if($canedituserinfo) 
+				<br>
+				<a href="$apphome/users/edit/edit.html?userid=$selecteduser.getId()" class="emdialog btn btn-sm btn-light ">
+				<i class="fas fa-edit"></i> [[Edit]]
+				</a>
+			#end
+			</p>
+		</div>
+	
+	
+	<div  style="margin:60px;">
+	  <h3 class=text-center>[[Donations Made]]</h3>
+	  
+	  <div class="" style="padding:10px;text-align:center">
+		[[No donations made]]
+	
+	  </div>
 	</div>
-     #end   
-  </div>
+	</div>
+
+
+
+
+	<div class="col">
+	
+		$pages.include("$apphome/users/projects.html", $context)
+		
+	</div>
+</div>
 </div>
 
 

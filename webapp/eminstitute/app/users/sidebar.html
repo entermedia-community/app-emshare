@@ -1,43 +1,70 @@
-<div class="profile-sidebar">
-	#set( $userimageurl = $mediaarchive.asLinkToProfile($selecteduser.assetportrait) )
-	#if(!$userimageurl)
-		#set( $userimageurl = "$apphome/theme/images/user.svg" )
-	#end
-
+<div class="sidebar-box">
 	
-#if( $user.getId() == $selecteduser.getId())
-	<div class="profile-username">
-		<div class="profile-userimage">
-			<img src="$userimageurl" alt="$selecteduser.getAnonNickName()" >
-			<a href="#" id="filePicker" class="btn btn-sm btn-light profileeditimage" title="[[Upload square image for better results]]"><i class="fas fa-image"></i> [[Edit]]</a>
-		</div>
-		<form id="uploaddata" 
-	name="wizard" 
-	method="post" 
-	enctype="multipart/form-data"
-	action="$apphome/users/uploadsave.html" 
-	>
-	<input type="hidden" name="userid" value="$selecteduser.getId()" />
-	<input type="hidden" name="sourcepath" value="userprofiles/$selecteduser.getId()/" />
-	<input id="upload_field" name="file" type="file" style="position:absolute; top:-1000px;" >
-		</form>
-		<script>
-			$('#upload_field').change(function() {
-			  $('#uploaddata').submit();
-			});
-		</script>
-	$user.getAnonNickName()
-	</div>
-<div class="text-center">
-	<a href="$apphome/users/edit/edit.html?userid=$selecteduser.getId()" class="btn btn-sm btn-primary emdialog">[[Edit]]</a>
+    <div class="sidebar-box-header">
+        [[Account]]        
+        <a href="#" class="sidebar-toggler"><i class="fas fa-angle-double-left"></i></a>
+    </div>
+    <div class="sidebar-box-content" style="padding:0;">
+    	<ul class="sidebar-list">
+		<li class="#if($content.appsection == "profile") current #end"><a href="$sitelink/app/users/$user.getId()/index.html"><i class="fa fa-user"></i> [[Profile]]</a></li>
+		<li class="#if($content.appsection == "messages") current #end"><a href="$sitelink/app/messages/index.html"><i class="fa fa-comment"></i> [[Messages]]</a></li>
+
+		<li class="#if($content.appsection == "tasks") current #end">
+			<a href="$sitelink/app/users/tasks/index.html?collectionid=*&goaltrackerstaff=$user.id"><i class="fa fa-clipboard-check"></i> [[Open Tasks]]</a>
+			<div style="padding:2px 20px 9px;">
+			<a href="$sitelink/app/users/tasks/search.html?field=ticketlevel&ticketlevel.value=1&operation=exact&field=projectstatus&projectstatus.value=open%7Ccritical&operation=orsgroup&sortby=creationdateDown" class="badge badge-success"> [[Level 1]]</a>
+			<a href="$sitelink/app/users/tasks/search.html?field=ticketlevel&ticketlevel.value=2&operation=exact&field=projectstatus&projectstatus.value=open%7Ccritical&operation=orsgroup&sortby=creationdateDown" class="badge badge-success">[[Level 2]]</a>
+			<a href="$sitelink/app/users/tasks/search.html?field=ticketlevel&ticketlevel.value=3&operation=exact&field=projectstatus&projectstatus.value=open%7Ccritical&operation=orsgroup&sortby=creationdateDown" class="badge badge-success">[[Level 3]]</a>
+			</div>
+		</li>
+		<li class="#if($content.appsection == "completed") current #end"><a href="$sitelink/app/users/tasks/report.html?collectionid=*&goaltrackerstaff=*"><i class="far fa-file-alt"></i> [[Completed Tasks]]</a></li>
+		</ul>
+    </div>
 </div>
-#else
-	#set( $userimage = "$apphome/theme/images/user.svg" )
-	<div class="profile-username">
-		<div class="profile-userimage">
-			<img src="$userimageurl" alt="$selecteduser.getAnonNickName()" >
-		</div>
-		$selecteduser.getAnonNickName()
-	</div>
-#end		
+
+
+
+<div class="sidebar-box">
+    <div class="sidebar-box-header">
+        [[Team Projects]]        
+    </div>
+    <div class="sidebar-box-content" style="padding:0;">
+	#set($selectedproject = $librarycol.getId())
+	##Search collections this user is teammeber
+	#set( $organizationsuser = $mediaarchive.query("librarycollectionusers").exact("followeruser",$user.getId()).exact("ontheteam","true").search() )
+	
+	#set($oids = [])
+	#foreach( $ohit in $organizationsuser )
+		#set($x = $oids.add($ohit.collectionid))
+	#end
+	#if($oids)
+	#set( $organizations = $mediaarchive.query("librarycollection").ids($oids).hitsPerPage(30).enduser(true).sort("name").search() )
+	<ul class="sidebar-list">
+	#foreach( $ohit in $organizations.getPageOfHits() )
+		<li><a href="$sitelink/app/collective/community/index.html?collectionid=$ohit.id&goaltrackerstaff=*" class="#if($selectedproject==$ohit.id) active #end"><i class="fas fa-sitemap"></i> $ohit.name</a></li>
+	#end
+	</ul>
+	#end
+	#if($organizations.getTotalPages()>1)
+		<select  id="collectivesearch2" 
+						name="collectionid" 
+						class="form-control autosubmitlink" 
+						data-placeholder="[[Search Collectives]]"
+						data-url="$sitelink/app/collective/community/index.html?goaltrackerstaff=*&collectionid="
+					>
+					<option></option>
+					#set( $collectives = $mediaarchive.query("librarycollection").match("library","organizations").sort("name").search() )
+					#foreach( $collective in $collectives )
+						<option value="$collective.getId()">#esc($collective.name)</option>
+					#end
+				   </select>
+	#end
+	<div style="padding:20px 20px;">
+	<a href="$apphome/site/sitedeployer/add/addorganization.html" class="emdialog btn btn-sm btn-primary" title="[[Add a Project]]">[[Add a Project]]</a></div>
+    </div>
 </div>
+
+		
+
+
+
