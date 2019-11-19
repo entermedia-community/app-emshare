@@ -38,10 +38,14 @@
 		#set($x = $oids.add($ohit.collectionid))
 	#end
 	#if($oids)
-	#set( $organizations = $mediaarchive.query("librarycollection").ids($oids).hitsPerPage(30).enduser(true).sort("name").search() )
+	#set( $organizations = $mediaarchive.query("librarycollection").ids($oids).hitsPerPage(20).enduser(true).sort("name").search() )
 	<ul class="sidebar-list">
 	#foreach( $ohit in $organizations.getPageOfHits() )
-		<li><a href="$sitelink/app/collective/community/index.html?collectionid=$ohit.id&goaltrackerstaff=*" class="#if($selectedproject==$ohit.id) active #end"><i class="fas fa-sitemap"></i> $ohit.name</a></li>
+		<li class="#if($selectedproject==$ohit.id) current #end">
+			<a href="$sitelink/app/collective/community/index.html?collectionid=$ohit.id&goaltrackerstaff=*" >
+			<i class="fas fa-sitemap"></i> $ohit.name
+			</a>
+		</li>
 	#end
 	</ul>
 	#end
@@ -49,7 +53,7 @@
 		<select  id="collectivesearch2" 
 						name="collectionid" 
 						class="form-control autosubmitlink" 
-						data-placeholder="[[Search Collectives]]"
+						data-placeholder="[[Search Projects]]"
 						data-url="$sitelink/app/collective/community/index.html?goaltrackerstaff=*&collectionid="
 					>
 					<option></option>
