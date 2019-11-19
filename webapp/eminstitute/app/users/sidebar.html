@@ -10,11 +10,11 @@
 		<li class="#if($content.appsection == "messages") current #end"><a href="$sitelink/app/messages/index.html"><i class="fa fa-comment"></i> [[Messages]]</a></li>
 
 		<li class="#if($content.appsection == "tasks") current #end">
-			<a href="$sitelink/app/users/tasks/index.html?collectionid=*&goaltrackerstaff=$user.id"><i class="fa fa-clipboard-check"></i> [[Open Tasks]]</a>
+			<a href="$sitelink/app/users/tasks/index.html"><i class="fa fa-clipboard-check"></i> [[Open Tasks]]</a>
 			<div style="padding:2px 20px 9px;">
-			<a href="$sitelink/app/users/tasks/search.html?field=ticketlevel&ticketlevel.value=1&operation=exact&field=projectstatus&projectstatus.value=open%7Ccritical&operation=orsgroup&sortby=creationdateDown" class="badge badge-success"> [[Level 1]]</a>
-			<a href="$sitelink/app/users/tasks/search.html?field=ticketlevel&ticketlevel.value=2&operation=exact&field=projectstatus&projectstatus.value=open%7Ccritical&operation=orsgroup&sortby=creationdateDown" class="badge badge-success">[[Level 2]]</a>
-			<a href="$sitelink/app/users/tasks/search.html?field=ticketlevel&ticketlevel.value=3&operation=exact&field=projectstatus&projectstatus.value=open%7Ccritical&operation=orsgroup&sortby=creationdateDown" class="badge badge-success">[[Level 3]]</a>
+			<a href="$sitelink/app/users/tasks/search.html?ticketlevel=1" class="badge badge-success"> [[Level 1]]</a>
+			<a href="$sitelink/app/users/tasks/search.html?ticketlevel=2" class="badge badge-success">[[Level 2]]</a>
+			<a href="$sitelink/app/users/tasks/search.html?ticketlevel=3" class="badge badge-success">[[Level 3]]</a>
 			</div>
 		</li>
 		<li class="#if($content.appsection == "completed") current #end"><a href="$sitelink/app/users/tasks/report.html?collectionid=*&goaltrackerstaff=*"><i class="far fa-file-alt"></i> [[Completed Tasks]]</a></li>
@@ -29,28 +29,10 @@
         [[Team Projects]]        
     </div>
     <div class="sidebar-box-content" style="padding:0;">
-	#set($selectedproject = $librarycol.getId())
-	##Search collections this user is teammeber
-	#set( $organizationsuser = $mediaarchive.query("librarycollectionusers").exact("followeruser",$user.getId()).exact("ontheteam","true").search() )
-	
-	#set($oids = [])
-	#foreach( $ohit in $organizationsuser )
-		#set($x = $oids.add($ohit.collectionid))
-	#end
-	#if($oids)
-	#set( $organizations = $mediaarchive.query("librarycollection").ids($oids).hitsPerPage(20).enduser(true).sort("name").search() )
-	<ul class="sidebar-list">
-	#foreach( $ohit in $organizations.getPageOfHits() )
-		<li class="#if($selectedproject==$ohit.id) current #end">
-			<a href="$sitelink/app/collective/community/index.html?collectionid=$ohit.id&goaltrackerstaff=*" >
-			<i class="fas fa-sitemap"></i> $ohit.name
-			</a>
-		</li>
-	#end
-	</ul>
-	#end
-	#if($organizations.getTotalPages()>1)
-		<select  id="collectivesearch2" 
+    
+    	#if($canviewsettings)
+    		<div style="padding:5px 15px;">
+			<select  id="collectivesearch2" 
 						name="collectionid" 
 						class="form-control autosubmitlink" 
 						data-placeholder="[[Search Projects]]"
@@ -61,8 +43,32 @@
 					#foreach( $collective in $collectives )
 						<option value="$collective.getId()">#esc($collective.name)</option>
 					#end
-				   </select>
+			</select>
+			</div>
+		#end
+	
+	#set($selectedproject = $librarycol.getId())
+	
+	##Search collections this user is teammeber
+	#set( $organizationsuser = $mediaarchive.query("librarycollectionusers").exact("followeruser",$user.getId()).exact("ontheteam","true").search() )
+	#set($oids = [])
+	#foreach( $ohit in $organizationsuser )
+		#set($x = $oids.add($ohit.collectionid))
 	#end
+	
+	#if($oids)
+	#set( $organizations = $mediaarchive.query("librarycollection").ids($oids).enduser(true).sort("name").search() )
+	<ul class="sidebar-list">
+	#foreach( $ohit in $organizations.getPageOfHits() )
+		<li class="#if($selectedproject==$ohit.id) current #end">
+			<a href="$sitelink/app/collective/community/index.html?collectionid=$ohit.id&goaltrackerstaff=*" >
+			<i class="fas fa-sitemap"></i> $ohit.name
+			</a>
+		</li>
+	#end
+	</ul>
+	#end
+
 	<div style="padding:20px 20px;">
 	<a href="$apphome/site/sitedeployer/add/addorganization.html" class="emdialog btn btn-sm btn-primary" title="[[Add a Project]]">[[Add a Project]]</a></div>
     </div>
