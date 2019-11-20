@@ -7,7 +7,8 @@
     <div class="sidebar-box-content" style="padding:0;">
     	<ul class="sidebar-list">
 		<li class="#if($content.appsection == "profile") current #end"><a href="$sitelink/app/users/$user.getId()/index.html"><i class="fa fa-user"></i> [[Profile]]</a></li>
-		<li class="#if($content.appsection == "messages") current #end"><a href="$sitelink/app/messages/index.html"><i class="fa fa-comment"></i> [[Messages]]</a></li>
+		#set( $pendingmessages = $chatManager.loadChatTopicLastChecked("${user.getId()}-messages",$user.getId() ) )
+		<li class="#if($content.appsection == "messages") current #end"><a href="$sitelink/app/messages/index.html"><i class="fa fa-comment"></i> [[Messages]] #if(!$pendingmessages.isEmpty()) * #end</a></li>
 
 		<li class="#if($content.appsection == "tasks") current #end">
 			<a href="$sitelink/app/users/tasks/index.html"><i class="fa fa-clipboard-check"></i> [[Open Tasks]]</a>
@@ -60,11 +61,16 @@
 	
 	#if($oids)
 	#set( $organizations = $mediaarchive.query("librarycollection").ids($oids).enduser(true).sort("name").search() )
+	
+	#set( $modcollections = $chatManager.loadCollectionsModified($organizations,$user.getId() ) )
+	
+	
 	<ul class="sidebar-list">
 	#foreach( $ohit in $organizations.getPageOfHits() )
 		<li class="#if($selectedproject==$ohit.id) current #end">
 			<a href="$sitelink/app/collective/community/index.html?collectionid=$ohit.id&goaltrackerstaff=*" >
 			<i class="fas fa-sitemap"></i> $ohit.name
+			#if( $modcollections.contains($ohit.getId())) * #end
 			</a>
 		</li>
 	#end
