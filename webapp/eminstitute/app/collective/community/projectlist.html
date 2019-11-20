@@ -8,6 +8,9 @@
 #end
 <div class="collaborate-content collaborate-channels" >
 <h3>[[Topics]]
+
+#set( $updatedtopics = $chatManager.loadChatTopicLastChecked($librarycol.getId(),$user.getId() ) )
+
 #if( $caneditcollection)	
 	 <a href="$apphome/collective/projects/addnew.html?collectionid=$librarycol.getId()&collectionroot=$applink/collective/community" 
 	 	class="emdialog community-add-btn float-right"
@@ -29,7 +32,13 @@
 				<i class="fas fa-lock-open"></i>
 			#end
 		#end 
-		$hit.name</a></li>
+		$hit.name
+		
+		#if($updatedtopics.contains($hit.getId()) * #end
+		
+		</a>
+		
+		</li>
 	  #end
 	</ul>
 #end
