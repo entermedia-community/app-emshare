@@ -2,7 +2,10 @@
 <div class="maincontent">
 <div class="row">
 	<div class="col-md-3">
-	$selecteduser.getId()
+		#if(!$selecteduser)
+			#set($selecteduser = $user)
+			$context.putPageValue("selecteduser", $selecteduser)
+		#end
 		#if( $user.getId() == $selecteduser.getId())
 			#set($canedituserinfo = true)
 		#end
@@ -54,12 +57,11 @@
 		</div>
 	
 	
-	<div  style="margin:60px;">
-	  <h3 class=text-center>[[Donations Made]]</h3>
+	<div  style="margin:60px 0; border-top:1px solid #ccc; padding-top:10px;">
+	  <h3>[[Donations Made]]</h3>
 	  
 	  <div class="" style="padding:10px;text-align:center">
-		[[No donations made]]
-	
+		##[[No donations made]]
 	  </div>
 	</div>
 	</div>
