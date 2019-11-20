@@ -10,7 +10,6 @@
 <h3>[[Topics]]
 
 #set( $updatedtopics = $chatManager.loadChatTopicLastChecked($librarycol.getId(),$user.getId() ) )
-
 #if( $caneditcollection)	
 	 <a href="$apphome/collective/projects/addnew.html?collectionid=$librarycol.getId()&collectionroot=$applink/collective/community" 
 	 	class="emdialog community-add-btn float-right"
@@ -23,7 +22,13 @@
 #else 
 	<ul class="">
 	  #foreach( $hit in $alltopics)
-	     <li class="#if($currenttopic.getId()==$hit.getId()) current #end">
+	  	
+	  	
+	  	
+	    <li class="
+	    	#if($currenttopic.getId()==$hit.getId()) current #end 
+	    	#if($updatedtopics.contains($hit.getId())) unread #end
+	    	">
 		<a href="$apphome/collective/community/index.html?collectionid=$collectionid&topic=$hit.getId()">
 		#if($caneditcollection)
 			#if ($hit.teamproject == "true")
@@ -33,8 +38,6 @@
 			#end
 		#end 
 		$hit.name
-		#if($updatedtopics.contains($hit.getId()) ) * #end
-		
 		</a>
 		
 		</li>
