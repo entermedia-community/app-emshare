@@ -2,34 +2,34 @@
 #set( $topicid = $context.getRequestParameter("topic"))
 #set( $searcher = $mediaarchive.getSearcher("collectiveproject") )
 
-#if($browser.inApp())
-	#if($caneditcollection)
-		#set( $alltopics = $searcher.query().match("parentcollectionid",$collectionid).sort("name").search($context) )
-	#else
-		#set( $alltopics = $searcher.query().match("parentcollectionid",$collectionid).exact("teamproject","false").sort("name").search($context) )
-	#end
-#end
-
 #if($topicid)
 	#set( $currenttopic = $searcher.query().match("parentcollectionid",$collectionid).exact("id",$topicid).searchOne() )
 #else
 	#set( $currenttopic = $searcher.query().match("parentcollectionid",$collectionid).sort("name").searchOne() )
 #end
 
+#set( $searcher = $mediaarchive.getSearcher("collectiveproject") )
+#set( $alltopics = $searcher.query().match("parentcollectionid",$collectionid).sort("name").search($context) )
+
 $context.putPageValue("alltopics", $alltopics)
 $context.putPageValue("currenttopic", $currenttopic)
 
-<div class=" h-100"  style="height:100%; width:100%;" >
+<div class=" h-100"  style="height:100%; width:100%; background:#fbfbfb;" >
+
+#if($browser.inApp())
+
+	$pages.includeContent($context)
+
+#else
 	<div class="community-maincol h-100">
 		<div class="row no-gutters h-100">
-			#if(!$browser.inApp())
 			<div class="col-lg-2 collaborate-sidebar">
 				$pages.include("$apphome/messages/topics.html", $context)
 			</div>
-			#end
 			<div class="collaborate-channel col h-100">
-				$pages.include("$apphome/messages/index.html", $context)
+				$pages.includeContent($context)
 			</div>
 		</div>	
 	</div>
+#end	
 </div>	

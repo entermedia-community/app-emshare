@@ -1,41 +1,49 @@
-	<div class="collaborate-channel-header">
-		<div class="channel-name float-left">
-		#if($alltopics.size()>1)
-		<div class="dropdown show">
-		<a href="#" class=" dropdown-toggl" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-		$topiclabels.showLabel($currenttopic) <i class="fas fa-caret-down"></i>
-		</a>
-		<div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-		 #foreach( $hit in $alltopics)
-		    #if ($hit.id != $currenttopic.id)
-			<a href="$apphome/messages/index.html?collectionid=$librarycol.getId()&topic=$hit.getId()"
-				class="dropdown-item">
-				#if($caneditcollection)
-					#if ($hit.teamproject == "true")
-						<i class="fas fa-lock"></i>
-					#else 
-						<i class="fas fa-lock-open"></i>
+#set( $collectionid = $librarycol.getId() )
+<div class="collaborate-channel-header">
+		#if($browser.inApp())
+			<div class="channel-name float-left">
+			#if($alltopics.size() > 1)
+			<div class="dropdown show">
+				<a href="#" class=" dropdown-toggl" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+				$!topiclabels.showLabel($currenttopic) <i class="fas fa-caret-down"></i>
+				</a>
+				<div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+				 #foreach( $hit in $alltopics)
+				    #if ($hit.id != $currenttopic.id)
+					<a href="$apphome/messages/index.html?collectionid=$librarycol.getId()&topic=$hit.getId()"
+						class="dropdown-item">
+						#if($caneditcollection)
+							#if ($hit.teamproject == "true")
+								<i class="fas fa-lock"></i>
+							#else 
+								<i class="fas fa-lock-open"></i>
+							#end
+						#end 
+						$!topiclabels.showLabel($hit)
+					</a>
 					#end
-				#end 
-				$topiclabels.showLabel($hit)
-			</a>
+				  #end
+				</div>
+			</div>
+			#else
+				$!topiclabels.showLabel($currenttopic)
 			#end
-		  #end
-		</div>
-		</div>
+			</div>
+			#if( $caneditcollection)	
+			<div class="channel-actions float-right">
+				 <a href="$apphome/messages/topics/addnew.html?collectionid=$librarycol.getId()&collectionroot=$applink/messages" 
+				 	class="emdialog community-add-btn float-right"
+				 	title="[[Create a Conversation]]">
+				 	<i class="fas fa-plus"></i></a>
+			</div>	
+			#end
 		#else
-			$topiclabels.showLabel($currenttopic)
-		#end
-		
-		</div>
-		<div class="channel-actions float-right">
-##			<a href="$apphome/collective/projects/edit.html?collectionid=$librarycol.getId()&id=${currenttopic.getId()}&collectionroot=$applink/messages/index.html" 
-##					class="emdialog" 
-##					title="[[Edit a Topic]]"
-##					data-hidefooter="true">
-##			<i class="fas fa-cog"></i></a>
-		</div>	
+			<div class="channel-name float-left">
+			$!topiclabels.showLabel($currenttopic)
+			</div>
+		#end		
 	</div>
+		
 #if( $currenttopic )
 	$pages.include("$apphome/messages/chatbox.html", $context)
 #end	
