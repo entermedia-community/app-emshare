@@ -2,11 +2,21 @@
 #set( $topicid = $context.getRequestParameter("topic"))
 #set( $searcher = $mediaarchive.getSearcher("collectiveproject") )
 
+#if($browser.inApp())
+	#if($caneditcollection)
+		#set( $alltopics = $searcher.query().match("parentcollectionid",$collectionid).sort("name").search($context) )
+	#else
+		#set( $alltopics = $searcher.query().match("parentcollectionid",$collectionid).exact("teamproject","false").sort("name").search($context) )
+	#end
+#end
 
 #if($topicid)
 	#set( $currenttopic = $searcher.query().match("parentcollectionid",$collectionid).exact("id",$topicid).searchOne() )
+#else
+	#set( $currenttopic = $searcher.query().match("parentcollectionid",$collectionid).sort("name").searchOne() )
 #end
 
+$context.putPageValue("alltopics", $alltopics)
 $context.putPageValue("currenttopic", $currenttopic)
 
 <div class=" h-100"  style="height:100%; width:100%;" >
