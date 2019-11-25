@@ -6,48 +6,46 @@
 
 	#set($sitetitle = $content.title)
     <title>#if( $librarycol ) $librarycol - #end $!sitetitle</title>
-
-	
 	
 	$pages.include("/${applicationid}/theme/layouts/includes.html")
 	
-	#if($content.usemap == "true")
+	#if(!$browser.inApp() && $content.usemap == "true")
 		$pages.include("/${applicationid}/components/map/includes.html")
 	#end
 	
-	<link rel="stylesheet" type="text/css" href="/site/app/theme/css/oi.css" />
-
-    <link rel="Shortcut Icon" type="image/x-icon" href="$apphome/theme/images/favicon.ico" />
-
+	#if(!$browser.inApp())
+		<link rel="stylesheet" type="text/css" href="/${applicationid}/app/theme/css/oi.css" />
+	    <link rel="Shortcut Icon" type="image/x-icon" href="$apphome/theme/images/favicon.ico" />
+	#end
 	</head>
 
-<body id="page-top">
-<div id="application" data-home="$home" data-apphome="$apphome" 
-	data-themeprefix="/${applicationid}/theme" data-browserlanguage="$!{browserlanguage}"
+<body id="page-top"  data-hidetoolbar="true">
+<div id="application"
+	class="eminstituteapp" 
+	data-home="$home" 
+	data-apphome="$apphome" 
+	data-inapp="$browser.inApp()"
+	data-themeprefix="/${applicationid}/theme" 
+	data-browserlanguage="$!{browserlanguage}"
 	data-editmode='$!user.get("oe_edit_mode")' 
 	data-mediadbappid="$!mediaarchive.getMediaDbId()"
 	data-componenthome="$!componenthome"
 	#if( $showupload)
-	data-showuploadid="${showupload.id}"
+		data-showuploadid="${showupload.id}"
 	#end
 	data-viewertemplate="$apphome/collective/channel/show/index.html"
 	>
-  
-	$pages.include("${apphome}/theme/layouts/navigation.html", $context)
+	
+  	#if(!$browser.inApp())
+		$pages.include("${apphome}/theme/layouts/navigation.html", $context)
+	#end
 	
 	$pages.includeContent()
 	
-	## #if( $canopeneditdirectedit)
-	## <div class="clearfix"></div>
-	## <div>
-	##Show pencils
-	## <a class="oe-enableedit" title="[[Edit]]"  
-	##	 	href="#"><i class="fas fa-edit">Edit Page</i></a>
-	## </div>
-	## #end	
 
 </div>
-	$pages.include("${apphome}/googleanalytics.html", $context)
-
+	#if(!$browser.inApp())
+		$pages.include("${apphome}/googleanalytics.html", $context)
+	#end
 </body>
 </html>

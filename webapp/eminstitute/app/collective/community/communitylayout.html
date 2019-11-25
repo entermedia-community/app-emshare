@@ -18,20 +18,11 @@ $context.putPageValue("currenttopic", $currenttopic)
  <div class="col">
 <div class="community-maincol h-100">
 <div class="row no-gutters h-100">
- <div class="col-lg-2 collaborate-sidebar">
-
-
-	$pages.include("$apphome/collective/community/projectlist.html", $context)
-	     
-    #if ($user)   
-	##<h3>[[Direct Messages]]<a href="#" 
-	## class="emdialog community-add-btn float-right"><i class="fas fa-plus"></i></a></h3>
-	##<h4>[[Team]]</h4>
-	##<h4>[[Suscribers]]</h4>
-	#end
-	
-	
- </div>
+	#if(!$browser.inApp())
+ 		<div class="col-lg-2 collaborate-sidebar">
+			$pages.include("$apphome/collective/community/projectlist.html", $context)
+ 		</div>
+ 	#end
 	<div class="collaborate-channel col h-100">
 	<div class="collaborate-channel-header">
 		<div class="channel-name float-left">
@@ -52,11 +43,13 @@ $context.putPageValue("currenttopic", $currenttopic)
 </div>
 
 </div>	
+#if(!$browser.inApp())
  <div class="col-lg-3 ">
-<div class="collective-sidebar">
-	$pages.include("$apphome/collective/channel/subscribers/index.html", $context)
-</div>
+	<div class="collective-sidebar">
+		$pages.include("$apphome/collective/channel/subscribers/index.html", $context)
+	</div>
  </div>
+ #end
 </div>
 </div>
 
