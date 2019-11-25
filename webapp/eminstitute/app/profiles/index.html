@@ -1,50 +1,56 @@
-<div style="float: left;margin: 15px;">
-<form class="bd-search d-flex align-items-center">
-	<input type="hidden" name="field" value="description" />
-	<input type="hidden" name="operation" value="contains" />
-  	<input type="search" name="description.value" class="form-control ds-input" id="search-input" placeholder="Profile Search..." 
-  		autocomplete="off" spellcheck="false" role="combobox" aria-autocomplete="list" 
-  		aria-expanded="false" aria-owns="algolia-autocomplete-listbox-0" dir="auto" 
-  		style="position: relative; vertical-align: top;" value='$!hits.getInput("description")'>
-</form>
+<div class="container">
+	<div class="row">
+		<div class="col">
+			<div style="float: left;margin: 15px;">
+			<form class="bd-search d-flex align-items-center">
+				<input type="hidden" name="field" value="description" />
+				<input type="hidden" name="operation" value="contains" />
+			  	<input type="search" name="description.value" class="form-control ds-input" id="search-input" placeholder="Profile Search..." 
+			  		autocomplete="off" spellcheck="false" role="combobox" aria-autocomplete="list" 
+			  		aria-expanded="false" aria-owns="algolia-autocomplete-listbox-0" dir="auto" 
+			  		style="position: relative; vertical-align: top;" value='$!hits.getInput("description")'>
+			</form>
+			</div>
+			
+			<table class="table">
+			  <thead class="thead-dark">
+			    <tr>
+			      <th scope="col"></th>
+			      <th scope="col">Screen Name</th>
+			      #if( $user)
+			      <th scope="col">Social Link</th>
+			      #end
+			    </tr>
+			  </thead>
+			  <tbody class="table-striped">
+			   	#foreach($hit in $hits)
+			
+			#set( $auser = $mediaarchive.getUser($hit.getId()))
+			  #set($userlink = "$apphome/users/${auser.getId()}/${auser.getAnonNickName()}.html")
+			    <tr>
+					<td>
+					  <a href="#urlescape($userlink)" title="${comment.getUserLabel()}">
+						#set( $userimageurl = $mediaarchive.asLinkToProfile($auser.assetportrait) )
+						#if(!$userimageurl)
+							#set( $userimageurl = "$apphome/theme/images/user.svg" )
+						#end
+					  <img src="$userimageurl" class="img-fluid" style="max-height: 140px;" />
+					  </a>
+					</td>
+			      <td>
+			      		  <a href="#urlescape($userlink)" title="${comment.getUserLabel()}">
+			      $auser.getAnonNickName()
+			      </a>
+			      </td>
+			      #if( $user)
+			      <td>$!hit.sociallink</td>
+			      #end
+			    </tr>
+					  </a>
+			
+			   #end
+			  </tbody>
+		</table>
+	</div>
 </div>
-
-<table class="table">
-  <thead class="thead-dark">
-    <tr>
-      <th scope="col"></th>
-      <th scope="col">Screen Name</th>
-      #if( $user)
-      <th scope="col">Social Link</th>
-      #end
-    </tr>
-  </thead>
-  <tbody class="table-striped">
-   	#foreach($hit in $hits)
-
-#set( $auser = $mediaarchive.getUser($hit.getId()))
-  #set($userlink = "$apphome/users/${auser.getId()}/${auser.getAnonNickName()}.html")
-    <tr>
-		<td>
-		  <a href="#urlescape($userlink)" title="${comment.getUserLabel()}">
-			#set( $userimageurl = $mediaarchive.asLinkToProfile($auser.assetportrait) )
-			#if(!$userimageurl)
-				#set( $userimageurl = "$apphome/theme/images/user.svg" )
-			#end
-		  <img src="$userimageurl" class="">
-		  </a>
-		</td>
-      <td>
-      		  <a href="#urlescape($userlink)" title="${comment.getUserLabel()}">
-      $auser.getAnonNickName()
-      </a>
-      </td>
-      #if( $user)
-      <td>$!hit.sociallink</td>
-      #end
-    </tr>
-		  </a>
-
-   #end
-  </tbody>
-</table>
+</div>		

@@ -1,39 +1,45 @@
 ##Exising ones 
 ##No existing programs found.
 
+<div id="projectresultholder" class="container container-feed">
+	<div class="row">
+		<div class="col">
 
-
-<div class="contentcolumn" style="margin:40px;">
-<h1>[[New Project]]</h1>  
-  <div class="" style="padding:20px;">
-
-#set( $searcher = $mediaarchive.getSearcher("librarycollection") )
-#set( $xmledithome  = "$apphome/components/xml")
-$context.putPageValue("searcher",$searcher)
-<form name="saveproject" id="saveproject" action="$apphome/collective/welcome.html" method="post" class="force-validate-inputs">
-
-#if(!$user)
-
-<div  class="alert alert-success"> 
-	  <strong>Login Required</strong> 
+			<div class="contentcolumn">
+			<h1>[[New Project]]</h1>  
+			  <div class="" style="padding:20px;">
+			
+			#set( $searcher = $mediaarchive.getSearcher("librarycollection") )
+			#set( $xmledithome  = "$apphome/components/xml")
+			$context.putPageValue("searcher",$searcher)
+			<form name="saveproject" id="saveproject" action="$apphome/collective/welcome.html" method="post" class="force-validate-inputs">
+			
+			#if(!$user)
+			
+			<div  class="alert alert-success"> 
+				  <strong>Login Required</strong> 
+			</div>
+			
+			#end
+			
+			<input type="hidden" name="save" value="true" />
+			<input type="hidden" name="searchtype" value="librarycollection" />
+			
+			<input type="hidden" name="field" value="owner" />
+			<input type="hidden" name="owner.value" value="$user.getId()" />
+			
+			#set( $searcher = $mediaarchive.getSearcher("collective") )
+			$context.putPageValue("searcher",$searcher)
+			$context.putPageValue("view", "collective/addnew")
+			
+			$pages.include("/$applicationid/components/xml/detaileditor4.html", $context)
+			
+			  <button type="submit" class="btn btn-primary">[[Create]]</button>
+			</form>
+			
+			  </div>
+			</div>
+		</div>
+	</div>
 </div>
-
-#end
-
-<input type="hidden" name="save" value="true" />
-<input type="hidden" name="searchtype" value="librarycollection" />
-
-<input type="hidden" name="field" value="owner" />
-<input type="hidden" name="owner.value" value="$user.getId()" />
-
-#set( $searcher = $mediaarchive.getSearcher("collective") )
-$context.putPageValue("searcher",$searcher)
-$context.putPageValue("view", "collective/addnew")
-
-$pages.include("/$applicationid/components/xml/detaileditor4.html", $context)
-
-  <button type="submit" class="btn btn-primary">[[Create]]</button>
-</form>
-
-  </div>
-</div>
+			

@@ -6,39 +6,38 @@
 #end
 
 <div id="projectresultholder">
-<div class="contentcolumn">
-<form class="emcontainer" style="float:right;" >
-	<input type="hidden" name="field" value="name" />
-	<input type="hidden" name="operation" value="contains" />
-  	<input type="search" name="name.value" class="form-control ds-input" id="search-input" 
-  		placeholder="[[Search For Project]]..." 
-  		style="width: 100%; max-width: 500px;vertical-align: top;" value='$!hits.getInput("name")'>
-</form>	
-#if($libraryid == "*")
-	#set($hits = $mediaarchive.query("librarycollection").all().sort("name").search())
-#elseif( $libraryid == "subscriptions")
-	#set($hits = $mediaarchive.getProjectManager().listCollectionsForFollower($user))
-#else
-	#set($hits = $mediaarchive.query("librarycollection").exact("library",$libraryid).sort("name").search())
-#end
-
-#set( $n = $hits.setHitsPerPage(50))
-<div class="clearfix"></div>
-<div class="">
-
-
-#foreach($collective in $hits.getPageOfHits())
- 	#set($collective = $mediaarchive.getSearcher("librarycollection").loadData($collective) )
+	<div class="contentcolumn">
+	<form class="emcontainer" style="float:right;" >
+		<input type="hidden" name="field" value="name" />
+		<input type="hidden" name="operation" value="contains" />
+	  	<input type="search" name="name.value" class="form-control ds-input" id="search-input" 
+	  		placeholder="[[Search For Project]]..." 
+	  		style="width: 100%; max-width: 500px;vertical-align: top;" value='$!hits.getInput("name")'>
+	</form>	
+	#if($libraryid == "*")
+		#set($hits = $mediaarchive.query("librarycollection").all().sort("name").search())
+	#elseif( $libraryid == "subscriptions")
+		#set($hits = $mediaarchive.getProjectManager().listCollectionsForFollower($user))
+	#else
+		#set($hits = $mediaarchive.query("librarycollection").exact("library",$libraryid).sort("name").search())
+	#end
 	
-	$context.putPageValue("collective", $collective)
-	$pages.include("$apphome/browse/collectivelisting.html", $context)
-
-#end
-
-#if($hits.getPages() > 1 )
-	Next page
-#end
-</div>
+	#set( $n = $hits.setHitsPerPage(50))
+	<div class="clearfix"></div>
+	
+	
+	#foreach($collective in $hits.getPageOfHits())
+	 	#set($collective = $mediaarchive.getSearcher("librarycollection").loadData($collective) )
+		
+		$context.putPageValue("collective", $collective)
+		$pages.include("$apphome/browse/collectivelisting.html", $context)
+	
+	#end
+	
+	#if($hits.getPages() > 1 )
+		[[Next page]]
+	#end
+	</div>
 </div>
 
 
