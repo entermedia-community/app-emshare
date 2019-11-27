@@ -1,5 +1,4 @@
 <div class="sidebar-box">
-	
     <div class="sidebar-box-header">
         [[Account]]        
         <a href="#" class="sidebar-toggler"><i class="fas fa-angle-double-left"></i></a>
@@ -11,11 +10,15 @@
 		<li class="#if($content.appsection == "messages") current #end"><a href="$sitelink/app/messages/index.html"><i class="fa fa-comment"></i> [[Messages]] #if(!$pendingmessages.isEmpty()) * #end</a></li>
 
 		<li class="#if($content.appsection == "tasks") current #end">
-			<a href="$sitelink/app/users/tasks/index.html"><i class="fa fa-clipboard-check"></i> [[Open Tasks]]</a>
+
+			#if ($canviewsettings)
+				#set($args = "goaltrackerstaff=*")
+			#end
+			<a href="$sitelink/app/users/tasks/index.html?$!{args}"><i class="fa fa-clipboard-check"></i> [[Open Tasks]]</a>
 			<div style="padding:2px 20px 9px;">
-			<a href="$sitelink/app/users/tasks/search.html?ticketlevel=1" class="badge badge-success"> [[Level 1]]</a>
-			<a href="$sitelink/app/users/tasks/search.html?ticketlevel=2" class="badge badge-success">[[Level 2]]</a>
-			<a href="$sitelink/app/users/tasks/search.html?ticketlevel=3" class="badge badge-success">[[Level 3]]</a>
+			<a href="$sitelink/app/users/tasks/search.html?ticketlevel=1&$!{args}" class="badge badge-success"> [[Level 1]]</a>
+			<a href="$sitelink/app/users/tasks/search.html?ticketlevel=2&$!{args}" class="badge badge-success">[[Level 2]]</a>
+			<a href="$sitelink/app/users/tasks/search.html?ticketlevel=3&$!{args}" class="badge badge-success">[[Level 3]]</a>
 			</div>
 		</li>
 		#if($canviewsettings)
@@ -24,8 +27,6 @@
 		</ul>
     </div>
 </div>
-
-
 
 <div class="sidebar-box">
     <div class="sidebar-box-header">
