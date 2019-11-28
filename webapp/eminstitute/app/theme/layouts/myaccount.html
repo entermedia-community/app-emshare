@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" style="height: 100%;">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+	#set($sitetitle = $content.title)
+    <title>#if( $librarycol ) $librarycol - #end $!sitetitle</title>
+	
+	$pages.include("/${applicationid}/theme/layouts/includes.html")
+	
+	#if(!$browser.inApp() && $content.usemap == "true")
+		$pages.include("/${applicationid}/components/map/includes.html")
+	#end
+	
+	</head>
+
+<body id="page-top"  data-hidetoolbar="true" style="height: 100%;">
+<div id="application"
+	class="eminstituteapp emptylayoutbody" 
+	data-home="$home" 
+	data-apphome="$apphome" 
+	data-inapp="$browser.inApp()"
+	data-themeprefix="/${applicationid}/theme" 
+	data-browserlanguage="$!{browserlanguage}"
+	data-editmode='$!user.get("oe_edit_mode")' 
+	data-mediadbappid="$!mediaarchive.getMediaDbId()"
+	data-componenthome="$!componenthome"
+	>
+	<div class="emptylayout">
+		<div class="modal-content">
+		$pages.includeContent()
+		</div>
+	</div>
+
+</div>
+</body>
+</html>
