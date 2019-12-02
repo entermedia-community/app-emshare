@@ -8,7 +8,14 @@
 #else
 	#set( $currenttopic = $searcher.query().match("parentcollectionid",$collectionid).sort("name").searchOne() )
 #end
-
+#if( !$currenttopic)
+	##No topics found
+	#set( $currenttopic = $searcher.createNewData() )
+	$currenttopic.setValue("parentcollectionid",$collectionid)
+	$currenttopic.setName("General")
+	$searcher.saveData($currenttopic)
+#end
+$context.putPageValue("currenttopic", $currenttopic)
 
 #if($currenttopic)
 $context.putPageValue("currenttopic", $currenttopic)

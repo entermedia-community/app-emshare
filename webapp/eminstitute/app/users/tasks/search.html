@@ -13,7 +13,11 @@
 		#set($ticketlevel = "1")
 	#end
 	
-	#set( $hits = $mediaarchive.query("projectgoal").orgroup("collectionid",$userprojects).exact("ticketlevel",$ticketlevel).orgroup("projectstatus","open|critical").enduser(true).sort("creationdateDown").search() )
+	#if($canviewsettings)
+		#set( $hits = $mediaarchive.query("projectgoal").exact("ticketlevel",$ticketlevel).orgroup("projectstatus","open|critical").enduser(true).sort("creationdateDown").search() )
+	#else
+		#set( $hits = $mediaarchive.query("projectgoal").orgroup("collectionid",$userprojects).exact("ticketlevel",$ticketlevel).orgroup("projectstatus","open|critical").enduser(true).sort("creationdateDown").search() )
+	#end
 	#if ($hits)
 		<div class="goals-header-actions">
 		$hits.size() [[Tasks]]
