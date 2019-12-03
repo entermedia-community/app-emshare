@@ -23,6 +23,18 @@
 	#if($candeletecomments && !$goal)
 		<div class="float-right" >
 	
+			$context.putPageValue("chat",$chat)
+			<span id="attach-${chat.id}" >
+			#if( $chat.attachedassets)
+				$pages.include("$apphome/collective/community/chatterbox/attach.html",$context)
+			#else
+					  <a data-oemaxlevel="1" class="ajax"   
+					  	data-targetdiv="attach-${chat.id}"
+						href="$applink/collective/community/chatterbox/attach.html?collectionid=$librarycol.getId()&messageid=$chat.id" 
+						title="[[Attachments]]">
+						<i class="fas fa-paperclip"></i></a>
+			#end
+			</span>		
 		  <a class="ajax maketicket"   
 		  	data-targetdiv="chatter-message-$chat.id"
 			href="$applink/collective/community/chatterbox/makegoal.html?collectionid=$librarycol.getId()&messageid=$chat.id" 
