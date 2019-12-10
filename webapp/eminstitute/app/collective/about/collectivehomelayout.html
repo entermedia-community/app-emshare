@@ -1,26 +1,33 @@
-﻿<div class="row">
+﻿<div class="row no-gutters h-100" style="max-height: calc(100% - 40px);">
 
-	 <div class="col col-lg-10">
+	 <div class="col">
+	 <div class="maincontent h-100">
 	 	#if( $caneditcollection)<a class="oe-dataedit showeditonright" data-target="#edithtmlintro-$librarycol.id" title="[[Edit Project Intro]]" data-width="500"	href="#"><i class="fas fa-edit"></i></a>#end
 		<div class="oe-editable" id="edithtmlintro-$librarycol.id" data-dataid="$librarycol.id" data-field="htmlintro" data-searchtype="librarycollection">
 		   		#if($librarycol.htmlintro) $!librarycol.htmlintro #else $pages.include("$apphome/collective/about/htmlintro.html")#end
 		</div>
 		
 		##show featured uploads?
-		
+		</div>
 	 </div>
 
-	<div class="col col-lg-2">
-
-  		$pages.include("$apphome/collective/about/menu.html")
-
-	 	#if( $caneditcollection)<a class="oe-dataedit showeditonright" data-target="#edithtmlside-$librarycol.id" title="[[Edit Side Panel]]" href="#"><i class="fas fa-edit"></i></a>#end
-		<div class="oe-editable" id="edithtmlside-$librarycol.id" data-dataid="$librarycol.id" data-field="htmlside" data-searchtype="librarycollection">
-		   		#if($librarycol.htmlside) $!librarycol.htmlside #else $pages.include("$apphome/collective/about/htmlside.html")#end
+	#if(!$browser.inApp())
+	 <div class="col-lg-3" style="max-width:350px;">
+		<div class="collective-sidebar">
+			$pages.include("$apphome/collective/channel/subscribers/index.html", $context)
 		</div>
+	 </div>
+	 #end
+
+  		
+
+	##	#if( $caneditcollection)<a class="oe-dataedit showeditonright" data-target="#edithtmlside-$librarycol.id" title="[[Edit Side Panel]]" href="#"><i class="fas fa-edit"></i></a>#end
+	##	<div class="oe-editable" id="edithtmlside-$librarycol.id" data-dataid="$librarycol.id" data-field="htmlside" data-searchtype="librarycollection">
+	##	   		#if($librarycol.htmlside) $!librarycol.htmlside #else $pages.include("$apphome/collective/about/htmlside.html")#end
+	##	</div>
 
 
-    </div>
+
 
 
 </div>
