@@ -30,6 +30,12 @@
 			#end
 		   </select>
 		   </li>
+		   
+		   #if( $selecteduser.getId() == $user.getId())
+		   	#set($oisection = "account")
+		   #end 
+		   
+		   
             <li class="nav-item #if($oisection == "stations")active#end" >
               <a class="nav-link js-scroll-trigger" href="$sitelink/app/browse/stations/index.html">[[Projects]]</a>
             </li>
@@ -37,14 +43,14 @@
               <a class="nav-link js-scroll-trigger" href="$sitelink/app/profiles/index.html">[[People]]</a>
             </li>
             <li class="nav-item #if($oisection == "feed")active#end" >
-              <a class="nav-link js-scroll-trigger" href="$sitelink/app/browse/feed/index.html">[[Actions]]</a>
+              <a class="nav-link js-scroll-trigger" href="$sitelink/app/browse/feed/index.html">[[Uploads]]</a>
             </li>
             <li class="nav-item #if($oisection == "contact")active#end" >
               <a class="nav-link js-scroll-trigger" href="$sitelink/app/contact/contact.html">[[Contact]]</a>
             </li>
             #if( $user )
-            <li class="nav-item #if($oisection == "users")active#end" >
-              <a class="nav-link" href='#urlescape("$apphome/users/${user.getId()}/${user.getAnonNickName()}.html")'>[[Profile]]</a>
+            <li class="nav-item #if($oisection == "account")active#end" >
+              <a class="nav-link" href='#urlescape("$apphome/users/${user.getId()}/${user.getAnonNickName()}.html")'>[[Account]]</a>
             </li>
             <li class="nav-item">
               <a class="nav-link js-scroll-trigger" href="$apphome/authentication/logout.html">[[Logout]]</a>
