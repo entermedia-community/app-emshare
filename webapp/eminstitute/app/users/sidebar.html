@@ -1,3 +1,17 @@
+##Search collections this user is teammeber
+#set( $organizationsuser = $mediaarchive.query("librarycollectionusers").exact("followeruser",$user.getId()).exact("ontheteam","true").search() )
+#set($userprojectsids = [])
+#set($userticketsids = [])
+#foreach( $ohit in $organizationsuser )
+	#set($x = $userprojectsids.add($ohit.collectionid))
+	##Search for Tickets in Collection
+	#set($goalsuser = $mediaarchive.query("projectgoal").exact("collectionid",$ohit.collectionid).enduser(true).search())
+	#if ($goalsuser)
+	#set($x = $userticketsids.add($goalsuser))
+	#end
+#end
+
+
 <div class="sidebar-box">
     <div class="sidebar-box-header">
         [[Account]]        
@@ -11,9 +25,8 @@
 		<li class="#if($content.appsection == "profile") current #end"><a href="$sitelink/app/users/$user.getId()/index.html"><i class="fa fa-user"></i> [[Profile]]</a></li>
 		#set( $pendingmessages = $chatManager.loadChatTopicLastChecked("${user.getId()}-messages",$user.getId() ) )
 		<li class="#if($content.appsection == "messages") current #end"><a href="$sitelink/app/messages/index.html"><i class="fa fa-comment"></i> [[Messages]] #if(!$pendingmessages.isEmpty()) * #end</a></li>
-
+		#if($userprojectsids.size() && $userticketsids.size())
 		<li class="#if($content.appsection == "tasks") current #end">
-
 			#if ($canviewsettings)
 				#set($args = "goaltrackerstaff=*")
 			#end
@@ -24,6 +37,7 @@
 			<a href="$sitelink/app/users/tasks/search.html?ticketlevel=3&$!{args}" class="badge badge-success">[[Level 3]]</a>
 			</div>
 		</li>
+		#end
 		#if($canviewsettings)
 		<li class="#if($content.appsection == "completed") current #end"><a href="$sitelink/app/users/tasks/report.html?collectionid=*&goaltrackerstaff=*"><i class="far fa-file-alt"></i> [[Completed Tasks]]</a></li>
 		#end
@@ -31,12 +45,12 @@
     </div>
 </div>
 
+
 <div class="sidebar-box">
     <div class="sidebar-box-header">
         [[Projects]]        
     </div>
     <div class="sidebar-box-content" style="padding:0;">
-    
     	#if($canviewsettings)
     		<div style="padding:5px 15px;">
 			<select  id="collectivesearch2" 
@@ -55,29 +69,20 @@
 		#end
 	
 	#set($selectedproject = $librarycol.getId())
-	
-	##Search collections this user is teammeber
-	#set( $organizationsuser = $mediaarchive.query("librarycollectionusers").exact("followeruser",$user.getId()).exact("ontheteam","true").search() )
-	#set($oids = [])
-	#foreach( $ohit in $organizationsuser )
-		#set($x = $oids.add($ohit.collectionid))
-	#end
-	
-	#if($oids)
-	#set( $organizations = $mediaarchive.query("librarycollection").ids($oids).enduser(true).sort("name").search() )
+
+	#if($userprojectsids)
+	#set( $organizations = $mediaarchive.query("librarycollection").ids($userprojectsids).enduser(true).sort("name").search() )
 	
 	#set( $modcollections = $chatManager.loadCollectionsModified($organizations,$user.getId() ) )
-	
-	
 	<ul class="sidebar-list">
-	#foreach( $ohit in $organizations.getPageOfHits() )
-		<li class="#if($selectedproject==$ohit.id) current #end">
-			<a href="$sitelink/app/collective/community/index.html?collectionid=$ohit.id&goaltrackerstaff=*" >
-			<i class="fas fa-sitemap"></i> $ohit.name
-			#if( $modcollections.contains($ohit.getId())) * #end
-			</a>
-		</li>
-	#end
+		#foreach( $ohit in $organizations.getPageOfHits() )
+			<li class="#if($selectedproject==$ohit.id) current #end">
+				<a href="$sitelink/app/collective/community/index.html?collectionid=$ohit.id&goaltrackerstaff=*" >
+				<i class="fas fa-sitemap"></i> $ohit.name
+				#if( $modcollections.contains($ohit.getId())) * #end
+				</a>
+			</li>
+		#end
 	</ul>
 	#end
 
