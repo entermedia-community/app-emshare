@@ -1,20 +1,43 @@
-   <h3 	> [[Projects]]</h3>
-  
-  <div class="" style="padding-top:20px;">
-	  #set( $subscriptions = $mediaarchive.query("librarycollectionusers").exact("followeruser",$selecteduser.getId()).sort("isonteam").search() )
+#if( !$selecteduser)
+	#set($selecteduser = $user)
+#end
 
-	  #foreach( $hit in $subscriptions )
-			
-			#set($collective = $mediaarchive.getCachedData("librarycollection",$hit.collectionid) )
-			$context.putPageValue("subscribed","true")
-			$context.putPageValue("ontheteam",$hit.ontheteam)
-			$context.putPageValue("collective", $collective)
-			$pages.include("$apphome/browse/collectivelisting.html", $context)
+<div style="max-width:1000px; margin:0 auto; padding:20px 1%">
 
-	  #end
-	 #if( $selecteduser.getId() == $user.getId()) 
-	<div style="margin-top:20px;">
-  		<a href="$apphome/browse/add/addnew.html" class="btn btn-sm btn-primary">[[Create New Project]]</a>
+   #if( $selecteduser.getId() == $user.getId()) 
+   <h3 	> [[Subscriptions]]</h3>
+   #else
+   <h3 	> [[Common Projects]]</h3>
+   #end
+
+<div class="project-grid ">
+ #if( $selecteduser.getId() == $user.getId()) 
+	<div class="project-item project-item-add">
+	<a href="$apphome/site/sitedeployer/add/addorganization.html" class="emdialog project-add" title="[[Add a Project]]">
+	<i class="fas fa-plus" style="font-size:.8em;"></i> [[Add a Project]]</a>
 	</div>
-     #end   
-  </div>
+#end
+	#set( $organizationsuser = $mediaarchive.query("librarycollectionusers").exact("followeruser",$selecteduser.getId()).search() )
+	#set($oids = [])
+	#foreach( $ohit in $organizationsuser )
+		#set($x = $oids.add($ohit.collectionid))
+	#end
+	#if($oids)
+		#set( $organizations = $mediaarchive.query("librarycollection").ids($oids).sort("name").search($context) )
+		#foreach( $ohit in $organizations )
+			#if($ohit.assetportrait)
+				#set($asset = $mediaarchive.getAsset($ohit.assetportrait))
+				#set($link = $mediaarchive.asLinkToPreview($asset,"image200x200.jpg"))
+			#end
+			<div class="project-item" style='#if($link) background-image: url("#uuencode($link)") #end'>
+			<div class="project-item-box">
+			<a href="$sitelink/app/collective/community/index.html?collectionid=$ohit.id&goaltrackerstaff=*" 
+				class="project-title #if($selectedproject==$ohit.id) active #end">
+			$ohit.name</a>
+			</div>
+			</div>
+		#end
+	#end
+	<div class="clearfix"></div>
+</div>
+</div>
