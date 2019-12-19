@@ -1,25 +1,42 @@
 #if(!$prefix) #set( $prefix = $context.siteRoot ) #end
 #if( $showupload )
-<meta property="og:type" content="article" />
-#set( $sharelink = "$prefix$apphome/collective/channel/${librarycol.getId()}/index.html?showupload=${showupload.getId()}")
-<meta property="og:url" content="$sharelink" />
-<meta property="og:title" content="#esc($!showupload.title)" />
-<meta property="og:description" content="#esc($!showupload.longdescription)" />
-#set( $asset = $mediaarchive.query("asset").exact("category-exact",$showupload.uploadcategory).searchOne() )
-#set($thumburl = $mediaarchive.asLinkToPreview($asset,"image1200x630.jpg") )
-<meta property="og:image" content="$!thumburl" />
-<meta property="og:image:width" content="1200" />
-<meta property="og:image:height" content="630" />
-#else
+	<meta property="og:type" content="article" />
+	#set( $sharelink = "$prefix$apphome/collective/channel/${librarycol.getId()}/index.html?showupload=${showupload.getId()}")
+	<meta property="og:url" content="$sharelink" />
+	<meta property="og:title" content="#esc($!showupload.title)" />
+	<meta property="og:description" content="#esc($!showupload.longdescription)" />
+	#set( $asset = $mediaarchive.query("asset").exact("category-exact",$showupload.uploadcategory).searchOne() )
+	#set($thumburl = $mediaarchive.asLinkToPreview($asset,"image1200x630.jpg") )
+	<meta property="og:image" content="$!thumburl" />
+	<meta property="og:image:width" content="1200" />
+	<meta property="og:image:height" content="630" />
+#elseif($librarycol)
+		<meta property="og:type" content="article" />
+		<meta property="og:url" content="$prefix$apphome/collective/$librarycol.getId()/${librarycol.name}.html" />
+		<meta property="og:title" content="#esc($!librarycol.title)" />
+		<meta property="og:description" content="#esc($!librarycol.collectivedescription)" />
+		#set( $logo = $mediaarchive.getAsset($librarycol.assetportrait) )
+		#if($logo)
+			#set($logourl = "$prefix/$mediaarchive.getMediaDbId()/services/module/asset/downloads/preset/${logo.sourcepath}/image200x200.jpg")
+		#end	
+		<meta property="og:image" content="$!logourl" />
+#elseif($postdata)
+		<meta property="og:type" content="article" />
+		#if ($postdata.name) 
+		<meta property="og:title" content="$postdata.name" />
+		#end
+		#if ($postdata.metadescription) 
+			<meta property="og:description" content="$postdata.metadescription" />
+		#end
+		#if ($postdata.metaimage) 
+			<meta property="og:img" content="$postdata.metaimage" />
+		#end
+		#if ($postdata.metaurl) 
+			<meta property="og:url" content="$postdata.metaurl" />
+		#end
+#end
 
-<meta property="og:type" content="article" />
-<meta property="og:url" content="$prefix$apphome/collective/$librarycol.getId()/${librarycol.name}.html" />
-<meta property="og:title" content="#esc($!librarycol.title)" />
-<meta property="og:description" content="#esc($!librarycol.collectivedescription)" />
-#set( $logo = $mediaarchive.getAsset($librarycol.assetportrait) )
-#if($logo)
-	#set($logourl = "$prefix/$mediaarchive.getMediaDbId()/services/module/asset/downloads/preset/${logo.sourcepath}/image200x200.jpg")
-#end	
-<meta property="og:image" content="$!logourl" />
 
+#if ($postdata.metadescription) 
+	<meta property="description" content="$postdata.metadescription" />
 #end

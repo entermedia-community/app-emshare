@@ -20,9 +20,8 @@
 		<a href="#esc($userlink)" title="$chatuser.getAnonNickName()"><img
 			src="${userimageurl}" class="img-fluid usericon"></a>
 	</div>
-	#if($candeletecomments && !$goal)
+	#if(!$goal)
 		<div class="float-right" >
-	
 			$context.putPageValue("chat",$chat)
 			<span id="attach-${chat.id}" >
 			#if( $chat.attachedassets)
@@ -35,16 +34,18 @@
 						<i class="fas fa-paperclip"></i></a>
 			#end
 			</span>		
-		  <a class="ajax maketicket"   
+		<a class="ajax maketicket"   
 		  	data-targetdiv="chatter-message-$chat.id"
 			href="$applink/collective/community/chatterbox/makegoal.html?collectionid=$librarycol.getId()&messageid=$chat.id" 
 			title="[[Flag as ticket]]">
-			<i class="fas fa-flag"></i></a>
+		<i class="fas fa-flag"></i></a>
 
-	## 	 <a class="confirm" data-confirm="Are you sure?" title="Delete message"
-	##		data-id="${chat.id}" data-target="#chatter-message-$chat.id"
-	##		data-searchtype="chatterbox" href="#"><i class="fas fa-times"></i></a>
-	##
+		#if($candeletecomments)
+		## 	 <a class="confirm" data-confirm="Are you sure?" title="Delete message"
+		##		data-id="${chat.id}" data-target="#chatter-message-$chat.id"
+		##		data-searchtype="chatterbox" href="#"><i class="fas fa-times"></i></a>
+		##
+		#end
 		
 		</div>
 	#end
