@@ -38,5 +38,16 @@
 
 
 #if ($postdata.metadescription) 
-	<meta property="description" content="$postdata.metadescription" />
+	<meta name="description" content="$postdata.metadescription" />
 #end
+
+#if($postdata.metaurl)
+		<link rel="canonical" href="$postdata.metaurl" />
+#else
+	#set($meta_canonical = $content.getValue("meta_canonical"))
+	#if($meta_canonical)
+		<link rel="canonical" href="$meta_canonical" />
+	#end
+#end
+	
+	
