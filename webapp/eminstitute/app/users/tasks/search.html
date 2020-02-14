@@ -13,8 +13,16 @@
 		#set($ticketlevel = "1")
 	#end
 	
+#set( $opengoalid = $context.getRequestParameter("opengoalid"))
+#if( $opengoalid )
+    #set( $goal = $mediaarchive.getData("projectgoal",$opengoalid))
+    #set( $goallink = "$apphome/collective/goals/editgoalpanel.html?id=${goal.id}&collectionid=$goal.collectionid&goalfolder=$!content.goalfolder")
+    <a href="$goallink" title="$goal.name" class="emdialog editgoalshow openemdialog" style="display: cnone" >[[Goal link]]</a>	
+#end
+	
+	
 	#if($canviewsettings)
-		#set( $hits = $mediaarchive.query("projectgoal").exact("ticketlevel",$ticketlevel).orgroup("projectstatus","open|critical").enduser(true).sort("creationdateDown").search() )
+		#set( $hits = $mediaarchive.query("projectgoal").exact("ticketlevel",$ticketlevel).orgroup("projectstatus","open|critical").enduser(true).sort("projectstatus").sort("creationdateDown").search() )
 	#else
 		#set( $hits = $mediaarchive.query("projectgoal").orgroup("collectionid",$userprojects).exact("ticketlevel",$ticketlevel).orgroup("projectstatus","open|critical").enduser(true).sort("creationdateDown").search() )
 	#end
@@ -55,9 +63,9 @@
 			</a>
 			</td>
 		
-			<td >
+			<td>
 			<a href="$sitelink/app/collective/goals/editgoalpanel.html?id=$goal.id&collectionid=$goal.collectionid&goalfolder=agent" 
-				title="" class="emdialog editgoalshow" style="text-decoration:underline;" data-urlbar="$apphome/collective/goals/editgoalpanel.html?id=$goal.id&collectionid=$goal.collectionid&opengoalid=$goal.id" 
+				title="" class="emdialog editgoalshow" style="text-decoration:underline;" data-urlbar="$apphome/users/tasks/search.html?ticketlevel=$ticketlevel&goaltrackerstaff=*&opengoalid=$goal.id"
 				data-width="900">$goal.name</a>
 			</td>
 			<td >
