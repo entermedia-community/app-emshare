@@ -20,64 +20,69 @@ public void init()
 	String addtoteam = context.getRequestParameter("addtoteam");
 	
 	User teamuser = null;
-	if (teamuserid != null) {
-		teamuser = archive.getUserManager().getUser(teamuserid);
-		
+/* Check for duplicate email. */
+	if (email == archive.getUserManager().getUserByEmail(email) ) {
+		return;
 	}
-	else if (email != null) {
-		teamuser = archive.getUserManager().getUserByEmail(email);
-	}
-	if( teamuser == null)
-	{
-		String	password = new PasswordGenerator().generate();
+	else {
+		if (teamuserid != null) {
+			teamuser = archive.getUserManager().getUser(teamuserid);
 			
-		teamuser = archive.getUserManager().createUser(null, password);
-		teamuser.setFirstName(firstName);
-		teamuser.setLastName(lastName);
-		teamuser.setEmail(email);
-		archive.getUserManager().saveUser(teamuser);
-	}
-	
-	
-	Data subscription = archive.query("librarycollectionusers").exact("followeruser", teamuser.getId()).exact("collectionid", collectionid).searchOne();
-	if (subscription != null)
-	{
-		//exists, but is ontheteam?
-		if (subscription.getValue("ontheteam") != "true" && addtoteam == "true") {
-			subscription.setValue("ontheteam",true);
-			archive.getSearcher("librarycollectionusers").saveData(subscription);
-		} 
-	}
-	else
-	{
-		subscription = archive.getSearcher("librarycollectionusers").createNewData();
-		subscription.setValue("collectionid",collectionid);
-		subscription.setValue("followeruser",teamuser.getId());
-		if (addtoteam == "true") {
-			subscription.setValue("ontheteam",true);
 		}
-		subscription.setValue("addeddate",new Date());
-		archive.getSearcher("librarycollectionusers").saveData(subscription);
-	}
-	context.putPageValue("subscription",subscription);
-	
-
-	String template = context.findValue("apphome") + "/theme/emails/collection-add-teammember.html";
-
-	WebEmail templatemail = archive.createSystemEmail(teamuser, template);
-	templatemail.setSubject("Added to Team"); //TODO: Translate
-	Map objects = new HashMap();
-	String entermediakey = archive.userManager.getEnterMediaKey(teamuser);
-	objects.put("entermediakey",entermediakey);
-	objects.put("user", context.getUser());
-	objects.put("teamuser",teamuser);
-	Data librarycol = archive.getData("librarycollection", collectionid);
-	objects.put("librarycol", librarycol);
-	objects.put("apphome", context.findValue("apphome"));
-	templatemail.send(objects);
+		else if (email != null) {
+			teamuser = archive.getUserManager().getUserByEmail(email);
+		}
+		if( teamuser == null)
+		{
+			String	password = new PasswordGenerator().generate();
+				
+			teamuser = archive.getUserManager().createUser(null, password);
+			teamuser.setFirstName(firstName);
+			teamuser.setLastName(lastName);
+			teamuser.setEmail(email);
+			archive.getUserManager().saveUser(teamuser);
+		}
 		
+		
+		Data subscription = archive.query("librarycollectionusers").exact("followeruser", teamuser.getId()).exact("collectionid", collectionid).searchOne();
+		if (subscription != null)
+		{
+			//exists, but is ontheteam?
+			if (subscription.getValue("ontheteam") != "true" && addtoteam == "true") {
+				subscription.setValue("ontheteam",true);
+				archive.getSearcher("librarycollectionusers").saveData(subscription);
+			} 
+		}
+		else
+		{
+			subscription = archive.getSearcher("librarycollectionusers").createNewData();
+			subscription.setValue("collectionid",collectionid);
+			subscription.setValue("followeruser",teamuser.getId());
+			if (addtoteam == "true") {
+				subscription.setValue("ontheteam",true);
+			}
+			subscription.setValue("addeddate",new Date());
+			archive.getSearcher("librarycollectionusers").saveData(subscription);
+		}
+		context.putPageValue("subscription",subscription);
+		
+	
+		String template = context.findValue("apphome") + "/theme/emails/collection-add-teammember.html";
+	
+		WebEmail templatemail = archive.createSystemEmail(teamuser, template);
+		templatemail.setSubject("Added to Team"); //TODO: Translate
+		Map objects = new HashMap();
+		String entermediakey = archive.userManager.getEnterMediaKey(teamuser);
+		objects.put("entermediakey",entermediakey);
+		objects.put("user", context.getUser());
+		objects.put("teamuser",teamuser);
+		Data librarycol = archive.getData("librarycollection", collectionid);
+		objects.put("librarycol", librarycol);
+		objects.put("apphome", context.findValue("apphome"));
+		templatemail.send(objects);
+			
+	}
 }
-
 init();
 
 
