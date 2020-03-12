@@ -3,7 +3,11 @@
 
 #set( $searcher = $mediaarchive.getSearcher("librarycollection") )
 $context.putPageValue("searcher",$searcher)
-$context.putPageValue("view", "librarycollection/edit")
+#if($canviewsettings)
+	$context.putPageValue("view", "librarycollection/agentedit")
+#else
+	$context.putPageValue("view", "librarycollection/edit")
+#end
 $context.putPageValue("data", $librarycol)
 
 <form name="saveproject" enctype="multipart/form-data" id="saveproject"
@@ -16,6 +20,8 @@ $context.putPageValue("data", $librarycol)
 
  
 $pages.include("/$applicationid/components/xml/detaileditor4.html", $context)
+
+
 
 </form>
 
