@@ -9,7 +9,8 @@ $context.putPageValue("searcher",$searcher)
 		#set($viewpath = "user/${viewid}")
 		#set($details = $searcher.getDetailsForView($viewpath, $userprofile))
 		
-	<form  id="dialogsearchform" style="margin-bottom:10px;" class="autosubmit" data-targetdiv="resultsdialog" action="$apphome/collective/channel/subscribers/usersearchresults.html">
+	<form  id="dialogsearchform" style="margin-bottom:10px;" class="autosubmit" 
+		data-targetdiv="adduserpicker" action="$apphome/collective/channel/subscribers/usersearchresults.html">
 		<input type="hidden" name="searchtype" value="user" />
 		<input type="hidden" name="sortby" value="firstName" />
 		<table style="width:100%;">
@@ -42,30 +43,8 @@ $context.putPageValue("searcher",$searcher)
 		</table>
 	</form>
 	
-
-	
-	<div id="resultsdialog">
+	<div id="adduserpicker" data-targetdiv="${targetdiv}" data-oemaxlevel="1" data-collectionid="${collectionid}" data-hitssessionid="$!hits.sessionId">
 		<div class="clearfix"></div>
 	</div>
 	</div>
-<script>
-lQuery("#resultsdialog .rowclick").livequery("click", function(e) {
-	e.preventDefault();
-	$(this).closest(".modal").modal("hide");
-	var rowid = $(this).attr("rowid");
-	#if ($targetdiv && $collectionid)
-		##Update targetdiv only
-		var targetdiv = $("#${targetdiv}");
-		var nextpage = '$home$apphome/collective/channel/subscribers/addsave.html?hitssessionid=$hits.sessionId';
-		var options = targetdiv.data();
-		options.teamuserid = rowid;
-		options.collectionid = "${collectionid}";
-		options.addtoteam = "true";
-		$.get(nextpage, options, function(data) {
-			targetdiv.replaceWith(data);
-		});
-	#end
-
-});
-</script>
 </div>	

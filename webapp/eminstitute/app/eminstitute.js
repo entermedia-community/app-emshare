@@ -313,6 +313,25 @@ lQuery(".chatter-send").livequery("click", function(){
 	});
 
 
+lQuery("#adduserpicker .rowclick").livequery("click", function(e) {
+	e.preventDefault();
+	$(this).closest(".modal").modal("hide");
+	var picker = $("#adduserpicker");
+	var row = $(this);
+	var rowid = row.attr("rowid");
+	
+	var targetdiv = picker.data("targetdiv");
+	var targetdiv = $("#" + targetdiv);
+	var nextpage = home + '/collective/channel/subscribers/addsave.html';
+	var options = picker.data();
+	options.teamuserid = rowid;
+	options.addtoteam = "true";
+	$.get(nextpage, options, function(data) {
+		targetdiv.replaceWith(data);
+	});
+
+});
+
 	
 });
 

@@ -1,17 +1,18 @@
 <div class="row">
 
 	<div class="col">
+	#if(!$selecteduser)
+		#set($selecteduser = $user)
+		$context.putPageValue("selecteduser", $selecteduser)
+	#end
+	#if( $selecteduser )	
 		#set( $subscriptions = $mediaarchive.query("librarycollectionusers").exact("followeruser",$selecteduser.getId()).sort("isonteam").search())
 		$context.putPageValue("subscriptions", $subscriptions)
 		$pages.include("$apphome/users/projects.html", $context)
-		
+	#end	
 	</div>
 
 	<div class="col-md-3" style="max-width:300px;">
-		#if(!$selecteduser)
-			#set($selecteduser = $user)
-			$context.putPageValue("selecteduser", $selecteduser)
-		#end
 		#if( $user.getId() == $selecteduser.getId())
 			#set($canedituserinfo = true)
 		#end
