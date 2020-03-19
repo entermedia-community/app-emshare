@@ -12,17 +12,26 @@ public void init()
 	String collectionid = context.getRequestParameter("collectionid");
 	String userid = context.getRequestParameter("userid");
 	MediaArchive archive = context.getPageValue("mediaarchive");
-	Data subscription = archive.query("librarycollectionusers").exact("collectionid",collectionid).exact("followeruser",userid).searchOne();
+	Collection hits = archive.query("librarycollectionusers").exact("collectionid",collectionid).exact("followeruser",userid).search();
 	//log.info(collectionid  + " and " + userid + " = " + subscription);
-	if(subscription != null)
+	boolean deleteextra = false;
+	for(Data subscription in hits)
 	{
-		Boolean onteam = subscription.getBoolean("ontheteam")
-		onteam = !onteam;
-		subscription.setValue("ontheteam",onteam);
-		archive.saveData("librarycollectionusers",subscription);
-		
-		context.putPageValue("subscription",subscription);
-	}	
+		if( deleteextra )
+		{
+			archive.getSearcher("librarycollectionusers").delete(subscription,null);
+		}
+		else
+		{
+			Boolean onteam = subscription.getBoolean("ontheteam")
+			onteam = !onteam;
+			subscription.setValue("ontheteam",onteam);
+			archive.saveData("librarycollectionusers",subscription);
+			
+			context.putPageValue("subscription",subscription);
+			deleteextra = true;
+		}	
+	}
 	//context.redirect("/"+$applicationid+"/collective/channel/");
 		
 }
