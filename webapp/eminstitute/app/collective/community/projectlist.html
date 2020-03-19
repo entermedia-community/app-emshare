@@ -2,9 +2,9 @@
 #set( $searcher = $mediaarchive.getSearcher("collectiveproject") )
 
 #if($caneditcollection)
-	#set( $alltopics = $searcher.query().match("parentcollectionid",$collectionid).sort("name").search($context) )
+	#set( $alltopics = $searcher.query().exact("parentcollectionid",$collectionid).sort("name").search($context) )
 #else
-	#set( $alltopics = $searcher.query().match("parentcollectionid",$collectionid).exact("teamproject","false").sort("name").search($context) )
+	#set( $alltopics = $searcher.query().exact("parentcollectionid",$collectionid).exact("teamproject","false").sort("name").search($context) )
 #end
 <div class="collaborate-content collaborate-channels" >
 <h3>[[Topics]]
