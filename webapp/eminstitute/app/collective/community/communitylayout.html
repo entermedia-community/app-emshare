@@ -2,12 +2,18 @@
 #set( $topicid = $context.getRequestParameter("topic"))
 #set( $searcher = $mediaarchive.getSearcher("collectiveproject") )
 
+#if($caneditcollection)
+	#set( $alltopics = $searcher.query().match("parentcollectionid",$collectionid).sort("name").search($context) )
+#else
+	#set( $alltopics = $searcher.query().match("parentcollectionid",$collectionid).exact("teamproject","false").sort("name").search($context) )
+#end
 
 #if($topicid)
 	#set( $currenttopic = $searcher.query().match("parentcollectionid",$collectionid).exact("id",$topicid).searchOne() )
 #else
 	#set( $currenttopic = $searcher.query().match("parentcollectionid",$collectionid).sort("name").searchOne() )
 #end
+
 #if( !$currenttopic)
 	##No topics found
 	#set( $currenttopic = $searcher.createNewData() )
@@ -20,38 +26,70 @@ $context.putPageValue("currenttopic", $currenttopic)
 #if($currenttopic)
 $context.putPageValue("currenttopic", $currenttopic)
 
-<div class=" h-100"  style="max-height: calc(100% - 40px); width:100%;" >
+<div class=" h-100"  style="max-height: calc(100% - 120px); width:100%;" >
 <div class="row h-100 no-gutters" >
- <div class="col">
-<div class="community-maincol h-100">
-<div class="row no-gutters h-100">
-	#if(!$browser.inApp())
- 		<div class="col-lg-2 collaborate-sidebar">
-			$pages.include("$apphome/collective/community/projectlist.html", $context)
- 		</div>
- 	#end 
-	<div class="collaborate-channel col h-100">
-	<div class="collaborate-channel-header">
-		<div class="channel-name float-left">
-		$currenttopic
+ 	<div class="col h-100">
+		<div class="community-maincol h-100">
+			<div class="row no-gutters h-100">
+				#if(!$browser.inApp())
+			 		<div class="col-lg-2 collaborate-sidebar d-none d-lg-block">
+						$pages.include("$apphome/collective/community/projectlist.html", $context)
+			 		</div>
+			 	#end 
+				<div class="collaborate-channel col">
+				<div class="collaborate-channel-header">
+					<div class="channel-name float-left">
+						#if($alltopics.size()>1)
+						<div class="dropdown show">
+						<a href="#" class=" dropdown-toggl" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						#if($caneditcollection)
+							#if ($currenttopic.teamproject == "true")
+								<i class="fas fa-lock chanel-teamonly"></i>
+							#else 
+								<i class="fas fa-lock-open  chanel-teamonly"></i>
+							#end
+						#end
+						$currenttopic <i class="fas fa-caret-down"></i>
+						</a>
+						<div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+						 #foreach( $hit in $alltopics)
+						    #if ($hit.id != $currenttopic.id)
+							<a href="$apphome/collective/community/index_app.html?collectionid=$collectionid&topic=$hit.getId()"
+								class="dropdown-item">
+								#if($caneditcollection)
+									#if ($hit.teamproject == "true")
+										<i class="fas fa-lock"></i>
+									#else 
+										<i class="fas fa-lock-open"></i>
+									#end
+								#end 
+								$hit.name
+							</a>
+							#end
+						  #end
+						</div>
+						</div>
+						#else
+						$currenttopic
+						#end
+						</div>
+					<div class="channel-actions float-right">
+						<a href="$apphome/collective/projects/edit.html?collectionid=$librarycol.getId()&id=${currenttopic.getId()}&collectionroot=$applink/collective/community/index.html" 
+								class="emdialog" 
+								title="[[Edit a Topic]]"
+								data-hidefooter="true">
+						<i class="fas fa-cog"></i></a></div>	
+				</div>
+			
+				$pages.include("$apphome/collective/community/chatbox.html", $context)
+				
+				</div>
+			</div>	
 		</div>
-		<div class="channel-actions float-right">
-			<a href="$apphome/collective/projects/edit.html?collectionid=$librarycol.getId()&id=${currenttopic.getId()}&collectionroot=$applink/collective/community/index.html" 
-					class="emdialog" 
-					title="[[Edit a Topic]]"
-					data-hidefooter="true">
-			<i class="fas fa-cog"></i></a></div>	
-	</div>
 
-	$pages.include("$apphome/collective/community/chatbox.html", $context)
-	
-	</div>
-</div>	
-</div>
-
-</div>	
+	</div>	
 #if(!$browser.inApp())
- <div class="col-lg-3" style="max-width:350px;">
+ <div class="col-lg-3 community-sidebar">
 	<div class="collective-sidebar">
 		<div id="collectivesidebar">
 		$pages.include("$apphome/collective/channel/subscribers/index.html", $context)
