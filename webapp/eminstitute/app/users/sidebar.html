@@ -1,4 +1,5 @@
 ##Search collections this user is teammeber
+#if($user)
 #set( $organizationsuser = $mediaarchive.query("librarycollectionusers").exact("followeruser",$user.getId()).exact("ontheteam","true").search() )
 #set($userprojectsids = [])
 #set($userticketsids = [])
@@ -61,7 +62,7 @@
 						name="collectionid" 
 						class="form-control autosubmitlink" 
 						data-placeholder="[[Search Projects]]"
-						data-url="$sitelink/app/collective/community/index.html?goaltrackerstaff=*&collectionid="
+						data-url="$apphome/collective/community/index.html?collectionid="
 						data-dropdownparent="sidebarboxprojects"
 					>
 					<option></option>
@@ -93,10 +94,15 @@
 	#end
 
 	<div style="padding:20px 20px;">
-	<a href="$apphome/site/sitedeployer/add/addorganization.html" class="emdialog btn btn-sm btn-primary" title="[[Add a Project]]">[[Add a Project]]</a></div>
+	<a #if( $user )href="$apphome/browse/add/addnew.html"
+  			#else
+  			href="$apphome/authentication/login.html?loginokpage=$apphome/browse/add/addnew.html"
+  			#end
+			title="[[Start New Channel]]"
+  		 	class="btn btn-primary" >[[Start New Project]]</a>	
     </div>
 </div>
-
+#end
 		
 
 

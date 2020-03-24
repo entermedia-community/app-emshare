@@ -1,55 +1,58 @@
-<h3> [[Team Projects]]</h3>
+<h3>[[Team Projects]]</h3>
 
- <div class="project-grid" style="padding-top:20px;">
-	  #set( $subscriptions = $mediaarchive.query("librarycollectionusers").exact("followeruser",$selecteduser.getId()).sort("isonteam").search() )
-
-	#foreach( $hit in $subscriptions )
-			
-			#set($collective = $mediaarchive.getCachedData("librarycollection",$hit.collectionid) )
-			$context.putPageValue("subscribed","true")
-			$context.putPageValue("ontheteam",$hit.ontheteam)
-			$context.putPageValue("collective", $collective)
-			$pages.include("$apphome/browse/collectivelisting.html", $context)
-	#end
+<div class="stations-grid ">
+	<div class="project-grid">
+		  #set( $subscriptions = $mediaarchive.query("librarycollectionusers").exact("followeruser",$selecteduser.getId()).sort("isonteam").search() )
 	
+		#foreach( $hit in $subscriptions )
+				
+				#set($collective = $mediaarchive.getCachedData("librarycollection",$hit.collectionid) )
+				$context.putPageValue("subscribed","true")
+				$context.putPageValue("ontheteam",$hit.ontheteam)
+				$context.putPageValue("collective", $collective)
+				$pages.include("$apphome/browse/collectivelisting.html", $context)
+		#end
+		
+	</div>
+	<div class="clearfix"></div>	
 </div>
 
-<div class="clearfix"></div>	
-
-
-<div class="project-grid ">
-
-   	#if( $selecteduser.getId() == $user.getId()) 
-  	 <h3 	> [[Subscriptions]]</h3>
-   	#else
-   	<h3 	> [[Common Projects]]</h3>
-   	#end
-
-
-	#set( $organizationsuser = $mediaarchive.query("librarycollectionusers").exact("followeruser",$selecteduser.getId()).search() )
-	#set($oids = [])
-	#foreach( $ohit in $organizationsuser )
-		#set($x = $oids.add($ohit.collectionid))
-	#end
-	#if($oids)
-		#set( $organizations = $mediaarchive.query("librarycollection").ids($oids).sort("name").search($context) )
-		#set( $modcollections = $chatManager.loadCollectionsModified($organizations,$user.getId() ) )
-		#foreach( $ohit in $organizations )
-			#set($link = false)
-			#if($ohit.assetportrait)
-				#set($asset = $mediaarchive.getAsset($ohit.assetportrait))
-				#set($link = $mediaarchive.asLinkToPreview($asset,"image200x200.jpg"))
-			#end
-			<div class="project-item" style='#if($link) background-image: url("#uuencode($link)");background-size: cover; #end'>
-			<div class="project-item-box">
-			<a href="$sitelink/app/collective/community/index.html?collectionid=$ohit.id&goaltrackerstaff=*" 
-				class="project-title #if($selectedproject==$ohit.id) active #end">
-			$ohit.name
-			#if( $modcollections.contains($ohit.getId())) * #end
-			</a>
-			</div>
-			</div>
+<div class="stations-grid ">
+	<div class="project-grid ">
+	
+	   	#if( $selecteduser.getId() == $user.getId()) 
+	  	 <h3 	> [[Subscriptions]]</h3>
+	   	#else
+	   	<h3 	> [[Common Projects]]</h3>
+	   	#end
+	
+	
+		#set( $organizationsuser = $mediaarchive.query("librarycollectionusers").exact("followeruser",$selecteduser.getId()).search() )
+		#set($oids = [])
+		#foreach( $ohit in $organizationsuser )
+			#set($x = $oids.add($ohit.collectionid))
 		#end
-	#end
-	<div class="clearfix"></div>
+		#if($oids)
+			#set( $organizations = $mediaarchive.query("librarycollection").ids($oids).sort("name").search($context) )
+			#set( $modcollections = $chatManager.loadCollectionsModified($organizations,$user.getId() ) )
+			#foreach( $ohit in $organizations )
+				#set($link = false)
+				#if($ohit.assetportrait)
+					#set($asset = $mediaarchive.getAsset($ohit.assetportrait))
+					#set($link = $mediaarchive.asLinkToPreview($asset,"image200x200.jpg"))
+				#end
+				<div class="project-item" style='#if($link) background-image: url("#uuencode($link)");background-size: cover; #end'>
+				<div class="project-item-box">
+				<a href="$sitelink/app/collective/community/index.html?collectionid=$ohit.id&goaltrackerstaff=*" 
+					class="project-title #if($selectedproject==$ohit.id) active #end">
+				$ohit.name
+				#if( $modcollections.contains($ohit.getId())) * #end
+				</a>
+				</div>
+				</div>
+			#end
+		#end
+		
+	</div>
+	<div class="clearfix"></div>	
 </div>
