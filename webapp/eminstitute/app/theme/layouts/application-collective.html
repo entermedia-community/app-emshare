@@ -43,7 +43,11 @@
 		#if($browser.inApp())
             $pages.includeContent()
 		#else	
-		<div class="collectivelayout">
+		#set( $usersidebarhidden = $userprofile.get("usersidebarhidden"))
+		#if(!$browser.inApp())
+			$pages.include("$apphome/components/sidebars/user/index.html")
+		#end
+		<div class="collectivelayout account-contentx #if($usersidebarhidden && $usersidebarhidden != 'false') account-content-fullwidthx #end">
             $pages.includeContent()
         </div>
         #end
