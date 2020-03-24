@@ -8,34 +8,44 @@
 <div id="projectresultholder">
 	<div class="contentcolumn">
 		
-	#if($libraryid == "*")
-		#set($hits = $mediaarchive.query("librarycollection").all().sort("name").search($context))
-	#elseif( $libraryid == "subscriptions")
-		#set($hits = $mediaarchive.getProjectManager().listCollectionsForFollower($user))
-	#else
-		#set($hits = $mediaarchive.query("librarycollection").exact("library",$libraryid).sort("name").search($context))
-	#end
+##	#if($libraryid == "*")
+##		#set($hits = $mediaarchive.query("librarycollection").all().sort("name").search($context))
+##	#elseif( $libraryid == "subscriptions")
+##		#set($hits = $mediaarchive.getProjectManager().listCollectionsForFollower($user))
+##	#else
+##		#set($hits = $mediaarchive.query("librarycollection").exact("library",$libraryid).sort("name").search($context))
+##	#end
 	
-	#set( $n = $hits.setHitsPerPage(75))
+	
 	<div class="clearfix"></div>
 	
 	<div class="project-grid ">
-
-	#foreach( $ohit in $hits.getPageOfHits() )
-		#set($link = false) 
-		#if($ohit.assetportrait)
-			#set($asset = $mediaarchive.getAsset($ohit.assetportrait))
-			#set($link = $mediaarchive.asLinkToPreview($asset,"image200x200.jpg"))
-		#end
-		<div class="project-item" style='#if($link) background-image: url("#uuencode($link)") #end; min-width:340px;'>
-		<div class="project-item-box">
-		<a href="$sitelink/app/collective/community/index.html?collectionid=$ohit.id" 
-			class="project-title">
-		$ohit.name</a>
+	#set($libraries = $mediaarchive.getList("library"))
+	#foreach( $library in $libraries)
+		#set($libraryid = $library.getId())
+		#set($collectivehits = $mediaarchive.query("librarycollection").exact("library",$libraryid).sort("name").search($context))
+		#set( $n = $collectivehits.setHitsPerPage(75))
+		<div class="stations-grid ">
+			<h3>$library.getName()</h3>
+			#foreach( $ohit in $collectivehits.getPageOfHits() )
+				#set($link = false) 
+				#if($ohit.assetportrait)
+					#set($asset = $mediaarchive.getAsset($ohit.assetportrait))
+					#set($link = $mediaarchive.asLinkToPreview($asset,"image200x200.jpg"))
+				#end
+				<div class="project-item" style='#if($link) background-image: url("#uuencode($link)") #end; min-width:313px;'>
+				<div class="project-item-box">
+				<a href="$sitelink/app/collective/community/index.html?collectionid=$ohit.id" 
+					class="project-title">
+				$ohit.name</a>
+				</div>
+				</div>
+			#end
+		<div class="clearfix"></div>
 		</div>
-		</div>
+		
 	#end
-	<div class="clearfix"></div>
+	
 	</div>
 	
 	
