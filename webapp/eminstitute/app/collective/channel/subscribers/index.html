@@ -19,11 +19,11 @@
 <input type="hidden" name="field" value="collectionid" />
 <input type="hidden" name="collectionid.value" value="$collectionid" />
 <input type="hidden" name="collectionid" value="$collectionid" />
-<input type="submit" class="btn suscribe-btn" value="[[Subscribe]]" />
+<input type="submit" class="btn suscribe-btn" value="[[Like]]" />
 </form>
 #else
 #set($loginok = "$apphome/collective/about/$collectionid/")
-<a href="$apphome/authentication/login.html?loginokpage=$!loginok" class="btn suscribe-btn">[[Login to Subscribe]]</a>
+<a href="$apphome/authentication/login.html?loginokpage=$!loginok" class="btn suscribe-btn">[[Login to Like]]</a>
 #end
 <div class="suscribe-headline">
 	#if( $caneditcollection)
@@ -42,9 +42,9 @@
 
 </div>	
 #else
-<div class="suscribe-title">[[You are subscribed]]</div>
+<div class="suscribe-title">[[Liked]]</div>
 	 <a href="$apphome/collective/channel/subscribers/unsubscribe.html?id=${found.getId()}&collectionid=$librarycol.getId()" 
-		>[[Un-Subscribe]]</a>
+		>[[Un-Like]]</a>
 
 #end
 ##<a href="$apphome/channel/subscribers/addnew.html?collectionid=$librarycol.getId()" class="emdialog btn btn-primary">[[Invite Others]]</a>
@@ -52,7 +52,7 @@
 <div class="suscribers-box">
 <div class="suscribers-box-box">
 	<div class="box-content" style="border-right:1px solid #ddd">
-	<strong>[[Subscribers]]</strong>
+	<strong>[[Likes]]</strong>
 	#set( $subscribers = $mediaarchive.query("librarycollectionusers").exact("collectionid",$collectionid).search($context) )
 	<div class="box-number"><a class="emdialog" data-cancelsubmit="true" title="View Subscribers" href="$apphome/collective/channel/subscribers/subscriberslist.html?collectionid=$librarycol.getId()">$subscribers.size()</a></div>
 	</div>
