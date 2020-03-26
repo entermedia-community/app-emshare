@@ -32,14 +32,18 @@
 				#if($ohit.assetportrait)
 					#set($asset = $mediaarchive.getAsset($ohit.assetportrait))
 					#set($link = $mediaarchive.asLinkToPreview($asset,"image200x200.jpg"))
+				#elseif($ohit.assetbanner)
+					#set( $banner = $mediaarchive.getAsset($ohit.assetbanner) )
+					#set($link = $mediaarchive.asLinkToPreview($banner,"image200x200.jpg"))
 				#end
+				<a href="$sitelink/app/collective/about/${ohit.id}/${ohit.getName().replaceAll(" ", "-")}.html" 
+					class="project-title" title="$!ohit.collectivedescription">
 				<div class="project-item" style='#if($link) background-image: url("#uuencode($link)") #end; min-width:313px;'>
 				<div class="project-item-box">
-				<a href="$sitelink/app/collective/community/index.html?collectionid=$ohit.id" 
-					class="project-title">
-				$ohit.name</a>
+					<span>$ohit.name</span>
 				</div>
 				</div>
+				</a>
 			#end
 		<div class="clearfix"></div>
 		</div>
