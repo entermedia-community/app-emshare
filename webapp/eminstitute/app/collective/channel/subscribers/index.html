@@ -85,6 +85,8 @@
 <div class="community-area">
 <h3>[[Team]]</h3>
 
+#set( $team = $mediaarchive.query("librarycollectionusers").exact("collectionid",$collectionid).exact("ontheteam",true).search($context) )
+	
 #if( $team.isEmpty()) 
 	<p>[[No Team yet]]</p>
 #else
@@ -122,12 +124,8 @@
 #end
 
 	#if( $caneditcollection)
-	<a href="$applink/collective/channel/subscribers/addnew.html?collectionid=${collectionid}" class="emdialog btn btn-sm btn-light" title="[[Add New User to Project]]">
-	<i class="fas fa-plus"></i> [[New User]]
-	</a>
-	
-	<a href="$applink/collective/channel/subscribers/usersearch.html?collectionid=${collectionid}" class="emdialog  btn btn-sm btn-light" title="[[Search Existing User]]">
-	<i class="fas fa-search"></i> [[Existing User]]
+	<a href="$applink/collective/channel/subscribers/usersearch.html?collectionid=${collectionid}" class="emdialog  btn btn-sm btn-light" title="[[Search Users]]">
+	<i class="fas fa-search"></i> [[Add Member]]
 	</a>
 	#end
 

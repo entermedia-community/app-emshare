@@ -16,7 +16,11 @@ public void init()
 		id = data.getId();
 	}
 	LibraryCollection data = (LibraryCollection)collectionsearcher.searchById(id);
-
+	if( data == null)
+	{
+		log.error("Could not find collection " + id);
+		return;
+	}
 	if( data.getValue("geo_point") != null && data.getValue("library") != null)
 	{
 		return;

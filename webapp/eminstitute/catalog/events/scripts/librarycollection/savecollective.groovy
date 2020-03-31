@@ -31,15 +31,30 @@ public void init()
 		collection.setValue("owner",user.getId());
 	}	
 
+	//#set( $team = $mediaarchive.query("librarycollectionusers").exact("collectionid",$collectionid).exact("ontheteam",true).search($context) )
+	Data userrecord = mediaArchive.query("librarycollectionusers").exact("collectionid",collection.getId()).exact("followeruser", user.getId()).searchOne();
+	if( userrecord == null)
+	{
+		userrecord = mediaArchive.getSearcher("librarycollectionusers").createNewData();
+		userrecord.setValue("collectionid",collection.getId());
+		userrecord.setValue("followeruser",user.getId());
+		userrecord.setValue("ontheteam","true");
+		mediaArchive.saveData("librarycollectionusers",userrecord);
+	}
+
 	collectionsearcher.saveData(collection);
 	
 	mediaArchive.getProjectManager().getRootCategory(mediaArchive,collection);
-	
+		
 	BaseSearcher colectivesearcher = mediaArchive.getSearcher("collectiveproject");
-	Data newproject = colectivesearcher.createNewData();
-	newproject.setName("General");
-	newproject.setValue("parentcollectionid",collection.getId());
-	colectivesearcher.saveData( newproject );
+	Data newproject = colectivesearcher.query().exact("parentcollectionid",collection.getId()).match("name","General").searchOne();
+	if( newproject == null)
+	{
+		newproject = colectivesearcher.createNewData();
+		newproject.setName("General");
+		newproject.setValue("parentcollectionid",collection.getId());
+		colectivesearcher.saveData( newproject );
+	}
 	context.putPageValue("librarycol",collection);
 }
 
