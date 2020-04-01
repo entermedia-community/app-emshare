@@ -26,7 +26,7 @@
 	#else
 		#set( $hits = $mediaarchive.query("projectgoal").orgroup("collectionid",$userprojects).exact("ticketlevel",$ticketlevel).orgroup("projectstatus","open|critical").enduser(true).sort("creationdateDown").search() )
 	#end
-	#if ($hits)
+	#if (!$hits.isEmpty())
 		<div class="goals-header-actions">
 		$hits.size() [[Tasks]]
 		</div>
@@ -98,6 +98,10 @@
 		
 		#end
 		</table>
+		#else
+		<img src="$apphome/theme/images/cnbnothing.png">
+		
+		</img>
 		</div>
 	#end
 #end
