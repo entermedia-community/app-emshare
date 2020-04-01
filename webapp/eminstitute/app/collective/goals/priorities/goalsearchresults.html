@@ -37,11 +37,89 @@
     #set( $goal = $mediaarchive.getData("projectgoal",$opengoalid))
     #set( $goallink = "$apphome/collective/goals/editgoalpanel.html?id=${goal.id}&collectionid=$collectionid&categoryid=$!selectedcat.getId()&hitssessionid=$!{goalhits.getSessionId()}&goalfolder=$content.goalfolder")
     <a href="$goallink" title="$goal.name" class="emdialog editgoalshow openemdialog" style="display: cnone" >[[Goal link]]</a>	
-#end	
- 	
+#end
+<!-- Added task table code starts here. -->	
+#set( $hits = $mediaarchive.query("projectgoal").orgroup("collectionid",$collectionid).orgroup("projectstatus","open|critical").enduser(true).sort("creationdateDown").search() )
+
+#if ($hits)
+	<div class="clearfix" style="padding:5px;">
+
+	</div>
+	<div class="emdata" style="overflow-x:auto;">
+	<table width="100%" class="table table-striped table-hover">
+	<thead>
+	<tr class="tableheader">
+		<th style="width:130px;">[[Project]]</th>
+		<th style="width:130px;">[[Topic]]</th>
+		<th>[[Goal]]</th>
+		<th style="width:130px;">[[Team]]</th>
+		<th>[[Details]]</th>
+		<th style="width:97px;">[[Status]]</th>
+		<th style="width:300px">[[Created]]</th>
+		
+	</tr>
+	</thead>
+	#foreach($goal in $hits)
+		#set( $goal = $mediaarchive.getSearcher("projectgoal").loadData($goal))
+		<tr class="goalstatus$!{goal.projectstatus}" >
+		$context.putPageValue("goal",$goal)
+		<td >
+		#set( $project= $!mediaarchive.getData("librarycollection",$goal.collectionid) )
+		<a href="$sitelink/app/collective/goals/priorities/index.html?collectionid=$goal.collectionid"
+		style="text-decoration:underline;" >
+		$!project
+		</a>
+		</td>
+		<td >
+		#set( $project= $!mediaarchive.getData("collectiveproject",$goal.goaltrackercolumn) )
+		<a href="$sitelink/app/collective/goals/search/search.html?collectionid=$goal.collectionid&field=goaltrackercolumn&operation=matches&goaltrackercolumn.value=$project.id" 
+		style="text-decoration:underline;" >
+		$!project
+		</a>
+		</td>
+	
+		<td>
+		<a href="$sitelink/app/collective/goals/editgoalpanel.html?id=$goal.id&collectionid=$goal.collectionid&goalfolder=agent" 
+			title="" class="emdialog editgoalshow" style="text-decoration:underline;" data-urlbar="$apphome/users/tasks/search.html?ticketlevel=$ticketlevel&goaltrackerstaff=*&opengoalid=$goal.id"
+			data-width="900">$goal.name</a>
+		</td>
+		<td >
+	  			$pages.include("$apphome/collective/goals/like.html",$context)
+		</td>	
+		<td >
+			$!goal.details 		
+			
+			<div class="goal-body">
+			$pages.include("$apphome/collective/goals/search/goaltasks.html?indialog=true",$context)
+			</div>
+			
+		</td>
+		<td class="text-center" >
+			$pages.include("$apphome/users/tasks/resolvebutton.html",$context) 
+		</td>
+		
+		
+		<td class="text-right" >
+			<span class="headersubtext">
+			
+				$!mediaarchive.getData("tickettype",$goal.tickettype) $!goal.getAge() [[ago]] [[by]] $!mediaarchive.getUser($goal.owner).getAnonNickName()
+			</span><br>
+			#if ($goal.deliverydate)
+				<span style="color:red">[[Due on:]] $goal.deliverydate.substring(0, 10)</span>
+			#end
+		</td>
+	
+	</tr>
+	
+	#end
+	</table>
+	</div>
+#end
+
 <div class="clearfix"></div>
 </div>
 
+<!-- Added Code Ends Here 
 #set( $col = 0)
 <div class="goals-columns">
 #set( $days = ["Mon", "Tue", "Wed", "Thu","Fri"] )
@@ -66,7 +144,7 @@ data-oemaxlevel="2"  data-collectionid="$collectionid" data-categoryid="$!select
 </div>
 </div>
 #end
-</div>
+</div> -->
 
 </div>
 
