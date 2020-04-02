@@ -25,7 +25,8 @@
 		#set($libraryid = $library.getId())
 		#set($collectivehits = $mediaarchive.query("librarycollection").exact("library",$libraryid).sort("name").search($context))
 		#set( $n = $collectivehits.setHitsPerPage(75))
-		<div class="stations-grid ">
+		#if( !$collectivehits.isEmpty() )
+			<div class="stations-grid ">
 			<h3>$library.getName()</h3>
 			#foreach( $ohit in $collectivehits.getPageOfHits() )
 				#set($link = false) 
@@ -45,8 +46,9 @@
 				</div>
 				</a>
 			#end
-		<div class="clearfix"></div>
-		</div>
+			<div class="clearfix"></div>
+			</div>
+		#end
 		
 	#end
 	
