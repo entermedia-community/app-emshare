@@ -250,9 +250,11 @@ jQuery(document).ready(function()
 					if (data.text == '') {
 						data.text = 'collective';
 					}
-					var collectivepage = $(this).data("url")+data.id+"/"+data.text+'.html';
+					var name  = data.text;
+					name = name.replace(/\ /g,'-');
+					var collectivepage = $(this).data("url")+data.id+"/"+ name +'.html';
 					console.log(collectivepage);
-					window.location.href = collectivepage;
+					window.location.assign( collectivepage );
 				}			
 			});
 	});
