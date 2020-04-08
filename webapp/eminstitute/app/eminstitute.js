@@ -6,6 +6,7 @@ jQuery(document).ready(function()
 		if ('PushManager' in window) 
 		{
 			//alert("enable push?");
+			/*
 			var applink = $("#application").data("apphome");	
 
 			navigator.serviceWorker.register(applink + '/components/javascript/push/service-worker.js')
@@ -18,6 +19,7 @@ jQuery(document).ready(function()
 				  {
 				    console.error('Unable to register service worker.', err);
 				  });
+			*/	  
 		}
 	}
 
