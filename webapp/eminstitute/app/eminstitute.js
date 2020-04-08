@@ -1,6 +1,27 @@
 jQuery(document).ready(function() 
 { 
 
+	if ('serviceWorker' in navigator) 
+	{
+		if ('PushManager' in window) 
+		{
+			//alert("enable push?");
+			var applink = $("#application").data("apphome");	
+
+			navigator.serviceWorker.register(applink + '/components/javascript/push/service-worker.js')
+			  .then(function(registration) 
+					  {
+						  console.log('Service worker successfully registered.');
+						  return registration;
+					  }
+			  ).catch(function(err) 
+				  {
+				    console.error('Unable to register service worker.', err);
+				  });
+		}
+	}
+
+	
 	lQuery(".attachtext input,.attachtext textarea").livequery("click",function(e)
 	{
 		$(".showonfocus").show();
