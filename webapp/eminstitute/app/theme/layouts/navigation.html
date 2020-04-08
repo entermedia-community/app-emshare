@@ -18,15 +18,15 @@
 			<li class="searchcollectivescontainer">
 			<select  id="collectivesearch" 
 				name="collectionid" 
-				class="form-control autosubmitlink" 
-				data-placeholder="[[View Project]]"
-				data-url="$applink/collective/community/index.html?collectionid="
+				class="form-control" 
+				data-placeholder="[[Choose Community]]"
+				data-url="$applink/community/"
 				data-dropdownparent="navbarResponsive"
 			>
 			<option></option>
-			#set( $collectives = $mediaarchive.query("librarycollection").all().search($context) )
-			#foreach( $collective in $collectives )
-				<option value="$collective.getId()">#esc($collective.name)</option>
+			#set( $libraries = $mediaarchive.query("library").sort("name").all().search($context) )
+			#foreach( $library in $libraries )
+				<option value="$library.getId()">#esc($library.name)</option>
 			#end
 		   </select>
 		   </li>

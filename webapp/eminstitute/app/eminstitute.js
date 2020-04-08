@@ -1,6 +1,29 @@
 jQuery(document).ready(function() 
 { 
 
+	if ('serviceWorker' in navigator) 
+	{
+		if ('PushManager' in window) 
+		{
+			//alert("enable push?");
+			/*
+			var applink = $("#application").data("apphome");	
+
+			navigator.serviceWorker.register(applink + '/components/javascript/push/service-worker.js')
+			  .then(function(registration) 
+					  {
+						  console.log('Service worker successfully registered.');
+						  return registration;
+					  }
+			  ).catch(function(err) 
+				  {
+				    console.error('Unable to register service worker.', err);
+				  });
+			*/	  
+		}
+	}
+
+	
 	lQuery(".attachtext input,.attachtext textarea").livequery("click",function(e)
 	{
 		$(".showonfocus").show();
@@ -227,9 +250,11 @@ jQuery(document).ready(function()
 					if (data.text == '') {
 						data.text = 'collective';
 					}
-					var collectivepage = $(this).data("url")+data.id+"/"+data.text+'.html';
+					var name  = data.text;
+					name = name.replace(/\ /g,'-');
+					var collectivepage = $(this).data("url")+data.id+"/"+ name +'.html';
 					console.log(collectivepage);
-					window.location.href = collectivepage;
+					window.location.assign( collectivepage );
 				}			
 			});
 	});

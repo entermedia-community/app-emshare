@@ -1,0 +1,16 @@
+#set($link = false) 
+				#if($collective.assetportrait)
+					#set($asset = $mediaarchive.getAsset($collective.assetportrait))
+					#set($link = $mediaarchive.asLinkToPreview($asset,"image200x200.jpg"))
+				#elseif($collective.assetbanner)
+					#set( $banner = $mediaarchive.getAsset($collective.assetbanner) )
+					#set($link = $mediaarchive.asLinkToPreview($banner,"image200x200.jpg"))
+				#end
+				<a href="$applink/collective/about/${collective.id}/${collective.getName().replaceAll(" ", "-")}.html" 
+					class="project-title" title="$!ohit.collectivedescription">
+				<div class="project-item" style='#if($link) background-image: url("#uuencode($link)") #end; min-width:313px;'>
+				<div class="project-item-box">
+					<span>$collective.name</span>
+				</div>
+				</div>
+				</a>

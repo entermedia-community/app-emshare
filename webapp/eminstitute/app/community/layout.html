@@ -1,0 +1,31 @@
+#set( $libraryid = $url_util.getPathUtilities().extractDirectoryName($context.getPathUrl()) )
+
+#set($library = $mediaarchive.getData("library",$libraryid))
+
+
+#if( $library)
+
+<div class="container">
+<h3>$library [[Community Page]]</h3>
+
+#set($collectivehits = $mediaarchive.query("librarycollection").exact("library",$library.id).sort("name").search($context))
+#foreach( $collective in $collectivehits.getPageOfHits() )
+	$context.putPageValue("collective",$collective)
+	$pages.include("$apphome/browse/collectivelist.html",$context)
+#end
+</div>
+
+#else
+
+[[Choose a community]]
+
+	#set($libraries = $mediaarchive.getList("library"))
+	<ul>
+	#foreach( $library in $libraries)
+		<li>
+			<a href="$applink/community/${library.id}/${library.name.replaceAll(" ","-")}.html">$library</a>
+		</li>
+	#end
+</ul>
+#end
+
