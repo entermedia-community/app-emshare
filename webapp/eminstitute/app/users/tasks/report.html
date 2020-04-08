@@ -26,7 +26,7 @@
 				#set( $weekpoints = $weekpoints + $points)
   				<tr><td><a class="emdialog" data-width="900"
 		 	 	title="Ticket Details" 
-		 	 		href="$apphome/collective/goals/editgoalpanel.html?id=$task.projectgoal&collectionid=$task.collectionid&nodeID=$selectedcat.id&goalfolder=$content.goalfolder">
+		 	 		href="$applink/collective/goals/editgoalpanel.html?id=$task.projectgoal&collectionid=$task.collectionid&nodeID=$selectedcat.id&goalfolder=$content.goalfolder">
 		 	 		#set($collection = $!mediaarchive.getData("librarycollection",$task.collectionid) )
 		 	 		Task: $collection - $task.name - "$!mediaarchive.getData("projectgoal",$task.projectgoal)"</a></td>
   					<td>$context.getDateTime($task.getDate("completedon"))</td><td>$points</td>
@@ -40,11 +40,11 @@
   		    #foreach($ticket in $tickets)
   		   		#set( $points = $ticket.getValue("points"))
   		    	<tr><td>
-  		    	#set( $goallink = "$apphome/collective/goals/editgoalpanel.html?id=${ticket.id}&collectionid=$ticket.collectionid&goalfolder=search")
+  		    	#set( $goallink = "$applink/collective/goals/editgoalpanel.html?id=${ticket.id}&collectionid=$ticket.collectionid&goalfolder=search")
   		    	#set($collection = $!mediaarchive.getData("librarycollection",$ticket.collectionid) )
   		    	  <a href="$goallink"
 		    	title="$ticket.name" class="emdialog editgoalshow" 
-		    	data-urlbar="$apphome/collective/goals/search/index.html?collectionid=$ticket.collectionid&opengoalid=${ticket.id}" data-width="900" >
+		    	data-urlbar="$applink/collective/goals/search/index.html?collectionid=$ticket.collectionid&opengoalid=${ticket.id}" data-width="900" >
   			Ticket: $collection - $mediaarchive.getData("collectiveproject",$ticket.goaltrackercolumn) - "$ticket.name" </a></td><td>$!context.getDateTime($ticket.getDate("resolveddate"))</td><td>$points</td></tr>
 				#set( $counted = $counted +1)
 				#set( $weekpoints = $weekpoints + $points)

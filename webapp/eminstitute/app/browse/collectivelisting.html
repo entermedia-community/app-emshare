@@ -1,4 +1,4 @@
-#set($collurl = "$apphome/collective/about/"+$collective.id+"/"+$collective.name+".html")
+#set($collurl = "$applink/collective/about/"+$collective.id+"/"+$collective.name+".html")
 <div class="card" style="margin:10px 0 20px;">
 		#if ($collective.assetbanner)
 			#set( $banner= $mediaarchive.getAsset($collective.assetbanner) )
@@ -7,7 +7,7 @@
 				#if($banner)
 					#set ($bannerurl = "/$mediaarchive.getMediaDbId()/services/module/asset/downloads/preset/${banner.sourcepath}/banner.jpg")
 				#else
-					#set ($bannerurl = "$apphome/theme/oi/banner.jpg")
+					#set ($bannerurl = "$applink/theme/oi/banner.jpg")
 				#end
 					background-image:url($bannerurl)
 				"
@@ -19,7 +19,7 @@
 					#if( $logo)
 						#set($logourl ="/$mediaarchive.getMediaDbId()/services/module/asset/downloads/preset/${logo.sourcepath}/image200x200.png")
 					#else	
-					    #set($logourl="$apphome/theme/oi/team100.png")
+					    #set($logourl="$applink/theme/oi/team100.png")
 					#end
 					<a href="#urlencode($collurl)" title="$!collective" ><img src="$logourl" class="img-fluid align-middle"></a>
 					#if( $ontheteam && $ontheteam == "true")
@@ -37,7 +37,7 @@
 					    	#end
 							<div class="feedcard-collective">		
 								#foreach($library in $collective.getLibraries())
-								<a class="collectivetag" href="$apphome/browse/stations/index.html?libraryid=$library.getId()&grid=true">$library</a> 
+								<a class="collectivetag" href="$applink/browse/stations/index.html?libraryid=$library.getId()&grid=true">$library</a> 
 								#end
 							</div>	
 					

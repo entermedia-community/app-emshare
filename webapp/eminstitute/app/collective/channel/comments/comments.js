@@ -1,7 +1,7 @@
 initcomments = function()
 {
 	var app = $("#application");
-	var apphome = app.data("home") + app.data("apphome");
+	var applink = app.data("home") + app.data("applink");
 
 	lQuery('input.commentadder').livequery("keyup",function(e) 
 	{
@@ -16,7 +16,7 @@ initcomments = function()
 	     	var options = input.data();
 	     	options.oemaxlevel = 1;
 	     	options.commenttext = input.val();
-	     	var link = apphome + "/collective/channel/comments/addcomment.html";
+	     	var link = applink + "/collective/channel/comments/addcomment.html";
 			jQuery.get(link,options,
 				function(data) 
 				{

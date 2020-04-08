@@ -1,10 +1,10 @@
 #set($collectionid = $librarycol.getId())
 <div id="activitylog" class="ajaxstatus" #if( $content == $page)data-ajaxrunning="true"#end  
-	ajaxpath="$home$apphome/collective/goals/activity/link.html?oemaxlevel=1&collectionid=${collectionid}" >
+	ajaxpath="$home$applink/collective/goals/activity/link.html?oemaxlevel=1&collectionid=${collectionid}" >
 	#if($collectionid)
 		#set( $results = $mediaarchive.query("statuschanges").exact("userid", $user.getId()).exact("collectionid",$collectionid).not("notified","true").search() )
 	#end
 	<a id="status" data-alwaysreloadpage="true"  
-		href="$apphome/collective/goals/activity/index.html?collectionid=${collectionid}" >
+		href="$applink/collective/goals/activity/index.html?collectionid=${collectionid}" >
 		[[Notifications]] #if($results.size()>0)<span class="badge badge-pill badge-warning" style="font-size:.7rem;">$results.size()</span>#end</a>
 </div>

@@ -4,11 +4,11 @@
   <div class="feedcard-comment">
 	<div class="">
 	  #set($commentuser = $comment.getUser())
-	  #set($userlink = "$apphome/users/${commentuser.getId()}/${commentuser.getAnonNickName()}.html")
+	  #set($userlink = "$applink/users/${commentuser.getId()}/${commentuser.getAnonNickName()}.html")
 	  <a href="#urlescape($userlink)" title="${comment.getUserLabel()}">
 		#set( $userimageurl = $mediaarchive.asLinkToProfile($commentuser.assetportrait) )
 		#if(!$userimageurl)
-			#set( $userimageurl = "$apphome/theme/images/user.svg" )
+			#set( $userimageurl = "$applink/theme/images/user.svg" )
 		#end
 	  <img src="$userimageurl" class="usericon">
 	  </a>
@@ -35,14 +35,14 @@
 #if ($user)
 	#set( $userimageurl = $mediaarchive.asLinkToProfile($user.assetportrait) )
 	#if(!$userimageurl)
-		#set( $userimageurl = "$apphome/theme/images/user.svg" )
+		#set( $userimageurl = "$applink/theme/images/user.svg" )
 	#end
 
 	<img src="$userimageurl" class="usericon">
 	<input type="text"  name="commenttext" data-useruploadid="$upload.id" data-collectionid="$librarycol.id" class="commentadder form-control feed-comments-textinput" placeholder="[[Write a comment]]">
 #else
-	#set($loginok = "$apphome/collective/channel/${librarycol.id}/${librarycol.name}.html")
-	<a href="$apphome/authentication/login.html?loginokpage=$!loginok" class="btn btn-sm btn-primary" >
+	#set($loginok = "$applink/collective/channel/${librarycol.id}/${librarycol.name}.html")
+	<a href="$applink/authentication/login.html?loginokpage=$!loginok" class="btn btn-sm btn-primary" >
 	[[Login to comment]]</a>
 #end
 </div>

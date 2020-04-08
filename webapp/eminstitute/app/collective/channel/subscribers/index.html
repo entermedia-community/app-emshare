@@ -10,7 +10,7 @@
 [[Join the Collective]]
 </div>	
 #if ($user && !$found)
-<form name="saveproject" id="saveproject" class="ajaxform" data-targetdiv="suscriberssidebar" action="$apphome/collective/channel/subscribers/addsave.html" method="post">
+<form name="saveproject" id="saveproject" class="ajaxform" data-targetdiv="suscriberssidebar" action="$applink/collective/channel/subscribers/addsave.html" method="post">
 <input type="hidden" name="save" value="true" />
 
 <input type="hidden" name="teamuserid" value="$user.getId()" />
@@ -22,8 +22,8 @@
 <input type="submit" class="btn suscribe-btn" value="[[Like]]" />
 </form>
 #else
-#set($loginok = "$apphome/collective/about/$collectionid/")
-<a href="$apphome/authentication/login.html?loginokpage=$!loginok" class="btn suscribe-btn">[[Login to Like]]</a>
+#set($loginok = "$applink/collective/about/$collectionid/")
+<a href="$applink/authentication/login.html?loginokpage=$!loginok" class="btn suscribe-btn">[[Login to Like]]</a>
 #end
 <div class="suscribe-headline">
 	#if( $caneditcollection)
@@ -43,18 +43,18 @@
 </div>	
 #else
 <div class="suscribe-title">[[Liked]]</div>
-	 <a href="$apphome/collective/channel/subscribers/unsubscribe.html?id=${found.getId()}&collectionid=$librarycol.getId()" 
+	 <a href="$applink/collective/channel/subscribers/unsubscribe.html?id=${found.getId()}&collectionid=$librarycol.getId()" 
 		>[[Un-Like]]</a>
 
 #end
-##<a href="$apphome/channel/subscribers/addnew.html?collectionid=$librarycol.getId()" class="emdialog btn btn-primary">[[Invite Others]]</a>
+##<a href="$applink/channel/subscribers/addnew.html?collectionid=$librarycol.getId()" class="emdialog btn btn-primary">[[Invite Others]]</a>
 
 <div class="suscribers-box">
 <div class="suscribers-box-box">
 	<div class="box-content" style="border-right:1px solid #ddd">
 	<strong>[[Likes]]</strong>
 	#set( $subscribers = $mediaarchive.query("librarycollectionusers").exact("collectionid",$collectionid).search($context) )
-	<div class="box-number"><a class="emdialog" data-cancelsubmit="true" title="View Subscribers" href="$apphome/collective/channel/subscribers/subscriberslist.html?collectionid=$librarycol.getId()">$subscribers.size()</a></div>
+	<div class="box-number"><a class="emdialog" data-cancelsubmit="true" title="View Subscribers" href="$applink/collective/channel/subscribers/subscriberslist.html?collectionid=$librarycol.getId()">$subscribers.size()</a></div>
 	</div>
 </div> 
 <div class="suscribers-box-box">
@@ -94,10 +94,10 @@
   #foreach( $hit in $team)
 	
   	#set( $followeruser = $mediaarchive.getUser($hit.followeruser) )
-    #set( $userlink = "$apphome/users/${followeruser.getId()}/${followeruser.getAnonNickName()}.html")
+    #set( $userlink = "$applink/users/${followeruser.getId()}/${followeruser.getAnonNickName()}.html")
 	#set( $userimageurl = $mediaarchive.asLinkToProfile($followeruser.assetportrait) )
 	#if(!$userimageurl)
-		#set( $userimageurl = "$apphome/theme/images/user.svg" )
+		#set( $userimageurl = "$applink/theme/images/user.svg" )
 	#end
 
 	<div class="col-md-6" >
@@ -137,10 +137,10 @@
 	#foreach($transaction in $donations)
 		#if ($transaction.userid)
 	 	#set( $selecteduser = $mediaarchive.getUser($transaction.userid) )
-		#set( $userlink = "$apphome/users/${selecteduser.getId()}/${selecteduser.getAnonNickName()}.html")
+		#set( $userlink = "$applink/users/${selecteduser.getId()}/${selecteduser.getAnonNickName()}.html")
 		#set( $userimageurl = $mediaarchive.asLinkToProfile($selecteduser.assetportrait) )
 		#if(!$userimageurl)
-			#set( $userimageurl = "$apphome/theme/images/user.svg" )
+			#set( $userimageurl = "$applink/theme/images/user.svg" )
 		#end
 		<tr>
 			<td style="width:40px">
@@ -155,12 +155,12 @@ $!context.getDateTime($transaction.paymentdate)
 </table>
 #end
 <div class="text-center">
-	<a href="$apphome/collective/donate/donate.html?collectionid=$collectionid" class="btn suscribe-btn">[[Donate Now]]</a>
+	<a href="$applink/collective/donate/donate.html?collectionid=$collectionid" class="btn suscribe-btn">[[Donate Now]]</a>
 </div>
 <h3>[[Stations]]</h3>
 		<div class="">		
 	#foreach($library in $librarycol.getLibraries())
-			<a class="collectivetag" href="$apphome/browse/stations/index.html?libraryid=$library.getId()&grid=true">$library</a> 
+			<a class="collectivetag" href="$applink/browse/stations/index.html?libraryid=$library.getId()&grid=true">$library</a> 
 	#end
 		</div>	
 

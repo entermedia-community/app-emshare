@@ -15,7 +15,7 @@ public void init()
 	String collectionid = context.getRequestParameter("collectionid");
 	String firstName = context.getRequestParameter("firstName.value");
 	String lastName = context.getRequestParameter("lastName.value");
-	String email = context.getRequestParameter("email.value");
+	String email = context.getRequestParameter("email.value").trim().toLowerCase();
 	String teamuserid = context.getRequestParameter("teamuserid");
 	String addtoteam = context.getRequestParameter("addtoteam");
 	
@@ -63,7 +63,7 @@ public void init()
 	context.putPageValue("subscription",subscription);
 		
 	
-	String template = context.findValue("apphome") + "/theme/emails/collection-add-teammember.html";
+	String template = context.findValue("applink") + "/theme/emails/collection-add-teammember.html";
 
 	WebEmail templatemail = archive.createSystemEmail(teamuser, template);
 	templatemail.setSubject("Added to Team"); //TODO: Translate
@@ -74,7 +74,7 @@ public void init()
 	objects.put("teamuser",teamuser);
 	Data librarycol = archive.getData("librarycollection", collectionid);
 	objects.put("librarycol", librarycol);
-	objects.put("apphome", context.findValue("apphome"));
+	objects.put("applink", context.findValue("applink"));
 	templatemail.send(objects);
 			
 }

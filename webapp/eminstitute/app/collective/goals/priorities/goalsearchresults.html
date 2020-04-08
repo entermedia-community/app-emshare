@@ -3,7 +3,7 @@
 <div class="goals-header-actions">
  	
 ##Needs to filter users in same projects
-##<form name="user" action="$apphome/collective/goals/priorities/index.html" class="autosubmitform form-inline" style="width:200px; float:left; padding-right:20px;">
+##<form name="user" action="$applink/collective/goals/priorities/index.html" class="autosubmitform form-inline" style="width:200px; float:left; padding-right:20px;">
 ##	<input name="collectionid" value="$collectionid" type="hidden" />
 ##    <select class="listdropdown autosubmited form-control-sm" name="goaltrackerstaff" data-placeholder="[[Staff]]">
 ##		<option value=""></option>
@@ -22,7 +22,7 @@
  	title="[[New Ticket]]" 
  	data-width="900"
  	style="margin-left: 10px;"
- 	href="$apphome/collective/goals/editgoalpanel.html?collectionid=$collectionid&categoryid=$!selectedcat.getId()&goalfolder=priorities&userlikes=$user.id" ><i class="fas fa-plus"></i> [[Add Ticket]]</a>
+ 	href="$applink/collective/goals/editgoalpanel.html?collectionid=$collectionid&categoryid=$!selectedcat.getId()&goalfolder=priorities&userlikes=$user.id" ><i class="fas fa-plus"></i> [[Add Ticket]]</a>
 
 		[[Total Priorities]]: <strong>$totallikes</strong> [[Open]]: <strong>$totalopen</strong> [[Closed]]: <strong>$totalclosed</strong> [[Sessions Purchased]] <strong>$!librarycol.totalsessionspurchased</strong> [[Sessions Completed]]  <strong>$!librarycol.totalsessionsused </strong> [[as of]] <strong>$!context.getDate($librarycol.sessioncalcdate)</strong>
 
@@ -35,7 +35,7 @@
 #set( $opengoalid = $context.getRequestParameter("opengoalid"))
 #if( $opengoalid )
     #set( $goal = $mediaarchive.getData("projectgoal",$opengoalid))
-    #set( $goallink = "$apphome/collective/goals/editgoalpanel.html?id=${goal.id}&collectionid=$collectionid&categoryid=$!selectedcat.getId()&hitssessionid=$!{goalhits.getSessionId()}&goalfolder=$content.goalfolder")
+    #set( $goallink = "$applink/collective/goals/editgoalpanel.html?id=${goal.id}&collectionid=$collectionid&categoryid=$!selectedcat.getId()&hitssessionid=$!{goalhits.getSessionId()}&goalfolder=$content.goalfolder")
     <a href="$goallink" title="$goal.name" class="emdialog editgoalshow openemdialog" style="display: cnone" >[[Goal link]]</a>	
 #end
 <!-- Added task table code starts here. -->	
@@ -80,7 +80,7 @@
 	
 		<td>
 		<a href="$sitelink/app/collective/goals/editgoalpanel.html?id=$goal.id&collectionid=$goal.collectionid&goalfolder=agent" 
-			title="" class="emdialog editgoalshow" style="text-decoration:underline;" data-urlbar="$apphome/users/tasks/search.html?ticketlevel=$ticketlevel&goaltrackerstaff=*&opengoalid=$goal.id"
+			title="" class="emdialog editgoalshow" style="text-decoration:underline;" data-urlbar="$applink/users/tasks/search.html?ticketlevel=$ticketlevel&goaltrackerstaff=*&opengoalid=$goal.id"
 			data-width="900">$goal.name</a>
 		</td>
 		<td >
@@ -134,10 +134,10 @@
 
 <ul class="projectgoals"
 data-oemaxlevel="2"  data-collectionid="$collectionid" data-categoryid="$!selectedcat.id" 
-	data-savepath="$apphome/collective/goals/goalmovepriority.html">  ##set a completed date
+	data-savepath="$applink/collective/goals/goalmovepriority.html">  ##set a completed date
 	#foreach( $goal in $daygoals )  
 		$context.putPageValue("goal",$goal)
-		$pages.include("$apphome/collective/goals/search/goalrow.html",$context)
+		$pages.include("$applink/collective/goals/search/goalrow.html",$context)
 	#end
 </ul>
 

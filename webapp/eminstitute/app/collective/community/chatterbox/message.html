@@ -8,9 +8,9 @@
 	#set( $goalfolder = "search" )
 #end
 #set( $chatuser = $mediaarchive.getUser($chat.user) ) 
-#set( $userlink = "$apphome/users/${chatuser.getId()}/${chatuser.getAnonNickName()}.html")
+#set( $userlink = "$applink/users/${chatuser.getId()}/${chatuser.getAnonNickName()}.html")
 #set( $userimageurl = $mediaarchive.asLinkToProfile($chatuser.assetportrait) )
-#if(!$userimageurl) #set( $userimageurl = "$apphome/theme/images/user.svg" ) #end
+#if(!$userimageurl) #set( $userimageurl = "$applink/theme/images/user.svg" ) #end
 
 #set( $goal = $mediaarchive.query("projectgoal").exact("chatparentid",$chat.getId() ).searchOne() )
 
@@ -68,11 +68,11 @@
 		$context.putPageValue("goal",$goal)
 		<div class="goalstatus goalstatus$!{goal.projectstatus}" style="position:relative"> 
 		
-		#set( $goallink = "$apphome/collective/goals/editgoalpanel.html?id=${goal.id}&collectionid=$goal.collectionid&hitssessionid=$!{goalhits.getSessionId()}&goalfolder=$!goalfolder")
+		#set( $goallink = "$applink/collective/goals/editgoalpanel.html?id=${goal.id}&collectionid=$goal.collectionid&hitssessionid=$!{goalhits.getSessionId()}&goalfolder=$!goalfolder")
 		<a href="$goallink"
 		    title="$goal.name" 
 			class="emdialog goalticket-level" 
-			data-urlbar="$apphome/collective/goals/priorities/index.html?collectionid=$goal.collectionid&opengoalid=${goal.id}" data-width="900" >
+			data-urlbar="$applink/collective/goals/priorities/index.html?collectionid=$goal.collectionid&opengoalid=${goal.id}" data-width="900" >
 				<i class="fas fa-flag"></i> 
 				#set( $level = $mediaarchive.getData("ticketlevel",$goal.ticketlevel))
 				[[Ticket]]:  #text($level)
@@ -89,7 +89,7 @@
 		</div>
   		
 		#if($goal.projectstatus != "completed")
-			<a href="$apphome/collective/goals/search/resolvegoal.html?goalid=$goal.id" data-targetdiv="goal$goal.id" 
+			<a href="$applink/collective/goals/search/resolvegoal.html?goalid=$goal.id" data-targetdiv="goal$goal.id" 
 			data-oemaxlevel="1"	class="ajax btn btn-xs btn-warning btn-resolve"	
 			><i class="fas fa-check"></i> [[Resolve]]
 			</a>
