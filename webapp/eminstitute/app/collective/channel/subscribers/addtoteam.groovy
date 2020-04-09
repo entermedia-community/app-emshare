@@ -15,7 +15,7 @@ public void init()
 	String collectionid = context.getRequestParameter("collectionid");
 	String firstName = context.getRequestParameter("firstName.value");
 	String lastName = context.getRequestParameter("lastName.value");
-	String email = context.getRequestParameter("email.value").trim().toLowerCase();
+	String email = context.getRequestParameter("email.value");
 	String teamuserid = context.getRequestParameter("teamuserid");
 	String addtoteam = context.getRequestParameter("addtoteam");
 	
@@ -35,7 +35,7 @@ public void init()
 		teamuser = archive.getUserManager().createUser(null, password);
 		teamuser.setFirstName(firstName);
 		teamuser.setLastName(lastName);
-		teamuser.setEmail(email);
+		teamuser.setEmail(email.trim().toLowerCase());
 		archive.getUserManager().saveUser(teamuser);
 	}
 	
