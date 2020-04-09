@@ -1,53 +1,52 @@
 #set($collectionid = $librarycol.getId())
 <div id="subscriberssidebar">
 <div class="subscribe-area">
-#if( $user )
-	#set( $searcher = $mediaarchive.getSearcher("librarycollectionusers") )
-	#set( $found = $searcher.query().exact("followeruser",$user.getId()).exact("collectionid",$collectionid).searchOne() )
-#end	
-#if( !$found)
-<div class="subscribe-title">
-[[Join the Collective]]
-</div>	
-#if ($user && !$found)
-<form name="saveproject" id="saveproject" class="ajaxform" data-targetdiv="subscriberssidebar" action="$applink/collective/channel/subscribers/addsave.html" method="post">
-<input type="hidden" name="save" value="true" />
-
-<input type="hidden" name="teamuserid" value="$user.getId()" />
-<input type="hidden" name="field" value="addeddate" />
-<input type="hidden" name="addeddate.value" value="$storeddate" />
-<input type="hidden" name="field" value="collectionid" />
-<input type="hidden" name="collectionid.value" value="$collectionid" />
-<input type="hidden" name="collectionid" value="$collectionid" />
-<input type="submit" class="btn subscribe-btn" value="[[Like]]" />
-</form>
-#else
-#set($loginok = "$applink/collective/about/$collectionid/")
-<a href="$applink/authentication/login.html?loginokpage=$!loginok" class="btn subscribe-btn">[[Login to Like]]</a>
-#end
-<div class="subscribe-headline">
-	#if( $caneditcollection)
-	<a class="oe-dataedit showeditonright" data-target="#editjoincollectivetext-$librarycol.id" title="[[Edit Join Collective Text]]" data-width="500"	href="#"><i class="fas fa-edit"></i></a>
+	#if( $user )
+		#set( $searcher = $mediaarchive.getSearcher("librarycollectionusers") )
+		#set( $following = $searcher.query().exact("followeruser",$user.getId()).exact("collectionid",$collectionid).searchOne() )
+	#end	
+	#if( !$following)
+			<h3>[[JOIN THE PROJECT]]</h3>
+			
+	#if ($user && !$following)
+	<form name="saveproject" id="saveproject" class="ajaxform" data-targetdiv="subscriberssidebar" action="$applink/collective/channel/subscribers/addsave.html" method="post">
+	<input type="hidden" name="save" value="true" />
+	
+	<input type="hidden" name="teamuserid" value="$user.getId()" />
+	<input type="hidden" name="field" value="addeddate" />
+	<input type="hidden" name="addeddate.value" value="$storeddate" />
+	<input type="hidden" name="field" value="collectionid" />
+	<input type="hidden" name="collectionid.value" value="$collectionid" />
+	<input type="hidden" name="collectionid" value="$collectionid" />
+	<input type="submit" class="btn subscribe-btn" value="[[Like]]" />
+	</form>
+	#else
+	#set($loginok = "$applink/collective/about/$collectionid/")
+	<a href="$applink/authentication/login.html?loginokpage=$!loginok" class="btn subscribe-btn">[[Login to Like]]</a>
+	#end
+	<div class="subscribe-headline">
+		#if( $caneditcollection)
+		<a class="oe-dataedit showeditonright" data-target="#editjoincollectivetext-$librarycol.id" title="[[Edit Join Collective Text]]" data-width="500"	href="#"><i class="fas fa-edit"></i></a>
+		
+		#end
+		<div class="oe-editable" id="editjoincollectivetext-$librarycol.id" data-dataid="$librarycol.id" data-field="joincollectivetext" data-searchtype="librarycollection">
+		   		#if($librarycol.joincollectivetext) 
+					$!librarycol.joincollectivetext
+				#else
+				<p>
+				[[Meet our team & Community and become a co-creator, sponsor or influencer]]
+				</p> 
+				#end
+				</div>
+	
+	</div>	
+	#else
+	<div class="subscribe-title">[[Liked]]</div>
+		 <a href="$applink/collective/channel/subscribers/unsubscribe.html?id=${found.getId()}&collectionid=$librarycol.getId()" 
+			>[[Un-Like]]</a>
 	
 	#end
-	<div class="oe-editable" id="editjoincollectivetext-$librarycol.id" data-dataid="$librarycol.id" data-field="joincollectivetext" data-searchtype="librarycollection">
-	   		#if($librarycol.joincollectivetext) 
-				$!librarycol.joincollectivetext
-			#else
-			<p>
-			[[Meet our team & Community and become a co-creator, sponsor or influencer]]
-			</p> 
-			#end
-			</div>
-
-</div>	
-#else
-<div class="subscribe-title">[[Liked]]</div>
-	 <a href="$applink/collective/channel/subscribers/unsubscribe.html?id=${found.getId()}&collectionid=$librarycol.getId()" 
-		>[[Un-Like]]</a>
-
-#end
-##<a href="$applink/channel/subscribers/addnew.html?collectionid=$librarycol.getId()" class="emdialog btn btn-primary">[[Invite Others]]</a>
+	##<a href="$applink/channel/subscribers/addnew.html?collectionid=$librarycol.getId()" class="emdialog btn btn-primary">[[Invite Others]]</a>
 
 <div class="subscribers-box">
 <div class="subscribers-box-box">
@@ -82,15 +81,15 @@
 	</div>
 	
 #end
-<div class="community-area">
-<h3>[[Team]]</h3>
+<div class="subscribesidebarbox">
+<h4><i class="fas fa-users"></i> [[Team]]</h4>
 
 #set( $team = $mediaarchive.query("librarycollectionusers").exact("collectionid",$collectionid).exact("ontheteam",true).search($context) )
 	
 #if( $team.isEmpty()) 
 	<p>[[No Team yet]]</p>
 #else
-<div class="row no-gutters">
+<div class="row no-gutters" style="margin-bottom:1rem;">
   #foreach( $hit in $team)
 	
   	#set( $followeruser = $mediaarchive.getUser($hit.followeruser) )
