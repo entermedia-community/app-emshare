@@ -1,58 +1,58 @@
 #set($collectionid = $librarycol.getId())
-<div class=" h-100"  style="max-height: calc(100% - 290px); width:100%;" >
+<div class="collectivecontent" >
 <div class="row h-100" >
 <div class="col">
-<div class="maincontent h-100">
-
-<h2>Products and Services</h2>
-##Search instances in these organizations
-		#set( $products = $mediaarchive.query("collectiveproduct").match("collectionid", $collectionid).search() )
-			#if ($products)
-				<div class="emdata">
-			    <table class="table table-striped">
-			        <thead>
-			            <tr class="tableheader">
-			            
-			                <th>[[Name]]</th>
-			         		<th>[[Price]]</th>
-			                <th>[[Description]]</th>
-										                <th>[[Payment Options]]</th>
-			                
-			            </tr>
-			        </thead>
-					#foreach($hit in $products)
-						#if ($hit.instance_status == "active")
-							#set($instancescount = $instancescount+1)
-						#end
-						<tr>
-				            <td>$hit.name</td>
-							<td style="text-align: center;">$!hit.price	</td>
-				            <td style="text-align: center;">$!hit.productdescription</td>
-							
+<div class="collectivemaincol h-100">
+	<div class="content">
+	<h3>[[Products and Services]]</h3>
+	##Search instances in these organizations
+			#set( $products = $mediaarchive.query("collectiveproduct").match("collectionid", $collectionid).search() )
+				#if ($products)
+					<div class="emdata">
+				    <table class="table table-striped">
+				        <thead>
+				            <tr class="tableheader">
 				            
-							<td>
-								<a href="$applink/collective/services/addtoinvoice.html?collectionid=${collectionid}&productid=${hit.id}" class=" btn btn-sm btn-primary" title="[[Add a Project]]">[[Buy Now]]</a>
-								<a href="$applink/collective/services/paylater.html?collectionid=${collectionid}&productid=${hit.id}" class=" btn btn-sm btn-primary" title="[[Add a Project]]">[[Invoice Me]]</a>
-
-							</td>
-				        </tr>
-					
-					#end
-			    </table>
-		    	</div>
-			#end
-	#if( $caneditcollection )
-
-	<a href="$applink/collective/services/addnew.html?collectionid=${collectionid}" class="emdialog btn btn-sm btn-primary" title="[[Add a Billing]]">[[Add Billing]]</a></div>
-
-	#end
-</div>	
- <div class="col-lg-3 ">
-	<div class="collective-sidebar">
-		$pages.include("$apphome/collective/channel/subscribers/index.html", $context)
+				                <th>[[Name]]</th>
+				         		<th>[[Price]]</th>
+				                <th>[[Description]]</th>
+											                <th>[[Payment Options]]</th>
+				                
+				            </tr>
+				        </thead>
+						#foreach($hit in $products)
+							#if ($hit.instance_status == "active")
+								#set($instancescount = $instancescount+1)
+							#end
+							<tr>
+					            <td>$hit.name</td>
+								<td style="text-align: center;">$!hit.price	</td>
+					            <td style="text-align: center;">$!hit.productdescription</td>
+								
+					            
+								<td>
+									<a href="$applink/collective/services/addtoinvoice.html?collectionid=${collectionid}&productid=${hit.id}" class=" btn btn-sm btn-primary" title="[[Add a Project]]">[[Buy Now]]</a>
+									<a href="$applink/collective/services/paylater.html?collectionid=${collectionid}&productid=${hit.id}" class=" btn btn-sm btn-primary" title="[[Add a Project]]">[[Invoice Me]]</a>
+	
+								</td>
+					        </tr>
+						
+						#end
+				    </table>
+			    	</div>
+				#end
+		#if( $caneditcollection )
+	
+		<a href="$applink/collective/services/addnew.html?collectionid=${collectionid}" class="emdialog btn btn-sm btn-primary" title="[[Add a Billing]]">[[Add Billing]]</a></div>
+	
+		#end
 	</div>
- </div>
+	</div>	
+	 <div class="col-lg-3 ">
+		<div class="collective-sidebar">
+			$pages.include("$apphome/collective/channel/subscribers/index.html", $context)
+		</div>
+	 </div>
 </div>		
-
 </div>
 			

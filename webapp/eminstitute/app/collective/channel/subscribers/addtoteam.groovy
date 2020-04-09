@@ -15,7 +15,10 @@ public void init()
 	String collectionid = context.getRequestParameter("collectionid");
 	String firstName = context.getRequestParameter("firstName.value");
 	String lastName = context.getRequestParameter("lastName.value");
-	String email = context.getRequestParameter("email.value").trim().toLowerCase();
+	String email = context.getRequestParameter("email.value");
+	if(email) {
+		email = email.trim().toLowerCase();
+	}
 	String teamuserid = context.getRequestParameter("teamuserid");
 	String addtoteam = context.getRequestParameter("addtoteam");
 	
