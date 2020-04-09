@@ -38,7 +38,7 @@ public void init()
 		teamuser = archive.getUserManager().createUser(null, password);
 		teamuser.setFirstName(firstName);
 		teamuser.setLastName(lastName);
-		teamuser.setEmail(email);
+		teamuser.setEmail(email.trim().toLowerCase());
 		archive.getUserManager().saveUser(teamuser);
 	}
 	
