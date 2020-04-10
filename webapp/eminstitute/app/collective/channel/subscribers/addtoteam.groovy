@@ -66,7 +66,7 @@ public void init()
 	context.putPageValue("subscription",subscription);
 		
 	
-	String template = context.findValue("applink") + "/theme/emails/collection-add-teammember.html";
+	String template = context.findValue("apphome") + "/theme/emails/collection-add-teammember.html";
 
 	WebEmail templatemail = archive.createSystemEmail(teamuser, template);
 	templatemail.setSubject("Added to Team"); //TODO: Translate
@@ -77,7 +77,7 @@ public void init()
 	objects.put("teamuser",teamuser);
 	Data librarycol = archive.getData("librarycollection", collectionid);
 	objects.put("librarycol", librarycol);
-	objects.put("applink", context.findValue("applink"));
+	objects.put("apphome", context.findValue("apphome"));
 	templatemail.send(objects);
 			
 }
