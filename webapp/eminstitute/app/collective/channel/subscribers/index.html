@@ -11,10 +11,10 @@
 					class="btn subscribe-btn">[[Liked]]</a>
 			</div>
 		#else
-			<form name="saveproject" id="saveproject" class="ajaxform" data-targetdiv="subscriberssidebar" action="$applink/collective/channel/subscribers/addsave.html" method="post">
+			<form name="saveproject" id="saveproject" class="ajaxform" data-targetdiv="subscriberssidebar" action="$applink/collective/channel/subscribers/likesave.html" method="post">
 			<input type="hidden" name="save" value="true" />
-			
-			<input type="hidden" name="teamuserid" value="$user.getId()" />
+			<input type="hidden" name="field" value="followeruser" />
+			<input type="hidden" name="followeruser.value" value="$user.getId()" />
 			<input type="hidden" name="field" value="addeddate" />
 			<input type="hidden" name="addeddate.value" value="$storeddate" />
 			<input type="hidden" name="field" value="collectionid" />
@@ -44,7 +44,7 @@
 <a class="emdialog" data-cancelsubmit="true" title="View Subscribers" href="$applink/collective/channel/subscribers/subscriberslist.html?collectionid=$librarycol.getId()">
 	<div class="box-content" style="border-right:1px solid #ddd">
 	<strong>[[Likes]]</strong>
-	#set( $subscribers = $mediaarchive.query("librarycollectionusers").exact("collectionid",$collectionid).search($context) )
+	#set( $subscribers = $mediaarchive.query("librarycollectionlikes").exact("collectionid",$collectionid).search($context) )
 	<div class="box-number">$subscribers.size()</div>
 	</div>
 </a>	
@@ -129,7 +129,6 @@
 			<input type="hidden" name="save" value="true" />
 			<input type="hidden" name="field" value="followeruser" />
 			<input type="hidden" name="followeruser.value" value="$user.getId()" />
-			
 			<input type="hidden" name="field" value="addeddate" />
 			<input type="hidden" name="addeddate.value" value="$storeddate" />
 			<input type="hidden" name="field" value="collectionid" />
