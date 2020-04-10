@@ -156,28 +156,17 @@
 
 #set( $donations = $mediaarchive.query("transaction").exact("collectionid",$collectionid).sort("paymentdate").search($context) )
 	
-<h3>[[Recent Donations]]</h3>
 #if( !$donations.isEmpty() )
-<table>
+<h3>[[Recent Donations]]</h3>
 	#foreach($transaction in $donations)
 		#if ($transaction.userid)
 	 	#set( $selecteduser = $mediaarchive.getUser($transaction.userid) )
-		#set( $userlink = "$applink/users/${selecteduser.getId()}/${selecteduser.getAnonNickName()}.html")
-		#set( $userimageurl = $mediaarchive.asLinkToProfile($selecteduser.assetportrait) )
-		#if(!$userimageurl)
-			#set( $userimageurl = "$applink/theme/images/user.svg" )
-		#end
-		<tr>
-			<td style="width:40px">
-$!context.getDateTime($transaction.paymentdate)
-			</td>
-			<td> 
+		<div style="background-color:#eee;padding:5px 10px 5px 10px; margin:4px;">
 			<span style="font-size:1rem"><strong>$$transaction.totalprice</strong></span> [[from]]
-			$selecteduser.getAnonNickName()
-			</td></tr>
+			$selecteduser.getAnonNickName() <br>on $!context.getDateTime($transaction.paymentdate)
+		</div>	
 		#end		
 	#end
-</table>
 #end
 <div class="text-center">
 	<a href="$applink/collective/donate/donate.html?collectionid=$collectionid" class="btn subscribe-btn">[[Donate Now]]</a>
