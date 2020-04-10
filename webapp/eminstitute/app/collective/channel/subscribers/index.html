@@ -2,7 +2,7 @@
 <div id="subscriberssidebar">
 
 <div class="float-right" style="margin:8px -10px 0 0">
-<a class="emdialog" data-allwaysloadpage="true" href="$applink/collective/edit/editcollective.html?collectionid=$librarycol.getId()" title="[[Project Settings]]"><i class="fas fa-sliders-h"></i></a>
+<a class="emdialog" data-allwaysloadpage="true" href="$applink/collective/edit/editcollective.html?collectionid=$librarycol.getId()" title="[[Project Settings]]"><i class="fas fa-cog"></i></a>
 </div>
 
 <div class="subscribe-area">
@@ -122,14 +122,17 @@
 	</div>
 	
 #end
+	#if( $caneditcollection)
+	<div class="pull-right" style="text-align:center;">
+	<a href="$applink/collective/channel/subscribers/usersearch.html?collectionid=${collectionid}" class="emdialog btn-gray btn btn-sm" title="[[Search Users]]">
+	<i class="fas fa-search"></i> [[Add Member]]
+	</a>
+	</div>
+	#end
 #if($user)
 #set( $onteam = $mediaarchive.query("librarycollectionusers").exact("followeruser",$user.getId()).exact("collectionid",$collectionid).exact("ontheteam",true).search($context) )
 #if(!$onteam)
-
-			<p>
-			[[Join the team to contribute]]
-			</p> 
-
+<div style="text-align: center">
 <form name="saveproject" id="saveproject" class="ajaxform" data-targetdiv="subscriberssidebar" action="$applink/collective/channel/subscribers/teamsave.html" method="post" style="padding-bottom:5px">
 			<input type="hidden" name="save" value="true" />
 			<input type="hidden" name="field" value="followeruser" />
@@ -143,15 +146,12 @@
 			<input type="hidden" name="ontheteam.value" value="true" />
 			<input type="submit" class="btn btn-success" value="[[Join Team]]" />
 </form>
+			<p>
+			[[Join the team to contribute]]
+			</p> 
+</div>
 #end
 #end
-	#if( $caneditcollection)
-	<div class="pull-right" style="text-align:center;">
-	<a href="$applink/collective/channel/subscribers/usersearch.html?collectionid=${collectionid}" class="emdialog btn-gray btn btn-sm" title="[[Search Users]]">
-	<i class="fas fa-search"></i> [[Add Member]]
-	</a>
-	</div>
-	#end
 
 
 #set( $donations = $mediaarchive.query("transaction").exact("collectionid",$collectionid).sort("paymentdate").search($context) )
