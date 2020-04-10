@@ -80,11 +80,10 @@
 	#set($selectedproject = $librarycol.getId())
 
 	#if($userprojectsids)
-	#set( $organizations = $mediaarchive.query("librarycollection").ids($userprojectsids).enduser(true).sort("name").search() )
+		#set( $organizations = $mediaarchive.query("librarycollection").ids($userprojectsids).enduser(true).sort("name").search() )
+		#set( $modcollections = $chatManager.loadCollectionsModified($organizations,$user.getId() ) )
 	
-	#set( $modcollections = $chatManager.loadCollectionsModified($organizations,$user.getId() ) )
-	
-	<ul class="sidebar-list">
+		<ul class="sidebar-list">
 		#foreach( $ohit in $organizations.getPageOfHits() )
 			<li class="#if($selectedproject==$ohit.id) current #end">
 				<a href="$applink/collective/community/index.html?collectionid=$ohit.id&goaltrackerstaff=*" >
@@ -93,7 +92,7 @@
 				</a>
 			</li>
 		#end
-	</ul>
+		</ul>
 	#end
 
 	<div style="padding:20px 20px;">
@@ -105,7 +104,10 @@
   		 	class="btn btn-primary" >[[Start New Project]]</a>	
     </div>
 </div>
-#end
+</div>
+
+
+#end  ##if user
 		
 
 

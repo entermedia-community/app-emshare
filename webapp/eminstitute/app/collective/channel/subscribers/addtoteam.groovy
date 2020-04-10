@@ -16,6 +16,9 @@ public void init()
 	String firstName = context.getRequestParameter("firstName.value");
 	String lastName = context.getRequestParameter("lastName.value");
 	String email = context.getRequestParameter("email.value");
+	if(email) {
+		email = email.trim().toLowerCase();
+	}
 	String teamuserid = context.getRequestParameter("teamuserid");
 	String addtoteam = context.getRequestParameter("addtoteam");
 	
