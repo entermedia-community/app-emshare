@@ -1,5 +1,5 @@
 #set( $searcher = $mediaarchive.getSearcher("librarycollectionlikes") )
-#set( $subs = $searcher.query().exact("collectionid",$librarycol.getId()).sort("addeddate").search($context))
+#set( $subs = $searcher.query().exact("collectionid",$librarycol.getId()).sort("ontheteam").search($context))
 #if( $subs.isEmpty()) 
 	<p>[[No Likes yet]]</p>
 #else
@@ -9,6 +9,7 @@
 		<tr class="tableheader">
 		<th>[[User]]</th>
 		<th>[[Added]]</th>
+		<th></th>
 		</tr>
    		</thead>
   #foreach( $hit in $subs)
@@ -27,6 +28,22 @@
 			</a>
 			</td> 
         	<td><span class="usernote">#if ($hit.getValue("addeddate")) $context.getDateTime( $hit.getValue("addeddate") )</span> #end</td>
+        	
+       		
+        	<td class="text-center">
+				#if( $caneditcollection )
+				<span class="whatsapp" id="team${hit.followeruser}">
+        	 	<a class="ajax btn btn-primary btn-sm " data-targetdiv="team${hit.followeruser}" data-oemaxlevel="1"
+        	 		href="$applink/collective/channel/subscribers/teamtoggle.html?collectionid=$librarycol.getId()&userid=$followeruser.getId()">
+        	 		#if( $hit.getBoolean("ontheteam"))
+        	 			[[Remove from team]]
+        	 		#else
+						[[Add to team]]        	 		
+        	 		#end</a></span>
+        		#elseif( $hit.getBoolean("ontheteam"))
+        	   	 <span class="whatsapp">(On The Team)</span>
+        		#end
+        	</td>        	
         </tr>
   #end
   </table>
