@@ -2,14 +2,22 @@
 
 <div class="stations-grid ">
 	<div class="project-grid">
-		  #set( $subscriptions = $mediaarchive.query("librarycollectionusers").exact("followeruser",$selecteduser.getId()).sort("isonteam").search() )
+		#set( $ids = $mediaarchive.query("librarycollectionusers").exact("followeruser",$selecteduser.getId()).sort("isonteam").search() )
+		#set( $collections = $mediaarchive.query("librarycollection").ids($ids).sort("name").search($context) )
+		#set( $modcollections = $chatManager.loadCollectionsModified($collections,$user.getId() ) )
 	
-		#foreach( $hit in $subscriptions )
+		#foreach( $collection in $collections )
 				
-				#set($collective = $mediaarchive.getCachedData("librarycollection",$hit.collectionid) )
 				$context.putPageValue("subscribed","true")
 				$context.putPageValue("ontheteam",$hit.ontheteam)
-				$context.putPageValue("collective", $collective)
+				$context.putPageValue("collective", $collection)
+				
+				#if( $modcollections.contains($ohit.getId())) 
+					$context.putPageValue("pendingmessages", true)
+				#else
+					$context.putPageValue("pendingmessages", false)
+				 #end
+				
 				$pages.include("$apphome/browse/collectivelisting.html", $context)
 		#end
 		
@@ -19,15 +27,9 @@
 
 <div class="stations-grid ">
 	<div class="project-grid ">
+	  	 <h3 	> [[Likes]]</h3>
 	
-	   	#if( $selecteduser.getId() == $user.getId()) 
-	  	 <h3 	> [[Subscriptions]]</h3>
-	   	#else
-	   	<h3 	> [[Common Projects]]</h3>
-	   	#end
-	
-	
-		#set( $organizationsuser = $mediaarchive.query("librarycollectionusers").exact("followeruser",$selecteduser.getId()).search() )
+		#set( $organizationsuser = $mediaarchive.query("librarycollectionlikes").exact("followeruser",$selecteduser.getId()).search() )
 		#set($oids = [])
 		#foreach( $ohit in $organizationsuser )
 			#set($x = $oids.add($ohit.collectionid))
