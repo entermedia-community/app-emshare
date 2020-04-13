@@ -1,11 +1,11 @@
 #set($collectionid = $librarycol.getId())
 <div id="subscriberssidebar">
-
-<div class="float-right" style="margin:8px -10px 0 0">
-<a class="emdialog" data-allwaysloadpage="true" href="$applink/collective/edit/editcollective.html?collectionid=$librarycol.getId()" title="[[Project Settings]]"><i class="fas fa-cog"></i></a>
-</div>
-
-<div class="subscribe-area">
+	#if( $caneditcollection)
+	<div class="float-right" style="margin:8px -10px 0 0">
+	<a class="emdialog" data-allwaysloadpage="true" href="$applink/collective/edit/editcollective.html?collectionid=$librarycol.getId()" title="[[Project Settings]]"><i class="fas fa-cog"></i></a>
+	</div>
+	#end
+	<div class="subscribe-area">
 	#if( $user )
 		#set( $likesearcher = $mediaarchive.getSearcher("librarycollectionlikes") )
 		#set( $liked = $likesearcher.query().exact("followeruser",$user.getId()).exact("collectionid",$collectionid).searchOne() )
@@ -61,30 +61,31 @@
 		#end
 		</div>
 	</div>	
-
+	</div>
+<div class=" text-center">
 <div class="subscribers-box">
 <div class="subscribers-box-box">
-<a class="emdialog" data-cancelsubmit="true" title="View Subscribers" href="$applink/collective/channel/subscribers/subscriberslist.html?collectionid=$librarycol.getId()">
-	<div class="box-content" style="border-right:1px solid #ddd">
-	<strong>[[Likes]]</strong>
-	#set( $subscribers = $mediaarchive.query("librarycollectionlikes").exact("collectionid",$collectionid).search($context) )
-	<div class="box-number">$subscribers.size()</div>
-	</div>
-</a>	
+	<a class="emdialog" data-cancelsubmit="true" title="View Subscribers" href="$applink/collective/channel/subscribers/subscriberslist.html?collectionid=$librarycol.getId()">
+		<div class="box-content" style="border-right:1px solid #ddd;">
+		<strong>[[Likes]]</strong>
+		#set( $subscribers = $mediaarchive.query("librarycollectionlikes").exact("collectionid",$collectionid).search($context) )
+		<div class="box-number">$subscribers.size()</div>
+		</div>
+	</a>	
 </div> 
-<div class="subscribers-box-box">
-<a class="emdialog" title="[[Share]]" href="$applink/components/share/embed.html?collectionid=$librarycol.id">
-	<div class="box-content">
-	<strong>[[Share]]</strong>
-	<div class="box-icons">
-		<i class="fas fa-envelope"></i>
-	</div>
-	</div>
-</div>  
-</a>
-<div class="clearfix"></div>
-</div>
 
+<div class="subscribers-box-box">
+	<a class="emdialog" title="[[Share]]" href="$applink/components/share/embed.html?collectionid=$librarycol.id">
+		<div class="box-content">
+			<strong>[[Share]]</strong>
+			<div class="box-icons">
+				<i class="fas fa-envelope"></i>
+			</div>
+		</div>
+	</a>
+	<div class="clearfix"></div>
+</div>
+</div>
 </div>
 
 #if($librarycol.collectivedescription)
@@ -121,12 +122,12 @@
 	<div class="col-md-6" >
 	  <div class="teammember">
 	  	
-	  	<div style="position: absolute; width:36px;">
-		<a href="#esc($userlink)" style="display:block; height:36px">
+	  	<div style="position: absolute; width:32px;">
+		<a href="#esc($userlink)" style="display:block; height:32px">
 		<img  src="${userimageurl}"  title="$!followeruser.getAnonNickName()" class="img-fluid align-middle usericon" 
 			style="position:relative; top:50%; transform: translateY(-50%);"></a>
 		</div>
-	  	<div style="margin-left:42px; height:38px; position:relative;">
+	  	<div style="margin-left:40px; height:34px; position:relative;">
 	    <div style="position:relative; top:50%; transform: translateY(-50%);">
 	    	<a href="#esc($userlink)" title="$!followeruser.getAnonNickName()">$!followeruser.getAnonNickName()</a></div> 
 	   	<div>
@@ -159,7 +160,7 @@
 	#foreach($transaction in $donations)
 		#if ($transaction.userid)
 	 	#set( $selecteduser = $mediaarchive.getUser($transaction.userid) )
-		<div style="background-color:#eee;padding:5px 10px 5px 10px; margin:4px;">
+		<div style="background-color:#eee;padding:5px 10px 5px 10px; margin:4px 0;">
 			<span style="font-size:1rem"><strong>$$transaction.totalprice</strong></span> [[from]]
 			$selecteduser.getAnonNickName() <br>[[on]] $!context.getDateTime($transaction.paymentdate)
 		</div>	
@@ -179,6 +180,9 @@
 		<a  href="$applink/community/${library.id}/${library.name.replaceAll(" ","-")}.html">$library</a>
 	#end
 		</div>	
+</div>
+
+
 </div>
         
  
