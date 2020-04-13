@@ -7,30 +7,31 @@
 #end
 #set($fullwidth = $content.fullwidth)
 
-		#set($homelink = "$apphome/collective/community/index.html?collectionid=$collectionid")
-		#if ($librarycol.assetbanner)
-			#set( $banner= $mediaarchive.getAsset($librarycol.assetbanner) )
-		#end
+	#set($homelink = "$apphome/collective/community/index.html?collectionid=$collectionid")
+	#if ($librarycol.assetbanner)
+		#set( $banner= $mediaarchive.getAsset($librarycol.assetbanner) )
+	#end
+	#set( $logo = $mediaarchive.getAsset($librarycol.assetportrait) )
 
-<div class="collectivelayout" >
+<div class="collectivelayout #if($logo) collectivelayoutlogo #end" >
 		<div 
 			class="collectivebanner #if($fullwidth)collectivebanner-fullwidth#end text-center #if($banner) hasbanner #end"
 			#if($banner) #set ($bannerurl = "/$mediaarchive.getMediaDbId()/services/module/asset/downloads/preset/${banner.sourcepath}/image1920x500cropped.jpg")	style="background-image:url($bannerurl)"	#end
 		>
-			#set($homelink = "$apphome/collective/community/index.html?collectionid=$librarycol.getId()")
-			#set( $logo = $mediaarchive.getAsset($librarycol.assetportrait) )
-			#if($logo)
-			<a  href="$homelink" title="$!librarycol.name">
-				<div class="project-thumb" style="background-image: url('/$mediaarchive.getMediaDbId()/services/module/asset/downloads/preset/${logo.sourcepath}/image200x200.png')"></div>
-			</a>
-			#end	
-	
-			<div class="project-title ">
-			$!librarycol.name
+			<div class="container" style="position: relative;">
+				#if($logo)
+					<a  href="$homelink" title="$!librarycol.name">
+						<div class="project-thumb" style="background-image: url('/$mediaarchive.getMediaDbId()/services/module/asset/downloads/preset/${logo.sourcepath}/image200x200.png')"></div>
+					</a>
+				#end	
+		
+				<div class="project-title ">
+				$!librarycol.name
+				</div>
 			</div>
-
-		$pages.include("$apphome/collective/menu.html", $context)
-	</div>
+			$pages.include("$apphome/collective/menu.html", $context)
+			
+		</div>
 
 	$pages.includeContent()	
 
