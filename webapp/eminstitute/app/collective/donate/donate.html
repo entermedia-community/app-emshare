@@ -2,7 +2,7 @@
 	<div class="row">
 		<div class="col" style="min-width:300px;">
 			<div class="contentcolumn">
-			<h1>[[Donate to Project]]</h1>
+			<h1>[[Donate to ]] $librarycol</h1>
 			#if( $caneditcollection)
 				<a class="oe-dataedit showeditonright" data-target="#editdonatedescription-$librarycol.id" title="[[Edit Donation Description]]" data-width="500"	href="#"><i class="fas fa-edit"></i></a>
 			#end
@@ -19,7 +19,13 @@
 			<div class="card donatecard">
 			
 			
-			 <div class="card-block" style="padding:20px 21px;">                      
+			
+			 <div class="card-block" style="padding:20px 21px;">
+			 
+			 #if( !$user)
+			 	#set($loginok = "$applink/collective/donate/$!librarycol.id/donate.html")
+				<a href="$applink/authentication/logon.html?loginokpage=$!loginok" class="btn subscribe-btn">[[Login to Donate]]</a>
+			 #else
 			       	<form action="$applink/collective/donate/donatefinish.html" method="post" id="payment-form" class="form">
 		            	<input type="hidden" name="collectionid" value="$!librarycol.id" />
 		             	<div class="row"><div class="col">
@@ -82,6 +88,7 @@
 					  	
 				  	
 					</form>
+			#end		
 			<hr>
 			<p>Or we support donations with:</p> 			
 			<p style="text-align:center">
@@ -96,7 +103,7 @@
 			</div>
 			
 			 <div class="col col-lg-4 ">
-		<div class="collective-sidebar">
+		<div class="collective-sidebar" style="margin:0px;">
 				$pages.include("$apphome/collective/channel/subscribers/index.html")
 		</div>
 			 </div>
