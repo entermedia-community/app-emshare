@@ -7,22 +7,22 @@
     <nav id="mainOINav" class="navbar navbar-fixed-top navbar-expand-sm nav-project-page">    
 	<a class="navbar-brand" href="$applink/index.html" title="Open Institute"> 
 	<img style="height: 50px;" src="$applink/theme/oi/OI.png" alt="Open Institute"></a>
-		#if( $library)
-		<h1 class="navcommunity"><a href="$applink/community/$library.getId()/${library.name.replaceAll(" ","-")}.html">#esc($library.name)</a></h1>
-		#end 
 		<button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-          
           <i class="fa fa-bars"></i>
         </button>
         <div class="collapse navbar-collapse" id="navbarResponsive">
 			#set($oisection = $content.oisection)          
-			<ul class="navbar-nav  ml-auto">
+			<ul class="navbar-nav ">
 		   
 		   #if( $selecteduser.getId() == $user.getId())
 		   	#set($oisection = "account")
-		   #end 
-	            <li class="nav-item dropdown">
-	              <a class="nav-link  dropdown-toggle  js-scroll-triggerr " href="#" data-toggle="dropdown">Communities</a>
+		   #end
+		   #if( $library)
+			<li class="nav-item"><h1 class="navcommunity"><a  class="nav-link  href="$applink/community/$library.getId()/${library.name.replaceAll(" ","-")}.html">#esc($library.name)</a></h1></li>
+			#end 
+		    
+            <li class="nav-item dropdown">
+	              <a class="nav-link  dropdown-toggle " href="#" data-toggle="dropdown">[[Communities]]</a>
 	              <ul class="dropdown-menu">
 	    	        	
         			#set( $libraries = $mediaarchive.query("library").sort("name").all().search($context) )
