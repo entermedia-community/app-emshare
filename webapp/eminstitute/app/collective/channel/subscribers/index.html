@@ -11,12 +11,11 @@
 		#set( $liked = $likesearcher.query().exact("followeruser",$user.getId()).exact("collectionid",$collectionid).searchOne() )
 
 		#if ($liked)
-			<div class="subscribe-title">
 				 <a href="$applink/collective/channel/subscribers/unsubscribe.html?id=${liked.getId()}&collectionid=$librarycol.getId()" 
-					class="btn subscribe-btn">[[Liked]]</a>
-			</div>
+					class="btn btn-secondary btn-action">[[Liked]]</a>
 		#else
-			<form name="saveproject" id="saveproject" class="ajaxform" data-targetdiv="subscriberssidebar" action="$applink/collective/channel/subscribers/likesave.html" method="post">
+			<h3>[[JOIN THE PROJECT]]</h3>
+			<form name="saveproject" id="saveproject" class="ajaxform" style="display:inline-block;" data-targetdiv="subscriberssidebar" action="$applink/collective/channel/subscribers/likesave.html" method="post">
 			<input type="hidden" name="save" value="true" />
 			<input type="hidden" name="field" value="followeruser" />
 			<input type="hidden" name="followeruser.value" value="$user.getId()" />
@@ -25,12 +24,31 @@
 			<input type="hidden" name="field" value="collectionid" />
 			<input type="hidden" name="collectionid.value" value="$collectionid" />
 			<input type="hidden" name="collectionid" value="$collectionid" />
-			<input type="submit" class="btn subscribe-btn" value="[[Like]]" />
+			<input type="submit" class="btn btn-success btn-action" value="[[Like]]" />
+			</form>
+			
+
+		#end
+		#set( $onteam = $mediaarchive.query("librarycollectionusers").exact("followeruser",$user.getId()).exact("collectionid",$collectionid).exact("ontheteam",true).search($context) )
+		#if(!$onteam)
+			<form name="saveproject" id="saveproject" class="ajaxform" style="display:inline-block;" data-targetdiv="subscriberssidebar" action="$applink/collective/channel/subscribers/teamsave.html" method="post" style="padding-bottom:5px">
+						<input type="hidden" name="save" value="true" />
+						<input type="hidden" name="field" value="followeruser" />
+						<input type="hidden" name="followeruser.value" value="$user.getId()" />
+						<input type="hidden" name="field" value="addeddate" />
+						<input type="hidden" name="addeddate.value" value="$storeddate" />
+						<input type="hidden" name="field" value="collectionid" />
+						<input type="hidden" name="collectionid.value" value="$collectionid" />
+						<input type="hidden" name="collectionid" value="$collectionid" />
+						<input type="hidden" name="field" value="ontheteam" />
+						<input type="hidden" name="ontheteam.value" value="true" />
+						<input type="submit" class="btn btn-success btn-action" value="[[Join Team]]" />
 			</form>
 		#end
 	#else
+		<h3>[[JOIN THE PROJECT]]</h3>
 		#set($loginok = "$applink/collective/about/$collectionid/${librarycol.getWebName()}.html")
-		<a href="$applink/authentication/login.html?loginokpage=$!loginok" class="btn subscribe-btn">[[Login to Like]]</a>
+		<a href="$applink/authentication/login.html?loginokpage=$!loginok" class="btn btn-success">[[Login to Like]]</a>
 	#end	
 	
 	<div class="subscribe-headline">
@@ -103,12 +121,12 @@
 	<div class="col-md-6" >
 	  <div class="teammember">
 	  	
-	  	<div style="position: absolute; width:40px;">
-		<a href="#esc($userlink)" style="display:inline-block; height:40px">
+	  	<div style="position: absolute; width:36px;">
+		<a href="#esc($userlink)" style="display:block; height:36px">
 		<img  src="${userimageurl}"  title="$!followeruser.getAnonNickName()" class="img-fluid align-middle usericon" 
 			style="position:relative; top:50%; transform: translateY(-50%);"></a>
 		</div>
-	  	<div style="margin-left:40px; height:40px; position:relative;">
+	  	<div style="margin-left:42px; height:38px; position:relative;">
 	    <div style="position:relative; top:50%; transform: translateY(-50%);">
 	    	<a href="#esc($userlink)" title="$!followeruser.getAnonNickName()">$!followeruser.getAnonNickName()</a></div> 
 	   	<div>
@@ -123,56 +141,39 @@
 	
 #end
 	#if( $caneditcollection)
-	<div class="pull-right" style="text-align:center;">
-	<a href="$applink/collective/channel/subscribers/usersearch.html?collectionid=${collectionid}" class="emdialog btn-gray btn btn-sm" title="[[Search Users]]">
+	<div class="text-right">
+	<a href="$applink/collective/channel/subscribers/usersearch.html?collectionid=${collectionid}" 
+		class="emdialog btn btn-light btn-xs" title="[[Search Users]]">
 	<i class="fas fa-search"></i> [[Add Member]]
 	</a>
 	</div>
 	#end
-#if($user)
-#set( $onteam = $mediaarchive.query("librarycollectionusers").exact("followeruser",$user.getId()).exact("collectionid",$collectionid).exact("ontheteam",true).search($context) )
-#if(!$onteam)
-<div style="text-align: center">
-<form name="saveproject" id="saveproject" class="ajaxform" data-targetdiv="subscriberssidebar" action="$applink/collective/channel/subscribers/teamsave.html" method="post" style="padding-bottom:5px">
-			<input type="hidden" name="save" value="true" />
-			<input type="hidden" name="field" value="followeruser" />
-			<input type="hidden" name="followeruser.value" value="$user.getId()" />
-			<input type="hidden" name="field" value="addeddate" />
-			<input type="hidden" name="addeddate.value" value="$storeddate" />
-			<input type="hidden" name="field" value="collectionid" />
-			<input type="hidden" name="collectionid.value" value="$collectionid" />
-			<input type="hidden" name="collectionid" value="$collectionid" />
-			<input type="hidden" name="field" value="ontheteam" />
-			<input type="hidden" name="ontheteam.value" value="true" />
-			<input type="submit" class="btn btn-success" value="[[Join Team]]" />
-</form>
-			<p>
-			[[Join the team to contribute]]
-			</p> 
 </div>
-#end
-#end
 
 
+<div class="subscribesidebarbox">
 #set( $donations = $mediaarchive.query("transaction").exact("collectionid",$collectionid).sort("paymentdateDown").search($context) )
-	
+<h4><i class="fas fa-hand-holding-usd"></i> [[Donations]]</h4>	
 #if( !$donations.isEmpty() )
-<h3>[[Recent Donations]]</h3>
+<strong>[[Recent Donations]]</strong>
 	#foreach($transaction in $donations)
 		#if ($transaction.userid)
 	 	#set( $selecteduser = $mediaarchive.getUser($transaction.userid) )
 		<div style="background-color:#eee;padding:5px 10px 5px 10px; margin:4px;">
 			<span style="font-size:1rem"><strong>$$transaction.totalprice</strong></span> [[from]]
-			$selecteduser.getAnonNickName() <br>on $!context.getDateTime($transaction.paymentdate)
+			$selecteduser.getAnonNickName() <br>[[on]] $!context.getDateTime($transaction.paymentdate)
 		</div>	
 		#end		
 	#end
 #end
-<div class="text-center">
+<div style="margin:20px 0;" class="text-center">
 	<a href="$applink/collective/donate/$collectionid/donate.html" class="btn subscribe-btn">[[Donate Now]]</a>
 </div>
+</div>
 
-<h3>[[Community]]</h3>
+
+<div class="subscribesidebarbox">
+<h4><i class="fas fa-globe"></i> [[Community]]</h4>
 		<div class="" style="padding-left:6px;">		
 	#foreach($library in $librarycol.getLibraries()) 
 		<a  href="$applink/community/${library.id}/${library.name.replaceAll(" ","-")}.html">$library</a>
