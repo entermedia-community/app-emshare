@@ -93,11 +93,18 @@
 	#esc($librarycol.collectivedescription)
 	</div>
 #end
-#if ($librarycol.facebooklink)
-		<a href="${librarycol.facebooklink}"><i class="fab fa-facebook-f"></i></a>
-#end
-#if ($librarycol.socialinstagram)
-	<a href="${librarycol.instagramlink}"><i class="fab fa-instagram"></i></a>
+#if ($librarycol.facebooklink || $librarycol.instagramlink || $librarycol.websitelink)
+	<div class="text-center" style="margin:20px;">
+	#if ($librarycol.facebooklink)
+			<a href="${librarycol.facebooklink}" class="btn btn-light btn-sm" target="_blank" title="[[Follow Us]]"><i class="fab fa-facebook-f"></i></a>
+	#end
+	#if ($librarycol.instagramlink)
+		<a href="${librarycol.instagramlink}" class="btn btn-light btn-sm" target="_blank" title="[[Follow Us]]"><i class="fab fa-instagram"></i></a>
+	#end
+	#if ($librarycol.websitelink)
+		<a href="${librarycol.websitelink}" class="btn btn-light btn-sm" target="_blank"  title="[[Visit Us]]"><i class="fas fa-link"></i></a>
+	#end
+	</div>
 #end
 
 <div class="subscribesidebarbox">
@@ -124,7 +131,7 @@
 	  	
 	  	<div style="position: absolute; width:32px;">
 		<a href="#esc($userlink)" style="display:block; height:32px">
-		<img  src="${userimageurl}"  title="$!followeruser.getAnonNickName()" class="img-fluid align-middle usericon" 
+			<img  src="${userimageurl}"  title="$!followeruser.getAnonNickName()" class="img-fluid align-middle usericon" 
 			style="position:relative; top:50%; transform: translateY(-50%);"></a>
 		</div>
 	  	<div style="margin-left:40px; height:34px; position:relative;">
