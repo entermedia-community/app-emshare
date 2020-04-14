@@ -1,7 +1,7 @@
 <div class="maincontent">
 	#if($canviewsettings)
 	<!--  $collectionid will be changed and looped from list of all active clients.-->
-		#set( $hits = $mediaarchive.query("librarycollectionusers").orgroup("followeruser",$user).enduser(true).search() )
+		#set( $hits = $mediaarchive.query("librarycollectionusers").orgroup("followeruser",$user.getId()).enduser(true).search() )
 	#if ($hits)
 		<div class="goals-header-actions">
 		<strong> [[You are apart of $hits.size() projects.]]</strong>
@@ -12,15 +12,17 @@
 		<tr class="tableheader">
 			<th style="width:130px">[[Client]]</th>
 			<th style="width:130px">[[Status]]</th>
-			<th style="width:130px">[[Lvl 3 New]]</th>
-			<th style="width:130px">[[Lvl 3 Closed]]</th>
-			<th style="width:130px">[[Lvl 3 Open]]</th>
-			<th style="width:130px">[[Lvl 2 New]]</th>
-			<th style="width:130px">[[Lvl 2 Closed]]</th>
-			<th style="width:130px">[[Lvl 2 Open]]</th>
 			<th style="width:130px">[[Lvl 1 New]]</th>
 			<th style="width:130px">[[Lvl 1 Open]]</th>
 			<th style="width:130px">[[Lvl 1 Closed]]</th>
+			<th style="width:130px">[[Lvl 2 New]]</th>
+			<th style="width:130px">[[Lvl 2 Open]]</th>
+			<th style="width:130px">[[Lvl 2 Closed]]</th>
+			<th style="width:130px">[[Lvl 3 New]]</th>
+			<th style="width:130px">[[Lvl 3 Open]]</th>
+			<th style="width:130px">[[Lvl 3 Closed]]</th>
+			
+
 			
 		</tr>
 		</thead>
@@ -43,43 +45,42 @@
 			<i class="far fa-smile fa-2x"></i>
 			#end
 			</td>
-			<td style="background-color: #07b9fc">
-			#set($newThree = $mediaarchive.query("projectgoal").orgroup("collectionid",$hit.collectionid).exact("ticketlevel","3").after("creationdate",$date).enduser(true).search() )
-			$newThree.size()
+			<td style="background-color: #ffce00">
+			#set($newOne = $mediaarchive.query("projectgoal").orgroup("collectionid",$hit.collectionid).exact("ticketlevel","1").after("creationdate",$date).enduser(true).search() )
+			$newOne.size()
 			</td>
-			<td style="background-color: #07b9fc">
-			#set($threeClosed = $mediaarchive.query("projectgoal").orgroup("collectionid",$hit.collectionid).exact("ticketlevel","3").orgroup("projectstatus","completed").enduser(true).search() )
-			$threeClosed.size()			
-			</td>	
-			<td style="background-color: #07b9fc">
-			#set($openThree = $mediaarchive.query("projectgoal").orgroup("collectionid",$hit.collectionid).exact("ticketlevel","3").orgroup("projectstatus","open").enduser(true).search() )
-			$openThree.size()
+			<td style="background-color: #ffce00">
+			#set($openOne = $mediaarchive.query("projectgoal").orgroup("collectionid",$hit.collectionid).exact("ticketlevel","1").orgroup("projectstatus","open").enduser(true).search() )
+			$openOne.size()
+			</td>
+			<td style="background-color: #ffce00">
+			#set($oneClosed = $mediaarchive.query("projectgoal").orgroup("collectionid",$hit.collectionid).exact("ticketlevel","1").orgroup("projectstatus","completed").enduser(true).search() )
+			$oneClosed.size()			
 			</td>
 			<td style="background-color: #9af000">
 			#set($newTwo = $mediaarchive.query("projectgoal").orgroup("collectionid",$hit.collectionid).exact("ticketlevel","2").after("creationdate",$date).enduser(true).search() )
 			$newTwo.size()
 			</td>
 			<td style="background-color: #9af000">
-			#set($twoClosed = $mediaarchive.query("projectgoal").orgroup("collectionid",$hit.collectionid).exact("ticketlevel","2").orgroup("projectstatus","completed").enduser(true).search() )
-			$twoClosed.size()			
-			</td>	
-			<td style="background-color: #9af000">
 			#set($openTwo = $mediaarchive.query("projectgoal").orgroup("collectionid",$hit.collectionid).exact("ticketlevel","2").orgroup("projectstatus","open").enduser(true).search() )
 			$openTwo.size()
 			</td>
-			<td style="background-color: #ffce00">
-			#set($newOne = $mediaarchive.query("projectgoal").orgroup("collectionid",$hit.collectionid).exact("ticketlevel","1").after("creationdate",$date).enduser(true).search() )
-			$newOne.size()
-			</td>
-			<td style="background-color: #ffce00">
-			#set($oneClosed = $mediaarchive.query("projectgoal").orgroup("collectionid",$hit.collectionid).exact("ticketlevel","1").orgroup("projectstatus","completed").enduser(true).search() )
-			$oneClosed.size()			
+			<td style="background-color: #9af000">
+			#set($twoClosed = $mediaarchive.query("projectgoal").orgroup("collectionid",$hit.collectionid).exact("ticketlevel","2").orgroup("projectstatus","completed").enduser(true).search() )
+			$twoClosed.size()			
 			</td>	
-			<td style="background-color: #ffce00">
-			#set($openOne = $mediaarchive.query("projectgoal").orgroup("collectionid",$hit.collectionid).exact("ticketlevel","1").orgroup("projectstatus","open").enduser(true).search() )
-			$openOne.size()
+			<td style="background-color: #07b9fc">
+			#set($newThree = $mediaarchive.query("projectgoal").orgroup("collectionid",$hit.collectionid).exact("ticketlevel","3").after("creationdate",$date).enduser(true).search() )
+			$newThree.size()
 			</td>
-			
+			<td style="background-color: #07b9fc">
+			#set($openThree = $mediaarchive.query("projectgoal").orgroup("collectionid",$hit.collectionid).exact("ticketlevel","3").orgroup("projectstatus","open").enduser(true).search() )
+			$openThree.size()
+			</td>
+			<td style="background-color: #07b9fc">
+			#set($threeClosed = $mediaarchive.query("projectgoal").orgroup("collectionid",$hit.collectionid).exact("ticketlevel","3").orgroup("projectstatus","completed").enduser(true).search() )
+			$threeClosed.size()			
+			</td>	
 		</tr>
 		#end
 		</table>
