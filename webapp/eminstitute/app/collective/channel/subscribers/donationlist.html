@@ -1,0 +1,46 @@
+#set( $searcher = $mediaarchive.getSearcher("transaction") )
+#set( $donations = $searcher.query().exact("collectionid",$librarycol.getId()).sort("paymentdateDown").search($context))
+#if( $donations.isEmpty()) 
+	<p>[[No Donations yet]]</p>
+#else
+
+<table class="table table-striped table-hover table-subscribers">
+   		<thead>
+		<tr class="tableheader">
+		<th>[[User]]</th>
+		<th>[[Total]]</th>
+		<th>[[Date]]</th>
+		#if( $canviewsettings )
+		<th></th>
+		#end
+		</tr>
+   		</thead>
+  #foreach( $transaction in $donations)
+        <tr>
+        	<td>
+	        	#set( $followeruser = $mediaarchive.getUser($transaction.userid) )
+			    #set( $userlink = "$applink/users/${followeruser.getId()}/${followeruser.getAnonNickName()}.html")
+				#set( $userimageurl = $mediaarchive.asLinkToProfile($followeruser.assetportrait) )
+				#if(!$userimageurl)
+					#set( $userimageurl = "$applink/theme/images/user.svg" )
+				#end
+			<a href="#esc($userlink)" title="$!followeruser.getAnonNickName()">
+			<img src="${userimageurl}"  title="$!followeruser.getAnonNickName()" class="img-fluid align-middle usericon"> <span class="username">$followeruser.getAnonNickName()</span>
+			</a>
+			</td> 
+        	<td style="font-size:1rem" class="text-center"><strong>$$transaction.totalprice</strong></span></td>
+        	<td>
+        		$!context.getDateTime($transaction.paymentdate)
+			</td>        	
+			#if( $canviewsettings )
+        	<td class="text-center">
+	        	 	<a class="btn btn-primary btn-sm " 
+        	 		href="$sitelink/emshare2/views/modules/transaction/edit/edit.html?id=$transaction.id&viewid=transactiongeneral&viewpath=transaction/transactiongeneral&hitssessionid=hitstransactionsite/catalog&searchtype=transaction&detailsreadonly=false">
+        	 		details
+        	 		</a>
+        	</td>        	
+       		#end
+        </tr>
+  #end
+  </table>
+#end

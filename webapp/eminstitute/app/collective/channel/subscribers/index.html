@@ -14,7 +14,7 @@
 				 <a href="$applink/collective/channel/subscribers/unsubscribe.html?id=${liked.getId()}&collectionid=$librarycol.getId()" 
 					class="btn btn-secondary btn-action">[[Un-Subscribe]]</a>
 		#else
-			<h3>[[JOIN THE PROJECT]]</h3>
+			<h3>[[Follow The Project]]</h3>
 			<form name="saveproject" id="saveproject" class="ajaxform" style="display:inline-block;" data-targetdiv="subscriberssidebar" action="$applink/collective/channel/subscribers/likesave.html" method="post">
 			<input type="hidden" name="save" value="true" />
 			<input type="hidden" name="field" value="followeruser" />
@@ -26,12 +26,10 @@
 			<input type="hidden" name="collectionid" value="$collectionid" />
 			[[Get Email Alerts]] <input type="submit" class="btn btn-success btn-action" value="[[Subscribe]]" /> 
 			</form>
-			
-
 		#end
-		#set( $onteam = $mediaarchive.query("librarycollectionusers").exact("followeruser",$user.getId()).exact("collectionid",$collectionid).exact("ontheteam",true).search($context) )
+		#set( $onteam = $mediaarchive.query("librarycollectionusers").exact("followeruser",$user.getId()).exact("collectionid",$collectionid).search($context) )
 		#if(!$onteam)
-			<form name="saveproject" id="saveproject" class="ajaxform" style="display:inline-block;" data-targetdiv="subscriberssidebar" action="$applink/collective/channel/subscribers/teamsave.html" method="post" style="padding-bottom:5px">
+			<form name="saveproject" id="saveproject" class="ajaxform" style="display:inline-block;padding:10px;" data-targetdiv="subscriberssidebar" action="$applink/collective/channel/subscribers/teamsave.html" method="post" style="padding-bottom:5px">
 						<input type="hidden" name="save" value="true" />
 						<input type="hidden" name="field" value="followeruser" />
 						<input type="hidden" name="followeruser.value" value="$user.getId()" />
@@ -41,12 +39,16 @@
 						<input type="hidden" name="collectionid.value" value="$collectionid" />
 						<input type="hidden" name="collectionid" value="$collectionid" />
 						<input type="hidden" name="field" value="ontheteam" />
+						#if($canviewsettings)
 						<input type="hidden" name="ontheteam.value" value="true" />
-						<input type="submit" class="btn btn-success btn-action" value="[[Join Team]]" />
+						#else
+						<input type="hidden" name="ontheteam.value" value="false" />
+						#end
+						<input type="submit" class="btn btn-success btn-action" value="[[Request To Joint The Team]]" />
 			</form>
 		#end
 	#else
-		<h3>[[JOIN THE PROJECT]]</h3>
+		<h3>[[JOIN THE TEAM]]</h3>
 		#set($loginok = "$applink/collective/about/$collectionid/${librarycol.getWebName()}.html")
 		<a href="$applink/authentication/login.html?loginokpage=$!loginok" class="btn btn-success">[[Login to Subscribe]]</a>
 	#end	
@@ -167,10 +169,15 @@ $team.size()</a>
 
 <div class="subscribesidebarbox">
 #set( $donations = $mediaarchive.query("transaction").exact("collectionid",$collectionid).sort("paymentdateDown").search($context) )
-<h4><i class="fas fa-hand-holding-usd"></i> [[Donations]]</h4>	
+<h4>
+<div class="float-right">
+<a class="emdialog" data-cancelsubmit="true" title="View All Donations" href="$applink/collective/channel/subscribers/donationlist.html?collectionid=$librarycol.getId()">
+$donations.size()</a>
+</div>
+<i class="fas fa-hand-holding-usd"></i> [[Donations]]</h4>	
 #if( !$donations.isEmpty() )
 <strong>[[Recent Donations]]</strong>
-	#foreach($transaction in $donations)
+	#foreach($transaction in $donations.getPageOfHits())
 		#if ($transaction.userid)
 	 	#set( $selecteduser = $mediaarchive.getUser($transaction.userid) )
 		<div style="background-color:#eee;padding:5px 10px 5px 10px; margin:4px 0;">
