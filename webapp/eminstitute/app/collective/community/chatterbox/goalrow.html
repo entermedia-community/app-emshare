@@ -1,0 +1,38 @@
+#set( $target = "messagetask${goal.id}")
+<div id="$target" class=goalstatus goalstatus$!{goal.projectstatus}" style="position:relative"> 
+
+#set( $goallink = "$applink/collective/goals/editgoalpanel.html?id=${goal.id}&collectionid=$goal.collectionid&hitssessionid=$!{goalhits.getSessionId()}&goalfolder=$!goalfolder")
+<a href="$goallink"
+    title="$goal.name" 
+	class="emdialog goalticket-level" 
+	data-urlbar="$applink/collective/goals/priorities/index.html?collectionid=$goal.collectionid&opengoalid=${goal.id}" data-width="900" >
+		<i class="fas fa-flag"></i> 
+		#set( $level = $mediaarchive.getData("ticketlevel",$goal.ticketlevel))
+		[[Ticket]]:  #text($level)
+		#set( $status  = $mediaarchive.getData("projectstatus", $goal.projectstatus) )
+		#text($status)
+</a>
+
+<div class="float-right">
+$pages.include("$apphome/collective/goals/like.html",$context)
+
+</div>
+<div style = "margin-right:80px">
+$pages.include("$apphome/collective/goals/search/goaltasks.html?indialog=true&onlyopen=true",$context)
+</div>
+		
+
+#if($goal.projectstatus != "completed" && $goal.projectstatus != "closed")
+<div class="float-right">
+	<a href="$applink/collective/community/chatterbox/closegoal.html?goalid=$goal.id" 
+		data-targetdiv="$target" 
+		data-oemaxlevel="1"
+		class="ajax btn btn-xs btn-resolve btn-warning" 
+		 ><i class="fas fa-check"></i> [[Resolve]]
+	</a>
+</div>
+#end
+
+
+<div class="clearfix"></div>
+</div>
