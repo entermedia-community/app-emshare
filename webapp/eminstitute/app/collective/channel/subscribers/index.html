@@ -12,7 +12,7 @@
 
 		#if ($liked)
 				 <a href="$applink/collective/channel/subscribers/unsubscribe.html?id=${liked.getId()}&collectionid=$librarycol.getId()" 
-					class="btn btn-secondary btn-action">[[Liked]]</a>
+					class="btn btn-secondary btn-action">[[Un-Subscribe]]</a>
 		#else
 			<h3>[[JOIN THE PROJECT]]</h3>
 			<form name="saveproject" id="saveproject" class="ajaxform" style="display:inline-block;" data-targetdiv="subscriberssidebar" action="$applink/collective/channel/subscribers/likesave.html" method="post">
@@ -24,7 +24,7 @@
 			<input type="hidden" name="field" value="collectionid" />
 			<input type="hidden" name="collectionid.value" value="$collectionid" />
 			<input type="hidden" name="collectionid" value="$collectionid" />
-			<input type="submit" class="btn btn-success btn-action" value="[[Like]]" />
+			[[Get Email Alerts]] <input type="submit" class="btn btn-success btn-action" value="[[Subscribe]]" /> 
 			</form>
 			
 
@@ -48,7 +48,7 @@
 	#else
 		<h3>[[JOIN THE PROJECT]]</h3>
 		#set($loginok = "$applink/collective/about/$collectionid/${librarycol.getWebName()}.html")
-		<a href="$applink/authentication/login.html?loginokpage=$!loginok" class="btn btn-success">[[Login to Like]]</a>
+		<a href="$applink/authentication/login.html?loginokpage=$!loginok" class="btn btn-success">[[Login to Subscribe]]</a>
 	#end	
 	
 	<div class="subscribe-headline">
@@ -67,7 +67,7 @@
 <div class="subscribers-box-box">
 	<a class="emdialog" data-cancelsubmit="true" title="View Subscribers" href="$applink/collective/channel/subscribers/subscriberslist.html?collectionid=$librarycol.getId()">
 		<div class="box-content" style="border-right:1px solid #ddd;">
-		<strong>[[Likes]]</strong>
+		<strong>[[Subscribers]]</strong>
 		#set( $subscribers = $mediaarchive.query("librarycollectionlikes").exact("collectionid",$collectionid).search($context) )
 		<div class="box-number">$subscribers.size()</div>
 		</div>
@@ -102,9 +102,15 @@
 
 <div class="subscribesidebarbox">
 
-<h4><i class="fas fa-users"></i> [[Team]]</h4>
-
 #set( $team = $mediaarchive.query("librarycollectionusers").exact("collectionid",$collectionid).exact("ontheteam",true).search($context) )
+<h4>
+<div class="float-right">
+<a class="emdialog" data-cancelsubmit="true" title="View Team" href="$applink/collective/channel/subscribers/teamlist.html?collectionid=$librarycol.getId()">
+$team.size()</a>
+</div>
+
+<i class="fas fa-users"></i> [[Team]]</h4>
+
 	
 #if( $team.isEmpty()) 
 	<p>[[No Team yet]]</p>
