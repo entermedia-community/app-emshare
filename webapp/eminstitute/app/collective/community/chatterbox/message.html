@@ -65,38 +65,8 @@
 	<div class="clearfix"></div>
 	
 	#if( $goal)
-		$context.putPageValue("goal",$goal)
-		<div class="goalstatus goalstatus$!{goal.projectstatus}" style="position:relative"> 
-		
-		#set( $goallink = "$applink/collective/goals/editgoalpanel.html?id=${goal.id}&collectionid=$goal.collectionid&hitssessionid=$!{goalhits.getSessionId()}&goalfolder=$!goalfolder")
-		<a href="$goallink"
-		    title="$goal.name" 
-			class="emdialog goalticket-level" 
-			data-urlbar="$applink/collective/goals/priorities/index.html?collectionid=$goal.collectionid&opengoalid=${goal.id}" data-width="900" >
-				<i class="fas fa-flag"></i> 
-				#set( $level = $mediaarchive.getData("ticketlevel",$goal.ticketlevel))
-				[[Ticket]]:  #text($level)
-				#set( $status  = $mediaarchive.getData("projectstatus", $goal.projectstatus) )
-				#text($status)
-		</a>
-		
-		<div class="float-right">
-		$pages.include("$apphome/collective/goals/like.html",$context)
-		
-		</div>
-		<div style = "margin-right:80px">
-		$pages.include("$apphome/collective/goals/search/goaltasks.html?indialog=true&onlyopen=true",$context)
-		</div>
-  		
-		#if($goal.projectstatus != "completed")
-			<a href="$applink/collective/goals/search/resolvegoal.html?goalid=$goal.id" data-targetdiv="goal$goal.id" 
-			data-oemaxlevel="1"	class="ajax btn btn-xs btn-warning btn-resolve"	
-			><i class="fas fa-check"></i> [[Resolve]]
-			</a>
-		
-		#end
-		
-		<div class="clearfix"></div>
-		</div>
+	$context.putPageValue("goal",$goal)
+	$pages.include("$apphome/collective/community/chatterbox/goalrow.html",$context) 
+	
 	#end
 </div>

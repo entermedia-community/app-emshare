@@ -4,27 +4,25 @@
 #else
 	#set( $leftbarstatus = false)
 #end
-#set( $filtersbarstatus = $userprofile.get("filtersbarstatus"))
-$pages.getWebPageRequest().putPageValue("leftbarstatus", $leftbarstatus)
-$pages.getWebPageRequest().putPageValue("filtersbarstatus", $filtersbarstatus)
 
-<div class="container-fluid">
-	<div class="row">
-		<div class="col" style="padding:0;" id="main">
-			<div id="collectiontoplevel" class="collectiontoplevel" data-collectionid="$librarycol.id">
+#set( $filtersbarstatus = $userprofile.get("filtersbarstatus"))
+
+<div class="collectivecontent">
+			<div id="collectiontoplevel" class="h-100" style="position:relative" data-collectionid="$librarycol.id">
 			
 			$pages.includeContent()
 			
 			#if( $canviewcategorynav || ( $librarycol && $canviewcategorynavcollections ) )
 			<div class="col-main col-left #if ($leftbarstatus!=false) leftopen #end " id="col-left">
 				<div class="col-main-inner">
-					$context.putPageValue("treeurlprefix", "$applink/collective/projects/index.html")
-					$pages.include("$apphome/components/sidebars/standard-left.html", $context)
+					#set($treeurl = "$apphome/collective/projects/tree.html")
+			  		#set($nodeID = $context.getRequestParameter("nodeID"))
+			  		#if (!$nodeID)
+			  			#set($treeurl = "$treeurl?clearselection=true")
+			  		#end
+					$pages.include($treeurl, $context)
 				</div>
 			</div>
 			#end
-			
 			</div>
-		</div>
-	</div>
 </div>
