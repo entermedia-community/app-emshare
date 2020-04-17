@@ -1,119 +1,257 @@
 <div class="container">
 	<div class="row">
-		<div class="col" style="min-width:300px;">
+		<div class="col" style="min-width: 300px;">
 			<div class="contentcolumn">
-			<h1>[[Donate to ]] $librarycol</h1>
-			#if( $caneditcollection)
-				<a class="oe-dataedit showeditonright" data-target="#editdonatedescription-$librarycol.id" title="[[Edit Donation Description]]" data-width="500"	href="#"><i class="fas fa-edit"></i></a>
-			#end
-			<div class="oe-editable" id="editdonatedescription-$librarycol.id" data-dataid="$librarycol.id" data-field="donatedescription" data-searchtype="librarycollection">
-		   		#if($librarycol.donatedescription) 
-					$!librarycol.donatedescription
-				#else
-				<p>
-				[[Become a sponsor of this project]]
-				</p> 
-				#end
-			</div>
-						
-			<div class="card donatecard">
-			
-			
-			
-			 <div class="card-block" style="padding:20px 21px;">
-			 
-			 #if( !$user)
-			 	#set($loginok = "$applink/collective/donate/$!librarycol.id/donate.html")
-				<a href="$applink/authentication/logon.html?loginokpage=$!loginok" class="btn subscribe-btn">[[Login to Donate]]</a>
-			 #else
-			       	<form action="$applink/collective/donate/donatefinish.html" method="post" id="payment-form" class="form">
-		            	<input type="hidden" name="collectionid" value="$!librarycol.id" />
+				<h1>[[Donate to ]] $librarycol</h1>
+				#if( $caneditcollection) <a class="oe-dataedit showeditonright"
+					data-target="#editdonatedescription-$librarycol.id"
+					title="[[Edit Donation Description]]" data-width="500" href="#"><i
+					class="fas fa-edit"></i></a> #end
+				<div class="oe-editable" id="editdonatedescription-$librarycol.id"
+					data-dataid="$librarycol.id" data-field="donatedescription"
+					data-searchtype="librarycollection">
+					#if($librarycol.donatedescription) $!librarycol.donatedescription
+					#else
+					<p>[[Choose Payment Method]]:</p>
+					#end
+				</div>
+
+				<div class="card donatecard">
+
+
+				<div class="card-block" style="padding: 20px 21px;">
+
+						<form action="$applink/collective/donate/donatefinish.html"
+							method="post" id="payment-form" class="form">
+							<input type="hidden" name="collectionid" value="$!librarycol.id" />
+
+									#if(!$user)
+						             	<div class="float-right" style="margin-top:-4px"><img src="$applink/theme/icons/creditcard.png" /></div>
+											#set($loginok =	"$applink/collective/donate/$!librarycol.id/donate.html")
+											<i class="fas fa-credit-card"></i> Login to Pay with Credit Card 
+												<div style="padding-left:60px">
+										  <a	href="$applink/authentication/logon.html?loginokpage=$!loginok"	class="btn btn-success">[[Login]]</a>
+										  	</div>
+									#else
+
 		             	<div class="row"><div class="col">
+		             	<div class="float-right" style="margin-top:-4px"><img src="$applink/theme/icons/creditcard.png" /></div>
 		             	<div class="form-group">
 		   					<label for="staticEmail">[[Card Info]]:</label>
 		   			 		<div class="form-control">
 								<div id="card-element" style="width: 100%">
-								<!-- Stripe . -->
 								</div>      
 					    	</div>
 		   				</div>
 		             	</div></div>
 
-						<div class="row">
-							<div class="col-md-6">
-								<div class="form-group">
-									<label for="staticEmail">[[Amount]]:</label>
-									<div class="input-group">
-									<div class="input-group-prepend">
-								      <div class="input-group-text">$</div>
-								    </div>
-				   			 		<input type="text" class="form-control" name="totalprice.value" id="donationamount">
+							<div class="row">
+								<div class="col-md-6">
+									<div class="form-group">
+										<label for="staticEmail">[[Amount]]:</label>
+										<div class="input-group">
+											<div class="input-group-prepend">
+												<div class="input-group-text">$</div>
+											</div>
+											<input type="text" class="form-control"
+												name="totalprice.value" id="donationamount">
+										</div>
 									</div>
-				   				</div>
-							</div>							
-							<div class="col-md-6">
-								<div class="form-group">
-				   					<label for="staticEmail">[[Donation Type]]:</label>
-							        <select class="form-control" name="frequency">
-									  <option value="">[[Once]]</option>
-									  <option value="weekly">[[Weekly]]</option>
-									  <option value="monthly">[[Monthly]]</option>
-									  <option value="yearly">[[Yearly]]</option>
-									</select>
-				   				</div>
+								</div>
+								<div class="col-md-6">
+																	<div class="form-group">
+										<label for="staticEmail">[[Donation Type]]:</label> <select
+											class="form-control" name="frequency">
+											<option value="">[[Once]]</option>
+											<option value="weekly">[[Weekly]]</option>
+											<option value="monthly">[[Monthly]]</option>
+											<option value="yearly">[[Yearly]]</option>
+										</select>
+									</div>
+								</div>
 							</div>
-						</div>
-						
-						<div id="card-errors" class="donateformerror" role="alert"></div>
-						
-			   			
-						<div class="row">
-							<div class="col-md-6">
-							<input type="submit" value="[[Donate]]" class="btn btn-success"/>
+
+
+							<div id="card-errors" class="donateformerror" role="alert"></div>
+
+
+							<div class="row">
+								<div class="col-md-6">
+									<div class="donate-secure " >
+										<i class="fas fa-lock"></i> [[Secure payment]]
+									</div>
+
+								</div>
+								<div class="col-md-6">
+										<div style=" margin: 0px auto;">
+										<a class="btn btn-success"><i class="fas fa-credit-card"></i> [[Check Out]]</a> 
+										</div>
+								</div>
 							</div>
-							<div class="col-md-6">
-							<div class="donate-secure text-right"><i class="fas fa-lock"></i> [[Secure payment]]</div>
-							</div>
-						</div>
-			
-			   				
-			   				
-			   			<input type="hidden" name="field" value="collectionid"/>
-			   			<input type="hidden" name="collectionid.value" value="$librarycol.getId()"/>
-			   			<input type="hidden" name="collectionid" value="$librarycol.getId()"/>
-			   			<input type="hidden" name="field" value="totalprice"/>
-			             	
-	 					<input type="hidden" name="field" value="userid"/>
-			   			<input type="hidden" name="userid.value" value="$user.getId()"/>
-					  	
-				  	
-					</form>
-			#end		
-			<hr>
-			<p>Or we support donations with:</p> 			
-			<p style="text-align:center">
-						<a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=donations@openinstitute.org&lc=US&item_name=$librarycol.getWebName()&no_note=0&cn=&currency_code=USD&bn=PP-DonationsBF:btn_donateCC_LG.gif:NonHosted"
-							target="_blank"><img src="$applink/theme/icons/Paypal.png" /></a>
-						</p>
-			</div>
-			</div>
-			</div>
-			
-			
-			</div>
-			
-			 <div class="col col-lg-4 ">
-		<div class="collective-sidebar" style="margin:0px;">
-				$pages.include("$apphome/collective/channel/subscribers/index.html")
-		</div>
-			 </div>
-			
-		</div>
+
+
+
+							<input type="hidden" name="field" value="collectionid" /> <input
+								type="hidden" name="collectionid.value"
+								value="$librarycol.getId()" /> <input type="hidden"
+								name="collectionid" value="$librarycol.getId()" /> <input
+								type="hidden" name="field" value="totalprice" /> <input
+								type="hidden" name="field" value="userid" /> <input
+								type="hidden" name="userid.value" value="$user.getId()" />
+						#end
+
+						</form>
+					</div>
 	</div>
+	
+	<p style="text-align:center;padding-top:10px;">[[OR]]</p>
+	
+				<div class="card donatecard" style="margin-top: 25px">
+
+					<div class="card-block" style="padding: 00px 21px;margin-top: 25px">
+
+						<form						action="$applink/collective/donate/paypaldonatefinish.html"
+							method="post" id="paypalpayment-form" class="form">
+							<input type="hidden" name="collectionid" value="$!librarycol.id" />
+							<input type="hidden" name="field" value="paymentemail" />
+							<input type="hidden" name="paymentemail.value" id="paypalemail"/>
+							<input type="hidden" name="authorizationid.value" id="paypalauthorization"/>
+
+
+							<div class="row">
+								<div class="col-md-6">
+								
+									<div class="form-group">
+										<label for="staticEmail">[[Amount]]:</label>
+										<div class="input-group">
+											<div class="input-group-prepend">
+												<div class="input-group-text">$</div>
+											</div>
+											<input type="hidden" name="field" value="totalprice" /> 
+											
+											<input type="text" class="form-control"
+												name="totalprice.value" id="paypaldonationamount">
+										</div>
+									</div>
+								</div>
+								<div class="col-md-6">
+																	<div class="form-group">
+										<label for="staticEmail">[[Donation Type]]:</label> 
+										<select class="form-control" name="frequency" id="paypalfrequency">
+											<option value="">[[Once]]</option>
+											<option value="weekly">[[Weekly]]</option>
+											<option value="monthly">[[Monthly]]</option>
+											<option value="yearly">[[Yearly]]</option>
+										</select>
+									</div>
+								</div>
+							</div>
+
+							<!-- 
+		             	<div class="row"><div class="col">
+		             	<div class="form-group">
+		   					<label for="staticEmail">[[Card Info]]:</label>
+		   			 		<div class="form-control">
+								<div id="card-element" style="width: 100%">
+								</div>      
+					    	</div>
+		   				</div>
+		             	</div></div>
+ -->
+
+							<div id="card-errors" class="donateformerror" role="alert"></div>
+
+
+							<div class="row">
+								<div class="col-md-6">
+	<div class="donate-secure " style="margin: 30px 0;">
+										<i class="fas fa-lock"></i> [[Secure payment]]
+									</div>
+
+								</div>
+								<div class="col-md-6">
+
+									<script
+										src="https://www.paypal.com/sdk/js?client-id=ATttahzoZ7_TgBb-LoyaJ1Q_AopKRgQl5BRKPRsKshSFVp5h8XPn1JyMvI6dnbZT12v7q_pIQ4wRcQaI&disable-funding=credit,card&intent=authorize"></script>
+									<div style="max-width: 300px; margin: 30px auto;">
+										<div id="paypal-button-container"></div>
+									</div>
+
+								</div>
+							</div>
+
+							<input type="hidden" name="field" value="collectionid" /> 
+							<input type="hidden" name="collectionid.value" value="$librarycol.getId()" />
+							<input type="hidden" name="collectionid" value="$librarycol.getId()" />
+							<input								type="hidden" name="field" value="userid" /> 
+							<input								type="hidden" name="userid.value" value="$!user.getId()" />
+
+
+						</form>
+					</div>
+				</div>
+			</div>
+
+
+		</div>
+
+		<div class="col col-lg-4 ">
+			<div class="collective-sidebar" style="margin: 0px;">
+				$pages.include("$apphome/collective/channel/subscribers/index.html")
+			</div>
+		</div>
+
+	</div>
+</div>
 
 <script type="text/javascript">
   // This identifies your website in the createToken call below
  
+$(document).ready(function() {
+	  
+    // This function sets up the details of the transaction, including the amount and line item details.
+    
+    //$("#paypalpayment-form").validate();
+    //ok?
+	 paypal.Buttons({
+		    createOrder: function(data, actions) 
+		    {
+
+		      var amount = $("#paypaldonationamount").val();
+		    	
+		      return actions.order.create({
+		        purchase_units: [{
+		          amount: {
+		            value: amount
+		          }
+		        }]
+		      });
+		    },
+		    onApprove: function(data, actions) {
+
+		      // Authorize the transaction
+		      actions.order.authorize().then(function(authorization) {
+
+		        // Get the authorization id
+		        var authorizationID = authorization.purchase_units[0]
+		          .payments.authorizations[0].id
+		        $("#paypalauthorization").val(authorizationID);
+
+		          var email = authorization.payer.email_address;
+		        $("#paypalemail").val(email);
+		        
+		        $("#paypalpayment-form").submit();
+		        // Call your server to validate and capture the transaction
+//		        console.log("Got data back");
+//		        console.log(authorization);
+//		        console.log(data);
+//		        console.log(actions);
+		      });
+		    }
+		  }).render('#paypal-button-container');
+	
+	
+  
 	  	// This identifies your website in the createToken call below
 	  	  #if($mediaarchive.isCatalogSettingTrue("productionmode"))
 	  		console.log('Production');
@@ -206,5 +344,7 @@
 		  
 	  }
   
+}); //ready
+
   
 </script>
