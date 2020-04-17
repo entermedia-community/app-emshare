@@ -4,15 +4,24 @@
 
 	#set($currentTotal = $transactionManager.getTransactionTotal($librarycol.getId()))
 
+	#if( $caneditcollection)
+	<div class="float-right" style="margin:8px -10px 0 0">
+	<a class="emdialog" data-allwaysloadpage="true" href="$applink/collective/edit/editcollective.html?collectionid=$librarycol.getId()" title="[[Edit your Goals]]"><i class="fas fa-cog"></i></a>
+	</div>
+	#end
+
 	<div class="subscribesidebarbox" style="padding:15px">
 		<h4><i class="fas fa-bullseye"></i> [[Goal]]</h4>
 				<div class="" style="padding-left:6px;">		
 				#if($librarycol.goaldate)
-				<strong>We want to raise $${librarycol.goalamount} by #date($librarycol,"goaldate"). We currently have $currentTotal</strong>
+				<strong>We want to raise $${librarycol.goalamount} by #date($librarycol,"goaldate")! We currently have $${currentTotal}</strong>
 				#else
 				<strong>No goals yet!</strong>
 				#end
 				</div>	
+
+				
+				
 	</div>
 
 	<div class="subscribesidebarbox" style="padding:15px" >
@@ -20,7 +29,7 @@
 	<h4>
 		<div class="float-right" >
 		<a class="emdialog" data-cancelsubmit="true" title="View All Donations" href="$applink/collective/channel/subscribers/donationlist.html?collectionid=$librarycol.getId()">
-		$currentTotal</a>
+		$${currentTotal}</a>
 		</div>
 			<i class="fas fa-hand-holding-usd"></i> [[Donations]]</h4>	
 			#if( !$donations.isEmpty() )
