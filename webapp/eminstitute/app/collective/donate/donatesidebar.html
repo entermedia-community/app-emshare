@@ -2,11 +2,12 @@
 
 <div id="subscriberssidebar">
 
+	#set($currentTotal = $transactionManager.getTransactionTotal($librarycol.getId()))
+
 	<div class="subscribesidebarbox" style="padding:15px">
 		<h4><i class="fas fa-bullseye"></i> [[Goal]]</h4>
 				<div class="" style="padding-left:6px;">		
 				#if($librarycol.goaldate)
-				#set($currentTotal = $transactionManager.getTransactionTotal($librarycol))
 				<strong>We want to raise $${librarycol.goalamount} by #date($librarycol,"goaldate"). We currently have $currentTotal</strong>
 				#else
 				<strong>No goals yet!</strong>
@@ -19,7 +20,7 @@
 	<h4>
 		<div class="float-right" >
 		<a class="emdialog" data-cancelsubmit="true" title="View All Donations" href="$applink/collective/channel/subscribers/donationlist.html?collectionid=$librarycol.getId()">
-		$donations.size()</a>
+		$currentTotal</a>
 		</div>
 			<i class="fas fa-hand-holding-usd"></i> [[Donations]]</h4>	
 			#if( !$donations.isEmpty() )
@@ -29,7 +30,7 @@
 				 	#set( $selecteduser = $mediaarchive.getUser($transaction.userid) )
 					<div style="background-color:#eee;padding:5px 10px 5px 10px; margin:4px 0;">
 						<span style="font-size:1rem"><strong>$$transaction.totalprice</strong></span> [[from]]
-						$selecteduser.getAnonNickName() <br>[[on]] $!context.getDateTime($transaction.paymentdate)
+						$!selecteduser.getAnonNickName() #if( $transaction.paymenttype =="paypal") (paypal) #end <br>[[on]] $!context.getDateTime($transaction.paymentdate) 
 					</div>	
 					#end		
 				#end
