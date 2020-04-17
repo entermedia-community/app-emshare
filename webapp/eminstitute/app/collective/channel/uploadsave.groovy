@@ -13,7 +13,7 @@ public void init()
 
 	String sourcepath = context.getRequestParameter("sourcepath");
 			
-	log.info("Script running" + sourcepath);
+	log.info("Uploading Post Content: " + sourcepath);
 	Category defaultcat = archive.getCategorySearcher().createCategoryPath(sourcepath);
 	
 	Searcher searcher = archive.getSearcher("userupload");
