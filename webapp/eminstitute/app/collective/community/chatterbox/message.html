@@ -14,8 +14,7 @@
 
 #set( $goal = $mediaarchive.query("projectgoal").exact("chatparentid",$chat.getId() ).searchOne() )
 
-<div class="chatterbox-chat" role="alert"
-	id="chatter-message-$chat.id">
+<div class="chatterbox-chat" role="alert" id="chatter-message-$chat.id">
 	<div class="chat-icon">
 		<a href="#esc($userlink)" title="$chatuser.getAnonNickName()"><img
 			src="${userimageurl}" class="img-fluid usericon"></a>
@@ -69,7 +68,9 @@
 			#if( $chat.message.startsWith("http"))
 				<a href="$chat.message">$chat.message</a>
 			#else
-				$chat.message
+			
+			$url_util.escapeMessage($chat.message)
+				
 			#end
 		#end			 
 	</div>
