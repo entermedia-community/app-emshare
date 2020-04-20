@@ -81,6 +81,7 @@ public void init()
 	Data librarycol = archive.getData("librarycollection", collectionid);
 	objects.put("librarycol", librarycol);
 	objects.put("apphome", context.findValue("apphome"));
+	objects.put("applink", context.findValue("applink"));
 	templatemail.send(objects);
 			
 }
