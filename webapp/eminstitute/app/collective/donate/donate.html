@@ -172,7 +172,7 @@
 								<div class="col-md-6">
 			##TODO: get from catalog settings
 									<script
-										src="https://www.paypal.com/sdk/js?client-id=AcKeyb0VTty1rY-_x8o9oCV2bGGfpAMJalA4GBQnZVeNoCKbQ1oJ2Id7j4pmZCVaJAQzEdcsDWf9nq1S&disable-funding=credit,card&intent=authorize"></script>
+										src="https://www.paypal.com/sdk/js?client-id=AcKeyb0VTty1rY-_x8o9oCV2bGGfpAMJalA4GBQnZVeNoCKbQ1oJ2Id7j4pmZCVaJAQzEdcsDWf9nq1S&disable-funding=credit,card&intent=capture"></script>
 									<div style="max-width: 300px; margin: 30px auto;">
 										<div id="paypal-button-container"></div>
 									</div>
@@ -222,9 +222,15 @@ $(document).ready(function() {
 		      return actions.order.create({
 		        purchase_units: [{
 		          amount: {
-		            value: amount
+		            value: amount,
+		            description: "$librarycol.getName()"
 		          }
-		        }]
+		        }],
+		        'description': "$librarycol",
+		        'application_context': {
+                    'shipping_preference': 'NO_SHIPPING',
+                    "brand_name":"$librarycol.getName()",
+                }
 		      });
 		    },
 		    onApprove: function(data, actions) {
