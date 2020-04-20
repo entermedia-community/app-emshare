@@ -65,9 +65,11 @@ public void init()
 		archive.getSearcher("librarycollectionusers").saveData(subscription);
 	}
 	context.putPageValue("subscription",subscription);
-		
 	
-	String template = context.findValue("apphome") + "/theme/emails/collection-add-teammember.html";
+//	Set template path with applicationid instead of just 'apphome'
+	String applicationid = context.findValue("applicationid");
+	String apphome = "/" + applicationid;
+	String template = apphome + "/theme/emails/collection-add-teammember.html";
 
 	WebEmail templatemail = archive.createSystemEmail(teamuser, template);
 	templatemail.setSubject("Added to Team"); //TODO: Translate
