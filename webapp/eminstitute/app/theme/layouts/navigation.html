@@ -10,9 +10,27 @@
 		</a>
 		#if( $library)
 			<ul class="navbar-nav ml-auto">
-				<li class="nav-item"><h1 class="navcommunity"><a  class="nav-link"  href="$applink/community/$library.getId()/${library.name.replaceAll(" ","-")}.html">#esc($library.name)</a></h1></li>
+				<li class="nav-item">
+			#if ($library.thumbnail)
+				#set( $thumbnail = $mediaarchive.getAsset($library.thumbnail) )
 			#end
-			</ul> 
+				<a  class="nav-link"  href="$applink/community/$library.getId()/${library.name.replaceAll(" ","-")}.html">						
+				#if($thumbnail)
+					<h1 class="navcommunity" 
+							style="">
+							<img height="50px" src="/$mediaarchive.getMediaDbId()/services/module/asset/downloads/preset/${thumbnail.sourcepath}/image200x200.png')" />
+						#esc($library.name)
+					</h1>
+				#else
+					<h1 class="navcommunity">
+						#esc($library.name)
+						</h1> 
+				#end	
+				 
+				</a>
+			</li>	
+			</ul>
+		#end	 
 		<button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
           <i class="fa fa-bars"></i>
         </button>
@@ -23,34 +41,37 @@
 		   #if( $selecteduser.getId() == $user.getId())
 		   	#set($oisection = "account")
 		   #end
+		   
+			#if( $library )
+            <li class="nav-item #if($oisection == "feed")active#end" >
+              <a class="nav-link js-scroll-trigger" href="$applink/news/$library.getId()/${library.name.replaceAll(" ","-")}.html">[[News Feed]]</a>
+            </li>
+            <li class="nav-item #if($oisection == "profiles")active#end" >
+              <a class="nav-link js-scroll-trigger" href="$applink/profiles/$library.getId()/${library.name.replaceAll(" ","-")}.html">[[People]]</a>
+            </li>
+            #end
             <li class="nav-item dropdown">
 	              <a class="nav-link  dropdown-toggle " href="#" data-toggle="dropdown">[[Communities]]</a>
 	              <ul class="dropdown-menu">
 	    	        	
         			#set( $libraries = $mediaarchive.query("library").sort("name").all().search($context) )
-					#foreach( $library in $libraries )
+					#foreach( $libraryhit in $libraries )
 						<li class="dropdown-item">
-							<a class="subnav-link  " href="$applink/community/$library.getId()/${library.name.replaceAll(" ","-")}.html">#esc($library.name)</a>			                    	
+							<a class="subnav-link  " href="$applink/community/$libraryhit.getId()/${libraryhit.name.replaceAll(" ","-")}.html">#esc($libraryhit.name)</a>			                    	
 				       	</li>
 					#end
 	            </ul>
             </li>
             <li class="nav-item #if($oisection == "stations")active#end" >
-              <a class="nav-link js-scroll-trigger" href="$applink/browse/stations/index.html">[[Projects]]</a>
-            </li>
-            <li class="nav-item #if($oisection == "feed")active#end" >
-              <a class="nav-link js-scroll-trigger" href="$applink/browse/feed/index.html">[[News Feed]]</a>
-            </li>
-            <li class="nav-item #if($oisection == "profiles")active#end" >
-              <a class="nav-link js-scroll-trigger" href="$applink/profiles/index.html">[[People]]</a>
+              <a class="nav-link js-scroll-trigger" href="$applink/browse/stations/index.html">[[Search]]</a>
             </li>
             <li class="nav-item #if($oisection == "contact")active#end" >
               <a class="nav-link js-scroll-trigger" href="$applink/contact/contact.html">[[Contact]]</a>
             </li>
             #if( $user )
-            <li class="nav-item #if($oisection == "account")active#end" >
-              <a class="nav-link" href='#urlescape("$applink/users/${user.getId()}/${user.getAnonNickName()}.html")'>[[Account]]</a>
-            </li>
+##            <li class="nav-item #if($oisection == "account")active#end" >
+##              <a class="nav-link" href='#urlescape("$applink/users/${user.getId()}/${user.getAnonNickName()}.html")'>[[Account]]</a>
+##            </li>
             <li class="nav-item">
               <a class="nav-link js-scroll-trigger" href="$applink/authentication/logout.html">[[Logout]]</a>
             </li>

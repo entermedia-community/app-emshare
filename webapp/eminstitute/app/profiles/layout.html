@@ -1,16 +1,13 @@
+
+#set($collectivehits = $mediaarchive.query("librarycollection").exact("library",$library.id).sort("name").search($context))
+
+#set( $searcher = $mediaarchive.getSearcher("librarycollectionusers") )
+
+#set( $userrecords = $searcher.query().orgroup("collectionid",$collectivehits).sort("ontheteam").search($context))
+
 <div class="container">
 	<div class="row">
 		<div class="col">
-			<div style="margin: 15px 0;">
-			<form class="bd-search d-flex align-items-center">
-				<input type="hidden" name="field" value="description" />
-				<input type="hidden" name="operation" value="contains" />
-			  	<input type="search" name="description.value" class="form-control ds-input" id="search-input" placeholder="Profile Search..." 
-			  		autocomplete="off" spellcheck="false" role="combobox" aria-autocomplete="list" 
-			  		aria-expanded="false" aria-owns="algolia-autocomplete-listbox-0" dir="auto" 
-			  		style="position: relative; vertical-align: top;" value='$!hits.getInput("description")'>
-			</form>
-			</div>
 			<div class="contentcolumn">
 			<table class="table table-striped table-hover">
 			  <thead class="thead-dark">
@@ -23,9 +20,9 @@
 			    </tr>
 			  </thead>
 			  <tbody class="table-striped">
-			   	#foreach($hit in $hits)
+			   	#foreach($hit in $userrecords)
 			
-			#set( $auser = $mediaarchive.getUser($hit.getId()))
+			#set( $auser = $mediaarchive.getUser($hit.get("followeruser")))
 			  #set($userlink = "$applink/users/${auser.getId()}/${auser.getAnonNickName()}.html")
 			    <tr>
 					<td>
@@ -41,8 +38,7 @@
 			      		 <a href="#urlescape($userlink)" title="${comment.getUserLabel()}">$auser.getAnonNickName()	</a>
 			      </td>
 			      #if( $user)
-			      
-			      <td>$!hit.sociallink</td>
+			      <td>$!auser.sociallink</td>
 			      #end
 			    </tr>
 					  </a>
