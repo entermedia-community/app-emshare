@@ -3,7 +3,7 @@
 
 #set( $searcher = $mediaarchive.getSearcher("librarycollectionusers") )
 
-#set( $hits = $searcher.query().orgroup("collectionid",$collectivehits).sort("ontheteam").search($context))
+#set( $userrecords = $searcher.query().orgroup("collectionid",$collectivehits).sort("ontheteam").search($context))
 
 <div class="container">
 	<div class="row">
@@ -20,9 +20,9 @@
 			    </tr>
 			  </thead>
 			  <tbody class="table-striped">
-			   	#foreach($hit in $hits)
+			   	#foreach($hit in $userrecords)
 			
-			#set( $auser = $mediaarchive.getUser($hit.getId()))
+			#set( $auser = $mediaarchive.getUser($hit.get("followeruser")))
 			  #set($userlink = "$applink/users/${auser.getId()}/${auser.getAnonNickName()}.html")
 			    <tr>
 					<td>
@@ -38,8 +38,7 @@
 			      		 <a href="#urlescape($userlink)" title="${comment.getUserLabel()}">$auser.getAnonNickName()	</a>
 			      </td>
 			      #if( $user)
-			      
-			      <td>$!hit.sociallink</td>
+			      <td>$!auser.sociallink</td>
 			      #end
 			    </tr>
 					  </a>
