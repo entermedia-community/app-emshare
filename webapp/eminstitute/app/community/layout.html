@@ -6,7 +6,19 @@
 				
 				<h3>$library [[Community Page]]</h3>
 				
+				#set($users = $library.getValues("users"))
+				#if( $canviewsettings || ($users && $users.contains($user.getId()) ) )
+				<a class="oe-dataedit showeditonright" data-target="#edithtmlintro-$library.id" title="[[Edit Library Intro]]" data-width="500"	href="#"><i class="fas fa-edit"></i></a>
+				#end
+				<div class="oe-editable" id="edithtmlintro-$library.id" data-dataid="$library.id" data-field="librarydescription" data-searchtype="library">
+				   		#if($librarycol.librarydescription) $!librarycol.librarydescription #end
+				</div>
+				
 				#set($collectivehits = $mediaarchive.query("librarycollection").exact("library",$library.id).sort("name").search($context))
+				<div>
+				Over $444 has been raised across $collectivehits.size() project 
+				</div>
+				
 				#foreach( $collective in $collectivehits.getPageOfHits() )
 					$context.putPageValue("collective",$collective)
 					$pages.include("$apphome/browse/collectivelist.html",$context)
