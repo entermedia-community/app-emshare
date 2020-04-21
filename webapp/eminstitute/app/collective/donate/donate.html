@@ -115,6 +115,8 @@
 							<input type="hidden" name="collectionid" value="$!librarycol.id" />
 							<input type="hidden" name="field" value="paymentemail" />
 							<input type="hidden" name="paymentemail.value" id="paypalemail"/>
+							<input type="hidden" name="field" value="name" />
+							<input type="hidden" name="name.value" id="paypalname"/>
 							<input type="hidden" name="authorizationid.value" id="paypalauthorization"/>
 
 
@@ -173,6 +175,7 @@
 			##TODO: get from catalog settings
 									<script
 										src="https://www.paypal.com/sdk/js?client-id=AcKeyb0VTty1rY-_x8o9oCV2bGGfpAMJalA4GBQnZVeNoCKbQ1oJ2Id7j4pmZCVaJAQzEdcsDWf9nq1S&disable-funding=credit,card&intent=capture"></script>
+										##src="https://www.paypal.com/sdk/js?client-id=AWtTwfOeBNI1ok8JfbeKd2Ld2te2isssU1nudKiv-zdd-dURV3kWfs3CMQ70M9Bj-HeqLXnMyQ6ChhDO&disable-funding=credit,card&intent=capture"></script>
 									<div style="max-width: 300px; margin: 30px auto;">
 										<div id="paypal-button-container"></div>
 									</div>
@@ -216,7 +219,7 @@ $(document).ready(function() {
 	 paypal.Buttons({
 		    createOrder: function(data, actions) 
 		    {
-
+//https://developer.paypal.com/docs/checkout/integration-features/confirmation-page/
 		      var amount = $("#paypaldonationamount").val();
 		    	
 		      return actions.order.create({
@@ -236,14 +239,19 @@ $(document).ready(function() {
 		    onApprove: function(data, actions) {
 
 		      // Authorize the transaction
-		      actions.order.authorize().then(function(authorization) {
+		      actions.order.capture().then(function(authorization) {
 
 		        // Get the authorization id
-		        var authorizationID = authorization.purchase_units[0]
-		          .payments.authorizations[0].id
-		        $("#paypalauthorization").val(authorizationID);
+		        //var authorizationID = authorization.purchase_units[0]		          .payments.authorizations[0].id
+		        var transactionid = authorization.id;
+		        
+		        $("#paypalauthorization").val(transactionid);
 
-		          var email = authorization.payer.email_address;
+		        var first = authorization.payer.name.given_name;
+		        var last = authorization.payer.name.surname;
+		        $("#paypalname").val(first + " " + last);
+		        
+		        var email = authorization.payer.email_address;
 		        $("#paypalemail").val(email);
 		        
 		        $("#paypalpayment-form").submit();

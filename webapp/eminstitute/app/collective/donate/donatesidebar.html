@@ -39,7 +39,11 @@
 				 	#set( $selecteduser = $mediaarchive.getUser($transaction.userid) )
 					<div style="background-color:#eee;padding:5px 10px 5px 10px; margin:4px 0;">
 						<span style="font-size:1rem"><strong>$$transaction.totalprice</strong></span> [[from]]
-						$!selecteduser.getAnonNickName() #if( $transaction.paymenttype =="paypal") (paypal) #end <br>[[on]] $!context.getDateTime($transaction.paymentdate) 
+						#if( $transaction.paymenttype =="paypal" && $transaction.name) 
+							 $transaction.name
+						#elseif($selecteduser)$!selecteduser.getAnonNickName()
+						#end
+						 <br>[[on]] $!context.getDateTime($transaction.paymentdate) 
 					</div>	
 					#end		
 				#end

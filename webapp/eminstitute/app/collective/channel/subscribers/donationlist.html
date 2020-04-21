@@ -10,7 +10,9 @@
 		<th>[[User]]</th>
 		<th>[[Total]]</th>
 		<th>[[Date]]</th>
-		#if( $canviewsettings )
+		<th>[[Type]]</th>
+		#if( $caneditcollection )
+		<th>[[Email]]</th>
 		<th></th>
 		#end
 		</tr>
@@ -32,7 +34,18 @@
         	<td>
         		$!context.getDateTime($transaction.paymentdate)
 			</td>        	
-			#if( $canviewsettings )
+        	<td style="font-size:1rem" class="text-center">$mediaarchive.getCachedData("paymenttype",$transaction.paymenttype)</span></td>
+			#if( $caneditcollection )
+        	<td >
+        		$!transaction.name
+        	
+		      #if( $transaction.paymentemail ) &lt;$transaction.paymentemail&gt;
+		      #else ($followeruser)
+		      	&lt;$!followeruser.getEmail()&gt;
+		      #end
+        	</td>
+       	 	#end	
+       	 #if( $caneditcollection )
         	<td class="text-center">
 	        	 	<a class="btn btn-primary btn-sm " 
         	 		href="$sitelink/emshare2/views/modules/transaction/edit/edit.html?id=$transaction.id&viewid=transactiongeneral&viewpath=transaction/transactiongeneral&hitssessionid=hitstransactionsite/catalog&searchtype=transaction&detailsreadonly=false">
