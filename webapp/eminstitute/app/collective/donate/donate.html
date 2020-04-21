@@ -174,7 +174,7 @@
 								<div class="col-md-6">
 			##TODO: get from catalog settings
 									<script
-										src="https://www.paypal.com/sdk/js?client-id=AcKeyb0VTty1rY-_x8o9oCV2bGGfpAMJalA4GBQnZVeNoCKbQ1oJ2Id7j4pmZCVaJAQzEdcsDWf9nq1S&disable-funding=credit,card&intent=capture"></script>
+										src='https://www.paypal.com/sdk/js?client-id=$mediaarchive.getCatalogSettingValue("paypalclientid")&disable-funding=credit,card&intent=capture'></script>
 										##src="https://www.paypal.com/sdk/js?client-id=AWtTwfOeBNI1ok8JfbeKd2Ld2te2isssU1nudKiv-zdd-dURV3kWfs3CMQ70M9Bj-HeqLXnMyQ6ChhDO&disable-funding=credit,card&intent=capture"></script>
 									<div style="max-width: 300px; margin: 30px auto;">
 										<div id="paypal-button-container"></div>
@@ -220,17 +220,27 @@ $(document).ready(function() {
 		    createOrder: function(data, actions) 
 		    {
 //https://developer.paypal.com/docs/checkout/integration-features/confirmation-page/
+//https://stackoverflow.com/questions/54640821/specific-line-items-in-paypal-checkout
 		      var amount = $("#paypaldonationamount").val();
 		    	
 		      return actions.order.create({
-		        purchase_units: [{
-		          amount: {
-		            value: amount,
-		            description: "$librarycol.getName()"
-		          }
-		        }],
-		        'description': "$librarycol",
-		        'application_context': {
+		    	  purchase_units: [{
+		                amount: {
+				            value: amount,
+				            currency_code: 'USD',
+		                    breakdown: {
+		                        item_total: {value: amount, currency_code: 'USD'}
+		                    }
+		                },
+		                items: [{
+		                	 name: '$librarycol',
+		                    unit_amount: {value: amount, currency_code: 'USD'},
+		                    quantity: '1',
+		                    sku: '$librarycol.getId()'
+		                }]
+		         }]		    	 
+		    	,
+		        application_context: {
                     'shipping_preference': 'NO_SHIPPING',
                     "brand_name":"$librarycol.getName()",
                 }
