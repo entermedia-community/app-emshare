@@ -96,7 +96,80 @@
 		</tr>
 		#end
 		<tr>
-		
+		<td><strong>Totals</strong></td>
+		<td></td>
+		<td>
+		#set($sumOneNew = 0)
+		#foreach($hit in $hits)
+		#set($newTot = $mediaarchive.query("projectgoal").orgroup("collectionid",$hit.collectionid).exact("ticketlevel","1").after("creationdate",$date).enduser(true).search() )
+		#set($sumOneNew = $sumOneNew + $newTot.size())
+		#end
+		<strong>$sumOneNew</strong>
+		</td>
+		<td>
+		#set($sumOneOpen = 0)
+		#foreach($hit in $hits)
+		#set($newTot = $mediaarchive.query("projectgoal").orgroup("collectionid",$hit.collectionid).exact("ticketlevel","1").orgroup("projectstatus","open").enduser(true).search() )
+		#set($sumOneOpen = $sumOneOpen + $newTot.size())
+		#end
+		<strong>$sumOneOpen</strong>
+		</td>
+		<td>
+		#set($sumOneClosed = 0)
+		#foreach($hit in $hits)
+		#set($newTot = $mediaarchive.query("projectgoal").orgroup("collectionid",$hit.collectionid).exact("ticketlevel","1").orgroup("projectstatus","completed").enduser(true).search() )
+		#set($sumOneClosed = $sumOneClosed + $newTot.size())
+		#end
+		<strong>$sumOneClosed</strong>
+		</td>
+		<td>
+		#set($sumTwoNew = 0)
+		#foreach($hit in $hits)
+		#set($newTot = $mediaarchive.query("projectgoal").orgroup("collectionid",$hit.collectionid).exact("ticketlevel","2").after("creationdate",$date).enduser(true).search() )
+		#set($sumTwoNew = $sumTwoNew + $newTot.size())
+		#end
+		<strong>$sumTwoNew</strong>
+		</td>
+		<td>
+		#set($sumTwoOpen = 0)
+		#foreach($hit in $hits)
+		#set($newTot = $mediaarchive.query("projectgoal").orgroup("collectionid",$hit.collectionid).exact("ticketlevel","2").orgroup("projectstatus","open").enduser(true).search() )
+		#set($sumTwoOpen = $sumTwoOpen + $newTot.size())
+		#end
+		<strong>$sumTwoOpen</strong>
+		</td>
+		<td>
+		#set($sumTwoClosed = 0)
+		#foreach($hit in $hits)
+		#set($newTot = $mediaarchive.query("projectgoal").orgroup("collectionid",$hit.collectionid).exact("ticketlevel","2").orgroup("projectstatus","completed").enduser(true).search() )
+		#set($sumTwoClosed = $sumTwoClosed + $newTot.size())
+		#end
+		<strong>$sumTwoClosed</strong>
+		</td>
+		<td>
+		#set($sumThreeNew = 0)
+		#foreach($hit in $hits)
+		#set($newTot = $mediaarchive.query("projectgoal").orgroup("collectionid",$hit.collectionid).exact("ticketlevel","3").after("creationdate",$date).enduser(true).search() )
+		#set($sumThreeNew = $sumThreeNew + $newTot.size())
+		#end
+		<strong>$sumThreeNew</strong>
+		</td>
+		<td>
+		#set($sumThreeOpen = 0)
+		#foreach($hit in $hits)
+		#set($newTot = $mediaarchive.query("projectgoal").orgroup("collectionid",$hit.collectionid).exact("ticketlevel","3").orgroup("projectstatus","open").enduser(true).search() )
+		#set($sumThreeOpen = $sumThreeOpen + $newTot.size())
+		#end
+		<strong>$sumThreeOpen</strong>
+		</td>
+		<td>
+		#set($sumThreeClosed = 0)
+		#foreach($hit in $hits)
+		#set($newTot = $mediaarchive.query("projectgoal").orgroup("collectionid",$hit.collectionid).exact("ticketlevel","3").orgroup("projectstatus","completed").enduser(true).search() )
+		#set($sumThreeClosed = $sumThreeClosed + $newTot.size())
+		#end
+		<strong>$sumThreeClosed</strong>
+		</td>
 		</tr>
 		</table>
 		</div>
