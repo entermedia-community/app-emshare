@@ -2,13 +2,10 @@
 	#if($collective.assetportrait)
 		#set($asset = $mediaarchive.getAsset($collective.assetportrait))
 		#set($link = $mediaarchive.asLinkToPreview($asset,"image200x200.jpg"))
-	#elseif($collective.assetbanner)
-		#set( $banner = $mediaarchive.getAsset($collective.assetbanner) )
-		#set($link = $mediaarchive.asLinkToPreview($banner,"image200x200.jpg"))
 	#end
 <a class="pick-item" href="$applink/collective/about/${collective.id}/${collective.getName().replaceAll(" ", "-")}.html" 
 		class="project-title" title="${collective.getName()}">
-	<div class="project-item" style='min-width:313px;'>
+	<div class="project-item" style='min-width:#if($link) background-image: url("#uuencode($link)") #end; 313px;'>
 	
 	<div class="project-item-box" >
 		<span style="color:#white">$collective.name</span>
