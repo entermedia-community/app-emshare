@@ -10,17 +10,20 @@
 		<table width="100%" class="table table-striped table-hover">
 		<thead>
 		<tr class="tableheader">
-			<th style="width:130px">[[Client]]</th>
-			<th style="width:130px">[[Status]]</th>
-			<th style="width:130px">[[Lvl 1 New]]</th>
-			<th style="width:130px">[[Lvl 1 Open]]</th>
-			<th style="width:130px">[[Lvl 1 Closed]]</th>
-			<th style="width:130px">[[Lvl 2 New]]</th>
-			<th style="width:130px">[[Lvl 2 Open]]</th>
-			<th style="width:130px">[[Lvl 2 Closed]]</th>
-			<th style="width:130px">[[Lvl 3 New]]</th>
-			<th style="width:130px">[[Lvl 3 Open]]</th>
-			<th style="width:130px">[[Lvl 3 Closed]]</th>
+			<th style="width:100px">[[Client]]</th>
+			<th style="width:100px">[[Status]]</th>
+			<th style="width:100px">[[Lvl 1 New]]</th>
+			<th style="width:100px">[[Lvl 1 Open]]</th>
+			<th style="width:100px">[[Lvl 1 Closed]]</th>
+			<th style="width:100px">[[Lvl 2 New]]</th>
+			<th style="width:100px">[[Lvl 2 Open]]</th>
+			<th style="width:100px">[[Lvl 2 Closed]]</th>
+			<th style="width:100px">[[Lvl 3 New]]</th>
+			<th style="width:100px">[[Lvl 3 Open]]</th>
+			<th style="width:100px">[[Lvl 3 Closed]]</th>
+			<th style="width:100px">[[Company New]]</th>
+			<th style="width:100px">[[Company Open]]</th>
+			<th style="width:100px">[[Company Closed]]</th>
 			
 
 			
@@ -92,7 +95,23 @@
 			<td style="background-color: #07b9fc">
 			#set($threeClosed = $mediaarchive.query("projectgoal").orgroup("collectionid",$hit.collectionid).exact("ticketlevel","3").orgroup("projectstatus","completed").enduser(true).search() )
 			$threeClosed.size()			
-			</td>	
+			</td>
+			<td style="background-color: #FF00FF">
+			#set($newComp = $mediaarchive.query("projectgoal").orgroup("collectionid",$hit.collectionid).exact("ticketlevel","AXBUDIyUTxs2_AvPTf11").after("creationdate",$date).enduser(true).search() )
+			$newComp.size()
+			</td>
+			<td style="background-color: #FF00FF">
+			#set($openComp = $mediaarchive.query("projectgoal").orgroup("collectionid",$hit.collectionid).exact("ticketlevel","AXBUDIyUTxs2_AvPTf11").orgroup("projectstatus","open").enduser(true).search() )
+			#if($openComp.size() >9 )
+				<strong>$openComp.size()</strong>
+				#else
+				$openComp.size()
+			#end
+			</td>
+			<td style="background-color: #FF00FF">
+			#set($compClosed = $mediaarchive.query("projectgoal").orgroup("collectionid",$hit.collectionid).exact("ticketlevel","AXBUDIyUTxs2_AvPTf11").orgroup("projectstatus","completed").enduser(true).search() )
+			$compClosed.size()			
+			</td>
 		</tr>
 		#end
 		<tr>
@@ -169,6 +188,30 @@
 		#set($sumThreeClosed = $sumThreeClosed + $newTot.size())
 		#end
 		<strong>$sumThreeClosed</strong>
+		</td>
+		<td>
+		#set($sumCompNew = 0)
+		#foreach($hit in $hits)
+		#set($newTot = $mediaarchive.query("projectgoal").orgroup("collectionid",$hit.collectionid).exact("ticketlevel","AXBUDIyUTxs2_AvPTf11").after("creationdate",$date).enduser(true).search() )
+		#set($sumCompNew = $sumCompNew + $newTot.size())
+		#end
+		<strong>$sumCompNew</strong>
+		</td>
+		<td>
+		#set($sumCompOpen = 0)
+		#foreach($hit in $hits)
+		#set($newTot = $mediaarchive.query("projectgoal").orgroup("collectionid",$hit.collectionid).exact("ticketlevel","AXBUDIyUTxs2_AvPTf11").orgroup("projectstatus","open").enduser(true).search() )
+		#set($sumCompOpen = $sumCompOpen + $newTot.size())
+		#end
+		<strong>$sumCompOpen</strong>
+		</td>
+		<td>
+		#set($sumCompClosed = 0)
+		#foreach($hit in $hits)
+		#set($newTot = $mediaarchive.query("projectgoal").orgroup("collectionid",$hit.collectionid).exact("ticketlevel","AXBUDIyUTxs2_AvPTf11").orgroup("projectstatus","completed").enduser(true).search() )
+		#set($sumCompClosed = $sumCompClosed + $newTot.size())
+		#end
+		<strong>$sumCompClosed</strong>
 		</td>
 		</tr>
 		</table>
