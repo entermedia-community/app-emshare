@@ -2,24 +2,25 @@
 	#set($chatid = $context.getRequestParameter("messageid"))
 	#set($chat = $mediaarchive.getData("chatterbox",$chatid))
 #end
-<div class="message-edit-box">
+<div id="chatter-message-$chat.id" class="message-edit-box">
 <strong>[[Editing]]</strong>
-<form name="attach${chat.id}" method="post" enctype="multipart/form-data" 
-	action="$applink/collective/community/chatterbox/editsave.html" class="ajaxform autocloseform autoreloadsource" 
-	data-targetdiv="chatter-message-$chat.id" >
+<form name="attach${chat.id}" class="chatter-edit-form" method="post"	 
+	action="$applink/collective/community/chatterbox/editsave.html" class="ajaxform" 
+	data-targetdiv="chatter-message-$chat.id" data-oemaxlevel="1">
+
 
 <input type="hidden" name="searchtype" value="chatterbox" />
-<input type="hidden" name="chatid" value="$chatid" />
+<input type="hidden" name="chatid" value="$chat.id" />
 <!-- <input type="hidden" name="collectionid" value="$collectionid" /> -->
 <input type="hidden" name="collectionid" value="$librarycol.id" />
 <div class="chatterbox-wirte">
-		<!-- <div class="chatterbox-wirte">
-		<textarea class="chatterbox-text chatter-text" id="chatter-msg" autofocus >$chat.message</textarea>
-		<button class="btn btn-primary btn-sm chatter-send float-left"
-			data-command="messagereceived" type="button">[[Save]]</button>
-		</div> -->
-			 <input type="text" id="chatter-msg" name="chatter-msg" value="$chat.message"></input>
-			<input class="btn btn-primary btn-sm chatter-send float-right" type="submit" value="Save"></input>	
+		
+		<div class="chatter-msg-edit" autofocus contentEditable="true">
+		$chat.message
+		</div>
+		
+			 <input type="hidden" class="chatter-msg-input" name="chatter-msg" value=""></input>
+			<input class="btn btn-primary btn-sm chatter-save float-right" type="button" value="Save"></input>	
 	</div>
 
 
