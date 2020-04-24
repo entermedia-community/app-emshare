@@ -32,12 +32,21 @@
 	#if( $librarycol.streamurl && !$topic )
 		$pages.include("$apphome/components/streaming/play.html",$context)
 	#end
-	
-	##$topuploads.setHitsPerPage(20)
+
+$topuploads.setHitsPerPage(2)
+
+	#set($resultsPage = "$content.getPath()?hitssessionid=$topuploads.sessionId&useruploadpageposition")
+
+	$context.putPageValue("hits",$topuploads)
+	$context.putPageValue("resultsPage",$resultsPage)
+	$context.putPageValue("targetdiv","channelcontainer")
+	$context.putPageValue("oemaxlevel","2")
+	$pages.include("$apphome/components/results/positions.html",$context)
 	#foreach( $upload in $topuploads.getPageOfHits())
 		$context.putPageValue("upload",$upload)
 		$pages.include("$apphome/collective/channel/showpost.html",$context)
 	#end
+	$pages.include("$apphome/components/results/positions.html",$context)
 
 
 
