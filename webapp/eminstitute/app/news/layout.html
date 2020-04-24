@@ -11,26 +11,7 @@
 			<h2 style="margin-top:10px;padding-top:10px;">$library Projects</h2>
 			#foreach( $collective in $collectivehits.getPageOfHits() )
 				$context.putPageValue("collective",$collective)
-				
-				#set($link = false) 
-					#if($collective.assetportrait)
-						#set($asset = $mediaarchive.getAsset($collective.assetportrait))
-						#set($link = $mediaarchive.asLinkToPreview($asset,"image200x200.jpg"))
-					#elseif($collective.assetbanner)
-						#set( $banner = $mediaarchive.getAsset($collective.assetbanner) )
-						#set($link = $mediaarchive.asLinkToPreview($banner,"image200x200.jpg"))
-					#end
-				<a href="$applink/collective/about/${collective.id}/${collective.getName().replaceAll(" ", "-")}.html" 
-						class="project-title" title="${collective.getName()}">
-					<div class="project-item" style='overflow:hidden;width:257px;#if($link) background-image: url("#uuencode($link)") #end;'>
-					
-					 <div class="text">	$!collective.collectivedescription</div>
-					 
-					<div class="project-item-box">
-						<span>$collective.name</span>
-					</div>
-					</div>
-				</a>
+				$pages.include("$apphome/browse/collectivelist.html",$context)
 
 			#end
 		</div>		
