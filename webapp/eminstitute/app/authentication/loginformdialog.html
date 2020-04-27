@@ -4,7 +4,7 @@ $!request.getAttribute( "oe-exception")
 		#if($user)
 			<p class="text-center"><strong>[[You are logged in as]] $user (<a href="home$content.loginroot/logout.html" style="text-decoration:underline">Logout</a>)</strong></p>		
 		#end
-		#set($loginok = $home+$context.findValue("loginokpage") )
+		
         <form class="form form-login" name="login" id="login" action="$home$content.loginroot/login.html" method="POST" onsubmit="return confirmPassword(this);">
             <div style="margin-bottom:20px;">
                 <label class="sr-only" for="accountname">[[Email or Username]]</label>
@@ -20,7 +20,11 @@ $!request.getAttribute( "oe-exception")
                 <a href="$home$content.loginroot/sendpassword.html" style="text-decoration:underline">[[Forgotten your password?]]</a>
             </div>
          <div class="clearfix"></div>
-         <input type="hidden" name="loginokpage" value="#esc($!loginok)"/>
+         #set($loginok = $home+$context.findValue("loginokpage") )
+         #if($loginok)
+				#set( $loginok = "$context.siteRoot" + "$loginok")
+				<input type="hidden" name="loginokpage" value="#esc($!loginok)"/>
+		#end
          <div>
          <button type="submit" class="btn btn-primary">[[Login]]</button>
          </div>
