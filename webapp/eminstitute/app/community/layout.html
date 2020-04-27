@@ -1,6 +1,6 @@
 <div id="projectresultholder" class="container container-feed">
 	<div class="row no-gutters">
-		<div class="col">
+		<div class="col community-maincol feed-maincol">
 			<div class="contentcolumn">
 				#if( $library)
 				
@@ -19,14 +19,37 @@
 				   		#if($library.librarydescription) $!library.librarydescription #end
 				</div>
 				
-				#set($collectivehits = $mediaarchive.query("librarycollection").exact("library",$library.id).sort("creationdate").search($context))
-				##Over $444 has been raised across $collectivehits.size() project 
-				
-				#foreach( $collective in $collectivehits.getPageOfHits() )
-					$context.putPageValue("collective",$collective)
-					$pages.include("$apphome/browse/collectivelist.html",$context)
+				#if( $caneditlibrary)
+					<div style="padding:20px 20px;">
+						<a href="/site/app/browse/add/addnew.html?libraryid=$library.getId()" title="Start New Project" class="btn btn-primary">Add Project</a>	
+				    </div>
 				#end
-				
+
+				<div class="feedupload-container">
+
+					<div id="channelcontainer"  style="min-height: 100%;";>
+					 
+					$context.putPageValue("showchannel",true)
+						
+						
+						#set($resultsPage = "$content.getPath()?hitssessionid=$topuploads.sessionId&useruploadpageposition")
+					
+						$context.putPageValue("hits",$topuploads)
+						$context.putPageValue("resultsPage",$resultsPage)
+						$context.putPageValue("targetdiv","projectresultholder")
+						$context.putPageValue("oemaxlevel","2")
+						$pages.include("$apphome/components/results/positions.html",$context)
+						#foreach( $upload in $topuploads.getPageOfHits())
+							$context.putPageValue("upload",$upload)
+							$pages.include("$apphome/collective/channel/showpost.html",$context)
+						#end
+						$pages.include("$apphome/components/results/positions.html",$context)
+					
+					</div>
+					
+
+				</div>
+
 				
 				#else
 				
@@ -42,14 +65,18 @@
 				</ul>
 				
 				#end
-				<div class="clearfix"></div>
-				
-				#if( $caneditlibrary)
-					<div style="padding:20px 20px;">
-						<a href="/site/app/browse/add/addnew.html?libraryid=$library.getId()" title="Start New Project" class="btn btn-primary">Start New Project</a>	
-				    </div>
-				#end
 			</div>
+		</div>
+		<div class="col col-12 col-collectivesidebar">
+			<div class="collective-sidebar">
+				#set($collectivehits = $mediaarchive.query("librarycollection").exact("library",$library.id).sort("name").search($context))
+				<h2 style="margin-top:10px;padding-top:10px;">$library Projects</h2>
+				#foreach( $collective in $collectivehits.getPageOfHits() )
+					$context.putPageValue("collective",$collective)
+					$pages.include("$apphome/browse/collectivelist.html",$context)
+	
+				#end
+			</div>		
 		</div>
 	</div>
 </div>
