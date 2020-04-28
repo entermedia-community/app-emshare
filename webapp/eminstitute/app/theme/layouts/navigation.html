@@ -13,7 +13,7 @@
 			#if ($library.thumbnail)
 				#set( $thumbnail = $mediaarchive.getAsset($library.thumbnail) )
 			#end
-				<a  class="nav-link"  href="$applink/community/$library.getId()/${library.name.replaceAll(" ","-")}.html">						
+				<a  class="nav-link"  href="$applink/community/$library.getId()/#dash($library.name).html">						
 				#if($thumbnail)
 					<h1 class="navcommunity" 
 							style="">
@@ -56,7 +56,13 @@
         			#set( $libraries = $mediaarchive.query("library").sort("name").all().search($context) )
 					#foreach( $libraryhit in $libraries )
 						<li class="dropdown-item">
-							<a class="subnav-link  " href="$applink/community/$libraryhit.getId()/${libraryhit.name.replaceAll(" ","-")}.html">#esc($libraryhit.name)</a>			                    	
+							<a class="subnav-link "
+							#if( $library.communitysubdomain)
+								href="https://${library.communitysubdomain}/app/"
+							#else
+							 	href="$applink/community/$libraryhit.getId()/#dash($libraryhit.name).html"
+							#end	 
+							>#esc($libraryhit.name)</a>			                    	
 				       	</li>
 					#end
 	            </ul>

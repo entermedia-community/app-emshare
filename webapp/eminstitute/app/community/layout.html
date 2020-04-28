@@ -3,15 +3,22 @@
 		<div class="col community-maincol feed-maincol">
 			<div class="contentcolumn">
 				#if( $library)
-				
-				<h3>$library [[Community Page]]</h3>
-				
+
 				#set($caneditlibrary = false )
 
 				#set($users = $library.getValues("users"))
 				#if( $canviewsettings || ($users && $users.contains($user.getId()) ) )
 					#set($caneditlibrary = true )
 				#end
+				
+				#if( $caneditlibrary)
+				<div class="float-right" style="margin:8px -10px 0 0">
+				<a class="emdialog" data-allwaysloadpage="true" href="$applink/community/edit/$library.id/editcommunity.html" title="[[Edit your Community]]"><i class="fas fa-cog"></i></a>
+				</div>
+				#end
+				
+				<h3>$library [[Community Page]]</h3>
+				
 				#if( $caneditlibrary)	
 				<a class="oe-dataedit showeditonright" data-target="#edithtmlintro-$library.id" title="[[Edit Library Intro]]" data-width="500"	href="#"><i class="fas fa-edit"></i></a>
 				#end
