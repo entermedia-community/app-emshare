@@ -166,35 +166,9 @@ $team.size()</a>
 	#end
 </div>
 
-
-<div class="subscribesidebarbox">
-#set( $donations = $mediaarchive.query("transaction").exact("collectionid",$collectionid).sort("paymentdateDown").search($context) )
-<h4>
-<div class="float-right">
-
-#set($currentTotal = $transactionManager.getTransactionTotal($librarycol.getId()))
-
-
-<a class="emdialog" data-cancelsubmit="true" title="View All Donations" href="$applink/collective/channel/subscribers/donationlist.html?collectionid=$librarycol.getId()">
-$${currentTotal}</a>
 </div>
-<i class="fas fa-hand-holding-usd"></i> [[Donations]]</h4>	
-#if( !$donations.isEmpty() )
-<strong>[[Recent Donations]]</strong>
-	#foreach($transaction in $donations.getPageOfHits())
-		#if ($transaction.userid)
-	 	#set( $selecteduser = $mediaarchive.getUser($transaction.userid) )
-		<div style="background-color:#eee;padding:5px 10px 5px 10px; margin:4px 0;">
-			<span style="font-size:1rem"><strong>$$transaction.totalprice</strong></span> [[from]]
-			$!selecteduser.getAnonNickName() #if( $transaction.paymenttype =="paypal") (paypal) #end <br>[[on]] $!context.getDateTime($transaction.paymentdate)
-		</div>	
-		#end		
-	#end
-#end
-<div style="margin:20px 0;" class="text-center">
-	<a href="$applink/collective/donate/$collectionid/donate.html" class="btn subscribe-btn">[[Donate Now]]</a>
-</div>
-</div>
+
+$pages.include("$apphome/collective/donate/donatesidebar.html",$context)
 
 
 <div class="subscribesidebarbox">
@@ -206,7 +180,5 @@ $${currentTotal}</a>
 		</div>	
 </div>
 
-
-</div>
         
  
