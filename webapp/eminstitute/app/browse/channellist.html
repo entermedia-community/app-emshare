@@ -28,11 +28,11 @@
 		#if( !$collectivehits.isEmpty() )
 			<div class="stations-grid ">
 			#if( $library.communitysubdomain)
-				#set($link = "https://${library.communitysubdomain}")
+				#set($link = "//${library.communitysubdomain}$applink/")
 			#else
-				#set($link = "$applink/community/${library.id}/${library.name.replaceAll(" ","-")}.html")
+				#set($link = "$applink/community/${library.id}/#dash($library.name).html")
 			#end
-			<a href="$link"></A><h3>$library.getName()</h3></a>
+			<a href="$link"><h3>$library.getName()</h3></a>
 			#foreach( $collective in $collectivehits.getPageOfHits() )
 				$context.putPageValue("collective",$collective)
 				$pages.include("$apphome/browse/collectivelist.html",$context)

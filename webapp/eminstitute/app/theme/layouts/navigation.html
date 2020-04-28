@@ -13,7 +13,14 @@
 			#if ($library.thumbnail)
 				#set( $thumbnail = $mediaarchive.getAsset($library.thumbnail) )
 			#end
-				<a  class="nav-link"  href="$applink/community/$library.getId()/#dash($library.name).html">						
+			
+				#if( $library.communitysubdomain)
+					#set( $href="//${library.communitysubdomain}$applink")
+				#else
+				 	#set( $href="$applink/community/$libraryhit.getId()/#dash($libraryhit.name).html")
+				#end
+			
+				<a  class="nav-link"  href="$href">						
 				#if($thumbnail)
 					<h1 class="navcommunity" 
 							style="">
@@ -58,7 +65,7 @@
 						<li class="dropdown-item">
 							<a class="subnav-link "
 							#if( $library.communitysubdomain)
-								href="https://${library.communitysubdomain}/app/"
+								href="//${library.communitysubdomain}$applink"
 							#else
 							 	href="$applink/community/$libraryhit.getId()/#dash($libraryhit.name).html"
 							#end	 
