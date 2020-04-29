@@ -66,7 +66,12 @@
 					<ul>
 					#foreach( $library in $libraries)
 						<li>
-							<a href="$applink/community/${library.id}/#dash($library.name).html">$library</a>
+						#if( $library.communitysubdomain)
+							#set($link = "//${library.communitysubdomain}$applink/")
+						#else
+							#set($link = "${context.siteRoot}$applink/community/${library.id}/#dash($library.name).html")
+						#end
+							<a href="$link">$library</a>
 						</li>
 					#end
 				</ul>
