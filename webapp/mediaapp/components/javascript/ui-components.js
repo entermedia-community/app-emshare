@@ -1696,24 +1696,23 @@ uiload = function() {
 
 		if (toggler.data('action') == 'hide') {
 			//hide sidebar
-			var url = apphome + '/components/sidebars/'+sidebar+'/hide.html';
-			
+			var url = apphome + '/components/sidebars/index.html';
+			saveProfileProperty("sidebarstatus","hidden");
+			saveProfileProperty("sidebarcomponent","");
 			$.ajax({ url: url, async: false, data: data, success: function(data) {
 				$("#"+targetdiv).html(data);
 				$(".pushcontent").addClass('pushcontent-fullwidth');
-				saveProfileProperty("sidebarstatus","hidden");
-				saveProfileProperty("sidebarcomponent",sidebar);
 			}
 			});
 		}
 		else {
 			//showsidebar
-			var url = apphome + '/components/sidebars/'+sidebar+'/show.html';
+			var url = apphome + '/components/sidebars/index.html';
+			saveProfileProperty("sidebarstatus","open");
+			saveProfileProperty("sidebarcomponent",sidebar);
 			$.ajax({ url: url, async: false, data: data, success: function(data) {
 				$("#"+targetdiv).html(data);
 				$(".pushcontent").removeClass('pushcontent-fullwidth');
-				saveProfileProperty("sidebarstatus","open");
-				saveProfileProperty("sidebarcomponent",sidebar);
 			}
 			});
 		}
@@ -1932,7 +1931,6 @@ var resizecolumns = function() {
 	}
 	
 	var header_height = $("#header").outerHeight()
-	var nav_height = $("#EMnav").outerHeight();
 	var footer_height = $("#footer").outerHeight();
 	var resultsheader_height = 0;
 	
@@ -1944,7 +1942,7 @@ var resizecolumns = function() {
 		resultsheader_height = $(".filtered").outerHeight();
 	}
 	
-	var allheights  =  header_height +  nav_height + footer_height + resultsheader_height;
+	var allheights  =  header_height +  footer_height + resultsheader_height;
 	var columnsheight = $("body").outerHeight() - allheights;
 	
 	var sidebartop = 1;
@@ -1967,7 +1965,7 @@ var resizecolumns = function() {
 		$(".col-left").css("height", columnsheight);
 	}
 	else {
-		allheights  = header_height + nav_height + resultsheader_height;
+		allheights  = header_height + resultsheader_height;
 		var windowh = $(window).height();
 		windowh = windowh - allheights;
 		$(".col-left").css("height", columnsheight);
