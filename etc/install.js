@@ -25,10 +25,13 @@ log.info("3. UPGRADE BASE DIR");
 files.deleteAll( root + "/WEB-INF/base/" + foldername);
 files.copyFiles( tmp + "/" + foldername, root + "/WEB-INF/base/" + foldername + "/");
 
-
-
 files.deleteAll( root + "/WEB-INF/base/emshare2");
 files.copyFiles( tmp + "/emshare2", root + "/WEB-INF/base/emshare2/");
+
+files.deleteAll( root + "/WEB-INF/base/mediaapp");
+files.copyFiles( tmp + "/emshare2", root + "/WEB-INF/base/mediaapp/");
+
+
 
 log.info("4. CLEAN UP");
 files.deleteAll(tmp);
