@@ -62,8 +62,8 @@
 		#end	
 		
 	    #if($canviewsettings)
-	   	<li><a href="$home$apphome/views/dashboard/index.html" >[[Dashboard]]</a></li> 
-	   	<li><a #if ( $module ) href="$home$apphome/views/settings/modules/$module.id/index.html" #else href="$home$apphome/views/settings/index.html" #end>[[Settings]]</a></li> 
+	   	<li class="nav-item"><a href="$home$apphome/views/dashboard/index.html" >[[Dashboard]]</a></li> 
+	   	<li class="nav-item"><a #if ( $module ) href="$home$apphome/views/settings/modules/$module.id/index.html" #else href="$home$apphome/views/settings/index.html" #end>[[Settings]]</a></li> 
 	    #end 
 	
 	#set($lastselected = $userprofile.last_selected_module )
@@ -75,7 +75,7 @@
 	#end   
 	#if( $userprofile.getModules().size() > 1 )
 	#set( $urlbase = "$home$apphome/views/modules" )
-	<li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">$module.getName($context.locale)</a> 
+	<li class="nav-item dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">$module.getName($context.locale)</a> 
 		<div id="module-bar-select" class="dropdown-menu">
 			#foreach ( $amodule in $userprofile.getModules() )
 				<a class="dropdown-item" href="$urlbase/${amodule.id}/index.html?field=last_selected_module&last_selected_module.value=${amodule.id}">$amodule</a>
