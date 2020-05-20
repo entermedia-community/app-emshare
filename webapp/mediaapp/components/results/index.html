@@ -33,10 +33,11 @@ $context.putPageValue("module", $module)
     #if(!$hidefilters)
         $pages.include("$apphome/components/filters/filters-selected.html", $context)
     #end
-    #set( $colleftwidth = $userprofile.get("colleftwidth"))
-    #set( $sidebarstatus = $userprofile.get("sidebarstatus"))
+    #set( $sidebarwidth = $userprofile.get("sidebarwidth"))
+    #set( $sidebarcomponent = $userprofile.get("sidebarcomponent"))
 
-	<div class="pushcontent #if($sidebarstatus!='open') pushcontent-fullwidth #end" style="#if($sidebarstatus=='open' && $colleftwidth) margin-left:${colleftwidth}px;#end">
+	<div class="pushcontent #if($sidebarcomponent) pushcontent-$sidebarcomponent #else pushcontent-fullwidth #end" 
+		  style="#if($sidebarcomponent && $sidebarwidth) margin-left:${sidebarwidth}px;#end">
 		#set ($resultview = $userprofile.get('resultview'))
 		#if (!$resultview || $resultview == 'table')
 			$context.putPageValue("showhover", "false")

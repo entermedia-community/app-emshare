@@ -1,0 +1,68 @@
+##Copied from:
+	##$pages.include("$apphome/views/collections/libraryresults.html",$context)
+	
+	#set($selectedlibraryid = $context.getRequestParameter("libraryid"))
+	#set( $libraries = $mediaarchive.query("library").all().enduser(true).sort("name").search($context) )
+	
+	#if($canviewfeaturedcollections && !$selectedlibraryid)
+		#set($selectedlibraryid = "featured")
+	#end
+	
+	
+	 #if($selectedlibraryid != "featured")
+	 	#set($selectedlibrary = $mediaarchive.getCachedData("library",$selectedlibraryid) )
+	 #end 
+	
+	<div id="collectionshomecontainer" class="libraryfinder" >
+		
+			<div class="libraryfinder-libraries">
+				<h4>[[Libraries]]</h4>
+					#if($libraries.size())
+						<ul>
+						#if($canviewfeaturedcollections)
+							<li #if($selectedlibraryid=="featured") class="current"#end>
+							<a class="ajax" 
+								data-targetdiv="collectionshomecontainer" 
+								data-oemaxlevel="1" 
+								href="$apphome/components/sidebars/libraries/libraryfinder.html?libraryid=featured&resultpage=libraryresults.html">
+								<i class="fa fa-star"></i>&nbsp;[[Featured]]</a>
+							</li>			
+						#end
+						
+						#foreach($library in $libraries)
+							<li class="#if($selectedlibraryid==$library.getId())current #end">
+							<a class="ajax" 
+								data-targetdiv="collectionshomecontainer" 
+								data-oemaxlevel="1" 
+								href="$apphome/components/sidebars/libraries/libraryfinder.html?libraryid=$library.getId()&resultpage=libraryresults.html">
+								#if($library.libraryicon)
+									#set($libraryicon = $library.libraryicon)
+								#else
+									#set($libraryicon = "fas fa-book")
+								#end
+								<i class="$libraryicon"></i>&nbsp;$library</a>
+							</li>			
+						#end
+						</ul>
+					#end		
+			</div>
+			<div class="libraryfinder-collections">
+					<h4>
+					 #if($selectedlibraryid=="featured") 
+					 	[[Featured Collections]]
+					 #elseif($selectedlibrary)
+						$selectedlibrary.getName() [[Collections]]
+					#end
+					</h4>
+				#set($args = "")
+			 	#if($selectedlibraryid == "featured")
+			 		#set($args = "?field=featuredcollection&operation=exact&featuredcollection.value=true")
+			 	#elseif($selectedlibrary)
+					#set($args = "?field=library&operation=exact&library.value=$selectedlibrary.getId()")
+				#else
+					
+				#end
+				$pages.include("$apphome/views/collections/collectionresults.html${args}",$context)
+			</div>
+			
+		</div>

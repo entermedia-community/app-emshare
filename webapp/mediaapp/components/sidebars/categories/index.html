@@ -1,10 +1,59 @@
-#set( $sidebarstatus = $userprofile.get("sidebarstatus"))
-#if(!$sidebarstatus)
-	#set( $sidebarstatus = "hidden")
-#end
-#set( $sidebarcomponent = $userprofile.get("sidebarcomponent"))
-#if($sidebarstatus == "open" && $sidebarcomponent == "categories" )
-	$pages.include("$apphome/components/sidebars/categories/show.html")
-#else
-	$pages.include("$apphome/components/sidebars/categories/hide.html")
-#end
+<div class="col-main-inner">
+			<div class="col-sidebar-header">
+				<h2>
+				#if( $module=="librarycollection" && $librarycol )
+				<a class="nav-btn float-left sidebarheaderactions" href="$apphome/views/modules/asset/index.html?nodeID=$librarycol.getRootCategoryId()">
+					<i class="fas fa-arrow-alt-circle-up"></i>
+				</a>
+				#else
+				<a class="emdialog sidebarsubmenu float-left sidebarheaderactions" data-hidefooter="true" data-width="1000" data-height="600"  title="[[Select Category]]" href="$home$apphome/components/categories/search/searchcategory.html">
+				<i class="fas fa-search"></i>
+				</a>
+				#end
+				<i class="fas fa-folder-open"></i> [[FOLDERS]]	
+				</h2>
+				<a href="#"
+					title="[[Hide Categories Sidebar]]"
+					class="sidebar-toggler sidebar-toggler-hide"
+					data-action="hide" 
+					data-targetdiv="col-sidebars"
+					data-sidebar="categories">
+					<i class="fas fa-angle-double-left closebar"></i>
+				</a>
+			</div>
+	
+		#if(!$librarycol)
+			#set( $selectedcollection = $context.getRequestParameter("collectionid"))
+			#if( $selectedcollection)
+				#set($librarycol = $mediaarchive.getData("librarycollection",$selectedcollection))
+				$context.putPageValue("librarycol",$librarycol)
+			#end	
+		#end
+		#set( $selectedlibraryid = $context.getRequestParameter("selectedlibrary"))
+		#if($selectedlibraryid)
+			#set($selectedlibrary = $mediaarchive.getData("library",$selectedlibraryid))
+			$context.putPageValue("selectedlibrary",$selectedlibrary)
+		#elseif( $librarycol )
+			#set( $selectedlibraryid = $librarycol.get("library") )
+			#set($selectedlibrary = $mediaarchive.getData("library",$selectedlibraryid))
+			$context.putPageValue("selectedlibrary",$selectedlibrary)
+		#end
+		
+		#set( $module = $content.module)
+		
+		#if($module=="librarycollection" && $librarycol )
+			$pages.include("$apphome/components/librarycollection/sidebar.html",$context)
+		#else
+			$pages.include("$apphome/components/categories/sidebar-left.html", $context) 
+		#end
+		
+		
+		<div class="clearfix"></div>
+</div>
+
+<div class="colslidercontainer">
+	<a href="#" class="col-resize" title="[[Resize Sidebar]]"></a>
+</div>
+
+
+

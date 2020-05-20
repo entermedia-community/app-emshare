@@ -1,10 +1,22 @@
-#set( $sidebarstatus = $userprofile.get("sidebarstatus"))
-#if(!$sidebarstatus)
-	#set( $sidebarstatus = "hidden")
-#end
-#set( $sidebarcomponent = $userprofile.get("sidebarcomponent"))
-#if($sidebarstatus == "open" && $sidebarcomponent == "filters" )
-	$pages.include("$apphome/components/sidebars/filters/show.html")
-#else
-	$pages.include("$apphome/components/sidebars/filters/hide.html")
-#end
+	<div class="col-sidebar-header">
+		<h2>
+		<i class="fas fa-sliders-h"></i> [[FILTER]] 
+		</h2>
+		<a href="#"
+					title="[[Hide Search Sidebar]]"
+					class="sidebar-toggler sidebar-toggler-hide"
+					data-action="hide" 
+					data-targetdiv="col-sidebars"
+					data-sidebar="filters">
+					<i class="fas fa-angle-double-left closebar"></i>
+				</a>
+	</div>
+
+	$pages.include("$apphome/components/filters/sidebar.html", $context)
+	
+	<div class="clearfix"></div>
+
+	##<div class="colslidercontainer">
+	##	<a href="#" class="col-resize" title="[[Resize Sidebar]]"></a>
+	##</div>
+

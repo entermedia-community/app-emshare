@@ -1619,72 +1619,6 @@ uiload = function() {
 			});
 
 
-	lQuery('.filterstoggle').livequery("click", function(e) {
-		e.preventDefault();
-		if ($("#col-filters").hasClass("filtersopen")) {
-			//close
-			$(".col-main").removeClass("filtersopen");
-				saveProfileProperty("filtersbarstatus",false,function(){
-			});
-			$("#filterstoggle").show( "fast", function() {
-				$(document).trigger( "resize" );
-  			});
-			
-		}
-		else {
-			//open
-			$("#filterstoggle").hide("fast", function() {
-				$(document).trigger( "resize" );
-  			});
-			$("#col-filters").addClass("filtersopen");
-			$(".col-main").addClass("filtersopen");
-			saveProfileProperty("filtersbarstatus",true,function(){
-			});
-		}
-		return false;
-	});
-	
-	//Left Column Toggle
-	lQuery('.lefttoggle').livequery("click", function(e) {
-		e.preventDefault();
-		var colleftwidth = $("#col-left").data("colleftwidth");
-		if (!$.isNumeric(colleftwidth)) {
-			colleftwidth = $("#col-left").width();
-		}
-		if ($("#col-left").hasClass("leftopen")) {
-			//close
-			$("#col-left").removeClass("leftopen");
-			$("#col-left").css("width",0);
-            $(".col-main").removeClass("leftopen");
-            $(".pushcontent").css("margin-left",0);
-            $("#lefttoggle").show("fast", function() {
-				$(document).trigger( "resize" );
-  			});
-			saveProfileProperty("leftbarstatus",false,function(){
-				
-			});
-		}
-		else {
-			//open
-            $("#col-left").addClass("leftopen");
-            if (colleftwidth) {
-            	$("#col-left").css("width", colleftwidth);
-            }
-            $(".col-main").addClass("leftopen");
-            if (colleftwidth) {
-            	$(".pushcontent").css("margin-left", colleftwidth+"px");
-            }
-            $("#lefttoggle").hide("fast", function() {
-				$(document).trigger( "resize" );
-  			});
-			saveProfileProperty("leftbarstatus",true,function(){
-				
-			});
-		}
-		
-		return false;
-	});
-	
 	
 	
 	lQuery('.sidebar-toggler').livequery("click", function(e) {
@@ -1697,22 +1631,26 @@ uiload = function() {
 		if (toggler.data('action') == 'hide') {
 			//hide sidebar
 			var url = apphome + '/components/sidebars/index.html';
-			saveProfileProperty("sidebarstatus","hidden");
+			//saveProfileProperty("sidebarstatus","hidden");
 			saveProfileProperty("sidebarcomponent","");
 			$.ajax({ url: url, async: false, data: data, success: function(data) {
 				$("#"+targetdiv).html(data);
+				$(".pushcontent").removeClass('pushcontent-'+sidebar);
 				$(".pushcontent").addClass('pushcontent-fullwidth');
+				
 			}
 			});
 		}
 		else {
 			//showsidebar
 			var url = apphome + '/components/sidebars/index.html';
-			saveProfileProperty("sidebarstatus","open");
+			
+			//saveProfileProperty("sidebarstatus","open");
 			saveProfileProperty("sidebarcomponent",sidebar);
 			$.ajax({ url: url, async: false, data: data, success: function(data) {
 				$("#"+targetdiv).html(data);
 				$(".pushcontent").removeClass('pushcontent-fullwidth');
+				$(".pushcontent").addClass('pushcontent-'+sidebar);
 			}
 			});
 		}
@@ -1743,9 +1681,9 @@ uiload = function() {
 	
 	
 	//Sidebar Custom Width
-	lQuery(".col-left-resize").livequery(function()	{
+	lQuery(".col-resize").livequery(function()	{
 		var slider = $(this);
-		var column = $(this).closest(".col-left");
+		var column = $(this).closest(".col-main");
 		var content = $(".pushcontent");
 		
 		var clickspot;
@@ -1767,7 +1705,7 @@ uiload = function() {
 			{
 				clickspot = false;
 				if (width != "undefined") {
-					saveProfileProperty("colleftwidth",width,function(){
+					saveProfileProperty("sidebarwidth",width,function(){
 						$(document).trigger("resize");
 					});
 				}
@@ -1786,7 +1724,7 @@ uiload = function() {
 					width = 220;
 				}
 				column.width(width);
-				column.data("colleftwidth",width);
+				column.data("sidebarwidth",width);
 				$(".pushcontent").css("margin-left",width+"px");
 				event.preventDefault();
 				$(document).trigger("resize");
@@ -1924,11 +1862,11 @@ var resizecolumns = function() {
 	//make them same top
 	var sidebarsposition = $("#resultsdiv").position();
 	var sidebarstop = 0;
-	if (typeof sidebarsposition != "undefined") {
+	/*if (typeof sidebarsposition != "undefined") {
 		sidebarstop = sidebarsposition.top;
 		$('.col-filters').css('top',sidebarstop + 'px');
 		$('.col-left').css('top',sidebarstop + 'px');
-	}
+	}*/
 	
 	var header_height = $("#header").outerHeight()
 	var footer_height = $("#footer").outerHeight();
