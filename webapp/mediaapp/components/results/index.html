@@ -30,14 +30,15 @@ $context.putPageValue("module", $module)
 #else
 
 <div id="emresultscontent"> 
-    #if(!$hidefilters)
-        $pages.include("$apphome/components/filters/filters-selected.html", $context)
-    #end
+    
     #set( $sidebarwidth = $userprofile.get("sidebarwidth"))
     #set( $sidebarcomponent = $userprofile.get("sidebarcomponent"))
 
 	<div class="pushcontent #if($sidebarcomponent) pushcontent-$sidebarcomponent #else pushcontent-fullwidth #end" 
 		  style="#if($sidebarcomponent && $sidebarwidth) margin-left:${sidebarwidth}px;#end">
+		  #if(!$hidefilters)
+        $pages.include("$apphome/components/filters/filters-selected.html", $context)
+    #end
 		#set ($resultview = $userprofile.get('resultview'))
 		#if (!$resultview || $resultview == 'table')
 			$context.putPageValue("showhover", "false")

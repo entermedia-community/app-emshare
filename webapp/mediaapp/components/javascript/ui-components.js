@@ -1681,6 +1681,77 @@ uiload = function() {
 	
 	
 	//Sidebar Custom Width
+	lQuery(".sidebar-toggler-resize").livequery(function()	{
+		var slider = $(this);
+		var column = $(this).closest(".col-main");
+		var content = $(".pushcontent");
+		
+		var clickspot;
+		var startwidth;
+		var width;
+		
+		slider.on('mouseover', function()	{
+			$(this).css('opacity','0.6');
+			
+			
+		});
+		slider.on('mouseout', function()	{
+			if( !clickspot )
+			{
+			$(this).css('opacity','0');
+			}
+			
+		});
+		slider.on("mousedown", function(event) {
+			if (!clickspot) {
+				clickspot = event;
+				startwidth = column.width();
+				return false;
+			}
+			
+		});
+		
+		//$(".sidebar-toggler-resize").show();
+		
+		$(window).on("mouseup", function(event)
+		{
+			
+			if( clickspot )
+			{
+				clickspot = false;
+				$(this).css('opacity','0');	
+				if (width != "undefined") {
+					saveProfileProperty("sidebarwidth",width,function(){
+						$(document).trigger("resize");
+					});
+				}
+				return false;
+			}
+		});
+		$(window).on("mousemove", function(event)
+		{
+			if( clickspot )
+			{
+				$(this).css('opacity','0.6');
+				width = 0;
+				var changeleft = event.pageX - clickspot.pageX;
+				width = startwidth + changeleft;
+				width = width+32;
+				if( width < 220 )
+				{
+					width = 220;
+				}
+				column.width(width);
+				column.data("sidebarwidth",width);
+				$(".pushcontent").css("margin-left",width+"px");
+				event.preventDefault();
+				$(document).trigger("resize");
+				return false;
+			}	
+		});
+	});
+	
+	
 	lQuery(".col-resize").livequery(function()	{
 		var slider = $(this);
 		var column = $(this).closest(".col-main");
@@ -1699,8 +1770,12 @@ uiload = function() {
 			}
 			
 		});
+		
+		//$(".sidebar-toggler-resize").show();
+		
 		$(window).on("mouseup", function(event)
 		{
+			
 			if( clickspot )
 			{
 				clickspot = false;

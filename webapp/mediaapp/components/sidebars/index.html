@@ -1,14 +1,11 @@
-<div id="col-sidebars" class="col-mainsidebar">
 #if(!$sidebarcomponent)
 	#set( $sidebarcomponent = $userprofile.get("sidebarcomponent"))
 #end
-
-
-
-#if($sidebarcomponent != "libraries" )
-	<div class="sidebar-togglers" style="top:0px;">
+<div  id="col-sidebars" >
+<div class="sidebar-togglers-bar">
+	<div class="sidebar-togglers #if($sidebarcomponent == "libraries") sidebar-selected #end" style="top:45px;">
 	<a href="#" 
-		class="sidebar-toggler sidebar-toggler-show" 
+		class="sidebar-toggler sidebar-toggler-show " 
 		data-action="show" 
 		data-targetdiv="col-sidebars"
 		data-sidebar="libraries"
@@ -16,25 +13,22 @@
 	<i class="fas fa-grip-horizontal"></i>
 	</a>
 	</div>
-#end
-
-#if($sidebarcomponent != "filters" )
-	<div class="sidebar-togglers"  style="top:45px;">
+	
+	<div class="sidebar-togglers #if($sidebarcomponent == "filters") sidebar-selected #end"  style="top:90px;">
 	<a href="#" 
 		class="sidebar-toggler sidebar-toggler-show" 
 		data-action="show" 
 		data-targetdiv="col-sidebars"
 		data-sidebar="filters"
 	title="[[Show Filters]]">
-	<i class="fas fa-search"></i>
+	<i class="fas fa-filter"></i>
 	</a>
 	</div>
-#end
 
-#if($sidebarcomponent != "categories" )
+
 	#set($sidebartop = 100)
 	#if( $canviewcategorynav || ( $librarycol && $canviewcategorynavcollections ) )
-		<div class="sidebar-togglers" style="top:90px;">
+		<div class="sidebar-togglers #if($sidebarcomponent == "categories") sidebar-selected #end" style="top:135px;">
 		<a href="#" 
 			class="sidebar-toggler sidebar-toggler-show" 
 			data-action="show" 
@@ -45,7 +39,9 @@
 		</a>
 		</div>
 	#end
-#end
+</div>
+<div class="col-mainsidebar">
+	
 
 #set( $sidebarwidth = $userprofile.get("sidebarwidth"))
 
@@ -57,13 +53,13 @@
 	
 	#if($sidebarcomponent == "filters" )
 		#set($sidebarurl = "$apphome/components/sidebars/filters/index.html")
-		#set($sidebartop = 45)
+		#set($sidebartop = 0)
 	#end
 	
 	#if($sidebarcomponent == "categories" )
 		#if( $canviewcategorynav || ( $librarycol && $canviewcategorynavcollections ) )
 			#set($sidebarurl = "$apphome/components/sidebars/categories/index.html")
-			#set($sidebartop = 90)
+			#set($sidebartop = 0)
 		#end
 	#end
 
@@ -75,3 +71,5 @@
 	</div>
 #end
 </div>
+</div>
+
