@@ -1,0 +1,22 @@
+<input style="width:100%" placeholder="Find Collection"/>
+Add New
+<ul class="">
+
+
+#foreach( $hit in $hits.getPageOfHits() )
+	#if($hit.collectionimage)
+		#set($asset = $mediaarchive.getAsset($hit.collectionimage))
+		#set( $link = $mediaarchive.asLinkToPreview($asset,"image200x200.jpg"))
+	#end
+		<li><a href="$apphome/views/modules/librarycollection/media/${hit.id}/index.html" 
+	   title="$hit.name">
+	 		<div class="collections-list-thumb" style='#if($link) background-image: url("#uuencode($link)") #end'></div>
+	 		<span class="collections-list-name">$hit.name</span>
+	 </a>
+	 </li>
+  	
+#end
+	</ul>
+
+	
+	
