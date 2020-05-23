@@ -1,20 +1,30 @@
-<input style="width:100%" placeholder="Find Collection"/>
-Add New
-<ul class="">
-
-
+<div style="padding:5px;">
+<input 
+	class="form-control form-control-sm"
+	style="width:calc(100% - 35px); padding: .10rem .15rem; height: calc(1.6rem)" 
+	placeholder="Find Collection"/>
+		#if($canaddnewcollection)
+			   	    
+                <a class="emdialog btn btn-sm btn-primary float-right" 
+                	style="padding:.275rem" 
+                	title="[[Add New Collection]]" 
+                	href="$home$apphome/components/librarycollection/pickcollectionaddnew.html?searchtype=librarycollection&library.value=$!library.getId()">
+                	<i class="fas fa-folder-plus"></i></a>
+            #end
+</div>
+<ul>
 #foreach( $hit in $hits.getPageOfHits() )
 	#if($hit.collectionimage)
 		#set($asset = $mediaarchive.getAsset($hit.collectionimage))
 		#set( $link = $mediaarchive.asLinkToPreview($asset,"image200x200.jpg"))
 	#end
-		<li><a href="$apphome/views/modules/librarycollection/media/${hit.id}/index.html" 
-	   title="$hit.name">
-	 		<div class="collections-list-thumb" style='#if($link) background-image: url("#uuencode($link)") #end'></div>
-	 		<span class="collections-list-name">$hit.name</span>
-	 </a>
+		<li>
+			<a href="$apphome/views/modules/librarycollection/media/${hit.id}/index.html" 
+	   			title="$hit.name">
+	 		<i class="fas fa-folder"></i> <span class="">$hit.name</span>
+	 		</a>
+	 		<a href="" class="libraryfinder-collectionmenu"><i class="fas fa-ellipsis-v"></i></a>
 	 </li>
-  	
 #end
 	</ul>
 

@@ -15,10 +15,10 @@
 
 <div class="filters-container">
 <div class="row no-gutters">
-	<div class="col-md-4">
+	<div class="col-md-5">
 	$pages.include("$apphome/components/filters/collectionmenu.html",$context)
 	</div>
-	<div class="col-md-4">
+	<div class="col-md-5">
 	#if ($canquicksearch || $canshowcollectionpicker || $canshowlibrarypicker)
 	<div class="navbar-quicksearch" id="nav-quicksearch" style="margin: 0 auto;">
 		#if( $canshowcollectionpicker || $canshowlibrarypicker)
@@ -30,14 +30,13 @@
 		#end
 	</div>
 	#end
-	</div>
 	<div class="filtered #if( $librarycol ) filteredinresults #end">
-#if( $hits.getSearchQuery().hasMainInput())
-	#if($librarycol)
-		[[Searching within]]: <strong><em>$librarycol</em> </strong> [[for]]:  <strong><em>$hits.getSearchQuery().getMainInput()</em></strong>
-	#else
-		[[Searching for]]:  <strong><em>$hits.getSearchQuery().getMainInput()</em></strong>
+	#if ($librarycol)
+	 <a class="badge badge-light" href="$apphome">$librarycol <i class="fas fa-times"></i></a>
 	#end
+#if( $hits.getSearchQuery().hasMainInput())
+	
+		[[Searching for]]:  <strong><em>$hits.getSearchQuery().getMainInput()</em></strong>
 #end
 ##TODO Loop over the view and show them here if they match
 
@@ -125,9 +124,5 @@
 	#end
 	</div>
 	</div>
-	<div class="col-md-4">
-	
-	
-	</div>
-
+</div>
 </div>
