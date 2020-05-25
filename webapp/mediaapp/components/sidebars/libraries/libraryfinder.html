@@ -1,7 +1,11 @@
 ##Copied from:
 	##$pages.include("$apphome/views/collections/libraryresults.html",$context)
-	
+
 	#set($selectedlibraryid = $context.getRequestParameter("libraryid"))
+#if( $library && !$selectedlibraryid )
+	#set($selectedlibraryid = $library.id )
+#end	
+	
 	#set( $libraries = $mediaarchive.query("library").all().enduser(true).sort("name").search($context) )
 	
 	#if($canviewfeaturedcollections && !$selectedlibraryid)
