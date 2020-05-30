@@ -1,4 +1,4 @@
-<div id="header" class="emheader clearfix" role="banner">
+
 #set($lastselected = "asset" )
 #set($module = $searcherManager.getData($catalogid, "module", $lastselected ) )
 #if( !$module ) 
@@ -6,18 +6,16 @@
     #set($module = $searcherManager.getData($catalogid, "module", "asset" ) )
 #end
 
-#set($logourl = "$home$themeprefix/images/logo.png")
 
-<div class="logocontainer">
-	<a class="emlogo" href="$home$apphome/index.html"><img class="logo" src="$logourl" alt="EnterMedia EMShare" /></a>
-</div>
-<div class="emheader-right">
-<div class=" navbar  navbar-expand-lg navbar-light">
+
+
+<div class="emheader">
+<div class=" navbar  navbar-expand-lg navbar-dark ">
 	<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
 	    <span class="navbar-toggler-icon"></span>
 	  </button>
 	<div class="collapse navbar-collapse navlinks" id="navbarNav">
-	<ul class="navbar-nav">
+	<ul class="navbar-nav  ml-auto">
 		#if( $user )
 
 	
@@ -87,5 +85,23 @@
 #end
 #end
 </div>
-<div id="site-title">$!content.tagline</div>
+
+
+
+<div id="header" class="emheader clearfix" role="banner">
+#set($logourl = "$home$themeprefix/images/EMLogo-small.png")
+<div class="logocontainer">
+	<a class="emlogo" href="$home$apphome/index.html">
+		<img class="logo" src="$logourl" alt="EnterMedia EMShare" />
+		<h1>[[Media App]]</h1>
+		##<div id="site-title">$!content.tagline</div>
+	</a>
 </div>
+
+
+  #if(!$hidefilters)
+        $pages.include("$apphome/components/filters/filters-selected.html", $context)
+    #end
+</div>
+
+
