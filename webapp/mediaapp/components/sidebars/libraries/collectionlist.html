@@ -4,8 +4,29 @@
 </div>
 
 
-
 <div class="libraryfinder-collections-list">
+
+#set( $rootpath = "${apphome}/components/categories")
+
+##Always clear Tree if not category or nodeID
+#set($clearselection = false)
+#set($nodeID = $context.getRequestParameter("nodeID"))
+#if(!$nodeID)
+	#if (!$category)
+		#set($clearselection = true)
+	#end
+#end
+
+
+<div id="side-categories" class="assetdropcategory">
+    #set( $link = "$apphome/components/emtree/tree.html")
+    #set( $treename = "collectionTree$library.getId()" )
+    #set( $link = "${link}?tree-name=$treename&clearselection=$clearselection&allowselections=false&editabletree=true" )
+    #set( $link = "${link}&targetdiv=searchlayout&maxlevelclick=1" )
+    ##set( $link = "${link}&url-prefix=$home$apphome/views/modules/category/categorysearch.html" )
+    $pages.include($link, $context)
+</div>
+
 
 <ul class="">
 
@@ -18,7 +39,7 @@
 		<li>
 		<a href="$apphome/views/modules/librarycollection/media/${hit.id}/index.html" 
 	   		title="$hit.name">
-	 		<div class="collections-list-thumb" style='#if($link) background-image: url("#uuencode($link)") #end'>
+	 		<div class="collections-list-thumb"> <i class="fas fa-folder"></i>
 	 			<span class="collections-list-name">$hit.name</span>
 	 		</div>
 	 	</a>
