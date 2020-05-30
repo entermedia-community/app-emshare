@@ -595,6 +595,65 @@ uiload = function() {
 			"click", function(event) {
 				emdialog($(this), event);
 	});
+	
+	lQuery(".typeaheaddropdown").livequery(function() {
+		
+		var input = $(this);
+		var hidescrolling = input.data("hidescrolling");
+
+		
+		var id = input.data("dialogid");
+		if (!id) {
+			id = "typeahead";	
+		}
+		
+		var modaldialog = $("#" + id);
+		if (modaldialog.length == 0) {
+			input.parent().append(
+					'<div class="typeaheadmodal " tabindex="-1" id="' + id
+							+ '" style="display:none" ></div>');
+			modaldialog = $("#" + id);
+		}
+		
+		var width = input.width();
+		var minwidth = input.data("minwidth");
+
+		if (minwidth && width) {
+			if( minwidth >  width )
+			{
+				width =  minwidth;
+			}
+		}
+		
+		modaldialog.css("width", width + "px");
+		console.log(input.position());
+		var topposition = input.position().top + input.height() + 5;
+		modaldialog.css("top", topposition+"px");
+		modaldialog.css("left", input.position().left+"px");
+		
+		input.on("keyup", function(e) {
+			
+			var options = input.data();
+			options["value"] = input.val();
+			var url = input.data("typeaheadurl");
+			
+			$.ajax({ url: url, async: false, data: options, success: function(data) {
+				if(data) 
+					{
+					modaldialog.show();
+					modaldialog.html(data);
+					}
+				
+			}});
+		});
+		
+		$("body").on("click", function(event){
+			
+			modaldialog.hide();
+		});
+	});
+	
+	
 
 	lQuery('.emrowpicker table td').livequery("click", function(event) {
 		event.preventDefault();
