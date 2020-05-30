@@ -1690,30 +1690,31 @@ uiload = function() {
 		if (toggler.data('action') == 'hide') {
 			//hide sidebar
 			var url = apphome + '/components/sidebars/index.html';
-			//saveProfileProperty("sidebarstatus","hidden");
-			saveProfileProperty("sidebarcomponent","");
-			$.ajax({ url: url, async: false, data: data, success: function(data) {
-				$("#"+targetdiv).html(data);
-				$(".pushcontent").removeClass('pushcontent-'+sidebar);
-				$(".pushcontent").addClass('pushcontent-fullwidth');
-				
-			}
+			saveProfileProperty("sidebarcomponent","", function(){
+				$.ajax({ url: url, async: false, data: data, success: function(data) {
+									$("#"+targetdiv).replaceWith(data);
+					$(".pushcontent").removeClass('pushcontent-'+sidebar);
+					$(".pushcontent").addClass('pushcontent-fullwidth');
+					$(window).trigger("resize");
+				}
+				});
 			});
 		}
 		else {
 			//showsidebar
 			var url = apphome + '/components/sidebars/index.html';
-			
-			//saveProfileProperty("sidebarstatus","open");
-			saveProfileProperty("sidebarcomponent",sidebar);
-			$.ajax({ url: url, async: false, data: data, success: function(data) {
-				$("#"+targetdiv).html(data);
-				$(".pushcontent").removeClass('pushcontent-fullwidth');
-				$(".pushcontent").addClass('pushcontent-'+sidebar);
-			}
+			saveProfileProperty("sidebarcomponent",sidebar, function(){
+				$.ajax({ url: url, async: false, data: data, success: function(data) {
+					
+					$("#"+targetdiv).replaceWith(data);
+					$(".pushcontent").removeClass('pushcontent-fullwidth');
+					$(".pushcontent").addClass('pushcontent-'+sidebar);
+					$(window).trigger("resize");
+				}
+				});
 			});
 		}
-		$(window).trigger("resize");
+		
 	});
 	
 	
