@@ -630,25 +630,42 @@ uiload = function() {
 		var topposition = input.position().top + input.height() + 5;
 		modaldialog.css("top", topposition+"px");
 		modaldialog.css("left", input.position().left+"px");
-		
-		input.on("keyup", function(e) {
-			
-			var options = input.data();
+
+		var options = input.data();
+
+		input.on("keyup", function(e) 
+		{
 			options["description.value"] = input.val();
-			var url = input.data("typeaheadurl");
-			
-			$.ajax({ url: url, async: false, data: options, success: function(data) {
-				if(data) 
-					{
-						modaldialog.html(data);
-						var lis = modaldialog.find("li");
-						if( lis.length > 1)
-						{
-							modaldialog.show();
-						}
-					}
+			if( e.which == 13)
+			{
+				var url = input.data("searchurl");
 				
-			}});
+				$.ajax({ url: url, async: true, data: options, success: function(data) 
+				{
+					if(data) 
+					{
+						$("#searchlayout").html(data);
+						modaldialog.hide();
+					}
+				}});				
+			}
+			else
+			{
+				var url = input.data("typeaheadurl");
+				
+				$.ajax({ url: url, async: true, data: options, success: function(data) {
+					if(data) 
+						{
+							modaldialog.html(data);
+							var lis = modaldialog.find("li");
+							if( lis.length > 1)
+							{
+								modaldialog.show();
+							}
+						}
+					
+				}});
+			}	
 		});
 		
 		$("body").on("click", function(event){
