@@ -634,14 +634,18 @@ uiload = function() {
 		input.on("keyup", function(e) {
 			
 			var options = input.data();
-			options["value"] = input.val();
+			options["description.value"] = input.val();
 			var url = input.data("typeaheadurl");
 			
 			$.ajax({ url: url, async: false, data: options, success: function(data) {
 				if(data) 
 					{
-					modaldialog.show();
-					modaldialog.html(data);
+						modaldialog.html(data);
+						var lis = modaldialog.find("li");
+						if( lis.length > 1)
+						{
+							modaldialog.show();
+						}
 					}
 				
 			}});
