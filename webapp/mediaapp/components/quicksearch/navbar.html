@@ -3,7 +3,11 @@
 #else
 	#set( $collectionid = $context.getRequestParameter("collectionid"))
 #end
-
+#set( $module = $context.findValue("module") )
+#if( !$module )
+	#set( $module = "modulesearch")
+#end
+$module
 <div class="nav-form nav-quicksearch">
 ##TODO  Remember last selected module of profile
 		<div class="input-group">
@@ -13,16 +17,13 @@
 					data-quicksearched='$!context.getRequestParameter("quicksearched")'
 					autocomplete="off"
 					placeholder="[[Search...]]"
-					#if( $module )
 					data-searchurl="$applink/views/modules/$module/grid/index.html"  
-					#else
-					data-searchurl="$applink/views/grid/all.html"  
-					#end
 					data-typeaheadurl="$applink/components/quicksearch/results.html"
 					data-oemaxlevel="1"
-					data-searchtype="asset"
+					data-searchtype="$module"
 					name="description.value" 
 					data-field="description"
+					data-operation="contains"
 					value="#esc($input)" />
 			
 			<div class="input-group-addon submitform" style="pointer-events: initial;">
