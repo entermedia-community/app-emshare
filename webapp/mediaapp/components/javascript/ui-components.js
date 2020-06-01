@@ -636,36 +636,40 @@ uiload = function() {
 		input.on("keyup", function(e) 
 		{
 			options["description.value"] = input.val();
-			if( e.which == 13)
+			var url = input.data("searchurl");
+			
+			$.ajax({ url: url, async: true, data: options, success: function(data) 
 			{
-				var url = input.data("searchurl");
-				
-				$.ajax({ url: url, async: true, data: options, success: function(data) 
+				if(data) 
 				{
-					if(data) 
+					$("#searchlayout").html(data);
+					if( e.which == 13)
 					{
-						$("#searchlayout").html(data);
 						modaldialog.hide();
 					}
-				}});				
-			}
-			else
+				}
+			}});				
+			var url = input.data("typeaheadurl");
+			
+			if( e.which != 13)
 			{
-				var url = input.data("typeaheadurl");
-				
-				$.ajax({ url: url, async: true, data: options, success: function(data) {
-					if(data) 
+				$.ajax(
+				{ 
+					url: url, async: true, data: options, success: function(data) 
+					{
+						if(data) 
 						{
 							modaldialog.html(data);
 							var lis = modaldialog.find("li");
 							if( lis.length > 1)
 							{
+								modaldialog.css("min-height",lis.length * 42 + 25);
 								modaldialog.show();
 							}
 						}
-					
-				}});
-			}	
+					}
+				});
+			}
 		});
 		
 		$("body").on("click", function(event){
