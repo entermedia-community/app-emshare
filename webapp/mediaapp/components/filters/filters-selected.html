@@ -1,5 +1,5 @@
 #set($hitssessionid = $hits.getSessionId())
-#set( $module = $content.module)
+
 #if (!$nodeID)
 	#set($nodeID = $context.getRequestParameter("nodeID"))
 	$context.putPageValue("nodeID",$nodeID)
@@ -18,22 +18,20 @@
 <table style="width:60%; margin:0 auto;">
 <tr>
 <td style="width:60px; padding-top:20px;">
+
+#set($modules = $mediaarchive.query("module").exact("showonsearch","true").sort("orderingUp").search($context))
 <div class="dropdown show">
-  <a class="btn btn-light dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-    #if($module == "project")
-    	[[Projects]]
-    #else
-    	[[All Types]]
-    #end
-  </a>
+	<a class="btn btn-light dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    		$module
+	</a>
 
   <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-    <a class="dropdown-item" href="$applink">Media</a>
-    <a class="dropdown-item" href="$applink/views/modules/project/grid/index.html">Projects</a>
-    <a class="dropdown-item" href="$applink">Collections</a>
-    <a class="dropdown-item" href="#">My Saves</a>
-    <a class="dropdown-item" href="#">Similar Profiles</a>
-  </div>
+	#foreach($modulelink in $modules)
+	    <a class="dropdown-item" href="$applink/views/modules/${modulelink.id}/grid/index.html">$modulelink</a>
+	#end
+	<a class="dropdown-item" href="#">My Saves</a>
+	<a class="dropdown-item" href="#">Similar Profiles</a>
+	</div>
 </div>
 
 </td>

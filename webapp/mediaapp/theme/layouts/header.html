@@ -1,14 +1,4 @@
-
-#set($lastselected = "asset" )
-#set($module = $searcherManager.getData($catalogid, "module", $lastselected ) )
-#if( !$module ) 
-	##in case they deleted an old selected module 
-    #set($module = $searcherManager.getData($catalogid, "module", "asset" ) )
-#end
-
-
-
-
+#set($module = $context.getPageValue("module"))
 <div class="emheader">
 <div class=" navbar  navbar-expand-lg navbar-dark ">
 	<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,13 +42,6 @@
 	   	<li class="nav-item"><a #if ( $module ) href="$home$apphome/views/settings/modules/$module.id/index.html" #else href="$home$apphome/views/settings/index.html" #end>[[Settings]]</a></li> 
 	    #end 
 	
-	#set($lastselected = $userprofile.last_selected_module )
-	#if(!$lastselected)
-		#set ($lastselected = $content.module )
-	#end
-	#if(!$lastselected)
-	      #set($lastselected = "asset" )
-	#end   
 	#if( $userprofile.getModules().size() > 1 )
 	#set( $urlbase = "$home$apphome/views/modules" )
 	<li class="nav-item dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">$module.getName($context.locale)</a> 
