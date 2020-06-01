@@ -1,0 +1,52 @@
+<div class="libraryfinder-header text-right">
+	<a href=""><i class="fas fa-folder-plus "></i></a> 
+	<a href=""><i class="fas fa-search "></i></a>
+</div>
+
+
+<div class="libraryfinder-collections-list">
+
+#set( $rootpath = "${apphome}/components/categories")
+
+##Always clear Tree if not category or nodeID
+#set($clearselection = false)
+#set($nodeID = $context.getRequestParameter("nodeID"))
+#if(!$nodeID)
+	#if (!$category)
+		#set($clearselection = true)
+	#end
+#end
+
+
+#foreach( $hit in $colhits.getPageOfHits() )
+
+##	#if($hit.collectionimage)
+##		#set($asset = $mediaarchive.getAsset($hit.collectionimage))
+##		#set( $link = $mediaarchive.asLinkToPreview($asset,"image200x200.jpg"))
+##	#end
+
+<div id="side-categories" class="assetdropcategory">
+    #set( $link = "$apphome/components/coltree/tree.html")
+    #set( $treename = "collectionTree$hit.getId()" )
+    #set( $link = "${link}?tree-name=$treename&clearselection=$clearselection&allowselections=false&editabletree=true" )
+    #set( $link = "${link}&targetdiv=searchlayout&maxlevelclick=1" )
+	#set( $rootcategory = false)
+    #set( $rootcategory = $mediaarchive.getCategory($hit.rootcategory))
+	#if( $rootcategory )
+		$context.putPageValue("rootcategory",$rootcategory)
+    	$pages.include($link, $context)
+    #else
+    	$hit
+    #end
+</div>
+##		<a href="$apphome/views/modules/librarycollection/media/${hit.id}/index.html" 
+##	   		title="$hit.name">
+##	 		<div class="collections-list-thumb"> <i class="fas fa-folder"></i>
+##	 			<span class="collections-list-name">$hit.name</span>
+##	 		</div>
+##	 	</a>
+##	 	<a href="" class="libraryfinder-collectionmenu"><i class="fas fa-ellipsis-v"></i></a>
+
+#end
+	
+</div>

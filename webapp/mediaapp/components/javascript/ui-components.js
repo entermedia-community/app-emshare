@@ -595,6 +595,86 @@ uiload = function() {
 			"click", function(event) {
 				emdialog($(this), event);
 	});
+	
+	lQuery(".typeaheaddropdown").livequery(function() {
+		
+		var input = $(this);
+		var hidescrolling = input.data("hidescrolling");
+
+		
+		var id = input.data("dialogid");
+		if (!id) {
+			id = "typeahead";	
+		}
+		
+		var modaldialog = $("#" + id);
+		if (modaldialog.length == 0) {
+			input.parent().append(
+					'<div class="typeaheadmodal " tabindex="-1" id="' + id
+							+ '" style="display:none" ></div>');
+			modaldialog = $("#" + id);
+		}
+		
+		var width = input.width();
+		var minwidth = input.data("minwidth");
+
+		if (minwidth && width) {
+			if( minwidth >  width )
+			{
+				width =  minwidth;
+			}
+		}
+		
+		modaldialog.css("width", width + "px");
+		console.log(input.position());
+		var topposition = input.position().top + input.height() + 5;
+		modaldialog.css("top", topposition+"px");
+		modaldialog.css("left", input.position().left+"px");
+
+		var options = input.data();
+
+		input.on("keyup", function(e) 
+		{
+			options["description.value"] = input.val();
+			if( e.which == 13)
+			{
+				var url = input.data("searchurl");
+				
+				$.ajax({ url: url, async: true, data: options, success: function(data) 
+				{
+					if(data) 
+					{
+						$("#searchlayout").html(data);
+						modaldialog.hide();
+					}
+				}});				
+			}
+			else
+			{
+				var url = input.data("typeaheadurl");
+				
+				$.ajax({ url: url, async: true, data: options, success: function(data) {
+					if(data) 
+						{
+							modaldialog.html(data);
+							var lis = modaldialog.find("li");
+							if( lis.length > 1)
+							{
+								modaldialog.show();
+							}
+						}
+					
+				}});
+			}	
+		});
+		
+		$("body").on("click", function(event){
+			
+			modaldialog.hide();
+		});
+	});
+	
+	
 
 	lQuery('.emrowpicker table td').livequery("click", function(event) {
 		event.preventDefault();
@@ -1619,72 +1699,6 @@ uiload = function() {
 			});
 
 
-	lQuery('.filterstoggle').livequery("click", function(e) {
-		e.preventDefault();
-		if ($("#col-filters").hasClass("filtersopen")) {
-			//close
-			$(".col-main").removeClass("filtersopen");
-				saveProfileProperty("filtersbarstatus",false,function(){
-			});
-			$("#filterstoggle").show( "fast", function() {
-				$(document).trigger( "resize" );
-  			});
-			
-		}
-		else {
-			//open
-			$("#filterstoggle").hide("fast", function() {
-				$(document).trigger( "resize" );
-  			});
-			$("#col-filters").addClass("filtersopen");
-			$(".col-main").addClass("filtersopen");
-			saveProfileProperty("filtersbarstatus",true,function(){
-			});
-		}
-		return false;
-	});
-	
-	//Left Column Toggle
-	lQuery('.lefttoggle').livequery("click", function(e) {
-		e.preventDefault();
-		var colleftwidth = $("#col-left").data("colleftwidth");
-		if (!$.isNumeric(colleftwidth)) {
-			colleftwidth = $("#col-left").width();
-		}
-		if ($("#col-left").hasClass("leftopen")) {
-			//close
-			$("#col-left").removeClass("leftopen");
-			$("#col-left").css("width",0);
-            $(".col-main").removeClass("leftopen");
-            $(".pushcontent").css("margin-left",0);
-            $("#lefttoggle").show("fast", function() {
-				$(document).trigger( "resize" );
-  			});
-			saveProfileProperty("leftbarstatus",false,function(){
-				
-			});
-		}
-		else {
-			//open
-            $("#col-left").addClass("leftopen");
-            if (colleftwidth) {
-            	$("#col-left").css("width", colleftwidth);
-            }
-            $(".col-main").addClass("leftopen");
-            if (colleftwidth) {
-            	$(".pushcontent").css("margin-left", colleftwidth+"px");
-            }
-            $("#lefttoggle").hide("fast", function() {
-				$(document).trigger( "resize" );
-  			});
-			saveProfileProperty("leftbarstatus",true,function(){
-				
-			});
-		}
-		
-		return false;
-	});
-	
 	
 	
 	lQuery('.sidebar-toggler').livequery("click", function(e) {
@@ -1697,26 +1711,31 @@ uiload = function() {
 		if (toggler.data('action') == 'hide') {
 			//hide sidebar
 			var url = apphome + '/components/sidebars/index.html';
-			saveProfileProperty("sidebarstatus","hidden");
-			saveProfileProperty("sidebarcomponent","");
-			$.ajax({ url: url, async: false, data: data, success: function(data) {
-				$("#"+targetdiv).html(data);
-				$(".pushcontent").addClass('pushcontent-fullwidth');
-			}
+			saveProfileProperty("sidebarcomponent","", function(){
+				$.ajax({ url: url, async: false, data: data, success: function(data) {
+									$("#"+targetdiv).replaceWith(data);
+					$(".pushcontent").removeClass('pushcontent-'+sidebar);
+					$(".pushcontent").addClass('pushcontent-fullwidth');
+					$(window).trigger("resize");
+				}
+				});
 			});
 		}
 		else {
 			//showsidebar
 			var url = apphome + '/components/sidebars/index.html';
-			saveProfileProperty("sidebarstatus","open");
-			saveProfileProperty("sidebarcomponent",sidebar);
-			$.ajax({ url: url, async: false, data: data, success: function(data) {
-				$("#"+targetdiv).html(data);
-				$(".pushcontent").removeClass('pushcontent-fullwidth');
-			}
+			saveProfileProperty("sidebarcomponent",sidebar, function(){
+				$.ajax({ url: url, async: false, data: data, success: function(data) {
+					
+					$("#"+targetdiv).replaceWith(data);
+					$(".pushcontent").removeClass('pushcontent-fullwidth');
+					$(".pushcontent").addClass('pushcontent-'+sidebar);
+					$(window).trigger("resize");
+				}
+				});
 			});
 		}
-		$(window).trigger("resize");
+		
 	});
 	
 	
@@ -1743,9 +1762,80 @@ uiload = function() {
 	
 	
 	//Sidebar Custom Width
-	lQuery(".col-left-resize").livequery(function()	{
+	lQuery(".sidebar-toggler-resize").livequery(function()	{
 		var slider = $(this);
-		var column = $(this).closest(".col-left");
+		var column = $(this).closest(".col-main");
+		var content = $(".pushcontent");
+		
+		var clickspot;
+		var startwidth;
+		var width;
+		
+		slider.on('mouseover', function()	{
+			$(this).css('opacity','0.6');
+			
+			
+		});
+		slider.on('mouseout', function()	{
+			if( !clickspot )
+			{
+			$(this).css('opacity','0');
+			}
+			
+		});
+		slider.on("mousedown", function(event) {
+			if (!clickspot) {
+				clickspot = event;
+				startwidth = column.width();
+				return false;
+			}
+			
+		});
+		
+		//$(".sidebar-toggler-resize").show();
+		
+		$(window).on("mouseup", function(event)
+		{
+			
+			if( clickspot )
+			{
+				clickspot = false;
+				$(this).css('opacity','0');	
+				if (width != "undefined") {
+					saveProfileProperty("sidebarwidth",width,function(){
+						$(document).trigger("resize");
+					});
+				}
+				return false;
+			}
+		});
+		$(window).on("mousemove", function(event)
+		{
+			if( clickspot )
+			{
+				$(this).css('opacity','0.6');
+				width = 0;
+				var changeleft = event.pageX - clickspot.pageX;
+				width = startwidth + changeleft;
+				width = width+32;
+				if( width < 220 )
+				{
+					width = 220;
+				}
+				column.width(width);
+				column.data("sidebarwidth",width);
+				$(".pushcontent").css("margin-left",width+"px");
+				event.preventDefault();
+				$(document).trigger("resize");
+				return false;
+			}	
+		});
+	});
+	
+	
+	lQuery(".col-resize").livequery(function()	{
+		var slider = $(this);
+		var column = $(this).closest(".col-main");
 		var content = $(".pushcontent");
 		
 		var clickspot;
@@ -1761,13 +1851,17 @@ uiload = function() {
 			}
 			
 		});
+		
+		//$(".sidebar-toggler-resize").show();
+		
 		$(window).on("mouseup", function(event)
 		{
+			
 			if( clickspot )
 			{
 				clickspot = false;
 				if (width != "undefined") {
-					saveProfileProperty("colleftwidth",width,function(){
+					saveProfileProperty("sidebarwidth",width,function(){
 						$(document).trigger("resize");
 					});
 				}
@@ -1786,7 +1880,7 @@ uiload = function() {
 					width = 220;
 				}
 				column.width(width);
-				column.data("colleftwidth",width);
+				column.data("sidebarwidth",width);
 				$(".pushcontent").css("margin-left",width+"px");
 				event.preventDefault();
 				$(document).trigger("resize");
@@ -1924,11 +2018,11 @@ var resizecolumns = function() {
 	//make them same top
 	var sidebarsposition = $("#resultsdiv").position();
 	var sidebarstop = 0;
-	if (typeof sidebarsposition != "undefined") {
+	/*if (typeof sidebarsposition != "undefined") {
 		sidebarstop = sidebarsposition.top;
 		$('.col-filters').css('top',sidebarstop + 'px');
 		$('.col-left').css('top',sidebarstop + 'px');
-	}
+	}*/
 	
 	var header_height = $("#header").outerHeight()
 	var footer_height = $("#footer").outerHeight();

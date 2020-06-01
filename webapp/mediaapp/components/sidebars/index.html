@@ -1,9 +1,75 @@
-<div id="col-sidebars" class="col-mainsidebar">
-
-$pages.include("$apphome/components/sidebars/filters/index.html", $context)
-
-#if( $canviewcategorynav || ( $librarycol && $canviewcategorynavcollections ) )
-	$pages.include("$apphome/components/sidebars/categories/index.html", $context)
+#if(!$sidebarcomponent)
+	#set( $sidebarcomponent = $userprofile.get("sidebarcomponent"))
 #end
+<div  id="col-sidebars" >
+<div class="sidebar-togglers-bar">
+	<div class="sidebar-togglers #if($sidebarcomponent == "libraries") sidebar-selected #end" style="top:45px;">
+	<a href="#" 
+		class="sidebar-toggler sidebar-toggler-show " 
+		data-action="show" 
+		data-targetdiv="col-sidebars"
+		data-sidebar="libraries"
+	title="[[Show Libraries]]">
+	<i class="fas fa-grip-horizontal"></i>
+	</a>
+	</div>
+	
+	<div class="sidebar-togglers #if($sidebarcomponent == "filters") sidebar-selected #end"  style="top:90px;">
+	<a href="#" 
+		class="sidebar-toggler sidebar-toggler-show" 
+		data-action="show" 
+		data-targetdiv="col-sidebars"
+		data-sidebar="filters"
+	title="[[Show Filters]]">
+	<i class="fas fa-filter"></i>
+	</a>
+	</div>
 
+
+	#set($sidebartop = 100)
+	#if( $canviewcategorynav || ( $librarycol && $canviewcategorynavcollections ) )
+		<div class="sidebar-togglers #if($sidebarcomponent == "categories") sidebar-selected #end" style="top:135px;">
+		<a href="#" 
+			class="sidebar-toggler sidebar-toggler-show" 
+			data-action="show" 
+			data-targetdiv="col-sidebars"
+			data-sidebar="categories"
+		title="[[Show Categories]]">
+		<i class="fas fa-folder"></i>
+		</a>
+		</div>
+	#end
 </div>
+<div class="col-mainsidebar">
+	
+
+#set( $sidebarwidth = $userprofile.get("sidebarwidth"))
+
+#if($sidebarcomponent)
+	#if($sidebarcomponent == "libraries" )
+		#set($sidebarurl = "$apphome/components/sidebars/libraries/index.html")
+		#set($sidebartop = 0)
+	#end
+	
+	#if($sidebarcomponent == "filters" )
+		#set($sidebarurl = "$apphome/components/sidebars/filters/index.html")
+		#set($sidebartop = 0)
+	#end
+	
+	#if($sidebarcomponent == "categories" )
+		#if( $canviewcategorynav || ( $librarycol && $canviewcategorynavcollections ) )
+			#set($sidebarurl = "$apphome/components/sidebars/categories/index.html")
+			#set($sidebartop = 0)
+		#end
+	#end
+
+	<div id="col-$sidebarcomponent" 
+	 class="col-main col-left col-$sidebarcomponent" 
+	 style="top: ${sidebartop}px; #if($sidebarwidth) width:${sidebarwidth}px;#end">
+		$pages.include($sidebarurl, $context)
+	
+	</div>
+#end
+</div>
+</div>
+

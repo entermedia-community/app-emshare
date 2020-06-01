@@ -1,0 +1,34 @@
+#if($librarycol)
+	#set( $collectionid = $librarycol.getId())
+#else
+	#set( $collectionid = $context.getRequestParameter("collectionid"))
+#end
+
+<div class="nav-form nav-quicksearch">
+##TODO  Remember last selected module of profile
+		<div class="input-group">
+			<input class="typeaheaddropdown form-control border-right-0 border" 
+					type="text"  
+					id="searchinput" 
+					data-quicksearched='$!context.getRequestParameter("quicksearched")'
+					autocomplete="off"
+					placeholder="[[Search...]]"
+					#if( $module )
+					data-searchurl="$applink/views/modules/$module/grid/index.html"  
+					#else
+					data-searchurl="$applink/views/grid/all.html"  
+					#end
+					data-typeaheadurl="$applink/components/quicksearch/results.html"
+					data-oemaxlevel="1"
+					data-searchtype="asset"
+					name="description.value" 
+					data-field="description"
+					value="#esc($input)" />
+			
+			<div class="input-group-addon submitform" style="pointer-events: initial;">
+			<a><i class="fa fa-search"></i></a>
+			</div>
+            
+		</div>
+
+</div>
