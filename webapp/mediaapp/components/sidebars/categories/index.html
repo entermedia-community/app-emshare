@@ -1,7 +1,7 @@
 <div class="col-main-inner">
 			<div class="col-sidebar-header">
 				<h2>
-				#if( $module=="librarycollection" && $librarycol )
+				#if( $module.id =="librarycollection" && $librarycol )
 				<a class="nav-btn float-left sidebarheaderactions" href="$apphome/views/modules/asset/index.html?nodeID=$librarycol.getRootCategoryId()">
 					<i class="fas fa-arrow-alt-circle-up"></i>
 				</a>
@@ -45,10 +45,8 @@
 			#set($selectedlibrary = $mediaarchive.getData("library",$selectedlibraryid))
 			$context.putPageValue("selectedlibrary",$selectedlibrary)
 		#end
-		
-		#set( $module = $content.module)
-		
-		#if($module=="librarycollection" && $librarycol )
+				
+		#if($module.id =="librarycollection" && $librarycol )
 			$pages.include("$apphome/components/librarycollection/sidebar.html",$context)
 		#else
 			$pages.include("$apphome/components/categories/sidebar-left.html", $context) 

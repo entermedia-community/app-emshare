@@ -1,8 +1,3 @@
-#set( $module = $content.module)
-#if(!$module)
-	#set($module = $context.getRequestParameter("module"))
-#end
-$context.putPageValue("module", $module)
 #if (!$nodeID)
 	#set($nodeID = $context.getRequestParameter("nodeID"))
 	$context.putPageValue("nodeID",$nodeID)
@@ -14,7 +9,7 @@ $context.putPageValue("module", $module)
 
 #if( !$librarycol )
 	#set($collectionid = $context.getRequestParameter("collectionid"))
-	#if($module=="librarycollection" && $collectionid)
+	#if($module.id =="librarycollection" && $collectionid)
 		#set( $librarycol = $mediaarchive.query("librarycollection").exact("id",$collectionid).searchOne() )
 	#end
 #end
@@ -23,7 +18,7 @@ $context.putPageValue("module", $module)
 	$context.putPageValue("librarycol", $librarycol)
 #end
 
-#if($module=="librarycollection" && $hits.size() == 0 && $mediaarchive.isCatalogSettingTrue("autopopulatecollections"))
+#if($module.id =="librarycollection" && $hits.size() == 0 && $mediaarchive.isCatalogSettingTrue("autopopulatecollections"))
 
 	$pages.include("$apphome/components/createmedia/copycategory/index.html?autorun=true", $context)
 
