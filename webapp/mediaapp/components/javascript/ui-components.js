@@ -635,37 +635,40 @@ uiload = function() {
 		input.on("keyup", function(e) 
 		{
 			options["description.value"] = input.val();
-			var url = input.data("searchurl");
-			
-			$.ajax({ url: url, async: true, data: options, success: function(data) 
-			{
-				if(data) 
-				{
-					$("#maincontent").html(data);
-					if( e.which == 13)
-					{
-						modaldialog.hide();
-					}
-				}
-			}});				
+							
 			var url = input.data("typeaheadurl");
 			
 			if( e.which != 13)
 			{
+				//Typeahead
 				$.ajax(
 				{ 
 					url: url, async: true, data: options, success: function(data) 
 					{
 						if(data) 
 						{
+							
 							modaldialog.html(data);
 							var lis = modaldialog.find("li");
-							if( lis.length > 1)
+							if( lis.length > 0)
 							{
-								modaldialog.css("min-height",lis.length * 42 + 25);
+								//modaldialog.css("min-height",lis.length * 42 + 25);
 								modaldialog.show();
 							}
 						}
+						//Search Results
+						var url = input.data("searchurl");
+						$.ajax({ url: url, async: true, data: options, success: function(data) 
+						{
+							if(data) 
+							{
+								$("#maincontent").html(data);
+								if( e.which == 13)
+								{
+									modaldialog.hide();
+								}
+							}
+						}});
 					}
 				});
 			}
