@@ -626,7 +626,6 @@ uiload = function() {
 		}
 		
 		modaldialog.css("width", width + "px");
-		console.log(input.position());
 		var topposition = input.position().top + input.height() + 5;
 		modaldialog.css("top", topposition+"px");
 		modaldialog.css("left", input.position().left+"px");
@@ -642,7 +641,7 @@ uiload = function() {
 			{
 				if(data) 
 				{
-					$("#searchlayout").html(data);
+					$("#maincontent").html(data);
 					if( e.which == 13)
 					{
 						modaldialog.hide();
