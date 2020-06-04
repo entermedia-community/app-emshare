@@ -1,0 +1,139 @@
+<div class=" h-100" style="max-height: calc(100% - 290px); width: 100%;">
+	<div class="row justify-content-md-center no-gutters h-100">
+		<div class="col">
+			<div class="maincontent h-100">
+
+				<h3 style="color:#28a745">San Marcos Salud</h3>
+				<div class=container>
+					<img class="img-header"src="$applink/theme/images/redcross.jpeg" >
+
+					<!-- <div class="project-thumb" style="background-image: url('$applink/theme/images/redcross.jpeg')"></div> -->
+
+
+					#set( $searcher = $mediaarchive.getSearcher("user") )
+					<!-- fix collection ID to san marcos table only -->
+					<!-- LIVE ID AXJxK_ILMRLIeZhr77qB -->
+					<!-- LOCAL ID AXJw5M3O4cMrv_DDXf7E -->
+					#set($collectionid = "AXJxK_ILMRLIeZhr77qB") 
+					$context.putPageValue("searcher",$searcher) 
+					#set($targetdiv = "subscriberssidebar")
+					<h4 style="color:#28a745">Buscar</h4>
+					<div id="search-collections">
+						<div id="searcharea">
+							#set($viewid = "usersearch") #set($viewpath = "user/${viewid}") 
+							#set($details = $searcher.getDetailsForView($viewpath, $userprofile))
+
+							<form id="dialogsearchform" style="margin-bottom: 10px;" class="autosubmit" data-targetdiv="adduserpicker" action="$sitelink/app/sanmarcos/usersearchresults.html">
+								<input type="hidden" name="collectionid" value="$collectionid" /> <input type="hidden" name="searchtype" value="user" /> <input type="hidden" name="sortby" value="firstName" />
+								<table style="width: 100%;">
+									<tr>
+										<td>
+
+											<div class="row inlinesearch">
+												<div class="col">
+													<input name="operation" value="contains" type="hidden"> <input name="field" value="description" type="hidden"> <input type="text" class="form-control detail_name textinput autosubmited " autocomplete="off" value="" id="name.value" name="description.value">
+												</div>
+											</div>
+										</td>
+
+									</tr>
+								</table>
+							</form>
+
+							<div id="adduserpicker" data-targetdiv="${targetdiv}" data-oemaxlevel="1" data-collectionid="${collectionid}" data-hitssessionid="$!hits.sessionId">
+								<div class="clearfix"></div>
+							</div>
+							<h4 style="color:#28a745">Nuevo Persona</h4>
+							<!-- Nuevo Persona -->
+							<a href="$applink/collective/channel/subscribers/addnewsanmarcos.html?collectionid=${collectionid}" class="emdialog btn btn-xs btn-light" title="[[Nuevo Persona]]" style="margin-bottom: 5px;"> <i class="fas fa-plus"></i> [[Crear Nuevo]]
+							</a>
+
+
+						</div>
+					</div>
+
+					<!-- IN SAN MARCOS LIST -->
+					#set( $team = $mediaarchive.query("librarycollectionusers").exact("collectionid",$collectionid).exact("ontheteam",true).search($context) )
+
+					<h4 style="color:#28a745">
+						<div class="float-right">
+							<a class="emdialog" data-cancelsubmit="true" title="View Team"> $team.size()</a>
+						</div>
+						<i class="fas fa-mountain"></i> [[En San Marcos]]
+					</h4>
+
+					#if( $team.isEmpty())
+					<p>[[Nadien todavia]]</p>
+					#else
+					<div class="row no-gutters" style="margin-bottom: 1rem;">
+						#set($odd = true) #foreach( $hit in $team) #set( $followeruser = $mediaarchive.getUser($hit.followeruser) ) #set( $userlink = "$apphome/users/${followeruser.getId()}/${followeruser.getAnonNickName()}.html") #set( $userimageurl = $mediaarchive.asLinkToProfile($followeruser.assetportrait) )
+						#if(!$userimageurl) #set( $userimageurl = "$applink/theme/images/user.svg" ) #end
+
+						<div class="col-lg-12 col-xl-6">
+							<div class="teammember" style="">
+
+								<div style="position: absolute; width: 38px;" class="table-subscribers">
+									<a style="display: inline-block; height: 40px"> <img src="${userimageurl}" title="$!followeruser.getName()" class="img-fluid align-middle usericon" style="position: relative; top: 50%; transform: translateY(-50%);"></a>
+								</div>
+								<div style="margin-left: 38px; height: 40px; position: relative;">
+									<div style="position: relative; top: 50%; transform: translateY(-50%);">
+										<a title="$!followeruser.getName()">$!followeruser.getAnonNickName()</a>
+									</div>
+									<div></div>
+									<i></i>
+								</div>
+
+							</div>
+						</div>
+						#set($odd = !$odd) #end
+					</div>
+
+					#end
+
+					<!-- POPULATION LIST -->
+					 
+					#set( $searcher = $mediaarchive.getSearcher("librarycollectionusers") ) 
+					#set( $subs = $searcher.query().exact("collectionid",$collectionid).sort("ontheteam").search($context)) 
+					#if( $subs.isEmpty())
+					<p>[[Nadien]]</p>
+					#else
+					
+					<h4 style="color:#28a745"><i class="fas fa-users"></i> [[Populacion]]</h4>
+					<table class="table table-striped table-hover table-subscribers">
+						<thead>
+							<tr class="tableheader">
+								<th>[[Persona]]</th>
+								<th>[[Ultima Hora de Entra]]</th>
+								<th></th>
+							</tr>
+						</thead>
+						#foreach( $hit in $subs)
+						<tr>
+							#set( $followeruser = $mediaarchive.getUser($hit.followeruser) ) 
+							#set( $userlink = "$applink/users/${followeruser.getId()}/${followeruser.getAnonNickName()}.html") 
+							#set( $userimageurl = $mediaarchive.asLinkToProfile($followeruser.assetportrait) ) 
+							#if(!$userimageurl) #set( $userimageurl ="$applink/theme/images/user.svg" ) #end
+
+
+							<td><a href="#" title="$!followeruser.getAnonNickName()"> <img src="${userimageurl}" title="$!followeruser.getAnonNickName()" class="img-fluid align-middle usericon"> <span class="username">$followeruser.getAnonNickName()</span>
+							</a></td>
+							<td><span class="usernote">#if ($hit.getValue("addeddate")) $context.getDateTime( $hit.getValue("addeddate") )</span> #end</td>
+
+
+							<td class="text-center"><span class="whatsapp" id="team${hit.followeruser}"> 
+							<a class="ajax btn btn-primary btn-sm " data-targetdiv="team${hit.followeruser}" data-oemaxlevel="1" href="$applink/collective/channel/subscribers/teamtoggle.html?collectionid=$collectionid&userid=$followeruser.getId()"> #if( $hit.getBoolean("ontheteam")) [[Salir]] #else [[Entrar]] #end</a></span>
+							</td>
+						</tr>
+						#end
+					</table>
+					#end
+				</div>
+
+
+			</div>
+		</div>
+
+	</div>
+
+</div>
+
