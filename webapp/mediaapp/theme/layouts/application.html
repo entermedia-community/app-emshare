@@ -1,22 +1,3 @@
-#set($moduleid = $content.module)
-#set($defaultmodule = "modulesearch")
-
-#if(!$moduleid)
-	#set($lastselected = $userprofile.last_selected_module )
-	#if(!$lastselected)
-		#set($lastselected = $defaultmodule )
-	#end
-	#set( $moduleid = $lastselected)
-#end
-
-#set($module = $searcherManager.getData($catalogid, "module", $moduleid ) )
-#if( !$module && $lastselected != $defaultmodule) 
-	##Double check in case they deleted an old selected module
-	#set($lastselected = $defaultmodule ) 
-    #set($module = $searcherManager.getData($catalogid, "module", $lastselected ) )
-#end
-$context.putPageValue("module", $module)
-
 <div id="application" data-user="$user.getId()" data-home="$home" data-apphome="$apphome" data-catalogid="$catalogid" data-themeprefix="${themeprefix}" data-browserlanguage="$!{browserlanguage}" data-componenthome="$componenthome" data-mediadbappid="$!mediaarchive.getMediaDbId()">
     #if ( $canviewerrors )
 		<div id="errordiv"></div>

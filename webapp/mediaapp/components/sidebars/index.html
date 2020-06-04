@@ -3,7 +3,20 @@
 #end
 <div  id="col-sidebars" >
 <div class="sidebar-togglers-bar">
-	<div class="sidebar-togglers #if($sidebarcomponent == "libraries") sidebar-selected #end" style="top:45px;">
+
+	<div class="sidebar-togglers #if($sidebarcomponent == "topics") sidebar-selected #end"  style="top:45px;">
+	<a href="#" 
+		class="sidebar-toggler sidebar-toggler-show" 
+		data-action="show" 
+		data-targetdiv="col-sidebars"
+		data-sidebar="topics"
+	title="[[Show Topics]]">
+	<i class="fas fa-tags"></i>
+	</a>
+	</div>
+
+
+	<div class="sidebar-togglers #if($sidebarcomponent == "libraries") sidebar-selected #end" style="top:90px;">
 	<a href="#" 
 		class="sidebar-toggler sidebar-toggler-show " 
 		data-action="show" 
@@ -14,7 +27,7 @@
 	</a>
 	</div>
 	
-	<div class="sidebar-togglers #if($sidebarcomponent == "filters") sidebar-selected #end"  style="top:90px;">
+	<div class="sidebar-togglers #if($sidebarcomponent == "filters") sidebar-selected #end"  style="top:135px;">
 	<a href="#" 
 		class="sidebar-toggler sidebar-toggler-show" 
 		data-action="show" 
@@ -24,11 +37,12 @@
 	<i class="fas fa-filter"></i>
 	</a>
 	</div>
+	
 
 
 	#set($sidebartop = 100)
 	#if( $canviewcategorynav || ( $librarycol && $canviewcategorynavcollections ) )
-		<div class="sidebar-togglers #if($sidebarcomponent == "categories") sidebar-selected #end" style="top:135px;">
+		<div class="sidebar-togglers #if($sidebarcomponent == "categories") sidebar-selected #end" style="top:175px;">
 		<a href="#" 
 			class="sidebar-toggler sidebar-toggler-show" 
 			data-action="show" 
@@ -56,19 +70,25 @@
 		#set($sidebartop = 0)
 	#end
 	
+	#if($sidebarcomponent == "topics" )
+		#set($sidebarurl = "$apphome/components/sidebars/topics/index.html")
+		#set($sidebartop = 0)
+	#end
+	
 	#if($sidebarcomponent == "categories" )
 		#if( $canviewcategorynav || ( $librarycol && $canviewcategorynavcollections ) )
 			#set($sidebarurl = "$apphome/components/sidebars/categories/index.html")
 			#set($sidebartop = 0)
 		#end
 	#end
-
+	#if($sidebarurl)
 	<div id="col-$sidebarcomponent" 
 	 class="col-main col-left col-$sidebarcomponent" 
 	 style="top: ${sidebartop}px; #if($sidebarwidth) width:${sidebarwidth}px;#end">
 		$pages.include($sidebarurl, $context)
 	
 	</div>
+	#end
 #end
 </div>
 </div>

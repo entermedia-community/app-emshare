@@ -1,0 +1,36 @@
+<div class="container-fluid">
+<div class="page-header">
+  <h2>$report</h2>
+</div>
+
+<div class="row ">
+
+<div class="col-md-3 ">
+<div class="card panel-default">
+    <div class="card-header">[[Filters]]  
+#set( $viewpath = "${reportsearcher.searchType}/${reportsearcher.searchType}advancedsearch")    
+ <a href="$home$apphome/views/settings/lists/datamanager/views/index.html?viewid=${reportsearcher.searchType}advancedsearch&viewpath=$viewpath&searchtype=${reportsearcher.searchType}">
+    <i class="fas fa-cog float-right"></i></a>
+    
+  </div>
+  <div class="card-body">$pages.include("./execute.html", $context)</div>
+</div>
+</div>
+
+
+<div class="col-md-9 ">
+<div class="card panel-default">
+    <div class="card-header">[[Results]] 
+  </div>
+  <div class="card-body">
+$pages.include("/${applicationid}/components/reports/types/${report.outputtype}.html")
+</div></div></div>
+
+</div>
+
+
+#if ($report.id == "assetedits")
+$pages.include("/${applicationid}/components/reports/types/assetsedithistory.html", $context)
+#end
+
+</div>

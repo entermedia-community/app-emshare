@@ -626,7 +626,6 @@ uiload = function() {
 		}
 		
 		modaldialog.css("width", width + "px");
-		console.log(input.position());
 		var topposition = input.position().top + input.height() + 5;
 		modaldialog.css("top", topposition+"px");
 		modaldialog.css("left", input.position().left+"px");
@@ -636,36 +635,47 @@ uiload = function() {
 		input.on("keyup", function(e) 
 		{
 			options["description.value"] = input.val();
-			if( e.which == 13)
+							
+			var url = input.data("typeaheadurl");
+			
+			if( e.which == 27)
 			{
-				var url = input.data("searchurl");
-				
-				$.ajax({ url: url, async: true, data: options, success: function(data) 
-				{
-					if(data) 
-					{
-						$("#searchlayout").html(data);
-						modaldialog.hide();
-					}
-				}});				
+				modaldialog.hide();	
 			}
-			else
+			else if( e.which != 13)
 			{
-				var url = input.data("typeaheadurl");
-				
-				$.ajax({ url: url, async: true, data: options, success: function(data) {
-					if(data) 
+				//Typeahead
+				$.ajax(
+				{ 
+					url: url, async: true, data: options, success: function(data) 
+					{
+						if(data) 
 						{
+							
 							modaldialog.html(data);
 							var lis = modaldialog.find("li");
-							if( lis.length > 1)
+							if( lis.length > 0)
 							{
+								//modaldialog.css("min-height",lis.length * 42 + 25);
 								modaldialog.show();
 							}
 						}
-					
-				}});
-			}	
+						//Search Results
+						var url = input.data("searchurl");
+						$.ajax({ url: url, async: true, data: options, success: function(data) 
+						{
+							if(data) 
+							{
+								$("#searchlayout").html(data);
+								if( e.which == 13)
+								{
+									modaldialog.hide();
+								}
+							}
+						}});
+					}
+				});
+			}
 		});
 		
 		$("body").on("click", function(event){

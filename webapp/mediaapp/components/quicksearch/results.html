@@ -1,17 +1,27 @@
-<div class="quicksearchresults">
+#set($popupheight = 10)
+#if($suggestions.size())
+	#set($popupheight = $popupheight+60)
+#end
+#if($topichits.size())
+	#set($popupheight = $popupheight+60)
+#end
+<div class="quicksearchresults" style="height: ${popupheight}px">
+#if($suggestions.size())
 <h3>[[Your Recent Searches]]</h3>
-<ul>
+<ul class="qsrecent">
 #foreach ($res in $suggestions)
 	#set( $s = $res.get('synonyms'))
-	<li><a href=""><span>#esc($s)</span></a></li>
+	<li><a href="" class="badge badge-light"><span>#esc($s)</span></a></li>
 #end
 </ul>
+<div class="clearfix"></div>
+#end
 #if($topichits && !$topichits.isEmpty() )
 <h3>[[Topics for You]]</h3>
-<ul>
+<ul class="qstopics">
 #foreach ($res in $topichits)
-	#set( $s = $res.get('synonyms'))
-	<li><a href=""><span>#esc($s)</span></a></li>
+	#set( $s = $res.get('name'))
+	<li><a href="$apphome/views/topictracker/showreport.html?tag=$tag" class="badge badge-info"><span>#esc($s)</span></a></li>
 #end
 </ul>
 #end
