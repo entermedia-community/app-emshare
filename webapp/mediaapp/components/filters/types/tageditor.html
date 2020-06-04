@@ -8,6 +8,9 @@ $pages.include("$apphome/components/xml/types/select2translations.html",$context
 #set($searchfield = $detail.getId() )
 #set( $detailid = $detail.getId().replace('.','-') )
 
+#set( $input = $modulehits.getInput("description") )
+
+
 ##TODO Use $values
 #set( $vals = $val.split("\s*\|\s*") )
 
@@ -18,12 +21,20 @@ $pages.include("$apphome/components/xml/types/select2translations.html",$context
 			<div class="col-4" style="text-align:right;">			
 			 ##<input type="checkbox" name="" value="$entry.getId()" #if(  $hits.getSearchQuery().hasTermValue($filternode.id,$entry.getId()) ) selected #end />
 			 #set($barwidth = $entry.count*100/10)
-			 #esc($entry.getText($context)) 
+				#set($s = $entry.getText($context) )			
+				<a href="$apphome/views/topictracker/showreport.html?tag=$s" class="badge badge-light" style="text-align:right; padding-right:10px;"><span>#esc($s)</span></a>
+			 
 			 </div>
 			 <div class="col">	
-				 <a href="" class="filterbar" 
-				 		style="width:${barwidth}px;#if( $foreach.count == 1)background-color:#f98f20;#end"> 
-				 </a>	${entry.count}
+			 	<a href="$applink/views/modules/$module.id/grid/index.html"  
+					data-oemaxlevel="3"
+					data-searchtype="modulesearch"
+					data-field="description"
+					data-operation="contains"
+					data-targetdiv="emcontainer" ##searchlayout"
+					data-description.value="$s"
+			 	 	class="filterbar ajax" style="width:${barwidth}px;#if( $input == $s)background-color:#f98f20;#end"> 
+				 </a>	<span>${entry.count}</span>
 			 </div>
 		   </div>
 		#end

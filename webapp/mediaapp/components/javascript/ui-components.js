@@ -638,7 +638,11 @@ uiload = function() {
 							
 			var url = input.data("typeaheadurl");
 			
-			if( e.which != 13)
+			if( e.which == 27)
+			{
+				modaldialog.hide();	
+			}
+			else if( e.which != 13)
 			{
 				//Typeahead
 				$.ajax(
@@ -662,7 +666,7 @@ uiload = function() {
 						{
 							if(data) 
 							{
-								$("#maincontent").html(data);
+								$("#searchlayout").html(data);
 								if( e.which == 13)
 								{
 									modaldialog.hide();

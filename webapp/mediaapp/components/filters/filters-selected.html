@@ -21,10 +21,12 @@
 
 #set($modules = $mediaarchive.query("module").exact("showonsearch","true").sort("orderingUp").search($context))
 <div class="dropdown show">
-	<a class="btn btn-primary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-    		$module
-	</a>
 
+	#if( $module)
+	<a class="btn btn-primary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    	$module
+	</a>
+	#end
   <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
 	#foreach($modulelink in $modules)
 	    <a class="dropdown-item" href="$applink/views/modules/${modulelink.id}/grid/index.html">$modulelink</a>

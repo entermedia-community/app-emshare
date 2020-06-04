@@ -1,0 +1,36 @@
+#if($reportsearcher)
+	#set( $view = "${reportsearcher.searchType}/${reportsearcher.searchType}advancedsearch")
+	#set ($details = $reportsearcher.getDetailsForView($view, $userprofile)) 
+	$context.putPageValue("view", $view)
+	$context.putPageValue("searcher", $reportsearcher)
+	$context.putPageValue("usestartswith",true)
+	$context.putPageValue("caneditlists",false)
+
+#if($details.size() > 0)
+
+
+<form action="executefinish.html">
+	<input type= "hidden" name="reportid" value="$data.id"/>
+	$context.putPageValue("searcher", $reportsearcher)
+		$context.putPageValue("searchform", true)
+
+	 #foreach( $detail in $details)
+	        $context.putPageValue("detail", $detail)
+		$context.putPageValue("searchform", true)
+
+	        #if ($detail.isLeaf())
+	        
+	            $pages.include("/${applicationid}/components/advancedsearch/detailedit.html", $context)
+	        #else
+	        
+	            $pages.include("/${applicationid}/components/advancedsearch/section.html", $context)
+	        #end
+	    #end
+	    <hr>
+	<input class="btn btn-sm btn-primary" type="submit" name="[[Run Report]]" value="[[Run Report]]"/>
+</form>
+#end
+#end
+
+
+
