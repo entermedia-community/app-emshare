@@ -11,14 +11,20 @@ $pages.include("$apphome/components/xml/types/select2translations.html",$context
 ##TODO Use $values
 #set( $vals = $val.split("\s*\|\s*") )
 
-
 		##sorted and use a multi-check box with a background showing how many times found	
 		#foreach($entry in $filternode.getChildrenByCount() )
-			<div class="chartbackground">
-				<span class="" style="width: ${entry.count}px"></span> 
-			 <input type="checkbox" name="" value="$entry.getId()" #if(  $hits.getSearchQuery().hasTermValue($filternode.id,$entry.getId()) ) selected #end />
-			 #set($barwidth = $entry.count*20)
-			 #esc($entry.getText($context)) <span class="filterbar filterbar-${barwidth}" style="width:${barwidth}px">${entry.count}</span>
+			<div class="chartbackground row">
+				##<span class="" style="width: ${entry.count}px"></span> 
+			<div class="col-4" style="text-align:right;">			
+			 ##<input type="checkbox" name="" value="$entry.getId()" #if(  $hits.getSearchQuery().hasTermValue($filternode.id,$entry.getId()) ) selected #end />
+			 #set($barwidth = $entry.count*100/10)
+			 #esc($entry.getText($context)) 
+			 </div>
+			 <div class="col">	
+				 <a href="" class="filterbar" 
+				 		style="width:${barwidth}px;#if( $foreach.count == 1)background-color:#f98f20;#end"> 
+				 </a>	${entry.count}
+			 </div>
 		   </div>
 		#end
 <!-- 
