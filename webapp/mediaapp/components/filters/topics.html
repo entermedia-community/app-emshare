@@ -1,4 +1,4 @@
-#set( $module = $content.module)
+#set( $moduleid = $content.module)
 
 #if ($editfilters)
 	#set( $edit = true )
@@ -11,7 +11,7 @@
 
 #if( !$librarycol )
 	#set($collectionid = $context.getRequestParameter("collectionid"))
-	#if($module=="librarycollection" && $collectionid)
+	#if($moduleid == "librarycollection" && $collectionid)
 		#set( $librarycol = $mediaarchive.query("librarycollection").exact("id",$collectionid).searchOne() )
 	#end
 #end
@@ -30,9 +30,9 @@
 
 <div id="advfilterpanel" class="advfilterpanel" >
 <div class="tanmodule" > 
-	#set( $view = "${module}/${module}advancedfilter")
+	#set( $view = "${moduleid}/${moduleid}advancedfilter")
 	
-	#set( $searcher  = $mediaarchive.getSearcher($module))
+	#set( $searcher  = $mediaarchive.getSearcher($moduleid))
 	
 	###set( $searcher = $mediaarchive.getAssetSearcher())
 	
@@ -66,7 +66,6 @@
 	$context.putPageValue("idprefix","search")
 	
 	##FILTERS
-		
 		#foreach( $detail in $details)   
 			$context.putPageValue("detail", $detail)
 			$context.putPageValue("searchform", true)
@@ -75,6 +74,12 @@
 				#if ($detail.isFilter())
 					#set($filternode = $modulehitsuserfiltervalues.get($detail.id))
 					$context.putPageValue("filternode",$filternode)
+					
+					#if( !$filternode)
+						Check keywords are in view $moduleid/${moduleid}advancedfilter.xml<br>
+						And that the index has it defined and it has values
+						Make sure description has keywords in it. Might have to reindex the table
+					#end
 					
 					#if(($edit == "true") || ($filternode && !$filternode.isEmpty() && $filternode.children.size() > 1))
 						
