@@ -26,6 +26,7 @@ public void init()
 			Boolean onteam = subscription.getBoolean("ontheteam")
 			onteam = !onteam;
 			subscription.setValue("ontheteam",onteam);
+			subscription.setValue("addeddate",new Date());
 			archive.saveData("librarycollectionusers",subscription);
 			
 			context.putPageValue("subscription",subscription);

@@ -14,17 +14,7 @@ public void init()
 	
 	String collectionid = context.getRequestParameter("collectionid");
 	String userid = context.getRequestParameter("userid");
-	log.info(userid);
 	
-	User teamuser = null;
-/* Check for duplicate email. */
-	if (teamuserid != null) 
-	{
-		teamuser = archive.getUserManager().getUser(teamuserid);			
-	}
-	else if (email != null) {
-		teamuser = archive.getUserManager().getUserByEmail(email);
-	}
 	
 	
 	Data subscription = archive.query("librarycollectionusers").exact("followeruser", userid).exact("collectionid", collectionid).searchOne();
