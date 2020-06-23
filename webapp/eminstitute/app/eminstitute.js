@@ -362,6 +362,33 @@ lQuery("#adduserpicker .rowclick").livequery("click", function(e) {
 
 });
 
+
+$("#saveproject").validate({
+	  rules: {
+		"name\.value": {
+		  required: true,
+		  minlength: 3,
+		  maxlength: 20,
+		  remote: home+"/site/sitedeployer/add/verifyproject.html"
+		}
+	  },
+	  messages: {
+		"name\.value": {
+		  remote: "That Project Name is already taken, please try different one."
+		}
+	  },
+	  errorElement: "div",
+	  errorClass: "errormsg",
+	  errorPlacement: function(error, element) {
+		  error.appendTo( element.closest(".form-group").parent() );
+		},
+	  submitHandler: function(form) {
+		   $("#loadingresult").show();
+		   form.submit();
+		   
+		  }
+});
+
 	
 });
 

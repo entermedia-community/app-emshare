@@ -30,35 +30,3 @@
 	</div>
 	<div class="clearfix"></div>
 </div>
-
-<script>
-
-	if ("$chatuser" != "$user"){
-		console.log(Notification.permission);
-	}
-	
-	console.log("$chatuser");
-	console.log("$user");
-	console.log("$user.getAnonNickName()");
-	
-	function showNotification() 
-	{
-		const notification = new Notification("$chatuser.getAnonNickName()", {
-			body: "$chat.message",
-			icon: "https://entermediadb.org/entermediadb/mediadb/services/module/asset/downloads/preset/2019/12/f0/94a/image200x200.png"
-		});
-		
-	}
-	
-	
-	if (Notification.permission === "granted" && "$chatuser" != "$user") {
-		showNotification();
-	} else if (Notification.permission !== "denied") {
-		Notification.requestPermission().then(permission => {
-			if (permission === "granted" && "$chatuser" != "$user"){
-				showNotification();
-			}
-		});
-	}
-
-</script>
