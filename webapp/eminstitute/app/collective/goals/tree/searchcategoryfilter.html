@@ -4,7 +4,14 @@
 $context.putPageValue("hits",$results)
 $context.putPageValue("searcher",$searcher)
 #set ($details = $searcher.getDetailsForView("category/searchcategory", $userprofile))
-	<form id="autosubmitfilter" name="autosubmitfilter" class="autosubmit" autocomplete="off"  data-targetdiv="categoryresults" action="$home$applink/components/categories/search/searchpath.html">
+#set( $hits = $searcher.query().exact("parents","AXLEi_BCXH9T6prQ_hcI").sort("categorypathUp").search($context) )
+<select name="categorypathe" class="listautocomplete form-control select2">
+<option value=""></option>
+#foreach( $hit in $hits)
+    <option #if ($val && $val == $hit.id) selected #end value="$hit.id">$hit</option>
+#end
+</select>
+	<!-- <form id="autosubmitfilter" name="autosubmitfilter" class="autosubmit" autocomplete="off"  data-targetdiv="categoryresults" action="$home$applink/components/categories/search/searchpath.html">
 		
 			<input type="hidden" name="searchtype" value="category" />
 			<input type="hidden" name="sortby" value="categorypathUp" />
@@ -22,7 +29,7 @@ $context.putPageValue("searcher",$searcher)
 			</tr>
 		</table>
 		
-		</form>
+		</form> -->
 
 #set( $existingcategories = $context.getRequestParameter("existingcategories"))			
 		
