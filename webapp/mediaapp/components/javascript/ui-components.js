@@ -1714,36 +1714,37 @@ uiload = function() {
 	lQuery('.sidebar-toggler').livequery("click", function(e) {
 		e.preventDefault();
 		var toggler = $(this);
-		var data = toggler.data;
+		var data = toggler.data();
+		
 		var targetdiv = toggler.data('targetdiv');
 		var sidebar = toggler.data('sidebar');
+		data["propertyfield"] = "sidebarcomponent";
 
+		//console.log(data.modulesearchhitssessionid);
+		
 		if (toggler.data('action') == 'hide') {
 			//hide sidebar
+			data["sidebarcomponent.value"] = "";
 			var url = apphome + '/components/sidebars/index.html';
-			saveProfileProperty("sidebarcomponent","", function(){
-				$.ajax({ url: url, async: false, data: data, success: function(data) {
-									$("#"+targetdiv).replaceWith(data);
-					$(".pushcontent").removeClass('pushcontent-'+sidebar);
+	        $("#"+targetdiv).load(url,data, function()
+		        {
+		        	$(".pushcontent").removeClass('pushcontent-'+sidebar);
 					$(".pushcontent").addClass('pushcontent-fullwidth');
 					$(window).trigger("resize");
-				}
-				});
-			});
+		        }
+			);
 		}
 		else {
 			//showsidebar
+			data["sidebarcomponent.value"] = sidebar;
 			var url = apphome + '/components/sidebars/index.html';
-			saveProfileProperty("sidebarcomponent",sidebar, function(){
-				$.ajax({ url: url, async: false, data: data, success: function(data) {
-					
-					$("#"+targetdiv).replaceWith(data);
+	        $("#"+targetdiv).load(url,data, function()
+		        {
 					$(".pushcontent").removeClass('pushcontent-fullwidth');
 					$(".pushcontent").addClass('pushcontent-'+sidebar);
 					$(window).trigger("resize");
-				}
-				});
-			});
+		        }
+			);
 		}
 		
 	});
