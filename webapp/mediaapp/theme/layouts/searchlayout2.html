@@ -32,8 +32,9 @@
 #if(!$sidebarcomponent)
 	#set( $sidebarcomponent = "")
 #end
-
+#set( $sidebarwidth = $userprofile.get("sidebarwidth"))
 $context.putPageValue("sidebarcomponent", $sidebarcomponent)
+$context.putPageValue("sidebarwidth", $sidebarwidth)
 
 <div id="searchlayout" 
 	 class="cols-main #if ($module) cols-$module #end searchlayout2" 
@@ -43,12 +44,6 @@ $context.putPageValue("sidebarcomponent", $sidebarcomponent)
 	 $pages.include("$componenthome/sidebars/index.html",$context)
 	
 	 <div id="maincontent" class="col-main col-content-main">
-	 
-	 
-	
-	
-	 #set( $sidebarwidth = $userprofile.get("sidebarwidth"))
-     #set( $sidebarcomponent = $userprofile.get("sidebarcomponent"))
 
 	<div class="pushcontent #if($sidebarcomponent) pushcontent-$sidebarcomponent #else pushcontent-fullwidth #end" 
 		  style="#if($sidebarcomponent && $sidebarwidth) margin-left:${sidebarwidth}px;#end">

@@ -1,3 +1,12 @@
+##Sidebars
+#set( $sidebarcomponent = $userprofile.get("sidebarcomponent"))
+#if(!$sidebarcomponent)
+	#set( $sidebarcomponent = "")
+#end
+#set( $sidebarwidth = $userprofile.get("sidebarwidth"))
+$context.putPageValue("sidebarcomponent", $sidebarcomponent)
+$context.putPageValue("sidebarwidth", $sidebarwidth)
+
 <div class="emheader">
 <div class=" navbar  navbar-expand-lg navbar-dark ">
 	<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -78,6 +87,7 @@
 
 
 <div id="header" class="mediacenterheader">
+	<div class="pushcontent #if($sidebarcomponent) pushcontent-$sidebarcomponent #else pushcontent-fullwidth #end">
 	#set($logourl = "$home$themeprefix/images/EMLogo-small.png")
 	<div class="logocontainer">
 		<a class="emlogo" href="$home$apphome/index.html">
@@ -89,10 +99,11 @@
 
 
 
-
-  #if(!$hidefilters)
-        $pages.include("$apphome/components/filters/filters-selected.html", $context)
-    #end
+	
+	  #if(!$hidefilters)
+	        $pages.include("$apphome/components/filters/filters-selected.html", $context)
+	    #end
+	</div>
 </div>
 
 
