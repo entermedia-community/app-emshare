@@ -1,3 +1,5 @@
+#set( $goalid = $context.getRequestParameter("goalid") ) 
+#set( $collectionid = $context.getRequestParameter("collectionid") ) 
 #set( $action = $context.getRequestParameter("action") ) 
 #set( $targetdiv = $context.getRequestParameter("targetdiv") )
 #set( $detailid = $context.getRequestParameter("detailid") )
@@ -17,26 +19,19 @@
 	#set( $categories = $context.getRequestParameter("category-exact.values") )
 #end	
 
-<div id="search-catgories">
-<table width="100%">
-<tr><td style="width:30%;padding-right:6px;">
-	<div class="emsearchfield" style="background-color: #eee; padding:6px"> 
-			[[Parent]] 
-		</div>
-	<div class="assetdropcategory assetdropcategorymove" style="padding:0px;overflow-x:auto;width:300px">  
-		$pages.include("$apphome/components/emtree/tree.html?tree-name=categoryPickerTree&editabletree=true&clearselection=true",$context)
-	</div>
-</td>
-<td>
-	<div class="emsearchfield" style="background-color: #eee; padding:6px; margin-bottom:4px"> 
-			[[Category Search]] 
-		</div>
-	<div id="searchareacontent" >
-	$pages.include("$apphome/components/categories/search/searchcategoryfilter.html?nodeID=index&existingcategories=$!categories",$context)
-	</div>
+#set($rootnode = $content.rootactionscategory)
+#if(!$rootnode)
+	#set( $rootnode = "tasks${librarycol.getId()}")
+#end
 
-</td></tr>	
-</table>	
+#set( $onlyopen = $context.getRequestParameter("onlyopen"))
+
+<div id="search-catgories">
+<!-- This is the left side where the tree is showing -->
+
+	<div id="taskssearchareacontent" > 
+	$pages.include("$apphome/collective/goals/actions/search/searchtaskfilter.html?nodeID=${rootnode}&existingcategories=$!categories",$context)
+	</div>
 
 <script>
 
@@ -49,13 +44,14 @@ $('[data-id="${categoryid}"]').addClass("emrowselected");
 
 $(document).on("emtreeselect",function(event) 
 {
+	event.stopPropagation();
 	var selectednode = event.nodeid;
 	$("#parentfilter").val(selectednode);
 	//trigger("submit");
 	//$("#autosubmitfilter").trigger("submit");
 	//$("#autosubmitfilter").submit();
-	$("#autosubmitfilter").ajaxSubmit({
-		target:"#categoryresults",
+	$("#dialogautosubmitfilter").ajaxSubmit({
+		target:"#goalscategoryresults",
 		success: paintselected 
 	});
 	return false;
@@ -69,12 +65,23 @@ $(".pickedcategoryform").submit(function(event)
 		event.preventDefault();
 		console.log("submit action $action to $targetdiv");
 		var params = {};
+		var theform = $(this);
 		params["${detailid}.value"] =  $("#selectedcategories").val();
 		params["detailid"] = "$detailid";
 		#if( $pickone )
-			params["id"] =  $("#selectedcategories").val();
-			$("#$targetdiv").load("$action", params);
-			$(this).closest(".modal").modal("hide"); 			//close dialog
+			params["categoryid"] =  $("#selectedcategories").val();
+			params["goalid"] = "$goalid";
+			params["completedby"] = $("#selecteduser").val();
+			params["comment"] = $("#commenttext").val();
+			params["collectionid"] = "$collectionid";
+			#if ($onlyopen)
+			params["onlyopen"] = "$onlyopen";
+			#end
+			jQuery.get("$action", params, function(data) 
+			{
+				$("#$targetdiv").replaceWith(data);
+				$(theform).closest(".modal").modal("hide"); 			//close dialog
+			});
 		#else
 			params["oemaxlevel"] = "1";
 			$("#$targetdiv").load("$action", params);

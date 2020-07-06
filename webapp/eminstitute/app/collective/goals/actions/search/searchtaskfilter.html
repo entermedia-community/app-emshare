@@ -1,0 +1,50 @@
+#set( $nodeID = $context.getRequestParameter("nodeID"))
+#set( $searcher = $mediaarchive.getSearcher("category") )
+#set( $results = $searcher.query().exact("parents",$nodeID).sort("categorypathUp").search($context) )
+$context.putPageValue("hits",$results)
+$context.putPageValue("searcher",$searcher)
+#set ($details = $searcher.getDetailsForView("category/searchcategory", $userprofile))
+#set( $goalid = $context.getRequestParameter("goalid") ) 
+#set( $collectionid = $context.getRequestParameter("collectionid") )
+<!-- change 'parents' variable below so that it reflects the correct node id. -->
+#set( $hits = $searcher.query().exact("parents","AXJxBWaW4cMrv_DDXf7Z").sort("categorypathUp").search($context) )
+<!-- $hits.size() -->
+#set( $existingcategories = $context.getRequestParameter("existingcategories"))
+<!-- Category picker I want working -->
+<form id="dialogautosubmitfilter" name="autosubmitfilter" class="autosubmitform pickedcategoryform emmultivalue" data-targetdiv="goalscategoryresults" 
+	action="$applink/collective/goals/actions/search/categorypicked.html">
+	
+	<!-- Add comment -->
+	<h4 style="color: black";>Details</h4>
+	<textarea id="commenttext" class="form-control" style="" name="comment"></textarea>
+	
+	<!-- Add staff member -->
+	<h4 style="color: black";>Staff Member</h4>
+	<select id="selecteduser" class="form-control form-control-sm"  name="completedby"  >
+			  <option value="" ></option>
+	#set( $users = $mediaarchive.getList("user"))
+	#foreach( $auser in $users)
+			  <option value="$auser.id">$auser.getName()</option>
+	#end
+	</select>
+	
+	<!-- Add task type -->
+	<h4 style="color: black";>Task Type</h4>
+	<select id="selectedcategories" name="categorypath" class="selectautosubmit listautocomplete form-control select2">
+	<option value=""></option>
+	#foreach( $hit in $hits)
+	    <option #if ($val && $val == $hit.id) selected #end value="$hit.id">$hit</option>
+	#end
+	</select>
+	
+	
+	
+	<input type="hidden" name="searchtype" value="category" />
+	<input type="hidden" name="sortby" value="categorypathUp" />
+	<input type="hidden" name="field" value="parents" />
+	<input type="hidden" name="operation" value="exact" />
+	<input type="hidden" name="parents.value" id="parentfilter" value="$nodeID" />
+	<input type="hidden" name="collectionid" value="$collectionid" />
+	<input type="hidden" name="goalid" value="$goalid" />
+			
+</form>

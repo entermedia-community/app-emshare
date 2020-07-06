@@ -32,8 +32,8 @@
 			data-width="900"
 			class="btn btn-xs btn-task taskcomplete$!{task.taskstatus} ajax" 
 			data-targetdiv="task$task.getId()" data-oemaxlevel="1" title="$tree.getCategoryPath()" >
-			$task 
-			
+			$task - $!task.taskstatus - $!mediaarchive.getUser($task.completedby).getAnonNickName()
+			<!-- Add information to be displayed here. -->
 			#set( $comment = $mediaarchive.query("goaltaskcomments").exact("goaltaskid",$task.id).match("commenttext","*").sort("dateDown").searchOne() )
 			#if ($comment)
 				&nbsp;<i class="fas fa-comment"></i>
@@ -72,7 +72,7 @@
 		data-goalid="$goal.id"
 		data-dialogid="picktask"
 		data-action="$applink/collective/goals/actions/search/categorypicked.html"
-		href="$applink/collective/goals/actions/search/searchdropdown.html?targetdiv=$target&clearselection=&detailid=category-exact&onlyopen=$!onlyopen"
+		href="$applink/collective/goals/actions/search/searchtask.html?targetdiv=$target&clearselection=&detailid=category-exact&onlyopen=$!onlyopen"
 		 ><i class="fas fa-plus-circle"></i> 
 		</a>
 	
