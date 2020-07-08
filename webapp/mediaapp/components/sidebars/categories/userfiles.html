@@ -1,0 +1,17 @@
+##this will block and will be loaded using a one time ajaxstatus reload
+
+#if( !$desktop )
+	<div id="userfiles" class="ajaxstatus" data-ajaxpath="$applink/components/sidebars/categories/userfiles.html" >
+<br><br><br>
+.. no desktop ..
+	</div>
+#else
+
+#set( $folderdetails = $desktop.getLocalFiles($mediaarchive,"/home/shanti") )
+<div class="localfiles" >
+
+		#foreach($folder in $folderdetails.childfolders)
+			#esc($folder.get("foldername"))<br>
+		#end		
+</div>
+#end
