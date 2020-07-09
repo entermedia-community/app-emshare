@@ -3,11 +3,15 @@
 	<div id="userfiles" class="ajaxstatus" data-ajaxpath="$applink/components/sidebars/categories/userfiles.html" >
 	</div>
 #else
-#set( $folderdetails = $desktop.getLocalFiles($mediaarchive,"/home/shanti") )
-<div class="localfiles" >
+<div class="localfiles col-categories categorytree " >
 
-		#foreach($folder in $folderdetails.childfolders)
-			#esc($folder.get("foldername"))<br>
-		#end		
+<div id="side-categories" class="assetdropcategory">
+    #set( $link = "$apphome/components/desktop/tree.html")
+    #set( $treename = "desktopTree$hit.getId()" )
+    #set( $link = "${link}?tree-name=$treename&clearselection=$clearselection&allowselections=false&editabletree=true" )
+    #set( $link = "${link}&targetdiv=searchlayout&maxlevelclick=1" )
+   	$pages.include($link, $context)
+</div>
+
 </div>
 #end
