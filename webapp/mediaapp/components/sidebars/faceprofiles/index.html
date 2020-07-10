@@ -25,11 +25,14 @@
 			
 			#set($asset = $mediaarchive.getAsset($faceprofile.collectionimage))
 			#set($link = $mediaarchive.asLinkToPreview($asset,"image200x200.jpg"))
+			
 			#set($profilename = $faceprofile.name)
-			<div class="card card-mini card-collections">
-			<a href="$apphome/${faceprofile.id}" 
+			#set( $selectedid = $context.getRequestParameter("faceprofiles.faceprofilegroup.value"))
+			
+			<div class="card card-mini card-collections #if($selectedid == $faceprofile.id) active #end">
+			<a href="$applink/views/modules/asset/search.html?field=faceprofiles.faceprofilegroup&operation=exact&faceprofiles.faceprofilegroup.value=${faceprofile.id}" 
 			   title="#if($profilename) $profilename #else ? #end">
-			 <div class="card-collections-thumb" style='#if($link) background-image: url("#uuencode($link)") #end'></div>
+			 <div class="card-collections-thumb" style='#if($link) background-image: url("#urlencode($link)") #end'></div>
 			 ##<div class="card-name collectionbox">#if($profilename) $profilename #else ? #end</div>
 			 </a>
 			 <a href="$apphome/views/modules/faceprofilegroup/edit/settings.html?id=$faceprofile.id" 
