@@ -26,31 +26,19 @@
 			$context.putPageValue("task", $task)
 			$pages.include($edittask, $context)
 		#else
-		<a href="$edittask"
+		<br><a href="$edittask"
 			id="task$task.getId()"
 			data-focuson="$task.id"
 			data-width="900"
 			class="btn btn-xs btn-task taskcomplete$!{task.taskstatus} ajax" 
 			data-targetdiv="task$task.getId()" data-oemaxlevel="1" title="$tree.getCategoryPath()" >
-			$task - $!task.taskstatus - $!mediaarchive.getUser($task.completedby).getAnonNickName()
 			<!-- Add information to be displayed here. -->
+			$task.getAge() - $task - $!mediaarchive.getData("taskstatus",$task.taskstatus) - $!mediaarchive.getUser($task.completedby).getAnonNickName()
+			
+			
 			#set( $comment = $mediaarchive.query("goaltaskcomments").exact("goaltaskid",$task.id).match("commenttext","*").sort("dateDown").searchOne() )
 			#if ($comment)
 				&nbsp;<i class="fas fa-comment"></i>
-				##<div>
-				##<span class="goal-commentauthor" title="$!mediaarchive.getUser(${comment.author}).getAnonNickName()">
-
-				##$!mediaarchive.getUser(${comment.author}).getAnonNickName():
-				
-				##</span>
-				##<span class="goal-commenttext">
-				##	#if( $comment.statuschange )
-				##		$!context.getDataText("taskstatus",$comment.statuschange)
-				##	#else
-				##	$comment.commenttext
-				##	#end
-				##</span>
-				##</div>
 			#end
 			</a>
 		#end
@@ -75,7 +63,7 @@
 		href="$applink/collective/goals/actions/search/searchtask.html?targetdiv=$target&clearselection=&detailid=category-exact&onlyopen=$!onlyopen"
 		 ><i class="fas fa-plus-circle"></i> 
 		</a>
-	
+		
 	#end
 	#if (!$onlyopen && $points>0)
 		$points
