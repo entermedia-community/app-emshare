@@ -22,14 +22,17 @@
 <div class="faceprofilessidebar">
 	#foreach($faceprofile in $faceprofiles)
 		#if($faceprofile.collectionimage)
+			
 			#set($asset = $mediaarchive.getAsset($faceprofile.collectionimage))
-			#set( $link = $mediaarchive.asLinkToPreview($asset,"image200x200.jpg"))
+			#set($link = $mediaarchive.asLinkToPreview($asset,"image200x200.jpg"))
+			#set($profilename = $faceprofile.name)
 			<div class="card card-mini card-collections">
 			<a href="$apphome/${faceprofile.id}" 
-			   title="$hit.name">
+			   title="#if($profilename) $profilename #else ? #end">
 			 <div class="card-collections-thumb" style='#if($link) background-image: url("#uuencode($link)") #end'></div>
-			 <div class="card-name collectionbox">$faceprofile.name</div>
+			 ##<div class="card-name collectionbox">#if($profilename) $profilename #else ? #end</div>
 			 </a>
+			 <a href="" title="[[Edit Profile Properties]]" class="btn btn-xs btn-light btn-editprofile"><i class="fas fa-edit"></i></a>
 			</div>
   	
 		#end
