@@ -15,7 +15,7 @@ function getRandomColor() {
 
 uiload = function() {
 	// https://github.com/select2/select2/issues/600
-	$.fn.select2.defaults.set("theme", "bootstrap4");
+	//$.fn.select2.defaults.set("theme", "bootstrap4");
 	$.fn.modal.Constructor.prototype._enforceFocus = function() {
 	}; // Select2 on Modals
 	
@@ -180,7 +180,6 @@ uiload = function() {
                 allowClear = true;
             }
 			theinput = theinput.select2({
-				theme : "bootstrap4",
 				placeholder : placeholder,
 				allowClear : allowClear,
 				minimumInputLength : 0,
@@ -1256,7 +1255,6 @@ uiload = function() {
                             }
 							theinput
 									.select2({
-										theme : "bootstrap4",
 										placeholder : defaulttext,
 										allowClear : allowClear,
 										minimumInputLength : 0,
@@ -1434,7 +1432,6 @@ uiload = function() {
                     }
 					theinput
 							.select2({
-								theme : "bootstrap4",
 								placeholder : defaulttext,
 								allowClear : allowClear,
 								minimumInputLength : 0,
@@ -1829,9 +1826,9 @@ uiload = function() {
 				var changeleft = event.pageX - clickspot.pageX;
 				width = startwidth + changeleft;
 				width = width+32;
-				if( width < 220 )
+				if( width < 440 )
 				{
-					width = 220;
+					width = 440;
 				}
 				column.width(width);
 				column.data("sidebarwidth",width);
@@ -1886,9 +1883,9 @@ uiload = function() {
 				width = 0;
 				var changeleft = event.pageX - clickspot.pageX;
 				width = startwidth + changeleft;
-				if( width < 220 )
+				if( width < 440 )
 				{
-					width = 220;
+					width = 440;
 				}
 				column.width(width);
 				column.data("sidebarwidth",width);
