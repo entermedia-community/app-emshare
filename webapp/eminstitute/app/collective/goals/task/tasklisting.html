@@ -24,7 +24,7 @@
 				&nbsp;<i class="fas fa-comment"></i>
 			#end</a>
 #else
-<!-- need to revamp how tasks are assigned very confusing -->
+## need to revamp how tasks are assigned very confusing 
 <div id="opentask$task.getId()" 
 	data-taskid="$task.id"
 	class="card-task card card-mini card-taskcomplete$!{task.taskstatus}"  >
@@ -48,6 +48,7 @@
   		<div class="card-task-body changetaskstatus" 	data-taskid="$task.id"  >
 	    	<form id="someform" class="ajaxform" data-targetdiv="opentask$task.id" data-oemaxlevel="1" action="$applink/collective/goals/task/tasksave.html" >
 	    	<input type="hidden" name="taskid" value="$task.id" />
+	    	<input type="hidden" name="collectionid" value="$librarycol.getId()" />
 			[[Status]]:
   			<select  name="taskstatus" class="form-control form-control-sm" >
 			  <option value="" ></option>
@@ -57,12 +58,12 @@
 			  #end
 			</select>
 			<div style="padding-top:5px;">
-			<!-- change completedby field to staff field? -->
+			## change completedby field to staff field? 
   			<span class="completedby">[[By]]: 
   			
   			<select class="form-control form-control-sm"  name="completedby"  >
 			  <option value="" ></option>
-			  #set( $team = $mediaarchive.query("librarycollectionusers").exact("collectionid",$collectionid).exact("ontheteam",true).search($context) )
+			  #set( $team = $mediaarchive.query("librarycollectionusers").exact("collectionid",$librarycol.getId()).exact("ontheteam",true).search($context) )
 				#foreach( $hit in $team)
 					#set( $followeruser = $mediaarchive.getUser($hit.followeruser) )
 			  		<option value="$hit.id" #if( $task.completedby == $hit.id) selected #end>$followeruser.getName()</option>
@@ -72,7 +73,7 @@
   			</span>
 			</div>
 			</form>
-			<!-- $pages.include("$apphome/collective/goals/comments/listcomments.html?taskid=$task.id") -->
+			## $pages.include("$apphome/collective/goals/comments/listcomments.html?taskid=$task.id") 
   		</div>
 </div>
 #end
