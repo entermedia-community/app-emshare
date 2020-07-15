@@ -18,7 +18,9 @@
 		#set( $tree =  $mediaarchive.getCategory($task.projectdepartment))
 		#if($tree)
 			#set( $c = $tree.getInt("goalpoints") )
-			#if( $c == 0)#set( $c = 10)#end
+			#if( $c == 0)
+				#set( $c = 10)
+			#end
 			#set($points = $points + $c)
 		#end
 		#set( $edittask = "$applink/collective/goals/task/taskedit.html?id=${task.id}&collectionid=$goal.collectionid&onlyopen=$!onlyopen")
@@ -33,7 +35,7 @@
 			data-width="900"
 			class="btn btn-xs btn-task taskcomplete$!{task.taskstatus} ajax" 
 			data-targetdiv="task$task.getId()" data-oemaxlevel="1" title="$tree.getCategoryPath()" >
-			<!-- Add information to be displayed here. -->
+			## Add information to be displayed here.
 			$task.getAge() - $task - $!mediaarchive.getData("taskstatus",$task.taskstatus) - $!mediaarchive.getUser($task.completedby).getAnonNickName()
 			
 			

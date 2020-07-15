@@ -38,7 +38,7 @@
     #set( $goallink = "$applink/collective/goals/editgoalpanel.html?id=${goal.id}&collectionid=$collectionid&categoryid=$!selectedcat.getId()&hitssessionid=$!{goalhits.getSessionId()}&goalfolder=$goalfolder")
     <a href="$goallink" title="$goal.name" class="emdialog editgoalshow openemdialog" style="display: cnone" >[[Goal link]]</a>	
 #end
-<!-- Added task table code starts here. -->	
+	
 #set( $hits = $mediaarchive.query("projectgoal").orgroup("collectionid",$collectionid).orgroup("projectstatus","open|critical").enduser(true).sort("projectstatus").sort("creationdateDown").search() )
 
 #if ($hits)
@@ -84,11 +84,13 @@
 			data-width="900">$goal.name</a>
 		</td>
 		<td >
-	  			$pages.include("$apphome/collective/goals/like.html",$context)
+			##TEAM
+	  		$pages.include("$apphome/collective/goals/like.html",$context)
 		</td>	
 		<td >
-			$!goal.details 		
+			##TASKS
 			
+			$!goal.details 		
 			<div class="goal-body">
 			$pages.include("$apphome/collective/goals/search/goaltasks.html?indialog=true",$context)
 			</div>
