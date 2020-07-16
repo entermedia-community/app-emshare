@@ -11,18 +11,10 @@
 			data-focuson="$task.id"
 			id="task$task.getId()"
 			class="btn btn-xs taskcomplete$!{task.taskstatus} ajax" data-targetdiv="task$task.getId()" data-oemaxlevel="1" title="$tree.getCategoryPath()" >
-			#if( $task.completedby )
-				#set( $completedby = $mediaarchive.getUser($task.completedby) )
-				$!completedby.getAnonNickName() :
-			#elseif( $task.startedby )
-				#set( $startedby = $mediaarchive.getUser($task.startedby) )
-				$!startedby.getAnonNickName() :
-			#end	
-			$task
-			#set( $comment = $mediaarchive.query("goaltaskcomments").exact("goaltaskid",$task.id).match("commenttext","*").sort("dateDown").searchOne() )
-			#if ($comment)
-				&nbsp;<i class="fas fa-comment"></i>
-			#end</a>
+			
+			##set( $comment = $mediaarchive.query("goaltaskcomments").exact("goaltaskid",$task.id).match("commenttext","*").sort("dateDown").searchOne() )
+			<i class="fas fa-pencil-alt"></i>
+		</a>
 #else
 ## need to revamp how tasks are assigned very confusing 
 <div id="opentask$task.getId()" 
