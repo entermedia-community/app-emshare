@@ -13,55 +13,38 @@
 #set( $target = "tasklist$!indialog#eid($goal.id)")
 #set( $onlyopen = $context.getRequestParameter("onlyopen"))
 <div id="$target" class="goalstaskcontainer">
-<table class="table table-hover table-dark">
-  <tbody>
 	#set($points = 0)
 	#foreach($task in $tasks)
 		#set( $tree =  $mediaarchive.getCategory($task.projectdepartment))
 		#if($tree)
 			#set( $c = $tree.getInt("goalpoints") )
-			#if( $c == 0)
-				#set( $c = 10)
-			#end
+			#if( $c == 0)#set( $c = 10)#end
 			#set($points = $points + $c)
 		#end
-		#set($collectionid = $goal.collectionid)
 		#set( $edittask = "$applink/collective/goals/task/taskedit.html?id=${task.id}&collectionid=$goal.collectionid&onlyopen=$!onlyopen")
 		#if ($onlyopen)
 			$context.putPageValue("task", $task)
 			$pages.include($edittask, $context)
 		#else
-			<tr>
-			<th id="taskage" scope="row">$task.getAge()</th>
-			<td id="tasktype">$task</td>
-			#if ($task.taskstatus == 1)
-			#set($color = "#ffc107")
-			#elseif ($task.taskstatus == 3)
-			#set($color = "#28a745")
-			#else
-			#set($color = "#868e96")
-			#end
-			<td id="taskstatus" style="background: $color;">$!mediaarchive.getData("taskstatus",$task.taskstatus)</td>
-			<td id="taskowner">$!mediaarchive.getUser($task.completedby).getAnonNickName()</td>
-			<td id="editrow">
-			<div>
-			<a href="$edittask"
+		<div>
+		<a href="$edittask"
 			id="task$task.getId()"
 			data-focuson="$task.id"
 			data-width="900"
 			class="btn btn-xs btn-task taskcomplete$!{task.taskstatus} ajax" 
 			data-targetdiv="task$task.getId()" data-oemaxlevel="1" title="$tree.getCategoryPath()" >
-			<i class="fas fa-pencil-alt"></i>
+			<!-- Add information to be displayed here. -->
+			$task.getAge() - $task - $!mediaarchive.getData("taskstatus",$task.taskstatus) - $!mediaarchive.getUser($task.completedby).getAnonNickName()
+			
+			
 			#set( $comment = $mediaarchive.query("goaltaskcomments").exact("goaltaskid",$task.id).match("commenttext","*").sort("dateDown").searchOne() )
-			<!-- #if ($comment)
+			#if ($comment)
 				&nbsp;<i class="fas fa-comment"></i>
-			#end -->
-			</a></div></td>
-			</tr>
+			#end
+			</a>
+			</div>
 		#end
 	#end
-	</tbody>
-	</table>
 	<div class="clearfix"></div>	
 			
 			
