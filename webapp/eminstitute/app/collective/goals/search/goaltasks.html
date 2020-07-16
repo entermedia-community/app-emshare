@@ -13,7 +13,7 @@
 #set( $target = "tasklist$!indialog#eid($goal.id)")
 #set( $onlyopen = $context.getRequestParameter("onlyopen"))
 <div id="$target" class="goalstaskcontainer">
-<table class="table table-hover table-dark">
+<table class="table table-sm table-hover table-borderless table-dark ">
   <tbody>
 	#set($points = 0)
 	#foreach($task in $tasks)
@@ -31,10 +31,12 @@
 			$context.putPageValue("task", $task)
 			$pages.include($edittask, $context)
 		#else
-			<tr>
+			<tr >
 			<th id="taskage" scope="row">$task.getAge()</th>
 			<td id="tasktype">$task</td>
 			<td id="taskowner">$!mediaarchive.getUser($task.completedby).getAnonNickName()</td>
+			#set( $comment = $mediaarchive.query("goaltaskcomments").exact("goaltaskid",$task.id) )
+			<td id="taskdetails" style="font-size: 0.66rem; width:150px;">$!task.comment</td>
 			#if ($task.taskstatus == 1)
 			#set($color = "#ffc107")
 			#elseif ($task.taskstatus == 3)
