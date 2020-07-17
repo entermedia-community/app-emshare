@@ -12,8 +12,9 @@
 #set( $indialog = $context.getRequestParameter("indialog"))
 #set( $target = "tasklist$!indialog#eid($goal.id)")
 #set( $onlyopen = $context.getRequestParameter("onlyopen"))
-testt
-<div id="$target" class="goalstaskcontainer">
+testt $tasks.size()
+<div id="$target">
+<div  class="goalstaskcontainer">
 
 <table class="table table-sm table-hover table-dark ">
   <tbody>
@@ -29,10 +30,7 @@ testt
 		#end
 		#set($collectionid = $goal.collectionid)
 		#set( $edittask = "$applink/collective/goals/task/taskedit.html?id=${task.id}&collectionid=$goal.collectionid&onlyopen=$!onlyopen&targetdiv=$target")
-		#if ($onlyopen)
-			$context.putPageValue("task", $task)
-			$pages.include($edittask, $context)
-		#else
+		
 			<tr >
 			<th id="taskage" scope="row">$task.getAge()</th>
 			<td id="tasktype">$task</td>
@@ -66,7 +64,6 @@ testt
 			#end -->
 			</a></td>
 			</tr>
-		#end
 	#end
 	</tbody>
 	</table>
@@ -96,4 +93,5 @@ testt
 		$points
 	#end
 	
-</div>			
+</div>		
+</div>	
