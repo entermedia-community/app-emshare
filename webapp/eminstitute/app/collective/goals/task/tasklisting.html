@@ -38,7 +38,11 @@
     		#end
     	</div>
   		<div class="card-task-body changetaskstatus" 	data-taskid="$task.id"  >
-	    	<form id="someform" class="ajaxform" data-targetdiv="opentask$task.id" data-oemaxlevel="1" action="$applink/collective/goals/task/tasksave.html" >
+  		<!-- EDITING BOX STARTS HERE -->
+  		#set($target = $context.getRequestParameter("targetdiv"))
+	    	<form id="someform" class="ajaxform" data-targetdiv="$target" data-oemaxlevel="1" action="$applink/collective/goals/task/tasksave.html" >
+	    	<input type="hidden" name="goalid" value="$selectedgoal.id" />
+	    	<input type="hidden" name="onlyopen" value="true" />
 	    	<input type="hidden" name="taskid" value="$task.id" />
 	    	<input type="hidden" name="collectionid" value="$librarycol.getId()" />
 			[[Status]]:
@@ -49,6 +53,7 @@
 			  <option value="$option.id" #if( $task.taskstatus == $option.id) selected #end >$option.getName()</option>
 			  #end
 			</select>
+			
 			<div style="padding-top:5px;">
 			## change completedby field to staff field? 
   			<span class="completedby">[[By]]: 
@@ -63,7 +68,12 @@
 			  
 			</select>
   			</span>
+  			
+  			<textarea id="commenttext" class="form-control" style="" name="comment">$!task.comment</textarea>
 			</div>
+			
+			
+			
 			</form>
 			## $pages.include("$apphome/collective/goals/comments/listcomments.html?taskid=$task.id") 
   		</div>
