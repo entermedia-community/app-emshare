@@ -1,0 +1,46 @@
+<div class="maincontent">
+	
+		<div class="goals-header-actions">
+		[[U.N. Global Propagation]]
+		
+		</div>
+		<div class="emdata" style="overflow-x:auto;">
+		<table id="info-table" width="100%" class="table table-striped table-hover">
+		<thead>
+		<tr class="tableheader">
+			<th style="width:130px;">[[Location]]</th>
+			<th style="width:130px;">[[IP Address]]</th>
+			<!-- <th style="width:130px;">[[Date]]</th> -->
+		</tr>
+		</thead>
+		</table>
+		</div>
+</div>
+<script type="text/javascript">
+// Add "&run_now=true" at the end of the url to run again.
+
+var url = "https://simplescraper.io/api/9rx9hxsZXMnMlpLUtRE7?apikey=GPQXT1GIupKNMivPUzBMdZVNtldL4jIc&offset=0&limit=30"; 
+fetch(url)
+    .then(function(response) {
+          if(response.ok) { // Check response
+              response.json().then(function(data) { 
+            	  console.log(data);
+            	  console.log(data.data.length);
+            	  var info = "";
+            	  
+           		  for(var i=0;i<data.data.length;i++){
+           			  console.log(i);
+           			  info += "<tr><td>"+data.data[i].location+"</td><td>"+data.data[i].ipaddress+"</td></tr>";
+           		  }
+           		 if(info != ""){
+           			 $("#info-table").append(info);
+           		 } 
+            	  
+              });
+          } else { // 
+              console.log("no DNS info || response failed");
+          }
+    });
+</script>
+
+
