@@ -1,7 +1,7 @@
 <div class="maincontent">
 	
 		<div class="goals-header-actions">
-		[[U.N. Global Propagation]]
+		<!-- TODO!!: Add Run Diagnostic Button -->
 		
 		</div>
 		<h3>United Nations Global DNS Propagation</h3>
@@ -19,15 +19,62 @@
 		</div>
 </div>
 <!-- //Load map script -->
-<script>// Initialize locations and add the map
+<script>
 var map;
 var locations = [];
 var green = "http://maps.google.com/mapfiles/ms/icons/green-dot.png" ;
 var red = "http://maps.google.com/mapfiles/ms/icons/red-dot.png" ;
+var url = "https://simplescraper.io/api/9rx9hxsZXMnMlpLUtRE7?apikey=GPQXT1GIupKNMivPUzBMdZVNtldL4jIc&offset=0&limit=30"; 
+//Add "&run_now=true" at the end of the url to run again.
+
+    
+//Initialize map as call back from script tag below
 function initMap() {
-	initLocations();
-	console.log(locations);
 	
+	//Initialize locations array
+	initLocations();
+	//Fetch on initialization
+	fetch(url)
+	    .then(function(response) {
+	          if(response.ok) { // Check response
+	             return response.json().then(function(data) { 
+	            	  
+	            	  var info = "";
+	           		  for(var i=0;i<data.data.length;i++){
+	           			  info += "<tr><td>"+data.data[i].location+"</td><td>"+data.data[i].ipaddress+"</td></tr>";
+	           		  }
+	           		 if(info != ""){
+	           			 $("#info-table").append(info);
+	           		 } 
+	           		
+	           		console.log(locations)
+	           		//Update IP information
+	           		for(var i=0;i<data.data.length;i++){
+	           			
+	           			locations[i].ip = data.data[i].ipaddress;
+	           			console.log(locations[i].ip);
+	         		  }
+	           		//Create markers
+	           		//Add logic to change color for null IP's
+	           		for (var i = 0; i < locations.length; i++) {
+	           		    var latLng = new google.maps.LatLng(locations[i].lat,locations[i].lng);
+	           		    var marker = new google.maps.Marker({
+	           		      position: latLng,
+	           		      icon: green,
+	           		      title: locations[i].name + ": " + locations[i].ip,
+	           		      map: map
+	           		      
+	           		    });
+	           		  }
+	           		
+	           		return locations;
+	            	 
+	              });
+	          } else { // 
+	              console.log("no DNS info || response failed");
+	          }
+	    });
+	//Stylin da map
 	var styledMapType = new google.maps.StyledMapType(
 			[
 				  {
@@ -264,7 +311,7 @@ function initMap() {
 				],
 				{name: 'EM Dark Map'});
 	
-	map = new google.maps.Map(document.getElementById('map'), {
+		map = new google.maps.Map(document.getElementById('map'), {
 	    zoom: 2,
 	    center: new google.maps.LatLng(40.8,-73),
 	    mapTypeControlOptions: {
@@ -277,17 +324,6 @@ function initMap() {
     map.mapTypes.set('styled_map', styledMapType);
     map.setMapTypeId('styled_map');
 	
-	for (var i = 0; i < locations.length; i++) {
-	  
-	    var latLng = new google.maps.LatLng(locations[i].lat,locations[i].lng);
-	    var marker = new google.maps.Marker({
-	      position: latLng,
-	      icon: green,
-	      title: locations[i].name + " " + locations[i].ip,
-	      map: map
-	      
-	    });
-	  }
 	
 };
 
@@ -356,30 +392,7 @@ function initLocations() {
   type="text/javascript"></script>
 <!--   Scrape Global DNS Checker for info and return info, will only run again if fetch is manipulated.  -->
 <script type="text/javascript">
-// Add "&run_now=true" at the end of the url to run again.
 
-var url = "https://simplescraper.io/api/9rx9hxsZXMnMlpLUtRE7?apikey=GPQXT1GIupKNMivPUzBMdZVNtldL4jIc&offset=0&limit=30"; 
-fetch(url)
-    .then(function(response) {
-          if(response.ok) { // Check response
-              response.json().then(function(data) { 
-            	  //console.log(data);
-            	  //console.log(data.data.length);
-            	  var info = "";
-            	  
-           		  for(var i=0;i<data.data.length;i++){
-           			  //console.log(i);
-           			  info += "<tr><td>"+data.data[i].location+"</td><td>"+data.data[i].ipaddress+"</td></tr>";
-           		  }
-           		 if(info != ""){
-           			 $("#info-table").append(info);
-           		 } 
-            	  
-              });
-          } else { // 
-              console.log("no DNS info || response failed");
-          }
-    });
 </script>
 
 
