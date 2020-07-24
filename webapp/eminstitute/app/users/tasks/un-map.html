@@ -1,9 +1,8 @@
 <div class="maincontent">
-	
-		<div class="goals-header-actions">
+		<button onclick="runRecent()"  id="recent" class="btn btn-sm btn-primary" style="float: right;" title="Run Diagnostic">Fetch Most Recent Data</button>
 		<!-- TODO!!: Add Run Diagnostic Button -->
+		<button onclick="runDiagnostic()"  id="diagnostic" class="btn btn-sm btn-warning" style="float: right;" title="Run Diagnostic">Run DNS Diagnostic</button>
 		
-		</div>
 		<h3>United Nations Global DNS Propagation</h3>
 		<div id="map" style="height: 400px; width:100%;"></div>
 		<div class="emdata" style="overflow-x:auto;">
@@ -24,48 +23,39 @@ var map;
 var locations = [];
 var green = "http://maps.google.com/mapfiles/ms/icons/green-dot.png" ;
 var red = "http://maps.google.com/mapfiles/ms/icons/red-dot.png" ;
-var url = "https://simplescraper.io/api/9rx9hxsZXMnMlpLUtRE7?apikey=GPQXT1GIupKNMivPUzBMdZVNtldL4jIc&offset=0&limit=30"; 
-//Add "&run_now=true" at the end of the url to run again.
+var url = "https://simplescraper.io/api/9rx9hxsZXMnMlpLUtRE7?apikey=GPQXT1GIupKNMivPUzBMdZVNtldL4jIc&offset=0&limit=30";
+var runDiag_url = "https://simplescraper.io/api/9rx9hxsZXMnMlpLUtRE7?apikey=GPQXT1GIupKNMivPUzBMdZVNtldL4jIc&offset=0&limit=30&run_now=true";
 
-    
-//Initialize map as call back from script tag below
-function initMap() {
+//Run diagnostic function
+function runDiagnostic() {
 	
+	alert("Fetching information please wait.");
+	//Re-run init map with runDiag Url
+	console.log('Diagnostic is running reinitializing EM DNS Map.');
 	//Initialize locations array
 	initLocations();
-	//Fetch on initialization
-	fetch(url)
+	//Fetch
+	fetch(runDiag_url)
 	    .then(function(response) {
 	          if(response.ok) { // Check response
 	             return response.json().then(function(data) { 
+	            	 //Create Table
+	            	 var info = "";
+	       		 	for(var i=0;i<data.data.length;i++){
+	       				info += "<tr><td>"+data.data[i].location+"</td><td>"+data.data[i].ipaddress+"</td></tr>";
+	       		 	}
+	       		 	if(info != ""){
+	       				$("#info-table").append(info);
+	       		 	} 
 	            	  
-	            	  var info = "";
-	           		  for(var i=0;i<data.data.length;i++){
-	           			  info += "<tr><td>"+data.data[i].location+"</td><td>"+data.data[i].ipaddress+"</td></tr>";
-	           		  }
-	           		 if(info != ""){
-	           			 $("#info-table").append(info);
-	           		 } 
-	           		
-	           		console.log(locations)
 	           		//Update IP information
 	           		for(var i=0;i<data.data.length;i++){
 	           			
 	           			locations[i].ip = data.data[i].ipaddress;
 	           			console.log(locations[i].ip);
 	         		  }
-	           		//Create markers
-	           		//Add logic to change color for null IP's
-	           		for (var i = 0; i < locations.length; i++) {
-	           		    var latLng = new google.maps.LatLng(locations[i].lat,locations[i].lng);
-	           		    var marker = new google.maps.Marker({
-	           		      position: latLng,
-	           		      icon: green,
-	           		      title: locations[i].name + ": " + locations[i].ip,
-	           		      map: map
-	           		      
-	           		    });
-	           		  }
+	           		createMarkers();
+	           		
 	           		
 	           		return locations;
 	            	 
@@ -74,6 +64,65 @@ function initMap() {
 	              console.log("no DNS info || response failed");
 	          }
 	    });
+};
+
+//Run diagnostic function
+function runRecent() {
+	
+	alert("Fetching most recent information please wait.");
+	//Initialize locations array
+	initLocations();
+	//Fetch
+	fetch(url)
+	    .then(function(response) {
+	          if(response.ok) { // Check response
+	             return response.json().then(function(data) { 
+	            	 //Create Table
+	            	 var info = "";
+	       		 	for(var i=0;i<data.data.length;i++){
+	       				info += "<tr><td>"+data.data[i].location+"</td><td>"+data.data[i].ipaddress+"</td></tr>";
+	       		 	}
+	       		 	if(info != ""){
+	       				$("#info-table").append(info);
+	       		 	} 
+	            	  
+	           		//Update IP information
+	           		for(var i=0;i<data.data.length;i++){
+	           			
+	           			locations[i].ip = data.data[i].ipaddress;
+	           			console.log(locations[i].ip);
+	         		  }
+	           		createMarkers();
+	           		
+	           		
+	           		return locations;
+	            	 
+	              });
+	          } else { // 
+	              console.log("no DNS info || response failed");
+	          }
+	    });
+};
+
+function createMarkers() {
+	//Create markers
+		//Add logic to change color for null IP's
+		for (var i = 0; i < locations.length; i++) {
+		    var latLng = new google.maps.LatLng(locations[i].lat,locations[i].lng);
+		    var marker = new google.maps.Marker({
+		      position: latLng,
+		      icon: green,
+		      title: locations[i].name + ": " + locations[i].ip,
+		      map: map
+		      
+		    });
+		  }
+};
+
+//Initialize map as call back from script tag below
+function initMap() {
+	
+	
 	//Stylin da map
 	var styledMapType = new google.maps.StyledMapType(
 			[
