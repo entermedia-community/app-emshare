@@ -9,16 +9,23 @@ TODO:
 $(document).ready(function(){
 	
 	
-	var entermediakey = '$context.getRequestParameter("entermediacloudkey")';
-	var instanceurl = '$url_utilities.siteRoot()/$catalogid';
-	console.log("Launching: "+instanceurl + "key: "+entermediakey);
-		
+	var entermediakey = '$tempentermediakey';
+	
+	##Docker must set siteroot correctly
+	#set($siteroot = $context.getSiteRoot())
+	#set($siteroot = $siteroot.replace("http://","https://"))
+	
+	var instanceurl = '$siteroot/assets';
+	
+	var user = '$context.getUserName()';
+	
+	console.log("Launching: "+instanceurl + ' user: ' + user + " key: "+entermediakey);
 	if(window && window.process && window.process.type) {
 		var electron = require('electron');
     	var startMediaBoat = electron.remote.require('./index.js').startMediaBoat;
     	//var entermediakey = $(theform).find('input[name="entermedia.key"]').val();
     	
-    	var mediaBoat = startMediaBoat(instanceurl, entermediakey);
+    	var mediaBoat = startMediaBoat(instanceurl, user, entermediakey);
 	
 	}
 });
@@ -30,4 +37,4 @@ $(document).ready(function(){
 
 </script>
 
-##$pages.include("$componenthome/results/index.html")	
+$pages.include("$componenthome/results/index.html")	
