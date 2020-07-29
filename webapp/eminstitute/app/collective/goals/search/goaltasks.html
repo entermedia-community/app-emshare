@@ -32,7 +32,7 @@
 		#set( $edittask = "$applink/collective/goals/task/taskedit.html?id=${task.id}&collectionid=$goal.collectionid&onlyopen=$!onlyopen&targetdiv=$target")
 		
 			<tr >
-			<th id="taskage" scope="row">$task.getAge()</th>
+			<td id="taskage" scope="row">$task.getAge()</td>
 			<td id="tasktype">$task</td>
 			<td id="taskowner">$!mediaarchive.getUser($task.completedby).getAnonNickName()</td>
 			#set( $comment = $mediaarchive.query("goaltaskcomments").exact("goaltaskid",$task.id) )
@@ -59,10 +59,8 @@
 			data-targetdiv="task$task.getId()" data-oemaxlevel="1" title="$tree.getCategoryPath()" >
 			<i class="fas fa-pencil-alt"></i>
 			#set( $comment = $mediaarchive.query("goaltaskcomments").exact("goaltaskid",$task.id).match("commenttext","*").sort("dateDown").searchOne() )
-			<!-- #if ($comment)
-				&nbsp;<i class="fas fa-comment"></i>
-			#end -->
-			</a></td>
+			</a>
+			</td>
 			</tr>
 	#end
 	</tbody>
@@ -95,3 +93,5 @@
 	
 </div>		
 </div>	
+
+
