@@ -1,27 +1,30 @@
 @Grapes(
-    @Grab(group='net.sourceforge.htmlunit', module='htmlunit', version='2.8')
+@Grab(group='org.jsoup', module='jsoup', version='1.6.2')
 )
+import org.jsoup.*
+import org.jsoup.nodes.*
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements
 
-import com.gargoylesoftware.htmlunit.*
-import com.gargoylesoftware.htmlunit.html.*
+public static void main(String[] args) throws Exception {
 
-
-String searchQuery = "DNS Scrape" ;
-
-//might need to enable Java Script
-try {
- /* String searchUrl = "https://dnschecker.org/#A/global.unitednations.entermediadb.net"
-	+ URLEncoder.encode(searchQuery, "UTF-8");
-  HtmlPage page = client.getPage(searchUrl);*/
-  URL url = new URL("https://dnschecker.org/#A/global.unitednations.entermediadb.net" + URLEncoder.encode(searchQuery, "UTF-8"));
-  StringWebResponse response = new StringWebResponse("<html><head><title>Test</title></head><body></body></html>", url);
-  WebClient client = new WebClient();
-  client.getOptions().setJavaScriptEnabled(true);
-  client.getOptions().setCssEnabled(true);
-  HtmlPage page = client.getPage(url);
-  
-  System.out.println(page);
-  
-}catch(Exception e){
-  e.printStackTrace();
-}
+	//conect to dnschecker with unitednations url
+	File input = new File("./input.html");
+	Document doc = Jsoup.parse(input, "UTF-8", "https://dnschecker.org/#A/global.unitednations.entermediadb.net");
+	/*Document doc = Jsoup.connect("https://dnschecker.org/#A/global.unitednations.entermediadb.net").get();*/
+	//retrieve only the 'results' table
+	Element results = doc.getElementById("results");
+	// get the names of the locations within
+	Elements names = results.getElementsByClass("align-middle name");
+	System.out.println(results);
+	System.out.println(names);
+	for (Element name : names) {
+		String city = name.text();
+		System.out.println(city);
+	}
+	
+	
+	
+	}
