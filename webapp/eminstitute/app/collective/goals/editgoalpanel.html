@@ -41,18 +41,21 @@ $context.putPageValue("searcher",$searcher)
 #else
 	action="/$applicationid/collective/goals/${goalfolder}/goalsavenew.html" >
 #end
-#if( $caneditcollection)
+
+
+
+#if($collectionid)
+	<input type="hidden" name="collectionid" value="$!collectionid" /> 
+	<input type="hidden" name="field" value="collectionid" />
+	<input type="hidden" name="collectionid.value" value="$!collectionid" />
+	#if($caneditcollection)
+		<input type="hidden" name="save" value="true" />
+	#end
+#else
 	<input type="hidden" name="save" value="true" />
 #end
-<!-- $goaltrackercolumn
-$collectionid -->
+
 <input type="hidden" name="searchtype" value="projectgoal" />
-
-
-<input type="hidden" name="collectionid" value="$!collectionid" /> 
-<input type="hidden" name="field" value="collectionid" />
-<input type="hidden" name="collectionid.value" value="$!collectionid" />
-
 
 <input type="hidden" name="field" value="lasteditedby" />
 <input type="hidden" name="lasteditedby.value" value="$user.getId()" />
