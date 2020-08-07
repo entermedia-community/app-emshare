@@ -17,6 +17,21 @@
 		</a>
 		</div>
 	#end
+	
+	#if($desktop)
+		<div class="sidebar-togglers #if($sidebarcomponent == "localcategories") sidebar-selected #end">
+		<a href="#" 
+			class="sidebar-toggler sidebar-toggler-show" 
+			data-action="show" 
+			data-targetdiv="col-sidebars"
+			data-sidebar="localcategories"
+			data-modulesearchhitssessionid="$modulehits.sessionId"
+		title="[[Show My Computer]]">
+		<i class="fas fa-laptop-house"></i>
+		</a>
+		</div>
+	#end
+	
 
 	<div class="sidebar-togglers #if($sidebarcomponent == "libraries") sidebar-selected #end">
 	<a href="#" 
@@ -95,6 +110,13 @@
 			#set($sidebarurl = "$apphome/components/sidebars/categories/index.html")
 		#end
 	#end
+	
+	#if($sidebarcomponent == "localcategories" )
+		#if( $canviewcategorynav)
+			#set($sidebarurl = "$apphome/components/sidebars/localcategories/index.html")
+		#end
+	#end
+	
 	#if($sidebarurl)
 	<div id="col-$sidebarcomponent" 
 	 class="col-main col-left col-$sidebarcomponent" 
