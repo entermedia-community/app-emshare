@@ -1,4 +1,4 @@
-<div id="editgoal">
+<div id="editgoaldialog">
 #set( $categoryid = $context.getRequestParameter("categoryid"))
 #set( $userlikes = $context.getRequestParameter("userlikes"))
 #set( $hitssessionid = $context.getRequestParameter("hitssessionid"))
@@ -88,7 +88,7 @@ $context.putPageValue("searcher",$searcher)
 	#end
 #end
 
-#if( $caneditcollection || !$data)
+#if( $caneditcollection || !$data || $canviewsettings)
 	$pages.include("/$applicationid/components/xml/detaileditor4.html", $context)
 	#set( $fullscreen = $context.getRequestParameter("fullscreen"))
 	#if( $fullscreen == "true")
@@ -109,7 +109,14 @@ $context.putPageValue("searcher",$searcher)
 <input type="hidden" name="tickettype" value="web" />
 <input type="hidden" name="field" value="tickettype" />
 <input type="hidden" name="tickettype.value" value="web" />
+<div class="float-right">
 
+<input class="btn btn-sm btn-primary" type="submit" value="Save & Close"></input>
+#if(!$data.id)
+<a id="btn-next" class="btn btn-sm btn-primary" href="$applink/collective/goals/${goalfolder}/goalsaveedit.html">Next</a>
+
+#end
+</div>
 </form>
 ##Show tasks when viewing from points report
 <!-- add task if data? -->
@@ -127,3 +134,17 @@ $context.putPageValue("searcher",$searcher)
 
 
 </div>
+<script>
+$(document).ready(function(){
+	$("#btn-next").click(function(event)
+	{
+		event.preventDefault();
+		$("#saveproject").attr("action", "$applink/collective/goals/${goalfolder}/goalsaveedit.html");
+		$("#saveproject").removeClass("autocloseform");
+		$("#saveproject").data("targetdiv","editgoaldialog");
+		$("#saveproject").submit();
+	})
+
+});
+
+</script>
