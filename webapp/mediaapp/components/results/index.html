@@ -1,3 +1,17 @@
+#set( $module = $content.module)
+#if(!$module)
+	#set($module = $context.getRequestParameter("module"))
+#end
+##fix module vs moduleid
+#if($module)
+	#if($module.id)
+		#set($moduleid = $module.id)
+	#else
+		#set($moduleid = $module)
+	#end
+#end
+
+
 #if (!$nodeID)
 	#set($nodeID = $context.getRequestParameter("nodeID"))
 	$context.putPageValue("nodeID",$nodeID)
@@ -9,7 +23,7 @@
 
 #if( !$librarycol )
 	#set($collectionid = $context.getRequestParameter("collectionid"))
-	#if($module.id =="librarycollection" && $collectionid)
+	#if($module =="librarycollection" && $collectionid)
 		#set( $librarycol = $mediaarchive.query("librarycollection").exact("id",$collectionid).searchOne() )
 	#end
 #end
@@ -18,62 +32,76 @@
 	$context.putPageValue("librarycol", $librarycol)
 #end
 
-#if($module.id =="librarycollection" && $hits.size() == 0 && $mediaarchive.isCatalogSettingTrue("autopopulatecollections"))
-
+#if($moduleid =="librarycollection" && $hits.size() == 0 && $mediaarchive.isCatalogSettingTrue("autopopulatecollections"))
 	$pages.include("$apphome/components/createmedia/copycategory/index.html?autorun=true", $context)
-
 #else
-
-<div id="emresultscontent"> 
-    
-    #set( $sidebarwidth = $userprofile.get("sidebarwidth"))
-    #set( $sidebarcomponent = $userprofile.get("sidebarcomponent"))
-
-		#set ($resultview = $userprofile.get('resultview'))
-		#if (!$resultview || $resultview == 'table')
-			$context.putPageValue("showhover", "false")
-			$context.putPageValue("thumbsize", "crop")
-			$context.putPageValue("showcaption", "true")
-			$context.putPageValue("hideheader", "false")
-			$context.putPageValue("pickable", false )
-			$context.putPageValue("resultstype", "table" )
-			$pages.include("$componenthome/results/table.html", $context)
-		#elseif ($resultview == "hierarchy")
-			$context.putPageValue("showcaption", true)
-			$context.putPageValue("showhover", "false")
-			$context.putPageValue("thumbsize", "thumb")
-			$context.putPageValue("showcaption", "true")
-			$context.putPageValue("hideheader", "false")
-			$context.putPageValue("pickable", false )
-			$pages.include("$componenthome/results/hierarchy.html", $context)
-			
-		#elseif ($resultview == "stackedgallery")
-			$context.putPageValue("showcaption", false)
-			$context.putPageValue("showhover", "false")
-			$context.putPageValue("thumbsize", "medium")
-			$context.putPageValue("showcaption", "false")
-			$context.putPageValue("hideheader", "false")
-			$context.putPageValue("pickable", false )
-			$pages.include("$componenthome/results/stackedgallery.html", $context)
-				
-		#elseif ($resultview == "map")
-			$context.putPageValue("showcaption", false)
-			$context.putPageValue("showhover", "false")
-			$context.putPageValue("thumbsize", "medium")
-			$context.putPageValue("showcaption", "false")
-			$context.putPageValue("hideheader", "false")
-			$context.putPageValue("pickable", false )
-			$pages.include("$componenthome/results/map.html", $context)
-			
-		
-		#else
-			$context.putPageValue("showcaption", true)
-			$context.putPageValue("showhover", "false")
-			$context.putPageValue("thumbsize", "thumb")
-			$context.putPageValue("showcaption", "true")
-			$context.putPageValue("hideheader", "false")
-			$context.putPageValue("pickable", "false" )
-			$pages.include("$componenthome/results/gallery.html", $context)
+	#if ($moduleid=="modulesearch")
+		#set($resultview = $userprofile.get("mediaappresultview"))
+		#if(!$resultview)
+			#set($resultview = $content.get("mediaappresultview"))
 		#end
-</div>
+		#if(!$resultview)
+			#set($resultview = "grid")
+		#end
+	#else
+		#set($resultview = $userprofile.get("resultview"))
+		#if(!$resultview)
+			#set($resultview = $content.get("resultview"))
+		#end
+		#if(!$resultview)
+			#set($resultview = "table")
+		#end
+	#end
+	
+	<div id="emresultscontent"> 
+	    #set( $sidebarwidth = $userprofile.get("sidebarwidth"))
+	    #set( $sidebarcomponent = $userprofile.get("sidebarcomponent"))
+	
+			
+			#if (!$resultview || $resultview == 'table')
+				$context.putPageValue("showhover", "false")
+				$context.putPageValue("thumbsize", "crop")
+				$context.putPageValue("showcaption", "true")
+				$context.putPageValue("hideheader", "false")
+				$context.putPageValue("pickable", false )
+				$context.putPageValue("resultstype", "table" )
+				$pages.include("$componenthome/results/table.html", $context)
+			#elseif ($resultview == "hierarchy")
+				$context.putPageValue("showcaption", true)
+				$context.putPageValue("showhover", "false")
+				$context.putPageValue("thumbsize", "thumb")
+				$context.putPageValue("showcaption", "true")
+				$context.putPageValue("hideheader", "false")
+				$context.putPageValue("pickable", false )
+				$pages.include("$componenthome/results/hierarchy.html", $context)
+			#elseif ($resultview == "stackedgallery")
+				$context.putPageValue("showcaption", false)
+				$context.putPageValue("showhover", "false")
+				$context.putPageValue("thumbsize", "medium")
+				$context.putPageValue("showcaption", "false")
+				$context.putPageValue("hideheader", "false")
+				$context.putPageValue("pickable", false )
+				$pages.include("$componenthome/results/stackedgallery.html", $context)
+			#elseif ($resultview == "map")
+				$context.putPageValue("showcaption", false)
+				$context.putPageValue("showhover", "false")
+				$context.putPageValue("thumbsize", "medium")
+				$context.putPageValue("showcaption", "false")
+				$context.putPageValue("hideheader", "false")
+				$context.putPageValue("pickable", false )
+				$pages.include("$componenthome/results/map.html", $context)
+			#elseif ($resultview == "grid")
+				$pages.include("/${applicationid}/views/grid/all.html",$context)
+			#elseif ($resultview == "finder")
+				$pages.include("/${applicationid}/views/finder/index.html",$context)
+			#else
+				$context.putPageValue("showcaption", true)
+				$context.putPageValue("showhover", "false")
+				$context.putPageValue("thumbsize", "thumb")
+				$context.putPageValue("showcaption", "true")
+				$context.putPageValue("hideheader", "false")
+				$context.putPageValue("pickable", "false" )
+				$pages.include("$componenthome/results/gallery.html", $context)
+			#end
+	</div>
 #end

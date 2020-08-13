@@ -1,5 +1,12 @@
 #set($hitssessionid = $hits.getSessionId())
-
+##fix module vs moduleid
+#if($module)
+	#if($module.id)
+		#set($moduleid = $module.id)
+	#else
+		#set($moduleid = $module)
+	#end
+#end
 #if (!$nodeID)
 	#set($nodeID = $context.getRequestParameter("nodeID"))
 	$context.putPageValue("nodeID",$nodeID)
@@ -22,7 +29,7 @@
 #set($modules = $mediaarchive.query("module").exact("showonsearch","true").sort("orderingUp").search($context))
 <div class="dropdown show">
 
-	#if( $module)
+	#if( $moduleid)
 	<a class="btn btn-primary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
     	$module
 	</a>
@@ -47,8 +54,32 @@
 		#end
 	</div>
 #end
+</td>
+<td style="padding-top:20px;">
 
-
+	#if ($moduleid=="modulesearch")
+		#set($resultview = $userprofile.get("mediaappresultview"))
+		#if(!$resultview)
+			#set($resultview = $content.get("mediaappresultview"))
+		#end
+		#if(!$resultview)
+			#set($resultview = "grid")
+		#end
+	#else
+		#set($resultview = $userprofile.get("resultview"))
+		#if(!$resultview)
+			#set($resultview = $content.get("resultview"))
+		#end
+		#if(!$resultview)
+			#set($resultview = "table")
+		#end
+	#end
+	$context.putPageValue("resultview",$resultview)
+	<div class="resultsview">
+		#set($resultviewurl = "$apphome/components/results/changeresultview.html?oemaxlevel=1&cache=false&hitsperpage=$!hitsperpage&module=$!moduleid&resultviewtype=mediaappresultview")
+		<a href="$resultviewurl&resultview=grid" data-searchtype="modulesearch" data-hitssessionid="$hitssessionid" class="selectresultview  #if($resultview=='grid')currentview#end" title="[[Grid View]]"><i class="fas fa-th"></i></a>
+		<a href="$resultviewurl&resultview=finder" data-searchtype="modulesearch" data-hitssessionid="$hitssessionid" class="selectresultview  #if($resultview=='finder')currentview#end" title="[[Table View]]"><i class="fas fa-list"></i></a>
+	</div>
 </td>
 </tr>
 </table>

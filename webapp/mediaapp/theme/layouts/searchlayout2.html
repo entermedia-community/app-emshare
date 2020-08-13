@@ -1,3 +1,12 @@
+##fix module vs moduleid
+#if($module)
+	#if($module.id)
+		#set($moduleid = $module.id)
+	#else
+		#set($moduleid = $module)
+	#end
+#end
+
 #set($nodeID = $context.getRequestParameter("nodeID"))
 #if(!$nodeID)
 	#set($nodeID = $context.getRequestParameter("nodeid"))
@@ -51,12 +60,14 @@ $context.putPageValue("sidebarwidth", $sidebarwidth)
 		  
 		  
 			<div id="emresultscontainer" >
-		    	#if($module == "asset")
+		    	#if($moduleid == "asset")
 					#set( $hits = $modulehits)
 					$context.putPageValue("hits",$hits)
 			    	$pages.include("$componenthome/results/index.html",$context) 
 				#else
-		    		$pages.include("/${applicationid}/views/grid/all.html",$context)
+		    		##$pages.include("/${applicationid}/views/grid/all.html",$context)
+		    		##$pages.include("/${applicationid}/views/finder/index.html",$context)
+		    		$pages.include("$componenthome/results/index.html",$context)
 				#end 
 			</div>		
 	</div>
