@@ -1826,9 +1826,16 @@ uiload = function() {
 				var changeleft = event.pageX - clickspot.pageX;
 				width = startwidth + changeleft;
 				width = width+32;
-				if( width < 440 )
+				if( width < 280 )
 				{
-					width = 440;
+					width = 280;
+				}
+				if( width > 380 )  //brake sidebarfilter columns
+				{
+					column.addClass("sidebarwide");
+				}
+				else {
+					column.removeClass("sidebarwide");
 				}
 				column.width(width);
 				column.data("sidebarwidth",width);
