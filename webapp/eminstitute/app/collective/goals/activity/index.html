@@ -13,7 +13,7 @@
 	<th>[[Details]]</th>
 	<th>[[Status]]</th>
 	<th>[[Sessions Compl.]]</th>
-	<th style="min-width:350px">[[Compl. Date]]</th>
+	<th>[[Compl. Date]]</th>
 	
 </tr>
 </thead>
@@ -47,7 +47,11 @@
 		$!goal.sessioncount
 	</td>
 	<td class="text-left" >
-			[[Completed On: ]] $!goal.resolveddate.substring(0, 10)
+		#if($goal.resolveddate)
+			$!goal.resolveddate.substring(0, 10)
+		#else
+			[[In Progress]]
+		#end
 				<!-- [[Added]] $!mediaarchive.getData("tickettype",$goal.tickettype) $!goal.getAge() [[ago]] <br> [[by]] $!mediaarchive.getUser($goal.owner).getAnonNickName() -->
  			<!-- <span class="headersubtext">
 				[[Modified on]] $context.getDateTime($activity.getValue("date")) <br>[[by]] $!mediaarchive.getUser($activity.editedbyid).getAnonNickName()
