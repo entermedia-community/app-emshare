@@ -1,45 +1,76 @@
-$!request.getAttribute( "oe-exception")
+<div class="row justify-content-md-center" style="margin: 90px 0; ">
 
-<div >
-		#if($user)
-			<p class="text-center"><strong>[[You are logged in as]] $user (<a href="home$content.loginroot/logout.html" style="text-decoration:underline">Logout</a>)</strong></p>		
-		#end
+
+
+#if($user)
+	<p class="text-center"><strong>[[You are currently logged in as]] $user (<a href="home$content.loginroot/logout.html" style="text-decoration:underline">Logout</a>)</strong></p>
+#end
+
+#if( $content.allowguestregistration == "true")
+	#set( $allowguest =  true)
+#else
+	#set( $allowguest =  false)
+#end
+#set($providers = $mediaarchive.query("oauthprovider").exact("enabled","true").search())
+
+#if( $providers )
+<div class="col-md-3" style="padding:70px 0px 0 0px; ">
 		
-        <form class="form form-login" name="login" id="login" action="$home$content.loginroot/login.html" method="POST" onsubmit="return confirmPassword(this);">
-            <div style="margin-bottom:20px;">
-                <label class="sr-only" for="accountname">[[Email or Username]]</label>
-                <input type="text" class="form-control " id="accountname" name="accountname" placeholder="[[Email or Username]]">
-            </div>
-            <div style="margin-bottom:5px;">
-                <label class="sr-only" for="password">[[Password]]</label>
-                <div class="input-group">
-                    <input type="password" class="form-control" id="password" name="password" placeholder="[[Password]]">
-                </div>
-            </div>
-            <div class="float-right note">
-                <a href="$home$content.loginroot/sendpassword.html" style="text-decoration:underline">[[Forgotten your password?]]</a>
-            </div>
-         <div class="clearfix"></div>
-         #set($loginok = $home+$context.findValue("loginokpage") )
-         #if($loginok)
-				#set( $loginok = "$context.siteRoot" + "$loginok")
-				<input type="hidden" name="loginokpage" value="#esc($!loginok)"/>
-		#end
-         <div>
-         <button type="submit" class="btn btn-primary">[[Login]]</button>
-         </div>
-        </form>
-        
+		<p class="text-center"><strong>[[Create Account and Sign-in with]]</strong></p>
+		
+        <div style="text-align: center;">
+		$pages.include("$home$content.loginroot/oauth/providers.html", $context)
+		</div>
+</div>
+#end
 
-		#if ( $context.getPageValue("oe-exception") )
-			<div class="alert alert-danger" role="alert" style="margin: 20px 0; text-align: center">$context.getPageValue("oe-exception")</div>
-			$context.removePageValue("oe-exception")
-		#end
+<div class="col-md-8" style=" max-width:500px; padding:40px 0px 0 40px; ">
+		
+		 #set($loginok = $context.findValue("loginokpage") ) 
+
+		<div class="hr"></div>
+		<form name="login" id="login" action="$home$content.loginroot/login.html" method="POST" onsubmit="return confirmPassword(this);">
+			<div class="form-group">
+			<label for="accountname">[[Email or Username]]</label>
+			<input class="form-control" type="text" id="accountname" name="accountname" autocapitalize="off"
+                autocorrect="off" />
+			</div>
+			<div class="form-group">
+			<label for="password">[[Password]]</label>
+			<div class="float-right note">
+                <a href="$home$content.loginroot/sendpassword.html" style="text-decoration:underline">[[Reset your password]]</a>
+                or
+                <a href="$home$content.loginroot/sendmagiclink.html" class="emdialog" title="Send Magic Link" style="text-decoration:underline">[[Send magic link]]</a> 
+            </div>
+			<input class="form-control" id="password" name="password" type="password" />
+			</div>
+			#if($mediaarchive.isCatalogSettingTrue("twofactorauthentication"))
+			<input type="hidden" name="field" value="googlekeystring"/>
+			<div class="form-group">
+			<label for="Google Key">[[Two Factor Authenticator Key]]</label>
+			<input class="form-control" id="googleauth" name="googlekeystring.value" type="text" />
+			</div>
+			<a href="$home$content.loginroot/getkey.html">[[If you haven't yet generated a two factor key, click here]]</a>
+			#end
+			
+			<div class="form-group">
+			<input class="btn btn-sm btn-primary float-right" name="submit" type="submit" id="login-submit" value="[[Login]]" />
+			#if($loginok)
+			#set( $loginok = "$context.siteRoot" + "$loginok")
+			<input type="hidden" name="loginokpage" value="#esc($!loginok)"/>
+			#end
+			</div>
+			#if ( $context.getPageValue("oe-exception") )
+				<div style="border: 1px solid black; width: 60%; text-align: center">$context.getPageValue("oe-exception")</div>
+				$context.removeSessionValue("oe-exception")
+			#end
+		</form>   
+
+	<div class="text-center"><br>[[Do you have any questions?]] [[Please]] <a href="https://entermediadb.org/#contact" style="text-decoration: underline;">[[contact us]].</a></div>
 		
 </div>
 
-
-
+</div>
 <script language="JavaScript" >
 	jQuery(document).ready(function() 
 	{ 
@@ -59,3 +90,5 @@ $!request.getAttribute( "oe-exception")
 		}
 	}
 </script> 
+
+</div>
