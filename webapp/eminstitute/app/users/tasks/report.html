@@ -35,22 +35,26 @@
   		    
   		    #set($tickets = $completed.getTicketsForWeek($person,$week))
   		    
-  		    #set( $countedtickets = 0)
-  		    #if(!$tickets.isEmpty())
-  		    #foreach($ticket in $tickets)
-  		   		#set( $points = $ticket.getValue("points"))
-  		    	<tr><td>
-  		    	#set( $goallink = "$applink/collective/goals/editgoalpanel.html?id=${ticket.id}&collectionid=$ticket.collectionid&goalfolder=search")
-  		    	#set($collection = $!mediaarchive.getData("librarycollection",$ticket.collectionid) )
-  		    	  <a href="$goallink"
-		    	title="$ticket.name" class="emdialog editgoalshow" 
-		    	data-urlbar="$applink/collective/goals/search/index.html?collectionid=$ticket.collectionid&opengoalid=${ticket.id}" data-width="900" >
-  			Ticket: $collection - $mediaarchive.getData("collectiveproject",$ticket.goaltrackercolumn) - "$ticket.name" </a></td><td>$!context.getDateTime($ticket.getDate("resolveddate"))</td><td>$points</td></tr>
-				#set( $counted = $counted +1)
-				#set( $weekpoints = $weekpoints + $points)
-				#set( $totalpoints = $totalpoints + $points)
+  		    ##DO NOT COUNT TICKET COMPLETITION POINTS ANYMORE (Starting Sept 2020)
+  		    #if(1==2)
+	  		    #set( $countedtickets = 0)
+	  		    #if(!$tickets.isEmpty())
+	  		    #foreach($ticket in $tickets)
+	  		   		#set( $points = $ticket.getValue("points"))
+	  		    	<tr><td>
+	  		    	#set( $goallink = "$applink/collective/goals/editgoalpanel.html?id=${ticket.id}&collectionid=$ticket.collectionid&goalfolder=search")
+	  		    	#set($collection = $!mediaarchive.getData("librarycollection",$ticket.collectionid) )
+	  		    	  <a href="$goallink"
+			    	title="$ticket.name" class="emdialog editgoalshow" 
+			    	data-urlbar="$applink/collective/goals/search/index.html?collectionid=$ticket.collectionid&opengoalid=${ticket.id}" data-width="900" >
+	  			Ticket: $collection - $mediaarchive.getData("collectiveproject",$ticket.goaltrackercolumn) - "$ticket.name" </a></td><td>$!context.getDateTime($ticket.getDate("resolveddate"))</td><td>$points</td></tr>
+					#set( $counted = $counted +1)
+					#set( $weekpoints = $weekpoints + $points)
+					#set( $totalpoints = $totalpoints + $points)
+	  		    #end
+	  		    #end
   		    #end
-  		    #end
+  		    
   		    #if( $weekpoints > 0)
   			<tr><td colspan="2" style="padding-left: 50px;"> </td><td style="text-align:right;">$weekpoints</td></tr>
   			#end
