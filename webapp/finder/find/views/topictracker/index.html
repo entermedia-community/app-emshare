@@ -1,0 +1,23 @@
+#set($reportlist = $mediaarchive.query("trackedtopics").all().search($context))
+
+
+<div class="dashboard">
+	<div class="container-fluid">
+	
+	<div class="row">
+	#foreach($tag in $reportlist)
+	<div class="col-md-6 ">
+	<div class="card panel-default">
+	  <div class="card-header">$tag 
+	  <a class="float-right" href="$apphome/views/dashboard/executefinish.html?reportid=${report.id}"><i class="fas fa-search"></i></a>
+	  </div>
+	  <div class="card-body">
+	        $pages.include("$apphome/views/topictracker/showreport.html?tag=$tag.getName()&cache=false")
+	  </div>
+	</div>
+	</div>
+	#end
+	</div>
+	
+	</div>
+</div>

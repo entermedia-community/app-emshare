@@ -1,0 +1,57 @@
+#if(!$module)
+	#set($module = $mediaArchive.getCachedData($context.module))
+#end
+
+
+#if($librarycol)
+	#set( $collectionid = $librarycol.getId())
+#else
+	#set( $collectionid = $context.getRequestParameter("collectionid"))
+#end
+<div class="nav-form nav-quicksearch">
+##TODO  Remember last selected module of profile
+
+#if(!$hits)
+#set( $hits = $modulehits)
+$context.putPageValue("hits",$hits)
+#end
+		#set( $input = $hits.getInput("description") )
+		#if (!$input)
+			#set( $input = "")
+		#end
+
+
+		<div class="input-group"  style="position:relative;">
+			<input class="typeaheaddropdown form-control border-right-0 border grabfocus" 
+					type="text"  
+					id="searchinput" 
+					data-quicksearched='$!context.getRequestParameter("quicksearched")'
+					autocomplete="off"
+					placeholder="[[Search...]]"
+					data-searchurl="$applink/views/modules/modulesearch/index.html"
+					data-oemaxlevel="2"
+					  
+					data-searchurlenter="$applink/views/modules/modulesearch/discovery.html"
+					data-searchurlentertargetdiv="searchlayout"
+					data-searchurlenteroemaxlevel="2"
+					
+					data-typeaheadurl="$applink/components/quicksearch/results.html?ajax=true"
+					data-typeaheadtargetdiv="searchlayout"
+					data-typeaheadoemaxlevel="2"
+					
+					data-searchtype="modulesearch"
+					data-hitssessionid="$hits.sessionId"
+					name="description.value" 
+					data-field="description"
+					data-operation="contains"
+					value="#esc($input)" />
+			
+			<div class="input-group-addon submitform" style="pointer-events: initial;">
+			<a title="press enter to search">[[Search]]</a>
+			</div>
+            
+		</div>
+
+</div>
+
+

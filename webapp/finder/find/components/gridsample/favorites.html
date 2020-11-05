@@ -1,0 +1,30 @@
+
+#set($itemid = $context.getRequestParameter("id"))
+#set($searchtype = $context.getRequestParameter("searchtype"))
+
+
+#set( $favorites = $userprofile.get("favorites_"+$searchtype))
+#set($isfav="false")
+#if($favorites && $favorites.indexOf($itemid) != -1)
+	#set($isfav="true")
+#end
+<div id="ibmfav$itemid" class="ibmfav$itemid">
+ <a href="" 
+ 	class="float-left ibmfavorite ibmfavclick #if($isfav=='true') ibmfavorited #end" 
+ 	data-id="$itemid"
+ 	data-searchtype="$searchtype"
+ 	data-targetdiv="ibmfav$itemid"
+ 	data-favurl="$componenthome/gridsample/favorites.html"
+ 	#if($isfav=='true')
+ 	title="[[Remove from Favorites]]"
+ 	#else
+ 	title="[[Add to Favorites]]"
+ 	#end
+ 	>
+ 	#if($isfav=='true')
+ 	<i class="fas fa-bookmark"></i>
+ 	#else
+ 	<i class="far fa-bookmark"></i>
+ 	#end
+ </a>
+ </div>

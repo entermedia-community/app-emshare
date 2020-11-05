@@ -1,0 +1,138 @@
+
+#set( $rendertype = $context.getPageValue("previewrendertype"))
+#if (!$rendertype)
+	#set( $rendertype = "discovery")
+#end
+
+#set($searchtype = $rendertype)
+
+#set($previewurl = "$componenthome/gridsample/preview/${rendertype}.html?id=$hit.id&searchtype=$searchtype&hitssessionid=$hits.sessionId")
+$context.putPageValue("previewurl", $previewurl)
+
+<div class="emgrid-content emgrid-type-$rendertype resultsassetcontainer">        	 
+        	 <div class="emgrid-content-header">
+        	 <h3>
+        	 <a href="$previewurl" 
+        	 	class="emdialog emgridresulttitle" 
+        	 	data-hidefooter="true" 
+        	 	data-hideheader="true"
+        	 	id="clickid${hit.id}"  
+        	 	data-id="$hit.id"
+        	 	title="$!hit.ibmtitle">
+     	 	
+        	 	$!hits.highlight($hit,"ibmtitle")</a>
+        	 
+        	 </h3> 
+        	 </div>
+        	 #if($hit.ibmprojectNumber || $hit.ibmoriginalAuthorName)
+	        	 <div class="ibmgrid-projectnumber">
+	        	 	#if($hit.ibmprojectNumber) 
+	        	 		$hit.ibmprojectNumber
+	        	 	#end 
+	        	 	#if($hit.ibmoriginalAuthorName) 
+	        	 	<span class="ibmgrid-name">$!hit.ibmoriginalAuthorName</span>
+	        	 	#end
+	        	 </div>
+        	 #end
+        	  
+	        <div class="emgridcell-default" data-width="$!{hit.width}" data-height="$!{hit.height}">
+	        	
+		        ##$!hits.highlight($hit,"ibmtext",200)
+		        
+		        #if($rendertype=="insight_domain_poc")
+		        	#if($hit.ibmfundingSource)<div>$hit.ibmfundingSource</div>#end
+		        	#if($hit.ibmsdl_date)<div>Publication Date: 
+		        		#set($formateddate = $context.getDate($hit.ibmsdl_date))
+		        		#if(!$formateddate)
+		        			$hit.ibmsdl_date
+		        		#else
+		        			$formateddate
+		        		#end
+		        		</div>#end
+					#if($hit.ibmreleaseDate)<div>[[Release Date]]: 
+					#set($formateddate = $context.getDate($hit.ibmreleaseDate))
+		        		#if(!$formateddate)
+		        			$hit.ibmreleaseDate
+		        		#else
+		        			$formateddate
+		        		#end
+					</div>#end
+				#elseif($rendertype=="insight_product_mpl")
+					#if($hit.ibmuploaded)<div>Uploaded - 
+					#set($formateddate = $context.getDate($hit.ibmuploaded))
+		        		#if(!$formateddate)
+		        			$hit.ibmuploaded
+		        		#else
+		        			$formateddate
+		        		#end
+					</div>#end
+				#elseif($rendertype=="insight_project_mip")
+					#if($hit.ibmportfolios)<div>[[Portfolio]] - 
+						#set ($portfolios = $hit.ibmportfolios.split("\s*\,\s*"))
+				      	#foreach ($Name in $portfolios)
+				      		$Name 
+				      	#end
+					</div>#end
+					#if($hit.ibmendDate) <div>[[Completed]] - 
+					#set($formateddate = $context.getDate($hit.ibmendDate))
+		        		#if(!$formateddate)
+		        			$hit.ibmendDate
+		        		#else
+		        			$formateddate
+		        		#end
+					</div>#end
+				#elseif($rendertype=="insight_project_mvc")
+					#if($hit.ibmportfolio)<div>[[Portfolio]] - $hit.ibmportfolio</div>#end
+					#if($hit.ibmeproject_end) <div>[[Last Updated]] - 
+					#set($formateddate = $context.getDate($hit.ibmeproject_end))
+		        		#if(!$formateddate)
+		        			$hit.ibmeproject_end
+		        		#else
+		        			$formateddate
+		        		#end
+					</div>#end
+				#elseif($rendertype=="insight_capability")
+					#if($hit.ibmcreated_at) <div>Last Updated: 
+					#set($formateddate = $context.getDate($hit.ibmcreated_at))
+		        		#if(!$formateddate)
+		        			$hit.ibmcreated_at
+		        		#else
+		        			$formateddate
+		        		#end
+		        		</div>#end  ##--getDate not working
+				#elseif($rendertype=="insight_contract")
+					#if($hit.ibmlast_modified) <div>Uploaded: 
+					#set($formateddate = $context.getDate($hit.ibmlast_modified))
+		        		#if(!$formateddate)
+		        			$hit.ibmlast_modified
+		        		#else
+		        			$formateddate
+		        		#end
+					 </div>#end  ##--getDate not working
+				#elseif($rendertype=="insight_platform")
+					#if($hit.changed) <div>Last Updated: 
+					#set($formateddate = $context.getDate($hit.changed))
+		        		#if(!$formateddate)
+		        			$hit.changed
+		        		#else
+		        			$formateddate
+		        		#end </div>#end  ##--getDate not working
+		        #end
+		        
+		        
+	        </div>
+
+	        $pages.include("$componenthome/gridsample/tags.html",$context)
+	        <div class="clearfix"></div>
+	        <div class="ibmgrid-footer">
+	        
+	        $pages.include("$componenthome/gridsample/favorites.html?id=$hit.id&searchtype=$searchtype", $context)
+	        
+	        <a class=" float-right emdialog insighemdialog" data-hidefooter="true" href="$previewurl" title="$!hit.ibmtitle">[[view more details]]</a>
+	        
+	        </div>
+	        
+	       ## <div class="griditem-tools resultsselection">
+	       ## <input type="checkbox" class="selectionbox" name="count" value="" data-dataid="$hit.getId()">
+	       ## </div>
+</div>

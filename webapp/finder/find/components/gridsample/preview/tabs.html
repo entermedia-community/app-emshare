@@ -1,0 +1,121 @@
+##Summary 
+#set($summary = $data.ibmsdl_extracted_summary)
+
+##Snippet
+#if(!$hidesnippet)
+	#set($snippet = $data.fulltext)
+#end
+
+##Organizations - ibmentityorganization
+#set($dataorgs = $data.getValues("ibmentityorganization"))
+#if($dataorgs)
+	#set($organizations = $mediaarchive.query("ibmentityorganization").orgroup("id",$dataorgs).search())
+#end
+
+##People - ibmentityperson
+#set($datapeople = $data.getValues("ibmentityperson"))
+#if($datapeople)
+	#set($people = $mediaarchive.query("ibmentityperson").orgroup("id",$datapeople).search())
+#end
+
+##Jobs - ibmentityjobtitle
+#set($datajobs = $data.getValues("ibmentityjobtitle"))
+#if($datajobs)
+	#set($jobs = $mediaarchive.query("ibmentityjobtitle").orgroup("id",$datajobs).search())
+#end
+
+#set($activetab = "active")
+<ul class="nav nav-tabs">
+  #if($summary)
+  <li class="nav-item">
+    <a class="nav-link $!activetab" data-toggle="tab" href="#summary">Summary</a>
+  </li>
+  #set($activetab = "")
+  #end
+  
+  #if($snippet)
+  <li class="nav-item">
+    <a class="nav-link $!activetab" data-toggle="tab" href="#snippet">Snippet</a>
+  </li>
+  #set($activetab = "")
+  #end
+  
+  #if($organizations)
+  <li class="nav-item">
+    <a class="nav-link $!activetab" data-toggle="tab" href="#organizations">Organizations</a>
+  </li>
+  #set($activetab = "")
+  #end
+  
+  #if($people)
+  <li class="nav-item">
+    <a class="nav-link $!activetab" data-toggle="tab" href="#people">People</a>
+  </li>
+  #set($activetab = "")
+  #end
+
+  #if($jobs)
+  <li class="nav-item">
+    <a class="nav-link $!activetab" data-toggle="tab" href="#jobs">Jobs</a>
+  </li>
+  #set($activetab = "")
+  #end  
+</ul>
+
+
+#set($activetab = "active")
+<div class="tab-content">
+	#if($summary)	
+		<div id="summary" class="tab-pane $!activetab">	
+			<div id="ibmsummary_$data.id" class="ibmtext #if($summary.length() > 500) seemoreclosed #end">
+			$!hits.highlight($data,"ibmsdl_extracted_summary")
+			</div>
+			#if($summary.length() > 500) <div class="ibmtextseemore"><a href="#" class="seemorelink" data-seemore="ibmsummary_$data.id">[[more]]</a></div><div class="clearfix"></div> #end
+		</div>
+		#set($activetab = "")
+	#end
+	
+	#if($snippet)
+		<div id="snippet" class="tab-pane $!activetab">	
+			<div id="ibmtext_$data.id" class="ibmtext #if($snippet.length() > 500) seemoreclosed #end">
+			$!hits.highlight($data,"fulltext")
+			</div>
+			#if($snippet.length() > 500) <div class="ibmtextseemore"><a href="#" class="seemorelink" data-seemore="ibmtext_$data.id">[[more]]</a></div><div class="clearfix"></div> #end
+		</div>
+		#set($activetab = "")
+	#end
+	
+	#if($organizations)
+		<div id="organizations" class="tab-pane $!activetab">
+			<ul class="tab-pane-ul">
+			#foreach($item in $organizations)
+				<li>$item</li>
+			#end
+			</ul>
+		</div>
+		#set($activetab = "")
+	#end
+	
+	#if($people)
+		<div id="people" class="tab-pane $!activetab">
+			<ul class="tab-pane-ul">
+			#foreach($item in $people)
+				<li>$item</li>
+			#end
+			</ul>
+		</div>
+		#set($activetab = "")
+	#end
+	
+	#if($jobs)
+		<div id="jobs"  class="tab-pane $!activetab">
+			<ul class="tab-pane-ul">
+			#foreach($item in $jobs)
+				<li>$item</li>
+			#end
+			</ul>
+		</div>
+		#set($activetab = "")
+	#end
+
+</div>

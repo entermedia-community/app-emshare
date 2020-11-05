@@ -1,0 +1,78 @@
+#set( $searchtype = $context.getRequestParameter("searchtype"))
+#set( $id = $context.getRequestParameter("id"))
+#set( $data = $hits.findData("id",$id))
+
+#if( !$data)
+	#set( $data  = $mediaarchive.getData($searchtype,$id) )
+#end
+
+$context.putPageValue("data", $data)
+
+#set($ibmmodule = $mediaarchive.getData("module", $searchtype))
+
+
+<div class="modal-content modal-data-details modal-insight ${ibmmodule.id}-modal">
+	
+<div class="modal-close">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+</div>
+
+<div class="modal-body modal-body-insight">
+
+<div class="ibmpreview">
+
+<h3 class="modal-insight-datatype"><img src="$apphome/theme/images/insights/icon_${ibmmodule.id}.svg"> $ibmmodule</h3>
+
+<div class="modal-body-insight-header">
+	<h2 class="modal-title">$!data.ibmtitle</h2>
+</div>
+
+
+<div class="insight-columns">
+	#if($data.ibmfield_tca_organizationleadername)
+	<h4>Contacts</h4>
+	<p>$data.ibmfield_tca_organizationleadername</p>
+	#end
+	
+	<p>
+		#if($data.ibmcreated_at) 
+			Updated: 
+			#set($formateddate = $context.getDate($data.ibmcreated_at))
+      		#if(!$formateddate)
+      			$data.ibmcreated_at
+      		#else
+      			$formateddate
+      		#end 
+		#end   
+	</p>
+	
+	#if( $data.hasfulltext == "true")
+		<h4>Description</h4>
+		<div id="ibmtext_$data.id" class="ibmtext ibmtextdescription #if($data.fulltext.length() > 300) seemoreclosed #end">
+			$!hits.highlight($data,"fulltext")
+		</div>
+		#if($data.fulltext.length() > 300) <div class="ibmtextseemore"><a href="#" class="seemorelink" data-seemore="ibmtext_$data.id">[[more]]</a></div><div class="clearfix"></div> #end
+		#set($hidesnippet = true)
+		$context.putPageValue("hidesnippet", $hidesnippet)
+	#end
+</div>
+	
+
+	$pages.include("$componenthome/gridsample/preview/tabs.html",$context)
+
+	$pages.include("$componenthome/gridsample/preview/tags.html",$context)	
+	
+	
+	$pages.include("$componenthome/gridsample/favorites.html?moduleid=$module.id&id=$data.id&searchtype=$searchtype", $context)
+	
+	#if($data.ibmcapability_url)
+		<div class="download-link float-right">
+			<a href="$data.ibmurl" target="_blank">[[view capabilities page]]</a>
+		</div>
+	#end
+
+</div>
+</div>
+</div>

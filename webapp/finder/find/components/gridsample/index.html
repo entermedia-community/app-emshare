@@ -1,0 +1,34 @@
+#if( $modulehits.size() > -1)
+#set( $hits = $modulehits)
+$context.putPageValue("hits", $modulehits)
+#end
+
+#if( $hits.getSearchQuery().hasMainInput())
+	$pages.include("$componenthome/quicksearch/suggestions.html",$context)
+#end
+<div id="resultsdiv">
+<div  class="emgridcontainer">
+
+	$pages.include("$componenthome/gridfilters/filter-selected.html",$context)
+
+	#if($module.id=="modulesearch")
+		$pages.include("$componenthome/gridsample/allmodules.html",$context)
+	#else
+		$pages.include("$componenthome/gridsample/module.html",$context)
+	#end
+	<div class="clearfix"></div>
+</div>
+</div>
+
+
+<script>
+#if($searchterms && $searchterms!="*")
+$("document").ready(function(){
+	   //var txt = "$searchterms"; 
+	   var txt  = new RegExp("$searchterms", "gi");
+	   $(".emgridcontainer .emgridresulttitle").each(function(e, v) {
+		   v.innerHTML = v.innerText.replace(txt, "<span class='highlight'>$&</span>");
+	   });
+})
+#end
+</script>

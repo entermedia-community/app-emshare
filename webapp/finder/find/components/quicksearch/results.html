@@ -1,0 +1,39 @@
+#set($popupheight = 10)
+#set( $suggestions = $topichits )
+#if($suggestions.size())
+	#set($popupheight = $popupheight+60)
+#end
+#if($topichits.size())
+	#set($popupheight = $popupheight+60)
+#end
+
+#set($url = "$applink/views/modules/modulesearch/grid/index.html")
+
+#set($ajax = $context.getRequestParameter("ajax")) 
+
+<div class="quicksearchresults" style="height: ${popupheight}px">
+#if($suggestions.size())
+<h3>[[Suggested]]</h3>
+<ul class="qsrecent">
+#foreach ($s in $suggestions)
+	#if (!$ajax)
+	#set($url = "$url?operation=contains&field=description&description.value=#esc($s)&clearfilters=true")
+	#end
+		
+	<li>
+		<a href="$url" 
+			data-oemaxlevel="3" 
+			data-searchtype="modulesearch" 
+			data-field="description" 
+			data-operation="contains" 
+			data-targetdiv="application" 
+			data-description.value="#esc($s)" 
+			class="badge badge-light #if($ajax) ajax#end" >
+			 <span>#esc($s)</span></a> 
+	</li>	 
+#end
+</ul>
+<div class="clearfix"></div>
+#end
+
+</div>

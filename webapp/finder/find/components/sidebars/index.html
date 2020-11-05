@@ -1,0 +1,136 @@
+#if(!$sidebarcomponent)
+	#set( $sidebarcomponent = $userprofile.get("sidebarcomponent"))
+#end
+<div  id="col-sidebars" >
+<div class="col-main sidebar-togglers-bar">
+	<div class="sidebar-togglers #if($sidebarcomponent == "filters") sidebar-selected #end">
+	<a href="#" 
+		class="sidebar-toggler sidebar-toggler-show light" 
+		data-action="show" 
+		data-targetdiv="col-sidebars"
+		data-sidebar="filters"
+		data-modulesearchhitssessionid="$modulehits.sessionId"
+	title="[[Search]]">
+	<i class="fas fa-filter"></i>
+	</a>
+	</div>
+
+	
+#if( $canviewcategorynavcollections ) 	
+	<div class="sidebar-togglers #if($sidebarcomponent == "topics") sidebar-selected #end">
+	<a href="#" 
+		class="sidebar-toggler sidebar-toggler-show light" 
+		data-modulesearchhitssessionid="$modulehits.sessionId"
+		data-action="show"
+		data-targetdiv="col-sidebars"
+		data-sidebar="topics"
+	title="[[Tags]]">
+	<i class="fas fa-tags"></i>
+	</a>
+	</div>
+#end
+<!-- 
+	#if( $canviewcategorynav || ( $librarycol && $canviewcategorynavcollections ) )
+		<div class="sidebar-togglers #if($sidebarcomponent == "categories") sidebar-selected #end">
+		<a href="#" 
+			class="sidebar-toggler sidebar-toggler-show" 
+			data-action="show" 
+			data-targetdiv="col-sidebars"
+			data-sidebar="categories"
+			data-modulesearchhitssessionid="$modulehits.sessionId"
+		title="[[Show Categories]]">
+		<i class="fas fa-folder"></i>
+		</a>
+		</div>
+	#end
+ -->
+ 	
+	#if($desktop)
+		<div class="sidebar-togglers #if($sidebarcomponent == "localcategories") sidebar-selected #end">
+		<a href="#" 
+			class="sidebar-toggler sidebar-toggler-show" 
+			data-action="show" 
+			data-targetdiv="col-sidebars"
+			data-sidebar="localcategories"
+			data-modulesearchhitssessionid="$modulehits.sessionId"
+		title="[[Show My Computer]]">
+		<i class="fas fa-laptop-house"></i>
+		</a>
+		</div>
+	#end
+	
+
+##	<div class="sidebar-togglers #if($sidebarcomponent == "libraries") sidebar-selected #end">
+##	<a href="#" 
+##		class="sidebar-toggler sidebar-toggler-show " 
+##		data-action="show" 
+##		data-targetdiv="col-sidebars"
+##		data-sidebar="libraries"
+##		data-modulesearchhitssessionid="$modulehits.sessionId"
+##	title="[[Collections]]">
+##	<i class="fas fa-grip-horizontal"></i>
+##	</a>
+##	</div>
+	
+	
+##	
+##	<div class="sidebar-togglers #if($sidebarcomponent == "faceprofiles") sidebar-selected #end">
+##	<a href="#" 
+##		class="sidebar-toggler sidebar-toggler-show light" 
+##		data-modulesearchhitssessionid="$modulehits.sessionId"
+##		data-action="show"
+##		data-targetdiv="col-sidebars"
+##		data-sidebar="faceprofiles"
+##	title="[[People]]">
+##	<i class="fas fa-portrait"></i>
+##	</a>
+##	</div>
+
+
+</div>
+#set( $sidebarwidth = $userprofile.get("sidebarwidth"))
+<div class="col-mainsidebar #if($sidebarwidth && $sidebarwidth>320)sidebarwide #end"   
+	 style="top: 24px; #if($sidebarwidth) width:${sidebarwidth}px;#end"
+	 data-sidebarwidth="$!sidebarwidth">
+
+#if($sidebarcomponent)
+	#if($sidebarcomponent == "libraries" )
+		#set($sidebarurl = "$apphome/components/sidebars/libraries/index.html")
+	#end
+	
+	#if($sidebarcomponent == "filters" )
+		#set($sidebarurl = "$apphome/components/sidebars/filters/index.html")
+	#end
+	
+	#if($sidebarcomponent == "topics" )
+		#set($sidebarurl = "$apphome/components/sidebars/tags/index.html")
+	#end
+	
+	#if($sidebarcomponent == "faceprofiles" )
+		#set($sidebarurl = "$apphome/components/sidebars/faceprofiles/index.html")
+	#end
+	
+	#if($sidebarcomponent == "categories" )
+		#if( $canviewcategorynav || ( $librarycol && $canviewcategorynavcollections ) )
+			#set($sidebarurl = "$apphome/components/sidebars/categories/index.html")
+		#end
+	#end
+	
+	#if($sidebarcomponent == "localcategories" )
+		#if( $canviewcategorynav)
+			#set($sidebarurl = "$apphome/components/sidebars/localcategories/index.html")
+		#end
+	#end
+	
+	#if($sidebarurl)
+	<div id="col-$sidebarcomponent" 
+	 class="col-main col-left col-$sidebarcomponent">
+	 	<div class="col-main-inner">
+		$pages.include($sidebarurl, $context)
+		</div>
+	</div>
+	#end
+#end
+</div>
+</div>
+

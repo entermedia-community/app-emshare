@@ -1,0 +1,26 @@
+#set($filternode = $hits.findFilterValue($context,"trackedtopics"))
+
+#if($filternode.children.size() > 0)
+#set($topichits = $filternode.getChildrenByCount())
+<div class="suggestionscontainer">
+<span class="suggestionstitle">[[Key Related Search Topics]]</span>
+
+#if($topichits && !$topichits.isEmpty() )
+
+	#foreach ($topic in $topichits)
+		#set($name = $topic.name)
+		<a href="$applink/views/modules/modulesearch/searchtag.html"  
+			data-searchtype="modulesearch" 
+			data-field="trackedtopics"
+			data-oemaxlevel="3"
+			data-trackedtopics.value="$topic.id" 
+			data-operation="exact" 
+			data-targetdiv="application" 
+			 class="ajax trackedtopic"
+			 title="#esc($name) ($topic.count)">
+			<span>#esc($name)</span></a>
+	#end
+
+#end
+</div>
+#end

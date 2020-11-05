@@ -1,0 +1,95 @@
+	#set( $searchtype = $context.getRequestParameter("searchtype"))
+#set( $id = $context.getRequestParameter("id"))
+#set( $data = $hits.findData("id",$id))
+
+#if( !$data)
+	#set( $data  = $mediaarchive.getData($searchtype,$id) )
+#end
+
+$context.putPageValue("data", $data)
+
+#set($ibmmodule = $mediaarchive.getData("module", $searchtype))
+
+
+<div class="modal-content modal-data-details modal-insight ${ibmmodule.id}-modal">
+	
+<div class="modal-close">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+</div>
+
+<div class="modal-body modal-body-insight">
+<div class="ibmpreview">
+
+<h3 class="modal-insight-datatype"><img src="$apphome/theme/images/insights/icon_${ibmmodule.id}.svg"> $ibmmodule</h3>
+
+<div class="modal-body-insight-header">
+	<h2 class="modal-title">$!data.ibmtitle</h2>
+</div>
+
+#if($data.ibmproject_page_charge_code)<div class="insight-subheader"><span class="insight-projectnumber">$!data.ibmproject_page_charge_code</span>  Status:</div>#end
+
+<div class="row insight-columns">
+	<div class="col-md-7">
+		#if($data.ibmproject_leader)<h4>$data.ibmproject_leader - [[Leader]]</h4>#end
+		
+		<h4>Period of Performance</h4>
+		<p>
+		#if($data.ibmproject_begin) 
+		#set($formateddate = $context.getDate($data.ibmproject_begin))
+  		#if(!$formateddate)
+  			$data.ibmproject_begin
+  		#else
+  			$formateddate
+  		#end - 
+  		#end
+		#if($data.ibmproject_end) 
+		#set($formateddate = $context.getDate($data.ibmproject_end))
+  		#if(!$formateddate)
+  			$data.ibmproject_end
+  		#else
+  			$formateddate
+  		#end
+		#end
+		</p>
+		
+		<p>
+		#if($data.ibmupdated_at) Last Updated: 
+		#set($formateddate = $context.getDate($data.ibmupdated_at))
+  		#if(!$formateddate)
+  			$data.ibmupdated_at
+  		#else
+  			$formateddate
+  		#end
+		#end
+		</p>
+		
+	</div>
+	<div class="col-md-5">
+	<h4>Project Details</h4>
+	#if($data.ibmsuper_portfolio)<p><strong>Super Portfolio</strong><br>$data.ibmsuper_portfolio</p>#end
+	
+	#if($data.ibmportfolio)<p><strong>Portfolio</strong><br>$data.ibmportfolio</p>#end
+	
+	#if($data.ibmsub_portfolio)<p><strong>Sub Portfolio</strong><br>$data.ibmsub_portfolio</p>#end
+	</div>
+</div>
+
+	$pages.include("$componenthome/gridsample/preview/tabs.html",$context)
+
+	$pages.include("$componenthome/gridsample/preview/tags.html",$context)	
+	
+
+	$pages.include("$componenthome/gridsample/favorites.html?moduleid=$module.id&id=$data.id&searchtype=$searchtype", $context)
+	
+	#if($data.ibmproject_url)
+		<div class="download-link float-right">
+			<a href="$data.ibmproject_url" target="_blank">[[view project page]]</a>
+		</div>
+	#end
+	
+
+</div>
+</div>
+</div>

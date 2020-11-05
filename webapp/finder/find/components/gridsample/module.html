@@ -1,0 +1,30 @@
+#set( $favorites = $userprofile.get("favorites_"+$module.id))
+$context.putPageValue("favorites", $favorites)
+	
+<div class="emgrid-subtitle">
+	#if($content.get("section") != "favorites")
+		<h3>$module ($hits.size())</h3>
+	#end
+	#if($hits.getTotalPages() >  1  )
+		$pages.include("$componenthome/results/pages.html", $context)
+	#end
+		<div class="clearfix"></div>
+</div>
+
+
+<div id="galleryimg" class="emgrid" data-colwidth="280" data-cellpadding="30">
+		#foreach( $hit in $hits.getPageOfHits())
+		     <div class="emgridcell emgridcell-$module.id" style="width:369px; height: 280px; "> 
+		     	#set($rendertype = "discovery")
+		     	#if ($module.modulerendertype)
+		     		#set($previewrendertype = $module.modulerendertype)
+		     	#end
+		     	$context.putPageValue("hit", $hit)
+				$context.putPageValue("previewrendertype", $previewrendertype)
+		        $pages.include("$apphome/components/gridsample/types/${rendertype}.html", $context)
+		     </div>
+		#end
+</div>  
+#if($hits.nextPage())
+	$pages.include("$componenthome/results/pages.html",$context)
+#end

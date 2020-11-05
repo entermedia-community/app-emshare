@@ -1,0 +1,40 @@
+<pre>
+TODO:
+
+1. Create this user if needed
+2. make sure admin password is not admin still. Generate new password if needed
+3. Pass along entermediakey of admin to the startmediaboat function and this url
+</pre>
+<script>
+$(document).ready(function(){
+	
+	
+	var entermediakey = '$tempentermediakey';
+	
+	##Docker must set siteroot correctly
+	#set($siteroot = $context.getSiteRoot())
+	#set($siteroot = $siteroot.replace("http://","https://"))
+	
+	var instanceurl = '$siteroot/assets';
+	
+	var user = '$context.getUserName()';
+	
+	console.log("Launching: "+instanceurl + ' user: ' + user + " key: "+entermediakey);
+	if(window && window.process && window.process.type) {
+		var electron = require('electron');
+    	var startMediaBoat = electron.remote.require('./index.js').startMediaBoat;
+    	//var entermediakey = $(theform).find('input[name="entermedia.key"]').val();
+    	
+    	var mediaBoat = startMediaBoat(instanceurl, user, entermediakey);
+	
+	}
+});
+	
+
+//startmediaboat(key,thisbaseurl)
+
+//Redirect to index.html
+
+</script>
+
+$pages.include("$componenthome/results/index.html")	

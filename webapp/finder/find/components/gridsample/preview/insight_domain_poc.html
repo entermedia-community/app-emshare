@@ -1,0 +1,62 @@
+#set( $searchtype = $context.getRequestParameter("searchtype"))
+#set( $id = $context.getRequestParameter("id"))
+#set( $data = $hits.findData("id",$id))
+
+#if( !$data)
+	#set( $data  = $mediaarchive.getData($searchtype,$id) )
+#end
+
+$context.putPageValue("data", $data)
+
+#set($ibmmodule = $mediaarchive.getData("module", $searchtype))
+
+
+<div class="modal-content modal-data-details modal-insight ${ibmmodule.id}-modal">
+	
+<div class="modal-close">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+
+<div class="modal-body modal-body-insight">
+<div class="ibmpreview">
+
+<h3 class="modal-insight-datatype"><img src="$apphome/theme/images/insights/icon_${ibmmodule.id}.svg"> $ibmmodule</h3>
+<div class="modal-body-insight-header">
+	<h2 class="modal-title">$!data.ibmtitle</h2>
+</div>
+#if($data.ibmprojectNumber)<div><span class="insight-projectnumber">$!data.ibmprojectNumber</span>  Status:</div>#end
+
+<div class="row" >
+	<div class="col-md-7">
+		<h4>$!data.ibmoriginalAuthorName - [[Leader]]</h4>
+		
+		<h4>Period of Performance</h4>
+		
+			
+	</div>
+	<div class="col-md-5">
+	<h4>Project Details</h4>
+	#if($data.ibmsdl_date)<p>Publication Date:<br> $context.getDate($data.ibmsdl_date)</p>#end
+	#if($data.ibmreleaseDate)<p>[[Release Date]]:<br> $context.getDate($data.ibmreleaseDate)<p>#end
+	</div>
+</div>
+
+
+	
+#if( $data.hasfulltext == "true")	
+	<div class="ibmtext"> 
+	<h3>Watson Discovery Summary</h3>
+	$!hits.highlight($data,"fulltext")
+	</div>
+	#end
+	
+	#if($data.ibmcopyrightText)<div class="insight-copyright">$data.ibmcopyrightText</div>#end
+	
+	$pages.include("$componenthome/gridsample/favorites.html?moduleid=$module.id&id=$data.id&searchtype=$searchtype", $context)
+	
+	
+</div>
+</div>
+</div>

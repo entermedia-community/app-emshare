@@ -1,0 +1,73 @@
+##Sidebars
+#set( $sidebarcomponent = $userprofile.get("sidebarcomponent"))
+#if(!$sidebarcomponent)
+	#set( $sidebarcomponent = "")
+#end
+#set( $sidebarwidth = $userprofile.get("sidebarwidth"))
+$context.putPageValue("sidebarcomponent", $sidebarcomponent)
+$context.putPageValue("sidebarwidth", $sidebarwidth)
+
+<div class="emheader">
+<div class=" navbar  navbar-expand-lg navbar-dark ">
+	<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+	    <span class="navbar-toggler-icon"></span>
+	  </button>
+	<div class="collapse navbar-collapse navlinks" id="navbarNav">
+	<ul class="navbar-nav  mr-auto">
+		<li  class="nav-item nav-first-item">
+		<a href="$home$apphome/home/index.html">MITRE | mii</a>
+		</li>
+		<li  class="nav-item">
+		<input type="text" placeholder="[[Enter FastJump]]" style="height: 21px; padding:0 3px; width:150px;" />
+		<a href=""><i class="fas fa-arrow-right"></i> FASTJUMP</a>
+		</li>
+		<li  class="nav-item">
+		<a href=""><i class="fas fa-user"></i> PEOPLE</a>
+		</li>
+		<li  class="nav-item">
+		<a href=""><i class="fas fa-search"></i> MII SEARCH</a>
+		</li>
+		<li  class="nav-item">
+		<a href="">DISCOVER <i class="fas fa-ellipsis-h"></i></a>
+		</li>
+	</ul>
+	<ul class="navbar-nav  ml-auto" style="margin-top:-12px;">
+		<li  class="nav-item">
+		<a href=""><i class="far fa-clock"></i> TRS </a>
+		</li>
+    </ul>
+ </div>
+</div>
+
+#if( $userprofile.hasModule("order") )
+#set( $orders = $mediaarchive.query("order").exact("checkoutstatus","pending").search($context))
+#if( $orders.size() > 0)
+<div id="headerstatusarea"  class="alert alert-primary" role="alert">
+<a href="$apphome/views/modules/order/fieldsearch.html?field=checkoutstatus&checkoutstatus.value=pending&operation=exact">
+	<i class="fas fa-info-circle"></i>
+	[[Pending Orders]]  ($orders.size())</a>
+</div>
+#end
+#end
+</div>
+
+
+
+<div id="header" class="mediacenterheader">
+	<div class="pushcontent #if($sidebarcomponent) pushcontent-open pushcontent-$sidebarcomponent #end"
+	style="#if($sidebarcomponent && $sidebarwidth) margin-left:${sidebarwidth}px;#end">
+	
+	<div class="logocontainer">
+		<a class="emlogo" href="$home$apphome/index.html" title="[[EnterMedia Insights]]">
+			<span><img src="$home$themeprefix/images/logo.png" alt="[[EnterMedia Insights]]" /></span>
+		</a>
+	</div>
+		
+	  #if(!$hidefilters)
+	        $pages.include("$apphome/components/gridfilters/header-search.html", $context)
+	        ##$pages.include("$apphome/components/gridfilters/filters-selected.html", $context)
+	    #end
+	</div>
+</div>
+
+

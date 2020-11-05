@@ -1,0 +1,56 @@
+#set($section = $content.get("section"))
+
+
+#set( $filter = $modulehits.findFilterValue("ibmsdl_source_type") )
+
+
+#foreach($module in $organizedModules)
+	<div class="emgrid-module">
+	#set($idhits = $organizedHits.get($module.id))
+	
+	#set( $favorites = $userprofile.get("favorites_"+$module.id))
+	$context.putPageValue("favorites", $favorites)
+	
+	<div class="emgrid-subtitle">
+		<h3>
+		##<i class="fas fa-user"></i>
+		<img src="$apphome/theme/images/insights/icon_${module.id}.svg" style="height: 24px;"> 
+		
+		#if( $idhits.size() < 7) ##this is safe
+			#set( $count = $idhits.size())
+		#else
+			#set( $count = $filter.getCount($module.id) )
+		#end
+
+		$module.getName() <span class="count">($count)</span></h3>
+		#set($resultsPage = "$apphome/views/modules/$module.id/index.html")
+
+		#if($idhits.size() > 4 && $section != "favorites")
+			#if( $jsonsearch)
+				#set($resultsPage = $url_util.urlEscape("$resultsPage?${module.id}clearfilters=true&${module.id}_jsonquery=$jsonsearch" ) )
+			#end		
+			<div style="float:right; padding:5px 15px 0 0 ;"><a href="$resultsPage">[[See More]]</a></div>
+		#end
+		<div class="clearfix"></div>
+	</div>
+	
+	<div id="galleryimg-${module.id}" class='emgrid #if($section != "favorites")emgridlimited#end' data-colwidth="292" data-cellpadding="30">
+		#foreach( $hit in $idhits)
+		     <div class="emgridcell emgridcell-$module.id" style="width:369px; height: 280px; "> 
+		     	#set($rendertype = "discovery")
+		     	#if ($module.modulerendertype)
+		     		#set($previewrendertype = $module.modulerendertype)
+		     	#end
+		     	$context.putPageValue("hit", $hit)
+				$context.putPageValue("previewrendertype", $previewrendertype)
+		        $pages.include("$apphome/components/gridsample/types/${rendertype}.html", $context)
+		     </div>
+		     #if($foreach.count > 6 && $section != "favorites")
+		     	#break 
+		     #end 
+		#end
+	</div>  
+	<div class="clearfix"></div>
+	</div>   
+#end
+

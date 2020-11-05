@@ -1,0 +1,44 @@
+
+##This is not used?
+
+<div id="resultsdiv">
+<div  class="emgridcontainer">
+$context.putPageValue("thumbsize", "mediumplus" )
+#if(1==2 &&  $category && $category.hasChildren())
+<div id="galleryimg" class="emgrid" data-colwidth="220"> 
+	#foreach( $hit in $category.getChildren())
+		#set($type = "category")
+	     <div class="emgridcell emgridcell-$type" style="width:319px; min-height: 80px; ">
+	     	$context.putPageValue("hit", $hit)
+	        $pages.include("$apphome/components/grid/types/category.html", $context)
+	     </div>
+	#end     
+</div>
+#end
+
+#if( $modulehits.isEmpty() && $category && $category.hasChildren())
+
+#else
+<div class="gridresultscount">
+$modulehits.size() [[Results Found]]
+</div>
+#end
+
+<div id="galleryimg" class="emgrid" data-colwidth="220">
+#foreach( $hit in $modulehits.getPageOfHits())
+	#set($type = $hit.getSearchHit().getType())
+     <div class="emgridcell emgridcell-$type" style="width:319px; min-height: 80px; ">
+     	#if ($type== "insight_product" || $type == "asset" || $type == "project" || $type == "task" || $type == "people" || $type =="librarycollection" || $type=="category")
+     		#set($includetype = $type)
+     	#else
+     		#set($includetype = "default")
+     	#end
+     	$context.putPageValue("hit", $hit)
+        $pages.include("$apphome/components/grid/types/${includetype}.html", $context)
+     </div>
+#end     
+</div>
+            
+<div class="clearfix"></div>
+</div>
+</div>

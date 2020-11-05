@@ -1,0 +1,19 @@
+#set($type = $hit.getSearchHit().getType())
+#set( $rendertype = $mediaarchive.getMediaRenderType($hit.fileformat))
+<div class="emgrid-content emgrid-type-$type emgrid-type-asset-$rendertype resultsassetcontainer">        	 
+        	 
+        	 <h3>
+        	 
+        	 $!hit.ibmtitle
+        	 </h3> 
+	        <div class="emgridcell-assetimage #if ($hit.keywords) emgriddcell-withkeywords #end" data-width="$!{hit.width}" data-height="$!{hit.height}">
+		        <div>$!hit.ibmprojectNumber</div>
+		        <div>$!hit.ibmoriginalAuthorName</div>
+	        </div>
+
+	        $pages.include("$componenthome/grid/tags.html",$context)
+	        
+	        <div class="griditem-tools resultsselection">
+	        <input type="checkbox" class="selectionbox" name="count" value="" data-dataid="$hit.getId()">
+	        </div>
+</div>

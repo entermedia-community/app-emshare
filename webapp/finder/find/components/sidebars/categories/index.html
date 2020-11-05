@@ -1,0 +1,85 @@
+			<div class="col-sidebar-header">
+				<h2>
+				#if( $module.id =="librarycollection" && $librarycol )
+				<a class="nav-btn float-left sidebarheaderactions" href="$apphome/views/modules/asset/index.html?nodeID=$librarycol.getRootCategoryId()">
+					<i class="fas fa-arrow-alt-circle-up"></i>
+				</a>
+				#else
+				<a class="emdialog sidebarsubmenu float-left sidebarheaderactions" data-hidefooter="true" data-width="1000" data-height="600"  title="[[Select Category]]" href="$home$apphome/components/categories/search/searchcategory.html">
+				<i class="fas fa-search"></i>
+				</a>
+				#end
+				[[FOLDERS]]
+				<a href="#"
+					title="[[Hide Categories Sidebar]]"
+					class="sidebar-toggler sidebar-toggler-hide"
+					data-action="hide" 
+					data-targetdiv="col-sidebars"
+					data-sidebar="categories">
+					<i class="fas fa-angle-double-left closebar"></i>
+				</a>	
+				</h2>
+				<a href="#"
+					title="[[Resize Sidebar]]"
+					class="sidebar-toggler sidebar-toggler-resize"
+					data-sidebar="mainsidebar">
+					<i class="fas fa-arrows-alt-h "></i>
+				</a>
+				
+			</div>
+	
+	
+	<div class="libraryfinder-header text-right">
+	<a href=""><i class="fas fa-folder-plus "></i></a> 
+	<a href=""><i class="fas fa-search "></i></a>
+	</div>
+
+	#if(!$librarycol)
+			#set( $selectedcollection = $context.getRequestParameter("collectionid"))
+			#if( $selectedcollection)
+				#set($librarycol = $mediaarchive.getData("librarycollection",$selectedcollection))
+				$context.putPageValue("librarycol",$librarycol)
+			#end	
+		#end
+		#set( $selectedlibraryid = $context.getRequestParameter("selectedlibrary"))
+		#if($selectedlibraryid)
+			#set($selectedlibrary = $mediaarchive.getData("library",$selectedlibraryid))
+			$context.putPageValue("selectedlibrary",$selectedlibrary)
+		#elseif( $librarycol )
+			#set( $selectedlibraryid = $librarycol.get("library") )
+			#set($selectedlibrary = $mediaarchive.getData("library",$selectedlibraryid))
+			$context.putPageValue("selectedlibrary",$selectedlibrary)
+		#end
+				
+		#if($module.id =="librarycollection" && $librarycol )
+			$pages.include("$apphome/components/librarycollection/sidebar.html",$context)
+		#else
+##			$pages.include("$apphome/components/categories/sidebar-left.html", $context)
+
+#set( $rootpath = "${apphome}/components/categories")
+
+##Always clear Tree if not category or nodeID
+#set($clearselection = false)
+#set($nodeID = $context.getRequestParameter("nodeID"))
+#if(!$nodeID)
+	#if (!$category)
+		#set($clearselection = true)
+	#end
+#end
+
+<div id="side-categories" class="assetdropcategory categorytree">
+    #set( $link = "$apphome/components/emtree/tree.html")
+    #set( $link = "${link}?tree-name=categoryPickerTree&clearselection=$clearselection&allowselections=false&editabletree=true" )
+    #set( $link = "${link}&targetdiv=searchlayout&maxlevelclick=2" )
+    #set( $link = "${link}&url-prefix=$home$apphome/views/modules/modulesearch/categorysearch.html" )
+    $pages.include($link, $context)
+</div>
+
+ 
+		#end
+		
+		
+		<div class="clearfix"></div>
+
+
+

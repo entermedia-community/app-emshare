@@ -1,0 +1,37 @@
+#set($type = $hit.getSearchHit().getType())
+#set( $rendertype = $mediaarchive.getMediaRenderType($hit.fileformat))
+<div class="emgrid-content emgrid-type-$type emgrid-type-asset-$rendertype resultsassetcontainer">        	 
+        	 
+        	 <h3>
+        	 #if($rendertype == "image")
+        	 <i class="fas fa-image"></i>
+        	 #elseif($rendertype == "video")
+        	 <i class="fas fa-play"></i>
+        	 #elseif($rendertype == "document")
+        	 	#if($hit.fileformat == "pdf")
+        	 		<i class="fas fa-file-pdf"></i>
+        	 	#else
+        	 		<i class="fas fa-file"></i>
+        	 	#end
+        	 #else
+        	 <i class="fas fa-file"></i>
+        	 #end
+        	 $!hit.name
+        	 </h3> 
+	        <div class="emgridcell-assetimage #if ($hit.keywords) emgriddcell-withkeywords #end" data-width="$!{hit.width}" data-height="$!{hit.height}">
+		        $context.putPageValue("type", $rendertype)
+		        #if ($rendertype == "video")
+		        	#set($rendertype="videothumbnail")
+		        	
+		        #end
+		        <a class="stackedplayer" id="clickid${hit.id}"  data-assetid="$hit.id" href="#">
+		        $pages.include("$componenthome/results/thumbnails/${rendertype}.html", $context)
+		        </a>
+	        </div>
+
+	        $pages.include("$componenthome/grid/tags.html",$context)
+	        
+	        <div class="griditem-tools resultsselection">
+	        <input type="checkbox" class="selectionbox" name="count" value="" data-dataid="$hit.getId()">
+	        </div>
+</div>
