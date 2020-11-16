@@ -86,6 +86,29 @@
 ##	</a>
 ##	</div>
 
+	#set($lastselected = $userprofile.last_selected_module )
+	#if(!$lastselected)
+		#set ($lastselected = $content.module )
+	#end
+	#if(!$lastselected)
+	      #set($lastselected = "asset" )
+	#end   
+#if( $userprofile.getModules().size() > 1 )
+	#set( $urlbase = "$home$applink/views/modules" )
+
+
+	<div class="sidebar-togglers #if($sidebarcomponent == "addentity") sidebar-selected #end">
+	<a href="$urlbase/${amodule.id}/edit/addnewdialog.html?field=last_selected_module&last_selected_module.value=${amodule.id}" 
+		class="sidebar-toggler sidebar-toggler-show light" 
+		data-modulesearchhitssessionid="$modulehits.sessionId"
+		data-action="show"
+		data-targetdiv="col-sidebars"
+		data-sidebar="addentity"
+	title="[[Add]]">
+	<i class="fas fa-plus-square"></i>
+	</a>
+
+#end
 
 </div>
 #set( $sidebarwidth = $userprofile.get("sidebarwidth"))
@@ -116,10 +139,14 @@
 		#end
 	#end
 	
-	#if($sidebarcomponent == "localcategories" )
+	#if($sidebarcomponent == "localcategories" )   ##Mark link folders for download/index/tracking/add to storage/download as needed
 		#if( $canviewcategorynav)
 			#set($sidebarurl = "$apphome/components/sidebars/localcategories/index.html")
 		#end
+	#end
+
+	#if($sidebarcomponent == "addentity" )
+		#set($sidebarurl = "$apphome/components/sidebars/addentity/index.html")
 	#end
 	
 	#if($sidebarurl)

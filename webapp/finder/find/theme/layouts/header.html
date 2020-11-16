@@ -49,26 +49,6 @@ $context.putPageValue("sidebarwidth", $sidebarwidth)
 	   	<li><a href="$home$apphome/views/dashboard/index.html" >[[Dashboard]]</a></li> 
 	   	<li><a #if ( $module ) href="$home$apphome/views/settings/modules/$module.id/index.html" #else href="$home$apphome/views/settings/index.html" #end>[[Settings]]</a></li> 
 	    #end 
-	
-	#set($lastselected = $userprofile.last_selected_module )
-	#if(!$lastselected)
-		#set ($lastselected = $content.module )
-	#end
-	#if(!$lastselected)
-	      #set($lastselected = "asset" )
-	#end   
-	#if( $userprofile.getModules().size() > 1 )
-	#set( $urlbase = "$home$apphome/views/modules" )
-	<li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">+ Add</a> 
-		<div id="module-bar-select" class="dropdown-menu  dropdown-menu-right">
-			#foreach ( $amodule in $userprofile.getModules() )
-				<a class="dropdown-item emdialog" href="$urlbase/${amodule.id}/edit/addnewdialog.html?field=last_selected_module&last_selected_module.value=${amodule.id}">$amodule</a>
-			#end
-		</div>
-	</li>
-	#end
-
-
 	</ul>
  </div>
 </div>
