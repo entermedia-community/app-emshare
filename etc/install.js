@@ -28,6 +28,9 @@ files.copyFiles( tmp + "/" + foldername, root + "/WEB-INF/base/" + foldername + 
 files.deleteAll( root + "/WEB-INF/base/emshare2");
 files.copyFiles( tmp + "/emshare2", root + "/WEB-INF/base/emshare2/");
 
+files.deleteAll( root + "/WEB-INF/base/finder");
+files.copyFiles( tmp + "/emshare2", root + "/WEB-INF/base/finder");
+
 files.deleteAll( root + "/WEB-INF/base/mediaapp");
 files.copyFiles( tmp + "/emshare2", root + "/WEB-INF/base/mediaapp/");
 
