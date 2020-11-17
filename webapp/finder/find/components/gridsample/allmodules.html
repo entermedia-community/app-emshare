@@ -14,7 +14,13 @@
 	<div class="emgrid-subtitle">
 		<h3>
 		##<i class="fas fa-user"></i>
-		<img src="$apphome/theme/images/insights/icon_${module.id}.svg" style="height: 24px;"> 
+
+     	#set($moduleicon = "entity")
+     	#if ($module.moduleicon)
+     		#set($moduleicon = $module.moduleicon)
+     	#end
+
+		<img src="$apphome/theme/images/entity/${moduleicon}.svg" style="height: 24px;"> 
 		
 		#if( $idhits.size() < 7) ##this is safe
 			#set( $count = $idhits.size())
@@ -35,14 +41,14 @@
 	</div>
 	
 	<div id="galleryimg-${module.id}" class='emgrid #if($section != "favorites")emgridlimited#end' data-colwidth="292" data-cellpadding="30">
+     	#set($rendertype = "discovery")
+     	#if ($module.modulerendertype)
+     		#set($rendertype = $module.modulerendertype)
+     	#end
+
 		#foreach( $hit in $idhits)
 		     <div class="emgridcell emgridcell-$module.id" style="width:369px; height: 280px; "> 
-		     	#set($rendertype = "discovery")
-		     	#if ($module.modulerendertype)
-		     		#set($previewrendertype = $module.modulerendertype)
-		     	#end
 		     	$context.putPageValue("hit", $hit)
-				$context.putPageValue("previewrendertype", $previewrendertype)
 		        $pages.include("$apphome/components/gridsample/types/${rendertype}.html", $context)
 		     </div>
 		     #if($foreach.count > 6 && $section != "favorites")
