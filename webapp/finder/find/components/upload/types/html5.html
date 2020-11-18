@@ -23,23 +23,28 @@
 
 $context.putPageValue("librarycol",$librarycol)
 
-
-<div id="upload-start" class="upload-start">	
-	<div class="uploaddroparea">
-		<div class="drop-area">
-	    	<div class="drop-over">
-			[[Drop Files or]] <a class="btn btn-light btn-sm" href="#" id="filePicker" style="margin-left:10px"><i class="fas fa-upload"></i> [[Pick Files]]...</a>
-	   		<input id="upload_field" type="file" style="position:absolute; top:-2000px;" multiple="multiple"  />	
-			</div>
-		</div>
-	</div>
-	
+<div class="container-fluid">
+<div class="row">
+    <div  class="col-4 col-upload-left">
+		<div class="uploadinstructions">
+		   	<a class="btn btn-primary btn-lg" href="#" id="filePicker" style="margin-top: 0"><i class="fas fa-upload"></i> [[Pick Files]]...</a>
+		   	<input id="upload_field" type="file" style="position:absolute; top:-2000px;" multiple="multiple"  />
+	        <p class="hints" style="text-align: left; padding: 5px 20px;" id="drag-and-drop-instructions">
+	            [[Upload multiple files by using the]] <strong>[[Shift]]</strong> [[key on your keyboard while selecting the files you wish to upload]].
+	        </p>			             
+		</div>				
 	<ul id="up-files-list" class="up-files-list">				
 	</ul>	
 	
+	<div class="uploadinstructions">	  
+           <div id="drop-area" >
+		<div class="drop-over"></div>
+		<div class="hints" >[[Drop files here!]]</div>
+	</div>
+	</div>	
+	
 	<!-- This is not shown -->
-    <div id="progress_report_template" style="display:none;">
-       
+       <div id="progress_report_template" style="display:none;">
         <li class="uploadprogressrow" >
 			<span id="progress_report_barcurrentupload" style="width: 0px;" class="uploadprogress"></span>
 			<a href="#">
@@ -49,15 +54,18 @@ $context.putPageValue("librarycol",$librarycol)
 			</a>	
 		</li>
 	</div>				
+					             
+        
+    </div>
+    <div  class="col-8 col-upload-right" >
 
-
-	<form id="uploaddata" name="wizard" onSubmit="return false;"
+<form id="uploaddata" name="wizard" onSubmit="return false;"
 				    action="$root/finish.html" class="force-validate-inputs"  >
 		<div id="uploadmetadata">
 		
 		
-		
-		    <div  class="ui-widget-header">[[Metadata]]
+		<div class="ui-widget uipanel">
+		    <div  class="ui-widget-header">[[Properties]]
 
 			
 		    	#if( $caneditmetadatasetup )
@@ -97,30 +105,26 @@ $context.putPageValue("librarycol",$librarycol)
 					
 					##have the cancel delete these assets?
 			        <div id="uploadinstructionsafter" style="display: none">
-				       <a class="btn btn-sm btn-primary" 
-				       		id="startbutton" 
-				       		data-complete="[[Upload Complete]]"  
-				       		href="#">[[Upload]]</a>
+				       <a class="btn btn-sm btn-primary" id="startbutton" data-complete="[[Upload Complete]]"  href="#">[[Upload]]</a>
 		        	</div>
 			</div>
+		</div>
+		</div>
+				</form>
 		
-		</div>
-		</form>
-</div>	
+		<div id="completed-uploads" style="display:none;margin-top:10px;" >
+		<div class="ui-widget uipanel">
+		    <div  class="ui-widget-header">[[Upload Queue]]</div>
+		    <div  class="ui-widget-content">
 
-<div id="upload-completed" class="upload-completed" style="display:none;" >
-	    <div  class="ui-widget-header">[[Upload Queue]]</div>
-	    <div  class="ui-widget-content">
-	    	<div class="upload-completed-container">
-			<ul id="up-files-list-completed" class="up-files-list" >
-			</ul>
+					<a id="viewassetsbtn" class="btn btn-sm btn-primary" disabled href ="#" data-customviewupload="$!customviewupload"> [[View Upload]]</a>	 
+					<ul id="up-files-list-completed" class="up-files-list" >
+					</ul>	
 			</div>
-			<a id="uploadmore" class="btn btn-sm btn-secondary">[[Upload More]]</a>
-			<a id="viewassetsbtn" class="btn btn-sm btn-primary float-right" 
-				disabled 
-				href ="#" 
-				data-customviewupload="$!customviewupload">[[View Uploads]]</a>	
+		</div>	
 		</div>
+	</div>
+</div>
 </div>
 
 <script>
@@ -130,12 +134,6 @@ $(document).ready(function()
 	$("#upload_field").val('');
 	var allfiles = new Array();
 	$("#up-files-list").empty();
-	
-	$("#uploadmore").click(function(e){
-		e.preventDefault();
-		$("#upload-start").show();
-		$("#upload-completed").hide();
-	});
 
 	$("#viewassetsbtn").click(function(e)
 	{

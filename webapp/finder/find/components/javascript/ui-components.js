@@ -1884,29 +1884,27 @@ uiload = function() {
 			//hide sidebar
 			data["sidebarcomponent.value"] = "";
 			var url = apphome + '/components/sidebars/index.html';
-	        $("#"+targetdiv).load(url,data, function()
-		        {
-
-	        		
-	        		$(".pushcontent").css('margin-left','0');
-	        		$(".pushcontent").removeClass('pushcontent-open');
-					$(window).trigger("resize");
-		        }
+			$.get(url, data, function(data) 
+			{
+				var cell = findclosest(toggler,"#" + targetdiv); 
+				cell.replaceWith(data); //Cant get a valid dom element
+	        	$(".pushcontent").removeClass('pushcontent-'+sidebar);
+				$(".pushcontent").addClass('pushcontent-fullwidth');
+				$(window).trigger("resize");
+			}
 			);
+
 		}
 		else {
 			//showsidebar
 			data["sidebarcomponent.value"] = sidebar;
 			var url = apphome + '/components/sidebars/index.html';
-	        $("#"+targetdiv).load(url,data, function()
-		        {
-	        		
-					$(".pushcontent").addClass('pushcontent-open');
-					$(".pushcontent").css('margin-left',$(".col-mainsidebar ").width()+'px');
-					var savedsidebarsize = $(".col-mainsidebar").data("sidebarwidth");
-	        		if (savedsidebarsize) {
-	        			$(".pushcontent").css('margin-left',savedsidebarsize+'px');
-	        		}
+			$.get(url, data, function(data) 
+				{
+					var cell = findclosest(toggler,"#" + targetdiv); 
+					cell.replaceWith(data); //Cant get a valid dom element
+					$(".pushcontent").removeClass('pushcontent-fullwidth');
+					$(".pushcontent").addClass('pushcontent-'+sidebar);
 					$(window).trigger("resize");
 		        }
 			);
