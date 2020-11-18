@@ -50,24 +50,15 @@ $context.putPageValue("sidebarwidth", $sidebarwidth)
 	 $pages.include("$componenthome/sidebars/index.html",$context)
 	
 	 <div id="maincontent" class="col-main col-content-main">
-
-	<div class="pushcontent #if($sidebarcomponent) pushcontent-$sidebarcomponent #else pushcontent-fullwidth #end" 
-		  style="#if($sidebarcomponent && $sidebarwidth) margin-left:${sidebarwidth}px;#end">
-		  
-		  
-			<div id="emresultscontainer" >
-		    	#if($moduleid == "asset")
-					#set( $hits = $modulehits)
-					$context.putPageValue("hits",$hits)
-			    	$pages.include("$componenthome/results/index.html",$context) 
-				#else
-		    		$pages.include("$componenthome/results/index.html",$context)
-				#end 
-			</div>		
+		<div class="pushcontent #if($sidebarcomponent) pushcontent-$sidebarcomponent #else pushcontent-fullwidth #end" 
+			  style="#if($sidebarcomponent && $sidebarwidth) margin-left:${sidebarwidth}px;#end">
+			  
+			  
+				<div id="emresultscontainer" >
+						$pages.streamContent()
+	
+				</div>		
+		</div>
 	</div>
-</div>
 
 </div>
-
-
-
