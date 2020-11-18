@@ -10,11 +10,11 @@
 		<a href="$edittask"
 			data-focuson="$task.id"
 			id="task$task.getId()"
-			class="btn btn-xs taskcomplete$!{task.taskstatus} ajax" data-targetdiv="task$task.getId()" data-oemaxlevel="1" title="$tree.getCategoryPath()" >
-			
-			##set( $comment = $mediaarchive.query("goaltaskcomments").exact("goaltaskid",$task.id).match("commenttext","*").sort("dateDown").searchOne() )
-			<i class="fas fa-pencil-alt"></i>
+			class="taskedit taskedit-$!{task.taskstatus} ajax" data-targetdiv="task$task.getId()" data-oemaxlevel="1" title="$tree.getCategoryPath()" >
+			##<i class="fas fa-pencil-alt"></i>
+			$!mediaarchive.getData("taskstatus", $task.taskstatus)
 		</a>
+		##set( $comment = $mediaarchive.query("goaltaskcomments").exact("goaltaskid",$task.id).match("commenttext","*").sort("dateDown").searchOne() )
 #else
 ## need to revamp how tasks are assigned very confusing 
 <div id="opentask$task.getId()" 
@@ -22,7 +22,7 @@
 	class="card-task card card-mini card-taskcomplete$!{task.taskstatus}"  >
 	
 	#set( $selectedcat = $mediaarchive.getCategory($task.projectdepartment))
-    	<div class="card-task-header taskcomplete taskcomplete$!{task.taskstatus} ui-draggable ui-droppable ui-draggable-handle"
+    	<div class="card-task-header taskcomplete taskstatus-$!{task.taskstatus} ui-draggable ui-droppable ui-draggable-handle"
     	 title="$selectedcat.getCategoryPath()"
     	 data-taskid="$task.id"
     	 data-cloneparentid="$task.id"
@@ -31,11 +31,7 @@
     		<a class="ajax" data-targetdiv="opentask$task.id" href="$applink/collective/goals/task/taskedit.html?id=${task.id}&collectionid=$librarycol.getId()&editclose=true">
     		<i class="fas fa-hands-helping" #if($selectedcat.goalpoints) title="${selectedcat.goalpoints} points #end"></i> $task.name 
     		</a> 
-    		#if( $caneditcollection )
-    		<a class="ajax tasklistdelete" data-confirm="[[Are you sure?]]"
-    			 targetdiv="editgoal" title="[[Remove task]]"
-    			href="$applink/collective/goals/taskdelete.html?collectionid=$librarycol.getId()&goalid=$selectedgoal.id&taskid=$task.id"><i class="fas fa-trash"></i></a> 
-    		#end
+    		
     	</div>
   		<div class="card-task-body changetaskstatus" 	data-taskid="$task.id"  >
   		<!-- EDITING BOX STARTS HERE -->
@@ -45,7 +41,7 @@
 	    	<input type="hidden" name="onlyopen" value="false" />
 	    	<input type="hidden" name="taskid" value="$task.id" />
 	    	<input type="hidden" name="collectionid" value="$librarycol.getId()" />
-			<i class="fas fa-check-square" style="color:#07172C"></i>:
+			<div style="width:20px; float:left;"><i class="fas fa-check-square" style="color:#07172C"></i></div>
   			<select  name="taskstatus" class="form-control form-control-sm" >
 			  <option value="" ></option>
 			  #set( $options = $mediaarchive.getList("taskstatus"))
@@ -54,9 +50,9 @@
 			  #end
 			</select>
 			
-			<div style="padding-top:5px;">
+			<div style="padding:5px 0 10px;">
 			## change completedby field to staff field? 
-  			<span class="completedby"><i class="fas fa-user" style="color:#07172C"></i>: 
+  			<div style="width:20px; float:left;"><i class="fas fa-user" style="color:#07172C"></i></div> 
   			
   			<select class="form-control form-control-sm"  name="completedby"  >
 			  <option value="" ></option>
@@ -67,13 +63,20 @@
 				#end
 			  
 			</select>
-  			</span>
+  			
 			</div>
-			<span>
-  			<i class="fas fa-comment" style="color:#07172C"></i>:
+			<div style="margin-bottom:10px;">
   			<textarea id="commenttext" class="form-control" style="" name="comment">$!task.comment</textarea>
-  			</span>
-			<input id="submitbutton" type="submit" form="someform" value="Submit" name="submitbutton" class="btn btn-xs btn-primary">
+  			</div>
+  			
+			<input id="submitbutton" type="submit" form="someform" value="[[Save]]" name="submitbutton" class="btn btn-xs btn-primary float_left">
+			#if( $caneditcollection )
+    		<a class="btn btn-xs btn-danger float-right ajax" data-confirm="[[Are you sure?]]"
+    			 targetdiv="editgoal" title="[[Remove task]]"
+    			href="$applink/collective/goals/taskdelete.html?collectionid=$librarycol.getId()&goalid=$selectedgoal.id&taskid=$task.id">[[Delete]]</a> 
+    		#end
+			
+			
 			
 			</form>
 			## $pages.include("$apphome/collective/goals/comments/listcomments.html?taskid=$task.id") 
