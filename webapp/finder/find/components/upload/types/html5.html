@@ -63,19 +63,7 @@ $context.putPageValue("librarycol",$librarycol)
 				    action="$root/finish.html" class="force-validate-inputs"  >
 		<div id="uploadmetadata">
 		
-		
-		<div class="ui-widget uipanel">
-		    <div  class="ui-widget-header">[[Properties]]
 
-			
-		    	#if( $caneditmetadatasetup )
-		    	<span class="widget-header-edit">
-				 <a  href="$home$apphome/views/settings/modules/asset/metadata/views/index.html?viewid=multipleupload&viewpath=asset/multipleupload" title="[[Edit]]"><i class="fas fa-cog"></i></a>
-				</span>
-				#end
-		    </div>
-		    
-		    <div  class="ui-widget-content"> 
 
 				#if( $nodeID)
 						$!context.setRequestParameter("libraries.value",$!librarycol.library)
@@ -88,6 +76,20 @@ $context.putPageValue("librarycol",$librarycol)
 					#end	
 					
 				#end				
+
+				$pages.include("$apphome/components/upload/entities/picker.html", $context)
+
+		
+		<div class="ui-widget uipanel">
+		    <div  class="ui-widget-header">[[More Details]]
+		    	#if( $caneditmetadatasetup )
+		    	<span class="widget-header-edit">
+				 <a  href="$home$apphome/views/settings/modules/asset/metadata/views/index.html?viewid=multipleupload&viewpath=asset/multipleupload" title="[[Edit]]"><i class="fas fa-cog"></i></a>
+				</span>
+				#end
+		    </div>
+		    
+		    <div  class="ui-widget-content"> 
 				
 				$context.putPageValue("searcher",$mediaarchive.getAssetSearcher() )	
 				
