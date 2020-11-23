@@ -1,9 +1,17 @@
+#set( $customsidebarcomponent = $content.get("sidebarcomponent"))
+#if($customsidebarcomponent)
+#set( $sidebarcomponent =$customsidebarcomponent ) 
+#end
+
 #if(!$sidebarcomponent)
 	#set( $sidebarcomponent = $userprofile.get("sidebarcomponent"))
 #end
+
+
 <div  id="col-sidebars" >
 <div class="col-main sidebar-togglers-bar">
 	<div class="sidebar-togglers #if($sidebarcomponent == "filters") sidebar-selected #end">
+	$sidebarcomponent
 	<a href="#" 
 		class="sidebar-toggler sidebar-toggler-show light" 
 		data-action="show" 
@@ -13,6 +21,7 @@
 	title="[[Search]]">
 	<i class="fas fa-filter"></i>
 	</a>
+
 	</div>
 
 	
@@ -86,23 +95,17 @@
 	</a>
 	</div>
 
-	#set($lastselected = $userprofile.last_selected_module )
-	#if(!$lastselected)
-		#set ($lastselected = $content.module )
-	#end
-	#if(!$lastselected)
-	      #set($lastselected = "asset" )
-	#end   
 #if( $userprofile.getModules().size() > 1 )
 	#set( $urlbase = "$home$applink/views/modules" )
 
 
 	<div class="sidebar-togglers #if($sidebarcomponent == "addentity") sidebar-selected #end">
-	<a href="$urlbase/${amodule.id}/edit/addnewdialog.html?field=last_selected_module&last_selected_module.value=${amodule.id}" 
-		class="sidebar-toggler sidebar-toggler-show light" 
+	<a href="$applink/views/modules/asset/add/start.html" 
+		class="ajax sidebar-toggler-show light" 
 		data-modulesearchhitssessionid="$modulehits.sessionId"
 		data-action="show"
-		data-targetdiv="col-sidebars"
+		data-targetdiv="application"
+		data-oemaxlevel="3"
 		data-sidebar="addentity"
 	title="[[Add New]]">
 	<i class="fas fa-plus-square"></i>
