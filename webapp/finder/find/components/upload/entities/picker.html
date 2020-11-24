@@ -6,67 +6,65 @@
     </div>
     
     <div class="ui-widget-content"> 
-		    
-	<div class="container-fluid">
-	<div class="row">
-	    <div class="col-sm">
-#set( $type = $context.getRequestParameter("showentity") )		##TODO remember the last selected	 
-
-	  <ul class="sidebar-list">
-		#foreach ( $amodule in $userprofile.getEntities() )
-			#if( $amodule.id != "asset")
-			<li #if($type == $amodule.id) class="current" #end>
-			<a class="dropdown-item ajax" data-targetdiv="entitypicker" data-oemaxlevel="1" 
-			href="$applink/components/upload/entities/showoptions.html?showentity=${amodule.id}">$amodule </a></li>
+		<div class="container-fluid">
+		<div class="row">
+		    <div class="col-sm" style="max-width:200px;">
+			#set( $type = $context.getRequestParameter("entitytype") )		##TODO remember the last selected	 
+	
+		  <ul class="sidebar-list">
+			#foreach ( $amodule in $userprofile.getEntities() )
+				#if( $amodule.id != "asset")
+				<li #if($type == $amodule.id) class="current" #end>
+				<a class="dropdown-item ajax" data-targetdiv="entitypicker" data-oemaxlevel="1" 
+				href="$applink/components/upload/entities/picker.html?entitytype=${amodule.id}">$amodule </a></li>
+				#end
 			#end
+		</ul>	
+		  </div>
+		<div class="col-sm">
+			<div style="min-height:300px">
+	
+		#if( $type )
+			#set($entries = $mediaarchive.getList($type))
+			#foreach($item in $entries)
+			<a class="badge badge-light ajax" style="margin:4px;" data-targetdiv="entitypicker" data-oemaxlevel="1" 
+				href="$applink/components/upload/entities/picker.html?entitytype=$type&selected=$selectedtext&addselection=$item.getId()">
+				$item </a>
+			#end
+	
+					<br>
+			<a class="badge badge-success ajax" style="margin:4px;" data-targetdiv="entitypicker" data-oemaxlevel="1"  ##TODO do inline, just add the name column 
+				href="$applink/components/upload/entities/addnew.html?entitytype=$type">
+					<i class="fas fa-plus"></i> Add New </a>
 		#end
-	</ul>	
-	  </div>
-	<div class="col-sm">
-		<div style="border:1px">
-
-	#if( $type )
-#set($entries = $mediaarchive.getList($type))
-#foreach($item in $entries)
-
-		<a class="badge badge-light ajax" style="margin:4px;" data-targetdiv="entitypicker" data-oemaxlevel="1" 
-			href="$applink/components/upload/entities/pickoption.html?showentity=$type&selected=$selected&addselection=$item.getId()">
-			$item </a>
-#end
-
-				<br>
-		<a class="badge badge-success ajax" style="margin:4px;" data-targetdiv="entitypicker" data-oemaxlevel="1"  ##TODO do inline, just add the name column 
-			href="$applink/components/upload/entities/addnew.html?showentity=$type&selected=$selected">
-				<i class="fas fa-plus"></i> Add New </a>
-
-	#end
-
-
+			</div>
 		</div>
-	</div>
-	<div class="col-sm">
-	
-	<form name="pickentitytype">
+		</div>	##row	    
 
-##handle add and remove here or in java code
-
-#foreach($select in $selected.split("|"))
-		<a class="badge badge-light ajax" data-targetdiv="entitypicker" data-oemaxlevel="1" 
-			href="$applink/components/upload/entities/showoptions.html?showentity=$type&selected=$selected&remove=$select">
-			$item </a>
- 	<i class="fas fa-times"></i></a>
-#end	
+			<div style="padding:20px">
 		
-	</form>
-	
-	</div>
-	
-	</div>		    
-		    
-	</div>
+			##handle add and remove here or in java code
+			#foreach ( $amodule in $userprofile.getEntities() )
+				#set( $key = "picked$amodule.getId()" )
+				#set( $hits = $userprofile.getValues($key))
+				#if( $hits && !$hits.isEmpty() )
+				<h5>$amodule:</h5> 
+					#foreach( $id in $hits )
+						#set( $data = $mediaarchive.getCachedData($amodule.getId(),$id))
+					<a class="badge badge-light ajax" style="margin:4px;" data-targetdiv="entitypicker" data-oemaxlevel="1" 
+					href="$applink/components/upload/entities/picker.html?entitytype=$module.getId()&removeselection=$id">
+					$data 
+		 				<i class="fas fa-times"></i>
+			 		</a>
+			 		#end
+	 			#end
+			#end	
+			
+		</div> 
 
- </div>
 	
-</div>
- 
+	</div> ##content
 
+ </div>  ##dialog
+	
+</div>  ##panel
