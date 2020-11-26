@@ -9,6 +9,15 @@ public void init()
 	String entitytype = context.getRequestParameter("entitytype");
 	
 	String addselection = context.getRequestParameter("addselection");
+	if( addselection == null)
+	{
+		Data data = context.getPageValue("data"); //saved new one?
+		if( data != null)
+		{
+			addselection = data.getId();
+		}
+	}
+	
 	if( addselection != null)
 	{
 		userprofile.addValue("picked" + entitytype,addselection);

@@ -1,67 +1,80 @@
 <div class="ui-widget uipanel" id="entitypicker">
-    <div class="ui-widget-header">Entity Tags
+    <div class="ui-widget-header" style="font-size:.9em;">Entity Tags
     	<span class="widget-header-edit">
-		 <a href="/finder/find/views/settings/modules/asset/metadata/views/index.html?viewid=multipleupload&amp;viewpath=asset/multipleupload" title="Edit"><i class="fas fa-cog"></i></a>
+		 <a href="$applink/views/settings/modules/asset/metadata/views/index.html?viewid=multipleupload&amp;viewpath=asset/multipleupload" title="Edit"><i class="fas fa-cog"></i></a>
 		</span>
     </div>
     
+	#set( $type = $context.getRequestParameter("entitytype") )		##TODO remember the last selected	 
     <div class="ui-widget-content"> 
 		<div class="container-fluid">
 		<div class="row">
-		    <div class="col-sm" style="max-width:200px;">
-			#set( $type = $context.getRequestParameter("entitytype") )		##TODO remember the last selected	 
-	
-		  <ul class="sidebar-list">
+		    <div class="col" style="margin-right:-40px;">
 			#foreach ( $amodule in $userprofile.getEntities() )
 				#if( $amodule.id != "asset")
-				<li #if($type == $amodule.id) class="current" #end>
-				<a class="dropdown-item ajax" data-targetdiv="entitypicker" data-oemaxlevel="1" 
-				href="$applink/components/upload/entities/picker.html?entitytype=${amodule.id}">$amodule </a></li>
+				
+					#set( $key = "picked$amodule.getId()" )
+					#set( $hits = $userprofile.getValues($key))
+					<div class="side-select-menu #if( $type == $amodule.id) active #end"  > ##style="border-top: 1px solid #eee; border-left: 1px solid #eee; border-right: 1px solid #eee;">
+					<a class="ajax" data-targetdiv="entitypicker" data-oemaxlevel="1" style="display:block;" 
+					href="$applink/components/upload/entities/picker.html?entitytype=${amodule.id}"> 
+					
+					<div class="row">
+					    <div class="col-10" style="">
+							<h5 style="margin:10px 0 0 10px;font-size: 1.0rem;">$amodule</h5>
+						</div>
+						<div class="col-2" style="">
+							 #if( $type != $amodule.id)
+							##<i class="fas fa-plus"></i> ##angle-double-right
+							#end	
+						</div>
+					</div>	
+					</a>
+						<input type="hidden" name="field" value="$amodule.id" />
+					#if( $hits && !$hits.isEmpty() )
+						<div style="padding:0px 30px 10px 30px;">
+						#foreach( $id in $hits )
+							#set( $data = $mediaarchive.getCachedData($amodule.getId(),$id))
+						<a class="badge badge-light ajax" style="margin:4px;" data-targetdiv="entitypicker" data-oemaxlevel="1" 
+						href="$applink/components/upload/entities/picker.html?entitytype=$amodule.getId()&removeselection=$id">
+						<input type="hidden" name="${amodule.id}.value" value="$id" />
+						#text($data) 
+			 				<i class="fas fa-times"></i>
+				 		</a>
+				 		#end
+			 			</div>
+		 			#end
+					</div>
 				#end
 			#end
-		</ul>	
 		  </div>
-		<div class="col-sm">
-			<div style="min-height:300px">
-	
+		<div class="col" style="margin-left:-4px;min-height:100%;">
 		#if( $type )
-			#set($entries = $mediaarchive.getList($type))
-			#foreach($item in $entries)
-			<a class="badge badge-light ajax" style="margin:4px;" data-targetdiv="entitypicker" data-oemaxlevel="1" 
-				href="$applink/components/upload/entities/picker.html?entitytype=$type&selected=$selectedtext&addselection=$item.getId()">
-				$item </a>
-			#end
-	
-					<br>
-			<a class="badge badge-success ajax" style="margin:4px;" data-targetdiv="entitypicker" data-oemaxlevel="1"  ##TODO do inline, just add the name column 
-				href="$applink/components/upload/entities/addnew.html?entitytype=$type">
+			<div style="min-height:100%; background-color: #ccc;padding:20px;">
+		
+			<a class="ajax" style="margin-top:-20px;margin-right:-22px; float:right;display:block;width:20px;height:20px;" data-targetdiv="entitypicker" data-oemaxlevel="1" 
+					href="$applink/components/upload/entities/picker.html"> <i class="fas fa-window-close"></i></a>
+			
+				
+				<a class="badge badge-success  emdialog TODOautocloseside" style="margin:4px;"  data-hidefooter="true" 
+					href="$applink/components/upload/entities/addnewentity.html?viewid=${type}addnew&searchtype=$type">
 					<i class="fas fa-plus"></i> Add New </a>
-		#end
+			<br>
+			#set($entries = $mediaarchive.getList($type))
+			#set( $key = "picked$type" )
+			#set( $hits = $userprofile.getValues($key))
+			
+			#foreach($item in $entries)
+				#if( !$hits.contains($item.getId()))
+				<a class="badge badge-light ajax" style="margin:4px;" data-targetdiv="entitypicker" data-oemaxlevel="1" 
+					href="$applink/components/upload/entities/picker.html?entitytype=$type&selected=$selectedtext&addselection=$item.getId()">
+					<i class="fas fa-angle-double-left"></i> $item </a>
+				#end	
+			#end
 			</div>
+		#end
 		</div>
 		</div>	##row	    
-
-			<div style="padding:20px">
-		
-			##handle add and remove here or in java code
-			#foreach ( $amodule in $userprofile.getEntities() )
-				#set( $key = "picked$amodule.getId()" )
-				#set( $hits = $userprofile.getValues($key))
-				#if( $hits && !$hits.isEmpty() )
-				<h5>$amodule:</h5> 
-					#foreach( $id in $hits )
-						#set( $data = $mediaarchive.getCachedData($amodule.getId(),$id))
-					<a class="badge badge-light ajax" style="margin:4px;" data-targetdiv="entitypicker" data-oemaxlevel="1" 
-					href="$applink/components/upload/entities/picker.html?entitytype=$module.getId()&removeselection=$id">
-					$data 
-		 				<i class="fas fa-times"></i>
-			 		</a>
-			 		#end
-	 			#end
-			#end	
-			
-		</div> 
-
 	
 	</div> ##content
 

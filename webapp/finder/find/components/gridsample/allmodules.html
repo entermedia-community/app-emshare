@@ -1,7 +1,7 @@
 #set($section = $content.get("section"))
 
 
-#set( $filter = $modulehits.findFilterValue("source_type") )
+#set( $filter = $modulehits.findFilterValue("entitysourcetype") )
 
 
 #foreach($module in $organizedModules)
@@ -47,8 +47,13 @@
      	#end
 
 		#foreach( $hit in $idhits)
-		     <div class="emgridcell emgridcell-$module.id" style="width:369px; height: 280px; "> 
+			#if( $rendertype == "media")
+		     <div class="emgridcell emgridcell-$module.id" style="width:400px; height: 260px; ">
+		    #else
+		     <div class="emgridcell emgridcell-$module.id" style="width:200px; height: 160px; ">
+		    #end  
 		     	$context.putPageValue("hit", $hit)
+		     	$context.putPageValue("module", $module)
 		        $pages.include("$apphome/components/gridsample/types/${rendertype}.html", $context)
 		     </div>
 		     #if($foreach.count > 6 && $section != "favorites")

@@ -1,4 +1,5 @@
 #set( $searchtype = $context.getRequestParameter("searchtype"))
+
 #set( $id = $context.getRequestParameter("id"))
 #set( $data = $hits.findData("id",$id))
 
@@ -6,9 +7,10 @@
 	#set( $data  = $mediaarchive.getData($searchtype,$id) )
 #end
 
-#set($ibmmodule = $mediaarchive.getData("module", $searchtype))
 
-<div class="modal-content modal-data-details ${ibmmodule.id}-modal">
+#set($module = $mediaarchive.getData("module", $searchtype))
+
+<div class="modal-content modal-data-details ${module.id}-modal">
 
 <div class="modal-close">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -16,28 +18,19 @@
         </button>
 </div>
 
-<div class="modal-body">
 
-<div class="ibmpreview">
-<h2 class="modal-title">$!data.ibmtitle</h2>
-<div class="row mb-4" >
+<div class="modal-body">
+<h2 class="modal-titleX">$data.name</h2>
+<div class="row" >
 <div class="col-md-3">
+    #set($formateddate = $context.getDate($hit.entity_date) )
+    #if( $formateddate )
 	<p>
-	<label>[[Project Number]]</label><br>
-	$!data.ibmprojectNumber
+	<label>[[Date:]]</label><br>
+		$!formateddate
 	</p>
-	<p>
-	<label>[[Publication Date:]]</label><br>
-	$!data.ibmsdl_date
-	</p>
-	
-	<p>
-	<label>[[Funding Source]]</label><br>
-	#set($ibmfundingSource = $mediaarchive.getData("ibmfundingSource",$data.ibmfundingSource))
-	$!ibmfundingSource.getName()
-	</p>
-	
-	
+	#end
+		
 	#set($count=0)
 		#if ($data.keywords)
 			<div class="mb-4">
@@ -54,33 +47,23 @@
 			</div>
 			</div>
 		#end
-	
-	#if($data.ibmcopyrightText)<p>$data.ibmcopyrightText</p>#end
-	
 	<p>
-#set( $index = $hits.indexOfId($data.id))
-#set( $previous = false )
-#set( $previous = $hits.previous($index))
-#set( $next = false )
-#set( $next = $hits.next($index))  
-#if( $previous)
-	#set($previewurl = "$componenthome/gridsample/preview/${searchtype}.html?id=$previous&searchtype=$searchtype&hitssessionid=$hits.sessionId")
-	<a href="$previewurl" class="emdialog" data-hideheader="true"> <i class="fas fa-chevron-circle-left"></i> Previous</a>
-#end
-#if( $next)
-	#set($previewurl = "$componenthome/gridsample/preview/${searchtype}.html?id=$next&searchtype=$searchtype&hitssessionid=$hits.sessionId")
-	<a href="$previewurl" class="emdialog" data-hideheader="true"> Next <i class="fas fa-chevron-circle-right"></i> </a>
-#end
+	
+   	#set($rendertype = "discovery")
+   	#if ($module.modulerendertype)
+   		#set($rendertype = $module.modulerendertype)
+   	#end
 	</p>
 </div>
 <div class="col-md-9">
+#if( $data.entitysummary )
 	<div class="ibmtext"> 
-	<h3>Watson Discovery Summary</h3>
-	$!hits.highlight($data,"ibmtext")
+	<h3>Description</h3>
+	$!hits.highlight($data,"entitysummary")
 	</div>
+#end	
 </div>
 </div>
 <div class="float-right"><a href="#">[[Link]]</a></div>
-</div>
 </div>
 </div>

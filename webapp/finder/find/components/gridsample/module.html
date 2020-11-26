@@ -3,7 +3,11 @@ $context.putPageValue("favorites", $favorites)
 	
 <div class="emgrid-subtitle">
 	#if($content.get("section") != "favorites")
-		<h3>$module ($hits.size())</h3>
+	<a class="badge badge-success  emdialog TODOautocloseside" style="margin:4px; float:right"  data-hidefooter="true" title="$module: [[Add New]]"
+				href="$applink/components/upload/entities/addnewentity.html?viewid=${module.id}addnew&searchtype=${module.id}">
+				<i class="fas fa-plus"></i> Add New </a>
+	<h3>$module ($hits.size())</h3>
+		
 	#end
 	#if($hits.getTotalPages() >  1  )
 		$pages.include("$componenthome/results/pages.html", $context)
@@ -12,13 +16,18 @@ $context.putPageValue("favorites", $favorites)
 </div>
 
 
+
 <div id="galleryimg" class="emgrid" data-colwidth="280" data-cellpadding="30">
+     	#set($rendertype = "entity")
+     	#if ($module.modulerendertype)
+     		#set($previewrendertype = $module.modulerendertype)
+     	#end
 		#foreach( $hit in $hits.getPageOfHits())
-		     <div class="emgridcell emgridcell-$module.id" style="width:369px; height: 280px; "> 
-		     	#set($rendertype = "discovery")
-		     	#if ($module.modulerendertype)
-		     		#set($previewrendertype = $module.modulerendertype)
-		     	#end
+			#if( $rendertype == "media")
+		     <div class="emgridcell emgridcell-$module.id" style="width:400px; height: 260px; ">
+		    #else
+		     <div class="emgridcell emgridcell-$module.id" style="width:200px; height: 160px; ">
+		    #end		   
 		     	$context.putPageValue("hit", $hit)
 				$context.putPageValue("previewrendertype", $previewrendertype)
 		        $pages.include("$apphome/components/gridsample/types/${rendertype}.html", $context)

@@ -83,9 +83,8 @@ $context.putPageValue("librarycol",$librarycol)
 				<span id="progress_report_statuscurrentupload"  class="uploadstatus"></span>
 			</a>	
 		</li>
-	</div>				
-					             
-        
+	 </div>				
+
     </div>
     <div  class="col-8 col-upload-right" >
 
@@ -95,7 +94,7 @@ $context.putPageValue("librarycol",$librarycol)
 
 		
 		<div class="ui-widget uipanel">
-		    <div  class="ui-widget-header">[[Add More Details]]
+		    <div  class="ui-widget-header" style="font-size:.9em;">[[Add More Details]]
 		    	#if( $caneditmetadatasetup )
 		    	<span class="widget-header-edit">
 				 <a  href="$home$apphome/views/settings/modules/asset/metadata/views/index.html?viewid=multipleupload&viewpath=asset/multipleupload" title="[[Edit]]"><i class="fas fa-cog"></i></a>
@@ -120,10 +119,12 @@ $context.putPageValue("librarycol",$librarycol)
 					$pages.include("/$applicationid/components/xml/detaileditorcss.html", $context)
 					
 					##have the cancel delete these assets?
-			        <div id="uploadinstructionsafter" style="display: none">
-				       <a class="btn btn-sm btn-primary" id="startbutton" data-complete="[[Upload]]"  href="#">[[Upload]]</a>
-					   <a id="viewassetsbtn" class="btn btn-sm btn-primary" disabled href ="#" data-customviewupload="$!customviewupload"> [[View Uploads]]</a>	 
-		        	</div>
+					
+					<div id="uploadinstructionsafter" style="display: none">
+			   			<a class="btn btn-primary btn-lg" id="startbutton" data-complete="[[Upload]]"  href="#">[[Upload]]</a>
+						<a id="viewassetsbtn" class="autoclick btn btn-sm btn-primary" disabled href ="#" data-customviewupload="$!customviewupload"> [[View Uploads]]</a>	 
+			  		</div>
+					
 			</div>
 		</div>
 		</div>
@@ -150,21 +151,13 @@ $(document).ready(function()
 	    var href = null;
 	    var customviewupload = $(this).data("customviewupload");
 	    if(customviewupload)
-	    	{
-	    		href= customviewupload + "?collectionid=" + collectionid;
-	    		if( nodeid)
-		    	{
-		    		href = href + "&nodeID=" + nodeid;
-		    	}
-	    	}
-	    else if(collectionid)
-	    {
-	    	href = "$home$apphome/views/modules/librarycollection/media/" + collectionid + "/index.html?sortby=assetaddeddateDown";
-	    	if( nodeid)
+    	{
+    		href= customviewupload + "?collectionid=" + collectionid;
+    		if( nodeid)
 	    	{
 	    		href = href + "&nodeID=" + nodeid;
 	    	}
-	    }
+    	}
 	    else if( nodeid)
 		{
 	         href = "$home$apphome/views/modules/asset/showcategory.html?sortby=assetaddeddateDown&nodeID=" + nodeid;;
