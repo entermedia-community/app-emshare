@@ -13,22 +13,23 @@
 	
 	<div class="emgrid-subtitle">
 		<h3>
-		##<i class="fas fa-user"></i>
-
-     	#set($moduleicon = "entity")
-     	#if ($module.moduleicon)
-     		#set($moduleicon = $module.moduleicon)
-     	#end
-
-		<img src="$apphome/theme/images/entity/${moduleicon}.svg" style="height: 24px;"> 
-		
-		#if( $idhits.size() < 7) ##this is safe
-			#set( $count = $idhits.size())
-		#else
-			#set( $count = $filter.getCount($module.id) )
-		#end
-
-		$module.getName() <span class="count">($count)</span></h3>
+			##<i class="fas fa-user"></i>
+	
+	     	#set($moduleicon = "entity")
+	     	#if ($module.moduleicon)
+	     		#set($moduleicon = $module.moduleicon)
+	     	#end
+	
+			<img src="$apphome/theme/images/entity/${moduleicon}.svg" style="height: 24px;"> 
+			
+			#if( $idhits.size() < 7) ##this is safe
+				#set( $count = $idhits.size())
+			#else
+				#set( $count = $filter.getCount($module.id) )
+			#end
+	
+			$module.getName() <span class="count">($count)</span>
+		</h3>
 		#set($resultsPage = "$apphome/views/modules/$module.id/index.html")
 
 		#if($idhits.size() > 4 && $section != "favorites")
@@ -40,27 +41,36 @@
 		<div class="clearfix"></div>
 	</div>
 	
-	<div id="galleryimg-${module.id}" class='emgrid #if($section != "favorites")emgridlimited#end' data-colwidth="292" data-cellpadding="30">
      	#set($rendertype = "discovery")
      	#if ($module.modulerendertype)
      		#set($rendertype = $module.modulerendertype)
      	#end
-
-		#foreach( $hit in $idhits)
-			#if( $rendertype == "media")
-		     <div class="emgridcell emgridcell-$module.id" style="width:400px; height: 260px; ">
-		    #else
-		     <div class="emgridcell emgridcell-$module.id" style="width:200px; height: 160px; ">
-		    #end  
+     	#if( $rendertype == "category")
+     		<div class="emgrid-type-category">
+			#foreach( $hit in $idhits)
 		     	$context.putPageValue("hit", $hit)
 		     	$context.putPageValue("module", $module)
 		        $pages.include("$apphome/components/gridsample/types/${rendertype}.html", $context)
-		     </div>
-		     #if($foreach.count > 6 && $section != "favorites")
-		     	#break 
-		     #end 
+		    #end    
+     		</div>
+     	#else
+		<div id="galleryimg-${module.id}" class='emgrid #if($section != "favorites")emgridlimited#end' data-colwidth="292" data-cellpadding="30">
+			#foreach( $hit in $idhits)
+			     #if($foreach.count > 6 && $section != "favorites")
+			     	#break 
+			     #end 
+				#if( $rendertype == "media")
+			     <div class="emgridcell emgridcell-$module.id" style="width:400px; height: 260px; ">
+			    #else
+			     <div class="emgridcell emgridcell-$module.id" style="width:200px; height: 160px; ">
+			    #end  
+		     	$context.putPageValue("hit", $hit)
+		     	$context.putPageValue("module", $module)
+		        $pages.include("$apphome/components/gridsample/types/${rendertype}.html", $context)
+				 </div>
+			#end
+		</div>	
 		#end
-	</div>  
 	<div class="clearfix"></div>
 	</div>   
 #end
