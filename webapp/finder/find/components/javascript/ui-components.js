@@ -2246,6 +2246,21 @@ uiload = function() {
 			);
 	});
 	
+	lQuery( ".emdesktopopen" ).livequery("click", function(e) {
+		e.preventDefault();
+		var item = $(this);
+		var options = item.data();
+		jQuery.ajax(
+				{
+					url:  apphome + "/components/sidebars/userdownloads/open.html",
+					data: options,
+					success: function() {
+						//Refresh side panel
+					}
+				}
+			);
+	});
+	
 	
 	lQuery(".seemorelink").livequery("click", function(e){
 		e.preventDefault();

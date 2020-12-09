@@ -1,6 +1,7 @@
 <div class="col-sidebar-header">
+#set($recentdownloads = $mediaarchive.query("userdownloads").exact("user",$user.getId()).sort("dateDown").search($context))
 		<h2>
-		[[Downloads]] 
+		[[Downloads]] ($recentdownloads.size()) 
 				<a href="#"
 					title="[[Hide Search Sidebar]]"
 					class="sidebar-toggler sidebar-toggler-hide"
@@ -24,12 +25,22 @@
 	#foreach ( $download in $recentdownloads )
 		<li> 
 		
-			<a class="" data-targetdiv="maincontent" data-oemaxlevel="2" data-hidefooter="true" 
-		href="$urlbase/${amodule.id}/index.html?field=sidebarcomponent&sidebarcomponent.value=addentity">
+		#if( $desktop && $download.isdownloadcomplete )
+			<a href="#" class="emdesktopopen" data-userdownloadid="$download.id" >
+		#end		
 		$context.getDateTime($download.getDate("date"))
-		#set( $asset = $mediaarchive.getAsset($download.assetid))
-		$asset.getName()
-		</a></li>
+		#if( $download.assetid)
+			#set( $asset = $mediaarchive.getAsset($download.assetid))
+			$asset.getName()
+		#else
+			#set( $cat = $mediaarchive.getCategory($download.categoryid))
+			$cat.getName()			
+		#end		
+		#if( $desktop && $download.isdownloadcomplete )
+			</a>
+		#end		
+	
+		</li>
 	#end
 </ul>
 	<div class="clearfix"></div>
