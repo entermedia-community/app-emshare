@@ -36,11 +36,10 @@
 	</a>
 	</div>
 #end
-<!-- 
 	#if( $canviewcategorynav || ( $librarycol && $canviewcategorynavcollections ) )
 		<div class="sidebar-togglers #if($sidebarcomponent == "categories") sidebar-selected #end">
 		<a href="#" 
-			class="sidebar-toggler sidebar-toggler-show" 
+			class="sidebar-toggler sidebar-toggler-show light" 
 			data-action="show" 
 			data-targetdiv="col-sidebars"
 			data-sidebar="categories"
@@ -50,12 +49,11 @@
 		</a>
 		</div>
 	#end
- -->
  	
 	#if($desktop)
 		<div class="sidebar-togglers #if($sidebarcomponent == "localcategories") sidebar-selected #end">
 		<a href="#" 
-			class="sidebar-toggler sidebar-toggler-show" 
+			class="sidebar-toggler sidebar-toggler-show light" 
 			data-action="show" 
 			data-targetdiv="col-sidebars"
 			data-sidebar="localcategories"
@@ -69,7 +67,7 @@
 
 	<div class="sidebar-togglers #if($sidebarcomponent == "libraries") sidebar-selected #end">
 	<a href="#" 
-		class="sidebar-toggler sidebar-toggler-show " 
+		class="sidebar-toggler sidebar-toggler-show light" 
 		data-action="show" 
 		data-targetdiv="col-sidebars"
 		data-sidebar="libraries"
@@ -106,10 +104,22 @@
 		data-oemaxlevel="3"
 		data-sidebar="addentity"
 	title="[[Add New]]">
-	<i class="fas fa-plus-square"></i>
+	<i class="fas fa-cloud-upload-alt"></i>
 	</a>
-
+	</div>
 #end
+
+	<div class="sidebar-togglers #if($sidebarcomponent == "userdownloads") sidebar-selected #end">
+	<a href="#" 
+		class="sidebar-toggler sidebar-toggler-show light" 
+		data-action="show" 
+		data-targetdiv="col-sidebars"
+		data-sidebar="userdownloads"
+		data-modulesearchhitssessionid="$modulehits.sessionId"
+	title="[[Downloads]]">
+	<i class="fas fa-cloud-download-alt"> </i>
+	</a>
+	</div>
 
 </div>
 #set( $sidebarwidth = $userprofile.get("sidebarwidth"))
@@ -154,6 +164,12 @@
 	#if($sidebarcomponent == "addentity" )
 		#set($sidebarurl = "$apphome/components/sidebars/addentity/index.html")
 	#end
+
+
+	#if($sidebarcomponent == "userdownloads" )
+		#set($sidebarurl = "$apphome/components/sidebars/userdownloads/index.html")
+	#end
+	
 	
 	#if($sidebarurl)
 	<div id="col-$sidebarcomponent" 
