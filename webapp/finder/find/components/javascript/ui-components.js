@@ -2241,6 +2241,7 @@ uiload = function() {
 					data: options,
 					success: function() {
 						//Refresh side panel
+						$("#col-sidebars").load(apphome + "/components/sidebars/index.html");
 					}
 				}
 			);
@@ -2256,6 +2257,7 @@ uiload = function() {
 					data: options,
 					success: function() {
 						//Refresh side panel
+						$("#col-sidebars").load(apphome + "/components/sidebars/index.html");
 					}
 				}
 			);
@@ -2276,6 +2278,28 @@ uiload = function() {
 }// uiload
 
 
+showajaxstatus = function(uid)
+{
+	//for each asset on the page reload it's status
+	//console.log(uid);
+	var cell = $("#" + uid);
+	if( cell )
+	{
+		var path = cell.attr("ajaxpath");
+		if(!path || path =="")
+		{
+			path = cell.data("ajaxpath");
+		}
+		//console.log("Loading " + path );
+		if( path && path.length > 1)
+		{
+			jQuery.get(path,  function(data) 
+			{
+				cell.replaceWith(data); //jQuery will reinit this class
+			});
+		}	
+	}
+}
 
 
 var resizecolumns = function() {
@@ -2339,6 +2363,31 @@ var resizecolumns = function() {
 	}
 	
 	$(".pushcontent").css("height","calc(100% - " + resultsheader_height + "px)");
+	
+	var ranajaxon = new Array();
+	
+	lQuery(".ajaxstatus").livequery(
+		function()
+		{
+			var uid = $(this).attr("id");
+			var isrunning = $(this).data("ajaxrunning");
+			var timeout = $(this).data("reloadspeed");
+			if( timeout == undefined)
+			{
+				timeout = 3000;
+			}
+			var ranonce = ranajaxon[uid];
+			if( ranonce == undefined)
+			{
+				timeout = 500; //Make the first run a quick one
+				ranajaxon[uid] = true;
+			}
+			
+			setTimeout('showajaxstatus("' + uid +'");',timeout); //First one is always faster			
+		}
+	);
+
+	
 }
 
 

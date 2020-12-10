@@ -116,8 +116,13 @@
 		data-targetdiv="col-sidebars"
 		data-sidebar="userdownloads"
 		data-modulesearchhitssessionid="$modulehits.sessionId"
-	title="[[Downloads]]">
-	<i class="fas fa-cloud-download-alt"> </i>
+	title="[[Downloads]]">	
+	<i class="fas fa-cloud-download-alt">
+	#if($sidebarcomponent != "userdownloads")
+		#set($recentdownloads = $mediaarchive.query("userdownloads").exact("user",$user.getId()).sort("dateDown").search($context))
+		$recentdownloads.size()
+	#end
+	</i>
 	</a>
 	</div>
 
