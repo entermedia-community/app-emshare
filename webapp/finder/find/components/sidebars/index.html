@@ -117,11 +117,15 @@
 		data-sidebar="userdownloads"
 		data-modulesearchhitssessionid="$modulehits.sessionId"
 	title="[[Downloads]]">	
+	<div class="downloadsUpdateWrapper">
+		<div class="downloadsUpdate">
+			#if($sidebarcomponent != "userdownloads")
+				#set($recentdownloads = $mediaarchive.query("userdownloads").exact("user",$user.getId()).sort("dateDown").search($context))
+				$recentdownloads.size()
+			#end
+		</div>
+	</div>
 	<i class="fas fa-cloud-download-alt">
-	#if($sidebarcomponent != "userdownloads")
-		#set($recentdownloads = $mediaarchive.query("userdownloads").exact("user",$user.getId()).sort("dateDown").search($context))
-		$recentdownloads.size()
-	#end
 	</i>
 	</a>
 	</div>
