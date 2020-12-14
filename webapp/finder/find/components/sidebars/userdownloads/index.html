@@ -1,4 +1,4 @@
-<div id="userdownloadlist" class="col-sidebar-header ajaxstatus" data-ajaxpath="$applink/components/sidebars/userdownloads/index.html" >
+<div id="userdownloadlist" class="col-sidebar-header ajaxstatusxx" data-ajaxpath="$applink/components/sidebars/userdownloads/index.html" >
 #set($recentdownloads = $mediaarchive.query("userdownloads").exact("user",$user.getId()).sort("dateDown").search($context))
 		<h2>
 		[[Downloads]] ($recentdownloads.size()) 
@@ -27,12 +27,17 @@
 		#if( $desktop && $download.isdownloadcomplete )
 			<a href="#" class="emdesktopopen" data-userdownloadid="$download.id" >
 		#end		
-		$context.getDateTime($download.getDate("date"))
+		##$context.getDateTime($download.getDate("date")) 
 		#if( $download.assetid)
 			#set( $asset = $mediaarchive.getAsset($download.assetid))
+			#set ($mime = $mediaarchive.getMimeTypeIcon($asset.fileformat))
+			<!-- #set( $thumbpath =  "$themeprefix/images/mimetypes/${mime}.png" ) -->
+			#set( $thumbpath = $mediaarchive.asLinkToPreview($asset, "image200x200.jpg"))
+			<img class="mimethumb" style="height:64px" src="$!cdn$home$thumbpath" border="0"/>
 			$asset.getName()
 		#else
 			#set( $cat = $mediaarchive.getCategory($download.categoryid))
+			<i class="far fa-folder-open"></i>
 			$cat.getName()			
 		#end		
 		#if( $desktop && $download.isdownloadcomplete )
