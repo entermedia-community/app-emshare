@@ -10,6 +10,7 @@ import org.openedit.users.authenticate.PasswordGenerator
 
 public void init()
 {
+	log.info("init");
 	MediaArchive archive = context.getPageValue("mediaarchive");
 	
 	String collectionid = context.getRequestParameter("collectionid");
@@ -21,6 +22,8 @@ public void init()
 	}
 	String teamuserid = context.getRequestParameter("teamuserid");
 	String addtoteam = context.getRequestParameter("addtoteam");
+	
+	log.info("Adding used to team " + teamuserid + " and " + email);
 	
 	User teamuser = null;
 /* Check for duplicate email. */
@@ -42,6 +45,7 @@ public void init()
 		teamuser.setEnabled(true);
 		archive.getUserManager().saveUser(teamuser);
 	}
+	log.info("Adding used to team " + teamuser.getId());
 	
 	
 	Data subscription = archive.query("librarycollectionusers").exact("followeruser", teamuser.getId()).exact("collectionid", collectionid).searchOne();
@@ -82,8 +86,12 @@ public void init()
 	objects.put("librarycol", librarycol);
 	objects.put("apphome", context.findValue("apphome"));
 	objects.put("applink", context.findValue("applink"));
+
+	log.info("Sending welcome email  " + teamuser.getId());
+	
 	templatemail.send(objects);
 			
+	log.info("Sent email " + teamuser.getId());
 }
 
 init();

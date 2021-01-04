@@ -1991,9 +1991,9 @@ uiload = function() {
 				var changeleft = event.pageX - clickspot.pageX;
 				width = startwidth + changeleft;
 				width = width+32;
-				if( width < 280 )
+				if( width < 100 )
 				{
-					width = 280;
+					width = 100;
 				}
 				if( width > 380 )  //break sidebarfilter columns
 				{
@@ -2058,10 +2058,11 @@ uiload = function() {
 				width = 0;
 				var changeleft = event.pageX - clickspot.pageX;
 				width = startwidth + changeleft;
-				if( width < 440 )
+				if( width < 50 )
 				{
-					width = 440;
+					width = 50;
 				}
+				console.log("Wid" , width);
 				column.width(width);
 				column.data("sidebarwidth",width);
 				$(".pushcontent").css("margin-left",width+"px");
