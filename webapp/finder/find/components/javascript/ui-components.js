@@ -1889,8 +1889,9 @@ uiload = function() {
 				var cell = findclosest(toggler,"#" + targetdiv); 
 				cell.replaceWith(data); //Cant get a valid dom element
 	        	$(".pushcontent").removeClass('pushcontent-'+sidebar);
+	        	$(".pushcontent").removeClass('pushcontent-open');
 				$(".pushcontent").addClass('pushcontent-fullwidth');
-				$(".pushcontent").css("margin-left","");
+				//$(".pushcontent").css("margin-left","");
 				$(window).trigger("resize");
 			}
 			);
@@ -1905,7 +1906,8 @@ uiload = function() {
 					var cell = findclosest(toggler,"#" + targetdiv); 
 					cell.replaceWith(data); //Cant get a valid dom element
 					$(".pushcontent").removeClass('pushcontent-fullwidth');
-					$(".pushcontent").css("margin-left","");
+					$(".pushcontent").addClass('pushcontent-open');
+					//$(".pushcontent").css("margin-left","");
 					$(".pushcontent").addClass('pushcontent-'+sidebar);
 					$(window).trigger("resize");
 		        }
