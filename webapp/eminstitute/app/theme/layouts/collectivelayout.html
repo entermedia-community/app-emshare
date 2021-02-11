@@ -14,6 +14,7 @@
 	#set( $logo = $mediaarchive.getAsset($librarycol.assetportrait) )
 
 <div class="collectivelayout #if($logo) collectivelayoutlogo #end" >
+#if( $banner )
 		<div 
 			class="collectivebanner #if($fullwidth)collectivebanner-fullwidth#end text-center #if($banner) hasbanner #end"
 			#if($banner) #set ($bannerurl = "/$mediaarchive.getMediaDbId()/services/module/asset/downloads/preset/${banner.sourcepath}/image1920x500cropped.jpg")	style="background-image:url($bannerurl)"	#end
@@ -25,13 +26,21 @@
 					</a>
 				#end	
 		
-				<div class="project-title ">
-				$!librarycol.name
-				</div>
 			</div>
-			$pages.include("$apphome/collective/menu.html", $context)
+			
 			
 		</div>
+#else
+
+<div  style="text-align:center;">
+<div class="project-title ">
+	$!librarycol.name
+</div>
+
+	$pages.include("$apphome/collective/menu.html", $context)
+</div>
+	
+#end		
 
 	$pages.includeContent()	
 
