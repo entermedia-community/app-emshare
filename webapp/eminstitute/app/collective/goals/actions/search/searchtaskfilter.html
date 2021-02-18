@@ -19,15 +19,7 @@ $context.putPageValue("searcher",$searcher)
 	<h4 style="color: black">Details</h4>
 	<textarea id="commenttext" class="form-control" name="comment"></textarea>
 	
-	<!-- Add task status -->
-	<h4 style="color: black">Task Status</h4>
-	<select id="selectedstatus" class="form-control form-control-sm" name="selectedstatus">
-			  <option value="" ></option>
-			  #set( $options = $mediaarchive.getList("taskstatus"))
-				  #foreach( $option in $options)
-				  <option value="$option.id" >$option.getName()</option>
-			  #end
-	</select>
+
 	<!-- Add staff member -->
 	<h4 style="color: black">Staff Member</h4>
 	<select id="selecteduser" class="form-control form-control-sm"  name="completedby"  >
@@ -35,7 +27,7 @@ $context.putPageValue("searcher",$searcher)
 			  #set( $team = $mediaarchive.query("librarycollectionusers").exact("collectionid",$collectionid).exact("ontheteam",true).search($context) )
 				#foreach( $hit in $team)
 					#set( $followeruser = $mediaarchive.getUser($hit.followeruser) )
-			  		<option value="$hit.followeruser">$followeruser.getName()</option>
+			  		<option value="$hit.followeruser" #if($user.getId()==$followeruser.getId()) selected #end >$followeruser.getName()</option>
 				#end
 	</select>
 	
@@ -44,7 +36,7 @@ $context.putPageValue("searcher",$searcher)
 	<select id="selectedcategories" name="categorypath" class="selectautosubmit listautocomplete form-control select2">
 	<option value=""></option>
 	#foreach( $hit in $hits)
-	    <option #if ($val && $val == $hit.id) selected #end value="$hit.id">$hit</option>
+	    <option #if ($val && $val == $hit.id) selected #end value="$hit.id">$hit ($hit.goalpoints)</option>
 	#end
 	</select>
 	
