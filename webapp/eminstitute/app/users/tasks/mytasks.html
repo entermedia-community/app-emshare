@@ -1,12 +1,32 @@
 <div class="maincontent">
 	#set( $hits = $opentickets)
 		<div class="dropdown show" style="float:right;">
-		  <a class="btn btn-success dropdown-toggle" style="color:white;" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+		  <!-- <a class="btn btn-success dropdown-toggle" style="color:white;" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 		    Employee
+		  </a> -->
+		  #set( $cbtasks =  $mediaarchive.query("goaltask").not("taskstatus", "3").exact("completedby", "cburkey").search($context))
+		  <a class="btn btn-success" style="color:white;" href="https://entermediadb.org/entermediadb/app/users/tasks/mytasks.html?goaltrackerstaff=cburkey" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+		    Chris <span style="color:orange;"><b>$!cbtasks.size()</b></span>
+		  </a>
+		  #set( $cbaltasks =  $mediaarchive.query("goaltask").not("taskstatus", "3").exact("completedby", "cristobalmejia").search($context))
+		  <a class="btn btn-success" style="color:white;" href="https://entermediadb.org/entermediadb/app/users/tasks/mytasks.html?goaltrackerstaff=cristobalmejia" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+		    Cristobal <span style="color:orange;"><b>$!cbaltasks.size()</b></span>
+		  </a>
+		  #set( $jatasks =  $mediaarchive.query("goaltask").not("taskstatus", "3").exact("completedby", "563960793").search($context))
+		  <a class="btn btn-success" style="color:white;" href="https://entermediadb.org/entermediadb/app/users/tasks/mytasks.html?goaltrackerstaff=563960793" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+		    Jadelli <span style="color:orange;"><b>$!jatasks.size()</b></span>
+		  </a>
+		  #set( $motasks =  $mediaarchive.query("goaltask").not("taskstatus", "3").exact("completedby", "426").search($context))
+		  <a class="btn btn-success" style="color:white;" href="https://entermediadb.org/entermediadb/app/users/tasks/mytasks.html?goaltrackerstaff=426" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+		    Mando <span style="color:orange;"><b>$!motasks.size()</b></span>
+		  </a>
+		  #set( $mitasks =  $mediaarchive.query("goaltask").not("taskstatus", "3").exact("completedby", "534").search($context))
+		  <a class="btn btn-success" style="color:white;" href="https://entermediadb.org/entermediadb/app/users/tasks/mytasks.html?goaltrackerstaff=534" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+		    Mitsuo <span style="color:orange;"><b>$!mitasks.size()</b></span>
 		  </a>
 	
 	
-		  <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+		  <!-- <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
 		    <a class="dropdown-item" href="https://entermediadb.org/entermediadb/app/users/tasks/mytasks.html?goaltrackerstaff=cburkey">Chris</a>
 		    <a class="dropdown-item" href="https://entermediadb.org/entermediadb/app/users/tasks/mytasks.html?goaltrackerstaff=cristobalmejia">Cristobal</a>
 		    <a class="dropdown-item" href="https://entermediadb.org/entermediadb/app/users/tasks/mytasks.html?goaltrackerstaff=277">David</a>
@@ -14,11 +34,12 @@
 		    <a class="dropdown-item" href="https://entermediadb.org/entermediadb/app/users/tasks/mytasks.html?goaltrackerstaff=534">Mitsuo</a>
 		    <a class="dropdown-item" href="https://entermediadb.org/entermediadb/app/users/tasks/mytasks.html?goaltrackerstaff=388">Rishi</a>
 		    <a class="dropdown-item" href="https://entermediadb.org/entermediadb/app/users/tasks/mytasks.html?goaltrackerstaff=489">Victor</a>
-		  </div>
+		  </div> -->
 		</div>
 	#if($canviewsettings)
 	#if($hits)
 		<div class="goals-header-actions">
+		
 		$hits.size() [[Tasks]]
 		
 		</div>
@@ -37,56 +58,58 @@
 		</tr>
 		</thead>
 		#foreach($goal in $hits)
-			##set( $goal = $mediaarchive.getSearcher("projectgoal").loadData($goal))
-			<tr class="goalstatus$!{goal.projectstatus}" >
-			$context.putPageValue("goal",$goal)
-			<td >
-			#set( $project= $!mediaarchive.getData("librarycollection",$goal.collectionid) )
-			<a href="$sitelink/app/collective/goals/priorities/index.html?collectionid=$goal.collectionid"
-			style="text-decoration:underline;" >
-			$!project
-			</a>
-			</td>
-			<td >
-			#set( $project= $!mediaarchive.getData("collectiveproject",$goal.goaltrackercolumn) )
-			<a href="$sitelink/app/collective/goals/search/search.html?collectionid=$goal.collectionid&field=goaltrackercolumn&operation=matches&goaltrackercolumn.value=$project.id" 
-			style="text-decoration:underline;" >
-			$!project
-			</a>
-			<br><a href="#" class="badge badge-pill badge-info">$!mediaarchive.getData("ticketlevel",$goal.ticketlevel)</a>
-			</td>
-		
-			<td>
-			<a data-cancelsubmit="true" data-hidefooter="true" href="$sitelink/app/collective/goals/editgoalpanel.html?id=$goal.id&collectionid=$goal.collectionid&goalfolder=agent" 
-				title="" class="emdialog editgoalshow" style="text-decoration:underline;" data-urlbar="$applink/users/tasks/search.html?ticketlevel=$goal.ticketlevel&goaltrackerstaff=*&opengoalid=$goal.id"
-				data-width="900">$goal.name</a>
-			</td>
-			<td>
-		  			$pages.include("$apphome/collective/goals/like.html",$context)
-			</td>	
-			<td >
-				$!goal.details 		
-				
-				<div class="goal-body">
-				$pages.include("$apphome/collective/goals/search/goaltasks.html?indialog=true",$context)
-				</div>
-				
-			</td>
-			<td class="text-center" >
-				$pages.include("$apphome/users/tasks/resolvebutton.html",$context) 
-			</td>
+		    #set( $tasks =  $mediaarchive.query("goaltask").not("taskstatus", "3").match("projectgoal", $goal.getId()).exact("completedby", $context.getUserName()).search($context))
+		    #if( !$tasks.isEmpty())
+				##set( $goal = $mediaarchive.getSearcher("projectgoal").loadData($goal))
+				<tr class="goalstatus$!{goal.projectstatus}" >
+				$context.putPageValue("goal",$goal)
+				<td > $tasks.size()
+				#set( $project= $!mediaarchive.getData("librarycollection",$goal.collectionid) )
+				<a href="$sitelink/app/collective/goals/priorities/index.html?collectionid=$goal.collectionid"
+				style="text-decoration:underline;" >
+				$!project
+				</a>
+				</td>
+				<td >
+				#set( $project= $!mediaarchive.getData("collectiveproject",$goal.goaltrackercolumn) )
+				<a href="$sitelink/app/collective/goals/search/search.html?collectionid=$goal.collectionid&field=goaltrackercolumn&operation=matches&goaltrackercolumn.value=$project.id" 
+				style="text-decoration:underline;" >
+				$!project
+				</a>
+				<br><a href="#" class="badge badge-pill badge-info">$!mediaarchive.getData("ticketlevel",$goal.ticketlevel)</a>
+				</td>
 			
-			<td class="text-right" >
-				<span class="headersubtext">
+				<td>
+				<a data-cancelsubmit="true" data-hidefooter="true" href="$sitelink/app/collective/goals/editgoalpanel.html?id=$goal.id&collectionid=$goal.collectionid&goalfolder=agent" 
+					title="" class="emdialog editgoalshow" style="text-decoration:underline;" data-urlbar="$applink/users/tasks/search.html?ticketlevel=$goal.ticketlevel&goaltrackerstaff=*&opengoalid=$goal.id"
+					data-width="900">$goal.name</a>
+				</td>
+				<td>
+			  			$pages.include("$apphome/collective/goals/like.html",$context)
+				</td>	
+				<td >
+					$!goal.details 		
+					
+					<div class="goal-body">
+					$pages.include("$apphome/collective/goals/search/goaltasks.html?indialog=true&onlyuser=true",$context)
+					</div>
+					
+				</td>
+				<td class="text-center" >
+					$pages.include("$apphome/users/tasks/resolvebutton.html",$context) 
+				</td>
 				
-					$!mediaarchive.getData("tickettype",$goal.tickettype) $!goal.getAge() [[ago]] [[by]] $!mediaarchive.getUser($goal.owner).getAnonNickName()
-				</span><br>
-				#if ($goal.deliverydate)
-					<span style="color:red">[[Due on:]] $goal.deliverydate.substring(0, 10)</span>
-				#end
-			</td>
-		
+				<td class="text-right" >
+					<span class="headersubtext">
+					
+						$!mediaarchive.getData("tickettype",$goal.tickettype) $!goal.getAge() [[ago]] [[by]] $!mediaarchive.getUser($goal.owner).getAnonNickName()
+					</span><br>
+					#if ($goal.deliverydate)
+						<span style="color:red">[[Due on:]] $goal.deliverydate.substring(0, 10)</span>
+					#end
+				</td>
 		</tr>
+			#end	
 		
 		#end
 		</table>
