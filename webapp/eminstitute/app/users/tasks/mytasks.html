@@ -4,27 +4,21 @@
 		  <!-- <a class="btn btn-success dropdown-toggle" style="color:white;" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 		    Employee
 		  </a> -->
-		  #set( $cbtasks =  $mediaarchive.query("goaltask").orgroup("projectgoal", $opentickets).not("taskstatus", "3").exact("completedby", "cburkey").search($context))
-		  <a class="btn btn-success" style="color:white;" href="$applink/users/tasks/mytasks.html?goaltrackerstaff=cburkey">
-		    Christopher <span style="color:orange;"><b>$!cbtasks.size()</b></span>
-		  </a>
-		  #set( $cbaltasks =  $mediaarchive.query("goaltask").not("taskstatus", "3").exact("completedby", "cristobalmejia").search($context))
-		  <a class="btn btn-success" style="color:white;" href="$applink/users/tasks/mytasks.html?goaltrackerstaff=cristobalmejia">
-		    Cristobal <span style="color:orange;"><b>$!cbaltasks.size()</b></span>
-		  </a>
-		  #set( $motasks =  $mediaarchive.query("goaltask").not("taskstatus", "3").exact("completedby", "426").search($context))
-		  <a class="btn btn-success" style="color:white;" href="$applink/users/tasks/mytasks.html?goaltrackerstaff=426">
-		    Mando <span style="color:orange;"><b>$!motasks.size()</b></span>
-		  </a>
-		  #set( $mitasks =  $mediaarchive.query("goaltask").not("taskstatus", "3").exact("completedby", "534").search($context))
-		  <a class="btn btn-success" style="color:white;" href="$applink/users/tasks/mytasks.html?goaltrackerstaff=534">
-		    Mitsuo <span style="color:orange;"><b>$!mitasks.size()</b></span>
-		  </a>
-		  #set( $nitasks =  $mediaarchive.query("goaltask").not("taskstatus", "3").exact("completedby", "563960792").search($context))
-		  <a class="btn btn-success" style="color:white;" href="$applink/app/users/tasks/mytasks.html?goaltrackerstaff=563960792">
-		    Nikhil <span style="color:orange;"><b>$!nitasks.size()</b></span>
-		  </a>
-	
+		  
+		  #set( $agents = $mediaarchive.getList("agentlist"))
+		  #if( $agents.isEmpty() )
+		  	Please populate agentlist table
+		#else
+				#foreach ( $agent in $agents)
+						#set( $auser = $mediaarchive.getUser($agent.get("userid")))
+					  #set( $nitasks =  $mediaarchive.query("goaltask").not("taskstatus", "3").exact("completedby", $agent.get("userid")).search($context))
+					  <a class="btn btn-success #if( $selecteduser.getId() == $agent.get("userid") ) active #end" 
+					  style="color:white;" 
+					  href="$applink/users/tasks/mytasks.html?goaltrackerstaff=${agent.get("userid")}&collectionid=*">
+					    $auser <span style="color:orange;"><b>$!nitasks.size()</b></span>
+					  </a>
+				#end
+			#end
 	
 		  <!-- <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
 		    <a class="dropdown-item" href="https://entermediadb.org/entermediadb/app/users/tasks/mytasks.html?goaltrackerstaff=cburkey">Chris</a>
@@ -37,18 +31,21 @@
 		  </div> -->
 		</div>
 	#if($canviewsettings)
-	#if($hits)
-		<div class="goals-header-actions">
+	<div class="goals-header-actions">
 		
 		$opentickets.size() open tickets
 		#set( $critical = $mediaarchive.query("projectgoal").orgroup("projectstatus", "critical").sort("creationdateUp").search($context) )
 		with $critical.size() priority tickets.
-		#set( $goal = $mediaarchive.getSearcher("projectgoal").loadData($critical.first()) )
-		#set( $project= $!mediaarchive.getData("collectiveproject",$goal.goaltrackercolumn) )
-		Oldest priority is <a href="$sitelink/app/collective/goals/search/search.html?collectionid=$goal.collectionid&field=goaltrackercolumn&operation=exact&goaltrackercolumn.value=$project.id"> 
-		$goal.getAge()</a>
-		old 
+		#if( !$critical.isEmpty() )
+			#set( $goal = $mediaarchive.getSearcher("projectgoal").loadData($critical.first()) )
+			#set( $project= $!mediaarchive.getData("collectiveproject",$goal.goaltrackercolumn) )
+			Oldest priority is <a href="$sitelink/app/collective/goals/search/search.html?collectionid=$goal.collectionid&field=goaltrackercolumn&operation=exact&goaltrackercolumn.value=$project.id"> 
+			$goal.getAge()
+			</a> old 
+		#end
 		</div>
+	#if($hits)
+		
 		<div class="emdata" style="overflow-x:auto;">
 		<table width="100%" class="table table-striped">
 		<thead>
@@ -68,7 +65,7 @@
 		    #if( !$tasks.isEmpty())
 				<tr class="goalstatus$!{goal.projectstatus}" >
 				$context.putPageValue("goal",$goal)
-				<td > $tasks.size()
+				<td >
 				#set( $project= $!mediaarchive.getData("librarycollection",$goal.collectionid) )
 				<a href="$sitelink/app/collective/goals/priorities/index.html?collectionid=$goal.collectionid"
 				style="text-decoration:underline;" >
@@ -122,7 +119,6 @@
 	#end
 #end
 
-##Points report moved to Completed Tasks
 
 </div>
 
