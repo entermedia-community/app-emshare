@@ -40,8 +40,14 @@
 	#if($hits)
 		<div class="goals-header-actions">
 		
-		<br>
-		
+		$opentickets.size() open tickets
+		#set( $critical = $mediaarchive.query("projectgoal").orgroup("projectstatus", "critical").sort("creationdateUp").search($context) )
+		with $critical.size() priority tickets.
+		#set( $goal = $mediaarchive.getSearcher("projectgoal").loadData($critical.first()) )
+		#set( $project= $!mediaarchive.getData("collectiveproject",$goal.goaltrackercolumn) )
+		Oldest priority is <a href="$sitelink/app/collective/goals/search/search.html?collectionid=$goal.collectionid&field=goaltrackercolumn&operation=exact&goaltrackercolumn.value=$project.id"> 
+		$goal.getAge()</a>
+		old 
 		</div>
 		<div class="emdata" style="overflow-x:auto;">
 		<table width="100%" class="table table-striped">
@@ -60,7 +66,6 @@
 		#foreach($goal in $hits)
 		    #set( $tasks =  $mediaarchive.query("goaltask").not("taskstatus", "3").match("projectgoal", $goal.getId()).exact("completedby", $context.getUserName()).search($context))
 		    #if( !$tasks.isEmpty())
-				##set( $goal = $mediaarchive.getSearcher("projectgoal").loadData($goal))
 				<tr class="goalstatus$!{goal.projectstatus}" >
 				$context.putPageValue("goal",$goal)
 				<td > $tasks.size()
