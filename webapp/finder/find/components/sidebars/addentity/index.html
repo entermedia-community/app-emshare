@@ -1,6 +1,6 @@
 <div class="col-sidebar-header">
 		<h2>
-		[[Add New]] 
+		[[Database Manager]] 
 				<a href="#"
 					title="[[Hide Search Sidebar]]"
 					class="sidebar-toggler sidebar-toggler-hide"
@@ -20,12 +20,12 @@
 	</div>
 <ul class="sidebar-list">
 	#set( $urlbase = "$home$applink/views/modules" )
-		<li class="current"> <a class="dropdown-item TODOautocloseside" data-hidefooter="true" 
+		<li #if( $module.id == "asset") class="current" #end> <a class="dropdown-item TODOautocloseside" data-hidefooter="true" 
 		href="$urlbase/asset/add/start.html">Upload Media</a></li>
 
 	#foreach ( $amodule in $userprofile.getEntities() )
 		#if( $amodule.id != "asset")
-		<li> <a class="dropdown-item  ajax TODOautocloseside" data-targetdiv="maincontent" data-oemaxlevel="2" data-hidefooter="true" 
+		<li #if( $module.id == $amodule.id) class="current" #end > <a class="dropdown-item  ajax TODOautocloseside" data-targetdiv="maincontent" data-oemaxlevel="2" data-hidefooter="true" 
 		href="$urlbase/${amodule.id}/index.html?field=sidebarcomponent&sidebarcomponent.value=addentity">$amodule</a></li>
 		#end	
 	#end
