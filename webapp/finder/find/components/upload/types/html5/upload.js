@@ -44,20 +44,23 @@ var uploadid;
 	        	    var file = files[i];
 	        	    if( file.size > 0)
 	        	    {
-		        	    var html = $("#progress_report_template").html();
+	        	    	if(i < 101){
+	        	    		var html = $("#progress_report_template").html();
+			        	    
+			        	    html = html.replace(regex,i);
+			        	    $("#up-files-list").append(html);
+			        	    
+			        	    //TODO: set the name and size of each row
+			        	    var name = file.name;
+			        	    if(file.webkitRelativePath){
+			        	    	name = file.webkitRelativePath;
+			        	    }
+			        	    
+		        	    	$("#progress_report_name" + i).text(name);
+			        	    var size = bytesToSize(file.size,2);
+			        	    $("#progress_report_size" + i).text(size);
+	        	    	}
 		        	    
-		        	    html = html.replace(regex,i);
-		        	    $("#up-files-list").append(html);
-		        	    
-		        	    //TODO: set the name and size of each row
-		        	    var name = file.name;
-		        	    if(file.webkitRelativePath){
-		        	    	name = file.webkitRelativePath;
-		        	    }
-		        	    
-	        	    	$("#progress_report_name" + i).text(name);
-		        	    var size = bytesToSize(file.size,2);
-		        	    $("#progress_report_size" + i).text(size);
 		
 	        	    }
 	        	    
