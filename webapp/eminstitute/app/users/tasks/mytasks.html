@@ -1,5 +1,6 @@
 <div class="maincontent">
 	#set( $hits = $opentickets)
+	
 		<div class="dropdown show" style="float:right;">
 		  <!-- <a class="btn btn-success dropdown-toggle" style="color:white;" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 		    Employee
@@ -20,27 +21,20 @@
 				#end
 			#end
 	
-		  <!-- <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-		    <a class="dropdown-item" href="https://entermediadb.org/entermediadb/app/users/tasks/mytasks.html?goaltrackerstaff=cburkey">Chris</a>
-		    <a class="dropdown-item" href="https://entermediadb.org/entermediadb/app/users/tasks/mytasks.html?goaltrackerstaff=cristobalmejia">Cristobal</a>
-		    <a class="dropdown-item" href="https://entermediadb.org/entermediadb/app/users/tasks/mytasks.html?goaltrackerstaff=277">David</a>
-		    <a class="dropdown-item" href="https://entermediadb.org/entermediadb/app/users/tasks/mytasks.html?goaltrackerstaff=426">Mando</a>
-		    <a class="dropdown-item" href="https://entermediadb.org/entermediadb/app/users/tasks/mytasks.html?goaltrackerstaff=534">Mitsuo</a>
-		    <a class="dropdown-item" href="https://entermediadb.org/entermediadb/app/users/tasks/mytasks.html?goaltrackerstaff=388">Rishi</a>
-		    <a class="dropdown-item" href="https://entermediadb.org/entermediadb/app/users/tasks/mytasks.html?goaltrackerstaff=489">Victor</a>
-		  </div> -->
 		</div>
 	#if($canviewsettings)
 	<div class="goals-header-actions">
-		
-		$opentickets.size() open tickets
+	<nobr>
+		 $opentickets.size() open tickets
 		#set( $critical = $mediaarchive.query("projectgoal").orgroup("projectstatus", "critical").sort("creationdateUp").search($context) )
 		with $critical.size() priority tickets.
 		#if( !$critical.isEmpty() )
 			#set( $goal = $mediaarchive.getSearcher("projectgoal").loadData($critical.first()) )
 			#set( $project= $!mediaarchive.getData("collectiveproject",$goal.goaltrackercolumn) )
-			Oldest priority is <a data-cancelsubmit="true" data-hidefooter="true" href="$sitelink/app/collective/goals/editgoalpanel.html?id=$goal.id&collectionid=$goal.collectionid&goalfolder=agent" title="" class="emdialog editgoalshow" style="text-decoration:underline;" data-urlbar="$applink/users/tasks/search.html?ticketlevel=$goal.ticketlevel&goaltrackerstaff=*&opengoalid=$goal.id" data-width="900"> $goal.getAge()</a> old.
+			<a style="float:left;" data-cancelsubmit="true" data-hidefooter="true" href="$sitelink/app/collective/goals/editgoalpanel.html?id=$goal.id&collectionid=$goal.collectionid&goalfolder=agent" title="" class="emdialog editgoalshow" style="text-decoration:underline;" data-urlbar="$applink/users/tasks/search.html?ticketlevel=$goal.ticketlevel&goaltrackerstaff=*&opengoalid=$goal.id" data-width="900">Oldest priority is $goal.getAge() old.&nbsp;</a> 
 		#end
+		</nobr>
+		
 		</div>
 	#if($hits)
 		
