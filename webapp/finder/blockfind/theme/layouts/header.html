@@ -1,0 +1,94 @@
+<div class="emheader">
+<!-- <div class=" navbar  navbar-expand-lg navbar-dark ">
+	<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+	    <span class="navbar-toggler-icon"></span>
+	  </button>
+	<div class="collapse navbar-collapse navlinks" id="navbarNav">
+	<ul class="navbar-nav  ml-auto">
+
+		#if( $user )
+			<li class="nav-item nav-first-item"><a class="emdialog" data-width="900" data-height="1900" title="[[Help Center]]" href="$home$apphome/views/modules/help/helpcenter.html">[[Help]]</a></li>
+	    	#if( $canviewmyaccount ) 
+	   			<li class="nav-item"><a href="$home$apphome/views/myaccount/myassets/index.html">[[My Account]]</a></li>	    	
+	    	#end
+			 <li   class="nav-item"><a href="https://entermediadb.org/app/workspaces/index.html">[[My Workspaces]]</a></li>
+	    	<li   class="nav-item"><a href="$home$apphome/authentication/logout.html">[[Logout]]</a></li> 
+	    #else 
+	    	<li class="nav-item nav-first-item"><a href="$home$apphome/authentication/login.html" class="first">[[Login]]</a></li> 
+	    #end
+	    #if($user)
+		#set( $localesearcher = $mediaarchive.getSearcher("locale") )
+	       #set($currentlang = $localesearcher.searchById($context.language))
+	      #if($currentlang)
+	 	<li class="nav-item dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">$currentlang</a> 
+	    #else
+	 	<li class="nav-item dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">[[Language]]</a> 
+	     #end
+	  
+	  	<div id="language-bar-select" class="dropdown-menu">
+			#set( $localesearcher = $mediaarchive.getSearcher("locale") )
+			#set( $languages = $localesearcher.query().match("enabled", "true").search($context) )
+			#foreach( $lang in $languages)
+				#set($langurl = "$home$apphome/components/languages/changelanguage.html?newlang=locale_$lang.id&origURL=$context.getPathUrl()")
+				 <a class="dropdown-item" href="#urlescape($langurl)">$lang </a>
+			#end
+	    </div> 
+		</li>
+		#end	
+		
+	    #if($canviewsettings)
+	   	<li><a href="$home$apphome/views/dashboard/index.html" >[[Dashboard]]</a></li> 
+	   	<li><a #if ( $module ) href="$home$apphome/views/settings/modules/$module.id/index.html" #else href="$home$apphome/views/settings/index.html" #end>[[Settings]]</a></li> 
+	    #end 
+	</ul>
+ </div>
+</div> -->
+
+	<nav class="navbar navbar-dark bg-dark justify-content-between">
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+		<div class="collapse" id="navbarNavDropdown">
+			<ul class="navbar-nav">
+			<li class="nav-item active">
+				<a class="nav-link" href="#">[[Dashboard]] <span class="sr-only">([[current]])</span></a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link" href="#">[[My Account]]</a>
+			</li>
+			<li class="nav-item dropdown">
+				<a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+				[[My Workspaces]]
+				</a>
+				<div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+				<a class="dropdown-item" href="#">My Workspace 1</a>
+				<a class="dropdown-item" href="#">My Free Trial</a>
+				</div>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link" href="/views/modules/help/helpcenter.html">[[Help]]</a>
+			</li>
+			</ul>
+		</div>
+	</nav>
+</div>
+
+
+<div id="header" class="mediacenterheader">
+	<div class="pushcontent #if($sidebarcomponent) pushcontent-open pushcontent-$sidebarcomponent #end"
+	style="#if($sidebarcomponent && $sidebarwidth) margin-left:${sidebarwidth}px;#end">
+	
+	<div class="logocontainer">
+		<a class="emlogo" href="$home$apphome/index.html" title="[[EnterMedia Insights]]">
+			<span><img src="$home$themeprefix/images/emfinder.png" alt="[[EnterMedia Insights]]" /></span>
+		</a>
+	</div>
+		
+	  #if(!$hidefilters)
+	        $pages.include("$apphome/components/gridfilters/header-search.html", $context)
+	        ##$pages.include("$apphome/components/gridfilters/filters-selected.html", $context)
+	    #end
+	</div>
+</div>
+
+
