@@ -1,25 +1,50 @@
 #set($section = $content.get("section"))
+#set($filter = $modulehits.findFilterValue("entitysourcetype") )
 
-
-#set( $filter = $modulehits.findFilterValue("entitysourcetype") )
 
 #if( $organizedModules.isEmpty())
-
 	<div>[[0 results]]</div>
-
 #end
 
 #foreach($module in $organizedModules)
-	<div class="emgrid-module">
+	
 	#set($idhits = $organizedHits.get($module.id))
+	$context.putPageValue("hits", $idhits)
+	$context.putPageValue("module", $module)
 	
-	#set( $favorites = $userprofile.get("favorites_"+$module.id))
+   	#set($rendertype = "default")
+   	#if ($module.modulerendertype)
+   		#set($rendertype = $module.modulerendertype)
+   	#end
+   	
+   	#set( $favorites = $userprofile.get("favorites_"+$module.id))
 	$context.putPageValue("favorites", $favorites)
-	
-	<div class="emgrid-subtitle">
-		<h3>
-			##<i class="fas fa-user"></i>
-	
+    	
+   	#if( $rendertype == "media")
+   		##Stacked view
+   		<div class="emgrid-module emgrid-module-$rendertype">
+	   		<div class="emgrid-module-$rendertype-inside">
+		   		$pages.include("$apphome/components/gridsample/types/media.html", $context)
+		   		
+		   		
+		   		<div class="clearfix"></div>
+		   		
+		   		
+		   		#set($resultsPage = "$apphome/views/modules/$module.id/index.html")
+				#if($idhits.size() > 4 && $section != "favorites")
+					#if( $jsonsearch)
+						#set($resultsPage = $url_util.urlEscape("$resultsPage?${module.id}clearfilters=true&${module.id}_jsonquery=$jsonsearch" ) )
+					#end		
+					<div class="emgrid-seemore"><a href="$resultsPage">[[See More]]</a></div>
+					<div class="clearfix"></div>
+				#end
+			</div>
+   		</div>
+   		
+   	#else
+   		<div class="emgrid-module emgrid-column emgrid-module-$rendertype">
+   		<div class="emgrid-subtitle">
+   		<h3>
 	     	#set($moduleicon = "entity")
 	     	#if ($module.moduleicon)
 	     		#set($moduleicon = $module.moduleicon)
@@ -35,48 +60,20 @@
 	
 			$module.getName() <span class="count">($count)</span>
 		</h3>
-		#set($resultsPage = "$apphome/views/modules/$module.id/index.html")
-
-		#if($idhits.size() > 4 && $section != "favorites")
-			#if( $jsonsearch)
-				#set($resultsPage = $url_util.urlEscape("$resultsPage?${module.id}clearfilters=true&${module.id}_jsonquery=$jsonsearch" ) )
-			#end		
-			<div style="float:right; padding:5px 15px 0 0 ;"><a href="$resultsPage">[[See More]]</a></div>
-		#end
-		<div class="clearfix"></div>
-	</div>
-	
-     	#set($rendertype = "discovery")
-     	#if ($module.modulerendertype)
-     		#set($rendertype = $module.modulerendertype)
-     	#end
-     	#if( $rendertype == "category")
-     		<div class="emgrid-type-categories">
+   		</div>
+		<div id="galleryimg-${rendertype}" class='emgrid #if($section != "favorites")emgridlimited#end' data-colwidth="292" data-cellpadding="30">
 			#foreach( $hit in $idhits)
-		     	$context.putPageValue("hit", $hit)
-		     	$context.putPageValue("module", $module)
-		        $pages.include("$apphome/components/gridsample/types/${rendertype}.html", $context)
-		    #end    
-     		</div>
-     	#else
-		<div id="galleryimg-${module.id}" class='emgrid #if($section != "favorites")emgridlimited#end' data-colwidth="292" data-cellpadding="30">
-			#foreach( $hit in $idhits)
-			     #if($foreach.count > 6 && $section != "favorites")
-			     	#break 
-			     #end 
-				#if( $rendertype == "media")
-			     <div class="emgridcell emgridcell-$module.id" style="width:400px; height: 260px; ">
-			    #else
-			     <div class="emgridcell emgridcell-$module.id" style="width:200px; height: 160px; ">
-			    #end  
-		     	$context.putPageValue("hit", $hit)
-		     	$context.putPageValue("module", $module)
-		        $pages.include("$apphome/components/gridsample/types/${rendertype}.html", $context)
+				$context.putPageValue("hit", $hit)
+			     ###if($foreach.count > 6 && $section != "favorites")
+			     ##	#break 
+			     ###end 
+			     <div class="emgridcell emgridcell-$rendertype" style="width:200px;">
+			     $pages.include("$apphome/components/gridsample/types/${rendertype}.html", $context)
 				 </div>
 			#end
-		</div>	
-		#end
-	<div class="clearfix"></div>
-	</div>   
+		</div>
+		</div>		
+	#end
+		   
 #end
 

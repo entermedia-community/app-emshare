@@ -7,7 +7,7 @@
 #set($previewurl = "$componenthome/gridsample/preview/${rendertype}.html?id=$hit.id&searchtype=$module.id&hitssessionid=$hits.sessionId")
 $context.putPageValue("previewurl", $previewurl)
 
-<div class="emgrid-content emgrid-type-$rendertype resultsassetcontainer">        	 
+<div class="emgrid-content emgrid-type-$rendertype">        	 
         	 <div class="emgrid-content-header">
         	 <h3>
         	 <a href="$previewurl" 
@@ -17,8 +17,9 @@ $context.putPageValue("previewurl", $previewurl)
         	 	id="clickid${hit.id}"  
         	 	data-id="$hit.id"
         	 	title="$!hit.name">
-     	 	
-        	 	$!hits.highlight($hit,"name")</a>
+        	 	##$!hits.highlight($hit,"name")
+        	 	$hit.name
+        	 	</a>
         	 
         	 </h3> 
         	 </div>
@@ -30,12 +31,13 @@ $context.putPageValue("previewurl", $previewurl)
 		        	<div>Date: $formateddate
 		        	</div>
 		        	#end
-		        	
-##		        	   <property id="entityresourceURL" />
 	        </div>
-	        $pages.include("$componenthome/gridsample/tags.html",$context)
 	        
+	        $pages.include("$componenthome/gridsample/attachedmedia.html",$context)
 	        <div class="clearfix"></div>
+	        $pages.include("$componenthome/gridsample/tags.html",$context)
+	        <div class="clearfix"></div>
+	        
 	        <div class="ibmgrid-footer">
 	        
 	        $pages.include("$componenthome/gridsample/favorites.html?id=$hit.id&searchtype=$module.id", $context)
