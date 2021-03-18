@@ -1,4 +1,4 @@
-			<div class="col-sidebar-header">
+<div class="col-sidebar-header">
 				<h2>
 				#if( $module.id =="librarycollection" && $librarycol )
 				<a class="nav-btn float-left sidebarheaderactions" href="$apphome/views/modules/asset/index.html?nodeID=$librarycol.getRootCategoryId()">
@@ -30,10 +30,15 @@
 	
 	
 	<div class="libraryfinder-header text-right">
-	<a href=""><i class="fas fa-folder-plus "></i></a> 
-	<a href=""><i class="fas fa-search "></i></a>
+	##<a href=""><i class="fas fa-folder-plus "></i></a> 
+	<form name="categorysearch" class="ajaxform" data-targetdivinner="sidecategoryresults" data-oemaxlevel="1" action="$applink/components/sidebars/categories/catresults.html">
+		<input type="hidden" name="field" value="description"/>
+		<input type="hidden" name="operation" value="freeform"/>
+		<input size="30" name="description.value"/><i class="fas fa-search "></i>
+	</form>
 	</div>
 
+<div id="sidecategoryresults">
 	#if(!$librarycol)
 			#set( $selectedcollection = $context.getRequestParameter("collectionid"))
 			#if( $selectedcollection)
@@ -71,15 +76,12 @@
     #set( $link = "$apphome/components/emtree/tree.html")
     #set( $link = "${link}?tree-name=categoryPickerTree&clearselection=$clearselection&allowselections=false&editabletree=true" )
     #set( $link = "${link}&targetdiv=searchlayout&maxlevelclick=2" )
-    #set( $link = "${link}&url-prefix=$home$apphome/views/modules/modulesearch/categorysearch.html" )
+    #set( $link = "${link}&url-prefix=$home$apphome/views/modules/asset/showcategory.html" )
     $pages.include($link, $context)
 </div>
 
  
-		#end
+#end
 		
-		
-		<div class="clearfix"></div>
-
-
-
+</div>		
+<div class="clearfix"></div>
