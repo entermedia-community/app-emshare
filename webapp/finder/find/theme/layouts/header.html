@@ -97,7 +97,7 @@
 
 
 <script>
-const emKey = "110md542602d7e0ba09a4e08c0a6234578650c08d0ba08d";// "#esc($userprofile.entermediacloudkey)";
+const emKey = "#esc($userprofile.entermediacloudkey)";
 const rootsite='https://emediafinder.com';
 $(".workspaces").on('click', function() {	
 	var href = `${rootsite}/entermediadb/mediadb/services/authentication/workspacesonteam.json?entermedia.key=${emKey}`; // TODO: call in java
@@ -106,9 +106,11 @@ $(".workspaces").on('click', function() {
         	$('#workspacelist').html('');
         	$.each(result.workspaces, function (i, ws) {
         		const url = '<a class="dropdown-item" href="'
-        			+ ws.url + '/finder/find/startmediaboat.html?entermediacloudkey='
-        			+ result.userKey +'" target="_blank">'
-        			+ ws.name+'</a>';
+        		 	+ ws.url + '/finder/find/startmediaboat.html?'
+        			+ 'entermediacloudkey=' + result.userKey 
+        			+ "&collectionid="+ result.collectionid
+        			+ '" target="_blank">'
+        			+ ws.name + '</a>';
         	  $('#workspacelist').append(url);
         	});
         },
