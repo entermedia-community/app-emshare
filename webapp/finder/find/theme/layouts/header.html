@@ -57,13 +57,16 @@
 				<a class="nav-link" href="#">[[My Account]]</a>
 			</li>
 			<li class="nav-item dropdown">
-				<a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+				<a class="nav-link dropdown-toggle workspaces" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 				[[My Workspaces]]
 				</a>
-				<div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-				<a class="dropdown-item" href="#">My Workspace 1</a>
-				<a class="dropdown-item" href="#">My Free Trial</a>
+				<div id="workspacelist" class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+					<!-- <a class="dropdown-item" href="#">My Workspace 1</a>
+					<a class="dropdown-item" href="#">My Free Trial</a> -->
 				</div>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link" href="/finder/find/views/settings/status/tools/index.html">[[Settings]]</a>
 			</li>
 			<li class="nav-item">
 				<a class="nav-link" href="/views/modules/help/helpcenter.html">[[Help]]</a>
@@ -92,3 +95,32 @@
 </div>
 
 
+
+<script>
+const emKey = "#esc($userprofile.entermediacloudkey)";
+const rootsite='https://emediafinder.com';
+$(".workspaces").on('click', function() {	
+	var href = `${rootsite}/entermediadb/mediadb/services/authentication/workspacesonteam.json?entermedia.key=${emKey}`; // TODO: call in java
+	$.ajax({type: "GET", url: href, crossDomain: true, 
+        success:function(result) {
+        	$('#workspacelist').html('');
+        	$.each(result.workspaces, function (i, ws) {
+        		console.log(result);
+        		const url = '<a class="dropdown-item" href="'
+        		 	+ ws.url + '/finder/find/startmediaboat.html?'
+        			+ 'entermediacloudkey=' + result.userKey 
+        			+ "&collectionid=" + ws.collectionid
+        			+ '" target="_blank">'
+        			+ ws.name + '</a>';
+        	  $('#workspacelist').append(url);
+        	});
+        },
+        error:function(result) {
+        }
+    });
+});
+
+//url: href, async: false, data: {}, success: function (data) {		
+//	console.log('thing');
+//}
+</script>
