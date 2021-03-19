@@ -1051,97 +1051,102 @@ var stopautoscroll = false;
 
 checkScroll = function()
 {
-		if( stopautoscroll )
+	var grid = $(".masonry-grid");
+	
+	if (grid.data("singlepage")==true) {
+		return;
+	}
+	if( stopautoscroll )
+	{
+		//ignore scrolls
+		if( getOverlay().is(":visible") )
 		{
-			//ignore scrolls
-			if( getOverlay().is(":visible") )
+			var lastscroll = getOverlay().data("lastscroll");
+			var currentscroll = $(window).scrollTop();
+			if( Math.abs(lastscroll -  currentscroll) > 50 )
 			{
-				var lastscroll = getOverlay().data("lastscroll");
-				var currentscroll = $(window).scrollTop();
-				if( Math.abs(lastscroll -  currentscroll) > 50 )
-				{
-					$(window).scrollTop( lastscroll );
-				}
+				$(window).scrollTop( lastscroll );
 			}
-			return;
 		}
-		
-		//No results?
-		var resultsdiv= $("#resultsdiv");
-		var lastcell = $(".masonry-grid-cell",resultsdiv).last();
-		 if( lastcell.length == 0 )
-		 {
-		 	return;
-		 }
-		
-		
-		//are we near the end? Are there more pages?
-  		var visibleHeight = $(window).height();
-  		var totalHeight = $(document).height();
+		return;
+	}
+	
+	//No results?
+	var resultsdiv= $("#resultsdiv");
+	var lastcell = $(".masonry-grid-cell", resultsdiv).last();
+	 if( lastcell.length == 0 )
+	 {
+	 	return;
+	 }
+	
+	
+	//are we near the end? Are there more pages?
+	var visibleHeight = $(window).height();
+	var totalHeight = $(document).height();
 
 
-	    var page = parseInt(resultsdiv.data("pagenum")); 
-	    var total = parseInt(resultsdiv.data("totalpages"));
-		//console.log("checking scroll " + stopautoscroll + " page " + page + " of " + total);
-	    if( page == total)
-	    {
-			return;
-		}
+    var page = parseInt(resultsdiv.data("pagenum")); 
+    var total = parseInt(resultsdiv.data("totalpages"));
+	//console.log("checking scroll " + stopautoscroll + " page " + page + " of " + total);
+    if( page == total)
+    {
+		return;
+	}
 
-  		//console.log($(window).scrollTop() + " + " +   (visibleHeight*2 + 500) + ">=" + totalHeight); 
-		var atbottom = ($(window).scrollTop() + (visibleHeight*2 + 500)) >= totalHeight ; //is the scrolltop plus the visible equal to the total height?
-		if(	!atbottom )
-	    {
-	    	//console.log("Not yet within 500px");
-		  return;
-		}
-		 
-	   stopautoscroll = true; 
-	   var session = resultsdiv.data("hitssessionid");
-	   page = page + 1;
-	   resultsdiv.data("pagenum",page);
-	   var appdiv = $('#application');
-	   var home = $('#application').data('home') + $('#application').data('apphome');
-	   var componenthome = appdiv.data('componenthome');
-	   var link = componenthome + "/results/stackedgallery.html";
-	   var collectionid = $('#resultsdiv').data("collectionid");
-	   var params = {
-		"hitssessionid":session,
-		"page":page,
-		"oemaxlevel":"1"
-		};
-		if (collectionid) {
-			params.collectionid = collectionid;
-		}
-	   console.log("Loading page: #" + page +" - " + link);
-		   
-		   
-	//			   	async: false,
+	//console.log($(window).scrollTop() + " + " +   (visibleHeight*2 + 500) + ">=" + totalHeight); 
+	var atbottom = ($(window).scrollTop() + (visibleHeight*2 + 500)) >= totalHeight ; //is the scrolltop plus the visible equal to the total height?
+	if(	!atbottom )
+    {
+    	//console.log("Not yet within 500px");
+	  return;
+	}
+	 
+   stopautoscroll = true; 
+   var session = resultsdiv.data("hitssessionid");
+   page = page + 1;
+   resultsdiv.data("pagenum",page);
+   var appdiv = $('#application');
+   var home = $('#application').data('home') + $('#application').data('apphome');
+   var componenthome = appdiv.data('componenthome');
+   var link = componenthome + "/results/stackedgallery.html";
+   var collectionid = $('#resultsdiv').data("collectionid");
+   var params = {
+	"hitssessionid":session,
+	"page":page,
+	"oemaxlevel":"1"
+	};
+	if (collectionid) {
+		params.collectionid = collectionid;
+	}
+   console.log("Loading page: #" + page +" - " + link);
+	   
+	   
+//			   	async: false,
 
-		   $.ajax({
-			   	url: link,
-			   	xhrFields: {
-			      withCredentials: true
-			   	},
-			   	cache: false,
-			   	data: params,
-				success: function(data) 
-			   	{
-				   var jdata = $(data);
-				   var code = $(".masonry-grid",jdata).html();
-				   $(".masonry-grid",resultsdiv).append(code);
-				   //$(resultsdiv).append(code);
-				   gridResize();
-				   $(document).trigger("domchanged");
-				   stopautoscroll = false; 
-				   //Once that is all done loading we can see if we need a second page?
-			   	   //console.log( page + " Loaded get some more?" + getOverlay().is(':hidden') );
-				   if( getOverlay().is(':hidden') )
-				   {
-				   		checkScroll(); //Might need to load up two pages worth
-				   }
-				}
-			});
+	   $.ajax({
+		   	url: link,
+		   	xhrFields: {
+		      withCredentials: true
+		   	},
+		   	cache: false,
+		   	data: params,
+			success: function(data) 
+		   	{
+			   var jdata = $(data);
+			   var code = $(".masonry-grid",jdata).html();
+			   $(".masonry-grid",resultsdiv).append(code);
+			   //$(resultsdiv).append(code);
+			   gridResize();
+			   $(document).trigger("domchanged");
+			   stopautoscroll = false; 
+			   //Once that is all done loading we can see if we need a second page?
+		   	   //console.log( page + " Loaded get some more?" + getOverlay().is(':hidden') );
+			   if( getOverlay().is(':hidden') )
+			   {
+			   		checkScroll(); //Might need to load up two pages worth
+			   }
+			}
+		});
 }
 
 
@@ -1209,6 +1214,7 @@ gridResize = function()
 
 	
 	checkScroll();
+	
 	
 }
 
