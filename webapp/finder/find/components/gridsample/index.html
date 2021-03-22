@@ -6,10 +6,13 @@ $context.putPageValue("hits", $modulehits)
 #if( $hits.getSearchQuery().hasMainInput())
 	$pages.include("$componenthome/quicksearch/suggestions.html",$context)
 #end
-<div id="resultsdiv">
-<div  class="emgridcontainer" style="padding:0;">
+
+<div id="resultsdiv" data-hitssessionid="$hits.getSessionId()" >
+<div  class="emgridcontainer">
 
 	$pages.include("$componenthome/gridfilters/filter-selected.html",$context)
+	
+	$pages.include("$componenthome/results/header.html",$context)
 
 	#if($module.id=="modulesearch")
 		$pages.include("$componenthome/gridsample/allmodules.html",$context)
