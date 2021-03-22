@@ -1168,6 +1168,7 @@ gridResize = function()
 	fixedheight = parseInt(fixedheight);
 	
 	var totalwidth = 0;
+	var totalheight = 0;
 	var rownum = 0;
 	var totalavailablew = grid.width();
 	
@@ -1196,7 +1197,8 @@ gridResize = function()
 		if( isover > totalavailablew )  //Just to make a row
 		{
 			//Process previously added cell
-			trimRowToFit(fixedheight,row,totalavailablew);
+			var newheight = trimRowToFit(fixedheight,row,totalavailablew);
+			totalheight = totalheight + newheight;
 			row = new Array();
 			sofarusedw = 0;
 			rownum = rownum + 1;
@@ -1204,14 +1206,23 @@ gridResize = function()
 		sofarusedw = sofarusedw + neww;
 		row.push( cell );		
 		cell.data( "rownum",rownum);
-	});
+	}); 
 	
-	if (row.length>0) {
-		trimRowToFit( grid.data("maxheight"),row,totalavailablew);
-	}
-	
-	resizecolumns();
+	var makebox = grid.data("makebox");
 
+	if (row.length>0) 
+	{
+		if( makebox && makebox == true )
+		{
+			totalheight = totalheight;
+			grid.css("height",totalheight + "px");
+			grid.css("overflow","hidden");
+		}
+		else
+		{
+			trimRowToFit( grid.data("maxheight"),row,totalavailablew);
+		}
+	}
 	
 	checkScroll();
 	
@@ -1269,7 +1280,7 @@ trimRowToFit = function(targetheight,row,totalavailablew)
 			div.css("width",w + "px");
 		}
 	}
-	
+	return fixedheight;
 			
 }
 	
