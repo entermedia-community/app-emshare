@@ -40,6 +40,7 @@
 
 
 <div id="resultsheader">
+
 <div id="sub-nav" class="emsubnav sub-nav-${module.id}">
 	<ul class="resultsnav">
 		#set ($enabled = false)
@@ -108,7 +109,9 @@
 		</ul>
 		
 
-#if( $hits.hasSelections())
+	
+
+#if(2==1 && $hits.hasSelections())
 #set($hitsurls = "")
 #set( $imagesize = "image1024x768.jpg")
 #foreach ($hit in $hits.getPageOfHits())
@@ -122,6 +125,7 @@
 #end
 <div class="resultsnav-btn-container">
 <a data-hitsurls="$hitsurls" href="#" class="btn btn-sm btn-success" id="btnupdateemurls">[[OK]]</a>
+
 </div>
 <script type="text/javascript">
 jQuery(document).ready(function() { 
@@ -129,11 +133,34 @@ jQuery(document).ready(function() {
 			jQuery("#emurls").val($(this).data("hitsurls"));
 			jQuery("#hiddenoverlay").hide();
 	});
+
 });
 </script>
 #end 
-		
-		
+
+
+#set( $dataid = $context.getRequestParameter("dataid"))
+#if($dataid)
+	#set($selectedasset = $mediaarchive.getAsset($dataid))
+	#set( $imagesize = "image1024x768.jpg")
+	#set($hiturl = $mediaarchive.asLinkToPreview($selectedasset, "", $imagesize, true))
+
+<div class="resultsnav-btn-container">
+<a data-hitsurls="$hiturl" href="#" class="btn btn-sm btn-success" id="btnupdateemurls">[[OK]]</a>
+<a  href="#" class="btn btn-sm btn-danger" id="btncloseoverlay">[[Cancel]]</a>
+</div>
+<script type="text/javascript">
+jQuery(document).ready(function() { 
+	jQuery("#btnupdateemurls").on("click", function() {
+			jQuery("#emurls").val($(this).data("hitsurls"));
+			jQuery("#hiddenoverlay").hide();
+	});
+	jQuery("#btncloseoverlay").on("click", function() {
+		jQuery("#hiddenoverlay").hide();
+});
+});
+</script>
+#end 
 		<ul class="resultsnavright">
 		#if(!$resultview)
 			#set($resultview = $userprofile.get("resultview"))

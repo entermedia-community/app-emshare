@@ -1011,6 +1011,7 @@ $(document).ready(function(url,params)
 	});
 	
 	gridResize();
+	
     window.addEventListener('load', 
 	  function() { 
 	    	gridResize();

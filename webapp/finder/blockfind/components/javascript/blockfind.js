@@ -15,7 +15,11 @@ $(document).ready(function()
 
 		modal.css("height", visibleHeight + "px");
 		modal.css("width", visibleWidth + "px");
-		console.log(modal);
+		
+		modal.show();
+		gridResize();
+		
+		
 	})
 	
 });
