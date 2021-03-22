@@ -1,6 +1,6 @@
 <div class="masonry-grid" 
 data-maxheightX="$!mediaarchive.getCatalogSettingValue('stacked_gallery_imagesize')"
-data-maxheight="140" 
+data-maxheight="180" 
 data-cellpadding="4"
 data-singlepage="true"  >
 
@@ -43,35 +43,38 @@ data-singlepage="true"  >
 	    	</a>
 	    	 <div class="grid-gallery-checkbox resultsselection">
 		          <input type="checkbox" class="selectionbox" name="count" value="" #if($hits.isSelectedOnPage(${hit.id})) checked #end data-dataid="${hit.id}" />          
-		      </div>
-	      <div class="caption">
-       
-	         #set($stackedfield = $mediaarchive.getCatalogSettingValue("stackedgalleryfield"))
-	         #if($stackedfield)
-	         	#set($title = $hit.get($stackedfield))
-			 #end
-			 #if(!$title)		         	
-	         	#if( $hit.assettitle )
-		        	#set($title =  $hit.assettitle) #else #set($title = $hit.name) 
-		        #end
-	         #end
-	         <div class="stacked-field-info" title="$title" ><a class="stackedplayer" href="#"  data-assetid="$hit.id">$title</a></div>
-	         
-	         <div class="ibmgrid-footer">
-	        	<a href="" class="float-left ibmfavorite" title="[[Add to Favorites]]">
-		        	<i class="fas fa-bookmark"></i>
-  	        	</a>
-  	        	#if( $desktop )
-		        	<a href="#" class="emdesktopdownload emdownloadasset" data-assetid="$hit.id" title="[[Download]]">
-		        	<i class="fas fa-download"> </i>
-		        	</a>
-	        	#else
-		        	<a href="DownloadtoOriginal" class="emdownloadasset" data-assetid="$hit.id" title="[[Download]]">
-		        	<i class="fas fa-download"> </i>
-		        	</a>
-	        	#end
-	        </div>
-	     </div>
+		     </div>
+		      <div class="caption">
+	       
+		         #set($stackedfield = $mediaarchive.getCatalogSettingValue("stackedgalleryfield"))
+		         #if($stackedfield)
+		         	#set($title = $hit.get($stackedfield))
+				 #end
+				 #if(!$title)		         	
+		         	#if( $hit.assettitle )
+			        	#set($title =  $hit.assettitle) #else #set($title = $hit.name) 
+			        #end
+		         #end
+		         <div class="stacked-field-info" title="$title" >
+		         	<div><a class="stackedplayer" href="#"  data-assetid="$hit.id">$title</a></div>
+
+		         </div>
+		         
+		         <div class="grid-gallery-footer">
+		        	<a href="" class="grid-gallery-favorite" title="[[Add to Favorites]]">
+			        	<i class="fas fa-bookmark"></i>
+	  	        	</a>
+	  	        	#if( $desktop )
+			        	<a href="#" class="emdesktopdownload grid-gallery-download" data-assetid="$hit.id" title="[[Download]]">
+			        	<i class="fas fa-download"> </i>
+			        	</a>
+		        	#else
+			        	<a href="DownloadtoOriginal" class="grid-gallery-download" data-assetid="$hit.id" title="[[Download]]">
+			        	<i class="fas fa-download"> </i>
+			        	</a>
+		        	#end
+		        </div>
+		     </div>
 	</div>
        #set ( $count = $count + 1) 
     
