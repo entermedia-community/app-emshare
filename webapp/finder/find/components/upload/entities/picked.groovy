@@ -18,7 +18,7 @@ public void init()
 		}
 	}
 	
-	if( addselection != null)
+	if( addselection != null && addselection != null)
 	{
 		userprofile.addValue("picked" + entitytype,addselection);
 	}
