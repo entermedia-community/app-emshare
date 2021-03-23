@@ -989,34 +989,9 @@ $(document).ready(function(url,params)
             }
         }
     );
-
-	document.addEventListener('touchmove', function(e) 
-	{
-		//console.log("touchmove event");
-		checkScroll();
-	});
-	
-	$(window).on('scroll',function(e) 
-	{
-		//console.log("scroll event *");
-		checkScroll();
-	});
-
-	$(document).on('domchanged',function() 
-	{
-		gridResize(); //This calls checkScroll. Makes sure this is last after any actions
-	});
-	$(window).on('resize',function(){
-		gridResize();
-	});
-	
-	gridResize();
-	
-    window.addEventListener('load', 
-	  function() { 
-	    	gridResize();
-	  }, false);
-	
+    
+    gridResize();
+    
 	var hidemediaviewer = $("body").data("hidemediaviewer");
     if (!hidemediaviewer) {
         var hash = window.location.hash;
@@ -1030,7 +1005,35 @@ $(document).ready(function(url,params)
     }
 	
 });        //document ready
-        
+       
+
+document.addEventListener('touchmove', function(e) 
+{
+	//console.log("touchmove event");
+	checkScroll();
+});
+
+$(window).on('scroll',function(e) 
+{
+	//console.log("scroll event *");
+	checkScroll();
+});
+
+$(document).on('domchanged',function() 
+{
+	gridResize(); //This calls checkScroll. Makes sure this is last after any actions
+});
+$(window).on('resize',function(){
+	gridResize();
+});
+
+window.addEventListener('load', 
+  function() { 
+    	gridResize();
+  }, false);
+	    
+	    
+	    
 
 //TODO: remove this. using ajax Used for modules
 togglehits =  function(action)
@@ -1137,7 +1140,7 @@ checkScroll = function()
 			   var code = $(".masonry-grid",jdata).html();
 			   $(".masonry-grid",resultsdiv).append(code);
 			   //$(resultsdiv).append(code);
-			   gridResize();
+			   //gridResize();
 			   $(document).trigger("domchanged");
 			   stopautoscroll = false; 
 			   //Once that is all done loading we can see if we need a second page?

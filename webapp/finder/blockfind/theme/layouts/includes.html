@@ -1,10 +1,12 @@
 
 
 #foreach( $script in $content.getScriptPaths() )
+	#if($script!="")
 	#if($script.indexOf("jquery-3.3.1.min.js") > -1)
 		<script src="#if(!$script.startsWith("http"))$!cdn$home#end$script" onload="if (!window.jQuery) window.$ = window.jQuery = module.exports;"></script>
 	#else
 		<script type="text/javascript" src="#if(!$script.startsWith("http"))$!cdn$home#end$script"></script>
+	#end
 	#end
 #end
 

@@ -17,7 +17,7 @@ $(document).ready(function()
 		modal.css("width", visibleWidth + "px");
 		
 		modal.show();
-		gridResize();
+		//gridResize();
 		
 		
 	})
