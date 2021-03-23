@@ -480,6 +480,24 @@ uiload = function() {
 		
 
 	});
+	
+	lQuery("select.ajaxautosubmitselect").livequery(function() {
+		var select = $(this);
+		select.change(function() {
+			var targetdiv = select.data("targetdiv");
+			var link = select.data("url");
+			var param = select.data("parametername");
+			
+			var url = link + "?" + param + "=" + select.val();
+			
+			var options = select.data();
+			$("#" + targetdiv).load(url, options, function() {
+				
+			});
+			
+		});
+	});
+	
 
 	lQuery("form.ajaxautosubmit").livequery(function() {
 		var theform = $(this);
