@@ -1,7 +1,7 @@
-$(document).ready(function(url,params) 
+jQuery(document).ready(function(url,params) 
 { 
 	var appdiv = $('#application');
-	var home = appdiv.data('siteroot') + appdiv.data('apphome');
+	var siteroot = appdiv.data('siteroot') + appdiv.data('apphome');
 	var componenthome = appdiv.data('siteroot') + appdiv.data('componenthome');
 
 	var refreshdiv = function(url,params)
@@ -874,8 +874,6 @@ $(document).ready(function(url,params)
 	
 	lQuery("input[name=pagetoggle]").livequery( 'click', function() 
 	{
-		  var home = $('#application').data('home');
-		  var apphome = $('#application').data('apphome');
 		  var hitssessionid = $('#resultsdiv').data('hitssessionid');
 		   var options = $('#resultsdiv').data();
 		   options.oemaxlevel = 1;
@@ -1004,7 +1002,7 @@ $(document).ready(function(url,params)
         }
     }
 	
-});        //document ready
+});//document ready
        
 
 document.addEventListener('touchmove', function(e) 
@@ -1013,17 +1011,17 @@ document.addEventListener('touchmove', function(e)
 	checkScroll();
 });
 
-$(window).on('scroll',function(e) 
+jQuery(window).on('scroll',function(e) 
 {
 	//console.log("scroll event *");
 	checkScroll();
 });
 
-$(document).on('domchanged',function() 
-{
+jQuery(document).on('domchanged',function(){
 	gridResize(); //This calls checkScroll. Makes sure this is last after any actions
 });
-$(window).on('resize',function(){
+
+jQuery(window).on('resize',function(){
 	gridResize();
 });
 
@@ -1109,9 +1107,8 @@ checkScroll = function()
    var session = resultsdiv.data("hitssessionid");
    page = page + 1;
    resultsdiv.data("pagenum",page);
-   var appdiv = $('#application');
-   var home = $('#application').data('home') + $('#application').data('apphome');
-   var componenthome = appdiv.data('componenthome');
+   
+   
    var link = componenthome + "/results/stackedgallery.html";
    var collectionid = $('#resultsdiv').data("collectionid");
    var params = {

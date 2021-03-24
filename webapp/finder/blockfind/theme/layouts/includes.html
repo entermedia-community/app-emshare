@@ -1,15 +1,14 @@
 
-
 #foreach( $script in $content.getScriptPaths() )
 	#if($script!="")
 	#if($script.indexOf("jquery-3.3.1.min.js") > -1)
 		<script src="#if(!$script.startsWith("http"))$!cdn$siteroot#end$script" onload="if (!window.jQuery) window.$ = window.jQuery = module.exports;"></script>
 	#else
-		<script type="text/javascript" src="#if(!$script.startsWith("http"))$!cdn$siteroot#end$script"></script>
+		<script type="text/javascript" src="#if(!$script.startsWith("http"))$siteroot#end$script"></script>
 	#end
 	#end
 #end
 
 #foreach( $style in $content.getStylePaths() )
-	<link rel="stylesheet" type="text/css" href="#if(!$style.startsWith("http"))$!cdn$siteroot#end$style" />
+	<link rel="stylesheet" type="text/css" href="#if(!$style.startsWith("http"))$siteroot#end$style" />
 #end
