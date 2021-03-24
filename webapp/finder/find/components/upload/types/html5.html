@@ -1,4 +1,5 @@
-#set( $root = "$home$componenthome/upload/types/html5")
+#set( $cdn = $mediaarchive.getCatalogSettingValue("cdn_prefix"))
+#set( $root = "$!cdn$home$componenthome/upload/types/html5")
 #set( $nodeID = $context.getRequestParameter("nodeID") )
 
 #set($collectionid = $context.getRequestParameter("collectionid"))
@@ -29,6 +30,8 @@ $context.putPageValue("librarycol",$librarycol)
 
 <form id="uploaddata" name="wizard" onSubmit="return false;"
 				    action="$root/finish.html" class="force-validate-inputs"  >
+
+
 
 <div class="container-fluid">
 <div class="row">
@@ -137,10 +140,22 @@ $context.putPageValue("librarycol",$librarycol)
 	</div>
 </div>
 </div>
+<input type="hidden" name="" id="entermediakey" value="" />
 </form>
 
 <script>
 $(document).ready(function() { 
+	lQuery("#startbutton").livequery('click',function(e) {
+		var entermediakey = localStorage.getItem('entermedia.key');
+		console.log("Before: "+entermediakey);
+		if (entermediakey!=null) {
+			$("#entermediakey").val(entermediakey);
+			$("#entermediakey").prop("name","entermedia.key");
+			console.log(entermediakey);
+		}
+	    });
+	
+	
 	$("#upload_field").val('');
 	var allfiles = new Array();
 	$("#up-files-list").empty();

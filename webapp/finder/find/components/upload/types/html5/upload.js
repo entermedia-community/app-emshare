@@ -89,6 +89,13 @@ $(document).ready(function()
 	lQuery("#startbutton").livequery('click',function(e) 
     {
     	e.preventDefault(); 
+    	
+    	var entermediakey = localStorage.getItem('entermedia.key');
+		if (entermediakey!=null) {
+			$("#entermediakey").val(entermediakey);
+			$("#entermediakey").prop("name","entermedia.key");
+		}
+		
     	if ($(this).prop("disabled")) {
     		return;
     	}
