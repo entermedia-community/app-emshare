@@ -27,8 +27,8 @@ $context.putPageValue("librarycol",$librarycol)
 <input id="upload_folder" type="file" style="position:absolute; top:-2000px;" webkitdirectory multiple="multiple"  />
 
 
-<form id="uploaddata" name="wizard" onSubmit="return false;"
-				    action="$root/finish.html" class="force-validate-inputs"  >
+<form id="uploaddata" name="wizard" onSubmit="return false;" 
+		data-finishaction="" action="$root/finish.html" class="force-validate-inputs"  >
 
 <div class="container-fluid">
 <div class="row">
@@ -127,7 +127,8 @@ $context.putPageValue("librarycol",$librarycol)
 					
 					<div id="uploadinstructionsafter" style="display: none">
 			   			<a class="btn btn-primary btn-lg" id="startbutton" data-complete="[[Upload]]"  href="#">[[Upload]]</a>
-						<a id="viewassetsbtn" class="autoclick btn btn-sm btn-primary" disabled href ="#" data-customviewupload="$!customviewupload"> [[View Uploads]]</a>	 
+						<a id="viewassetsbtn" style="display:none;" class="autoclick btn btn-sm btn-primary" disabled href ="#" 
+							data-targetdiv="searchlayout" data-customviewupload="$!customviewupload"> [[View Uploads]]</a>	 
 			  		</div>
 					
 			</div>
@@ -159,6 +160,10 @@ $(document).ready(function() {
 
 	$("#viewassetsbtn").click(function(e) {
 		e.preventDefault();
+		
+		var btn = jQuery(this);
+	    var options = btn.data();
+
 		var collectionid = $("#currentcollection").val();
 		var nodeid = $("#nodeid").val();
 	    var href = null;
@@ -181,21 +186,31 @@ $(document).ready(function() {
 		    	{
 		    		href = href + "&nodeID=" + nodeid;
 		    	}
+	    	options.oemaxlevel = 2;	
 	    }
 	    else if(collectionid) {
 	    	href = "$siteroot$apphome/views/modules/librarycollection/media/" + collectionid + "/index.html?sortby=assetaddeddateDown";
 	    	if( nodeid)	{
 	    		href = href + "&nodeID=" + nodeid;
 	    	}
+	    	options.oemaxlevel = 3;	
 	    }
 	    else if( nodeid) {
 	         href = "$siteroot$apphome/views/modules/asset/showcategory.html?sortby=assetaddeddateDown&nodeID=" + nodeid;;
+		    	options.oemaxlevel = 2;	
 		}
 	    else  {
 	        href = "$siteroot$apphome/views/modules/asset/index.html?sortby=assetaddeddateDown";
+	    	options.oemaxlevel = 2;	
 		}
 	    //console.log(href);
-	    document.location.href = href;
-		});
+	    //document.location.href = href;
+	    var targetdiv = btn.data("targetdiv");
+	    
+	    jQuery("#" + targetdiv).load(href,options, function() {
+			console.log("redirected");    	
+	    });
+	    
+	});
 });
 </script>

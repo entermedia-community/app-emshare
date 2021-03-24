@@ -33,9 +33,9 @@
 	$context.putPageValue("librarycol", $librarycol)
 #end
 
-#if($moduleid =="librarycollection" && $hits.size() == 0 && $mediaarchive.isCatalogSettingTrue("autopopulatecollections"))
-	$pages.include("$apphome/components/createmedia/copycategory/index.html?autorun=true", $context)
-#else
+##if($moduleid =="librarycollection" && $hits.size() == 0 && $mediaarchive.isCatalogSettingTrue("autopopulatecollections"))
+##	$pages.include("$apphome/components/createmedia/copycategory/index.html?autorun=true", $context)
+##else
 	#if ($moduleid=="modulesearch")
 		#set($resultview = $userprofile.get("mediaappresultview"))
 		#if(!$resultview)
@@ -50,7 +50,15 @@
 			#set($resultview = $content.get("resultview"))
 		#end
 		#if(!$resultview)
-			#set($resultview = "table")
+			#set($resultview = "stackedgallery")
+		#end
+	#elseif($moduleid=="librarycollection")
+		#set($resultview = $userprofile.get("resultview"))
+		#if(!$resultview)
+			#set($resultview = $content.get("resultview"))
+		#end
+		#if(!$resultview)
+			#set($resultview = "stackedgallery")
 		#end
 	#else
 		#set($resultview = $userprofile.get("resultview$moduleid"))
@@ -109,4 +117,4 @@
 				$pages.include("$componenthome/results/gallery.html", $context)
 			#end
 	</div>
-#end
+##end

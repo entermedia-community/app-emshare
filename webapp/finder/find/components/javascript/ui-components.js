@@ -21,6 +21,8 @@ uiload = function() {
 	
 	var app = jQuery("#application");
 	var apphome = app.data("siteroot") + app.data("apphome");
+	var themeprefix = app.data("siteroot") + app.data("themeprefix");
+	
 
 	resizecolumns()
 	
