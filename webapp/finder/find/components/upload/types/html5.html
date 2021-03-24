@@ -1,5 +1,4 @@
-#set( $cdn = $mediaarchive.getCatalogSettingValue("cdn_prefix"))
-#set( $root = "$!cdn$home$componenthome/upload/types/html5")
+#set( $root = "$siteroot$componenthome/upload/types/html5")
 #set( $nodeID = $context.getRequestParameter("nodeID") )
 
 #set($collectionid = $context.getRequestParameter("collectionid"))
@@ -30,8 +29,6 @@ $context.putPageValue("librarycol",$librarycol)
 
 <form id="uploaddata" name="wizard" onSubmit="return false;"
 				    action="$root/finish.html" class="force-validate-inputs"  >
-
-
 
 <div class="container-fluid">
 <div class="row">
@@ -105,7 +102,7 @@ $context.putPageValue("librarycol",$librarycol)
 		    <div  class="ui-widget-header" style="font-size:.9em;">[[Add More Details]]
 		    	#if( $caneditmetadatasetup )
 		    	<span class="widget-header-edit">
-				 <a  href="$home$apphome/views/settings/modules/asset/metadata/views/index.html?viewid=multipleupload&viewpath=asset/multipleupload" title="[[Edit]]"><i class="fas fa-cog"></i></a>
+				 <a  href="$siteroot$apphome/views/settings/modules/asset/metadata/views/index.html?viewid=multipleupload&viewpath=asset/multipleupload" title="[[Edit]]"><i class="fas fa-cog"></i></a>
 				</span>
 				#end
 		    </div>
@@ -186,16 +183,16 @@ $(document).ready(function() {
 		    	}
 	    }
 	    else if(collectionid) {
-	    	href = "$home$apphome/views/modules/librarycollection/media/" + collectionid + "/index.html?sortby=assetaddeddateDown";
+	    	href = "$siteroot$apphome/views/modules/librarycollection/media/" + collectionid + "/index.html?sortby=assetaddeddateDown";
 	    	if( nodeid)	{
 	    		href = href + "&nodeID=" + nodeid;
 	    	}
 	    }
 	    else if( nodeid) {
-	         href = "$home$apphome/views/modules/asset/showcategory.html?sortby=assetaddeddateDown&nodeID=" + nodeid;;
+	         href = "$siteroot$apphome/views/modules/asset/showcategory.html?sortby=assetaddeddateDown&nodeID=" + nodeid;;
 		}
 	    else  {
-	        href = "$home$apphome/views/modules/asset/index.html?sortby=assetaddeddateDown";
+	        href = "$siteroot$apphome/views/modules/asset/index.html?sortby=assetaddeddateDown";
 		}
 	    //console.log(href);
 	    document.location.href = href;

@@ -7,14 +7,14 @@
 	<ul class="navbar-nav  ml-auto">
 
 		#if( $user )
-			<li class="nav-item nav-first-item"><a class="emdialog" data-width="900" data-height="1900" title="[[Help Center]]" href="$home$apphome/views/modules/help/helpcenter.html">[[Help]]</a></li>
+			<li class="nav-item nav-first-item"><a class="emdialog" data-width="900" data-height="1900" title="[[Help Center]]" href="$siteroot$apphome/views/modules/help/helpcenter.html">[[Help]]</a></li>
 	    	#if( $canviewmyaccount ) 
-	   			<li class="nav-item"><a href="$home$apphome/views/myaccount/myassets/index.html">[[My Account]]</a></li>	    	
+	   			<li class="nav-item"><a href="$siteroot$apphome/views/myaccount/myassets/index.html">[[My Account]]</a></li>	    	
 	    	#end
 			 <li   class="nav-item"><a href="https://entermediadb.org/app/workspaces/index.html">[[My Workspaces]]</a></li>
-	    	<li   class="nav-item"><a href="$home$apphome/authentication/logout.html">[[Logout]]</a></li> 
+	    	<li   class="nav-item"><a href="$siteroot$apphome/authentication/logout.html">[[Logout]]</a></li> 
 	    #else 
-	    	<li class="nav-item nav-first-item"><a href="$home$apphome/authentication/login.html" class="first">[[Login]]</a></li> 
+	    	<li class="nav-item nav-first-item"><a href="$siteroot$apphome/authentication/login.html" class="first">[[Login]]</a></li> 
 	    #end
 	    #if($user)
 		#set( $localesearcher = $mediaarchive.getSearcher("locale") )
@@ -29,7 +29,7 @@
 			#set( $localesearcher = $mediaarchive.getSearcher("locale") )
 			#set( $languages = $localesearcher.query().match("enabled", "true").search($context) )
 			#foreach( $lang in $languages)
-				#set($langurl = "$home$apphome/components/languages/changelanguage.html?newlang=locale_$lang.id&origURL=$context.getPathUrl()")
+				#set($langurl = "$siteroot$apphome/components/languages/changelanguage.html?newlang=locale_$lang.id&origURL=$context.getPathUrl()")
 				 <a class="dropdown-item" href="#urlescape($langurl)">$lang </a>
 			#end
 	    </div> 
@@ -37,8 +37,8 @@
 		#end	
 		
 	    #if($canviewsettings)
-	   	<li><a href="$home$apphome/views/dashboard/index.html" >[[Dashboard]]</a></li> 
-	   	<li><a #if ( $module ) href="$home$apphome/views/settings/modules/$module.id/index.html" #else href="$home$apphome/views/settings/index.html" #end>[[Settings]]</a></li> 
+	   	<li><a href="$siteroot$apphome/views/dashboard/index.html" >[[Dashboard]]</a></li> 
+	   	<li><a #if ( $module ) href="$siteroot$apphome/views/settings/modules/$module.id/index.html" #else href="$siteroot$apphome/views/settings/index.html" #end>[[Settings]]</a></li> 
 	    #end 
 	</ul>
  </div>
@@ -76,8 +76,8 @@
 	style="#if($sidebarcomponent && $sidebarwidth) margin-left:${sidebarwidth}px;#end">
 	
 	<div class="logocontainer">
-		<a class="emlogo" href="$home$apphome/index.html" title="[[EnterMedia Insights]]">
-			<span><img src="$home$themeprefix/images/emfinder.png" alt="[[EnterMedia Insights]]" /></span>
+		<a class="emlogo" href="$siteroot$apphome/index.html" title="[[EnterMedia Insights]]">
+			<span><img src="$siteroot$themeprefix/images/emfinder.png" alt="[[EnterMedia Insights]]" /></span>
 		</a>
 	</div>
 		

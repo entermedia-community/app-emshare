@@ -376,7 +376,7 @@ uiload = function() {
 
 				if (form.hasClass("showwaiting")) {
 					var app = $("#application");
-					var apphome = app.data("home") + app.data("apphome");
+					var apphome = app.data("siteroot") + app.data("apphome");
 					$("#" + targetdiv).html(
 							'<img src="' + apphome
 									+ '/theme/images/ajax-loader.gif">');
@@ -2102,7 +2102,7 @@ uiload = function() {
 	        var args = {oemaxlevel:1,hitssessionid:table.data("hitssessionid"),origURL:table.data("origURL"),catalogid:table.data("catalogid"),searchtype:table.data("searchtype")};
 	        var column = $(this);
 	        var fieldid = column.data("fieldid");
-			var apphome = app.data("home") + app.data("apphome");
+			var apphome = app.data("siteroot") + app.data("apphome");
 	
 	        if ( column.hasClass('currentsort') ) 
 	        {

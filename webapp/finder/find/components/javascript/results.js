@@ -1,8 +1,8 @@
 $(document).ready(function(url,params) 
 { 
 	var appdiv = $('#application');
-	var home = appdiv.data('home') + appdiv.data('apphome');
-	var componenthome = appdiv.data('home') + appdiv.data('componenthome');
+	var home = appdiv.data('siteroot') + appdiv.data('apphome');
+	var componenthome = appdiv.data('siteroot') + appdiv.data('componenthome');
 
 	var refreshdiv = function(url,params)
 	{

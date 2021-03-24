@@ -53,7 +53,7 @@
 
 		## #if ( $module.getId() =="asset" && $librarycol.getId() )
 		##		<li class="nav-item">
-		##			<a class="nav-link nav-hover" href="$home$apphome/views/modules/librarycollection/media/index.html?collectionid=${librarycol.getId()}#if($nodeID)&nodeID=$nodeID#end" title="[[Open Collection]] $librarycol"><i class="fa fa-folder-open"></i> [[Open Collection]]</a>
+		##			<a class="nav-link nav-hover" href="$siteroot$apphome/views/modules/librarycollection/media/index.html?collectionid=${librarycol.getId()}#if($nodeID)&nodeID=$nodeID#end" title="[[Open Collection]] $librarycol"><i class="fa fa-folder-open"></i> [[Open Collection]]</a>
 		##		</li>				
 		## #end
 		#if ($resultview != "map")
@@ -66,18 +66,18 @@
 					<div class="dropdown-menu" aria-labelledby="navbarShareDropdown">
 				#if($canpublish || $canemaillink )				
 						#if( $canemaillink )
-							<a class="dropdown-item emdialog" data-hidefooter="true" href="$home$apphome/views/modules/asset/activity/emailassets.html?hitssessionid=$!hits.getSessionId()" >[[Email Assets]]</a>
+							<a class="dropdown-item emdialog" data-hidefooter="true" href="$siteroot$apphome/views/modules/asset/activity/emailassets.html?hitssessionid=$!hits.getSessionId()" >[[Email Assets]]</a>
 						#end
 						#if( $canpublish)
-							<a  class="dropdown-item emdialog" data-hidefooter="true" href="$home$apphome/views/modules/asset/activity/publishassets.html?hitssessionid=$!hits.getSessionId()" >[[Publish Assets to Server]]</a>
+							<a  class="dropdown-item emdialog" data-hidefooter="true" href="$siteroot$apphome/views/modules/asset/activity/publishassets.html?hitssessionid=$!hits.getSessionId()" >[[Publish Assets to Server]]</a>
 						#end
 						#if( $canquickgallery)
-							<a  class="dropdown-item emdialog" data-hidefooter="true" href="$home$apphome/views/modules/asset/activity/creategallerycollection.html?hitssessionid=$!hits.getSessionId()" >[[Create a shareable gallery]]</a>
+							<a  class="dropdown-item emdialog" data-hidefooter="true" href="$siteroot$apphome/views/modules/asset/activity/creategallerycollection.html?hitssessionid=$!hits.getSessionId()" >[[Create a shareable gallery]]</a>
 						#end
 				#end
 				#if($canexportdata)
-					<a class="dropdown-item" href="$home$apphome/views/modules/asset/export/download/export_asset.csv?hitssessionid=$hits.sessionId&searchtype=asset">[[Export results]]</a>
-					<a class="dropdown-item" href="$home$apphome/views/modules/asset/export/download/export_asset.csv?hitssessionid=$hits.sessionId&friendly=true&searchtype=asset&view=asset/resultstable">[[Export results (friendly)]]</a>
+					<a class="dropdown-item" href="$siteroot$apphome/views/modules/asset/export/download/export_asset.csv?hitssessionid=$hits.sessionId&searchtype=asset">[[Export results]]</a>
+					<a class="dropdown-item" href="$siteroot$apphome/views/modules/asset/export/download/export_asset.csv?hitssessionid=$hits.sessionId&friendly=true&searchtype=asset&view=asset/resultstable">[[Export results (friendly)]]</a>
 				#end		
 					</div>
 				</li>
@@ -89,7 +89,7 @@
 				<a class="nav-link" href="#" id="navbarPublishDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">[[Publish]]</a>
 					<div class="dropdown-menu" aria-labelledby="navbarPublishDropdown">
 						#foreach($item in $quickpublishlist)
-							<a class="dropdown-item" href="$home$apphome/views/modules/asset/activity/publish/quickpublish.html?hitssessionid=$!hits.getSessionId()&quickid=$item.id"   >$item.name</a>
+							<a class="dropdown-item" href="$siteroot$apphome/views/modules/asset/activity/publish/quickpublish.html?hitssessionid=$!hits.getSessionId()&quickid=$item.id"   >$item.name</a>
 						#end
 					</div>
 				</li>
@@ -99,7 +99,7 @@
 		
 			#if ( $cancheckout && $order)
 				<li>
-					<a class="updatebasket emdialog nav-link-cart" data-action="remove" targetdiv="basket-paint"  href="$home$apphome/views/modules/asset/activity/checkout/accept.html?orderid=${order.id}" title="[[Checkout your Cart]]">[[Checkout Cart]] <i class="fas fa-caret-right"></i></a>
+					<a class="updatebasket emdialog nav-link-cart" data-action="remove" targetdiv="basket-paint"  href="$siteroot$apphome/views/modules/asset/activity/checkout/accept.html?orderid=${order.id}" title="[[Checkout your Cart]]">[[Checkout Cart]] <i class="fas fa-caret-right"></i></a>
 				</li>				
 			#end
 		#end
@@ -125,7 +125,7 @@
 			#if( $canedittablecolumns )
 				#if( $edit )
 					<li>
-						<a class="ajax table-edit-close" targetdiv="resultsdiv" href="$home$componenthome/results/table.html?searchtype=asset&hitssessionid=$hits.getSessionId()&editheader="><i class="fas fa-times"></i></a>
+						<a class="ajax table-edit-close" targetdiv="resultsdiv" href="$siteroot$componenthome/results/table.html?searchtype=asset&hitssessionid=$hits.getSessionId()&editheader="><i class="fas fa-times"></i></a>
 					</li>								
 					<li class="resultsnavtitem" style="min-width:180px">
 							#set ($alldetails = $searcher.getUserPropertyDetails() )
@@ -136,14 +136,14 @@
 							</select>
 							<script type="text/javascript">
 								function addColumn(inId) {
-									jQuery('#resultsdiv').load("$home$componenthome/results/addremovecolumns.html?oemaxlevel=1&searchtype=asset&hitssessionid=$hits.getSessionId()&editheader=true&addcolumn=" + inId);
+									jQuery('#resultsdiv').load("$siteroot$componenthome/results/addremovecolumns.html?oemaxlevel=1&searchtype=asset&hitssessionid=$hits.getSessionId()&editheader=true&addcolumn=" + inId);
 									return false;	
 								}
 							</script>
 					</li>	
 				#else 
 					<li >
-						<a class="ajax nav-hover" id="table-editor" targetdiv="resultsdiv" href="$home$componenthome/results/table.html?searchtype=asset&hitssessionid=$hits.getSessionId()&editheader=true"> <i class="fas fa-edit"></i></a>
+						<a class="ajax nav-hover" id="table-editor" targetdiv="resultsdiv" href="$siteroot$componenthome/results/table.html?searchtype=asset&hitssessionid=$hits.getSessionId()&editheader=true"> <i class="fas fa-edit"></i></a>
 					</li>
 				#end	
 			#end								
