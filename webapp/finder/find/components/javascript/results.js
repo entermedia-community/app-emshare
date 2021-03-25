@@ -1001,33 +1001,39 @@ jQuery(document).ready(function(url,params)
             }
         }
     }
-	
+
+    
+    
+    
 });//document ready
        
 
+
 document.addEventListener('touchmove', function(e) 
-{
-	//console.log("touchmove event");
-	checkScroll();
-});
+		{
+			//console.log("touchmove event");
+			checkScroll();
+		});
 
-jQuery(window).on('scroll',function(e) 
-{
-	//console.log("scroll event *");
-	checkScroll();
-});
+		jQuery(window).on('scroll',function(e) 
+		{
+			//console.log("scroll event *");
+			checkScroll();
+		});
 
-jQuery(document).on('domchanged',function(){
-	gridResize(); //This calls checkScroll. Makes sure this is last after any actions
-});
+		jQuery(document).on('domchanged',function(){
+			gridResize(); //This calls checkScroll. Makes sure this is last after any actions
+		});
 
-jQuery(window).on('resize',function(){
-	gridResize();
-});
+		jQuery(window).on('resize',function(){
+			console.log('resized results.js');
+			gridResize();
+		});
+
 
 window.addEventListener('load', 
   function() { 
-    	gridResize();
+    	//gridResize();
   }, false);
 	    
 	    
@@ -1153,7 +1159,7 @@ checkScroll = function()
 
 gridResize = function() 
 {
-	
+	console.log("gridResize");
 	var grid = $(".masonry-grid");
 	if( grid.length == 0 )
 	{

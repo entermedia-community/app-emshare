@@ -565,65 +565,76 @@ uiload = function() {
 		{
 			history.pushState({}, null, urlbar);
 		}
-		modaldialog.load(link, options, function() {
-			if (width) {
+		
+		jQuery.ajax({
+			xhrFields: {
+                withCredentials: true
+            },
+			crossDomain: true,
+			url: link,
+			options: options,
+			success: function(data) {
+				modaldialog.html(data);
 				
-				if( width >  $(window).width() )
+				if (width) {
+					
+					if( width >  $(window).width() )
+					{
+						width =  $(window).width();
+					}
+					
+					$(".modal-lg").css("min-width", width + "px");
+				}
+				if (maxwidth) {
+					$(".modal-lg").css("max-width", maxwidth + "px");
+				}
+				// $(".modal-lg").css("min-height",height + "px" );
+				
+				var modalkeyboard = true;
+				var noesc = dialog.data("noesc");
+				if (noesc != null && noesc == true) {
+					 modalkeyboard = false;
+				}
+				var modalinstance = modaldialog.modal({
+					keyboard : modalkeyboard,
+					backdrop : true,
+					closeExisting: false,
+					"show" : true
+				});
+					
+				var firstform = $('form', modaldialog);
+				firstform.data("openedfrom", openfrom);
+				// fix submit button
+				var justok = dialog.data("cancelsubmit");
+				if (justok != null) {
+					$(".modal-footer #submitbutton", modaldialog).hide();
+				} else {
+					var id = $("form", modaldialog).attr("id");
+					$("#submitbutton", modaldialog).attr("form", id);
+				}
+				var hidetitle = dialog.data("hideheader");
+				if( hidetitle == null)
 				{
-					width =  $(window).width();
+					var title = dialog.attr("title");
+					if (title == null) {
+						title = dialog.text();
+					}
+					$(".modal-title", modaldialog).text(title);
+				}	
+				var hidefooter = dialog.data("hidefooter");
+				if (hidefooter != null) {
+					$(".modal-footer", modaldialog).hide();
 				}
-				
-				$(".modal-lg").css("min-width", width + "px");
-			}
-			if (maxwidth) {
-				$(".modal-lg").css("max-width", maxwidth + "px");
-			}
-			// $(".modal-lg").css("min-height",height + "px" );
-			
-			var modalkeyboard = true;
-			var noesc = dialog.data("noesc");
-			if (noesc != null && noesc == true) {
-				 modalkeyboard = false;
-			}
-			var modalinstance = modaldialog.modal({
-				keyboard : modalkeyboard,
-				backdrop : true,
-				closeExisting: false,
-				"show" : true
-			});
-				
-			var firstform = $('form', modaldialog);
-			firstform.data("openedfrom", openfrom);
-			// fix submit button
-			var justok = dialog.data("cancelsubmit");
-			if (justok != null) {
-				$(".modal-footer #submitbutton", modaldialog).hide();
-			} else {
-				var id = $("form", modaldialog).attr("id");
-				$("#submitbutton", modaldialog).attr("form", id);
-			}
-			var hidetitle = dialog.data("hideheader");
-			if( hidetitle == null)
-			{
-				var title = dialog.attr("title");
-				if (title == null) {
-					title = dialog.text();
+				var focuselement = dialog.data("focuson");
+	
+				if (focuselement) {
+					//console.log(focuselement);
+					var elmnt = document.getElementById(focuselement);
+					elmnt.scrollIntoView();
+				} else {
+					$('form', modaldialog).find('*').filter(
+							':input:visible:first').focus();
 				}
-				$(".modal-title", modaldialog).text(title);
-			}	
-			var hidefooter = dialog.data("hidefooter");
-			if (hidefooter != null) {
-				$(".modal-footer", modaldialog).hide();
-			}
-			var focuselement = dialog.data("focuson");
-
-			if (focuselement) {
-				//console.log(focuselement);
-				var elmnt = document.getElementById(focuselement);
-				elmnt.scrollIntoView();
-			} else {
-				$('form', modaldialog).find('*').filter(
-						':input:visible:first').focus();
 			}
 		});
 		
@@ -2003,7 +2014,7 @@ uiload = function() {
 				$(this).css('opacity','0');	
 				if (width != "undefined") {
 					saveProfileProperty("sidebarwidth",width,function(){
-						$(document).trigger("resize");
+						$(window).trigger("resize");
 					});
 				}
 				return false;
@@ -2036,7 +2047,7 @@ uiload = function() {
 				column.data("sidebarwidth",width);
 				$(".pushcontent").css("margin-left",width+"px");
 				event.preventDefault();
-				$(document).trigger("resize");
+				$(window).trigger("resize");
 				return false;
 			}	
 		});
@@ -2072,7 +2083,7 @@ uiload = function() {
 				clickspot = false;
 				if (width != "undefined") {
 					saveProfileProperty("sidebarwidth",width,function(){
-						$(document).trigger("resize");
+						$(window).trigger("resize");
 					});
 				}
 				return false;
@@ -2094,7 +2105,7 @@ uiload = function() {
 				column.data("sidebarwidth",width);
 				$(".pushcontent").css("margin-left",width+"px");
 				event.preventDefault();
-				$(document).trigger("resize");
+				$(window).trigger("resize");
 				return false;
 			}	
 		});	
@@ -2326,10 +2337,13 @@ showajaxstatus = function(uid)
 			}
 			//TODO: entermedia key or serialize
 			jQuery.ajax({
-				crossDomain: true,
-				url: path, async: false, data: {'entermedia.key':entermediakey}, success: function (data) {
+				url: path, async: false, data: {}, success: function (data) {
 					cell.replaceWith(data);
-				}
+				},
+				xhrFields: {
+	                withCredentials: true
+	            },
+				crossDomain: true
 			});
 		}	
 	}
@@ -2438,13 +2452,14 @@ var resizegallery = function() {
 	
 
 
-$(document).ready(function() {
+jQuery(document).ready(function() {
 	uiload();
 	resizecolumns();
 	resizegallery();
 });
 
-$(window).on('resize',function(){
+jQuery(window).on('resize',function(){
+	console.log('resized');
 	resizecolumns();
 	resizegallery();
 });

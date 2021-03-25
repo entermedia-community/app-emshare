@@ -65,7 +65,7 @@ var uploadid;
 	        	    }
 	        	    
 	        	 }
-	        	 console.log("Picked " + files.length );
+	        	 //console.log("Picked " + files.length );
 	        	 
 	         }
 	

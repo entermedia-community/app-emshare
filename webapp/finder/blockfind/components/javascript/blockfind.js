@@ -10,7 +10,8 @@ jQuery(document).ready(function(){
 		modal.css("height", visibleHeight + "px");
 		modal.css("width", visibleWidth + "px");
 		modal.show();
-		$(document).trigger("resize");
+		
+		
 	}
 	
 	loaddialog = function(href) {
@@ -18,11 +19,16 @@ jQuery(document).ready(function(){
 		if( modal.length == 0 )
 		{
 			jQuery.ajax({
-				crossDomain: true,
 				url: href, async: false, data: {}, success: function (data) {
 					jQuery('body').prepend(data);
 					showdialog();
-				}
+				},
+				type: "POST",
+				dataType: 'text',
+				xhrFields: {
+	                withCredentials: true
+	            },
+				crossDomain: true
 			});
 			return;
 		}
@@ -31,12 +37,17 @@ jQuery(document).ready(function(){
 			options.oemaxlayout = "1";
 			
 			jQuery.ajax({
-				crossDomain: true,
 				url: href, async: false, data: options, success: function (data) {
 					jQuery('#application').replaceWith(data);
 					showdialog();
 					
-				}
+				},
+				type: "POST",
+				dataType: 'text',
+				xhrFields: {
+	                withCredentials: true
+	            },
+				crossDomain: true
 			});
 		}
 	}
