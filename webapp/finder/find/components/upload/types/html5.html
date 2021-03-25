@@ -128,7 +128,7 @@ $context.putPageValue("librarycol",$librarycol)
 					<div id="uploadinstructionsafter" style="display: none">
 			   			<a class="btn btn-primary btn-lg" id="startbutton" data-complete="[[Upload]]"  href="#">[[Upload]]</a>
 						<a id="viewassetsbtn" style="display:none;" class="autoclick btn btn-sm btn-primary" disabled href ="#" 
-							data-targetdiv="searchlayout" data-customviewupload="$!customviewupload"> [[View Uploads]]</a>	 
+							data-targetdiv="application" data-oemaxlayout="1" data-customviewupload="$!customviewupload"> [[View Uploads]]</a>	 
 			  		</div>
 					
 			</div>
@@ -142,38 +142,35 @@ $context.putPageValue("librarycol",$librarycol)
 </form>
 
 <script>
-$(document).ready(function() { 
-	lQuery("#startbutton").livequery('click',function(e) {
-		var entermediakey = localStorage.getItem('entermedia.key');
-		console.log("Before: "+entermediakey);
-		if (entermediakey!=null) {
-			$("#entermediakey").val(entermediakey);
-			$("#entermediakey").prop("name","entermedia.key");
-			console.log(entermediakey);
-		}
-	    });
+$(document).ready(function() {
+	var entermediakey = jQuery("#application").data("entermediakey");
+	if (entermediakey!=null) {
+		$("#entermediakey").val(entermediakey);
+		$("#entermediakey").prop("name","entermedia.key");
+	}
 	
-	
-	$("#upload_field").val('');
+	jQuery("#upload_field").val('');
 	var allfiles = new Array();
-	$("#up-files-list").empty();
+	jQuery("#up-files-list").empty();
 
-	$("#viewassetsbtn").click(function(e) {
+	jQuery("#viewassetsbtn").click(function(e) {
 		e.preventDefault();
 		
 		var btn = jQuery(this);
+	    if (entermediakey != null) {
+	    	btn.attr('data-entermedia.key', entermediakey);
+	    }
 	    var options = btn.data();
-
-		var collectionid = $("#currentcollection").val();
+		var collectionid = jQuery("#currentcollection").val();
 		var nodeid = $("#nodeid").val();
 	    var href = null;
 	    var customviewupload = $(this).data("customviewupload");
 	    if (!customviewupload) {
-	    	#set($customviewupload = $content.viewupload)
+	    	#set($customviewupload = $content.redirectviewupload)
 	    	customviewupload = "$!customviewupload";
 	    }
 	    if(customviewupload) {
-	    		href= customviewupload;
+	    		href= "$siteroot"+customviewupload;
 	    		if (collectionid) {
 	    			if (href.indexOf("?") > -1) {
 	    				href = href + "&collectionid=" + collectionid;
@@ -186,8 +183,7 @@ $(document).ready(function() {
 		    	{
 		    		href = href + "&nodeID=" + nodeid;
 		    	}
-	    	options.oemaxlevel = 2;	
-	    }
+	    	}
 	    else if(collectionid) {
 	    	href = "$siteroot$apphome/views/modules/librarycollection/media/" + collectionid + "/index.html?sortby=assetaddeddateDown";
 	    	if( nodeid)	{
@@ -206,10 +202,12 @@ $(document).ready(function() {
 	    //console.log(href);
 	    //document.location.href = href;
 	    var targetdiv = btn.data("targetdiv");
-	    
-	    jQuery("#" + targetdiv).load(href,options, function() {
-			console.log("redirected");    	
-	    });
+
+		jQuery.ajax({
+			url: href, async: false, data: options, success: function (data) {
+				jQuery('#'+targetdiv).replaceWith(data);
+			}
+		});
 	    
 	});
 });

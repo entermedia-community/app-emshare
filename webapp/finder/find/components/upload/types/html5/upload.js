@@ -73,7 +73,7 @@ var uploadid;
 $(document).ready(function() 
 {	
 	
-	home = $("#application").data("home") + $("#application").data("apphome"); 
+	siteroot = $("#application").data("siteroot") + $("#application").data("apphome"); 
 	lQuery('#filePicker').livequery('click',function(e){
 		e.preventDefault(); 
 		$('#upload_field').trigger('click');
@@ -89,13 +89,7 @@ $(document).ready(function()
 	lQuery("#startbutton").livequery('click',function(e) 
     {
     	e.preventDefault(); 
-    	
-    	var entermediakey = localStorage.getItem('entermedia.key');
-		if (entermediakey!=null) {
-			$("#entermediakey").val(entermediakey);
-			$("#entermediakey").prop("name","entermedia.key");
-		}
-		
+    		
     	if ($(this).prop("disabled")) {
     		return;
     	}
@@ -291,7 +285,7 @@ $(document).ready(function()
 		var input = $("#uploaddescription");
 		var inputtext = input.val();
 		var targetdiv = input.data("targetdiv");
-		var targeturl = home+"/collective/channel/addnewlink.html";
+		var targeturl = siteroot+"/collective/channel/addnewlink.html";
 		delay(function () {
 			var p = /(https:\/\/www\.(yotu\.be\/|youtube\.com)\/)(?:(?:.+\/)?(?:watch(?:\?v=|.+&v=))?(?:v=)?)([\w_-]{11})(&\.+)?/;
 		    if(inputtext.match(p)){

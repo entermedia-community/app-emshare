@@ -37,12 +37,12 @@ $context.putPageValue("thumbsize", $thumbsize)
 	#elseif( $hit.previewstatus && $hit.previewstatus == "mime")
 		#set ($mime = $mediaarchive.getMimeTypeIcon($hit.fileformat))
 		#set( $thumbpath =  "$themeprefix/images/mimetypes/${mime}.png" )
-		<img class="mimethumb" style="height:64px" src="$!cdn$siteroot$thumbpath$!urlparams" border="0"/>
+		<img class="mimethumb" style="height:64px" src="$siteroot$thumbpath$!urlparams" border="0"/>
 	#else	
 	
 	
 		#if($useoriginal)
-			#set($tpath = "$cdnprefix$siteroot/$mediadbappid/services/module/asset/downloads/originals/"+$mediaarchive.asLinkToOriginal($hit))
+			#set($tpath = "$siteroot/$mediadbappid/services/module/asset/downloads/originals/"+$mediaarchive.asLinkToOriginal($hit))
 		#else
 			#set($tpath = $mediaarchive.asLinkToPreview($hit, $librarycol.id, $imagesize, true))
 		#end

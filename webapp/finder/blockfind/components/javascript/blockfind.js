@@ -10,6 +10,7 @@ jQuery(document).ready(function(){
 		modal.css("height", visibleHeight + "px");
 		modal.css("width", visibleWidth + "px");
 		modal.show();
+		$(document).trigger("resize");
 	}
 	
 	loaddialog = function(href) {
@@ -34,6 +35,7 @@ jQuery(document).ready(function(){
 				url: href, async: false, data: options, success: function (data) {
 					jQuery('#application').replaceWith(data);
 					showdialog();
+					
 				}
 			});
 		}

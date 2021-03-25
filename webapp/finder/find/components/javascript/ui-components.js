@@ -2319,9 +2319,16 @@ showajaxstatus = function(uid)
 		//console.log("Loading " + path );
 		if( path && path.length > 1)
 		{
-			jQuery.get(path,  function(data) 
-			{
-				cell.replaceWith(data); //jQuery will reinit this class
+			var entermediakey = '';
+			if (app && app.data('entermediakey') != null) {
+				entermediakey = app.data('entermediakey');
+			}
+			//TODO: entermedia key or serialize
+			jQuery.ajax({
+				crossDomain: true,
+				url: path, async: false, data: {'entermedia.key':entermediakey}, success: function (data) {
+					cell.replaceWith(data);
+				}
 			});
 		}	
 	}
