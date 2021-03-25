@@ -104,15 +104,16 @@ jQuery(document).ready(function()
         	$(this).emgrid();
         } );
 	});
+
+	jQuery(window).on('resize',function(){
+		//var thegrid = $('.emgrid');
+		//thegrid.emgrid();
+		jQuery( ".emgrid" ).each(function(){
+			jQuery(this).emgrid();
+	    } );
+
+	});
+
 	
-});
-
-jQuery(window).on('resize',function(){
-	//var thegrid = $('.emgrid');
-	//thegrid.emgrid();
-	jQuery( ".emgrid" ).each(function(){
-		jQuery(this).emgrid();
-    } );
-
 });
 
