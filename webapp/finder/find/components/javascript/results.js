@@ -988,8 +988,6 @@ jQuery(document).ready(function(url,params)
         }
     );
     
-    gridResize();
-    
 	var hidemediaviewer = $("body").data("hidemediaviewer");
     if (!hidemediaviewer) {
         var hash = window.location.hash;
@@ -1004,8 +1002,9 @@ jQuery(document).ready(function(url,params)
 
     
     
+    gridResize();
     
-});//document ready
+
        
 
 
@@ -1020,23 +1019,19 @@ document.addEventListener('touchmove', function(e)
 			//console.log("scroll event *");
 			checkScroll();
 		});
-
+		//Deprecated?
 		jQuery(document).on('domchanged',function(){
+			console.log('domchanged');
 			gridResize(); //This calls checkScroll. Makes sure this is last after any actions
 		});
 
 		jQuery(window).on('resize',function(){
-			console.log('resized results.js');
-			gridResize();
+			//gridResize();
 		});
 
 
-window.addEventListener('load', 
-  function() { 
-    	//gridResize();
-  }, false);
 	    
-	    
+});//document ready   
 	    
 
 //TODO: remove this. using ajax Used for modules
@@ -1057,10 +1052,9 @@ togglehits =  function(action)
 }
 var stopautoscroll = false;
 
-checkScroll = function()
-{
-	var grid = $(".masonry-grid");
+checkScroll = function() {
 	
+	var grid = $(".masonry-grid");
 	if (grid.data("singlepage")==true) {
 		return;
 	}
@@ -1143,8 +1137,8 @@ checkScroll = function()
 			   var code = $(".masonry-grid",jdata).html();
 			   $(".masonry-grid",resultsdiv).append(code);
 			   //$(resultsdiv).append(code);
-			   //gridResize();
-			   $(document).trigger("domchanged");
+			   gridResize();
+			   //$(document).trigger("resize"); //LOOP!
 			   stopautoscroll = false; 
 			   //Once that is all done loading we can see if we need a second page?
 		   	   //console.log( page + " Loaded get some more?" + getOverlay().is(':hidden') );
