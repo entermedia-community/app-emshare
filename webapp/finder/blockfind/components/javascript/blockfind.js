@@ -1,6 +1,6 @@
 jQuery(document).ready(function(){
 
-	var href,emkey,inputname,loadedurl;
+	var href,emkey,inputname,loadedurl,collectionid;
 	
 	
 	showdialog = function(){
@@ -59,7 +59,8 @@ jQuery(document).ready(function(){
 		var clicked = $(this);
 		href = clicked.data("emhref");
 		emkey = clicked.data("emkey");
-		href = href + "?entermedia.key="+emkey;
+		collectionid = clicked.data("collectionid");
+		href = href + "?entermediacloudkey="+emkey + "&collectionid=" + collectionid;
 		inputname = clicked.data('inputidupload');
 		
 		loaddialog(href);
