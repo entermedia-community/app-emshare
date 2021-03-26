@@ -17,8 +17,8 @@ uiload = function() {
 	
 	// https://github.com/select2/select2/issues/600
 	//$.fn.select2.defaults.set("theme", "bootstrap4");
-	$.fn.modal.Constructor.prototype._enforceFocus = function() {
-	}; // Select2 on Modals
+	//$.fn.modal.Constructor.prototype._enforceFocus = function() {
+	//}; // Select2 on Modals
 	
 	var app = jQuery("#application");
 	var apphome = app.data("siteroot") + app.data("apphome");
@@ -1970,7 +1970,7 @@ uiload = function() {
 		}
 	});
 	
-	$('[data-toggle="tooltipb"]').tooltip();
+	//$('[data-toggle="tooltipb"]').tooltip();
 	
 	
 	//Sidebar Custom Width
@@ -2462,6 +2462,7 @@ jQuery(window).on('resize',function(){
 	console.log('resized');
 	resizecolumns();
 	resizegallery();
+	
 });
 
 
