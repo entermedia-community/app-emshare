@@ -1029,7 +1029,11 @@ document.addEventListener('touchmove', function(e)
 			//gridResize();
 		});
 
-
+//		jQuery(".masonry-grid img.imagethumb:eq(10)").on('load',  function() { 
+			
+			   // gridResize();
+			
+	//	});
 	    
 });//document ready   
 	    

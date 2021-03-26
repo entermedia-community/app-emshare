@@ -11,6 +11,8 @@ jQuery(document).ready(function(){
 		modal.css("width", visibleWidth + "px");
 		modal.show();
 		
+		//this is launched early
+		 gridResize();
 		
 	}
 	
