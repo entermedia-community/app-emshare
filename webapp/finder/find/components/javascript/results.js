@@ -6,10 +6,15 @@ jQuery(document).ready(function(url,params)
 
 	var refreshdiv = function(url,params)
 	{
-		$.get(url, params, function(data) 
-		{
-			jQuery("#resultsheader").replaceWith(data);
-		});	
+		jQuery.ajax({
+			url: url, async: false, data: params, success: function (data) {
+				jQuery("#resultsheader").replaceWith(data);
+			},
+			xhrFields: {
+                withCredentials: true
+            },
+			crossDomain: true
+		});
 	}
 		
 	lQuery("select#selectresultview").livequery( function()
@@ -1008,27 +1013,9 @@ jQuery(document).ready(function(url,params)
        
 
 
-document.addEventListener('touchmove', function(e) 
-		{
-			//console.log("touchmove event");
-			checkScroll();
-		});
 
-		jQuery(window).on('scroll',function(e) 
-		{
-			//console.log("scroll event *");
-			checkScroll();
-		});
-		//Deprecated?
-		jQuery(document).on('domchanged',function(){
-			console.log('domchanged');
-			gridResize(); //This calls checkScroll. Makes sure this is last after any actions
-		});
 
-		jQuery(window).on('resize',function(){
-			//gridResize();
-		});
-
+	
 //		jQuery(".masonry-grid img.imagethumb:eq(10)").on('load',  function() { 
 			
 			   // gridResize();
@@ -1036,6 +1023,28 @@ document.addEventListener('touchmove', function(e)
 	//	});
 	    
 });//document ready   
+
+document.addEventListener('touchmove', function(e) 
+{
+	//console.log("touchmove event");
+	checkScroll();
+});
+
+jQuery(window).on('scroll',function(e) 
+{
+	//console.log("scroll event *");
+	checkScroll();
+});
+//Deprecated?
+jQuery(document).on('domchanged',function(){
+	console.log('domchanged');
+	gridResize(); //This calls checkScroll. Makes sure this is last after any actions
+});
+jQuery(window).on('resize',function(){
+	console.log("resize from results.js");
+	gridResize();
+});
+
 	    
 
 //TODO: remove this. using ajax Used for modules
@@ -1157,11 +1166,12 @@ checkScroll = function() {
 
 gridResize = function() 
 {
-	//console.log("gridResize");
 	var grid = $(".masonry-grid");
+	
+	console.log("gridResize width:"+grid.width());
+	//debugger;
 	if( grid.length == 0 )
 	{
-		//console.log("No grid");
 		return;
 	}
 	
@@ -1230,8 +1240,6 @@ gridResize = function()
 	}
 	
 	checkScroll();
-	
-	
 }
 
 /**
@@ -1271,7 +1279,8 @@ trimRowToFit = function(targetheight,row,totalavailablew)
 		neww = Math.round(neww);//make sure we dont round too high across lots of widths
 		div.css("width",neww + "px");
 		
-		totalwused = totalwused + neww;		
+		totalwused = totalwused + neww;
+		
 	});
 	
 	if( totalwused != totalavailablew && fixedheight != targetheight) //Deal with fraction of a pixel
@@ -1285,6 +1294,7 @@ trimRowToFit = function(targetheight,row,totalavailablew)
 			div.css("width",w + "px");
 		}
 	}
+	
 	return fixedheight;
 			
 }

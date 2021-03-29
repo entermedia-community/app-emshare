@@ -9,12 +9,13 @@ jQuery(document).ready(function(){
 		var visibleWidth = $(window).width();
 		modal.css("height", visibleHeight + "px");
 		modal.css("width", visibleWidth + "px");
-		modal.show();
-		
-		//this is launched early
-		 gridResize();
-		
+		modal.show("fast", function(){
+			console.log("Opening... "+ $(this).width());
+			jQuery(window).trigger("resize");
+		});
 	}
+	
+
 	
 	loaddialog = function(href) {
 		var modal = $("#blockfindoverlay");
@@ -78,6 +79,11 @@ jQuery(document).ready(function(){
 		jQuery("#blockfindoverlay").hide();
 	});
 
+});
+
+jQuery("#blockfindoverlay").on("show", function(e){
+	console.log("show"+$(this).width);
+	gridResize();
 });
 
 

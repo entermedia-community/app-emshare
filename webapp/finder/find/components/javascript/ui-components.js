@@ -1906,37 +1906,42 @@ uiload = function() {
 	lQuery('.sidebar-toggler').livequery("click", function(e) {
 		e.preventDefault();
 		var toggler = $(this);
-		var data = toggler.data();
+		var options = toggler.data();
 		
 		var targetdiv = toggler.data('targetdiv');
 		var sidebar = toggler.data('sidebar');
-		data["propertyfield"] = "sidebarcomponent";
+		options["propertyfield"] = "sidebarcomponent";
 
 		//console.log(data.modulesearchhitssessionid);
 		
 		if (toggler.data('action') == 'hide') {
 			//hide sidebar
-			data["sidebarcomponent.value"] = "";
+			options["sidebarcomponent.value"] = "";
 			var url = apphome + '/components/sidebars/index.html';
-			$.get(url, data, function(data) 
-			{
-				var cell = findclosest(toggler,"#" + targetdiv); 
-				cell.replaceWith(data); //Cant get a valid dom element
-	        	$(".pushcontent").removeClass('pushcontent-'+sidebar);
-	        	$(".pushcontent").removeClass('pushcontent-open');
-				$(".pushcontent").addClass('pushcontent-fullwidth');
-				//$(".pushcontent").css("margin-left","");
-				$(window).trigger("resize");
-			}
-			);
+
+			jQuery.ajax({
+				url: url, async: false, data: options, success: function (data) {
+					var cell = findclosest(toggler,"#" + targetdiv); 
+					cell.replaceWith(data); //Cant get a valid dom element
+		        	$(".pushcontent").removeClass('pushcontent-'+sidebar);
+		        	$(".pushcontent").removeClass('pushcontent-open');
+					$(".pushcontent").addClass('pushcontent-fullwidth');
+					//$(".pushcontent").css("margin-left","");
+					$(window).trigger("resize");
+				},
+				xhrFields: {
+	                withCredentials: true
+	            },
+				crossDomain: true
+			});
 
 		}
 		else {
 			//showsidebar
-			data["sidebarcomponent.value"] = sidebar;
+			options["sidebarcomponent.value"] = sidebar;
 			var url = apphome + '/components/sidebars/index.html';
-			$.get(url, data, function(data) 
-				{
+			jQuery.ajax({
+				url: url, async: false, data: options, success: function (data) {
 					var cell = findclosest(toggler,"#" + targetdiv); 
 					cell.replaceWith(data); //Cant get a valid dom element
 					$(".pushcontent").removeClass('pushcontent-fullwidth');
@@ -1944,8 +1949,12 @@ uiload = function() {
 					//$(".pushcontent").css("margin-left","");
 					$(".pushcontent").addClass('pushcontent-'+sidebar);
 					$(window).trigger("resize");
-		        }
-			);
+				},
+				xhrFields: {
+	                withCredentials: true
+	            },
+				crossDomain: true
+			});
 		}
 		
 	});
@@ -2459,10 +2468,8 @@ jQuery(document).ready(function() {
 });
 
 jQuery(window).on('resize',function(){
-	console.log('resized');
 	resizecolumns();
 	resizegallery();
-	
 });
 
 

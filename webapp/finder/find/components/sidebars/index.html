@@ -120,11 +120,6 @@
 	</div>
 
 </div>
-#set( $sidebarwidth = $userprofile.get("sidebarwidth"))
-<div class="col-mainsidebar #if($sidebarwidth && $sidebarwidth>320)sidebarwide #end"   
-	 style="top: 24px; #if($sidebarwidth) width:${sidebarwidth}px;#end"
-	 data-sidebarwidth="$!sidebarwidth">
-
 #if($sidebarcomponent)
 	#if($sidebarcomponent == "libraries" )
 		#set($sidebarurl = "$apphome/components/sidebars/libraries/index.html")
@@ -153,7 +148,7 @@
 		#end
 	#end
 	
-	#if($sidebarcomponent == "localcategories" )   ##Mark link folders for download/index/tracking/add to storage/download as needed
+	#if($sidebarcomponent == "localcategories" )   
 		#if( $canviewcategorynav)
 			#set($sidebarurl = "$apphome/components/sidebars/localcategories/index.html")
 		#end
@@ -167,17 +162,29 @@
 	#if($sidebarcomponent == "userdownloads" )
 		#set($sidebarurl = "$apphome/components/sidebars/userdownloads/index.html")
 	#end
+
+	#set( $sidebarwidth = $userprofile.get("sidebarwidth"))
 	
+	
+
 	
 	#if($sidebarurl)
+		#if($sidebarwidth=='' || $sidebarwidth=='undefined')
+			#set($sidebarwidth = 280)
+		#end
+	<div class="col-mainsidebar #if($sidebarwidth && $sidebarwidth>320)sidebarwide #end"   
+	 style="top: 24px; #if($sidebarwidth) width:${sidebarwidth}px;#end"
+	 data-sidebarwidth="$!sidebarwidth">
 	<div id="col-$sidebarcomponent" 
 	 class="col-main col-left col-$sidebarcomponent">
 	 	<div class="col-main-inner">
 		$pages.include($sidebarurl, $context)
 		</div>
 	</div>
+	</div>
 	#end
+	
 #end
-</div>
+
 </div>
 
