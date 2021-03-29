@@ -5,10 +5,11 @@ TODO:
 3. Pass along s of admin to the startmediaboat function and this url
  -->
 
+#if( $user)
+
 <script>
 $(document).ready(function(){
 	
-	#if( $user)
 	var entermediakey = '$tempentermediakey';  //Will start with em
 	
 	##Docker must set siteroot correctly
@@ -32,7 +33,6 @@ $(document).ready(function(){
 			window.location.replace("index.html"); 
 		}, 2000);
 	}
-	#end
 });
 	
 //startmediaboat(key,thisbaseurl)
@@ -49,3 +49,17 @@ $(document).ready(function(){
 	<div class="spinner-border" ></div><br>
 	<label>Loading Your Workspace...</label>
 </div>
+#else
+
+<div class="text-center" style="position:fixed;top:50%;left:50%;transform:translate(-50%, -50%);">
+<pre>
+[[Could not log in user using key]]:
+
+Cloud Key:	$!context.getRequestParameter("entermediacloudkey") 
+Collection ID:		$!context.getRequestParameter("collectionid")
+
+Check server logs for more details
+</pre>
+</div>
+
+#end
