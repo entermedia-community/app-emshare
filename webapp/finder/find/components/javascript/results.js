@@ -1183,13 +1183,15 @@ gridResize = function()
 	fixedheight = parseInt(fixedheight);
 	
 	var totalwidth = 0;
-	var totalheight = 0;
+	var totalheight = fixedheight+4;
 	var rownum = 0;
 	var totalavailablew = grid.width();
 	
 	//Two loops, one to make rows and one to render cells
 	var sofarusedw = 0;
 	var sofarusedh = 0;
+	
+
 	
 	var row = new Array();
 	$(".masonry-grid .masonry-grid-cell").each(function()
@@ -1235,8 +1237,9 @@ gridResize = function()
 		}
 		else
 		{
-			trimRowToFit( grid.data("maxheight"),row,totalavailablew);
+			
 		}
+		trimRowToFit( grid.data("maxheight"),row,totalavailablew);
 	}
 	
 	checkScroll();
