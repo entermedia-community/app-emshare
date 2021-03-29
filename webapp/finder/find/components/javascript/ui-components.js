@@ -543,17 +543,17 @@ uiload = function() {
 		
 		var modaldialog = $("#" + id);
 		if (modaldialog.length == 0) {
-			$("body").append(
+			jQuery("body").append(
 					'<div class="modal " tabindex="-1" id="' + id
 							+ '" style="display:none" ></div>');
-			modaldialog = $("#" + id);
+			modaldialog = jQuery("#" + id);
 		}
 		var link = dialog.attr("href");
 
 		var options = dialog.data();
 		var param = dialog.data("parameterdata");
 		if (param) {
-			var element = $("#" + param);
+			var element = jQuery("#" + param);
 			var name = element.prop("name");
 			options[name] = element.val();
 		}
