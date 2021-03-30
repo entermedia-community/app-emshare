@@ -403,6 +403,10 @@ uiload = function() {
 				} 
 				
 				form.ajaxSubmit({
+					xhrFields: {
+		                withCredentials: true
+		            },
+					crossDomain: true,
 					error : function(data) {
 						alert("error");
 						if (targetdiv) {
