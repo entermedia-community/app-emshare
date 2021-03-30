@@ -543,7 +543,7 @@ uiload = function() {
 		
 		var modaldialog = $("#" + id);
 		if (modaldialog.length == 0) {
-			jQuery("body").append(
+			jQuery("#application").append(
 					'<div class="modal " tabindex="-1" id="' + id
 							+ '" style="display:none" ></div>');
 			modaldialog = jQuery("#" + id);
@@ -601,6 +601,8 @@ uiload = function() {
 					closeExisting: false,
 					"show" : true
 				});
+				
+				jQuery('.modal-backdrop').insertAfter(modalinstance);
 					
 				var firstform = $('form', modaldialog);
 				firstform.data("openedfrom", openfrom);

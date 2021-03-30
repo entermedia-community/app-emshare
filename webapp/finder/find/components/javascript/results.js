@@ -1037,7 +1037,6 @@ jQuery(window).on('scroll',function(e)
 });
 //Deprecated?
 jQuery(document).on('domchanged',function(){
-	console.log('domchanged');
 	gridResize(); //This calls checkScroll. Makes sure this is last after any actions
 });
 jQuery(window).on('resize',function(){
@@ -1183,7 +1182,7 @@ gridResize = function()
 	fixedheight = parseInt(fixedheight);
 	
 	var totalwidth = 0;
-	var totalheight = fixedheight+4;
+	var totalheight = fixedheight;
 	var rownum = 0;
 	var totalavailablew = grid.width();
 	
@@ -1197,8 +1196,8 @@ gridResize = function()
 	$(".masonry-grid .masonry-grid-cell").each(function()
 	{		
 		var cell = $(this);
-		var w = cell.data("width");
-		var	h = cell.data("height");
+		var w = cell.data("width")+4;
+		var	h = cell.data("height")+4;
 		w = parseInt(w);
 		h = parseInt(h);
 		if( w == 0 )
@@ -1231,15 +1230,16 @@ gridResize = function()
 	{
 		if( makebox && makebox == true )
 		{
-			totalheight = totalheight;
+			totalheight = totalheight + trimRowToFit( grid.data("maxheight"),row,totalavailablew);
 			grid.css("height",totalheight + "px");
 			grid.css("overflow","hidden");
+			
 		}
 		else
 		{
-			
+			trimRowToFit( grid.data("maxheight"),row,totalavailablew);
 		}
-		trimRowToFit( grid.data("maxheight"),row,totalavailablew);
+		
 	}
 	
 	checkScroll();
@@ -1267,6 +1267,10 @@ trimRowToFit = function(targetheight,row,totalavailablew)
 	if (fixedheight>(targetheight*1.7)) {
 		fixedheight = targetheight;
 	}
+	else{
+		fixedheight = targetheight*1.7;
+	}
+		
 	//The overwidth may not be able to be divided out evenly depending on number of 
 	var totalwused = 0;
 	$.each( row, function()
