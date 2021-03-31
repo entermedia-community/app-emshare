@@ -1,0 +1,70 @@
+#set( $xmledithome = $context.getPageProperty("xmledithome"))
+#set( $readonly = "true" )
+
+##We need 3 things passed in: $searcher, $view, $data
+#if ($view)
+	#if( $context.getUserProfile() )
+		#set ($details = $searcher.getDetailsForView($view, $context.getUserProfile()))
+	#else
+		#set ($details = $searcher.getDetailsForView($view))
+	#end
+#else
+	##leagacy check. We used to pass in the $details
+	#if( !$details)
+		#set ($details = $searcher.getPropertyDetails())
+	#end
+#end	
+
+#if( !$details)
+		[[Not view defined on]]: $view
+#end
+
+#if(!$detailviewercolumns)
+	#set($detailviewercolumns = 2)
+#end
+#set($detailviewercolumnclass = "col-md-6")
+#if($detailviewercolumns == 1)
+	#set($detailviewercolumnclass = "col-md-12")
+#end
+
+
+<div class="row no-gutters">
+#foreach( $detail in $details )
+	$!context.putPageValue("detail",$detail)
+	
+	#if ($detail.header)
+		<li class="header">
+		#if ($detail.header != "blank")
+			<span><h4>$detail.header</h4></span>
+		#end
+		</li>
+	#end
+	#set($val = false)
+	#set( $val = $data.get($detail.getId()) )
+	#if(  $val && $val.length() > 0 )
+		<div class="$detailviewercolumnclass">
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-4 col-emdatafield">
+					<label class="emdatafield" >
+						$detail.getText($context)
+					</label>
+					</div>
+					<div class="col-8">
+					<div class="emdatafieldvalue">					
+						$!context.putPageValue("val",$val)
+						$context.putPageValue("showalllanguagevalues",true)
+						
+						$!context.putPageValue("detail",$detail)
+						
+						$pages.include("$apphome/components/xml/detailreadonly.html", $context) 
+					</div>
+					</div>
+				</div>
+			</div>
+			
+		</div> 
+		
+	#end
+#end
+</div>

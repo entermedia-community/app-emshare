@@ -961,7 +961,7 @@ uiload = function() {
 					$(form).trigger("submit");
 				}
 				if (form.hasClass("autoclose")) {
-					form.closest(".modal").modal("hide");
+					form.closest(".modal").modal("hide");j
 				}
 			} else if (url != undefined) {
 				if (url == "") {
