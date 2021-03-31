@@ -30,6 +30,10 @@ data-singlepage="true"  >
 		 data-assetid="$hit.id" 
 		 data-width="$assetwidth" 
 		 data-height="$assetheight">
+		 <div class="grid-gallery-checkbox resultsselection">
+		          <input type="checkbox" class="selectionbox" name="count" value="${hit.id}" 
+		          	#if($hits.isSelectedOnPage(${hit.id})) checked #end data-dataid="${hit.id}" />          
+		     </div>
 	    	<a class="stackedplayer imagearea " id="clickid${hit.id}" data-assetid="$hit.id" href="#">
 	    	    <div class="grid-thumbimage" data-assetid="$hit.id">
 	    	    	#if(!$rendertype || $type =="rendertype")
@@ -41,12 +45,9 @@ data-singlepage="true"  >
 	        	    $pages.include("$componenthome/results/thumbnails/${rendertype}.html", $context)
 	        	   	##$pages.include("$componenthome/results/badges.html", $context)
 	        	</div>
-	    	</a>
-	    	 <div class="grid-gallery-checkbox resultsselection">
-		          <input type="checkbox" class="selectionbox" name="count" value="${hit.id}" 
-		          	#if($hits.isSelectedOnPage(${hit.id})) checked #end data-dataid="${hit.id}" />          
-		     </div>
-		      <div class="caption">
+	    	
+	    	 
+		      <div class="cell-caption">
 	       
 		         #set($stackedfield = $mediaarchive.getCatalogSettingValue("stackedgalleryfield"))
 		         #if($stackedfield)
@@ -58,10 +59,11 @@ data-singlepage="true"  >
 			        #end
 		         #end
 		         <div class="stacked-field-info" title="$title" >
-		         	<div><a class="stackedplayer" href="#"  data-assetid="$hit.id">$title</a></div>
+		         	<div>$title</div>
 
 		         </div>
-		         
+		       </div>
+		       </a>  
 		         <div class="grid-gallery-footer">
 		        	<a href="" class="grid-gallery-favorite" title="[[Add to Favorites]]">
 			        	<i class="fas fa-bookmark"></i>
@@ -76,8 +78,8 @@ data-singlepage="true"  >
 			        	</a>
 		        	#end
 		        </div>
-		     </div>
-	</div>
+
+		</div>
        #set ( $count = $count + 1) 
     
 	#end

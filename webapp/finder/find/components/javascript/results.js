@@ -1276,7 +1276,7 @@ trimRowToFit = function(targetheight,row,totalavailablew)
 	$.each( row, function()
 	{
 		var div = this;
-		div.css("line-height",fixedheight + "px"); 
+		//div.css("line-height",fixedheight + "px"); 
 		div.css("height",fixedheight + "px");
 		$("img.imagethumb",div).height(fixedheight);
 		
