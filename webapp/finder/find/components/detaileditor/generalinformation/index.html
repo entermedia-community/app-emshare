@@ -10,7 +10,7 @@ $context.putPageValue("showalllanguagevalues",true)
 
 
 <div class="row h-100 no-gutters">
-	<div class="col-7">
+	<div class="col-7 h-100">
 			#set( $ismulti = $asset.id.startsWith("multiedit:") || $context.getRequestParameter("multi") == "true")
 	        #if( $ismulti )
 	        
@@ -19,7 +19,7 @@ $context.putPageValue("showalllanguagevalues",true)
 	        	</div>
 	        
 	        #else
-				$pages.include("$componenthome/mediaviewer/player/summary-mini.html",$context)
+				$pages.include("$componenthome/mediaviewer/player/summary.html",$context)
 			#end
 	</div>	
 	<div class="col-5">
@@ -92,9 +92,23 @@ $context.putPageValue("showalllanguagevalues",true)
 					   </div>
 			<div class="clearfix"></div>
 			#if($caneditasset)
-			$pages.include("/$applicationid/views/modules/asset/editor/edit/metadata/assetreadmetadata.html")
+			##$pages.include("/$applicationid/views/modules/asset/editor/edit/metadata/assetreadmetadata.html")
+			
+			
+			#set($view = "assetreadmetadata")
+			#set($hitssessionid = $context.findValue("hitssessionid"))
+			<div class="asset-data-readwritemetadata">
+					
+					<a class="ajax"
+						href="$siteroot$apphome/views/modules/asset/editor/edit/metadata/read.html?oemaxlevel=1&assetid=$asset.getId()&force=true" 
+						data-targetdiv="assetrwmetadata" ><i class="fas fa-upload"></i> [[Read Metadata]]</a>
+					<a class="ajax"
+						href="$siteroot$apphome/views/modules/asset/editor/edit/metadata/write.html?oemaxlevel=1&assetid=$asset.getId()&force=true" 
+						data-targetdiv="assetrwmetadata" ><i class="fas fa-download"></i> [[Rewrite Metadata]]</a>
+					<span id="assetrwmetadata"></span>
+			</div>
+						
 			#end
-			<div class="clearfix"></div>
 			</div>
 			#end
 	</div>					

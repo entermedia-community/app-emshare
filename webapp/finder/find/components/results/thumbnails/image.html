@@ -14,7 +14,14 @@
 	#set ( $sourcepath = $sourcepath.replace("%2F", "/") )
 #end
 #set( $imagesize = "image200x200.jpg")
-#if($thumbsize == "mediumplus")
+#if($thumbsize == "largepreview")
+	#if( $type == "video" )
+		#set($imagesize = "image640x480.jpg")
+	#else
+		#set($imagesize = "image1500x1500.jpg")
+	#end
+
+#elseif($thumbsize == "mediumplus")
 	#if( $type == "video" )
 		#set($imagesize = "image640x480.jpg")
 	#else
@@ -46,7 +53,7 @@ $context.putPageValue("thumbsize", $thumbsize)
 		#else
 			#set($tpath = $mediaarchive.asLinkToPreview($hit, $librarycol.id, $imagesize, true))
 		#end
-		<div class="thumbimagecontainer">
+		
 			<img class="imagethumb img-fluid"
 				 border="0" 
 				 sourcepath="$sourcepath" 
@@ -58,7 +65,7 @@ $context.putPageValue("thumbsize", $thumbsize)
 				 data-name="$!hit.name" 		
 				 src="$tpath$!urlparams" 
 				  />
-		</div>	
+			
 	#end
 </div>
 

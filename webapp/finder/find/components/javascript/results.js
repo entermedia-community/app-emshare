@@ -1037,11 +1037,10 @@ jQuery(window).on('scroll',function(e)
 });
 //Deprecated?
 jQuery(document).on('domchanged',function(){
-	console.log('domchanged');
+	//console.log('domchanged');
 	gridResize(); //This calls checkScroll. Makes sure this is last after any actions
 });
 jQuery(window).on('resize',function(){
-	console.log("resize from results.js");
 	gridResize();
 });
 
@@ -1168,7 +1167,7 @@ gridResize = function()
 {
 	var grid = $(".masonry-grid");
 	
-	console.log("gridResize width:"+grid.width());
+	//console.log("gridResize width:"+grid.width());
 	//debugger;
 	if( grid.length == 0 )
 	{
