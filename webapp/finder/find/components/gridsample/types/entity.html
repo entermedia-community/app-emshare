@@ -1,10 +1,16 @@
+#set($entity = $hit)
+#set($entityid = $entity.id)
+#set($entity_module = $module.getId())
+
+$context.putPageValue("entityid", $entityid)
+$context.putPageValue("entity_module", $entity_module)
 
 #set( $rendertype = $context.getPageValue("previewrendertype"))
 #if (!$rendertype)
-	#set( $rendertype = "discovery")
+	#set( $rendertype = "default")
 #end
 
-#set($previewurl = "$componenthome/gridsample/preview/${rendertype}.html?id=$hit.id&searchtype=$module.id&hitssessionid=$hits.sessionId")
+#set($previewurl = "$componenthome/gridsample/preview/${rendertype}.html?id=$entityid&searchtype=$entity_module&hitssessionid=$hits.sessionId")
 $context.putPageValue("previewurl", $previewurl)
 
 <div class="emgrid-content emgrid-type-$rendertype">        	 
@@ -14,11 +20,11 @@ $context.putPageValue("previewurl", $previewurl)
         	 	class="emdialog emgridresulttitle" 
         	 	data-hidefooter="true" 
         	 	data-hideheader="true"
-        	 	id="clickid${hit.id}"  
-        	 	data-id="$hit.id"
-        	 	title="$!hit.name">
+        	 	id="clickid${entity.id}"  
+        	 	data-id="entity.id"
+        	 	title="$!entity.name">
         	 	##$!hits.highlight($hit,"name")
-        	 	$hit.name
+        	 	$entity.name
         	 	</a>
         	 
         	 </h3> 
@@ -26,14 +32,16 @@ $context.putPageValue("previewurl", $previewurl)
         	  
 	        <div class="emgridcell-default" data-width="$!{hit.width}" data-height="$!{hit.height}">
 		        	
-		        	#set($formateddate = $context.getDate($hit.entity_date) )
+		        	#set($formateddate = $context.getDate($entity.entity_date) )
 		        	#if($formateddate )
 		        	<div>Date: $formateddate
 		        	</div>
 		        	#end
 	        </div>
-	        
+			
 	        $pages.include("$componenthome/gridsample/attachedmedia.html",$context)
+	        
+	        
 	        <div class="clearfix"></div>
 	        $pages.include("$componenthome/gridsample/tags.html",$context)
 	        <div class="clearfix"></div>

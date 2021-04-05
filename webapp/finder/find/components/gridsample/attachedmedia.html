@@ -1,5 +1,42 @@
-#set( $hits = $mediaarchive.query("asset").match($module.getId(),$hit.id).search() )
+#if(!$entity_module)
+	#set($entity_module = $context.getRequestParameter("searchtype"))
+#end
+#if(!$entityid)
+	#set($entityid = $context.getRequestParameter("id"))
+#end
 
-<img id="" class="imagethumb  document   assetdragdrop img-fluid" draggable="true" data-sourcepath="Collections/General/Album+1/2021/family-loan-agreement.pdf" data-name="family-loan-agreement.pdf" data-hidenav="$hidenav" src="/finder/mediadb/services/module/asset/downloads/preset/Collections/General/Album%201/2021/family-loan-agreement.pdf/image200x200.jpg" border="0" style="height: 150px;">
+#if($entity_module && $entityid)
+#set( $hits = $mediaarchive.query("asset").match($entity_module, $entityid).sort("assetaddeddateDown").search() )
+#set($count = 0)
+#foreach( $hit in $hits)
+	#if($count < 5)
+		#set($count = $count + 1)
+		$context.putPageValue("hit", $hit)
+		#set($type = $hit.getSearchHit().getType())
+		#set( $rendertype = $mediaarchive.getMediaRenderType($hit.fileformat))
+		$context.putPageValue("type", $rendertype)
+		
+		$context.putPageValue("assetid", $hit.id)
+		$context.putPageValue("sourcepath", $hit.sourcepath )
+		$context.putPageValue("thumbsize", "crop" )
+		
+		#set($sourcepath = $hit.sourcepath)
+		#set($assetwidth = $mediaarchive.getRealImageWidth($hit))
+		#set($assetheight = $mediaarchive.getRealImageHeight($hit))
+		#set($click = "$siteroot$viewerlink?hitssessionid=${hits.getSessionId()}&assetid=${hit.id}")
+		
+	  	#if(!$rendertype || $type =="rendertype")
+	 		#set( $rendertype = "mime" )
+	 	#elseif( $rendertype =="video")
+	 		#set( $rendertype = "videothumbnail" )
+	 	#end
+	 	<div class="float-left" style="margin: 0 5px 5px 5px;">
+	 	<a class="stackedplayer imagearea " id="clickid${hit.id}" data-assetid="$hit.id" href="#">
+		$pages.include("$componenthome/results/thumbnails/${rendertype}.html", $context)
+		</a>
+		</div>
+	#end
+#end
+<div class="clearfix"></div>
 
-<img id="" class="imagethumb  document   assetdragdrop img-fluid" draggable="true" data-sourcepath="Collections/General/Album+1/2021/family-loan-agreement.pdf" data-name="family-loan-agreement.pdf" data-hidenav="$hidenav" src="/finder/mediadb/services/module/asset/downloads/preset/Collections/General/Album%201/2021/family-loan-agreement.pdf/image200x200.jpg" border="0" style="height: 150px;">
+#end
