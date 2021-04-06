@@ -63,6 +63,7 @@
             },
 
 
+            
             setName: function(text) {},
             setStatus: function(text) {},
             setProgress: function(value) {},
@@ -158,6 +159,7 @@
                         upload_file(number+1);
                     }
                 };
+                xhr.withCredentials = true;
                 xhr.open(options.method, typeof(options.url) == "function" ? options.url(number) : options.url, true);
                 $.each(options.headers,function(key,val){
                     val = typeof(val) == "function" ? val(file) : val; // resolve value
