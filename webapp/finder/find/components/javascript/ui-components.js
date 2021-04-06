@@ -2405,9 +2405,11 @@ var resizecolumns = function() {
 		console.log("Col:"+col.attr("id")+" h:"+columnsheight);
 	});
 	
-	$(".col-filters").css("height", columnsheight);
-	if(!$(".col-left").hasClass("fixedheight")) {
-		$(".col-left").css("height", columnsheight);
+	//$(".col-filters").css("height", columnsheight);
+	$(".sidebar-togglers-bar").css("min-height", columnsheight);
+	if(!$(".col-mainsidebar").hasClass("fixedheight")) {
+		var offset = $(".col-mainsidebar").offset();
+		$(".col-mainsidebar").css("height", columnsheight - offset.top+1);
 	}
 	else {
 		allheights  = header_height + resultsheader_height;
@@ -2416,8 +2418,8 @@ var resizecolumns = function() {
 		$(".col-left").css("height", columnsheight);
 		$(".col-left > .col-main-inner").css("height", windowh);
 	}
-	$(".col-sidebar").css("min-height", columnsheight);
-	$(".sidebar-togglers-bar").css("min-height", columnsheight);
+	//$(".col-sidebar").css("min-height", columnsheight);
+	
 	if ($(".col-content-main").parent().hasClass("settingslayout")) {
 		$(".col-content-main").css("min-height", columnsheight + sidebarstop + "px");
 	}
