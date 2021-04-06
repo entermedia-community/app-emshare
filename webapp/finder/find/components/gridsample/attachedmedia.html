@@ -5,11 +5,15 @@
 	#set($entityid = $context.getRequestParameter("id"))
 #end
 
+#if(!$assetsshown)
+	#set($assetsshown = 4)
+#end
+
 #if($entity_module && $entityid)
 #set( $hits = $mediaarchive.query("asset").match($entity_module, $entityid).sort("assetaddeddateDown").search() )
 #set($count = 0)
 #foreach( $hit in $hits)
-	#if($count < 5)
+	#if($count < $assetsshown)
 		#set($count = $count + 1)
 		$context.putPageValue("hit", $hit)
 		#set($type = $hit.getSearchHit().getType())

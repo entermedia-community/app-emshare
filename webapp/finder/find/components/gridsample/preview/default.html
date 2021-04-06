@@ -10,22 +10,25 @@
 
 #set($module = $mediaarchive.getData("module", $searchtype))
 
-<div class="modal-content modal-data-details ${module.id}-modal">
-
-<div class="modal-close">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-</div>
-
-
-<div class="modal-body">
-<h2 class="modal-titleX">$data.name</h2>
-<div class="row" >
-
-$pages.include("$componenthome/gridsample/attachedmedia.html",$context)
-
-</div>
-<div class="float-right"><a href="#">[[Link]]</a></div>
-</div>
+<div class="modal-content modal-data-details modal-entity ${module.id}-modal">
+	<div class="modal-body">
+		<div class="modal-close">
+		        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+		          <span aria-hidden="true">&times;</span>
+		        </button>
+		</div>
+		
+		
+		<div class="clearfix"></div>
+		<div class="entity-media">
+		$context.putPageValue("assetsshown",20)
+		$pages.include("$componenthome/gridsample/attachedmedia.html",$context)
+		</div>
+		<div class="entity-metadata">
+			<h2 class="modal-title">$data.name</h2>
+			
+			<a href="" class="btn btn-dark"><i class="fas fa-edit"></i> [[Edit]]</a>
+		</div>
+		<div class="clearfix"></div>
+	</div>
 </div>
