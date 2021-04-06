@@ -24,9 +24,6 @@ uiload = function() {
 	var apphome = app.data("siteroot") + app.data("apphome");
 	var themeprefix = app.data("siteroot") + app.data("themeprefix");
 	
-
-	resizecolumns()
-	
 	if ($.fn.tablesorter) {
 		$("#tablesorter").tablesorter();
 	}
@@ -2389,7 +2386,7 @@ var resizecolumns = function() {
 	
 	var allheights  =  header_height +  footer_height + resultsheader_height;
 	var columnsheight = $("body").outerHeight() - allheights;
-	
+
 	var sidebartop = 1;
 	$(".col-main").each(function(){
 		var col = $(this);
@@ -2403,8 +2400,11 @@ var resizecolumns = function() {
 		
 		if (thisheight > columnsheight) {
 			columnsheight = thisheight;
+			
 		}
+		console.log("Col:"+col.attr("id")+" h:"+columnsheight);
 	});
+	
 	$(".col-filters").css("height", columnsheight);
 	if(!$(".col-left").hasClass("fixedheight")) {
 		$(".col-left").css("height", columnsheight);
@@ -2426,32 +2426,30 @@ var resizecolumns = function() {
 	}
 	
 	$(".pushcontent").css("height","calc(100% - " + resultsheader_height + "px)");
-	
-	var ranajaxon = new Array();
-	
-	lQuery(".ajaxstatus").livequery(
-		function()
-		{
-			var uid = $(this).attr("id");
-			var isrunning = $(this).data("ajaxrunning");
-			var timeout = $(this).data("reloadspeed");
-			if( timeout == undefined)
-			{
-				timeout = 3000;
-			}
-			var ranonce = ranajaxon[uid];
-			if( ranonce == undefined)
-			{
-				timeout = 500; //Make the first run a quick one
-				ranajaxon[uid] = true;
-			}
-			
-			setTimeout('showajaxstatus("' + uid +'");',timeout); //First one is always faster			
-		}
-	);
-
-	
 }
+
+var ranajaxon = new Array();
+
+lQuery(".ajaxstatus").livequery(
+	function()
+	{
+		var uid = $(this).attr("id");
+		var isrunning = $(this).data("ajaxrunning");
+		var timeout = $(this).data("reloadspeed");
+		if( timeout == undefined)
+		{
+			timeout = 3000;
+		}
+		var ranonce = ranajaxon[uid];
+		if( ranonce == undefined)
+		{
+			timeout = 500; //Make the first run a quick one
+			ranajaxon[uid] = true;
+		}
+		
+		setTimeout('showajaxstatus("' + uid +'");',timeout); //First one is always faster			
+	}
+);
 
 
 var resizegallery = function() {
@@ -2469,15 +2467,20 @@ var resizegallery = function() {
 
 jQuery(document).ready(function() {
 	uiload();
-	resizecolumns();
+	gridResize();
 	resizegallery();
+	resizecolumns();
+	
 });
 
 jQuery(window).on('resize',function(){
-	resizecolumns();
+	gridResize();
 	resizegallery();
+	resizecolumns();
 });
-
+jQuery(document).on('domchanged',function(){
+	gridResize(); //This calls checkScroll. Makes sure this is last after any actions
+});
 
 
 

@@ -1005,15 +1005,8 @@ jQuery(document).ready(function(url,params)
         }
     }
 
-    
-    
+   
     gridResize();
-    
-
-       
-
-
-
 
 	
 //		jQuery(".masonry-grid img.imagethumb:eq(10)").on('load',  function() { 
@@ -1026,22 +1019,16 @@ jQuery(document).ready(function(url,params)
 
 document.addEventListener('touchmove', function(e) 
 {
-	//console.log("touchmove event");
 	checkScroll();
 });
-
 jQuery(window).on('scroll',function(e) 
 {
 	//console.log("scroll event *");
 	checkScroll();
 });
-//Deprecated?
-jQuery(document).on('domchanged',function(){
-	//console.log('domchanged');
-	gridResize(); //This calls checkScroll. Makes sure this is last after any actions
-});
+
 jQuery(window).on('resize',function(){
-	gridResize();
+	//gridResize();
 });
 
 	    
@@ -1064,10 +1051,10 @@ togglehits =  function(action)
 }
 var stopautoscroll = false;
 
-checkScroll = function() {
-	
+checkScroll = function() 
+{
 	var grid = $(".masonry-grid");
-	if (grid.data("singlepage")==true) {
+	if (grid== "undefined" || grid.data("singlepage")==true) {
 		return;
 	}
 	if( stopautoscroll )
