@@ -159,8 +159,8 @@
                         upload_file(number+1);
                     }
                 };
-                xhr.withCredentials = true;
                 xhr.open(options.method, typeof(options.url) == "function" ? options.url(number) : options.url, true);
+                xhr.withCredentials = true;
                 $.each(options.headers,function(key,val){
                     val = typeof(val) == "function" ? val(file) : val; // resolve value
                     if (val === false) return true; // if resolved value is boolean false, do not send this header
