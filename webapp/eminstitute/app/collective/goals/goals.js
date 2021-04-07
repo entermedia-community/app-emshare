@@ -228,8 +228,12 @@ jQuery(document).ready(function(url,params)
 		var select = div.find("select");
 		select.on("change",function()
 		{
-			var form = select.closest("form");
-			form.trigger("submit");	
+			var val = select.val();
+			if( val == "3")
+			{
+				var form = select.closest("form");
+				form.trigger("submit");	
+			}
 		});
 	});
 
@@ -253,6 +257,28 @@ jQuery(document).ready(function(url,params)
 		});
 					
 	});
+
+	
+	lQuery(".appendgoalbutton").livequery("click", function(e)
+			{
+				e.preventDefault();
+
+				var button = $(this);
+				var goalid = button.data("goalid");
+				
+				var href = button.attr("href");
+				var options = button.data();
+				jQuery.ajax({
+					url: href, data: options, success: function (data) 
+					{
+						$("#" + goalid + "container .table-goaltaskstable").append(data);
+						jQuery('.grabfocus').focus();
+
+					},
+					type: "POST",
+					dataType: 'text',
+				});
+			});
 
 	
 });

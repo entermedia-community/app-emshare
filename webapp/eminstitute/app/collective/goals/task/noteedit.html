@@ -1,0 +1,61 @@
+#if(!$task)
+#set( $taskid = $context.getRequestParameter("taskid"))
+#if( $taskid)
+#set( $task = $mediaarchive.getData("goaltask",$taskid) )
+#end
+#end
+
+#set($target = $context.getRequestParameter("targetdiv"))
+
+<tr id="taskrow$task.getId()" >
+	<td class="taskage" scope="row">$!task.getAge()</td>
+	
+<td colspan="4"> 
+  	<form id="someform" class="ajaxform" data-targetdiv="$target" data-oemaxlevel="1" action="$applink/collective/goals/task/tasksave.html" >
+
+  		<!-- EDITING BOX STARTS HERE -->
+  		
+	    	<input type="hidden" name="goalid" value="$selectedgoal.id" />
+	    	<input type="hidden" name="onlyopen" value="false" />
+	    	<input type="hidden" name="taskid" value="$!task.id" />
+	    	<input type="hidden" name="collectionid" value="$librarycol.getId()" />
+
+#set( $completedby = $task.completedby)
+#if( !$completedby )
+#set( $completedby = $user.id)	
+#end
+  			<input type="hidden"  name="completedby" value="$completedby" />
+
+<table width="100%" style="border: 0px;">
+	<tr>
+	<td>
+			<input type="hidden"  name="taskstatus" value="5"  />
+  			<textarea id="commenttext" class="form-control grabfocus" style="width:100%;" name="comment">$!task.comment</textarea>
+	</td>
+	<td width="130" style="padding:5px 0 10px;">
+
+			<input id="submitbutton" type="submit" value="[[Save]]" name="submitbutton" class="btn btn-xs btn-primary float-right">
+			#if( $caneditcollection )
+    		<a class="btn btn-xs btn-danger float-left ajax" data-confirm="[[Are you sure?]]"
+    			 targetdiv="editgoal" title="[[Remove task]]"
+    			href="$applink/collective/goals/taskdelete.html?collectionid=$librarycol.getId()&goalid=$selectedgoal.id&taskid=$task.id">[[Delete]]</a> 
+    		#end
+		
+	<div class="taskstatus goalstatus-$!task.taskstatus">
+	
+		#set( $edittask = "$applink/collective/goals/task/taskedit.html?id=${task.id}&collectionid=$librarycol.getId()&onlyopen=$!onlyopen")
+		<a href="$edittask"
+			data-focuson="$task.id"
+			id="task$task.getId()"
+			class="taskedit taskedit-$!{task.taskstatus} ajax" data-targetdiv="task$task.getId()" data-oemaxlevel="1" title="$tree.getCategoryPath()" >
+			##<i class="fas fa-pencil-alt"></i>
+			Cancel
+		</a>
+	</div>
+	</td>
+	</tr>
+</table>
+</form>
+	</td>		
+</tr>
+			
