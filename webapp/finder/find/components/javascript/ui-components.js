@@ -2409,7 +2409,11 @@ var resizecolumns = function() {
 	$(".sidebar-togglers-bar").css("min-height", columnsheight);
 	if(!$(".col-mainsidebar").hasClass("fixedheight")) {
 		var offset = $(".col-mainsidebar").offset();
-		$(".col-mainsidebar").css("height", columnsheight - offset.top+1);
+		var colheight = columnsheight;
+		if (offset) {
+			colheight = columnsheight - offset.top+1;
+		}
+		$(".col-mainsidebar").css("height", colheight);
 	}
 	else {
 		allheights  = header_height + resultsheader_height;
