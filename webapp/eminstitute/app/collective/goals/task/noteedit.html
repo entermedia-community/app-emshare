@@ -40,17 +40,15 @@
     			 targetdiv="editgoal" title="[[Remove task]]"
     			href="$applink/collective/goals/taskdelete.html?collectionid=$librarycol.getId()&goalid=$selectedgoal.id&taskid=$task.id">[[Delete]]</a> 
     		#end
+    		
+    		#set( $targetdiv = "tasklist#eid($selectedgoal.id)")
+			#set( $cancellink = "$applink/collective/goals/search/goaltasks.html?collectionid=$librarycol.getId()&goalid=$selectedgoal.id")
+			<a href="$cancellink" data-focuson="$task.id" id="task$task.getId()" class="btn btn-xs btn-warning float-left taskedit-$!{task.taskstatus} ajax" data-targetdiv="$targetdiv" data-oemaxlevel="1" title="$tree.getCategoryPath()" >
+			[[Cancel]]</a>
+			<!-- removed taskedit class from "a" tag above  -->
 		
 	<div class="taskstatus goalstatus-$!task.taskstatus">
-	
-		#set( $edittask = "$applink/collective/goals/task/taskedit.html?id=${task.id}&collectionid=$librarycol.getId()&onlyopen=$!onlyopen")
-		<a href="$edittask"
-			data-focuson="$task.id"
-			id="task$task.getId()"
-			class="taskedit taskedit-$!{task.taskstatus} ajax" data-targetdiv="task$task.getId()" data-oemaxlevel="1" title="$tree.getCategoryPath()" >
-			##<i class="fas fa-pencil-alt"></i>
-			Cancel
-		</a>
+
 	</div>
 	</td>
 	</tr>
