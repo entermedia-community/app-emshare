@@ -638,7 +638,9 @@ uiload = function() {
 					$('form', modaldialog).find('*').filter(
 							':input:visible:first').focus();
 				}
-
+				modalinstance.on('hidden.bs.modal', function () {
+					$(window).trigger("resize");
+				});
 			}
 		});
 		
