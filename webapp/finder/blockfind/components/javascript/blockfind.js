@@ -75,7 +75,7 @@ jQuery(document).ready(function(){
 	});
 	
 	
-	jQuery(document).on("click", "#btncloseoverlay", function(e){
+	jQuery(document).on("click", ".btncloseoverlay", function(e){
 		jQuery("#blockfindoverlay").hide();
 	});
 
