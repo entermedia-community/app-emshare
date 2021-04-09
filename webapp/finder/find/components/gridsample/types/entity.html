@@ -29,19 +29,17 @@ $context.putPageValue("previewurl", $previewurl)
         	 
         	 </h3> 
         	 </div>
-        	  
-	        <div class="emgridcell-default" data-width="$!{hit.width}" data-height="$!{hit.height}">
-		        	
-		        	#set($formateddate = $context.getDate($entity.entity_date) )
-		        	#if($formateddate )
-		        	<div>Date: $formateddate
-		        	</div>
-		        	#end
-	        </div>
-			
+        	 
+        	#if($entity.longcaption)
+        	<div style="padding:5px">
+        		$entity.longcaption
+        	</div>
+        	#end
+        	
+        	<div style="padding:0 5px;">
 			$context.putPageValue("assetsshown",4)
 	        $pages.include("$componenthome/gridsample/attachedmedia.html",$context)
-	        
+	        </div>
 	        
 	        <div class="clearfix"></div>
 	        $pages.include("$componenthome/gridsample/tags.html",$context)

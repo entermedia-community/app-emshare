@@ -638,6 +638,7 @@ uiload = function() {
 					$('form', modaldialog).find('*').filter(
 							':input:visible:first').focus();
 				}
+
 			}
 		});
 		
@@ -649,6 +650,10 @@ uiload = function() {
 		{
 			event.preventDefault();
 		}	
+		
+		
+		
+		
 		return false;
 	}
 	
@@ -865,7 +870,7 @@ uiload = function() {
 			}
 		});
 		
-		$("body").on("click", function(event){
+		jQuery("body").on("click", function(event){
 			modaldialog.hide();
 		});
 	});
@@ -2402,7 +2407,6 @@ var resizecolumns = function() {
 			columnsheight = thisheight;
 			
 		}
-		console.log("Col:"+col.attr("id")+" h:"+columnsheight);
 	});
 	
 	//$(".col-filters").css("height", columnsheight);

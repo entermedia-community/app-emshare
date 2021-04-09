@@ -4,7 +4,7 @@
 #set( $data = $hits.findData("id",$id))
 
 #if( !$data)
-	#set( $data  = $mediaarchive.getData($searchtype,$id) )
+	#set( $data  = $mediaarchive.getData($searchtype, $id) )
 #end
 
 
@@ -25,9 +25,10 @@
 		$pages.include("$componenthome/gridsample/attachedmedia.html",$context)
 		</div>
 		<div class="entity-metadata">
-			<h2 class="modal-title">$data.name</h2>
+			$context.putPageValue("data", $data)
+			$context.putPageValue("searchtype", $searchtype)
+			$pages.include("metadata.html", $context)
 			
-			<a href="" class="btn btn-dark"><i class="fas fa-edit"></i> [[Edit]]</a>
 		</div>
 		<div class="clearfix"></div>
 	</div>

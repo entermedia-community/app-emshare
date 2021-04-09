@@ -1,0 +1,63 @@
+#set( $id = $context.getRequestParameter("id"))
+#set( $searchtype = $context.getRequestParameter("searchtype"))
+#set( $searcher = $mediaarchive.getSearcher($searchtype) )
+$context.putPageValue("searcher",$searcher)
+
+
+#if($id)
+
+#if( !$data)
+	#set( $data  = $mediaarchive.getData($searchtype, $id) )
+#end
+$context.putPageValue("data",$data)
+
+<div id="editentitymetadata">
+<h2 class="modal-title">$data.name</h2>
+
+
+
+#set($edit = $context.getRequestParameter("edit"))
+#if($edit!="true")
+	#set($edit="false")
+#end
+
+
+
+#set($viewid = "general")
+#set($view = "$searchtype/$viewid")
+#set($action = "$siteroot$applink/components/gridsample/preview/metadata-save.html")
+
+<form id="entitydataeditor" name="entitydataeditor" class="ajaxform force-validate-inputs" data-targetdiv="editentitymetadata" method="post"  action="$action">
+    	<input name="save" type="hidden" value="true" />
+    	<input name="id" type="hidden" value="$!id" />
+    	<input name="searchtype" type="hidden" value="$searchtype" />
+    	<input name="viewid" type="hidden" value="$viewid" />
+    	<input name="view" type="hidden" value="$view" />
+    	<input name="hitssessionid" type="hidden" value="$!hits.sessionId" />
+
+    	
+    	$context.putPageValue("view", $view)
+    	$context.putPageValue("viewid", $viewid)
+
+		#if($edit =="true")  ##TODO - Permissions
+		$pages.include("/$applicationid/components/xml/detaileditor-2.html?longform=true", $context)
+		#else
+			$pages.include("/$applicationid/components/xml/detaileditorcss.html?detailsreadonly=true&alwaysshow=true", $context)
+		#end
+	
+    #if($edit=="true")
+    <div class="btns">
+	    <a class="btn btn-sm btn-dark submitform" style="margin-right: 10px;">[[Save]]</a>
+		<a class="btn btn-sm btn-dark ajax" style="margin-right: 10px;" data-targetdiv="editentitymetadata" href="$siteroot$apphome/components/gridsample/preview/metadata.html?id=$!id&searchtype=$!searchtype">[[Cancel]]</a>
+		<a class="btn btn-sm btn-dark float-right" href="$siteroot$apphome/views/settings/modules/${searcher.searchType}/metadata/views/index.html?viewid=$viewid&viewpath=$view"><i class="fas fa-cog"></i> [[Edit View]]</a>
+	    <div class="clearfix"></div>
+    </div>
+    #end
+    </form>
+
+#if($edit!="true")
+<a href="$siteroot$apphome/components/gridsample/preview/metadata.html?edit=true&id=$data.id&searchtype=$searchtype" data-targetdiv="editentitymetadata" class="ajax btn btn-dark"><i class="fas fa-edit"></i> [[Edit]]</a>
+#end
+</div>
+
+#end
