@@ -53,7 +53,7 @@
 		</tr>
 		</thead>
 		#foreach($goal in $hits)
-		    #set( $tasks =  $tasklookup.get($goal) )
+		    #set( $tasks =  $tasklookup.get($goal.getId()) )
 		    #if( !$tasks.isEmpty())
 				<tr class="goalstatus$!{goal.projectstatus}" >
 				$context.putPageValue("goal",$goal)
@@ -74,6 +74,7 @@
 					$!goal.details 		
 					
 					<div class="goal-body">
+					
 					$pages.include("$apphome/collective/goals/search/goaltasks.html?indialog=true&onlyuser=true",$context)
 					</div>
 					
