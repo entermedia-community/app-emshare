@@ -48,15 +48,16 @@
 <!-- 			<th style="width:130px;">[[Team]]</th>-->			
 			<th>[[Details]]</th>
 			<th style="width:180px;">[[Status]]</th>
-			<!-- <th style="width:250px">[[Created]]</th> -->
+			<!-- <th style="width:250px">[[#]]</th> -->
 			
 		</tr>
 		</thead>
 		#foreach($goal in $hits)
-		    #set( $tasks =  $mediaarchive.query("goaltask").not("taskstatus", "3").match("projectgoal", $goal.getId()).exact("completedby", $selecteduser.getId()).search($context))
+		    #set( $tasks =  $tasklookup.get($goal.getId()) )
 		    #if( !$tasks.isEmpty())
 				<tr class="goalstatus$!{goal.projectstatus}" >
 				$context.putPageValue("goal",$goal)
+				$context.putPageValue("tasks",$tasks)
 				<td >
 				#set( $project= $!mediaarchive.getData("librarycollection",$goal.collectionid) )
 				<a href="$sitelink/app/collective/goals/priorities/index.html?collectionid=$goal.collectionid"
@@ -64,27 +65,16 @@
 				$!project
 				</a>
 				</td>
-			<!-- 	<td >
-				#set( $project= $!mediaarchive.getData("collectiveproject",$goal.goaltrackercolumn) )
-				<a href="$sitelink/app/collective/goals/search/search.html?collectionid=$goal.collectionid&field=goaltrackercolumn&operation=matches&goaltrackercolumn.value=$project.id" 
-				style="text-decoration:underline;" >
-				$!project
-				</a>
-				<br><a href="#" class="badge badge-pill badge-info">$!mediaarchive.getData("ticketlevel",$goal.ticketlevel)</a>
-				</td> -->
-			
 				<td>
 				<a data-cancelsubmit="true" data-hidefooter="true" href="$sitelink/app/collective/goals/editgoalpanel.html?id=$goal.id&collectionid=$goal.collectionid&goalfolder=agent" 
 					title="" class="emdialog editgoalshow" style="text-decoration:underline;" data-urlbar="$applink/users/tasks/search.html?ticketlevel=$goal.ticketlevel&goaltrackerstaff=*&opengoalid=$goal.id"
-					data-width="900">$goal.name</a>
+					data-width="900">$!goal.ticketnumber $goal.name</a>
 				</td>
-				<!-- <td>
-			  			$pages.include("$apphome/collective/goals/like.html",$context)
-				</td> -->	
 				<td >
 					$!goal.details 		
 					
 					<div class="goal-body">
+					
 					$pages.include("$apphome/collective/goals/search/goaltasks.html?indialog=true&onlyuser=true",$context)
 					</div>
 					
@@ -93,7 +83,6 @@
 				$pages.include("$apphome/users/tasks/resolvebutton.html",$context) 
 				<div class="clearfix" style="padding:5px;"> </div>
 				<span class="headersubtext">
-				
 					$!mediaarchive.getData("tickettype",$goal.tickettype) $!goal.getAge() [[ago]] [[by]] $!mediaarchive.getUser($goal.owner).getAnonNickName()
 				</span><br>
 				
@@ -109,16 +98,7 @@
 					#end
 				</td>
 				
-				<!-- <td class="text-right" >
-					<span class="headersubtext">
-					
-						$!mediaarchive.getData("tickettype",$goal.tickettype) $!goal.getAge() [[ago]] [[by]] $!mediaarchive.getUser($goal.owner).getAnonNickName()
-					</span><br>
-					#if ($goal.deliverydate)
-						<span style="color:red">[[Due on:]] $goal.deliverydate.substring(0, 10)</span>
-					#end
-				</td> -->
-		</tr>
+				</tr>
 			#end	
 		
 		#end
