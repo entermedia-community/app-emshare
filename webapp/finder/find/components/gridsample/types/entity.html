@@ -13,8 +13,8 @@ $context.putPageValue("entity_module", $entity_module)
 #set($previewurl = "$componenthome/gridsample/preview/${rendertype}.html?id=$entityid&searchtype=$entity_module&hitssessionid=$hits.sessionId")
 $context.putPageValue("previewurl", $previewurl)
 
-<div class="emgrid-content emgrid-type-$rendertype">        	 
-        	 <div class="emgrid-content-header">
+<div class="emgrid-content emgrid-type-$rendertype">
+        	 <div class="emgrid-entityheader">
         	 <h3>
         	 <a href="$previewurl" 
         	 	class="emdialog entity-dialog emgridresulttitle" 
@@ -29,32 +29,38 @@ $context.putPageValue("previewurl", $previewurl)
         	 
         	 </h3> 
         	 </div>
+	<div class="emgrid-entitymetadata">        	 
+
         	 
         	#if($entity.longcaption)
-        	<div style="padding:5px">
+        	<div style="padding:0 10px">
         		$entity.longcaption
+        		<div style="padding:10px 0"><a class="emdialog entity-dialog" data-hidefooter="true" href="$previewurl" title="$!hit.ibmtitle">[[More details]]</a></div>
         	</div>
+        	
+        	
         	#end
         	
-        	$pages.include("$componenthome/gridsample/tags.html",$context)
-	        <div class="clearfix"></div>
+        	##$pages.include("$componenthome/gridsample/tags.html",$context)
+	        
+      </div>
+       <div class="emgrid-entitymedia"> 	
         	
-        	<div style="padding:0 5px;">
 			$context.putPageValue("assetsshown",4)
 	        $pages.include("$componenthome/gridsample/attachedmedia.html",$context)
-	        </div>
+	   </div>
 	        
 	        <div class="clearfix"></div>
 	        
 	        
 	        <div class="ibmgrid-footer">
 	        
-	        $pages.include("$componenthome/gridsample/favorites.html?id=$hit.id&searchtype=$module.id", $context)
+	       ## $pages.include("$componenthome/gridsample/favorites.html?id=$hit.id&searchtype=$module.id", $context)
 	        
 	        
 	        
 	        
-	        <a class=" float-right emdialog entity-dialog" data-hidefooter="true" href="$previewurl" title="$!hit.ibmtitle">[[view more details]]</a>
+	       ## 
 	        
 	        </div>
 	        
