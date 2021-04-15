@@ -1,0 +1,42 @@
+{
+	"modules":[
+		#foreach($module in $organizedModules)
+		    #if ($module.modulerendertype != "media")
+		        #set($idhits = $organizedHits.get($module.id))
+		        $context.putPageValue("hits", $idhits)
+		        {
+		         "id":"$module.id",
+		         "name":"$module.name",
+		         "renderType":"$module.modulerendertype",
+		         
+		         "size":"$idhits.size()",
+		         "entities":[		         	
+		         	#foreach( $hit in $idhits) #if( ${foreach.count} != 1 ), #end
+						$context.putPageValue("hit", $hit)					      
+					    ##json($hit $searcher.getPropertyDetails())
+					    {
+					      "id":"$hit.id",
+					      "name":"$hit.name",
+					      #set($assethits = $mediaarchive.query("asset").hitsPerPage(20).exact($module.id, $hit.id).sort("assetaddeddateDown").search() )
+					      "assets": [
+					      	#foreach($assethit in $assethits.getPageOfHits()) #if( ${foreach.count} != 1 ), #end
+						      	$context.putPageValue("assethit", $assethit)
+						      	##json($assethit $searcher.getPropertyDetails())
+						      	{
+						      	  "id":"$assethit.id",
+						      	  "name":"$assethit.name",
+						      	  "sourcepath":"$assethit.sourcepath",
+						      	  #set($imagesize = "image1500x1500.jpg")
+								  #set($tpath = $mediaarchive.asLinkToPreview($assethit, null, $imagesize, true))								  								  
+						      	  "thumbnail":"$tpath"
+						      	}
+					      	#end
+					      ]
+					    }					     
+					#end		         	
+		         ] 
+		        }#if( ${foreach.count} < $organizedModules.size() ), #end		        		    
+			#end
+		#end
+		]
+}
