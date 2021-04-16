@@ -100,15 +100,15 @@ if (emKey) {
 	
 	const rootsite='https://emediafinder.com';
 	$(".workspaces").on('click', function() {	
-		var href = `${rootsite}/entermediadb/mediadb/services/authentication/workspacesonteam.json?noredirect=true&entermedia.key=${emKey}`; // TODO: call in java
+		var href = `${rootsite}/entermediadb/mediadb/services/authentication/workspacesonteam.json?noredirect=true&entermedia.key=${emKey}`; // TODO: call in java		
+		$('#workspacelist').html('');
 		$.ajax({type: "GET", url: href, crossDomain: true, 
-	        success:function(result) {
+	        success:function(result) {	        	
 	        	if (result.status === "error") {
 	        		const url = '<a class="dropdown-item" target="_blank" href="https://emediafinder.com">eMediaFinder.com</a>';
 	        	  	$('#workspacelist').append(url);
 	        		return;
-	        	}
-	        	$('#workspacelist').html('');
+	        	}	        	
 	        	if (result.workspaces.length > 0) {
 		        	$.each(result.workspaces, function (i, ws) {
 		        		console.log(result);
@@ -117,7 +117,7 @@ if (emKey) {
 		        			+ 'entermediacloudkey=' + result.userKey 
 		        			+ "&collectionid=" + ws.collectionid + '">'
 		        			+ ws.name + '</a>';
-		        	  $('#workspacelist').append(url);
+		        	    $('#workspacelist').append(url);
 		        	});
 	        	} else {
 	        		const url = '<a class="dropdown-item" target="_blank" href="https://emediafinder.com/app/workspaces/index.html">Create a Workspace</a>';
