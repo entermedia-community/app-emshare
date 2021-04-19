@@ -111,33 +111,23 @@
 
 	
 
-#if(2==1 && $hits.hasSelections())
-#set($hitsurls = "")
-#set( $imagesize = "image1500x1500.jpg")
-#foreach ($hit in $hits.getPageOfHits())
-	#if($hits.isSelectedOnPage(${hit.id}))
-		#if($hitsurls!="")
-			#set($hitsurls = $hitsurls + ",")
-		#end
-		#set($hiturl = $mediaarchive.asLinkToPreview($hit, "", $imagesize, true))
-		#set($hitsurls = $hitsurls + $hiturl)
-	#end
-#end
 <div class="resultsnav-btn-container">
-<a data-hitsurls="$hitsurls" href="#" class="btn btn-sm btn-success" id="btnupdateemurls">[[OK]]</a>
-</div>
-#end 
-
-<div class="resultsnav-btn-container">
-#set( $dataid = $context.getRequestParameter("dataid"))
-#if($dataid)
-	#set($selectedasset = $mediaarchive.getAsset($dataid))
+#if($hits.hasSelections())
+	#set($hitsurls = "")
 	#set( $imagesize = "image1500x1500.jpg")
-	#set($hiturl = $mediaarchive.asLinkToPreview($selectedasset, "", $imagesize, true))
-	
-	##set( $inputid = $context.getRequestParameter("inputid"))
-<a data-hitsurls="$hiturl" href="#" class="btn btn-sm btn-success" id="btnupdateemurls">[[OK]]</a>
-
+	#foreach ($hit in $hits.getPageOfHits())
+		#if($hits.isSelectedOnPage(${hit.id}))
+			#set($hiturl = $mediaarchive.asLinkToPreview($hit, "", $imagesize, true))
+			#if($hitsurls == "")
+				#set($hitsurls = $hiturl)
+			#else
+				#set($hitsurls = "$hitsurls , $hiturl")
+			#end
+		#end
+	#end
+	#if($hitsurls != "")
+		<a data-hitsurls="$hitsurls" href="#" class="btn btn-sm btn-success" id="btnupdateemurls">[[OK]]</a>
+	#end
 #end 
 <a  href="#" class="btn btn-sm btn-danger" id="btncloseoverlay">[[Cancel]]</a>
 
