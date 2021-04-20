@@ -1074,37 +1074,10 @@ $(document).ready(function()
 			if (exception == 'abort') {
 				return;
 			}		
-				
-				var errordiv = $("#errordiv")
-				if( errordiv.length > 0)
-				{
-					
-					function fade(elem){
-						$(elem).delay(6000).fadeOut(5000, "linear");
-					}
-					
-					$('#errordiv').stop(true, true).show().css('opacity', 1);
-					
-					errors = '<p class="error"><strong>Error: </strong>' + settings.url  + '<br/><strong> Returned: </strong>' + '' + exception + '</p>'
-					
-					$('#errordiv').html(errors);
-					
-					fade($('#errordiv'));
-					
-					$('#errordiv').mouseover(function(){
-						$(this).stop(true, true).show().css('opacity', 1);
-					});
-					
-					$('#errordiv p').mouseout(function(){
-						fade($('#errordiv'));
-					});
-				}
-				else
-				{
-					//  alert("Error \n" + settings.url + " \nreturned " + exception);
-
-				}
-			});
+			var errors = 'Error: ' + settings.url  + '\n Returned: ' + exception;
+			alert(errors);
+			return;
+	});
 
 	onloadselectors();
 	emcomponents();
