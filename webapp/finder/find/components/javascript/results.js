@@ -22,6 +22,8 @@ jQuery(document).ready(function(url,params)
 		var select = $(this);
 		select.on("change",function() 
 		{
+			var componenthome = select.data('componenthome');
+
 			var originalhitsperpage = select.data("hitsperpage");
 			if(originalhitsperpage){
 				var href = componenthome  +  "/results/changeresultview.html?oemaxlevel=1&cache=false&hitsperpage=" + originalhitsperpage;
