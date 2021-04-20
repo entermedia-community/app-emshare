@@ -108,6 +108,84 @@
 			
 		</ul>
 		
+		#set( $issample = $context.getRequestParameter("issample"))
+		
+		#if(!$issample)
+		<ul class="resultsnavright">
+		#if(!$resultview)
+			#set($resultview = $userprofile.get("resultview"))
+			#if (!$resultview)
+				#set($resultview = $content.get("resultview"))
+			#end
+			#if (!$resultview)
+				#set($resultview = "table")
+			#end
+		#end
+		
+		
+		#if (!$resultview || $resultview == 'table')
+			#if( $canedittablecolumns )
+				#if( $edit )
+					<li>
+						<a class="ajax table-edit-close" data-targetdiv="resultsdiv" href="$siteroot$componenthome/results/table.html?searchtype=asset&hitssessionid=$hits.getSessionId()&editheader="><i class="fas fa-times"></i></a>
+					</li>								
+					<li class="resultsnavtitem" style="min-width:180px">
+							#set ($alldetails = $searcher.getUserPropertyDetails() )
+							<select  class="form-control form-control-sm select2"  onchange='return addColumn(jQuery(this).val())' name="addcolumn" data-allowclear="false" >
+								<option>[[Add Column]]</option>
+								#foreach( $detail in $alldetails) <option value="$detail.id">$detail.getText($context)</option>
+								#end
+							</select>
+							<script type="text/javascript">
+								function addColumn(inId) {
+									jQuery('#resultsdiv').load("$siteroot$componenthome/results/addremovecolumns.html?oemaxlevel=1&searchtype=asset&hitssessionid=$hits.getSessionId()&editheader=true&addcolumn=" + inId);
+									return false;	
+								}
+							</script>
+					</li>	
+				#else 
+					<li >
+						<a class="ajax nav-hover" id="table-editor" data-targetdiv="resultsdiv" href="$siteroot$componenthome/results/table.html?searchtype=asset&hitssessionid=$hits.getSessionId()&editheader=true"> <i class="fas fa-edit"></i></a>
+					</li>
+				#end	
+			#end								
+		#end
+		#if($edit && $edit == "true"  )
+			<li class="resultsnavtitem">
+					<span class="small" style="padding-right: 10px;" >[[Drag columns to move them]]</span>
+			</li>
+		#end		
+
+		#if(!$edit || $edit == "false"  )
+			<li class="resultsnavtitem">
+				<select class="form-control" name="resultview" id="selectresultview"  
+					data-hitssessionid="$hits.getSessionId()" 
+					data-searchtype="asset" 
+					data-page="$hits.getPage()" 
+					data-showremoveselections="$showremoveselections" 
+					data-collectionid="$!librarycol.getId()">
+				#set( $types = $mediaarchive.getList("resulttype"))
+				#foreach($type in $types)
+					<option value="$type.getId()" #if( $resultview == "$type.getId()") selected #end>$type.getName($context)</option>
+				#end
+				</select>
+				
+			</li>
+			#if ($resultview != "map")
+			#if( $hits.size() > 0)
+				##<li class="resultsnavtitem hidden-sm-xs hidden-xs hidden-sm hidden-md">
+				##	$pages.include("$componenthome/results/pages.html",$context)
+				##</li>	
+				<li class="resultsnavtitem hidden-sm-xs hidden-xs hidden-sm hidden-md">
+					##<span class="text">$module.id[[Results]] $hits.getPageStart() - $hits.getPageEnd() [[of]] $hits.size() </span>
+				</li>			
+			#end
+			#end
+		#end	
+
+		
+	</ul>
+	#end
 </div>
 <div class="clearfix"></div>
 </div>
