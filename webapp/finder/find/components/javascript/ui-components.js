@@ -793,7 +793,7 @@ uiload = function() {
 				return;
 			}
 			var url = input.data("typeaheadurl");
-			console.log("Keyup" + e.which);
+			//console.log("Keyup" + e.which);
 			if( e.which == 27) //Tab?
 			{
 				modaldialog.hide();	

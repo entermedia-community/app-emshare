@@ -651,6 +651,13 @@ jQuery(document).ready(function(url,params)
 		return false;
 	});
 	
+	lQuery('a.stackedplayer', ".entity-media").livequery('click',function(e)
+	{
+		var modal = $(this).closest(".modal");
+		if (modal.length) {
+			modal.modal("hide");
+		}
+	});
 	lQuery('.stackedplayertableX tr td' ).livequery(
 	function()
 	{
