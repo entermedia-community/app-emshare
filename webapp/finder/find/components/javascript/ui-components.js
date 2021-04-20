@@ -2291,6 +2291,11 @@ uiload = function() {
 	lQuery( ".emdesktopdownload" ).livequery("click", function(e) {
 		e.preventDefault();
 		var item = $(this);
+		var reload = item.data("reloadsidebar");
+		if( reload == undefined)
+		{
+			reload = true;
+		}
 		var options = item.data();
 		jQuery.ajax(
 				{
@@ -2298,7 +2303,10 @@ uiload = function() {
 					data: options,
 					success: function() {
 						//Refresh side panel
-						$("#col-sidebars").load(apphome + "/components/sidebars/index.html");
+						if( reload )
+						{
+							$("#col-sidebars").load(apphome + "/components/sidebars/index.html");
+						}
 					}
 				}
 			);
