@@ -12,6 +12,8 @@
 #if($entity_module && $entityid)
 #set( $hits = $mediaarchive.query("asset").hitsPerPage($assetsshown).exact($entity_module, $entityid).sort("assetaddeddateDown").search() )
 #set($count = 0)
+#set($stackedfield = $mediaarchive.getCatalogSettingValue("stackedgalleryfield"))
+
 #foreach( $hit in $hits.getPageOfHits())
 	#set($count = $count + 1)
 	$context.putPageValue("hit", $hit)
@@ -31,8 +33,19 @@
  	#elseif( $rendertype =="video")
  		#set( $rendertype = "videothumbnail" )
  	#end
+ 	
+ 	#if($stackedfield)
+	      	#set($title = $hit.get($stackedfield))
+	#end
+	#if(!$title)		         	
+	  	#if( $hit.assettitle )
+	      	#set($title =  $hit.assettitle) 
+	    #else 
+	      	#set($title = $hit.name) 
+	    #end
+	#end
  	<div class="float-left grid-attachedmedia">
- 	<a class="stackedplayer imagearea " id="clickid${hit.id}" data-assetid="$hit.id" href="#">
+ 	<a class="stackedplayer imagearea" id="clickid${hit.id}" data-assetid="$hit.id" href="#" alt="$!title">
 	$pages.include("$componenthome/results/thumbnails/${rendertype}.html", $context)
 	</a>
 	</div>

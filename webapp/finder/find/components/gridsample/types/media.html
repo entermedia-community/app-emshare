@@ -7,6 +7,7 @@ data-singlepage="true"  >
 
 #set($count = 0)
 #set( $viewerlink = $content.get("assetviewerlink") )
+#set($stackedfield = $mediaarchive.getCatalogSettingValue("stackedgalleryfield"))
 
 #foreach( $hit in $hits)
 	
@@ -30,41 +31,41 @@ data-singlepage="true"  >
 		 data-assetid="$hit.id" 
 		 data-width="$assetwidth" 
 		 data-height="$assetheight">
-		 <div class="grid-gallery-checkbox resultsselection">
-		          <input type="checkbox" class="selectionbox" name="count" value="${hit.id}" 
-		          	#if($hits.isSelectedOnPage(${hit.id})) checked #end data-dataid="${hit.id}" />          
-		     </div>
-	    	<a class="stackedplayer imagearea " id="clickid${hit.id}" data-assetid="$hit.id" href="#">
-	    	    <div class="grid-thumbimage" data-assetid="$hit.id">
+		<div class="grid-cell-hover"></div>
+		<div class="grid-gallery-checkbox resultsselection">
+			<input type="checkbox" class="selectionbox" name="count" value="${hit.id}" 
+		        	#if($hits.isSelectedOnPage(${hit.id})) checked #end data-dataid="${hit.id}" />          
+		</div>
+	    <a class="stackedplayer imagearea " id="clickid${hit.id}" data-assetid="$hit.id" href="#">
+	    	    <div class="grid-thumbimage" data-assetid="$!hit.id">
+	    	    
 	    	    	#if(!$rendertype || $type =="rendertype")
 	    	    		#set( $rendertype = "mime" )
 	    	    	#elseif( $rendertype =="video")
 	    	    		#set( $rendertype = "videothumbnail" )
 	    	    	#end
-	    	    	
+
 	        	    $pages.include("$componenthome/results/thumbnails/${rendertype}.html", $context)
 	        	   	##$pages.include("$componenthome/results/badges.html", $context)
 	        	</div>
 	    	
-	    	 
-		      <div class="cell-caption">
-	       
-		         #set($stackedfield = $mediaarchive.getCatalogSettingValue("stackedgalleryfield"))
-		         #if($stackedfield)
-		         	#set($title = $hit.get($stackedfield))
-				 #end
-				 #if(!$title)		         	
-		         	#if( $hit.assettitle )
-			        	#set($title =  $hit.assettitle) #else #set($title = $hit.name) 
-			        #end
-		         #end
-		         <div class="stacked-field-info" title="$title" >
-		         	<div>$title</div>
-
-		         </div>
+	    	 	<div class="grid-caption  #if($rendertype=="default") grid-caption-show #end">
+			         
+			         #if($stackedfield)
+			         	#set($title = $hit.get($stackedfield))
+					 #end
+					 #if(!$title)		         	
+			         	#if( $hit.assettitle )
+				        	#set($title =  $hit.assettitle) 
+				        #else 
+				        	#set($title = $hit.name) 
+				        #end
+			         #end
+			         
+			         $!title
 		       </div>
-		       </a>  
-		         <div class="grid-gallery-footer">
+		 </a>  
+		 <div class="grid-gallery-footer">
 		        	<a href="" class="grid-gallery-favorite" title="[[Add to Favorites]]">
 			        	<i class="fas fa-bookmark"></i>
 	  	        	</a>
@@ -77,11 +78,10 @@ data-singlepage="true"  >
 			        	<i class="fas fa-download"> </i>
 			        	</a>
 		        	#end
-		        </div>
-
+		  </div>
 		</div>
        #set ( $count = $count + 1) 
-    
+   
 	#end
 
 </div>
