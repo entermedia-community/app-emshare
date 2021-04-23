@@ -262,6 +262,21 @@ runajaxonthis = function(inlink,e)
 			$(".ajaxprogress").hide();
 			//inlink.css("enabled",true);
 			inlink.removeAttr('disabled');
+			//Close Dialog
+			var closedialog = inlink.data("closedialog");
+			if (closedialog) {
+				inlink.parents(".modal").each(function() {
+					$(this).modal("hide");
+				});
+			}
+			//Close MediaViewer
+			var closemediaviewer = inlink.data("closemediaviewer");
+			if (closemediaviewer) {
+				var overlay = $("#hiddenoverlay");
+				if (overlay.length) {
+					hideOverlayDiv(overlay);
+				}
+			}
 		});
 		
 		

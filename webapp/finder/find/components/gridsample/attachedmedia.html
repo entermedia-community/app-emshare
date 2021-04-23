@@ -52,12 +52,12 @@
 #end
 <div class="clearfix"></div>
 <div class="entity-assets-info">
-[[Found]]: $hits.size() #if ($hits.size()==1) [[asset]] #else [[assets]] #end
+###set($link = "$siteroot$applink/views/module/$entity_module/search.html")
+#set($link = "$siteroot$applink/views/modules/modulesearch/filter.html")
+#set($link = "$link?hitssessionid=${hits.getSessionId()}&field=entitysourcetype&operation=matches&entitysourcetype.searchtype=modulesearch&entitysourcetype.value=$entity_module")
+#set($link = "$link&oemaxlevel=2")
+[[Found]]: <a href="$link" class="ajax" data-targetdiv="searchlayout" data-closedialog="true" data-closemediaviewer="true">$hits.size() #if ($hits.size()==1) [[asset]] #else [[assets]] #end</a>
 #if($fullview) 
-#if($hits.size()>=$assetsshown)
-<a href="" class="moreactions">
-	<i class="fas fa-th"></i> <span>[[See More]]</span></a>
-#end
 <a href="$siteroot/$applink/views/modules/asset/add/start.html?entitytype=$entity_module&addselection=$entityid" class="moreactions">
 	<i class="fas fa-upload"></i> [[Upload]]</a>
 #end
