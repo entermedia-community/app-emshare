@@ -2437,9 +2437,9 @@ var resizecolumns = function() {
 		$(".col-left > .col-main-inner").css("height", windowh);
 	}
 	//$(".col-sidebar").css("min-height", columnsheight);
-	
 	if ($(".col-content-main").parent().hasClass("settingslayout")) {
-		$(".col-content-main").css("min-height", columnsheight + sidebarstop + "px");
+		$(".col-content-main").css("height", columnsheight + sidebarstop + "px");
+		$(".col-settingssidebar").css("height", columnsheight + sidebarstop + "px");
 	}
 	else {
 		$(".col-content-main").css("min-height", columnsheight + sidebarstop + "px");
