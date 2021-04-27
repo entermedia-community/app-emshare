@@ -2050,14 +2050,15 @@ uiload = function() {
 		{
 			if( clickspot )
 			{
+				
 				$(this).css('opacity','0.6');
 				width = 0;
 				var changeleft = event.pageX - clickspot.pageX;
 				width = startwidth + changeleft;
 				width = width+32;
-				if( width < 100 )
+				if( width < 200 )
 				{
-					width = 100;
+					width = 200;
 				}
 				if( width > 380 )  //break sidebarfilter columns
 				{
@@ -2122,9 +2123,9 @@ uiload = function() {
 				width = 0;
 				var changeleft = event.pageX - clickspot.pageX;
 				width = startwidth + changeleft;
-				if( width < 50 )
+				if( width < 200 )
 				{
-					width = 50;
+					width = 200;
 				}
 				console.log("Wid" , width);
 				column.width(width);
