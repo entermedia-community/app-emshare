@@ -1969,6 +1969,13 @@ uiload = function() {
 		
 	});
 	
+	lQuery('.col-mainsidebarZ').livequery("mouseenter mouseleave", function(e) {
+		
+		var toggler = $(this).find(".sidebar-toggler-hide");
+		if (toggler) {
+			toggler.toggle();
+		}
+	});
 	
 
 	lQuery(".assetpicker .removefieldassetvalue").livequery("click", function(e) 
