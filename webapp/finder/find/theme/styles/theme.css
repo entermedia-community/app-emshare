@@ -193,29 +193,40 @@ body {
 	width:240px;
 }
 
-.settingslayout .ui-widget-header a, .ui-widget-header a:visited {
-	color:#ddd;
+.col-left.col-settings,
+.col-left.col-addentity {
+	background-color: #dedede;
 }
-.settingslayout .sidebar-list a {
+
+.col-settings .sidebar-list li {
+	background-color: #eaeaea;
+	border-bottom:1px solid #ccc;
+	line-height: 1.6;
+}
+.col-settings .sidebar-list li:hover,
+.col-settings .sidebar-list li.current {
+	background-color: #bbb;
+}
+.col-settings .sidebar-list a {
 	display:block;
-	color:#b5b5b5;
-	padding:4px;
+	color:#444;
+	padding:4px 8px;
 } 
-.settingslayout .sidebar-list a:hover {
-	color:#efefef;
+.col-settings .sidebar-list a:hover {
+	color:#000;
 	text-decoration:none;
 	}
-.settingslayout .sidebar-list li.current a,
-.settingslayout .sidebar-list li.current a.dropdown-item {
-	color:#fff;
+.col-settings .sidebar-list li.current a,
+.col-settings .sidebar-list li.current a.dropdown-item {
+	color:#111;
 	font-weight: bold;
-	text-decoration: underline;
+	
 }
-.settingslayout .ui-widget-header .dropdown-menu {
+.col-settings .ui-widget-header .dropdown-menu {
 	border-radius: 0;
 	width: 80%;
 }
-.settingslayout .ui-widget-header .dropdown-item {
+.col-settings .ui-widget-header .dropdown-item {
 	background-color:#232323;
 	border-bottom:1px solid #444;
 	font-size: 1rem;
@@ -364,7 +375,8 @@ ul.list-group.list-group-hover li:hover,
 .table-striped tr.emrowselected:nth-of-type(odd),
 .category-search .current,
 .category-search .auto-active-row:hover,
-.uploadcollection
+.uploadcollection,
+.downloads-sidebar-list li:hover
 {
 	background-color: #efefef!important;
 	color:#333;
@@ -877,7 +889,7 @@ html, body, #application {
 	transition: 0.2s;
 	margin:0 0 0 32px;
 }
-.mediaappcontent .col-content-main { margin-top:90px; padding-top:0px; }
+.mediaappcontent .col-content-main {  padding-top:90px; }
 
 .pushcontent {
 	height: 100%;
@@ -901,8 +913,8 @@ html, body, #application {
 	position:absolute;
 	top:0;
 	right:0;
-	width:6px;
-	opacity: .5;
+	width:8px;
+	opacity: .0;
 }
 .colslidercontainer a:hover {
 	color:#000;
@@ -923,12 +935,6 @@ html, body, #application {
     	
 	}
 	.col-content {
-		margin-left: 280px;
-		min-height: 400px;
-	}
-	
-	.settingslayout .col-content {
-		margin-left: 240px;
 		min-height: 400px;
 	}
 	
@@ -1005,7 +1011,7 @@ html, body, #application {
     
     border-bottom-right-radius:.25rem;
 	border-top-right-radius:.25rem;
-	box-shadow:2px 2px 6px 0 rgba(0,0,0,0.4);
+	
 	opacity:0.5;
 	z-index:100;
 }
@@ -1030,7 +1036,7 @@ html, body, #application {
 	
 	box-shadow:3px 1px 3px 0 rgba(0,0,0,0.3);
 	background-color: #fff;
-	opacity: 0.9;
+
 }
 
 .col-left .col-main-inner {
@@ -1068,6 +1074,25 @@ html, body, #application {
 .col-userdownloads .col-sidebar-header h2,
 .col-userdownloads .sidebar-toggler-hide {
 	background-color:#6FB353;
+}
+.col-settings .col-sidebar-header h2,
+.col-settings .sidebar-toggler-hide {
+	background-color:#555;
+}
+
+
+.col-mainsidebar h3 {
+	font-size:1rem;
+	font-weight:bold;
+	color:#000;
+	background-color:#999;
+	margin:0;
+	padding:6px 8px;
+}
+
+.col-mainsidebar h3 a {
+	font-weight:bold;
+	color:#000;
 }
 
 .col-addentity .dropdown-item {
@@ -1112,9 +1137,7 @@ html, body, #application {
 	.col-mainsidebarZ {
 		max-width:600px!important;
 	}
-	.col-left {
-		opacity: 1;
-	}
+
 	
 }
 
@@ -1161,7 +1184,7 @@ html, body, #application {
 		color:#fff;
 }
 
-.col-mainsidebar h3 {
+.col-mainsidebarX h3 {
 	font-size: 0.9rem;
 	font-weight:bold;
 	margin:0;
@@ -5008,6 +5031,42 @@ a.collectionbox.favorite
 	margin-left:5px;
 }
 
+
+.downloads-sidebar-list {
+	margin:0;
+	padding:0;
+	list-style: none;
+
+}
+.downloads-sidebar-list a {
+	display:block;
+	color:#666;
+	padding:5px;
+	line-height:3;
+	
+		 white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width:100%;
+}
+.downloads-sidebar-list a:hover {
+	text-decoration: none;
+	color:#333;
+
+}
+.downloads-sidebar-list .download-sidebar-thumb-container {
+	width:60px;
+	height: 40px;
+	float:left;
+	margin-right: 5px;
+	text-align: center;
+}
+.downloads-sidebar-list .download-sidebar-thumb {
+	max-width:60px;
+	max-height: 40px;
+}
+
+
 .typeaheadmodal {
 	position: absolute;
 	z-index: 15000;
@@ -5328,28 +5387,32 @@ h3.modal-insight-datatype {
 	text-decoration: none;
 }
 
-.fa-filter {
+.sidebar-togglers .fa-filter {
 	color: cadetblue;
 }
 
-.fa-folder {
+.sidebar-togglers .fa-folder {
     color: #ffd05b;
 }
 
-.fa-grip-horizontal {
+.sidebar-togglers .fa-grip-horizontal {
     color: #ff6600;
 }
 
-.fa-portrait {
+.sidebar-togglers .fa-portrait {
     color: brown;
 }
 
-.fa-database {
+.sidebar-togglers .fa-database {
 	color: #990000;
 }
 
-.fa-history {
+.sidebar-togglers .fa-history {
     color: #6FB353;
+}
+
+.sidebar-togglers .fa-cog {
+	
 }
 
 .downloadsUpdateWrapper {
@@ -5486,7 +5549,7 @@ h3.modal-insight-datatype {
 }
 
 .datamanagerchose {
-	background-color: #efefef;
+
 	padding:10px 0 15px;
 }
 .datamanagertable {

@@ -118,6 +118,22 @@
 	<i class="fas fa-history"></i>
 	</a>
 	</div>
+	
+	
+	#if( $canviewsettings ) 
+		<div class="sidebar-togglers #if($sidebarcomponent == "settings") sidebar-selected #end">
+		<a href="#" 
+			class="sidebar-toggler sidebar-toggler-show light" 
+			data-action="show" 
+			data-targetdiv="col-sidebars"
+			data-sidebar="settings"
+			data-modulesearchhitssessionid="$modulehits.sessionId"
+		title="[[Settings]]">
+		<i class="fas fa-cog"></i>
+		</a>
+		</div>
+	#end
+	
 
 </div>
 #if($sidebarcomponent)
@@ -158,17 +174,25 @@
 		#set($sidebarurl = "$apphome/components/sidebars/addentity/index.html?selectedmodule=$!module.id")
 	#end
 
-
 	#if($sidebarcomponent == "userdownloads" )
 		#set($sidebarurl = "$apphome/components/sidebars/userdownloads/index.html")
 	#end
+	
+	#if($sidebarcomponent == "settings" )
+		#set($sidebarurl = "$apphome/components/sidebars/settings/index.html")
+	#end
 
+
+	##SIDEBAR WIDTH
+	
 	#set( $sidebarwidth = $userprofile.get("sidebarwidth"))
 
 	#if($sidebarurl)
 		#if($sidebarwidth=='' || $sidebarwidth=='undefined')
 			#set($sidebarwidth = 280)
-		#end
+	#end
+	
+	
 	<div class="col-mainsidebar #if($sidebarwidth && $sidebarwidth>320)sidebarwide #end"   
 	 style="top: 24px; #if($sidebarwidth) width:${sidebarwidth}px;#end"
 	 data-sidebarwidth="$!sidebarwidth">

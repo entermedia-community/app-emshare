@@ -15,7 +15,7 @@
 				</div>
 				
 				
-<ul class="sidebar-list">
+<ul class="downloads-sidebar-list">
 #set($recentdownloads = $mediaarchive.query("userdownloads").exact("user",$user.getId()).sort("dateDown").search($context))
 
 	#foreach ( $download in $recentdownloads )
@@ -30,7 +30,9 @@
 			#set ($mime = $mediaarchive.getMimeTypeIcon($asset.fileformat))
 			<!-- #set( $thumbpath =  "$themeprefix/images/mimetypes/${mime}.png" ) -->
 			#set( $thumbpath = $mediaarchive.asLinkToPreview($asset, "image200x200.jpg"))
-			<img class="mimethumb" style="height:64px" src="$!cdn$siteroot$thumbpath" border="0"/>
+			<div class="download-sidebar-thumb-container">
+			<img class=" download-sidebar-thumb" src="$siteroot$thumbpath" border="0"/>
+			</div>
 			$asset.getName()
 		#else
 			#set( $cat = $mediaarchive.getCategory($download.categoryid))

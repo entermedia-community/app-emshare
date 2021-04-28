@@ -1,0 +1,75 @@
+<div class="col-sidebar-header">
+	<h2>
+	[[SETTINGS]]
+	</h2>
+	<a href="#"
+		title="[[Hide Settings Sidebar]]"
+		class="sidebar-toggler sidebar-toggler-hide"
+		data-action="hide" 
+		data-targetdiv="col-sidebars">
+		<i class="fas fa-angle-double-left closebar"></i>
+	</a>	
+</div>
+
+
+#set ($lastselected = $content.module )
+#if(!$lastselected)
+		#set($lastselected = $userprofile.last_selected_module )
+	#end
+#set($module = $searcherManager.getData($catalogid, "module", $lastselected ) )
+#if ( !$module || $module.id == "modulesearch")
+	#set ($module = $searcherManager.getData($catalogid, "module", "asset") )
+#end
+#set($userprofile.last_selected_module = $module.id)
+
+#if($module)
+<div >
+	<div>
+		<h3>
+			<a class="dropdown-toggle" href="#" data-toggle="dropdown">$module [[Settings]]</a>
+			<div class="dropdown-menu">
+			#foreach ( $amodule in $userprofile.getModules() )
+					<a class="dropdown-item" href="$home$apphome/views/settings/modules/${amodule.id}/index.html?propertyfield=last_selected_module&last_selected_module.value=${amodule.id}">$amodule</a>
+				#end
+			</div>
+		</h3>
+	</div>
+	<div>
+		<ul id="settings-menu" class="sidebar-list">
+			#set( $searcher = $searcherManager.getSearcher($catalogid,"settingsmenumodule") )
+			#set( $query = $searcher.createSearchQuery() )
+			#set( $null = $query.addExact("menulevel","toplevel") )
+			#set( $null = $query.addExact("moduleid",$module.id) )
+			$!query.addSortBy("ordering")
+			#set($screens =  $searcher.search($query))
+			#foreach($screen in $screens)
+
+			<li id="$screen.id" #if( $tab == "$screen.id" ) class="current" #end>
+				<a href="$home$apphome${screen.path}">$context.getText($screen.toString())</a>
+			</li>
+			#end
+		</ul>
+	</div>
+</div>
+#end
+			
+			
+
+<div  >
+	<h3>[[System Settings]]</h3>
+</div>
+<div  class="ui-widget-content categories-widget no-padding-for-real">
+	<ul id="settings-menu" class="sidebar-list">
+		
+		#set( $searcher = $searcherManager.getSearcher($catalogid,"settingsmenumodule") )
+		#set( $query = $searcher.createSearchQuery() )
+		#set( $null = $query.addExact("menulevel","toplevel") )
+		#set( $null = $query.addExact("moduleid","system") )						
+		$!query.addSortBy("ordering")
+		#foreach($screen in $searcher.search($query) )
+		<li id="$screen.id" #if( $tab == "$screen.id" ) class="current" #end>
+			<a href="$home$apphome${screen.path}">$context.getText($screen.toString())</a>
+		</li>
+		#end
+	</ul>
+</div>
