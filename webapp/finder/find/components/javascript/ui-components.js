@@ -2127,7 +2127,7 @@ uiload = function() {
 				{
 					width = 200;
 				}
-				console.log("Wid" , width);
+				//console.log("W" , width);
 				column.width(width);
 				column.data("sidebarwidth",width);
 				$(".pushcontent").css("margin-left",width+"px");
@@ -2456,6 +2456,37 @@ var resizecolumns = function() {
 	$(".pushcontent").css("height","calc(100% - " + resultsheader_height + "px)");
 }
 
+
+var resizesearchcategories = function() {
+	var container = $("#sidecategoryresults");
+	if (!container) {
+		return
+	}
+	var w = container.width();
+	var h = container.height();
+	
+	var ctree = container.find(".searchcategories-tree");
+	var cfilter = container.find(".searchcategories-filter");
+	if (w>640) {
+		ctree.addClass("widesidebar");
+		cfilter.addClass("widesidebar")
+		var wt = ctree.width();
+		cfilter.width(w-wt-24);
+		cfilter.height(h);
+		ctree.height(h);
+	}
+	else {
+		ctree.removeClass("widesidebar");
+		cfilter.removeClass("widesidebar");
+		cfilter.width(w-20);
+		ctree.height('250');
+		cfilter.height('auto');
+		
+	}
+	console.log(h);
+}
+
+
 var ranajaxon = new Array();
 
 lQuery(".ajaxstatus").livequery(
@@ -2498,13 +2529,14 @@ jQuery(document).ready(function() {
 	gridResize();
 	resizegallery();
 	resizecolumns();
-	
+	resizesearchcategories();
 });
 
 jQuery(window).on('resize',function(){
 	gridResize();
 	resizegallery();
 	resizecolumns();
+	resizesearchcategories();
 });
 jQuery(document).on('domchanged',function(){
 	gridResize(); //This calls checkScroll. Makes sure this is last after any actions

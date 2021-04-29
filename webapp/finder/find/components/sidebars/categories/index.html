@@ -1,14 +1,6 @@
 <div class="col-sidebar-header">
 	<h2>
-	#if( $module.id =="librarycollection" && $librarycol )
-	<a class="nav-btn float-left sidebarheaderactions" href="$apphome/views/modules/asset/index.html?nodeID=$librarycol.getRootCategoryId()">
-		<i class="fas fa-arrow-alt-circle-up"></i>
-	</a>
-	#else
-	<a class="emdialog sidebarsubmenu float-left sidebarheaderactions" data-hidefooter="true" data-width="1000" data-height="600"  title="[[Select Category]]" href="$siteroot$apphome/components/categories/search/searchcategory.html">
-	<i class="fas fa-search"></i>
-	</a>
-	#end
+
 	[[FOLDERS]]
 	</h2>
 	<a href="#"
@@ -20,16 +12,6 @@
 	</a>	
 </div>
 	
-	
-	<div class="libraryfinder-header text-right">
-	##<a href=""><i class="fas fa-folder-plus "></i></a> 
-	<form name="categorysearch" class="ajaxform" data-targetdivinner="sidecategoryresults" data-oemaxlevel="1" action="$applink/components/sidebars/categories/catresults.html">
-		<input type="hidden" name="field" value="description" />
-		<input type="hidden" name="operation" value="freeform"/>
-		<input size="30" name="description.value" autocomplete="off" class="form-control form-control-sm grabfocusX"/>
-		<a href="#" class="submitform" title="[[Search Categories]]"><i class="fas fa-search"></i></a>
-	</form>
-	</div>
 
 <div id="sidecategoryresults">
 	#if(!$librarycol)
@@ -65,13 +47,21 @@
 	#end
 #end
 
-<div id="side-categories" class="assetdropcategory categorytree">
-    #set( $link = "$apphome/components/emtree/tree.html")
-    #set( $link = "${link}?tree-name=categoryPickerTree&clearselection=$clearselection&allowselections=false&editabletree=true" )
-    #set( $link = "${link}&targetdiv=searchlayout&maxlevelclick=2" )
-    #set( $link = "${link}&url-prefix=$siteroot$apphome/views/modules/asset/showcategory.html" )
-    $pages.include($link, $context)
-</div>
+##$pages.include("$apphome/components/sidebars/categories/search/searchcategory.html?nodeID=index",$context)
+
+$pages.include("$apphome/components/categories/search/searchcategory.html?nodeID=index",$context)
+
+
+##<div id="side-categories" class="assetdropcategory categorytree">
+##    #set( $link = "$apphome/components/emtree/tree.html")
+##    #set( $link = "${link}?tree-name=categoryPickerTree&clearselection=$clearselection&allowselections=false&editabletree=true" )
+##    #set( $link = "${link}&targetdiv=searchlayout&maxlevelclick=2" )
+##    #set( $link = "${link}&url-prefix=$siteroot$apphome/views/modules/asset/showcategory.html" )
+##    $pages.include($link, $context)
+##</div>
+
+
+
 
  
 #end
