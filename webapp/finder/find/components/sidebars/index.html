@@ -74,7 +74,7 @@
 		</div>
 	#end -->
 	
-
+#if( $usercollections && !$usercollections.isEmpty() )
 	<div class="sidebar-togglers #if($sidebarcomponent == "libraries") sidebar-selected #end">
 	<a href="#" 
 		class="sidebar-toggler sidebar-toggler-show light" 
@@ -82,11 +82,11 @@
 		data-targetdiv="col-sidebars"
 		data-sidebar="libraries"
 		data-modulesearchhitssessionid="$modulehits.sessionId"
-	title="[[Albums]]">
+	title="[[Recent Albums]]">
 	<i class="fas fa-grip-horizontal"></i>
 	</a>
 	</div>
-	
+#end
 	
 ##	
 	<!-- <div class="sidebar-togglers #if($sidebarcomponent == "faceprofiles") sidebar-selected #end">
@@ -101,22 +101,6 @@
 	</a>
 	</div> -->
 
-#if( $userprofile.getModules().size() > 1 )
-	#set( $urlbase = "$siteroot$applink/views/modules" )
-
-
-	<div class="sidebar-togglers #if($sidebarcomponent == "addentity") sidebar-selected #end">
-	<a href="#" 
-		class="ajax sidebar-toggler sidebar-toggler-show light" 
-		data-modulesearchhitssessionid="$modulehits.sessionId"
-		data-action="show"
-		data-targetdiv="col-sidebars"
-		data-sidebar="addentity"
-	title="[[Database]]">
-	<i class="fas fa-database"></i>
-	</a>
-	</div>
-#end
 
 	<div class="sidebar-togglers #if($sidebarcomponent == "userdownloads") sidebar-selected #end">
 	<a href="#" 
@@ -137,8 +121,25 @@
 	<i class="fas fa-history"></i>
 	</a>
 	</div>
-	
-	
+
+
+#if( $userprofile.getModules().size() > 1 )
+	#set( $urlbase = "$siteroot$applink/views/modules" )
+
+
+	<div class="sidebar-togglers #if($sidebarcomponent == "addentity") sidebar-selected #end">
+	<a href="#" 
+		class="ajax sidebar-toggler sidebar-toggler-show light" 
+		data-modulesearchhitssessionid="$modulehits.sessionId"
+		data-action="show"
+		data-targetdiv="col-sidebars"
+		data-sidebar="addentity"
+	title="[[Database]]">
+	<i class="fas fa-database"></i>
+	</a>
+	</div>
+#end
+
 	#if( $canviewsettings ) 
 		<div class="sidebar-togglers #if($sidebarcomponent == "settings") sidebar-selected #end">
 		<a href="#" 

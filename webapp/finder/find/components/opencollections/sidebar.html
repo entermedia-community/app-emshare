@@ -1,0 +1,93 @@
+#if ( $canviewopencollections)
+#if(!$userprofile.minimizeopencollectionscontent || $userprofile.minimizeopencollectionscontent == "false")
+	#set($minimized = true)
+#else
+	#set($minimized = false)
+#end
+<div id="left-col-opencollections-container">
+<div class="sidebar-component" id="left-col-opencollections" >
+	<div  class=" sidebar-component-header sidetoggle"
+		data-target="opencollectionscontent">
+		<i class="fas 
+		#if($minimized) 
+				 fa-caret-down 
+		  	#else 
+		  		 fa-caret-right 
+		  	#end 
+		 caret"></i>
+		<span>[[Recent Collections]]</span>
+		<span class="float-right component-actions" 
+		#if(!$minimized == "true") style="display: none;" #end>
+			<a class="emdialog sidebarsubmenu" title="[[Collection Search]]" data-hidefooter="true" data-width="900" href="$home$apphome/components/opencollections/searchcollection.html"><i class="fas fa-search"></i></a>
+		</span>
+	</div>
+	<div  class="sidebar-component-content"  
+		  id="opencollectionscontent" 
+ 		  #if(!$minimized) style="display: none;" #end>
+
+	<div class="opencollections">
+	<ul>
+		
+	 #if($canaddtofavorites)
+		#set( $collection = $mediaarchive.getProjectManager().getFavoritesCollection($user) )
+		#if( $librarycol && $collection.getId() == $librarycol.id )
+				#set( $selected = true )
+			#end
+		<li class="librarycollectiondroparea #if ($selected ) selected #end"
+				data-dropsaveurl="$home$apphome/components/opencollections/addassettocollection.html"
+				data-collectionid="$collection.getId()"
+				data-targetdiv="left-col-opencollections"
+			>
+				<div class="collectionrow collectionrowfavorite">
+					<a  href="$home$apphome/views/modules/librarycollection/media/${collection.getId()}/index.html?clearselection=true" 
+					 	class="collectionbox #if ($selected ) selected #end favorite"  
+					 	title="$!{collection}"
+					 	data-collectionname="${collection.getName()}">
+					 	<i class="fas fa-star"></i>  [[Favorites]] ($collection.getAssetCount())
+					</a>
+				 </div>
+			</li>
+	#end
+	  	#foreach($collection in $usercollections )
+		    #set( $selected = false )
+			#if( $librarycol && $collection.getId() == $librarycol.id )
+				#set( $selected = true )
+			#end
+	  		<li class="librarycollectiondroparea #if ($selected ) selected #end"
+				data-dropsaveurl="$home$apphome/components/opencollections/addassettocollection.html"
+				data-collectionid="$collection.getId()"
+				data-targetdiv="left-col-opencollections"
+			>
+				<div class="collectionrow">
+					<a  href="$home$apphome/views/modules/librarycollection/media/${collection.getId()}/index.html?clearselection=true" 
+					 	class="collectionbox #if ($selected ) selected #end"  
+					 	title="$!{collection}"
+					 	data-collectionname="${collection.getName()}">
+					 	$collection.getName() ($collection.getAssetCount())
+					</a>
+					<div class="collectionicons">
+						<a href="$home$apphome/components/opencollections/closecollection.html?collectionid=${collection.getId()}" 
+							class="collectionclose ajax" targetdiv="left-col-opencollections" title="[[Close Collection]]">
+							<span class="closecollection fas fa-times " data-collectionid="${collection.getId()}"></span>
+						</a>
+					</div>
+				 </div>
+			</li>
+		#end
+		#if ($canaddnewcollection)
+		<li class="newcollectiondroparea" style="text-align: right;">
+			<div id="opencollectioncreatenewarea">
+ 				<a id="newCollection" class="ajax collectionnew btn btn-xs btn-filters" 
+					   targetdivinner="opencollectioncreatenewarea" data-oemaxlevel="1"
+					   href="$home$apphome/components/opencollections/addnewchild.html?libraryid=$context.getUserName()" >
+					   [[Create New]]
+					</a>
+		    </div>
+		</li>
+		#end	
+	</ul>	
+	</div>
+	</div>
+</div>
+</div>
+#end
