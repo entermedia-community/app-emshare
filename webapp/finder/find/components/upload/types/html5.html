@@ -9,10 +9,14 @@
 #end
 #if (!$librarycol)
 	#if(!$collectionid)
-		#set($collectionid = $userprofile.get("lastselectedcollection"))
+		##set($collectionid = $userprofile.get("lastselectedcollection"))
+	#end
+	#if(!$collectionid)
+	
+		#set($librarycol = $mediaarchive.getProjectManager().loadUserCollection($mediaarchive, $userprofile))
 	#end
 
-	#if($collectionid)
+	#if(!$librarycol && $collectionid)
 		#set($librarycol = $mediaarchive.getCachedData("librarycollection",$collectionid) )
 	#end
 #end
