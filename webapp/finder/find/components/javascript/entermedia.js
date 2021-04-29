@@ -221,11 +221,14 @@ runajaxonthis = function(inlink,e)
 	{
 		var container = inlink.closest(".auto-active-container");
 		
-		jQuery(".auto-active-row",container).removeClass("current");
-		
+		jQuery(".auto-active-row",container).removeClass("current");	
 		var row = inlink.closest(".auto-active-row");
 		row.addClass("current");
-		
+
+		jQuery("li",container).removeClass("current");
+		var row = inlink.closest("li");
+		row.addClass("current");
+
 	}
 	var options = inlink.data();
 	
