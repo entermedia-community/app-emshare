@@ -3,8 +3,13 @@
 
 
 #if( !$sidebarcomponent && $modulehits.isEmpty() )
- #set( $sidebarcomponent = "guide" )
-#end 
+	#set( $sidebarcomponent = "guide" )
+#end
+
+#set($forcedsidebarcomponent = $context.getRequestParameter("sidebarcomponent")) 
+#if($forcedsidebarcomponent)
+	#set( $sidebarcomponent = $forcedsidebarcomponent )
+#end
 
 	<div class="sidebar-togglers #if($sidebarcomponent == "guide") sidebar-selected #end">
 	<a href="#" 
