@@ -2423,7 +2423,7 @@ var resizecolumns = function() {
 		
 		if (thisheight > columnsheight) {
 			columnsheight = thisheight;
-			
+			console.log("Won col "+col);
 		}
 	});
 	
@@ -2433,7 +2433,7 @@ var resizecolumns = function() {
 		var offset = $(".col-mainsidebar").offset();
 		var colheight = columnsheight;
 		if (offset) {
-			colheight = columnsheight - offset.top+1;
+			colheight = columnsheight - offset.top;
 		}
 		$(".col-mainsidebar").css("height", colheight);
 	}
@@ -2470,20 +2470,19 @@ var resizesearchcategories = function() {
 	if (w>640) {
 		ctree.addClass("widesidebar");
 		cfilter.addClass("widesidebar")
-		var wt = ctree.width();
-		cfilter.width(w-wt-24);
-		cfilter.height(h);
-		ctree.height(h);
+		//var wt = ctree.width();
+		//cfilter.width(w-wt-12);
+		//cfilter.height(h);
+		//ctree.height(h);
 	}
 	else {
 		ctree.removeClass("widesidebar");
 		cfilter.removeClass("widesidebar");
-		cfilter.width(w-20);
-		ctree.height('250');
-		cfilter.height('auto');
-		
+		//cfilter.width(w-12);
+		//ctree.height('250');
+		//cfilter.height(h-300);
 	}
-	console.log(h);
+	//console.log(h);
 }
 
 
