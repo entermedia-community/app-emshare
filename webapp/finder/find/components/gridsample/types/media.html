@@ -25,8 +25,9 @@ data-singlepage="true"  >
 	#set($assetwidth = $mediaarchive.getRealImageWidth($hit))
 	#set($assetheight = $mediaarchive.getRealImageHeight($hit))
 	#set($click = "$siteroot$viewerlink?hitssessionid=${hits.getSessionId()}&assetid=${hit.id}")
+	#set($isselected = $hits.isSelectedOnPage(${hit.id}) )
        
-	<div class="masonry-grid-cell stackedplayer-cell assetdraggable resultsassetcontainer" 
+	<div class="masonry-grid-cell stackedplayer-cell assetdraggable resultsassetcontainer #if($isselected) emrowselected #end" 
 		 id="gallerycell_${hit.id}"
 		 data-assetid="$hit.id" 
 		 data-width="$assetwidth" 
@@ -34,7 +35,7 @@ data-singlepage="true"  >
 		<div class="grid-cell-hover"></div>
 		<div class="grid-gallery-checkbox resultsselection">
 			<input type="checkbox" class="selectionbox" name="count" value="${hit.id}" 
-		        	#if($hits.isSelectedOnPage(${hit.id})) checked #end data-dataid="${hit.id}" />          
+		        	#if($isselected) checked #end data-dataid="${hit.id}" />          
 		</div>
 	    <a class="stackedplayer imagearea " id="clickid${hit.id}" data-assetid="$hit.id" href="#">
 	    	    <div class="grid-thumbimage" data-assetid="$!hit.id">
