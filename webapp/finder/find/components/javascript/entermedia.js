@@ -202,11 +202,22 @@ runajaxonthis = function(inlink,e)
 	if (!nextpage) {
 		nextpage = inlink.data("nextpage");
 	}
+	
 	var targetDiv = inlink.data("targetdiv");
+	var replaceHtml = true;
 	if( !targetDiv )
 	{
 		targetDiv = inlink.attr("targetdiv");
 	}
+	
+	if( !targetDiv )
+	{
+		targetDiv = inlink.data("targetdivinner");
+		if (targetDiv) {
+			replaceHtml = false;
+		}
+	}	
+	
 	var useparent = inlink.data("useparent");
 
 
@@ -251,8 +262,13 @@ runajaxonthis = function(inlink,e)
 					cell = findclosest(inlink,"#" + targetDiv); 
 					
 				}
-				//Call replacer to pull $scope variables
-				cell.replaceWith(data); //Cant get a valid dom element
+				if (replaceHtml) {
+					//Call replacer to pull $scope variables
+					cell.replaceWith(data); //Cant get a valid dom element
+				}
+				else {
+					cell.html(data);
+				}
 				$(window).trigger( "resize" );
 			},
 			type: "POST",
@@ -286,6 +302,7 @@ runajaxonthis = function(inlink,e)
 	}	
 	else
 	{
+		/*
 		//add oemaxlevel as data
 		var loaddiv = inlink.data("targetdivinner");
 		if( !loaddiv )
@@ -315,6 +332,7 @@ runajaxonthis = function(inlink,e)
 							//inlink.css("enabled",true);
 							inlink.removeAttr('disabled');
 						});		
+		*/
 	}
 	
 	inlink.css( "cursor","");
