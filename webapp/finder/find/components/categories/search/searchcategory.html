@@ -1,0 +1,123 @@
+#if (!$treename)
+	#set( $treename = "dialogCategoryPickerTree" )
+#end
+#set( $action = $context.getRequestParameter("action") ) 
+#if (!$targetdiv)
+	#set( $targetdiv = $context.getRequestParameter("targetdiv") )
+#end
+#set( $detailid = $context.getRequestParameter("detailid") )
+#if(!$detailid)
+	#set( $detailid = "category") 
+#end
+
+#set( $pickone = $context.getRequestParameter("pickone") )
+#if (!$pickone)
+	#set( $pickone = true )
+#end
+#set( $categories = $context.getRequestParameter("${detailid}.value") )
+#if(!$categories)
+	#set( $categories = $context.getRequestParameter("category-exact.values") )
+#end	
+#if(!$categories)
+	#set( $categories = $context.getRequestParameter("category.values") )
+#end
+#if(!$categories)
+	#set( $categories = $context.getRequestParameter("category-exact.values") )
+#end	
+#if(!$categories)
+	#set( $categories = $context.getRequestParameter("existingcategories") )
+#end
+
+#set( $multivalue = $context.getRequestParameter("multivalue") )
+#if(!$multivalue)
+	#set( $selectedcategories = $categories )
+	$context.putPageValue("selectedcategories",$selectedcategories)
+#end
+
+
+#set( $assetid = $context.getRequestParameter("assetid") )
+
+<div id="search-catgories">
+<div class="searchcategories-tree">
+    <div class="assetdropcategory assetdropcategorymove searchcategories-treecontainer">
+        #set( $link = "$apphome/components/emtree/tree.html")
+        #set( $link = "${link}?tree-name=$treename&editabletree=true&clearselection=true" )
+        #set( $link = "${link}&targetdiv=$!targetdiv&maxlevelclick=$!maxlevelclick&updateAddressBar=false" )
+        
+		$pages.include($link, $context)  
+	</div>
+</div>
+<div class="searchcategories-filter">
+	<div id="searchareacontent"> 
+	$pages.include("$apphome/components/categories/search/searchcategoryfilter.html?nodeID=index",$context)
+	</div>
+</div>
+
+
+<script>
+
+var paintselected = function()
+{
+	#foreach($categoryid in $categories.split("\s*\|\s*"))
+	$('[data-resultsnodeid="${categoryid}"]').addClass("emrowselected");
+	#end
+};
+
+$(document).on("emtreeselect",function(event) 
+{
+	
+	var selectednode = event.nodeid;
+	$("#parentfilter").val(selectednode);
+	//trigger("submit");
+	//$("#autosubmitfilter").trigger("submit");
+	//$("#autosubmitfilter").submit();
+	$("#autosubmitfilter").ajaxSubmit({
+		target:"#categoryresults",
+		success: paintselected 
+	});
+	return false;
+});
+
+
+$(".pickedcategoryform").submit(function(event)
+{
+	//append to a list of categories from the calling area?
+	#if( $action )
+		//debugger;
+		event.preventDefault();
+		var params = {};
+		params["detailid"] = "$detailid";
+		#if ($assetid && $detailid == 'categoryid')
+			params["assetid"] =  "$assetid";
+			params["${detailid}"] =  $("#selectedcategories").val();
+		#else
+			params["${detailid}.value"] =  $("#selectedcategories").val();
+		#end
+		params["oemaxlevel"] = "1";
+
+		#if( $pickone )
+			params["id"] =  $("#selectedcategories").val();
+			$("#$targetdiv").load("$action", params, function() {
+				var autosubmit = $("#$targetdiv").data("autosubmit");
+				if (autosubmit) {
+					$("#$targetdiv").closest("form").submit();
+				}
+			});
+			
+			$(this).closest(".modal").modal("hide"); 			//close dialog
+		#else
+			
+			$("#$targetdiv").load("$action", params);
+		#end
+		return false;
+	#else
+		
+		return true;  //Load category as usual
+	#end
+});
+
+paintselected();
+
+</script>
+<div class="clearfix"></div>
+</div>	

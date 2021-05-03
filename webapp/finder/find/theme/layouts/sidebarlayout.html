@@ -1,0 +1,17 @@
+#set( $sidebarwidth = $userprofile.get("sidebarwidth"))
+
+<div id="applicationcontent"  
+	 class="cols-main #if ($module) cols-$module #end" >
+	 
+	 $pages.include("$componenthome/sidebars/index.html",$context)
+	
+	 <div id="applicationmaincontent" class="col-main col-content-main">
+		<div class="pushcontent #if($sidebarcomponent) pushcontent-open pushcontent-$sidebarcomponent #else pushcontent-fullwidth #end" 
+			  style="#if($sidebarwidth) margin-left:${sidebarwidth}px;#end">
+			  
+				$pages.streamContent()
+					
+		</div>
+	</div>
+	
+</div>
