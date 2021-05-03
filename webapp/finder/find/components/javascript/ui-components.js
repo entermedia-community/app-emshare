@@ -884,11 +884,17 @@ uiload = function() {
 
 		var clicked = $(this);
 		var row = clicked.closest("tr");
+		var table = clicked.closest("table");
+		var form = $(clicked.closest("form"));
+		
 		var existing = row.hasClass("emrowselected");
+		if (!form.hasClass("emmultivalue")) {
+			$("tr",table).removeClass("emrowselected");
+		}
 		row.toggleClass("emrowselected");
 		var id = row.data("id");
 
-		var form = $(clicked.closest("form"));
+		
 		$('.emselectedrow', form).each(function() {
 			if (form.hasClass("emmultivalue")) {
 				var old = $(this).val();
@@ -909,14 +915,8 @@ uiload = function() {
 			}
 		});
 
-		var targetdiv = form.data("targetdiv");
-		if ((typeof targetdiv) != "undefined") {
-			$(form).ajaxSubmit({
-				target : "#" + $.escapeSelector(targetdiv)
-			});
-		} else {
-			$(form).trigger("submit");
-		}
+		$(form).trigger("submit");
+		
 		if (form.hasClass("autoclose")) {
 			form.closest(".modal").modal("hide");
 		}

@@ -1,0 +1,38 @@
+#set( $nodeID = $context.getRequestParameter("nodeID"))
+#set( $searcher = $mediaarchive.getSearcher("category") )
+#set( $results = $searcher.query().exact("parents",$nodeID).sort("categorypathUp").search($context) )
+$context.putPageValue("hits",$results)
+$context.putPageValue("searcher",$searcher)
+#set ($details = $searcher.getDetailsForView("category/searchcategory", $userprofile))
+	<form id="autosubmitfilter" name="autosubmitfilter" class="autosubmit" autocomplete="off"  data-targetdiv="categoryresults" action="$home$apphome/components/categories/search/searchpath.html">
+		<input type="hidden" name="searchtype" value="category" />
+		<input type="hidden" name="sortby" value="categorypathUp" />
+		<input type="hidden" name="field" value="parents" />
+		<input type="hidden" name="operation" value="exact" />
+		<input type="hidden" name="parents.value" id="parentfilter" value="$nodeID" />
+		<div class="emsearchfieldrow">
+			<div id="detail_categorypath" align="left" class="emsearchfieldvalue">
+				<input name="field" value="finder/catalog:$view:categorypath" type="hidden">
+				<input name="operation" value="contains" type="hidden">
+				<input type="text" class="form-control detail_categorypath textinput autosubmited " placeholder="[[Search Categories]]" value="" id="categorypath.value" name="categorypath.value">
+			</div>
+		</div>
+	</form>
+
+
+	#if(!$targetresults)
+		#set($targetresults = "$siteroot$apphome/views/categories/index.html")
+	#end
+
+
+	<form class="pickedcategoryform ajaxform" 
+			action="$targetresults" 
+			data-targetdivinner="applicationmaincontent" 
+			data-oemaxlevel="1">
+		
+		$pages.include("$apphome/components/categories/search/searchpath.html", $context)
+		
+		<input name="categoryid" class="emselectedrow" type="hidden" id="selectedcategories" value="$!selectedcategories" />
+		<input name="nodeID" class="emselectedrow" type="hidden" />
+	</form>
+
