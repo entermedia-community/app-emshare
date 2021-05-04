@@ -51,7 +51,7 @@ jQuery(document).ready(function(url,params)
 						 
 			$.get(href, args, function(data) 
 			{
-				$("#emresultscontent").html(data);
+				$("#applicationmaincontent").html(data);
 				$(window).trigger( "resize" );
 			});
 		});
