@@ -229,7 +229,7 @@ $(document).ready(function()
 		if( event.keyCode == 13 ) 	{
 	       	//13 represents Enter key
 			var action = input.data("action");
-			if (!action.eq("create")) {
+			if (action != "create") {
 				action = "rename";
 			}
 			var rootid = tree.data("treename")+"root";
