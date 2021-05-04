@@ -63,8 +63,6 @@ $lsearcher.addShowOnly($context, $query)
 #set($values = $data.getValues($detail.id))
 #end
 
-
-#if($types)
 $types.enableBulkOperations()
 	#if( $foreignkeyid)
 		<script type="text/javascript">
@@ -72,11 +70,11 @@ $types.enableBulkOperations()
 		</script>
 	#end
 		
-		<select id="${valueid}.value" multiple name="$!detailprefix${valueid}.values" 
+	<select id="$csslistid" multiple name="$!detailprefix${valueid}.values" 
 		class="select2 form-control #if($detail.isRequired() && !$multiedit) required #end" 
 		listid="$listid" 
 		data-listid="$listid" 
-		data-placeholder=" "
+		data-placeholder=" #if($types.isEmpty())[[No values found]]#end"
 		data-searchtype='$!searchtype'
 	>
 	#if ($detail.blankoption != false)
@@ -89,24 +87,10 @@ $types.enableBulkOperations()
 
    </select>		
 
-#else
-	<div>[[No values found]]</div>
-#end
 
  #if( $caneditlists)
 		<a class="emdialog addnewitem btn btn-xs btn-secondary" href="$apphome/views/settings/lists/datamanager/edit/inline.html?searchtype=$listid&update=$csslistid" title="[[Add New]] $detail" data-hidefooter="true">+ $detail</a>
   #end
 
 </div>
-
-
-
-
-
-
-
-
-
-
-
 
