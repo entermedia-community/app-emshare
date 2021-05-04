@@ -226,11 +226,14 @@ $(document).ready(function()
        	var value = input.val();
        	//console.log("childnode",node);
        	var nodeid = node.data('nodeid');
-		if( event.keyCode == 13 ) 
-	  	{
+		if( event.keyCode == 13 ) 	{
 	       	//13 represents Enter key
+			var action = input.data("action");
+			if (!action.eq("create")) {
+				action = "rename";
+			}
 			var rootid = tree.data("treename")+"root";
-			var link = tree.data("home") + "/components/emtree/savenode.html?tree-name=" + tree.data("treename") + "&"+rootid+"="+tree.data("rootnodeid")+"&depth=" + node.data('depth');
+			var link = tree.data("home") + "/components/emtree/savenode.html?action=" + action + "&tree-name=" + tree.data("treename") + "&"+rootid+"="+tree.data("rootnodeid")+"&depth=" + node.data('depth');
 			if(nodeid != undefined)
 			{
 				link = link + "&nodeID=" + nodeid;
