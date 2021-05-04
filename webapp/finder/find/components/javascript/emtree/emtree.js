@@ -161,11 +161,14 @@ $(document).ready(function()
 						var cell = jQuery("#" + targetdivinner); 
 						cell.html(data);
 					}
-					var targetdiv = tree.data("targetdiv");
-					if( targetdiv)
+					else
 					{
-						var cell = jQuery("#" + targetdiv); 
-						cell.replaceWith(data);
+						var targetdiv = tree.data("targetdiv");
+						if( targetdiv)
+						{
+							var cell = jQuery("#" + targetdiv); 
+							cell.replaceWith(data);
+						}
 					}
 					$(window).trigger( "resize" );
 				}
