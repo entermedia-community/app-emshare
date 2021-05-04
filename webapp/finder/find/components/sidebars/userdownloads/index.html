@@ -14,39 +14,39 @@
 				</a>	
 				</div>
 				
-				
+<div style="padding:5px;">
 <ul class="downloads-sidebar-list">
 #set($recentdownloads = $mediaarchive.query("userdownloads").exact("user",$user.getId()).sort("dateDown").search($context))
 
 	#foreach ( $download in $recentdownloads )
 		<li> 
 		
-		#if( $desktop && $download.isdownloadcomplete )
-			<a href="#" class="emdesktopopen" data-userdownloadid="$download.id" >
-		#end		
-		##$context.getDateTime($download.getDate("date")) 
-		#if( $download.assetid)
-			#set( $asset = $mediaarchive.getAsset($download.assetid))
-			#set ($mime = $mediaarchive.getMimeTypeIcon($asset.fileformat))
-			<!-- #set( $thumbpath =  "$themeprefix/images/mimetypes/${mime}.png" ) -->
-			#set( $thumbpath = $mediaarchive.asLinkToPreview($asset, "image200x200.jpg"))
-			<div class="download-sidebar-thumb-container">
-			<img class=" download-sidebar-thumb" src="$siteroot$thumbpath" border="0"/>
-			</div>
-			$asset.getName()
-		#else
-			#set( $cat = $mediaarchive.getCategory($download.categoryid))
-			<i class="fas fa-folder-open"></i>
-			$cat.getName()			
-		#end		
-		#if( $desktop && $download.isdownloadcomplete )
+		
+			<a href="#" class="#if( $desktop && $download.isdownloadcomplete ) emdesktopopen #end" data-userdownloadid="$download.id" >
+				
+			##$context.getDateTime($download.getDate("date")) 
+			#if( $download.assetid)
+				#set( $asset = $mediaarchive.getAsset($download.assetid))
+				#set ($mime = $mediaarchive.getMimeTypeIcon($asset.fileformat))
+				##<!-- #set( $thumbpath =  "$themeprefix/images/mimetypes/${mime}.png" ) -->
+				#set( $thumbpath = $mediaarchive.asLinkToPreview($asset, "image200x200.jpg"))
+				<div class="download-sidebar-thumb-container">
+				<img class=" download-sidebar-thumb" src="$siteroot$thumbpath" border="0"/>
+				</div>
+				$asset.getName()
+			#else
+				#set( $cat = $mediaarchive.getCategory($download.categoryid))
+				<i class="fas fa-folder-open"></i>
+				$cat.getName()			
+			#end		
+		
 			</a>
-		#end		
+				
 	
 		</li>
 	#end
 </ul>
-	<div class="clearfix"></div>
+</div>
 
 </div>
 	
