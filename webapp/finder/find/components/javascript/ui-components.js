@@ -2423,7 +2423,6 @@ var resizecolumns = function() {
 		
 		if (thisheight > columnsheight) {
 			columnsheight = thisheight;
-			console.log("Won col "+col);
 		}
 	});
 	
