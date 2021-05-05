@@ -51,11 +51,15 @@
 		        	$pages.include("$apphome/views/modules/asset/editor/voting/index.html", $context)
 		   		</div>
 			#end
-			## Download Button 
-			<a href="DownloadtoOriginal" class="grid-gallery-download" data-assetid="$hit.id" title="[[Download]]">
-			        	<i class="fas fa-download"> </i>
-			        	</a>
 			
+			## Download Button 
+			#if($candownload)
+				#set( $originalpath = $mediaarchive.asLinkToOriginal($asset) )
+				#set($downloadlink = "$siteroot/$mediadbappid/services/module/asset/downloads/originals/$originalpath?collectionid=$!{collectionid}&assetid=$asset.getId()")
+				<a href="#urlescape($downloadlink)" class="grid-gallery-download" data-assetid="$hit.id" title="[[Download]]">
+				        	<i class="fas fa-download"> </i>
+			    </a>
+			#end
 			#if( $desktop )
 			<div class="btn-group" role="group" aria-label="Button group with nested dropdown">
 		 
