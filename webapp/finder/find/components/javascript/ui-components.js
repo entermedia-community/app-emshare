@@ -468,10 +468,12 @@ uiload = function() {
 				target : "#" + $.escapeSelector(targetdiv) 
 			});
 		});
-		$("input",form).on("keyup", function() {
-			$(form).ajaxSubmit({
-				target : "#" + $.escapeSelector(targetdiv)
-			});
+		$("input",form).on("keyup", function(event) {
+			
+				$(form).ajaxSubmit({
+					target : "#" + $.escapeSelector(targetdiv)
+				});
+			
 		});
 		$('input[type="file"]',form).on("change", function() {
 			$(form).ajaxSubmit({

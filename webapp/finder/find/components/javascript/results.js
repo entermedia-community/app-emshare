@@ -317,6 +317,7 @@ jQuery(document).ready(function(url,params)
 	}
 	hideOverlayDiv = function(inOverlay)
 	{
+		
 		disposevideos();
 		stopautoscroll = false;
 		$("body").css({ overflow: 'auto' })
@@ -524,7 +525,7 @@ jQuery(document).ready(function(url,params)
 		var resultsdiv = $("#resultsdiv");
 		if (resultsdiv.length) 
 		{
-	        var href = home+'/views/search/index.html';
+	        var href = siteroot+'/views/search/index.html';
 	        var searchdata = resultsdiv.data();
 	        searchdata.oemaxlevel = 1;
 			searchdata.cache = false;
