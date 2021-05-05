@@ -6,7 +6,24 @@ $context.putPageValue("favorites", $favorites)
 	<a class="badge badge-success  emdialog TODOautocloseside" style="margin:4px; float:right"  data-hidefooter="true" title="$module: [[Add New]]"
 				href="$applink/components/upload/entities/addnewentity.html?viewid=${module.id}addnew&searchtype=${module.id}">
 				<i class="fas fa-plus"></i> Add New </a>
-	<h3>$module ($hits.size())</h3>
+	
+	
+   		<h3>
+	     	#set($moduleicon = "entity")
+	     	#if ($module.moduleicon)
+	     		#set($moduleicon = $module.moduleicon)
+	     	#end
+	
+			<img src="$apphome/theme/images/entity/${moduleicon}.svg" style="height: 24px;"> 
+			
+			#if( $hits.size() < 7) ##this is safe
+				#set( $count = $hits.size())
+			#else
+				#set( $count = $filter.getCount($module.id) )
+			#end
+	
+			$module.getName() <span class="count">($count)</span>
+		</h3>
 		
 	#end
 	#if($hits.getTotalPages() >  1  )
@@ -17,22 +34,28 @@ $context.putPageValue("favorites", $favorites)
 
 
 
-<div id="galleryimg" class="emgrid" data-colwidth="280" data-cellpadding="30">
+<div id="galleryimg-${rendertype}" class='emgrid #if($section != "favorites")emgridlimited#end' 
+	data-colwidth="425" 
+	data-cellpadding="30">
      	#set($rendertype = "entity")
      	#if ($module.modulerendertype)
      		#set($previewrendertype = $module.modulerendertype)
      	#end
+
+		
+		
 		#foreach( $hit in $hits.getPageOfHits())
-			#if( $rendertype == "media")
-		     <div class="emgridcell emgridcell-$module.id" style="width:400px; height: 260px; ">
-		    #else
-		     <div class="emgridcell emgridcell-$module.id" style="width:200px; height: 160px; ">
-		    #end		   
-		     	$context.putPageValue("hit", $hit)
-				$context.putPageValue("previewrendertype", $previewrendertype)
-		        $pages.include("$apphome/components/gridsample/types/${rendertype}.html", $context)
-		     </div>
-		#end
+				$context.putPageValue("hit", $hit)
+			     ###if($foreach.count > 6 && $section != "favorites")
+			     ##	#break 
+			     ###end 
+			     
+			     
+			     <div class="emgridcell emgridcell-$rendertype">
+			     $pages.include("$apphome/components/gridsample/types/${rendertype}.html", $context)
+				 </div>
+			#end
+		
 </div>  
 #if($hits.nextPage())
 	$pages.include("$componenthome/results/pages.html",$context)
