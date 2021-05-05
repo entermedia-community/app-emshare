@@ -83,36 +83,50 @@ $context.putPageValue("showalllanguagevalues",true)
 		$pages.include("$componenthome/categories/asset/listassetcategories.html",$context)
 			
 			
-		#if( $caneditassetcategories )
-		<div class="asset-data-detail assetpanel-editor-box">
-			<div class="float-left" style="margin-left: 0px;">
+		
+		<div class="asset-data-detail assetpanel-editor-box" style="padding:12px; margin-bottom: 20px;">
+			#if( $caneditassetcategories )
+				<div class="folder-list-actions">
+					<a href="$apphome/components/categories/search/searchcategory.html?targetdiv=assetcategoryresults&amp;multivalue=false&amp;pickone=true&amp;detailid=categoryid&amp;existingcategories=$!{existingcategories}&amp;assetid=${asset.id}&amp;pickedcategoryaction=$apphome/components/categories/asset/listassetcategories.html" 
+				   class="detail-edit-icon btn   btn-dark emdialog"
+				   data-cancelsubmit="true" 
+				   data-parameterdata="categoryvalues"
+				   data-noesc="true"
+				   title="[[Pick Folder]]"><i class="fas fa-plus"></i> [[Folder]]</a>
+			   </div>
+			#end
+			#if( $caneditassetcategories )
 			<a href="$home$apphome/components/opencollections/asset/searchcollectionpicker.html?assetid=$asset.id" 
-					   class="detail-edit-icon emdialog btn"
+					   class="detail-edit-icon emdialog btn btn-dark"
+					   style="margin-left:10px;"
 					   data-hidefooter="true" 
 					   data-noesc="true"
 					   title="[[Add Asset to Collection]]"><i class="fas fa-plus"></i> [[Add to Collection]]</a>
-					   </div>
+			#end
 			<div class="clearfix"></div>
+			</div>
+			
+			
 			#if($caneditasset)
-			##$pages.include("/$applicationid/views/modules/asset/editor/edit/metadata/assetreadmetadata.html")
+				##$pages.include("/$applicationid/views/modules/asset/editor/edit/metadata/assetreadmetadata.html")
 			
 			
-			#set($view = "assetreadmetadata")
-			#set($hitssessionid = $context.findValue("hitssessionid"))
-			<div class="asset-data-readwritemetadata">
-					
-					<a class="ajax"
-						href="$siteroot$apphome/views/modules/asset/editor/edit/metadata/read.html?oemaxlevel=1&assetid=$asset.getId()&force=true" 
-						data-targetdiv="assetrwmetadata" ><i class="fas fa-upload"></i> [[Read Metadata]]</a>
-					<a class="ajax"
-						href="$siteroot$apphome/views/modules/asset/editor/edit/metadata/write.html?oemaxlevel=1&assetid=$asset.getId()&force=true" 
-						data-targetdiv="assetrwmetadata" ><i class="fas fa-download"></i> [[Rewrite Metadata]]</a>
-					<span id="assetrwmetadata"></span>
-			</div>
+				#set($view = "assetreadmetadata")
+				#set($hitssessionid = $context.findValue("hitssessionid"))
+				<div class="asset-data-readwritemetadata">
 						
-			#end
-			</div>
-			#end
+						<a class="ajax"
+							href="$siteroot$apphome/views/modules/asset/editor/edit/metadata/read.html?oemaxlevel=1&assetid=$asset.getId()&force=true" 
+							data-targetdiv="assetrwmetadata" ><i class="fas fa-upload"></i> [[Read Metadata]]</a>
+						<a class="ajax"
+							href="$siteroot$apphome/views/modules/asset/editor/edit/metadata/write.html?oemaxlevel=1&assetid=$asset.getId()&force=true" 
+							data-targetdiv="assetrwmetadata" ><i class="fas fa-download"></i> [[Rewrite Metadata]]</a>
+						<span id="assetrwmetadata"></span>
+				</div>
+							
+				#end
+			
+			
 	</div>					
 		
 </div>

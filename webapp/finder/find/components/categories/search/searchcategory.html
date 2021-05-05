@@ -1,10 +1,12 @@
 #if (!$treename)
 	#set( $treename = "dialogCategoryPickerTree" )
 #end
-#set( $action = $context.getRequestParameter("action") ) 
+#set( $action = $context.getRequestParameter("pickedcategoryaction") ) 
 #if (!$targetdiv)
 	#set( $targetdiv = $context.getRequestParameter("targetdiv") )
 #end
+$context.putPageValue("targetdiv",$targetdiv)
+
 #set( $detailid = $context.getRequestParameter("detailid") )
 #if(!$detailid)
 	#set( $detailid = "category") 
@@ -79,7 +81,7 @@ $(document).on("emtreeselect",function(event)
 });
 
 
-$(".pickedcategoryform").submit(function(event)
+$(".pickedcategoryformX").submit(function(event)
 {
 	//append to a list of categories from the calling area?
 	#if( $action )
@@ -103,8 +105,9 @@ $(".pickedcategoryform").submit(function(event)
 					$("#$targetdiv").closest("form").submit();
 				}
 			});
-			
 			$(this).closest(".modal").modal("hide"); 			//close dialog
+			event.stopPropagation();
+			
 		#else
 			
 			$("#$targetdiv").load("$action", params);

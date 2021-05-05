@@ -1,6 +1,8 @@
 #set( $nodeID = $context.getRequestParameter("nodeID"))
 #set( $searcher = $mediaarchive.getSearcher("category") )
 #set( $results = $searcher.query().exact("parents",$nodeID).sort("categorypathUp").search($context) )
+#set( $action = $context.getRequestParameter("pickedcategoryaction") )
+
 $context.putPageValue("hits",$results)
 $context.putPageValue("searcher",$searcher)
 #set ($details = $searcher.getDetailsForView("category/searchcategory", $userprofile))
@@ -21,19 +23,33 @@ $context.putPageValue("searcher",$searcher)
 			</div>
 		</div>
 	</form>
-
-
+	
+	#if($action)
+		#set($targetresults = $action)
+	#end
 	#if(!$targetresults)
 		#set($targetresults = "$siteroot$apphome/views/categories/index.html")
 	#end
+	
+	#if(!$targetdiv)
+		#set($targetdiv = "applicationmaincontent")
+	#end
 
 
-	<form class="pickedcategoryform ajaxform" 
+	<form class="pickedcategoryform ajaxform #if($action) autoclose #end" 
 			action="$targetresults" 
-			data-targetdivinner="applicationmaincontent" 
-			data-oemaxlevel="1">
+			data-targetdivinner="$targetdiv" 
+			data-oemaxlevel="1"
+			>
 		
 		$pages.include("$apphome/components/categories/search/searchpath.html", $context)
+		
+		#if($action)
+			##Searching from Media Viewer
+			#set( $assetid = $context.getRequestParameter("assetid") )
+			<input name="assetid"  type="hidden" value="$assetid" />
+			<input name="detailid"  type="hidden" value="categoryid" />
+		#end
 		
 		<input name="categoryid" class="emselectedrow" type="hidden" id="selectedcategories" value="$!selectedcategories" />
 		<input name="nodeID" class="emselectedrow" type="hidden" />

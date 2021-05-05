@@ -887,7 +887,7 @@ uiload = function() {
 		var clicked = $(this);
 		var row = clicked.closest("tr");
 		var table = clicked.closest("table");
-		var form = $(clicked.closest("form"));
+		var form = clicked.closest("form");
 		
 		var existing = row.hasClass("emrowselected");
 		if (!form.hasClass("emmultivalue")) {
@@ -917,7 +917,9 @@ uiload = function() {
 			}
 		});
 
-		$(form).trigger("submit");
+		
+		form.trigger("submit");
+		
 		
 		if (form.hasClass("autoclose")) {
 			form.closest(".modal").modal("hide");
