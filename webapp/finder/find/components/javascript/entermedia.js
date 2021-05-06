@@ -520,7 +520,11 @@ onloadselectors = function()
 	lQuery(".desktop-send").livequery("click", function(){
 		var button = jQuery(this);
 		var data = button.data();
-	    var json = JSON.stringify(data);
+	    var json = encodeURIComponent(JSON.stringify(data));
+	    
+	    app = $("#application");
+		siteroot =  app.data("siteroot");
+		apphome = siteroot + app.data("apphome");
 	    jQuery.ajax(
 				{
 					url: apphome + "/components/desktop/sendcommand.html?command=" + json
