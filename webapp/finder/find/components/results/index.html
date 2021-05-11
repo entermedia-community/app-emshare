@@ -36,7 +36,10 @@
 ##if($moduleid =="librarycollection" && $hits.size() == 0 && $mediaarchive.isCatalogSettingTrue("autopopulatecollections"))
 ##	$pages.include("$apphome/components/createmedia/copycategory/index.html?autorun=true", $context)
 ##else
-	#if ($moduleid=="modulesearch")
+	
+	#if($content.resultview)
+		#set($resultview = $content.resultview)
+	#elseif ($moduleid=="modulesearch")
 		#set($resultview = $userprofile.get("mediaappresultview"))
 		#if(!$resultview)
 			#set($resultview = $content.get("mediaappresultview"))
@@ -58,7 +61,7 @@
 			#set($resultview = $content.get("resultview"))
 		#end
 		#if(!$resultview)
-			#set($resultview = "stackedgallery")
+			#set($resultview = "grid")
 		#end
 	#else
 		#set($resultview = $userprofile.get("resultview$moduleid"))

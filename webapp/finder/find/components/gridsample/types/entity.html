@@ -5,30 +5,30 @@
 $context.putPageValue("entityid", $entityid)
 $context.putPageValue("entity_module", $entity_module)
 
-#set( $rendertype = $context.getPageValue("previewrendertype"))
-#if (!$rendertype)
-	#set( $rendertype = "default")
+#set( $previewrendertype = $context.getPageValue("previewrendertype"))
+#if (!$previewrendertype)
+	#set( $previewrendertype = "default")
 #end
 
-#set($previewurl = "$componenthome/gridsample/preview/${rendertype}.html?id=$entityid&searchtype=$entity_module&hitssessionid=$hits.sessionId")
+#set($previewurl = "$componenthome/gridsample/preview/${previewrendertype}.html?id=$entityid&searchtype=$entity_module&hitssessionid=$hits.sessionId")
 $context.putPageValue("previewurl", $previewurl)
 
-<div class="emgrid-content emgrid-type-$rendertype">
-        	 <div class="emgrid-entityheader">
-        	 <h3>
-        	 <a href="$previewurl" 
-        	 	class="emdialog entity-dialog emgridresulttitle" 
-        	 	data-hidefooter="true" 
-        	 	data-hideheader="true"
-        	 	id="clickid${entity.id}"  
-        	 	data-id="entity.id"
-        	 	title="$!entity.name">
-        	 	##$!hits.highlight($hit,"name")
-        	 	$entity.name
-        	 	</a>
-        	 
-        	 </h3> 
-        	 </div>
+<div class="emgrid-content emgrid-type-$previewrendertype">
+   	 <div class="emgrid-entityheader">
+   	 <h3>
+   	 <a href="$previewurl" 
+   	 	class="emdialog entity-dialog emgridresulttitle" 
+   	 	data-hidefooter="true" 
+   	 	data-hideheader="true"
+   	 	id="clickid${entity.id}"  
+   	 	data-id="entity.id"
+   	 	title="$!entity.name">
+   	 	##$!hits.highlight($hit,"name")
+   	 	$entity.name
+   	 	</a>
+   	 
+   	 </h3> 
+   	 </div>
 	<div class="emgrid-entitymetadata">        	 
 
         	 
@@ -44,8 +44,9 @@ $context.putPageValue("previewurl", $previewurl)
 	        
       </div>
        <div class="emgrid-entitymedia"> 	
-        	
-			$context.putPageValue("assetsshown",4)
+			#set($assetsshown = 4)
+			#set( $assetshits = $mediaarchive.query("asset").hitsPerPage($assetsshown).exact($entity_module, $entityid).sort("assetaddeddateDown").search() )
+			$context.putPageValue("assetshits", $assetshits)
 	        $pages.include("$componenthome/gridsample/attachedmedia.html",$context)
 	   </div>
 	        
@@ -67,3 +68,5 @@ $context.putPageValue("previewurl", $previewurl)
 	       ## <input type="checkbox" class="selectionbox" name="count" value="" data-dataid="$hit.getId()">
 	       ## </div>
 </div>
+
+

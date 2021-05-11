@@ -1,5 +1,12 @@
 #set( $favorites = $userprofile.get("favorites_"+$module.id))
 $context.putPageValue("favorites", $favorites)
+
+#set($moduleid = $module.id)
+#if($moduleid.startsWith("entity"))
+	#set($rendertype = "entity")
+#else
+	#set($rendertype = $module.id)
+#end
 	
 <div class="emgrid-subtitle">
 	#if($content.get("section") != "favorites")
@@ -9,7 +16,7 @@ $context.putPageValue("favorites", $favorites)
 	
 	
    		<h3>
-	     	#set($moduleicon = "entity")
+	     	#set($moduleicon = $rendertype)
 	     	#if ($module.moduleicon)
 	     		#set($moduleicon = $module.moduleicon)
 	     	#end
@@ -22,7 +29,7 @@ $context.putPageValue("favorites", $favorites)
 				#set( $count = $filter.getCount($module.id) )
 			#end
 	
-			$module.getName() <span class="count">($count)</span>
+			$module.getName() <span class="count">($count)</span>  
 		</h3>
 		
 	#end
@@ -37,24 +44,18 @@ $context.putPageValue("favorites", $favorites)
 <div id="galleryimg-${rendertype}" class='emgrid #if($section != "favorites")emgridlimited#end' 
 	data-colwidth="425" 
 	data-cellpadding="30">
-     	#set($rendertype = "entity")
+     	
      	#if ($module.modulerendertype)
      		#set($previewrendertype = $module.modulerendertype)
      	#end
 
 		
-		
 		#foreach( $hit in $hits.getPageOfHits())
-				$context.putPageValue("hit", $hit)
-			     ###if($foreach.count > 6 && $section != "favorites")
-			     ##	#break 
-			     ###end 
-			     
-			     
-			     <div class="emgridcell emgridcell-$rendertype">
-			     $pages.include("$apphome/components/gridsample/types/${rendertype}.html", $context)
-				 </div>
-			#end
+			$context.putPageValue("hit", $hit)
+		     <div class="emgridcell emgridcell-$rendertype">
+		     $pages.include("$apphome/components/gridsample/types/${rendertype}.html", $context)
+			 </div>
+		#end
 		
 </div>  
 #if($hits.nextPage())

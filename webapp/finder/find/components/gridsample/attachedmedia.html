@@ -5,16 +5,13 @@
 	#set($entityid = $context.getRequestParameter("id"))
 #end
 
-#if(!$assetsshown)
-	#set($assetsshown = 4)
-#end
 
-#if($entity_module && $entityid)
-#set( $hits = $mediaarchive.query("asset").hitsPerPage($assetsshown).exact($entity_module, $entityid).sort("assetaddeddateDown").search() )
+#if($assetshits)
+
 #set($count = 0)
 #set($stackedfield = $mediaarchive.getCatalogSettingValue("stackedgalleryfield"))
 
-#foreach( $hit in $hits.getPageOfHits())
+#foreach( $hit in $assetshits.getPageOfHits())
 	#set($count = $count + 1)
 	$context.putPageValue("hit", $hit)
 	#set($type = $hit.getSearchHit().getType())
@@ -26,7 +23,7 @@
 	$context.putPageValue("thumbsize", "crop" )
 	
 	#set($sourcepath = $hit.sourcepath)
-	#set($click = "$siteroot$viewerlink?hitssessionid=${hits.getSessionId()}&assetid=${hit.id}")
+	##set($click = "$siteroot$viewerlink?hitssessionid=${assetshits.getSessionId()}&assetid=${hit.id}")
 	
   	#if(!$rendertype || $type =="rendertype")
  		#set( $rendertype = "mime" )
@@ -52,18 +49,31 @@
 #end
 <div class="clearfix"></div>
 <div class="entity-assets-info">
-	#if($hits.size()>0)
-		#set($link = "$siteroot$applink/views/modules/asset/index.html")
-		#set($link = "$link?hitssessionid=${hits.getSessionId()}&field=$entity_module&operation=matches&${entity_module}.value=$entityid")
+	#if($assetshits.size()>0)
+		
+		#if($entity_module=="librarycollection")
+			
+			#set($link = "$siteroot$applink/views/modules/librarycollection/showcategory.html?hitssessionid=$!{assetshits.sessionId}&nodeID=$librarycol.rootcategory")
+			#set($link = "$link&oemaxlevel=4")
+			###set($link = "$link?&field=category&operation=matches&category.value=$librarycol.rootcategory&nodeID=")
+		#else
+			#set($link = "$siteroot$applink/views/modules/asset/index.html")
+			#set($link = "$link?hitssessionid=$!{assetshits.sessionId}&field=$entity_module&operation=matches&${entity_module}.value=$entityid")
+			#set($link = "$link&oemaxlevel=3")
+		#end
 		#set($link = "$link&sidebarcomponent=categories")
-		#set($link = "$link&oemaxlevel=1")
-		[[Found]]: <a href="$link" class="ajax" data-targetdivinner="applicationmaincontent" data-oemaxlevel="1" data-closedialog="true" data-closemediaviewer="true">$hits.size() #if ($hits.size()==1) [[asset]] #else [[assets]] #end</a>
+		
+		[[Found]]: <a href="$link" 
+						class="ajax" 
+						data-targetdivinner="applicationcontainer" 
+						data-closedialog="true" 
+						data-closemediaviewer="true">$assetshits.size() #if ($assetshits.size()==1) [[asset]] #else [[assets]] #end</a>
 	#end
 	#if($fullview) 
 	<a href="$siteroot/$applink/views/modules/asset/add/start.html?entitytype=$entity_module&addselection=$entityid" class="moreactions">
 		<i class="fas fa-upload"></i> [[Upload]]</a>
 	#end
 </div>
-<div class="clearfix"></div>
+
 
 #end

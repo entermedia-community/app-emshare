@@ -1,15 +1,72 @@
-#set($type = $hit.getSearchHit().getType())
-<div class="emgrid-content emgrid-type-$type">
-        	 <h3><i class="fas fa-grip-horizontal"></i></h3>
-        	 <h4>$hit.name</h4>
-	        <div class="emgridcell-description">
-	        ##$hit.highlight
+#set($entity = $hit)
+#set($entityid = $entity.id)
+$context.putPageValue("entityid", $entityid)
+#set($entity_module = $module.getId())
+$context.putPageValue("entity_module", $entity_module)
+
+#set( $librarycol = $mediaarchive.getData("librarycollection",$entityid))
+$context.putPageValue("librarycol", $librarycol)
+
+#set( $previewrendertype = $context.getPageValue("previewrendertype"))
+#if (!$previewrendertype)
+	#set( $previewrendertype = "default")
+#end
+
+#set($previewurl = "$componenthome/gridsample/preview/${previewrendertype}.html?id=$entityid&searchtype=$entity_module&hitssessionid=$hits.sessionId")
+$context.putPageValue("previewurl", $previewurl)
+
+<div class="emgrid-content emgrid-type-$previewrendertype">
+   	 <div class="emgrid-entityheader">
+   	 <h3>
+   	 <a href="$previewurl" 
+   	 	class="emdialog entity-dialog emgridresulttitle" 
+   	 	data-hidefooter="true" 
+   	 	data-hideheader="true"
+   	 	id="clickid${entity.id}"  
+   	 	data-id="entity.id"
+   	 	title="$!entity.name">
+   	 	##$!hits.highlight($hit,"name")
+   	 	$entity.name
+   	 	</a>
+   	 
+   	 </h3> 
+   	 </div>
+	<div class="emgrid-entitymetadata">        	 
+
+        	#if($entity.longcaption)
+        	<div style="padding:0 10px">
+        		$entity.longcaption
+        	</div>
+        	#end
+        	<div style="padding:10px">
+        	<a class="emdialog entity-dialog" data-hidefooter="true" href="$previewurl" title="$!entity.name">[[More details]]</a>
+        	</div>
+        	##$pages.include("$componenthome/gridsample/tags.html",$context)
 	        
-	        $!hit.longcaption
-	        </div>
-	                $pages.include("$componenthome/grid/tags.html",$context)
+      </div>
+       <div class="emgrid-entitymedia"> 	
+			#set($assetsshown = 4)
+			#set( $assetshits = $mediaarchive.query("asset").hitsPerPage($assetsshown).match("category",$librarycol.rootcategory).sort("assetaddeddateDown").search() )
+			$context.putPageValue("assetshits", $assetshits)
+			
+	        $pages.include("$componenthome/gridsample/attachedmedia.html",$context)
+	   </div>
 	        
-	        <div class="emgridcell-actions">
-	         <i class="far fa-heart"></i>
+	        <div class="clearfix"></div>
+	        
+	        
+	        <div class="ibmgrid-footer">
+	        
+	       ## $pages.include("$componenthome/gridsample/favorites.html?id=$hit.id&searchtype=$module.id", $context)
+	        
+	        
+	        
+	        
+	       ## 
+	        
 	        </div>
+	        
+	       ## <div class="griditem-tools resultsselection">
+	       ## <input type="checkbox" class="selectionbox" name="count" value="" data-dataid="$hit.getId()">
+	       ## </div>
 </div>

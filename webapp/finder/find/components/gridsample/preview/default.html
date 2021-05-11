@@ -1,14 +1,12 @@
 #set( $searchtype = $context.getRequestParameter("searchtype"))
-
 #set( $id = $context.getRequestParameter("id"))
-#set( $data = $hits.findData("id",$id))
-
-#if( !$data)
-	#set( $data  = $mediaarchive.getData($searchtype, $id) )
+#set( $entity = $hits.findData("id",$id))
+#if( !$entity)
+	#set( $entity  = $mediaarchive.getData($searchtype, $id) )
 #end
-
-
 #set($module = $mediaarchive.getData("module", $searchtype))
+#set($entityid = $entity.id)
+#set($entity_module = $module.getId())
 
 <div class="modal-content modal-data-details modal-entity ${module.id}-modal">
 	<div class="modal-body">
@@ -21,14 +19,16 @@
 		
 		<div class="clearfix"></div>
 		<div class="entity-media">
-		<h2 class="modal-title">$data.name</h2>
+		<h2 class="modal-title">$entity.name</h2>
 		
-		$context.putPageValue("assetsshown",15)
+		#set($assetsshown = 15)
+		#set( $assetshits = $mediaarchive.query("asset").hitsPerPage($assetsshown).exact($entity_module, $entityid).sort("assetaddeddateDown").search() )
+		$context.putPageValue("assetshits", $assetshits)
 		$context.putPageValue("fullview",true)
 		$pages.include("$componenthome/gridsample/attachedmedia.html",$context)
 		</div>
 		<div class="entity-metadata">
-			$context.putPageValue("data", $data)
+			$context.putPageValue("data", $entity)
 			$context.putPageValue("searchtype", $searchtype)
 			$pages.include("metadata.html", $context)
 			
