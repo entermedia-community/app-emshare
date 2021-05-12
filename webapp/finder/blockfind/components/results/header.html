@@ -50,62 +50,7 @@
 		#if( $librarycol )
 			$pages.include("$componenthome/desktop/menu.html?collectionid=$librarycol.getId()", $context)				
 		#end
-
-		## #if ( $module.getId() =="asset" && $librarycol.getId() )
-		##		<li class="nav-item">
-		##			<a class="nav-link nav-hover" href="$siteroot$apphome/views/modules/librarycollection/media/index.html?collectionid=${librarycol.getId()}#if($nodeID)&nodeID=$nodeID#end" title="[[Open Collection]] $librarycol"><i class="fa fa-folder-open"></i> [[Open Collection]]</a>
-		##		</li>				
-		## #end
-		#if ($resultview != "map")
-			$pages.include("$componenthome/results/selected/index.html",$context)
-
-			#if( $enabled && ($canpublish || $canemaillink || $canexportdata ) )
-			  <li class="nav-item dropdown">
-				<a class="nav-link dropdown-toggle" href="#" id="navbarSharehDropdown" role="button" data-toggle="dropdown" 
-					aria-haspopup="true" aria-expanded="false">[[Share]]</a>
-					<div class="dropdown-menu" aria-labelledby="navbarShareDropdown">
-				#if($canpublish || $canemaillink )				
-						#if( $canemaillink )
-							<a class="dropdown-item emdialog" data-hidefooter="true" href="$siteroot$apphome/views/modules/asset/activity/emailassets.html?hitssessionid=$!hits.getSessionId()" >[[Email Assets]]</a>
-						#end
-						#if( $canpublish)
-							<a  class="dropdown-item emdialog" data-hidefooter="true" href="$siteroot$apphome/views/modules/asset/activity/publishassets.html?hitssessionid=$!hits.getSessionId()" >[[Publish Assets to Server]]</a>
-						#end
-						#if( $canquickgallery)
-							<a  class="dropdown-item emdialog" data-hidefooter="true" href="$siteroot$apphome/views/modules/asset/activity/creategallerycollection.html?hitssessionid=$!hits.getSessionId()" >[[Create a shareable gallery]]</a>
-						#end
-				#end
-				#if($canexportdata)
-					<a class="dropdown-item" href="$siteroot$apphome/views/modules/asset/export/download/export_asset.csv?hitssessionid=$hits.sessionId&searchtype=asset">[[Export results]]</a>
-					<a class="dropdown-item" href="$siteroot$apphome/views/modules/asset/export/download/export_asset.csv?hitssessionid=$hits.sessionId&friendly=true&searchtype=asset&view=asset/resultstable">[[Export results (friendly)]]</a>
-				#end		
-					</div>
-				</li>
-			#end
-		
-			#if($enabled && $canquickpublish )
-				#set($quickpublishlist = $mediaarchive.getList("quickpublish"))
-			<li class="nav-item">
-				<a class="nav-link" href="#" id="navbarPublishDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">[[Publish]]</a>
-					<div class="dropdown-menu" aria-labelledby="navbarPublishDropdown">
-						#foreach($item in $quickpublishlist)
-							<a class="dropdown-item" href="$siteroot$apphome/views/modules/asset/activity/publish/quickpublish.html?hitssessionid=$!hits.getSessionId()&quickid=$item.id"   >$item.name</a>
-						#end
-					</div>
-				</li>
-			#end
-		
-  			#set( $edit = $context.getRequestParameter("editheader") )
-		
-			#if ( $cancheckout && $order)
-				<li>
-					<a class="updatebasket emdialog nav-link-cart" data-action="remove" targetdiv="basket-paint"  href="$siteroot$apphome/views/modules/asset/activity/checkout/accept.html?orderid=${order.id}" title="[[Checkout your Cart]]">[[Checkout Cart]] <i class="fas fa-caret-right"></i></a>
-				</li>				
-			#end
-		#end
-		
-
-			
+	
 		</ul>
 		
 
@@ -129,7 +74,7 @@
 		<a data-hitsurls="$hitsurls" href="#" class="btn btn-sm btn-success" id="btnupdateemurls">[[OK]]</a>
 	#end
 #end 
-<a  href="#" class="btn btn-sm btn-danger" id="btncloseoverlay">[[Cancel]]</a>
+<a  href="#" class="btn btn-sm btn-danger btncloseoverlay" id="btncloseoverlay">[[Cancel]]</a>
 
 </div>
 
