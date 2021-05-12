@@ -200,7 +200,14 @@ $(document).ready(function() {
 	    var targetdiv = btn.data("targetdiv");
 
 		jQuery.ajax({
-			url: href, async: false, data: options, success: function (data) {
+			xhrFields: {
+                withCredentials: true
+            },
+			crossDomain: true,
+			url: href, 
+			async: false, 
+			data: options, 
+			success: function (data) {
 				jQuery('#'+targetdiv).replaceWith(data);
 			}
 		});
