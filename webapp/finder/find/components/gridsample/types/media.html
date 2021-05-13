@@ -37,7 +37,7 @@ data-singlepage="true"  >
 			<input type="checkbox" class="selectionbox" name="count" value="${hit.id}" 
 		        	#if($isselected) checked #end data-dataid="${hit.id}" />          
 		</div>
-	    <a class="stackedplayer imagearea " id="clickid${hit.id}" data-assetid="$hit.id" href="#">
+	    
 	    	    <div class="grid-thumbimage" data-assetid="$!hit.id">
 	    	    
 	    	    	#if(!$rendertype || $type =="rendertype")
@@ -51,7 +51,7 @@ data-singlepage="true"  >
 	        	</div>
 	    	
 	    	 	<div class="grid-caption  #if($rendertype=="default") grid-caption-show #end">
-			         
+			         <a class="stackedplayer grid-caption-link" id="clickid${hit.id}" data-assetid="$hit.id" href="#">
 			         #if($stackedfield)
 			         	#set($title = $hit.get($stackedfield))
 					 #end
@@ -63,27 +63,35 @@ data-singlepage="true"  >
 				        #end
 			         #end
 			         
-			         <div>$!title</div>
-			         
+			         $!title
+
+			         </a>  
+			        <div class="grid-gallery-footer"> 
 			         #if ($hit.assetaddeddate)
-			         <div>$hit.getAge("assetaddeddate") [[ago]] ($!context.getDate($hit.assetaddeddate))</div>
+			         $!context.getDate($hit.assetaddeddate)
 			         #end
-		       </div>
-		 </a>  
-		 <div class="grid-gallery-footer">
-		        	<a href="" class="grid-gallery-favorite" title="[[Add to Favorites]]">
+			        <a href="" class="grid-gallery-favorite" title="[[Add to Favorites]]">
 			        	<i class="fas fa-bookmark"></i>
 	  	        	</a>
-	  	        	#if( $desktop )
-			        	<a href="#" class="emdesktopdownload grid-gallery-download" data-assetid="$hit.id" title="[[Download]]">
-			        	<i class="fas fa-download"> </i>
-			        	</a>
-		        	#else
-			        	<a href="DownloadtoOriginal" class="grid-gallery-download" data-assetid="$hit.id" title="[[Download]]">
-			        	<i class="fas fa-download"> </i>
-			        	</a>
-		        	#end
-		  </div>
+	  	        	#if($canquickdownload)
+		  	        	#if( $desktop )
+				        	<a href="#" class="emdesktopdownload grid-gallery-download" data-assetid="$hit.id" title="[[Download]] $!title">
+				        	<i class="fas fa-download"> </i>
+				        	</a>
+			        	#else
+							#set($dlink = $mediaarchive.asLinkToOriginal($hit))
+							#set($dlink = "$siteroot/$mediadbappid/services/module/asset/downloads/originals/$dlink?collectionid=$!{collectionid}&assetid=$hit.getId()")
+				        	<a href="#urlencode($dlink)" class="grid-gallery-download" data-assetid="$hit.id" title="[[Download]] $!title">
+				        	<i class="fas fa-download"> </i>
+				        	</a>
+			        	#end
+			        #end 
+		        	</div>
+		       </div>
+		 
+		 
+		        	
+		  
 		</div>
        #set ( $count = $count + 1) 
    
