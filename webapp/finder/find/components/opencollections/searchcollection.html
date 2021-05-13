@@ -1,0 +1,111 @@
+#set( $searcher = $mediaarchive.getSearcher("librarycollection") )
+$context.putPageValue("searcher",$searcher)
+#set($targetdiv = $context.getRequestParameter("targetdiv"))
+<div  id="search-collections" >
+	<div id="searcharea" >
+		#set($viewid = "librarysearchcollection")
+		#set($viewpath = "librarycollection/${viewid}")
+		#set($details = $searcher.getDetailsForView($viewpath, $userprofile))
+		#set($hitssessionid = $context.getRequestParameter("hitssessionid"))
+		#if($hitssessionid)
+			#set( $hits = $context.getSessionValue($hitssessionid))
+			#if( $hits && $hits.getSelectionSize() > 0)	
+				<div class="alert alert-info">
+			  		<strong>[[Adding]]</strong> $hits.getSelectionSize() [[assets to collection]]
+				</div>
+			#end	
+		#end
+	<form  id="colsearchform" class="autosubmit"  data-targetdiv="collectionresultsdialog" action="$siteroot$apphome/components/opencollections/searchcollectionresults.html">
+		<input type="hidden" name="searchtype" value="librarycollection" />
+		<input type="hidden" name="sortby" value="name" />
+		<table style="width:100%;">
+		<tr>
+		<td>
+
+		<div  class="row inlinesearch" >
+			$context.putPageValue("autocomplete","off")
+			#foreach( $detail in $details)
+			<div class="col">
+					$context.putPageValue("detail", $detail)
+					$pages.include("/${applicationid}/components/advancedsearch/detaileditinline.html", $context)
+			</div>
+			#if( $counter == 4)
+				</div>
+				<div  class="row" >
+			#end	
+			#end
+		</div>	
+		</td>
+		#if($canviewsettings)
+		<td style="width:20px; padding:0; position:relative">
+			<a style="position:absolute; top:3px; right:3px;"
+				class=" edit-icon"
+				href="$apphome/views/settings/modules/librarycollection/metadata/viewssystem/index.html?viewid=${viewid}&viewpath=${viewpath}"
+				title="[[Edit Search Form Fields]]">
+			<i class="fas fa-edit"></i>
+			</a>
+		</td>
+		#end
+		</tr>
+		</table>
+	</form>
+	
+
+	
+	<div id="collectionresultsdialog">
+		$pages.include("$apphome/components/opencollections/searchcollectionresults.html",$context)
+		<div class="clearfix"></div>
+	</div>
+	
+	#if($canaddnewcollection)
+		#if(!$targetdiv)
+			#set($addnewurl = "$home$apphome/components/librarycollection/pickcollectionaddnew.html?searchtype=librarycollection")
+		#else
+			#set($addnewurl = "$home$apphome/components/opencollections/pickcollectionaddnew.html?searchtype=librarycollection&targetdiv=$!{targetdiv}&library.value=$!library.getId()")
+		#end
+		    <a  class="emdialog" 
+	       	title="[[Create New Collection]]" 
+	       	href="$addnewurl">
+	       	<i class="fa fa-plus-square"></i> [[Create New Collection]]</a>
+    #end	
+	</div>
+<script>
+lQuery("#collectionresultsdialog .rowclick").livequery("click", function(e) {
+	$(this).closest(".modal").modal("hide");
+	var rowid = $(this).attr("rowid");
+	#if ($targetdiv)
+		##Update targetdiv only
+		var targetdiv = $("#${targetdiv}");
+		var nextpage = targetdiv.data("collectionpicker");
+		var options = targetdiv.data();
+		options.collectionid = rowid;
+		$.get(nextpage, options, function(data) {
+			targetdiv.replaceWith(data);
+		});
+		jQuery.ajax({
+			xhrFields: {
+                withCredentials: true
+            },
+			crossDomain: true,
+			url: nextpage, 
+			async: false, 
+			data: options, 
+			success: function (data) {
+				targetdiv.replaceWith(data);
+			}
+		});
+	#else
+		#set($hitsselected = $hits.getSelectionSize())
+		#if(  $hits &&  $hitsselected > 0 )	
+			var nextpage = '$siteroot$apphome/views/modules/librarycollection/media/addtocollection.html?collectionid=' + rowid + '&hitssessionid=$hits.sessionId';
+		#else	
+		    var nextpage = '$siteroot$apphome/views/modules/librarycollection/media/' + rowid + '/index.html';
+		#end   
+		//$("#left-col-opencollections").load(nextpage);
+		//console.log(${hitsselected});
+		window.location.href = nextpage;
+	#end
+
+});
+</script>
+</div>	
