@@ -12,6 +12,9 @@ data-singlepage="true"  >
 #foreach( $hit in $hits)
 	
 	$context.putPageValue("hit", $hit)
+	#set($asset = $mediaarchive.getAsset($hit.id))
+	$context.putPageValue("asset", $asset)
+	
 	#set($type = $hit.getSearchHit().getType())
 	#set( $rendertype = $mediaarchive.getMediaRenderType($hit.fileformat))
 	$context.putPageValue("type", $rendertype)
@@ -70,9 +73,11 @@ data-singlepage="true"  >
 			         #if ($hit.assetaddeddate)
 			         $!context.getDate($hit.assetaddeddate)
 			         #end
-			        <a href="" class="grid-gallery-favorite" title="[[Add to Favorites]]">
-			        	<i class="fas fa-bookmark"></i>
-	  	        	</a>
+
+	  	        	<div id="assetfavorite-${hit.id}" class="media-info-icons">
+			        	 $pages.include("$apphome/views/modules/asset/editor/favorite/index.html", $context)
+			   		</div>
+	  	        	
 	  	        	#if($canquickdownload)
 		  	        	#if( $desktop )
 				        	<a href="#" class="emdesktopdownload grid-gallery-download" data-assetid="$hit.id" title="[[Download]] $!title">
