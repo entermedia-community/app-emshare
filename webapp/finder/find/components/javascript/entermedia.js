@@ -220,7 +220,7 @@ runajaxonthis = function(inlink,e)
 	
 	var useparent = inlink.data("useparent");
 
-	if (typeof global_updateurl !== "undefined" && global_updateurl == "false") {
+	if (typeof global_updateurl !== "undefined" && global_updateurl == false) {
 		//globaly disabled updateurl
 	}
 	else {
