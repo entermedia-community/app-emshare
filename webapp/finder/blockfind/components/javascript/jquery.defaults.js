@@ -9,3 +9,4 @@ $.ajaxSetup({
 });
 
 
+var global_updateurl = false;

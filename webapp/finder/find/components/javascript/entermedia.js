@@ -220,13 +220,15 @@ runajaxonthis = function(inlink,e)
 	
 	var useparent = inlink.data("useparent");
 
-
-	var updateurl = inlink.data("updateurl");
-
-	if( updateurl )
-	{
-		history.pushState({}, null, nextpage);
-		window.scrollTo(0, 0);
+	if (typeof global_updateurl !== "undefined" && global_updateurl == "false") {
+		//globaly disabled updateurl
+	}
+	else {
+		var updateurl = inlink.data("updateurl");
+		if( updateurl)	{
+			history.pushState({}, null, nextpage);
+			window.scrollTo(0, 0);
+		}
 	}
 	if( inlink.hasClass("auto-active-link" ) )
 	{
