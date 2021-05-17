@@ -35,7 +35,7 @@ public void init()
 	saved = saved +  tosave.size();
 	log.info("saved " + saved);
 	
-	if( saved > 1)
+	if( saved > 0)
 	{
 		archive.fireMediaEvent("facecompare", context.getUser());
 	}
