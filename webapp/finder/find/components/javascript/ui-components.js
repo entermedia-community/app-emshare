@@ -562,11 +562,16 @@ uiload = function() {
 		}
 		var openfrom = window.location.href;
 		
-		//openemdialog
-		var urlbar = dialog.data("urlbar");
-		if( urlbar )
-		{
-			history.pushState({}, null, urlbar);
+		if (typeof global_updateurl !== "undefined" && global_updateurl == false) {
+			//globaly disabled updateurl
+		}
+		else {
+			//Update Address Bar
+			var urlbar = dialog.data("urlbar");
+			if( urlbar )
+			{
+				history.pushState({}, null, urlbar);
+			}
 		}
 		
 		jQuery.ajax({
@@ -758,13 +763,16 @@ uiload = function() {
 								if( q2 == q)
 								{
 									
-	
-									if( updateurl )
-									{
-										history.pushState({}, null, updateurl);
-										window.scrollTo(0, 0);
+									if (typeof global_updateurl !== "undefined" && global_updateurl == false) {
+										//globaly disabled updateurl
 									}
-	
+									else {
+										if( updateurl )
+										{
+											history.pushState({}, null, updateurl);
+											window.scrollTo(0, 0);
+										}
+									}
 									$("#"+searchurlentertargetdiv).replaceWith(data);
 									$(window).trigger("resize");
 								}	
