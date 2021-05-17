@@ -72,17 +72,17 @@
 			   <ul class="dropdown-menu">
    							#if ($canpublish)
 	                       <li>
-	                           <a  class=" emdialog"  data-hidefooter="true" data-noesc="true"   href="$home$apphome/views/modules/asset/activity/publishassets.html?assetid=$asset.id" >[[Publish]]</a>
+	                           <a  class=" emdialog"  data-hidefooter="true" data-noesc="true"   href="$siteroot$apphome/views/modules/asset/activity/publishassets.html?assetid=$asset.id" >[[Publish]]</a>
 	                       </li>
 	                       	#end
 	                       	#if( $canemaillink )
 	                       <li>
-	                           <a  class="  emdialog"  data-hidefooter="true" data-noesc="true"   href="$home$apphome/views/modules/asset/activity/emailassets.html?assetid=$asset.id" >[[Email]]</a>
+	                           <a  class="  emdialog"  data-hidefooter="true" data-noesc="true"   href="$siteroot$apphome/views/modules/asset/activity/emailassets.html?assetid=$asset.id" >[[Email]]</a>
 	                       </li>
 	                       	#end
 	                       	#if( $canembedasset && !$multi)
 	                       <li>
-	                           <a  class="  emdialog"  data-hidefooter="true" data-noesc="true"   href="$home$componenthome/share/embed.html?assetid=$asset.id&collectionid=$!collectionid" >[[Links]]</a>
+	                           <a  class="  emdialog"  data-hidefooter="true" data-noesc="true"   href="$siteroot$componenthome/share/embed.html?assetid=$asset.id&collectionid=$!collectionid" >[[Links]]</a>
 	                       </li>
 	                       	#end
 	                       	#if ( $canaddtoproject )
@@ -96,7 +96,7 @@
     		#set( $originalpath = $mediaarchive.asLinkToOriginal($asset) )	
 			#if($candownload && $asset.getFileFormat()  == "pdf")
 			<li class="footermenu bottomtab" >
-			    <a class="expandmenu" data-assetid="${asset.id}" target="_new" href="$!cdnprefix$home/$mediadbappid/services/module/asset/downloads/vieworiginal/$originalpath" >
+			    <a class="expandmenu" data-assetid="${asset.id}" target="_new" href="$!cdnprefix$siteroot/$mediadbappid/services/module/asset/downloads/vieworiginal/$originalpath" >
 	            	<span class="fas fa-file-alt"> </span> [[View PDF]]
 	            </a>
             </li> 
@@ -111,7 +111,7 @@
 						#end
 								
 						 #if($candownload)	
-							<li><a href="#urlencode("$cdnprefix$home/$mediadbappid/services/module/asset/downloads/originals/$originalpath?collectionid=${collectionid}&assetid=$asset.getId()")">[[Original File]]</a></li>
+							<li><a href="#urlencode("$cdnprefix$siteroot/$mediadbappid/services/module/asset/downloads/originals/$originalpath?collectionid=${collectionid}&assetid=$asset.getId()")">[[Original File]]</a></li>
 						#end
 						
 						#if($canconvert || $candownloadfpo)
@@ -250,28 +250,28 @@
 		    #if ( $canviewbasket  )
 				<li id="mediaviewerbasket">
 				#if($orderManager.isAssetInOrder($catalogid, $order, $asset.id) )
-					<a class="updatebasketmediaviewer" data-action="remove" data-alerttxt="[[Removed From Basket]]" targetdiv="mediaviewerbasket"  href="$home$componenthome/basket/mediaviewertoggleitem.html?assetid=$asset.id">[[Remove From Cart]]</a>
+					<a class="updatebasketmediaviewer" data-action="remove" data-alerttxt="[[Removed From Basket]]" targetdiv="mediaviewerbasket"  href="$siteroot$componenthome/basket/mediaviewertoggleitem.html?assetid=$asset.id">[[Remove From Cart]]</a>
 				#else
-					<a class="updatebasketmediaviewer" targetdiv="mediaviewerbasket" data-alerttxt="[[Added To Basket]]"  href="$home$componenthome/basket/mediaviewertoggleitem.html?assetid=$asset.id">[[Add To Cart]]</a>
+					<a class="updatebasketmediaviewer" targetdiv="mediaviewerbasket" data-alerttxt="[[Added To Basket]]"  href="$siteroot$componenthome/basket/mediaviewertoggleitem.html?assetid=$asset.id">[[Add To Cart]]</a>
 				#end
 				</li>
 			#end
 			#if( $canaddtofavorites && $librarycol.id != "${user.id}-favorites" )
 			<a class="" 
 			   title="[[Add to Favorites]]"  
-			   href="$home$apphome/views/modules/librarycollection/media/addtocollection.html?searchtype=asset&collectionid=${user.id}-favorites&assetid=$asset.id">[[Add To Favorites]]</a>
+			   href="$siteroot$apphome/views/modules/librarycollection/media/addtocollection.html?searchtype=asset&collectionid=${user.id}-favorites&assetid=$asset.id">[[Add To Favorites]]</a>
 			#end
 		    	#if( $candeleteasset )
                  <li>
 					#if ( $ismulti )
 						#if($canmultidelete)                 
-                     		<a class="emdialog"   href="$home$componenthome/mediaviewer/fullscreen/delete/index.html?collectionid=$!collectionid&hitssessionid=$!hitssessionid">
+                     		<a class="emdialog"   href="$siteroot$componenthome/mediaviewer/fullscreen/delete/index.html?collectionid=$!collectionid&hitssessionid=$!hitssessionid">
 	                     [[Delete Selected Assets]]</a>
 	                    #end 
                     #else
                      <a class="emdialog" 
                      	data-maxwidth="600"
-                     	href="$home$componenthome/mediaviewer/fullscreen/delete/index.html?assetid=$asset.id&collectionid=$!collectionid&hitssessionid=$!hitssessionidOriginal&hideOverlay=true">
+                     	href="$siteroot$componenthome/mediaviewer/fullscreen/delete/index.html?assetid=$asset.id&collectionid=$!collectionid&hitssessionid=$!hitssessionidOriginal&hideOverlay=true">
 	                     [[Delete Asset]]</a>
                      #end
                      </a>

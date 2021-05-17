@@ -52,7 +52,7 @@ $context.putPageValue("searchtype", $searchtype)
 #set( $viewdata = $searcher.getViewData($view) )
 <h4>$context.getText($viewdata) 
 <a class="float-right btn btn-sm btn-dark"
-   href="$home$apphome/views/settings/modules/${module}/metadata/views/index.html?viewid=${viewid}&viewpath=${view}&assettype=$!type"
+   href="$siteroot$apphome/views/settings/modules/${module}/metadata/views/index.html?viewid=${viewid}&viewpath=${view}&assettype=$!type"
    title="[[Configure View]]"><i class="fas fa-cog"></i> [[Edit View]]</a>
    
 ##<a href="$componenthome/detaileditor/generalinformation/editform.html?viewpath=$viewpath&oemaxlevel=1&edit=$!caneditasset&assetid=${asset.id}&columns=1" 
@@ -68,7 +68,7 @@ $context.putPageValue("searchtype", $searchtype)
 	#if (!$targetdiv)
 		#set( $targetdiv = "tabsummarypanel")
 	#end
-	<form name="formedit$view" id="formedit$view" class="ajaxform" targetdiv="$!targetdiv" method="post" action="$home$editpath" data-includesearchcontext="false">
+	<form name="formedit$view" id="formedit$view" class="ajaxform" targetdiv="$!targetdiv" method="post" action="$siteroot$editpath" data-includesearchcontext="false">
 	
 		<input type="hidden" name="saveasnew" value="false" />
 		<input name="oemaxlevel" type="hidden" value="1" />
@@ -125,7 +125,7 @@ $context.putPageValue("searchtype", $searchtype)
 			#else
 			#set( $args = "id=$id&candelete=$candelete&editpath=$editpath&parentid=$parentid&jumptomodule=$!jumptomodule&catalogid=$catalogid&searchtype=$searchtype&fieldexternalid=$fieldexternalid&fieldexternalvalue=$fieldexternalvalue&viewid=$viewid&viewpath=$view&permissionname=$!permissionname&hitssessionid=$!hitssessionid&selectlink=$!link")
 			<a class="ajax btn btn-sm btn-dark" style="margin-right:10px;" targetdiv="$targetdiv" 
-				href="$home$editpath?oemaxlevel=1&${args}">[[Cancel]]</a>
+				href="$siteroot$editpath?oemaxlevel=1&${args}">[[Cancel]]</a>
 			#end
 			#if( $caneditmetadatasetup  )
 				#if ( $view.contains("$asset.assettype") )
@@ -212,7 +212,7 @@ $context.putPageValue("searchtype", $searchtype)
 		<div class="col">
 			<div class="btns">
 			<a class="ajax btn btn-sm btn-primary" targetdiv="${view}editor" 
-			href="$home$componenthome/detaileditor/generic.html?catalogid=$catalogid&searchtype=$searcher.searchType&id=$!data.id&view=$view&assetid=$!asset.id&edit=1&oemaxlevel=1" >[[Edit ]]</a>
+			href="$siteroot$componenthome/detaileditor/generic.html?catalogid=$catalogid&searchtype=$searcher.searchType&id=$!data.id&view=$view&assetid=$!asset.id&edit=1&oemaxlevel=1" >[[Edit ]]</a>
 			#if( $caneditmetadatasetup  )
 				#if ( $view.contains("$asset.assettype") )
 					#set ( $type = $asset.assettype )

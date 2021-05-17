@@ -696,7 +696,7 @@ onloadselectors = function()
 /*	var appletholder = $('#emsyncstatus');
 //	if(appletholder.size() > 0)
 //	{
-//		appletholder.load('$home/${page.applicationid}/components/uploadqueue/index.html?appletname=' + window.name);
+//		appletholder.load('$siteroot/${page.applicationid}/components/uploadqueue/index.html?appletname=' + window.name);
 //	}
 */	
 	lQuery('.baseemshowonhover' ).livequery( function() 

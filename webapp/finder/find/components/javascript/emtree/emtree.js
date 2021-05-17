@@ -508,7 +508,7 @@ function getPosition(e) {
 repaintEmTree = function (tree) {
 	var home = tree.data("home");
 	
-//	<div id="${treename}tree" class="emtree emtree-widget" data-home="$home$apphome" data-treename="$treename" data-rootnodeid="$rootcategory.getId()"
+//	<div id="${treename}tree" class="emtree emtree-widget" data-home="$siteroot$apphome" data-treename="$treename" data-rootnodeid="$rootcategory.getId()"
 //		data-editable="$editable" data-url-prefix="$!prefix" data-url-postfix="$!postfix" data-targetdiv="$!targetdiv"
 //		>
 /*	var options = { 
