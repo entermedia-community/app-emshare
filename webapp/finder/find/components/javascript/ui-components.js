@@ -722,7 +722,7 @@ uiload = function() {
 
 		var typeaheadtargetdiv = input.data("typeaheadtargetdiv");
 		if(typeaheadtargetdiv == null) {
-			typeaheadtargetdiv = "searchlayout"
+			typeaheadtargetdiv = "applicationmaincontent"
 		}	
 		
 		var searchurlentertargetdiv = input.data("searchurlentertargetdiv");
@@ -808,7 +808,7 @@ uiload = function() {
 			{
 				modaldialog.hide();	
 			}
-			else if( e.which == 8 || (e.which != 37 && e.which != 39 && e.which > 32) ) //Real words and backspace
+			else if(q != "" && (e.which == 8 || (e.which != 37 && e.which != 39 && e.which > 32) ) ) //Real words and backspace
 			{
 				console.log("\"" + q + "\" type aheading on " + e.which);
 				//Typeahead
