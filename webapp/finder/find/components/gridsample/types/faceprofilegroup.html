@@ -10,6 +10,8 @@ $context.putPageValue("entity_module", $entity_module)
 	#set( $previewrendertype = "default")
 #end
 
+#set($facemanager = $mediaarchive.getBean("faceDetectManager") )
+
 #set($previewurl = "$componenthome/gridsample/preview/${previewrendertype}.html?id=$entityid&searchtype=$entity_module&hitssessionid=$hits.sessionId")
 $context.putPageValue("previewurl", $previewurl)
 
@@ -45,8 +47,11 @@ $context.putPageValue("previewurl", $previewurl)
       </div>
        <div class="emgrid-entitymedia"> 	
 			#set($assetsshown = 4)
-			#set( $assetshits = $mediaarchive.query("asset").hitsPerPage($assetsshown).exact($entity_module, $entityid).sort("assetaddeddateDown").search() )
+			#set( $assetshits = $facemanager.searchForAssets($mediaarchive,$entity.id) )
+			$!assetshits.setHitsPerPage($assetsshown)
 			$context.putPageValue("assetshits", $assetshits)
+			
+			
 	        $pages.include("$componenthome/gridsample/attachedmedia.html",$context)
 	   </div>
 	        
