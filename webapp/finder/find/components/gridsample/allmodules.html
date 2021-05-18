@@ -13,10 +13,12 @@
 	$context.putPageValue("hits", $idhits)
 	$context.putPageValue("module", $module)
 	
-   	#set($rendertype = "default")
+   	#set($rendertype = "entity")
    	#if ($module.modulerendertype)
    		#set($rendertype = $module.modulerendertype)
    	#end
+   	$context.putPageValue("rendertype", $rendertype)
+   	
    	
    	#set( $favorites = $userprofile.get("favorites_"+$module.id))
 	$context.putPageValue("favorites", $favorites)
@@ -76,11 +78,6 @@
 		<div id="galleryimg-${rendertype}" class='emgrid #if($section != "favorites")emgridlimited#end' data-colwidth="292" data-cellpadding="30">
 			#foreach( $hit in $idhits)
 				$context.putPageValue("hit", $hit)
-			     ###if($foreach.count > 6 && $section != "favorites")
-			     ##	#break 
-			     ###end 
-			     
-			     
 			     <div class="emgridcell emgridcell-$rendertype">
 			     $pages.include("$apphome/components/gridsample/types/${rendertype}.html", $context)
 				 </div>

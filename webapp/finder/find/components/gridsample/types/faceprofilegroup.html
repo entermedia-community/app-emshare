@@ -5,14 +5,10 @@
 $context.putPageValue("entityid", $entityid)
 $context.putPageValue("entity_module", $entity_module)
 
-#set( $previewrendertype = $context.getPageValue("previewrendertype"))
-#if (!$previewrendertype)
-	#set( $previewrendertype = "default")
-#end
 
 #set($facemanager = $mediaarchive.getBean("faceDetectManager") )
 
-#set($previewurl = "$componenthome/gridsample/preview/${previewrendertype}.html?id=$entityid&searchtype=$entity_module&hitssessionid=$hits.sessionId")
+#set($previewurl = "$componenthome/gridsample/preview/${rendertype}.html?id=$entityid&searchtype=$entity_module&hitssessionid=$!hits.sessionId")
 $context.putPageValue("previewurl", $previewurl)
 
 <div class="emgrid-content emgrid-type-$previewrendertype">
@@ -26,7 +22,11 @@ $context.putPageValue("previewurl", $previewurl)
    	 	data-id="entity.id"
    	 	title="$!entity.name">
    	 	##$!hits.highlight($hit,"name")
-   	 	$entity.name
+   	 	#set($name = $entity.name)
+			#if(!$name)
+				#set($name = "[[Unknown Profile]]")
+			#end
+			$name
    	 	</a>
    	 
    	 </h3> 
@@ -40,7 +40,7 @@ $context.putPageValue("previewurl", $previewurl)
         	</div>
         	#end
         	<div style="padding:10px">
-        	<a class="emdialog entity-dialog" data-hidefooter="true" href="$previewurl" title="$!entity.name">[[More details]]</a>
+        	<a class="emdialog entity-dialog" data-hidefooter="true" href="$previewurl" title="$!name">[[More details]]</a>
         	</div>
         	##$pages.include("$componenthome/gridsample/tags.html",$context)
 	        
@@ -61,12 +61,7 @@ $context.putPageValue("previewurl", $previewurl)
 	        <div class="ibmgrid-footer">
 	        
 	       ## $pages.include("$componenthome/gridsample/favorites.html?id=$hit.id&searchtype=$module.id", $context)
-	        
-	        
-	        
-	        
-	       ## 
-	        
+
 	        </div>
 	        
 	       ## <div class="griditem-tools resultsselection">

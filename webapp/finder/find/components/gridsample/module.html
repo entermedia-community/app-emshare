@@ -2,13 +2,15 @@
 $context.putPageValue("favorites", $favorites)
 
 #set($moduleid = $module.id)
-#if($moduleid.startsWith("entity"))
-	#set($rendertype = "entity")
-#else
-	#set($rendertype = $module.id)
+
+#set($rendertype = "entity")
+#if ($module.modulerendertype)
+	#set($rendertype = $module.modulerendertype)
 #end
+$context.putPageValue("rendertype", $rendertype)
 
 
+--$module.modulerendertype
 	
 <div class="emgrid-subtitle">
 	#if($content.get("section") != "favorites")
@@ -46,12 +48,7 @@ $context.putPageValue("favorites", $favorites)
 <div id="galleryimg-${rendertype}" class='emgrid #if($section != "favorites")emgridlimited#end' 
 	data-colwidth="425" 
 	data-cellpadding="30">
-     	
-     	#if ($module.modulerendertype)
-     		#set($previewrendertype = $module.modulerendertype)
-     	#end
-
-		
+     		
 		#foreach( $hit in $hits.getPageOfHits())
 			$context.putPageValue("hit", $hit)
 		     <div class="emgridcell emgridcell-$rendertype">

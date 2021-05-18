@@ -1,0 +1,48 @@
+#set( $searchtype = $context.getRequestParameter("searchtype"))
+#set( $id = $context.getRequestParameter("id"))
+#set( $entity = $hits.findData("id",$id))
+
+#if( !$entity)
+	#set( $entity  = $mediaarchive.getData($searchtype, $id) )
+#end
+#set($module = $mediaarchive.getData("module", $searchtype))
+#set($entityid = $entity.id)
+#set($entity_module = $module.getId())
+
+#set($facemanager = $mediaarchive.getBean("faceDetectManager") )
+
+<div class="modal-content modal-data-details modal-entity ${module.id}-modal">
+	<div class="modal-body">
+		<div class="modal-close">
+		        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+		          <span aria-hidden="true">&times;</span>
+		        </button>
+		</div>
+		
+		
+		<div class="clearfix"></div>
+		<div class="entity-media">
+		<h2 class="modal-title">
+			#set($name = $entity.name)
+			#if(!$name)
+				#set($name = "[[Unknown Profile]]")
+			#end
+			$name
+		</h2>
+		
+		#set($assetsshown = 15)
+		#set( $assetshits = $facemanager.searchForAssets($mediaarchive,$entityid) )
+		$!assetshits.setHitsPerPage($assetsshown)
+		$context.putPageValue("assetshits", $assetshits)
+		$context.putPageValue("fullview",true)
+		$pages.include("$componenthome/gridsample/attachedmedia.html",$context)
+		</div>
+		<div class="entity-metadata">
+			$context.putPageValue("data", $entity)
+			$context.putPageValue("searchtype", $searchtype)
+			$pages.include("metadata.html", $context)
+			
+		</div>
+		<div class="clearfix"></div>
+	</div>
+</div>
