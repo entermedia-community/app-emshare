@@ -98,7 +98,6 @@ jQuery("#blockfindoverlay").on("show", function(e){
 
 jQuery(window).on('resize',function(){
 	jQuery("#blockfindoverlay").width("100%");
-	gridResize();
 });
 
 
