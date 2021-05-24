@@ -303,6 +303,10 @@ $(document).ready(function()
 				event.stopPropagation();
 				var node = getNode(this);
 				var categoryid = node.data('nodeid');
+				if (categoryid == null) {
+					categoryid = $(this).data("categoryid");
+				}
+					
 				var options = {};
 				
 				options.categoryid = categoryid;
@@ -313,11 +317,18 @@ $(document).ready(function()
 						data: options,
 						success: function() {
 							//Refresh side panel
-							$("#col-sidebars").load(apphome + "/components/sidebars/index.html");
+							//$("#col-sidebars").load(apphome + "/components/sidebars/index.html");
+							var nextpage = apphome + "/components/sidebars/index.html";
+							jQuery.ajax({
+								url: nextpage, 
+								data: options, 
+								success: function (data) {
+									$("#col-sidebars").replaceWith(data); //Cant get a valid dom element
+									$(window).trigger( "resize" );
+								}
+							});
 						}
-					}
-				);
-
+					});
 	});	
 	
 	lQuery(".treecontext #addmedia, .cat-uploadfromtree").livequery('click', function(event) 

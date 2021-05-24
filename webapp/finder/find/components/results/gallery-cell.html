@@ -1,0 +1,73 @@
+<div class="emthumbbox embox$thumbsize resultsassetcontainer" id="cell${catalogid}_${hit.id}">
+	#if($showtoolbar)
+	<div class="gallery-checkbox resultsselection">
+		<input type="checkbox" 
+				class="selectionbox" 
+				name="count" 
+				value=""
+				#if($hits.isSelectedOnPage(${hit.id})) checked #end
+				data-dataid="${hit.id}" />
+	</div>
+	#end 
+	#if( $canviewvoting )
+	<div class="assetVoteTool">
+		<div class="votebox" id="votebox${hit.id}">
+			$pages.include("$componenthome/voting/status.html",$context)</div>
+	</div>
+	#end 
+	<a class="hovering stackedplayer" href="$click"  data-assetid="$hit.id">
+		<div class="emthumbimage em$thumbsize assetdraggable"
+			data-assetid="${hit.id}" title="$sourcepath">
+			
+   	    	#if(!$type || $type =="audio")
+   	    		#set( $type = "mime" )
+   	    	#elseif( $type =="video")
+   	    		#set( $type = "videothumbnail" )
+   	    	#end
+			$pages.include("$componenthome/results/thumbnails/${type}.html", $context)
+			$pages.include("$componenthome/results/badges.html", $context)
+			
+			
+		</div>
+	</a> 
+		 
+	#if( $showcaption )
+	<div class="gallery-caption">
+		<div class="gallery-field-info">
+			  #set($stackedfield = $mediaarchive.getCatalogSettingValue("stackedgalleryfield"))
+		         #if($stackedfield)
+		         	#set($title = $hit.get($stackedfield))
+				 #end
+				 #if(!$title)		         	
+		         
+		         
+		         #if( $hit.assettitle )
+		         
+		         #set($title =  $hit.assettitle) #else #set($title = $hit.name) #end
+		         #end
+
+				<a href="$click" class="stackedplayer"  data-assetid="$hit.id"> $title</a>
+		</div>
+		###if($canviewbasket)
+		##$pages.include("$componenthome/basket/toggleitem.html", $context)
+		###end
+		
+		#if($canquickdownload)
+	    #if( $desktop )
+        	<a href="#" class="emdesktopdownload gallerycell-download" data-assetid="$hit.id" title="[[Download]] $!title">
+        	<i class="fas fa-download"> </i>
+        	</a>
+       	#else
+			#set($dlink = $mediaarchive.asLinkToOriginal($hit))
+			#set($dlink = "$siteroot/$mediadbappid/services/module/asset/downloads/originals/$dlink?assetid=$!hit.getId()")
+			#if($collectionid)
+				#set($dlink = "$dlink&collectionid=$!{collectionid}")
+			#end
+        	<a href="$dlink" class="gallerycell-download" data-assetid="$hit.id" title="[[Download]] $!title">
+        	<i class="fas fa-download"> </i>
+        	</a>
+       	#end
+       #end
+	</div>
+	#end
+</div>
