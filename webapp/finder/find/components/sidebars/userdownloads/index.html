@@ -19,10 +19,15 @@
 #set($recentdownloads = $mediaarchive.query("userdownloads").exact("user",$user.getId()).sort("dateDown").search($context))
 
 	#foreach ( $download in $recentdownloads )
+		#set($name = $asset.getName())
+		#if (!$name)
+			#set($name = $asset.id)
+		#end
 		<li> 
-		
-		
-			<a href="#" class="#if( $desktop && $download.isdownloadcomplete ) emdesktopopen #end" data-userdownloadid="$download.id" >
+			<a href="#" 
+			class="#if( $desktop && $download.isdownloadcomplete ) emdesktopopen #end" 
+			data-userdownloadid="$download.id"
+			title="$!name" >
 				
 			##$context.getDateTime($download.getDate("date")) 
 			#if( $download.assetid)
@@ -30,10 +35,13 @@
 				#set ($mime = $mediaarchive.getMimeTypeIcon($asset.fileformat))
 				##<!-- #set( $thumbpath =  "$themeprefix/images/mimetypes/${mime}.png" ) -->
 				#set( $thumbpath = $mediaarchive.asLinkToPreview($asset, "image200x200.jpg"))
+				#if (!$thumbpath)
+					#set( $thumbpath =  "$themeprefix/images/mimetypes/${mime}.png" )
+				#end
 				<div class="download-sidebar-thumb-container">
-				<img class=" download-sidebar-thumb" src="$siteroot$thumbpath" border="0"/>
+				<img class=" download-sidebar-thumb" src="$siteroot$thumbpath" alt="$!name" border="0"/>
 				</div>
-				$asset.getName()
+				$!name
 			#else
 				#set( $cat = $mediaarchive.getCategory($download.categoryid))
 				<i class="fas fa-folder-open"></i>
