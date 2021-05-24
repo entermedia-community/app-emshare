@@ -2325,7 +2325,15 @@ uiload = function() {
 						//Refresh side panel
 						if( reload )
 						{
-							$("#col-sidebars").load(apphome + "/components/sidebars/index.html");
+							var nextpage = apphome + "/components/sidebars/index.html";
+							jQuery.ajax({
+								url: nextpage, 
+								data: options, 
+								success: function (data) {
+									$("#col-sidebars").replaceWith(data); //Cant get a valid dom element
+									$(window).trigger( "resize" );
+								}
+							});
 						}
 					}
 				}
@@ -2342,7 +2350,15 @@ uiload = function() {
 					data: options,
 					success: function() {
 						//Refresh side panel
-						$("#col-sidebars").load(apphome + "/components/sidebars/index.html");
+						var nextpage = apphome + "/components/sidebars/index.html";
+						jQuery.ajax({
+							url: nextpage, 
+							data: options, 
+							success: function (data) {
+								$("#col-sidebars").replaceWith(data); //Cant get a valid dom element
+								$(window).trigger( "resize" );
+							}
+						});
 					}
 				}
 			);
