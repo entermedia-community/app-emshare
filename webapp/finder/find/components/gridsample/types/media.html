@@ -85,8 +85,11 @@ data-singlepage="true"  >
 				        	</a>
 			        	#else
 							#set($dlink = $mediaarchive.asLinkToOriginal($hit))
-							#set($dlink = "$siteroot/$mediadbappid/services/module/asset/downloads/originals/$dlink?collectionid=$!{collectionid}&assetid=$hit.getId()")
-				        	<a href="#urlencode($dlink)" class="grid-gallery-download" data-assetid="$hit.id" title="[[Download]] $!title">
+							#set($dlink = "$siteroot/$mediadbappid/services/module/asset/downloads/originals/$dlink?assetid=$!hit.getId()")
+							#if($collectionid)
+								#set($dlink = "$dlink&collectionid=$!{collectionid}")
+							#end
+				        	<a href="$dlink" class="grid-gallery-download" data-assetid="$hit.id" title="[[Download]] $!title">
 				        	<i class="fas fa-download"> </i>
 				        	</a>
 			        	#end
