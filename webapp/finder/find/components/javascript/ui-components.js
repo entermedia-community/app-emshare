@@ -2269,7 +2269,7 @@ uiload = function() {
 	});
 	
 	
-	lQuery( ".ibmfavclick" ).livequery("click", function(e) {
+	lQuery( ".favclick" ).livequery("click", function(e) {
 		e.preventDefault();
 		var item = $(this);
 		var itemid = item.data("id");
@@ -2278,7 +2278,7 @@ uiload = function() {
 		var targetdiv= item.data("targetdiv");
 		var options = item.data();
 		if (itemid) {
-			if (item.hasClass("ibmfavorited")){
+			if (item.hasClass("itemfavorited")){
 				jQuery.ajax(
 						{
 							url:  apphome + "/components/userprofile/favoritesremove.html?profilepreference=" + "favorites_"+searchtype + "&profilepreference.value=" + itemid,

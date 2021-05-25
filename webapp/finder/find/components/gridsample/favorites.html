@@ -5,15 +5,17 @@
 
 #set( $favorites = $userprofile.get("favorites_"+$searchtype))
 #set($isfav="false")
+
 #if($favorites && $favorites.indexOf($itemid) != -1)
 	#set($isfav="true")
 #end
-<div id="ibmfav$itemid" class="ibmfav$itemid">
+
+<div id="itemfav$itemid" class="itemfav$itemid">
  <a href="" 
- 	class="float-left ibmfavorite ibmfavclick #if($isfav=='true') ibmfavorited #end" 
+ 	class="favclick favorite-star #if($isfav=='true')  star-full itemfavorited #end" 
  	data-id="$itemid"
  	data-searchtype="$searchtype"
- 	data-targetdiv="ibmfav$itemid"
+ 	data-targetdiv="itemfav$itemid"
  	data-favurl="$componenthome/gridsample/favorites.html"
  	#if($isfav=='true')
  	title="[[Remove from Favorites]]"
@@ -21,10 +23,6 @@
  	title="[[Add to Favorites]]"
  	#end
  	>
- 	#if($isfav=='true')
- 	<i class="fas fa-bookmark"></i>
- 	#else
- 	<i class="far fa-bookmark"></i>
- 	#end
+ 	<i class="fas fa-star"></i>
  </a>
  </div>
