@@ -1,3 +1,6 @@
+#set($asset = $mediaarchive.getAsset($hit.id))
+$context.putPageValue("asset",$asset)
+
 <div class="emthumbbox embox$thumbsize resultsassetcontainer" id="cell${catalogid}_${hit.id}">
 	#if($showtoolbar)
 	<div class="gallery-checkbox resultsselection">
@@ -8,11 +11,14 @@
 				#if($hits.isSelectedOnPage(${hit.id})) checked #end
 				data-dataid="${hit.id}" />
 	</div>
-	#end 
+	#end
+	$context.putPageValue("assetid", $hit.id) 
+	
 	#if( $canviewvoting )
-	<div class="assetVoteTool">
-		<div class="votebox" id="votebox${hit.id}">
-			$pages.include("$componenthome/voting/status.html",$context)</div>
+	<div class="assetVoteTool gallerycell-favorite">
+		<div id="galleryassetfavorite-${hit.id}" class="media-info-icons">
+        	 $pages.include("$apphome/views/modules/asset/editor/favorite/index.html?targetdiv=galleryassetfavorite", $context)
+   		</div>
 	</div>
 	#end 
 	<a class="hovering stackedplayer" href="$click"  data-assetid="$hit.id">
