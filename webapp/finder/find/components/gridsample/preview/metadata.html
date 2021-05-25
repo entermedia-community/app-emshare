@@ -20,8 +20,10 @@ $context.putPageValue("data",$data)
 
 
 
-#set($viewid = "general")
+#set($viewid = "generalmetadata")
 #set($view = "$searchtype/$viewid")
+
+
 #set($action = "$siteroot$applink/components/gridsample/preview/metadata-save.html")
 
 <form id="entitydataeditor" name="entitydataeditor" class="ajaxform force-validate-inputs" data-targetdiv="editentitymetadata" method="post"  action="$action">
@@ -37,7 +39,12 @@ $context.putPageValue("data",$data)
     	$context.putPageValue("viewid", $viewid)
     	
 		#if($edit =="true")  ##TODO - Permissions
-		$pages.include("/$applicationid/components/xml/detaileditor-2.html?longform=true", $context)
+			##1 or 2 colums feature
+			#set($detailviewercolumns = $context.getRequestParameter("detailviewercolumns"))
+			#if(!$detailviewercolumns)
+				#set($detailviewercolumns = 2)
+			#end
+			$pages.include("/$applicationid/components/xml/detaileditor-entities.html?longform=true&detailviewercolumns=$detailviewercolumns", $context)
 		#else
 			$pages.include("/$applicationid/components/xml/detaileditorcss.html?detailsreadonly=true&alwaysshow=true", $context)
 		#end
@@ -46,7 +53,19 @@ $context.putPageValue("data",$data)
     <div class="btns">
 	    <a class="btn btn-sm btn-dark submitform" style="margin-right: 10px;">[[Save]]</a>
 		<a class="btn btn-sm btn-dark ajax" style="margin-right: 10px;" data-targetdiv="editentitymetadata" href="$siteroot$apphome/components/gridsample/preview/metadata.html?id=$!id&searchtype=$!searchtype">[[Cancel]]</a>
-		<a class="btn btn-sm btn-dark float-right" href="$siteroot$apphome/views/settings/modules/${searcher.searchType}/metadata/views/index.html?viewid=$viewid&viewpath=$view"><i class="fas fa-cog"></i> [[Edit View]]</a>
+		
+		#if($detailviewercolumns==1)
+			#set($changedetailviewercolumns = 2)
+			#set($icondetailviewercolumns = "grip-vertical")
+		#else
+			#set($changedetailviewercolumns = 1)
+			#set($icondetailviewercolumns = "grip-horizontal")
+		#end
+		<a class="btn btn-sm btn-darkless float-right" href="$siteroot$apphome/views/settings/modules/${searcher.searchType}/metadata/views/index.html?viewid=$viewid&viewpath=$view"><i class="fas fa-cog"></i> [[Fields]]</a>
+		<a class="ajax btn btn-sm btn-darkless float-right" style="margin-right:5px;" data-targetdiv="editentitymetadata" href="$siteroot$apphome/components/gridsample/preview/metadata.html?edit=true&id=$data.id&searchtype=$searchtype&detailviewercolumns=$changedetailviewercolumns">
+			<i class="fas fa-$icondetailviewercolumns"></i>
+		</a>
+		
 	    <div class="clearfix"></div>
     </div>
     #end
