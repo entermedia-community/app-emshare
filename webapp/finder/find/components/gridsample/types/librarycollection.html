@@ -9,7 +9,7 @@ $context.putPageValue("librarycol", $librarycol)
 
 #set( $previewrendertype = $context.getPageValue("previewrendertype"))
 #if (!$previewrendertype)
-	#set( $previewrendertype = "default")
+	#set( $previewrendertype = "entity")
 #end
 
 #set($previewurl = "$componenthome/gridsample/preview/${previewrendertype}.html?id=$entityid&searchtype=$entity_module&hitssessionid=$hits.sessionId")
@@ -38,9 +38,7 @@ $context.putPageValue("previewurl", $previewurl)
         		$entity.longcaption
         	</div>
         	#end
-        	<div style="padding:10px">
-        	<a class="emdialog entity-dialog" data-hidefooter="true" href="$previewurl" title="$!entity.name">[[More details]]</a>
-        	</div>
+
         	##$pages.include("$componenthome/gridsample/tags.html",$context)
 	        
       </div>
@@ -55,15 +53,13 @@ $context.putPageValue("previewurl", $previewurl)
 	        <div class="clearfix"></div>
 	        
 	        
-	        <div class="ibmgrid-footer">
-	        
-	       ## $pages.include("$componenthome/gridsample/favorites.html?id=$hit.id&searchtype=$module.id", $context)
-	        
-	        
-	        
-	        
-	       ## 
-	        
+			<div class="grid-gallery-footer">
+	        <div class="emgrid-moredetails">
+        	<a class="emdialog entity-dialog" data-hidefooter="true" href="$previewurl" title="$!entity.name">[[More details]]</a>
+        	</div>
+        	<div class="emgrid-moredetailsright">
+	       	$pages.include("$componenthome/gridsample/favorites.html?id=$hit.id&searchtype=$module.id", $context)
+	       	</div>
 	        </div>
 	        
 	       ## <div class="griditem-tools resultsselection">
