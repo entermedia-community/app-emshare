@@ -1,6 +1,8 @@
 ##This is used to make a readonly version for mediadb
 #set( $previewonly = $context.getRequestParameter("previewonly"))
-
+#if (!$previewonly)
+#set($previewonly = false)
+#end
 
 <div id="footerbase">
 
@@ -44,8 +46,8 @@
 				</div>
 			#end
 			
-			#if (!$ismulti && !$previewonly)
-				#if( !$ismulti && $canviewmediaedit )
+			
+			#if(!$previewonly && !$ismulti && $canviewmediaedit )
 			   	<li class="footermenu hidemulti bottomtab #if($opentab == 'viewmedia')tabselected #end">
 			   	<a class="expandmenu assettab " 
 						data-link="$componenthome/mediaviewer/fullscreen/tabs/viewmedia.html" title="[[Media]]"
@@ -54,17 +56,18 @@
 					<i class="fas fa-images"></i>  [[Media]]  
 					</a>
 			   	</li>
-			   	#end
-				#if ($canviewcomments || $canassetannotate)
+			 #end
+			 
+			 #if (!$previewonly && ($canviewcomments || $canassetannotate))
 				 <li class="footermenu hidemulti bottomtab #if($opentab == "viewcollaborate")tabselected#end">
 					<a class="expandmenu assettab" 
 						data-link="$componenthome/mediaviewer/fullscreen/tabs/viewcollaborate.html" title="[[Approvals]]"
 						data-assettab="viewcollaborate" >
-					<i class="fas fa-comment-alt"></i> [[Approvals]] 
+					<i class="fas fa-comment-alt"></i> [[Approvals]]  
 					</a>
 				</li>
-				#end
-			#end
+ 			#end
+
 			#if ( $canshareasset && !$ismulti )
 			#if ($canpublish ||
 			$canemaillink ||
@@ -84,7 +87,7 @@
                            <a  class="  emdialog"  data-hidefooter="true" data-noesc="true"   href="$siteroot$apphome/views/modules/asset/activity/emailassets.html?assetid=$asset.id" >[[Email]]</a>
                        </li>
                        	#end
-                       	#if( $canembedasset && !$multi)
+                       	#if( $canembedasset)
                        <li>
                            <a  class="  emdialog"  data-hidefooter="true" data-noesc="true"   href="$siteroot$componenthome/share/embed.html?assetid=$asset.id&collectionid=$!collectionid" >[[Links]]</a>
                        </li>
@@ -158,7 +161,7 @@
 						
 			#if($user && ( !$previewonly 	&& !$ismulti))
 			#if($canviewconversions || 
-				($rendertype == "video" || $rendertype == "audio") ||
+				($canviewtimeline && ($rendertype == "video" || $rendertype == "audio")) ||
 				$canviewclosedcaptions ||
 				$canviewattachments ||
 				$canconverthistory ||
