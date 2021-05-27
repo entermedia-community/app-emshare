@@ -27,6 +27,7 @@
 				</a>
 			 </il>
 			 #end
+			 
 			 #if( !$previewonly && $canviewmetadatageneral )
 			 <li class="footermenu bottomtab #if($opentab == "viewproperties")tabselected#end">
 				<a class="expandmenu assettab" 
@@ -36,63 +37,68 @@
 				</a>
 			</li>
 			#end
+			
 			#if (!$ismulti)
 				<div class="hidemulti">
 					$pages.include("$componenthome/detaileditor/assetdatatables.html",$context)
 				</div>
 			#end
 			
-			#if (!$ismulti)
-				#if( !$previewonly )
-					#if( !$ismulti && $canviewmediaedit )
-				   	<li class="footermenu hidemulti bottomtab #if($opentab == 'viewmedia')tabselected #end">
-				   	<a class="expandmenu assettab " 
-							data-link="$componenthome/mediaviewer/fullscreen/tabs/viewmedia.html" title="[[Media]]"
-							data-assettab="viewmedia"
-							data-assettabname="[[Media]]" >
-						<i class="fas fa-images"></i>  [[Media]]  
-						</a>
-				   	</li>
-				   	#end
-					#if ($canviewcomments || $canassetannotate)
-					 <li class="footermenu hidemulti bottomtab #if($opentab == "viewcollaborate")tabselected#end">
-						<a class="expandmenu assettab" 
-							data-link="$componenthome/mediaviewer/fullscreen/tabs/viewcollaborate.html" title="[[Approvals]]"
-							data-assettab="viewcollaborate" >
-						<i class="fas fa-comment-alt"></i> [[Approvals]] 
-						</a>
-					</li>
-					#end
+			#if (!$ismulti && !$previewonly)
+				#if( !$ismulti && $canviewmediaedit )
+			   	<li class="footermenu hidemulti bottomtab #if($opentab == 'viewmedia')tabselected #end">
+			   	<a class="expandmenu assettab " 
+						data-link="$componenthome/mediaviewer/fullscreen/tabs/viewmedia.html" title="[[Media]]"
+						data-assettab="viewmedia"
+						data-assettabname="[[Media]]" >
+					<i class="fas fa-images"></i>  [[Media]]  
+					</a>
+			   	</li>
+			   	#end
+				#if ($canviewcomments || $canassetannotate)
+				 <li class="footermenu hidemulti bottomtab #if($opentab == "viewcollaborate")tabselected#end">
+					<a class="expandmenu assettab" 
+						data-link="$componenthome/mediaviewer/fullscreen/tabs/viewcollaborate.html" title="[[Approvals]]"
+						data-assettab="viewcollaborate" >
+					<i class="fas fa-comment-alt"></i> [[Approvals]] 
+					</a>
+				</li>
 				#end
 			#end
 			#if ( $canshareasset && !$ismulti )
+			#if ($canpublish ||
+			$canemaillink ||
+			$canembedasset ||
+			$canaddtoproject)
             <li class="footermenu bottomtab hidemulti">
 			   <a href="#" class="expandmenu dropdown-toggle" data-toggle="dropdown" title="[[Share]]">
 			   	 <span class="fas fa-share-alt"></span> [[Share]]</a>
-			   <ul class="dropdown-menu">
-   							#if ($canpublish)
-	                       <li>
-	                           <a  class=" emdialog"  data-hidefooter="true" data-noesc="true"   href="$siteroot$apphome/views/modules/asset/activity/publishassets.html?assetid=$asset.id" >[[Publish]]</a>
-	                       </li>
-	                       	#end
-	                       	#if( $canemaillink )
-	                       <li>
-	                           <a  class="  emdialog"  data-hidefooter="true" data-noesc="true"   href="$siteroot$apphome/views/modules/asset/activity/emailassets.html?assetid=$asset.id" >[[Email]]</a>
-	                       </li>
-	                       	#end
-	                       	#if( $canembedasset && !$multi)
-	                       <li>
-	                           <a  class="  emdialog"  data-hidefooter="true" data-noesc="true"   href="$siteroot$componenthome/share/embed.html?assetid=$asset.id&collectionid=$!collectionid" >[[Links]]</a>
-	                       </li>
-	                       	#end
-	                       	#if ( $canaddtoproject )
-							<li id="add-to-collection">
-								<a class="ajax" targetdivinner="shareOptionsContainer" href="#">[[Add to Project]]</a>
-							</li>
-							#end
-             </ul>
+			   		<ul class="dropdown-menu">
+  						#if ($canpublish)
+                       <li>
+                           <a  class=" emdialog"  data-hidefooter="true" data-noesc="true"   href="$siteroot$apphome/views/modules/asset/activity/publishassets.html?assetid=$asset.id" >[[Publish]]</a>
+                       </li>
+                       	#end
+                       	#if( $canemaillink )
+                       <li>
+                           <a  class="  emdialog"  data-hidefooter="true" data-noesc="true"   href="$siteroot$apphome/views/modules/asset/activity/emailassets.html?assetid=$asset.id" >[[Email]]</a>
+                       </li>
+                       	#end
+                       	#if( $canembedasset && !$multi)
+                       <li>
+                           <a  class="  emdialog"  data-hidefooter="true" data-noesc="true"   href="$siteroot$componenthome/share/embed.html?assetid=$asset.id&collectionid=$!collectionid" >[[Links]]</a>
+                       </li>
+                       	#end
+                       	#if ( $canaddtoproject )
+						<li id="add-to-collection">
+							<a class="ajax" data-targetdivinner="shareOptionsContainer" href="#">[[Add to Project]]</a>
+						</li>
+						#end
+            	 	</ul>
              </li>
-             #end
+            #end
+            #end
+            
     		#set( $originalpath = $mediaarchive.asLinkToOriginal($asset) )	
 			#if($candownload && $asset.getFileFormat()  == "pdf")
 			<li class="footermenu bottomtab" >
@@ -101,8 +107,9 @@
 	            </a>
             </li> 
 			#end
-			#if (!$ismulti)
-			#if(1==2 && ($candownload || $canconvert || $candownloadfpo))
+			
+
+			#if(1==2 && !$ismulti && ($candownload || $canconvert || $candownloadfpo))
 				<li class="footermenu bottomtab hidemulti" >		
 					<a href="#" class="expandmenu dropdown-toggle" data-toggle="dropdown" expanded="true" > <span class="fas fa-download"></span>  [[Download]]</a>
 					   <ul class="dropdown-menu">
@@ -148,9 +155,19 @@
 					</ul>
 				  </li>
 			 #end
-            #end
 						
 			#if($user && ( !$previewonly 	&& !$ismulti))
+			#if($canviewconversions || 
+				($rendertype == "video" || $rendertype == "audio") ||
+				$canviewclosedcaptions ||
+				$canviewattachments ||
+				$canconverthistory ||
+				$canviewbasket ||
+				$canaddtofavorites ||
+				$candeleteasset  ||
+				$canmultiedit)
+			
+			
 			<li class="footermenu bottomtab bottomtabactions hidemulti #if($opentab == "viewactions") tabselected #end">
 			   <a href="#" class="expandmenu dropdown-toggle" data-toggle="dropdown" title="[[Actions Menu]]"> 
 			   <span class="fas fa-edit"></span>  
@@ -261,39 +278,40 @@
 			   title="[[Add to Favorites]]"  
 			   href="$siteroot$apphome/views/modules/librarycollection/media/addtocollection.html?searchtype=asset&collectionid=${user.id}-favorites&assetid=$asset.id">[[Add To Favorites]]</a>
 			#end
-		    	#if( $candeleteasset )
-                 <li>
-					#if ( $ismulti )
-						#if($canmultidelete)                 
-                     		<a class="emdialog"   href="$siteroot$componenthome/mediaviewer/fullscreen/delete/index.html?collectionid=$!collectionid&hitssessionid=$!hitssessionid">
-	                     [[Delete Selected Assets]]</a>
-	                    #end 
-                    #else
-                     <a class="emdialog" 
-                     	data-maxwidth="600"
-                     	href="$siteroot$componenthome/mediaviewer/fullscreen/delete/index.html?assetid=$asset.id&collectionid=$!collectionid&hitssessionid=$!hitssessionidOriginal&hideOverlay=true">
-	                     [[Delete Asset]]</a>
-                     #end
-                     </a>
-                 </li>
-                 #end
-                #if( $canmultiedit )
+	    	#if( $candeleteasset )
+                <li>
+				#if ( $ismulti )
+					#if($canmultidelete)                 
+                    		<a class="emdialog"   href="$siteroot$componenthome/mediaviewer/fullscreen/delete/index.html?collectionid=$!collectionid&hitssessionid=$!hitssessionid">
+                     [[Delete Selected Assets]]</a>
+                    #end 
+                   #else
+                    <a class="emdialog" 
+                    	data-maxwidth="600"
+                    	href="$siteroot$componenthome/mediaviewer/fullscreen/delete/index.html?assetid=$asset.id&collectionid=$!collectionid&hitssessionid=$!hitssessionidOriginal&hideOverlay=true">
+                     [[Delete Asset]]</a>
+                    #end
+                    </a>
+                </li>
+             #end
+             #if( $canmultiedit )
                 #if($hits.getSelectedHits() && $hits.getSelectedHits().size() > 1)
                  <li>
 	  				#set($text = "[[Multi Edit]] ($hits.getSelectionSize())")
 					<a id="multiedit-menu" class="" href="#" title="[[Edit selected records]]">$text</a>
                  </li>
                  #end
-                 #end
-				</ul>
+             #end
+			</ul>
 		    </li>
 		    #end
+		    #end
 		</ul>
-		<ul class="footermenu-assetnav">
-		<li class="footermenu">
-				<div class="goleftclick gotoarrows" id="goleftclick" data-enabled="false"><span class="fas fa-caret-left overlay-nav gocaret"></span></div>	
-				<div class="gorightclick gotoarrows" id="gorightclick"  data-enabled="false" ><span class="fas fa-caret-right overlay-nav gocaret"></span></div>	
-		</li>
-		</ul>
+		##<ul class="footermenu-assetnav">
+		##<li class="footermenu">
+		##		<div class="goleftclick gotoarrows" id="goleftclick" data-enabled="false"><span class="fas fa-caret-left overlay-nav gocaret"></span></div>	
+		##		<div class="gorightclick gotoarrows" id="gorightclick"  data-enabled="false" ><span class="fas fa-caret-right overlay-nav gocaret"></span></div>	
+		##</li>
+		##</ul>
 	</div>
 </div>
