@@ -2182,6 +2182,28 @@ uiload = function() {
 	function escapeRegExp(str) {
 	    return str.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
 	}
+	
+    $('#setup-view').click(function(){
+        if ( $('#setup-view').hasClass('open') ) {
+            $('#views-header').height(44)
+            $('#views-settings').hide();
+            $('#setup-view').removeClass('open');
+        }
+        else {
+            $('#views-header').height('auto')
+            $('#views-settings').show();
+            $('#setup-view').addClass('open'); 
+        }
+    });
+    
+    $('#renderastable').click(function(){
+        if ( $('#renderastable').is(':checked') ) {
+            $('#rendertableoptions').show();
+        }
+        else {
+            $('#rendertableoptions').hide();
+        }
+    });
 		
 	lQuery('.sortviews').livequery(function()
 		{
@@ -2220,8 +2242,10 @@ uiload = function() {
 		     });   
 		}
 	});
-		
-	var listtosort = $('.listsort');
+	
+	
+	lQuery('.listsort').livequery(function() {
+	var listtosort = $(this);
 	if (typeof listtosort.sortable == "function") {
 		listtosort.sortable({
 				axis: 'y',
@@ -2250,6 +2274,7 @@ uiload = function() {
 			    }
 		});
 	}
+	});
 		
 		
 	lQuery( ".copytoclipboard" ).livequery("click", function(e) {
