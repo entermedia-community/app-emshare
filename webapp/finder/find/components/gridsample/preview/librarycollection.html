@@ -9,6 +9,8 @@
 #set($entityid = $entity.id)
 #set($entity_module = $module.getId())
 
+#set( $rootcategory = $context.getRequestParameter("rootcategory"))
+
 
 $context.putPageValue("entityid", $entityid)
 $context.putPageValue("entity_module", $entity_module)
@@ -27,7 +29,7 @@ $context.putPageValue("entity_module", $entity_module)
 		<h2 class="modal-title">$entity.name</h2>
 		
 		#set($assetsshown = 15)
-		#set( $assetshits = $mediaarchive.query("asset").hitsPerPage($assetsshown).exact($entity_module, $entityid).sort("assetaddeddateDown").search() )
+		#set( $assetshits = $mediaarchive.query("asset").hitsPerPage($assetsshown).match("category",$rootcategory).sort("assetaddeddateDown").search() )
 		$context.putPageValue("assetshits", $assetshits)
 		$context.putPageValue("fullview",true)
 		$pages.include("$componenthome/gridsample/attachedmedia.html",$context)

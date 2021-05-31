@@ -7,14 +7,14 @@ $context.putPageValue("entity_module", $entity_module)
 #set( $librarycol = $mediaarchive.getData("librarycollection",$entityid))
 $context.putPageValue("librarycol", $librarycol)
 
-$context.putPageValue("rootcategory", $librarycol.rootcategory)
+#set($rootcategory = $librarycol.rootcategory)
+$context.putPageValue("rootcategory", $rootcategory)
 
-#set( $previewrendertype = $context.getPageValue("previewrendertype"))
-#if (!$previewrendertype)
-	#set( $previewrendertype = "entity")
+#if (!$rendertype)
+	#set( $rendertype = "entity")
 #end
 
-#set($previewurl = "$componenthome/gridsample/preview/${previewrendertype}.html?id=$entityid&searchtype=$entity_module&hitssessionid=$hits.sessionId")
+#set($previewurl = "$componenthome/gridsample/preview/${rendertype}.html?id=$entityid&searchtype=$entity_module&rootcategory=$rootcategory&hitssessionid=$hits.sessionId")
 $context.putPageValue("previewurl", $previewurl)
 
 <div class="emgrid-content emgrid-type-$previewrendertype">
