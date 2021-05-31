@@ -5,9 +5,6 @@
 $context.putPageValue("entityid", $entityid)
 $context.putPageValue("entity_module", $entity_module)
 
-
-#set($facemanager = $mediaarchive.getBean("faceDetectManager") )
-
 #set($previewurl = "$componenthome/gridsample/preview/${rendertype}.html?id=$entityid&searchtype=$entity_module&hitssessionid=$!hits.sessionId")
 $context.putPageValue("previewurl", $previewurl)
 
@@ -43,14 +40,17 @@ $context.putPageValue("previewurl", $previewurl)
         	##$pages.include("$componenthome/gridsample/tags.html",$context)
 	        
       </div>
-       <div class="emgrid-entitymedia"> 	
-			#set($assetsshown = 4)
-			#set( $assetshits = $facemanager.searchForAssets($mediaarchive,$entity.id) )
-			$!assetshits.setHitsPerPage($assetsshown)
-			$context.putPageValue("assetshits", $assetshits)
-			
-			
-	        $pages.include("$componenthome/gridsample/attachedmedia.html",$context)
+
+	   #set($assetsshown = 4)
+       $context.putPageValue("assetsshown", $assetsshown)
+       <div class="emgrid-entitymedia assetdropentity"
+       		id="attachedmedia$entityid" 
+       		data-entitymodule="$entity_module" 
+       		data-entityid="$entityid" 
+       		data-assetsshown="$assetsshown"
+       		data-attachedmediaurl="$siteroot$componenthome/gridsample/types/attachedmedia/faceprofilegroup.html"
+       		data-targetdiv="attachedmedia$entityid"> 	
+	        $pages.include("$componenthome/gridsample/types/attachedmedia/faceprofilegroup.html",$context)
 	   </div>
 	        
 	        <div class="clearfix"></div>

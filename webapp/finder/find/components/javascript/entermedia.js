@@ -825,8 +825,9 @@ onloadselectors = function()
 						}
 						,
 						revert: 'invalid',
-						containment: '#emcontainer',
-						zIndex: 100000,
+						appendTo: "body",
+						containment: 'document',
+						zIndex: 300000,
 					}
 				);
 				/*
@@ -838,9 +839,7 @@ onloadselectors = function()
 				*/
 			}
 		);
-		lQuery(".categorydraggable").livequery( 
-			function()
-			{	
+		lQuery(".categorydraggable").livequery( function() {
 				$(this).draggable( 
 					{
 						delay: 300,
@@ -941,8 +940,8 @@ onloadselectors = function()
 
 	if( jQuery.fn.droppable )
 	{
-    	lQuery(".assetdropcategory .categorydroparea").livequery(
-			function()
+    	//Category tree droppable
+		lQuery(".assetdropcategory .categorydroparea").livequery(function()
 			{
 				$(this).droppable(
 					{
@@ -1009,6 +1008,80 @@ onloadselectors = function()
 				);
 			}
 		);
+		
+		//Entities tree droppable
+		lQuery(".assetdropentity").livequery(function()
+			{
+				var node = $(this);
+				node.droppable(
+					{
+						drop: function(event, ui) {
+							//var node = $(this);
+							var entityid = node.data("entityid");
+							var entitymodule = node.data("entitymodule");
+							
+							var assetid = ui.draggable.data("assetid");
+							var hitssessionid = $("#resultsdiv").data("hitssessionid");
+							if( !hitssessionid )
+							{
+								hitssessionid = $("#main-results-table").data("hitssessionid");
+							}
+							
+							//move or add it
+							var moveit = false;
+							if( node.closest(".assetdropcategorymove").length > 0 )
+							{
+								moveit = true;
+							}
+							
+							var options = {};
+							options.assetid = assetid;
+							options.entityid=entityid;
+							options.entitymodule=entitymodule;
+							options.rootcategory=node.data("rootcategory");
+							options.hitssessionid=hitssessionid;
+							options.moveasset= moveit;
+							
+							$.ajax({
+									url: apphome + "/components/entities/addassetentity.html",
+									data: options,
+									 async: false,
+									success: function(data) {
+											var targetdiv = node.data("targetdiv");
+											var targeturl = node.data("attachedmediaurl");
+											targetdiv = $("#"+targetdiv)
+											if (targetdiv.length) {
+												var options = {};
+												options.entityid=entityid;
+												options.entitymodule=entitymodule;
+												options.rootcategory=node.data("rootcategory");
+												options.assetsshown=node.data("assetsshown");
+												jQuery.get(targeturl, options, function(data2){
+													//success
+													targetdiv.html(data2);
+													targetdiv.append("<span class='fader emnotify'>&nbsp;+" + data + "</span>");
+													targetdiv.find(".fader").fadeOut(3000);
+													targetdiv.removeClass("dragoverselected");
+												});
+											}
+										}
+							});		
+							
+						},
+						tolerance: 'pointer',
+						over: outlineSelectionCol,
+						out: unoutlineSelectionCol
+					}
+				);
+			}
+		);
+		
+		
+		function reloadentityattachedmedia(node) {
+			
+		}
+		
+		
 		} //droppable
 		
 

@@ -1,10 +1,9 @@
 #if(!$entity_module)
-	#set($entity_module = $context.getRequestParameter("searchtype"))
+	#set($entity_module = $context.getRequestParameter("entitymodule"))
 #end
 #if(!$entityid)
-	#set($entityid = $context.getRequestParameter("id"))
+	#set($entityid = $context.getRequestParameter("entityid"))
 #end
-
 
 #if($assetshits)
 
@@ -42,9 +41,11 @@
 	    #end
 	#end
  	<div class="float-left grid-attachedmedia">
- 	<a class="stackedplayer imagearea" id="clickid${hit.id}" data-assetid="$hit.id" href="#" alt="$!title">
-	$pages.include("$componenthome/results/thumbnails/${rendertype}.html", $context)
-	</a>
+ 	 <div class="assetdraggable" data-assetid="$hit.id"> 
+	 	<a class="stackedplayer imagearea" id="clickid${hit.id}" data-assetid="$hit.id" href="#" alt="$!title">
+		$pages.include("$componenthome/results/thumbnails/${rendertype}.html", $context)
+		</a>
+	</div>
 	</div>
 #end
 <div class="clearfix"></div>
@@ -53,7 +54,7 @@
 		
 		#if($entity_module=="librarycollection")
 			
-			#set($link = "$siteroot$applink/views/modules/librarycollection/showcategory.html?hitssessionid=$!{assetshits.sessionId}&nodeID=$librarycol.rootcategory")
+			#set($link = "$siteroot$applink/views/modules/librarycollection/showcategory.html?hitssessionid=$!{assetshits.sessionId}&nodeID=$rootcategory")
 			#set($link = "$link&oemaxlevel=4")
 			#set($link = "$link&sidebarcomponent=categories")
 			#set($targetdiv = "applicationcontainer")

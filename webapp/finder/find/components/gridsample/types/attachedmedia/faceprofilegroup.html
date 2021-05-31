@@ -1,0 +1,20 @@
+#if(!$entity_module)
+	#set($entity_module = $context.getRequestParameter("entitymodule"))
+#end
+#if(!$entityid)
+	#set($entityid = $context.getRequestParameter("entityid"))
+#end
+#if(!$assetsshown)
+	#set($assetsshown = $context.getRequestParameter("assetsshown"))
+#end
+#if(!$assetsshown)
+	#set($assetsshown = 4)
+#end
+
+
+#set($facemanager = $mediaarchive.getBean("faceDetectManager") )
+
+#set( $assetshits = $facemanager.searchForAssets($mediaarchive, $entityid) )
+$!assetshits.setHitsPerPage($assetsshown)
+$context.putPageValue("assetshits", $assetshits)
+$pages.include("$componenthome/gridsample/attachedmedia.html",$context)

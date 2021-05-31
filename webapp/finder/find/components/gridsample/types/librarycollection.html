@@ -7,6 +7,8 @@ $context.putPageValue("entity_module", $entity_module)
 #set( $librarycol = $mediaarchive.getData("librarycollection",$entityid))
 $context.putPageValue("librarycol", $librarycol)
 
+$context.putPageValue("rootcategory", $librarycol.rootcategory)
+
 #set( $previewrendertype = $context.getPageValue("previewrendertype"))
 #if (!$previewrendertype)
 	#set( $previewrendertype = "entity")
@@ -42,12 +44,18 @@ $context.putPageValue("previewurl", $previewurl)
         	##$pages.include("$componenthome/gridsample/tags.html",$context)
 	        
       </div>
-       <div class="emgrid-entitymedia"> 	
-			#set($assetsshown = 4)
-			#set( $assetshits = $mediaarchive.query("asset").hitsPerPage($assetsshown).match("category",$librarycol.rootcategory).sort("assetaddeddateDown").search() )
-			$context.putPageValue("assetshits", $assetshits)
-			
-	        $pages.include("$componenthome/gridsample/attachedmedia.html",$context)
+	   
+	  #set($assetsshown = 4)
+      $context.putPageValue("assetsshown", $assetsshown)
+       <div class="emgrid-entitymedia assetdropentity"
+       		id="attachedmedia$entityid" 
+       		data-entitymodule="$entity_module" 
+       		data-entityid="$entityid"
+       		data-rootcategory="$librarycol.rootcategory" 
+       		data-assetsshown="$assetsshown"
+       		data-attachedmediaurl="$siteroot$componenthome/gridsample/types/attachedmedia/librarycollection.html"
+       		data-targetdiv="attachedmedia$entityid"> 	
+	        $pages.include("$componenthome/gridsample/types/attachedmedia/librarycollection.html",$context)
 	   </div>
 	        
 	        <div class="clearfix"></div>
