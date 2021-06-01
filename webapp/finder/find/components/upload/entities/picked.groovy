@@ -7,8 +7,8 @@ public void init()
 	UserProfile userprofile = context.getUserProfile();
 	
 	String entitytype = context.getRequestParameter("entitytype");
-	
 	String addselection = context.getRequestParameter("addselection");
+	
 	if( addselection == null)
 	{
 		Data data = context.getPageValue("data"); //saved new one?
@@ -18,15 +18,15 @@ public void init()
 		}
 	}
 	
-	if( addselection != null && addselection != null)
+	if( addselection != null && entitytype != null)
 	{
-		userprofile.addValue("picked" + entitytype,addselection);
+		userprofile.addValue("picked" + entitytype, addselection);
 	}
 
 	String removeselection = context.getRequestParameter("removeselection");
 	if( removeselection != null)
 	{
-		userprofile.removeValue("picked" + entitytype,removeselection);
+		userprofile.removeValue("picked" + entitytype, removeselection);
 	}
 
 }

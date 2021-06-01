@@ -13,13 +13,13 @@
 	#foreach ( $amodule in $userprofile.getEntities() )
 		#set( $hits = false )
 		#if( $amodule.id != "asset" && $amodule.id != "faceprofilegroup" )
-		#set( $key = "picked$amodule.getId()" )
-		#set( $hits = $userprofile.getValues($key))
-		#if( ($type && $amodule.id == $type  ) || ( $hits) )
-		
-		#else
-			#set( $true = $others.add($amodule) )
-		#end	
+			#set( $key = "picked$amodule.getId()" )
+			#set( $hits = $userprofile.getValues($key))
+			#if( ($type && $amodule.id == $type  ) || ( $hits) )
+			
+			#else
+				#set( $true = $others.add($amodule) )
+			#end	
 		#end
 	#end
 	
@@ -43,76 +43,77 @@
 					</div>
 			#end
 		
-		
-			#foreach ( $amodule in $userprofile.getEntities() )
-				<div  class="row no-gutters">
-				#set( $hits = false )
-				#set( $key = "picked$amodule.getId()" )
-				#set( $hits = $userprofile.getValues($key))
-				#if( ($type && $amodule.id == $type  ) || ( $hits && $amodule.id != "asset" && $amodule.id != "faceprofilegroup") )
-					<div class=" col-5">
-					<div class="side-select-menu #if( $type == $amodule.id) active #end"> 
-					
-					<div class="addMediaRow">
-					<a class="ajax" data-targetdiv="entitypicker" data-oemaxlevel="1"  
-					href="$siteroot$applink/components/upload/entities/picker.html?entitytype=${amodule.id}"> 
-							<h5 class="selectedEntity" style="padding: 10px 0px 10px 10px;">$amodule</h5>
-					</a>
-					</div>
-					
-					<input type="hidden" name="field" value="$amodule.id" />
-					#if( $hits && !$hits.isEmpty() )
-						<div class="addEntityButtonContainer" style="padding:  0 0 10px 10px">
-						#foreach( $id in $hits )
-							#set( $data = $mediaarchive.getCachedData($amodule.getId(),$id))
-						<a class="badge badge-secondary ajax" style="margin:4px;" data-targetdiv="entitypicker" data-oemaxlevel="1" 
-						href="$siteroot$applink/components/upload/entities/picker.html?entitytype=$amodule.getId()&removeselection=$id">
-						<input type="hidden" name="${amodule.id}.value" value="$id" />
-						#text($data) 
-			 				<i class="fas fa-times"></i>
-				 		</a>
-				 		#end
-			 			</div>
-		 			#end
-					</div>
-					</div>
-					#if( $type == $amodule.id )
-						<div class="col-7">
-						<div class="addEntity">
-							
-								<a class="ajax addEntityClose" 
-								style=" " data-targetdiv="entitypicker" data-oemaxlevel="1" 
-								href="$applink/components/upload/entities/picker.html"> <i class="fas fa-times"></i></a>
+			#set($clearotherentities = $context.getRequestParameter("clearotherentities") )
+			###if(!$clearentities =="true")
+				#foreach ( $amodule in $userprofile.getEntities() )
+					<div  class="row no-gutters">
+					#set( $hits = false )
+					#set( $key = "picked$amodule.getId()" )
+					#set( $hits = $userprofile.getValues($key))
+					#if( ($type && $amodule.id == $type  ) || ( $clearotherentities !="true" && $hits && $amodule.id != "asset" && $amodule.id != "faceprofilegroup") )
+						<div class=" col-5">
+						<div class="side-select-menu #if( $type == $amodule.id) active #end"> 
+						
+						<div class="addMediaRow">
+						<a class="ajax" data-targetdiv="entitypicker" data-oemaxlevel="1"  
+						href="$siteroot$applink/components/upload/entities/picker.html?entitytype=${amodule.id}"> 
+								<h5 class="selectedEntity" style="padding: 10px 0px 10px 10px;">$amodule</h5>
+						</a>
+						</div>
+						
+						<input type="hidden" name="field" value="$amodule.id" />
+						#if( $hits && !$hits.isEmpty() )
+							<div class="addEntityButtonContainer" style="padding:  0 0 10px 10px">
+							#foreach( $id in $hits )
+								#set( $data = $mediaarchive.getCachedData($amodule.getId(),$id))
+							<a class="badge badge-secondary ajax" style="margin:4px;" data-targetdiv="entitypicker" data-oemaxlevel="1" 
+							href="$siteroot$applink/components/upload/entities/picker.html?entitytype=$amodule.getId()&removeselection=$id">
+							<input type="hidden" name="${amodule.id}.value" value="$id" />
+							#text($data) 
+				 				<i class="fas fa-times"></i>
+					 		</a>
+					 		#end
+				 			</div>
+			 			#end
+						</div>
+						</div>
+						#if( $type == $amodule.id )
+							<div class="col-7">
+							<div class="addEntity">
+								
+									<a class="ajax addEntityClose" 
+									style=" " data-targetdiv="entitypicker" data-oemaxlevel="1" 
+									href="$applink/components/upload/entities/picker.html"> <i class="fas fa-times"></i></a>
+									
 								
 							
-						
-						#set($entries = false)
-						#set($entries = $mediaarchive.getList($type))
-						#set( $key = "picked$type" )
-						#set( $hits = false)
-						#set( $hits = $userprofile.getValues($key))
-						
-						<div class="addEntityButtonList" style="">
-						#foreach($item in $entries)
-							#if( !$hits.contains($item.getId()))
-							<a class="badge badge-secondary ajax" style="margin:4px;" data-targetdiv="entitypicker" data-oemaxlevel="1" 
-								href="$applink/components/upload/entities/picker.html?entitytype=$type&selected=$!selectedtext&addselection=$item.getId()">
-								<i class="fas fa-angle-double-left"></i> $item </a>
-							#end	
+							#set($entries = false)
+							#set($entries = $mediaarchive.getList($type))
+							#set( $key = "picked$type" )
+							#set( $hits = false)
+							#set( $hits = $userprofile.getValues($key))
+							
+							<div class="addEntityButtonList" style="">
+							#foreach($item in $entries)
+								#if( !$hits.contains($item.getId()))
+								<a class="badge badge-secondary ajax" style="margin:4px;" data-targetdiv="entitypicker" data-oemaxlevel="1" 
+									href="$applink/components/upload/entities/picker.html?entitytype=$type&selected=$!selectedtext&addselection=$item.getId()">
+									<i class="fas fa-angle-double-left"></i> $item </a>
+								#end	
+							#end
+							</div>
+							<a class="btn btn-xs btn-dark  emdialog TODOautocloseside addEntityButton" 
+										style=""  data-hidefooter="true" 
+										href="$applink/components/upload/entities/addnewentity.html?viewid=${type}addnew&searchtype=$type">
+										<i class="fas fa-plus"></i> [[Add New]] </a>
+							</div>
+							</div>
 						#end
-						</div>
-						<a class="btn btn-xs btn-dark  emdialog TODOautocloseside addEntityButton" 
-									style=""  data-hidefooter="true" 
-									href="$applink/components/upload/entities/addnewentity.html?viewid=${type}addnew&searchtype=$type">
-									<i class="fas fa-plus"></i> [[Add New]] </a>
-						</div>
-						</div>
+						
 					#end
-					
+					</div>
 				#end
-				</div>
-			#end
-	 
+	 		###end
 
  </div>  ##dialog
 	

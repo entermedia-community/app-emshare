@@ -572,6 +572,13 @@ uiload = function() {
 			{
 				history.pushState({}, null, urlbar);
 			}
+			else {
+				var updateurl = dialog.data("updateurl");
+				if( updateurl)	{
+					history.pushState({}, null, link);
+					window.scrollTo(0, 0);
+				}
+			}
 		}
 		
 		jQuery.ajax({

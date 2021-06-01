@@ -6,49 +6,50 @@
 #end
 
 #if($assetshits)
-
-#set($count = 0)
-#set($stackedfield = $mediaarchive.getCatalogSettingValue("stackedgalleryfield"))
-
-#foreach( $hit in $assetshits.getPageOfHits())
-	#set($count = $count + 1)
-	$context.putPageValue("hit", $hit)
-	#set($type = $hit.getSearchHit().getType())
-	#set( $rendertype = $mediaarchive.getMediaRenderType($hit.fileformat))
-	$context.putPageValue("type", $rendertype)
+	#set($count = 0)
+	#set($stackedfield = $mediaarchive.getCatalogSettingValue("stackedgalleryfield"))
 	
-	$context.putPageValue("assetid", $hit.id)
-	$context.putPageValue("sourcepath", $hit.sourcepath )
-	$context.putPageValue("thumbsize", "crop" )
-	
-	#set($sourcepath = $hit.sourcepath)
-	##set($click = "$siteroot$viewerlink?hitssessionid=${assetshits.getSessionId()}&assetid=${hit.id}")
-	
-  	#if(!$rendertype || $type =="rendertype")
- 		#set( $rendertype = "mime" )
- 	#elseif( $rendertype =="video")
- 		#set( $rendertype = "videothumbnail" )
- 	#end
- 	
- 	#if($stackedfield)
-	      	#set($title = $hit.get($stackedfield))
+	#foreach( $hit in $assetshits.getPageOfHits())
+		#set($count = $count + 1)
+		$context.putPageValue("hit", $hit)
+		#set($type = $hit.getSearchHit().getType())
+		#set( $rendertype = $mediaarchive.getMediaRenderType($hit.fileformat))
+		$context.putPageValue("type", $rendertype)
+		
+		$context.putPageValue("assetid", $hit.id)
+		$context.putPageValue("sourcepath", $hit.sourcepath )
+		$context.putPageValue("thumbsize", "crop" )
+		
+		#set($sourcepath = $hit.sourcepath)
+		##set($click = "$siteroot$viewerlink?hitssessionid=${assetshits.getSessionId()}&assetid=${hit.id}")
+		
+	  	#if(!$rendertype || $type =="rendertype")
+	 		#set( $rendertype = "mime" )
+	 	#elseif( $rendertype =="video")
+	 		#set( $rendertype = "videothumbnail" )
+	 	#end
+	 	
+	 	#if($stackedfield)
+		      	#set($title = $hit.get($stackedfield))
+		#end
+		#if(!$title)		         	
+		  	#if( $hit.assettitle )
+		      	#set($title =  $hit.assettitle) 
+		    #else 
+		      	#set($title = $hit.name) 
+		    #end
+		#end
+	 	<div class="float-left grid-attachedmedia">
+	 	 <div class="assetdraggable" data-assetid="$hit.id"> 
+		 	<a class="stackedplayer imagearea" id="clickid${hit.id}" data-assetid="$hit.id" href="#" alt="$!title">
+			$pages.include("$componenthome/results/thumbnails/${rendertype}.html", $context)
+			</a>
+		</div>
+		</div>
 	#end
-	#if(!$title)		         	
-	  	#if( $hit.assettitle )
-	      	#set($title =  $hit.assettitle) 
-	    #else 
-	      	#set($title = $hit.name) 
-	    #end
-	#end
- 	<div class="float-left grid-attachedmedia">
- 	 <div class="assetdraggable" data-assetid="$hit.id"> 
-	 	<a class="stackedplayer imagearea" id="clickid${hit.id}" data-assetid="$hit.id" href="#" alt="$!title">
-		$pages.include("$componenthome/results/thumbnails/${rendertype}.html", $context)
-		</a>
-	</div>
-	</div>
+	<div class="clearfix"></div>
+
 #end
-<div class="clearfix"></div>
 <div class="entity-assets-info">
 	#if($assetshits.size()>0)
 		
@@ -61,7 +62,6 @@
 			#set($link = "$link&sidebarcomponent=categories")
 			#set($targetdiv = "applicationcontainer")
 		#elseif($entity_module=="faceprofilegroup")
-
 			#set($link = "$siteroot$applink/views/modules/asset/faceprofilegroup.html")
 			#set($link = "$link?faceprofilegroupid=$entityid")
 			#set($link = "$link&oemaxlevel=2")
@@ -79,12 +79,32 @@
 						data-targetdivinner="$targetdiv" 
 						data-closedialog="true" 
 						data-closemediaviewer="true">$assetshits.size() #if ($assetshits.size()==1) [[asset]] #else [[assets]] #end</a>
+		
 	#end
 	#if($fullview) 
-	<a href="$siteroot/$applink/views/modules/asset/add/start.html?entitytype=$entity_module&addselection=$entityid" class="moreactions">
-		<i class="fas fa-upload"></i> [[Upload]]</a>
+	
+		#if($entity_module=="librarycollection")
+			#set($uploadlink = "$siteroot/$applink/views/modules/asset/add/start.html?collectionid=$entityid&clearotherentities=true")
+			#set($oemaxlevel = "1")
+			#set($targetdiv = "applicationmaincontent")
+		#elseif($entity_module=="faceprofilegroup")
+			
+		#else
+			#set($uploadlink = "$siteroot/$applink/views/modules/asset/add/start.html?entitytype=$entity_module&addselection=$entityid&clearotherentities=true")
+			#set($oemaxlevel = "1")
+			#set($targetdiv = "applicationmaincontent")
+		#end
+		#if ($uploadlink)
+		<a href="$uploadlink" 
+			class="ajax moreactions"
+			data-targetdivinner="$targetdiv"
+			data-closedialog="true" 
+			data-closemediaviewer="true"
+			data-updateurl="true"
+			data-oemaxlevel="$!oemaxlevel">
+			<i class="fas fa-upload"></i> [[Upload]]</a>
+		#end
 	#end
+	
 </div>
 
-
-#end
