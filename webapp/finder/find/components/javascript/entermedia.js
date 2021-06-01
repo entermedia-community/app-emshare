@@ -1059,8 +1059,10 @@ onloadselectors = function()
 												jQuery.get(targeturl, options, function(data2){
 													//success
 													targetdiv.html(data2);
-													targetdiv.append("<span class='fader emnotify'>&nbsp;+" + data + "</span>");
-													targetdiv.find(".fader").fadeOut(3000);
+													if (data.trim() != "") {
+														targetdiv.append("<span class='fader emnotify'>&nbsp;+" + data + "</span>");
+														targetdiv.find(".fader").fadeOut(3000);
+													}
 													targetdiv.removeClass("dragoverselected");
 												});
 											}
