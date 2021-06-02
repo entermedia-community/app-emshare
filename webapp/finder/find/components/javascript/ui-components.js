@@ -667,9 +667,6 @@ uiload = function() {
 			event.preventDefault();
 		}	
 		
-		
-		
-		
 		return false;
 	}
 	
