@@ -35,7 +35,7 @@
 ##if($moduleid =="librarycollection" && $hits.size() == 0 && $mediaarchive.isCatalogSettingTrue("autopopulatecollections"))
 ##	$pages.include("$apphome/components/createmedia/copycategory/index.html?autorun=true", $context)
 ##else
-	
+
 	#if($content.resultview)
 		#set($resultview = $content.resultview)
 	#elseif ($moduleid=="modulesearch")
@@ -68,13 +68,13 @@
 			#set($resultview = $content.get("resultview$moduleid"))
 		#end
 		#if(!$resultview)
-			#set($resultview = "grid")
+			#set($resultview = "table")
 		#end
 	#end
 	
 	
 	##if( $hits || $modulehits.size() > -1)
-	<div class="emresultscontainer">
+	<div class="emresultscontainer emresults$!resultview">
 			#if (!$resultview || $resultview == 'table')
 				$context.putPageValue("showhover", "false")
 				$context.putPageValue("thumbsize", "crop")
