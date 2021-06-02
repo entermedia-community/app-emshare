@@ -243,10 +243,15 @@ $(document).ready(function()
 			}
 			var rootid = tree.data("treename")+"root";
 			var link = tree.data("home") + "/components/emtree/savenode.html?action=" + action + "&tree-name=" + tree.data("treename") + "&"+rootid+"="+tree.data("rootnodeid")+"&depth=" + node.data('depth');
-			if(nodeid != undefined)
+			
+			var targetdiv = tree.closest("#treeholder");
+			
+			if(action == "rename" && nodeid != undefined)
 			{
 				link = link + "&nodeID=" + nodeid;
 				link = link + "&adding=true";
+				
+				targetdiv = node;
 			}
 			else
 			{
@@ -262,7 +267,7 @@ $(document).ready(function()
 			var options = tree.data();
 			options["edittext"] = value;
 			$.get(link, options,	function(data) {	
-				tree.closest("#treeholder").replaceWith(data);
+				targetdiv.replaceWith(data);
 				//Reload tree in case it moved order
 				//repaintEmTree(tree);
 			});
