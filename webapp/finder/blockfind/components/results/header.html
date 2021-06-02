@@ -77,7 +77,9 @@
 <a  href="#" class="btn btn-sm btn-danger btncloseoverlay" id="btncloseoverlay">[[Cancel]]</a>
 
 </div>
-
+		#set( $issample = $context.getRequestParameter("issample"))
+		
+		#if(!$issample)
 		<ul class="resultsnavright">
 		#if(!$resultview)
 			#set($resultview = $userprofile.get("resultview"))
@@ -93,34 +95,31 @@
 		#if (!$resultview || $resultview == 'table')
 			#if( $canedittablecolumns )
 				#if( $edit )
-					<li>
-						<a class="ajax table-edit-close" targetdiv="resultsdiv" href="$siteroot$componenthome/results/table.html?searchtype=asset&hitssessionid=$hits.getSessionId()&editheader="><i class="fas fa-times"></i></a>
-					</li>								
+				<li>
+						<a class="ajax table-edit-close" data-targetdiv="resultsdiv" href="$siteroot$componenthome/results/table.html?searchtype=asset&hitssessionid=$hits.getSessionId()&editheader="><i class="fas fa-times"></i></a>
+					</li>
 					<li class="resultsnavtitem" style="min-width:180px">
 							#set ($alldetails = $searcher.getUserPropertyDetails() )
-							<select  class="form-control form-control-sm select2"  onchange='return addColumn(jQuery(this).val())' name="addcolumn" data-allowclear="false" >
+							<select class="form-control form-control-sm select2 tableresultsaddcolumn" 
+									name="addcolumn"
+									data-componenthome="$siteroot$componenthome/results/addremovecolumns.html?oemaxlevel=1&searchtype=asset&hitssessionid=$hits.getSessionId()&editheader=true"
+									data-targetdiv="resultsdiv" 
+									data-allowclear="false" >
 								<option>[[Add Column]]</option>
 								#foreach( $detail in $alldetails) <option value="$detail.id">$detail.getText($context)</option>
 								#end
 							</select>
-							<script type="text/javascript">
-								function addColumn(inId) {
-									jQuery('#resultsdiv').load("$siteroot$componenthome/results/addremovecolumns.html?oemaxlevel=1&searchtype=asset&hitssessionid=$hits.getSessionId()&editheader=true&addcolumn=" + inId);
-									return false;	
-								}
-							</script>
-					</li>	
+					</li>
+						
+					<li class="resultsnavtitem">
+					<span class="" style="padding-right: 10px;" >[[Drag columns to move them]]</span>
+					</li>
 				#else 
 					<li >
-						<a class="ajax nav-hover" id="table-editor" targetdiv="resultsdiv" href="$siteroot$componenthome/results/table.html?searchtype=asset&hitssessionid=$hits.getSessionId()&editheader=true"> <i class="fas fa-edit"></i></a>
+						<a class="ajax nav-hover" id="table-editor" data-targetdiv="resultsdiv" href="$siteroot$componenthome/results/table.html?searchtype=asset&hitssessionid=$hits.getSessionId()&editheader=true"> <i class="fas fa-edit"></i></a>
 					</li>
 				#end	
 			#end								
-		#end
-		#if($edit && $edit == "true"  )
-			<li class="resultsnavtitem">
-					<span class="small" style="padding-right: 10px;" >[[Drag columns to move them]]</span>
-			</li>
 		#end		
 
 		#if(!$edit || $edit == "false"  )
@@ -139,19 +138,18 @@
 				
 			</li>
 			#if ($resultview != "map")
-			#if( $hits.size() > 0)
-				##<li class="resultsnavtitem hidden-sm-xs hidden-xs hidden-sm hidden-md">
-				##	$pages.include("$componenthome/results/pages.html",$context)
-				##</li>	
-				<li class="resultsnavtitem hidden-sm-xs hidden-xs hidden-sm hidden-md">
-					<span class="text">[[Results]] $hits.getPageStart() - $hits.getPageEnd() [[of]] $hits.size() </span>
-				</li>			
-			#end
+				#if( $hits.size() > 0)
+					##<li class="resultsnavtitem hidden-sm-xs hidden-xs hidden-sm hidden-md">
+					##	$pages.include("$componenthome/results/pages.html",$context)
+					##</li>	
+					<li class="resultsnavtitem hidden-sm-xs hidden-xs hidden-sm hidden-md">
+						<span class="text">[[Results]] $hits.getPageStart() - $hits.getPageEnd() [[of]] $hits.size() </span>
+					</li>			
+				#end
 			#end
 		#end	
-
-		
 	</ul>
+	#end
 </div>
 <div class="clearfix"></div>
 </div>

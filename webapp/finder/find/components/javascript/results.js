@@ -509,7 +509,7 @@ jQuery(document).ready(function(url,params)
 			}
 			
 			$.ajax({ url:href,async: false, data: {oemaxlevel:1}, success: function(data) {
-				$('body').prepend(data);
+				$('#application').prepend(data);
 				hidden = $("#hiddenoverlay");
 				initKeyBindings(hidden);
 			}
@@ -948,6 +948,19 @@ jQuery(document).ready(function(url,params)
 			});
 	
 	
+	lQuery('.tableresultsaddcolumn').livequery("change",function() {
+		var selector = $(this);
+		var targetdiv = selector.data("targetdiv");
+		var selectedval = $(this).val();
+		if (selectedval) {
+			var link = selector.data("componenthome");
+			link = link + "&addcolumn=" +selectedval;
+			jQuery("#"+targetdiv).load(link);
+		}
+	});
+	
+	
+	
 	lQuery('select.addremovecolumns').livequery("change",function()
 	{
 		var selectedval = $(this).val();
@@ -1128,12 +1141,10 @@ checkScroll = function()
 	if (collectionid) {
 		params.collectionid = collectionid;
 	}
-   console.log("Loading page: #" + page +" - " + link);
-	   
-	   
-//			   	async: false,
 
-	   $.ajax({
+	console.log("Loading page: #" + page +" - " + link);
+
+	$.ajax({
 		   	url: link,
 		   	xhrFields: {
 		      withCredentials: true
@@ -1208,7 +1219,7 @@ gridResize = function()
 		if( isover > totalavailablew )  //Just to make a row
 		{
 			//Process previously added cell
-			var newheight = trimRowToFit(fixedheight,row,totalavailablew);
+			var newheight = trimRowToFit(fixedheight, row, totalavailablew);
 			totalheight = totalheight + newheight;
 			row = new Array();
 			sofarusedw = 0;
@@ -1223,10 +1234,10 @@ gridResize = function()
 
 	if (row.length>0) 
 	{
-		trimRowToFit( grid.data("maxheight"),row,totalavailablew);
+		trimRowToFit( grid.data("maxheight"), row, totalavailablew);
 		if( makebox && makebox == true && rownum >= 3)
 		{
-			grid.css("height",totalheight + "px");
+			grid.css("height", totalheight + "px");
 			grid.css("overflow","hidden");
 		}
 	}
