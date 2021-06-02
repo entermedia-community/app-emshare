@@ -21,15 +21,34 @@ $context.putPageValue("previewurl", $previewurl)
    	 	##$!hits.highlight($hit,"name")
    	 	#set($name = $entity.name)
 			#if(!$name)
-				#set($name = "[[Unknown Profile]]")
+				#set($name = "")
 			#end
 			$name
    	 	</a>
    	 
    	 </h3> 
    	 </div>
+   	 
+   	 
+	<div class="emgrid-entitymetadata">        	 
+			#set( $image = $mediaarchive.getCachedData("asset",$entity.collectionimage))
+			#set( $imagesize = "image200x200.jpg")
+   	 		#set($tpath = $mediaarchive.asLinkToPreview($image, null, $imagesize, true))
+			<img class="imagethumb img-fluid"
+				 border="0" 
+				 sourcepath="$sourcepath" 
+				 catalogid="$catalogid" 
+				 assetid="$image.id" 
+				 alt="$!image.name"
+				 draggable="true"  
+				 data-name="$!image.name" 		
+				 src="$tpath" 
+				  />
+	</div>   	 
+   	 
 	<div class="emgrid-entitymetadata">        	 
 
+        	 
         	 
         	#if($entity.longcaption)
         	<div style="padding:0 10px">
