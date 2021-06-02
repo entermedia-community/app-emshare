@@ -44,7 +44,8 @@
 			#end
 		
 			#set($clearotherentities = $context.getRequestParameter("clearotherentities") )
-			###if(!$clearentities =="true")
+			#set($addselection = $context.getRequestParameter("addselection") )
+			
 				#foreach ( $amodule in $userprofile.getEntities() )
 					<div  class="row no-gutters">
 					#set( $hits = false )
@@ -56,7 +57,7 @@
 						
 						<div class="addMediaRow">
 						<a class="ajax" data-targetdiv="entitypicker" data-oemaxlevel="1"  
-						href="$siteroot$applink/components/upload/entities/picker.html?entitytype=${amodule.id}"> 
+						href="$siteroot$applink/components/upload/entities/picker.html?entitytype=${amodule.id}&clearotherentities=$!clearotherentities"> 
 								<h5 class="selectedEntity" style="padding: 10px 0px 10px 10px;">$amodule</h5>
 						</a>
 						</div>
@@ -65,13 +66,16 @@
 						#if( $hits && !$hits.isEmpty() )
 							<div class="addEntityButtonContainer" style="padding:  0 0 10px 10px">
 							#foreach( $id in $hits )
-								#set( $data = $mediaarchive.getCachedData($amodule.getId(),$id))
-							<a class="badge badge-secondary ajax" style="margin:4px;" data-targetdiv="entitypicker" data-oemaxlevel="1" 
-							href="$siteroot$applink/components/upload/entities/picker.html?entitytype=$amodule.getId()&removeselection=$id">
-							<input type="hidden" name="${amodule.id}.value" value="$id" />
-							#text($data) 
-				 				<i class="fas fa-times"></i>
-					 		</a>
+								#if($id == $addselection || $clearotherentities != "true")
+									#set( $data = $mediaarchive.getCachedData($amodule.getId(),$id))
+									<a class="badge badge-secondary ajax" style="margin:4px;" 
+										data-targetdiv="entitypicker" 
+										data-oemaxlevel="1" 
+										href="$siteroot$applink/components/upload/entities/picker.html?entitytype=$amodule.getId()&removeselection=$id&clearotherentities=$!clearotherentities">
+									<input type="hidden" name="${amodule.id}.value" value="$id" />
+									#text($data) <i class="fas fa-times"></i>
+							 		</a>
+							 	#end
 					 		#end
 				 			</div>
 			 			#end
@@ -83,28 +87,29 @@
 								
 									<a class="ajax addEntityClose" 
 									style=" " data-targetdiv="entitypicker" data-oemaxlevel="1" 
-									href="$applink/components/upload/entities/picker.html"> <i class="fas fa-times"></i></a>
+									href="$applink/components/upload/entities/picker.html?&clearotherentities=$!clearotherentities"> <i class="fas fa-times"></i></a>
 									
 								
 							
 							#set($entries = false)
 							#set($entries = $mediaarchive.getList($type))
-							#set( $key = "picked$type" )
 							#set( $hits = false)
+							#set( $key = "picked$type" )
 							#set( $hits = $userprofile.getValues($key))
-							
+
 							<div class="addEntityButtonList" style="">
 							#foreach($item in $entries)
-								#if( !$hits.contains($item.getId()))
-								<a class="badge badge-secondary ajax" style="margin:4px;" data-targetdiv="entitypicker" data-oemaxlevel="1" 
-									href="$applink/components/upload/entities/picker.html?entitytype=$type&selected=$!selectedtext&addselection=$item.getId()">
-									<i class="fas fa-angle-double-left"></i> $item </a>
-								#end	
+									#if( !$hits.contains($item.getId()) || ($clearotherentities == "true" && $item.getId()!=$addselection))
+									<a class="badge badge-secondary ajax" style="margin:4px;" data-targetdiv="entitypicker" data-oemaxlevel="1" 
+										href="$applink/components/upload/entities/picker.html?entitytype=$type&selected=$!selectedtext&addselection=$item.getId()&&clearotherentities=$!clearotherentities">
+										<i class="fas fa-angle-double-left"></i> $item </a>
+									#end
+									
 							#end
 							</div>
 							<a class="btn btn-xs btn-dark  emdialog TODOautocloseside addEntityButton" 
 										style=""  data-hidefooter="true" 
-										href="$applink/components/upload/entities/addnewentity.html?viewid=${type}addnew&searchtype=$type">
+										href="$applink/components/upload/entities/addnewentity.html?viewid=${type}addnew&searchtype=$type&&clearotherentities=$!clearotherentities">
 										<i class="fas fa-plus"></i> [[Add New]] </a>
 							</div>
 							</div>
@@ -113,7 +118,7 @@
 					#end
 					</div>
 				#end
-	 		###end
+	 		
 
  </div>  ##dialog
 	

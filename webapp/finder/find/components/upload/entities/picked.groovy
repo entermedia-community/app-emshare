@@ -20,6 +20,7 @@ public void init()
 	
 	if( addselection != null && entitytype != null)
 	{
+
 		userprofile.addValue("picked" + entitytype, addselection);
 	}
 
