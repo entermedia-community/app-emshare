@@ -1,14 +1,14 @@
 #set($entity = $hit)
 #set($entityid = $entity.id)
-#set($entity_module = $module.getId())
+#set($moduleid = $module.id)
 
 $context.putPageValue("entityid", $entityid)
-$context.putPageValue("entity_module", $entity_module)
+$context.putPageValue("moduleid", $moduleid)
 
-#set($previewurl = "$siteroot$componenthome/gridsample/preview/${rendertype}.html?id=$entityid&searchtype=$entity_module&hitssessionid=$!hits.sessionId")
+#set($previewurl = "$siteroot$componenthome/gridsample/preview/${rendertype}.html?id=$entityid&searchtype=$moduleid&hitssessionid=$!hits.sessionId")
 $context.putPageValue("previewurl", $previewurl)
 
-<div class="emgrid-content emgrid-type-$previewrendertype">
+<div class="emgrid-content emgrid-type-$previewrendertype entity$!moduleid$!entityid">
    	 <div class="emgrid-entityheader">
    	 <h3>
    	 <a href="$previewurl" 
@@ -64,7 +64,7 @@ $context.putPageValue("previewurl", $previewurl)
        $context.putPageValue("assetsshown", $assetsshown)
        <div class="emgrid-entitymedia assetdropentity"
        		id="attachedmedia$entityid" 
-       		data-entitymodule="$entity_module" 
+       		data-moduleid="$moduleid" 
        		data-entityid="$entityid" 
        		data-assetsshown="$assetsshown"
        		data-attachedmediaurl="$siteroot$componenthome/gridsample/types/attachedmedia/faceprofilegroup.html"
@@ -80,7 +80,7 @@ $context.putPageValue("previewurl", $previewurl)
         	<a class="emdialog entity-dialog" data-hidefooter="true" href="$previewurl" title="$!entity.name">[[More details]]</a>
         	</div>
         	<div class="emgrid-moredetailsright">
-	       	$pages.include("$componenthome/gridsample/favorites.html?id=$hit.id&searchtype=$module.id", $context)
+	       	$pages.include("$componenthome/gridsample/favorites.html?id=$hit.id&searchtype=$moduleid", $context)
 	       	</div>
 	        </div>
 	        

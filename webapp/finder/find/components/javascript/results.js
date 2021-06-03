@@ -1303,8 +1303,47 @@ trimRowToFit = function(targetheight,row,totalavailablew)
 }
 	
 
-	lQuery('div.assetpreview').livequery('click',function(e)
-	{
+function updateentities (form) {
+	//get form fields as data
+	var data = $(form).serializeArray().reduce(function(obj, item) {
+	    obj[item.name] = item.value;
+	    return obj;
+	}, {});
+	var entitycontainerclass = 'entity'+data.searchtype+data.id;
+	
+	$("." + entitycontainerclass).each(function() {
+		$(this).trigger("reload");
+	});
+	
+}
+
+lQuery(".entitycontainer").livequery('reload', function(e) {
+	//debugger;
+	var entity = $(this);
+	var entityparent = entity.closest(".entitiescontainer");
+	var entityreloadurl = entityparent.data("entityrenderurl");
+	if (entityreloadurl != null) {
+		var options = {};
+		var targetdiv = entity.closest(".emgridcell")
+		options = entity.data();
+		$.ajax({
+			url : entityreloadurl,
+			data : options,
+			success: function(data){
+				//debugger;
+				console.log('reloading' + entity);
+				targetdiv.replaceWith(data);
+				$(window).trigger( "resize" );
+			}
+		});
+	}
+	
+	
+});
+
+
+
+lQuery('div.assetpreview').livequery('click',function(e) {
 		e.preventDefault();
 		$(".bottomtab").removeClass("tabselected");
 		$(this).closest(".bottomtab").addClass("tabselected");

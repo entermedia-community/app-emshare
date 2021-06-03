@@ -1,0 +1,23 @@
+#if(!$hit)
+	#set($id = $context.getRequestParameter("id"))
+	#if(!$rendertype)
+		#set($rendertype = "entity")
+		#set($moduleid = $context.getRequestParameter("moduleid"))
+		#set($module = $mediaarchive.getData("module", $moduleid))
+		$context.putPageValue("module", $module)
+	   	#if ($module.modulerendertype)
+	   		#set($rendertype = $module.modulerendertype)
+	   	#end
+	   	$context.putPageValue("rendertype", $rendertype)
+	#end
+	#if($id && $rendertype)
+		#set($hit = $mediaarchive.getData($moduleid, $id))
+		$context.putPageValue("hit", $hit)
+	#end
+#end
+ 
+#if($hit)
+ <div class="emgridcell emgridcell-$rendertype" > 
+    $pages.include("$apphome/components/gridsample/types/${rendertype}.html", $context)
+ </div>
+ #end

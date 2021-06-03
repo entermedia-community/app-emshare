@@ -1,5 +1,5 @@
-#if(!$entity_module)
-	#set($entity_module = $context.getRequestParameter("entitymodule"))
+#if(!$moduleid)
+	#set($moduleid = $context.getRequestParameter("moduleid"))
 #end
 #if(!$entityid)
 	#set($entityid = $context.getRequestParameter("entityid"))
@@ -53,7 +53,7 @@
 <div class="entity-assets-info">
 	#if($assetshits.size()>0)
 		
-		#if($entity_module=="librarycollection")
+		#if($moduleid=="librarycollection")
 			#if(!$rootcategory)
 				#set($rootcategory = $context.getRequestParameter("rootcategory"))
 			#end
@@ -61,14 +61,14 @@
 			#set($link = "$link&oemaxlevel=4")
 			#set($link = "$link&sidebarcomponent=categories")
 			#set($targetdiv = "applicationcontainer")
-		#elseif($entity_module=="faceprofilegroup")
+		#elseif($moduleid=="faceprofilegroup")
 			#set($link = "$siteroot$applink/views/modules/asset/faceprofilegroup.html")
 			#set($link = "$link?faceprofilegroupid=$entityid")
 			#set($link = "$link&oemaxlevel=2")
 			#set($targetdiv = "applicationmaincontent")
 		#else
 			#set($link = "$siteroot$applink/views/modules/asset/index.html")
-			#set($link = "$link?hitssessionid=$!{assetshits.sessionId}&field=$entity_module&operation=matches&${entity_module}.value=$entityid")
+			#set($link = "$link?hitssessionid=$!{assetshits.sessionId}&field=$moduleid&operation=matches&${moduleid}.value=$entityid")
 			#set($link = "$link&oemaxlevel=1")
 			#set($targetdiv = "applicationmaincontent")
 		#end
@@ -82,15 +82,14 @@
 		
 	#end
 	#if($fullview) 
-	
-		#if($entity_module=="librarycollection")
+		#if($moduleid=="librarycollection")
 			#set($uploadlink = "$siteroot/$applink/views/modules/asset/add/start.html?collectionid=$entityid&clearotherentities=true")
 			#set($oemaxlevel = "1")
 			#set($targetdiv = "applicationmaincontent")
-		#elseif($entity_module=="faceprofilegroup")
+		#elseif($moduleid=="faceprofilegroup")
 			#set($uploadlink = "")
 		#else
-			#set($uploadlink = "$siteroot/$applink/views/modules/asset/add/start.html?entitytype=$entity_module&addselection=$entityid&clearotherentities=true")
+			#set($uploadlink = "$siteroot/$applink/views/modules/asset/add/start.html?entitytype=$moduleid&addselection=$entityid&clearotherentities=true")
 			#set($oemaxlevel = "1")
 			#set($targetdiv = "applicationmaincontent")
 		#end

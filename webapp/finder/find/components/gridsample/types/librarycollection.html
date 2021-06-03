@@ -1,8 +1,9 @@
 #set($entity = $hit)
 #set($entityid = $entity.id)
+#set($moduleid = $module.getId())
+
 $context.putPageValue("entityid", $entityid)
-#set($entity_module = $module.getId())
-$context.putPageValue("entity_module", $entity_module)
+$context.putPageValue("moduleid", $moduleid)
 
 #set( $librarycol = $mediaarchive.getData("librarycollection",$entityid))
 $context.putPageValue("librarycol", $librarycol)
@@ -14,10 +15,12 @@ $context.putPageValue("rootcategory", $rootcategory)
 	#set( $rendertype = "entity")
 #end
 
-#set($previewurl = "$siteroot$componenthome/gridsample/preview/${rendertype}.html?id=$entityid&searchtype=$entity_module&rootcategory=$rootcategory&hitssessionid=$hits.sessionId")
+#set($previewurl = "$siteroot$componenthome/gridsample/preview/${rendertype}.html?id=$entityid&searchtype=$moduleid&rootcategory=$rootcategory&hitssessionid=$hits.sessionId")
 $context.putPageValue("previewurl", $previewurl)
 
-<div class="emgrid-content emgrid-type-$previewrendertype">
+<div class="emgrid-content entitycontainer emgrid-type-$previewrendertype entity$!moduleid$!entityid"
+		data-id="${entity.id}"
+   	 	data-moduleid="$!moduleid">
    	 <div class="emgrid-entityheader">
    	 <h3>
    	 <a href="$previewurl" 
@@ -26,6 +29,7 @@ $context.putPageValue("previewurl", $previewurl)
    	 	data-hideheader="true"
    	 	id="clickid${entity.id}"  
    	 	data-id="entity.id"
+   	 	data-moduleid="$!moduleid"
    	 	title="$!entity.name">
    	 	##$!hits.highlight($hit,"name")
    	 	$entity.name
@@ -49,7 +53,7 @@ $context.putPageValue("previewurl", $previewurl)
       $context.putPageValue("assetsshown", $assetsshown)
        <div class="emgrid-entitymedia assetdropentity"
        		id="attachedmedia$entityid" 
-       		data-entitymodule="$entity_module" 
+       		data-moduleid="$moduleid" 
        		data-entityid="$entityid"
        		data-rootcategory="$librarycol.rootcategory" 
        		data-assetsshown="$assetsshown"
@@ -66,7 +70,7 @@ $context.putPageValue("previewurl", $previewurl)
         	<a class="emdialog entity-dialog" data-hidefooter="true" href="$previewurl" title="$!entity.name">[[More details]]</a>
         	</div>
         	<div class="emgrid-moredetailsright">
-	       	$pages.include("$componenthome/gridsample/favorites.html?id=$hit.id&searchtype=$module.id", $context)
+	       	$pages.include("$componenthome/gridsample/favorites.html?id=$hit.id&searchtype=$moduleid", $context)
 	       	</div>
 	        </div>
 	        

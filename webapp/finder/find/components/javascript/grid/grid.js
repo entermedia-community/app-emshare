@@ -72,6 +72,7 @@ jQuery(document).ready(function()
       	        var left = colwidth * col;
       	        cell.css("left",left + "px");
       	        cell.css("visibility","visible");
+      	        
       	        col++;
       	        if( col == colcount)
       	        {

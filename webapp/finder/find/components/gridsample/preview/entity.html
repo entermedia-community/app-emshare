@@ -7,12 +7,12 @@
 #end
 #set($module = $mediaarchive.getData("module", $searchtype))
 #set($entityid = $entity.id)
-#set($entity_module = $module.getId())
+#set($moduleid = $module.getId())
 
 $context.putPageValue("entityid", $entityid)
-$context.putPageValue("entity_module", $entity_module)
+$context.putPageValue("moduleid", $moduleid)
 
-<div class="modal-content modal-data-details modal-entity ${module.id}-modal">
+<div class="modal-content modal-data-details modal-entity ${moduleid}-modal">
 	<div class="modal-body">
 		<div class="modal-close">
 		        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -26,7 +26,7 @@ $context.putPageValue("entity_module", $entity_module)
 		<h2 class="modal-title">$entity.name</h2>
 		
 		#set($assetsshown = 15)
-		#set( $assetshits = $mediaarchive.query("asset").hitsPerPage($assetsshown).exact($entity_module, $entityid).sort("assetaddeddateDown").search() )
+		#set( $assetshits = $mediaarchive.query("asset").hitsPerPage($assetsshown).exact($moduleid, $entityid).sort("assetaddeddateDown").search() )
 		$context.putPageValue("assetshits", $assetshits)
 		$context.putPageValue("fullview",true)
 		$pages.include("$componenthome/gridsample/attachedmedia.html",$context)

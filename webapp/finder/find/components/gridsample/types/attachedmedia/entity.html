@@ -1,8 +1,10 @@
-#if(!$entity_module)
-	#set($entity_module = $context.getRequestParameter("entitymodule"))
+#if(!$moduleid)
+	#set($moduleid = $context.getRequestParameter("moduleid"))
+	$context.putPageValue("moduleid", $moduleid)
 #end
 #if(!$entityid)
 	#set($entityid = $context.getRequestParameter("entityid"))
+	$context.putPageValue("entityid", $entityid)
 #end
 #if(!$assetsshown)
 	#set($assetsshown = $context.getRequestParameter("assetsshown"))
@@ -10,7 +12,8 @@
 #if(!$assetsshown)
 	#set($assetsshown = 4)
 #end
-
-#set( $assetshits = $mediaarchive.query("asset").hitsPerPage($assetsshown).exact($entity_module, $entityid).sort("assetaddeddateDown").search() )
-$context.putPageValue("assetshits", $assetshits)
-$pages.include("$componenthome/gridsample/attachedmedia.html",$context)
+#if($moduleid && $entityid)
+	#set( $assetshits = $mediaarchive.query("asset").hitsPerPage($assetsshown).exact($moduleid, $entityid).sort("assetaddeddateDown").search() )
+	$context.putPageValue("assetshits", $assetshits)
+	$pages.include("$componenthome/gridsample/attachedmedia.html",$context)
+#end

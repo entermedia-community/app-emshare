@@ -12,6 +12,7 @@
 	
 	$context.putPageValue("hits", $idhits)
 	$context.putPageValue("module", $module)
+	$context.putPageValue("moduleid", $module.id)
 	
    	#set($rendertype = "entity")
    	#if ($module.modulerendertype)
@@ -75,12 +76,14 @@
 		</h3>
 		
    		</div>
-		<div id="galleryimg-${rendertype}" class='emgrid #if($section != "favorites")emgridlimited#end' data-colwidth="300" data-cellpadding="25">
+		<div id="galleryimg-${rendertype}" 
+				class='emgrid #if($section != "favorites")emgridlimited#end entitiescontainer' 
+				data-colwidth="300" 
+				data-cellpadding="25"
+				data-entityrenderurl="$siteroot$apphome/components/gridsample/gridcell.html">
 			#foreach( $hit in $idhits)
 				$context.putPageValue("hit", $hit)
-			     <div class="emgridcell emgridcell-$rendertype">
-			     $pages.include("$apphome/components/gridsample/types/${rendertype}.html", $context)
-				 </div>
+			    $pages.include("$apphome/components/gridsample/gridcell.html", $context)
 			#end
 		</div>
 		</div>		

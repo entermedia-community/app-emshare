@@ -447,7 +447,16 @@ uiload = function() {
 		                    }
 		                }
 		                $(window).trigger( "resize" );
-
+		                
+		                //experimental
+		                if(form.data("onsuccess")) {
+		                	var onsuccess = form.data("onsuccess");
+		                	var fnc = window[onsuccess];
+		                	if( fnc && typeof fnc === "function" ) {  //make sure it exists and it is a function
+		                	    fnc(form);  //execute it
+		                	}
+		                }
+		                
 					},
 					data : data
 				});
