@@ -1018,7 +1018,7 @@ onloadselectors = function()
 						drop: function(event, ui) {
 							//var node = $(this);
 							var entityid = node.data("entityid");
-							var entitymodule = node.data("entitymodule");
+							var moduleid = node.data("moduleid");
 							
 							var assetid = ui.draggable.data("assetid");
 							var hitssessionid = $("#resultsdiv").data("hitssessionid");
@@ -1037,7 +1037,7 @@ onloadselectors = function()
 							var options = {};
 							options.assetid = assetid;
 							options.entityid=entityid;
-							options.entitymodule=entitymodule;
+							options.moduleid=moduleid;
 							options.rootcategory=node.data("rootcategory");
 							options.hitssessionid=hitssessionid;
 							options.moveasset= moveit;
@@ -1053,7 +1053,7 @@ onloadselectors = function()
 											if (targetdiv.length) {
 												var options = {};
 												options.entityid=entityid;
-												options.entitymodule=entitymodule;
+												options.moduleid=moduleid;
 												options.rootcategory=node.data("rootcategory");
 												options.assetsshown=node.data("assetsshown");
 												jQuery.get(targeturl, options, function(data2){
