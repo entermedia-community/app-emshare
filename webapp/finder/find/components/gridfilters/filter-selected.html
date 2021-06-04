@@ -20,7 +20,7 @@
 			#if( $librarycol )
 				#set($href = "$siteroot$apphome/views/modules/librarycollection/media/index.html?hitssessionid=$hits.getSessionId()&collectionid=$librarycol.getId()&clearselection=true")
 			#else
-				#set($href = "$siteroot$apphome/views/modules/asset/index.html?clearselection=true")
+				#set($href = "$siteroot$apphome/views/modules/$module.id/index.html?clearselection=true")
 			#end
 			
 		<a
@@ -40,15 +40,17 @@
 			#set($href = "$siteroot$apphome/views/modules/librarycollection/media/index.html?hitssessionid=$hits.getSessionId()&collectionid=$librarycol.getId()&removeterm=$term.getId()")
 			
 		#else
-			#set($href = "$siteroot$apphome/views/modules/asset/index.html?hitssessionid=$hits.getSessionId()&removeterm=$term.getId()")
+			#set($href = "$siteroot$apphome/views/modules/$module.id/index.html?hitssessionid=$hits.getSessionId()&removeterm=$term.getId()")
 		#end
 		#if ($nodeID)
 		 	#set($href = $href + "&nodeID=${nodeID}")
 		#end
 	
 		<a href="$href"
-			class="clearitself"
-			title="[[Clear]] $term.getDetail()">$term.getDetail(): 
+			class="badge badge-primary clearitself ajax"
+			data-targetdiv="applicationmaincontent"
+			data-oemaxlevel="1"
+			title="[[Clear]]: $term.getDetail()">$term.getDetail(): 
 			
 			<strong>
 			#foreach( $val in $term.getValueCollection() )
@@ -88,10 +90,12 @@
 				
 			#end
 			</strong>&nbsp;
-			 ##<i class="fas fa-times"></i></a>
+			 <i class="fas fa-times"></i></a>
 		#end	
 		
 		
+		
+		##Clear All
 		
 		#if( $hits.getSearchQuery().hasMainInput() || ($terms && !$terms.isEmpty()) )
 			
@@ -103,7 +107,12 @@
 			#if ($nodeID)
 		 		#set($href = $href + "&nodeID=$!{nodeID}")
 			#end
-			<a class="ajax btn btn-secondary btn-xs" href="$href" data-targetdivinner="applicationcontainer" data-oemaxlayout="1" title="[[Clear Filters]]">[[clear all]]</a>
+			<a class="ajax btn btn-secondary btn-xs" 
+				style="margin:0 10px;"
+				href="$href" 
+				data-targetdivinner="applicationcontainer" 
+				data-oemaxlayout="1" 
+				title="[[Clear All Filters]]"><i class="fas fa-trash"></i> &nbsp;[[clear all]]</a>
 		#end
 	</div>
 	
