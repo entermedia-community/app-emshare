@@ -29,9 +29,10 @@ $context.putPageValue("previewurl", $previewurl)
    	 </h3> 
    	 </div>
    	 
+ 	 
    	 
-	<div class="emgrid-entitymetadata">        	 
-			#set( $image = $mediaarchive.getCachedData("asset",$entity.collectionimage))
+	<div class="emgrid-entitymetadata"> 
+	#set( $image = $mediaarchive.getCachedData("asset",$entity.collectionimage))
 			#set( $imagesize = "image200x200.jpg")
    	 		#set($tpath = $mediaarchive.asLinkToPreview($image, null, $imagesize, true))
 			<img class="imagethumb img-fluid"
@@ -43,22 +44,15 @@ $context.putPageValue("previewurl", $previewurl)
 				 draggable="true"  
 				 data-name="$!image.name" 		
 				 src="$tpath" 
-				  />
-	</div>   	 
-   	 
-	<div class="emgrid-entitymetadata">        	 
+				  />       	 
+       	#if($entity.longcaption)
+       	<div style="padding:0 10px">
+       		$entity.longcaption
+       	</div>
+       	#end
 
-        	 
-        	 
-        	#if($entity.longcaption)
-        	<div style="padding:0 10px">
-        		$entity.longcaption
-        	</div>
-        	#end
-
-        	##$pages.include("$componenthome/gridsample/tags.html",$context)
-	        
-      </div>
+       	##$pages.include("$componenthome/gridsample/tags.html",$context)
+    </div>
 
 	   #set($assetsshown = 4)
        $context.putPageValue("assetsshown", $assetsshown)
