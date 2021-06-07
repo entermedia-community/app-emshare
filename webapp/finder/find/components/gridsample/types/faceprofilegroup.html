@@ -35,6 +35,13 @@ $context.putPageValue("previewurl", $previewurl)
 	#set( $image = $mediaarchive.getCachedData("asset",$entity.collectionimage))
 			#set( $imagesize = "image200x200.jpg")
    	 		#set($tpath = $mediaarchive.asLinkToPreview($image, null, $imagesize, true))
+	   	 	<a href="$previewurl" 
+	   	 	class="emdialog entity-dialog" 
+	   	 	data-hidefooter="true" 
+	   	 	data-hideheader="true"
+	   	 	id="clickid${entity.id}"  
+	   	 	data-id="entity.id"
+	   	 	title="$!entity.name">
 			<img class="imagethumb img-fluid"
 				 border="0" 
 				 sourcepath="$sourcepath" 
@@ -44,7 +51,8 @@ $context.putPageValue("previewurl", $previewurl)
 				 draggable="true"  
 				 data-name="$!image.name" 		
 				 src="$tpath" 
-				  />       	 
+				  />    
+			</a>   	 
        	#if($entity.longcaption)
        	<div style="padding:0 10px">
        		$entity.longcaption
