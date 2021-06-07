@@ -282,10 +282,22 @@ uiload = function() {
 		if (!targetDiv) {
 			targetDiv = inlink.attr("targetdiv");
 		}
-		targetDiv = targetDiv.replace(/\//g, "\\/");
-		$.get(nextpage, {}, function(data) {
+		
+		
+		var options = inlink.data();
+		options[inlink.attr("name")] = inlink.val();
+		$.get(nextpage, options, function(data) {
+			if (targetDiv) {
 			var cell = $("#" + targetDiv);
-			cell.replaceWith(data);
+			cell.html(data);
+			}
+			else {
+				if (!targetDiv) {
+					targetDiv = inlink.data("targetdivinner");
+					var cell = $("#" + targetDiv);
+					cell.replaceWith(data);
+				}
+			}
 			$(window).trigger("resize");
 		});
 	});
