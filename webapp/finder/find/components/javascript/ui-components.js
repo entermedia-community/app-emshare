@@ -2199,6 +2199,16 @@ uiload = function() {
 	        $('#datamanager-workarea').load( apphome + '/views/settings/lists/datamanager/list/columnsort.html',args);
 	});
 	
+	
+	lQuery('.tabnav a').livequery("click",function() {
+		$('.tabnav a').removeClass('current');
+		$(this).addClass('current');
+		
+	});
+
+	
+	
+	
 	function replaceAll(str, find, replace) {
 		find = escapeRegExp(find);
 	    return str.replace(new RegExp(find, 'g'), replace);
