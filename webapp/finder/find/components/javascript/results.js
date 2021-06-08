@@ -1392,6 +1392,7 @@ lQuery('div.assetpreview').livequery('click',function(e) {
 			var link = $(this).data("link");
 			div.load(link, options, function()
 			{
+				console.log("triggered");
 				$(window).trigger("tabready");
 			});
 			//save to profile only pewview, properties and media
