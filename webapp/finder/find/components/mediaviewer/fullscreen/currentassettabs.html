@@ -40,6 +40,19 @@
 			</li>
 			#end
 			
+			#if(!$ismulti && ($rendertype == "video" || $rendertype == "audio"))
+			   		#if($canviewtimeline)
+			   			<li class="footermenu bottomtab #if($opentab == "viewtimeline")tabselected#end"">
+					   	<a class="expandmenu assettab" 
+								data-link="$componenthome/mediaviewer/fullscreen/tabs/viewactions.html?action=timeline" title="[[Timeline]]"
+								data-assettab="viewtimeline"
+								data-assettabname="[[Timeline]]" >
+							<span class="fas fa-play"></span> [[Timeline]]
+							</a>
+					   	</li>
+			   		#end
+			#end
+			
 			#if (!$ismulti)
 				<div class="hidemulti">
 					$pages.include("$componenthome/detaileditor/assetdatatables.html",$context)
@@ -158,10 +171,11 @@
 					</ul>
 				  </li>
 			 #end
+			 
+
 						
 			#if($user && ( !$previewonly 	&& !$ismulti))
 			#if($canviewconversions || 
-				($canviewtimeline && ($rendertype == "video" || $rendertype == "audio")) ||
 				$canviewclosedcaptions ||
 				$canviewattachments ||
 				$canconverthistory ||
@@ -178,8 +192,6 @@
 			   ##TODO Create a table for actions
 			   #if ($opentabactions=='conversions')
 			   		[[Conversions]]
-			   #elseif ($opentabactions=='timeline')
-			   		[[Timeline]]
 			   #elseif ($opentabactions=='closedcaptions')
 			   		[[Closed Captions]]
 			   #elseif ($opentabactions=='categorize')
@@ -210,17 +222,6 @@
 			   	</li>
 			   	#end
 			   	#if(!$ismulti && ($rendertype == "video" || $rendertype == "audio"))
-			   		#if($canviewtimeline)
-			   			<li>
-					   	<a class="assettab #if($opentabactions=='timeline') dropdown-current #end" 
-								data-link="$componenthome/mediaviewer/fullscreen/tabs/viewactions.html?action=timeline" title="[[Timeline]]"
-								data-assettab="viewactions"
-								data-assettabactions="timeline"
-								data-assettabname="[[Timeline]]" >
-							[[Timeline]]
-							</a>
-					   	</li>
-			   		#end
 			   		#if($canviewclosedcaptions)
 			   			<li>
 					   	<a class="assettab #if($opentabactions=='closedcaptions') dropdown-current #end" 
