@@ -1365,10 +1365,8 @@ lQuery('div.assetpreview').livequery('click',function(e) {
 
 		var assettab = $(this).data("assettab");
 		
-		
 		var collectionid = $("#resultsdiv").data("collectionid");
-		if(collectionid )
-		{
+		if(collectionid ) {
 				options.collectionid = collectionid;
 		}
 		 
@@ -1392,12 +1390,12 @@ lQuery('div.assetpreview').livequery('click',function(e) {
 			var link = $(this).data("link");
 			div.load(link, options, function()
 			{
-				console.log("triggered");
+				//console.log("triggered");
 				$(window).trigger("tabready");
 			});
 			//save to profile only pewview, properties and media
-			if (assettab=='viewproperties' || assettab=='viewmedia') {
-				saveProfileProperty("assetopentab",assettab,function(){});
+			if (assettab=='viewproperties' || assettab=='viewmedia' || assettab=='viewtimeline') {
+				saveProfileProperty("assetopentab", assettab,function(){});
 			}
 			var assettabactions = $(this).data("assettabactions");
 			if (assettabactions) {
