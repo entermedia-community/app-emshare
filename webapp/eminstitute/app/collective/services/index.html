@@ -45,6 +45,43 @@
 		<a href="$applink/collective/services/addnew.html?collectionid=${collectionid}" class="emdialog btn btn-sm btn-primary" title="[[Add a Billing]]">[[Add Product or Service]]</a></div>
 	
 		#end
+		
+		 <div>
+	 #set( $products = $mediaarchive.query("collectiveinvoice").match("collectionid", $collectionid).search() )
+				#if ($products)
+					<div class="emdata">
+				    <table class="table table-striped">
+				        <thead>
+				            <tr class="tableheader">
+				            	<th>[[Date]]</th>
+				                <th>[[Name]]</th>
+				         		<th>[[Price]]</th>
+				                
+											                <!-- <th>[[Payment Options]]</th> -->
+				                
+				            </tr>
+				        </thead>
+						#foreach($hit in $products)
+							#if ($hit.instance_status == "active")
+								#set($instancescount = $instancescount+1)
+							#end
+							<tr>
+							    <td>$hit.createdon</td>
+					            <td>$hit.name</td>
+								<td style="text-align: center;">$!hit.productprice</td>
+					            								
+					            
+								<td>
+									<a href="$applink/collective/services/addtoinvoice.html?collectionid=${collectionid}&productid=${hit.id}" class=" btn btn-sm btn-primary" title="[[Add a Project]]">[[Buy Now]]</a>
+									<a href="$applink/collective/services/paylater.html?collectionid=${collectionid}&productid=${hit.id}" class=" btn btn-sm btn-primary" title="[[Add a Project]]">[[Invoice Me]]</a>
+								</td>
+					        </tr>
+						
+						#end
+				    </table>
+			    	</div>
+				#end
+	 </div>
 	</div>
 	</div>	
 	 <div class="col-lg-3 ">
@@ -52,6 +89,8 @@
 			$pages.include("$apphome/collective/channel/subscribers/index.html", $context)
 		</div>
 	 </div>
+	 
+	
 </div>		
 </div>
 			
