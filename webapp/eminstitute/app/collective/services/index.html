@@ -4,8 +4,8 @@
 <div class="col">
 <div class="collectivemaincol h-100">
 	<div class="content">
-	<h3>[[Products and Services]]</h3>
-	##Search instances in these organizations
+					<h3>[[Products and Services]]</h3>
+					##Search instances in these organizations
 			#set( $products = $mediaarchive.query("collectiveproduct").match("collectionid", $collectionid).search() )
 				#if ($products)
 					<div class="emdata">
@@ -25,10 +25,10 @@
 								#set($instancescount = $instancescount+1)
 							#end
 							<tr>
-							    <td>$hit.createdon</td>
+							    <td>$!context.getDate($hit.createdon)</td>
 					            <td>$hit.name</td>
-								<td style="text-align: center;">$!hit.productprice</td>
-					            <td style="text-align: center;">$!hit.productdescription</td>								
+								<td style="text-align: center;">$!context.roundDouble($!hit.productprice,2)</td>
+					            <td style="text-align: center;">$!hit.productdescription</td>
 					            
 								##<td>
 								##	<a href="$applink/collective/services/addtoinvoice.html?collectionid=${collectionid}&productid=${hit.id}" class=" btn btn-sm btn-primary" title="[[Add a Project]]">[[Buy Now]]</a>
@@ -39,49 +39,50 @@
 						#end
 				    </table>
 			    	</div>
-				#end
-		#if( $caneditcollection )
-	
-		<a href="$applink/collective/services/addnew.html?collectionid=${collectionid}" class="emdialog btn btn-sm btn-primary" title="[[Add a Billing]]">[[Add Product or Service]]</a></div>
-	
-		#end
-		
-		 <div>
-	 #set( $products = $mediaarchive.query("collectiveinvoice").match("collectionid", $collectionid).search() )
-				#if ($products)
+			    	#if( $caneditcollection )
+			    	<a href="$applink/collective/services/addnew.html?collectionid=${collectionid}" class="emdialog btn btn-sm btn-primary mb-4" title="[[Add a Billing]]">[[Add Product or Service]]</a>
+			    	#end
+			    	
+			    	 #set( $invoices = $mediaarchive.query("collectiveinvoice").match("collectionid", $collectionid).search() )
+				#if ($invoices)
+				<h3>[[Invoice]]</h3>
 					<div class="emdata">
 				    <table class="table table-striped">
 				        <thead>
 				            <tr class="tableheader">
-				            	<th>[[Date]]</th>
-				                <th>[[Name]]</th>
-				         		<th>[[Price]]</th>
-				                
-											                <!-- <th>[[Payment Options]]</th> -->
-				                
+				            	<th>[[Created On]]</th>
+				            	<th>[[Billed On]]</th>
+				                <th>[[Invoice Number]]</th>
+				                <th>[[Paid On]]</th>
+				         		<th>[[Total Price]]</th>
+				         		<th>[[Options]]</th>
 				            </tr>
 				        </thead>
-						#foreach($hit in $products)
+						#foreach($hit in $invoices)
 							#if ($hit.instance_status == "active")
 								#set($instancescount = $instancescount+1)
 							#end
 							<tr>
-							    <td>$hit.createdon</td>
-					            <td>$hit.name</td>
-								<td style="text-align: center;">$!hit.productprice</td>
-					            								
-					            
+							    <td>$!context.getDate($hit.createdon)</td>	
+							    <td>$!context.getDate($hit.duedate)</td>
+					            <td>$hit.invoicenumber</td>
+					            <td>$!context.getDate($hit.invoicepaidon)</td>
+								<td style="text-align: center;">$!context.roundDouble($!hit.totalprice,2)</td>
 								<td>
-									<a href="$applink/collective/services/addtoinvoice.html?collectionid=${collectionid}&productid=${hit.id}" class=" btn btn-sm btn-primary" title="[[Add a Project]]">[[Buy Now]]</a>
-									<a href="$applink/collective/services/paylater.html?collectionid=${collectionid}&productid=${hit.id}" class=" btn btn-sm btn-primary" title="[[Add a Project]]">[[Invoice Me]]</a>
+									#if ($hit.getValue("paymentstatus") == "invoiced")
+									<a href="$applink/collective/services/addtoinvoice.html?collectionid=${collectionid}&productid=${hit.id}" class="btn btn-sm btn-primary">[[Pay Now]]</a>										
+									#else
+									<a href="$applink/collective/services/addtoinvoice.html?collectionid=${collectionid}&productid=${hit.id}" class="btn btn-sm btn-secondary">[[View Details]]</a>
+									#end
 								</td>
 					        </tr>
-						
 						#end
 				    </table>
 			    	</div>
 				#end
-	 </div>
+				#end		
+		</div>
+	 
 	</div>
 	</div>	
 	 <div class="col-lg-3 ">
@@ -89,7 +90,6 @@
 			$pages.include("$apphome/collective/channel/subscribers/index.html", $context)
 		</div>
 	 </div>
-	 
 	
 </div>		
 </div>
