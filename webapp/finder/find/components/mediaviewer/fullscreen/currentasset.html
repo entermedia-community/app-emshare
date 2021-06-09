@@ -6,7 +6,7 @@ $context.putPageValue("asset", $asset)
 $context.putPageValue("rendertype",$rendertype)
 #set( $playertype = $mediaarchive.getMediaPlayerType($asset))
 #if( !$playertype )
-	No template for $playertype
+	[[No template for]] $playertype
 #end
 #set( $cdnprefix = $mediaarchive.getCatalogSettingValue("cdn_prefix") )
 $context.putPageValue("cdn",$cdnprefix)
@@ -35,6 +35,10 @@ $context.putPageValue("previewonly", $previewonly)
 #end
 
 #if( !$canviewmetadatageneral )
+	#set( $opentab = "viewpreview")
+#end
+
+#if($opentab == "viewtimeline" && $rendertype != "video")
 	#set( $opentab = "viewpreview")
 #end
 
@@ -85,6 +89,8 @@ data-multieeditlink="$componenthome/mediaviewer/fullscreen/tabs/multiedit.html?a
 		$pages.include("$componenthome/mediaviewer/fullscreen/tabs/viewmedia.html")
 	#elseif($opentab == "viewcollaborate")
 		$pages.include("$componenthome/mediaviewer/fullscreen/tabs/viewcollaborate.html")
+	#elseif($opentab == "viewtimeline")
+		$pages.include("$componenthome/mediaviewer/fullscreen/tabs/viewactions.html?action=timeline")
 	#elseif($opentab == "multiedit")
 		$pages.include("$componenthome/mediaviewer/fullscreen/tabs/multiedit.html")
 	#elseif($opentab == "viewactions")
