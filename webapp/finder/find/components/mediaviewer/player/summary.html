@@ -53,14 +53,27 @@
 	        	$pages.include("$apphome/views/modules/asset/editor/favorite/index.html?targetdiv=mvassetfavorite", $context)
 	   		</div>
 			
+			#set($title = $asset.name)
+			
 			## Download Button 
 			#if($candownload)
-				#set( $originalpath = $mediaarchive.asLinkToOriginal($asset) )
-				#set($downloadlink = "$siteroot/$mediadbappid/services/module/asset/downloads/originals/$originalpath?collectionid=$!{collectionid}&assetid=$asset.getId()")
-				<a href="#urlescape($downloadlink)" class="grid-gallery-download" data-assetid="$hit.id" title="[[Download]]">
-				        	<i class="fas fa-download"> </i>
-			    </a>
+				#if( $desktop )
+		        	<a href="#" class="emdesktopdownload grid-gallery-download" data-assetid="$asset.id" title="[[Download]] $!title">
+		        	<i class="fas fa-download"> </i>
+		        	</a>
+	        	#else
+					#set($dlink = $mediaarchive.asLinkToOriginal($asset))
+					#set($dlink = "$siteroot/$mediadbappid/services/module/asset/downloads/originals/$dlink?assetid=$!asset.getId()")
+					#if($collectionid)
+						#set($dlink = "$dlink&collectionid=$!{collectionid}")
+					#end
+		        	<a href="$!dlink" class="grid-gallery-download" data-assetid="$asset.id" title="[[Download]] $!title">
+		        	<i class="fas fa-download"> </i>
+		        	</a>
+	        	#end
 			#end
+			
+			
 			#if( $desktop )
 			<div class="btn-group" role="group" aria-label="Button group with nested dropdown">
 		 
