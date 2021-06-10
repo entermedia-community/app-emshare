@@ -1,0 +1,55 @@
+#set( $currency = '$' )
+#set($id = $context.getRequestParameter('invoiceid')) 
+#set($invoice =	$mediaarchive.getInvoiceById($id)) 
+#set($products = $mediaarchive.getInvoiceProductList($id))
+<div
+	style="background: #cec5b3; padding: 1px; color: #3e4553; text-align: center; border-top: solid 10px #3e4553;">
+	<h1>[[View Invoice]]</h1>
+</div>
+
+<div class="card"
+	style="margin: 40px; max-width: 800px; text-align: left;">
+	<div class="card-header">
+		<div class="row">
+			<div class="col-sm-6">
+					Invoice Number: $invoice.getValue("invoicenumber")
+			</div>
+			<div class="col-sm-6 text-right">
+					Created on: $!context.getDate($invoice.getValue("createdon"))
+			</div>
+		</div>
+	</div>
+	<div class="card-body" style="padding: 20px;">		
+		<h4>Products</h4>
+		<div class="table-responsive">
+			<table class="table">
+				<col span="1" style="width: 20%;">
+		       	<col span="1" style="width: 60%;">
+		       	<col span="1" style="width: 20%;">
+				<tr>
+					<th class="purchase_heading" align="left">
+						<p class="f-fallback">Quantity</p>
+					</th>
+					<th class="purchase_heading" align="left">
+						<p class="f-fallback">Description</p>
+					</th>
+					<th class="purchase_heading" align="right">
+						<p class="f-fallback">Amount</p>
+					</th>
+				</tr>
+	
+				#foreach ($product in $products)
+				<tr>
+					<td>$product.productquantity</td>
+					<td><span>$mediaarchive.getProductName($product.productid)</span></td>
+					<td><span>$currency $!context.roundDouble($product.productprice, 2)</span></td>
+				</tr>
+				#end
+				<tr>
+					<td class="text-right" colspan="2"><b>Total</b></td>
+					<td><b>$currency $!context.roundDouble($invoice.getValue("totalprice"), 2)</b></td>
+				</tr>
+			</table>
+		</div>
+	</div>
+</div>
