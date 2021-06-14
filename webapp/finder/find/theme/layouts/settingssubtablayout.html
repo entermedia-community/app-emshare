@@ -14,6 +14,7 @@
 			#if($tabs)
 				#foreach($screen in $tabs )
 				<li #if( $subtab == "$screen.id" ) class="current" #end>
+					#if($tabs.size()>1)
 					<a  href="$siteroot$apphome${screen.path}" 
 						class="ajax" 
 						data-targetdivinner="applicationmaincontent" 
@@ -21,6 +22,12 @@
 						data-updateurl="true">
 						#if ( $screen.sublabel ) $context.getText($screen.sublabel.toString()) #else $context.getText($screen.toString()) #end 
 					</a>
+					#else
+					<a  href="#" 
+						>
+						#if ( $screen.sublabel ) $context.getText($screen.sublabel.toString()) #else $context.getText($screen.toString()) #end 
+					</a>
+					#end
 				</li>
 				#end
 			#else
