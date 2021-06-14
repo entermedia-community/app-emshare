@@ -2206,7 +2206,17 @@ uiload = function() {
 		
 	});
 
-	
+	lQuery("select.eventsjump").livequery("change", function () 
+       		{
+            	var val = $(this).val();
+            	var url = $(this).data("eventurl");
+            	var targetdiv = $(this).data("targetdiv");
+            	
+    	        $("#"+targetdiv).load(url + "?oemaxlevel=1&type=" + val, function(){
+    	        	$(window).trigger( "resize" );
+    	        });
+    	        
+            });
 	
 	
 	function replaceAll(str, find, replace) {
