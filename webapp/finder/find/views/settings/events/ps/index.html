@@ -1,0 +1,64 @@
+#set( $sorted = $patheventmanager.getRunningTasksSorted() )
+#if( $sorted.size() > 0 )
+
+	<div class="tab-actions">
+		<a class="btn btn-sm btn-primary ajax" data-targetdivinner="applicationmaincontent" href="$siteroot$apphome/views/settings/events/ps/index.html?oemaxlevel=3">[[Refresh]]</a>
+	</div>
+	
+	
+<div id="emselectable">
+	<table class="table table-striped table-hover emdata">
+		<thead>
+			<tr class="tableheader">
+				<th>[[Name]]</th>
+				<th>[[Path]]</th>
+				<th colspan="4">[[Status]]</th>
+				
+			</tr>
+		</thead>
+		<tbody>
+			#foreach( $runner in $sorted )
+
+			#set( $event = $runner.getPathEvent() )
+			<tr rowid="$event.getPage().getPath()">
+				<td><b>$context.getText($event.getName())</b></td>
+				<td> $event.getPage().getName()
+				<div class="emselectabledetails">
+					$!context.getText($event.getPage().getProperty("eventdescription"))
+				</div> 
+				#if( $event.getLastRun() )
+				<div>
+					[[last run]]:
+					$context.getDateTime($event.getLastRun() )					
+				</div> #end </td>
+				<td> #if( $event.isRunning() )
+				[[running]]
+				#end </td>
+				<td> 
+				[[runs]]: $event.getTotalRunCount()
+				#if( $event.getPeriod() > 0 )
+				[[repeats every]] $event.getFormattedPeriod()
+				#end
+				#if( $event.getStartingFromMidnight() )
+					[[starting:]] $event.getStartingFromFormated()
+				#end
+				
+				 </td>
+			</tr>
+			#end
+		</tbody>
+	</table>
+	<form name="showevent" target="_top" method="post" 
+			action="$siteroot$apphome/views/settings/events/triggers/edit/edit.html"
+			class="ajaxform"
+			data-targetdivinner="applicationmaincontent"
+			data-oemaxlevel="3">
+		<input name="eventpath" type="hidden" id="emselectedrow" />
+	</form>
+
+			
+
+</div>
+#else
+[[No events in queue]]
+#end 
