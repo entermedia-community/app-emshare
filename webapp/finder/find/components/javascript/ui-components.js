@@ -2593,7 +2593,7 @@ lQuery(".ajaxstatus").livequery(
 		var timeout = $(this).data("reloadspeed");
 		if( timeout == undefined)
 		{
-			timeout = 3000;
+			timeout = 2000;
 		}
 		var ranonce = ranajaxon[uid];
 		if( ranonce == undefined)

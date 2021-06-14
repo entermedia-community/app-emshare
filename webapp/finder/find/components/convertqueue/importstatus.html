@@ -10,15 +10,21 @@
 #if($conversionerrors && $conversionerrors.size() >0)
 	#set ($mime = $mediaarchive.getMimeTypeIcon($hit.fileformat))
 	#set( $thumbpath =  "$themeprefix/images/mimetypes/${mime}.png" )
+	<div class="mimethumbcontainer">
 	<img title="[[Conversion Error]]" class="mimethumb" style="height:64px" src="$siteroot$thumbpath" border="0"/><br/>
     <span style="color:red; font-size: 10px; position: relative; top: -2px;">[[Conversion Error]]</span>
+    </div>
 #elseif($publisherrors && $publisherrors.size() >0)
 	#set ($mime = $mediaarchive.getMimeTypeIcon($hit.fileformat))
 	#set( $thumbpath =  "$themeprefix/images/mimetypes/${mime}.png" )
+	<div class="mimethumbcontainer">
 	<img title="[[Publish Error]]" class="mimethumb" style="height:64px" src="$siteroot$thumbpath" border="0"/><br/>
     <span style="color:red; font-size: 10px; position: relative; top: -2px;">[[Publish Error]]</span>
+    </div>
 #elseif( $hit.importstatus && $hit.importstatus == "complete")
     $context.putPageValue("hit",$hit)
+    #set( $type = $mediaarchive.getMediaRenderType($hit.fileformat))
+    $context.putPageValue("type", $type)
     
     #if($thumbsize == "crop")
     $pages.include("$apphome/components/results/thumbnails/small.html",$context)
@@ -50,8 +56,9 @@
 
         #set ($mime = $mediaarchive.getMimeTypeIcon($hit.fileformat))
 	#set( $thumbpath =  "$themeprefix/images/mimetypes/${mime}.png" )
+	<div class="mimethumbcontainer">
 	<img title="[[Conversion Error]]" class="mimethumb" style="height:64px" src="$siteroot$thumbpath" border="0"/><br/>
-
+	</div>
         
         #set( $completed = $totalcount - $remaining )
         #set( $total = 80 * $mathutil.getPercentage($completed, $totalcount) )
