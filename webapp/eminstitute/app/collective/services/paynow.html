@@ -1,149 +1,215 @@
+#set($currency = '$' )
+#set($id = $context.getRequestParameter('invoiceid'))
+#set($invoice = $mediaarchive.getInvoiceById($id))
+#set($products = $mediaarchive.getInvoiceProductList($id))
+
 <h1>[[Purchase Now]]</h1>
 #if($mediaarchive.getCatalogSettingValue("productionmode") == "test")
-<p>Site is in test mode.  Credit card is 4242 4242 4242 4242 any expiry.  Add your keys to catalog settings and switch to production mode to take credit cards.</p>
+<div class="alert alert-warning">Site is in test mode. Credit card is 4242 4242 4242 4242 any expiry. Add your keys to
+    catalog settings and switch to production mode to take credit cards.</div>
 #end
-$mediaarchive.getCatalogSettingValue("productionmode")
 
 <div class="card">
-<div class="card-header">
-	<div class="row" style="border-bottom:1px solidc ">
-		<div class="col-sm-10"> 
-		[[All major Credit Cards Accepted]]
-		</div>
-	
-		<div class="col-sm-2">                            
-		<img class="img-fluid" src="http://i76.imgup.net/accepted_c22e0.png">
-		</div>
-	</div>
-</div>
+    <div class="card-header">
+        <div class="row" style="border-bottom:1px solidc ">
+            <div class="col-sm-10">
+                <h5>
+                    <i class="fas fa-credit-card mr-4" style="font-size: 1.4em"></i>
+                    [[All major Credit Cards Accepted]]
+                </h5>
+            </div>
 
 
- <div class="card-block" style="padding:20px 21px;">                      
-       	<form action="$applink/collective/services/paymentfinish.html" method="post" id="payment-form">
-             	
-             	<div class="form-group row">
-   				<label for="staticEmail" class="col-sm-2 col-form-label">[[Card Info]]:</label>
-   			 	<div class="col-sm-9">
-					<div id="card-element" style="width: 100%">
-					<!-- a Stripe Element will be inserted here. -->
-					</div>      
-			    </div>
-   			</div>
-   			
-   			
-   		
-   			
-   			
-   			
-   			<div class="form-group row">
-   				<label for="staticEmail" class="col-sm-2 col-form-label">Amount:</label>
-   			 	<div class="col-sm-9">
-					      <input type="hidden" class="form-control" name="totalprice.value" value="$invoicetotal">
-					      $invoicetotal
-			    </div>
-   			</div>
-   			
-   				
-   			<input type="hidden" name="field" value="collectionid"/>
-   			<input type="hidden" name="collectionid.value" value="$librarycol.id"/>
-   			
-   			   			<input type="hidden" name="collectionid" value="$librarycol.id"/>
-   			
-   			
-   			<input type="hidden" name="field" value="totalprice"/>
-             	##<input type="submit" id="btnSubmit" class="submit" value="Submit Payment">
-             	
-         
-            
-            
-          
-            
-             	
-             	<!-- Used to display form errors -->
-		  	<div id="card-errors" role="alert"></div>
-	  	<input type="submit" value="[[Purchase Now]]" class="btn btn-primary"/>
-		</form>
-</div>
+        </div>
+    </div>
+    <div class="card-body" style="padding:20px 21px;">
+        <div class="row">
+
+            <div class="col-sm-8">
+                <div class="card-body" style="padding: 20px;">
+                    <h4>Products</h4>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <col span="1" style="width: 20%;">
+                            <col span="1" style="width: 60%;">
+                            <col span="1" style="width: 20%;">
+                            <tr>
+                                <th class="purchase_heading" align="left">
+                                    <p class="f-fallback">Quantity</p>
+                                </th>
+                                <th class="purchase_heading" align="left">
+                                    <p class="f-fallback">Description</p>
+                                </th>
+                                <th class="purchase_heading" align="right">
+                                    <p class="f-fallback">Amount</p>
+                                </th>
+                            </tr>
+
+                            #foreach ($product in $products)
+                            <tr>
+                                <td>$product.productquantity</td>
+                                <td><span>$mediaarchive.getProductName($product.productid)</span></td>
+                                <td><span>$currency $!context.roundDouble($product.productprice, 2)</span></td>
+                            </tr>
+                            #set($lastproduct = $mediaarchive.getProductById($product.productid))
+                            #end
+                            <tr>
+                                <td class="text-right" colspan="2"><b>Total</b></td>
+                                <td><b>$currency $!context.roundDouble($invoice.getValue("totalprice"), 2)</b></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-sm-4">
+                <div class="card donatecard">
+                    <div class="card-block" style="padding: 20px 21px;">
+                        <form action="$applink/collective/services/payfinish.html" method="post" id="payment-form"
+                            class="form">
+                            <input type="hidden" name="collectionid" value="$!librarycol.id" />
+
+                            <div class="row">
+                                <div class="col">
+                                    <div class="float-right" style="margin-top:-4px"><img
+                                            src="$applink/theme/icons/creditcard.png" /></div>
+                                    <div class="form-group">
+                                        <label for="staticEmail">[[Card Info]]:</label>
+                                        <div class="form-control">
+                                            <div id="card-element" style="width: 100%">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="staticEmail">[[Amount]]:</label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <div class="input-group-text">$</div>
+                                            </div>
+                                            <input type="text" class="form-control" name="totalprice.value"
+                                                id="totalprice" #if($invoice.totalprice) value="$invoice.totalprice"
+                                                disabled #end>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                               <div class="col-md-6">
+                               #if ($lastproduct.recurring)
+		                            <div class="form-group">
+		                                <label for="staticEmail">[[Recurring Monthly]]</label>
+		                                 
+		                                <input type="text" class="form-control" name="recurringperiod" value="$lastproduct.recurringperiod" disabled></input>
+		                            </div>
+	                            #end
+                        		</div>
+                            </div>
+
+
+                            <div id="card-errors" class="donateformerror" role="alert"></div>
+
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="donate-secure ">
+                                        <i class="fas fa-lock"></i> [[Secure payment]]
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div style=" margin: 0px auto;">
+                                        <a href="#" onclick='$("#payment-form").submit()' class="btn btn-success"><i
+                                                class="fas fa-credit-card"></i> [[Check Out]]</a>
+                                    </div>
+                                </div>
+                            </div>
+
+							<input type="hidden" name="recurring" value="$lastproduct.recurring" />
+                            <input type="hidden" name="field" value="collectionid" /> 
+                            <input type="hidden" name="collectionid.value" value="$librarycol.getId()" /> 
+                            <input type="hidden" name="invoiceid" value="$id" /> 
+                            <input type="hidden" name="field" value="totalprice" /> 
+                            <input type="hidden" name="field" value="userid" /> 
+                            <input type="hidden" name="userid.value" value="$user.getId()" />
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 
 <script type="text/javascript">
-  // This identifies your website in the createToken call below
- 
-	  	// This identifies your website in the createToken call below
+    $(document).ready(function () {
 	  	  #if($mediaarchive.isCatalogSettingTrue("productionmode"))
-	  		console.log('production');
+        console.log('Production');
 	  		#set($publishkey = $mediaarchive.getCatalogSettingValue("stripe_publishable_key"))
-	  	  	
-	  	  	
 	  	 #else
+        console.log('Test Publishkey');
 	  		#set($publishkey = $mediaarchive.getCatalogSettingValue("stripe_test_publishable_key"))
-	  	  	 
-	  	  		 
 	  	 #end
-	  	var stripe = Stripe("$publishkey");
-	   	var elements = stripe.elements();
+        var stripe = Stripe("$publishkey");
+	  		console.log("$publishkey");
+        var elements = stripe.elements();
+        var style = { base: { fontSize: '18px', color: "#495057" } };
 
+        // Create an instance of the card Element.
+        var card = elements.create('card', { style: style });
 
-	  	
-	   	var style = {
-	   		  base: {
-	   		    // Add your base input styles here. For example:
-	   		    fontSize: '18px',
-	   		    color: "#495057"
-	   		    
-	   		  }
-	   		};
+        // Add an instance of the card Element into the `card-element` <div>
+        card.mount('#card-element');
 
-	   		// Create an instance of the card Element.
-	   		var card = elements.create('card', {style: style});
+        // Handle real-time validation errors from the card Element.
+        card.addEventListener('change', function (event) {
+            var displayError = document.getElementById('card-errors');
+            if (event.error) {
+                $(displayError).html('<div class="errormsg">' + event.error.message + '</div>');
+            } else {
+                displayError.textContent = '';
+            }
+        });
 
-	 // Add an instance of the card Element into the `card-element` <div>
-	 card.mount('#card-element');
+        var form = document.getElementById('payment-form');
+        $(form).validate({
+            rules: {
+                "totalprice.value": {
+                    required: true,
+                    number: true
+                }
+            },
+            submitHandler: function (form) {
+                stripe.createToken(card).then(function (result) {
+                    if (result.error) {
+                        var errorElement = document.getElementById('card-errors');
+                        $(errorElement).html('<div class="errormsg">' + result.error.message + '</div>');
+                    } else {
+                        stripeResponseHandler(result);
+                    }
+                });
+            },
+            errorElement: "div",
+            errorClass: "errormsg",
+            errorPlacement: function (error, element) {
+                error.appendTo(element.closest(".form-group").parent());
+                //$("#card-errors").html('<div class="errormsg">'+error.html()+'</div>');
+            }
+        });
 
-	 // Handle real-time validation errors from the card Element.
-	 card.addEventListener('change', function(event) {
-	   var displayError = document.getElementById('card-errors');
-	   if (event.error) {
-	     displayError.textContent = event.error.message;
-	   } else {
-	     displayError.textContent = '';
-	   }
-	 });
+        stripeResponseHandler = function (response) {
+            var form = document.getElementById('payment-form');
+            var hiddenInput = document.createElement('input');
+            hiddenInput.setAttribute('type', 'hidden');
+            hiddenInput.setAttribute('name', 'stripeToken');
+            hiddenInput.setAttribute('value', response.token.id);
+            form.appendChild(hiddenInput);
+            form.submit();
+        }
 
-	 var form = document.getElementById('payment-form');
-	 form.addEventListener('submit', function(event) {
-	   event.preventDefault();
-	   stripe.createToken(card).then(function(result) {
-	     if (result.error) {
-	       // Inform the user if there was an error
-	       var errorElement = document.getElementById('card-errors');
-	       errorElement.textContent = result.error.message;
-	     } else {
-	       // Send the token to your server
-	       stripeResponseHandler(result);
-
-	     }
-	   });
-	 });
-	  	
-	 stripeResponseHandler = function( response){
-		  
-		 
-		 
-		 var form = document.getElementById('payment-form');
-		  var hiddenInput = document.createElement('input');
-		  hiddenInput.setAttribute('type', 'hidden');
-		  hiddenInput.setAttribute('name', 'stripeToken');
-		  hiddenInput.setAttribute('value', response.token.id);
-		  form.appendChild(hiddenInput);
-
-		  // Submit the form
-		  form.submit();
-		 
-		
-		  
-	  }
-  
-  
+    });
 </script>
