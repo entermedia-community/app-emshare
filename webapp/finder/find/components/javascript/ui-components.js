@@ -2218,7 +2218,50 @@ uiload = function() {
     	        });
     	        
             });
+	lQuery(".permissionsroles").livequery("change", function () {
+        var val = $(this).val();
+        var targetdiv = $(this).data("targetdiv");
+        var url = $(this).data("urlprefix");
+        var permissiontype = $(this).data("permissiontype");
+        if ( val == "new" ) {
+           $("#"+targetdiv).load(url+"addnew.html?oemaxlevel=1&groupname=New", function(){
+         	  $(window).trigger( "resize" );
+           });
+           $("#module-picker").hide();
+           
+        }
+        else {
+           $("#"+targetdiv).load(url+"index.html?oemaxlevel=1&permissiontype="+permissiontype+"&settingsgroupid=" + val, function(){
+         	  $(window).trigger( "resize" );
+           });
+           $("#module-picker").show();
+           
+        }
+     });
 	
+	jQuery(".permission-radio").livequery("click", function () {
+		var val = jQuery(this).val();
+		
+		if(val == "partial"){
+			jQuery(this).parent().find(".sub-list").show();
+		}
+		else {
+			jQuery(this).parent().find(".sub-list").hide();
+		}
+	});
+	
+	lQuery("#module-picker select").livequery("change", function () {
+        var rolesval = $('.permissionsroles').val();
+        var val = $(this).val();
+        if ( val == "all" ) {
+        	jQuery(".togglesection").show();
+        }
+        else {
+     	   jQuery(".togglesection").hide();
+     	   jQuery("."+ val).show();
+        }
+     });
+
 	
 	function replaceAll(str, find, replace) {
 		find = escapeRegExp(find);
