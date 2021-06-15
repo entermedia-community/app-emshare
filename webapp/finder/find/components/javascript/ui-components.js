@@ -320,6 +320,7 @@ uiload = function() {
 
 	// deprecated, use data-confirm
 	lQuery(".confirm").livequery('click', function(e) {
+		
 		var inText = $(this).attr("confirm");
 		if (!inText) {
 			inText = $(this).data("confirm");
@@ -2239,7 +2240,7 @@ uiload = function() {
         }
      });
 	
-	jQuery(".permission-radio").livequery("click", function () {
+	lQuery(".permission-radio").livequery("click", function () {
 		var val = jQuery(this).val();
 		
 		if(val == "partial"){
