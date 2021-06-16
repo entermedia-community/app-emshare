@@ -45,7 +45,7 @@
 			    	
 			    	 #set( $invoices = $mediaarchive.query("collectiveinvoice").match("collectionid", $collectionid).search() )
 				#if ($invoices)
-				<h3>[[Invoice]]</h3>
+				<h3>[[Invoices]]</h3>
 					<div class="emdata">
 				    <table class="table table-striped">
 				        <thead>
@@ -80,6 +80,35 @@
 				    </table>
 			    	</div>
 				#end
+
+				#if ($subs)
+				<h3>[[Subscriptions]]</h3>
+					<div class="emdata">
+				    <table class="table table-striped">
+				        <thead>
+				            <tr class="tableheader">
+				            	<th>[[Created On]]</th>
+				            	<th>[[Billed On]]</th>
+				                <th>[[Subscription Type]]</th>
+				                <th>[[Type Counter]]</th>
+				         		<th>[[Status]]</th>
+				         		<th>[[Options]]</th>
+				            </tr>
+				        </thead>
+						#foreach($hit in $subs)
+							<tr>
+							    <td>$!context.getDate($hit.created)</td>
+							    <td>$ $!context.stripePriceToString($hit.plan.amount)</td>
+							    <td>$hit.plan.interval</td>
+							    <td>$hit.plan.interval_count</td>
+							    <td>$hit.status</td>
+							    <td>opt</td>
+					        </tr>
+						#end
+				    </table>
+			    	</div>
+				#end
+				
 				#end		
 		</div>
 	 
