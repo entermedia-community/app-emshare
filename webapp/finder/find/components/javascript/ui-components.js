@@ -1965,7 +1965,7 @@ uiload = function() {
 		
 		if (toggler.data('action') == 'hide') {
 			//hide sidebar
-			options["sidebarcomponent.value"] = "";
+			options["sidebarcomponent.value"] = "none";
 			var url = apphome + '/components/sidebars/index.html';
 
 			jQuery.ajax({
