@@ -102,20 +102,23 @@
                                <div class="col-md-6">
                                #if ($lastproduct.recurring)
 		                            <div class="form-group">
-		                                <label for="staticEmail">[[Recurring Monthly]]</label>
-		                                 
+		                                <label for="staticEmail">[[Recurring Monthly]]</label>		                                 
 		                                <input type="text" class="form-control" name="recurringperiod" value="$lastproduct.recurringperiod" disabled></input>
 		                            </div>
-	                            #end
-                        		</div>
+                        	   </div>
+                        		
+                        	   <div class="col-md-12">
+                        	   		<div class="form-check">
+		                                <input type="checkbox" class="form-check-input" id="isautopaidcheckbox" name="isautopaidcheckbox"></input>
+		                                <label class="form-check-label" for="isautopaid">[[Automatic Payment]]</label>	
+		                            </div>
+	                           #end
+                        	   </div>
                             </div>
-
-
-                            <div id="card-errors" class="donateformerror" role="alert"></div>
-
-
-                            <div class="row">
+ 
+                            <div class="row mt-2">                            	
                                 <div class="col-md-6">
+                                <div id="card-errors" class="donateformerror" role="alert"></div>
                                     <div class="donate-secure ">
                                         <i class="fas fa-lock"></i> [[Secure payment]]
                                     </div>
@@ -127,7 +130,8 @@
                                     </div>
                                 </div>
                             </div>
-
+							
+							<input type="hidden" name="isautopaid" id="isautopaid" value="$lastproduct.isautopaid" />
 							<input type="hidden" name="recurring" value="$lastproduct.recurring" />
                             <input type="hidden" name="field" value="collectionid" /> 
                             <input type="hidden" name="collectionid.value" value="$librarycol.getId()" /> 
@@ -146,6 +150,17 @@
 
 
 <script type="text/javascript">
+	$("#isautopaidcheckbox").change(function() {  
+	    if ($(this).is(":checked")) {
+	    	document.getElementById('isautopaid').value = true;
+	    } else {
+	    	document.getElementById('isautopaid').value = false;
+	    }
+	});
+	#if ($lastproduct.isautopaid)
+		document.getElementById('isautopaidcheckbox').checked = true;
+	#end
+
     $(document).ready(function () {
 	  	  #if($mediaarchive.isCatalogSettingTrue("productionmode"))
         console.log('Production');
