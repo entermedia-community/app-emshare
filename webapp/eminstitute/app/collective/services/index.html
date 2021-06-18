@@ -6,7 +6,7 @@
 	<div class="content">
 					<h3>[[Products and Services]]</h3>
 					##Search instances in these organizations
-			#set( $products = $mediaarchive.query("collectiveproduct").match("collectionid", $collectionid).search() )
+				#set( $products = $mediaarchive.query("collectiveproduct").match("collectionid", $collectionid).search() )
 				#if ($products)
 					<div class="emdata">
 				    <table class="table table-striped">
@@ -16,11 +16,12 @@
 				                <th>[[Name]]</th>
 				         		<th>[[Price]]</th>
 				                <th>[[Description]]</th>
+				                <th>[[Options]]</th>
 											                <!-- <th>[[Payment Options]]</th> -->
 				                
 				            </tr>
 				        </thead>
-						#foreach($hit in $products)
+							#foreach($hit in $products)
 							#if ($hit.instance_status == "active")
 								#set($instancescount = $instancescount+1)
 							#end
@@ -30,15 +31,15 @@
 								<td style="text-align: center;">$!context.roundDouble($!hit.productprice,2)</td>
 					            <td style="text-align: center;">$!hit.productdescription</td>
 					            
-								##<td>
-								##	<a href="$applink/collective/services/addtoinvoice.html?collectionid=${collectionid}&productid=${hit.id}" class=" btn btn-sm btn-primary" title="[[Add a Project]]">[[Buy Now]]</a>
+								<td>
+									<a href="$applink/collective/services/editproduct.html?collectionid=${collectionid}&id=${hit.id}" class="emdialog btn btn-sm btn-info" title="[[Add a Project]]">[[Edit]]</a>
 								##	<a href="$applink/collective/services/paylater.html?collectionid=${collectionid}&productid=${hit.id}" class=" btn btn-sm btn-primary" title="[[Add a Project]]">[[Invoice Me]]</a>
-								##</td>
+								</td>
 					        </tr>
-						
-						#end
+							#end
 				    </table>
 			    	</div>
+			    	#end	
 			    	#if( $caneditcollection )
 			    	<a href="$applink/collective/services/addnew.html?collectionid=${collectionid}" class="emdialog btn btn-sm btn-primary mb-4" title="[[Add a Billing]]">[[Add Product or Service]]</a>
 			    	#end
@@ -67,7 +68,8 @@
 							    <td>$!context.getDate($hit.duedate)</td>
 					            <td>$hit.invoicenumber</td>
 					            <td>$!context.getDate($hit.invoicepaidon)</td>
-								<td style="text-align: center;">$!context.roundDouble($!hit.totalprice,2)</td>
+								<td style="text-align: center;">$!context.roundDouble($!hit.totalprice, 2)</td>
+								
 								<td>
 									#if ($hit.getValue("paymentstatus") == "invoiced")
 									<a href="$applink/collective/services/paynow.html?invoiceid=${hit.id}" class="btn btn-sm btn-primary">[[Pay Now]]</a>										
@@ -92,6 +94,8 @@
 				                <th>[[Subscription Type]]</th>
 				                <th>[[Type Counter]]</th>
 				         		<th>[[Status]]</th>
+				         		<th>[[Service Start]]</th>
+				         		<th>[[Service End]]</th>
 				         		<th>[[Options]]</th>
 				            </tr>
 				        </thead>
@@ -102,14 +106,23 @@
 							    <td>$hit.plan.interval</td>
 							    <td>$hit.plan.interval_count</td>
 							    <td>$hit.status</td>
-							    <td>opt</td>
+							    <td>$!context.getDate($hit.current_period_start)</td>
+								<td>$!context.getDate($hit.current_period_end)</td>
+							    <td>
+							    	#if ($hit.status == "active")
+									<a href="$applink/collective/services/pausesubscription.html?subid=${hit.id}" class="emdialog btn btn-sm btn-info">[[Cancel Subscription]]</a>
+									<a href="$applink/collective/services/viewstripeinvoices.html?customerid=${hit.customer}&subid=${hit.id}" class="emdialog btn btn-sm btn-info">[[View Invoices]]</a>										
+									#else
+									<a href="$applink/collective/services/viewinvoice.html?invoiceid=${hit.id}" title="[[View Invoice]]" class="emdialog btn btn-sm btn-secondary">[[View Details]]</a>
+									#end
+							    </td>
 					        </tr>
 						#end
 				    </table>
 			    	</div>
 				#end
 				
-				#end		
+					
 		</div>
 	 
 	</div>

@@ -1,6 +1,11 @@
+#set($id = $context.getRequestParameter("id"))
 <div style="background:#cec5b3; padding:1px; color:#3e4553;text-align:center; border-top:solid 10px #3e4553;">
     <h1>[[New Product or Service]]</h1>
 </div>
+
+#if(!$data)
+	#set($data  = $mediaarchive.getData("collectiveproduct", $id) )
+#end
 
 ##Exising ones 
 ##No existing programs found.
@@ -14,9 +19,9 @@
 #set( $searcher = $mediaarchive.getSearcher("collectiveproduct") )
 #set( $xmledithome  = "$apphome/components/xml")
 $context.putPageValue("searcher",$searcher)
-<form name="saveproject" id="saveproject" action="addsave.html" method="post">
+<form name="saveproject" id="saveproject" action="editsave.html" method="post">
 
-
+<input type="hidden" name="id" value="$id" />
 <input type="hidden" name="save" value="true" />
 <input type="hidden" name="searchtype" value="collectiveproduct" />
 
@@ -31,8 +36,11 @@ $context.putPageValue("searcher",$searcher)
 $context.putPageValue("searcher",$searcher)
 $context.putPageValue("view", "collectiveproduct/addnew")
 $context.putPageValue("data", $data)
+
  
 $pages.include("/$applicationid/components/xml/detaileditor4.html", $context)
+
+
   <button type="submit" class="btn btn-primary" hidden>Submit</button>
 </form>
 
