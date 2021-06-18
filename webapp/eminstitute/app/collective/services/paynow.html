@@ -2,7 +2,7 @@
 #set($id = $context.getRequestParameter('invoiceid'))
 #set($invoice = $mediaarchive.getInvoiceById($id))
 #set($products = $mediaarchive.getInvoiceProductList($id))
-
+<div style="padding:20px">
 <h1>[[Purchase Now]]</h1>
 #if($mediaarchive.getCatalogSettingValue("productionmode") == "test")
 <div class="alert alert-warning">Site is in test mode. Credit card is 4242 4242 4242 4242 any expiry. Add your keys to
@@ -135,6 +135,7 @@
 							<input type="hidden" name="recurring" value="$lastproduct.recurring" />
                             <input type="hidden" name="field" value="collectionid" /> 
                             <input type="hidden" name="collectionid.value" value="$librarycol.getId()" /> 
+                            <input type="hidden" name="collectionid" value="$librarycol.getId()" />
                             <input type="hidden" name="invoiceid" value="$id" /> 
                             <input type="hidden" name="field" value="totalprice" /> 
                             <input type="hidden" name="field" value="userid" /> 
@@ -146,6 +147,8 @@
             </div>
         </div>
     </div>
+</div>
+
 </div>
 
 
