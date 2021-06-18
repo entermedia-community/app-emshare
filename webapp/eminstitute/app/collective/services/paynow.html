@@ -100,9 +100,9 @@
 
 
                                <div class="col-md-6">
-                               #if ($lastproduct.recurring)
+                               #if ($lastproduct.recurring == true)
 		                            <div class="form-group">
-		                                <label for="staticEmail">[[Recurring Monthly]]</label>		                                 
+		                                <label for="staticEmail">[[Recurring Monthly]]</label>                                 
 		                                <input type="text" class="form-control" name="recurringperiod" value="$lastproduct.recurringperiod" disabled></input>
 		                            </div>
                         	   </div>
@@ -123,7 +123,7 @@
                                         <i class="fas fa-lock"></i> [[Secure payment]]
                                     </div>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-6 text-right">
                                     <div style=" margin: 0px auto;">
                                         <a href="#" onclick='$("#payment-form").submit()' class="btn btn-success"><i
                                                 class="fas fa-credit-card"></i> [[Check Out]]</a>
@@ -153,18 +153,19 @@
 
 
 <script type="text/javascript">
-	$("#isautopaidcheckbox").change(function() {  
-	    if ($(this).is(":checked")) {
-	    	document.getElementById('isautopaid').value = true;
-	    } else {
-	    	document.getElementById('isautopaid').value = false;
-	    }
-	});
-	#if ($lastproduct.isautopaid)
-		document.getElementById('isautopaidcheckbox').checked = true;
+	#if ($lastproduct.recurring == true)
+		$("#isautopaidcheckbox").change(function() {  
+		    if ($(this).is(":checked")) {
+		    	document.getElementById('isautopaid').value = true;
+		    } else {
+		    	document.getElementById('isautopaid').value = false;
+		    }
+		});
+	 	document.getElementById('isautopaidcheckbox').checked = $lastproduct.isautopaid;
 	#end
 
     $(document).ready(function () {
+    	
 	  	  #if($mediaarchive.isCatalogSettingTrue("productionmode"))
         console.log('Production');
 	  		#set($publishkey = $mediaarchive.getCatalogSettingValue("stripe_publishable_key"))
