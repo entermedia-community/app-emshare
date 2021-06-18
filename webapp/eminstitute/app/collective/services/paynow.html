@@ -2,6 +2,7 @@
 #set($id = $context.getRequestParameter('invoiceid'))
 #set($invoice = $mediaarchive.getInvoiceById($id))
 #set($products = $mediaarchive.getInvoiceProductList($id))
+#set($workspace = $mediaarchive.getWorkspaceById($invoice.collectionid))
 <div style="padding:20px">
 <h1>[[Purchase Now]]</h1>
 #if($mediaarchive.getCatalogSettingValue("productionmode") == "test")
@@ -68,54 +69,77 @@
                         <form action="$applink/collective/services/payfinish.html" method="post" id="payment-form"
                             class="form">
                             <input type="hidden" name="collectionid" value="$!librarycol.id" />
-
+                            
+                             #if ($workspace.savestripecreditcard == true && $customer.sources.data.size() > 0)
                             <div class="row">
-                                <div class="col">
-                                    <div class="float-right" style="margin-top:-4px"><img
-                                            src="$applink/theme/icons/creditcard.png" /></div>
-                                    <div class="form-group">
-                                        <label for="staticEmail">[[Card Info]]:</label>
-                                        <div class="form-control">
-                                            <div id="card-element" style="width: 100%">
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                                <div class="col-md-12 mb-3">
+                                    <label>[[Card Options]]:</label>
+	                            	<select id="creditcardselect" class="form-control">
+	                            		<option value="0">New Credit Card</option>
+	                            		#foreach ($s in $customer.sources.data)
+	                            		<option value="$s.id">$s.brand (****-$s.last4)</option>
+	                            		#end
+	                            	</select>
+                            	</div>
                             </div>
-
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="staticEmail">[[Amount]]:</label>
-                                        <div class="input-group">
-                                            <div class="input-group-prepend">
-                                                <div class="input-group-text">$</div>
-                                            </div>
-                                            <input type="text" class="form-control" name="totalprice.value"
-                                                id="totalprice" #if($invoice.totalprice) value="$invoice.totalprice"
-                                                disabled #end>
-                                        </div>
-                                    </div>
-                                </div>
-
-
-                               <div class="col-md-6">
-                               #if ($lastproduct.recurring == true)
-		                            <div class="form-group">
-		                                <label for="staticEmail">[[Recurring Monthly]]</label>                                 
-		                                <input type="text" class="form-control" name="recurringperiod" value="$lastproduct.recurringperiod" disabled></input>
-		                            </div>
-                        	   </div>
-                        		
-                        	   <div class="col-md-12">
-                        	   		<div class="form-check">
-		                                <input type="checkbox" class="form-check-input" id="isautopaidcheckbox" name="isautopaidcheckbox"></input>
-		                                <label class="form-check-label" for="isautopaid">[[Automatic Payment]]</label>	
-		                            </div>
-	                           #end
-                        	   </div>
-                            </div>
- 
+							#end  
+							<div id="allcreditcardform">	
+							
+	                            <div class="row">
+	                                <div class="col">
+	                                    <div class="float-right" style="margin-top:-4px"><img
+	                                            src="$applink/theme/icons/creditcard.png" /></div>
+	                                    <div class="form-group">
+	                                        <label for="staticEmail">[[Card Info]]:</label>
+	                                        
+	                                                                              
+	                                        
+	                                        <div class="form-control">
+	                                            <div id="card-element" style="width: 100%">
+	                                            </div>
+	                                        </div>
+	                                    </div>
+	                                </div>
+	                                <div class="col-md-12">
+	                                	<div class="form-check">
+			                                <input type="checkbox" class="form-check-input" id="issavecard" name="issavecard"></input>
+			                                <label class="form-check-label" for="issavecard">[[Save this Credit Card for future payments]]</label>	
+			                            </div>
+	                               	</div>
+	                            </div>
+	
+	                            <div class="row">
+	                                <div class="col-md-6">
+	                                    <div class="form-group">
+	                                        <label for="staticEmail">[[Amount]]:</label>
+	                                        <div class="input-group">
+	                                            <div class="input-group-prepend">
+	                                                <div class="input-group-text">$</div>
+	                                            </div>
+	                                            <input type="text" class="form-control" name="totalprice.value"
+	                                                id="totalprice" #if($invoice.totalprice) value="$invoice.totalprice"
+	                                                disabled #end>
+	                                        </div>
+	                                    </div>
+	                                </div>
+	
+	                               <div class="col-md-6">
+	                               #if ($lastproduct.recurring == true)
+			                            <div class="form-group">
+			                                <label for="staticEmail">[[Recurring Monthly]]</label>                                 
+			                                <input type="text" class="form-control" name="recurringperiod" value="$lastproduct.recurringperiod" disabled></input>
+			                            </div>
+	                        	   </div>
+	                        		
+	                        	   <div class="col-md-12">
+	                        	   		<div class="form-check">
+			                                <input type="checkbox" class="form-check-input" id="isautopaidcheckbox" name="isautopaidcheckbox"></input>
+			                                <label class="form-check-label" for="isautopaid">[[Automatic Payment]]</label>	
+			                            </div>
+		                           #end
+	                        	   </div>
+	                            </div>
+	 						</div>
                             <div class="row mt-2">                            	
                                 <div class="col-md-6">
                                 <div id="card-errors" class="donateformerror" role="alert"></div>
@@ -130,8 +154,10 @@
                                     </div>
                                 </div>
                             </div>
+                            
 							
 							<input type="hidden" name="isautopaid" id="isautopaid" value="$lastproduct.isautopaid" />
+							<input type="hidden" name="savestripecreditcard" id="savestripecreditcard" value="$lastproduct.isautopaid" />
 							<input type="hidden" name="recurring" value="$lastproduct.recurring" />
                             <input type="hidden" name="field" value="collectionid" /> 
                             <input type="hidden" name="collectionid.value" value="$librarycol.getId()" /> 
@@ -140,6 +166,8 @@
                             <input type="hidden" name="field" value="totalprice" /> 
                             <input type="hidden" name="field" value="userid" /> 
                             <input type="hidden" name="userid.value" value="$user.getId()" />
+                            <input type="hidden" name="customerselected" id="customerselected" value="0" />
+                            <input type="text" name="stripecustomer" id="stripecustomer" value="$customer.id" hidden="" />
                         </form>
 
                     </div>
@@ -163,9 +191,23 @@
 		});
 	 	document.getElementById('isautopaidcheckbox').checked = $lastproduct.isautopaid;
 	#end
-
+	$("#issavecard").change(function() {  
+	    if ($(this).is(":checked")) {
+	    	document.getElementById('savestripecreditcard').value = true;
+	    } else {
+	    	document.getElementById('savestripecreditcard').value = false;
+	    }
+	});
+	document.getElementById('issavecard').checked = true;
+	
+	#if ($workspace.savestripecreditcard == true && $customer.sources.data.size() > 0)
+	$("#creditcardselect").change(function() {
+		document.getElementById('customerselected').value = $("#creditcardselect").val() !== "0";
+		$("#allcreditcardform").attr('hidden', $("#creditcardselect").val() !== "0")
+	});
+	#end
+	
     $(document).ready(function () {
-    	
 	  	  #if($mediaarchive.isCatalogSettingTrue("productionmode"))
         console.log('Production');
 	  		#set($publishkey = $mediaarchive.getCatalogSettingValue("stripe_publishable_key"))
@@ -203,14 +245,20 @@
                 }
             },
             submitHandler: function (form) {
-                stripe.createToken(card).then(function (result) {
-                    if (result.error) {
-                        var errorElement = document.getElementById('card-errors');
-                        $(errorElement).html('<div class="errormsg">' + result.error.message + '</div>');
-                    } else {
-                        stripeResponseHandler(result);
-                    }
-                });
+            	var isCustomer = document.getElementById("customerselected").value;
+            	console.log('cust', isCustomer, isCustomer != "true");
+            	if (isCustomer != "true") {
+	                stripe.createToken(card).then(function (result) {
+	                    if (result.error) {
+	                        var errorElement = document.getElementById('card-errors');
+	                        $(errorElement).html('<div class="errormsg">' + result.error.message + '</div>');
+	                    } else {
+	                        stripeResponseHandler(result);
+	                    }
+                	});
+            	} else {
+            		form.submit();
+            	}
             },
             errorElement: "div",
             errorClass: "errormsg",

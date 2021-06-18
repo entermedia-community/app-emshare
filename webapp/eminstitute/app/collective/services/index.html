@@ -6,7 +6,7 @@
 	<div class="content">
 					<h3>[[Products and Services]]</h3>
 					##Search instances in these organizations
-				#set( $products = $mediaarchive.query("collectiveproduct").match("collectionid", $collectionid).search() )
+				#set($products = $mediaarchive.query("collectiveproduct").match("collectionid", $collectionid).search())
 				#if ($products)
 					<div class="emdata">
 				    <table class="table table-striped">
@@ -44,8 +44,8 @@
 			    	<a href="$applink/collective/services/addnew.html?collectionid=${collectionid}" class="emdialog btn btn-sm btn-primary mb-4" title="[[Add a Billing]]">[[Add Product or Service]]</a>
 			    	#end
 			    	
-			    	 #set( $invoices = $mediaarchive.query("collectiveinvoice").match("collectionid", $collectionid).search() )
-				#if ($invoices)
+			    	 #set( $invoices = $mediaarchive.query("collectiveinvoice").match("collectionid", $collectionid).sort("createdonDown").search())		
+			    	 #if ($invoices)
 				<h3>[[Invoices]]</h3>
 					<div class="emdata">
 				    <table class="table table-striped">
