@@ -2667,7 +2667,7 @@ var resizecolumns = function() {
 		$('.col-left').css('top',sidebarstop + 'px');
 	}*/
 	
-	//console.log("resizing now");
+	console.log("resizing now");
 	
 	var header_height = $("#header").outerHeight()
 	var footer_height = $("#footer").outerHeight();
@@ -2682,7 +2682,8 @@ var resizecolumns = function() {
 	}
 	
 	var allheights  =  header_height +  footer_height + resultsheader_height;
-	var columnsheight = $("body").outerHeight() - allheights;
+	//var columnsheight = $("body").outerHeight() - allheights;
+	var columnsheight = 0;
 
 	var sidebartop = 1;
 	$(".col-main").each(function(){
@@ -2691,8 +2692,8 @@ var resizecolumns = function() {
 				return true;
 		}
 		var thisheight = col.outerHeight();
-		if (col.children(0)	&& col.children(0).hasClass("col-main-inner")) {
-			thisheight = col.children(0).outerHeight();
+		if (col.find(".col-main-inner").length) {
+			thisheight = col.find(".col-main-inner").outerHeight();
 		}
 		
 		if (thisheight > columnsheight) {
@@ -2804,7 +2805,7 @@ adjustdatamanagertable = function() {
 
 jQuery(document).ready(function() {
 	uiload();
-	$(window).trigger("resize");
+	jQuery(window).trigger("resize");
 	/*gridResize();
 	resizegallery();
 	resizecolumns();
@@ -2820,7 +2821,8 @@ jQuery(window).on('resize',function(){
 });
 jQuery(document).on('domchanged',function(){
 	gridResize(); //This calls checkScroll. Makes sure this is last after any actions
-	resizecolumns();
+	//resizecolumns();
+	//jQuery(window).trigger("resize");
 });
 
 
