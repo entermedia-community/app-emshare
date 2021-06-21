@@ -5,6 +5,8 @@ data-cellpadding="4"
 data-makebox="true"
 data-singlepage="true"  >
 
+
+
 #set($count = 0)
 #set( $viewerlink = $content.get("assetviewerlink") )
 #set($stackedfield = $mediaarchive.getCatalogSettingValue("stackedgalleryfield"))
@@ -40,15 +42,12 @@ data-singlepage="true"  >
 			<input type="checkbox" class="selectionbox" name="count" value="${hit.id}" 
 		        	#if($isselected) checked #end data-dataid="${hit.id}" />          
 		</div>
-	    
 	    	    <div class="grid-thumbimage" data-assetid="$!hit.id">
-	    	    
 	    	    	#if(!$rendertype || $type =="rendertype")
 	    	    		#set( $rendertype = "mime" )
 	    	    	#elseif( $rendertype =="video")
 	    	    		#set( $rendertype = "videothumbnail" )
 	    	    	#end
-
 	        	    $pages.include("$componenthome/results/thumbnails/${rendertype}.html", $context)
 	        	</div>
 	    	
@@ -67,10 +66,38 @@ data-singlepage="true"  >
 			         <span>#esc($!title)</span>
 			         
 			         ##Show entities or something more?
+			         #foreach( $module in $mediaarchive.getList("module") )
+			         	#set( $showon = $module.get("showonsearch") )
+			         	#if($showon)
+			         		#set( $values = $hit.getValues($module.getId()) )
+			         		#if( $values)
+			         		<div>
+			         			$module:
+					         	#foreach( $row in $values )
+					         		$mediaarchive.getCachedData($module.getId(),$row)
+					         	#end
+					         </div>	
+					        #end	
+			         	#end
+			         #end
 			         
+			         </a>
 			         
-			         </a>  
+			        #foreach($row in $list)
+						#set( $val = false )
+						#set( $val = $mediaarchive.getCachedData($fieldid,$row) )
+						#if( $val)
+							<span class="clipdetail"><a href="$apphome/components/gridsample/preview/entity.html?id=$val.getId()&searchtype=$fieldid" class="emdialog entity-dialog">$val</a></span>
+						#else
+						##Missing: $fieldid = $v
+						#end
+					#end
+         
+			           
 			        <div class="grid-gallery-footer"> 
+			        
+			        
+			        
 	        	   	$pages.include("$componenthome/results/badges.html", $context)
 			         #if ($hit.assetaddeddate)
 			         $!context.getDate($hit.assetaddeddate)
