@@ -2667,6 +2667,8 @@ var resizecolumns = function() {
 		$('.col-left').css('top',sidebarstop + 'px');
 	}*/
 	
+	//console.log("resizing now");
+	
 	var header_height = $("#header").outerHeight()
 	var footer_height = $("#footer").outerHeight();
 	var resultsheader_height = 0;
@@ -2716,7 +2718,7 @@ var resizecolumns = function() {
 		$(".col-left > .col-main-inner").css("height", windowh);
 	}
 	//$(".col-sidebar").css("min-height", columnsheight);
-	if ($(".col-content-main").parent().hasClass("settingslayout")) {
+	if ($(".col-content-main").find(".settingslayout").length) {
 		$(".col-content-main").css("height", columnsheight + sidebarstop + "px");
 		$(".col-settingssidebar").css("height", columnsheight + sidebarstop + "px");
 	}
@@ -2724,7 +2726,7 @@ var resizecolumns = function() {
 		$(".col-content-main").css("min-height", columnsheight + sidebarstop + "px");
 	}
 	
-	$(".pushcontent").css("height","calc(100% - " + resultsheader_height + "px)");
+	//$(".pushcontent").css("height","calc(100% - " + resultsheader_height + "px)");
 }
 
 
@@ -2791,15 +2793,22 @@ var resizegallery = function() {
 		
 	}
 }
-	
+
+adjustdatamanagertable = function() {
+	if($(".datamanagertable").length) {
+	var height = $( window ).height();
+	$(".datamanagertable").height(height - 320);
+	}
+}
 
 
 jQuery(document).ready(function() {
 	uiload();
-	gridResize();
+	$(window).trigger("resize");
+	/*gridResize();
 	resizegallery();
 	resizecolumns();
-	resizesearchcategories();
+	resizesearchcategories();*/
 });
 
 jQuery(window).on('resize',function(){
@@ -2807,9 +2816,11 @@ jQuery(window).on('resize',function(){
 	resizegallery();
 	resizecolumns();
 	resizesearchcategories();
+	adjustdatamanagertable();
 });
 jQuery(document).on('domchanged',function(){
 	gridResize(); //This calls checkScroll. Makes sure this is last after any actions
+	resizecolumns();
 });
 
 
