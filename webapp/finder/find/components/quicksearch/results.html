@@ -12,12 +12,14 @@
 #set($ajax = $context.getRequestParameter("ajax")) 
 
 <div class="quicksearchresults" style="height: ${popupheight}px">
-#if($suggestions.size())
+
+#if($livesuggestions.size())
 <h3>[[Suggested]]</h3>
 <ul class="qsrecent">
-#foreach ($s in $suggestions)
+#foreach ($suggestion in $livesuggestions)
+	#set( $k = $suggestion.getKeyword() )
 	#if (!$ajax)
-	#set($url = "$url?operation=contains&field=description&description.value=#esc($s)&clearfilters=true")
+	#set($url = "$url?operation=contains&field=description&description.value=#esc($k)&clearfilters=true")
 	#end
 		
 	<li>
@@ -27,9 +29,9 @@
 			data-field="description" 
 			data-operation="contains" 
 			data-targetdiv="application" 
-			data-description.value="#esc($s)" 
+			data-description.value="#esc($k)" 
 			class="badge badge-light #if($ajax) ajax#end" >
-			 <span>#esc($s)</span></a> 
+			 <span>$suggestion.getBold()</span></a>  ##make bold
 	</li>	 
 #end
 </ul>

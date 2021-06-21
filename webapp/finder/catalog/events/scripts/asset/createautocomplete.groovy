@@ -77,6 +77,8 @@ public void init(){
 	//		String parentfolder = org.openedit.util.PathUtilities.extractDirectoryPath(asset.getSourcePath());
 	//		assetTags.add("\"" + parentfolder + "\"");
 	
+			//Add categories?
+			
 			if (toSave.size() > 3000)
 			{
 				autocompletesearcher.saveAllData(toSave, user);
