@@ -50,7 +50,6 @@ data-singlepage="true"  >
 	    	    	#end
 
 	        	    $pages.include("$componenthome/results/thumbnails/${rendertype}.html", $context)
-	        	   	##$pages.include("$componenthome/results/badges.html", $context)
 	        	</div>
 	    	
 	    	 	<div class="grid-caption grid-caption-${rendertype} #if($rendertype=="default") grid-caption-show #end">
@@ -65,9 +64,14 @@ data-singlepage="true"  >
 				        	#set($title = $hit.name) 
 				        #end
 			         #end
-			         <span>$!title</span>
+			         <span>#esc($!title)</span>
+			         
+			         ##Show entities or something more?
+			         
+			         
 			         </a>  
 			        <div class="grid-gallery-footer"> 
+	        	   	$pages.include("$componenthome/results/badges.html", $context)
 			         #if ($hit.assetaddeddate)
 			         $!context.getDate($hit.assetaddeddate)
 			         #end
