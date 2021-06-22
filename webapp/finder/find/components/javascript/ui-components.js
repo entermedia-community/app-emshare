@@ -2797,8 +2797,8 @@ var resizegallery = function() {
 
 adjustdatamanagertable = function() {
 	if($(".datamanagertable").length) {
-	var height = $( window ).height();
-	$(".datamanagertable").height(height - 320);
+		var height = $( window ).height();
+		$(".datamanagertable").height(height - 320);
 	}
 }
 
@@ -2815,9 +2815,11 @@ jQuery(document).ready(function() {
 jQuery(window).on('resize',function(){
 	gridResize();
 	resizegallery();
-	resizecolumns();
-	resizesearchcategories();
 	adjustdatamanagertable();
+	resizesearchcategories();
+	resizecolumns();
+	
+	
 });
 jQuery(document).on('domchanged',function(){
 	gridResize(); //This calls checkScroll. Makes sure this is last after any actions
