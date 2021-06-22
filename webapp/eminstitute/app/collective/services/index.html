@@ -30,9 +30,15 @@
 					            <td>$hit.name</td>
 								<td style="text-align: center;">$!context.roundDouble($!hit.productprice,2)</td>
 					            <td style="text-align: center;">$!hit.productdescription</td>
-					            
 								<td>
 									<a href="$applink/collective/services/editproduct.html?collectionid=${collectionid}&id=${hit.id}" class="emdialog btn btn-sm btn-info" title="[[Add a Project]]">[[Edit]]</a>
+									#if ($hit.recurring == true)
+									  #if ($hit.isautopaid == true)
+									  <a href="$applink/collective/services/toggleautopay.html?collectionid=${collectionid}&id=${hit.id}" class="btn btn-sm btn-info" title="[[Add a Project]]">[[Disable AutoPay]]</a>
+									  #else
+									  <a href="$applink/collective/services/toggleautopay.html?collectionid=${collectionid}&id=${hit.id}" class="btn btn-sm btn-info" title="[[Add a Project]]">[[Enable AutoPay]]</a>
+									  #end
+									#end
 								##	<a href="$applink/collective/services/paylater.html?collectionid=${collectionid}&productid=${hit.id}" class=" btn btn-sm btn-primary" title="[[Add a Project]]">[[Invoice Me]]</a>
 								</td>
 					        </tr>
@@ -56,6 +62,7 @@
 				                <th>[[Invoice Number]]</th>
 				                <th>[[Paid On]]</th>
 				         		<th>[[Total Price]]</th>
+				         		<th>[[Status]]</th>
 				         		<th>[[Options]]</th>
 				            </tr>
 				        </thead>
@@ -69,10 +76,15 @@
 					            <td>$hit.invoicenumber</td>
 					            <td>$!context.getDate($hit.invoicepaidon)</td>
 								<td style="text-align: center;">$!context.roundDouble($!hit.totalprice, 2)</td>
-								
+								<td>$hit.paymentstatus</td>
 								<td>
 									#if ($hit.getValue("paymentstatus") == "invoiced")
 									<a href="$applink/collective/services/paynow.html?invoiceid=${hit.id}&collectionid=$collectionid" class="btn btn-sm btn-primary">[[Pay Now]]</a>										
+									#elseif ($hit.getValue("paymentstatus") == "autopayfailed" || $hit.getValue("paymentstatus") == "error")
+									<a href="$applink/collective/services/paynow.html?invoiceid=${hit.id}&collectionid=$collectionid" class="btn btn-sm btn-primary">[[Pay Now]]</a>
+									  #if ($hit.paymentstatusreason != "")
+									  <div class="alert alert-danger">$hit.paymentstatusreason</div>
+									  #end
 									#else
 									<a href="$applink/collective/services/viewinvoice.html?invoiceid=${hit.id}&collectionid=$collectionid" title="[[View Invoice]]" class="emdialog btn btn-sm btn-secondary">[[View Details]]</a>
 									#end
@@ -82,47 +94,6 @@
 				    </table>
 			    	</div>
 				#end
-
-				#if ($subs)
-				<h3>[[Subscriptions]]</h3>
-					<div class="emdata">
-				    <table class="table table-striped">
-				        <thead>
-				            <tr class="tableheader">
-				            	<th>[[Created On]]</th>
-				            	<th>[[Billed On]]</th>
-				                <th>[[Subscription Type]]</th>
-				                <th>[[Type Counter]]</th>
-				         		<th>[[Status]]</th>
-				         		<th>[[Service Start]]</th>
-				         		<th>[[Service End]]</th>
-				         		<th>[[Options]]</th>
-				            </tr>
-				        </thead>
-						#foreach($hit in $subs)
-							<tr>
-							    <td>$!context.getDate($hit.created)</td>
-							    <td>$ $!context.stripePriceToString($hit.plan.amount)</td>
-							    <td>$hit.plan.interval</td>
-							    <td>$hit.plan.interval_count</td>
-							    <td>$hit.status</td>
-							    <td>$!context.getDate($hit.current_period_start)</td>
-								<td>$!context.getDate($hit.current_period_end)</td>
-							    <td>
-							    	#if ($hit.status == "active")
-									<a href="$applink/collective/services/pausesubscription.html?subid=${hit.id}" class="emdialog btn btn-sm btn-info">[[Cancel Subscription]]</a>
-									<a href="$applink/collective/services/viewstripeinvoices.html?customerid=${hit.customer}&subid=${hit.id}" class="emdialog btn btn-sm btn-info">[[View Invoices]]</a>										
-									#else
-									<a href="$applink/collective/services/viewinvoice.html?invoiceid=${hit.id}" title="[[View Invoice]]" class="emdialog btn btn-sm btn-secondary">[[View Details]]</a>
-									#end
-							    </td>
-					        </tr>
-						#end
-				    </table>
-			    	</div>
-				#end
-				
-					
 		</div>
 	 
 	</div>
