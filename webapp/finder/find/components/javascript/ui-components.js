@@ -2667,8 +2667,6 @@ var resizecolumns = function() {
 		$('.col-left').css('top',sidebarstop + 'px');
 	}*/
 	
-	console.log("resizing now");
-	
 	var header_height = $("#header").outerHeight()
 	var footer_height = $("#footer").outerHeight();
 	var resultsheader_height = 0;
