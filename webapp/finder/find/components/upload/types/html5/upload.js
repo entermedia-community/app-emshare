@@ -280,6 +280,78 @@ $(document).ready(function()
 				initUpload(inputfield);
 			});
 	
+	
+	jQuery("#upload_field").val('');
+	var allfiles = new Array();
+	jQuery("#up-files-list").empty();
+
+	lQuery("#viewassetsbtn").livequery("click", function(e) {
+		e.preventDefault();
+		
+		var btn = jQuery(this);
+
+	    var options = btn.data();
+		var collectionid = jQuery("#currentcollection").val();
+		var nodeid = $("#nodeid").val();
+	    var href = null;
+	    
+	    var customviewupload = btn.data("customviewupload");
+
+	    if(customviewupload) {
+	    		href= "siteroot"+customviewupload;
+	    		if (collectionid) {
+	    			if (href.indexOf("?") > -1) {
+	    				href = href + "&";
+	    			}
+	    			else {
+	    				href = href + "?";
+	    			}
+	    			href = href + "collectionid=" + collectionid;
+	    		}
+	    		if( nodeid)
+		    	{
+		    		href = href + "&nodeID=" + nodeid;
+		    	}
+	    	}
+	    else if(collectionid) {
+	    	href = siteroot+"/views/modules/librarycollection/showcategory.html?collectionid="+collectionid+"&sortby=assetaddeddateDown";
+	    	if( nodeid)	{
+	    		href = href + "&nodeID=" + nodeid;
+	    	}
+	    	else {
+	    		var currentcollectionrootcategory = jQuery("#currentcollectionrootcategory").val();
+	    		if (currentcollectionrootcategory) {
+	    			href = href + "&nodeID=" + currentcollectionrootcategory;
+	    		}
+	    	}
+	    	options.oemaxlevel = 1;	
+	    }
+	    else if( nodeid) {
+	         href = siteroot+"/views/modules/asset/showcategory.html?sortby=assetaddeddateDown&nodeID=" + nodeid;;
+		    	options.oemaxlevel = 2;	
+		}
+	    else  {
+	        href = siteroot+"/views/modules/asset/index.html?sortby=assetaddeddateDown";
+	    	options.oemaxlevel = 2;	
+		}
+	    //console.log(href);
+	    //document.location.href = href;
+	    var targetdiv = btn.data("targetdivinner");
+
+		jQuery.ajax({
+
+			url: href, 
+			async: false, 
+			data: options, 
+			success: function (data) {
+				jQuery('#'+targetdiv).html(data);
+			}
+		});
+	    
+	});
+	
+	
+	
 	//Detect Youtube Link
 	$("#uploaddescription").on("keyup", function() {
 		var input = $("#uploaddescription");

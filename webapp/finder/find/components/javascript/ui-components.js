@@ -2679,35 +2679,35 @@ var resizecolumns = function() {
 		resultsheader_height = $(".filtered").outerHeight();
 	}
 	
-	var allheights  =  header_height +  footer_height + resultsheader_height;
 	//var columnsheight = $("body").outerHeight() - allheights;
 	var columnsheight = 0;
-
 	var sidebartop = 1;
-	$(".col-main").each(function(){
-		var col = $(this);
-		if(col.hasClass("col-left") && col.hasClass("fixedheight")) {
-				return true;
-		}
-		var thisheight = col.outerHeight();
-		if (col.find(".col-main-inner").length) {
-			thisheight = col.find(".col-main-inner").outerHeight();
-		}
-		
-		if (thisheight > columnsheight) {
+
+	
+	var coltogglers = $(".col-sidebar-togglers > .col-main-inner");
+	if (coltogglers.length) {
+		columnsheight = coltogglers.outerHeight();
+	}
+	var colsidebar = $(".col-mainsidebar").find(".col-main-inner");
+	if (colsidebar.length) {
+		var thisheight = colsidebar.outerHeight();
+		if (thisheight>columnsheight) {
 			columnsheight = thisheight;
 		}
-	});
-	
-	//$(".col-filters").css("height", columnsheight);
-	$(".sidebar-togglers-bar").css("min-height", columnsheight);
-	if(!$(".col-mainsidebar").hasClass("fixedheight")) {
-		var offset = $(".col-mainsidebar").offset();
-		var colheight = columnsheight;
-		if (offset) {
-			colheight = columnsheight - offset.top;
+	}
+	var colmaincontet = $(".col-content-main").find(".col-main-inner");
+	if (colmaincontet.length) {
+		var thisheight = colmaincontet.outerHeight();
+		if (thisheight>columnsheight) {
+			columnsheight = thisheight;
 		}
-		$(".col-mainsidebar").css("height", colheight);
+	}
+	
+	var allheights  = header_height + resultsheader_height;
+	$(".col-sidebar-togglers").css("height", columnsheight + allheights);
+
+	if(!$(".col-mainsidebar").hasClass("fixedheight")) {
+		$(".col-mainsidebar").css("height", columnsheight + allheights);
 	}
 	else {
 		allheights  = header_height + resultsheader_height;
@@ -2716,13 +2716,14 @@ var resizecolumns = function() {
 		$(".col-left").css("height", columnsheight);
 		$(".col-left > .col-main-inner").css("height", windowh);
 	}
+	
 	//$(".col-sidebar").css("min-height", columnsheight);
 	if ($(".col-content-main").find(".settingslayout").length) {
 		$(".col-content-main").css("height", columnsheight + sidebarstop + "px");
-		$(".col-settingssidebar").css("height", columnsheight + sidebarstop + "px");
+		$(".settingslayout").css("height", columnsheight + sidebarstop + "px");
 	}
 	else {
-		$(".col-content-main").css("min-height", columnsheight + sidebarstop + "px");
+		$(".col-content-main").css("height", columnsheight);
 	}
 	
 	//$(".pushcontent").css("height","calc(100% - " + resultsheader_height + "px)");

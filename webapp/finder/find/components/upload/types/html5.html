@@ -12,10 +12,8 @@
 		##set($collectionid = $userprofile.get("lastselectedcollection"))
 	#end
 	#if(!$collectionid)
-	
 		#set($librarycol = $mediaarchive.getProjectManager().loadUserCollection($mediaarchive, $userprofile))
 	#end
-
 	#if(!$librarycol && $collectionid)
 		#set($librarycol = $mediaarchive.getCachedData("librarycollection",$collectionid) )
 	#end
@@ -134,13 +132,25 @@ $context.putPageValue("librarycol",$librarycol)
 					$pages.include("/$applicationid/components/xml/detaileditorcss.html", $context)
 					
 					#set($customviewupload = $content.redirectviewupload)
-					
+				
 					##have the cancel delete these assets?
-					
 					<div id="uploadinstructionsafter" style="display: none">
-			   			<a class="btn btn-primary btn-lg" id="startbutton" data-complete="[[Upload]]"  href="#">[[Upload]]</a>
-						<a id="viewassetsbtn" style="display:none;" class="autoclick btn btn-sm btn-primary" disabled href ="#" 
-							data-targetdiv="application" data-oemaxlayout="1" data-customviewupload="$!customviewupload"> [[View Uploads]]</a>	 
+			   			<a class="btn btn-primary btn-lg" 
+			   				id="startbutton" 
+			   				data-complete="[[Upload]]" 
+			   				href="#">[[Upload]]</a>
+			   			
+			   			
+			   			
+						<a id="viewassetsbtn" 
+						style="display:none;" 
+						class="autoclick btn btn-sm btn-primary" 
+						disabled 
+						href ="$redirect" 
+						data-targetdivinner="applicationmaincontent" 
+						data-oemaxlayout="3" 
+						data-customviewupload="$!customviewupload"
+						data-updateurl="true"> [[View Uploads]]</a>	 
 			  		</div>
 					
 			</div>
@@ -151,73 +161,3 @@ $context.putPageValue("librarycol",$librarycol)
 </div>
 </div>
 </form>
-
-<script>
-$(document).ready(function() {
-	
-	jQuery("#upload_field").val('');
-	var allfiles = new Array();
-	jQuery("#up-files-list").empty();
-
-	jQuery("#viewassetsbtn").click(function(e) {
-		e.preventDefault();
-		
-		var btn = jQuery(this);
-
-	    var options = btn.data();
-		var collectionid = jQuery("#currentcollection").val();
-		var nodeid = $("#nodeid").val();
-	    var href = null;
-	    
-	    var customviewupload = $(this).data("customviewupload");
-
-	    if(customviewupload) {
-	    		href= "$siteroot"+customviewupload;
-	    		if (collectionid) {
-	    			if (href.indexOf("?") > -1) {
-	    				href = href + "&collectionid=" + collectionid;
-	    			}
-	    			else {
-	    				href = href + "?collectionid=" + collectionid;
-	    			}
-	    		}
-	    		if( nodeid)
-		    	{
-		    		href = href + "&nodeID=" + nodeid;
-		    	}
-	    	}
-	    else if(collectionid) {
-	    	href = "$siteroot$apphome/views/modules/librarycollection/media/" + collectionid + "/index.html?sortby=assetaddeddateDown";
-	    	if( nodeid)	{
-	    		href = href + "&nodeID=" + nodeid;
-	    	}
-	    	options.oemaxlevel = 3;	
-	    }
-	    else if( nodeid) {
-	         href = "$siteroot$apphome/views/modules/asset/showcategory.html?sortby=assetaddeddateDown&nodeID=" + nodeid;;
-		    	options.oemaxlevel = 2;	
-		}
-	    else  {
-	        href = "$siteroot$apphome/views/modules/asset/index.html?sortby=assetaddeddateDown";
-	    	options.oemaxlevel = 2;	
-		}
-	    //console.log(href);
-	    //document.location.href = href;
-	    var targetdiv = btn.data("targetdiv");
-
-		jQuery.ajax({
-			xhrFields: {
-                withCredentials: true
-            },
-			crossDomain: true,
-			url: href, 
-			async: false, 
-			data: options, 
-			success: function (data) {
-				jQuery('#'+targetdiv).replaceWith(data);
-			}
-		});
-	    
-	});
-});
-</script>
