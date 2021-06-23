@@ -7,7 +7,7 @@
 	#set($popupheight = $popupheight+60)
 #end
 
-#set($url = "$applink/views/modules/modulesearch/index.html")
+#set($url = "$!siteroot$applink/views/modules/modulesearch/index.html")
 
 #set($ajax = $context.getRequestParameter("ajax")) 
 
@@ -18,9 +18,9 @@
 <ul class="qsrecent">
 #foreach ($suggestion in $livesuggestions)
 	#set( $k = $suggestion.getKeyword() )
-	#if (!$ajax)
-	#set($url = "$url?operation=contains&field=description&description.value=#esc($k)&clearfilters=true")
-	#end
+	##if (!$ajax)
+	##set($url = "$url?operation=contains&field=description&description.value=#esc($k)&clearfilters=true")
+	##end
 		
 	<li>
 		<a href="$url" 
@@ -28,9 +28,9 @@
 			data-searchtype="modulesearch" 
 			data-field="description" 
 			data-operation="contains" 
-			data-targetdiv="application" 
+			data-targetdiv="applicationcontent"
 			data-description.value="#esc($k)" 
-			class="badge badge-light #if($ajax) ajax#end" >
+			class="badge badge-light ajax" >
 			 <span>$suggestion.getBold()</span></a>  ##make bold
 	</li>	 
 #end
