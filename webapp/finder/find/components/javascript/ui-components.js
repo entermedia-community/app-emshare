@@ -1,4 +1,4 @@
-//EMfrontend2
+//EM Media Finder
 
 formatHitCountResult = function(inRow) {
 	return inRow[1];
@@ -41,6 +41,7 @@ uiload = function() {
 	}
 	
 	if ($.datepicker) {
+		console.log("datepicker exists");
 		lQuery("input.datepicker").livequery(function() {
             var dpicker = $(this);
 			$.datepicker.setDefaults( $.datepicker.regional[browserlanguage] );
@@ -60,6 +61,7 @@ uiload = function() {
                 yearRange : '1900:2050',
                 beforeShow: function (input, inst) {
                     setTimeout(function () {
+                    	$('#application').append($('#ui-datepicker-div'));
                         //Fix Position if in bootstrap modal
 						var modal = $("#modals");
                         if (modal.length) {
@@ -79,6 +81,7 @@ uiload = function() {
 	                            });
 							}
                         }
+                        
                     }, 0);
                 }
 			});
