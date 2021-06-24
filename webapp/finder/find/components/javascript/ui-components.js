@@ -2815,6 +2815,7 @@ jQuery(document).ready(function() {
 });
 
 jQuery(window).on('resize',function(){
+	console.log("resizing");
 	gridResize();
 	resizegallery();
 	adjustdatamanagertable();
@@ -2825,7 +2826,7 @@ jQuery(window).on('resize',function(){
 });
 jQuery(document).on('domchanged',function(){
 	gridResize(); //This calls checkScroll. Makes sure this is last after any actions
-	//resizecolumns();
+	resizecolumns();
 	//jQuery(window).trigger("resize");
 });
 

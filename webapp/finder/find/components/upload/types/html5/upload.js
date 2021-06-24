@@ -65,7 +65,7 @@ $(document).ready(function()
 		    }
 		    
 		 }
-		 console.log("Picked " + files.length );
+		 //console.log("Picked " + files.length );
 		 
 	}
 	var allfiles = new Array();
@@ -337,6 +337,7 @@ $(document).ready(function()
 			data: options, 
 			success: function (data) {
 				jQuery('#'+targetdiv).html(data);
+				jQuery(window).trigger("resize");
 			}
 		});
 	    
