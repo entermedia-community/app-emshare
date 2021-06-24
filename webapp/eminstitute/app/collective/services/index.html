@@ -4,7 +4,7 @@
 <div class="col">
 <div class="collectivemaincol h-100">
 	<div class="content">
-					<h3>[[Products and Services]]</h3>
+					<h3>[[Recurring Subscriptions]]</h3>
 					##Search instances in these organizations
 				#set($products = $mediaarchive.query("collectiveproduct").match("collectionid", $collectionid).search())
 				#if ($products)
@@ -16,38 +16,41 @@
 				                <th>[[Name]]</th>
 				         		<th>[[Price]]</th>
 				                <th>[[Description]]</th>
-				                <th>[[Options]]</th>
-											                <!-- <th>[[Payment Options]]</th> -->
-				                
+				                <th></th>
 				            </tr>
 				        </thead>
 							#foreach($hit in $products)
-							#if ($hit.instance_status == "active")
-								#set($instancescount = $instancescount+1)
-							#end
-							<tr>
-							    <td>$!context.getDate($hit.createdon)</td>
-					            <td>$hit.name</td>
-								<td style="text-align: center;">$!context.roundDouble($!hit.productprice,2)</td>
-					            <td style="text-align: center;">$!hit.productdescription</td>
-								<td>
-									<a href="$applink/collective/services/editproduct.html?collectionid=${collectionid}&id=${hit.id}" class="emdialog btn btn-sm btn-info" title="[[Add a Project]]">[[Edit]]</a>
-									#if ($hit.recurring == true)
-									  #if ($hit.isautopaid == true)
-									  <a href="$applink/collective/services/toggleautopay.html?collectionid=${collectionid}&id=${hit.id}" class="btn btn-sm btn-info" title="[[Add a Project]]">[[Disable AutoPay]]</a>
-									  #else
-									  <a href="$applink/collective/services/toggleautopay.html?collectionid=${collectionid}&id=${hit.id}" class="btn btn-sm btn-info" title="[[Add a Project]]">[[Enable AutoPay]]</a>
-									  #end
-									#end
-								##	<a href="$applink/collective/services/paylater.html?collectionid=${collectionid}&productid=${hit.id}" class=" btn btn-sm btn-primary" title="[[Add a Project]]">[[Invoice Me]]</a>
-								</td>
-					        </tr>
+								#if ($hit.instance_status == "active")
+									#set($instancescount = $instancescount+1)
+								#end
+								#if($hit.recurring == true || $caneditcollection)
+								<tr>
+								    <td>$!context.getDate($hit.createdon)</td>
+						            <td>$hit.name</td>
+									<td style="text-align: center;">$ $!context.roundDouble($!hit.productprice,2)</td>
+						            <td style="text-align: center;">$!mediaarchive.text($hit.productdescription, $hit.id)</td>
+									<td>
+										#if( $caneditcollection )
+										<a href="$siteroot/entermediadb/emshare2/views/settings/lists/datamanager/index.html" class="btn btn-sm btn-secondary" target="_blank"><i class="fa fa-database"></i></a>
+										<a href="$applink/collective/services/editproduct.html?collectionid=${collectionid}&id=${hit.id}" class="emdialog btn btn-sm btn-info">[[Edit]]</a>
+										#end
+										#if ($hit.recurring == true)
+										  #if ($hit.isautopaid == true)
+										  <a href="$applink/collective/services/toggleautopay.html?collectionid=${collectionid}&id=${hit.id}" class="btn btn-sm btn-info">[[Disable AutoPay]]</a>
+										  #else
+										  <a href="$applink/collective/services/toggleautopay.html?collectionid=${collectionid}&id=${hit.id}" class="btn btn-sm btn-info">[[Enable AutoPay]]</a>
+										  #end
+										#end
+									##	<a href="$applink/collective/services/paylater.html?collectionid=${collectionid}&productid=${hit.id}" class=" btn btn-sm btn-primary">[[Invoice Me]]</a>
+									</td>
+						        </tr>
+						        #end
 							#end
 				    </table>
 			    	</div>
 			    	#end	
 			    	#if( $caneditcollection )
-			    	<a href="$applink/collective/services/addnew.html?collectionid=${collectionid}" class="emdialog btn btn-sm btn-primary mb-4" title="[[Add a Billing]]">[[Add Product or Service]]</a>
+			    	<a href="$applink/collective/services/addnew.html?collectionid=${collectionid}" class="emdialog btn btn-sm btn-primary mb-4">[[Add Product or Service]]</a>
 			    	#end
 			    	
 			    	 #set( $invoices = $mediaarchive.query("collectiveinvoice").match("collectionid", $collectionid).sort("createdonDown").search())		
@@ -57,13 +60,14 @@
 				    <table class="table table-striped">
 				        <thead>
 				            <tr class="tableheader">
-				            	<th>[[Created On]]</th>
-				            	<th>[[Billed On]]</th>
-				                <th>[[Invoice Number]]</th>
+				            	<th>[[Invoice Number]]</th>
+				            	<th>[[Due Date]]</th>
 				                <th>[[Paid On]]</th>
+				                <th>[[Name]]</th>
+				                <th>[[Description]]</th>
 				         		<th>[[Total Price]]</th>
 				         		<th>[[Status]]</th>
-				         		<th>[[Options]]</th>
+				         		<th></th>
 				            </tr>
 				        </thead>
 						#foreach($hit in $invoices)
@@ -71,13 +75,31 @@
 								#set($instancescount = $instancescount+1)
 							#end
 							<tr>
-							    <td>$!context.getDate($hit.createdon)</td>	
-							    <td>$!context.getDate($hit.duedate)</td>
-					            <td>$hit.invoicenumber</td>
+								<td>$hit.invoicenumber</td>	
+							    <td>$!context.getDate($hit.duedate)</td>					            
 					            <td>$!context.getDate($hit.invoicepaidon)</td>
-								<td style="text-align: center;">$!context.roundDouble($!hit.totalprice, 2)</td>
-								<td>$hit.paymentstatus</td>
 								<td>
+								#set($prods = $hit.getValue("productlist"))
+					            #foreach($pr in $prods)
+					            	#set($prod = $mediaarchive.query("collectiveproduct").exact("id", "$pr.productid").searchOne())
+					            	$prod<br>
+					            #end
+					            </td>
+					            <td>
+					            #foreach($pr in $prods)
+					            	#set($prod = $mediaarchive.query("collectiveproduct").exact("id", "$pr.productid").searchOne())
+					            	$!mediaarchive.text($prod.productdescription, $hit.id)<br>
+					            #end
+					            </td>
+								<td style="text-align: center;">$ $!context.roundDouble($!hit.totalprice, 2)</td>
+								<td>
+									#set($status = $mediaarchive.query("paymentstatus").match("id", "$hit.paymentstatus").searchOne())
+									$status
+								</td>
+								<td>
+									#if( $caneditcollection )
+									<a href="$siteroot/entermediadb/emshare2/views/settings/lists/datamanager/index.html" class="btn btn-sm btn-secondary" target="_blank"><i class="fa fa-database"></i></a>
+									#end
 									#if ($hit.getValue("paymentstatus") == "invoiced")
 									<a href="$applink/collective/services/paynow.html?invoiceid=${hit.id}&collectionid=$collectionid" class="btn btn-sm btn-primary">[[Pay Now]]</a>										
 									#elseif ($hit.getValue("paymentstatus") == "autopayfailed" || $hit.getValue("paymentstatus") == "error")
@@ -86,7 +108,7 @@
 									  <div class="alert alert-danger">$hit.paymentstatusreason</div>
 									  #end
 									#else
-									<a href="$applink/collective/services/viewinvoice.html?invoiceid=${hit.id}&collectionid=$collectionid" title="[[View Invoice]]" class="emdialog btn btn-sm btn-secondary">[[View Details]]</a>
+									<a href="$applink/collective/services/viewinvoice.html?invoiceid=${hit.id}&collectionid=$collectionid" class="emdialog btn btn-sm btn-secondary">[[View]]</a>
 									#end
 								</td>
 					        </tr>
