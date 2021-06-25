@@ -416,6 +416,7 @@ uiload = function() {
 				} 
 				
 				form.ajaxSubmit({
+					data : data,
 					xhrFields: {
 		                withCredentials: true
 		            },
@@ -473,8 +474,23 @@ uiload = function() {
 		                	}
 		                }
 		                
-					},
-					data : data
+		                if (typeof global_updateurl !== "undefined" && global_updateurl == false) {
+		        			//globaly disabled updateurl
+		        		}
+		        		else {
+		        			//Update Address Bar
+	        				var updateurl = form.data("updateurl");
+	        				if( updateurl)	{
+	        					//serialize and attach
+	        					var params = form.serialize();
+	        					var url = form.attr("action");
+	        					url += (url.indexOf('?') >= 0 ? '&' : '?') + params;
+	        					history.pushState({}, null, url);
+	        					window.scrollTo(0, 0);
+	        				}
+		        		}
+		                
+					}
 				});
 
 
