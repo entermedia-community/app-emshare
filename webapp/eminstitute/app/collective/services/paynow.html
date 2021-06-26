@@ -100,12 +100,7 @@
 	                                        </div>
 	                                    </div>
 	                                </div>
-	                                <div class="col-md-12">
-	                                	<div class="form-check">
-			                                <input type="checkbox" class="form-check-input" id="issavecard" name="issavecard"></input>
-			                                <label class="form-check-label" for="issavecard">[[Save this Credit Card for future payments]]</label>	
-			                            </div>
-	                               	</div>
+	                                
 	                            </div>
 	
 	                            <div class="row">
@@ -123,21 +118,21 @@
 	                                    </div>
 	                                </div>
 	
-	                               <div class="col-md-6">
-	                               #if ($lastproduct.recurring == true)
+									#if ($lastproduct.recurring == true)
+	                               <div class="col-md-6">	                               
 			                            <div class="form-group">
 			                                <label for="staticEmail">[[Recurring Monthly]]</label>                                 
 			                                <input type="text" class="form-control" name="recurringperiod" value="$lastproduct.recurringperiod" disabled></input>
 			                            </div>
 	                        	   </div>
-	                        		
-	                        	   <div class="col-md-12">
-	                        	   		<div class="form-check">
-			                                <input type="checkbox" class="form-check-input" id="isautopaidcheckbox" name="isautopaidcheckbox"></input>
-			                                <label class="form-check-label" for="isautopaid">[[Automatic Payment]]</label>	
+	                        		#end
+	                        	  	<div class="col-md-12">
+	                                	<div class="form-check">
+			                                <input type="checkbox" class="form-check-input" id="issavecard" name="issavecard"></input>
+			                                <label class="form-check-label" for="issavecard">[[Save this Credit Card for future payments]]</label>	
 			                            </div>
-		                           #end
-	                        	   </div>
+	                               	</div>
+	                        	   
 	                            </div>
 	 						</div>
                             <div class="row mt-2">                            	
@@ -181,16 +176,6 @@
 
 
 <script type="text/javascript">
-	#if ($lastproduct.recurring == true)
-		$("#isautopaidcheckbox").change(function() {  
-		    if ($(this).is(":checked")) {
-		    	document.getElementById('isautopaid').value = true;
-		    } else {
-		    	document.getElementById('isautopaid').value = false;
-		    }
-		});
-	 	document.getElementById('isautopaidcheckbox').checked = $lastproduct.isautopaid;
-	#end
 	$("#issavecard").change(function() {  
 	    if ($(this).is(":checked")) {
 	    	document.getElementById('savestripecreditcard').value = true;
@@ -206,6 +191,7 @@
 		$("#allcreditcardform").attr('hidden', $("#creditcardselect").val() !== "0")
 	});
 	#end
+	document.getElementById('customerselected').value = false;
 	
     $(document).ready(function () {
 	  	  #if($mediaarchive.isCatalogSettingTrue("productionmode"))
