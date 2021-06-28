@@ -1233,6 +1233,7 @@ uiload = function() {
                         if (allowClear == undefined)  {
                             allowClear = true;
                         }
+                        
 						var url = apphome
 								+ "/components/xml/types/autocomplete/tagsearch.txt?catalogid="
 								+ catalogid + "&field=" + searchfield
@@ -1255,6 +1256,10 @@ uiload = function() {
 														// we use Select2's
 														// convenient helper
 												url : url,
+												xhrFields: {
+											        withCredentials: true
+											    },
+												crossDomain: true,
 												dataType : 'json',
 												data : function(params) {
 													var search = {
@@ -1285,7 +1290,7 @@ uiload = function() {
 														// data.total_count
 														}
 													};
-												}
+												}												
 											},
 											escapeMarkup : function(m) {
 												return m;
@@ -1294,6 +1299,7 @@ uiload = function() {
 											templateSelection : select2Selected,
 											tokenSeparators : [ "|" ],
 											separator : '|'
+											
 										});
 							theinput.on("select2:select" , function() {
 								if ($(this).parents(".ignore").length == 0) {
