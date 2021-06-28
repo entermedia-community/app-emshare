@@ -337,6 +337,14 @@ $(document).ready(function()
 			data: options, 
 			success: function (data) {
 				jQuery('#'+targetdiv).html(data);
+				 if (typeof global_updateurl !== "undefined" && global_updateurl == false) {
+	        			//globaly disabled updateurl
+	        		}
+	        		else {
+	        			//Update Address Bar
+     					history.pushState({}, null, href);
+     					window.scrollTo(0, 0);
+	        	}
 				jQuery(window).trigger("resize");
 			}
 		});
