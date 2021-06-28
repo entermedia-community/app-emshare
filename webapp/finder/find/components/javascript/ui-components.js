@@ -2836,7 +2836,6 @@ jQuery(document).ready(function() {
 });
 
 jQuery(window).on('resize',function(){
-	console.log("resizing");
 	gridResize();
 	resizegallery();
 	adjustdatamanagertable();
