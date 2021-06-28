@@ -11,7 +11,7 @@ data-singlepage="true"  >
 #set( $viewerlink = $content.get("assetviewerlink") )
 #set($stackedfield = $mediaarchive.getCatalogSettingValue("stackedgalleryfield"))
 
-#foreach( $hit in $hits)
+#foreach( $hit in $hits.getPageOfHits())
 	
 	$context.putPageValue("hit", $hit)
 	#set($asset = $mediaarchive.getAsset($hit.id))
@@ -36,6 +36,7 @@ data-singlepage="true"  >
 		 id="gallerycell_${hit.id}"
 		 data-assetid="$hit.id" 
 		 data-width="$assetwidth" 
+		 style="height:180px;width:250px;"
 		 data-height="$assetheight">
 		<div class="grid-cell-hover"></div>
 		<div class="grid-gallery-checkbox resultsselection">
