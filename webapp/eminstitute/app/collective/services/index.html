@@ -1,4 +1,9 @@
 #set($collectionid = $librarycol.getId())
+#set( $catalagDB = $mediaarchive.query("catalogsettings").exact("id", "events_billing_notify_invoice_appid").searchOne() )
+#set( $db = "entermediadb" ) 
+#if ( $catalagDB )
+  	#set( $db = "$catalagDB.value" ) 
+#end
 <div class="collectivecontent" >
 <div class="row no-gutters h-100" >
 <div class="col">
@@ -31,17 +36,23 @@
 						            <td style="text-align: center;">$!mediaarchive.text($hit.productdescription, $hit.id)</td>
 									<td>
 										#if( $caneditcollection )
-										<a href="$siteroot/entermediadb/emshare2/views/settings/lists/datamanager/index.html" class="btn btn-sm btn-secondary" target="_blank"><i class="fa fa-database"></i></a>
+										<a href="$siteroot/$db/emshare2/views/settings/lists/datamanager/edit/edit.html?id=$hit.id&searchtype=collectiveproduct" class="btn btn-sm btn-secondary" target="_blank"><i class="fa fa-database"></i></a>
 										<a href="$applink/collective/services/editproduct.html?collectionid=${collectionid}&id=${hit.id}" class="emdialog btn btn-sm btn-info">[[Edit]]</a>
 										#end
 										#if ($hit.recurring == true)
-										  #if ($hit.isautopaid == true)
-										  <a href="$applink/collective/services/toggleautopay.html?collectionid=${collectionid}&id=${hit.id}" class="btn btn-sm btn-info">[[Disable AutoPay]]</a>
-										  #else
-										  <a href="$applink/collective/services/toggleautopay.html?collectionid=${collectionid}&id=${hit.id}" class="btn btn-sm btn-info">[[Enable AutoPay]]</a>
+										  #if ($hit.billingstatus == "active")
+											#if ($hit.isautopaid == true)
+											<a href="$applink/collective/services/toggleautopay.html?collectionid=${collectionid}&id=${hit.id}" class="btn btn-sm btn-success">[[AutoPay Enabled]]</a>
+											#else
+											<a href="$applink/collective/services/toggleautopay.html?collectionid=${collectionid}&id=${hit.id}" class="btn btn-sm btn-secondary">[[AutoPay Paused]]</a>
+											#end
+										  #end
+										  #if ($hit.billingstatus == "active")
+										  <a href="$applink/collective/services/cancelsubscription.html?collectionid=${collectionid}&productid=${hit.id}" class="emdialog btn btn-sm btn-danger">[[Cancel]]</a>
+										  #elseif ($hit.billingstatus == "canceled")
+										  <button class="btn btn-secondary" disabled>[[Canceled]]</button>
 										  #end
 										#end
-									##	<a href="$applink/collective/services/paylater.html?collectionid=${collectionid}&productid=${hit.id}" class=" btn btn-sm btn-primary">[[Invoice Me]]</a>
 									</td>
 						        </tr>
 						        #end
@@ -98,7 +109,7 @@
 								</td>
 								<td>
 									#if( $caneditcollection )
-									<a href="$siteroot/entermediadb/emshare2/views/settings/lists/datamanager/index.html" class="btn btn-sm btn-secondary" target="_blank"><i class="fa fa-database"></i></a>
+									<a href="$siteroot/$db/emshare2/views/settings/lists/datamanager/edit/edit.html?id=$hit.id&searchtype=collectiveinvoice" class="btn btn-sm btn-secondary" target="_blank"><i class="fa fa-database"></i></a>
 									#end
 									#if ($hit.getValue("paymentstatus") == "invoiced")
 									<a href="$applink/collective/services/paynow.html?invoiceid=${hit.id}&collectionid=$collectionid" class="btn btn-sm btn-primary">[[Pay Now]]</a>										
@@ -108,7 +119,7 @@
 									  <div class="alert alert-danger">$hit.paymentstatusreason</div>
 									  #end
 									#else
-									<a href="$applink/collective/services/viewinvoice.html?invoiceid=${hit.id}&collectionid=$collectionid" class="emdialog btn btn-sm btn-secondary">[[View]]</a>
+									<a href="$applink/collective/services/viewinvoice.html?invoiceid=${hit.id}&collectionid=$collectionid" target="_blank" class="btn btn-sm btn-secondary">[[View]]</a>
 									#end
 								</td>
 					        </tr>
