@@ -1835,8 +1835,7 @@ uiload = function() {
 								function(event) {
 									
 									var mainimage = $("#mainimage");
-									if ($("#hiddenoverlay").css(
-											"display") == "none") {
+									if ($("#hiddenoverlay").css("display") == "none" || !$("#mainimage").length) {
 										return true;
 									}
 									
