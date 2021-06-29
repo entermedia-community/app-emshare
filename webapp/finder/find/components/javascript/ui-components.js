@@ -783,6 +783,9 @@ uiload = function() {
 				{
 					e.preventDefault();
 					modaldialog.hide();
+					if (q == null || q=="") {
+						return;
+					}
 					var url = input.data("searchurlenter");
 					if( url == null)
 					{
