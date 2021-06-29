@@ -795,7 +795,7 @@ uiload = function() {
 					$("body").css( "cursor","wait");
 					
 					//Show results below
-					console.log("enter running " + q);
+					//console.log("enter running " + q);
 					options["oemaxlevel"] = input.data("searchurlenteroemaxlevel");
 					var updateurl = input.data("updateurl");
 	
@@ -815,11 +815,12 @@ uiload = function() {
 									else {
 										if( updateurl )
 										{
-											history.pushState({}, null, updateurl);
+											history.pushState({}, null, url);
 											window.scrollTo(0, 0);
 										}
 									}
-									$("#"+searchurlentertargetdiv).replaceWith(data);
+									$("#"+searchurlentertargetdiv).html(data);
+										
 									$(window).trigger("resize");
 								}	
 							}
@@ -856,7 +857,7 @@ uiload = function() {
 			}
 			else if(q != "" && (e.which == 8 || (e.which != 37 && e.which != 39 && e.which > 32) ) ) //Real words and backspace
 			{
-				console.log("\"" + q + "\" type aheading on " + e.which);
+				//console.log("\"" + q + "\" type aheading on " + e.which);
 				//Typeahead
 				if( lasttypeahead )
 				{
