@@ -4,7 +4,7 @@
 #set($products = $mediaarchive.getInvoiceProductList($id))
 #set($workspace = $mediaarchive.getWorkspaceById($invoice.collectionid))
 <div style="padding:20px">
-<h1>[[Purchase Now]]</h1>
+<h1>[[Check Out]]</h1>
 #if($mediaarchive.getCatalogSettingValue("productionmode") == "test")
 <div class="alert alert-warning">Site is in test mode. Credit card is 4242 4242 4242 4242 any expiry. Add your keys to
     catalog settings and switch to production mode to take credit cards.</div>
@@ -78,6 +78,7 @@
 	                            		<option value="0">New Credit Card</option>
 	                            		#foreach ($s in $customer.sources.data)
 	                            		<option value="$s.id">$s.brand (****-$s.last4)</option>
+	                            		#set( $custsource = $s.id )
 	                            		#end
 	                            	</select>
                             	</div>
@@ -145,11 +146,10 @@
                                 <div class="col-md-6 text-right">
                                     <div style=" margin: 0px auto;">
                                         <a href="#" onclick='$("#payment-form").submit()' class="btn btn-success"><i
-                                                class="fas fa-credit-card"></i> [[Check Out]]</a>
+                                                class="fas fa-credit-card"></i> [[Pay Now]] </a>
                                     </div>
                                 </div>
                             </div>
-                            
 							
 							<input type="hidden" name="isautopaid" id="isautopaid" value="$lastproduct.isautopaid" />
 							<input type="hidden" name="savestripecreditcard" id="savestripecreditcard" value="true" />
@@ -186,14 +186,26 @@
 	document.getElementById('issavecard').checked = true;
 	
 	#if ($workspace.savestripecreditcard == true && $customer.sources.data.size() > 0)
+	let element = document.getElementById("creditcardselect");
+	element.value = "0";
+
 	$("#creditcardselect").change(function() {
 		document.getElementById('customerselected').value = $("#creditcardselect").val() !== "0";
-		$("#allcreditcardform").attr('hidden', $("#creditcardselect").val() !== "0")
+		$("#allcreditcardform").attr('hidden', $("#creditcardselect").val() !== "0");
 	});
 	#end
+	
+	
+	
 	document.getElementById('customerselected').value = false;
 	
     $(document).ready(function () {
+    	#if ($workspace.savestripecreditcard == true && $customer.sources.data.size() > 0)
+	    	element.value = "$custsource";
+		    $("#allcreditcardform").attr('hidden', $("#creditcardselect").val() !== "0");
+		    document.getElementById("customerselected").value = "true";
+		#end
+	    
 	  	  #if($mediaarchive.isCatalogSettingTrue("productionmode"))
         console.log('Production');
 	  		#set($publishkey = $mediaarchive.getCatalogSettingValue("stripe_publishable_key"))
@@ -202,7 +214,6 @@
 	  		#set($publishkey = $mediaarchive.getCatalogSettingValue("stripe_test_publishable_key"))
 	  	 #end
         var stripe = Stripe("$publishkey");
-	  		console.log("$publishkey");
         var elements = stripe.elements();
         var style = { base: { fontSize: '18px', color: "#495057" } };
 
@@ -232,7 +243,6 @@
             },
             submitHandler: function (form) {
             	var isCustomer = document.getElementById("customerselected").value;
-            	console.log('cust', isCustomer, isCustomer != "true");
             	if (isCustomer != "true") {
 	                stripe.createToken(card).then(function (result) {
 	                    if (result.error) {
