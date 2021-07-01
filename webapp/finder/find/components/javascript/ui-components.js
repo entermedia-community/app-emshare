@@ -654,7 +654,7 @@ uiload = function() {
 				}
 				var modalinstance = modaldialog.modal({
 					keyboard : modalkeyboard,
-					backdrop : true,
+					backdrop : "static",
 					closeExisting: false,
 					"show" : true
 				});
