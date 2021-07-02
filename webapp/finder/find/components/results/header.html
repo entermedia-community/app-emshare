@@ -9,19 +9,20 @@
 #end
  
 #if($hits)
-	#set( $catid = $hits.getInput("categoryid") )
-	#if (!$catid)
-		#set( $catid = $context.getRequestParameter("category"))
+	#set( $categoryid = $hits.getInput("categoryid") )
+	#if (!$categoryid)
+		#set( $categoryid = $context.getRequestParameter("category"))
 	#end
 	#set( $nodeID = $context.getRequestParameter("nodeID"))
-	#if (!$catid && $nodeID)
-		#set( $catid = $nodeID )
+	#if (!$categoryid && $nodeID)
+		#set( $categoryid = $nodeID )
 	#end
-	#if ($catid)
-		$context.putPageValue("catid",$catid)
+	#if ($categoryid)
+		$context.putPageValue("catid",$categoryid)  ##used?
+		$context.putPageValue("categoryid",$categoryid)
 	#end
-	#if( $catid && !$category)
-		#set( $category = $mediaarchive.getData("category",$catid) )
+	#if( $categoryid && !$category)
+		#set( $category = $mediaarchive.getData("category",$categoryid) )
 	#end
 	#set( $orderid = $hits.getInput("orderid") )
 	#if( $orderid )
