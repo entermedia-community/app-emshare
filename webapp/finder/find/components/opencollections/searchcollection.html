@@ -1,7 +1,7 @@
 #set( $searcher = $mediaarchive.getSearcher("librarycollection") )
 $context.putPageValue("searcher",$searcher)
-#set($targetdiv = $context.getRequestParameter("targetdiv"))
-<div  id="search-collections" >
+#set($searchcollectinolauncher = $context.getRequestParameter("searchcollectinolauncher"))
+<div  id="search-collections-dialog" data-searchcollectinolauncher="$!{searchcollectinolauncher}" >
 	<div id="searcharea" >
 		#set($viewid = "librarysearchcollection")
 		#set($viewpath = "librarycollection/${viewid}")
@@ -11,11 +11,14 @@ $context.putPageValue("searcher",$searcher)
 			#set( $hits = $context.getSessionValue($hitssessionid))
 			#if( $hits && $hits.getSelectionSize() > 0)	
 				<div class="alert alert-info">
-			  		<strong>[[Adding]]</strong> $hits.getSelectionSize() [[assets to collection]]
+			  		[[Adding]] $hits.getSelectionSize() [[assets to Album]]
 				</div>
 			#end	
 		#end
-	<form  id="colsearchform" class="autosubmit"  data-targetdiv="collectionresultsdialog" action="$siteroot$apphome/components/opencollections/searchcollectionresults.html">
+	<form  id="colsearchform" 
+			class="autosubmit"  
+			data-targetdiv="collectionresultsdialog" 
+			action="$siteroot$apphome/components/opencollections/searchcollectionresults.html">
 		<input type="hidden" name="searchtype" value="librarycollection" />
 		<input type="hidden" name="sortby" value="name" />
 		<table style="width:100%;">
@@ -64,43 +67,9 @@ $context.putPageValue("searcher",$searcher)
 			#set($addnewurl = "$siteroot$apphome/components/opencollections/pickcollectionaddnew.html?searchtype=librarycollection&targetdiv=$!{targetdiv}&library.value=$!library.getId()")
 		#end
 		    <a  class="emdialog" 
-	       	title="[[Create New Collection]]" 
+	       	title="[[Create New Album]]" 
 	       	href="$addnewurl">
-	       	<i class="fa fa-plus-square"></i> [[Create New Collection]]</a>
+	       	<i class="fa fa-plus-square"></i> [[Create New Album]]</a>
     #end	
 	</div>
-<script>
-lQuery("#collectionresultsdialog .rowclick").livequery("click", function(e) {
-	$(this).closest(".modal").modal("hide");
-	var rowid = $(this).attr("rowid");
-	#if ($targetdiv)
-		##Update targetdiv only
-		var targetdiv = $("#${targetdiv}");
-		var nextpage = targetdiv.data("collectionpicker");
-		var options = targetdiv.data();
-		options.collectionid = rowid;
-		jQuery.ajax({
-			xhrFields: {
-                withCredentials: true
-            },
-			crossDomain: true,
-			url: nextpage, 
-			async: false, 
-			data: options, 
-			success: function (data) {
-				targetdiv.replaceWith(data);
-			}
-		});
-	#else
-		#set($hitsselected = $hits.getSelectionSize())
-		#if(  $hits &&  $hitsselected > 0 )	
-			var nextpage = '$siteroot$apphome/views/modules/librarycollection/media/addtocollection.html?collectionid=' + rowid + '&hitssessionid=$hits.sessionId';
-		#else	
-		    var nextpage = '$siteroot$apphome/views/modules/librarycollection/media/' + rowid + '/index.html';
-		#end   
-		window.location.href = nextpage;
-	#end
-
-});
-</script>
 </div>	

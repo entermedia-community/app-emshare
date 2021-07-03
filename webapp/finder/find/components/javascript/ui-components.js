@@ -2646,6 +2646,31 @@ uiload = function() {
 		}
 		
 	});
+	
+	
+	lQuery("#collectionresultsdialog .rowclick").livequery("click", function(e) {
+		var launcher = jQuery("#search-collections-dialog").data("searchcollectinolauncher");
+		launcher = $("#"+launcher);
+		if (launcher.length) {
+			var nextpage = launcher.data("targeturl");
+			var targetdiv = launcher.data("targetdiv");
+			if (nextpage && targetdiv) {
+				$(this).closest(".modal").modal("hide");
+				var rowid = $(this).attr("rowid");
+				var options = launcher.data();
+				options.collectionid = rowid;
+				console.log(options);
+				jQuery.ajax({
+					url: nextpage, 
+					data: options, 
+					success: function (data) {
+						$("#"+targetdiv).html(data);
+						$(window).trigger( "resize" );
+					}
+				});
+			}
+		}
+	});
 
 
 }// uiload
