@@ -10,7 +10,6 @@ import org.openedit.users.authenticate.PasswordGenerator
 
 public void init()
 {
-	log.info("init");
 	MediaArchive archive = context.getPageValue("mediaarchive");
 	
 	String collectionid = context.getRequestParameter("collectionid");
@@ -87,7 +86,7 @@ public void init()
 	objects.put("apphome", context.findValue("apphome"));
 	objects.put("applink", context.findValue("applink"));
 
-	log.info("Sending welcome email  " + teamuser.getId());
+	//log.info("Sending welcome email  " + teamuser.getId());
 	
 	templatemail.send(objects);
 			
