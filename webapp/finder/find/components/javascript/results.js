@@ -409,11 +409,23 @@ jQuery(document).ready(function(url,params)
 			if (typeof id != 'undefined'  && id != '') {
 				enable(id,".goleftclick");
 				enable(id,"#leftpage");
+				var title = div.data("previousname");
+				if (title) {
+					$(".goleftclick").attr("title", title);
+				}else {
+					$(".goleftclick").attr("title", "<");
+				}
 			}
 			id = div.data("next");
 			if (typeof id != 'undefined' && id != '') {
 				enable(id,".gorightclick");
 				enable(id,"#rightpage");
+				var title = div.data("nextname");
+				if (title) {
+					$(".gorightclick").attr("title", title);
+				}else {
+					$(".gorightclick").attr("title", ">");
+				}
 			}
 		    $(document).trigger("domchanged");
 			$(window).trigger( "resize" );
@@ -580,24 +592,24 @@ jQuery(document).ready(function(url,params)
 		
 	});
 	
-	lQuery('div.goleftclick .gocaret').livequery('click',function(e)
+	lQuery('.goleftclick').livequery('click',function(e)
 	{
 		e.preventDefault();
 		var div = $("#main-media-viewer" );
 		var id = div.data("previous");
-		var enabled = $(this).parent().data("enabled");
+		var enabled = $(this).data("enabled");
 		if (id && enabled) {
 			showAsset(id);
 		}
 
 	});
 	
-	lQuery('div.gorightclick .gocaret').livequery('click',function(e)
+	lQuery('.gorightclick').livequery('click',function(e)
 	{
 		e.preventDefault();
 		var div = $("#main-media-viewer" );
 		var id = div.data("next");
-		var enabled = $(this).parent().data("enabled");
+		var enabled = $(this).data("enabled");
 		if (id && enabled) {
 			showAsset(id);
 		}
