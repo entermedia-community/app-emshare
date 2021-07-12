@@ -1,0 +1,40 @@
+#set($mediadbappid=$mediaarchive.getMediaDbId())
+#set($cdnprefix = $!{mediaarchive.getCatalogSettingValue("cdn_prefix")})
+
+#if(${presetdata.id} != "0") 
+
+#set($url = "$!cdnprefix$siteroot/$mediadbappid/services/module/asset/downloads/preset/$asset.sourcepath/$presetdata.generatedoutputfile?cache=false")
+<a class="btn btn-xs btn-secondary" target="_blank" href="#urlescape($url)">[[Preview]]</a>
+#set($url = "$!cdnprefix$siteroot/$mediadbappid/services/module/asset/downloads/generated/$asset.sourcepath/$presetdata.generatedoutputfile/$mediaarchive.asExportFileName($asset, $presetdata)?includemetadata=true")
+<a class="btn btn-xs btn-secondary" href="#urlescape($url)">[[Download]]</a>
+#if($canembedasset)
+<a class="btn btn-xs btn-secondary embedbtn copyembed " 
+	id="${presetdata.id}-btn" 
+	data-targetdivinner="${presetdata.id}-embed"
+	data-isshowing="false" 
+	href="$siteroot$apphome/views/modules/asset/editor/conversions/embed.html?assetid=${asset.id}&outputfile=${presetdata.generatedoutputfile}&oemaxlevel=1">[[Embed]]</a>
+	#set($url = "$siteroot$apphome/views/modules/asset/editor/conversions/oembed.html?assetid=$!{asset.id}&ouputpreset=${presetdata.id}&outputfile=${presetdata.generatedoutputfile}&oemaxlevel=1")
+<a class="btn btn-xs btn-secondary embedbtn copyembed " 
+	id="${presetdata.id}-obtn" 
+	data-targetdivinner="${presetdata.id}-embed"
+	data-isshowing="false" 
+	href="#urlescape($url)">[[oEmbed]]</a>
+#end
+
+#else
+	#set($url = "$!cdnprefix$siteroot/$mediadbappid/services/module/asset/downloads/originals/$asset.sourcepath/$mediaarchive.asExportFileName($asset, $presetdata)?includemetadata=true")
+	<a class="btn" href="#urlescape($url)">[[Download]]</a>
+	#set($outputfilename = $asset.getMediaName())
+	#set($urlesc = "$siteroot$apphome/views/modules/asset/editor/conversions/embedorig.html?assetid=$!{asset.id}&outputfile=$!outputfilename&oemaxlevel=1")
+	<a class="btn  embedbtn copyembed" id="$!{presetdata.id}-btn" data-targetdivinner="$!{presetdata.id}-embed" 
+		href="#urlescape($urlesc)">[[Embed]]</a>
+#end
+
+
+
+
+
+
+
+
+

@@ -2671,6 +2671,26 @@ uiload = function() {
 			}
 		}
 	});
+	
+	
+	lQuery( ".copyembed" ).livequery("click", function(e) {
+		e.preventDefault();
+        var embedbtn = $(this);
+		  var loaddiv = embedbtn.data("targetdivinner");
+		  var nextpage = embedbtn.attr("href")
+		  jQuery.get(nextpage, function(data) {
+					$("#"+loaddiv).html(data);
+					var copyText = $("#"+loaddiv).children("textarea");
+			        if ((typeof copyText) != "undefined") {
+						  copyText.select();
+						  document.execCommand("copy");
+					}	
+					$(window).trigger( "resize" ); //need this?
+				})		
+		  
+		  
+		  
+	});
 
 
 }// uiload

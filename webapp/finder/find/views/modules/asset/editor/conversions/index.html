@@ -1,0 +1,228 @@
+<div id="asset-editor-container">
+
+<div class="assetpanel-editorinner">
+
+<div style="padding:20px;">
+
+
+
+<h2>[[Asset Conversions]]</h2>
+#set( $cdnprefix = $mediaarchive.getCatalogSettingValue("cdn_prefix") )
+#set( $type = $mediaarchive.getMediaRenderType($asset.fileformat))
+
+
+<div class="conversionsheader" style="padding:20px 0;">
+
+#if($caneditasset)
+	##<a class="btn btn-sm btn-secondary ajax" data-targetdivinner="asset-editor-container" data-oemaxlevel="1"   href="$siteroot$apphome/views/modules/asset/editor/conversions/previewcrop.html?assetid=$asset.id&presetid=largeimage&noaspect=true&savetoall=true">[[Crop]]</a>
+
+	<a class="btn btn-sm btn-secondary ajax" data-targetdivinner="asset-editor-container" data-oemaxlevel="1" 
+	   href="$siteroot$apphome/views/modules/asset/editor/conversions/rotate.html?rotate=90&assetid=$asset.id">[[Rotate +90]]</a>
+
+
+	<a class="btn btn-sm btn-secondary ajax" data-targetdivinner="asset-editor-container" data-oemaxlevel="1" 
+   	   href="$siteroot$apphome/views/modules/asset/editor/conversions/reloadthumbs.html?assetid=$asset.id">[[Reload Original Thumbnails]]</a>
+   	   
+   	   
+   	<span class="ajaxprogress">&nbsp;&nbsp;<i class="fas fa-spinner fa-spin"></i></span>
+   	
+	
+	<div style="padding-top:20px">
+	<form id="uploadform" class="ajaxform" data-targetdiv="asset-editor-container" name="wizard" method="post" enctype="multipart/form-data" action="$siteroot${apphome}/views/modules/asset/editor/conversions/customthumb.html">
+		<span class="btn btn-sm btn-secondary btn-default btn-file">
+		    [[Replace Image]] <input type="file" name="file.0" id="file0-file" onchange='$("#file0-file-info").html($(this).val());'>
+		</span>
+		<span id="file0-file-info" style="font-size:90%"></span>
+		##[[Replace Image]]:<input type="file" size="50" name="file.0">
+		<input type="hidden" name="unzip" value="false" />
+		<input type="hidden" name="sourcepath" value="$!context.getRequestParameter('assetid')" />
+		<input type="hidden" name="assetid" value="$!context.getRequestParameter('assetid')" />
+		<input type="hidden" name="presetid" value="$!context.getRequestParameter('presetid')" />
+		<input type="submit" id="finishbutton" value="[[Upload]]" class="btn btn-sm btn-primary" >
+	</form>
+	</div>
+#end
+
+</div>
+#set($mediadbappid=$mediaarchive.getMediaDbId())
+#set($newpreset = $context.findValue("newpreset"))
+#set($type =$mediaarchive.getMediaRenderType($asset.fileformat))
+#set($results = $conversionUtil.getActivePresetList($catalogid,$type) )
+#set($cdnprefix = $!{mediaarchive.getCatalogSettingValue("cdn_prefix")})
+#if(!$cdnprefix )
+	#set($cdnprefix = $context.siteRoot )
+#end
+
+$context.putPageValue("results", $results)
+
+$pages.include("$apphome/views/modules/asset/editor/conversions/sendalltofatwire.html", $context)
+
+<div class="conversionsall emdata" >
+<table class="table table-striped table-hover tabe-conversions" id="conversionstable">
+<thead>
+	<tr class="tableheader">
+	    <th>[[Preview]]</th>
+		<th>[[Description]]</th>
+		<th style="width:100px;">[[Size]]</th>
+		<th style="width:100px;">[[Aspect Ratio]]</th>
+		#if( $canviewconversions )
+		<th style="width:95px;">[[Status]]</th>
+		<th style="width:280px;">[[Last Updated]]</th>
+		#end
+		<th style="width:380px;">[[Actions]]</th>
+	</tr>
+</thead>
+#foreach ($result in $results)
+	$context.putPageValue("presetdata",$result)
+	#set($presetdata = $result)
+	#set($cancrop = $conversionUtil.canCrop($catalogid,$result.id,$asset.id))
+	#if(!$cancrop)
+		#if( $mediaarchive.isCatalogSettingTrue("preventupscaling"))
+			#set($show = false)
+		#else
+		
+			#set($show = true)
+		#end
+	#else
+		#set($show = true)
+	#end
+
+	#if($conversionUtil.doesExist($catalogid, $asset.id,$asset.sourcePath, $result.id) && $show)
+		<!-- include name + info -->
+		#set($dimension = $conversionUtil.getConvertPresetDimension($catalogid,$result.id))
+		#set($height = $mathtool.toInteger($dimension.getHeight()))
+		#set($width = $mathtool.toInteger($dimension.getWidth()))
+		##$context.putPageValue("height", $height)
+		##$context.putPageValue("width", $width)
+		
+		#set($aspectratio = $conversionUtil.getConvertPresetAspectRatio($dimension))
+		#set($description = $conversionUtil.getConvertPresetParameter($catalogid,$result.id, "imagelocation"))
+		<tr>
+		<td class="text-center">
+		#set($imgurl = "$siteroot/$mediadbappid/services/module/asset/downloads/preset/$asset.sourcepath/$presetdata.generatedoutputfile?cache=false")
+		<img src="#urlescape($imgurl)"
+			  style="max-width:120px; max-height: 80px;" />
+		</td>
+		<td>
+		$result.name
+		</td>
+		<td class="text-center">
+		#if ($height && $height > 0 && $width && $width > 0)
+			<span class="h2e">${width}x${height}</span>
+			###if($description && $description!="") <span style="font-size:smaller;">$description</span> #end
+		#end
+		#set($description = "")
+		</td>
+		<td class="text-center">
+		#if ($aspectratio)
+			<span class="h2e">$aspectratio</span>
+		#end
+		</td>
+		
+		#if( $canviewconversions )
+			$pages.include("$apphome/views/modules/asset/editor/conversions/modify.html", $context)
+		#end
+		
+		<td>
+		<div style="position:relative">
+		##ACTIONS
+		#set($isready = $conversionUtil.isConvertPresetReady($catalogid,$asset.id,$asset.sourcePath, $result.id))
+		
+		
+		
+		#if($isready)
+			##SHARE
+			$pages.include("$apphome/views/modules/asset/editor/conversions/share.html", $context)
+		#else
+			#set($notready = true)
+		#end
+		
+		##UPLOAD
+		#if($caneditasset &&  $presetdata.id != "0" )
+			<a class="emdialog btn btn-xs btn-secondary"  data-width="1000" data-height="600"  title="[[Select File]]" href="$siteroot$apphome/views/modules/asset/editor/conversions/upload.html?assetid=${asset.id}&presetid=${presetdata.id}">[[Upload]]</a>
+		#end
+		#if($isready)
+			#if($caneditasset && $presetdata.id)
+			##FATWIRE & FALCON
+			#if($result.publishtofatwire == "true") 
+				$pages.include("$apphome/views/modules/asset/editor/conversions/submittofatwire.html", $context)
+			#end	
+				$pages.include("$apphome/views/modules/asset/editor/conversions/submittofalcon.html", $context)
+				
+			#end
+		#end
+		
+		<div id="${presetdata.id}-embed"></div>
+		</div>
+		</td>
+		</tr>
+	#end
+
+#end  ##foreach
+</table>
+</div>
+
+<script>
+$(document).ready(function(){
+
+	#if ($notready)
+
+		var reloadingconversionspage = setTimeout(function(){
+		//reloadpageajax("$siteroot$apphome/views/modules/asset/editor/conversions/index.html?assetid=$asset.id&oemaxlevel=1", "asset-editor-container")
+		var nextpage = "$siteroot$apphome/views/modules/asset/editor/conversions/index.html?assetid=$asset.id&oemaxlevel=1";
+		var targetDiv = "asset-editor-container";
+		if ($("#conversionstable").length) {
+			//console.log("Reloading...")
+			var options;
+			targetDiv = targetDiv.replace(/\//g, "\\/");
+			$.get(nextpage, options, function(data) 
+					{
+						var cell;
+						cell = $("#" + targetDiv);
+						//Call replacer to pull $scope variables
+						cell.replaceWith(data);
+						$(window).trigger( "resize" );
+					}
+			);
+			}
+		}, 5000);
+	#end
+});
+</script>
+
+$context.putPageValue("asset",$asset)
+#if($caneditasset)
+	#if($newpreset)
+		$context.putPageValue("omitpreset",$newpreset)
+	#end
+	$pages.include("$apphome/views/modules/asset/editor/conversions/createnewconversion.html", $context)
+#end
+
+##<script>
+##$(document).ready(function(){
+##	//console.log($(".thumbimagecontainer img").attr('src'));
+##	var windowwidth = $(window).width();
+##	$(".previewcrop-btn").each(function(i,obj){
+##		var href = $(this).attr("href");
+##		if (href.indexOf("displaywidth")<0){
+##			href = href + "&displaywidth="+windowwidth;
+##			$(this).attr("href",href);
+##		}
+##	});
+##});
+##</script>
+
+#if($caneditasset)
+	<div style="padding:20px 0">
+	<p>[[You can specify custom width, height or formats. For example, a large PDF]]:</p>
+	<p><i>
+		$siteroot/$mediadbappid/services/module/asset/downloads/preview/cache/$asset.sourcePath/image2000x2000.pdf </i>
+	</p>
+	</div>
+#end
+
+
+</div>
+</div>
+</div>
+
