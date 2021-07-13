@@ -7,9 +7,10 @@
     #set($category = $mediaarchive.getData("category",$nodeID))
 	#set($librarycol = $mediaarchive.query("librarycollection").orgroup("rootcategory",$category.getParentCategories()).searchOne() )
 #end
+
 #if (!$librarycol)
 	#if(!$collectionid)
-		##set($collectionid = $userprofile.get("lastselectedcollection"))
+		#set($collectionid = $userprofile.get("lastselectedcollection"))
 	#end
 	#if(!$collectionid)
 		#set($librarycol = $mediaarchive.getProjectManager().loadUserCollection($mediaarchive, $userprofile))
@@ -36,10 +37,25 @@ $context.putPageValue("librarycol",$librarycol)
 <div class="row">
     <div  class="col-4 col-upload-left">
 		
-	#if( $nodeID)
+	#if( $nodeID )
 			$!context.setRequestParameter("libraries.value",$!librarycol.library)
 			<input type="hidden" name="collectionid" id="currentcollection" value="$!collectionid" />
 			<input type="hidden" name="currentcollection" id="currentcollection" value="$!collectionid" />
+			#if ($librarycol)
+			<div class="ui-widget-header">[[Album]]</div>
+			#end
+			<div style="padding:5px 8px; margin:5px 0 10px; background-color: #c6c6c6;">
+				[[Uploading to:]] 
+				#if ($librarycol)
+					<strong>$librarycol.getName()</strong>
+				#end
+				#if (!$category)
+					#set($category = $mediaarchive.getData("category",$nodeID))
+				#end
+				#if($category && $category.getId() != $librarycol.getRootCategoryId())
+					| $category.getName() 
+				#end
+			</div>
 	#else		 
 		#if($collectionid || $mediaarchive.isCatalogSettingTrue("show_add_media_collection"))
 			$pages.include("$apphome/components/upload/types/html5/collectionpicker.html", $context)
