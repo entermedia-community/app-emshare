@@ -28,14 +28,14 @@
                                         #if ($hit.instance_status == "active")
                                             #set($instancescount = $instancescount+1)
                                         #end
-                                        #if($hit.recurring == true || $caneditcollection)
+                                        #if($hit.recurring == true || $canviewsettings)
                                             <tr>
                                                 <td>$!context.getDate($hit.createdon)</td>
                                                 <td>$hit.name</td>
                                                 <td style="text-align: center;">$ $!context.roundDouble($!hit.productprice,2)</td>
                                                 <td style="text-align: center;">$!mediaarchive.text($hit.productdescription, $hit.id)</td>
                                                 <td>
-                                                    #if( $caneditcollection )
+                                                    #if( $canviewsettings )
                                                         <a
                                                             href="$siteroot/$db/emshare2/views/settings/lists/datamanager/edit/edit.html?id=$hit.id&searchtype=collectiveproduct"
                                                             class="btn btn-sm btn-secondary"
@@ -124,7 +124,7 @@
                                             $status
                                         </td>
                                         <td>
-                                            #if( $caneditcollection )
+                                            #if( $canviewsettings )
                                                 <a
                                                     href="$siteroot/$db/emshare2/views/settings/lists/datamanager/edit/edit.html?id=$hit.id&searchtype=collectiveinvoice"
                                                     class="btn btn-sm btn-secondary"
