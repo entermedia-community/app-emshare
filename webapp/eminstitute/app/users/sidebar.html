@@ -1,116 +1,115 @@
 ##Search collections this user is teammeber
+
 #if($user)
-#set( $organizationsuser = $mediaarchive.query("librarycollectionusers").exact("followeruser",$user.getId()).exact("ontheteam","true").search() )
-#set($userprojectsids = [])
-#set($userticketsids = [])
-#foreach( $ohit in $organizationsuser )
-	#set($x = $userprojectsids.add($ohit.collectionid))
-	##Search for Tickets in Collection
-	#set($goalsuser = $mediaarchive.query("projectgoal").exact("collectionid",$ohit.collectionid).enduser(true).search())
-	#if ($goalsuser)
-	#set($x = $userticketsids.add($goalsuser))
+	#set( $organizationsuser = $mediaarchive.query("librarycollectionusers").exact("followeruser",$user.getId()).exact("ontheteam","true").search() )
+	#set($userprojectsids = [])
+	#set($userticketsids = [])
+	#foreach( $ohit in $organizationsuser )
+		#set($x = $userprojectsids.add($ohit.collectionid))
+		##Search for Tickets in Collection
+		#set($goalsuser = $mediaarchive.query("projectgoal").exact("collectionid",$ohit.collectionid).enduser(true).search())
+		#if ($goalsuser)
+		#set($x = $userticketsids.add($goalsuser))
+		#end
 	#end
-#end
 
-
-<div class="sidebar-box">
-    <div class="sidebar-box-header">
-        [[Account]]        
-        <a href="#" class="sidebar-toggler" data-action="hide" data-targetdiv="usersidebar"
-        title="[[Hide User Sidebar]]">
-        <i class="fas fa-angle-double-left"></i>
-        </a>
-    </div>
-    <div class="sidebar-box-content" style="padding:0;">
-    	<ul class="sidebar-list">
-		<li class="#if($content.appsection == "profile") current #end"><a href="$applink/users/$user.getId()/index.html"><i class="fa fa-user"></i> [[Profile]]</a></li>
-		#set( $pendingmessages = $chatManager.loadChatTopicLastChecked("${user.getId()}-messages",$user.getId() ) )
-		<li class="#if($content.appsection == "messages") current #end">
-			<a href="$applink/messages/index.html">
-			<i class="fa fa-comment"></i> [[Messages]] #if($pendingmessages && !$pendingmessages.isEmpty()) * #end
-			</a>
-		</li>
-		#if($userprojectsids.size() && $userticketsids.size())
-		<li class="#if($content.appsection == "tasks") current #end">
-			#if ($canviewsettings)
-				#set($args = "goaltrackerstaff=*")
-			#end
-			<a href="$applink/users/tasks/index.html?$!{args}"><i class="fa fa-clipboard-check"></i> [[Open Tasks]]</a>
-			<div style="padding:2px 20px 9px;">
-			<a href="$applink/users/tasks/search.html?ticketlevel=1&$!{args}" class="badge badge-success"> [[Level 1]]</a>
-			<a href="$applink/users/tasks/search.html?ticketlevel=2&$!{args}" class="badge badge-success">[[Level 2]]</a>
-			<a href="$applink/users/tasks/search.html?ticketlevel=3&$!{args}" class="badge badge-success">[[Level 3]]</a>
-			</div>
-		</li>
-		#end
-		#if($canviewsettings)
-		<li class="#if($content.appsection == "completed") current #end"><a href="$applink/users/tasks/report.html?collectionid=*&goaltrackerstaff=*"><i class="far fa-file-alt"></i> [[Completed Tasks]]</a></li>
-		#end
-		#if($canviewsettings)
-		<li class="#if($content.appsection == "mytasks") current #end"><a href="$applink/users/tasks/mytasks.html?goaltrackerstaff=$user.getId()"><i class="fas fa-hammer"></i> [[My Tasks]]</a></li>
-		#end
-		#if($canviewsettings)
-		<li class="#if($content.appsection == "sanmarcos") current #end"><a href="$applink/sanmarcos/index.html?goaltrackerstaff=$user.getId()"><i class="fas fa-heartbeat"></i> [[San Marcos Salud (temporary)]]</a></li>
-		#end
-		</ul>
-    </div>
-</div>
-
-
-<div class="sidebar-box" id="sidebarboxprojects">
-    <div class="sidebar-box-header">
-        [[Projects]]        
-    </div>
-    <div class="sidebar-box-content" style="padding:0;">
-    	#if($canviewsettings)
-    		<div style="padding:5px 15px;">
-			<select  id="collectivesearch2" 
-						name="collectionid" 
-						class="form-control autosubmitlink" 
-						data-placeholder="[[Search Projects]]"
-						data-url="$applink/collective/community/index.html?collectionid="
-						data-dropdownparent="sidebarboxprojects"
-					>
-					<option></option>
-					#set( $collectives = $mediaarchive.query("librarycollection").sort("name").search() )
-					#foreach( $collective in $collectives )
-						<option value="$collective.getId()">#esc($collective.name)</option>
-					#end
-			</select>
-			</div>
-		#end
-	
-	#set($selectedproject = $librarycol.getId())
-
-	#if($userprojectsids)
-		#set( $organizations = $mediaarchive.query("librarycollection").ids($userprojectsids).enduser(true).sort("name").search() )
-		#set( $modcollections = $chatManager.loadCollectionsModified($organizations,$user.getId() ) )
-	
-		<ul class="sidebar-list">
-		#foreach( $ohit in $organizations.getPageOfHits() )
-			<li class="#if($selectedproject==$ohit.id) current #end">
-				<a href="$applink/collective/community/index.html?collectionid=$ohit.id&goaltrackerstaff=*" >
-				<i class="fas fa-sitemap"></i> $ohit.name
-				#if( $modcollections.contains($ohit.getId())) * #end
+	<div class="sidebar-box">
+	    <div class="sidebar-box-header">
+	        [[Account]]        
+	        <a href="#" class="sidebar-toggler" data-action="hide" data-targetdiv="usersidebar"
+	        title="[[Hide User Sidebar]]">
+	        <i class="fas fa-angle-double-left"></i>
+	        </a>
+	    </div>
+	    <div class="sidebar-box-content" style="padding:0;">
+	    	<ul class="sidebar-list">
+			<li class="#if($content.appsection == "profile") current #end"><a href="$applink/users/$user.getId()/index.html"><i class="fa fa-user"></i> [[Profile]]</a></li>
+			#set( $pendingmessages = $chatManager.loadChatTopicLastChecked("${user.getId()}-messages",$user.getId() ) )
+			<li class="#if($content.appsection == "messages") current #end">
+				<a href="$applink/messages/index.html">
+				<i class="fa fa-comment"></i> [[Messages]] #if($pendingmessages && !$pendingmessages.isEmpty()) * #end
 				</a>
 			</li>
-		#end
-		</ul>
-	#end
+			#if($userprojectsids.size() && $userticketsids.size())
+			<li class="#if($content.appsection == "tasks") current #end">
+				#if ($canviewsettings)
+					#set($args = "goaltrackerstaff=*")
+				#end
+				<a href="$applink/users/tasks/index.html?$!{args}"><i class="fa fa-clipboard-check"></i> [[Open Tasks]]</a>
+				<div style="padding:2px 20px 9px;">
+				<a href="$applink/users/tasks/search.html?ticketlevel=1&$!{args}" class="badge badge-success"> [[Level 1]]</a>
+				<a href="$applink/users/tasks/search.html?ticketlevel=2&$!{args}" class="badge badge-success">[[Level 2]]</a>
+				<a href="$applink/users/tasks/search.html?ticketlevel=3&$!{args}" class="badge badge-success">[[Level 3]]</a>
+				</div>
+			</li>
+			#end
+			#if($canviewsettings)
+			<li class="#if($content.appsection == "completed") current #end"><a href="$applink/users/tasks/report.html?collectionid=*&goaltrackerstaff=*"><i class="far fa-file-alt"></i> [[Completed Tasks]]</a></li>
+			#end
+			#if($canviewsettings)
+			<li class="#if($content.appsection == "mytasks") current #end"><a href="$applink/users/tasks/mytasks.html?goaltrackerstaff=$user.getId()"><i class="fas fa-hammer"></i> [[My Tasks]]</a></li>
+			#end
+			#if($canviewsettings)
+			<li class="#if($content.appsection == "sanmarcos") current #end"><a href="$applink/sanmarcos/index.html?goaltrackerstaff=$user.getId()"><i class="fas fa-heartbeat"></i> [[San Marcos Salud (temporary)]]</a></li>
+			#end
+			</ul>
+	    </div>
+	</div>
+	
+	
+	<div class="sidebar-box" id="sidebarboxprojects">
+	    <div class="sidebar-box-header">
+	        [[Projects]]        
+	    </div>
+	    <div class="sidebar-box-content" style="padding:0;">
+	    	#if($canviewsettings)
+	    		<div style="padding:5px 15px;">
+				<select  id="collectivesearch2" 
+							name="collectionid" 
+							class="form-control autosubmitlink" 
+							data-placeholder="[[Search Projects]]"
+							data-url="$applink/collective/community/index.html?collectionid="
+							data-dropdownparent="sidebarboxprojects"
+						>
+						<option></option>
+						#set( $collectives = $mediaarchive.query("librarycollection").sort("name").search() )
+						#foreach( $collective in $collectives )
+							<option value="$collective.getId()">#esc($collective.name)</option>
+						#end
+				</select>
+				</div>
+			#end
+		
+			#set($selectedproject = $librarycol.getId())
+		
+			#if($userprojectsids)
+				#set( $organizations = $mediaarchive.query("librarycollection").ids($userprojectsids).enduser(true).sort("name").search() )
+				#set( $modcollections = $chatManager.loadCollectionsModified($organizations,$user.getId() ) )
+			
+				<ul class="sidebar-list">
+				#foreach( $ohit in $organizations.getPageOfHits() )
+					<li class="#if($selectedproject==$ohit.id) current #end">
+						<a href="$applink/collective/community/index.html?collectionid=$ohit.id&goaltrackerstaff=*" >
+						<i class="fas fa-sitemap"></i> $ohit.name
+						#if( $modcollections.contains($ohit.getId())) * #end
+						</a>
+					</li>
+				#end
+				</ul>
+			#end
+		
+			<div style="padding:20px 20px;">
+			<a #if( $user )href="$applink/browse/add/addnew.html"
+		  			#else
+		  			href="$applink/authentication/login.html?loginokpage=$apphome/browse/add/addnew.html"
+		  			#end
+					title="[[Start New Channel]]"
+		  		 	class="btn btn-primary" >[[Start New Project]]</a>	
+		    </div>
+		</div>
+	</div>
 
-	<div style="padding:20px 20px;">
-	<a #if( $user )href="$applink/browse/add/addnew.html"
-  			#else
-  			href="$applink/authentication/login.html?loginokpage=$apphome/browse/add/addnew.html"
-  			#end
-			title="[[Start New Channel]]"
-  		 	class="btn btn-primary" >[[Start New Project]]</a>	
-    </div>
-</div>
-</div>
-
-
-#end  ##if user
+#end  
 		
 
 
