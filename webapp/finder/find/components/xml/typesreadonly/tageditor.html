@@ -8,11 +8,17 @@
 #set( $vals = $val.split("\s*\|\s*") )
 
 #set( $type = $detail.getListId() )
+#set($link = $context.getPageValue("tagssearchlink"))
+#if(!$link)
+	#set($link = "$siteroot$apphome/views/modules/asset/index.html")
+#end
+
 #set($clearfilters = $context.getPageValue("clearfilters"))
+
 <div class="tageditor-viewer">
 #foreach( $val in $vals )
 	## #set($link = "$siteroot$apphome/views/search/search.html?field=${type}&operation=contains&${type}.value=#esc($val)&assetclearresults=true&assetclearselection=true&clearselection=true&clearfilters=true")
-	#set($link = "$siteroot$apphome/views/modules/asset/index.html?field=${type}&operation=contains&${type}.value=#esc($val)")
+	#set($link = "$link?field=${type}&operation=contains&${type}.value=#esc($val)")
 	#if ($clearfilters)
 		#set($link = "$link&clearfilters=true")
 	#end
