@@ -15,16 +15,30 @@ $context.putPageValue("searcher",$mediaarchive.getSearcher($searchtype))
 	#set( $id = $context.getRequestParameter("id") )
 #end
 
+
+#set($targetdiv = $context.getRequestParameter("targetdiv"))
+#if ($targetdiv == "entitypicker")
+	#set( $action = "$siteroot$applink/components/upload/entities/addnewentitysave.html")
+#else 
+	#set( $action = "$!siteroot$apphome/views/modules/$searchtype/edit/addnewentitysave.html")
+#end
+
+
 <div id="default-fields">
     <div id="editlayout">
-    <form id="dataeditor" name="dataeditor" class="force-validate-inputs ajaxform autocloseform" data-targetdiv="entitypicker" 
-    method="post"  action="$siteroot$applink/components/upload/entities/addnewentitysave.html">
+    <form id="dataeditor" 
+    		name="dataeditor" 
+    		class="force-validate-inputs ajaxform autocloseform" 
+    		data-targetdivinner="$!targetdiv"
+    		method="post"  
+    		action="$action">
     	<input name="save" type="hidden" value="true" />
     	<input name="id" type="hidden" value="$!id" />
     	<input name="searchtype" type="hidden" value="$searchtype" />
     	<input name="viewid" type="hidden" value="$viewid" />
     	<input name="oemaxlevel" type="hidden" value="1" />
     	<input name="entitytype" type="hidden" value="$searchtype" />
+    	<input name="module" type="hidden" value="$searchtype" />
     	
     	$context.putPageValue("viewid", $viewid)
 
