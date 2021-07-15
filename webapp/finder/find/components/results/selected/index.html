@@ -9,21 +9,21 @@
 #end
 </a>
 	<div class="dropdown-menu" aria-labelledby="navbarSelectionsDropdown">
-	  	<a class="dropdown-item ajax selectpage" targetdiv="resultsheader" href="$home$componenthome/results/togglepage.html?oemaxlevel=1&hitssessionid=$hits.getSessionId()&action=page&collectionid=$!librarycol.getId()">[[Select This Page]]</a>
-    	<a class="dropdown-item ajax  selectpage" targetdiv="resultsheader" href="$home$componenthome/results/togglepage.html?oemaxlevel=1&hitssessionid=$hits.getSessionId()&action=all&collectionid=$!librarycol.getId()">[[Select All Results]]</a>
+	  	<a class="dropdown-item ajax selectpage" targetdiv="resultsheader" href="$siteroot$componenthome/results/togglepage.html?oemaxlevel=1&hitssessionid=$hits.getSessionId()&action=page&collectionid=$!librarycol.getId()">[[Select This Page]]</a>
+    	<a class="dropdown-item ajax  selectpage" targetdiv="resultsheader" href="$siteroot$componenthome/results/togglepage.html?oemaxlevel=1&hitssessionid=$hits.getSessionId()&action=all&collectionid=$!librarycol.getId()">[[Select All Results]]</a>
 		 #if( !$hits.isShowOnlySelected() )
 				<a class="dropdown-item" 
 					title="[[View Selections]]"
-					href="$home$apphome/views/search/index.html?assetshowonlyselections=true&hitssessionid=$hits.getSessionId()&page=1&collectionid=$!librarycol.getId()">
+					href="$siteroot$apphome/views/modules/asset/index.html?assetshowonlyselections=true&hitssessionid=$hits.getSessionId()&page=1&collectionid=$!librarycol.getId()">
 						[[Show Only Selections]]</a>
 		#else				
 				<a class="dropdown-item #if($hits.isShowOnlySelected()) active #end"
 					title="[[Show All]]"
-					href="$home$apphome/views/search/index.html?assetshowonlyselections=false&hitssessionid=$hits.getSessionId()&collectionid=$!librarycol.getId()">
+					href="$siteroot$apphome/views/modules/asset/index.html?assetshowonlyselections=false&hitssessionid=$hits.getSessionId()&collectionid=$!librarycol.getId()">
 						[[Show All Results]]</a>
 		#end		
 		#if( $hits.getSelectionSize() && $hits.getSelectionSize() > 0)
-		    	<a class="dropdown-item ajax deselectpage" targetdiv="resultsheader" href="$home$componenthome/results/togglepage.html?oemaxlevel=1&hitssessionid=$hits.getSessionId()&action=none&collectionid=$!librarycol.getId()">[[Deselect All]]</a>
+		    	<a class="dropdown-item ajax deselectpage" targetdiv="resultsheader" href="$siteroot$componenthome/results/togglepage.html?oemaxlevel=1&hitssessionid=$hits.getSessionId()&action=none&collectionid=$!librarycol.getId()">[[Deselect All]]</a>
 		#end
 	</div>
 </li>
@@ -43,7 +43,7 @@
 	    #end	
 	    #if ( $canviewbasket  )
 			#if($order)
-				<a class="dropdown-item updatebasket" data-action="remove" targetdiv="basket-paint"  href="$home$componenthome/basket/removeselection.html?hitssessionid=$hits.getSessionId()" ">[[Remove From Cart]]</a>
+				<a class="dropdown-item updatebasket" data-action="remove" targetdiv="basket-paint"  href="$siteroot$componenthome/basket/removeselection.html?hitssessionid=$hits.getSessionId()" ">[[Remove From Cart]]</a>
 			#else
 				<a class="dropdown-item updatebasket" targetdiv="basket-paint"  href="$siteroot$componenthome/basket/addselection.html?hitssessionid=$hits.getSessionId()" ">[[Add To Cart]]</a>
 			#end
@@ -62,10 +62,10 @@
 		#if(!$canforcebasiccollections)
 			#if( $librarycol && ( $canaddnewcollection || $caneditcollection ) )
 				 #if( $caneditcollection)
-					<a class="dropdown-item confirm" href="$home$apphome/views/modules/librarycollection/removefromcollection.html?hitssessionid=$!hits.getSessionId()&collectionid=$!librarycol.getId()" title="[[Edit one or more selected records]]" confirm="[[Remove from collection?]]" >[[Remove from Collection]]</a>
+					<a class="dropdown-item confirm" href="$siteroot$apphome/views/modules/librarycollection/removefromcollection.html?hitssessionid=$!hits.getSessionId()&collectionid=$!librarycol.getId()" title="[[Edit one or more selected records]]" confirm="[[Remove from collection?]]" >[[Remove from Collection]]</a>
 				#end
 				#if( $canaddnewcollection)
-					<a class="dropdown-item emdialog" href="$home$apphome/views/modules/librarycollection/copycollection.html?collectionid=$!librarycol.getId()" title="[[Create a copy of this collection]]">[[Copy Collection]]</a>
+					<a class="dropdown-item emdialog" href="$siteroot$apphome/views/modules/librarycollection/copycollection.html?collectionid=$!librarycol.getId()" title="[[Create a copy of this collection]]">[[Copy Collection]]</a>
 				 #end
 			#end
 		#end
@@ -73,14 +73,14 @@
 		#if( $canaddtofavorites && $librarycol.id != "${user.id}-favorites" )
 			<a class="dropdown-item " 
 			   title="[[Add to Favorites]]"  
-			   href="$home$apphome/views/modules/librarycollection/media/addselections.html?hitssessionid=$hits.getSessionId()&searchtype=asset&collectionid=${user.id}-favorites">[[Add To Favorites]]</a>
+			   href="$siteroot$apphome/views/modules/librarycollection/media/addselections.html?hitssessionid=$hits.getSessionId()&searchtype=asset&collectionid=${user.id}-favorites">[[Add To Favorites]]</a>
 		#end
 		#if ($canmultiedit && $hits.getSelectionSize() && $hits.getSelectionSize() > 1)
   				#set($text = "[[Multi Edit]] ($hits.getSelectionSize())")
 				<a id="multiedit-menu" class="dropdown-item" href="#" title="[[Edit selected records]]">$text</a>
 		#end
 		#if($canmultidelete)
-			#set($deleteurl = "$home$componenthome/mediaviewer/fullscreen/delete/index.html?hitssessionid=$hits.getSessionId()&nodeID=$!catid")
+			#set($deleteurl = "$siteroot$componenthome/mediaviewer/fullscreen/delete/index.html?hitssessionid=$hits.getSessionId()&nodeID=$!catid")
 			#if($module=="librarycollection")
 				#set($deleteurl = "${deleteurl}&collectionid=$!librarycol.getId()")
 			#end	    
@@ -89,7 +89,7 @@
 	 			href="$deleteurl">[[Delete Assets]]</a>
 	   	#end    
 		#if($canprintpreview)
-	    	 <a class="dropdown-item" href="$home$apphome/views/modules/asset/editor/printpreview/printselections.html?hitssessionid=$hits.getSessionId()">[[Print Assets]]</a>
+	    	 <a class="dropdown-item" href="$siteroot$apphome/views/modules/asset/editor/printpreview/printselections.html?hitssessionid=$hits.getSessionId()">[[Print Assets]]</a>
 		#end
 		#if( $user && ($candownload || $canconvert || $candownloadfpo ) )
 			#if( $librarycol )
@@ -99,9 +99,9 @@
 			
 			#if( $enabled )
 				#if($mediaarchive.isCatalogSettingTrue("preventupscaling")) 
-					<a class="dropdown-item" href="$home$apphome/views/modules/asset/activity/customdownloadassets.html?hitssessionid=$!hits.getSessionId()&collectionid=$!{librarycol.getId()}"  data-hidefooter="true" >[[Download]]</a>
+					<a class="dropdown-item" href="$siteroot$apphome/views/modules/asset/activity/customdownloadassets.html?hitssessionid=$!hits.getSessionId()&collectionid=$!{librarycol.getId()}"  data-hidefooter="true" >[[Download]]</a>
 				#else
-					<a class="dropdown-item emdialog" href="$home$apphome/views/modules/asset/activity/downloadassets.html?hitssessionid=$!hits.getSessionId()&collectionid=$!{librarycol.getId()}"  data-hidefooter="true" >[[Download]]</a>
+					<a class="dropdown-item emdialog" href="$siteroot$apphome/views/modules/asset/activity/downloadassets.html?hitssessionid=$!hits.getSessionId()&collectionid=$!{librarycol.getId()}"  data-hidefooter="true" >[[Download]]</a>
 				#end
 			#else		
 				<a class="dropdown-item" href="#">[[Download]]</a>
