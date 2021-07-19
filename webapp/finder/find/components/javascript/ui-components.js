@@ -121,7 +121,7 @@ uiload = function() {
 	lQuery('.focusme').livequery(function(){
 		$(this).focus();
 	})
-
+	
 	lQuery('#module-dropdown').livequery("click", function(e) {
 		e.stopPropagation();
 		if ($(this).hasClass('active')) {
@@ -158,6 +158,19 @@ uiload = function() {
 			allowClear : allowClear,
 			dropdownParent : dropdownParent
 		});
+		
+		theinput.on("select2:open", function(e) {
+			var selectId = $(this).attr("id");
+			if(selectId) {
+				$(".select2-search__field[aria-controls='select2-" + selectId + "-results']").each(function (key, value) {
+				        value.focus()
+				})
+			}
+			else {
+				document.querySelector(".select2-container--open .select2-search__field").focus()
+			}
+		});
+		
 	});
 	
 	lQuery("select.listdropdown").livequery(function() {
@@ -221,6 +234,18 @@ uiload = function() {
 					}
 				}
 			});
+			
+			theinput.on("select2:open", function(e) {
+				var selectId = $(this).attr("id");
+				if(selectId) {
+					$(".select2-search__field[aria-controls='select2-" + selectId + "-results']").each(function (key, value) {
+					        value.focus()
+					})
+				}
+				else {
+					document.querySelector(".select2-container--open .select2-search__field").focus()
+				}
+			});;
 
 	});
 
@@ -274,6 +299,18 @@ uiload = function() {
 			}
         	
     	});
+		
+		theinput.on("select2:open", function(e) {
+			var selectId = $(this).attr("id");
+			if(selectId) {
+				$(".select2-search__field[aria-controls='select2-" + selectId + "-results']").each(function (key, value) {
+				        value.focus()
+				})
+			}
+			else {
+				document.querySelector(".select2-container--open .select2-search__field").focus()
+			}
+		});
 		
 	});
 
@@ -1646,6 +1683,17 @@ uiload = function() {
 								}
 
 							});
+							theinput.on("select2:open", function(e) {
+								var selectId = $(this).attr("id");
+								if(selectId) {
+									$(".select2-search__field[aria-controls='select2-" + selectId + "-results']").each(function (key, value) {
+									        value.focus()
+									})
+								}
+								else {
+									document.querySelector(".select2-container--open .select2-search__field").focus()
+								}
+							});
 						}
 	});
 	//-
@@ -1783,7 +1831,19 @@ uiload = function() {
 							var id = "#list-" + theinput.attr("id");
 							$(id).val("");
 						} 
-				});
+					});
+					
+					theinput.on("select2:open", function(e) {
+						var selectId = $(this).attr("id");
+						if(selectId) {
+							$(".select2-search__field[aria-controls='select2-" + selectId + "-results']").each(function (key, value) {
+							        value.focus()
+							})
+						}
+						else {
+							document.querySelector(".select2-container--open .select2-search__field").focus()
+						}
+					});
 			}
 	});
 	
