@@ -14,7 +14,7 @@
   		#foreach( $week in $weeks)
 			#set( $counted = 0)
 			#set( $weekpoints = 0)  	
-			#set($tasks = $completed.getTasksForWeek($person,$week))
+			#set($tasks = $completed.getTasksForWeek($person, $week))
   		    #foreach($task in $tasks)
   				#set( $selectedcat = $mediaarchive.getCategory($task.projectdepartment))
 				#set( $points = $selectedcat.getValue("goalpoints"))
@@ -28,7 +28,10 @@
 		 	 	title="Ticket Details" 
 		 	 		href="$applink/collective/goals/editgoalpanel.html?id=$task.projectgoal&collectionid=$task.collectionid&nodeID=$selectedcat.id&goalfolder=$content.goalfolder">
 		 	 		#set($collection = $!mediaarchive.getData("librarycollection",$task.collectionid) )
-		 	 		Task: $collection - $task.name - $!task.comment</a></td>
+		 	 		###Task: 
+		 	 		#set($taskname = $!mediaarchive.getData("category",$task.projectdepartment) )
+		 	 		$collection - $!taskname - $!task.comment</a>
+		 	 		</td>
   					<td>$context.getDateTime($task.getDate("completedon"))</td><td>$points</td>
   				</tr>
   		    #end
