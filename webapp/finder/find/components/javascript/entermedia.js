@@ -213,6 +213,11 @@ runajaxonthis = function(inlink,e)
 	if( !targetDiv )
 	{
 		targetDiv = inlink.data("targetdivinner");
+		if( !targetDiv )
+		{
+			targetDiv = inlink.attr("targetdivinner");
+		}
+		
 		if (targetDiv) {
 			replaceHtml = false;
 		}
