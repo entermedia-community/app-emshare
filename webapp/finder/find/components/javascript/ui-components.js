@@ -2490,7 +2490,7 @@ uiload = function() {
 	    return str.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
 	}
 	
-    $('#setup-view').click(function(){
+	lQuery('#setup-view').livequery("click", function(){
         if ( $('#setup-view').hasClass('open') ) {
             $('#views-header').height(44)
             $('#views-settings').hide();
