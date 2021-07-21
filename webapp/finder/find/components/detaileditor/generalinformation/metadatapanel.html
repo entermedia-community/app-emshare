@@ -9,7 +9,7 @@
 			$context.putPageValue("data",$asset)	
 			$context.putPageValue("searcher",$mediaarchive.getAssetSearcher() )	
 			$context.putPageValue("view",$viewpath)
-			
+
 			<div id="edit-${target.getId()}" 
 				 class="asset-data-detail asset-data-preview assetpanel-editor-box edit-panel-generic">
 				#set($collectionid = $context.getRequestParameter("collectionid"))
@@ -17,14 +17,15 @@
 				$context.putPageValue("clearfilters","true")	 
 				$pages.include("/$applicationid/components/xml/detailviewer.html", $context)
 				#if($caneditasset)
-				<div class="assetpanel-editor-actions">
-					#set( $url = "$componenthome/detaileditor/generalinformation/editform.html?viewpath=$viewpath&oemaxlevel=1&edit=$!caneditasset&assetid=${asset.id}&collectionid=$!{collectionid}&hitssessionid=$!hitssessionid")
-					#set( $url = "$url&targetdiv=asset-detail-editor&editpath=$componenthome/detaileditor/generalinformation/save.html" )
-					<a href="#urlescape($url)" 
-					   class="ajax btn btn-dark"
-					   data-targetdiv="edit-${target.getId()}"
-					   title="[[Edit]] $context.getText($target.toString())"><i class="fas fa-edit"></i> [[Edit]]</a>
-				</div>
+					<div class="assetpanel-editor-actions">
+						#set( $url = "$componenthome/detaileditor/generalinformation/editform.html")
+						#set( $url = "$url?viewpath=$viewpath&oemaxlevel=1&edit=$!caneditasset&assetid=${asset.id}&collectionid=$!{collectionid}&hitssessionid=$!hitssessionid" )
+						#set( $url = "$url&targetdiv=asset-detail-editor&editpath=$componenthome/detaileditor/generalinformation/save.html" )
+						<a href="#urlescape($url)" 
+						   class="ajax btn btn-sm btn-dark"
+						   data-targetdiv="edit-${target.getId()}"
+						   title="[[Edit]] $context.getText($target.toString())"><i class="fas fa-edit"></i> [[Edit]]</a>
+					</div>
 				#end
 			</div>
 		#end

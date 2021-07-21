@@ -27,69 +27,69 @@ $context.putPageValue("showalllanguagevalues",true)
 		
 			$pages.include("$componenthome/detaileditor/generalinformation/metadatapanel.html", $context)
 		
-		#set( $libraries = $asset.getLibraries())
-		#if( $libraries.size() > 0)
-  				
-  				<div class="asset-data-detail assetpanel-editor-box" >
-  				  <h4>[[Libraries]]</h4>
-  				  <div class="emlist">
-          				#foreach($library in $libraries)
-          					 #set( $division = $mediaarchive.getData("division",$library.division ) )
-          					 #if($division)
-          					 	#set($ldata = "$division.getName($context) / $library.getName($context)" )
-          					 #else
-          					 	#set($ldata = $library.getName($context) )
-          					 #end
-          					<a href="$siteroot$apphome/views/modules/library/view/view.html?id=$library.getId()" class="list-library list-hover"><i class="fas fa-boxes"></i> $ldata</a>
-          			
-          				#end
-  				  </div>
-  				</div>
-		#end	
-								
-		$pages.include("$componenthome/categories/asset/listassetcategories.html",$context)
+			#set( $libraries = $asset.getLibraries())
+			#if( $libraries.size() > 0)
+	  				
+	  				<div class="asset-data-detail assetpanel-editor-box" >
+	  				  <h4>[[Libraries]]</h4>
+	  				  <div class="emlist">
+	          				#foreach($library in $libraries)
+	          					 #set( $division = $mediaarchive.getData("division",$library.division ) )
+	          					 #if($division)
+	          					 	#set($ldata = "$division.getName($context) / $library.getName($context)" )
+	          					 #else
+	          					 	#set($ldata = $library.getName($context) )
+	          					 #end
+	          					<a href="$siteroot$apphome/views/modules/library/view/view.html?id=$library.getId()" class="list-library list-hover"><i class="fas fa-boxes"></i> $ldata</a>
+	          			
+	          				#end
+	  				  </div>
+	  				</div>
+			#end	
+									
+			$pages.include("$componenthome/categories/asset/listassetcategories.html",$context)
+				
+				
 			
-			
-		
-		<div class="asset-data-detail assetpanel-editor-box" style="padding:12px; margin-bottom: 20px;">
-			#if( $caneditassetcategories )
-				<div class="folder-list-actions">
-					<a href="$apphome/components/categories/search/searchcategory.html?targetdiv=assetcategoryresults&amp;multivalue=false&amp;pickone=true&amp;detailid=categoryid&amp;existingcategories=$!{existingcategories}&amp;assetid=${asset.id}&amp;pickedcategoryaction=$apphome/components/categories/asset/listassetcategories.html" 
-				   class="detail-edit-icon btn   btn-dark emdialog"
-				   data-cancelsubmit="true" 
-				   data-parameterdata="categoryvalues"
-				   data-noesc="true"
-				   title="[[Pick Folder]]"><i class="fas fa-plus"></i> [[Folders]]</a>
-			   </div>
-			#end
-			#if( $caneditassetcategories )
-			<a href="$siteroot$apphome/components/opencollections/asset/searchcollectionpicker.html?assetid=$asset.id" 
-					   class="detail-edit-icon emdialog btn btn-dark"
-					   style="margin-left:10px;"
-					   data-hidefooter="true" 
+			<div class="asset-data-detail assetpanel-editor-box" style="padding:12px; margin-bottom: 20px;">
+				#if( $caneditassetcategories )
+					<div class="folder-list-actions">
+						<a href="$apphome/components/categories/search/searchcategory.html?targetdiv=assetcategoryresults&amp;multivalue=false&amp;pickone=true&amp;detailid=categoryid&amp;existingcategories=$!{existingcategories}&amp;assetid=${asset.id}&amp;pickedcategoryaction=$apphome/components/categories/asset/listassetcategories.html" 
+					   class="detail-edit-icon btn   btn-dark emdialog"
+					   data-cancelsubmit="true" 
+					   data-parameterdata="categoryvalues"
 					   data-noesc="true"
-					   title="[[Add Asset to Collection]]"><i class="fas fa-plus"></i> [[Add to Album]]</a>
-			#end
-			<div class="clearfix"></div>
-			</div>
-			
-			
-			#if($caneditasset)
-				##$pages.include("/$applicationid/views/modules/asset/editor/edit/metadata/assetreadmetadata.html")
-			
-			
-				#set($view = "assetreadmetadata")
-				#set($hitssessionid = $context.findValue("hitssessionid"))
-				<div class="asset-data-readwritemetadata">
-						
-						<a class="ajax"
-							href="$siteroot$apphome/views/modules/asset/editor/edit/metadata/read.html?oemaxlevel=1&assetid=$asset.getId()&force=true" 
-							data-targetdiv="assetrwmetadata" ><i class="fas fa-upload"></i> [[Read Metadata]]</a>
-						<a class="ajax"
-							href="$siteroot$apphome/views/modules/asset/editor/edit/metadata/write.html?oemaxlevel=1&assetid=$asset.getId()&force=true" 
-							data-targetdiv="assetrwmetadata" ><i class="fas fa-download"></i> [[Rewrite Metadata]]</a>
-						<span id="assetrwmetadata"></span>
+					   title="[[Pick Folder]]"><i class="fas fa-plus"></i> [[Folders]]</a>
+				   </div>
+				#end
+				#if( $caneditassetcategories )
+				<a href="$siteroot$apphome/components/opencollections/asset/searchcollectionpicker.html?assetid=$asset.id" 
+						   class="detail-edit-icon emdialog btn btn-dark"
+						   style="margin-left:10px;"
+						   data-hidefooter="true" 
+						   data-noesc="true"
+						   title="[[Add Asset to Collection]]"><i class="fas fa-plus"></i> [[Add to Album]]</a>
+				#end
+				<div class="clearfix"></div>
 				</div>
+				
+				
+				#if($caneditasset)
+					##$pages.include("/$applicationid/views/modules/asset/editor/edit/metadata/assetreadmetadata.html")
+				
+				
+					#set($view = "assetreadmetadata")
+					#set($hitssessionid = $context.findValue("hitssessionid"))
+					<div class="asset-data-readwritemetadata">
+							
+							<a class="ajax"
+								href="$siteroot$apphome/views/modules/asset/editor/edit/metadata/read.html?oemaxlevel=1&assetid=$asset.getId()&force=true" 
+								data-targetdiv="assetrwmetadata" ><i class="fas fa-upload"></i> [[Read Metadata]]</a>
+							<a class="ajax"
+								href="$siteroot$apphome/views/modules/asset/editor/edit/metadata/write.html?oemaxlevel=1&assetid=$asset.getId()&force=true" 
+								data-targetdiv="assetrwmetadata" ><i class="fas fa-download"></i> [[Rewrite Metadata]]</a>
+							<span id="assetrwmetadata"></span>
+					</div>
 							
 				#end
 			
