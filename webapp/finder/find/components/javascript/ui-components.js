@@ -2594,7 +2594,7 @@ uiload = function() {
 		  document.execCommand("copy");
 		  var alertdiv = btn.data("targetdiv");
 		  if (alertdiv) {
-			  console.log(alertdiv);
+			  console.log(copyText);
 			  $("#"+alertdiv).show().fadeOut(2000);
 		  }
 		  
