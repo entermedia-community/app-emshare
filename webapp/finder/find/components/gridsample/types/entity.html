@@ -27,18 +27,40 @@ $context.putPageValue("previewurl", $previewurl)
    	 
    	 </h3> 
    	 </div>
-	<div class="emgrid-entitymetadata">        	 
-
+	<div class="emgrid-entitymetadata">
+	
+		#set( $image = $mediaarchive.getCachedData("asset", $entity.primaryimage))
+		#if($image)
+			#set( $imagesize = "image200x200.jpg")
+	  	 	#set($tpath = $mediaarchive.asLinkToPreview($image, null, $imagesize, true))
+	   	 	<a href="$previewurl" 
+	   	 	class="emdialog entity-dialog" 
+	   	 	data-hidefooter="true" 
+	   	 	data-hideheader="true"
+	   	 	id="clickid${entity.id}"  
+	   	 	data-id="entity.id"
+	   	 	title="$!entity.name">
+			<img class="imagethumb img-fluid"
+				 border="0" 
+				 sourcepath="$sourcepath" 
+				 catalogid="$catalogid" 
+				 assetid="$image.id" 
+				 alt="$!image.name"
+				 draggable="true"  
+				 data-name="$!image.name" 		
+				 src="$tpath" 
+				  />    
+			</a>        	 
+		#end
         	 
-        	#if($entity.longcaption)
+       	#if($entity.longcaption)
+       		$entity.longcaption
+       	#end
         	
-        		$entity.longcaption
-        	
-        	#end
-        	
-        	##$pages.include("$componenthome/gridsample/tags.html",$context)
+       	##$pages.include("$componenthome/gridsample/tags.html",$context)
 	        
       </div>
+      
       #set($assetsshown = 4)
       $context.putPageValue("assetsshown", $assetsshown)
        <div class="emgrid-entitymedia assetdropentity"
@@ -51,21 +73,20 @@ $context.putPageValue("previewurl", $previewurl)
 	        $pages.include("$componenthome/gridsample/types/attachedmedia/entity.html",$context)
 	   </div>
 	        
-	        <div class="clearfix"></div>
-	        
-	        
-	        <div class="grid-gallery-footer">
-	        <div class="emgrid-moredetails">
-        	<a class="emdialog entity-dialog" data-hidefooter="true" href="$previewurl" title="$!entity.name">[[More details]]</a>
-        	</div>
-        	<div class="emgrid-moredetailsright">
-	       	$pages.include("$componenthome/gridsample/favorites.html?id=$hit.id&searchtype=$moduleid", $context)
-	       	</div>
-	        </div>
-	        
-	       ## <div class="griditem-tools resultsselection">
-	       ## <input type="checkbox" class="selectionbox" name="count" value="" data-dataid="$hit.getId()">
-	       ## </div>
+        <div class="clearfix"></div>
+        
+        <div class="grid-gallery-footer">
+        <div class="emgrid-moredetails">
+       	<a class="emdialog entity-dialog" data-hidefooter="true" href="$previewurl" title="$!entity.name">[[More details]]</a>
+       	</div>
+       	<div class="emgrid-moredetailsright">
+       	$pages.include("$componenthome/gridsample/favorites.html?id=$hit.id&searchtype=$moduleid", $context)
+       	</div>
+        </div>
+        
+       ## <div class="griditem-tools resultsselection">
+       ## <input type="checkbox" class="selectionbox" name="count" value="" data-dataid="$hit.getId()">
+       ## </div>
 </div>
 
 
