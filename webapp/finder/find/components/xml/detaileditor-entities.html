@@ -20,14 +20,14 @@
 <div class="oeinputform entitiesinfputform validate-inputs">
 	<div id="allerrors"></div>
 
-#set( $detailviewercolumns = $context.getRequestParameter("detailviewercolumns"))
-#if(!$detailviewercolumns)
-	#set($detailviewercolumns = 2)
-#end
-#set($detailviewercolumnclass = "col-6")
-#if($detailviewercolumns == 1)
-	#set($detailviewercolumnclass = "col-12")
-#end
+	#set( $detailviewercolumns = $context.getRequestParameter("detailviewercolumns"))
+	#if(!$detailviewercolumns)
+		#set($detailviewercolumns = 2)
+	#end
+	#set($detailviewercolumnclass = "col-6")
+	#if($detailviewercolumns == 1)
+		#set($detailviewercolumnclass = "col-12")
+	#end
 
 
 
@@ -35,7 +35,6 @@
  <div class="row no-gutters">
  #foreach( $detail in $details )
  	
- 	<div class="$detailviewercolumnclass">
 	#set( $val = false )
 	#set( $target = "${detail.id}.value" )
 	#set( $val = $context.getRequestParameter($target) )					
@@ -49,44 +48,54 @@
 		#set( $val = $!{data.get($detail.getId())} )
 	#end
 	
-	$!context.putPageValue("detail",$detail)
-	
-	#if ($detail.header)
-		#if ($detail.header != "blank")
-			<div class="header"><h4>$detail.header</h4></div>
-		#end
+	#if( !$val) 
+		#set( $val = "") 
 	#end
 	#set( $editrow = $detail.isEditable() && $readonly != "true") 
-	#if( $editrow || $val  || !$detail.isEditable() || $detail.dataType == "searchjoin" )
-		#if( !$val) #set( $val = "") #end	
+	
+	#if( $editrow || $val )
+	 	<div class="$detailviewercolumnclass detail-${detail.id}">
 		$!context.putPageValue("val",$val)
+		$!context.putPageValue("detail",$detail)
+		
+			
+		
+		#if ($detail.header)
+			#if ($detail.header != "blank")
+				<div class="header"><h4>$detail.header</h4></div>
+			#end
+		#end
+		
+		#if( $editrow || $val  || !$detail.isEditable() || $detail.dataType == "searchjoin" )
+			
 			#if( $detail.hidelabel == true )
 			#else
-				<label class="emdatafield" >
-						$!detail.getText($context)
-				</label>
+					<label class="emdatafield" >
+							$!detail.getText($context)
+					</label>
 			#end
-		<div id="detail_$detail.id" class="emdatafieldvalue #if ($detail.isRequired()) requiredfield #end">
-		#if( $editrow )	
-			$pages.include("$xmledithome/detailedit.html", $context)
-		#else  ##NOT EDITABLE
-			<div class="emdatafieldvalue-readonly">
-			$pages.include("$xmledithome/detailreadonly.html", $context)
-			</div> 
+			<div id="detail_$detail.id" class="emdatafieldvalue #if ($detail.isRequired()) requiredfield #end">
+				#if( $editrow )	
+					$pages.include("$xmledithome/detailedit.html", $context)
+				#else  ##NOT EDITABLE
+					<div class="emdatafieldvalue-readonly">
+					$pages.include("$xmledithome/detailreadonly.html", $context)
+					</div> 
+				#end
+				#if ( $detail.note )
+					<span class="detail-note">$context.getText($detail.note.toString())<span>
+				#end
+			</div>
 		#end
-		#if ( $detail.note )
-			<span class="detail-note">$context.getText($detail.note.toString())<span>
+		#if ($detail.viewType && ($detail.viewType == "html" || $detail.viewType == "largehtml"))
+			#if($usedhtml)
+				#set( $usedhtml = "htmltextarea=${detail.getId()}&$usedhtml")
+			#else
+				#set( $usedhtml = "htmltextarea=${detail.getId()}")
+			#end
 		#end
 		</div>
 	#end
-	#if ($detail.viewType && ($detail.viewType == "html" || $detail.viewType == "largehtml"))
-		#if($usedhtml)
-			#set( $usedhtml = "htmltextarea=${detail.getId()}&$usedhtml")
-		#else
-			#set( $usedhtml = "htmltextarea=${detail.getId()}")
-		#end
-	#end
-	</div>
 #end
 </div>
 </div>
