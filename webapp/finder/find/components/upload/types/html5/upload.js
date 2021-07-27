@@ -290,7 +290,7 @@ $(document).ready(function()
 	    var customviewupload = btn.data("customviewupload");
 
 	    if(customviewupload) {
-	    		href= "siteroot"+customviewupload;
+	    		href= customviewupload;
 	    		if (collectionid) {
 	    			if (href.indexOf("?") > -1) {
 	    				href = href + "&";
@@ -304,9 +304,10 @@ $(document).ready(function()
 		    	{
 		    		href = href + "&nodeID=" + nodeid;
 		    	}
-	    	}
+	    		href = href + "&sortby=assetaddeddateDown"
+	    }
 	    else if(collectionid) {
-	    	href = siteroot+"/views/modules/librarycollection/showcategory.html?collectionid="+collectionid+"&sortby=assetaddeddateDown";
+	    	href = siteroot+"/views/modules/librarycollection/showcategory.html?collectionid="+collectionid+"&clearfilters=true&sortby=assetaddeddateDown";
 	    	if( nodeid)	{
 	    		href = href + "&nodeID=" + nodeid;
 	    	}

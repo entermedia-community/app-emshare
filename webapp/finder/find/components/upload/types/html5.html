@@ -1,6 +1,8 @@
 #set( $root = "$siteroot$componenthome/upload/types/html5")
 #set( $nodeID = $context.getRequestParameter("nodeID") )
 
+#set($customredirect = $content.redirectviewupload)
+
 #set($collectionid = $context.getRequestParameter("collectionid"))
 
 #if( !$collectionid && $nodeID ) 
@@ -22,6 +24,7 @@
 #if( $librarycol && !$collectioinid)
     #set($collectionid = $librarycol.getId())
 #end
+
 
 
 $context.putPageValue("librarycol",$librarycol)
@@ -112,6 +115,14 @@ $context.putPageValue("librarycol",$librarycol)
 
 		<div id="uploadmetadata">
 		
+		#set( $entitytype = $context.getRequestParameter("entitytype") )
+		#if($entitytype)
+			#set( $addselection = $context.getRequestParameter("addselection") )
+			#if($addselection)
+				#set($customredirect = "$siteroot$apphome/views/modules/asset/index.html?clearfilters=true&field=$!entitytype&operation=matches&${entitytype}.value=$!addselection")
+			#end
+		#end
+		
 		$pages.include("$apphome/components/upload/entities/picker.html", $context)
 		
 		
@@ -147,7 +158,6 @@ $context.putPageValue("librarycol",$librarycol)
                     
 					$pages.include("/$applicationid/components/xml/detaileditorcss.html", $context)
 					
-					#set($customviewupload = $content.redirectviewupload)
 				
 					##have the cancel delete these assets?
 					<div id="uploadinstructionsafter" style="display: none">
@@ -165,7 +175,7 @@ $context.putPageValue("librarycol",$librarycol)
 						href ="$redirect" 
 						data-targetdivinner="applicationmaincontent" 
 						data-oemaxlayout="3" 
-						data-customviewupload="$!customviewupload"
+						data-customviewupload="$!customredirect"
 						data-updateurl="true"> [[View Uploads]]</a>	 
 			  		</div>
 					

@@ -57,18 +57,18 @@
 			#if(!$rootcategory)
 				#set($rootcategory = $context.getRequestParameter("rootcategory"))
 			#end
-			#set($link = "$siteroot$applink/views/modules/librarycollection/showcategory.html?hitssessionid=$!{assetshits.sessionId}&nodeID=$rootcategory")
+			#set($link = "$siteroot$applink/views/modules/librarycollection/showcategory.html?hitssessionid=$!{assetshits.sessionId}&nodeID=$rootcategory&clearfilters=true")
 			#set($oemaxlevel = "4")
 			#set($link = "$link&sidebarcomponent=categories")
 			#set($targetdiv = "applicationcontainer")
 		#elseif($moduleid=="faceprofilegroup")
 			#set($link = "$siteroot$applink/views/modules/asset/faceprofilegroup.html")
-			#set($link = "$link?faceprofilegroupid=$entityid")
+			#set($link = "$link?faceprofilegroupid=$!entityid&clearfilters=true")
 			#set($oemaxlevel = "2")
 			#set($targetdiv = "applicationmaincontent")
 		#else
 			#set($link = "$siteroot$applink/views/modules/asset/index.html")
-			#set($link = "$link?hitssessionid=$!{assetshits.sessionId}&field=$moduleid&operation=matches&${moduleid}.value=$entityid")
+			#set($link = "$link?hitssessionid=$!{assetshits.sessionId}&field=$moduleid&operation=matches&${moduleid}.value=$!entityid&clearfilters=true")
 			#set($oemaxlevel = "1")
 			#set($targetdiv = "applicationmaincontent")
 		#end
