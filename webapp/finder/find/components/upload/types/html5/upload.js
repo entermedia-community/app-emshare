@@ -7,6 +7,14 @@ var uploadid;
 // wait for the DOM to be loaded 
 $(document).ready(function() 
 {	
+	if (!apphome) {
+		if (!siteroot) {
+			siteroot = $("#application").data("siteroot");
+		}
+		apphome =  siteroot + $("#application").data("apphome");
+	}
+	
+	
 	function filesPicked(event, files) 
 	{
 		//merge them together
@@ -69,9 +77,7 @@ $(document).ready(function()
 		 
 	}
 	var allfiles = new Array();
-	
-	siteroot = $("#application").data("siteroot") + $("#application").data("apphome"); 
-	
+		
 	lQuery('#filePicker').livequery('click',function(e){
 		e.preventDefault(); 
 		$('#upload_field').trigger('click');
@@ -307,7 +313,7 @@ $(document).ready(function()
 	    		href = href + "&sortby=assetaddeddateDown"
 	    }
 	    else if(collectionid) {
-	    	href = siteroot+"/views/modules/librarycollection/showcategory.html?collectionid="+collectionid+"&clearfilters=true&sortby=assetaddeddateDown";
+	    	href = apphome+"/views/modules/librarycollection/showcategory.html?collectionid="+collectionid+"&clearfilters=true&sortby=assetaddeddateDown";
 	    	if( nodeid)	{
 	    		href = href + "&nodeID=" + nodeid;
 	    	}
@@ -320,11 +326,11 @@ $(document).ready(function()
 	    	options.oemaxlevel = 1;	
 	    }
 	    else if( nodeid) {
-	         href = siteroot+"/views/modules/asset/showcategory.html?sortby=assetaddeddateDown&nodeID=" + nodeid;;
+	         href = apphome+"/views/modules/asset/showcategory.html?sortby=assetaddeddateDown&nodeID=" + nodeid;;
 		    	options.oemaxlevel = 2;	
 		}
 	    else  {
-	        href = siteroot+"/views/modules/asset/index.html?sortby=assetaddeddateDown";
+	        href = apphome+"/views/modules/asset/index.html?sortby=assetaddeddateDown";
 	    	options.oemaxlevel = 2;	
 		}
 	    //console.log(href);
@@ -359,7 +365,7 @@ $(document).ready(function()
 		var input = $("#uploaddescription");
 		var inputtext = input.val();
 		var targetdiv = input.data("targetdiv");
-		var targeturl = siteroot+"/collective/channel/addnewlink.html";
+		var targeturl = apphome+"/collective/channel/addnewlink.html";
 		delay(function () {
 			var p = /(https:\/\/www\.(yotu\.be\/|youtube\.com)\/)(?:(?:.+\/)?(?:watch(?:\?v=|.+&v=))?(?:v=)?)([\w_-]{11})(&\.+)?/;
 		    if(inputtext.match(p)){
