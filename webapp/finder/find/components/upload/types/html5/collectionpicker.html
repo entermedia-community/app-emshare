@@ -4,8 +4,10 @@
 	#set($collectionid = $context.getRequestParameter("collectionid"))
 	
 	#if($collectionid)
-		#set($librarycol = $mediaarchive.getCachedData("librarycollection",$collectionid) )
-		
+		#set($librarycol = $mediaarchive.getCachedData("librarycollection", $collectionid) )
+	#else
+		##not a real collection in this DB?
+		#set($collectionid = "")
 	#end
 #end
 
@@ -41,11 +43,10 @@
 				title="[[Find or Create Album]]"
 				data-hidefooter="true"><i class="fa fa-search"></i> [[Choose Album]]</a>
 	
-			<div  style="float:center">
+			
 			<input type="hidden" name="collectionid" id="currentcollection" value="$!collectionid" class="required" required />
 			<input type="hidden" name="currentcollection" id="currentcollection" value="$!collectionid" />
-			<input type="hidden" name="currentcollectionrootcategory" id="currentcollectionrootcategory" value="$librarycol.getRootCategoryId()" />
-			</div>
+			<input type="hidden" name="currentcollectionrootcategory" id="currentcollectionrootcategory" value="$!librarycol.getRootCategoryId()" />
 				
 		</div>
 	</div>
