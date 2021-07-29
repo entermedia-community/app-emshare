@@ -166,6 +166,9 @@ $(document).ready(function()
 //			        	 return [];
 //			         },         
 			         sendBoundary: window.FormData || $.browser.mozilla,
+			         headers: {
+			             "Access-Control-Allow-Credentials":"true"
+			         },
 			         onStart: function(event, total, files) 
 			         {
 			        	 //$(".uploadinstructions").hide();
