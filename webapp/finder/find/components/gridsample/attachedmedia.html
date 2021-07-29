@@ -18,7 +18,6 @@
 		
 		$context.putPageValue("assetid", $hit.id)
 		$context.putPageValue("sourcepath", $hit.sourcepath )
-		$context.putPageValue("thumbsize", "crop" )
 		
 		#set($sourcepath = $hit.sourcepath)
 		##set($click = "$siteroot$viewerlink?hitssessionid=${assetshits.getSessionId()}&assetid=${hit.id}")
@@ -39,7 +38,7 @@
 		      	#set($title = $hit.name) 
 		    #end
 		#end
-	 	<div class="float-left grid-attachedmedia">
+	 	<div class="grid-attachedmedia">
 	 	 <div class="assetdraggable" data-assetid="$hit.id"> 
 		 	<a class="stackedplayer imagearea" id="clickid${hit.id}" data-assetid="$hit.id" href="#" title="$!title">
 			$pages.include("$componenthome/results/thumbnails/${rendertype}.html", $context)
@@ -52,7 +51,6 @@
 #end
 <div class="entity-assets-info">
 	#if($assetshits.size()>0)
-		
 		#if($moduleid=="librarycollection")
 			#if(!$rootcategory)
 				#set($rootcategory = $context.getRequestParameter("rootcategory"))
@@ -102,8 +100,9 @@
 			data-closedialog="true" 
 			data-closemediaviewer="true"
 			data-updateurl="true"
-			data-oemaxlevel="$!oemaxlevel">
-			<i class="fas fa-upload"></i> [[Upload]]</a>
+			data-oemaxlevel="$!oemaxlevel"
+			title="[[Upload assets here]]">
+			<i class="fas fa-upload"></i></a>
 		#end
 	#end
 	

@@ -25,19 +25,20 @@ $context.putPageValue("moduleid", $moduleid)
 		
 		<div class="clearfix"></div>
 		<div class="entity-media">
-		<h2 class="modal-title">
-			#set($name = $entity.name)
-			#if(!$name)
-				#set($name = "[[Unknown Profile]]")
-			#end
-			$name
-		</h2>
+##		<h2 class="modal-title">
+##			#set($name = $entity.name)
+##			#if(!$name)
+##				#set($name = "[[Unknown Profile]]")
+##			#end
+##			$name
+##		</h2>
 		
-		#set($assetsshown = 15)
+		#set($assetsshown = 4)
 		#set( $assetshits = $facemanager.searchForAssets($mediaarchive,$entityid) )
 		$!assetshits.setHitsPerPage($assetsshown)
 		$context.putPageValue("assetshits", $assetshits)
 		$context.putPageValue("fullview",true)
+		$context.putPageValue("thumbsize", "small" )
 		$pages.include("$componenthome/gridsample/attachedmedia.html",$context)
 		</div>
 		<div class="entity-metadata">

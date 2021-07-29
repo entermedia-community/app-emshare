@@ -25,12 +25,13 @@ $context.putPageValue("moduleid", $moduleid)
 		
 		<div class="clearfix"></div>
 		<div class="entity-media">
-		<h2 class="modal-title">$entity.name</h2>
+		##<h2 class="modal-title">$entity.name</h2>
 		
-		#set($assetsshown = 15)
+		#set($assetsshown = 4)
 		#set( $assetshits = $mediaarchive.query("asset").hitsPerPage($assetsshown).match("category",$rootcategory).sort("assetaddeddateDown").search() )
 		$context.putPageValue("assetshits", $assetshits)
 		$context.putPageValue("fullview",true)
+		$context.putPageValue("thumbsize", "small" )
 		$pages.include("$componenthome/gridsample/attachedmedia.html",$context)
 		</div>
 		<div class="entity-metadata">
