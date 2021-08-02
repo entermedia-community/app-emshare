@@ -69,6 +69,9 @@
 			#set($resultview = $content.get("resultview$moduleid"))
 		#end
 		#if(!$resultview)
+			#set($resultview = $context.getRequestParameter("resultstype"))
+		#end
+		#if(!$resultview)
 			#set($resultview = "table")
 		#end
 	#end
@@ -110,6 +113,7 @@
 				$context.putPageValue("pickable", false )
 				$pages.include("$componenthome/results/map.html", $context)
 			#elseif ($resultview == "grid")
+				$context.putPageValue("resultstype", "grid" )
 				$pages.include("/${componenthome}/gridsample/index.html",$context)
 			#elseif ($resultview == "finder")
 				$pages.include("/${applicationid}/views/finder/index.html",$context)
