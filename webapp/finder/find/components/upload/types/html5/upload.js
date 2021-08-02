@@ -290,8 +290,15 @@ $(document).ready(function()
 	jQuery("#up-files-list").empty();
 
 	lQuery("#viewassetsbtn").livequery("click", function(e) {
-		e.preventDefault();
+		
 		var btn = jQuery(this);
+		
+		if(btn.hasClass("entity-dialog")) {
+			return;
+		}
+		
+		e.preventDefault();
+		
 	    var options = btn.data();
 		var collectionid = jQuery("#currentcollection").val();
 		var nodeid = $("#nodeid").val();
