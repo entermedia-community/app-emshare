@@ -21,30 +21,32 @@
 						#end
 
 					
-						<div class="feedcard-collective"><a href="$collurl" class="collectivetag" title="$!librarycol.getName()">#if( $asset) <img src="$link" style='height:30px;'/>#end  $!librarycol.getName()</a></div>
+						<div class="feedcard-collective">
+							<a href="$collurl" class="collectivetag" title="$!librarycol.getName()">#if( $asset) <img src="$link" style='height:30px;'/>#end  $!librarycol.getName()</a>
+						</div>
 						<div class="clearfix"></div>
-					<div class="feedcard-author text-left">[[Published]] 
-					
-					$context.getAge($upload.getDate("uploaddate")) [[ago]]  [[by]]
-					#set( $postuser = $userManager.getUser($upload.owner, true)) 
-					<a class="" href='#urlescape("$applink/users/${postuser.getId()}/${postuser.getAnonNickName()}.html")'>$postuser.getAnonNickName()</a> |  
-					<a  class="emdialog feed-icon"  data-width="900" data-hidefooter="true" data-librarycol="${librarycol.getId()}" data-uploadid="${upload.id}" 
-			     	 href="$home$applink/collective/channel/share.html?collectionid=${librarycol.getId()}&showupload=$upload.id" title="[[Share Post]]"><i class="fas fa-share-alt"></i></a>
+						
+						<div class="feedcard-author text-left">[[Published]] 
+						$context.getAge($upload.getDate("uploaddate")) [[ago]]  [[by]]
+						#set( $postuser = $userManager.getUser($upload.owner, true)) 
+						<a class="" href='#urlescape("$applink/users/${postuser.getId()}/${postuser.getAnonNickName()}.html")'>$postuser.getAnonNickName()</a> |  
+						<a  class="emdialog feed-icon"  data-width="900" data-hidefooter="true" data-librarycol="${librarycol.getId()}" data-uploadid="${upload.id}" 
+			     	 		href="$home$applink/collective/channel/share.html?collectionid=${librarycol.getId()}&showupload=$upload.id" title="[[Share Post]]"><i class="fas fa-share-alt"></i></a>
 			     	 
-			     	 <a  class="channelviewer  feed-icon"  data-librarycol="${librarycol.getId()}" data-uploadid="${upload.id}" 
-			     	 href="$home$applink/collective/channel/show/${librarycol.getId()}/index.html?showupload=${upload.id}" title="[[View Post]]"><i class="far fa-window-maximize"></i></a>
+			     	 	<a class="channelviewer  feed-icon"  data-librarycol="${librarycol.getId()}" data-uploadid="${upload.id}" 
+			     	 		href="$home$applink/collective/channel/show/${librarycol.getId()}/index.html?showupload=${upload.id}" title="[[View Post]]"><i class="far fa-window-maximize"></i></a>
 			     	 
-					#if( $caneditcollection )
-						<a  class="emdialog  feed-icon float-right" style="margin-right:10px;" data-hidefooter="true" data-collectionid="${librarycol.getId()}" data-uploadid="${upload.id}" 
-			     	 	href="$home$applink/collective/channel/editupload/edit.html" title="[[Edit Post]]" ><i class="fas fa-ellipsis-v"></i></a>
-					#end
+						#if( $caneditcollection )
+							<a  class="emdialog  feed-icon float-right" style="margin-right:10px;" data-hidefooter="true" data-collectionid="${librarycol.getId()}" data-uploadid="${upload.id}" 
+			     	 			href="$home$applink/collective/channel/editupload/edit.html" title="[[Edit Post]]" ><i class="fas fa-ellipsis-v"></i></a>
+						#end
 					</div>
 					 
 				</div>
 			
 				<div class="feedcard-media">
 					$context.putPageValue("upload",$upload)
-					$pages.include("$apphome/collective/channel/images.html",$context)
+					$pages.include("$apphome/collective/channel/images.html", $context)
 				</div>
 				#if ($upload.longdescription)
 					<div class="feedcard-body">#linebreaks($upload.longdescription)</div>
