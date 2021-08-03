@@ -170,36 +170,22 @@ $context.putPageValue("librarycol",$librarycol)
 			   				href="#">[[Upload]]</a>
 			   			
 			   			
-			   			#if($entityupload && $entitytype && $addselection)
-			   				#set($rendertype = "entity")
-			   				#set($entitymodule = $mediaarchive.getModule($entitytype))
-							#if ($entitymodule.modulerendertype)
-								#set($rendertype = $entitymodule.modulerendertype)
-							#end
-			   				#set($previewurl = "$siteroot$componenthome/gridsample/preview/${rendertype}.html?id=$!addselection&searchtype=$!entitytype")
-			   				<a href="$previewurl" 
-					   	 	class="emdialog entity-dialog autoclick btn btn-sm btn-primary" 
-					   	 	style="display:none;" 
-					   	 	data-hidefooter="true" 
-					   	 	data-hideheader="true"
-					   	 	data-id="$addselection"
-					   	 	data-moduleid="$!entitytype"
-					   	 	id="viewassetsbtn" 
-					   	 	title="">
- 							[[View Uploads]]
-					   	 	</a>
-						#else
+
 							<a id="viewassetsbtn" 
 							style="display:none;" 
 							class="autoclick btn btn-sm btn-primary" 
 							disabled 
-							href ="$redirect" 
+							href ="$!redirect" 
 							data-targetdivinner="applicationmaincontent" 
 							data-oemaxlayout="3" 
+							#if($entityupload)
+								data-entityupload="true"
+							#else 
+								data-customviewupload="$!customredirect"
+							#end
 							
-							data-customviewupload="$!customredirect"
 							data-updateurl="true"> [[View Uploads]]</a>
-						#end	 
+							 
 			  		</div>
 					
 			</div>

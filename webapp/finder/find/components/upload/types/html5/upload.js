@@ -292,9 +292,20 @@ $(document).ready(function()
 	lQuery("#viewassetsbtn").livequery("click", function(e) {
 		
 		var btn = jQuery(this);
-		
-		if(btn.hasClass("entity-dialog")) {
-			return;
+		var href = null;
+		if(btn.data("entityupload")) {
+			//display entity dialog
+			btn.addClass("emdialog");
+			btn.addClass("entity-dialog");
+			var entitytype = $("#entitypickerentities").data("selectedentity");
+			var entityid = $("#entitypickerentities").data("selectedentityid");
+			if (entitytype && entityid) {
+				href = apphome+"/views/modules/"+entitytype+"/components/gridsample/preview/entity.html?id="+entityid+"&searchtype="+entitytype;
+				btn.attr("href", href);
+				console.log(href);
+				emdialog(btn, e);
+				return;
+			}
 		}
 		
 		e.preventDefault();
@@ -302,7 +313,7 @@ $(document).ready(function()
 	    var options = btn.data();
 		var collectionid = jQuery("#currentcollection").val();
 		var nodeid = $("#nodeid").val();
-	    var href = null;
+	    
 	    var customviewupload = btn.data("customviewupload");
 
 	    if(customviewupload) {

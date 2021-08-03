@@ -10,6 +10,10 @@
     
 	#set( $others = [])
 	#set( $type = $context.getRequestParameter("entitytype") )		##TODO remember the last selected	 
+	#set( $clearotherentities = $context.getRequestParameter("clearotherentities") )
+	#set( $addselection = $context.getRequestParameter("addselection") )
+			
+			
 	#foreach ( $amodule in $userprofile.getEntities() )
 		#set( $hits = false )
 		#if( $amodule.id != "asset" && $amodule.id != "faceprofilegroup" )
@@ -24,7 +28,7 @@
 	#end
 	
 	
-    <div style="padding:15px 0"> 
+    <div style="padding:15px 0" id="entitypickerentities" data-selectedentity="$!type" data-selectedentityid="$!addselection"> 
 		
 		    
 			#if( !$others.isEmpty() )
@@ -44,8 +48,7 @@
 					</div>
 			#end
 		
-			#set($clearotherentities = $context.getRequestParameter("clearotherentities") )
-			#set($addselection = $context.getRequestParameter("addselection") )
+			
 			
 				#foreach ( $amodule in $userprofile.getEntities() )
 					<div  class="row no-gutters">
@@ -57,9 +60,11 @@
 						<div class="side-select-menu #if( $type == $amodule.id) active #end"> 
 						
 						<div class="addMediaRow">
-						<a class="ajax" data-targetdiv="entitypicker" data-oemaxlevel="1"  
-						href="$siteroot$applink/components/upload/entities/picker.html?entitytype=${amodule.id}&clearotherentities=$!clearotherentities"> 
-								<h5 class="selectedEntity" style="padding: 10px 0px 10px 10px;">$amodule</h5>
+						<a class="ajax" 
+							data-targetdiv="entitypicker" 
+							data-oemaxlevel="1"  
+							href="$siteroot$applink/components/upload/entities/picker.html?entitytype=${amodule.id}&clearotherentities=$!clearotherentities"> 
+							<h5 class="selectedEntity" style="padding: 10px 0px 10px 10px;">$amodule</h5>
 						</a>
 						</div>
 						
