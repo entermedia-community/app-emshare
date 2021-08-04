@@ -13,18 +13,21 @@
 						<i class="fas fa-lock"></i>
 						#end
 						</div>
-					
-						#set($asset = false )
-						#if($librarycol.assetportrait)
-							#set($asset = $mediaarchive.getAsset($librarycol.assetportrait))
-							#set($link = $mediaarchive.asLinkToPreview($asset,"image200x200.jpg"))
+						
+						#if($content.collectivesection !="channel")
+							#set($asset = false )
+							#if($librarycol.assetportrait)
+								#set($asset = $mediaarchive.getAsset($librarycol.assetportrait))
+								#set($link = $mediaarchive.asLinkToPreview($asset,"image200x200.jpg"))
+							#end
+	
+						
+							<div class="feedcard-collective">
+								<a href="$collurl" class="collectivetag" title="$!librarycol.getName()">#if( $asset) <img src="$link" style='height:30px;'/>#end  $!librarycol.getName()</a>
+							</div>
+							<div class="clearfix"></div>
 						#end
-
-					
-						<div class="feedcard-collective">
-							<a href="$collurl" class="collectivetag" title="$!librarycol.getName()">#if( $asset) <img src="$link" style='height:30px;'/>#end  $!librarycol.getName()</a>
-						</div>
-						<div class="clearfix"></div>
+						
 						
 						<div class="feedcard-author text-left">[[Published]] 
 						$context.getAge($upload.getDate("uploaddate")) [[ago]]  [[by]]
