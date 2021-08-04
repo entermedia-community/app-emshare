@@ -995,11 +995,12 @@ jQuery(document).ready(function(url,params)
 
 	
 	lQuery('th.sortable').livequery('click', function(){
+		
             var id = $(this).data('sortby');
             var resultsdiv =  "";
             var searchome="";
             var options="";
-            var moduletable = $(this).closest("#emselectable");;
+            var moduletable = $(this).closest(".emselectable");;
             if (moduletable && moduletable.data("targetdiv")) {
             	resultsdiv = $("#"+moduletable.data("targetdiv"));
             	searchhome = moduletable.data('searchhome');
@@ -1025,8 +1026,8 @@ jQuery(document).ready(function(url,params)
                 $(this).addClass('currentsort');
                 $(resultsdiv).load( columnsort + '&sortby=' + id + 'Down', options);
             }
-        }
-    );
+    });
+	
     
 	var hidemediaviewer = $("body").data("hidemediaviewer");
     if (!hidemediaviewer) {
