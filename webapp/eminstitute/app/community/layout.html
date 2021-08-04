@@ -17,7 +17,7 @@
 				</div>
 				#end
 				
-				<h3>$library [[Community Page]]</h3>
+				<h2>$library [[Community Page]]</h2>
 				
 				#if( $caneditlibrary)	
 				<a class="oe-dataedit showeditonright" data-target="#edithtmlintro-$library.id" title="[[Edit Library Intro]]" data-width="500"	href="#"><i class="fas fa-edit"></i></a>
@@ -27,8 +27,8 @@
 				</div>
 				
 				#if( $caneditlibrary)
-					<div style="padding:20px 20px;">
-						<a href="/site/app/browse/add/addnew.html?libraryid=$library.getId()" title="Start New Project" class="btn btn-primary">Add Project</a>	
+					<div style="padding:20px 0;">
+						<a href="$applink/browse/add/addnew.html?libraryid=$library.getId()" title="[[Start New Project]]" class="btn btn-primary">Add Project</a>	
 				    </div>
 				#end
 
@@ -82,7 +82,7 @@
 		<div class="col col-12 col-collectivesidebar">
 			<div class="collective-sidebar">
 				#set($collectivehits = $mediaarchive.query("librarycollection").exact("library",$library.id).sort("creationdate").search($context))
-				<h2 style="margin-top:10px;padding-top:10px;">$library Projects</h2>
+				<h2>$library Projects</h2>
 				#foreach( $collective in $collectivehits.getPageOfHits() )
 					$context.putPageValue("collective",$collective)
 					$pages.include("$apphome/browse/collectivelist.html",$context)

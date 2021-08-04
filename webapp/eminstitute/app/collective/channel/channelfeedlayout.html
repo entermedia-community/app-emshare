@@ -2,67 +2,67 @@
 
 <div id="channelcontainer" class="container" style="min-height: 100%;">
 <div class="row no-gutters" style="min-height: 100%;">
- <div class="col community-maincol feed-maincol">
-##Intro 'about' code.
- <div class="contentcolumn content-body content-collective-home">
-	 	#if( $caneditcollection)<a class="oe-dataedit showeditonright" data-target="#edithtmlintro-$librarycol.id" title="[[Edit Project Intro]]" data-width="500"	href="#"><i class="fas fa-edit"></i></a>#end
-		<div class="oe-editable" id="edithtmlintro-$librarycol.id" data-dataid="$librarycol.id" data-field="htmlintro" data-searchtype="librarycollection">
-		   		#if($librarycol.htmlintro) $!librarycol.htmlintro #else $pages.include("$apphome/collective/about/htmlintro.html")#end
+ <div class="col community-maincol channel-feed feed-maincol">
+		##Intro 'about' code.
+	 	<div class="contentcolumn content-body content-collective-home">
+		 	#if( $caneditcollection)<a class="oe-dataedit showeditonright" data-target="#edithtmlintro-$librarycol.id" title="[[Edit Project Intro]]" data-width="500"	href="#"><i class="fas fa-edit"></i></a>#end
+			<div class="oe-editable" id="edithtmlintro-$librarycol.id" data-dataid="$librarycol.id" data-field="htmlintro" data-searchtype="librarycollection">
+			   		#if($librarycol.htmlintro) $!librarycol.htmlintro #else $pages.include("$apphome/collective/about/htmlintro.html")#end
+			</div>
+			
+			##show featured uploads?
 		</div>
 		
-		##show featured uploads?
-		</div>
-	
-	#if( $caneditcollection )
-		$pages.include("$apphome/collective/channel/addnewupload.html")
-	#end
-	#set( $topic = $context.getRequestParameter("topic"))
-	
-	#if($caneditcollection)
-		#set( $allprojects = $mediaarchive.getSearcher("collectiveproject").query().match("parentcollectionid",$collectiveid).match("featured","true").sort("name").search($context) )
-	#else
-		#set( $allprojects = $mediaarchive.getSearcher("collectiveproject").query().match("parentcollectionid",$collectiveid).exact("teamproject","false").match("featured","true").sort("name").search($context) )
-	#end
-	#if($allprojects.size()>0)
-		<div class="feed-topics">
-		<span class="d-none d-md-block"><strong>[[Topics]]:</strong></span> 
-		<a href="$applink/collective/channel/${collectiveid}/${librarycol.name}.html" class="btn-toolbar #if (!$topic) topicselected #end" title="[[All Posts]]">#[[All]]</a>
-		
-		#foreach( $project in $allprojects )
-		<a href="$applink/collective/channel/${collectiveid}/topics.html?topic=${project.getId()}" class="btn-toolbar #if($topic == $project.getId()) topicselected #end" title="#esc($!{project.projectdescription})">$project</a>
+		#if( $caneditcollection )
+			$pages.include("$apphome/collective/channel/addnewupload.html")
 		#end
+		#set( $topic = $context.getRequestParameter("topic"))
+		
 		#if($caneditcollection)
-			<a href="$applink/collective/projects/edit.html?collectionid=${collectiveid}" class="btn-toolbar float-right emdialog" data-hidefooter="true" title="[[Edit Topics]]" style="margin-left:5px;"><i class="fas fa-ellipsis-v"></i></a> 
-			<a href="$applink/collective/projects/addnew.html?collectionid=${collectiveid}" class="btn-toolbar emdialog" title="[[Add a Topic]]"><i class="fas fa-plus"></i></a>
+			#set( $allprojects = $mediaarchive.getSearcher("collectiveproject").query().match("parentcollectionid",$collectiveid).match("featured","true").sort("name").search($context) )
+		#else
+			#set( $allprojects = $mediaarchive.getSearcher("collectiveproject").query().match("parentcollectionid",$collectiveid).exact("teamproject","false").match("featured","true").sort("name").search($context) )
 		#end
+		#if($allprojects.size()>0)
+			<div class="feed-topics">
+			<span class="d-none d-md-block"><strong>[[Topics]]:</strong></span> 
+			<a href="$applink/collective/channel/${collectiveid}/${librarycol.name}.html" class="btn-toolbar #if (!$topic) topicselected #end" title="[[All Posts]]">#[[All]]</a>
+			
+			#foreach( $project in $allprojects )
+			<a href="$applink/collective/channel/${collectiveid}/topics.html?topic=${project.getId()}" class="btn-toolbar #if($topic == $project.getId()) topicselected #end" title="#esc($!{project.projectdescription})">$project</a>
+			#end
+			#if($caneditcollection)
+				<a href="$applink/collective/projects/edit.html?collectionid=${collectiveid}" class="btn-toolbar float-right emdialog" data-hidefooter="true" title="[[Edit Topics]]" style="margin-left:5px;"><i class="fas fa-ellipsis-v"></i></a> 
+				<a href="$applink/collective/projects/addnew.html?collectionid=${collectiveid}" class="btn-toolbar emdialog" title="[[Add a Topic]]"><i class="fas fa-plus"></i></a>
+			#end
+			</div>
+		#end
+		#if( $librarycol.streamurl && !$topic )
+			$pages.include("$apphome/components/streaming/play.html",$context)
+		#end
+	
+		#set($resultsPage = "$content.getPath()?hitssessionid=$topuploads.sessionId&useruploadpageposition")
+	
+		$context.putPageValue("hits",$topuploads)
+		$context.putPageValue("resultsPage",$resultsPage)
+		$context.putPageValue("targetdiv","channelcontainer")
+		$context.putPageValue("oemaxlevel","2")
+		$pages.include("$apphome/components/results/positions.html",$context)
+		#foreach( $upload in $topuploads.getPageOfHits())
+			$context.putPageValue("upload",$upload)
+			$pages.include("$apphome/collective/channel/showpost.html",$context)
+		#end
+		
+		
+		$pages.include("$apphome/components/results/positions.html",$context)
+
+
+
+	</div>	
+	 <div class="col col-12 col-collectivesidebar">
+		<div class="collective-sidebar">
+			$pages.include("$apphome/collective/channel/subscribers/index.html", $context)
 		</div>
-	#end
-	#if( $librarycol.streamurl && !$topic )
-		$pages.include("$apphome/components/streaming/play.html",$context)
-	#end
-
-	#set($resultsPage = "$content.getPath()?hitssessionid=$topuploads.sessionId&useruploadpageposition")
-
-	$context.putPageValue("hits",$topuploads)
-	$context.putPageValue("resultsPage",$resultsPage)
-	$context.putPageValue("targetdiv","channelcontainer")
-	$context.putPageValue("oemaxlevel","2")
-	$pages.include("$apphome/components/results/positions.html",$context)
-	#foreach( $upload in $topuploads.getPageOfHits())
-		$context.putPageValue("upload",$upload)
-		$pages.include("$apphome/collective/channel/showpost.html",$context)
-	#end
-	
-	
-	$pages.include("$apphome/components/results/positions.html",$context)
-
-
-
-</div>	
- <div class="col col-12 col-collectivesidebar">
-<div class="collective-sidebar">
-	$pages.include("$apphome/collective/channel/subscribers/index.html", $context)
-</div>
- </div>
+	 </div>
 </div>
 </div>
