@@ -32,26 +32,6 @@
 	<div class="opencollections">
 	<ul>
 		
-	 #if($canaddtofavorites)
-		#set( $collection = $mediaarchive.getProjectManager().getFavoritesCollection($user) )
-		#if( $librarycol && $collection.getId() == $librarycol.id )
-				#set( $selected = true )
-			#end
-		<li class="librarycollectiondroparea #if ($selected ) selected #end"
-				data-dropsaveurl="$siteroot$apphome/components/opencollections/addassettocollection.html"
-				data-collectionid="$collection.getId()"
-				data-targetdiv="left-col-opencollections"
-			>
-				<div class="collectionrow collectionrowfavorite">
-					<a  href="$siteroot$apphome/views/modules/librarycollection/media/${collection.getId()}/index.html?clearselection=true" 
-					 	class="collectionbox #if ($selected ) selected #end favorite"  
-					 	title="$!{collection}"
-					 	data-collectionname="${collection.getName()}">
-					 	<i class="fas fa-star"></i>  [[Favorites]] ($collection.getAssetCount())
-					</a>
-				 </div>
-			</li>
-	#end
 	  	#foreach($collection in $usercollections )
 		    #set( $selected = false )
 			#if( $librarycol && $collection.getId() == $librarycol.id )
