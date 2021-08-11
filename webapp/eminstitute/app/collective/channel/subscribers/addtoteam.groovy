@@ -85,12 +85,23 @@ public void init()
 	objects.put("librarycol", librarycol);
 	objects.put("apphome", context.findValue("apphome"));
 	objects.put("applink", context.findValue("applink"));
+	objects.put("siteroot", getSiteRoot());
 
+		
 	//log.info("Sending welcome email  " + teamuser.getId());
 	
 	templatemail.send(objects);
 			
 	log.info("Sent email " + teamuser.getId());
+}
+
+private String getSiteRoot() {
+	MediaArchive mediaArchive = context.getPageValue("mediaarchive");
+	String site = mediaArchive.getCatalogSettingValue("siteroot");
+	if (!site) {
+		site = mediaArchive.getCatalogSettingValue("cdn_prefix");
+	}
+	return site;
 }
 
 init();
