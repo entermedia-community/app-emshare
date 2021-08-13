@@ -101,6 +101,9 @@ $(document).ready(function()
     	if(!valid){
     		return;
     	}
+    	
+
+    	
     	$(this).text("Uploading");
     	
     	$(this).attr('disabled', 'disabled');

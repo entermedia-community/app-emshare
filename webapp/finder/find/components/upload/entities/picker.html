@@ -1,5 +1,6 @@
 <div class="ui-widget uipanel" id="entitypicker">
-    <div class="ui-widget-header">[[Data Entity Tags]]
+   <div class="ui-widget-header toggle-upload-details" data-status="open">
+		<i class="fas fa-caret-down"></i> [[Entity Tags]]
     	<span class="widget-header-edit">
 		 <a	class="ajax" 
 			data-targetdivinner="applicationmaincontent" 
@@ -27,12 +28,10 @@
 		#end
 	#end
 	
-	
-    <div style="padding:15px 0" id="entitypickerentities" data-selectedentity="$!type" data-selectedentityid="$!addselection"> 
-		
-		    
+	<div class="toggle-content ">
+    <div id="entitypickerentities" data-selectedentity="$!type" data-selectedentityid="$!addselection"> 
 			#if( !$others.isEmpty() )
-				<div style="margin-bottom:15px;">
+				<div style="padding:10px 0; ">
 					<select name="addentity" 
 							class="ajaxautosubmitselect form-control form-control-sm" 
 							data-url="$siteroot$applink/components/upload/entities/picker.html" 
@@ -44,19 +43,18 @@
 							<option value="$amodule.id">$amodule.getName($context)</option>
 						#end
 					</select>
-					<div class="clearfix"></div>
+					
 					</div>
 			#end
-		
-			
-			
-				#foreach ( $amodule in $userprofile.getEntities() )
-					<div  class="row no-gutters">
-					#set( $hits = false )
-					#set( $key = "picked$amodule.getId()" )
-					#set( $hits = $userprofile.getValues($key))
-					#if( ($type && $amodule.id == $type  ) || ( $clearotherentities !="true" && $hits && $amodule.id != "asset" && $amodule.id != "faceprofilegroup") )
-						<div class=" col-5">
+
+			#foreach ( $amodule in $userprofile.getEntities() )
+				
+				#set( $hits = false )
+				#set( $key = "picked$amodule.getId()" )
+				#set( $hits = $userprofile.getValues($key))
+				#if( ($type && $amodule.id == $type  ) || ( $clearotherentities !="true" && $hits && $amodule.id != "asset" && $amodule.id != "faceprofilegroup") )
+					<div  class="row no-gutters" style="margin-bottom: 20px;">
+						<div class=" col-md-5">
 						<div class="side-select-menu #if( $type == $amodule.id) active #end"> 
 						
 						<div class="addMediaRow">
@@ -89,7 +87,7 @@
 						</div>
 						#set( $entityupload = $context.getRequestParameter("entityupload") )
 						#if( $type == $amodule.id && $entityupload != "true")
-							<div class="col-7">
+							<div class="col-md-7">
 							<div class="addEntity">
 								
 									<a class="ajax addEntityClose" 
@@ -124,12 +122,10 @@
 							</div>
 							</div>
 						#end
-						
-					#end
-					</div>
+					</div>	
 				#end
-	 		
-
- </div>  ##dialog
-	
+				
+			#end
+	 		</div>  ##dialog
+		 </div>
 </div>  ##panel

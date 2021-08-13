@@ -2757,6 +2757,27 @@ uiload = function() {
 		  
 		  
 	});
+	
+	
+	lQuery( ".toggle-upload-details" ).livequery("click", function(e) {
+		toggleuploaddetails($(this));
+	});
+	
+	toggleuploaddetails = function(detail, status = '') {
+		if (status=='') {
+			status = detail.data("status");
+		}	
+		if (status=="open") {
+			detail.next(".toggle-content").hide();
+			detail.children(".fas").removeClass("fa-caret-down").addClass("fa-caret-right");
+			detail.data("status", "closed");
+		}
+		else {
+			detail.next(".toggle-content").show();
+			detail.children(".fas").removeClass("fa-caret-right").addClass("fa-caret-down");
+			detail.data("status", "open");
+		}
+	};
 
 
 }// uiload

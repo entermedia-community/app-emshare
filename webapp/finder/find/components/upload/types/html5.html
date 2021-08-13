@@ -38,47 +38,26 @@ $context.putPageValue("librarycol",$librarycol)
 
 <div class="container-fluid">
 <div class="row">
-    <div  class="col-4 col-upload-left">
+    <div  class="col-md-4 col-upload-left">
 		
-	#if( $nodeID )
-			$!context.setRequestParameter("libraries.value",$!librarycol.library)
-			<input type="hidden" name="collectionid" id="currentcollection" value="$!collectionid" />
-			<input type="hidden" name="currentcollection" id="currentcollection" value="$!collectionid" />
-			#if ($librarycol)
-			<div class="ui-widget-header">[[Album]]</div>
-			#end
-			<div style="padding:5px 8px; margin:5px 0 10px; background-color: #c6c6c6;">
-				[[Uploading to:]] 
-				#if ($librarycol)
-					<strong>$librarycol.getName()</strong>
-				#end
-				#if (!$category)
-					#set($category = $mediaarchive.getData("category",$nodeID))
-				#end
-				#if($category && $category.getId() != $librarycol.getRootCategoryId())
-					| $category.getName() 
-				#end
-			</div>
-	#else		 
-		#if($collectionid || $mediaarchive.isCatalogSettingTrue("show_add_media_collection"))
-			$pages.include("$apphome/components/upload/types/html5/collectionpicker.html", $context)
-		#end	
-	#end				
+			
+		<div class="ui-widget-header">[[SELECT FILES]]</div>
 		
-		
-		<div class="uploadinstructions">
+		<div class="uploadinstructions" style="padding-top:10px;">
 			<div class="pickerHolder">
-				<a class="btn btn-primary btn-lg picker" href="#" id="filePicker" style="margin-top: 0"><i class="fas fa-upload"></i> [[Pick Files]]</a>
-				<a class="btn btn-primary btn-lg picker" href="#" id="folderPicker" style="margin-top: 0"><i class="fas fa-upload"></i> [[Pick Folders]]</a>
+				<a class="btn btn-primary btn-lg picker" href="#" id="filePicker" style="margin-top: 0">
+				<i class="fas fa-file-upload"></i> [[Pick Files]]</a>
+				<a class="btn btn-primary btn-lg picker" href="#" id="folderPicker" style="margin-top: 0">
+				<i class="fas fa-folder"></i> [[Pick Folders]]</a>
 			</div>
-			   <p class="hints" style="text-align: left; padding: 5px 20px;" id="drag-and-drop-instructions">
-	            [[Upload multiple files by using the]] <strong>[[Shift]]</strong> [[key on your keyboard while selecting the files you wish to upload]].
-	        </p>			             
+			   ##<p class="hints" style="text-align: left; padding: 5px 20px;" id="drag-and-drop-instructions">
+	           ## [[Upload multiple files by using the]] <strong>[[Shift]]</strong> [[key on your keyboard while selecting the files you wish to upload]].
+	           ##</p>			             
 		</div>				
 	<ul id="up-files-list" class="up-files-list">				
 	</ul>	
 	
-	<div class="uploadinstructions">	  
+	<div class="uploadinstructions d-none d-lg-block">	  
            <div id="drop-area" >
 		<div class="drop-over"></div>
 		<div class="hints" >[[Drop files here!]]</div>
@@ -111,8 +90,36 @@ $context.putPageValue("librarycol",$librarycol)
 	 </div>				
 
     </div>
-    <div  class="col-8 col-upload-right" >
-
+    <div  class="col-md-8 col-upload-right" >
+    
+    	<div class="upload-detail-box">
+    	#if( $nodeID )
+			$!context.setRequestParameter("libraries.value",$!librarycol.library)
+			<input type="hidden" name="collectionid" id="currentcollection" value="$!collectionid" />
+			<input type="hidden" name="currentcollection" id="currentcollection" value="$!collectionid" />
+			#if ($librarycol)
+			<div class="ui-widget-header"><i class="fas fa-caret-right"></i> [[Album]]</div>
+			#end
+			<div style="padding:5px 8px; margin:5px 0 10px; background-color: #c6c6c6;">
+				[[Uploading to:]] 
+				#if ($librarycol)
+					<strong>$librarycol.getName()</strong>
+				#end
+				#if (!$category)
+					#set($category = $mediaarchive.getData("category",$nodeID))
+				#end
+				#if($category && $category.getId() != $librarycol.getRootCategoryId())
+					| $category.getName() 
+				#end
+			</div>
+		#else		 
+			#if($collectionid || $mediaarchive.isCatalogSettingTrue("show_add_media_collection"))
+				$pages.include("$apphome/components/upload/types/html5/collectionpicker.html", $context)
+			#end	
+		#end	
+		</div>
+		
+		
 		<div id="uploadmetadata">
 		
 		
@@ -137,8 +144,9 @@ $context.putPageValue("librarycol",$librarycol)
 		#set($viewpath = "asset/$viewid")
 		$context.putPageValue("view",$viewpath)
 		
-		<div class="ui-widget uipanel">
-		    <div  class="ui-widget-header">[[Add More Details]]
+			<div class="upload-detail-box">
+		    <div class="ui-widget-header toggle-upload-details" data-status="open">
+		    <i class="fas fa-caret-right"></i> [[Add More Details]]
 		    	#if( $caneditmetadatasetup )
 		    	<span class="widget-header-edit">
 				 <a class="ajax" 
@@ -149,7 +157,7 @@ $context.putPageValue("librarycol",$librarycol)
 				#end
 		    </div>
 		    
-		    <div  class="ui-widget-content"> 
+		    <div class="toggle-content "> 
 				
 				$context.putPageValue("searcher",$mediaarchive.getAssetSearcher() )	
 				
@@ -161,13 +169,15 @@ $context.putPageValue("librarycol",$librarycol)
                     
 					$pages.include("/$applicationid/components/xml/detaileditorcss.html", $context)
 					
-				
-					##have the cancel delete these assets?
+			</div>
+			</div>
+			
+			##have the cancel delete these assets?
 					<div id="uploadinstructionsafter" style="display: none">
 			   			<a class="btn btn-primary btn-lg" 
 			   				id="startbutton" 
 			   				data-complete="[[Upload]]" 
-			   				href="#">[[Upload]]</a>
+			   				href="#"><i class="fas fa-upload"></i> [[Upload]]</a>
 			   			
 			   			
 
@@ -187,9 +197,6 @@ $context.putPageValue("librarycol",$librarycol)
 							data-updateurl="true"> [[View Uploads]]</a>
 							 
 			  		</div>
-					
-			</div>
-		</div>
 		</div>
 		
 	</div>
