@@ -1,20 +1,21 @@
 #set($collectionid = $librarycol.getId())
 
-<div id="subscriberssidebar">
+<div id="subscriberssidebar" style="position:relative">
 
 	#set($currentTotal = $transactionManager.getTransactionTotal($librarycol.getId()))
 
-	#if( $caneditcollection)
-	<div class="float-right" style="margin:8px -10px 0 0">
-	<a class="emdialog" data-allwaysloadpage="true" href="$applink/collective/edit/editcollective.html?collectionid=$librarycol.getId()" title="[[Edit your Goals]]"><i class="fas fa-cog"></i></a>
-	</div>
-	#end
+##	#if( $caneditcollection)
+	
+##	<a class="emdialog btn btn-sm btn-light" style="position:absolute; right: 0px; top:20px;" data-allwaysloadpage="true" href="$applink/collective/edit/editcollective.html?collectionid=$librarycol.getId()" title="[[Edit your Goals]]"><i class="fas fa-cog"></i> [[Goals]]</a>
+	
+##	#end
 
 
 ##Distribution details, move all this to Donate/Expendetures area 
 
 	<div class="sidebarbox" style="padding-top:15px;" >
-		<h4><i class="fas fa-bullseye"></i> [[Goal]]</h4>
+		<h4><i class="fas fa-bullseye"></i> [[Goal]]
+		</h4>
 				<div class="" style="padding-left:6px;">		
 				#if($librarycol.goaldate)
 				<strong>[[Our Goal Is:]] $${librarycol.goalamount} by #date($librarycol,"goaldate")! </strong><br>
@@ -24,6 +25,9 @@
 				<strong>[[No goals yet]]!</strong>
 				#end
 				</div>	
+		#if( $caneditcollection)
+			<div style=" padding:6px; color:#888"><i class="fas fa-info-circle"></i> [[Configure Goals on Project Settings]]</div>
+		#end
 
 	</div>
 	<div style="padding:20px 0;" class="text-center">
@@ -35,11 +39,12 @@
 	<div class="sidebarbox" >
 	
 	<h4>
-		<div class="float-right" >
-		<a class="emdialog" data-cancelsubmit="true" title="View All Donations" href="$applink/collective/donate/donationlist.html?collectionid=$librarycol.getId()">
+		
+		<a class="emdialog float-right" style="font-size:.8em;" data-cancelsubmit="true" title="View All Donations" href="$applink/collective/donate/donationlist.html?collectionid=$librarycol.getId()">
 		$${currentTotal}</a>
-		</div>
-			<i class="fas fa-hand-holding-usd"></i> [[Donations]]</h4>	
+		
+			<i class="fas fa-hand-holding-usd"></i> [[Donations]]
+	</h4>	
 			#if( !$donations.isEmpty() )
 			<strong>[[Recent Donations]]</strong>
 				#foreach($transaction in $donations.getPageOfHits())

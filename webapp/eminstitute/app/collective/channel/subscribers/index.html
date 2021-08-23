@@ -2,8 +2,10 @@
 <div id="subscriberssidebar">
 	#if( $caneditcollection)
 	<div class="float-right">
-	<a class="emdialog" data-allwaysloadpage="true" href="$applink/collective/edit/editcollective.html?collectionid=$librarycol.getId()" 
-		title="[[Project Settings]]"><i class="fas fa-cog"></i></a>
+	<a class="emdialog btn btn-sm btn-light"
+	style="position:absolute; right:10px;"  
+		data-allwaysloadpage="true" href="$applink/collective/edit/editcollective.html?collectionid=$librarycol.getId()" 
+		title="[[Project Settings]]"><i class="fas fa-cog"></i> [[Settings]]</a>
 	</div>
 	#end
 	<div class="subscribe-area">
@@ -51,14 +53,14 @@
 				</form>
 			#end
 		#else
-			<h3>[[JOIN THE TEAM]]</h3>
+			<h3>[[Follow The Project]]</h3>
 			#set($loginok = "$applink/collective/channel/$collectionid/${librarycol.getWebName()}.html")
-			<a href="$applink/authentication/login.html?loginokpage=$!loginok" class="btn btn-success">[[Login to Subscribe]]</a>
+			<a href="$applink/authentication/login.html?loginokpage=$!loginok" class="btn btn-success" style=""><i class="fas fa-envelope"></i> &nbsp;[[Login to Subscribe]]</a>
 		#end	
 		
 		<div class="subscribe-headline">
 			#if( $caneditcollection)
-			<a class="oe-dataedit showeditonright" data-target="#editjoincollectivetext-$librarycol.id" title="[[Edit Join Collective Text]]" data-width="500"	href="#"><i class="fas fa-edit"></i></a>
+			<a class="oe-dataedit float-right" data-target="#editjoincollectivetext-$librarycol.id" title="[[Edit Join Collective Text]]" data-width="500"	href="#"><i class="fas fa-edit"></i></a>
 			#end
 			<div class="oe-editable" id="editjoincollectivetext-$librarycol.id" data-dataid="$librarycol.id" data-field="joincollectivetext" data-searchtype="librarycollection">
 	   		#if($librarycol.joincollectivetext) 
@@ -119,7 +121,7 @@
 #set( $team = $mediaarchive.query("librarycollectionusers").exact("collectionid",$collectionid).exact("ontheteam",true).search($context) )
 <h4>
 <div class="float-right">
-<a class="emdialog" data-cancelsubmit="true" title="View Team" href="$applink/collective/channel/subscribers/teamlist.html?collectionid=$librarycol.getId()">
+<a class="emdialog" style="font-size:.8em;" data-cancelsubmit="true" title="[[View Team]]" href="$applink/collective/channel/subscribers/teamlist.html?collectionid=$librarycol.getId()">
 $team.size()</a>
 </div>
 
@@ -164,7 +166,7 @@ $team.size()</a>
 	#if( $caneditcollection)
 	<div class="text-right">
 	<a href="$applink/collective/channel/subscribers/usersearch.html?collectionid=${collectionid}" 
-		class="emdialog btn btn-light btn-xs" title="[[Search Users]]">
+		class="emdialog btn btn-primary btn-sm" title="[[Search Users]]">
 	<i class="fas fa-search"></i> [[Add Member]]
 	</a>
 	</div>
