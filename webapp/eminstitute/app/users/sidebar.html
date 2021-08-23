@@ -44,72 +44,40 @@
 			</li>
 			#end
 			#if($canviewsettings)
+			<li class="#if($content.appsection == "mytasks") current #end"><a href="$applink/users/tasks/mytasks.html?goaltrackerstaff=$user.getId()"><i class="fas fa-hammer"></i> [[My Open Tasks]]</a></li>
+			#end
+			#if($canviewsettings)
 			<li class="#if($content.appsection == "completed") current #end"><a href="$applink/users/tasks/report.html?collectionid=*&goaltrackerstaff=*"><i class="far fa-file-alt"></i> [[Completed Tasks]]</a></li>
-			#end
-			#if($canviewsettings)
-			<li class="#if($content.appsection == "mytasks") current #end"><a href="$applink/users/tasks/mytasks.html?goaltrackerstaff=$user.getId()"><i class="fas fa-hammer"></i> [[My Tasks]]</a></li>
-			#end
-			#if($canviewsettings)
-			<li class="#if($content.appsection == "sanmarcos") current #end"><a href="$applink/sanmarcos/index.html?goaltrackerstaff=$user.getId()"><i class="fas fa-heartbeat"></i> [[San Marcos Salud (temporary)]]</a></li>
 			#end
 			</ul>
 	    </div>
 	</div>
 	
 	
-	<div class="sidebar-box" id="sidebarboxprojects">
+		<div class="sidebar-box" id="sidebarboxprojects">
 	    <div class="sidebar-box-header">
-	        [[Projects]]        
+	        [[My Teams]]        
 	    </div>
 	    <div class="sidebar-box-content" style="padding:0;">
-	    	#if($canviewsettings)
-	    		<div style="padding:5px 15px;">
-				<select  id="collectivesearch2" 
-							name="collectionid" 
-							class="form-control autosubmitlink" 
-							data-placeholder="[[Search Projects]]"
-							data-url="$applink/collective/community/index.html?collectionid="
-							data-dropdownparent="sidebarboxprojects"
-						>
-						<option></option>
-						#set( $collectives = $mediaarchive.query("librarycollection").sort("name").search() )
-						#foreach( $collective in $collectives )
-							<option value="$collective.getId()">#esc($collective.name)</option>
-						#end
-				</select>
-				</div>
-			#end
-		
-			#set($selectedproject = $librarycol.getId())
-		
-			#if($userprojectsids)
-				#set( $organizations = $mediaarchive.query("librarycollection").ids($userprojectsids).enduser(true).sort("name").search() )
-				#set( $modcollections = $chatManager.loadCollectionsModified($organizations,$user.getId() ) )
-			
-				<ul class="sidebar-list">
-				#foreach( $ohit in $organizations.getPageOfHits() )
+	    	<ul class="sidebar-list">
+	    		<li><a href="$applink/users/teams/createteam.html">[[Create New Team]]</a></li>
+					#set($mylibraries = $mediaarchive.query("library").or().exact("owner",$user.getId()).exact("viewuers",$user.getId()).sort("name").search($context) )
+					#foreach( $alibrary in $mylibraries )
 					<li class="#if($selectedproject==$ohit.id) current #end">
-						<a href="$applink/collective/community/index.html?collectionid=$ohit.id&goaltrackerstaff=*" >
-						<i class="fas fa-sitemap"></i> $ohit.name
-						#if( $modcollections.contains($ohit.getId())) * #end
-						</a>
+						#if( $alibrary.communitysubdomain)
+							#set($link = "//${alibrary.communitysubdomain}$applink/")
+						#else
+							#set($link = "${context.siteRoot}$applink/community/${alibrary.id}/#dash($alibrary.name).html")
+						#end
+						<a href="$link"><i class="fas fa-sitemap"></i> $alibrary.getName()</a>
 					</li>
 				#end
-				</ul>
-			#end
+			</ul>
 			
-			#if(1==2)
-			<div style="padding:20px 20px;">
-			<a #if( $user )href="$applink/browse/add/addnew.html"
-		  			#else
-		  			href="$applink/authentication/login.html?loginokpage=$apphome/browse/add/addnew.html"
-		  			#end
-					title="[[Start New Channel]]"
-		  		 	class="btn btn-primary" >[[Start New Project]]</a>	
-		    </div>
-		    #end
 		</div>
 	</div>
+	
+	
 
 #end  
 		
