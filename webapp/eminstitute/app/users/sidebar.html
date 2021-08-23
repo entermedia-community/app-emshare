@@ -56,18 +56,18 @@
 	
 		<div class="sidebar-box" id="sidebarboxprojects">
 	    <div class="sidebar-box-header">
-	        [[My Organizations]]        
+	        [[My Organizations]]         
 	    </div>
 	    <div class="sidebar-box-content" style="padding:0;">
 	    	<ul class="sidebar-list">
-	    		<li><a #if($content.appsection == "createorg") current #end" href="$applink/users/organization/create.html">[[Create New Organization]]</a></li>
+	    		<li class="#if($content.appsection == "createorg") current #end" ><a href="$applink/organization/create.html">[[Create New Organization]]</a></li>
 					#set($mylibraries = $mediaarchive.query("library").or().exact("owner",$user.getId()).exact("viewuers",$user.getId()).sort("name").search($context) )
 					#foreach( $alibrary in $mylibraries )
-					<li class="#if($selectedproject==$ohit.id) current #end">
+					<li class="#if($library.id==$alibrary.id) current #end">
 						#if( $alibrary.communitysubdomain)
 							#set($link = "//${alibrary.communitysubdomain}$applink/")
 						#else
-							#set($link = "${context.siteRoot}$applink/community/${alibrary.id}/#dash($alibrary.name).html")
+							#set($link = "${context.siteRoot}$applink/organization/projects/${alibrary.id}/#dash($alibrary.name).html")
 						#end
 						<a href="$link"><i class="fas fa-sitemap"></i> $alibrary.getName()</a>
 					</li>
