@@ -1,0 +1,71 @@
+#set( $hits = $mediaarchive.query("collectionproduct").hitsPerPage(20).exact("collectionid",${librarycol.id}).sort("name").search($context) )
+$hits.size()
+<div class="masonry-grid" 
+data-maxheightX="$!mediaarchive.getCatalogSettingValue('stacked_gallery_imagesize')"
+data-maxheight="180" 
+data-cellpadding="4"
+data-makebox="true"
+data-singlepage="true"  >
+
+#set($count = 0)
+#set( $viewerlink = $content.get("assetviewerlink") )
+
+
+#foreach( $aflora in $hits.getPageOfHits())
+	
+	#set( $hit = false)
+	#set( $hit = $mediaarchive.getAsset( $aflora.primaryimage).searchOne($context) )
+	#if( !$hit )
+		#set( $hit = $mediaarchive.getAsset( "AXrj_8u2To2Y34J739re") )
+	#end
+	
+	$context.putPageValue("hit", $hit)
+			
+	#set($type = $hit.getSearchHit().getType())
+	#set( $rendertype = $mediaarchive.getMediaRenderType($hit.fileformat))
+	$context.putPageValue("type", $rendertype)
+	
+	$context.putPageValue("assetid", $hit.id)
+	$context.putPageValue("count", $count )
+	$context.putPageValue("sourcepath", $hit.sourcepath )
+	$context.putPageValue("thumbsize", "mediumplus" )
+	
+	#set($sourcepath = $hit.sourcepath)
+	#set($assetwidth = $mediaarchive.getRealImageWidth($hit))
+	#set($assetheight = $mediaarchive.getRealImageHeight($hit))
+	#set($click = "$siteroot$viewerlink?hitssessionid=${hits.getSessionId()}&assetid=${hit.id}")
+       
+	<div class="masonry-grid-cell stackedplayer-cell assetdraggable resultsassetcontainer" 
+		 id="gallerycell_${hit.id}"
+		 data-assetid="$hit.id" 
+		 data-width="$assetwidth" 
+		 data-height="$assetheight">
+		 <div class="grid-gallery-checkbox resultsselection">
+		          <input type="checkbox" class="selectionbox" name="count" value="${hit.id}" 
+		          	#if($hits.isSelectedOnPage(${hit.id})) checked #end data-dataid="${hit.id}" />          
+		     </div>
+	    	<a class="stackedplayer imagearea " id="clickid${hit.id}" data-assetid="$hit.id" href="$applink/details/${hit.id}/${hit.name}.html">
+	    	    <div class="grid-thumbimage" data-assetid="$hit.id">
+	    	    	#if(!$rendertype || $type =="rendertype")
+	    	    		#set( $rendertype = "mime" )
+	    	    	#elseif( $rendertype =="video")
+	    	    		#set( $rendertype = "videothumbnail" )
+	    	    	#end
+	    	    	
+	        	    $pages.include("$componenthome/results/thumbnails/${rendertype}.html", $context)
+	        	   	##$pages.include("$componenthome/results/badges.html", $context)
+	        	</div>
+		       </a>  
+		         <div class="grid-gallery-footer">
+	
+		         	<a class="footer-text" href="$sitelink/app/collective/details/#esc($aflora.name)/${aflora.id}.html">$aflora.name</a>
+
+		         </div>
+		        	
+
+		</div>
+       #set ( $count = $count + 1) 
+    
+	#end
+
+</div>

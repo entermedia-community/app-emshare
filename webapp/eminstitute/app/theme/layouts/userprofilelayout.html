@@ -1,0 +1,87 @@
+<div class="container">
+<div class="maincontent">
+<div class="row">
+
+	<div class="col"> 
+	$pages.includeContent()
+	</div>
+
+	<div class="col-md-3" style="max-width:300px;">
+		#if( $user.getId() == $selecteduser.getId())
+			#set($canedituserinfo = true)
+		#end
+	
+		#set( $userimageurl = $mediaarchive.asLinkToProfile($selecteduser.assetportrait) )
+		#if(!$userimageurl)
+			#set( $userimageurl = "$applink/theme/images/user.svg" )
+		#end
+	
+		 <h3>[[Profile]]</h3>
+		<div class="profile-username">
+			<div class="profile-imagecontainer">
+					#if($canedituserinfo)
+						<div class="">
+						<a href="#" id="filePicker" class="" title="[[Upload square image for better results]]">
+								<img src="$userimageurl" alt="$selecteduser.getAnonNickName()" style="max-height: 140px;" />
+						</a>
+						</div>
+					#else
+						<img src="$userimageurl" alt="$selecteduser.getAnonNickName()" style="max-height: 140px;" />
+					#end
+			</div>
+			#if($canedituserinfo)
+			<form id="uploaddata" 
+				name="wizard" 
+				method="post" 
+				enctype="multipart/form-data"
+				action="$applink/users/uploadsave.html" 
+				>
+				<input type="hidden" name="userid" value="$selecteduser.getId()" />
+				<input type="hidden" name="sourcepath" value="userprofiles/$selecteduser.getId()/" />
+				<input id="upload_field" name="file" type="file" style="position:absolute; top:-1000px;" >
+			</form>
+			<script>
+				$('#upload_field').change(function() {
+				  $('#uploaddata').submit();
+				});
+			</script>
+			#end
+			<div>
+			
+			
+			<div class="text-center">
+			<h4>$!selecteduser.getName()</h4>
+			
+			<i class="far fa-envelope"></i> $selecteduser.email<br>
+			<i class="far fa-user"></i> $selecteduser.getAnonNickName()
+			#if($canedituserinfo) 
+				<br>
+				<a href="$applink/users/edit/edit.html?userid=$selecteduser.getId()" class="emdialog btn btn-sm btn-light ">
+				<i class="fas fa-edit"></i> [[Edit]]
+				</a>
+			#end
+			</div>
+			</div>
+		</div>
+	
+	
+	##<div  style="margin:50px 0; border-top:1px solid #ccc; padding:10px;">
+	 ## <h3>[[Donations Made]]</h3>
+	  
+	  ##<div class="" style="padding:10px;text-align:center">
+		##[[No donations made]]
+	  ##</div>
+	##</div>
+	<!-- 
+	<div  style="margin:50px 0; border-top:1px solid #ccc; padding:10px;">
+	<h3>[[Get the EnterMedia App]]</h3>
+	<a href="https://play.google.com/store/apps/details?id=org.entermediadb.chat2&ah=filFasKFa_Vp2kJEELkQyYevRZA">
+	<img src="$applink/theme/images/en_badge_web_generic.png" class="img-fluid" style="max-width:200px;" /></a>
+	</div>
+	</div>
+ 	-->
+</div>
+</div>
+</div>
+
+</div>
