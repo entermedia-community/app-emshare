@@ -1,7 +1,11 @@
+#if($librarycol.name)
+<div class="project-title text-center">
+$!librarycol.name
+</div>
+#end
 $pages.include("$apphome/collective/menu.html", $context)
 
-<div class="container">
-<div class="row no-gutters" style="min-height: 100%;";>
+<div class="row no-gutters justify-content-md-center h-100">
  	<div class="col community-maincol feed-maincol">
  	<div class="contentcolumn" style="width:100%;">
     
@@ -9,7 +13,7 @@ $pages.include("$apphome/collective/menu.html", $context)
 	
 
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-7">
 			#if( $caneditcollection)
 				<a class="oe-dataedit showeditonright" data-target="#editcontactdescription-$librarycol.id" title="[[Edit Contact Description]]" data-width="500"	href="#"><i class="fas fa-edit"></i></a>
 			#end
@@ -75,7 +79,7 @@ $pages.include("$apphome/collective/menu.html", $context)
                 <!--Grid row-->
 				#if( !$answer )
 	              <div style="margin-top:10px">
-					<label for="registration-human-test" >[[Registration test]](write out): $question.description:</label>
+					<label for="registration-human-test" >[[Registration test]] ([[write out]]):<br><em>$question.description:</em></label>
 				
 					<input class="field small" type="text" name="answerid" id="registration-human-test" />
 				   </div>
@@ -94,7 +98,7 @@ $pages.include("$apphome/collective/menu.html", $context)
         
 		</div>
 		
-		<div class="col-md-6">
+		<div class="col-md-5">
 			#if( $caneditcollection)
 				<a class="oe-dataedit showeditonright" data-target="#editcontactinfo-$librarycol.id" title="[[Edit Contact Information]]" data-width="500"	href="#"><i class="fas fa-edit"></i></a>
 				#end
@@ -106,5 +110,13 @@ $pages.include("$apphome/collective/menu.html", $context)
 	</div>
 	</div>
     </div>
-</div>
+    #if(!$browser.inApp())
+ <div class="col-lg-3 maincontentsidebar">
+	<div class="collective-sidebar">
+		<div id="collectivesidebar">
+		$pages.include("$apphome/collective/channel/subscribers/index.html", $context)
+		</div>
+	</div>
+ </div>
+ #end
 </div>
