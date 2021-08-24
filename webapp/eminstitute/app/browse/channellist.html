@@ -19,23 +19,32 @@
 	
 	<div class="clearfix"></div>
 	
-	<div class="project-grid ">
+	<h3>Projects:</h3>
+	
+	<div class="" style="margin-left:10px;">
 	#set($libraries = $mediaarchive.getList("library"))
 	#foreach( $library in $libraries)
 		#set($libraryid = $library.getId())
 		#set($collectivehits = $mediaarchive.query("librarycollection").exact("library",$libraryid).sort("name").search($context))
 		#set( $n = $collectivehits.setHitsPerPage(75))
 		#if( !$collectivehits.isEmpty() )
-			<div class="stations-grid ">
+			<div class="">
 			#if( $library.communitysubdomain)
 				#set($link = "//${library.communitysubdomain}$applink/")
 			#else
-				#set($link = "${context.siteRoot}$applink/community/${library.id}/#dash($library.name).html")
+				#set($link = "${context.siteRoot}$applink/organization/projects/${library.id}/#dash($library.name).html")
 			#end
-			<a href="$link"><h3>$library.getName()</h3></a>
+			<a href="$link">$library.getName()</a>
+			<div style="padding-left:10px;">
 			#foreach( $collective in $collectivehits.getPageOfHits() )
-				$context.putPageValue("collective",$collective)
-				$pages.include("$apphome/browse/collectivelist.html",$context)
+			
+				<div> <a class="pick-item" href="$applink/collective/channel/${collective.id}/#dash($collective.getName()).html"> 
+						$collective
+					</a>
+				 </div>
+			##	$context.putPageValue("collective",$collective)
+			##	$pages.include("$apphome/browse/collectivelist.html",$context)
+			</div>
 			#end
 			<div class="clearfix"></div>
 			</div>
