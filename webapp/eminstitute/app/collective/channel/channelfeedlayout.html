@@ -2,12 +2,15 @@
 #if(!$librarycol)
 	#set( $librarycol = $mediaarchive.query("librarycollection").exact("id",$collectionid).searchOne() )
 #end
-<div id="channelcontainer" class="channel-container h-100">
+#set($logo = $mediaarchive.getAsset($librarycol.assetportrait) )
+#set($homelink = "$apphome/collective/community/index.html?collectionid=$collectionid")
+
+
+<div id="channelcontainer" class="channel-container #if($logo) channel-container-logo #end h-100">
 <div class="row no-gutters justify-content-md-center h-100">
  <div class="col community-maincol channel-feed feed-maincol">
  
- 		#set($logo = $mediaarchive.getAsset($librarycol.assetportrait) )
- 		#set($homelink = "$apphome/collective/community/index.html?collectionid=$collectionid")
+ 		
 		#if($logo)
 				<a  href="$homelink" title="$!librarycol.name">
 					<div class="project-thumb" style="background-image: url('/$mediaarchive.getMediaDbId()/services/module/asset/downloads/preset/${logo.sourcepath}/image200x200.png')"></div>
@@ -81,7 +84,7 @@
 
 
 	</div>	
-	 <div class="col-md-3 col-collectivesidebar">
+	 <div class="col-md-3 col-lg-4 col-collectivesidebar">
 		<div class="collective-sidebar #if($logo) collective-sidebar-logo #end">
 			$pages.include("$apphome/collective/channel/subscribers/index.html", $context)
 		</div>
