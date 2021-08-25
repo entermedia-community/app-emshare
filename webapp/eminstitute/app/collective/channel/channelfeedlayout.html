@@ -12,35 +12,43 @@
  
  		
 		#if($logo)
-				<a  href="$homelink" title="$!librarycol.name">
-					<div class="project-thumb" style="background-image: url('/$mediaarchive.getMediaDbId()/services/module/asset/downloads/preset/${logo.sourcepath}/image200x200.png')"></div>
-				</a>
+			<a  href="$homelink" title="$!librarycol.name">
+				<div class="project-thumb" style="background-image: url('/$mediaarchive.getMediaDbId()/services/module/asset/downloads/preset/${logo.sourcepath}/image200x200.png')"></div>
+			</a>
 		#end	
 
 	
 	 	<div class="contentcolumn content-body content-collective-home #if($logo) content-collective-home-logo #end">
-	 	
-	 	#if($librarycol.name)
-		<div class="project-title text-center">
-		$!librarycol.name
-		</div>
-		#end
-	 	#if( $caneditcollection)
-		 		<a class="btn btn-sm btn-light oe-dataedit showeditonright" data-target="#edithtmlintro-$librarycol.id" title="[[Edit Project Intro]]" data-width="500"	href="#"><i class="fas fa-edit"></i> [[Edit]]</a>
-		 		#end
+		 	#if( $caneditcollection)
+				<div class="float-right">
+				<a class="emdialog btn btn-sm btn-light"
+				style="position:absolute; right:25px;"  
+					data-allwaysloadpage="true" href="$applink/collective/edit/editcollective.html?collectionid=$librarycol.getId()" 
+					title="[[Project Settings]]"><i class="fas fa-cog"></i> [[Settings]]</a>
+				</div>
+			#end
+		 	
+		 	#if($librarycol.name)
+				<div class="project-title text-center">
+				$!librarycol.name
+				</div>
+			#end
+			
+		 	#if( $caneditcollection)
+				<a class="oe-dataedit" style="position:absolute; bottom:22px; right:17px;" data-target="#edithtmlintro-$librarycol.id" title="[[Edit Project Intro]]" data-width="500"	href="#"><i class="fas fa-edit"></i> </a>
+			#end
 			<div class="oe-editable" id="edithtmlintro-$librarycol.id" data-dataid="$librarycol.id" data-field="htmlintro" data-searchtype="librarycollection">
-			   		#if($librarycol.htmlintro) $!librarycol.htmlintro #else $pages.include("$apphome/collective/about/htmlintro.html")#end
+			   	#if($librarycol.htmlintro) $!librarycol.htmlintro #else $pages.include("$apphome/collective/about/htmlintro.html")#end
 			</div>
 			
-			##show featured uploads?
 		</div>
 		
 		$pages.include("$apphome/collective/menu.html", $context)
 		
-		
 		#if( $caneditcollection )
 			$pages.include("$apphome/collective/channel/addnewupload.html")
 		#end
+		
 		#set( $topic = $context.getRequestParameter("topic"))
 		
 		#if($caneditcollection)

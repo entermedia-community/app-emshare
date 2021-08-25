@@ -1,13 +1,6 @@
 #set($collectionid = $librarycol.getId())
 <div id="subscriberssidebar">
-	#if( $caneditcollection)
-	<div class="float-right">
-	<a class="emdialog btn btn-sm btn-light"
-	style="position:absolute; right:25px;"  
-		data-allwaysloadpage="true" href="$applink/collective/edit/editcollective.html?collectionid=$librarycol.getId()" 
-		title="[[Project Settings]]"><i class="fas fa-cog"></i> [[Settings]]</a>
-	</div>
-	#end
+
 	<div class="subscribe-area">
 		#if( $user )
 			#set( $likesearcher = $mediaarchive.getSearcher("librarycollectionlikes") )
@@ -62,7 +55,7 @@
 			#if( $caneditcollection)
 			<a class="oe-dataedit float-right" data-target="#editjoincollectivetext-$librarycol.id" title="[[Edit Join Collective Text]]" data-width="500"	href="#"><i class="fas fa-edit"></i></a>
 			#end
-			<div class="oe-editable" id="editjoincollectivetext-$librarycol.id" data-dataid="$librarycol.id" data-field="joincollectivetext" data-searchtype="librarycollection">
+			<div class="oe-editable #if( $caneditcollection) oe-editable-space #end" id="editjoincollectivetext-$librarycol.id" data-dataid="$librarycol.id" data-field="joincollectivetext" data-searchtype="librarycollection">
 	   		#if($librarycol.joincollectivetext) 
 				$!librarycol.joincollectivetext
 			#end
