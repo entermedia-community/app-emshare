@@ -2,92 +2,78 @@
 #if(!$librarycol)
 	#set( $librarycol = $mediaarchive.query("librarycollection").exact("id",$collectionid).searchOne() )
 #end
-#set($logo = $mediaarchive.getAsset($librarycol.assetportrait) )
-#set($homelink = "$apphome/collective/community/index.html?collectionid=$collectionid")
 
+#if ($librarycol.assetbanner)
+	#set( $banner= $mediaarchive.getAsset($librarycol.assetbanner) )
+	#set ($bannerurl = "/$mediaarchive.getMediaDbId()/services/module/asset/downloads/preset/${banner.sourcepath}/image1920x500cropped.jpg")
+#end
 
 <div id="channelcontainer" class="channel-container #if($logo) channel-container-logo #end h-100">
 <div class="row no-gutters justify-content-md-center h-100">
  <div class="col community-maincol channel-feed feed-maincol">
- 
+	<div #if ($bannerurl) style="background-image:url($bannerurl); background-size: cover;  #end">
+ 	<div class="contentcolumn content-body content-collective-home #if($logo) content-collective-home-logo #end"
  		
-		#if($logo)
-			<a  href="$homelink" title="$!librarycol.name">
-				<div class="project-thumb" style="background-image: url('/$mediaarchive.getMediaDbId()/services/module/asset/downloads/preset/${logo.sourcepath}/image200x200.png')"></div>
-			</a>
-		#end	
+ 	>
+ 	
 
 	
-	 	<div class="contentcolumn content-body content-collective-home #if($logo) content-collective-home-logo #end">
-		 	#if( $caneditcollection)
-				<div class="float-right">
-				<a class="emdialog btn btn-sm btn-light"
-				style="position:absolute; right:25px;"  
-					data-allwaysloadpage="true" href="$applink/collective/edit/editcollective.html?collectionid=$librarycol.getId()" 
-					title="[[Project Settings]]"><i class="fas fa-cog"></i> [[Settings]]</a>
-				</div>
-			#end
-		 	
-		 	#if($librarycol.name)
-				<div class="project-title text-center">
-				$!librarycol.name
-				</div>
-			#end
-			
-		 	#if( $caneditcollection)
-				<a class="oe-dataedit" style="position:absolute; bottom:22px; right:17px;" data-target="#edithtmlintro-$librarycol.id" title="[[Edit Project Intro]]" data-width="500"	href="#"><i class="fas fa-edit"></i> </a>
-			#end
-			<div class="oe-editable" id="edithtmlintro-$librarycol.id" data-dataid="$librarycol.id" data-field="htmlintro" data-searchtype="librarycollection">
-			   	#if($librarycol.htmlintro) $!librarycol.htmlintro #else $pages.include("$apphome/collective/about/htmlintro.html")#end
-			</div>
-			
+
+	 	#if( $caneditcollection)
+			<a class="oe-dataedit" style="position:absolute; bottom:22px; right:17px;" data-target="#edithtmlintro-$librarycol.id" title="[[Edit Project Intro]]" data-width="500"	href="#"><i class="fas fa-edit"></i> </a>
+		#end
+		<div class="oe-editable" id="edithtmlintro-$librarycol.id" data-dataid="$librarycol.id" data-field="htmlintro" data-searchtype="librarycollection">
+		   	#if($librarycol.htmlintro) $!librarycol.htmlintro #else $pages.include("$apphome/collective/about/htmlintro.html")#end
 		</div>
 		
-		$pages.include("$apphome/collective/menu.html", $context)
+	</div>
+	</div>
+	
+	##$pages.include("$apphome/collective/menu.html", $context)
+	
+	#if( $caneditcollection )
+		$pages.include("$apphome/collective/channel/addnewupload.html")
+	#end
+	
+	#set( $topic = $context.getRequestParameter("topic"))
+	
+	#if($caneditcollection)
+		#set( $allprojects = $mediaarchive.getSearcher("collectiveproject").query().match("parentcollectionid",$collectiveid).match("featured","true").sort("name").search($context) )
+	#else
+		#set( $allprojects = $mediaarchive.getSearcher("collectiveproject").query().match("parentcollectionid",$collectiveid).exact("teamproject","false").match("featured","true").sort("name").search($context) )
+	#end
+	#if($allprojects.size()>0)
+		<div class="feed-topics">
+		<span class="d-none d-md-block"><strong>[[Topics]]:</strong></span> 
+		<a href="$applink/collective/channel/${collectiveid}/${librarycol.name}.html" class="btn-toolbar #if (!$topic) topicselected #end" title="[[All Posts]]">#[[All]]</a>
 		
-		#if( $caneditcollection )
-			$pages.include("$apphome/collective/channel/addnewupload.html")
+		#foreach( $project in $allprojects )
+		<a href="$applink/collective/channel/${collectiveid}/topics.html?topic=${project.getId()}" class="btn-toolbar #if($topic == $project.getId()) topicselected #end" title="#esc($!{project.projectdescription})">$project</a>
 		#end
-		
-		#set( $topic = $context.getRequestParameter("topic"))
-		
 		#if($caneditcollection)
-			#set( $allprojects = $mediaarchive.getSearcher("collectiveproject").query().match("parentcollectionid",$collectiveid).match("featured","true").sort("name").search($context) )
-		#else
-			#set( $allprojects = $mediaarchive.getSearcher("collectiveproject").query().match("parentcollectionid",$collectiveid).exact("teamproject","false").match("featured","true").sort("name").search($context) )
+			<a href="$applink/collective/projects/edit.html?collectionid=${collectiveid}" class="btn-toolbar float-right emdialog" data-hidefooter="true" title="[[Edit Topics]]" style="margin-left:5px;"><i class="fas fa-ellipsis-v"></i></a> 
+			<a href="$applink/collective/projects/addnew.html?collectionid=${collectiveid}" class="btn-toolbar emdialog" title="[[Add a Topic]]"><i class="fas fa-plus"></i></a>
 		#end
-		#if($allprojects.size()>0)
-			<div class="feed-topics">
-			<span class="d-none d-md-block"><strong>[[Topics]]:</strong></span> 
-			<a href="$applink/collective/channel/${collectiveid}/${librarycol.name}.html" class="btn-toolbar #if (!$topic) topicselected #end" title="[[All Posts]]">#[[All]]</a>
-			
-			#foreach( $project in $allprojects )
-			<a href="$applink/collective/channel/${collectiveid}/topics.html?topic=${project.getId()}" class="btn-toolbar #if($topic == $project.getId()) topicselected #end" title="#esc($!{project.projectdescription})">$project</a>
-			#end
-			#if($caneditcollection)
-				<a href="$applink/collective/projects/edit.html?collectionid=${collectiveid}" class="btn-toolbar float-right emdialog" data-hidefooter="true" title="[[Edit Topics]]" style="margin-left:5px;"><i class="fas fa-ellipsis-v"></i></a> 
-				<a href="$applink/collective/projects/addnew.html?collectionid=${collectiveid}" class="btn-toolbar emdialog" title="[[Add a Topic]]"><i class="fas fa-plus"></i></a>
-			#end
-			</div>
-		#end
-		#if( $librarycol.streamurl && !$topic )
-			$pages.include("$apphome/components/streaming/play.html",$context)
-		#end
+		</div>
+	#end
+	#if( $librarycol.streamurl && !$topic )
+		$pages.include("$apphome/components/streaming/play.html",$context)
+	#end
+
+	#set($resultsPage = "$content.getPath()?hitssessionid=$topuploads.sessionId&useruploadpageposition")
+
+	$context.putPageValue("hits",$topuploads)
+	$context.putPageValue("resultsPage",$resultsPage)
+	$context.putPageValue("targetdiv","channelcontainer")
+	$context.putPageValue("oemaxlevel","2")
+	$pages.include("$apphome/components/results/positions.html",$context)
+	#foreach( $upload in $topuploads.getPageOfHits())
+		$context.putPageValue("upload",$upload)
+		$pages.include("$apphome/collective/channel/showpost.html",$context)
+	#end
 	
-		#set($resultsPage = "$content.getPath()?hitssessionid=$topuploads.sessionId&useruploadpageposition")
 	
-		$context.putPageValue("hits",$topuploads)
-		$context.putPageValue("resultsPage",$resultsPage)
-		$context.putPageValue("targetdiv","channelcontainer")
-		$context.putPageValue("oemaxlevel","2")
-		$pages.include("$apphome/components/results/positions.html",$context)
-		#foreach( $upload in $topuploads.getPageOfHits())
-			$context.putPageValue("upload",$upload)
-			$pages.include("$apphome/collective/channel/showpost.html",$context)
-		#end
-		
-		
-		$pages.include("$apphome/components/results/positions.html",$context)
+	$pages.include("$apphome/components/results/positions.html",$context)
 
 
 

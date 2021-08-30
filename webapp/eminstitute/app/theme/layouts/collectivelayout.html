@@ -6,35 +6,42 @@
 	#end
 #end
 #set($fullwidth = $content.fullwidth)
-
-	#set($homelink = "$apphome/collective/community/index.html?collectionid=$collectionid")
-	#if ($librarycol.assetbanner)
-		#set( $banner= $mediaarchive.getAsset($librarycol.assetbanner) )
+	
+	#set($logo = $mediaarchive.getAsset($librarycol.assetportrait) )
+	#if ($logo)
+		#set($logourl = "/$mediaarchive.getMediaDbId()/services/module/asset/downloads/preset/${logo.sourcepath}/image200x200.png")
+	#else
+		#set($logourl = "$applink/theme/images/OI_flower.png")
 	#end
+	#set($homelink = "$apphome/collective/community/index.html?collectionid=$collectionid")
+
+
+<div class="collectivelayout ">
+
+
 	
 
-<div class="collectivelayout #if($logo) collectivelayoutlogo #end" >
+	
+ 	<div class=" collectiveheader" style="position:relative;" >
 
-
-
-#if( $banner )
-		<div 
-			class="collectivebanner #if($fullwidth)collectivebanner-fullwidth#end text-center #if($banner) hasbanner #end"
-			#if($banner) #set ($bannerurl = "/$mediaarchive.getMediaDbId()/services/module/asset/downloads/preset/${banner.sourcepath}/image1920x500cropped.jpg")	style="background-image:url($bannerurl)"	#end
-		>
+			<div class="collectiveheaderlogo">
+			<a  href="$homelink" title="$!librarycol.name">
+				<div class="project-thumb" style="background-image: url('$logourl');"></div>
+			</a>
+			</div>
 		
-			
-		</div>
+		<div class="collectiveheadermenu">	
+			#if($librarycol.name)
+			<div class="project-title">
+			$!librarycol.name
+			</div>
+			#end
+		
+			$pages.include("$apphome/collective/menu.html", $context)
+		</div>	
 	
-#end	
-
-#if($librarycol.name)
-<div class="project-title text-center">
-$!librarycol.name
-</div>
-$pages.include("$apphome/collective/menu.html", $context)	
-#end
-
+	</div>
+	
 	$pages.includeContent()	
 
 </div>
