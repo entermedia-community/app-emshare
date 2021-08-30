@@ -522,7 +522,7 @@ uiload = function() {
 	        					var params = form.serialize();
 	        					var url = form.attr("action");
 	        					url += (url.indexOf('?') >= 0 ? '&' : '?') + params;
-	        					history.pushState({}, null, url);
+	        					history.pushState($("#application").html(), null, url);
 	        					window.scrollTo(0, 0);
 	        				}
 		        		}
@@ -647,25 +647,6 @@ uiload = function() {
 		}
 		var openfrom = window.location.href;
 		
-		if (typeof global_updateurl !== "undefined" && global_updateurl == false) {
-			//globaly disabled updateurl
-		}
-		else {
-			//Update Address Bar
-			var urlbar = dialog.data("urlbar");
-			if( urlbar )
-			{
-				history.pushState({}, null, urlbar);
-			}
-			else {
-				var updateurl = dialog.data("updateurl");
-				if( updateurl)	{
-					history.pushState({}, null, link);
-					window.scrollTo(0, 0);
-				}
-			}
-		}
-		
 		jQuery.ajax({
 			xhrFields: {
                 withCredentials: true
@@ -737,6 +718,23 @@ uiload = function() {
 					$('form', modaldialog).find('*').filter(
 							':input:visible:first').focus();
 				}
+				
+				if (typeof global_updateurl !== "undefined" && global_updateurl == false) {
+					//globaly disabled updateurl
+				}
+				else {
+					//Update Address Bar
+					var updateurl = dialog.data("urlbar");
+					if( !updateurl )
+					{
+						updateurl = dialog.data("updateurl");
+					}
+					if( updateurl)	{
+							history.pushState($("#application").html(), null, link);
+							window.scrollTo(0, 0);
+					}
+				}
+				
 				modalinstance.on('hidden.bs.modal', function () {
 					$(window).trigger("resize");
 				});
@@ -861,7 +859,7 @@ uiload = function() {
 									else {
 										if( updateurl )
 										{
-											history.pushState({}, null, url);
+											history.pushState($("#application").html(), null, url);
 											window.scrollTo(0, 0);
 										}
 									}

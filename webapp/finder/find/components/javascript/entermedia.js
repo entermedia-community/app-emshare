@@ -180,6 +180,21 @@ findclosest = function(link,inid)
 	}
 	return result.first();
 }
+
+//window.addEventListener("hashchange", function(e) {  //Try listening to popstate and put the state (html) back in
+$(window).bind("popstate", function change(e) {
+    //alert('popped');
+    var state = e.originalEvent.state;
+	if( state )
+	{
+		console.log( "Editing html" );
+		$("#application").html(state);	
+	}
+	
+
+    
+});
+
 runajaxonthis = function(inlink,e)
 {
 	
@@ -225,16 +240,6 @@ runajaxonthis = function(inlink,e)
 	
 	var useparent = inlink.data("useparent");
 
-	if (typeof global_updateurl !== "undefined" && global_updateurl == false) {
-		//globaly disabled updateurl
-	}
-	else {
-		var updateurl = inlink.data("updateurl");
-		if( updateurl)	{
-			history.pushState({}, null, nextpage);
-			window.scrollTo(0, 0);
-		}
-	}
 	if( inlink.hasClass("auto-active-link" ) )
 	{
 		var container = inlink.closest(".auto-active-container");
@@ -285,6 +290,21 @@ runajaxonthis = function(inlink,e)
             },
 			crossDomain: true
 		}).always(function(){
+			
+			if (typeof global_updateurl !== "undefined" && global_updateurl == false) {
+				//globaly disabled updateurl
+			}
+			else {
+				var updateurl = inlink.data("updateurl");
+				if( updateurl)	{
+					console.log("Saving state ", updateurl);
+					history.pushState($("#application").html(), null, nextpage);
+					window.scrollTo(0, 0);
+				}
+				
+				//window.addEventListener("hashchange", function(e) { reload using ajax
+			}
+			
 			$(".ajaxprogress").hide();
 			//inlink.css("enabled",true);
 			inlink.removeAttr('disabled');
