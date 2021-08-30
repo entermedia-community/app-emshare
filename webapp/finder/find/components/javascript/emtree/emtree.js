@@ -126,16 +126,6 @@ $(document).ready(function()
 			reloadurl = reloadurl + "&hitssessionid=" + hitssessionid;
 		}
 		
-		
-		if (typeof global_updateurl !== "undefined" && global_updateurl == false) {
-			//globaly disabled updateurl
-		}
-		else {
-			//Update Address Bar
-			if(tree.data("updateaddressbar")) {
-				history.pushState({}, null, reloadurl);
-			}
-		}
 		var options =  tree.data();
 		
 		options['tree-name'] = tree.data("treename");
@@ -176,6 +166,17 @@ $(document).ready(function()
 							cell.replaceWith(data);
 						}
 					}
+					
+					if (typeof global_updateurl !== "undefined" && global_updateurl == false) {
+						//globaly disabled updateurl
+					}
+					else {
+						//Update Address Bar
+						if(tree.data("updateaddressbar")) {
+							history.pushState($("#application").html(), null, reloadurl);
+						}
+					}
+					
 					$(window).trigger( "resize" );
 				}
         );
