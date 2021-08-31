@@ -19,13 +19,16 @@
 <div style="padding:5px">
 <ul class="sidebar-list auto-active-container">
 	#set( $urlbase = "$siteroot$applink/views/modules" )
+	
+	#if( $canviewupload )
 		<li #if( $module.id == "asset") class="current" #end>
 		<a class="ajax auto-active-link" 
 			data-targetdivinner="applicationmaincontent" 
 			data-oemaxlayout="3"
 			data-updateurl="true" 
 			href="$urlbase/asset/add/start.html">[[Upload Media]]</a></li>
-
+	#end
+	
 	#foreach ( $amodule in $userprofile.getEntities() )
 		#if( $amodule.id != "asset")
 		<li >
