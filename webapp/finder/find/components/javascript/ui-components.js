@@ -2881,7 +2881,7 @@ var resizecolumns = function() {
 		$(".settingslayout").css("height", columnsheight + sidebarstop + "px");
 	}
 	else {
-		$(".col-content-main").css("height", columnsheight);
+		$(".col-content-main").css("height", columnsheight + allheights - header_height);
 	}
 	
 	//$(".pushcontent").css("height","calc(100% - " + resultsheader_height + "px)");
