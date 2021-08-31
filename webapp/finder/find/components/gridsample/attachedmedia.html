@@ -81,28 +81,30 @@
 						data-closemediaviewer="true">$assetshits.size() #if ($assetshits.size()==1) [[asset]] #else [[assets]] #end</a>
 		
 	#end
-	#if($fullview) 
-		#if($moduleid=="librarycollection")
-			#set($uploadlink = "$siteroot/$applink/views/modules/asset/add/start.html?collectionid=$entityid&clearotherentities=true")
-			#set($oemaxlevel = "1")
-			#set($targetdiv = "applicationmaincontent")
-		#elseif($moduleid=="faceprofilegroup")
-			#set($uploadlink = "")
-		#else
-			#set($uploadlink = "$siteroot/$applink/views/modules/asset/add/start.html?entityupload=true&entitytype=$moduleid&addselection=$entityid&clearotherentities=true")
-			#set($oemaxlevel = "1")
-			#set($targetdiv = "applicationmaincontent")
-		#end
-		#if ($uploadlink)
-		<a href="$uploadlink" 
-			class="ajax moreactions"
-			data-targetdivinner="$targetdiv"
-			data-closedialog="true" 
-			data-closemediaviewer="true"
-			data-updateurl="true"
-			data-oemaxlevel="$!oemaxlevel"
-			title="[[Upload assets here]]">
-			<i class="fas fa-upload"></i></a>
+	#if( $canviewupload )
+		#if($fullview) 
+			#if($moduleid=="librarycollection")
+				#set($uploadlink = "$siteroot/$applink/views/modules/asset/add/start.html?collectionid=$entityid&clearotherentities=true")
+				#set($oemaxlevel = "1")
+				#set($targetdiv = "applicationmaincontent")
+			#elseif($moduleid=="faceprofilegroup")
+				#set($uploadlink = "")
+			#else
+				#set($uploadlink = "$siteroot/$applink/views/modules/asset/add/start.html?entityupload=true&entitytype=$moduleid&addselection=$entityid&clearotherentities=true")
+				#set($oemaxlevel = "1")
+				#set($targetdiv = "applicationmaincontent")
+			#end
+			#if ($uploadlink)
+			<a href="$uploadlink" 
+				class="ajax moreactions"
+				data-targetdivinner="$targetdiv"
+				data-closedialog="true" 
+				data-closemediaviewer="true"
+				data-updateurl="true"
+				data-oemaxlevel="$!oemaxlevel"
+				title="[[Upload assets here]]">
+				<i class="fas fa-upload"></i></a>
+			#end
 		#end
 	#end
 	
