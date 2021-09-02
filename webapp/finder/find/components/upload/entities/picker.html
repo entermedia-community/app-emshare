@@ -29,7 +29,7 @@
 	#end
 	
 	<div class="toggle-content ">
-    <div id="entitypickerentities" data-selectedentity="$!type" data-selectedentityid="$!addselection"> 
+    <div id="entitypickerentities" data-selectedentity="$!type" data-selectedentityid="$!addselection" style="padding-left:10px;"> 
 			#if( !$others.isEmpty() )
 				<div style="padding:10px 0; ">
 					<select name="addentity" 
@@ -43,10 +43,10 @@
 							<option value="$amodule.id">$amodule.getName($context)</option>
 						#end
 					</select>
-					
 					</div>
 			#end
 
+			#set( $foundone = false)
 			#foreach ( $amodule in $userprofile.getEntities() )
 				
 				#set( $hits = false )
@@ -57,6 +57,7 @@
 						<div class=" col-md-5">
 						<div class="side-select-menu #if( $type == $amodule.id) active #end"> 
 						
+						#set( $foundone = true)
 						<div class="addMediaRow">
 						<a class="ajax" 
 							data-targetdiv="entitypicker" 
@@ -151,8 +152,13 @@
 						#end
 					</div>	
 				#end
-				
 			#end
+			##done with loop
+				#if( $foundone)
+									<a class="ajax" data-targetdiv="entitypicker" 
+							data-oemaxlevel="1"   href="$siteroot$applink/components/upload/entities/picker.html?removeallselection=true">clear all</a>
+				#end
+			
 	 		</div>  ##dialog
 		 </div>
 </div>  ##panel
