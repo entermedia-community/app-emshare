@@ -1213,10 +1213,10 @@ $(document).ready(function()
 	$(document).ajaxError(function(e, jqxhr, settings, exception) 
 	{
 			console.log(e,jqxhr,exception);
-			if (exception == 'abort') {
+			if (exception == 'abort' || exception == 'timeout') {  // options are "timeout", "error", "abort", and "parsererror".
 				return;
 			}		
-			var errors = 'Error: ' + settings.url  + '\n Returned: ' + exception;
+			var errors = 'Error: ' + exception  + '\n' + jqxhr.responseText + '\n URL: ' + settings.url;
 			alert(errors);
 			return;
 	});
