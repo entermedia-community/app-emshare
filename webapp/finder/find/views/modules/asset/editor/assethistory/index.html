@@ -1,0 +1,28 @@
+#set($currentab = $context.getRequestParameter("currentab"))
+#if (!$currentab)
+	#set( $currentab = "converthistory" )
+#end
+#set( $assettab = $context.findValue("assettab") ) 
+
+#set ($listid =  "asseteditorhistory" )
+<div style="padding:20px">
+<h2>[[Asset  History]]</h2>  
+<div id="eml-tab-subnav">
+    
+    <ul class="auto-active-container">
+        #set( $screens = $searcherManager.query($catalogid,$listid).all().sort("name").search() )
+        #foreach($screen in $screens)
+        <li class=" #if( $currentab == $screen.id ) current #end">
+            <a class="ajax auto-active-link" data-targetdiv="asset-editor-container" 
+             href="$siteroot$apphome${screen.path}?assetid=$asset.id&hitssessionid=$!hits.getSessionId()&oemaxlevel=1&currentab=$screen.id">
+            <i class="fas fa-tasks"></i> $context.getText($screen)</a>
+        </li>
+        #end
+    </ul>
+</div>
+<div class="clearfix"></div>
+
+<div id="assethistorytabs">
+	$pages.include("/$applicationid/views/modules/asset/editor/converthistory/index.html", $context)
+</div>
+</div>
