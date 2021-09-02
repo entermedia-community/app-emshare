@@ -408,6 +408,7 @@ uiload = function() {
 			'submit', // Make sure you use
 						// $(this).closest("form").trigger("submit")
 			function(e) {
+
 				e.preventDefault();
 				var form = $(this);
 
