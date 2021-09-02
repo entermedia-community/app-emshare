@@ -912,7 +912,7 @@ uiload = function() {
 				{ 
 					url: url, async: true, 
 					data: options,
-					timeout: 700,
+					timeout: 5000,
 					success: function(data) 
 					{
 						if(data) 
