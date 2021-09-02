@@ -6,6 +6,13 @@ public void init()
 {
 	UserProfile userprofile = context.getUserProfile();
 	
+	String removeallselection = context.getRequestParameter("removeallselection");
+	if( removeallselection == "true")
+	{
+		userprofile.removeAllStartWith("picked");
+		return;
+	}
+	
 	String entitytype = context.getRequestParameter("entitytype");
 	String addselection = context.getRequestParameter("addselection");
 	
