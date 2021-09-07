@@ -1407,7 +1407,7 @@ lQuery('div.assetpreview').livequery('click',function(e) {
 				$(window).trigger("tabready");
 			});
 			//save to profile only pewview, properties and media
-			if (assettab=='viewproperties' || assettab=='viewmedia' || assettab=='viewtimeline') {
+			if (assettab=='viewproperties' || assettab=='viewmedia' || assettab=='viewdownloads'  || assettab=='viewtimeline') {
 				saveProfileProperty("assetopentab", assettab,function(){});
 			}
 			var assettabactions = $(this).data("assettabactions");

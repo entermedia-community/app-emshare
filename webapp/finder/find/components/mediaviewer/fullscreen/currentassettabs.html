@@ -71,6 +71,19 @@
 			   	</li>
 			 #end
 			 
+			 
+			#if(!$previewonly && !$ismulti && $canviewconversions )
+			   	<li class="footermenu hidemulti bottomtab #if($opentab == 'viewdownloads')tabselected #end">
+			   	<a class="expandmenu assettab " 
+						data-link="$siteroot$componenthome/mediaviewer/fullscreen/tabs/viewactions.html?action=conversions" title="[[Conversions]]"
+						data-assettab="viewdownloads"
+						data-assettabname="[[Download]]" >
+					<i class="fas fa-images"></i>  [[Downloads]]  
+					</a>
+			   	</li>
+			 #end
+			 
+			 
 			 #if (!$previewonly && ($canviewcomments || $canassetannotate))
 				 <li class="footermenu hidemulti bottomtab #if($opentab == "viewcollaborate")tabselected#end">
 					<a class="expandmenu assettab" 
@@ -190,9 +203,7 @@
 			   <span class="fas fa-edit"></span>  
 			   <span class="bottomtabactionstext">
 			   ##TODO Create a table for actions
-			   #if ($opentabactions=='conversions')
-			   		[[Conversions]]
-			   #elseif ($opentabactions=='closedcaptions')
+			   #if ($opentabactions=='closedcaptions')
 			   		[[Closed Captions]]
 			   #elseif ($opentabactions=='categorize')
 			   		[[Categories]]
@@ -210,17 +221,7 @@
 			   <ul class="dropdown-menu">
 
 			   
-		    	#if( !$ismulti && $canviewconversions )
-			   	<li>
-			   	<a class="assettab #if($opentabactions=='conversions') dropdown-current #end" 
-						data-link="$siteroot$componenthome/mediaviewer/fullscreen/tabs/viewactions.html?action=conversions" title="[[Conversions]]"
-						data-assettab="viewactions"
-						data-assettabactions="conversions"
-						data-assettabname="[[Conversions]]" >
-					[[Conversions]] 
-					</a>
-			   	</li>
-			   	#end
+
 			   	#if(!$ismulti && ($rendertype == "video" || $rendertype == "audio"))
 			   		#if($canviewclosedcaptions)
 			   			<li>
