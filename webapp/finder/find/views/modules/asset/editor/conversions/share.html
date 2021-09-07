@@ -13,54 +13,63 @@
 
 
 <div class="btn-group">
-  #set($url = "$siteroot/$mediadbappid/services/module/asset/downloads/generated/$asset.sourcepath/$presetdata.generatedoutputfile/$mediaarchive.asExportFileName($asset, $presetdata)?includemetadata=true")
-  <a href="#urlescape($url)" class="btn btn-sm btn-secondary" title="[[Download]]"><i class="fas fa-download"></i> [[Download]]</a>
-  <button type="button" class="btn btn-sm btn-secondary dropdown-toggle dropdown-toggle-split" 
-  	id="dropdownActionsMenuLink"
-  	 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-    <span class="visually-hidden"></span>
-  </button>
-  <ul class="dropdown-menu" aria-labelledby="dropdownActionsMenuLink">
-    ##Share
-	 #if($canembedasset)
-	 	<li>
-		<a class="dropdown-item emdialog" 
-	    	href="$siteroot$apphome/views/modules/asset/editor/media/share.html?assetid=${asset.id}&presetid=${presetdata.id}"
-	    	data-noesc="true"
-	    	data-hidefooter="true"
-	    	title="[[Share]] $!presetdata.name">[[Share]]</a>
-	    	</li>
-	 #end
-	 ##Crop
-	 #set($cancrop = $conversionUtil.canCrop($mediaarchive, $catalogid, $presetdata.id, $asset.id))
-	 #if($caneditasset && $cancrop) 
-	 <li>
-		<a class="dropdown-item ajax" 
-			targetdivinner="asset-editor-container"  
-			data-oemaxlevel="1"  
-			href="$siteroot$apphome/views/modules/asset/editor/media/croppreview.html?assetid=${asset.id}&presetid=${presetdata.id}"
-			title="[[Crop]] $!presetdata.name">[[Crop]]</a>
-	</li> 
-	 #end
-	##UPLOAD
-	#if($caneditasset &&  $presetdata.id != "0" )
-	<li>
-		<a class="dropdown-item  emdialog"  data-width="1000" data-height="600"  title="[[Select File]]" href="$siteroot$apphome/views/modules/asset/editor/conversions/upload.html?assetid=${asset.id}&presetid=${presetdata.id}">[[Upload]]</a>
-	</li>
+	#if($presetdata.id!="videohls")
+		  #set($url = "$siteroot/$mediadbappid/services/module/asset/downloads/generated/$asset.sourcepath/$presetdata.generatedoutputfile/$mediaarchive.asExportFileName($asset, $presetdata)?includemetadata=true")
+		  <a href="#urlescape($url)" class="btn btn-sm btn-secondary" title="[[Download]]"><i class="fas fa-download"></i> [[Download]]</a>
+		  <button type="button" class="btn btn-sm btn-secondary dropdown-toggle dropdown-toggle-split" 
+		  	id="dropdownActionsMenuLink"
+		  	 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+		    <span class="visually-hidden"></span>
+		  </button>
+		  <ul class="dropdown-menu" aria-labelledby="dropdownActionsMenuLink">
+		    ##Share
+			 #if($canembedasset)
+			 	<li>
+				<a class="dropdown-item emdialog" 
+			    	href="$siteroot$apphome/views/modules/asset/editor/media/share.html?assetid=${asset.id}&presetid=${presetdata.id}"
+			    	data-noesc="true"
+			    	data-hidefooter="true"
+			    	title="[[Share]] $!presetdata.name">[[Share]]</a>
+			    	</li>
+			 #end
+			 ##Crop
+			 #set($cancrop = $conversionUtil.canCrop($mediaarchive, $catalogid, $presetdata.id, $asset.id))
+			 #if($caneditasset && $cancrop) 
+			 <li>
+				<a class="dropdown-item ajax" 
+					targetdivinner="asset-editor-container"  
+					data-oemaxlevel="1"  
+					href="$siteroot$apphome/views/modules/asset/editor/media/croppreview.html?assetid=${asset.id}&presetid=${presetdata.id}"
+					title="[[Crop]] $!presetdata.name">[[Crop]]</a>
+			</li> 
+			 #end
+			##UPLOAD
+			#if($caneditasset &&  $presetdata.id != "0" )
+			<li>
+				<a class="dropdown-item  emdialog"  data-width="1000" data-height="600"  title="[[Select File]]" href="$siteroot$apphome/views/modules/asset/editor/conversions/upload.html?assetid=${asset.id}&presetid=${presetdata.id}">[[Upload]]</a>
+			</li>
+			#end
+			#if($isready)
+				#if($caneditasset && $presetdata.id)
+					##FATWIRE & FALCON
+					#if($result.publishtofatwire == "true")
+						<li><hr class="dropdown-divider"></li> 
+						$pages.include("$apphome/views/modules/asset/editor/conversions/submittofatwire.html", $context)
+					#end	
+					
+					$pages.include("$apphome/views/modules/asset/editor/conversions/submittofalcon.html", $context)
+						
+				#end
+			#end
+		  </ul>
+	#else
+		##HLS
+		<a class="btn btn-sm btn-secondary emdialog" 
+			    	href="$siteroot$apphome/views/modules/asset/editor/media/share.html?assetid=${asset.id}&presetid=${presetdata.id}"
+			    	data-noesc="true"
+			    	data-hidefooter="true"
+			    	title="[[Share]] $!presetdata.name"><i class="fas fa-share"></i> [[Share]]</a>
 	#end
-	#if($isready)
-		#if($caneditasset && $presetdata.id)
-			##FATWIRE & FALCON
-			#if($result.publishtofatwire == "true")
-				<li><hr class="dropdown-divider"></li> 
-				$pages.include("$apphome/views/modules/asset/editor/conversions/submittofatwire.html", $context)
-			#end	
-			
-			$pages.include("$apphome/views/modules/asset/editor/conversions/submittofalcon.html", $context)
-				
-		#end
-	#end
-  </ul>
 </div>
 
 
