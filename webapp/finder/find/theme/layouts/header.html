@@ -60,6 +60,33 @@
 		</button>
 		<div class="collapse" id="navbarNavDropdown">
 			<ul class="navbar-nav">
+			
+			
+			#if($user)
+			#set( $localesearcher = $mediaarchive.getSearcher("locale") )
+		       #set($currentlang = $localesearcher.searchById($context.language))
+		      	#if($currentlang)
+		 			<li class="nav-item dropdown">
+		 				<a class="nav-link  dropdown-toggle" href="#" data-toggle="dropdown">$currentlang</a> 
+		    	#else
+		 			<li class="nav-item dropdown">
+		 				<a class="nav-link  dropdown-toggle" href="#" data-toggle="dropdown">[[Language]]</a> 
+		     	#end
+		  
+				  	<div id="language-bar-select" class="dropdown-menu">
+						#set( $localesearcher = $mediaarchive.getSearcher("locale") )
+						#set( $languages = $localesearcher.query().match("enabled", "true").search($context) )
+						#foreach( $lang in $languages)
+							#set($langurl = "$home$apphome/components/languages/changelanguage.html?newlang=locale_$lang.id&origURL=$context.getPathUrl()")
+							 <a class="nav-link  dropdown-item" href="#urlescape($langurl)">$lang </a>
+						#end
+				    </div> 
+			</li>
+			#end	
+			
+			
+			
+			
 			<li class="nav-item dropdown workspacedropmenu" id="workspacedropmenu">
 				<a class="nav-link dropdown-toggle workspaces" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 	              [[My Workspaces]]
