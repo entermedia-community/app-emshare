@@ -39,19 +39,7 @@
 				</a>
 			</li>
 			#end
-			
-			#if(!$ismulti && ($rendertype == "video"))
-			   		#if($canviewtimeline)
-			   			<li class="footermenu bottomtab #if($opentab == "viewtimeline")tabselected#end"">
-					   	<a class="expandmenu assettab" 
-								data-link="$siteroot$componenthome/mediaviewer/fullscreen/tabs/viewactions.html?action=timeline" title="[[Timeline]]"
-								data-assettab="viewtimeline"
-								data-assettabname="[[Timeline]]" >
-							<span class="fas fa-play"></span> [[Timeline]]
-							</a>
-					   	</li>
-			   		#end
-			#end
+
 			
 			#if (!$ismulti)
 				<div class="hidemulti">
@@ -84,12 +72,41 @@
 			 #end
 			 
 			 
+			 			
+			#if(!$ismulti && ($rendertype == "video"))
+			   		#if($canviewtimeline)
+			   			<li class="footermenu bottomtab #if($opentab == "viewtimeline")tabselected#end"">
+					   	<a class="expandmenu assettab" 
+								data-link="$siteroot$componenthome/mediaviewer/fullscreen/tabs/viewactions.html?action=timeline" title="[[Timeline]]"
+								data-assettab="viewtimeline"
+								data-assettabname="[[Timeline]]" >
+							<span class="fas fa-play"></span> [[Timeline]]
+							</a>
+					   	</li>
+			   		#end
+			#end
+
+			
+			#if(!$ismulti && ($rendertype == "video" || $rendertype == "audio"))
+			   		#if($canviewclosedcaptions)
+			   			<li class="footermenu bottomtab #if($opentab == "viewclosedcaptions")tabselected#end"">
+					   	<a class="expandmenu assettab" 
+								data-link="$siteroot$componenthome/mediaviewer/fullscreen/tabs/viewactions.html?action=closedcaptions" title="[[Closed Captions]]"
+								data-assettab="viewclosedcaptions"
+								data-assettabname="[[Closed Captions]]" >
+							<span class="fas fa-closed-captioning"></span> [[Closed Captions]]
+							</a>
+					   	</li>
+			   		#end
+			   	#end
+			 
+			 
 			 #if (!$previewonly && ($canviewcomments || $canassetannotate))
 				 <li class="footermenu hidemulti bottomtab #if($opentab == "viewcollaborate")tabselected#end">
 					<a class="expandmenu assettab" 
 						data-link="$siteroot$componenthome/mediaviewer/fullscreen/tabs/viewcollaborate.html" title="[[Approvals]]"
 						data-assettab="viewcollaborate" >
-					<i class="fas fa-comment-alt"></i> [[Approvals]]  
+					<i class="fas fa-comment-alt"></i> [[Chat]]  
 					</a>
 				</li>
  			#end
@@ -199,13 +216,11 @@
 			
 			
 			<li class="footermenu bottomtab bottomtabactions hidemulti #if($opentab == "viewactions") tabselected #end">
-			   <a href="#" class="expandmenu dropdown-toggle" data-toggle="dropdown" title="[[Actions Menu]]"> 
+			   <a href="#" class="expandmenu dropdown-toggle" data-toggle="dropdown" title="[[More Menu]]"> 
 			   <span class="fas fa-edit"></span>  
 			   <span class="bottomtabactionstext">
 			   ##TODO Create a table for actions
-			   #if ($opentabactions=='closedcaptions')
-			   		[[Closed Captions]]
-			   #elseif ($opentabactions=='categorize')
+			   #if ($opentabactions=='categorize')
 			   		[[Categories]]
 			   #elseif ($opentabactions=='map')
 			   		[[Map]]
@@ -214,27 +229,12 @@
 			   #elseif ($opentabactions=='assethistory')
 			   		[[History]]
 			   #else
-			   	[[Actions]]
+			   	[[More]]
 			   #end
 			   </span>
 			   </a>
 			   <ul class="dropdown-menu">
 
-			   
-
-			   	#if(!$ismulti && ($rendertype == "video" || $rendertype == "audio"))
-			   		#if($canviewclosedcaptions)
-			   			<li>
-					   	<a class="assettab #if($opentabactions=='closedcaptions') dropdown-current #end" 
-								data-link="$siteroot$componenthome/mediaviewer/fullscreen/tabs/viewactions.html?action=closedcaptions" title="[[Closed Captions]]"
-								data-assettab="viewactions"
-								data-assettabactions="closedcaptions"
-								data-assettabname="[[Closed Captions]]" >
-							[[Closed Captions]]
-							</a>
-					   	</li>
-			   		#end
-			   	#end
 		    	#if(!$ismulti && $canviewmap)
 			   	<li>
 			   	<a class="assettab #if($opentabactions=='map') dropdown-current #end" 
