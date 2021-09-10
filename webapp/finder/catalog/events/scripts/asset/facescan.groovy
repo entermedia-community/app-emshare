@@ -19,12 +19,12 @@ public void init()
 		return;
 	}
 
+	int saved = 0;
 	try
 	{	
 		HitTracker hits = archive.query("asset").exact("facescancomplete", "false").exact("importstatus","complete").search();
 		hits.enableBulkOperations();
 			
-		int saved = 0;
 		List tosave = new ArrayList();
 		FaceDetectManager manager = archive.getBean("faceDetectManager");
 		int found = 0;
@@ -46,16 +46,16 @@ public void init()
 		archive.saveAssets(tosave);
 		saved = saved +  tosave.size();
 		log.info("saved " + saved);
-		
-		if( saved > 0)
-		{
-			archive.fireMediaEvent("facecompare", context.getUser());
-		}
 	}
 	finally
 	{
 		archive.getLockManager().release(lock);
-	}	
+	}
+
+	if( saved > 0)
+	{
+		archive.fireMediaEvent("facecompare", context.getUser());
+	}
 	
 }
 
