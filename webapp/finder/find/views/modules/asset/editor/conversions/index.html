@@ -5,23 +5,23 @@
 <div style="padding:20px;">
 
 #set($title = $asset.name)
-
-<h2>[[Asset Downloads]]</h2>
+<div class="row">
+<div class="col-md-3">
+##<h2>[[Asset Downloads]]</h2>
 <div class="clearfix"></div>
-<table>
-<tr>
-<td style="width:220px; text-align: center;">
+
 	#set($mediaurl = "$siteroot/$mediadbappid/services/module/asset/downloads/preset/$asset.sourcepath/$presetdata.generatedoutputfile")	  
 	#set($previewurl="$siteroot$apphome/components/asseteditor/preview.html?previewimg=$mediaurl")
 	
-	#set($tpath = $mediaarchive.asLinkToPreview($asset, null, "image200x200.jpg", true))
+	#set($$assetthpath = $mediaarchive.asLinkToPreview($asset, null, "image200x200.jpg", true))
 	#set($imgurl="$mediaurl?_=$mathutil.getRandomValue(9999)")
 	
-	<img src="$tpath" alt="$title" style="max-width: 200px; max-height: 200px" />
-</td>
-<td valign="top">
+	<div class="text-center">
+	<img src="$assetthpath" alt="$title" style="max-width: 200px; max-height: 200px" />
+	</div>
 
 #if($candownload)	
+<div style="margin:10px 0;">
 	#if( $desktop )
        	<a href="#" class="emdesktopdownload btn btn-dark" data-assetid="$asset.id" title="[[Download]] $!title">
        	<i class="fas fa-download"> </i> [[Download Original]]
@@ -36,6 +36,7 @@
        	<i class="fas fa-download"></i> [[Download Original]]
        	</a>
       	#end
+</div>
 #end
 
 #if($caneditasset)
@@ -43,24 +44,26 @@
 	<a class="btn btn-sm btn-secondary ajax" data-targetdivinner="asset-editor-container" data-oemaxlevel="1" 
 	   href="$siteroot$apphome/views/modules/asset/editor/conversions/rotate.html?rotate=90&assetid=$asset.id">[[Rotate +90]]</a>
 	</div>
-	<div style="padding-top:5px">
-	<form id="uploadform" class="ajaxform" data-targetdiv="asset-editor-container" name="wizard" method="post" enctype="multipart/form-data" action="$siteroot${apphome}/views/modules/asset/editor/conversions/customthumb.html">
-		<span class="btn btn-sm btn-secondary btn-default btn-file">
-		    [[Replace Image]] <input type="file" name="file.0" id="file0-file" onchange='$("#file0-file-info").html($(this).val());'>
-		</span>
-		<span id="file0-file-info" style="font-size:90%"></span>
+##	<div style="padding-top:5px">
+##	<form id="uploadform" class="ajaxform" data-targetdiv="asset-editor-container" name="wizard" method="post" enctype="multipart/form-data" action="$siteroot${apphome}/views/modules/asset/editor/conversions/customthumb.html">
+##		<span class="btn btn-sm btn-secondary btn-default btn-file">
+##		    [[Replace Image]] <input type="file" name="file.0" id="file0-file" onchange='$("#file0-file-info").html($(this).val());'>
+##		</span>
+##		<span id="file0-file-info" style="font-size:90%"></span>
 		##[[Replace Image]]:<input type="file" size="50" name="file.0">
-		<input type="hidden" name="unzip" value="false" />
-		<input type="hidden" name="sourcepath" value="$!context.getRequestParameter('assetid')" />
-		<input type="hidden" name="assetid" value="$!context.getRequestParameter('assetid')" />
-		<input type="hidden" name="presetid" value="$!context.getRequestParameter('presetid')" />
-		<input type="submit" id="finishbutton" value="[[Upload]]" class="btn btn-sm btn-primary" >
-	</form>
-	</div>
+##		<input type="hidden" name="unzip" value="false" />
+##		<input type="hidden" name="sourcepath" value="$!context.getRequestParameter('assetid')" />
+##		<input type="hidden" name="assetid" value="$!context.getRequestParameter('assetid')" />
+##		<input type="hidden" name="presetid" value="$!context.getRequestParameter('presetid')" />
+##		<input type="submit" id="finishbutton" value="[[Upload]]" class="btn btn-sm btn-primary" >
+##	</form>
+##	</div>
 #end
-</td>
-</tr>
-</table>
+
+
+</div>
+<div class="col-md-9">
+
 
 ###set( $cdnprefix = $mediaarchive.getCatalogSettingValue("cdn_prefix") )
 #set($cdnprefix = $context.siteRoot )
@@ -82,10 +85,10 @@ $context.putPageValue("results", $results)
 
 
 <div class="conversionsall emdata" >
-<table class="table table-striped table-hover tabe-conversions" id="conversionstable" style="max-width: 1200px; margin-top:30px;">
+<table class="table table-striped table-hover tabe-conversions" id="conversionstable" style="max-width: 1200px; margin-top:0px;">
 <thead>
 	<tr class="tableheader">
-	    <th style="width:120px;">[[Crop]]</th>
+	    <th style="width:120px;">[[Download]]</th>
 		<th>[[Description]]</th>
 		<th style="width:100px;">[[Size]]</th>
 		<th style="width:100px;">[[Aspect Ratio]]</th>
@@ -93,7 +96,7 @@ $context.putPageValue("results", $results)
 		<th style="width:95px;">[[Status]]</th>
 		<th style="width:180px;">[[Last Updated]]</th>
 		#end
-		<th style="width:210px;">[[Actions]]</th>
+		<th style="width:110px;">[[Crop]]</th>
 	</tr>
 </thead>
 #foreach ($result in $results)
@@ -124,22 +127,24 @@ $context.putPageValue("results", $results)
 		#set($description = $conversionUtil.getConvertPresetParameter($catalogid,$result.id, "imagelocation"))
 		<tr>
 		
-		<td class="text-center">
-			#set($mediaurl = "$siteroot/$mediadbappid/services/module/asset/downloads/preset/$asset.sourcepath/$presetdata.generatedoutputfile")	  
-			#set($previewurl="$siteroot$apphome/components/asseteditor/preview.html?previewimg=$mediaurl")
+		<td class="text-center"> 
 			
-			#if($asset.assettype!="video")
-			<a href="#urlescape($previewurl)"
-				class="emdialog" data-cancelsubmit="true" data-hidefooter="true" data-noesc="true"
-				title="$!presetdata.name">
-			#end	
-				##why not cache=false?
-				#set($imgurl="$mediaurl?_=$mathutil.getRandomValue(9999)")
-				
-				<img src="#urlescape($imgurl)" alt="$!presetdata.name" style="max-width: 100px; max-height: 60px" />
-			#if($asset.assettype!="video")
-			</a>
-			#end
+			
+			<div style=" padding:5px 0;">
+			
+			 #set($url = "$siteroot/$mediadbappid/services/module/asset/downloads/generated/$asset.sourcepath/$presetdata.generatedoutputfile/$mediaarchive.asExportFileName($asset, $presetdata)?includemetadata=true")
+			<a href="#urlescape($url)" class="btn btn-sm btn-secondary" title="[[Download]]"><i class="fas fa-download"></i></a>
+		  	
+			#if($canembedasset)
+			
+				<a class="btn btn-sm btn-secondary emdialog" 
+			    	href="$siteroot$apphome/views/modules/asset/editor/media/share.html?assetid=${asset.id}&presetid=${presetdata.id}"
+			    	data-noesc="true"
+			    	data-hidefooter="true"
+			    	title="[[Share]] $!presetdata.name"><i class="fas fa-share-alt"></i></a>
+			
+			 #end
+		  	</div>
 			  
 		</td>
 		<td>
@@ -176,6 +181,10 @@ $context.putPageValue("results", $results)
 			#set($notready = true)
 		#end
 		
+		
+		#set($mediaurl = "$siteroot/$mediadbappid/services/module/asset/downloads/preset/$asset.sourcepath/$presetdata.generatedoutputfile")	  
+			#set($previewurl="$siteroot$apphome/components/asseteditor/preview.html?previewimg=$mediaurl")
+			
 
 		</div>
 		</td>
@@ -208,7 +217,7 @@ $pages.include("$apphome/views/modules/asset/editor/conversions/sendalltofatwire
 	
 
 	<a class="btn btn-sm btn-secondary ajax" data-targetdivinner="asset-editor-container" data-oemaxlevel="1" 
-   	   href="$siteroot$apphome/views/modules/asset/editor/conversions/reloadthumbs.html?assetid=$asset.id">[[Reload Original Thumbnails]]</a>
+   	   href="$siteroot$apphome/views/modules/asset/editor/conversions/reloadthumbs.html?assetid=$asset.id">[[Recreate Conversions]]</a>
    	   
    	   
    	<span class="ajaxprogress">&nbsp;&nbsp;<i class="fas fa-spinner fa-spin"></i></span>
@@ -219,7 +228,8 @@ $pages.include("$apphome/views/modules/asset/editor/conversions/sendalltofatwire
 
 </div>
 
-
+</div>
+</div>
 
 
 <script>
