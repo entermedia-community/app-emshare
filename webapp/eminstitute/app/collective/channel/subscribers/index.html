@@ -16,7 +16,7 @@
 	
 			#if ($liked)
 					 <a href="$applink/collective/channel/subscribers/unsubscribe.html?id=${liked.getId()}&collectionid=$librarycol.getId()" 
-						class="btn btn-secondary btn-action">[[Un-Subscribe]]</a>
+						class="btn btn-secondary btn-action">[[Un-Like]]</a>
 			#else
 				<h3>[[Follow The Project]]</h3>
 				<form name="followproject" id="followproject" class="ajaxform" style="display:inline-block;" data-targetdiv="subscriberssidebar" action="$applink/collective/channel/subscribers/likesave.html" method="post">
@@ -28,7 +28,7 @@
 				<input type="hidden" name="field" value="collectionid" />
 				<input type="hidden" name="collectionid.value" value="$collectionid" />
 				<input type="hidden" name="collectionid" value="$collectionid" />
-				 <a href="" class="btn btn-success btn-action submitform" title="[[Get Email Alerts]]"><i class="fas fa-envelope"></i> &nbsp;[[Subscribe]]</a>
+				 <a href="" class="btn btn-success btn-action submitform" title="[[Get Email Alerts]]"><i class="fas fa-thumbs-up"></i> &nbsp;[[Like]]</a>
 				 
 				  
 				</form>
@@ -56,7 +56,7 @@
 		#else
 			<h3>[[Follow The Project]]</h3>
 			#set($loginok = "$applink/collective/channel/$collectionid/${librarycol.getWebName()}.html")
-			<a href="$applink/authentication/login.html?loginokpage=$!loginok" class="btn btn-success" style=""><i class="fas fa-envelope"></i> &nbsp;[[Login to Subscribe]]</a>
+			<a href="$applink/authentication/login.html?loginokpage=$!loginok" class="btn btn-success" style=""><i class="fas fa-envelope"></i> &nbsp;[[Login to Like]]</a>
 		#end	
 		
 		<div class="subscribe-headline">
@@ -75,7 +75,7 @@
 	<div class="subscribers-box-box">
 		<a class="emdialog" data-cancelsubmit="true" title="View Subscribers" href="$applink/collective/channel/subscribers/subscriberslist.html?collectionid=$librarycol.getId()">
 			<div class="box-content" style="border-right:1px solid #ddd;">
-			<strong>[[Subscribers]]</strong>
+			<strong>[[Likes]]</strong>
 			#set( $subscribers = $mediaarchive.query("librarycollectionlikes").exact("collectionid",$collectionid).search($context) )
 			<div class="box-number">$subscribers.size()</div>
 			</div>
@@ -168,7 +168,7 @@ $team.size()</a>
 	<div class="text-right">
 	<a href="$applink/collective/channel/subscribers/usersearch.html?collectionid=${collectionid}" 
 		class="emdialog btn btn-primary btn-sm" title="[[Search Users]]">
-	<i class="fas fa-search"></i> [[Add Member]]
+	<i class="fas fa-search"></i> [[Add Team Member]]
 	</a>
 	</div>
 	#end
