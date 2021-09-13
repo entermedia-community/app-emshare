@@ -24,7 +24,7 @@ $context.putPageValue("moduleid", $moduleid)
 		
 		
 		<div class="clearfix"></div>
-		<div class="entity-media">
+		<div class="entity-media" style="width:240px;">
 ##		<h2 class="modal-title">
 ##			#set($name = $entity.name)
 ##			#if(!$name)
@@ -39,7 +39,30 @@ $context.putPageValue("moduleid", $moduleid)
 		$context.putPageValue("assetshits", $assetshits)
 		$context.putPageValue("fullview",true)
 		$context.putPageValue("thumbsize", "small" )
-		$pages.include("$componenthome/gridsample/attachedmedia.html",$context)
+		
+		#set( $assetshits = $mediaarchive.query("asset").hitsPerPage($assetsshown).exact("faceprofiles.faceprofilegroup", $entityid).sort("assetaddeddateDown").search() )		
+
+#set($facemanager = $mediaarchive.getBean("faceDetectManager") )
+
+	#foreach($hit in $assetshits)
+		
+		#set($link = $mediaarchive.asLinkToPreview($hit, "image200x200.jpg"))
+		#set($locationxy = $facemanager.getImageAndLocationForGroup($hit,$entityid,200,200) )
+	 
+	 ##TODO get offset for video
+	 ##TODO get array of images
+	 
+		<div class="assetdraggable ui-draggable ui-draggable-handle" data-assetid="$hit.getId()" > 
+		 	<a class="stackedplayer imagearea" data-assetid="$hit.getId()"  href="#" title="$hit.name">
+			<span class="emshowbox" data-faceprofilegroup="$entityid" data-showbox="$locationxy">
+				<img class="imagethumb" style="width:200px" border="0"  data-assetid="$hit.getId()" alt="$hit.getName()" draggable="true" 
+				data-sourcepath="$hit.getSourcePath()"    src="$link">
+			</span>
+			</a>
+		</div>
+	
+	#end
+		
 		</div>
 		<div class="entity-metadata">
 			$context.putPageValue("data", $entity)

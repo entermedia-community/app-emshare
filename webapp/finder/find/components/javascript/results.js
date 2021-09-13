@@ -971,6 +971,33 @@ jQuery(document).ready(function(url,params)
 		}
 	});
 	
+	lQuery('.emshowbox').livequery(function() 
+	{
+		var div = $(this);
+		div.css("position","relative");
+		var box =  div.data("showbox");
+		//var box = JSON.parse(json);
+	
+		div.prepend("<canvas></canvas>");
+		
+		var canvas = $(div.find("canvas"));
+		canvas.css("position","absolute");
+		
+		var image = $(div.find("img"));
+		image.ready( function ()
+		{
+			console.log(image.height());
+			//canvas.width(box[2]);
+			//canvas.height(box[3]);
+			canvas.attr({width:box[0]+box[2]+100,height:box[1]+ box[3]+100});
+			var context = canvas[0].getContext("2d");	
+			context.beginPath();
+			context.lineWidth = 1;
+			context.strokeStyle = '#666';
+			context.strokeRect(box[0],box[1],box[2],box[3]);
+		});
+ 	});
+	
 	
 	
 	lQuery('select.addremovecolumns').livequery("change",function()
