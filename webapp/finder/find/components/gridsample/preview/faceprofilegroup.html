@@ -45,16 +45,20 @@ $context.putPageValue("moduleid", $moduleid)
 #set($facemanager = $mediaarchive.getBean("faceDetectManager") )
 
 	#foreach($hit in $assetshits)
-		
-		#set($link = $mediaarchive.asLinkToPreview($hit, "image200x200.jpg"))
-		#set($locationxy = $facemanager.getImageAndLocationForGroup($hit,$entityid,200,200) )
+		#set($imagelocation = $facemanager.getImageAndLocationForGroup($hit,$entityid,200,200) )
+		#if($imagelocation.timecodestartseconds > -1)
+			##/views/modules/asset/downloads/preview/crop/Albums/Users/admin/2021/axevnr20130110ensd_2.mp4/thumb.jpg?timeoffset=18.0&assetid=AXvggdnE8BvxpXRSMb13
+			##http://localhost:8080/finder/mediadb/services/module/asset/downloads/preset/Albums/Users/admin/2021/54888538ecad0490488b456b-750-536_5.jpg/image200x200.jpg
+			#set($link = "/$mediaarchive.getMediaDbId()/services/module/asset/downloads/preset/$hit.sourcepath/image200x200.jpg?timeoffset=$imagelocation.timecodestartseconds")
+		#else
+			#set($link = $mediaarchive.asLinkToPreview($hit, "image200x200.jpg"))
+		#end	
 	 
 	 ##TODO get offset for video
-	 ##TODO get array of images
 	 
 		<div class="assetdraggable ui-draggable ui-draggable-handle" data-assetid="$hit.getId()" > 
 		 	<a class="stackedplayer imagearea" data-assetid="$hit.getId()"  href="#" title="$hit.name">
-			<span class="emshowbox" data-faceprofilegroup="$entityid" data-showbox="$locationxy">
+			<span class="emshowbox" data-faceprofilegroup="$entityid" data-showbox="$imagelocation.locationxy">
 				<img class="imagethumb" style="width:200px" border="0"  data-assetid="$hit.getId()" alt="$hit.getName()" draggable="true" 
 				data-sourcepath="$hit.getSourcePath()"    src="$link">
 			</span>
