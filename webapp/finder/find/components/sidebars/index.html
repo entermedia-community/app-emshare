@@ -1,6 +1,7 @@
 <div  id="col-sidebars" >
 	<div class="col-main col-sidebar-togglers sidebar-togglers-bar">
 	<div class="col-main-inner">
+
 	
 	#if( !$sidebarcomponent && $modulehits.isEmpty() )
 		#set( $sidebarcomponent = "guide" ) 
@@ -27,10 +28,18 @@
 		<div class="sidebar-togglers #if($sidebarcomponent == "filters") sidebar-selected #end">
 		<a href="#" 
 			class="sidebar-toggler sidebar-toggler-show light" 
-			data-action="show" 
-			data-targetdiv="col-sidebars"
+			data-action="show"
+			data-moduleid="$module.getId()"  
 			data-sidebar="filters"
-			data-modulesearchhitssessionid="$modulehits.sessionId"
+			#set ($moduleid = $module.getId())
+			#if($moduleid)
+				data-contenturl="$siteroot$apphome/views/modules/$moduleid/entity.html?sidebarcomponent=filters"
+				data-oemaxlevel="2"
+				data-targetdiv="applicationcontent"
+			#else
+				data-targetdiv="col-sidebars"
+			#end
+			data-modulesearchhitssessionid="$!modulehits.sessionId"
 		title="[[Search]]">
 		<i class="fas fa-filter"></i>
 		</a>
@@ -118,7 +127,7 @@
 		<div class="downloadsUpdateWrapper">
 			<div class="downloadsUpdate">
 				#if($user && $sidebarcomponent != "userdownloads")
-					#set($recentdownloads = $mediaarchive.query("userdownloads").exact("user",$user.getId()).sort("dateDown").search($context))
+					##set($recentdownloads = $mediaarchive.query("userdownloads").exact("user",$user.getId()).sort("dateDown").search($context))
 					$recentdownloads.size()
 				#end
 			</div>
@@ -229,6 +238,7 @@
 		 data-sidebarwidth="$!sidebarwidth">
 		<div id="col-$sidebarcomponent" class="col-left col-$sidebarcomponent">
 		 	<div class="col-main-inner">
+		 	
 			$pages.include($sidebarurl, $context)
 			<div class="colslidercontainer">
 				<a href="#" class="col-resize" title="[[Resize Sidebar]]"></a>

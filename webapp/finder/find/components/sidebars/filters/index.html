@@ -1,4 +1,14 @@
-	<div class="col-sidebar-header">
+#if(!$moduleid)
+	#set( $moduleid = $context.getRequestParameter("moduleid"))
+#end
+#if($moduleid)
+	#set( $module = $mediaarchive.getData("module", $moduleid))
+#else
+	#set( $module = $content.module)
+	#set( $module = $mediaarchive.getData("module", $module))	
+#end
+
+<div class="col-sidebar-header">
 		<h2>
 		[[Filter By]] 
 
@@ -11,8 +21,7 @@
 		<i class="fas fa-angle-double-left closebar"></i>
 		</a>
 
-	</div>
-
+</div>
 
 	#if($module.getId()=="modulesearch")
 		$pages.include("$apphome/components/gridfilters/index.html", $context)

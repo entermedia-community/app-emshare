@@ -2210,11 +2210,18 @@ uiload = function() {
 		else {
 			//showsidebar
 			options["sidebarcomponent.value"] = sidebar;
-			var url = apphome + '/components/sidebars/index.html';
+			var url  = '';
+			if(options["contenturl"] != undefined){
+				url = options["contenturl"];
+				targetdiv = $("#"+options["targetdiv"])
+			}
+			else {
+				url = apphome + '/components/sidebars/index.html';
+				targetdiv = findclosest(toggler, "#" + targetdiv);
+			}
 			jQuery.ajax({
 				url: url, async: false, data: options, success: function (data) {
-					var cell = findclosest(toggler,"#" + targetdiv); 
-					cell.replaceWith(data); //Cant get a valid dom element
+					targetdiv.replaceWith(data); //Cant get a valid dom element
 					$(".pushcontent").removeClass('pushcontent-fullwidth');
 					$(".pushcontent").addClass('pushcontent-open');
 					//$(".pushcontent").css("margin-left","");
