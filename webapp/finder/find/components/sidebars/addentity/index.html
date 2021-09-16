@@ -1,10 +1,13 @@
-<div class="col-sidebar-header">
-#if( !$module)
-	#set( $selectedmodule = $context.getRequestParameter("selectedmodule") )
-	#if( $selectedmodule)
-		#set( $module = $mediaarchive.getData("module",$selectedmodule))  ##not working due to ajax load. Fix one day, low priority
-	#end
+#set( $moduleid = $content.module)
+#if(!$moduleid)
+	#set($moduleid = "asset")
 #end
+#if($moduleid)
+	#set($module = $mediaarchive.getData("module", $moduleid))
+#end
+
+
+<div class="col-sidebar-header">
 		<h2>
 		[[Data Entity Manager]] 
 		</h2>
@@ -31,8 +34,8 @@
 	
 	#foreach ( $amodule in $userprofile.getEntities() )
 		#if( $amodule.id != "asset")
-		<li >
-		<a class=" ajax TODOautocloseside auto-active-link" data-targetdiv="applicationcontent" data-oemaxlevel="2" data-updateurl="true" data-hidefooter="true" 
+		<li class="#if($moduleid==$amodule.id) current #end" >
+		<a class=" ajax TODOautocloseside auto-active-link " data-targetdiv="applicationcontent" data-oemaxlevel="2" data-updateurl="true" data-hidefooter="true" 
 		href="$urlbase/${amodule.id}/index.html">$amodule</a></li>
 		#end	
 	#end
