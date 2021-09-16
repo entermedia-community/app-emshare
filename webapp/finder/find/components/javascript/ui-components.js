@@ -807,13 +807,15 @@ uiload = function() {
 
 		var options = input.data();
 		
-
+		var searchurltargetdiv = input.data("searchurltargetdiv");
+			
 		var typeaheadtargetdiv = input.data("typeaheadtargetdiv");
 		if(typeaheadtargetdiv == null) {
 			typeaheadtargetdiv = "applicationmaincontent"
 		}	
 		
 		var searchurlentertargetdiv = input.data("searchurlentertargetdiv");
+		
 		if(searchurlentertargetdiv != null)
 		{
 			input.on("keydown", function(e)
@@ -958,7 +960,7 @@ uiload = function() {
 								//var q2 = input.val();
 								//if( q2 == q)
 								{
-									$("#"+typeaheadtargetdiv).html(data);
+									$("#"+searchurltargetdiv).replaceWith(data);
 									$(window).trigger("resize");
 								}	
 							}

@@ -24,28 +24,36 @@ $context.putPageValue("hits",$hits)
 		<div class="input-group"  style="position:relative;">
 			<input class="typeaheaddropdown form-control border-right-0 grabfocus" 
 					type="text"  
-					id="searchinput" 
-					data-quicksearched='$!context.getRequestParameter("quicksearched")'
+					id="searchinput"
+					name="description.value"
+					value="#esc($input)"
 					autocomplete="off"
 					placeholder="[[Search...]]"
+					
+					data-updateurl="true" 
+					data-field="description"
+					
+					##regularsearch
+					data-quicksearched='$!context.getRequestParameter("quicksearched")'
 					data-searchurl="$siteroot$applink/views/modules/modulesearch/index.html"
+					data-searchurltargetdiv="applicationcontent"
 					data-oemaxlevel="2"
-					  
+					
+					##enterkeyaction?  
 					data-searchurlenter="$siteroot$applink/views/modules/modulesearch/discovery.html"
 					data-searchurlentertargetdiv="applicationmaincontent"
 					data-searchurlenteroemaxlevel="2"
-					data-updateurl="true"
 					
+					##typeahed
 					data-typeaheadurl="$siteroot$applink/components/quicksearch/results.html"
 					data-typeaheadtargetdiv="applicationmaincontent"
 					data-typeaheadoemaxlevel="2"
 					
 					data-searchtype="modulesearch"
-					data-hitssessionid="$hits.sessionId"
-					name="description.value" 
-					data-field="description"
+					data-hitssessionid="$!hits.sessionId"
+					
 					data-operation="contains"
-					value="#esc($input)" />
+					 />
 			
 			<div class="input-group-addon submitform" style="pointer-events: initial;">
 			<a title="[[Search Now]]">[[Search]]</a>
