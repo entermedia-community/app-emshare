@@ -5,6 +5,8 @@
 		#set( $librarycol = $mediaarchive.query("librarycollection").exact("id",$collectionid).searchOne() )
 	#end
 #end
+
+#if( $librarycol )
 #set($fullwidth = $content.fullwidth)
 	
 	#set($logo = $mediaarchive.getAsset($librarycol.assetportrait) )
@@ -18,10 +20,6 @@
 
 <div class="collectivelayout ">
 
-
-	
-
-	
  	<div class=" collectiveheader" style="position:relative;" >
 
 			<div class="collectiveheaderlogo">
@@ -45,3 +43,8 @@
 	$pages.includeContent()	
 
 </div>
+
+#else
+$pages.includeContent()	
+
+#end
