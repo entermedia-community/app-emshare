@@ -24,7 +24,7 @@ $context.putPageValue("moduleid", $moduleid)
 		
 		
 		<div class="clearfix"></div>
-		<div class="entity-media" style="width:250px;">
+		<div class="entity-media" style="width:450px;">
 ##		<h2 class="modal-title">
 ##			#set($name = $entity.name)
 ##			#if(!$name)
@@ -43,15 +43,15 @@ $context.putPageValue("moduleid", $moduleid)
 		#set( $assetshits = $mediaarchive.query("asset").hitsPerPage($assetsshown).exact("faceprofiles.faceprofilegroup", $entityid).sort("assetaddeddateDown").search() )		
 
 #set($facemanager = $mediaarchive.getBean("faceDetectManager") )
-<div style="width:240px;max-height:640px;overflow:auto;">
+<div style="width:440px;max-height:640px;overflow:auto;">
 	#foreach($hit in $assetshits)
-		#set($imagelocation = $facemanager.getImageAndLocationForGroup($hit,$entityid,200,200) )
+		#set($imagelocation = $facemanager.getImageAndLocationForGroup($hit,$entityid,400,400) )
 		#if($imagelocation.timecodestartseconds > -1)
 			##/views/modules/asset/downloads/preview/crop/Albums/Users/admin/2021/axevnr20130110ensd_2.mp4/thumb.jpg?timeoffset=18.0&assetid=AXvggdnE8BvxpXRSMb13
 			##http://localhost:8080/finder/mediadb/services/module/asset/downloads/preset/Albums/Users/admin/2021/54888538ecad0490488b456b-750-536_5.jpg/image200x200.jpg
-			#set($link = "/$mediaarchive.getMediaDbId()/services/module/asset/downloads/preset/$hit.sourcepath/image200x200.jpg?timeoffset=$imagelocation.timecodestartseconds")
+			#set($link = "/$mediaarchive.getMediaDbId()/services/module/asset/downloads/preset/$hit.sourcepath/image550x350.jpg?timeoffset=$imagelocation.timecodestartseconds")
 		#else
-			#set($link = $mediaarchive.asLinkToPreview($hit, "image200x200.jpg"))
+			#set($link = $mediaarchive.asLinkToPreview($hit, "image550x350.jpg"))
 		#end	
 	 
 	 ##TODO get offset for video
@@ -59,7 +59,7 @@ $context.putPageValue("moduleid", $moduleid)
 		<div class="assetdraggable ui-draggable ui-draggable-handle" data-assetid="$hit.getId()" > 
 		 	<a class="stackedplayer imagearea" data-assetid="$hit.getId()"  href="#" title="$hit.name">
 			<span class="emshowbox" data-faceprofilegroup="$entityid" data-showbox="$imagelocation.locationxy">
-				<img class="imagethumb" style="width:200px" border="0"  data-assetid="$hit.getId()" alt="$hit.getName()" draggable="true" 
+				<img class="imagethumb" style="width:400px" border="0"  data-assetid="$hit.getId()" alt="$hit.getName()" draggable="true" 
 				data-sourcepath="$hit.getSourcePath()"    src="$link">
 			</span>
 			</a>
