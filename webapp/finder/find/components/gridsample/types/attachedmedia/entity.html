@@ -14,7 +14,9 @@
 #end
 #if($moduleid && $entityid)
 	#set( $assetshits = $mediaarchive.query("asset").hitsPerPage($assetsshown).exact($moduleid, $entityid).sort("assetaddeddateDown").search() )
-	$context.putPageValue("assetshits", $assetshits)
-	$context.putPageValue("thumbsize", "crop" )
-	$pages.include("$componenthome/gridsample/attachedmedia.html",$context)
+	#if ($assetshits.size()>1)
+		$context.putPageValue("assetshits", $assetshits)
+		$context.putPageValue("thumbsize", "crop" )
+		$pages.include("$componenthome/gridsample/attachedmedia.html",$context)
+	#end
 #end
