@@ -45,7 +45,10 @@ public void init()
 		}
 		archive.saveAssets(tosave);
 		saved = saved +  tosave.size();
-		log.info("saved " + saved);
+		if( saved > 0)
+		{
+			log.info("saved " + saved);
+		}
 	}
 	finally
 	{
