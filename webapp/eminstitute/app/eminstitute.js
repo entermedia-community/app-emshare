@@ -1,5 +1,8 @@
 jQuery(document).ready(function() 
 { 
+	
+	var appdiv = $('#application');
+	var home = appdiv.data('home') + appdiv.data('apphome');
 
 	if ('serviceWorker' in navigator) 
 	{
