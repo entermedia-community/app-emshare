@@ -1,11 +1,14 @@
 #set( $target = "messagetask${goal.id}")
-<div id="$target" class=goalstatus goalstatus$!{goal.projectstatus}" style="position:relative"> 
+<div id="$target" class="goalstatus goalstatus$!{goal.projectstatus}" style="position:relative"> 
 
 #set( $goallink = "$applink/collective/goals/editgoalpanel.html?id=${goal.id}&collectionid=$goal.collectionid&hitssessionid=$!{goalhits.getSessionId()}&goalfolder=$!goalfolder")
-<a data-cancelsubmit="true" data-hidefooter="true" href="$goallink"
-    title="$goal.name" 
-	class="emdialog goalticket-level" 
-	data-urlbar="$applink/collective/goals/priorities/index.html?collectionid=$goal.collectionid&opengoalid=${goal.id}" data-width="900" >
+<a data-cancelsubmit="true" 
+    data-hidefooter="true" 
+    href="$goallink"
+    title="[[Ticket]] #$!goal.ticketnumber" 
+	class="emdialog goalticket-level float-left" 
+	data-urlbar="$applink/collective/goals/priorities/index.html?collectionid=$goal.collectionid&opengoalid=${goal.id}" 
+	data-width="900" >
 		<i class="fas fa-flag"></i> 
 		#set( $level = $mediaarchive.getData("ticketlevel",$goal.ticketlevel))
 		[[Ticket]] : #$!goal.ticketnumber  #text($level)
@@ -13,17 +16,16 @@
 		#text($status)
 </a>
 
-<div class="float-right">
+<div class="goalslike float-right">
 $pages.include("$apphome/collective/goals/like.html",$context)
-
 </div>
-<div style = "margin-right:0px">
+<div class="goaltasksout" style="margin-right:0px">
 $pages.include("$apphome/collective/goals/search/goaltasks.html?indialog=true&onlyopen=true",$context)
 </div>
 		
 
 #if($goal.projectstatus != "completed" && $goal.projectstatus != "closed")
-<div class="float-right">
+<div class="goalcloseout text-right">
 	<a href="$applink/collective/community/chatterbox/closegoal.html?goalid=$goal.id" 
 		data-targetdiv="$target" 
 		data-oemaxlevel="1"
@@ -33,6 +35,4 @@ $pages.include("$apphome/collective/goals/search/goaltasks.html?indialog=true&on
 </div>
 #end
 
-
-<div class="clearfix"></div>
 </div>
