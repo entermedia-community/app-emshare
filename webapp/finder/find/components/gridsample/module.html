@@ -2,16 +2,21 @@
 
 $context.putPageValue("favorites", $favorites)
 
-#set($moduleid = $module.id)
 
+#if (!$rendertype)
+	#set($rendertype = $module.modulerendertype)
+	#if (!$rendertype)
+		#set($rendertype = "entity")
+	#end
+#end
+$context.putPageValue("rendertype", $rendertype)
 
-	#if($content.get("section") != "favorites")
-	
-	#end
-	#if($hits.getTotalPages() >  1  )
-		$pages.include("$componenthome/results/pages.html", $context)
-		<div class="clearfix"></div>
-	#end
+#if($hits.getTotalPages() >  1  )
+	#set($resultsPage = "$siteroot$apphome/views/modules/$module.id/index.html")
+	$context.putPageValue("resultsPage", $resultsPage)
+	$pages.include("$componenthome/results/pages.html", $context)
+	<div class="clearfix"></div>
+#end
 	
 
 
