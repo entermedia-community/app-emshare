@@ -2,14 +2,13 @@
 #foreach( $viewpath in $views.keySet() )
 	#set( $target = $views.get($viewpath) )
 	#set($permissionvalue = $context.getPageValue("canview-${target.getId()}"))
-        #if("$!permissionvalue" == "" || $permissionvalue == true)
-     
+    #if("$!permissionvalue" == "" || $permissionvalue == true)
 		#if( !$target.rendertable )
 			$context.putPageValue("origURL", "$apphome/assets/${asset.sourcePath}.html")
 			$context.putPageValue("data",$asset)	
 			$context.putPageValue("searcher",$mediaarchive.getAssetSearcher() )	
 			$context.putPageValue("view",$viewpath)
-
+	
 			<div id="edit-${target.getId()}" 
 				 class="asset-data-detail asset-data-preview assetpanel-editor-box edit-panel-generic">
 				#set($collectionid = $context.getRequestParameter("collectionid"))
@@ -27,10 +26,9 @@
 						   title="[[Edit]] $context.getText($target.toString())"><i class="fas fa-edit"></i> [[Edit]]</a>
 					</div>
 				#end
-			</div>
+				</div>
+			#end
+			#set($permissionvalue = "")
 		#end
-	#end
-             #set($permissionvalue = "")
-	
 #end
 </div>
