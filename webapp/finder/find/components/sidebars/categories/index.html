@@ -32,10 +32,11 @@
 		$context.putPageValue("selectedlibrary",$selectedlibrary)
 	#end
 				
-	#if($module.id =="librarycollection" && $librarycol )
-		$pages.include("$apphome/components/librarycollection/sidebar.html",$context)
-	#else
-##		$pages.include("$apphome/components/categories/sidebar-left.html", $context)
+	###if($module.id =="librarycollection" && $librarycol )
+	##	$pages.include("$apphome/components/librarycollection/sidebar.html",$context)
+	##else
+		###$pages.include("$apphome/components/categories/sidebar-left.html", $context)
+		
 		#set( $rootpath = "${apphome}/components/categories")
 		
 		##Always clear Tree if not category or nodeID
@@ -45,20 +46,20 @@
 			#if (!$category)
 				#set($clearselection = true)
 			#end
-	#end
+		#end
 
-#set($targetresults = "$siteroot$apphome/views/modules/asset/showcategory.html")
-$context.putPageValue("targetresults", $targetresults)
-$context.putPageValue("treename", "sidebarCategories")
-
-$context.putPageValue("maxlevelclick", "2")
-$context.putPageValue("targetdiv", "applicationcontent")
-
-$pages.include("$apphome/components/categories/search/searchcategory.html?nodeID=index",$context)
-
-
-
-#end
+			#set($targetresults = "$siteroot$apphome/views/modules/asset/showcategory.html")
+			$context.putPageValue("targetresults", $targetresults)
+			$context.putPageValue("treename", "sidebarCategories")
+			
+			$context.putPageValue("maxlevelclick", "2")
+			$context.putPageValue("targetdiv", "applicationcontent")
+			
+			$pages.include("$apphome/components/categories/search/searchcategory.html?nodeID=index",$context)
+			
+			
+		
+	##	#end
 		
 </div>		
 <div class="clearfix"></div>

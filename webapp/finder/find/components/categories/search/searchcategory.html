@@ -30,11 +30,17 @@ $context.putPageValue("targetdiv",$targetdiv)
 	#set( $categories = $context.getRequestParameter("existingcategories") )
 #end
 
+#if(!$categories)
+	#set( $categories = $context.getRequestParameter("nodeID") )
+#end
+
+
 #set( $multivalue = $context.getRequestParameter("multivalue") )
 #if(!$multivalue)
 	#set( $selectedcategories = $categories )
 	$context.putPageValue("selectedcategories",$selectedcategories)
 #end
+
 
 
 #set( $assetid = $context.getRequestParameter("assetid") )
@@ -55,72 +61,5 @@ $context.putPageValue("targetdiv",$targetdiv)
 	</div>
 </div>
 
-
-<script>
-
-var paintselected = function()
-{
-	#foreach($categoryid in $categories.split("\s*\|\s*"))
-//	$('[data-resultsnodeid="${categoryid}"]').addClass("emrowselected");
-	#end
-};
-
-$(document).on("emtreeselect",function(event) 
-{
-	
-	var selectednode = event.nodeid;
-	$("#parentfilter").val(selectednode);
-	//trigger("submit");
-	//$("#autosubmitfilter").trigger("submit");
-	//$("#autosubmitfilter").submit();
-	$("#autosubmitfilter").ajaxSubmit({
-		target:"#categoryresults",
-		success: paintselected 
-	});
-	return false;
-});
-
-
-$(".pickedcategoryformX").submit(function(event)
-{
-	//append to a list of categories from the calling area?
-	#if( $action )
-		//debugger;
-		event.preventDefault();
-		var params = {};
-		params["detailid"] = "$detailid";
-		#if ($assetid && $detailid == 'categoryid')
-			params["assetid"] =  "$assetid";
-			params["${detailid}"] =  $("#selectedcategories").val();
-		#else
-			params["${detailid}.value"] =  $("#selectedcategories").val();
-		#end
-		params["oemaxlevel"] = "1";
-
-		#if( $pickone )
-			params["id"] =  $("#selectedcategories").val();
-			$("#$targetdiv").load("$action", params, function() {
-				var autosubmit = $("#$targetdiv").data("autosubmit");
-				if (autosubmit) {
-					$("#$targetdiv").closest("form").submit();
-				}
-			});
-			$(this).closest(".modal").modal("hide"); 			//close dialog
-			event.stopPropagation();
-			
-		#else
-			
-			$("#$targetdiv").load("$action", params);
-		#end
-		return false;
-	#else
-		
-		return true;  //Load category as usual
-	#end
-});
-
-paintselected();
-
-</script>
 <div class="clearfix"></div>
 </div>	

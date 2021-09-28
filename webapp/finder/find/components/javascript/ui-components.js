@@ -2788,6 +2788,9 @@ uiload = function() {
 			detail.data("status", "open");
 		}
 	};
+	
+
+
 
 
 }// uiload
@@ -2996,5 +2999,15 @@ jQuery(document).on('domchanged',function(){
 	//jQuery(window).trigger("resize");
 });
 
+
+jQuery(document).on('emtreeselect',function(event){
+			var selectednode = event.nodeid;
+			$("#parentfilter").val(selectednode);
+
+			$("#autosubmitfilter").ajaxSubmit({
+				target:"#categoryresults"
+			});
+			return false;
+});
 
 
