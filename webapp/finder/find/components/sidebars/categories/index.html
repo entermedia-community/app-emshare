@@ -14,30 +14,6 @@
 	
 
 <div id="sidecategoryresults">
-	#if(!$librarycol)
-		#set( $selectedcollection = $context.getRequestParameter("collectionid"))
-		#if( $selectedcollection)
-			#set($librarycol = $mediaarchive.getData("librarycollection",$selectedcollection))
-			$context.putPageValue("librarycol",$librarycol)
-		#end	
-	#end
-	
-	#set( $selectedlibraryid = $context.getRequestParameter("selectedlibrary"))
-	#if( $selectedlibraryid )
-		#set($selectedlibrary = $mediaarchive.getData("library",$selectedlibraryid))
-		$context.putPageValue("selectedlibrary",$selectedlibrary)
-	#elseif( $librarycol )
-		#set( $selectedlibraryid = $librarycol.get("library") )
-		#set($selectedlibrary = $mediaarchive.getData("library",$selectedlibraryid))
-		$context.putPageValue("selectedlibrary",$selectedlibrary)
-	#end
-				
-	###if($module.id =="librarycollection" && $librarycol )
-	##	$pages.include("$apphome/components/librarycollection/sidebar.html",$context)
-	##else
-		###$pages.include("$apphome/components/categories/sidebar-left.html", $context)
-		
-		#set( $rootpath = "${apphome}/components/categories")
 		
 		##Always clear Tree if not category or nodeID
 		#set($clearselection = false)
@@ -48,18 +24,16 @@
 			#end
 		#end
 
-			#set($targetresults = "$siteroot$apphome/views/modules/asset/showcategory.html")
-			$context.putPageValue("targetresults", $targetresults)
-			$context.putPageValue("treename", "sidebarCategories")
-			
-			$context.putPageValue("maxlevelclick", "2")
-			$context.putPageValue("targetdiv", "applicationcontent")
-			
-			$pages.include("$apphome/components/categories/search/searchcategory.html?nodeID=index",$context)
-			
-			
+		#set($targetresults = "$siteroot$apphome/views/modules/asset/showcategory.html")
+		$context.putPageValue("targetresults", $targetresults)
+		$context.putPageValue("treename", "sidebarCategories")
 		
-	##	#end
+		$context.putPageValue("maxlevelclick", "2")
+		$context.putPageValue("targetdiv", "applicationcontent")
+		$context.putPageValue("clearselection", $clearselection)
+		
+		$pages.include("$apphome/components/categories/search/searchcategory.html",$context)
+
 		
 </div>		
 <div class="clearfix"></div>
