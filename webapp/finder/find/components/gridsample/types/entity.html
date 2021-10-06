@@ -1,15 +1,38 @@
-#set($entity = $hit)
-#set($entityid = $entity.id)
-#set($moduleid = $module.id)
+#if($hit)
+	#set($entity = $hit)
+	#set($entityid = $entity.id)
+	#set($moduleid = $module.id)
+#else
+	#if(!$moduleid)
+		#set($moduleid = $context.getRequestParameter("moduleid"))
+	#end
+	#if(!$entityid)
+		#set($entityid = $context.getRequestParameter("entityid"))
+	#end
+	#if($moduleid && $entityid)
+		#set($entity = $mediaarchive.getCachedData($moduleid, $entityid))
+	#end
+#end
 
 $context.putPageValue("entityid", $entityid)
 $context.putPageValue("moduleid", $moduleid)
+
+#if (!$rendertype && $moduleid)
+	#if(!$module)
+		#set($module = $mediaarchive.getCachedData("module", $moduleid))
+	#end
+   	#set($rendertype = $module.modulerendertype)
+#end
+#if (!$rendertype)
+   		#set($rendertype = "entity")
+#end
 
 #set($previewurl = "$siteroot$componenthome/gridsample/preview/${rendertype}.html?id=$entityid&searchtype=$moduleid&hitssessionid=$!hits.sessionId")
 $context.putPageValue("previewurl", $previewurl)
 
 <div class="emgrid-content emgrid-type-$!moduleid entitycontainer entity$!moduleid$!entityid" 
-		data-id="${entity.id}"
+	 id="emgridentity$!moduleid$!entityid"
+		data-id="${entityid}"
    	 	data-moduleid="$!moduleid">
    	 <div class="emgrid-entityheader">
    	 <h3>
@@ -17,8 +40,8 @@ $context.putPageValue("previewurl", $previewurl)
    	 	class="emdialog entity-dialog emgridresulttitle" 
    	 	data-hidefooter="true" 
    	 	data-hideheader="true"
-   	 	id="clickid${entity.id}"  
-   	 	data-id="${entity.id}"
+   	 	id="clickid${entityid}"  
+   	 	data-id="${entityid}"
    	 	data-moduleid="$!moduleid"
    	 	title="$!entity.name">
    	 	##$!hits.highlight($hit,"name")
@@ -44,7 +67,7 @@ $context.putPageValue("previewurl", $previewurl)
 	   	 	class="emdialog entity-dialog" 
 	   	 	data-hidefooter="true" 
 	   	 	data-hideheader="true"
-	   	 	id="clickid${entity.id}"  
+	   	 	id="clickid${entityid}"  
 	   	 	data-id="entity.id"
 	   	 	title="$!entity.name">
 			<img class="imagethumb img-fluid"
@@ -75,8 +98,8 @@ $context.putPageValue("previewurl", $previewurl)
        		data-moduleid="$moduleid" 
        		data-entityid="$entityid" 
        		data-assetsshown="$assetsshown"
-       		data-attachedmediaurl="$siteroot$componenthome/gridsample/types/attachedmedia/entity.html"
-       		data-targetdiv="attachedmedia$entityid"> 	
+       		data-attachedmediaurl="$siteroot$componenthome/gridsample/types/entity.html"
+       		data-targetdiv="emgridentity$!moduleid$!entityid"> 	
 	        $pages.include("$componenthome/gridsample/types/attachedmedia/entity.html",$context)
 	   </div>
 	        
