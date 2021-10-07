@@ -1083,7 +1083,7 @@ onloadselectors = function()
 												options.assetsshown=node.data("assetsshown");
 												jQuery.get(targeturl, options, function(data2){
 													//success
-													targetdiv.html(data2);
+													targetdiv.replaceWith(data2);
 													if (data.trim() != "") {
 														targetdiv.append("<span class='fader emnotify'>&nbsp;+" + data + "</span>");
 														targetdiv.find(".fader").fadeOut(3000);

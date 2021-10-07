@@ -1,6 +1,18 @@
-#set($entity = $hit)
-#set($entityid = $entity.id)
-#set($moduleid = $module.getId())
+#if($hit)
+	#set($entity = $hit)
+	#set($entityid = $entity.id)
+	#set($moduleid = $module.id)
+#else
+	#if(!$moduleid)
+		#set($moduleid = $context.getRequestParameter("moduleid"))
+	#end
+	#if(!$entityid)
+		#set($entityid = $context.getRequestParameter("entityid"))
+	#end
+	#if($moduleid && $entityid)
+		#set($entity = $mediaarchive.getCachedData($moduleid, $entityid))
+	#end
+#end
 
 $context.putPageValue("entityid", $entityid)
 $context.putPageValue("moduleid", $moduleid)
@@ -19,6 +31,7 @@ $context.putPageValue("rootcategory", $rootcategory)
 $context.putPageValue("previewurl", $previewurl)
 
 <div class="emgrid-content entitycontainer emgrid-type-$previewrendertype entity$!moduleid$!entityid"
+		id="emgridentity$!moduleid$!entityid"
 		data-id="${entity.id}"
    	 	data-moduleid="$!moduleid">
    	 <div class="emgrid-entityheader">
@@ -42,11 +55,29 @@ $context.putPageValue("previewurl", $previewurl)
    	 </div>
 	<div class="emgrid-entitymetadata">        	 
 
-        	#if($entity.longcaption)
-        	<div style="padding:0 10px">
-        		$entity.longcaption
-        	</div>
-        	#end
+        	#set( $image = $mediaarchive.getCachedData("asset", $entity.primaryimage))
+		#if($image)
+			#set( $imagesize = "image200x200.jpg")
+	  	 	#set($tpath = $mediaarchive.asLinkToPreview($image, null, $imagesize, true))
+	   	 	<a href="$previewurl" 
+	   	 	class="emdialog entity-dialog" 
+	   	 	data-hidefooter="true" 
+	   	 	data-hideheader="true"
+	   	 	id="clickid${entityid}"  
+	   	 	data-id="entity.id"
+	   	 	title="$!entity.name">
+			<img class="imagethumb img-fluid"
+				 border="0" 
+				 sourcepath="$sourcepath" 
+				 catalogid="$catalogid" 
+				 assetid="$image.id" 
+				 alt="$!image.name"
+				 draggable="true"  
+				 data-name="$!image.name" 		
+				 src="$tpath" 
+				  />    
+			</a>        	 
+		#end
 
         	##$pages.include("$componenthome/gridsample/tags.html",$context)
 	        
@@ -60,8 +91,8 @@ $context.putPageValue("previewurl", $previewurl)
        		data-entityid="$entityid"
        		data-rootcategory="$librarycol.rootcategory" 
        		data-assetsshown="$assetsshown"
-       		data-attachedmediaurl="$siteroot$componenthome/gridsample/types/attachedmedia/librarycollection.html"
-       		data-targetdiv="attachedmedia$entityid"> 	
+       		data-attachedmediaurl="$siteroot$componenthome/gridsample/types/librarycollection.html"
+       		data-targetdiv="emgridentity$!moduleid$!entityid"> 	
 	        $pages.include("$componenthome/gridsample/types/attachedmedia/librarycollection.html",$context)
 	   </div>
 	        
