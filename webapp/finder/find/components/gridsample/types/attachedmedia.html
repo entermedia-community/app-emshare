@@ -1,0 +1,85 @@
+#if(!$moduleid)
+	#set($moduleid = $context.getRequestParameter("moduleid"))
+#end
+#if(!$entityid)
+	#set($entityid = $context.getRequestParameter("entityid"))
+#end
+
+#if($assetshits)
+	#set($count = 0)
+	#set($stackedfield = $mediaarchive.getCatalogSettingValue("stackedgalleryfield"))
+	
+	#foreach( $hit in $assetshits.getPageOfHits())
+		#set($count = $count + 1)
+		$context.putPageValue("hit", $hit)
+		#set($type = $hit.getSearchHit().getType())
+		#set( $rendertype = $mediaarchive.getMediaRenderType($hit.fileformat))
+		$context.putPageValue("type", $rendertype)
+		
+		$context.putPageValue("assetid", $hit.id)
+		$context.putPageValue("sourcepath", $hit.sourcepath )
+		
+		#set($sourcepath = $hit.sourcepath)
+		##set($click = "$siteroot$viewerlink?hitssessionid=${assetshits.getSessionId()}&assetid=${hit.id}")
+		
+	  	#if(!$rendertype || $type =="rendertype")
+	 		#set( $rendertype = "mime" )
+	 	#elseif( $rendertype =="video")
+	 		#set( $rendertype = "videothumbnail" )
+	 	#end
+	 	
+	 	#if($stackedfield)
+		      	#set($title = $hit.get($stackedfield))
+		#end
+		#if(!$title)		         	
+		  	#if( $hit.assettitle )
+		      	#set($title =  $hit.assettitle) 
+		    #else 
+		      	#set($title = $hit.name) 
+		    #end
+		#end
+	 	<div class="grid-attachedmedia">
+	 	 <div class="assetdraggable" data-assetid="$hit.id"> 
+		 	<a class="stackedplayer imagearea" id="clickid${hit.id}" data-assetid="$hit.id" href="#" title="$!title">
+			$pages.include("$componenthome/results/thumbnails/${rendertype}.html", $context)
+			</a>
+		</div>
+		</div>
+	#end
+	<div class="clearfix"></div>
+
+#end
+<div class="entity-assets-info">
+	#if($assetshits.size()>0)
+		#if($moduleid=="librarycollection")
+			#if(!$rootcategory)
+				#set($rootcategory = $context.getRequestParameter("rootcategory"))
+			#end
+			#set($link = "$siteroot$applink/views/modules/librarycollection/showcategory.html?hitssessionid=$!{assetshits.sessionId}&nodeID=$rootcategory&clearfilters=true")
+			#set($oemaxlevel = "4")
+			#set($link = "$link&sidebarcomponent=categories")
+			#set($targetdiv = "applicationcontainer")
+		#elseif($moduleid=="faceprofilegroup")
+			#set($link = "$siteroot$applink/views/modules/asset/faceprofilegroup.html")
+			#set($link = "$link?faceprofilegroupid=$!entityid&clearfilters=true")
+			#set($oemaxlevel = "2")
+			#set($targetdiv = "applicationmaincontent")
+		#else
+			#set($link = "$siteroot$applink/views/modules/asset/index.html")
+			#set($link = "$link?hitssessionid=$!{assetshits.sessionId}&field=$moduleid&operation=matches&${moduleid}.value=$!entityid&clearfilters=true")
+			#set($oemaxlevel = "1")
+			#set($targetdiv = "applicationmaincontent")
+		#end
+		
+		
+		[[Found]]: <a href="$link" 
+						class="ajax" 
+						data-targetdivinner="$targetdiv" 
+						data-closedialog="true"
+						data-oemaxlevel="$!oemaxlevel"
+						data-updateurl="true"
+						data-closemediaviewer="true">$assetshits.size() #if ($assetshits.size()==1) [[asset]] #else [[assets]] #end</a>
+		
+	#end	
+</div>
+

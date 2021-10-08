@@ -1,18 +1,17 @@
 #set( $searchtype = $context.getRequestParameter("searchtype"))
 #set( $id = $context.getRequestParameter("id"))
-#set( $entity = $hits.findData("id", $id))
-
-#if( !$entity)
-	#set( $entity  = $mediaarchive.getData($searchtype, $id) )
-#end
-#set($module = $mediaarchive.getData("module", $searchtype))
-#set($entityid = $entity.id)
-#set($moduleid = $module.getId())
-
-#set( $rootcategory = $context.getRequestParameter("rootcategory"))
-
+#set($entityid = $id)
 $context.putPageValue("entityid", $entityid)
+
+#set( $librarycol = $mediaarchive.getData("librarycollection",$id))
+$context.putPageValue("librarycol", $librarycol)
+
+#set($rootcategory = $librarycol.rootcategory)
+$context.putPageValue("rootcategory", $rootcategory)
+
+#set($moduleid = "librarycollection")
 $context.putPageValue("moduleid", $moduleid)
+
 
 <div class="modal-content modal-data-details modal-entity ${module.id}-modal">
 	<div class="modal-body">
@@ -29,10 +28,13 @@ $context.putPageValue("moduleid", $moduleid)
 		
 		#set($assetsshown = 4)
 		#set( $assetshits = $mediaarchive.query("asset").hitsPerPage($assetsshown).match("category",$rootcategory).sort("assetaddeddateDown").search() )
+		
+		
 		$context.putPageValue("assetshits", $assetshits)
 		$context.putPageValue("fullview",true)
 		$context.putPageValue("thumbsize", "small" )
-		$pages.include("$componenthome/gridsample/attachedmedia.html",$context)
+		$context.putPageValue("primaryimage", $librarycol.primaryimage )
+		$pages.include("$componenthome/gridsample/preview/attachedmedia.html",$context)
 		</div>
 		<div class="entity-metadata">
 			$context.putPageValue("data", $entity)
