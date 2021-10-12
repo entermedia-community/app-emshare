@@ -1,0 +1,78 @@
+<div  id="search-collections" >
+	<div id="searcharea" >
+	#set( $searcher = $mediaarchive.getSearcher("librarycollection") )
+	$context.putPageValue("searcher",$searcher)
+	#set ($details = $searcher.getDetailsForView("librarycollection/librarysearchcollection", $userprofile))
+
+#if( $hits && $hits.getSelectionSize() > 0)	
+	<div class="alert alert-info">
+  		<strong>[[Adding]]</strong> $hits.getSelectionSize() [[assets to album]]
+	</div>
+#elseif($assetid)	
+	
+#end	
+     
+    <form  id="colsearchform" class="autosubmit"  data-targetdiv="collectionresultsdialog" 
+    action="$home$apphome/components/opencollections/searchcollectionresults.html">
+	
+		<input type="hidden" name="searchtype" value="librarycollection" />
+		<input type="hidden" name="sortby" value="name" />
+
+		<input type="hidden" name="assetid" value="$!asset.id" />
+		<table  width="100%">
+		<tr>
+		<td>
+		<div class="row inlinesearch" >
+		$context.putPageValue("autocomplete","off")
+			#foreach( $detail in $details)
+			<div class="col">
+					$context.putPageValue("detail", $detail)
+					$pages.include("/${applicationid}/components/advancedsearch/detaileditinline.html", $context)
+			</div>
+			#if( $counter == 4)
+				</div>
+				<div  class="row" >
+			#end	
+			#end
+		</div>	
+		</td>
+		
+		</tr>
+		</table>
+	</form>
+	
+	
+	<div id="collectionresultsdialog">
+	$pages.include("$apphome/components/opencollections/searchcollectionresults.html",$context)
+	</div>
+	
+	</div>
+	
+	#if($canaddnewcollection)
+       <a  class="emdialog" 
+       	title="[[Create New Album" 
+       	href="$home$apphome/components/opencollections/pickcollectionaddnew.html?searchtype=librarycollection&assetid=$!asset.id&targetdiv=assetcategoryresults&library.value=$!library.getId()">
+       	<i class="fa fa-plus-square"></i> [[Create New Album]]</a>
+    #end
+</div>	
+	<form id="colelectform" 
+		class="ajaxform"  
+		data-targetdiv="assetcategoryresults" 
+		action="$home$apphome/components/categories/asset/listassetcollections.html">
+	
+		<input type="hidden" name="searchtype" value="librarycollection" />
+		<input type="hidden" name="sortby" value="name" />
+		<input id="submitcollectionid" type="hidden" name="collectionid" />
+        <input type="hidden" name="assetid" value="$!asset.id" />
+    </form>
+
+<script>
+lQuery("#collectionresultsdialog .rowclick").livequery("click", function(e) {
+	$(this).closest(".modal").modal("hide");
+	var rowid = $(this).attr("rowid");
+	$("#submitcollectionid").val(rowid);
+	$("#colelectform").trigger("submit");
+
+});
+</script>
+
