@@ -2748,6 +2748,13 @@ uiload = function() {
 		}
 	});
 	
+	lQuery("#assetcollectionresultsdialog .rowclick").livequery("click", function(e) {
+		$(this).closest(".modal").modal("hide");
+		var rowid = $(this).attr("rowid");
+		$("#submitcollectionid").val(rowid);
+		$("#colelectform").trigger("submit");
+
+	});
 	
 	lQuery( ".copyembed" ).livequery("click", function(e) {
 		e.preventDefault();
