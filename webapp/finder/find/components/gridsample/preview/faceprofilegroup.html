@@ -24,7 +24,7 @@ $context.putPageValue("moduleid", $moduleid)
 		
 		
 		<div class="clearfix"></div>
-		<div class="entity-media" style="width:450px;">
+		<div class="entity-media entity-media-faceprofile">
 ##		<h2 class="modal-title">
 ##			#set($name = $entity.name)
 ##			#if(!$name)
@@ -43,7 +43,7 @@ $context.putPageValue("moduleid", $moduleid)
 		#set( $assetshits = $mediaarchive.query("asset").hitsPerPage($assetsshown).exact("faceprofiles.faceprofilegroup", $entityid).sort("assetaddeddateDown").search() )		
 
 #set($facemanager = $mediaarchive.getBean("faceDetectManager") )
-<div style="width:440px;max-height:640px;overflow:auto;">
+<div style="">
 	#foreach($hit in $assetshits)
 		#set($imagelocation = $facemanager.getImageAndLocationForGroup($hit,$entityid,400,400) )
 		#if($imagelocation.timecodestartseconds > -1)
@@ -56,7 +56,7 @@ $context.putPageValue("moduleid", $moduleid)
 	 
 	 ##TODO get offset for video
 	 
-		<div class="assetdraggable ui-draggable ui-draggable-handle" data-assetid="$hit.getId()" > 
+		<div class="assetdraggable ui-draggable ui-draggable-handle faceprofile-attachedmedia" data-assetid="$hit.getId()" > 
 		 	<a class="stackedplayer imagearea" data-assetid="$hit.getId()"  href="#" title="$hit.name">
 			<span class="emshowbox" data-faceprofilegroup="$entityid" data-showbox="$imagelocation.locationxy">
 				<img class="imagethumb" style="width:400px" border="0"  data-assetid="$hit.getId()" alt="$hit.getName()" draggable="true" 
@@ -68,7 +68,7 @@ $context.putPageValue("moduleid", $moduleid)
 	#end
 </div>		
 		</div>
-		<div class="entity-metadata">
+		<div class="entity-metadata entity-metadata-faceprofile">
 			$context.putPageValue("data", $entity)
 			$context.putPageValue("searchtype", $searchtype)
 			$pages.include("metadata.html", $context)
