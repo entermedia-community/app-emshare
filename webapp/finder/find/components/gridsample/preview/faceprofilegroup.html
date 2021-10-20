@@ -17,7 +17,7 @@ $context.putPageValue("moduleid", $moduleid)
 <div class="modal-content modal-data-details modal-entity ${moduleid}-modal">
 	<div class="modal-body">
 		<div class="modal-close">
-		        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+		        <button type="button" class="close" data-dismiss="modal" aria-label="[[Close]]">
 		          <span aria-hidden="true">&times;</span>
 		        </button>
 		</div>
@@ -41,7 +41,9 @@ $context.putPageValue("moduleid", $moduleid)
 		$context.putPageValue("thumbsize", "small" )
 		
 		#set( $assetshits = $mediaarchive.query("asset").hitsPerPage($assetsshown).exact("faceprofiles.faceprofilegroup", $entityid).sort("assetaddeddateDown").search() )		
-
+		
+		#set( $primaryimage = $entity.primaryimage ) ##primaryimage
+		
 #set($facemanager = $mediaarchive.getBean("faceDetectManager") )
 <div style="">
 	#foreach($hit in $assetshits)
@@ -55,16 +57,25 @@ $context.putPageValue("moduleid", $moduleid)
 		#end	
 	 
 	 ##TODO get offset for video
-	 
-		<div class="assetdraggable ui-draggable ui-draggable-handle faceprofile-attachedmedia" data-assetid="$hit.getId()" > 
+	 	<div class="faceprofile-attachedmedia  #if($primaryimage==$hit.id) grid-isprimaryimage #end">
+		<div class=" " data-assetid="$hit.getId()" > 
 		 	<a class="stackedplayer imagearea" data-assetid="$hit.getId()"  href="#" title="$hit.name">
 			<span class="emshowbox" data-faceprofilegroup="$entityid" data-showbox="$imagelocation.locationxy">
 				<img class="imagethumb" style="width:400px" border="0"  data-assetid="$hit.getId()" alt="$hit.getName()" draggable="true" 
 				data-sourcepath="$hit.getSourcePath()"    src="$link">
 			</span>
 			</a>
+			
 		</div>
-	
+		#if($primaryimage!=$hit.id)
+			<div class="grid-makeprimary">
+			<a href="$siteroot$applink/components/gridsample/preview/makeprimaryimage.html?assetid=${hit.id}&entityid=$entityid&moduleid=${moduleid}"
+				class="ajax"
+				data-targetdivinner="entitydialog"
+				data-oemaxlevel=""><i class="fas fa-image"></i> [[Make Primary Image]]</a>
+			</div>
+			#end
+		</div>
 	#end
 </div>		
 		</div>
