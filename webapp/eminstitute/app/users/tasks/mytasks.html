@@ -10,16 +10,24 @@
 		  #if( $agents.isEmpty() )
 		  	Please populate agentlist table
 		#else
-				#foreach ( $agent in $agents)
-						#set( $auser = $mediaarchive.getUser($agent.get("userid")))
-					  #set( $nitasks =  $mediaarchive.query("goaltask").exact("taskstatus", "1").exact("taskstatus", "0").exact("completedby", $agent.get("userid")).search($context))
-					  <a class="btn btn-success #if( $selecteduser.getId() == $agent.get("userid") ) active #end" 
-					  style="color:white;" 
-					  href="$applink/users/tasks/mytasks.html?goaltrackerstaff=${agent.get("userid")}&collectionid=*">
-					    $auser <span style="color:orange;"><b>$!nitasks.size()</b></span>
-					  </a>
-				#end
+			##openprojects
+			#set ($aprojects = $mediaarchive.query("projectgoal").not("projectstatus", "closed").not("projectstatus", "completed").search($context))
+			#set($pids = [])
+		  	#foreach ( $aproject in $aprojects)
+		  			#set($x = $pids.add($aproject.id))
+		  	#end
+			#foreach ( $agent in $agents)
+				#set( $auser = $mediaarchive.getUser($agent.get("userid")))
+			  	##set( $nitasks =  $mediaarchive.query("goaltask").exact("taskstatus", "1").exact("taskstatus", "0").exact("completedby", $agent.get("userid")).search($context))
+
+			  	#set( $nitasks =  $mediaarchive.query("goaltask").not("taskstatus", "3").not("taskstatus", "5").orgroup("projectgoal", $pids).exact("completedby", $agent.get("userid")).search($context))
+			  	<a class="btn btn-success #if( $selecteduser.getId() == $agent.get("userid") ) active #end" 
+			  	style="color:white;" 
+			  	href="$applink/users/tasks/mytasks.html?goaltrackerstaff=${agent.get("userid")}&collectionid=*">
+			    $auser <span style="color:orange;"><b>$!nitasks.size()</b></span>
+			  </a>
 			#end
+		#end
 	
 		</div>
 	#if($canviewsettings)
