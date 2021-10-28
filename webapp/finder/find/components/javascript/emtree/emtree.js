@@ -293,7 +293,7 @@ $(document).ready(function()
 	}
 	lQuery(".treecontext #nodeproperties").livequery('click', function(event) 
 	{
-				//event.stopPropagation();
+				event.stopPropagation();
 				var node = getNode(this);
 				var tree = node.closest(".emtree");
 				var nodeid = node.data('nodeid');
