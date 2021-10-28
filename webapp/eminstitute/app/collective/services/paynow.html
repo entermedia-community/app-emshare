@@ -63,111 +63,137 @@
                 </div>
 
             </div>
-            <div class="col-sm-4">
-                <div class="card donatecard">
-                    <div class="card-block" style="padding: 20px 21px;">
-                        <form action="$applink/collective/services/payfinish.html" method="post" id="payment-form"
-                            class="form">
-                            <input type="hidden" name="collectionid" value="$!librarycol.id" />
-                            
-                             #if ($workspace.savestripecreditcard == true && $customer.sources.data.size() > 0)
-                            <div class="row">
-                                <div class="col-md-12 mb-3">
-                                    <label>[[Card Options]]:</label>
-	                            	<select id="creditcardselect" class="form-control">
-	                            		<option value="0">New Credit Card</option>
-	                            		#foreach ($s in $customer.sources.data)
-	                            		<option value="$s.id">$s.brand (****-$s.last4)</option>
-	                            		#set( $custsource = $s.id )
-	                            		#end
-	                            	</select>
-                            	</div>
-                            </div>
-							#end  
-							<div id="allcreditcardform">	
-							
+            
+            #if ($invoice.paymentstatus == "invoiced" || $invoice.paymentstatus == "autopayfailed")
+	            <div class="col-sm-4">
+	                <div class="card donatecard">
+	                    <div class="card-block" style="padding: 20px 21px;">
+	                        <form action="$applink/collective/services/payfinish.html" method="post" id="payment-form"
+	                            class="form">
+	                            <input type="hidden" name="collectionid" value="$!librarycol.id" />
+	                            
+	                             #if ($workspace.savestripecreditcard == true && $customer.sources.data.size() > 0)
 	                            <div class="row">
-	                                <div class="col">
-	                                    <div class="float-right" style="margin-top:-4px"><img
-	                                            src="$applink/theme/icons/creditcard.png" /></div>
-	                                    <div class="form-group">
-	                                        <label for="staticEmail">[[Card Info]]:</label>
-	                                        
-	                                                                              
-	                                        
-	                                        <div class="form-control">
-	                                            <div id="card-element" style="width: 100%">
-	                                            </div>
-	                                        </div>
-	                                    </div>
-	                                </div>
-	                                
+	                                <div class="col-md-12 mb-3">
+	                                    <label>[[Card Options]]:</label>
+		                            	<select id="creditcardselect" class="form-control">
+		                            		<option value="0">New Credit Card</option>
+		                            		#foreach ($s in $customer.sources.data)
+		                            		<option value="$s.id">$s.brand (****-$s.last4)</option>
+		                            		#set( $custsource = $s.id )
+		                            		#end
+		                            	</select>
+	                            	</div>
 	                            </div>
-	
-	                            <div class="row">
+								#end  
+								<div id="allcreditcardform">	
+								
+		                            <div class="row">
+		                                <div class="col">
+		                                    <div class="float-right" style="margin-top:-4px"><img
+		                                            src="$applink/theme/icons/creditcard.png" /></div>
+		                                    <div class="form-group">
+		                                        <label for="staticEmail">[[Card Info]]:</label>
+		                                        
+		                                                                              
+		                                        
+		                                        <div class="form-control">
+		                                            <div id="card-element" style="width: 100%">
+		                                            </div>
+		                                        </div>
+		                                    </div>
+		                                </div>
+		                                
+		                            </div>
+		
+		                            <div class="row">
+		                                <div class="col-md-6">
+		                                    <div class="form-group">
+		                                        <label for="staticEmail">[[Amount]]:</label>
+		                                        <div class="input-group">
+		                                            <div class="input-group-prepend">
+		                                                <div class="input-group-text">$</div>
+		                                            </div>
+		                                            <input type="text" class="form-control" name="totalprice.value"
+		                                                id="totalprice" #if($invoice.totalprice) value="$invoice.totalprice"
+		                                                disabled #end>
+		                                        </div>
+		                                    </div>
+		                                </div>
+		
+										#if ($lastproduct.recurring == true)
+		                               <div class="col-md-6">	                               
+				                            <div class="form-group">
+				                                <label for="staticEmail">[[Recurring Monthly]]</label>                                 
+				                                <input type="text" class="form-control" name="recurringperiod" value="$lastproduct.recurringperiod" disabled></input>
+				                            </div>
+		                        	   </div>
+		                        		#end
+		                        	  	<div class="col-md-12">
+		                                	<div class="form-check">
+				                                <input type="checkbox" class="form-check-input" id="issavecard" name="issavecard"></input>
+				                                <label class="form-check-label" for="issavecard">[[Save this Credit Card for future payments]]</label>	
+				                            </div>
+		                               	</div>
+		                        	   
+		                            </div>
+		 						</div>
+	                            <div class="row mt-2">                            	
 	                                <div class="col-md-6">
-	                                    <div class="form-group">
-	                                        <label for="staticEmail">[[Amount]]:</label>
-	                                        <div class="input-group">
-	                                            <div class="input-group-prepend">
-	                                                <div class="input-group-text">$</div>
-	                                            </div>
-	                                            <input type="text" class="form-control" name="totalprice.value"
-	                                                id="totalprice" #if($invoice.totalprice) value="$invoice.totalprice"
-	                                                disabled #end>
-	                                        </div>
+	                                <div id="card-errors" class="donateformerror" role="alert"></div>
+	                                    <div class="donate-secure ">
+	                                        <i class="fas fa-lock"></i> [[Secure payment]]
 	                                    </div>
 	                                </div>
-	
-									#if ($lastproduct.recurring == true)
-	                               <div class="col-md-6">	                               
-			                            <div class="form-group">
-			                                <label for="staticEmail">[[Recurring Monthly]]</label>                                 
-			                                <input type="text" class="form-control" name="recurringperiod" value="$lastproduct.recurringperiod" disabled></input>
-			                            </div>
-	                        	   </div>
-	                        		#end
-	                        	  	<div class="col-md-12">
-	                                	<div class="form-check">
-			                                <input type="checkbox" class="form-check-input" id="issavecard" name="issavecard"></input>
-			                                <label class="form-check-label" for="issavecard">[[Save this Credit Card for future payments]]</label>	
-			                            </div>
-	                               	</div>
-	                        	   
+	                                <div class="col-md-6 text-right">
+	                                    <div style=" margin: 0px auto;">
+	                                        <a href="#" onclick='$("#payment-form").submit()' class="btn btn-success"><i
+	                                                class="fas fa-credit-card"></i> [[Pay Now]] </a>
+	                                    </div>
+	                                </div>
 	                            </div>
-	 						</div>
-                            <div class="row mt-2">                            	
-                                <div class="col-md-6">
-                                <div id="card-errors" class="donateformerror" role="alert"></div>
-                                    <div class="donate-secure ">
-                                        <i class="fas fa-lock"></i> [[Secure payment]]
-                                    </div>
-                                </div>
-                                <div class="col-md-6 text-right">
-                                    <div style=" margin: 0px auto;">
-                                        <a href="#" onclick='$("#payment-form").submit()' class="btn btn-success"><i
-                                                class="fas fa-credit-card"></i> [[Pay Now]] </a>
-                                    </div>
-                                </div>
-                            </div>
-							
-							<input type="hidden" name="isautopaid" id="isautopaid" value="$lastproduct.isautopaid" />
-							<input type="hidden" name="savestripecreditcard" id="savestripecreditcard" value="true" />
-							<input type="hidden" name="recurring" value="$lastproduct.recurring" />
-                            <input type="hidden" name="field" value="collectionid" /> 
-                            <input type="hidden" name="collectionid.value" value="$librarycol.getId()" /> 
-                            <input type="hidden" name="collectionid" value="$librarycol.getId()" />
-                            <input type="hidden" name="invoiceid" value="$id" /> 
-                            <input type="hidden" name="field" value="totalprice" /> 
-                            <input type="hidden" name="field" value="userid" /> 
-                            <input type="hidden" name="userid.value" value="$user.getId()" />
-                            <input type="hidden" name="customerselected" id="customerselected" value="0" />
-                            <input type="text" name="stripecustomer" id="stripecustomer" value="$customer.id" hidden="" />
-                        </form>
-
-                    </div>
-                </div>
-            </div>
+								
+								<input type="hidden" name="isautopaid" id="isautopaid" value="$lastproduct.isautopaid" />
+								<input type="hidden" name="savestripecreditcard" id="savestripecreditcard" value="true" />
+								<input type="hidden" name="recurring" value="$lastproduct.recurring" />
+	                            <input type="hidden" name="field" value="collectionid" /> 
+	                            <input type="hidden" name="collectionid.value" value="$librarycol.getId()" /> 
+	                            <input type="hidden" name="collectionid" value="$librarycol.getId()" />
+	                            <input type="hidden" name="invoiceid" value="$id" /> 
+	                            <input type="hidden" name="field" value="totalprice" /> 
+	                            <input type="hidden" name="field" value="userid" /> 
+	                            <input type="hidden" name="userid.value" value="$user.getId()" />
+	                            <input type="hidden" name="customerselected" id="customerselected" value="0" />
+	                            <input type="text" name="stripecustomer" id="stripecustomer" value="$customer.id" hidden="" />
+	                        </form>
+	
+	                    </div>
+	                </div>
+	            </div>
+	          #elseif ($invoice.paymentstatus == 'paid')
+	          <div class="col-sm-4">
+	          	<div class="card">
+		          	<div class="card-header alert-success">
+		          	   Invoice already paid
+		          	</div>
+		          	<div class="card-body">
+		          		Thank you for your preference
+		          	</div>
+	          	</div>
+	          </div>
+	          #elseif ($invoice.paymentstatus == 'canceled')
+	          <div class="col-sm-4">
+	          	<div class="card">
+		          	<div class="card-header alert-danger">
+		          	   This invoice was canceled
+		          	</div>
+		          	<div class="card-body">
+		          		Please contact support or reach us via chat
+		          	</div>
+	          	</div>
+	          </div>          
+	          #end
+	          
         </div>
     </div>
 </div>
