@@ -257,6 +257,8 @@ runajaxonthis = function(inlink,e)
 	
 	inlink.css( "cursor","wait");
 	$("body").css( "cursor","wait");
+	
+	var inlinkmodal = inlink.closest(".modal");
 
 	if( targetDiv)
 	{
@@ -310,10 +312,8 @@ runajaxonthis = function(inlink,e)
 			inlink.removeAttr('disabled');
 			//Close Dialog
 			var closedialog = inlink.data("closedialog");
-			if (closedialog) {
-				inlink.parents(".modal").each(function() {
-					$(this).modal("hide");
-				});
+			if (closedialog && inlinkmodal != null) {
+					inlinkmodal.modal("hide");
 			}
 			//Close MediaViewer
 			var closemediaviewer = inlink.data("closemediaviewer");
