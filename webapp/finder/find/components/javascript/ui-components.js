@@ -2407,8 +2407,12 @@ uiload = function() {
 			}	
 		});	
 	});
-
-
+	
+	lQuery('.sidebarselected').livequery("click",function() {
+		$("#sidebar-entities li").removeClass("current");
+		$("#sidebar-list-upload").addClass("current");
+	});
+	
 	//Moved From settings.js
 	lQuery('#datamanager-workarea th.sortable').livequery("click",function() {
 	  		var table = $("#main-results-table");
