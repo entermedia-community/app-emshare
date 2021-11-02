@@ -36,9 +36,10 @@
 ##	$pages.include("$apphome/components/createmedia/copycategory/index.html?autorun=true", $context)
 ##else
 
-	#if($content.resultview)
-		#set($resultview = $content.resultview)
-	#elseif ($moduleid=="modulesearch")
+	###if($content.resultview)
+	##	#set($resultview = $content.resultview)
+	
+	#if ($moduleid=="modulesearch")
 		#set($resultview = $userprofile.get("mediaappresultview"))
 		#if(!$resultview)
 			#set($resultview = $content.get("mediaappresultview"))
@@ -72,9 +73,13 @@
 			#set($resultview = $context.getRequestParameter("resultstype"))
 		#end
 		#if(!$resultview)
+			#set($resultview = $content.resultview)
+		#end
+		#if(!$resultview)
 			#set($resultview = "table")
 		#end
 	#end
+	
 	
 	
 	##if( $hits || $modulehits.size() > -1)
@@ -114,9 +119,9 @@
 				$pages.include("$componenthome/results/map.html", $context)
 			#elseif ($resultview == "grid")
 				$context.putPageValue("resultstype", "grid" )
-				$pages.include("/${componenthome}/gridsample/index.html",$context)
+				$pages.include("${componenthome}/gridsample/index.html",$context)
 			#elseif ($resultview == "finder")
-				$pages.include("/${applicationid}/views/finder/index.html",$context)
+				$pages.include("${applicationid}/views/finder/index.html",$context)
 			#else 
 				$context.putPageValue("showcaption", true)
 				$context.putPageValue("showhover", "false")
