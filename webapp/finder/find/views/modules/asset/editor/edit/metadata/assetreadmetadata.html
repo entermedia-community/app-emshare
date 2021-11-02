@@ -1,0 +1,32 @@
+#set($view = "assetreadmetadata")
+#set($hitssessionid = $context.findValue("hitssessionid"))
+<div class="float-left" style="margin-left: 20px;">
+
+<form name="formedit$view" id="formedit$view" class="ajaxform showwaiting"  targetdiv="assetreadmetadataeditor" method="post" action="$home$apphome/views/modules/asset/editor/edit/metadata/read.html?oemaxlevel=1" >
+	<input type="hidden" name="field" value="assetid" />
+	<input type="hidden" name="assetid.value" value="$asset.getId()" />
+	<input type="hidden" name="assetid" value="$asset.getId()" />
+	<input type="hidden" name="force" value="true" />
+	$context.putPageValue("view",$view)
+	$context.putPageValue("origURL", "$apphome/assets/${asset.sourcePath}.html")
+
+		<a  class="btn btn-sm btn-secondary submitform"><i class="fas fa-upload"></i> [[Read Metadata]]</a>
+		&nbsp;
+		<span id="assetreadmetadataeditor"></span>
+</form>
+</div>
+<div class="float-left" style="margin-left: 10px;">
+<form name="formedit$view" id="formedit$view" class="ajaxform showwaiting" targetdiv="assetwritemetadataeditor" method="post" action="$home$apphome/views/modules/asset/editor/edit/metadata/write.html?oemaxlevel=1" >
+	<input type="hidden" name="field" value="assetid" />
+	<input type="hidden" name="assetid.value" value="$asset.getId()" />
+	<input type="hidden" name="assetid" value="$asset.getId()" />
+	<input type="hidden" name="force" value="true" />
+	$context.putPageValue("view",$view)
+	$context.putPageValue("origURL", "$apphome/assets/${asset.sourcePath}.html")
+	
+		<a class="btn btn-sm btn-secondary submitform" ><i class="fas fa-download"></i> [[Rewrite Metadata]]</a>
+		&nbsp;
+		<span id="assetwritemetadataeditor"></span>
+	
+</form>
+</div>

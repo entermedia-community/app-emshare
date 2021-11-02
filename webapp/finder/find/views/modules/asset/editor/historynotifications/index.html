@@ -1,0 +1,23 @@
+<div id="asset-editor-container" class=" assetpanel-editor-box">
+<div class="assetpanel-editortitle">
+<h3>[[Notifications]]</h3>
+</div>
+<div class="assetpanel-editorinner">
+
+#set( $searchtype = "notification")
+#set( $fieldexternalid = "dataid")
+#set( $fieldexternalvalue = $asset.getId())
+#set( $permissionname = "caneditasset")
+#set ($view = "notification/details")
+#set($viewid = $context.getRequestParameter("viewid"))
+$context.putPageValue("subtab","viewassetnotificationhistory")
+
+#set( $args = "parentid=$asset.id&dataid=$asset.id&catalogid=$mediaarchive.getCatalogId()&searchtype=$searchtype&fieldexternalid=$fieldexternalid&fieldexternalvalue=$fieldexternalvalue&listid=$!listid&listexternalid=$!listexternalid&permissionname=$permissionname&view=$view")
+#set( $args = "$args&selectlink=$home$content.searchhome/editor/historynotifications/index.html")
+
+$pages.include("$apphome/components/detaileditor/generictable.html?$args", $context)
+  
+
+</div>
+</div>
+  
