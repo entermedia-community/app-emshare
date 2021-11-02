@@ -23,7 +23,7 @@ $context.putPageValue("previewurl", $previewurl)
 			#if($name)
 				$name (Profile $entity.facecounter)
 			#else	
-				Profile $entity.facecounter
+				[[Profile]] $entity.facecounter
 			#end
 			
    	 	</a>
@@ -37,25 +37,30 @@ $context.putPageValue("previewurl", $previewurl)
  	 
    	 
 	<div class="emgrid-entitymetadata"> 
-		#set( $image = $mediaarchive.getCachedData("asset", $entity.primaryimage))
+		#set( $assetimage = $mediaarchive.getCachedData("asset", $entity.primaryimage))
 		#set( $imagesize = "image200x200.jpg")
-  	 	#set($tpath = $mediaarchive.asLinkToPreview($image, null, $imagesize, true))
-   	 	<a href="$previewurl" 
+  	 	#set($tpath = $mediaarchive.asLinkToPreview($assetimage, null, $imagesize, true))
+  	 	
+   	 	<a href="$!previewurl" 
    	 	class="emdialog entity-dialog" 
    	 	data-hidefooter="true" 
    	 	data-hideheader="true"
    	 	id="clickid${entity.id}"  
    	 	data-id="entity.id"
    	 	title="$!entity.name">
+   	 	
+   	 	
+
+	        	    
 		<img class="imagethumb img-fluid"
 			 border="0" 
-			 sourcepath="$sourcepath" 
+			 sourcepath="$!sourcepath" 
 			 catalogid="$catalogid" 
 			 assetid="$image.id" 
 			 alt="$!image.name"
 			 draggable="true"  
 			 data-name="$!image.name" 		
-			 src="$tpath" 
+			 src="$!tpath" 
 			  />    
 		</a>   	 
        	#if($entity.longcaption)
