@@ -25,25 +25,25 @@ function chatterbox() {
 	    data.command= button.data("command");
 	    var json = JSON.stringify(data);
 	    content.value="";
-	    
-	    if(chatconnection.readyState === chatconnection.CLOSED  ){
-	    	connect();
-	    	//IF we do a reconnect render the whole page
+	    if(chatconnection) {
+		    if(chatconnection.readyState === chatconnection.CLOSED  ){
+		    	connect();
+		    	//IF we do a reconnect render the whole page
+		    }
+		    var toggle = button.data("toggle");
+		    if(toggle == true){
+		    	jQuery(".chatter-toggle").toggle();
+		    }
+		    
+		    if(jQuery("#chatter-msg").val() != "" ){
+			chatconnection.send(json);
+		    jQuery("#chatter-msg").val("");
+		    
+		    //scroll down, delay a little?
+		    scrollToChat();
+			
+			}
 	    }
-	    var toggle = button.data("toggle");
-	    if(toggle == true){
-	    	jQuery(".chatter-toggle").toggle();
-	    }
-	    
-	    if(jQuery("#chatter-msg").val() != "" ){
-		chatconnection.send(json);
-	    jQuery("#chatter-msg").val("");
-	    
-	    //scroll down, delay a little?
-	    scrollToChat();
-		
-		}
-	    
 	});
 
 	lQuery('.chatter-text').livequery("keydown", function(e){
