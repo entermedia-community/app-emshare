@@ -1,13 +1,17 @@
-<form class="validate" id="usereditform" method="post" action="$home$apphome/views/modules/asset/activity/publish/processorder.html">
-	<div class="emrounded">
+<form class="validate ajaxform"
+	data-targetdivinner="orderdialog"  
+	id="usereditform" 
+	method="post" 
+	action="$siteroot$apphome/views/modules/asset/activity/publish/processorder.html">
+	
 	<input type="hidden" name="searchtype" value="order"/>
 	<input type="hidden" name="catalogid" value="$catalogid"/>
 	<input type="hidden" name="orderid" value="$order.id"/>
 	<input type="hidden" name="invaliditems" value="$!invaliditems" />
-		<div>
+		
 			#set($publishtype = $!searcherManager.getData($catalogid,"publishdestination",$order.publishdestination))
 			
-			<h4>Publishing to $publishtype</h4>
+			<div  style="margin-bottom:20px;"><strong>[[Publishing to]] $publishtype</strong></div>
 			
 			#set($filetypes = [])
 			#if ($publishtype.publishtype == "youtube")
@@ -134,11 +138,11 @@
 				</tr>
 			#end
 			</table>
-		</div>
-	</div>
+
+	
 #if($invaliditems.size() == $orderitems.size())
-	<input class="btn small" style="float: right" type="button" value="[[Cancel]]" onclick="window.history.back()"/>
+	<input class="btn btn-primary" style="float: right" type="button" value="[[Cancel]]" onclick="window.history.back()"/>
 #else
-	<input class="btn small" style="float: right" type="submit" value="[[Next]]" />
+	<input class="btn btn-primary" style="float: right" type="submit" value="[[Next]]" />
 #end
 </form>     
