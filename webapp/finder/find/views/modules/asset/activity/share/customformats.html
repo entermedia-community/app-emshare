@@ -1,8 +1,8 @@
-<div class="emrounded">
+<div >
 <input type="hidden" name="searchtype" value="order"/>
 <input type="hidden" name="catalogid" value="$catalogid"/>
 <input type="hidden" name="orderid" value="$order.id"/>
-	<div>
+	
 	
 	<table id="shared-asset-table" class="table table-striped table-hover download-table" width="100%" >
 	<thead>
@@ -30,7 +30,7 @@
 			#foreach( $item in $orderitems )
 				 #set( $asset = $mediaarchive.getAssetBySourcePath($item.assetsourcepath))
 			<tr>
-			<td>		
+			<td class="assetstable">		
 				<input type="hidden" name="itemid" value="$item.id"/>
 				 
 						$context.putPageValue("asset", $asset)
@@ -47,13 +47,13 @@
 				#else
 					#set( $rootid = $hits.sessionId )
 				#end
-					#set( $click = "$home$apphome/views/assetdialog/index.html?width=600&height=500&sourcepath=${asset.sourcepath}&hitssessionid=$rootid" )
+					#set( $click = "$siteroot$apphome/views/assetdialog/index.html?width=600&height=500&sourcepath=${asset.sourcepath}&hitssessionid=$rootid" )
 				
 					#if($asset.fileFormat)
-		                        #set( $type = $mediaarchive.getMediaRenderType($asset.fileFormat))
-		#else
+		                #set( $type = $mediaarchive.getMediaRenderType($asset.fileFormat))
+					#else
 		                #set( $type = "none")
-		#end
+					#end
 					$context.putPageValue("cell", $asset)
 					$context.putPageValue("showdetails", "false")
 				   	$context.putPageValue("thumbsize", "crop")
@@ -130,5 +130,4 @@
 	
 </table>
 	
-</div>
 </div>

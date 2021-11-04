@@ -1,4 +1,4 @@
-<div class="em-rounded">
+<div id="emailshareasset">
 #if( $order.userid != $user.getId() )
 [[Invalid order]] 
 #else
@@ -7,7 +7,11 @@
 	#set($ordersearcher = $searcherManager.getSearcher($catalogid, "order"))
 	#set($owner = $userManager.getUser($order.userid))
 	
-<form class="validate" id="usereditform" method="post" action="$home$apphome/views/modules/asset/activity/share/step2.html">
+<form class="validate ajaxform" 
+		data-targetdivinner="emailshareasset"
+		id="usereditform" 
+		method="post" 
+		action="$siteroot$apphome/views/modules/asset/activity/share/step2.html">
 #set($searcher = $searcherManager.getSearcher($catalogid, "order"))
 $context.putPageValue("searcher", $searcher)	 
 $context.putPageValue("data", $order)	 
