@@ -12,12 +12,34 @@
 				#end
 				#if ($canassetannotate)
 				<div class="col-md-6 col-lg-7" >
-				$pages.include("$componenthome/annotations2/annotation.html")
+				#set( $targetpage = $mediaarchive.getPageManager().getPage("/$applicationid/components/annotations2/annotation.html"))
+				
+				
+				
+				#foreach( $script in $targetpage.getScriptPaths(true) )
+					##<script type="text/javascript" src="#if(!$script.startsWith("http"))$siteroot#end$script">  </script>
+					#if(!$script.startsWith("http"))
+						#set($scripturl ="$siteroot$script")
+					#else
+						#set($scripturl ="$script")
+					#end
+					<script>
+					getScriptIfNotLoaded("$scripturl");
+					</script>
+				#end
+				#foreach( $style in $targetpage.getStylePaths(true) )
+					<link rel="stylesheet" type="text/css" href="#if(!$style.startsWith("http"))$siteroot#end$style" />
+				#end
+				
+				$pages.include("$componenthome/annotations2/annotation.html", $context)
+				
 				</div>
 				#end
 			</div>	
 		</div>
 </div>
+
+
 
 <script type="text/javascript">
 

@@ -13,6 +13,22 @@ function getRandomColor() {
 	return color;
 }
 
+function getScriptIfNotLoaded(scriptLocationAndName)
+{
+  var len = $('script[src*="' + scriptLocationAndName +'"]').length;
+
+  //script already loaded!
+  if (len > 0)
+      return;
+
+  var head = document.getElementsByTagName('head')[0];
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src = scriptLocationAndName;
+  head.appendChild(script);
+}
+
+
 uiload = function() {
 	
 	// https://github.com/select2/select2/issues/600
