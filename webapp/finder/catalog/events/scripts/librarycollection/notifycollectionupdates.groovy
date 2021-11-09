@@ -100,6 +100,7 @@ public void init()
 			objects.put("applink","/" + appid);
 			objects.put("mediaarchive",mediaArchive);
 			objects.put("messagessince",since);
+			objects.put("siteroot",getSiteRoot());
 			
 			templatemail.send(objects);
 			log.info("Chat Notified " + followeruser.getEmail() + " " + templatemail.getSubject());
@@ -113,6 +114,15 @@ public void init()
 	notificationsent.setValue("value", started);
 	mediaArchive.saveData("catalogsettings",notificationsent);
 
+}
+
+private String getSiteRoot() {
+	MediaArchive mediaArchive = context.getPageValue("mediaarchive");
+	String site = mediaArchive.getCatalogSettingValue("siteroot");
+	if (!site) {
+		site = mediaArchive.getCatalogSettingValue("cdn_prefix");
+	}
+	return site;
 }
 
 
