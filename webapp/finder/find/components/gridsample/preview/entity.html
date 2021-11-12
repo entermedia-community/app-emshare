@@ -26,10 +26,14 @@ $context.putPageValue("moduleid", $moduleid)
 		
 		#set( $assetsshown = 4)
 		#if( $searchtype == "faceprofilegroup" )
-			#set( $assetshits = $mediaarchive.query("asset").hitsPerPage($assetsshown).exact("faceprofiles.faceprofilegroup", $entityid).sort("assetaddeddateDown").search() )		
+			#set( $assetshits = $mediaarchive.query("asset").hitsPerPage($assetsshown).exact("faceprofiles.faceprofilegroup", $entityid).sort("assetaddeddateDown").search() )
+					
 		#else
-			#set( $assetshits = $mediaarchive.query("asset").hitsPerPage($assetsshown).exact($moduleid, $entityid).sort("assetaddeddateDown").search() )		
+			#set( $assetshits = $mediaarchive.query("asset").hitsPerPage($assetsshown).match($moduleid, $entityid).sort("assetaddeddateDown").search() )
+				
 		#end
+		
+		
 		$context.putPageValue("assetshits", $assetshits)
 		$context.putPageValue("fullview",true) 
 		$context.putPageValue("thumbsize", "small" )
