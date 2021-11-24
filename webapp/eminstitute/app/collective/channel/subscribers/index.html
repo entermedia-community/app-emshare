@@ -134,32 +134,31 @@ $team.size()</a>
 #else
 <div class="row no-gutters" style="margin-bottom:1rem;">
   #foreach( $hit in $team)
-	
   	#set( $followeruser = $mediaarchive.getUser($hit.followeruser) )
-    #set( $userlink = "$applink/users/${followeruser.getId()}/${followeruser.getAnonNickName()}.html")
-	#set( $userimageurl = $mediaarchive.asLinkToProfile($followeruser.assetportrait) )
-	#if(!$userimageurl)
-		#set( $userimageurl = "$applink/theme/images/user.svg" )
-	#end
-
-	<div class="col-md-6" >
-	  <div class="teammember">
-	  	
-	  	<div style="position: absolute; width:32px;" class="table-subscribers">
-		<a href="#esc($userlink)" style="display:block; height:32px">
-			<img  src="${userimageurl}"  title="$!followeruser.getAnonNickName()" class="img-fluid align-middle usericon" 
-			style="position:relative; top:50%; transform: translateY(-50%);"></a>
+  	#if($followeruser)
+	    #set( $userlink = "$applink/users/${followeruser.getId()}/${followeruser.getAnonNickName()}.html")
+		#set( $userimageurl = $mediaarchive.asLinkToProfile($followeruser.assetportrait) )
+		#if(!$userimageurl)
+			#set( $userimageurl = "$applink/theme/images/user.svg" )
+		#end
+		<div class="col-md-6" >
+		  <div class="teammember">
+		  	<div style="position: absolute; width:32px;" class="table-subscribers">
+			<a href="#esc($userlink)" style="display:block; height:32px">
+				<img  src="${userimageurl}"  title="$!followeruser.getAnonNickName()" class="img-fluid align-middle usericon" 
+				style="position:relative; top:50%; transform: translateY(-50%);"></a>
+			</div>
+		  	<div style="margin-left:40px; height:34px; position:relative;">
+		    <div style="position:relative; top:50%; transform: translateY(-50%);">
+		    	<a href="#esc($userlink)" title="$!followeruser.getAnonNickName()">$!followeruser.getAnonNickName()</a></div> 
+		   	<div>
+		        </div>
+			<i></i>
+		    </div>
+		    
+		  </div>
 		</div>
-	  	<div style="margin-left:40px; height:34px; position:relative;">
-	    <div style="position:relative; top:50%; transform: translateY(-50%);">
-	    	<a href="#esc($userlink)" title="$!followeruser.getAnonNickName()">$!followeruser.getAnonNickName()</a></div> 
-	   	<div>
-	        </div>
-		<i></i>
-	    </div>
-	    
-	  </div>
-	</div>
+	#end
   #end
 	</div>
 	
@@ -183,7 +182,7 @@ $pages.include("$apphome/collective/donate/donatesidebar.html",$context)
 <h4><i class="fas fa-globe"></i> [[Community]]</h4>
 		<div class="" style="padding-left:6px;">		
 	#foreach($library in $librarycol.getLibraries()) 
-		<a  href="$applink/organization/projects/${library.id}/${library.name.replaceAll(" ","-")}.html">$library</a>
+		<a  href='$applink/organization/projects/${library.id}/${library.name.replaceAll(" ","-")}.html'>$library</a>
 	#end
 		</div>	
 </div>

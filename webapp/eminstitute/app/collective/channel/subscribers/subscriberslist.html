@@ -12,8 +12,9 @@
 		</tr>
    		</thead>
   #foreach( $hit in $subs)
+  	#set( $followeruser = $mediaarchive.getUser($hit.followeruser) )
+  	#if($followeruser)
         <tr>
-        	#set( $followeruser = $mediaarchive.getUser($hit.followeruser) )
 		    #set( $userlink = "$applink/users/${followeruser.getId()}/${followeruser.getAnonNickName()}.html")
 			#set( $userimageurl = $mediaarchive.asLinkToProfile($followeruser.assetportrait) )
 			#if(!$userimageurl)
@@ -28,6 +29,7 @@
 			</td> 
         	<td><span class="usernote">#if ($hit.getValue("addeddate")) $context.getDateTime( $hit.getValue("addeddate") )</span> #end</td>
         </tr>
+       #end
   #end
   </table>
 #end
