@@ -3,8 +3,10 @@
 		#set($selecteduser = $user)
 		$context.putPageValue("selecteduser", $selecteduser)
 	#end
+	 
 	#if( $selecteduser )	
-		#set( $subscriptions = $mediaarchive.query("librarycollectionusers").exact("followeruser",$selecteduser.getId()).sort("isonteam").search())
+		#set( $subscriptions = $mediaarchive.query("librarycollectionusers").match("followeruser",$selecteduser.getId()).sort("isonteam").search())
 		$context.putPageValue("subscriptions", $subscriptions)
+		
 		$pages.include("$apphome/users/projects.html", $context)
 	#end	

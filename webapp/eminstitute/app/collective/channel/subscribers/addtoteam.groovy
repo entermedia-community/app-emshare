@@ -22,7 +22,7 @@ public void init()
 	String teamuserid = context.getRequestParameter("teamuserid");
 	String addtoteam = context.getRequestParameter("addtoteam");
 	
-	log.info("Adding used to team " + teamuserid + " and " + email);
+	//log.info("Adding used to team " + teamuserid + " and " + email);
 	
 	User teamuser = null;
 /* Check for duplicate email. */
@@ -32,7 +32,11 @@ public void init()
 	}
 	else if (email != null) {
 		teamuser = archive.getUserManager().getUserByEmail(email);
+		if (teamuser != null) {
+			teamuserid = teamuser.getId();
+		}
 	}
+	//not a user, create
 	if( teamuser == null)
 	{
 		String	password = new PasswordGenerator().generate();
@@ -43,11 +47,18 @@ public void init()
 		teamuser.setEmail(email.trim().toLowerCase());
 		teamuser.setEnabled(true);
 		archive.getUserManager().saveUser(teamuser);
+		teamuserid = teamuser.getId();
 	}
-	log.info("Adding used to team " + teamuser.getId());
+	
+	if (teamuserid == null) {
+		log.info("Error Adding user to team " + collectionid);
+		return;
+	}
+	
+	log.info("Adding user to team " + teamuserid);
 	
 	
-	Data subscription = archive.query("librarycollectionusers").exact("followeruser", teamuser.getId()).exact("collectionid", collectionid).searchOne();
+	Data subscription = archive.query("librarycollectionusers").exact("followeruser", teamuserid).exact("collectionid", collectionid).searchOne();
 	if (subscription != null)
 	{
 		//exists, but is ontheteam?
@@ -60,7 +71,7 @@ public void init()
 	{
 		subscription = archive.getSearcher("librarycollectionusers").createNewData();
 		subscription.setValue("collectionid",collectionid);
-		subscription.setValue("followeruser",teamuser.getId());
+		subscription.setValue("followeruser",teamuserid);
 		if (addtoteam == "true") {
 			subscription.setValue("ontheteam",true);
 		}
@@ -88,11 +99,11 @@ public void init()
 	objects.put("siteroot", getSiteRoot());
 
 		
-	//log.info("Sending welcome email  " + teamuser.getId());
+	//log.info("Sending welcome email  " + teamuserid);
 	
 	templatemail.send(objects);
 			
-	log.info("Sent email " + teamuser.getId());
+	log.info("Sent email " + teamuserid);
 }
 
 private String getSiteRoot() {
