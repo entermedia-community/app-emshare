@@ -3,7 +3,7 @@
  	#if( $caneditcollection)
 		<div class="float-right">
 		<a class="emdialog btn btn-sm btn-light"
-		style="position:absolute; right:15px;"  
+		style="position:absolute; right:25px;"  
 			data-allwaysloadpage="true" href="$applink/collective/edit/editcollective.html?collectionid=$librarycol.getId()" 
 			title="[[Project Settings]]"><i class="fas fa-cog"></i></a>
 		</div>
@@ -15,27 +15,12 @@
 			#set( $liked = $likesearcher.query().exact("followeruser",$user.getId()).exact("collectionid",$collectionid).searchOne() )
 	
 			#if ($liked)
-					 <a href="$applink/collective/channel/subscribers/unsubscribe.html?id=${liked.getId()}&collectionid=$librarycol.getId()" 
-						class="btn btn-secondary btn-action">[[Un-Like]]</a>
-			#else
-				<h3>[[Follow The Project]]</h3>
-				<form name="followproject" id="followproject" class="ajaxform" style="display:inline-block;" data-targetdiv="subscriberssidebar" action="$applink/collective/channel/subscribers/likesave.html" method="post">
-				<input type="hidden" name="save" value="true" />
-				<input type="hidden" name="field" value="followeruser" />
-				<input type="hidden" name="followeruser.value" value="$user.getId()" />
-				<input type="hidden" name="field" value="addeddate" />
-				<input type="hidden" name="addeddate.value" value="$storeddate" />
-				<input type="hidden" name="field" value="collectionid" />
-				<input type="hidden" name="collectionid.value" value="$collectionid" />
-				<input type="hidden" name="collectionid" value="$collectionid" />
-				 <a href="" class="btn btn-success btn-action submitform" title="[[Get Email Alerts]]"><i class="fas fa-thumbs-up"></i> &nbsp;[[Like]]</a>
-				 
-				  
-				</form>
-			#end
-			#set( $onteam = $mediaarchive.query("librarycollectionusers").exact("followeruser",$user.getId()).exact("collectionid",$collectionid).search($context) )
-			#if(!$onteam)
-				<form name="saveprojectsidebar" id="saveprojectsidebar" class="ajaxform" style="display:inline-block;padding:10px;" data-targetdiv="subscriberssidebar" action="$applink/collective/channel/subscribers/teamsave.html" method="post" style="padding-bottom:5px">
+				<a href="$applink/collective/channel/subscribers/unsubscribe.html?id=${liked.getId()}&collectionid=$librarycol.getId()" 
+						class="btn btn-light btn-action">[[Liked]]</a>
+						
+				#set( $onteam = $mediaarchive.query("librarycollectionusers").exact("followeruser",$user.getId()).exact("collectionid",$collectionid).search($context) )
+				#if(!$onteam)
+					<form name="saveprojectsidebar" id="saveprojectsidebar" class="ajaxform" style="display:inline-block;padding:10px;" data-targetdiv="subscriberssidebar" action="$applink/collective/channel/subscribers/teamsave.html" method="post" style="padding-bottom:5px">
 							<input type="hidden" name="save" value="true" />
 							<input type="hidden" name="field" value="followeruser" />
 							<input type="hidden" name="followeruser.value" value="$user.getId()" />
@@ -50,11 +35,26 @@
 							#else
 							<input type="hidden" name="ontheteam.value" value="false" />
 							#end
-							<input type="submit" class="btn btn-success btn-action" value="[[Request To Join The Team]]" />
+							<input type="submit" class="btn btn-success btn-action" value="[[Join The Team]]" />
+					</form>
+				#end
+			#else
+				<form name="followproject" id="followproject" class="ajaxform" style="display:inline-block;" data-targetdiv="subscriberssidebar" action="$applink/collective/channel/subscribers/likesave.html" method="post">
+				<input type="hidden" name="save" value="true" />
+				<input type="hidden" name="field" value="followeruser" />
+				<input type="hidden" name="followeruser.value" value="$user.getId()" />
+				<input type="hidden" name="field" value="addeddate" />
+				<input type="hidden" name="addeddate.value" value="$storeddate" />
+				<input type="hidden" name="field" value="collectionid" />
+				<input type="hidden" name="collectionid.value" value="$collectionid" />
+				<input type="hidden" name="collectionid" value="$collectionid" />
+				 <a href="" class="btn btn-success btn-action submitform" title="[[Get Email Alerts]]"><i class="fas fa-thumbs-up"></i> &nbsp;[[Like]]</a>
+				 
+				  
 				</form>
 			#end
+			
 		#else
-			<h3>[[Follow The Project]]</h3>
 			#set($loginok = "$applink/collective/channel/$collectionid/${librarycol.getWebName()}.html")
 			<a href="$applink/authentication/login.html?loginokpage=$!loginok" class="btn btn-success" style=""><i class="fas fa-envelope"></i> &nbsp;[[Login to Like]]</a>
 		#end	
@@ -65,35 +65,16 @@
 			#end
 			<div class="oe-editable #if( $caneditcollection) oe-editable-space #end" id="editjoincollectivetext-$librarycol.id" data-dataid="$librarycol.id" data-field="joincollectivetext" data-searchtype="librarycollection">
 	   		#if($librarycol.joincollectivetext) 
+	   			<div class="subscribe-headline-content">
 				$!librarycol.joincollectivetext
+				</div>
 			#end
 			</div>
 		</div>	
 	</div>
 
-<div class="subscribers-box text-center">
-	<div class="subscribers-box-box">
-		<a class="emdialog" data-cancelsubmit="true" title="View Subscribers" href="$applink/collective/channel/subscribers/subscriberslist.html?collectionid=$librarycol.getId()">
-			<div class="box-content" style="border-right:1px solid #ddd;">
-			<strong>[[Likes]]</strong>
-			#set( $subscribers = $mediaarchive.query("librarycollectionlikes").exact("collectionid",$collectionid).search($context) )
-			<div class="box-number">$subscribers.size()</div>
-			</div>
-		</a>	
-	</div> 
 
-	<div class="subscribers-box-box">
-		<a class="emdialog" title="[[Share]]" href="$applink/components/share/embed.html?collectionid=$librarycol.id">
-			<div class="box-content">
-				<strong>[[Share]]</strong>
-				<div class="box-icons">
-					<i class="fas fa-share-alt fa-lg"></i>
-				</div>
-			</div>
-		</a>
-		<div class="clearfix"></div>
-	</div>
-</div>
+
 
 
 $pages.include("$apphome/collective/donate/donatesidebar.html",$context)
@@ -190,5 +171,37 @@ $team.size()</a>
 		</div>	
 </div>
 
+
+
+
+
+
+
+
+<!-- 
+
+<div class="subscribers-box text-center">
+	<div class="subscribers-box-box">
+		<a class="emdialog" data-cancelsubmit="true" title="View Subscribers" href="$applink/collective/channel/subscribers/subscriberslist.html?collectionid=$librarycol.getId()">
+			<div class="box-content" style="border-right:1px solid #ddd;">
+			<strong>[[Likes]]</strong>
+			#set( $subscribers = $mediaarchive.query("librarycollectionlikes").exact("collectionid",$collectionid).search($context) )
+			<div class="box-number">$subscribers.size()</div>
+			</div>
+		</a>	
+	</div> 
+
+	<div class="subscribers-box-box">
+		<a class="emdialog" title="[[Share]]" href="$applink/components/share/embed.html?collectionid=$librarycol.id">
+			<div class="box-content">
+				<strong>[[Share]]</strong>
+				<div class="box-icons">
+					<i class="fas fa-share-alt fa-lg"></i>
+				</div>
+			</div>
+		</a>
+		<div class="clearfix"></div>
+	</div>
+</div> -->
         
  
