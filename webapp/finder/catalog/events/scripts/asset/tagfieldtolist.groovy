@@ -9,6 +9,10 @@ import org.openedit.util.PathUtilities
 
 public void init()
 {
+	
+	String field1 = "videographer";  //tag field
+	String field2 = "entityvideographer"; //entity field
+	
 	MediaArchive archive = context.getPageValue("mediaarchive");
 	AssetSearcher searcher = archive.getAssetSearcher();
 	HitTracker hits = archive.query("asset").search();
@@ -19,8 +23,9 @@ public void init()
 	
 	for(Data hit in hits) {
 		Asset asset = searcher.loadData(hit);
-		if (tagtoentity(asset, "videographer", "entityvideographer")) {
-			tosave.add(asset);
+		if (tagtoentity(asset, field1, field2)) {
+			log.info("Found asset " + asset.getId() + " : " + asset.getValues(field1) + " - " + asset.getValues(field2));
+			tosave.add(asset); 
 		}
 		
 		if( tosave.size() == 100 )	{
