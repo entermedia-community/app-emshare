@@ -1,0 +1,55 @@
+#set($collectionid = $librarycol.getId())
+
+#set( $subscribers = $mediaarchive.query("librarycollectionlikes").exact("collectionid",$collectionid).search($context) )
+#set( $subscriberssize = $subscribers.size())
+<div class="project-likes">
+	<div class="project-likes-count">$subscriberssize #if($subscriberssize==1)[[Like]] #else [[Likes]]#end</div>
+		#if( $user )
+			#set( $likesearcher = $mediaarchive.getSearcher("librarycollectionlikes") )
+			#set( $liked = $likesearcher.query().exact("followeruser",$user.getId()).exact("collectionid",$collectionid).searchOne() )
+	
+			#if ($liked)
+				<a href="$applink/collective/channel/subscribers/unsubscribe.html?id=${liked.getId()}&collectionid=$librarycol.getId()" 
+						class="btn btn-xs btn-light btn-action btn-liked"><i class="fas fa-thumbs-up"></i> &nbsp;[[Liked]]</a>
+						
+				#set( $onteam = $mediaarchive.query("librarycollectionusers").exact("followeruser",$user.getId()).exact("collectionid",$collectionid).search($context) )
+				#if(!$onteam)
+					<form name="saveprojectsidebar" id="saveprojectsidebar" class="ajaxform" style="display:inline-block;" data-targetdiv="subscriberssidebar" action="$applink/collective/channel/subscribers/teamsave.html" method="post">
+							<input type="hidden" name="save" value="true" />
+							<input type="hidden" name="field" value="followeruser" />
+							<input type="hidden" name="followeruser.value" value="$user.getId()" />
+							<input type="hidden" name="field" value="addeddate" />
+							<input type="hidden" name="addeddate.value" value="$storeddate" />
+							<input type="hidden" name="field" value="collectionid" />
+							<input type="hidden" name="collectionid.value" value="$collectionid" />
+							<input type="hidden" name="collectionid" value="$collectionid" />
+							<input type="hidden" name="field" value="ontheteam" />
+							#if($canviewsettings)
+							<input type="hidden" name="ontheteam.value" value="true" />
+							#else
+							<input type="hidden" name="ontheteam.value" value="false" />
+							#end
+							<a href="" class="submitform request-join">[[Request Join Team]]</a>
+					</form>
+				#end
+			#else
+				<form name="followproject" id="followproject" class="ajaxform" style="display:inline-block;" data-targetdiv="subscriberssidebar" action="$applink/collective/channel/subscribers/likesave.html" method="post">
+				<input type="hidden" name="save" value="true" />
+				<input type="hidden" name="field" value="followeruser" />
+				<input type="hidden" name="followeruser.value" value="$user.getId()" />
+				<input type="hidden" name="field" value="addeddate" />
+				<input type="hidden" name="addeddate.value" value="$storeddate" />
+				<input type="hidden" name="field" value="collectionid" />
+				<input type="hidden" name="collectionid.value" value="$collectionid" />
+				<input type="hidden" name="collectionid" value="$collectionid" />
+				 <a href="" class="btn btn-xs btn-success btn-action submitform" title="[[Like the Project]]"><i class="fas fa-thumbs-up"></i> &nbsp;[[Like]]</a>
+				</form>
+			#end
+			
+		#else
+			#set($loginok = "$applink/collective/channel/$collectionid/${librarycol.getWebName()}.html")
+			<a href="$applink/authentication/login.html?loginokpage=$!loginok" 
+			class="btn btn-xs btn-success" style=""><i class="fas fa-thumbs-up"></i> &nbsp;[[Login to Like]]</a>
+		#end	
+</div>		
+
