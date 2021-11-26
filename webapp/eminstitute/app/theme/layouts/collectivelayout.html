@@ -10,13 +10,19 @@
 	#set($fullwidth = $content.fullwidth)
 	
 	#set($logo = $mediaarchive.getAsset($librarycol.assetportrait) )
+	
 	#if ($logo)
 		#set($logourl = "/$mediaarchive.getMediaDbId()/services/module/asset/downloads/preset/${logo.sourcepath}/image200x200.png")
 	#else
 		#set($logourl = "$applink/theme/images/OI_flower.png")
 	#end
+	
 	#set($homelink = "$apphome/collective/community/index.html?collectionid=$collectionid")
 
+	#if ($librarycol.assetbanner)
+		#set( $banner= $mediaarchive.getAsset($librarycol.assetbanner) )
+		#set ($bannerurl = "/$mediaarchive.getMediaDbId()/services/module/asset/downloads/preset/${banner.sourcepath}/image1920x500cropped.jpg")
+	#end
 
 <div class="collectivelayout ">
 

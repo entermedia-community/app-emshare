@@ -3,6 +3,13 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+	#set($collectionid = $librarycol.getId())
+	#if(!$collectionid)
+		#set($collectionid = $context.getRequestParameter("organizationid"))
+		#if($collectionid)
+			#set( $librarycol = $mediaarchive.query("librarycollection").exact("id",$collectionid).searchOne() )
+		#end
+	#end
 
 	#set($sitetitle = $content.title)
     <title>#if( $library ) $library #end #if( $librarycol ) $librarycol - #end $!sitetitle</title>
@@ -18,8 +25,20 @@
     <link rel="Shortcut Icon" type="image/x-icon" href="$applink/theme/images/favicon.ico" />
 
 	</head>
+	
+	
+	#if ($librarycol.assetbanner)
+		#set( $banner= $mediaarchive.getAsset($librarycol.assetbanner) )
+		#set ($bannerurl = "/$mediaarchive.getMediaDbId()/services/module/asset/downloads/preset/${banner.sourcepath}/image1920x500cropped.jpg")
+	#end
 
-<body id="page-top" #if($browser.inApp()) data-hidetoolbar="true" #end>
+<body id="page-top" #if($browser.inApp()) data-hidetoolbar="true" #end
+		#if ($bannerurl) style="
+			background-image:url($bannerurl); 
+			background-size: cover;
+			background-attachment: fixed;
+			background-position:  0 50px;"#end
+>
 
 <div id="application" 
 	class="eminstitutecollective"
