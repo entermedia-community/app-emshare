@@ -5,12 +5,48 @@
 	#set( $db = "$catalagDB.value" ) 
 #end
 
+#set( $year = $!context.getRequestParameter("year"))
+#set( $month = $!context.getRequestParameter("month"))
+#set( $status = $!context.getRequestParameter("status"))
 #if( $canviewsettings )
-<div class="collectivecontent">
+<div class="collectivecontent" id="invoicedata">
+	
     <div class="row no-gutters h-100">
         <div class="col">
             <div class="collectivemaincol h-100">
                 <div class="content">
+				   <div class="card mb-4">
+				   	<div class="card-header ">
+						<b>Filters</b>	   		
+				   	</div>
+				   	<div class="card-body">
+				   		<form class="ajaxform" data-targetdiv="invoicedata">
+					   		<label>Year</label>
+					   		<select class="form-control form-control-sm" name="year">
+							#foreach($i in [2021..2030])
+							   <option value="$i" #if($i == $year) selected="selected" #end>$i</option>
+							#end
+					   		</select>
+					   		
+					   		<label>Month</label>
+					   		<select class="form-control form-control-sm" name="month">
+					   		   <option value="0" #if($month == 0) selected="selected" #end>All</option>
+							#foreach($i in [1..12])
+							   <option value="$i" #if($i == $month) selected="selected" #end>$i</option>
+							#end
+					   		</select>
+					   		
+					   		<label>Status</label>
+					   		<select class="form-control form-control-sm" name="status">
+							   <option value="paid" #if($status == "paid") selected="selected" #end>Paid</option>
+							   <option value="invoiced" #if($status == "invoiced") selected="selected" #end>Invoiced</option>
+					   		</select>
+					   		
+					   		<button class="btn btn-primary" type="submit">Search</button>
+				   		</form>
+				   	</div>	   	
+				   </div>
+	
                 
 	                <div class="table-responsive">
 	                	<table class="table table-striped">
@@ -29,8 +65,7 @@
 	                		
 	                		<tbody>
 	                		###set( $invoices = $mediaarchive.query("collectiveinvoice").search())
-	                		#set( $invoices = $mediaarchive.getInvoiceFromYear("paid", 2021) )
-	                		
+	                		#set( $invoices = $mediaarchive.getInvoiceFromMonth($status, $year, $month) )
 	                		#foreach($hit in $invoices)
                                     #if ($hit.instance_status == "active")
                                         #set($instancescount = $instancescount+1)
