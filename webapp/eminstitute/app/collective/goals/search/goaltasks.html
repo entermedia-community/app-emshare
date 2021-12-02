@@ -15,8 +15,7 @@
 <div id="$target">
 <div  class="goalstaskcontainer" id="${goal.id}container">
 
-<table class="table table-goaltaskstable" >
-  <tbody>
+<div>
 	#set($points = 0)
 	#foreach($task in $tasks)
 		#set( $tree =  $mediaarchive.getCategory($task.projectdepartment))
@@ -30,41 +29,42 @@
 		#set($collectionid = $goal.collectionid)
 		#set( $edittask = "$applink/collective/goals/task/taskedit.html?id=${task.id}&collectionid=$goal.collectionid&onlyopen=$!onlyopen&targetdiv=$target")
 		
-			<tr id="taskrow$task.getId()" >
-			<td class="taskage" scope="row">$task.getAge()</td>
-			<td class="taskowner">$!mediaarchive.getUser($task.completedby).getAnonNickName()</td>
-			#set( $comment = $mediaarchive.query("goaltaskcomments").exact("goaltaskid",$task.id) )
-			<td class="taskdetails" id="taskdetails" #if( !$tree ) colspan="2" #end>
-			#if($!task.comment.length() > 300)
-			$!task.comment.substring(0, 300) ...
-			#else
-			$!task.comment
-			#end
-			</td>
-
-			#if( $tree )
-			<td class="tasktype">
-					$tree
-			</td>
-			#end
-
-			<td class="taskstatus goalstatus-$!task.taskstatus">
-			
-			<a href="$edittask"
-			id="task$task.getId()"
-			data-focuson="$task.id"
-			data-width="900"
-			class="taskedit taskedit-$!{task.taskstatus} ajax" 
-			data-targetdiv="taskrow$task.getId()" data-oemaxlevel="1" title="[[Edit Task]]" >
-			##<i class="fas fa-pencil-alt"></i>
-			$!mediaarchive.getData("taskstatus", $task.taskstatus)
-			</a>
-			##set( $comment = $mediaarchive.query("goaltaskcomments").exact("goaltaskid",$task.id).match("commenttext","*").sort("dateDown").searchOne() )
-			</td>
-			</tr>
+			<div id="taskrow$task.getId()" class="goaltaskrow" >
+				<div class="taskage">$task.getAge()</div>
+				<div class="taskowner">$!mediaarchive.getUser($task.completedby).getAnonNickName()</div>
+				<div class="tasktype">
+						$!tree
+				</div>
+				#set( $comment = $mediaarchive.query("goaltaskcomments").exact("goaltaskid",$task.id) )
+				<div class="taskdetails">
+				#if($!task.comment.length() > 300)
+				$!task.comment.substring(0, 300) ...
+				#else
+				$!task.comment
+				#end
+				</div>
+	
+				
+				
+				
+	
+				<div class="taskstatus goalstatus-$!task.taskstatus">
+					<a href="$edittask"
+					id="task$task.getId()"
+					data-focuson="$task.id"
+					data-width="900"
+					class="taskedit taskedit-$!{task.taskstatus} ajax" 
+					data-targetdiv="taskrow$task.getId()" data-oemaxlevel="1" title="[[Edit Task]]" >
+					##<i class="fas fa-pencil-alt"></i>
+					$!mediaarchive.getData("taskstatus", $task.taskstatus)
+					</a>
+					##set( $comment = $mediaarchive.query("goaltaskcomments").exact("goaltaskid",$task.id).match("commenttext","*").sort("dateDown").searchOne() )
+				</div>
+				<div class="clearfix"></div>
+			</div>
 	#end
-	</tbody>
-	</table>
+</div>
+
 	<div class="clearfix"></div>	
 						
 	#if( ( $canviewsettings || $caneditcollection)  && $goal.collectionid)

@@ -271,7 +271,7 @@ jQuery(document).ready(function(url,params)
 				jQuery.ajax({
 					url: href, data: options, success: function (data) 
 					{
-						$("#" + goalid + "container .table-goaltaskstable").append(data);
+						$("#" + goalid + "container").append(data);
 						jQuery('.grabfocus').focus();
 
 					},
