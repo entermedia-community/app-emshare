@@ -5,9 +5,23 @@
 	#set( $db = "$catalagDB.value" ) 
 #end
 
-#set( $year = $!context.getRequestParameter("year"))
-#set( $month = $!context.getRequestParameter("month"))
-#set( $status = $!context.getRequestParameter("status"))
+#if ($!context.getRequestParameter("year")) 
+	#set( $year = $!context.getRequestParameter("year"))
+#else
+	#set( $year = $mediaarchive.getCurrentYear())
+#end
+
+#if ($!context.getRequestParameter("month"))
+	#set( $month = $!context.getRequestParameter("month"))
+#else
+	#set( $month = 0)
+#end
+
+#if ($!context.getRequestParameter("status")) 
+	#set( $status = $!context.getRequestParameter("status"))
+#else
+	#set( $status = "paid")
+#end
 #if( $canviewsettings )
 <div class="collectivecontent" id="invoicedata">
 	
