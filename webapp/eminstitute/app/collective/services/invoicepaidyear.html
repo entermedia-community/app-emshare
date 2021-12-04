@@ -64,7 +64,13 @@
 	                			 	  <th>[[Workspace]]</th>
                                       <th>[[Invoice Number]]</th>
                                        <th>[[Created On]]</th>
-                                       <th>[[Paid On]]</th>
+                                       <th>
+                                       #if ($status == "paid")
+                                         [[Paid On]]
+                                       #elseif ($status == "invoiced")
+                                         [[Due Date]]
+                                       #end                                       
+                                       </th>
                                        <th>[[Name]]</th>
                                        <th>[[Description]]</th>
                                        <th>[[Total Price]]</th>
@@ -83,7 +89,13 @@
                                     	<td>$!mediaarchive.getWorkspaceById($hit.collectionid)</td>
                                         <td>$hit.invoicenumber</td>
                                         <td>$!context.getDate($hit.createdon)</td>
-                                        <td>$!context.getDate($hit.invoicepaidon)</td>
+                                        <td>
+                                            #if ($status == "paid")
+                                              $!context.getDate($hit.invoicepaidon)
+                                            #elseif ($status == "invoiced")
+                                              $!context.getDate($hit.duedate)
+                                            #end
+                                        </td>
                                         <td>
                                             #set($prods = $hit.getValue("productlist"))
                                             #foreach($pr in $prods)
