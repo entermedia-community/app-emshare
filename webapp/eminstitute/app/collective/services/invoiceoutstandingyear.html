@@ -1,0 +1,76 @@
+#set($currency = '$' )
+#set( $catalagDB = $mediaarchive.query("catalogsettings").exact("id", "events_billing_notify_invoice_appid").searchOne() ) 
+#set( $db = "entermediadb" ) 
+#if ( $catalagDB )
+	#set( $db = "$catalagDB.value" ) 
+#end
+
+#if( $canviewsettings )
+<div class="collectivecontent">
+    <div class="row no-gutters h-100">
+        <div class="col">
+            <div class="collectivemaincol h-100">
+                <div class="content">
+                
+	                <div class="table-responsive">
+	                	<table class="table table-striped">
+	                		<thead>
+	                			 <tr class="tableheader">
+	                			 	  <th>[[Workspace]]</th>
+                                      <th>[[Invoice Number]]</th>
+                                       <th>[[Due Date]]</th>
+                                       <th>[[Created On]]</th>
+                                       <th>[[Name]]</th>
+                                       <th>[[Description]]</th>
+                                       <th>[[Total Price]]</th>
+                                       <th></th>
+                                  </tr>
+	                		</thead>	
+	                		
+	                		<tbody>
+	                		###set( $invoices = $mediaarchive.query("collectiveinvoice").search())
+	                		#set( $invoices = $mediaarchive.getInvoiceFromYear("invoiced", 2021) )
+	                		
+	                		#foreach($hit in $invoices)
+                                    #if ($hit.instance_status == "active")
+                                        #set($instancescount = $instancescount+1)
+                                    #end
+                                    <tr>
+                                    	<td>$!mediaarchive.getWorkspaceById($hit.collectionid)</td>
+                                        <td>$hit.invoicenumber</td>
+                                        <td>$!context.getDate($hit.duedate)</td>
+                                        <td>$!context.getDate($hit.createdon)</td>
+                                        <td>
+                                            #set($prods = $hit.getValue("productlist"))
+                                            #foreach($pr in $prods)
+                                                #set($prod = $mediaarchive.query("collectiveproduct").exact("id", "$pr.productid").searchOne())
+                                                $prod<br>
+                                            #end
+                                        </td>
+                                        <td>
+                                            #foreach($pr in $prods)
+                                                #set($prod = $mediaarchive.query("collectiveproduct").exact("id", "$pr.productid").searchOne())
+                                                $!mediaarchive.text($prod.productdescription, $hit.id)<br>
+                                            #end
+                                        </td>
+                                        <td style="text-align: center;">$ $!context.roundDouble($!hit.totalprice, 2)</td>
+                                        <td>
+                                                <a
+                                                    href="$siteroot/$db/emshare2/views/settings/lists/datamanager/edit/edit.html?id=$hit.id&searchtype=collectiveinvoice"
+                                                    class="btn btn-sm btn-secondary"
+                                                    target="_blank">
+                                                    <i class="fa fa-database"></i>
+                                                </a>                      
+                                        </td>
+                                    </tr>
+                                #end
+	                		</tbody>
+	                	</table>	                
+	                </div>
+	                
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+#end

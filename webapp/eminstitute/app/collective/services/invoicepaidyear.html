@@ -1,0 +1,150 @@
+#set($currency = '$' )
+#set( $catalagDB = $mediaarchive.query("catalogsettings").exact("id", "events_billing_notify_invoice_appid").searchOne() ) 
+#set( $db = "entermediadb" ) 
+#if ( $catalagDB )
+	#set( $db = "$catalagDB.value" ) 
+#end
+
+#if ($!context.getRequestParameter("year")) 
+	#set( $year = $!context.getRequestParameter("year"))
+#else
+	#set( $year = $mediaarchive.getCurrentYear())
+#end
+
+#if ($!context.getRequestParameter("month"))
+	#set( $month = $!context.getRequestParameter("month"))
+#else
+	#set( $month = 0)
+#end
+
+#if ($!context.getRequestParameter("status")) 
+	#set( $status = $!context.getRequestParameter("status"))
+#else
+	#set( $status = "paid")
+#end
+#if( $canviewsettings )
+<div class="collectivecontent" id="invoicedata">
+	
+    <div class="row no-gutters h-100">
+        <div class="col">
+            <div class="collectivemaincol h-100">
+                <div class="content">
+				   <div class="card mb-4">
+				   	<div class="card-header ">
+						<b>Filters</b>	   		
+				   	</div>
+				   	<div class="card-body">
+				   		<form class="ajaxform" data-targetdiv="invoicedata">
+					   		<label>Year</label>
+					   		<select class="form-control form-control-sm" name="year">
+							#foreach($i in [2021..2030])
+							   <option value="$i" #if($i == $year) selected="selected" #end>$i</option>
+							#end
+					   		</select>
+					   		
+					   		<label>Month</label>
+					   		<select class="form-control form-control-sm" name="month">
+					   		   <option value="0" #if($month == 0) selected="selected" #end>All</option>							
+							   <option value="1" #if($month == 1) selected="selected" #end>[[January]]</option>
+							   <option value="2" #if($month == 2) selected="selected" #end>[[February]]</option>
+							   <option value="3" #if($month == 3) selected="selected" #end>[[March]]</option>
+							   <option value="4" #if($month == 4) selected="selected" #end>[[April]]</option>
+							   <option value="5" #if($month == 5) selected="selected" #end>[[May]]</option>
+							   <option value="6" #if($month == 6) selected="selected" #end>[[June]]</option>
+							   <option value="7" #if($month == 7) selected="selected" #end>[[July]]</option>
+							   <option value="8" #if($month == 8) selected="selected" #end>[[August]]</option>
+							   <option value="9" #if($month == 9) selected="selected" #end>[[September]]</option>
+							   <option value="10" #if($month == 10) selected="selected" #end>[[October]]</option>
+							   <option value="11" #if($month == 11) selected="selected" #end>[[November]]</option>
+							   <option value="12" #if($month == 12) selected="selected" #end>[[December]]</option>							
+					   		</select>
+					   		
+					   		<label>Status</label>
+					   		<select class="form-control form-control-sm" name="status">
+							   <option value="paid" #if($status == "paid") selected="selected" #end>Paid</option>
+							   <option value="invoiced" #if($status == "invoiced") selected="selected" #end>Invoiced</option>
+					   		</select>
+					   		
+					   		<button class="btn btn-primary" type="submit">Search</button>
+				   		</form>
+				   	</div>	   	
+				   </div>
+	
+                
+	                <div class="table-responsive">
+	                	<table class="table table-striped">
+	                		<thead>
+	                			 <tr class="tableheader">
+	                			 	  <th>[[Workspace]]</th>
+                                      <th>[[Invoice Number]]</th>
+                                       <th>[[Created On]]</th>
+                                       <th>
+                                       #if ($status == "paid")
+                                         [[Paid On]]
+                                       #elseif ($status == "invoiced")
+                                         [[Due Date]]
+                                       #end                                       
+                                       </th>
+                                       <th>[[Name]]</th>
+                                       <th>[[Description]]</th>
+                                       <th>[[Total Price]]</th>
+                                       <th></th>
+                                  </tr>
+	                		</thead>	
+	                		
+	                		<tbody>
+	                		###set( $invoices = $mediaarchive.query("collectiveinvoice").search())
+	                		#set( $invoices = $mediaarchive.getInvoiceFromMonth($status, $year, $month) )
+	                		#foreach($hit in $invoices)
+                                    #if ($hit.instance_status == "active")
+                                        #set($instancescount = $instancescount+1)
+                                    #end
+                                    <tr>
+                                    	<td>$!mediaarchive.getWorkspaceById($hit.collectionid)</td>
+                                        <td>$hit.invoicenumber</td>
+                                        <td>$!context.getDate($hit.createdon)</td>
+                                        <td>
+                                            #if ($status == "paid")
+                                              $!context.getDate($hit.invoicepaidon)
+                                            #elseif ($status == "invoiced")
+                                              $!context.getDate($hit.duedate)
+                                            #end
+                                        </td>
+                                        <td>
+                                            #set($prods = $hit.getValue("productlist"))
+                                            #foreach($pr in $prods)
+                                                #set($prod = $mediaarchive.query("collectiveproduct").exact("id", "$pr.productid").searchOne())
+                                                $prod<br>
+                                            #end
+                                        </td>
+                                        <td>
+                                            #foreach($pr in $prods)
+                                                #set($prod = $mediaarchive.query("collectiveproduct").exact("id", "$pr.productid").searchOne())
+                                                $!mediaarchive.text($prod.productdescription, $hit.id)<br>
+                                            #end
+                                        </td>
+                                        <td style="text-align: center;">$ $!context.roundDouble($!hit.totalprice, 2)</td>
+                                        <td>
+                                            #set($status = $mediaarchive.query("paymentstatus").match("id", "$hit.paymentstatus").searchOne())
+                                            $status
+                                        </td>
+                                        <td>
+                                                <a
+                                                    href="$siteroot/$db/emshare2/views/settings/lists/datamanager/edit/edit.html?id=$hit.id&searchtype=collectiveinvoice"
+                                                    class="btn btn-sm btn-secondary"
+                                                    target="_blank">
+                                                    <i class="fa fa-database"></i>
+                                                </a>                                            
+                                        </td>
+                                    </tr>
+                                #end
+	                		</tbody>
+	                	</table>	                
+	                </div>
+	                
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+#end
