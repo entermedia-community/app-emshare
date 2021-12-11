@@ -105,7 +105,7 @@ public void init()
 			Data profile = mediaArchive.getData("userprofile", userid);
 			if(profile != null && profile.getBoolean("sendcollectionnotifications") == false)
 			{
-				log.info("Notification disabled " + userid);
+				//log.info("Notification disabled " + userid);
 				continue;	
 			}
 			String appid  = null;

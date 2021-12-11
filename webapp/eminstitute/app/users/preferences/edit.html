@@ -1,0 +1,21 @@
+<div id="dialoguserform">
+#set( $searcher = $mediaarchive.getSearcher("userprofile") )
+$context.putPageValue("searcher",$searcher)
+$context.putPageValue("view", "userprofile/preferences")
+$context.putPageValue("data", $selecteduser)
+<form name="dialogformuser" 
+	 id="userprofileform"
+	 action="$applink/users/preferences/save.html" 
+	 method="post"
+	 class="ajaxform autocloseform"  data-targetdiv="dialoguserform">
+
+<input type="hidden" name="save" value="true" />
+<input type="hidden" name="searchtype" value="userprofile" />
+<input type="hidden" name="id" value='$selecteduser.getId()' />
+<input type="hidden" name="userid" value='$selecteduser.getId()' />
+
+$context.putPageValue("fieldcolumnsize", 7)
+$pages.include("/$applicationid/components/xml/detaileditor4.html", $context)
+
+</form>
+</div>

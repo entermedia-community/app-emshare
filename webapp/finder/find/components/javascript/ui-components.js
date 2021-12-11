@@ -469,6 +469,8 @@ uiload = function() {
 					data = {oemaxlevel:oemaxlevel};
 				} 
 				
+				var formmodal = form.closest(".modal");
+				
 				form.ajaxSubmit({
 					data : data,
 					xhrFields: {
@@ -496,10 +498,9 @@ uiload = function() {
 								$("#" + $.escapeSelector(targetdiv)).replaceWith(result);
 							}
 					 	}
-		                if (form.hasClass("autocloseform")) {
-		                    var findmodal = form.closest(".modal");
-		                    if (findmodal && findmodal.modal) {
-		                        findmodal.modal("hide");
+						if (formmodal.length > 0 && form.hasClass("autocloseform")) {
+		                    if (formmodal.modal) {
+		                    	formmodal.modal("hide");
 		                    }
 		                }
 		        		$('#resultsdiv').data('reloadresults',true);
