@@ -56,6 +56,14 @@ public void init()
 			String userid = auser.get("followeruser");
 			if(!userwhochecked.contains(userid + "_" + chattopicid))
 			{
+				Data profile = mediaArchive.getData("userprofile", userid);
+				
+				//make it not false?
+				if(profile != null && profile.getBoolean("sendchatnotifications") == true)
+				{
+					log.info("Chat Notification disabled " + userid);
+					continue;
+				}
 				//Notify them of what they missed only
 				List topics = usertopics.get(userid);
 				if( topics == null)
@@ -78,7 +86,7 @@ public void init()
 			User followeruser = mediaArchive.getUser(useerid);
 			if (followeruser == null || followeruser.getEmail() == null) 
 			{
-				log.info("Invalid User or no email address " + useerid);
+				log.error("Invalid User or no email address " + useerid);
 				continue;
 			}
 				
