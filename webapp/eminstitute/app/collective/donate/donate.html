@@ -23,88 +23,86 @@
 
 				<div class="card-block" style="padding: 20px 21px;">
 
-						<form action="$applink/collective/donate/donatefinish.html"
-							method="post" id="payment-form" class="form">
-							<input type="hidden" name="collectionid" value="$!librarycol.id" />
+					<form action="$applink/collective/donate/donatefinish.html"
+						method="post" id="payment-form" class="form">
+						<input type="hidden" name="collectionid" value="$!librarycol.id" />
 
-									#if(!$user)
-					             		
-										#set($loginok =	"$applink/collective/donate/$!librarycol.id/donate.html")
-										<i class="fas fa-credit-card"></i> [[Login to Pay with Credit Card]] 
-										<div style="padding:20px 0 10px;">
-									  		<a href="$applink/authentication/logon.html?loginokpage=$!loginok"	class="btn btn-success">[[Login]]</a>
-									  	</div>
-									  	<div class="float-right" style="margin-top:-4px"><img src="$applink/theme/icons/creditcard.png" /></div>
-									#else
+						#if(!$user)
+		             		
+							#set($loginok =	"$applink/collective/donate/$!librarycol.id/donate.html")
+							<i class="fas fa-credit-card"></i> [[Login to Pay with Credit Card]] 
+							<div style="padding:20px 0 10px;">
+						  		<a href="$applink/authentication/logon.html?loginokpage=$!loginok"	class="btn btn-success">[[Login]]</a>
+						  	</div>
+						  	<div class="float-right" style="margin-top:-4px"><img src="$applink/theme/icons/creditcard.png" /></div>
+						#else
 
-		             	<div class="row"><div class="col">
-		             	<div class="float-right" style="margin-top:-4px"><img src="$applink/theme/icons/creditcard.png" /></div>
-		             	<div class="form-group">
-		   					<label for="staticEmail">[[Card Info]]:</label>
-		   			 		<div class="form-control">
-								<div id="card-element" style="width: 100%">
-								</div>      
-					    	</div>
-		   				</div>
-		             	</div></div>
-
-							<div class="row">
-								<div class="col-md-6">
-									<div class="form-group">
-										<label for="staticEmail">[[Amount]]:</label>
-										<div class="input-group">
-											<div class="input-group-prepend">
-												<div class="input-group-text">$</div>
+			             	<div class="row"><div class="col">
+			             	<div class="float-right" style="margin-top:-4px"><img src="$applink/theme/icons/creditcard.png" /></div>
+			             	<div class="form-group">
+			   					<label for="staticEmail">[[Card Info]]:</label>
+			   			 		<div class="form-control">
+									<div id="card-element" style="width: 100%">
+									</div>      
+						    	</div>
+			   				</div>
+			             	</div></div>
+		
+								<div class="row">
+									<div class="col-md-6">
+										<div class="form-group">
+											<label for="staticEmail">[[Amount]]:</label>
+											<div class="input-group">
+												<div class="input-group-prepend">
+													<div class="input-group-text">$</div>
+												</div>
+												<input type="text" class="form-control"
+													name="totalprice.value" id="donationamount">
 											</div>
-											<input type="text" class="form-control"
-												name="totalprice.value" id="donationamount">
+										</div>
+									</div>
+									<div class="col-md-6">
+											<div class="form-group">
+											<label for="staticEmail">[[Donation Type]]:</label> <select
+												class="form-control" name="frequency">
+												<option value="">[[Once]]</option>
+												<option value="weekly">[[Weekly]]</option>
+												<option value="monthly">[[Monthly]]</option>
+												<option value="yearly">[[Yearly]]</option>
+											</select>
 										</div>
 									</div>
 								</div>
-								<div class="col-md-6">
-																	<div class="form-group">
-										<label for="staticEmail">[[Donation Type]]:</label> <select
-											class="form-control" name="frequency">
-											<option value="">[[Once]]</option>
-											<option value="weekly">[[Weekly]]</option>
-											<option value="monthly">[[Monthly]]</option>
-											<option value="yearly">[[Yearly]]</option>
-										</select>
-									</div>
-								</div>
-							</div>
-
-
-							<div id="card-errors" class="donateformerror" role="alert"></div>
-
-
-							<div class="row">
-								<div class="col-md-6">
-									<div class="donate-secure " >
-										<i class="fas fa-lock"></i> [[Secure payment]]
-									</div>
-
-								</div>
-								<div class="col-md-6">
-										<div style=" margin: 0px auto;">
-										<a href="#" onclick='$("#payment-form").submit()' class="btn btn-success"><i class="fas fa-credit-card"></i> [[Check Out]]</a> 
+		
+		
+								<div id="card-errors" class="donateformerror" role="alert"></div>
+		
+		
+								<div class="row">
+									<div class="col-md-6">
+										<div class="donate-secure " >
+											<i class="fas fa-lock"></i> [[Secure payment]]
 										</div>
+		
+									</div>
+									<div class="col-md-6">
+											<div style=" margin: 0px auto;">
+											<a href="#" onclick='$("#payment-form").submit()' class="btn btn-success"><i class="fas fa-credit-card"></i> [[Check Out]]</a> 
+											</div>
+									</div>
 								</div>
-							</div>
+		
+								<input  type="hidden" name="field" value="collectionid" /> 
+								<input	type="hidden" name="collectionid.value"	value="$!librarycol.getId()" /> 
+								<input  type="hidden" name="collectionid" value="$!librarycol.getId()" /> 
+								<input	type="hidden" name="field" value="totalprice" /> 
+								<input	type="hidden" name="field" value="userid" /> 
+								<input	type="hidden" name="userid.value" value="$!user.getId()" />
+								<input	type="hidden" name="isdonation" value="true" />
+							#end
 
-
-
-							<input type="hidden" name="field" value="collectionid" /> <input
-								type="hidden" name="collectionid.value"
-								value="$librarycol.getId()" /> <input type="hidden"
-								name="collectionid" value="$librarycol.getId()" /> <input
-								type="hidden" name="field" value="totalprice" /> <input
-								type="hidden" name="field" value="userid" /> <input
-								type="hidden" name="userid.value" value="$user.getId()" />
-						#end
-
-						</form>
-					</div>
+					</form>
+				</div>
 	</div>
 	
 	<p style="text-align:center;padding-top:20px;"><strong>[[Or Use]] PayPal:</strong></p>
