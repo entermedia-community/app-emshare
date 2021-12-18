@@ -1,13 +1,17 @@
-<div class="card mx-auto" style="margin:0 40px 20px 40px;max-width:800px;text-align:left;">
   <div class="card-block" style="padding:20px;">
 
 #set( $searcher = $mediaarchive.getSearcher("librarycollection") )
 $context.putPageValue("searcher",$searcher)
-#if($canviewsettings)
-	$context.putPageValue("view", "librarycollection/agentedit")
-#else
-	$context.putPageValue("view", "librarycollection/edit")
+
+#set( $view = $context.getRequestParameter("view") )
+#if(!$view)
+	#if($canviewsettings)
+		#set( $view = "agentedit")
+	#else
+		#set( $view = "edit")
+	#end
 #end
+$context.putPageValue("view", "librarycollection/$view")
 $context.putPageValue("data", $librarycol)
 <form name="saveproject" enctype="multipart/form-data" id="saveproject"
 	 action="$applink/collective/edit/save.html" method="post">
@@ -21,14 +25,15 @@ $context.putPageValue("data", $librarycol)
 $pages.include("/$applicationid/components/xml/detaileditor4.html", $context)
 
 
+
+</form>
+</div>
+
   #if($canviewsettings)	
     <a class="btn btn-sm btn-danger" 
     data-confirm="[[Are you sure]]?" style="margin-righ:10px;" .
     href="$applink/collective/edit/delete.html?id=$librarycol.id&collectionid=$librarycol.id&catalogid=$searcher.catalogId&searchtype=$searcher.searchType&viewid=$viewid&viewpath=$viewpath&oemaxlevel=1" style="margin: 20px 20px 0 0;">[[Delete]]</a>
     #end
-
-</form>
-
 <script type="text/javascript">
 
 jQuery(document).ready(function()
@@ -40,5 +45,4 @@ jQuery(document).ready(function()
 });
 
 </script>
-  </div>
-</div>
+  
