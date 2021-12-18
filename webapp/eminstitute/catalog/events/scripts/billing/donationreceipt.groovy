@@ -18,15 +18,20 @@ public void init() {
 	
 	String appid = mediaArchive.getCatalogSettingValue("events_billing_notify_invoice_appid");
 	String emailbody = "Thank you for your donation.";
-	String subject = "Donation Receipt";
+	String subject = "Donation Receipt"; //Better Default Donation Text & Subject
 	
 	//get emailbody from collection
 	Data collection = mediaArchive.getData("librarycollection", context.getPageValue("collectionid"));
 	if (collection.getValue("donationemailtemplate")) {
 		emailbody = collection.getValue("donationemailtemplate");
 	}
+	if (collection.getValue("donationemailsubject")) {
+		subject = collection.getValue("donationemailsubject");
+	}
 	
 	context.putPageValue("receiptuser", user);
+	context.putPageValue("donor", user.getName());
+	context.putPageValue("amount", receipt.getValue("amount"));
 	context.putPageValue("mediaarchive", mediaArchive);
 	context.putPageValue("receipt", receipt);
 	context.putPageValue("payment", payment);
