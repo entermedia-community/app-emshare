@@ -28,7 +28,7 @@
 		#if( $caneditcollection)
 			<div style=" padding:6px; color:#888">
 				<i class="fas fa-info-circle"></i> [[Configure Goals on Project Settings]]<br>
-				<i class="fas fa-info-circle"></i>  <a href="$applink/collective/edit/editcollective.html?collectionid=$!collectionid&view=editdonations"
+				<i class="fas fa-cog"></i>  <a href="$applink/collective/edit/editcollective.html?collectionid=$!collectionid&view=editdonations"
 				class="emdialog" style="text-decoration: underline">[[Configure Donation Receipt Email]]</a>
 				</div>
 		#end
@@ -39,14 +39,13 @@
 	</div>
 	
 	#set( $donations = $mediaarchive.query("transaction").exact("collectionid",$collectionid).sort("paymentdateDown").search($context) )
+	#set( $n = $donations.setHitsPerPage(5))
 	<div class="sidebarbox" >
 	
 	<h4>
+		<div class="float-right ">$${currentTotal}</div>
+		<i class="fas fa-hand-holding-usd"></i> [[Donations]]
 		
-		<a class="emdialog float-right" style="font-size:.8em;" data-cancelsubmit="true" title="View All Donations" href="$applink/collective/donate/donationlist.html?collectionid=$librarycol.getId()">
-		$${currentTotal}</a>
-		
-			<i class="fas fa-hand-holding-usd"></i> [[Donations]]
 	</h4>	
 			#if( !$donations.isEmpty() )
 			<strong>[[Recent Donations]]</strong>
@@ -61,6 +60,12 @@
 						 <br>[[on]] $!context.getDateTime($transaction.paymentdate) 
 					</div>	
 				#end
+				#if( $caneditcollection)
+			<a style="text-decoration:underline;" 
+			title="[[View All Donations]]" 
+			href="$applink/collective/services/donations/index.html?collectionid=$librarycol.getId()"><i class="fas fa-cog"></i> [[View All]]
+		</a>
+		#end
 			#end
 	</div>
 
