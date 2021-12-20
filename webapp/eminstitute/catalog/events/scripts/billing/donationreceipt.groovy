@@ -29,17 +29,19 @@ public void init() {
 		subject = collection.getValue("donationemailsubject");
 	}
 	
-	context.putPageValue("receiptuser", user);
-	context.putPageValue("donor", user.getName());
-	context.putPageValue("amount", receipt.getValue("amount"));
-	context.putPageValue("mediaarchive", mediaArchive);
-	context.putPageValue("receipt", receipt);
-	context.putPageValue("payment", payment);
+	Map objects = new HashMap();
+
+	objects.put("receiptuser", user);
+	objects.put("donor", user.getName());
+	objects.put("amount", receipt.getValue("amount"));
+	objects.put("mediaarchive", mediaArchive);
+	objects.put("receipt", receipt);
+	objects.put("payment", payment);
 
 	WebEmail templateEmail = mediaArchive.createSystemEmailBody(user, emailbody);
 	templateEmail.setSubject(subject);
 	templateEmail.loadSettings(context);
-	templateEmail.send();
+	templateEmail.send(objects);
 	
 	log.info("Email sent to: "+user.getEmail());
 }
