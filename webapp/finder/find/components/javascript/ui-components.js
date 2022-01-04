@@ -616,6 +616,14 @@ uiload = function() {
 		theform.trigger("submit");
 	});
 	
+	lQuery(".submitform-oehtml").livequery('click',
+			function(e) {
+				var theform = $(this).closest('form');
+				theform.data("readytosubmit","true"); 
+				theform.find(".oehtmlinput").trigger("blur");
+				e.preventDefault();
+			});
+	
 	lQuery(".selectsubmitform").livequery("change", function(e) {
 		e.preventDefault();
 		var theform = $(this).closest('form');
