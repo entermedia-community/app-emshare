@@ -13,8 +13,11 @@ $context.putPageValue("searcher",$searcher)
 #end
 $context.putPageValue("view", "librarycollection/$view")
 $context.putPageValue("data", $librarycol)
-<form name="saveproject" enctype="multipart/form-data" id="saveproject"
-	 action="$applink/collective/edit/save.html" method="post">
+<form name="saveproject" 
+	enctype="multipart/form-data" 
+	id="saveproject"
+	action="$applink/collective/edit/save.html"
+	method="post">
 
 <input type="hidden" name="save" value="true" />
 <input type="hidden" name="searchtype" value="librarycollection" />
@@ -24,16 +27,24 @@ $context.putPageValue("data", $librarycol)
  
 $pages.include("/$applicationid/components/xml/detaileditor4.html", $context)
 
-
+	<a class="btn btn-sm btn-primary submitform-oehtml ">[[Save]]</a>
+  #if($canviewsettings && ($view == "agentedit" || $view == "edit"))	
+    <a class="btn btn-sm btn-danger confirm"
+    style="margin: 0px 0 0 10px;" 
+    data-confirm="[[Are you sure]]?" 
+    href="$applink/collective/edit/delete.html?id=$librarycol.id&collectionid=$librarycol.id&catalogid=$searcher.catalogId&searchtype=$searcher.searchType&viewid=$viewid&viewpath=$viewpath&oemaxlevel=1" 
+    >[[Delete]]</a>
+    #end
+     <button id="closebutton" 
+     	type="button" 
+     	class="btn btn-sm btn-secondary" 
+     	style="margin: 0px 0 0 10px;"
+     	data-dismiss="modal">[[Cancel]]</button>
 
 </form>
 </div>
 
-  #if($canviewsettings)	
-    <a class="btn btn-sm btn-danger" 
-    data-confirm="[[Are you sure]]?" style="margin-righ:10px;" .
-    href="$applink/collective/edit/delete.html?id=$librarycol.id&collectionid=$librarycol.id&catalogid=$searcher.catalogId&searchtype=$searcher.searchType&viewid=$viewid&viewpath=$viewpath&oemaxlevel=1" style="margin: 20px 20px 0 0;">[[Delete]]</a>
-    #end
+    
 <script type="text/javascript">
 
 jQuery(document).ready(function()
