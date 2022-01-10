@@ -613,6 +613,7 @@ uiload = function() {
 	lQuery(".submitform").livequery("click", function(e) {
 		e.preventDefault();
 		var theform = $(this).closest('form');
+		console.log("Submit Form " + theform);
 		theform.trigger("submit");
 	});
 	

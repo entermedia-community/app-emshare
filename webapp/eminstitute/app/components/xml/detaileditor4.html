@@ -1,0 +1,87 @@
+#set( $xmledithome = $context.getPageProperty("xmledithome"))
+#set( $readonly = $context.getRequestParameter("detailsreadonly"))
+#ifnull($readonly)
+	#set( $readonly = "false" )
+#end
+#set( $alwaysshow = $context.getRequestParameter("alwaysshow"))
+#set( $multiedit = $context.getRequestParameter("multiedit"))
+#ifnull($multiedit)
+	#set( $multiedit = "false")
+#end
+
+#if ( $multiedit == "true" )
+	#set( $multiedit = true)
+#else
+	#set( $multiedit = false)
+#end
+$context.putPageValue("multiedit",$multiedit)
+$context.putPageValue("longform",false)
+
+#if(!$view)
+	#if($viewid)
+		#set($view = "${searcher.searchType}/${viewid}")
+	#end
+#end
+
+##We need 3 things passed in: $searcher, $view, $data
+#if ($view)
+	#if( $context.getUserProfile() )
+		#set ($details = $searcher.getDetailsForView($view, $context.getUserProfile()))
+	#end
+	#if( !$details)
+		#set ($details = $searcher.getDetailsForView($view)) 
+	#end
+	
+	#if( !$details)
+		[[No details available for this view.  Please configure your view settings.]]
+
+	#end
+
+#else
+	##leagacy check. We used to pass in the $details
+	#if( !$details)
+	#set ($details = $searcher.getPropertyDetails())
+	#end
+#end	
+
+  #set ($mode = $user.get("oe_edit_mode"))
+   #if($viewid)
+   #if($mode && ($mode == "debug" || $mode == "editing" ))
+		<span class="widget-header-edit">
+		<a class="ir emdialog" data-autoclose="false" href="$apphome/views/settings/lists/datamanager/views/indexdialog.html?viewpath=$view&searchtype=$searcher.searchType&viewid=$viewid">
+		[[Edit]]
+		</a>
+		</span>
+	#end
+	#end
+
+  
+	
+<div class="oeinputform detaileditor detaileditor-2cols">
+	<div id="allerrors"></div>
+
+ #foreach( $detail in $details )
+ 
+	#set( $val = false)
+	#set( $target = "${detail.id}.value")
+	#set( $val = false)
+	#set( $val = $context.getRequestParameter($target))		
+	#if( !$val)
+		#set( $val = $!{data.get($detail.getId())} )
+	#end
+
+
+	$!context.putPageValue("detail",$detail)
+	$!context.putPageValue("val",$val)
+ 	<div class="form-group row no-gutters">
+    <label for="exampleTextarea" class="col">$detail.getText($context)</label>
+    #if(!$fieldcolumnsize)
+    	#set($fieldcolumnsize = 10)
+    #end
+    <div class="col-$fieldcolumnsize" style="padding-left:10px;">
+    $pages.include("$xmledithome/detailedit.html", $context)
+    </div>
+    </div>	
+	
+#end
+</div>
