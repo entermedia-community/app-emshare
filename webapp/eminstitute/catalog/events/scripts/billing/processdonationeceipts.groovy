@@ -59,8 +59,8 @@ private void sendReceipt(MediaArchive mediaArchive, Searcher transactionSearcher
 			objects.put("mediaarchive", mediaArchive);
 			objects.put("receipt", receipt);
 			//objects.put("receiptuser", user);
-			objects.put("donor", receipt.getValue("name"));
-			objects.put("amount", receipt.getValue("amount"));
+			objects.put("donor", (String) receipt.getValue("name"));
+			objects.put("amount", (String) receipt.getValue("amount"));
 			if (collection != null) {
 				objects.put("organization", collection.getName());
 			}

@@ -41,8 +41,8 @@ public void init() {
 	Map objects = new HashMap();
 
 	objects.put("receiptuser", user);
-	objects.put("donor", user.getName());
-	objects.put("amount", payment.getValue("amount"));
+	objects.put("donor", (String) user.getName());
+	objects.put("amount", (String) payment.getValue("amount"));
 	objects.put("mediaarchive", mediaArchive);
 	objects.put("payment", payment);
 	objects.put("organization", collection.getName());
