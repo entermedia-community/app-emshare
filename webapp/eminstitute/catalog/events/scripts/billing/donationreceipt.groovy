@@ -47,10 +47,10 @@ public void init() {
 	objects.put("payment", payment);
 	objects.put("organization", collection.getName());
 
-	WebEmail templateEmail = mediaArchive.createSystemEmailBody(user, emailbody);
+	WebEmail templateEmail = mediaArchive.createSystemEmailBody(user);
 	templateEmail.setSubject(subject);
 	templateEmail.loadSettings(context);
-	templateEmail.send(objects);
+	templateEmail.send(emailbody, objects);
 	
 	log.info("Email sent to: "+user.getEmail());
 }

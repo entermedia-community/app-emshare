@@ -9,7 +9,7 @@ import org.openedit.users.User
 
 public void init() {
 	MediaArchive mediaArchive = context.getPageValue("mediaarchive");
-	Searcher transactionSearcher = mediaArchive .getSearcher("transaction");
+	Searcher transactionSearcher = mediaArchive.getSearcher("transaction");
 	//Searcher receiptSearcher = mediaArchive .getSearcher("donationreceipt");
 	
 	sendDonationReceipt(mediaArchive, transactionSearcher);
@@ -37,15 +37,15 @@ private void sendReceipt(MediaArchive mediaArchive, Searcher transactionSearcher
 			Data collection = mediaArchive.getData("librarycollection", receipt.getValue("collectionid"));
 			if(collection != null) {
 				if (collection.getValue("donationemailtemplate")) {
-					emailbody = collection.getValue("donationemailtemplate");
+					emailbody = (String) collection.getValue("donationemailtemplate");
 				}
 				if (collection.getValue("donationemailsubject")) {
-					subject = collection.getValue("donationemailsubject");
+					subject = (String) collection.getValue("donationemailsubject");
 				}
 			}
 			//default emailbody+subject
 			if (emailbody.equals("")) {
-				emailbody = mediaArchive.getCatalogSettingValue("donation_email_body");
+				emailbody = (String) mediaArchive.getCatalogSettingValue("donation_email_body");
 			}
 			if (emailbody.equals("")) {
 				emailbody = "Thank you for your Donation.";
@@ -65,13 +65,14 @@ private void sendReceipt(MediaArchive mediaArchive, Searcher transactionSearcher
 				objects.put("organization", collection.getName());
 			}
 		
-			WebEmail templateEmail = mediaArchive.createSystemEmailBody(receiptemail, emailbody);
+			WebEmail templateEmail = mediaArchive.createSystemEmailBody(receiptemail);
 			templateEmail.setSubject(subject);
 			templateEmail.loadSettings(context);
-			templateEmail.send(objects);
+			templateEmail.send(emailbody, objects);
 			
 			receipt.setValue("receiptstatus", "sent");
 			transactionSearcher.saveData(receipt);
+			
 			log.info("Email sent to: " + receiptemail);
 		}
 	}
