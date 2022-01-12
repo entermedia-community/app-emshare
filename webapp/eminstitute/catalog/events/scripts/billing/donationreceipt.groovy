@@ -12,13 +12,13 @@ public void init() {
 	Searcher transactionSearcher = mediaArchive .getSearcher("transaction");
 	
 	Data payment = context.getPageValue("payment");
-	Data receipt = context.getPageValue("receipt");
+	//Data receipt = context.getPageValue("receipt");
 	
 	User user = context.getUser();
 	
 	String appid = mediaArchive.getCatalogSettingValue("events_billing_notify_invoice_appid");
-	String emailbody = "Thank you for your donation.";
-	String subject = "Donation Receipt"; //Better Default Donation Text & Subject
+	String emailbody = "";
+	String subject = "";
 	
 	//get emailbody from collection
 	Data collection = mediaArchive.getData("librarycollection", context.getPageValue("collectionid"));
@@ -28,15 +28,24 @@ public void init() {
 	if (collection.getValue("donationemailsubject")) {
 		subject = collection.getValue("donationemailsubject");
 	}
+	if (emailbody.equals("")) {
+		emailbody = mediaarchive.getCatalogSettingValue("donation_email_body");
+	}
+	if (emailbody.equals("")) {
+		emailbody = "Thank you for your Donation.";
+	}
+	if (subject.equals("")) {
+		subject =  "Donation Receipt at " + collection.getName(); 
+	}
 	
 	Map objects = new HashMap();
 
 	objects.put("receiptuser", user);
 	objects.put("donor", user.getName());
-	objects.put("amount", receipt.getValue("amount"));
+	objects.put("amount", payment.getValue("amount"));
 	objects.put("mediaarchive", mediaArchive);
-	objects.put("receipt", receipt);
 	objects.put("payment", payment);
+	objects.put("organization", collection.getName());
 
 	WebEmail templateEmail = mediaArchive.createSystemEmailBody(user, emailbody);
 	templateEmail.setSubject(subject);

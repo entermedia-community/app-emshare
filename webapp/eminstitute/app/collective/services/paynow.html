@@ -12,7 +12,7 @@
 
 <h1>[[Check Out]]</h1>
 #if($mediaarchive.getCatalogSettingValue("productionmode") == "false")
-<div class="alert alert-warning">Site is in test mode. Credit card is 4242 4242 4242 4242 any expiry. Add your keys to
+<div class="alert alert-warning">Site is in test mode. Credit card is 4242 4242 4242 4242 any expiration date. Add your keys to
     catalog settings and switch to production mode to take credit cards.</div>
 #end
 
@@ -32,6 +32,8 @@
         </div>
     </div>
     <div class="card-body" style="padding:20px 21px;">
+    
+    
         <div class="row">
 
             <div class="col-sm-8">
@@ -49,7 +51,7 @@
                                 <th class="purchase_heading" align="left">
                                     <p class="f-fallback">Description</p>
                                 </th>
-                                <th class="purchase_heading" align="right">
+                                <th class="purchase_heading" style="text-align: right">
                                     <p class="f-fallback">Amount</p>
                                 </th>
                             </tr>
@@ -57,14 +59,17 @@
                             #foreach ($product in $products)
                             <tr>
                                 <td>$product.productquantity</td>
-                                <td><span>$mediaarchive.getProductName($product.productid)</span></td>
-                                <td><span>$currency $!context.roundDouble($product.productprice, 2)</span></td>
+                                <td>
+                                	<div>$mediaarchive.getProductName($product.productid)</div>
+									<div style="font-size: 0.9em;">$!mediaarchive.text($prod.getValue("productdescription"), $invoice.id)</div>
+                                </td>
+                                <td  style="text-align: right"><span>$currency $!context.roundDouble($product.productprice, 2)</span></td>
                             </tr>
                             #set($lastproduct = $mediaarchive.getProductById($product.productid))
                             #end
                             <tr>
                                 <td class="text-right" colspan="2"><b>Total</b></td>
-                                <td><b>$currency $!context.roundDouble($invoice.getValue("totalprice"), 2)</b></td>
+                                <td  style="text-align: right"><b>$currency $!context.roundDouble($invoice.getValue("totalprice"), 2)</b></td>
                             </tr>
                         </table>
                     </div>
