@@ -10,10 +10,12 @@
 	<div class="" style="margin-left:10px;">
 	#set($tags = $mediaarchive.getList("communitytag"))
 	#foreach( $tag in $tags)
+			#set( $projects = $mediaarchive.query("librarycollection").exact("communitytag",$tag.getId()).search() )
+			#if( !$projects.isEmpty() )
+			
 			<div class="">
 			<a href="$tag.domain"><h3>$tag.getName()</h3>  </a>
 						
-				#set( $projects = $mediaarchive.query("librarycollection").exact("communitytag",$tag.getId()).search() )
 				<div style="padding-left:10px;">
 				#foreach( $project in $projects.getPageOfHits() )
 					$context.putPageValue("collective",$project)
@@ -21,7 +23,8 @@
 				#end
 				</div>
 				<div style="clear:both"></div>
-			</div>		
+			</div>	
+			#end	
 	#end
 	
 	</div>
