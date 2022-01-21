@@ -10,17 +10,15 @@
 		<a class="navbar-brand" href="${context.siteRoot}/	" title="Open Institute"> 
 		<img style="height: 50px;" src="$applink/theme/oi/OI.png" alt="Open Institute">
 		</a>
-		#if( $library)
+		#if( $communitytag)
 			<ul class="navbar-nav ml-auto">
 				<li class="nav-item">
-			#if ($library.thumbnail)
-				#set( $thumbnail = $mediaarchive.getAsset($library.thumbnail) )
+			#if ($communitytag.communityimage)
+				#set( $thumbnail = $mediaarchive.getAsset($communitytag.communityimage) )
 			#end
 			
-				#if( $library.communitysubdomain)
-					#set( $href="//${library.communitysubdomain}$applink/")
-				#else
-				 	#set( $href="$applink/organization/projects/$library.getId()/#dash($library.name).html")
+				#if( $communitytag.domain)
+					#set( $href="//${communitytag.domain}$applink/")
 				#end
 			
 				<a  class="nav-link"  href="$href">						
@@ -31,7 +29,7 @@
 					</h1>
 				#else
 					<h1 class="navcommunity">
-						#esc($library.name)
+						#esc($communitytag.name)
 						</h1> 
 				#end	
 				 
