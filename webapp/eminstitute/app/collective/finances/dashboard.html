@@ -1,0 +1,34 @@
+<div class="container">
+	<div class="row">
+		<div class="col" style="padding-top:20px;">
+			    <h1>[[Profit and Loss]]</h1>
+				<h3>Net Income</h3>
+#set( $totals = $financeManager.getTotalIncomesByDateRange($daterange) )
+<ul>
+#foreach( $total in $totals)
+	<li>$total.getCurrency() :  $financeManager.getTotalExpenseByCurrency($total.getCurrency(),$daterange) - $total.getAmount() 
+			=  $financeManager.getNetIncomeByCurrency($total.getCurrency(),$daterange)
+	</li>
+#end
+</ul>
+	<h3>Income</h3> <a href="#">Add New Income</a>
+
+#set( $incomebytype = $financeManager.getIncomeTypesByDateRange($daterange) )
+<ul>
+#foreach( $bytype in $incomebytype)
+	<li>$bytype.getCurrency() = $bytype.getIncomeType() $bytype.getAmount()</li>
+#end
+</ul>
+				<h3>Expense</h3>   <a href="#">Add New Expense</a>
+#set( $expensebytype = $financeManager.getExpenseTypesByDateRange($daterange) )
+<ul>
+#foreach( $bytype in $expensebytype)
+	<li>$bytype.getCurrency() = $bytype.getExpenseType() $bytype.getAmount()</li>
+#end
+</ul>
+
+	</div>
+</div>
+			
+			
+			
