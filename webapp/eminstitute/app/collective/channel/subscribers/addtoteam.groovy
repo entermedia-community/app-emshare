@@ -44,18 +44,18 @@ public void init()
 		teamuser = archive.getUserManager().createUser(null, password);
 		teamuser.setFirstName(firstName);
 		teamuser.setLastName(lastName);
-		teamuser.setEmail(email.trim().toLowerCase());
+		teamuser.setEmail(email);
 		teamuser.setEnabled(true);
 		archive.getUserManager().saveUser(teamuser);
 		teamuserid = teamuser.getId();
 	}
 	
 	if (teamuserid == null) {
-		log.info("Error Adding user to team " + collectionid);
+		log.info("Error adding user: " + email + " to team " + collectionid);
 		return;
 	}
 	
-	log.info("Adding user to team " + teamuserid);
+	
 	
 	
 	Data subscription = archive.query("librarycollectionusers").exact("followeruser", teamuserid).exact("collectionid", collectionid).searchOne();
@@ -103,7 +103,7 @@ public void init()
 	
 	templatemail.send(objects);
 			
-	log.info("Sent email " + teamuserid);
+	log.info("User: " + email + " Added to team: " + teamuserid);
 }
 
 private String getSiteRoot() {
