@@ -49,15 +49,27 @@
 				
 	
 				<div class="taskstatus goalstatus-$!task.taskstatus">
-					<a href="$edittask"
-					id="task$task.getId()"
+					
+					<a 
+					
+					#if($user)
+						id="task$task.getId()"
+						href="$edittask"
+						title="[[Edit Task]]"
+					#else
+						href="#"
+						title="[[Task]]"
+					#end
 					data-focuson="$task.id"
 					data-width="900"
-					class="taskedit taskedit-$!{task.taskstatus} ajax" 
-					data-targetdiv="taskrow$task.getId()" data-oemaxlevel="1" title="[[Edit Task]]" >
+					class=" taskedit taskedit-$!{task.taskstatus} #if($user)ajax#end " 
+					data-targetdiv="taskrow$task.getId()" 
+					data-oemaxlevel="1" 
+					 >
 					##<i class="fas fa-pencil-alt"></i>
 					$!mediaarchive.getData("taskstatus", $task.taskstatus)
 					</a>
+					
 					##set( $comment = $mediaarchive.query("goaltaskcomments").exact("goaltaskid",$task.id).match("commenttext","*").sort("dateDown").searchOne() )
 				</div>
 				<div class="clearfix"></div>
@@ -67,7 +79,7 @@
 
 	<div class="clearfix"></div>	
 						
-	#if( ( $canviewsettings || $caneditcollection)  && $goal.collectionid)
+	#if($user && ( $canviewsettings || $caneditcollection)  && $goal.collectionid)
 
 	<a class="appendgoalbutton"
 		title="[[Add Note]]"
