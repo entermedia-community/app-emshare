@@ -3,7 +3,7 @@
 #set( $goallink = "$applink/collective/goals/editgoalpanel.html?id=${goal.id}&collectionid=$goal.collectionid&hitssessionid=$!{goalhits.getSessionId()}&goalfolder=$!goalfolder")
 
 <div>
-#if($user)
+#if($caneditcollection)
 <a data-cancelsubmit="true" 
     data-hidefooter="true" 
     href="$goallink"
@@ -28,7 +28,7 @@ $pages.include("$apphome/collective/goals/search/goaltasks.html?indialog=true&on
 </div>
 		
 
-#if($user && $goal.projectstatus != "completed" && $goal.projectstatus != "closed")
+#if($caneditcollection && $goal.projectstatus != "completed" && $goal.projectstatus != "closed")
 <div class="goalcloseout text-right">
 	<a href="$applink/collective/community/chatterbox/closegoal.html?goalid=$goal.id" 
 		data-targetdiv="$target" 
