@@ -1,5 +1,6 @@
 #set( $users = $goal.getValues("userlikes"))
 <div id="like${goal.id}" class="goallike" >
+	#if($user)
 	  <a href="$applink/collective/goals/like.html?goalid=${goal.id}"
 	  	title="[[Make Priority]]" 
 		class="editgoallike ajax" targetdiv="like$goal.id" 
@@ -18,6 +19,13 @@
 	   	#else
 	   		>
 	   	#end	
-	  				</a>
+	  </a>
+	#else
+		<i class="fas fa-user"></i>
+	   		#foreach($us in $users)
+	   			#if( $foreach.count > 1)|#end $!mediaarchive.getUser($us).getAnonNickName() 
+	   		#end
+	
+	#end
 	  				
 </div> 
