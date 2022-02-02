@@ -1,7 +1,0 @@
-#set($existinglevel = $context.getRequestParameter("ticketlevel"))
-#if( !$existinglevel)
-	#set($existinglevel = "1")
-#end
-#set( $hits = $mediaarchive.query("projectgoal").exact("ticketlevel",$existinglevel).orgroup("projectstatus","open|critical").sort("creationdateDown").search())
-$context.putPageValue("hits",$hits)
-$pages.include("./search.html",$context)
