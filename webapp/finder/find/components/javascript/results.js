@@ -320,7 +320,7 @@ jQuery(document).ready(function(url,params)
 	}
 	hideOverlayDiv = function(inOverlay)
 	{
-		
+		//debugger;
 		disposevideos();
 		stopautoscroll = false;
 		$("body").css({ overflow: 'auto' })
@@ -335,7 +335,9 @@ jQuery(document).ready(function(url,params)
 		}
 		else
 		{
-			gridResize();
+			$(document).trigger("domchanged");
+			$(window).trigger( "resize" );
+			//gridResize();
 		}
 		var lastscroll = getOverlay().data("lastscroll");
 		//remove Asset #hash
