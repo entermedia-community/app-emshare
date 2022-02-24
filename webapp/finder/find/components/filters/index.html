@@ -93,32 +93,40 @@
 					</span> 
 					[[Sort]]
 			</div>
-			<div class="filter-box-options" id="filterboxsorting" #if($minimizedfilterbox) style="display: none;" #end>
+			<div class="filter-box-options" 
+				 id="filterboxsorting" #if($minimizedfilterbox) style="display: none;" #end>
 				#set ($alldetails = $searcher.getUserPropertyDetails() )
 				<div style="width:145px; display: inline-block;">
 				<select data-sortup="$hits.searchQuery.isSortUp()" 
 						class="form-control form-control-sm select2 autosubmited" 
 						name="sortby" 
-						id="$moduleidsortby" 
+						id="${moduleid}sortby" 
 						data-allowclear="false" 
 						style="" >
 					#foreach( $detail in $alldetails)
 						
 						 #if($hits.searchQuery.isSortUp())
 						 	#set($value = "${detail.id}Up")
+						 	#set($currentSortOrder = "up")
 						 #else
 						 	#set($value = "${detail.id}Down")
+						 	#set($currentSortOrder = "down")
 						 #end
 						<option data-detailid="${detail.id}" 
 								value="$value" 
 								#if($hits.isSortedBy($detail.id)) 
 								selected="selected" 
+									#set($currentSort = $detail.getText($context))
 								#end>$detail.getText($context)</option>
 					#end
 				</select>
 				</div>
 				<div class=" float-right" >
-				<i class="filterschangesort fas #if($hits.searchQuery.isSortUp()) fa-sort-alpha-up #else fa-sort-alpha-down #end" style="padding-top:5px"></i></div>
+				<a href="#" class="filterschangesort" title='[[Sort by]] $currentSort #if($currentSortOrder == "up") Down #else Up #end'>
+				<i class=" fas #if($hits.searchQuery.isSortUp()) fa-sort-alpha-up #else fa-sort-alpha-down #end" style="padding-top:5px"></i>
+				</a>
+				</div>
+				
 			</div>
 		</div>
 		</div>

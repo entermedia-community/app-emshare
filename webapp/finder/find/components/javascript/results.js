@@ -92,21 +92,24 @@ jQuery(document).ready(function(url,params)
 				
 			});
 	
-	lQuery(".filterschangesort").livequery("click", function(){
+	lQuery(".filterschangesort").livequery("click", function(e){
+		//debugger;
+		e.preventDefault();
 		var dropdown = $("#assetsortby");
 		var up = dropdown.data("sortup");
 		var selected = dropdown.find(":selected");
 		var id = selected.data("detailid");
+		var icon = $(this).find("i");
 		if(up){
 			selected.attr("value", id + "Down");
-			$(this).removeClass("fa-sort-alpha-up");
-			$(this).addClass("fa-sort-alpha-down");
+			icon.removeClass("fa-sort-alpha-up");
+			icon.addClass("fa-sort-alpha-down");
 			
 			dropdown.data("sortup", false);
 		} else{
 			selected.attr("value", id + "Up");
-			$(this).removeClass("fa-sort-alpha-down");
-			$(this).addClass("fa-sort-alpha-up");
+			icon.removeClass("fa-sort-alpha-down");
+			icon.addClass("fa-sort-alpha-up");
 			dropdown.data("sortup", true);
 		}
 		
