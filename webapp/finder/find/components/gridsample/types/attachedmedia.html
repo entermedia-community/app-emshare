@@ -20,7 +20,8 @@
 		$context.putPageValue("sourcepath", $hit.sourcepath )
 		
 		#set($sourcepath = $hit.sourcepath)
-		##set($click = "$siteroot$viewerlink?hitssessionid=${assetshits.getSessionId()}&assetid=${hit.id}")
+		
+				##set($click = "$siteroot$viewerlink?hitssessionid=${assetshits.getSessionId()}&assetid=${hit.id}")
 		
 	  	#if(!$rendertype || $type =="rendertype")
 	 		#set( $rendertype = "mime" )
@@ -39,42 +40,46 @@
 		    #end
 		#end
 	 	 <div class="grid-attachedmedia assetdraggable" data-assetid="$hit.id"> 
-		 	<a class="stackedplayer imagearea" id="clickid${hit.id}" data-assetid="$hit.id" href="#" title="$!title">
+		 	<a class="stackedplayer imagearea" 
+		 		id="clickid${hit.id}" 
+		 		data-assetid="$hit.id" 
+		 		href="#" 
+		 		title="$!title">
 			$pages.include("$componenthome/results/thumbnails/${rendertype}.html", $context)
 			</a>
 		</div>
 	#end
 	<div class="clearfix"></div>
-
 #end
+
 <div class="entity-assets-info">
+	#set($targetdiv = "applicationmaincontent")
+	
 	#if($assetshits.size()>0)
 		#if($moduleid=="librarycollection")
 			#if(!$rootcategory)
 				#set($rootcategory = $context.getRequestParameter("rootcategory"))
 			#end
 			#set($link = "$siteroot$applink/views/modules/librarycollection/showcategory.html?hitssessionid=$!{assetshits.sessionId}&nodeID=$rootcategory&clearfilters=true")
-			#set($oemaxlevel = "4")
-			#set($link = "$link&sidebarcomponent=categories")
+			#set($oemaxlevel = "3")
+			#set($link = "$!link&sidebarcomponent=categories")
 			#set($targetdiv = "applicationcontainer")
 		#elseif($moduleid=="faceprofilegroup")
 			#set($link = "$siteroot$applink/views/modules/asset/faceprofilegroup.html")
 			#set($link = "$link?faceprofilegroupid=$!entityid&clearfilters=true")
 			#set($oemaxlevel = "2")
-			#set($targetdiv = "applicationmaincontent")
 		#else
 			#set($link = "$siteroot$applink/views/modules/asset/index.html")
-			#set($link = "$link?hitssessionid=$!{assetshits.sessionId}&field=$moduleid&operation=matches&${moduleid}.value=$!entityid&clearfilters=true")
+			#set($link = "$link?hitssessionid=$!{assetshits.sessionId}&field=$!moduleid&operation=matches&${moduleid}.value=$!entityid&clearfilters=true")
 			#set($oemaxlevel = "1")
-			#set($targetdiv = "applicationmaincontent")
 		#end
 		
 		
 		[[Found]]: <a href="$link" 
-						class="ajax" 
-						data-targetdivinner="$targetdiv" 
+						class="ajax"
+						data-oemaxlevel="$!oemaxlevel" 
+						data-targetdivinner="$!targetdiv" 
 						data-closedialog="true"
-						data-oemaxlevel="$!oemaxlevel"
 						data-updateurl="true"
 						data-closemediaviewer="true">$assetshits.size() #if ($assetshits.size()==1) [[asset]] #else [[assets]] #end</a>
 		
