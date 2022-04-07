@@ -13,7 +13,7 @@ function chatterbox() {
 	}	
 	
 	connect();
-    keepAlive(); //this should be here so it doesn't keep getting requeued.
+    keepAlive(); // this should be here so it doesn't keep getting requeued.
     
 
 	lQuery(".chatter-send").livequery("click", function(){
@@ -28,7 +28,7 @@ function chatterbox() {
 	    if(chatconnection) {
 		    if(chatconnection.readyState === chatconnection.CLOSED  ){
 		    	connect();
-		    	//IF we do a reconnect render the whole page
+		    	// IF we do a reconnect render the whole page
 		    }
 		    var toggle = button.data("toggle");
 		    if(toggle == true){
@@ -39,7 +39,7 @@ function chatterbox() {
 			chatconnection.send(json);
 		    jQuery("#chatter-msg").val("");
 		    
-		    //scroll down, delay a little?
+		    // scroll down, delay a little?
 		    scrollToChat();
 			
 			}
@@ -49,7 +49,7 @@ function chatterbox() {
 	lQuery('.chatter-text').livequery("keydown", function(e){
 	    if(e.keyCode == 13 && !e.shiftKey)
 	    {
-	    	//jQuery("#chatter-msg").val("");
+	    	// jQuery("#chatter-msg").val("");
 	    	e.preventDefault();
 			var button = jQuery('button[data-command="messagereceived"]');		    	
 	    	button.trigger("click");
@@ -67,7 +67,7 @@ function chatterbox() {
 	
 	lQuery('button[data-command="messagereceived"]').livequery("click", function(e)
 	{
-		//jQuery("#chatter-msg").val("");
+		// jQuery("#chatter-msg").val("");
 	});
 
 	lQuery(".chatter-save").livequery("click", function(e){
@@ -78,8 +78,9 @@ function chatterbox() {
 		var chatdiv = form.find(".chatter-msg-edit");
 		var text = chatdiv.html();
 		form.find(".chatter-msg-input").val(text);
-		/*var button = jQuery('submit');		    	
-    	button.trigger("#submit");*/
+		/*
+		 * var button = jQuery('submit'); button.trigger("#submit");
+		 */
 		form.trigger("submit");
 		
 	});
@@ -133,7 +134,7 @@ function connect() {
     
     var url = "/entermedia/services/websocket/org/entermediadb/websocket/chat/ChatConnection?sessionid=" + tabID + "&userid=" + userid;
     
-  //Get the channel
+  // Get the channel
     var channel = jQuery(".chatterbox").data("channel");
     if (channel != null) {
     	url = url + '&channel='+channel;
@@ -149,13 +150,13 @@ function connect() {
        
     chatconnection.onmessage = function(event) {
     	
-    	//var app = jQuery("#application");
-    	//var apphome = app.data("home") + app.data("apphome");
+    	// var app = jQuery("#application");
+    	// var apphome = app.data("home") + app.data("apphome");
     	
     	console.log("The app " + app);
     	
         var message = JSON.parse(event.data);
-        console.log(message);
+        //console.log(message);
         
         var channel = message.channel;
         var id = message.messageid;
@@ -185,14 +186,17 @@ function connect() {
         
         registerServiceWorker();
         
-        /*Check if you are the sender, play sound and notify. "message.topic != message.user" checks for private chat*/
+        /*
+		 * Check if you are the sender, play sound and notify. "message.topic !=
+		 * message.user" checks for private chat
+		 */
         var user = app.data("user");
         
         if(message.user != user){
         	
         	play();
         	
-        	/*Desktop notifications - mando*/
+        	/* Desktop notifications - mando */
 		    function showNotification() 
 			{
 				const notification = new Notification(message.name + " in " + message.topic, {
@@ -204,7 +208,7 @@ function connect() {
 				
 			}
 			
-			/*Check para permissions and ask.*/ 
+			/* Check para permissions and ask. */ 
 			if (Notification.permission === "granted") {
 				showNotification();
 			} else if (Notification.permission !== "denied") {
@@ -258,7 +262,7 @@ function keepAlive() {
     	var command = new Object();
     	command.command = "keepalive";
     	
-    	var userid = jQuery(".chatterbox").data("user"); //TODO: Use app?
+    	var userid = jQuery(".chatterbox").data("user"); // TODO: Use app?
     	command.userid =  userid;
     	
     	var chatter = jQuery('.chatterbox').data("channel");
@@ -309,7 +313,7 @@ function isPushNotificationSupported() {
 	}
 
 function createNotificationSubscription() {
-	  //wait for service worker installation to be ready, and then
+	  // wait for service worker installation to be ready, and then
 	  return navigator.serviceWorker.ready.then(function(serviceWorker) {
 	    // subscribe and return the subscription
 	    return serviceWorker.pushManager
