@@ -529,6 +529,11 @@ uiload = function() {
 		                	}
 		                }
 		                
+		                //experimental
+		                if(form.data("onsuccessreload")) {
+		                	document.location.reload(true)
+		                }
+		                
 		                if (typeof global_updateurl !== "undefined" && global_updateurl == false) {
 		        			//globaly disabled updateurl
 		        		}
