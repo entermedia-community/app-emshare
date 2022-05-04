@@ -1,3 +1,5 @@
+
+	
 jQuery(document).ready(function(url,params) 
 { 
 	var appdiv = $('#application');
@@ -1121,6 +1123,10 @@ var stopautoscroll = false;
 
 checkScroll = function() 
 {
+	var appdiv = $('#application');
+	var siteroot = appdiv.data('siteroot') + appdiv.data('apphome');
+	var componenthome = appdiv.data('siteroot') + appdiv.data('componenthome');
+	
 	var grid = $(".masonry-grid");
 	if (grid== "undefined" || grid.data("singlepage")==true) {
 		return;
