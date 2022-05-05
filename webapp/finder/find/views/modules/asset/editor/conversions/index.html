@@ -17,7 +17,7 @@
 	#set($imgurl="$mediaurl?_=$mathutil.getRandomValue(9999)")
 	
 	<div class="text-center">
-	<img src="$assetthpath" alt="$title" style="max-width: 200px; max-height: 200px" />
+	<img src="$assetthpath?cache=false" alt="$title" style="max-width: 200px; max-height: 200px" />
 	</div>
 
 #if($candownload)	
@@ -169,22 +169,22 @@ $context.putPageValue("results", $results)
 		
 		<td>
 		<div style="position:relative">
-		##ACTIONS
-		#set($isready = $conversionUtil.isConvertPresetReady($catalogid,$asset.id,$asset.sourcePath, $result.id))
-		
-		
-		
-		#if($isready)
-			##SHARE
-			$pages.include("$apphome/views/modules/asset/editor/conversions/share.html", $context)
-		#else
-			#set($notready = true)
-		#end
-		
-		
-		#set($mediaurl = "$siteroot/$mediadbappid/services/module/asset/downloads/preset/$asset.sourcepath/$presetdata.generatedoutputfile")	  
-			#set($previewurl="$siteroot$apphome/components/asseteditor/preview.html?previewimg=$mediaurl")
+			##ACTIONS
+			#set($isready = $conversionUtil.isConvertPresetReady($catalogid,$asset.id,$asset.sourcePath, $result.id))
 			
+			
+			
+			#if($isready)
+				##SHARE
+				$pages.include("$apphome/views/modules/asset/editor/conversions/share.html", $context)
+			#else
+				#set($notready = true)
+			#end
+			
+			
+			#set($mediaurl = "$siteroot/$mediadbappid/services/module/asset/downloads/preset/$asset.sourcepath/$presetdata.generatedoutputfile")	  
+			#set($previewurl="$siteroot$apphome/components/asseteditor/preview.html?previewimg=$mediaurl")
+				
 
 		</div>
 		</td>
