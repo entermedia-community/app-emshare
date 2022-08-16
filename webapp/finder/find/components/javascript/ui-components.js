@@ -949,7 +949,7 @@ uiload = function() {
 				{
 					lasttypeahead.abort();
 				}
-				
+				//Typeahead ajax call
 				lasttypeahead = $.ajax(
 				{ 
 					url: url, async: true, 
@@ -977,7 +977,7 @@ uiload = function() {
 				var searching = input.data("searching");
 				if( searching == "true")
 				{
-					console.log("already searching"  + searching);
+					//console.log("already searching"  + searching);
 				}
 				var url = input.data("searchurl");
 				if (url != null) {
@@ -988,8 +988,8 @@ uiload = function() {
 					{
 						lastsearch.abort();
 					}
-					options["oemaxlevel"] = input.data("typeaheadoemaxlevel");
-					
+					options["oemaxlevel"] = input.data("oemaxlevel");
+					//Regular Search Ajax Call
 					lastsearch = $.ajax({ url: url, async: true, data: options, 
 						success: function(data) 
 						{
@@ -999,7 +999,7 @@ uiload = function() {
 								//var q2 = input.val();
 								//if( q2 == q)
 								{
-									$("#"+searchurltargetdiv).replaceWith(data);
+									$("#"+searchurltargetdiv).html(data);
 									$(window).trigger("resize");
 								}	
 							}
