@@ -53,7 +53,7 @@
 #end
 
 <div class="entity-assets-info">
-	#set($targetdiv = "applicationmaincontent")
+	#set($targetdiv = "application")
 	
 	#if($assetshits.size()>0)
 		#if($moduleid=="librarycollection")
@@ -63,7 +63,7 @@
 			#set($link = "$siteroot$applink/views/modules/librarycollection/showcategory.html?hitssessionid=$!{assetshits.sessionId}&nodeID=$rootcategory&clearfilters=true")
 			#set($oemaxlevel = "3")
 			#set($link = "$!link&sidebarcomponent=categories")
-			#set($targetdiv = "applicationcontainer")
+			#set($targetdiv = "application")
 		#elseif($moduleid=="faceprofilegroup")
 			#set($link = "$siteroot$applink/views/modules/asset/faceprofilegroup.html")
 			#set($link = "$link?faceprofilegroupid=$!entityid&clearfilters=true")
@@ -71,14 +71,14 @@
 		#else
 			#set($link = "$siteroot$applink/views/modules/asset/index.html")
 			#set($link = "$link?hitssessionid=$!{assetshits.sessionId}&field=$!moduleid&operation=matches&${moduleid}.value=$!entityid&clearfilters=true")
-			#set($oemaxlevel = "1")
+			#set($oemaxlevel = "4")
 		#end
 		
 		
 		[[Found]]: <a href="$link" 
 						class="ajax"
 						data-oemaxlevel="$!oemaxlevel" 
-						data-targetdivinner="$!targetdiv" 
+						data-targetdiv="$!targetdiv" 
 						data-closedialog="true"
 						data-updateurl="true"
 						data-closemediaviewer="true">$assetshits.size() #if ($assetshits.size()==1) [[asset]] #else [[assets]] #end</a>
