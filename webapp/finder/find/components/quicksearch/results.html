@@ -11,9 +11,12 @@
 
 #set($ajax = $context.getRequestParameter("ajax")) 
 
-<div class="quicksearchresults" style="height: ${popupheight}px">
+<div class="quicksearchresults" style="position:relative; height: ${popupheight}px; ">
 
 #if($livesuggestions.size())
+<div style="position:absolute; top:2px; right:5px; color:#333;">
+<span title="Esc to Close" class="fas fa-window-close"></span>
+</div>
 <h3>[[Suggested]]</h3>
 <ul class="qsrecent">
 #foreach ($suggestion in $livesuggestions)
@@ -24,11 +27,11 @@
 		
 	<li>
 		<a href="$url" 
-			data-oemaxlevel="3" 
+			data-oemaxlevel="1" 
 			data-searchtype="modulesearch" 
 			data-field="description" 
 			data-operation="contains" 
-			data-targetdiv="applicationcontent"
+			data-targetdivinner="applicationmaincontent"
 			data-description.value="#esc($k)" 
 			class="badge badge-light ajax" >
 			 <span>$suggestion.getBold()</span></a>  ##make bold
