@@ -16,7 +16,7 @@ public void init(){
 	if(isentity.asBoolean()) {
 		PropertyDetails details = archive.getAssetSearcher().getPropertyDetails();
 		PropertyDetail detail = details.getDetail(id);
-		if(detail !== null){
+		if(detail != null){
 			//Field already exists, may be a exisisting not related field or it was created previously
 			return;
 		}
