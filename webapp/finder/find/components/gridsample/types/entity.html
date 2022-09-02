@@ -59,10 +59,13 @@ $context.putPageValue("previewurl", $previewurl)
    	 </div>
 	<div class="emgrid-entitymetadata">
 	
-		#set( $image = $mediaarchive.getCachedData("asset", $entity.primaryimage))
-		#if($image)
+		#set( $asset = $mediaarchive.getCachedData("asset", $entity.primaryimage))
+		#if($asset)
+			$context.putPageValue("asset", $asset)
+			$context.putPageValue("viewer", "e_m_i_${entity.id}")
+			
 			#set( $imagesize = "image200x200.jpg")
-	  	 	#set($tpath = $mediaarchive.asLinkToPreview($image, null, $imagesize, true))
+	  	 	#set($tpath = $mediaarchive.asLinkToPreview($asset, null, $imagesize, true))
 	  	 	<div  class="assetdraggable" data-assetid="$!entity.primaryimage">
 	   	 	<a href="$previewurl" 
 	   	 	class="emdialog entity-dialog" 
@@ -71,16 +74,14 @@ $context.putPageValue("previewurl", $previewurl)
 	   	 	id="clickid${entityid}"  
 	   	 	data-id="entity.id"
 	   	 	title="$!entity.name">
-			<img class="imagethumb img-fluid"
-				 border="0" 
-				 sourcepath="$sourcepath" 
-				 catalogid="$catalogid" 
-				 assetid="$image.id" 
-				 alt="$!image.name"
-				 draggable="true"  
-				 data-name="$!image.name" 		
-				 src="$tpath" 
-				  />    
+			
+			  #set($rendertype = $mediaarchive.getMediaRenderType($asset.fileformat))
+			  #if(!$rendertype || $type =="rendertype")
+	   	    		#set( $rendertype = "mime" )
+	   	    	#elseif( $rendertype =="video")
+	   	    		#set( $rendertype = "videothumbnail" )
+	   	    	#end
+	       	    $pages.include("$componenthome/results/thumbnails/${rendertype}.html", $context)
 			</a>        	 
 			</div>
 		#end
@@ -96,6 +97,7 @@ $context.putPageValue("previewurl", $previewurl)
       
       #set($assetsshown = 4)
       $context.putPageValue("assetsshown", $assetsshown)
+      $context.putPageValue("viewer", "e_m_g_${entity.id}")
        <div class="emgrid-entitymedia assetdropentity"
        		id="attachedmedia$entityid" 
        		data-moduleid="$moduleid" 

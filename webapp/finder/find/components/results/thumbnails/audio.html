@@ -1,6 +1,8 @@
-#if ( !$hit )
+#if ( $asset )
      #set ( $hit = $asset )
 #end
+
+#if($hit)
 ## Required: path, id
 ## Optional: width, autostart, hit or asset (for the file name)
 #set ( $urlutils = $context.getPageValue("url_util"))
@@ -15,7 +17,7 @@
 	#set ($viewer = "${viewer}_")
 #end
 
-#set ($path = "$!siteroot$home/${mediadbappid}/services/module/asset/downloads/preset/$urlenc/audio.mp3")   
+#set ($path = "$!siteroot$home/${mediadbappid}/services/module/asset/downloads/preset/$!urlenc/audio.mp3")   
 
 <div class="audio-thumb-container" >    
 	<div id="jp_container_$!viewer$hit.id" class="jp-audio mini">
@@ -37,8 +39,8 @@
 	            </div>
 	            #if($thumbsize == "largepreview")
 	            <div class="jp-controls" >
-					<div class="jp-control jp-mute" data-target="jquery_jplayer_$!viewer$hit.id" tabindex="0">max volume</div>
-					<div class="jp-control jp-unmute" data-target="jquery_jplayer_$!viewer$hit.id" tabindex="0">min volume</div>
+					<div class="jp-control jp-mute" data-target="jquery_jplayer_$!viewer$hit.id" tabindex="0">[[max volume]]</div>
+					<div class="jp-control jp-unmute" data-target="jquery_jplayer_$!viewer$hit.id" tabindex="0">[[min volume]]</div>
 				</div>
 				<div class="jp-volume-bar">
 							<div class="jp-volume-bar-value" style="width: 80%;"></div>
@@ -49,3 +51,4 @@
 	</div>
 	##<div class="smallname">$hit.getName()</div>
 </div>
+#end
