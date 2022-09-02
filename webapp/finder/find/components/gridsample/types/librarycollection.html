@@ -59,8 +59,6 @@ $context.putPageValue("previewurl", $previewurl)
 		#if($asset)
 			$context.putPageValue("asset", $asset)
 			$context.putPageValue("viewer", "l_m_i_${entity.id}")
-			#set( $imagesize = "image200x200.jpg")
-	  	 	#set($tpath = $mediaarchive.asLinkToPreview($asset, null, $imagesize, true))
 	  	 	<div  class="assetdraggable" data-assetid="$!entity.primaryimage">
 	   	 	<a href="$previewurl" 
 	   	 	class="emdialog entity-dialog" 
@@ -75,6 +73,7 @@ $context.putPageValue("previewurl", $previewurl)
 	   	    	#elseif( $rendertype =="video")
 	   	    		#set( $rendertype = "videothumbnail" )
 	   	    	#end
+	   	    	$context.putPageValue("thumbsize", "crop" )
 	       	    $pages.include("$componenthome/results/thumbnails/${rendertype}.html", $context)
 			</a>        
 			</div>	 
