@@ -10,14 +10,27 @@
 ##<h2>[[Asset Downloads]]</h2>
 <div class="clearfix"></div>
 
-	#set($mediaurl = "$siteroot/$mediadbappid/services/module/asset/downloads/preset/$asset.sourcepath/$presetdata.generatedoutputfile")	  
-	#set($previewurl="$siteroot$apphome/components/asseteditor/preview.html?previewimg=$mediaurl")
+	##set($mediaurl = "$siteroot/$mediadbappid/services/module/asset/downloads/preset/$asset.sourcepath/$presetdata.generatedoutputfile")	  
+	##set($previewurl="$siteroot$apphome/components/asseteditor/preview.html?previewimg=$mediaurl")
 	
-	#set($$assetthpath = $mediaarchive.asLinkToPreview($asset, null, "image200x200.jpg", true))
-	#set($imgurl="$mediaurl?_=$mathutil.getRandomValue(9999)")
+	##set($$assetthpath = $mediaarchive.asLinkToPreview($asset, null, "image200x200.jpg", true))
+	##set($imgurl="$mediaurl?_=$mathutil.getRandomValue(9999)")
 	
-	<div class="text-center">
-	<img src="$assetthpath?cache=false" alt="$title" style="max-width: 200px; max-height: 200px" />
+	$context.putPageValue("asset", $asset)
+	$context.putPageValue("viewer", "media_download_")
+	
+	#set($rendertype = $mediaarchive.getMediaRenderType($asset.fileformat))
+	
+	<div class="text-center" style="font-size:0.6rem;">
+	##<img src="$assetthpath?cache=false" alt="$title" style="max-width: 200px; max-height: 200px" />
+		#set($rendertype = $mediaarchive.getMediaRenderType($asset.fileformat))
+	 	#if(!$rendertype || $type =="rendertype")
+		   	#set( $rendertype = "mime" )
+		#elseif( $rendertype =="video")
+		   	#set( $rendertype = "videothumbnail" )
+		#end
+		$context.putPageValue("thumbsize", "small" )
+	    $pages.include("$componenthome/results/thumbnails/${rendertype}.html", $context)
 	</div>
 
 #if($candownload)	
@@ -39,7 +52,7 @@
 </div>
 #end
 
-#if($caneditasset)
+#if($caneditasset && $rendertype=="image")
 	<div style="padding:10px 0 0; text-align: center;">
 	<a class="btn btn-sm btn-secondary ajax" data-targetdivinner="asset-editor-container" data-oemaxlevel="1" 
 	   href="$siteroot$apphome/views/modules/asset/editor/conversions/rotate.html?rotate=90&assetid=$asset.id">[[Rotate +90]]</a>
