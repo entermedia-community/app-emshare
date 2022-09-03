@@ -71,14 +71,24 @@ $context.putPageValue("previewurl", $previewurl)
 	   	 	title="$!entity.name">
 	   	 	#end
 			 
-			  #if(!$rendertype || $type =="rendertype")
+			 	 #if(!$rendertype || $type =="rendertype")
 	   	    		#set( $rendertype = "mime" )
 	   	    	#elseif( $rendertype =="video")
 	   	    		#set( $rendertype = "videothumbnail" )
 	   	    	#end
 	   	    	$context.putPageValue("thumbsize", "crop" )
 	       	    $pages.include("$componenthome/results/thumbnails/${rendertype}.html", $context)
-			#if($rendertype != "audio")</a>    #end    
+			#if($rendertype != "audio")</a>    #end   
+			#if($rendertype == "audio")
+	   	 	<a href="$previewurl" 
+	   	 	class="emdialog entity-dialog" 
+	   	 	style="display: block; text-align:center; text-decoration: none;"
+	   	 	data-hidefooter="true" 
+	   	 	data-hideheader="true"
+	   	 	id="clickid${entityid}"  
+	   	 	data-id="entity.id"
+	   	 	title="$!entity.name">[[Open]]
+	   	 	#end
 			</div>	 
 		#end
 

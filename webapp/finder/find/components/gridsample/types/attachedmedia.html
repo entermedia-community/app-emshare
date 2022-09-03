@@ -41,13 +41,28 @@
 		    #end
 		#end
 	 	 <div class="grid-attachedmedia assetdraggable" data-assetid="$hit.id"> 
-		 	<a class="stackedplayer imagearea" 
+		 	
+		 	
+		 		#if($rendertype != "audio")
+		 		<a class="stackedplayer imagearea" 
 		 		id="clickid${hit.id}" 
 		 		data-assetid="$hit.id" 
 		 		href="#" 
 		 		title="$!title">
-			$pages.include("$componenthome/results/thumbnails/${rendertype}.html", $context)
-			</a>
+					$pages.include("$componenthome/results/thumbnails/${rendertype}.html", $context)
+					</a>
+				#else
+					$pages.include("$componenthome/results/thumbnails/${rendertype}.html", $context)
+					<a class="stackedplayer imagearea" 
+		 		id="clickid${hit.id}" 
+		 		style="display: block; text-align:center; text-decoration: none;"
+		 		data-assetid="$hit.id" 
+		 		href="#" 
+		 		title="$!title">
+					[[Open]]</a>
+				#end
+			
+			
 		</div>
 	#end
 	<div class="clearfix"></div>
