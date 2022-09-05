@@ -60,34 +60,32 @@ $context.putPageValue("previewurl", $previewurl)
 			$context.putPageValue("asset", $asset)
 			$context.putPageValue("viewer", "l_m_i_${entity.id}")
 			#set($rendertype = $mediaarchive.getMediaRenderType($asset.fileformat))
+			#if(!$rendertype || $type =="rendertype")
+  	    		#set( $rendertype = "mime" )
+  	    	#elseif( $rendertype =="video")
+  	    		#set( $rendertype = "videothumbnail" )
+  	    	#end
+  	    	$context.putPageValue("thumbsize", "crop" )
 	  	 	<div  class="assetdraggable" data-assetid="$!entity.primaryimage">
-	  	 	#if($rendertype != "audio")
-	   	 	<a href="$previewurl" 
-	   	 	class="emdialog entity-dialog" 
-	   	 	data-hidefooter="true" 
-	   	 	data-hideheader="true"
-	   	 	id="clickid${entityid}"  
-	   	 	data-id="entity.id"
-	   	 	title="$!entity.name">
-	   	 	#end
-			 
-			 	 #if(!$rendertype || $type =="rendertype")
-	   	    		#set( $rendertype = "mime" )
-	   	    	#elseif( $rendertype =="video")
-	   	    		#set( $rendertype = "videothumbnail" )
-	   	    	#end
-	   	    	$context.putPageValue("thumbsize", "crop" )
-	       	    $pages.include("$componenthome/results/thumbnails/${rendertype}.html", $context)
-			#if($rendertype != "audio")</a>    #end   
 			#if($rendertype == "audio")
-	   	 	<a href="$previewurl" 
-	   	 	class="emdialog entity-dialog" 
-	   	 	style="display: block; text-align:center; text-decoration: none;"
-	   	 	data-hidefooter="true" 
-	   	 	data-hideheader="true"
-	   	 	id="clickid${entityid}"  
-	   	 	data-id="entity.id"
-	   	 	title="$!entity.name">[[Open]]
+				$pages.include("$componenthome/results/thumbnails/${rendertype}.html", $context)
+		   	 	<a href="$previewurl" 
+		   	 	class="emdialog entity-dialog" 
+		   	 	style="display: block; text-align:center; text-decoration: none;"
+		   	 	data-hidefooter="true" 
+		   	 	data-hideheader="true"
+		   	 	id="clickid${entityid}"  
+		   	 	data-id="entity.id"
+		   	 	title="$!entity.name">[[Open]]</a>
+	   	 	#else
+		   	 	<a href="$previewurl" 
+		   	 	class="emdialog entity-dialog" 
+		   	 	style="display: block; text-align:center; text-decoration: none;"
+		   	 	data-hidefooter="true" 
+		   	 	data-hideheader="true"
+		   	 	id="clickid${entityid}"  
+		   	 	data-id="entity.id"
+		   	 	title="$!entity.name">$pages.include("$componenthome/results/thumbnails/${rendertype}.html", $context)</a>
 	   	 	#end
 			</div>	 
 		#end
