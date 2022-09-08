@@ -7,8 +7,21 @@
 	#set( $hits = $orderassets)
 	$context.putPageValue("hits", $hits)
 #end
- 
+
 #if($hits)
+	#if(!$searchtype)
+		#set ( $searchtype = $context.getRequestParameter("searchtype") )
+	#end
+	#if(!$searchtype)
+		#set ( $searchtype = "asset" )
+	#end
+	#if(!$ismodulesearch)
+		#set ( $ismodulesearch = $content.get("ismodulesearch") )
+	#end
+	#if(!$ismodulesearch)
+		#set ( $ismodulesearch = $context.getRequestParameter("ismodulesearch") )
+	#end
+	
 	#set( $categoryid = $hits.getInput("categoryid") )
 	#if (!$categoryid)
 		#set( $categoryid = $context.getRequestParameter("category"))
@@ -48,6 +61,7 @@
 		#if ($hits.getSelectionSize() && $hits.getSelectionSize()>0)
 			#set ($enabled = true)
 		#end
+		
 		##if( $librarycol )
 		##	$pages.include("$componenthome/desktop/menu.html?collectionid=$librarycol.getId()", $context)				
 		##end
@@ -60,35 +74,35 @@
 				<a class=" dropdown-toggle" href="#" id="navbarSharehDropdown" role="button" data-toggle="dropdown" 
 					aria-haspopup="true" aria-expanded="false">[[Share]]</a>
 					<div class="dropdown-menu" aria-labelledby="navbarShareDropdown">
-				#if($canpublish || $canemaillink )				
-						#if( $canemaillink )
-							<a class="dropdown-item emdialog" data-hidefooter="true" href="$siteroot$apphome/views/modules/asset/activity/emailassets.html?hitssessionid=$!hits.getSessionId()" >[[Email Assets]]</a>
+						#if($canpublish || $canemaillink )				
+								#if( $canemaillink )
+									<a class="dropdown-item emdialog" data-hidefooter="true" href="$siteroot$apphome/views/modules/asset/activity/emailassets.html?hitssessionid=$!hits.getSessionId()" >[[Email Assets]]</a>
+								#end
+								#if( $canpublish)
+									<a  class="dropdown-item emdialog" data-hidefooter="true" href="$siteroot$apphome/views/modules/asset/activity/publishassets.html?hitssessionid=$!hits.getSessionId()" >[[Publish Assets to Server]]</a>
+								#end
+								#if( $canquickgallery)
+									<a  class="dropdown-item emdialog" data-hidefooter="true" href="$siteroot$apphome/views/modules/asset/activity/creategallerycollection.html?hitssessionid=$!hits.getSessionId()" >[[Create a shareable gallery]]</a>
+								#end
 						#end
-						#if( $canpublish)
-							<a  class="dropdown-item emdialog" data-hidefooter="true" href="$siteroot$apphome/views/modules/asset/activity/publishassets.html?hitssessionid=$!hits.getSessionId()" >[[Publish Assets to Server]]</a>
-						#end
-						#if( $canquickgallery)
-							<a  class="dropdown-item emdialog" data-hidefooter="true" href="$siteroot$apphome/views/modules/asset/activity/creategallerycollection.html?hitssessionid=$!hits.getSessionId()" >[[Create a shareable gallery]]</a>
-						#end
-				#end
-				#if($canexportdata)
-					<a class="dropdown-item" href="$siteroot$apphome/views/modules/asset/export/download/export_asset.csv?hitssessionid=$hits.sessionId&searchtype=asset">[[Export results]]</a>
-					<a class="dropdown-item" href="$siteroot$apphome/views/modules/asset/export/download/export_asset.csv?hitssessionid=$hits.sessionId&friendly=true&searchtype=asset&view=asset/resultstable">[[Export results (friendly)]]</a>
-				#end		
+						#if($canexportdata)
+							<a class="dropdown-item" href="$siteroot$apphome/views/modules/asset/export/download/export_asset.csv?hitssessionid=$hits.sessionId&searchtype=asset">[[Export results]]</a>
+							<a class="dropdown-item" href="$siteroot$apphome/views/modules/asset/export/download/export_asset.csv?hitssessionid=$hits.sessionId&friendly=true&searchtype=asset&view=asset/resultstable">[[Export results (friendly)]]</a>
+						#end		
 					</div>
 				</li>
 			#end
 		
 			#if($enabled && $canquickpublish )
 				#set($quickpublishlist = $mediaarchive.getList("quickpublish"))
-			<li class="">
-				<a class="" href="#" id="navbarPublishDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">[[Publish]]</a>
-					<div class="dropdown-menu" aria-labelledby="navbarPublishDropdown">
-						#foreach($item in $quickpublishlist)
-							<a class="dropdown-item" href="$siteroot$apphome/views/modules/asset/activity/publish/quickpublish.html?hitssessionid=$!hits.getSessionId()&quickid=$item.id"   >$item.name</a>
-						#end
-					</div>
-				</li>
+				<li class="">
+					<a class="" href="#" id="navbarPublishDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">[[Publish]]</a>
+						<div class="dropdown-menu" aria-labelledby="navbarPublishDropdown">
+							#foreach($item in $quickpublishlist)
+								<a class="dropdown-item" href="$siteroot$apphome/views/modules/asset/activity/publish/quickpublish.html?hitssessionid=$!hits.getSessionId()&quickid=$item.id"   >$item.name</a>
+							#end
+						</div>
+					</li>
 			#end
 		
   			#set( $edit = $context.getRequestParameter("editheader") )
@@ -103,29 +117,25 @@
 
 			
 		</ul>
-		
-		#set( $ismaingrid = $context.getRequestParameter("ismaingrid"))
-		
-		#if(!$ismaingrid)
 		<ul class="resultsnavright">
-		#if(!$resultview)
-			#set($resultview = $userprofile.get("resultview"))
-			#if (!$resultview)
-				#set($resultview = $content.get("resultview"))
+			#if(!$resultview)
+				#set($resultview = $userprofile.get("resultview"))
+				#if (!$resultview)
+					#set($resultview = $content.get("resultview"))
+				#end
+				#if (!$resultview)
+					#set($resultview = "stackedgallery")
+				#end
 			#end
-			#if (!$resultview)
-				#set($resultview = "stackedgallery")
-			#end
-		#end
-		
-		
-		#if (!$resultview || $resultview == 'table')
-			#if( $canedittablecolumns )
-				#if( $edit )
-				<li>
-						<a class="ajax table-edit-close" data-targetdiv="resultsdiv" href="$siteroot$componenthome/results/table.html?searchtype=asset&hitssessionid=$hits.getSessionId()&editheader="><i class="fas fa-times"></i></a>
-					</li>
-					<li class="resultsnavtitem" style="min-width:180px">
+			
+			
+			#if (!$resultview || $resultview == 'table')
+				#if( $canedittablecolumns )
+					#if( $edit )
+						<li>
+							<a class="ajax table-edit-close" data-targetdiv="resultsdiv" href="$siteroot$componenthome/results/table.html?searchtype=asset&hitssessionid=$hits.getSessionId()&editheader="><i class="fas fa-times"></i></a>
+						</li>
+						<li class="resultsnavtitem" style="min-width:180px">
 							#set ($alldetails = $searcher.getUserPropertyDetails() )
 							<select class="form-control form-control-sm select2 tableresultsaddcolumn" 
 									name="addcolumn"
@@ -136,47 +146,49 @@
 								#foreach( $detail in $alldetails) <option value="$detail.id">$detail.getText($context)</option>
 								#end
 							</select>
-					</li>
-						
-					<li class="resultsnavtitem">
-					<span class="" style="padding-right: 10px;" >[[Drag columns to move them]]</span>
-					</li>
-				#else 
-					<li >
-						<a class="ajax nav-hover" id="table-editor" data-targetdiv="resultsdiv" href="$siteroot$componenthome/results/table.html?searchtype=asset&hitssessionid=$hits.getSessionId()&editheader=true"> <i class="fas fa-edit"></i></a>
-					</li>
-				#end	
-			#end								
-		#end
-
-		#if(!$edit || $edit == "false"  )
-			<li class="resultsnavtitem">
-				<select class="form-control" name="resultview" id="selectresultview"  
-					data-hitssessionid="$hits.getSessionId()" 
-					data-searchtype="asset" 
-					data-componenthome = "${siteroot}${applink}/views/modules/asset/components"
-					data-page="$hits.getPage()" 
-					data-showremoveselections="$showremoveselections" 
-					data-collectionid="$!librarycol.getId()">
-				#set( $types = $mediaarchive.getList("resulttype"))
-				#foreach($type in $types)
-					<option value="$type.getId()" #if( $resultview == "$type.getId()") selected #end>$type.getName($context)</option>
-				#end
-				</select>
-				
-			</li>
-			#if ($resultview != "map")
-				#if( $hits.size() > 0)
-					<li class="resultsnavtitem hidden-sm-xs hidden-xs hidden-sm hidden-md">
-						$pages.include("$componenthome/results/pages.html",$context)
-					</li>	
-				#end
+						</li>
+								
+						<li class="resultsnavtitem">
+							<span class="" style="padding-right: 10px;" >[[Drag columns to move them]]</span>
+						</li>
+					#else 
+						<li >
+							<a class="ajax nav-hover" id="table-editor" data-targetdiv="resultsdiv" href="$siteroot$componenthome/results/table.html?searchtype=asset&hitssessionid=$hits.getSessionId()&editheader=true"> <i class="fas fa-edit"></i></a>
+						</li>
+					#end	
+				#end								
 			#end
-		#end	
-
-		
+	
+			#if(!$edit || $edit == "false"  )
+				<li class="resultsnavtitem">
+					<select class="form-control" 
+						name="resultview" 
+						id="selectresultview"  
+						data-hitssessionid="$!hits.getSessionId()" 
+						data-searchtype="$searchtype"
+						data-ismodulesearch = "$!ismodulesearch" 
+						data-componenthome = "$!componenthome"
+						data-page="$!hits.getPage()" 
+						data-showremoveselections="$showremoveselections" 
+						data-collectionid="$!librarycol.getId()"
+						data-targetdiv="applicationmaincontent">
+						#set( $types = $mediaarchive.getList("resulttype"))
+						#foreach($type in $types)
+							<option value="$type.getId()" #if( $resultview == "$type.getId()") selected #end>$type.getName($context)</option>
+						#end
+					</select>
+					
+				</li>
+				#if ($resultview != "map")
+					#if( $hits.size() > 0)
+						<li class="resultsnavtitem hidden-sm-xs hidden-xs hidden-sm hidden-md">
+							$pages.include("$componenthome/results/pages.html",$context)
+						</li>	
+					#end
+				#end
+			#end	
 	</ul>
-	#end
+	
 </div>
 <div class="clearfix"></div>
 </div>

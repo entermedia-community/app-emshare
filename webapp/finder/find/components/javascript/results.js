@@ -25,18 +25,31 @@ jQuery(document).ready(function(url,params)
 		select.on("change",function() 
 		{
 			var componenthome = select.data('componenthome');
-
 			var originalhitsperpage = select.data("hitsperpage");
-			if(originalhitsperpage){
-				var href = componenthome  +  "/results/changeresultview.html?oemaxlevel=1&cache=false&hitsperpage=" + originalhitsperpage;
+			var href = '';
+			var searchtype = select.data('searchtype');
+			var targetdiv = select.data('targetdiv');
+			var ismodulesearch = select.data('ismodulesearch');
+			//
+			
+			if (ismodulesearch == true) {
+				targetdiv = "modulesearchassetmodule";
+				href = componenthome  +  "/results/changemodulesearchassetview.html?oemaxlevel=1";
 			}
-			else{
-				var href = componenthome  +  "/results/changeresultview.html?oemaxlevel=1";
+			else {
+				
+				if(originalhitsperpage){
+					href = componenthome  +  "/results/changeresultview.html?oemaxlevel=1&cache=false&hitsperpage=" + originalhitsperpage;
+				}
+				else{
+					href = componenthome  +  "/results/changeresultview.html?oemaxlevel=1";
+				}
 			}
 			var args = { hitssessionid: select.data("hitssessionid") ,
-						 searchtype:  select.data("searchtype") ,
+						 searchtype:  searchtype ,
 						 page:  select.data("page") ,
 						 showremoveselections:  select.data("showremoveselections") ,
+						 ismodulesearch: ismodulesearch,
 						  };
 						 
 			var category = $("#resultsdiv").data("category");
@@ -50,10 +63,10 @@ jQuery(document).ready(function(url,params)
 				args.collectionid = collectionid;
 			}
 			args.resultview = select.val();
-						 
+					 
 			$.get(href, args, function(data) 
 			{
-				$("#applicationmaincontent").html(data);
+				$("#"+targetdiv).html(data);
 				$(window).trigger( "resize" );
 			});
 		});

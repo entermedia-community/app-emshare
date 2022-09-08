@@ -3,8 +3,6 @@
 	#set($module = $context.getRequestParameter("module"))
 #end
 
-
-
 ##fix module vs moduleid
 #if($module)
 	#if($module.id)
@@ -13,8 +11,6 @@
 		#set($moduleid = $module)
 	#end
 #end
-
-
 
 #if (!$nodeID)
 	#set($nodeID = $context.getRequestParameter("nodeID"))
@@ -39,7 +35,6 @@
 ##if($moduleid =="librarycollection" && $hits.size() == 0 && $mediaarchive.isCatalogSettingTrue("autopopulatecollections"))
 ##	$pages.include("$apphome/components/createmedia/copycategory/index.html?autorun=true", $context)
 ##else
-
 	###if($content.resultview)
 	##	#set($resultview = $content.resultview)
 	
@@ -83,58 +78,12 @@
 		#end
 	#end
 	
+	$context.putPageValue("resultview",$resultview)
 	
+	
+	$pages.include("$componenthome/results/resultviews.html", $context)
 	
 	##if( $hits || $modulehits.size() > -1)
-	<div class="emresultscontainer emresults$!resultview">
-			#if (!$resultview || $resultview == 'table')
-				$context.putPageValue("showhover", "false")
-				$context.putPageValue("thumbsize", "crop")
-				$context.putPageValue("showcaption", "true")
-				$context.putPageValue("hideheader", "false")
-				$context.putPageValue("pickable", false )
-				$context.putPageValue("resultstype", "table" )
-				$pages.include("$componenthome/results/table.html", $context)
-			#elseif ($resultview == "hierarchy")
-				$context.putPageValue("showcaption", true)
-				$context.putPageValue("showhover", "false")
-				$context.putPageValue("thumbsize", "thumb")
-				$context.putPageValue("showcaption", "true")
-				$context.putPageValue("hideheader", "false")
-				$context.putPageValue("pickable", false )
-				$pages.include("$componenthome/results/hierarchy.html", $context)
-			#elseif ($resultview == "stackedgallery")
-
-				$context.putPageValue("showcaption", false)
-				$context.putPageValue("showhover", "false")
-				$context.putPageValue("thumbsize", "medium")
-				$context.putPageValue("showcaption", "false")
-				$context.putPageValue("hideheader", "false")
-				$context.putPageValue("pickable", false )
-				$pages.include("$componenthome/results/stackedgallery.html", $context)
-			#elseif ($resultview == "map")
-				$context.putPageValue("showcaption", false)
-				$context.putPageValue("showhover", "false")
-				$context.putPageValue("thumbsize", "medium")
-				$context.putPageValue("showcaption", "false")
-				$context.putPageValue("hideheader", "false")
-				$context.putPageValue("pickable", false )
-				$pages.include("$componenthome/results/map.html", $context)
-			#elseif ($resultview == "grid")
-				$context.putPageValue("resultstype", "grid" )
-				$pages.include("${componenthome}/gridsample/index.html",$context)
-			#elseif ($resultview == "finder")
-				$pages.include("${applicationid}/views/finder/index.html",$context)
-			#else 
-				$context.putPageValue("showcaption", true)
-				$context.putPageValue("showhover", "false")
-				$context.putPageValue("thumbsize", "thumb")
-				$context.putPageValue("showcaption", "true")
-				$context.putPageValue("hideheader", "false")
-				$context.putPageValue("pickable", "false" )
-				$pages.include("$componenthome/results/gallery.html", $context)
-			#end
-	</div>
 	###else
 	##<div class="emnoresults">[[No Results]]</div>
 	###end

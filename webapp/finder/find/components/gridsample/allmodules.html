@@ -2,7 +2,7 @@
 #set($filter = $modulehits.findFilterValue("entitysourcetype") )
 
 #if( $organizedModules.isEmpty())
-	<div>[[0 results]]</div>
+	<div>0 [[results]]</div>
 #end
 
 #foreach($module in $organizedModules)
@@ -26,23 +26,24 @@
    	#if( $rendertype == "media")
    		##Stacked view
    		<div class="emgrid-module emgrid-module-$rendertype">
-   			<div id="resultsdiv" 
-   				data-hitssessionid="$idhits.getSessionId()" ##it breaks drag&drop
-   				#set( $inputid = $context.getRequestParameter("inputid"))
-   				data-inputid="$!inputid"
-   				data-ismaingrid="true"
-   				>
-	   		<div class="emgrid-module-$rendertype-inside">
-	   		
-	   			$pages.include("$apphome/components/results/header.html?ismaingrid=true",$context)
-	   		
-		   		$pages.include("$apphome/components/gridsample/types/media.html", $context)
-		   		
-		   		
+	   		<div class="emgrid-module-$rendertype-inside"  id="modulesearchassetmodule">
+	   			#set($resultview = $userprofile.get("resultview"))
+				#if(!$resultview)
+					#set($resultview = $content.get("resultview"))
+				#end
+				#if(!$resultview)
+					#set($resultview = "stackedview")
+				#end
+				
+				$context.putPageValue("ismodulesearch","true")
+				$context.putPageValue("searchtype","asset")
+				$context.putPageValue("resultview",$resultview)
+				
+		   		$pages.include("$apphome/components/results/resultviews.html", $context)
+
 		   		<div class="clearfix"></div>
-		   		
-		   		
-		   		#set($resultsPage = "$siteroot$apphome/views/modules/$module.id/index.html")
+			</div>
+				#set($resultsPage = "$siteroot$apphome/views/modules/$module.id/index.html")
 				#if($idhits.size() > 4 && $section != "favorites")
 					#if( $jsonsearch)
 						#set($resultsPage = $url_util.urlEscape("$resultsPage?${module.id}clearfilters=true&${module.id}_jsonquery=$jsonsearch" ) )
@@ -50,8 +51,6 @@
 					<div class="emgrid-seemore"><a href="$resultsPage">[[See More]]</a></div>
 					<div class="clearfix"></div>
 				#end
-			</div>
-			</div>
    		</div>
    		
    	#else
