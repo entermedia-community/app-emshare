@@ -1,26 +1,44 @@
+#if(!$ismodulesearch)
+		#set ( $ismodulesearch = $content.get("ismodulesearch") )
+#end
+#if(!$ismodulesearch)
+	#set ( $ismodulesearch = $context.getRequestParameter("ismodulesearch") )
+#end
+
 <div id="resultsdiv" 
- 				data-hitssessionid="$!hits.getSessionId()" ##it breaks drag&drop
- 				#set( $inputid = $context.getRequestParameter("inputid"))
- 				data-inputid="$!inputid"
- 				data-ismaingrid="true"
- 				data-rendertype="$rendertype"
- 				>
+	data-hitssessionid="$!hits.getSessionId()" ##it breaks drag&drop
+	#if($ismodulesearch != "true")
+		data-searchhome="$home$componenthome/results"
+		data-category="$!category.getId()"
+		data-collectionid="$!librarycol.getId()" 
+		data-rendertype="$rendertype"
+		data-searchtype="asset" 
+		data-pagenum="$hits.getPage()" 
+		data-totalpages="$hits.getTotalPages()"
+		data-module="$!module"
+	#else
+		#set( $inputid = $context.getRequestParameter("inputid"))
+		data-inputid="$!inputid"
+		data-ismaingrid="true"
+	#end
+	
+	>
 
 
 #if( $hideheader &&  $hideheader != "true")
 	$pages.include("$componenthome/results/header.html",$context) 
 #end
 
-
-
 <div class="masonry-grid" 
-data-maxheightX="$!mediaarchive.getCatalogSettingValue('stacked_gallery_imagesize')"
-data-maxheight="180" 
-data-cellpadding="4"
-data-makebox="true"
-data-singlepage="true"  >
-
-
+	data-maxheightX="$!mediaarchive.getCatalogSettingValue('stacked_gallery_imagesize')"
+	data-maxheight="180" 
+	data-cellpadding="4"
+	#if($ismodulesearch != "true")
+	#else
+		data-makebox="true"
+		data-singlepage="true"  
+	#end
+>
 
 #set($count = 0)
 #set($viewerlink = $content.get("assetviewerlink") )
