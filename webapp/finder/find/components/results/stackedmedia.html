@@ -99,36 +99,12 @@
 				        #end
 			         #end
 			         <a class="stackedplayer grid-caption-link" id="clickid${hit.id}" data-assetid="$hit.id" href="#" title="#esc($!title)">
-			         <span>#esc($!title)</span>
-			         
-			         ##Show entities or something more?
-			         #foreach( $module in $mediaarchive.getList("module") )
-			         	#set( $showon = $module.get("showonsearch") )
-			         	#if($showon == "true")
-			         	
-			         		#set( $values = $hit.getValues($module.getId()) )
-			         		#if( $values)
-			         		<span>
-			         			$module:
-					         	#foreach( $row in $values )
-					         		$mediaarchive.getCachedData($module.getId(),$row)
-					         	#end
-					         </span>	
-					        #end	
-			         	#end
-			         #end
-			         
-			         </a>
-			         
-			        #foreach($row in $list)
-						#set( $val = false )
-						#set( $val = $mediaarchive.getCachedData($fieldid,$row) )
-						#if( $val)
-							<span class="clipdetail"><a href="$apphome/components/gridsample/preview/entity.html?id=$val.getId()&searchtype=$fieldid" class="emdialog entity-dialog">$val</a></span>
-						#else
-						##Missing: $fieldid = $v
-						#end
-					#end
+				        $context.putPageValue("data",$hit)	
+						$context.putPageValue("searcher",$mediaarchive.getAssetSearcher() )	
+						$context.putPageValue("view", "asset/stackedgallery")
+						$pages.include("/$applicationid/components/xml/detailviewer-stackedgallery.html", $context)
+					</a>
+					
          
 			           
 			        <div class="grid-gallery-footer"> 
