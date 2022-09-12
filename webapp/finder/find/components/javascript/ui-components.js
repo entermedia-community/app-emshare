@@ -57,7 +57,6 @@ uiload = function() {
 	}
 	
 	if ($.datepicker) {
-		console.log("datepicker exists");
 		lQuery("input.datepicker").livequery(function() {
             var dpicker = $(this);
 			$.datepicker.setDefaults( $.datepicker.regional[browserlanguage] );
