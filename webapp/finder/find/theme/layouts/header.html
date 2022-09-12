@@ -88,6 +88,8 @@
 
 
 ##Move This to entermedia.js
+#set($siteroot = $context.getSiteRoot())
+#set($siteroot = $siteroot.replace("http://","https://"))
 
 <script>
 var emKey = "#esc($userprofile.entermediacloudkey)";
@@ -96,7 +98,7 @@ if (emKey) {
 	
 	const rootsite='$workspaceproviderurl';
 	$(".workspaces").on('click', function() {	
-		var href = `${rootsite}/entermediadb/mediadb/services/authentication/workspacesonteam.json?noredirect=true&entermedia.key=${emKey}`; // TODO: call in java		
+		var href = '$!{siteroot}/entermediadb/mediadb/services/authentication/workspacesonteam.json?noredirect=true&entermedia.key=$!{emKey}'; // TODO: call in java		
 		$('#workspacelist').html('');
 		$.ajax({type: "GET", url: href, crossDomain: true, 
 	        success:function(result) {	        	
