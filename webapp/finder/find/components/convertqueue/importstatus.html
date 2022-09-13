@@ -22,15 +22,23 @@
     	<div class="mimeconversionerror">[[Publish Error]]</div>
     </div>
 #elseif( $hit.importstatus && $hit.importstatus == "complete")
-    $context.putPageValue("hit",$hit)
-    #set( $type = $mediaarchive.getMediaRenderType($hit.fileformat))
-    $context.putPageValue("type", $type)
+    $context.putPageValue("hit", $hit)
+    #set( $rendertype = $mediaarchive.getMediaRenderType($hit.fileformat))
+    ##$context.putPageValue("type", $rendertype)
     
-    #if($thumbsize == "crop")
-    $pages.include("$apphome/components/results/thumbnails/small.html",$context)
-    #else
-    $pages.include("$apphome/components/results/thumbnails/image.html",$context)
-    #end        
+    ###if($thumbsize == "crop")
+    ##$pages.include("$apphome/components/results/thumbnails/small.html",$context)
+    ###else
+    ##$pages.include("$apphome/components/results/thumbnails/image.html",$context)
+    ###end
+    
+    #if(!$rendertype || $type =="rendertype")
+   		#set( $rendertype = "mime" )
+   	#elseif( $rendertype =="video")
+   		#set( $rendertype = "videothumbnail" )
+   	#end   
+   	
+   	$pages.include("$componenthome/results/thumbnails/${rendertype}.html", $context)     
 
 #elseif($publish && $publish.size() >0 )
     <div id="status$hit.id"  class="ajaxstatus"  #if( $content == $page)data-ajaxrunning="true"#end  ajaxpath="$siteroot$apphome/components/convertqueue/importstatus.html?assetid=$hit.id&thumbsize=$thumbsize" >
@@ -52,7 +60,7 @@
 #else
     <div id="status$hit.id" class="ajaxstatus importstatusreport" 
     	#if( $content == $page)data-ajaxrunning="true"#end 
-    	data-reloadspeed="1000"
+    	data-reloadspeed="2000"
     	ajaxpath="$siteroot$apphome/components/convertqueue/importstatus.html?assetid=$hit.id&thumbsize=$thumbsize" >
         #set( $totalcount = $conversions.size() )
 
