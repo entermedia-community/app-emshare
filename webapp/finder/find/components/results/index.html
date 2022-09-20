@@ -35,6 +35,9 @@
 ##if($moduleid =="librarycollection" && $hits.size() == 0 && $mediaarchive.isCatalogSettingTrue("autopopulatecollections"))
 ##	$pages.include("$apphome/components/createmedia/copycategory/index.html?autorun=true", $context)
 ##else
+##end
+
+
 	###if($content.resultview)
 	##	#set($resultview = $content.resultview)
 	
@@ -63,6 +66,8 @@
 			#set($resultview = "stackedgallery")
 		#end
 	#else
+		##All Other Entities
+		
 		#set($resultview = $userprofile.get("resultview$moduleid"))
 		#if(!$resultview)
 			#set($resultview = $content.get("resultview$moduleid"))
@@ -74,7 +79,7 @@
 			#set($resultview = $content.resultview)
 		#end
 		#if(!$resultview)
-			#set($resultview = "table")
+			#set($resultview = "grid")
 		#end
 	#end
 	
@@ -82,9 +87,5 @@
 	
 	
 	$pages.include("$componenthome/results/resultviews.html", $context)
-	
-	##if( $hits || $modulehits.size() > -1)
-	###else
-	##<div class="emnoresults">[[No Results]]</div>
-	###end
-##end
+
+

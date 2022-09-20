@@ -50,6 +50,7 @@ jQuery(document).ready(function(url,params)
 						 page:  select.data("page") ,
 						 showremoveselections:  select.data("showremoveselections") ,
 						 ismodulesearch: ismodulesearch,
+						 resultviewtype: searchtype+"resultview",
 						  };
 						 
 			var category = $("#resultsdiv").data("category");
