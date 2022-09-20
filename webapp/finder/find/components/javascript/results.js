@@ -25,6 +25,7 @@ jQuery(document).ready(function(url,params)
 		select.on("change",function() 
 		{
 			var componenthome = select.data('componenthome');
+			var moduleid = select.data('moduleid');
 			var originalhitsperpage = select.data("hitsperpage");
 			var href = '';
 			var searchtype = select.data('searchtype');
@@ -37,12 +38,16 @@ jQuery(document).ready(function(url,params)
 				href = componenthome  +  "/results/changemodulesearchassetview.html?oemaxlevel=1";
 			}
 			else {
-				
-				if(originalhitsperpage){
-					href = componenthome  +  "/results/changeresultview.html?oemaxlevel=1&cache=false&hitsperpage=" + originalhitsperpage;
+				if(searchtype=='asset') {
+					if(originalhitsperpage){
+						href = componenthome  +  "/results/changeresultview.html?oemaxlevel=1&cache=false&hitsperpage=" + originalhitsperpage;
+					}
+					else{
+						href = componenthome  +  "/results/changeresultview.html?oemaxlevel=1";
+					}
 				}
-				else{
-					href = componenthome  +  "/results/changeresultview.html?oemaxlevel=1";
+				else {
+					href = siteroot+"/views/modules/"+moduleid+"/changeresultview.html?oemaxlevel=1";
 				}
 			}
 			var args = { hitssessionid: select.data("hitssessionid") ,

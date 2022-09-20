@@ -2,7 +2,9 @@
 #if(!$module)
 	#set($module = $context.getRequestParameter("module"))
 #end
-
+#if(!$module)
+	#set($module = $context.getRequestParameter("moduleid"))
+#end
 ##fix module vs moduleid
 #if($module)
 	#if($module.id)
@@ -68,9 +70,10 @@
 	#else
 		##All Other Entities
 		
-		#set($resultview = $userprofile.get("resultview$moduleid"))
+		#set($resultview = $userprofile.get("${moduleid}resultview"))
+
 		#if(!$resultview)
-			#set($resultview = $content.get("resultview$moduleid"))
+			#set($resultview = $content.get("${moduleid}resultview"))
 		#end
 		#if(!$resultview)
 			#set($resultview = $context.getRequestParameter("resultstype"))
