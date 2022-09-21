@@ -2,17 +2,22 @@
 #set($defaultview = $userprofile.getDefaultViewForModule($moduleid) )
 #set($searchhome = $page.get("searchhome") )
 
+#set($viewid = "${moduleid}resultstable")
+#set($viewpath = "${moduleid}/${moduleid}resultstable")
+
 <div id="resultsdiv" 
 		class="tableresults" 
 		data-hitssessionid="$hits.getSessionId()"
 		data-componenthome="$!searchhome/components" 
-		data-searchhome="$!searchhome/results"
+		data-searchhome="$!searchhome/components/results"
 		data-category="$!category.getId()"
 		data-collectionid="$!librarycol.getId()" 
 		data-searchtype="$!searchtype" 
 		data-pagenum="$hits.getPage()" 
 		data-totalpages="$hits.getTotalPages()"
-		data-module="$!module">
+		data-module="$!module"
+		data-moduleid="$!moduleid"
+		data-viewid="$!viewid">
 
 
 <div id="emresultscontent">
@@ -22,14 +27,19 @@
 	$pages.include("${searchhome}/resultsactions.html",$context)
 	$pages.stream("/${content.searchhome}/empty.html", $context)	
 #else
-
-	#set( $resultdetail = $searcher.getDetailsForView("${moduleid}/${moduleid}resultstable", $userprofile))
 	##set ( $canedit = $context.getPageValue("${moduleid}edit") )
+
+	#set($resultdetail = $searcher.getDetailsForView($viewpath, $userprofile))
 	
-	#set($popupdetail = $searcher.getDetailsForView("${moduleid}/${moduleid}popupdetail"))
-	#if ($popupdetail && $popupdetail.size() > 0)
-		#set( $enablepopup = "true")
-	#end
+	
+	
+##	#set($popupdetail = $searcher.getDetailsForView("${moduleid}/${moduleid}popupdetail"))
+##	#if ($popupdetail && $popupdetail.size() > 0)
+##		#set( $enablepopup = "true")
+##	#end
+
+
+
 
 ##Header
 
@@ -60,7 +70,7 @@ $pages.include("${searchhome}/resultsactions.html",$context)
 
 
 <table class="table table-striped table-hover" 
-		id="main-results-table" 
+		id="$!searchtype-main-results-table" 
 		data-resultsarea="resultsarea" 
 		data-hitssessionid="$!hits.sessionId">
 

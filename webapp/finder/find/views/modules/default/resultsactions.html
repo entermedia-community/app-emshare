@@ -46,15 +46,18 @@
 	#if (!$resultview || $resultview == 'table')
 		#if( $canedittablecolumns )
 			#if( $edit )
+				##Close Icon
 				<li>
-					<a class="ajax table-edit-close" data-targetdiv="resultsdiv" href="$siteroot$componenthome/results/table.html?searchtype=asset&hitssessionid=$hits.getSessionId()&editheader="><i class="fas fa-times"></i></a>
+					<a class="ajax table-edit-close" 
+						data-targetdiv="resultsviewcontainer" 
+						href="$siteroot$componenthome/results/index.html?oemaxlevel=1&searchtype=$!searchtype&hitssessionid=$hits.getSessionId()&editheader=&moduleid=$!moduleid"><i class="fas fa-times"></i></a>
 				</li>
 				<li class="resultsnavtitem" style="min-width:180px">
 					#set ($alldetails = $searcher.getUserPropertyDetails() )
 					<select class="form-control form-control-sm select2 tableresultsaddcolumn" 
 							name="addcolumn"
-							data-componenthome="$siteroot$componenthome/results/addremovecolumns.html?oemaxlevel=1&searchtype=asset&hitssessionid=$hits.getSessionId()&editheader=true"
-							data-targetdiv="resultsdiv" 
+							data-componenthome="$siteroot$componenthome/results/addremovecolumns.html?oemaxlevel=1&searchtype=$!searchtype&hitssessionid=$hits.getSessionId()&editheader=true&moduleid=$!moduleid&viewid=$!{moduleid}resultstable"
+							data-targetdiv="resultsviewcontainer" 
 							data-allowclear="false" >
 						<option>[[Add Column]]</option>
 						#foreach( $detail in $alldetails) <option value="$detail.id">$detail.getText($context)</option>
@@ -66,8 +69,12 @@
 					<span class="" style="padding-right: 10px;" >[[Drag columns to move them]]</span>
 				</li>
 			#else 
+				##Edit
 				<li >
-					<a class="ajax nav-hover" id="table-editor" data-targetdiv="resultsdiv" href="$siteroot$componenthome/results/table.html?searchtype=asset&hitssessionid=$hits.getSessionId()&editheader=true"> <i class="fas fa-edit"></i></a>
+					<a class="ajax nav-hover" 
+						id="table-editor-close" 
+						data-targetdiv="resultsviewcontainer" 
+						href="$siteroot$componenthome/results/index.html?searchtype=$!searchtype&hitssessionid=$hits.getSessionId()&editheader=true&moduleid=$!moduleid"> <i class="fas fa-edit"></i></a>
 				</li>
 			#end	
 		#end								
@@ -86,7 +93,7 @@
 				data-page="$!hits.getPage()" 
 				data-showremoveselections="$!showremoveselections" 
 				data-collectionid="$!librarycol.getId()"
-				data-targetdiv="applicationmaincontent">
+				data-targetdiv="resultsviewcontainer">
 				
 				<option value="grid" #if( $resultview == "grid") selected #end>[[Grid]]</option>
 				<option value="table" #if( $resultview == "table") selected #end>[[Table]]</option>
