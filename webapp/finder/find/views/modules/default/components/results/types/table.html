@@ -1,7 +1,22 @@
-<div id="emresultscontent">
 #set($moduleid = $page.get("module") )
 #set($defaultview = $userprofile.getDefaultViewForModule($moduleid) )
 #set($searchhome = $page.get("searchhome") )
+
+<div id="resultsdiv" 
+		class="tableresults" 
+		data-hitssessionid="$hits.getSessionId()"
+		data-componenthome="$!searchhome/components" 
+		data-searchhome="$!searchhome/results"
+		data-category="$!category.getId()"
+		data-collectionid="$!librarycol.getId()" 
+		data-searchtype="$!searchtype" 
+		data-pagenum="$hits.getPage()" 
+		data-totalpages="$hits.getTotalPages()"
+		data-module="$!module">
+
+
+<div id="emresultscontent">
+
 
 #if ( $hits.size() == 0 )
 	$pages.include("${searchhome}/resultsactions.html",$context)
@@ -35,16 +50,19 @@ $pages.include("${searchhome}/resultsactions.html",$context)
 
 <div id="emselectable" 
 		class="emselectable" 
-		data-view="$viewpath"
-		data-viewid="$viewid" 
+		data-view="$!viewpath"
+		data-viewid="$!viewid" 
 		data-id="$!id"
-		data-searchtype="$searchtype" 
+		data-searchtype="$!searchtype" 
 		data-searchhome="$!searchhome"
 		data-editpath="$home$editpath?$args&edit=true&oemaxlevel=1" 
 		#if($viewid)data-targetdiv="${viewid}editor"#end>
 
 
-<table class="table table-striped table-hover" id="main-results-table" data-resultsarea="resultsarea" data-hitssessionid="$!hits.sessionId">
+<table class="table table-striped table-hover" 
+		id="main-results-table" 
+		data-resultsarea="resultsarea" 
+		data-hitssessionid="$!hits.sessionId">
 
 <thead>
 <tr id="tableheader" class="tableheader" >
@@ -64,13 +82,8 @@ $pages.include("${searchhome}/resultsactions.html",$context)
     	    </ul>
     	</div>
     	</div>
-    	
-    	
 	</th>
 
-
-	
-	
 #end
 
 #set( $edit = $context.getRequestParameter("editheader"))
@@ -82,10 +95,15 @@ $pages.include("${searchhome}/resultsactions.html",$context)
 	
 		<th  class="sortable #if( $edit)editcolumnheader #end #if( $sortby.startsWith($detail.getId() ) ) currentsort #if( $sortby.endsWith("Up") ) up #else down #end #end tableheader-$detail.id" id="th-$detail.id" sortby="$detail.id" data-sortby="$detail.id">
 					
-			<div id="$detail.id" hitssessionid="$hits.getSessionId()"  editing="$edit" class="headerdraggable headerdroppable"> 
+			<div id="$detail.id" 
+					hitssessionid="$hits.getSessionId()"  
+					editing="$edit" 
+					class="headerdraggable headerdroppable"> 
 					#text( $detail.name )
 					#if( $edit)
-						<a class="baseemenableonhover ajax edit-table-header" targetdivinner="resultsdiv" href="$home$searchhome/addremovecolumns.html?oemaxlevel=1&searchtype=${moduleid}&hitssessionid=$hits.getSessionId()&editheader=true&removecolumn=$detail.id"><i class="fas fa-times"></i></a>
+						<a class="baseemenableonhover ajax edit-table-header" 
+							targetdivinner="resultsdiv" 
+							href="$home$searchhome/addremovecolumns.html?oemaxlevel=1&searchtype=${moduleid}&hitssessionid=$hits.getSessionId()&editheader=true&removecolumn=$detail.id"><i class="fas fa-times"></i></a>
 					
 					#elseif ($sortby.startsWith($detail.getId()))
 		 				#if($sortby.endsWith("Up"))
@@ -195,3 +213,4 @@ $context.putPageValue('detail',  $detail)
 
 ## $pages.include("/${content.searchhome}/actions.html", $context)
 		</div>
+</div>

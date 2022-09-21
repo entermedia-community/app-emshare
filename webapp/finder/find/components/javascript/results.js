@@ -929,6 +929,7 @@ jQuery(document).ready(function(url,params)
 	{
 		  var hitssessionid = $('#resultsdiv').data('hitssessionid');
 		   var options = $('#resultsdiv').data();
+		   var componenthome = options.componenthome;
 		   options.oemaxlevel = 1;
 		   
 		   var status = $('input[name=pagetoggle]').is(':checked');
