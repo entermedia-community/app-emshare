@@ -47,7 +47,7 @@ jQuery(document).ready(function(url,params)
 					}
 				}
 				else {
-					href = siteroot+"/views/modules/"+moduleid+"/changeresultview.html?oemaxlevel=1";
+					href = siteroot+"/views/modules/"+moduleid+"/components/results/changeresultview.html?oemaxlevel=1";
 				}
 			}
 			var args = { hitssessionid: select.data("hitssessionid") ,
