@@ -890,11 +890,14 @@ jQuery(document).ready(function(url,params)
 	});
 	
 	
+	//Selections
+	
 	lQuery(".resultsselection input.selectionbox").livequery("change", function(e) 
 	{
 		var clicked = $(this);
 		var dataid = $(clicked).data('dataid');
 		var data = $('#resultsdiv').data();
+		var componenthome = data.componenthome;
 		
 		data['dataid'] = dataid;
 		var targetdiv = componenthome + "/results/toggle.html";
