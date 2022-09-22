@@ -1,7 +1,6 @@
 #set($moduleid = $page.get("module") )
-#set($defaultview = $userprofile.getDefaultViewForModule($moduleid) )
 #set($searchhome = $page.get("searchhome") )
-
+#set($isentity = $module.get("isentity"))
 #set($viewid = "${moduleid}resultstable")
 #set($viewpath = "${moduleid}/${moduleid}resultstable")
 
@@ -57,16 +56,28 @@ $pages.include("${searchhome}/resultsactions.html",$context)
 
 
 <div id="messagearea"> </div>
-
+#set($defaultview = $userprofile.getDefaultViewForModule($moduleid) )
+#if($defaultview)
+ 	#set($defaultviewid = $defaultview.id )
+#end
+#if(!$defaultviewid)
+	#if($isentity == true)
+		#set($defaultviewid = "${moduleid}generalmetadata" )
+	#else
+		#set($defaultviewid = "${moduleid}general" )
+	#end
+#end
+    
 <div id="emselectable" 
 		class="emselectable" 
-		data-view="$!viewpath"
-		data-viewid="$!viewid" 
+		data-viewid="$!defaultviewid"
+		data-hitssessionid="$hits.getSessionId()" 
 		data-id="$!id"
 		data-searchtype="$!searchtype" 
 		data-searchhome="$!searchhome"
-		data-editpath="$home$editpath?$args&edit=true&oemaxlevel=1" 
-		#if($viewid)data-targetdiv="${viewid}editor"#end>
+		data-editpath="$!home$!editpath?$!{args}&edit=true&oemaxlevel=1" 
+		data-targetdiv="moduleresultscontainer"
+		data-clickurl="$!home$!{content.searchhome}/edit/edit.html?hitssessionid=$!{hits.sessionId}&detailsreadonly=$!readonly">
 
 
 <table class="table table-striped table-hover" 
@@ -126,11 +137,11 @@ $pages.include("${searchhome}/resultsactions.html",$context)
 			</div>
 		 </th>
 	#end
-
 </tr>
 </thead>
+
 <tbody>
-    
+
 #set( $even = true )
 #set($count = 0)
 #foreach ( $cell in $hits.getPageOfHits() )
@@ -139,44 +150,39 @@ $pages.include("${searchhome}/resultsactions.html",$context)
     $context.putPageValue('cell', $cell)
     
 	#set( $clink = "$home${content.linkprefix}${cell.id}${content.linksuffix}" )
-        
-        <tr  rowid="$home$content.searchhome/edit/edit.html?id=${cell.id}&viewid=$defaultview.id&viewpath=$moduleid/$defaultview.id&hitssessionid=${hits.sessionId}&searchtype=$moduleid&detailsreadonly=$readonly">
+
+    ##<tr  rowid="$home$content.searchhome/edit/edit.html?id=${cell.id}&viewid=$!{defaultviewid}&viewpath=$moduleid/$!{defaultviewid}&hitssessionid=${hits.sessionId}&searchtype=$moduleid&detailsreadonly=$readonly">
+    <tr  rowid="$!{cell.id}">
    
     
 #if($content.isPropertyTrue("showactions"))
 
 	<td class="borderedcell checkbox resultsselection" noclick="true"> 
 		
-<input type="checkbox" class="selectionbox" name="count" value="" #if($hits.isSelected(${cell.id})) checked #end data-dataid="${cell.id}" />
+		<input type="checkbox" class="selectionbox" name="count" value="" #if($hits.isSelected(${cell.id})) checked #end data-dataid="${cell.id}" />
 
-##<input type="checkbox" class="moduleselectionbox" name="count" value="" #if($hits.isSelectedOnPage(${cell.id})) checked #end data-dataid='${cell.id}' data-hitssessionid='$hits.sessionId' />
-<div id="check_${count}">
-</div>
-
-</td>
-
+		##<input type="checkbox" class="moduleselectionbox" name="count" value="" #if($hits.isSelectedOnPage(${cell.id})) checked #end data-dataid='${cell.id}' data-hitssessionid='$hits.sessionId' />
+		<div id="check_${count}"></div>
+	</td>
 #end
-
 
 #foreach( $detail in $resultdetail )
-<td class="editfield highlightMe tablecell-$detail.id">
-#set($val = false)	
-#set( $val =  $cell.get($detail.id) )
-    	#if( !$val && $detail.render )	
-	#set($val = $searcherManager.getValue($catalogid,$detail.render, $cell.properties) ) 
-#end	
-#if( !$val )
-	#set($val = "")	
-#end		
-$context.putPageValue('val',  $val)
-$context.putPageValue('detail',  $detail)
-   <div id="edit_${cell.id}_$detail.id" class="popupdetails tablecell-$!{detail.id}-#esc($val)" data-id="${cell.id}">
-        $pages.include("${searchhome}/cell.html", $context)
-    </div>
-</td>
+	<td class="editfield highlightMe tablecell-$detail.id">
+	#set($val = false)	
+	#set( $val =  $cell.get($detail.id) )
+	    	#if( !$val && $detail.render )	
+		#set($val = $searcherManager.getValue($catalogid,$detail.render, $cell.properties) ) 
+	#end	
+	#if( !$val )
+		#set($val = "")	
+	#end		
+	$context.putPageValue('val',  $val)
+	$context.putPageValue('detail',  $detail)
+	   <div id="edit_${cell.id}_$detail.id" class="popupdetails tablecell-$!{detail.id}-#esc($val)" data-id="${cell.id}">
+	        $pages.include("${searchhome}/cell.html", $context)
+	    </div>
+	</td>
 #end
-
-
 </tr>
 #set($count = $count + 1)
 #end

@@ -1089,6 +1089,7 @@ uiload = function() {
 			var table = row.closest("table");
 			var id = row.attr("rowid");
 			// var url = emselectable.data("clickpath");
+			
 			var url = table.data("clickpath");
 			var form = emselectable.find("form");
 			var data = row.data();
@@ -1128,7 +1129,27 @@ uiload = function() {
 					parent.document.location.href = link;
 				}
 			} else {
-				parent.document.location.href = id;
+				//verify row url
+				var clickurl = emselectable.data("clickurl");
+				if (clickurl != "") {
+					var targetdiv = emselectable.data("targetdiv");
+					var options = emselectable.data();
+					options.id = id;
+					if(targetdiv != '') {
+						jQuery.ajax({
+							url:  clickurl,
+							data: options,
+							success: function(data) {
+								$("#"+targetdiv).html(data);
+							}
+						});
+						
+					}
+				}
+				else if(id!="") {
+					//legacy modules
+					parent.document.location.href = id;
+				}
 			}
 		}
 	});
