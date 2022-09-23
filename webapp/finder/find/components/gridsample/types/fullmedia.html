@@ -1,4 +1,20 @@
-#set($asset = $mediaarchive.getAsset($hit.id))
+<div class="masonry-grid" 
+data-maxheightX="$!mediaarchive.getCatalogSettingValue('stacked_gallery_imagesize')"
+data-maxheight="180" 
+data-cellpadding="4"
+data-makebox="true"
+data-singlepage="true"  >
+
+
+
+#set($count = 0)
+#set($viewerlink = $content.get("assetviewerlink") )
+#set($stackedfield = $mediaarchive.getCatalogSettingValue("stackedgalleryfield"))
+
+#foreach( $hit in $hits.getPageOfHits())
+	
+	$context.putPageValue("hit", $hit)
+	#set($asset = $mediaarchive.getAsset($hit.id))
 	$context.putPageValue("asset", $asset)
 	
 	#set($type = $hit.getSearchHit().getType())
@@ -15,8 +31,19 @@
 	#set($assetheight = $mediaarchive.getRealImageHeight($hit))
 	#set($click = "$siteroot$viewerlink?hitssessionid=${hits.getSessionId()}&assetid=${hit.id}")
 	#set($isselected = $hits.isSelectedOnPage(${hit.id}) )
-<div class="masonry-grid-cell">
-<div class="grid-thumbimage" data-assetid="$!hit.id">
+       
+	<div class="masonry-grid-cell stackedplayer-cell assetdraggable resultsassetcontainer #if($isselected) emrowselected #end" 
+		 id="gallerycell_${hit.id}"
+		 data-assetid="$hit.id" 
+		 data-width="$assetwidth" 
+		 style="height:180px;width:250px;"
+		 data-height="$assetheight">
+		<div class="grid-cell-hover"></div>
+		<div class="grid-gallery-checkbox resultsselection">
+			<input type="checkbox" class="selectionbox" name="count" value="${hit.id}" 
+		        	#if($isselected) checked #end data-dataid="${hit.id}" />          
+		</div>
+	    	    <div class="grid-thumbimage" data-assetid="$!hit.id">
 	    	    	#if(!$rendertype || $type =="rendertype")
 	    	    		#set( $rendertype = "mime" )
 	    	    	#elseif( $rendertype =="video")
@@ -102,4 +129,13 @@
 			        #end 
 		        	</div>
 		       </div>
+		 
+		 
+		        	
+		  
+		</div>
+       #set ( $count = $count + 1) 
+   
+	#end
+
 </div>

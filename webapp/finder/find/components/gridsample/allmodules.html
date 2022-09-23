@@ -23,7 +23,7 @@
    	#set( $favorites = $userprofile.get("favorites_"+$module.id))
 	$context.putPageValue("favorites", $favorites)
     	
-   	#if( $rendertype == "media")
+   	#if( $rendertype == "fullmedia")
    		
    		<div class="emgrid-module emgrid-module-$rendertype">
 	   		<div class="emgrid-module-$rendertype-inside"  id="modulesearchassetmodule">
@@ -61,7 +61,12 @@
 	     	#if ($module.moduleicon)
 	     		#set($moduleicon = $module.moduleicon)
 	     	#end
-	     	#set($entityurl = "$siteroot$apphome/views/modules/$module.id/entity.html")
+	     	
+	     	#if($module.id=="asset")
+	     		#set($entityurl = "$siteroot$apphome/views/modules/$module.id/index.html")
+	     	#else
+	     		#set($entityurl = "$siteroot$apphome/views/modules/$module.id/entity.html")
+	     	#end
 			<a href="$entityurl" class="ajax" data-targetdivinner="applicationcontent" data-oemaxlevel="3" data-updateurl="true" title="$module.getName()">
 			<img src="$siteroot$apphome/theme/images/entity/${moduleicon}.svg" style="height: 24px;"> 
 			

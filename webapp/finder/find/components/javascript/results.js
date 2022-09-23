@@ -1205,7 +1205,11 @@ checkScroll = function()
    resultsdiv.data("pagenum",page);
    
    
-   var link = componenthome + "/results/stackedgallery.html";
+   var stackedviewpath = resultsdiv.data("stackedviewpath");
+   if (!stackedviewpath) {
+	   stackedviewpath = "stackedgallery.html"
+   }
+   var link = componenthome + "/results/" + stackedviewpath;
    var collectionid = $('#resultsdiv').data("collectionid");
    var params = {
 	"hitssessionid":session,
