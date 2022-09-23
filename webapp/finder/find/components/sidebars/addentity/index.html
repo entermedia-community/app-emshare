@@ -23,7 +23,7 @@
 <ul class="sidebar-list auto-active-container" id="sidebar-entities">
 	#set( $urlbase = "$siteroot$applink/views/modules" )
 	
-	#if( $canviewupload )
+	#if(1==2 && $canviewupload )
 		<li id="sidebar-list-upload" #if( $module.id == "asset") class="current" #end >
 		<a class="ajax auto-active-link"
 			data-targetdivinner="applicationmaincontent" 
@@ -33,11 +33,14 @@
 	#end
 	
 	#foreach ( $amodule in $userprofile.getEntities() )
-		#if( $amodule.id != "asset")
+		#set($oemaxlevel = 2)
 		<li class="#if($moduleid==$amodule.id) current #end" >
-		<a class=" ajax TODOautocloseside auto-active-link " data-targetdiv="applicationcontent" data-oemaxlevel="2" data-updateurl="true" data-hidefooter="true" 
-		href="$urlbase/${amodule.id}/index.html">$amodule</a></li>
-		#end	
+		<a class=" ajax TODOautocloseside auto-active-link " 
+			data-targetdiv="applicationcontent" 
+			data-updateurl="true" 
+			data-hidefooter="true" 
+			href="$urlbase/${amodule.id}/index.html?oemaxlevel=$!oemaxlevel">$amodule</a></li>
+			
 	#end
 </ul>
 </div>

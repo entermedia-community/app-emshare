@@ -8,12 +8,15 @@ import org.openedit.data.Searcher
 import org.openedit.hittracker.HitTracker
 import org.openedit.repository.ContentItem
 
+import groovy.util.logging.Log
+
 public void init()
 {
-		MediaArchive archive = context.getPageValue("mediaarchive");//Search for all files looking for videos
+		MediaArchive archive = context.getPageValue("mediaarchive");
 		Searcher searcher = archive.getAssetSearcher();
 		HitTracker assets = searcher.query().all().not("editstatus","7").sort("id").search();
 		assets.enableBulkOperations();
+		assets.setHitsPerPage(500);
 		String ids = context.getRequestParameter("assetids");
 		if( ids != null )
 		{
@@ -24,25 +27,36 @@ public void init()
 
 		List assetsToSave = new ArrayList();
 		MetaDataReader reader = moduleManager.getBean("metaDataReader");
+		log.info("metadatareader assets to read: " + assets.size());
+		Integer count = 0;
 		for (Data hit in assets)
 		{
+			log.info("metadatareader loading asset: ${hit.id}");
 			Asset asset = searcher.loadData(hit);
-
 			if( asset != null)
 			{
+				count = count +1;
 				ContentItem content = archive.getOriginalContent( asset );
+				log.info("metadatareader asset (${count}) content ${hit.id}: " + content.toString());
 				reader.populateAsset(archive, content, asset);
+				log.info("metadatareader asset populated ${hit.id}");
 				assetsToSave.add(asset);
-				if(assetsToSave.size() == 1000)
+				if(assetsToSave.size() == 300)
 				{
+					log.info("metadatareader about to save 300 assets");
 					archive.saveAssets( assetsToSave );
+					log.info("metadatareader saved 300 assets");
 					assetsToSave.clear();
-					log.info("saved 1000 metadata readings");
+					count = 0;
 				}
 			}
+			else
+			{
+				log.info("metadatareader error loading asset: ${hit.id}");
+			}
 		}
-		archive.saveAssets assetsToSave;
-		log.info("metadata reading complete");
+		archive.saveAssets(assetsToSave);
+		log.info("metadatareader reading complete");
 }
 
 init();
