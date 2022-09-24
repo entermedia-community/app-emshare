@@ -3063,6 +3063,8 @@ jQuery(window).on('resize',function(){
 	
 	
 });
+
+
 jQuery(document).on('domchanged',function(){
 	gridResize(); //This calls checkScroll. Makes sure this is last after any actions
 	resizecolumns();
@@ -3078,6 +3080,26 @@ jQuery(document).on('emtreeselect',function(event){
 				target:"#categoryresults"
 			});
 			return false;
+});
+
+jQuery(window).on('ajaxsocketautoreload',function(){
+	
+	 $(".ajaxsocketautoreload").each(function() 
+	 {
+		 var cell = $(this);
+		 var path = cell.data("ajaxpath");
+		jQuery.ajax({
+			url: path, async: false, data: {}, success: function (data) {
+				cell.replaceWith(data);
+			},
+			xhrFields: {
+	            withCredentials: true
+	        },
+			crossDomain: true
+		});
+		
+	});
+
 });
 
 
