@@ -323,6 +323,11 @@ runajaxonthis = function(inlink,e)
 					hideOverlayDiv(overlay);
 				}
 			}
+			//Close Navbar if exists
+			var navbar = inlink.closest(".navbar-collapse");
+			if(navbar) {
+				navbar.collapse('hide');
+			}
 		});
 		
 		
