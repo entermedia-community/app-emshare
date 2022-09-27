@@ -1,5 +1,6 @@
-#set($module = $searcherManager.getData($catalogid, "module", $context.findValue("module") ))
+###set($module = $searcherManager.getData($catalogid, "module", $context.findValue("module") ))
 #set($moduleid = $module.id)
+
 #set($defaultview = $userprofile.getDefaultViewForModule($module.id) )
 
 #set($resulttype = $userprofile.get("${module.id}-display"))
@@ -22,7 +23,7 @@
 		<a  
 		class="emdialog"  
 		title="$module: [[Add New]]"
-		href="$siteroot$applink/components/upload/entities/addnewentity.html?viewid=${module.id}addnew&searchtype=${module.id}&targetdiv=applicationmaincontent"
+		href="$siteroot$applink/components/upload/entities/addnewentity.html?viewid=${moduleid}addnew&searchtype=${moduleid}&targetdiv=applicationmaincontent"
 		data-hidefooter="true">
 		[[Add New]]</a>
 	</li> 
@@ -51,13 +52,13 @@
 				<li>
 					<a class="ajax table-edit-close" 
 						data-targetdiv="resultsviewcontainer" 
-						href="$siteroot$componenthome/results/index.html?oemaxlevel=1&searchtype=$!searchtype&hitssessionid=$hits.getSessionId()&editheader=&moduleid=$!moduleid"><i class="fas fa-times"></i></a>
+						href="$siteroot$componenthome/results/index.html?oemaxlevel=1&searchtype=$!moduleid&hitssessionid=$!hits.getSessionId()&editheader=&moduleid=$!moduleid"><i class="fas fa-times"></i></a>
 				</li>
 				<li class="resultsnavtitem" style="min-width:180px">
 					#set ($alldetails = $searcher.getUserPropertyDetails() )
 					<select class="form-control form-control-sm select2 tableresultsaddcolumn" 
 							name="addcolumn"
-							data-componenthome="$siteroot$componenthome/results/addremovecolumns.html?oemaxlevel=1&searchtype=$!searchtype&hitssessionid=$hits.getSessionId()&editheader=true&moduleid=$!moduleid&viewid=$!{moduleid}resultstable"
+							data-componenthome="$siteroot$componenthome/results/addremovecolumns.html?oemaxlevel=1&searchtype=$!moduleid&hitssessionid=$hits.getSessionId()&editheader=true&moduleid=$!moduleid&viewid=$!{moduleid}resultstable"
 							data-targetdiv="resultsviewcontainer" 
 							data-allowclear="false" >
 						<option>[[Add Column]]</option>
@@ -87,10 +88,10 @@
 				name="resultview" 
 				id="selectresultview"  
 				data-hitssessionid="$!hits.getSessionId()" 
-				data-searchtype="$!searchtype"
-				data-moduleid="$module.id"
+				data-searchtype="$!moduleid"
+				data-moduleid="$moduleid"
 				data-ismodulesearch = "$!ismodulesearch" 
-				data-componenthome = "$!componenthome"
+				data-componenthome = "$apphome/views/modules/$moduleid/components"
 				data-page="$!hits.getPage()" 
 				data-showremoveselections="$!showremoveselections" 
 				data-collectionid="$!librarycol.getId()"
