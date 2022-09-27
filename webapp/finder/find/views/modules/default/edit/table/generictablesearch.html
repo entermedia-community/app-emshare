@@ -1,0 +1,69 @@
+
+#set($searchtype = $context.getRequestParameter("submodulesearchtype"))
+#set($parentsearchtype = $context.getRequestParameter("parentsearchtype"))
+<div  id="search-collections" >
+	<div id="searcharea" >
+
+		
+	<form id="dialogsearchform" 
+		style="margin-bottom:10px;" 
+		class="autosubmit" 
+		data-targetdiv="submodulepicker"
+		data-oemaxlevel="1" 
+		action="${page.directory}/generictablesearchresults.html"
+		>
+		
+		<input type="hidden" name="searchtype" value="${searchtype}" />
+		<input type="hidden" name="moduleid" value="${searchtype}" />
+		<input type="hidden" name="sortby" value="name" />
+		<table style="width:100%;">
+		<tr>
+		<td>
+
+		<div  class="row inlinesearch" >
+		<div class="col">
+			<input name="operation" value="contains" type="hidden">
+			<input name="field" value="description" type="hidden">
+			<input type="text" class="form-control detail_name textinput autosubmited " 
+					autocomplete="off" 
+					value="" 
+					id="name.value" 
+					name="description.value">
+		</div>	
+		</div>
+		</td>
+##		#if($canviewsettings)
+##		<td style="width:20px; padding:0; position:relative">
+##			<a style="position:absolute; top:3px; right:3px;"
+##				class=" edit-icon"
+##				href="$applink/views/settings/modules/librarycollection/metadata/viewssystem/index.html?viewid=${viewid}&viewpath=${viewpath}"
+##				title="[[Edit Search Form Fields]]">
+##			<i class="fas fa-edit"></i>
+##			</a>
+##		</td>
+##		#end
+		</tr>
+		</table>
+	</form>
+
+#set ($fieldexternalid = $context.getRequestParameter("fieldexternalid"))
+#set ($fieldexternalvalue = $context.getRequestParameter("fieldexternalvalue"))
+	
+	<div id="submodulepicker" 
+		data-targetdiv="editlayout" 
+		data-oemaxlevel="1" 
+		data-submodulesearchtype="$!{searchtype}" 
+		data-hitssessionid="$!hits.sessionId"
+		data-fieldexternalid="$fieldexternalid"
+		data-fieldexternalvalue="$fieldexternalvalue"
+		data-savepath="${page.directory}/generictablesavesubmodule.html"
+		
+		data-searchtype="$!{parentsearchtype}"
+		data-viewid="$viewid"
+		data-viewpath="$viewpath"
+		data-id="$id"
+		>
+		<div class="clearfix"></div>
+	</div>
+	</div>
+</div>	

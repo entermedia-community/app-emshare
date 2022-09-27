@@ -1,0 +1,25 @@
+<div id="emresultscontent">
+#set($searchtype = $context.getRequestParameter("searchtype"))
+$context.putPageValue("searchtype", $searchtype)
+$context.putPageValue("searcher",$searcher)
+
+##set($viewid = "pickerresults")
+##$context.putPageValue("viewid", $viewid)
+
+#set ($details = $searcher.getDetailsForView("user/${viewid}", $userprofile))
+$context.putPageValue("details",$details)
+$context.putPageValue("module",$moduleid)
+
+$context.putPageValue("hits",$resultshits)
+
+$pages.include("${apphome}/components/table/results.html", $context)
+
+</div>
+
+
+
+<a href="$applink/collective/channel/subscribers/addnew.html?collectionid=${collectionid}" 
+class="emdialog btn btn-sm btn-light" title="[[Add New User to Project]]">
+<i class="fas fa-plus"></i> [[Create New]]
+</a>
+	

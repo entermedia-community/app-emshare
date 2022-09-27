@@ -33,17 +33,17 @@ $context.putPageValue("searchhome", $searchhome)
 	#set( $link = "${page.directory}/generictableedit.html" )
 #end
 
-#set($jumptomodule = $context.getRequestParameter("jumptomodule"))
+#set( $jumptomodule = $context.getRequestParameter("jumptomodule"))
 
-#set ($id = $context.getRequestParameter("id"))
+#set( $id = $context.getRequestParameter("id"))
 
 #set( $args = "id=$id&candelete=$candelete&editpath=$editpath&parentid=$parentid&jumptomodule=$!jumptomodule&catalogid=$catalogid&searchtype=$searchtype&fieldexternalid=$fieldexternalid&fieldexternalvalue=$fieldexternalvalue&viewid=$viewid&viewpath=$viewpath&permissionname=$!permissionname&hitssessionid=$!hitssessionid&selectlink=$!link")
 #set( $argsnoid = "candelete=$candelete&jumptomodule=$!jumptomodule&parentid=$parentid&catalogid=$catalogid&searchtype=$searchtype&fieldexternalid=$fieldexternalid&fieldexternalvalue=$fieldexternalvalue&viewid=$viewid&viewpath=$viewpath&permissionname=$!permissionname&hitssessionid=$!hitssessionid")
 
-#set($viewdetailspath = $context.getRequestParameter("viewdetailspath"))
+#set( $viewdetailspath = $context.getRequestParameter("viewdetailspath"))
 
 
-#set ($passalong = "viewdetailspath=$!viewdetailspath&jumptomodule=$!jumptomodule&candelete=$candelete&viewid=$viewid&viewpath=$viewpath&parentid=$parentid&hitssessionid=$!hitssessionid&selectlink=$!link&fieldexternalid=$fieldexternalid&fieldexternalvalue=$fieldexternalvalue&$fieldexternalid=$!fieldexternalvalue")
+#set( $passalong = "viewdetailspath=$!viewdetailspath&jumptomodule=$!jumptomodule&candelete=$candelete&viewid=$viewid&viewpath=$viewpath&parentid=$parentid&hitssessionid=$!hitssessionid&selectlink=$!link&fieldexternalid=$fieldexternalid&fieldexternalvalue=$fieldexternalvalue&$fieldexternalid=$!fieldexternalvalue")
 #set( $passalong = $passalong.replace("=","%3D").replace("&","%26").replace(" ","%20"))
 
 #set( $showit = true )
@@ -53,22 +53,41 @@ $context.putPageValue("searchhome", $searchhome)
 	#set($edit = "true")
 #end
 
-#if( $showit )
+#if( $showit && $viewid)
 <div id="${viewid}editor" >
 
 		#set ($searcher = $searcherManager.getSearcher($catalogid, $searchtype))
 		#set( $viewdata = $searcher.getViewData($viewid) )
 		
-		<h4>$!context.getText($viewdata) </h4>
+		<h4>$!context.getText($viewdata)</h4>
 
 		$pages.include("/$applicationid/components/xml/table.html?$args&passalong=$passalong",$context)
 		
 		#if( !$parser.parseBoolean($edit) && ($caneditdata || $caneditasset) && !$print.equals("true"))
 	
+		#set($targetmodule = $mediaarchive.getCachedData("module", $viewdata.rendertable))
+	
+		
+		
+		##href="$apphome/components/upload/entities/addnewentity.html?viewid=${targetmodule.getId()}addnew&searchtype=${searchtype}"
+		
+		
 			<div class="addnew-generic">
 			<a class="btn btn-sm btn-primary ajax"  
+			
+			href="$home${page.directory}/generictablesearch.html?oemaxlevel=1&submodulesearchtype=$searchtype&fieldexternalid=$fieldexternalid&fieldexternalvalue=$fieldexternalvalue" 
+			data-targetdiv="${viewid}editor"
+			data-parentviewid="$viewid"
+			data-parentviewpath="$viewpath"
+			data-parentid="$id"
+			
+			data-hidefooter="true">[[Search]]</a>
+			
+			<a class="btn btn-sm btn-primary ajax"  
+			
 			href="$home$editpath?$argsnoid&oemaxlevel=1" 
-			targetdiv="${viewid}editor">[[Add New]]</a>
+			data-targetdiv="${viewid}editor"
+			data-hidefooter="true">[[Add New]]</a>
 			</div>
 		#end
 	
