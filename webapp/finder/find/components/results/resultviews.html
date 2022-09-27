@@ -1,4 +1,5 @@
-
+#set($searcher = $searcherManager.getSearcher($catalogid,$module.id))
+$context.putPageValue("searcher", $searcher)
 <div class="emresultscontainer emresults$!resultview" id="resultsviewcontainer" data-resultview="$!resultview" data-moduleid="$module">
 			#if (!$resultview || $resultview == 'table')
 				$context.putPageValue("showhover", "false")
@@ -8,6 +9,7 @@
 				$context.putPageValue("pickable", false )
 				$context.putPageValue("resultstype", "table" )
 				$context.putPageValue("moduleid", $module.id)
+				$context.putPageValue("searchtype", $module.id)
 				$pages.include("$componenthome/results/types/table.html", $context)
 				##$apphome/views/modules/$moduleid/results/types/
 			#elseif ($resultview == "hierarchy")

@@ -2868,7 +2868,6 @@ uiload = function() {
 		var rowid = row.attr("rowid");
 		
 		var targetdiv = picker.data("targetdiv");
-		var targetdiv = $("#" + targetdiv);
 		var nextpage = picker.data('savepath');
 		var options = picker.data();
 		options.submoduleid = rowid;
@@ -2877,6 +2876,7 @@ uiload = function() {
 			data: options, 
 			success: function (data) {
 				$("#"+targetdiv).html(data);
+				console.log("reloading "+targetdiv)
 				//$(window).trigger( "resize" );
 			}
 		});
