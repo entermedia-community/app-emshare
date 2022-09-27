@@ -4,6 +4,11 @@
 #set($parentviewid = $context.getRequestParameter("parentviewid"))
 #set($parentviewpath = $context.getRequestParameter("parentviewpath"))
 #set($parentid = $context.getRequestParameter("parentid"))
+
+#set ($fieldexternalid = $context.getRequestParameter("fieldexternalid"))
+#set ($fieldexternalvalue = $context.getRequestParameter("fieldexternalvalue"))
+
+
 <div  id="search-collections" >
 	<div id="searcharea" >
 
@@ -19,6 +24,11 @@
 		<input type="hidden" name="searchtype" value="${searchtype}" />
 		<input type="hidden" name="moduleid" value="${searchtype}" />
 		<input type="hidden" name="sortby" value="name" />
+		#if($fieldexternalid)
+			<input name="operation" value="not" type="hidden">
+			<input name="field" value="$fieldexternalid" type="hidden">
+			<input name="${fieldexternalid}.value" value="$fieldexternalvalue" type="hidden">
+		#end
 		<table style="width:100%;">
 		<tr>
 		<td>
@@ -49,8 +59,6 @@
 		</table>
 	</form>
 
-#set ($fieldexternalid = $context.getRequestParameter("fieldexternalid"))
-#set ($fieldexternalvalue = $context.getRequestParameter("fieldexternalvalue"))
 	
 	<div id="submodulepicker" 
 		data-targetdiv="editlayout" 
@@ -66,6 +74,9 @@
 		data-viewpath="$!parentviewpath"
 		data-id="$!parentid"
 		>
+		
+		$pages.include("${page.directory}/generictablesearchresults.html?searchtype=${searchtype}&sortby=name&field=${fieldexternalid}&${fieldexternalid}.value=${fieldexternalvalue}&operation=not")
+		
 		<div class="clearfix"></div>
 	</div>
 	</div>
