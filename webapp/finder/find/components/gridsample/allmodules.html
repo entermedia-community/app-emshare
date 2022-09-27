@@ -13,17 +13,18 @@
 	$context.putPageValue("module", $module)
 	$context.putPageValue("moduleid", $module.id)
 	
-   	#set($rendertype = "entity")
-   	#if ($module.modulerendertype)
-   		#set($rendertype = $module.modulerendertype)
+   	#set($modulerendertype = "entity")
+   	#if ($module.homepagerendertype)
+   		#set($modulerendertype = $module.homepagerendertype)
    	#end
-   	$context.putPageValue("rendertype", $rendertype)
+   	$context.putPageValue("modulerendertype", $modulerendertype)
+   	
    	
   	
    	#set( $favorites = $userprofile.get("favorites_"+$module.id))
 	$context.putPageValue("favorites", $favorites)
-    	
-   	#if( $rendertype == "fullmedia")
+    
+   	#if( $modulerendertype == "fullmedia")
    		
    		<div class="emgrid-module emgrid-module-$rendertype">
 	   		<div class="emgrid-module-$rendertype-inside"  id="modulesearchassetmodule">
@@ -52,7 +53,36 @@
 					<div class="clearfix"></div>
 				#end
    		</div>
-   		
+   	#elseif( $modulerendertype == "expanded")
+   		<div class="emgrid-expanded">
+   		<div class="emgrid-subtitle">
+   		<h3>
+	     	#set($moduleicon = "entity")
+	     	#if ($module.moduleicon)
+	     		#set($moduleicon = $module.moduleicon)
+	     	#end
+	     	
+	     	#if($module.id=="asset")
+	     		#set($entityurl = "$siteroot$apphome/views/modules/$module.id/index.html")
+	     	#else
+	     		#set($entityurl = "$siteroot$apphome/views/modules/$module.id/entity.html")
+	     	#end
+			<a href="$entityurl" class="ajax" data-targetdivinner="applicationcontent" data-oemaxlevel="3" data-updateurl="true" title="$module.getName()">
+			<img src="$siteroot$apphome/theme/images/entity/${moduleicon}.svg" style="height: 24px;"> 
+			
+			#if( $idhits.size() < 7) ##this is safe
+				#set( $count = $idhits.size())
+			#else
+				#set( $count = $filter.getCount($module.id) )
+			#end
+	
+			$module.getName() <span class="count">($count)</span>
+			</a>
+		</h3>
+		</div>
+		$pages.include("$apphome/views/modules/$module.id/components/results/index.html?module=${module.id}", $context)
+		<div class="clearfix"></div>   
+		</div>		
    	#else
    		<div class="emgrid-module emgrid-column emgrid-module-$rendertype">
    		<div class="emgrid-subtitle">
@@ -81,11 +111,17 @@
 		</h3>
 		
    		</div>
+		#set($rendertype = "entity")
+	   	#if ($module.modulerendertype)
+	   		#set($rendertype = $module.modulerendertype)
+	   	#end
+	   	$context.putPageValue("rendertype", $rendertype)
 		<div id="galleryimg-${rendertype}" 
 				class='emgrid #if($section != "favorites")emgridlimited#end entitiescontainer' 
 				data-colwidth="300" 
 				data-cellpadding="25"
-				data-entityrenderurl="$siteroot$apphome/components/gridsample/gridcell.html">
+				data-entityrenderurl="$siteroot$apphome/components/gridsample/gridcell.html"
+				data-rendertype="$rendertype">
 			#foreach( $hit in $idhits)
 				$context.putPageValue("hit", $hit)
 			    $pages.include("$apphome/components/gridsample/gridcell.html", $context)

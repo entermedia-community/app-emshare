@@ -1,5 +1,5 @@
 
-<div class="emresultscontainer emresults$!resultview" id="resultsviewcontainer" data-resultview="$!resultview">
+<div class="emresultscontainer emresults$!resultview" id="resultsviewcontainer" data-resultview="$!resultview" data-moduleid="$module">
 			#if (!$resultview || $resultview == 'table')
 				$context.putPageValue("showhover", "false")
 				$context.putPageValue("thumbsize", "crop")
@@ -7,6 +7,7 @@
 				$context.putPageValue("hideheader", "false")
 				$context.putPageValue("pickable", false )
 				$context.putPageValue("resultstype", "table" )
+				$context.putPageValue("moduleid", $module.id)
 				$pages.include("$componenthome/results/types/table.html", $context)
 				##$apphome/views/modules/$moduleid/results/types/
 			#elseif ($resultview == "hierarchy")
@@ -18,14 +19,14 @@
 				$context.putPageValue("pickable", false )
 				$pages.include("$componenthome/results/types/hierarchy.html", $context)
 			#elseif ($resultview == "stackedgallery")
-			
 				$context.putPageValue("showcaption", false)
 				$context.putPageValue("showhover", "false")
 				$context.putPageValue("thumbsize", "medium")
 				$context.putPageValue("showcaption", "false")
 				$context.putPageValue("hideheader", "false")
 				$context.putPageValue("pickable", false )
-				$pages.include("$componenthome/results/types/stackedmedia.html", $context)
+				
+				$pages.include("$componenthome/results/stackedmedia.html", $context)
 			#elseif ($resultview == "map")
 				$context.putPageValue("showcaption", false)
 				$context.putPageValue("showhover", "false")

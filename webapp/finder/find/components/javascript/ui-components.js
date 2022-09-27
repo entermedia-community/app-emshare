@@ -2859,6 +2859,30 @@ uiload = function() {
 		}
 	};
 	
+	
+	lQuery("#submodulepicker .rowclick").livequery("click", function(e) {
+		e.preventDefault();
+		$(this).closest(".modal").modal("hide");
+		var picker = $("#submodulepicker");
+		var row = $(this);
+		var rowid = row.attr("rowid");
+		
+		var targetdiv = picker.data("targetdiv");
+		var targetdiv = $("#" + targetdiv);
+		var nextpage = picker.data('savepath');
+		var options = picker.data();
+		options.submoduleid = rowid;
+		jQuery.ajax({
+			url: nextpage, 
+			data: options, 
+			success: function (data) {
+				$("#"+targetdiv).html(data);
+				//$(window).trigger( "resize" );
+			}
+		});
+	
+	});
+	
 
 
 

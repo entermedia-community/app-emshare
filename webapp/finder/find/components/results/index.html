@@ -1,9 +1,11 @@
-#set( $module = $content.module)
 #if(!$module)
 	#set($module = $context.getRequestParameter("module"))
 #end
 #if(!$module)
 	#set($module = $context.getRequestParameter("moduleid"))
+#end
+#if(!$module)
+	#set( $module = $content.module)
 #end
 
 ##fix module vs moduleid
@@ -54,14 +56,20 @@
 		#end
 	#elseif($moduleid=="asset")
 		#set($resultview = $userprofile.get("assetresultview"))
-##		#if(!$resultview)
-##			#set($resultview = $content.get("resultview"))
-##		#end
 		#if(!$resultview)
 			#set($resultview = "stackedgallery")
 		#end
 	#elseif($moduleid=="librarycollection")
 		#set($resultview = $content.resultview)
+		#if(!$resultview)
+			#if($librarycollectionassets)
+				##Show assets on collction
+				#set($resultview = $userprofile.get("librarycollectionassetsresultview"))
+				#if(!$resultview)
+					#set($resultview = "stackedgallery")
+				#end
+			#end
+		#end
 		#if(!$resultview)
 			#set($resultview = $userprofile.get("${moduleid}resultview"))
 		#end
@@ -83,12 +91,11 @@
 			#set($resultview = $content.resultview)
 		#end
 		#if(!$resultview)
-			#set($resultview = "grid")
+			#set($resultview = "table")
 		#end
 	#end
 	
 	$context.putPageValue("resultview",$resultview)
-	
 	
 	$pages.include("$componenthome/results/resultviews.html", $context)
 
