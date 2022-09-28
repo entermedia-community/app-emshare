@@ -48,10 +48,10 @@
 ##For Subtables on entities
 #set( $tabletype = $context.getRequestParameter("tabletype"))
 #if($tabletype == "subentity")
-	#set( $targetrendertype = $context.getRequestParameter("targetrendertype"))
 	#set( $targetdiv = $context.getRequestParameter("targetdiv"))
 	#set( $targetoemaxlevel = $context.getRequestParameter("targetoemaxlevel"))
 #end
+#set( $targetrendertype = $context.getRequestParameter("targetrendertype"))
 <div id="${searchtype}_table" class="tableholder">
    
 #if($candelete != "false")
@@ -66,6 +66,8 @@
 		#if($tabletype == "subentity")
 			data-clickurl="$componenthome/gridsample/preview/${targetrendertype}.html?oemaxlevel=$!targetoemaxlevel"
 			data-targetdiv="${targetdiv}"
+		#elseif($tabletype == "subentitydialog" && $targetrendertype)
+			data-emdialoglink="$componenthome/gridsample/preview/${targetrendertype}.html?searchtype=$!searchtype"
 		#else
 			data-editpath="$!home$!editpath?$args&edit=true&oemaxlevel=1" 
 			#if($viewid)data-targetdiv="${viewid}editor"#end
@@ -168,7 +170,7 @@
 
 #set($link = $context.getRequestParameter("selectlink"))
 
-#if($link)
+#if($tabletype != "subentitydialog" && $link)
 
 	#set($jumptomodule = $context.getRequestParameter("jumptomodule"))
 	#if( $jumptomodule && $jumptomodule == "true")

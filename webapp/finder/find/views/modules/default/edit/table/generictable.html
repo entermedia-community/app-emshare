@@ -80,16 +80,22 @@ $context.putPageValue("searchhome", $searchhome)
 
 		</div>
 		<div class="clearfix"></div>
-
+		#set($targetmodule = $mediaarchive.getCachedData("module", $viewdata.rendertable))
+		#set($targetmodulerendertype = $targetmodule.rendertype)
+		#if(!$targetmodulerendertype)
+			#set($targetmodulerendertype = "entity")
+		#end
+		#set($args ="$args&tabletype=subentitydialog&targetrendertype=$!{targetmodulerendertype}")
+		
 		$pages.include("/$applicationid/components/xml/table.html?$args&passalong=$passalong",$context)
 		
 		#if( !$parser.parseBoolean($edit) && ($caneditdata || $caneditasset) && !$print.equals("true"))
 	
-		#set($targetmodule = $mediaarchive.getCachedData("module", $viewdata.rendertable))
+		
 	
 		
 		
-		##href="$apphome/components/upload/entities/addnewentity.html?viewid=${targetmodule.getId()}addnew&searchtype=${searchtype}"
+		
 		
 		
 
