@@ -18,6 +18,17 @@
 
 
 #set( $assetshits = $mediaarchive.query("asset").hitsPerPage($assetsshown).match("category",$rootcategory).sort("assetaddeddateDown").search() )
+#if($assethits.size()>1)
 $context.putPageValue("assetshits", $assetshits)
 $context.putPageValue("thumbsize", "crop" )
+<div class="emgrid-entitymedia assetdropentity"
+       		id="attachedmedia$entityid" 
+       		data-moduleid="$moduleid" 
+       		data-entityid="$entityid"
+       		data-rootcategory="$librarycol.rootcategory" 
+       		data-assetsshown="$assetsshown"
+       		data-attachedmediaurl="$siteroot$componenthome/gridsample/types/librarycollection.html"
+       		data-targetdiv="emgridentity$!moduleid$!entityid"> 
 $pages.include("$componenthome/gridsample/types/attachedmedia.html",$context)
+</div>
+#end
