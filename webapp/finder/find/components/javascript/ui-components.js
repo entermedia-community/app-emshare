@@ -445,11 +445,19 @@ uiload = function() {
 					}
 				}
 				var targetdiv = form.data("targetdiv");
-				if (!targetdiv) {
+				if (targetdiv  === undefined) {
 					targetdiv = form.attr("targetdiv");
 				}
-				if (targetdiv) {
-					targetdiv = targetdiv.replace(/\//g, "\\/");   //TODO use $.escapeSelector ?
+				if (targetdiv  === undefined) {
+					targetdiv = form.data("targetdivinner");
+				}
+				targetdiv = $("#"+$.escapeSelector(targetdiv));
+				if(form.attr("action") == undefined) {
+					var action = targetdiv.data("saveaction");
+					if(action == undefined) {
+						action = form.data("defaultaction");
+					}
+					form.attr("action", action);
 				}
 
 				if (form.hasClass("showwaiting")) {
@@ -458,20 +466,23 @@ uiload = function() {
 							'<img src="' + apphome
 									+ '/theme/images/ajax-loader.gif">');
 				}
-				var oemaxlevel = form.data("oemaxlevel");
-				if (!oemaxlevel) {
+				
+				var oemaxlevel = targetdiv.data("oemaxlevel");
+				if(oemaxlevel == undefined) {
+					oemaxlevel = form.data("oemaxlevel");
+				}
+				if(oemaxlevel == undefined) {
 					oemaxlevel = 1;
 				}
+				targetdiv.data("oemaxlevel", oemaxlevel);
 
 				var data;
 				if(form.data("includesearchcontext") == true){
 					data = jQuery("#resultsdiv").data();
 					data.oemaxlevel = oemaxlevel;
-
 				}
-				
 				else{
-					data = {oemaxlevel:oemaxlevel};
+					data = targetdiv.data();
 				} 
 				
 				var formmodal = form.closest(".modal");
@@ -574,6 +585,10 @@ uiload = function() {
 				target : "#" + $.escapeSelector(targetdiv) 
 			});
 		});
+		$("input",form).on("focus", function(event) {
+			$("#"+$.escapeSelector(targetdiv)).show();
+		});
+		
 		$("input",form).on("keyup", function(event) {
 			
 				$(form).ajaxSubmit({

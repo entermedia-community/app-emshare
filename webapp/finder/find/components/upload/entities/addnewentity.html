@@ -22,11 +22,7 @@ $context.putPageValue("searcher",$mediaarchive.getSearcher($searchtype))
 
 
 #set($targetdiv = $context.getRequestParameter("targetdiv"))
-#if ($targetdiv == "entitypicker")
-	#set( $action = "$siteroot$applink/components/upload/entities/addnewentitysave.html")
-#else 
-	#set( $action = "$!siteroot$apphome/views/modules/$searchtype/edit/addnewentitysave.html")
-#end
+#set( $defaultaction = "$!siteroot$apphome/views/modules/$searchtype/edit/addnewentitysave.html")
 
 
 
@@ -37,7 +33,7 @@ $context.putPageValue("searcher",$mediaarchive.getSearcher($searchtype))
     		class="force-validate-inputs ajaxform autocloseform" 
     		data-targetdivinner="$!targetdiv"
     		method="post"  
-    		action="$action">
+    		data-defaultaction="$!defaultaction">
     	<input name="save" type="hidden" value="true" />
     	<input name="id" type="hidden" value="$!id" />
     	<input name="searchtype" type="hidden" value="$searchtype" />
@@ -51,13 +47,6 @@ $context.putPageValue("searcher",$mediaarchive.getSearcher($searchtype))
 #set( $origURL = $context.getRequestParameter("origURL" ) )
 #set( $moduleid = $context.findValue("module") )
 
-
-#set( $parentid = $context.getRequestParameter("parentid") )
-#set( $parentvalue = $context.getRequestParameter("parentvalue") )
-$predata.set($parentid, $parentvalue)
-#if($parentid)
-$context.putPageValue("data", $predata)
-#end
 
 $pages.include("/$applicationid/components/xml/detaileditor.html", $context)
 

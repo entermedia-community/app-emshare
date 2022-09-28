@@ -1,4 +1,3 @@
-
 #set($searchtype = $context.getRequestParameter("submodulesearchtype"))
 #set($parentsearchtype = $context.getRequestParameter("parentsearchtype"))
 #set($parentviewid = $context.getRequestParameter("parentviewid"))
@@ -11,8 +10,18 @@
 
 <div  id="search-collections" >
 	<div id="searcharea" >
+	<div style="padding:0 0 20px;">
+	#set($predata = $mediaarchive.getSearcher($searchtype).createNewData())
+	$predata.setValue($fieldexternalid, $fieldexternalvalue)
+	$context.putPageValue("data", $predata)
 
-		
+	
+	$pages.include("$apphome/components/upload/entities/addnewentity.html?viewid=${searchtype}addnew&searchtype=${searchtype}&targetdiv=modulesubtable")
+	<div class="clearfix"></div>
+	</div>
+<hr>
+<h5 style="margin-bottom:10px;">[[Or Choose From Existing]]</h5>
+
 	<form id="dialogsearchform" 
 		style="margin-bottom:10px;" 
 		class="autosubmit" 
@@ -62,7 +71,7 @@
 
 	
 	<div id="submodulepicker" 
-		data-targetdiv="editlayout" 
+		data-targetdiv="modulesubtable" 
 		data-oemaxlevel="1" 
 		data-submodulesearchtype="$!{searchtype}" 
 		data-hitssessionid="$!hits.sessionId"
@@ -74,18 +83,13 @@
 		data-viewid="$!parentviewid"
 		data-viewpath="$!parentviewpath"
 		data-id="$!parentid"
+		style="display: none;"
 		>
 		
 		$pages.include("${page.directory}/generictablesearchresults.html?searchtype=${searchtype}&sortby=name&field=${fieldexternalid}&${fieldexternalid}.value=${fieldexternalvalue}&operation=not")
 		
 		<div class="clearfix"></div>
 	</div>
-#set($addnewurl = "$apphome/components/upload/entities/addnewentity.html?viewid=${searchtype}addnew&searchtype=${searchtype}&parentid=$!{fieldexternalid}&parentvalue=$fieldexternalvalue")
-<a href="$!addnewurl" 
-class="emdialog btn btn-sm btn-light" title="[[Create New]]"
-data-hidefooter="true">
-<i class="fas fa-plus"></i> [[Create New]]
-</a>
 	
 	
 	</div>
