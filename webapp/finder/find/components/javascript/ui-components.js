@@ -1155,11 +1155,14 @@ uiload = function() {
 					}
 					return;
 				}
+				//verify if is entity dialog
 				var emdialoglink = emselectable.data("emdialoglink");
 				if (emdialoglink && emdialoglink != "") {
 					emdialoglink = emdialoglink + "&id="+id;
-					emselectable.data("emdialoglink", emdialoglink);
-					emdialog(emselectable, event);
+					row.data("emdialoglink", emdialoglink);
+					row.data("id", id);
+					row.data("searchtype", emselectable.data("searchtype"));
+					emdialog(row, event);
 				}
 				else if(id!="") {
 					//legacy modules

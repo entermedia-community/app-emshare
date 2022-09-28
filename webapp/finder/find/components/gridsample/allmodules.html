@@ -5,6 +5,8 @@
 	<div>0 [[results]]</div>
 #end
 
+$context.putPageValue("ismodulesearch","true")
+
 #foreach($module in $organizedModules)
 	
 	#set($idhits = $organizedHits.get($module.id))
@@ -36,13 +38,13 @@
 					#set($resultview = "stackedgallery")
 				#end
 				
-				$context.putPageValue("ismodulesearch","true")
+				
 				$context.putPageValue("searchtype","asset")
 				$context.putPageValue("resultview",$resultview)
 				
 		   		$pages.include("$apphome/components/results/resultviews.html", $context)
-
 		   		<div class="clearfix"></div>
+		   		
 			</div>
 				#set($resultsPage = "$siteroot$apphome/views/modules/$module.id/index.html")
 				#if($idhits.size() > 4 && $section != "favorites")
@@ -80,8 +82,10 @@
 			</a>
 		</h3>
 		</div>
-		$pages.include("$apphome/views/modules/$module.id/components/results/index.html?module=${module.id}", $context)
-		<div class="clearfix"></div>   
+		<div id="${module.id}resultscontainer">
+			$pages.include("$apphome/views/modules/$module.id/components/results/index.html?module=${module.id}", $context)
+			<div class="clearfix"></div>   
+		</div>
 		</div>		
    	#else
    		<div class="emgrid-module emgrid-column emgrid-module-$rendertype">

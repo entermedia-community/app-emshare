@@ -49,7 +49,16 @@ $context.putPageValue("searcher",$mediaarchive.getSearcher($searchtype))
     	$context.putPageValue("viewid", $viewid)
 
 #set( $origURL = $context.getRequestParameter("origURL" ) )
-#set ( $moduleid = $context.findValue("module") )
+#set( $moduleid = $context.findValue("module") )
+
+
+#set( $parentid = $context.getRequestParameter("parentid") )
+#set( $parentvalue = $context.getRequestParameter("parentvalue") )
+$predata.set($parentid, $parentvalue)
+#if($parentid)
+$context.putPageValue("data", $predata)
+#end
+
 $pages.include("/$applicationid/components/xml/detaileditor.html", $context)
 
 #if( $caneditmetadatasetup )
