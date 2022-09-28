@@ -682,7 +682,9 @@ uiload = function() {
 			modaldialog = jQuery("#" + id);
 		}
 		var link = dialog.attr("href");
-
+		if(!link) {
+			link = dialog.data("emdialoglink");
+		}
 		var options = dialog.data();
 		var param = dialog.data("parameterdata");
 		if (param) {
@@ -1137,7 +1139,7 @@ uiload = function() {
 			} else {
 				//verify row url
 				var clickurl = emselectable.data("clickurl");
-				if (clickurl != "") {
+				if (clickurl && clickurl != "") {
 					var targetdiv = emselectable.data("targetdiv");
 					var options = emselectable.data();
 					options.id = id;
@@ -1151,6 +1153,13 @@ uiload = function() {
 						});
 						
 					}
+					return;
+				}
+				var emdialoglink = emselectable.data("emdialoglink");
+				if (emdialoglink && emdialoglink != "") {
+					emdialoglink = emdialoglink + "&id="+id;
+					emselectable.data("emdialoglink", emdialoglink);
+					emdialog(emselectable, event);
 				}
 				else if(id!="") {
 					//legacy modules
