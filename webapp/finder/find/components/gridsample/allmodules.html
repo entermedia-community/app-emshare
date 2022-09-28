@@ -10,7 +10,6 @@ $context.putPageValue("ismodulesearch","true")
 #foreach($module in $organizedModules)
 	
 	#set($idhits = $organizedHits.get($module.id))
-	
 	$context.putPageValue("hits", $idhits)
 	$context.putPageValue("module", $module)
 	$context.putPageValue("moduleid", $module.id)
@@ -104,7 +103,7 @@ $context.putPageValue("ismodulesearch","true")
 			<a href="$entityurl" class="ajax" data-targetdivinner="applicationcontent" data-oemaxlevel="3" data-updateurl="true" title="$module.getName()">
 			<img src="$siteroot$apphome/theme/images/entity/${moduleicon}.svg" style="height: 24px;"> 
 			
-			#if( $idhits.size() < 7) ##this is safe
+			#if( $idhits.size() < 7 || $module.id == "asset") ##this is safe
 				#set( $count = $idhits.size())
 			#else
 				#set( $count = $filter.getCount($module.id) )
