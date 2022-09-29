@@ -67,6 +67,13 @@ $context.putPageValue("previewurl", $previewurl)
 	  	    		#set( $rendertype = "videothumbnail" )
 	  	    	#end
 	  	    	$context.putPageValue("thumbsize", "crop" )
+	  	    	#if(!$assettitle)		         	
+				  	#if( $hit.assettitle )
+				      	#set($assettitle =  $asset.assettitle) 
+				    #else 
+				      	#set($assettitle = $asset.name) 
+				    #end
+				#end
 		  	 	<div  class="assetdraggable" data-assetid="$!entity.primaryimage">
 				#if($rendertype == "audio")
 					$pages.include("$componenthome/results/thumbnails/${rendertype}.html", $context)
@@ -77,7 +84,7 @@ $context.putPageValue("previewurl", $previewurl)
 			   	 	data-hideheader="true"
 			   	 	id="clickid${entityid}"  
 			   	 	data-id="entity.id"
-			   	 	title="$!entity.name">[[Open]]</a>
+			   	 	title="$!entity.name">$assettitle.name</a>
 		   	 	#else
 			   	 	<a href="$previewurl" 
 			   	 	class="emdialog entity-dialog" 
@@ -96,11 +103,19 @@ $context.putPageValue("previewurl", $previewurl)
 	        
       
 	   
-	  #set($assetsshown = 4)
+	  #set($assetsshown = 2)
       $context.putPageValue("assetsshown", $assetsshown)
       $context.putPageValue("viewer", "l_m_g_${entity.id}")
-       	
+      <div class="emgrid-entitymedia assetdropentity"
+       		id="attachedmedia$entityid" 
+       		data-moduleid="$moduleid" 
+       		data-entityid="$entityid"
+       		data-rootcategory="$librarycol.rootcategory" 
+       		data-assetsshown="$assetsshown"
+       		data-attachedmediaurl="$siteroot$componenthome/gridsample/types/librarycollection.html"
+       		data-targetdiv="emgridentity$!moduleid$!entityid"> 
 	  $pages.include("$componenthome/gridsample/types/attachedmedia/librarycollection.html",$context)
+	  </div>
 	   
 	        
 	        <div class="clearfix"></div>

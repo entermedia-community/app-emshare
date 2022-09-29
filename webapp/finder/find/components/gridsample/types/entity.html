@@ -69,7 +69,13 @@ $context.putPageValue("previewurl", $previewurl)
 	   	    		#set( $rendertype = "videothumbnail" )
 	   	    	#end
 	   	    	$context.putPageValue("thumbsize", "crop" )
-	   	    
+	   	    #if(!$assettitle)		         	
+				  	#if( $hit.assettitle )
+				      	#set($assettitle =  $asset.assettitle) 
+				    #else 
+				      	#set($assettitle = $asset.name) 
+				    #end
+				#end
 	   	    <div  class="assetdraggable" data-assetid="$!entity.primaryimage">
  			#if($rendertype == "audio")
  				$pages.include("$componenthome/results/thumbnails/${rendertype}.html", $context)
@@ -80,7 +86,7 @@ $context.putPageValue("previewurl", $previewurl)
 		   	 	data-hideheader="true"
 		   	 	id="clickid${entityid}"  
 		   	 	data-id="$!{entity.id}"
-		   	 	title="$!entity.name">[[Open]]</a>
+		   	 	title="$!entity.name">$assettitle.name</a>
 		   	#else
 		   		<a href="$previewurl" 
 		   	 	class="emdialog entity-dialog" 
