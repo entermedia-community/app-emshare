@@ -76,6 +76,11 @@
 		#if(!$resultview)
 			#set($resultview = "grid")
 		#end
+	#elseif ($moduleid=="faceprofilegroup")
+		#set($resultview = $userprofile.get("faceprofilegroupresultview"))
+		#if(!$resultview)
+			#set($resultview = "grid")
+		#end
 	#else
 		##All Other Entities
 		
@@ -96,6 +101,8 @@
 	#end
 	
 	$context.putPageValue("resultview",$resultview)
+	
+	
 	
 	$pages.include("$componenthome/results/resultviews.html", $context)
 

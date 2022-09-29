@@ -24,14 +24,21 @@ $context.putPageValue("moduleid", $moduleid)
 		
 		
 		<div class="clearfix"></div>
+		<div class="entity-metadata entity-metadata-faceprofile">
+				<h2 class="modal-title">
+			#set($name = $entity.name)
+			#if(!$name)
+				#set($name = "[[Unknown Profile]]")
+			#end
+			$name
+		</h2>
+		
+			$context.putPageValue("data", $entity)
+			$context.putPageValue("searchtype", $searchtype)
+			$pages.include("metadata.html", $context)
+			
+		</div>
 		<div class="entity-media entity-media-faceprofile">
-##		<h2 class="modal-title">
-##			#set($name = $entity.name)
-##			#if(!$name)
-##				#set($name = "[[Unknown Profile]]")
-##			#end
-##			$name
-##		</h2>
 		
 		#set($assetsshown = 4)
 		#set( $assetshits = $facemanager.searchForAssets($mediaarchive,$entityid) )
@@ -79,12 +86,7 @@ $context.putPageValue("moduleid", $moduleid)
 	#end
 </div>		
 		</div>
-		<div class="entity-metadata entity-metadata-faceprofile">
-			$context.putPageValue("data", $entity)
-			$context.putPageValue("searchtype", $searchtype)
-			$pages.include("metadata.html", $context)
-			
-		</div>
+		
 		<div class="clearfix"></div>
 	</div>
 </div>
