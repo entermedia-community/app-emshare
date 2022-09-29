@@ -32,13 +32,13 @@ $context.putPageValue("searcher",$mediaarchive.getSearcher($searchtype))
     		name="dataeditor" 
     		class="force-validate-inputs ajaxform autocloseform" 
     		data-targetdivinner="$!targetdiv"
+    		data-oemaxlevel="2"
     		method="post"  
     		data-defaultaction="$!defaultaction">
     	<input name="save" type="hidden" value="true" />
     	<input name="id" type="hidden" value="$!id" />
     	<input name="searchtype" type="hidden" value="$searchtype" />
     	<input name="viewid" type="hidden" value="$viewid" />
-    	<input name="oemaxlevel" type="hidden" value="1" />
     	<input name="entitytype" type="hidden" value="$searchtype" />
     	<input name="module" type="hidden" value="$searchtype" />
     	
@@ -47,20 +47,19 @@ $context.putPageValue("searcher",$mediaarchive.getSearcher($searchtype))
 #set( $origURL = $context.getRequestParameter("origURL" ) )
 #set( $moduleid = $context.findValue("module") )
 
-
 $pages.include("/$applicationid/components/xml/detaileditor.html", $context)
 
 #if( $caneditmetadatasetup )
 	
-	 <a class=" float-left btn btn-sm btn-light" href="$siteroot$apphome/views/settings/modules/${searcher.searchType}/metadata/views/index.html?viewid=$viewid&viewpath=$viewpath">
+	 <a class=" float-right btn btn-sm btn-light" href="$siteroot$apphome/views/settings/modules/${searcher.searchType}/metadata/views/index.html?viewid=$viewid&viewpath=$viewpath">
 	 <i class="fas fa-cog"></i> [[Fields]]</a>
 	
 #end
 	
     #if($caneditdata)
-    <input class="btn btn-sm btn-primary float-right" style="margin-left:10px;" type="submit" value="[[Save]]" />
+    <input class="btn btn-sm btn-primary float-left" style="margin-right:10px;" type="submit" value="[[Save]]" />
     #end
-    <button id="closebutton" type="button" class="btn btn-sm btn-secondary float-right" data-dismiss="modal">[[Close]]</button>
+    <button id="closebutton" type="button" class="btn btn-sm btn-secondary float-left" data-dismiss="modal">[[Close]]</button>
     ###if($caneditdata || $candelete)	
     ##<a class="btn btn-sm btn-danger ajax" targetdiv="editlayout" data-confirm="[[Are you sure]]?" style="margin-righ:10px;" href="$siteroot$content.searchhome/edit/delete.html?id=$data.id&catalogid=$searcher.catalogId&searchtype=$searcher.searchType&viewid=$viewid&viewpath=$viewpath&oemaxlevel=1" style="margin: 20px 20px 0 0;">[[Delete]]</a>
     ###end

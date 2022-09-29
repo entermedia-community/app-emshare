@@ -3,6 +3,7 @@
 #set($moduleid = $context.findValue("module"))
 #set($hitssessionid = $context.getRequestParameter('hitssessionid'))
 #set($searchhome = $context.findValue("searchhome"))
+#set($parentsearchtype = $context.getRequestParameter("searchtype"))
 
 #set($viewsearcher = $searcherManager.getSearcher($catalogid, "view"))
 #set( $viewdata = $viewsearcher.searchById($viewid))
@@ -39,7 +40,7 @@ $context.putPageValue("canedittable", $caneditdata)
 ##TODO: Create a new type of table.html component that runs locally using searchhome and has a TableModel with it passed along with sessionids
 
 #set( $args = "id=$!id&parentid=$id&jumptomodule=$!jumptomodule&catalogid=$mediaarchive.getCatalogId()&searchtype=$searchtype&fieldexternalid=$!fieldexternalid&fieldexternalvalue=$!fieldexternalvalue&listid=$!listid&listexternalid=$!listexternalid&permissionname=$permissionname&hitssessionid=$hitssessionid")
-#set( $args = "$args&searchhome=$!{searchhome}/edit")
+#set( $args = "$args&searchhome=$!{searchhome}/edit&parentsearchtype=$!parentsearchtype")
 
 #if( $searchtype == "librarycollection")
 	#set( $args = "$args&viewdetailspath=$apphome/views/modules/librarycollection/media/")

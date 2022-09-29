@@ -474,7 +474,7 @@ uiload = function() {
 				if(oemaxlevel == undefined) {
 					oemaxlevel = 1;
 				}
-				targetdiv.data("oemaxlevel", oemaxlevel);
+				//targetdiv.data("oemaxlevel", oemaxlevel);
 
 				var data;
 				if(form.data("includesearchcontext") == true){
@@ -484,6 +484,8 @@ uiload = function() {
 				else{
 					data = targetdiv.data();
 				} 
+				
+				data.oemaxlevel = oemaxlevel;
 				
 				var formmodal = form.closest(".modal");
 				
@@ -511,7 +513,7 @@ uiload = function() {
 						else
 						{		
 							if (targetdiv) {
-								$("#" + $.escapeSelector(targetdiv)).replaceWith(result);
+								targetdiv.replaceWith(result);
 							}
 					 	}
 						if (formmodal.length > 0 && form.hasClass("autocloseform")) {
