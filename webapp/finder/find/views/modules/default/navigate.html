@@ -1,3 +1,4 @@
+#set( $moduleid = $context.findValue("module") )
 #if(!$searchhome)
 	#set( $searchhome = $content.searchhome) ##$context.findValue("searchhome") )
 #end
@@ -14,20 +15,32 @@
 	#set( $hitsperpage = $!hits.hitsPerPage)
 	##or-> #set( $hitsperpage = $userprofile.get("modulehitsperpage"))
 #end
-#set( $moduleid = $context.findValue("module") )
+
+#set($totalhits = $context.getRequestParameter("moduletotalhits"))
+#if(!$totalhits)
+	#set( $totalhits = $hits.total)
+#end
+
+
 #if( $hits)
 	#set($resultsPage = "$home$!{searchhome}/index.html?hitssessionid=$hits.sessionId&searchtype=$moduleid&hitsperpage=$!hitsperpage&categoryid=$!category.id&resultstype=$!resultstype")
 	#set($resultsPage = "$resultsPage&page")
 	#set($thispage = $hits.getPage())
 	
     <div class="resultsnumber float-left">
-    [[Displaying records]] $!hits.getPageStart() - $!hits.getPageEnd()  [[of]] $!hits.total [[items]]
+    [[Displaying records]] $!hits.getPageStart() - $!hits.getPageEnd()  [[of]] $!totalhits [[items]]
     </div>
-    #if($hits.size()>1)
+    #if($totalhits > $hits.total)
+    	<div id="pages-bottom" class="pages float-right">
+         <ul>
+         	<li><a class="ajax" targetdivinner="$targetdivinner" data-oemaxlevel="$!oemaxlevel" href="$resultsPage" title="[[All Results]]">[[View All]]</a></li>
+         </ul>
+         </div>
+    #elseif($hits.getTotalPages()>1)
             <div id="pages-bottom" class="pages float-right">
                 <ul>
                     #if( $hits.prevPage() )
-                    <li><a class="ajax" targetdivinner="$targetdivinner" data-oemaxlevel="$!oemaxlevel" href="$resultsPage=$hits.prevPage()" title="[[Previous]] ( alt p enter)" accesskey="p" >Previous</a></li>
+                    <li><a class="ajax" targetdivinner="$targetdivinner" data-oemaxlevel="$!oemaxlevel" href="$resultsPage=$hits.prevPage()" title="[[Previous]] ( alt p enter)" accesskey="p" >[[Previous]]</a></li>
                     #end
                     #set( $befores = $hits.linksBefore() )                  
                         #if($befores.size()!=0)

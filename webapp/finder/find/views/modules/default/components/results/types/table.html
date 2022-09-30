@@ -184,13 +184,15 @@ $pages.include("${searchhome}/resultsactions.html",$context)
 		</table>
 	</div>
 	
+	##Custom Displays for ModuleSearch 
 	
 	#if($ismodulesearch)
 		#set( $hitsperpage = $userprofile.get("modulehitsperpage"))
 		#if(!$hitsperpage)
 			#set( $hitsperpage = 15)
 		#end
-		#set($args = "resultsoemaxlevel=2&targetdiv=applicationmaincontent&hitsperpage=$hitsperpage")
+		#set($moduletotalhits = $context.getPageValue("$moduletotalhits")) 
+		#set($args = "resultsoemaxlevel=2&targetdiv=applicationmaincontent&hitsperpage=$hitsperpage&moduletotalhits=$!moduletotalhits")
 	#end	
 		$pages.include("/${searchhome}/navigate.html?$!args", $context)
 		
