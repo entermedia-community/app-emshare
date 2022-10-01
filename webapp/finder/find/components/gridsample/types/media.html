@@ -39,21 +39,25 @@
 				        #end
 			         #end
 			         <a class="stackedplayer grid-caption-link" id="clickid${hit.id}" data-assetid="$hit.id" href="#" title="#esc($!title)">
-			         <span>#esc($!context.getText($title))</span>
+			         <div>#text($!context.getText($title))</div>
 			         
 			         ##Show entities or something more?
-			         #foreach( $module in $mediaarchive.getList("module") )
-			         	#set( $showon = $module.get("showonsearch") )
+			         #foreach( $asetmodule in $mediaarchive.getList("module") )
+			         	#set( $showon = $asetmodule.get("showonsearch") )
 			         	#if($showon == "true")
 			         	
-			         		#set( $values = $hit.getValues($module.getId()) )
+			         		#set( $values = $hit.getValues($asetmodule.getId()) )
 			         		#if( $values)
-			         		<div>
-			         			$module:
+			         		
 					         	#foreach( $row in $values )
-					         		$mediaarchive.getCachedData($module.getId(),$row)
+					         		#set($modulevalue = $!mediaarchive.getCachedData($!asetmodule.getId(), $row))
+					         		#if($modulevalue)
+					         		<div class="badge badge-secondary" data-assetmoduleid="$!asetmodule.getId()">
+					         		#text($!context.getText($modulevalue))
+					         		</div>	
+					         		#end
 					         	#end
-					         </div>	
+					         
 					        #end	
 			         	#end
 			         #end
@@ -62,7 +66,7 @@
 			         
 			        #foreach($row in $list)
 						#set( $val = false )
-						#set( $val = $mediaarchive.getCachedData($fieldid,$row) )
+						#set( $val = $mediaarchive.getCachedData($fieldid, $row) )
 						#if( $val)
 							<span class="clipdetail"><a href="$apphome/components/gridsample/preview/entity.html?id=$val.getId()&searchtype=$fieldid" class="emdialog entity-dialog">$val</a></span>
 						#else
