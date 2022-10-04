@@ -14,6 +14,14 @@ $(document).ready(function()
 		apphome =  siteroot + $("#application").data("apphome");
 	}
 	
+	var allfiles = new Array();
+	
+	lQuery('#createmediapanel').livequery(function(e){
+		//reset array
+		allfiles = new Array();
+        
+     });
+	
 	
 	function filesPicked(event, files) 
 	{
@@ -76,7 +84,7 @@ $(document).ready(function()
 		 //console.log("Picked " + files.length );
 		 
 	}
-	var allfiles = new Array();
+	
 		
 	lQuery('#filePicker').livequery('click',function(e){
 		e.preventDefault(); 
