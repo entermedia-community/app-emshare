@@ -1,4 +1,4 @@
-<div class="em-rounded" style="margin:20px;">
+<div style="margin:0 10px;" id="downloadassetsdialog">
 	#if( !$order )
 		[[Session expired, Reload browser]]
 	#end
@@ -9,11 +9,12 @@
 		#set($orderitemsearcher = $searcherManager.getSearcher($catalogid, "orderitem"))
 		#set($ordersearcher = $searcherManager.getSearcher($catalogid, "order"))
 		
-	<form class="validate" id="usereditform"  method="get" 
-	
-	onSubmit='$("#submitbutton").attr("disabled","disabled");$("#submitbutton").val("[[Processing]]...");'
-	
-	action="$home$apphome/views/modules/asset/activity/download/processorder.html">
+	<form class="validate ajaxform" 
+		id="usereditform"
+		data-targetdiv="downloadassetsdialog"  
+		method="get" 
+		onSubmit='$("#submitbutton").attr("disabled","disabled");$("#submitbutton").val("[[Processing]]...");'
+		action="$home$apphome/views/modules/asset/activity/download/processorder.html">
 	#set($searcher = $searcherManager.getSearcher($catalogid, "order"))
 	$context.putPageValue("searcher", $searcher)	 
 	$context.putPageValue("data", $order)	 
@@ -32,10 +33,11 @@
 	
 	<input type="hidden" name="field" value="ordertype" />
 	<input type="hidden" name="ordertype.value" value="download" />
+		<h4>$orderitems.size() [[Items]]</h4>
 		#if($canconvert)
-		<p><strong>[[Please choose a download format for each type of asset.]]</strong></p>
+		<div>[[Choose a download format for each type of asset]].</div>
 		#end
-		$orderitems.size() Items
+		
 		#set($filetypes = [])
 		#foreach( $item in $orderitems )
 			#set( $asset = $mediaarchive.getAssetBySourcePath($item.assetsourcepath))
@@ -43,7 +45,7 @@
 			#if($fileformat)
 				#set( $rendertypeid = $mediaarchive.getMediaRenderType($fileformat) )
 			#else
-			#set( $rendertypeid = "none" )
+				#set( $rendertypeid = "none" )
 			#end
 			
 			#set($found = false)
@@ -62,7 +64,7 @@
 			<input type="hidden" name="itemid" value="$item.id"/>
 		#end
 		
-		<table id="shared-asset-table" class="striped download-table" width="100%" >
+		<table id="shared-asset-table" class="table table-striped download-table" style="margin:10px 0;" >
 		#foreach( $ft in $filetypes)
 			#set($rendertypeid = $ft.get(0))
 			#set($num = $ft.get(1))
@@ -70,7 +72,7 @@
 				<td>
 				<input type="hidden" name="field" value="rendertype"/>
 				<input type="hidden" name="rendertype.value" value="${rendertypeid}"/>
-				#set($rendertype = $searcherManager.getData($catalogid,"rendertype",$rendertypeid))
+				#set($rendertype = $!context.getText($searcherManager.getData($catalogid,"rendertype",$rendertypeid)))
 				
 				[[Downloading]] $num $rendertype
 				</td>
@@ -84,7 +86,7 @@
 				#set($null = $presetquery.addSortBy("ordering"))
 				#set( $results = $presetsearcher.search($presetquery) )
 				#if($canconvert || $candownloadfpo) 
-			  		<select name="${rendertypeid}.presetid.value">
+			  		<select name="${rendertypeid}.presetid.value" class="form-control form-control-sm">
 					#foreach ($preset in $results)
 						#set($ok = false)
 						#if($canconvert && $candownloadfpo)

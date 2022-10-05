@@ -31,23 +31,27 @@ jQuery(document).ready(function(url,params)
 			var searchtype = select.data('searchtype');
 			var targetdiv = select.data('targetdiv');
 			var ismodulesearch = select.data('ismodulesearch');
+			var oemaxlevel = select.data('oemaxlevel');
+			if(!oemaxlevel) {
+				oemaxlevel = 1;
+			}
 			//
 			
 			if (ismodulesearch == true) {
 				targetdiv = "modulesearchassetmodule";
-				href = componenthome  +  "/results/changemodulesearchassetview.html?oemaxlevel=1";
+				href = componenthome  +  "/results/changemodulesearchassetview.html";
 			}
 			else {
 				if(searchtype=='asset') {
 					if(originalhitsperpage){
-						href = componenthome  +  "/results/changeresultview.html?oemaxlevel=1&cache=false&hitsperpage=" + originalhitsperpage;
+						href = componenthome  +  "/results/changeresultview.html?cache=false&hitsperpage=" + originalhitsperpage;
 					}
 					else{
-						href = componenthome  +  "/results/changeresultview.html?oemaxlevel=1";
+						href = componenthome  +  "/results/changeresultview.html";
 					}
 				}
 				else {
-					href = siteroot+"/views/modules/"+moduleid+"/components/results/changeresultview.html?oemaxlevel=1";
+					href = siteroot+"/views/modules/"+moduleid+"/components/results/changeresultview.html";
 				}
 			}
 			var args = { hitssessionid: select.data("hitssessionid") ,
@@ -56,6 +60,7 @@ jQuery(document).ready(function(url,params)
 						 showremoveselections:  select.data("showremoveselections") ,
 						 ismodulesearch: ismodulesearch,
 						 resultviewtype: searchtype+"resultview",
+						 oemaxlevel: oemaxlevel,
 						  };
 						 
 			var category = $("#resultsdiv").data("category");

@@ -16,106 +16,104 @@
 #end
 
 #if($moduleid != "faceprofilegroup")
-<div id="resultsheader">
-<div id="sub-nav" class="search-views emsubnav sub-nav-$moduleid">
-#if(!$edit)
-	<ul class="resultsnav">
-	<li>
-		<a  
-		class="emdialog"  
-		title="$module: [[Add New]]"
-		href="$siteroot$applink/components/upload/entities/addnewentity.html?viewid=${moduleid}addnew&searchtype=${moduleid}&targetdiv=applicationmaincontent"
-		data-hidefooter="true">
-		[[Add New]]</a>
-	</li> 
-	#if($content.showactions && $hits.hasSelections())
-		$pages.include("$searchhome/selectionactions.html")
+	<div id="resultsheader">
+	<div id="sub-nav" class="search-views emsubnav sub-nav-$moduleid">
+		#if(!$edit)
+			<ul class="resultsnav">
+			<li>
+				<a  
+				class="emdialog"  
+				title="$module: [[Add New]]"
+				href="$siteroot$applink/components/upload/entities/addnewentity.html?viewid=${moduleid}addnew&searchtype=${moduleid}&targetdiv=applicationmaincontent"
+				data-hidefooter="true">
+				[[Add New]]</a>
+			</li> 
+			#if($content.showactions && $hits.hasSelections())
+				$pages.include("$searchhome/selectionactions.html")
+			#end
+			</ul>
+		#end
+
+	#if(!$resultview)
+		#set($resultview = $userprofile.get("$!{searchtype}resultview"))
+		#if (!$resultview)
+			#set($resultview = $content.get("resultview"))
+		#end
+		#if (!$resultview)
+			#set($resultview = "stackedgallery")
+		#end
 	#end
+
+
+	<ul class="resultsnavright"> 
+		#if (!$resultview || $resultview == 'table')
+			#if( $canedittablecolumns )
+				#if( $edit )
+					##Close Icon
+					<li>
+						<a class="ajax table-edit-close" 
+							data-targetdiv="resultsviewcontainer" 
+							href="$siteroot$componenthome/results/index.html?oemaxlevel=1&searchtype=$!moduleid&hitssessionid=$!hits.getSessionId()&editheader=&moduleid=$!moduleid"><i class="fas fa-times"></i></a>
+					</li>
+					<li class="resultsnavtitem" style="min-width:180px">
+						#set ($alldetails = $searcher.getUserPropertyDetails() )
+						<select class="form-control form-control-sm select2 tableresultsaddcolumn" 
+								name="addcolumn"
+								data-componenthome="$siteroot$componenthome/results/addremovecolumns.html?oemaxlevel=1&searchtype=$!moduleid&hitssessionid=$hits.getSessionId()&editheader=true&moduleid=$!moduleid&viewid=$!{moduleid}resultstable"
+								data-targetdiv="resultsviewcontainer" 
+								data-allowclear="false" >
+							<option>[[Add Column]]</option>
+							#foreach( $detail in $alldetails) <option value="$detail.id">$detail.getText($context)</option>
+							#end
+						</select>
+					</li>
+							
+					<li class="resultsnavtitem">
+						<span class="" style="padding-right: 10px;" >[[Drag columns to move them]]</span>
+					</li>
+				#else 
+					##Edit
+					<li >
+						<a class="ajax nav-hover" 
+							id="table-editor-close" 
+							data-targetdiv="resultsviewcontainer" 
+							href="$siteroot$componenthome/results/index.html?searchtype=$!searchtype&hitssessionid=$hits.getSessionId()&editheader=true&moduleid=$!moduleid"> <i class="fas fa-edit"></i></a>
+					</li>
+				#end	
+			#end								
+		#end
+		#if($edit != "true")
+			<li class="resultsnavtitem">
+				<select class="form-control" 
+					name="resultview" 
+					id="selectresultview"  
+					data-hitssessionid="$!hits.getSessionId()" 
+					data-searchtype="$!moduleid"
+					data-moduleid="$moduleid"
+					data-ismodulesearch = "$!ismodulesearch" 
+					data-componenthome = "$apphome/views/modules/$moduleid/components"
+					data-page="$!hits.getPage()" 
+					data-showremoveselections="$!showremoveselections" 
+					data-collectionid="$!librarycol.getId()"
+					data-targetdiv="resultsviewcontainer">
+					
+					<option value="grid" #if( $resultview == "grid") selected #end>[[Grid]]</option>
+					<option value="table" #if( $resultview == "table") selected #end>[[Table]]</option>
+					##<option value="map" #if( $resultview == "map") selected #end>[[Map]]</option>
+					
+				</select>
+				
+			</li>
+		
+			##<li class="resultsnavtitem hidden-sm-xs hidden-xs hidden-sm hidden-md">
+			##$pages.include("$apphome/views/modules/default/pages.html", $context) ## views/modules/default/navigate.html",$context)
+			##</li>
+		#end
+	
 	</ul>
 #end
-
-#if(!$resultview)
-	#set($resultview = $userprofile.get("$!{searchtype}resultview"))
-	#if (!$resultview)
-		#set($resultview = $content.get("resultview"))
-	#end
-	#if (!$resultview)
-		#set($resultview = "stackedgallery")
-	#end
-#end
-
-
-<ul class="resultsnavright">
-	#if (!$resultview || $resultview == 'table')
-		#if( $canedittablecolumns )
-			#if( $edit )
-				##Close Icon
-				<li>
-					<a class="ajax table-edit-close" 
-						data-targetdiv="resultsviewcontainer" 
-						href="$siteroot$componenthome/results/index.html?oemaxlevel=1&searchtype=$!moduleid&hitssessionid=$!hits.getSessionId()&editheader=&moduleid=$!moduleid"><i class="fas fa-times"></i></a>
-				</li>
-				<li class="resultsnavtitem" style="min-width:180px">
-					#set ($alldetails = $searcher.getUserPropertyDetails() )
-					<select class="form-control form-control-sm select2 tableresultsaddcolumn" 
-							name="addcolumn"
-							data-componenthome="$siteroot$componenthome/results/addremovecolumns.html?oemaxlevel=1&searchtype=$!moduleid&hitssessionid=$hits.getSessionId()&editheader=true&moduleid=$!moduleid&viewid=$!{moduleid}resultstable"
-							data-targetdiv="resultsviewcontainer" 
-							data-allowclear="false" >
-						<option>[[Add Column]]</option>
-						#foreach( $detail in $alldetails) <option value="$detail.id">$detail.getText($context)</option>
-						#end
-					</select>
-				</li>
-						
-				<li class="resultsnavtitem">
-					<span class="" style="padding-right: 10px;" >[[Drag columns to move them]]</span>
-				</li>
-			#else 
-				##Edit
-				<li >
-					<a class="ajax nav-hover" 
-						id="table-editor-close" 
-						data-targetdiv="resultsviewcontainer" 
-						href="$siteroot$componenthome/results/index.html?searchtype=$!searchtype&hitssessionid=$hits.getSessionId()&editheader=true&moduleid=$!moduleid"> <i class="fas fa-edit"></i></a>
-				</li>
-			#end	
-		#end								
-	
-
-	#if(!$edit)
-		<li class="resultsnavtitem">
-			<select class="form-control" 
-				name="resultview" 
-				id="selectresultview"  
-				data-hitssessionid="$!hits.getSessionId()" 
-				data-searchtype="$!moduleid"
-				data-moduleid="$moduleid"
-				data-ismodulesearch = "$!ismodulesearch" 
-				data-componenthome = "$apphome/views/modules/$moduleid/components"
-				data-page="$!hits.getPage()" 
-				data-showremoveselections="$!showremoveselections" 
-				data-collectionid="$!librarycol.getId()"
-				data-targetdiv="resultsviewcontainer">
-				
-				<option value="grid" #if( $resultview == "grid") selected #end>[[Grid]]</option>
-				<option value="table" #if( $resultview == "table") selected #end>[[Table]]</option>
-				##<option value="map" #if( $resultview == "map") selected #end>[[Map]]</option>
-				
-			</select>
-			
-		</li>
-	
-		##<li class="resultsnavtitem hidden-sm-xs hidden-xs hidden-sm hidden-md">
-		##$pages.include("$apphome/views/modules/default/pages.html", $context) ## views/modules/default/navigate.html",$context)
-		##</li>
-	#end
-
-</ul>
-#end
 </div>
 </div>
-#end
 
 ##<script type="text/javascript">
 ##	//This should be moved out of here
