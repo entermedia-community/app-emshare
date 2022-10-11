@@ -23,6 +23,11 @@ public void runit()
 		chat.setValue("channel", inMap.get("channel"));
 		chat.setValue("channeltype", inMap.get("channeltype"));
 	 */
+	if( event == null)
+	{
+		log.info("No event");
+		return;
+	}
 	User aUser = event.getUser();
 	
 	Data data = (Data)event.getValue("data");
