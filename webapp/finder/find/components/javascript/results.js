@@ -525,10 +525,13 @@ jQuery(document).ready(function(url,params)
 		        // TODO: background window.scrollTo the .masonry-grid-cell we view, so we can reload hits
 		        
 		        case 27: // esc
-		        	if ($('#modals').hasClass('show')) {
+		        	var ismodal = $('#modals, #inlineedit, .modal');
+		        	if (ismodal.hasClass('show')) {
 		        		//Close modal only
-		        		$('#modals').modal('hide');
+		        		ismodal.modal('hide');
 		        		e.stopPropagation();
+		        		return;
+		        		
 		        	}
 		        	else{
 		        		hideOverlayDiv(getOverlay());

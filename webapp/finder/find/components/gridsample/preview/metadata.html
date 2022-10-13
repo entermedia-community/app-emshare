@@ -112,19 +112,26 @@ $context.putPageValue("data",$data)
 				#set( $permissionname = "canedit${searchtype}")
 				#set( $parentid = $context.getRequestParameter("parentid"))
 				
-				#if($viewdata.rendertable)
-					#set($targetmodule = $mediaarchive.getCachedData("module", $viewdata.rendertable)) 
-					#set($targetrendertype = $targetmodule.modulerendertype)
-					#if(!$targetrendertype)
-						#set($targetrendertype = "entity")
+				
+				#set( $joinsearcher = $searcherManager.getSearcher($catalogid, $searchtype))
+				#set ($query = $joinsearcher.createSearchQuery().append($fieldexternalid, $fieldexternalvalue) )
+				#set( $existingrecords = $joinsearcher.search($query) )
+				#if($existingrecords.size()>0)
+				
+					#if($viewdata.rendertable)
+						#set($targetmodule = $mediaarchive.getCachedData("module", $viewdata.rendertable)) 
+						#set($targetrendertype = $targetmodule.modulerendertype)
+						#if(!$targetrendertype)
+							#set($targetrendertype = "entity")
+						#end
+				
+						#set( $args = "id=$id&candelete=$!candelete&editpath=$!editpath&parentid=$!parentid&catalogid=$!catalogid&searchtype=$!searchtype&fieldexternalid=$!fieldexternalid&fieldexternalvalue=$!fieldexternalvalue&viewid=$!targetviewid&viewpath=$!targetviewpath&permissionname=$!permissionname&hitssessionid=$!hitssessionid")
+						#set( $args = "$args&tabletype=subentity&targetrendertype=$!targetrendertype&targetdiv=entitypreviewdialog&targetoemaxlevel=1")
+						
+						
+						<h3>$targetview</h3>
+						$pages.include("/$applicationid/components/xml/table.html?$args&passalong=$!passalong",$context)
 					#end
-			
-					#set( $args = "id=$id&candelete=$!candelete&editpath=$!editpath&parentid=$!parentid&catalogid=$!catalogid&searchtype=$!searchtype&fieldexternalid=$!fieldexternalid&fieldexternalvalue=$!fieldexternalvalue&viewid=$!targetviewid&viewpath=$!targetviewpath&permissionname=$!permissionname&hitssessionid=$!hitssessionid")
-					#set( $args = "$args&tabletype=subentity&targetrendertype=$!targetrendertype&targetdiv=entitypreviewdialog&targetoemaxlevel=1")
-					
-					
-					<h3>$targetview</h3>
-					$pages.include("/$applicationid/components/xml/table.html?$args&passalong=$!passalong",$context)
 				#end
 			#end
 		#end
