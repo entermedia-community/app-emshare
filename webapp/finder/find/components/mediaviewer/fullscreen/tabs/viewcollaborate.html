@@ -6,7 +6,16 @@
 		        #if ($canviewcomments)
 		    	<div class="col-md-6 col-lg-5" >
 				<div class="assetpanel-content-chatterbox">
-					<div class="assetpanel-chatterbox chatterbox"  data-collectionid="$!context.getRequestParameter('collectionid')" data-assetid="$asset.id" data-channel="${asset.id}" data-channeltype="asset" data-user="${user.id}" data-catalogid="${catalogid}"></div>
+					<div class="assetpanel-chatterbox chatterbox"  
+						data-collectionid="$!context.getRequestParameter('collectionid')" 
+						data-assetid="$asset.id" 
+						data-channel="${asset.id}" 
+						data-channeltype="asset" 
+						data-user="${user.id}" 
+						data-catalogid="${catalogid}"
+						##data-renderurl="$applink/collective/community/chatterbox/index.html" 
+						##data-rendermessageurl="$applink/collective/community/chatterbox/message.html"
+						></div>
 				</div>
 				</div>
 				#end
@@ -17,7 +26,7 @@
 				
 				
 				#foreach( $script in $targetpage.getScriptPaths(true) )
-					##<script type="text/javascript" src="#if(!$script.startsWith("http"))$siteroot#end$script">  </script>
+					<script type="text/javascript" src="#if(!$script.startsWith("http"))$siteroot#end$script">  </script>
 					#if(!$script.startsWith("http"))
 						#set($scripturl ="$siteroot$script")
 					#else
@@ -40,11 +49,3 @@
 </div>
 
 
-
-<script type="text/javascript">
-
-chatterbox();
-scrollToChat();
-
-
-</script>
