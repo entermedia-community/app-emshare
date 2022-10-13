@@ -518,7 +518,7 @@ uiload = function() {
 					 	}
 						if (formmodal.length > 0 && form.hasClass("autocloseform")) {
 		                    if (formmodal.modal) {
-		                    	formmodal.modal("hide");
+		                    	formmodal.modal.hide();
 		                    }
 		                }
 		        		$('#resultsdiv').data('reloadresults',true);
@@ -740,11 +740,21 @@ uiload = function() {
 				if (noesc != null && noesc == true) {
 					 modalkeyboard = false;
 				}
-				var modalinstance = modaldialog.modal({
-					keyboard : modalkeyboard,
-					backdrop : "static",
-					closeExisting: false,
-					"show" : true
+				//Verify if modal was open on top of Asset Media Viewer
+				if(modalkeyboard) {
+					var mainmedia = $("#hiddenoverlay");
+					if(mainmedia.length  && mainmedia.hasClass("show")) {
+						modalkeyboard = false;
+					}
+				}
+				
+				var modalinstance;
+
+				modalinstance = modaldialog.modal({
+						keyboard : modalkeyboard,
+						backdrop : 'static',
+						closeExisting: false,
+						"show" : true
 				});
 				
 				jQuery('.modal-backdrop').insertAfter(modalinstance);
@@ -829,6 +839,17 @@ uiload = function() {
 			"click", function(event) {
 				emdialog($(this), event);
 	});
+	
+	lQuery(".closemodal").livequery("click", function(event) {
+		closeemdialog($(this).closest(".modal"));
+	});
+	
+	closeemdialog = function(modaldialog) {
+		if (modaldialog.modal) {
+			modaldialog.modal("hide");
+		}
+	}
+	
 	
 	var lasttypeahead;
 	var lastsearch;
@@ -1087,7 +1108,7 @@ uiload = function() {
 		
 		
 		if (form.hasClass("autoclose")) {
-			form.closest(".modal").modal("hide");
+			closeemdialog(form.closest(".modal"));
 		}
 
 	});
@@ -1135,7 +1156,7 @@ uiload = function() {
 					$(form).trigger("submit");
 				}
 				if (form.hasClass("autoclose")) {
-					form.closest(".modal").modal("hide");j
+					closeemdialog(form.closest(".modal"));
 				}
 			} else if (url != undefined) {
 				if (url == "") {
@@ -2828,7 +2849,7 @@ uiload = function() {
 				var nextpage = launcher.data("targeturl");
 				var targetdiv = launcher.data("targetdiv");
 				if (nextpage && targetdiv) {
-					$(this).closest(".modal").modal("hide");
+					closeemdialog($(this).closest(".modal"));
 					var rowid = $(this).attr("rowid");
 					var options = launcher.data();
 					options.collectionid = rowid;
@@ -2847,7 +2868,7 @@ uiload = function() {
 	});
 	
 	lQuery("#assetcollectionresultsdialog .rowclick").livequery("click", function(e) {
-		$(this).closest(".modal").modal("hide");
+		closeemdialog($(this).closest(".modal"));
 		var rowid = $(this).attr("rowid");
 		$("#submitcollectionid").val(rowid);
 		$("#colelectform").trigger("submit");
@@ -2897,7 +2918,7 @@ uiload = function() {
 	
 	lQuery("#submodulepicker .rowclick").livequery("click", function(e) {
 		e.preventDefault();
-		$(this).closest(".modal").modal("hide");
+		closeemdialog($(this).closest(".modal"));
 		var picker = $("#submodulepicker");
 		var row = $(this);
 		var rowid = row.attr("rowid");

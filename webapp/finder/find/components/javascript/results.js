@@ -351,6 +351,7 @@ jQuery(document).ready(function(url,params)
 		stopautoscroll = false;
 		$("body").css({ overflow: 'auto' })
 		inOverlay.hide();
+		inOverlay.removeClass("show");
 		
 		var reloadonclose =  $('#resultsdiv').data('reloadresults');
 		if (reloadonclose == undefined) {
@@ -376,6 +377,7 @@ jQuery(document).ready(function(url,params)
 		stopautoscroll = true;
 		 $("body").css({ overflow: 'hidden' })
 		inOverlay.show();
+		 inOverlay.addClass("show");
 		var lastscroll = $(window).scrollTop();
 		getOverlay().data("lastscroll",lastscroll);
 	}
