@@ -518,7 +518,7 @@ uiload = function() {
 					 	}
 						if (formmodal.length > 0 && form.hasClass("autocloseform")) {
 		                    if (formmodal.modal) {
-		                    	closeemdialog(formmodal.modal);
+		                    	closeemdialog(formmodal);
 		                    }
 		                }
 		        		$('#resultsdiv').data('reloadresults',true);
