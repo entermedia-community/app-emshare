@@ -89,7 +89,10 @@
 </div>
 #end
 
-<div class="filtered #if( $librarycol ) filteredinresultsX #end">
+<div class="filtered">
+
+##BREADCRUMB
+
 #if( $hits.getSearchQuery().hasMainInput())
 	#if($librarycol)
 		[[Searching within]]: <strong><em>$librarycol</em> </strong> [[for]]:  <strong><em>$hits.getSearchQuery().getMainInput()</em></strong>
@@ -98,11 +101,9 @@
 	#end
 #else
 	<a href="$siteroot$apphome/index.html" title="[[Home]]" class="ajax" data-targetdiv="application" data-oemaxlevel="4">[[Home]]</a> &gt;
-	#if($moduleid=="asset")
-		<a href="$siteroot$apphome/views/modules/$moduleid/index.html" title="$module" class="ajax" data-targetdivinner="applicationmaincontent" data-oemaxlevel="2">$module</a> &gt;
-	#else
-		<a href="$siteroot$apphome/views/modules/$moduleid/index.html" title="$module" class="ajax" data-targetdivinner="applicationmaincontent" data-oemaxlevel="2">$module</a> &gt;
-	#end
+
+	<a href="$siteroot$apphome/views/modules/$moduleid/index.html" title="$module" class="ajax" data-targetdivinner="applicationmaincontent" data-oemaxlevel="2">$module</a> &gt;
+
 #end
 
 #set($currentSort = $hits.getSearchQuery().getSortBy())
