@@ -90,10 +90,12 @@ $(document).ready(function()
                 }
                 else
                 {
-                	reloadurl = home + "/views/modules/librarycollection/showcategory.html";                
+                	//reloadurl = home + "/views/modules/librarycollection/media/showcategory.html";                
+                	reloadurl = home + "/views/modules/asset/showcategory.html";
                 }
                 
-                prefix = home + "/views/modules/librarycollection/showcategory.html";
+                //prefix = home + "/views/modules/librarycollection/media/showcategory.html";
+            	prefix = home + "/views/modules/asset//showcategory.html";
                 //maxlevel = 2;
             }
             else 
