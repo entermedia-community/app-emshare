@@ -2299,7 +2299,7 @@ uiload = function() {
 		var targetdiv = toggler.data('targetdiv');
 		var sidebar = toggler.data('sidebar');
 		options["propertyfield"] = "sidebarcomponent";
-
+		options["module"] = $("#application").data("moduleid");
 		//console.log(data.modulesearchhitssessionid);
 		
 		if (toggler.data('action') == 'hide') {
@@ -2308,7 +2308,10 @@ uiload = function() {
 			var url = apphome + '/components/sidebars/index.html';
 
 			jQuery.ajax({
-				url: url, async: false, data: options, success: function (data) {
+				url: url, 
+				async: false, 
+				data: options, 
+				success: function (data) {
 					var cell = findclosest(toggler,"#" + targetdiv); 
 					cell.replaceWith(data); //Cant get a valid dom element
 		        	$(".pushcontent").removeClass('pushcontent-'+sidebar);
