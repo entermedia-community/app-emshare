@@ -2299,7 +2299,7 @@ uiload = function() {
 		var targetdiv = toggler.data('targetdiv');
 		var sidebar = toggler.data('sidebar');
 		options["propertyfield"] = "sidebarcomponent";
-		options["module"] = $("#application").data("moduleid");
+		options["module"] = $("#applicationcontent").data("moduleid");
 		//console.log(data.modulesearchhitssessionid);
 		
 		if (toggler.data('action') == 'hide') {
