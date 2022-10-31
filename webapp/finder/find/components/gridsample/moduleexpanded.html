@@ -1,0 +1,96 @@
+#if($module.id=="asset")
+	<div class="emgrid-expanded">
+ 		<div class="emgrid-subtitle">
+	 		<h3>
+	    	#set($moduleicon = "entity")
+	    	#if ($module.moduleicon)
+	    		#set($moduleicon = $module.moduleicon)
+	    	#end
+	
+	   		#set($entityurl = "$siteroot$apphome/views/modules/$module.id/index.html")
+		<a href="$entityurl" 
+			class="ajax" 
+			data-targetdiv="applicationcontent" 
+			data-oemaxlevel="3" 
+			data-updateurl="true" 
+			title="$module.getName()">
+		<img src="$siteroot$apphome/theme/images/entity/${moduleicon}.svg" style="height: 24px;"> 
+		
+##		#if( $hits.size() < 7) ##this is safe
+##			#set( $count = $hits.size())
+##		#else
+##			#set( $count = $filter.getCount($module.id) )
+##		#end
+		
+		#set( $count = $hits.size())
+		$module.getName() <span class="count">($count)</span>
+		$context.putPageValue("$moduletotalhits", $count)
+		</a>
+	</h3>
+	</div>
+	<div class="emgrid-module emgrid-module-$!rendertype">
+  		<div class="emgrid-module-$rendertype-inside"  id="modulesearchassetmodule">
+  			#set($resultview = $userprofile.get("assetresultview"))
+			#if(!$resultview)
+				#set($resultview = $content.get("resultview"))
+			#end
+			#if(!$resultview)
+				#set($resultview = "stackedgallery")
+			#end
+			
+			
+			$context.putPageValue("searchtype","asset")
+			$context.putPageValue("resultview",$resultview)
+			
+	   		$pages.include("$apphome/views/modules/$module.id/components/results/index.html?module=${module.id}", $context)
+	   		<div class="clearfix"></div>
+	   		
+		</div>
+##			#set($resultsPage = "$siteroot$apphome/views/modules/asset/index.html")
+##			#if($hits.size() > 4 && $section != "favorites")
+##				#if( $jsonsearch)
+##					#set($resultsPage = $url_util.urlEscape("$resultsPage?${module.id}clearfilters=true&${module.id}_jsonquery=$jsonsearch" ) )
+##				#end		
+##				<div class="emgrid-seemore"><a href="$resultsPage">[[See More]]</a></div>
+##				<div class="clearfix"></div>
+##			#end
+	 </div>
+	 </div>
+#else
+	<div class="emgrid-expanded">
+ 		<div class="emgrid-subtitle">
+	 		<h3>
+	    	#set($moduleicon = "entity")
+	    	#if ($module.moduleicon)
+	    		#set($moduleicon = $module.moduleicon)
+	    	#end
+	
+	   		#set($entityurl = "$siteroot$apphome/views/modules/$module.id/index.html")
+		<a href="$entityurl" 
+			class="ajax" 
+			data-targetdiv="applicationcontent" 
+			data-oemaxlevel="3" 
+			data-updateurl="true" 
+			title="$module.getName()">
+		<img src="$siteroot$apphome/theme/images/entity/${moduleicon}.svg" style="height: 24px;"> 
+		
+		#if( $hits.size() < 7) ##this is safe
+			#set( $count = $hits.size())
+		#else
+			#set( $count = $filter.getCount($module.id) )
+		#end
+	
+		$module.getName() <span class="count">($count)</span>
+		$context.putPageValue("$moduletotalhits", $count)
+		</a>
+	</h3>
+	</div>
+	<div id="${module.id}resultscontainer">
+		$pages.include("$apphome/views/modules/$module.id/components/results/index.html?module=${module.id}", $context)
+		<div class="clearfix"></div>   
+	</div>
+	</div>
+#end	
+	
+	
+	

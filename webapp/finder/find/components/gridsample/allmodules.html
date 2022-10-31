@@ -1,5 +1,6 @@
 #set($section = $content.get("section"))
 #set($filter = $modulehits.findFilterValue("entitysourcetype") )
+$context.putPageValue("filter", $filter)
 
 #if( $organizedModules.isEmpty())
 	<div>0 [[results]]</div>
@@ -7,139 +8,40 @@
 
 $context.putPageValue("ismodulesearch","true")
 
-#foreach($module in $organizedModules)
-	
+#set( $expandedmodule = $userprofile.get("expanded_module"))
+
+#if( $expandedmodule && $organizedHits.containsKey($expandedmodule))
+	#set($module = $mediaarchive.getCachedData("module",$expandedmodule))
+		
 	#set($idhits = $organizedHits.get($module.id))
+	
 	$context.putPageValue("hits", $idhits)
 	$context.putPageValue("module", $module)
 	$context.putPageValue("moduleid", $module.id)
 	
-   	#set($modulerendertype = "entity")
-   	#if ($module.homepagerendertype)
-   		#set($modulerendertype = $module.homepagerendertype)
-   	#end
-   	$context.putPageValue("modulerendertype", $modulerendertype)
-   	
-   	
-  	
-   	#set( $favorites = $userprofile.get("favorites_"+$module.id))
-	$context.putPageValue("favorites", $favorites)
-    
-   	#if( $modulerendertype == "fullmedia")
-   		
-   		<div class="emgrid-module emgrid-module-$rendertype">
-	   		<div class="emgrid-module-$rendertype-inside"  id="modulesearchassetmodule">
-	   			#set($resultview = $userprofile.get("assetresultview"))
-				#if(!$resultview)
-					#set($resultview = $content.get("resultview"))
-				#end
-				#if(!$resultview)
-					#set($resultview = "stackedgallery")
-				#end
-				
-				
-				$context.putPageValue("searchtype","asset")
-				$context.putPageValue("resultview",$resultview)
-				
-		   		$pages.include("$apphome/components/results/resultviews.html", $context)
-		   		<div class="clearfix"></div>
-		   		
-			</div>
-				#set($resultsPage = "$siteroot$apphome/views/modules/$module.id/index.html")
-				#if($idhits.size() > 4 && $section != "favorites")
-					#if( $jsonsearch)
-						#set($resultsPage = $url_util.urlEscape("$resultsPage?${module.id}clearfilters=true&${module.id}_jsonquery=$jsonsearch" ) )
-					#end		
-					<div class="emgrid-seemore"><a href="$resultsPage">[[See More]]</a></div>
-					<div class="clearfix"></div>
-				#end
-   		</div>
-   	#elseif( $modulerendertype == "expanded")
-   		<div class="emgrid-expanded">
-   		<div class="emgrid-subtitle">
-   		<h3>
-	     	#set($moduleicon = "entity")
-	     	#if ($module.moduleicon)
-	     		#set($moduleicon = $module.moduleicon)
-	     	#end
-
-     		#set($entityurl = "$siteroot$apphome/views/modules/$module.id/index.html")
-			<a href="$entityurl" 
-				class="ajax" 
-				data-targetdiv="applicationcontent" 
-				data-oemaxlevel="3" 
-				data-updateurl="true" 
-				title="$module.getName()">
-			<img src="$siteroot$apphome/theme/images/entity/${moduleicon}.svg" style="height: 24px;"> 
-			
-			#if( $idhits.size() < 7) ##this is safe
-				#set( $count = $idhits.size())
-			#else
-				#set( $count = $filter.getCount($module.id) )
-			#end
+	$pages.include("$apphome/components/gridsample/moduleexpanded.html", $context)
 	
-			$module.getName() <span class="count">($count)</span>
-			$context.putPageValue("$moduletotalhits", $count)
-			</a>
-		</h3>
-		</div>
-		<div id="${module.id}resultscontainer">
-			$pages.include("$apphome/views/modules/$module.id/components/results/index.html?module=${module.id}", $context)
-			<div class="clearfix"></div>   
-		</div>
-		</div>		
-   	#else
-   		<div class="emgrid-module emgrid-column emgrid-module-$rendertype">
-   		<div class="emgrid-subtitle">
-   		<h3>
-	     	#set($moduleicon = "entity")
-	     	#if ($module.moduleicon)
-	     		#set($moduleicon = $module.moduleicon)
-	     	#end
-	     	
-     		#set($entityurl = "$siteroot$apphome/views/modules/$module.id/index.html")
+#end
 
-			<a href="$entityurl" 
-				class="ajax" 
-				data-targetdiv="applicationcontent" 
-				data-oemaxlevel="3" 
-				data-updateurl="true" 
-				title="$module.getName()">
-			<img src="$siteroot$apphome/theme/images/entity/${moduleicon}.svg" style="height: 24px;"> 
-			
-			#if( $idhits.size() < 7 || $module.id == "asset") ##this is safe
-				#set( $count = $idhits.size())
-			#else
-				#set( $count = $filter.getCount($module.id) )
-			#end
-	
-			$module.getName() <span class="count">($count)</span>
-			</a>
-		</h3>
+#foreach($module in $organizedModules)
+	#if($module.id != $expandedmodule)
+		#set($idhits = $organizedHits.get($module.id))
 		
-   		</div>
-		#set($rendertype = "entity")
-	   	#if ($module.modulerendertype)
-	   		#set($rendertype = $module.modulerendertype)
+		$context.putPageValue("hits", $idhits)
+		$context.putPageValue("module", $module)
+		$context.putPageValue("moduleid", $module.id)
+		
+	   	#set($modulerendertype = "entity")
+	   	#if ($module.homepagerendertype)
+	   		#set($modulerendertype = $module.homepagerendertype)
 	   	#end
-	   	$context.putPageValue("rendertype", $rendertype)
-		<div id="galleryimg-${rendertype}" 
-				class='emgrid #if($section != "favorites")emgridlimited#end entitiescontainer' 
-				data-colwidth="300" 
-				data-cellpadding="25"
-				data-entityrenderurl="$siteroot$apphome/components/gridsample/gridcell.html"
-				data-rendertype="$rendertype">
-			#foreach( $hit in $idhits)
-				$context.putPageValue("hit", $hit)
-			    $pages.include("$apphome/components/gridsample/gridcell.html", $context)
-			#end
-		</div>
-		
-		#if( $filter.getCount($module.id) > 7)
-			<a href="$entityurl" class="ajax entity-seemore" data-targetdivinner="applicationcontent" data-oemaxlevel="2" data-updateurl="true" title="[[See More]] $module.getName()">[[See More]]</a>
-		#end
-		</div>		
-	#end
-		   
+	   	
+	   	$context.putPageValue("modulerendertype", $modulerendertype)
+	  	
+	   	#set( $favorites = $userprofile.get("favorites_"+$module.id))
+		$context.putPageValue("favorites", $favorites)
+
+		$pages.include("$apphome/components/gridsample/modulegrid.html", $context)
+	#end 
 #end
 
