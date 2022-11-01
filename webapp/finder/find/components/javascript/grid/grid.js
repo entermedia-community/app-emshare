@@ -4,7 +4,9 @@ jQuery(document).ready(function()
 	(function( $ ) {
 		 
 	    $.fn.emgrid = function() {
-	 
+	    	
+	    	//debugger;
+	    	
             var grid = $( this );
             var colwidth = parseInt(grid.data("colwidth"));
             var gridw = grid.width();
@@ -21,7 +23,7 @@ jQuery(document).ready(function()
             }
            
             //adjust the colwidth to spread out the extra space
-            var remainder = grid.width() - (colcount * colwidth);
+            var remainder = grid.width() - (colcount * (colwidth)) + cellpadding;
             colwidth = colwidth + (remainder/colcount);
             
             var columns = [];
@@ -32,7 +34,7 @@ jQuery(document).ready(function()
             
             
             
-            //debugger;
+            
             var col = 0;
             
             var cells = grid.children( ".emgridcell" );

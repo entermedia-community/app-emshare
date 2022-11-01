@@ -15,35 +15,36 @@
 	#set( $edit = false)
 #end
 
-#if($moduleid != "faceprofilegroup")
+
 	<div id="resultsheader">
 	<div id="sub-nav" class="search-views emsubnav sub-nav-$moduleid">
-		#if(!$edit)
-			<ul class="resultsnav">
-			<li>
-				<a  
-				class="emdialog"  
-				title="$module: [[Add New]]"
-				href="$siteroot$applink/components/upload/entities/addnewentity.html?viewid=${moduleid}addnew&searchtype=${moduleid}&targetdiv=applicationmaincontent"
-				data-hidefooter="true">
-				[[Add New]]</a>
-			</li> 
-			#if($content.showactions && $hits.hasSelections())
-				$pages.include("$searchhome/selectionactions.html")
+		#if($moduleid != "faceprofilegroup")
+			#if(!$edit)
+				<ul class="resultsnav">
+				<li>
+					<a  
+					class="emdialog"  
+					title="$module: [[Add New]]"
+					href="$siteroot$applink/components/upload/entities/addnewentity.html?viewid=${moduleid}addnew&searchtype=${moduleid}&targetdiv=applicationmaincontent"
+					data-hidefooter="true">
+					[[Add New]]</a>
+				</li> 
+				#if($content.showactions && $hits.hasSelections())
+					$pages.include("$searchhome/selectionactions.html")
+				#end
+				</ul>
 			#end
-			</ul>
-		#end
-
-	#if(!$resultview)
-		#set($resultview = $userprofile.get("$!{searchtype}resultview"))
-		#if (!$resultview)
-			#set($resultview = $content.get("resultview"))
-		#end
-		#if (!$resultview)
-			#set($resultview = "stackedgallery")
+	
+		#if(!$resultview)
+			#set($resultview = $userprofile.get("$!{searchtype}resultview"))
+			#if (!$resultview)
+				#set($resultview = $content.get("resultview"))
+			#end
+			#if (!$resultview)
+				#set($resultview = "stackedgallery")
+			#end
 		#end
 	#end
-
 
 	<ul class="resultsnavright"> 
 		#if (!$resultview || $resultview == 'table')
@@ -95,7 +96,7 @@
 					data-page="$!hits.getPage()" 
 					data-showremoveselections="$!showremoveselections" 
 					data-collectionid="$!librarycol.getId()"
-					data-targetdiv="resultsviewcontainer">
+					data-targetdiv="resultsviewcontainer$!moduleid">
 					
 					<option value="grid" #if( $resultview == "grid") selected #end>[[Grid]]</option>
 					<option value="table" #if( $resultview == "table") selected #end>[[Table]]</option>
@@ -111,7 +112,7 @@
 		#end
 	
 	</ul>
-#end
+
 </div>
 </div>
 

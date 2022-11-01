@@ -38,8 +38,7 @@ jQuery(document).ready(function(url,params)
 			//
 			
 			if (ismodulesearch == true) {
-				targetdiv = "modulesearchassetmodule";
-				href = componenthome  +  "/results/changemodulesearchassetview.html";
+				href = componenthome  +  "/results/changeresultview.html";
 			}
 			else {
 				if(searchtype=='asset') {

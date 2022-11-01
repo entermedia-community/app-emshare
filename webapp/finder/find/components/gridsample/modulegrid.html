@@ -1,38 +1,38 @@
-   		<div class="emgrid-module emgrid-column emgrid-module-$!rendertype">
+   		<div class="emgrid-module emgrid-box emgrid-column emgrid-module-$!rendertype">
    		<div class="emgrid-subtitle">
-   		<h3>
-	     	#set($moduleicon = "entity")
-	     	#if ($module.moduleicon)
-	     		#set($moduleicon = $module.moduleicon)
-	     	#end
-	     	
-     		#set($entityurl = "$siteroot$apphome/views/modules/$module.id/index.html")
-
-			<a href="$entityurl" 
-				class="ajax" 
-				data-targetdiv="applicationcontent" 
-				data-oemaxlevel="3" 
-				data-updateurl="true" 
-				title="$module.getName()">
-			<img src="$siteroot$apphome/theme/images/entity/${moduleicon}.svg" style="height: 24px;"> 
-			
-			#if( $hits.size() < 7 || $module.id == "asset") ##this is safe
-				#set( $count = $hits.size()) 
-			#else
-				#set( $count = $filter.getCount($module.id) ) 
-			#end
+	   		<h3>
+		     	#set($moduleicon = "entity")
+		     	#if ($module.moduleicon)
+		     		#set($moduleicon = $module.moduleicon)
+		     	#end
+		     	
+	     		#set($entityurl = "$siteroot$apphome/views/modules/$module.id/index.html")
 	
-			$module.getName() <span class="count">($count)</span>
-			</a>
-			
-			<div style="float:right" >
-				<a href="$siteroot$apphome/views/modules/modulesearch/expand.html?profilepreference=expanded_module&profilepreference.value=$module.id" 
-				data-targetdiv="applicationcontent"
-				data-oemaxlevel="2"
-				class="ajax">
-				<i class="fas fa-window-maximize"></i></a>
-			</div>
-		</h3>
+				<a href="$entityurl" 
+					class="ajax" 
+					data-targetdiv="applicationcontent" 
+					data-oemaxlevel="3" 
+					data-updateurl="true" 
+					title="$module.getName()">
+				<img src="$siteroot$apphome/theme/images/entity/${moduleicon}.svg" style="height: 24px;"> 
+				
+				#if( $hits.size() < 7 || $module.id == "asset") ##this is safe
+					#set( $count = $hits.size()) 
+				#else
+					#set( $count = $filter.getCount($module.id) ) 
+				#end
+		
+				$module.getName() <span class="count">($count)</span>
+				</a>
+				
+				<div style="float:right" >
+					<a href="$siteroot$apphome/views/modules/modulesearch/expand.html?profilepreference=expanded_module&profilepreference.value=$module.id" 
+					data-targetdiv="applicationcontent"
+					data-oemaxlevel="2"
+					class="ajax">
+					<i class="fas fa-window-maximize"></i></a>
+				</div>
+			</h3>
 		
    		</div>
 		#set($rendertype = "entity")
@@ -42,8 +42,8 @@
 	   	$context.putPageValue("rendertype", $rendertype)
 		<div id="galleryimg-${rendertype}" 
 				class='emgrid #if($section != "favorites")emgridlimited#end entitiescontainer' 
-				data-colwidth="300" 
-				data-cellpadding="25"
+				data-colwidth="315" 
+				data-cellpadding="10"
 				data-entityrenderurl="$siteroot$apphome/components/gridsample/gridcell.html"
 				data-rendertype="$rendertype">
 			#foreach( $hit in $hits)
@@ -51,8 +51,22 @@
 			    $pages.include("$apphome/components/gridsample/gridcell.html", $context)
 			#end
 		</div>
-		
-		#if( $filter.getCount($module.id) > 7)
-			<a href="$entityurl" class="ajax entity-seemore" data-targetdivinner="applicationcontent" data-oemaxlevel="2" data-updateurl="true" title="[[See More]] $module.getName()">[[See More]]</a>
-		#end
+		<div class="emgrid-footer">
+			#if ($moduleid!="faceprofilegroup")
+			<a class="btn btn-xs btn-secondary emdialog TODOautocloseside" 
+				style="margin-right:5px; "  
+				title="$module: [[Add New]]"
+				href="$siteroot$applink/components/upload/entities/addnewentity.html?viewid=${module.id}addnew&searchtype=${module.id}&targetdiv=applicationmaincontent"
+				data-hidefooter="true">
+				<i class="fas fa-plus"></i> [[Add New]]</a>
+			#end
+			#if($filter.getCount($module.id) > 2)
+				<a href="$entityurl" 
+					class="ajax btn btn-xs btn-secondary" 
+					data-targetdivinner="applicationmaincontent" 
+					data-oemaxlevel="2" 
+					data-updateurl="true" 
+					title="[[See More]] $module.getName()">[[See More]]</a>
+			#end
+		</div>
 		</div>	
