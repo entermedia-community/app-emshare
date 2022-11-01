@@ -16,7 +16,7 @@
 					title="$module.getName()">
 				<img src="$siteroot$apphome/theme/images/entity/${moduleicon}.svg" style="height: 24px;"> 
 				
-				#if( $hits.size() < 7 || $module.id == "asset") ##this is safe
+				#if( $module.id == "asset") ##this is safe
 					#set( $count = $hits.size()) 
 				#else
 					#set( $count = $filter.getCount($module.id) ) 
@@ -46,19 +46,29 @@
 				data-cellpadding="10"
 				data-entityrenderurl="$siteroot$apphome/components/gridsample/gridcell.html"
 				data-rendertype="$rendertype">
-			#foreach( $hit in $hits)
+			#foreach( $hit in $hits.getPageOfHits() )
 				$context.putPageValue("hit", $hit)
 			    $pages.include("$apphome/components/gridsample/gridcell.html", $context)
 			#end
 		</div>
 		<div class="emgrid-footer">
 			#if ($moduleid!="faceprofilegroup")
-			<a class="btn btn-xs btn-secondary emdialog TODOautocloseside" 
-				style="margin-right:5px; "  
-				title="$module: [[Add New]]"
-				href="$siteroot$applink/components/upload/entities/addnewentity.html?viewid=${module.id}addnew&searchtype=${module.id}&targetdiv=applicationmaincontent"
-				data-hidefooter="true">
-				<i class="fas fa-plus"></i> [[Add New]]</a>
+				#if($moduleid =="asset")
+				<a class="btn btn-xs btn-secondary ajax sidebarselected" 
+					data-updateurl="true" 
+					data-targetdivinner="applicationmaincontent" 
+					data-oemaxlayout="3" 
+					href="$siteroot$applink/views/modules/asset/add/start.html" 
+					title="Upload Media">
+					<i class="fas fa-plus"></i><span>&nbsp;[[Upload]]</span></a>
+				#else
+					<a class="btn btn-xs btn-secondary emdialog TODOautocloseside" 
+						style="margin-right:5px; "  
+						title="$module: [[Add New]]"
+						href="$siteroot$applink/components/upload/entities/addnewentity.html?viewid=${module.id}addnew&searchtype=${module.id}&targetdiv=applicationmaincontent"
+						data-hidefooter="true">
+						<i class="fas fa-plus"></i> [[Add New]]</a>
+				#end
 			#end
 			#if($filter.getCount($module.id) > 2)
 				<a href="$entityurl" 
