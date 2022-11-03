@@ -10,9 +10,9 @@
 #end
 $context.putPageValue('oemaxlevel',  $oemaxlevel)
 
-#set($targetdiv = "applicationmaincontent")
+#set($targetdivinner = "applicationmaincontent")
 
-$context.putPageValue('targetdiv',  $targetdiv)
+$context.putPageValue('targetdivinner',  $targetdivinner)
 
 #set($hitsperpage = $context.getRequestParameter("hitsperpage"))
 #if(!$hitsperpage)
@@ -28,9 +28,11 @@ $context.putPageValue('targetdiv',  $targetdiv)
 
 
 #if( $hits)
+	$context.putPageValue('hits',  $hits)
+	
 	###set($resultsPage = "$home$!{searchhome}/index.html?hitssessionid=$hits.sessionId&searchtype=$moduleid&hitsperpage=$!hitsperpage&categoryid=$!category.id&resultstype=$!resultstype")
 	#set($resultsPage = "$home$!{searchhome}/index.html?hitssessionid=$hits.sessionId")
-	#set($resultsPage = "$resultsPage&page")
+	#set($resultsPage = "$resultsPage&pageposition")
 	$context.putPageValue('resultsPage',  $resultsPage)
 	
 	#set($thispage = $hits.getPage())
