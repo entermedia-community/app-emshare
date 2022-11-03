@@ -928,7 +928,9 @@ uiload = function() {
 					//Show results below
 					//console.log("enter running " + q);
 					options["oemaxlevel"] = input.data("searchurlenteroemaxlevel");
-					var updateurl = input.data("updateurl");
+					//var updateurl = input.data("updateurl");
+					var moduleid = $("#applicationcontent").data("moduleid");
+					var updateurl = apphome + "/views/modules/" + moduleid + "/index.html";
 	
 					$.ajax({ url: url, async: true, data: options, 
 						success: function(data) 
@@ -1024,7 +1026,7 @@ uiload = function() {
 				{
 					//console.log("already searching"  + searching);
 				}
-				var url = input.data("searchurl");
+				var url = updateurl;//input.data("searchurl");
 				if (url != null) {
 					console.log(q + " searching");
 					input.data("searching","true");
