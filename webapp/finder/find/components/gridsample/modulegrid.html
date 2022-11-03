@@ -1,3 +1,6 @@
+#set($filter = $modulehits.findFilterValue("entitysourcetype") )
+$context.putPageValue("filter", $filter)
+
    		<div class="emgrid-module emgrid-box emgrid-column emgrid-module-$!rendertype">
    		<div class="emgrid-subtitle">
 	   		<h3>
@@ -8,12 +11,7 @@
 		     	
 	     		#set($entityurl = "$siteroot$apphome/views/modules/$module.id/index.html")
 	
-				<a href="$entityurl" 
-					class="ajax" 
-					data-targetdiv="applicationcontent" 
-					data-oemaxlevel="3" 
-					data-updateurl="true" 
-					title="$module.getName()">
+
 				<img src="$siteroot$apphome/theme/images/entity/${moduleicon}.svg" style="height: 24px;"> 
 				
 				#if( $module.id == "asset") ##this is safe
@@ -23,13 +21,14 @@
 				#end
 		
 				$module.getName() <span class="count">($count)</span>
-				</a>
 				
 				<div style="float:right" >
-					<a href="$siteroot$apphome/views/modules/modulesearch/expand.html?profilepreference=expanded_module&profilepreference.value=$module.id" 
-					data-targetdiv="applicationcontent"
-					data-oemaxlevel="2"
-					class="ajax">
+					<a href="$entityurl" 
+					class="ajax" 
+					data-targetdiv="applicationcontent" 
+					data-oemaxlevel="3" 
+					data-updateurl="true" 
+					title="$module.getName()">
 					<i class="fas fa-window-maximize"></i></a>
 				</div>
 			</h3>
@@ -70,13 +69,6 @@
 						<i class="fas fa-plus"></i> [[Add New]]</a>
 				#end
 			#end
-			#if($filter.getCount($module.id) > 2)
-				<a href="$entityurl" 
-					class="ajax btn btn-xs btn-secondary" 
-					data-targetdivinner="applicationmaincontent" 
-					data-oemaxlevel="2" 
-					data-updateurl="true" 
-					title="[[See More]] $module.getName()">[[See More]]</a>
-			#end
+
 		</div>
 		</div>	

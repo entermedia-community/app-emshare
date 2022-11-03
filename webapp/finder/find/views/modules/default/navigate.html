@@ -1,15 +1,19 @@
 #set( $moduleid = $context.findValue("module") )
+
 #if(!$searchhome)
 	#set( $searchhome = $content.searchhome) ##$context.findValue("searchhome") )
 #end
+
 #set($oemaxlevel = $context.getRequestParameter("resultsoemaxlevel"))
 #if(!$oemaxlevel)
 	#set( $oemaxlevel = 2)
 #end
-#set($targetdivinner = $context.getRequestParameter("targetdiv"))
-#if(!$targetdivinner)
-	#set($targetdivinner = "applicationmaincontent")
-#end
+$context.putPageValue('oemaxlevel',  $oemaxlevel)
+
+#set($targetdiv = "applicationmaincontent")
+
+$context.putPageValue('targetdiv',  $targetdiv)
+
 #set($hitsperpage = $context.getRequestParameter("hitsperpage"))
 #if(!$hitsperpage)
 	#set( $hitsperpage = $!hits.hitsPerPage)
@@ -24,56 +28,25 @@
 
 
 #if( $hits)
-	#set($resultsPage = "$home$!{searchhome}/index.html?hitssessionid=$hits.sessionId&searchtype=$moduleid&hitsperpage=$!hitsperpage&categoryid=$!category.id&resultstype=$!resultstype")
+	###set($resultsPage = "$home$!{searchhome}/index.html?hitssessionid=$hits.sessionId&searchtype=$moduleid&hitsperpage=$!hitsperpage&categoryid=$!category.id&resultstype=$!resultstype")
+	#set($resultsPage = "$home$!{searchhome}/index.html?hitssessionid=$hits.sessionId")
 	#set($resultsPage = "$resultsPage&page")
-	#set($thispage = $hits.getPage())
+	$context.putPageValue('resultsPage',  $resultsPage)
 	
+	#set($thispage = $hits.getPage())
+	<div class="clearfix"></div>
     <div class="resultsnumber float-left">
     [[Displaying records]] $!hits.getPageStart() - $!hits.getPageEnd()  [[of]] $!totalhits [[items]]
     </div>
     #if($totalhits > $hits.total)
     	<div id="pages-bottom" class="pages float-right">
          <ul>
-         	<li><a class="ajax" targetdivinner="$targetdivinner" data-oemaxlevel="$!oemaxlevel" href="$resultsPage" title="[[All Results]]">[[View All]]</a></li>
+         	<li><a class="ajax" data-targetdivinner="$targetdivinner" data-oemaxlevel="$!oemaxlevel" href="$resultsPage" title="[[All Results]]">[[View All]]</a></li>
          </ul>
          </div>
     #elseif($hits.getTotalPages()>1)
-            <div id="pages-bottom" class="pages float-right">
-                <ul>
-                    #if( $hits.prevPage() )
-                    <li><a class="ajax" targetdivinner="$targetdivinner" data-oemaxlevel="$!oemaxlevel" href="$resultsPage=$hits.prevPage()" title="[[Previous]] ( alt p enter)" accesskey="p" >[[Previous]]</a></li>
-                    #end
-                    #set( $befores = $hits.linksBefore() )                  
-                        #if($befores.size()!=0)
-                          #if($befores.get(0)>1)
-                            <li><a class="ajax" targetdivinner="$targetdivinner" data-oemaxlevel="$!oemaxlevel" href="$resultsPage=1" >1</a></li>   
-                            <li class="ellipsis">...</li>
-                           #end
-                        #end
-                        #set( $afters = $hits.linksAfter() )
-                    #foreach( $before in $befores )
-                        <li><a class="ajax" targetdivinner="$targetdivinner" data-oemaxlevel="$!oemaxlevel" href="$resultsPage=$before" >$before</a></li>        
-                    #end
-                        <li class="current">
-                        <a  class="ajax" targetdivinner="$targetdivinner" data-oemaxlevel="$!oemaxlevel" href="$resultsPage=$thispage" >$!thispage</a>
-                        </li>
-                    #foreach( $after in $afters )
-                        <li>
-                        <a  class="ajax" targetdivinner="$targetdivinner" data-oemaxlevel="$!oemaxlevel" href="$resultsPage=$after">$after</a></li>      
-                    #end
-                    #set($size=${afters.size()})
-                    #set( $size = $size - 1 )
-                    #if($size>0)
-                        #if ($afters.get($size)< $hits.getTotalPages() )
-                            <li class="ellipsis">...</li>
-                            <li><a  class="ajax" targetdivinner="$targetdivinner" data-oemaxlevel="$!oemaxlevel" href="$resultsPage=$hits.getTotalPages()" >$hits.getTotalPages()</a></li>   
-                        #end
-                    #end
-                    #if ( $hits.nextPage() )
-                    <li><a class="ajax" targetdivinner="$targetdivinner" data-oemaxlevel="$!oemaxlevel" href="$resultsPage=$hits.nextPage()"   title="[[Next]] (alt n enter)" accesskey="n">Next</a>
-                    #end
-                </ul>
-            </div>
+     
+           $pages.include("/${searchhome}/components/results/positions.html", $context)
     #end
 #end
 

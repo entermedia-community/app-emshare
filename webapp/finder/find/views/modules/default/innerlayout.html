@@ -44,3 +44,33 @@ $pages.includeContent()
 </div>
 
 
+
+<div class="modulesearchmodules">
+
+#foreach($module in $organizedModules)
+	#if($module.id != $expandedmodule)
+		#set($idhits = $organizedHits.get($module.id))
+		
+		$context.putPageValue("hits", $idhits)
+		$context.putPageValue("module", $module)
+		$context.putPageValue("moduleid", $module.id)
+		
+	   	#set($modulerendertype = "entity")
+	   	#if ($module.homepagerendertype)
+	   		#set($modulerendertype = $module.homepagerendertype)
+	   	#end
+	   	
+	   	$context.putPageValue("modulerendertype", $modulerendertype)
+	  	
+	   	#set( $favorites = $userprofile.get("favorites_"+$module.id))
+		$context.putPageValue("favorites", $favorites)
+
+		$pages.include("$apphome/components/gridsample/modulegrid.html", $context)
+	#end 
+#end
+</div>
+
+
+
+
+
