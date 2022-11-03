@@ -1,2 +1,35 @@
 ##FIND INDEX
-$pages.include("$componenthome/results/index.html",$context)
+
+#set($defaultmodule = $mediaarchive.getCatalogSettingValue("defaultmodule"))
+#if($defaultmodule)
+	$context.putPageValue("moduleid", $defaultmodule)
+	$context.putPageValue("componenthome", "$apphome/views/modules/$defaultmodule/components") 
+	
+	#set($x = $pages.getChildContentList().add($pages.getPage("$apphome/views/modules/$defaultmodule/index.html")))
+	$pages.include("$apphome/views/modules/$defaultmodule/innerlayout.html",$context)
+#else
+<div class="modulesearchmodules">
+
+#foreach($module in $organizedModules)
+	#if($module.id != $expandedmodule)
+		#set($idhits = $organizedHits.get($module.id))
+		
+		$context.putPageValue("hits", $idhits)
+		$context.putPageValue("module", $module)
+		$context.putPageValue("moduleid", $module.id)
+		
+	   	#set($modulerendertype = "entity")
+	   	#if ($module.homepagerendertype)
+	   		#set($modulerendertype = $module.homepagerendertype)
+	   	#end
+	   	
+	   	$context.putPageValue("modulerendertype", $modulerendertype)
+	  	
+	   	#set( $favorites = $userprofile.get("favorites_"+$module.id))
+		$context.putPageValue("favorites", $favorites)
+
+		$pages.include("$apphome/components/gridsample/modulegrid.html", $context)
+	#end 
+#end
+</div>
+#end

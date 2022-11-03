@@ -61,29 +61,35 @@ $context.putPageValue("assetrootfolder", "/$catalogid/assets")
 	</div>	
 	<div class="clearfix"></div>
 	
-	#if ($resultview != "map" && $resultview != "stackedgallery" && !$ismodulesearch)
-	<div class="resultsnumber">$!hits.getPageStart() - $!hits.getPageEnd()  [[of]] $!hits.total</div>
-	
-	#if(!$resultsPage)
-		#set($resultsPage = "$componenthome/results/index.html")
+	#if ($resultview != "map" && $resultview != "stackedgallery")
+		<div class="resultsnumber">$!hits.getPageStart() - $!hits.getPageEnd()  [[of]] $!hits.total</div>
+		
+		#if(!$resultsPage)
+			#set($resultsPage = "$componenthome/results/index.html")
+		#end
+		#set($resultsPage = "$resultsPage?hitssessionid=$!hits.sessionId&searchtype=$hits.getSearchType()")
+		#set($resultsPage = "$resultsPage&categoryid=$!categoryid&collectionid=$!collectionid&oemaxlevel=1&resultstype=$!resultstype")
+		#set($resultsPage = "$resultsPage&ismodulesearch=$ismodulesearch")
+		#if($module)
+			#set($resultsPage = "$resultsPage&module=$module.id")
+		#end
+		
+		#if ($ismodulesearch)
+			$context.putPageValue('targetdivinner',  "modulesearchexpandedmodule")
+			$context.putPageValue('oemaxlevel', "3")
+			
+		#else
+			$context.putPageValue('targetdivinner',  "applicationmaincontent")
+			$context.putPageValue('oemaxlevel', "2")
+		#end
+		
+		#set($resultsPage = "$resultsPage&pageposition")
+		$context.putPageValue('resultsPage',  $resultsPage)
+		
+		$pages.include("$componenthome/results/positions.html",$context)
 	#end
-	#set($resultsPage = "$resultsPage?hitssessionid=$!hits.sessionId&searchtype=$hits.getSearchType()")
-	#set($resultsPage = "$resultsPage&categoryid=$!categoryid&collectionid=$!collectionid&oemaxlevel=1&resultstype=$!resultstype")
-	#if($module)
-		#set($resultsPage = "$resultsPage&module=$module.id")
-	#end
-	#set($resultsPage = "$resultsPage&pageposition")
-	$context.putPageValue('resultsPage',  $resultsPage)
 	
-	#set($targetdivinner = "applicationmaincontent")
-	$context.putPageValue('targetdivinner',  $targetdivinner)
-	
-	$context.putPageValue('oemaxlevel', "2")
-	
-	$pages.include("$componenthome/results/positions.html",$context)
-	#end
-	
-<div class="clearfix"></div>
+
 #else
 <div class="info" style="margin: 20px;">[[No results found]]</div>
 #end
