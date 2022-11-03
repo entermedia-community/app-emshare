@@ -900,6 +900,11 @@ uiload = function() {
 		
 		var searchurlentertargetdiv = input.data("searchurlentertargetdiv");
 		
+		var moduleid = $("#applicationcontent").data("moduleid");
+		var searchurl = apphome + "/views/modules/" + moduleid + "/index.html";
+
+		var updateurl = input.data("updateurl");
+
 		if(searchurlentertargetdiv != null)
 		{
 			input.on("keydown", function(e)
@@ -914,13 +919,6 @@ uiload = function() {
 					if (q == null || q=="") {
 						return;
 					}
-					var url = input.data("searchurlenter");
-					if( url == null)
-					{
-						//input.closest("form").submit();
-						url = input.data("searchurl");	
-					}
-					
 					input.data("searching","true");
 					input.css( "cursor","wait");
 					$("body").css( "cursor","wait");
@@ -929,10 +927,8 @@ uiload = function() {
 					//console.log("enter running " + q);
 					options["oemaxlevel"] = input.data("searchurlenteroemaxlevel");
 					//var updateurl = input.data("updateurl");
-					var moduleid = $("#applicationcontent").data("moduleid");
-					var updateurl = apphome + "/views/modules/" + moduleid + "/index.html";
 	
-					$.ajax({ url: url, async: true, data: options, 
+					$.ajax({ url: searchurl, async: true, data: options, 
 						success: function(data) 
 						{
 							input.data("searching","false");
@@ -948,7 +944,7 @@ uiload = function() {
 									else {
 										if( updateurl )
 										{
-											history.pushState($("#application").html(), null, url);
+											history.pushState($("#application").html(), null, searchurl);
 											window.scrollTo(0, 0);
 										}
 									}
@@ -1026,8 +1022,7 @@ uiload = function() {
 				{
 					//console.log("already searching"  + searching);
 				}
-				var url = updateurl;//input.data("searchurl");
-				if (url != null) {
+				if (searchurl != null) {
 					console.log(q + " searching");
 					input.data("searching","true");
 					
@@ -1037,7 +1032,7 @@ uiload = function() {
 					}
 					options["oemaxlevel"] = input.data("oemaxlevel");
 					//Regular Search Ajax Call
-					lastsearch = $.ajax({ url: url, async: true, data: options, 
+					lastsearch = $.ajax({ url: searchurl, async: true, data: options, 
 						success: function(data) 
 						{
 							input.data("searching","false");
