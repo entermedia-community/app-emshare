@@ -1,0 +1,65 @@
+#if($hits.isSelected(${hit.id}))
+#set($selectedrow = true)
+#end
+<tr data-rowid="$hit.id" title="$sourcepath" class="resultsassetcontainer #if($selectedrow) emrowselected #end" >
+#if( $showtoolbar )
+	<td class="borderedcell checkbox resultsselection" noclick="true"> 
+		<input type="checkbox" 
+		class="selectionbox" 
+		name="count" 
+		value="" 
+		#if($selectedrow) checked #end 
+		data-dataid="${hit.id}" 
+		#if($canquickdownload) style="margin-right: 1px;" #end />
+		#if($canquickdownload)
+        	#if( $desktop )
+		       	<a href="#" class="emdesktopdownload grid-gallery-download" data-assetid="$hit.id" title="[[Download]] $!title">
+		       	<i class="fas fa-download"> </i>
+		       	</a> 
+	      	#else
+				#set($dlink = $mediaarchive.asLinkToOriginal($hit))
+				#set($dlink = "$siteroot/$mediadbappid/services/module/asset/downloads/originals/$dlink?assetid=$!hit.getId()")
+				#if($collectionid)
+					#set($dlink = "$dlink&collectionid=$!{collectionid}")
+				#end
+			
+	       	<a href="$dlink" class="btn btn-sm btn-primary" data-assetid="$hit.id" title="[[Download]] $!title">
+	       	<i class="fas fa-download"> </i>
+	       	</a>
+	       	#end
+	    #end
+	</td>
+#end	
+	<td class="resultstablecell thumbnail assetdraggable" data-assetid="${hit.id}" >
+		$pages.include("$componenthome/results/thumbnails/small.html",$context)	
+		$pages.include("$componenthome/results/badges.html", $context)
+	</td>
+
+#foreach( $detail in $details)
+	#set( $value = false)
+	#if( $detail.id == "name")
+		#if( $hit.name )
+      		#set( $value = $hit.name )
+      	#elseif ( $asset.title )
+      		#set( $value = $hit.assettitle )
+      	#else
+      		#set( $value = "(No name)" )
+      	#end
+      #else	
+		#set( $value = $hit.get($detail.id))
+	#end
+	
+	#if( !$value && $detail.render )	
+		#set($value = $searcherManager.getValue($catalogid,$detail.render, $hit.properties) ) 
+	#end	
+	
+	$!context.putPageValue("detail",$detail)
+	$!context.putPageValue("val",$value)	
+	$!context.putPageValue("data",$hit)
+	<td  class="resultstablecell $detail.id">
+        
+        $pages.include("$componenthome/xml/detailreadonly.html", $context)
+        
+	</td>	
+#end	
+ </tr>   

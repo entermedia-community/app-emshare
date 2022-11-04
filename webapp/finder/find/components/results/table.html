@@ -64,15 +64,21 @@ $context.putPageValue("assetrootfolder", "/$catalogid/assets")
 	#if ($resultview != "map" && $resultview != "stackedgallery" && !$ismodulesearch)
 	<div class="resultsnumber">$!hits.getPageStart() - $!hits.getPageEnd()  [[of]] $!hits.total</div>
 	
-	#if(!$resultsPage)
-		#set($resultsPage = "$componenthome/results/index.html")
+	
+	
+	#if($module=="asset")
+		#set($resultsPage = "$applink/views/modules/asset/index.html?pageposition")
+	#else
+		#if(!$resultsPage)
+			#set($resultsPage = "$componenthome/results/index.html")
+		#end
+		#set($resultsPage = "$resultsPage?hitssessionid=$!hits.sessionId&searchtype=$hits.getSearchType()")
+		#set($resultsPage = "$resultsPage&categoryid=$!categoryid&collectionid=$!collectionid&oemaxlevel=1&resultstype=$!resultstype")
+		#if($module)
+			#set($resultsPage = "$resultsPage&module=$module.id")
+		#end
+		#set($resultsPage = "$resultsPage&pageposition")
 	#end
-	#set($resultsPage = "$resultsPage?hitssessionid=$!hits.sessionId&searchtype=$hits.getSearchType()")
-	#set($resultsPage = "$resultsPage&categoryid=$!categoryid&collectionid=$!collectionid&oemaxlevel=1&resultstype=$!resultstype")
-	#if($module)
-		#set($resultsPage = "$resultsPage&module=$module.id")
-	#end
-	#set($resultsPage = "$resultsPage&pageposition")
 	$context.putPageValue('resultsPage',  $resultsPage)
 	
 	#set($targetdivinner = "applicationmaincontent")

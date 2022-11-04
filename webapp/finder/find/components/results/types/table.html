@@ -108,10 +108,11 @@ $pages.include("${searchhome}/resultsactions.html",$context)
 							editing="$edit" 
 							class="headerdraggable headerdroppable"> 
 							#text( $detail.name )
-							#if( $edit)
+							#if( $edit) 
 								<a class="baseemenableonhover ajax edit-table-header" 
-									targetdivinner="resultsviewcontainer$!moduleid" 
-									href="$home$searchhome/addremovecolumns.html?oemaxlevel=1&searchtype=${moduleid}&hitssessionid=$hits.getSessionId()&editheader=true&removecolumn=$detail.id"><i class="fas fa-times"></i></a>
+									data-targetdivinner="resultsviewcontainer$!moduleid" 
+									href="$componenthome/results/addremovecolumns.html?oemaxlevel=1&searchtype=${moduleid}&hitssessionid=$hits.getSessionId()&editheader=true&removecolumn=$detail.id">
+									<i class="fas fa-times"></i></a>
 							
 							#elseif ($sortby.startsWith($detail.getId()))
 				 				#if($sortby.endsWith("Up"))
@@ -194,7 +195,7 @@ $pages.include("${searchhome}/resultsactions.html",$context)
 		#set($moduletotalhits = $context.getPageValue("$moduletotalhits")) 
 		#set($args = "resultsoemaxlevel=2&targetdiv=applicationmaincontent&hitsperpage=$hitsperpage&moduletotalhits=$!moduletotalhits")
 	#end	
-		
+	
 	$pages.include("/${searchhome}/navigate.html?$!argsX", $context)
 
 
