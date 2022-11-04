@@ -1,4 +1,5 @@
 #set($hitssessionid = $hits.getSessionId())
+#set($moduleid = $module.id)
 #if (!$nodeID)
 	#set($nodeID = $context.getRequestParameter("nodeID"))
 	$context.putPageValue("nodeID",$nodeID)
@@ -95,7 +96,10 @@
 #else
 	<a href="$siteroot$apphome/index.html" title="[[Home]]" class="ajax" data-updateurl="true" data-targetdiv="application" data-oemaxlevel="4">[[Home]]</a> &gt;
 
-	<a href="$siteroot$apphome/views/modules/$moduleid/index.html" title="$module" class="ajax" data-targetdivinner="applicationmaincontent" data-oemaxlevel="2">$module</a> &gt;
+	<a href="$siteroot$apphome/views/modules/$moduleid/index.html" title="#text($module)" class="ajax" data-targetdivinner="applicationmaincontent" data-oemaxlevel="2">
+	#text($module)
+	#if($count)($count)#end
+	</a> &gt;
 
 #end
 

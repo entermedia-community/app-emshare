@@ -21,16 +21,15 @@ $context.putPageValue("searchhome", $searchhome )
 
 <div id="emresultscontent">
 
+$pages.include("${searchhome}/resultsactions.html",$context)
 
 #if ( $hits.size() == 0 )
-	$pages.include("${searchhome}/resultsactions.html",$context)
 	$pages.stream("/$!{searchhome}/empty.html", $context)	
 #else
 	##set ( $canedit = $context.getPageValue("${moduleid}edit") )
-
 	#set($resultdetail = $searcher.getDetailsForView($viewpath, $userprofile))
 
-$pages.include("${searchhome}/resultsactions.html",$context)
+
 
 #if( $caneditdata )
 	#set( $readonly = false)
@@ -111,7 +110,7 @@ $pages.include("${searchhome}/resultsactions.html",$context)
 							#text( $detail.name )
 							#if( $edit)
 								<a class="baseemenableonhover ajax edit-table-header" 
-									targetdivinner="resultsdiv" 
+									targetdivinner="resultsviewcontainer$!moduleid" 
 									href="$home$searchhome/addremovecolumns.html?oemaxlevel=1&searchtype=${moduleid}&hitssessionid=$hits.getSessionId()&editheader=true&removecolumn=$detail.id"><i class="fas fa-times"></i></a>
 							
 							#elseif ($sortby.startsWith($detail.getId()))

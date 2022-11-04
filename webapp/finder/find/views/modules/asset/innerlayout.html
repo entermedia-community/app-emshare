@@ -1,20 +1,7 @@
 #set($moduleid = $module.id)
 
-<div class="emgrid-subtitle" style="padding:15px 15px 0px;">
-   		<h3>
-	     	#set($moduleicon = $rendertype)
-	     	#if ($module.moduleicon)
-	     		#set($moduleicon = $module.moduleicon)
-	     	#end
-	
-			<img src="$siteroot$apphome/theme/images/entity/${moduleicon}.svg" style="height: 24px;"> 
-			
-			#set( $count = $hits.size())
-	
-			$module.getName() #if($count!=0)<span class="count">($!count)</span>#end   
-		</h3>
-		<div class="clearfix"></div>
-</div>
+#set( $count = $hits.size())
+$context.putPageValue("count", $count)
 
 $pages.include("$componenthome/filters/filters-selected.html",$context)
 

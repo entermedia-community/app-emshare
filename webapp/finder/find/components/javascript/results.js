@@ -76,7 +76,7 @@ jQuery(document).ready(function(url,params)
 					 
 			$.get(href, args, function(data) 
 			{
-				$("#"+targetdiv).html(data);
+				$("#"+targetdiv).replaceWith(data);
 				$(window).trigger( "resize" );
 			});
 		});
@@ -1005,8 +1005,15 @@ jQuery(document).ready(function(url,params)
 		var selectedval = $(this).val();
 		if (selectedval) {
 			var link = selector.data("componenthome");
-			link = link + "&addcolumn=" +selectedval;
-			jQuery("#"+targetdiv).load(link);
+			var args = { 
+					addcolumn: selectedval
+			}
+			//jQuery("#"+targetdiv).load(link);
+			$.get(link, args, function(data) 
+			{
+				$("#"+targetdiv).replaceWith(data);
+				$(window).trigger( "resize" );
+			});
 		}
 	});
 	

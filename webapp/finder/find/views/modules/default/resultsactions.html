@@ -16,17 +16,17 @@
 
 
 	<div id="resultsheader">
-	<div id="sub-nav" class="search-views emsubnav sub-nav-$moduleid">
+	<div id="sub-nav" class="search-views emsubnav sub-nav-$!moduleid">
 		#if($moduleid != "faceprofilegroup")
 			#if(!$edit)
 				<ul class="resultsnav">
-				<li>
+				<li class="selectednav">
 					<a  
 					class="emdialog"  
-					title="$module: [[Add New]]"
+					title="#text($module): [[Add New]]"
 					href="$siteroot$applink/components/upload/entities/addnewentity.html?viewid=${moduleid}addnew&searchtype=${moduleid}&targetdiv=applicationmaincontent"
 					data-hidefooter="true">
-					[[Add New]]</a>
+					<i class="fas fa-plus"></i> [[Add New]]</a>
 				</li> 
 				#if($content.showactions && $hits.hasSelections())
 					$pages.include("$searchhome/selectionactions.html")
@@ -52,7 +52,7 @@
 					##Close Icon
 					<li>
 						<a class="ajax table-edit-close" 
-							data-targetdiv="resultsviewcontainer" 
+							data-targetdiv="resultsviewcontainer$!moduleid" 
 							href="$siteroot$componenthome/results/index.html?oemaxlevel=1&searchtype=$!moduleid&hitssessionid=$!hits.getSessionId()&editheader=&moduleid=$!moduleid"><i class="fas fa-times"></i></a>
 					</li>
 					<li class="resultsnavtitem" style="min-width:180px">
@@ -60,7 +60,7 @@
 						<select class="form-control form-control-sm select2 tableresultsaddcolumn" 
 								name="addcolumn"
 								data-componenthome="$siteroot$componenthome/results/addremovecolumns.html?oemaxlevel=1&searchtype=$!moduleid&hitssessionid=$hits.getSessionId()&editheader=true&moduleid=$!moduleid&viewid=$!{moduleid}resultstable"
-								data-targetdiv="resultsviewcontainer" 
+								data-targetdiv="resultsviewcontainer$!moduleid" 
 								data-allowclear="false" >
 							<option>[[Add Column]]</option>
 							#foreach( $detail in $alldetails) <option value="$detail.id">$detail.getText($context)</option>
@@ -76,7 +76,7 @@
 					<li >
 						<a class="ajax nav-hover" 
 							id="table-editor-close" 
-							data-targetdiv="resultsviewcontainer" 
+							data-targetdiv="resultsviewcontainer$!moduleid" 
 							href="$siteroot$componenthome/results/index.html?searchtype=$!searchtype&hitssessionid=$hits.getSessionId()&editheader=true&moduleid=$!moduleid"> <i class="fas fa-edit"></i></a>
 					</li>
 				#end	

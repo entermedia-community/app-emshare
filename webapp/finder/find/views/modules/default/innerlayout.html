@@ -6,33 +6,10 @@
 
 $context.putPageValue("rendertype", $rendertype)
 
-
-<div class="emgrid-subtitle" style="padding:15px 15px 0px;">
-	#if ($moduleid!="faceprofilegroup")
-	<a class="btn btn-secondary emdialog TODOautocloseside" 
-		style="margin:4px; float:right"  
-		title="$module: [[Add New]]"
-		href="$siteroot$applink/components/upload/entities/addnewentity.html?viewid=${module.id}addnew&searchtype=${module.id}&targetdiv=applicationmaincontent"
-		data-hidefooter="true">
-		<i class="fas fa-plus"></i> [[Add New]]</a>
-	#end
-	
-   		<h3>
-	     	#set($moduleicon = $rendertype)
-	     	#if ($module.moduleicon)
-	     		#set($moduleicon = $module.moduleicon)
-	     	#end
-	
-			<img src="$siteroot$apphome/theme/images/entity/${moduleicon}.svg" style="height: 24px;"> 
-			
-			#if(!$hits.isEmpty())
-				#set( $count = $hits.size())
-			#end
-	
-			$module.getName() #if($count && $count!=0)<span class="count">($!count)</span>#end  
-		</h3>
-		<div class="clearfix"></div>
-</div>
+#if(!$hits.isEmpty())
+	#set( $count = $hits.size())
+#end
+$context.putPageValue("count", $count)
 
 $pages.include("$componenthome/filters/filters-selected.html", $context)
 
