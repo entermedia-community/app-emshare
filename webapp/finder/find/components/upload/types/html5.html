@@ -99,32 +99,18 @@ $context.putPageValue("librarycol",$librarycol)
     </div>
     <div  class="col-md-8 col-upload-right" >
     
-    	<div class="upload-detail-box">
+    	
     	#if( $nodeID )
 			$!context.setRequestParameter("libraries.value",$!librarycol.library)
 			<input type="hidden" name="collectionid" id="currentcollection" value="$!collectionid" />
 			<input type="hidden" name="currentcollection" id="currentcollection" value="$!collectionid" />
-			#if ($librarycol)
-			<div class="ui-widget-header"><i class="fas fa-caret-right"></i> [[Album]]</div>
-			#end
-			<div style="padding:5px 8px; margin:5px 0 10px; background-color: #c6c6c6;">
-				[[Uploading to:]] 
-				#if ($librarycol)
-					<strong>$librarycol.getName()</strong>
-				#end
-				#if (!$category)
-					#set($category = $mediaarchive.getData("category",$nodeID))
-				#end
-				#if($category && $category.getId() != $librarycol.getRootCategoryId())
-					| $category.getName() 
-				#end
-			</div>
 		#else		 
 			#if($collectionid || $mediaarchive.isCatalogSettingTrue("show_add_media_collection"))
+				<div class="upload-detail-box">
 				$pages.include("$apphome/components/upload/types/html5/collectionpicker.html", $context)
+				</div>
 			#end	
 		#end	
-		</div>
 		
 		
 		<div id="uploadmetadata">
