@@ -29,8 +29,6 @@ $pages.include("${searchhome}/resultsactions.html",$context)
 	##set ( $canedit = $context.getPageValue("${moduleid}edit") )
 	#set($resultdetail = $searcher.getDetailsForView($viewpath, $userprofile))
 
-
-
 #if( $caneditdata )
 	#set( $readonly = false)
 #else
@@ -59,12 +57,14 @@ $pages.include("${searchhome}/resultsactions.html",$context)
 			data-searchhome="$!searchhome"
 			data-editpath="$!home$!editpath?$!{args}&edit=true&oemaxlevel=2" 
 			
-			#if($rowrendertype)
-				data-emdialoglink="$!searchhome/components/gridsample/preview/${rowrendertype}.html?searchtype=$!searchtype"
-			#else
-				data-clickurl="$!home$!searchhome/edit/edit.html?hitssessionid=$!{hits.sessionId}&detailsreadonly=$!readonly&oemaxlevel=2"
-				data-targetdiv="$!{moduleid}resultscontainer"
-			#end
+			##if($rowrendertype)
+				
+			data-emdialoglink="$!searchhome/components/gridsample/preview/$!{rowrendertype}.html?searchtype=$!searchtype"
+			
+			##else
+			##	data-clickurl="$!home$!searchhome/edit/edit.html?hitssessionid=$!{hits.sessionId}&detailsreadonly=$!readonly&oemaxlevel=2"
+			##	data-targetdiv="$!{moduleid}resultscontainer"
+			##end
 	>
 	
 		<table class="table table-striped table-hover" 
@@ -200,26 +200,6 @@ $pages.include("${searchhome}/resultsactions.html",$context)
 
 
 </form>
-
-#if($enablepopup)
-<script>
-    $('.popupdetails').on({
-		powerTipPreRender: function() {
-			$(this).data('powertip' , '<div class="details"><img src="/${applicationid}/theme/styles/tooltip/tooltip-loader-blue.gif" /></div>');
-		},
-		powerTipRender: function() {
-			var id = $(this).data("id");
-			$('#powerTip').find('.details').load( '$home${searchhome}/popup.html?oemaxlevel=1&id=' + id );
-		}
-	});
-	$(function() {
-		var mouseFollowDiv = $('.popupdetails');
-		var tipContent = $('<p></p>');
-		mouseFollowDiv.data('powertip', tipContent);
-		mouseFollowDiv.powerTip({ followMouse: true });
-	});
-</script>
-#end
 
 #end
 

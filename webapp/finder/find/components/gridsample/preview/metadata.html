@@ -85,21 +85,21 @@ $context.putPageValue("data",$data)
 
 #if($edit!="true")
 ##<a href="$siteroot$apphome/components/gridsample/preview/metadata.html?edit=true&id=$data.id&searchtype=$searchtype&moduleid=$!moduleid" data-targetdiv="editentitymetadata" class="ajax btn btn-dark"><i class="fas fa-edit"></i> [[Edit]]</a>
-##<a href="$siteroot$apphome/components/entities/delete.html?id=$data.id&searchtype=$searchtype" class="ajax btn btn-dark" data-targetdiv="editentitymetadata" data-closedialog="true" data-confirm="[[Are you sure]]?" style="margin-left:10px;"><i class="fas fa-trash"></i> [[Delete]]</a>
 
-<a href="$siteroot$apphome/views/modules/$!{searchtype}/edit/edit.html?edit=true&id=$data.id&searchtype=$searchtype&moduleid=$!moduleid" data-oemaxlevel="3" data-targetdivinner="applicationmaincontent" data-closedialog="true" class="ajax btn btn-dark"><i class="fas fa-edit"></i> [[Edit]]</a>
 
+<a href="$siteroot$apphome/views/modules/$!{searchtype}/edit/edit.html?edit=true&id=$data.id" data-oemaxlevel="3" data-targetdivinner="applicationmaincontent" data-closedialog="true" data-updateurl="true" class="ajax btn btn-dark"><i class="fas fa-edit"></i> [[Edit]]</a>
+<a href="$siteroot$apphome/components/entities/delete.html?id=$data.id&searchtype=$searchtype" class="ajax btn btn-dark" data-targetdiv="editentitymetadata" data-closedialog="true" data-confirm="[[Are you sure]]?" style="margin-left:10px;"><i class="fas fa-trash"></i> [[Delete]]</a>
 
 #end
 
+
+##SUB-Modules
+
 #if($edit && $edit !="true" && $moduleid) 
-	##SUB-Views
-	
 	#set($viewsearcher = $searcherManager.getSearcher($catalogid, "view"))
 	#set($views = $viewsearcher.query().exact("moduleid",$moduleid).exact("systemdefined","false").not("id",$viewid).sort("orderingUp").search($context) )
 	#if($views)		
 		#foreach( $targetview in $views)
-		
 			#if($targetview.getId())
 				#set( $targetviewid = $targetview.getId())
 				#set( $targetviewpath = "${searchtype}/"+$targetview.getId())
@@ -117,20 +117,32 @@ $context.putPageValue("data",$data)
 				#set ($query = $joinsearcher.createSearchQuery().append($fieldexternalid, $fieldexternalvalue) )
 				#set( $existingrecords = $joinsearcher.search($query) )
 				#if($existingrecords.size()>0)
-				
 					#if($viewdata.rendertable)
-						#set($targetmodule = $mediaarchive.getCachedData("module", $viewdata.rendertable)) 
-						#set($targetrendertype = $targetmodule.modulerendertype)
-						#if(!$targetrendertype)
-							#set($targetrendertype = "entity")
-						#end
-				
-						#set( $args = "id=$id&candelete=$!candelete&editpath=$!editpath&parentid=$!parentid&catalogid=$!catalogid&searchtype=$!searchtype&fieldexternalid=$!fieldexternalid&fieldexternalvalue=$!fieldexternalvalue&viewid=$!targetviewid&viewpath=$!targetviewpath&permissionname=$!permissionname&hitssessionid=$!hitssessionid")
-						#set( $args = "$args&tabletype=subentity&targetrendertype=$!targetrendertype&targetdiv=entitypreviewdialog&targetoemaxlevel=1")
-						
-						
-						<h3>$targetview</h3>
-						$pages.include("/$applicationid/components/xml/table.html?$args&passalong=$!passalong",$context)
+						<div class="editentitymetadata-submodule">
+							#set($targetmodule = $mediaarchive.getCachedData("module", $viewdata.rendertable)) 
+							#set($targetrendertype = $targetmodule.modulerendertype)
+							#if(!$targetrendertype)
+								#set($targetrendertype = "entity")
+							#end
+					
+							#set( $args = "id=$id&candelete=$!candelete&editpath=$!editpath&parentid=$!parentid&catalogid=$!catalogid&searchtype=$!searchtype&fieldexternalid=$!fieldexternalid&fieldexternalvalue=$!fieldexternalvalue&viewid=$!targetviewid&viewpath=$!targetviewpath&permissionname=$!permissionname&hitssessionid=$!hitssessionid")
+							#set( $args = "$args&tabletype=subentity&targetrendertype=$!targetrendertype&targetdiv=entitypreviewdialog&targetoemaxlevel=1")
+							
+							
+							<h3>$targetview
+							<div class="float-right submodule-actions">
+								<a href="$applink/views/modules/$!searchtype/index.html" 
+									class="ajax" 
+									data-targetdiv="applicationmaincontent" 
+									data-oemaxlevel="2" 
+									data-closedialog="true" 
+									data-updateurl="true"
+									title="#text($!targetview)"><i class="fas fa-edit"></i></a>
+								</div>
+							</h3>
+							
+							$pages.include("/$applicationid/components/xml/table.html?$args&passalong=$!passalong",$context)
+						</div>
 					#end
 				#end
 			#end

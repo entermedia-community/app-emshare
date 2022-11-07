@@ -1,0 +1,55 @@
+#set($detailid = $detail.id )
+#if( !$detailid)
+	#set( $detailid = $context.getRequestParameter("detailid"))
+#end	
+#set($idcount = $context.getRequestParameter("idcount"))
+#if(!$idcount)
+	#set($idcount = "")
+#end
+####if(!$val)
+	#set($val = $context.getRequestParameter('assetid'))
+####end
+#if($val && $val != "")
+	#set( $foundrow = $mediaarchive.getAsset($val)  )
+#end
+
+#if( $foundrow )
+	#set( $rootid = $hits.sessionId )
+	
+	#set( $click = "$home$apphome/views/modules/asset/editor/generalinformation/index.html?assetid=$!val&hitssessionid=$!rootid" )
+	
+	<div  id="${detailid}-previewlink" style="display: block; text-align:center;">
+	#set( $link = "/${applicationid}/components/mediaviewer/player/zoom/index.html?assetid=$foundrow.id&name=preview.jpg")
+	
+	
+	#set( $hit = $foundrow)
+	$context.putPageValue("hit", $hit)
+	#set( $rendertype = $mediaarchive.getMediaRenderType($hit.fileformat))
+	$context.putPageValue("type", $rendertype)
+	$context.putPageValue("thumbsize", "small" )
+	
+	#if(!$rendertype || $rendertype =="rendertype")
+		#set( $rendertype = "mime" )
+	#elseif( $rendertype =="video")
+		#set( $rendertype = "videothumbnail" )
+	#end
+	
+	#if($rendertype == "audio")
+	     	<div class="emthumbimage emthumbaudio emcrop assetdraggable" data-assetid="${foundrow.id}" >
+				$pages.include("$componenthome/results/thumbnails/${rendertype}.html", $context)
+			</div>       
+		<div class="emthumbaudio-assetname">
+		<a class="stackedplayer " data-assetid="$foundrow.id" href="#" title="$!foundrow.name" ><i class="fas fa-window-restore"></i> $!foundrow.name</a>
+		</div>
+	#else
+		<a class="stackedplayer" data-assetid="$foundrow.id" href="#" >
+		##       <img id="main-media" class="assetdragdrop" title="[[Drag to collection]]"  draggable="true"  
+		##       data-sourcepath="$urlenc" data-name="$foundrow.name" src="$img" alt="$!foundrow.name"/>
+	
+	     	<div class="emthumbimage emcrop assetdraggable" data-assetid="${foundrow.id}" >
+				$pages.include("$componenthome/results/thumbnails/${rendertype}.html", $context)
+			</div>       
+	</a>
+	#end
+	</div>
+#end			
