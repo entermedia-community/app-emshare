@@ -90,12 +90,12 @@ $(document).ready(function()
                 }
                 else
                 {
-                	//reloadurl = home + "/views/modules/librarycollection/media/showcategory.html";                
-                	reloadurl = home + "/views/modules/asset/showcategory.html";
+                	reloadurl = home + "/views/modules/librarycollection/media/showcategory.html";                
+                	//reloadurl = home + "/views/modules/asset/showcategory.html";
                 }
                 
                 //prefix = home + "/views/modules/librarycollection/media/showcategory.html";
-            	prefix = home + "/views/modules/asset//showcategory.html";
+            	prefix = home + "/views/modules/asset/showcategory.html";
                 //maxlevel = 2;
             }
             else 
@@ -425,11 +425,27 @@ $(document).ready(function()
 		event.stopPropagation();
 		var node = getNode(this);
 		var nodeid = node.data('nodeid');
-		var button = $("#collectionidaddbycategory");
-		button.data("rootcategory",nodeid);
-		button.data("name",node.data("categoryname"));
 		
-		button[0].click();
+		var tree = node.closest(".emtree");
+		var link = tree.data("home") + "/views/modules/librarycollection/createcollection.html"
+		
+		var catoptions = node.data();
+				
+		link = link + "?oemaxlevel=3&searchtype=librarycollection&field=rootcategory&rootcategory.value="+catoptions.nodeid+"&field=name&name.value="+catoptions.categoryname;
+	
+		var targetdiv = "application";
+		
+		$.get(link,  function(data) {
+			var cell = jQuery("#" + targetdiv); 
+			cell.replaceWith(data);
+			
+		    //node.append(data);
+		    var theinput = node.find("input");
+			theinput.focus({preventScroll:false});
+			//theinput.select();
+			//theinput.focus();
+			$(document).trigger("domchanged");
+		});
 		return false;
 	} );
 

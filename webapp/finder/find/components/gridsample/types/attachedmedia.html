@@ -66,32 +66,31 @@
 #end
 
 <div class="entity-assets-info">
-	#set($targetdiv = "application")
-	
+	#set($targetdivinner = "applicationmaincontent")
+	#set($oemaxlevel = "2")
 	#if($assetshits.size()>0)
 		#if($moduleid=="librarycollection")
 			#if(!$rootcategory)
 				#set($rootcategory = $context.getRequestParameter("rootcategory"))
 			#end
-			#set($link = "$siteroot$applink/views/modules/librarycollection/showcategory.html?hitssessionid=$!{assetshits.sessionId}&nodeID=$rootcategory&clearfilters=true&collectionid=$!librarycol.getId()")
-			#set($oemaxlevel = "3")
+			#set($link = "$siteroot$applink/views/modules/librarycollection/media/showcategory.html?hitssessionid=$!{assetshits.sessionId}&nodeID=$rootcategory&clearfilters=true&collectionid=$!librarycol.getId()")
 			#set($link = "$!link&sidebarcomponent=categories")
-			#set($targetdiv = "application")
+			
 		#elseif($moduleid=="faceprofilegroup")
 			#set($link = "$siteroot$applink/views/modules/asset/faceprofilegroup.html")
 			#set($link = "$link?faceprofilegroupid=$!entityid&clearfilters=true")
-			#set($oemaxlevel = "3")
+			
 		#else
 			#set($link = "$siteroot$applink/views/modules/asset/index.html")
 			#set($link = "$link?hitssessionid=$!{assetshits.sessionId}&field=$!moduleid&operation=matches&${moduleid}.value=$!entityid&clearfilters=true")
-			#set($oemaxlevel = "3")
+			
 		#end
 		
 		
 		<a href="$link" 
 						class="ajax"
 						data-oemaxlevel="$!oemaxlevel" 
-						data-targetdiv="$!targetdiv" 
+						data-targetdivinner="$!targetdivinner" 
 						data-closedialog="true"
 						data-updateurl="true"
 						data-closemediaviewer="true">[[View Media]] ($assetshits.size())</a>
