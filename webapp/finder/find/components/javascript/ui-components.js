@@ -903,6 +903,8 @@ uiload = function() {
 		var moduleid = $("#applicationcontent").data("moduleid");
 		var searchurl = apphome + "/views/modules/" + moduleid + "/index.html";
 
+		options["moduleid"] = moduleid;
+		
 		var updateurl = input.data("updateurl");
 
 		if(searchurlentertargetdiv != null)
