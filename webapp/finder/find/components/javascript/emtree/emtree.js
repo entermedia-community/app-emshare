@@ -483,7 +483,7 @@ function getPosition(e) {
 		noderow.find("> .categorydroparea").addClass('selected'); //Keep it highlighted
 		var emtreediv = noderow.closest(".emtree");
 		
-		//console.log(noderow);
+		console.log(noderow);
 		
 		var treename = emtreediv.data("treename"); 
 		var contextMenu = $( "#" + treename + "contextMenu");
@@ -500,6 +500,12 @@ function getPosition(e) {
 			var yPos = pos.y - 10;
 			
 			contextMenu.data("selectednoderow",noderow);
+			var iscollection = noderow.data("collectionid");
+			$("#" + treename + "contextMenu #createcollection").show();
+			if(iscollection != null && iscollection != "") {
+				$("#" + treename + "contextMenu #createcollection").hide();
+			}
+			
 			contextMenu.css({
 			  display: "block",
 			      left: xPos,
