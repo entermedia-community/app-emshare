@@ -8,14 +8,14 @@ jQuery(document).ready(function()
 	    	//debugger;
 	    	
             var grid = $( this );
+            var gridwidth = grid.width();
             var colwidth = parseInt(grid.data("colwidth"));
-            var gridw = grid.width();
             var cellpadding = parseInt(grid.data("cellpadding"));
             if(isNaN(cellpadding)) {
-            	cellpadding = 210;
+            	cellpadding = 10;
             }
             //get colum width divide by div width
-            var colcount = grid.width() / colwidth;
+            var colcount =  gridwidth / colwidth;
             colcount = Math.floor(colcount);
             
             if (colcount<1) {
@@ -23,7 +23,7 @@ jQuery(document).ready(function()
             }
            
             //adjust the colwidth to spread out the extra space
-            var remainder = grid.width() - (colcount * (colwidth)) + cellpadding;
+            var remainder = gridwidth - (colcount * (colwidth)) + cellpadding;
             colwidth = colwidth + (remainder/colcount);
             
             var columns = [];

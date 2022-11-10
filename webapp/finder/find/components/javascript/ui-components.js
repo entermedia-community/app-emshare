@@ -2466,8 +2466,8 @@ uiload = function() {
 				else {
 					column.removeClass("sidebarwide");
 				}
-				if (width > 520) {
-					width = 520;
+				if (width > 500) {
+					width = 500;
 				}
 				column.width(width);
 				column.data("sidebarwidth",width);
@@ -2526,7 +2526,10 @@ uiload = function() {
 				{
 					width = 200;
 				}
-				//console.log("W" , width);
+				if (width > 480) {
+					width = 480;
+				}
+				//console.log("W " , width);
 				column.width(width);
 				column.data("sidebarwidth",width);
 				$(".pushcontent").css("margin-left",width+"px");
