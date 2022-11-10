@@ -913,6 +913,11 @@ uiload = function() {
 			{
 				var q = input.val();
 				q = q.trim();
+				
+				var moduleid = $("#applicationcontent").data("moduleid");
+				var searchurl = apphome + "/views/modules/" + moduleid + "/index.html";
+
+				options["moduleid"] = moduleid;
 	
 				if( e.which == 13)
 				{
@@ -972,6 +977,13 @@ uiload = function() {
 			var q = input.val();
 			q = q.trim();
 			options["description.value"] = q;
+			
+			var moduleid = $("#applicationcontent").data("moduleid");
+			var searchurl = apphome + "/views/modules/" + moduleid + "/index.html";
+
+			options["moduleid"] = moduleid;
+			
+			
 			if( q && q.length < 2)
 			{
 				return;

@@ -14,6 +14,11 @@
 	#set( $edit = false)
 #end
 
+#set($entityrendertype = "entity")
+#if ($module.modulerendertype)
+	#set($entityrendertype = $module.modulerendertype)
+#end
+
 
 	<div id="resultsheader">
 	<div id="sub-nav" class="search-views emsubnav sub-nav-$!moduleid">
@@ -23,8 +28,8 @@
 				<li class="selectednav">
 					<a  
 					class="emdialog"  
-					title="#text($module): [[Add New]]"
-					href="$siteroot$applink/components/upload/entities/addnewentity.html?viewid=${moduleid}addnew&searchtype=${moduleid}&targetdiv=applicationmaincontent"
+					title="[[Add New]] #text($module) "
+					href="$!siteroot$applink/components/gridsample/preview/$!{entityrendertype}.html?searchtype=$moduleid&edit=true"
 					data-hidefooter="true">
 					<i class="fas fa-plus"></i> [[Add New]]</a>
 				</li> 
