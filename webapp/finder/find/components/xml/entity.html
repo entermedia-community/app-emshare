@@ -63,6 +63,7 @@ $lsearcher.addShowOnly($context, $query)
 #set($values = $data.getValues($detail.id))
 #end
 
+
 $types.enableBulkOperations()
 	#if( $foreignkeyid)
 		<script type="text/javascript">
@@ -82,7 +83,7 @@ $types.enableBulkOperations()
 	#end
 	#foreach( $type in $types )
 		#set( $key = $type.id)
-		<option value="$key" #if($values.contains($key)) selected #end>#esc($type.getName($context.getLanguage()))</option>
+		<option value="$key" #if($values.contains($key) || $value.equals($key)) selected #end>#esc($type.getName($context.getLanguage()))</option>
 	#end
 
    </select>		

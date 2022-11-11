@@ -37,13 +37,18 @@
  	
 	#set( $val = false )
 	#set( $target = "${detail.id}.value" )
-	#set( $val = $context.getRequestParameter($target) )					
-	#if( $searcherManager )
-		#set( $val = $searcherManager.getValue($data,$detail) )	
-	#else
-		#set( $val = $!{data.getProperty($detail.getId())} )
-	#end
+	#set( $val = $context.getRequestParameter($target) )	
+	#if( !$val )
+		#set( $val = $context.getPageValue($target) )
+	#end	
 	
+	#if( !$val )
+		#if( $searcherManager )
+			#set( $val = $searcherManager.getValue($data,$detail) )	
+		#else
+			#set( $val = $!{data.getProperty($detail.getId())} )
+		#end
+	#end
 	#if( !$val )
 		#set( $val = $!{data.get($detail.getId())} )
 	#end
