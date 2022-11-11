@@ -24,8 +24,8 @@
 
 #set( $moduleid = $context.findValue("module") )
 
-#set ($catalogId = $context.getRequestParameter("catalogid") )
-			
+#set ($catalogId = $mediaarchive.getCatalogId() )
+
 #set( $joinsearcher = $searcherManager.getSearcher($catalogId, $searchtype))
 
 #if(!$existingrecords)
@@ -87,7 +87,7 @@
 	<thead>
 	<tr id="tableheader" class="tableheader">
 	#foreach( $detail in $details )
-	<th class="sortable #if( $edit)editcolumnheader #end #if( $sortby.startsWith($detail.getId() ) ) currentsort #if( $sortby.endsWith("Up") ) up #else down #end #end" id="th-$detail.id" data-sortby="$detail.id">
+	<th class="sortableX #if( $edit)editcolumnheader #end #if( $sortby.startsWith($detail.getId() ) ) currentsort #if( $sortby.endsWith("Up") ) up #else down #end #end" id="th-$detail.id" data-sortby="$detail.id">
 		$detail.text
 		#set( $sortby = $existingrecords.getSearchQuery().getSortBy() )
 		#if ($sortby.startsWith($detail.getId()))
@@ -143,26 +143,6 @@
 </table>
 
 
-    <script>
-        $('th.sortableX').on({
-            click: function(){
-                var id = $(this).attr('id');
-                var path = "$home$apphome/components/xml/columnsort.html?$args&sortby="
-              	
-                		if ( $(this).hasClass('currentsort') ) {
-                    if ( $(this).hasClass('up') ) {
-                        jQuery('#${viewid}editor').load( path + id + 'Down');
-                    } else {
-                        jQuery('#${viewid}editor').load( path + id + 'Up');
-                    }
-                } else {
-                    $('th.sortable').removeClass('currentsort');
-                    $(this).addClass('currentsort');
-                    jQuery('#${viewid}editor').load( path + id + 'Down');
-                }
-            }
-        });
-    </script>
 
 
 #end

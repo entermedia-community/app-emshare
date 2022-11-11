@@ -7,18 +7,18 @@
 #set ($fieldexternalid = $context.getRequestParameter("fieldexternalid"))
 #set ($fieldexternalvalue = $context.getRequestParameter("fieldexternalvalue"))
 
+#set($targetdiv = $context.getRequestParameter("parenttargetdiv"))
 
-<div  id="search-collections" >
+<div  id="search-entities-modal" class="searchonetomany" >
 	<div id="searcharea" >
-	<div style="padding:0 0 20px;">
+	
 	#set($predata = $mediaarchive.getSearcher($searchtype).createNewData())
 	$predata.setValue($fieldexternalid, $fieldexternalvalue)
 	$context.putPageValue("data", $predata)
-
 	
-	$pages.include("$apphome/components/upload/entities/addnewentity.html?viewid=${searchtype}addnew&searchtype=${searchtype}&targetdiv=modulesubtable")
+	$pages.include("$apphome/views/modules/${searchtype}/edit/addnewentity.html?viewid=${searchtype}addnew&searchtype=${searchtype}&targetdiv=$!targetdiv")
 	<div class="clearfix"></div>
-	</div>
+	
 <hr>
 <h5 style="margin-bottom:10px;">[[Or Choose From Existing]]</h5>
 
@@ -55,23 +55,13 @@
 		</div>	
 		</div>
 		</td>
-##		#if($canviewsettings)
-##		<td style="width:20px; padding:0; position:relative">
-##			<a style="position:absolute; top:3px; right:3px;"
-##				class=" edit-icon"
-##				href="$applink/views/settings/modules/librarycollection/metadata/viewssystem/index.html?viewid=${viewid}&viewpath=${viewpath}"
-##				title="[[Edit Search Form Fields]]">
-##			<i class="fas fa-edit"></i>
-##			</a>
-##		</td>
-##		#end
 		</tr>
 		</table>
 	</form>
 
 	
 	<div id="submodulepicker" 
-		data-targetdiv="modulesubtable" 
+		data-targetdiv="$!targetdiv" 
 		data-oemaxlevel="1" 
 		data-submodulesearchtype="$!{searchtype}" 
 		data-hitssessionid="$!hits.sessionId"
@@ -79,10 +69,10 @@
 		data-fieldexternalvalue="$fieldexternalvalue"
 		data-savepath="${page.directory}/generictablesavesubmodule.html"
 		
-		data-searchtype="$!{parentsearchtype}"
+		data-parentsearchtype="$!{parentsearchtype}"
 		data-viewid="$!parentviewid"
 		data-viewpath="$!parentviewpath"
-		data-id="$!parentid"
+		data-parentid="$!parentid"
 		style="display: none;"
 		>
 		

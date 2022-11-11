@@ -2935,7 +2935,7 @@ uiload = function() {
 	
 	lQuery("#submodulepicker .rowclick").livequery("click", function(e) {
 		e.preventDefault();
-		closeemdialog($(this).closest(".modal"));
+		//closeemdialog($(this).closest(".modal"));
 		var picker = $("#submodulepicker");
 		var row = $(this);
 		var rowid = row.attr("rowid");
@@ -2949,7 +2949,7 @@ uiload = function() {
 			data: options, 
 			success: function (data) {
 				$("#"+targetdiv).html(data);
-				console.log("reloading "+targetdiv)
+				//console.log("reloading "+targetdiv)
 				//$(window).trigger( "resize" );
 			}
 		});

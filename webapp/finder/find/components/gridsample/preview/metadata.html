@@ -6,23 +6,19 @@ $context.putPageValue("searcher",$searcher)
 #if(!$moduleid)
 	#set($moduleid = $context.getRequestParameter("moduleid"))
 #end
+#if(!$moduleid)
+	#set($moduleid = $searchtype)
+#end
 
 ##if($id)
 
-#if( !$data)
-	#set( $data  = $mediaarchive.getData($searchtype, $id) )
-#end
+#set( $data  = $mediaarchive.getData($searchtype, $id) )
+
 $context.putPageValue("data",$data)
 
-#set($fieldexternalid = $context.getRequestParameter("fieldexternalid"))
-#if($fieldexternalid)
-	#set($fieldexternalvalue = $context.getRequestParameter("fieldexternalvalue"))
-	#if($fieldexternalvalue)
-		$context.putPageValue("${fieldexternalid}.value",$fieldexternalvalue)
-	#end
-#end
 
-<div id="editentitymetadata">
+<div id="editentitymetadata" class="entitymetadatamodal" data-id="$!id">
+
 
 #set($edit = $context.getRequestParameter("edit"))
 #if($edit!="true")
@@ -104,6 +100,16 @@ $context.putPageValue("data",$data)
 
 
 ##SUB-Modules
+
+#set($fieldexternalid = $context.getRequestParameter("fieldexternalid"))
+#if($fieldexternalid)
+	#set($fieldexternalvalue = $context.getRequestParameter("fieldexternalvalue"))
+	#if($fieldexternalvalue)
+		$context.putPageValue("${fieldexternalid}.value",$fieldexternalvalue)
+	#end
+#end
+
+
 #set( $parentsearchtype = $searchtype)
 
 #if($edit && $edit !="true" && $moduleid) 
@@ -135,68 +141,66 @@ $context.putPageValue("data",$data)
 					#set($targetrendertype = "entity")
 				#end
 		
-				#set( $args = "id=$id&candelete=$!candelete&editpath=$!editpath&parentid=$!parentid&catalogid=$!catalogid&searchtype=$!searchtype&fieldexternalid=$!fieldexternalid&fieldexternalvalue=$!fieldexternalvalue&viewid=$!targetviewid&viewpath=$!targetviewpath&permissionname=$!permissionname&hitssessionid=$!hitssessionid")
+				##set( $args = "id=$id&candelete=$!candelete&parentid=$!parentid&catalogid=$!catalogid&searchtype=$!searchtype&fieldexternalid=$!fieldexternalid&fieldexternalvalue=$!fieldexternalvalue&viewid=$!targetviewid&viewpath=$!targetviewpath&permissionname=$!permissionname&hitssessionid=$!hitssessionid")
+				##set( $args = "$args&tabletype=subentity&targetrendertype=$!targetrendertype&targetdiv=entitypreviewdialog&targetoemaxlevel=1")
+				
+				#set( $args = "id=$id&parentid=$!parentid&searchtype=$!searchtype&fieldexternalid=$!fieldexternalid&fieldexternalvalue=$!fieldexternalvalue&viewid=$!targetviewid&viewpath=$!targetviewpath&hitssessionid=$!hitssessionid")
 				#set( $args = "$args&tabletype=subentity&targetrendertype=$!targetrendertype&targetdiv=entitypreviewdialog&targetoemaxlevel=1")
 				
+			
 				#set($targetentityrendertype = "entity")
 				#if ($targetmodule.modulerendertype)
 					#set($targetentityrendertype = $targetmodule.modulerendertype)
 				#end
 				
-				#set($targetmodulelink = "$!siteroot$applink/components/gridsample/preview/$!{targetentityrendertype}.html?searchtype=$!targetmodule.getId()&edit=true")
-				#set($targetmodulelink = "$targetmodulelink&fieldexternalid=$!fieldexternalid&fieldexternalvalue=$!fieldexternalvalue")
+				##set($targetmodulelink = "$!siteroot$applink/components/gridsample/preview/$!{targetentityrendertype}.html?searchtype=$!targetmodule.getId()&edit=true")
+				##set($targetmodulelink = "$targetmodulelink&fieldexternalid=$!fieldexternalid&fieldexternalvalue=$!fieldexternalvalue")
 							
 							
 							
-				#if($existingrecords.size()>0)
-				
-
-					#if($viewdata.rendertable)
-						<div class="editentitymetadata-submodule">
+				#set($addentitylink = "$!siteroot$applink/views/modules/$moduleid/edit/table/generictablesearch.html?submodulesearchtype=$searchtype&fieldexternalid=$fieldexternalid&fieldexternalvalue=$!fieldexternalvalue&parentviewid=$!viewid&parentviewpath=$!viewpath&parentid=$!id&parentsearchtype=$!parentsearchtype")
+							
+							
+				<div class="editentitymetadata-submodule">
 
 							<h3>#text($targetmodule)
 							<div class="float-right submodule-actions">
-##								<a href="$applink/views/modules/$!searchtype/index.html" 
-##									class="ajax" 
-##									data-targetdiv="applicationmaincontent" 
-##									data-oemaxlevel="2" 
-##									data-closedialog="true" 
-##									data-updateurl="true"
-##									title="#text($!targetview)"><i class="fas fa-edit"></i></a>
-
-								
-								<a  
-									class="ajax btn btn-xs btn-dark"  
-									data-targetdiv="entitydialog" 
-									data-oemaxlevel="2" 
-									title="[[Add New]] #text($targetmodule) "
-									href="$!targetmodulelink"
-									>
-									<i class="fas fa-plus"></i> [[Add]] #text($targetmodule)</a>
-
-								</div>
-							</h3>
 							
-							$pages.include("/$applicationid/components/xml/table.html?$args&passalong=$!passalong",$context)
-						</div>
-					#end
-				#else
-					<h3>#text($targetmodule)
-							<div class="float-right submodule-actions">
+							
+							<a class="btn btn-sm btn-dark ajax"  
+			
+							href="$addentitylink" 
+							data-targetdiv="targetmoduleaddnew#eid($targetviewid)"
+							data-oemaxlevel="1"
+							data-parentviewid="$!viewid"
+							data-parentviewpath="$!viewpath"
+							data-parenttargetdiv="editentitymetadata"
+							data-parentid="$!id"
+							data-hidefooter="true">[[Add]] $!context.getText($viewdata)</a>
 					
-								<a  
-									class="ajax btn btn-xs btn-dark"  
-									data-targetdiv="entitydialog" 
-									data-oemaxlevel="2" 
-									title="[[Add New]] #text($targetmodule) "
-									href="$!targetmodulelink"
-									>
-									<i class="fas fa-plus"></i> [[Add]] #text($targetmodule)</a>
+##								<a  
+##									class="ajax btn btn-xs btn-dark"  
+##									data-targetdiv="entitydialog" 
+##									data-oemaxlevel="2" 
+##									title="[[Add New]] #text($targetmodule) "
+##									href="$!targetmodulelink"
+##									>
+##									<i class="fas fa-plus"></i> [[Add]] #text($targetmodule)</a>
 
 								</div>
 							</h3>
-				#end
-			#end
+							<div id="targetmoduleaddnew#eid($targetviewid)">
+								#if($existingrecords.size()>0)
+									#if($viewdata.rendertable)
+										$pages.include("/$applicationid/components/xml/table.html?$args&passalong=$!passalong",$context)						
+									#end
+								#end
+
+							</div>
+						</div>
+							
+					#end		
+
 		#end
 	#end
 

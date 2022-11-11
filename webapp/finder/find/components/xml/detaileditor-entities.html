@@ -36,11 +36,14 @@
  #foreach( $detail in $details )
  	
 	#set( $val = false )
-	#set( $target = "${detail.id}.value" )
-	#set( $val = $context.getRequestParameter($target) )	
-	#if( !$val )
-		#set( $val = $context.getPageValue($target) )
-	#end	
+	
+	#if($editrow)
+		#set( $target = "${detail.id}.value" )
+		#set( $val = $context.getRequestParameter($target) )	
+		#if( !$val )
+			#set( $val = $context.getPageValue($target) )
+		#end	
+	#end
 	
 	#if( !$val )
 		#if( $searcherManager )
