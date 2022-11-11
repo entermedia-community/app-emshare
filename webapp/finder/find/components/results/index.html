@@ -8,14 +8,26 @@
 	#set( $module = $content.module)
 #end
 
-##fix module vs moduleid
-#if($module)
-	#if($module.id)
-		#set($moduleid = $module.id)
-	#else
-		#set($moduleid = $module)
+	##fix module vs moduleid
+	#if($module)
+		#if($module.id)
+			#set($moduleid = $module.id)
+		#else
+			#set($moduleid = $module)
+		#end
 	#end
-#end
+	$context.putPageValue("moduleid", $module.id)
+	
+	
+#set($searcher = $searcherManager.getSearcher($catalogid, $module.id))
+$context.putPageValue("searcher", $searcher)
+
+#set($searchhome = "$apphome/views/modules/$moduleid" )
+$context.putPageValue("searchhome", $searchhome )
+
+#set($isentity = $module.get("isentity"))
+$context.putPageValue("isentity", $isentity )
+
 
 #if (!$nodeID)
 	#set($nodeID = $context.getRequestParameter("nodeID"))
@@ -38,28 +50,42 @@
 #end
 
 	
-	#if($moduleid=="asset")
-		#set($resultview = $userprofile.get("assetresultview"))
-		#if(!$resultview)
-			#set($resultview = "stackedgallery")
-		#end
-	#elseif($moduleid=="librarycollection")
-		###set($resultview = $content.resultview)
-		#if(!$resultview)
-			#set($librarycollectionassets = $content.librarycollectionassets)
-			#if($librarycollectionassets)
-				##Show assets on collction
-				#set($resultview = $userprofile.get("librarycollectionassetsresultview"))
-				#if(!$resultview)
-					#set($resultview = "stackedgallery")
-				#end
+#if($moduleid=="asset")
+
+	#set($resultview = $userprofile.get("assetresultview"))
+	#if(!$resultview)
+		#set($resultview = "stackedgallery")
+	#end
+	
+#elseif($moduleid=="librarycollection")
+		##INTERNAL ALBUM PAGES?
+		#if( $librarycol )	
+			#set($resultview = $userprofile.get("assetresultview"))
+			#if(!$resultview)
+				#set($resultview = "stackedgallery")
 			#end
-		#end
-		#if(!$resultview)
-			#set($resultview = $userprofile.get("${moduleid}resultview"))
-		#end
-		#if(!$resultview)
-			#set($resultview = "grid")
+			
+			#set($searcher = $searcherManager.getSearcher($catalogid, "asset"))
+			$context.putPageValue("searcher", $searcher)
+			
+			#set($searchhome = "$apphome/views/modules/asset" )
+			$context.putPageValue("searchhome", $searchhome )
+			
+			$context.putPageValue("componenthome", "$apphome/views/modules/asset/components")
+			
+			##SET INTERNAL VIEWS same as ASSET
+			$context.putPageValue("viewid", "assetresultstable")
+			$context.putPageValue("viewpath", "asset/assetresultstable")
+			
+			
+		#else
+			##MAIN ALBUMS VIEW
+			#if(!$resultview)
+				#set($resultview = $userprofile.get("${moduleid}resultview"))
+			#end
+			#if(!$resultview)
+				#set($resultview = "grid")
+			#end
 		#end
 	#elseif ($moduleid=="faceprofilegroup")
 		#set($resultview = $userprofile.get("faceprofilegroupresultview"))
@@ -83,6 +109,10 @@
 		#if(!$resultview)
 			#set($resultview = "table")
 		#end
+		
+		$context.putPageValue("searchtype", $module.id)
+		
+		
 	#end
 	
 	$context.putPageValue("resultview",$resultview)
