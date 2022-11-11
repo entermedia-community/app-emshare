@@ -1,10 +1,19 @@
+#if( $category )
+	#set( $categoryid = $category.id )
+#else
+	#set( $categoryid = "index" )
+#end
+#if($librarycol)
+	#set( $collectionid = $librarycol.getId() )
+#end
+
 
 <div id="resultsdiv" class="tableresults" 
 		data-hitssessionid="$hits.getSessionId()" 
 		data-componenthome="$!home$!componenthome"
 		data-searchhome="$!home$!componenthome/results"
-		data-category="$!category.getId()"
-		data-collectionid="$!librarycol.getId()" 
+		data-category="$!categoryid"
+		data-collectionid="$!collectionid" 
 		data-searchtype="asset" 
 		data-pagenum="$hits.getPage()" 
 		data-totalpages="$hits.getTotalPages()"
@@ -21,11 +30,7 @@ $pages.include("$componenthome/results/header.html",$context)
 
 $context.putPageValue("assetrootfolder", "/$catalogid/assets")
 
-#if( $category )
-	#set( $catid = $category.id )
-#else
-	#set( $catid = "index" )
-#end
+
 
 
 #if ( $hits && $hits.size() > 0 )
@@ -65,17 +70,26 @@ $context.putPageValue("assetrootfolder", "/$catalogid/assets")
 		<div class="resultsnumber">$!hits.getPageStart() - $!hits.getPageEnd()  [[of]] $!hits.total</div>
 		
 		#if($module.getId()=="asset")
-			#set($resultsPage = "$applink/views/modules/asset/index.html?pageposition")
-		#else
-			#if(!$resultsPage)
-				#set($resultsPage = "$componenthome/results/index.html")
-			#end
-			#set($resultsPage = "$resultsPage?hitssessionid=$!hits.sessionId&searchtype=$hits.getSearchType()")
-			#set($resultsPage = "$resultsPage&categoryid=$!categoryid&collectionid=$!collectionid&oemaxlevel=1&resultstype=$!resultstype")
-			#if($module)
-				#set($resultsPage = "$resultsPage&module=$module.id")
-			#end
+		#if($categoryid || $collectionid)
+			#set($resultsPage = "$applink/views/modules/asset/showcategory.html")
+			#set($resultsPage = "$resultsPage?hitssessionid=$!hits.sessionId&searchtype=$!hits.getSearchType()")
+			#set($resultsPage = "$resultsPage&nodeID=$!categoryid&collectionid=$!collectionid")
 			#set($resultsPage = "$resultsPage&pageposition")
+		#else
+			#set($resultsPage = "$applink/views/modules/asset/index.html?pageposition")
+		#end
+			$context.putPageValue('targetdivinner',  "applicationmaincontent")
+			$context.putPageValue('oemaxlevel', "2")
+		#elseif($module.getId()=="librarycollection")
+			#if(!$resultsPage)
+				#set($resultsPage = "$applink/views/modules/librarycollection/media/showcategory.html")
+			#end
+			#set($resultsPage = "$resultsPage?hitssessionid=$!hits.sessionId&searchtype=$!hits.getSearchType()")
+			#set($resultsPage = "$resultsPage&categoryid=$!categoryid&collectionid=$!collectionid")
+			#set($resultsPage = "$resultsPage&pageposition")
+			
+			$context.putPageValue('targetdivinner',  "resultsarea")
+			$context.putPageValue('oemaxlevel', "2")
 		#end
 		
 		
@@ -84,8 +98,7 @@ $context.putPageValue("assetrootfolder", "/$catalogid/assets")
 			$context.putPageValue('oemaxlevel', "3")
 			
 		#else
-			$context.putPageValue('targetdivinner',  "applicationmaincontent")
-			$context.putPageValue('oemaxlevel', "2")
+
 		#end
 		
 		
