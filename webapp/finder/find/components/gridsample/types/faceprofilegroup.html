@@ -38,9 +38,10 @@ $context.putPageValue("previewurl", $previewurl)
    	 
 	<div class="emgrid-entitymetadata"> 
 		#set( $assetimage = $mediaarchive.getCachedData("asset", $entity.primaryimage))
-		#set( $imagesize = "image200x200.jpg")
-  	 	#set($tpath = $mediaarchive.asLinkToPreview($assetimage, null, $imagesize, true))
-  	 	
+  	 	## #set($tpath = $mediaarchive.asLinkToPreview($assetimage, null, $imagesize, true))
+  	 	$context.putPageValue("asset", $assetimage)
+		$context.putPageValue("viewer", "e_m_pp_${entity.id}")
+  	 	$context.putPageValue("thumbsize", "small" )
    	 	<a href="$!previewurl" 
    	 	class="emdialog entity-dialog" 
    	 	data-hidefooter="true" 
@@ -49,16 +50,7 @@ $context.putPageValue("previewurl", $previewurl)
    	 	data-id="entity.id"
    	 	title="$!entity.name">
 	        	    
-		<img class="imagethumb img-fluid"
-			 border="0" 
-			 sourcepath="$!sourcepath" 
-			 catalogid="$catalogid" 
-			 assetid="$assetimage.id" 
-			 alt="$!assetimage.name"
-			 draggable="true"  
-			 data-name="$!assetimage.name" 		
-			 src="$!tpath" 
-			  />    
+	  	$pages.include("$componenthome/results/thumbnails/image.html", $context)
 		</a>   	 
 
 
