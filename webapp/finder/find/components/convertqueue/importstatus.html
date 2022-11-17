@@ -41,13 +41,13 @@
    	$pages.include("$componenthome/results/thumbnails/${rendertype}.html", $context)     
 
 #elseif($publish && $publish.size() >0 )
-    <div id="status$hit.id"  class="ajaxstatus"  #if( $content == $page)data-ajaxrunning="true"#end  ajaxpath="$siteroot$apphome/components/convertqueue/importstatus.html?assetid=$hit.id&thumbsize=$thumbsize" >
+    <div id="status$!hit.id"  class="ajaxstatus"  #if( $content == $page)data-ajaxrunning="true"#end  ajaxpath="$siteroot$apphome/components/convertqueue/importstatus.html?assetid=$hit.id&thumbsize=$thumbsize" >
     	<div class="uiinfo	 proxythumb" title="[[Publishing Proxy]] $publish.size()" >
     		<div class="loadingbar" style="width:30px;"></div>
     	</div> 
      </div>
 #elseif($conversions && $conversions.size() == 0)
-    <div id="status$hit.id" class="ajaxstatus" 
+    <div id="status$!hit.id" class="ajaxstatus" 
     	#if( $content == $page)data-ajaxrunning="true"#end  
     	data-reloadspeed="3500"
     	ajaxpath="$siteroot$apphome/components/convertqueue/importstatus.html?assetid=$hit.id&thumbsize=$thumbsize" >
@@ -58,7 +58,7 @@
         </div> 
     </div>
 #else
-    <div id="status$hit.id" class="ajaxstatus importstatusreport" 
+    <div id="status$!hit.id" class="ajaxstatus importstatusreport" 
     	#if( $content == $page)data-ajaxrunning="true"#end 
     	data-reloadspeed="2000"
     	ajaxpath="$siteroot$apphome/components/convertqueue/importstatus.html?assetid=$hit.id&thumbsize=$thumbsize" >
@@ -75,7 +75,7 @@
 		#set( $thumbpath =  "$themeprefix/images/mimetypes/${mime}.png" )
 	
 		<div class="mimethumbcontainer">
-			<img title="[[Conversions in process]]" class="mimethumb" src="$siteroot$thumbpath" border="0"/>
+			<img title="[[Conversions in process]]" class="mimethumb" src="$!siteroot$thumbpath" border="0"/>
 			#set( $completed = $totalcount - $remaining )
 	        #set( $total = 80 * $mathutil.getPercentage($completed, $totalcount) )
 	        #set( $total = $total + 20 )

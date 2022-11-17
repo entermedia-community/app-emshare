@@ -8,6 +8,8 @@
 	#set ($hit = $data)
 #end
 
+$context.putPageValue("hit", $hit)
+
 #set ($sourcepath = $hit.sourcepath)
 #set ($urlutils = $context.getPageValue("url_util"))
 #set ($thumbsize = $context.getPageValue("thumbsize"))
@@ -51,8 +53,6 @@ $context.putPageValue("thumbsize", $thumbsize)
 		<img class="mimethumb" src="$siteroot$thumbpath$!urlparams" border="0" alt="$!hit.name" />
 		</div>
 	#else	
-	
-	
 		#if($useoriginal)
 			#set($tpath = "$siteroot/$mediadbappid/services/module/asset/downloads/originals/"+$mediaarchive.asLinkToOriginal($hit))
 		#else
