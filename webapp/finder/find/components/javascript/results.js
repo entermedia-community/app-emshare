@@ -1073,16 +1073,19 @@ jQuery(document).ready(function(url,params)
             var resultsdiv =  "";
             var searchome="";
             var options="";
+            var targetdiv="";
+            
+            resultsdiv = $(this).closest("#resultsdiv");
+        	searchhome = resultsdiv.data('searchhome');
+			options = resultsdiv.data();
+			
+			
             var moduletable = $(this).closest(".emselectable");;
             if (moduletable && moduletable.data("targetdiv")) {
-            	resultsdiv = $("#"+moduletable.data("targetdiv"));
-            	searchhome = moduletable.data('searchhome');
-    			options = moduletable.data();
+            	targetdiv = $("#"+moduletable.data("targetdiv"));
             }
             else {
-            	resultsdiv = $(this).closest("#resultsdiv");
-            	searchhome = resultsdiv.data('searchhome');
-    			options = resultsdiv.data();
+            	targetdiv = $(this).closest("#resultsdiv");
             }
             
 			//var columnsort = searchhome + '/columnsort.html?oemaxlevel=1&searchtype=' + searchtype + '&viewpath=' + viewpath + '&viewid=' + viewid + '&hitssessionid=' + sessionid;
@@ -1090,14 +1093,30 @@ jQuery(document).ready(function(url,params)
 			
             if ( $(this).hasClass('currentsort') ) {
                 if ( $(this).hasClass('up') ) {
-                    $(resultsdiv).load( columnsort + '&sortby=' + id + 'Down', options);
+                    //$(resultsdiv).load( columnsort + '&sortby=' + id + 'Down', options);
+                	var link = columnsort + '&sortby=' + id + 'Down';
+                	$.get(link, options, function(data) 
+        			{
+        				$(targetdiv).replaceWith(data);
+        			});
+                	
                 } else {
-                    $(resultsdiv).load( columnsort + '&sortby=' + id + 'Up', options);
+                    //$(resultsdiv).load( columnsort + '&sortby=' + id + 'Up', options);
+                    var link = columnsort + '&sortby=' + id + 'Up';
+                	$.get(link, options, function(data) 
+        			{
+        				$(targetdiv).replaceWith(data);
+        			});
                 }
             } else {
                 $('th.sortable').removeClass('currentsort');
                 $(this).addClass('currentsort');
-                $(resultsdiv).load( columnsort + '&sortby=' + id + 'Down', options);
+                //$(resultsdiv).load( columnsort + '&sortby=' + id + 'Down', options);
+                var link = columnsort + '&sortby=' + id + 'Down';
+            	$.get(link, options, function(data) 
+    			{
+    				$(targetdiv).replaceWith(data);
+    			});
             }
     });
 	
