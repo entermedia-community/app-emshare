@@ -9,14 +9,24 @@ jQuery(document).ready(function()
 	    	
             var grid = $( this );
             var gridwidth = grid.width();
-            var colwidth = parseInt(grid.data("colwidth"));
             var cellpadding = parseInt(grid.data("cellpadding"));
             if(isNaN(cellpadding)) {
             	cellpadding = 10;
             }
             //get colum width divide by div width
-            var colcount =  gridwidth / colwidth;
-            colcount = Math.floor(colcount);
+            
+            var colcount =  1;
+            var colwidth = 100;
+            if(grid.data("colcount"))
+            	{
+            	colcount = grid.data("colcount");
+            	colwidth = gridwidth / colcount;
+            	}
+            else {
+	            colwidth = parseInt(grid.data("colwidth"));
+	            colcount =  gridwidth / colwidth;
+	            colcount = Math.floor(colcount);
+            }
             
             if (colcount<1) {
             	colcount = 1;
