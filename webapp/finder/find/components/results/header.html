@@ -66,6 +66,50 @@
 		##end
 
 		#if ($resultview != "map")
+		
+			#if( $librarycol )
+			<li class=" dropdown">
+			<a href="#" class="dropdown-toggle dropdown-noarrow" data-toggle="dropdown" data-bs-toggle="dropdown" title="[[Album Actions]]">
+			[[Album]]</a>
+				<div class="dropdown-menu">
+				 	#if(!$canforcebasiccollections)
+					 	#if($cansharecollection )
+						 	#set( $editlink = "$siteroot$apphome/views/modules/librarycollection/sharecollection.html?collectionid=${librarycol.getId()}")
+						 	<a class="dropdown-item emdialog" data-allwaysloadpage="true" data-hidefooter="true"   href="$editlink" title="[[Sharing Album]]"><i class="dropdown-item-icon fas fa-share-alt"></i> [[Sharing]]</a>
+					 	#end
+				 	#end
+				 	#if( $canaddnewcollection || $cancopycollection)
+							<a class="dropdown-item emdialog" href="$siteroot$apphome/views/modules/librarycollection/copycollection.html?collectionid=$!librarycol.getId()" title="[[Create a copy of this Album]]"><i class="dropdown-item-icon fas fa-copy"></i> [[Copy Album]]</a>
+					#end
+					#if($caneditcollection)
+					  #set( $link = "$siteroot$apphome/views/modules/librarycollection/share.html?collectionid=${librarycol.getId()}")
+					  <a class="dropdown-item emdialog" id="sharetab" href="$link" data-hidefooter="true" title="[[Notifications]]"><i class="dropdown-item-icon fas fa-flag"></i> [[Notifications]]</a>
+					  #set( $link = "$siteroot$apphome/views/modules/librarycollection/users.html?collectionid=${librarycol.getId()}")
+					  <a class="dropdown-item emdialog"  id="editingtab"  href="$link" data-hidefooter="true" title="[[Editing Users]]"><i class="dropdown-item-icon fas fa-user-friends"></i> [[Editing Users]]</a>
+					   #set( $link = "$siteroot$apphome/views/modules/librarycollection/permissions.html?collectionid=${librarycol.getId()}")
+					  <a class="dropdown-item emdialog" id="permissionstab" href="$link" data-hidefooter="true" title="[[Viewing Users]]"><i class="dropdown-item-icon fas fa-user-check"></i> [[Viewing Users]]</a>
+					  #set( $link = "$siteroot$apphome/views/modules/librarycollection/datapermissions/index.html?collectionid=${librarycol.getId()}&id=${librarycol.getId()}")
+					  <a class="dropdown-item emdialog" id="colpermissionstab" href="$link" data-hidefooter="true" title="[[Album Permissions]] (${librarycol})"><i class="dropdown-item-icon fas fa-user-lock"></i> [[Album Permissions]]</a>
+		              #if($librarycol.get('library'))
+						  #set( $link = "$siteroot$apphome/views/modules/library/datapermissions/index.html?id=${librarycol.get('library')}")
+						  <a class="dropdown-item emdialog" id="libpermissionstab" href="$link" data-hidefooter="true" title="$librarycol.library [[Library Permissions]]"><i class="dropdown-item-icon fas fa-user-lock"></i>  [[Library Permissions]]</a>
+					  #end
+					  #set( $editlink = "$siteroot$apphome/views/modules/librarycollection/edit/settings.html?collectionid=${librarycol.getId()}")
+				 	  <a class="dropdown-item emdialog"  data-allwaysloadpage="true" data-hidefooter="true"   href="$editlink" title="[[AlbumProperties]]"><i class="dropdown-item-icon fas fa-cogs"></i> [[Properties]]</a>
+				   	#else
+					   	#set( $editlink = "$siteroot$apphome/views/modules/librarycollection/edit/settings.html?collectionid=${librarycol.getId()}")
+					 	<a class="dropdown-item emdialog"  data-allwaysloadpage="true" data-hidefooter="true"   href="$editlink" title="[[Album Properties]]"><i class="dropdown-item-icon fas fa-cogs"></i> [[Properties]]</a>
+					#end
+				</div>
+				</li>
+			#end
+		
+		
+		
+		
+		
+		
+		
 			$pages.include("$componenthome/results/selected/index.html",$context)
 
 			#if( $enabled && ($canpublish || $canemaillink || $canexportdata ) )
