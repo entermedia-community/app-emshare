@@ -30,8 +30,12 @@
 	    #end
 	</td>
 #end	
-	<td class="resultstablecell thumbnail assetdraggable" data-assetid="${hit.id}" >
+
+	#set( $type = $mediaarchive.getMediaRenderType($hit.fileformat))
+	<td class="resultstablecell thumbnail assetdraggable" data-assetid="${hit.id}" #if($type=="audio") noclick="true" #end>
 		$pages.include("$componenthome/results/thumbnails/small.html",$context)	
+		  	 	
+		   	 	
 		$pages.include("$componenthome/results/badges.html", $context)
 	</td>
 
@@ -58,6 +62,8 @@
 		$!context.putPageValue("data",$hit)
 		<td  class="resultstablecell $detail.id">
 	        $pages.include("$componenthome/xml/detailreadonly.html", $context)
+	        
+
 	        
 		</td>	
 	#end	
