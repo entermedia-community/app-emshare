@@ -476,13 +476,15 @@ uiload = function() {
 				}
 				//targetdiv.data("oemaxlevel", oemaxlevel);
 
-				var data;
+				var data = {};
 				if(form.data("includesearchcontext") == true){
 					data = jQuery("#resultsdiv").data();
 					data.oemaxlevel = oemaxlevel;
 				}
 				else{
-					data = targetdiv.data();
+					if (targetdiv.data()  !== undefined) {
+						data = targetdiv.data();
+					}
 				} 
 				
 				data.oemaxlevel = oemaxlevel;
