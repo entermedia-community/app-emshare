@@ -120,7 +120,8 @@ jQuery(document).ready(function(url,params)
 	lQuery(".filterschangesort").livequery("click", function(e){
 		//debugger;
 		e.preventDefault();
-		var dropdown = $("#assetsortby");
+		var sirtbyfield = $(this).data("sortbyfield");
+		var dropdown = $("#"+sirtbyfield);
 		var up = dropdown.data("sortup");
 		var selected = dropdown.find(":selected");
 		var id = selected.data("detailid");
