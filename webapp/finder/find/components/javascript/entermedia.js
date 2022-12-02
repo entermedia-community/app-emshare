@@ -944,7 +944,7 @@ onloadselectors = function()
 							
 							console.log(options.moduleid);
 							$.get(searchhome + "/savecolumns.html", options, function(data) {
-								var cell = findclosest(resultsdiv, "#resultsdiv");
+								var cell = findclosest(resultsdiv, resultsdiv);
 								resultsdiv.replaceWith(data);
 							})
 							/*

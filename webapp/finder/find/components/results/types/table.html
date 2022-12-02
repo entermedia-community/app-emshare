@@ -1,4 +1,9 @@
-
+#if(!$moduleid)
+	#set($moduleid = $context.getRequestParameter("moduleid"))
+#end
+#if(!$searchhome)
+	#set($searchhome = "$apphome/views/modules/$moduleid" )
+#end
 #if(!$viewid)
 	#set($viewid = "${moduleid}resultstable")
 #end
@@ -170,7 +175,7 @@ $pages.include("${searchhome}/resultsactions.html",$context)
 			$context.putPageValue('val',  $val)
 			$context.putPageValue('detail',  $detail)
 			   <div id="edit_${cell.id}_$detail.id" class="popupdetails tablecell-$!{detail.id}-#esc($val)" data-id="${cell.id}">
-			        $pages.include("${searchhome}/cell.html", $context)
+			        $pages.include("$!{searchhome}/cell.html", $context)
 			    </div>
 			</td>
 		#end
