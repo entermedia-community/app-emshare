@@ -33,178 +33,180 @@ $pages.include("${searchhome}/resultsactions.html",$context)
 #if ( $hits.size() == 0 )
 	$pages.stream("/$!{searchhome}/empty.html", $context)	
 #else
-	##set ( $canedit = $context.getPageValue("${moduleid}edit") )
+	##set ($canedit = $context.getPageValue("${moduleid}edit") )
 	#set($resultdetail = $searcher.getDetailsForView($viewpath, $userprofile))
-
-#if( $caneditdata )
-	#set( $readonly = false)
-#else
-	#set( $readonly = true)
-#end
-<form name="selectionform" action="$home$!{searchhome}/common/selection/toggle.html">
-	<input type="hidden" name="hitsname" value="hits"/>
-
-	<div class="tablecontainer">
 	
-	<div id="messagearea"> </div>
-	#set($defaultview = $userprofile.getDefaultViewForModule($moduleid) )
-	#if($defaultview)
-	 	#set($defaultviewid = $defaultview.id )
-	#end
-	#if(!$defaultviewid)
-		#set($defaultviewid = "${moduleid}general" )
-	#end
-	    
-	<div id="emselectable" 
-			class="emselectable" 
-			data-viewid="$!defaultviewid"
-			data-hitssessionid="$hits.getSessionId()" 
-			data-id="$!id"
-			data-searchtype="$!searchtype" 
-			data-searchhome="$!searchhome"
-			data-editpath="$!home$!editpath?$!{args}&edit=true&oemaxlevel=2" 
-			
-			##if($rowrendertype)
-				
-			data-emdialoglink="$!searchhome/components/gridsample/preview/$!{rowrendertype}.html?searchtype=$!searchtype"
-			
-			##else
-			##	data-clickurl="$!home$!searchhome/edit/edit.html?hitssessionid=$!{hits.sessionId}&detailsreadonly=$!readonly&oemaxlevel=2"
-			##	data-targetdiv="$!{moduleid}resultscontainer"
-			##end
-			
-			data-targetdiv="resultsviewcontainer$!moduleid"
-	>
+	##$resultdetail --
 	
-		<table class="table table-striped table-hover" 
-				id="$!searchtype-main-results-table" 
-				data-resultsarea="resultsarea" 
-				data-hitssessionid="$!hits.sessionId">
+	#if( $caneditdata )
+		#set( $readonly = false)
+	#else
+		#set( $readonly = true)
+	#end
+	<form name="selectionform" action="$home$!{searchhome}/common/selection/toggle.html">
+		<input type="hidden" name="hitsname" value="hits"/>
+	
+		<div class="tablecontainer">
 		
-		<thead>
-		<tr id="tableheader" class="tableheader" >
-		###if($content.isPropertyTrue("showactions"))
-		
-			<th class="firstheader" id="th-checkbox">
-			<div id="th-checkbox-left">
-				<input name="pagetoggle" type="checkbox" #if($hits.isAllSelected()) checked #end  />
-				</div>
-			<div id="th-checkbox-right">
-			    <div class="anchor">
-		    	    <div class="select-dropdown-open down"></div>
-		    	    <ul class="select-dropdown" style="display: none;">
-		    	        <li><a class="ajax selectpage" targetdiv="resultsheader" href="${searchhome}/components/results/togglepage.html?oemaxlevel=1&hitssessionid=$hits.getSessionId()&action=page">[[Select This Page]]</a></li>
-		    	        <li><a class="ajax  selectpage" targetdiv="resultsheader" href="${searchhome}/components/results/togglepage.html?oemaxlevel=1&hitssessionid=$hits.getSessionId()&action=all">[[Select All Results]]</a></li>
-		    	        <li><a class="ajax  deselectpage" targetdiv="resultsheader" href="${searchhome}/components/results/togglepage.html?oemaxlevel=1&hitssessionid=$hits.getSessionId()&action=none">[[Deselect All]]</a></li>
-		    	    </ul>
-		    	</div>
-		    	</div>
-			</th>
-		
-		###end
-		
-		#set( $edit = $context.getRequestParameter("editheader"))
-		#if( !$edit || $edit == "false")
-			#set( $edit = false)
+		<div id="messagearea"> </div>
+		#set($defaultview = $userprofile.getDefaultViewForModule($moduleid) )
+		#if($defaultview)
+		 	#set($defaultviewid = $defaultview.id )
 		#end
-			#set( $sortby = $hits.getSearchQuery().getSortBy() )
-			#foreach( $detail in $resultdetail)
+		#if(!$defaultviewid)
+			#set($defaultviewid = "${moduleid}general" )
+		#end
+		    
+		<div id="emselectable" 
+				class="emselectable" 
+				data-viewid="$!defaultviewid"
+				data-hitssessionid="$hits.getSessionId()" 
+				data-id="$!id"
+				data-searchtype="$!searchtype" 
+				data-searchhome="$!searchhome"
+				data-editpath="$!home$!editpath?$!{args}&edit=true&oemaxlevel=2" 
+				
+				##if($rowrendertype)
+					
+				data-emdialoglink="$!searchhome/components/gridsample/preview/$!{rowrendertype}.html?searchtype=$!searchtype"
+				
+				##else
+				##	data-clickurl="$!home$!searchhome/edit/edit.html?hitssessionid=$!{hits.sessionId}&detailsreadonly=$!readonly&oemaxlevel=2"
+				##	data-targetdiv="$!{moduleid}resultscontainer"
+				##end
+				
+				data-targetdiv="resultsviewcontainer$!moduleid"
+		>
+		
+			<table class="table table-striped table-hover" 
+					id="$!searchtype-main-results-table" 
+					data-resultsarea="resultsarea" 
+					data-hitssessionid="$!hits.sessionId">
 			
-				<th  class="sortable #if( $edit)editcolumnheader #end #if( $sortby.startsWith($detail.getId() ) ) currentsort #if( $sortby.endsWith("Up") ) up #else down #end #end tableheader-$detail.id" id="th-$detail.id" sortby="$detail.id" data-sortby="$detail.id">
-					<div id="$detail.id" 
-							hitssessionid="$hits.getSessionId()"  
-							editing="$edit" 
-							class="headerdraggable headerdroppable"> 
-							#text( $detail.name )
-							#if( $edit) 
-								<a class="baseemenableonhover ajax edit-table-header" 
-									data-targetdivinner="resultsviewcontainer$!moduleid" 
-									href="$componenthome/results/addremovecolumns.html?oemaxlevel=1&searchtype=${moduleid}&hitssessionid=$hits.getSessionId()&editheader=true&removecolumn=$detail.id">
-									<i class="fas fa-times"></i></a>
-							
-							#elseif ($sortby.startsWith($detail.getId()))
-				 				#if($sortby.endsWith("Up"))
-				 					#set($sorticon="up")
-				 				#else
-				 					#set($sorticon="down")
-				 				#end	
-				 				&nbsp;&nbsp;&nbsp;<i class="fas fa-caret-$sorticon"></i>
-							#end
+			<thead>
+			<tr id="tableheader" class="tableheader" >
+			###if($content.isPropertyTrue("showactions"))
+			
+				<th class="firstheader" id="th-checkbox">
+				<div id="th-checkbox-left">
+					<input name="pagetoggle" type="checkbox" #if($hits.isAllSelected()) checked #end  />
 					</div>
-				 </th>
+				<div id="th-checkbox-right">
+				    <div class="anchor">
+			    	    <div class="select-dropdown-open down"></div>
+			    	    <ul class="select-dropdown" style="display: none;">
+			    	        <li><a class="ajax selectpage" targetdiv="resultsheader" href="${searchhome}/components/results/togglepage.html?oemaxlevel=1&hitssessionid=$hits.getSessionId()&action=page">[[Select This Page]]</a></li>
+			    	        <li><a class="ajax  selectpage" targetdiv="resultsheader" href="${searchhome}/components/results/togglepage.html?oemaxlevel=1&hitssessionid=$hits.getSessionId()&action=all">[[Select All Results]]</a></li>
+			    	        <li><a class="ajax  deselectpage" targetdiv="resultsheader" href="${searchhome}/components/results/togglepage.html?oemaxlevel=1&hitssessionid=$hits.getSessionId()&action=none">[[Deselect All]]</a></li>
+			    	    </ul>
+			    	</div>
+			    	</div>
+				</th>
+			
+			###end
+			
+			#set( $edit = $context.getRequestParameter("editheader"))
+			#if( !$edit || $edit == "false")
+				#set( $edit = false)
 			#end
-		</tr>
-		</thead>
-		
-		<tbody>
-		
-		#set( $even = true )
-		#set($count = 0)
-		#foreach ( $cell in $hits.getPageOfHits() )
-		
-		   	$context.putPageValue('data', $cell)
-		    $context.putPageValue('cell', $cell)
-		    
-			#set( $clink = "$home${content.linkprefix}${cell.id}${content.linksuffix}" )
-		
-		    ##<tr  rowid="$home$!{searchhome}/edit/edit.html?id=${cell.id}&viewid=$!{defaultviewid}&viewpath=$moduleid/$!{defaultviewid}&hitssessionid=${hits.sessionId}&searchtype=$moduleid&detailsreadonly=$readonly">
-		    <tr  rowid="$!{cell.id}">
-		   
-		    
-		###if($content.isPropertyTrue("showactions"))
-		
-			<td class="borderedcell checkbox resultsselection" noclick="true"> 
+				#set( $sortby = $hits.getSearchQuery().getSortBy() )
+				#foreach( $detail in $resultdetail)
 				
-				<input type="checkbox" class="selectionbox" name="count" value="" #if($hits.isSelected(${cell.id})) checked #end data-dataid="${cell.id}" />
+					<th  class="sortable #if( $edit)editcolumnheader #end #if( $sortby.startsWith($detail.getId() ) ) currentsort #if( $sortby.endsWith("Up") ) up #else down #end #end tableheader-$detail.id" id="th-$detail.id" sortby="$detail.id" data-sortby="$detail.id">
+						<div id="$detail.id" 
+								hitssessionid="$hits.getSessionId()"  
+								editing="$edit" 
+								class="headerdraggable headerdroppable"> 
+								#text( $detail.name )
+								#if( $edit) 
+									<a class="baseemenableonhover ajax edit-table-header" 
+										data-targetdivinner="resultsviewcontainer$!moduleid" 
+										href="$componenthome/results/addremovecolumns.html?oemaxlevel=1&searchtype=${moduleid}&hitssessionid=$hits.getSessionId()&editheader=true&removecolumn=$detail.id">
+										<i class="fas fa-times"></i></a>
+								
+								#elseif ($sortby.startsWith($detail.getId()))
+					 				#if($sortby.endsWith("Up"))
+					 					#set($sorticon="up")
+					 				#else
+					 					#set($sorticon="down")
+					 				#end	
+					 				&nbsp;&nbsp;&nbsp;<i class="fas fa-caret-$sorticon"></i>
+								#end
+						</div>
+					 </th>
+				#end
+			</tr>
+			</thead>
+			
+			<tbody>
+			
+			#set( $even = true )
+			#set($count = 0)
+			#foreach ( $cell in $hits.getPageOfHits() )
+			
+			   	$context.putPageValue('data', $cell)
+			    $context.putPageValue('cell', $cell)
+			    
+				#set( $clink = "$home${content.linkprefix}${cell.id}${content.linksuffix}" )
+			
+			    ##<tr  rowid="$home$!{searchhome}/edit/edit.html?id=${cell.id}&viewid=$!{defaultviewid}&viewpath=$moduleid/$!{defaultviewid}&hitssessionid=${hits.sessionId}&searchtype=$moduleid&detailsreadonly=$readonly">
+			    <tr  rowid="$!{cell.id}">
+			   
+			    
+			###if($content.isPropertyTrue("showactions"))
+			
+				<td class="borderedcell checkbox resultsselection" noclick="true"> 
+					
+					<input type="checkbox" class="selectionbox" name="count" value="" #if($hits.isSelected(${cell.id})) checked #end data-dataid="${cell.id}" />
+			
+					##<input type="checkbox" class="moduleselectionbox" name="count" value="" #if($hits.isSelectedOnPage(${cell.id})) checked #end data-dataid='${cell.id}' data-hitssessionid='$hits.sessionId' />
+					<div id="check_${count}"></div>
+				</td>
+			###end
+			
+			#foreach( $detail in $resultdetail )
+				<td class="editfield highlightMe tablecell-$detail.id tablecell-$!detail.rendertype" #if($detail.rendertype == "asset") noclick="true" #end>
+				#set($val = false)	
+				#set( $val =  $cell.get($detail.id) )
+				#if( !$val && $detail.render )	
+					#set($val = $searcherManager.getValue($catalogid,$detail.render, $cell.properties) ) 
+				#end	
+				#if( !$val )
+					#set($val = "")	
+				#end		
+				$context.putPageValue('val',  $val)
+				$context.putPageValue('detail',  $detail)
+				   <div id="edit_${cell.id}_$detail.id" class="popupdetails tablecell-$!{detail.id}-#esc($val)" data-id="${cell.id}">
+				        $pages.include("$!{searchhome}/cell.html", $context)
+				    </div>
+				</td>
+			#end
+			</tr>
+			#set($count = $count + 1)
+			#end
+			</tbody>
+			</table>
+		</div>
 		
-				##<input type="checkbox" class="moduleselectionbox" name="count" value="" #if($hits.isSelectedOnPage(${cell.id})) checked #end data-dataid='${cell.id}' data-hitssessionid='$hits.sessionId' />
-				<div id="check_${count}"></div>
-			</td>
-		###end
+	
+			
 		
-		#foreach( $detail in $resultdetail )
-			<td class="editfield highlightMe tablecell-$detail.id tablecell-$!detail.rendertype" #if($detail.rendertype == "asset") noclick="true" #end>
-			#set($val = false)	
-			#set( $val =  $cell.get($detail.id) )
-			#if( !$val && $detail.render )	
-				#set($val = $searcherManager.getValue($catalogid,$detail.render, $cell.properties) ) 
-			#end	
-			#if( !$val )
-				#set($val = "")	
-			#end		
-			$context.putPageValue('val',  $val)
-			$context.putPageValue('detail',  $detail)
-			   <div id="edit_${cell.id}_$detail.id" class="popupdetails tablecell-$!{detail.id}-#esc($val)" data-id="${cell.id}">
-			        $pages.include("$!{searchhome}/cell.html", $context)
-			    </div>
-			</td>
-		#end
-		</tr>
-		#set($count = $count + 1)
-		#end
-		</tbody>
-		</table>
-	</div>
-	
-
 		
+		</div>
+	</form>
 	
-	
-	</div>
-</form>
-
-	##Custom Displays for ModuleSearch 
-	
-	#if($ismodulesearch=="true")
-		#set( $hitsperpage = $userprofile.get("modulehitsperpage"))
-		#if(!$hitsperpage)
-			#set( $hitsperpage = 15)
-		#end
-		#set($moduletotalhits = $context.getPageValue("$moduletotalhits")) 
-		#set($args = "resultsoemaxlevel=2&targetdiv=applicationmaincontent&hitsperpage=$hitsperpage&moduletotalhits=$!moduletotalhits")
-	#end	
-	
-	$pages.include("/${searchhome}/navigate.html?$!argsX", $context)
+		##Custom Displays for ModuleSearch 
+		
+		#if($ismodulesearch=="true")
+			#set( $hitsperpage = $userprofile.get("modulehitsperpage"))
+			#if(!$hitsperpage)
+				#set( $hitsperpage = 15)
+			#end
+			#set($moduletotalhits = $context.getPageValue("$moduletotalhits")) 
+			#set($args = "resultsoemaxlevel=2&targetdiv=applicationmaincontent&hitsperpage=$hitsperpage&moduletotalhits=$!moduletotalhits")
+		#end	
+		
+		$pages.include("/${searchhome}/navigate.html?$!argsX", $context)
 
 #end
 		</div>
