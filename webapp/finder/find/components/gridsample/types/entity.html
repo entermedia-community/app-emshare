@@ -58,57 +58,25 @@ $context.putPageValue("previewurl", $previewurl)
        	</div> 
    	 </div>
 	<div class="emgrid-entitymetadata">
-		#set( $asset = $mediaarchive.getCachedData("asset", $entity.primaryimage))
-		#if($asset)
-			$context.putPageValue("asset", $asset)
-			$context.putPageValue("viewer", "e_m_i_${entity.id}")
-			#set($rendertype = $mediaarchive.getMediaRenderType($asset.fileformat))
-			#if(!$rendertype || $type =="rendertype")
-	   	    		#set( $rendertype = "mime" )
-	   	    	#elseif( $rendertype =="video")
-	   	    		#set( $rendertype = "videothumbnail" )
-	   	    	#end
-	   	    	$context.putPageValue("thumbsize", "small" )
-	   	    #if(!$assettitle)		         	
-				  	#if( $hit.assettitle )
-				      	#set($assettitle =  $asset.assettitle) 
-				    #else 
-				      	#set($assettitle = $asset.name) 
-				    #end
-				#end
-	   	    <div  class="assetdraggable" data-assetid="$!entity.primaryimage">
- 			#if($rendertype == "audio")
- 				$pages.include("$componenthome/results/thumbnails/${rendertype}.html", $context)
-		   	 	<a href="$previewurl" 
-		   	 	class="emdialog entity-dialog entity-primarymedia-audio" 
-		   	 	style="display: block; text-align:center;"
-		   	 	data-hidefooter="true" 
-		   	 	data-hideheader="true"
-		   	 	id="clickid${entityid}"  
-		   	 	data-id="$!{entity.id}"
-		   	 	title="$!entity.name">#text($!assettitle)</a>
-		   	#else
-		   		<a href="$previewurl" 
-		   	 	class="emdialog entity-dialog" 
-		   	 	style="display: block; text-align:center;"
-		   	 	data-hidefooter="true" 
-		   	 	data-hideheader="true"
-		   	 	id="clickid${entityid}"  
-		   	 	data-id="$!{entity.id}"
-		   	 	title="$!entity.name">
-		   		$pages.include("$componenthome/results/thumbnails/${rendertype}.html", $context)
-		   		</a>
-			#end
-			</div>
-		#end
-        	       	
-       	##$pages.include("$componenthome/gridsample/tags.html",$context)
-	        
-      </div>
+      	$pages.include("$componenthome/gridsample/tags.html",$context)
+    </div>
       
-      #set($assetsshown = 2)
-      $context.putPageValue("assetsshown", $assetsshown)
-      $context.putPageValue("viewer", "e_m_g_${entity.id}")
+	   	#set($assetsshown = 1)
+	    $context.putPageValue("viewer", "e_m_g_${entity.id}")
+     
+      	#set( $primaryasset = $mediaarchive.getCachedData("asset", $entity.primaryimage))
+		#if($primaryasset)
+			$context.putPageValue("primaryasset", $primaryasset)		
+			#set( $entityassetshits = $mediaarchive.query("asset").hitsPerPage($assetsshown).exact($moduleid, $entityid).not("id",$primaryasset.getId()).sort("assetaddeddateDown").search() )
+			#set($entityassetscount = $entityassetshits.size() + 1)
+		#else
+			#set( $entityassetshits = $mediaarchive.query("asset").hitsPerPage($assetsshown).exact($moduleid, $entityid).sort("assetaddeddateDown").search() )
+			#set($entityassetscount = $entityassetshits.size())
+		#end
+		
+		$context.putPageValue("entityassetshits", $entityassetshits)
+		
+      
        <div class="emgrid-entitymedia assetdropentity"
        		id="attachedmedia$entityid" 
        		data-moduleid="$moduleid" 
@@ -123,38 +91,78 @@ $context.putPageValue("previewurl", $previewurl)
         
         <div class="grid-gallery-footer">
         
-       	<div class="emgrid-moredetailsright">
-       	
-       		#if( $canviewupload )
-		       	#if($moduleid=="librarycollection")
-					#set($uploadlink = "$siteroot/$applink/views/modules/asset/add/start.html?collectionid=$entityid&clearotherentities=true")
-					#set($oemaxlevel = "1")
-					#set($targetdiv = "applicationmaincontent")
-				#elseif($moduleid=="faceprofilegroup")
-					#set($uploadlink = "")
-				#else
-					#set($uploadlink = "$siteroot/$applink/views/modules/asset/add/start.html?entityupload=true&entitytype=$moduleid&addselection=$entityid&clearotherentities=true")
-					#set($oemaxlevel = "1")
-					#set($targetdiv = "applicationmaincontent")
-				#end
-				#if ($uploadlink)
-				<a href="$uploadlink" 
-					class="ajax moreactions"
-					data-targetdivinner="$targetdiv"
-					data-closedialog="true" 
-					data-closemediaviewer="true"
-					data-updateurl="true"
-					data-oemaxlevel="$!oemaxlevel"
-					title="[[Upload Media]]">
-					<i class="fas fa-upload"></i></a>
-				#end
-			#end
-			
-	    
-	       	$pages.include("$componenthome/gridsample/favorites.html?id=$hit.id&searchtype=$moduleid", $context)
+	       	<div class="emgrid-moredetailsright">
 	       	
-	       	
-       	</div>
+	       		#if( $canviewupload )
+			       	#if($moduleid=="librarycollection")
+						#set($uploadlink = "$siteroot/$applink/views/modules/asset/add/start.html?collectionid=$entityid&clearotherentities=true")
+						#set($oemaxlevel = "1")
+						#set($targetdiv = "applicationmaincontent")
+					#elseif($moduleid=="faceprofilegroup")
+						#set($uploadlink = "")
+					#else
+						#set($uploadlink = "$siteroot/$applink/views/modules/asset/add/start.html?entityupload=true&entitytype=$moduleid&addselection=$entityid&clearotherentities=true")
+						#set($oemaxlevel = "1")
+						#set($targetdiv = "applicationmaincontent")
+					#end
+					#if ($uploadlink)
+					<a href="$uploadlink" 
+						class="ajax moreactions"
+						data-targetdivinner="$targetdiv"
+						data-closedialog="true" 
+						data-closemediaviewer="true"
+						data-updateurl="true"
+						data-oemaxlevel="$!oemaxlevel"
+						title="[[Upload Media]]">
+						<i class="fas fa-upload"></i></a>
+					#end
+				#end
+				
+				
+				#if($entityassetscount>=1)
+				
+						#set($targetdivinner = "applicationmaincontent")
+						#set($oemaxlevel = "2")
+						
+							#if($moduleid=="librarycollection")
+								#if(!$rootcategory)
+									#set($rootcategory = $context.getRequestParameter("rootcategory"))
+								#end
+								#set($link = "$siteroot$applink/views/modules/librarycollection/media/showcategory.html?nodeID=$rootcategory&clearfilters=true&collectionid=$!librarycol.getId()")
+								#set($link = "$!link&sidebarcomponent=categories")
+								
+							#elseif($moduleid=="faceprofilegroup")
+								#set($link = "$siteroot$applink/views/modules/asset/faceprofilegroup.html")
+								#set($link = "$link?faceprofilegroupid=$!entityid&clearfilters=true")
+								
+							#else
+								#set($link = "$siteroot$applink/views/modules/asset/index.html")
+								#set($link = "$link?field=$!moduleid&operation=matches&${moduleid}.value=$!entityid&clearfilters=true")
+								
+							#end
+							
+							#if($entityassetscount==1)
+								#set($entityassetscounttext = "(${entityassetscount} [[Asset]])")
+							#elseif($entityassetscount>1)
+								#set($entityassetscounttext = "(${entityassetscount} [[Assets]])")
+							#end
+							<a href="$link" 
+											class="ajax"
+											data-oemaxlevel="$!oemaxlevel" 
+											data-targetdivinner="$!targetdivinner" 
+											data-closedialog="true"
+											data-updateurl="true"
+											data-closemediaviewer="true"
+											title="[[View Media]] $!entityassetscounttext"><i class="fas fa-images"></i></a>
+							
+							
+					#end
+				
+		    
+		       	$pages.include("$componenthome/gridsample/favorites.html?id=$hit.id&searchtype=$moduleid", $context)
+		       	
+		       	
+	       	</div>
         </div>
         
        ## <div class="griditem-tools resultsselection">

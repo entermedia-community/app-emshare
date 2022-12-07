@@ -1,30 +1,10 @@
-#if(!$moduleid)
-	#set($moduleid = $context.getRequestParameter("moduleid"))
-	$context.putPageValue("moduleid", $moduleid)
-#end
-#if(!$entityid)
-	#set($entityid = $context.getRequestParameter("entityid"))
-	$context.putPageValue("entityid", $entityid)
-#end
-#if(!$rootcategory)
-	#set($rootcategory = $context.getRequestParameter("rootcategory"))
-#end
-#if(!$assetsshown)
-	#set($assetsshown = $context.getRequestParameter("assetsshown"))
-#end
-#if(!$assetsshown)
-	#set($assetsshown = 4)
-#end
+$context.putPageValue("thumbsize", "crop" )
 
-#if($rootcategory)
-	#if($asset)
-		#set( $assetshits = $mediaarchive.query("asset").hitsPerPage($assetsshown).match("category",$rootcategory).not("id",$asset.getId()).sort("assetaddeddateDown").search() )
-	#else
-		#set( $assetshits = $mediaarchive.query("asset").hitsPerPage($assetsshown).match("category",$rootcategory).sort("assetaddeddateDown").search() )
-	#end
-	#if(!$assetshits.isEmpty())
-		$context.putPageValue("assetshits", $assetshits)
-		$context.putPageValue("thumbsize", "crop" ) 
-		$pages.include("$componenthome/gridsample/types/attachedmedia.html",$context)
-	#end
+#if($primaryasset)
+	$context.putPageValue("hit", $primaryasset)
+	$pages.include("$componenthome/gridsample/types/attachedmediarender.html", $context)
+#end
+#if(!$entityassetshits.isEmpty())
+	$context.putPageValue("assetshits", $entityassetshits)
+	$pages.include("$componenthome/gridsample/types/attachedmedia.html", $context)
 #end

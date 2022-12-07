@@ -53,69 +53,39 @@ $context.putPageValue("previewurl", $previewurl)
         	<a class="emdialog entity-dialog" data-hidefooter="true" href="$previewurl" title="$!entity.name"><i class="fas  fa-info-circle"></i></a>
         	</div>
    	 </div>
-	        	 
-
-        #set( $asset = $mediaarchive.getCachedData("asset", $entity.primaryimage))
-		#if($asset)
-			<div class="emgrid-entitymetadata">
-				$context.putPageValue("asset", $asset)
-				$context.putPageValue("viewer", "l_m_i_${entity.id}")
-				#set($rendertype = $mediaarchive.getMediaRenderType($asset.fileformat))
-				#if(!$rendertype || $type =="rendertype")
-	  	    		#set( $rendertype = "mime" )
-	  	    	#elseif( $rendertype =="video")
-	  	    		#set( $rendertype = "videothumbnail" )
-	  	    	#end
-	  	    	$context.putPageValue("thumbsize", "small" )
-	  	    	#if(!$assettitle)		         	
-				  	#if( $hit.assettitle )
-				      	#set($assettitle =  $asset.assettitle) 
-				    #else 
-				      	#set($assettitle = $asset.name) 
-				    #end
-				#end
-		  	 	<div  class="assetdraggable" data-assetid="$!entity.primaryimage">
-				#if($rendertype == "audio")
-					$pages.include("$componenthome/results/thumbnails/${rendertype}.html", $context)
-			   	 	<a href="$previewurl" 
-			   	 	class="emdialog entity-dialog entity-primarymedia-audio" 
-			   	 	style="display: block; text-align:center;"
-			   	 	data-hidefooter="true" 
-			   	 	data-hideheader="true"
-			   	 	id="clickid${entityid}"  
-			   	 	data-id="entity.id"
-			   	 	title="$!entity.name">#text($!assettitle)</a>
-		   	 	#else
-			   	 	<a href="$previewurl" 
-			   	 	class="emdialog entity-dialog" 
-			   	 	style="display: block; text-align:center;"
-			   	 	data-hidefooter="true" 
-			   	 	data-hideheader="true"
-			   	 	id="clickid${entityid}"  
-			   	 	data-id="entity.id"
-			   	 	title="$!entity.name">$pages.include("$componenthome/results/thumbnails/${rendertype}.html", $context)</a>
-		   	 	#end
-				</div>
-				</div>
-		#end
-
-        ##$pages.include("$componenthome/gridsample/tags.html",$context)
-	        
+   	 
+   	 <div class="emgrid-entitymetadata">
+      	$pages.include("$componenthome/gridsample/tags.html",$context)
+    </div>
+   	 
+	    
+	    #set($assetsshown = 1)
+      	$context.putPageValue("assetsshown", $assetsshown)
+      	$context.putPageValue("viewer", "l_m_g_${entity.id}")
       
-	   
-	  #set($assetsshown = 2)
-      $context.putPageValue("assetsshown", $assetsshown)
-      $context.putPageValue("viewer", "l_m_g_${entity.id}")
-      <div class="emgrid-entitymedia assetdropentity"
-       		id="attachedmedia$entityid" 
-       		data-moduleid="$moduleid" 
-       		data-entityid="$entityid"
-       		data-rootcategory="$librarycol.rootcategory" 
-       		data-assetsshown="$assetsshown"
-       		data-attachedmediaurl="$siteroot$componenthome/gridsample/types/librarycollection.html"
-       		data-targetdiv="emgridentity$!moduleid$!entityid"> 
-	  		$pages.include("$componenthome/gridsample/types/attachedmedia/librarycollection.html",$context)
-	  </div>
+		#set( $primaryasset = $mediaarchive.getCachedData("asset", $entity.primaryimage))
+		
+		#if($primaryasset)
+			$context.putPageValue("primaryasset", $primaryasset)		
+			#set($entityassetshits = $mediaarchive.query("asset").hitsPerPage($assetsshown).match("category",$rootcategory).not("id",$primaryasset.getId()).sort("assetaddeddateDown").search() )
+			#set($entityassetscount = $entityassetshits.size() + 1)
+		#else
+			#set($entityassetshits = $mediaarchive.query("asset").hitsPerPage($assetsshown).match("category",$rootcategory).sort("assetaddeddateDown").search() )
+			#set($entityassetscount = $entityassetshits.size())
+		#end
+		
+		$context.putPageValue("entityassetshits", $entityassetshits)
+	  
+	      <div class="emgrid-entitymedia assetdropentity"
+	       		id="attachedmedia$entityid" 
+	       		data-moduleid="$moduleid" 
+	       		data-entityid="$entityid"
+	       		data-rootcategory="$librarycol.rootcategory" 
+	       		data-assetsshown="$assetsshown"
+	       		data-attachedmediaurl="$siteroot$componenthome/gridsample/types/librarycollection.html"
+	       		data-targetdiv="emgridentity$!moduleid$!entityid"> 
+		  		$pages.include("$componenthome/gridsample/types/attachedmedia/librarycollection.html",$context)
+		  </div>
 	   
 	        
 	        <div class="clearfix"></div>

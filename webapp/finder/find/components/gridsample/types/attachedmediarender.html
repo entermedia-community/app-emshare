@@ -1,0 +1,47 @@
+#set($sourcepath = $hit.sourcepath)
+$context.putPageValue("sourcepath", $hit.sourcepath )
+
+#set($type = $hit.getSearchHit().getType())
+#set( $rendertype = $mediaarchive.getMediaRenderType($hit.fileformat))
+
+ 	#if(!$rendertype || $type =="rendertype")
+		#set( $rendertype = "mime" )
+	#elseif( $rendertype =="video")
+		#set( $rendertype = "videothumbnail" )
+	#end
+	
+	$context.putPageValue("type", $rendertype)
+	$context.putPageValue("rendertype", $rendertype)
+		
+#if($stackedfield)
+     #set($title = $hit.get($stackedfield))
+#end
+#if(!$title)		         	
+  	#if( $hit.assettitle )
+      	#set($title =  $hit.assettitle) 
+    #else 
+      	#set($title = $hit.name) 
+    #end
+#end
+	 <div class="grid-attachedmedia assetdraggable " data-assetid="$hit.id"> 
+ 	
+ 		#if($rendertype == "audio")
+ 			$pages.include("$componenthome/results/thumbnails/${rendertype}.html", $context)
+			<a class="stackedplayer imagearea grid-attachedmedia-audio" 
+		 		id="clickid${hit.id}" 
+		 		data-assetid="$hit.id" 
+		 		href="#" 
+		 		title="$!title">
+			#text($title)</a>
+		#else
+	 		<a class="stackedplayer imagearea" 
+	 		id="clickid${hit.id}" 
+	 		data-assetid="$hit.id" 
+	 		href="#" 
+	 		title="$!title">
+			$pages.include("$componenthome/results/thumbnails/${rendertype}.html", $context)
+			</a>
+		#end
+	
+	
+</div>

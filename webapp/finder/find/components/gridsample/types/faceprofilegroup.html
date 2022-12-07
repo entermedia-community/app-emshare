@@ -34,30 +34,22 @@ $context.putPageValue("previewurl", $previewurl)
         </div>
    	 </div>
    	 
- 	 
-   	 
-	<div class="emgrid-entitymetadata"> 
-		#set( $assetimage = $mediaarchive.getCachedData("asset", $entity.primaryimage))
-  	 	## #set($tpath = $mediaarchive.asLinkToPreview($assetimage, null, $imagesize, true))
-  	 	$context.putPageValue("asset", $assetimage)
-		$context.putPageValue("viewer", "e_m_pp_${entity.id}")
-  	 	$context.putPageValue("thumbsize", "small" )
-   	 	<a href="$!previewurl" 
-   	 	class="emdialog entity-dialog" 
-   	 	data-hidefooter="true" 
-   	 	data-hideheader="true"
-   	 	id="clickid${entity.id}"  
-   	 	data-id="entity.id"
-   	 	title="$!entity.name">       	    
-	  	$pages.include("$componenthome/results/thumbnails/image.html", $context)
-		</a>   	 
-
-
-       	##$pages.include("$componenthome/gridsample/tags.html",$context)
+   	<div class="emgrid-entitymetadata">
+      	$pages.include("$componenthome/gridsample/tags.html",$context)
     </div>
+   	 
+ 	 #set($assetsshown = 2)
+ 	 $context.putPageValue("viewer", "e_m_pp_${entity.id}")
+ 	 
+	 #set( $primaryasset = $mediaarchive.getCachedData("asset", $entity.primaryimage))
+	 
+	#set($facemanager = $mediaarchive.getBean("faceDetectManager") )
+	#set($entityassetshits = $facemanager.searchForAssets($mediaarchive, $entityid) )
+	$!entityassetshits.setHitsPerPage($assetsshown)
+	#set($entityassetscount = $entityassetshits.size())
+	
+	$context.putPageValue("entityassetshits", $entityassetshits)  
 
-	   #set($assetsshown = 2)
-       $context.putPageValue("assetsshown", $assetsshown)
        <div class="emgrid-entitymedia assetdropentity"
        		id="attachedmedia$entityid" 
        		data-moduleid="$moduleid" 
