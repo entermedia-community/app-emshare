@@ -1,35 +1,11 @@
-##check for view
-#set($viewid = "${searchtype}gridfields")
-#set($view = "$searchtype/$viewid")
 
-#if (!$details && $view)
-	#if( $context.getUserProfile() )
-		#set ($details = $searcher.getDetailsForView($view, $context.getUserProfile()))
-	#else
-		#set ($details = $searcher.getDetailsForView($view))
-	#end
+##Longcaption default for all
+
+#if($data.longcaption)
+	<div class="emgridcell-longcaption">
+	#text($!data.longcaption)
+	</div>
 #end
-
-#if($details)
-
-	#foreach( $detail in $details )
-		#if( $searcherManager )
-			#set( $val = $searcherManager.getValue($data,$detail) )	
-		#else
-			#set( $val = $!{data.getProperty($detail.getId())} )
-		#end
-	
-		#if( !$val )
-			#set( $val = $!{data.get($detail.getId())} )
-		#end
-		
-		#if( !$val) 
-			#set( $val = "") 
-		#end
-	$val	
-		$pages.include("$apphome/components/xml/detailreadonly.html", $context)
-	#end
-#end 
 
 #set($count=0)
 #if ($hit.keywords)
@@ -38,7 +14,7 @@
 	      #foreach ($tag in $keywords)
 	       	#if($count<3)
 				#set($count=$count+1)
-				<a class="badge badge-light" 
+				<a class="badge badge-secondary" 
 					title="$tag"
 					href="$applink/views/modules/modulesearch/searchtag.html?searchtype=modulesearch&field=description&operation=contains&description.value=$tag&clearfilters=true">$tag</a>
 			#end
@@ -46,7 +22,7 @@
 		  
 		  #if($keywords.size()>3)
 		  	#set($morekeywords = $keywords.size()-$count)
-		  	<a class="emdialog badge badge-light" 
+		  	<a class="emdialog badge badge-secondary" 
 		  		href="$!previewurl" 
 		  		title="${morekeywords} more keywords"
 		  		>${morekeywords}+</a> 
