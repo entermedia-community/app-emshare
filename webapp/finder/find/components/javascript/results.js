@@ -1069,7 +1069,9 @@ jQuery(document).ready(function(url,params)
 
 	
 	lQuery('th.sortable').livequery('click', function(){
-		
+			if ($(this).closest(".datamanagertable")) {
+				return;
+			}
             var id = $(this).data('sortby');
             var resultsdiv =  "";
             var searchome="";
@@ -1084,6 +1086,7 @@ jQuery(document).ready(function(url,params)
             var moduletable = $(this).closest(".emselectable");;
             if (moduletable && moduletable.data("targetdiv")) {
             	targetdiv = $("#"+moduletable.data("targetdiv"));
+            	searchhome = moduletable.data('searchhome');
             }
             else {
             	targetdiv = $(this).closest("#resultsdiv");

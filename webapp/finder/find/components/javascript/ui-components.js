@@ -2548,7 +2548,7 @@ uiload = function() {
 	});
 	
 	//Moved From settings.js
-	lQuery('#datamanager-workarea th.sortable').livequery("click",function() {
+	lQuery('#datamanager-workarea th.sortable').livequery("click",function(e) {
 	  		var table = $("#main-results-table");
 	        var args = {oemaxlevel:1,hitssessionid:table.data("hitssessionid"),origURL:table.data("origURL"),catalogid:table.data("catalogid"),searchtype:table.data("searchtype")};
 	        var column = $(this);
@@ -2568,6 +2568,7 @@ uiload = function() {
 	           args.sortby=fieldid + 'Up';
 	        }
 	        $('#datamanager-workarea').load( apphome + '/views/settings/lists/datamanager/list/columnsort.html',args);
+	        e.stopPropagation();
 	});
 	
 	
