@@ -11,17 +11,18 @@ $context.putPageValue("previewurl", $previewurl)
 <div class="emgrid-content emgrid-type-$previewrendertype entity$!moduleid$!entityid">
    	 <div class="emgrid-entityheader">
    	 <h3>
+   	 #set($name = $entity.name)
    	 <a href="$previewurl" 
    	 	class="emdialog entity-dialog emgridresulttitle" 
    	 	data-hidefooter="true" 
    	 	data-hideheader="true"
    	 	id="clickid${entity.id}"  
    	 	data-id="entity.id"
-   	 	title="$!entity.name">
+   	 	title="#text($!entity.name)">
    	 	##$!hits.highlight($hit,"name")
-   	 	#set($name = $entity.name)
+   	 	
 			#if($name)
-				$name (Profile $entity.facecounter)
+				#text($!name) ([[Profile]] $entity.facecounter)
 			#else	
 				[[Profile]] $entity.facecounter
 			#end
@@ -33,10 +34,17 @@ $context.putPageValue("previewurl", $previewurl)
         	<a class="emdialog entity-dialog" data-hidefooter="true" href="$previewurl" title="$!name"><i class="fas  fa-info-circle"></i></a>
         </div>
    	 </div>
-   	 
+   	 <a href="$previewurl" 
+   	 	class="emdialog entity-dialog emgridresulttitle" 
+   	 	data-hidefooter="true" 
+   	 	data-hideheader="true"
+   	 	id="clickid${entity.id}"  
+   	 	data-id="entity.id"
+   	 	title="#text($!entity.name)">
    	<div class="emgrid-entitydata">
       	$pages.include("$componenthome/gridsample/types/tags.html",$context)
     </div>
+   	 </a>
    	 
  	 #set($assetsshown = 2)
  	 $context.putPageValue("viewer", "e_m_pp_${entity.id}")

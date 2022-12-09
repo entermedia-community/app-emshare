@@ -9,18 +9,18 @@
 
 #set($count=0)
 #if ($hit.keywords)
-     	<div class="emgridcell-keywords">
+     	<div class="emgridcell-fields">
      	  #set ($keywords = $hit.getValues("keywords"))
 	      #foreach ($tag in $keywords)
 	       	#if($count<3)
 				#set($count=$count+1)
-				<a class="badge badge-secondary" 
-					title="$tag"
-					href="$applink/views/modules/modulesearch/searchtag.html?searchtype=modulesearch&field=description&operation=contains&description.value=$tag&clearfilters=true">$tag</a>
+				##<a class="badge badge-secondary" title="$tag"	href="$applink/views/modules/modulesearch/searchtag.html?searchtype=modulesearch&field=description&operation=contains&description.value=$tag&clearfilters=true">
+					<span class="badge badge-secondary">$tag</span>
+				##</a>
 			#end
 		  #end
 		  
-		  #if($keywords.size()>3)
+		  #if(1==2 && $keywords.size()>3)
 		  	#set($morekeywords = $keywords.size()-$count)
 		  	<a class="emdialog badge badge-secondary" 
 		  		href="$!previewurl" 
