@@ -98,6 +98,37 @@ $context.putPageValue("previewurl", $previewurl)
 						<i class="fas fa-upload"></i></a>
 					#end
         		#end
+        		
+        		
+        		#if($entityassetscount>=1)
+				
+						#set($targetdivinner = "applicationmaincontent")
+						#set($oemaxlevel = "2")
+							
+							#if($moduleid=="faceprofilegroup")
+								#set($link = "$siteroot$applink/views/modules/asset/faceprofilegroup.html")
+								#set($link = "$link?faceprofilegroupid=$!entityid&clearfilters=true")
+													
+							#end
+							
+							#if($entityassetscount==1)
+								#set($entityassetscounttext = "(${entityassetscount} [[Asset]])")
+							#elseif($entityassetscount>1)
+								#set($entityassetscounttext = "(${entityassetscount} [[Assets]])")
+							#end
+							<a href="$link" 
+											class="ajax"
+											data-oemaxlevel="$!oemaxlevel" 
+											data-targetdivinner="$!targetdivinner" 
+											data-closedialog="true"
+											data-updateurl="true"
+											data-closemediaviewer="true"
+											title="[[View Media]] $!entityassetscounttext"><i class="fas fa-images"></i></a>
+							
+							
+					#end
+					
+					
 	       		$pages.include("$componenthome/gridsample/favorites.html?id=$hit.id&searchtype=$moduleid", $context)
 	       	</div>
 	        </div>
