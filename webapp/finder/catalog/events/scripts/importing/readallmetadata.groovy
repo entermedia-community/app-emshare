@@ -14,9 +14,11 @@ public void init()
 {
 		MediaArchive archive = context.getPageValue("mediaarchive");
 		Searcher searcher = archive.getAssetSearcher();
-		HitTracker assets = searcher.query().all().not("editstatus","7").sort("id").search();
+		Integer pagesize = 200;
+		
+		HitTracker assets = searcher.query().exact("tempeditstatus","needsmetadata").sort("id").search();
 		assets.enableBulkOperations();
-		assets.setHitsPerPage(500);
+		assets.setHitsPerPage(pagesize);
 		String ids = context.getRequestParameter("assetids");
 		if( ids != null )
 		{
@@ -40,12 +42,15 @@ public void init()
 				log.info("metadatareader asset (${count}) content ${hit.id}: " + content.toString());
 				reader.populateAsset(archive, content, asset);
 				log.info("metadatareader asset populated ${hit.id}");
+				
+				asset.setValue("tempeditstatus", "");
+				
 				assetsToSave.add(asset);
-				if(assetsToSave.size() == 300)
+				if(assetsToSave.size() == pagesize)
 				{
 					log.info("metadatareader about to save 300 assets");
 					archive.saveAssets( assetsToSave );
-					log.info("metadatareader saved 300 assets");
+					log.info("metadatareader saved "+pagesize+" assets");
 					assetsToSave.clear();
 					count = 0;
 				}
