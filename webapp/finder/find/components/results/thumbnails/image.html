@@ -12,11 +12,12 @@ $context.putPageValue("hit", $hit)
 
 #set ($sourcepath = $hit.sourcepath)
 #set ($urlutils = $context.getPageValue("url_util"))
-#set ($thumbsize = $context.getPageValue("thumbsize"))
 #if ($urlutils)
 	#set ( $sourcepath = $urlutils.encode($sourcepath))
 	#set ( $sourcepath = $sourcepath.replace("%2F", "/") )
 #end
+
+#set ($thumbsize = $context.getPageValue("thumbsize"))
 #set( $imagesize = "image200x200.jpg")
 #if($thumbsize == "largepreview")
 	#if( $type == "video" )
@@ -38,9 +39,10 @@ $context.putPageValue("hit", $hit)
 	#set($imagesize = "image110x62cropped.jpg")
 #end		
 
+$context.putPageValue("thumbsize", $thumbsize)
 
 #set($urlparams = $context.getPageValue("urlparams"))
-$context.putPageValue("thumbsize", $thumbsize)
+
 <div class="emthumbholder">
 	#if( $hit.importstatus && $hit.importstatus == "uploading" )
 		$pages.include("$componenthome/uploadqueue/uploadstatus.html?assetid=${hit.id}",$context)	
@@ -63,7 +65,7 @@ $context.putPageValue("thumbsize", $thumbsize)
 			#set($tpath = "${tpath}?_=$tstamp")
 		#end
 		<div class="imageholder">
-			<img class="imagethumb img-fluid"
+			<img class="imagethumb img-fluid  img$!thumbsize "
 				 border="0" 
 				 sourcepath="$sourcepath" 
 				 catalogid="$catalogid" 

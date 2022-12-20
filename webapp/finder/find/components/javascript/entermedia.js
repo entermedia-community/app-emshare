@@ -854,6 +854,7 @@ onloadselectors = function()
 							return cloned;
 						}
 						,
+						handle: $(".imageholder"),
 						revert: 'invalid',
 						appendTo: "body",
 						containment: 'document',

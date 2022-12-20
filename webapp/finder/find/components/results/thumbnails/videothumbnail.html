@@ -25,7 +25,8 @@
 #elseif($thumbsize == "crop")
 	#set($imagesize = "image110x62cropped.jpg")
 #end		
-##$context.putPageValue("thumbsize", $thumbsize)
+$context.putPageValue("thumbsize", $thumbsize)
+
 <div class="emthumbholder" data-importstatus="$hit.importstatus">
 #if( $hit.importstatus && $hit.importstatus == "uploading" )
 	$pages.include("$componenthome/uploadqueue/uploadstatus.html?assetid=${hit.id}",$context)	
@@ -39,11 +40,18 @@
 
 	#set($tpath = $mediaarchive.asLinkToPreview($hit, $imagesize))
 	
-	<div class="thumbimagecontainer tumbvideocontainer">
-		<img class="imagethumb img-fluid" sourcepath="$sourcepath" catalogid="$catalogid" assetid="$hit.id" alt="" title=""
-		draggable="true"  data-sourcepath="$sourcepath" data-name="$hit.name" 		
-		src="$tpath" border="0" />
-		<button class="videoplay-button"><span class="videoplay-icon"></span></button> 
+	<div class="imageholder thumbimagecontainer tumbvideocontainer">
+		<img class="imagethumb img-fluid img$!thumbsize " 
+			sourcepath="$sourcepath" 
+			catalogid="$catalogid" 
+			assetid="$hit.id"
+			alt="$!hit.name"
+			draggable="true"  
+			data-sourcepath="$sourcepath" 
+			data-name="$hit.name" 		
+			src="$tpath" 
+			border="0" />
+			<button class="videoplay-button"><span class="videoplay-icon"></span></button> 
 	</div>	
 #end
 </div>
