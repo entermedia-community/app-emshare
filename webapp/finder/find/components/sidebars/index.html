@@ -1,3 +1,4 @@
+#set ($moduleid = $module.getId())
 <div  id="col-sidebars" >
 	<div class="col-main col-sidebar-togglers sidebar-togglers-bar">
 	<div class="col-main-inner">
@@ -29,22 +30,24 @@
 		</a>
 		</div>
 	
-		#set ($moduleid = $module.getId())
+		
 		<div class="sidebar-togglers #if($sidebarcomponent == "filters") sidebar-selected #end">
 		<a href="#" 
-			class="sidebar-toggler sidebar-toggler-show light" 
+			class="sidebar-toggler sidebar-toggler-show light sidebar-$moduleid" 
 			data-action="show"
 			data-sidebar="filters"
 			#if($moduleid)
 				data-moduleid="$moduleid"
-				data-contenturl="$siteroot$apphome/views/modules/$moduleid/index.html?sidebarcomponent=filters"
-				data-oemaxlevel="3"
-				data-targetdiv="applicationcontent"
+
+					data-contenturl="$siteroot$apphome/views/modules/$moduleid/index.html?sidebarcomponent=filters"
+					data-oemaxlevel="3"
+					data-targetdiv="applicationcontent"
+
 			#else
 				data-targetdiv="col-sidebars"
 			#end
 			data-modulesearchhitssessionid="$!modulehits.sessionId"
-		title="[[Search]]">
+			title="[[Search]]">
 		<i class="fas fa-filter"></i>
 		</a>
 	

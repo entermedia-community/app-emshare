@@ -1,7 +1,16 @@
-#set( $module = $content.module)
+##set( $module = $content.module)
 #if( $modulehits.size() > -1 )
 	#set( $hits = $modulehits)
 	$context.putPageValue("hits",$modulehits)
+#end
+
+
+#if(!$moduleid)
+	#set($moduleid = $module.getId())
+#end
+#if($moduleid=="modulesearch")
+	##set($moduleid = "asset")
+
 #end
 
 <div id="advfilterpanel" class="advfilterpanel" >
@@ -9,9 +18,9 @@
 <div class="advfilterpanelcontent">
 
 <div class="tanmodule" >
-		#set( $view = "$module/${module}advancedfilter")
-		#set( $searcher = $mediaarchive.getSearcher($module))
-		
+		#set( $view = "$moduleid/${moduleid}advancedfilter")
+		#set( $searcher = $mediaarchive.getSearcher($moduleid))
+
 		$context.putPageValue("view", $view)
 		$context.putPageValue("searcher", $searcher)
 		
@@ -30,7 +39,7 @@
 		#elseif ($content.get("section")=="favorites")
 			action="$siteroot$apphome/views/modules/modulesearch/favorites.html"
 		#else
-			action="$siteroot$apphome/views/modules/$module/filter.html" 
+			action="$siteroot$apphome/views/modules/$moduleid/index.html" 
 		#end 
 		>
 		#if( $librarycol)
@@ -65,7 +74,7 @@
 				#end
 		#end
 				
-			<input type="hidden" name="${searcher.getSearchType()}endusersearch" value="true"/>
+			<input type="hidden" name="$!{searcher.getSearchType()}endusersearch" value="true"/>
 		
 			<input type="hidden" name="field" value="description" />
 			<input type="hidden" name="operation" value="freeform" />
@@ -78,6 +87,8 @@
 			<input type="hidden" name="removeterm" id="filtersremoveterm" value=""/>
 		
 			<input type="hidden" name="keeppreviousfilter" value="true"/>
+			
+			<input type="hidden" name="sidebarcomponent" value="filters"/>
 		
 				
 			#set ($resultview = $userprofile.get('resultview'))
