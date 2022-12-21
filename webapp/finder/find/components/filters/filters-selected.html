@@ -136,14 +136,14 @@
 
 #foreach( $term in $terms)
 	#if( $librarycol )
-		#set($href = "$siteroot$apphome/views/modules/librarycollection/showcategory.html?hitssessionid=$hits.getSessionId()&collectionid=$librarycol.getId()&removeterm=$term.getId()")
+		#set($href = "$siteroot$apphome/views/modules/librarycollection/showcategory.html?hitssessionid=$!hits.getSessionId()&collectionid=$!librarycol.getId()&removeterm=$!term.getId()")
 		#set($oemaxlevel = "3")
 	#else
 		#if($moduleid=="asset")
-			#set($href = "$siteroot$apphome/views/modules/$moduleid/index.html?hitssessionid=$hits.getSessionId()&removeterm=$term.getId()")
+			#set($href = "$siteroot$apphome/views/modules/$moduleid/index.html?hitssessionid=$!hits.getSessionId()&removeterm=$!term.getId()")
 			#set($oemaxlevel = "4")
 		#else
-			#set($href = "$siteroot$apphome/views/modules/$moduleid/index.html?hitssessionid=$hits.getSessionId()&removeterm=$term.getId()")
+			#set($href = "$siteroot$apphome/views/modules/$moduleid/index.html?hitssessionid=$!hits.getSessionId()&removeterm=$!term.getId()")
 			#set($oemaxlevel = "3")
 		#end
 	#end
@@ -203,14 +203,14 @@
 
 #if( $hits.getSearchQuery().hasMainInput() || ($terms && !$terms.isEmpty()) )
 	#if( $librarycol )
-		#set($href = "$siteroot$apphome/views/modules/librarycollection/showcategory.html?hitssessionid=$hits.getSessionId()&collectionid=$librarycol.getId()&assetclearresults=true&clearfilters=true")
+		#set($href = "$siteroot$apphome/views/modules/librarycollection/showcategory.html?hitssessionid=$!hits.getSessionId()&collectionid=$!librarycol.getId()&assetclearresults=true&clearfilters=true")
 		#set($oemaxlevel = "2")
 	#else
 		#if($moduleid=="asset")
-			#set($href = "$siteroot$apphome/views/modules/$moduleid/index.html?hitssessionid=$hits.getSessionId()&assetclearresults=true&assetclearselection=true&clearselection=true&clearfilters=true")
+			#set($href = "$siteroot$apphome/views/modules/${moduleid}/index.html?hitssessionid=$!hits.getSessionId()&assetclearresults=true&assetclearselection=true&clearselection=true&clearfilters=true")
 			#set($oemaxlevel = "3")
 		#else
-			#set($href = "$siteroot$apphome/views/modules/$moduleid/index.html?hitssessionid=$hits.getSessionId()&assetclearresults=true&assetclearselection=true&clearselection=true&clearfilters=true")
+			#set($href = "$siteroot$apphome/views/modules/${moduleid}/index.html?hitssessionid=$!hits.getSessionId()&${moduleid}clearresults=true&${moduleid}clearselection=true&clearselection=true&clearfilters=true")
 			#set($oemaxlevel = "3")
 		#end
 	#end
