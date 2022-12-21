@@ -1,10 +1,20 @@
 #set($section = $content.section)
 
+#if( !$sidebarcomponent)
+	#set($forcedsidebarcomponent = $context.getRequestParameter("sidebarcomponent")) 
+	#if($forcedsidebarcomponent)
+		#set( $sidebarcomponent = $forcedsidebarcomponent )
+	#end
+#end
+
 #if( !$sidebarcomponent && $modulehits.isEmpty() )
 	#set( $sidebarcomponent = "guide" )
 #end
 
 #set( $sidebarwidth = $userprofile.get("sidebarwidth"))
+#if($sidebarwidth=='' || $sidebarwidth=='undefined')
+				#set($sidebarwidth = 280)
+#end
 
 <div id="applicationcontent"  
 	 class="cols-main #if ($module) cols-$module.id #end cols-${section}" data-moduleid="$!module.id" >
@@ -13,8 +23,7 @@
 	
 	 <div class="col-main col-content-main">
 		<div class="pushcontent #if($sidebarcomponent) pushcontent-open pushcontent-$sidebarcomponent #else pushcontent-fullwidth #end" 
-			  style="#if($sidebarcomponent && $sidebarwidth) margin-left:${sidebarwidth}px;#end">
-			
+			  style="#if($sidebarcomponent && $sidebarwidth) margin-left:$!{sidebarwidth}px;#end">
 			<div id="applicationmaincontent" class="applicationmaincontent  applicationmaincontent$section">
 				$pages.streamContent()
 			</div>
