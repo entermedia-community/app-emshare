@@ -1069,9 +1069,10 @@ jQuery(document).ready(function(url,params)
 
 	
 	lQuery('th.sortable').livequery('click', function(){
-			if ($(this).closest(".datamanagertable")) {
+			if ($(this).closest(".datamanagertable").lenght > 0) {
 				return;
 			}
+			
             var id = $(this).data('sortby');
             var resultsdiv =  "";
             var searchome="";
