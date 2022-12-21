@@ -128,6 +128,12 @@
 
 #set( $terms = $hits.getFilteredTerms($context,"advancedfilter") )
 
+#if(!$terms)
+	##check modulehits
+	#set( $terms = $modulehits.getFilteredTerms($context,"advancedfilter") )
+#end
+
+
 #foreach( $term in $terms)
 	#if( $librarycol )
 		#set($href = "$siteroot$apphome/views/modules/librarycollection/showcategory.html?hitssessionid=$hits.getSessionId()&collectionid=$librarycol.getId()&removeterm=$term.getId()")
