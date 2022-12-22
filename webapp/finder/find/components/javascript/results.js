@@ -1033,7 +1033,7 @@ jQuery(document).ready(function(url,params)
 		var image = $(div.find("img"));
 		image.ready( function ()
 		{
-			console.log(image.height());
+			//console.log(image.height());
 			//canvas.width(box[2]);
 			//canvas.height(box[3]);
 			canvas.attr({width:box[0]+box[2]+10,height:box[1]+ box[3]+10});
@@ -1042,6 +1042,8 @@ jQuery(document).ready(function(url,params)
 			context.lineWidth = 1;
 			context.strokeStyle = '#666';
 			context.strokeRect(box[0],box[1],box[2],box[3]);
+			context.strokeStyle = '#fff';
+			context.strokeRect(box[0]-1,box[1]-1,box[2]+1,box[3]+1);
 		});
  	});
 	
