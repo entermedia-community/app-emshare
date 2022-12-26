@@ -2359,6 +2359,13 @@ uiload = function() {
 					$(".pushcontent").addClass('pushcontent-open');
 					//$(".pushcontent").css("margin-left","");
 					$(".pushcontent").addClass('pushcontent-'+sidebar);
+					var mainsidebar = $(".col-mainsidebar");
+					if(mainsidebar.data("sidebarwidth")) {
+						var width = mainsidebar.data("sidebarwidth");
+						if (typeof width == 'number') {
+							$(".pushcontent").css("margin-left", width+"px");
+						}
+					}
 					$(window).trigger("resize");
 				},
 				xhrFields: {
