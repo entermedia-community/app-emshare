@@ -3038,6 +3038,12 @@ var resizecolumns = function() {
 			columnsheight = thisheight;
 		}
 	}
+	
+	//reset some heights
+	if($(".settingslayout").length) {
+		$(".settingslayout").css("height","auto");
+	}
+	
 	var colmaincontet = $(".col-content-main").find(".col-main-inner");
 	if (colmaincontet.length) {
 		var thisheight = colmaincontet.outerHeight();
@@ -3155,6 +3161,7 @@ jQuery(document).ready(function() {
 });
 
 jQuery(window).on('resize',function(){
+	console.log("resizing...");
 	gridResize();
 	resizegallery();
 	adjustdatamanagertable();

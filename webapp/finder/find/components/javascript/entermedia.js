@@ -283,7 +283,7 @@ runajaxonthis = function(inlink,e)
 				else {
 					cell.html(data);
 				}
-				$(window).trigger( "resize" );
+				
 			},
 			type: "POST",
 			dataType: 'text',
@@ -299,7 +299,7 @@ runajaxonthis = function(inlink,e)
 			else {
 				var updateurl = inlink.data("updateurl");
 				if( updateurl)	{
-					console.log("Saving state ", updateurl);
+					//console.log("Saving state ", updateurl);
 					history.pushState($("#application").html(), null, nextpage);
 					window.scrollTo(0, 0);
 				}
@@ -328,6 +328,8 @@ runajaxonthis = function(inlink,e)
 			if(navbar) {
 				navbar.collapse('hide');
 			}
+			
+			$(window).trigger( "resize" );
 		});
 		
 		
