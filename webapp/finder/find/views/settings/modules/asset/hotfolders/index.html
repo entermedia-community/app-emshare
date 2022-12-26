@@ -1,11 +1,11 @@
-<div class="eml-content-title" style="padding:20px;">
+<div style="padding:20px;">
 	
-	<h2 class="float-left">[[Hot Folders]]</h2>
+	<h2 class="float-left"><a href="$!siteroot$apphome/views/settings/modules/asset/hotfolders/index.html" title="[[Hot Folders]]">[[Hot Folders]]</a></h2>
 	
 	<a class="btn  btn-primary float-right ajax" style="margin-left:10px;" 
 		href="$siteroot$apphome/views/settings/modules/asset/hotfolders/add-new-folder.html"
-		data-targetdivinner="applicationmaincontent"
-		data-oemaxlevel="2">[[Add Hot Folder]]</a>
+		data-targetdivinner="hotfolderscontainer"
+		data-oemaxlevel="1">[[Add Hot Folder]]</a>
 	#set( $pathEventManager = $moduleManager.getBean($catalogid,"pathEventManager") )
 	#set( $event = $pathEventManager.getPathEvent("/$catalogid/events/importing/importfolders.html") )
 	#if( $event.isRunning() )
@@ -19,7 +19,7 @@
 
 	<div class="clearfix"></div>
 </div>
-
+<div id="hotfolderscontainer">
 <ul id="folders" class="fwlist">
 	#foreach($source in $sources )
 		#set( $folder = $source.getConfig() )
@@ -27,11 +27,12 @@
 		<div class="folder">
 		<a href="$siteroot$apphome/views/settings/modules/asset/hotfolders/folder-setup.html?id=$folder.id"
 			class="ajax"
-			data-targetdivinner="applicationmaincontent"
-			data-oemaxlevel="2"
-			data-updateurl="true">
+			data-targetdivinner="hotfolderscontainer"
+			data-oemaxlevel="1"
+			data-updateurl="true"
+			title="#text($folder.name) [[Hot Folder]]">
 			<div class="name">
-				<div class="alias" title="Alias">$folder.name
+				<div class="alias">#text($folder.name)
 				#if( $folder.enabled )
 				 <span class="path" >([[Enabled]]: $folder.enabled)</span> 
 				#end
@@ -78,7 +79,7 @@
 	</li>
 	 -->
 </ul>				
-
+</div>
 
 
 
