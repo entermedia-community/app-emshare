@@ -31,6 +31,12 @@ public void runit()
 	User aUser = event.getUser();
 	
 	Data data = (Data)event.getValue("data");
+	if( data == null)
+	{
+		//Pass along the save data
+		String chatterid = event.get("dataid");
+		data = (MultiValued)mediaArchive.getData("chatterbox", chatterid);
+	}
 	String message = data.get("message");
 		
 	String topicid = data.get("channel");
