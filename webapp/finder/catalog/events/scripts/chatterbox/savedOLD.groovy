@@ -36,6 +36,7 @@ public void runit()
 			{
 				manager.updateChatTopicLastModified( channelid, userid, messageid );
 			}	
+			
 			archive.fireDataEvent(context.getUser(),"google", "sendchatnotification", chat);
 			//archive.firePathEvent("google/sendchatnotification", context.getUser(), chat);
 			
