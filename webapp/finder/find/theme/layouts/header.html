@@ -39,6 +39,8 @@
 			</li>
 			#end	
 			
+			
+			
 			    #if($canviewsettings)
    					<li class="nav-item">
    					<a href="$siteroot$apphome/views/dashboard/index.html" class="nav-link ajax" 
@@ -59,9 +61,16 @@
 				<a class="nav-link" href="${workspaceproviderurl}/app/collective/community/index.html?collectionid=$workspaceid">[[Workspace Team]]</a>
 			</li>
 			#end
-			<li class="nav-item">
-				<a class="nav-link" href="$!siteroot$apphome/authentication/logout.html" title="[[Logout]]">[[Logout]]</a>
-			</li>
+		
+			#if( $user )
+		    	#if( $canviewmyaccount ) 
+		    		<li class="nav-item"><a class="nav-link ajax" data-targetdivinner="applicationmaincontent" data-updateurl="true" data-oemaxlevel="2" href="$!siteroot$apphome/views/myaccount/index.html"  title="[[Account Settings]]">[[My Account]]</a></li>
+		    	#end 
+		    	<li  class="nav-item"><a class="nav-link" href="$!siteroot$apphome/authentication/logout.html" title="[[Logout]]">[[Logout]]</a></li> 
+		    #else 
+		    	<li  class="nav-item"><a class="nav-link" href="$!siteroot$apphome/authentication/login.html"  title="[[Login]]">[[Login]]</a></li> 
+		    #end
+			
 			</ul>
 		</div>
 	</nav>

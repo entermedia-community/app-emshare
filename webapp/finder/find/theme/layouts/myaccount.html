@@ -1,0 +1,37 @@
+#set( $tab = $context.findValue("tab") )
+<div class="maincontentlayout" id="myaccountcontent">
+##	<div class="maincontent-sidebar">
+			
+##				<div class="ui-widget-header">[[My Account]]</div>
+##				<div class="">
+##					<ul id="settings-menu" class="sidebar-list">
+					
+##						#set( $searcher = $searcherManager.getSearcher($catalogid,"settingsmenumodule") )
+##						#set( $screens = $searcher.query().match("menulevel","toplevel").match("moduleid", "user").sort("orderingUp").search() ) 
+##						#foreach($screen in	$screens)
+##							#if($screen.permission)
+##								#set($canview = $context.getPageValue("can${screen.permission}"))
+##							#else
+##								#set($canview = true)
+##							#end
+##							#if($canview)
+##								<li id="$screen.id" #if( $tab== "$screen.id" ) class="current" #end>
+##									<a href="$home$apphome${screen.path}" class="ajax" data-targetdiv="myaccountcontent" data-oemaxlevel="3">$context.getText($screen.getName())</a>
+##								</li>
+##							#end
+##						#end
+##					</ul>
+##				</div>
+			
+			
+##	</div>
+##	<div class="maincontent-content">
+			$pages.includeContent()
+##	</div>
+	
+	
+	<div class="clearfix"></div>
+	
+	
+
+</div>
