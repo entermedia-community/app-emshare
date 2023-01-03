@@ -51,6 +51,8 @@
 	#end
 
 	<ul class="resultsnavright"> 
+	$pages.include("/${searchhome}/components/results/positions.html", $context)
+	
 		#if (!$resultview || $resultview == 'table')
 			#if( $canedittablecolumns )
 				#if( $edit )
@@ -89,7 +91,7 @@
 		#end
 		#if($edit != "true")
 			<li class="resultsnavtitem">
-				<select class="form-control" 
+				<select class="form-control select2 select2simple" 
 					name="resultview" 
 					id="selectresultview"  
 					data-hitssessionid="$!hits.getSessionId()" 
@@ -100,7 +102,8 @@
 					data-page="$!hits.getPage()" 
 					data-showremoveselections="$!showremoveselections" 
 					data-collectionid="$!librarycol.getId()"
-					data-targetdiv="resultsviewcontainer$!moduleid">
+					data-targetdiv="resultsviewcontainer$!moduleid"
+					readonly="readonly">
 					
 					<option value="grid" #if( $resultview == "grid") selected #end>[[Grid]]</option>
 					<option value="table" #if( $resultview == "table") selected #end>[[Table]]</option>

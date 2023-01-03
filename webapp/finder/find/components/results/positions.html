@@ -1,10 +1,10 @@
-##needs 	$hits $resultsPage  $targetdivinner
+##needs 	$hits
 
 #set($total = $hits.getTotalPages() )
 #if( $total > 1)
 
-<ul class="posresultsnavright">
-		<li class="resultpages">
+
+		<li class="resultpages" style="padding-top:1px;">
 		 <ul>
 			#set( $befores = $hits.linksBefore() )
 			#if(!$befores.isEmpty() && $befores.get(0)>1)
@@ -40,10 +40,29 @@
 			#end
 		</ul>
 	 </li>
-	 <li class="textheader">
-			<span class="text">#if($total > 1) [[of]] $total [[pages]]#else [[page]]#end  </span>
-	</li>			
+##	 <li class="textheader">
+##			<span class="text">#if($total > 1) [[of]] $total [[pages]]#else [[page]]#end  </span>
+##	</li>	
+	<li class="resultsnavtitem" style="width:61px;">
+			 #set( $currenthitsperpage = $userprofile.get("modulehitsperpage"))
+			#set($hitcountoptions = $mediaarchive.getList("hitcount"))
+			<select class="form-control" 
+				
+				id="hitsperpagechange"
+					data-hitssessionid="$!hits.getSessionId()" 
+					data-searchtype="$!moduleid"
+					data-moduleid="$moduleid"
+					data-ismodulesearch = "$!ismodulesearch" 
+					data-componenthome = "$apphome/views/modules/$moduleid/components"
+					data-page="$!hits.getPage()" 
+					data-showremoveselections="$!showremoveselections" 
+					data-collectionid="$!librarycol.getId()"
+					data-targetdiv="resultsviewcontainer$!moduleid">
+			#foreach($ho in $hitcountoptions)
+			<option value="$ho.id" #if($currenthitsperpage==$ho.id) selected="selected"#end>#text($ho)</option>
+			#end	
+			</select>
+	</li>		
 	 
-</ul>
-<div class="clearfix"></div>	 
+	 
 #end	

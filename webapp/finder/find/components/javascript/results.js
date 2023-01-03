@@ -35,12 +35,7 @@ jQuery(document).ready(function(url,params)
 			if(!oemaxlevel) {
 				oemaxlevel = 1;
 			}
-			//
-			
-			if (ismodulesearch == true) {
-				href = componenthome  +  "/results/changeresultview.html";
-			}
-			else {
+
 				if(searchtype=='asset') {
 					if(originalhitsperpage){
 						href = componenthome  +  "/results/changeresultview.html?cache=false&hitsperpage=" + originalhitsperpage;
@@ -52,7 +47,7 @@ jQuery(document).ready(function(url,params)
 				else {
 					href = siteroot+"/views/modules/"+moduleid+"/components/results/changeresultview.html";
 				}
-			}
+			
 			var args = { hitssessionid: select.data("hitssessionid") ,
 						 searchtype:  searchtype ,
 						 page:  select.data("page") ,
@@ -80,10 +75,81 @@ jQuery(document).ready(function(url,params)
 				$(window).trigger( "resize" );
 			});
 		});
-		
 	});
 	
-	lQuery(".selectresultview").livequery( function() {
+	
+	lQuery("select#hitsperpagechange").livequery( function()
+			{
+				var select = $(this);
+				
+				select.select2({
+					  tags: true
+				});
+				
+				select.on("change",function() 
+				{
+					var componenthome = select.data('componenthome');
+					var moduleid = select.data('moduleid');
+					var originalhitsperpage = select.data("hitsperpage");
+					var href = '';
+					var searchtype = select.data('searchtype');
+					var targetdiv = select.data('targetdiv');
+					var ismodulesearch = select.data('ismodulesearch');
+					var oemaxlevel = select.data('oemaxlevel');
+					if(!oemaxlevel) {
+						oemaxlevel = 1;
+					}
+
+					if(searchtype=='asset') {
+						if(originalhitsperpage){
+							href = componenthome  +  "/results/changehitsperpage.html?cache=false&hitsperpage=" + originalhitsperpage;
+						}
+						else{
+							href = componenthome  +  "/results/changehitsperpage.html";
+						}
+					}
+					else {
+						href = siteroot+"/views/modules/"+moduleid+"/components/results/changehitsperpage.html";
+					}
+				
+					var args = { hitssessionid: select.data("hitssessionid") ,
+								 searchtype:  searchtype ,
+								 page:  select.data("page") ,
+								 showremoveselections:  select.data("showremoveselections") ,
+								 ismodulesearch: ismodulesearch,
+								 resultviewtype: searchtype+"resultview",
+								 oemaxlevel: oemaxlevel,
+								  };
+								 
+					var category = $("#resultsdiv").data("category");
+					if( category )
+					{
+						args.category = category;
+					}
+					var collectionid = $("#resultsdiv").data("collectionid");
+					if( collectionid )
+					{
+						args.collectionid = collectionid;
+					}
+					
+					//the selected option
+					args.hitsperpage = select.val();
+							 
+					$.get(href, args, function(data) 
+					{
+						$("#"+targetdiv).replaceWith(data);
+						$(window).trigger( "resize" );
+						
+						//should I call in a trigger?
+						$(".select2simple").select2({
+							 minimumResultsForSearch: Infinity
+						});
+					});
+				});
+			});
+	
+
+	lQuery(".selectresultviewXX").livequery( function() {
 				var select = $(this);
 				select.on("click",function(e) 
 				{
