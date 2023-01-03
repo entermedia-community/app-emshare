@@ -104,12 +104,6 @@
 				</li>
 			#end
 		
-		
-		
-		
-		
-		
-		
 			$pages.include("$componenthome/results/selected/index.html",$context)
 
 			#if( $enabled && ($canpublish || $canemaillink || $canexportdata ) )
@@ -161,6 +155,9 @@
 			
 		</ul>
 		<ul class="resultsnavright">
+		
+		$pages.include("$componenthome/results/positions.html", $context)
+		
 			#if(!$resultview)
 				#set($resultview = $userprofile.get("$!{searchtype}resultview"))
 				#if (!$resultview)
@@ -170,6 +167,30 @@
 					#set($resultview = "stackedgallery")
 				#end
 			#end
+			
+			#if(!$edit || $edit == "false"  )
+				<li class="resultsnavtitem">
+					<select class="form-control" 
+						name="resultview" 
+						id="selectresultview"  
+						data-hitssessionid="$!hits.getSessionId()" 
+						data-searchtype="$searchtype"
+						data-ismodulesearch = "$!ismodulesearch" 
+						data-componenthome = "$!componenthome"
+						data-page="$!hits.getPage()" 
+						data-showremoveselections="$showremoveselections" 
+						data-collectionid="$!librarycol.getId()"
+						data-targetdiv="resultsviewcontainer$!module.getId()"
+						data-oemaxlevel="1">
+						#set( $types = $mediaarchive.getList("resulttype"))
+						#foreach($type in $types)
+							<option value="$type.getId()" #if( $resultview == "$type.getId()") selected #end>$type.getName($context)</option>
+						#end
+					</select>
+					
+				</li>
+				
+			#end	
 			
 			
 			#if (!$resultview || $resultview == 'table')
@@ -208,29 +229,7 @@
 				#end								
 			#end
 	
-			#if(!$edit || $edit == "false"  )
-				<li class="resultsnavtitem">
-					<select class="form-control" 
-						name="resultview" 
-						id="selectresultview"  
-						data-hitssessionid="$!hits.getSessionId()" 
-						data-searchtype="$searchtype"
-						data-ismodulesearch = "$!ismodulesearch" 
-						data-componenthome = "$!componenthome"
-						data-page="$!hits.getPage()" 
-						data-showremoveselections="$showremoveselections" 
-						data-collectionid="$!librarycol.getId()"
-						data-targetdiv="resultsviewcontainer$!module.getId()"
-						data-oemaxlevel="1">
-						#set( $types = $mediaarchive.getList("resulttype"))
-						#foreach($type in $types)
-							<option value="$type.getId()" #if( $resultview == "$type.getId()") selected #end>$type.getName($context)</option>
-						#end
-					</select>
-					
-				</li>
-				
-			#end	
+			
 	</ul>
 	
 </div>
