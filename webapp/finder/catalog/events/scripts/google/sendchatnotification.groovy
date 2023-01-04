@@ -84,8 +84,7 @@ public void runit()
 		}
 		else
 		{
-			String subject = "[" + collection.getName() + " / " + topicdata.getName() + "]";
-			subject = subject + " from:" + aUser.getScreenName();
+			String subject =  aUser.getScreenName() + " in " + collection.getName();
 			Map extra = new HashMap();
 			extra.put("collectionid", collection.getId());
 			extra.put("collectionlabel", collection.getName());
