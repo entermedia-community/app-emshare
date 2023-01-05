@@ -193,11 +193,11 @@ uiload = function() {
 		});
 		
 	});
-	
+	/*
 	$(".select2simple").select2({
 		 minimumResultsForSearch: Infinity
 	});
-	
+	*/
 	lQuery("select.listdropdown").livequery(function() {
 		var theinput = $(this);
 		var dropdownParent = theinput.data('dropdownparent');
