@@ -15,6 +15,8 @@ jQuery(document).ready(function() {
 			}
 			var serverurl = app.data("siteroot");
 			var mediadbid = app.data("mediadbappid");
+			
+			serverurl = serverurl + "/finder/mediadb/services/module/asset/create";
 			uploadFolder(userid, entermediakey, serverurl, mediadbid);
 		});
 	}
