@@ -90,6 +90,7 @@ public void runit()
 			extra.put("collectionlabel", collection.getName());
 			extra.put("collectivetopicid", topicdata.getId());
 			extra.put("collectivetopiclabel", topicdata.getName());
+			extra.put("notificationtype", "projectchat");
 			extra.put("userid", aUser.getId());
 			
 			manager.notifyTopic(collection.getId(), aUser, subject, message, extra);

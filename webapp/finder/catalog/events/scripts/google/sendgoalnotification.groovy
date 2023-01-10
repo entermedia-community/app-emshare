@@ -42,34 +42,35 @@ public void runit()
 		Data collection = mediaArchive.getData("librarycollection", collectionid);
 		
 		String topicid = event.get("goaltrackercolumn");
-		Data topic = mediaArchive.getData("collectiveproject", topicid);
+		//Data topic = mediaArchive.getData("collectiveproject", topicid);
 		String subject = collection.getName();
-		if( topic != null)
-		{
-			subject = subject + " / " + topic.getName();
-		}
-		subject = "[" + subject + "] " + aUser.getScreenName();
+//		if( topic != null)
+//		{
+//			subject = subject + " / " + topic.getName();
+//		}
+		subject = aUser.getScreenName() + " task: ";
 		Data status =  mediaArchive.getData("projectstatus",projectgoal.get("projectstatus") );
 		if( status != null )
 		{
-			 subject = subject + " " + status.getName("en") + " Goal";
+			 subject = subject + " " + status.getName("en");
 		}
 		else
 		{
-			 subject = subject + " new Goal";
+			 subject = subject;
 		}
 		Map extra = new HashMap();
 		extra.put("projectgoalid", projectgoal.getId());
 		extra.put("projectgoallabel",  projectgoal.getName());
 		extra.put("collectionid", collectionid);
 		extra.put("collectionlabel", collection.getName());
+		extra.put("notificationtype", "goalnotification");
 		
 		String message = projectgoal.getName();
 		//Level and status info
 		Data level = mediaArchive.getData("ticketlevel",projectgoal.get("ticketlevel") );
 		if( level != null)
 		{
-			message = level.getName() + ": " + message;
+			message = level.getName("en") + ": " + message;
 		}
 		if( !notified)
 		{	
