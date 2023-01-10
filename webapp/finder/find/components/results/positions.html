@@ -1,5 +1,52 @@
 ##needs 	$hits
 
+
+	#if($moduleid=="asset")
+			#if($categoryid || $collectionid)
+				#set($resultsPage = "$applink/views/modules/asset/showcategory.html")
+				#set($resultsPage = "$resultsPage?hitssessionid=$!hits.sessionId&searchtype=$!hits.getSearchType()")
+				#set($resultsPage = "$resultsPage&nodeID=$!categoryid&collectionid=$!collectionid")
+				#set($resultsPage = "$resultsPage&pageposition")
+			#else
+				#set($resultsPage = "$applink/views/modules/asset/index.html?pageposition")
+			#end
+			$context.putPageValue('targetdivinner',  "applicationmaincontent")
+			$context.putPageValue('oemaxlevel', "2")
+	#elseif($moduleid=="librarycollection")
+			#if(!$resultsPage)
+				#set($resultsPage = "$applink/views/modules/librarycollection/media/showcategory.html")
+			#end
+			#set($resultsPage = "$resultsPage?hitssessionid=$!hits.sessionId&searchtype=$!hits.getSearchType()")
+			#set($resultsPage = "$resultsPage&categoryid=$!categoryid&collectionid=$!collectionid")
+			#set($resultsPage = "$resultsPage&pageposition")
+			
+			$context.putPageValue('targetdivinner',  "resultsarea")
+			$context.putPageValue('oemaxlevel', "2")
+	#else
+		#if(!$resultsPage)
+			#set($resultsPage = "$componenthome/results/index.html")
+		#end
+		#set($resultsPage = "$resultsPage?hitssessionid=$!hits.sessionId&searchtype=$hits.getSearchType()")
+		#set($resultsPage = "$resultsPage&categoryid=$!categoryid&collectionid=$!collectionid&oemaxlevel=1&resultstype=$!resultstype")
+		#if($module)
+			#set($resultsPage = "$resultsPage&module=$module.id")
+		#end
+		#set($resultsPage = "$resultsPage&pageposition")
+	#end
+
+		#if ($ismodulesearch)
+			$context.putPageValue('targetdivinner',  "modulesearchexpandedmodule")
+			$context.putPageValue('oemaxlevel', "3")
+		#end
+	
+		$context.putPageValue('resultsPage',  $resultsPage)
+		
+		#set($targetdivinner = "applicationmaincontent")
+		$context.putPageValue('targetdivinner',  $targetdivinner)
+	
+		#set($oemaxlevel = "2")
+		$context.putPageValue('oemaxlevel', $oemaxlevel)
+
 #set($total = $hits.getTotalPages() )
 #if( $total > 1)
 

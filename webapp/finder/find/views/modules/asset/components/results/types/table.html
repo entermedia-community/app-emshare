@@ -70,14 +70,14 @@ $context.putPageValue("assetrootfolder", "/$catalogid/assets")
 		<div class="resultsnumber">$!hits.getPageStart() - $!hits.getPageEnd()  [[of]] $!hits.total</div>
 		
 		#if($module.getId()=="asset")
-		#if($categoryid || $collectionid)
-			#set($resultsPage = "$applink/views/modules/asset/showcategory.html")
-			#set($resultsPage = "$resultsPage?hitssessionid=$!hits.sessionId&searchtype=$!hits.getSearchType()")
-			#set($resultsPage = "$resultsPage&nodeID=$!categoryid&collectionid=$!collectionid")
-			#set($resultsPage = "$resultsPage&pageposition")
-		#else
-			#set($resultsPage = "$applink/views/modules/asset/index.html?pageposition")
-		#end
+			#if($categoryid || $collectionid)
+				#set($resultsPage = "$applink/views/modules/asset/showcategory.html")
+				#set($resultsPage = "$resultsPage?hitssessionid=$!hits.sessionId&searchtype=$!hits.getSearchType()")
+				#set($resultsPage = "$resultsPage&nodeID=$!categoryid&collectionid=$!collectionid")
+				#set($resultsPage = "$resultsPage&pageposition")
+			#else
+				#set($resultsPage = "$applink/views/modules/asset/index.html?pageposition")
+			#end
 			$context.putPageValue('targetdivinner',  "applicationmaincontent")
 			$context.putPageValue('oemaxlevel', "2")
 		#elseif($module.getId()=="librarycollection")
@@ -91,17 +91,12 @@ $context.putPageValue("assetrootfolder", "/$catalogid/assets")
 			$context.putPageValue('targetdivinner',  "resultsarea")
 			$context.putPageValue('oemaxlevel', "2")
 		#end
-		
-		
+
 		#if ($ismodulesearch)
 			$context.putPageValue('targetdivinner',  "modulesearchexpandedmodule")
 			$context.putPageValue('oemaxlevel', "3")
-			
-		#else
-
 		#end
-		
-		
+	
 		$context.putPageValue('resultsPage',  $resultsPage)
 		
 		##$pages.include("$componenthome/results/positions.html",$context)
