@@ -118,9 +118,9 @@ $context.putPageValue("data",$data)
 	#set($views = $viewsearcher.query().exact("moduleid",$moduleid).exact("systemdefined","false").not("id",$viewid).sort("orderingUp").search($context) )
 	#if($views)		
 		#foreach( $targetview in $views)
-			#if($targetview.getId())
-				#set( $targetviewid = $targetview.getId())
-				#set( $targetviewpath = "${parentsearchtype}/"+$targetview.getId())
+			#set( $targetviewid = $targetview.getId())
+			#if($targetviewid)
+				#set( $targetviewpath = "${parentsearchtype}/"+$targetviewid)
 				#set( $viewdata = $viewsearcher.searchById($targetviewid))
 				
 				#set( $searchtype = $viewdata.rendertable )
@@ -129,73 +129,50 @@ $context.putPageValue("data",$data)
 				
 				#set( $permissionname = "canedit${searchtype}")
 				#set( $parentid = $context.getRequestParameter("parentid"))
-				
-				
-				#set( $joinsearcher = $searcherManager.getSearcher($catalogid, $searchtype))
-				#set ($query = $joinsearcher.createSearchQuery().append($fieldexternalid, $fieldexternalvalue) )
-				#set( $existingrecords = $joinsearcher.search($query) )
-				
-				
-				#set($targetmodule = $mediaarchive.getCachedData("module", $viewdata.rendertable)) 
+							
+				#set($targetmodule = $mediaarchive.getCachedData("module", $viewdata.rendertable))
+				 
 				#set($targetrendertype = $targetmodule.modulerendertype)
 				#if(!$targetrendertype)
 					#set($targetrendertype = "entity")
 				#end
 		
-				##set( $args = "id=$id&candelete=$!candelete&parentid=$!parentid&catalogid=$!catalogid&searchtype=$!searchtype&fieldexternalid=$!fieldexternalid&fieldexternalvalue=$!fieldexternalvalue&viewid=$!targetviewid&viewpath=$!targetviewpath&permissionname=$!permissionname&hitssessionid=$!hitssessionid")
-				##set( $args = "$args&tabletype=subentity&targetrendertype=$!targetrendertype&targetdiv=entitypreviewdialog&targetoemaxlevel=1")
-				
 				#set( $args = "id=$id&parentid=$!parentid&searchtype=$!searchtype&fieldexternalid=$!fieldexternalid&fieldexternalvalue=$!fieldexternalvalue&viewid=$!targetviewid&viewpath=$!targetviewpath&hitssessionid=$!hitssessionid")
 				#set( $args = "$args&tabletype=subentity&targetrendertype=$!targetrendertype&targetdiv=entitypreviewdialog&targetoemaxlevel=1")
-				
-			
+						
 				#set($targetentityrendertype = "entity")
 				#if ($targetmodule.modulerendertype)
 					#set($targetentityrendertype = $targetmodule.modulerendertype)
 				#end
-				
-				##set($targetmodulelink = "$!siteroot$applink/components/gridsample/preview/$!{targetentityrendertype}.html?searchtype=$!targetmodule.getId()&edit=true")
-				##set($targetmodulelink = "$targetmodulelink&fieldexternalid=$!fieldexternalid&fieldexternalvalue=$!fieldexternalvalue")
-							
-							
 							
 				#set($addentitylink = "$!siteroot$applink/views/modules/$moduleid/edit/table/generictablesearch.html?submodulesearchtype=$searchtype&fieldexternalid=$fieldexternalid&fieldexternalvalue=$!fieldexternalvalue&parentviewid=$!viewid&parentviewpath=$!viewpath&parentid=$!id&parentsearchtype=$!parentsearchtype")
 							
 							
 				<div class="editentitymetadata-submodule">
 
-							<h3>#text($targetmodule)
+							<h3>#text($viewdata)
 							<div class="float-right submodule-actions">
 							
 							
 							<a class="btn btn-sm btn-dark ajax"  
 			
 							href="$addentitylink" 
-							data-targetdiv="targetmoduleaddnew#eid($targetviewid)"
+							data-targetdiv="targetmodulecontainer#eid($targetviewid)"
 							data-oemaxlevel="1"
 							data-parentviewid="$!viewid"
 							data-parentviewpath="$!viewpath"
 							data-parenttargetdiv="editentitymetadata"
 							data-parentid="$!id"
-							data-hidefooter="true">[[Add]] $!context.getText($viewdata)</a>
-					
-##								<a  
-##									class="ajax btn btn-xs btn-dark"  
-##									data-targetdiv="entitydialog" 
-##									data-oemaxlevel="2" 
-##									title="[[Add New]] #text($targetmodule) "
-##									href="$!targetmodulelink"
-##									>
-##									<i class="fas fa-plus"></i> [[Add]] #text($targetmodule)</a>
+							data-hidefooter="true"
+							title="[[Add]] #text($viewdata)"><i class="fas fa-plus"></i> #text($viewdata)</a>
 
 								</div>
 							</h3>
-							<div id="targetmoduleaddnew#eid($targetviewid)">
-								#if($existingrecords.size()>0)
+							<div id="targetmodulecontainer#eid($targetviewid)">
+								
 									#if($viewdata.rendertable)
-										$pages.include("/$applicationid/components/xml/table.html?$args&passalong=$!passalong",$context)						
+										$pages.include("/$applicationid/components/xml/table-entities.html?$!args",$context)						
 									#end
-								#end
 
 							</div>
 						</div>
