@@ -3179,17 +3179,25 @@ uiload = function() {
 	};
 	
 	
-	lQuery("#submodulepicker .rowclick").livequery("click", function(e) {
+	lQuery(".tabletypesubentity .rowclick").livequery("click", function(e) {
 		e.preventDefault();
 		//closeemdialog($(this).closest(".modal"));
-		var picker = $("#submodulepicker");
+		
+		//debugger;
+		var picker = $(this).closest("#resultsdiv");
 		var row = $(this);
 		var rowid = row.attr("rowid");
 		
-		var targetdiv = picker.data("targetdiv");
-		var nextpage = picker.data('savepath');
+		var targetdiv = picker.data("subentitytargetdiv");
+		var nextpage = picker.data('subentityclickurl');
+		//var options = [];
 		var options = picker.data();
-		options.submoduleid = rowid;
+		options["searchtype"] = picker.data('searchtype');
+		options["id"] = rowid;
+		options["oemaxlevel"] = picker.data('subentityoemaxlevel');
+		
+		//options.submoduleid = rowid;
+		
 		jQuery.ajax({
 			url: nextpage, 
 			data: options, 

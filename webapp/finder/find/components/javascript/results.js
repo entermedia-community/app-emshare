@@ -1149,7 +1149,8 @@ jQuery(document).ready(function(url,params)
             
             resultsdiv = $(this).closest("#resultsdiv");
         	searchhome = resultsdiv.data('searchhome');
-			options = resultsdiv.data();
+			
+        	options = resultsdiv.data();
 			
 			
             var moduletable = $(this).closest(".emselectable");;
@@ -1162,12 +1163,13 @@ jQuery(document).ready(function(url,params)
             }
             
 			//var columnsort = searchhome + '/columnsort.html?oemaxlevel=1&searchtype=' + searchtype + '&viewpath=' + viewpath + '&viewid=' + viewid + '&hitssessionid=' + sessionid;
-			var columnsort = searchhome + '/columnsort.html?oemaxlevel';
+			var link = searchhome + '/columnsort.html';
 			
             if ( $(this).hasClass('currentsort') ) {
                 if ( $(this).hasClass('up') ) {
                     //$(resultsdiv).load( columnsort + '&sortby=' + id + 'Down', options);
-                	var link = columnsort + '&sortby=' + id + 'Down';
+                	
+                	options["sortby"] = id + 'Down';
                 	$.get(link, options, function(data) 
         			{
         				$(targetdiv).replaceWith(data);
@@ -1175,7 +1177,7 @@ jQuery(document).ready(function(url,params)
                 	
                 } else {
                     //$(resultsdiv).load( columnsort + '&sortby=' + id + 'Up', options);
-                    var link = columnsort + '&sortby=' + id + 'Up';
+                    options["sortby"] = id + 'Up';
                 	$.get(link, options, function(data) 
         			{
         				$(targetdiv).replaceWith(data);
@@ -1185,7 +1187,7 @@ jQuery(document).ready(function(url,params)
                 $('th.sortable').removeClass('currentsort');
                 $(this).addClass('currentsort');
                 //$(resultsdiv).load( columnsort + '&sortby=' + id + 'Down', options);
-                var link = columnsort + '&sortby=' + id + 'Down';
+                options["sortby"] = id + 'Down';
             	$.get(link, options, function(data) 
     			{
     				$(targetdiv).replaceWith(data);

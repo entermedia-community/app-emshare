@@ -4,7 +4,7 @@
 #set( $xmledithome = "$apphome/views/modules/$searchtype/components/xml")
 #set( $candelete = $context.getRequestParameter("candelete"))
 #if(!$searchhome)
-	#set( $searchhome = $context.findValue("searchhome"))
+	#set( $searchhome = "$componenthome/table")
 #end
 #set( $viewid = $context.getRequestParameter("viewid"))
 #set( $viewpath = $context.getRequestParameter("viewpath"))
@@ -17,9 +17,6 @@
 
 #set( $fieldexternalid = $context.getRequestParameter("fieldexternalid"))
 #set( $fieldexternalvalue = $context.getRequestParameter("fieldexternalvalue"))
-
-#set( $editpath = $context.getRequestParameter("editpath"))
-###set( $hitssessionid = $context.getRequestParameter("hitssessionid"))
 
 ##For module Editing tables
 #set ($id = $context.getRequestParameter("id"))
@@ -37,18 +34,17 @@
 
 #set($hits = $tablehits)
 
-$hits
-
 #if( $hits && $hits.size() > 0 )
 	#set($total = $hits.getTotalPages() )
 	
 	$context.putPageValue("hits", $hits)
-	$context.putPageValue("resultsLink", "/$applicationid/components/gridsample/preview/table-entities.html")
+	$context.putPageValue("resultsLink", "$componenthome/table/table.html")
 	#set($targetdivposition = "targetmodulecontainer#eid($viewid)")
 	$context.putPageValue("targetdivtablepostions", $targetdivposition)
 	$context.putPageValue("oemaxlevel", "1")
 	
-	<div class="domdatacontext" 
+	<div id="resultsdiv"
+			class="domdatacontext" 
 			data-view="$!viewpath"
 			data-viewid="$!viewid" 
 			data-id="$!id"
@@ -56,14 +52,23 @@ $hits
 			data-searchhome="$!searchhome"
 			data-tabletype="$!tabletype"
 			
+			data-hitssessionid="$hits.getSessionId()" 
+			data-componenthome="$!home$!componenthome"
+		
+			data-pagenum="$hits.getPage()" 
+			data-totalpages="$hits.getTotalPages()"
+			data-module="$!moduleid"
+			
 			data-targetdivtablepostions = "$!targetdivposition"
 			data-tablepositionsoemaxlevel = "1"
+			data-oemaxlevel = "1"
 			
 			data-targetrendertype="$!targetrendertype"
 			
 			#if($tabletype == "subentity")
-				data-clickurl="$componenthome/gridsample/preview/${targetrendertype}.html?oemaxlevel=$!targetoemaxlevel"
-				data-targetdiv="$!{targetdiv}"
+				data-subentityclickurl="/$applicationid/components/gridsample/preview/${targetrendertype}.html"
+				data-subentitytargetdiv="entitypreviewdialog"
+				data-subentityoemaxlevel="2"
 			#elseif($tabletype == "subentitydialog" && $targetrendertype)
 				data-emdialoglink="$componenthome/gridsample/preview/${targetrendertype}.html?searchtype=$!searchtype"
 			#else
@@ -77,7 +82,12 @@ $hits
 		<ul class="table-positions-top domdatacontext" 
 			data-targetdivinner="$!targetdivposition" 
 			data-oemaxlevel="1" 
-			data-viewid="$!viewid">
+			data-viewid="$!viewid"
+			data-field="$fieldexternalid"
+			data-${fieldexternalid}.value="$fieldexternalvalue"
+			data-operation="exact"
+			data-fieldexternalid="$fieldexternalid"
+			data-fieldexternalvalue="$fieldexternalvalue">
 			$pages.include("/$applicationid/components/table/positions.html", $context)
 		</ul>
 		<div class="clearfix"></div>
@@ -105,14 +115,14 @@ $hits
 		#end
 		
 		#set($selectedid = $context.getRequestParameter("selectedid"))
-		
-		<table id="main-results-table" class="emdata table table-striped table-hover"  data-hitssessionid="$!hits.sessionId">
+		#set( $sortby = $hits.getSearchQuery().getSortBy() )
+		<table id="main-results-table" class="emdata table table-striped table-hover tabletype$!tabletype  data-hitssessionid="$!hits.sessionId">
 			<thead>
 			<tr id="tableheader" class="tableheader">
 			#foreach( $detail in $details )
 			<th class="sortable #if( $edit)editcolumnheader #end #if( $sortby.startsWith($detail.getId() ) ) currentsort #if( $sortby.endsWith("Up") ) up #else down #end #end" id="th-$detail.id" data-sortby="$detail.id">
-				$detail.text
-				#set( $sortby = $hits.getSearchQuery().getSortBy() )
+				#text($detail.text)
+				
 				#if ($sortby.startsWith($detail.getId()))
 						#if($sortby.endsWith("Up"))
 							#set($sorticon="up")
@@ -130,7 +140,7 @@ $hits
 			</thead>
 			<tbody>
 			#foreach ( $hit in $hits.getPageOfHits() )
-				<tr #if($candelete != "false") rowid="$hit.id" #end #if($selectedid == $hit.id) class="emhighlight" #end>
+				<tr #if($candelete != "false") rowid="$hit.id" #end class="#if($selectedid == $hit.id) emhighlight #end rowclick">
 				#foreach( $detail in $details )
 					<td>
 					
