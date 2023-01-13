@@ -1,0 +1,219 @@
+##Why is this here? Looks like a duplicate of types/table.html
+
+#set( $searchtype = $context.getRequestParameter("searchtype")) 
+#set( $xmledithome = "$apphome/views/modules/$searchtype/components/xml")
+#set( $candelete = $context.getRequestParameter("candelete"))
+#if(!$searchhome)
+	#set( $searchhome = $context.findValue("searchhome"))
+#end
+#set( $viewid = $context.getRequestParameter("viewid"))
+#set( $viewpath = $context.getRequestParameter("viewpath"))
+#if( !$viewpath )
+	#set( $viewpath = $context.getRequestParameter("view"))
+#end
+#if( !$viewpath )
+	#set( $viewpath = $view)
+#end
+
+#set( $fieldexternalid = $context.getRequestParameter("fieldexternalid"))
+#set( $fieldexternalvalue = $context.getRequestParameter("fieldexternalvalue"))
+
+#set( $editpath = $context.getRequestParameter("editpath"))
+###set( $hitssessionid = $context.getRequestParameter("hitssessionid"))
+
+##For module Editing tables
+#set ($id = $context.getRequestParameter("id"))
+
+#set( $details = $searcher.getDataProperties($viewpath, $user) )
+
+##For Subtables on entities
+#set( $tabletype = $context.getRequestParameter("tabletype"))
+#if($tabletype == "subentity")
+	#set( $targetdiv = $context.getRequestParameter("targetdiv"))
+	#set( $targetoemaxlevel = $context.getRequestParameter("targetoemaxlevel"))
+#end
+#set( $targetrendertype = $context.getRequestParameter("targetrendertype"))
+
+
+#set($hits = $tablehits)
+
+$hits
+
+#if( $hits && $hits.size() > 0 )
+	#set($total = $hits.getTotalPages() )
+	
+	$context.putPageValue("hits", $hits)
+	$context.putPageValue("resultsLink", "/$applicationid/components/gridsample/preview/table-entities.html")
+	#set($targetdivposition = "targetmodulecontainer#eid($viewid)")
+	$context.putPageValue("targetdivtablepostions", $targetdivposition)
+	$context.putPageValue("oemaxlevel", "1")
+	
+	<div class="domdatacontext" 
+			data-view="$!viewpath"
+			data-viewid="$!viewid" 
+			data-id="$!id"
+			data-searchtype="$!searchtype" 
+			data-searchhome="$!searchhome"
+			data-tabletype="$!tabletype"
+			
+			data-targetdivtablepostions = "$!targetdivposition"
+			data-tablepositionsoemaxlevel = "1"
+			
+			data-targetrendertype="$!targetrendertype"
+			
+			#if($tabletype == "subentity")
+				data-clickurl="$componenthome/gridsample/preview/${targetrendertype}.html?oemaxlevel=$!targetoemaxlevel"
+				data-targetdiv="$!{targetdiv}"
+			#elseif($tabletype == "subentitydialog" && $targetrendertype)
+				data-emdialoglink="$componenthome/gridsample/preview/${targetrendertype}.html?searchtype=$!searchtype"
+			#else
+				data-editpath="$!siteroot$!editpath?$args&edit=true&oemaxlevel=1" 
+				#if($viewid)data-targetdiv="$!{viewid}editor"#end
+			#end
+		>
+	#if($hits.totalPages > 1)
+		
+		
+		<ul class="table-positions-top domdatacontext" 
+			data-targetdivinner="$!targetdivposition" 
+			data-oemaxlevel="1" 
+			data-viewid="$!viewid">
+			$pages.include("/$applicationid/components/table/positions.html", $context)
+		</ul>
+		<div class="clearfix"></div>
+		#end
+		
+		<div id="${searchtype}_table_entities" class="tableholder">
+		   
+		#if($candelete != "false")
+		
+		
+		
+		
+		<div 
+				class="emselectable" 
+				data-view="$!viewpath"
+				data-viewid="$!viewid" 
+				data-id="$!id"
+				data-searchtype="$!searchtype" 
+				data-searchhome="$!searchhome"
+				data-tabletype="$!tabletype"
+			
+				data-emdialoglink="$componenthome/gridsample/preview/$!{targetrendertype}.html?searchtype=$!searchtype"
+				
+				>
+		#end
+		
+		#set($selectedid = $context.getRequestParameter("selectedid"))
+		
+		<table id="main-results-table" class="emdata table table-striped table-hover"  data-hitssessionid="$!hits.sessionId">
+			<thead>
+			<tr id="tableheader" class="tableheader">
+			#foreach( $detail in $details )
+			<th class="sortable #if( $edit)editcolumnheader #end #if( $sortby.startsWith($detail.getId() ) ) currentsort #if( $sortby.endsWith("Up") ) up #else down #end #end" id="th-$detail.id" data-sortby="$detail.id">
+				$detail.text
+				#set( $sortby = $hits.getSearchQuery().getSortBy() )
+				#if ($sortby.startsWith($detail.getId()))
+						#if($sortby.endsWith("Up"))
+							#set($sorticon="up")
+						#else
+							#set($sorticon="down")
+						#end	
+						&nbsp;&nbsp;&nbsp;<span class="sorticon fas fa-caret-$sorticon"></span>
+				#end
+			</th>
+			#end
+			#if($candelete && $candelete == true && $showdelete == "true")
+			<th></th>
+			#end
+			</tr>
+			</thead>
+			<tbody>
+			#foreach ( $hit in $hits.getPageOfHits() )
+				<tr #if($candelete != "false") rowid="$hit.id" #end #if($selectedid == $hit.id) class="emhighlight" #end>
+				#foreach( $detail in $details )
+					<td>
+					
+						#set( $val = "$!hit.get($detail.id)" )
+						#set( $values = false )
+						#set( $values = $hit.getValues($detail.id) )
+						#if($detail.rendermask)
+							#set( $val = $searcherManager.getValue($catalogid, $detail.rendermask, $hit.properties))
+							#set( $values = $searcherManager.getValues($catalogid, $detail.rendermask, $hit.properties))
+						#end
+						
+						$context.putPageValue("detail",$detail)
+						$context.putPageValue("values",$values)
+						$context.putPageValue("val",$val)
+						$context.putPageValue("hit",$hit)
+						$context.putPageValue("data",$hit)
+						
+						$pages.include("$xmledithome/detailreadonly.html", $context)
+					</td>
+				#end
+				
+				#if($candelete && $candelete == true && $showdelete == "true")
+					<td>
+					<a href="#" onclick="if(confirm('Delete Item?')) { showpath('${searchtype}_table', '$home/system/components/xml/table-deleterow.html?delete=true&$editargs'); } return false;">
+						[[delete]]
+					</a>
+					</td>
+				#end		
+				</tr>
+			#end
+			</tr>
+			</tbody>
+		</table>
+		
+		
+		
+		#set($link = $context.getRequestParameter("selectlink"))
+		
+		#if($tabletype != "subentitydialog" && $link)
+		
+			#set($jumptomodule = $context.getRequestParameter("jumptomodule"))
+			#if( $jumptomodule && $jumptomodule == "true")
+				#set( $link = "$apphome/views/modules/${searchtype}/edit/edit.html")
+				<form name="editrow" method="post" action="$home$link?$passalongdec">
+				#set($fieldname = $context.getRequestParameter("fieldname"))
+				#if(!$fieldname)
+					#set($fieldname = "id" )
+				#end
+				<input type="hidden" id="emselectedrow" name="$fieldname" />	
+				<input type="hidden"  name="edit" value="true" />
+				<input type="hidden" name="searchtype" value="${searchtype}" />
+				
+			</form>
+			
+			#else
+				
+				<form name="editrow" method="post" class="ajaxform" targetdiv="${viewid}editor"  data-targetdiv="${viewid}editor"action="$home$link?$passalongdec">
+				
+				#set($fieldname = $context.getRequestParameter("fieldname"))
+				#if (!$fieldname)
+					#set($fieldname = "id" )
+				#end
+					<input type="hidden" id="emselectedrow" name="$fieldname" />	
+					<input type="hidden"  name="edit" value="true" />
+					<input type="hidden"  name="oemaxlevel" value="1" />
+					<input type="hidden" name="searchtype" value="${searchtype}" />
+				</form>
+			#end
+		#else
+			<div id="$!editlink" data-targetdiv="${viewid}editor" data-link="$home$editpath?$args&edit=true&oemaxlevel=1"></div>
+		#end
+		
+		
+		#if($candelete != "false")
+		</div>
+		#end
+	</div>
+	
+	
+
+
+#if( !$hits || $hits.size() == 0 )
+	<p class="info">[[No records found]]</p>
+#end
+</div>
+#end

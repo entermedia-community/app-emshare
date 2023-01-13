@@ -52,7 +52,34 @@
 
 	<ul class="resultsnavright"> 
 	$pages.include("/${searchhome}/components/results/positions.html", $context)
-	
+		#if($edit != "true")
+				<li class="resultsnavtitem">
+					<select class="form-control" 
+						name="resultview" 
+						id="selectresultview"  
+						data-hitssessionid="$!hits.getSessionId()" 
+						data-searchtype="$!moduleid"
+						data-moduleid="$moduleid"
+						data-ismodulesearch = "$!ismodulesearch" 
+						data-componenthome = "$apphome/views/modules/$moduleid/components"
+						data-page="$!hits.getPage()" 
+						data-showremoveselections="$!showremoveselections" 
+						data-collectionid="$!librarycol.getId()"
+						data-targetdiv="resultsviewcontainer$!moduleid"
+						readonly="readonly">
+						
+						<option value="grid" #if( $resultview == "grid") selected #end>[[Grid]]</option>
+						<option value="table" #if( $resultview == "table") selected #end>[[Table]]</option>
+						##<option value="map" #if( $resultview == "map") selected #end>[[Map]]</option>
+						
+					</select>
+					
+				</li>
+			
+				##<li class="resultsnavtitem hidden-sm-xs hidden-xs hidden-sm hidden-md">
+				##$pages.include("$apphome/views/modules/default/pages.html", $context) ## views/modules/default/navigate.html",$context)
+				##</li>
+			#end
 		#if (!$resultview || $resultview == 'table')
 			#if( $canedittablecolumns )
 				#if( $edit )
@@ -89,34 +116,7 @@
 				#end	
 			#end								
 		#end
-		#if($edit != "true")
-			<li class="resultsnavtitem">
-				<select class="form-control select2 select2simple" 
-					name="resultview" 
-					id="selectresultview"  
-					data-hitssessionid="$!hits.getSessionId()" 
-					data-searchtype="$!moduleid"
-					data-moduleid="$moduleid"
-					data-ismodulesearch = "$!ismodulesearch" 
-					data-componenthome = "$apphome/views/modules/$moduleid/components"
-					data-page="$!hits.getPage()" 
-					data-showremoveselections="$!showremoveselections" 
-					data-collectionid="$!librarycol.getId()"
-					data-targetdiv="resultsviewcontainer$!moduleid"
-					readonly="readonly">
-					
-					<option value="grid" #if( $resultview == "grid") selected #end>[[Grid]]</option>
-					<option value="table" #if( $resultview == "table") selected #end>[[Table]]</option>
-					##<option value="map" #if( $resultview == "map") selected #end>[[Map]]</option>
-					
-				</select>
-				
-			</li>
 		
-			##<li class="resultsnavtitem hidden-sm-xs hidden-xs hidden-sm hidden-md">
-			##$pages.include("$apphome/views/modules/default/pages.html", $context) ## views/modules/default/navigate.html",$context)
-			##</li>
-		#end
 	
 	</ul>
 

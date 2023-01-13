@@ -38,9 +38,10 @@ finddata = function(inlink, inname)
 		value = inlink.attr(inname);
 	}
 	var parent = inlink;
+	//debugger;
 	while( !value)
 	{
-		parent = parent.closest(".domdatacontext");
+		parent = parent.parent().closest(".domdatacontext");
 		if( parent.length == 0)
 		{
 			break;
@@ -57,8 +58,8 @@ findalldata = function(inlink)
 	var parent = item;
 	do
 	{
-		parent = parent.closest(".domdatacontext");
-		var moreoptions = parent.data(inname);
+		parent = parent.parent().closest(".domdatacontext");
+		var moreoptions = parent.data();
 		$.each( moreoptions, function( key, value ) { 
 			if( !options[key] )
 			{
@@ -95,17 +96,25 @@ runajaxonthis = function(inlink,e)
 	if (!nextpage) {
 		nextpage = inlink.data("nextpage");
 	}
-	
+
 	var targetDiv = finddata(inlink,"targetdiv");
 	var replaceHtml = true;
 	
+	/*
+	 * Moved to always search targetdivinner
 	if( !targetDiv )
 	{
 		targetDiv = finddata(inlink,"targetdivinner");
 		if (targetDiv) {
 			replaceHtml = false;
 		}
-	}	
+	}*/	
+	
+	var targetDivInner = finddata(inlink,"targetdivinner");
+	if (targetDivInner) {
+		targetDiv = targetDivInner;
+		replaceHtml = false;
+	}
 	
 	var useparent = inlink.data("useparent");
 
@@ -3395,7 +3404,7 @@ jQuery(document).ready(function() {
 });
 
 jQuery(window).on('resize',function(){
-	console.log("resizing...");
+	//console.log("resizing...");
 	gridResize();
 	resizegallery();
 	adjustdatamanagertable();

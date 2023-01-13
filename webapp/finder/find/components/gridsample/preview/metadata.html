@@ -45,7 +45,7 @@ $context.putPageValue("data",$data)
     	<input name="moduleid" type="hidden" value="$moduleid" />
     	<input name="viewid" type="hidden" value="$viewid" />
     	<input name="view" type="hidden" value="$view" />
-    	<input name="hitssessionid" type="hidden" value="$!hits.sessionId" />
+    	##<input name="hitssessionid" type="hidden" value="$!hits.sessionId" />
 
     	
     	$context.putPageValue("view", $view)
@@ -123,11 +123,12 @@ $context.putPageValue("data",$data)
 				#set( $targetviewpath = "${parentsearchtype}/"+$targetviewid)
 				#set( $viewdata = $viewsearcher.searchById($targetviewid))
 				
-				#set( $searchtype = $viewdata.rendertable )
+				#set( $searchtype = $viewdata.rendertable ) 
 				#set( $fieldexternalid = $viewdata.renderexternalid)
 				#set( $fieldexternalvalue = $id )
 				
 				#set( $permissionname = "canedit${searchtype}")
+				
 				#set( $parentid = $context.getRequestParameter("parentid"))
 							
 				#set($targetmodule = $mediaarchive.getCachedData("module", $viewdata.rendertable))
@@ -137,51 +138,43 @@ $context.putPageValue("data",$data)
 					#set($targetrendertype = "entity")
 				#end
 		
-				#set( $args = "id=$id&parentid=$!parentid&searchtype=$!searchtype&fieldexternalid=$!fieldexternalid&fieldexternalvalue=$!fieldexternalvalue&viewid=$!targetviewid&viewpath=$!targetviewpath&hitssessionid=$!hitssessionid")
-				#set( $args = "$args&tabletype=subentity&targetrendertype=$!targetrendertype&targetdiv=entitypreviewdialog&targetoemaxlevel=1")
-						
-				#set($targetentityrendertype = "entity")
-				#if ($targetmodule.modulerendertype)
-					#set($targetentityrendertype = $targetmodule.modulerendertype)
-				#end
-							
+				$context.putPageValue("canedittablecolumns", "false")			
 				#set($addentitylink = "$!siteroot$applink/views/modules/$moduleid/edit/table/generictablesearch.html?submodulesearchtype=$searchtype&fieldexternalid=$fieldexternalid&fieldexternalvalue=$!fieldexternalvalue&parentviewid=$!viewid&parentviewpath=$!viewpath&parentid=$!id&parentsearchtype=$!parentsearchtype")
 							
 							
 				<div class="editentitymetadata-submodule">
 
 							<h3>#text($viewdata)
-							<div class="float-right submodule-actions">
-							
-							
-							<a class="btn btn-sm btn-dark ajax"  
-			
-							href="$addentitylink" 
-							data-targetdiv="targetmodulecontainer#eid($targetviewid)"
-							data-oemaxlevel="1"
-							data-parentviewid="$!viewid"
-							data-parentviewpath="$!viewpath"
-							data-parenttargetdiv="editentitymetadata"
-							data-parentid="$!id"
-							data-hidefooter="true"
-							title="[[Add]] #text($viewdata)"><i class="fas fa-plus"></i> #text($viewdata)</a>
-
+								<div class="float-right submodule-actions">
+								<a class="btn btn-sm btn-dark ajax"  
+								href="$addentitylink" 
+								data-targetdiv="targetmodulecontainer#eid($targetviewid)"
+								data-oemaxlevel="1"
+								data-parentviewid="$!viewid"
+								data-parentviewpath="$!viewpath"
+								data-parenttargetdiv="editentitymetadata"
+								data-parentid="$!id"
+								data-hidefooter="true"
+								title="[[Add]] #text($viewdata)"><i class="fas fa-plus"></i> #text($viewdata)</a>
 								</div>
 							</h3>
 							<div id="targetmodulecontainer#eid($targetviewid)">
 								
 									#if($viewdata.rendertable)
-										$pages.include("/$applicationid/components/xml/table-entities.html?$!args",$context)						
+									
+										#set( $args = "id=$id&parentid=$!parentid&searchtype=$!searchtype&field=$!fieldexternalid&$!{fieldexternalid}.value=$!fieldexternalvalue&operation=exact&viewid=$!targetviewid&viewpath=$!targetviewpath&hitsperpage=6&targetrendertype=$!targetrendertype")
+									
+									##--->$args
+									
+										$pages.include("/$applicationid/components/gridsample/preview/table-entities.html?$!args",$context)						
 									#end
 
 							</div>
 						</div>
 							
 					#end		
-
+			#end
 		#end
-	#end
-
 #end
 
 
