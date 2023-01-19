@@ -6,7 +6,7 @@ jQuery(document).ready(function() {
 		
 		lQuery("#localfolderPicker").livequery("click", function(e) {
 			e.stopPropagation();
-			console.log("localfolderPicker click");
+			
 			var uploadFolder = electron.remote.require('./index.js').uploadFolder;
 			var userid = app.data("user");
 			var entermediakey = '';
@@ -16,11 +16,34 @@ jQuery(document).ready(function() {
 			var serverurl = app.data("siteroot");
 			var mediadbid = app.data("mediadbappid");
 			var sourcepath = $(this).data("sourcepath");
+						
+			var mediadburl = serverurl + "/" + mediadbid;
 			
-			var uploadasseturl = serverurl + "/finder/mediadb/services/module/asset/create";
 			var redirecturl = serverurl + app.data("apphome") + "/views/modules/asset/index.html";
-			uploadFolder(entermediakey, sourcepath, uploadasseturl, redirecturl);
+			
+			uploadFolder(entermediakey, sourcepath, mediadburl, redirecturl);
 		});
+		
+		
+		
+		lQuery("#localfolderDownloadPath").livequery("click", function(e) {
+			e.stopPropagation();
+			
+			var selectFolder = electron.remote.require('./index.js').selectFolder;
+			
+			var userid = app.data("user");
+			var entermediakey = '';
+			if (app && app.data('entermediakey') != null) {
+				entermediakey = app.data('entermediakey');
+			}
+			var serverurl = app.data("siteroot");
+			var mediadbid = app.data("mediadbappid");
+						
+			var mediadburl = serverurl + "/" + mediadbid;
+			
+			selectFolder(entermediakey);
+		});
+		
 	}
 	
 });
