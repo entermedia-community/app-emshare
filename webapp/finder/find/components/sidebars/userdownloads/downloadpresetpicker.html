@@ -31,7 +31,6 @@
 	<input type="hidden" name="collectionid.value" value="$!context.getRequestParameter('collectionid')"/>
 
 	<input type="hidden" name="field" value="publishdestination" />
-	###set($publishdestination  = $mediaarchive.getCatalogSettingValue("downloadpublisher"))
 	#set($publishdestination  = "desktopdownload")
 	<input type="hidden" name="publishdestination.value" value="$publishdestination" /> ## 0 is http 1 is aspera
 	
@@ -43,56 +42,27 @@
 		<div>[[Choose a download format for each type of asset]].</div>
 		#end
 		
-		#set($filetypes = [])
 		#foreach( $item in $orderitems )
-			#set( $asset = $mediaarchive.getAssetBySourcePath($item.assetsourcepath))
-			#set($fileformat = $asset.fileformat) ##need to get an example fileformat for each filetype
-			#if($fileformat)
-				#set( $rendertypeid = $mediaarchive.getMediaRenderType($fileformat) )
-			#else
-				#set( $rendertypeid = "none" )
-			#end
-			
-			#set($found = false)
-			#foreach( $ft in $filetypes)		   ##TODO: This is ugly in-line code. replace with objects
-				#if ($ft.get(0).equals($rendertypeid))
-					#set($num = $numberutils.toInt("${ft.get(1)}"))
-					#set($num = $num + 1)
-					#set($null = $ft.set(1,"$num"))
-					#set($found = true)
-					#break
-				#end
-			#end
-			#if(!$found)
-				#set($null = $filetypes.add([$rendertypeid,"1"]))
-			#end
 			<input type="hidden" name="itemid" value="$item.id"/>
 		#end
 		
 		<table id="shared-asset-table" class="table table-striped download-table" style="margin:10px 0;" >
-		#foreach( $ft in $filetypes)
-			#set($rendertypeid = $ft.get(0))
-			#set($num = $ft.get(1))
+		#foreach( $renderoption in $rendertypeoptions)
+			#set($rendertypeid = $renderoption.getRenderTypeId() )
 			<tr>
 				<td>
 				<input type="hidden" name="field" value="rendertype"/>
 				<input type="hidden" name="rendertype.value" value="${rendertypeid}"/>
-				#set($rendertype = $!context.getText($searcherManager.getData($catalogid,"rendertype",$rendertypeid)))
 				
-				[[Downloading]] $num $rendertype
+				#set($num = $option.getOrderItems().size())
+				[[Downloading]] $num #text($renderoption.getRenderType())
 				</td>
 				<td>
 				<input type="hidden" name="field" value="presetid"/>
-				#set($presetsearcher = $searcherManager.getSearcher($catalogid, "convertpreset") )
-			  	#set($presetquery = $presetsearcher.createSearchQuery() )
-				#set($null = $presetquery.setAndTogether(false))
-		   	    #set($null = $presetquery.addExact("inputtype",$rendertypeid))
-				#set($null = $presetquery.addExact("inputtype","all"))
-				#set($null = $presetquery.addSortBy("ordering"))
-				#set( $results = $presetsearcher.search($presetquery) )
-				#if($canconvert || $candownloadfpo) 
-			  		<select name="${rendertypeid}.presetid.value" class="form-control form-control-sm downloadpreset">
-					#foreach ($preset in $results)
+			
+		  		<select name="${rendertypeid}.presetid.value" class="form-control form-control-sm downloadpreset">
+					#foreach ($presetoption in $renderoption.getPresetOptions())
+						#set($preset = $presetoption.getPreset())
 						#set($ok = false)
 						#if($canconvert && $candownloadfpo)
 							#set($ok = true) 
@@ -118,11 +88,8 @@
 						#set($ok = false)
 					#end
 				</select>
-
-				<input type="hidden" name="${asset.getId()}_${item.presetid}" value="$item.downloadpath" class="orderitemsperpreset${item.presetid}"/>
-
-				#else
-			  		<input type="hidden" name="${rendertypeid}.presetid.value" value="0">
+				#foreach($downloadpath in $presetoption.getDowloadPaths() )
+				<input type="hidden" name="${rendertypeid}_${presetoption.getPreset().getId()}" value="$downloadpath" class="orderitemsperpreset${presetoption.getPreset().getId()}"/>
 				#end
 				</td>
 			</tr>
