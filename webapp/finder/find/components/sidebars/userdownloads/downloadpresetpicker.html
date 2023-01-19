@@ -91,7 +91,7 @@
 				#set($null = $presetquery.addSortBy("ordering"))
 				#set( $results = $presetsearcher.search($presetquery) )
 				#if($canconvert || $candownloadfpo) 
-			  		<select name="${rendertypeid}.presetid.value" class="form-control form-control-sm">
+			  		<select name="${rendertypeid}.presetid.value" class="form-control form-control-sm downloadpreset">
 					#foreach ($preset in $results)
 						#set($ok = false)
 						#if($canconvert && $candownloadfpo)
@@ -118,6 +118,9 @@
 						#set($ok = false)
 					#end
 				</select>
+
+				<input type="hidden" name="${asset.getId()}_${item.presetid}" value="$item.downloadpath" class="orderitemsperpreset${item.presetid}"/>
+
 				#else
 			  		<input type="hidden" name="${rendertypeid}.presetid.value" value="0">
 				#end

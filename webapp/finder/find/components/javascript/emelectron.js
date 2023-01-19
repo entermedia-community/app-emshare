@@ -29,6 +29,17 @@ jQuery(document).ready(function() {
 		lQuery("#localfolderDownloadPath").livequery("click", function(e) {
 			e.stopPropagation();
 			
+			//Select items
+			var downloadpaths = [];
+			$(".downloadpreset :selected").each(function() {
+				var presetid = $(this).val();
+				$(".orderitemsperpreset"+presetid).each(function(){
+					downloadpaths.push($(this).val());
+				})
+				
+			});
+			
+			
 			var selectFolder = electron.remote.require('./index.js').selectFolder;
 			
 			var userid = app.data("user");
@@ -41,7 +52,7 @@ jQuery(document).ready(function() {
 						
 			var mediadburl = serverurl + "/" + mediadbid;
 			
-			selectFolder(entermediakey);
+			selectFolder(entermediakey, downloadpaths);
 		});
 		
 	}
