@@ -61,10 +61,6 @@
 			#set ($enabled = true)
 		#end
 		
-		##if( $librarycol )
-		##	$pages.include("$componenthome/desktop/menu.html?collectionid=$librarycol.getId()", $context)				
-		##end
-
 		#if ($resultview != "map")
 		
 			#if( $librarycol )
@@ -141,16 +137,6 @@
 						</div>
 					</li>
 			#end
-			
-			
-			#if($desktop && $hits.hasSelections())
-				<li class="">
-					<a class="emdialog" href="$apphome/components/sidebars/userdownloads/downloadpresetpicker.html?hitssessionid=$!hits.getSessionId()" data-hidefooter="true" id="" role="button">[[Desktop Download]]</a>
-				</li>
-			
-			#end 
-			
-			
   			#set( $edit = $context.getRequestParameter("editheader") )
 		
 			#if ( $cancheckout && $order)
@@ -160,7 +146,9 @@
 			#end
 		#end
 		
-
+		#if($desktop && $user && ($candownload || $canconvert || $candownloadfpo ) )
+			$pages.include("$componenthome/desktop/menu.html?collectionid=$librarycol.getId()",$context)
+		#end
 			
 		</ul>
 		<ul class="resultsnavright">
