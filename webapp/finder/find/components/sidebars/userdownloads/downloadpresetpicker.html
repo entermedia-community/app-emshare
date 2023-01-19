@@ -54,7 +54,7 @@
 				<input type="hidden" name="field" value="rendertype"/>
 				<input type="hidden" name="rendertype.value" value="${rendertypeid}"/>
 				
-				#set($num = $option.getOrderItems().size())
+				#set($num = $renderoption.getOrderItems().size())
 				[[Downloading]] $num #text($renderoption.getRenderType())
 				</td>
 				<td>
@@ -88,8 +88,10 @@
 						#set($ok = false)
 					#end
 				</select>
-				#foreach($downloadpath in $presetoption.getDowloadPaths() )
-				<input type="hidden" name="${rendertypeid}_${presetoption.getPreset().getId()}" value="$downloadpath" class="orderitemsperpreset${presetoption.getPreset().getId()}"/>
+				#foreach ($presetoption in $renderoption.getPresetOptions())
+					#foreach($downloadpath in $presetoption.getDowloadPaths() )
+					<input type="hidden" name="${rendertypeid}_${presetoption.getPreset().getId()}" value="$downloadpath" class="orderitemsperpreset${presetoption.getPreset().getId()}"/>
+					#end
 				#end
 				</td>
 			</tr>

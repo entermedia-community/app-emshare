@@ -12,7 +12,7 @@
 	#set( $viewpath = $context.getRequestParameter("view"))
 #end
 #if( !$viewpath )
-	#set( $viewpath = $view)
+	#set( $viewpath = "${searchtype}/${viewid}")
 #end
 
 #set( $fieldexternalid = $context.getRequestParameter("fieldexternalid"))
@@ -40,7 +40,7 @@
 	$context.putPageValue("hits", $hits)
 	$context.putPageValue("resultsLink", "$componenthome/table/table.html")
 	#set($targetdivposition = "targetmodulecontainer#eid($viewid)")
-	$context.putPageValue("targetdivtablepostions", $targetdivposition)
+	$context.putPageValue("targetdivtablepositions", $targetdivposition)
 	$context.putPageValue("oemaxlevel", "1")
 	
 	<div id="resultsdiv"
@@ -59,7 +59,7 @@
 			data-totalpages="$hits.getTotalPages()"
 			data-module="$!moduleid"
 			
-			data-targetdivtablepostions = "$!targetdivposition"
+			data-targetdivtablepositions = "$!targetdivposition"
 			data-tablepositionsoemaxlevel = "1"
 			data-oemaxlevel = "1"
 			

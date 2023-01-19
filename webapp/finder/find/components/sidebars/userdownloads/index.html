@@ -1,5 +1,5 @@
 #if($desktop)
-<div id="userdownloadlist" class="ajaxstatus" data-ajaxpath="$siteroot$applink/components/sidebars/userdownloads/index.html" >
+<div id="userdownloadlist" class="ajaxstatusX" data-ajaxpath="$siteroot$applink/components/sidebars/userdownloads/index.html" >
 #set($recentdownloads = $mediaarchive.query("userdownloads").exact("user",$user.getId()).sort("dateDown").search($context))
 <div class="col-sidebar-header">
 		<h2>
@@ -14,50 +14,9 @@
 					<i class="fas fa-angle-double-left closebar"></i>
 				</a>	
 				</div>
-				
-<div style="padding:5px;">
-<ul class="downloads-sidebar-list">
-	#set($recentdownloads = $mediaarchive.query("userdownloads").exact("user",$user.getId()).sort("dateDown").search($context))
-
-	#foreach ( $download in $recentdownloads )
-	
-		#set( $asset = $mediaarchive.getAsset($download.assetid))
-		
-		#if($asset)
-		
-			#set($name = $asset.getName())
-			#if (!$name)
-				#set($name = $asset.id)
-			#end
-			<li> 
-				<a href="#" 
-				class="#if( $desktop && $download.isdownloadcomplete ) emdesktopopen #end" 
-				data-userdownloadid="$download.id"
-				title="$!name" >
-					
-				##$context.getDateTime($download.getDate("date")) 
-				#if( $download.assetid)
-					#set ($mime = $mediaarchive.getMimeTypeIcon($asset.fileformat))
-					##<!-- #set( $thumbpath =  "$themeprefix/images/mimetypes/${mime}.png" ) -->
-					#set( $thumbpath = $mediaarchive.asLinkToPreview($asset, "image200x200.jpg"))
-					#if (!$thumbpath)
-						#set( $thumbpath =  "$themeprefix/images/mimetypes/${mime}.png" )
-					#end
-					<div class="download-sidebar-thumb-container">
-					<img class=" download-sidebar-thumb" src="$siteroot$thumbpath" alt="$!name" border="0"/>
-					</div>
-					$!name 
-				#else
-					#set( $cat = $mediaarchive.getCategory($download.categoryid))
-					<i class="fas fa-folder-open"></i>
-					$cat.getName()			
-				#end		
-				</a>
-			</li>
-		#end
-	#end
-</ul>
-</div>
-
+	<div id="targetmodulecontainersearch">
+			#set( $args = "searchtype=order&field=userid&userid.value=$user.id&operation=exact&sortby=date&viewid=downloads&hitsperpage=6")
+			$pages.include("/$applicationid/components/table/table.html?$!args",$context)						
+		</div>
 </div>
 #end

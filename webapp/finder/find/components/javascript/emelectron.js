@@ -34,7 +34,9 @@ jQuery(document).ready(function() {
 			$(".downloadpreset :selected").each(function() {
 				var presetid = $(this).val();
 				$(".orderitemsperpreset"+presetid).each(function(){
-					downloadpaths.push($(this).val());
+					var url = $(this).val();
+					
+					downloadpaths.push(url);
 				})
 				
 			});
