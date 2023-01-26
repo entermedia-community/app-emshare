@@ -57,33 +57,62 @@ jQuery(document).ready(function() {
 			selectFolder(entermediakey, downloadpaths);
 		});
 		
+		connectDesktop();
 	}
 	
 });
 
-var app $("#application");
-var serverurl = app.data("siteroot");
-var mediadbid = app.data("mediadbappid");
-
-function listCategoryAssets(inCategoryId)
+function downloadAsset(message)
 {
-	const json = '{	  "page": "1",  "hitsperpage": "20", "query": {   "terms": [     {   "field": "category", "operator": "exact", "value": ';
-	json = json +  '"' + inCategoryId + '"  }   ]  } }';
-	const obj = JSON.parse(json);
-
-	var url = serverurl + "/" + mediadbid + "/services/module/asset/search";
-	$.ajax({
-		  type: "POST",
-		  url: url,
-		  data: obj,
-		  success: function(inresponse)
-		  {
-			  console.log(inresponse);
-		  },
-		  xhrFields: {
-			  withCredentials: true
-		  },
-		  crossDomain: true
-		});
+	var subpath = (String)message.get("subpath");
+	//debug("downloadFolders on" + subpath + " sent " + request.toJSONString());
+	
 
 }
+
+function connectDesktop() {
+    
+	var app = jQuery("#application");
+	var userid = app.data("user");
+    var protocol = location.protocol;
+    
+	var url = "/entermedia/services/websocket/org/entermediadb/websocket/mediaboat/MediaBoatConnection?userid=" + userid;
+    
+    if (protocol === "https:") {
+    	chatconnection = new WebSocket("wss://" +location.host + url );	
+    } else{
+    	chatconnection = new WebSocket("ws://" +location.host  + url );
+    }
+    
+    chatconnection.onmessage = function(event) {
+    	
+    	var app = jQuery("#application");
+    	var apphome = app.data("home") + app.data("apphome");
+    	jQuery(window).trigger("ajaxsocketautoreload");
+        var message = JSON.parse(event.data);
+        //console.log(message);
+
+        console.log(message);
+		var command = message.get("command");
+
+		if( "downloadasset".equals( command))
+		{
+			downloadAsset(message);
+		}
+		else if( "openasset".equals( command))
+		{
+			openAsset(message);
+		}
+		else if( "downloadcategory".equals( command))
+		{
+			downloadFolders(message);
+		}
+		else if( "opencategorypath".equals( command))
+		{
+
+		}
+        
+    }; 
+
+}
+
