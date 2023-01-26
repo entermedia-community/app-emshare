@@ -61,7 +61,7 @@
 			
 			data-targetdivtablepositions = "$!targetdivposition"
 			data-tablepositionsoemaxlevel = "1"
-			data-oemaxlevel = "1"
+			##data-oemaxlevel = "1"
 			
 			data-targetrendertype="$!targetrendertype"
 			
@@ -72,13 +72,11 @@
 			#elseif($tabletype == "subentitydialog" && $targetrendertype)
 				data-emdialoglink="$componenthome/gridsample/preview/${targetrendertype}.html?searchtype=$!searchtype"
 			#else
-				data-editpath="$!siteroot$!editpath?$args&edit=true&oemaxlevel=1" 
-				#if($viewid)data-targetdiv="$!{viewid}editor"#end
+				##data-editpath="$!siteroot$!editpath?$args&edit=true&oemaxlevel=1" 
+				###if($viewid) data-targetdiv="$!{viewid}editor" #end
 			#end
 		>
 	#if($hits.totalPages > 1)
-		
-		
 		<ul class="table-positions-top domdatacontext" 
 			data-targetdivinner="$!targetdivposition" 
 			data-oemaxlevel="1" 
@@ -96,11 +94,7 @@
 		<div id="${searchtype}_table_entities" class="tableholder">
 		   
 		#if($candelete != "false")
-		
-		
-		
-		
-		<div 
+			<div id="emselectable"
 				class="emselectable" 
 				data-view="$!viewpath"
 				data-viewid="$!viewid" 
@@ -116,11 +110,15 @@
 		
 		#set($selectedid = $context.getRequestParameter("selectedid"))
 		#set( $sortby = $hits.getSearchQuery().getSortBy() )
-		<table id="main-results-table" class="emdata table table-striped table-hover tabletype$!tabletype  data-hitssessionid="$!hits.sessionId">
+		<table id="main-results-table" 
+				class="emdata table table-striped table-hover tabletype$!tabletype"
+				data-hitssessionid="$!hits.sessionId">
 			<thead>
 			<tr id="tableheader" class="tableheader">
 			#foreach( $detail in $details )
-			<th class="sortable #if( $edit)editcolumnheader #end #if( $sortby.startsWith($detail.getId() ) ) currentsort #if( $sortby.endsWith("Up") ) up #else down #end #end" id="th-$detail.id" data-sortby="$detail.id">
+			<th class="sortable #if( $edit)editcolumnheader #end #if( $sortby.startsWith($detail.getId() ) ) currentsort #if( $sortby.endsWith("Up") ) up #else down #end #end" 
+				id="th-$detail.id" 
+				data-sortby="$detail.id">
 				#text($detail.text)
 				
 				#if ($sortby.startsWith($detail.getId()))
@@ -139,8 +137,14 @@
 			</tr>
 			</thead>
 			<tbody>
+			#set($rowidfield = $context.getRequestParameter("rowidfield"))
 			#foreach ( $hit in $hits.getPageOfHits() )
-				<tr #if($candelete != "false") rowid="$hit.id" #end class="#if($selectedid == $hit.id) emhighlight #end rowclick">
+				#if($rowidfield)
+					#set($rowid = $hit.getValue($rowidfield))
+				#else
+					#set($rowid = $hit.id)
+				#end	
+				<tr #if($candelete != "false") rowid="$!rowid" #end class="#if($selectedid == $hit.id) emhighlight #end rowclick">
 				#foreach( $detail in $details )
 					<td>
 					
@@ -179,38 +183,38 @@
 		
 		#set($link = $context.getRequestParameter("selectlink"))
 		
-		#if($tabletype != "subentitydialog" && $link)
+		#set($jumptomodule = $context.getRequestParameter("jumptomodule"))
 		
-			#set($jumptomodule = $context.getRequestParameter("jumptomodule"))
-			#if( $jumptomodule && $jumptomodule == "true")
+		#if($link)
+		
+			###<div id="$!editlink" data-targetdiv="${viewid}editor" data-link="$home$editpath?$args&edit=true&oemaxlevel=1"></div>
+			<div id="$!editlink" data-targetdiv="${targetdiv}" data-link="$link"></div>
+			
+		#elseif( $jumptomodule && $jumptomodule == "true")
 				#set( $link = "$apphome/views/modules/${searchtype}/edit/edit.html")
 				<form name="editrow" method="post" action="$home$link?$passalongdec">
-				#set($fieldname = $context.getRequestParameter("fieldname"))
-				#if(!$fieldname)
-					#set($fieldname = "id" )
-				#end
-				<input type="hidden" id="emselectedrow" name="$fieldname" />	
-				<input type="hidden"  name="edit" value="true" />
-				<input type="hidden" name="searchtype" value="${searchtype}" />
-				
-			</form>
-			
-			#else
-				
-				<form name="editrow" method="post" class="ajaxform" targetdiv="${viewid}editor"  data-targetdiv="${viewid}editor"action="$home$link?$passalongdec">
-				
-				#set($fieldname = $context.getRequestParameter("fieldname"))
-				#if (!$fieldname)
-					#set($fieldname = "id" )
-				#end
+					#set($fieldname = $context.getRequestParameter("fieldname"))
+					#if(!$fieldname)
+						#set($fieldname = "id" )
+					#end
+					<input type="hidden" id="emselectedrow" name="$fieldname" />	
+					<input type="hidden"  name="edit" value="true" />
+					<input type="hidden" name="searchtype" value="${searchtype}" />
+				</form>
+		#elseif($link)
+				<form name="editrow" 
+				method="post" class="ajaxform" 
+				data-targetdiv="${viewid}editor"
+				action="$home$link?$passalongdec">
+					#set($fieldname = $context.getRequestParameter("fieldname"))
+					#if (!$fieldname)
+						#set($fieldname = "id" )
+					#end
 					<input type="hidden" id="emselectedrow" name="$fieldname" />	
 					<input type="hidden"  name="edit" value="true" />
 					<input type="hidden"  name="oemaxlevel" value="1" />
 					<input type="hidden" name="searchtype" value="${searchtype}" />
 				</form>
-			#end
-		#else
-			<div id="$!editlink" data-targetdiv="${viewid}editor" data-link="$home$editpath?$args&edit=true&oemaxlevel=1"></div>
 		#end
 		
 		

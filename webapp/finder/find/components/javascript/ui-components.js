@@ -1364,7 +1364,7 @@ uiload = function() {
 
 	});
 
-	lQuery('#emselectable table td').livequery("click", function(event) {
+	lQuery('.emselectable table td, #emselectable table td').livequery("click", function(event) {
 		var clicked = $(this);
 		if (clicked.attr("noclick") == "true") {
 			return true;
@@ -1373,6 +1373,9 @@ uiload = function() {
 			return true;
 		}
 		var emselectable = clicked.closest("#emselectable");
+		if (!emselectable) {
+			emselectable = clicked.closest(".emselectable");
+		}
 		var row = $(clicked.closest("tr"));
 		if (row.hasClass("thickbox")) {
 			var href = row.data("href");
@@ -1427,10 +1430,25 @@ uiload = function() {
 				}
 			} else {
 				//verify row url
+				var targetdiv = '';
+				var options = emselectable.data();
 				var clickurl = emselectable.data("clickurl");
+				if (!clickurl) {
+					//search domdatacontext :: Move all tables to use domdatacontext
+					clickurl = finddata(emselectable, "clickurl");
+					if (clickurl && clickurl != "") {
+						//Get everything from domadatacontext
+						targetdiv = finddata(emselectable, "targetdiv");
+						options = row.data();
+						options.oemaxlevel =  finddata(emselectable, "oemaxlevel");
+					}
+				}
 				if (clickurl && clickurl != "") {
-					var targetdiv = emselectable.data("targetdiv");
-					var options = emselectable.data();
+
+					if (!targetdiv) {
+						targetdiv = emselectable.data("targetdiv");
+					}
+					
 					options.id = id;
 					if(targetdiv != '') {
 						jQuery.ajax({

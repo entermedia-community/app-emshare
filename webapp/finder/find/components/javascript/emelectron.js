@@ -35,8 +35,8 @@ jQuery(document).ready(function() {
 				var presetid = $(this).val();
 				$(".orderitemsperpreset"+presetid).each(function(){
 					var url = $(this).val();
-					
-					downloadpaths.push(url);
+					var asset = $(this).data();
+					downloadpaths.push(asset);
 				})
 				
 			});
@@ -54,7 +54,8 @@ jQuery(document).ready(function() {
 						
 			var mediadburl = serverurl + "/" + mediadbid;
 			
-			selectFolder(entermediakey, downloadpaths);
+			var selectedPath = selectFolder(entermediakey, downloadpaths);
+			console.log(selectedPath);
 		});
 		
 	}
