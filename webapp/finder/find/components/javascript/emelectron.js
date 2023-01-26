@@ -61,7 +61,7 @@ jQuery(document).ready(function() {
 	
 });
 
-var app $("#application");
+var app = $("#application");
 var serverurl = app.data("siteroot");
 var mediadbid = app.data("mediadbappid");
 
