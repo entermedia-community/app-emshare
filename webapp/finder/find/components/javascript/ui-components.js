@@ -668,6 +668,20 @@ uiload = function() {
 
 				e.preventDefault();
 				e.stopImmediatePropagation();
+
+				if( CKEDITOR )
+				{
+					for (instance in CKEDITOR.instances) 
+					{
+			         var editor = CKEDITOR.instances[instance];
+			         var div = $(editor.element.$);
+			         var id = div.data("saveto");
+			         var tosave = $("#" + id);
+			         //editor.updateElement() //does not work
+			         var data = editor.getData();
+			         tosave.val(data);
+					}
+				}
 				
 				var form = $(this);
 
