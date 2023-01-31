@@ -48,53 +48,54 @@ public void runit()
 	{
 		return;
 	}
-	for(String parentcollectionid in values)
-	{
-		LibraryCollection collection = mediaArchive.getData("librarycollection", parentcollectionid);
-		if( parentcollectionid.endsWith("-messages"))
-		{
-			String userid = (String)collection.getValue("owner");
-			if( userid.equals(aUser.getId())) //Dont sent to self
-			{
-				continue;
-			}
-			User otherUser = mediaArchive.getUser(userid);
-			if( otherUser != null)
-			{
-				Data lastchecked = mediaArchive.query("chattopiclastchecked").exact("userid", userid).
-					exact("collectionid", parentcollectionid).searchOne();  //Wont be in any other collection
-				if( lastchecked != null)
-				{
-					Date checked = lastchecked.getDate("datechecked");
-					if( checked.getTime() + 1000*60*10 > System.currentTimeMillis())
-					{
-						continue;
-					}
-					String subject = "Message from " + aUser.getScreenName();
-					Map extra = new HashMap();
-					
-					extra.put("collectionid", collection.getId());
-					extra.put("collectionlabel", collection.getName());
-					extra.put("collectivetopicid", topicid);
-					extra.put("collectivetopiclabel", otherUser.getScreenName());
-					extra.put("userid", aUser.getId());
-					manager.notifyTopic(collection.getId(), aUser, subject, message, extra);
-				}
-			}
-		}
-		else
-		{
+//	for(String parentcollectionid in values)
+//	{
+//		LibraryCollection collection = mediaArchive.getData("librarycollection", parentcollectionid);
+//		if( parentcollectionid.endsWith("-messages"))
+//		{
+//			String userid = (String)collection.getValue("owner");
+//			if( userid.equals(aUser.getId())) //Dont sent to self
+//			{
+//				continue;
+//			}
+//			User otherUser = mediaArchive.getUser(userid);
+//			if( otherUser != null)
+//			{
+//				Data lastchecked = mediaArchive.query("chattopiclastchecked").exact("userid", userid).
+//					exact("collectionid", parentcollectionid).searchOne();  //Wont be in any other collection
+//				if( lastchecked != null)
+//				{
+//					Date checked = lastchecked.getDate("datechecked");
+//					if( checked.getTime() + 1000*60*10 > System.currentTimeMillis())
+//					{
+//						continue;
+//					}
+//					String subject = "Message from " + aUser.getScreenName();
+//					Map extra = new HashMap();
+//					
+//					extra.put("collectionid", collection.getId());
+//					extra.put("collectionlabel", collection.getName());
+//					extra.put("collectivetopicid", topicid);
+//					extra.put("collectivetopiclabel", otherUser.getScreenName());
+//					extra.put("userid", aUser.getId());
+//					manager.notifyTopic(collection.getId(), aUser, subject, message, extra);
+//				}
+//			}
+//		}
+//		else
+//		{
 			String subject =  aUser.getScreenName() + " in " + collection.getName();
 			Map extra = new HashMap();
 			extra.put("collectionid", collection.getId());
 			extra.put("collectionlabel", collection.getName());
+			extra.put("collectiontype", collection.get("collectiontype")); //3 is direct messsages project
 			extra.put("collectivetopicid", topicdata.getId());
 			extra.put("collectivetopiclabel", topicdata.getName());
 			extra.put("notificationtype", "projectchat");
 			extra.put("userid", aUser.getId());
 			
 			manager.notifyTopic(collection.getId(), aUser, subject, message, extra);
-		}	
+//		}	
 	}
 
 }
