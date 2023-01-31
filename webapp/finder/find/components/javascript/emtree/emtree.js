@@ -316,29 +316,8 @@ $(document).ready(function()
 				if (categoryid == null) {
 					categoryid = $(this).data("categoryid");
 				}
-					
-				var options = {};
+				listCategoryAssets($(this), event, categoryid);
 				
-				options.categoryid = categoryid;
-				
-				jQuery.ajax(
-					{
-						url:  apphome + "/components/sidebars/userdownloads/start.html",
-						data: options,
-						success: function() {
-							//Refresh side panel
-							//$("#col-sidebars").load(apphome + "/components/sidebars/index.html");
-							var nextpage = apphome + "/components/sidebars/index.html";
-							jQuery.ajax({
-								url: nextpage, 
-								data: options, 
-								success: function (data) {
-									$("#col-sidebars").replaceWith(data); //Cant get a valid dom element
-									$(window).trigger( "resize" );
-								}
-							});
-						}
-					});
 	});	
 	
 	lQuery(".treecontext #addmedia, .cat-uploadfromtree").livequery('click', function(event) 

@@ -46,6 +46,7 @@ jQuery(document).ready(function() {
 		});
 		
 		
+//Download
 		
 		lQuery("#localfolderDownloadPath").livequery("click", function(e) {
 			e.stopPropagation();
@@ -62,6 +63,16 @@ jQuery(document).ready(function() {
 				
 			});
 			
+			downloadAssetsToDesktop(downloadpaths);
+			
+		});
+		
+	}
+	
+	downloadAssetsToDesktop = function(downloadpaths) {
+			var electron = require('electron');
+			var serverurl = app.data("siteroot");
+			var mediadbid = app.data("mediadbappid");
 			
 			var selectFolder = electron.remote.require('./index.js').selectFolder;
 			
@@ -70,45 +81,66 @@ jQuery(document).ready(function() {
 			if (app && app.data('entermediakey') != null) {
 				entermediakey = app.data('entermediakey');
 			}
-			var serverurl = app.data("siteroot");
-			var mediadbid = app.data("mediadbappid");
+			
 						
 			var mediadburl = serverurl + "/" + mediadbid;
 			
 			var selectedPath = selectFolder(entermediakey, downloadpaths);
+			
 			console.log(selectedPath);
-		});
+	};
 		
+	
+	
+	listCategoryAssets = function(element, event, inCategoryId)
+	{
+		
+		var serverurl = app.data("siteroot");
+		var mediadbid = app.data("mediadbappid");
+		
+		var json = '{	  "page": "1", "hitsname": "downloadfolderhits", "hitsperpage": "20", "query": {   "terms": [     {   "field": "category", "operator": "exact", "value": ';
+		json = json +  '"' + inCategoryId + '"  }   ]  } }';
+		var obj = JSON.parse(json);
+		
+		var url = serverurl + "/" + mediadbid + "/services/module/asset/search";
+		$.ajax({
+			  type: "POST",
+			  url: url,
+			  data: json,
+			  contentType: 'application/json',
+			  dataType: 'json',
+			  success: function(inresponse)
+			  {
+				  console.log(inresponse);
+				  
+				  var hitSessionId = inresponse.response.hitsessionid;
+				  var url = app.data("apphome") + '/components/sidebars/userdownloads/downloadpresetpicker.html?selectall=true&hitssessionid='+hitSessionId+"&categoryid="+inCategoryId;
+				  element.attr("href", url);
+				  emdialog(element, event);
+				  /*
+				  var downloadpaths = [];
+				  $.each( inresponse.results, function( key, value ) { 
+					  //console.log(value);
+					  var asset = [];
+					  asset['url'] = '';
+					  asset['sourcepath'] = value.sourcepath;
+					  downloadpaths.push(asset);
+				  });
+				  downloadAssetsToDesktop(downloadpaths);
+				  */
+			  },
+			  xhrFields: {
+				  withCredentials: true
+			  },
+			  crossDomain: true
+			});
+
 	}
 	
 });
 
-var app = $("#application");
-var serverurl = app.data("siteroot");
-var mediadbid = app.data("mediadbappid");
 
-function listCategoryAssets(inCategoryId)
-{
-	const json = '{	  "page": "1",  "hitsperpage": "20", "query": {   "terms": [     {   "field": "category", "operator": "exact", "value": ';
-	json = json +  '"' + inCategoryId + '"  }   ]  } }';
-	const obj = JSON.parse(json);
 
-	var url = serverurl + "/" + mediadbid + "/services/module/asset/search";
-	$.ajax({
-		  type: "POST",
-		  url: url,
-		  data: obj,
-		  success: function(inresponse)
-		  {
-			  console.log(inresponse);
-		  },
-		  xhrFields: {
-			  withCredentials: true
-		  },
-		  crossDomain: true
-		});
-
-}
 
 
 
