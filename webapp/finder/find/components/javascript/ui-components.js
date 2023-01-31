@@ -1364,7 +1364,7 @@ uiload = function() {
 
 	});
 
-	lQuery('.emselectable table td, #emselectable table td').livequery("click", function(event) {
+	lQuery('#emselectable table td').livequery("click", function(event) {
 		var clicked = $(this);
 		if (clicked.attr("noclick") == "true") {
 			return true;
@@ -1439,7 +1439,11 @@ uiload = function() {
 					if (clickurl && clickurl != "") {
 						//Get everything from domadatacontext
 						targetdiv = finddata(emselectable, "targetdiv");
+						if (!targetdiv) {
+							targetdiv = finddata(emselectable, "targetdivinner");
+						}
 						options = row.data();
+						options.id = row.attr("rowid");
 						options.oemaxlevel =  finddata(emselectable, "oemaxlevel");
 					}
 				}
@@ -1448,7 +1452,9 @@ uiload = function() {
 					if (!targetdiv) {
 						targetdiv = emselectable.data("targetdiv");
 					}
-					
+					if (!targetdiv) {
+						targetdiv = emselectable.data("targetdivinner");
+					}
 					options.id = id;
 					if(targetdiv != '') {
 						jQuery.ajax({

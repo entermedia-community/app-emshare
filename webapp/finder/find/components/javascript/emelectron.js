@@ -4,6 +4,27 @@ jQuery(document).ready(function() {
 		var electron = require('electron');
 		
 		
+		lQuery("#localfilePicker").livequery("click", function(e) {
+			e.stopPropagation();
+			
+			var uploadFiles = electron.remote.require('./index.js').uploadFiles;
+			var userid = app.data("user");
+			var entermediakey = '';
+			if (app && app.data('entermediakey') != null) {
+				entermediakey = app.data('entermediakey');
+			}
+			var serverurl = app.data("siteroot");
+			var mediadbid = app.data("mediadbappid");
+			var sourcepath = $(this).data("sourcepath");
+			
+			var mediadburl = serverurl + "/" + mediadbid;
+			
+			var redirecturl = serverurl + app.data("apphome") + "/views/modules/asset/index.html";
+			
+			uploadFiles(entermediakey, sourcepath, mediadburl, redirecturl);
+		});
+		
+		
 		lQuery("#localfolderPicker").livequery("click", function(e) {
 			e.stopPropagation();
 			
@@ -88,3 +109,6 @@ function listCategoryAssets(inCategoryId)
 		});
 
 }
+
+
+
