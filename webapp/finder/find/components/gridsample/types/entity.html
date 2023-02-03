@@ -127,8 +127,7 @@ $context.putPageValue("previewurl", $previewurl)
 				
 				#if($entityassetscount>=1)
 				
-						#set($targetdivinner = "applicationmaincontent")
-						#set($oemaxlevel = "2")
+						
 						
 							#if($moduleid=="librarycollection")
 								#if(!$rootcategory)
@@ -152,6 +151,29 @@ $context.putPageValue("previewurl", $previewurl)
 							#elseif($entityassetscount>1)
 								#set($entityassetscounttext = "(${entityassetscount} [[Assets]])")
 							#end
+							
+							
+						
+					#end
+					
+					
+					#set($targetdivinner = "applicationmaincontent")
+						#set($oemaxlevel = "2")
+					
+					#set($categorylink = "$siteroot$applink/views/modules/modulesearch/index.html")
+					#set($categorylink = "$categorylink?field=$!moduleid&operation=exact&${moduleid}.value=$!entityid&clearfilters=true")
+							
+					#if($categorylinkXXXX)
+							<a href="$categorylink" 
+											class="ajax"
+											data-oemaxlevel="$!oemaxlevel" 
+											data-targetdivinner="$!targetdivinner" 
+											data-closedialog="true"
+											data-updateurl="true"
+											data-closemediaviewer="true"
+											title="[[View Related]] $!entityassetscounttext"><i class="fas fa-folder"></i></a>
+					#end
+					#if($link)
 							<a href="$link" 
 											class="ajax"
 											data-oemaxlevel="$!oemaxlevel" 
@@ -160,10 +182,7 @@ $context.putPageValue("previewurl", $previewurl)
 											data-updateurl="true"
 											data-closemediaviewer="true"
 											title="[[View Media]] $!entityassetscounttext"><i class="fas fa-images"></i></a>
-							
-							
 					#end
-				
 		    
 		       	$pages.include("$componenthome/gridsample/favorites.html?id=$hit.id&searchtype=$moduleid", $context)
 		       	
