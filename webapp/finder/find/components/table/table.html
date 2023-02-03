@@ -47,7 +47,7 @@
 			class="domdatacontext" 
 			data-view="$!viewpath"
 			data-viewid="$!viewid" 
-			data-id="$!id"
+			#if($id) data-id="$!id" #end
 			data-searchtype="$!searchtype" 
 			data-searchhome="$!searchhome"
 			data-tabletype="$!tabletype"
@@ -81,11 +81,15 @@
 			data-targetdivinner="$!targetdivposition" 
 			data-oemaxlevel="1" 
 			data-viewid="$!viewid"
-			data-field="$fieldexternalid"
-			data-${fieldexternalid}.value="$fieldexternalvalue"
-			data-operation="exact"
-			data-fieldexternalid="$fieldexternalid"
-			data-fieldexternalvalue="$fieldexternalvalue">
+			#if ($fieldexternalid)
+				data-field="$fieldexternalid"
+				data-$!{fieldexternalid}.value="$!fieldexternalvalue"
+				data-operation="exact"
+				data-fieldexternalid="$!fieldexternalid"
+				data-fieldexternalvalue="$!fieldexternalvalue"
+			#end
+			>
+			
 			$pages.include("/$applicationid/components/table/positions.html", $context)
 		</ul>
 		<div class="clearfix"></div>
@@ -98,7 +102,7 @@
 				class="emselectable" 
 				data-view="$!viewpath"
 				data-viewid="$!viewid" 
-				data-id="$!id"
+				#if($id) data-id="$!id" #end
 				data-searchtype="$!searchtype" 
 				data-searchhome="$!searchhome"
 				data-tabletype="$!tabletype"
@@ -144,7 +148,9 @@
 				#else
 					#set($rowid = $hit.id)
 				#end	
-				<tr #if($candelete != "false") rowid="$!rowid" #end class="#if($selectedid == $hit.id) emhighlight #end rowclick">
+				<tr #if($candelete != "false") rowid="$!rowid" #end 
+					class="#if($selectedid == $hit.id) emhighlight #end rowclick domdatacontext"
+					>
 				#foreach( $detail in $details )
 					<td>
 					

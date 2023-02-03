@@ -111,7 +111,7 @@ runajaxonthis = function(inlink,e)
 	}*/	
 	
 	var targetDivInner = finddata(inlink,"targetdivinner");
-	if (targetDivInner) {
+	if (!targetDiv && targetDivInner) {
 		targetDiv = targetDivInner;
 		replaceHtml = false;
 	}
@@ -131,7 +131,7 @@ runajaxonthis = function(inlink,e)
 		row.addClass("current");
 
 	}
-	var options = findalldata(inlink);
+	var options = findalldata(inlink); //--
 	
 	inlink.css( "cursor","wait");
 	$("body").css( "cursor","wait");
