@@ -6,7 +6,10 @@
 #if(!$searchhome)
 	#set( $searchhome = "$componenthome/table")
 #end
+
+#if(!$viewid)
 #set( $viewid = $context.getRequestParameter("viewid"))
+#end
 #set( $viewpath = $context.getRequestParameter("viewpath"))
 #if( !$viewpath )
 	#set( $viewpath = $context.getRequestParameter("view"))
@@ -33,6 +36,8 @@
 
 
 #set($hits = $tablehits)
+
+
 
 #if( $hits && $hits.size() > 0 )
 	#set($total = $hits.getTotalPages() )
@@ -61,20 +66,11 @@
 			
 			data-targetdivtablepositions = "$!targetdivposition"
 			data-tablepositionsoemaxlevel = "1"
-			##data-oemaxlevel = "1"
 			
 			data-targetrendertype="$!targetrendertype"
-			
-			#if($tabletype == "subentity")
-				data-subentityclickurl="/$applicationid/components/gridsample/preview/${targetrendertype}.html"
-				data-subentitytargetdiv="entitypreviewdialog"
-				data-subentityoemaxlevel="2"
-			#elseif($tabletype == "subentitydialog" && $targetrendertype)
-				data-emdialoglink="$componenthome/gridsample/preview/${targetrendertype}.html?searchtype=$!searchtype"
-			#else
-				##data-editpath="$!siteroot$!editpath?$args&edit=true&oemaxlevel=1" 
-				###if($viewid) data-targetdiv="$!{viewid}editor" #end
-			#end
+
+			##data-editpath="$!siteroot$!editpath?$args&edit=true&oemaxlevel=1" 
+			###if($viewid) data-targetdiv="$!{viewid}editor" #end
 		>
 	#if($hits.totalPages > 1)
 		<ul class="table-positions-top domdatacontext" 
@@ -106,8 +102,11 @@
 				data-searchtype="$!searchtype" 
 				data-searchhome="$!searchhome"
 				data-tabletype="$!tabletype"
-			
-				data-emdialoglink="$componenthome/gridsample/preview/$!{targetrendertype}.html?searchtype=$!searchtype"
+				#if($tabletype == "subentity" && $targetrendertype)
+					data-clickurl="/$applicationid/components/gridsample/preview/${targetrendertype}.html"
+					data-targetdiv="entitypreviewdialog"
+					data-oemaxlevel="2"
+				#end
 				
 				>
 		#end

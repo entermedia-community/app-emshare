@@ -1402,11 +1402,14 @@ uiload = function() {
 			row.removeClass("emborderhover");
 			var table = row.closest("table");
 			var id = row.attr("rowid");
+			
 			// var url = emselectable.data("clickpath");
 			
 			var url = table.data("clickpath");
 			var form = emselectable.find("form");
 			var data = row.data();
+
+			//--Form
 			if (form.length > 0) {
 				emselectable.find('#emselectedrow').val(id);
 				emselectable.find('.emneedselection').each(function() {
@@ -1427,6 +1430,7 @@ uiload = function() {
 					closeemdialog(form.closest(".modal"));
 				}
 			} else if (url != undefined) {
+				//-- table clickpath
 				if (url == "") {
 					return true;
 				}
@@ -1443,33 +1447,36 @@ uiload = function() {
 					parent.document.location.href = link;
 				}
 			} else {
-				//verify row url
+				//--clickurl on emselectable
 				var targetdiv = '';
-				var options = emselectable.data();
+				var options = null;
 				var clickurl = emselectable.data("clickurl");
-				if (!clickurl) {
+				if(clickurl){
+					options = emselectable.data();
+					options.id = row.attr("rowid");
+				}
+				else if (!clickurl) {
 					//search domdatacontext :: Move all tables to use domdatacontext
 					clickurl = finddata(emselectable, "clickurl");
 					if (clickurl && clickurl != "") {
 						//Get everything from domadatacontext
+						options = findalldata(emselectable);
 						targetdiv = finddata(emselectable, "targetdiv");
 						if (!targetdiv) {
 							targetdiv = finddata(emselectable, "targetdivinner");
 						}
-						options = row.data();
+						//options = row.data();
 						options.id = row.attr("rowid");
 						options.oemaxlevel =  finddata(emselectable, "oemaxlevel");
 					}
 				}
 				if (clickurl && clickurl != "") {
-
 					if (!targetdiv) {
 						targetdiv = emselectable.data("targetdiv");
 					}
 					if (!targetdiv) {
 						targetdiv = emselectable.data("targetdivinner");
 					}
-					options.id = id;
 					if(targetdiv != '') {
 						jQuery.ajax({
 							url:  clickurl,
@@ -1492,7 +1499,7 @@ uiload = function() {
 					emdialog(row, event);
 				}
 				else if(id!="") {
-					//legacy modules
+					//legacy refresh window
 					parent.document.location.href = id;
 				}
 			}
@@ -3218,7 +3225,7 @@ uiload = function() {
 		}
 	};
 	
-	
+	/*
 	lQuery(".tabletypesubentity .rowclick").livequery("click", function(e) {
 		e.preventDefault();
 		//closeemdialog($(this).closest(".modal"));
@@ -3250,7 +3257,7 @@ uiload = function() {
 	
 	});
 	
-
+*/
 
 
 
