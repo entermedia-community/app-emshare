@@ -59,7 +59,7 @@ $(document).ready(function()
 			//node.load(home + "/components/emtree/tree.html?toggle=true&tree-name=" + tree.data("treename") + "&nodeID=" + nodeid + "&depth=" + depth);
         }
         else {  //Regular Tree
-            gotopage(tree, node, maxlevel, prefix, postfix);
+            gotopage(tree, node, maxlevel, prefix, postfix, null);
         }
 		var event = $.Event( "emtreeselect" );
 		event.tree = tree;
@@ -67,8 +67,9 @@ $(document).ready(function()
 		$(document).trigger(event);
 	});
 	
-    gotopage = function(tree, node, maxlevel, prefix, postfix)
+    gotopage = function(tree, node, maxlevel, prefix, inOptions)
 	{
+    	//postfix not used
     	
 		var treeholder = $("div#categoriescontent");
 		var toplocation =  parseInt( treeholder.scrollTop() );
@@ -119,6 +120,7 @@ $(document).ready(function()
         }
 
 		reloadurl = reloadurl + "?nodeID="+ nodeid;
+		
 		if( collectionid )
 		{
 			reloadurl = reloadurl + "&collectionid=" + collectionid; 
@@ -150,7 +152,11 @@ $(document).ready(function()
         }
 		options.searchchildren = searchchildren; 
 		
-		
+		if(inOptions["clearotherentities"]) {
+			options.clearotherentities = true;
+			reloadurl = reloadurl + "&clearotherentities=true";
+		}
+				
 		//jQuery.get(prefix + nodeid + postfix,
 		jQuery.get(prefix, options,	
 				function(data) 
@@ -334,17 +340,22 @@ $(document).ready(function()
 				var collectionid = node.data("collectionid");
 				var postfix = "";
 				
+				//clear other entities on Upload Form
+				var options = [];
+				options["clearotherentities"] = "true"
+				
+				
 				var customurladdmedia = tree.data("customurladdmedia");
 				if (customurladdmedia) {
 					var url = customurladdmedia;
                     var maxlevel = 1;
-					gotopage(tree,node,maxlevel,url);
+					gotopage(tree,node,maxlevel,url, options);
 				}
 				else {
 
 					var url = tree.data("home") + "/views/modules/asset/add/start.html";
                     var maxlevel = 1;
-					gotopage(tree,node,maxlevel,url);
+					gotopage(tree,node,maxlevel,url, options);
 					
 				}
 				$(".treerow").removeClass("cat-current");
