@@ -1,7 +1,12 @@
 #ifnull($resultsLink)
 	#set($searchhome = "$home$apphome/components/table")
 #end
-#set($resultsLink = "$resultsLink?hitssessionid=$hits.sessionId&searchtype=$hits.getSearchType()&hitsperpage=$!hits.hitsPerPage&oemaxlevel=1")
+##Set max position pages
+#set($positionsmaxpages = $context.getRequestParameter("positionsmaxpages"))
+#if($positionsmaxpages)
+	$hits.setMaxPageListing($positionsmaxpages)
+#end
+#set($resultsLink = "$resultsLink?hitssessionid=$hits.sessionId&searchtype=$hits.getSearchType()&hitsperpage=$!hits.hitsPerPage&oemaxlevel=1&positionsmaxpages=$!positionsmaxpages")
 #set($resultsPage = "$resultsLink&pageposition")
 
 #set($targetdivinner = $targetdivtablepostions)
@@ -11,10 +16,7 @@
 
 #set($total = $hits.getTotalPages() )
 
-##Set max position pages
-#if($positionsmaxpages)
-	$hits.setMaxPageListing($positionsmaxpages)
-#end
+
 #set($updateurl = "false")
 
 #if($resultsPage && $total > 1)
