@@ -35,6 +35,12 @@
 #set( $targetrendertype = $context.getRequestParameter("targetrendertype"))
 
 
+#set($clickurl = $context.getRequestParameter("clickurl"))
+#set($clickurltargetdiv = $context.getRequestParameter("clickurltargetdiv"))
+#set($clickurloemaxlevel = $context.getRequestParameter("clickurloemaxlevel"))
+
+
+
 #set($hits = $tablehits)
 
 
@@ -93,7 +99,7 @@
 		
 		<div id="${searchtype}_table_entities" class="tableholder">
 		   
-		#if($candelete != "false")
+		##if($candelete != "false")
 			<div id="emselectable"
 				class="emselectable" 
 				data-view="$!viewpath"
@@ -106,10 +112,14 @@
 					data-clickurl="/$applicationid/components/gridsample/preview/${targetrendertype}.html"
 					data-targetdiv="entitypreviewdialog"
 					data-oemaxlevel="2"
+				#elseif($clickurl)
+					data-clickurl="$clickurl"
+					data-targetdiv="$clickurltargetdiv"
+					data-oemaxlevel="$clickurloemaxlevel"
 				#end
 				
 				>
-		#end
+		##end
 		
 		#set($selectedid = $context.getRequestParameter("selectedid"))
 		#set( $sortby = $hits.getSearchQuery().getSortBy() )
@@ -223,9 +233,9 @@
 		#end
 		
 		
-		#if($candelete != "false")
+		##if($candelete != "false")
 		</div>
-		#end
+		##end
 	</div>
 	
 	

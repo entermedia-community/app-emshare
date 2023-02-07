@@ -7,7 +7,7 @@
 				
 		</h2>
 		<a href="#"
-					title="[[Hide Categories Sidebar]]"
+					title="[[Hide Downloads Sidebar]]"
 					class="sidebar-toggler sidebar-toggler-hide"
 					data-action="hide" 
 					data-targetdiv="col-sidebars">
@@ -15,8 +15,12 @@
 				</a>	
 				</div>
 	
-	<div id="targetmodulecontainerdownloads">
-			#set( $args = "searchtype=order&field=userid&userid.value=$user.id&operation=exact&sortby=date&viewid=downloads&hitsperpage=10&positionsmaxpages=5")
+	<div id="targetmodulecontainerdownloads" class="domdatacontext" data-onlyassets="true">
+		#set($clickurl = "$applink/views/modules/asset/activity/details/vieworder.html")
+		#set($clickurltargetdiv = "applicationmaincontent")
+		#set($clickurloemaxlevel = "2")
+			#set( $args = "searchtype=order&field=userid&userid.value=$user.id&operation=exact&sortby=dateDown&viewid=downloads&hitsperpage=10&positionsmaxpages=5")
+			#set ($args = "$args&clickurl=$clickurl&clickurltargetdiv=$clickurltargetdiv&clickurloemaxlevel=$clickurloemaxlevel")
 			$pages.include("/$applicationid/components/table/table.html?$!args",$context)						
 		</div>
 </div>
