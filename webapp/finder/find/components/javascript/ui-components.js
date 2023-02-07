@@ -714,7 +714,12 @@ uiload = function() {
 
 				if (form.hasClass("showwaiting")) {
 					var apphome = app.data("siteroot") + app.data("apphome");
-					$("#" + targetdiv).html(
+					var showwaitingtarget = targetdiv;
+					if (form.data("showwaitingtarget")) {
+						showwaitingtarget = form.data("showwaitingtarget");
+						showwaitingtarget = $("#"+$.escapeSelector(showwaitingtarget));
+					}
+					showwaitingtarget.html(
 							'<img src="' + apphome
 									+ '/theme/images/ajax-loader.gif">');
 				}
