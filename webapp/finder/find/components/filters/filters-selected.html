@@ -115,13 +115,26 @@
 		##	#set($href = "$siteroot$apphome/views/modules/asset/index.html?clearselection=true")
 		##end
 		
-		#set($href = "$siteroot$apphome/views/modules/$moduleid/index.html?clearselection=true")
-		<a
-		href="$href"
-		class="badge badge-primary ajax"
-		data-targetdiv="applicationcontent"
-		data-oemaxlevel="4"
-		title="[[Clear Album]]">$category <i class="fas fa-times"></i></a>
+		#foreach( $parent in $category.getParentCategoriesFrom(1))
+			#if( ${foreach.count} > 1) \ #end
+			<a style="padding:0px 4px 4px 4px;" 
+				href="$siteroot$apphome/views/modules/asset/bycategory/${parent.id}.html"
+				class="ajax"
+				data-targetdivinner="applicationcontent"
+				data-oemaxlayout="2"
+				data-closemediaviewer="true"
+				data-updateurl="true"
+				data-sidebarcomponent="categories">$parent</a>
+				
+		#end
+		
+##		#set($href = "$siteroot$apphome/views/modules/$moduleid/index.html?clearselection=true")
+##		<a
+##		href="$href"
+##		class="badge badge-primary ajax"
+##		data-targetdiv="applicationcontent"
+##		data-oemaxlevel="4"
+##		title="[[Clear Album]]">$category <i class="fas fa-times"></i></a>
 	#end
 #end
 

@@ -27,7 +27,28 @@
 
 		<div id="targetmodulecontainersearch" class="domdatacontext" data-clickurl="$applink/views/modules/asset/bycategory/index.html" data-targetdivinner="applicationmaincontent" data-oemaxlevel="3">
 			#set( $args = "searchtype=userupload&field=owner&owner.value=$user.id&operation=exact&sortby=uploaddate&viewid=search&hitsperpage=20&rowidfield=uploadcategory")
-			$pages.include("/$applicationid/components/table/table.html?$!args",$context)						
+			## $pages.include("/$applicationid/components/table/table.html?$!args",$context)
+			
+			#set( $uploads = $mediaarchive.query("userupload").exact("owner", $user.id).sort("uploaddate").search($context) )
+			#if($uploads)
+				#foreach($upload in $uploads)
+				<div class="uploads-categorypath">
+					##$upload.uploadcategory
+					#set( $category = $mediaarchive.getCategory($upload.uploadcategory) )
+					#foreach( $parent in $category.getParentCategoriesFrom(5))
+						#if( ${foreach.count} > 1)\\#end
+						<a style="padding:0px 2px 4px 2px;" 
+						href="$siteroot$apphome/views/modules/asset/bycategory/${parent.id}.html"
+						class="ajax"
+						data-targetdivinner="applicationcontent"
+						data-oemaxlevel="4"
+						data-closemediaviewer="true"
+						data-updateurl="true"
+						data-sidebarcomponent="categories" title="[[Uploaded at]]: $!upload.uploaddate">$parent</a>
+							#end
+				</div>
+				#end
+			#end						
 		</div>
 
 
