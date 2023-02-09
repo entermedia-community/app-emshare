@@ -978,6 +978,8 @@ uiload = function() {
 			url: link,
 			options: options,
 			success: function(data) {
+				
+				//--
 				modaldialog.html(data);
 				
 				if (width) {
