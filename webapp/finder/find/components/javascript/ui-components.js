@@ -957,11 +957,18 @@ uiload = function() {
 							+ '" style="display:none" ></div>');
 			modaldialog = jQuery("#" + id);
 		}
+		var options = dialog.data();
 		var link = dialog.attr("href");
 		if(!link) {
 			link = dialog.data("emdialoglink");
 		}
-		var options = dialog.data();
+		if(dialog.hasClass("entity-dialog") && dialog.closest(".modal").length !== 0) {
+			link = link.replace("entity.html", "entitytab.html");
+			options.oemaxlevel=1;
+		}
+		
+		
+		
 		var param = dialog.data("parameterdata");
 		if (param) {
 			var element = jQuery("#" + param);
@@ -979,100 +986,122 @@ uiload = function() {
 			options: options,
 			success: function(data) {
 				
-				//--
-				modaldialog.html(data);
-				
-				if (width) {
-					
-					if( width >  $(window).width() )
-					{
-						width =  $(window).width();
+				//--Entities
+				if(dialog.hasClass("entity-dialog") && dialog.closest(".modal").length !== 0) {
+					//find tab
+					var entityid = dialog.data("entityid");
+					if(entityid) {
+						var container = dialog.closest(".entity-body");
+						var tabs = container.find(".entity-tab-content");
+						$.each(tabs, function( index, element ) {
+							if($(element).data("id") == entityid) {
+								//exists replace
+							} 
+							else {
+								//append
+								container.append(data);
+								$(".entity-tab").removeClass("current-entity");
+								$(".entity-navigation").append('<a href="" class="entity-tab current-entity" data-entityid="'+entityid+'">'+entityid+'</a>');
+								return;
+							}
+						})
 					}
-					
-					$(".modal-lg").css("min-width", width + "px");
-				}
-				if (maxwidth) {
-					$(".modal-lg").css("max-width", maxwidth + "px");
-				}
-				// $(".modal-lg").css("min-height",height + "px" );
-				
-				var modalkeyboard = true;
-				var noesc = dialog.data("noesc");
-				if (noesc != null && noesc == true) {
-					 modalkeyboard = false;
-				}
-				//Verify if modal was open on top of Asset Media Viewer
-				if(modalkeyboard) {
-					var mainmedia = $("#hiddenoverlay");
-					if(mainmedia.length  && mainmedia.hasClass("show")) {
-						modalkeyboard = false;
-					}
-				}
-				
-				var modalinstance;
-
-				modalinstance = modaldialog.modal({
-						keyboard : modalkeyboard,
-						backdrop : 'static',
-						closeExisting: false,
-						"show" : true
-				});
-				
-				jQuery('.modal-backdrop').insertAfter(modalinstance);
-					
-				var firstform = $('form', modaldialog);
-				firstform.data("openedfrom", openfrom);
-				// fix submit button
-				var justok = dialog.data("cancelsubmit");
-				if (justok != null) {
-					$(".modal-footer #submitbutton", modaldialog).hide();
-				} else {
-					var id = $("form", modaldialog).attr("id");
-					$("#submitbutton", modaldialog).attr("form", id);
-				}
-				var hidetitle = dialog.data("hideheader");
-				if( hidetitle == null)
-				{
-					var title = dialog.attr("title");
-					if (title == null) {
-						title = dialog.text();
-					}
-					$(".modal-title", modaldialog).text(title);
-				}	
-				var hidefooter = dialog.data("hidefooter");
-				if (hidefooter != null) {
-					$(".modal-footer", modaldialog).hide();
-				}
-				var focuselement = dialog.data("focuson");
-	
-				if (focuselement) {
-					//console.log(focuselement);
-					var elmnt = document.getElementById(focuselement);
-					elmnt.scrollIntoView();
-				} else {
-					$('form', modaldialog).find('*').filter(
-							':input:visible:first').focus();
-				}
-				
-				if (typeof global_updateurl !== "undefined" && global_updateurl == false) {
-					//globaly disabled updateurl
 				}
 				else {
-					//Update Address Bar
-					var updateurl = dialog.data("urlbar");
-					if( !updateurl )
+					modaldialog.html(data);
+					
+					if (width) {
+						
+						if( width >  $(window).width() )
+						{
+							width =  $(window).width();
+						}
+						
+						$(".modal-lg").css("min-width", width + "px");
+					}
+					if (maxwidth) {
+						$(".modal-lg").css("max-width", maxwidth + "px");
+					}
+					// $(".modal-lg").css("min-height",height + "px" );
+					
+					var modalkeyboard = true;
+					var noesc = dialog.data("noesc");
+					if (noesc != null && noesc == true) {
+						 modalkeyboard = false;
+					}
+					//Verify if modal was open on top of Asset Media Viewer
+					if(modalkeyboard) {
+						var mainmedia = $("#hiddenoverlay");
+						if(mainmedia.length  && mainmedia.hasClass("show")) {
+							modalkeyboard = false;
+						}
+					}
+					
+					var modalinstance;
+	
+					modalinstance = modaldialog.modal({
+							keyboard : modalkeyboard,
+							backdrop : 'static',
+							closeExisting: false,
+							"show" : true
+					});
+					
+					jQuery('.modal-backdrop').insertAfter(modalinstance);
+						
+					var firstform = $('form', modaldialog);
+					firstform.data("openedfrom", openfrom);
+					// fix submit button
+					var justok = dialog.data("cancelsubmit");
+					if (justok != null) {
+						$(".modal-footer #submitbutton", modaldialog).hide();
+					} else {
+						var id = $("form", modaldialog).attr("id");
+						$("#submitbutton", modaldialog).attr("form", id);
+					}
+					var hidetitle = dialog.data("hideheader");
+					if( hidetitle == null)
 					{
-						updateurl = dialog.data("updateurl");
+						var title = dialog.attr("title");
+						if (title == null) {
+							title = dialog.text();
+						}
+						$(".modal-title", modaldialog).text(title);
+					}	
+					var hidefooter = dialog.data("hidefooter");
+					if (hidefooter != null) {
+						$(".modal-footer", modaldialog).hide();
 					}
-					if( updateurl)	{
-							history.pushState($("#application").html(), null, link);
-							window.scrollTo(0, 0);
+					var focuselement = dialog.data("focuson");
+		
+					if (focuselement) {
+						//console.log(focuselement);
+						var elmnt = document.getElementById(focuselement);
+						elmnt.scrollIntoView();
+					} else {
+						$('form', modaldialog).find('*').filter(
+								':input:visible:first').focus();
 					}
+					
+					if (typeof global_updateurl !== "undefined" && global_updateurl == false) {
+						//globaly disabled updateurl
+					}
+					else {
+						//Update Address Bar
+						var updateurl = dialog.data("urlbar");
+						if( !updateurl )
+						{
+							updateurl = dialog.data("updateurl");
+						}
+						if( updateurl)	{
+								history.pushState($("#application").html(), null, link);
+								window.scrollTo(0, 0);
+						}
+					}
+					
+					modalinstance.on('hidden.bs.modal', function () {
+						$(window).trigger("resize");
+					});
 				}
-				
-				modalinstance.on('hidden.bs.modal', function () {
-					$(window).trigger("resize");
-				});
 			}
 		});
 		

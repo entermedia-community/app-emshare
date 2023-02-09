@@ -1,0 +1,118 @@
+#set( $searchtype = $context.getRequestParameter("searchtype"))
+#set( $id = $context.getRequestParameter("id"))
+
+#if( !$entity)
+	#set( $entity  = $mediaarchive.getData($searchtype, $id) )
+#end
+#set($module = $mediaarchive.getData("module", $searchtype))
+#set($entityid = $entity.id)
+#set($moduleid = $module.getId())
+
+$context.putPageValue("entityid", $entityid)
+$context.putPageValue("moduleid", $moduleid)
+
+#if(!$data)
+	#set( $data  = $mediaarchive.getCachedData($searchtype, $id) )
+#end
+
+<div class="entity-tab-content" data-id="$!data.getId()">
+<div class="entity-metadata">
+	$context.putPageValue("data", $entity)
+	$context.putPageValue("searchtype", $searchtype)
+	$pages.include("metadata.html", $context)
+</div>
+
+<div class="entity-media">
+	<div class="entity-media-box" style="margin-bottom:20px;">
+	<div class="entity-media-header">
+		<h4>[[Folders]]</h4>
+		
+		#if( $canviewupload )
+		
+			<a href="$uploadlink" 
+					class="ajax entity-add-media"
+					data-targetdivinner="$targetdiv"
+					data-closedialog="true" 
+					data-closemediaviewer="true"
+					data-updateurl="true"
+					data-oemaxlevel="$!oemaxlevel"
+					title="[[Download Folder]]">
+					<i class="fas fa-download"></i></a>
+		
+			
+				#set($uploadlink = "$siteroot$applink/views/modules/asset/add/start.html?entityupload=true&entitytype=$moduleid&addselection=$entityid&clearotherentities=true")
+				#set($oemaxlevel = "1")
+				#set($targetdiv = "applicationmaincontent")
+
+					
+					<a href="$uploadlink" 
+					class="ajax entity-add-media"
+					data-targetdivinner="$targetdiv"
+					data-closedialog="true" 
+					data-closemediaviewer="true"
+					data-updateurl="true"
+					data-oemaxlevel="$!oemaxlevel"
+					title="[[Upload Folder]]">
+					<i class="fas fa-upload"></i></a>
+					
+					
+					
+					<a href="$uploadlink" 
+					class="ajax entity-add-media"
+					data-targetdivinner="$targetdiv"
+					data-closedialog="true" 
+					data-closemediaviewer="true"
+					data-updateurl="true"
+					data-oemaxlevel="$!oemaxlevel"
+					title="[[Choose Folder]]">
+					<i class="fas fa-search"></i></a>
+			
+		#end
+	</div>
+	
+	
+	</div>
+	
+	
+		<div class="entity-media-box">
+				<div class="entity-media-header">
+				<h4>[[Files]]</h4>
+				#set($uploadlink = "$siteroot$applink/views/modules/asset/add/start.html?entityupload=true&entitytype=$moduleid&addselection=$entityid&clearotherentities=true")
+				#set($oemaxlevel = "1")
+				#set($targetdiv = "applicationmaincontent")
+				<a href="$uploadlink" 
+					class="ajax entity-add-media"
+					data-targetdivinner="$targetdiv"
+					data-closedialog="true" 
+					data-closemediaviewer="true"
+					data-updateurl="true"
+					data-oemaxlevel="$!oemaxlevel"
+					title="[[Upload Media]]">
+					<i class="fas fa-upload"></i></a>
+				</div>
+				
+				#set( $assetsshown = 4)
+				#if( $searchtype == "faceprofilegroup" )
+					#set( $assetshits = $mediaarchive.query("asset").hitsPerPage($assetsshown).exact("faceprofiles.faceprofilegroup", $entityid).sort("assetaddeddateDown").search() )
+							
+				#else
+					#set( $assetshits = $mediaarchive.query("asset").hitsPerPage($assetsshown).match($moduleid, $entityid).sort("assetaddeddateDown").search() )
+						
+				#end
+				
+				
+				$context.putPageValue("assetshits", $assetshits)
+				$context.putPageValue("fullview",true) 
+				$context.putPageValue("thumbsize", "small" )
+				$context.putPageValue("primaryimage", $entity.primaryimage )
+				
+				$context.putPageValue("mediarender", "attachedmedialist" )
+				
+				$pages.include("$componenthome/gridsample/preview/attachedmedia.html",$context)
+				
+		</div>
+	
+	</div>
+
+
+</div>
