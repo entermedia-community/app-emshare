@@ -1,0 +1,13 @@
+#set( $searchtype = $context.getRequestParameter("searchtype"))
+#set( $id = $context.getRequestParameter("id"))
+#set( $module = $mediaarchive.getCachedData("module", $searchtype))
+
+#if( !$entity)
+	#set( $entity  = $mediaarchive.getData($searchtype, $id) )
+#end
+
+
+<div class="entity-tab  current-entity">
+<a href="#$!entity.getId()" class="entity-tab-label" data-entityid="$!entity.getId()" title="$!entity.getName()">$module.getName(): $!entity.getName()</a>
+<a href="#$!entity.getId()" class="entity-tab-close" data-entityid="$!entity.getId()" title="[[Close]]: $!entity.getName()"><i class="fas fa-times"></i></a>
+</div>

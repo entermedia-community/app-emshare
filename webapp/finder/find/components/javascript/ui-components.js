@@ -993,18 +993,35 @@ uiload = function() {
 					if(entityid) {
 						var container = dialog.closest(".entity-body");
 						var tabs = container.find(".entity-tab-content");
+						var tabexists = false;
 						$.each(tabs, function( index, element ) {
 							if($(element).data("id") == entityid) {
 								//exists replace
+								tabexists = true;
+								$('a[data-entityid="'+entityid+'"].entity-tab-label').trigger("click");
 							} 
-							else {
+						})
+						if(!tabexists) {
 								//append
 								container.append(data);
+								
+								//Menu
+								var tabmenu = $(".entity-navigation");
+								var link = tabmenu.data("tabmenuurl")
+								var options2 = dialog.data();
+								options2.id=entityid;
 								$(".entity-tab").removeClass("current-entity");
-								$(".entity-navigation").append('<a href="" class="entity-tab current-entity" data-entityid="'+entityid+'">'+entityid+'</a>');
+								jQuery.ajax({
+									url: link,
+									data: options2,
+									success: function(data2) {
+										$(".entity-navigation").append(data2);
+									}
+									});
+								
 								return;
-							}
-						})
+					}
+						
 					}
 				}
 				else {
@@ -1139,6 +1156,34 @@ uiload = function() {
 			modaldialog.modal("hide");
 		}
 	}
+	
+	
+	lQuery("a.entity-tab-label").livequery("click", function(event) {
+		event.preventDefault();
+		$(".entity-tab").removeClass("current-entity");
+		$(this).closest(".entity-tab").addClass("current-entity");
+		var entityid = $(this).data("entityid");
+		$(".entity-tab-content").hide();
+		$('div[data-id="'+entityid+'"].entity-tab-content').show();
+	});
+	
+	lQuery("a.entity-tab-close").livequery("click", function(event) {
+		event.preventDefault();
+		if ($('.entity-tab').length >1) {
+			//only remove if more than one tab
+			var tabcontainer = $(this).closest(".entity-tab");
+			var open = tabcontainer.prev();
+			if(open.length == 0) {
+				open = tabcontainer.next();
+			}
+			var entityid = open.find('.entity-tab-label').data("entityid");
+			open.addClass("current-entity");
+			tabcontainer.remove();
+			$('div[data-id="'+$(this).data("entityid")+'"].entity-tab-content').remove();
+			$(".entity-tab-content").hide();
+			$('div[data-id="'+entityid+'"].entity-tab-content').show();
+		}
+	});
 	
 	
 	var lasttypeahead;

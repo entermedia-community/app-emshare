@@ -1,7 +1,6 @@
 #set( $searchtype = $context.getRequestParameter("searchtype"))
 #set( $id = $context.getRequestParameter("id"))
 
-
 #if( !$entity)
 	#set( $entity  = $mediaarchive.getData($searchtype, $id) )
 #end
@@ -9,22 +8,19 @@
 #set($entityid = $entity.id)
 #set($moduleid = $module.getId())
 
+$context.putPageValue("entity", $entity)
 $context.putPageValue("entityid", $entityid)
 $context.putPageValue("moduleid", $moduleid)
 
-#set( $data  = $mediaarchive.getCachedData($searchtype, $id) )
-
-
-
 <div class="entity-wraper">	
-	<div class="entity-navigation">
-		<a href="" class="entity-tab current-entity" data-entityid="$!data.getId()">$module.getName(): $!data.getName()</a>
+	<div class="entity-navigation" data-tabmenuurl="$apphome/components/gridsample/preview/entitytabmenu.html">
+		$pages.include("$apphome/components/gridsample/preview/entitytabmenu.html", $context)
 		
 	</div>
 	
 	<div class="entity-body">
 		
-			$pages.include("entitytab.html", $context)
+			$pages.include("$apphome/components/gridsample/preview/entitytab.html", $context)
 			
 	<div class="clearfix"></div>	
 	</div>
