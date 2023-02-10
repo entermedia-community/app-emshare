@@ -594,7 +594,7 @@ jQuery(document).ready(function(url,params)
 		        	var ismodal = $('#modals, #inlineedit, .modal');
 		        	if (ismodal.hasClass('show')) {
 		        		//Close modal only
-		        		ismodal.modal('hide');
+		        		closeemdialog(ismodal);
 		        		e.stopPropagation();
 		        		return;
 		        		

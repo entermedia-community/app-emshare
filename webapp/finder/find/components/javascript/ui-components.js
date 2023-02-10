@@ -942,9 +942,6 @@ uiload = function() {
 
 		var width = dialog.data("width");
 		var maxwidth = dialog.data("maxwidth");
-		/*if (!width) {
-			width = "800";
-		}*/
 		var id = dialog.data("dialogid");
 		if (!id) {
 			id = "modals";	
@@ -966,9 +963,6 @@ uiload = function() {
 			link = link.replace("entity.html", "entitytab.html");
 			options.oemaxlevel=1;
 		}
-		
-		
-		
 		var param = dialog.data("parameterdata");
 		if (param) {
 			var element = jQuery("#" + param);
@@ -1039,7 +1033,6 @@ uiload = function() {
 					if (maxwidth) {
 						$(".modal-lg").css("max-width", maxwidth + "px");
 					}
-					// $(".modal-lg").css("min-height",height + "px" );
 					
 					var modalkeyboard = true;
 					var noesc = dialog.data("noesc");
@@ -1055,13 +1048,20 @@ uiload = function() {
 					}
 					
 					var modalinstance;
-	
-					modalinstance = modaldialog.modal({
-							keyboard : modalkeyboard,
-							backdrop : 'static',
+					if(modalkeyboard) {
+						modalinstance = modaldialog.modal({
+								closeExisting: false,
+								"show" : true
+						});
+					}else {
+						modalinstance = modaldialog.modal({
+							keyboard : false,
+							backdrop : "static",
 							closeExisting: false,
 							"show" : true
-					});
+						});
+					}
+					
 					
 					jQuery('.modal-backdrop').insertAfter(modalinstance);
 						
@@ -1154,8 +1154,10 @@ uiload = function() {
 	closeemdialog = function(modaldialog) {
 		if (modaldialog.modal) {
 			modaldialog.modal("hide");
+			modaldialog.remove();
 		}
 	}
+	
 	
 	
 	lQuery("a.entity-tab-label").livequery("click", function(event) {
@@ -1182,6 +1184,10 @@ uiload = function() {
 			$('div[data-id="'+$(this).data("entityid")+'"].entity-tab-content').remove();
 			$(".entity-tab-content").hide();
 			$('div[data-id="'+entityid+'"].entity-tab-content').show();
+		}
+		else {
+			//close dialog
+			closeemdialog($(this).closest(".modal"));
 		}
 	});
 	
