@@ -643,7 +643,8 @@ onloadselectors = function() {
 															.css(
 																	{
 																		"border" : "1px solid blue",
-																		"background" : "#c9e8f2"
+																		"background" : "#c9e8f2",
+																		"min-width":"250px"
 																	});
 
 													// var status =
@@ -745,6 +746,10 @@ onloadselectors = function() {
 											{
 												drop : function(event, ui) {
 													var node = $(this);
+													if( !node.hasClass("categorydroparea") &&  !node.hasClass("assetdropcategory"))
+													{
+															return;
+													}
 													var categoryid = node
 															.parent().data(
 																	"nodeid");
@@ -780,6 +785,12 @@ onloadselectors = function() {
 													} else {
 														var assetid = ui.draggable
 																.data("assetid");
+														if( !assetid)
+														{
+															console.log("No asset");
+															//Could be an entity drop
+															return;
+														}
 														var hitssessionid = $(
 																"#resultsdiv")
 																.data(
@@ -844,14 +855,18 @@ onloadselectors = function() {
 							node
 									.droppable({
 										drop : function(event, ui) {
-											// var node = $(this);
-											var entityid = node
+											var element = $(this);
+											
+											var entityid = element
 													.data("entityid");
-											var moduleid = node
+											var moduleid = element
 													.data("moduleid");
 
 											var assetid = ui.draggable
 													.data("assetid");
+											var categoryid = ui.draggable
+													.data("nodeid");
+													
 											var hitssessionid = $("#resultsdiv")
 													.data("hitssessionid");
 											if (!hitssessionid) {
@@ -859,25 +874,21 @@ onloadselectors = function() {
 														"#main-results-table")
 														.data("hitssessionid");
 											}
-
-											// move or add it
-											var moveit = false;
-											if (node
-													.closest(".assetdropcategorymove").length > 0) {
-												moveit = true;
-											}
-
+									
 											var options = {};
-											options.assetid = assetid;
+											if( assetid )
+											{
+												options.assetid = assetid;
+											}
+											if( categoryid)
+											{
+												options.categoryid = categoryid;
+											} 
 											options.entityid = entityid;
 											options.moduleid = moduleid;
-											options.rootcategory = node
-													.data("rootcategory");
 											options.hitssessionid = hitssessionid;
-											options.moveasset = moveit;
 
-											$
-													.ajax({
+											$.ajax({
 														url : apphome
 																+ "/components/entities/addassetentity.html",
 														data : options,
@@ -893,34 +904,27 @@ onloadselectors = function() {
 																var options = {};
 																options.entityid = entityid;
 																options.moduleid = moduleid;
-																options.rootcategory = node
-																		.data("rootcategory");
-																options.assetsshown = node
-																		.data("assetsshown");
-																jQuery
-																		.get(
-																				targeturl,
-																				options,
-																				function(
-																						data2) {
-																					// success
-																					targetdiv
-																							.replaceWith(data2);
-																					if (data
-																							.trim() != "") {
-																						targetdiv
-																								.append("<span class='fader emnotify'>&nbsp;+"
-																										+ data
-																										+ "</span>");
-																						targetdiv
-																								.find(
-																										".fader")
-																								.fadeOut(
-																										3000);
-																					}
-																					targetdiv
-																							.removeClass("dragoverselected");
-																				});
+																options.rootcategory = node.data("rootcategory");
+																options.assetsshown = node.data("assetsshown");
+																jQuery.get(	targeturl,options,	function(data2) {
+																	// success
+																	targetdiv
+																			.replaceWith(data2);
+																	if (data
+																			.trim() != "") {
+																		targetdiv
+																				.append("<span class='fader emnotify'>&nbsp;+"
+																						+ data
+																						+ "</span>");
+																		targetdiv
+																				.find(
+																						".fader")
+																				.fadeOut(
+																						3000);
+																	}
+																	targetdiv
+																			.removeClass("dragoverselected");
+																});
 															}
 														}
 													});

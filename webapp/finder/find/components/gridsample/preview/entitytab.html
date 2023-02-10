@@ -12,7 +12,7 @@ $context.putPageValue("entityid", $entityid)
 $context.putPageValue("moduleid", $moduleid)
 
 
-<div class="entity-tab-content" data-id="$!entity.getId()">
+<div id="entity-tab" class="entity-tab-content" data-id="$!entity.getId()">
 <div class="entity-metadata">
 	$context.putPageValue("data", $entity)
 	$context.putPageValue("searchtype", $searchtype)
@@ -23,8 +23,6 @@ $context.putPageValue("moduleid", $moduleid)
 	<div class="entity-media-box" style="margin-bottom:20px;">
 	<div class="entity-media-header">
 		<h4>[[Folders]]</h4>
-		
-		#if( $canviewupload )
 		
 			<a href="$uploadlink" 
 					class="ajax entity-add-media"
@@ -52,19 +50,28 @@ $context.putPageValue("moduleid", $moduleid)
 					title="[[Upload Folder]]">
 					<i class="fas fa-upload"></i></a>
 					
+			#set( $folders = $mediaarchive.query("category").hitsPerPage(6).match($moduleid, $entityid).sort("name").search($context) )
 					
+					##TODO create list of categories
 					
-					<a href="$uploadlink" 
-					class="ajax entity-add-media"
-					data-targetdivinner="$targetdiv"
-					data-closedialog="true" 
-					data-closemediaviewer="true"
-					data-updateurl="true"
-					data-oemaxlevel="$!oemaxlevel"
-					title="[[Choose Folder]]">
-					<i class="fas fa-search"></i></a>
-			
-		#end
+						#set($searchlink = "$apphome/components/categories/search/searchcategory.html")
+						<a href="$searchlink" 
+						   class="detail-edit-icon btn  emdialog"
+						   data-cancelsubmit="true" 
+						   data-multivalue="false"
+						   data-pickone="true"
+						   ## data-detailid="categoryid"
+						   ## data-assetid=${asset.id}
+						   data-moduleid="$moduleid"
+						   data-dataid="$entityid"
+						   data-existingcategories="$!{existingcategories}"
+						   data-action="$apphome/components/gridsample/preview/entitytab.html"
+						   data-targetdiv="entity-tab"
+						   data-parameterdata="id"
+						   data-noesc="true"
+						   title="[[Choose Folder]]"><i class="fas fa-search"></i></a>		
+		
+		
 	</div>
 	
 	
