@@ -140,7 +140,9 @@ $context.putPageValue("data",$data)
 		
 				$context.putPageValue("canedittablecolumns", "false")			
 				#set($addentitylink = "$!siteroot$applink/views/modules/$moduleid/edit/table/generictablesearch.html?submodulesearchtype=$searchtype&fieldexternalid=$fieldexternalid&fieldexternalvalue=$!fieldexternalvalue&parentviewid=$!viewid&parentviewpath=$!viewpath&parentid=$!id&parentsearchtype=$!parentsearchtype")
-							
+				
+				
+				#set($submodulepickerid = "targetmodulecontainer#eid($id)")
 							
 				<div class="editentitymetadata-submodule">
 
@@ -148,7 +150,7 @@ $context.putPageValue("data",$data)
 								<div class="float-right submodule-actions">
 								<a class="btn btn-sm btn-dark ajax"  
 								href="$addentitylink" 
-								data-targetdiv="targetmodulecontainer#eid($targetviewid)"
+								data-targetdiv="$submodulepickerid"
 								data-oemaxlevel="1"
 								data-parentviewid="$!viewid"
 								data-parentviewpath="$!viewpath"
@@ -158,7 +160,7 @@ $context.putPageValue("data",$data)
 								title="[[Add]] #text($viewdata)"><i class="fas fa-plus"></i> #text($viewdata)</a>
 								</div>
 							</h3>
-							<div id="targetmodulecontainer#eid($targetviewid)" class="submodulepicker">
+							<div id="$submodulepickerid" class="submodulepicker">
 								
 									#if($viewdata.rendertable)
 									

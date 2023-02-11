@@ -1645,7 +1645,7 @@ uiload = function() {
 								if (!targetdiv.jquery) {
 									targetdiv = $("#"+targetdiv);
 								}
-								targetdiv.html(data);
+								targetdiv.replaceWith(data);
 							}
 						});
 						
@@ -1655,15 +1655,15 @@ uiload = function() {
 				//verify if is entity dialog - not being used?
 				var emdialoglink = emselectable.data("emdialoglink");
 				if (emdialoglink && emdialoglink != "") {
-					emdialoglink = emdialoglink + "&id="+id;
+					emdialoglink = emdialoglink + "&id="+rowid;
 					row.data("emdialoglink", emdialoglink);
-					row.data("id", id);
+					row.data("id", rowid);
 					row.data("searchtype", emselectable.data("searchtype"));
 					emdialog(row, event);
 				}
 				else if(id!="") {
 					//legacy refresh window
-					parent.document.location.href = id;
+					parent.document.location.href = rowid;
 				}
 			}
 		}
