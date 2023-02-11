@@ -987,6 +987,10 @@ uiload = function() {
 					if(entityid) {
 						var container = dialog.closest(".entity-body");
 						var tabs = container.find(".entity-tab-content");
+						if(tabs.length >= 6) {
+							alert("Max Tabs Limit");
+							return;
+						}
 						var tabexists = false;
 						$.each(tabs, function( index, element ) {
 							if($(element).data("id") == entityid) {
@@ -996,26 +1000,24 @@ uiload = function() {
 							} 
 						})
 						if(!tabexists) {
-								//append
-								container.append(data);
-								
-								//Menu
-								var tabmenu = $(".entity-navigation");
-								var link = tabmenu.data("tabmenuurl")
-								var options2 = dialog.data();
-								options2.id=entityid;
-								$(".entity-tab").removeClass("current-entity");
-								jQuery.ajax({
-									url: link,
-									data: options2,
-									success: function(data2) {
-										$(".entity-navigation").append(data2);
-									}
-									});
-								
-								return;
-					}
-						
+							//append
+							container.append(data);
+							
+							//Menu
+							var tabmenu = $(".entity-navigation");
+							var link = tabmenu.data("tabmenuurl")
+							var options2 = dialog.data();
+							options2.id=entityid;
+							$(".entity-tab").removeClass("current-entity");
+							jQuery.ajax({
+								url: link,
+								data: options2,
+								success: function(data2) {
+									$(".entity-navigation").append(data2);
+								}
+								});
+							return;
+						}
 					}
 				}
 				else {
@@ -1158,8 +1160,6 @@ uiload = function() {
 		}
 	}
 	
-	
-	
 	lQuery("a.entity-tab-label").livequery("click", function(event) {
 		event.preventDefault();
 		$(".entity-tab").removeClass("current-entity");
@@ -1174,11 +1174,15 @@ uiload = function() {
 		if ($('.entity-tab').length >1) {
 			//only remove if more than one tab
 			var tabcontainer = $(this).closest(".entity-tab");
-			var open = tabcontainer.prev();
+			var open = $(".current-entity");
+			if (open.data("entityid") == $(this).data("entityid")) {
+				open = tabcontainer.prev();
+			}	
 			if(open.length == 0) {
 				open = tabcontainer.next();
 			}
 			var entityid = open.find('.entity-tab-label').data("entityid");
+			$(".entity-tab").removeClass("current-entity");
 			open.addClass("current-entity");
 			tabcontainer.remove();
 			$('div[data-id="'+$(this).data("entityid")+'"].entity-tab-content').remove();
@@ -1190,7 +1194,6 @@ uiload = function() {
 			closeemdialog($(this).closest(".modal"));
 		}
 	});
-	
 	
 	var lasttypeahead;
 	var lastsearch;
@@ -1478,6 +1481,9 @@ uiload = function() {
 			emselectable = clicked.closest(".emselectable");
 		}
 		var row = $(clicked.closest("tr"));
+		var rowid = row.attr("rowid");
+		
+		
 		if (row.hasClass("thickbox")) {
 			var href = row.data("href");
 			openFancybox(href);
@@ -1488,7 +1494,6 @@ uiload = function() {
 			row.addClass('emhighlight');
 			row.removeClass("emborderhover");
 			var table = row.closest("table");
-			var id = row.attr("rowid");
 			
 			// var url = emselectable.data("clickpath");
 			
@@ -1498,7 +1503,7 @@ uiload = function() {
 
 			//--Form
 			if (form.length > 0) {
-				emselectable.find('#emselectedrow').val(id);
+				emselectable.find('#emselectedrow').val(rowid);
 				emselectable.find('.emneedselection').each(function() {
 					clicked.removeAttr('disabled');
 				});
@@ -1524,9 +1529,9 @@ uiload = function() {
 				var link = url;
 				var post = table.data("viewpostfix");
 				if (post != undefined) {
-					link = link + id + post;
+					link = link + rowid + post;
 				} else {
-					link = link + id;
+					link = link + rowid;
 				}
 				if (emselectable.hasClass("showmodal")) {
 					showmodal(emselectable, link);
@@ -1538,11 +1543,79 @@ uiload = function() {
 				var targetdiv = '';
 				var options = null;
 				var clickurl = emselectable.data("clickurl");
+			
+				
+				//Entitydialog table - Same as emdialog
+				var tabletype = emselectable.data("tabletype"); //make this earlier?
+				if(clickurl && tabletype == "subentity") {
+					var entityid = rowid;
+					if(entityid) {
+						var container = emselectable.closest(".entity-body");
+						var tabs = container.find(".entity-tab-content");
+						if(tabs.length >= 6) {
+							alert("Max Tabs Limit");
+							return;
+						}
+						var tabexists = false;
+						$.each(tabs, function( index, element ) {
+							if($(element).data("id") == entityid) {
+								//exists replace
+								tabexists = true;
+								$('a[data-entityid="'+entityid+'"].entity-tab-label').trigger("click");
+							} 
+						});
+						if(!tabexists) {
+							var options1 = emselectable.data();
+							clickurl = clickurl.replace("entity.html", "entitytab.html");
+							options1.oemaxlevel=1;
+							options1.id = rowid; 
+							jQuery.ajax({
+								url: clickurl,
+								data: options1,
+								success: function(data) {
+										
+											//append
+											container.append(data);
+											
+											//Menu
+											var tabmenu = $(".entity-navigation");
+											var link = tabmenu.data("tabmenuurl")
+											var options2 = emselectable.data();
+											options2.id=entityid;
+											$(".entity-tab").removeClass("current-entity");
+											jQuery.ajax({
+												url: link,
+												data: options2,
+												success: function(data2) {
+													$(".entity-navigation").append(data2);
+												}
+												});
+											return;
+										}
+								
+							});
+						}
+						
+						return;
+					}
+				}
+				
+				
+				//Entitydialog - Add subentity
+				if(clickurl && tabletype == "subentityadd") {
+					options = emselectable.data();
+					var targetdiv_ = emselectable.data("targetdiv");
+					targetdiv = emselectable.closest("#"+targetdiv_);
+				}
+				
+				/*
 				if(clickurl){
 					options = emselectable.data();
-					options.id = row.attr("rowid");
+					options.id = rowid;
 				}
-				else if (!clickurl) {
+				else
+					*/
+				if (!clickurl) {
 					//search domdatacontext :: Move all tables to use domdatacontext
 					clickurl = finddata(emselectable, "clickurl");
 					if (clickurl && clickurl != "") {
@@ -1569,14 +1642,17 @@ uiload = function() {
 							url:  clickurl,
 							data: options,
 							success: function(data) {
-								$("#"+targetdiv).html(data);
+								if (!targetdiv.jquery) {
+									targetdiv = $("#"+targetdiv);
+								}
+								targetdiv.html(data);
 							}
 						});
 						
 					}
 					return;
 				}
-				//verify if is entity dialog
+				//verify if is entity dialog - not being used?
 				var emdialoglink = emselectable.data("emdialoglink");
 				if (emdialoglink && emdialoglink != "") {
 					emdialoglink = emdialoglink + "&id="+id;

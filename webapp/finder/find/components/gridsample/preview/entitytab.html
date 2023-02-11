@@ -13,7 +13,7 @@ $context.putPageValue("moduleid", $moduleid)
 
 
 <div id="entity-tab" class="entity-tab-content" data-id="$!entity.getId()">
-<div class="entity-metadata">
+<div class="entity-metadata" id="entitymetadata" data-id="$!entity.getId()" data-searchtype="$!searchtype">
 	$context.putPageValue("data", $entity)
 	$context.putPageValue("searchtype", $searchtype)
 	$pages.include("metadata.html", $context)
@@ -52,25 +52,25 @@ $context.putPageValue("moduleid", $moduleid)
 					
 			#set( $folders = $mediaarchive.query("category").hitsPerPage(6).match($moduleid, $entityid).sort("name").search($context) )
 					
-					##TODO create list of categories
-					
-						#set($searchlink = "$apphome/components/categories/search/searchcategory.html")
-						<a href="$searchlink" 
-						   class="detail-edit-icon btn  emdialog"
-						   data-cancelsubmit="true" 
-						   data-multivalue="false"
-						   data-pickone="true"
-						   ## data-detailid="categoryid"
-						   ## data-assetid=${asset.id}
-						   data-moduleid="$moduleid"
-						   data-dataid="$entityid"
-						   data-existingcategories="$!{existingcategories}"
-						   data-action="$apphome/components/gridsample/preview/entitytab.html"
-						   data-targetdiv="entity-tab"
-						   data-parameterdata="id"
-						   data-noesc="true"
-						   title="[[Choose Folder]]"><i class="fas fa-search"></i></a>		
-		
+			##TODO create list of categories
+			
+			#set($searchlink = "$apphome/components/categories/search/searchcategory.html")
+			<a href="$searchlink" 
+			   class="detail-edit-icon btn  emdialog"
+			   data-cancelsubmit="true" 
+			   data-multivalue="false"
+			   data-pickone="true"
+			   ## data-detailid="categoryid"
+			   ## data-assetid=${asset.id}
+			   data-moduleid="$moduleid"
+			   data-dataid="$entityid"
+			   data-existingcategories="$!{existingcategories}"
+			   data-action="$apphome/components/gridsample/preview/entitytab.html"
+			   data-targetdiv="entity-tab"
+			   data-parameterdata="id"
+			   data-noesc="true"
+			   title="[[Choose Folder]]"><i class="fas fa-search"></i></a>		
+
 		
 	</div>
 	
