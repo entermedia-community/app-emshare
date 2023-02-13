@@ -15,6 +15,8 @@
 	<path-action bean="userManager" name="PageValue.loadPageVariable" allowduplicates="true" />
     <path-action name="SessionValue.loadSessionVariable" bean="moduleManager" />
 	<path-action name="Admin.loadPermissions"/>
+	<path-action name="Admin.loadPermissionFinder"/>
+	
 	<path-action name="Admin.allowViewing" />
 	<path-action name="TranslationModule.loadBrowserLanguage" />
 	<path-action name="ProjectModule.listConnectedDesktop"/>
@@ -517,7 +519,10 @@
 	</permission>
 	
 	<permission name="view">
+	<or>
 		<userprofile property="view" equals="true" />
+		<group id="administrators"/>
+		</or>
 	</permission>
 
 
