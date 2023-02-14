@@ -25,7 +25,7 @@ jQuery(document).ready(function() {
 		});
 		
 		
-		lQuery("#localfolderPicker").livequery("click", function(e) {
+		lQuery(".localfolderPicker").livequery("click", function(e) {
 			e.stopPropagation();
 			
 			var uploadFolder = electron.remote.require('./index.js').uploadFolder;
@@ -42,7 +42,10 @@ jQuery(document).ready(function() {
 			
 			var redirecturl = serverurl + app.data("apphome") + "/views/modules/asset/index.html";
 			
-			uploadFolder(entermediakey, sourcepath, mediadburl, redirecturl);
+			var options = $(this).data();
+			console.log(options);
+			uploadFolder(entermediakey, sourcepath, mediadburl, redirecturl, options);
+			//uploadFolder(entermediakey, sourcepath, mediadburl, redirecturl);
 		});
 		
 		
@@ -67,6 +70,13 @@ jQuery(document).ready(function() {
 			
 		});
 		
+	}
+	
+	refreshEntiyDialog = function() {
+		var entityid = $(".current-entity").data("entityid");
+		$('a[data-entityid="'+entityid+'"].entity-tab-label').trigger("click");
+		
+		console.log("refreshEntiyDialog refreshing... " + entityid);
 	}
 	
 	downloadAssetsToDesktop = function(downloadpaths) {

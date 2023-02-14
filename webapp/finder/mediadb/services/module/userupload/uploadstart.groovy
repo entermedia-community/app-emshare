@@ -27,8 +27,18 @@ public void init()
 	log.info("Script running: " + sourcepath);
 	//String path = PathUtilities.extractDirectoryPath(sourcepath);
 	Category defaultcat = archive.getCategorySearcher().createCategoryPath(sourcepath);
+	String moduleid = context.getRequestParameter("moduleid");
+	String entityid = context.getRequestParameter("entityid");
+	
+	if (moduleid != null && entityid != null)
+	{
+		defaultcat.setValue(moduleid, entityid);
+		archive.saveData("category", defaultcat);
+	}
 	upload.setValue("uploadcategory",defaultcat);
 	searcher.saveData(upload);
+	
+	
 		
 	context.putPageValue("data",upload);
 	context.putPageValue("searcher",searcher);

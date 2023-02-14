@@ -29,17 +29,17 @@
 		#set($oemaxlevel = "1")
 		#set($targetdiv = "applicationmaincontent")
 
-			
-			<a href="$uploadlink" 
-			class="ajax entity-add-media"
-			data-targetdivinner="$targetdiv"
-			data-closedialog="true" 
-			data-closemediaviewer="true"
-			data-updateurl="true"
-			data-oemaxlevel="$!oemaxlevel"
+		#if($desktop)
+			<a  
+			href="#" id="localfolderPicker"
+			class="localfolderPicker" 
+			data-sourcepath="Albums/Users/$user.getScreenName()/Desktops"
+			data-moduleid="$moduleid"
+	   		data-entityid="$entityid"
+			class="entity-add-media"
 			title="[[Upload Folder]]">
 			<i class="fas fa-upload"></i></a>
-			
+		#end
 	
 			
 	##TODO create list of categories
@@ -75,7 +75,13 @@
 		#foreach( $parent in $category.getParentCategoriesFrom(1))
 			#if( ${foreach.count} > 1) \ #end
 			<a style="padding:0px 4px 4px 4px;" 
-				href="$home$apphome/views/categories/${parent.id}.html">$parent</a>
+				##class="emdialog entity-dialog"
+				##data-targetdiv="entitypreviewdialog"
+				##data-entityid="${parent.id}"
+				##href="$home$apphome/components/gridsample/preview/entity.html?searchtype=category&id=${parent.id}">
+				
+				href="views/modules/asset/bycategory/${parent.id}.html">
+				$parent</a>
 		#end
 		</div>
 		#if( $caneditassetcategoriesX )
