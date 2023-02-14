@@ -977,7 +977,7 @@ uiload = function() {
             },
 			crossDomain: true,
 			url: link,
-			options: options,
+			data: options,
 			success: function(data) {
 				
 				//--Entities
@@ -1038,7 +1038,7 @@ uiload = function() {
 					
 					var modalkeyboard = true;
 					var noesc = dialog.data("noesc");
-					if (noesc != null && noesc == true) {
+					if (noesc != null && noesc == "true") {
 						 modalkeyboard = false;
 					}
 					//Verify if modal was open on top of Asset Media Viewer

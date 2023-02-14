@@ -32,9 +32,12 @@ $context.putPageValue("searcher",$searcher)
 		#set($targetresults = $action)
 	#end
 	#if(!$targetresults)
-		#set($targetresults = "$siteroot$apphome/views/module/asset/showcategory.html")
+		#set($targetresults = "$siteroot$apphome/views/modules/asset/showcategory.html")
 	#end
 	
+	#if (!$targetdiv)
+		#set( $targetdiv = $context.getRequestParameter("targetdiv") )
+	#end
 	#if(!$targetdiv)
 		#set($targetdiv = "applicationcontent")
 	#end
@@ -51,8 +54,15 @@ $context.putPageValue("searcher",$searcher)
 		#if($action)
 			##Searching from Media Viewer
 			#set( $assetid = $context.getRequestParameter("assetid") )
+			#if ($assetid)
 			<input name="assetid"  type="hidden" value="$assetid" />
 			<input name="detailid"  type="hidden" value="categoryid" />
+			#else
+				#set( $moduleid = $context.getRequestParameter("moduleid") )
+				#set( $entityid = $context.getRequestParameter("entityid") )
+				<input name="moduleid"  type="hidden" value="$moduleid" />
+				<input name="entityid"  type="hidden" value="$entityid" />
+			#end
 		#end
 		
 		<input name="categoryid" class="emselectedrow" type="hidden" id="selectedcategories" value="$!selectedcategories" />
