@@ -259,6 +259,7 @@ runajax = function(e)
 	return false;
 }
 
+
 uiload = function() {
 	
 	// https://github.com/select2/select2/issues/600
@@ -368,6 +369,25 @@ uiload = function() {
 	lQuery('.focusme').livequery(function(){
 		$(this).focus();
 	})
+	
+	//$(window).trigger( "ajaxautoreload" );
+	jQuery(window).on('ajaxautoreload',function(e){
+		lQuery(".ajaxautoreload").each(function()
+		{
+			var div = $(this);
+			var url = div.data("url");
+			var options = div.data();
+			jQuery.ajax({
+			url: url, async: false, data: options, success: function (data) {
+				div.replaceWith(data);
+			},
+			xhrFields: {
+                withCredentials: true
+            },
+			crossDomain: true
+		});
+		});
+	});
 	
 	lQuery('#module-dropdown').livequery("click", function(e) {
 		e.stopPropagation();
