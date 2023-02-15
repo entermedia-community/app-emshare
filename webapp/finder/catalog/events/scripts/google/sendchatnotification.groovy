@@ -43,18 +43,17 @@ public void runit()
 	MultiValued topicdata = (MultiValued)mediaArchive.getData("collectiveproject", topicid);
 	//If it ends with messages
 	
-	Collection values = topicdata.getValues("parentcollectionid");
-	if( values == null)
-	{
-		return;
-	}
-		String subject =  aUser.getScreenName() + " in " + collection.getName();
-		Map extra = new HashMap();
-		extra.put("collectionid", collection.getId());
-		extra.put("collectionlabel", collection.getName());
-		extra.put("collectiontype", collection.get("collectiontype")); //3 is direct messsages project
-		extra.put("collectivetopicid", topicdata.getId());
-		extra.put("collectivetopiclabel", topicdata.getName());
+   		Map extra = new HashMap();
+        Data collection = mediaArchive.getCachedData("librarycollection",topicdata.getValue("parentcollectionid"));
+        if(collection != null)
+        {
+		    String subject =  aUser.getScreenName() + " in " + collection.getName();
+		    extra.put("collectionid", collection.getId());
+		    extra.put("collectionlabel", collection.getName());
+		    extra.put("collectiontype", collection.get("collectiontype")); //3 is direct messsages project
+		    extra.put("collectivetopicid", topicdata.getId());
+		    extra.put("collectivetopiclabel", topicdata.getName());
+        }
 		extra.put("notificationtype", "projectchat");
 		extra.put("userid", aUser.getId());
 		
