@@ -1016,6 +1016,7 @@ uiload = function() {
 							if($(element).data("id") == entityid) {
 								//exists replace
 								tabexists = true;
+								$(".entity-tab-content").hide();
 								$('a[data-entityid="'+entityid+'"].entity-tab-label').trigger("click");
 							} 
 						})
@@ -1033,6 +1034,7 @@ uiload = function() {
 								url: link,
 								data: options2,
 								success: function(data2) {
+									$(".entity-tab-content").hide();
 									$(".entity-navigation").append(data2);
 								}
 								});
