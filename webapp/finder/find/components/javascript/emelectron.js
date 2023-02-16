@@ -1,3 +1,10 @@
+refreshEntiyDialog = function() {
+	var entityid = $(".current-entity").data("entityid");
+	$('a[data-entityid="'+entityid+'"].entity-tab-label').trigger("click");
+	
+	console.log("refreshEntiyDialog refreshing... " + entityid);
+}
+
 jQuery(document).ready(function() {
 	//electron
 	if(window && window.process && window.process.type) {
@@ -72,12 +79,7 @@ jQuery(document).ready(function() {
 		
 	}
 	
-	refreshEntiyDialog = function() {
-		var entityid = $(".current-entity").data("entityid");
-		$('a[data-entityid="'+entityid+'"].entity-tab-label').trigger("click");
-		
-		console.log("refreshEntiyDialog refreshing... " + entityid);
-	}
+
 	
 	downloadAssetsToDesktop = function(downloadpaths) {
 			var electron = require('electron');
@@ -126,6 +128,8 @@ jQuery(document).ready(function() {
 				  var hitSessionId = inresponse.response.hitsessionid;
 				  var url = app.data("apphome") + '/components/sidebars/userdownloads/downloadpresetpicker.html?selectall=true&hitssessionid='+hitSessionId+"&categoryid="+inCategoryId;
 				  element.attr("href", url);
+				  element.data("dialogid", "downloadorder");
+				  element.data("hidefooter", "true");
 				  emdialog(element, event);
 				  /*
 				  var downloadpaths = [];

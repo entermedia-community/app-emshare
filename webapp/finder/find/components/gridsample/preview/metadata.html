@@ -1,5 +1,8 @@
 #set( $id = $context.getRequestParameter("id"))
-#set( $searchtype = $context.getRequestParameter("searchtype"))
+#set( $searchtype = $context.findValue("module"))
+#if(!$searchtype)
+	#set( $searchtype = $context.findValue("searchtype"))
+#end
 #set( $searcher = $mediaarchive.getSearcher($searchtype) )
 $context.putPageValue("searcher",$searcher)
 

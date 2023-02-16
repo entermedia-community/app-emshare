@@ -1,4 +1,8 @@
-#set( $searchtype = $context.getRequestParameter("searchtype"))
+#set( $searchtype = $context.findValue("module"))
+#if(!$searchtype)
+	#set( $searchtype = $context.findValue("searchtype"))
+#end
+
 #set( $id = $context.getRequestParameter("id"))
 #set($entityid = $id)
 
@@ -13,7 +17,12 @@ $context.putPageValue("entityid", $entityid)
 $context.putPageValue("moduleid", $moduleid)
 
 
-<div id="entity-tab" class="entity-tab-content" data-id="$!entity.getId()">
+<div id="entity-tab" 
+	class="entity-tab-content ajaxautoreload" 
+	data-id="$!entity.getId()" 
+	data-autoreloadevents="uploadstart"
+	data-url="$componenthome/gridsample/preview/entitytab.html">
+	
 <div class="entity-metadata" id="entitymetadata" data-id="$!entity.getId()" data-searchtype="$!searchtype">
 	$context.putPageValue("data", $entity)
 	$context.putPageValue("searchtype", $searchtype)

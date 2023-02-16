@@ -78,8 +78,8 @@ jQuery(document).ready(function(url,params)
 	});
 	
 	
-	lQuery("select#hitsperpagechange").livequery( function()
-			{
+	lQuery("select#hitsperpagechange").livequery( function() {
+			if (window.select2 !== undefined) {	
 				var select = $(this);
 				
 				select.select2({
@@ -146,7 +146,8 @@ jQuery(document).ready(function(url,params)
 						});
 					});
 				});
-			});
+			}
+	});
 	
 
 	lQuery(".selectresultviewXX").livequery( function() {

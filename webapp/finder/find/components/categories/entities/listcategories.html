@@ -5,33 +5,35 @@
 #set( $entityid = $context.getRequestParameter("entityid"))
 #end
 
-<div id="entitycategoryresults">
+<div id="entitycategoryresults" class="entitycategoryresults" >
 
-#set( $existingcategories = $mediaarchive.query("category").hitsPerPage(6).match($moduleid, $entityid).sort("name").search($context) )
+##set( $existingcategories = $mediaarchive.query("category").hitsPerPage(6).match($moduleid, $entityid).sort("name").search($context) )
+#set( $existingcategories =  $mediaarchive.getBean("entityManager").loadCategories($moduleid, $entityid))
 #set($existingids = [])
 #foreach ($c in $existingcategories)
 	#set($null = $existingids.add($c.getId()))
 #end
 	<div class="entity-media-header">
 		<h4>[[Folders]]</h4>
-		<a href="$uploadlink" 
-			class="ajax entity-add-media"
-			data-targetdivinner="$targetdiv"
-			data-closedialog="true" 
-			data-closemediaviewer="true"
-			data-updateurl="true"
-			data-oemaxlevel="$!oemaxlevel"
-			title="[[Download Folder]]">
-			<i class="fas fa-download"></i></a>
-
-	
-		#set($uploadlink = "$siteroot$applink/views/modules/asset/add/start.html?entityupload=true&entitytype=$moduleid&addselection=$entityid&clearotherentities=true")
-		#set($oemaxlevel = "1")
-		#set($targetdiv = "applicationmaincontent")
-
+		
 		#if($desktop)
+		
+			#set($uploadlink = "$siteroot$applink/views/modules/asset/add/start.html?entityupload=true&entitytype=$moduleid&addselection=$entityid&clearotherentities=true")
+			#set($oemaxlevel = "1")
+			#set($targetdiv = "applicationmaincontent")
+			<a href="$uploadlink" 
+				class="ajax entity-add-media"
+				data-targetdivinner="$targetdiv"
+				data-closedialog="true" 
+				data-closemediaviewer="true"
+				data-updateurl="true"
+				data-oemaxlevel="$!oemaxlevel"
+				title="[[Download Folder]]">
+				<i class="fas fa-download"></i></a>
+
 			<a  
-			href="#" id="localfolderPicker"
+			href="#" 
+			id="localfolderPicker"
 			class="localfolderPicker" 
 			data-sourcepath="Albums/Users/$user.getScreenName()/Desktops"
 			data-moduleid="$moduleid"
@@ -61,39 +63,55 @@
 	   title="[[Choose Folder]]"><i class="fas fa-search"></i></a>		
 	</div>
 	
-
-	<div  id="cat-list" class="emlist">
-	#foreach ($c in $existingcategories)
 	
-		##better way to do this?
-		#set ($category = $mediaarchive.getCategory($c.getId()))
+
+		<div  id="cat-list" class="emlist">
+		<table style="width:100%;">
+		#foreach ($c in $existingcategories)
 		
-		 
-		#set( $iscollection = $categoryCollectionCache.isPartOfCollection($category))
-		<div  class="list-row">
-		<div  class="category #if($iscollection) cat-collection #else cat-category #end">
-		#foreach( $parent in $category.getParentCategoriesFrom(1))
-			#if( ${foreach.count} > 1) \ #end
-			<a style="padding:0px 4px 4px 4px;" 
-				##class="emdialog entity-dialog"
-				##data-targetdiv="entitypreviewdialog"
-				##data-entityid="${parent.id}"
-				##href="$home$apphome/components/gridsample/preview/entity.html?searchtype=category&id=${parent.id}">
-				
-				href="views/modules/asset/bycategory/${parent.id}.html">
-				$parent</a>
+			##better way to do this?
+			#set ($category = $mediaarchive.getCategory($c.getId()))
+			
+			 
+			#set( $iscollection = $categoryCollectionCache.isPartOfCollection($category))
+			
+			
+			<tr>
+			<td>
+				<div  class="list-row">
+				<div  class="category #if($iscollection) cat-collection #else cat-category #end">
+				#foreach( $parent in $category.getParentCategoriesFrom(1))
+					#if( ${foreach.count} > 1) \ #end
+					<a style="padding:0px 4px 4px 4px;" 
+						##class="emdialog entity-dialog"
+						##data-targetdiv="entitypreviewdialog"
+						##data-entityid="${parent.id}"
+						##href="$home$apphome/components/gridsample/preview/entity.html?searchtype=category&id=${parent.id}">
+						
+						href="views/modules/asset/bycategory/${parent.id}.html">
+						$parent</a>
+				#end
+				</div>
+				</div>
+			</td>
+			<td style="width:30px; text-align: right; vertical-align: top; padding:6px 2px 0 0;">
+			#if( $caneditassetcategoriesX )
+			 	<a class="ajax list-delete"  
+			 		data-targetdiv="entitycategoryresults" 
+			 		href="$!home$apphome/components/categories/asset/removeassetcategory.html?assetid=${asset.id}&categoryid=${category.id}" >
+			 	<i class="fas fa-times"></i></a>
+		 	#end
+		 	#if($desktop)
+		 	<a href="#" class="list-row-actions treedesktopdownload" data-categoryid="${category.id}"><i class="fas fa-download"></i></a>
+		 	#end
+			</td>
+			</tr>
+			
+			
+			
+			
 		#end
+		</table>
 		</div>
-		#if( $caneditassetcategoriesX )
-		 	<a class="ajax list-delete"  
-		 		data-targetdiv="entitycategoryresults" 
-		 		href="$home$apphome/components/categories/asset/removeassetcategory.html?assetid=${asset.id}&categoryid=${category.id}" >
-		 	<i class="fas fa-times"></i></a>
-	 	#end
-		</div>
-	#end
-	
 	</div>
-
-</div>
 
