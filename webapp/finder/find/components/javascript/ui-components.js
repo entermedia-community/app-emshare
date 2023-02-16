@@ -372,7 +372,7 @@ uiload = function() {
 	
 	//$(window).trigger( "ajaxautoreload" );
 	jQuery(window).on('ajaxautoreload',function(e){
-		lQuery(".ajaxautoreload").each(function()
+		jQuery(".ajaxautoreload").each(function()
 		{
 			var div = $(this);
 			var url = div.data("url");
@@ -689,7 +689,7 @@ uiload = function() {
 				e.preventDefault();
 				e.stopImmediatePropagation();
 
-				if( CKEDITOR )
+				if( typeof CKEDITOR !== 'undefined')
 				{
 					for (instance in CKEDITOR.instances) 
 					{
