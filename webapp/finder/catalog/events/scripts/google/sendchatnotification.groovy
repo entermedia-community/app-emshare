@@ -45,9 +45,10 @@ public void runit()
 	
    		Map extra = new HashMap();
         Data collection = mediaArchive.getCachedData("librarycollection",topicdata.getValue("parentcollectionid"));
+	    String subject =  aUser.getScreenName();
         if(collection != null)
         {
-		    String subject =  aUser.getScreenName() + " in " + collection.getName();
+            subject = subject + " in " + collection.getName();
 		    extra.put("collectionid", collection.getId());
 		    extra.put("collectionlabel", collection.getName());
 		    extra.put("collectiontype", collection.get("collectiontype")); //3 is direct messsages project
