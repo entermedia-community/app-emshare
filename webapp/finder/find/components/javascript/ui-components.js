@@ -1583,6 +1583,7 @@ uiload = function() {
 							if($(element).data("id") == entityid) {
 								//exists replace
 								tabexists = true;
+								$(".entity-tab-content").hide();
 								$('a[data-entityid="'+entityid+'"].entity-tab-label').trigger("click");
 							} 
 						});
@@ -1595,7 +1596,7 @@ uiload = function() {
 								url: clickurl,
 								data: options1,
 								success: function(data) {
-										
+											$(".entity-tab-content").hide();
 											//append
 											container.append(data);
 											
@@ -1604,6 +1605,7 @@ uiload = function() {
 											var link = tabmenu.data("tabmenuurl")
 											var options2 = emselectable.data();
 											options2.id=entityid;
+											
 											$(".entity-tab").removeClass("current-entity");
 											jQuery.ajax({
 												url: link,

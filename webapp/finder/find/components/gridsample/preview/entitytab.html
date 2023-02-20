@@ -1,4 +1,7 @@
-#set( $searchtype = $context.findValue("module"))
+#set($searchtype = $context.getRequestParameter("searchtype"))
+#if(!$searchtype)
+	#set( $searchtype = $context.findValue("module"))
+#end
 #if(!$searchtype)
 	#set( $searchtype = $context.findValue("searchtype"))
 #end
@@ -20,63 +23,66 @@ $context.putPageValue("moduleid", $moduleid)
 <div id="entity-tab" 
 	class="entity-tab-content ajaxautoreload" 
 	data-id="$!entity.getId()" 
+	data-searchtype="$searchtype"
 	data-autoreloadevents="uploadstart"
 	data-url="$componenthome/gridsample/preview/entitytab.html">
 	
-<div class="entity-metadata" id="entitymetadata" data-id="$!entity.getId()" data-searchtype="$!searchtype">
-	$context.putPageValue("data", $entity)
-	$context.putPageValue("searchtype", $searchtype)
-	$pages.include("metadata.html", $context)
-</div>
-
-<div class="entity-media">
-	<div class="entity-media-box" style="margin-bottom:20px;">
-	
-	
-	$pages.include("$componenthome/categories/entities/listcategories.html",$context)
-	
+	<div class="entity-metadata" id="entitymetadata" data-id="$!entity.getId()" data-searchtype="$!searchtype">
+		$context.putPageValue("data", $entity)
+		$context.putPageValue("searchtype", $searchtype)
+		$pages.include("metadata.html", $context)
 	</div>
 	
-	
-		<div class="entity-media-box">
-				<div class="entity-media-header">
-				<h4>[[Files]]</h4>
-				#set($uploadlink = "$siteroot$applink/views/modules/asset/add/start.html?entityupload=true&entitytype=$moduleid&addselection=$entityid&clearotherentities=true")
-				#set($oemaxlevel = "1")
-				#set($targetdiv = "applicationmaincontent")
-				<a href="$uploadlink" 
-					class="ajax entity-add-media"
-					data-targetdivinner="$targetdiv"
-					data-closedialog="true" 
-					data-closemediaviewer="true"
-					data-updateurl="true"
-					data-oemaxlevel="$!oemaxlevel"
-					title="[[Upload Media]]">
-					<i class="fas fa-upload"></i></a>
-				</div>
-				
-				#set( $assetsshown = 4)
-				#if( $searchtype == "faceprofilegroup" )
-					#set( $assetshits = $mediaarchive.query("asset").hitsPerPage($assetsshown).exact("faceprofiles.faceprofilegroup", $entityid).sort("assetaddeddateDown").search() )
-							
-				#else
-					#set( $assetshits = $mediaarchive.query("asset").hitsPerPage($assetsshown).match($moduleid, $entityid).sort("assetaddeddateDown").search() )
-						
-				#end
-				
-				
-				$context.putPageValue("assetshits", $assetshits)
-				$context.putPageValue("fullview",true) 
-				$context.putPageValue("thumbsize", "small" )
-				$context.putPageValue("primaryimage", $entity.primaryimage )
-				
-				$context.putPageValue("mediarender", "attachedmedialist" )
-				
-				$pages.include("$componenthome/gridsample/preview/attachedmedia.html",$context)
-				
+	<div class="entity-media">
+		<div class="entity-media-box" style="margin-bottom:20px;">
+		
+		
+		$pages.include("$componenthome/categories/entities/listcategories.html",$context)
+		
 		</div>
-	
-	</div>
-
+		
+		
+			<div class="entity-media-box">
+					<div class="entity-media-header">
+					<h4>[[Files]]</h4>
+					#if($moduleid && $entityid)
+						#set($uploadlink = "$siteroot$applink/views/modules/asset/add/start.html?entityupload=true&entitytype=$moduleid&addselection=$entityid&clearotherentities=true")
+						#set($oemaxlevel = "1")
+						#set($targetdiv = "applicationmaincontent")
+						<a href="$uploadlink" 
+							class="ajax entity-add-media"
+							data-targetdivinner="$targetdiv"
+							data-closedialog="true" 
+							data-closemediaviewer="true"
+							data-updateurl="true"
+							data-oemaxlevel="$!oemaxlevel"
+							title="[[Upload Media]]">
+							<i class="fas fa-upload"></i></a>
+					#end
+					</div>
+					
+					#set( $assetsshown = 4)
+					#if( $searchtype == "faceprofilegroup" )
+						#set( $assetshits = $mediaarchive.query("asset").hitsPerPage($assetsshown).exact("faceprofiles.faceprofilegroup", $entityid).sort("assetaddeddateDown").search() )
+								
+					#else
+						#set( $assetshits = $mediaarchive.query("asset").hitsPerPage($assetsshown).match($moduleid, $entityid).sort("assetaddeddateDown").search() )
+							
+					#end
+					
+					
+					$context.putPageValue("assetshits", $assetshits)
+					$context.putPageValue("fullview",true) 
+					$context.putPageValue("thumbsize", "small" )
+					$context.putPageValue("primaryimage", $entity.primaryimage )
+					
+					$context.putPageValue("mediarender", "attachedmedialist" )
+					
+					$pages.include("$componenthome/gridsample/preview/attachedmedia.html",$context)
+					
+			</div>
+		
+		</div>
+	<div class="clearfix"></div>
 
 </div>

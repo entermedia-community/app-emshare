@@ -8,7 +8,10 @@
 <div id="entitycategoryresults" class="entitycategoryresults" >
 
 ##set( $existingcategories = $mediaarchive.query("category").hitsPerPage(6).match($moduleid, $entityid).sort("name").search($context) )
-#set( $existingcategories =  $mediaarchive.getBean("entityManager").loadCategories($moduleid, $entityid))
+#if($moduleid && $entityid)
+	#set( $existingcategories =  $mediaarchive.getBean("entityManager").loadCategories($moduleid, $entityid))
+#end
+
 #set($existingids = [])
 #foreach ($c in $existingcategories)
 	#set($null = $existingids.add($c.getId()))
@@ -16,51 +19,49 @@
 	<div class="entity-media-header">
 		<h4>[[Folders]]</h4>
 		
-		#if($desktop)
-		
-			#set($uploadlink = "$siteroot$applink/views/modules/asset/add/start.html?entityupload=true&entitytype=$moduleid&addselection=$entityid&clearotherentities=true")
-			#set($oemaxlevel = "1")
-			#set($targetdiv = "applicationmaincontent")
-			<a href="$uploadlink" 
-				class="ajax entity-add-media"
-				data-targetdivinner="$targetdiv"
-				data-closedialog="true" 
-				data-closemediaviewer="true"
-				data-updateurl="true"
-				data-oemaxlevel="$!oemaxlevel"
-				title="[[Download Folder]]">
-				<i class="fas fa-download"></i></a>
-
-			<a  
-			href="#" 
-			id="localfolderPicker"
-			class="localfolderPicker" 
-			data-sourcepath="Albums/Users/$user.getScreenName()/Desktops"
-			data-moduleid="$moduleid"
-	   		data-entityid="$entityid"
-			class="entity-add-media"
-			title="[[Upload Folder]]">
-			<i class="fas fa-upload"></i></a>
-		#end
+		#if($moduleid && $entityid)
+			#if($desktop)
+				#set($uploadlink = "$siteroot$applink/views/modules/asset/add/start.html?entityupload=true&entitytype=$moduleid&addselection=$entityid&clearotherentities=true")
+				#set($oemaxlevel = "1")
+				#set($targetdiv = "applicationmaincontent")
+				<a href="$uploadlink" 
+					class="ajax entity-add-media"
+					data-targetdivinner="$targetdiv"
+					data-closedialog="true" 
+					data-closemediaviewer="true"
+					data-updateurl="true"
+					data-oemaxlevel="$!oemaxlevel"
+					title="[[Download Folder]]">
+					<i class="fas fa-download"></i></a>
 	
+				<a  
+				href="#" 
+				id="localfolderPicker"
+				class="localfolderPicker" 
+				data-sourcepath="Albums/Users/$user.getScreenName()/Desktops"
+				data-moduleid="$moduleid"
+		   		data-entityid="$entityid"
+				class="entity-add-media"
+				title="[[Upload Folder]]">
+				<i class="fas fa-upload"></i></a>
+			#end
 			
-	##TODO create list of categories
-	
-	#set($searchlink = "$apphome/components/categories/search/searchcategory.html")
-	<a href="$searchlink" 
-	   class="detail-edit-icon btn emdialog"
-	   data-dialogid="categorypickermodule"
-	   data-cancelsubmit="true" 
-	   data-multivalue="false"
-	   data-pickone="true"
-	   data-moduleid="$moduleid"
-	   data-entityid="$entityid"
-	   data-existingcategories="$!{existingids}"
-	   data-pickedcategoryaction="$apphome/components/categories/entities/listcategories.html"
-	   data-targetdiv="entitycategoryresults"
-	   data-parameterdata="id"
-	   data-noesc="true"
-	   title="[[Choose Folder]]"><i class="fas fa-search"></i></a>		
+			#set($searchlink = "$apphome/components/categories/search/searchcategory.html")
+			<a href="$searchlink" 
+			   class="detail-edit-icon btn emdialog"
+			   data-dialogid="categorypickermodule"
+			   data-cancelsubmit="true" 
+			   data-multivalue="false"
+			   data-pickone="true"
+			   data-moduleid="$moduleid"
+			   data-entityid="$entityid"
+			   data-existingcategories="$!{existingids}"
+			   data-pickedcategoryaction="$apphome/components/categories/entities/listcategories.html"
+			   data-targetdiv="entitycategoryresults"
+			   data-parameterdata="id"
+			   data-noesc="true"
+			   title="[[Choose Folder]]"><i class="fas fa-search"></i></a>
+	   #end		
 	</div>
 	
 	
@@ -114,4 +115,3 @@
 		</table>
 		</div>
 	</div>
-

@@ -9,12 +9,12 @@ jQuery(document).ready(function() {
 	//electron
 	if(window && window.process && window.process.type) {
 		var electron = require('electron');
-		
+		const { ipcRenderer } = require('electron');
 		
 		lQuery("#localfilePicker").livequery("click", function(e) {
 			e.stopPropagation();
 			
-			var uploadFiles = electron.remote.require('./index.js').uploadFiles;
+			var uploadFiles = electron.require('./index.js').uploadFiles;
 			var userid = app.data("user");
 			var entermediakey = '';
 			if (app && app.data('entermediakey') != null) {
@@ -35,7 +35,7 @@ jQuery(document).ready(function() {
 		lQuery(".localfolderPicker").livequery("click", function(e) {
 			e.stopPropagation();
 			
-			var uploadFolder = electron.remote.require('./index.js').uploadFolder;
+			//var uploadFolder = electron.require('./index.js').uploadFolder;
 			var userid = app.data("user");
 			var entermediakey = '';
 			if (app && app.data('entermediakey') != null) {
@@ -51,7 +51,10 @@ jQuery(document).ready(function() {
 			
 			var options = $(this).data();
 			console.log(options);
-			uploadFolder(entermediakey, sourcepath, mediadburl, redirecturl, options);
+			options.sourcepath = sourcepath;
+			options.mediadburl = mediadburl;
+			ipcRenderer.send('uploadFolder', options);
+			//uploadFolder(entermediakey, sourcepath, mediadburl, redirecturl, options);
 			//uploadFolder(entermediakey, sourcepath, mediadburl, redirecturl);
 		});
 		
