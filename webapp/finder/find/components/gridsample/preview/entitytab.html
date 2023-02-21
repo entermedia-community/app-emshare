@@ -20,7 +20,7 @@ $context.putPageValue("entityid", $entityid)
 $context.putPageValue("moduleid", $moduleid)
 
 
-<div id="entity-tab" 
+<div id="entity-tab-$!entity.getId()" 
 	class="entity-tab-content ajaxautoreload" 
 	data-id="$!entity.getId()" 
 	data-searchtype="$searchtype"
@@ -34,16 +34,14 @@ $context.putPageValue("moduleid", $moduleid)
 	</div>
 	
 	<div class="entity-media">
+	#if($moduleid && $entityid)
 		<div class="entity-media-box" style="margin-bottom:20px;">
-		
-		
-		$pages.include("$componenthome/categories/entities/listcategories.html",$context)
-		
+			$pages.include("$componenthome/categories/entities/listcategories.html",$context)
 		</div>
 		
 		
 			<div class="entity-media-box">
-					<div class="entity-media-header">
+				<div class="entity-media-header">
 					<h4>[[Files]]</h4>
 					#if($moduleid && $entityid)
 						#set($uploadlink = "$siteroot$applink/views/modules/asset/add/start.html?entityupload=true&entitytype=$moduleid&addselection=$entityid&clearotherentities=true")
@@ -79,9 +77,8 @@ $context.putPageValue("moduleid", $moduleid)
 					$context.putPageValue("mediarender", "attachedmedialist" )
 					
 					$pages.include("$componenthome/gridsample/preview/attachedmedia.html",$context)
-					
 			</div>
-		
+		#end
 		</div>
 	<div class="clearfix"></div>
 

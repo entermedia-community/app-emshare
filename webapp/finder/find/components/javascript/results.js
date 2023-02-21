@@ -1493,17 +1493,21 @@ trimRowToFit = function(targetheight,row,totalavailablew)
 	
 
 function updateentities (form) {
+	
+	
 	//get form fields as data
 	var data = $(form).serializeArray().reduce(function(obj, item) {
 	    obj[item.name] = item.value;
 	    return obj;
 	}, {});
-	var entitycontainerclass = 'entity'+data.searchtype+data.id;
-	
-	$("." + entitycontainerclass).each(function() {
-		$(this).trigger("reload");
-	});
-	
+	if (data.id) {
+		
+		var entitycontainerclass = 'entity'+data.searchtype+data.id;
+		
+		$("." + entitycontainerclass).each(function() {
+			$(this).trigger("reload");
+		});
+	}
 }
 
 lQuery(".entitycontainer").livequery('reload', function(e) {

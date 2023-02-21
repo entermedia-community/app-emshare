@@ -784,22 +784,30 @@ uiload = function() {
 					},
 					success : function(result, status, xhr, $form) 
 					{
-						var targetdivinner = form.data("targetdivinner");
-						if( targetdivinner )
-						{
-							$("#" + $.escapeSelector(targetdivinner)).html(result);
+						//new ajaxautoreload
+						if(form.data("ajaxautoreloadcontainer")) {
+							$(window).trigger("ajaxautoreload");
 						}
-						else
-						{		
-							if (targetdiv) {
-								targetdiv.replaceWith(result);
+						else {
+							var targetdivinner = form.data("targetdivinner");
+							if( targetdivinner )
+							{
+								$("#" + $.escapeSelector(targetdivinner)).html(result);
 							}
-					 	}
+							else
+							{		
+								if (targetdiv) {
+									targetdiv.replaceWith(result);
+								}
+						 	}
+						}
 						if (formmodal.length > 0 && form.hasClass("autocloseform")) {
 		                    if (formmodal.modal) {
 		                    	closeemdialog(formmodal);
 		                    }
 		                }
+						
+						//who uses this?
 		        		$('#resultsdiv').data('reloadresults',true);
 
 		                //TODO: Move this to results.js
