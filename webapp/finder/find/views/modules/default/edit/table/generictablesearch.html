@@ -9,7 +9,7 @@
 
 #set($targetdiv = $context.getRequestParameter("parenttargetdiv"))
 
-<div  id="search-entities-modal" class="searchonetomany" >
+<div id="search-entities-modal" class="searchonetomany" >
 	<div id="searcharea" >
 	
 	#set($predata = $mediaarchive.getSearcher($searchtype).createNewData())
@@ -18,7 +18,10 @@
 	
 	$context.putPageValue("entitydialogeditor", "true")
 	
-	$pages.include("$apphome/views/modules/${searchtype}/edit/addnewentity.html?viewid=${searchtype}addnew&searchtype=${searchtype}&targetdiv=$!targetdiv")
+	#set($editor = "$apphome/views/modules/${searchtype}/edit/addnewentity.html?viewid=${searchtype}addnew&searchtype=${searchtype}&targetdiv=$!targetdiv")
+	
+	$pages.include($editor)
+	
 	<div class="clearfix"></div>
 	
 <hr>

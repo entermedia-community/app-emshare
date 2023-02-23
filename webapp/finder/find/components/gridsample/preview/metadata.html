@@ -128,6 +128,7 @@ $context.putPageValue("data",$data)
 	#set($viewsearcher = $searcherManager.getSearcher($catalogid, "view"))
 	#set($views = $viewsearcher.query().exact("moduleid",$moduleid).exact("systemdefined","false").not("id",$viewid).sort("orderingUp").search($context) )
 	#if($views)		
+	<div class="editentitymetadata-submodules-container">
 		#foreach( $targetview in $views)
 			#set( $targetviewid = $targetview.getId())
 			#if($targetviewid)
@@ -150,10 +151,9 @@ $context.putPageValue("data",$data)
 				#end
 		
 				$context.putPageValue("canedittablecolumns", "false")			
+
 				#set($addentitylink = "$!siteroot$applink/views/modules/$moduleid/edit/table/generictablesearch.html?submodulesearchtype=$searchtype&fieldexternalid=$fieldexternalid&fieldexternalvalue=$!fieldexternalvalue&parentviewid=$!viewid&parentviewpath=$!viewpath&parentid=$!id&parentsearchtype=$!parentsearchtype")
-				
-				
-				#set($submodulepickerid = "targetmodulecontainer#eid($id)")
+				#set($submodulepickerid = "tmc_#eid($targetmodule.getId())#eid($id)")
 							
 				<div class="editentitymetadata-submodule">
 
@@ -187,6 +187,7 @@ $context.putPageValue("data",$data)
 							
 					#end		
 			#end
+			</div>
 		#end
 #end
 

@@ -14,6 +14,9 @@
 #end
 
 #if($details)
+	#set( $xmledithome = "$componenthome/xml")
+	$!context.putPageValue("xmledithome",$xmledithome)
+	
 	<div class="emgridcell-fields">
 	#foreach( $detail in $details )
 		#if( $searcherManager )
@@ -34,11 +37,8 @@
 			$!context.putPageValue("val",$val)
 			$!context.putPageValue("detail",$detail)
 			
-			##<a class="badge  badge-secondary" href="$!previewurl"	title="$!val"> 
-			<span class="badge badge-secondary" data-fieldid="$!detail.getId()" data-fieldvalue="$!val">
-			$pages.include("$apphome/components/xml/detailplaintext.html", $context)
-			</span>
-			##</a>	
+			$pages.include("$xmledithome/detailreadonly.html", $context)
+			
 		#end
 	#end
 	</div>

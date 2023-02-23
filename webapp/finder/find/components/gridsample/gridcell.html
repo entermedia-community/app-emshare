@@ -1,8 +1,14 @@
 #if(!$hit)
 	#set($id = $context.getRequestParameter("id"))
-
-	#if($id && $rendertype)
-		#set($hit = $mediaarchive.getData($moduleid, $id))
+	#if(!$searchtype)
+		#set( $searchtype = $context.findValue("module"))
+	#end
+	#if(!$searchtype)
+		#set($searchtype = $context.getRequestParameter("moduleid"))
+	#end
+	#if($id && $searchtype)
+		#set($hit = $mediaarchive.getData($searchtype, $id))
+		#set($rendertype = $module.modulerendertype)
 		$context.putPageValue("hit", $hit)
 	#end
 #end
