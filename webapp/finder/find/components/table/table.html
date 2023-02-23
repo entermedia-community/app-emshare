@@ -26,6 +26,10 @@
 
 #set( $details = $searcher.getDataProperties($viewpath, $user) )
 
+#if(!$details)
+[[No view defined for]]: $viewpath
+#end
+
 ##For Subtables on entities
 #if(!$tabletype)
 	#set( $tabletype = $context.getRequestParameter("tabletype"))
@@ -42,7 +46,6 @@
 #set($clickurloemaxlevel = $context.getRequestParameter("clickurloemaxlevel"))
 
 #set($hits = $tablehits)
-
 
 
 #if( $hits && $hits.size() > 0 )
@@ -78,7 +81,7 @@
 			##data-editpath="$!siteroot$!editpath?$args&edit=true&oemaxlevel=1" 
 			###if($viewid) data-targetdiv="$!{viewid}editor" #end
 		>
-	#if($hits.totalPages > 1)
+		#if($hits.totalPages > 1)
 		<ul class="table-positions-top domdatacontext" 
 			data-targetdivinner="$!targetdivposition" 
 			data-oemaxlevel="1" 
@@ -131,6 +134,7 @@
 				data-hitssessionid="$!hits.sessionId">
 			<thead>
 			<tr id="tableheader" class="tableheader">
+			
 			#foreach( $detail in $details )
 			<th class="sortable #if( $edit)editcolumnheader #end #if( $sortby.startsWith($detail.getId() ) ) currentsort #if( $sortby.endsWith("Up") ) up #else down #end #end" 
 				id="th-$detail.id" 
