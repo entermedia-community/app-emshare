@@ -50,9 +50,11 @@ jQuery(document).ready(function() {
 			var redirecturl = serverurl + app.data("apphome") + "/views/modules/asset/index.html";
 			
 			var options = $(this).data();
+			console.log("Folder Picker EM")
 			console.log(options);
 			options.sourcepath = sourcepath;
 			options.mediadburl = mediadburl;
+			options.entermediakey = entermediakey;
 			ipcRenderer.send('uploadFolder', options);
 			//uploadFolder(entermediakey, sourcepath, mediadburl, redirecturl, options);
 			//uploadFolder(entermediakey, sourcepath, mediadburl, redirecturl);
