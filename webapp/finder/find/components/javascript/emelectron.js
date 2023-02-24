@@ -11,10 +11,10 @@ jQuery(document).ready(function() {
 		var electron = require('electron');
 		const { ipcRenderer } = require('electron');
 		
-		lQuery("#localfilePicker").livequery("click", function(e) {
+		lQuery(".localfilePicker").livequery("click", function(e) {
 			e.stopPropagation();
 			
-			var uploadFiles = electron.require('./index.js').uploadFiles;
+			
 			var userid = app.data("user");
 			var entermediakey = '';
 			if (app && app.data('entermediakey') != null) {
@@ -27,8 +27,15 @@ jQuery(document).ready(function() {
 			var mediadburl = serverurl + "/" + mediadbid;
 			
 			var redirecturl = serverurl + app.data("apphome") + "/views/modules/asset/index.html";
-			
-			uploadFiles(entermediakey, sourcepath, mediadburl, redirecturl);
+			var options = $(this).data();
+			console.log("File Picker EM")
+			console.log(options);
+			options.sourcepath = sourcepath;
+			options.mediadburl = mediadburl;
+			options.entermediakey = entermediakey;
+			ipcRenderer.send('uploadFiles', options);
+			//var uploadFiles = electron.require('./index.js').uploadFiles;
+			//uploadFiles(entermediakey, sourcepath, mediadburl, redirecturl);
 		});
 		
 		
@@ -82,32 +89,36 @@ jQuery(document).ready(function() {
 			
 		});
 		
-	}
-	
-
-	
+		
 	downloadAssetsToDesktop = function(downloadpaths) {
-			var electron = require('electron');
+			
 			var serverurl = app.data("siteroot");
 			var mediadbid = app.data("mediadbappid");
-			
-			var selectFolder = electron.remote.require('./index.js').selectFolder;
-			
+		
 			var userid = app.data("user");
 			var entermediakey = '';
 			if (app && app.data('entermediakey') != null) {
 				entermediakey = app.data('entermediakey');
 			}
-			
-						
+							
 			var mediadburl = serverurl + "/" + mediadbid;
-			
-			var selectedPath = selectFolder(entermediakey, downloadpaths);
-			
-			console.log(selectedPath);
+				
+			var options = $(this).data();
+			console.log("Folder Picker EM")
+			console.log(options);
+			options.downloadpaths = downloadpaths;
+			options.mediadburl = mediadburl;
+			options.entermediakey = entermediakey;
+			ipcRenderer.send('selectFolder', options);
+
+			//var selectedPath = selectFolder(entermediakey, downloadpaths);
+			//console.log(selectedPath);
 	};
 		
+	}
 	
+
+
 	
 	listCategoryAssets = function(element, event, inCategoryId)
 	{

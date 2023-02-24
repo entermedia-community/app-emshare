@@ -44,18 +44,32 @@ $context.putPageValue("moduleid", $moduleid)
 				<div class="entity-media-header">
 					<h4>[[Files]]</h4>
 					#if($moduleid && $entityid)
-						#set($uploadlink = "$siteroot$applink/views/modules/asset/add/start.html?entityupload=true&entitytype=$moduleid&addselection=$entityid&clearotherentities=true")
-						#set($oemaxlevel = "1")
-						#set($targetdiv = "applicationmaincontent")
-						<a href="$uploadlink" 
-							class="ajax entity-add-media"
-							data-targetdivinner="$targetdiv"
-							data-closedialog="true" 
-							data-closemediaviewer="true"
-							data-updateurl="true"
-							data-oemaxlevel="$!oemaxlevel"
-							title="[[Upload Media]]">
-							<i class="fas fa-upload"></i></a>
+					
+						#if($desktop)
+						<a href="#" 
+								class="ajax localfilePicker"
+								data-targetdivinner="$targetdiv"
+								data-closedialog="true" 
+								data-closemediaviewer="true"
+								data-updateurl="true"
+								data-oemaxlevel="$!oemaxlevel"
+								title="[[Upload Media]]">
+								<i class="fas fa-upload"></i></a>
+						
+						#else
+							#set($uploadlink = "$siteroot$applink/views/modules/asset/add/start.html?entityupload=true&entitytype=$moduleid&addselection=$entityid&clearotherentities=true")
+							#set($oemaxlevel = "1")
+							#set($targetdiv = "applicationmaincontent")
+							<a href="$uploadlink" 
+								class="ajax entity-add-media"
+								data-targetdivinner="$targetdiv"
+								data-closedialog="true" 
+								data-closemediaviewer="true"
+								data-updateurl="true"
+								data-oemaxlevel="$!oemaxlevel"
+								title="[[Upload Media]]">
+								<i class="fas fa-upload"></i></a>
+						#end	
 					#end
 					</div>
 					
