@@ -24,7 +24,7 @@ public void init()
 	upload.setValue("collectiveproject",context.getRequestParameter("collectiveproject"));
 	upload.setValue("totalfilesize",context.getRequestParameter("totalfilesize"));
 	
-	log.info("Script running: " + sourcepath);
+	log.info("Upload to Category: " + sourcepath);
 	//String path = PathUtilities.extractDirectoryPath(sourcepath);
 	Category defaultcat = archive.getCategorySearcher().createCategoryPath(sourcepath);
 	String moduleid = context.getRequestParameter("moduleid");
