@@ -1,14 +1,25 @@
-#set( $id = $context.getRequestParameter("id"))
-#set($searchtype = $context.getRequestParameter("searchtype"))
+#if(!$searchtype)
+	#set($searchtype = $context.getRequestParameter("searchtype"))
+	$context.putPageValue("searchtype",$searchtype)
+#end
 #if(!$searchtype)
 	#set( $searchtype = $context.findValue("module"))
+	$context.putPageValue("searchtype",$searchtype)
 #end
-#if(!$searchtype)
-	#set( $searchtype = $context.findValue("searchtype"))
+
+#if(!$data)
+	#if($searchtype && $id)
+		#set( $id = $context.getRequestParameter("id"))
+		#set( $data  = $mediaarchive.getCachedData($searchtype, $id) )
+	#end	
 #end
-$context.putPageValue("searchtype",$searchtype)
+
+#if($data)
+$context.putPageValue("data",$data)
+
 #set( $searcher = $mediaarchive.getSearcher($searchtype) )
 $context.putPageValue("searcher",$searcher)
+
 
 #if(!$moduleid)
 	#set($moduleid = $context.getRequestParameter("moduleid"))
@@ -16,13 +27,6 @@ $context.putPageValue("searcher",$searcher)
 #if(!$moduleid)
 	#set($moduleid = $searchtype)
 #end
-
-##if($id)
-
-#set( $data  = $mediaarchive.getCachedData($searchtype, $id) )
-
-$context.putPageValue("data",$data)
-
 
 <div id="editentitymetadata" class="entitymetadatamodal" data-id="$!id">
 
@@ -165,7 +169,7 @@ $context.putPageValue("data",$data)
 								data-oemaxlevel="1"
 								data-parentviewid="$!viewid"
 								data-parentviewpath="$!viewpath"
-								data-parenttargetdiv="editentitymetadata"
+								data-parenttargetdiv="entity-tab-#eid($id)"
 								data-parentid="$!id"
 								data-hidefooter="true"
 								title="[[Add]] #text($viewdata)"><i class="fas fa-plus"></i> #text($viewdata)</a>
@@ -194,5 +198,4 @@ $context.putPageValue("data",$data)
 
 </div>
 
-##end
-
+#end
