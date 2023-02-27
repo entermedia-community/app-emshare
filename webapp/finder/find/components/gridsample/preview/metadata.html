@@ -13,9 +13,9 @@
 		#set( $data  = $mediaarchive.getCachedData($searchtype, $id) )
 	#end	
 #end
-
 #if($data)
-$context.putPageValue("data",$data)
+	$context.putPageValue("data",$data)
+#end
 
 #set( $searcher = $mediaarchive.getSearcher($searchtype) )
 $context.putPageValue("searcher",$searcher)
@@ -41,16 +41,23 @@ $context.putPageValue("searcher",$searcher)
 #set($view = "$searchtype/$viewid")
 
 #set($action = "$siteroot$applink/components/gridsample/preview/metadata-save.html")
-
+#set($addnew = $context.getRequestParameter("addnew"))
 <form id="entitydataeditor" 
 		name="entitydataeditor" 
 		class="ajaxform force-validate-inputs" 
-		data-targetdiv="entity-tab-$!data.getId()" 
+		#if($addnew)
+			data-targetdivinner="entitypreviewdialog-body"
+		#else
+			data-targetdiv="entity-tab-$!data.getId()"
+		#end 
 		data-onsuccess="updateentities"
 		method="post"  
 		action="$action"
 		enctype="multipart/form-data">
     	<input name="save" type="hidden" value="true" />
+    	#if($addnew)
+    	<input name="addnew" type="hidden" value="true" />
+    	#end
     	<input name="id" type="hidden" value="$!id" />
     	<input name="searchtype" type="hidden" value="$searchtype" />
     	<input name="moduleid" type="hidden" value="$moduleid" />
@@ -197,5 +204,3 @@ $context.putPageValue("searcher",$searcher)
 
 
 </div>
-
-#end
