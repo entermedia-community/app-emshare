@@ -39,6 +39,9 @@
 	#set( $targetoemaxlevel = $context.getRequestParameter("targetoemaxlevel"))
 #end
 #set( $targetrendertype = $context.getRequestParameter("targetrendertype"))
+#if($tabletype == "subentityadd")
+	#set( $targetdiv = $context.getRequestParameter("targetdiv"))
+#end
 
 
 #set($clickurl = $context.getRequestParameter("clickurl"))
@@ -113,10 +116,10 @@
 				data-tabletype="$!tabletype"
 				#if($tabletype == "subentity" && $targetrendertype)
 					data-clickurl="/$applicationid/components/gridsample/preview/${targetrendertype}.html"
-					data-targetdiv="entitypreviewdialog"
+					data-targetdiv="$targetdiv"
 					data-oemaxlevel="2"
 				#elseif($tabletype == "subentityadd")
-					data-targetdiv="editentitymetadata"
+					data-targetdiv="$targetdiv"
 					data-oemaxlevel="2"
 				#elseif($clickurl)
 					data-clickurl="$clickurl"

@@ -5,7 +5,6 @@
 #set( $entityid = $context.getRequestParameter("entityid"))
 #end
 
-<div id="entitycategoryresults" class="entitycategoryresults" >
 
 ##set( $existingcategories = $mediaarchive.query("category").hitsPerPage(6).match($moduleid, $entityid).sort("name").search($context) )
 #if($moduleid && $entityid)
@@ -16,8 +15,18 @@
 #foreach ($c in $existingcategories)
 	#set($null = $existingids.add($c.getId()))
 #end
+<div class="entity-media-box #if(!$existingcategories) collapsedmediabox #end" style="margin-bottom:20px;">
+<div id="entitycategoryresults" class="entitycategoryresults  " >
+
+
 	<div class="entity-media-header">
-		<h4>[[Folders]]</h4>
+		<h4 class="expandmediabox">
+		#if(!$existingcategories)
+			<i class="fas  fa-caret-right  expandmediaboxicon"></i>
+		#else
+			<i class="fas  fa-caret-down  expandmediaboxicon"></i>
+		#end [[Folders]]</h4>
+		
 		
 		#if($moduleid && $entityid)
 			#if($desktop)
@@ -61,7 +70,8 @@
 			   data-parameterdata="id"
 			   data-noesc="true"
 			   title="[[Choose Folder]]"><i class="fas fa-search"></i></a>
-	   #end		
+	   #end	
+	   
 	</div>
 	
 	
@@ -82,15 +92,15 @@
 				<div  class="list-row">
 				<div  class="category #if($iscollection) cat-collection #else cat-category #end">
 				#foreach( $parent in $category.getParentCategoriesFrom(1))
-					#if( ${foreach.count} > 1) \ #end
-					<a style="padding:0px 4px 4px 4px;" 
+					#if( ${foreach.count} > 1)\
+					#end
+					<a style="padding:0px 0 4px 0;" 
 						##class="emdialog entity-dialog"
 						##data-targetdiv="entitypreviewdialog"
 						##data-entityid="${parent.id}"
 						##href="$home$apphome/components/gridsample/preview/entity.html?searchtype=category&id=${parent.id}">
 						
-						href="views/modules/asset/bycategory/${parent.id}.html">
-						$parent</a>
+						href="views/modules/asset/bycategory/${parent.id}.html">$parent</a>
 				#end
 				</div>
 				</div>
@@ -115,3 +125,4 @@
 		</table>
 		</div>
 	</div>
+</div>

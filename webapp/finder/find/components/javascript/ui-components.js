@@ -1225,6 +1225,21 @@ uiload = function() {
 		}
 	});
 	
+	
+	lQuery(".expandmediabox").livequery("click", function(event) {
+		event.preventDefault();
+		var box = $(this).closest(".entity-media-box");
+		box.toggleClass("collapsedmediabox");
+		if(box.hasClass("collapsedmediabox")) {
+			$(this).find(".expandmediaboxicon").removeClass("fa-caret-down").addClass("fa-caret-right");
+		}
+		else {
+			$(this).find(".expandmediaboxicon").removeClass("fa-caret-right").addClass("fa-caret-down");
+			
+		}
+	});
+	
+	
 	var lasttypeahead;
 	var lastsearch;
 	
