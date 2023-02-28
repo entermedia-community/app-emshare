@@ -27,6 +27,13 @@ $context.putPageValue("moduleid", $moduleid)
 #set($id= "")
 #end
 
+#set($edit = $context.getRequestParameter("edit"))
+#if($edit!="true")
+	#set($edit="false")
+#end
+$context.putPageValue("edit", $edit)
+
+
 
 <div id="entity-tab-#eid($id)" 
 	class="entity-tab-content ajaxautoreload" 
@@ -107,5 +114,11 @@ $context.putPageValue("moduleid", $moduleid)
 		#end
 		</div>
 	<div class="clearfix"></div>
+	
+	
+	$pages.include("$componenthome/gridsample/preview/metadata-submodules.html",$context)
+	
+	
+	
 
 </div>

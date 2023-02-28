@@ -32,11 +32,6 @@ $context.putPageValue("searcher",$searcher)
 <div id="editentitymetadata" class="entitymetadatamodal" data-id="$!id">
 
 
-#set($edit = $context.getRequestParameter("edit"))
-
-#if($edit!="true")
-	#set($edit="false")
-#end
 
 #set($viewid = "${searchtype}general")
 #set($view = "$searchtype/$viewid")
@@ -115,93 +110,13 @@ $context.putPageValue("searcher",$searcher)
     </div>
     #end
     </form>
-
-#if($edit!="true")
-##<a href="$siteroot$apphome/views/modules/$!{searchtype}/edit/edit.html?edit=true&id=$data.id" data-oemaxlevel="3" data-targetdivinner="applicationmaincontent" data-closedialog="true" data-updateurl="true" class="ajax btn btn-dark"><i class="fas fa-edit"></i> [[Edit]]</a>
-<a href="$componenthome/gridsample/preview/metadata.html?edit=true&id=$!data.id&searchtype=$!searchtype&moduleid=$!moduleid" data-targetdiv="editentitymetadata" class="ajax btn btn-dark"><i class="fas fa-edit"></i> [[Edit]]</a>
-<a href="$siteroot$apphome/components/entities/delete.html?id=$data.id&searchtype=$searchtype" class="ajax btn btn-dark" data-targetdiv="editentitymetadata" data-closedialog="true" data-confirm="[[Are you sure]]?" style="margin-left:10px;"><i class="fas fa-trash"></i> [[Delete]]</a>
-#end
-
-
-##SUB-Modules
-
-#set($fieldexternalid = $context.getRequestParameter("fieldexternalid"))
-#if($fieldexternalid)
-	#set($fieldexternalvalue = $context.getRequestParameter("fieldexternalvalue"))
-	#if($fieldexternalvalue)
-		$context.putPageValue("${fieldexternalid}.value",$fieldexternalvalue)
+	
+	#if($edit!="true")
+	##<a href="$siteroot$apphome/views/modules/$!{searchtype}/edit/edit.html?edit=true&id=$data.id" data-oemaxlevel="3" data-targetdivinner="applicationmaincontent" data-closedialog="true" data-updateurl="true" class="ajax btn btn-dark"><i class="fas fa-edit"></i> [[Edit]]</a>
+	<a href="$componenthome/gridsample/preview/metadata.html?edit=true&id=$!data.id&searchtype=$!searchtype&moduleid=$!moduleid" data-targetdiv="editentitymetadata" class="ajax btn btn-dark"><i class="fas fa-edit"></i> [[Edit]]</a>
+	<a href="$siteroot$apphome/components/entities/delete.html?id=$data.id&searchtype=$searchtype" class="ajax btn btn-dark" data-targetdiv="editentitymetadata" data-closedialog="true" data-confirm="[[Are you sure]]?" style="margin-left:10px;"><i class="fas fa-trash"></i> [[Delete]]</a>
 	#end
-#end
 
-
-#set( $parentsearchtype = $searchtype)
-
-#if($edit && $edit !="true" && $moduleid) 
-	#set($viewsearcher = $searcherManager.getSearcher($catalogid, "view"))
-	#set($views = $viewsearcher.query().exact("moduleid",$moduleid).exact("systemdefined","false").not("id",$viewid).sort("orderingUp").search($context) )
-	#if($views)		
-	<div class="editentitymetadata-submodules-container">
-		#foreach( $targetview in $views)
-			#set( $targetviewid = $targetview.getId())
-			#if($targetviewid)
-				#set( $targetviewpath = "${parentsearchtype}/"+$targetviewid)
-				#set( $viewdata = $viewsearcher.searchById($targetviewid))
-				
-				#set( $searchtype = $viewdata.rendertable ) 
-				#set( $fieldexternalid = $viewdata.renderexternalid)
-				#set( $fieldexternalvalue = $id )
-				
-				#set( $permissionname = "canedit${searchtype}")
-				
-				#set( $parentid = $context.getRequestParameter("parentid"))
-							
-				#set($targetmodule = $mediaarchive.getCachedData("module", $viewdata.rendertable))
-				 
-				#set($targetrendertype = $targetmodule.modulerendertype)
-				#if(!$targetrendertype)
-					#set($targetrendertype = "entity")
-				#end
-		
-				$context.putPageValue("canedittablecolumns", "false")			
-
-				#set($addentitylink = "$!siteroot$applink/views/modules/$moduleid/edit/table/generictablesearch.html?submodulesearchtype=$searchtype&fieldexternalid=$fieldexternalid&fieldexternalvalue=$!fieldexternalvalue&parentviewid=$!viewid&parentviewpath=$!viewpath&parentid=$!id&parentsearchtype=$!parentsearchtype")
-				#set($submodulepickerid = "tmc_#eid($targetmodule.getId())#eid($id)")
-							
-				<div class="editentitymetadata-submodule">
-
-							<h3>#text($viewdata)
-								<div class="float-right submodule-actions">
-								<a class="btn btn-sm btn-dark ajax"  
-								href="$addentitylink" 
-								data-targetdiv="$submodulepickerid"
-								data-oemaxlevel="1"
-								data-parentviewid="$!viewid"
-								data-parentviewpath="$!viewpath"
-								data-parenttargetdiv="entity-tab-#eid($id)"
-								data-parentid="$!id"
-								data-hidefooter="true"
-								title="[[Add]] #text($viewdata)"><i class="fas fa-plus"></i> #text($viewdata)</a>
-								</div>
-							</h3>
-							<div id="$submodulepickerid" class="submodulepicker">
-								
-									#if($viewdata.rendertable)
-									
-										#set( $args = "id=$id&parentid=$!parentid&searchtype=$!searchtype&field=$!fieldexternalid&$!{fieldexternalid}.value=$!fieldexternalvalue&operation=exact&fieldexternalid=$!fieldexternalid&fieldexternalvalue=$!fieldexternalvalue&viewid=$!targetviewid&viewpath=$!targetviewpath&hitsperpage=6&targetrendertype=$!targetrendertype&tabletype=subentity")
-									
-									##--->$args
-									
-										$pages.include("/$applicationid/components/table/table.html?$!args",$context)						
-									#end
-
-							</div>
-						</div>
-							
-					#end		
-			#end
-			</div>
-		#end
-#end
 
 
 </div>
