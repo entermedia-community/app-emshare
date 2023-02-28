@@ -1758,6 +1758,47 @@ uiload = function() {
 			}
 		}
 	});
+	
+	
+	lQuery(".assetpickerselectrow").livequery("click", function() {
+		var assetid = $(this).data('assetid');
+		jQuery("#" + targetdiv).attr("value", assetid);
+		
+		//Todo: Integrte with emselectable
+		var emselectable = $(this).closest(".emselectable");
+		
+		var launcher = emselectable.data("launcher");
+		launcher = $("#"+launcher);
+		if(launcher.length) {
+		
+			var options = launcher.data();
+			options.assetid = assetid;
+			
+			var clickurl = launcher.data("clickurl");
+			if (clickurl && clickurl != "") {
+				var targetdiv = launcher.data("targetdiv");
+				if(targetdiv != '') {
+					jQuery.ajax({
+						url:  clickurl,
+						data: options,
+						success: function(data) {
+							if (!targetdiv.jquery) {
+								targetdiv = $("#"+targetdiv);
+							}
+							targetdiv.replaceWith(data);
+							closeemdialog(emselectable.closest(".modal"));
+						}
+					});
+					
+				}
+				return;
+			}
+		}
+	});
+	
+	
+	
+	
 
 	showmodal = function(emselecttable, url) {
 		var id = "modals";

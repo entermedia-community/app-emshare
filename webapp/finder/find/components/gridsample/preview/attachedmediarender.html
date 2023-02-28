@@ -3,7 +3,7 @@ $context.putPageValue("assetid", $hit.id)
 #set($sourcepath = $hit.sourcepath)
 $context.putPageValue("sourcepath", $sourcepath )
 	
-	#set($type = $hit.getSearchHit().getType())
+#set($type = $hit.getSearchHit().getType())
 #set( $rendertype = $mediaarchive.getMediaRenderType($hit.fileformat))
 #if(!$rendertype || $type =="rendertype")
 		#set( $rendertype = "mime" )
@@ -25,6 +25,8 @@ $context.putPageValue("type", $rendertype)
 	
 	 <div class="grid-attachedmedia #if($primaryimage==$hit.id) grid-isprimaryimage #end assetdraggable" data-assetid="$hit.id"> 
  	<a class="stackedplayer imagearea" id="clickid${hit.id}" data-assetid="$hit.id" href="#" title="$!title">
+ 	$context.putPageValue("hit", $hit)
+ 	$context.putPageValue("asset", $hit)
 	$pages.include("$componenthome/results/thumbnails/${rendertype}.html", $context)
 	</a>
 	#if($primaryimage!=$hit.id)

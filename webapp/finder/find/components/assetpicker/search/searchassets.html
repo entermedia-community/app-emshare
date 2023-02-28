@@ -1,0 +1,60 @@
+#set( $action = $context.getRequestParameter("action") ) 
+#set( $targetdiv = $context.getRequestParameter("targetdiv") )
+#set($hits = $pickerhits)
+$context.putPageValue("hits",$hits)
+<div id="search-categories" >
+	<div id="searcharea" >
+		#set( $searcher = $mediaarchive.getSearcher("asset") )
+		$context.putPageValue("searcher",$searcher)
+		#set($viewid = "asset")
+		#set($viewpath = "asset/picker")
+		#set ($details = $searcher.getDetailsForView("asset/picker", $userprofile))
+		<form  class="autosubmit"
+				style="margin-bottom:10px;"
+			 	data-targetdiv="assetsearchresults" 
+			  	action="$siteroot$apphome/components/assetpicker/search/searchassetresults.html">
+			<div class="row inlinesearch">
+			#foreach( $detail in $details)
+				<div class="col">
+					$context.putPageValue("detail", $detail)
+					$pages.include("/${applicationid}/components/advancedsearch/detaileditinline.html", $context)
+				</div>
+			#end
+			</div>
+		</form>
+		
+		#if($canviewsettings)
+		
+			<a style="position:absolute; top:3px; right:3px;"
+				class=" edit-icon"
+				href="$apphome/views/settings/modules/asset/metadata/viewssystem/index.html?viewid=${viewid}&viewpath=${viewpath}"
+				title="[[Edit Search Form Fields]]">
+			<i class="fas fa-edit"></i>
+			</a>
+		
+		#end
+		
+		<div id="assetsearchresults"  
+			class="emselectable" 
+	 		data-targetdiv="assetsearchresults"
+	 		data-searchhome="$siteroot$apphome/components/assetpicker/search"
+	 		data-searchtype="asset" >
+			$pages.include("$apphome/components/assetpicker/search/searchassetresults.html",$context)
+		</div>
+		
+	</div>
+</div>	
+
+<script type="text/javascript">
+	var targetdiv = "$context.getRequestParameter('targetdiv')";
+	var detailid = "$context.getRequestParameter('detailid')";
+	
+	
+	jQuery("#assetsearchresults").on("click", ".selectrowclick", function() {
+		var assetid = jQuery(this).data('assetid');
+		jQuery("#" + targetdiv).attr("value", assetid);
+		jQuery("#" + detailid + "-preview").load("$siteroot$apphome/components/xml/types/assetpicker/preview.html?oemaxlevel=1&assetid=" + assetid, function(){
+			jQuery("#assetsearchdialog").modal('hide');
+	});
+	});
+</script>
