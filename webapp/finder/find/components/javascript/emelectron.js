@@ -167,6 +167,16 @@ jQuery(document).ready(function() {
 
 	}
 	
+	
+	lQuery(".folderdesktopdownload").livequery('click', function(event) 
+	{
+		event.preventDefault();
+		event.stopPropagation();
+		categoryid = $(this).data("categoryid");
+		listCategoryAssets($(this), event, categoryid);
+				
+	});	
+
 });
 
 

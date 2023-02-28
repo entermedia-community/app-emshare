@@ -377,17 +377,37 @@ uiload = function() {
 			var div = $(this);
 			var url = div.data("url");
 			var options = div.data();
-			jQuery.ajax({
-			url: url, async: false, data: options, success: function (data) {
-				div.replaceWith(data);
-			},
-			xhrFields: {
-                withCredentials: true
-            },
-			crossDomain: true
-		});
+			if(url != undefined) {
+				jQuery.ajax({
+					url: url, async: false, data: options, success: function (data) {
+						div.replaceWith(data);
+					},
+					xhrFields: {
+		                withCredentials: true
+		            },
+					crossDomain: true
+				});
+			}
 		});
 	});
+	
+	function autoreload(div) {
+		if(div.length) {
+			var url = div.data("url");
+			var options = div.data();
+			if(url != undefined) {
+				jQuery.ajax({
+					url: url, async: false, data: options, success: function (data) {
+						div.replaceWith(data);
+					},
+					xhrFields: {
+		                withCredentials: true
+		            },
+					crossDomain: true
+				});
+			}
+		}
+	}
 	
 	lQuery('#module-dropdown').livequery("click", function(e) {
 		e.stopPropagation();
@@ -1195,8 +1215,12 @@ uiload = function() {
 		$(".entity-tab").removeClass("current-entity");
 		$(this).closest(".entity-tab").addClass("current-entity");
 		var entityid = $(this).data("entityid");
+		
+		//$('div[data-id="'+entityid+'"].entity-tab-content').show();
+		//reload content
+		var container = $("#entity-tab-"+entityid);
 		$(".entity-tab-content").hide();
-		$('div[data-id="'+entityid+'"].entity-tab-content').show();
+		autoreload(container);
 	});
 	
 	lQuery("a.entity-tab-close").livequery("click", function(event) {
