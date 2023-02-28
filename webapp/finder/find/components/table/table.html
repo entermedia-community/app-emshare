@@ -56,8 +56,11 @@
 	
 	$context.putPageValue("hits", $hits)
 	$context.putPageValue("resultsLink", "$componenthome/table/table.html")
-	#set($targetdivposition = "targetmodulecontainer#eid($viewid)")
+	#set($targetdivposition = "tmc_#eid($searchtype)#eid($fieldexternalvalue)")
 	$context.putPageValue("targetdivtablepositions", $targetdivposition)
+	#if(!$targetdiv)
+		#set($targetdiv = $targetdivposition)
+	#end
 	$context.putPageValue("oemaxlevel", "1")
 	
 	<div id="resultsdiv"
@@ -110,16 +113,23 @@
 				class="emselectable" 
 				data-view="$!viewpath"
 				data-viewid="$!viewid" 
+				
+				data-hitssessionid="$hits.getSessionId()" 
+				data-pagenum="$hits.getPage()" 
+				data-totalpages="$hits.getTotalPages()"
+				data-module="$!moduleid"
+				
 				#if($id) data-id="$!id" #end
 				data-searchtype="$!searchtype" 
 				data-searchhome="$!searchhome"
 				data-tabletype="$!tabletype"
 				#if($tabletype == "subentity" && $targetrendertype)
 					data-clickurl="/$applicationid/components/gridsample/preview/${targetrendertype}.html"
-					data-targetdiv="$targetdiv"
-					data-oemaxlevel="2"
+					data-targetrendertype="$!targetrendertype"
+					data-targetdiv="$!targetdiv"
+					data-oemaxlevel="1"
 				#elseif($tabletype == "subentityadd")
-					data-targetdiv="$targetdiv"
+					data-targetdiv="$!targetdiv"
 					data-oemaxlevel="2"
 				#elseif($clickurl)
 					data-clickurl="$clickurl"
@@ -213,7 +223,7 @@
 		#if($link)
 		
 			###<div id="$!editlink" data-targetdiv="${viewid}editor" data-link="$home$editpath?$args&edit=true&oemaxlevel=1"></div>
-			<div id="$!editlink" data-targetdiv="${targetdiv}" data-link="$link"></div>
+			<div id="$!editlink" data-targetdiv="$!{targetdiv}" data-link="$link"></div>
 			
 		#elseif( $jumptomodule && $jumptomodule == "true")
 				#set( $link = "$apphome/views/modules/${searchtype}/edit/edit.html")

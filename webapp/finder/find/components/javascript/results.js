@@ -1158,6 +1158,7 @@ jQuery(document).ready(function(url,params)
             if (moduletable && moduletable.data("targetdiv")) {
             	targetdiv = $("#"+moduletable.data("targetdiv"));
             	searchhome = moduletable.data('searchhome');
+            	options = moduletable.data();
             }
             else {
             	targetdiv = $(this).closest("#resultsdiv");
