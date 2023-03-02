@@ -1050,6 +1050,7 @@ uiload = function() {
 						})
 						if(!tabexists) {
 							//append
+							$(".entity-tab-content").hide();
 							container.append(data);
 							
 							//Menu
@@ -1062,7 +1063,7 @@ uiload = function() {
 								url: link,
 								data: options2,
 								success: function(data2) {
-									$(".entity-tab-content").hide();
+									
 									$(".entity-navigation").append(data2);
 								}
 								});
