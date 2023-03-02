@@ -19,6 +19,16 @@
 <div  class="entitycategoryresults  " >
 
 
+			
+			
+			#set($uploadsourcepath =  $mediaarchive.getBean("entityManager").loadUploadSourcepath($module,$entity, $context.getUser()))
+			#if(!$uploadsourcepath)
+				#set($uploadsourcepath = "Albums/Users/$user.getScreenName()/Desktops")
+			#end
+			
+			--
+			$uploadsourcepath
+
 	<div class="entity-media-header">
 		<h4 class="expandmediabox">
 		#if(!$existingcategories)
@@ -30,13 +40,14 @@
 		
 		#if($moduleid && $entityid)
 			
-				
+			
+
 			#if($desktop)
 				<a  
 				href="#" 
 				id="localfolderPicker"
 				class="localfolderPicker" 
-				data-sourcepath="Albums/Users/$user.getScreenName()/Desktops"
+				data-sourcepath="$uploadsourcepath"
 				data-moduleid="$moduleid"
 		   		data-entityid="$entityid"
 				class="entity-add-media"
