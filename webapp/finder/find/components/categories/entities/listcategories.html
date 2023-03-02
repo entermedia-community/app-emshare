@@ -1,8 +1,12 @@
 #if(!$moduleid)
 #set( $moduleid = $context.getRequestParameter("moduleid"))
 #end
+#set($module = $mediaarchive.getCachedData("module", $moduleid))
 #if(!$entityid)
 #set( $entityid = $context.getRequestParameter("entityid"))
+#end
+#ifnull($entity)
+#set( $entity = $data)
 #end
 
 
@@ -17,18 +21,13 @@
 #end
 <div id="entitycategoryresults#eid($entityid)" class="entity-media-box #if(!$existingcategories) collapsedmediabox #end" style="margin-bottom:20px;">
 <div  class="entitycategoryresults  " >
-
-
+		
 			
-			
-			#set($uploadsourcepath =  $mediaarchive.getBean("entityManager").loadUploadSourcepath($module,$entity, $context.getUser()))
-			#if(!$uploadsourcepath)
-				#set($uploadsourcepath = "Albums/Users/$user.getScreenName()/Desktops")
-			#end
-			
-			--
-			$uploadsourcepath
-
+	#set($uploadsourcepath =  $mediaarchive.getBean("entityManager").loadUploadSourcepath($module,$entity, $context.getUser()))
+	#ifnull($uploadsourcepath)
+		#set($uploadsourcepath = "Albums/Users/$user.getScreenName()/Desktops")
+	#end	
+	
 	<div class="entity-media-header">
 		<h4 class="expandmediabox">
 		#if(!$existingcategories)
