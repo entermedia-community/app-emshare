@@ -131,7 +131,14 @@ runajaxonthis = function(inlink,e)
 		row.addClass("current");
 
 	}
-	var options = findalldata(inlink); //--
+	//var options = findalldata(inlink); //-- causing issues with ajax regular links, moved down
+	
+	var options = $(inlink).data();
+	if(options.isEmptyObject) {
+		options = findalldata(inlink); 
+	}
+	
+	
 	
 	inlink.css( "cursor","wait");
 	$("body").css( "cursor","wait");
