@@ -134,7 +134,7 @@ runajaxonthis = function(inlink,e)
 	//var options = findalldata(inlink); //-- causing issues with ajax regular links, moved down
 	
 	var options = $(inlink).data();
-	if(options.isEmptyObject) {
+	if(options.isEmptyObject || $(inlink).data("findalldata")) {
 		options = findalldata(inlink); 
 	}
 	
