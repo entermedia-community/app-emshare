@@ -19,6 +19,7 @@
 		#foreach( $targetview in $views)
 			#set( $targetviewid = $targetview.getId())
 			#if($targetviewid)
+			
 				#set( $targetviewpath = "${parentsearchtype}/"+$targetviewid)
 				#set( $viewdata = $viewsearcher.searchById($targetviewid))
 				
@@ -38,7 +39,7 @@
 				#end
 		
 				$context.putPageValue("canedittablecolumns", "false")			
-
+				#if($targetmodule.getId() && $id)
 				#set($addentitylink = "$!siteroot$applink/views/modules/$moduleid/edit/table/generictablesearch.html?submodulesearchtype=$searchtype&fieldexternalid=$fieldexternalid&fieldexternalvalue=$!fieldexternalvalue&parentviewid=$!viewid&parentviewpath=$!viewpath&parentid=$!id&parentsearchtype=$!parentsearchtype")
 				#set($submodulepickerid = "tmc_#eid($targetmodule.getId())#eid($id)")
 							
@@ -71,7 +72,7 @@
 
 							</div>
 						</div>
-							
+					#end		
 					#end		
 			#end
 			</div>
