@@ -6,9 +6,17 @@
 	#if(!$searchtype)
 		#set($searchtype = $context.getRequestParameter("moduleid"))
 	#end
+	
+	#if(!$module)
+		#set($module = $mediaarchive.getCachedData("module", $searchtype))
+	#end
+	
 	#if($id && $searchtype)
 		#set($hit = $mediaarchive.getData($searchtype, $id))
 		#set($rendertype = $module.modulerendertype)
+		#if (!$rendertype)
+   			#set($rendertype = "entity")
+		#end
 		$context.putPageValue("hit", $hit)
 	#end
 #end

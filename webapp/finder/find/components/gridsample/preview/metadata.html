@@ -37,13 +37,16 @@ $context.putPageValue("edit", $edit)
 
 <div id="editentitymetadata" class="entitymetadatamodal" data-id="$!id">
 
-
-
+#set($addnew = $context.getRequestParameter("addnew"))
+#if($addnew)
+#set($viewid = "${searchtype}addnew")
+#else
 #set($viewid = "${searchtype}general")
+#end
 #set($view = "$searchtype/$viewid")
 
 #set($action = "$siteroot$applink/components/gridsample/preview/metadata-save.html")
-#set($addnew = $context.getRequestParameter("addnew"))
+
 <form id="entitydataeditor" 
 		name="entitydataeditor" 
 		class="ajaxform" 
