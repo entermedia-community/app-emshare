@@ -1,6 +1,36 @@
+<div class="emgrid-box" style="padding:20px">
+ 		<div class="emgrid-subtitle">
+  		<h3>
+     	#set($moduleicon = "entity")
+     	#if ($module.moduleicon)
+     		#set($moduleicon = $module.moduleicon)
+     	#end
+     	
+    		#set($entityurl = "$siteroot$apphome/views/modules/$module.id/index.html")
+
+		<img src="$siteroot$apphome/theme/images/entity/${moduleicon}.svg" style="height: 24px;"> 
+
+					#set( $count = $hits.size()) 
+				#text($module)
+				 <span class="count">($count)</span>
+		</h3>
+</div>
 <div id="resultsarea" class="expandedmodule">
+
+		
+
+
 $pages.include("$componenthome/results/index.html", $context)
 <div class="clearfix"></div>
+	<a  
+	class="emdialog btn btn-xs btn-secondary"  
+	title="[[Add New]] #text($module) "
+	href="$!siteroot$applink/components/gridsample/preview/$!{entityrendertype}.html?searchtype=$moduleid&edit=true&addnew=true"
+	data-hidefooter="true">
+	<i class="fas fa-plus"></i> [[Add New]]</a>
+
 </div>
 
 
+
+</div>
