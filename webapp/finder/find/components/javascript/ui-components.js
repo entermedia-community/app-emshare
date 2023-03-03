@@ -446,11 +446,13 @@ uiload = function() {
 		{
 			placeholder = "...";
 		}
-		theinput.select2({
-			allowClear : allowClear,
-			placeholder: placeholder,
-			dropdownParent : dropdownParent
-		});
+		if($.fn.select2 ) {
+			theinput.select2({
+				allowClear : allowClear,
+				placeholder: placeholder,
+				dropdownParent : dropdownParent
+			});
+		}
 		
 		theinput.on("select2:open", function(e) {
 			var selectId = $(this).attr("id");
@@ -498,13 +500,14 @@ uiload = function() {
             if (allowClear == undefined)  {
                 allowClear = true;
             }
-			theinput = theinput.select2({
-				placeholder : placeholder,
-				allowClear : allowClear,
-				minimumInputLength : 0,
-				dropdownParent : dropdownParent
-			});
-
+            if($.fn.select2 ) {
+				theinput = theinput.select2({
+					placeholder : placeholder,
+					allowClear : allowClear,
+					minimumInputLength : 0,
+					dropdownParent : dropdownParent
+				});
+            }
 			theinput.on("change", function(e) {
 				//console.log("XX changed")
 				if (theinput.hasClass("uifilterpicker")) 
@@ -570,32 +573,34 @@ uiload = function() {
 		});
 
 		// Be aware: calling select2 forces livequery to filter again
-		input.select2({
-			createSearchChoice : function(term, data) {
-				if ($(data).filter(function() {
-					return this.text.localeCompare(term) === 0;
-				}).length === 0) {
-					//console.log("picking" + term);
-					return {
-						id : term,
-						text : term
-					};
+		if($.fn.select2 ) {
+			input.select2({
+				createSearchChoice : function(term, data) {
+					if ($(data).filter(function() {
+						return this.text.localeCompare(term) === 0;
+					}).length === 0) {
+						//console.log("picking" + term);
+						return {
+							id : term,
+							text : term
+						};
+					}
+				},
+				multiple : false,
+				tags: true	
+				
+			})
+			.on('select2:select', function (e) {
+				var thevalue = $(this).val();
+				if (thevalue != '' && $(this).hasClass("autosubmited")) {
+					var theform =$(this).parent("form")
+					if (theform.hasClass("autosubmitform")) {
+						theform.trigger("submit");
+					}
 				}
-			},
-			multiple : false,
-			tags: true	
-			
-		})
-		.on('select2:select', function (e) {
-			var thevalue = $(this).val();
-			if (thevalue != '' && $(this).hasClass("autosubmited")) {
-				var theform =$(this).parent("form")
-				if (theform.hasClass("autosubmitform")) {
-					theform.trigger("submit");
-				}
-			}
-        	
-    	});
+	        	
+	    	});
+		}
 		
 		input.on("select2:open", function(e) {
 			var selectId = $(this).attr("id");
@@ -1956,116 +1961,115 @@ uiload = function() {
 		}
 	});
 
-	lQuery("select.listtags")
-			.livequery(
-					function() {
-						var theinput = $(this);
-						var dropdownParent = theinput.data('dropdownparent');
-						if (dropdownParent && $("#" + dropdownParent).length) {
-							dropdownParent = $("#" + dropdownParent);
-						}
-						else {
-							dropdownParent = $(this).parent();
-						}
-						var parent = theinput.closest("#main-media-container");
-						if (parent.length) {
-							dropdownParent = parent;
-						} 
-						var parent = theinput.parents(".modal-content");
-						if (parent.length) {
-							dropdownParent = parent;
-						}
-						var searchtype = theinput.data('searchtype');
-						var searchfield = theinput.data('searchfield');
-						var catalogid = theinput.data('listcatalogid');
-						var sortby = theinput.data('sortby');
-						var defaulttext = theinput.data('showdefault');
-						if (!defaulttext) {
-							defaulttext = "Search";
-                        }
-                        var allowClear = $(this).data('allowclear');
-                        if (allowClear == undefined)  {
-                            allowClear = true;
-                        }
-                        
-						var url = apphome
-								+ "/components/xml/types/autocomplete/tagsearch.txt?catalogid="
-								+ catalogid + "&field=" + searchfield
-								+ "&operation=contains&searchtype="
-								+ searchtype;
-
-						theinput
-								.select2(
-										{
-											tags : true,
-											placeholder : defaulttext,
-											allowClear : allowClear,
-											dropdownParent : dropdownParent,
-											selectOnBlur : true,
-											delay : 150,
-											minimumInputLength : 1,
-											ajax : { // instead of writing
-														// the function to
-														// execute the request
-														// we use Select2's
-														// convenient helper
-												url : url,
-												xhrFields: {
-											        withCredentials: true
-											    },
-												crossDomain: true,
-												dataType : 'json',
-												data : function(params) {
-													var search = {
-														page_limit : 15,
-														page : params.page
-													};
-													search[searchfield
-															+ ".value"] = params.term; // search
-																						// term
-													search["sortby"] = sortby; // search
-																				// term
-													return search;
-												},
-												processResults : function(data,
-														params) { // parse the
-																	// results
-																	// into the
-																	// format
-																	// expected
-																	// by
-																	// Select2.
-													params.page = params.page || 1;
-													return {
-														results : data.rows,
-														pagination : {
-															more : false
-														// (params.page * 30) <
-														// data.total_count
-														}
-													};
-												}												
-											},
-											escapeMarkup : function(m) {
-												return m;
-											},
-											templateResult : select2formatResult,
-											templateSelection : select2Selected,
-											tokenSeparators : [ "|" ],
-											separator : '|'
-											
-										});
-							theinput.on("select2:select" , function() {
-								if ($(this).parents(".ignore").length == 0) {
-									$(this).valid(); 
+	lQuery("select.listtags").livequery(function() {
+		var theinput = $(this);
+		var dropdownParent = theinput.data('dropdownparent');
+		if (dropdownParent && $("#" + dropdownParent).length) {
+			dropdownParent = $("#" + dropdownParent);
+		}
+		else {
+			dropdownParent = $(this).parent();
+		}
+		var parent = theinput.closest("#main-media-container");
+		if (parent.length) {
+			dropdownParent = parent;
+		} 
+		var parent = theinput.parents(".modal-content");
+		if (parent.length) {
+			dropdownParent = parent;
+		}
+		var searchtype = theinput.data('searchtype');
+		var searchfield = theinput.data('searchfield');
+		var catalogid = theinput.data('listcatalogid');
+		var sortby = theinput.data('sortby');
+		var defaulttext = theinput.data('showdefault');
+		if (!defaulttext) {
+			defaulttext = "Search";
+        }
+        var allowClear = $(this).data('allowclear');
+        if (allowClear == undefined)  {
+            allowClear = true;
+        }
+        
+		var url = apphome
+				+ "/components/xml/types/autocomplete/tagsearch.txt?catalogid="
+				+ catalogid + "&field=" + searchfield
+				+ "&operation=contains&searchtype="
+				+ searchtype;
+		
+		if($.fn.select2 ) {
+			theinput.select2(
+				{
+					tags : true,
+					placeholder : defaulttext,
+					allowClear : allowClear,
+					dropdownParent : dropdownParent,
+					selectOnBlur : true,
+					delay : 150,
+					minimumInputLength : 1,
+					ajax : { // instead of writing
+								// the function to
+								// execute the request
+								// we use Select2's
+								// convenient helper
+						url : url,
+						xhrFields: {
+					        withCredentials: true
+					    },
+						crossDomain: true,
+						dataType : 'json',
+						data : function(params) {
+							var search = {
+								page_limit : 15,
+								page : params.page
+							};
+							search[searchfield
+									+ ".value"] = params.term; // search
+																// term
+							search["sortby"] = sortby; // search
+														// term
+							return search;
+						},
+						processResults : function(data,
+								params) { // parse the
+											// results
+											// into the
+											// format
+											// expected
+											// by
+											// Select2.
+							params.page = params.page || 1;
+							return {
+								results : data.rows,
+								pagination : {
+									more : false
+								// (params.page * 30) <
+								// data.total_count
 								}
-						   });
-						   theinput.on("select2:unselect" , function() {
-								if ($(this).parents(".ignore").length == 0) {
-									$(this).valid(); 
-								}
-							});
-					});
+							};
+						}												
+					},
+					escapeMarkup : function(m) {
+						return m;
+					},
+					templateResult : select2formatResult,
+					templateSelection : select2Selected,
+					tokenSeparators : [ "|" ],
+					separator : '|'
+					
+				});
+		}
+		theinput.on("select2:select" , function() {
+			if ($(this).parents(".ignore").length == 0) {
+				$(this).valid(); 
+			}
+	   });
+	   theinput.on("select2:unselect" , function() {
+			if ($(this).parents(".ignore").length == 0) {
+				$(this).valid(); 
+			}
+		});
+	});
 
 	lQuery("input.grabfocus").livequery(function() {
 		var theinput = $(this);
@@ -2268,7 +2272,8 @@ uiload = function() {
                     if (allowClear == undefined)  {
                         allowClear = true;
                     }
-					theinput.select2({
+                    if($.fn.select2 ) {
+                    	theinput.select2({
 								placeholder : defaulttext,
 								allowClear : allowClear,
 								minimumInputLength : 0,
@@ -2353,7 +2358,7 @@ uiload = function() {
 								templateResult : select2formatResult,
 								templateSelection : select2Selected
 							});
-
+                    }
 					// TODO: Remove this?
 					theinput.on("change", function(e) {
 						if (e.val == "") // Work around for a bug
