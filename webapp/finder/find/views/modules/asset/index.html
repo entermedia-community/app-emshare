@@ -1,7 +1,38 @@
 <div class="emgrid-box" style="padding:15px; margin:0 10px 20px;">
-<div id="resultsarea">
-$pages.include("$componenthome/results/index.html", $context)
-<div class="clearfix"></div>
+	<div class="emgrid-subtitle">
+			<h3>
+	   	#set($moduleicon = "entity")
+	   	#if ($module.moduleicon)
+	   		#set($moduleicon = $module.moduleicon)
+	   	#end
+	   	
+	  		#set($entityurl = "$siteroot$apphome/views/modules/$module.id/index.html")
+	
+	<img src="$siteroot$apphome/theme/images/entity/${moduleicon}.svg" style="height: 24px;"> 
+	
+			#set( $count = $hits.size()) 
+		#text($module)
+		 <span class="count">($count)</span>
+	</h3>
+		
+	<div class="float-right" style="padding-right:10px;">
+		<a href="$applink/index.html" 
+		class="ajax minimizeexpandedmodule"
+		title="[[Collapse]] #text($module)"
+		data-oemaxlevel="3"
+		data-updateurl="true"
+		data-targetdiv="applicationcontent"
+		data-profilepreference="defaultmodule"
+		data-profilepreference.value="none"
+		>
+		<i class="fas fa-grip-horizontal"></i>
+		</a>
+	</div>
+	<div class="clearfix"></div>
+		
+	<div id="resultsarea">
+	$pages.include("$componenthome/results/index.html", $context)
+	<div class="clearfix"></div>
 </div>
 
 
