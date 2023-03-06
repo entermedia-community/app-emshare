@@ -2903,9 +2903,30 @@ uiload = function() {
 		var sidebar = toggler.data('sidebar');
 		options["propertyfield"] = "sidebarcomponent";
 		options["module"] = $("#applicationcontent").data("moduleid");
+		var url = toggler.attr("url");
 		//console.log(data.modulesearchhitssessionid);
-		
-		if (toggler.data('action') == 'hide') {
+		if (toggler.data('action') == 'home') {
+			options["sidebarcomponent.value"] = "";
+			jQuery.ajax({
+				url: url, 
+				async: false, 
+				data: options, 
+				success: function (data) {
+					var cell = findclosest(toggler,"#" + targetdiv); 
+					cell.replaceWith(data); //Cant get a valid dom element
+					$(".pushcontent").removeClass('pushcontent-'+sidebar);
+		        	$(".pushcontent").removeClass('pushcontent-open');
+					$(".pushcontent").addClass('pushcontent-fullwidth');
+						//$(".pushcontent").css("margin-left","");
+					$(window).trigger("resize");
+				},
+				xhrFields: {
+	                withCredentials: true
+	            },
+				crossDomain: true
+			});
+		}
+		else if (toggler.data('action') == 'hide') {
 			//hide sidebar
 			options["sidebarcomponent.value"] = "";
 			var url = apphome + '/components/sidebars/index.html';

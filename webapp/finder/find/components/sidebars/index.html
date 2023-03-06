@@ -3,20 +3,32 @@
 	<div class="col-main col-sidebar-togglers sidebar-togglers-bar">
 	<div class="col-main-inner">
 
+	##force specific sidebar from URL only if sidebars open
+	#set($forcedsidebarcomponent = $context.getRequestParameter("sidebarcomponent")) 
 	#set( $sidebarcomponent = $userprofile.get("sidebarcomponent"))
+	
+	#if($forcedsidebarcomponent && $sidebarcomponent)
+		#set( $sidebarcomponent = $forcedsidebarcomponent )
+	#end
 	
 	##very first time
 	#if( !$sidebarcomponent && $modulehits.isEmpty() )
 		#set( $sidebarcomponent = "guide" ) 
 	#end
-	
-	##force specific sidebar from URL only if sidebars open
-	##if( !$sidebarcomponent )
-		#set($forcedsidebarcomponent = $context.getRequestParameter("sidebarcomponent")) 
-		#if($forcedsidebarcomponent)
-			#set( $sidebarcomponent = $forcedsidebarcomponent )
-		#end
-	##end
+
+		<div class="sidebar-togglers ">
+		<a href="$!apphome" 
+			class="sidebar-toggler sidebar-toggler-show light" 
+			data-action="home" 
+			data-targetdiv="applicationcontainer"
+			data-oemaxlevel="4"
+			data-sidebarcomponent="home"
+			##data-modulesearchhitssessionid="$!modulehits.sessionId"
+			title="[[eMediaWorkspace Home]]">
+		<i class="fas fa-home"></i> 
+		</a>
+		</div>
+
 	
 		<div class="sidebar-togglers #if($sidebarcomponent == "guide") sidebar-selected #end">
 		<a href="#" 
