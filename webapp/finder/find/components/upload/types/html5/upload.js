@@ -283,7 +283,18 @@ $(document).ready(function()
 									});
 								  
 
-		    				   }			   
+		    				   }
+		    				   if(uploadformarea.data("onupload")=="reloadentity") {
+		    					   var entityid=uploadformarea.data("entityid");
+		    					   if(entityid) {
+		    						   //Todo create a generic method
+		    						   setTimeout(()=> {
+		    							   $('a[data-entityid="'+entityid+'"].entity-tab-label').trigger("click");
+		    						      }
+		    						      ,2000);
+		    						   
+		    					   }
+		    				   }
 		    				   
 		    				   //$("#uploadsfinishedtrigger").trigger("submit");
 		    				   //$(".media_results_tab").data("tabloaded",false);
