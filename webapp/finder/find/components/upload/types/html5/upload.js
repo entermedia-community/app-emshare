@@ -25,6 +25,8 @@ $(document).ready(function()
 	
 	function filesPicked(event, files) 
 	{
+		var uploadformarea = $(this).closest(".uploadformarea");
+
 		//merge them together
 		for (var i = 0; i < files.length; i++) 
 	 	{
@@ -36,24 +38,26 @@ $(document).ready(function()
 	    }
 		
 	    files = allfiles;
-		var inputbox = $("#upload_field")[0];
-		$("#upload_field").triggerHandler("html5_upload.setFiles",[allfiles]);
+		var inputbox = uploadformarea.find("#upload_field")[0];
 		
-		inputbox.count = allfiles.length;
+		var upload_field = uploadformarea.find("#upload_field");
+		upload_field.triggerHandler("html5_upload.setFiles",[allfiles]);
+		
+		//inputbox.count = allfiles.length;
 		
 	 	//$("#upload_field").setFiles( allfiles );
 	 	
-	 	$("#uploadinstructionsafter").hide();
-		var startb = $("#startbutton");
+	 	uploadformarea.find("#uploadinstructionsafter").hide();
+		var startb = uploadformarea.find("#startbutton");
 		$(startb).text("Upload");
 		$(startb).prop('disabled', false);
-		$("#uploadinstructionsafter").show();
-		$(".showonselect").show();
+		uploadformarea.find("#uploadinstructionsafter").show();
+		uploadformarea.find(".showonselect").show();
 		
 		 
 		 var regex = new RegExp("currentupload", 'g');  
 		 
-	    $("#up-files-list").empty();
+	    uploadformarea.find("#up-files-list").empty();
 	     //return confirm("You are trying to upload " + total + " files. Are you sure?");
 		 for (var i = 0; i < files.length; i++) 
 		 {
@@ -61,10 +65,10 @@ $(document).ready(function()
 		    if( file.size > 0)
 		    {
 		    	if(i < 101){
-		    		var html = $("#progress_report_template").html();
+		    		var html = uploadformarea.find("#progress_report_template").html();
 	        	    
 	        	    html = html.replace(regex,i);
-	        	    $("#up-files-list").append(html);
+	        	    uploadformarea.find("#up-files-list").append(html);
 	        	    
 	        	    //TODO: set the name and size of each row
 	        	    var name = file.name;
@@ -72,9 +76,9 @@ $(document).ready(function()
 	        	    	name = file.webkitRelativePath;
 	        	    }
 	        	    
-	    	    	$("#progress_report_name" + i).text(name);
+	    	    	uploadformarea.find("#progress_report_name" + i).text(name);
 	        	    var size = bytesToSize(file.size,2);
-	        	    $("#progress_report_size" + i).text(size);
+	        	    uploadformarea.find("#progress_report_size" + i).text(size);
 		    	}
 	    	    
 
@@ -83,6 +87,12 @@ $(document).ready(function()
 		 }
 		 //console.log("Picked " + files.length );
 		 
+ 		if( upload_field.data("autostartupload") == true)
+		{
+			upload_field.triggerHandler("html5_upload.start");
+		}
+
+		
 	}
 	
 		
@@ -94,7 +104,8 @@ $(document).ready(function()
 	
 	lQuery('#folderPicker').livequery('click',function(e){
 		e.preventDefault(); 
-		$('#upload_folder').trigger('click');
+		var form = $(this).closest(".uploadformarea");
+		$(form).find('#upload_folder').trigger('click');
         
      });
 
@@ -161,18 +172,19 @@ $(document).ready(function()
 	});
 	
 	initUpload = function(inputfield) {
-		
+		var uploadformarea = inputfield.closest(".uploadformarea");
+		var autostart = false;
 		inputfield.html5_upload(
 				   {
 			         filesPicked: filesPicked,
 			         url: function(number) {
-			       		var url =  $("#uploaddata").attr("action");
-			       		
-			       		var str = $("#uploaddata").serialize();
+						var data = uploadformarea.find("#uploaddata");
+			       		var url =  data.attr("action");
+			       		var str = data.serialize();
 			       		return url + "?" + str;
 			            // return prompt(number + " url", "/");
 			         },
-			         autostart:false,
+			         autostart:autostart,
 //			         extraFields: function() {
 //			        	 return [];
 //			         },         
@@ -184,14 +196,14 @@ $(document).ready(function()
 			         {
 			        	 //$(".uploadinstructions").hide();
 		        	  	 //console.log("On start " + files.length );
-			        	var completed = $("#up-files-list li").clone();
-					    $("#up-files-list").empty();
+			        	var completed = uploadformarea.find("#up-files-list li").clone();
+					    uploadformarea.find("#up-files-list").empty();
 
-						$("#up-files-list-completed").prepend(completed);
-						$("#completed-uploads").show();
+						uploadformarea.find("#up-files-list-completed").prepend(completed);
+						uploadformarea.find("#completed-uploads").show();
 			        	 
-						$("#upload-start").hide();
-						$("#upload-completed").show();
+						uploadformarea.find("#upload-start").hide();
+						uploadformarea.find("#upload-completed").show();
 						
 			             return true;
 			        	 //Loop over all the files. add rows
@@ -216,13 +228,13 @@ $(document).ready(function()
 			        	 {
 			        		 text = "Uploading";
 			        	 }
-			             $("#progress_report_status" + currentupload).text(text);
+			             uploadformarea.find("#progress_report_status" + currentupload).text(text);
 			         },
 			         setProgress: function(val) {
-			             $("#progress_report_bar" + currentupload).css('width', Math.ceil(val*100)+"%");
+			             uploadformarea.find("#progress_report_bar" + currentupload).css('width', Math.ceil(val*100)+"%");
 			         },
 			         onFinishOne: function(event, response, name, number, total) {
-			             $("#progress_report_bar" + currentupload).css('width', "100%");
+			             uploadformarea.find("#progress_report_bar" + currentupload).css('width', "100%");
 			         },
 			         onError: function(event, name, error) {
 			             alert('error while uploading file ' + name);
@@ -232,22 +244,22 @@ $(document).ready(function()
 			             //do a search
 			        	 if( !haderror)
 			        	{
-			        			var startb = $("#startbutton");
+			        			var startb = uploadformarea.find("#startbutton");
 			        			var complete = startb.data("complete");
 			        			
 			        			$(startb).text(complete);
 			        			$(startb).prop('disabled', 'disabled');
 		    				    allfiles = new Array();
 		    				   
-				   				var completed = $("#up-files-list-completed li span");
+				   				var completed = uploadformarea.find("#up-files-list-completed li span");
 								$.each(completed,function()
 								{
 									$(this).removeAttr("id");
 								});
-		    				   $("#filePicker").text("Pick More Files...");
-		    				   $("#upload_field").removeAttr('disabled');
+		    				   uploadformarea.find("#filePicker").text("Pick More Files...");
+		    				   uploadformarea.find("#upload_field").removeAttr('disabled');
 		    				   
-		    				   var viewassets = $("#viewassetsbtn");
+		    				   var viewassets = uploadformarea.find("#viewassetsbtn");
 			        		   viewassets.removeAttr('disabled');
 
 			        		   if( viewassets.hasClass("autoclick"))
@@ -285,12 +297,14 @@ $(document).ready(function()
 	lQuery("#upload_field").livequery( function() 
 	{
 		var inputfield = $(this);
+		inputfield.val('');
 		initUpload(inputfield);
 	});
 	
 	lQuery("#upload_folder").livequery( function() 
 	{
 		var inputfield = $(this);
+		inputfield.val('');
 		initUpload(inputfield);
 	});
 

@@ -20,7 +20,7 @@
 	#set($null = $existingids.add($c.getId()))
 #end
 <div id="entitycategoryresults#eid($entityid)" class="entity-media-box #if(!$existingcategories) collapsedmediabox #end" style="margin-bottom:20px;">
-<div  class="entitycategoryresults  " >
+<div  class="entitycategoryresults uploadformarea " >
 		
 			
 	#set($uploadsourcepath =  $mediaarchive.getBean("entityManager").loadUploadSourcepath($module,$entity, $context.getUser()))
@@ -53,18 +53,23 @@
 				title="[[Upload Folder]]">
 				<i class="fas fa-upload"></i></a>
 			#else
-				#set($uploadlink = "$siteroot$applink/views/modules/asset/add/start.html?entityupload=true&entitytype=$moduleid&addselection=$entityid&clearotherentities=true")
-				#set($oemaxlevel = "1")
-				#set($targetdiv = "applicationmaincontent")
-				<a href="$uploadlink" 
-					class="ajax entity-add-media"
-					data-targetdivinner="$targetdiv"
-					data-closedialog="true" 
-					data-closemediaviewer="true"
-					data-updateurl="true"
-					data-oemaxlevel="$!oemaxlevel"
-					title="[[Upload Folder]]">
-					<i class="fas fa-upload"></i></a>
+				<a class="entity-add-media" href="#" 
+				id="folderPicker" 
+				title="[[Upload Folder]]" style="margin-top: 0">
+				<i class="fas fa-upload"></i></a>
+			
+					  <input id="upload_field" data-autostartupload="true" type="file" style="position:absolute; top:-2000px;" multiple="multiple"  />
+					  <input id="upload_folder" type="file" style="position:absolute; top:-2000px;" webkitdirectory multiple="multiple"  />
+					  
+					  #set( $root = "$siteroot$componenthome/upload/types/html5")
+					  <form id="uploaddata" name="wizard" onSubmit="return false;" 
+		data-finishaction="" action="$root/finish.html" class="force-validate-inputs" >
+					  	<input name="createentityfolder" value="true" type="hidden"/>
+					  	<input name="entitytype" value="$moduleid" type="hidden"/>
+					  	<input name="selected$moduleid" value="$entityid" type="hidden"/>
+					    ##<input name="field" value="$moduleid" />
+					  	##<input name="${moduleid}.value" value="$entityid" />
+					  	<input name="sourcepath" value="$uploadsourcepath" type="hidden"/>
 			#end
 			
 			#set($searchlink = "$apphome/components/categories/search/searchcategory.html")
@@ -89,6 +94,36 @@
 	
 
 		<div  id="cat-list" class="emlist">
+		
+		#ifnull($desktop)
+			<div>
+				<!-- This is not shown -->
+		       <div id="progress_report_template" style="display:none;">
+		        <li class="uploadprogressrow" >
+					<span id="progress_report_barcurrentupload" style="width: 0px;" class="uploadprogress"></span>
+					<a href="#">
+						<span  id="progress_report_namecurrentupload"  class="name"></span>
+						<span id="progress_report_sizecurrentupload"  class="size"></span>
+						<span id="progress_report_statuscurrentupload"  class="uploadstatus"></span>
+					</a>	
+				</li>
+			 	</div>
+			 	
+			 	<ul id="up-files-list" class="up-files-list">
+				</ul>	
+			 	
+			 	<div id="completed-uploads" style="display:none;padding-top:3px;" >
+				<div class="ui-widget uipanel">
+				    <div  class="ui-widget-header">[[Upload Queue]]</div>
+				    <div>
+							<ul id="up-files-list-completed" class="up-files-list" >
+							</ul>	
+					</div>
+				</div>	
+				</div>		
+			</div>
+		#end
+		
 		<table style="width:100%;">
 		#foreach ($c in $existingcategories)
 		
