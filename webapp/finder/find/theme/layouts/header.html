@@ -1,10 +1,12 @@
-#if( !$sidebarcomponent && $modulehits.isEmpty() )
-	#set( $sidebarcomponent = "guide" )
+#set($forcedsidebarcomponent = $context.getRequestParameter("sidebarcomponent")) 
+#if($forcedsidebarcomponent)
+	#set( $sidebarcomponent = $forcedsidebarcomponent )
 #end
 
 #set( $sidebarwidth = $userprofile.get("sidebarwidth"))
-
-
+#if($sidebarwidth=='' || $sidebarwidth=='undefined')
+	#set($sidebarwidth = 280)
+#end
 #if($user)
 <div class="emheader">
 	#set( $workspaceproviderurl = $mediaarchive.getCatalogSettingValue("workspace-provider-url"))
