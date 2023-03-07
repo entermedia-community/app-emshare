@@ -23,25 +23,26 @@ public void init()
 	for (Data module in modules)
 	{
 		String startingpath = module.get("autocreatestartingpath");
-		int deep = module.getInt("autocreatedeep");
+		int deeplevel = module.getInt("autocreatedeep");
 		log.info("Scanning: " + startingpath);
 		//scan folders till deep
 		Category root = mediaArchive.createCategoryPath(startingpath);
-		processChildren(mediaArchive, module, root,deep, 0);		
+		processChildren(mediaArchive, module, root,deeplevel, 0);		
 	}	
 }
 public void processChildren(MediaArchive mediaArchive, Data inmodule, Category parent, int startfromdeep, int currentdeep)
 {
+	log.info("processChildren " + parent + " " + startfromdeep + " != " + currentdeep);
 	if(startfromdeep == currentdeep )
 	{
 		//Check each child
-		for (Data child in parent.getChildren())
+		for (Data category in parent.getChildren())
 		{
-			 String id = childg.getValue(inmodule.getId());
+			 String id = category.getValue(inmodule.getId());
 			 if( id == null )
 			 {
 			 	Data newchild = mediaArchive.getSearcher(inmodule.getId()).createNewData();
-			 	newchild.setName(child.getName());
+			 	newchild.setName(category.getName());
 			 	
 			 	//TODO Check parent for any entites and pass those down
 			 	for( String key in parent.getProperties().keySet() )
@@ -53,16 +54,18 @@ public void processChildren(MediaArchive mediaArchive, Data inmodule, Category p
 			 		}
 			 	}
 			 	mediaArchive.saveData(inmodule.getId(),newchild);
+			 	category.setValue(inmodule.getId(),newchild.getId());
+			 	mediaArchive.saveData("category",category);
 			 	log.info("Save new entity " + inmodule + " / " + newchild);
 			 }
 		}
 	}
 	else
 	{
-		int nextdeep = currentdeep++;
+		int nextdeep = currentdeep + 1;
 		for (Data child in parent.getChildren())
 		{
-			processChildren(mediaArchive,inmodule, child,deep, nextdeep);
+			processChildren(mediaArchive,inmodule, child,startfromdeep, nextdeep);
 		}
 	}
 }
