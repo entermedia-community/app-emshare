@@ -35,11 +35,17 @@
 	#end
 	
 	#if($rendertype == "audio")
-	     	<div class="emthumbimage emthumbaudio emcrop assetdraggable" data-assetid="${foundrow.id}" >
-				$pages.include("$componenthome/results/thumbnails/${rendertype}.html", $context)
-			</div>       
+		#if($hit.getValue("length"))
+			#set($length = $!mediaarchive.formatMinutesAndSeconds($hit.getValue("length")))
+		#end
+		$context.putPageValue("length", $length )
+     	<div class="emthumbimage emthumbaudio emcrop assetdraggable" data-assetid="${foundrow.id}" >
+			$pages.include("$componenthome/results/thumbnails/${rendertype}.html", $context)
+		</div>       
 		<div class="emthumbaudio-assetname">
-		<a class="stackedplayer " data-assetid="$foundrow.id" href="#" title="$!foundrow.name" ><i class="fas fa-window-restore"></i> $!foundrow.name</a>
+		<a class="stackedplayer " data-assetid="$foundrow.id" href="#" title="$!{foundrow.name}#if($length) ($length) #end" >
+		<i class="fas fa-window-restore"></i> 
+		$!foundrow.name</a>
 		</div>
 	#else
 		<a class="stackedplayer" data-assetid="$foundrow.id" href="#" >
