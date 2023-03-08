@@ -990,6 +990,13 @@ uiload = function() {
 		$('#' + navbar).toggle();
 
 	});
+	
+	lQuery(".quicksearchlinks").livequery("click", function() {
+		var modalparent = $(this).closest('.typeaheadmodal');
+		modalparent.toggle();
+
+	});
+	
 		
 	
 	emdialog = function(dialog, event) {
@@ -1279,6 +1286,11 @@ uiload = function() {
 			//close dialog
 			closeemdialog($(this).closest(".modal"));
 		}
+	});
+	
+	lQuery(".emgrid-content").livequery("click", function(event) {
+		
+		
 	});
 	
 	
