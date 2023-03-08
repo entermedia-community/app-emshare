@@ -2908,6 +2908,7 @@ uiload = function() {
 	
 	lQuery('.sidebar-toggler').livequery("click", function(e) {
 		e.preventDefault();
+		e.stopImmediatePropagation();
 		var toggler = $(this);
 		var options = toggler.data();
 		
@@ -2915,10 +2916,11 @@ uiload = function() {
 		var sidebar = toggler.data('sidebar');
 		options["propertyfield"] = "sidebarcomponent";
 		options["module"] = $("#applicationcontent").data("moduleid");
-		var url = toggler.attr("url");
+		var url = toggler.attr("href");
 		//console.log(data.modulesearchhitssessionid);
 		if (toggler.data('action') == 'home') {
 			options["sidebarcomponent.value"] = "";
+			options["sidebarcomponent"] = "home";
 			jQuery.ajax({
 				url: url, 
 				async: false, 
