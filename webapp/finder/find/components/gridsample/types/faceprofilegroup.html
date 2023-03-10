@@ -49,14 +49,17 @@ $context.putPageValue("previewurl", $previewurl)
  	 #set($assetsshown = 2)
  	 $context.putPageValue("viewer", "e_m_pp_${entity.id}")
  	 
-	 #set( $primaryasset = $mediaarchive.getCachedData("asset", $entity.primaryimage))
+	#set( $primaryasset = $mediaarchive.getCachedData("asset", $entity.primaryimage))
+	$context.putPageValue("primaryasset", $primaryasset)
 	 
 	#set($facemanager = $mediaarchive.getBean("faceDetectManager") )
 	#set($entityassetshits = $facemanager.searchForAssets($mediaarchive, $entityid) )
 	$!entityassetshits.setHitsPerPage($assetsshown)
 	#set($entityassetscount = $entityassetshits.size())
 	
-	$context.putPageValue("entityassetshits", $entityassetshits)  
+	$context.putPageValue("entityassetshits", $entityassetshits)
+	
+	  
 
        <div class="emgrid-entitymedia assetdropentity"
        		id="attachedmedia$entityid" 
