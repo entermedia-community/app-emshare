@@ -1496,6 +1496,7 @@ trimRowToFit = function(targetheight,row,totalavailablew)
 function updateentities (form) {
 	
 	
+	
 	//get form fields as data
 	var data = $(form).serializeArray().reduce(function(obj, item) {
 	    obj[item.name] = item.value;
@@ -1509,28 +1510,32 @@ function updateentities (form) {
 			$(this).trigger("reload");
 		});
 	}
+	
+	$(window).trigger( "ajaxautoreload", {"eventtype": "entitysave", "moduleid": data.searchtype} );
 }
 
-lQuery(".entitycontainer").livequery('reload', function(e) {
+lQuery(".entitycontainer").livequery(function(e) {
 	//debugger;
 	var entity = $(this);
-	var entityparent = entity.closest(".entitiescontainer");
-	var entityreloadurl = entityparent.data("entityrenderurl");
-	if (entityreloadurl != null) {
-		var options = {};
-		var targetdiv = entity.closest(".emgridcell")
-		options = entity.data();
-		$.ajax({
-			url : entityreloadurl,
-			data : options,
-			success: function(data){
-				//debugger;
-				console.log('reloading' + entity);
-				targetdiv.replaceWith(data);
-				$(window).trigger( "resize" );
-			}
-		});
-	}
+	entity.on('reload', function(e) {
+		var entityparent = entity.closest(".entitiescontainer");
+		var entityreloadurl = entityparent.data("entityrenderurl");
+		if (entityreloadurl != null) {
+			var options = {};
+			var targetdiv = entity.closest(".emgridcell")
+			options = entity.data();
+			$.ajax({
+				url : entityreloadurl,
+				data : options,
+				success: function(data){
+					//debugger;
+					console.log('reloading' + entity);
+					targetdiv.replaceWith(data);
+					$(window).trigger( "resize" );
+				}
+			});
+		}
+	});
 	
 	
 });

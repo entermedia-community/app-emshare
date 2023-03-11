@@ -377,8 +377,18 @@ uiload = function() {
 		$(this).focus();
 	})
 	
-	//$(window).trigger( "ajaxautoreload" );
-	jQuery(window).on('ajaxautoreload',function(e){
+	//$(window).trigger( "ajaxautoreload", eventtype, options );
+	jQuery(window).on('ajaxautoreload',function(e, options){
+		if(options.eventtype =='entitysave') {
+			//reload results containers
+			var moduleid = options.moduleid;
+			if(moduleid) {
+				jQuery('#resultsarea[data-moduleid="'+moduleid+'"]').each(function() {
+					autoreload($(this));
+				});
+			}
+		}
+			/*
 		jQuery(".ajaxautoreload").each(function()
 		{
 			var div = $(this);
@@ -395,8 +405,10 @@ uiload = function() {
 					crossDomain: true
 				});
 			}
-		});
+		});*/
 	});
+	
+	
 	
 	function autoreload(div) {
 		if(div.length) {
