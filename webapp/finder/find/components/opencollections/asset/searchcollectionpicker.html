@@ -23,7 +23,7 @@
 		<tr>
 		<td>
 		<div class="row inlinesearch" >
-		$context.putPageValue("autocomplete","off")
+			$context.putPageValue("autocomplete","off")
 			#foreach( $detail in $details)
 			<div class="col">
 					$context.putPageValue("detail", $detail)
@@ -43,25 +43,26 @@
 	
 	
 	<div id="assetcollectionresultsdialog">
-	$pages.include("$apphome/components/opencollections/searchcollectionresults.html",$context)
+	$pages.include("$apphome/components/opencollections/searchcollectionresults.html?assetid=$!asset.id",$context)
 	</div>
 	
 	</div>
 	
 	#if($canaddnewcollection)
-       <a  class="emdialog" 
+	<h4>[[Or]]</h4>
+       <a  class="emdialog btn btn-primary" 
        	title="[[Create New Album" 
        	href="$home$apphome/components/opencollections/pickcollectionaddnew.html?searchtype=librarycollection&assetid=$!asset.id&targetdiv=assetcategoryresults&library.value=$!library.getId()">
        	<i class="fa fa-plus-square"></i> [[Create New Album]]</a>
     #end
 </div>	
-	<form id="colelectform" 
-		class="ajaxform"  
-		data-targetdiv="assetcategoryresults" 
-		action="$home$apphome/components/categories/asset/listassetcollections.html">
-	
-		<input type="hidden" name="searchtype" value="librarycollection" />
-		<input type="hidden" name="sortby" value="name" />
-		<input id="submitcollectionid" type="hidden" name="collectionid" />
-        <input type="hidden" name="assetid" value="$!asset.id" />
-    </form>
+<form id="collectionselectform" 
+	class="ajaxform"  
+	data-targetdiv="assetcategoryresults" 
+	action="$home$apphome/components/categories/asset/listassetcollections.html">
+
+	<input type="hidden" name="searchtype" value="librarycollection" />
+	<input type="hidden" name="sortby" value="name" />
+	<input id="submitcollectionid" type="hidden" name="collectionid" />
+    <input type="hidden" name="assetid" value="$!asset.id" />
+</form>

@@ -10,7 +10,9 @@
 #if(!$viewid)
 #set( $viewid = $context.getRequestParameter("viewid"))
 #end
-#set( $viewpath = $context.getRequestParameter("viewpath"))
+#if( !$viewpath )
+	#set( $viewpath = $context.getRequestParameter("viewpath"))
+#end
 #if( !$viewpath )
 	#set( $viewpath = $context.getRequestParameter("view"))
 #end
@@ -47,6 +49,11 @@
 #set($clickurl = $context.getRequestParameter("clickurl"))
 #set($clickurltargetdiv = $context.getRequestParameter("clickurltargetdiv"))
 #set($clickurloemaxlevel = $context.getRequestParameter("clickurloemaxlevel"))
+
+
+
+#set($emselectableform = $context.getRequestParameter("emselectableform"))
+
 
 #set($hits = $tablehits)
 
@@ -86,6 +93,8 @@
 
 			##data-editpath="$!siteroot$!editpath?$args&edit=true&oemaxlevel=1" 
 			###if($viewid) data-targetdiv="$!{viewid}editor" #end
+			
+			
 		>
 		#if($hits.totalPages > 1)
 		<ul class="table-positions-top domdatacontext" 
@@ -141,6 +150,10 @@
 					data-clickurl="$clickurl"
 					data-targetdiv="$clickurltargetdiv"
 					data-oemaxlevel="$clickurloemaxlevel"
+				#end
+				
+				#if($emselectableform)
+					data-emselectableform="$emselectableform"
 				#end
 				
 				>

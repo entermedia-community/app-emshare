@@ -1636,7 +1636,16 @@ uiload = function() {
 			var data = row.data();
 
 			//--Form
-			if (form.length > 0) {
+			if (!form.length) {
+				form = emselectable.data("emselectableform");
+				if (form) {
+					form = $("#"+form);
+				}
+			}
+			if (form && form.length > 0) {
+				
+				data.id = rowid;
+				
 				emselectable.find('#emselectedrow').val(rowid);
 				emselectable.find('.emneedselection').each(function() {
 					clicked.removeAttr('disabled');
@@ -1790,16 +1799,18 @@ uiload = function() {
 				}
 				//verify if is entity dialog - not being used?
 				var emdialoglink = emselectable.data("emdialoglink");
-				if (emdialoglink && emdialoglink != "") {
+				if (emdialoglink && emdialoglink != "") 
+				{
 					emdialoglink = emdialoglink + "&id="+rowid;
 					row.data("emdialoglink", emdialoglink);
 					row.data("id", rowid);
 					row.data("searchtype", emselectable.data("searchtype"));
 					emdialog(row, event);
 				}
-				else if(id!="") {
+				else if(rowid != "") 
+				{
 					//legacy refresh window
-					parent.document.location.href = rowid;
+					//parent.document.location.href = rowid;
 				}
 			}
 		}
