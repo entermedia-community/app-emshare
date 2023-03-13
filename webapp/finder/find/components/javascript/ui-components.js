@@ -169,6 +169,15 @@ runajaxonthis = function(inlink,e)
 					cell.html(data);
 				}
 				
+				//on success execute extra JS
+                if(inlink.data("onsuccess")) {
+                	var onsuccess = inlink.data("onsuccess");
+                	var fnc = window[onsuccess];
+                	if( fnc && typeof fnc === "function" ) {  //make sure it exists and it is a function
+                	    fnc(inlink);  //execute it
+                	}
+                }
+				
 			},
 			type: "POST",
 			dataType: 'text',
@@ -869,7 +878,7 @@ uiload = function() {
 		                }
 		                $(window).trigger( "resize" );
 		                
-		                //experimental
+		                //on success execute extra JS
 		                if(form.data("onsuccess")) {
 		                	var onsuccess = form.data("onsuccess");
 		                	var fnc = window[onsuccess];

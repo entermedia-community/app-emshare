@@ -132,7 +132,7 @@ jQuery(document).ready(function(url,params)
 						args.collectionid = collectionid;
 					}
 					
-					//the selected option
+					// the selected option
 					args.hitsperpage = select.val();
 							 
 					$.get(href, args, function(data) 
@@ -140,7 +140,7 @@ jQuery(document).ready(function(url,params)
 						$("#"+targetdiv).replaceWith(data);
 						$(window).trigger( "resize" );
 						
-						//should I call in a trigger?
+						// should I call in a trigger?
 						$(".select2simple").select2({
 							 minimumResultsForSearch: Infinity
 						});
@@ -185,7 +185,7 @@ jQuery(document).ready(function(url,params)
 			});
 	
 	lQuery(".filterschangesort").livequery("click", function(e){
-		//debugger;
+		// debugger;
 		e.preventDefault();
 		var sirtbyfield = $(this).data("sortbyfield");
 		var dropdown = $("#"+sirtbyfield);
@@ -221,7 +221,7 @@ jQuery(document).ready(function(url,params)
 		}
 		
 		
-	//    $("#select-dropdown-open").click();
+	// $("#select-dropdown-open").click();
 	
 	});
 	
@@ -299,7 +299,7 @@ jQuery(document).ready(function(url,params)
 	$(".autosubmitform").on('submit', function() 
 			{
 				var form = $(this);
-				//Remove required from Filters Form
+				// Remove required from Filters Form
 				if (form.hasClass('filterform')) {
 					$('.required', form).each(function() {
 						$(this).removeClass('required');
@@ -333,15 +333,15 @@ jQuery(document).ready(function(url,params)
 			var neww = Math.max(avwidth, Math.floor( avwidth * w / h ));
 			img.width(avwidth);
 			img.css("height", "auto");
-			//Only if limited by height
+			// Only if limited by height
 			
 
 			if( newh > avheight )
 			{ 
 				img.height(avheight);
 				img.css("margin-top","0px");
-				//var neww2 = Math.floor( avheight * w / h );
-				//img.width(neww2);
+				// var neww2 = Math.floor( avheight * w / h );
+				// img.width(neww2);
 				img.css("width", "auto");
 				img.css("height", avheight);
 			}
@@ -359,21 +359,19 @@ jQuery(document).ready(function(url,params)
 					img.css("margin-top","0px");
 				}	
 			}
-			//img.css("height", avheight);
+			// img.css("height", avheight);
 			
 		}
 		else
 		{
 			/*
-			img.width(avwidth);
-			//img.css("height", "auto");
-			img.css("height", avheight);
-			img.css("margin-top","0px");
-			*/
+			 * img.width(avwidth); //img.css("height", "auto");
+			 * img.css("height", avheight); img.css("margin-top","0px");
+			 */
 		}
 	}
 	$(window).resize(function(){
-				overlayResize(); //TODO: Add this to the shared
+				overlayResize(); // TODO: Add this to the shared
 	});
 	
 	$.fn.exists = function () {
@@ -404,7 +402,7 @@ jQuery(document).ready(function(url,params)
 			}
 	}
 	disposevideos = function(){
-		//Stop/Dispose Videos
+		// Stop/Dispose Videos
 		$('.video-js, .video-player').each(function () {
 			if (this.id) {
 				videojs(this.id).dispose();
@@ -413,7 +411,7 @@ jQuery(document).ready(function(url,params)
 	}
 	hideOverlayDiv = function(inOverlay)
 	{
-		//debugger;
+		// debugger;
 		disposevideos();
 		stopautoscroll = false;
 		$("body").css({ overflow: 'auto' })
@@ -431,10 +429,10 @@ jQuery(document).ready(function(url,params)
 		{
 			$(document).trigger("domchanged");
 			$(window).trigger( "resize" );
-			//gridResize();
+			// gridResize();
 		}
 		var lastscroll = getOverlay().data("lastscroll");
-		//remove Asset #hash
+		// remove Asset #hash
 		history.replaceState(null, null, ' '); 
 		$(window).scrollTop( lastscroll );
 	}
@@ -465,7 +463,7 @@ jQuery(document).ready(function(url,params)
 		}
 		var hidden = getOverlay();
 
-		//Not needed?
+		// Not needed?
 		var link = resultsdiv.data("assettemplate");
 		if( link == null )
 		{
@@ -475,7 +473,7 @@ jQuery(document).ready(function(url,params)
 		var params = {embed:true,assetid:assetid,hitssessionid:hitssessionid,oemaxlevel:1};
 		if( pagenum != null )
 		{
-			params.pagenum = pagenum; //Do we use this for anything?
+			params.pagenum = pagenum; // Do we use this for anything?
 		}
 		params.pageheight =  $(window).height() - 100;
 
@@ -534,15 +532,12 @@ jQuery(document).ready(function(url,params)
 			if( assetid.indexOf("multiedit:") > -1 )
 			{
 				/*
-				var link = $("#main-media-viewer").data("multieeditlink");
-				var mainmedia2 = $("#main-media-viewer");
-			
-				var options = mainmedia2.data();
-				mainmedia2.load(link, options, function()
-				{
-					$(window).trigger("tabready");
-				});
-				*/
+				 * var link = $("#main-media-viewer").data("multieeditlink");
+				 * var mainmedia2 = $("#main-media-viewer");
+				 * 
+				 * var options = mainmedia2.data(); mainmedia2.load(link,
+				 * options, function() { $(window).trigger("tabready"); });
+				 */
 			}
 			else
 			{
@@ -589,12 +584,13 @@ jQuery(document).ready(function(url,params)
 			        }	
 		        break;
 		        
-		        // TODO: background window.scrollTo the .masonry-grid-cell we view, so we can reload hits
+		        // TODO: background window.scrollTo the .masonry-grid-cell we
+				// view, so we can reload hits
 		        
 		        case 27: // esc
 		        	var ismodal = $('#modals, #inlineedit, .modal');
 		        	if (ismodal.hasClass('show')) {
-		        		//Close modal only
+		        		// Close modal only
 		        		closeemdialog(ismodal);
 		        		e.stopPropagation();
 		        		return;
@@ -608,7 +604,8 @@ jQuery(document).ready(function(url,params)
 		
 		        default: return; // exit this handler for other keys
 		    }
-		    e.preventDefault(); // prevent the default action (scroll / move caret)
+		    e.preventDefault(); // prevent the default action (scroll / move
+								// caret)
 		});
 	}
 	getOverlay = function()
@@ -796,7 +793,7 @@ jQuery(document).ready(function(url,params)
 		);
 	});
 	
-	//Select multiple assets with Shift+Mouse
+	// Select multiple assets with Shift+Mouse
 	var isMouseDown = false;
   	var currentCol;
   	lQuery('.stackedplayertable td').livequery('mousedown',function(e) {
@@ -805,23 +802,23 @@ jQuery(document).ready(function(url,params)
 		  var row = $(this).closest("tr");
 	      currentCol = row.data("rowid");
 		  if (currentCol) {
-		    //row.toggleClass("emrowselected");
+		    // row.toggleClass("emrowselected");
 		    var isHighlighted = row.hasClass("emrowselected");
 			var chkbox = row.find(".selectionbox");
 			$(chkbox).prop( "checked", true );
 			$(chkbox).trigger("change");
 		  }
 	  }
-      return false; //Prevent text selection
+      return false; // Prevent text selection
     });
 
 	lQuery('.stackedplayertable td').livequery('mouseover',function(e) {
-      if (isMouseDown && e.shiftKey) {  //Mouse + Shift Key
+      if (isMouseDown && e.shiftKey) {  // Mouse + Shift Key
 		  var row = $(this).closest("tr");
 		  var currentColDown = row.data("rowid");
 		  var isHighlighted = row.hasClass("emrowselected");
 	      if (currentColDown && !isHighlighted) {
-          	//row.toggleClass("emrowselected", isHighlighted);
+          	// row.toggleClass("emrowselected", isHighlighted);
 			var chkbox = row.find(".selectionbox");
 			$(chkbox).prop( "checked", true );
 			$(chkbox).trigger("change");
@@ -829,16 +826,16 @@ jQuery(document).ready(function(url,params)
       }
     })
 	
-	//    .bind("selectstart", function () {
-	//      return false;
-	//    })
+	// .bind("selectstart", function () {
+	// return false;
+	// })
 
    $(window)
     .mouseup(function () {
       isMouseDown = false;
     });
 
-	//Select multiple assets with CTRL key	
+	// Select multiple assets with CTRL key
 	var ctrlPressed = false;
 	$(window).keydown(function(evt) {
 		  if (evt.which == 17) { // ctrl
@@ -850,9 +847,9 @@ jQuery(document).ready(function(url,params)
 		  }
 	});
 
-	//Click on asset
+	// Click on asset
 	var selectStart = null;
-	//Table clicking
+	// Table clicking
 	lQuery('.stackedplayertable td').livequery('click',function(e)
 	{
 		var clicked = $(this);
@@ -863,7 +860,7 @@ jQuery(document).ready(function(url,params)
 		{
 			return true;
 		}
-		//click+ctrl
+		// click+ctrl
 		if (ctrlPressed) {
 		    var chkbox = clicked.closest("tr").find(".selectionbox");
 			if (chkbox) {
@@ -878,7 +875,7 @@ jQuery(document).ready(function(url,params)
 			}
 			return false;
 		} 
-		//click+shift
+		// click+shift
 		if (e.shiftKey){
 			if (selectStart == null) {
 				selectStart = $(clicked).closest("tr");
@@ -913,11 +910,11 @@ jQuery(document).ready(function(url,params)
 		
 		showAsset(assetid);
 	});
-	//Gallery clicking
+	// Gallery clicking
 	lQuery('.emgallery .emthumbimage').livequery('click',function(e)
 	{
 		var clicked = $(this);
-		//click+ctrl
+		// click+ctrl
 		if (ctrlPressed) {
 		    var chkbox = clicked.closest(".emboxthumb").find(".selectionbox");
 			if (chkbox) {
@@ -934,7 +931,7 @@ jQuery(document).ready(function(url,params)
 			e.stopPropagation()
 			return false;
 		} 
-		//click+shift
+		// click+shift
 		if (e.shiftKey){
 			if (selectStart == null) {
 				selectStart = $(clicked).closest(".emboxthumb");
@@ -967,7 +964,7 @@ jQuery(document).ready(function(url,params)
 	});
 	
 	
-	//Selections
+	// Selections
 	
 	lQuery(".resultsselection input.selectionbox").livequery("change", function(e) 
 	{
@@ -996,7 +993,7 @@ jQuery(document).ready(function(url,params)
 	lQuery("a.deselectpage").livequery( 'click', function() 
 	{
 		$('input[name=pagetoggle]').prop('checked',false);
-		$('.selectionbox').prop('checked',false); //Not firing the page
+		$('.selectionbox').prop('checked',false); // Not firing the page
 		$('.selectionbox').closest(".resultsassetcontainer").removeClass("emrowselected");
 		$('.selectionbox').closest(".emboxthumb").removeClass("emrowselected");
 		if(typeof(refreshSelections) != 'undefined'){
@@ -1076,7 +1073,7 @@ jQuery(document).ready(function(url,params)
 			var args = { 
 					addcolumn: selectedval
 			}
-			//jQuery("#"+targetdiv).load(link);
+			// jQuery("#"+targetdiv).load(link);
 			$.get(link, args, function(data) 
 			{
 				$("#"+targetdiv).replaceWith(data);
@@ -1090,7 +1087,7 @@ jQuery(document).ready(function(url,params)
 		var div = $(this);
 		div.css("position","relative");
 		var box =  div.data("showbox");
-		//var box = JSON.parse(json);
+		// var box = JSON.parse(json);
 	
 		div.prepend("<canvas></canvas>");
 		
@@ -1100,9 +1097,9 @@ jQuery(document).ready(function(url,params)
 		var image = $(div.find("img"));
 		image.ready( function ()
 		{
-			//console.log(image.height());
-			//canvas.width(box[2]);
-			//canvas.height(box[3]);
+			// console.log(image.height());
+			// canvas.width(box[2]);
+			// canvas.height(box[3]);
 			canvas.attr({width:box[0]+box[2]+10,height:box[1]+ box[3]+10});
 			var context = canvas[0].getContext("2d");	
 			context.beginPath();
@@ -1164,12 +1161,16 @@ jQuery(document).ready(function(url,params)
             	targetdiv = $(this).closest("#resultsdiv");
             }
             
-			//var columnsort = searchhome + '/columnsort.html?oemaxlevel=1&searchtype=' + searchtype + '&viewpath=' + viewpath + '&viewid=' + viewid + '&hitssessionid=' + sessionid;
+			// var columnsort = searchhome +
+			// '/columnsort.html?oemaxlevel=1&searchtype=' + searchtype +
+			// '&viewpath=' + viewpath + '&viewid=' + viewid + '&hitssessionid='
+			// + sessionid;
 			var link = searchhome + '/columnsort.html';
 			
             if ( $(this).hasClass('currentsort') ) {
                 if ( $(this).hasClass('up') ) {
-                    //$(resultsdiv).load( columnsort + '&sortby=' + id + 'Down', options);
+                    // $(resultsdiv).load( columnsort + '&sortby=' + id +
+					// 'Down', options);
                 	
                 	options["sortby"] = id + 'Down';
                 	$.get(link, options, function(data) 
@@ -1178,7 +1179,8 @@ jQuery(document).ready(function(url,params)
         			});
                 	
                 } else {
-                    //$(resultsdiv).load( columnsort + '&sortby=' + id + 'Up', options);
+                    // $(resultsdiv).load( columnsort + '&sortby=' + id + 'Up',
+					// options);
                     options["sortby"] = id + 'Up';
                 	$.get(link, options, function(data) 
         			{
@@ -1188,7 +1190,8 @@ jQuery(document).ready(function(url,params)
             } else {
                 $('th.sortable').removeClass('currentsort');
                 $(this).addClass('currentsort');
-                //$(resultsdiv).load( columnsort + '&sortby=' + id + 'Down', options);
+                // $(resultsdiv).load( columnsort + '&sortby=' + id + 'Down',
+				// options);
                 options["sortby"] = id + 'Down';
             	$.get(link, options, function(data) 
     			{
@@ -1214,13 +1217,13 @@ jQuery(document).ready(function(url,params)
     gridResize();
 
 	
-//		jQuery(".masonry-grid img.imagethumb:eq(10)").on('load',  function() { 
+// jQuery(".masonry-grid img.imagethumb:eq(10)").on('load', function() {
 			
 			   // gridResize();
 			
-	//	});
+	// });
 	    
-});//document ready   
+});// document ready
 
 document.addEventListener('touchmove', function(e) 
 {
@@ -1228,17 +1231,17 @@ document.addEventListener('touchmove', function(e)
 });
 jQuery(window).on('scroll',function(e) 
 {
-	//console.log("scroll event *");
+	// console.log("scroll event *");
 	checkScroll();
 });
 
 jQuery(window).on('resize',function(){
-	//gridResize();
+	// gridResize();
 });
 
 	    
 
-//TODO: remove this. using ajax Used for modules
+// TODO: remove this. using ajax Used for modules
 togglehits =  function(action)
 {
 	var data = $('#resultsdiv').data();
@@ -1268,7 +1271,7 @@ checkScroll = function()
 	}
 	if( stopautoscroll )
 	{
-		//ignore scrolls
+		// ignore scrolls
 		if( getOverlay().is(":visible") )
 		{
 			var lastscroll = getOverlay().data("lastscroll");
@@ -1281,7 +1284,7 @@ checkScroll = function()
 		return;
 	}
 	
-	//No results?
+	// No results?
 	var resultsdiv= $("#resultsdiv");
 	var lastcell = $(".masonry-grid-cell", resultsdiv).last();
 	 if( lastcell.length == 0 )
@@ -1290,24 +1293,36 @@ checkScroll = function()
 	 }
 	
 	
-	//are we near the end? Are there more pages?
+	// are we near the end? Are there more pages?
 	var visibleHeight = $(window).height();
 	var totalHeight = $(document).height();
 
 
     var page = parseInt(resultsdiv.data("pagenum")); 
     var total = parseInt(resultsdiv.data("totalpages"));
-	//console.log("checking scroll " + stopautoscroll + " page " + page + " of " + total);
+	// console.log("checking scroll " + stopautoscroll + " page " + page + " of
+	// " + total);
     if( page == total)
     {
 		return;
 	}
 
-	//console.log($(window).scrollTop() + " + " +   (visibleHeight*2 + 500) + ">=" + totalHeight); 
-	var atbottom = ($(window).scrollTop() + (visibleHeight*2 + 500)) >= totalHeight ; //is the scrolltop plus the visible equal to the total height?
+	// console.log($(window).scrollTop() + " + " + (visibleHeight*2 + 500) +
+	// ">=" + totalHeight);
+	var atbottom = ($(window).scrollTop() + (visibleHeight*2 + 500)) >= totalHeight ; // is
+																						// the
+																						// scrolltop
+																						// plus
+																						// the
+																						// visible
+																						// equal
+																						// to
+																						// the
+																						// total
+																						// height?
 	if(	!atbottom )
     {
-    	//console.log("Not yet within 500px");
+    	// console.log("Not yet within 500px");
 	  return;
 	}
 	 
@@ -1346,15 +1361,17 @@ checkScroll = function()
 			   var jdata = $(data);
 			   var code = $(".masonry-grid",jdata).html();
 			   $(".masonry-grid",resultsdiv).append(code);
-			   //$(resultsdiv).append(code);
+			   // $(resultsdiv).append(code);
 			   gridResize();
-			   //$(document).trigger("resize"); //LOOP!
+			   // $(document).trigger("resize"); //LOOP!
 			   stopautoscroll = false; 
-			   //Once that is all done loading we can see if we need a second page?
-		   	   //console.log( page + " Loaded get some more?" + getOverlay().is(':hidden') );
+			   // Once that is all done loading we can see if we need a second
+				// page?
+		   	   // console.log( page + " Loaded get some more?" +
+				// getOverlay().is(':hidden') );
 			   if( getOverlay().is(':hidden') )
 			   {
-			   		checkScroll(); //Might need to load up two pages worth
+			   		checkScroll(); // Might need to load up two pages worth
 			   }
 			}
 		});
@@ -1365,8 +1382,8 @@ gridResize = function()
 {
 	var grid = $(".masonry-grid");
 	
-	//console.log("gridResize width:"+grid.width());
-	//debugger;
+	// console.log("gridResize width:"+grid.width());
+	// debugger;
 	if( grid.length == 0 )
 	{
 		return;
@@ -1384,7 +1401,7 @@ gridResize = function()
 	var rownum = 0;
 	var totalavailablew = grid.width();
 	
-	//Two loops, one to make rows and one to render cells
+	// Two loops, one to make rows and one to render cells
 	var sofarusedw = 0;
 	var sofarusedh = 0;
 	
@@ -1406,9 +1423,9 @@ gridResize = function()
 		var neww = a * fixedheight;
 		cell.data("targetw",Math.ceil(neww));
 		var isover = sofarusedw + neww;
-		if( isover > totalavailablew )  //Just to make a row
+		if( isover > totalavailablew )  // Just to make a row
 		{
-			//Process previously added cell
+			// Process previously added cell
 			var newheight = trimRowToFit(fixedheight, row, totalavailablew);
 			totalheight = totalheight + newheight;
 			row = new Array();
@@ -1436,10 +1453,8 @@ gridResize = function()
 }
 
 /**
-A = W / H
-H = W / A
-W = A * H
-*/
+ * A = W / H H = W / A W = A * H
+ */
 trimRowToFit = function(targetheight,row,totalavailablew)
 {
 
@@ -1450,35 +1465,41 @@ trimRowToFit = function(targetheight,row,totalavailablew)
 		var usedw = div.data("targetw");
 		totalwidthused = totalwidthused + usedw ;
 	});
-    var existingaspect = targetheight / totalwidthused; //Existing aspec ratio
+    var existingaspect = targetheight / totalwidthused; // Existing aspec ratio
 	var overwidth = totalwidthused - totalavailablew;
 	var changeheight = existingaspect * overwidth;
 	var fixedheight = targetheight - changeheight;
 	if (fixedheight>(targetheight*1.7)) {
 		fixedheight = targetheight;
 	}
-	//The overwidth may not be able to be divided out evenly depending on number of 
+	// The overwidth may not be able to be divided out evenly depending on
+	// number of
 	var totalwused = 0;
 	$.each( row, function()
 	{
 		var div = this;
-		//div.css("line-height",fixedheight + "px"); 
+		// div.css("line-height",fixedheight + "px");
 		div.css("height",fixedheight + "px");
 		$("img.imagethumb",div).height(fixedheight);
 		
 		var a = div.data("aspect");
 		var neww = (fixedheight) * a ;
 		
-		neww = Math.round(neww);//make sure we dont round too high across lots of widths
+		neww = Math.round(neww);// make sure we dont round too high across lots
+								// of widths
 		div.css("width",neww + "px");
 		
 		totalwused = totalwused + neww;
 		
 	});
 	
-	if( totalwused != totalavailablew && fixedheight != targetheight) //Deal with fraction of a pixel
+	if( totalwused != totalavailablew && fixedheight != targetheight) // Deal
+																		// with
+																		// fraction
+																		// of a
+																		// pixel
 	{
-		//We have a fraction of a pixel to add to last item
+		// We have a fraction of a pixel to add to last item
 		var toadd = totalavailablew - totalwused;
 		var div = row[row.length-1];
 		if (div) {
@@ -1493,19 +1514,18 @@ trimRowToFit = function(targetheight,row,totalavailablew)
 }
 	
 
-function updateentities (form) {
-	
-	
-	
-	//get form fields as data
-	var data = $(form).serializeArray().reduce(function(obj, item) {
+function updateentities (element) {
+	// get form fields as data
+	var data = $(element).serializeArray().reduce(function(obj, item) {
 	    obj[item.name] = item.value;
 	    return obj;
 	}, {});
-	if (data.id) {
-		
+	//or get data from element (<a>)
+	if(data.constructor === Object && Object.keys(data).length === 0) {
+		data = element.data();
+	}
+	if (data.id && data.searchtype) {
 		var entitycontainerclass = 'entity'+data.searchtype+data.id;
-		
 		$("." + entitycontainerclass).each(function() {
 			$(this).trigger("reload");
 		});
@@ -1515,7 +1535,7 @@ function updateentities (form) {
 }
 
 lQuery(".entitycontainer").livequery(function(e) {
-	//debugger;
+	// debugger;
 	var entity = $(this);
 	entity.on('reload', function(e) {
 		var entityparent = entity.closest(".entitiescontainer");
@@ -1528,7 +1548,7 @@ lQuery(".entitycontainer").livequery(function(e) {
 				url : entityreloadurl,
 				data : options,
 				success: function(data){
-					//debugger;
+					// debugger;
 					console.log('reloading' + entity);
 					targetdiv.replaceWith(data);
 					$(window).trigger( "resize" );
@@ -1578,7 +1598,7 @@ lQuery('div.assetpreview').livequery('click',function(e) {
 			var link = $(this).data("link");
 			div.load(link, options, function()
 			{
-			    //Update AssetID
+			    // Update AssetID
 			    var assetid = $("#multieditpanel").data("assetid");
 			    $("#main-media-viewer").data("assetid",assetid);
 				$(window).trigger("tabready");
@@ -1589,10 +1609,10 @@ lQuery('div.assetpreview').livequery('click',function(e) {
 			var link = $(this).data("link");
 			div.load(link, options, function()
 			{
-				//console.log("triggered");
+				// console.log("triggered");
 				$(window).trigger("tabready");
 			});
-			//save to profile only pewview, properties and media
+			// save to profile only pewview, properties and media
 			if (assettab=='viewproperties' || assettab=='viewmedia' || assettab=='viewdownloads'  || assettab=='viewtimeline' || assettab=='viewclosedcaptions') {
 				saveProfileProperty("assetopentab", assettab,function(){});
 			}
@@ -1603,7 +1623,7 @@ lQuery('div.assetpreview').livequery('click',function(e) {
 				if (label) {
 					$('.bottomtabactionstext').text(label);
 				}
-				//saveProfileProperty("assetopentabactions",assettabactions,function(){});
+				// saveProfileProperty("assetopentabactions",assettabactions,function(){});
 			}
 			var assettabtable = $(this).data("assettabtable");
 			if (assettabtable) {
@@ -1612,7 +1632,7 @@ lQuery('div.assetpreview').livequery('click',function(e) {
 				if (label) {
 					$('.bottomtabactionstext').text(label);
 				}
-				//saveProfileProperty("assetopentabassettable",assettabtable,function(){});
+				// saveProfileProperty("assetopentabassettable",assettabtable,function(){});
 			}
 		}
 		
