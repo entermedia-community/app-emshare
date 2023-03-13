@@ -105,16 +105,15 @@
 						$context.putPageValue("view", "asset/stackedgallery")
 						$pages.include("/$applicationid/components/xml/detailviewer-stackedgallery.html", $context)
 					</a>
-					
-         
-			           
 			        <div class="grid-gallery-footer"> 
-			        
-			        
-			        
 	        	   	$pages.include("$componenthome/results/badges.html", $context)
-			         #if ($hit.assetaddeddate)
+			         #ifnotnull($hit.assetcreationdate)
+			         	$!context.getDate($hit.assetcreationdate)
+			         #end
+			         #ifnull($hit.assetcreationdate)
+			         #ifnotnull($hit.assetaddeddate)
 			         $!context.getDate($hit.assetaddeddate)
+			         #end
 			         #end
 					#if($canaddtofavorites)
 	  	        	<div id="gsassetfavorite-${hit.id}" class="media-info-icons">
