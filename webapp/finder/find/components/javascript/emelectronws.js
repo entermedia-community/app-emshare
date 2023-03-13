@@ -4,7 +4,7 @@ jQuery(document).ready(function() {
 		var electron = require('electron');
 		
 		
-		lQuery("#localfolderPicker").livequery("click", function(e) {
+		lQuery(".localfolderPicker").livequery("click", function(e) {
 			e.stopPropagation();
 			
 			var uploadFolder = electron.remote.require('./index.js').uploadFolder;
