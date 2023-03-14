@@ -1,3 +1,6 @@
+#if( !$librarycol && $category ) 
+	#set( $librarycol = $mediaarchive.query("librarycollection").orgroup("rootcategory",$category.getParentCategories()).searchOne() )
+#end
 <div class="emgrid-box" style="padding:15px; margin:0 10px 20px;">
 	<div class="emgrid-subtitle">
 			<h3>
@@ -10,7 +13,7 @@
 	
 	<img src="$siteroot$apphome/theme/images/entity/${moduleicon}.svg" style="height: 24px;"> 
 	
-			#set( $count = $hits.size()) 
+		#set( $count = $hits.size()) 
 		#text($librarycol)
 		 <span class="count">($count)</span>
 	</h3>

@@ -1649,7 +1649,7 @@ uiload = function() {
 			if (form && form.length > 0) {
 				
 				data.id = rowid;
-				
+				data.oemaxlevel = form.data("oemaxlevel");
 				emselectable.find('#emselectedrow').val(rowid);
 				emselectable.find('.emneedselection').each(function() {
 					clicked.removeAttr('disabled');
@@ -3529,7 +3529,7 @@ uiload = function() {
 	});
 	
 	
-	lQuery("#collectionresultsdialog .rowclick").livequery("click", function(e) {
+	lQuery("#collectionresultsdialogX .rowclick").livequery("click", function(e) {
 		var launcher = jQuery("#search-collections-dialog").data("searchcollectinolauncher");
 		if (launcher != "") {
 			launcher = $("#"+launcher);

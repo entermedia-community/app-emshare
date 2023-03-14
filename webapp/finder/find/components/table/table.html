@@ -190,6 +190,7 @@
 			</thead>
 			<tbody>
 			#set($rowidfield = $context.getRequestParameter("rowidfield"))
+			#set($rowidname = $context.getRequestParameter("rowidname"))
 			#foreach ( $hit in $hits.getPageOfHits() )
 				#if($rowidfield)
 					#set($rowid = $hit.getValue($rowidfield))
@@ -197,6 +198,7 @@
 					#set($rowid = $hit.id)
 				#end	
 				<tr #if($candelete != "false") rowid="$!rowid" #end 
+					#if($rowidname) data-${rowidname}="$!rowid" #end
 					class="#if($selectedid == $hit.id) emhighlight #end rowclick domdatacontext"
 					>
 				#foreach( $detail in $details )
