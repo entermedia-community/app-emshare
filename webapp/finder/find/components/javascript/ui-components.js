@@ -195,10 +195,14 @@ runajaxonthis = function(inlink,e)
 				if( updateurl)	{
 					//console.log("Saving state ", updateurl);
 					history.pushState($("#application").html(), null, nextpage);
-					window.scrollTo(0, 0);
 				}
 				
 				//window.addEventListener("hashchange", function(e) { reload using ajax
+			}
+			
+			var scrolltotop = inlink.data("scrolltotop");
+			if( scrolltotop)	{
+				window.scrollTo(0, 0);
 			}
 			
 			$(".ajaxprogress").hide();

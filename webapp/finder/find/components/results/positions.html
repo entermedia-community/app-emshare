@@ -47,7 +47,7 @@
 		
 		$context.putPageValue('oemaxlevel', $oemaxlevel)
 		
-		#set($updateurl = "false")
+		#set($updateurl = "true")
 
 #set($total = $hits.getTotalPages() )
 #if( $total > 1)
@@ -60,14 +60,14 @@
 			#end
 			#foreach( $before in $befores )
 				#set( $pos = $hits.toPosition($before) )
-				<li><a class="ajax" data-targetdivinner="$targetdivinner" data-updateurl="$!updateurl"  data-oemaxlevel="$oemaxlevel"  href="$resultsPage=$pos" >$pos</a></li>		
+				<li><a class="ajax" data-targetdivinner="$targetdivinner" data-updateurl="$!updateurl"  data-oemaxlevel="$oemaxlevel" data-position="$pos"  href="$resultsPage=$pos" >$pos</a></li>		
 			#end
 			#set($pos = $hits.toPosition($hits.getPage()))
-			<li class="current"><a  class="ajax" data-targetdivinner="$targetdivinner" data-updateurl="$!updateurl"  data-oemaxlevel="$oemaxlevel" href="$resultsPage=$pos" >$pos</a></li>
+			<li class="current"><a  class="ajax" data-targetdivinner="$targetdivinner" data-updateurl="$!updateurl"  data-oemaxlevel="$oemaxlevel" data-position="$pos"  href="$resultsPage=$pos" >$pos</a></li>
 			#set( $afters = $hits.linksAfter() )
 			#foreach( $after in $afters )
 				#set( $pos = $hits.toPosition($after) )
-				<li><a  class="ajax" data-targetdivinner="$targetdivinner" data-updateurl="$!updateurl" data-oemaxlevel="$oemaxlevel" href="$resultsPage=$pos">$pos</a></li>		
+				<li><a  class="ajax" data-targetdivinner="$targetdivinner" data-updateurl="$!updateurl" data-oemaxlevel="$oemaxlevel" data-position="$pos"  href="$resultsPage=$pos">$pos</a></li>		
 			#end
 			#set($size=${afters.size()})
 			#set( $size = $size - 1 )

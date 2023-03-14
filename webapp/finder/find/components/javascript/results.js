@@ -79,7 +79,7 @@ jQuery(document).ready(function(url,params)
 	
 	
 	lQuery("select#hitsperpagechange").livequery( function() {
-			if (window.select2 !== undefined) {	
+
 				var select = $(this);
 				
 				select.select2({
@@ -146,7 +146,7 @@ jQuery(document).ready(function(url,params)
 						});
 					});
 				});
-			}
+			
 	});
 	
 
@@ -1445,7 +1445,7 @@ gridResize = function()
 		if( makebox && makebox == true && rownum >= 3)
 		{
 			grid.css("height", totalheight + "px");
-			grid.css("overflow","hidden");
+			//grid.css("overflow","hidden");
 		}
 	}
 	
