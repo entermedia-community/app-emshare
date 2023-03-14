@@ -3677,6 +3677,7 @@ showajaxstatus = function(uid)
 
 
 var resizecolumns = function() {
+	var windowh = $(window).height();
 	//make them same top
 	var sidebarsposition = $("#resultsdiv").position();
 	var sidebarstop = 0;
@@ -3702,11 +3703,21 @@ var resizecolumns = function() {
 	var columnsheight = 0;
 	var sidebartop = 1;
 
+	//togglers always screen height
+	var coltogglers = $(".col-sidebar-togglers");
+	coltogglers.css("height", windowh);
+	var colsidebar = $(".col-mainsidebar");
+	colsidebar.css("height", windowh);
 	
-	var coltogglers = $(".col-sidebar-togglers > .col-main-inner");
+	
+/*
+ * 	
+ 	var coltogglers = $(".col-sidebar-togglers > .col-main-inner");
 	if (coltogglers.length) {
 		columnsheight = coltogglers.outerHeight();
 	}
+*/
+	/*
 	var colsidebar = $(".col-mainsidebar").find(".col-main-inner");
 	if (colsidebar.length) {
 		var thisheight = colsidebar.outerHeight();
@@ -3714,7 +3725,7 @@ var resizecolumns = function() {
 			columnsheight = thisheight;
 		}
 	}
-	
+	*/
 	//reset some heights
 	if($(".settingslayout").length) {
 		$(".settingslayout").css("height","auto");
@@ -3729,14 +3740,14 @@ var resizecolumns = function() {
 	}
 	
 	var allheights  = header_height + resultsheader_height;
-	$(".col-sidebar-togglers").css("height", columnsheight + allheights);
+	//$(".col-sidebar-togglers").css("height", columnsheight + allheights);
 
 	if(!$(".col-mainsidebar").hasClass("fixedheight")) {
-		$(".col-mainsidebar").css("height", columnsheight + allheights);
+		//$(".col-mainsidebar").css("height", columnsheight + allheights);
 	}
 	else {
 		allheights  = header_height + resultsheader_height;
-		var windowh = $(window).height();
+		
 		windowh = windowh - allheights;
 		$(".col-left").css("height", columnsheight);
 		$(".col-left > .col-main-inner").css("height", windowh);
@@ -3750,6 +3761,8 @@ var resizecolumns = function() {
 	else {
 		$(".col-content-main").css("height", columnsheight + allheights - header_height);
 	}
+	
+	$("#application").css("height", columnsheight + allheights)
 	
 	//$(".pushcontent").css("height","calc(100% - " + resultsheader_height + "px)");
 }
