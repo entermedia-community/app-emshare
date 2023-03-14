@@ -390,44 +390,11 @@ uiload = function() {
 		$(this).focus();
 	})
 	
-	//$(window).trigger( "ajaxautoreload", eventtype, options );
-	jQuery(window).on('ajaxautoreload',function(e, options){
-		if(options.eventtype =='entitysave') {
-			//reload results containers
-			var moduleid = options.moduleid;
-			if(moduleid) {
-				jQuery('#resultsarea[data-moduleid="'+moduleid+'"]').each(function() {
-					autoreload($(this));
-				});
-			}
-		}
-			/*
-		jQuery(".ajaxautoreload").each(function()
-		{
-			var div = $(this);
-			var url = div.data("url");
-			var options = div.data();
-			if(url != undefined) {
-				jQuery.ajax({
-					url: url, async: false, data: options, success: function (data) {
-						div.replaceWith(data);
-					},
-					xhrFields: {
-		                withCredentials: true
-		            },
-					crossDomain: true
-				});
-			}
-		});*/
-	});
-	
-	
 	
 	function autoreload(div) {
-		if(div.length) {
 			var url = div.data("url");
-			var options = div.data();
 			if(url != undefined) {
+				var options = div.data();
 				jQuery.ajax({
 					url: url, async: false, data: options, success: function (data) {
 						div.replaceWith(data);
@@ -438,7 +405,6 @@ uiload = function() {
 					crossDomain: true
 				});
 			}
-		}
 	}
 	
 	lQuery('#module-dropdown').livequery("click", function(e) {
@@ -842,21 +808,28 @@ uiload = function() {
 					success : function(result, status, xhr, $form) 
 					{
 						//new ajaxautoreload
-						if(form.data("ajaxautoreloadcontainer")) {
-							$(window).trigger("ajaxautoreload");
-						}
-						else {
-							var targetdivinner = form.data("targetdivinner");
-							if( targetdivinner )
+						var classes = form.data("ajaxreloadtargets"); //assetresults, projectpage, sidebaralbums
+						if(classes) 
+						{
+							var splitnames = classes.split(",");
+							$.each(splitnames,function(index,classname)
 							{
-								$("#" + $.escapeSelector(targetdivinner)).html(result);
+								$("." + classname).each(function(index,div)
+								{
+							  	 	autoreload($(div));
+								});
+							});
+						}
+						var targetdivinner = form.data("targetdivinner");
+						if( targetdivinner )
+						{
+							$("#" + $.escapeSelector(targetdivinner)).html(result);
+						}
+						else
+						{		
+							if (targetdiv) {
+								targetdiv.replaceWith(result);
 							}
-							else
-							{		
-								if (targetdiv) {
-									targetdiv.replaceWith(result);
-								}
-						 	}
 						}
 						if (formmodal.length > 0 && form.hasClass("autocloseform")) {
 		                    if (formmodal.modal) {
@@ -872,7 +845,7 @@ uiload = function() {
 		                	hideOverlayDiv(getOverlay());
 		                }
 						
-		                if (form.hasClass("autoreloadsource")) 
+		                if (form.hasClass("autoreloadsource"))  //TODO: Use ajaxreloadtargets
 		                {
 		                    var link = form.data("openedfrom")
 		                    if( link)
