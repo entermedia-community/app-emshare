@@ -29,6 +29,9 @@ jQuery(document).ready(function(url,params)
 			var originalhitsperpage = select.data("hitsperpage");
 			var href = '';
 			var searchtype = select.data('searchtype');
+			if(!moduleid) {
+				moduleid = searchtype;
+			}
 			var targetdiv = select.data('targetdiv');
 			var ismodulesearch = select.data('ismodulesearch');
 			var oemaxlevel = select.data('oemaxlevel');

@@ -52,6 +52,14 @@
 	#end
 #end
 
+#set($reloadsearchtype = $searchtype)
+#set($librarycollectionassets = $context.findValue("librarycollectionassets"))
+#if($searchtype=="librarycollection")
+	#if($librarycollectionassets)
+		#set($reloadsearchtype = "asset")
+	#end
+#end
+
 
 <div id="resultsheader" class="resultsheader">
 <div id="sub-nav" class="emsubnav sub-nav-${module.id}">
@@ -171,7 +179,7 @@
 						name="resultview" 
 						id="selectresultview"  
 						data-hitssessionid="$!hits.getSessionId()" 
-						data-searchtype="$searchtype"
+						data-searchtype="$!reloadsearchtype"
 						data-ismodulesearch = "$!ismodulesearch" 
 						data-componenthome = "$!componenthome"
 						data-page="$!hits.getPage()" 

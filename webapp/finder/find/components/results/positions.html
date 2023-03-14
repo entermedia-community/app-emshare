@@ -1,53 +1,59 @@
 ##needs 	$hits
 
 
-	#if($moduleid=="asset")
-			#if($categoryid || $collectionid)
-				#set($resultsPage = "$applink/views/modules/asset/showcategory.html")
-				#set($resultsPage = "$resultsPage?hitssessionid=$!hits.sessionId&searchtype=$!hits.getSearchType()")
-				#set($resultsPage = "$resultsPage&nodeID=$!categoryid&collectionid=$!collectionid")
-				#set($resultsPage = "$resultsPage&pageposition")
-			#else
-				#set($resultsPage = "$applink/views/modules/asset/index.html?pageposition")
-			#end
+#set($reloadsearchtype = $searchtype)
 
-			#set($oemaxlevel = "1")
-	#elseif($moduleid=="librarycollection")
-			#if(!$resultsPage)
-				#set($resultsPage = "$applink/views/modules/librarycollection/media/showcategory.html")
-			#end
+#if($moduleid=="asset")
+		#if($categoryid || $collectionid)
+			#set($resultsPage = "$applink/views/modules/asset/showcategory.html")
 			#set($resultsPage = "$resultsPage?hitssessionid=$!hits.sessionId&searchtype=$!hits.getSearchType()")
-			#set($resultsPage = "$resultsPage&categoryid=$!categoryid&collectionid=$!collectionid")
+			#set($resultsPage = "$resultsPage&nodeID=$!categoryid&collectionid=$!collectionid")
 			#set($resultsPage = "$resultsPage&pageposition")
-			
-			#set($oemaxlevel = "1")
-	#else
+		#else
+			#set($resultsPage = "$applink/views/modules/asset/index.html?pageposition")
+		#end
+
+		#set($oemaxlevel = "1")
+#elseif($moduleid=="librarycollection")
 		#if(!$resultsPage)
-			#set($resultsPage = "$componenthome/results/index.html")
+			#set($resultsPage = "$applink/views/modules/librarycollection/media/showcategory.html")
 		#end
-		#set($resultsPage = "$resultsPage?hitssessionid=$!hits.sessionId&searchtype=$hits.getSearchType()")
-		#set($resultsPage = "$resultsPage&resultstype=$!resultstype")
-		#if($module)
-			#set($resultsPage = "$resultsPage&module=$module.id")
-		#end
+		#set($resultsPage = "$resultsPage?hitssessionid=$!hits.sessionId&searchtype=$!hits.getSearchType()")
+		#set($resultsPage = "$resultsPage&categoryid=$!categoryid&collectionid=$!collectionid")
 		#set($resultsPage = "$resultsPage&pageposition")
-		#set($oemaxlevel = "2")
+		
+		#set($oemaxlevel = "1")
+		#set($librarycollectionassets = $context.findValue("librarycollectionassets"))
+		#if($librarycollectionassets)
+			#set($reloadsearchtype = "asset")
+		#end
+#else
+	#if(!$resultsPage)
+		#set($resultsPage = "$componenthome/results/index.html")
+	#end
+	#set($resultsPage = "$resultsPage?hitssessionid=$!hits.sessionId&searchtype=$hits.getSearchType()")
+	#set($resultsPage = "$resultsPage&resultstype=$!resultstype")
+	#if($module)
+		#set($resultsPage = "$resultsPage&module=$module.id")
+	#end
+	#set($resultsPage = "$resultsPage&pageposition")
+	#set($oemaxlevel = "2")
+#end
+
+	#if ($ismodulesearch)
+		$context.putPageValue('targetdivinner',  "modulesearchexpandedmodule")
+		$context.putPageValue('oemaxlevel', "3")
 	#end
 
-		#if ($ismodulesearch)
-			$context.putPageValue('targetdivinner',  "modulesearchexpandedmodule")
-			$context.putPageValue('oemaxlevel', "3")
-		#end
+	$context.putPageValue('resultsPage',  $resultsPage)
 	
-		$context.putPageValue('resultsPage',  $resultsPage)
-		
-		#set($targetdivinner = "${moduleid}resultscontainer")
-		$context.putPageValue('targetdivinner',  $targetdivinner)
+	#set($targetdivinner = "${moduleid}resultscontainer")
+	$context.putPageValue('targetdivinner',  $targetdivinner)
+
 	
-		
-		$context.putPageValue('oemaxlevel', $oemaxlevel)
-		
-		#set($updateurl = "true")
+	$context.putPageValue('oemaxlevel', $oemaxlevel)
+	
+	#set($updateurl = "true")
 
 #set($total = $hits.getTotalPages() )
 #if( $total > 1)
@@ -93,13 +99,13 @@
 
 #end
 	<li class="resultsnavtitem" style="width:61px;">
-			 #set( $currenthitsperpage = $userprofile.get("modulehitsperpage"))
+			#set( $currenthitsperpage = $userprofile.get("modulehitsperpage"))
 			#set($hitcountoptions = $mediaarchive.getList("hitcount"))
 			<select class="form-control" 
 				
 				id="hitsperpagechange"
 					data-hitssessionid="$!hits.getSessionId()" 
-					data-searchtype="$!moduleid"
+					data-searchtype="$!reloadsearchtype"
 					data-moduleid="$moduleid"
 					data-ismodulesearch = "$!ismodulesearch" 
 					data-componenthome = "$apphome/views/modules/$moduleid/components"
