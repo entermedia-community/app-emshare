@@ -1629,15 +1629,16 @@ uiload = function() {
 				});
 				//form.submit();
 				var targetdiv = form.data("targetdiv");
-				if ((typeof targetdiv) != "undefined") {
+				/*if ((typeof targetdiv) != "undefined") {
 					$(form).ajaxSubmit({
 						target : "#" + $.escapeSelector(targetdiv), 
 						data:data
 						
 					});
 				} else {
+					*/
 					$(form).trigger("submit");
-				}
+				//}
 				if (form.hasClass("autoclose")) {
 					closeemdialog(form.closest(".modal"));
 				}
