@@ -9,7 +9,7 @@
 		#set( $action = "$!siteroot$apphome/components/opencollections/asset/createcollection.html")
 	#else
 		#set( $action = "$!siteroot$apphome/components/opencollections/createcollection.html")
-		#set($targetdiv = "applicationcontent")
+		#set($targetdiv = "pickcollectionfields")
 	#end
 #end
 
@@ -17,6 +17,7 @@
 		id="adder" 
 		class="validate-inputs #if($targetdiv) ajaxform autocloseform #end" 
 		data-targetdiv="$!{targetdiv}" 
+		data-ajaxreloadtargets="sidebarcontent"
 		action="$action">
 	<input type="hidden" name="save" value="true" />
 	<input type="hidden" name="searchtype" value="$searchtype" />
@@ -33,9 +34,10 @@
 	
 	<input type="hidden" name="field" value="rootcategory" />
 	<input type="hidden" name="rootcategory.value" value="$!data.rootcategory" />
-	
+	<div id="pickcollectionfields">
 	$context.putPageValue("searcher",$searcherManager.getSearcher($catalogid,$searchtype) )	
 	$context.putPageValue("view","${searchtype}/${searchtype}addnew")	
 	$pages.include("/$applicationid/components/xml/detaileditorcss.html", $context)
+	</div>
 </form>
 
