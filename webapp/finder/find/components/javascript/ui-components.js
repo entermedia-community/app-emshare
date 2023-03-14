@@ -3738,6 +3738,9 @@ var resizecolumns = function() {
 			columnsheight = thisheight;
 		}
 	}
+	if(columnsheight<100) {
+		columnsheight = 300;
+	}
 	
 	var allheights  = header_height + resultsheader_height;
 	//$(".col-sidebar-togglers").css("height", columnsheight + allheights);
