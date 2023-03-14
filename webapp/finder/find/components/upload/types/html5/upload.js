@@ -38,26 +38,26 @@ $(document).ready(function()
 	    }
 		
 	    files = allfiles;
-		var inputbox = uploadformarea.find("#upload_field")[0];
+		var inputbox = uploadformarea.find(".upload_field")[0];
 		
-		var upload_field = uploadformarea.find("#upload_field");
+		var upload_field = uploadformarea.find(".upload_field");
 		upload_field.triggerHandler("html5_upload.setFiles",[allfiles]);
 		
 		//inputbox.count = allfiles.length;
 		
 	 	//$("#upload_field").setFiles( allfiles );
 	 	
-	 	uploadformarea.find("#uploadinstructionsafter").hide();
-		var startb = uploadformarea.find("#startbutton");
+	 	uploadformarea.find(".uploadinstructionsafter").hide();
+		var startb = uploadformarea.find(".startbutton");
 		$(startb).text("Upload");
 		$(startb).prop('disabled', false);
-		uploadformarea.find("#uploadinstructionsafter").show();
+		uploadformarea.find(".uploadinstructionsafter").show();
 		uploadformarea.find(".showonselect").show();
 		
 		 
 		 var regex = new RegExp("currentupload", 'g');  
 		 
-	    uploadformarea.find("#up-files-list").empty();
+	    uploadformarea.find(".up-files-list").empty();
 	     //return confirm("You are trying to upload " + total + " files. Are you sure?");
 		 for (var i = 0; i < files.length; i++) 
 		 {
@@ -65,10 +65,10 @@ $(document).ready(function()
 		    if( file.size > 0)
 		    {
 		    	if(i < 101){
-		    		var html = uploadformarea.find("#progress_report_template").html();
+		    		var html = uploadformarea.find(".progress_report_template").html();
 	        	    
 	        	    html = html.replace(regex,i);
-	        	    uploadformarea.find("#up-files-list").append(html);
+	        	    uploadformarea.find(".up-files-list").append(html);
 	        	    
 	        	    //TODO: set the name and size of each row
 	        	    var name = file.name;
@@ -76,9 +76,9 @@ $(document).ready(function()
 	        	    	name = file.webkitRelativePath;
 	        	    }
 	        	    
-	    	    	uploadformarea.find("#progress_report_name" + i).text(name);
+	    	    	uploadformarea.find(".progress_report_name" + i).text(name);
 	        	    var size = bytesToSize(file.size,2);
-	        	    uploadformarea.find("#progress_report_size" + i).text(size);
+	        	    uploadformarea.find(".progress_report_size" + i).text(size);
 		    	}
 	    	    
 
@@ -96,20 +96,20 @@ $(document).ready(function()
 	}
 	
 		
-	lQuery('#filePicker').livequery('click',function(e){
+	lQuery('.filePicker').livequery('click',function(e){
 		e.preventDefault(); 
-		$('#upload_field').trigger('click');
+		$('.upload_field').trigger('click');
         
      });
 	
-	lQuery('#folderPicker').livequery('click',function(e){
+	lQuery('.folderPicker').livequery('click',function(e){
 		e.preventDefault(); 
 		var form = $(this).closest(".uploadformarea");
-		$(form).find('#upload_folder').trigger('click');
+		$(form).find('.upload_folder').trigger('click');
         
      });
 
-	lQuery("#startbutton").livequery('click',function(e) 
+	lQuery(".startbutton").livequery('click',function(e) 
     {
     	e.preventDefault(); 
     		
@@ -127,8 +127,8 @@ $(document).ready(function()
     	
     	$(this).attr('disabled', 'disabled');
     	//$(this).prop('disabled', true);
-    	$("#viewassetsbtn").attr('disabled', 'disabled');
-    	$("#upload_field").triggerHandler("html5_upload.start");
+    	$(".viewassetsbtn").attr('disabled', 'disabled');
+    	$(".upload_field").triggerHandler("html5_upload.start");
     	
     });
 
@@ -162,7 +162,7 @@ $(document).ready(function()
 		            if(e.originalEvent.dataTransfer.files.length) {
 		                e.preventDefault();
 		                e.stopPropagation();
-						$("#upload_field").triggerHandler('html5_upload.filesPicked', [e.originalEvent.dataTransfer.files]);						
+						$(".upload_field").triggerHandler('html5_upload.filesPicked', [e.originalEvent.dataTransfer.files]);						
 		            }   
 		        }
 		        div.removeClass("uploaddragenter");
@@ -228,13 +228,13 @@ $(document).ready(function()
 			        	 {
 			        		 text = "Uploading";
 			        	 }
-			             uploadformarea.find("#progress_report_status" + currentupload).text(text);
+			             uploadformarea.find(".progress_report_status" + currentupload).text(text);
 			         },
 			         setProgress: function(val) {
-			             uploadformarea.find("#progress_report_bar" + currentupload).css('width', Math.ceil(val*100)+"%");
+			             uploadformarea.find(".progress_report_bar" + currentupload).css('width', Math.ceil(val*100)+"%");
 			         },
 			         onFinishOne: function(event, response, name, number, total) {
-			             uploadformarea.find("#progress_report_bar" + currentupload).css('width', "100%");
+			             uploadformarea.find(".progress_report_bar" + currentupload).css('width', "100%");
 			         },
 			         onError: function(event, name, error) {
 			             alert('error while uploading file ' + name);
@@ -244,22 +244,22 @@ $(document).ready(function()
 			             //do a search
 			        	 if( !haderror)
 			        	{
-			        			var startb = uploadformarea.find("#startbutton");
+			        			var startb = uploadformarea.find(".startbutton");
 			        			var complete = startb.data("complete");
 			        			
 			        			$(startb).text(complete);
 			        			$(startb).prop('disabled', 'disabled');
 		    				    allfiles = new Array();
 		    				   
-				   				var completed = uploadformarea.find("#up-files-list-completed li span");
+				   				var completed = uploadformarea.find(".up-files-list-completed li span");
 								$.each(completed,function()
 								{
 									$(this).removeAttr("id");
 								});
-		    				   uploadformarea.find("#filePicker").text("Pick More Files...");
-		    				   uploadformarea.find("#upload_field").removeAttr('disabled');
+		    				   uploadformarea.find(".filePicker").text("Pick More Files...");
+		    				   uploadformarea.find(".upload_field").removeAttr('disabled');
 		    				   
-		    				   var viewassets = uploadformarea.find("#viewassetsbtn");
+		    				   var viewassets = uploadformarea.find(".viewassetsbtn");
 			        		   viewassets.removeAttr('disabled');
 
 			        		   if( viewassets.hasClass("autoclick"))
@@ -305,27 +305,27 @@ $(document).ready(function()
 		
 	}
 				
-	lQuery("#upload_field").livequery( function() 
+	lQuery(".upload_field").livequery( function() 
 	{
 		var inputfield = $(this);
 		inputfield.val('');
 		initUpload(inputfield);
 	});
 	
-	lQuery("#upload_folder").livequery( function() 
+	lQuery(".upload_folder").livequery( function() 
 	{
 		var inputfield = $(this);
 		inputfield.val('');
 		initUpload(inputfield);
 	});
 
-	jQuery("#upload_field").val('');
+	jQuery(".upload_field").val('');
 
 	var allfiles = new Array();
 	
-	jQuery("#up-files-list").empty();
+	jQuery(".up-files-list").empty();
 
-	lQuery("#viewassetsbtn").livequery("click", function(e) {
+	lQuery(".viewassetsbtn").livequery("click", function(e) {
 		
 		var btn = jQuery(this);
 		var href = null;
