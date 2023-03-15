@@ -1623,8 +1623,8 @@ uiload = function() {
 				
 				data.id = rowid;
 				data.oemaxlevel = form.data("oemaxlevel");
-				emselectable.find('#emselectedrow').val(rowid);
-				emselectable.find('.emneedselection').each(function() {
+				form.find('#emselectedrow').val(rowid);
+				form.find('.emneedselection').each(function() {
 					clicked.removeAttr('disabled');
 				});
 				//form.submit();
@@ -1637,7 +1637,7 @@ uiload = function() {
 					});
 				} else {
 					*/
-					$(form).trigger("submit");
+				$(form).trigger("submit");
 				//}
 				if (form.hasClass("autoclose")) {
 					closeemdialog(form.closest(".modal"));
