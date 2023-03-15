@@ -19,27 +19,35 @@
 	
 	<div class="emgridcell-fields">
 	#foreach( $detail in $details )
-		#if( $searcherManager )
-			#set( $val = $searcherManager.getValue($data,$detail) )	
-		#else
-			#set( $val = $!{data.getProperty($detail.getId())} )
-		#end
 	
-		#if( !$val )
-			#set( $val = $!{data.get($detail.getId())} )
-		#end
+
+			#if( $searcherManager )
+				#set( $val = $searcherManager.getValue($data,$detail) )	
+			#else
+				#set( $val = $!{data.getProperty($detail.getId())} )
+			#end
 		
-		#if( !$val) 
-			#set( $val = "") 
-		#end
-		
-		#if( $val) 
-			$!context.putPageValue("val",$val)
-			$!context.putPageValue("detail",$detail)
+			#if( !$val )
+				#set( $val = $!{data.get($detail.getId())} )
+			#end
 			
-			$pages.include("$xmledithome/detailreadonly.html", $context)
+			#if( !$val) 
+				#set( $val = "") 
+			#end
 			
-		#end
+			#if( $val) 
+				$!context.putPageValue("val",$val)
+				$!context.putPageValue("detail",$detail)
+			
+				#if($detail.viewType == "tageditor")
+					#set($tagssearchlink = "$siteroot$apphome/views/modules/${searchtype}/index.html")
+					$context.putPageValue("tagssearchlink",$tagssearchlink)
+					
+					$pages.include("$componenthome/gridsample/types/tags.html", $context)
+				#else
+					$pages.include("$xmledithome/detailreadonly.html", $context)
+				#end
+			#end
 	#end
 	</div>
 #end 
