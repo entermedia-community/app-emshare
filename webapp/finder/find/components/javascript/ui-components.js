@@ -2925,7 +2925,6 @@ uiload = function() {
 		var targetdiv = toggler.data('targetdiv');
 		var sidebar = toggler.data('sidebar');
 		options["propertyfield"] = "sidebarcomponent";
-		options["module"] = $("#applicationcontent").data("moduleid");
 		var url = toggler.attr("href");
 		//console.log(data.modulesearchhitssessionid);
 		if (toggler.data('action') == 'home') {
@@ -2941,7 +2940,10 @@ uiload = function() {
 					$(".pushcontent").removeClass('pushcontent-'+sidebar);
 		        	$(".pushcontent").removeClass('pushcontent-open');
 					$(".pushcontent").addClass('pushcontent-fullwidth');
-						//$(".pushcontent").css("margin-left","");
+					
+					
+					history.pushState($("#application").html(), null, url);
+					
 					$(window).trigger("resize");
 				},
 				xhrFields: {
@@ -2952,6 +2954,7 @@ uiload = function() {
 		}
 		else if (toggler.data('action') == 'hide') {
 			//hide sidebar
+			options["module"] = $("#applicationcontent").data("moduleid");
 			options["sidebarcomponent.value"] = "";
 			var url = apphome + '/components/sidebars/index.html';
 
@@ -2977,6 +2980,7 @@ uiload = function() {
 		}
 		else {
 			//showsidebar
+			options["module"] = $("#applicationcontent").data("moduleid");
 			options["sidebarcomponent.value"] = sidebar;
 			var url  = '';
 			if(options["contenturl"] != undefined){
