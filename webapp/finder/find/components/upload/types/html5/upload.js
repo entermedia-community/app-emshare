@@ -205,6 +205,13 @@ $(document).ready(function()
 						uploadformarea.find("#upload-start").hide();
 						uploadformarea.find("#upload-completed").show();
 						
+						var entityuploadPicker = uploadformarea.find(".entityuploadPicker");
+						if(entityuploadPicker)
+							{
+							entityuploadPicker.hide();
+							entityuploadPicker.next(".loadericon").show();
+							}
+						
 			             return true;
 			        	 //Loop over all the files. add rows
 			        	 //alert("start");

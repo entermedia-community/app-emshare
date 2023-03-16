@@ -1309,12 +1309,15 @@ uiload = function() {
 		}
 	});
 	
-	function expandmediabox(box) {
+	function expandmediabox(item) {
+		var box = item.closest(".entity-media-box");
 		box.removeClass("collapsedmediabox");
 		$(this).find(".expandmediaboxicon").removeClass("fa-caret-right").addClass("fa-caret-down");
 	}
 	
-	lQuery(".expandmediabox").livequery("click", expandmediabox($(this)));
+	lQuery(".expandmediabox").livequery("click", function(e) {
+		expandmediabox($(this));
+	});
 	
 	var lasttypeahead;
 	var lastsearch;
