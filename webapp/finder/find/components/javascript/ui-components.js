@@ -1296,7 +1296,7 @@ uiload = function() {
 	});
 	
 	
-	lQuery(".expandmediabox").livequery("click", function(event) {
+	lQuery(".mediaboxheader").livequery("click", function(event) {
 		event.preventDefault();
 		var box = $(this).closest(".entity-media-box");
 		box.toggleClass("collapsedmediabox");
@@ -1309,6 +1309,12 @@ uiload = function() {
 		}
 	});
 	
+	function expandmediabox(box) {
+		box.removeClass("collapsedmediabox");
+		$(this).find(".expandmediaboxicon").removeClass("fa-caret-right").addClass("fa-caret-down");
+	}
+	
+	lQuery(".expandmediabox").livequery("click", expandmediabox($(this)));
 	
 	var lasttypeahead;
 	var lastsearch;

@@ -14,7 +14,7 @@
 #if($moduleid && $entityid)
 	#set( $existingcategories =  $mediaarchive.getBean("entityManager").loadCategories($moduleid, $entityid))
 #end
-
+$existingcategories
 #set($existingids = [])
 #foreach ($c in $existingcategories)
 	#set($null = $existingids.add($c.getId()))
@@ -29,7 +29,7 @@
 	#end	
 	
 	<div class="entity-media-header">
-		<h4 class="expandmediabox">
+		<h4 class="mediaboxheader">
 		#if(!$existingcategories)
 			<i class="fas  fa-caret-right  expandmediaboxicon"></i>
 		#else
@@ -56,19 +56,21 @@
 				id="" 
 				title="[[Upload Folder]]" style="margin-top: 0">
 				<i class="fas fa-upload"></i></a>
-			
-					  <input class="upload_field" data-autostartupload="true" type="file" style="position:absolute; top:-2000px;" multiple="multiple"  />
-					  <input class="upload_folder" type="file" style="position:absolute; top:-2000px;" webkitdirectory multiple="multiple"  />
+					<input class="upload_field" data-autostartupload="true" type="file" style="position:absolute; top:-2000px;" multiple="multiple"  />
+					<input class="upload_folder" type="file" style="position:absolute; top:-2000px;" webkitdirectory multiple="multiple"  />
 					  
-					  #set( $root = "$siteroot$componenthome/upload/types/html5")
-					  <form id="uploaddata" name="wizard" onSubmit="return false;" 
-		data-finishaction="" action="$root/finish.html" class="force-validate-inputs" >
-					  	<input name="createentityfolder" value="true" type="hidden"/>
-					  	<input name="entitytype" value="$moduleid" type="hidden"/>
-					  	<input name="selected$moduleid" value="$entityid" type="hidden"/>
-					    ##<input name="field" value="$moduleid" />
-					  	##<input name="${moduleid}.value" value="$entityid" />
-					  	<input name="sourcepath" value="$uploadsourcepath" type="hidden"/>
+				  #set( $root = "$siteroot$componenthome/upload/types/html5")
+				  <form id="uploaddata" 
+				  		name="wizard" 
+				  		onSubmit="return false;" 
+						data-finishaction="" action="$root/finish.html" class="force-validate-inputs" >
+				  	<input name="createentityfolder" value="true" type="hidden"/>
+				  	<input name="entitytype" value="$moduleid" type="hidden"/>
+				  	<input name="selected$moduleid" value="$entityid" type="hidden"/>
+				    ##<input name="field" value="$moduleid" />
+				  	##<input name="${moduleid}.value" value="$entityid" />
+				  	<input name="sourcepath" value="$uploadsourcepath" type="hidden"/>
+				  	</form>
 			#end
 			
 			#set($searchlink = "$apphome/components/categories/search/searchcategory.html")
@@ -89,7 +91,7 @@
 	   #end	
 	   
 	</div>
-	
+	<div class="mediaboxbody">
 	
 
 		<div  id="cat-list" class="emlist">
@@ -187,6 +189,7 @@
 			
 		#end
 		</table>
+		</div>
 		</div>
 	</div>
 </div>

@@ -98,8 +98,8 @@ $(document).ready(function()
 		
 	lQuery('.filePicker').livequery('click',function(e){
 		e.preventDefault(); 
-		$('.upload_field').trigger('click');
-        
+		var form = $(this).closest(".uploadformarea");
+		$(form).find('.upload_field').trigger('click');
      });
 	
 	lQuery('.folderPicker').livequery('click',function(e){
@@ -256,6 +256,7 @@ $(document).ready(function()
 								{
 									$(this).removeAttr("id");
 								});
+								
 		    				   uploadformarea.find(".filePicker").text("Pick More Files...");
 		    				   uploadformarea.find(".upload_field").removeAttr('disabled');
 		    				   

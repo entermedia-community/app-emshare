@@ -161,8 +161,6 @@
 		</ul>
 		<ul class="resultsnavright">
 		
-		$pages.include("$componenthome/results/positions.html", $context)
-		
 			#if(!$resultview)
 				#set($resultview = $userprofile.get("$!{searchtype}resultview"))
 				#if (!$resultview)
@@ -172,6 +170,11 @@
 					#set($resultview = "stackedgallery")
 				#end
 			#end
+			
+			$context.putPageValue("resultview", $resultview)
+			
+			
+			$pages.include("$componenthome/results/positions.html", $context)
 			
 			#if(!$edit || $edit == "false"  )
 				<li class="resultsnavtitem">

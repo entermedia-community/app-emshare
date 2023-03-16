@@ -20,57 +20,110 @@ $context.putPageValue("thumbsize", "small" )
 $context.putPageValue("primaryimage", $entity.primaryimage )
 $context.putPageValue("mediarender", "attachedmedialist" )
 <div id="entityassetresults#eid($entityid)" class="entity-media-box #if(!$assetshits) collapsedmediabox #end">
-			<div class="entity-media-header">
-				<h4 class="expandmediabox">
-				#if(!$assetshits)
-					<i class="fas  fa-caret-right  expandmediaboxicon"></i>
+	<div  class="entityassetresults uploadformarea" data-onupload="reloadentity" data-entityid="$entityid" >
+		<div class="entity-media-header">
+			<h4 class="mediaboxheader">
+			#if(!$assetshits)
+				<i class="fas  fa-caret-right  expandmediaboxicon"></i>
+			#else
+				<i class="fas  fa-caret-down  expandmediaboxicon"></i>
+			#end [[Attached Files]]
+			</h4>
+			
+			#if($moduleid && $entityid)
+			
+			#set($uploadsourcepath =  $mediaarchive.getBean("entityManager").loadUploadSourcepath($module, $entity, $context.getUser()))
+			#ifnull($uploadsourcepath)
+				#set($uploadsourcepath = "Albums/Users/$user.getScreenName()/Desktops")
+			#end
+			
+				#if($desktopX)
+				<a href="#" 
+						class="ajax localfilePicker expandmediabox"
+						data-targetdivinner="$targetdiv"
+						data-closedialog="true" 
+						data-closemediaviewer="true"
+						data-updateurl="true"
+						data-oemaxlevel="$!oemaxlevel"
+						data-sourcepath="Albums/Users/$user.getScreenName()/Desktops"
+						title="[[Upload Media]]">
+						<i class="fas fa-upload"></i></a>
+				
 				#else
-					<i class="fas  fa-caret-down  expandmediaboxicon"></i>
-				#end [[Attached Files]]</h4>
-				#if($moduleid && $entityid)
-				
-					#if($desktopX)
+					##set($uploadlink = "$siteroot$applink/views/modules/asset/add/start.html?entityupload=true&entitytype=$moduleid&addselection=$entityid&clearotherentities=true")
+					##set($oemaxlevel = "1")
+					##set($targetdiv = "applicationmaincontent")
 					<a href="#" 
-							class="ajax localfilePicker"
-							data-targetdivinner="$targetdiv"
-							data-closedialog="true" 
-							data-closemediaviewer="true"
-							data-updateurl="true"
-							data-oemaxlevel="$!oemaxlevel"
-							data-sourcepath="Albums/Users/$user.getScreenName()/Desktops"
-							title="[[Upload Media]]">
-							<i class="fas fa-upload"></i></a>
-					
-					#else
-						#set($uploadlink = "$siteroot$applink/views/modules/asset/add/start.html?entityupload=true&entitytype=$moduleid&addselection=$entityid&clearotherentities=true")
-						#set($oemaxlevel = "1")
-						#set($targetdiv = "applicationmaincontent")
-						<a href="$uploadlink" 
-							class="ajax entity-add-media"
-							data-targetdivinner="$targetdiv"
-							data-closedialog="true" 
-							data-closemediaviewer="true"
-							data-updateurl="true"
-							data-oemaxlevel="$!oemaxlevel"
-							title="[[Upload Media]]">
-							<i class="fas fa-upload"></i></a>
-					#end	
-					
-					#set($searchlink = "$componenthome/assetpicker/entities/searchassets.html")
-					<a href="$searchlink"
-						id="assetpicker#eid($entityid)" 
-						data-launcher="assetpicker#eid($entityid)"
-						data-targetdiv="entityassetresults#eid($entityid)"
-						data-clickurl="$componenthome/gridsample/preview/media/listassets.html"
-						data-entityid="$entityid"
-						data-moduleid="$moduleid"
+						class="entity-add-media filePicker"
+						title="[[Upload Media]]">
+						<i class="fas fa-upload"></i></a>
 						
-						data-target="$siteroot$apphome/components/assetpicker/search/searchassets.html?targetdiv=${detail.id}-value&detailid=${detail.id}"
-						data-dialogid="assetsearchdialog" 
-						class="emdialog"
-						title="[[Choose Folder]]"><i class="fas fa-search"></i></a>
-				#end
-				</div>
+						<input class="upload_field" data-autostartupload="true" type="file" style="position:absolute; top:-2000px;" multiple="multiple"  />
+						#set( $root = "$siteroot$componenthome/upload/types/html5")
+					  <form id="uploaddata" 
+					  		name="wizard" 
+					  		onSubmit="return false;" 
+							data-finishaction="" action="$root/finish.html" class="force-validate-inputs" >
+					  	<input name="createentityfolder" value="true" type="hidden"/>
+					  	<input name="entitytype" value="$moduleid" type="hidden"/>
+					  	<input name="selected$moduleid" value="$entityid" type="hidden"/>
+					    <input name="field" value="$moduleid"type="hidden" />
+					  	<input name="${moduleid}.value" value="$entityid"type="hidden" />
+					  	<input name="sourcepath" value="$uploadsourcepath" type="hidden"/>
+					  	
+					  	</form>
+				#end	
 				
-				$pages.include("$componenthome/gridsample/preview/attachedmedia.html",$context)
-		</div>
+				#set($searchlink = "$componenthome/assetpicker/entities/searchassets.html")
+				<a href="$searchlink"
+					id="assetpicker#eid($entityid)" 
+					data-launcher="assetpicker#eid($entityid)"
+					data-targetdiv="entityassetresults#eid($entityid)"
+					data-clickurl="$componenthome/gridsample/preview/media/listassets.html"
+					data-entityid="$entityid"
+					data-moduleid="$moduleid"
+					
+					data-target="$siteroot$apphome/components/assetpicker/search/searchassets.html?targetdiv=${detail.id}-value&detailid=${detail.id}"
+					data-dialogid="assetsearchdialog" 
+					class="emdialog"
+					title="[[Choose Folder]]"><i class="fas fa-search"></i></a>
+			#end
+			</div>
+			<div class="mediaboxbody">
+			
+			##ifnull($desktop)
+			<div>
+				<!-- This is not shown -->
+		       <div class="progress_report_template" style="display:none;">
+		        <li class="uploadprogressrow" >
+					<span style="width: 0px;" class="uploadprogress progress_report_barcurrentupload"></span>
+					<a href="#">
+						<span   class="progress_report_namecurrentupload name"></span>
+						<span   class="progress_report_sizecurrentupload size"></span>
+						<span   class="progress_report_statuscurrentupload uploadstatus"></span>
+					</a>	
+				</li>
+			 	</div>
+			 	
+			 	<ul class="up-files-list">
+				</ul>	
+			 	
+			 	<div class="completed-uploads" style="display:none;padding-top:3px;" >
+				<div class="ui-widget uipanel">
+				    <div  class="ui-widget-header">[[Upload Queue]]</div>
+				    <div>
+							<ul class="up-files-list up-files-list-completed" >
+							</ul>	
+					</div>
+				</div>	
+				</div>		
+			</div>
+			##end
+			
+			$pages.include("$componenthome/gridsample/preview/attachedmedia.html",$context)
+			
+			</div>
+	</div>
+</div>	
+
+
