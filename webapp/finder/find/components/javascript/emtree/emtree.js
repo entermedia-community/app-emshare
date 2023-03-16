@@ -441,6 +441,18 @@ $(document).ready(function()
 		return false;
 	} );
 
+	lQuery(".treecontext #downloadnode").livequery('click', function(event) 
+	{
+		event.stopPropagation();
+		var node = getNode(this);
+		var nodeid = node.data('nodeid');
+		var catname = node.data("categorynameesc");
+		
+		var tree = node.closest(".emtree");
+		var link = tree.data("home") + "/views/modules/asset/downloads/bycategory/" + nodeid + "/" + catname +".zip"
+		window.location.href = link;		
+		return false;
+	} );
 	
 function getPosition(e) {
   var posx = 0;

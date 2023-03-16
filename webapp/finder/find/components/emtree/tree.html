@@ -38,7 +38,8 @@
 			class="noderow categorydraggable" 
 			data-nodeid="$cat.id" 
 			data-depth="$depth" 
-			data-categoryname="$cat.name" 
+			data-categoryname="$cat.name"
+			 data-categorynameesc="#esc($cat.name)"
 			data-collectionid="$!collectionid"
 			 > 
 			#set( $checked = $render.isIdSelected($cat.id) )
@@ -184,13 +185,13 @@
 		</div>
 	</div>
 	
-	#if($caneditcategorytree || $editcategories || $canviewcategoryupload)
+	#if($caneditcategorytree || $editcategories || $canviewcategoryupload || $download)
 	
 	<div id="${treename}contextMenu" class="dropdown clearfix treecontext"  data-treename="$treename">
 	    <ul class="dropdown-menu dropdown-menu-right dropdown-context" role="menu" aria-labelledby="dropdownMenu">
 	    #if( $desktop )
 		<li>       	
-		<a href="#" class="treedesktopdownload  dropdown-item" title="[[Download]]">
+		<a href="#" class="treedesktopdownload  drx	opdown-item" title="[[Download]]">
        	<i class="fas fa-download"> </i> [[Download]]</a></li>
       	<li class="divider"></li>
        	#end
@@ -199,10 +200,14 @@
 	      	<li><a id="addmedia" tabindex="-1" href="#" data-cancelsubmit="false" class="dropdown-item">[[Upload]]</a></li>
 	      	<li class="divider"></li>
 	    #end
+	    #if( $candownload  )
+	    	<li><a id="downloadnode" tabindex="-1" href="#" class="dropdown-item">[[Download]]</a></li>
+	    #end
 	    
 	    #if( $editable && $caneditcategorytree  )
 	    	<li><a id="createnode" tabindex="-1" href="#" class="dropdown-item">[[Add Category]]</a></li>
 	    #end
+
 		#if( $editable && $caneditcategorytree )
 			#if($canaddnewcollection) 
 	      		<li>
