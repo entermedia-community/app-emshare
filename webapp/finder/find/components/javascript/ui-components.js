@@ -1286,9 +1286,13 @@ uiload = function() {
 		}
 	});
 	
-	lQuery(".emgrid-content").livequery("click", function(event) {
-		
-		
+	
+	
+	
+	
+	lQuery(".submoduleedit").livequery("click", function(event) {
+		$(this).closest(".editentitymetadata-submodule").addClass("editingsubmodule");
+		$(this).hide();
 	});
 	
 	

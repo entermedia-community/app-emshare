@@ -1198,7 +1198,8 @@ jQuery(document).ready(function(url,params)
                 options["sortby"] = id + 'Down';
             	$.get(link, options, function(data) 
     			{
-    				$(targetdiv).replaceWith(data);
+    				//$(targetdiv).replaceWith(data);
+            		$(targetdiv).html(data);
     			});
             }
     });

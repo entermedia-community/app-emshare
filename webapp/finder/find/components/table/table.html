@@ -32,6 +32,9 @@
 [[No view defined for]]: $viewpath
 #end
 
+
+#set($sortable = "sortable")
+
 ##For Subtables on entities
 #if(!$tabletype)
 	#set( $tabletype = $context.getRequestParameter("tabletype"))
@@ -43,20 +46,17 @@
 #set( $targetrendertype = $context.getRequestParameter("targetrendertype"))
 #if($tabletype == "subentityadd")
 	#set( $targetdiv = $context.getRequestParameter("targetdiv"))
+	#set($sortable = "")
 #end
-
 
 #set($clickurl = $context.getRequestParameter("clickurl"))
 #set($clickurltargetdiv = $context.getRequestParameter("clickurltargetdiv"))
 #set($clickurloemaxlevel = $context.getRequestParameter("clickurloemaxlevel"))
 
 
-
 #set($emselectableform = $context.getRequestParameter("emselectableform"))
 
-
 #set($hits = $tablehits)
-
 
 #if( $hits && $hits.size() > 0 )
 	#set($total = $hits.getTotalPages() )
@@ -168,12 +168,17 @@
 			<tr id="tableheader" class="tableheader">
 			
 			#foreach( $detail in $details )
-			<th class="sortable #if( $edit)editcolumnheader #end #if( $sortby.startsWith($detail.getId() ) ) currentsort #if( $sortby.endsWith("Up") ) up #else down #end #end" 
+			<th class='$!sortable 
+				#if($edit)editcolumnheader #end 
+				#if($sortable && $sortby.startsWith($detail.getId())) 
+				currentsort 
+				#if($sortby.endsWith("Up")) up #else down #end 
+				#end' 
 				id="th-$detail.id" 
 				data-sortby="$detail.id">
 				#text($detail.text)
 				
-				#if ($sortby.startsWith($detail.getId()))
+				#if ($sortable && $sortby.startsWith($detail.getId()))
 						#if($sortby.endsWith("Up"))
 							#set($sorticon="up")
 						#else
