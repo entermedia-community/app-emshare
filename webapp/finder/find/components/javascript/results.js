@@ -1344,8 +1344,7 @@ checkScroll = function()
 
 
     var page = parseInt(resultsdiv.data("pagenum")); 
-    
-    
+/*   
     var nextpage = gridcurrentpageviewport;
     if(currentscroll>=gridlastscroll) {
     	scrolldirection = "down";
@@ -1360,7 +1359,7 @@ checkScroll = function()
     gridlastscroll = currentscroll;
     
     
-	var firstelementonpage = $(".masonry-grid-cell[data-pagenum='"+ (nextpage) +"']:first");
+	var firstelementonpage = $(".masonry-grid-cell[data-positionnum='"+ (nextpage) +"']:first");
 	if(firstelementonpage.length > 0) 
 	{
 		var elementviewport = elementvisibility(firstelementonpage);
@@ -1370,7 +1369,14 @@ checkScroll = function()
 			gridupdatepositions(grid, gridcurrentpageviewport);
 		}
 	}
-	
+	*/
+    
+    gridupdatepositions(grid);
+    
+    
+    
+    
+    
     var total = parseInt(resultsdiv.data("totalpages"));
 	// console.log("checking scroll " + stopautoscroll + " page " + page + " of
 	// " + total);
@@ -1447,12 +1453,38 @@ function elementvisibility(obj) {
 }
 
 
-function gridupdatepositions(grid, position) {
+function gridupdatepositions(grid) {
+	
+	var oldposition = grid.data("visibleposition");
+	console.log("Old Position: " + oldposition);
 	var positionsDiv = grid.closest("#resultsdiv");
 	positionsDiv = positionsDiv.find(".resultspositions");
-	positionsDiv.data("currentposition", position);
-	autoreload(positionsDiv);
+	
+	
+	$(".masonry-grid-cell").each(function(index, cell){
+		
+    	var elementviewport = elementvisibility($(cell));
+    	if(elementviewport[1]>'0.35') {
+    		var pageposition = $(cell).data("positionnum");
+    		if(pageposition != oldposition)
+			{
+    			autoreload(positionsDiv, function(){
+    				var current = $(".currentposition"+pageposition);
+    				if(current.length > 0) {
+    					$(".current").removeClass("current");
+    					current.addClass("current");
+    					 console.log("Reloaded: " + pageposition);
+    					 
+    				}
+    			});
+    			grid.data("visibleposition", pageposition);
+    			return false;
+			}
+    		
+    	}
+    });
 }
+
 
 
 gridResize = function() 

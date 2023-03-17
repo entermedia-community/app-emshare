@@ -3617,13 +3617,21 @@ uiload = function() {
 
 
 
-function autoreload(div) {
+function autoreload(div, callback) {
 	var url = div.data("url");
 	if(url != undefined) {
 		var options = div.data();
 		jQuery.ajax({
-			url: url, async: false, data: options, success: function (data) {
+			url: url, 
+			async: false, 
+			data: options, 
+			success: function (data) {
 				div.replaceWith(data);
+
+				if( callback && typeof callback === "function" ) {  //make sure it exists and it is a function
+            		callback();  //execute it
+            	}
+				
 			},
 			xhrFields: {
                 withCredentials: true
