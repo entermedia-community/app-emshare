@@ -174,7 +174,39 @@
 			$context.putPageValue("resultview", $resultview)
 			
 			
-			$pages.include("$componenthome/results/positions.html", $context)
+			
+			#set($total = $hits.getTotalPages() )
+			#if( $total > 1)
+			<li class="resultpages" style="padding-top:1px;">			
+				$pages.include("$componenthome/results/positions.html", $context)
+			#end
+			
+			##	 <li class="textheader">
+			##			<span class="text">#if($total > 1) [[of]] $total [[pages]]#else [[page]]#end  </span>
+			##	</li>	
+			
+			
+			#if($resultview != "stackedgallery")
+				<li class="resultsnavtitem" style="width:61px;">
+						#set( $currenthitsperpage = $userprofile.get("modulehitsperpage"))
+						#set($hitcountoptions = $mediaarchive.getList("hitcount"))
+						<select class="form-control" 
+							id="hitsperpagechange"
+								data-hitssessionid="$!hits.getSessionId()" 
+								data-searchtype="$!reloadsearchtype"
+								data-moduleid="$moduleid"
+								data-ismodulesearch = "$!ismodulesearch" 
+								data-componenthome = "$apphome/views/modules/$moduleid/components"
+								data-page="$!hits.getPage()" 
+								data-showremoveselections="$!showremoveselections" 
+								data-collectionid="$!librarycol.getId()"
+								data-targetdiv="resultsviewcontainer$!moduleid">
+						#foreach($ho in $hitcountoptions)
+						<option value="$ho.id" #if($currenthitsperpage==$ho.id) selected="selected"#end>#text($ho)</option>
+						#end	
+						</select>
+				</li>		
+			#end
 			
 			#if(!$edit || $edit == "false"  )
 				<li class="resultsnavtitem">

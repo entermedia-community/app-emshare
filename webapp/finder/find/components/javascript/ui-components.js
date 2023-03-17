@@ -390,23 +390,6 @@ uiload = function() {
 		$(this).focus();
 	})
 	
-	
-	function autoreload(div) {
-			var url = div.data("url");
-			if(url != undefined) {
-				var options = div.data();
-				jQuery.ajax({
-					url: url, async: false, data: options, success: function (data) {
-						div.replaceWith(data);
-					},
-					xhrFields: {
-		                withCredentials: true
-		            },
-					crossDomain: true
-				});
-			}
-	}
-	
 	lQuery('#module-dropdown').livequery("click", function(e) {
 		e.stopPropagation();
 		if ($(this).hasClass('active')) {
@@ -3631,6 +3614,26 @@ uiload = function() {
 
 
 }// uiload
+
+
+
+function autoreload(div) {
+	var url = div.data("url");
+	if(url != undefined) {
+		var options = div.data();
+		jQuery.ajax({
+			url: url, async: false, data: options, success: function (data) {
+				div.replaceWith(data);
+			},
+			xhrFields: {
+                withCredentials: true
+            },
+			crossDomain: true
+		});
+	}
+}
+
+
 
 
 showajaxstatus = function(uid)

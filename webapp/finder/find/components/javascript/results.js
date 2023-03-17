@@ -1262,6 +1262,9 @@ togglehits =  function(action)
 
 }
 var stopautoscroll = false;
+var gridcurrentpageviewport = 1; 
+var gridlastscroll = 0;
+var gridscrolldirection = 'down';
 
 checkScroll = function() 
 {
@@ -1273,13 +1276,16 @@ checkScroll = function()
 	if (grid== "undefined" || grid.data("singlepage")==true) {
 		return;
 	}
+	
+	var currentscroll = $(window).scrollTop();
+	
 	if( stopautoscroll )
 	{
 		// ignore scrolls
-		if( getOverlay().is(":visible") )
+		if( typeof getOverlay === "function" && getOverlay().is(":visible") )
 		{
 			var lastscroll = getOverlay().data("lastscroll");
-			var currentscroll = $(window).scrollTop();
+			
 			if( Math.abs(lastscroll -  currentscroll) > 50 )
 			{
 				$(window).scrollTop( lastscroll );
@@ -1303,6 +1309,33 @@ checkScroll = function()
 
 
     var page = parseInt(resultsdiv.data("pagenum")); 
+    
+    
+    var nextpage = gridcurrentpageviewport;
+    if(currentscroll>=gridlastscroll) {
+    	scrolldirection = "down";
+    	nextpage = nextpage+1
+    }
+    else
+    {
+    	scrolldirection = "up";
+    	nextpage = nextpage-1;
+    }
+    
+    gridlastscroll = currentscroll;
+    
+    
+	var firstelementonpage = $(".masonry-grid-cell[data-pagenum='"+ (nextpage) +"']:first");
+	if(firstelementonpage.length > 0) 
+	{
+		var elementviewport = elementvisibility(firstelementonpage);
+		if(elementviewport[1]>'0.35') {
+			gridcurrentpageviewport = nextpage;
+			console.log(gridcurrentpageviewport + "-> " + elementviewport[1]);
+			gridupdatepositions(grid, gridcurrentpageviewport);
+		}
+	}
+	
     var total = parseInt(resultsdiv.data("totalpages"));
 	// console.log("checking scroll " + stopautoscroll + " page " + page + " of
 	// " + total);
@@ -1313,23 +1346,13 @@ checkScroll = function()
 
 	// console.log($(window).scrollTop() + " + " + (visibleHeight*2 + 500) +
 	// ">=" + totalHeight);
-	var atbottom = ($(window).scrollTop() + (visibleHeight*2 + 500)) >= totalHeight ; // is
-																						// the
-																						// scrolltop
-																						// plus
-																						// the
-																						// visible
-																						// equal
-																						// to
-																						// the
-																						// total
-																						// height?
+	var atbottom = ($(window).scrollTop() + (visibleHeight*2 + 500)) >= totalHeight ; // is the scrolltop plus the visible
+																						// equal to the total height?
 	if(	!atbottom )
     {
-    	// console.log("Not yet within 500px");
-	  return;
+	  return; //not yet at bottom (-500px)
 	}
-	 
+ 
    stopautoscroll = true; 
    var session = resultsdiv.data("hitssessionid");
    page = page + 1;
@@ -1379,6 +1402,21 @@ checkScroll = function()
 			   }
 			}
 		});
+}
+
+
+function elementvisibility(obj) {
+	var winw = jQuery(window).width(),winh = jQuery(window).height(),elw = obj.width(),
+    elh = obj.height(), o = obj[0].getBoundingClientRect(),x1 = o.left - winw, x2 = o.left + elw, y1 = o.top - winh, y2 = o.top + elh; 
+	return [Math.max(0, Math.min((0 - x1) / (x2 - x1), 1)), Math.max(0, Math.min((0 - y1) / (y2 - y1), 1))];
+}
+
+
+function gridupdatepositions(grid, position) {
+	var positionsDiv = grid.closest("#resultsdiv");
+	positionsDiv = positionsDiv.find(".resultspositions");
+	positionsDiv.data("currentposition", position);
+	autoreload(positionsDiv);
 }
 
 
