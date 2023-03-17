@@ -29,17 +29,18 @@
 <div id="moduleadvfilterpanel" class="advfilterpanel" >
 
 
-<h3>[[Filter]] $module.getName($context)
+<h3>[[Filter]] #text($module)
 #if( !$edit )
 	<div class="filters-edit-icon float-right">
-		<a class="ajax" data-targetdiv="moduleadvfilterpanel" href="$siteroot$componenthome/filters/index.html?editfilters=true&oemaxlevel=1&collectionid=$!collectionid&moduleid=$!module.getId()"><i class="fas fa-cog"></i></a>
+		<a class="ajax" data-targetdiv="moduleadvfilterpanel" 
+			href="$siteroot$componenthome/filters/index.html?editfilters=true&oemaxlevel=1&collectionid=$!collectionid&moduleid=$!module.getId()"><i class="fas fa-cog"></i></a>
 	</div>
 #end
 </h3>
 
 
 <div class="advfilterpanelcontent" >
-	#set( $view = "$moduleid/${moduleid}advancedfilter")
+	#set( $view = "$moduleid/$!{moduleid}advancedfilter")
 
 	#set( $searcher = $mediaarchive.getSearcher($moduleid))
 	
@@ -55,21 +56,23 @@
 <form  	name="filtersortform" 
 		id="filtersortform" 
 		class="autosubmitform filterform em-widget-content ajaxform" 
-		data-targetdiv="applicationcontent" 
+		data-targetdiv="applicationmaincontent" 
 		method="POST"  
 	#if( $librarycol)
 		data-oemaxlevel="2" 
 		action="$siteroot$apphome/views/modules/librarycollection/columnsort.html" 
 	#else
-		data-oemaxlevel="3" 
-		action="$siteroot$apphome/views/modules/$moduleid/index.html" 
+		data-oemaxlevel="1" 
+		action="$siteroot$apphome/views/modules/$moduleid/components/results/columnsort.html" 
 	#end 
 	>
 	<div class="form-group">
 	#if( $librarycol)
-		<input name="collectionid" type="hidden" value="$librarycol.getId()">
+		<input name="collectionid" type="hidden" value="$!{librarycol.getId()}" />
 	#end
-		<input name="searchtype" type="hidden" value="$moduleid">
+		<input name="searchtype" type="hidden" value="$!moduleid" />
+		<input name="hitssessionid" type="hidden" value="$!hits.getSessionId()" />
+		
 		<div class="filter-box">
 			<div class="filter-box-header">
 					<span class="toggle-filter sidetoggle" data-target="filterboxsorting">
@@ -93,7 +96,7 @@
 				<select data-sortup="$hits.searchQuery.isSortUp()" 
 						class="form-control form-control-sm select2 autosubmited" 
 						name="sortby" 
-						id="${moduleid}sortby" 
+						id="$!{moduleid}sortby" 
 						data-allowclear="false" 
 						style="" >
 					#foreach( $detail in $alldetails)
@@ -144,7 +147,7 @@
 			#end 
 	>
 		#if( $librarycol)
-			<input name="collectionid" type="hidden" value="$librarycol.getId()">
+			<input name="collectionid" type="hidden" value="$!librarycol.getId()">
 		#end
 		
 		##We need 2 things passed in: $searcher, $view or $searcher $details
@@ -196,7 +199,7 @@
 		#if( $librarycol.rootcategory )
 			<input type="hidden" name="field" value="category" />
 			<input type="hidden" name="operation" value="exact" />
-			<input type="hidden" name="collectionid" value="$librarycol.getId()" />
+			<input type="hidden" name="collectionid" value="$!librarycol.getId()" />
 			#if($nodeID && $nodeID != $librarycol.rootcategory) 
 				<input type="hidden" name="category.value" value="$!nodeID" />
 				<input type="hidden" name="nodeID" value="$!nodeID" />

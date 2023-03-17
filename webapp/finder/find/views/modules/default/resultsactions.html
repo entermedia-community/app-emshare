@@ -51,8 +51,14 @@
 		#end
 	#end
 
-	<ul class="resultsnavright"> 
-	$pages.include("/${searchhome}/components/results/positions.html", $context)
+	<ul class="resultsnavright">
+	#set($total = $hits.getTotalPages() )
+			#if( $total > 1)
+			<li class="resultpages">	 
+				$pages.include("/${searchhome}/components/results/positions.html", $context)
+			</li>
+			#end
+			
 		#if($edit != "true")
 				<li class="resultsnavtitem">
 					<select class="form-control" 
