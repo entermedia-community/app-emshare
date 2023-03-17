@@ -177,7 +177,7 @@
 			
 			#set($total = $hits.getTotalPages() )
 			#if( $total > 1)
-			<li class="resultpages" style="padding-top:1px;">			
+			<li class="resultpages">			
 				$pages.include("$componenthome/results/positions.html", $context)
 			#end
 			
@@ -190,7 +190,7 @@
 				<li class="resultsnavtitem" style="width:61px;">
 						#set( $currenthitsperpage = $userprofile.get("modulehitsperpage"))
 						#set($hitcountoptions = $mediaarchive.getList("hitcount"))
-						<select class="form-control" 
+						<select class="form-control resultsnavselect" 
 							id="hitsperpagechange"
 								data-hitssessionid="$!hits.getSessionId()" 
 								data-searchtype="$!reloadsearchtype"
@@ -200,7 +200,7 @@
 								data-page="$!hits.getPage()" 
 								data-showremoveselections="$!showremoveselections" 
 								data-collectionid="$!librarycol.getId()"
-								data-targetdiv="resultsviewcontainer$!moduleid">
+								data-targetdiv="$!{moduleid}resultscontainer">
 						#foreach($ho in $hitcountoptions)
 						<option value="$ho.id" #if($currenthitsperpage==$ho.id) selected="selected"#end>#text($ho)</option>
 						#end	

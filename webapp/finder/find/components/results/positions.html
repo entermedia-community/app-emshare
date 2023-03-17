@@ -69,9 +69,22 @@
 <div class="resultspositions" data-url="$componenthome/results/positions.html" data-moduleid="$moduleid" data-hitssessionid="$!hits.getSessionId()" data-searchtype="$!hits.getSearchType()" data-currentposition="$!currentposition">
  <ul>
  
- 
- <li>$!currentposition</li>
- 
+ 	#if($total>10)
+ 	<li style="padding-top:0; max-width: 78px;">
+ 	<select class="form-control resultsnavselect" 
+		name="pageposition" 
+		id="jumptopageresults"  
+		data-hitssessionid="$!hits.getSessionId()" 
+		data-url="$resultsPage="
+		data-targetdiv="$!{moduleid}resultscontainer"
+		data-oemaxlevel="1">
+		<option >[[Jump to page]]</option>
+		#foreach($i in [1..$total])
+			<option value="$i">$i</option>
+		#end
+	</select>
+ 	</li>
+ 	#end
  
 	#set( $befores = $hits.linksBefore() )
 	#if(!$befores.isEmpty() && $befores.get(0)>1)

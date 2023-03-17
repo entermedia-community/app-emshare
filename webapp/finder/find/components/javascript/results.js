@@ -152,6 +152,41 @@ jQuery(document).ready(function(url,params)
 			
 	});
 	
+	
+	lQuery("select#jumptopageresults").livequery( function() {
+
+		var select = $(this);
+		
+		select.select2({
+			  tags: true
+		});
+		
+		select.on("change",function() 
+		{
+			var url = select.data('url');
+			var targetdiv = select.data('targetdiv');
+			var oemaxlevel = select.data('oemaxlevel');
+			var page = select.val();
+			
+			var args = { 
+					hitssessionid: select.data("hitssessionid") ,
+					oemaxlevel: oemaxlevel,
+			};
+			url = url +page;
+			$.get(url, args, function(data) 
+			{
+				$("#"+targetdiv).html(data);
+				history.pushState($("#application").html(), null, url);
+				$(window).trigger( "resize" );
+				
+				// should I call in a trigger?
+				$(".select2simple").select2({
+					 minimumResultsForSearch: Infinity
+				});
+			});
+		});
+});
+	
 
 	lQuery(".selectresultviewXX").livequery( function() {
 				var select = $(this);
