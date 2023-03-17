@@ -1519,7 +1519,7 @@ gridResize = function()
 	if (row.length>0) 
 	{
 		trimRowToFit( grid.data("maxheight"), row, totalavailablew);
-		if( makebox && makebox == true && rownum >= 3)
+		//if( makebox && makebox == true && rownum >= 3)
 		{
 			grid.css("height", totalheight + "px");
 			//grid.css("overflow","hidden");
