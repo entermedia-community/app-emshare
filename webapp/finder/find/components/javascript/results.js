@@ -1331,10 +1331,10 @@ checkScroll = function()
 	
 	// No results?
 	var resultsdiv= $("#resultsdiv");
-	var lastcell = $(".masonry-grid-cell", resultsdiv).last();
-	 if( lastcell.length == 0 )
+	var gridcells = $(".masonry-grid-cell", resultsdiv);
+	 if( gridcells.length == 0 )
 	 {
-	 		console.log("No grid found, dont load more")
+	 	console.log("No grid found, dont load more")
 
 	 	return; //No results?
 	 }
@@ -1383,16 +1383,15 @@ checkScroll = function()
 		return;
 	}
 
-
 	// console.log($(window).scrollTop() + " + " + (visibleHeight*2 + 500) +
 	// ">=" + totalHeight);
-	var visibleHeight = $(window).height();
-	var totalHeight = $(document).height();
-	var atbottom = ($(window).scrollTop() + (visibleHeight*2 + 500)) >= totalHeight ; // is the scrolltop plus the visible
+//	var visibleHeight = $(window).height();
+//	var totalHeight = $(document).height();
+//	var atbottom = ($(window).scrollTop() + (visibleHeight*2 + 500)) >= totalHeight ; // is the scrolltop plus the visible
 																						// equal to the total height?
-	if(	!atbottom )
+	if(	!isInViewport(gridcells.last().get(0)) )
     {
-	  console.log("At bottom, dont load more")
+	  console.log("up top, dont load more yet")
 	  return; //not yet at bottom (-500px)
 	}
  
@@ -1450,7 +1449,7 @@ checkScroll = function()
 function gridupdatepositions(grid) {
 	
 	var oldposition = grid.data("visibleposition");
-	console.log("Checking Old Position: " + oldposition);
+	//console.log("Checking Old Position: " + oldposition);
 	var positionsDiv = grid.closest("#resultsdiv");
 	positionsDiv = positionsDiv.find(".resultspositions");
 	
