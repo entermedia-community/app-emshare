@@ -1446,46 +1446,47 @@ checkScroll = function()
 }
 
 
-function elementvisibility(obj) {
-	var winw = jQuery(window).width(),winh = jQuery(window).height(),elw = obj.width(),
-    elh = obj.height(), o = obj[0].getBoundingClientRect(),x1 = o.left - winw, x2 = o.left + elw, y1 = o.top - winh, y2 = o.top + elh; 
-	return [Math.max(0, Math.min((0 - x1) / (x2 - x1), 1)), Math.max(0, Math.min((0 - y1) / (y2 - y1), 1))];
-}
-
-
 function gridupdatepositions(grid) {
 	
 	var oldposition = grid.data("visibleposition");
-	console.log("Old Position: " + oldposition);
+	//console.log("Old Position: " + oldposition);
 	var positionsDiv = grid.closest("#resultsdiv");
 	positionsDiv = positionsDiv.find(".resultspositions");
 	
-	
-	$(".masonry-grid-cell").each(function(index, cell){
-		
-    	var elementviewport = elementvisibility($(cell));
-    	if(elementviewport[1]>'0.35') {
+	$(".masonry-grid-cell").each(function(index, cell)
+	{
+    	var elementviewport = isInViewport(cell);
+    	if(elementviewport) {
     		var pageposition = $(cell).data("positionnum");
     		if(pageposition != oldposition)
 			{
+    			grid.data("visibleposition", pageposition);
+	    	 	//console.log("Cell is visible: ",index,oldposition, pageposition, $(window).scrollTop());
     			autoreload(positionsDiv, function(){
     				var current = $(".currentposition"+pageposition);
     				if(current.length > 0) {
     					$(".current").removeClass("current");
     					current.addClass("current");
-    					 console.log("Reloaded: " + pageposition);
-    					 
+    					//console.log("Pick page: " + pageposition);
     				}
     			});
-    			grid.data("visibleposition", pageposition);
-    			return false;
 			}
-    		
+   			return false;
     	}
     });
 }
 
-
+function isInViewport(cell) 
+{
+    const rect = cell.getBoundingClientRect();
+    var isin =  (
+        rect.top >= 0 &&
+        rect.left >= 0 &&
+        rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+        rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+    );
+    return isin;
+}
 
 gridResize = function() 
 {
