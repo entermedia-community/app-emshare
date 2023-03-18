@@ -1334,16 +1334,16 @@ checkScroll = function()
 	var lastcell = $(".masonry-grid-cell", resultsdiv).last();
 	 if( lastcell.length == 0 )
 	 {
-	 	return;
+	 		console.log("No grid found, dont load more")
+
+	 	return; //No results?
 	 }
 	
 	
 	// are we near the end? Are there more pages?
-	var visibleHeight = $(window).height();
-	var totalHeight = $(document).height();
 
 
-    var page = parseInt(resultsdiv.data("pagenum")); 
+  //  var page = parseInt(resultsdiv.data("pagenum")); 
 /*   
     var nextpage = gridcurrentpageviewport;
     if(currentscroll>=gridlastscroll) {
@@ -1373,24 +1373,26 @@ checkScroll = function()
     
     gridupdatepositions(grid);
     
-    
-    
-    
-    
+    var page = parseInt(resultsdiv.data("pagenum")); 
     var total = parseInt(resultsdiv.data("totalpages"));
 	// console.log("checking scroll " + stopautoscroll + " page " + page + " of
 	// " + total);
-    if( page == total)
+    if( page == total) //Last page. dont load more
     {
+		console.log("Last page, dont load more")
 		return;
 	}
 
+
 	// console.log($(window).scrollTop() + " + " + (visibleHeight*2 + 500) +
 	// ">=" + totalHeight);
+	var visibleHeight = $(window).height();
+	var totalHeight = $(document).height();
 	var atbottom = ($(window).scrollTop() + (visibleHeight*2 + 500)) >= totalHeight ; // is the scrolltop plus the visible
 																						// equal to the total height?
 	if(	!atbottom )
     {
+	  console.log("At bottom, dont load more")
 	  return; //not yet at bottom (-500px)
 	}
  
@@ -1398,7 +1400,6 @@ checkScroll = function()
    var session = resultsdiv.data("hitssessionid");
    page = page + 1;
    resultsdiv.data("pagenum",page);
-   
    
    var stackedviewpath = resultsdiv.data("stackedviewpath");
    if (!stackedviewpath) {
@@ -1449,7 +1450,7 @@ checkScroll = function()
 function gridupdatepositions(grid) {
 	
 	var oldposition = grid.data("visibleposition");
-	//console.log("Old Position: " + oldposition);
+	console.log("Checking Old Position: " + oldposition);
 	var positionsDiv = grid.closest("#resultsdiv");
 	positionsDiv = positionsDiv.find(".resultspositions");
 	
