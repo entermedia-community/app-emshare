@@ -1384,7 +1384,7 @@ checkScroll = function()
 	// " + total);
     if( page == total) //Last page. dont load more
     {
-		console.log("Last page, dont load more")
+		//console.log("Last page, dont load more")
 		return;
 	}
 
@@ -1450,33 +1450,29 @@ checkScroll = function()
 		});
 }
 
-
 function gridupdatepositions(grid) {
 	
-	var oldposition = grid.data("visibleposition");
 	//console.log("Checking Old Position: " + oldposition);
 	var positionsDiv = grid.closest("#resultsdiv");
 	positionsDiv = positionsDiv.find(".resultspositions");
+	var oldpage = grid.data("currentpagenum");
 	
 	$(".masonry-grid-cell").each(function(index, cell)
 	{
     	var elementviewport = isInViewport(cell);
     	if(elementviewport) {
-    		var pageposition = $(cell).data("positionnum");
-    		if(pageposition != oldposition)
+    		var pagenum = $(cell).data("pagenum");
+    		if(pagenum != oldpage)
 			{
-    			grid.data("visibleposition", pageposition);
-   				var currentscroll = $(window).scrollTop();
+    			grid.data("currentpagenum", pagenum);
+    			positionsDiv.data("currentpagenum", pagenum);
+   				//var currentscroll = $(window).scrollTop();
 
-	    	 	console.log("Firing dom event: ",currentscroll,index,oldposition, pageposition, $(window).scrollTop());
-    			autoreload(positionsDiv, function(){
-    				var current = $(".currentposition"+pageposition);
-    				if(current.length > 0) {
-    					$(".current").removeClass("current");
-    					current.addClass("current");
-    					//console.log("Pick page: " + pageposition);
-    				}
-    			});
+	    	 	//console.log("Firing dom event: ",oldpage, pagenum, $(window).scrollTop());
+				var url = positionsDiv.data("url");
+ 				//positionsDiv.data("currentpage",pagenum); //Where we are at
+ 				var options = positionsDiv.data();
+				replaceelement(url,positionsDiv,options);
 			}
    			return false;
     	}

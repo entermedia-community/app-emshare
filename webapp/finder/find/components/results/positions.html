@@ -62,47 +62,48 @@
 
 #set($total = $hits.getTotalPages() )
 
-#set($pos = $hits.toPosition($hits.getPage()))
 
-#set($currentposition = $context.getRequestParameter("currentposition"))
+#set($currentpage = $context.getRequestParameter("currentpagenum"))
 
-<div class="resultspositions" data-url="$componenthome/results/positions.html" data-moduleid="$moduleid" data-hitssessionid="$!hits.getSessionId()" data-searchtype="$!hits.getSearchType()" data-currentposition="$!currentposition">
+#set( $prhits = $hits.getPositionRender() )
+#ifnotnull($currentpage)
+$prhits.setPageOneBased($currentpage)
+#end
+#set($pos = $prhits.toPosition($prhits.getPage()))
+
+<div class="resultspositions" data-url="$componenthome/results/positions.html" data-moduleid="$moduleid" 
+data-hitssessionid="$!hits.getSessionId()" data-searchtype="$!hits.getSearchType()" data-currentpagenum="$prhits.getPage()">
  <ul>
  
  	#if($total>10)
  	<li style="padding-top:0; max-width: 78px;">
- 	<select class="form-control resultsnavselect" 
+ 	<input class="form-control resultsnavselect" 
 		name="pageposition" 
 		id="jumptopageresults"  
 		data-hitssessionid="$!hits.getSessionId()" 
 		data-url="$resultsPage="
 		data-targetdiv="$!{moduleid}resultscontainer"
 		data-oemaxlevel="1">
-		<option >[[Jump to page]]</option>
-		#foreach($i in [1..$total])
-			<option value="$i">$i</option>
-		#end
-	</select>
+		placeholdertext= "[[Jump to page]]"
+	</input>
  	</li>
  	#end
  	
- 	
- 	<li>$!currentposition</li>
- 
-	#set( $befores = $hits.linksBefore() )
+	#set( $befores = $prhits.linksBefore() )
 	#if(!$befores.isEmpty() && $befores.get(0)>1)
-		<li><a class="ajax" data-targetdivinner="$targetdivinner" data-updateurl="$!updateurl" data-oemaxlevel="$oemaxlevel" href="$resultsPage=$total" >$hits.getStartingPosition()</a></li>	
+		<li><a class="ajax firstposition" data-targetdivinner="$targetdivinner" data-updateurl="$!updateurl" data-oemaxlevel="$oemaxlevel" href="$resultsPage=$total" >$prhits.getStartingPosition()</a></li>	
 	    <li class="ellipsis">...</li>
 	#end
 	#foreach( $before in $befores )
-		#set( $pos = $hits.toPosition($before) )
-		#set( $poslabel = $hits.toPositionLabel($before) )
-		<li class="currentposition${pos}"><a class="ajax" data-targetdivinner="$targetdivinner" data-updateurl="$!updateurl"  data-oemaxlevel="$oemaxlevel" data-position="$pos"  href="$resultsPage=$pos" >$poslabel</a></li>		
+		#set( $pos = $prhits.toPosition($before) )
+		#set( $poslabel = $prhits.toPositionLabel($before) )
+		<li class="currentposition${pos}"><a class="ajax" data-targetdivinner="$targetdivinner" data-updateurl="$!updateurl"  data-oemaxlevel="$oemaxlevel" 
+		data-position="$pos"  href="$resultsPage=$pos" >$poslabel</a></li>		
 	#end
 	
 
-	#set($pos = $hits.toPosition($hits.getPage()))
-	#set( $poslabel = $hits.toPositionLabel($hits.getPage()) )
+	#set($pos = $prhits.toPosition($prhits.getPage()))
+	#set( $poslabel = $prhits.toPositionLabel($prhits.getPage()) )
 	
 	<li class="current currentposition${pos}">
 	<a  class="ajax" data-targetdivinner="$targetdivinner" data-updateurl="$!updateurl"  data-oemaxlevel="$oemaxlevel" data-position="$pos"  href="$resultsPage=$pos" >$poslabel</a>
@@ -110,27 +111,28 @@
 	
 	
 	
-	#set( $afters = $hits.linksAfter() )
+	#set( $afters = $prhits.linksAfter() )
 	#foreach( $after in $afters )
-		#set( $pos = $hits.toPosition($after) )
-		#set( $poslabel = $hits.toPositionLabel($after) )
-		<li class="currentposition${pos}"><a  class="ajax" data-targetdivinner="$targetdivinner" data-updateurl="$!updateurl" data-oemaxlevel="$oemaxlevel" data-position="$pos"  href="$resultsPage=$pos">$poslabel</a></li>		
+		#set( $pos = $prhits.toPosition($after) )
+		#set( $poslabel = $prhits.toPositionLabel($after) )
+		<li class="currentposition${pos}"><a  class="ajax" data-targetdivinner="$targetdivinner" data-updateurl="$!updateurl" data-oemaxlevel="$oemaxlevel" 
+		data-position="$pos"  href="$resultsPage=$pos">$poslabel</a></li>		
 	#end
 	#set($size=${afters.size()})
 	#set( $size = $size - 1 )
 	#if($size>0  )
-		#if ($afters.get($size)< $hits.getTotalPages() )
+		#if ($afters.get($size)< $prhits.getTotalPages() )
 			<li class="ellipsis">...</li>
 			#if($hits.size() < 9999)
-                    <li><a  class="ajax" data-targetdivinner="$targetdivinner" data-updateurl="$!updateurl" data-oemaxlevel="$oemaxlevel" href="$resultsPage=1" >$hits.getEndingPosition()</a></li>	
+                    <li><a  class="ajax lastposition" data-targetdivinner="$targetdivinner" data-updateurl="$!updateurl" data-oemaxlevel="$oemaxlevel" href="$resultsPage=1" >$hits.getEndingPosition()</a></li>	
                    #end
 		#end
 	#end
-	#if( $hits.prevPage() )
-		<li class="pagenav"><a class="ajax" data-targetdivinner="$targetdivinner"  data-updateurl="$!updateurl"  data-oemaxlevel="$oemaxlevel" href="$resultsPage=$hits.toPosition($hits.prevPage())" title="Previous ( alt p enter)" accesskey="p" ><span class="fas fa-caret-left overlay-nav gocaret"></span></a></li>
+	#if( $prhits.prevPage() )
+		<li class="pagenav"><a class="ajax" data-targetdivinner="$targetdivinner"  data-updateurl="$!updateurl"  data-oemaxlevel="$oemaxlevel" href="$resultsPage=$prhits.toPosition($prhits.prevPage())" title="Previous ( alt p enter)" accesskey="p" ><span class="fas fa-caret-left overlay-nav gocaret"></span></a></li>
 	#end
-	#if ( $hits.nextPage() )
-		<li class="pagenav"><a id="next" class="ajax" data-updateurl="$!updateurl" data-oemaxlevel="$oemaxlevel" data-targetdivinner="$targetdivinner"  href="$resultsPage=$hits.toPosition($hits.nextPage())" title="Next (alt n enter)" accesskey="n"><span class="fas fa-caret-right overlay-nav gocaret"></span></a></li>
+	#if ( $prhits.nextPage() )
+		<li class="pagenav"><a id="next" class="ajax" data-updateurl="$!updateurl" data-oemaxlevel="$oemaxlevel" data-targetdivinner="$targetdivinner"  href="$resultsPage=$prhits.toPosition($prhits.nextPage())" title="Next (alt n enter)" accesskey="n"><span class="fas fa-caret-right overlay-nav gocaret"></span></a></li>
 	#end
 </ul>
 </div>
