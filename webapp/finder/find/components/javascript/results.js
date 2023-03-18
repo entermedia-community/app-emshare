@@ -1270,7 +1270,7 @@ document.addEventListener('touchmove', function(e)
 });
 jQuery(window).on('scroll',function(e) 
 {
-	// console.log("scroll event *");
+	//console.log("scroll event *" + e);
 	checkScroll();
 });
 
@@ -1311,9 +1311,14 @@ checkScroll = function()
 	if (grid== "undefined" || grid.data("singlepage")==true) {
 		return;
 	}
-	
+	var lastcheck = $(window).data("lastscrollcheck");
 	var currentscroll = $(window).scrollTop();
-	
+	if( lastcheck == currentscroll)
+	{
+		//Dom events cause it to fire recursively
+		return false;
+	}
+	$(window).data("lastscrollcheck",currentscroll);
 	if( stopautoscroll )
 	{
 		// ignore scrolls
@@ -1391,7 +1396,7 @@ checkScroll = function()
 																						// equal to the total height?
 	if(	!isInViewport(gridcells.last().get(0)) )
     {
-	  console.log("up top, dont load more yet")
+	  //console.log("up top, dont load more yet")
 	  return; //not yet at bottom (-500px)
 	}
  
@@ -1461,7 +1466,9 @@ function gridupdatepositions(grid) {
     		if(pageposition != oldposition)
 			{
     			grid.data("visibleposition", pageposition);
-	    	 	//console.log("Cell is visible: ",index,oldposition, pageposition, $(window).scrollTop());
+   				var currentscroll = $(window).scrollTop();
+
+	    	 	console.log("Firing dom event: ",currentscroll,index,oldposition, pageposition, $(window).scrollTop());
     			autoreload(positionsDiv, function(){
     				var current = $(".currentposition"+pageposition);
     				if(current.length > 0) {
