@@ -1385,8 +1385,10 @@ checkScroll = function()
 //	var visibleHeight = $(window).height();
 //	var totalHeight = $(document).height();
 //	var atbottom = ($(window).scrollTop() + (visibleHeight*2 + 500)) >= totalHeight ; // is the scrolltop plus the visible
-																						// equal to the total height?
-	if(	!isInViewport(gridcells.last().get(0)) )
+		  // equal to the total height?
+    
+    var lastcell = gridcells.last().get(0); 
+	if(	!isInViewport(lastcell) )
     {
 	  //console.log("up top, dont load more yet")
 	  return; //not yet at bottom (-500px)
@@ -1428,7 +1430,7 @@ checkScroll = function()
 			   $(".masonry-grid",resultsdiv).append(code);
 			   // $(resultsdiv).append(code);
 			   gridResize();
-			   // $(document).trigger("resize"); //LOOP!
+
 			   stopautoscroll = false; 
 			   // Once that is all done loading we can see if we need a second
 				// page?
@@ -1502,7 +1504,7 @@ gridResize = function()
 	fixedheight = parseInt(fixedheight);
 	
 	var totalwidth = 0;
-	var totalheight = 0;
+	var totalheight = fixedheight;
 	var rownum = 0;
 	var totalavailablew = grid.width();
 	
