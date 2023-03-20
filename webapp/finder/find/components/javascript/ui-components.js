@@ -3744,8 +3744,11 @@ var resizecolumns = function() {
 			columnsheight = thisheight;
 		}
 	}
+	else if($("#application").find(".finderlargearea")) {
+		columnsheight = $("#application").find(".finderlargearea").outerHeight();
+	}
 	if(columnsheight<100) {
-		columnsheight = 300;
+		columnsheight = 360;
 	}
 	
 	var allheights  = header_height + resultsheader_height;
