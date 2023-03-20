@@ -153,23 +153,19 @@ jQuery(document).ready(function(url,params)
 	});
 	
 	
-	lQuery("select#jumptopageresults").livequery( function() {
+	lQuery("input#jumptopageresults").livequery( function() {
 
-		var select = $(this);
+		var input = $(this);
 		
-		select.select2({
-			  tags: true
-		});
-		
-		select.on("change",function() 
+		input.on("change",function() 
 		{
-			var url = select.data('url');
-			var targetdiv = select.data('targetdiv');
-			var oemaxlevel = select.data('oemaxlevel');
-			var page = select.val();
+			var url = input.data('url');
+			var targetdiv = input.data('targetdiv');
+			var oemaxlevel = input.data('oemaxlevel');
+			var page = input.val();
 			
 			var args = { 
-					hitssessionid: select.data("hitssessionid") ,
+					hitssessionid: input.data("hitssessionid") ,
 					oemaxlevel: oemaxlevel,
 			};
 			url = url +page;
@@ -179,10 +175,6 @@ jQuery(document).ready(function(url,params)
 				history.pushState($("#application").html(), null, url);
 				$(window).trigger( "resize" );
 				
-				// should I call in a trigger?
-				$(".select2simple").select2({
-					 minimumResultsForSearch: Infinity
-				});
 			});
 		});
 });

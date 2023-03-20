@@ -75,20 +75,6 @@ $prhits.setPageOneBased($currentpage)
 data-hitssessionid="$!hits.getSessionId()" data-searchtype="$!hits.getSearchType()" data-currentpagenum="$prhits.getPage()">
  <ul>
  
- 	#if($total>10)
- 	<li style="padding-top:0; max-width: 78px;">
- 	<input class="form-control resultsnavselect" 
-		name="pageposition" 
-		id="jumptopageresults"  
-		data-hitssessionid="$!hits.getSessionId()" 
-		data-url="$resultsPage="
-		data-targetdiv="$!{moduleid}resultscontainer"
-		data-oemaxlevel="1">
-		placeholdertext= "[[Jump to page]]"
-	</input>
- 	</li>
- 	#end
- 	
 	#set( $befores = $prhits.linksBefore() )
 	#if(!$befores.isEmpty() && $befores.get(0)>1)
 		<li><a class="ajax firstposition" data-targetdivinner="$targetdivinner" data-updateurl="$!updateurl" data-oemaxlevel="$oemaxlevel" href="$resultsPage=$total" >$prhits.getStartingPosition()</a></li>	
@@ -134,6 +120,22 @@ data-hitssessionid="$!hits.getSessionId()" data-searchtype="$!hits.getSearchType
 	#if ( $prhits.nextPage() )
 		<li class="pagenav"><a id="next" class="ajax" data-updateurl="$!updateurl" data-oemaxlevel="$oemaxlevel" data-targetdivinner="$targetdivinner"  href="$resultsPage=$prhits.toPosition($prhits.nextPage())" title="Next (alt n enter)" accesskey="n"><span class="fas fa-caret-right overlay-nav gocaret"></span></a></li>
 	#end
+	
+	#if($total>2)
+ 	<li style="padding-top:0; max-width: 78px;">
+ 	<input class="form-control resultsnavselect" 
+		name="pageposition" 
+		id="jumptopageresults"  
+		data-hitssessionid="$!hits.getSessionId()" 
+		data-url="$resultsPage="
+		data-targetdiv="$!{moduleid}resultscontainer"
+		data-oemaxlevel="1"
+		placeholder= "[[go to page]]"
+	</input>
+ 	</li>
+ 	#end
+	
+	
 </ul>
 </div>
 
