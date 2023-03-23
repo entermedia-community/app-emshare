@@ -1,62 +1,65 @@
-#set ($groupSearcher = $searcherManager.getSearcher($catalogid, "settingsgroup"))
-#set ($permissiontype = $context.findValue("permissiontype"))
+#set($groupSearcher = $searcherManager.getSearcher($catalogid, "settingsgroup"))
+#set($permissionassignedSearcher = $searcherManager.getSearcher($catalogid, "permissionentityassigned"))
+#set($groupid = $context.getRequestParameter("settingsgroupid"))
+
+#set($moduleid = $module.getId())
+
 #if (!$data)
-	#set($groupid = $context.getRequestParameter("settingsgroupid"))
 	#if($groupid)
-		#set ($data = $groupSearcher.searchById($groupid))
+		#set($permissionManager = $mediaarchive.getBean("permissionManager") )
+		#set($permissionassigned = $permissionManager.loadEntitySettingsGroupPermissions($moduleid, $groupid))
 	#end
 #end
-#if ($data)
-<form method="post" action="$siteroot$apphome/views/settings/users/permissions/views/save.html">
-	<input type="hidden" name="id" value="$!data.id"/>
-	<input type="hidden" name="save" value="true"/>
-	<input type="hidden" name="view" value="settings/settinggroupedit" />
-	<input type="hidden" name="searchtype" value="$groupSearcher.getSearchType()"/>
-	<input type="hidden" name="settingsgroupid" value="$data.id" />
-	<input type="hidden" name="field" value="permissions"/>
-	
-	$context.putPageValue("searcher", $groupSearcher)	 
-	$context.putPageValue("view", "settings/settinggroupedit")
-	$context.putPageValue("data", $data)	
+<form method="post" 
+	action="$siteroot$apphome/views/settings/modules/$moduleid/permissions/views/save.html"
+	class="autosubmit">
 
-	#set($permissionsearcher = $searcherManager.getSearcher($catalogid, "permissionsapp"))
-	<div class="list-adder" id="permission-role">
-	$pages.include("/${applicationid}/components/xml/detaileditor.html", $context)
-	</div>
-    
-	<input type="hidden" name="field" value="profilesearchfilters" />
-	<input type="hidden" name="profilesearchfilters.value" value="hideassettype" />
+	
+	<input type="hidden" name="settingsgroupid" value="$groupid" />
+	<input type="hidden" name="moduleid" value="$moduleid" />
+	
+	
+
+	#set($permissionsearcher = $searcherManager.getSearcher($catalogid, "permissionsentity"))
+	
 	<div>
 
-        #if ( !$permissiontype )
-           #set ( $permissiontype = "*" )
+        #if ( !$permissionentitytype )
+           #set ( $permissionentitytype = "*" )
         #end
         
-	    #set( $hits = $permissionsearcher.query().match("permissiontype",$permissiontype).sort("permissiontype").sort("ordering").search() )
+	    #set( $hits = $permissionsearcher.query().match("permissionentitytype", $permissionentitytype).sort("ordering").search() )
+	    
     	<table class="table table-striped emdata settings-table">	
 		    
 		    #set( $section = "none")
 	    	#foreach($item in $hits )
-	        		#set($val = false )
 	        		
-	        		#set($val = $data.getValues("permissions").contains($item.id))
-	        		#if( $section != $item.permissiontype )
+	        		#if( $section != $item.permissionentitytype )
 	        		<thead>
 	        			<tr class="sectionlevel section${item.permissiontype} togglesection">
 	        			<td colspan="3" style="height: 35px; line-height: 35px;">
-	        				$searcherManager.getData($catalogid,"permissiontype",$item.permissiontype)
+	        				#set($permissiontype = $mediaarchive.getData("permissionentitytype", $!item.permissionentitytype))
+	        				#text($permissiontype)
+	        				
 	        			</td>
 	        			</tr>
 	        		</thead>
-	        		#set( $section = $item.permissiontype)
+	        		#set( $section = $item.permissionentitytype)
 	        		
 	        			
 	        		#end
-	        		<tr class="$item.permissiontype">
+	        		
+	        		
+	        		#set($val = $permissionassigned.get($item.id))
+	        		<tr class="$item.permissionentitytype">
 	        		<td valign="middle" style="text-align: center; width: 35px;">
-	        		<input class="permission-radio" type="checkbox" name="permissions.value" value="$item.id" id="checkbox-$item.id" #if($val == "true" || $val == "full") checked #end/>
+					<input type="hidden" name="field" value="$item.id" />
+	        		<input class="permission-radio" type="checkbox" name="${item.id}.value" value="true" data-permissionsentity="$item.id" id="checkbox-$item.id"
+	        		 #if($val) checked #end/>
+	        		
 	        		</td>
-	        		<td valign="middle"><label for="checkbox-$item.id" style="padding:5px 0 1px 0;">$context.getText($item.getName())</label></td>
+	        		<td valign="middle"><label for="checkbox-$!item.id" style="padding:5px 0 1px 0;">#text($item.getName())</label></td>
 	        		<td class="caption">$!item.caption</td>
 	        			
 	        		</tr>
@@ -80,7 +83,3 @@ jQuery(".permission-radio").bind("click", function () {
 	}
 });
 </script>
-
-#else
-[[Please select a Security Group]]
-#end
