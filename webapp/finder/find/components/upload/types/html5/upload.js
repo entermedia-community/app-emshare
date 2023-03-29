@@ -196,8 +196,8 @@ $(document).ready(function()
 			         {
 			        	 //$(".uploadinstructions").hide();
 		        	  	 //console.log("On start " + files.length );
-			        	var completed = uploadformarea.find("#up-files-list li").clone();
-					    uploadformarea.find("#up-files-list").empty();
+			        	var completed = uploadformarea.find(".up-files-list-pending li").clone();
+					    uploadformarea.find(".up-files-list-pending").empty();
 
 						uploadformarea.find("#up-files-list-completed").prepend(completed);
 						uploadformarea.find("#completed-uploads").show();
