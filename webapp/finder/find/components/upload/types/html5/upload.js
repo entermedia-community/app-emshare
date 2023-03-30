@@ -68,7 +68,7 @@ $(document).ready(function()
 		    		var html = uploadformarea.find(".progress_report_template").html();
 	        	    
 	        	    html = html.replace(regex,i);
-	        	    uploadformarea.find(".up-files-list").append(html);
+	        	    uploadformarea.find(".up-files-list-pending").append(html);
 	        	    
 	        	    //TODO: set the name and size of each row
 	        	    var name = file.name;
