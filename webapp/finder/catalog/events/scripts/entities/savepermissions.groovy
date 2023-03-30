@@ -21,7 +21,7 @@ public void init()
 
 		for (permissionid in fields) {
 		String permissionidvalue = context.getRequestParameter(permissionid+".value");
-		if(permissionidvalue != null && !permissionidvalue.asBoolean() && permissionassigned.containsKey(permissionid))
+		if(permissionidvalue == null && permissionassigned.containsKey(permissionid))
 		{
 			Data data = permissionassigned.get(permissionid);
 			permissionsSearcher.delete(data, null);
