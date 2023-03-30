@@ -54,7 +54,7 @@ $context.putPageValue("thumbsize", $thumbsize)
 		#set ($mime = $mediaarchive.getMimeTypeIcon($hit.fileformat))
 		#set( $thumbpath =  "$themeprefix/images/mimetypes/${mime}.png" )
 		<div class="mimethumbcontainer">
-		<img class="mimethumb" src="$siteroot$thumbpath$!urlparams" border="0" alt="$!hit.name" />
+		<img class="mimethumb" alt="#if($title) #esc($title) #else $!hit.name #end" src="$siteroot$thumbpath$!urlparams" border="0" alt="$!hit.name" />
 		</div>
 	#else	
 		#if($useoriginal)
@@ -72,10 +72,10 @@ $context.putPageValue("thumbsize", $thumbsize)
 				 sourcepath="$sourcepath" 
 				 catalogid="$catalogid" 
 				 assetid="$hit.id" 
-				 alt="$!hit.name"
+				 alt="#if($title) #esc($title) #else $!hit.name #end"
 				 draggable="true"  
 				 data-sourcepath="$sourcepath" 
-				 data-name="$!hit.name" 		
+				 data-name="#if($title) #esc($title) #else $!hit.name #end" 		
 				 src="$tpath$!urlparams" 
 				  />
 		

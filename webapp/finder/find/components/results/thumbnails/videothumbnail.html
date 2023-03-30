@@ -35,7 +35,7 @@ $context.putPageValue("thumbsize", $thumbsize)
 #elseif( $hit.previewstatus && $hit.previewstatus == "mime")
 	#set ($mime = $mediaarchive.getMimeTypeIcon($hit.fileformat))
 	#set( $thumbpath =  "$themeprefix/images/mimetypes/${mime}.png" )
-	<img class="mimethumb" style="height:64px" src="$!cdn$siteroot$thumbpath" border="0"/>
+	<img class="mimethumb" alt="#if($title) #esc($title) #else $!hit.name #end" style="height:64px" src="$!cdn$siteroot$thumbpath" border="0"/>
 #else	
 
 	#set($tpath = $mediaarchive.asLinkToPreview($hit, $imagesize))
@@ -45,10 +45,10 @@ $context.putPageValue("thumbsize", $thumbsize)
 			sourcepath="$sourcepath" 
 			catalogid="$catalogid" 
 			assetid="$hit.id"
-			alt="$!hit.name"
+			alt="#if($title) #esc($title) #else $!hit.name #end"
 			draggable="true"  
 			data-sourcepath="$sourcepath" 
-			data-name="$hit.name" 		
+			data-name="#if($title) #esc($title) #else $!hit.name #end" 		
 			src="$tpath" 
 			border="0" />
 			<button class="videoplay-button"><span class="videoplay-icon"></span></button> 
