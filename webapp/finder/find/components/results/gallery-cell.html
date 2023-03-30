@@ -1,6 +1,20 @@
 #set($asset = $mediaarchive.getAsset($hit.id))
 $context.putPageValue("asset",$asset)
 
+
+#set($stackedfield = $mediaarchive.getCatalogSettingValue("stackedgalleryfield"))
+#if($stackedfield)
+   #set($title = $asset.getText($stackedfield,$context))
+#end
+#if(!$title)		         	
+ 	#if( $asset.assettitle )
+ 	#set($title =  $asset.getText("assettitle",$context)) 
+ #else 
+ 	#set($title = $asset.getText("name",$context) )
+ #end
+#end
+$context.putPageValue("title",$title)
+ 		
 <div class="emthumbbox embox$thumbsize resultsassetcontainer" id="cell${catalogid}_${hit.id}">
 	#if($showtoolbar)
 	<div class="gallery-checkbox resultsselection">
@@ -24,7 +38,7 @@ $context.putPageValue("asset",$asset)
 	<a class="hovering stackedplayer" href="$click"  data-assetid="$hit.id">
 		<div class="emthumbimage em$thumbsize assetdraggable"
 			data-assetid="${hit.id}" title="$sourcepath">
-			
+			$context.putPageValue("thumbsize", "mediumplus" )
    	    	#if(!$type)
    	    		#set( $type = "mime" )
    	    	#elseif( $type =="video")
@@ -40,19 +54,9 @@ $context.putPageValue("asset",$asset)
 	#if( $showcaption )
 	<div class="gallery-caption">
 		<div class="gallery-field-info">
-			  #set($stackedfield = $mediaarchive.getCatalogSettingValue("stackedgalleryfield"))
-		         #if($stackedfield)
-		         	#set($title = $hit.get($stackedfield))
-				 #end
-				 #if(!$title)		         	
-		         
-		         
-		         #if( $hit.assettitle )
-		         
-		         #set($title =  $hit.assettitle) #else #set($title = $hit.name) #end
-		         #end
+			  	 
 
-				<a href="$click" class="stackedplayer"  data-assetid="$hit.id"> $title</a>
+				<a href="$click" class="stackedplayer" title="#esc($title)"  data-assetid="$hit.id"> #esc($title)</a>
 		</div>
 		###if($canviewbasket)
 		##$pages.include("$componenthome/basket/toggleitem.html", $context)

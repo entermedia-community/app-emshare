@@ -67,6 +67,19 @@
 	#set($assetheight = $mediaarchive.getRealImageHeight($hit))
 	#set($click = "$siteroot$viewerlink?hitssessionid=${hits.getSessionId()}&assetid=${hit.id}")
 	#set($isselected = $hits.isSelectedOnPage(${hit.id}) )
+	
+	#if($stackedfield)
+	       	#set($title = $asset.getText($stackedfield,$context))
+	 #end
+	 
+	 #if(!$title)		         	
+     	#if( $asset.assettitle )
+     	#set($title =  $asset.getText("assettitle",$context)) 
+     #else 
+     	#set($title = $asset.getText("name",$context) )
+     #end
+     #end
+     $context.putPageValue("title",$title)
        
 	<div class="masonry-grid-cell stackedplayer-cell assetdraggable ui-draggable resultsassetcontainer #if($isselected) emrowselected #end" 
 		 id="gallerycell_${hit.id}"
@@ -93,17 +106,10 @@
 	    		
 	    		##Caption
 	    	 	<div class="grid-caption grid-caption-${rendertype} #if($rendertype=="default") grid-caption-show #end">
-	    	 		#if($stackedfield)
-			         	#set($title = $hit.get($stackedfield))
-					 #end
-					 #if(!$title)		         	
-			         	#if( $hit.assettitle )
-				        	#set($title =  $hit.assettitle) 
-				        #else 
-				        	#set($title = $hit.name) 
-				        #end
-			         #end
-			         <a class="stackedplayer grid-caption-link" id="clickid${hit.id}" data-assetid="$hit.id" href="#" title="#esc($!title)">
+	    	 		
+			         <a class="stackedplayer grid-caption-link" 
+			         	id="clickid${hit.id}" data-assetid="$hit.id" href="#" 
+			         	title="#esc($!title)">
 				        $context.putPageValue("data",$hit)	
 						$context.putPageValue("searcher",$mediaarchive.getAssetSearcher() )	
 						$context.putPageValue("view", "asset/stackedgallery")
@@ -126,7 +132,7 @@
 	  	        	#end
 	  	        	#if($canquickdownload)
 		  	        	#if( $desktop )
-				        	<a href="#" class="emdesktopdownload grid-gallery-download" data-assetid="$hit.id" title="[[Download]] $!title">
+				        	<a href="#" class="emdesktopdownload grid-gallery-download" data-assetid="$hit.id" title="[[Download]] #esc($!title)">
 				        	<i class="fas fa-download"> </i>
 				        	</a>
 			        	#else
@@ -135,7 +141,7 @@
 							#if($collectionid)
 								#set($dlink = "$dlink&collectionid=$!{collectionid}")
 							#end
-				        	<a href="$dlink" class="grid-gallery-download" data-assetid="$hit.id" title="[[Download]] $!title">
+				        	<a href="$dlink" class="grid-gallery-download" data-assetid="$hit.id" title="[[Download]] #esc($!title)">
 				        	<i class="fas fa-download"> </i>
 				        	</a>
 			        	#end
