@@ -38,67 +38,67 @@
 		
 		
 		#if($moduleid && $entityid)
-			
-			
-
-			#if($desktopX)
-				<a  
-				href="#" 
-				class="localfolderPicker" 
-				data-sourcepath="$uploadsourcepath"
-				data-moduleid="$moduleid"
-		   		data-entityid="$entityid"
-				class="entity-add-media"
-				title="[[Upload Folder]]">
-				<i class="fas fa-upload"></i></a>
-			#else
-				<a class="entity-add-media folderPicker entityuploadPicker" href="#" 
-				id="" 
-				title="[[Upload Folder]]" style="margin-top: 0">
-				<i class="fas fa-upload"></i></a>
-				<div class="loadericon float-right"><i class="fas fa-spinner fa-spin"></i></div>
-				
-					<input class="upload_field" data-autostartupload="true" type="file" style="position:absolute; top:-2000px;" multiple="multiple"  />
-					<input class="upload_folder" type="file" style="position:absolute; top:-2000px;" webkitdirectory multiple="multiple"  />
-					  
-				  #set( $root = "$siteroot$componenthome/upload/types/html5")
-				  <form id="uploaddata" 
-				  		name="wizard" 
-				  		onSubmit="return false;" 
-						data-finishaction="" action="$root/finish.html" class="force-validate-inputs" >
-				  	<input name="createentityfolder" value="true" type="hidden"/>
-				  	<input name="entitytype" value="$moduleid" type="hidden"/>
-				  	<input name="selected$moduleid" value="$entityid" type="hidden"/>
-				    ##<input name="field" value="$moduleid" />
-				  	##<input name="${moduleid}.value" value="$entityid" />
-				  	<input name="sourcepath" value="$uploadsourcepath" type="hidden"/>
-				  	</form>
+			#if($permissions.can($moduleid, "upload_folders"))
+				#if($desktopX)
+					<a  
+					href="#" 
+					class="localfolderPicker" 
+					data-sourcepath="$uploadsourcepath"
+					data-moduleid="$moduleid"
+			   		data-entityid="$entityid"
+					class="entity-add-media"
+					title="[[Upload Folder]]">
+					<i class="fas fa-upload"></i></a>
+				#else
+					<a class="entity-add-media folderPicker entityuploadPicker" href="#" 
+					id="" 
+					title="[[Upload Folder]]" style="margin-top: 0">
+					<i class="fas fa-upload"></i></a>
+					<div class="loadericon float-right"><i class="fas fa-spinner fa-spin"></i></div>
+					
+						<input class="upload_field" data-autostartupload="true" type="file" style="position:absolute; top:-2000px;" multiple="multiple"  />
+						<input class="upload_folder" type="file" style="position:absolute; top:-2000px;" webkitdirectory multiple="multiple"  />
+						  
+					  #set( $root = "$siteroot$componenthome/upload/types/html5")
+					  <form id="uploaddata" 
+					  		name="wizard" 
+					  		onSubmit="return false;" 
+							data-finishaction="" action="$root/finish.html" class="force-validate-inputs" >
+					  	<input name="createentityfolder" value="true" type="hidden"/>
+					  	<input name="entitytype" value="$moduleid" type="hidden"/>
+					  	<input name="selected$moduleid" value="$entityid" type="hidden"/>
+					    ##<input name="field" value="$moduleid" />
+					  	##<input name="${moduleid}.value" value="$entityid" />
+					  	<input name="sourcepath" value="$uploadsourcepath" type="hidden"/>
+					  	</form>
+				#end
 			#end
 			
-			#set($searchlink = "$apphome/components/categories/search/searchcategory.html")
-			<a href="$searchlink" 
-			   class="detail-edit-icon btn emdialog"
-			   data-dialogid="categorypickermodule"
-			   data-cancelsubmit="true" 
-			   data-multivalue="false"
-			   data-pickone="true"
-			   data-moduleid="$moduleid"
-			   data-entityid="$entityid"
-			   data-existingcategories="$!{existingids}"
-			   data-pickedcategoryaction="$apphome/components/categories/entities/listcategories.html"
-			   data-targetdiv="entitycategoryresults#eid($entityid)"
-			   data-parameterdata="id"
-			   data-noesc="true"
-			   title="[[Choose Folder]]"><i class="fas fa-search"></i></a>
+			#if($permissions.can($moduleid, "assign_folders"))
+				#set($searchlink = "$apphome/components/categories/search/searchcategory.html")
+				<a href="$searchlink" 
+				   class="detail-edit-icon btn emdialog"
+				   data-dialogid="categorypickermodule"
+				   data-cancelsubmit="true" 
+				   data-multivalue="false"
+				   data-pickone="true"
+				   data-moduleid="$moduleid"
+				   data-entityid="$entityid"
+				   data-existingcategories="$!{existingids}"
+				   data-pickedcategoryaction="$apphome/components/categories/entities/listcategories.html"
+				   data-targetdiv="entitycategoryresults#eid($entityid)"
+				   data-parameterdata="id"
+				   data-noesc="true"
+				   title="[[Choose Folder]]"><i class="fas fa-search"></i></a>
+			#end
 	   #end	
-	   
 	</div>
-	<div class="mediaboxbody">
 	
-
+	<div class="mediaboxbody">
 		<div  id="cat-list" class="emlist">
 		
 		##ifnull($desktop)
+			#if($permissions.can($moduleid, "upload_folders"))
 			<div>
 				<!-- This is not shown -->
 		       <div class="progress_report_template" style="display:none;">
@@ -125,6 +125,7 @@
 				</div>	
 				</div>		
 			</div>
+			#end
 		##end
 		
 		<table style="width:100%;">

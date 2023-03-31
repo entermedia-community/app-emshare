@@ -111,7 +111,10 @@ $context.putPageValue("edit", $edit)
 			#set($changedetailviewercolumns = 1)
 			#set($icondetailviewercolumns = "grip-horizontal")
 		#end
-		<a class="ajax btn btn-sm btn-darkless float-right" data-targetdiv="applicationcontent" data-updateurl="true" data-closedialog="true" data-oemaxlayout="2" href="$siteroot$apphome/views/settings/modules/${searcher.searchType}/metadata/views/index.html?viewid=$viewid&viewpath=$!view&moduleid=$!moduleid"><i class="fas fa-cog"></i> [[Fields]]</a>
+		
+		#if($permissions.can($moduleid, "edit"))
+			<a class="ajax btn btn-sm btn-darkless float-right" data-targetdiv="applicationcontent" data-updateurl="true" data-closedialog="true" data-oemaxlayout="2" href="$siteroot$apphome/views/settings/modules/${searcher.searchType}/metadata/views/index.html?viewid=$viewid&viewpath=$!view&moduleid=$!moduleid"><i class="fas fa-cog"></i> [[Fields]]</a>
+		#end
 		<a class="ajax btn btn-sm btn-darkless float-right" style="margin-right:5px;" data-targetdiv="editentitymetadata" href="$siteroot$apphome/components/gridsample/preview/metadata.html?edit=true&id=$data.id&searchtype=$searchtype&detailviewercolumns=$changedetailviewercolumns&moduleid=$!moduleid">
 			<i class="fas fa-$icondetailviewercolumns"></i>
 		</a>
@@ -122,17 +125,20 @@ $context.putPageValue("edit", $edit)
     </form>
 	
 	#if($edit!="true")
-	##<a href="$siteroot$apphome/views/modules/$!{searchtype}/edit/edit.html?edit=true&id=$data.id" data-oemaxlevel="3" data-targetdivinner="applicationmaincontent" data-closedialog="true" data-updateurl="true" class="ajax btn btn-dark"><i class="fas fa-edit"></i> [[Edit]]</a>
-	<a href="$componenthome/gridsample/preview/metadata.html?edit=true&id=$!data.id&searchtype=$!searchtype&moduleid=$!moduleid" data-targetdiv="editentitymetadata" class="ajax btn btn-dark"><i class="fas fa-edit"></i> [[Edit]]</a>
-	<a href="$siteroot$apphome/components/entities/delete.html?id=$data.id&searchtype=$searchtype" 
-		class="ajax btn btn-dark" 
-		data-targetdiv="editentitymetadata" 
-		data-closedialog="true" 
-		data-confirm="[[Are you sure]]?"
-		data-onsuccess="updateentities"
-		data-searchtype="$searchtype"
-		data-id="$data.id" 
-		style="margin-left:10px;"><i class="fas fa-trash"></i> [[Delete]]</a>
+		#if($permissions.can($moduleid, "create"))
+			<a href="$componenthome/gridsample/preview/metadata.html?edit=true&id=$!data.id&searchtype=$!searchtype&moduleid=$!moduleid" data-targetdiv="editentitymetadata" class="ajax btn btn-dark" style="margin-right:10px;"><i class="fas fa-edit"></i> [[Edit]]</a>
+		#end
+		#if($permissions.can($moduleid, "delete"))
+		<a href="$siteroot$apphome/components/entities/delete.html?id=$data.id&searchtype=$searchtype" 
+			class="ajax btn btn-dark" 
+			data-targetdiv="editentitymetadata" 
+			data-closedialog="true" 
+			data-confirm="[[Are you sure]]?"
+			data-onsuccess="updateentities"
+			data-searchtype="$searchtype"
+			data-id="$data.id" 
+			><i class="fas fa-trash"></i> [[Delete]]</a>
+		#end
 	#end
 
 

@@ -66,24 +66,25 @@ $context.putPageValue("filter", $filter)
 			#end
 		</div>
 		<div class="emgrid-footer">
-			#if ($moduleid!="faceprofilegroup")
-				#if($moduleid =="asset")
-				<a class="btn btn-xs btn-secondary ajax sidebarselected" 
-					data-updateurl="true" 
-					data-targetdivinner="applicationmaincontent" 
-					data-oemaxlayout="3" 
-					href="$siteroot$applink/views/modules/asset/add/start.html" 
-					title="Upload Media">
-					<i class="fas fa-plus"></i><span>&nbsp;[[Upload]]</span></a>
-				#else
-					<a class="btn btn-xs btn-secondary emdialog TODOautocloseside" 
-						style="margin-right:5px; "  
-						title="[[Add New]] #text($module)"
-						href="$siteroot$applink/views/modules/${moduleid}/components/gridsample/preview/$!{rendertype}.html?edit=true&addnew=true&viewid=${module.id}addnew&searchtype=${module.id}&targetdiv=applicationmaincontent"
-						data-hidefooter="true">
-						<i class="fas fa-plus"></i> [[Add New]]</a>
+			#if($permissions.can($moduleid, "create"))
+				#if ($moduleid!="faceprofilegroup")
+					#if($moduleid =="asset")
+					<a class="btn btn-xs btn-secondary ajax sidebarselected" 
+						data-updateurl="true" 
+						data-targetdivinner="applicationmaincontent" 
+						data-oemaxlayout="3" 
+						href="$siteroot$applink/views/modules/asset/add/start.html" 
+						title="Upload Media">
+						<i class="fas fa-plus"></i><span>&nbsp;[[Upload]]</span></a>
+					#else
+						<a class="btn btn-xs btn-secondary emdialog TODOautocloseside" 
+							style="margin-right:5px; "  
+							title="[[Add New]] #text($module)"
+							href="$siteroot$applink/views/modules/${moduleid}/components/gridsample/preview/$!{rendertype}.html?edit=true&addnew=true&viewid=${module.id}addnew&searchtype=${module.id}&targetdiv=applicationmaincontent"
+							data-hidefooter="true">
+							<i class="fas fa-plus"></i> [[Add New]]</a>
+					#end
 				#end
 			#end
-
 		</div>
 		</div>	
