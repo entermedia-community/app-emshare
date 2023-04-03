@@ -1,3 +1,9 @@
+################
+## TODO: Start using views/modules/asset/components/results/row.html
+################
+
+
+
 #if($hits.isSelected(${hit.id}))
 #set($selectedrow = true)
 #end
@@ -43,11 +49,11 @@
 		#set( $value = false)
 		#if( $detail.id == "name")
 			#if( $hit.name )
-	      		#set( $value = $hit.name )
+	      		#set($value =  $asset.getText("name",$context))
 	      	#elseif ( $asset.title )
-	      		#set( $value = $hit.assettitle )
+	      		#set($value =  $asset.getText("assettitle",$context))
 	      	#else
-	      		#set( $value = "(No name)" )
+	      		#set( $value = "" )
 	      	#end
 	      #else	
 			#set( $value = $hit.get($detail.id))
@@ -61,6 +67,8 @@
 		$!context.putPageValue("val",$value)	
 		$!context.putPageValue("data",$hit)
 		<td  class="resultstablecell $detail.id">
+		
+		
 	        $pages.include("$componenthome/xml/detailreadonly.html", $context)
 	        
 

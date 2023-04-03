@@ -23,43 +23,51 @@
 					#set($dlink = "$dlink&collectionid=$!{collectionid}")
 				#end
 			
-	       	<a href="$dlink" class="btn btn-sm btn-primary" data-assetid="$hit.id" title="[[Download]] $!title">
+	       	<a href="$dlink" class="grid-gallery-download" data-assetid="$hit.id" title="[[Download]] $!title">
 	       	<i class="fas fa-download"> </i>
 	       	</a>
 	       	#end
 	    #end
 	</td>
 #end	
-	<td class="resultstablecell thumbnail assetdraggable" data-assetid="${hit.id}" >
+
+	#set( $type = $mediaarchive.getMediaRenderType($hit.fileformat))
+	<td class="resultstablecell thumbnail assetdraggable" data-assetid="${hit.id}" #if($type=="audio") noclick="true" #end>
 		$pages.include("$componenthome/results/thumbnails/small.html",$context)	
+		  	 	
+		   	 	
 		$pages.include("$componenthome/results/badges.html", $context)
 	</td>
 
-#foreach( $detail in $details)
-	#set( $value = false)
-	#if( $detail.id == "name")
-		#if( $hit.name )
-      		#set( $value = $hit.name )
-      	#elseif ( $asset.title )
-      		#set( $value = $hit.assettitle )
-      	#else
-      		#set( $value = "(No name)" )
-      	#end
-      #else	
-		#set( $value = $hit.get($detail.id))
-	#end
-	
-	#if( !$value && $detail.render )	
-		#set($value = $searcherManager.getValue($catalogid,$detail.render, $hit.properties) ) 
+	#foreach( $detail in $details)
+		#set( $value = false)
+		#if( $detail.id == "name")
+		
+			#if( $hit.name )
+	      		#set($value =  $asset.getText("name",$context))
+	      	#elseif ( $asset.assettitle )
+	      		#set($value =  $asset.getText("assettitle",$context))
+	      	#else
+	      		#set( $value = "" )
+	      	#end
+	    #else	
+			#set( $value = $hit.get($detail.id))
+		#end
+		
+		#if( !$value && $detail.render )	
+			#set($value = $searcherManager.getValue($catalogid,$detail.render, $hit.properties) ) 
+		#end	
+		
+		$!context.putPageValue("detail",$detail)
+		$!context.putPageValue("val",$value)	
+		$!context.putPageValue("data",$hit)
+		<td  class="resultstablecell $detail.id">
+		
+		
+	        $pages.include("$componenthome/xml/detailreadonly.html", $context)
+	        
+
+	        
+		</td>	
 	#end	
-	
-	$!context.putPageValue("detail",$detail)
-	$!context.putPageValue("val",$value)	
-	$!context.putPageValue("data",$hit)
-	<td  class="resultstablecell $detail.id">
-        
-        $pages.include("$componenthome/xml/detailreadonly.html", $context)
-        
-	</td>	
-#end	
  </tr>   
