@@ -4,6 +4,15 @@
 #set($previewonly = false)
 #end
 
+
+ #if(!$title)		         	
+	#if( $asset.assettitle )
+		#set($title =  $asset.getText("assettitle",$context)) 
+	#else 
+		#set($title = $asset.getText("name",$context) )
+	#end
+#end
+     
 <div id="footerbase">
 
 	<div id="footermenu">
@@ -24,7 +33,7 @@
 				<a class="expandmenu assetpreview assettab" 
 					data-link="$siteroot$componenthome/mediaviewer/fullscreen/tabs/viewpreview.html"
 					data-assettab="viewpreview"
-					title="[[View $asset]]" >
+					title="[[View]] #esc($!title)" >
 				<i class="fas fa-expand"></i> [[Viewer]] 
 				</a>
 			 </il>
@@ -33,7 +42,8 @@
 			 #if( !$previewonly && $canviewmetadatageneral )
 			 <li class="footermenu bottomtab #if($opentab == "viewproperties")tabselected#end">
 				<a class="expandmenu assettab" 
-					data-link="$siteroot$componenthome/mediaviewer/fullscreen/tabs/viewasset.html" title="[[View Metadata]]"
+					data-link="$siteroot$componenthome/mediaviewer/fullscreen/tabs/viewasset.html" 
+					title="[[Metadata]]"
 					data-assettab="viewproperties" >
 				<i class="fas fa-info-circle"></i> [[Properties]]  
 				</a>
@@ -63,7 +73,8 @@
 			#if(!$previewonly && !$ismulti && $canviewconversions )
 			   	<li class="footermenu hidemulti bottomtab #if($opentab == 'viewdownloads')tabselected #end">
 			   	<a class="expandmenu assettab " 
-						data-link="$siteroot$componenthome/mediaviewer/fullscreen/tabs/viewactions.html?action=conversions" title="[[Conversions]]"
+						data-link="$siteroot$componenthome/mediaviewer/fullscreen/tabs/viewactions.html?action=conversions" 
+						title="[[Downloads]]"
 						data-assettab="viewdownloads"
 						data-assettabname="[[Download]]" >
 					<i class="fas fa-images"></i>  [[Downloads]]  

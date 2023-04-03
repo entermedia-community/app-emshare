@@ -53,12 +53,18 @@
 	        	$pages.include("$apphome/views/modules/asset/editor/favorite/index.html?targetdiv=mvassetfavorite", $context)
 	   		</div>
 			
-			#set($title = $asset.name)
+			 #if(!$title)		         	
+		     	#if( $asset.assettitle )
+		     		#set($title =  $asset.getText("assettitle",$context)) 
+		     	#else 
+		     		#set($title = $asset.getText("name",$context) )
+		     	#end
+		     #end
 			
 			## Download Button 
 			#if($candownload)
 				#if( $desktop )
-		        	<a href="#" class="emdesktopdownload grid-gallery-download" data-assetid="$asset.id" title="[[Download]] $!title">
+		        	<a href="#" class="emdesktopdownload grid-gallery-download" data-assetid="$asset.id" title="[[Download]]  #esc($!title)">
 		        	<i class="fas fa-download"> </i>
 		        	</a>
 	        	#else
@@ -67,7 +73,7 @@
 					#if($collectionid)
 						#set($dlink = "$dlink&collectionid=$!{collectionid}")
 					#end
-		        	<a href="$!dlink" class="grid-gallery-download" data-assetid="$asset.id" title="[[Download]] $!title">
+		        	<a href="$!dlink" class="grid-gallery-download" data-assetid="$asset.id" title="[[Download]]  #esc($!title)">
 		        	<i class="fas fa-download"> </i>
 		        	</a>
 	        	#end
@@ -82,8 +88,8 @@
 			      [[Desktop Sync]] </button>
 			    <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
 			      <a class="dropdown-item ajax" targetdiv="nowhere"  href="$siteroot$apphome/components/desktop/openasset.html?assetid=$asset.id&lock=true">[[Edit on Desktop]]</a>
-			      <a class="dropdown-item desktop-send" href="#" data-assetid="${asset.id}" data-command="singleupload" data-catalogid="${catalogid}" data-mediadb="${mediadbappid}" data-replace="true" data-filename="${asset.name}">[[Replace from Desktop]]</a>
-			      <a class="dropdown-item desktop-send" href="#" data-assetid="${asset.id}" data-replace="false" data-command="singleupload" data-catalogid="${catalogid}" data-mediadb="${mediadbappid}" data-filename="${asset.name}">[[Create new copy from Desktop]]</a>
+			      <a class="dropdown-item desktop-send" href="#" data-assetid="${asset.id}" data-command="singleupload" data-catalogid="${catalogid}" data-mediadb="${mediadbappid}" data-replace="true" data-filename='#esc($asset.getText("name",$context))'>[[Replace from Desktop]]</a>
+			      <a class="dropdown-item desktop-send" href="#" data-assetid="${asset.id}" data-replace="false" data-command="singleupload" data-catalogid="${catalogid}" data-mediadb="${mediadbappid}" data-filename='#esc($asset.getText("name",$context))'>[[Create new copy from Desktop]]</a>
 			      
 			    </div>
 			    
