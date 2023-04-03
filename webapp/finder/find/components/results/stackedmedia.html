@@ -74,11 +74,12 @@
 	 
 	 #if(!$title)		         	
      	#if( $asset.assettitle )
-     	#set($title =  $asset.getText("assettitle",$context)) 
-     #else 
-     	#set($title = $asset.getText("name",$context) )
+     		#set($title =  $asset.getText("assettitle",$context)) 
+     	#else 
+     		#set($title = $asset.getText("name",$context) )
+     	#end
      #end
-     #end
+     
      $context.putPageValue("title",$title)
 	<div class="masonry-grid-cell stackedplayer-cell assetdraggable ui-draggable resultsassetcontainer #if($isselected) emrowselected #end" 
 		 id="gallerycell_${hit.id}"
@@ -109,7 +110,7 @@
 			         <a class="stackedplayer grid-caption-link" 
 			         	id="clickid${hit.id}" data-assetid="$hit.id" href="#" 
 			         	title="#esc($!title)">
-				        $context.putPageValue("data",$hit)	
+				        $context.putPageValue("data",$asset)	
 						$context.putPageValue("searcher",$mediaarchive.getAssetSearcher() )	
 						$context.putPageValue("view", "asset/stackedgallery")
 						$pages.include("/$applicationid/components/xml/detailviewer-stackedgallery.html", $context)

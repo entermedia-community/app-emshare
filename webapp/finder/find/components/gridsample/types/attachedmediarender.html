@@ -13,16 +13,18 @@ $context.putPageValue("sourcepath", $hit.sourcepath )
 	$context.putPageValue("type", $rendertype)
 	$context.putPageValue("rendertype", $rendertype)
 		
-#if($stackedfield)
-     #set($title = $hit.get($stackedfield))
-#end
-#if(!$title)		         	
-  	#if( $hit.assettitle )
-      	#set($title =  $hit.assettitle) 
-    #else 
-      	#set($title = $hit.name) 
-    #end
-#end 
+	#if($stackedfield)
+	       	#set($title = $asset.getText($stackedfield,$context))
+	 #end
+	 
+	 #if(!$title)		         	
+     	#if( $asset.assettitle )
+     		#set($title =  $asset.getText("assettitle",$context)) 
+     	#else 
+     		#set($title = $asset.getText("name",$context) )
+     	#end
+     #end 
+     $context.putPageValue("title",$title)
 	<div class="grid-attachedmedia assetdraggable " data-assetid="$hit.id"> 
  	
  		#if($rendertype == "audio")
@@ -30,14 +32,14 @@ $context.putPageValue("sourcepath", $hit.sourcepath )
 			<a class="stackedplayer imagearea grid-attachedmedia-audio draggholder" 
 		 		id="clickid${hit.id}" 
 		 		data-assetid="$hit.id" 
-		 		title="$!title">
-			<i class="fas fa-window-restore"></i> #text($title)</a>
+		 		title="#esc($title)">
+			<i class="fas fa-window-restore"></i> #esc($title)</a>
 		#else
 	 		<a class="stackedplayer imagearea draggholder" 
 	 		id="clickid${hit.id}" 
 	 		data-assetid="$hit.id" 
 	 		href="#" 
-	 		title="$!title">
+	 		title="#esc($title)">
 			$pages.include("$componenthome/results/thumbnails/${rendertype}.html", $context)
 			</a>
 		#end

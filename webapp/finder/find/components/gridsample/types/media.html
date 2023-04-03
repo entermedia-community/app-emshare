@@ -1,4 +1,4 @@
-#set($asset = $mediaarchive.getAsset($hit.id))
+	#set($asset = $mediaarchive.getAsset($hit.id))
 	$context.putPageValue("asset", $asset)
 	
 	#set($type = $hit.getSearchHit().getType())
@@ -28,18 +28,19 @@
 	    		
   	##Caption
   	<div class="grid-caption grid-caption-${rendertype} #if($rendertype=="default") grid-caption-show #end  draggholder" data-assetid="$!hit.id">
-  	 		#if($stackedfield)
-         	#set($title = $hit.get($stackedfield))
+  	 	 #if($stackedfield)
+	       	#set($title = $asset.getText($stackedfield,$context))
 		 #end
+		 
 		 #if(!$title)		         	
-         	#if( $hit.assettitle )
-	        	#set($title =  $hit.assettitle) 
-	        #else 
-	        	#set($title = $hit.name) 
-	        #end
-         #end
+	     	#if( $asset.assettitle )
+	     		#set($title =  $asset.getText("assettitle",$context)) 
+	     	#else 
+	     		#set($title = $asset.getText("name",$context) )
+	     	#end
+	     #end
          <a class="stackedplayer grid-caption-link" id="clickid${hit.id}" data-assetid="$hit.id" href="#" title="#esc($!title)">
-         <div>#text($!context.getText($title))</div>
+         <div>#esc($title)</div>
          
          ##Show entities or something more?
          #foreach( $asetmodule in $mediaarchive.getList("module") )

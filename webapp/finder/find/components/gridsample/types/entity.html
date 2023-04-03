@@ -62,7 +62,7 @@ $context.putPageValue("previewurl", $previewurl)
 	   	#set($assetsshown = 1)
 	    $context.putPageValue("viewer", "e_m_g_${entity.id}")
      
-      	#set( $primaryasset = $mediaarchive.getCachedData("asset", $entity.primaryimage))
+      	#set( $primaryasset = $mediaarchive.getAsset($entity.primaryimage))
 		#if($primaryasset)
 			$context.putPageValue("primaryasset", $primaryasset)		
 			#set( $entityassetshits = $mediaarchive.query("asset").hitsPerPage($assetsshown).exact($moduleid, $entityid).not("id",$primaryasset.getId()).sort("assetaddeddateDown").search() )
