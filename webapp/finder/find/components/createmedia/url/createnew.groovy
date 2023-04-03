@@ -31,8 +31,11 @@ public void init()
 		mediaarchive.getAssetSearcher().updateData(context,fields,asset);
 	}
 	
+	
 	//n7GxnhQjBaw/hqdefault.jpg
 	String externalmediainput = context.getRequestParameter("externalmediainput");
+	log.info("Importing asset: "+externalmediainput);
+	
 	String fetchthumb = null;
 	if( externalmediainput.startsWith("https://youtu.be/") )
 	{
@@ -106,6 +109,7 @@ public void init()
 	
 	String sourcepath = mediaarchive.getAssetImporter().getAssetUtilities().createSourcePath(context, mediaarchive, assetname);
 	asset.setSourcePath(sourcepath);
+
 	asset.setName(assetname);
 	
 	//String embed =  context.getRequestParameter("embeddedurl.value") 

@@ -40,8 +40,12 @@ public void init() {
 			boolean regenerate = false;
 			if( fetchurl != null )
 			{
-				String filename = current.name;
-				if(filename == null){
+				String filename = "";
+				
+				if(current.name != null){
+					filename = current.getText("name", context)
+				}
+				else if(filename == null){
 					filename = PathUtilities.extractFileName(fetchurl);
 					filename = filename.replaceAll("\\?.*", "");
 				}
