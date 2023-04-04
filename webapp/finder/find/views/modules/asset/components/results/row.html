@@ -1,6 +1,18 @@
 #if($hits.isSelected(${hit.id}))
 #set($selectedrow = true)
 #end
+
+#if(!$title)		         	
+	#if( $asset.assettitle )
+		#set($title =  $asset.getText("assettitle",$context)) 
+	#else 
+		#set($title = $asset.getText("name",$context) )
+	#end
+#end
+
+$context.putPageValue("title",$title)
+     
+     
 <tr data-rowid="$hit.id" title="$sourcepath" class="resultsassetcontainer #if($selectedrow) emrowselected #end" >
 #if( $showtoolbar )
 	<td class="borderedcell checkbox resultsselection" noclick="true"> 

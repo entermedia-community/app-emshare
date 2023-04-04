@@ -8,6 +8,17 @@
 	#set ($hit = $data)
 #end
 
+#if(!$title)
+	#if(!$asset)
+		#set( $asset = $mediaarchive.getAsset($hit.getId()) )
+	#end		         	
+	#if( $asset.assettitle )
+		#set($title =  $asset.getText("assettitle",$context)) 
+	#else 
+		#set($title = $asset.getText("name",$context) )
+	#end
+#end
+
 $context.putPageValue("hit", $hit)
 
 #set ($sourcepath = $hit.sourcepath)

@@ -1,4 +1,14 @@
 #set ($sourcepath = $hit.sourcepath)
+#if(!$title)
+	#if(!$asset)
+		#set( $asset = $mediaarchive.getAsset($hit.getId()) )
+	#end		         	
+	#if( $asset.assettitle )
+		#set($title =  $asset.getText("assettitle",$context)) 
+	#else 
+		#set($title = $asset.getText("name",$context) )
+	#end
+#end
 <div class="small-thumb-container draggholder" > 
    #if( ($hit.previewstatus && $hit.previewstatus == "mime") || $alwaysmime)
        #set ($mime = $mediaarchive.getMimeTypeIcon($hit.fileformat))
@@ -26,7 +36,13 @@
 		      	#set( $img = $mediaarchive.asLinkToPreview($hit,$librarycol.id,$imagesize, true))  
 			#end
 		       
-		        <img class="smallthumb assetdragdrop" draggable="true" data-sourcepath="$hit.sourcepath" data-name="#if($title)#esc($title)#else$!{hit.name}#end" src="$img" alt="#if($title)#esc($title)#else$!{hit.name}#end" border="0" />
+		        <img class="smallthumb assetdragdrop" 
+		        	draggable="true" 
+		        	data-sourcepath="$hit.sourcepath" 
+		        	data-name="#if($title)#esc($title)#else$!{hit.name}#end" 
+		        	src="$img" 
+		        	alt="#if($title)#esc($title)#else$!{hit.name}#end" 
+		        	border="0" />
 		        
        #end
    #end
