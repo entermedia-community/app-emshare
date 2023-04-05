@@ -98,74 +98,20 @@ $context.putPageValue("previewurl", $previewurl)
 	   
 	        
 	        <div class="clearfix"></div>
-	        
-	        
-			<div class="grid-gallery-footer">
-	        
-        	<div class="emgrid-moredetailsright">
-        		#if( $canviewupload )
-	        		#if($moduleid=="librarycollection")
-					#set($uploadlink = "$siteroot/$applink/views/modules/asset/add/start.html?collectionid=$entityid&clearotherentities=true")
-					#set($oemaxlevel = "1")
-					#set($targetdiv = "applicationmaincontent")
-					#elseif($moduleid=="faceprofilegroup")
-						#set($uploadlink = "")
-					#else
-						#set($uploadlink = "$siteroot/$applink/views/modules/asset/add/start.html?entitytype=$moduleid&addselection=$entityid&clearotherentities=true")
-						#set($oemaxlevel = "1")
-						#set($targetdiv = "applicationmaincontent")
-					#end
-					#if ($uploadlink)
-					<a href="$uploadlink" 
-						class="ajax moreactions"
-						data-targetdivinner="$targetdiv"
-						data-closedialog="true" 
-						data-closemediaviewer="true"
-						data-updateurl="true"
-						data-oemaxlevel="$!oemaxlevel"
-						title="[[Upload assets here]]">
-						<i class="fas fa-upload"></i></a>
-					#end
-				#end
-				
-				
-				#if($entityassetscount>=1)
-				
-						#set($targetdivinner = "applicationmaincontent")
-						#set($oemaxlevel = "2")
-						
-							#if($moduleid=="librarycollection")
-								#if(!$rootcategory)
-									#set($rootcategory = $context.getRequestParameter("rootcategory"))
-								#end
-								#set($link = "$siteroot$applink/views/modules/librarycollection/media/showcategory.html?nodeID=$rootcategory&clearfilters=true&collectionid=$!librarycol.getId()")
-								#set($link = "$!link&sidebarcomponent=categories")
-							#end
-							
-							#if($entityassetscount==1)
-								#set($entityassetscounttext = "(${entityassetscount} [[Asset]])")
-							#elseif($entityassetscount>1)
-								#set($entityassetscounttext = "(${entityassetscount} [[Assets]])")
-							#end
-							<a href="$link" 
-											class="ajax"
-											data-oemaxlevel="$!oemaxlevel" 
-											data-targetdivinner="$!targetdivinner" 
-											data-closedialog="true"
-											data-updateurl="true"
-											data-closemediaviewer="true"
-											title="[[View Media]] $!entityassetscounttext"><i class="fas fa-images"></i></a>
-							
-							
-					#end
-				
-				
-				
-	       		$pages.include("$componenthome/gridsample/favorites.html?id=$hit.id&searchtype=$moduleid", $context)
-	       	</div>
-	        </div>
+			
 	        
 	       ## <div class="griditem-tools resultsselection">
 	       ## <input type="checkbox" class="selectionbox" name="count" value="" data-dataid="$hit.getId()">
 	       ## </div>
 </div>
+<div class="grid-gallery-footer">
+
+	#if($entityassetscount>0)
+	$entityassetscount <i class="fas fa-images"></i>
+	#end
+	
+	<div class="emgrid-moredetailsright">
+ 	$pages.include("$componenthome/gridsample/favorites.html?id=$hit.id&searchtype=$moduleid", $context)
+	</div>
+</div>
+

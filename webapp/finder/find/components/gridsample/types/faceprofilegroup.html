@@ -87,48 +87,20 @@ $context.putPageValue("previewurl", $previewurl)
 	   </div>
 	        
 	        <div class="clearfix"></div>
-	        
-	        
-	        <div class="grid-gallery-footer">
-	        
-        	<div class="emgrid-moredetailsright">
-        		
-        		#if($entityassetscount>=1)
-				
-						#set($targetdivinner = "applicationmaincontent")
-						#set($oemaxlevel = "2")
-							
-							#if($moduleid=="faceprofilegroup")
-								#set($link = "$siteroot$applink/views/modules/asset/faceprofilegroup.html")
-								#set($link = "$link?faceprofilegroupid=$!entityid&clearfilters=true")
-													
-							#end
-							
-							#if($entityassetscount==1)
-								#set($entityassetscounttext = "(${entityassetscount} [[Asset]])")
-							#elseif($entityassetscount>1)
-								#set($entityassetscounttext = "(${entityassetscount} [[Assets]])")
-							#end
-							<a href="$link" 
-											class="ajax"
-											data-oemaxlevel="$!oemaxlevel" 
-											data-targetdivinner="$!targetdivinner" 
-											data-closedialog="true"
-											data-updateurl="true"
-											data-closemediaviewer="true"
-											title="[[View Media]] $!entityassetscounttext"><i class="fas fa-images"></i></a>
-							
-							
-					#end
-					
-					
-	       		$pages.include("$componenthome/gridsample/favorites.html?id=$hit.id&searchtype=$moduleid", $context)
-	       	</div>
-	        </div>
+
 	        
 	       ## <div class="griditem-tools resultsselection">
 	       ## <input type="checkbox" class="selectionbox" name="count" value="" data-dataid="$hit.getId()">
 	       ## </div>
 </div>
+<div class="grid-gallery-footer">
 
+	#if($entityassetscount>0)
+	$entityassetscount <i class="fas fa-images"></i>
+	#end
+	
+	<div class="emgrid-moredetailsright">
+ 	$pages.include("$componenthome/gridsample/favorites.html?id=$hit.id&searchtype=$moduleid", $context)
+	</div>
+</div>
 
