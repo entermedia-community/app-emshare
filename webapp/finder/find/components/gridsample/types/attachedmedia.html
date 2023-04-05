@@ -9,17 +9,18 @@
 	#set($mediarender = "attachedmediarender")
 #end
 
-
 #if($assetshits)
 	#set($count = 0)
 	#set($stackedfield = $mediaarchive.getCatalogSettingValue("stackedgalleryfield"))
 	
 	#foreach( $ahit in $assetshits.getPageOfHits())
-		#set($count = $count + 1)
-		$context.putPageValue("hit", $ahit)
-		#set($asset = $mediaarchive.getAsset($ahit.id))
-		$context.putPageValue("asset", $asset)
-		$pages.include("$apphome/components/gridsample/types/attachedmediarender.html", $context)
+		#if($primaryasset.getId() != $ahit.getId())
+			#set($count = $count + 1)
+			$context.putPageValue("hit", $ahit)
+			#set($asset = $mediaarchive.getAsset($ahit.id))
+			$context.putPageValue("asset", $asset)
+			$pages.include("$apphome/components/gridsample/types/attachedmediarender.html", $context)
+		#end
 	#end
 	<div class="clearfix"></div>
 #end

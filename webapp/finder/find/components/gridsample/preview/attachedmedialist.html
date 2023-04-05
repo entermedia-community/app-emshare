@@ -3,7 +3,7 @@ $context.putPageValue("assetid", $hit.id)
 #set($sourcepath = $hit.sourcepath)
 $context.putPageValue("sourcepath", $sourcepath )
 	
-	#set($type = $hit.getSearchHit().getType())
+#set($type = $hit.getSearchHit().getType())
 #set( $rendertype = $mediaarchive.getMediaRenderType($hit.fileformat))
 #if(!$rendertype || $type =="rendertype")
 		#set( $rendertype = "mime" )
@@ -15,13 +15,14 @@ $context.putPageValue("type", $rendertype)
 	#if($stackedfield)
       	#set($title = $hit.get($stackedfield))
 #end
+
 #if(!$title)		         	
-  	#if( $hit.assettitle )
-      	#set($title =  $hit.assettitle) 
-    #else 
-      	#set($title = $hit.name) 
-    #end
-#end
+     	#if( $hit.assettitle )
+     		#set($title =  $hit.getText("assettitle",$context)) 
+     	#else 
+     		#set($title = $hit.getText("name",$context) )
+     	#end
+     #end
 	
 	<div class="list-attachedmedia #if($primaryimage==$hit.id) list-isprimaryimage #end assetdraggable" data-assetid="$hit.id"> 
  	<a class="stackedplayer imagearea" id="clickid${hit.id}" data-assetid="$hit.id" href="#" title="$!title">
