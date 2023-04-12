@@ -1232,6 +1232,9 @@ uiload = function() {
 	
 	lQuery("a.entity-tab-label").livequery("click", function(event) {
 		event.preventDefault();
+		if($(this).data("ismultiedit")) {
+			return;
+		}
 		$(".entity-tab").removeClass("current-entity");
 		$(this).closest(".entity-tab").addClass("current-entity");
 		var entityid = $(this).data("entityid");

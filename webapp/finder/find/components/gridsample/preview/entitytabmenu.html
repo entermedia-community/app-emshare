@@ -13,7 +13,7 @@
 
 #if($id.startsWith("multiedit"))
 	#set($name = "[[Multi Edit]]")
-	#set($targetentitytabid = "entity-tab-multyedit")
+	#set($targetentitytabid = "entity-tab-multiedit")
 #else
 	#if( !$entity)
 		#set( $entity  = $mediaarchive.getData($searchtype, $id) )
@@ -35,7 +35,17 @@
 	#set($targetentitytabid = "entity-tab-#eid($id)")
 #end
 <div class="entity-tab  current-entity" data-entityid="$!entity.getId()">
-<a href="#$!entity.getId()" class="entity-tab-label" data-toggle="tab" data-target="$targetentitytabid"  role="tab" aria-controls="$targetentitytabid" data-entityid="$!entity.getId()" title="#esc($name)">
+<a href="#$!entity.getId()" 
+	class="entity-tab-label" 
+	data-toggle="tab" 
+	data-target="$targetentitytabid"
+	#if($id.startsWith("multiedit"))
+	data-ismultiedit="true"
+	#end 
+	role="tab" 
+	aria-controls="$targetentitytabid" 
+	data-entityid="$!entity.getId()" 
+	title="#esc($name)">
 <span class="entity-tab-label-type">#text($module)\</span> #esc($name)</a>
 <a href="#$!entity.getId()" class="entity-tab-close" data-entityid="$!entity.getId()" title="[[Close]]: $!entity.getName()"><i class="fas fa-times"></i></a>
 </div>
