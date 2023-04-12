@@ -7,26 +7,29 @@
 #end
 
 #set( $id = $context.getRequestParameter("id"))
-#set($entityid = $id)
 
-#if( !$entity)
-	#set( $entity  = $mediaarchive.getData($searchtype, $id) )
+#if($id.startsWith("multiedit"))
+	#set($entityid = $entity.id)
+	#set($entitytabid = "entity-tab-multyedit")
+#else
+	#if(!$entity)
+		#set( $entity  = $mediaarchive.getData($searchtype, $id) )
+	#end
+	#set($entityid = $entity.id)
+	$context.putPageValue("entity", $entity)
+	#if(!$id)
+		#set($id= $entity.id)
+	#end
+	#if(!$id)
+		#set($id= "")
+	#end
+	#set($entitytabid = "entity-tab-#eid($id)")
 #end
-#set($entityid = $entity.id)
-$context.putPageValue("entity", $entity)
 #set($module = $mediaarchive.getData("module", $searchtype))
 #set($moduleid = $module.getId())
 
-$context.putPageValue("entity", $entity)
 $context.putPageValue("entityid", $entityid)
 $context.putPageValue("moduleid", $moduleid)
-
-#if(!$id)
-#set($id= $entity.id)
-#end
-#if(!$id)
-#set($id= "")
-#end
 
 #set($edit = $context.getRequestParameter("edit"))
 #if($edit!="true")
@@ -36,7 +39,7 @@ $context.putPageValue("edit", $edit)
 
 
 
-<div id="entity-tab-#eid($id)" 
+<div id="$entitytabid" 
 	class="entity-tab-content #eid($entity.id)tab-content" 
 	data-id="$!entity.id" 
 	data-searchtype="$searchtype"

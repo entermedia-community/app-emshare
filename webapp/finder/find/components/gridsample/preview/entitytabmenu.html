@@ -1,26 +1,41 @@
-#set( $searchtype = $context.getRequestParameter("searchtype"))
+#if(!$searchtype)
+	#set( $searchtype = $context.findValue("searchtype"))
+	#if(!$searchtype)
+		#set( $searchtype = $context.getRequestParameter("searchtype"))
+	#end
+#end
 #set( $id = $context.getRequestParameter("id"))
 #set( $module = $mediaarchive.getCachedData("module", $searchtype))
 
-#if( !$entity)
-	#set( $entity  = $mediaarchive.getData($searchtype, $id) )
+#if(!$moduleid)
+	#set($moduleid = $module.getId())
 #end
-#if($moduleid == "faceprofilegroup")
-	#set($name = $entity.name)
-	#if($name)
-		#set($name = "$!name ([[Profile]] $entity.facecounter)")
-	#else	
-		#set($name = "[[Profile]] $entity.facecounter")
-	#end
+
+#if($id.startsWith("multiedit"))
+	#set($name = "[[Multi Edit]]")
+	#set($targetentitytabid = "entity-tab-multyedit")
 #else
-	#if($entity.getName($context))
-		#set($name = $!entity.getName($context))
-	#else 
-		#set($name = "[[Add New]]")
+	#if( !$entity)
+		#set( $entity  = $mediaarchive.getData($searchtype, $id) )
 	#end
+	#if($moduleid == "faceprofilegroup")
+		#set($name = $entity.name)
+		#if($name)
+			#set($name = "$!name ([[Profile]] $entity.facecounter)")
+		#else	
+			#set($name = "[[Profile]] $entity.facecounter")
+		#end
+	#else
+		#if($entity.getName($context))
+			#set($name = $!entity.getName($context))
+		#else 
+			#set($name = "[[Add New]]")
+		#end
+	#end
+	#set($targetentitytabid = "entity-tab-#eid($id)")
 #end
 <div class="entity-tab  current-entity" data-entityid="$!entity.getId()">
-<a href="#$!entity.getId()" class="entity-tab-label" data-toggle="tab" data-target="#entity-tab-$!entity.getId()"  role="tab" aria-controls="entity-tab-$!entity.getId()" data-entityid="$!entity.getId()" title="#esc($name)">
+<a href="#$!entity.getId()" class="entity-tab-label" data-toggle="tab" data-target="$targetentitytabid"  role="tab" aria-controls="$targetentitytabid" data-entityid="$!entity.getId()" title="#esc($name)">
 <span class="entity-tab-label-type">#text($module)\</span> #esc($name)</a>
 <a href="#$!entity.getId()" class="entity-tab-close" data-entityid="$!entity.getId()" title="[[Close]]: $!entity.getName()"><i class="fas fa-times"></i></a>
 </div>

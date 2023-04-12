@@ -1,4 +1,5 @@
 #set($moduleid = $module.id)
+$context.putPageValue("moduleid", $moduleid)
 
 #set($defaultview = $userprofile.getDefaultViewForModule($module.id) )
 
@@ -6,6 +7,7 @@
 #if(!$resulttype)
 	#set($resulttype = "table")
 #end
+$context.putPageValue("resulttype", $resulttype)
 
 #set($searchhome = $page.get("searchhome") )
 
@@ -18,7 +20,7 @@
 #if ($module.modulerendertype)
 	#set($entityrendertype = $module.modulerendertype)
 #end
-
+$context.putPageValue("entityrendertype", $entityrendertype)
 
 	<div id="resultsheader" class="resultsheader">
 	<div id="sub-nav" class="search-views emsubnav sub-nav-$!moduleid">
@@ -39,7 +41,7 @@
 					#end
 			
 				#if($content.showactions && $hits.hasSelections())
-					$pages.include("$searchhome/selectionactions.html")
+					$pages.include("$searchhome/selectionactions.html", $context)
 				#end
 				</ul>
 			#end

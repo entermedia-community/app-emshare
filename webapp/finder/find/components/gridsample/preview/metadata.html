@@ -9,8 +9,8 @@
 
 #if(!$data)
 	#set($id = $context.getRequestParameter("id"))
-	#if($searchtype && $id)
-		#set( $id = $context.getRequestParameter("id"))
+	#if($searchtype && $id && !$id.startsWith("multiedit"))
+		##set( $id = $context.getRequestParameter("id"))
 		#set( $data  = $mediaarchive.getCachedData($searchtype, $id) )
 	#end	
 #end
@@ -37,14 +37,20 @@ $context.putPageValue("edit", $edit)
 
 <div id="editentitymetadata" class="entitymetadatamodal" data-id="$!id">
 
-#set($addnew = $context.getRequestParameter("addnew"))
-#if($addnew)
-#set($viewid = "${searchtype}addnew")
+#if($id.startsWith("multiedit"))
+	#set($viewid = "${searchtype}general")
+	#set($targetentitytabid = "entity-tab-multyedit")
 #else
-#set($viewid = "${searchtype}general")
+	#set($addnew = $context.getRequestParameter("addnew"))
+	#if($addnew)
+		#set($viewid = "${searchtype}addnew")
+	#else
+		#set($viewid = "${searchtype}general")
+	#end
+	#set($targetentitytabid = "entity-tab-#eid($id)")
 #end
-#set($view = "$searchtype/$viewid")
 
+#set($view = "$searchtype/$viewid")
 #set($action = "$siteroot$applink/components/gridsample/preview/metadata-save.html")
 
 <form id="entitydataeditor" 
