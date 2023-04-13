@@ -17,35 +17,16 @@ $context.putPageValue("rootcategory", $rootcategory)
 $context.putPageValue("moduleid", $moduleid)
 
 
-<div class="modal-content modal-data-details modal-entity ${module.id}-modal">
-	<div class="modal-body">
-		<div class="modal-close">
-		        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-		          <span aria-hidden="true">&times;</span>
-		        </button>
-		</div>
-
-		<div class="entity-metadata">
-			<h2 class="modal-title">[[Albums]]</h2>
-			$context.putPageValue("data", $entity)
-			$context.putPageValue("searchtype", $searchtype)
-			$pages.include("metadata.html", $context)
+<div class="entity-wraper">	
+	<nav>
+  	<div class="nav nav-tabs entity-navigation" id="entity-nav-tab" role="tablist"  data-tabmenuurl="$componenthome/gridsample/preview/entitytabmenu.html">
+		$pages.include("$componenthome/gridsample/preview/entitytabmenu.html", $context)
+		
+	</div>
+	</nav>
+		<div class="tab-content entity-body" id="entity-nav-tabContent">
 			
-		</div>
-				<div class="entity-media">
-		
-		
-		#set($assetsshown = 4)
-		#set( $assetshits = $mediaarchive.query("asset").hitsPerPage($assetsshown).match("category",$rootcategory).sort("assetaddeddateDown").search() )
-		
-		
-		$context.putPageValue("assetshits", $assetshits)
-		$context.putPageValue("fullview",true)
-		$context.putPageValue("thumbsize", "small" )
-		$context.putPageValue("primaryimage", $librarycol.primaryimage )
-		$pages.include("$componenthome/gridsample/preview/attachedmedia.html",$context)
-		</div>
-		
-		<div class="clearfix"></div>
+			$pages.include("$componenthome/gridsample/preview/librarycollectiontab.html", $context)
+	
 	</div>
 </div>

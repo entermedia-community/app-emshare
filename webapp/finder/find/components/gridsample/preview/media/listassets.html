@@ -9,10 +9,13 @@
 #set( $assetsshown = 4)
 #if( $searchtype == "faceprofilegroup" )
 	#set( $assetshits = $mediaarchive.query("asset").hitsPerPage($assetsshown).exact("faceprofiles.faceprofilegroup", $entityid).sort("assetaddeddateDown").search() )
-			
+#elseif($searchtype == "librarycollection")
+	#set($rootcategory = $librarycol.rootcategory)
+	$context.putPageValue("rootcategory", $rootcategory)
+	#set( $assetshits = $mediaarchive.query("asset").hitsPerPage($assetsshown).match("category",$rootcategory).sort("assetaddeddateDown").search() )
+	#set($uploadsourcepath = "Albums/Users/$user.getScreenName()/")		
 #else
 	#set( $assetshits = $mediaarchive.query("asset").hitsPerPage($assetsshown).match($moduleid, $entityid).sort("assetaddeddateDown").search() )
-		
 #end
 $context.putPageValue("assetshits", $assetshits)
 $context.putPageValue("fullview",true) 
@@ -33,7 +36,9 @@ $context.putPageValue("mediarender", "attachedmedialist" )
 			#if($moduleid && $entityid)
 			
 				#if($permissions.can($moduleid, "upload_files"))
-					#set($uploadsourcepath =  $mediaarchive.getBean("entityManager").loadUploadSourcepath($module, $entity, $context.getUser()))
+					#ifnull($uploadsourcepath)
+						#set($uploadsourcepath =  $mediaarchive.getBean("entityManager").loadUploadSourcepath($module, $entity, $context.getUser()))
+					#end
 					#ifnull($uploadsourcepath)
 						#set($uploadsourcepath = "Albums/Users/$user.getScreenName()/Desktops")
 					#end

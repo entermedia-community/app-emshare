@@ -11,6 +11,8 @@
 		#set($module = $mediaarchive.getCachedData("module", $searchtype))
 	#end
 	
+	#set($moduleid = $module.getId())
+	
 	#if($id && $searchtype)
 		#set($hit = $mediaarchive.getData($searchtype, $id))
 		#set($rendertype = $module.modulerendertype)
@@ -22,7 +24,7 @@
 #end
  
 #if($hit)
- <div class="emgridcell emgridcell-$rendertype"> 
-    $pages.include("$apphome/components/gridsample/types/${rendertype}.html", $context)
+ <div class="emgridcell emgridcell-$rendertype">
+ 	$pages.include("$apphome/views/modules/$!{moduleid}/components/gridsample/types/${rendertype}.html", $context)
  </div>
 #end
