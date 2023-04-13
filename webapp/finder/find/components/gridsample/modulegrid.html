@@ -9,7 +9,7 @@ $context.putPageValue("filter", $filter)
 		     		#set($moduleicon = $module.moduleicon)
 		     	#end
 		     	
-	     		#set($entityurl = "$siteroot$apphome/views/modules/$module.id/index.html?${module.id}page=1")
+	     		#set($entityurl = "$!siteroot$apphome/views/modules/$!{module.id}/index.html?$!{module.id}page=1")
 	
 				<a href="$entityurl" 
 					class="ajax minimizeexpandedmodule" 
@@ -58,7 +58,7 @@ $context.putPageValue("filter", $filter)
 				data-colwidth="315" 
 				data-colcount="2"
 				data-cellpadding="10"
-				data-entityrenderurl="$siteroot$apphome/views/modules/$module.id/components/gridsample/gridcell.html"
+				data-entityrenderurl="$!{siteroot}$apphome/views/modules/${module.id}/components/gridsample/gridcell.html"
 				data-rendertype="$rendertype">
 			#foreach( $hit in $hits.getPageOfHits() )
 				$context.putPageValue("hit", $hit)
@@ -80,7 +80,7 @@ $context.putPageValue("filter", $filter)
 						<a class="btn btn-xs btn-secondary emdialog TODOautocloseside" 
 							style="margin-right:5px; "  
 							title="[[Add New]] #text($module)"
-							href="$siteroot$applink/views/modules/${moduleid}/components/gridsample/preview/$!{rendertype}.html?edit=true&addnew=true&viewid=${module.id}addnew&searchtype=${module.id}&targetdiv=applicationmaincontent"
+							href="$siteroot$applink/views/modules/${moduleid}/components/gridsample/preview/$!{rendertype}.html?edit=true&addnew=true&viewid=$!{module.id}addnew&targetdiv=applicationmaincontent"
 							data-hidefooter="true">
 							<i class="fas fa-plus"></i> [[Add New]]</a>
 					#end

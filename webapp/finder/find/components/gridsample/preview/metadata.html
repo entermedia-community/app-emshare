@@ -51,7 +51,7 @@ $context.putPageValue("edit", $edit)
 #end
 
 #set($view = "$searchtype/$viewid")
-#set($action = "$siteroot$applink/components/gridsample/preview/metadata-save.html")
+#set($action = "$siteroot$applink/views/modules/${moduleid}/components/gridsample/preview/metadata-save.html")
 
 <form id="entitydataeditor" 
 		name="entitydataeditor" 
@@ -122,7 +122,7 @@ $context.putPageValue("edit", $edit)
 		#end
 		
 		#if($permissions.can($moduleid, "edit"))
-			<a class="ajax btn btn-sm btn-darkless float-right" data-targetdiv="applicationcontent" data-updateurl="true" data-closedialog="true" data-oemaxlayout="2" href="$siteroot$apphome/views/settings/modules/${searcher.searchType}/metadata/views/index.html?viewid=$viewid&viewpath=$!view&moduleid=$!moduleid"><i class="fas fa-cog"></i> [[Fields]]</a>
+			<a class="ajax btn btn-sm btn-darkless float-right" data-targetdiv="applicationcontent" data-updateurl="true" data-closedialog="true" data-oemaxlayout="2" href="$siteroot$apphome/views/settings/modules/$!{searcher.searchType}/metadata/views/index.html?viewid=$viewid&viewpath=$!view&moduleid=$!moduleid"><i class="fas fa-cog"></i> [[Fields]]</a>
 		#end
 		<a class="ajax btn btn-sm btn-darkless float-right" style="margin-right:5px;" data-targetdiv="editentitymetadata" href="$siteroot$apphome/components/gridsample/preview/metadata.html?edit=true&id=$data.id&searchtype=$searchtype&detailviewercolumns=$changedetailviewercolumns&moduleid=$!moduleid">
 			<i class="fas fa-$icondetailviewercolumns"></i>
@@ -135,16 +135,18 @@ $context.putPageValue("edit", $edit)
 	
 	#if($edit!="true")
 		#if($permissions.can($moduleid, "edit"))
-			<a href="$componenthome/gridsample/preview/metadata.html?edit=true&id=$!data.id&searchtype=$!searchtype&moduleid=$!moduleid" data-targetdiv="editentitymetadata" class="ajax btn btn-dark" style="margin-right:10px;"><i class="fas fa-edit"></i> [[Edit]]</a>
+			<a href="$componenthome/gridsample/preview/metadata.html?edit=true&id=$!data.id&moduleid=$!moduleid" 
+				data-targetdiv="editentitymetadata" 
+				class="ajax btn btn-dark" 
+				style="margin-right:10px;"><i class="fas fa-edit"></i> [[Edit]]</a>
 		#end
 		#if($permissions.can($moduleid, "delete"))
-		<a href="$siteroot$apphome/components/entities/delete.html?id=$data.id&searchtype=$searchtype" 
+		<a href="$componenthome/entities/delete.html?id=$data.id" 
 			class="ajax btn btn-dark" 
 			data-targetdiv="editentitymetadata" 
 			data-closedialog="true" 
 			data-confirm="[[Are you sure]]?"
 			data-onsuccess="updateentities"
-			data-searchtype="$searchtype"
 			data-id="$data.id" 
 			><i class="fas fa-trash"></i> [[Delete]]</a>
 		#end
