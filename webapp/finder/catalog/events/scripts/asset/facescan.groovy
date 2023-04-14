@@ -1,7 +1,7 @@
 package asset
 
 import org.entermediadb.asset.*
-import org.entermediadb.asset.facedetect.FaceDetectManager
+import org.entermediadb.asset.facedetect.FaceProfileManager
 import org.json.simple.JSONArray
 import org.openedit.Data
 import org.openedit.hittracker.HitTracker
@@ -19,47 +19,23 @@ public void init()
 		return;
 	}
 
-	int saved = 0;
 	try
 	{	
 		HitTracker hits = archive.query("asset").exact("facescancomplete", "false").exact("importstatus","complete").search();
 		hits.enableBulkOperations();
 			
-		List tosave = new ArrayList();
-		FaceDetectManager manager = archive.getBean("faceDetectManager");
-		int found = 0;
+		FaceProfileManager manager = archive.getBean("faceProfileManager");
 		for(Data hit in hits)
 		{
 			Asset asset = archive.getAssetSearcher().loadData(hit);
-			if( manager.extractFaces(archive, asset) )
-			{
-				tosave.add(asset);
-			}
-			if( tosave.size() == 1000 )
-			{
-				saved = saved +  tosave.size();
-				log.info("saved " + saved);
-				archive.saveAssets(tosave);
-				tosave.clear();
-			}
+			manager.extractFaces(asset);
 		}
-		archive.saveAssets(tosave);
-		saved = saved +  tosave.size();
-		if( saved > 0)
-		{
-			log.info("saved " + saved);
-		}
+		log.info("processed  " + hits.size());
 	}
 	finally
 	{
 		archive.getLockManager().release(lock);
 	}
-
-	if( saved > 0)
-	{
-		archive.fireMediaEvent("facecompare", context.getUser());
-	}
-	
 }
 
 
