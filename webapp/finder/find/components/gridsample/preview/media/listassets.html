@@ -10,10 +10,12 @@
 #if( $searchtype == "faceprofilegroup" )
 	#set( $assetshits = $mediaarchive.query("asset").hitsPerPage($assetsshown).exact("faceprofiles.faceprofilegroup", $entityid).sort("assetaddeddateDown").search() )
 #elseif($searchtype == "librarycollection")
+	
 	#set($rootcategory = $librarycol.rootcategory)
-	$context.putPageValue("rootcategory", $rootcategory)
+	#set($category  = $mediaarchive.getCategory($rootcategory))
+
 	#set( $assetshits = $mediaarchive.query("asset").hitsPerPage($assetsshown).match("category",$rootcategory).sort("assetaddeddateDown").search() )
-	#set($uploadsourcepath = "Albums/Users/$user.getScreenName()/")		
+	
 #else
 	#set( $assetshits = $mediaarchive.query("asset").hitsPerPage($assetsshown).match($moduleid, $entityid).sort("assetaddeddateDown").search() )
 #end
@@ -58,7 +60,7 @@ $context.putPageValue("mediarender", "attachedmedialist" )
 					#else
 						<a href="#" 
 							class="entity-add-media filePicker entityuploadPicker"
-							title="[[Upload Media]]">
+							title="[[Upload Media to:]] $!uploadsourcepath">
 						<i class="fas fa-upload"></i></a>
 						<div class="loadericon float-right"><i class="fas fa-spinner fa-spin"></i></div>
 							
