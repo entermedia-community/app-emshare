@@ -1130,7 +1130,9 @@ jQuery(document).ready(function(url,params)
 			// console.log(image.height());
 			// canvas.width(box[2]);
 			// canvas.height(box[3]);
-			canvas.attr({width:box[0]+box[2]+10,height:box[1]+ box[3]+10});
+			var w = 240; //box[2]+10;
+			var h = 240;//box[3]+10;
+			canvas.attr({width: w, height:h});
 			var context = canvas[0].getContext("2d");	
 			context.beginPath();
 			context.lineWidth = 1;
