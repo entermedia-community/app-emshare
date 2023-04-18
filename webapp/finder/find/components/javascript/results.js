@@ -1190,7 +1190,7 @@ jQuery(document).ready(function(url,params)
             	options = moduletable.data();
             }
             else {
-            	targetdiv = $(this).closest("#resultsarea");
+            	targetdiv = $(this).closest(".resultsarea");
             }
             
 			// var columnsort = searchhome +
