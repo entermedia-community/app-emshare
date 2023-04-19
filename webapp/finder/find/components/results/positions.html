@@ -13,11 +13,14 @@
 			#set($resultsPage = "$resultsPage&nodeID=$!categoryid&collectionid=$!collectionid")
 			#set($resultsPage = "$resultsPage&pageposition")
 		#else
-			##set($resultsPage = "$applink/views/modules/asset/index.html?pageposition")
-			#set($resultsPage = "$componenthome/results/index.html?hitssessionid=$!hits.sessionId&pageposition")
+			#set($resultsPage = "$applink/views/modules/asset/index.html?hitssessionid=$!hits.sessionId&pageposition")
+			##set($resultsPage = "$componenthome/results/index.html?hitssessionid=$!hits.sessionId&pageposition")
 		#end
-
+		
 		#set($oemaxlevel = "1")
+		
+		#set($targetdivinner = "$!{moduleid}resultscontainer")
+		
 #elseif($moduleid=="librarycollection")
 		#if(!$resultsPage)
 			#set($resultsPage = "$applink/views/modules/librarycollection/media/showcategory.html")
@@ -31,6 +34,9 @@
 		#if($librarycollectionassets)
 			#set($reloadsearchtype = "asset")
 		#end
+		
+		#set($targetdivinner = "${moduleid}resultsarea")
+		
 #else
 	#if(!$resultsPage)
 		#set($resultsPage = "$componenthome/results/index.html")
@@ -42,6 +48,9 @@
 	#end
 	#set($resultsPage = "$resultsPage&pageposition")
 	#set($oemaxlevel = "2")
+	
+	#set($targetdivinner = "${moduleid}resultsarea")
+	
 #end
 
 ##  ##toRemove
@@ -52,7 +61,7 @@
 
 ## $context.putPageValue('resultsPage',  $resultsPage)
 
-#set($targetdivinner = "${moduleid}resultsarea")
+
 
 ## $context.putPageValue('targetdivinner',  $targetdivinner)
 
