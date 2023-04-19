@@ -652,6 +652,7 @@ uiload = function() {
 			return;
 		} else {
 			e.preventDefault();
+			e.stopImmediatePropagation();
 		}
 	});
 
