@@ -2021,8 +2021,8 @@ uiload = function() {
         }
         
 		var url = apphome
-				+ "/components/xml/types/autocomplete/tagsearch.txt?catalogid="
-				+ catalogid + "&field=" + searchfield
+				+ "/components/xml/types/autocomplete/tagsearch.txt?"
+				+ "field=" + searchfield
 				+ "&operation=contains&searchtype="
 				+ searchtype;
 		
@@ -2271,8 +2271,8 @@ uiload = function() {
 							.data('defaultvalueid');
 
 					var url = apphome
-							+ "/components/xml/types/autocomplete/datasearch.txt?catalogid="
-							+ catalogid + "&field=" + searchfield
+							+ "/components/xml/types/autocomplete/datasearch.txt?"
+							+ "field=" + searchfield
 							+ "&operation=contains&searchtype="
 							+ searchtype;
 					if (defaultvalue != undefined) {
