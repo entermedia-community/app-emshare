@@ -2,14 +2,16 @@
 	<a class="nav-link dropdown-toggle" data-toggle="dropdown" id="resultsSelectionDropdown">[[Results]] </a>
 	<div class="dropdown-menu">
 	#set( $type = $content.module )
-	#set($previewurl = "$siteroot$apphome/views/modules/$!moduleid/components/gridsample/preview/$!{entityrendertype}.html?id=multiedit:$!hits.sessionId&hitssessionid=$!hits.sessionId&searchtype=$moduleid&edit=true")	
-	<a class="dropdown-item emdialog" 
-		href="$previewurl">[[Batch Edit]]</a>
+	#if($permissions.can($moduleid, "edit"))
+		#set($previewediturl = "$siteroot$apphome/views/modules/$!moduleid/components/gridsample/preview/$!{entityrendertype}.html?id=multiedit:$!hits.sessionId&hitssessionid=$!hits.sessionId&searchtype=$moduleid&edit=true")
+		<a class="dropdown-item emdialog" 
+			href="$previewediturl">[[Batch Edit]]</a>
+	#end
 	<a class="dropdown-item" href="$home${content.searchhome}/export/download/export_${type}.csv?hitssessionid=$hits.sessionId&searchtype=$type">[[Export results]]</a>
 	<a class="dropdown-item" href="$home${content.searchhome}/export/download/export_${type}.csv?hitssessionid=$hits.sessionId&friendly=true&searchtype=$type&view=$type/${type}resultstable">[[Export results (friendly)]]</a>
 	<a class="dropdown-item ajax" data-oemaxlevel="1" data-targetdiv="resultsarea" href="$home${content.searchhome}/export/custom.html?hitssessionid=$hits.sessionId">[[Custom Export]]</a>
 	##<a class="dropdown-item" href="$home${apphome}/views/modules/asset/activity/downloaddataassets.html?hitssessionid=$hits.sessionId">[[Download Assets]]</a>
-	#if($candelete)
+	#if($permissions.can($moduleid, "delete"))
 		 <a class="dropdown-item ajax" data-oemaxlevel="2" data-targetdiv="resultsarea" href="$home${content.searchhome}/actions/deleteselections.html?hitssessionid=$hits.sessionId&module=$!{module.id}">[[Delete Selected Items]]</a>
 	#end
 	</div>
