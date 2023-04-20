@@ -140,7 +140,7 @@ jQuery(document).ready(function(url,params)
 							 
 					$.get(href, args, function(data) 
 					{
-						$("#"+targetdiv).replaceWith(data);
+						$("#"+targetdiv).html(data);
 						$(window).trigger( "resize" );
 						
 						// should I call in a trigger?
