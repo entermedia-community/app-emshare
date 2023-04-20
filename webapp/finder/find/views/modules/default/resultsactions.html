@@ -58,11 +58,33 @@ $context.putPageValue("entityrendertype", $entityrendertype)
 	#end
 
 	<ul class="resultsnavright">
-	#set($total = $hits.getTotalPages() )
+			#set($total = $hits.getTotalPages() )
 			#if( $total > 1)
 			<li class="resultpages">	 
 				$pages.include("/${searchhome}/components/results/positions.html", $context)
 			</li>
+			#end
+			
+			#if($resultview != "stackedgallery")
+				<li class="resultsnavtitem" style="width:61px;">
+						#set( $currenthitsperpage = $userprofile.get("modulehitsperpage"))
+						#set($hitcountoptions = $mediaarchive.getList("hitcount"))
+						<select class="form-control resultsnavselect" 
+							id="hitsperpagechange"
+								data-hitssessionid="$!hits.getSessionId()" 
+								data-searchtype="$!reloadsearchtype"
+								data-moduleid="$!moduleid"
+								data-ismodulesearch = "$!ismodulesearch" 
+								data-componenthome = "$apphome/views/modules/$moduleid/components"
+								data-page="$!hits.getPage()" 
+								data-showremoveselections="$!showremoveselections" 
+								data-collectionid="$!librarycol.getId()"
+								data-targetdiv="$!{moduleid}resultscontainer">
+						#foreach($ho in $hitcountoptions)
+						<option value="$ho.id" #if($currenthitsperpage==$ho.id) selected="selected"#end>#text($ho)</option>
+						#end	
+						</select>
+				</li>		
 			#end
 			
 		#if($edit != "true")
