@@ -1,18 +1,23 @@
 #set( $searchtype = $context.findValue("searchtype"))
 #set( $id = $context.getRequestParameter("id"))
 
-#if( !$entity)
-	#set( $entity  = $mediaarchive.getData($searchtype, $id) )
+
+#if($id.startsWith("multiedit"))
+
+#else
+	#if( !$entity)
+		#set( $entity  = $mediaarchive.getData($searchtype, $id) )
+	#end
+	#set($entityid = $entity.id)
+	$context.putPageValue("entity", $entity)
+	$context.putPageValue("entityid", $entityid)
 #end
+
 #set($module = $mediaarchive.getData("module", $searchtype))
-
-#set($entityid = $entity.id)
 #set($moduleid = $module.getId())
-
-$context.putPageValue("entity", $entity)
-$context.putPageValue("entityid", $entityid)
 $context.putPageValue("moduleid", $moduleid)
- 
+
+
 <div class="entity-wraper">	
 	<nav>
   	<div class="nav nav-tabs entity-navigation" id="entity-nav-tab" role="tablist"  data-tabmenuurl="$componenthome/gridsample/preview/entitytabmenu.html">

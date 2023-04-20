@@ -1000,24 +1000,27 @@ jQuery(document).ready(function(url,params)
 	{
 		var clicked = $(this);
 		var dataid = $(clicked).data('dataid');
-		var data = $('#resultsdiv').data();
-		var componenthome = data.componenthome;
-		
-		data['dataid'] = dataid;
-		var targetdiv = componenthome + "/results/toggle.html";
-		refreshdiv( targetdiv, data);
-		if(typeof(refreshSelections) != 'undefined'){
-			refreshSelections();
+		var resultsdiv = $(this).closest('#resultsdiv');
+		if (resultsdiv != null) {
+			var data = resultsdiv.data();
+			var componenthome = data.componenthome;
+			
+			data['dataid'] = dataid;
+			var toggleurl = componenthome + "/results/toggle.html";
+			refreshdiv( toggleurl, data);
+			if(typeof(refreshSelections) != 'undefined'){
+				refreshSelections();
+			}
+			var ischecked = $(clicked).prop("checked");
+			if (ischecked == true) {
+				$(clicked).closest(".resultsassetcontainer").addClass("emrowselected");
+			}
+			else {
+				$(clicked).closest(".resultsassetcontainer").removeClass("emrowselected");
+			}
+			
+			$('.assetproperties').trigger('click');
 		}
-		var ischecked = $(clicked).prop("checked");
-		if (ischecked == true) {
-			$(clicked).closest(".resultsassetcontainer").addClass("emrowselected");
-		}
-		else {
-			$(clicked).closest(".resultsassetcontainer").removeClass("emrowselected");
-		}
-		
-		$('.assetproperties').trigger('click');
 	});
 	
 	lQuery("a.deselectpage").livequery( 'click', function() 

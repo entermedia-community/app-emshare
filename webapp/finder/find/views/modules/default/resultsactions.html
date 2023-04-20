@@ -22,6 +22,16 @@ $context.putPageValue("resulttype", $resulttype)
 #end
 $context.putPageValue("entityrendertype", $entityrendertype)
 
+#if(!$resultview)
+	#set($resultview = $userprofile.get("$!{searchtype}resultview"))
+	#if (!$resultview)
+		#set($resultview = $content.get("resultview"))
+	#end
+	#if (!$resultview)
+		#set($resultview = "stackedgallery")
+	#end
+#end
+
 	<div id="resultsheader" class="resultsheader">
 	<div id="sub-nav" class="search-views emsubnav sub-nav-$!moduleid">
 		#if($moduleid != "faceprofilegroup")
@@ -40,21 +50,13 @@ $context.putPageValue("entityrendertype", $entityrendertype)
 					</li>
 					#end
 			
-				#if($content.showactions && $hits.hasSelections())
+				#if($resultview == "table" && $hits.hasSelections())
 					$pages.include("$searchhome/selectionactions.html", $context)
 				#end
 				</ul>
 			#end
 	
-		#if(!$resultview)
-			#set($resultview = $userprofile.get("$!{searchtype}resultview"))
-			#if (!$resultview)
-				#set($resultview = $content.get("resultview"))
-			#end
-			#if (!$resultview)
-				#set($resultview = "stackedgallery")
-			#end
-		#end
+
 	#end
 
 	<ul class="resultsnavright">
