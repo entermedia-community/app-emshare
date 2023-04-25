@@ -105,7 +105,8 @@ $context.putPageValue("edit", $edit)
 			#if($id.startsWith("multiedit"))
 				<button id="closebutton" style="margin-right: 10px;"  type="button" class="btn btn-sm btn-dark" data-dismiss="modal">[[Cancel]]</button>
 			#else
-				<a class="btn btn-sm btn-dark ajax" style="margin-right: 10px;" data-targetdiv="editentitymetadata" href="$siteroot$apphome/components/gridsample/preview/metadata.html?id=$!id&searchtype=$!searchtype&moduleid=$!moduleid">[[Cancel]]</a>
+				<a class="btn btn-sm btn-dark ajax" style="margin-right: 10px;" data-targetdiv="editentitymetadata" 
+					href="$!siteroot$applink/views/modules/$!{moduleid}/components/gridsample/preview/metadata.html?id=$!id&moduleid=$!moduleid">[[Cancel]]</a>
 			#end
 		#else
 			<a class="btn btn-sm btn-dark submitform" style="margin-right: 10px;"><i class="fas fa-caret-right"></i> [[Next]]</a>
@@ -124,7 +125,8 @@ $context.putPageValue("edit", $edit)
 		#if($permissions.can($moduleid, "edit"))
 			<a class="ajax btn btn-sm btn-darkless float-right" data-targetdiv="applicationcontent" data-updateurl="true" data-closedialog="true" data-oemaxlayout="2" href="$siteroot$apphome/views/settings/modules/$!{searcher.searchType}/metadata/views/index.html?viewid=$viewid&viewpath=$!view&moduleid=$!moduleid"><i class="fas fa-cog"></i> [[Fields]]</a>
 		#end
-		<a class="ajax btn btn-sm btn-darkless float-right" style="margin-right:5px;" data-targetdiv="editentitymetadata" href="$siteroot$apphome/components/gridsample/preview/metadata.html?edit=true&id=$data.id&searchtype=$searchtype&detailviewercolumns=$changedetailviewercolumns&moduleid=$!moduleid">
+		<a class="ajax btn btn-sm btn-darkless float-right" style="margin-right:5px;" data-targetdiv="editentitymetadata" 
+			href="$!siteroot$applink/views/modules/$!{moduleid}/components/gridsample/preview/metadata.html?edit=true&id=$data.id&detailviewercolumns=$changedetailviewercolumns&moduleid=$!moduleid">
 			<i class="fas fa-$icondetailviewercolumns"></i>
 		</a>
 		
@@ -135,13 +137,13 @@ $context.putPageValue("edit", $edit)
 	
 	#if($edit!="true")
 		#if($permissions.can($moduleid, "edit"))
-			<a href="$componenthome/gridsample/preview/metadata.html?edit=true&id=$!data.id&moduleid=$!moduleid" 
+			<a href="$!siteroot$applink/views/modules/$!{moduleid}/components/gridsample/preview/metadata.html?edit=true&id=$!data.id&moduleid=$!moduleid" 
 				data-targetdiv="editentitymetadata" 
 				class="ajax btn btn-dark" 
 				style="margin-right:10px;"><i class="fas fa-edit"></i> [[Edit]]</a>
 		#end
 		#if($permissions.can($moduleid, "delete"))
-		<a href="$componenthome/entities/delete.html?id=$data.id" 
+		<a href="$!siteroot$applink/views/modules/$!{moduleid}/components/entities/delete.html?id=$data.id" 
 			class="ajax btn btn-dark" 
 			data-targetdiv="editentitymetadata" 
 			data-closedialog="true" 
