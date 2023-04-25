@@ -2,7 +2,7 @@
 #set ($viewpath = $context.getRequestParameter("viewpath"))
 #set ($label = $context.getRequestParameter("label"))
 #set ($id = $context.getRequestParameter("id"))
-#set ($module = $context.findValue("module"))
+#set ($moduleid = $context.findValue("module"))
 #set ($viewid = $url_util.getPathUtilities().extractFileName($view) )
 #set ($columns = $context.getRequestParameter("columns"))
 #if ($columns)
@@ -11,7 +11,7 @@
 #if(!$hitssessionid)
 	#set( $hitssessionid = $context.getRequestParameter("hitssessionid") )
 #end
-<div id="edit-${viewid}" class="edit-panel-generic">
+<div id="edit-${viewid}" class="edit-panel-generic" data-assetid="$!asset.getId()">
 #if( !$catalogid )
 	#set( $catalogid = $mediaarchive.getCatalogId() )
 #end
@@ -86,7 +86,7 @@ $context.putPageValue("searchtype", $searchtype)
 		
 		<input type="hidden" name="view" value="$view" />
 		<input type="hidden" name="label" value="$label" />
-		<input type="hidden" name="module" value="$module" />
+		<input type="hidden" name="module" value="$moduleid" />
 		#if( $collectionid  )
                 	<input type="hidden" name="collectionid" value="$!collectionid" />
 		#end
@@ -138,10 +138,11 @@ $context.putPageValue("searchtype", $searchtype)
 			#end
 			<a class="float-right btn btn-sm btn-secondary ajax"
 				data-targetdiv="applicationcontent" 
+				data-oemaxlevel="5"
 				data-updateurl="true" 
 				data-closedialog="true"
 				data-closemediaviewer="true" 
-   				href="$siteroot$apphome/views/settings/modules/${module}/metadata/views/index.html?viewid=${viewid}&viewpath=${view}&assettype=$!type"
+   				href="$siteroot$apphome/views/settings/modules/$!{moduleid}/metadata/views/index.html?viewid=${viewid}&viewpath=${view}&assettype=$!type"
    				title="[[Configure View]]"><i class="fas fa-cog"></i> [[Fields]]</a>
 			
 			#if( $caneditmetadatasetup  )
@@ -224,12 +225,12 @@ $context.putPageValue("searchtype", $searchtype)
 		#end
 		
 		#if(($caneditasset || $caneditallassets) && !$print.equals("true"))
-		<div class="container-fluid">
+		
 		<div class="row">
 		<div class="col">
 			<div class="btns">
 			<a class="ajax btn btn-sm btn-primary" data-targetdiv="${view}editor" 
-			href="$siteroot$componenthome/detaileditor/generic.html?catalogid=$catalogid&searchtype=$searcher.searchType&id=$!data.id&view=$view&assetid=$!asset.id&edit=1&oemaxlevel=1" >[[Edit ]]</a>
+			href="$siteroot$componenthome/detaileditor/generic.html?catalogid=$catalogid&id=$!data.id&view=$view&assetid=$!asset.id&edit=1&oemaxlevel=1" >[[Edit ]]</a>
 			#if( $caneditmetadatasetup  )
 				#if ( $view.contains("$asset.assettype") )
 					#set ( $type = $asset.assettype )
@@ -238,8 +239,8 @@ $context.putPageValue("searchtype", $searchtype)
 			#end
 			</div>
 			</div>
-			</div>
-			</div>
+		</div>
+		
 		#end
 		</div>
 	#else ##showit
