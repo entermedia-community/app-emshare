@@ -17,13 +17,19 @@
 			    	#set($name = $row)
 			    #end
 			    #set($entityid = $row.id)
-			    #set($link = "$siteroot$applink/components/gridsample/preview/entity.html?id=$entityid&searchtype=$entity_module&hitssessionid=$!hits.sessionId")
+			    #set($rendertype = $row.modulerendertype)
+				#if(!$rendertype)
+					#set($rendertype = "entity")
+				#end
+			    #set($link = "$!{siteroot}$applink/views/modules/$!{entity_module}/components/gridsample/preview/${rendertype}.html?id=$entityid&hitssessionid=$!hits.sessionId")
 			    <li>
 			    <a href="$link" 
 			    	class="emdialog entity-dialog" 
 			    	data-noesc="true" 
 			    	data-entityid="$!row.getId()"
-			    	data-searchtype="$entity_module">$name</a>
+			    	data-targetrendertype="$!{rendertype}"
+			    	data-targetcomponenthome="$!{siteroot}$applink/views/modules/$!{entity_module}/components"
+			    	data-searchtype="$!entity_module">$name</a>
 			    </li>
 		    #end 
 		#end	

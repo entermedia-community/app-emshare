@@ -1056,12 +1056,15 @@ uiload = function() {
 							
 							//Menu
 							var tabmenu = $(".entity-navigation");
-							var link = tabmenu.data("tabmenuurl")
+							//var link = tabmenu.data("tabmenuurl")
 							var options2 = dialog.data();
+							var targetcomponenthome = options2.targetcomponenthome;
+							var targetrendertype = options2.targetrendertype;
+							var clickurlmenu = targetcomponenthome+"/gridsample/preview/entitytabmenu.html";
 							options2.id=entityid;
 							$(".entity-tab").removeClass("current-entity");
 							jQuery.ajax({
-								url: link,
+								url: clickurlmenu,
 								data: options2,
 								success: function(data2) {
 									
@@ -1663,12 +1666,12 @@ uiload = function() {
 				//--clickurl on emselectable
 				var targetdiv = '';
 				var options = null;
-				var clickurl = emselectable.data("clickurl");
+				//var clickurl = emselectable.data("clickurl");
 			
 				
 				//Entitydialog table - Same as emdialog
 				var tabletype = emselectable.data("tabletype"); //make this earlier?
-				if(clickurl && tabletype == "subentity") {
+				if(tabletype == "subentity") {
 					var entityid = rowid;
 					if(entityid) {
 						var container = emselectable.closest(".entity-body");
@@ -1688,7 +1691,9 @@ uiload = function() {
 						});
 						if(!tabexists) {
 							var options1 = emselectable.data();
-							clickurl = clickurl.replace("entity.html", "entitytab.html");
+							var targetcomponenthome = emselectable.data("targetcomponenthome");
+							var targetrendertype = emselectable.data("targetrendertype");
+							var clickurl = targetcomponenthome+"/gridsample/preview/"+targetrendertype+"tab.html";
 							options1.oemaxlevel=1;
 							options1.id = rowid; 
 							jQuery.ajax({
@@ -1701,13 +1706,15 @@ uiload = function() {
 											
 											//Menu
 											var tabmenu = $(".entity-navigation");
-											var link = tabmenu.data("tabmenuurl")
+											
+											var clickurlmenu = targetcomponenthome+"/gridsample/preview/entitytabmenu.html";
+											
 											var options2 = emselectable.data();
 											options2.id=entityid;
 											
 											$(".entity-tab").removeClass("current-entity");
 											jQuery.ajax({
-												url: link,
+												url: clickurlmenu,
 												data: options2,
 												success: function(data2) {
 													$(".entity-navigation").append(data2);
@@ -2257,7 +2264,7 @@ uiload = function() {
 												// components
 				{
 					var searchfield = theinput.data('searchfield');
-					var catalogid = theinput.data('listcatalogid');
+					
 
 					var foreignkeyid = theinput.data('foreignkeyid');
 					var sortby = theinput.data('sortby');
@@ -2454,7 +2461,6 @@ uiload = function() {
 				if (searchtype != undefined) 
 				{
 					var searchfield = theinput.data('searchfield');
-					var catalogid = theinput.data('listcatalogid');
 
 					var foreignkeyid = theinput.data('foreignkeyid');
 					var sortby = theinput.data('sortby');
@@ -2468,8 +2474,8 @@ uiload = function() {
 							.data('defaultvalueid');
 
 					var url = apphome
-							+ "/components/xml/types/autocomplete/datasearch.txt?catalogid="
-							+ catalogid + "&field=" + searchfield
+							+ "/components/xml/types/autocomplete/datasearch.txt?"
+							+ "field=" + searchfield
 							+ "&operation=contains&searchtype="
 							+ searchtype;
 					if (defaultvalue != undefined) {

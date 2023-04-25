@@ -3,9 +3,6 @@
 #set( $searchtype = $context.getRequestParameter("searchtype")) 
 #set( $xmledithome = "$componenthome/xml")
 #set( $candelete = $context.getRequestParameter("candelete"))
-#if(!$searchhome)
-	#set( $searchhome = "$componenthome/table")
-#end
 
 #if(!$viewid)
 #set( $viewid = $context.getRequestParameter("viewid"))
@@ -62,7 +59,7 @@
 	#set($total = $hits.getTotalPages() )
 	
 	$context.putPageValue("hits", $hits)
-	$context.putPageValue("resultsLink", "$componenthome/table/table.html")
+	$context.putPageValue("resultsLink", "/$applicationid/views/modules/$!{searchtype}/components/table/table.html")
 	#set($targetdivposition = "tmc_#eid($searchtype)#eid($fieldexternalvalue)")
 	$context.putPageValue("targetdivtablepositions", $targetdivposition)
 	#if(!$targetdiv)
@@ -131,15 +128,18 @@
 				#end
 				data-hitssessionid="$hits.getSessionId()" 
 				data-pagenum="$hits.getPage()" 
+				data-hitsperpage="$!hits.hitsPerPage"
 				data-totalpages="$hits.getTotalPages()"
-				data-module="$!moduleid"
+				##data-module="$!moduleid"
 				
 				#if($id) data-id="$!id" #end
 				data-searchtype="$!searchtype" 
-				data-searchhome="$!searchhome"
+				
 				data-tabletype="$!tabletype"
 				#if($tabletype == "subentity" && $targetrendertype)
-					data-clickurl="/$applicationid/components/gridsample/preview/${targetrendertype}.html"
+					##data-clickurl="/gridsample/preview/${targetrendertype}.html"
+					data-targetcomponenthome="/$applicationid/views/modules/$!searchtype/components"
+					data-searchhome="/$applicationid/views/modules/$!searchtype/components/table"
 					data-targetrendertype="$!targetrendertype"
 					data-targetdiv="$!targetdiv"
 					data-oemaxlevel="1"

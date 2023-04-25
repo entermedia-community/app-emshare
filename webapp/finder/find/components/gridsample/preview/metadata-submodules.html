@@ -30,6 +30,9 @@
 				#set( $permissionname = "canedit${searchtype}")
 				
 				#set( $parentid = $context.getRequestParameter("parentid"))
+				#if(!$parentid)
+					#set( $parentid = $fieldexternalvalue)
+				#end
 							
 				#set($targetmodule = $mediaarchive.getCachedData("module", $viewdata.rendertable))
 				 
@@ -67,7 +70,8 @@
 									
 									##--->$args
 									
-										$pages.include("/$applicationid/components/table/table.html?$!args",$context)						
+										##$pages.include("/$applicationid/components/table/table.html?$!args",$context)						
+										$pages.include("/$applicationid/views/modules/$!searchtype/components/table/table.html?$!args",$context)
 									#end
 
 							</div>
