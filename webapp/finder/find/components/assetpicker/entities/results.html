@@ -1,7 +1,7 @@
 #set($hits = $pickerhits)
 $context.putPageValue("hits",$hits)
 
-#set( $componenthome = "$home$apphome/components/assetpicker/search")
+#set( $componenthome = "$home$apphome/components/assetpicker/entities")
 #set( $searcher = $mediaarchive.getSearcher("asset") )
 $context.putPageValue("searcher", $searcher)
 #set( $viewid = "pickerresults" )
@@ -15,7 +15,11 @@ $context.putPageValue("clickpath","$apphome/views/assets/")
 $context.putPageValue("viewpostfix",".html")
 
 
-#set($resultsLink = "$componenthome/results.html?hitssessionid=$hits.sessionId&searchtype=$hits.getSearchType()&hitsperpage=$!hits.hitsPerPage&oemaxlevel=1&viewid=$!viewid")
+#set($resultsPage = "$componenthome/results.html")
+$context.putPageValue("resultsPage", $resultsPage)
+
+#set($resultsLink = "$resultsPage?hitssessionid=$hits.sessionId&searchtype=$hits.getSearchType()&hitsperpage=$!hits.hitsPerPage&oemaxlevel=1&viewid=$!viewid")
+
 #set($targetdiv = "dialogsearchresults")
 
 #set( $edit = $context.getRequestParameter("editheader"))

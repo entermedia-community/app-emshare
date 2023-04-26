@@ -1,6 +1,8 @@
 #if( $hits && $hits.getTotalPages() >  1  )
 	#set($module = $content.module)
-	#set($resultsPage = "$home$apphome/components/assetpicker/search/results.html")
+	#if(!$resultsPage)
+		#set($resultsPage = "$home$apphome/components/assetpicker/search/results.html")
+	#end
 	#set($resultsPage = "$resultsPage?hitssessionid=$hits.sessionId&searchtype=$hits.getSearcher().getSearchType()&hitsperpage=$!hits.hitsPerPage&oemaxlevel=1")
 	#set($resultsPage = "$resultsPage&page")
 	#set($thispage = $hits.getPage())

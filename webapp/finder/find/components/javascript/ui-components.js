@@ -892,11 +892,11 @@ uiload = function() {
 			$("#"+$.escapeSelector(targetdiv)).show();
 		});
 		
-		$("input",form).on("keyup", function(event) {
+		$("input",form).on("keyup", function(e) {
+	
+			$(form).trigger("submit");
 			
-				$(form).ajaxSubmit({
-					target : "#" + $.escapeSelector(targetdiv)
-				});
+
 			
 		});
 		$('input[type="file"]',form).on("change", function() {

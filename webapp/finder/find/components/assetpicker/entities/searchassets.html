@@ -2,7 +2,7 @@
 #set( $targetdiv = $context.getRequestParameter("targetdiv") )
 
 #set( $launcher = $context.getRequestParameter("launcher") )
-
+#set( $moduleid = $context.getRequestParameter("moduleid") )
 
 #set($hits = $pickerhits)
 $context.putPageValue("hits",$hits)
@@ -13,10 +13,10 @@ $context.putPageValue("hits",$hits)
 		#set($viewid = "asset")
 		#set($viewpath = "asset/picker")
 		#set ($details = $searcher.getDetailsForView("asset/picker", $userprofile))
-		<form  class="autosubmit"
+		<form  class="autosubmit ajaxform"
 				style="margin-bottom:10px;"
-			 	data-targetdiv="assetsearchresultsdialog" 
-			  	action="$siteroot$apphome/components/assetpicker/search/searchassetresults.html">
+			 	data-targetdivinner="assetsearchresultsdialog" 
+			  	action="$siteroot$apphome/components/assetpicker/entities/searchassetresults.html">
 			<div class="row inlinesearch">
 			#foreach( $detail in $details)
 				<div class="col">
@@ -42,7 +42,7 @@ $context.putPageValue("hits",$hits)
 			class="emselectable" 
 	 		data-launcher="$!launcher"
 	 		
-	 		data-searchhome="$siteroot$apphome/components/assetpicker/entities"
+	 		data-searchhome="$siteroot$apphome/views/modules/$!{moduleid}/components/assetpicker/entities"
 	 		data-searchtype="asset" >
 			$pages.include("$apphome/components/assetpicker/entities/searchassetresults.html",$context)
 		</div>
