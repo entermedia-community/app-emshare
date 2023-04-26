@@ -134,6 +134,39 @@ $context.putPageValue("mediarender", "attachedmedialist" )
 			
 			$pages.include("$componenthome/gridsample/preview/attachedmedia.html",$context)
 			
+			#if($assetshits.size() > 0)
+			
+			#if($moduleid=="librarycollection")
+				#if(!$rootcategory)
+					#set($rootcategory = $context.getRequestParameter("rootcategory"))
+				#end
+				#set($link = "$siteroot$applink/views/modules/librarycollection/media/showcategory.html?nodeID=$rootcategory&clearfilters=true&collectionid=$!librarycol.getId()")
+				#set($link = "$!link&sidebarcomponent=categories")
+				
+			#elseif($moduleid=="faceprofilegroup")
+				#set($link = "$siteroot$applink/views/modules/asset/faceprofilegroup.html")
+				#set($link = "$link?faceprofilegroupid=$!entityid&clearfilters=true")
+				
+			#else
+				#set($link = "$siteroot$applink/views/modules/asset/index.html")
+				#set($link = "$link?field=$!moduleid&operation=matches&${moduleid}.value=$!entityid&clearfilters=true")
+			#end	
+			#set($targetdivinner = "applicationmaincontent")
+			#set($oemaxlevel = "2")
+			
+			<div class="entity-listasset-footer">
+			<a href="$link" 
+					class="ajax"
+					data-oemaxlevel="$!oemaxlevel" 
+					data-targetdivinner="$!targetdivinner" 
+					data-closedialog="true"
+					data-updateurl="true"
+					data-closemediaviewer="true"
+					title="[[View]] $assetshits.size() [[Assets]]"><i class="fas fa-images"></i> [[View]] $assetshits.size() [[Assets]]</a>
+			
+			</div>
+			#end
+			
 			</div>
 	</div>
 </div>	
