@@ -156,7 +156,19 @@
 						title="[[View Files]]"
 						href="$applink/views/modules/asset/bycategory/${parent.id}.html">$parent</a>
 				#end
-				<a style="padding:0px 0 4px 10px; float:right;" 
+				
+				</div>
+				</div>
+			</td>
+			<td style="width:38px; text-align: right; vertical-align: top; padding:6px 2px 0 0;">
+			#if($desktopX)
+				<a href="" 
+					class="folderdesktopdownload"
+					data-categoryid="$c.getId()"
+					title="[[Download Folder]]">
+					<i class="fas fa-download"></i></a>
+			#else
+			<a style="padding:0px 0 4px 10px; float:right;" 
 						class=""
 						data-targetdiv="applicationcontent"
 						data-oemaxlevel="4"
@@ -166,24 +178,15 @@
 		   				data-sidebarcomponent="categories"
 		   				title="[[Download folders]]"
 		   				href="$applink/views/modules/asset/downloads/bycategory/${category.id}/#eid($category.name).zip"><i class="fa fa-download" aria-hidden="true"></i></a>
-				</div>
-				</div>
-			</td>
-			<td style="width:30px; text-align: right; vertical-align: top; padding:6px 2px 0 0;">
-			#if($desktopX)
-				<a href="" 
-					class="folderdesktopdownload"
-					data-categoryid="$c.getId()"
-					title="[[Download Folder]]">
-					<i class="fas fa-download"></i></a>
-			#else
-				#if( $caneditassetcategories )
+		   	#end
+		   	
+			#if($permissions.can($moduleid, "edit"))
 				 	<a class="ajax list-delete"  
 				 		data-targetdiv="entitycategoryresults" 
-				 		href="$!home$apphome/components/categories/asset/removeassetcategory.html?assetid=${asset.id}&categoryid=${category.id}" >
+				 		href="" >
 				 	<i class="fas fa-times"></i></a>
-			 	#end
-		 	#end
+			#end
+		 	
 			</td>
 			</tr>
 			
