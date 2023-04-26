@@ -6,13 +6,16 @@ $context.putPageValue("sourcepath", $sourcepath )
 #set($type = $hit.getSearchHit().getType())
 #set( $rendertype = $mediaarchive.getMediaRenderType($hit.fileformat))
 #if(!$rendertype || $type =="rendertype")
-		#set( $rendertype = "mime" )
-	#elseif( $rendertype =="video")
-		#set( $rendertype = "videothumbnail" )
-	#end
+	#set( $rendertype = "mime" )
+#elseif( $rendertype =="video")
+	#set( $rendertype = "videothumbnail" )
+#end
 $context.putPageValue("type", $rendertype)
+
+#set( $thumbsize = "crop")
+$context.putPageValue("thumbsize", $thumbsize)
 	
-	#if($stackedfield)
+#if($stackedfield)
       	#set($title = $hit.get($stackedfield))
 #end
 
