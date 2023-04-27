@@ -35,10 +35,15 @@ $context.putPageValue("mediarender", "attachedmedialist" )
 			#end [[Attached Files]]
 			</h4>
 			
+			
+			
 			#if($moduleid && $entityid)
 			
 				#if($permissions.can($moduleid, "upload_files"))
 					#ifnull($uploadsourcepath)
+						#if( !$entity)
+							#set( $entity  = $mediaarchive.getData($moduleid, $entityid) )
+						#end
 						#set($uploadsourcepath =  $mediaarchive.getBean("entityManager").loadUploadSourcepath($module, $entity, $context.getUser()))
 					#end
 					#ifnull($uploadsourcepath)
