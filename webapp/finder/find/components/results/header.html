@@ -50,230 +50,230 @@
 	#if( $librarycol )	
 		$context.putPageValue("librarycol",$librarycol)
 	#end
-#end
 
-#set($reloadsearchtype = $searchtype)
-#set($librarycollectionassets = $context.findValue("librarycollectionassets"))
-#if($searchtype=="librarycollection")
-	#if($librarycollectionassets)
-		#set($reloadsearchtype = "asset")
-	#end
-#end
-
-
-<div id="resultsheader" class="resultsheader">
-<div id="sub-nav" class="emsubnav sub-nav-${module.id}">
-	<ul class="resultsnav">
-		#set ($enabled = false)
-		#if ($hits.getSelectionSize() && $hits.getSelectionSize()>0)
-			#set ($enabled = true)
+	
+	#set($reloadsearchtype = $searchtype)
+	#set($librarycollectionassets = $context.findValue("librarycollectionassets"))
+	#if($searchtype=="librarycollection")
+		#if($librarycollectionassets)
+			#set($reloadsearchtype = "asset")
 		#end
-		
-		#if ($resultview != "map")
-		
-			#if( $librarycol )
-			<li class=" dropdown">
-			<a href="#" class="dropdown-toggle dropdown-noarrow" data-toggle="dropdown" data-bs-toggle="dropdown" title="[[Album Actions]]">
-			[[Album]]</a>
-				<div class="dropdown-menu">
-				 	#if(!$canforcebasiccollections)
-					 	#if($cansharecollection )
-						 	#set( $editlink = "$siteroot$apphome/views/modules/librarycollection/sharecollection.html?collectionid=${librarycol.getId()}")
-						 	<a class="dropdown-item emdialog" data-allwaysloadpage="true" data-hidefooter="true"   href="$editlink" title="[[Sharing Album]]"><i class="dropdown-item-icon fas fa-share-alt"></i> [[Sharing]]</a>
+	#end
+	
+	
+	<div id="resultsheader" class="resultsheader">
+	<div id="sub-nav" class="emsubnav sub-nav-${module.id}">
+		<ul class="resultsnav">
+			#set ($enabled = false)
+			#if ($hits.getSelectionSize() && $hits.getSelectionSize()>0)
+				#set ($enabled = true)
+			#end
+			
+			#if ($resultview != "map")
+			
+				#if( $librarycol )
+				<li class=" dropdown">
+				<a href="#" class="dropdown-toggle dropdown-noarrow" data-toggle="dropdown" data-bs-toggle="dropdown" title="[[Album Actions]]">
+				[[Album]]</a>
+					<div class="dropdown-menu">
+					 	#if(!$canforcebasiccollections)
+						 	#if($cansharecollection )
+							 	#set( $editlink = "$siteroot$apphome/views/modules/librarycollection/sharecollection.html?collectionid=${librarycol.getId()}")
+							 	<a class="dropdown-item emdialog" data-allwaysloadpage="true" data-hidefooter="true"   href="$editlink" title="[[Sharing Album]]"><i class="dropdown-item-icon fas fa-share-alt"></i> [[Sharing]]</a>
+						 	#end
 					 	#end
-				 	#end
-				 	#if( $canaddnewcollection || $cancopycollection)
-							<a class="dropdown-item emdialog" href="$siteroot$apphome/views/modules/librarycollection/copycollection.html?collectionid=$!librarycol.getId()" title="[[Create a copy of this Album]]"><i class="dropdown-item-icon fas fa-copy"></i> [[Copy Album]]</a>
-					#end
-					#if($caneditcollection)
-					  #set( $link = "$siteroot$apphome/views/modules/librarycollection/share.html?collectionid=${librarycol.getId()}")
-					  <a class="dropdown-item emdialog" id="sharetab" href="$link" data-hidefooter="true" title="[[Notifications]]"><i class="dropdown-item-icon fas fa-flag"></i> [[Notifications]]</a>
-					  #set( $link = "$siteroot$apphome/views/modules/librarycollection/users.html?collectionid=${librarycol.getId()}")
-					  <a class="dropdown-item emdialog"  id="editingtab"  href="$link" data-hidefooter="true" title="[[Editing Users]]"><i class="dropdown-item-icon fas fa-user-friends"></i> [[Editing Users]]</a>
-					   #set( $link = "$siteroot$apphome/views/modules/librarycollection/permissions.html?collectionid=${librarycol.getId()}")
-					  <a class="dropdown-item emdialog" id="permissionstab" href="$link" data-hidefooter="true" title="[[Viewing Users]]"><i class="dropdown-item-icon fas fa-user-check"></i> [[Viewing Users]]</a>
-					  #set( $link = "$siteroot$apphome/views/modules/librarycollection/datapermissions/index.html?collectionid=${librarycol.getId()}&id=${librarycol.getId()}")
-					  <a class="dropdown-item emdialog" id="colpermissionstab" href="$link" data-hidefooter="true" title="[[Album Permissions]] (${librarycol})"><i class="dropdown-item-icon fas fa-user-lock"></i> [[Album Permissions]]</a>
-		              #if($librarycol.get('library'))
-						  #set( $link = "$siteroot$apphome/views/modules/library/datapermissions/index.html?id=${librarycol.get('library')}")
-						  <a class="dropdown-item emdialog" id="libpermissionstab" href="$link" data-hidefooter="true" title="$librarycol.library [[Library Permissions]]"><i class="dropdown-item-icon fas fa-user-lock"></i>  [[Library Permissions]]</a>
-					  #end
-					  #set( $editlink = "$siteroot$apphome/views/modules/librarycollection/edit/settings.html?collectionid=${librarycol.getId()}")
-				 	  <a class="dropdown-item emdialog"  data-allwaysloadpage="true" data-hidefooter="true"   href="$editlink" title="[[AlbumProperties]]"><i class="dropdown-item-icon fas fa-cogs"></i> [[Properties]]</a>
-				   	#else
-					   	#set( $editlink = "$siteroot$apphome/views/modules/librarycollection/edit/settings.html?collectionid=${librarycol.getId()}")
-					 	<a class="dropdown-item emdialog"  data-allwaysloadpage="true" data-hidefooter="true"   href="$editlink" title="[[Album Properties]]"><i class="dropdown-item-icon fas fa-cogs"></i> [[Properties]]</a>
-					#end
-				</div>
-				</li>
-			#end
-		
-			$pages.include("$componenthome/results/selected/index.html",$context)
-
-			#if( $enabled && ($canpublish || $canemaillink || $canexportdata ) )
-			  <li class=" dropdown">
-				<a class=" dropdown-toggle" href="#" id="navbarSharehDropdown" role="button" data-toggle="dropdown"  data-bs-toggle="dropdown"
-					aria-haspopup="true" aria-expanded="false">[[Share]]</a>
-					<div class="dropdown-menu" aria-labelledby="navbarShareDropdown">
-						#if($canpublish || $canemaillink )				
-								#if( $canemaillink )
-									<a class="dropdown-item emdialog" data-hidefooter="true" href="$siteroot$apphome/views/modules/asset/activity/emailassets.html?hitssessionid=$!hits.getSessionId()" >[[Email Assets]]</a>
-								#end
-								#if( $canpublish)
-									<a  class="dropdown-item emdialog" data-hidefooter="true" href="$siteroot$apphome/views/modules/asset/activity/publishassets.html?hitssessionid=$!hits.getSessionId()" >[[Publish Assets to Server]]</a>
-								#end
-								#if( $canquickgallery)
-									<a  class="dropdown-item emdialog" data-hidefooter="true" href="$siteroot$apphome/views/modules/asset/activity/creategallerycollection.html?hitssessionid=$!hits.getSessionId()" >[[Create a shareable gallery]]</a>
-								#end
+					 	#if( $canaddnewcollection || $cancopycollection)
+								<a class="dropdown-item emdialog" href="$siteroot$apphome/views/modules/librarycollection/copycollection.html?collectionid=$!librarycol.getId()" title="[[Create a copy of this Album]]"><i class="dropdown-item-icon fas fa-copy"></i> [[Copy Album]]</a>
 						#end
-						#if($canexportdata)
-							<a class="dropdown-item" href="$siteroot$apphome/views/modules/asset/export/download/export_asset.csv?hitssessionid=$hits.sessionId&searchtype=asset">[[Export results]]</a>
-							<a class="dropdown-item" href="$siteroot$apphome/views/modules/asset/export/download/export_asset.csv?hitssessionid=$hits.sessionId&friendly=true&searchtype=asset&view=asset/resultstable">[[Export results (friendly)]]</a>
-						#end		
+						#if($caneditcollection)
+						  #set( $link = "$siteroot$apphome/views/modules/librarycollection/share.html?collectionid=${librarycol.getId()}")
+						  <a class="dropdown-item emdialog" id="sharetab" href="$link" data-hidefooter="true" title="[[Notifications]]"><i class="dropdown-item-icon fas fa-flag"></i> [[Notifications]]</a>
+						  #set( $link = "$siteroot$apphome/views/modules/librarycollection/users.html?collectionid=${librarycol.getId()}")
+						  <a class="dropdown-item emdialog"  id="editingtab"  href="$link" data-hidefooter="true" title="[[Editing Users]]"><i class="dropdown-item-icon fas fa-user-friends"></i> [[Editing Users]]</a>
+						   #set( $link = "$siteroot$apphome/views/modules/librarycollection/permissions.html?collectionid=${librarycol.getId()}")
+						  <a class="dropdown-item emdialog" id="permissionstab" href="$link" data-hidefooter="true" title="[[Viewing Users]]"><i class="dropdown-item-icon fas fa-user-check"></i> [[Viewing Users]]</a>
+						  #set( $link = "$siteroot$apphome/views/modules/librarycollection/datapermissions/index.html?collectionid=${librarycol.getId()}&id=${librarycol.getId()}")
+						  <a class="dropdown-item emdialog" id="colpermissionstab" href="$link" data-hidefooter="true" title="[[Album Permissions]] (${librarycol})"><i class="dropdown-item-icon fas fa-user-lock"></i> [[Album Permissions]]</a>
+			              #if($librarycol.get('library'))
+							  #set( $link = "$siteroot$apphome/views/modules/library/datapermissions/index.html?id=${librarycol.get('library')}")
+							  <a class="dropdown-item emdialog" id="libpermissionstab" href="$link" data-hidefooter="true" title="$librarycol.library [[Library Permissions]]"><i class="dropdown-item-icon fas fa-user-lock"></i>  [[Library Permissions]]</a>
+						  #end
+						  #set( $editlink = "$siteroot$apphome/views/modules/librarycollection/edit/settings.html?collectionid=${librarycol.getId()}")
+					 	  <a class="dropdown-item emdialog"  data-allwaysloadpage="true" data-hidefooter="true"   href="$editlink" title="[[AlbumProperties]]"><i class="dropdown-item-icon fas fa-cogs"></i> [[Properties]]</a>
+					   	#else
+						   	#set( $editlink = "$siteroot$apphome/views/modules/librarycollection/edit/settings.html?collectionid=${librarycol.getId()}")
+						 	<a class="dropdown-item emdialog"  data-allwaysloadpage="true" data-hidefooter="true"   href="$editlink" title="[[Album Properties]]"><i class="dropdown-item-icon fas fa-cogs"></i> [[Properties]]</a>
+						#end
 					</div>
-				</li>
-			#end
-		
-			#if($enabled && $canquickpublish )
-				#set($quickpublishlist = $mediaarchive.getList("quickpublish"))
-				<li class="">
-					<a class="" href="#" id="navbarPublishDropdown" role="button" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">[[Publish]]</a>
-						<div class="dropdown-menu" aria-labelledby="navbarPublishDropdown">
-							#foreach($item in $quickpublishlist)
-								<a class="dropdown-item" href="$siteroot$apphome/views/modules/asset/activity/publish/quickpublish.html?hitssessionid=$!hits.getSessionId()&quickid=$item.id"   >$item.name</a>
+					</li>
+				#end
+			
+				$pages.include("$componenthome/results/selected/index.html",$context)
+	
+				#if( $enabled && ($canpublish || $canemaillink || $canexportdata ) )
+				  <li class=" dropdown">
+					<a class=" dropdown-toggle" href="#" id="navbarSharehDropdown" role="button" data-toggle="dropdown"  data-bs-toggle="dropdown"
+						aria-haspopup="true" aria-expanded="false">[[Share]]</a>
+						<div class="dropdown-menu" aria-labelledby="navbarShareDropdown">
+							#if($canpublish || $canemaillink )				
+									#if( $canemaillink )
+										<a class="dropdown-item emdialog" data-hidefooter="true" href="$siteroot$apphome/views/modules/asset/activity/emailassets.html?hitssessionid=$!hits.getSessionId()" >[[Email Assets]]</a>
+									#end
+									#if( $canpublish)
+										<a  class="dropdown-item emdialog" data-hidefooter="true" href="$siteroot$apphome/views/modules/asset/activity/publishassets.html?hitssessionid=$!hits.getSessionId()" >[[Publish Assets to Server]]</a>
+									#end
+									#if( $canquickgallery)
+										<a  class="dropdown-item emdialog" data-hidefooter="true" href="$siteroot$apphome/views/modules/asset/activity/creategallerycollection.html?hitssessionid=$!hits.getSessionId()" >[[Create a shareable gallery]]</a>
+									#end
 							#end
+							#if($canexportdata)
+								<a class="dropdown-item" href="$siteroot$apphome/views/modules/asset/export/download/export_asset.csv?hitssessionid=$hits.sessionId&searchtype=asset">[[Export results]]</a>
+								<a class="dropdown-item" href="$siteroot$apphome/views/modules/asset/export/download/export_asset.csv?hitssessionid=$hits.sessionId&friendly=true&searchtype=asset&view=asset/resultstable">[[Export results (friendly)]]</a>
+							#end		
 						</div>
 					</li>
-			#end
-  			#set( $edit = $context.getRequestParameter("editheader") )
-		
-			#if ( $cancheckout && $order)
-				<li>
-					<a class="updatebasket emdialog -cart" data-action="remove" targetdiv="basket-paint"  href="$siteroot$apphome/views/modules/asset/activity/checkout/accept.html?orderid=${order.id}" title="[[Checkout your Cart]]">[[Checkout Cart]] <i class="fas fa-caret-right"></i></a>
-				</li>				
-			#end
-		#end
-		
-		#if($desktop && $user && ($candownload || $canconvert || $candownloadfpo ) )
-			$pages.include("$componenthome/desktop/menu.html?collectionid=$librarycol.getId()",$context)
-		#end
-			
-		</ul>
-		<ul class="resultsnavright">
-		
-			#if(!$resultview)
-				#set($resultview = $userprofile.get("$!{searchtype}resultview"))
-				#if (!$resultview)
-					#set($resultview = $content.get("resultview"))
 				#end
-				#if (!$resultview)
-					#set($resultview = "stackedgallery")
-				#end
-			#end
 			
-			$context.putPageValue("resultview", $resultview)
-			
-			
-			
-			#set($total = $hits.getTotalPages() )
-			#if( $total > 1)
-			<li class="resultpages">			
-				$pages.include("$componenthome/results/positions.html", $context)
-			#end
-			
-			##	 <li class="textheader">
-			##			<span class="text">#if($total > 1) [[of]] $total [[pages]]#else [[page]]#end  </span>
-			##	</li>	
-			
-			
-			#if($resultview != "stackedgallery")
-				<li class="resultsnavtitem" style="width:61px;">
-						#set( $currenthitsperpage = $userprofile.get("modulehitsperpage"))
-						#set($hitcountoptions = $mediaarchive.getList("hitcount"))
-						<select class="form-control resultsnavselect" 
-							id="hitsperpagechange"
-								data-hitssessionid="$!hits.getSessionId()" 
-								data-searchtype="$!reloadsearchtype"
-								data-moduleid="$!moduleid"
-								data-ismodulesearch = "$!ismodulesearch" 
-								data-componenthome = "$apphome/views/modules/$moduleid/components"
-								data-page="$!hits.getPage()" 
-								data-showremoveselections="$!showremoveselections" 
-								data-collectionid="$!librarycol.getId()"
-								data-targetdiv="$!{moduleid}resultscontainer">
-						#foreach($ho in $hitcountoptions)
-						<option value="$ho.id" #if($currenthitsperpage==$ho.id) selected="selected"#end>#text($ho)</option>
-						#end	
-						</select>
-				</li>		
-			#end
-			
-			#if(!$edit || $edit == "false"  )
-				<li class="resultsnavtitem">
-					<select class="form-control" 
-						name="resultview" 
-						id="selectresultview"  
-						data-hitssessionid="$!hits.getSessionId()" 
-						data-searchtype="$!reloadsearchtype"
-						data-ismodulesearch = "$!ismodulesearch" 
-						data-componenthome = "$!componenthome"
-						data-page="$!hits.getPage()" 
-						data-showremoveselections="$showremoveselections" 
-						data-collectionid="$!librarycol.getId()"
-						data-targetdiv="resultsviewcontainer$!module.getId()"
-						data-oemaxlevel="1">
-						#set( $types = $mediaarchive.getList("resulttype"))
-						#foreach($type in $types)
-							<option value="$type.getId()" #if( $resultview == "$type.getId()") selected #end>$type.getName($context)</option>
-						#end
-					</select>
-					
-				</li>
-				
-			#end	
-			
-			
-			#if (!$resultview || $resultview == 'table')
-				#if( $canedittablecolumns )
-					#if( $edit )
-						<li>
-							<a class="ajax table-edit-close" 
-								data-targetdiv="resultsviewcontainer$!module.getId()" 
-								href="$siteroot$componenthome/results/index.html?searchtype=asset&hitssessionid=$hits.getSessionId()&editheader="><i class="fas fa-times"></i></a>
-						</li>
-						<li class="resultsnavtitem" style="min-width:180px">
-							#set ($alldetails = $searcher.getUserPropertyDetails() )
-							<select class="form-control form-control-sm select2 tableresultsaddcolumn" 
-									name="addcolumn"
-									data-componenthome="$siteroot$componenthome/results/addremovecolumns.html?oemaxlevel=1&searchtype=asset&hitssessionid=$hits.getSessionId()&editheader=true"
-									data-targetdiv="resultsviewcontainer$!module.getId()" 
-									data-allowclear="false" >
-								<option>[[Add Column]]</option>
-								#foreach( $detail in $alldetails) <option value="$detail.id">$detail.getText($context)</option>
+				#if($enabled && $canquickpublish )
+					#set($quickpublishlist = $mediaarchive.getList("quickpublish"))
+					<li class="">
+						<a class="" href="#" id="navbarPublishDropdown" role="button" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">[[Publish]]</a>
+							<div class="dropdown-menu" aria-labelledby="navbarPublishDropdown">
+								#foreach($item in $quickpublishlist)
+									<a class="dropdown-item" href="$siteroot$apphome/views/modules/asset/activity/publish/quickpublish.html?hitssessionid=$!hits.getSessionId()&quickid=$item.id"   >$item.name</a>
 								#end
-							</select>
+							</div>
 						</li>
-								
-						<li class="resultsnavtitem">
-							<span class="" style="padding-right: 10px;" >[[Drag columns to move them]]</span>
-						</li>
-					#else 
-						<li >
-							<a class="ajax nav-hover" 
-								id="table-editor" 
-								data-targetdiv="resultsviewcontainer$!module.getId()" 
-								href="$siteroot$componenthome/results/index.html?searchtype=asset&hitssessionid=$hits.getSessionId()&editheader=true">
-								<i class="fas fa-edit"></i></a>
-						</li>
-					#end	
-				#end								
-			#end
-	
+				#end
+	  			#set( $edit = $context.getRequestParameter("editheader") )
 			
-	</ul>
-	
-</div>
-<div class="clearfix"></div>
-</div>
-
+				#if ( $cancheckout && $order)
+					<li>
+						<a class="updatebasket emdialog -cart" data-action="remove" targetdiv="basket-paint"  href="$siteroot$apphome/views/modules/asset/activity/checkout/accept.html?orderid=${order.id}" title="[[Checkout your Cart]]">[[Checkout Cart]] <i class="fas fa-caret-right"></i></a>
+					</li>				
+				#end
+			#end
+			
+			#if($desktop && $user && ($candownload || $canconvert || $candownloadfpo ) )
+				$pages.include("$componenthome/desktop/menu.html?collectionid=$librarycol.getId()",$context)
+			#end
+				
+			</ul>
+			<ul class="resultsnavright">
+			
+				#if(!$resultview)
+					#set($resultview = $userprofile.get("$!{searchtype}resultview"))
+					#if (!$resultview)
+						#set($resultview = $content.get("resultview"))
+					#end
+					#if (!$resultview)
+						#set($resultview = "stackedgallery")
+					#end
+				#end
+				
+				$context.putPageValue("resultview", $resultview)
+				
+				
+				
+				#set($total = $hits.getTotalPages() )
+				#if( $total > 1)
+				<li class="resultpages">			
+					$pages.include("$componenthome/results/positions.html", $context)
+				#end
+				
+				##	 <li class="textheader">
+				##			<span class="text">#if($total > 1) [[of]] $total [[pages]]#else [[page]]#end  </span>
+				##	</li>	
+				
+				
+				#if($resultview != "stackedgallery")
+					<li class="resultsnavtitem" style="width:61px;">
+							#set( $currenthitsperpage = $userprofile.get("modulehitsperpage"))
+							#set($hitcountoptions = $mediaarchive.getList("hitcount"))
+							<select class="form-control resultsnavselect" 
+								id="hitsperpagechange"
+									data-hitssessionid="$!hits.getSessionId()" 
+									data-searchtype="$!reloadsearchtype"
+									data-moduleid="$!moduleid"
+									data-ismodulesearch = "$!ismodulesearch" 
+									data-componenthome = "$apphome/views/modules/$moduleid/components"
+									data-page="$!hits.getPage()" 
+									data-showremoveselections="$!showremoveselections" 
+									data-collectionid="$!librarycol.getId()"
+									data-targetdiv="$!{moduleid}resultscontainer">
+							#foreach($ho in $hitcountoptions)
+							<option value="$ho.id" #if($currenthitsperpage==$ho.id) selected="selected"#end>#text($ho)</option>
+							#end	
+							</select>
+					</li>		
+				#end
+				
+				#if(!$edit || $edit == "false"  )
+					<li class="resultsnavtitem">
+						<select class="form-control" 
+							name="resultview" 
+							id="selectresultview"  
+							data-hitssessionid="$!hits.getSessionId()" 
+							data-searchtype="$!reloadsearchtype"
+							data-ismodulesearch = "$!ismodulesearch" 
+							data-componenthome = "$!componenthome"
+							data-page="$!hits.getPage()" 
+							data-showremoveselections="$showremoveselections" 
+							data-collectionid="$!librarycol.getId()"
+							data-targetdiv="resultsviewcontainer$!module.getId()"
+							data-oemaxlevel="1">
+							#set( $types = $mediaarchive.getList("resulttype"))
+							#foreach($type in $types)
+								<option value="$type.getId()" #if( $resultview == "$type.getId()") selected #end>$type.getName($context)</option>
+							#end
+						</select>
+						
+					</li>
+					
+				#end	
+				
+				
+				#if (!$resultview || $resultview == 'table')
+					#if( $canedittablecolumns )
+						#if( $edit )
+							<li>
+								<a class="ajax table-edit-close" 
+									data-targetdiv="resultsviewcontainer$!module.getId()" 
+									href="$siteroot$componenthome/results/index.html?searchtype=asset&hitssessionid=$hits.getSessionId()&editheader="><i class="fas fa-times"></i></a>
+							</li>
+							<li class="resultsnavtitem" style="min-width:180px">
+								#set ($alldetails = $searcher.getUserPropertyDetails() )
+								<select class="form-control form-control-sm select2 tableresultsaddcolumn" 
+										name="addcolumn"
+										data-componenthome="$siteroot$componenthome/results/addremovecolumns.html?oemaxlevel=1&searchtype=asset&hitssessionid=$hits.getSessionId()&editheader=true"
+										data-targetdiv="resultsviewcontainer$!module.getId()" 
+										data-allowclear="false" >
+									<option>[[Add Column]]</option>
+									#foreach( $detail in $alldetails) <option value="$detail.id">$detail.getText($context)</option>
+									#end
+								</select>
+							</li>
+									
+							<li class="resultsnavtitem">
+								<span class="" style="padding-right: 10px;" >[[Drag columns to move them]]</span>
+							</li>
+						#else 
+							<li >
+								<a class="ajax nav-hover" 
+									id="table-editor" 
+									data-targetdiv="resultsviewcontainer$!module.getId()" 
+									href="$siteroot$componenthome/results/index.html?searchtype=asset&hitssessionid=$hits.getSessionId()&editheader=true">
+									<i class="fas fa-edit"></i></a>
+							</li>
+						#end	
+					#end								
+				#end
+		
+				
+		</ul>
+		
+	</div>
+	<div class="clearfix"></div>
+	</div>
+#end
  

@@ -86,15 +86,14 @@
 <div class="filtered">
 
 ##BREADCRUMB
-
 #if( $hits.getSearchQuery().hasMainInput())
+	<div class="filtered-breadcrumb">
 	#if($librarycol)
 		[[Searching within]]: <strong><em>$librarycol</em> </strong> [[for]]:  <strong><em>$hits.getSearchQuery().getMainInput()</em></strong>
 	#else
 		[[Searching for]]:  <strong><em>$hits.getSearchQuery().getMainInput()</em></strong>
 	#end
-#else
-	
+	</div>
 
 #end
 
@@ -102,6 +101,7 @@
 
 ##TODO Loop over the view and show them here if they match
 #if( $category )
+	<div class="filtered-breadcrumb">
 	#if( $mediaarchive.getCategorySearcher().getRootCategory() != $category)
 		##if( $librarycol )
 		##set($href = "$siteroot$apphome/views/modules/librarycollection/showcategory.html?hitssessionid=$hits.getSessionId()&collectionid=$librarycol.getId()&clearselection=true")
@@ -112,7 +112,7 @@
 		#foreach( $parent in $category.getParentCategoriesFrom(0))
 			#if( ${foreach.count} > 1) / #end
 			#if($category.getId() != $parent.getId())
-			<a style="padding:0px 4px 4px 4px;" 
+			<a style="padding:0px 4px 0;" 
 				href="$siteroot$apphome/views/modules/asset/showcategory.html?nodeID=${parent.id}&hitssessionid=$!hits.getSessionId()"
 				title="[[Show:]] $parent"
 				class="ajax"
@@ -135,6 +135,7 @@
 ##		data-oemaxlevel="4"
 ##		title="[[Clear Album]]">$category <i class="fas fa-times"></i></a>
 	#end
+	</div>
 #end
 
 
@@ -166,7 +167,7 @@
 	#end
 
 	<a href="$href"
-		class="badge badge-primary ajax"
+		class="btn btn-xs btn-green ajax"
 		title="[[Clear]] $term.getDetail()"
 		data-targetdiv="applicationcontent" 
 		data-oemaxlevel="$oemaxlevel"
@@ -234,7 +235,7 @@
 		data-targetdiv="applicationcontent" 
 		data-oemaxlevel="$oemaxlevel" 
 		data-updateurl="true" 
-		title="[[Cear Search Filters]]"><i class="fas fa-times"></i> &nbsp;[[Clear Filters]]</a>
+		title="[[Cear Search Filters]]">[[Clear Filters]] <i class="fas fa-times"></i> </a>
 #end
 
 
