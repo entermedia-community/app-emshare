@@ -109,16 +109,21 @@
 		##	#set($href = "$siteroot$apphome/views/modules/asset/index.html?clearselection=true")
 		##end
 		
-		#foreach( $parent in $category.getParentCategoriesFrom(1))
-			#if( ${foreach.count} > 1) \ #end
+		#foreach( $parent in $category.getParentCategoriesFrom(0))
+			#if( ${foreach.count} > 1) / #end
+			#if($category.getId() != $parent.getId())
 			<a style="padding:0px 4px 4px 4px;" 
-				href="$siteroot$apphome/views/modules/asset/bycategory/${parent.id}.html"
+				href="$siteroot$apphome/views/modules/asset/showcategory.html?nodeID=${parent.id}&hitssessionid=$!hits.getSessionId()"
+				title="[[Show:]] $parent"
 				class="ajax"
 				data-targetdiv="applicationcontent"
 				data-oemaxlayout="2"
 				data-closemediaviewer="true"
 				data-updateurl="true"
 				data-sidebarcomponent="categories">$parent</a>
+			#else
+			<span class="currentcategory">$parent</span>
+			#end
 				
 		#end
 		
