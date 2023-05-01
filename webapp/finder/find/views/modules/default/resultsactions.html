@@ -3,7 +3,7 @@ $context.putPageValue("moduleid", $moduleid)
 
 #set($defaultview = $userprofile.getDefaultViewForModule($module.id) )
 
-#if($hits)
+##if($hits)
 	
 	#set($resulttype = $userprofile.get("${module.id}-display"))
 	#if(!$resulttype)
@@ -52,7 +52,7 @@ $context.putPageValue("moduleid", $moduleid)
 						</li>
 						#end
 				
-					#if($resultview == "table" && $hits.hasSelections())
+					#if($hits && $resultview == "table" && $hits.hasSelections())
 						$pages.include("$searchhome/selectionactions.html", $context)
 					#end
 					</ul>
@@ -61,6 +61,7 @@ $context.putPageValue("moduleid", $moduleid)
 	
 		#end
 	
+		#if($hits)
 		<ul class="resultsnavright">
 				#set($total = $hits.getTotalPages() )
 				#if( $total > 1)
@@ -158,10 +159,11 @@ $context.putPageValue("moduleid", $moduleid)
 			
 		
 		</ul>
-	
+		#end
+		
 	</div>
 	</div>
-#end
+##end
 
 	
 	##<script type="text/javascript">
