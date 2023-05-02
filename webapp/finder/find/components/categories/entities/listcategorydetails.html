@@ -5,7 +5,7 @@
 	#set( $entityid = $context.getRequestParameter("entityid"))
 #end
 
-#set( $currentcategoryid = $context.getRequestParameter("currentcategory"))
+#set( $currentcategoryid = $context.getRequestParameter("categoryid"))
 #if(!$currentcategoryid && $defaultfolder)
 	#set( $currentcategoryid = $defaultfolder.getId())
 #end
@@ -36,8 +36,7 @@ $context.putPageValue("mediarender", "attachedmedialist" )
 	<div  class="entityassetresults uploadformarea" data-onupload="reloadentity" data-entityid="$entityid" >
 		<div class="entity-media-header">
 			<h4 class="mediaboxheader">
-				
-				 [[Folder Details]]: $currentcategory.getName() 
+				 [[Folder Details]]: <span>$currentcategory.getName()</span> 
 			</h4>
 			#if($currentcategory)
 				<a style="padding:0px 0 4px 10px; " 
@@ -109,10 +108,11 @@ $context.putPageValue("mediarender", "attachedmedialist" )
 				
 			#else
 				#set($link = "$siteroot$applink/views/modules/asset/index.html")
-				#set($link = "$link?field=$!moduleid&operation=matches&${moduleid}.value=$!entityid&clearfilters=true")
+				##set($link = "$link?field=$!moduleid&operation=matches&${moduleid}.value=$!entityid&clearfilters=true")
+				#set($link = "$siteroot$applink/views/modules/asset/bycategory/${currentcategoryid}.html?clearfilters=true")
 			#end	
 			#set($targetdivinner = "applicationmaincontent")
-			#set($oemaxlevel = "2")
+			#set($oemaxlevel = "3")
 			
 			<div class="entity-categorydetails">
 			
@@ -136,10 +136,10 @@ $context.putPageValue("mediarender", "attachedmedialist" )
 							id="assetpicker#eid($entityid)" 
 							data-launcher="assetpicker#eid($entityid)"
 							data-targetdiv="entityassetresults#eid($entityid)"
-							data-clickurl="$componenthome/gridsample/preview/media/listassets.html"
+							data-clickurl="$componenthome/categories/entities/listcategorydetails.html"
 							data-entityid="$entityid"
 							data-moduleid="$moduleid"
-							
+							data-categoryid="$currentcategoryid"
 							data-target="$!siteroot$apphome/components/assetpicker/entities/searchassets.html"
 							data-dialogid="assetsearchdialog" 
 							class="emdialog "
