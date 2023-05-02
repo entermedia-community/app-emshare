@@ -133,75 +133,69 @@
 			#end
 		##end
 		
-		<table style="width:100%;">
-		#foreach ($c in $existingcategories)
-		
-			##better way to do this?
-			#set ($category = $mediaarchive.getCategory($c.getId()))
-			
-			 
-			#set( $iscollection = $categoryCollectionCache.isPartOfCollection($category))
-			
-			
-			<tr class="activelistcontainer #if($category.getId() == $defaultfolder.getId()) active #end">
-			<td>
-				<div  class="list-row">
-				<div  class="category #if($iscollection) cat-collection #else cat-category #end">
-				#foreach( $parent in $category.getParentCategoriesFrom(1))
-					#if( ${foreach.count} > 1)\
-					#end
-					<a style="padding:0px 0 4px 0;" 
-						class="ajax"
-						data-targetdiv="applicationcontent"
-						data-oemaxlevel="4"
-						data-closedialog="true"
-						data-updateurl="true"
-						data-nodeId="$entityid"
-		   				data-sidebarcomponent="categories"
-		   				data-scrolltocat="true"
-						title="[[View Files]]"
-						##href="$applink/views/modules/asset/bycategory/${parent.id}.html"
-						href="$applink/views/modules/asset/showcategory.html?nodeID=${parent.id}"
-						>$parent</a>
-				#end
+		#set($link = "$applink/views/modules/${moduleid}/components/categories/entities/listcategorydetails.html")
+		<form name="jumptocat" action="$link" class="ajaxform" data-targetdiv="entityassetresults#eid($entityid)" data-oemaxlevel="3">
+				<input type="hidden" name="entityid" value="$entityid" />
+				<input type="hidden" name="moduleid" value="$moduleid" />
+				<input type="hidden" class="emselectedrow" name="currentcategory" value="" />
 				
-				</div>
-				</div>
-			</td>
-			<td style="width:38px; text-align: right; vertical-align:middle; padding:6px 2px 0 0;">
-			#if($desktopX)
-				<a href="" 
-					class="folderdesktopdownload"
-					data-categoryid="$c.getId()"
-					title="[[Download Folder]]">
-					<i class="fas fa-download"></i></a>
-			#else
-			<a style="padding:0px 4px 4px 6px; float:right;" 
-						class="ajax activelistenerparent"
-						data-targetdiv="entityassetresults#eid($entityid)"
-						data-oemaxlevel="1"
-						data-entityid="$entityid"
-						data-moduleid="$moduleid"
-		   				title="[[Preview Files]]"
-		   				href="$applink/views/modules/${moduleid}/components/gridsample/preview/media/listassets.html?currentcategory=${category.id}">
-		   				<i class="fas fa-eye"></i></a>
-		   	#end
-		   	
-			#if($permissions.can($moduleid, "edit"))
-				 	<a class="ajax list-delete"  
-				 		data-targetdiv="entitycategoryresults" 
-				 		href="" >
-				 	<i class="fas fa-times"></i></a>
+		
+		<div class="emrowpicker">
+			
+			<table style="width:100%;">
+			#foreach ($c in $existingcategories)
+			
+				##better way to do this?
+				#set ($category = $mediaarchive.getCategory($c.getId()))
+				
+				 
+				#set( $iscollection = $categoryCollectionCache.isPartOfCollection($category))
+				
+				
+				<tr class="activelistcontainer #if($category.getId() == $defaultfolder.getId()) active #end" data-id="$category.getId()">
+				<td>
+					<div  class="list-row">
+					<div  class="category #if($iscollection) cat-collection #else cat-category #end">
+					#foreach( $parent in $category.getParentCategoriesFrom(1))
+						#if( ${foreach.count} > 1)\
+						#end
+							$parent
+					#end
+					
+					</div>
+					</div>
+				</td>
+				<td style="width:38px; text-align: right; vertical-align:middle; padding:6px 2px 0 0;">
+	
+				<a style="padding:0px 4px 4px 6px; float:right;" 
+							class="activelistenerparent"
+							target="_blank"
+							##data-targetdiv="entityassetresults#eid($entityid)"
+							data-oemaxlevel="1"
+							data-entityid="$entityid"
+							data-moduleid="$moduleid"
+			   				title="[[View Folder]]"
+			   				
+			   				href="$applink/views/modules/asset/bycategory/${category.id}.html">
+			   				<i class="fas fa-external-link-alt"></i></a>
+			   	
+				#if($permissions.can($moduleid, "edit"))
+					 	<a class="ajax list-delete"  
+					 		data-targetdiv="entitycategoryresults" 
+					 		href="" >
+					 	<i class="fas fa-times"></i></a>
+				#end
+			 	
+				</td>
+				</tr>
+				
+				
+				
+				
 			#end
-		 	
-			</td>
-			</tr>
-			
-			
-			
-			
-		#end
-		</table>
+			</table>
+		</div>
+			</form>
 		</div>
 		</div>
 	</div>
