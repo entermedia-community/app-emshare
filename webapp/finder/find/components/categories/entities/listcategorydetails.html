@@ -24,7 +24,10 @@
 	#set( $assetshits = $mediaarchive.query("asset").hitsPerPage($assetsshown).match("category",$rootcategory).sort("assetaddeddateDown").search() )
 	
 #else
-	#set( $assetshits = $mediaarchive.query("asset").hitsPerPage($assetsshown).match("category", $currentcategoryid).sort("assetaddeddateDown").search() )
+	##set( $assetshits = $mediaarchive.query("asset").facet().hitsPerPage($assetsshown).match("category", $currentcategoryid).sort("assetaddeddateDown").search() )
+	#set($sizevalues = $mediaarchive.getBean("entityManager").listTotalSize($currentcategory.getId(),$context) )
+	#set( $assetshits = $sizevalues.get("hits") )
+	
 #end
 
 $context.putPageValue("assetshits", $assetshits)
@@ -127,7 +130,7 @@ $context.putPageValue("mediarender", "attachedmedialist" )
 						data-closedialog="true"
 						data-updateurl="true"
 						data-closemediaviewer="true"
-						title="[[View]] $assetshits.size() [[Assets]]"><i class="fas fa-images"></i> $assetshits.size() [[Files]]</a>
+						title="[[View]] $assetshits.size() [[Assets]]"><i class="fas fa-images"></i> $assetshits.size() [[Files]]</a> ##($sizer.inEnglish($total) )
 				
 					#if($permissions.can($moduleid, "assign_folders"))
 						#set($searchlink = "$componenthome/assetpicker/entities/searchassets.html")
