@@ -92,6 +92,16 @@ runajaxonthis = function(inlink,e)
 		$(".activelistener").removeClass("active");
 		inlink.addClass("active");
 	}
+	//for listeners in a container
+	if( inlink.hasClass("activelistenerparent") )
+	{
+		var listenerparent = inlink.closest(".activelistcontainer");
+		if(listenerparent.length > 0) {
+			listenerparent.siblings().removeClass("active");
+			listenerparent.addClass("active");
+		}
+	}
+	
 	var nextpage= inlink.attr('href');
 	if (!nextpage) {
 		nextpage = inlink.data("nextpage");

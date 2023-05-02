@@ -1,10 +1,17 @@
 #if(!$moduleid)
-#set( $moduleid = $context.getRequestParameter("moduleid"))
+	#set( $moduleid = $context.getRequestParameter("moduleid"))
 #end
 #if(!$entityid)
-#set( $entityid = $context.getRequestParameter("entityid"))
+	#set( $entityid = $context.getRequestParameter("entityid"))
 #end
 
+#set( $currentcategoryid = $context.getRequestParameter("currentcategory"))
+#if(!$currentcategoryid && $defaultfolder)
+	#set( $currentcategoryid = $defaultfolder.getId())
+#end
+#if($currentcategoryid)
+	#set($currentcategory = $mediaarchive.getCategory($currentcategoryid))
+#end
 
 #set( $assetsshown = 4)
 #if( $searchtype == "faceprofilegroup" )
@@ -17,22 +24,20 @@
 	#set( $assetshits = $mediaarchive.query("asset").hitsPerPage($assetsshown).match("category",$rootcategory).sort("assetaddeddateDown").search() )
 	
 #else
-	#set( $assetshits = $mediaarchive.query("asset").hitsPerPage($assetsshown).match($moduleid, $entityid).sort("assetaddeddateDown").search() )
+	#set( $assetshits = $mediaarchive.query("asset").hitsPerPage($assetsshown).match("category", $currentcategoryid).sort("assetaddeddateDown").search() )
 #end
+
 $context.putPageValue("assetshits", $assetshits)
 $context.putPageValue("fullview",true) 
 $context.putPageValue("thumbsize", "small" )
 $context.putPageValue("primaryimage", $entity.primaryimage )
 $context.putPageValue("mediarender", "attachedmedialist" )
-<div id="entityassetresults#eid($entityid)" class="entity-media-box #if(!$assetshits) collapsedmediabox #end">
+<div id="entityassetresults#eid($entityid)" class="entity-media-box ">
 	<div  class="entityassetresults uploadformarea" data-onupload="reloadentity" data-entityid="$entityid" >
 		<div class="entity-media-header">
 			<h4 class="mediaboxheader">
-			#if(!$assetshits)
-				<i class="fas  fa-caret-right  expandmediaboxicon"></i>
-			#else
 				<i class="fas  fa-caret-down  expandmediaboxicon"></i>
-			#end [[Attached Files]]
+				 $currentcategory.getName() [[Attached Files]]
 			</h4>
 			
 			
@@ -80,11 +85,29 @@ $context.putPageValue("mediarender", "attachedmedialist" )
 						  	<input name="selected$moduleid" value="$entityid" type="hidden"/>
 						    <input name="field" value="$moduleid"type="hidden" />
 						  	<input name="${moduleid}.value" value="$entityid"type="hidden" />
+						  	<input name="field" value="category"type="hidden" />
+						  	<input name="category.value" value="$currentcategoryid"type="hidden" />
 						  	<input name="sourcepath" value="$uploadsourcepath" type="hidden"/>
 						  	
 						  	</form>
 					#end
 				#end	
+				
+				
+				
+				#if($currentcategory)
+				<a style="padding:0px 0 4px 10px; " 
+						class=""
+						data-targetdiv="applicationcontent"
+						data-oemaxlevel="4"
+						data-closedialog="true"
+						data-updateurl="true"
+						data-nodeId="$entityid"
+		   				data-sidebarcomponent="categories"
+		   				title="[[Download folders]]"
+		   				href="$applink/views/modules/asset/downloads/bycategory/${defaultFolder.id}/#eid($category.name).zip"><i class="fa fa-download" aria-hidden="true"></i></a>
+				#end
+				
 				
 				#if($permissions.can($moduleid, "assign_folders"))
 					#set($searchlink = "$componenthome/assetpicker/entities/searchassets.html")
@@ -101,6 +124,8 @@ $context.putPageValue("mediarender", "attachedmedialist" )
 						class="emdialog"
 						title="[[Choose Asset]]"><i class="fas fa-search"></i></a>
 				#end
+				
+				
 			#end
 			
 			</div>

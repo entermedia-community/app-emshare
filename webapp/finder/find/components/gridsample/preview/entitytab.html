@@ -56,7 +56,8 @@ $context.putPageValue("edit", $edit)
 	#if($module.enableuploading == true)
 		<div class="entity-media">
 		#if($moduleid && $entityid)
-			
+			#set($defaultfolder =  $mediaarchive.getBean("entityManager").loadDefaultFolder($module, $entity, $context.getUser()))
+			$context.putPageValue("defaultfolder", $defaultfolder)
 			$pages.include("$componenthome/categories/entities/listcategories.html",$context)
 			
 			
