@@ -67,6 +67,20 @@ $(document).ready(function()
 		$(document).trigger(event);
 	});
 	
+	
+	lQuery(".scrolltocat").livequery( function()
+	{	
+		var tree = $(this).closest(".categorytreescrolllable");
+		var scrollTo = $(this);
+		
+        var position = scrollTo.offset().top 
+                - tree.offset().top 
+                + tree.scrollTop()
+                - 100;
+        console.log(position);
+        tree.scrollTop(position);
+	});
+	
     gotopage = function(tree, node, maxlevel, prefix, inOptions)
 	{
     	//postfix not used
@@ -232,6 +246,7 @@ $(document).ready(function()
 			catcontent.scrollLeft(parseInt(left));
 		}
 	});
+	
 
 	lQuery('#treeholder input').livequery('click', function(event)
 	{
