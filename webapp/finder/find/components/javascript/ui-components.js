@@ -1547,9 +1547,13 @@ uiload = function() {
 	
 
 	lQuery('.emrowpicker table td').livequery("click", function(event) {
-		event.preventDefault();
+		
 
 		var clicked = $(this);
+		if (clicked.attr("noclick") == "true") {
+			return true;
+		}
+		event.preventDefault();
 		var row = clicked.closest("tr");
 		var table = clicked.closest("table");
 		var form = clicked.closest("form");
