@@ -39,8 +39,13 @@ $context.putPageValue("targetdiv",$targetdiv)
 
 #set( $multivalue = $context.getRequestParameter("multivalue") )
 #if(!$multivalue)
-	#set( $selectedcategories = $categories )
-	$context.putPageValue("selectedcategories",$selectedcategories)
+	$context.putPageValue("selectedcategories",$categories)
+	#set($category = $mediaarchive.getCategory($categories))
+	#if(!$category)
+		#set($initialcategory = "index")
+	#else
+		#set($initialcategory = $category.getId())
+	#end
 #end
 
 
@@ -58,7 +63,7 @@ $context.putPageValue("targetdiv",$targetdiv)
 </div>
 <div class="searchcategories-filter">
 	<div id="searchareacontent"> 
-	$pages.include("$apphome/components/categories/search/searchcategoryfilter.html?nodeID=index",$context)
+	$pages.include("$apphome/components/categories/search/searchcategoryfilter.html?nodeID=$initialcategory",$context)
 	</div>
 </div>
 
