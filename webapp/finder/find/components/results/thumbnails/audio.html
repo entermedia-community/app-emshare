@@ -3,6 +3,7 @@
 #end
 
 #if($hit)
+
 ## Required: path, id
 ## Optional: width, autostart, hit or asset (for the file name)
 #set ( $urlutils = $context.getPageValue("url_util"))
@@ -17,10 +18,15 @@
 	#set ($viewer = "${viewer}_")
 #end
 
+#if($hit.getValue("length"))
+	#set($length = $!mediaarchive.formatMinutesAndSeconds($hit.getValue("length")))
+#end
+$context.putPageValue("length", $length )
+
 #set ($path = "$!siteroot$home/${mediadbappid}/services/module/asset/downloads/preset/$!urlenc/audio.mp3")   
 
 <div class="audio-thumb-container" >    
-	<div id="jp_container_$!viewer$hit.id" class="jp-audio mini">
+	<div id="jp_container_$!viewer$hit.id" class="jp-audio #if($thumbsize != "largepreview") mini #end">
 	    <div class="jp-type-single">
 	        <div id="jquery_jplayer_$!viewer$hit.id" data-container="jp_container_$!viewer$hit.id"  class="jp-jplayer" data-url="$path"></div>
 	        	
@@ -42,11 +48,23 @@
 					<div class="jp-control jp-mute" data-target="jquery_jplayer_$!viewer$hit.id" tabindex="0">[[max volume]]</div>
 					<div class="jp-control jp-unmute" data-target="jquery_jplayer_$!viewer$hit.id" tabindex="0">[[min volume]]</div>
 				</div>
+				<div class="jp-controls" >
 				<div class="jp-volume-bar">
-							<div class="jp-volume-bar-value" style="width: 80%;"></div>
+					<div class="jp-volume-bar-value" style="width: 80%;"></div>
 				</div>
+				</div>
+				
+				
+		        
 				#end
 	        </div>
+	        <div class="clearfix"></div>
+	        ##if($thumbsize == "largepreview")
+	        <div class="jp-time-holder">
+					<div class="jp-current-time">00:00</div>
+			        <div class="jp-duration">#if($length)$length#end</div>
+		        </div>
+		    ##end
 	    </div>
 	</div>
 	##<div class="audio-thumb-name">$hit.getName()</div>
