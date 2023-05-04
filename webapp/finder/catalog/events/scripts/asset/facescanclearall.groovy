@@ -21,7 +21,7 @@ public void init()
 
 	try
 	{	
-		HitTracker hits = archive.query("asset").exact("facescancomplete", "true").exact("importstatus","complete").search();
+		HitTracker hits = archive.query("asset").exact("facehasprofile", "true").exact("importstatus","complete").search();
 		hits.enableBulkOperations();
 			
 		int saved = 0;
