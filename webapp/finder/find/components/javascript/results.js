@@ -1127,14 +1127,18 @@ jQuery(document).ready(function(url,params)
 		var canvas = $(div.find("canvas"));
 		canvas.css("position","absolute");
 		
+		var w = div.data("imagewidth");
+		var h = div.data("imageheight");
+		
 		var image = $(div.find("img"));
 		image.ready( function ()
 		{
 			// console.log(image.height());
 			// canvas.width(box[2]);
 			// canvas.height(box[3]);
-			var w = 240; //box[2]+10;
-			var h = 240;//box[3]+10;
+			//var w = 240; //box[2]+10;
+			//var h = 240;//box[3]+10;
+			
 			canvas.attr({width: w, height:h});
 			var context = canvas[0].getContext("2d");	
 			context.beginPath();
@@ -1144,6 +1148,14 @@ jQuery(document).ready(function(url,params)
 			context.strokeStyle = '#fff';
 			context.strokeRect(box[0]-1,box[1]-1,box[2]+1,box[3]+1);
 		});
+		var container = div.data("centerbox");
+		if(container) {
+			var topbox = box[1];
+			if(topbox > (h/2)) {
+				div.css("top", topbox+5);
+			}
+		}
+		
  	});
 	
 	
