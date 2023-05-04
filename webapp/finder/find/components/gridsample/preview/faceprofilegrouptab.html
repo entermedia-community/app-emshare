@@ -68,14 +68,14 @@ $context.putPageValue("edit", $edit)
 			
 			#foreach($hit in $assetshits)
 				#set($imagelocation = $facemanager.getImageAndLocationForGroup($hit,$entityid,240,240) )
-				#if($imagelocation.timecodestartseconds > -1)
 					##/views/modules/asset/downloads/preview/crop/Albums/Users/admin/2021/axevnr20130110ensd_2.mp4/thumb.jpg?timeoffset=18.0&assetid=AXvggdnE8BvxpXRSMb13
 					##http://localhost:8080/finder/mediadb/services/module/asset/downloads/preset/Albums/Users/admin/2021/54888538ecad0490488b456b-750-536_5.jpg/image200x200.jpg
-					#set($link = "/$mediaarchive.getMediaDbId()/services/module/asset/downloads/preset/$hit.sourcepath/image550x350.jpg?timeoffset=$imagelocation.timecodestartseconds")
-				#else
+					###set($link = "/$mediaarchive.getMediaDbId()/services/module/asset/downloads/preset/$hit.sourcepath/image550x350.jpg?timeoffset=$imagelocation.timecodestartseconds")
 					#set($link = $mediaarchive.asLinkToPreview($hit, "image550x350.jpg"))
-				#end	
 			 
+			 		#if($imagelocation.timecodestartseconds > -1)
+						 #set($link = "$link?timeoffset=$imagelocation.timecodestartseconds")
+			 		#end
 			 ##TODO get offset for video
 			 	<div class="faceprofile-attachedmedia  #if($primaryimage==$hit.id) grid-isprimaryimage #end">
 				<div class=" " data-assetid="$hit.getId()" > 
