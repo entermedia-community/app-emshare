@@ -1153,6 +1153,7 @@ jQuery(document).ready(function(url,params)
 			var topbox = box[1];
 			if(topbox > (h/2)) {
 				div.css("top", topbox+5);
+				
 			}
 		}
 		
