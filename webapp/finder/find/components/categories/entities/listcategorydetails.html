@@ -64,12 +64,55 @@ $context.putPageValue("mediarender", "attachedmedialist" )
 					#ifnull($uploadsourcepath)
 						#set($uploadsourcepath = "Albums/Users/$user.getScreenName()/Desktops")
 					#end
+					
+								#if($permissions.can($moduleid, "assign_folders"))
+				#set($searchlink = "$apphome/components/categories/search/searchcategory.html")
+				<a href="$searchlink" 
+				   class="detail-edit-icon btn emdialog"
+				   data-dialogid="categorypickermodule"
+				   data-cancelsubmit="true" 
+				   data-multivalue="false"
+				   data-pickone="true"
+				   data-moduleid="$moduleid"
+				   data-entityid="$entityid"
+				   data-existingcategories="$!{existingids}"
+				   data-pickedcategoryaction="$apphome/components/categories/entities/listcategories.html"
+				   data-targetdiv="entitycategoryresults#eid($entityid)"
+				   data-parameterdata="id"
+				   data-noesc="true"
+				   title="[[Choose Folder]]"><i class="fas fa-search"></i></a>
+			#end
+					
+					
+					
 					<div>
+
+			   	
+				#if($permissions.can($moduleid, "edit"))
+					 	<a class="ajax list-delete"  
+					 		data-targetdiv="entitycategoryresults" 
+					 		href="" >
+					 	<i class="fas fa-times"></i></a>
+				#end
+
+
 
 						<a href="#" 
 							class="entity-add-media filePicker entityuploadPicker"
 							title="[[Upload Media to:]] $!uploadsourcepath">
 						<i class="fas fa-file-upload"></i></a>
+						
+										<a style="padding:0px 4px 4px 6px;" 
+							class=""
+							target="_blank"
+							##data-targetdiv="entityassetresults#eid($entityid)"
+							data-oemaxlevel="1"
+							data-entityid="$entityid"
+							data-moduleid="$moduleid"
+			   				title="[[View Folder]]"
+			   				
+			   				href="$applink/views/modules/asset/bycategory/${category.id}.html?sidebarcomponent=categories&scrolltocat=true">
+			   				<i class="fas fa-external-link-alt"></i>[[View Media]]</a>
 						
 						<div class="loadericon float-right"><i class="fas fa-spinner fa-spin"></i></div>
 							
