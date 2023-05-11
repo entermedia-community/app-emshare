@@ -18,7 +18,7 @@
 ##TODO: Verify upload rights to $collectionid?
 
 <div id="uploadcollectionpicker" 
-	data-collectionpicker="$siteroot$apphome/components/upload/types/html5/collectionpicker.html">
+	data-collectionpicker="">
 	<div class="ui-widget-header toggle-upload-details" data-status="open">
 		<i class="fas fa-caret-down"></i> [[Album]]
 	</div>
@@ -26,7 +26,10 @@
 		<div class="emdatafieldvalue "> 
 			#if($librarycol)
 				<div class="uploadcollection"> 
-				$librarycol.getLibrary() / $librarycol 
+				#ifnotnull($librarycol.getLibrary()) 
+					$librarycol.getLibrary() / 
+				#end
+				$librarycol 
 				<a href="$siteroot$apphome/components/upload/types/html5/collectionpicker.html" 
 					class="ajax delete-row"
 					data-targetdiv="uploadcollectionpicker"
