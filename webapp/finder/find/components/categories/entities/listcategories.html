@@ -25,7 +25,7 @@
 	#set($defaultfolder =  $mediaarchive.getBean("entityManager").loadDefaultFolder($module, $entity, $context.getUser()))
 #end
 
-<div id="entitycategoryresults#eid($entityid)" class="entity-media-box #if(!$existingcategories) collapsedmediabox #end" style="margin-bottom:20px;">
+<div id="entitycategoryresults#eid($entityid)" class="entity-media-box #if(!$existingcategories) ZZZcollapsedmediabox #end" style="margin-bottom:20px;">
 <div  class="entitycategoryresults uploadformarea" data-onupload="reloadentity" data-entityid="$entityid" >
 		
 	#set($uploadsourcepath =  $mediaarchive.getBean("entityManager").loadUploadSourcepath($module, $entity, $context.getUser()))
@@ -36,10 +36,10 @@
 	<div class="entity-media-header">
 		<h4 class="mediaboxheader">
 		#if(!$existingcategories)
-			<i class="fas  fa-caret-right  expandmediaboxicon"></i>
+			<i class="expandmediaboxicon"></i>
 		#else
-			<i class="fas  fa-caret-down  expandmediaboxicon"></i>
-		#end [[Folders]]</h4>
+			<i class="expandmediaboxicon"></i>
+		#end [[Select Folder]]</h4>
 		
 		
 		#if($moduleid && $entityid)
@@ -58,7 +58,7 @@
 					<a class="entity-add-media folderPicker entityuploadPicker" href="#" 
 					id="" 
 					title="[[Upload Folder]]" style="margin-top: 0">
-					<i class="fas fa-upload"></i></a>
+					<i class="fas fa-plus"></i></a>
 					<div class="loadericon float-right"><i class="fas fa-spinner fa-spin"></i></div>
 					
 						<input class="upload_field" data-autostartupload="true" type="file" style="position:absolute; top:-2000px;" multiple="multiple"  />
@@ -166,25 +166,6 @@
 				</td>
 				<td style="width:38px; text-align: right; vertical-align:middle; padding:6px 2px 0 0;" noclick="true">
 	
-				<a style="padding:0px 4px 4px 6px;" 
-							class=""
-							target="_blank"
-							##data-targetdiv="entityassetresults#eid($entityid)"
-							data-oemaxlevel="1"
-							data-entityid="$entityid"
-							data-moduleid="$moduleid"
-			   				title="[[View Folder]]"
-			   				
-			   				href="$applink/views/modules/asset/bycategory/${category.id}.html?sidebarcomponent=categories&scrolltocat=true">
-			   				<i class="fas fa-external-link-alt"></i></a>
-			   	
-				#if($permissions.can($moduleid, "edit"))
-					 	<a class="ajax list-delete"  
-					 		data-targetdiv="entitycategoryresults" 
-					 		href="" >
-					 	<i class="fas fa-times"></i></a>
-				#end
-			 	
 				</td>
 				</tr>
 				
