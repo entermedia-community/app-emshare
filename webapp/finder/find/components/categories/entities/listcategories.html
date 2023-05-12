@@ -8,6 +8,9 @@
 #ifnull($entity)
 #set( $entity = $data)
 #end
+#ifnull($entity)
+	#set($entity = $mediaarchive.getCachedData($moduleid, $entityid))
+#end
 
 
 ##set( $existingcategories = $mediaarchive.query("category").hitsPerPage(6).match($moduleid, $entityid).sort("name").search($context) )
