@@ -42,7 +42,7 @@ $context.putPageValue("mediarender", "attachedmedialist" )
 				 [[Folder Details]]: <span>$currentcategory.getName()</span> 
 			</h4>
 			#if($currentcategory)
-				<a style="padding:0px 0 4px 10px; " 
+				<a style="padding:0px 0 4px 6px; " 
 						class=" "
 						data-targetdiv="applicationcontent"
 						data-oemaxlevel="4"
@@ -50,74 +50,56 @@ $context.putPageValue("mediarender", "attachedmedialist" )
 						data-updateurl="true"
 						data-nodeId="$entityid"
 		   				data-sidebarcomponent="categories"
-		   				title="[[Download]]"
+		   				title="[[Download]]: $currentcategory.getName()"
 		   				href="$applink/views/modules/asset/downloads/bycategory/${currentcategory.id}/#eid($currentcategory.name).zip"><i class="fa fa-download" aria-hidden="true"></i></a>
 			#end
 			
 			#if($permissions.can($moduleid, "upload_files"))
-					#ifnull($uploadsourcepath)
-						#if( !$entity)
-							#set( $entity  = $mediaarchive.getData($moduleid, $entityid) )
-						#end
-						#set($uploadsourcepath =  $mediaarchive.getBean("entityManager").loadUploadSourcepath($module, $entity, $context.getUser()))
+				#ifnull($uploadsourcepath)
+					#if( !$entity)
+						#set( $entity  = $mediaarchive.getData($moduleid, $entityid) )
 					#end
-					#ifnull($uploadsourcepath)
-						#set($uploadsourcepath = "Albums/Users/$user.getScreenName()/Desktops")
-					#end
-					
-								#if($permissions.can($moduleid, "assign_folders"))
-				#set($searchlink = "$apphome/components/categories/search/searchcategory.html")
-				<a href="$searchlink" 
-				   class="detail-edit-icon btn emdialog"
-				   data-dialogid="categorypickermodule"
-				   data-cancelsubmit="true" 
-				   data-multivalue="false"
-				   data-pickone="true"
-				   data-moduleid="$moduleid"
-				   data-entityid="$entityid"
-				   data-existingcategories="$!{existingids}"
-				   data-pickedcategoryaction="$apphome/components/categories/entities/listcategories.html"
-				   data-targetdiv="entitycategoryresults#eid($entityid)"
-				   data-parameterdata="id"
-				   data-noesc="true"
-				   title="[[Choose Folder]]"><i class="fas fa-search"></i></a>
-			#end
-					
-					
-					
-					<div>
+					#set($uploadsourcepath =  $mediaarchive.getBean("entityManager").loadUploadSourcepath($module, $entity, $context.getUser()))
+				#end
+				#ifnull($uploadsourcepath)
+					#set($uploadsourcepath = "Albums/Users/$user.getScreenName()/Desktops")
+				#end
+				
+				
 
-			   	
-				#if($permissions.can($moduleid, "edit"))
+				   	
+					#if($permissions.can($moduleid, "edit"))
 					 	<a class="ajax list-delete"  
 					 		data-targetdiv="entitycategoryresults" 
 					 		href="" >
 					 	<i class="fas fa-times"></i></a>
-				#end
+					#end
 
 
 
-						<a href="#" 
-							class="entity-add-media filePicker entityuploadPicker"
-							title="[[Upload Media to:]] $!uploadsourcepath">
-						<i class="fas fa-file-upload"></i></a>
+					<a href="#" 
+						style="padding:0px 4px 4px 6px;"
+						class="entity-add-media filePicker entityuploadPicker"
+						title="[[Upload Media to]]: $!uploadsourcepath">
+					<i class="fas fa-file-upload"></i></a>
+					
+					<div class="loadericon float-right" 
+						style="padding:0px 4px 4px 6px;"><i class="fas fa-spinner fa-spin"></i></div>
 						
-										<a style="padding:0px 4px 4px 6px;" 
+					<a style="padding:0px 4px 4px 6px;" 
 							class=""
 							target="_blank"
 							##data-targetdiv="entityassetresults#eid($entityid)"
 							data-oemaxlevel="1"
 							data-entityid="$entityid"
 							data-moduleid="$moduleid"
-			   				title="[[View Folder]]"
+			   				title="[[View Folder]]: $currentcategory.getName()"
 			   				
-			   				href="$applink/views/modules/asset/bycategory/${category.id}.html?sidebarcomponent=categories&scrolltocat=true">
-			   				<i class="fas fa-external-link-alt"></i>[[View Media]]</a>
-						
-						<div class="loadericon float-right"><i class="fas fa-spinner fa-spin"></i></div>
-							
+			   				href="$applink/views/modules/asset/bycategory/$!{currentcategory.id}.html?sidebarcomponent=categories&scrolltocat=true">
+			   				<i class="fas fa-external-link-alt"></i></a>
+										
 						<input class="upload_field" data-autostartupload="true" type="file" style="position:absolute; top:-2000px;" multiple="multiple"  />
-							#set( $root = "$siteroot$componenthome/upload/types/html5")
+						#set( $root = "$siteroot$componenthome/upload/types/html5")
 						<form id="uploaddata" 
 						  		name="wizard" 
 						  		onSubmit="return false;" 
@@ -132,8 +114,8 @@ $context.putPageValue("mediarender", "attachedmedialist" )
 						  	<input name="sourcepath" value="$uploadsourcepath" type="hidden"/>
 						  	
 						 </form>
+						
 					
-					</div>
 				#end	
 				
 		</div>

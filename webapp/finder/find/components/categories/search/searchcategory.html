@@ -43,19 +43,18 @@ $context.putPageValue("targetdiv",$targetdiv)
 
 
 #set( $multivalue = $context.getRequestParameter("multivalue") )
-#if(!$multivalue)
+#if($multivalue != "true")
 	$context.putPageValue("selectedcategories",$categories)
 	#set($category = $mediaarchive.getCategory($categories))
-	#if(!$category)
-		#set($initialcategory = "index")
-	#else
+	#ifnotnull($category)
 		#set($initialcategory = $category.getId())
+	#end
+	#if(!$initialcategory)
+		#set($initialcategory = "index")
 	#end
 #end
 
-
 #set( $assetid = $context.getRequestParameter("assetid") )
-
 
 <div class="searchcategories-tree">
     <div class="assetdropcategory assetdropcategorymove searchcategories-treecontainer categorytreescrolllable" >
@@ -68,7 +67,7 @@ $context.putPageValue("targetdiv",$targetdiv)
 </div>
 <div class="searchcategories-filter">
 	<div id="searchareacontent"> 
-	$pages.include("$apphome/components/categories/search/searchcategoryfilter.html?nodeID=$initialcategory",$context)
+	$pages.include("$apphome/components/categories/search/searchcategoryfilter.html?nodeID=$!initialcategory",$context)
 	</div>
 </div>
 
