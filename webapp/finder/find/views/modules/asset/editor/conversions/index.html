@@ -51,16 +51,18 @@
        	<a href="#" class="emdesktopdownload btn btn-dark" data-assetid="$asset.id" title="[[Download]] #text($!title)">
        	<i class="fas fa-download"> </i> [[Download Original]]
        	</a>
-      	#else
+    #else
 		#set($dlink = $mediaarchive.asLinkToOriginal($asset))
-		#set($dlink = "$siteroot/$mediadbappid/services/module/asset/downloads/originals/$dlink?assetid=$!asset.getId()")
-		#if($collectionid)
-			#set($dlink = "$dlink&collectionid=$!{collectionid}")
-		#end
-       	<a href="$!dlink" class="btn  btn-dark" data-assetid="$asset.id" title="[[Download]] $!title">
-       	<i class="fas fa-download"></i> [[Download Original]]
-       	</a>
-      	#end
+		#ifnotnull($dlink)
+			#set($dlink = "$siteroot/$mediadbappid/services/module/asset/downloads/originals/$dlink?assetid=$!asset.getId()")
+			#if($collectionid)
+				#set($dlink = "$dlink&collectionid=$!{collectionid}")
+			#end
+	       	<a href="$!dlink" class="btn  btn-dark" data-assetid="$asset.id" title="[[Download]] $!title">
+	       	<i class="fas fa-download"></i> [[Download Original]]
+	       	</a>
+       	#end
+   	#end
 </div>
 #end
 
@@ -288,27 +290,11 @@ $(document).ready(function(){
 
 
 
-##<script>
-##$(document).ready(function(){
-##	//console.log($(".thumbimagecontainer img").attr('src'));
-##	var windowwidth = $(window).width();
-##	$(".previewcrop-btn").each(function(i,obj){
-##		var href = $(this).attr("href");
-##		if (href.indexOf("displaywidth")<0){
-##			href = href + "&displaywidth="+windowwidth;
-##			$(this).attr("href",href);
-##		}
-##	});
-##});
-##</script>
-
-
-
-#if($caneditasset && $rendertype != "audio")
+#if($caneditasset && $rendertype != "audio" && $asset.sourcePath)
 	<div style="padding:20px 0">
 	<p>[[You can specify custom width, height or formats. For example, a large PDF]]:</p>
 	<p><i>
-		$siteroot/$mediadbappid/services/module/asset/downloads/preview/cache/$asset.sourcePath/image2000x2000.pdf </i>
+		$siteroot/$mediadbappid/services/module/asset/downloads/preview/cache/$!asset.sourcePath/image2000x2000.pdf </i>
 	</p>
 	</div>
 #end

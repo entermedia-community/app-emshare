@@ -2,14 +2,17 @@
 		#set($totalpages = $numberutils.toInt($asset.pages))
 		#set ( $hitssessionid = $context.findValue("hitssessionid"))
 			<div class="media-thumbnail">
-				#set( $type = $mediaarchive.getMediaRenderType($asset.fileformat))
+				
 				#if( !$thumbsize )
 		    		#set( $thumbsize  = "largepreview" )
 				#end
 				$context.putPageValue("thumbsize",$thumbsize)
 				$context.putPageValue("viewer","summary")
 				
-				#if ($type == "video")
+				#set( $type = $mediaarchive.getMediaRenderType($asset.fileformat))
+				#if(!$type)
+					[[Unknown Asset File Format]]
+				#elseif ($type == "video")
 					$pages.include("$apphome/components/results/thumbnails/${type}.html", $context)
 				#else
 					##<a class="assettab" 
