@@ -32,6 +32,18 @@
 #foreach( $detail in $details )
 	$!context.putPageValue("detail",$detail)
 	
+	#if($detail.dataType == "searchjoin" )
+		#set($viewtype = "searchjoin" )
+	#else
+		#set($viewtype = $detail.viewType)
+	#end
+	#if (!$viewtype)
+		#set($viewtype = $detail.dataType)
+	#end
+	#if (!$viewtype || $viewtype== "text")
+		#set ($viewtype = "default")
+	#end
+	
 	#if ($detail.header)
 		<li class="header">
 		#if ($detail.header != "blank")
@@ -42,7 +54,7 @@
 	#set($val = false)
 	#set( $val = $data.get($detail.getId()) )
 	#if(  $val && $val.length() > 0 )
-		<div class="$detailviewercolumnclass">
+		<div class="$detailviewercolumnclass emdatafield-$!viewtype">
 			<div class="container-fluid">
 				<div class="row">
 					<div class="col-4 col-emdatafield">
