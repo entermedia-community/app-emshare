@@ -100,32 +100,41 @@
 #set($currentSort = $hits.getSearchQuery().getSortBy())
 
 ##TODO Loop over the view and show them here if they match
+
 #if( $category )
 	<div class="filtered-breadcrumb">
-	#if( $mediaarchive.getCategorySearcher().getRootCategory() != $category)
+	
 		##if( $librarycol )
 		##set($href = "$siteroot$apphome/views/modules/librarycollection/showcategory.html?hitssessionid=$hits.getSessionId()&collectionid=$librarycol.getId()&clearselection=true")
 		##else
 		##	#set($href = "$siteroot$apphome/views/modules/asset/index.html?clearselection=true")
 		##end
 		
-		#foreach( $parent in $category.getParentCategoriesFrom(0))
-			#if( ${foreach.count} > 1) / #end
-			#if($category.getId() != $parent.getId())
-			<a style="padding:0px 4px 0;" 
-				href="$siteroot$apphome/views/modules/asset/showcategory.html?nodeID=${parent.id}&hitssessionid=$!hits.getSessionId()"
-				title="[[Show:]] $parent"
-				class="ajax"
-				data-targetdiv="applicationcontent"
-				data-oemaxlayout="2"
-				data-closemediaviewer="true"
-				data-updateurl="true"
-				data-sidebarcomponent="categories">$parent</a>
-			#else
-			<span class="currentcategory">$parent</span>
+		#set( $count = $hits.size())
+		#set($parentcategories = $category.getParentCategories())
+		
+		#if(!$parentcategories.isEmpty())
+			#foreach( $parent in $parentcategories)
+				#if( ${foreach.count} > 1) / #end
+				#if($category.getId() != $parent.getId())
+				<a style="padding:0px 4px 0;" 
+					href="$siteroot$apphome/views/modules/asset/showcategory.html?nodeID=${parent.id}&hitssessionid=$!hits.getSessionId()"
+					title="[[Show:]] $parent"
+					class="ajax"
+					data-targetdiv="applicationcontent"
+					data-oemaxlayout="2"
+					data-closemediaviewer="true"
+					data-updateurl="true"
+					data-sidebarcomponent="categories">$parent</a>
+				#else
+				<span class="currentcategory">$parent</span>
+				#end
+					
 			#end
-				
+		
+		&nbsp;<span>($count)</span>
 		#end
+		
 		
 ##		#set($href = "$siteroot$apphome/views/modules/$moduleid/index.html?clearselection=true")
 ##		<a
@@ -134,7 +143,7 @@
 ##		data-targetdiv="applicationcontent"
 ##		data-oemaxlevel="4"
 ##		title="[[Clear Album]]">$category <i class="fas fa-times"></i></a>
-	#end
+	
 	</div>
 #end
 

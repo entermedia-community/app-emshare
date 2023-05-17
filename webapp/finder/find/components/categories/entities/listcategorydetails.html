@@ -38,90 +38,13 @@ $context.putPageValue("mediarender", "attachedmedialist" )
 <div id="entityassetresults#eid($entityid)" class="entity-media-box-details ">
 	<div  class="entityassetresults uploadformarea" data-onupload="reloadentity" data-entityid="$entityid" >
 		<div class="entity-media-header">
-			<h4 class="mediaboxheader">
+		<h4 class="mediaboxheader">
 				 [[Folder Details]]: <span>$currentcategory.getName()</span> 
 			</h4>
-			#if($currentcategory)
-				<a style="padding:0px 0 4px 6px; " 
-						class=" "
-						data-targetdiv="applicationcontent"
-						data-oemaxlevel="4"
-						data-closedialog="true"
-						data-updateurl="true"
-						data-nodeId="$entityid"
-		   				data-sidebarcomponent="categories"
-		   				title="[[Download]]: $currentcategory.getName()"
-		   				href="$applink/views/modules/asset/downloads/bycategory/${currentcategory.id}/#eid($currentcategory.name).zip"><i class="fa fa-download" aria-hidden="true"></i></a>
-			#end
+		</div>	
 			
-			#if($permissions.can($moduleid, "upload_files"))
-				#ifnull($uploadsourcepath)
-					#if( !$entity)
-						#set( $entity  = $mediaarchive.getData($moduleid, $entityid) )
-					#end
-					#set($uploadsourcepath =  $mediaarchive.getBean("entityManager").loadUploadSourcepath($module, $entity, $context.getUser()))
-				#end
-				#ifnull($uploadsourcepath)
-					#set($uploadsourcepath = "Albums/Users/$user.getScreenName()/Desktops")
-				#end
-				
-				
-
-				   	
-					#if($permissions.can($moduleid, "edit"))
-					 	<a class="ajax list-delete"  
-					 		data-targetdiv="entitycategoryresults" 
-					 		href="" >
-					 	<i class="fas fa-times"></i></a>
-					#end
-
-
-
-					<a href="#" 
-						style="padding:0px 4px 4px 6px;"
-						class="entity-add-media filePicker entityuploadPicker"
-						title="[[Upload Media to]]: $!uploadsourcepath">
-					<i class="fas fa-file-upload"></i></a>
-					
-					<div class="loadericon float-right" 
-						style="padding:0px 4px 4px 6px;"><i class="fas fa-spinner fa-spin"></i></div>
-						
-					<a style="padding:0px 4px 4px 6px;" 
-							class=""
-							target="_blank"
-							##data-targetdiv="entityassetresults#eid($entityid)"
-							data-oemaxlevel="1"
-							data-entityid="$entityid"
-							data-moduleid="$moduleid"
-			   				title="[[View Folder]]: $currentcategory.getName()"
-			   				
-			   				href="$applink/views/modules/asset/bycategory/$!{currentcategory.id}.html?sidebarcomponent=categories&scrolltocat=true">
-			   				<i class="fas fa-external-link-alt"></i></a>
-										
-						<input class="upload_field" data-autostartupload="true" type="file" style="position:absolute; top:-2000px;" multiple="multiple"  />
-						#set( $root = "$siteroot$componenthome/upload/types/html5")
-						<form id="uploaddata" 
-						  		name="wizard" 
-						  		onSubmit="return false;" 
-								data-finishaction="" action="$root/finish.html" class="force-validate-inputs" >
-						  	<input name="createentityparent" value="true" type="hidden"/>
-						  	<input name="entitytype" value="$moduleid" type="hidden"/>
-						  	<input name="selected$moduleid" value="$entityid" type="hidden"/>
-						    <input name="field" value="$moduleid"type="hidden" />
-						  	<input name="${moduleid}.value" value="$entityid"type="hidden" />
-						  	<input name="field" value="category"type="hidden" />
-						  	<input name="category.value" value="$currentcategoryid"type="hidden" />
-						  	<input name="sourcepath" value="$uploadsourcepath" type="hidden"/>
-						  	
-						 </form>
-						
-					
-				#end	
-				
-		</div>
-		
 		#if($moduleid && $entityid)
-			<div class="mediaboxbody">	
+			<div class="mediaboxbody" style="float:left; width: 120px;">	
 			
 			#if($moduleid=="librarycollection")
 				#if(!$rootcategory)
@@ -207,6 +130,92 @@ $context.putPageValue("mediarender", "attachedmedialist" )
 			</div>
 			
 			#end
+			
+			
+			<div class="text-left" style="bottom:8px; position:absolute; right:8px;">
+			
+			
+			#if($permissions.can($moduleid, "upload_files"))
+				#ifnull($uploadsourcepath)
+					#if( !$entity)
+						#set( $entity  = $mediaarchive.getData($moduleid, $entityid) )
+					#end
+					#set($uploadsourcepath =  $mediaarchive.getBean("entityManager").loadUploadSourcepath($module, $entity, $context.getUser()))
+				#end
+				#ifnull($uploadsourcepath)
+					#set($uploadsourcepath = "Albums/Users/$user.getScreenName()/Desktops")
+				#end
+				
+				
+
+				   	
+					#if($permissions.can($moduleid, "edit"))
+					 	<a class="ajax list-delete"  
+					 		data-targetdiv="entitycategoryresults" 
+					 		href="" >
+					 	<i class="fas fa-times"></i></a>
+					#end
+
+
+
+
+					<a 	class="ajax btn-sm btn-blue"
+							data-targetdiv="applicationmaincontent"
+							data-oemaxlevel="3"
+							data-closedialog="true"
+							data-updateurl="true"
+			   				title="[[View Folder]]: $currentcategory.getName()"
+			   				href="$applink/views/modules/asset/bycategory/$!{currentcategory.id}.html?sidebarcomponent=categories&scrolltocat=true">
+			   		<i class="fas fa-external-link-alt"></i> [[View Files]]</a>
+			   		
+			   		
+			   							<a href="#" 
+						
+						class="btn-sm btn-blue entity-add-media filePicker entityuploadPicker"
+						title="[[Upload Media to]]: $!uploadsourcepath">
+					<i class="fas fa-file-upload"></i> [[Upload]]</a>
+					
+					<div class="loadericon" 
+						style="padding:0px 4px 4px 6px;"><i class="fas fa-spinner fa-spin"></i></div>
+						
+			   		
+			   		#if($currentcategory)
+					<a	class="btn-sm btn-blue "
+						data-targetdiv="applicationcontent"
+						data-oemaxlevel="4"
+						data-closedialog="true"
+						data-updateurl="true"
+						data-nodeId="$entityid"
+		   				data-sidebarcomponent="categories"
+		   				title="[[Download]]: $currentcategory.getName()"
+		   				href="$applink/views/modules/asset/downloads/bycategory/${currentcategory.id}/#eid($currentcategory.name).zip">
+		   				<i class="fa fa-download" aria-hidden="true"></i> [[Download]]</a>
+					#end
+										
+						<input class="upload_field" data-autostartupload="true" type="file" style="position:absolute; top:-2000px;" multiple="multiple"  />
+						#set( $root = "$siteroot$componenthome/upload/types/html5")
+						<form id="uploaddata" 
+						  		name="wizard" 
+						  		onSubmit="return false;" 
+								data-finishaction="" action="$root/finish.html" class="force-validate-inputs" >
+						  	<input name="createentityparent" value="true" type="hidden"/>
+						  	<input name="entitytype" value="$moduleid" type="hidden"/>
+						  	<input name="selected$moduleid" value="$entityid" type="hidden"/>
+						    <input name="field" value="$moduleid"type="hidden" />
+						  	<input name="${moduleid}.value" value="$entityid"type="hidden" />
+						  	<input name="field" value="category"type="hidden" />
+						  	<input name="category.value" value="$currentcategoryid"type="hidden" />
+						  	<input name="sourcepath" value="$uploadsourcepath" type="hidden"/>
+						  	
+						 </form>
+						
+					
+				#end	
+				
+		</div>
+			
+			
+			
 			</div>
 	</div>
 

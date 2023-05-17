@@ -1,5 +1,13 @@
 #set($moduleid = $module.getId())
-
+#if (!$rendertype && $moduleid)
+	#if(!$module)
+		#set($module = $mediaarchive.getCachedData("module", $moduleid))
+	#end
+   	#set($rendertype = $module.modulerendertype)
+#end
+#if (!$rendertype)
+   		#set($rendertype = "entity")
+#end
 <div class="moduleindex"
 	data-hitssessionid="$!hits.getSessionId()"
 	data-url="$apphome/views/modules/$!{module.id}/index.html"
@@ -7,7 +15,20 @@
 	
 	
  	<div class="emgrid-box expandedmodule">
- 		<div class="emgrid-subtitle">
+ 		<div class="expandedgrid-subtitle">
+ 		
+ 		<a href="$applink/index.html" 
+		class="ajax minimizeexpandedmodule"
+		title="[[Collapse]] #text($module)"
+		data-oemaxlevel="3"
+		data-updateurl="true"
+		data-targetdiv="applicationcontent"
+		data-profilepreference="defaultmodule"
+		data-profilepreference.value="none"
+		>
+		<i class="fas fa-caret-square-down"></i>
+		</a>
+ 		
   		<h3>
      	#set($moduleicon = "entity")
      	#if ($module.moduleicon)
@@ -23,28 +44,24 @@
 				 <span class="count">($count)</span>
 		</h3>
 		
-		#if($permissions.can($moduleid, "create"))
-		<a class="btn-addentity emdialog TODOautocloseside" 
-			style="margin-right:5px; "  
-			title="[[Add New]] #text($module)"
+	
+	#if($permissions.can($moduleid, "create"))
+	<div class="clearfix"></div>
+	
+	<div class="" style="padding-top:10px">
+		<a class="btn-sm btn-blue emdialog " 
+			style="margin-right: 5px;"
+			data-updateurl="true" 
+			data-targetdivinner="applicationmaincontent" 
+			data-oemaxlayout="3" 
 			href="$siteroot$applink/views/modules/${moduleid}/components/gridsample/preview/$!{rendertype}.html?edit=true&addnew=true&viewid=$!{module.id}addnew&targetdiv=applicationmaincontent"
-			data-hidefooter="true">
-			<i class="fas fa-plus-circle"></i></a>
-		#end
-		
-	<div class="float-right">
-		<a href="$applink/index.html" 
-		class="ajax minimizeexpandedmodule"
-		title="[[Collapse]] #text($module)"
-		data-oemaxlevel="3"
-		data-updateurl="true"
-		data-targetdiv="applicationcontent"
-		data-profilepreference="defaultmodule"
-		data-profilepreference.value="none"
-		>
-		<i class="fas fa-minus-square"></i>
-		</a>
+			title="[[Add New]] #text($module)">
+			<i class="fas fa-plus"></i> [[New]]</a>
 	</div>
+	#end
+	
+		
+	
 	<div class="clearfix"></div>
 </div>
 

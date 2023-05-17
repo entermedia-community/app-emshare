@@ -4,61 +4,18 @@
 	#set($rootcategories = $category.getParentCategories()) 
 	#set( $librarycol = $mediaarchive.query("librarycollection").orgroup("rootcategory", $rootcategories).searchOne() )
 #end
+#set($moduleicon = "entity")
+#if ($module.moduleicon)
+		#set($moduleicon = $module.moduleicon)
+#end
+
+#set( $count = $hits.size())
+	
+#set($entityurl = "$siteroot$apphome/views/modules/$module.id/index.html")
+#set( $entities = $userprofile.getEntitiesInParent($category) )
 <div class="emgrid-box expandedmodule" style=" margin:0 10px 10px;">
-	<div class="emgrid-subtitle">
-		<h2>
-	   	#set($moduleicon = "entity")
-	   	#if ($module.moduleicon)
-	   		#set($moduleicon = $module.moduleicon)
-	   	#end
-	   	
-	  	#set($entityurl = "$siteroot$apphome/views/modules/$module.id/index.html")
-	
-	<img src="$siteroot$apphome/theme/images/entity/${moduleicon}.svg" style="height: 24px;"> 
-	
-		#set( $count = $hits.size())
-		
-		#if($librarycol)
-		 	#text($librarycol)
-		#else
-			#text($module)
-		#end
-		 <span class="count">($count)</span>
-	</h2>
-	
-	#if($permissions.can($moduleid, "create"))
-		<a class="btn-addentity ajax sidebarselected float-left" 
-			data-updateurl="true" 
-			data-targetdivinner="applicationmaincontent" 
-			data-oemaxlayout="3" 
-			href="$siteroot$applink/views/modules/asset/add/start.html" 
-			title="[[Upload Media]]">
-			<i class="fas fa-plus-circle"></i></a>	
-	#end
-	
-	
-	
-	#set( $entities = $userprofile.getEntitiesInParent($category) )
-	#foreach ( $entity in $entities)
-		#set($moduleid = $entity.moduleid) 
-		
-		#set($module = $mediaarchive.getData("module", $moduleid))
-		
-		#set($rendertype = $module.modulerendertype)
-		#if (!$rendertype)
-   			#set($rendertype = "entity")
-		#end
-		#set($previewurl = "$!{siteroot}$apphome/views/modules/$!{moduleid}/components/gridsample/preview/${rendertype}.html?id=$entity.getId()&hitssessionid=$!hits.sessionId")
-		<div class="entityheaderincategory">
-			<h3><strong>#text($module):</strong> #text($entity) <a href="$previewurl" class="emdialog entity-dialog"><i class="fas fa-window-restore"></i></a> </h3>
-			#if($entity.longcaption)
-			<div class="entityheaderincat-description">$entity.longcaption</div>
-			#end
-		</div> 
-	#end
-		
-	<div class="float-right">
-		<a href="$applink/index.html" 
+
+	<a href="$applink/index.html" 
 		class="ajax minimizeexpandedmodule"
 		title="[[Collapse]] #text($module)"
 		data-oemaxlevel="3"
@@ -67,10 +24,89 @@
 		data-profilepreference="defaultmodule"
 		data-profilepreference.value="none"
 		>
-		<i class="fas fa-minus-square"></i>
+		<i class="fas fa-caret-square-down"></i>
 		</a>
-	</div>
+		
+	<div class="expandedgrid-subtitle">
+	#if(!$entities.isEmpty())
+		#foreach ( $entity in $entities)
+			#set($moduleid = $entity.moduleid) 
+			
+			#set($module = $mediaarchive.getData("module", $moduleid))
+			
+			#set($rendertype = $module.modulerendertype)
+			#if (!$rendertype)
+	   			#set($rendertype = "entity")
+			#end
+			
+			#set($moduleicon = "entity")
+	     	#if ($module.moduleicon)
+	     		#set($moduleicon = $module.moduleicon)
+	     	#end
+		     	
+		     	
+			#set($previewurl = "$!{siteroot}$apphome/views/modules/$!{moduleid}/components/gridsample/preview/${rendertype}.html?id=$entity.getId()&hitssessionid=$!hits.sessionId")
+			<div class="entityinheader">
+				<a href="$previewurl" class="emdialog entity-dialog entityproperties" 
+					style=""
+					title="[[View]]: #text($entity)"><i class="fas fa-ellipsis-v"></i></a>
+				<h3>
+				<img src="$siteroot$apphome/theme/images/entity/${moduleicon}.svg" style="height: 24px;">
+				<span style=""> #text($module)</span><br>
+				<a href="$previewurl" 
+					class="emdialog entity-dialog" 
+					style="margin-left:35px;"
+					title="[[View]]: #text($entity)"><strong>#text($entity)</strong></a> 
+				</h3>
+				<div class="emgrid-entitydataZ">
+					$context.putPageValue("searchtype", $moduleid)
+					$context.putPageValue("data", $entity)
+					
+					<div class="emgridcell-fields">
+	
+					$pages.include("$apphome/views/modules/$!moduleid/components/gridsample/types/fields.html",$context)
+
+
+					</div>
+			   
+			    </div>
+			 </div>
+		#end
+
+	#end
 	<div class="clearfix"></div>
+	
+	<div class="">
+	#if($permissions.can($moduleid, "create"))
+	
+		<a class="btn-sm btn-blue ajax sidebarselected " 
+			style="margin-right: 5px;"
+			data-updateurl="true" 
+			data-targetdivinner="applicationmaincontent" 
+			data-oemaxlayout="3" 
+			href="$siteroot$applink/views/modules/asset/add/start.html?nodeID=$!category.getId()" 
+			title="[[Upload Media]]">
+			<i class="fas fa-plus"></i> [[Media]]</a>
+	#end
+	
+	##if($permissions.can($moduleid, "create"))
+		<a class="btn-sm btn-blue ajax sidebarselected " 
+			data-updateurl="true" 
+			data-targetdivinner="applicationmaincontent" 
+			data-oemaxlayout="3" 
+			href="$siteroot$applink/views/modules/asset/add/start.html" 
+			title="[[Download Folder]]">
+			<i class="fas fa-download"></i> [[Download Folder]]</a>
+	##end
+	</div>	
+		
+	
+		
+	
+	<div class="clearfix"></div>
+	
+	
+	
 	</div>
 	
 	

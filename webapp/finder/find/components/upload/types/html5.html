@@ -5,29 +5,30 @@
 
 #set($collectionid = $context.getRequestParameter("collectionid"))
 
-#if( !$collectionid && $nodeID ) 
+#if( $nodeID ) 
     #set($category = $mediaarchive.getData("category",$nodeID))
-	#set($librarycol = $mediaarchive.query("librarycollection").orgroup("rootcategory",$category.getParentCategories()).searchOne() )
+    #set($categoryid = $category.getId())
+	##set($librarycol = $mediaarchive.query("librarycollection").orgroup("rootcategory",$category.getParentCategories()).searchOne() )
+#else
+	#if (!$librarycol)
+		#if(!$collectionid)
+			#set($collectionid = $userprofile.get("lastselectedcollection"))
+		#end
+		#if(!$collectionid)
+			#set($librarycol = $mediaarchive.getProjectManager().loadUserCollection($mediaarchive, $userprofile))
+		#end
+	#end
 #end
 
-#if (!$librarycol)
-	#if(!$collectionid)
-		#set($collectionid = $userprofile.get("lastselectedcollection"))
-	#end
-	#if(!$collectionid)
-		#set($librarycol = $mediaarchive.getProjectManager().loadUserCollection($mediaarchive, $userprofile))
-	#end
-	#if(!$librarycol && $collectionid)
-		#set($librarycol = $mediaarchive.getCachedData("librarycollection",$collectionid) )
-	#end
+#if(!$librarycol && $collectionid)
+	#set($librarycol = $mediaarchive.getCachedData("librarycollection",$collectionid) )
 #end
 #if( $librarycol && !$collectioinid)
     #set($collectionid = $librarycol.getId())
 #end
 
-
-
 $context.putPageValue("librarycol",$librarycol)
+
 <div class="uploadformarea">
 <input class="upload_field" type="file" style="position:absolute; top:-2000px;" multiple="multiple"  />
 <input class="upload_folder" type="file" style="position:absolute; top:-2000px;" webkitdirectory multiple="multiple"  />
@@ -100,15 +101,17 @@ $context.putPageValue("librarycol",$librarycol)
     <div  class="col-md-8 col-upload-right" >
     
     	
-    	#if( $nodeID )
+    	#if( $collectionid )
 			$!context.setRequestParameter("libraries.value",$!librarycol.library)
 			<input type="hidden" name="collectionid" id="currentcollection" value="$!collectionid" />
 			<input type="hidden" name="currentcollection" id="currentcollection" value="$!collectionid" />
-		#else		 
-			#if($collectionid || $mediaarchive.isCatalogSettingTrue("show_add_media_collection"))
-				<div class="upload-detail-box">
-				$pages.include("$apphome/components/upload/types/html5/collectionpicker.html", $context)
-				</div>
+		#else
+			#ifnull($categoryid)		 
+				#if($collectionid || $mediaarchive.isCatalogSettingTrue("show_add_media_collection"))
+					<div class="upload-detail-box">
+					$pages.include("$apphome/components/upload/types/html5/collectionpicker.html", $context)
+					</div>
+				#end
 			#end	
 		#end	
 		
