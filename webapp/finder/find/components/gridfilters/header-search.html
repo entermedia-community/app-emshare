@@ -73,8 +73,24 @@ href="$siteroot$applink/views/modules/asset/add/start.html" title="[[Upload Medi
 </tr>
 </table>
 	
-	
-	
+    #set($toplevels = $userprofile.getTopEntities() )
+    #set( $selected = $content.module )
+	<ul class="entity-navbar">
+		<li #ifnull($selected) class="active"#end>
+			<a href="$applink/index.html" class="ajax" data-targetdiv="applicationcontent" data-oemaxlevel="3" data-updateurl="true" 
+			 title="View All">
+					  [[All]]
+			</a>
+		</li>
+	#foreach( $entity in $toplevels)
+		<li >
+			<a href="$applink/views/modules/$entity.getId()/index.html?${entity.getId()}page=1" class="ajax activelistener #ifnotnull($selected) #if( $selected == $entity.getId()) active#end #end" data-targetdiv="applicationcontent" data-oemaxlevel="3" data-updateurl="true" 
+			data-profilepreference="defaultmodule" data-profilepreference.value="${entity.getId()}" title="View #text($entity)">
+					#text($entity)
+			</a>
+		</li>
+	#end
+	</ul>
 	
 	
 </div>
