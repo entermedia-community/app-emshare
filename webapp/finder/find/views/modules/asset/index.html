@@ -15,18 +15,6 @@
 #set( $entities = $userprofile.getEntitiesInParent($category) )
 <div class="emgrid-box expandedmodule" style=" margin:0 10px 10px;">
 
-	<a href="$applink/index.html" 
-		class="ajax minimizeexpandedmodule"
-		title="[[Collapse]] #text($module)"
-		data-oemaxlevel="3"
-		data-updateurl="true"
-		data-targetdiv="applicationcontent"
-		data-profilepreference="defaultmodule"
-		data-profilepreference.value="none"
-		>
-		<i class="fas fa-caret-square-down"></i>
-		</a>
-		
 	<div class="expandedgrid-subtitle">
 	#if(!$entities.isEmpty())
 		#foreach ( $entity in $entities)
@@ -50,14 +38,29 @@
 				<a href="$previewurl" class="emdialog entity-dialog entityproperties" 
 					style=""
 					title="[[View]]: #text($entity)"><i class="fas fa-ellipsis-v"></i></a>
+				
+				
+				#set( $primaryasset = $mediaarchive.getAsset($entity.primaryimage))
+		
+				#if($primaryasset)
+					$context.putPageValue("primaryasset", $primaryasset)		
+					
+					$context.putPageValue("hit", $primaryasset)
+					$context.putPageValue("asset", $primaryasset)
+					$context.putPageValue("thumbsize", "crop" )
+					<div style="float:left; margin: 0 5px 5px 0;">
+					$pages.include("$componenthome/gridsample/types/attachedmediarender.html", $context)
+					</div>
+				#end
+				
 				<h3>
-				<img src="$siteroot$apphome/theme/images/entity/${moduleicon}.svg" style="height: 24px;">
 				<span style=""> #text($module)</span><br>
 				<a href="$previewurl" 
 					class="emdialog entity-dialog" 
-					style="margin-left:35px;"
+					style=""
 					title="[[View]]: #text($entity)"><strong>#text($entity)</strong></a> 
 				</h3>
+				<div class="clearfix"></div>
 				<div class="emgrid-entitydataZ">
 					$context.putPageValue("searchtype", $moduleid)
 					$context.putPageValue("data", $entity)
