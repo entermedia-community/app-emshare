@@ -27,21 +27,6 @@
 
 <table class="searchbarheadertable">
 <tr>
-##<td style="width:60px; padding-top:30px;">
-###set($modules = $mediaarchive.query("module").exact("showonsearch","true").sort("orderingUp").search($context))
-##<div class="dropdown show">
-##	#if($moduleid)
-##	<a class="btn btn-primary dropdown-toggle moduletoggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-##    	#if($moduleid=="modulesearch") [[All]] #else $module #end
-##	</a>
-##	#end
-##  <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-##	#foreach($modulelink in $modules)
-##	    <a class="dropdown-item" href="$applink/views/modules/${modulelink.id}/grid/index.html">$modulelink</a>
-##	#end
-##	</div>
-##</div>
-##</td>
 <td>
 
 ##if( $canshowcollectionpicker || $canshowlibrarypicker)
@@ -73,24 +58,6 @@ href="$siteroot$applink/views/modules/asset/add/start.html" title="[[Upload Medi
 </tr>
 </table>
 	
-    #set($toplevels = $userprofile.getTopEntities() )
-    #set( $selected = $content.module )
-	<ul class="entity-navbar">
-		<li #ifnull($selected) class="active"#end>
-			<a href="$applink/index.html" class="ajax" data-targetdiv="applicationcontent" data-oemaxlevel="3" data-updateurl="true" 
-			 title="View All">
-					  [[All]]
-			</a>
-		</li>
-	#foreach( $entity in $toplevels)
-		<li >
-			<a href="$applink/views/modules/$entity.getId()/index.html?${entity.getId()}page=1" class="ajax activelistener #ifnotnull($selected) #if( $selected == $entity.getId()) active#end #end" data-targetdiv="applicationcontent" data-oemaxlevel="3" data-updateurl="true" 
-			data-profilepreference="defaultmodule" data-profilepreference.value="${entity.getId()}" title="View #text($entity)">
-					#text($entity)
-			</a>
-		</li>
-	#end
-	</ul>
-	
-	
+    
+
 </div>

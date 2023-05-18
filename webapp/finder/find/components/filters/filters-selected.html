@@ -14,6 +14,33 @@
 #end
 
 
+#set($toplevels = $userprofile.getTopEntities() )
+#set($selected = $userprofile.getValue("defaultmodule") )
+
+<div class="entitynabarcontainer">
+<ul class="entity-navbar">
+	<li>
+		<a href="$applink/index.html" class="ajax #ifnull($selected) active #end" 
+			data-targetdiv="applicationcontent" 
+			data-oemaxlevel="3" 
+			data-updateurl="true"
+			data-profilepreference="defaultmodule" 
+			data-profilepreference.value="" 
+		 	title="[[View All]]">
+				  [[All]]
+		</a>
+	</li>
+#foreach( $entity in $toplevels)
+	<li >
+		<a href="$applink/views/modules/$entity.getId()/index.html?${entity.getId()}page=1" class="ajax activelistener #ifnotnull($selected) #if( $selected == $entity.getId()) active#end #end" data-targetdiv="applicationcontent" data-oemaxlevel="3" data-updateurl="true" 
+		data-profilepreference="defaultmodule" data-profilepreference.value="${entity.getId()}" title="[[View]] #text($entity)">
+				#text($entity)
+		</a>
+	</li>
+#end
+</ul>
+</div>
+
 
 #if($librarycolX )	
 <div class="collection-header">
