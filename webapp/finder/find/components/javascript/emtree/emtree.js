@@ -98,18 +98,12 @@ $(document).ready(function()
 		{
         	//debugger;
 			// Always load Assets Layout if not prefix
+			/*
 			if( collectionid != undefined && collectionid != "")
             {
-            	if( appnavtab == "asset")
-            	{
-	            	reloadurl = home + "/views/modules/asset/showcategory.html";
-                }
-                else
-                {
-                	reloadurl = home + "/views/modules/librarycollection/media/showcategory.html";                
-                	//reloadurl = home + "/views/modules/asset/showcategory.html";
-                }
-                
+
+            	reloadurl = home + "/views/modules/librarycollection/media/showcategory.html";                
+            	//reloadurl = home + "/views/modules/asset/showcategory.html";
                 
             	prefix = home + "/views/modules/librarycollection/media/showcategory.html";
             	//prefix = home + "/views/modules/asset/showcategory.html";
@@ -117,10 +111,12 @@ $(document).ready(function()
             }
             else 
             {
-                //Asset Module
-                reloadurl = home + "/views/modules/asset/showcategory.html";
-                prefix = home + "/views/modules/asset/showcategory.html";
-            }
+			*/
+				
+        //Asset Module
+        reloadurl = home + "/views/modules/asset/bycategory/"+nodeid+".html";
+        prefix = reloadurl;
+            //}
         }
         else {
         	var customprefix= tree.data('customurlprefix');
@@ -133,17 +129,14 @@ $(document).ready(function()
     		}
         }
 
-		reloadurl = reloadurl + "?nodeID="+ nodeid;
+		//reloadurl = reloadurl + "?nodeID="+ nodeid;
 		
-		if( collectionid )
-		{
-			reloadurl = reloadurl + "&collectionid=" + collectionid; 
-		}
+		
 		
 		var hitssessionid = $('#resultsdiv').data('hitssessionid');
 		if( hitssessionid )
 		{
-			reloadurl = reloadurl + "&hitssessionid=" + hitssessionid;
+			reloadurl = reloadurl + "?hitssessionid=" + hitssessionid;
 		}
 		
 		var options =  tree.data();

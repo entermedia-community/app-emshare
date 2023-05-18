@@ -1,3 +1,4 @@
+
 #if(!$hit)
 	#set($id = $context.getRequestParameter("id"))
 	#if(!$searchtype)
@@ -13,6 +14,8 @@
 	
 	#set($moduleid = $module.getId())
 	
+	#set($rendermoduleid = $moduleid)
+	
 	#if($id && $searchtype)
 		#set($hit = $mediaarchive.getData($searchtype, $id))
 		#set($rendertype = $module.modulerendertype)
@@ -22,9 +25,11 @@
 		$context.putPageValue("hit", $hit)
 	#end
 #end
- 
-#if($hit && $rendertype)
+
+
+
+#ifnotnull($hit)
  <div class="emgridcell emgridcell-$rendertype">
- 	$pages.include("$apphome/views/modules/$!{moduleid}/components/gridsample/types/${rendertype}.html", $context)
+  	$pages.include("$apphome/views/modules/$!{rendermoduleid}/components/gridsample/types/${rendertype}.html", $context)
  </div>
 #end

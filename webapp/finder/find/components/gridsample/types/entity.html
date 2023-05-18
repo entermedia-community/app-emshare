@@ -1,7 +1,11 @@
 #if($hit)
 	#set($entity = $hit)
 	#set($entityid = $entity.id)
-	#set($moduleid = $module.id)
+	#if($rendermoduleid)
+		#set($moduleid = $rendermoduleid)
+	#else
+		#set($moduleid = $module.id)
+	#end
 #else
 	#if(!$moduleid)
 		#set($moduleid = $context.getRequestParameter("moduleid"))
@@ -17,24 +21,16 @@
 $context.putPageValue("entityid", $entityid)
 $context.putPageValue("moduleid", $moduleid)
 
-#if (!$rendertype && $moduleid)
-	#if(!$module)
-		#set($module = $mediaarchive.getCachedData("module", $moduleid))
-	#end
-   	#set($rendertype = $module.modulerendertype)
-#end
-#if (!$rendertype)
-   		#set($rendertype = "entity")
-#end
 
-#set($previewurl = "$!{siteroot}$apphome/views/modules/$!moduleid/components/gridsample/preview/${rendertype}.html?id=$entityid&hitssessionid=$!hits.sessionId")
+
+#set($previewurl = "$!{siteroot}$apphome/views/modules/$!moduleid/components/gridsample/preview/entity.html?id=$entityid&hitssessionid=$!hits.sessionId")
 $context.putPageValue("previewurl", $previewurl)
 
 <div class="emgrid-content emgrid-type-$!moduleid entitycontainer entity$!moduleid$!entityid" 
 	 id="emgridentity$!moduleid$!entityid"
 		data-id="${entityid}"
    	 	data-moduleid="$!moduleid"
-   	 	data-rendertype="$rendertype">
+   	 	data-rendertype="entity">
    	 <div class="emgrid-entityheader">
    	 <h3>
    	 <a href="$previewurl" 
@@ -83,7 +79,7 @@ $context.putPageValue("previewurl", $previewurl)
        		data-assetsshown="$assetsshown"
        		data-attachedmediaurl="$siteroot$componenthome/gridsample/types/entity.html"
        		data-targetdiv="emgridentity$!moduleid$!entityid"> 	
-	        $pages.include("$componenthome/gridsample/types/attachedmedia/entity2.html",$context)
+	      ##  $pages.include("$componenthome/gridsample/types/attachedmedia/entity2.html",$context)
 	   
 	        
         <div class="clearfix"></div>

@@ -27,7 +27,7 @@ $context.putPageValue("rootcategory", $rootcategory)
 	#set( $rendertype = "librarycollection")
 #end
 
-#set($previewurl = "$!{siteroot}$apphome/views/modules/librarycollection/media/showcategory.html?nodeID=$rootcategory")
+#set($previewurl = "$!{siteroot}$apphome/views/modules/asset/bycategory/$!{rootcategory}.html")
 $context.putPageValue("previewurl", $previewurl)
 
 <div class="emgrid-content entitycontainer emgrid-type-$!previewrendertype entity$!moduleid$!entityid"
@@ -39,12 +39,11 @@ $context.putPageValue("previewurl", $previewurl)
    	 <a href="$previewurl" 
    	 	class="ajax emgridresulttitle" 
    	 	data-targetdiv="applicationcontent"
-   	 	data-oemaxlevel="3"
+   	 	data-oemaxlevel="4"
+   	 	data-categoryid="$!rootcategory"
    	 	data-sidebarcomponent="categories"
    	 	data-updateurl="true" 
    	 	id="clickid${entity.id}"  
-   	 	data-id="entity.id"
-   	 	data-moduleid="$!moduleid"
    	 	title="#text($!entity.name)">
    	 	##$!hits.highlight($hit,"name")
    	 	#text($!entity.name)
@@ -84,7 +83,7 @@ $context.putPageValue("previewurl", $previewurl)
 	       		data-assetsshown="$assetsshown"
 	       		data-attachedmediaurl="$siteroot$componenthome/gridsample/types/librarycollection.html"
 	       		data-targetdiv="emgridentity$!moduleid$!entityid"> 
-		  		$pages.include("$componenthome/gridsample/types/attachedmedia/librarycollection.html",$context)
+		##  		$pages.include("$componenthome/gridsample/types/attachedmedia/librarycollection.html",$context)
 		  </div>
 	   
 	        

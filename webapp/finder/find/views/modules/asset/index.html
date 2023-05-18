@@ -9,74 +9,46 @@
 #set( $count = $hits.size())
 	
 #set($entityurl = "$siteroot$apphome/views/modules/$module.id/index.html")
+
 #set( $entities = $userprofile.getEntitiesInParent($category) )
+
 <div class="emgrid-box expandedmodule" style=" margin:0 10px 10px;">
 
-	<div class="expandedgrid-subtitle">
+	
 	#if(!$entities.isEmpty())
-		#foreach ( $entity in $entities)
-			#set($moduleid = $entity.moduleid) 
+	<div class="entitiesontop">
+		#foreach ( $data in $entities)
+			#set($entity = $data.getData())
+			#set($emoduleid = $data.getModuleId()) 
 			
-			#set($module = $mediaarchive.getData("module", $moduleid))
+			#set($emodule = $mediaarchive.getData("module", $emoduleid))
 			
-			#set($rendertype = $module.modulerendertype)
+			#set($rendertype = $emodule.modulerendertype)
 			#if (!$rendertype)
 	   			#set($rendertype = "entity")
 			#end
+			$context.putPageValue("rendertype", $rendertype)
+			$context.putPageValue("rendermoduleid", $emoduleid)
 			
 			#set($moduleicon = "entity")
-	     	#if ($module.moduleicon)
-	     		#set($moduleicon = $module.moduleicon)
+	     	#if ($emodule.moduleicon)
+	     		#set($moduleicon = $emodule.moduleicon)
 	     	#end
 		     	
 		     	
-			#set($previewurl = "$!{siteroot}$apphome/views/modules/$!{moduleid}/components/gridsample/preview/${rendertype}.html?id=$entity.getId()&hitssessionid=$!hits.sessionId")
-			<div class="entityinheader">
-				<a href="$previewurl" class="emdialog entity-dialog entityproperties" 
-					style=""
-					title="[[View]]: #text($entity)"><i class="fas fa-ellipsis-v"></i></a>
-				
-				
-				#set( $primaryasset = $mediaarchive.getAsset($entity.primaryimage))
-		
-				#if($primaryasset)
-					$context.putPageValue("primaryasset", $primaryasset)		
-					
-					$context.putPageValue("hit", $primaryasset)
-					$context.putPageValue("asset", $primaryasset)
-					$context.putPageValue("thumbsize", "crop" )
-					<div style="float:left; margin: 0 5px 5px 0;">
-					$pages.include("$componenthome/gridsample/types/attachedmediarender.html", $context)
-					</div>
-				#end
-				
-				<h3>
-				<span style=""> #text($module)</span><br>
-				<a href="$previewurl" 
-					class="emdialog entity-dialog" 
-					style=""
-					title="[[View]]: #text($entity)"><strong>#text($entity)</strong></a> 
-				</h3>
-				<div class="clearfix"></div>
-				<div class="emgrid-entitydataZ">
-					$context.putPageValue("searchtype", $moduleid)
-					$context.putPageValue("data", $entity)
-					
-					<div class="emgridcell-fields">
-	
-					$pages.include("$apphome/views/modules/$!moduleid/components/gridsample/types/fields.html",$context)
-
-
-					</div>
-			   
-			    </div>
-			 </div>
+			#set($previewurl = "$!{siteroot}$apphome/views/modules/$!{emoduleid}/components/gridsample/preview/${rendertype}.html?id=$entity.getId()&hitssessionid=$!hits.sessionId")
+			
+			$context.putPageValue("hit", $entity)
+			<div class="entitycell">
+			$pages.include("$apphome/views/modules/$!{emoduleid}/components/gridsample/types/${rendertype}.html", $context)
+			</div>
+			
 		#end
-
+	</div>
 	#end
 	<div class="clearfix"></div>
 	
-	<div class="">
+	<div style="padding:5px;">
 	#if($permissions.can($moduleid, "create"))
 	
 		<a class="btn-sm btn-blue ajax sidebarselected " 
@@ -89,14 +61,12 @@
 			<i class="fas fa-plus"></i> [[Media]]</a>
 	#end
 	
-	##if($permissions.can($moduleid, "create"))
-		<a class="btn-sm btn-blue ajax sidebarselected " 
-			data-updateurl="true" 
-			data-targetdivinner="applicationmaincontent" 
-			data-oemaxlayout="3" 
-			href="$siteroot$applink/views/modules/asset/add/start.html" 
-			title="[[Download Folder]]">
-			<i class="fas fa-download"></i> [[Download Folder]]</a>
+	##if($permissions.can($moduleid, "download"))
+		<a class="btn-sm btn-blue" 
+			title="[[Download]]: $currentcategory.getName()"
+		   	href="$applink/views/modules/asset/downloads/bycategory/${category.id}/#eid($category.name).zip">
+		   	<i class="fa fa-download" aria-hidden="true"></i> [[Download]]</a>
+			
 	##end
 	</div>	
 		
@@ -107,7 +77,6 @@
 	
 	
 	
-	</div>
 	
 	
 	<div id="${moduleid}resultsarea" class="resultsarea" >
