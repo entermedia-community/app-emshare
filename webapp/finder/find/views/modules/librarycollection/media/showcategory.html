@@ -1,42 +1,7 @@
 #if( !$librarycol && $category ) 
 	#set( $librarycol = $mediaarchive.query("librarycollection").orgroup("rootcategory",$category.getParentCategories()).searchOne() )
 #end
-<div class="emgrid-box expandedmodule" style=" margin:0 10px 20px;">
-	<div class="emgrid-subtitle">
-			<h3>
-	   	#set($moduleicon = "entity")
-	   	#if ($module.moduleicon)
-	   		#set($moduleicon = $module.moduleicon)
-	   	#end
-	   	
-	  		#set($entityurl = "$siteroot$apphome/views/modules/$module.id/index.html")
-	
-	<img src="$siteroot$apphome/theme/images/entity/${moduleicon}.svg" style="height: 24px;"> 
-	
-		#set( $count = $hits.size()) 
-		#text($librarycol)
-		 <span class="count">($count)</span>
-	</h3>
-	<div class="float-right" style="padding-right:10px;">
-		<a href="$applink/index.html" 
-		class="ajax minimizeexpandedmodule"
-		title="[[Collapse]] #text($module)"
-		data-oemaxlevel="3"
-		data-updateurl="true"
-		data-targetdiv="applicationcontent"
-		data-profilepreference="defaultmodule"
-		data-profilepreference.value="none"
-		>
-		<i class="fas fa-times-circle"></i>
-		</a>
-	</div>
-	<div class="clearfix"></div>
-	</div>
-	
-	<div id="resultsarea">
-	$pages.include("$componenthome/results/index.html", $context)
-	<div class="clearfix"></div>
-	</div>
-</div>
 
 
+
+$pages.include("$apphome/views/modules/asset/index.html",$context)
