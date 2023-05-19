@@ -18,6 +18,8 @@
 	#end
 #end
 
+#set($module = $mediaarchive.getCachedData("module", $moduleid))
+
 $context.putPageValue("entityid", $entityid)
 $context.putPageValue("moduleid", $moduleid)
 
@@ -33,6 +35,11 @@ $context.putPageValue("previewurl", $previewurl)
    	 	data-rendertype="entity">
    	 <div class="emgrid-entityheader">
    	 <h3>
+   	 	#set($moduleicon = "entity")
+    	#if ($module.moduleicon)
+    		#set($moduleicon = $module.moduleicon)
+    	#end
+    	<img src="$siteroot$apphome/theme/images/entity/${moduleicon}.svg" style="height: 23px;"> 
    	 <a href="$previewurl" 
    	 	class="emdialog entity-dialog emgridresulttitle" 
    	 	data-hidefooter="true" 

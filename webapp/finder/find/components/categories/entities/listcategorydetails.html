@@ -39,12 +39,12 @@ $context.putPageValue("mediarender", "attachedmedialist" )
 	<div  class="entityassetresults uploadformarea" data-onupload="reloadentity" data-entityid="$entityid" >
 		<div class="entity-media-header">
 		<h4 class="mediaboxheader">
-				 [[Folder Details]]: <span>$currentcategory.getName()</span> 
+				<span>$currentcategory.getName()</span> 
 			</h4>
 		</div>	
 			
 		#if($moduleid && $entityid)
-			<div class="mediaboxbody" style="float:left; width: 120px;">	
+			<div class="mediaboxbody" style="width: 120px;">	
 			
 			#if($moduleid=="librarycollection")
 				#if(!$rootcategory)
@@ -67,10 +67,9 @@ $context.putPageValue("mediarender", "attachedmedialist" )
 			
 			<div class="entity-categorydetails">
 			
-				<div style="padding:4px 0;">
-				<i class="fas fa-folder"></i>  $currentcategory.getChildren().size() [[Subfolders]]
-				</div>
-				<div>
+				
+				<i class="fas fa-folder"></i>  $currentcategory.getChildren().size() 
+				&nbsp;|&nbsp;
 				<a href="$link" 
 						class="ajax"
 						data-oemaxlevel="$!oemaxlevel" 
@@ -78,25 +77,11 @@ $context.putPageValue("mediarender", "attachedmedialist" )
 						data-closedialog="true"
 						data-updateurl="true"
 						data-closemediaviewer="true"
-						title="[[View]] $assetshits.size() [[Assets]]"><i class="fas fa-images"></i> $assetshits.size() [[Files]]</a> ##($sizer.inEnglish($total) )
+						title="[[View]] $assetshits.size() [[Assets]]"></a>
+				<i class="fas fa-images"></i> $assetshits.size() [[Files]] ##($sizer.inEnglish($total) )
 				
-					#if($permissions.can($moduleid, "assign_folders"))
-						#set($searchlink = "$componenthome/assetpicker/entities/searchassets.html")
-						&nbsp; 
-						<a href="$searchlink"
-							id="assetpicker#eid($entityid)" 
-							data-launcher="assetpicker#eid($entityid)"
-							data-targetdiv="entityassetresults#eid($entityid)"
-							data-clickurl="$componenthome/categories/entities/listcategorydetails.html"
-							data-entityid="$entityid"
-							data-moduleid="$moduleid"
-							data-categoryid="$currentcategoryid"
-							data-target="$!siteroot$apphome/components/assetpicker/entities/searchassets.html"
-							data-dialogid="assetsearchdialog" 
-							class="emdialog "
-							title="[[Choose Asset]]"><i class="fas fa-search-plus"></i></a>
-					#end
-				</div>
+					
+				
 			</div>
 
 			#if($permissions.can($moduleid, "upload_files"))
@@ -132,7 +117,7 @@ $context.putPageValue("mediarender", "attachedmedialist" )
 			#end
 			
 			
-			<div class="text-left" style="bottom:8px; position:absolute; right:8px;">
+			<div class="text-left" style="">
 			
 			
 			#if($permissions.can($moduleid, "upload_files"))

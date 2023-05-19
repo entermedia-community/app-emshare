@@ -1,7 +1,11 @@
 #if($hit)
 	#set($entity = $hit)
 	#set($entityid = $entity.id)
-	#set($moduleid = $module.id)
+	#if($rendermoduleid)
+		#set($moduleid = $rendermoduleid)
+	#else
+		#set($moduleid = $module.id)
+	#end
 #else
 	#if(!$moduleid)
 		#set($moduleid = $context.getRequestParameter("moduleid"))
@@ -13,6 +17,9 @@
 		#set($entity = $mediaarchive.getCachedData($moduleid, $entityid))
 	#end
 #end
+
+
+#set($module = $mediaarchive.getCachedData("module", $moduleid))
 
 $context.putPageValue("entityid", $entityid)
 $context.putPageValue("moduleid", $moduleid)
@@ -36,6 +43,11 @@ $context.putPageValue("previewurl", $previewurl)
    	 	data-moduleid="$!moduleid">
    	 <div class="emgrid-entityheader">
    	 <h3>
+   	 #set($moduleicon = "entity")
+    	#if ($module.moduleicon)
+    		#set($moduleicon = $module.moduleicon)
+    	#end
+    	<img src="$siteroot$apphome/theme/images/entity/${moduleicon}.svg" style="height: 23px;">
    	 <a href="$previewurl" 
    	 	class="ajax emgridresulttitle" 
    	 	data-targetdiv="applicationcontent"

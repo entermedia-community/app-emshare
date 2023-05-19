@@ -44,9 +44,10 @@
 			</div>
 			
 		#end
+		<div class="clearfix"></div>
 	</div>
 	#end
-	<div class="clearfix"></div>
+	
 	
 	<div style="padding:10px 0 10px 0 ;">
 	#if($permissions.can($moduleid, "create"))
@@ -59,6 +60,23 @@
 			href="$siteroot$applink/views/modules/asset/add/start.html?nodeID=$!category.getId()" 
 			title="[[Upload Media]]">
 			<i class="fas fa-plus"></i> [[Media]]</a>
+	#end
+	
+	#if(1==2 && $permissions.can($moduleid, "assign_folders"))
+						#set($searchlink = "$componenthome/assetpicker/entities/searchassets.html")
+						&nbsp; 
+						<a href="$searchlink"
+							id="assetpicker#eid($entityid)" 
+							data-launcher="assetpicker#eid($entityid)"
+							data-targetdiv="entityassetresults#eid($entityid)"
+							data-clickurl="$componenthome/categories/entities/listcategorydetails.html"
+							data-entityid="$entityid"
+							data-moduleid="$moduleid"
+							data-categoryid="$currentcategoryid"
+							data-target="$!siteroot$apphome/components/assetpicker/entities/searchassets.html"
+							data-dialogid="assetsearchdialog" 
+							class="emdialog "
+							title="[[Choose Asset]]"><i class="fas fa-search-plus"></i></a>
 	#end
 	
 	##if($permissions.can($moduleid, "download"))
