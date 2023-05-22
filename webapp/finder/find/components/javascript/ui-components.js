@@ -984,10 +984,25 @@ uiload = function() {
 	});
 	
 	lQuery(".quicksearchlinks").livequery("click", function() {
-		var modalparent = $(this).closest('.typeaheadmodal');
-		modalparent.toggle();
+		closetypeaheadmodal();
+		/*var modalparent = $(this).closest('.typeaheadmodal');
+		modalparent.toggle();*/
 
 	});
+	
+	lQuery(".clearallfilters").livequery("click", function() {
+		closetypeaheadmodal();
+		
+
+	});
+	
+	function closetypeaheadmodal() {
+		var modal = $('.typeaheadmodal');
+		if(modal.length > 0) {
+			modal.hide();
+		}
+		$("#searchinput").val("");
+	}
 	
 		
 	

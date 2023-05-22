@@ -1,3 +1,7 @@
+#ifnull($hits)
+	#set($hits = $modulehits)
+#end
+
 #set($hitssessionid = $hits.getSessionId())
 #set($moduleid = $module.id)
 #if (!$nodeID)
@@ -123,9 +127,9 @@
 #if( $hits.getSearchQuery().hasMainInput())
 	<div class="filtered-breadcrumb">
 	#if($librarycol)
-		[[Searching within]]: <strong><em>$librarycol</em> </strong> [[for]]:  <strong><em>$hits.getSearchQuery().getMainInput()</em></strong>
+		[[Searching within]]: <strong><em>$librarycol</em> </strong> [[for]]:  <span class="searchterm">$hits.getSearchQuery().getMainInput()</span>
 	#else
-		[[Searching for]]:  <strong><em>$hits.getSearchQuery().getMainInput()</em></strong>
+		[[Searching for]]:  <span class="searchterm">$hits.getSearchQuery().getMainInput()</span>
 	#end
 	</div>
 
@@ -263,23 +267,29 @@
 		#set($href = "$siteroot$apphome/views/modules/librarycollection/showcategory.html?hitssessionid=$!hits.getSessionId()&collectionid=$!librarycol.getId()&assetclearresults=true&clearfilters=true")
 		#set($oemaxlevel = "2")
 	#else
-		#if($moduleid=="asset")
-			#set($href = "$siteroot$apphome/views/modules/${moduleid}/index.html?hitssessionid=$!hits.getSessionId()&assetclearresults=true&assetclearselection=true&clearselection=true&clearfilters=true")
+		#if($moduleid=="modulesearch")
+			#set($href = "$siteroot$apphome/index.html?hitssessionid=$!hits.getSessionId()&clearselection=true&clearfilters=true")
 			#set($oemaxlevel = "3")
 		#else
-			#set($href = "$siteroot$apphome/views/modules/${moduleid}/index.html?hitssessionid=$!hits.getSessionId()&${moduleid}clearresults=true&${moduleid}clearselection=true&clearselection=true&clearfilters=true")
-			#set($oemaxlevel = "3")
+			#if($moduleid=="asset")
+				#set($href = "$siteroot$apphome/views/modules/${moduleid}/index.html?hitssessionid=$!hits.getSessionId()&assetclearresults=true&assetclearselection=true&clearselection=true&clearfilters=true")
+				#set($oemaxlevel = "3")
+			#else
+				#set($href = "$siteroot$apphome/views/modules/${moduleid}/index.html?hitssessionid=$!hits.getSessionId()&${moduleid}clearresults=true&${moduleid}clearselection=true&clearselection=true&clearfilters=true")
+				#set($oemaxlevel = "3")
+			#end
 		#end
 	#end
 	#if ($nodeID)
  		#set($href = $href + "&nodeID=$!{nodeID}")
 	#end
-	<a class="ajax btn btn-secondary btn-xs btn-clearall" 
+	<a class="clearallfilters ajax btn btn-secondary btn-xs btn-clearall " 
 		href="$href"
 		data-targetdiv="applicationcontent" 
 		data-oemaxlevel="$oemaxlevel" 
 		data-updateurl="true" 
-		title="[[Cear Search Filters]]">[[Clear Filters]] <i class="fas fa-times"></i> </a>
+		data-onsuccess="closetypeaheadmodal"
+		title="[[Clear Search Filters]]">[[Clear Filters]] <i class="fas fa-times"></i> </a>
 #end
 
 
