@@ -1,0 +1,29 @@
+<div class="eml-tab-content">
+<h2>[[Entities]]</h2>
+<a class="btn btn-sm btn-primary" href="$home$apphome/views/settings/modules/setup/add-new-module.html">[[Add Module]]</a>
+</div>
+<div style="margin:5px 30% 20px 20px; border:1px solid #aaa;">
+<ul  class="fwlist modulelist listsort ui-sortable" 
+	data-path="$home$apphome/views/settings/modules/setup/sort.html" 
+	data-field="ordering" 
+	data-searchtype="module">
+    
+    ##set ( $modules = $searcherManager.getList($catalogid, "module") )
+    
+    #set( $modulesearcher = $searcherManager.getSearcher($catalogid, "module"))
+    #set( $modules = $modulesearcher.query().all().sort("ordering").search())
+    
+   
+    #foreach ( $module in $modules )
+    <li style="position:relative;" class="ui-sortable-handle" data-ordering="$module.ordering" id="$module.getId()">
+		<span class="drag-and-drop"></span>
+        <a href="$home$apphome/views/settings/modules/$module.id/info/module-setup.html?field=last_selected_module&last_selected_module.value=${module.id}">
+            #text($module)        
+        </a>
+
+    </li>
+    #end
+</ul> 
+              
+</div>
+<div class="clearfix">&nbsp;</div>
