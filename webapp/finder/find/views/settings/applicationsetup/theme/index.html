@@ -1,0 +1,68 @@
+<div style="position:relative">
+
+<div id="editlayout" >
+#set($searcher = $mediaarchive.getSearcher("theme"))
+
+#set( $themeid = $context.getRequestParameter("themeid"))
+#if(!$themeid)
+
+	#set( $themeid = $content.get("themeid") )
+#end
+	<div class="eml-content-title">
+	<div class="float-left">
+	<h2>[[Theme Editor]]</h2>
+	</div>
+	<div class="float-right">
+		<form name="picker" action="index.html">
+			
+			<input name="reload" type="hidden" value="true" />
+			
+			<select name="themeid" class="form-control" onchange="this.form.submit()" style="float:left; width:180px; margin-right:10px;">
+				
+			#set( $themes = $mediaarchive.getList("theme") )
+			#foreach( $theme in $themes)
+				<option value="$theme.id" #if( $theme.id == $themeid)selected#end>$theme</option>		
+			#end
+			</select>
+			<input class="btn btn-sm btn-secondary" type=button  onClick='location.href = "./copy.html?themeid=$!themeid"' value="[[Copy]]" />
+			<input class="btn btn-sm btn-secondary" type=button  onClick='location.href = "$home$apphome/views/settings/lists/datamanager/list/index.html?searchtype=theme"' value="[[Export]]" />
+			<input class="btn btn-sm btn-danger" type=button  onClick='location.href = "./remove.html?themeid=$!themeid"' value="[[Remove]]" />
+		
+			
+		</form>
+	</div>
+	</div>
+	<div class="clearfix"></div>
+	
+	#set($data = $mediaarchive.getData("theme", $themeid))
+	
+	$context.putPageValue("searcher", $searcher)
+	$context.putPageValue("data", $data)
+	
+	$context.putPageValue("view", "theme/edit")
+	
+		<link rel="stylesheet" type="text/css" href="$home$apphome/theme/styles/custom.css?cache=false" />
+	
+	#if( $data )
+		#if ($message) 
+		<div class="alert alert-success fader alert-save" role="alert" style="bottom: initial;">
+		$message
+		</div>
+		#end
+		<form id="dataeditor" method="post" action="$home$apphome/views/settings/applicationsetup/theme/save.html"  enctype="multipart/form-data">
+			<input name="save" type="hidden" value="true" />
+			<input name="id" type="hidden" value="$data.id" />
+			<input name="themeid" type="hidden" value="$data.id" />
+			
+			<input name="searchtype" type="hidden" value="theme" />
+			<div class="themeeditor">
+			$pages.include("/${applicationid}/components/xml/detaileditor.html", $context)
+			</div>
+			<input type="submit" value="[[Save]]" class="btn btn-primary" />
+		</form>
+		
+	#end
+	
+	</div>
+	</div>
+
