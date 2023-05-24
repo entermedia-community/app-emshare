@@ -56,6 +56,18 @@
 #set($hits = $tablehits)
 
 #if( $hits && $hits.size() > 0 )
+
+	#if($tabletype == "subentity")
+	#set($entity = $mediaarchive.getCachedData("module", $searchtype))
+	<h3>
+		#set($moduleicon = "entity")
+    	#ifnull($module.moduleicon)
+    		#set($moduleicon = $module.moduleicon)
+    	#end
+    	<img src="$siteroot$apphome/theme/images/entity/${moduleicon}.svg" style="height: 23px;"> 
+	#text($entity) ($hits.size())</h3>
+	#end
+	
 	#set($total = $hits.getTotalPages() )
 	
 	$context.putPageValue("hits", $hits)

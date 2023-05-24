@@ -1,4 +1,3 @@
-
 ##SUB-Modules
 #set($fieldexternalid = $context.getRequestParameter("fieldexternalid"))
 #if($fieldexternalid)
@@ -46,9 +45,21 @@
 				#set($addentitylink = "$!siteroot$applink/views/modules/$moduleid/edit/table/generictablesearch.html?submodulesearchtype=$searchtype&fieldexternalid=$fieldexternalid&fieldexternalvalue=$!fieldexternalvalue&parentviewid=$!viewid&parentviewpath=$!viewpath&parentid=$!id&parentsearchtype=$!parentsearchtype")
 				#set($submodulepickerid = "tmc_#eid($targetmodule.getId())#eid($id)")
 							
-				<div class="editentitymetadata-submodule">
+				<div class="editentitymetadata-submodule" data-submoduleid="$!targetmodule.getId()">
 
-							<h3>#text($viewdata)							</h3>
+							
+
+							
+							<div id="$submodulepickerid" class="submodulepicker">
+								
+								#if($viewdata.rendertable)
+									#set( $args = "id=$id&parentid=$!parentid&searchtype=$!searchtype&field=$!fieldexternalid&$!{fieldexternalid}.value=$!fieldexternalvalue&operation=exact&fieldexternalid=$!fieldexternalid&fieldexternalvalue=$!fieldexternalvalue&viewid=$!targetviewid&viewpath=$!targetviewpath&hitsperpage=6&targetrendertype=$!targetrendertype&tabletype=subentity")
+									$context.putPageValue("moduleid", $!targetmodule.getId() )				
+									$pages.include("/$applicationid/views/modules/$!searchtype/components/table/table.html?$!args",$context)
+								#end
+
+							</div>
+							
 							<div class="submodule-actions">
 								<a class="btn btn-sm btn-blue ajax  submoduleedit"  
 								href="$addentitylink" 
@@ -60,19 +71,6 @@
 								data-parentid="$!id"
 								data-hidefooter="true"
 								title="[[Add]] #text($viewdata)"><i class="fas fa-plus"></i> #text($viewdata)</a>
-								</div>
-							<div id="$submodulepickerid" class="submodulepicker">
-								
-									#if($viewdata.rendertable)
-									
-										#set( $args = "id=$id&parentid=$!parentid&searchtype=$!searchtype&field=$!fieldexternalid&$!{fieldexternalid}.value=$!fieldexternalvalue&operation=exact&fieldexternalid=$!fieldexternalid&fieldexternalvalue=$!fieldexternalvalue&viewid=$!targetviewid&viewpath=$!targetviewpath&hitsperpage=6&targetrendertype=$!targetrendertype&tabletype=subentity")
-									
-									##--->$args
-									
-										##$pages.include("/$applicationid/components/table/table.html?$!args",$context)						
-										$pages.include("/$applicationid/views/modules/$!searchtype/components/table/table.html?$!args",$context)
-									#end
-
 							</div>
 						</div>
 					#end		

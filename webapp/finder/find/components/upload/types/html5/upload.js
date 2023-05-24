@@ -209,7 +209,7 @@ $(document).ready(function()
 						if(entityuploadPicker)
 							{
 							entityuploadPicker.hide();
-							entityuploadPicker.next(".loadericon").show();
+							entityuploadPicker.next(".loadericon").css("display", "inline-block");
 							}
 						
 			             return true;
@@ -303,7 +303,14 @@ $(document).ready(function()
 		    						   
 		    					   }
 		    				   }
-		    				   
+		    				   else if(uploadformarea.data("onupload")=="reloadcontainer") {
+								   var container_ = uploadformarea.data("container");
+								   var container = uploadformarea.closest("."+container_);
+								   if(container.length >0) { 
+		    					   var entityid=uploadformarea.data("entityid");
+			    					   
+		    					   }
+		    				   }
 		    				   //$("#uploadsfinishedtrigger").trigger("submit");
 		    				   //$(".media_results_tab").data("tabloaded",false);
 			        	}
