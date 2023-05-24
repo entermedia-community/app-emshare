@@ -292,6 +292,20 @@ $(document).ready(function()
 								  
 
 		    				   }
+		    				   //new ajaxautoreload
+								var classes = uploadformarea.data("ajaxreloadtargets"); //assetresults, projectpage, sidebaralbums
+								if(classes) 
+								{
+									var splitnames = classes.split(",");
+									$.each(splitnames,function(index,classname)
+									{
+										$("." + classname).each(function(index,div)
+										{
+									  	 	autoreload($(div));
+										});
+									});
+								}
+		    				   /*
 		    				   if(uploadformarea.data("onupload")=="reloadentity") {
 		    					   var entityid=uploadformarea.data("entityid");
 		    					   if(entityid) {
@@ -310,7 +324,7 @@ $(document).ready(function()
 		    					   var entityid=uploadformarea.data("entityid");
 			    					   
 		    					   }
-		    				   }
+		    				   }*/
 		    				   //$("#uploadsfinishedtrigger").trigger("submit");
 		    				   //$(".media_results_tab").data("tabloaded",false);
 			        	}

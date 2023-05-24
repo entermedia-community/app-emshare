@@ -1611,7 +1611,7 @@ uiload = function() {
 
 	});
 
-	lQuery('#emselectable table td').livequery("click", function(event) {
+	lQuery('.emselectable table td').livequery("click", function(event) {
 		var clicked = $(this);
 		if (clicked.attr("noclick") == "true") {
 			return true;
@@ -1620,7 +1620,7 @@ uiload = function() {
 			return true;
 		}
 		var emselectable = clicked.closest("#emselectable");
-		if (!emselectable) {
+		if (emselectable.length < 1) {
 			emselectable = clicked.closest(".emselectable");
 		}
 		var row = $(clicked.closest("tr"));
@@ -1642,15 +1642,15 @@ uiload = function() {
 			
 			var url = table.data("clickpath");
 			var form = emselectable.find("form");
-			var data = row.data();
-
-			//--Form
 			if (!form.length) {
 				form = emselectable.data("emselectableform");
 				if (form) {
 					form = $("#"+form);
 				}
 			}
+			var data = row.data();
+
+			
 			if (form && form.length > 0) {
 				
 				data.id = rowid;
@@ -1691,144 +1691,215 @@ uiload = function() {
 				} else {
 					parent.document.location.href = link;
 				}
-			} else {
-				//--clickurl on emselectable
-				var targetdiv = '';
-				var options = null;
-				//var clickurl = emselectable.data("clickurl");
-			
-				
-				//Entitydialog table - Same as emdialog
-				var tabletype = emselectable.data("tabletype"); //make this earlier?
-				if(tabletype == "subentity") {
-					var entityid = rowid;
-					if(entityid) {
-						var container = emselectable.closest(".entity-body");
-						var tabs = container.find(".entity-tab-content");
-						if(tabs.length >= 6) {
-							alert("Max Tabs Limit");
-							return;
-						}
-						var tabexists = false;
-						$.each(tabs, function( index, element ) {
-							if($(element).data("id") == entityid) {
-								//exists replace
-								tabexists = true;
-								$(".entity-tab-content").hide();
-								$('a[data-entityid="'+entityid+'"].entity-tab-label').trigger("click");
-							} 
-						});
-						if(!tabexists) {
-							var options1 = emselectable.data();
-							var targetcomponenthome = emselectable.data("targetcomponenthome");
-							var targetrendertype = emselectable.data("targetrendertype");
-							var clickurl = targetcomponenthome+"/gridsample/preview/"+targetrendertype+"tab.html";
-							options1.oemaxlevel=1;
-							options1.id = rowid; 
-							jQuery.ajax({
-								url: clickurl,
-								data: options1,
-								success: function(data) {
-											$(".entity-tab-content").hide();
-											//append
-											container.append(data);
-											
-											//Menu
-											var tabmenu = $(".entity-navigation");
-											
-											var clickurlmenu = targetcomponenthome+"/gridsample/preview/entitytabmenu.html";
-											
-											var options2 = emselectable.data();
-											options2.id=entityid;
-											
-											$(".entity-tab").removeClass("current-entity");
-											jQuery.ajax({
-												url: clickurlmenu,
-												data: options2,
-												success: function(data2) {
-													$(".entity-navigation").append(data2);
-												}
-												});
-											return;
-										}
-								
-							});
-						}
-						
-						return;
-					}
+			}
+			else { /*
+				if(tabletype == "subentityadd") {
+						//Entitydialog - Add subentity
+						options = emselectable.data();
+						var targetdiv_ = emselectable.data("targetdiv");
+						targetdiv = emselectable.closest("#"+targetdiv_);
 				}
-				
-				
-				//Entitydialog - Add subentity
-				if(clickurl && tabletype == "subentityadd") {
-					options = emselectable.data();
-					var targetdiv_ = emselectable.data("targetdiv");
-					targetdiv = emselectable.closest("#"+targetdiv_);
-				}
-				
-				/*
-				if(clickurl){
-					options = emselectable.data();
-					options.id = rowid;
-				}
-				else
-					*/
-				if (!clickurl) {
-					//search domdatacontext :: Move all tables to use domdatacontext
-					clickurl = finddata(emselectable, "clickurl");
-					if (clickurl && clickurl != "") {
-						//Get everything from domadatacontext
-						options = findalldata(emselectable);
-						targetdiv = finddata(emselectable, "targetdiv");
-						if (!targetdiv) {
-							targetdiv = finddata(emselectable, "targetdivinner");
+				else if (!clickurl) {
+						//search domdatacontext :: Move all tables to use domdatacontext
+						clickurl = finddata(emselectable, "clickurl");
+						if (clickurl && clickurl != "") {
+							//Get everything from domadatacontext
+							options = findalldata(emselectable);
+							targetdiv = finddata(emselectable, "targetdiv");
+							if (!targetdiv) {
+								targetdiv = finddata(emselectable, "targetdivinner");
+							}
+							//options = row.data();
+							options.id = row.attr("rowid");
+							options.oemaxlevel =  finddata(emselectable, "oemaxlevel");
 						}
-						//options = row.data();
-						options.id = row.attr("rowid");
-						options.oemaxlevel =  finddata(emselectable, "oemaxlevel");
-					}
 				}
 				if (clickurl && clickurl != "") {
-					if (!targetdiv) {
-						targetdiv = emselectable.data("targetdiv");
-					}
-					if (!targetdiv) {
-						targetdiv = emselectable.data("targetdivinner");
-					}
-					if(targetdiv != '') {
-						jQuery.ajax({
-							url:  clickurl,
-							data: options,
-							success: function(data) {
-								if (!targetdiv.jquery) {
-									targetdiv = $("#"+targetdiv);
+						if (!targetdiv) {
+							targetdiv = emselectable.data("targetdiv");
+						}
+						if (!targetdiv) {
+							targetdiv = emselectable.data("targetdivinner");
+						}
+						if(targetdiv != '') {
+							jQuery.ajax({
+								url:  clickurl,
+								data: options,
+								success: function(data) {
+									if (!targetdiv.jquery) {
+										targetdiv = $("#"+targetdiv);
+									}
+									targetdiv.replaceWith(data);
 								}
-								targetdiv.replaceWith(data);
-							}
-						});
-						
+							});
+							
+						}
+						return;
 					}
-					return;
-				}
-				//verify if is entity dialog - not being used?
-				var emdialoglink = emselectable.data("emdialoglink");
-				if (emdialoglink && emdialoglink != "") 
-				{
-					emdialoglink = emdialoglink + "&id="+rowid;
-					row.data("emdialoglink", emdialoglink);
-					row.data("id", rowid);
-					row.data("searchtype", emselectable.data("searchtype"));
-					emdialog(row, event);
-				}
-				else if(rowid != "") 
-				{
-					//legacy refresh window
-					//parent.document.location.href = rowid;
-				}
+					
+					else if(rowid != "") 
+					{
+						//legacy refresh window
+						//parent.document.location.href = rowid;
+					}
+					*/
 			}
+			 
 		}
 	});
+	
+	//Entity Dialog Table
+	lQuery('.emselectableentitymodule table td').livequery("click", function(event) {
+		var clicked = $(this);
+		if (clicked.attr("noclick") == "true") {
+			return true;
+		}
+		if ($(event.target).is("input")) {
+			return true;
+		}
+		var emselectable = clicked.closest(".emselectableentitymodule");
+		
+		var row = $(clicked.closest("tr"));
+		var rowid = row.attr("rowid");
+		
+		var emdialoglink = emselectable.data("emdialoglink");
+		if (emdialoglink && emdialoglink != "") 
+		{
+			emdialoglink = emdialoglink + "&id="+rowid;
+			row.data("emdialoglink", emdialoglink);
+			row.data("id", rowid);
+			row.data("searchtype", emselectable.data("searchtype"));
+			emdialog(row, event);
+		}
+	});
+	
+	//Entity SubModule Table
+	lQuery('.emselectableentity table td').livequery("click", function(event) {
+		var clicked = $(this);
+		if (clicked.attr("noclick") == "true") {
+			return true;
+		}
+		if ($(event.target).is("input")) {
+			return true;
+		}
+		var emselectable = clicked.closest(".emselectableentity");
+
+		var row = $(clicked.closest("tr"));
+		var rowid = row.attr("rowid");
+		
+		var tabletype = emselectable.data("tabletype"); //make this earlier?
+		if(tabletype == "subentity") {
+				var targetdiv = '';
+				var options = null;
+				var entityid = rowid;
+				if(entityid) {
+					var container = emselectable.closest(".entity-body");
+					var tabs = container.find(".entity-tab-content");
+					if(tabs.length >= 6) {
+						alert("Max Tabs Limit");
+						return;
+					}
+					var tabexists = false;
+					$.each(tabs, function( index, element ) {
+						if($(element).data("id") == entityid) {
+							//exists replace
+							tabexists = true;
+							$(".entity-tab-content").hide();
+							$('a[data-entityid="'+entityid+'"].entity-tab-label').trigger("click");
+						} 
+					});
+					if(!tabexists) {
+						var options1 = emselectable.data();
+						var targetcomponenthome = emselectable.data("targetcomponenthome");
+						var targetrendertype = emselectable.data("targetrendertype");
+						var clickurl = targetcomponenthome+"/gridsample/preview/"+targetrendertype+"tab.html";
+						options1.oemaxlevel=1;
+						options1.id = rowid; 
+						jQuery.ajax({
+							url: clickurl,
+							data: options1,
+							success: function(data) {
+										$(".entity-tab-content").hide();
+										//append
+										container.append(data);
+										
+										//Menu
+										var tabmenu = $(".entity-navigation");
+										
+										var clickurlmenu = targetcomponenthome+"/gridsample/preview/entitytabmenu.html";
+										
+										var options2 = emselectable.data();
+										options2.id=entityid;
+										
+										$(".entity-tab").removeClass("current-entity");
+										jQuery.ajax({
+											url: clickurlmenu,
+											data: options2,
+											success: function(data2) {
+												$(".entity-navigation").append(data2);
+											}
+											});
+										return;
+									}
+							
+						});
+					}
+					
+					return;
+				}
+		}
+	});
+	
+	//Entity Add Sub Module
+	lQuery('.emselectableentityadd table td').livequery("click", function(event) {
+		var clicked = $(this);
+		if (clicked.attr("noclick") == "true") {
+			return true;
+		}
+		if ($(event.target).is("input")) {
+			return true;
+		}
+		var emselectable = clicked.closest(".emselectableentityadd");
+		
+		var row = $(clicked.closest("tr"));
+		var rowid = row.attr("rowid");
+		
+		var options = emselectable.data();
+		var targetdiv_ = emselectable.data("targetdiv");
+		targetdiv = emselectable.closest("#"+targetdiv_);
+		
+		clickurl = finddata(emselectable, "clickurl");
+		if (clickurl && clickurl != "") {
+			//Get everything from domadatacontext
+			options = findalldata(emselectable);
+			targetdiv = finddata(emselectable, "targetdiv");
+			if (!targetdiv) {
+				targetdiv = finddata(emselectable, "targetdivinner");
+			}
+			//options = row.data();
+			options.id = row.attr("rowid");
+			options.oemaxlevel =  finddata(emselectable, "oemaxlevel");
+		}
+		
+		if(targetdiv != '') {
+			jQuery.ajax({
+				url:  clickurl,
+				data: options,
+				success: function(data) {
+					if (!targetdiv.jquery) {
+						targetdiv = $("#"+targetdiv);
+					}
+					targetdiv.replaceWith(data);
+				}
+			});
+			
+		}
+		return;
+		
+	});
+	
+	
+	
 	
 	
 	lQuery(".assetpickerselectrow").livequery("click", function() {

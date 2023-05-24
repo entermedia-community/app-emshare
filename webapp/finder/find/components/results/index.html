@@ -87,30 +87,30 @@ $context.putPageValue("isentity", $isentity )
 				#set($resultview = "grid")
 			#end
 		#end
-	#elseif ($moduleid=="faceprofilegroup")
+#elseif ($moduleid=="faceprofilegroup")
 		#set($resultview = $userprofile.get("faceprofilegroupresultview"))
 		#if(!$resultview)
 			#set($resultview = "grid")
 		#end
-	#else
-		##All Other Entities
-		
-		#set($resultview = $userprofile.get("${moduleid}resultview"))
-
-		#if(!$resultview)
-			#set($resultview = $content.get("${moduleid}resultview"))
-		#end
-		#if(!$resultview)
-			#set($resultview = $context.getRequestParameter("resultstype"))
-		#end
-		#if(!$resultview)
-			#set($resultview = $content.resultview)
-		#end
-		#if(!$resultview)
-			#set($resultview = "table")
-		#end
+#else
+	##All Other Entities
 	
+	#set($resultview = $userprofile.get("${moduleid}resultview"))
+
+	#if(!$resultview)
+		#set($resultview = $content.get("${moduleid}resultview"))
 	#end
+	#if(!$resultview)
+		#set($resultview = $context.getRequestParameter("resultview"))
+	#end
+	#if(!$resultview)
+		#set($resultview = $content.resultview)
+	#end
+	#if(!$resultview)
+		#set($resultview = "grid")
+	#end
+
+#end
 	
 	$context.putPageValue("searchtype", $module.id)
 	
