@@ -58,8 +58,8 @@ $context.putPageValue("previewurl", $previewurl)
    	 
    	 
    	 	##check for view
-		#set($viewid = "${searchtype}gridfields")
-		#set($view = "$searchtype/$viewid")
+		#set($viewid = "${moduleid}gridfields")
+		#set($view = "$moduleid/$viewid")
 		
 		#if (!$details && $view)
 			#if( $context.getUserProfile() )
@@ -73,12 +73,13 @@ $context.putPageValue("previewurl", $previewurl)
 		
 		##look for primaryimage
 		#foreach( $detail in $details )
+		
 			#if($detail.getId() == "primaryimage")
 				#set( $primaryasset = $mediaarchive.getAsset($entity.primaryimage))
 				$context.putPageValue("primaryasset", $primaryasset)
 			#end
 		#end
-			
+		
    	
 		<div class="emgrid-entitydata">
 			$context.putPageValue("searchtype", $moduleid)

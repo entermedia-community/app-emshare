@@ -66,8 +66,8 @@ $context.putPageValue("previewurl", $previewurl)
    	 </div>
    	 
 		##check for view
-		#set($viewid = "${searchtype}gridfields")
-		#set($view = "$searchtype/$viewid")
+		#set($viewid = "${moduleid}gridfields")
+		#set($view = "$moduleid/$viewid")
 		
 		#if (!$details && $view)
 			#if( $context.getUserProfile() )
@@ -77,14 +77,14 @@ $context.putPageValue("previewurl", $previewurl)
 			#end
 		#end
 		
-		$entity.primaryimage
+		
 		
 		$context.putPageValue("details", $details)
 		
 		##look for primaryimage
 		#foreach( $detail in $details )
 		
-			#if($detail.getId() == "primaryimage")
+			#if($detail.getId() == "collectionimage")
 				#set( $primaryasset = $mediaarchive.getAsset($entity.collectionimage))
 				$context.putPageValue("primaryasset", $primaryasset)
 			#end
