@@ -1,18 +1,4 @@
 
-##All other data show as badge
-
-##check for view
-#set($viewid = "${searchtype}gridfields")
-#set($view = "$searchtype/$viewid")
-
-#if (!$details && $view)
-	#if( $context.getUserProfile() )
-		#set ($details = $searcher.getDetailsForView($view, $context.getUserProfile()))
-	#else
-		#set ($details = $searcher.getDetailsForView($view))
-	#end
-#end
-
 #if($details)
 	#set( $xmledithome = "$componenthome/xml")
 	$!context.putPageValue("xmledithome",$xmledithome)
@@ -20,6 +6,7 @@
 	<div class="emgridcell-fields">
 	#foreach( $detail in $details )
 	
+		#if($detail.getId() != "primaryimage")
 
 			#if( $searcherManager )
 				#set( $val = $searcherManager.getValue($data,$detail) )	
@@ -48,6 +35,7 @@
 					$pages.include("$xmledithome/detailreadonly.html", $context)
 				#end
 			#end
+		#end
 	#end
 	</div>
 #end 

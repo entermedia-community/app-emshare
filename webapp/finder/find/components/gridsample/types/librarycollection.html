@@ -65,47 +65,62 @@ $context.putPageValue("previewurl", $previewurl)
    	 
    	 </div>
    	 
-
-   	 <div class="emgrid-entitydata">
-      	$pages.include("$componenthome/gridsample/types/tags.html",$context)
-    </div>
-	    
-	    #set($assetsshown = 1)
-      	$context.putPageValue("assetsshown", $assetsshown)
-      	$context.putPageValue("viewer", "l_m_g_${entity.id}")
-      
-		#set( $primaryasset = $mediaarchive.getCachedData("asset", $entity.primaryimage))
+		##check for view
+		#set($viewid = "${searchtype}gridfields")
+		#set($view = "$searchtype/$viewid")
 		
-		#if($primaryasset)
-			$context.putPageValue("primaryasset", $primaryasset)		
-			#set($entityassetshits = $mediaarchive.query("asset").hitsPerPage($assetsshown).match("category",$rootcategory).not("id",$primaryasset.getId()).sort("assetaddeddateDown").search() )
-			#set($entityassetscount = $entityassetshits.size() + 1)
-		#else
-			#set($entityassetshits = $mediaarchive.query("asset").hitsPerPage($assetsshown).match("category",$rootcategory).sort("assetaddeddateDown").search() )
-			#set($entityassetscount = $entityassetshits.size())
+		#if (!$details && $view)
+			#if( $context.getUserProfile() )
+				#set ($details = $searcher.getDetailsForView($view, $context.getUserProfile()))
+			#else
+				#set ($details = $searcher.getDetailsForView($view))
+			#end
 		#end
 		
+		$context.putPageValue("details", $details)
+		
+		##look for primaryimage
+		#foreach( $detail in $details )
+			#if($detail.getId() == "primaryimage")
+				#set( $primaryasset = $mediaarchive.getAsset($entity.primaryimage))
+				$context.putPageValue("primaryasset", $primaryasset)
+			#end
+		#end
+			
+   	
+		<div class="emgrid-entitydata">
+			$context.putPageValue("searchtype", $moduleid)
+			$context.putPageValue("data", $entity)
+			
+	      	$pages.include("$componenthome/gridsample/types/fields.html",$context)
+	    </div>
+    
+	   	#set($assetsshown = 1)
+	    $context.putPageValue("viewer", "l_m_g_${entity.id}")
+	    #set( $entityassetshits = $mediaarchive.query("asset").exact($moduleid, $entityid).not("id",$primaryasset.getId()).sort("assetaddeddateDown").search() )
+		#set($entityassetscount = $entityassetshits.size())
+		#ifnotnull($primaryasset)
+			#set($entityassetscount = $entityassetshits.size() + 1)	
+		#end
 		$context.putPageValue("entityassetshits", $entityassetshits)
-	  
-	      <div class="emgrid-entitymedia assetdropentity"
-	       		id="attachedmedia$entityid" 
-	       		data-moduleid="$moduleid" 
-	       		data-entityid="$entityid"
-	       		data-rootcategory="$librarycol.rootcategory" 
-	       		data-assetsshown="$assetsshown"
-	       		data-attachedmediaurl="$siteroot$componenthome/gridsample/types/librarycollection.html"
-	       		data-targetdiv="emgridentity$!moduleid$!entityid"> 
-		##  		$pages.include("$componenthome/gridsample/types/attachedmedia/librarycollection.html",$context)
-		  </div>
+		
+       #ifnotnull($primaryasset)
+       <div class="emgrid-entitymedia assetdropentity"
+       		id="attachedmedia$entityid" 
+       		data-moduleid="$moduleid" 
+       		data-entityid="$entityid" 
+       		data-assetsshown="$assetsshown"
+       		data-attachedmediaurl="$siteroot$componenthome/gridsample/types/entity.html"
+       		data-targetdiv="emgridentity$!moduleid$!entityid"> 	
+	        $pages.include("$componenthome/gridsample/types/attachedmedia/entity2.html", $context)
 	   
 	        
-	        <div class="clearfix"></div>
-			
-	        
-	       ## <div class="griditem-tools resultsselection">
-	       ## <input type="checkbox" class="selectionbox" name="count" value="" data-dataid="$hit.getId()">
-	       ## </div>
-</div>
+        <div class="clearfix"></div>
+        
+
+        </div>
+        #end
+        
 <div class="grid-gallery-footer">
 
 	#if($entityassetscount>0)
@@ -116,4 +131,4 @@ $context.putPageValue("previewurl", $previewurl)
  	$pages.include("$componenthome/gridsample/favorites.html?id=$hit.id&searchtype=$moduleid", $context)
 	</div>
 </div>
-
+</div>
