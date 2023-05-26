@@ -24,15 +24,14 @@ public void init()
 	{
 		String startingpath = module.get("autocreatestartingpath");
 		int deeplevel = module.getInt("autocreatedeep");
-		log.info("Scanning: " + startingpath);
+		log.info("Scanning: " + module + "for " + startingpath);
 		//scan folders till deep
 		Category root = mediaArchive.createCategoryPath(startingpath);
-		processChildren(mediaArchive, module, root,deeplevel, 0);		
+		processChildren(mediaArchive, module, root,deeplevel, 1);		
 	}	
 }
 public void processChildren(MediaArchive mediaArchive, Data inmodule, Category parent, int startfromdeep, int currentdeep)
 {
-	log.info("processChildren " + parent + " " + startfromdeep + " != " + currentdeep);
 	if(startfromdeep == currentdeep )
 	{
 		//Check each child
@@ -53,6 +52,8 @@ public void processChildren(MediaArchive mediaArchive, Data inmodule, Category p
 			 			newchild.setValue(key,val);
 			 		}
 			 	}
+			 	
+			 	newchild.setValue("uploadsourcepath",category.getCategoryPath());
 			 	mediaArchive.saveData(inmodule.getId(),newchild);
 			 	category.setValue(inmodule.getId(),newchild.getId());
 			 	mediaArchive.saveData("category",category);
@@ -62,6 +63,8 @@ public void processChildren(MediaArchive mediaArchive, Data inmodule, Category p
 	}
 	else
 	{
+		log.info("processChildren Folder:" + parent + " Actual:" + currentdeep + " Matches? " + startfromdeep);
+	
 		int nextdeep = currentdeep + 1;
 		for (Data child in parent.getChildren())
 		{
