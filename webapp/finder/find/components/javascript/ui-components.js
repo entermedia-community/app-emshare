@@ -1571,7 +1571,7 @@ uiload = function() {
 		event.preventDefault();
 		var row = clicked.closest("tr");
 		var table = clicked.closest("table");
-		var form = clicked.closest("form");
+		var form = clicked.closest(".pickedcategoryform");
 		
 		var existing = row.hasClass("emrowselected");
 		if (!form.hasClass("emmultivalue")) {

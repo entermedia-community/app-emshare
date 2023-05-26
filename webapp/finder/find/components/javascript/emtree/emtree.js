@@ -59,7 +59,9 @@ $(document).ready(function()
 			//node.load(home + "/components/emtree/tree.html?toggle=true&tree-name=" + tree.data("treename") + "&nodeID=" + nodeid + "&depth=" + depth);
         }
         else {  //Regular Tree
-            gotopage(tree, node, maxlevel, prefix, postfix, null);
+        	var options  = [];
+        	options["oemaxlevel"] = 3;	
+            gotopage(tree, node, maxlevel, prefix, options);
         }
 		var event = $.Event( "emtreeselect" );
 		event.tree = tree;
@@ -162,6 +164,10 @@ $(document).ready(function()
 		if(inOptions["clearotherentities"]) {
 			options.clearotherentities = true;
 			reloadurl = reloadurl + "&clearotherentities=true";
+		}
+		if(inOptions["oemaxlevel"]) {
+			options.oemaxlevel = inOptions["oemaxlevel"];
+
 		}
 				
 		//jQuery.get(prefix + nodeid + postfix,
@@ -350,7 +356,7 @@ $(document).ready(function()
 				
 				//clear other entities on Upload Form
 				var options = [];
-				options["clearotherentities"] = "true"
+				options["clearotherentities"] = "true";
 				
 				
 				var customurladdmedia = tree.data("customurladdmedia");
@@ -363,6 +369,7 @@ $(document).ready(function()
 
 					var url = tree.data("home") + "/views/modules/asset/add/start.html";
                     var maxlevel = 1;
+                    options["oemaxlevel"] = "2"
 					gotopage(tree,node,maxlevel,url, options);
 					
 				}
