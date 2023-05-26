@@ -1,3 +1,4 @@
+<div id="assetresults">
 #set($moduleid = $module.getId())
 
 #if( !$librarycol && $category )
@@ -11,6 +12,12 @@
 #set($entityurl = "$siteroot$apphome/views/modules/$module.id/index.html")
 
 #set( $entities = $userprofile.getEntitiesInParent($category) )
+
+	#if( $category)
+	$pages.include("$apphome/views/modules/category/showchildren.html", $context)
+	#end
+	
+
 
 <div class="emgrid-box expandedmodule" style=" margin:0 10px 10px;">
 
@@ -47,8 +54,7 @@
 		<div class="clearfix"></div>
 	</div>
 	#end
-	
-	
+
 	<div class="expandedentityactions">
 	
 		<a href="$!{siteroot}$apphome/views/modules/asset/add/start.html" 			
@@ -90,4 +96,4 @@
 </div>
 
 
-
+</div>
