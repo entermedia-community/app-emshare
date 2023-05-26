@@ -9,34 +9,51 @@
   	isentity="true"  enableuploading="false" ordering="3" modulerendertype="entity" moduleicon="project">
     <name><![CDATA[Projects]]></name>
   </data>
-  <data id="entityevent" showonsearch="true" securityenabled="false"  enableuploading="true" isentity="true" ordering="7" showonnav="true" 
-  childentities="entitycampaign|entityoutput|entityperson|entitylocation" modulerendertype="entity" moduleicon="event">
-    <name><![CDATA[Events]]></name>
-  </data>
-
-   <data id="entityproduct" showonsearch="false" securityenabled="false"   enableuploading="true" isentity="true" ordering="8" showonnav="true" modulerendertype="entity" moduleicon="product">
-    <name><![CDATA[Products]]></name>
-  </data>
-  <data id="entitydevice" showonsearch="true" securityenabled="false" ordering="5" isentity="true"  enableuploading="true" showonnav="false" moduleicon="programs"  
-  autocreatestartingpath="Media/Photo Shoots" autocreateentities="false" uploadsourcepath="Media/Photo Shoots/2023/${entitydevice.entitycapture.name}/${entitydevice.name}/"
-  > 
-    <name><![CDATA[Upload Folders]]></name> 
+	  <data id="entitycapture" showonsearch="true" securityenabled="false"  isentity="true" ordering="4" showonnav="false" modulerendertype="entity" moduleicon="programs"
+	    >
+	    <name><![CDATA[Media Uploads]]></name>
+	  </data>  
+		  <data id="entitydevice" showonsearch="true" securityenabled="false" ordering="5" isentity="true"  enableuploading="true" showonnav="false" moduleicon="programs"  
+		  uploadsourcepath="Projects/${formattedyear}/${entitydevice.entitycapture.entityproject.name}/${entitydevice.entitycapture.name}/${entitydevice.name}/" 
+		  autocreatestartingpath="Projects" autocreatedeep="4" autocreateentities="true" 
+		  > 
+		    <name><![CDATA[Upload Folders]]></name> 
+		  </data>
+		  
+  <data id="entityoutput" showonsearch="true" securityenabled="false"  isentity="true" ordering="6"  enableuploading="true" showonnav="false" modulerendertype="entity" moduleicon="event">
+    <name><![CDATA[Media Outputs]]></name>
   </data>
   
     <data id="entitycampaign" showonsearch="true" securityenabled="false"  isentity="true" ordering="2" showonnav="false" modulerendertype="entity" moduleicon="programs">
     <name><![CDATA[Campaign]]></name>
   </data>   
-    <data id="entitycapture" showonsearch="true" securityenabled="false"  isentity="true" ordering="4" showonnav="false" modulerendertype="entity" moduleicon="programs"
-    autocreatestartingpath="Media/Photo Shoots" 
-    >
-    <name><![CDATA[Media Uploads]]></name>
-  </data>  
 
-  <data id="entityoutput" showonsearch="true" securityenabled="false"  isentity="true" ordering="6"  enableuploading="true" showonnav="false" modulerendertype="entity" moduleicon="event">
-    <name><![CDATA[Media Outputs]]></name>
+
+  <data id="entityevent" showonsearch="true" securityenabled="false"  enableuploading="true" isentity="true" ordering="7" showonnav="true" 
+  childentities="entitycampaign|entityoutput|entityperson|entitylocation" modulerendertype="entity" moduleicon="event"
+  		  uploadsourcepath="Events/${formattedyear}/${entityevent.name}" autocreatestartingpath="Events" autocreatedeep="2" autocreateentities="true"
+  >
+    <name><![CDATA[Events]]></name>
   </data>
 
+   <data id="entityproduct" showonsearch="false" securityenabled="false"   enableuploading="false" isentity="true" ordering="8" showonnav="true" 
+   		modulerendertype="entity" moduleicon="product"
+   		autocreatestartingpath="Products" autocreatedeep="1" autocreateentities="true"
+   		>
+    <name><![CDATA[Products]]></name>
+  </data>
 
+  <data id="entityproductfolder" showonsearch="false" securityenabled="false"   enableuploading="true" isentity="true" ordering="9" showonnav="false"
+   childentities="entityserie|entityseason|entityperson" modulerendertype="entity" moduleicon="programs"
+   uploadsourcepath="${entityproductfolder.entityproduct.uploadsourcepath}/${entityproductfolder.name}" 
+   	autocreatestartingpath="Products" autocreatedeep="2" 
+   autocreateentities="true"
+   >
+    <name><![CDATA[Product Folder]]></name>
+  </data>   
+  
+  
+  
   <data id="entityperson" showonsearch="true" securityenabled="false"  enableuploading="true" isentity="true" ordering="9" showonnav="false" modulerendertype="entity" moduleicon="person">
     <name><![CDATA[People]]></name>
   </data>   
@@ -54,13 +71,20 @@
     <name><![CDATA[Facial Profiles]]></name>
   </data>   
    
-  <data id="entityepisode" showonsearch="false" securityenabled="false"   enableuploading="true" isentity="true" ordering="16" showonnav="true" childentities="entityserie|entityseason|entityperson" modulerendertype="entity" moduleicon="programs">
+  <data id="entityepisode" showonsearch="false" securityenabled="false"   enableuploading="true" isentity="true" ordering="16" showonnav="true"
+   childentities="entityserie|entityseason|entityperson" modulerendertype="entity" moduleicon="programs"
+   uploadsourcepath="Episodes/${entityserie.name}/${entityseason.name}/${entityepisode.name}" autocreatestartingpath="Episodes" autocreatedeep="3" autocreateentities="true"
+   >
     <name><![CDATA[Episodes]]></name>
   </data>   
-  <data id="entityserie" showonsearch="false" securityenabled="false"  isentity="true" ordering="14" showonnav="false" modulerendertype="entity" moduleicon="programs">
+  <data id="entityserie" showonsearch="false" securityenabled="false"  isentity="true" ordering="14" showonnav="false" modulerendertype="entity" moduleicon="programs"
+  autocreatestartingpath="Episodes" autocreatedeep="2"
+  >
     <name><![CDATA[Series Programs]]></name>
   </data>   
-  <data id="entityseason" showonsearch="false" securityenabled="false"  isentity="true" ordering="15" showonnav="false" modulerendertype="entity" moduleicon="programs">
+  <data id="entityseason" showonsearch="false" securityenabled="false"  isentity="true" ordering="15" showonnav="false" modulerendertype="entity" moduleicon="programs"
+  	autocreatestartingpath="Episodes" autocreatedeep="1"
+  >
     <name><![CDATA[Seasons]]></name>
   </data>
   
