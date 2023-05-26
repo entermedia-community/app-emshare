@@ -893,6 +893,9 @@ uiload = function() {
 	lQuery("form.autosubmit").livequery(function() {
 		var form = $(this);
 		var targetdiv = form.data('targetdiv');
+		if(!targetdiv) {
+			targetdiv = form.data('targetdivinner');
+		}
 		$("select",form).change(function() {
 			$(form).ajaxSubmit({
 				target : "#" + $.escapeSelector(targetdiv) 
