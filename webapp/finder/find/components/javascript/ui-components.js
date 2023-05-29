@@ -1571,6 +1571,11 @@ uiload = function() {
 		if (clicked.attr("noclick") == "true") {
 			return true;
 		}
+		if( $(e.target).is("input") || $(e.target).is("a"))
+		{
+			return true;
+		}
+		
 		event.preventDefault();
 		var row = clicked.closest("tr");
 		var table = clicked.closest("table");
