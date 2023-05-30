@@ -1,9 +1,11 @@
-#set($searchtype = $context.getRequestParameter("searchtype"))
+
+#set( $searchtype = $context.findValue("module")) 
+
 #if(!$searchtype)
-	#set( $searchtype = $context.findValue("module"))
+	#set( $searchtype = $context.findValue("searchtype")) 
 #end
 #if(!$searchtype)
-	#set( $searchtype = $context.findValue("searchtype"))
+	#set($searchtype = $context.getRequestParameter("searchtype")) 
 #end
 
 #set( $id = $context.getRequestParameter("id"))
@@ -74,7 +76,7 @@ $context.putPageValue("edit", $edit)
 	$pages.include("$componenthome/gridsample/preview/metadata-submodules.html",$context)
 	
 	
-	#if($canviewsettings)
+	#if($canviewsettings && $entityid)
 	<div class="entityidfooter">Id: $entityid</div>
 	#end
 

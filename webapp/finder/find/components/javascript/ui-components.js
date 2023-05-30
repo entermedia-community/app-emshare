@@ -777,7 +777,7 @@ uiload = function() {
 				}
 				else{
 					if (targetdiv.data()  !== undefined) {
-						data = targetdiv.data();
+						//data = targetdiv.data();
 					}
 				} 
 				
