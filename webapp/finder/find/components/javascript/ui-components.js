@@ -1386,12 +1386,14 @@ uiload = function() {
 		
 		var searchurlentertargetdiv = input.data("searchurlentertargetdiv");
 		
-		var moduleid = $("#applicationcontent").data("moduleid");
-		var searchurl = apphome + "/views/modules/" + moduleid + "/index.html";
-
-		options["moduleid"] = moduleid;
+		//var moduleid = $("#applicationcontent").data("moduleid");
+		//var searchurl = apphome + "/views/modules/" + moduleid + "/index.html";
+		//var searchurl = apphome + "/index.html";
+		//options["moduleid"] = moduleid;
+		
 		
 		var updateurl = input.data("updateurl");
+		var searchurl = apphome + "/index.html";
 
 		if(searchurlentertargetdiv != null)
 		{
@@ -1400,10 +1402,10 @@ uiload = function() {
 				var q = input.val();
 				q = q.trim();
 				
-				var moduleid = $("#applicationcontent").data("moduleid");
-				var searchurl = apphome + "/views/modules/" + moduleid + "/index.html";
+				//var moduleid = $("#applicationcontent").data("moduleid");
+				//var searchurl = apphome + "/views/modules/" + moduleid + "/index.html";
+				//options["moduleid"] = moduleid;
 
-				options["moduleid"] = moduleid;
 	
 				if( e.which == 13)
 				{
@@ -1464,10 +1466,10 @@ uiload = function() {
 			q = q.trim();
 			options["description.value"] = q;
 			
-			var moduleid = $("#applicationcontent").data("moduleid");
-			var searchurl = apphome + "/views/modules/" + moduleid + "/index.html";
+			//var moduleid = $("#applicationcontent").data("moduleid");
+			//var searchurl = apphome + "/views/modules/" + moduleid + "/index.html";
 
-			options["moduleid"] = moduleid;
+			//options["moduleid"] = moduleid;
 			
 			
 			if( q && q.length < 2)
