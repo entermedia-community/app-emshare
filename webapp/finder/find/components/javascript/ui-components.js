@@ -148,16 +148,25 @@ runajaxonthis = function(inlink,e)
 		options = findalldata(inlink); 
 	}
 	
-	
-	
-	inlink.css( "cursor","wait");
-	$("body").css( "cursor","wait");
-	
 	var inlinkmodal = inlink.closest(".modal");
 
 	if( targetDiv)
 	{
+		
+		inlink.css( "cursor","wait");
+		$("body").css( "cursor","wait");
+	
 		targetDiv = targetDiv.replace(/\//g, "\\/");
+		
+		
+	//before ajaxcall
+	if(inlink.data("onbefore")) {
+		var onbefore = inlink.data("onbefore");
+		var fnc = window[onbefore];
+		if( fnc && typeof fnc === "function" ) {  //make sure it exists and it is a function
+		    fnc(inlink);  //execute it
+		}
+	}
 		
 		jQuery.ajax({
 			url: nextpage, data: options, success: function (data) {
@@ -1303,16 +1312,6 @@ uiload = function() {
 			closeemdialog($(this).closest(".modal"));
 		}
 	});
-	
-	
-	
-	
-	
-	lQuery(".submoduleedit").livequery("click", function(event) {
-		$(this).closest(".editentitymetadata-submodule").addClass("editingsubmodule");
-		$(this).hide();
-	});
-	
 	
 	lQuery(".mediaboxheader").livequery("click", function(event) {
 		event.preventDefault();
@@ -3768,6 +3767,13 @@ uiload = function() {
 }// uiload
 
 
+function switchsubmodulebox(item) {
+	var parent = item.closest(".editentitymetadata-submodule");
+	var results = item.data("targetdiv");
+	parent.find("#"+results).hide('fast');
+	parent.addClass("editingsubmodule");
+	item.hide();
+}
 
 replaceelement = function(url, div, options, callback) {
 	var options = div.data();
