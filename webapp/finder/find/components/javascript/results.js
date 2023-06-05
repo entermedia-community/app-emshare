@@ -297,7 +297,12 @@ jQuery(document).ready(function(url,params)
 			{
 			    if($(this).hasClass("filtercheck")) {
 			    	var fieldname = $(this).data("fieldname");
-			    	
+			    	var fieldtype = $(this).data("fieldtype");
+			    	if (fieldtype == 'boolean') {
+						if($("#filtersremoveterm").length) {
+							$("#filtersremoveterm").val(fieldname);
+						}
+					}
 			    	var boxes = $('.filtercheck' + fieldname + ':checkbox:checked');
 			    	if(boxes.length == 0){
 						if($("#filtersremoveterm").length) {
