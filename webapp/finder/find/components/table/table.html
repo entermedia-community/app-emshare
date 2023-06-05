@@ -65,19 +65,19 @@
     		#set($moduleicon = $module.moduleicon)
     	#end
     	<img src="$siteroot$apphome/theme/images/entity/${moduleicon}.svg" style="height: 23px;"> 
-	#text($entity) ($hits.size())</h3>
-	#end
-	
-	#set($total = $hits.getTotalPages() )
-	
-	$context.putPageValue("hits", $hits)
-	$context.putPageValue("resultsLink", "/$applicationid/views/modules/$!{searchtype}/components/table/table.html")
-	#set($targetdivposition = "tmc_#eid($searchtype)#eid($fieldexternalvalue)")
-	$context.putPageValue("targetdivtablepositions", $targetdivposition)
-	#if(!$targetdiv)
-		#set($targetdiv = $targetdivposition)
-	#end
-	$context.putPageValue("oemaxlevel", "1")
+		#text($entity) ($hits.size())</h3>
+		#end
+		
+		#set($total = $hits.getTotalPages() )
+		
+		$context.putPageValue("hits", $hits)
+		$context.putPageValue("resultsLink", "/$applicationid/views/modules/$!{searchtype}/components/table/table.html")
+		#set($targetdivposition = "tmc_#eid($searchtype)#eid($fieldexternalvalue)")
+		$context.putPageValue("targetdivtablepositions", $targetdivposition)
+		#if(!$targetdiv)
+			#set($targetdiv = $targetdivposition)
+		#end
+		$context.putPageValue("oemaxlevel", "1")
 	
 	<div id="resultsdiv$!{entity.getId()}"
 			class="domdatacontext" 
@@ -308,4 +308,9 @@
 	<p class="info">[[No records found]]</p>
 #end
 </div>
+#else
+	#if($tabletype == "subentity")
+		#set($entity = $mediaarchive.getCachedData("module", $searchtype))	
+		<div id="resultsdiv$!{entity.getId()}"></div>
+	#end
 #end
