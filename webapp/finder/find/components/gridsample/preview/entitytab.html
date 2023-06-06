@@ -10,6 +10,8 @@
 
 #set( $id = $context.getRequestParameter("id"))
 
+##ifnotnull($id)
+
 #if($id.startsWith("multiedit"))
 	#set($entityid = $entity.id)
 	#set($entitytabid = "entity-tab-multiedit")
@@ -55,21 +57,43 @@ $context.putPageValue("edit", $edit)
 		$pages.include("$componenthome/gridsample/preview/metadata.html", $context)
 	</div>
 	
-	#if($module.enableuploading == true)
-		<div class="entity-media">
-		#if($moduleid && $entityid)
+	#if($moduleid && $entityid)
 			#set($defaultfolder =  $mediaarchive.getBean("entityManager").loadDefaultFolder($module, $entity, $context.getUser()))
 			$context.putPageValue("defaultfolder", $defaultfolder)
-			##$pages.include("$componenthome/categories/entities/listcategories.html",$context)
-			
-			$pages.include("$componenthome/categories/entities/listcategorydetails.html",$context)
-			
-			
-			##$pages.include("$componenthome/gridsample/preview/media/listassets.html",$context)
+	#end
+
+	
+		<div class="entity-media">
+		
+		
+			<div class="entity-actions-bar">
+				#ifnotnull($defaultfolder)		
+				<a href="$applink/components/share/entity.html?moduleid=$moduleid&categoryid=${defaultfolder.getId()}" class="emdialog"><i class="fas fa-share-alt"></i></a>
+				#end
+				#if($moduleid && $canviewsettings)
+				<a href="$applink/views/settings/modules/$moduleid/info/module-setup.html"
+					class="ajax"
+					data-targetdiv="applicationcontainer"
+					data-oemaxlevel="5"
+					data-updateurl="true"
+					data-closedialog="true"
+					title="#text($module) [[Properties]]"><i class="fas fa-cog"></i></a>
+				#end
+			</div>
+		
+		#if($module.enableuploading == true)
+		
+			#ifnotnull($defaultfolder)
+				
+				##$pages.include("$componenthome/categories/entities/listcategories.html",$context)
+				$pages.include("$componenthome/categories/entities/listcategorydetails.html",$context)
+				
+				##$pages.include("$componenthome/gridsample/preview/media/listassets.html",$context)
 			
 			#end
+		#end
 		</div>
-	#end
+	
 	<div class="clearfix"></div>
 	
 	
@@ -81,3 +105,6 @@ $context.putPageValue("edit", $edit)
 	#end
 
 </div>
+
+
+##end
