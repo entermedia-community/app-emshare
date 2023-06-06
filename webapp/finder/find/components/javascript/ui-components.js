@@ -1108,6 +1108,7 @@ uiload = function() {
 									$(".entity-navigation").append(data2);
 								}
 								});
+								
 							return;
 						}
 					}
@@ -1208,6 +1209,8 @@ uiload = function() {
 								window.scrollTo(0, 0);
 						}
 					}
+					
+					$(window).trigger("resize");
 					
 					modalinstance.on('hidden.bs.modal', function () {
 						$(window).trigger("resize");

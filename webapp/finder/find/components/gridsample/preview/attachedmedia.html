@@ -5,11 +5,35 @@
 	#set($entityid = $context.getRequestParameter("entityid"))
 #end
 
-#if(!$mediarender)
+##if(!$mediarender)
 	#set($mediarender = "attachedmediarender")
-#end
+##end
+
+
 
 #if($assetshits)
+
+	$context.putPageValue("rendertype", "media")
+	$context.putPageValue("rendermoduleid", "asset")
+	
+	<div id="galleryimg-media-dialog" 
+			class='emgrid #if($section != "favorites")emgridlimited#end entitiescontainer' 
+			data-colwidth="360" 
+			data-colcount="4"
+			data-cellpadding="10"
+			data-entityrenderurl="$!{siteroot}$apphome/views/modules/${module.id}/components/gridsample/gridcell.html"
+			data-rendertype="media">
+		#foreach( $hit in $assetshits.getPageOfHits() )
+			$context.putPageValue("hit", $hit)
+		    $pages.include("$apphome/components/gridsample/gridcell.html", $context)
+		#end
+	</div>
+#end
+
+
+
+
+#if(1==2 && $assetshits)
 	#set($count = 0)
 	#set($stackedfield = $mediaarchive.getCatalogSettingValue("stackedgalleryfield"))
 	
@@ -17,6 +41,7 @@
 		#set($count = $count + 1)
 		$context.putPageValue("hit", $hit)
 		
+		 
 		$pages.include("$apphome/components/gridsample/preview/${mediarender}.html", $context)		
 		#end
 	<div class="clearfix"></div>

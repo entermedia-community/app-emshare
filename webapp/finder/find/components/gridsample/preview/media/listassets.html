@@ -32,173 +32,87 @@ $context.putPageValue("fullview",true)
 $context.putPageValue("thumbsize", "small" )
 $context.putPageValue("primaryimage", $entity.primaryimage )
 $context.putPageValue("mediarender", "attachedmedialist" )
-<div id="entityassetresults#eid($entityid)" class="entity-media-box ">
-	<div  class="entityassetresults uploadformarea" data-onupload="reloadentity" data-entityid="$entityid" >
-		<div class="entity-media-header">
-			<h4 class="mediaboxheader">
+
+
+<div class="emgrid-module emgrid-box emgrid-column emgrid-module-$!rendertype" style="margin:20px 0 30px">
+   		<div class="emgrid-subtitle">
+	   		<h3>
+	   			#set($assetmodule = $mediaarchive.getCachedData("module", "asset"))
+		     	#set($moduleicon = "entity")
+		     	#if ($module.moduleicon)
+		     		#set($moduleicon = $assetmodule.moduleicon)
+		     	#end
+		     	
+	     		#set($entityurl = "$!siteroot$apphome/views/modules/$!{assetmodule.id}/index.html?$!{module.id}page=1")
+	
+				<img src="$siteroot$apphome/theme/images/entity/${moduleicon}.svg" style="height: 25px; max-width:20px;"> 
 				
-				 $currentcategory.getName() [[Attached Files]]
-			</h4>
-			
-			
-			
-			#if($moduleid && $entityid)
-			
-				#if($permissions.can($moduleid, "upload_files"))
-					#ifnull($uploadsourcepath)
-						#if( !$entity)
-							#set( $entity  = $mediaarchive.getData($moduleid, $entityid) )
-						#end
-						#set($uploadsourcepath =  $mediaarchive.getBean("entityManager").loadUploadSourcepath($module, $entity, $context.getUser()))
-					#end
-					#ifnull($uploadsourcepath)
-						#set($uploadsourcepath = "Albums/Users/$user.getScreenName()/Desktops")
-					#end
-				
-					#if($desktopX)
-					<a href="#" 
-							class="ajax localfilePicker "
-							data-targetdivinner="$targetdiv"
-							data-closedialog="true" 
-							data-closemediaviewer="true"
-							data-updateurl="true"
-							data-oemaxlevel="$!oemaxlevel"
-							data-sourcepath="Albums/Users/$user.getScreenName()/Desktops"
-							title="[[Upload Media]]">
-							<i class="fas fa-upload"></i></a>
-					
-					#else
-						<a href="#" 
-							class="entity-add-media filePicker entityuploadPicker"
-							title="[[Upload Media to:]] $!uploadsourcepath">
-						<i class="fas fa-upload"></i></a>
-						<div class="loadericon float-right"><i class="fas fa-spinner fa-spin"></i></div>
-							
-							<input class="upload_field" data-autostartupload="true" type="file" style="position:absolute; top:-2000px;" multiple="multiple"  />
-							#set( $root = "$siteroot$componenthome/upload/types/html5")
-						  <form id="uploaddata" 
-						  		name="wizard" 
-						  		onSubmit="return false;" 
-								data-finishaction="" action="$root/finish.html" class="force-validate-inputs" >
-						  	<input name="createentityparent" value="true" type="hidden"/>
-						  	<input name="entitytype" value="$moduleid" type="hidden"/>
-						  	<input name="selected$moduleid" value="$entityid" type="hidden"/>
-						    <input name="field" value="$moduleid"type="hidden" />
-						  	<input name="${moduleid}.value" value="$entityid"type="hidden" />
-						  	<input name="field" value="category"type="hidden" />
-						  	<input name="category.value" value="$currentcategoryid"type="hidden" />
-						  	<input name="sourcepath" value="$uploadsourcepath" type="hidden"/>
-						  	
-						  	</form>
-					#end
-				#end	
-				
-				
-				
-				#if($currentcategory)
-				<a style="padding:0px 0 4px 10px; " 
-						class=""
-						data-targetdiv="applicationcontent"
-						data-oemaxlevel="4"
-						data-closedialog="true"
-						data-updateurl="true"
-						data-nodeId="$entityid"
-		   				data-sidebarcomponent="categories"
-		   				title="[[Download folders]]"
-		   				href="$applink/views/modules/asset/downloads/bycategory/${defaultFolder.id}/#eid($category.name).zip"><i class="fa fa-download" aria-hidden="true"></i></a>
+				#if( $module.id == "asset") ##this is safe
+					#set( $count = $assetshits.size()) 
+				#else
+					#set( $count = $filter.getCount($assetmodule.id) ) 
 				#end
-				
-				
-				#if($permissions.can($moduleid, "assign_folders"))
-					#set($searchlink = "$componenthome/assetpicker/entities/searchassets.html")
-					<a href="$searchlink"
-						id="assetpicker#eid($entityid)" 
-						data-launcher="assetpicker#eid($entityid)"
-						data-targetdiv="entityassetresults#eid($entityid)"
-						data-clickurl="$componenthome/gridsample/preview/media/listassets.html"
-						data-entityid="$entityid"
-						data-moduleid="$moduleid"
-						
-						data-target="$!siteroot$apphome/components/assetpicker/entities/searchassets.html"
-						data-dialogid="assetsearchdialog" 
-						class="emdialog"
-						title="[[Choose Asset]]"><i class="fas fa-search"></i></a>
+				#ifnull($count)
+					#set( $count = $assetshits.size()) 
 				#end
+				#text($assetmodule)
+				 <span class="count">($count)</span>
 				
 				
-			#end
-			
-			</div>
-			<div class="mediaboxbody">
-			
-			##ifnull($desktop)
-				#if($permissions.can($moduleid, "upload_files"))
-				<div>
-					<!-- This is not shown -->
-			       <div class="progress_report_template" style="display:none;">
-			        <li class="uploadprogressrow" >
-						<span style="width: 0px;" class="uploadprogress progress_report_barcurrentupload"></span>
-						<a href="#">
-							<span   class="progress_report_namecurrentupload name"></span>
-							<span   class="progress_report_sizecurrentupload size"></span>
-							<span   class="progress_report_statuscurrentupload uploadstatus"></span>
-						</a>	
-					</li>
-				 	</div>
-				 	
-				 	<ul class="up-files-list up-files-list-pending">
-					</ul>	
-				 	
-				 	<div class="completed-uploads" style="display:none;padding-top:3px;" >
-					<div class="ui-widget uipanel">
-					    <div  class="ui-widget-header">[[Upload Queue]]</div>
-					    <div>
-							<ul class="up-files-list up-files-list-completed" >
-							</ul>	
-						</div>
-					</div>	
-					</div>		
+
+			</h3>
+					<div style="float:right" >
+					<a href="$entityurl" 
+					class="ajax minimizeexpandedmodule" 
+					data-targetdiv="applicationcontent" 
+					data-oemaxlevel="3" 
+					data-updateurl="true" 
+					data-profilepreference="defaultmodule"
+					data-profilepreference.value="$!module.getId()"
+					data-closedialog="true"
+					title="[[Expand]] #text($module)">
+					<i class="fas fa-window-maximize"></i></a>
 				</div>
-				#end
-			##end
-			
+		<div class="clearfix"></div>
+   		</div>
+
+
+	<div id="entityassetresults#eid($entityid)">
+		<div  class="entityassetresults uploadformarea" data-onupload="reloadentity" data-entityid="$entityid" >
+					
 			$pages.include("$componenthome/gridsample/preview/attachedmedia.html",$context)
 			
-			#if($assetshits.size() > 0)
-			
-			#if($moduleid=="librarycollection")
-				#if(!$rootcategory)
-					#set($rootcategory = $context.getRequestParameter("rootcategory"))
-				#end
-				#set($link = "$siteroot$applink/views/modules/librarycollection/media/showcategory.html?nodeID=$rootcategory&clearfilters=true&collectionid=$!librarycol.getId()")
-				#set($link = "$!link&sidebarcomponent=categories")
-				
-			#elseif($moduleid=="faceprofilegroup")
-				#set($link = "$siteroot$applink/views/modules/asset/faceprofilegroup.html")
-				#set($link = "$link?faceprofilegroupid=$!entityid&clearfilters=true")
-				
-			#else
-				#set($link = "$siteroot$applink/views/modules/asset/index.html")
-				#set($link = "$link?field=$!moduleid&operation=matches&${moduleid}.value=$!entityid&clearfilters=true")
-			#end	
-			#set($targetdivinner = "applicationmaincontent")
-			#set($oemaxlevel = "2")
-			
-			<div class="entity-listasset-footer">
-			<a href="$link" 
-					class="ajax"
-					data-oemaxlevel="$!oemaxlevel" 
-					data-targetdivinner="$!targetdivinner" 
-					data-closedialog="true"
-					data-updateurl="true"
-					data-closemediaviewer="true"
-					title="[[View]] $assetshits.size() [[Assets]]"><i class="fas fa-images"></i> [[View]] $assetshits.size() [[Assets]]</a>
-			
-			</div>
-			#end
-			
-			</div>
+		</div>
 	</div>
-</div>	
+
+
+
+	
+	#if($moduleid=="librarycollection")
+		#if(!$rootcategory)
+			#set($rootcategory = $context.getRequestParameter("rootcategory"))
+		#end
+		#set($link = "$siteroot$applink/views/modules/librarycollection/media/showcategory.html?nodeID=$rootcategory&clearfilters=true&collectionid=$!librarycol.getId()")
+		#set($link = "$!link&sidebarcomponent=categories")
+		
+	#elseif($moduleid=="faceprofilegroup")
+		#set($link = "$siteroot$applink/views/modules/asset/faceprofilegroup.html")
+		#set($link = "$link?faceprofilegroupid=$!entityid&clearfilters=true")
+		
+	#else
+		#set($link = "$siteroot$applink/views/modules/asset/index.html")
+		##set($link = "$link?field=$!moduleid&operation=matches&${moduleid}.value=$!entityid&clearfilters=true")
+		#set($link = "$siteroot$applink/views/modules/asset/bycategory/${currentcategoryid}.html?clearfilters=true")
+	#end	
+	#set($targetdivinner = "applicationmaincontent")
+	#set($oemaxlevel = "3")
+
+
+$context.putPageValue("category", $currentcategory)
+$context.putPageValue("categoryid", $currentcategoryid)
+$pages.include("$componenthome/categories/entities/actions.html",$context)
+
+</div>
+
 
 

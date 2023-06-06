@@ -22,20 +22,23 @@ $context.putPageValue("type", $rendertype)
       	#set($title = $hit.name) 
     #end
 #end
-	
-	 <div class="grid-attachedmedia #if($primaryimage==$hit.id) grid-isprimaryimage #end assetdraggable" data-assetid="$hit.id"> 
- 	<a class="stackedplayer imagearea" id="clickid${hit.id}" data-assetid="$hit.id" href="#" title="$!title">
- 	$context.putPageValue("hit", $hit)
- 	$context.putPageValue("asset", $hit)
-	$pages.include("$componenthome/results/thumbnails/${rendertype}.html", $context)
-	</a>
-	#if($primaryimage!=$hit.id)
-	<div class="grid-makeprimary">
-	<a href="$siteroot$applink/components/gridsample/preview/makeprimaryimage.html?assetid=${hit.id}&entityid=$entityid&moduleid=${moduleid}"
-		class="ajax"
-		data-targetdivinner="entitydialog"
-		data-oemaxlevel=""><i class="fas fa-image"></i> [[Make Primary Media]]</a>
-	</div>
-	#end
 
-</div>
+
+	<div class="grid-attachedmedia #if($primaryimage==$hit.id) grid-isprimaryimage #end assetdraggable" data-assetid="$hit.id"> 
+		<a class="stackedplayer imagearea" id="clickid${hit.id}" data-assetid="$hit.id" href="#" title="$!title">
+			$context.putPageValue("hit", $hit)
+			$context.putPageValue("asset", $hit)
+		$pages.include("$componenthome/results/thumbnails/${rendertype}.html", $context)
+		</a>
+		#if($primaryimage!=$hit.id)
+			<div class="grid-makeprimary">
+			<a href="$siteroot$applink/components/gridsample/preview/makeprimaryimage.html?assetid=${hit.id}&entityid=$entityid&moduleid=${moduleid}"
+				class="ajax"
+				data-targetdivinner="entitydialog"
+				data-oemaxlevel=""><i class="fas fa-image"></i> [[Make Primary Media]]</a>
+			</div>
+		#end
+
+	</div>
+
+

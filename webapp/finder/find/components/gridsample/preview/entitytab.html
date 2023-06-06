@@ -43,68 +43,83 @@ $context.putPageValue("edit", $edit)
 
 
 
-<div id="$entitytabid" 
-	class="entity-tab-content #eid($entity.id)tab-content reloadonupload" 
+<div id="$entitytabid"
+	class="#eid($entity.id)tab-content reloadonupload" 
 	data-id="$!entity.id" 
 	data-searchtype="$searchtype"
 	data-autoreloadevents="uploadend"
 	data-url="$componenthome/gridsample/preview/entitytab.html">
 	
+	<div class="entity-tab-content">
 	<div class="entity-metadata #if($module.enableuploading == true) entity-metadata-withmedia #end" id="entitymetadata" data-id="$!entity.getId()" data-searchtype="$!searchtype">
 		$context.putPageValue("id", $entityid)
 		$context.putPageValue("data", $entity)
 		$context.putPageValue("searchtype", $searchtype)
 		$pages.include("$componenthome/gridsample/preview/metadata.html", $context)
 	</div>
+	<div class="clearfix"></div>
 	
 	#if($moduleid && $entityid)
 			#set($defaultfolder =  $mediaarchive.getBean("entityManager").loadDefaultFolder($module, $entity, $context.getUser()))
 			$context.putPageValue("defaultfolder", $defaultfolder)
 	#end
 
-	
-		<div class="entity-media">
 		
-		
-			<div class="entity-actions-bar">
-				#ifnotnull($defaultfolder)		
-				<a href="$applink/components/share/entity.html?moduleid=$moduleid&categoryid=${defaultfolder.getId()}" class="emdialog"><i class="fas fa-share-alt"></i></a>
-				#end
-				#if($moduleid && $canviewsettings)
-				<a href="$applink/views/settings/modules/$moduleid/info/module-setup.html"
-					class="ajax"
-					data-targetdiv="applicationcontainer"
-					data-oemaxlevel="5"
-					data-updateurl="true"
-					data-closedialog="true"
-					title="#text($module) [[Properties]]"><i class="fas fa-cog"></i></a>
-				#end
-			</div>
-		
-		#if($module.enableuploading == true)
-		
-			#ifnotnull($defaultfolder)
-				
-				##$pages.include("$componenthome/categories/entities/listcategories.html",$context)
-				$pages.include("$componenthome/categories/entities/listcategorydetails.html",$context)
-				
-				##$pages.include("$componenthome/gridsample/preview/media/listassets.html",$context)
-			
-			#end
+	<div class="entity-actions-bar">
+		#if($canviewsettings && $entityid)
+		<span style="display:none">Id: $entityid</span>
 		#end
-		</div>
+		
+		#ifnotnull($defaultfolder)
+			
+			<a href="$applink/components/share/entity.html?moduleid=$moduleid&categoryid=${defaultfolder.getId()}" 
+			class="emdialog"
+			title="[[Share]] #text($entity.name)"><i class="fas fa-share-alt"></i></a>
+			
+			#if($canviewsettings)
+			<a href="$applink/views/settings/modules/$moduleid/info/module-setup.html"
+				class="ajax"
+				data-targetdiv="applicationcontainer"
+				data-oemaxlevel="5"
+				data-updateurl="true"
+				data-closedialog="true"
+				title="#text($module) [[Properties]]"><i class="fas fa-cog"></i></a>
+			#end
+			
+			<a href="$applink/views/modules/asset/bycategory/${defaultfolder.getId()}.html" 
+			class="ajax" 
+			data-targetdiv="applicationcontent" 
+			data-oemaxlevel="4" 
+			data-updateurl="true" 
+			data-scrolltocat="true" 
+			data-closedialog="true"
+			title="[[Expand]] #text($entity.name)"><i class="fas fa-window-maximize"></i></a>
+		
+		#end
+		
+		
+		
+	</div>
+		
+	
+	$pages.include("$componenthome/gridsample/preview/metadata-submodules.html",$context)
+
+</div>
+
+		#ifnull($showmedia)
+			#if($module.enableuploading == true)
+				#ifnotnull($defaultfolder)
+			
+					$pages.include("$componenthome/gridsample/preview/media/listassets.html",$context)
+			
+				#end
+			#end	
+		#end
+	
 	
 	<div class="clearfix"></div>
 	
 	
-	$pages.include("$componenthome/gridsample/preview/metadata-submodules.html",$context)
-	
-	
-	#if($canviewsettings && $entityid)
-	<div class="entityidfooter">Id: $entityid</div>
-	#end
-
 </div>
-
 
 ##end
