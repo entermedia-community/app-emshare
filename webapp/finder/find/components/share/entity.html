@@ -7,23 +7,40 @@
 #set($moduleid = $context.getRequestParameter("moduleid"))
 #set($categoryid = $context.getRequestParameter("categoryid"))
 #if($moduleid && $categoryid)
-#set( $sharelink = "$siteroot$apphome/views/modules/asset/bycategory/${categoryid}.html")
+#set( $sharelink = "$siteroot$apphome/views/modules/asset/bycategory/${categoryid}.html?action=viewcategory")
 #end
 #ifnotnull($sharelink )
 <div id="embedalertdialog" style="display:none; position: absolute;" class="alert alert-success fader">[[Copied to Clipboard]]</div>
 	<div style="margin-bottom:20px">
 	<h5>[[Entity Category Page]]:</h5> 
-	<p class="hyphenate" style="margin:5px 0">
-	##<a href="$sharelink">
-	$sharelink
-	##</a>
-	</p>
-	<input style="position:absolute; top:-1000px;" id="previewlink" value="$sharelink" />
-	<a href="#" 
+	<div class="hyphenate" style="margin:5px 0">
+		<span class="sharelink">$sharelink</span> 
+		<a href="#" 
 			class="copytoclipboard btn btn-xxs btn-light"
 			data-targetdiv="embedalertdialog"
 			data-copytext="previewlink" title="[[Copy to Clipboard]]"><i class="far fa-copy"></i> [[Copy]]</a>
+	
+	
+		<input class="sharelink" style="position:absolute; top:-1000px;" id="previewlink" value="$sharelink" />
+	
+		<div class="form-check">
+			<input name="allowview" 
+				class="form-check-input togglesharelink" 
+				id="allowview" checked="" size="8" 
+				type="checkbox"
+			 	 
+			 	data-value="action=viewcategory"
+			 	data-originalurl="$sharelink">
+			<label class="form-check-label" for="allowview">
+			    [[Auto assign view permission]]
+			  </label>
+		</div>
 	</div>
+	</div>
+	
+	##action=viewcategory
+	
+	
 #end
 
 	

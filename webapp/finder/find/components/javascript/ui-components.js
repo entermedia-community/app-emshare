@@ -3731,6 +3731,20 @@ uiload = function() {
 		}
 	};
 	
+	
+	lQuery( ".togglesharelink" ).livequery("change", function(e) {
+		var url = $("input.sharelink").val();
+		var value = $(this).data("value");
+		if(url.includes(value)) {
+			url = url.replace("?"+value, "");
+		}
+		else {
+			url = url + "?" + value;
+		}
+		$("span.sharelink").html(url);
+		$("input.sharelink").val(url);
+	})
+	
 	/*
 	lQuery(".tabletypesubentity .rowclick").livequery("click", function(e) {
 		e.preventDefault();
