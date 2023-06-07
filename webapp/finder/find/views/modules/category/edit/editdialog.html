@@ -4,15 +4,18 @@
 #if( !$viewpath )	
 	#set($viewpath = $context.getRequestParameter("viewpath"))
 #end
-
+#if( !$viewpath )
+	#set($viewpath = "category/$viewid")
+#end
 #set( $moduleid = $context.findValue("module") )
 
 #set($id = $data.id )
 #if( !$id )
 	#set( $id = $context.getRequestParameter("id") )
 #end
+
 #if( !$view )
-	#set($view = $searcherManager.getData($catalogid, "view",$viewid))
+	#set($view = $searcherManager.getData($catalogid, "view", $viewid))
 #end
 
 #if( $view.rendertype )
@@ -20,6 +23,7 @@
 #else
 	#set( $action = "$siteroot$content.searchhome/edit/save.html")
 #end
+
 
 $context.putPageValue("viewid", $view.id)
 
@@ -42,27 +46,28 @@ $context.putPageValue("viewid", $view.id)
     	
     	$context.putPageValue("view", $viewpath)
 
-#set( $origURL = $context.getRequestParameter("origURL" ) )
-#set ( $moduleid = $context.findValue("module") )
-#if($caneditdata)
-$pages.include("/$applicationid/components/xml/detaileditor.html?longform=true", $context)
-#else
-##$pages.include("/$applicationid/components/xml/detaileditor.html?detailsreadonly=true&alwaysshow=true", $context)
-$pages.include("/$applicationid/components/xml/detaileditor.html?detailsreadonly=true&alwaysshow=false", $context)
-#end
-    #if($caneditdata)
-    <input class="btn btn-sm btn-primary float-left" type="submit" value="[[Save]]" style="margin-right:10px;"  />
-    #end
-    #if($caneditdata || $candelete)	
-    	<a class="btn btn-sm btn-secondary float-left ajax" data-targetdiv="editlayout" data-confirm="[[Are you sure]]?" href="$siteroot$content.searchhome/edit/delete.html?id=$data.id&catalogid=$searcher.catalogId&searchtype=$searcher.searchType&viewid=$viewid&viewpath=$viewpath&oemaxlevel=1" style="">[[Delete]]</a>
-    #end
-	#if( $caneditmetadatasetup )
-		<a class="btn btn-sm float-right btn-light ajax" 
-			href="$siteroot$apphome/views/settings/modules/${searcher.searchType}/metadata/views/index.html?viewid=$viewid&viewpath=$viewpath"
-			data-targetdivinner="applicationmaincontent"
-			data-oemaxlevel="4"
-			data-closedialog="true"><i class="fas fa-cog"></i> [[Fields]]</a>
-	#end
+		#set( $origURL = $context.getRequestParameter("origURL" ) )
+		#set ( $moduleid = $context.findValue("module") )
+		#if($caneditdata)
+			$pages.include("/$applicationid/components/xml/detaileditor.html?longform=true", $context)
+		#else
+			##$pages.include("/$applicationid/components/xml/detaileditor.html?detailsreadonly=true&alwaysshow=true", $context)
+			$pages.include("/$applicationid/components/xml/detaileditor.html?detailsreadonly=true&alwaysshow=false", $context)
+		#end
+    
+	    #if($caneditdata)
+	    <input class="btn btn-sm btn-primary float-left" type="submit" value="[[Save]]" style="margin-right:10px;"  />
+	    #end
+	    #if($caneditdata || $candelete)	
+	    	<a class="btn btn-sm btn-secondary float-left ajax" data-targetdiv="editlayout" data-confirm="[[Are you sure]]?" href="$siteroot$content.searchhome/edit/delete.html?id=$data.id&catalogid=$searcher.catalogId&searchtype=$searcher.searchType&viewid=$viewid&viewpath=$viewpath&oemaxlevel=1" style="">[[Delete]]</a>
+	    #end
+		#if( $caneditmetadatasetup )
+			<a class="btn btn-sm float-right btn-light ajax" 
+				href="$siteroot$apphome/views/settings/modules/${searcher.searchType}/metadata/views/index.html?viewid=$viewid&viewpath=$viewpath"
+				data-targetdivinner="applicationmaincontent"
+				data-oemaxlevel="4"
+				data-closedialog="true"><i class="fas fa-cog"></i> [[Fields]]</a>
+		#end
     
     </form>
     

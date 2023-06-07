@@ -41,10 +41,13 @@ $context.putPageValue("moduleid", $moduleid)
 #end
 $context.putPageValue("edit", $edit)
 
-
+#set($entityid = $entity.id)
+#ifnull($entityid)
+	#set($entityid = "")
+#end
 
 <div id="$entitytabid"
-	class="#eid($entity.id)tab-content reloadonupload" 
+	class="#eid($entityid)tab-content reloadonupload" 
 	data-id="$!entity.id" 
 	data-searchtype="$searchtype"
 	data-autoreloadevents="uploadend"
@@ -74,12 +77,15 @@ $context.putPageValue("edit", $edit)
 			
 			<a href="$applink/components/share/entity.html?moduleid=$moduleid&categoryid=${defaultfolder.getId()}" 
 			class="emdialog"
+			data-dialogid="entitysharedialog"
 			title="[[Share]] #text($entity.name)"><i class="fas fa-share-alt"></i></a>
 			
 			#if($canviewsettings)
-			<a href="$applink/views/settings/modules/category/edit/editdialog.html?categoryid=${defaultfolder.getId()}&viewid=categoryentity"
+			<a href="$applink/views/modules/category/edit/editdialog.html?categoryid=${defaultfolder.getId()}&viewid=categoryentity"
 				class="emdialog"
-				title="#text($module) [[Permissions]]"><i class="fas fa-user-lock"></i></a>
+				data-hidefooter="true"
+				data-dialogid="entitypermissionsdialog"
+				title="#text($module)\ #text($entity) [[Permissions]]"><i class="fas fa-user-lock"></i></a>
 				
 				
 			<a href="$applink/views/settings/modules/$moduleid/info/module-setup.html"
