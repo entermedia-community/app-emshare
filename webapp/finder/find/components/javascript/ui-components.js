@@ -1631,6 +1631,9 @@ uiload = function() {
 		if ($(event.target).is("input")) {
 			return true;
 		}
+		if ($(event.target).is("a")) {
+			return true;
+		}
 		var emselectable = clicked.closest("#emselectable");
 		if (emselectable.length < 1) {
 			emselectable = clicked.closest(".emselectable");
@@ -1769,6 +1772,9 @@ uiload = function() {
 		if ($(event.target).is("input")) {
 			return true;
 		}
+		if ($(event.target).is("a")) {
+			return true;
+		}
 		var emselectable = clicked.closest(".emselectableentitymodule");
 		
 		var row = $(clicked.closest("tr"));
@@ -1792,6 +1798,9 @@ uiload = function() {
 			return true;
 		}
 		if ($(event.target).is("input")) {
+			return true;
+		}
+		if ($(event.target).is("a")) {
 			return true;
 		}
 		var emselectable = clicked.closest(".emselectableentity");
@@ -1869,6 +1878,9 @@ uiload = function() {
 			return true;
 		}
 		if ($(event.target).is("input")) {
+			return true;
+		}
+		if ($(event.target).is("a")) {
 			return true;
 		}
 		var emselectable = clicked.closest(".emselectableentityadd");
