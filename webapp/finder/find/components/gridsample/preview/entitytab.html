@@ -46,14 +46,19 @@ $context.putPageValue("edit", $edit)
 	#set($entityid = "")
 #end
 
+#ifnull($showmedia)
+	#set($showmedia = $context.getRequestParameter("showmedia"))
+#end
+$context.putPageValue("showmedia", $showmedia)
+
 <div id="$entitytabid"
-	class="#eid($entityid)tab-content reloadonupload" 
+	class="#eid($entityid)tab-content reloadonupload entity-tab-content" 
 	data-id="$!entity.id" 
 	data-searchtype="$searchtype"
 	data-autoreloadevents="uploadend"
 	data-url="$componenthome/gridsample/preview/entitytab.html">
 	
-	<div class="entity-tab-content">
+	<div>
 	<div class="entity-metadata #if($module.enableuploading == true) Zentity-metadata-withmedia #end" id="entitymetadata" data-id="$!entity.getId()" data-searchtype="$!searchtype">
 		$context.putPageValue("id", $entityid)
 		$context.putPageValue("data", $entity)

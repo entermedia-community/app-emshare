@@ -76,7 +76,13 @@ $context.putPageValue("edit", $edit)
     	<input name="viewid" type="hidden" value="$viewid" />
     	<input name="view" type="hidden" value="$view" />
     	##<input name="hitssessionid" type="hidden" value="$!hits.sessionId" />
-
+	
+		#ifnull($showmedia)
+			#set($showmedia = $context.getRequestParameter("showmedia"))
+		#end
+		#ifnotnull($showmedia)
+			<input name="showmedia" type="hidden" value="$showmedia" />
+		#end
     	
     	$context.putPageValue("view", $view)
     	$context.putPageValue("viewid", $viewid)
@@ -106,7 +112,7 @@ $context.putPageValue("edit", $edit)
 				<button id="closebutton" style="margin-right: 10px;"  type="button" class="btn btn-sm btn-dark" data-dismiss="modal">[[Cancel]]</button>
 			#else
 				<a class="btn btn-sm btn-dark ajax" style="margin-right: 10px;" data-targetdiv="editentitymetadata" 
-					href="$!siteroot$applink/views/modules/$!{moduleid}/components/gridsample/preview/metadata.html?id=$!id&moduleid=$!moduleid">[[Cancel]]</a>
+					href="$!siteroot$applink/views/modules/$!{moduleid}/components/gridsample/preview/metadata.html?id=$!id&moduleid=$!moduleid&showmedia=$!showmedia">[[Cancel]]</a>
 			#end
 		#else
 			<a class="btn btn-sm btn-dark submitform" style="margin-right: 10px;"><i class="fas fa-caret-right"></i> [[Next]]</a>
@@ -137,7 +143,7 @@ $context.putPageValue("edit", $edit)
 	
 	#if($edit!="true")
 		#if($permissions.can($moduleid, "edit"))
-			<a href="$!siteroot$applink/views/modules/$!{moduleid}/components/gridsample/preview/metadata.html?edit=true&id=$!data.id&moduleid=$!moduleid" 
+			<a href="$!siteroot$applink/views/modules/$!{moduleid}/components/gridsample/preview/metadata.html?edit=true&id=$!data.id&moduleid=$!moduleid&showmedia=$!showmedia" 
 				data-targetdiv="editentitymetadata" 
 				class="ajax btn btn-dark" 
 				style="margin-right:10px;"><i class="fas fa-edit"></i> [[Edit]]</a>
