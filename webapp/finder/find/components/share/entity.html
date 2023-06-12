@@ -7,7 +7,8 @@
 #set($moduleid = $context.getRequestParameter("moduleid"))
 #set($categoryid = $context.getRequestParameter("categoryid"))
 #if($moduleid && $categoryid)
-#set( $sharelink = "$siteroot$apphome/views/modules/asset/bycategory/${categoryid}.html?action=viewcategory")
+#set($category = $mediaarchive.getCategory($categoryid))
+#set( $sharelink = "$siteroot$apphome/views/modules/asset/sharefiles/${categoryid}/#dash($category).html")
 #end
 #ifnotnull($sharelink )
 <div id="embedalertdialog" style="display:none; position: absolute;" class="alert alert-success fader">[[Copied to Clipboard]]</div>
@@ -23,18 +24,6 @@
 	
 		<input class="sharelink" style="position:absolute; top:-1000px;" id="previewlink" value="$sharelink" />
 	
-		<div class="form-check">
-			<input name="allowview" 
-				class="form-check-input togglesharelink" 
-				id="allowview" checked="" size="8" 
-				type="checkbox"
-			 	 
-			 	data-value="action=viewcategory"
-			 	data-originalurl="$sharelink">
-			<label class="form-check-label" for="allowview">
-			    [[Auto assign view permission]]
-			  </label>
-		</div>
 	</div>
 	</div>
 	
