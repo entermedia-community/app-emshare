@@ -116,7 +116,7 @@ $(document).ready(function()
 			*/
 				
         //Asset Module
-        reloadurl = home + "/views/modules/asset/bycategory/"+nodeid+".html";
+        reloadurl = home + "/views/modules/asset/viewfiles/"+nodeid+"/" + node.data("categorynameesc") + ".html";
         prefix = reloadurl;
             //}
         }
@@ -464,6 +464,7 @@ $(document).ready(function()
 		var catname = node.data("categorynameesc");
 		
 		var tree = node.closest(".emtree");
+		
 		var link = tree.data("home") + "/views/modules/asset/downloads/bycategory/" + nodeid + "/" + catname +".zip"
 		window.location.href = link;		
 		return false;
