@@ -52,9 +52,41 @@ $context.putPageValue("previewurl", $previewurl)
    	 
    	 	##$!hits.highlight($hit,"name")
    	 	<span>#text($!entity)</span>
-   	 	<div style="float:right"><i class="fas fa-ellipsis-v"></i></div>
    	 	</a>
+   	 	<div style="float:right; padding-right:2px;">
+   	 	   	 
    	 	
+   	 	
+   	 	
+   	#set($defaultfolder =  $mediaarchive.getBean("entityManager").loadDefaultFolder($module, $entity, $context.getUser()))
+	#if($defaultfolder.getId() != $category.getId())
+		##set($sizevalues = $mediaarchive.getBean("entityManager").listTotalSize($defaultfolder.getId(),$context) )
+		##set( $assetshits = $sizevalues.get("hits") )
+		#ifnotnull($defaultfolder)
+			<a 	class="ajax"
+					data-targetdiv="applicationcontent"
+					data-oemaxlevel="5"
+					data-closedialog="true"
+					data-updateurl="true"
+					data-sidebarcomponent="categories"
+					data-scrolltocat="true"
+	   				title="[[View Folder]]: $defaultfolder.getName()"
+	   				
+	   				href="$applink/views/modules/asset/viewfiles/$!{defaultfolder.getId()}/#dash($defaultfolder).html">
+	   		<i class="fas fa-folder"></i></a>
+		#end
+	#end
+	
+	<a href="$previewurl" 
+   	 	class="emdialog entity-dialog emgridresulttitle" 
+   	 	data-hidefooter="true" 
+   	 	data-hideheader="true"
+   	 	id="clickid${entityid}"  
+   	 	data-id="${entityid}"
+   	 	data-moduleid="$!moduleid"
+   	 	title="#text($!entity.name)">
+   	 	<i class="fas fa-ellipsis-v"></i></a>
+   	 	</div>
    	 	
    	 </h3>
    	 
@@ -119,24 +151,7 @@ $context.putPageValue("previewurl", $previewurl)
        
 <div class="grid-gallery-footer">
 #if($module.enableuploading == true)
-	#set($defaultfolder =  $mediaarchive.getBean("entityManager").loadDefaultFolder($module, $entity, $context.getUser()))
-	#if($defaultfolder.getId() != $category.getId())
-		##set($sizevalues = $mediaarchive.getBean("entityManager").listTotalSize($defaultfolder.getId(),$context) )
-		##set( $assetshits = $sizevalues.get("hits") )
-		#ifnotnull($defaultfolder)
-			<a 	class="ajax btn-xs btn-secondary"
-					data-targetdiv="applicationcontent"
-					data-oemaxlevel="4"
-					data-closedialog="true"
-					data-updateurl="true"
-					data-sidebarcomponent="categories"
-					data-scrolltocat="true"
-	   				title="[[View Folder]]: $defaultfolder.getName()"
-	   				
-	   				href="$applink/views/modules/asset/bycategory/$!{defaultfolder.getId()}.html">
-	   		<i class="fas fa-external-link-alt"></i> [[View Files]]</a>
-		#end
-	#end
+
 #end	
 	<div class="emgrid-moredetailsright">
  	$pages.include("$componenthome/gridsample/favorites.html?id=$hit.id&searchtype=$moduleid", $context)
