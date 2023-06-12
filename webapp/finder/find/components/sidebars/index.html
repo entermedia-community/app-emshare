@@ -4,11 +4,16 @@
 	<div class="col-main-inner">
 
 	##force specific sidebar from URL only if sidebars open
-	#set($forcedsidebarcomponent = $context.getRequestParameter("sidebarcomponent")) 
-	#set( $sidebarcomponent = $userprofile.get("sidebarcomponent"))
-	
+	#set($forcedsidebarcomponent = $context.getRequestParameter("sidebarcomponent"))
+	#ifnull($forcedsidebarcomponent)
+		#set($forcedsidebarcomponent = $content.sidebarcomponent)
+	#end 
 	#if($forcedsidebarcomponent)
 		#set( $sidebarcomponent = $forcedsidebarcomponent )
+	#end
+	
+	#ifnull($sidebarcomponent)
+		#set( $sidebarcomponent = $userprofile.get("sidebarcomponent"))
 	#end
 
 	##very first time

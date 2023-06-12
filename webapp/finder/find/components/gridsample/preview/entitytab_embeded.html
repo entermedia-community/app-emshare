@@ -50,6 +50,19 @@ $context.putPageValue("edit", $edit)
 #end
 $context.putPageValue("showmedia", $showmedia)
 
+
+<div class="emgrid-subtitle">	
+	<h3>
+		#set($moduleicon = "entity")
+    	#ifnull($module.moduleicon)
+    		#set($moduleicon = $module.moduleicon)
+    	#end
+    	<img src="$siteroot$apphome/theme/images/entity/${moduleicon}.svg" style="height: 23px;"> 
+		<span class="entity-tab-label-type">#text($module)</span> 
+	</h3>
+</div>
+<div class="clearfix"></div>
+
 <div id="$entitytabid"
 	class="#eid($entityid)tab-content reloadonupload entity-tab-content" 
 	data-id="$!entity.id" 
@@ -67,55 +80,9 @@ $context.putPageValue("showmedia", $showmedia)
 	<div class="clearfix"></div>
 	
 	#if($moduleid && $entityid)
-			#set($defaultfolder =  $mediaarchive.getBean("entityManager").loadDefaultFolder($module, $entity, $context.getUser()))
-			$context.putPageValue("defaultfolder", $defaultfolder)
+		#set($defaultfolder =  $mediaarchive.getBean("entityManager").loadDefaultFolder($module, $entity, $context.getUser()))
+		$context.putPageValue("defaultfolder", $defaultfolder)
 	#end
-
-		
-	<div class="entity-actions-bar">
-		#if($canviewsettings && $entityid)
-		<span style="display:none">Id: $entityid</span>
-		#end
-		
-		#ifnotnull($defaultfolder)
-			
-			<a href="$applink/components/share/entity.html?moduleid=$moduleid&categoryid=${defaultfolder.getId()}" 
-			class="emdialog"
-			data-dialogid="entitysharedialog"
-			title="[[Share]] #text($entity.name)"><i class="fas fa-share-alt"></i></a>
-			
-			#if($canviewsettings)
-			<a href="$applink/views/modules/category/edit/editdialog.html?categoryid=${defaultfolder.getId()}&viewid=categoryentity"
-				class="emdialog"
-				data-hidefooter="true"
-				data-dialogid="entitypermissionsdialog"
-				title="#text($module)\ #text($entity) [[Permissions]]"><i class="fas fa-user-lock"></i></a>
-				
-				
-			<a href="$applink/views/settings/modules/$moduleid/info/module-setup.html"
-				class="ajax"
-				data-targetdiv="applicationcontainer"
-				data-oemaxlevel="5"
-				data-updateurl="true"
-				data-closedialog="true"
-				title="#text($module) [[Properties]]"><i class="fas fa-cog"></i></a>
-			#end
-			
-			<a href="$applink/views/modules/asset/bycategory/${defaultfolder.getId()}.html" 
-			class="ajax" 
-			data-targetdiv="applicationcontent" 
-			data-oemaxlevel="4" 
-			data-updateurl="true" 
-			data-scrolltocat="true" 
-			data-closedialog="true"
-			title="[[Expand]] #text($entity.name)"><i class="fas fa-window-maximize"></i></a>
-		
-		#end
-		
-		
-		
-	</div>
-		
 	
 	$pages.include("$componenthome/gridsample/preview/metadata-submodules.html",$context)
 

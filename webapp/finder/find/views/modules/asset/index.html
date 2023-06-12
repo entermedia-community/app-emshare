@@ -13,48 +13,48 @@
 
 #set( $entities = $userprofile.getEntitiesInParent($category) )
 
-	#if( $category)
+#if( $category)
 	$pages.include("$apphome/views/modules/category/showchildren.html", $context)
-	#end
+#end
 	
 
 
 <div class="emgrid-box expandedmodule" style=" margin:0 10px 10px;">
-
-	
-	#if(!$entities.isEmpty())
-	<div class="entitiesontop">
-		#foreach ( $data in $entities)
-			#set($entity = $data.getData())
-			#set($emoduleid = $data.getModuleId()) 
-			
-			#set($emodule = $mediaarchive.getData("module", $emoduleid))
-			
-			#set($rendertype = $emodule.modulerendertype)
-			#if (!$rendertype)
-	   			#set($rendertype = "entity")
+	#set($showentitiesheader = $content.showentitiesheader)
+	#ifnull($showentitiesheader)
+		#if(!$entities.isEmpty())
+		<div class="entitiesontop">
+			#foreach ( $data in $entities)
+				#set($entity = $data.getData())
+				#set($emoduleid = $data.getModuleId()) 
+				
+				#set($emodule = $mediaarchive.getData("module", $emoduleid))
+				
+				#set($rendertype = $emodule.modulerendertype)
+				#if (!$rendertype)
+		   			#set($rendertype = "entity")
+				#end
+				$context.putPageValue("rendertype", $rendertype)
+				$context.putPageValue("rendermoduleid", $emoduleid)
+				
+				#set($moduleicon = "entity")
+		     	#if ($emodule.moduleicon)
+		     		#set($moduleicon = $emodule.moduleicon)
+		     	#end
+			     	
+			     	
+				#set($previewurl = "$!{siteroot}$apphome/views/modules/$!{emoduleid}/components/gridsample/preview/${rendertype}.html?id=$entity.getId()&hitssessionid=$!hits.sessionId")
+				
+				$context.putPageValue("hit", $entity)
+				<div class="entitycelltop">
+				$pages.include("$apphome/views/modules/$!{emoduleid}/components/gridsample/preview/${rendertype}_embeded.html?id=$entity.id", $context)
+				</div>
+				
 			#end
-			$context.putPageValue("rendertype", $rendertype)
-			$context.putPageValue("rendermoduleid", $emoduleid)
-			
-			#set($moduleicon = "entity")
-	     	#if ($emodule.moduleicon)
-	     		#set($moduleicon = $emodule.moduleicon)
-	     	#end
-		     	
-		     	
-			#set($previewurl = "$!{siteroot}$apphome/views/modules/$!{emoduleid}/components/gridsample/preview/${rendertype}.html?id=$entity.getId()&hitssessionid=$!hits.sessionId")
-			
-			$context.putPageValue("hit", $entity)
-			<div class="entitycelltop">
-			$pages.include("$apphome/views/modules/$!{emoduleid}/components/gridsample/preview/embedded_${rendertype}.html?id=$entity.id", $context)
-			</div>
-			
+			<div class="clearfix"></div>
+		</div>
 		#end
-		<div class="clearfix"></div>
-	</div>
 	#end
-	
 	
 	<div class="expandedgrid-subtitle">
  		
