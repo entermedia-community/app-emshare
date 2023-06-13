@@ -27,7 +27,8 @@ public void init()
 		log.info("Scanning: " + module + "for " + startingpath);
 		//scan folders till deep
 		Category root = mediaArchive.createCategoryPath(startingpath);
-		processChildren(mediaArchive, module, root,deeplevel, 1);		
+		int count = root.getParentCategories().size();
+		processChildren(mediaArchive, module, root,deeplevel, count);		
 	}	
 }
 public void processChildren(MediaArchive mediaArchive, Data inmodule, Category parent, int startfromdeep, int currentdeep)
