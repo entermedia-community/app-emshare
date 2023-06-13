@@ -301,7 +301,9 @@ $(document).ready(function()
 									{
 										$("." + classname).each(function(index,div)
 										{
-									  	 	autoreload($(div));
+											if(!$(div).is(':hidden')) {
+									  	 		autoreload($(div));
+									  	 	}
 										});
 									});
 								}
