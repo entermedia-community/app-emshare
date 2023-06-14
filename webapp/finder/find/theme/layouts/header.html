@@ -85,7 +85,17 @@
 	
 	<div class="logocontainer">
 		<a class="emlogo" href="$!{siteroot}$apphome/index.html" title="[[eMediaWorkspace]]">
-			<span><img src="$!{siteroot}$themeprefix/images/logo.png" alt="[[eMediaWorkspace]]" /></span>
+		#ifnotnull($category)
+			#set( $assetid = $category.findValue("headercategoryimage") )
+			#ifnotnull($assetid)
+				#set($logoasset = $mediaarchive.getCachedData("asset",$assetid))
+				#set($logourl = $mediaarchive.asLinkToOriginal($logoasset))
+			#end
+		#end
+		#ifnull( $logourl)
+			#set( $logourl = "$!{siteroot}$themeprefix/images/logo.png")
+		#end
+			<span><img src="$logourl" alt="[[eMediaWorkspace]]" /></span>
 		</a>
 	</div>
 		
@@ -96,54 +106,3 @@
 	    #end
 	</div>
 </div>
-
-
-##Move This to entermedia.js
-#set($siteroot = $context.getSiteRoot())
-#set($siteroot = $siteroot.replace("http://","https://"))
-
-<script>
-var emKey = "#esc($userprofile.entermediacloudkey)";
-if (emKey) {
-	emKey = encodeURIComponent(emKey);	
-	
-	const rootsite='$workspaceproviderurl';
-	$(".workspaces").on('click', function() {	
-		var href = '$!{siteroot}/entermediadb/mediadb/services/authentication/workspacesonteam.json?noredirect=true&entermedia.key=$!{emKey}'; // TODO: call in java		
-		$('#workspacelist').html('');
-		$.ajax({type: "GET", url: href, crossDomain: true, 
-	        success:function(result) {	        	
-	        	if (result.status === "error") {
-	        		const url = '<a class="dropdown-item" target="_blank" href="https://emediafinder.com">eMediaFinder.com</a>';
-	        	  	$('#workspacelist').append(url);
-	        		return;
-	        	}	        	
-	        	if (result.workspaces.length > 0) {
-		        	$.each(result.workspaces, function (i, ws) {
-		        		console.log(result);
-		        		const url = '<a class="dropdown-item" href="'
-		        		 	+ ws.url + '/finder/find/startmediaboat.html?'
-		        			+ 'entermediacloudkey=' + result.userKey 
-		        			+ "&collectionid=" + ws.collectionid + '">'
-		        			+ ws.name + '</a>';
-		        	    $('#workspacelist').append(url);
-		        	});
-	        	} else {
-	        		const url = '<a class="dropdown-item" target="_blank" href="https://emediafinder.com/app/workspaces/index.html">Create a Workspace</a>';
-		        	$('#workspacelist').append(url);
-		            return;
-	        	}
-	        },
-	        error:function(result) {
-	        }
-	    });
-	});
-} else {
-	const url = '<a class="dropdown-item" target="_blank" href="https://emediafinder.com">eMediaFinder.com</a>';
-  	$('#workspacelist').append(url);
-}
-
-//url: href, async: false, data: {}, success: function (data) {		
-//	console.log('thing');
-//}
-</script>
