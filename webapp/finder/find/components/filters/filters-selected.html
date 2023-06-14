@@ -99,55 +99,55 @@
 #end
 
 ### ENTITIES
-
-#set( $entities = $userprofile.getEntitiesInParent($category) )
-#if(!$entities.isEmpty())
-<div class="category-entities-actions">
-	#foreach ( $data in $entities)
-		#set($entity = $data.getData())
-		#set($entityid = $data.getId())
-		#set($emoduleid = $data.getModuleId()) 
-		
-		#set($emodule = $mediaarchive.getData("module", $emoduleid))
-		
-		#set($rendertype = $emodule.modulerendertype)
-		#if (!$rendertype)
-   			#set($rendertype = "entity")
+#if($canviewentitiesbreadcrumb)
+	#set( $entities = $userprofile.getEntitiesInParent($category) )
+	#if(!$entities.isEmpty())
+	<div class="category-entities-actions">
+		#foreach ( $data in $entities)
+			#set($entity = $data.getData())
+			#set($entityid = $data.getId())
+			#set($emoduleid = $data.getModuleId()) 
+			
+			#set($emodule = $mediaarchive.getData("module", $emoduleid))
+			
+			#set($rendertype = $emodule.modulerendertype)
+			#if (!$rendertype)
+	   			#set($rendertype = "entity")
+			#end
+			$context.putPageValue("rendertype", $rendertype)
+			$context.putPageValue("rendermoduleid", $emoduleid)
+			
+			#set($moduleicon = "entity")
+	     	#if ($emodule.moduleicon)
+	     		#set($moduleicon = $emodule.moduleicon)
+	     	#end
+		     	
+			#set($previewurl = "$!{siteroot}$apphome/views/modules/$!{emoduleid}/components/gridsample/preview/${rendertype}.html?id=$entity.getId()&hitssessionid=$!hits.sessionId")
+			
+			$context.putPageValue("hit", $entity)
+			
+			#set($moduleicon = "entity")
+	    	#if ($module.moduleicon)
+	    		#set($moduleicon = $module.moduleicon)
+	    	#end
+	    	
+			<div class="category-entity">    	
+				<a href="$previewurl" 
+		   	 	class="emdialog entity-dialog emgridresulttitle " 
+		   	 	data-hidefooter="true" 
+		   	 	data-hideheader="true"
+		   	 	id="clickid${entityid}"  
+		   	 	data-id="${entityid}"
+		   	 	data-moduleid="$!emoduleid"
+		   	 	title="#text($!entity.name)">
+		   	 	<img src="$siteroot$apphome/theme/images/entity/${moduleicon}.svg" style="height: 23px;">
+		   	 	#text($emodule) \ #text($entity)&nbsp; <i class="fas fa-external-link-alt"></i></a>
+	   	 	</div>
 		#end
-		$context.putPageValue("rendertype", $rendertype)
-		$context.putPageValue("rendermoduleid", $emoduleid)
-		
-		#set($moduleicon = "entity")
-     	#if ($emodule.moduleicon)
-     		#set($moduleicon = $emodule.moduleicon)
-     	#end
-	     	
-		#set($previewurl = "$!{siteroot}$apphome/views/modules/$!{emoduleid}/components/gridsample/preview/${rendertype}.html?id=$entity.getId()&hitssessionid=$!hits.sessionId")
-		
-		$context.putPageValue("hit", $entity)
-		
-		#set($moduleicon = "entity")
-    	#if ($module.moduleicon)
-    		#set($moduleicon = $module.moduleicon)
-    	#end
-    	
-		<div class="category-entity">    	
-			<a href="$previewurl" 
-	   	 	class="emdialog entity-dialog emgridresulttitle " 
-	   	 	data-hidefooter="true" 
-	   	 	data-hideheader="true"
-	   	 	id="clickid${entityid}"  
-	   	 	data-id="${entityid}"
-	   	 	data-moduleid="$!emoduleid"
-	   	 	title="#text($!entity.name)">
-	   	 	<img src="$siteroot$apphome/theme/images/entity/${moduleicon}.svg" style="height: 23px;">
-	   	 	#text($emodule) \ #text($entity)&nbsp; <i class="fas fa-external-link-alt"></i></a>
-   	 	</div>
+		<div class="clearfix"></div>
+	</div>
 	#end
-	<div class="clearfix"></div>
-</div>
 #end
-
 
 #set( $terms = $hits.getFilteredTerms($context,"advancedfilter") )
 
