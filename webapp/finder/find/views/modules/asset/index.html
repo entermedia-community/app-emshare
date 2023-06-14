@@ -73,33 +73,34 @@
 				 <span class="count">($count)</span>
 		</h3>
 		</div>
-
+	#if($canviewupload || $candownloadcategoryzip)
 	<div class="expandedentityactions">
-		##if($permissions.can($moduleid, "upload_files"))
+		
 		#if($canviewupload)
-		<a href="$!{siteroot}$apphome/views/modules/asset/add/start.html" 			
-			class="btn-sm btn-blue ajax"
-			data-targetdivinner="applicationmaincontent"
-			data-oemaxlevel="2"
-			data-categoryid="$category.getId()"
-			data-clearotherentities="true"
-			title="[[Upload Media to]]: #text($category)">
-		<i class="fas fa-file-upload"></i> [[Upload]]</a>
+			<a href="$!{siteroot}$apphome/views/modules/asset/add/start.html" 			
+				class="btn-sm btn-blue ajax"
+				data-targetdivinner="applicationmaincontent"
+				data-oemaxlevel="2"
+				data-categoryid="$category.getId()"
+				data-clearotherentities="true"
+				title="[[Upload Media to]]: #text($category)">
+			<i class="fas fa-file-upload"></i> [[Upload]]</a>
 		#end
 		<div class="loadericon" 
 			style="padding:0px 4px 4px 6px; "><i class="fas fa-spinner fa-spin"></i></div>
 			
    		
-   		#if($category)
-		<a	class="btn-sm btn-blue "
-  				title="[[Download]]: $category.getName()"
-  				href="$applink/views/modules/asset/downloads/bycategory/${category.id}/#eid($category.name).zip">
-  				<i class="fa fa-download" aria-hidden="true"></i> [[Download]]</a>
+   		#if($candownloadcategoryzip)
+	   		#if($category)
+			<a	class="btn-sm btn-blue "
+	  				title="[[Download]]: $category.getName()"
+	  				href="$applink/views/modules/asset/downloads/bycategory/${category.id}/#eid($category.name).zip">
+	  				<i class="fa fa-download" aria-hidden="true"></i> [[Download]]</a>
+			#end
 		#end
 			
-			
 	</div>	
-		
+	#end
 	
 		
 	
