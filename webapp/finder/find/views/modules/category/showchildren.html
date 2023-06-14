@@ -1,5 +1,5 @@
 <div class="childcategorieslist">
-#foreach( $child in $category.getChildren())
+#foreach( $child in $mediaarchive.query("category").exact("parentid",$category.getId()).sort("name").search($context) )
 		<a style="padding:0px 6px 0 4px;" 
 			href="$siteroot$apphome/views/modules/asset/viewfiles/$!{child.id}/#dash($child).html?hitssessionid=$!hits.getSessionId()"
 			title="[[View Files]]: $child"
