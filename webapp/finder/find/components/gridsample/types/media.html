@@ -26,8 +26,9 @@
    	</div>
 	    		
 	    		
-  	##Caption
+  	##Caption	
   	<div class="grid-caption grid-caption-${rendertype} #if($rendertype=="default") grid-caption-show #end  draggholder" data-assetid="$!hit.id">
+  	
   	 	 #if($stackedfield)
 	       	#set($title = $asset.getText($stackedfield,$context))
 		 #end
@@ -76,10 +77,17 @@
 		#end
       
            
-        <div class="grid-gallery-footer"> 
+        <div class="grid-gallery-footer">
+	        ##look for datefields
+			#foreach( $detail in $details )
+				#if($detail.getId() == "assetaddeddate")
+					#set( $assetdate = $hit.getValue($detail.getId()))
+				#end
+			#end
+        	
       	   	$pages.include("$componenthome/results/badges.html", $context)
-	         #if ($hit.assetaddeddate)
-	         	$!context.getDate($hit.assetaddeddate)
+	        #ifnotnull ($assetdate)
+	         	$!context.getDate($assetdate)
 	         #end
 	         <div class="float-right">
 			

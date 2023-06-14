@@ -55,6 +55,20 @@ $context.putPageValue("filter", $filter)
 	   	$context.putPageValue("rendertype", $rendertype)
 	   	$context.putPageValue("rendermoduleid", $module.id)
 	   	
+	   	##check for view
+		#set($viewid = "${moduleid}gridfields")
+		#set($view = "$moduleid/$viewid")
+
+		#if( $context.getUserProfile() )
+			#set($searcher = $searcherManager.getSearcher($catalogid,$moduleid))
+			#set ($details = $searcher.getDetailsForView($view, $context.getUserProfile()))
+			
+		#else
+			#set ($details = $searcher.getDetailsForView($view))
+			
+		#end
+	   	$context.putPageValue("details", $details)
+	   	
 		<div id="galleryimg-${rendertype}" 
 				class='emgrid #if($section != "favorites")emgridlimited#end entitiescontainer' 
 				data-colwidth="360" 

@@ -5,6 +5,20 @@
 	#set ( $ismodulesearch = $context.getRequestParameter("ismodulesearch") )
 #end
 
+##check for view
+#set($viewid = "${moduleid}gridfields")
+#set($view = "$moduleid/$viewid")
+
+#if( $context.getUserProfile() )
+	#set($searcher = $searcherManager.getSearcher($catalogid,$moduleid))
+	#set ($details = $searcher.getDetailsForView($view, $context.getUserProfile()))
+	
+#else
+	#set ($details = $searcher.getDetailsForView($view))
+	
+#end
+  	$context.putPageValue("details", $details)
+
 <div id="resultsdiv" 
 	data-hitssessionid="$!hits.getSessionId()" ##it breaks drag&drop
 	#if($ismodulesearch != "true")
@@ -117,35 +131,39 @@
 					</a>
 			        <div class="grid-gallery-footer"> 
 	        	   	$pages.include("$componenthome/results/badges.html", $context)
-			         #ifnotnull($hit.assetcreationdate)
-			         	$!context.getDate($hit.assetcreationdate)
-			         #end
-			         #ifnull($hit.assetcreationdate)
-			         #ifnotnull($hit.assetaddeddate)
-			         $!context.getDate($hit.assetaddeddate)
-			         #end
-			         #end
-					#if($canaddtofavorites)
-	  	        	<div id="gsassetfavorite-${hit.id}" class="media-info-icons">
-			        	 $pages.include("$apphome/views/modules/asset/editor/favorite/index.html?targetdiv=gsassetfavorite", $context)
-			   		</div>
-	  	        	#end
-	  	        	#if($canquickdownload)
-		  	        	#if( $desktop )
-				        	<a href="#" class="emdesktopdownload grid-gallery-download" data-assetid="$hit.id" title="[[Download]] #esc($!title)">
-				        	<i class="fas fa-download"> </i>
-				        	</a>
-			        	#else
-							#set($dlink = $mediaarchive.asLinkToOriginal($hit))
-							#set($dlink = "$siteroot/$mediadbappid/services/module/asset/downloads/originals/$dlink?assetid=$!hit.getId()")
-							#if($collectionid)
-								#set($dlink = "$dlink&collectionid=$!{collectionid}")
+	        	   		 ##look for datefields
+						#foreach( $detail in $details )
+							#if($detail.getId() == "assetaddeddate")
+								#set( $assetdate = $hit.getValue($detail.getId()))
 							#end
-				        	<a href="$dlink" class="grid-gallery-download" data-assetid="$hit.id" title="[[Download]] #esc($!title)">
-				        	<i class="fas fa-download"> </i>
-				        	</a>
-			        	#end
-			        #end 
+						#end
+						
+						#ifnotnull ($assetdate)
+				         	$!context.getDate($assetdate)
+				         #end
+			        	 <div class="float-right">
+							#if($canaddtofavorites)
+			  	        	<div id="gsassetfavorite-${hit.id}" class="media-info-icons">
+					        	 $pages.include("$apphome/views/modules/asset/editor/favorite/index.html?targetdiv=gsassetfavorite", $context)
+					   		</div>
+			  	        	#end
+			  	        	#if($canquickdownload)
+				  	        	#if( $desktop )
+						        	<a href="#" class="emdesktopdownload grid-gallery-download" data-assetid="$hit.id" title="[[Download]] #esc($!title)">
+						        	<i class="fas fa-download"> </i>
+						        	</a>
+					        	#else
+									#set($dlink = $mediaarchive.asLinkToOriginal($hit))
+									#set($dlink = "$siteroot/$mediadbappid/services/module/asset/downloads/originals/$dlink?assetid=$!hit.getId()")
+									#if($collectionid)
+										#set($dlink = "$dlink&collectionid=$!{collectionid}")
+									#end
+						        	<a href="$dlink" class="grid-gallery-download" data-assetid="$hit.id" title="[[Download]] #esc($!title)">
+						        	<i class="fas fa-download"> </i>
+						        	</a>
+					        	#end
+					        #end 
+					        </div>
 		        	</div>
 		       </div>
 		 
