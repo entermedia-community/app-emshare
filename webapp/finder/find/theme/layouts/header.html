@@ -9,7 +9,6 @@
 #end
 #if($user)
 <div class="emheader">
-	#set( $workspaceproviderurl = $mediaarchive.getCatalogSettingValue("workspace-provider-url"))
 
 	<nav class="navbar navbar-dark justify-content-between">
 		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
@@ -51,24 +50,12 @@
    				#end
 			
 			
-			<li class="nav-item dropdown workspacedropmenu" id="workspacedropmenu">
-				<a class="nav-link dropdown-toggle workspaces" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-	              [[My Workspaces]]
-	            </a>
-		        <div id="workspacelist" class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">	</div>
-			</li>
-			#set( $workspaceid = $mediaarchive.getCatalogSettingsValue("workspace-id"))
-			#if( $workspaceid )
-			<li class="nav-item">
-				<a class="nav-link" href="${workspaceproviderurl}/app/collective/community/index.html?collectionid=$workspaceid">[[Workspace Team]]</a>
-			</li>
-			#end
 		
 			#if( $user )
 		    	#if( $canviewmyaccount ) 
 		    		<li class="nav-item"><a class="nav-link ajax" data-targetdivinner="applicationmaincontent" data-updateurl="true" data-oemaxlevel="2" href="$!siteroot$apphome/views/myaccount/index.html"  title="[[Account Settings]]">[[My Account]]</a></li>
 		    	#end 
-		    	<li  class="nav-item"><a class="nav-link" href="$!siteroot$apphome/authentication/logout.html" title="[[Logout]]">[[Logout]]</a></li> 
+		    	<li  class="nav-item"><a class="nav-link" href="$!siteroot$apphome/authentication/logout.html" title="[[Logout]]">[[Logout]] $user</a></li> 
 		    #else 
 		    	<li  class="nav-item"><a class="nav-link" href="$!siteroot$apphome/authentication/login.html"  title="[[Login]]">[[Login]]</a></li> 
 		    #end
