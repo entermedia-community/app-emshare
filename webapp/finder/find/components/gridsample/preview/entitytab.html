@@ -79,10 +79,12 @@ $context.putPageValue("showmedia", $showmedia)
 		
 		#ifnotnull($defaultfolder)
 			
+			#if($permissions.can($moduleid, "share"))
 			<a href="$applink/components/share/entity.html?moduleid=$moduleid&categoryid=${defaultfolder.getId()}" 
 			class="emdialog"
 			data-dialogid="entitysharedialog"
 			title="[[Share]] #text($entity.name)"><i class="fas fa-share-alt"></i></a>
+			#end
 			
 			#if($canviewsettings)
 			<a href="$applink/views/modules/$moduleid/edit/editdialog.html?id=${entityid}&viewid=entitypermissions"
