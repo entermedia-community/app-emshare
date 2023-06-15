@@ -71,10 +71,17 @@
 		#end
 		
 		#if( $canaddtofavorites && $librarycol.id != "${user.id}-favorites" )
-			<a class="dropdown-item " 
+			<a class="dropdown-item ajax"
+				data-targetdiv="application"
+				data-oemaxlevel="5" 
 			   title="[[Add to Favorites]]"  
-			   href="$siteroot$apphome/views/modules/librarycollection/media/addselections.html?hitssessionid=$hits.getSessionId()&searchtype=asset&collectionid=${user.id}-favorites">[[Add To Favorites]]</a>
+			   ##href="$siteroot$apphome/views/modules/librarycollection/media/addselections.html?hitssessionid=$hits.getSessionId()&searchtype=asset&collectionid=${user.id}-favorites"
+			   href="$siteroot$apphome/views/modules/asset/editor/favorite/favorite-add.html?multiedit:$hits.getSessionId()&searchtype=asset"
+			   >
+			   [[Add To Favorites]]</a>
 		#end
+		
+		
 		#if ($canmultiedit && $hits.getSelectionSize() && $hits.getSelectionSize() > 1)
   				#set($text = "[[Multi Edit]] ($hits.getSelectionSize())")
 				<a id="multiedit-menu" class="dropdown-item" href="#" title="[[Edit selected records]]">$text</a>
