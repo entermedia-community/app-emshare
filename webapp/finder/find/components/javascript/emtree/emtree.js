@@ -60,7 +60,7 @@ $(document).ready(function()
         }
         else {  //Regular Tree
         	var options  = [];
-        	options["oemaxlevel"] = 3;	
+        	options["oemaxlevel"] = 5;	
             gotopage(tree, node, maxlevel, prefix, options);
         }
 		var event = $.Event( "emtreeselect" );

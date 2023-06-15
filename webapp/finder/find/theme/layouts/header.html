@@ -71,7 +71,7 @@
 	style="#if($sidebarcomponent  && $sidebarwidth) margin-left:${sidebarwidth}px;#end">
 	
 	<div class="logocontainer">
-		<a class="emlogo" href="$!{siteroot}$apphome/index.html" title="[[eMediaWorkspace]]">
+		
 		#ifnotnull($category)
 			#set( $assetid = $category.findValue("headercategoryimage") )
 			#ifnotnull($assetid)
@@ -79,12 +79,21 @@
 				#set($logourl = $mediaarchive.asLinkToOriginal($logoasset))
 				#set($logourl = "$siteroot/$mediadbappid/services/module/asset/downloads/originals/${logourl}")
 			#end
+			#ifnotnull( $logourl)
+			<a class="emlogo-custom" href="$!{siteroot}$apphome/index.html" title="[[eMediaWorkspace]]">	
+			<span><img src="$logourl" alt="[[eMediaWorkspace]]" /></span>
+			</a>
+			#end
 		#end
 		#ifnull( $logourl)
 			#set( $logourl = "$!{siteroot}$themeprefix/images/logo.png")
-		#end
+			
+			<a class="emlogo" href="$!{siteroot}$apphome/index.html" title="[[eMediaWorkspace]]">	
 			<span><img src="$logourl" alt="[[eMediaWorkspace]]" /></span>
-		</a>
+			</a>
+		#end
+			
+		
 	</div>
 		
 	  ###if(!$hidefilters)
