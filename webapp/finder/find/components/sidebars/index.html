@@ -1,5 +1,15 @@
 #set ($moduleid = $module.getId())
-<div  id="col-sidebars" class="col-sidebars-sticky sidebarcontent" data-url="$applink/components/sidebars/index.html" >
+<div  id="col-sidebars" class="col-sidebars-sticky sidebarcontent"
+	#set( $title = $mediaarchive.getCatalogSettingValue("sitetitle"))
+	#set( $section = $context.getRequestParameter("sitetitle"))
+	#ifnotnull( $section )
+		data-setpagetitle="#text($section) - $title" 
+	#end
+	#ifnull( $section )
+		data-setpagetitle="$title"
+	#end	
+
+ data-url="$applink/components/sidebars/index.html" >
 	<div class="col-main col-sidebar-togglers sidebar-togglers-bar">
 	<div class="col-main-inner">
 
@@ -29,6 +39,7 @@
 			data-oemaxlevel="4"
 			data-sidebarcomponent="home"
 			data-updateurl="true"
+			data-sitetitle="[[Home]]"
 			title="[[eMediaWorkspace Home]]">
 		<i class="fas fa-home"></i> 
 		</a>
@@ -42,6 +53,7 @@
 			data-targetdiv="col-sidebars"
 			data-sidebar="guide"
 			data-modulesearchhitssessionid="$modulehits.sessionId"
+			data-sitetitle="[[User Guide]]"
 			title="[[User Guide]]">
 		<i class="fas fa-question-circle"></i> 
 		</a>
@@ -64,6 +76,7 @@
 				data-targetdiv="col-sidebars"
 			#end
 			data-modulesearchhitssessionid="$!modulehits.sessionId"
+			data-sitetitle="[[Search]]"
 			title="[[Search]]">
 		<i class="fas fa-filter"></i>
 		</a>
@@ -80,6 +93,7 @@
 			data-action="show"
 			data-targetdiv="col-sidebars"
 			data-sidebar="topics"
+			data-sitetitle="[[Tags]]"
 		title="[[Tags]]">
 		<i class="fas fa-tags"></i>
 		</a>
@@ -93,8 +107,9 @@
 				data-action="show" 
 				data-targetdiv="col-sidebars"
 				data-sidebar="categories"
+				data-sitetitle="[[Cloud Folders]]"
 				data-modulesearchhitssessionid="$!modulehits.sessionId"
-			title="[[Show Categories]]">
+			title="[[Cloud Folders]]">
 			<i class="fas fa-folder"></i>
 			</a>
 			</div>
@@ -108,6 +123,7 @@
 			data-targetdiv="col-sidebars"
 			data-sidebar="libraries"
 			data-modulesearchhitssessionid="$!modulehits.sessionId"
+			data-sitetitle="[[Albums]]"
 		title="[[Recent Albums]]">
 		<i class="fas fa-sitemap"></i> 
 		</a>
@@ -192,6 +208,7 @@
 				data-targetdiv="col-sidebars"
 				data-sidebar="settings"
 				data-modulesearchhitssessionid="$!modulehits.sessionId"
+				data-sitetitle="[[Settings]]"
 			title="[[Settings]]">
 			<i class="fas fa-cog"></i>
 			</a>
