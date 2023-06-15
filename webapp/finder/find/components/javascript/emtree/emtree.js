@@ -175,7 +175,7 @@ $(document).ready(function()
 				function(data) 
 				{
 					var targetdivinner = tree.data("targetdivinner");
-					if( targetdivinner)
+					if( targetdivinner && targetdiv != undefined)
 					{
 						var cell = jQuery("#" + targetdivinner); 
 						cell.html(data);

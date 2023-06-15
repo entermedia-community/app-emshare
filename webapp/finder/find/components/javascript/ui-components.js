@@ -1575,7 +1575,7 @@ uiload = function() {
 		if (clicked.attr("noclick") == "true") {
 			return true;
 		}
-		if( $(e.target).is("input") || $(e.target).is("a"))
+		if( $(event.target).is("input") || $(event.target).is("a"))
 		{
 			return true;
 		}
