@@ -174,6 +174,7 @@ $(document).ready(function()
 		jQuery.get(prefix, options,	
 				function(data) 
 				{
+					data = $(data);
 					var targetdivinner = tree.data("targetdivinner");
 					if( targetdivinner && targetdiv != undefined)
 					{
@@ -199,6 +200,11 @@ $(document).ready(function()
 							history.pushState($("#application").html(), null, reloadurl);
 						}
 					}
+					var setpagetitle = data.data("setpagetitle");
+					if( setpagetitle) {
+						document.title = setpagetitle;
+					}			
+
 					
 					$(window).trigger( "resize" );
 				}

@@ -9,6 +9,20 @@
 	data-browserlanguage="$!{browserlanguage}" 
 	data-componenthome="$componenthome"
 	data-moduleid="$!module.getId()" 
+
+	#set( $title = $mediaarchive.getCatalogSettingValue("sitetitle"))
+	#ifnotnull( $category )
+		data-setpagetitle="#text($category) - $title" 
+	#end
+	#ifnull( $category )
+		#ifnotnull($module)
+			data-setpagetitle="#text($module) - $title"
+		#end	
+		#ifnull($module)
+			data-setpagetitle="$title"
+		#end	
+	#end	
+
 	data-mediadbappid="$!mediaarchive.getMediaDbId()"
 	data-entermediakey="$!mediaarchive.getUserManager().getEnterMediaKey($user)"
 	data-editmode='$!user.get("oe_edit_mode")'>

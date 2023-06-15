@@ -171,6 +171,12 @@ runajaxonthis = function(inlink,e)
 		jQuery.ajax({
 			url: nextpage, data: options, success: function (data) {
 				var cell;
+				data = $(data);
+				var setpagetitle = data.data("setpagetitle");
+				if( setpagetitle) {
+					document.title = setpagetitle;
+				}			
+
 				if(useparent && useparent == "true")
 				{
 					cell = $("#" + targetDiv, window.parent.document);
@@ -218,7 +224,6 @@ runajaxonthis = function(inlink,e)
 				
 				//window.addEventListener("hashchange", function(e) { reload using ajax
 			}
-			
 			var scrolltotop = inlink.data("scrolltotop");
 			if( scrolltotop)	{
 				window.scrollTo(0, 0);
@@ -3065,6 +3070,11 @@ uiload = function() {
 				async: false, 
 				data: options, 
 				success: function (data) {
+					data = $(data);
+					var setpagetitle = data.data("setpagetitle");
+					if( setpagetitle) {
+						document.title = setpagetitle;
+					}
 					var cell = findclosest(toggler,"#" + targetdiv); 
 					cell.replaceWith(data); //Cant get a valid dom element
 					$(".pushcontent").removeClass('pushcontent-'+sidebar);
@@ -3093,6 +3103,11 @@ uiload = function() {
 				async: false, 
 				data: options, 
 				success: function (data) {
+					data = $(data);
+					var setpagetitle = data.data("setpagetitle");
+					if( setpagetitle) {
+						document.title = setpagetitle;
+					}
 					var cell = findclosest(toggler,"#" + targetdiv); 
 					cell.replaceWith(data); //Cant get a valid dom element
 		        	$(".pushcontent").removeClass('pushcontent-'+sidebar);
@@ -3123,6 +3138,11 @@ uiload = function() {
 			}
 			jQuery.ajax({
 				url: url, async: false, data: options, success: function (data) {
+					data = $(data);
+					var setpagetitle = data.data("setpagetitle");
+					if( setpagetitle) {
+						document.title = setpagetitle;
+					}
 					targetdiv.replaceWith(data); //Cant get a valid dom element
 					$(".pushcontent").removeClass('pushcontent-fullwidth');
 					$(".pushcontent").addClass('pushcontent-open');
