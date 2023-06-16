@@ -9,7 +9,7 @@ $context.putPageValue("filter", $filter)
 		     		#set($moduleicon = $module.moduleicon)
 		     	#end
 		     	
-	     		#set($entityurl = "$!siteroot$apphome/views/modules/$!{module.id}/index.html?$!{module.id}page=1")
+	     		#set($entityurl = "$!siteroot$apphome/views/modules/$!{module.id}/index.html?$!{module.id}page=1&hitssessionid=$!hits.getSessionId()")
 	
 				<a href="$entityurl" 
 					class="ajax minimizeexpandedmoduleX" 
@@ -36,15 +36,28 @@ $context.putPageValue("filter", $filter)
 
 			</h3>
 					<div style="float:right" >
-					<a href="$entityurl" 
-					class="ajax minimizeexpandedmodule" 
-					data-targetdiv="applicationcontent" 
-					data-oemaxlevel="3" 
-					data-updateurl="true" 
-					data-profilepreference="defaultmodule"
-					data-profilepreference.value="$!module.getId()"
-					title="[[Expand]] #text($module)">
-					<i class="fas fa-window-maximize"></i></a>
+					#if($moduleid=="asset")
+						
+						<a href="$entityurl" 
+						class="btn-sm btn-blue btn-view-media entity-add-media ajax"
+						data-targetdiv="application"
+						data-sidebarcomponent="categories"
+						data-oemaxlevel="4"
+						title="[[View Media]]" 
+						data-profilepreference="defaultmodule"
+						data-profilepreference.value="$!module.getId()">
+						<i class="fas fa-images"></i> [[View Media]]</a>
+					#else
+						<a href="$entityurl" 
+						class="ajax minimizeexpandedmodule" 
+						data-targetdiv="applicationcontent" 
+						data-oemaxlevel="3" 
+						data-updateurl="true" 
+						data-profilepreference="defaultmodule"
+						data-profilepreference.value="$!module.getId()"
+						title="[[Expand]] #text($module)">
+						<i class="fas fa-window-maximize"></i></a>
+					#end
 				</div>
 		<div class="clearfix"></div>
    		</div>
@@ -82,29 +95,16 @@ $context.putPageValue("filter", $filter)
 			#end
 		</div>
 		<div class="emgrid-footer">
-			#if($moduleid == "asset")
-				#set($canaddnew = $canviewupload)
-			#else
-				#set($canaddnew = $permissions.can($moduleid, "upload_files"))
-			#end
-			#if($canaddnew)
-				#if ($moduleid!="faceprofilegroup")
-					#if($moduleid =="asset")
-					<a class="btn btn-xs btn-blue ajax sidebarselected" 
-						data-updateurl="true" 
-						data-targetdivinner="applicationmaincontent" 
-						data-oemaxlayout="3" 
-						href="$siteroot$applink/views/modules/asset/add/start.html" 
-						title="[[Upload Media]]">
-						<i class="fas fa-plus"></i><span>&nbsp;[[Upload]]</span></a>
-					#else
+			#if ($moduleid!="faceprofilegroup" && $moduleid!="asset")
+				#set($canaddnew = $permissions.can($moduleid, "create"))
+				#if($canaddnew)
+			
 						<a class="btn btn-xs btn-blue emdialog TODOautocloseside" 
 							style="margin-right:5px; "  
 							title="[[Add New]] #text($module)"
 							href="$siteroot$applink/views/modules/${moduleid}/components/gridsample/preview/$!{rendertype}.html?edit=true&addnew=true&viewid=$!{module.id}addnew&targetdiv=applicationmaincontent"
 							data-hidefooter="true">
 							<i class="fas fa-plus"></i> [[Add New]]</a>
-					#end
 				#end
 			#end
 		</div>
