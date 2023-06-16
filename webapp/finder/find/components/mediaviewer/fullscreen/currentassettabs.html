@@ -213,7 +213,17 @@
 				  </li>
 			 #end
 			 
-
+			 
+			#if( $canaddtofavorites)
+			$context.putPageValue("assetid", $asset.id)
+			<li class="footermenu bottomtab" >
+			<div id="tabassetfavorite-${asset.id}" class="media-info-icons">
+	        	 $pages.include("$apphome/views/modules/asset/editor/favorite/index.html?targetdiv=tabassetfavorite", $context)
+	   		</div>
+	   			
+			
+			#end
+			 
 						
 			#if($user && ( !$previewonly 	&& !$ismulti))
 			#if($canviewconversions || 
@@ -221,7 +231,6 @@
 				$canviewattachments ||
 				$canconverthistory ||
 				$canviewbasket ||
-				$canaddtofavorites ||
 				$candeleteasset  ||
 				$canmultiedit)
 			
@@ -289,11 +298,7 @@
 				#end
 				</li>
 			#end
-##			#if( $canaddtofavorites && $librarycol.id != "${user.id}-favorites" )
-##			<a class="" 
-##			   title="[[Add to Favorites]]"  
-##			   href="$siteroot$apphome/views/modules/librarycollection/media/addtocollection.html?searchtype=asset&collectionid=${user.id}-favorites&assetid=$asset.id">[[Add To Favorites]]</a>
-##			#end
+
 	    	#if( $candeleteasset )
                 <li>
 				#if ( $ismulti )
