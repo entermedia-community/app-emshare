@@ -3,10 +3,17 @@
 	#set( $sidebarcomponent = $forcedsidebarcomponent )
 #end
 
-#set( $sidebarwidth = $userprofile.get("sidebarwidth"))
-#if($sidebarwidth=='' || $sidebarwidth=='undefined')
-	#set($sidebarwidth = 280)
+#if($sidebarcomponent == "categories" && !$canviewcategorynav )
+	#set($sidebarcomponent = "")
 #end
+#if($sidebarcomponent)
+	#set( $sidebarwidth = $userprofile.get("sidebarwidth"))
+	
+	#if($sidebarwidth=='' || $sidebarwidth=='undefined')
+		#set($sidebarwidth = 280)
+	#end
+#end
+
 #if($user)
 <div class="emheader">
 
@@ -67,6 +74,7 @@
 #end
 
 <div id="header" class="mediacenterheader">
+$sidebarcomponent
 	<div class="pushcontent #if($sidebarcomponent) pushcontent-open pushcontent-$sidebarcomponent #end"
 	style="#if($sidebarcomponent  && $sidebarwidth) margin-left:${sidebarwidth}px;#end">
 	
