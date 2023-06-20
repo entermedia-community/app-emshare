@@ -209,6 +209,7 @@ $(document).ready(function()
 						if(entityuploadPicker)
 							{
 							entityuploadPicker.hide();
+							entityuploadPicker.parent().find(".hideonupload").hide();
 							entityuploadPicker.next(".loadericon").css("display", "inline-block");
 							}
 						
