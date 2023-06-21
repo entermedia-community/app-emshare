@@ -53,23 +53,10 @@ $context.putPageValue("previewurl", $previewurl)
    	 	##$!hits.highlight($hit,"name")
    	 	<span>#text($!entity)</span>
    	 	</a>
-   	 	<div style="float:right; padding:4px 2px;">
-   	 	   	 
-   	 	
+   	 	<div style="float:right; padding:4px 2px;">	 	
    	 		<div class="emgrid-moredetailsright">
  				$pages.include("$componenthome/gridsample/favorites.html?id=$hit.id&searchtype=$moduleid", $context)
 			</div>
-   	 	
-   			#set($defaultfolder =  $mediaarchive.getBean("entityManager").loadDefaultFolder($module, $entity, $context.getUser()))
-			<a href="$previewurl" 
-		   	 	class="emdialog entity-dialog" 
-		   	 	data-hidefooter="true" 
-		   	 	data-hideheader="true"
-		   	 	id="clickid${entityid}"  
-		   	 	data-id="${entityid}"
-		   	 	data-moduleid="$!moduleid"
-		   	 	title="#text($!entity.name)">
-		   	 	<i class="fas fa-external-link-alt"></i></a>
    	 	</div>
    	 </h3>
        	<div class="clearfix"></div>
@@ -130,7 +117,7 @@ $context.putPageValue("previewurl", $previewurl)
         #end
       
        
-       
+       #set($defaultfolder =  $mediaarchive.getBean("entityManager").loadDefaultFolder($module, $entity, $context.getUser()))
        #if($defaultfolder.getId() != $category.getId())
 		##set($sizevalues = $mediaarchive.getBean("entityManager").listTotalSize($defaultfolder.getId(),$context) )
 		##set( $assetshits = $sizevalues.get("hits") )
