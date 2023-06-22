@@ -236,6 +236,7 @@ runajaxonthis = function(inlink,e)
 			var closedialog = inlink.data("closedialog");
 			if (closedialog && inlinkmodal != null) {
 					inlinkmodal.modal("hide");
+					$("body").removeClass("modal-open");
 			}
 			//Close MediaViewer
 			var closemediaviewer = inlink.data("closemediaviewer");
@@ -1273,7 +1274,7 @@ uiload = function() {
 	            // restore the modal-open class to the body element, so that scrolling works
 	            // properly after de-stacking a modal.
 	            setTimeout(function() {
-	                $(document.body).addClass('modal-open');
+	                $(document.body).renoveClass('modal-open');
 	            }, 0);
 	        }
 	    }
