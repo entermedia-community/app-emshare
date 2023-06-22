@@ -353,10 +353,7 @@ $(document).ready(function()
 				var nodeid = node.data('nodeid');
 				var tree = node.closest(".emtree");
 				var maxlevel = 2;
-				
-				//http://localhost:8080/assets/emshare/components/createmedia/upload/index.html?collectionid=AVgCmUw-cmJZ6_qmM-9u
-				//var url = tree.data("home") + "/components/createmedia/upload/index.html?";
-				
+							
 				var collectionid = node.data("collectionid");
 				var postfix = "";
 				
@@ -375,7 +372,8 @@ $(document).ready(function()
 
 					var url = tree.data("home") + "/views/modules/asset/add/start.html";
                     var maxlevel = 1;
-                    options["oemaxlevel"] = "2"
+                    options["oemaxlevel"] = "4";
+                    options["sidebarcomponent"] = "categories";
 					gotopage(tree,node,maxlevel,url, options);
 					
 				}

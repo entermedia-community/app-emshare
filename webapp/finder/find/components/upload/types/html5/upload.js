@@ -415,8 +415,8 @@ $(document).ready(function()
 	    	options.oemaxlevel = 2;	
 	    }
 	    else if( nodeid) {
-	         href = apphome+"/views/modules/asset/showcategory.html?sortby=assetaddeddateDown&nodeID=" + nodeid;;
-		    	options.oemaxlevel = 2;	
+	         href = apphome+"/views/modules/asset/viewfiles/"+ nodeid +"/index.html?sortby=assetaddeddateDown";
+		     options.oemaxlevel = 5;	
 		}
 	    else  {
 	        href = apphome+"/views/modules/asset/index.html?sortby=assetaddeddateDown";
