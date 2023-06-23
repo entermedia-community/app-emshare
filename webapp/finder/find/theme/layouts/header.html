@@ -1,16 +1,18 @@
-#set($forcedsidebarcomponent = $context.getRequestParameter("sidebarcomponent")) 
-#if($forcedsidebarcomponent)
-	#set( $sidebarcomponent = $forcedsidebarcomponent )
-#end
-
-#if($sidebarcomponent == "categories" && !$canviewcategorynav )
-	#set($sidebarcomponent = "")
-#end
-#if($sidebarcomponent)
-	#set( $sidebarwidth = $userprofile.get("sidebarwidth"))
+#if($cansidebar)
+	#set($forcedsidebarcomponent = $context.getRequestParameter("sidebarcomponent")) 
+	#if($forcedsidebarcomponent)
+		#set( $sidebarcomponent = $forcedsidebarcomponent )
+	#end
 	
-	#if($sidebarwidth=='' || $sidebarwidth=='undefined')
-		#set($sidebarwidth = 280)
+	#if($sidebarcomponent == "categories" && !$canviewcategorynav )
+		#set($sidebarcomponent = "")
+	#end
+	#if($sidebarcomponent)
+		#set( $sidebarwidth = $userprofile.get("sidebarwidth"))
+		
+		#if($sidebarwidth=='' || $sidebarwidth=='undefined')
+			#set($sidebarwidth = 280)
+		#end
 	#end
 #end
 
@@ -75,8 +77,8 @@
 
 <div id="header" class="mediacenterheader">
 
-	<div class="pushcontent #if($sidebarcomponent) pushcontent-open pushcontent-$sidebarcomponent #end"
-	style="#if($sidebarcomponent  && $sidebarwidth) margin-left:${sidebarwidth}px;#end">
+	<div class="pushcontent #if($cansidebar && $sidebarcomponent) pushcontent-open pushcontent-$sidebarcomponent #end"
+	style="#if($cansidebar && $sidebarcomponent  && $sidebarwidth) margin-left:${sidebarwidth}px;#end">
 	
 	<div class="logocontainer">
 		
