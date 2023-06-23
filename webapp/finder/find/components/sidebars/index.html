@@ -12,20 +12,22 @@
  data-url="$applink/components/sidebars/index.html" >
 	<div class="col-main col-sidebar-togglers sidebar-togglers-bar">
 	<div class="col-main-inner">
-
+	
 	##force specific sidebar from URL only if sidebars open
 	#set($forcedsidebarcomponent = $context.getRequestParameter("sidebarcomponent"))
+	
 	#ifnull($forcedsidebarcomponent)
 		#set($forcedsidebarcomponent = $content.sidebarcomponent)
 	#end 
-	#if($forcedsidebarcomponent)
+	
+	#ifnotnull($forcedsidebarcomponent)
 		#set( $sidebarcomponent = $forcedsidebarcomponent )
 	#end
 	
 	#ifnull($sidebarcomponent)
 		#set( $sidebarcomponent = $userprofile.get("sidebarcomponent"))
 	#end
-
+	
 	##very first time
 	#if( !$sidebarcomponent && $modulehits.isEmpty() )
 		#set( $sidebarcomponent = "guide" ) 
