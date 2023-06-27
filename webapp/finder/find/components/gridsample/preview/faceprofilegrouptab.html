@@ -51,12 +51,12 @@ $context.putPageValue("edit", $edit)
 	#end
 			
 		</div>
-		<div class="entity-media entity-media-faceprofile ">
+		<div class="entity-media-faceprofile ">
 			#set($facemanager = $mediaarchive.getBean("faceProfileManager") )		
-			#set($assetsshown = 4)
-			#set( $assetshits = $facemanager.searchForAssets($mediaarchive,$entityid) )
+			#set($assetsshown = 5)
+			##set( $assetshits = $facemanager.searchForAssets($mediaarchive,$entityid) )
 			
-			$!assetshits.setHitsPerPage($assetsshown)
+			
 			$context.putPageValue("assetshits", $assetshits)
 			$context.putPageValue("fullview",true)
 			$context.putPageValue("thumbsize", "small" )
@@ -66,7 +66,7 @@ $context.putPageValue("edit", $edit)
 			
 			#set( $primaryimage = $entity.primaryimage ) ##primaryimage
 			
-			#foreach($hit in $assetshits)
+			#foreach($hit in $assetshits.getPageOfHits())
 				#set($imagelocation = $facemanager.getImageAndLocationForGroup($hit,$entityid,240,240) )
 					##/views/modules/asset/downloads/preview/crop/Albums/Users/admin/2021/axevnr20130110ensd_2.mp4/thumb.jpg?timeoffset=18.0&assetid=AXvggdnE8BvxpXRSMb13
 					##http://localhost:8080/finder/mediadb/services/module/asset/downloads/preset/Albums/Users/admin/2021/54888538ecad0490488b456b-750-536_5.jpg/image200x200.jpg
@@ -101,6 +101,20 @@ $context.putPageValue("edit", $edit)
 					#end
 				</div>
 			#end
+			<div class="clearfix"></div>
 		</div>
+		#if($assetshits.size() > 0)
+		#set($link = "$applink/views/modules/asset/search.html?field=faceprofiles.faceprofilegroup&faceprofiles.faceprofilegroup.value=$entityid&operation=exact")
+		<div style="margin:0 10px 10px; height: 50px; font-size:0.8rem;">
+		<a href="$link" 			
+			class="btn-sm btn-blue entity-add-media hideonupload ajax"
+			data-targetdiv="application"
+			data-oemaxlevel="4"
+			data-updateurl="true"
+			data-closedialog="true"
+			title="[[View Media]]">
+		<i class="fas fa-images"></i> [[View Media]]</a>
+		</div>
+		#end
 		<div class="clearfix"></div>
 		</div>
