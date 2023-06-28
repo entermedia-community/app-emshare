@@ -30,6 +30,10 @@
     #set($collectionid = $librarycol.getId())
 #end
 
+#if( !$nodeID && $librarycol )
+	#set( $nodeID = $librarycol.getValue("rootcategory") )
+#end 
+
 $context.putPageValue("librarycol",$librarycol)
 
 <div class="uploadformarea">
@@ -108,6 +112,7 @@ $context.putPageValue("librarycol",$librarycol)
 			$!context.setRequestParameter("libraries.value",$!librarycol.library)
 			<input type="hidden" name="collectionid" id="currentcollection" value="$!collectionid" />
 			<input type="hidden" name="currentcollection" id="currentcollection" value="$!collectionid" />
+			
 		#else
 			#ifnull($categoryid)		 
 				#if($collectionid || $mediaarchive.isCatalogSettingTrue("show_add_media_collection"))

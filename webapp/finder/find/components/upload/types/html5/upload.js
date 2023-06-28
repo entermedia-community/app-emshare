@@ -404,7 +404,8 @@ $(document).ready(function()
 	    else if(collectionid) {
 	    	href = apphome+"/views/modules/librarycollection/media/showcategory.html?collectionid="+collectionid+"&clearfilters=true&sortby=assetaddeddateDown";
 	    	if( nodeid)	{
-	    		href = href + "&nodeID=" + nodeid;
+				 href = apphome+"/views/modules/asset/viewfiles/"+ nodeid +"/index.html?sortby=assetaddeddateDown";
+	    		
 	    	}
 	    	else {
 	    		var currentcollectionrootcategory = jQuery("#currentcollectionrootcategory").val();
@@ -412,7 +413,7 @@ $(document).ready(function()
 	    			href = href + "&nodeID=" + currentcollectionrootcategory;
 	    		}
 	    	}
-	    	options.oemaxlevel = 2;	
+	    	options.oemaxlevel = 5;	
 	    }
 	    else if( nodeid) {
 	         href = apphome+"/views/modules/asset/viewfiles/"+ nodeid +"/index.html?sortby=assetaddeddateDown";
