@@ -1,21 +1,6 @@
 <div class="login-area bodywebsite text-center" >
 
-	#set( $disabled = $context.getPageValue("disabled") )
-	#set( $category = $context.getPageValue("category") )
-	#set( $invaliduser = $context.getPageValue("invaliduser") )
-	
-	#if($category)
-		#set( $adminemail = $category.findValue("categoryadminemail"))
-	#end
-	#if ( $disabled && $adminemail)
-		<h1>[[Registration Complete]]</h1>
-		#set($emailbody = "Message: $invaliduser.getId() ($invaliduser.getEmail()) [[is requesting access to]] $category.getName()")
-		#set($emailparameters = "subject=$category.getName() [[User]] $invaliduser.getId() [[Access Request]]&body=#urlescape($emailbody)")
-		<p>[[Send and email to]]: <a href="mailto:${adminemail}?${emailparameters}">$adminemail</a> [[in order to enable the access to eMediaWorkspace]].</p>
-	#else
-		$pages.include("$content.loginroot/loginform.html",$context)
-	#end
-
+	$pages.include("$content.loginroot/loginform.html",$context)
 
 		
 </div>
