@@ -2,12 +2,15 @@
 
 	#set( $disabled = $context.getPageValue("disabled") )
 	#set( $category = $context.getPageValue("category") )
+	#set( $invaliduser = $context.getPageValue("invaliduser") )
+	
 	#if($category)
 		#set( $adminemail = $category.getValue("categoryadminemail"))
 	#end
 	#if ( $disabled && $adminemail)
 		<h1>[[Registration Complete]]</h1>
-		<p>[[Send and email to]]: <a href="mailto:$adminemail">$adminemail</a> [[in order to enable the access to eMediaWorkspace]].</p>
+		#set($emailparameters = "subject=$category.getName() [[User Access Request]]&body=Message: $invaliduser.getId() ($invaliduser.getEmail()) [[is requesting access to]] $category.getName()")
+		<p>[[Send and email to]]: <a href="mailto:${adminemail}?${emailparameters}">$adminemail</a> [[in order to enable the access to eMediaWorkspace]].</p>
 	#else
 		$pages.include("$content.loginroot/loginform.html",$context)
 	#end
