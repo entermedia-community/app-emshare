@@ -9,7 +9,8 @@
 	#end
 	#if ( $disabled && $adminemail)
 		<h1>[[Registration Complete]]</h1>
-		#set($emailparameters = "subject=$category.getName() [[User Access Request]]&body=Message: $invaliduser.getId() ($invaliduser.getEmail()) [[is requesting access to]] $category.getName()")
+		#set($emailbody = "Message: $invaliduser.getId() ($invaliduser.getEmail()) [[is requesting access to]] $category.getName()")
+		#set($emailparameters = "subject=$category.getName() [[User]] $invaliduser.getId() [[Access Request]]&body=#urlescape($emailbody)")
 		<p>[[Send and email to]]: <a href="mailto:${adminemail}?${emailparameters}">$adminemail</a> [[in order to enable the access to eMediaWorkspace]].</p>
 	#else
 		$pages.include("$content.loginroot/loginform.html",$context)
