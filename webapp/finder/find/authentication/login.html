@@ -1,4 +1,18 @@
-<div class="login-area bodywebsite" >
+<div class="login-area bodywebsite text-center" >
+
+	#set( $disabled = $context.getPageValue("disabled") )
+	#set( $category = $context.getPageValue("category") )
+	#if($category)
+		#set( $adminemail = $category.getValue("categoryadminemail"))
+	#end
+	#if ( $disabled && $adminemail)
+		<h1>[[Registration Complete]]</h1>
+		<p>[[Send and email to]]: <a href="mailto:$adminemail">$adminemail</a> [[in order to enable the access to eMediaWorkspace]].</p>
+	#else
 		$pages.include("$content.loginroot/loginform.html",$context)
+	#end
+
+
+		
 </div>
 
