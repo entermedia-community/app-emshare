@@ -10,6 +10,13 @@ import org.openedit.locks.Lock
 public void init()
 {
 	MediaArchive archive = context.getPageValue("mediaarchive");//Search for all files looking for videos
+	
+	String api = archive.getCatalogSettingValue("faceapikey");
+	if(api==null) {
+		//No Face API key defined
+		log.info("No Face Detect API key defined (faceapikey)");
+		return;
+	}
 
 	Lock lock = archive.getLockManager().lockIfPossible("facescanning", "admin");
 	
@@ -18,6 +25,8 @@ public void init()
 		log.info("Face scanning already in progress");
 		return;
 	}
+	
+	
 
 	try
 	{	
