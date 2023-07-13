@@ -1249,7 +1249,7 @@ jQuery(document).ready(function(url,params)
             	$.get(link, options, function(data) 
     			{
     				//$(targetdiv).replaceWith(data);
-            		$(targetdiv).html(data);
+            		$(targetdiv).replaceWith(data);
     			});
             }
     });
