@@ -1,6 +1,8 @@
+#set($categories = $mediaarchive.query("category").exact("parentid",$category.getId()).sort("name").search($context))
+#ifnotnull($categories)
 <div class="childcategorieslist">
-#foreach( $child in $mediaarchive.query("category").exact("parentid",$category.getId()).sort("name").search($context) )
-		<a style="padding:0px 6px 0 4px;" 
+#foreach( $child in  $categories)
+		<a style="padding:0px 10px 0 1px;" 
 			href="$siteroot$apphome/views/modules/asset/viewfiles/$!{child.id}/#dash($child).html?hitssessionid=$!hits.getSessionId()"
 			title="[[View Files]]: $child"
 			class="ajax"
@@ -12,3 +14,4 @@
 			data-sidebarcomponent="categories"><i class="fas fa-folder"></i> $child</a>
 #end
 </div>
+#end

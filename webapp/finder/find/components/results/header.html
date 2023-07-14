@@ -240,11 +240,7 @@
 				#if (!$resultview || $resultview == 'table')
 					#if( $canedittablecolumns )
 						#if( $edit )
-							<li>
-								<a class="ajax table-edit-close" 
-									data-targetdiv="resultsviewcontainer$!module.getId()" 
-									href="$siteroot$componenthome/results/index.html?searchtype=asset&hitssessionid=$hits.getSessionId()&editheader="><i class="fas fa-times"></i></a>
-							</li>
+							
 							<li class="resultsnavtitem" style="min-width:180px">
 								#set ($alldetails = $searcher.getUserPropertyDetails() )
 								<select class="form-control form-control-sm select2 tableresultsaddcolumn" 
@@ -256,10 +252,16 @@
 									#foreach( $detail in $alldetails) <option value="$detail.id">$detail.getText($context)</option>
 									#end
 								</select>
+								<div class="" style="padding-right: 10px;" >*[[Drag columns to move them]]</div>
 							</li>
-									
+							<li>
+								<a class="ajax table-edit-close" 
+									data-targetdiv="resultsviewcontainer$!module.getId()" 
+									title="[[Close Edit Columns Mode]]"
+									href="$siteroot$componenthome/results/index.html?searchtype=asset&hitssessionid=$hits.getSessionId()&editheader="><i class="fas fa-times"></i></a>
+							</li>		
 							<li class="resultsnavtitem">
-								<span class="" style="padding-right: 10px;" >[[Drag columns to move them]]</span>
+								
 							</li>
 						#else 
 							<li >
