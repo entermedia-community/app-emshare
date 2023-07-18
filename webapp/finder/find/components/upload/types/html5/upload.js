@@ -413,11 +413,11 @@ $(document).ready(function()
 	    			href = href + "&nodeID=" + currentcollectionrootcategory;
 	    		}
 	    	}
-	    	options.oemaxlevel = 5;	
+	    	options.oemaxlevel = btn.data("oemaxlevel");
 	    }
 	    else if( nodeid) {
 	         href = apphome+"/views/modules/asset/viewfiles/"+ nodeid +"/index.html?sortby=assetaddeddateDown";
-		     options.oemaxlevel = 5;	
+		     options.oemaxlevel = btn.data("oemaxlevel");	
 		}
 	    else  {
 	        href = apphome+"/views/modules/asset/index.html?sortby=assetaddeddateDown";

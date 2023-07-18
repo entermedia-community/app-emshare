@@ -55,12 +55,10 @@ $(document).ready(function()
 			var home = tree.data("home");
 			tree.find(nodeid + "_add").remove();
 			var depth = node.data('depth');	
-			//really needed?
-			//node.load(home + "/components/emtree/tree.html?toggle=true&tree-name=" + tree.data("treename") + "&nodeID=" + nodeid + "&depth=" + depth);
         }
         else {  //Regular Tree
         	var options  = [];
-        	options["oemaxlevel"] = 5;	
+        		
             gotopage(tree, node, maxlevel, prefix, options);
         }
 		var event = $.Event( "emtreeselect" );
@@ -141,7 +139,7 @@ $(document).ready(function()
 			reloadurl = reloadurl + "?hitssessionid=" + hitssessionid;
 		}
 		
-		var options =  tree.data();
+		var options =  structuredClone(tree.data());
 		
 		options['tree-name'] = tree.data("treename");
 		options['nodeID'] = nodeid;
@@ -372,7 +370,7 @@ $(document).ready(function()
 
 					var url = tree.data("home") + "/views/modules/asset/add/start.html";
                     var maxlevel = 1;
-                    options["oemaxlevel"] = "4";
+                    options["oemaxlevel"] = "2";
                     options["sidebarcomponent"] = "categories";
 					gotopage(tree,node,maxlevel,url, options);
 					
