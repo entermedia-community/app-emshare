@@ -19,23 +19,30 @@
 
 
 #if($canviewentitiestopmenu)
-	#set($toplevels = $userprofile.getTopEntities() )
+
+	#set( $menu = $mediaarchive.query("appsection").all().sort("ordering").search($context) )
 	#set($selected = $userprofile.getValue("defaultmodule") )
 	
 	<div class="entitynabarcontainer">
 	<ul class="entity-navbar">
+		
+		#if($menu.isEmpty())
 		<li>
 			<a href="$applink/index.html" class="ajax #ifnull($selected) active #end" 
 				data-targetdiv="applicationcontent" 
 				data-oemaxlevel="4" 
 				data-updateurl="true"
+				data-sidebarcomponent="categories"
 				data-profilepreference="defaultmodule" 
 				data-profilepreference.value="" 
 			 	title="[[View All]]">
-					  [[All]]
+					  [[Folders]]
 			</a>
 		</li>
-	#foreach( $entity in $toplevels)
+		#else
+		#foreach( $link in $menu)
+			#set( $entity = $mediaarchive.getData("module",$link.toplevelentity) )
+			##sort type			
 		<li >
 			<a href="$applink/views/modules/$entity.getId()/index.html?${entity.getId()}page=1" class="ajax activelistener #ifnotnull($selected) #if( $selected == $entity.getId()) active#end #end" 
 				data-targetdiv="applicationcontent" 
@@ -44,11 +51,12 @@
 				data-profilepreference="defaultmodule" 
 				data-profilepreference.value="${entity.getId()}" 
 				#if($entity.getId() =="asset") data-sidebarcomponent="categories" #end
-				title="[[View]] #text($entity)">
-					#text($entity)
+				title="[[View]] #text($link)">
+					#text($link)
 			</a>
 		</li>
-	#end
+		#end
+		#end
 	</ul>
 	</div>
 #end
