@@ -1,7 +1,13 @@
 $context.putPageValue("thumbsize", "thumbnail" )
 
 #ifnotnull($primaryasset)
-	$context.putPageValue("hit", $primaryasset)
+	
+	
+	##$pages.include("$componenthome/gridsample/types/attachedmediarender.html", $context)
+	
+	#set($hit = $primaryasset)
+	$context.putPageValue("hit", $hit) 
 	$context.putPageValue("asset", $primaryasset)
-	$pages.include("$componenthome/gridsample/types/attachedmediarender.html", $context)
+	#set( $rendertype = $mediaarchive.getMediaRenderType($hit.fileformat))
+	$pages.include("$componenthome/results/thumbnails/${rendertype}.html", $context)
 #end

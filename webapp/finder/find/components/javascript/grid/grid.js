@@ -17,24 +17,34 @@ jQuery(document).ready(function()
             
             var colcount =  1;
             var colwidth = 100;
-            if(grid.data("colcount"))
-            	{
-            	colcount = grid.data("colcount");
-            	colwidth = gridwidth / colcount;
-            	}
-            else {
-	            colwidth = parseInt(grid.data("colwidth"));
-	            colcount =  gridwidth / colwidth;
-	            colcount = Math.floor(colcount);
+            if(grid.data("fixedwidth")) {
+				colwidth = grid.data("fixedwidth"); 
+				colcount =  gridwidth / (colwidth + cellpadding);
+			}
+			else {
+	            if(grid.data("colcount"))
+	            	{
+	            	colcount = grid.data("colcount");
+	            	colwidth = gridwidth / colcount;
+	            	}
+	            else {
+		            colwidth = parseInt(grid.data("colwidth"));
+		            colcount =  gridwidth / colwidth;
+	            }
+	            
+	            
+	            
+	            if (colcount<1) {
+	            	colcount = 1;
+	            }
+	           
+	            //adjust the colwidth to spread out the extra space
+	            var remainder = gridwidth - (colcount * (colwidth)) + cellpadding;
+	            colwidth = colwidth + (remainder/colcount);
             }
             
-            if (colcount<1) {
-            	colcount = 1;
-            }
-           
-            //adjust the colwidth to spread out the extra space
-            var remainder = gridwidth - (colcount * (colwidth)) + cellpadding;
-            colwidth = colwidth + (remainder/colcount);
+            colcount = Math.floor(colcount);
+            
             
             var columns = [];
             for(var i=0;i<colcount;i++)
