@@ -34,10 +34,16 @@
 	#end
 
 		<div class="sidebar-togglers ">
-		<a href="$!apphome/index.html" 
+			#set( $menu = $mediaarchive.query("appsection").all().sort("ordering").search($context) )
+		#if( $menu.isEmpty())
+		<a href="$!apphome/index.html"
+		#else
+		#set( $link = $menu.iterator().next())
+		<a href="$!apphome/views/modules/$link.get("toplevelentity")/index.html"
+		#end 
 			class="sidebar-toggler sidebar-toggler-show light" 
 			data-action="home" 
-			data-targetdiv="application"
+			data-targetdiv="applicationcontent"
 			data-oemaxlevel="4"
 			data-sidebarcomponent="home"
 			data-updateurl="true"
