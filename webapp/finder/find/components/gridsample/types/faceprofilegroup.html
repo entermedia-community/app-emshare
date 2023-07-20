@@ -19,42 +19,16 @@ $context.putPageValue("moduleid", $moduleid)
 
 #set($previewurl = "$siteroot$componenthome/gridsample/preview/${rendertype}.html?id=$entityid&searchtype=$moduleid&hitssessionid=$!hits.sessionId")
 $context.putPageValue("previewurl", $previewurl)
-
+<div class="emgridcellC-header"></div>
 <div class="emgrid-content emgrid-type-faceprofilegroup entitycontainer entity$!moduleid$!entityid"
 	data-id="${entityid}"
    	data-moduleid="$!moduleid"
    	data-rendertype="faceprofilegroup">
-   	 <div class="emgrid-entityheader">
-   	 <h3>
+   	 
    	 #set($name = $entity.name)
-   	 <a href="$previewurl" 
-   	 	class="emdialog entity-dialog emgridresulttitle" 
-   	 	data-hidefooter="true" 
-   	 	data-hideheader="true"
-   	 	id="clickid${entity.id}"  
-   	 	data-id="$entity.id"
-   	 	title="#text($!entity.name)">
-   	 	##$!hits.highlight($hit,"name")
-   	 	
-			#if($name)
-				#text($!name) ([[Profile]] $entity.facecounter)
-			#else	
-				[[Profile]] $entity.facecounter
-			#end
-			
-   	 	</a>
    	 
-   	 </h3> 
-   	 	<div class="emgrid-moredetails">
-        	<a class="emdialog entity-dialog" data-hidefooter="true" href="$previewurl" title="$!name"><i class="fas  fa-info-circle"></i></a>
-        </div>
-   	 </div>
-		<div class="emgrid-entitydata">
-			$context.putPageValue("searchtype", $moduleid)
-			$context.putPageValue("data", $entity)
-	      	$pages.include("$componenthome/gridsample/types/fields.html",$context)
-	    </div>
    	 
+  	 
  	 #set($assetsshown = 1)
  	 $context.putPageValue("viewer", "e_m_pp_${entity.id}")
  	 
@@ -70,31 +44,34 @@ $context.putPageValue("previewurl", $previewurl)
 	
 	  
 
-       <div class="emgrid-entitymedia assetdropentity"
+       <div class="emgridC-entitymedia assetdropentity"
+       style="text-align: center;"
        		id="attachedmedia$entityid" 
        		data-moduleid="$moduleid" 
        		data-entityid="$entityid" 
        		data-assetsshown="$assetsshown"
        		data-attachedmediaurl="$siteroot$componenthome/gridsample/types/attachedmedia/faceprofilegroup.html"
        		data-targetdiv="attachedmedia$entityid"> 	
-	        $pages.include("$componenthome/gridsample/types/attachedmedia/faceprofilegroup.html",$context)
+       		<a href="$previewurl" 
+   	 	class="emdialog entity-dialog emgridresulttitle" 
+   	 	data-hidefooter="true" 
+   	 	data-hideheader="true"
+   	 	id="clickid${entity.id}"  
+   	 	data-id="$entity.id"
+   	 	title="#text($!entity.name)">
+   	 	 $pages.include("$componenthome/gridsample/types/attachedmedia/entity2.html", $context)
+   	 	 <div class="emgridC-name">
+			#if($name)
+				#text($!name) ([[Profile]] $entity.facecounter)
+			#else	
+				[[Profile]] $entity.facecounter
+			#end
+			</div>
+   	 	</a>
+	        
 	   </div>
 	        
 	        <div class="clearfix"></div>
 
-	        
-	       ## <div class="griditem-tools resultsselection">
-	       ## <input type="checkbox" class="selectionbox" name="count" value="" data-dataid="$hit.getId()">
-	       ## </div>
-</div>
-<div class="grid-gallery-footer">
-
-	#if($entityassetscount>0)
-	$entityassetscount <i class="fas fa-images"></i>
-	#end
-	
-	<div class="emgrid-moredetailsright">
- 	$pages.include("$componenthome/gridsample/favorites.html?id=$hit.id&searchtype=$moduleid", $context)
-	</div>
 </div>
 
