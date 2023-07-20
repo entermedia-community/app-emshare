@@ -75,14 +75,17 @@ $context.putPageValue("previewurl", $previewurl)
 		#set($defaultfolder =  $mediaarchive.getBean("entityManager").loadDefaultFolder($module, $entity, $context.getUser()))
        #if($defaultfolder.getId() != $category.getId())
 			#ifnotnull($defaultfolder)
-			   	#set($link = "$!siteroot$applink/views/modules/$!moduleid/components/gridsample/types/viewmedia.html")
-				<a href="$link" 			
+			   	###set($link = "$!siteroot$applink/views/modules/$!moduleid/components/gridsample/types/viewmedia.html")
+			   	#set($link = "$!siteroot$applink/views/modules/$!moduleid/index.html")
+				<a href="$link?entityid=$!entity.getId()&externalid=$!moduleid" 			
 				class=" ajax activelistenerparent"
-				data-targetdivinner="entitymediapreview$!moduleid"
+				data-targetdivinner="application"
 				data-defaultfolder="$defaultfolder.getId()"
-				data-entity="$entity.getId()"
-				data-oemaxlevel="2"
-				data-scrollto="entitymediapreview$!moduleid"
+				data-entity="$!entity.getId()"
+				data-oemaxlevel="5"
+				data-field=""
+				data-updateurl="true"
+				data-scrollto="entitymediapreviewselected"
 				title="[[View Media]]">
 				
 				#ifnotnull($primaryasset)
