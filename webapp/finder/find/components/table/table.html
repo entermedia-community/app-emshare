@@ -60,11 +60,13 @@
 	#if($tabletype == "subentity")
 	#set($entity = $mediaarchive.getCachedData("module", $searchtype))
 	<h3>
+	
 		#set($moduleicon = "entity")
-    	#ifnull($module.moduleicon)
-    		#set($moduleicon = $module.moduleicon)
+    	#ifnotnull($entity.moduleicon)
+    		#set($moduleicon = $entity.moduleicon)
     	#end
-    	<img src="$siteroot$apphome/theme/images/entity/${moduleicon}.svg" style="height: 23px;"> 
+    	
+    	<img src="$siteroot$apphome/theme/images/entity/$!{moduleicon}.svg" style="height: 23px;"> 
 		#text($entity) ($hits.size())</h3>
 		#end
 		

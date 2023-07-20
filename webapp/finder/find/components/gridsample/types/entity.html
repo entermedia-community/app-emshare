@@ -88,18 +88,25 @@ $context.putPageValue("previewurl", $previewurl)
 				data-scrollto="entitymediapreviewselected"
 				title="[[View Media]]">
 				
-				#ifnotnull($primaryasset)
-			       <div class="emgridC-entitymedia assetdropentity"
+				<div class="emgridC-entitymedia assetdropentity"
+					style="text-align: center;"
 			       		id="attachedmedia$entityid" 
 			       		data-moduleid="$moduleid" 
 			       		data-entityid="$entityid" 
 			       		data-assetsshown="$assetsshown"
 			       		data-attachedmediaurl="$siteroot$componenthome/gridsample/types/entity.html"
-			       		data-targetdiv="emgridentity$!moduleid$!entityid"> 	
-				        $pages.include("$componenthome/gridsample/types/attachedmedia/entity2.html", $context)
-				        <div class="clearfix"></div>
-			        </div>
-			   #end
+			       		data-targetdiv="emgridentity$!moduleid$!entityid"> 
+					#if($primaryasset)
+					        $pages.include("$componenthome/gridsample/types/attachedmedia/entity2.html", $context)
+				   #else
+					   	#set($moduleicon = "entity")
+				     	#if ($module.moduleicon)
+				     		#set($moduleicon = $module.moduleicon)
+				     	#end
+				     	<img src="$siteroot$apphome/theme/images/entity/${moduleicon}.svg" style="height: 95px; width:95px; ">
+				   #end
+			   		<div class="clearfix"></div>
+			   </div>
 			        
 			   <div class="emgridC-name">#text($!entity)</div>     
 				</a>
