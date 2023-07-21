@@ -36,21 +36,35 @@ $context.putPageValue("moduleid", $moduleid)
 	#end
 	
 		<div id="resultsheader" class="resultsheader">
+		
+		
 		<div id="sub-nav" class="search-views emsubnav sub-nav-$!moduleid">
 			#if($moduleid != "faceprofilegroup")
-	
-				#if(!$edit)
 					<ul class="resultsnav">
+					<li>
+						#if($permissions.can($moduleid, "create"))
+						<div class="" style="">
+							<a class="btn-sm btn-blue emdialog " 
+								style="margin-right: 5px;"
+								data-updateurl="true" 
+								data-targetdivinner="applicationmaincontent" 
+								data-oemaxlayout="3" 
+								href="$siteroot$applink/views/modules/${moduleid}/components/gridsample/preview/$!{rendertype}.html?edit=true&addnew=true&viewid=$!{module.id}addnew&targetdiv=applicationmaincontent"
+								title="[[Add New]] #text($module)">
+								<i class="fas fa-plus"></i> [[New]]</a>
+						</div>
+						#end
+							
+					</li>
 						
-			
-					#if($hits && $resultview == "table" && $hits.hasSelections())
-						$pages.include("$searchhome/selectionactions.html", $context)
+					#if(!$edit)
+						#if($hits && $resultview == "table" && $hits.hasSelections())
+							$pages.include("$searchhome/selectionactions.html", $context)
+						#end
 					#end
 					</ul>
-				#end
-		
-	
-		#end
+				
+			#end
 	
 		#if($hits)
 		<ul class="resultsnavright">

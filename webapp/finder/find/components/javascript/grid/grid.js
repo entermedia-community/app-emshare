@@ -89,7 +89,8 @@ jQuery(document).ready(function()
       	        var cellheight = cell.height();
       	        
       	        cell.css("top",curheight + "px");
-      	        columns[col] = curheight + cellheight + cellpadding;
+      	        //columns[col] = curheight + cellheight + cellpadding;
+      	        columns[col] = curheight + cellheight ;
       	        //left
       	        var left = colwidth * col;
       	        cell.css("left",left + "px");
