@@ -1,13 +1,13 @@
 #if(!$moduleid)
 	#set( $moduleid = $context.getRequestParameter("moduleid"))
 #end
-#if(!$entityid)
-	#set( $entityid = $context.getRequestParameter("entityid"))
+#ifnull($selectedentity)
+	
+	//Show module path
+	
 #end
+#set($uploadsourcepath =  $mediaarchive.getBean("entityManager").loadDefaultFolder($entity, $context.getUser()))
 
-#ifnull($currentcategoryid)
-	#set( $currentcategoryid = $context.getRequestParameter("currentcategory"))
-#end
 #if(!$currentcategoryid && $defaultfolder)
 	#set( $currentcategoryid = $defaultfolder.getId())
 #end
