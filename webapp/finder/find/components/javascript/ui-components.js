@@ -1412,7 +1412,7 @@ uiload = function() {
 		
 		
 		var updateurl = input.data("updateurl");
-		var searchurl = apphome + "/index.html";
+		
 
 		if(searchurlentertargetdiv != null)
 		{
@@ -1425,8 +1425,9 @@ uiload = function() {
 				//var searchurl = apphome + "/views/modules/" + moduleid + "/index.html";
 				//options["moduleid"] = moduleid;
 
+				var searchurl = input.data("searchurl");//apphome + "/index.html";
 	
-				if( e.which == 13)
+				if( searchurl && e.which == 13)
 				{
 					e.preventDefault();
 					modaldialog.hide();
@@ -1543,6 +1544,8 @@ uiload = function() {
 				{
 					//console.log("already searching"  + searching);
 				}
+				var searchurl = input.data("searchurl");//apphome + "/index.html";
+
 				if (searchurl != null) {
 					console.log(q + " searching");
 					input.data("searching","true");
