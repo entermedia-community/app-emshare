@@ -75,7 +75,7 @@ $context.putPageValue("mediarender", "attachedmedialist" )
 		
 		
 		<div class="filtered" style="padding:5px 0; font-size: 0.9rem;">
-gdzasadvgfsdfgsdf
+
 ## BREADCRUMB
 #if($canviewbreadcrumb)
 	#if( $hits.getSearchQuery().hasMainInput())
@@ -93,16 +93,16 @@ gdzasadvgfsdfgsdf
 	
 	##TODO Loop over the view and show them here if they match
 	
-	#if( $currentcategory )
+	#if( $defaultfolder )
 		<div class="filtered-breadcrumb">
 			
 			#set( $count = $assetshits.size())
-			#set($parentcategories = $currentcategory.getParentCategories())
+			#set($parentcategories = $defaultfolder.getParentCategories())
 			
 			#if(!$parentcategories.isEmpty())
 				#foreach( $parent in $parentcategories)
 					#if( ${foreach.count} > 1) / #end
-					#if($currentcategory.getId() != $parent.getId())
+					#if($defaultfolder.getId() != $parent.getId())
 					<a style="padding:0px 4px 0;" 
 						href="$siteroot$apphome/views/modules/asset/viewfiles/$!{parent.id}/#dash($parent).html?hitssessionid=$!hits.getSessionId()"
 						title="[[View Files]]: $parent"
