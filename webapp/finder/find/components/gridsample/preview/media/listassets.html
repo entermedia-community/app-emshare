@@ -78,7 +78,7 @@ $context.putPageValue("mediarender", "attachedmedialist" )
 
 ## BREADCRUMB
 #if($canviewbreadcrumb)
-	#if( $hits.getSearchQuery().hasMainInput())
+	#if( $assetshits.getSearchQuery().hasMainInput())
 		<div class="filtered-breadcrumb">
 		#if($librarycol)
 			[[Searching within]]: <strong><em>$librarycol</em> </strong> [[for]]:  <span class="searchterm">$hits.getSearchQuery().getMainInput()</span>
@@ -102,7 +102,7 @@ $context.putPageValue("mediarender", "attachedmedialist" )
 			#if(!$parentcategories.isEmpty())
 				#foreach( $parent in $parentcategories)
 					#if( ${foreach.count} > 1) / #end
-					#if($defaultfolder.getId() != $parent.getId())
+					
 					<a style="padding:0px 4px 0;" 
 						href="$siteroot$apphome/views/modules/asset/viewfiles/$!{parent.id}/#dash($parent).html?hitssessionid=$!hits.getSessionId()"
 						title="[[View Files]]: $parent"
@@ -112,9 +112,7 @@ $context.putPageValue("mediarender", "attachedmedialist" )
 						data-scrolltocat="true"
 						data-updateurl="true"
 						data-sidebarcomponent="categories">$parent</a>
-					#else
-					<span class="currentcategory">$parent</span>
-					#end		
+		
 				#end
 			
 				&nbsp;<span>($count)</span>
