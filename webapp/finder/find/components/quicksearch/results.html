@@ -23,11 +23,66 @@
 
 <div class="quicksearchresults" style="position:relative; height: ${popupheight}px; ">
 
+#foreach($module in $organizedModules)
+	#set($hits = $organizedHits.get($module.id))
+	
+	$context.putPageValue("hits", $hits)
+	$context.putPageValue("module", $module)
+	$context.putPageValue("moduleid", $module.id)
+
+   	#set($moduleicon = "entity")
+   	#if ($module.moduleicon)
+   		#set($moduleicon = $module.moduleicon)
+   	#end
+   	#set( $val = $hits.getInput("description"))
+   	
+	#set($entityurl = "$!siteroot$apphome/views/modules/$!{module.id}/index.html?$!{module.id}page=1&field=description&operation=freeform&description.value=$val")
+	
+	<a href="$entityurl" 
+		class="ajax minimizeexpandedmoduleX" 
+		data-targetdiv="applicationmaincontent" 
+		data-oemaxlevel="3" 
+		data-updateurl="true" 
+		data-profilepreference="defaultmodule"
+		data-profilepreference.value="$!module.getId()"
+		title="#text($module)" >
+	<img src="$siteroot$apphome/theme/images/entity/${moduleicon}.svg" style="height: 25px; max-width:20px;"> 
+	
+	#if( $module.id == "asset") ##this is safe
+		#set( $count = $hits.size()) 
+	#else
+		#set( $count = $filter.getCount($module.id) ) 
+	#end
+	#ifnull($count)
+		#set( $count = $hits.size()) 
+	#end
+	#text($module)
+	 <span class="count">($count)</span>
+	</a>
+	<div>
+	#foreach( $hit in $hits.getPageOfHits())
+	   	#set( $val = $hit.getName())
+		#set($one = "$!siteroot$apphome/views/modules/$!{module.id}/index.html?$!{module.id}page=1&field=description&operation=freeform&description.value=$val")
+	
+			<a href="$one" 
+		class="ajax minimizeexpandedmoduleX" 
+		data-targetdiv="applicationmaincontent" 
+		data-oemaxlevel="3" 
+		data-updateurl="true" 
+		data-profilepreference="defaultmodule"
+		data-profilepreference.value="$!module.getId()"
+		title="#text($module)" >$hit</a>
+	#end
+	</div>
+
+#end
+
 #if($livesuggestions.size())
 <div style="position:absolute; top:0px; right:2px; color:#333;">
 <span title="[[Esc to Close]]" class="fas fa-window-close"></span>
 </div>
-<h3>[[Suggested]]</h3>
+<br>
+<h3>[[Related Keywords]]</h3>
 <ul class="qsrecent">
 #foreach ($suggestion in $livesuggestions)
 	#set( $k = $suggestion.getKeyword() )
