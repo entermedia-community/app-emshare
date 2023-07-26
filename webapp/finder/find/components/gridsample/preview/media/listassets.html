@@ -5,7 +5,11 @@
 	#set($defaultfolder =  $mediaarchive.getBean("entityManager").loadDefaultFolderForModule($topmodule, $context.getUser()))
 #end
 #ifnotnull($selectedentity)
-	#set($defaultfolder =  $mediaarchive.getBean("entityManager").loadDefaultFolder($selectedentity, $context.getUser()))
+	#if($topmodule.getId()=="faceprofilegroup")
+		#set($defaultfolder =  $mediaarchive.getBean("entityManager").loadDefaultFolderForModule($topmodule, $context.getUser()))		
+	#else
+		#set($defaultfolder =  $mediaarchive.getBean("entityManager").loadDefaultFolder($selectedentity, $context.getUser()))
+	#end
 #end
 #if(!$currentcategoryid && $defaultfolder)
 	#set( $currentcategoryid = $defaultfolder.getId())
