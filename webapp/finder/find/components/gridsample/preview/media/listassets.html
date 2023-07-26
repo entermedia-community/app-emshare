@@ -2,12 +2,11 @@
 	#set( $moduleid = $context.getRequestParameter("moduleid"))
 #end
 #ifnull($selectedentity)
-	
-	##//Nothing selected
-	
+	#set($defaultfolder =  $mediaarchive.getBean("entityManager").loadDefaultFolderForModule($topmodule, $context.getUser()))
 #end
-#set($defaultfolder =  $mediaarchive.getBean("entityManager").loadDefaultFolder($selectedentity, $context.getUser()))
-
+#ifnotnull($selectedentity)
+	#set($defaultfolder =  $mediaarchive.getBean("entityManager").loadDefaultFolder($selectedentity, $context.getUser()))
+#end
 #if(!$currentcategoryid && $defaultfolder)
 	#set( $currentcategoryid = $defaultfolder.getId())
 #end
@@ -111,7 +110,7 @@ $context.putPageValue("mediarender", "attachedmedialist" )
 						data-oemaxlevel="5"
 						data-scrolltocat="true"
 						data-updateurl="true"
-						data-sidebarcomponent="categories">$parent</a>
+						data-sidebarcomponent="categories">#text($parent)</a>
 		
 				#end
 			
