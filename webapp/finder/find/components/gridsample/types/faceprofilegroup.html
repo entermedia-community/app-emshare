@@ -42,8 +42,18 @@ $context.putPageValue("previewurl", $previewurl)
 	
 	$context.putPageValue("entityassetshits", $entityassetshits)
 	
+	#set($link = "$!siteroot$applink/views/modules/$!topmodule.getId()/index.html")
 	  
-
+		<a href="$link?entityid=$!entity.getId()&entitytype=$!moduleid" 			
+				class=" ajax activelistenerparent"
+				data-targetdivinner="application"
+				data-defaultfolder="$defaultfolder.getId()"
+				data-entity="$!entity.getId()"
+				data-oemaxlevel="5"
+				data-field=""
+				data-updateurl="true"
+				data-scrollto="entitymediapreviewselected"
+				title="[[View]]">
        <div class="emgridC-entitymedia assetdropentity"
        style="text-align: center;"
        		id="attachedmedia$entityid" 
@@ -52,14 +62,14 @@ $context.putPageValue("previewurl", $previewurl)
        		data-assetsshown="$assetsshown"
        		data-attachedmediaurl="$siteroot$componenthome/gridsample/types/attachedmedia/faceprofilegroup.html"
        		data-targetdiv="attachedmedia$entityid"> 	
-       		<a href="$previewurl" 
-   	 	class="emdialog entity-dialog emgridresulttitle" 
-   	 	data-hidefooter="true" 
-   	 	data-hideheader="true"
-   	 	id="clickid${entity.id}"  
-   	 	data-id="$entity.id"
-   	 	title="#text($!entity.name)">
+       		
+       
+       		
+       		
+       		
    	 	 $pages.include("$componenthome/gridsample/types/attachedmedia/entity2.html", $context)
+   	 	 <div class="clearfix"></div>
+   	 	 </div>
    	 	 <div class="emgridC-name">
 			#if($name)
 				#text($!name) ([[Profile]] $entity.facecounter)
@@ -67,11 +77,17 @@ $context.putPageValue("previewurl", $previewurl)
 				[[Profile]] $entity.facecounter
 			#end
 			</div>
-   	 	</a>
-	        
-	   </div>
-	        
-	        <div class="clearfix"></div>
+	   </a>
+	   
+	   <a href="$previewurl" 
+   	 	class="emdialog entity-dialog emgridpreviewlink" 
+   	 	data-hidefooter="true" 
+   	 	data-hideheader="true"
+   	 	id="clickid${entity.id}"  
+   	 	data-id="$entity.id"
+   	 	title="#text($!entity.name)">
+	        <i class="fas fa-ellipsis-v"></i>
+	        </a>
 
 </div>
 
