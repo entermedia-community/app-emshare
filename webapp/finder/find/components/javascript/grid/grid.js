@@ -63,27 +63,40 @@ jQuery(document).ready(function()
         	        {
             	var cell = $(this);
             		cell.css("visibility","hidden");
-        	        });
+        	});
             cells.each(function() 
 	        {
       	        var cell = $(this);
       	        var cellwidth = colwidth;
-      	        if (colcount >1 ) {
-    	        	cellwidth = colwidth-cellpadding;
+      	        if(grid.data("fixedwidth")) {
+					cell.css("width", cellwidth + "px");
+					if (col >0 ) {
+					//left
+	      	        var left = (colwidth * col) + (cellpadding * col);
+	      	        cell.css("left",left + "px");
+	      	        }
+				}
+				else {
+	      	        if (colcount >1 ) {
+	    	        	cellwidth = colwidth-cellpadding;
+	      	        }
+	      	        cell.css("width", cellwidth + "px");
+	      	        //left
+      	        	var left = (colwidth * col);
+      	        	cell.css("left",left + "px");
+	      	        var cellimage = cell.find('.emgridcell-assetimage');
+      	        
+	      	        if (cellimage.length > 0)
+	  	        	{
+	  	        		var imgwidth = cellimage.data("width");
+	  	        		var imgheight = cellimage.data("height");
+	  	        		var setimgheight = colwidth*(imgheight/imgwidth);
+	  	        		cellimage.find(".imagethumb").css("height", setimgheight+'px');
+	  	        		
+	  	        		cellimage.find(".videothumb").css("height", setimgheight+'px');
+	  	        	}
       	        }
-      	        cell.css("width", cellwidth + "px");
       	        
-      	        var cellimage = cell.find('.emgridcell-assetimage');
-      	        
-      	        if (cellimage.length > 0)
-  	        	{
-  	        		var imgwidth = cellimage.data("width");
-  	        		var imgheight = cellimage.data("height");
-  	        		var setimgheight = colwidth*(imgheight/imgwidth);
-  	        		cellimage.find(".imagethumb").css("height", setimgheight+'px');
-  	        		
-  	        		cellimage.find(".videothumb").css("height", setimgheight+'px');
-  	        	}
       	        
       	        var curheight = columns[col];
       	        var cellheight = cell.height();
@@ -91,9 +104,7 @@ jQuery(document).ready(function()
       	        cell.css("top",curheight + "px");
       	        //columns[col] = curheight + cellheight + cellpadding;
       	        columns[col] = curheight + cellheight ;
-      	        //left
-      	        var left = colwidth * col;
-      	        cell.css("left",left + "px");
+      	        
       	        cell.css("visibility","visible");
       	        
       	        col++;
