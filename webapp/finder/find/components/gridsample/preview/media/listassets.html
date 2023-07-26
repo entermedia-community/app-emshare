@@ -3,14 +3,20 @@
 #end
 #ifnull($selectedentity)
 	#set($defaultfolder =  $mediaarchive.getBean("entityManager").loadDefaultFolderForModule($topmodule, $context.getUser()))
+	
 #end
 #ifnotnull($selectedentity)
+
 	#if($topmodule.getId()=="faceprofilegroup")
 		#set($defaultfolder =  $mediaarchive.getBean("entityManager").loadDefaultFolderForModule($topmodule, $context.getUser()))		
 	#else
 		#set($defaultfolder =  $mediaarchive.getBean("entityManager").loadDefaultFolder($selectedentity, $context.getUser()))
+		
 	#end
+	
+	
 #end
+
 #if(!$currentcategoryid && $defaultfolder)
 	#set( $currentcategoryid = $defaultfolder.getId())
 #end
@@ -32,9 +38,7 @@
 	#set($category  = $mediaarchive.getCategory($rootcategory))
 
 	#set( $assetshits = $mediaarchive.query("asset").hitsPerPage($assetsshown).match("category",$rootcategory).sort("assetaddeddateDown").search() )
-	
 #else 
-
 	#set( $assetshits = $mediaarchive.query("asset").hitsPerPage($assetsshown).match("category", $currentcategoryid).sort("assetaddeddateDown").search() )
 #end
 
@@ -43,11 +47,6 @@ $context.putPageValue("fullview",true)
 $context.putPageValue("thumbsize", "small" )
 $context.putPageValue("primaryimage", $entity.primaryimage )
 $context.putPageValue("mediarender", "attachedmedialist" )
-
-
-
-
-
 
 
 
