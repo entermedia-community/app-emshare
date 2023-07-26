@@ -11,12 +11,36 @@ $context.putPageValue("rendertype", $rendertype)
 $context.putPageValue("rendermoduleid", $module.id)
 
 
+$hits.setHitsPerPage(6)
+
+
 $pages.include("$apphome/views/modules/$module.id/resultsactions.html",$context)
+
+#set($currentpage = $context.getRequestParameter("currentpagenum"))
+
+#set( $prhits = $hits.getPositionRender() )
+#ifnotnull($currentpage)
+$prhits.setPageOneBased($currentpage)
+#end
+#set($pos = $prhits.toPosition($prhits.getPage()))
+
+#set($resultsPage = "$componenthome/results/index.html?hitssessionid=$!hits.sessionId&pageposition")
+#set($targetdivinner = "${module.id}resultsarea")
+#set($oemaxlevel = "2")
+
+<div class="emgridnav" style="padding-right: 4px;">
+
+	#if( $prhits.prevPosition() )
+		<a href="$resultsPage=$prhits.prevPosition()" class="ajax" data-updateurl="$!updateurl" data-oemaxlevel="$oemaxlevel" data-targetdivinner="$targetdivinner">
+		<img src="$apphome/theme/images/arrow-left.svg"	style="width:20px;" />
+		</a>
+	#end
+</div>
 
 <div id="galleryimg-${rendertype}" 
 	class='emgrid entitiescontainer' 
-	data-fixedwidth="220" 
-	data-cellpadding="15"
+	data-fixedwidth="200" 
+	data-cellpadding="11"
 	data-entityrenderurl="$siteroot$apphome/views/modules/$module.id/components/gridsample/gridcell.html"
 	data-rendertype="$rendertype">
     	#foreach( $hit in $hits.getPageOfHits())
@@ -25,6 +49,16 @@ $pages.include("$apphome/views/modules/$module.id/resultsactions.html",$context)
 		#end
 		
 </div>  
+  
+<div class="emgridnav" style="padding-left:4px;">
+	#if ( $prhits.nextPosition() )
+		<a href="$resultsPage=$prhits.nextPosition()" class="ajax" data-updateurl="$!updateurl" data-oemaxlevel="$oemaxlevel" data-targetdivinner="$targetdivinner">
+		<img src="$apphome/theme/images/arrow-right.svg"	style="width:20px;" />
+		</a>
+	#end
+</div>
+<div class="clearfix"></div>
+		
 #if($hits.getTotalPages() >  1  )
 
 	$pages.include("$apphome/views/modules/$module.id/navigate.html", $context)
