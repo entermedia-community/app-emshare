@@ -18,6 +18,9 @@
 	#end
 #end
 
+$context.putPageValue("entityid", $entityid)
+$context.putPageValue("moduleid", $moduleid)
+
 
 #set($module = $mediaarchive.getCachedData("module", $moduleid))
 
@@ -25,8 +28,8 @@
 	#set($topmodule = $module)
 #end
 
-$context.putPageValue("entityid", $entityid)
-$context.putPageValue("moduleid", $moduleid)
+#set($topentityid = $context.getRequestParameter("topentityid"))
+$context.putPageValue("topentityid", $topentityid)
 
 
 
@@ -82,15 +85,19 @@ $context.putPageValue("previewurl", $previewurl)
 			#ifnotnull($defaultfolder)
 			   	###set($link = "$!siteroot$applink/views/modules/$!moduleid/components/gridsample/types/viewmedia.html")
 			   	#set($link = "$!siteroot$applink/views/modules/$!topmodule.getId()/index.html")
-				<a href="$link?entityid=$!entity.getId()&entitytype=$!moduleid" 			
+				#if( $topmodule == $module)
+				<a href="$link?entityid=$!entity.getId()&entitytype=$!moduleid&topentityid=$!entity.getId()"
+				#else
+				<a href="$link?entityid=$!entity.getId()&entitytype=$!moduleid&topentityid=$!topentityid"
+				#end 			
 				class=" ajax activelistenerparent"
 				data-targetdivinner="application"
 				data-defaultfolder="$defaultfolder.getId()"
 				data-entity="$!entity.getId()"
+				
 				data-oemaxlevel="5"
 				data-field=""
 				data-updateurl="true"
-				data-scrollto="entitymediapreviewselected"
 				title="[[View]]">
 				
 				<div class="emgridC-entitymedia assetdropentity"
