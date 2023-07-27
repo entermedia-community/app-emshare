@@ -62,17 +62,17 @@
 #end
 
 <div class="filtered">
-
+<div class="filtered-breadcrumb">
 ## BREADCRUMB
 #if($canviewbreadcrumb)
 	#if( $hits.getSearchQuery().hasMainInput())
-		<div class="filtered-breadcrumb">
+		
 		#if($librarycol)
 			[[Searching within]]: <strong><em>$librarycol</em> </strong> [[for]]:  <span class="searchterm">$hits.getSearchQuery().getMainInput()</span>
 		#else
 			[[Searching for]]:  <span class="searchterm">$hits.getSearchQuery().getMainInput()</span>
 		#end
-		</div>
+		
 	
 	#end
 	
@@ -81,7 +81,7 @@
 	##TODO Loop over the view and show them here if they match
 	
 	#if( $category )
-		<div class="filtered-breadcrumb">
+		
 			
 			#set( $count = $hits.size())
 			#set($parentcategories = $category.getParentCategories())
@@ -106,8 +106,20 @@
 			
 				&nbsp;<span>($count)</span>
 			#end
-		</div>
+		
 	#end
+	
+	#set($topentityid = $context.getRequestParameter("topentityid"))
+
+	#if($topentityid)
+		
+		#set($topentity = $mediaarchive.getCachedData($topmodule.getId(), $topentityid))
+		#set($clearfiltershref = "$siteroot$apphome/views/modules/${topmodule.getId()}/index.html?hitssessionid=$!hits.getSessionId()&${topmodule.getId()}clearresults=true&${topmodule.getId()}clearselection=true&clearselection=true&clearfilters=true")
+		#set($oemaxlevel = "4")
+			[[Showing]]: <span class="searchterm">#text($topentity)</span>
+			
+	#end
+		</div>
 #end
 
 
@@ -238,8 +250,10 @@
 
 
 
-#if( $hits.getSearchQuery().hasMainInput() || ($terms && !$terms.isEmpty()) )
-	#if( $librarycol )
+#if( $hits.getSearchQuery().hasMainInput() || ($terms && !$terms.isEmpty())  || $clearfiltershref)
+	#if($clearfiltershref)
+		#set($href = $clearfiltershref)
+	#elseif( $librarycol )
 		#set($href = "$siteroot$apphome/views/modules/librarycollection/showcategory.html?hitssessionid=$!hits.getSessionId()&collectionid=$!librarycol.getId()&assetclearresults=true&clearfilters=true")
 		#set($oemaxlevel = "2")
 	#else

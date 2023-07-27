@@ -1,27 +1,6 @@
 #set($filter = $modulehits.findFilterValue("entitysourcetype") )
 $context.putPageValue("filter", $filter)
 
-
-#set($topentityid = $context.getRequestParameter("topentityid"))
-
-#if($topentityid)
-	#set($topentity = $mediaarchive.getCachedData($topmodule.getId(), $topentityid))
-	#set($href = "$siteroot$apphome/views/modules/${topmodule.getId()}/index.html?hitssessionid=$!hits.getSessionId()&${topmodule.getId()}clearresults=true&${topmodule.getId()}clearselection=true&clearselection=true&clearfilters=true")
-	#set($oemaxlevel = "4")
-	<div class="filtered">
-		<div class="filtered-breadcrumb">
-		[[Showing]]: <span class="searchterm">#text($topentity)</span>
-		</div>
-		<a class="clearallfilters ajax btn btn-secondary btn-xs btn-clearall " 
-		href="$href"
-		data-targetdiv="applicationcontent" 
-		data-oemaxlevel="$oemaxlevel" 
-		data-updateurl="true" 
-		data-onsuccess="closetypeaheadmodal"
-		title="[[Clear Search Filters]]">[[Clear Filters]] <i class="fas fa-times"></i> </a>
-	</div>
-#end
-
    		<div class="emgrid-module emgrid-box emgrid-column emgrid-module-$!rendertype">
    		<div class="emgrid-subtitle">
 	   		<h3>
