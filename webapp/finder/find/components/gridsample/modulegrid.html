@@ -35,6 +35,7 @@ $context.putPageValue("filter", $filter)
 				
 
 			</h3>
+			
 					<div style="float:right" >
 					#if($moduleid=="asset")
 						
@@ -62,6 +63,21 @@ $context.putPageValue("filter", $filter)
 				</div>
 		<div class="clearfix"></div>
    		</div>
+   		
+   		
+		#if ($moduleid!="faceprofilegroup" && $moduleid!="asset")
+				#set($canaddnew = $permissions.can($moduleid, "create"))
+				#if($canaddnew)
+				<div style="margin-bottom:15px">
+						<a class="btn btn-xs btn-blue emdialog TODOautocloseside" 
+							style="margin-right:5px; "  
+							title="[[Add New]] #text($module)"
+							href="$siteroot$applink/views/modules/${moduleid}/components/gridsample/preview/$!{rendertype}.html?edit=true&addnew=true&viewid=$!{module.id}addnew&targetdiv=applicationmaincontent"
+							data-hidefooter="true">
+							<i class="fas fa-plus"></i> [[New]]</a>
+							</div>
+				#end
+			#end
 		#set($rendertype = "entity")
 	   	#if ($module.modulerendertype)
 	   		#set($rendertype = $module.modulerendertype)
@@ -82,37 +98,36 @@ $context.putPageValue("filter", $filter)
 			
 		#end
 	   	$context.putPageValue("details", $details)
+	   
+	   
 	   	
+	   $hits.setHitsPerPage(6)
+	   
 	   
 	   	
 		<div id="galleryimg-${rendertype}" 
 				class='emgrid #if($section != "favorites")emgridlimited#end entitiescontainer' 
-				data-fixedwidth="220" 
-				data-cellpadding="15"
+				style="width:1300px"
+				data-fixedwidth="200" 
+				data-cellpadding="10"
 				data-entityrenderurl="$!{siteroot}$apphome/views/modules/${module.id}/components/gridsample/gridcell.html"
 				data-rendertype="$rendertype">
-			#foreach( $hit in $hits.getPageOfHits() )
-				$context.putPageValue("hit", $hit)
-			    $pages.include("$apphome/components/gridsample/gridcell.html", $context)
-			#end
-		</div>
-		
-		
-		<div class="emgrid-footer">
-			#if ($moduleid!="faceprofilegroup" && $moduleid!="asset")
-				#set($canaddnew = $permissions.can($moduleid, "create"))
-				#if($canaddnew)
-			
-						<a class="btn btn-xs btn-blue emdialog TODOautocloseside" 
-							style="margin-right:5px; "  
-							title="[[Add New]] #text($module)"
-							href="$siteroot$applink/views/modules/${moduleid}/components/gridsample/preview/$!{rendertype}.html?edit=true&addnew=true&viewid=$!{module.id}addnew&targetdiv=applicationmaincontent"
-							data-hidefooter="true">
-							<i class="fas fa-plus"></i> [[Add New]]</a>
+				#foreach( $hit in $hits.getPageOfHits() )
+					$context.putPageValue("hit", $hit)
+				    $pages.include("$apphome/components/gridsample/gridcell.html", $context)
 				#end
-			#end
+				#if($hits.getTotalPages() > 1)
+				<div class=" emgrid-viewmore " style="">
+					<a href="$siteroot$applink/views/modules/${moduleid}/index.html">[[View More]]</a>
+				</div>
+				#end
 		</div>
-		</div>
+		
+		
+		
+		
+		
+	</div>
 		
 		
 		

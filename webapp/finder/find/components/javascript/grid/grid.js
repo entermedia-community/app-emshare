@@ -56,7 +56,7 @@ jQuery(document).ready(function()
             
             
             var col = 0;
-            
+            var lastleft = 0;
             var cells = grid.children( ".emgridcell" );
 	    	
             cells.each(function() 
@@ -74,6 +74,7 @@ jQuery(document).ready(function()
 					//left
 	      	        var left = (colwidth * col) + (cellpadding * col);
 	      	        cell.css("left",left + "px");
+	      	        lastleft = left;
 	      	        }
 				}
 				else {
@@ -84,6 +85,7 @@ jQuery(document).ready(function()
 	      	        //left
       	        	var left = (colwidth * col);
       	        	cell.css("left",left + "px");
+      	        	lastleft = left;
 	      	        var cellimage = cell.find('.emgridcell-assetimage');
       	        
 	      	        if (cellimage.length > 0)
@@ -128,6 +130,11 @@ jQuery(document).ready(function()
             }
             grid.css("height",tallest + 'px');
             
+            var viewmore = grid.find(".emgrid-viewmore");
+            if(viewmore) {
+	            lastleft = lastleft + colwidth + cellpadding; 
+	            viewmore.css("left", lastleft);
+            }
 	        return this;
 	 
 	    };
