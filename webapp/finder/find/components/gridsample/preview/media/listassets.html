@@ -1,18 +1,21 @@
 #if(!$moduleid)
 	#set( $moduleid = $context.getRequestParameter("moduleid"))
 #end
-#ifnull($selectedentity)
-	#set($defaultfolder =  $mediaarchive.getBean("entityManager").loadDefaultFolderForModule($topmodule, $context.getUser()))
-	
-#end
-
-#ifnotnull($selectedentity)
-
-	#if($topmodule.getId()=="faceprofilegroup")
-		#set($defaultfolder =  $mediaarchive.getBean("entityManager").loadDefaultFolderForModule($topmodule, $context.getUser()))		
-	#else
-		#set($defaultfolder =  $mediaarchive.getBean("entityManager").loadDefaultFolder($selectedentity, $context.getUser()))
+#ifnull($defaultfolder)
+	#ifnull($selectedentity)
+		#set($defaultfolder =  $mediaarchive.getBean("entityManager").loadDefaultFolderForModule($topmodule, $context.getUser()))
 		
+	#end
+	
+	#ifnotnull($selectedentity)
+	
+		#if($topmodule.getId()=="faceprofilegroup")
+			#set($defaultfolder =  $mediaarchive.getBean("entityManager").loadDefaultFolderForModule($topmodule, $context.getUser()))		
+		#else
+		
+			#set($defaultfolder =  $mediaarchive.getBean("entityManager").loadDefaultFolder($selectedentity, $context.getUser()))
+			
+		#end
 	#end
 #end
 
@@ -40,7 +43,7 @@
 	#set( $assetshits = $mediaarchive.query("asset").hitsPerPage($assetsshown).match("category",$rootcategory).sort("assetaddeddateDown").search() )
 #else 
 	#set( $assetshits = $mediaarchive.query("asset").hitsPerPage($assetsshown).match("category", $currentcategoryid).sort("assetaddeddateDown").search() )
-	$assetshits
+	
 #end
 
 $context.putPageValue("assetshits", $assetshits)

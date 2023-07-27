@@ -29,6 +29,9 @@ $context.putPageValue("moduleid", $moduleid)
 #end
 
 #set($topentityid = $context.getRequestParameter("topentityid"))
+#if(!$topentityid)
+	
+#end
 $context.putPageValue("topentityid", $topentityid)
 
 
@@ -83,13 +86,16 @@ $context.putPageValue("previewurl", $previewurl)
 		#set($defaultfolder =  $mediaarchive.getBean("entityManager").loadDefaultFolder($module, $entity, $context.getUser()))
        #if($defaultfolder.getId() != $category.getId())
 			#ifnotnull($defaultfolder)
-			   	###set($link = "$!siteroot$applink/views/modules/$!moduleid/components/gridsample/types/viewmedia.html")
+			   	
 			   	#set($link = "$!siteroot$applink/views/modules/$!topmodule.getId()/index.html")
+			   	
 				#if( $topmodule == $module)
-				<a href="$link?entityid=$!entity.getId()&entitytype=$!moduleid&topentityid=$!entity.getId()"
+					#set($link = "$link?entityid=$!entity.getId()&entitytype=$!moduleid&topentityid=$!entity.getId()")
 				#else
-				<a href="$link?entityid=$!entity.getId()&entitytype=$!moduleid&topentityid=$!topentityid"
-				#end 			
+					#set($link = "$link?entityid=$!entity.getId()&entitytype=$!moduleid&topentityid=$!topentityid")
+				#end
+				<a href="$link"
+			
 				class=" ajax activelistenerparent"
 				data-targetdivinner="application"
 				data-defaultfolder="$defaultfolder.getId()"
