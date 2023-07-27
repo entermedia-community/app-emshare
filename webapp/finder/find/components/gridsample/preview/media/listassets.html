@@ -12,9 +12,7 @@
 		#if($topmodule.getId()=="faceprofilegroup")
 			#set($defaultfolder =  $mediaarchive.getBean("entityManager").loadDefaultFolderForModule($topmodule, $context.getUser()))		
 		#else
-		
 			#set($defaultfolder =  $mediaarchive.getBean("entityManager").loadDefaultFolder($selectedentity, $context.getUser()))
-			
 		#end
 	#end
 #end
@@ -88,21 +86,9 @@ $context.putPageValue("mediarender", "attachedmedialist" )
 
 ## BREADCRUMB
 #if($canviewbreadcrumb)
-	#if( $assetshits.getSearchQuery().hasMainInput())
-		<div class="filtered-breadcrumb">
-		#if($librarycol)
-			[[Searching within]]: <strong><em>$librarycol</em> </strong> [[for]]:  <span class="searchterm">$hits.getSearchQuery().getMainInput()</span>
-		#else
-			[[Searching for]]:  <span class="searchterm">$assetshits.getSearchQuery().getMainInput()</span>
-		#end
-		</div>
-	
-	#end
 	
 	#set($currentSort = $assetshits.getSearchQuery().getSortBy())
-	
-	##TODO Loop over the view and show them here if they match
-	
+		
 	#if( $defaultfolder )
 		<div class="filtered-breadcrumb">
 			
