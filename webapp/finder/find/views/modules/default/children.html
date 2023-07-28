@@ -6,31 +6,35 @@
 	data-oemaxlevel="1"
 >
 
+#set($topentityid = $context.getRequestParameter("topentityid"))
+#ifnotnull($topentityid)
 
-#foreach($module in $organizedModules)
-	#if($module.id != $expandedmodule)
-		#set($idhits = $organizedHits.get($module.id))
-		#if( !$idhits.isEmpty())
-			$context.putPageValue("hits", $idhits)
-			$context.putPageValue("module", $module)
-			$context.putPageValue("moduleid", $module.id)
-			
-		   	#set($modulerendertype = "entity")
-		   	#if ($module.homepagerendertype)
-		   		#set($modulerendertype = $module.homepagerendertype)
-		   	#end
-		   	
-		   	$context.putPageValue("modulerendertype", $modulerendertype)
-		  	
-		   	#set( $favorites = $userprofile.get("favorites_"+$module.id))
-			$context.putPageValue("favorites", $favorites)
-	
-			$pages.include("$apphome/components/gridsample/modulegrid.html", $context)
-		#end	
-	#end 
+	#foreach($module in $organizedModules)
+		#if($module.id != $expandedmodule)
+			#set($idhits = $organizedHits.get($module.id))
+			#if( !$idhits.isEmpty())
+				$context.putPageValue("hits", $idhits)
+				$context.putPageValue("module", $module)
+				$context.putPageValue("moduleid", $module.id)
+				
+			   	#set($modulerendertype = "entity")
+			   	#if ($module.homepagerendertype)
+			   		#set($modulerendertype = $module.homepagerendertype)
+			   	#end
+			   	
+			   	$context.putPageValue("modulerendertype", $modulerendertype)
+			  	
+			   	#set( $favorites = $userprofile.get("favorites_"+$module.id))
+				$context.putPageValue("favorites", $favorites)
+		
+				$pages.include("$apphome/components/gridsample/modulegrid.html", $context)
+			#end	
+		#end 
+	#end
+	<div class="clearfix"></div>
 #end
-<div class="clearfix"></div>
 
+##Display Media
 $pages.include("$apphome/components/gridsample/preview/media/listassets.html", $context)
 
 </div>
