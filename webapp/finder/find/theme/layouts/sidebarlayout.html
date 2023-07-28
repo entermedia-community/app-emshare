@@ -22,20 +22,7 @@
 <div id="applicationcontent"  
 	 class="cols-main #if ($module) cols-$module.id #end cols-${section}" 
 	 data-moduleid="$!module.id" 
-
-	#set( $title = $mediaarchive.getCatalogSettingValue("sitetitle"))
-	#ifnotnull( $category )
-		data-setpagetitle="#text($category) - $title" 
-	#end
-	#ifnull( $category )
-		#ifnotnull($module)
-			data-setpagetitle="#text($module) - $title"
-		#end	
-		#ifnull($module)
-			data-setpagetitle="$title"
-		#end	
-	#end	
-	 
+   $pages.include("$apphome/components/sections/title.html",$context)
 >
 
 	#if($user && $cansidebar)
