@@ -1,14 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	#set( $section = $content.section)
+	##set( $section = $content.section)
 
 	#set( $title = $mediaarchive.getCatalogSettingValue("sitetitle"))
 	<title data-titlebase="$title">
-		#ifnotnull( $category )
-			#text($category) -
-		#end
-		$title
+		
+	#ifnotnull( $category )
+		#text($category) - $title
+	#end
+	#ifnull( $category )
+		#ifnotnull($module)
+			#text($module) - $title
+		#end	
+		#ifnull($module)
+			$title
+		#end	
+	#end	
 	</title>
 	
 	<meta http-equiv="X-UA-Compatible" content="IE=10">

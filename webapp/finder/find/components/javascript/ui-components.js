@@ -4081,6 +4081,14 @@ adjustdatamanagertable = function() {
 jQuery(document).ready(function() {
 	uiload();
 	jQuery(window).trigger("resize");
+
+	history.pushState($("#application").html(), null, window.location.href);	
+	window.onhashchange = function() {
+	 	//Enable scroll
+		$("body").css({ overflow: 'visible' });
+		$(window).trigger( "resize" );
+	}
+	
 	/*gridResize();
 	resizegallery();
 	resizecolumns();
