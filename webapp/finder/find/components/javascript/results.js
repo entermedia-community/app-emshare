@@ -537,6 +537,7 @@ jQuery(document).ready(function(url,params)
 			
 			var container = $("#main-media-container");
 			container.replaceWith(data);
+			
 			var div = $("#main-media-viewer");
 			var id = div.data("previous");
 			if (typeof id != 'undefined'  && id != '') {
