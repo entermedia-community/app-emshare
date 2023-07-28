@@ -9,13 +9,6 @@
 
 #set( $moduleid = $context.getRequestParameter("moduleid") )
 
-
-
-
-
-##set($url = "$!siteroot$applink/views/modules/modulesearch/index.html")
-#set( $url = "$applink/views/modules/$moduleid/index.html")
-
 #set( $url = "$applink/views/modules/asset/index.html")
 
 
@@ -38,14 +31,16 @@
 	#set($entityurl = "$!siteroot$apphome/views/modules/$!{module.id}/index.html?$!{module.id}page=1&field=description&operation=freeform&description.value=$val")
 	
 	<a href="$entityurl" 
-		class="ajax minimizeexpandedmoduleX" 
+		class="ajax qsresultsEntity" 
+		style=""
 		data-targetdiv="applicationmaincontent" 
 		data-oemaxlevel="3" 
 		data-updateurl="true" 
 		data-profilepreference="defaultmodule"
 		data-profilepreference.value="$!module.getId()"
-		title="#text($module)" >
-	<img src="$siteroot$apphome/theme/images/entity/${moduleicon}.svg" style="height: 25px; max-width:20px;"> 
+		title="[[View]]: #text($module)" >
+	<img src="$siteroot$apphome/theme/images/entity/${moduleicon}.svg" 
+	style="height: 25px; max-width:20px;"> 
 	
 	#if( $module.id == "asset") ##this is safe
 		#set( $count = $hits.size()) 
@@ -63,8 +58,8 @@
 	   	#set( $val = $hit.getName())
 		#set($one = "$!siteroot$apphome/views/modules/$!{module.id}/index.html?$!{module.id}page=1&field=description&operation=freeform&description.value=$val&topentityid=$hit.getId()&entityid=$hit.getId()&entitytype=${module.id}")
 	
-			<a href="$one" 
-		class="ajax minimizeexpandedmoduleX" 
+		<a href="$one" 
+		class="ajax quicksearchlinks" 
 		data-targetdiv="applicationmaincontent" 
 		data-oemaxlevel="3" 
 		data-updateurl="true" 
@@ -81,7 +76,15 @@
 <span title="[[Esc to Close]]" class="fas fa-window-close"></span>
 </div>
 <br>
-<h3>[[Media Keywords]]</h3>
+#set($assetmodule = $mediaarchive.getModule("asset")
+$assetmodule
+#set($moduleicon = "entity")
+#if ($assetmodule.moduleicon)
+	#set($moduleicon = $assetmodule.moduleicon)
+#end
+<h3 style="line-height: 25px;">
+	<img src="$siteroot$apphome/theme/images/entity/${moduleicon}.svg" 
+	style="height: 25px; max-width:20px;"> [[Media Keywords]]</h3>
 <ul class="qsrecent">
 #foreach ($suggestion in $livesuggestions)
 	#set( $k = $suggestion.getKeyword() )
@@ -97,7 +100,7 @@
 			data-operation="contains" 
 			data-targetdivinner="applicationmaincontent"
 			data-description.value="#esc($k)" 
-			class="badge badge-light ajax quicksearchlinks" >
+			class="ajax quicksearchlinks" >
 			 <span>$suggestion.getBold()</span></a>  ##make bold
 	</li>	 
 #end
