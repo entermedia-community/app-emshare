@@ -168,6 +168,20 @@ runajaxonthis = function(inlink,e)
 		}
 	}
 		
+			if (typeof global_updateurl !== "undefined" && global_updateurl == false) {
+				//globaly disabled updateurl
+			}
+			else {
+				var updateurl = inlink.data("updateurl");
+				if( updateurl)	{
+					//console.log("Saving state ", updateurl);
+					history.pushState($("#application").html(), null, nextpage);
+				}
+				
+				//window.addEventListener("hashchange", function(e) { reload using ajax
+			}
+
+		
 		jQuery.ajax({
 			url: nextpage, data: options, success: function (data) {
 				var cell;
@@ -216,18 +230,6 @@ runajaxonthis = function(inlink,e)
 			crossDomain: true
 		}).always(function(){
 			
-			if (typeof global_updateurl !== "undefined" && global_updateurl == false) {
-				//globaly disabled updateurl
-			}
-			else {
-				var updateurl = inlink.data("updateurl");
-				if( updateurl)	{
-					//console.log("Saving state ", updateurl);
-					history.pushState($("#application").html(), null, nextpage);
-				}
-				
-				//window.addEventListener("hashchange", function(e) { reload using ajax
-			}
 			var scrolltotop = inlink.data("scrolltotop");
 			if( scrolltotop)	{
 				window.scrollTo(0, 0);
@@ -803,6 +805,23 @@ uiload = function() {
 				data.oemaxlevel = oemaxlevel;
 				
 				var formmodal = form.closest(".modal");
+			
+                if (typeof global_updateurl !== "undefined" && global_updateurl == false) {
+        			//globaly disabled updateurl
+        		}
+        		else {
+        			//Update Address Bar
+    				var updateurl = form.data("updateurl");
+    				if( updateurl)	{
+    					//serialize and attach
+    					var params = form.serialize();
+    					var url = form.attr("action");
+    					url += (url.indexOf('?') >= 0 ? '&' : '?') + params;
+    					history.pushState($("#application").html(), null, url);
+    					window.scrollTo(0, 0);
+    				}
+        		}
+
 				
 				form.ajaxSubmit({
 					data : data,
@@ -881,23 +900,6 @@ uiload = function() {
 		                if(form.data("onsuccessreload")) {
 		                	document.location.reload(true)
 		                }
-		                
-		                if (typeof global_updateurl !== "undefined" && global_updateurl == false) {
-		        			//globaly disabled updateurl
-		        		}
-		        		else {
-		        			//Update Address Bar
-	        				var updateurl = form.data("updateurl");
-	        				if( updateurl)	{
-	        					//serialize and attach
-	        					var params = form.serialize();
-	        					var url = form.attr("action");
-	        					url += (url.indexOf('?') >= 0 ? '&' : '?') + params;
-	        					history.pushState($("#application").html(), null, url);
-	        					window.scrollTo(0, 0);
-	        				}
-		        		}
-		                
 					}
 				});
 
@@ -1442,6 +1444,19 @@ uiload = function() {
 					//console.log("enter running " + q);
 					options["oemaxlevel"] = input.data("searchurlenteroemaxlevel");
 					//var updateurl = input.data("updateurl");
+
+									
+					if (typeof global_updateurl !== "undefined" && global_updateurl == false) {
+						//globaly disabled updateurl
+					}
+					else {
+						if( updateurl )
+						{
+							history.pushState($("#application").html(), null, searchurl);
+							window.scrollTo(0, 0);
+						}
+					}
+
 	
 					$.ajax({ url: searchurl, async: true, data: options, 
 						success: function(data) 
@@ -1452,17 +1467,6 @@ uiload = function() {
 								var q2 = input.val();
 								if( q2 == q)
 								{
-									
-									if (typeof global_updateurl !== "undefined" && global_updateurl == false) {
-										//globaly disabled updateurl
-									}
-									else {
-										if( updateurl )
-										{
-											history.pushState($("#application").html(), null, searchurl);
-											window.scrollTo(0, 0);
-										}
-									}
 									$("#"+searchurlentertargetdiv).html(data);
 										
 									$(window).trigger("resize");
@@ -3080,6 +3084,7 @@ uiload = function() {
 		if (toggler.data('action') == 'home') {
 			options["sidebarcomponent.value"] = "";
 			options["sidebarcomponent"] = "home";
+			history.pushState($("#application").html(), null, url);
 			jQuery.ajax({
 				url: url, 
 				async: false, 
@@ -3095,9 +3100,6 @@ uiload = function() {
 					$(".pushcontent").removeClass('pushcontent-'+sidebar);
 		        	$(".pushcontent").removeClass('pushcontent-open');
 					$(".pushcontent").addClass('pushcontent-fullwidth');
-					
-					
-					history.pushState($("#application").html(), null, url);
 					
 					$(window).trigger("resize");
 				},
@@ -4082,7 +4084,7 @@ jQuery(document).ready(function() {
 	uiload();
 	jQuery(window).trigger("resize");
 
-	history.pushState($("#application").html(), null, window.location.href);	
+	//history.pushState($("#application").html(), null, window.location.href);	
 	window.onhashchange = function() {
 	 	//Enable scroll
 		$("body").css({ overflow: 'visible' });
