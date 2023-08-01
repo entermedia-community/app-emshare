@@ -207,11 +207,7 @@ runajaxonthis = function(inlink,e)
 				else {
 					cell.html(data);
 				}
-				
-				if(inlink.data("scrollto")) {
-					scrollTo('#' + inlink.data("scrollto"));
-				}
-				 
+								 
 				//on success execute extra JS
                 if(inlink.data("onsuccess")) {
                 	var onsuccess = inlink.data("onsuccess");
@@ -4055,10 +4051,6 @@ lQuery(".ajaxstatus").livequery(
 		setTimeout('showajaxstatus("' + uid +'");',timeout); //First one is always faster			
 	}
 );
-
-function scrollTo(selector) {
-    document.querySelector(selector).scrollIntoView({ behavior: 'smooth' })
-}
 
 
 var resizegallery = function() {
