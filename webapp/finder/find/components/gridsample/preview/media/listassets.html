@@ -51,8 +51,10 @@ $context.putPageValue("thumbsize", "small" )
 $context.putPageValue("primaryimage", $entity.primaryimage )
 $context.putPageValue("mediarender", "attachedmedialist" )
 
-
-
+#ifnotnull($selectedentity)
+	#set($entityid = $selectedentity.getId())
+	$context.putPageValue("entityid", $entityid )
+#end
 
 <div class="emgrid-module emgrid-box emgrid-column emgrid-module-$!rendertype" >
    		<div class="emgrid-subtitle">
@@ -153,7 +155,7 @@ $context.putPageValue("mediarender", "attachedmedialist" )
 
 
 $context.putPageValue("category", $currentcategory)
-$context.putPageValue("categoryid", $currentcategoryid)
+$context.putPageValue("categoryid", $currentcategoryid) 
 $pages.include("$componenthome/categories/entities/actions.html",$context)
 
 </div>

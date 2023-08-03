@@ -3,38 +3,28 @@
 #if(!$nodeID)
 	#set( $nodeID = $context.getRequestParameter("categoryid") )
 #end
-
-#set($customredirect = $content.redirectviewupload)
-
-#set($collectionid = $context.getRequestParameter("collectionid"))
-
-#if( $nodeID ) 
+#if(!$nodeID)
+	##Is a Collection Upload?
+	#set($collectionid = $context.getRequestParameter("collectionid"))
+	#if(!$collectionid)
+		#set($librarycol = $mediaarchive.getProjectManager().loadUserCollection($mediaarchive, $userprofile))
+	#end
+	#if($collectionid)
+		#set($librarycol = $mediaarchive.getCachedData("librarycollection",$collectionid) )
+	#end
+	#if( $librarycol)
+		#set($collectionid = $librarycol.getId())
+		#set( $nodeID = $librarycol.getValue("rootcategory") )
+		$context.putPageValue("librarycol", $librarycol)
+	#end
+	
+#end
+#if( $nodeID )
     #set($category = $mediaarchive.getData("category",$nodeID))
     #set($categoryid = $category.getId())
-	##set($librarycol = $mediaarchive.query("librarycollection").orgroup("rootcategory",$category.getParentCategories()).searchOne() )
-#else
-	#if (!$librarycol)
-		#if(!$collectionid)
-			#set($collectionid = $userprofile.get("lastselectedcollection"))
-		#end
-		#if(!$collectionid)
-			#set($librarycol = $mediaarchive.getProjectManager().loadUserCollection($mediaarchive, $userprofile))
-		#end
-	#end
 #end
 
-#if(!$librarycol && $collectionid)
-	#set($librarycol = $mediaarchive.getCachedData("librarycollection",$collectionid) )
-#end
-#if( $librarycol && !$collectioinid)
-    #set($collectionid = $librarycol.getId())
-#end
 
-#if( !$nodeID && $librarycol )
-	#set( $nodeID = $librarycol.getValue("rootcategory") )
-#end 
-
-$context.putPageValue("librarycol",$librarycol)
 
 <div class="uploadformarea">
 <input class="upload_field" type="file" style="position:absolute; top:-2000px;" multiple="multiple"  />
@@ -53,7 +43,7 @@ $context.putPageValue("librarycol",$librarycol)
 		<div class="uploadinstructions" style="padding-top:10px;">
 			<div class="pickerHolder">
 				<a class="btn btn-primary btn-lg picker filePicker" href="#" style="margin-top: 0">
-				<i class="fas fa-file-upload"></i> [[Pick Files]]</a>
+				<i class="fas fa-file"></i> [[Pick Files]]</a>
 				<a class="btn btn-primary btn-lg picker folderPicker" href="#"  style="margin-top: 0">
 				<i class="fas fa-folder"></i> [[Pick Folder]]</a>
 			</div>
@@ -66,7 +56,7 @@ $context.putPageValue("librarycol",$librarycol)
 	
 	<div class="uploadinstructions d-none d-lg-block">	  
            <div id="drop-area" >
-		<div class="drop-over"></div>
+		<div class="drop-over"><div class="drop-over-bg"></div></div>
 		<div class="hints" >[[Drop files here!]]</div>
 	</div>
 	
@@ -125,32 +115,44 @@ $context.putPageValue("librarycol",$librarycol)
 		
 		
 		<div id="uploadmetadata">
-		
-		
-		#set( $entityupload = $context.getRequestParameter("entityupload") )
-		#set( $entitytype = $context.getRequestParameter("entitytype") )
-		
-		#if($entitytype)
-			#set( $addselection = $context.getRequestParameter("addselection") )
-			#if($addselection)
-				#set($customredirect = "$siteroot$apphome/views/modules/asset/index.html?clearfilters=true&field=$!entitytype&operation=matches&${entitytype}.value=$!addselection")
-			#end
+	
+		#if($nodeID)
+				<div style="font-size:1.1em; font-weight: bold; padding: 0 0 20px;">
+					[[Uploading to]]: 
+					
+					
+					#set($parentcategories = $category.getParentCategories())
+			
+					#if(!$parentcategories.isEmpty())
+						#foreach( $parent in $parentcategories)
+							#if( ${foreach.count} > 1) / #end
+							
+							<a style="padding:0px 4px 0;" 
+								href="$siteroot$apphome/views/modules/asset/viewfiles/$!{parent.id}/#dash($parent).html?hitssessionid=$!hits.getSessionId()"
+								title="[[View Files]]: $parent"
+								class="ajax"
+								data-targetdiv="applicationcontent"
+								data-oemaxlevel="5"
+								data-scrolltocat="true"
+								data-updateurl="true"
+								data-sidebarcomponent="categories">#text($parent)</a>
+				
+						#end
+					
+					
+					#end
+			
+				</div>		
+						<input id="nodeid" type="hidden" name="parentcategoryid" value="$nodeID"/>
 		#end
 		
-		$pages.include("$apphome/components/upload/entities/picker.html", $context)
-		
-		
-		##if($collectionid || $nodeid)
-		##	#set($viewid = "multipleuploadcollection")
-		##else
-			#set($viewid = "multipleupload")  ##Default finder
-		##end
-		#set($viewpath = "asset/$viewid")
-		$context.putPageValue("view",$viewpath)
+				#set($viewid = "multipleupload")  ##Default finder
+				#set($viewpath = "asset/$viewid") 
+				$context.putPageValue("view",$viewpath)
 		
 			<div class="upload-detail-box">
-		    <div class="ui-widget-header toggle-upload-details" data-status="open">
-		    <i class="fas fa-caret-right"></i> [[Add More Details]]
+		    <div class="ui-widget-header toggle-upload-details" data-status="closed">
+		    <i class="fas fa-caret-down"></i> [[Add More Details]]
 		    	#if( $caneditmetadatasetup )
 		    	<span class="widget-header-edit">
 				 <a class="ajax" 
@@ -161,25 +163,22 @@ $context.putPageValue("librarycol",$librarycol)
 				#end
 		    </div>
 		    
-		    <div class="toggle-content "> 
+		    <div class="toggle-content " style="display:none;"> 
 				
 				$context.putPageValue("searcher",$mediaarchive.getAssetSearcher() )	
 				
-				#if($nodeID)
-						<input id="nodeid" type="hidden" name="parentcategoryid" value="$nodeID"/>
-				#end
-
+				
                     
-					$pages.include("/$applicationid/components/xml/detaileditorcss.html", $context)
+				$pages.include("/$applicationid/components/xml/detaileditorcss.html", $context)
 					
 			</div>
 			</div>
 			
 			##have the cancel delete these assets?
-					<div class="uploadinstructionsafter" style="display: none">
-			   			<a class="btn btn-primary btn-lg startbutton"  
+					<div class="uploadinstructionsafter" style="display: none; width:300px">
+			   			<a class="btn btn-primary btn-lg btn-uploadnow startbutton"  
 							data-uploadreadytext="[[Upload]]" data-complete="[[Upload Complete]]" 
-			   				href="#"><i class="fas fa-upload"></i> [[Upload]]</a>
+			   				href="#"><i class="fas fa-file-upload"></i>  [[Upload]]</a>
 
 							<a  
 							style="display:none;" 

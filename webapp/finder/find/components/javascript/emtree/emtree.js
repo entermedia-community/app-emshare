@@ -159,10 +159,6 @@ $(document).ready(function()
         }
 		options.searchchildren = searchchildren; 
 		
-		if(inOptions["clearotherentities"]) {
-			options.clearotherentities = true;
-			reloadurl = reloadurl + "&clearotherentities=true";
-		}
 		if(inOptions["oemaxlevel"]) {
 			options.oemaxlevel = inOptions["oemaxlevel"];
 

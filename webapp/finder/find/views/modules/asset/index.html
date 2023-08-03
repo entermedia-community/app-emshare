@@ -15,6 +15,7 @@
 
 
 #if( $category)
+	#set( $categoryid= $category.getId()) 
 	$pages.include("$apphome/views/modules/category/showchildren.html", $context)
 #end
 	
@@ -77,8 +78,8 @@
 	#if($canviewupload || $candownloadcategoryzip)
 	<div class="expandedentityactions">
 		
-		#if($canviewupload)
-			<a href="$!{siteroot}$apphome/views/modules/asset/add/start.html" 			
+		#if($category && $canviewupload)
+			<a href="$!{siteroot}$apphome/views/modules/asset/add/start.html?categoryid=$!categoryid" 			
 				class="btn-sm btn-blue ajax"
 				data-targetdivinner="applicationmaincontent"
 				data-oemaxlevel="2"

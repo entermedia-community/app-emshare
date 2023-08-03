@@ -49,7 +49,7 @@ $(document).ready(function()
 	 	
 	 	uploadformarea.find(".uploadinstructionsafter").hide();
 		var startb = uploadformarea.find(".startbutton");
-		$(startb).text("Upload");
+		//$(startb).text("Upload");
 		$(startb).prop('disabled', false);
 		uploadformarea.find(".uploadinstructionsafter").show();
 		uploadformarea.find(".showonselect").show();

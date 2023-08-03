@@ -1,0 +1,115 @@
+#ifnotnull($categoryid)
+	#set($category = $mediaarchive.getCachedData("category", $categoryid))
+#end
+#ifnotnull($entityid)
+	#set($entity = $mediaarchive.getCachedData($moduleid, $entityid))
+#end
+
+<div class="uploadformarea entitycategoryactions" data-ajaxreloadtargets="reloadonupload" data-entityid="$entityid" data-moduleid="$moduleid" >
+	#if($permissions.can($moduleid, "upload_files"))
+		<div>
+			<!-- This is not shown -->
+	       <div class="progress_report_template" style="display:none;">
+	       <ul>
+	        <li class="uploadprogressrow" >
+				<span style="width: 0px;" class="uploadprogress progress_report_barcurrentupload"></span>
+				<a href="#">
+					<span   class="progress_report_namecurrentupload name"></span>
+					<span   class="progress_report_sizecurrentupload size"></span>
+					<span   class="progress_report_statuscurrentupload uploadstatus"></span>
+				</a>	
+			</li>
+			</ul>
+		 	</div>
+		 	
+		 	<ul class="up-files-list up-files-list-pending">
+			</ul>	
+		 	
+		 	<div class="completed-uploads" style="display:none;padding-top:3px;" >
+			<div class="ui-widget uipanel">
+			    <div  class="ui-widget-header">[[Upload Queue]]</div>
+			    <div>
+					<ul class="up-files-list up-files-list-completed" >
+					</ul>	
+				</div>
+			</div>	
+			</div>		
+		</div>
+	#end
+
+
+		#if($permissions.can($moduleid, "upload_files"))
+			#ifnull($uploadsourcepath)
+				#if( !$entity)
+					#set( $entity  = $mediaarchive.getData($moduleid, $entityid) )
+				#end
+				#set($uploadsourcepath =  $mediaarchive.getBean("entityManager").loadUploadSourcepath($module, $entity, $context.getUser()))
+			#end
+			#ifnull($uploadsourcepath)
+				#set($uploadsourcepath = "Albums/Users/$user.getScreenName()/Desktops")
+			#end
+	
+	
+
+	   	
+		#if($permissions.can($moduleid, "edit"))
+		 	<a class="ajax list-delete"  
+		 		data-targetdiv="entitycategoryresults" 
+		 		href="" >
+		 	<i class="fas fa-times"></i></a>
+		#end
+		
+		#if($module.getBoolean("enableuploading"))
+   		<a href="#" 			
+			class="btn-sm btn-blue entity-add-media filePicker entityuploadPicker"
+			title="[[Upload Media to]]: $!uploadsourcepath">
+		<i class="fas fa-file-upload"></i> [[Upload]]</a>
+		<div class="loadericon" 
+			style="padding:0px 4px 4px 6px; float:left; "><i class="fas fa-spinner fa-spin"></i> [[Uploading...]]</div>
+		#end
+		
+		
+
+   		
+   		#if($category && $assetshits)
+			<a	class="btn-sm btn-blue hideonupload"
+  				title="[[Download]]: $category.getName()"
+  				href="$applink/views/modules/asset/downloads/bycategory/${category.id}/#eid($category.name).zip">
+  				<i class="fa fa-download" aria-hidden="true"></i> [[Download]]</a>
+		#end
+							
+			<input class="upload_field" data-autostartupload="true" type="file" style="position:absolute; top:-2000px;" multiple="multiple"  />
+			#set( $root = "$siteroot$componenthome/upload/types/html5")
+			<form id="uploaddata" 
+			  		name="wizard" 
+			  		onSubmit="return false;" 
+					data-finishaction="" action="$root/finish.html" class="force-validate-inputs" >
+				  	<input name="createentityparent" value="true" type="hidden"/>
+				  	<input name="entitytype" value="$moduleid" type="hidden"/>
+				  	<input name="selected$moduleid" value="$entityid" type="hidden"/>
+				    <input name="field" value="$moduleid"type="hidden" />
+				  	<input name="${moduleid}.value" value="$entityid"type="hidden" />
+				  	<input name="field" value="category"type="hidden" />
+				  	<input name="category.value" value="${category.id}"type="hidden" />
+				  	<input name="sourcepath" value="$uploadsourcepath" type="hidden"/>
+				  	
+				 </form>
+				
+			
+		#end
+		
+		
+		#set($link = "$!siteroot$applink/views/modules/asset/viewfiles/${category.id}/#dash($category).html")
+		#if($category)
+		<a href="$link" 			
+			class="btn-sm btn-blue entity-add-media hideonupload ajax"
+			data-targetdiv="applicationcontent"
+			data-oemaxlevel="5"
+			data-updateurl="true"
+			data-closedialog="true"
+			title="[[View Media]]">
+		<i class="fas fa-external-link-alt"></i> [[View Folder]]</a>	
+		#end
+		<div class="clearfix"></div>
+</div>
+		
