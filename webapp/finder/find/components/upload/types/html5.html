@@ -37,7 +37,7 @@
 <div class="row">
     <div  class="col-md-4 col-upload-left">
 			
-		<div class="ui-widget-header">[[CHOOSE FILES OR FOLDER]]</div>
+		<div class="ui-widget-header">[[Choose Files or Folder]]</div>
    		
 		
 		<div class="uploadinstructions" style="padding-top:10px;">
@@ -117,8 +117,8 @@
 		<div id="uploadmetadata">
 	
 		#if($nodeID)
-				<div style="font-size:1.1em; font-weight: bold; padding: 0 0 20px;">
-					[[Uploading to]]: 
+				<div class="uploadto-breadcrumb" style="font-weight: bold; padding: 0 0 20px;">
+					<span style="font-size:1rem; ">[[Uploading to]]:</span> 
 					
 					
 					#set($parentcategories = $category.getParentCategories())
@@ -130,7 +130,7 @@
 							<a style="padding:0px 4px 0;" 
 								href="$siteroot$apphome/views/modules/asset/viewfiles/$!{parent.id}/#dash($parent).html?hitssessionid=$!hits.getSessionId()"
 								title="[[View Files]]: $parent"
-								class="ajax"
+								class="ajax #if($nodeID == $parent.id) currentcategory #end"
 								data-targetdiv="applicationcontent"
 								data-oemaxlevel="5"
 								data-scrolltocat="true"
@@ -152,7 +152,7 @@
 		
 			<div class="upload-detail-box">
 		    <div class="ui-widget-header toggle-upload-details" data-status="closed">
-		    <i class="fas fa-caret-down"></i> [[Add More Details]]
+		    <i class="fas fa-caret-right"></i> [[Add More Details]]
 		    	#if( $caneditmetadatasetup )
 		    	<span class="widget-header-edit">
 				 <a class="ajax" 
