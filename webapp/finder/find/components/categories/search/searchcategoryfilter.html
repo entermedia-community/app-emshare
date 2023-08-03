@@ -36,12 +36,20 @@ $context.putPageValue("searcher",$searcher)
 	#if(!$targetresults)
 		#set($targetresults = "$siteroot$apphome/views/modules/asset/showcategory.html")
 	#end
-
+	
+	#set($oemaxlevel = "2")
+	#if (!$targetdiv)
+		#set( $targetdiv = $context.getRequestParameter("targetdiv") )
+	#end
+	#if(!$targetdiv)
+		#set($targetdiv = "applicationmaincontent")
+		#set($oemaxlevel = "2")
+	#end
 
 	<form class="pickedcategoryform ajaxform #if($action) autoclose #end" 
 			action="$targetresults" 
-			data-targetdiv="applicationmaincontent" 
-			data-oemaxlevel="3"
+			data-targetdiv="$targetdiv"  
+			data-oemaxlevel="$oemaxlevel"
 			>
 		<input name="sidebarcomponent"  type="hidden" value="categories" />
 		
