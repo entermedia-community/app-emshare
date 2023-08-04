@@ -3844,6 +3844,8 @@ replaceelement = function(url, div, options, callback) {
 		async: false, 
 		data: options, 
 		success: function (data) {
+			
+			
 			div.replaceWith(data);
 
 			if( callback && typeof callback === "function" ) {  //make sure it exists and it is a function

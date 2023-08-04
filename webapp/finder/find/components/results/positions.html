@@ -72,12 +72,13 @@
 	$prhits.setPageOneBased($currentpage)
 #end
 #set($pos = $prhits.toPosition($prhits.getPage()))
+#set( $befores = $prhits.linksBefore() )
+#set( $afters = $prhits.linksAfter() )
+
 
 <div class="resultspositions" data-url="$componenthome/results/positions.html" data-moduleid="$moduleid" 
 data-hitssessionid="$!hits.getSessionId()" data-searchtype="$!hits.getSearchType()" data-currentpagenum="$prhits.getPage()">
  <ul>
- 
-	#set( $befores = $prhits.linksBefore() )
 	#if(!$befores.isEmpty() && $befores.get(0)>1)
 		<li><a class="ajax firstposition" data-targetdivinner="$targetdivinner" data-updateurl="$!updateurl" data-oemaxlevel="$oemaxlevel" href="$resultsPage=$total" >$prhits.getStartingPosition()</a></li>	
 	    <li class="ellipsis">...</li>
@@ -94,7 +95,6 @@ data-hitssessionid="$!hits.getSessionId()" data-searchtype="$!hits.getSearchType
 				href="$resultsPage=$pos" >$poslabel</a>
 		</li>		
 	#end
-	
 
 	#set( $pos = $prhits.toPosition($prhits.getPage()))
 	#set( $poslabel = $prhits.toPositionLabel($prhits.getPage()) )
@@ -110,7 +110,7 @@ data-hitssessionid="$!hits.getSessionId()" data-searchtype="$!hits.getSearchType
 	
 	
 	
-	#set( $afters = $prhits.linksAfter() )
+	
 	#foreach( $after in $afters )
 		#set( $pos = $prhits.toPosition($after) )
 		#set( $poslabel = $prhits.toPositionLabel($after) )

@@ -47,6 +47,13 @@ $(document).ready(function()
 		
 	 	//$("#upload_field").setFiles( allfiles );
 	 	
+	 	//inline
+	 	var uploadformareainline = $(this).closest(".uploadformareainline");
+	 	uploadformareainline.find("#drop-area").hide();
+	 	uploadformareainline.find("#completed-uploads").show();
+	 	
+	 	
+	 	//Upload page
 	 	uploadformarea.find(".uploadinstructionsafter").hide();
 		var startb = uploadformarea.find(".startbutton");
 		//$(startb).text("Upload");
@@ -54,8 +61,10 @@ $(document).ready(function()
 		uploadformarea.find(".uploadinstructionsafter").show();
 		uploadformarea.find(".showonselect").show();
 		
+		
+		
 		 
-		 var regex = new RegExp("currentupload", 'g');  
+		var regex = new RegExp("currentupload", 'g');  
 		 
 	    uploadformarea.find(".up-files-list").empty();
 	     //return confirm("You are trying to upload " + total + " files. Are you sure?");
