@@ -39,32 +39,26 @@ $context.putPageValue("moduleid", $moduleid)
 		
 		
 		<div id="sub-nav" class="search-views emsubnav sub-nav-$!moduleid">
-			#if($moduleid != "faceprofilegroup")
+			
 					<ul class="resultsnav">
-					<li>
-						#if($permissions.can($moduleid, "create"))
-						<div class="" style="">
-							<a class="btn btn-sm btn-blue emdialog " 
-								style="margin-right: 5px;"
-								data-updateurl="true" 
-								data-targetdivinner="applicationmaincontent" 
-								data-oemaxlayout="3" 
-								href="$siteroot$applink/views/modules/${moduleid}/components/gridsample/preview/$!{entityrendertype}.html?edit=true&addnew=true&viewid=$!{module.id}addnew&targetdiv=applicationmaincontent"
-								title="[[Add New]] #text($module)">
-								<i class="fas fa-plus"></i> [[New]]</a>
-						</div>
-						#end
-							
-					</li>
+					
+					#if($resultview == "grid")
+						#if($hits.getTotalPages() >  1  )
+	
+							$pages.include("$apphome/views/modules/$module.id/navigate.html", $context)
 						
-					#if(!$edit)
-						#if($hits && $resultview == "table" && $hits.hasSelections())
-							$pages.include("$searchhome/selectionactions.html", $context)
+						#end
+					#end
+					
+					#if($moduleid != "faceprofilegroup")
+						#if(!$edit)
+							#if($hits && $resultview == "table" && $hits.hasSelections())
+								$pages.include("$searchhome/selectionactions.html", $context)
+							#end
 						#end
 					#end
 					</ul>
-				
-			#end
+			
 	
 		#if($hits)
 		<ul class="resultsnavright">
@@ -110,7 +104,7 @@ $context.putPageValue("moduleid", $moduleid)
 							data-page="$!hits.getPage()" 
 							data-showremoveselections="$!showremoveselections" 
 							data-collectionid="$!librarycol.getId()"
-							data-targetdiv="resultsviewcontainer$!moduleid"
+							data-targetdiv="$!{moduleid}resultsarea"
 							readonly="readonly">
 							
 							<option value="grid" #if( $resultview == "grid") selected #end>[[Grid]]</option>
