@@ -1,4 +1,13 @@
+
+#set($module = $mediaarchive.getCachedData("module", "asset"))
 #set($moduleid = $module.getId())
+
+$context.putPageValue("module", $module)
+$context.putPageValue("componenthome", "$apphome/views/modules/asset/components")
+
+$context.putPageValue("showcategoriesheader", false)
+$context.putPageValue("showentitiesheader", false)
+
 
 #if( !$category)
 	#set($categoryid = $context.getRequestParameter("categoryid"))
@@ -16,69 +25,16 @@ $context.putPageValue("categoryid", $categoryid)
 	#set( $librarycol = $mediaarchive.query("librarycollection").orgroup("rootcategory", $rootcategories).searchOne() )
 #end
 
-
-#set( $count = $hits.size())
-	
-#set($entityurl = "$siteroot$apphome/views/modules/$module.id/index.html")
-
-#set( $entities = $userprofile.getEntitiesInParent($category) )
-
-	
-
+<div id="$!{module.getId()}resultscontainer">
 <div id="assetresults"
 	class="assetresults" 
 	data-url="$apphome/views/modules/asset/index.html" 
 	data-oemaxlevel="1"
 	data-categoryid="$!categoryid"
 	data-nodeID="$!categoryid">
-
-	#ifnull($showcategoriesheader)
-		#if( $category)
-			$pages.include("$apphome/views/modules/category/showchildren.html", $context)
-		#end
-	#end
 	
-	
-	<div class="emgrid-box expandedmodule emgrid-module-asset" style=" margin:0 10px 10px;">
+	<div class="emgrid-module emgrid-box emgrid-module-asset" style=" margin:0 10px 10px;">
 
-		#ifnull($showentitiesheader)
-			#set($showentitiesheader = $content.showentitiesheader)
-		#end
-		#ifnull($showentitiesheader)
-			#if(!$entities.isEmpty())
-			<div class="entitiesontop">
-				#foreach ( $data in $entities)
-					#set($entity = $data.getData())
-					#set($emoduleid = $data.getModuleId()) 
-					
-					#set($emodule = $mediaarchive.getData("module", $emoduleid))
-					
-					#set($rendertype = $emodule.modulerendertype)
-					#if (!$rendertype)
-			   			#set($rendertype = "entity")
-					#end
-					$context.putPageValue("rendertype", $rendertype)
-					$context.putPageValue("rendermoduleid", $emoduleid)
-					
-					#set($moduleicon = "entity")
-			     	#if ($emodule.moduleicon)
-			     		#set($moduleicon = $emodule.moduleicon)
-			     	#end
-				     	
-				     	
-					#set($previewurl = "$!{siteroot}$apphome/views/modules/$!{emoduleid}/components/gridsample/preview/${rendertype}.html?id=$entity.getId()&hitssessionid=$!hits.sessionId")
-					
-					$context.putPageValue("hit", $entity)
-					<div class="entitycelltop">
-					$pages.include("$apphome/views/modules/$!{emoduleid}/components/gridsample/preview/${rendertype}_embeded.html?id=$entity.id", $context)
-					</div>
-					
-				#end
-				<div class="clearfix"></div>
-			</div>
-			#end
-		#end
-		
 		<div class="emgrid-subtitle">
 	  		<h3>
 	     	#set($moduleicon = "entity")
@@ -86,16 +42,39 @@ $context.putPageValue("categoryid", $categoryid)
 	     		#set($moduleicon = $module.moduleicon)
 	     	#end
 	     	
-	    	#set($entityurl = "$siteroot$apphome/views/modules/$module.id/index.html")
-	
-			<img src="$siteroot$apphome/theme/images/entity/${moduleicon}.svg" style="height: 26px;"> 
-	
-					#set( $count = $hits.size()) 
-					#text($module)
-					 <span class="count">($count)</span>
+			#set( $count = $hits.size())
+			 
+				<img src="$siteroot$apphome/theme/images/entity/${moduleicon}.svg" style="height: 26px;"> 
+						
+				#if( $defaultfolder )
+					<div class="filtered-breadcrumb">
+						
+						#set($parentcategories = $defaultfolder.getParentCategories())
+						
+						#if(!$parentcategories.isEmpty())
+							#foreach( $parent in $parentcategories)
+								#if( ${foreach.count} > 1) / #end
+								
+								<a style="padding:0px 4px 0;" 
+									href="$siteroot$apphome/views/modules/asset/viewfiles/$!{parent.id}/#dash($parent).html?hitssessionid=$!hits.getSessionId()"
+									title="[[View Files]]: $parent"
+									class="ajax"
+									data-targetdiv="applicationcontent"
+									data-oemaxlevel="5"
+									data-scrolltocat="true"
+									data-updateurl="true"
+									data-sidebarcomponent="categories">#text($parent)</a>
+					
+							#end
+						
+							#if($count)&nbsp;<span class="count">($count)</span>#end
+						#end
+					</div>
+				#end
 			</h3>
 			<div class="clearfix"></div>
 		</div>
+		
 	
 		#if($canviewupload || $candownloadcategoryzip)
 		<div class="expandedentityactions">
@@ -132,4 +111,5 @@ $context.putPageValue("categoryid", $categoryid)
 	</div>
 
 
+</div>
 </div>

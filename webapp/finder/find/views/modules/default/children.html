@@ -9,22 +9,22 @@
 #set($topentityid = $context.getRequestParameter("topentityid"))
 #ifnotnull($topentityid)
 
-	#foreach($module in $organizedModules)
+	#foreach($childmodule in $organizedModules)
 		#if($module.id != $expandedmodule)
-			#set($idhits = $organizedHits.get($module.id))
+			#set($idhits = $organizedHits.get($childmodule.id))
 			#if( !$idhits.isEmpty())
 				$context.putPageValue("hits", $idhits)
-				$context.putPageValue("module", $module)
-				$context.putPageValue("moduleid", $module.id)
+				$context.putPageValue("module", $childmodule)
+				$context.putPageValue("moduleid", $childmodule.id)
 				
 			   	#set($modulerendertype = "entity")
-			   	#if ($module.homepagerendertype)
-			   		#set($modulerendertype = $module.homepagerendertype)
+			   	#if ($childmodule.homepagerendertype)
+			   		#set($modulerendertype = $childmodule.homepagerendertype)
 			   	#end
 			   	
 			   	$context.putPageValue("modulerendertype", $modulerendertype)
 			  	
-			   	#set( $favorites = $userprofile.get("favorites_"+$module.id))
+			   	#set( $favorites = $userprofile.get("favorites_"+$childmodule.id))
 				$context.putPageValue("favorites", $favorites)
 		
 				$pages.include("$apphome/components/gridsample/modulegrid.html", $context)
@@ -34,9 +34,32 @@
 	<div class="clearfix"></div>
 #end
 
-##Display Media
-#if($topmodule.enableuploading == true)
-	$pages.include("$apphome/components/gridsample/preview/media/listassets.html", $context)
-#end
+##Display Full Media
+##if($topmodule.enableuploading == true)
+	
+	#ifnull($defaultfolder)
+		#ifnull($selectedentity)
+			#set($defaultfolder =  $mediaarchive.getBean("entityManager").loadDefaultFolderForModule($topmodule, $context.getUser()))
+		#end
+		
+		#ifnotnull($selectedentity)
+			#if($topmodule.getId()=="faceprofilegroup")
+				#set($defaultfolder =  $mediaarchive.getBean("entityManager").loadDefaultFolderForModule($topmodule, $context.getUser()))		
+			#else
+				#set($defaultfolder =  $mediaarchive.getBean("entityManager").loadDefaultFolder($selectedentity, $context.getUser()))
+			#end
+		#end
+	#end
+	$context.putPageValue("defaultfolder", $defaultfolder)
+	#if(!$currentcategoryid && $defaultfolder)
+		#set( $currentcategoryid = $defaultfolder.getId())
+		$context.putPageValue("categoryid", $currentcategoryid)
+	#end
+
+	$pages.include("$apphome/views/modules/asset/indexembed.html", $context)
+##end
 
 </div>
+
+
+
