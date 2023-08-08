@@ -131,7 +131,17 @@ $(document).ready(function()
 		}
      }); 
      
-    
+    lQuery('.globalfolderPicker').livequery('click',function(e){
+		e.preventDefault(); 
+		var uploadarea = $(".globaluploadarea");
+		if(uploadarea) {
+			var categoryid = $(this).data("categoryid");
+			if(categoryid) {
+				$(uploadarea).find('#nodeid').val(categoryid);
+			}
+			$(uploadarea).find('.upload_folder').trigger('click');
+		}      
+     });
 
 	lQuery(".startbutton").livequery('click',function(e) 
     {
