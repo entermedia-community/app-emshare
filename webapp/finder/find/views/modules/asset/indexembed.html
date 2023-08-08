@@ -24,10 +24,18 @@ $context.putPageValue("categoryid", $categoryid)
 <div id="$!{module.getId()}resultscontainer">
 <div id="assetresults"
 	class="assetresults" 
-	data-url="$apphome/views/modules/asset/index.html" 
-	data-oemaxlevel="1"
+	#if($categoryid)
+	##data-url="$apphome/views/modules/asset/viewfiles/${categoryid}/#dash($category).html"
+	data-url="$apphome/views/modules/asset/indexembed.html"
+	
 	data-categoryid="$!categoryid"
-	data-nodeID="$!categoryid">
+	data-nodeID="$!categoryid"
+	data-oemaxlevel="1"
+	#else
+	data-url="$apphome/views/modules/asset/index.html"
+	#end  
+	data-oemaxlevel="1"
+	>
 	
 	<div class="emgrid-module emgrid-box emgrid-module-asset" style=" margin:0 10px 10px;">
 
@@ -42,10 +50,10 @@ $context.putPageValue("categoryid", $categoryid)
 			 
 				<img src="$siteroot$apphome/theme/images/entity/${moduleicon}.svg" style="height: 26px;"> 
 						
-				#if( $defaultfolder )
+				#if( $category )
 					<div class="filtered-breadcrumb">
 						
-						#set($parentcategories = $defaultfolder.getParentCategories())
+						#set($parentcategories = $category.getParentCategories())
 						
 						#if(!$parentcategories.isEmpty())
 							#foreach( $parent in $parentcategories)
@@ -73,9 +81,6 @@ $context.putPageValue("categoryid", $categoryid)
 			<div class="clearfix"></div>
 		</div>
 		
-	
-
-		<div class="clearfix"></div>
 		
 		
 		$pages.include("$componenthome/results/index.html", $context)
