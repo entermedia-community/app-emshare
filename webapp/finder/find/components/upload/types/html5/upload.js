@@ -196,6 +196,13 @@ $(document).ready(function()
 		            if(e.originalEvent.dataTransfer.files.length) {
 		                e.preventDefault();
 		                e.stopPropagation();
+		                var categoryid = $(this).data("categoryid");
+						if(categoryid) {
+							var uploadformarea = $(".globaluploadarea");
+							if(uploadformarea) {
+								$(uploadformarea).find('#nodeid').val(categoryid);
+							}
+						}
 						$(".upload_field").triggerHandler('html5_upload.filesPicked', [e.originalEvent.dataTransfer.files]);						
 		            }   
 		        }
@@ -248,7 +255,7 @@ $(document).ready(function()
 							entityuploadPicker.parent().find(".hideonupload").hide();
 							entityuploadPicker.next(".loadericon").css("display", "inline-block");
 							}
-						
+					
 			             return true;
 			        	 //Loop over all the files. add rows
 			        	 //alert("start");

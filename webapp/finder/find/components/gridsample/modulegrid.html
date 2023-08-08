@@ -1,7 +1,8 @@
+#set($moduleid = $module.getId())
 #set($filter = $modulehits.findFilterValue("entitysourcetype") )
 $context.putPageValue("filter", $filter)
 
-   		<div class="emgrid-module emgrid-box emgrid-column emgrid-module-$!rendertype">
+	<div class="emgrid-module emgrid-box emgrid-column emgrid-module-$!rendertype">
    		<div class="emgrid-subtitle">
 	   		<h3>
 		     	#set($moduleicon = "entity")
@@ -19,65 +20,52 @@ $context.putPageValue("filter", $filter)
 					data-profilepreference="defaultmodule"
 					data-profilepreference.value="$!module.getId()"
 					title="#text($module)" >
-				<img src="$siteroot$apphome/theme/images/entity/${moduleicon}.svg" style="height: 25px; max-width:20px;"> 
 				
-				#if( $module.id == "asset") ##this is safe
-					#set( $count = $hits.size()) 
-				#else
-					#set( $count = $filter.getCount($module.id) ) 
-				#end
-				#ifnull($count)
-					#set( $count = $hits.size()) 
-				#end
-				#text($module)
-				 <span class="count">($count)</span>
-				</a>
+					<img src="$siteroot$apphome/theme/images/entity/${moduleicon}.svg" style="height: 25px; max-width:20px;"> 
 				
-
+					#if( $module.id == "asset") ##this is safe
+						#set( $count = $hits.size()) 
+					#else
+						#set( $count = $filter.getCount($module.id) ) 
+					#end
+					#ifnull($count)
+						#set( $count = $hits.size()) 
+					#end
+					#text($module)
+					 <span class="count">($count)</span>
+					</a>
+					$context.putPageValue("moduleid", $moduleid)
+					$pages.include("$apphome/views/modules/${moduleid}/contextmenu.html", $context)
 			</h3>
 			
-					<div style="float:right" >
-					#if($moduleid=="asset")
-						
-						<a href="$entityurl" 
-						class="btn-sm btn-blue btn-view-media entity-add-media ajax"
-						data-targetdiv="applicationcontent"
-						data-sidebarcomponent="categories"
-						data-oemaxlevel="4"
-						title="[[View Media]]" 
-						data-profilepreference="defaultmodule"
-						data-profilepreference.value="$!module.getId()">
-						<i class="fas fa-images"></i> [[View Media]]</a>
-					#else
-						<a href="$entityurl" 
-						class="ajax minimizeexpandedmodule" 
-						data-targetdiv="applicationcontent" 
-						data-oemaxlevel="4" 
-						data-updateurl="true" 
-						data-profilepreference="defaultmodule"
-						data-profilepreference.value="$!module.getId()"
-						title="[[Expand]] #text($module)">
-						<i class="fas fa-window-maximize"></i></a>
+			<div style="float:right" >
+				#if($moduleid=="asset")
 					
-					#end
-				</div>
+					<a href="$entityurl" 
+					class="btn-sm btn-blue btn-view-media entity-add-media ajax"
+					data-targetdiv="applicationcontent"
+					data-sidebarcomponent="categories"
+					data-oemaxlevel="4"
+					title="[[View Media]]" 
+					data-profilepreference="defaultmodule"
+					data-profilepreference.value="$!module.getId()">
+					<i class="fas fa-images"></i> [[View Media]]</a>
+				#else
+					<a href="$entityurl" 
+					class="ajax minimizeexpandedmodule" 
+					data-targetdiv="applicationcontent" 
+					data-oemaxlevel="4" 
+					data-updateurl="true" 
+					data-profilepreference="defaultmodule"
+					data-profilepreference.value="$!module.getId()"
+					title="[[Expand]] #text($module)">
+					<i class="fas fa-window-maximize"></i></a>
+				
+				#end
+			</div>
 		<div class="clearfix"></div>
    		</div>
-   		
-   		
-		#if ($moduleid!="faceprofilegroup" && $moduleid!="asset")
-				#set($canaddnew = $permissions.can($moduleid, "create"))
-				#if($canaddnew)
-				<div style="margin-bottom:15px">
-						<a class="btn btn-xs btn-blue emdialog TODOautocloseside" 
-							style="margin-right:5px; "  
-							title="[[Add New]] #text($module)"
-							href="$siteroot$applink/views/modules/${moduleid}/components/gridsample/preview/$!{rendertype}.html?edit=true&addnew=true&viewid=$!{module.id}addnew&targetdiv=applicationmaincontent"
-							data-hidefooter="true">
-							<i class="fas fa-plus"></i> [[New]]</a>
-							</div>
-				#end
-			#end
+
 		#set($rendertype = "entity")
 	   	#if ($module.modulerendertype)
 	   		#set($rendertype = $module.modulerendertype)

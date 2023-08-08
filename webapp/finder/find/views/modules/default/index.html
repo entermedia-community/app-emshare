@@ -1,4 +1,3 @@
-
 #set($moduleid = $module.getId())
 #if (!$rendertype && $moduleid)
 	#if(!$module)
@@ -36,19 +35,8 @@ $context.putPageValue("topmodule", $topmodule)
 			#text($module)
 			<span class="count">($count)</span>
 			
-			<a href="" class="entitydropdownmenu dropdown-toggle dropdown-noarrow" data-toggle="dropdown" data-bs-toggle="dropdown"><i class="fas fa-ellipsis-v"></i></a>
-				 <div class="dropdown-menu">
-				 	#if($permissions.can($moduleid, "create"))
-				 		<a class="dropdown-item emdialog" data-allwaysloadpage="true" data-hidefooter="true"   href="$editlink" 
-				 		title="[[Add Record]]"><i class="fas fa-file-alt"></i> [[Add Record]]</a>
-				 	#end
-				 		<a class="dropdown-item emdialog" data-allwaysloadpage="true" data-hidefooter="true"   href="$editlink" 
-				 		title="[[Add Folder]]"><i class="fas fa-folder-plus"></i> [[Add Folder]]</a>
-				 		<a class="dropdown-item emdialog" data-allwaysloadpage="true" data-hidefooter="true"   href="$editlink" 
-				 		title="[[Add Files]]"><i class="fas fa-photo-video"></i> [[Add Files]]</a>
-				 		<a class="dropdown-item emdialog" data-allwaysloadpage="true" data-hidefooter="true"   href="$editlink" 
-				 		title="[[Properties]]"><i class="fas fa-cog"></i> [[Properties]]</a>
-			 	</div>
+			$context.putPageValue("moduleid", $moduleid)
+			$pages.include("$apphome/views/modules/${moduleid}/contextmenu.html", $context)
 					 
 			</h3>
 			<div class="clearfix"></div>
