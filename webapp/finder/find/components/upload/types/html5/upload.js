@@ -121,13 +121,13 @@ $(document).ready(function()
     //Global Upload
     lQuery('.globalfilePicker').livequery('click',function(e){
 		e.preventDefault(); 
-		var form = $(".globaluploadarea");
-		if(form) {
+		var uploadarea = $(".globaluploadarea");
+		if(uploadarea) {
 			var categoryid = $(this).data("categoryid");
 			if(categoryid) {
-				$(form).find('#nodeid').val(categoryid);
+				$(uploadarea).find('#nodeid').val(categoryid);
 			}
-			$(form).find('.upload_field').trigger('click');
+			$(uploadarea).find('.upload_field').trigger('click');
 		}
      }); 
      
@@ -228,6 +228,8 @@ $(document).ready(function()
 			        	 
 						uploadformarea.find("#upload-start").hide();
 						uploadformarea.find("#upload-completed").show();
+						
+						uploadformarea.show();
 						
 						var entityuploadPicker = uploadformarea.find(".entityuploadPicker");
 						if(entityuploadPicker)
@@ -496,6 +498,13 @@ $(document).ready(function()
     	}, 500);
 	
 	});
+	
+	lQuery('.hideuploadarea').livequery('click',function(e){
+		e.preventDefault(); 
+		$(".globaluploadarea").toggle();
+		
+     });
+	
 	
 }); 
 	
