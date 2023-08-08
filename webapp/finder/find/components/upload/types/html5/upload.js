@@ -117,6 +117,21 @@ $(document).ready(function()
 		$(form).find('.upload_folder').trigger('click');
         
      });
+     
+    //Global Upload
+    lQuery('.globalfilePicker').livequery('click',function(e){
+		e.preventDefault(); 
+		var form = $(".globaluploadarea");
+		if(form) {
+			var categoryid = $(this).data("categoryid");
+			if(categoryid) {
+				$(form).find('#nodeid').val(categoryid);
+			}
+			$(form).find('.upload_field').trigger('click');
+		}
+     }); 
+     
+    
 
 	lQuery(".startbutton").livequery('click',function(e) 
     {

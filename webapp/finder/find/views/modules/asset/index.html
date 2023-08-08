@@ -6,6 +6,7 @@
 		#set($category = $mediaarchive.getCachedData("category", $categoryid))
 	#end
 #end
+
 #if( !$categoryid && $category)
 	#set( $categoryid= $category.getId())
 #end
@@ -23,7 +24,6 @@ $context.putPageValue("categoryid", $categoryid)
 
 #set( $entities = $userprofile.getEntitiesInParent($category) )
 
-	
 
 <div id="assetresults"
 	class="assetresults" 
@@ -32,7 +32,7 @@ $context.putPageValue("categoryid", $categoryid)
 	data-categoryid="$!categoryid"
 	data-nodeID="$!categoryid">
 
-	#ifnull($showcategoriesheader)
+	#if($showcategoriesheader)
 		#if( $category)
 			$pages.include("$apphome/views/modules/category/showchildren.html", $context)
 		#end
@@ -40,89 +40,26 @@ $context.putPageValue("categoryid", $categoryid)
 	
 	
 	<div class="emgrid-box expandedmodule emgrid-module-asset" style=" margin:0 10px 10px;">
-
-		#ifnull($showentitiesheader)
-			#set($showentitiesheader = $content.showentitiesheader)
-		#end
-		#ifnull($showentitiesheader)
-			#if(!$entities.isEmpty())
-			<div class="entitiesontop">
-				#foreach ( $data in $entities)
-					#set($entity = $data.getData())
-					#set($emoduleid = $data.getModuleId()) 
-					
-					#set($emodule = $mediaarchive.getData("module", $emoduleid))
-					
-					#set($rendertype = $emodule.modulerendertype)
-					#if (!$rendertype)
-			   			#set($rendertype = "entity")
-					#end
-					$context.putPageValue("rendertype", $rendertype)
-					$context.putPageValue("rendermoduleid", $emoduleid)
-					
-					#set($moduleicon = "entity")
-			     	#if ($emodule.moduleicon)
-			     		#set($moduleicon = $emodule.moduleicon)
-			     	#end
-				     	
-				     	
-					#set($previewurl = "$!{siteroot}$apphome/views/modules/$!{emoduleid}/components/gridsample/preview/${rendertype}.html?id=$entity.getId()&hitssessionid=$!hits.sessionId")
-					
-					$context.putPageValue("hit", $entity)
-					<div class="entitycelltop">
-					$pages.include("$apphome/views/modules/$!{emoduleid}/components/gridsample/preview/${rendertype}_embeded.html?id=$entity.id", $context)
-					</div>
-					
-				#end
-				<div class="clearfix"></div>
-			</div>
-			#end
-		#end
-		
+	
 		<div class="emgrid-subtitle">
 	  		<h3>
-	     	#set($moduleicon = "entity")
-	     	#if ($module.moduleicon)
-	     		#set($moduleicon = $module.moduleicon)
-	     	#end
-	     	
-	    	#set($entityurl = "$siteroot$apphome/views/modules/$module.id/index.html")
-	
-			<img src="$siteroot$apphome/theme/images/entity/${moduleicon}.svg" style="height: 26px;"> 
-	
-					#set( $count = $hits.size()) 
-					#text($module)
-					 <span class="count">($count)</span>
+		     	#set($moduleicon = "entity")
+		     	#if ($module.moduleicon)
+		     		#set($moduleicon = $module.moduleicon)
+		     	#end
+		     	
+		    	#set($entityurl = "$siteroot$apphome/views/modules/$module.id/index.html")
+		
+				<img src="$siteroot$apphome/theme/images/entity/${moduleicon}.svg" style="height: 26px;"> 
+		
+				#set( $count = $hits.size()) 
+				#text($module)
+				<span class="count">($count)</span>
+				 
+				$pages.include("$apphome/views/modules/asset/contextmenu.html", $context)
 			</h3>
 			<div class="clearfix"></div>
 		</div>
-	
-		#if($canviewupload || $candownloadcategoryzip)
-		<div class="expandedentityactions">
-			
-			#if($category && $canviewupload)
-				<div id="inlineupload">
-				<a href="$apphome/components/upload/types/html5inline.html" 			
-					class="btn-sm btn-blue ajax"
-					data-targetdivinner="inlineupload"
-					data-oemaxlevel="1"
-					data-categoryid="$!category.getId()"
-					title="[[Upload Media to]]: #text($category)">
-				<i class="fas fa-file-upload"></i> [[Upload]]</a>
-				</div>
-			#end
-	
-	   		#if($candownloadcategoryzip)
-		   		#if($category)
-				<a	class="btn-sm btn-blue "
-		  				title="[[Download]]: $category.getName()"
-		  				href="$applink/views/modules/asset/downloads/bycategory/${category.id}/#eid($category.name).zip">
-		  				<i class="fa fa-download" aria-hidden="true"></i> [[Download]]</a>
-				#end
-			#end
-				
-		</div>	
-		#end
 		
 		<div class="clearfix"></div>
 		
