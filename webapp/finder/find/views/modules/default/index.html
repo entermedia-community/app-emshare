@@ -6,18 +6,20 @@
    	#set($rendertype = $module.modulerendertype)
 #end
 #if (!$rendertype)
-   		#set($rendertype = "entity")
+   	#set($rendertype = "entity")
 #end
-
+$context.putPageValue("entityrendertype", $rendertype)
 
 #set( $topmodule = $module)
 $context.putPageValue("topmodule", $topmodule)
 
+#set($topentityid = $context.getRequestParameter("topentityid"))
+
 <div class="moduleindex"
 	data-hitssessionid="$!hits.getSessionId()"
 	data-url="$apphome/views/modules/$!{module.id}/index.html"
+	#if($topentityid) data-topentityid="$topentityid" #end
 	data-oemaxlevel="1">
-	
 	
  	<div class="emgrid-box expandedmodule">
  		<div class="emgrid-subtitle">
@@ -41,7 +43,6 @@ $context.putPageValue("topmodule", $topmodule)
 			</h3>
 			<div class="clearfix"></div>
 		</div>
-
 
 		$pages.include("$componenthome/results/index.html", $context)
 

@@ -13,9 +13,17 @@ $context.putPageValue("rendertype", $rendertype)
 #end
 $context.putPageValue("count", $count)
 
-
 #set( $topmodule = $module)
 $context.putPageValue("topmodule", $topmodule)
+
+#set($topentityid = $context.getRequestParameter("topentityid"))
+
+<div class="topmodulecontainer"
+	data-hitssessionid="$!hits.getSessionId()"
+	data-url="$apphome/views/modules/$!{module.id}/index.html"
+	#if($topentityid) data-topentityid="$topentityid" #end
+	data-oemaxlevel="2">
+
 
 $pages.include("$componenthome/filters/filters-selected.html", $context)
 
@@ -29,7 +37,7 @@ $pages.include("$componenthome/filters/filters-selected.html", $context)
 $pages.include("$apphome/views/modules/$module.id/children.html", $context)
 </div>
 
-
+</div>
 
 
 

@@ -14,10 +14,19 @@
 		#set( $data  = $mediaarchive.getCachedData($searchtype, $id) )
 	#end	
 #end
+
+#if(!$data)
+	#set ($fieldexternalid = $context.getRequestParameter("fieldexternalid"))
+	#set ($fieldexternalvalue = $context.getRequestParameter("fieldexternalvalue"))
+	#ifnotnull($fieldexternalid)
+		#set($data = $mediaarchive.getSearcher($searchtype).createNewData())
+		$data.setValue($fieldexternalid, $fieldexternalvalue)
+	#end
+#end
+
 #if($data)
 	$context.putPageValue("data",$data)
 #end
-
 #set( $searcher = $mediaarchive.getSearcher($searchtype) )
 $context.putPageValue("searcher",$searcher)
 
@@ -44,6 +53,7 @@ $context.putPageValue("edit", $edit)
 	#set($addnew = $context.getRequestParameter("addnew"))
 	#if($addnew)
 		#set($viewid = "${searchtype}addnew")
+		#set($reloadtargets = $context.getRequestParameter("reloadtargets"))
 	#else
 		#set($viewid = "${searchtype}general")
 	#end
@@ -61,7 +71,11 @@ $context.putPageValue("edit", $edit)
 		#else
 			data-targetdiv="entity-tab-$!data.getId()"
 		#end 
-		data-ajaxreloadtargets="moduleindex"
+		#if($addnew && $reloadtargets)
+			data-ajaxreloadtargets="$reloadtargets"
+		#else
+			data-ajaxreloadtargets="moduleindex"
+		#end
 	##	data-onsuccess="updateentities"
 		method="post"  
 		action="$action"
