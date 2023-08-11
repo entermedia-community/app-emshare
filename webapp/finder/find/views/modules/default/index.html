@@ -15,6 +15,14 @@ $context.putPageValue("topmodule", $topmodule)
 
 #set($topentityid = $context.getRequestParameter("topentityid"))
 
+#if( !$entity)
+	#set( $entity  = $mediaarchive.getData($topmodule.getId(), $entityid) )
+#end
+
+#set($uploadsourcepath =  $topmodule.getValue("uploadsourcepath"))
+$context.putPageValue("uploadsourcepath", $uploadsourcepath)
+
+
 <div class="moduleindex"
 	data-hitssessionid="$!hits.getSessionId()"
 	data-url="$apphome/views/modules/$!{module.id}/index.html"
