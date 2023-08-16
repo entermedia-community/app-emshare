@@ -1,58 +1,87 @@
+##always reset it?
 
-#if(!$searchtype)
-	#set( $searchtype = $context.findValue("searchtype"))
-	
-	#if(!$searchtype)
-		#set( $searchtype = $context.getRequestParameter("searchtype"))
-	#end
+#if($tabmodule)
+	#set( $searchtype = $tabmodule.getId())
+	#set( $moduleid = $tabmodule.getId())
 #end
-#set( $id = $context.getRequestParameter("id"))
-#set( $module = $mediaarchive.getCachedData("module", $searchtype))
-
-#if(!$moduleid)
-	#set($moduleid = $module.getId())
+#ifnull($id)
+	#set( $id = $context.getRequestParameter("id"))
 #end
-
-#if($id.startsWith("multiedit"))
-	#set($name = "[[Multi Edit]] $!entity.getSelectedResults().size() [[Items]]")
-	#set($targetentitytabid = "entity-tab-multiedit")
+#ifnull($id)
+	#set( $id = $context.getRequestParameter("entityid"))
+#end
+#if(!$tabtype)
+	#set($tabtype = $context.getRequestParamenter("tabtype"))
+#end
+#if($tabtype == "submodulehome")
+	#set($tabid = "_$!searchtype")
+	#set($viewsearcher = $searcherManager.getSearcher($catalogid, "view"))
+	#set( $viewdata = $viewsearcher.searchById($targetviewid))
+	#set($name = $viewdata.getName($context))
+#elseif($tabtype=="media")
+	#set($tabid = "_$!searchtype")
+	#set($name = $tabmodule.getName($context))
 #else
-	#if( !$entity)
-		#set( $entity  = $mediaarchive.getData($searchtype, $id) )
-	#end
-	#if($moduleid == "faceprofilegroup")
-		#set($name = $entity.name)
-		#if($name)
-			#set($name = "$!name ([[Profile]] $entity.facecounter)")
-		#else	
-			#set($name = "[[Profile]] $entity.facecounter")
-		#end
-	#else
-		#if($entity.getName($context))
-			#set($name = $!entity.getName($context))
-		#else 
-			#set($name = "[[Add New]]")
-		#end
-	#end
-	#set($targetentitytabid = "entity-tab-#eid($id)")
-#end
-<div class="entity-tab  current-entity" data-entityid="$!entity.getId()">
-<a href="#$!entity.getId()" 
-	class="entity-tab-label" 
-	data-toggle="tab" 
-	data-target="$targetentitytabid"
 	#if($id.startsWith("multiedit"))
-	data-ismultiedit="true"
-	#end 
-	role="tab" 
-	aria-controls="$targetentitytabid" 
-	data-entityid="$!entity.getId()" 
-	title="#esc($name)">
-	#set($moduleicon = "entity")
-   	#if ($module.moduleicon)
-   		#set($moduleicon = $module.moduleicon)
-   	#end
-   	<img src="$siteroot$apphome/theme/images/entity/${moduleicon}.svg" style="height: 22px;"> 
-<span class="entity-tab-label-type">#text($module)\</span> #esc($name)</a>
-<a href="#$!entity.getId()" class="entity-tab-close" data-entityid="$!entity.getId()" title="[[Close]]: $!entity.getName()"><i class="fas fa-times"></i></a>
+		#set($name = "[[Multi Edit]] $!entity.getSelectedResults().size() [[Items]]")
+		#set($targetentitytabid = "entity-tab-multiedit")
+	#else
+		#if( !$entity)
+			#set( $entity  = $mediaarchive.getData($searchtype, $id) )
+		#end
+		#if($moduleid == "faceprofilegroup")
+			#set($name = $entity.name)
+			#if($name)
+				#set($name = "$!name ([[Profile]] $entity.facecounter)")
+			#else	
+				#set($name = "[[Profile]] $entity.facecounter")
+			#end
+		#else
+			#if($entity.getName($context))
+				#set($name = $!entity.getName($context))
+			#else 
+				#set($name = "[[Add New]]")
+			#end
+		#end
+		#set($targetentitytabid = "entity-tab-#eid($!{id})")
+		#set($tabid = "${moduleid}$!{id}")
+		#set($tabid = "#eid($tabid)")
+	#end
+
+#end
+
+<div class="entity-tab  #if($currenttab == $tabid) current-entity #end" #if(!$tabtype) data-entityid="$!entity.getId() #end">
+	<a href="#tab$!tabid" 
+		class="entity-tab-label" 
+		data-toggle="tab" 
+		data-target="$!targetentitytabid"
+		#if($id.startsWith("multiedit"))
+			data-ismultiedit="true"
+		#end 
+		role="tab" 
+		#if(!$tabtype)
+			aria-controls="$targetentitytabid" 
+			data-entityid="$!entity.getId()"
+		#end 
+		title="#esc($name)">
+		#set($moduleicon = "entity")
+	   	#if ($tabmodule.moduleicon)
+	   		#set($moduleicon = $tabmodule.moduleicon)
+	   	#end
+	   	<img src="$siteroot$apphome/theme/images/entity/${moduleicon}.svg" style="height: 22px;"> 
+		#if($tabtype == "submodulehome")
+			#text($name)
+		#elseif($tabtype=="media") 
+			 #text($tabmodule)
+		#else
+			###text($name)
+			[[General]]
+		#end
+		</a>
+		
+		
 </div>
+
+
+
+

@@ -104,11 +104,27 @@ $context.putPageValue("filter", $filter)
 					$context.putPageValue("hit", $hit)
 				    $pages.include("$apphome/components/gridsample/gridcell.html", $context)
 				#end
-				#if($hits.getTotalPages() > 1)
-				<div class=" emgrid-viewmore " style="">
-					<a href="$siteroot$applink/views/modules/${moduleid}/index.html?hitssessionid=$!hits.getSessionId()">[[View More]]</a>
-				</div>
+				
+				
+				
+				#if($permissions.can($moduleid, "create") && $moduleid!="faceprofilegroup")
+			 		#set($addurl = "$siteroot$applink/views/modules/${moduleid}/components/gridsample/preview/$!{entityrendertype}.html?edit=true&addnew=true&viewid=$!{moduleid}addnew")
+			 		#ifnotnull($topentityid)
+			 			#set($addurl = "$addurl&fieldexternalid=${topmodule.getId()}&fieldexternalvalue=${topentityid}&reloadtargets=topmodulecontainer")
+			 		#end
+					<div class=" emgrid-addmore " style="">
+						<a href="$addurl"
+						class="emdialog"
+						title="[[Add Record]]"
+						>[[Add New]]</a>
+					</div>
 				#end
+				
+				##if($hits.getTotalPages() > 1)
+				##<div class=" emgrid-viewmore " style="">
+				##	<a href="$siteroot$applink/views/modules/${moduleid}/index.html?hitssessionid=$!hits.getSessionId()">[[View More]]</a>
+				##</div>
+				##end
 		</div>
 		
 		

@@ -1,6 +1,10 @@
 #set( $searchtype = $context.findValue("searchtype"))
+#set( $parentsearchtype = $searchtype)
 #set( $id = $context.getRequestParameter("id"))
-
+#ifnull($id)
+	#set( $id = $context.getRequestParameter("entityid"))
+	$context.putPageValue("id", $id)
+#end
 
 #if($id.startsWith("multiedit"))
 
@@ -18,22 +22,93 @@
 $context.putPageValue("moduleid", $moduleid)
 
 
-<div class="entity-wraper">	
-	<nav>
-  	<div class="nav nav-tabs entity-navigation" id="entity-nav-tab" role="tablist" 
-  		 data-tabmenuurl="gridsample/preview/entitytabmenu.html">
-  	
-		$pages.include("$componenthome/gridsample/preview/entitytabmenu.html", $context)
+#set($viewsearcher = $searcherManager.getSearcher($catalogid, "view"))
+#set($enttiyviews = $viewsearcher.query().exact("moduleid", $moduleid).exact("rendertype","table").exact("systemdefined","false").sort("orderingUp").search($context) )
+
+
+<div class="entitydialog" data-moduleid="$moduleid" data-entityid="$!entityid" data-url="$componenthome/gridsample/preview/entity.html">
+	<div class="entity-wraper">
+	
+	<h2>
+	<a href="#" class="entitydialogback emdialog" data-moduleid="" data-entityid="" style="display: none;">
+	<i class="fas fa-arrow-left"></i></a>
+	#text($module) \ 
+	
+	#if($entity.getName($context))
+			#set($name = $!entity.getName($context))
+	#else 
+			#set($name = "[[Add New]]")
+	#end
+	
+	#text($name)
+	
+	</h2>
 		
-	</div>
-	</nav>
-	
-	<div class="tab-content entity-body" id="entity-nav-tabContent">
+		<nav>
+	  	<div class="nav nav-tabs entity-navigation" id="entity-nav-tab" role="tablist" 
+	  		 data-tabmenuurl="gridsample/preview/entitytabmenu.html">
+	  		##myself
+	  		$context.putPageValue("tabmodule", $module)
+	  		#set($currenttab = "${moduleid}$!{entityid}")
+			#set($currenttab = "#eid($currenttab)")
+	  		$context.putPageValue("currenttab", $currenttab)
+			$pages.include("$componenthome/gridsample/preview/entitytabmenu.html", $context)
 			
-			$pages.include("$componenthome/gridsample/preview/entitytab.html", $context)
-	
+			#ifnotnull($id)
+				##submodules
+				#if($enttiyviews)		
+					#foreach( $targetview in $enttiyviews)
+						#set( $targetviewid = $targetview.getId())
+						#set( $viewdata = $viewsearcher.searchById($targetviewid))
+						#set( $subentitysearchtype = $viewdata.rendertable )
+						#ifnotnull($subentitysearchtype)
+							#set($submodule = $mediaarchive.getCachedData("module", $viewdata.rendertable))
+							$context.putPageValue("tabmodule", $submodule)
+							$context.putPageValue("tabtype", "submodulehome")
+							$context.putPageValue("targetviewid", $targetviewid)
+							#set($subcomponenthome = "$apphome/views/modules/$subentitysearchtype/components")
+							$pages.include("$subcomponenthome/gridsample/preview/entitytabmenu.html", $context)
+						#end
+					#end
+				#end	
+				
+				##media?
+				#set($submodule = $mediaarchive.getCachedData("module", "asset"))
+				$context.putPageValue("tabmodule", $submodule)
+				$context.putPageValue("tabtype", "media")
+				#set($subcomponenthome = "$apphome/views/modules/asset/components")
+				$pages.include("$subcomponenthome/gridsample/preview/entitytabmenu.html", $context)
+			#end	
+		</div>
+		</nav>
+		
+		<div class="tab-content entity-body" id="entity-nav-tabContent">
+				
+				$pages.include("$componenthome/gridsample/preview/entitytab.html", $context)
+				
+				#ifnotnull($id)
+					##submodules
+					#if($enttiyviews)		
+						#foreach( $targetview in $enttiyviews)
+							#set( $targetviewid = $targetview.getId())
+						
+							
+							$context.putPageValue("targetviewid", $targetviewid)
+							$context.putPageValue("parentsearchtype", $parentsearchtype)
+							$context.putPageValue("parentid", $id)
+							$context.putPageValue("hidesubmodule", true)
+							#set($subcomponenthome = "$apphome/views/modules/$subentitysearchtype/components")
+							$pages.include("$subcomponenthome/gridsample/preview/entitytabsub.html", $context)
+						#end
+					#end
+						
+		
+					$context.putPageValue("parentsearchtype", $parentsearchtype)
+					$context.putPageValue("hidesubmodule", true)
+					$pages.include("$subcomponenthome/gridsample/preview/entitytabmedia.html?entityid=$id", $context)
+			#end
+		</div>
 	</div>
-	
 </div>
 
 

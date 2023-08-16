@@ -1,0 +1,32 @@
+#set($entityid = $context.getRequestParameter("entityid"))
+#if(!$parentsearchtype)
+	#set($parentsearchtype = $context.getRequestParameter("parentsearchtype"))
+#end
+#if( !$entity)
+	#set( $entity  = $mediaarchive.getData($parentsearchtype, $entityid) )
+#end
+
+<div id="tab_asset" 
+class="editentitymetadata-submodule entity-tab-content" 
+data-entityid="$!entityid"
+data-parentsearchtype="$!parentsearchtype"
+data-url="$componenthome/gridsample/preview/entitytabmedia.html"
+#if($hidesubmodule) style="display: none; #end">
+<div id="$!submodulepickerid" class="submodulepicker entity-tab-content">
+	
+	$context.putPageValue("selectedentity", $entity)
+	#set($subcomponenthome = "$apphome/views/modules/asset/components")
+	$pages.include("$subcomponenthome/gridsample/preview/media/listassets.html",$context)
+	<div class="clearfix"></div>
+</div>
+</div>
+
+
+#ifnull($showmedia)
+	#if($module.enableuploading == true)
+		#ifnotnull($defaultfolder)
+			
+	
+		#end
+	#end	
+#end

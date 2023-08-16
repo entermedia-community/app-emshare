@@ -1061,7 +1061,7 @@ uiload = function() {
 			link = dialog.data("emdialoglink");
 		}
 		if(dialog.hasClass("entity-dialog") && dialog.closest(".modal").length !== 0) {
-			link = link.replace("entity.html", "entitytab.html");
+			//link = link.replace("entity.html", "entitytab.html");
 			options.oemaxlevel=1;
 		}
 		var param = dialog.data("parameterdata");
@@ -1102,9 +1102,16 @@ uiload = function() {
 							} 
 						})
 						if(!tabexists) {
-							//append
-							$(".entity-tab-content").hide();
-							container.append(data);
+							//open new entity full
+							container = dialog.closest(".entity-wraper");
+							container.replaceWith(data);
+							
+							
+							
+							/*
+							//append - Open tab same Nav
+							//$(".entity-tab-content").hide();
+							//container.append(data);
 							
 							//Menu
 							var tabmenu = $(".entity-navigation");
@@ -1123,7 +1130,7 @@ uiload = function() {
 									$(".entity-navigation").append(data2);
 								}
 								});
-								
+							*/
 							return;
 						}
 					}
@@ -1300,8 +1307,10 @@ uiload = function() {
 		
 		//$('div[data-id="'+entityid+'"].entity-tab-content').show();
 		//reload content
-		var container = $("#entity-tab-"+entityid);
-		$(".entity-tab-content").hide();
+		//var container = $("#entity-tab-"+entityid);  // <--------
+		var container = $(this).attr("href");
+		container = $(container);
+		$(".entity-tab-content").hide(); //hide all others
 		autoreload(container);
 	});
 	
@@ -1727,58 +1736,7 @@ uiload = function() {
 					parent.document.location.href = link;
 				}
 			}
-			else { /*
-				if(tabletype == "subentityadd") {
-						//Entitydialog - Add subentity
-						options = emselectable.data();
-						var targetdiv_ = emselectable.data("targetdiv");
-						targetdiv = emselectable.closest("#"+targetdiv_);
-				}
-				else if (!clickurl) {
-						//search domdatacontext :: Move all tables to use domdatacontext
-						clickurl = finddata(emselectable, "clickurl");
-						if (clickurl && clickurl != "") {
-							//Get everything from domadatacontext
-							options = findalldata(emselectable);
-							targetdiv = finddata(emselectable, "targetdiv");
-							if (!targetdiv) {
-								targetdiv = finddata(emselectable, "targetdivinner");
-							}
-							//options = row.data();
-							options.id = row.attr("rowid");
-							options.oemaxlevel =  finddata(emselectable, "oemaxlevel");
-						}
-				}
-				if (clickurl && clickurl != "") {
-						if (!targetdiv) {
-							targetdiv = emselectable.data("targetdiv");
-						}
-						if (!targetdiv) {
-							targetdiv = emselectable.data("targetdivinner");
-						}
-						if(targetdiv != '') {
-							jQuery.ajax({
-								url:  clickurl,
-								data: options,
-								success: function(data) {
-									if (!targetdiv.jquery) {
-										targetdiv = $("#"+targetdiv);
-									}
-									targetdiv.replaceWith(data);
-								}
-							});
-							
-						}
-						return;
-					}
-					
-					else if(rowid != "") 
-					{
-						//legacy refresh window
-						//parent.document.location.href = rowid;
-					}
-					*/
-			}
+			
 			 
 		}
 	});
@@ -1834,7 +1792,7 @@ uiload = function() {
 				var options = null;
 				var entityid = rowid;
 				if(entityid) {
-					var container = emselectable.closest(".entity-body");
+					var container = emselectable.closest(".entity-wraper");
 					var tabs = container.find(".entity-tab-content");
 					if(tabs.length >= 6) {
 						alert("Max Tabs Limit");
@@ -1845,7 +1803,7 @@ uiload = function() {
 						if($(element).data("id") == entityid) {
 							//exists replace
 							tabexists = true;
-							$(".entity-tab-content").hide();
+							$(container).find(".entity-tab-content").hide();
 							$('a[data-entityid="'+entityid+'"].entity-tab-label').trigger("click");
 						} 
 					});
@@ -1853,36 +1811,59 @@ uiload = function() {
 						var options1 = emselectable.data();
 						var targetcomponenthome = emselectable.data("targetcomponenthome");
 						var targetrendertype = emselectable.data("targetrendertype");
-						var clickurl = targetcomponenthome+"/gridsample/preview/"+targetrendertype+"tab.html";
+						var clickurl = targetcomponenthome+"/gridsample/preview/entity.html";
 						options1.oemaxlevel=1;
 						options1.id = rowid; 
 						jQuery.ajax({
 							url: clickurl,
 							data: options1,
 							success: function(data) {
-										$(".entity-tab-content").hide();
-										//append
-										container.append(data);
-										
-										//Menu
-										var tabmenu = $(".entity-navigation");
-										
-										var clickurlmenu = targetcomponenthome+"/gridsample/preview/entitytabmenu.html";
-										
-										var options2 = emselectable.data();
-										options2.id=entityid;
-										
-										$(".entity-tab").removeClass("current-entity");
-										jQuery.ajax({
-											url: clickurlmenu,
-											data: options2,
-											success: function(data2) {
-												$(".entity-navigation").append(data2);
-											}
-											});
-										return;
+								var parent = container.closest('.entitydialog');
+								var parentmoduleid = '';
+								var parententityid = '';
+								var parenturl = '';
+								if(parent.length) {
+									parentmoduleid = parent.data("moduleid");
+									parententityid = parent.data("entityid");
+									parententiturl = parent.data("url");
+								}
+								container.replaceWith(data);
+								if(parentmoduleid != '') {
+									
+									var backbtn = $('.entitydialogback');
+									$(backbtn).show();
+									$(backbtn).attr('href', parententiturl);
+									$(backbtn).data('moduleid',parentmoduleid);
+									$(backbtn).data('entityid',parententityid);
+									
+								}
+								
+								
+								/*
+								//Open Tab in same Nav
+								
+								$(container).find(".entity-tab-content").hide();
+								container.append(data);
+								//Menu
+								var tabmenu = $(container).find(".entity-navigation");
+								
+								var clickurlmenu = targetcomponenthome+"/gridsample/preview/entitytabmenu.html";
+								
+								var options2 = emselectable.data();
+								options2.id=entityid;
+								
+								$(container).find(".entity-tab").removeClass("current-entity");
+								jQuery.ajax({
+									url: clickurlmenu,
+									data: options2,
+									success: function(data2) {
+										$(container).find(".entity-navigation").append(data2);
 									}
-							
+									});
+								return;
+								*/
+							}
+					
 						});
 					}
 					

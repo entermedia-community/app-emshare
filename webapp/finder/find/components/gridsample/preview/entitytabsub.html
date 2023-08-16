@@ -1,0 +1,46 @@
+#set($viewsearcher = $searcherManager.getSearcher($catalogid, "view"))
+
+#ifnull($targetviewid)
+	#set($targetviewid = $context.getRequestParameter("targetviewid"))
+#end
+#ifnull($parentsearchtype)
+	#set($parentsearchtype = $context.getRequestParameter("parentsearchtype"))
+#end
+#ifnull($parentid)
+	#set($parentid = $context.getRequestParameter("parentid"))
+#end
+
+#set( $targetviewpath = "${parentsearchtype}/"+$targetviewid)
+#set( $viewdata = $viewsearcher.searchById($targetviewid))
+#set( $subentitysearchtype = $viewdata.rendertable )
+#set( $submodule = $mediaarchive.getCachedData("module", $subentitysearchtype))
+#set( $fieldexternalid = $viewdata.renderexternalid)
+#set( $fieldexternalvalue = $parentid)
+
+#set($targetrendertype = $submodule.modulerendertype)
+#if(!$targetrendertype)
+	#set($targetrendertype = "entity")
+#end
+
+#if($subentitysearchtype)
+	<div id="tab_$!subentitysearchtype" 
+		class="editentitymetadata-submodule entity-tab-content" 
+		data-submoduleid="$!submodule.getId()"
+		
+		data-targetviewid="$!targetviewid"
+		data-parentsearchtype="$!parentsearchtype"
+		data-parentid=$!parentid
+		data-url="$componenthome/gridsample/preview/entitytabsub.html"
+		#if($hidesubmodule) style="display: none; #end">
+		<div id="$!submodulepickerid" class="submodulepicker entity-tab-content">
+			#set( $args = "parentid=$!parentid&searchtype=$!subentitysearchtype")
+			#set( $args = "$args&fieldexternalid=$!fieldexternalid&fieldexternalvalue=$!fieldexternalvalue")
+			#set( $args = "$args&field=$!fieldexternalid&$!{fieldexternalid}.value=$!fieldexternalvalue&operation=exact")
+			#set( $args = "$args&viewpath=$!targetviewpath&hitsperpage=6&targetrendertype=$!targetrendertype")
+			#set( $args = "$args&targetdiv=entitywraper")
+			
+			$context.putPageValue("moduleid", $!submodule.getId() )				
+			$pages.include("/$applicationid/views/modules/$!subentitysearchtype/components/table/subentitytable.html?$!args",$context)
+		</div>
+	</div>
+#end

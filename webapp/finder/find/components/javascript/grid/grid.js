@@ -130,11 +130,19 @@ jQuery(document).ready(function()
             }
             grid.css("height",tallest + 'px');
             
+            /*
             var viewmore = grid.find(".emgrid-viewmore");
             if(viewmore) {
 	            lastleft = lastleft + colwidth + cellpadding; 
 	            viewmore.css("left", lastleft);
             }
+            */
+            var addmore = grid.find(".emgrid-addmore");
+            if(addmore) {
+	            lastleft = lastleft + colwidth + cellpadding; 
+	            addmore.css("left", lastleft);
+            }
+            
 	        return this;
 	 
 	    };

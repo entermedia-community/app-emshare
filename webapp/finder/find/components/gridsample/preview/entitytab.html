@@ -1,3 +1,4 @@
+
 #set( $searchtype = $context.findValue("module")) 
 
 #if(!$searchtype)
@@ -26,13 +27,17 @@
 	#if(!$id)
 		#set($id= "")
 	#end
-	#set($entitytabid = "entity-tab-#eid($id)")
 #end
 #set($module = $mediaarchive.getData("module", $searchtype))
 #set($moduleid = $module.getId())
 
 $context.putPageValue("entityid", $entityid)
 $context.putPageValue("moduleid", $moduleid)
+
+#if(!$entitytabid)
+	#set($entitytabid = "${module.getId()}${entityid}")
+	#set($entitytabid = "#eid($entitytabid)")
+#end
 
 #set($edit = $context.getRequestParameter("edit"))
 #if($edit!="true")
@@ -50,7 +55,7 @@ $context.putPageValue("edit", $edit)
 #end
 $context.putPageValue("showmedia", $showmedia)
 
-<div id="$entitytabid"
+<div id="tab$!entitytabid"
 	class="#eid($entityid)tab-content reloadonupload entity-tab-content" 
 	data-id="$!entity.id" 
 	data-searchtype="$searchtype"
@@ -58,6 +63,7 @@ $context.putPageValue("showmedia", $showmedia)
 	data-url="$componenthome/gridsample/preview/entitytab.html">
 	
 	<div>
+	
 	<div class="entity-metadata #if($module.enableuploading == true) Zentity-metadata-withmedia #end" id="entitymetadata" data-id="$!entity.getId()" data-searchtype="$!searchtype">
 		$context.putPageValue("id", $entityid)
 		$context.putPageValue("data", $entity)
@@ -74,7 +80,7 @@ $context.putPageValue("showmedia", $showmedia)
 		
 	<div class="entity-actions-bar">
 		#if($canviewsettings && $entityid)
-		<span style="display:none">Id: $entityid</span>
+		<span >Id: $entityid</span>
 		#end
 		
 		#ifnotnull($defaultfolder)
@@ -123,25 +129,11 @@ $context.putPageValue("showmedia", $showmedia)
 	</div>
 		
 	
-	$pages.include("$componenthome/gridsample/preview/metadata-submodules.html",$context)
+	##$pages.include("$componenthome/gridsample/preview/metadata-submodules.html",$context)
 
 </div>
 
-		#ifnull($showmedia)
-			#if($module.enableuploading == true)
-				#ifnotnull($defaultfolder)
-					$context.putPageValue("selectedentity", $entity.getId())
-				
-					$pages.include("$componenthome/gridsample/preview/media/listassets.html",$context)
-			
-				#end
-			#end	
-		#end
-	
-	
-	<div class="clearfix"></div>
-	
-	
+
 </div>
 
 ##end
