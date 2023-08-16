@@ -42,5 +42,26 @@
 			$context.putPageValue("moduleid", $!submodule.getId() )				
 			$pages.include("/$applicationid/views/modules/$!subentitysearchtype/components/table/subentitytable.html?$!args",$context)
 		</div>
+		
+		#set($addentitylink = "$!siteroot$applink/views/modules/${submodule.getId()}/edit/table/generictablesearch.html")
+		#set($addentitylink = "$addentitylink?submodulesearchtype=$subentitysearchtype&fieldexternalid=$fieldexternalid&fieldexternalvalue=$!fieldexternalvalue&parentviewpath=$!viewpath&parentid=$!id&parentsearchtype=$!parentsearchtype&rendertype=$!targetrendertype")
+		#if($permissions.can($!submodule.getId() , "create"))
+		<div class="submodule-actions">
+			<a class="btn btn-sm btn-blue ajax  submoduleedit"  
+			href="$addentitylink" 
+			##data-targetdiv="$submodulepickerid"
+			data-targetdivinner="tab_$!subentitysearchtype"
+			data-oemaxlevel="1"
+			data-parentviewid="$!viewid"
+			data-parentviewpath="$!viewpath"
+			data-parenttargetdiv="entitypreviewdialog-body"
+			data-parentid="$!id"
+			data-hidefooter="true"
+			data-onbefore="switchsubmodulebox"
+			title="[[Add]] #text($viewdata)"><i class="fas fa-plus"></i> #text($viewdata)</a>
+		</div>
+	#end
 	</div>
+	
+	
 #end
