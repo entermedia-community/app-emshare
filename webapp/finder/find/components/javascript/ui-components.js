@@ -4090,12 +4090,15 @@ jQuery(document).on('domchanged',function(){
 
 
 jQuery(document).on('emtreeselect',function(event){
-		var selectednode = event.nodeid;
-		$("#parentfilter").val(selectednode);
-		
-		$("#autosubmitfilter").ajaxSubmit({
-			target:"#categoryresults"
-		});
+		var treename = event.tree.data("treename");
+		if(treename == "sidebarCategories") {
+			var selectednode = event.nodeid;
+			$("#parentfilter").val(selectednode);
+			
+			$("#autosubmitfilter").ajaxSubmit({
+				target:"#categoryresults"
+			});
+		}
 		return false;
 });
 

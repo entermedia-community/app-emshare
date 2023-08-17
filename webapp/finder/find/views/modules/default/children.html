@@ -8,7 +8,7 @@
 
 #set($topentityid = $context.getRequestParameter("topentityid"))
 $context.putPageValue("topentityid", $topentityid)
-#ifnotnull($topentityid)
+
 
 	#foreach($childmodule in $organizedModules)
 		#if($module.id != $expandedmodule)
@@ -33,32 +33,7 @@ $context.putPageValue("topentityid", $topentityid)
 		#end 
 	#end
 	<div class="clearfix"></div>
-#end
 
-##Display Full Media
-##if($topmodule.enableuploading == true)
-	
-	#ifnull($defaultfolder)
-		#ifnull($selectedentity)
-			#set($defaultfolder =  $mediaarchive.getBean("entityManager").loadDefaultFolderForModule($topmodule, $context.getUser()))
-		#end
-		
-		#ifnotnull($selectedentity)
-			#if($topmodule.getId()=="faceprofilegroup")
-				#set($defaultfolder =  $mediaarchive.getBean("entityManager").loadDefaultFolderForModule($topmodule, $context.getUser()))		
-			#else
-				#set($defaultfolder =  $mediaarchive.getBean("entityManager").loadDefaultFolder($selectedentity, $context.getUser()))
-			#end
-		#end
-	#end
-	$context.putPageValue("defaultfolder", $defaultfolder)
-	#if(!$currentcategoryid && $defaultfolder)
-		#set( $currentcategoryid = $defaultfolder.getId())
-		$context.putPageValue("categoryid", $currentcategoryid)
-	#end
-
-	$pages.include("$apphome/views/modules/asset/indexembed.html", $context)
-##end
 
 </div>
 

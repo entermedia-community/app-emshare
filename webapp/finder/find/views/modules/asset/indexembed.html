@@ -3,7 +3,8 @@
 #set($moduleid = $module.getId())
 
 $context.putPageValue("module", $module)
-$context.putPageValue("componenthome", "$apphome/views/modules/asset/components")
+#set($componenthome = "$apphome/views/modules/asset/components")
+$context.putPageValue("componenthome", $componenthome)
 
 #if( !$category)
 	#set($categoryid = $context.getRequestParameter("categoryid"))
@@ -18,7 +19,7 @@ $context.putPageValue("category", $category)
 $context.putPageValue("categoryid", $categoryid)
 #if( !$librarycol && $category )
 	#set($rootcategories = $category.getParentCategories()) 
-	#set( $librarycol = $mediaarchive.query("librarycollection").orgroup("rootcategory", $rootcategories).searchOne() )
+	###set( $librarycol = $mediaarchive.query("librarycollection").orgroup("rootcategory", $rootcategories).searchOne() )
 #end
 
 <div id="$!{module.getId()}resultscontainer">
@@ -67,6 +68,7 @@ $context.putPageValue("categoryid", $categoryid)
 									data-oemaxlevel="5"
 									data-scrolltocat="true"
 									data-updateurl="true"
+									data-closedialog="true"
 									data-sidebarcomponent="categories">#text($parent)</a>
 					
 							#end
@@ -82,9 +84,24 @@ $context.putPageValue("categoryid", $categoryid)
 			<div class="clearfix"></div>
 		</div>
 		
+		<div class="embedmediacontainer">
+		<div class="embedmediacol embedmediacol-tree">
+			#set( $rootcategory = $categoryid)
+			#set( $targetembedmedia = "embedmedia$!{embedmediadialogid}")
+			#set( $link = "$componenthome/emtree/tree.html")
+		    #set( $link = "${link}?collectiontreeroot=$rootcategory&tree-name=collectiontree&editabletree=true" )
+		    #set( $link = "${link}&targetdivinner=${targetembedmedia}&maxlevelclick=1&updateAddressBar=false" )
+			
+		    #set( $link = "${link}&url-prefix=$apphome/views/modules/asset/showcategory.html" )
+		    
+			$pages.include($link, $context)
+		</div>
 		
+		<div class="embedmediacol embedmediacol-results" id="embedmedia$!{embedmediadialogid}" >
 		
-		$pages.include("$componenthome/results/index.html", $context)
+			$pages.include("$componenthome/results/index.html", $context)
+		</div>
+		</div>
 		
 	</div>
 

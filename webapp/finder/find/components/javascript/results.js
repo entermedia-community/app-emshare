@@ -32,7 +32,11 @@ jQuery(document).ready(function(url,params)
 			if(!moduleid) {
 				moduleid = searchtype;
 			}
-			var targetdiv = select.data('targetdiv');
+			var targetdivid = select.data('targetdiv');
+			var targetdiv = select.closest('#'+targetdivid);
+			if (!targetdiv.length) {
+				targetdiv = $('#'+targetdivid)
+			}
 			var ismodulesearch = select.data('ismodulesearch');
 			var oemaxlevel = select.data('oemaxlevel');
 			if(!oemaxlevel) {
@@ -74,7 +78,7 @@ jQuery(document).ready(function(url,params)
 					 
 			$.get(href, args, function(data) 
 			{
-				$("#"+targetdiv).replaceWith(data);
+				$(targetdiv).replaceWith(data);
 				$(window).trigger( "resize" );
 			});
 		});
@@ -806,7 +810,7 @@ jQuery(document).ready(function(url,params)
 	{
 		var modal = $(this).closest(".modal");
 		if (modal.length) {
-			modal.modal("hide");
+			//modal.modal("hide");
 		}
 	});
 	lQuery('.stackedplayertableX tr td' ).livequery(
@@ -1407,8 +1411,15 @@ checkScroll = function()
     
     gridupdatepositions(grid);
     
-    var page = parseInt(resultsdiv.data("pagenum")); 
+    var page = parseInt(resultsdiv.data("pagenum"));
+    if (isNaN(page)) {
+		page = 1;
+	}
+     
     var total = parseInt(resultsdiv.data("totalpages"));
+    if (isNaN(total)) {
+		total = 1;
+	}
 	// console.log("checking scroll " + stopautoscroll + " page " + page + " of
 	// " + total);
     if( page == total) //Last page. dont load more

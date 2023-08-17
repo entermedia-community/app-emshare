@@ -33,11 +33,15 @@ $(document).ready(function()
 	lQuery('.emtree-widget ul li div .cat-name').livequery('click', function(event) 
 	{
 		event.stopPropagation();
-		//console.log('selected');
-		$('.emtree ul li div').removeClass('selected cat-current');
+		
+		
+		
+		
         var tree = $(this).closest(".emtree");
         var treename = tree.data("treename");
 		var node = $(this).closest('.noderow');
+		//$('.emtree ul li div').removeClass('selected cat-current');
+		$('ul li div', tree).removeClass('selected cat-current');
 		$("div:first",node).addClass('cat-current');
 		var nodeid = node.data('nodeid');	
 		
@@ -170,7 +174,7 @@ $(document).ready(function()
 				{
 					data = $(data);
 					var targetdivinner = tree.data("targetdivinner");
-					if( targetdivinner && targetdiv != undefined)
+					if( targetdivinner)
 					{
 						var cell = jQuery("#" + targetdivinner); 
 						cell.html(data);
