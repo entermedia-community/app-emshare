@@ -1286,7 +1286,7 @@ document.addEventListener('touchmove', function(e)
 });
 jQuery(window).on('scroll',function(e) 
 {
-	//console.log("scroll event *" + e);
+	//console.log("main scroll");
 	checkScroll();
 });
 
@@ -1323,18 +1323,31 @@ checkScroll = function()
 	var siteroot = appdiv.data('siteroot') + appdiv.data('apphome');
 	var componenthome = appdiv.data('siteroot') + appdiv.data('componenthome');
 	
-	var grid = $(".masonry-grid");
-	if (grid== "undefined" || grid.data("singlepage")==true) {
+	
+	var grid = getCurrentGrid();
+	if( !grid )
+	{
 		return;
 	}
-	var lastcheck = $(window).data("lastscrollcheck");
-	var currentscroll = $(window).scrollTop();
+	if (grid.data("singlepage")==true) {
+		return;
+	}
+	
+	var resultsdiv= $(grid).closest("#resultsdiv");
+	var lastcheck = $(resultsdiv).data("lastscrollcheck");
+	var currentscroll = 0;
+	if(grid.closest('.modal').length) {  //change to parent for multiple
+		currentscroll = $('.modal').scrollTop();
+	}
+	else {
+		currentscroll = $(window).scrollTop();
+	}
 	if( lastcheck == currentscroll)
 	{
 		//Dom events cause it to fire recursively
 		return false;
 	}
-	$(window).data("lastscrollcheck",currentscroll);
+	$(resultsdiv).data("lastscrollcheck",currentscroll);
 	if( stopautoscroll )
 	{
 		// ignore scrolls
@@ -1351,7 +1364,7 @@ checkScroll = function()
 	}
 	
 	// No results?
-	var resultsdiv= $("#resultsdiv");
+	
 	var gridcells = $(".masonry-grid-cell", resultsdiv);
 	 if( gridcells.length == 0 )
 	 {
@@ -1428,7 +1441,7 @@ checkScroll = function()
 	   stackedviewpath = "stackedgallery.html"
    }
    var link = componenthome + "/results/" + stackedviewpath;
-   var collectionid = $('#resultsdiv').data("collectionid");
+   var collectionid = $(resultsdiv).data("collectionid");
    var params = {
 	"hitssessionid":session,
 	"page":page,
@@ -1451,7 +1464,8 @@ checkScroll = function()
 		   	{
 			   var jdata = $(data);
 			   var code = $(".masonry-grid",jdata).html();
-			   $(".masonry-grid",resultsdiv).append(code);
+			   //$(".masonry-grid",resultsdiv).append(code);
+			   $(grid).append(code);
 			   // $(resultsdiv).append(code);
 			   gridResize();
 
@@ -1475,7 +1489,7 @@ function gridupdatepositions(grid) {
 	positionsDiv = positionsDiv.find(".resultspositions");
 	var oldpage = grid.data("currentpagenum");
 	
-	$(".masonry-grid-cell").each(function(index, cell)
+	$(".masonry-grid-cell", grid).each(function(index, cell)
 	{
     	var elementviewport = isInViewport(cell);
     	if(elementviewport) {
@@ -1509,13 +1523,24 @@ function isInViewport(cell)
     return isin;
 }
 
+function getCurrentGrid(){
+	var grid = $(".entitydialog").find(".masonry-grid");
+	if( grid.length == 0 )
+	{
+		grid = $(".masonry-grid"); //Mainscreen Grid
+	}
+	if( grid.length == 0 )
+	{
+		return null;
+	}
+
+	return grid;
+}
+
 gridResize = function() 
 {
-	var grid = $(".masonry-grid");
-	
-	// console.log("gridResize width:"+grid.width());
-	// debugger;
-	if( grid.length == 0 )
+	var grid = getCurrentGrid();
+	if( !grid )
 	{
 		return;
 	}
@@ -1537,7 +1562,7 @@ gridResize = function()
 	var sofarusedh = 0;
 	
 	var row = new Array();
-	$(".masonry-grid .masonry-grid-cell").each(function()
+	$(grid).find(".masonry-grid-cell").each(function()
 	{		
 		var cell = $(this);
 		var w = cell.data("width");

@@ -7,16 +7,39 @@
 #end
 
 <div id="tab_asset" 
-class="editentitymetadata-submodule entity-tab-content" 
+class=" entity-tab-content entity-tab-media" 
 data-entityid="$!entityid"
 data-parentsearchtype="$!parentsearchtype"
 data-url="$componenthome/gridsample/preview/entitytabmedia.html"
 #if($hidesubmodule) style="display: none; #end">
 <div id="$!submodulepickerid" class="submodulepicker entity-tab-content">
 	
-	$context.putPageValue("selectedentity", $entity)
-	#set($subcomponenthome = "$apphome/views/modules/asset/components")
-	$pages.include("$subcomponenthome/gridsample/preview/media/listassets.html",$context)
+	##Display Full Media
+	##if($topmodule.enableuploading == true)
+		
+		#ifnull($defaultfolder)
+			#ifnull($entity)
+				#set($defaultfolder =  $mediaarchive.getBean("entityManager").loadDefaultFolderForModule($topmodule, $context.getUser()))
+			#end
+			
+			#ifnotnull($entity)
+				#if($topmodule.getId()=="faceprofilegroup")
+					#set($defaultfolder =  $mediaarchive.getBean("entityManager").loadDefaultFolderForModule($topmodule, $context.getUser()))		
+				#else
+					#set($defaultfolder =  $mediaarchive.getBean("entityManager").loadDefaultFolder($entity, $context.getUser()))
+				#end
+			#end
+		#end
+		$context.putPageValue("defaultfolder", $defaultfolder)
+		#if(!$currentcategoryid && $defaultfolder)
+			#set( $currentcategoryid = $defaultfolder.getId())
+			$context.putPageValue("categoryid", $currentcategoryid)
+		#end
+		
+		$pages.include("$apphome/views/modules/asset/indexembed.html", $context)
+	##end
+	
+	
 	<div class="clearfix"></div>
 </div>
 </div>

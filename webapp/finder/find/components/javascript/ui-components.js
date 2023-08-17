@@ -1237,6 +1237,10 @@ uiload = function() {
 					modalinstance.on('hidden.bs.modal', function () {
 						$(window).trigger("resize");
 					});
+					
+					modalinstance.on('scroll', function () {
+						checkScroll();
+					});
 				}
 			}
 		});
@@ -4059,17 +4063,11 @@ jQuery(document).ready(function() {
 	uiload();
 	jQuery(window).trigger("resize");
 
-	//history.pushState($("#application").html(), null, window.location.href);	
 	window.onhashchange = function() {
-	 	//Enable scroll
-		$("body").css({ overflow: 'visible' });
+		$("body").css({ overflow: 'visible' });//Enable scroll
 		$(window).trigger( "resize" );
 	}
-	
-	/*gridResize();
-	resizegallery();
-	resizecolumns();
-	resizesearchcategories();*/
+
 });
 
 jQuery(window).on('resize',function(){
@@ -4085,20 +4083,20 @@ jQuery(window).on('resize',function(){
 
 
 jQuery(document).on('domchanged',function(){
-	gridResize(); //This calls checkScroll. Makes sure this is last after any actions
+	gridResize(); 
 	resizecolumns();
 	//jQuery(window).trigger("resize");
 });
 
 
 jQuery(document).on('emtreeselect',function(event){
-			var selectednode = event.nodeid;
-			$("#parentfilter").val(selectednode);
-
-			$("#autosubmitfilter").ajaxSubmit({
-				target:"#categoryresults"
-			});
-			return false;
+		var selectednode = event.nodeid;
+		$("#parentfilter").val(selectednode);
+		
+		$("#autosubmitfilter").ajaxSubmit({
+			target:"#categoryresults"
+		});
+		return false;
 });
 
 jQuery(window).on('ajaxsocketautoreload',function(){
