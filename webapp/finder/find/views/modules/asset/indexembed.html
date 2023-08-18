@@ -1,3 +1,6 @@
+#set($hits = $entityassethits)
+$context.putPageValue("hits", $hits)
+
 
 #set($module = $mediaarchive.getCachedData("module", "asset"))
 #set($moduleid = $module.getId())
@@ -49,7 +52,7 @@ $context.putPageValue("categoryid", $categoryid)
 	     	
 			#set( $count = $hits.size())
 			 
-				<img src="$siteroot$apphome/theme/images/entity/${moduleicon}.svg" style="height: 26px;"> 
+				##<img src="$siteroot$apphome/theme/images/entity/${moduleicon}.svg" style="height: 26px;"> 
 						
 				#if( $category )
 					<div class="filtered-breadcrumb">
@@ -86,6 +89,7 @@ $context.putPageValue("categoryid", $categoryid)
 		
 		<div class="embedmediacontainer">
 		<div class="embedmediacol embedmediacol-tree">
+			<div class="embedmediacolheader"></div>
 			#set( $rootcategory = $categoryid)
 			#set( $targetembedmedia = "embedmedia$!{embedmediadialogid}")
 			#set( $link = "$componenthome/emtree/tree.html")
@@ -98,7 +102,7 @@ $context.putPageValue("categoryid", $categoryid)
 		</div>
 		
 		<div class="embedmediacol embedmediacol-results" id="embedmedia$!{embedmediadialogid}" >
-		
+			
 			$pages.include("$componenthome/results/index.html", $context)
 		</div>
 		</div>

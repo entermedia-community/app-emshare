@@ -8,7 +8,7 @@
 	$context.putPageValue("hits", $hits)
 #end
 
-#if($hits)
+
 	#if(!$searchtype)
 		#set ( $searchtype = $context.getRequestParameter("searchtype") )
 	#end
@@ -222,13 +222,13 @@
 							data-ismodulesearch = "$!ismodulesearch" 
 							data-componenthome = "$!componenthome"
 							data-page="$!hits.getPage()" 
-							data-showremoveselections="$showremoveselections" 
+							data-showremoveselections="$!showremoveselections" 
 							data-collectionid="$!librarycol.getId()"
 							data-targetdiv="resultsviewcontainer$!module.getId()"
 							data-oemaxlevel="1">
 							#set( $types = $mediaarchive.getList("resulttype"))
 							#foreach($type in $types)
-								<option value="$type.getId()" #if( $resultview == "$type.getId()") selected #end>$type.getName($context)</option>
+								<option value="$!type.getId()" #if( $resultview == "$type.getId()") selected #end>$type.getName($context)</option>
 							#end
 						</select>
 						
@@ -245,11 +245,11 @@
 								#set ($alldetails = $searcher.getUserPropertyDetails() )
 								<select class="form-control form-control-sm select2 tableresultsaddcolumn" 
 										name="addcolumn"
-										data-componenthome="$siteroot$componenthome/results/addremovecolumns.html?oemaxlevel=1&searchtype=asset&hitssessionid=$hits.getSessionId()&editheader=true"
+										data-componenthome="$!siteroot$componenthome/results/addremovecolumns.html?oemaxlevel=1&searchtype=asset&hitssessionid=$hits.getSessionId()&editheader=true"
 										data-targetdiv="resultsviewcontainer$!module.getId()" 
 										data-allowclear="false" >
 									<option>[[Add Column]]</option>
-									#foreach( $detail in $alldetails) <option value="$detail.id">$detail.getText($context)</option>
+									#foreach( $detail in $alldetails) <option value="$!detail.id">$detail.getText($context)</option>
 									#end
 								</select>
 								<div class="" style="padding-right: 10px;" >*[[Drag columns to move them]]</div>
@@ -281,5 +281,3 @@
 	</div>
 	<div class="clearfix"></div>
 	</div>
-#end
- 
