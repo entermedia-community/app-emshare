@@ -25,9 +25,9 @@ $context.putPageValue("categoryid", $categoryid)
 	###set( $librarycol = $mediaarchive.query("librarycollection").orgroup("rootcategory", $rootcategories).searchOne() )
 #end
 
-<div id="$!{module.getId()}resultscontainer">
+<div id="$!{module.getId()}resultscontainer" class="h-100">
 <div id="assetresults"
-	class="assetresults" 
+	class="assetresults h-100" 
 	#if($categoryid)
 	##data-url="$apphome/views/modules/asset/viewfiles/${categoryid}/#dash($category).html"
 	data-url="$apphome/views/modules/asset/indexembed.html"
@@ -41,7 +41,7 @@ $context.putPageValue("categoryid", $categoryid)
 	data-oemaxlevel="1"
 	>
 	
-	<div class="emgrid-module emgrid-box emgrid-module-asset" style="">
+	<div class="emgrid-module emgrid-box emgrid-module-asset h-100">
 
 		<div class="emgrid-subtitle">
 	  		<h3>
@@ -88,13 +88,17 @@ $context.putPageValue("categoryid", $categoryid)
 		
 		<div class="embedmediacontainer">
 		<div class="embedmediacol embedmediacol-tree">
-			<div class="embedmediacolheader"></div>
+			<div class="embedmediacolheader">
+				<a href=""class="float-left" style="border-right:1px solid #444;" title="[[Add Folder]]"><i class="fas fa-folder-plus"></i></a>
+				<a href="" class="float-right" style="border-left:1px solid #444;" title="[[Upload]]"><i class="fas fa-upload"></i></a>
+				
+			</div>
 			#set( $rootcategory = $categoryid)
 			#set( $targetembedmedia = "embedmedia$!{embedmediadialogid}")
 			#set( $link = "$componenthome/emtree/tree.html")
 		    #set( $link = "${link}?collectiontreeroot=$rootcategory&tree-name=collectiontree&editabletree=true" )
-		    #set( $link = "${link}&targetdivinner=${targetembedmedia}&maxlevelclick=1&updateAddressBar=false" )
-			
+		    #set( $link = "${link}&targetdivinner=${targetembedmedia}&maxlevelclick=1&updateAddressBar=false&uploadmaxlevel=1" )
+			#set( $link = "${link}&customurladdmedia=$apphome/views/modules/asset/add/entityaddmedia.html" )
 		    #set( $link = "${link}&url-prefix=$apphome/views/modules/asset/showcategory.html" )
 		    
 			$pages.include($link, $context)

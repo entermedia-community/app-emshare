@@ -9,6 +9,7 @@
 #set( $adding = $context.getRequestParameter("adding" ) )
 
 #set( $scrolltocat = $context.getRequestParameter("scrolltocat") )
+#set( $uploadmaxlevel = $context.getRequestParameter("uploadmaxlevel") )
 
 #if($selectednodes)
 	$!webtree.getTreeRenderer().selectNodes($selectednodes)
@@ -77,7 +78,7 @@
 			       	<i class="fas fa-download"> </i> 
 			       	</a>
 			    #elseif( $canviewupload || $canviewcategoryupload)
-                    <a href="#" class="cat-options cat-uploadfromtree" title="[[Upload]]"><i class="fas fa-upload"></i></a>
+                    <a href="#" class="cat-options cat-uploadfromtree" data-oemaxlevel="$!uploadmaxlevel" title="[[Upload]]"><i class="fas fa-upload"></i></a>
                 #end
                 
 			</div>
@@ -198,7 +199,7 @@
        	#end
        	
        	 #if( $canviewupload || $canviewcategoryupload)
-	      	<li><a id="addmedia" tabindex="-1" href="#" data-cancelsubmit="false" class="dropdown-item">[[Upload]]</a></li>
+	      	<li><a id="addmedia" tabindex="-1" href="#" data-cancelsubmit="false" data-oemaxlevel="$!uploadmaxlevel" class="dropdown-item">[[Upload]]</a></li>
 	      	<li class="divider"></li>
 	    #end
 	    #if( $candownload  )

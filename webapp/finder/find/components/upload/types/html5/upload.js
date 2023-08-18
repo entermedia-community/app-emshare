@@ -215,7 +215,8 @@ $(document).ready(function()
 								$(uploadformarea).find('#nodeid').val(categoryid);
 							}
 						}
-						$(".upload_field").triggerHandler('html5_upload.filesPicked', [e.originalEvent.dataTransfer.files]);						
+						var uploadformarea = $(div).closest(".uploadformarea");
+						$(".upload_field", uploadformarea).triggerHandler('html5_upload.filesPicked', [e.originalEvent.dataTransfer.files]);						
 		            }   
 		        }
 		        div.removeClass("uploaddragenter");
