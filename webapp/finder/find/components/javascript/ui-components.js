@@ -1314,7 +1314,12 @@ uiload = function() {
 		//var container = $("#entity-tab-"+entityid);  // <--------
 		var container = $(this).attr("href");
 		container = $(container);
-		$(".entity-tab-content").hide(); //hide all others
+		container.data("currenttab", $(this).data("tabtype")); //me
+		$(".entity-tab-content").hide(); 
+		
+		saveProfileProperty("entitytabopen", $(this).data("tabtype"), function(){});
+		
+		
 		autoreload(container);
 	});
 	

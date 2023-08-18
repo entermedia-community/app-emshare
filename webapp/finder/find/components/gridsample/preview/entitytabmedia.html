@@ -5,10 +5,15 @@
 #if( !$entity)
 	#set( $entity  = $mediaarchive.getData($parentsearchtype, $entityid) )
 #end
-
-<div id="tab_asset" 
-class=" entity-tab-content entity-tab-media" 
+#if(!$currenttab)
+	#set($currenttab = $context.getRequestParameter("currenttab"))
+#end
+<div id="tabasset" 
+class=" entity-tab-content entity-tab-media tabtype$!tabtype" 
+style=" #if($currenttab != 'media') display:none; #end"
+data-tabtype="media"
 data-entityid="$!entityid"
+data-currenttab="$!currenttab"
 data-parentsearchtype="$!parentsearchtype"
 data-url="$componenthome/gridsample/preview/entitytabmedia.html"
 #if($hidesubmodule) style="display: none; #end">

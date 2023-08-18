@@ -1,4 +1,3 @@
-
 #set( $searchtype = $context.findValue("module")) 
 
 #if(!$searchtype)
@@ -54,10 +53,16 @@ $context.putPageValue("edit", $edit)
 	#set($showmedia = $context.getRequestParameter("showmedia"))
 #end
 $context.putPageValue("showmedia", $showmedia)
+#if(!$currenttab)
+	#set($currenttab = $context.getRequestParameter("currenttab"))
+#end
 
 <div id="tab$!entitytabid"
-	class="#eid($entityid)tab-content reloadonupload entity-tab-content" 
+	class="#eid($entityid)tab-content reloadonupload entity-tab-content tabtype$!tabtype"
+	style=" #if($currenttab != 'metadata') display:none; #end" 
 	data-id="$!entity.id" 
+	data-tabtype="metadata"
+	data-currenttab="$!currenttab"
 	data-searchtype="$searchtype"
 	data-autoreloadevents="uploadend"
 	data-url="$componenthome/gridsample/preview/entitytab.html">

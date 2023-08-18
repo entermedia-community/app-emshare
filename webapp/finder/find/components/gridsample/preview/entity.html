@@ -26,6 +26,9 @@ $context.putPageValue("moduleid", $moduleid)
 #set($enttiyviews = $viewsearcher.query().exact("moduleid", $moduleid).exact("rendertype","table").exact("systemdefined","false").sort("orderingUp").search($context) )
 
 
+#set( $entitytabopen = $userprofile.get("entitytabopen"))
+
+
 <div class="entitydialog" data-moduleid="$moduleid" data-entityid="$!entityid" data-url="$componenthome/gridsample/preview/entity.html">
 	<div class="entity-wraper">
 	
@@ -49,9 +52,16 @@ $context.putPageValue("moduleid", $moduleid)
 	  		 data-tabmenuurl="gridsample/preview/entitytabmenu.html">
 	  		##myself
 	  		$context.putPageValue("tabmodule", $module)
-	  		#set($currenttab = "${moduleid}$!{entityid}")
-			#set($currenttab = "#eid($currenttab)")
-	  		$context.putPageValue("currenttab", $currenttab)
+	  		#set($tabid = "${moduleid}$!{entityid}")
+			#set($tabid = "#eid($tabid)")
+			#set($tabtype= "metadata")
+			$context.putPageValue("tabtype", $tabtype)
+			
+			#if(!$entitytabopen || $entitytabopen == $tabtype)
+	  			$context.putPageValue("currenttab", $tabtype)
+	  			
+			#end
+			
 			$pages.include("$componenthome/gridsample/preview/entitytabmenu.html", $context)
 			
 			#ifnotnull($id)
@@ -66,6 +76,11 @@ $context.putPageValue("moduleid", $moduleid)
 							$context.putPageValue("tabmodule", $submodule)
 							$context.putPageValue("tabtype", "submodulehome")
 							$context.putPageValue("targetviewid", $targetviewid)
+							#set($tabid = "$!subentitysearchtype")
+							#set($tabtype= "submodulehome")
+							#if($entitytabopen == $tabtype)
+					  			$context.putPageValue("currenttab", $tabtype)
+							#end
 							#set($subcomponenthome = "$apphome/views/modules/$subentitysearchtype/components")
 							$pages.include("$subcomponenthome/gridsample/preview/entitytabmenu.html", $context)
 						#end
@@ -76,6 +91,10 @@ $context.putPageValue("moduleid", $moduleid)
 				#set($submodule = $mediaarchive.getCachedData("module", "asset"))
 				$context.putPageValue("tabmodule", $submodule)
 				$context.putPageValue("tabtype", "media")
+				#set($tabid = "asset")
+				#if($entitytabopen == "media")
+		  			$context.putPageValue("currenttab", "media")
+				#end
 				#set($subcomponenthome = "$apphome/views/modules/asset/components")
 				$pages.include("$subcomponenthome/gridsample/preview/entitytabmenu.html", $context)
 			#end	
@@ -83,7 +102,8 @@ $context.putPageValue("moduleid", $moduleid)
 		</nav>
 		
 		<div class="tab-content entity-body" id="entity-nav-tabContent">
-				
+				#set($tabtype= "metadata")
+				$context.putPageValue("tabtype", $tabtype)
 				$pages.include("$componenthome/gridsample/preview/entitytab.html", $context)
 				
 				#ifnotnull($id)
@@ -97,6 +117,10 @@ $context.putPageValue("moduleid", $moduleid)
 							$context.putPageValue("parentsearchtype", $parentsearchtype)
 							$context.putPageValue("parentid", $id)
 							$context.putPageValue("hidesubmodule", true)
+							#set($tabtype= "submodulehome")
+							#if($entitytabopen == $tabtype)
+					  			$context.putPageValue("currenttab", $tabtype)
+					  		#end
 							#set($subcomponenthome = "$apphome/views/modules/$subentitysearchtype/components")
 							$pages.include("$subcomponenthome/gridsample/preview/entitytabsub.html", $context)
 						#end
@@ -105,6 +129,10 @@ $context.putPageValue("moduleid", $moduleid)
 		
 					$context.putPageValue("parentsearchtype", $parentsearchtype)
 					$context.putPageValue("hidesubmodule", true)
+					#set($tabtype= "media")
+					#if($entitytabopen == $tabtype)
+			  			$context.putPageValue("currenttab", $tabtype)
+			  		#end
 					$pages.include("$subcomponenthome/gridsample/preview/entitytabmedia.html?entityid=$id", $context)
 			#end
 		</div>

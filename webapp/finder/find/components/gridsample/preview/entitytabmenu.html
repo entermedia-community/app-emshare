@@ -14,12 +14,12 @@
 	#set($tabtype = $context.getRequestParamenter("tabtype"))
 #end
 #if($tabtype == "submodulehome")
-	#set($tabid = "_$!searchtype")
+	#set($tabid = "$!searchtype")
 	#set($viewsearcher = $searcherManager.getSearcher($catalogid, "view"))
 	#set( $viewdata = $viewsearcher.searchById($targetviewid))
 	#set($name = $viewdata.getName($context))
 #elseif($tabtype=="media")
-	#set($tabid = "_$!searchtype")
+	#set($tabid = "$!searchtype")
 	#set($name = $tabmodule.getName($context))
 #else
 	#if($id.startsWith("multiedit"))
@@ -49,11 +49,12 @@
 	#end
 
 #end
-
-<div class="entity-tab  #if($currenttab == $tabid) current-entity #end" #if(!$tabtype) data-entityid="$!entity.getId() #end">
+<div class="entity-tab  #if($currenttab == $tabtype) current-entity #end" 
+	#if(!$tabtype) data-entityid="$!entity.getId() #end">
 	<a href="#tab$!tabid" 
-		class="entity-tab-label" 
-		data-toggle="tab" 
+		class="entity-tab-label"
+		data-tabtype="$!tabtype" 
+		data-toggle="tab"
 		data-target="$!targetentitytabid"
 		#if($id.startsWith("multiedit"))
 			data-ismultiedit="true"

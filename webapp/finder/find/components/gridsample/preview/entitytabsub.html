@@ -21,12 +21,16 @@
 #if(!$targetrendertype)
 	#set($targetrendertype = "entity")
 #end
-
+#if(!$currenttab)
+	#set($currenttab = $context.getRequestParameter("currenttab"))
+#end
 #if($subentitysearchtype)
-	<div id="tab_$!subentitysearchtype" 
-		class="editentitymetadata-submodule entity-tab-content" 
+	<div id="tab$!subentitysearchtype" 
+		class="editentitymetadata-submodule entity-tab-content tabtype$!tabtype" 
+		style=" #if($currenttab != 'submodulehome') display:none; #end"
+		data-tabtype="submodulehome"
 		data-submoduleid="$!submodule.getId()"
-		
+		data-currenttab="$!currenttab"
 		data-targetviewid="$!targetviewid"
 		data-parentsearchtype="$!parentsearchtype"
 		data-parentid=$!parentid
