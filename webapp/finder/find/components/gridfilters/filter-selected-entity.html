@@ -96,6 +96,18 @@
 		
 		
 		##Clear All
+
+				<div class=" float-right" >
+				#foreach($sort in $hits.searchQuery.getSorts())
+				<a href="#" 
+					class="filterschangesort"
+					data-sortbyfield="${moduleid}sortby" 
+					title='[[Sorted by]] $sort #if($hits.isAscending() ) Ascending #end'>
+				<i class=" fas #if($sort.endsWith("Down")) fa-sort-alpha-down #else fa-sort-alpha-up #end" style="padding-top:5px"></i>
+				</a>
+				#end
+				</div>
+
 		
 		#if( $hits.getSearchQuery().hasMainInput() || ($terms && !$terms.isEmpty()) )
 			

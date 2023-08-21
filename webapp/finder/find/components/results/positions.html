@@ -1,9 +1,9 @@
 ##needs 	$hits  $moduleid
-
 #if(!$moduleid)
 #set($moduleid = $context.getRequestParameter("moduleid"))
 #end
 
+	
 #set($reloadsearchtype = $moduleid)
 
 #if($moduleid=="asset")
@@ -17,10 +17,10 @@
 			#if($collectionid)
 				#set($resultsPage = "$resultsPage&collectionid=$!collectionid")
 			#end
-			#set($resultsPage = "$resultsPage&pageposition")
+			#set($resultsPage = "$resultsPage&$!{hits.getSearchType()}pageposition")
 		#else
-			#set($resultsPage = "$applink/views/modules/asset/index.html?hitssessionid=$!hits.sessionId&pageposition")
-			##set($resultsPage = "$componenthome/results/index.html?hitssessionid=$!hits.sessionId&pageposition")
+			#set($resultsPage = "$applink/views/modules/asset/index.html?hitssessionid=$!hits.sessionId&$!{hits.getSearchType()}pageposition")
+			##set($resultsPage = "$componenthome/results/index.html?hitssessionid=$!hits.sessionId&$!{hits.getSearchType()}pageposition")
 		#end
 		
 		#set($oemaxlevel = "1")
@@ -56,7 +56,7 @@
 	#if($module)
 		#set($resultsPage = "$resultsPage&module=$module.id")
 	#end
-	#set($resultsPage = "$resultsPage&pageposition")
+	#set($resultsPage = "$resultsPage&$!{hits.getSearchType()}pageposition")
 	#set($oemaxlevel = "1")
 	
 	#set($targetdivinner = "${moduleid}resultscontainer")
@@ -86,19 +86,17 @@ data-hitssessionid="$!hits.getSessionId()" data-searchtype="$!hits.getSearchType
 	#end
 	#foreach( $before in $befores )
 		#set( $pos = $prhits.toPosition($before) )
-		#set( $poslabel = $prhits.toPositionLabel($before) )
 		<li class="currentposition${pos}">
 			<a class="ajax" 
 				data-targetdivinner="$targetdivinner" 
 				data-updateurl="$!updateurl" 
 				data-oemaxlevel="$oemaxlevel"
 				data-position="$pos" 
-				href="$resultsPage=$pos" >$poslabel</a>
+				href="$resultsPage=$pos" >$pos</a>
 		</li>		
 	#end
 
 	#set( $pos = $prhits.toPosition($prhits.getPage()))
-	#set( $poslabel = $prhits.toPositionLabel($prhits.getPage()) )
 	
 	<li class="current currentposition${pos}">
 		<a  class="ajax" 
@@ -106,7 +104,7 @@ data-hitssessionid="$!hits.getSessionId()" data-searchtype="$!hits.getSearchType
 			data-updateurl="$!updateurl"  
 			data-oemaxlevel="$oemaxlevel" 
 			data-position="$pos"  
-			href="$resultsPage=$pos" >$poslabel</a>
+			href="$resultsPage=$pos" >$pos</a>
 	</li>
 	
 	
@@ -114,14 +112,13 @@ data-hitssessionid="$!hits.getSessionId()" data-searchtype="$!hits.getSearchType
 	
 	#foreach( $after in $afters )
 		#set( $pos = $prhits.toPosition($after) )
-		#set( $poslabel = $prhits.toPositionLabel($after) )
 		<li class="currentposition${pos}">
 			<a  class="ajax" 
 				data-targetdivinner="$targetdivinner" 
 				data-updateurl="$!updateurl" 
 				data-oemaxlevel="$oemaxlevel" 
 				data-position="$pos"  
-				href="$resultsPage=$pos">$poslabel</a>
+				href="$resultsPage=$pos">$pos</a>
 		</li>		
 	#end
 	
@@ -145,7 +142,7 @@ data-hitssessionid="$!hits.getSessionId()" data-searchtype="$!hits.getSearchType
 	#if($total>2)
  	<li style="padding-top:0; max-width: 68px;">
  	<input class="form-control resultsnavselect" 
-		name="pageposition" 
+		name="$!{hits.getSearchType()}pageposition" 
 		id="jumptopageresults"  
 		data-hitssessionid="$!hits.getSessionId()" 
 		data-url="$resultsPage="
