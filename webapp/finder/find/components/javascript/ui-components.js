@@ -750,14 +750,17 @@ uiload = function() {
 						return;
 					}
 				}
-				var targetdiv = form.data("targetdiv");
-				if (targetdiv  === undefined) {
-					targetdiv = form.attr("targetdiv");
+				var targetdiv_ = form.data("targetdiv");
+				if (targetdiv_  === undefined) {
+					targetdiv_ = form.attr("targetdiv");
 				}
-				if (targetdiv  === undefined) {
-					targetdiv = form.data("targetdivinner");
+				if (targetdiv_  === undefined) {
+					targetdiv_ = form.data("targetdivinner");
 				}
-				targetdiv = $("#"+$.escapeSelector(targetdiv));
+				var targetdiv = $("#"+$.escapeSelector(targetdiv_));
+				if(!targetdiv.length) {
+					targetdiv = $("."+$.escapeSelector(targetdiv_));
+				}
 				if(form.attr("action") == undefined) {
 					var action = targetdiv.data("saveaction");
 					if(action == undefined) {
@@ -1828,25 +1831,8 @@ uiload = function() {
 							data: options1,
 							success: function(data) {
 								var parent = container.closest('.entitydialog');
-								var parentmoduleid = '';
-								var parententityid = '';
-								var parenturl = '';
-								if(parent.length) {
-									parentmoduleid = parent.data("moduleid");
-									parententityid = parent.data("entityid");
-									parententiturl = parent.data("url");
-								}
 								container.replaceWith(data);
-								if(parentmoduleid != '') {
-									
-									var backbtn = $('.entitydialogback');
-									$(backbtn).show();
-									$(backbtn).attr('href', parententiturl);
-									$(backbtn).data('moduleid',parentmoduleid);
-									$(backbtn).data('entityid',parententityid);
-									
-								}
-								
+								tabbackbutton(parent)
 								
 								/*
 								//Open Tab in same Nav
@@ -1972,10 +1958,6 @@ uiload = function() {
 		}
 	});
 	
-	
-	
-	
-
 	showmodal = function(emselecttable, url) {
 		var id = "modals";
 		var modaldialog = $("#" + id);
@@ -3817,6 +3799,34 @@ uiload = function() {
 
 
 }// uiload
+
+function formsavebackbutton(form) {
+	var savedcontainer = $('.enablebackbtn');
+	if (savedcontainer.length) {
+		var parent = savedcontainer.parent().closest('.entitydialog');
+		tabbackbutton(parent)
+	}
+}
+
+function tabbackbutton(parent) {
+		var parentmoduleid = '';
+		var parententityid = '';
+		var parenturl = '';
+		if(parent.length) {
+			parentmoduleid = parent.data("moduleid");
+			parententityid = parent.data("entityid");
+			parententiturl = parent.data("url");
+		}
+		
+		if(parentmoduleid != '') {
+			var backbtn = $('.entitydialogback');
+			$(backbtn).show();
+			$(backbtn).attr('href', parententiturl);
+			$(backbtn).data('moduleid',parentmoduleid);
+			$(backbtn).data('entityid',parententityid);
+			
+		}
+}
 
 
 function switchsubmodulebox(item) {

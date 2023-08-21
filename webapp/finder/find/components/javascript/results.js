@@ -229,14 +229,15 @@ jQuery(document).ready(function(url,params)
 		var icon = $(this).find("i");
 		if(up){
 			selected.attr("value", id + "Down");
-			icon.removeClass("fa-sort-alpha-up");
-			icon.addClass("fa-sort-alpha-down");
+			icon.removeClass("fa-sort-alpha-down");
+			icon.addClass("fa-sort-alpha-up");
 			
 			dropdown.data("sortup", false);
 		} else{
 			selected.attr("value", id + "Up");
-			icon.removeClass("fa-sort-alpha-down");
-			icon.addClass("fa-sort-alpha-up");
+			icon.removeClass("fa-sort-alpha-up");
+			icon.addClass("fa-sort-alpha-down");
+			
 			dropdown.data("sortup", true);
 		}
 		

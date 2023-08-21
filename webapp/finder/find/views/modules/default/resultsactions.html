@@ -122,12 +122,7 @@ $context.putPageValue("moduleid", $moduleid)
 			#if (!$resultview || $resultview == 'table')
 				#if( $canedittablecolumns )
 					#if( $edit )
-						##Close Icon
-						<li>
-							<a class="ajax table-edit-close" 
-								data-targetdiv="resultsviewcontainer$!moduleid" 
-								href="$siteroot$componenthome/results/index.html?oemaxlevel=1&searchtype=$!moduleid&hitssessionid=$!hits.getSessionId()&editheader=&moduleid=$!moduleid"><i class="fas fa-times"></i></a>
-						</li>
+						
 						<li class="resultsnavtitem" style="min-width:180px">
 							#set ($alldetails = $searcher.getUserPropertyDetails() )
 							<select class="form-control form-control-sm select2 tableresultsaddcolumn" 
@@ -139,18 +134,23 @@ $context.putPageValue("moduleid", $moduleid)
 								#foreach( $detail in $alldetails) <option value="$detail.id">$detail.getText($context)</option>
 								#end
 							</select>
+							<div class="">**[[Drag columns to move them]]</div>
 						</li>
-								
-						<li class="resultsnavtitem">
-							<span class="" style="padding-right: 10px;" >[[Drag columns to move them]]</span>
+						##Close Icon
+						<li>
+							<a class="ajax table-edit-close" 
+								data-targetdiv="$!{moduleid}topcontainer"
+								data-oemaxlevel="2" 
+								href="${searchhome}/index.html?searchtype=$!moduleid&hitssessionid=$!hits.getSessionId()&editheader=false&moduleid=$!moduleid"><i class="fas fa-times"></i></a>
 						</li>
 					#else 
 						##Edit
 						<li >
 							<a class="ajax nav-hover" 
 								id="table-editor-close" 
-								data-targetdiv="resultsviewcontainer$!moduleid" 
-								href="$siteroot$componenthome/results/index.html?searchtype=$!searchtype&hitssessionid=$hits.getSessionId()&editheader=true&moduleid=$!moduleid"> <i class="fas fa-edit"></i></a>
+								data-targetdiv="$!{moduleid}topcontainer"
+								data-oemaxlevel="2" 
+								href="${searchhome}/index.html?searchtype=$!searchtype&hitssessionid=$hits.getSessionId()&editheader=true&moduleid=$!moduleid"> <i class="fas fa-edit"></i></a>
 						</li>
 					#end	
 				#end								

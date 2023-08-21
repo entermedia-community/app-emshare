@@ -1,55 +1,39 @@
 #set( $terms = $hits.getFilteredTerms($context,"advancedfilter") )
+#if($topmodule)
+	#set($topmoduleid = $topmodule.getId())
+#end
 
 <div class="filtered #if( $librarycol ) filteredinresults #end">
 	
-		#if($content.get("section") == "favorites")
-		<h2>[[Favorites]]</h2> 
-		#else
-			#if($terms)
-				[[Results]] > 
-			#end
-		#end
-	#if( $hits.getSearchQuery().hasMainInput())
-	
-		[[Searching for]]: <strong><em>$hits.getSearchQuery().getMainInput()</em></strong>&nbsp;
+#if(1==2)
+	#foreach($sort in $hits.searchQuery.getSorts())
+	<a href="#" 
+		class="filterschangesort  float-left"
+		data-sortbyfield="${moduleid}sortby" 
+		title='[[Sorted by]] $sort #if($hits.isAscending() ) [[Ascending]] #end'>
+	<i class=" fas #if($sort.endsWith("Down")) fa-sort-alpha-up #else fa-sort-alpha-down #end"></i>
+	</a>
 	#end
-	##TODO Loop over the view and show them here if they match
-
-	#if( $category )
-		#if( $mediaarchive.getCategorySearcher().getRootCategory() != $category)
-			#if( $librarycol )
-				#set($href = "$siteroot$apphome/views/modules/librarycollection/media/index.html?hitssessionid=$hits.getSessionId()&collectionid=$librarycol.getId()&clearselection=true")
-			#else
-				#set($href = "$siteroot$apphome/views/modules/$module.id/index.html?clearselection=true")
-			#end
-			
-		<a
-		href="$href"
-		class=""
-		title="[[Clear Category]]">$category <i class="fas fa-times"></i></a>
-		#end
-	#end
-	#if ($librarycol)
-	 <a class="badge badge-light" href="$apphome">$librarycol <i class="fas fa-times"></i></a>
-	#end
+#end
 
 	
 	#foreach( $term in $terms)
 
 		#if( $librarycol )
-			#set($href = "$siteroot$apphome/views/modules/librarycollection/media/index.html?hitssessionid=$hits.getSessionId()&collectionid=$librarycol.getId()&removeterm=$term.getId()")
+			#set($href = "$siteroot$apphome/views/modules/librarycollection/media/index.html?hitssessionid=$!hits.getSessionId()&collectionid=$librarycol.getId()&removeterm=$term.getId()")
 			
 		#else
-			#set($href = "$siteroot$apphome/views/modules/$module.id/index.html?hitssessionid=$hits.getSessionId()&removeterm=$term.getId()")
+			#set($href = "$siteroot$apphome/views/modules/$module.id/index.html?hitssessionid=$!hits.getSessionId()&removeterm=$term.getId()")
 		#end
 		#if ($nodeID)
 		 	#set($href = $href + "&nodeID=${nodeID}")
 		#end
 	
 		<a href="$href"
-			class="badge badge-primary clearitself ajax"
-			data-targetdiv="applicationmaincontent"
-			data-oemaxlevel="1"
+			class="btn btn-sm btn-blue clearitself ajax float-left"
+			style="margin-left:10px;"
+			data-targetdiv="applicationcontent"
+			data-oemaxlevel="4"
 			title="[[Clear]]: $term.getDetail()">$term.getDetail(): 
 			
 			<strong>
@@ -95,35 +79,24 @@
 		
 		
 		
-		##Clear All
 
-				<div class=" float-right" >
-				#foreach($sort in $hits.searchQuery.getSorts())
-				<a href="#" 
-					class="filterschangesort"
-					data-sortbyfield="${moduleid}sortby" 
-					title='[[Sorted by]] $sort #if($hits.isAscending() ) Ascending #end'>
-				<i class=" fas #if($sort.endsWith("Down")) fa-sort-alpha-down #else fa-sort-alpha-up #end" style="padding-top:5px"></i>
-				</a>
-				#end
-				</div>
 
 		
-		#if( $hits.getSearchQuery().hasMainInput() || ($terms && !$terms.isEmpty()) )
+		#if( $terms && !$terms.isEmpty() )
 			
 			#if($content.get("section") == "favorites")
 				#set($href = "$siteroot$apphome/views/modules/$module.id/favorites.html?hitssessionid=$hits.getSessionId()&clearselection=true&clearfilters=true")
 			#else
-				#set($href = "$siteroot$apphome/views/modules/$module.id/index.html?hitssessionid=$hits.getSessionId()&clearselection=true&clearfilters=true")
+				#set($href = "$siteroot$apphome/views/modules/$module.id/index.html?hitssessionid=$!hits.getSessionId()&clearselection=true&clearfilters=true")
 			#end
 			#if ($nodeID)
 		 		#set($href = $href + "&nodeID=$!{nodeID}")
 			#end
-			<a class="ajax btn btn-secondary btn-xs btn-clearall" 
-				style="margin:0 10px;"
+			<a class="ajax btn btn-secondary btn-sm btn-clearall  float-left" 
+				style="margin:0 0 0 10px;"
 				href="$href" 
-				data-targetdivinner="applicationcontainer" 
-				data-oemaxlayout="1" 
+				data-targetdivinner="applicationcontent" 
+				data-oemaxlevel="4" 
 				data-updateurl="true"
 				title="[[Clear Search Filters]]"><i class="fas fa-times"></i> &nbsp;[[Clear Filters]]</a>
 		#end

@@ -25,11 +25,16 @@ $context.putPageValue("moduleid", $moduleid)
 #set($viewsearcher = $searcherManager.getSearcher($catalogid, "view"))
 #set($enttiyviews = $viewsearcher.query().exact("moduleid", $moduleid).exact("rendertype","table").exact("systemdefined","false").sort("orderingUp").search($context) )
 
+#set( $entitytabopen = $context.getRequestParameter("entitytabopen"))
+#ifnull($entitytabopen)
+	#set( $entitytabopen = $userprofile.get("entitytabopen"))
+#end
 
-#set( $entitytabopen = $userprofile.get("entitytabopen"))
+#set( $enablebackbutton = $context.getRequestParameter("enablebackbutton"))
 
 
-<div class="entitydialog" data-moduleid="$moduleid" data-entityid="$!entityid" data-url="$componenthome/gridsample/preview/entity.html">
+
+<div class="entitydialog #if($enablebackbutton) enablebackbtn #end" data-moduleid="$moduleid" data-entityid="$!entityid" data-url="$componenthome/gridsample/preview/entity.html">
 	<div class="entity-wraper">
 	
 	<h2>
@@ -41,6 +46,7 @@ $context.putPageValue("moduleid", $moduleid)
 			#set($name = $!entity.getName($context))
 	#else 
 			#set($name = "[[Add New]]")
+			#set($entitytabopen = "metadata")
 	#end
 	
 	#text($name)

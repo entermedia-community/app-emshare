@@ -1,20 +1,18 @@
 #set( $terms = $hits.getFilteredTerms($context,"advancedfilter") )
-
 <div class="filtered #if( $librarycol ) filteredinresults #end">
 	
-		#if($content.get("section") == "favorites")
-		<h2>[[Favorites]]</h2> 
-		#else
-			#if($terms)
-				[[Results]] > 
-			#end
+	#if($content.get("section") == "favorites")
+	<h2>[[Favorites]]</h2> 
+	#else
+		#if($terms)
+			[[Results]] > 
 		#end
+	#end
 	#if( $hits.getSearchQuery().hasMainInput())
 	
 		[[Searching for]]: <strong><em>$hits.getSearchQuery().getMainInput()</em></strong>&nbsp;
 	#end
-	##TODO Loop over the view and show them here if they match
-
+	
 	#if( $category )
 		#if( $mediaarchive.getCategorySearcher().getRootCategory() != $category)
 			#if( $librarycol )

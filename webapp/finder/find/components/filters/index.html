@@ -50,21 +50,17 @@
 	#set($usestartswith = $page.isPropertyTrue('usestartswith'))
 	$context.putPageValue("usestartswith",$usestartswith)
 	$context.putPageValue("caneditlists",false)
-				
+	
+	#set($targetdiv = "$!{moduleid}resultscontainer")
 	
 ##SORT
 <form  	name="filtersortform" 
 		id="filtersortform" 
-		class="autosubmitform filterform em-widget-content ajaxform" 
-		data-targetdivinner="resultsarea" 
-		method="POST"  
-	#if( $librarycol)
-		data-oemaxlevel="2" 
-		action="$siteroot$apphome/views/modules/librarycollection/columnsort.html" 
-	#else
+		class="autosubmitform filterform em-widget-content ajaxform"
+		method="POST"   
+		data-targetdivinner="$targetdiv" 
 		data-oemaxlevel="2" 
 		action="$siteroot$apphome/views/modules/$moduleid/components/results/columnsort.html" 
-	#end 
 	>
 	<div class="form-group">
 	#if( $librarycol)
@@ -89,6 +85,7 @@
 					</span> 
 					[[Sort]]
 			</div>
+			
 			<div class="filter-box-options" 
 				 id="filterboxsorting" #if($minimizedfilterbox) style="display: none;" #end>
 				#set ($alldetails = $searcher.getUserPropertyDetails() )
@@ -111,18 +108,19 @@
 						<option data-detailid="${detail.id}" 
 								value="$value" 
 								#if($hits.isSortedBy($detail.id)) 
-								selected="selected" 
+									selected="selected" 
 									#set($currentSort = $detail.getText($context))
 								#end>$detail.getText($context)</option>
 					#end
 				</select>
+				
 				</div>
 				<div class=" float-right" >
 				<a href="#" 
 					class="filterschangesort"
 					data-sortbyfield="${moduleid}sortby" 
-					title='[[Sort by]] $currentSort #if($currentSortOrder == "up") Down #else Up #end'>
-				<i class=" fas #if($hits.searchQuery.isSortUp()) fa-sort-alpha-down #else fa-sort-alpha-up #end" style="padding-top:5px"></i>
+					title='[[Sort by]] $currentSort #if($currentSortOrder == "up") [[Down]] #else [[Up]] #end'>
+					<i class=" fas #if($hits.searchQuery.isSortUp()) fa-sort-alpha-down #else fa-sort-alpha-up #end" style="padding-top:5px"></i>
 				</a>
 				</div>
 				
@@ -135,16 +133,11 @@
 	
 	<form  	name="filterform" 
 			id="filterform" 
-			class="ajaxform autosubmitform filterform" 
-			data-targetdiv="applicationcontent" 
-			method="POST"  
-			#if( $librarycol)
-				data-oemaxlevel="2" 
-				action="$siteroot$apphome/views/modules/librarycollection/search.html" 
-			#else
-				data-oemaxlevel="3" 
-				action="$siteroot$apphome/views/modules/$moduleid/search.html" 
-			#end 
+			class="ajaxform autosubmitform filterform"
+			method="POST" 
+			data-targetdiv="$targetdiv" 
+			data-oemaxlevel="1" 
+			action="$siteroot$apphome/views/modules/$moduleid/index.html" 
 	>
 		#if( $librarycol)
 			<input name="collectionid" type="hidden" value="$!librarycol.getId()">
