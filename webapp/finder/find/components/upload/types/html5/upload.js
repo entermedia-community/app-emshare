@@ -19,9 +19,33 @@ $(document).ready(function()
 	lQuery('#createmediapanel').livequery(function(e){
 		//reset array
 		allfiles = new Array();
-        
      });
+
+
+	lQuery(".upload_field").livequery( function() 
+	{
+		var inputfield = $(this);
+		inputfield.val('');
+		initUpload(inputfield);
+	});
 	
+	lQuery(".upload_folder").livequery( function() 
+	{
+		var inputfield = $(this);
+		inputfield.val('');
+		initUpload(inputfield);
+	});
+
+	jQuery(".upload_field").val('');
+
+	var allfiles = new Array();
+	
+	var uplist = $(".up-files-list");
+	
+	$.each(uplist,function()
+	{
+		$(this).empty();
+	});	
 	
 	function filesPicked(event, files) 
 	{
@@ -61,12 +85,15 @@ $(document).ready(function()
 		uploadformarea.find(".uploadinstructionsafter").show();
 		uploadformarea.find(".showonselect").show();
 		
-		
-		
-		 
 		var regex = new RegExp("currentupload", 'g');  
 		 
-	    uploadformarea.find(".up-files-list").empty();
+	    var uplist = uploadformarea.find(".up-files-list");
+	    
+	    $.each(uplist,function()
+		{
+			$(this).empty();
+		});
+	    
 	     //return confirm("You are trying to upload " + total + " files. Are you sure?");
 		 for (var i = 0; i < files.length; i++) 
 		 {
@@ -89,13 +116,10 @@ $(document).ready(function()
 	        	    var size = bytesToSize(file.size,2);
 	        	    uploadformarea.find(".progress_report_size" + i).text(size);
 		    	}
-	    	    
-
 		    }
 		    
 		 }
 		 //console.log("Picked " + files.length );
-		 
  		if( upload_field.data("autostartupload") == true)
 		{
 			upload_field.triggerHandler("html5_upload.start");
@@ -104,6 +128,16 @@ $(document).ready(function()
 		
 	}
 	
+	
+	lQuery('.removefile').livequery('click',function(e){
+		e.preventDefault(); 
+		var row = $(this).closest(".uploadprogressrow");
+		var fileindex = $(row).data("fileindex");
+		var uploadformarea = $(this).closest(".uploadformarea");
+		var upload_field = uploadformarea.find(".upload_field");
+		removeFileFromFileList(upload_field, fileindex);
+		$(row).remove();
+     });
 		
 	lQuery('.filePicker').livequery('click',function(e){
 		e.preventDefault(); 
@@ -224,6 +258,10 @@ $(document).ready(function()
 		);
 	
 	});
+	
+	removeFileFromFileList = function(input, index) {
+		  allfiles.splice(index,1);
+	}
 	
 	initUpload = function(inputfield) {
 		var uploadformarea = inputfield.closest(".uploadformarea");
@@ -393,25 +431,7 @@ $(document).ready(function()
 		
 	}
 				
-	lQuery(".upload_field").livequery( function() 
-	{
-		var inputfield = $(this);
-		inputfield.val('');
-		initUpload(inputfield);
-	});
 	
-	lQuery(".upload_folder").livequery( function() 
-	{
-		var inputfield = $(this);
-		inputfield.val('');
-		initUpload(inputfield);
-	});
-
-	jQuery(".upload_field").val('');
-
-	var allfiles = new Array();
-	
-	jQuery(".up-files-list").empty();
 
 	lQuery(".viewassetsbtn").livequery("click", function(e) {
 		
