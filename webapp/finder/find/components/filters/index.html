@@ -135,7 +135,7 @@
 			id="filterform" 
 			class="ajaxform autosubmitform filterform"
 			method="POST" 
-			data-targetdiv="$targetdiv" 
+			data-targetdivinner="$targetdiv" 
 			data-oemaxlevel="1" 
 			action="$siteroot$apphome/views/modules/$moduleid/index.html" 
 	>
@@ -152,7 +152,6 @@
 		#else
 			#set ($details = $searcher.getDetailsForView($view))
 		#end
-	
 		
 		$context.putPageValue("idprefix","search")
 	
@@ -168,15 +167,16 @@
 				$context.putPageValue("searchform", true)
 
 				#if ($detail.isLeaf())
+				
 					#if ($detail.isFilter())
 						#set($filternode = $hits.findFilterValue($detail.id))
 						$context.putPageValue("filternode",$filternode)
-
-						$pages.include("/${applicationid}/components/filters/detailedit.html", $context)
-	
-					#elseif($detail.hasChildren())
-						$pages.include("/${applicationid}/components/filters/section.html", $context)
 					#end
+
+					$pages.include("/${applicationid}/components/filters/detailedit.html", $context)
+						
+				#else($detail.hasChildren())
+					$pages.include("/${applicationid}/components/filters/section.html", $context)
 				#end
 			  #end
 		#end
@@ -284,7 +284,7 @@
 				###set($doneUrl = "$siteroot$componenthome/filters/index.html?oemaxlevel=1&collectionid=$!collectionid&moduleid=$!moduleid")
 				
 				#set($doneUrl = "$siteroot$apphome/views/modules/$moduleid/index.html?collectionid=$!collectionid&moduleid=$!moduleid")
-				<a class="btn btn-sm btn-secondary ajax"  data-targetdiv="applicationcontent" data-oemaxlevel="3" href="$doneUrl">[[Done Editing]]</a>
+				<a class="btn btn-sm btn-secondary ajax"  data-targetdiv="applicationcontent" data-oemaxlevel="4" href="$doneUrl">[[Done Editing]]</a>
 			</div>	
 			</form>
 			</div>

@@ -25,18 +25,33 @@ $context.putPageValue("moduleid", $moduleid)
 #set($viewsearcher = $searcherManager.getSearcher($catalogid, "view"))
 #set($enttiyviews = $viewsearcher.query().exact("moduleid", $moduleid).exact("rendertype","table").exact("systemdefined","false").sort("orderingUp").search($context) )
 
+
+
 #set( $entitytabopen = $context.getRequestParameter("entitytabopen"))
 #ifnull($entitytabopen)
 	#set( $entitytabopen = $userprofile.get("entitytabopen"))
 #end
 
+##default to General tab if not submodules configured
+#if($entitytabopen == 'submodulehome')
+	#if(!$enttiyviews)
+		#set($entitytabopen = "metadata")
+	#end
+#end
+
+##default to General tab if not media allowed
+#if($entitytabopen == 'media')
+	#if(!$module.getBoolean("enableuploading") || !$permissions.can($moduleid, "upload_files"))
+		#set($entitytabopen = "metadata")
+	#end
+#end
+
+
+
 #set( $enablebackbutton = $context.getRequestParameter("enablebackbutton"))
-
-
 
 <div class="entitydialog #if($enablebackbutton) enablebackbtn #end" data-moduleid="$moduleid" data-entityid="$!entityid" data-url="$componenthome/gridsample/preview/entity.html">
 	<div class="entity-wraper">
-	
 	<h2>
 	<a href="#" class="entitydialogback emdialog" data-moduleid="" data-entityid="" style="display: none;">
 	<i class="fas fa-arrow-left"></i></a>
@@ -71,6 +86,7 @@ $context.putPageValue("moduleid", $moduleid)
 			$pages.include("$componenthome/gridsample/preview/entitytabmenu.html", $context)
 			
 			#ifnotnull($id)
+				
 				##submodules
 				#if($enttiyviews)		
 					#foreach( $targetview in $enttiyviews)
@@ -93,16 +109,18 @@ $context.putPageValue("moduleid", $moduleid)
 					#end
 				#end	
 				
-				##media?
-				#set($submodule = $mediaarchive.getCachedData("module", "asset"))
-				$context.putPageValue("tabmodule", $submodule)
-				$context.putPageValue("tabtype", "media")
-				#set($tabid = "asset")
-				#if($entitytabopen == "media")
-		  			$context.putPageValue("currenttab", "media")
+				##media
+				#if($module.getBoolean("enableuploading") && $permissions.can($moduleid, "upload_files"))
+					#set($submodule = $mediaarchive.getCachedData("module", "asset"))
+					$context.putPageValue("tabmodule", $submodule)
+					$context.putPageValue("tabtype", "media")
+					#set($tabid = "asset")
+					#if($entitytabopen == "media")
+			  			$context.putPageValue("currenttab", "media")
+					#end
+					#set($subcomponenthome = "$apphome/views/modules/asset/components")
+					$pages.include("$subcomponenthome/gridsample/preview/entitytabmenu.html", $context)
 				#end
-				#set($subcomponenthome = "$apphome/views/modules/asset/components")
-				$pages.include("$subcomponenthome/gridsample/preview/entitytabmenu.html", $context)
 			#end	
 		</div>
 		</nav>
@@ -132,14 +150,15 @@ $context.putPageValue("moduleid", $moduleid)
 						#end
 					#end
 						
-		
-					$context.putPageValue("parentsearchtype", $parentsearchtype)
-					$context.putPageValue("hidesubmodule", true)
-					#set($tabtype= "media")
-					#if($entitytabopen == $tabtype)
-			  			$context.putPageValue("currenttab", $tabtype)
-			  		#end
-					$pages.include("$subcomponenthome/gridsample/preview/entitytabmedia.html?entityid=$id", $context)
+					#if($module.getBoolean("enableuploading") && $permissions.can($moduleid, "upload_files"))
+						$context.putPageValue("parentsearchtype", $parentsearchtype)
+						$context.putPageValue("hidesubmodule", true)
+						#set($tabtype= "media")
+						#if($entitytabopen == $tabtype)
+				  			$context.putPageValue("currenttab", $tabtype)
+				  		#end
+						$pages.include("$subcomponenthome/gridsample/preview/entitytabmedia.html?entityid=$id", $context)
+					#end
 			#end
 		</div>
 	</div>
