@@ -19,7 +19,7 @@ jQuery(document).ready(function()
             var colwidth = 100;
             if(grid.data("fixedwidth")) {
 				colwidth = grid.data("fixedwidth"); 
-				colcount =  gridwidth / (colwidth + cellpadding);
+				colcount =  (gridwidth + cellpadding) / (colwidth + cellpadding);
 			}
 			else {
 	            if(grid.data("colcount"))
@@ -31,8 +31,6 @@ jQuery(document).ready(function()
 		            colwidth = parseInt(grid.data("colwidth"));
 		            colcount =  gridwidth / colwidth;
 	            }
-	            
-	            
 	            
 	            if (colcount<1) {
 	            	colcount = 1;
@@ -52,17 +50,14 @@ jQuery(document).ready(function()
             	columns[i] = 0;
             }
             
-            
-            
-            
             var col = 0;
+            var cellcount = 0;
             var lastleft = 0;
             var cells = grid.children( ".emgridcell" );
 	    	
-            cells.each(function() 
-        	        {
+            cells.each(function() {
             	var cell = $(this);
-            		cell.css("visibility","hidden");
+            	cell.css("visibility","hidden");
         	});
             cells.each(function() 
 	        {
@@ -109,15 +104,14 @@ jQuery(document).ready(function()
       	        
       	        cell.css("visibility","visible");
       	        
+      	        cellcount++;
       	        col++;
       	        if( col == colcount)
       	        {
-      	        	
       	        	if (grid.hasClass("emgridlimited") && colcount>=4) {
       	        		return false;
       	        	}
       	        	col = 0;
-      	        	
       	        }
             });		
 	        var tallest = 0;
@@ -138,8 +132,11 @@ jQuery(document).ready(function()
             }
             */
             var addmore = grid.find(".emgrid-addmore");
-            if(addmore) {
+            if(addmore && cellcount>0) {
 	            lastleft = lastleft + colwidth + cellpadding; 
+	            if (grid.find(".emgridnav")) {
+					lastleft = lastleft +28;
+				}
 	            addmore.css("left", lastleft);
             }
             

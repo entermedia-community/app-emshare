@@ -87,16 +87,12 @@ $context.putPageValue("filter", $filter)
 		#end
 	   	$context.putPageValue("details", $details)
 	   
-	   
-	   	
 	   $hits.setHitsPerPage(6)
-	   
-	   
-	   	
+	 <div class="emgridflex">  	
 		<div id="galleryimg-${rendertype}" 
 				class='emgrid #if($section != "favorites")emgridlimited#end entitiescontainer' 
-				style="width:1300px"
-				data-fixedwidth="200" 
+				style="width:1125px"
+				data-fixedwidth="175" 
 				data-cellpadding="10"
 				data-entityrenderurl="$!{siteroot}$apphome/views/modules/${module.id}/components/gridsample/gridcell.html"
 				data-rendertype="$rendertype">
@@ -104,30 +100,22 @@ $context.putPageValue("filter", $filter)
 					$context.putPageValue("hit", $hit)
 				    $pages.include("$apphome/components/gridsample/gridcell.html", $context)
 				#end
-				
-				
-				
-				#if($permissions.can($moduleid, "create") && $moduleid!="faceprofilegroup")
-			 		#set($addurl = "$siteroot$applink/views/modules/${moduleid}/components/gridsample/preview/$!{entityrendertype}.html?edit=true&addnew=true&viewid=$!{moduleid}addnew")
-			 		#ifnotnull($topentityid)
-			 			#set($addurl = "$addurl&fieldexternalid=${topmodule.getId()}&fieldexternalvalue=${topentityid}&reloadtargets=topmodulecontainer")
-			 		#end
-					<div class=" emgrid-addmore " style="">
-						<a href="$addurl"
-						class="emdialog"
-						title="[[Add Record]]"
-						>[[Add New]]</a>
-					</div>
-				#end
-				
-				##if($hits.getTotalPages() > 1)
-				##<div class=" emgrid-viewmore " style="">
-				##	<a href="$siteroot$applink/views/modules/${moduleid}/index.html?hitssessionid=$!hits.getSessionId()">[[View More]]</a>
-				##</div>
-				##end
 		</div>
 		
+		#if($permissions.can($moduleid, "create") && $moduleid!="faceprofilegroup")
+	 		#set($addurl = "$siteroot$applink/views/modules/${moduleid}/components/gridsample/preview/$!{entityrendertype}.html?edit=true&addnew=true&viewid=$!{moduleid}addnew")
+	 		#ifnotnull($topentityid)
+	 			#set($addurl = "$addurl&fieldexternalid=${topmodule.getId()}&fieldexternalvalue=${topentityid}&reloadtargets=topmodulecontainer")
+	 		#end
+			<div class=" emgrid-addmore " style="">
+				<a href="$addurl"
+				class="emdialog"
+				title="[[Add Record]]"
+				>[[Add New]]</a>
+			</div>
+		#end
 		
+		</div>
 		
 		
 		
