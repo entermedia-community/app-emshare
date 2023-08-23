@@ -1217,7 +1217,7 @@ jQuery(document).ready(function(url,params)
             	options = moduletable.data();
             }
             else {
-            	targetdiv = $(this).closest(".resultsarea");
+            	targetdiv = $(this).closest(".moduleindex");
             }
             
 			// var columnsort = searchhome +
