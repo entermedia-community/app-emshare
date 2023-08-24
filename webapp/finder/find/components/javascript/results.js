@@ -1115,8 +1115,10 @@ jQuery(document).ready(function(url,params)
 		if (selectedval) {
 			var link = selector.data("componenthome");
 			var args = { 
-					addcolumn: selectedval
+					addcolumn: selectedval,
+					oemaxlevel: selector.data("oemaxlevel")
 			}
+			
 			// jQuery("#"+targetdiv).load(link);
 			$.get(link, args, function(data) 
 			{

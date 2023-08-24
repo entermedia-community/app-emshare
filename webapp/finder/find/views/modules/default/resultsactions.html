@@ -1,3 +1,5 @@
+##Header for Modules (not asset)
+
 #set($moduleid = $module.id)
 $context.putPageValue("moduleid", $moduleid)
 
@@ -62,6 +64,7 @@ $context.putPageValue("moduleid", $moduleid)
 	
 		#if($hits)
 		<ul class="resultsnavright">
+			#if($edit != "true")
 				#set($total = $hits.getTotalPages() )
 				#if( $total > 1)
 				<li class="resultpages">	 
@@ -91,7 +94,7 @@ $context.putPageValue("moduleid", $moduleid)
 					</li>		
 				#end
 				
-			#if($edit != "true")
+				
 					<li class="resultsnavtitem">
 						<select class="form-control" 
 							name="resultview" 
@@ -114,11 +117,8 @@ $context.putPageValue("moduleid", $moduleid)
 						</select>
 						
 					</li>
-				
-					##<li class="resultsnavtitem hidden-sm-xs hidden-xs hidden-sm hidden-md">
-					##$pages.include("$apphome/views/modules/default/pages.html", $context) ## views/modules/default/navigate.html",$context)
-					##</li>
-				#end
+
+			#end
 			#if (!$resultview || $resultview == 'table')
 				#if( $canedittablecolumns )
 					#if( $edit )
@@ -127,8 +127,9 @@ $context.putPageValue("moduleid", $moduleid)
 							#set ($alldetails = $searcher.getUserPropertyDetails() )
 							<select class="form-control form-control-sm select2 tableresultsaddcolumn" 
 									name="addcolumn"
-									data-componenthome="$siteroot$componenthome/results/addremovecolumns.html?oemaxlevel=1&searchtype=$!moduleid&hitssessionid=$hits.getSessionId()&editheader=true&moduleid=$!moduleid&viewid=$!{moduleid}resultstable"
-									data-targetdiv="resultsviewcontainer$!moduleid" 
+									data-componenthome="$siteroot$componenthome/results/addremovecolumns.html?searchtype=$!moduleid&hitssessionid=$hits.getSessionId()&editheader=true&moduleid=$!moduleid&viewid=$!{moduleid}resultstable"
+									data-targetdiv="$!{moduleid}resultsarea"
+									data-oemaxlevel="1" 
 									data-allowclear="false" >
 								<option>[[Add Column]]</option>
 								#foreach( $detail in $alldetails) <option value="$detail.id">$detail.getText($context)</option>
@@ -164,10 +165,3 @@ $context.putPageValue("moduleid", $moduleid)
 	</div>
 ##end
 
-	
-	##<script type="text/javascript">
-	##	//This should be moved out of here
-	##	function refreshSelections() {
-	##		jQuery('#moduleselections').load("$searchhome/selections/selected.html?oemaxlevel=1&searchtype=${module.id}&hitssessionid=$hits.getSessionId()");
-	##	}
-	##</script>

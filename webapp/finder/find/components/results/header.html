@@ -1,3 +1,5 @@
+##Header for ASSET module
+
 #if( !$hits )
 	#set( $hits = $collectionassets)
 	$context.putPageValue("hits",$hits)
@@ -178,34 +180,33 @@
 				$context.putPageValue("resultview", $resultview)
 				
 				
-				
-				#set($total = $hits.getTotalPages() )
-				#if( $total > 1)
-				<li class="resultpages">			
-					$pages.include("$componenthome/results/positions.html", $context)
-				#end
-
-				
-				#if($resultview != "stackedgallery")
-					<li class="resultsnavtitem" style="width:61px;">
-							#set( $currenthitsperpage = $userprofile.get("modulehitsperpage"))
-							#set($hitcountoptions = $mediaarchive.getList("hitcount"))
-							<select class="form-control resultsnavselect" 
-								id="hitsperpagechange"
-									data-hitssessionid="$!hits.getSessionId()" 
-									data-searchtype="$!reloadsearchtype"
-									data-moduleid="$!moduleid"
-									data-ismodulesearch = "$!ismodulesearch" 
-									data-componenthome = "$apphome/views/modules/$moduleid/components"
-									data-page="$!hits.getPage()" 
-									data-showremoveselections="$!showremoveselections" 
-									data-collectionid="$!librarycol.getId()"
-									data-targetdiv="$!{moduleid}resultscontainer">
-							#foreach($ho in $hitcountoptions)
-							<option value="$ho.id" #if($currenthitsperpage==$ho.id) selected="selected"#end>#text($ho)</option>
-							#end	
-							</select>
-					</li>		
+				#if(!$edit || $edit == "false"  )
+					#set($total = $hits.getTotalPages() )
+					#if( $total > 1)
+					<li class="resultpages">			
+						$pages.include("$componenthome/results/positions.html", $context)
+					#end
+					#if($resultview != "stackedgallery")
+						<li class="resultsnavtitem" style="width:61px;">
+								#set( $currenthitsperpage = $userprofile.get("modulehitsperpage"))
+								#set($hitcountoptions = $mediaarchive.getList("hitcount"))
+								<select class="form-control resultsnavselect" 
+									id="hitsperpagechange"
+										data-hitssessionid="$!hits.getSessionId()" 
+										data-searchtype="$!reloadsearchtype"
+										data-moduleid="$!moduleid"
+										data-ismodulesearch = "$!ismodulesearch" 
+										data-componenthome = "$apphome/views/modules/$moduleid/components"
+										data-page="$!hits.getPage()" 
+										data-showremoveselections="$!showremoveselections" 
+										data-collectionid="$!librarycol.getId()"
+										data-targetdiv="$!{moduleid}resultscontainer">
+								#foreach($ho in $hitcountoptions)
+								<option value="$ho.id" #if($currenthitsperpage==$ho.id) selected="selected"#end>#text($ho)</option>
+								#end	
+								</select>
+						</li>	
+					#end	
 				#end
 				
 				#if(!$edit || $edit == "false"  )
@@ -220,7 +221,7 @@
 							data-page="$!hits.getPage()" 
 							data-showremoveselections="$!showremoveselections" 
 							data-collectionid="$!librarycol.getId()"
-							data-targetdiv="resultsviewcontainer$!module.getId()"
+							data-targetdiv="$!module.getId()resultsarea"
 							data-oemaxlevel="1">
 							#set( $types = $mediaarchive.getList("resulttype"))
 							#foreach($type in $types)
@@ -241,8 +242,9 @@
 								#set ($alldetails = $searcher.getUserPropertyDetails() )
 								<select class="form-control form-control-sm select2 tableresultsaddcolumn" 
 										name="addcolumn"
-										data-componenthome="$!siteroot$componenthome/results/addremovecolumns.html?oemaxlevel=1&searchtype=asset&hitssessionid=$hits.getSessionId()&editheader=true"
-										data-targetdiv="resultsviewcontainer$!module.getId()" 
+										data-componenthome="$!siteroot$componenthome/results/addremovecolumns.html?searchtype=asset&hitssessionid=$hits.getSessionId()&editheader=true"
+										data-targetdiv="$!module.getId()resultsarea" 
+										data-oemaxlevel="1"
 										data-allowclear="false" >
 									<option>[[Add Column]]</option>
 									#foreach( $detail in $alldetails) <option value="$!detail.id">$detail.getText($context)</option>
@@ -252,7 +254,8 @@
 							</li>
 							<li>
 								<a class="ajax table-edit-close" 
-									data-targetdiv="resultsviewcontainer$!module.getId()" 
+									data-targetdiv="$!module.getId()resultsarea"
+									data-oemaxlevel="1" 
 									title="[[Close Edit Columns Mode]]"
 									href="$siteroot$componenthome/results/index.html?searchtype=asset&hitssessionid=$hits.getSessionId()&editheader="><i class="fas fa-times"></i></a>
 							</li>		
@@ -263,7 +266,8 @@
 							<li >
 								<a class="ajax nav-hover" 
 									id="table-editor" 
-									data-targetdiv="resultsviewcontainer$!module.getId()" 
+									data-targetdiv="$!module.getId()resultsarea"
+									data-oemaxlevel="1" 
 									href="$siteroot$componenthome/results/index.html?searchtype=asset&hitssessionid=$hits.getSessionId()&editheader=true">
 									<i class="fas fa-edit"></i></a>
 							</li>
