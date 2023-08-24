@@ -14,12 +14,12 @@
 	#set($tabtype = $context.getRequestParamenter("tabtype"))
 #end
 #if($tabtype == "submodulehome")
-	#set($tabid = "$!searchtype")
+	#set($tabid = "tabsubentity_$!{targetviewid}")
 	#set($viewsearcher = $searcherManager.getSearcher($catalogid, "view"))
-	#set( $viewdata = $viewsearcher.searchById($targetviewid))
+	#set($viewdata = $viewsearcher.searchById($targetviewid))
 	#set($name = $viewdata.getName($context))
 #elseif($tabtype=="media")
-	#set($tabid = "$!searchtype")
+	#set($tabid = "tab_media")
 	#set($name = $tabmodule.getName($context))
 #else
 	#if($id.startsWith("multiedit"))
@@ -44,15 +44,16 @@
 			#end
 		#end
 		#set($targetentitytabid = "entity-tab-#eid($!{id})")
-		#set($tabid = "${moduleid}$!{id}")
-		#set($tabid = "#eid($tabid)")
+		#set($tabid = "tab_metadata")
 	#end
 
 #end
-<div class="entity-tab  #if($currenttab == $tabtype) current-entity #end" 
+<div class="entity-tab  #if($currenttab == $tabid) current-entity #end" 
 	#if(!$tabtype) data-entityid="$!entity.getId() #end">
-	<a href="#tab$!tabid" 
+	<a href="#$!tabid" 
 		class="entity-tab-label"
+		data-tabid="$!tabid"
+		data-currenttab="$!tabid"
 		data-tabtype="$!tabtype" 
 		data-toggle="tab"
 		data-target="$!targetentitytabid"

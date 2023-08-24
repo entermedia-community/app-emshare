@@ -25,27 +25,37 @@ $context.putPageValue("moduleid", $moduleid)
 #set($viewsearcher = $searcherManager.getSearcher($catalogid, "view"))
 #set($enttiyviews = $viewsearcher.query().exact("moduleid", $moduleid).exact("rendertype","table").exact("systemdefined","false").sort("orderingUp").search($context) )
 
-
-
+#set($defaulttab = "tab_metadata")
 #set( $entitytabopen = $context.getRequestParameter("entitytabopen"))
+
 #ifnull($entitytabopen)
 	#set( $entitytabopen = $userprofile.get("entitytabopen"))
 #end
 
-##default to General tab if not submodules configured
-#if($entitytabopen == 'submodulehome')
-	#if(!$enttiyviews)
-		#set($entitytabopen = "metadata")
-	#end
+#if($entitytabopen.equals("undefined"))
+	#set( $entitytabopen = $defaulttab)
 #end
 
 ##default to General tab if not media allowed
 #if($entitytabopen == 'media')
 	#if(!$module.getBoolean("enableuploading") || !$permissions.can($moduleid, "upload_files"))
-		#set($entitytabopen = "metadata")
+		#set($entitytabopen = $defaulttab)
 	#end
 #end
 
+##default to $defaulttab if not submodules (view) exists in this Entity
+#if($entitytabopen.startsWith("tabsubentity_"))
+	#set($entitytabopen = $defaulttab)
+	#if($enttiyviews)
+		#foreach( $targetview in $enttiyviews)
+			#set( $targetviewid = $targetview.getId())
+			#set($tabid = "tabsubentity_$!{targetviewid}")
+			#if($entitytabopen.equals($tabid))
+				#set($entitytabopen = $tabid)
+			#end
+		#end
+	#end
+#end
 
 
 #set( $enablebackbutton = $context.getRequestParameter("enablebackbutton"))
@@ -61,7 +71,7 @@ $context.putPageValue("moduleid", $moduleid)
 			#set($name = $!entity.getName($context))
 	#else 
 			#set($name = "[[Add New]]")
-			#set($entitytabopen = "metadata")
+			#set($entitytabopen = "tab_metadata")
 	#end
 	
 	#text($name)
@@ -71,16 +81,14 @@ $context.putPageValue("moduleid", $moduleid)
 		<nav>
 	  	<div class="nav nav-tabs entity-navigation" id="entity-nav-tab" role="tablist" 
 	  		 data-tabmenuurl="gridsample/preview/entitytabmenu.html">
-	  		##myself
+	  		##General Tab (tab_metadata)
 	  		$context.putPageValue("tabmodule", $module)
-	  		#set($tabid = "${moduleid}$!{entityid}")
-			#set($tabid = "#eid($tabid)")
-			#set($tabtype= "metadata")
-			$context.putPageValue("tabtype", $tabtype)
+	  		#set($tabid = "tab_metadata")
+				#set($tabtype= "metadata")
+				$context.putPageValue("tabtype", $tabtype)
 			
-			#if(!$entitytabopen || $entitytabopen == $tabtype)
-	  			$context.putPageValue("currenttab", $tabtype)
-	  			
+			#if(!$entitytabopen || $entitytabopen == $tabid)
+	  			$context.putPageValue("currenttab", $tabid)
 			#end
 			
 			$pages.include("$componenthome/gridsample/preview/entitytabmenu.html", $context)
@@ -98,10 +106,11 @@ $context.putPageValue("moduleid", $moduleid)
 							$context.putPageValue("tabmodule", $submodule)
 							$context.putPageValue("tabtype", "submodulehome")
 							$context.putPageValue("targetviewid", $targetviewid)
-							#set($tabid = "$!subentitysearchtype")
+							
+							#set($tabid = "tabsubentity_$!{targetviewid}")
 							#set($tabtype= "submodulehome")
-							#if($entitytabopen == $tabtype)
-					  			$context.putPageValue("currenttab", $tabtype)
+							#if($entitytabopen.equals($tabid))
+					  			$context.putPageValue("currenttab", $tabid)
 							#end
 							#set($subcomponenthome = "$apphome/views/modules/$subentitysearchtype/components")
 							$pages.include("$subcomponenthome/gridsample/preview/entitytabmenu.html", $context)
@@ -136,7 +145,6 @@ $context.putPageValue("moduleid", $moduleid)
 						#foreach( $targetview in $enttiyviews)
 							#set( $targetviewid = $targetview.getId())
 						
-							
 							$context.putPageValue("targetviewid", $targetviewid)
 							$context.putPageValue("parentsearchtype", $parentsearchtype)
 							$context.putPageValue("parentid", $id)

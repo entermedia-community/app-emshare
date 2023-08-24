@@ -1305,22 +1305,19 @@ uiload = function() {
 	
 	lQuery("a.entity-tab-label").livequery("click", function(event) {
 		event.preventDefault();
-		if($(this).data("ismultiedit")) {
+		var link = $(this);
+		if(link.data("ismultiedit")) {
 			return;
 		}
 		$(".entity-tab").removeClass("current-entity");
-		$(this).closest(".entity-tab").addClass("current-entity");
-		var entityid = $(this).data("entityid");
-		
-		//$('div[data-id="'+entityid+'"].entity-tab-content').show();
-		//reload content
-		//var container = $("#entity-tab-"+entityid);  // <--------
-		var container = $(this).attr("href");
+		link.closest(".entity-tab").addClass("current-entity");
+		var entityid = link.data("entityid");
+		var container = link.attr("href");
 		container = $(container);
-		container.data("currenttab", $(this).data("tabtype")); //me
+		container.data("currenttab", link.data("tabid")); //me
 		$(".entity-tab-content").hide(); 
 		
-		saveProfileProperty("entitytabopen", $(this).data("tabtype"), function(){});
+		saveProfileProperty("entitytabopen", link.data("tabid"), function(){});
 		
 		
 		autoreload(container);
