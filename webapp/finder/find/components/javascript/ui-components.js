@@ -1087,55 +1087,21 @@ uiload = function() {
 				//--Entities
 				if(dialog.hasClass("entity-dialog") && dialog.closest(".modal").length !== 0) {
 					//find tab
-					var entityid = dialog.data("entityid");
-					if(entityid) {
+					var tabid = dialog.data("tabid");
+					if(tabid) {
 						var container = dialog.closest(".entity-body");
 						var tabs = container.find(".entity-tab-content");
-						if(tabs.length >= 6) {
+						if(tabs.length >= 8) {
 							alert("Max Tabs Limit");
 							return;
 						}
-						var tabexists = false;
-						$.each(tabs, function( index, element ) {
-							if($(element).data("id") == entityid) {
-								//exists replace
-								tabexists = true;
-								$(".entity-tab-content").hide();
-								$('a[data-entityid="'+entityid+'"].entity-tab-label').trigger("click");
-							} 
-						})
-						if(!tabexists) {
-							//open new entity full
-							container = dialog.closest(".entity-wraper");
-							container.replaceWith(data);
-							
-							
-							
-							/*
-							//append - Open tab same Nav
-							//$(".entity-tab-content").hide();
-							//container.append(data);
-							
-							//Menu
-							var tabmenu = $(".entity-navigation");
-							//var link = tabmenu.data("tabmenuurl")
-							var options2 = dialog.data();
-							var targetcomponenthome = options2.targetcomponenthome;
-							var targetrendertype = options2.targetrendertype;
-							var clickurlmenu = targetcomponenthome+"/gridsample/preview/entitytabmenu.html";
-							options2.id=entityid;
-							$(".entity-tab").removeClass("current-entity");
-							jQuery.ajax({
-								url: clickurlmenu,
-								data: options2,
-								success: function(data2) {
-									
-									$(".entity-navigation").append(data2);
-								}
-								});
-							*/
-							return;
-						}
+						
+						//open new entity full
+						var parent = container.closest('.entitydialog');
+						container = dialog.closest(".entity-wraper");
+						container.replaceWith(data);
+						tabbackbutton(parent);
+						return;
 					}
 				}
 				else {
@@ -1808,14 +1774,7 @@ uiload = function() {
 						return;
 					}
 					var tabexists = false;
-					$.each(tabs, function( index, element ) {
-						if($(element).data("id") == entityid) {
-							//exists replace
-							tabexists = true;
-							$(container).find(".entity-tab-content").hide();
-							$('a[data-entityid="'+entityid+'"].entity-tab-label').trigger("click");
-						} 
-					});
+
 					if(!tabexists) {
 						var options1 = emselectable.data();
 						var targetcomponenthome = emselectable.data("targetcomponenthome");
@@ -1829,31 +1788,7 @@ uiload = function() {
 							success: function(data) {
 								var parent = container.closest('.entitydialog');
 								container.replaceWith(data);
-								tabbackbutton(parent)
-								
-								/*
-								//Open Tab in same Nav
-								
-								$(container).find(".entity-tab-content").hide();
-								container.append(data);
-								//Menu
-								var tabmenu = $(container).find(".entity-navigation");
-								
-								var clickurlmenu = targetcomponenthome+"/gridsample/preview/entitytabmenu.html";
-								
-								var options2 = emselectable.data();
-								options2.id=entityid;
-								
-								$(container).find(".entity-tab").removeClass("current-entity");
-								jQuery.ajax({
-									url: clickurlmenu,
-									data: options2,
-									success: function(data2) {
-										$(container).find(".entity-navigation").append(data2);
-									}
-									});
-								return;
-								*/
+								tabbackbutton(parent);
 							}
 					
 						});
@@ -3816,7 +3751,8 @@ function tabbackbutton(parent) {
 		}
 		
 		if(parentmoduleid != '') {
-			var backbtn = $('.entitydialogback');
+			var container = parent.find('.entitydialog');
+			var backbtn = $('.entitydialogback', container);
 			$(backbtn).show();
 			$(backbtn).attr('href', parententiturl);
 			$(backbtn).data('moduleid',parentmoduleid);
