@@ -45,15 +45,19 @@ $context.putPageValue("moduleid", $moduleid)
 
 ##default to $defaulttab if not submodules (view) exists in this Entity
 #if($entitytabopen.startsWith("tabsubentity_"))
-	#set($entitytabopen = $defaulttab)
 	#if($enttiyviews)
 		#foreach( $targetview in $enttiyviews)
 			#set( $targetviewid = $targetview.getId())
 			#set($tabid = "tabsubentity_$!{targetviewid}")
 			#if($entitytabopen.equals($tabid))
-				#set($entitytabopen = $tabid)
+				#set($foundtab = $tabid)
 			#end
 		#end
+	#end
+	#if($foundtab)
+		#set($entitytabopen = $foundtab)
+	#else
+		#set($entitytabopen = $defaulttab)
 	#end
 #end
 
@@ -144,9 +148,9 @@ $context.putPageValue("moduleid", $moduleid)
 					##submodules
 					#if($enttiyviews)		
 						#foreach( $targetview in $enttiyviews)
-							#set( $targetviewid = $targetview.getId())
+							#set( $viewid = $targetview.getId())
 						
-							$context.putPageValue("targetviewid", $targetviewid)
+							$context.putPageValue("viewid", $viewid)
 							$context.putPageValue("parentsearchtype", $parentsearchtype)
 							$context.putPageValue("parentid", $id)
 							$context.putPageValue("hidesubmodule", true)

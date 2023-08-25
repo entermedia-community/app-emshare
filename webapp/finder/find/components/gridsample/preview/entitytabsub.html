@@ -1,7 +1,7 @@
 #set($viewsearcher = $searcherManager.getSearcher($catalogid, "view"))
 
-#ifnull($targetviewid)
-	#set($targetviewid = $context.getRequestParameter("targetviewid"))
+#ifnull($viewid)
+	#set($viewid = $context.getRequestParameter("viewid"))
 #end
 #ifnull($parentsearchtype)
 	#set($parentsearchtype = $context.getRequestParameter("parentsearchtype"))
@@ -10,8 +10,8 @@
 	#set($parentid = $context.getRequestParameter("parentid"))
 #end
 
-#set( $targetviewpath = "${parentsearchtype}/"+$targetviewid)
-#set( $viewdata = $viewsearcher.searchById($targetviewid))
+#set( $targetviewpath = "${parentsearchtype}/"+$viewid)
+#set( $viewdata = $viewsearcher.searchById($viewid))
 #set( $subentitysearchtype = $viewdata.rendertable )
 #set( $submodule = $mediaarchive.getCachedData("module", $subentitysearchtype))
 #set( $fieldexternalid = $viewdata.renderexternalid)
@@ -22,7 +22,7 @@
 	#set($targetrendertype = "entity")
 #end
 
-#set($tabid = "tabsubentity_$!{targetviewid}")
+#set($tabid = "tabsubentity_$!{viewid}")
 
 #if(!$currenttab)
 	#set($currenttab = $context.getRequestParameter("currenttab"))
@@ -34,20 +34,21 @@
 		style=" #if($currenttab != $tabid) display:none; #end"
 		data-tabtype="submodulehome"
 		data-submoduleid="$!submodule.getId()"
-		
-		data-targetviewid="$!targetviewid"
+		data-viewid="$!viewid"
 		data-parentsearchtype="$!parentsearchtype"
 		data-parentid=$!parentid
 		data-url="$componenthome/gridsample/preview/entitytabsub.html"
 		#if($hidesubmodule) style="display: none; #end">
-		<div id="$!submodulepickerid" class="submodulepicker">
+		#set($submoduleresults = "results$!{viewid}")
+		<div id="$!submoduleresults" class="submodulepicker">
 			#set( $args = "parentid=$!parentid&searchtype=$!subentitysearchtype")
 			#set( $args = "$args&fieldexternalid=$!fieldexternalid&fieldexternalvalue=$!fieldexternalvalue")
 			#set( $args = "$args&field=$!fieldexternalid&$!{fieldexternalid}.value=$!fieldexternalvalue&operation=exact")
-			#set( $args = "$args&viewpath=$!targetviewpath&hitsperpage=6&targetrendertype=$!targetrendertype")
+			#set( $args = "$args&viewid=$!viewid&viewpath=$!targetviewpath&hitsperpage=6&targetrendertype=$!targetrendertype")
 			#set( $args = "$args&targetdiv=entitywraper")
 			
-			$context.putPageValue("moduleid", $!submodule.getId() )				
+			$context.putPageValue("moduleid", $!submodule.getId() )
+			$context.putPageValue("submoduleresults", $!submoduleresults )				
 			$pages.include("/$applicationid/views/modules/$!subentitysearchtype/components/table/subentitytable.html?$!args",$context)
 		</div>
 		
