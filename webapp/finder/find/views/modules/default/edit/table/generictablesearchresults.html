@@ -1,18 +1,17 @@
-<div id="emresultscontent">
+#set( $parentviewid = $context.getRequestParameter("parentviewid"))
 #set($searchtype = $context.getRequestParameter("searchtype"))
 $context.putPageValue("searchtype", $searchtype)
 $context.putPageValue("searcher",$searcher)
 
 #set($viewid = "$!{searchtype}resultstable")
 $context.putPageValue("viewid", $viewid)
-
-#set ($details = $searcher.getDetailsForView("${searchtype}/${viewid}", $userprofile))
-$context.putPageValue("details",$details)
 $context.putPageValue("module",$moduleid)
 
 $context.putPageValue("tablehits",$resultshits)
 
-$pages.include("${apphome}/components/table/table.html", $context)
+<div id="resultsaddentity$!{parentviewid}">
+
+$pages.include("${apphome}/components/table/subentitytable.html", $context)
 
 </div>
 

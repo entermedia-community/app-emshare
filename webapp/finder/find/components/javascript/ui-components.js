@@ -121,7 +121,8 @@ runajaxonthis = function(inlink,e)
 	}*/	
 	
 	var targetDivInner = finddata(inlink,"targetdivinner");
-	if (!targetDiv && targetDivInner) {
+	//if (!targetDiv && targetDivInner) {
+	if (targetDivInner) {
 		targetDiv = targetDivInner;
 		replaceHtml = false;
 	}
@@ -1812,15 +1813,16 @@ uiload = function() {
 			return true;
 		}
 		var emselectable = clicked.closest(".emselectableentityadd");
+		targetdiv = emselectable.data( "targetdiv");
 		
 		var row = $(clicked.closest("tr"));
 		var rowid = row.attr("rowid");
-		
-		var options = emselectable.data();
-		var targetdiv_ = emselectable.data("targetdiv");
-		targetdiv = emselectable.closest("#"+targetdiv_);
-		
 		clickurl = finddata(emselectable, "clickurl");
+		var targetdiv = finddata(emselectable, "targetdiv");
+		var options = emselectable.data();
+		options.id = row.attr("rowid");
+		
+				/*
 		if (clickurl && clickurl != "") {
 			//Get everything from domadatacontext
 			options = findalldata(emselectable);
@@ -1832,7 +1834,7 @@ uiload = function() {
 			options.id = row.attr("rowid");
 			options.oemaxlevel =  finddata(emselectable, "oemaxlevel");
 		}
-		
+		*/
 		if(targetdiv != '') {
 			jQuery.ajax({
 				url:  clickurl,
@@ -1841,7 +1843,8 @@ uiload = function() {
 					if (!targetdiv.jquery) {
 						targetdiv = $("#"+targetdiv);
 					}
-					targetdiv.replaceWith(data);
+//					targetdiv.replaceWith(data);
+					autoreload(targetdiv);
 				}
 			});
 			

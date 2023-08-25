@@ -10,7 +10,7 @@
 #set($targetdiv = $context.getRequestParameter("parenttargetdiv"))
 
 <div id="search-entities-modal" class="searchonetomany" >
-	<div id="searcharea" >
+
 	
 	#set($predata = $mediaarchive.getSearcher($searchtype).createNewData())
 	$predata.setValue($fieldexternalid, $fieldexternalvalue)
@@ -37,13 +37,20 @@
 		
 		>
 		
+		<input type="hidden" name="viewid" value="$!{searchtype}resultstable" />
+		<input type="hidden" name="parentviewid" value="$!parentviewid" />
+		
 		<input type="hidden" name="searchtype" value="${searchtype}" />
 		<input type="hidden" name="moduleid" value="${searchtype}" />
 		<input type="hidden" name="sortby" value="name" />
+		
 		#if($fieldexternalid)
 			<input name="operation" value="not" type="hidden">
 			<input name="field" value="$fieldexternalid" type="hidden">
 			<input name="${fieldexternalid}.value" value="$fieldexternalvalue" type="hidden">
+			
+			<input name="fieldexternalid" value="$fieldexternalid" type="hidden">
+			<input name="fieldexternalvalue" value="$fieldexternalvalue" type="hidden">
 			
 		#end
 		
@@ -80,7 +87,7 @@
 		data-fieldexternalid="$fieldexternalid"
 		data-fieldexternalvalue="$fieldexternalvalue"
 		data-clickurl="${page.directory}/generictablesavesubmodule.html"
-		
+		data-submodulesearchtype="$searchtype"
 		data-parentsearchtype="$!{parentsearchtype}"
 		data-viewid="$!parentviewid"
 		data-viewpath="$!parentviewpath"
@@ -95,6 +102,5 @@
 		<div class="clearfix"></div>
 	</div>
 	
-	
-	</div>
+
 </div>	
