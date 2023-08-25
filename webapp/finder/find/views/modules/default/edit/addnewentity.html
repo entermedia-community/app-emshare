@@ -22,6 +22,7 @@ $context.putPageValue("searcher",$mediaarchive.getSearcher($searchtype))
 
 #set($parentsearchtype = $context.getRequestParameter("parentsearchtype"))
 #set($parentid = $context.getRequestParameter("parentid"))
+#set($parentviewid = $context.getRequestParameter("parentviewid"))
 
 #set ($fieldexternalid = $context.getRequestParameter("fieldexternalid"))
 #set ($fieldexternalvalue = $context.getRequestParameter("fieldexternalvalue"))
@@ -46,7 +47,7 @@ $context.putPageValue("searcher",$mediaarchive.getSearcher($searchtype))
     	<input name="viewid" type="hidden" value="$viewid" />
     	<input name="entitytype" type="hidden" value="$searchtype" />
     	<input name="module" type="hidden" value="$searchtype" />
-    	<input name="entitytabopen" type="hidden" value="metadata" />
+    	<input name="entitytabopen" type="hidden" value="tab_metadata" />
     	<input name="enablebackbutton" type="hidden" value="true" />
     	
     	
@@ -78,7 +79,9 @@ $context.putPageValue("searcher",$mediaarchive.getSearcher($searchtype))
 	    
 	    #end
 	    #if($entitydialogeditor)
-	    	<a href="$componenthome/gridsample/preview/entitytab.html?id=$parentid" class="btn btn-sm btn-dark float-left ajax" data-targetdiv="$!targetdiv">[[Cancel]]</a>
+	    	<a href="#" 
+	    		class="btn btn-sm btn-dark float-left reloadcontainer" 
+	    		data-reloadcontainer="tabsubentity_$!{parentviewid}">[[Cancel]]</a> 
 	    #else
 	    	<button id="closebutton" type="button" class="btn btn-sm btn-dark float-left" data-dismiss="modal">[[Close]]</button>
 	    #end

@@ -3729,6 +3729,19 @@ uiload = function() {
 */
 
 
+	lQuery(".reloadcontainer").livequery("click", function(event) {
+		event.preventDefault();
+		var link = $(this);
+		if(link.data("reloadcontainer")) {
+			var container_ = link.data("reloadcontainer");
+			var container =$("#"+container_); 
+			if(container.length) {
+				autoreload(container);
+			}
+		}
+		return;		
+	});
+
 
 }// uiload
 
