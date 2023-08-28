@@ -29,6 +29,29 @@ $context.putPageValue("topentityid", $topentityid)
 				$context.putPageValue("favorites", $favorites)
 		
 				$pages.include("$apphome/components/gridsample/modulegrid.html", $context)
+				
+				#if($organizedSubModules[$childmodule.id])
+					#set( $childsubmodule = $organizedSubModules[$childmodule.id])
+					#set( $idsubhits = $organizedHitsSubModules.get($childsubmodule.id))
+					#if( !$idsubhits.isEmpty())
+						$context.putPageValue("hits", $idsubhits)
+						$context.putPageValue("module", $childsubmodule)
+						$context.putPageValue("moduleid", $childsubmodule.id)
+						
+					   	#set($modulerendertype = "entity")
+					   	#if ($childsubmodule.homepagerendertype)
+					   		#set($modulerendertype = $childsubmodule.homepagerendertype)
+					   	#end
+					   	
+					   	$context.putPageValue("modulerendertype", $modulerendertype)
+					  	
+					   	#set( $favorites = $userprofile.get("favorites_"+$childsubmodule.id))
+						$context.putPageValue("favorites", $favorites)
+				
+						$pages.include("$apphome/components/gridsample/modulegrid.html", $context)
+					#end
+				#end
+				
 			#end	
 		#end 
 	#end
