@@ -17,6 +17,11 @@
 #set( $fieldexternalid = $viewdata.renderexternalid)
 #set( $fieldexternalvalue = $parentid)
 
+#set( $sortby = $!viewdata.rendersort)
+#if(!$sortby)
+	#set( $sortby = "name")
+#end
+
 #set($targetrendertype = $submodule.modulerendertype)
 #if(!$targetrendertype)
 	#set($targetrendertype = "entity")
@@ -46,7 +51,7 @@
 			#set( $args = "$args&fieldexternalid=$!fieldexternalid&fieldexternalvalue=$!fieldexternalvalue")
 			#set( $args = "$args&field=$!fieldexternalid&$!{fieldexternalid}.value=$!fieldexternalvalue&operation=exact")
 			#set( $args = "$args&viewid=$!viewid&viewpath=$!targetviewpath&hitsperpage=6&targetrendertype=$!targetrendertype")
-			#set( $args = "$args&targetdiv=entitywraper")
+			#set( $args = "$args&targetdiv=entitywraper&sortby=$!sortby")
 			
 			$context.putPageValue("moduleid", $!submodule.getId() )
 			$context.putPageValue("submoduleresults", $!submoduleresults )				
