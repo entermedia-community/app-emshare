@@ -68,60 +68,69 @@
 #end
 
 <div class="filtered filteredmain">
-<div class="filtered-breadcrumb">
-## BREADCRUMB
-#if($canviewbreadcrumb)
-	#if( $hits.getSearchQuery().hasMainInput())
-		
-		#if($librarycol)
-			[[Searching within]]: <strong><em>$librarycol</em> </strong> [[for]]:  <span class="searchterm">$hits.getSearchQuery().getMainInput()</span>
-		#else
-			[[Searching for]]:  <span class="searchterm">$hits.getSearchQuery().getMainInput()</span>
-		#end
-		
-	
-	#end
-	
-	#set($currentSort = $hits.getSearchQuery().getSortBy())
-	
-	##TODO Loop over the view and show them here if they match
-	
-	#if( $category )
-			#set( $count = $hits.size())
-			#set($parentcategories = $category.getParentCategories())
-			
-			#if(!$parentcategories.isEmpty())
-				#foreach( $parent in $parentcategories)
-					#if( ${foreach.count} > 1) / #end
-					#if($category.getId() != $parent.getId())
-					<a style="padding:0px 4px 0;" 
-						href="$siteroot$apphome/views/modules/asset/viewfiles/$!{parent.id}/#dash($parent).html?hitssessionid=$!hits.getSessionId()"
-						title="[[View Files]]: $parent"
-						class="ajax"
-						data-targetdiv="applicationcontent"
-						data-oemaxlevel="5"
-						data-scrolltocat="true"
-						data-updateurl="true"
-						data-sidebarcomponent="categories">$parent</a>
-					#else
-					<span class="currentcategory">$parent</span>
-					#end		
-				#end
-				&nbsp;<span>($count)</span>
-			#end
-		
-	#end
-	
-	#set($topentityid = $context.getRequestParameter("topentityid"))
 
-	#if($topentityid)
-		#set($topentity = $mediaarchive.getCachedData($topmodule.getId(), $topentityid))
-		#set($clearfiltershref = "$siteroot$apphome/views/modules/${topmodule.getId()}/index.html?hitssessionid=$!hits.getSessionId()&${topmodule.getId()}clearresults=true&${topmodule.getId()}clearselection=true&clearselection=true&clearfilters=true")
-		#set($oemaxlevel = "4")
-			[[Showing]]: <span class="searchterm">#text($topentity)</span>
+	## BREADCRUMB
+	#if($canviewbreadcrumb)
+		<div class="filtered-breadcrumb">
+			#set($topentityid = $context.getRequestParameter("topentityid"))
+			#set($entityid = $context.getRequestParameter("entityid"))
+		
+			#if($topentityid && $topmodule)
+				#set($topentity = $mediaarchive.getCachedData($topmodule.getId(), $topentityid))
+				#set($clearfiltershref = "$siteroot$apphome/views/modules/${topmodule.getId()}/index.html?hitssessionid=$!hits.getSessionId()&${topmodule.getId()}clearresults=true&${topmodule.getId()}clearselection=true&clearselection=true&clearfilters=true")
+				#set($oemaxlevel = "4")
+					[[Showing]]: <span class="searchterm">#text($topentity)</span>
+					#set($entitytype = $context.getRequestParameter("entitytype"))
+					
+					#if($entitytype && $entityid && !$entityid.equals($topentityid))
+						#set($entitymodule = $mediaarchive.getCachedData($entitytype, $entityid))
+						\ <span class="searchterm">#text($entitymodule)</span>
+					#end
+			#else
+		
+				#if( $hits.getSearchQuery().hasMainInput())
+					#if($librarycol)
+						[[Searching within]]: <strong><em>$librarycol</em> </strong> [[for]]:  <span class="searchterm">$hits.getSearchQuery().getMainInput()</span>
+					#else
+						[[Searching for]]:  <span class="searchterm">$hits.getSearchQuery().getMainInput()</span>
+					#end
+				#end
+				
+			#end
+			
+			#set($currentSort = $hits.getSearchQuery().getSortBy())
+			
+			##TODO Loop over the view and show them here if they match
+			
+			#if( $category )
+					#set( $count = $hits.size())
+					#set($parentcategories = $category.getParentCategories())
+					
+					#if(!$parentcategories.isEmpty())
+						#foreach( $parent in $parentcategories)
+							#if( ${foreach.count} > 1) / #end
+							#if($category.getId() != $parent.getId())
+							<a style="padding:0px 4px 0;" 
+								href="$siteroot$apphome/views/modules/asset/viewfiles/$!{parent.id}/#dash($parent).html?hitssessionid=$!hits.getSessionId()"
+								title="[[View Files]]: $parent"
+								class="ajax"
+								data-targetdiv="applicationcontent"
+								data-oemaxlevel="5"
+								data-scrolltocat="true"
+								data-updateurl="true"
+								data-sidebarcomponent="categories">$parent</a>
+							#else
+							<span class="currentcategory">$parent</span>
+							#end		
+						#end
+						&nbsp;<span>($count)</span>
+					#end
+				
+			#end
+			
+			
+		</div>			
 	#end
-		</div>
-#end
 
 
 ## ENTITIES
@@ -248,8 +257,9 @@
 				#end
 			#end <i class="fas fa-times"></i></a>
 	#end
-	
-	
+#end
+
+
 	#if( $hits.getSearchQuery().hasMainInput() || ($terms && !$terms.isEmpty())  || $clearfiltershref)
 		#if($clearfiltershref)
 			#set($href = $clearfiltershref)
@@ -284,7 +294,6 @@
 	
 	<div class="clearfix"></div>
 
-#end
 </div>
 
 

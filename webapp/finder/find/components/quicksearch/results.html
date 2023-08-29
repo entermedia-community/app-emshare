@@ -14,7 +14,10 @@
 
 #set($ajax = $context.getRequestParameter("ajax")) 
 
-<div class="quicksearchresults" style="position:relative; height: ${popupheight}px; ">
+<div class="quicksearchresults" style="position:relative;  ">
+<div style="position:absolute; top:0px; right:2px; color:#333;">
+<span title="[[Esc to Close]]" class="fas fa-window-close"></span>
+</div>
 #foreach($module in $organizedModules)
 	#set($hits = $organizedHits.get($module.id))
 	
@@ -29,7 +32,7 @@
    	#set( $val = $hits.getInput("description"))
    	
 	#set($entityurl = "$!siteroot$apphome/views/modules/$!{module.id}/index.html?$!{module.id}page=1&field=description&operation=freeform&description.value=$val")
-	
+	<div style="margin-bottom: 10px;">
 	<a href="$entityurl" 
 		class="ajax qsresultsEntity" 
 		style=""
@@ -41,7 +44,7 @@
 		title="[[View]]: #text($module)" >
 	<img src="$siteroot$apphome/theme/images/entity/${moduleicon}.svg" 
 	style="height: 25px; max-width:20px;"> 
-	
+	<span class="qsresultsEntitytext">
 	#if( $module.id == "asset") ##this is safe
 		#set( $count = $hits.size()) 
 	#else
@@ -51,6 +54,7 @@
 		#set( $count = $hits.size()) 
 	#end
 	#text($module)
+	</span>
 	 <span class="count">($count)</span>
 	</a>
 	<div>
@@ -65,26 +69,33 @@
 		data-updateurl="true" 
 		data-profilepreference="defaultmodule"
 		data-profilepreference.value="$!module.getId()"
-		title="#text($module)" >$hit</a>
+		title="[[View]] #text($module): #esc($hit) " >$hit</a>
 	#end
 	</div>
-
+	</div>
 #end
 
 #if($livesuggestions.size())
-<div style="position:absolute; top:0px; right:2px; color:#333;">
-<span title="[[Esc to Close]]" class="fas fa-window-close"></span>
-</div>
-<br>
+
 #set($assetmodule = $mediaarchive.getModule("asset"))
 
 #set($moduleicon = "entity")
 #if ($assetmodule.moduleicon)
 	#set($moduleicon = $assetmodule.moduleicon)
 #end
-<h3 style="line-height: 25px;">
-	<img src="$siteroot$apphome/theme/images/entity/${moduleicon}.svg" 
-	style="height: 25px; max-width:20px;"> [[Media Keywords]]</h3>
+#set($entityurl = "$!siteroot$apphome/views/modules/asset/search.html?field=description&operation=freeform&description.value=$val")
+<a href="$entityurl" 
+		class="ajax qsresultsEntity" 
+		style=""
+		data-targetdiv="applicationmaincontent" 
+		data-oemaxlevel="3" 
+		data-updateurl="true" 
+		data-profilepreference="defaultmodule"
+		data-profilepreference.value="$!assetmodule.getId()"
+		title="[[View Media Keywords]]" >
+	<img src="$siteroot$apphome/theme/images/entity/${moduleicon}.svg"	style="height: 25px; max-width:20px;"> 
+	<span class="qsresultsEntitytext">[[Media Keywords]]</span>
+	</a>
 <ul class="qsrecent">
 #foreach ($suggestion in $livesuggestions)
 	#set( $k = $suggestion.getKeyword() )

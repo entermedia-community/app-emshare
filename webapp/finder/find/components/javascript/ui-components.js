@@ -1362,7 +1362,7 @@ uiload = function() {
 			modaldialog = $("#" + id);
 		}
 		
-		var width = input.width();
+		var width = input.parent().width();
 		var minwidth = input.data("minwidth");
 
 		if (minwidth && width) {
