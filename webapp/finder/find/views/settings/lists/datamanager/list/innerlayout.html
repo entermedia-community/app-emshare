@@ -1,9 +1,10 @@
 #set($currentsearch = $context.getRequestParameter("searchtype"))
+#if($currentsearch)
 #set( $action = "$siteroot$content.dataroot/list/index.html" )
 
 #set( $showfields = $context.getRequestParameter("showfields"))
 #if( $showfields )
-<h2 class="settings-title">[[Data Search]]</h2>
+<h3 class="settings-title">[[Data Search]]</h3>
 
 <form action="$action">
 	<input type="hidden" name="catalogid" value="$catalogid"/>
@@ -16,7 +17,7 @@
 	</select>
 </form>
 #else
-<h2 class="settings-title">$currentsearch</h2>
+<h3 class="settings-title">[[Table]]: <Strong>$!currentsearch</Strong></h3>
 #end
 <div class="clearfix"></div>
 
@@ -49,5 +50,7 @@
 #if( $showfields )
 
 <a href="$siteroot${content.dataroot}/list/reindex.html?catalogid=$catalogid&searchtype=$currentsearch">[[Reindex]]</a>
+
+#end
 
 #end
