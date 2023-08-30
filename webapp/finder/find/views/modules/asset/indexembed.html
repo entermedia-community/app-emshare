@@ -1,7 +1,6 @@
 #set($hits = $entityassethits)
 $context.putPageValue("hits", $hits)
 
-
 #set($module = $mediaarchive.getCachedData("module", "asset"))
 #set($moduleid = $module.getId())
 
@@ -24,7 +23,6 @@ $context.putPageValue("categoryid", $categoryid)
 	#set($rootcategories = $category.getParentCategories()) 
 	###set( $librarycol = $mediaarchive.query("librarycollection").orgroup("rootcategory", $rootcategories).searchOne() )
 #end
-
 
 #if($parentsearchtype)
 	#set($topmodule = $mediaarchive.getCachedData("module", $parentsearchtype))
@@ -81,7 +79,7 @@ $context.putPageValue("categoryid", $categoryid)
 					
 							#end
 						
-							#if($count)&nbsp;<span class="count">($count)</span>#end
+							#if($count)&nbsp;<span class="count">($count)</span>#end 
 						#end
 						</div>
 						
@@ -107,10 +105,10 @@ $context.putPageValue("categoryid", $categoryid)
 			#set( $rootcategory = $categoryid)
 			#set( $targetembedmedia = "embedmedia$!{embedmediadialogid}")
 			#set( $link = "$componenthome/emtree/tree.html")
-		    #set( $link = "${link}?collectiontreeroot=$rootcategory&tree-name=collectiontree&editabletree=true" )
+		    #set( $link = "${link}?entitymediatreeroot=$rootcategory&treename=entitymediatree&editabletree=true" )
 		    #set( $link = "${link}&targetdivinner=${targetembedmedia}&maxlevelclick=1&updateAddressBar=false&uploadmaxlevel=1" )
 			#set( $link = "${link}&customurladdmedia=$apphome/views/modules/asset/add/entityaddmedia.html" )
-		    #set( $link = "${link}&url-prefix=$apphome/views/modules/asset/showcategory.html" )
+		    #set( $link = "${link}&urlprefix=$apphome/views/modules/asset/showcategory.html" )
 		    
 			$pages.include($link, $context)
 		</div>

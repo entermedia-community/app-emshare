@@ -1,4 +1,4 @@
-#set( $treename = $context.getRequestParameter("tree-name") )
+#set( $treename = $context.getRequestParameter("treename") )
 #set( $webtree = $context.getPageValue($treename) )
 
 #set( $showinput = $webtree.getTreeRenderer().isAllowSelections() )
@@ -120,13 +120,13 @@
 		$render.setSelectedNode($category)
 	#end
 	
-	#set($rootcategory = $webtree.getModel().getRoot())
+	#set($rootcategory = $webtree.getModel().getRoot())  
 
 	#set( $top = $context.getRequestParameter("treetoplocation") )
 	#set( $left = $context.getRequestParameter("treeleftlocation") )
 	
-	#set( $prefix = $context.getRequestParameter("url-prefix" ) )
-	#set( $postfix = $context.getRequestParameter("url-postfix" ) )
+	#set( $prefix = $context.getRequestParameter("urlprefix" ) )
+	#set( $postfix = $context.getRequestParameter("urlpostfix" ) )
 	
 	
 	#set( $maxlevelclick = $context.getRequestParameter("maxlevelclick" ) )
@@ -146,11 +146,12 @@
 		<div id="${treename}tree" 
 			class="emtree emtree-widget" 
 			data-home="$siteroot$apphome" 
-			data-treename="$treename" 
+			data-treename="$!treename"
+			data-$!{treename}root="$rootcategory.getId()" 
 			data-rootnodeid="$rootcategory.getId()"
 			data-editable="$editable" 
-			data-url-prefix="$!prefix" 
-			data-url-postfix="$!postfix" 
+			data-urlprefix="$!prefix" 
+			data-urlpostfix="$!postfix" 
 			#set( $targetdiv = $context.getRequestParameter("targetdiv" ) )
 			#set( $targetdivinner = $context.getRequestParameter("targetdivinner" ) )
 			#set( $oemaxlevel = $context.getRequestParameter("oemaxlevel" ) )
@@ -185,7 +186,7 @@
 				#end	
 				</ul>
 		</div>
-	</div>
+	
 	
 	#if($caneditcategorytree || $editcategories || $canviewcategoryupload || $download)
 	
@@ -239,4 +240,6 @@
 		###end
 	  </div>
 	  #end
+	  
+	  </div>
 #end

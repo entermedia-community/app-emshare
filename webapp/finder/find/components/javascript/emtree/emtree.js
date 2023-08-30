@@ -22,7 +22,7 @@ $(document).ready(function()
 			}
 			
 			tree.find(nodeid + "_add").remove();
-			node.load(home + "/components/emtree/tree.html?toggle=true&tree-name=" + tree.data("treename") + "&nodeID=" + nodeid + "&depth=" + depth, 
+			node.load(home + "/components/emtree/tree.html?toggle=true&treename=" + tree.data("treename") + "&nodeID=" + nodeid + "&depth=" + depth, 
 				function()
 				{
 					$(window).trigger( "resize" ) 
@@ -45,8 +45,8 @@ $(document).ready(function()
 		$("div:first",node).addClass('cat-current');
 		var nodeid = node.data('nodeid');	
 		
-        var prefix = tree.data("url-prefix");
-        var postfix = tree.data("url-postfix");
+        var prefix = tree.data("urlprefix");
+        var postfix = tree.data("urlpostfix");
 		var targetdiv = tree.data("targetdiv");
 		var maxlevel = tree.data("maxlevelclick");
 		if(maxlevel ==  undefined || maxlevel == "" )
@@ -145,7 +145,7 @@ $(document).ready(function()
 		
 		var options =  structuredClone(tree.data());
 		
-		options['tree-name'] = tree.data("treename");
+		options['treenameme'] = tree.data("treename");
 		options['nodeID'] = nodeid;
 		options['treetoplocation'] = toplocation;
 		options['treeleftlocation'] = leftlocation;
@@ -224,7 +224,7 @@ $(document).ready(function()
 
 				$.get(home + "/components/emtree/deletecategory.html", {
 					categoryid: id,
-					'tree-name': tree.data("treename"),
+					'treename': tree.data("treename"),
 					} ,function () {
 						tree.find("#" + id + "_row").hide( 'fast', function(){
 							repaintEmTree(tree); 
@@ -271,7 +271,7 @@ $(document).ready(function()
 				action = "rename";
 			}
 			var rootid = tree.data("treename")+"root";
-			var link = tree.data("home") + "/components/emtree/savenode.html?action=" + action + "&tree-name=" + tree.data("treename") + "&"+rootid+"="+tree.data("rootnodeid")+"&depth=" + node.data('depth');
+			var link = tree.data("home") + "/components/emtree/savenode.html?action=" + action + "&treename=" + tree.data("treename") + "&"+rootid+"="+tree.data("rootnodeid")+"&depth=" + node.data('depth');
 			
 			var targetdiv = tree.closest("#treeholder");
 			
@@ -392,7 +392,7 @@ $(document).ready(function()
 				var node = getNode(this);
 				var tree = node.closest(".emtree");
 				var nodeid = node.data('nodeid');
-				var link = tree.data("home") + "/components/emtree/rename.html?tree-name=" + tree.data("treename") + "&nodeID=" + nodeid + "&depth=" +  node.data('depth'); 
+				var link = tree.data("home") + "/components/emtree/rename.html?treename=" + tree.data("treename") + "&nodeID=" + nodeid + "&depth=" +  node.data('depth'); 
 				node.find("> .categorydroparea").load(link , function()
 				{
 					node.find("input").select().focus();
@@ -408,7 +408,7 @@ $(document).ready(function()
 		if (agree)
 		{
 			//console.log("removing",node, nodeid);
-			var link = tree.data("home") + "/components/emtree/delete.html?tree-name=" + tree.data("treename") + "&nodeID=" + nodeid + "&depth=" +  node.data('depth'); 
+			var link = tree.data("home") + "/components/emtree/delete.html?treename=" + tree.data("treename") + "&nodeID=" + nodeid + "&depth=" +  node.data('depth'); 
 			var options = tree.data();
 			$.get(link, options,	function(data) {	
 				//tree.closest("#treeholder").replaceWith(data);
@@ -422,7 +422,7 @@ $(document).ready(function()
 		event.stopPropagation();
 		var node = getNode(this);
 		var tree = node.closest(".emtree");
-		var link = tree.data("home") + "/components/emtree/create.html?tree-name=" + tree.data("treename") + "&depth=" +  node.data('depth'); 
+		var link = tree.data("home") + "/components/emtree/create.html?treename=" + tree.data("treename") + "&depth=" +  node.data('depth'); 
 		$.get(link, function(data) {
 		    node.append(data);
 		    var theinput = node.find("input");
@@ -580,9 +580,9 @@ repaintEmTree = function (tree) {
 //		data-editable="$editable" data-url-prefix="$!prefix" data-url-postfix="$!postfix" data-targetdiv="$!targetdiv"
 //		>
 /*	var options = { 
-			"tree-name": tree.data("treename"),
-			"url-prefix":tree.data("url-prefix"),
-			"url-postfix":tree.data("url-postfix"),
+			"treename": tree.data("treename"),
+			"url-prefix":tree.data("urlprefix"),
+			"url-postfix":tree.data("urlpostfix"),
 			"targetdiv":tree.data("targetdiv"),
 			"maxlevelclick":tree.data("maxlevelclick")
 		};
@@ -590,7 +590,7 @@ repaintEmTree = function (tree) {
 
 	var link = home +  "/components/emtree/tree.html";
 	var options = tree.data();
-	options["tree-name"] = tree.data("treename"); //why?
+	options["treename"] = tree.data("treename"); //why?
 	$.get(link, options, function(data) {
 		console.log("tree repainted");
 		tree.closest("#treeholder").replaceWith(data);
