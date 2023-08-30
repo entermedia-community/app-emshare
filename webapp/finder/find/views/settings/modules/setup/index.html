@@ -1,7 +1,7 @@
 
-<div class="eml-tab-content" style="max-width:1200px; ">
+<div class="eml-tab-content" style="">
 	
-	<h2 class="float-left">[[Data Entities]]</h2>
+	<h3 class="settings-title">[[Data Entities]]</h3>
 	<div class="float-right" >
 		<a class="btn btn-sm btn-primary" href="$home$apphome/views/settings/modules/setup/add-new-module.html" title="[[Create New]]">[[Create]]</a>
 	</div>	
@@ -10,70 +10,69 @@
 
 <div style="margin:15px 0 20px 20px; max-width:1200px; border:1px solid #aaa;">
 ##<ul  class="fwlist modulelist listsort ui-sortable"	>
-<table class="table table-striped table-hover" >
-<thead>
-<tr>
-	<th>[[Name]]</th>
-	<th>[[Child Entities]]</th>
-	<th>[[Settings]]</th>
-	<th>[[Groups]]</th>
-	<th></th>
-</tr>
-</thead>
-<tbody class="tablesort ui-sortable" data-path="$home$apphome/views/settings/modules/setup/sort.html" 
-	data-field="ordering" 
-	data-searchtype="module">
-    ##set ( $modules = $searcherManager.getList($catalogid, "module") )
-    
-    #set( $modulesearcher = $searcherManager.getSearcher($catalogid, "module"))
-    #set( $modules = $modulesearcher.query().exact("isentity", true).sort("ordering").search())
-    
-   
-    #foreach ( $module in $modules )
-    <tr class="ui-sortable-handle" data-ordering="$!module.ordering" id="$!module.getId()">
-    	<td style="padding:8px 0 8px 8px;" >
-    	
-		
-        <a href="$home$apphome/views/settings/modules/$module.id/info/module-setup.html"
-        	class="ajax"
-        	data-targetdiv="applicationcontent"
-			data-oemaxlevel="5"
-			title="($module.getId())  #text($module) [[Properties]]">
-            #text($module)        
-        </a>
-		</td>
-		<td>
-		#foreach($childmodule in $module.getValues("childentities"))
-			#set($child = $mediaarchive.getCachedData("module", $childmodule))
-			<a href="$home$apphome/views/settings/modules/$child.id/info/module-setup.html"
-				data-targetdiv="applicationcontent"
-				data-oemaxlevel="4"
-				class="badge badge-primary ajax"
-				title="#text($child) [[Properties]]">#text($child)</a>&nbsp;
-		#end
-		</td>
-		<td>
-		#if($module.isentity=="true")
-			##<span class="badge badge-primary">[[Is Entity]]</span>&nbsp;&nbsp;
-		#end
-		#if($module.showonsearch=="true")
-			<span class="badge badge-primary">[[Search Enabled]]</span>
-		#end
-		</td>
-    	<td>
-    		#foreach($viewgroups in $module.getValues("viewgroups"))
-			#set($group = $mediaarchive.getCachedData("group", $viewgroups))
-			<span class="badge badge-primary">#text($group)</span>&nbsp;
+	<table class="table  table-hover emdata" >
+	<thead>
+	<tr class="tableheader">
+		<th>[[Name]]</th>
+		<th>[[Child Entities]]</th>
+		<th>[[Settings]]</th>
+		<th>[[Groups]]</th>
+		<th></th>
+	</tr>
+	</thead>
+	<tbody class="tablesort ui-sortable" data-path="$home$apphome/views/settings/modules/setup/sort.html" 
+		data-field="ordering" 
+		data-searchtype="module">
+	    ##set ( $modules = $searcherManager.getList($catalogid, "module") )
+	    
+	    #set( $modulesearcher = $searcherManager.getSearcher($catalogid, "module"))
+	    #set( $modules = $modulesearcher.query().exact("isentity", true).sort("ordering").search())
+	    
+	   
+	    #foreach ( $module in $modules )
+	    <tr class="ui-sortable-handle" data-ordering="$!module.ordering" id="$!module.getId()">
+	    	<td style="padding:8px 0 8px 8px;" >
+	    	
+			
+	        <a href="$home$apphome/views/settings/modules/$module.id/info/module-setup.html"
+	        	class="ajax"
+	        	data-targetdiv="applicationcontent"
+				data-oemaxlevel="5"
+				title="($module.getId())  #text($module) [[Properties]]">
+	            #text($module)        
+	        </a>
+			</td>
+			<td>
+			#foreach($childmodule in $module.getValues("childentities"))
+				#set($child = $mediaarchive.getCachedData("module", $childmodule))
+				<a href="$home$apphome/views/settings/modules/$child.id/info/module-setup.html"
+					data-targetdiv="applicationcontent"
+					data-oemaxlevel="4"
+					class="badge badge-primary ajax"
+					title="#text($child) [[Properties]]">#text($child)</a>&nbsp;
 			#end
-    	</td>
-    	<td style="text-align: right;"><span class="drag-and-drop-fixed"></span></td>
-    </tr>
-    #end
-    </tbody>
-</table>
+			</td>
+			<td>
+			#if($module.isentity=="true")
+				##<span class="badge badge-primary">[[Is Entity]]</span>&nbsp;&nbsp;
+			#end
+			#if($module.showonsearch=="true")
+				<span class="badge badge-primary">[[Search Enabled]]</span>
+			#end
+			</td>
+	    	<td>
+	    		#foreach($viewgroups in $module.getValues("viewgroups"))
+				#set($group = $mediaarchive.getCachedData("group", $viewgroups))
+				<span class="badge badge-primary">#text($group)</span>&nbsp;
+				#end
+	    	</td>
+	    	<td style="text-align: right;"><span class="drag-and-drop-fixed"></span></td>
+	    </tr>
+	    #end
+	    </tbody>
+	</table>
               
 </div>
-<div class="clearfix">&nbsp;</div>
 
 
 $pages.include("./appsections.html")
