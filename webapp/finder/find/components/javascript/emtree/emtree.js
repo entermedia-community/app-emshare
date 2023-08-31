@@ -433,6 +433,26 @@ $(document).ready(function()
 		});
 		return false;
 	} );
+	
+	lQuery(".createfoldertree").livequery('click', function(event) { 
+		event.stopPropagation();
+		var link = $(this);
+		
+		var tree = $("#"+link.data("tree"));
+		
+		var node = tree.find(".rootnoderow");
+		
+		var link = tree.data("home") + "/components/emtree/create.html?treename=" + tree.data("treename") + "&depth=" +  node.data('depth'); 
+		$.get(link, function(data) {
+		    node.append(data);
+		    var theinput = node.find("input");
+			theinput.focus({preventScroll:false});
+			//theinput.select();
+			theinput.focus();
+			$(document).trigger("domchanged");
+		});
+		return false;
+	} );
 
 	lQuery(".treecontext #createcollection").livequery('click', function(event) 
 	{
