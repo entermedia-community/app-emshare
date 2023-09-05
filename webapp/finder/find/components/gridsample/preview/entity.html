@@ -63,11 +63,16 @@ $context.putPageValue("moduleid", $moduleid)
 
 
 #set( $enablebackbutton = $context.getRequestParameter("enablebackbutton"))
-
-<div class="entitydialog #if($enablebackbutton) enablebackbtn #end" data-moduleid="$moduleid" data-entityid="$!entityid" data-url="$componenthome/gridsample/preview/entity.html">
+#set($dialogtabid = "${moduleid}$!{entityid}")
+<div class="entitydialog #if($enablebackbutton) enablebackbtn #end"
+	id="#eid($!dialogtabid)" 
+	data-moduleid="$moduleid" 
+	data-entityid="$!entityid" 
+	data-oemaxlevel="1"
+	data-url="$componenthome/gridsample/preview/entity.html">
 	<div class="entity-wraper">
 	<h2>
-	<a href="#" class="entitydialogback emdialog" data-moduleid="" data-entityid="" style="display: none;">
+	<a href="#" id="backbtn#eid($!dialogtabid)" class="entitydialogback" style="display: none;">
 	<i class="fas fa-arrow-left"></i></a>
 	#text($module) \ 
 	

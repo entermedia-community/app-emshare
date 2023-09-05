@@ -1251,6 +1251,19 @@ uiload = function() {
 		}
 	};
 	
+	lQuery(".entitydialogback").livequery("click", function(event) {
+		event.preventDefault();
+		var parentid = $(this).data("parentid");
+		var parent = $("#"+parentid); 
+		if (parent.length) {
+			var grandparent = parent.parent().closest('.entitydialog');
+			autoreload(parent);
+			tabbackbutton(grandparent);
+			
+		}
+	});
+	
+	
 	$(document).on({
 	    'show.bs.modal': function () {
 	        var zIndex = 100000 + (10 * $('.modal:visible').length);
@@ -3697,41 +3710,7 @@ uiload = function() {
 		$("input.sharelink").val(url);
 	})
 	
-	/*
-	lQuery(".tabletypesubentity .rowclick").livequery("click", function(e) {
-		e.preventDefault();
-		//closeemdialog($(this).closest(".modal"));
-		
-		//debugger;
-		var picker = $(this).closest("#resultsdiv");
-		var row = $(this);
-		var rowid = row.attr("rowid");
-		
-		var targetdiv = picker.data("subentitytargetdiv");
-		var nextpage = picker.data('subentityclickurl');
-		//var options = [];
-		var options = picker.data();
-		options["searchtype"] = picker.data('searchtype');
-		options["id"] = rowid;
-		options["oemaxlevel"] = picker.data('subentityoemaxlevel');
-		
-		//options.submoduleid = rowid;
-		
-		jQuery.ajax({
-			url: nextpage, 
-			data: options, 
-			success: function (data) {
-				$("#"+targetdiv).html(data);
-				//console.log("reloading "+targetdiv)
-				//$(window).trigger( "resize" );
-			}
-		});
 	
-	});
-	
-*/
-
-
 	lQuery(".reloadcontainer").livequery("click", function(event) {
 		event.preventDefault();
 		var link = $(this);
@@ -3757,22 +3736,17 @@ function formsavebackbutton(form) {
 }
 
 function tabbackbutton(parent) {
-		var parentmoduleid = '';
-		var parententityid = '';
-		var parenturl = '';
+		var parentid = '';
 		if(parent.length) {
-			parentmoduleid = parent.data("moduleid");
-			parententityid = parent.data("entityid");
-			parententiturl = parent.data("url");
+			parentid = parent.attr("id");
 		}
 		
-		if(parentmoduleid != '') {
-			var container = parent.find('.entitydialog');
-			var backbtn = $('.entitydialogback', container);
+		if(parentid != '') {
+			//var container = parent.find('.entitydialog');
+			var backbtn = $('.entitydialogback');
 			$(backbtn).show();
-			$(backbtn).attr('href', parententiturl);
-			$(backbtn).data('moduleid',parentmoduleid);
-			$(backbtn).data('entityid',parententityid);
+			$(backbtn).data('parentid', parentid);
+			
 			
 		}
 }
