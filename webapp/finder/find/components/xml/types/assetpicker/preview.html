@@ -15,47 +15,50 @@
 
 #if( $foundrow )
 	#set( $rootid = $hits.sessionId )
-	
-	#set( $click = "$home$apphome/views/modules/asset/editor/generalinformation/index.html?assetid=$!val&hitssessionid=$!rootid" )
-	
-	<div  id="${detailid}-previewlink" style="display: block; text-align:left;">
-	#set( $link = "/${applicationid}/components/mediaviewer/player/zoom/index.html?assetid=$foundrow.id&name=preview.jpg")
-	
-	
 	#set( $hit = $foundrow)
 	$context.putPageValue("hit", $hit)
 	#set( $rendertype = $mediaarchive.getMediaRenderType($hit.fileformat))
-	$context.putPageValue("type", $rendertype)
-	$context.putPageValue("thumbsize", "small" )
-	
 	#if(!$rendertype || $rendertype =="rendertype")
 		#set( $rendertype = "mime" )
-	#elseif( $rendertype =="video")
+	#elseif( $rendertype == "video")
 		#set( $rendertype = "videothumbnail" )
 	#end
-	
-	#if($rendertype == "audio")
-		#if($hit.getValue("length"))
-			#set($length = $!mediaarchive.formatMinutesAndSeconds($hit.getValue("length")))
-		#end
-		$context.putPageValue("length", $length )
-     	<div class="emthumbimage emthumbaudio emcrop assetdraggable" data-assetid="${foundrow.id}" >
-			$pages.include("$componenthome/results/thumbnails/${rendertype}.html", $context)
-		</div>       
-		<div class="emthumbaudio-assetname">
-		<a class="stackedplayer " data-assetid="$foundrow.id" href="#" title="$!{foundrow.name}#if($length) ($length) #end" >
-		<i class="fas fa-window-restore"></i> 
-		$!foundrow.name</a>
-		</div>
-	#else
-		<a class="stackedplayer" data-assetid="$foundrow.id" href="#" >
-		##       <img id="main-media" class="assetdragdrop" title="[[Drag to collection]]"  draggable="true"  
-		##       data-sourcepath="$urlenc" data-name="$foundrow.name" src="$img" alt="$!foundrow.name"/>
-	
-	     	<div class="emthumbimage emcrop assetdraggable" data-assetid="${foundrow.id}" >
+	$context.putPageValue("type", $rendertype)
+	#if(!$thumbsize)
+		$context.putPageValue("thumbsize", "small" )
+	#end
+		###set( $click = "$home$apphome/views/modules/asset/editor/generalinformation/index.html?assetid=$!val&hitssessionid=$!rootid" )
+		###set( $link = "/${applicationid}/components/mediaviewer/player/zoom/index.html?assetid=$foundrow.id&name=preview.jpg")
+	##<div  id="${detailid}-previewlink" style="display: block; text-align:center;">
+		
+		#if($rendertype == "audio")
+			#if($hit.getValue("length"))
+				#set($length = $!mediaarchive.formatMinutesAndSeconds($hit.getValue("length")))
+			#end
+			$context.putPageValue("length", $length )
+	     	<div class="emthumbimage emthumbaudio emcrop assetdraggable" data-assetid="${foundrow.id}" >
 				$pages.include("$componenthome/results/thumbnails/${rendertype}.html", $context)
 			</div>       
-	</a>
-	#end
-	</div>
+			<div class="previewassetname">
+			<a class="stackedplayer " data-assetid="$foundrow.id" href="#" title="$!{foundrow.name}#if($length) ($length) #end" >
+			<i class="fas fa-external-link-alt"></i> $!foundrow.name</a>
+			</div>
+		#else
+			#if($linkintext)
+				<div class="emthumbimage emcrop assetdraggable" data-assetid="${foundrow.id}" >
+					$pages.include("$componenthome/results/thumbnails/${rendertype}.html", $context)
+				</div>
+				<div class="previewassetname">
+				<a class="stackedplayer" data-assetid="$foundrow.id" href="#" >
+					<i class="fas fa-external-link-alt"></i> $!foundrow.name</a>
+				</div>
+			#else
+			<a class="stackedplayer" data-assetid="$foundrow.id" href="#" >
+		     	<div class="emthumbimage emcrop assetdraggable" data-assetid="${foundrow.id}" >
+					$pages.include("$componenthome/results/thumbnails/${rendertype}.html", $context)
+				</div>       
+			</a>
+			#end
+		#end
+	##</div>
 #end			
