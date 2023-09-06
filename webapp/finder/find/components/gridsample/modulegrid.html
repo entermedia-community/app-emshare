@@ -10,6 +10,13 @@ $context.putPageValue("filter", $filter)
 		     		#set($moduleicon = $module.moduleicon)
 		     	#end
 		     	
+		     	#set($rendertype = $module.modulerendertype)
+				
+				#if (!$rendertype)
+				   	#set($rendertype = "entity")
+				#end
+				$context.putPageValue("entityrendertype", $rendertype)
+		     	
 	     		#set($entityurl = "$!siteroot$apphome/views/modules/$!{module.id}/index.html?$!{module.id}page=1&hitssessionid=$!hits.getSessionId()")
 	
 				<a href="$entityurl" 
