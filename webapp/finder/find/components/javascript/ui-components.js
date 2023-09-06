@@ -4040,9 +4040,7 @@ jQuery(document).on('emtreeselect',function(event){
 			var selectednode = event.nodeid;
 			$("#parentfilter").val(selectednode);
 			
-			$("#autosubmitfilter").ajaxSubmit({
-				target:"#categoryresults"
-			});
+			$("#autosubmitfilter").trigger("submit");
 		}
 		return false;
 });

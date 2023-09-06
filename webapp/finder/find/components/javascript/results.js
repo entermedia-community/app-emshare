@@ -1597,7 +1597,7 @@ gridResize = function()
 		{
 			// Process previously added cell
 			var newheight = trimRowToFit(fixedheight, row, totalavailablew);
-			totalheight = totalheight + newheight;
+			totalheight = totalheight + newheight + 8;
 			row = new Array();
 			sofarusedw = 0;
 			rownum = rownum + 1;

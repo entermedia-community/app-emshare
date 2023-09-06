@@ -37,41 +37,11 @@ $context.putPageValue("searcher",$searcher)
 		#set($targetresults = "$siteroot$apphome/views/modules/asset/showcategory.html")
 	#end
 	
-	#set($oemaxlevel = "4")
-	
-	#if (!$targetdiv)
-		#set( $targetdiv = $context.getRequestParameter("targetdiv") )
-	#end
-	#if(!$targetdiv)
-		#set($targetdiv = "applicationmaincontent")
-		#set($oemaxlevel = "2")
-	#end
+	#set($oemaxlevel = "5")
+	#set($targetdiv = "applicationmaincontent")
 
-	<form class="pickedcategoryform ajaxform #if($action) autoclose #end" 
-			action="$targetresults" 
-			data-targetdiv="$targetdiv"  
-			data-oemaxlevel="$oemaxlevel"
-			>
-		<input name="sidebarcomponent"  type="hidden" value="categories" />
 		
-		$pages.include("$apphome/components/categories/search/searchpath.html", $context)
+	$pages.include("$apphome/components/categories/search/searchpath.html", $context)
 		
-		#if($action)
-			##Searching from Media Viewer
-			#set( $assetid = $context.getRequestParameter("assetid") )
-			#if ($assetid)
-			<input name="assetid"  type="hidden" value="$assetid" />
-			<input name="detailid"  type="hidden" value="categoryid" />
-			#else
-				#set( $moduleid = $context.getRequestParameter("moduleid") )
-				#set( $entityid = $context.getRequestParameter("entityid") )
-				<input name="moduleid"  type="hidden" value="$moduleid" />
-				<input name="entityid"  type="hidden" value="$entityid" />
-			#end
-		#end
-		
-		<input name="categoryid" class="emselectedrow" type="hidden" id="selectedcategories" value="$!selectedcategories" />
-		<input name="nodeID" class="emselectedrow" type="hidden" />
-		<input type="hidden" name="scrolltocat" value="true" />
-	</form>
+
 
