@@ -63,6 +63,9 @@ $context.putPageValue("isentity", $isentity )
 		#if( $librarycol )	
 			#set($resultview = $userprofile.get("assetresultview"))
 			#if(!$resultview)
+				#set($resultview = $module.get("moduleresultsview"))
+			#end
+			#if(!$resultview)
 				#set($resultview = "stackedgallery")
 			#end
 			
@@ -91,6 +94,9 @@ $context.putPageValue("isentity", $isentity )
 #elseif ($moduleid=="faceprofilegroup")
 		#set($resultview = $userprofile.get("faceprofilegroupresultview"))
 		#if(!$resultview)
+				#set($resultview = $module.get("moduleresultsview"))
+			#end
+		#if(!$resultview)
 			#set($resultview = "grid")
 		#end
 #else
@@ -108,7 +114,10 @@ $context.putPageValue("isentity", $isentity )
 		#set($resultview = $content.resultview)
 	#end
 	#if(!$resultview)
-		#set($resultview = "grid")
+		#set($resultview = $module.get("moduleresultsview"))
+	#end
+	#if(!$resultview)
+		#set($resultview = "table")
 	#end
 
 #end
