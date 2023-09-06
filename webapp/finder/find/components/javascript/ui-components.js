@@ -1652,6 +1652,10 @@ uiload = function() {
 		if ($(event.target).is("a")) {
 			return true;
 		}
+		if ($(event.target).hasClass("jp-audio")) {
+			return true;
+		}
+		
 		var emselectable = clicked.closest("#emselectable");
 		if (emselectable.length < 1) {
 			emselectable = clicked.closest(".emselectable");
@@ -1768,6 +1772,9 @@ uiload = function() {
 			return true;
 		}
 		if ($(event.target).is("a")) {
+			return true;
+		}
+		if ($(event.target).closest(".jp-audio").length) {
 			return true;
 		}
 		var emselectable = clicked.closest(".emselectableentity");
