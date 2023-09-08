@@ -56,7 +56,32 @@
 	#end
 	#text($module)
 	</span>
-	 <span class="count">($count)</span>
+	 <span class="count">([[Found]]: $count)</span>
+	</a>
+	
+	#set($entityurlall = "$!siteroot$apphome/views/modules/$!{module.id}/index.html?$!{module.id}page=1")
+	<a href="$entityurlall" 
+		class="ajax qsresultsEntityall" 
+		style=""
+		data-targetdiv="applicationmaincontent" 
+		data-oemaxlevel="3" 
+		data-updateurl="true" 
+		data-profilepreference="defaultmodule"
+		data-profilepreference.value="$!module.getId()"
+		title="[[View All]]: #text($module)" >
+	
+	<span class="qsresultsEntitytext">
+	#if( $module.id == "asset") ##this is safe
+		#set( $count = $hits.size()) 
+	#else
+		#set( $count = $filter.getCount($module.id) ) 
+	#end
+	#ifnull($count)
+		#set( $count = $hits.size()) 
+	#end
+	[[View All]]
+	</span>
+	 ##<span class="count">($count)</span>
 	</a>
 	<div>
 	#foreach( $hit in $hits.getPageOfHits())
