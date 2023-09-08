@@ -23,6 +23,17 @@ $context.putPageValue("moduleid", $moduleid)
 <div class="entity-wraper">	
 	<nav>
   	<div class="nav nav-tabs entity-navigation" id="entity-nav-tab" role="tablist"  data-tabmenuurl="$componenthome/gridsample/preview/entitytabmenu.html">
+  	
+  		$context.putPageValue("tabmodule", $module)
+  		#set($tabid = "tab_metadata")
+		#set($tabtype= "metadata")
+		$context.putPageValue("tabtype", $tabtype)
+		
+		#if(!$entitytabopen || $entitytabopen == $tabid)
+  			$context.putPageValue("currenttab", $tabid)
+		#end
+			
+			
 		$pages.include("$componenthome/gridsample/preview/entitytabmenu.html", $context)
 		
 	</div>
