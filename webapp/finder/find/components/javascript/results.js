@@ -457,6 +457,9 @@ jQuery(document).ready(function(url,params)
 		$("body").css({ overflow: 'auto' })
 		inOverlay.hide();
 		inOverlay.removeClass("show");
+		if($('.modal:visible').length) {
+			adjustzindex($('.modal:visible'));
+		}
 		
 		var reloadonclose =  $('#resultsdiv').data('reloadresults');
 		if (reloadonclose == undefined) {
@@ -480,9 +483,12 @@ jQuery(document).ready(function(url,params)
 	showOverlayDiv = function(inOverlay)
 	{
 		stopautoscroll = true;
-		 $("body").css({ overflow: 'hidden' })
+		$("body").css({ overflow: 'hidden' })
 		inOverlay.show();
-		 inOverlay.addClass("show");
+		
+		adjustzindex(inOverlay);
+		
+		inOverlay.addClass("show");
 		var lastscroll = $(window).scrollTop();
 		getOverlay().data("lastscroll",lastscroll);
 	}
@@ -585,7 +591,6 @@ jQuery(document).ready(function(url,params)
 				var escape = assetid.replace(/\//g, "\\/");
 				$("#gallery-" + escape).addClass("active-asset");
 			}
-			$(window).trigger("tabready");
 			
 			
 		});
@@ -628,7 +633,7 @@ jQuery(document).ready(function(url,params)
 		        // TODO: background window.scrollTo the .masonry-grid-cell we
 				// view, so we can reload hits
 		        
-		        case 27: // esc
+		        case 27000: // esc  MOVED TO UI-COMPONENTS
 		        	var ismodal = $('#modals, #inlineedit, .modal');
 		        	if (ismodal.hasClass('show')) {
 		        		// Close modal only
@@ -649,6 +654,7 @@ jQuery(document).ready(function(url,params)
 								// caret)
 		});
 	}
+	
 	getOverlay = function()
 	{
 		var hidden = $("#hiddenoverlay");
@@ -661,17 +667,23 @@ jQuery(document).ready(function(url,params)
 				 href = componenthome + "/mediaviewer/fullscreen/index.html";	
 			}
 			
-			$.ajax({ url:href,async: false, data: {oemaxlevel:1}, success: function(data) {
-				$('#application').prepend(data);
-				hidden = $("#hiddenoverlay");
-				initKeyBindings(hidden);
-			}
+			$.ajax({ url:href,
+					async: false, 
+					data: {oemaxlevel:1}, 
+					success: function(data) {
+						$('#application').prepend(data);
+						hidden = $("#hiddenoverlay");
+						initKeyBindings(hidden);
+					}	
 			});
 		}
 		hidden = $("#hiddenoverlay");
+
 		return hidden;
 		
     }
+    
+	
     
 
     refreshresults = function() {

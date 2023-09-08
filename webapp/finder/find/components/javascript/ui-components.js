@@ -226,7 +226,6 @@ runajaxonthis = function(inlink,e)
             },
 			crossDomain: true
 		}).always(function(){
-			
 			var scrolltotop = inlink.data("scrolltotop");
 			if( scrolltotop)	{
 				window.scrollTo(0, 0);
@@ -1134,6 +1133,8 @@ uiload = function() {
 						}
 					}
 					
+					modalkeyboard = false;
+					
 					var modalinstance;
 					if(modalkeyboard) {
 						modalinstance = modaldialog.modal({
@@ -1143,7 +1144,6 @@ uiload = function() {
 					}else {
 						modalinstance = modaldialog.modal({
 							keyboard : false,
-							backdrop : "static",
 							closeExisting: false,
 							"show" : true
 						});
@@ -1202,9 +1202,12 @@ uiload = function() {
 						}
 					}
 					
+					adjustzindex(modalinstance);
+					
 					$(window).trigger("resize");
 					
 					modalinstance.on('hidden.bs.modal', function () {
+						
 						$(window).trigger("resize");
 					});
 					
@@ -1215,6 +1218,31 @@ uiload = function() {
 			}
 		});
 		
+		$(modaldialog).on('shown.bs.modal', function () {
+		       //adjustzindex($(this));
+		});
+		
+		$(modaldialog).on('hide.bs.modal', function (e) {
+			if(!$(this).hasClass('onfront')) {
+				
+				e.stopPropagation();
+				return;	
+			}
+			else {
+			    if ($('.modal:visible').length > 0) {
+		            // restore the modal-open class to the body element, so that scrolling works
+		            // properly after de-stacking a modal.
+		            setTimeout(function() {
+						
+		                $(document.body).removeClass('modal-open');
+		            }, 0);
+		        }
+	        }
+		});
+		$(modaldialog).on('hidden.bs.modal', function (e) {
+			//console.log('modal hidden')
+		});
+				
 		//Close drodpown if exists
 		if (dialog.closest('.dropdown-menu').length !== 0) {
 			dialog.closest('.dropdown-menu').removeClass('show');
@@ -1264,25 +1292,28 @@ uiload = function() {
 	});
 	
 	
-	$(document).on({
-	    'show.bs.modal': function () {
-	        var zIndex = 100000 + (10 * $('.modal:visible').length);
-	        $(this).css('z-index', zIndex);
-	        setTimeout(function() {
-	            $('.modal-backdrop').not('.modal-stack').css('z-index', zIndex - 1).addClass('modal-stack');
-	        }, 0);
-	    },
-	    'hidden.bs.modal': function() {
-	        if ($('.modal:visible').length > 0) {
-	            // restore the modal-open class to the body element, so that scrolling works
-	            // properly after de-stacking a modal.
-	            setTimeout(function() {
-	                $(document.body).renoveClass('modal-open');
-	            }, 0);
-	        }
-	    }
-	}, '.modal');
-	
+	adjustzindex = function(element) {
+		var zIndex = 100000;
+        setTimeout(function() {
+			var adjust = 0;
+			
+			if(element.hasClass("modalmediaviewer")) {
+				$('.modal:visible').css('z-index', zIndex);	
+				$('.modal:visible').off();
+			}
+			else {
+				$('.modalmediaviewer').css('z-index', zIndex);
+				$('.modal:visible').css('z-index', zIndex - 1); //reset others?		
+				$('.modal-backdrop').not('.modal-stack').css('z-index', zIndex - 1).addClass('modal-stack');	
+			}
+			adjust = 1 + (1 * $('.modal:visible').length);
+			element.css('z-index', zIndex + adjust);
+			$('.onfront').removeClass("onfront");
+			element.addClass("onfront");
+		}, 0);
+	}
+
+
 	lQuery("a.entity-tab-label").livequery("click", function(event) {
 		event.preventDefault();
 		var link = $(this);
@@ -3730,9 +3761,33 @@ uiload = function() {
 		}
 		return;		
 	});
+	
+	
+	$(document).keydown(function(e) {
+    switch(e.which) {
+        case 27: // esc
+        	var ismodal = $('.modal.onfront');
+        	if (ismodal.length) {
+        		// Close modal only
+        		closeemdialog(ismodal);
+        	}
+        	else{
+        		hideOverlayDiv(getOverlay());
+        	}
+       		e.stopPropagation();
+       		e.preventDefault();
+			return;
+        break;
+        
+        default: return; // exit this handler for other keys
+    }
+});
 
 
 }// uiload
+
+
+
 
 function formsavebackbutton(form) {
 	var savedcontainer = $('.enablebackbtn');
@@ -4028,6 +4083,7 @@ jQuery(window).on('resize',function(){
 
 
 jQuery(document).on('domchanged',function(){
+	
 	gridResize(); 
 	resizecolumns();
 	//jQuery(window).trigger("resize");
