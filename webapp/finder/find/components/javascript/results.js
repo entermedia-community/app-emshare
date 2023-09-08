@@ -1224,9 +1224,14 @@ jQuery(document).ready(function(url,params)
         	options = resultsdiv.data();
 			
 			
-            var moduletable = $(this).closest(".emselectable");;
-            if (moduletable && moduletable.data("targetdiv")) {
-            	targetdiv = $("#"+moduletable.data("targetdiv"));
+            var moduletable = $(this).closest(".emselectablesortable");;
+            var targetdiv_ = moduletable.data("targetdiv");
+            if (moduletable && targetdiv_) {
+				
+            	targetdiv = $("#"+targetdiv_);
+            	if(!targetdiv.length) {
+					targetdiv = $("."+targetdiv_);
+				}
             	searchhome = moduletable.data('searchhome');
             	options = moduletable.data();
             }

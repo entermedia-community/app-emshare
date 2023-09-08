@@ -1,5 +1,6 @@
 
 #set( $searchtype = $context.getRequestParameter("searchtype"))
+#set( $parentsearchtype = $context.getRequestParameter("parentsearchtype"))
  
 #set( $xmledithome = "$componenthome/xml")
 #set( $candelete = $context.getRequestParameter("candelete"))
@@ -21,13 +22,11 @@
 #set( $details = $searcher.getDataProperties($viewpath, $user) )
 
 #if(!$details)
-[[No view defined]]: $viewpath
-#stop
+	[[No view defined]]: $viewpath
+	#stop
 #end
 
 #set($sortable = "sortable")
-
-
 #set( $targetrendertype = $context.getRequestParameter("targetrendertype"))
 #if(!$tabletype)
 	#set( $tabletype = $context.getRequestParameter("tabletype"))
@@ -36,7 +35,7 @@
 	#set( $tabletype = "subentity")
 #end
 #if($tabletype == "subentity")
-	#set( $targetdiv = $context.getRequestParameter("targetdiv"))
+	#set( $targetdiv = "submodulepicker")
 	#set( $targetoemaxlevel = $context.getRequestParameter("targetoemaxlevel"))
 	#set( $targetdivtablepositions = "results$!{viewid}")
 	#set( $fieldexternaloperation = "exact")
@@ -48,19 +47,17 @@
 	#set( $fieldexternaloperation = "not")
 #end
 
-
 $context.putPageValue("targetdivtablepositions", $targetdivtablepositions)
 
 #set($clickurl = $context.getRequestParameter("clickurl"))
 #set($clickurltargetdiv = $context.getRequestParameter("clickurltargetdiv"))
 #set($clickurloemaxlevel = $context.getRequestParameter("clickurloemaxlevel"))
 
-
 #set($emselectableform = $context.getRequestParameter("emselectableform"))
 
 #set($hits = $tablehits)
-
-
+#set($submoduleresults = "results$!{viewid}")
+<div id="$!submoduleresults" class="submodulepicker">
 #if( $hits && $hits.size() > 0 )
 
 	#if($tabletype == "subentity")
@@ -87,14 +84,12 @@ $context.putPageValue("targetdivtablepositions", $targetdivtablepositions)
 		#set($resultsLink = "${resultsLink}?${args}")
 		
 		$context.putPageValue("resultsLink", $resultsLink)
-		
-		
 	
 
 		#if($hits.totalPages > 1)
 		<ul class="table-positions-top domdatacontext" 
 			#if($tabletype == "subentity") 
-			data-targetdivinner="$!targetdivtablepositions"
+			data-targetdiv="$!targetdivtablepositions"
 			#else
 			data-targetdiv="$!targetdivtablepositions"
 			#end
@@ -129,8 +124,9 @@ $context.putPageValue("targetdivtablepositions", $targetdivtablepositions)
 		   
 		
 			<div id="emselectable"
-				class='$tableclass' 
+				class='$tableclass emselectablesortable' 
 				data-viewid="$!viewid" 
+				data-viewpath="$viewpath"
 				#if ($fieldexternalid)
 				data-field="$fieldexternalid"
 				data-$!{fieldexternalid}.value="$!fieldexternalvalue"
@@ -155,6 +151,7 @@ $context.putPageValue("targetdivtablepositions", $targetdivtablepositions)
 					data-targetdiv="$!targetdiv"
 					data-oemaxlevel="1"
 					data-entitytabopen="tab_metadata"
+					data-parentsearchtype="$!parentsearchtype"
 				#elseif($tabletype == "subentityadd")
 					data-parentviewid="$!parentviewid"
 					data-targetdiv="$!targetdiv"
@@ -305,3 +302,4 @@ $context.putPageValue("targetdivtablepositions", $targetdivtablepositions)
 		<div id="resultsdiv$!{entity.getId()}"></div>
 	#end
 #end
+</div>
