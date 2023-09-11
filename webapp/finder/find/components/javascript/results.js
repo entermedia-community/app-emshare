@@ -1516,30 +1516,35 @@ checkScroll = function()
 function gridupdatepositions(grid) {
 	
 	//console.log("Checking Old Position: " + oldposition);
-	var positionsDiv = grid.closest("#resultsdiv");
-	positionsDiv = positionsDiv.find(".resultspositions");
-	var oldpage = grid.data("currentpagenum");
+	var resultsDiv = grid.closest("#resultsdiv");
 	
-	$(".masonry-grid-cell", grid).each(function(index, cell)
-	{
-    	var elementviewport = isInViewport(cell);
-    	if(elementviewport) {
-    		var pagenum = $(cell).data("pagenum");
-    		if(pagenum != oldpage)
-			{
-    			grid.data("currentpagenum", pagenum);
-    			positionsDiv.data("currentpagenum", pagenum);
-   				//var currentscroll = $(window).scrollTop();
-
-	    	 	//console.log("Firing dom event: ",oldpage, pagenum, $(window).scrollTop());
-				var url = positionsDiv.data("url");
- 				//positionsDiv.data("currentpage",pagenum); //Where we are at
- 				var options = positionsDiv.data();
-				replaceelement(url,positionsDiv,options);
-			}
-   			return false;
-    	}
-    });
+	var positionsDiv = resultsDiv.find(".resultspositions");
+	console.log("positionsDiv:", positionsDiv);
+	
+	if(positionsDiv.length  > 0) {
+		var oldpage = grid.data("currentpagenum");
+		
+		$(".masonry-grid-cell", grid).each(function(index, cell)
+		{
+	    	var elementviewport = isInViewport(cell);
+	    	if(elementviewport) {
+	    		var pagenum = $(cell).data("pagenum");
+	    		if(pagenum != oldpage)
+				{
+	    			grid.data("currentpagenum", pagenum);
+	    			positionsDiv.data("currentpagenum", pagenum);
+	   				//var currentscroll = $(window).scrollTop();
+	
+		    	 	//console.log("Firing dom event: ",oldpage, pagenum, $(window).scrollTop());
+					var url = positionsDiv.data("url");
+	 				//positionsDiv.data("currentpage",pagenum); //Where we are at
+	 				var options = positionsDiv.data();
+					replaceelement(url,positionsDiv,options);
+				}
+	   			return false;
+	    	}
+	    });
+	}
 }
 
 function isInViewport(cell) 
