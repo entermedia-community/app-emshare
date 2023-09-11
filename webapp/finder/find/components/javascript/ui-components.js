@@ -2230,7 +2230,7 @@ uiload = function() {
 		});
 	});
 
-	lQuery("input.grabfocus").livequery(function() {
+	lQuery(".grabfocus").livequery(function() {
 		var theinput = $(this);
 		//theinput.css("color", "#666");
 //		if (theinput.val() == "") {
