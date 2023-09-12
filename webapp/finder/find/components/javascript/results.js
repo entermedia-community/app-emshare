@@ -59,7 +59,7 @@ jQuery(document).ready(function(url,params)
 						 searchtype:  searchtype ,
 						 page:  select.data("page") ,
 						 showremoveselections:  select.data("showremoveselections") ,
-						 ismodulesearch: ismodulesearch,
+						 moduleid: moduleid,
 						 resultviewtype: searchtype+"resultview",
 						 oemaxlevel: oemaxlevel,
 						  };
