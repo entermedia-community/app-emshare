@@ -56,11 +56,12 @@
 	#end
 	#text($module)
 	</span>
-	 <span class="count">([[Found]]: $count)</span>
+	 ##<span class="count">([[Found]]: $count)</span>
 	</a>
 	
-	#set($entityurlall = "$!siteroot$apphome/views/modules/$!{module.id}/index.html?$!{module.id}page=1")
-	<a href="$entityurlall" 
+	#if($count > 3)
+	##set($entityurlall = "$!siteroot$apphome/views/modules/$!{module.id}/index.html?$!{module.id}page=1")
+	<a href="$entityurl" 
 		class="ajax qsresultsEntityall" 
 		style=""
 		data-targetdiv="applicationmaincontent" 
@@ -68,7 +69,7 @@
 		data-updateurl="true" 
 		data-profilepreference="defaultmodule"
 		data-profilepreference.value="$!module.getId()"
-		title="[[View All]]: #text($module)" >
+		title="[[View]] $count: #text($module)" >
 	
 	<span class="qsresultsEntitytext">
 	#if( $module.id == "asset") ##this is safe
@@ -79,10 +80,12 @@
 	#ifnull($count)
 		#set( $count = $hits.size()) 
 	#end
-	[[View All]]
+	([[View]] <span class="count">$count</span>)
 	</span>
-	 ##<span class="count">($count)</span>
 	</a>
+	#end
+	
+	
 	<div>
 	#foreach( $hit in $hits.getPageOfHits())
 	   	#set( $val2 = $hit.getName())
