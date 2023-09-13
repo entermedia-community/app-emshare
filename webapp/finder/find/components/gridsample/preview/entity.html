@@ -1,6 +1,7 @@
 #set( $searchtype = $context.findValue("searchtype"))
 #set( $parentsearchtype = $searchtype)
 #set( $id = $context.getRequestParameter("id"))
+#set( $addnew = $context.getRequestParameter("addnew"))
 #ifnull($id)
 	#set( $id = $context.getRequestParameter("entityid"))
 	$context.putPageValue("id", $id)
@@ -79,8 +80,11 @@ $context.putPageValue("moduleid", $moduleid)
 	#if($entity.getName($context))
 			#set($name = $!entity.getName($context))
 	#else 
+		#if($addnew=='true')
 			#set($name = "[[Add New]]")
 			#set($entitytabopen = "tab_metadata")
+			$context.putPageValue("addnew", $addnew)
+		#end
 	#end
 	
 	#text($name)

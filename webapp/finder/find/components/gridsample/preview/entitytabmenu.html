@@ -40,7 +40,9 @@
 			#if($entity.getName($context))
 				#set($name = $!entity.getName($context))
 			#else 
-				#set($name = "[[Add New]]")
+				#if($addnew=='true')
+					#set($name = "[[Add New]]")
+				#end
 			#end
 		#end
 		#set($targetentitytabid = "entity-tab-#eid($!{id})")
@@ -50,7 +52,12 @@
 #end
 <div class="entity-tab  #if($currenttab == $tabid) current-entity #end" 
 	#if(!$tabtype) data-entityid="$!entity.getId() #end">
-	<a href="#$!tabid" 
+	<a 
+		#if($addnew=='true')
+			href="#"
+		#else
+			href="#$!tabid"
+		#end 
 		class="entity-tab-label"
 		data-tabid="$!tabid"
 		data-currenttab="$!tabid"
