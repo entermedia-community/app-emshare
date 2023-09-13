@@ -1,2 +1,44 @@
-$pages.include("${page.directory}/multiselect.html", $context)
+
+<div id="listdetail_$fieldname" class="listdetailpicker" data-rendertype="multiselect">
+#if( !$values && $data )
+	#set($values = $data.getValues($detail.id) )
+#end
+
+#set($searcher = $searcherManager.getSearcher($detail.getListCatalogId(), $detail.getListId() ))
+#set($entity_module = $detail.getListId())
+
+#set ($foreignkeyid = $detail.getListId() )
+
+#set($searchfield = "name")
+#set($detailid = $detail.getId().replace('.','-') )
+#set($idcount = $context.getRequestParameter("idcount"))
+#if(!$idcount)
+	#set($idcount = "")
+#end
+#set( $valueid = "list-${detailid}${idcount}value")
+<select name="${detail.getId()}.value"  
+		id="$valueid"  
+		class="listautocompletemulti form-control #if($detail.isRequired() && !$multiedit && !$searchfrom) required #end" 
+		data-searchfield="name" 
+		data-searchtype="$detail.listId" 
+		data-listcatalogid="$detail.listCatalogId" 
+		data-foreignkeyid="" 
+		data-placeholder="$detail.getText($context)" 
+		data-sortby="$!detail.sort"
+		multiple>
+	#foreach( $type in $values )
+			#set( $row = false )
+			#set( $row = $searcher.searchById($type) )
+		    #if( $row )
+			    #if( $searcher.getDetail("name").isMultiLanguage())
+			    	#set($name = $row.getName($context.getLocale()))
+			    #else
+			    	#set($name = $row)
+			    #end
+			    #set($entityid = $row.id)
+			 #end
+		<option value="$row.getId()"  selected="selected">#text($row)</option>
+	#end
+</select>	
+</div>
 
