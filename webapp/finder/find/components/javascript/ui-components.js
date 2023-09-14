@@ -1457,7 +1457,12 @@ uiload = function() {
 				//options["moduleid"] = moduleid;
 
 				var searchurl = input.data("searchurl");//apphome + "/index.html";
-	
+				
+				if( e.which == 9)
+				{
+					typeaheadloading.hide();
+					return;
+				}
 				if( searchurl && e.which == 13)
 				{
 					e.preventDefault();
@@ -1569,6 +1574,7 @@ uiload = function() {
 						if(data) 
 						{
 							modaldialog.html(data);
+							/*
 							var lis = modaldialog.find("li");
 							if( lis.length > 0)
 							{
@@ -1579,6 +1585,8 @@ uiload = function() {
 							{
 								modaldialog.hide();
 							}
+							*/
+							modaldialog.show();
 						}	
 						typeaheadloading.hide();
 					}
