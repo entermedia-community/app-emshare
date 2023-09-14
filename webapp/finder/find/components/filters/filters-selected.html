@@ -36,32 +36,32 @@
 			</a>
 		</li>
 		#else
-		#foreach( $link in $topmenu)
-			#set( $entity = $mediaarchive.getCachedData("module",$link.toplevelentity) )
-			##sort type			
-		<li >
-			<a href="$applink/views/modules/$entity.getId()/index.html?${entity.getId()}page=1" 
-				class="ajax activelistener #ifnotnull($selected) #if( $selected == $entity.getId()) active#end #end" 
-				data-targetdiv="applicationcontent" 
-				data-oemaxlevel="4" 
-				data-updateurl="true"
-				data-profilepreference="defaultmodule" 
-				data-profilepreference.value="${entity.getId()}" 
-				#if($entity.getId() =="asset") data-sidebarcomponent="categories" #end
-				title="[[View]] #text($link)">
-					#text($link)
-			</a>
-		</li>
-		#end
-		#if($canviewsettings)
-			<li class="settingslinkmenu">
-				<a href="$applink/views/settings/modules/setup/index.html" 
-				class="ajax" data-targetdiv="applicationcontent" data-oemaxlevel="4"
-				data-sidebarcomponent="settings" 
-				title="[[Add Menu Options]]">
-				<i class="fas fa-plus"></i></a>
-			</li>
-		#end
+			#foreach( $link in $topmenu)
+				#set( $entity = $mediaarchive.getCachedData("module",$link.toplevelentity) )
+				##sort type			
+				<li >
+					<a href="$applink/views/modules/$entity.getId()/index.html?${entity.getId()}page=1" 
+						class="ajax activelistener #ifnotnull($selected) #if( $selected == $entity.getId()) active#end #end" 
+						data-targetdiv="applicationcontent" 
+						data-oemaxlevel="4" 
+						data-updateurl="true"
+						data-profilepreference="defaultmodule" 
+						data-profilepreference.value="${entity.getId()}" 
+						#if($entity.getId() =="asset") data-sidebarcomponent="categories" #end
+						title="[[View]] #text($link)">
+							#text($link)
+					</a>
+				</li>
+			#end
+			#if($canviewsettings)
+				<li class="settingslinkmenu">
+					<a href="$applink/views/settings/modules/setup/index.html" 
+					class="ajax" data-targetdiv="applicationcontent" data-oemaxlevel="4"
+					data-sidebarcomponent="settings" 
+					title="[[Add Menu Options]]">
+					<i class="fas fa-plus"></i></a>
+				</li>
+			#end
 		#end
 	</ul>
 	</div>

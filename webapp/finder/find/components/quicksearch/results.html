@@ -86,18 +86,20 @@
 	#end
 	
 	
+	#set($rendertype = $module.modulerendertype)
+				
+	#if (!$rendertype)
+	   	#set($rendertype = "entity")
+	#end
+	
 	<div>
 	#foreach( $hit in $hits.getPageOfHits())
 	   	#set( $val2 = $hit.getName())
-		#set($one = "$!siteroot$apphome/views/modules/$!{module.id}/index.html?$!{module.id}page=1&field=description&operation=freeform&description.value=$val2&topentityid=$hit.getId()&entityid=$hit.getId()&entitytype=${module.id}")
+		##set($one = "$!siteroot$apphome/views/modules/$!{module.id}/index.html?$!{module.id}page=1&field=description&operation=freeform&description.value=$val2&topentityid=$hit.getId()&entityid=$hit.getId()&entitytype=${module.id}")
+		#set($one = "$!siteroot$apphome/views/modules/$!{module.id}/components/gridsample/preview/${rendertype}.html?id=$hit.getId()")
 	
 		<a href="$one" 
-		class="ajax quicksearchlinks" 
-		data-targetdiv="applicationmaincontent" 
-		data-oemaxlevel="3" 
-		data-updateurl="true" 
-		data-profilepreference="defaultmodule"
-		data-profilepreference.value="$!module.getId()"
+		class="quicksearchlinks emdialog entity-dialog" 
 		title="[[View]] #text($module): #esc($hit) " >$hit</a>
 	#end
 	</div>
