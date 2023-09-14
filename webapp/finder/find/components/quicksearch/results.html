@@ -18,6 +18,9 @@
 <div style="position:absolute; top:0px; right:2px; color:#333;">
 <span title="[[Esc to Close]]" class="fas fa-window-close"></span>
 </div>
+#set($filter = $modulehits.findFilterValue("entitysourcetype") )
+$context.putPageValue("filter", $filter)
+
 #foreach($module in $organizedModules)
 	#set($hits = $organizedHits.get($module.id))
 	
@@ -125,29 +128,8 @@
 		data-profilepreference.value="$!assetmodule.getId()"
 		title="[[View Media Keywords]]" >
 	<img src="$siteroot$apphome/theme/images/entity/${moduleicon}.svg"	style="height: 25px; max-width:20px;"> 
-	<span class="qsresultsEntitytext">[[Media Keywords]]</span>
-	</a>
-<ul class="qsrecent">
-#foreach ($suggestion in $livesuggestions)
-	#set( $k = $suggestion.getKeyword() )
-	##if (!$ajax)
-	##set($url = "$url?operation=contains&field=description&description.value=#esc($k)&clearfilters=true")
-	##end
-		
-	<li>
-		<a href="$url" 
-			data-oemaxlevel="3" 
-			data-searchtype="applicationmaincontent" 
-			data-field="description" 
-			data-operation="contains" 
-			data-targetdivinner="applicationmaincontent"
-			data-description.value="#esc($k)" 
-			class="ajax quicksearchlinks" >
-			 <span>$suggestion.getBold()</span></a>  ##make bold
-	</li>	 
-#end
-</ul>
-<div class="clearfix"></div>
+	<span class="qsresultsEntitytext">[[Media Files]] (See $assethits.size())</span>
+</a>
 #end
 
 </div>
