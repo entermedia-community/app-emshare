@@ -61,8 +61,6 @@ $context.putPageValue("filter", $filter)
 	</span>
 	 ##<span class="count">([[Found]]: $count)</span>
 	</a>
-	
-	#if($count > 3)
 	##set($entityurlall = "$!siteroot$apphome/views/modules/$!{module.id}/index.html?$!{module.id}page=1")
 	<a href="$entityurl" 
 		class="ajax qsresultsEntityall" 
@@ -86,8 +84,6 @@ $context.putPageValue("filter", $filter)
 	([[View]] <span class="count">$count</span>)
 	</span>
 	</a>
-	#end
-	
 	
 	#set($rendertype = $module.modulerendertype)
 				
@@ -95,17 +91,19 @@ $context.putPageValue("filter", $filter)
 	   	#set($rendertype = "entity")
 	#end
 	
-	<div>
-	#foreach( $hit in $hits.getPageOfHits())
-	   	#set( $val2 = $hit.getName())
-		##set($one = "$!siteroot$apphome/views/modules/$!{module.id}/index.html?$!{module.id}page=1&field=description&operation=freeform&description.value=$val2&topentityid=$hit.getId()&entityid=$hit.getId()&entitytype=${module.id}")
-		#set($one = "$!siteroot$apphome/views/modules/$!{module.id}/components/gridsample/preview/${rendertype}.html?id=$hit.getId()")
-	
-		<a href="$one" 
-		class="quicksearchlinks emdialog entity-dialog" 
-		title="[[View]] #text($module): #esc($hit) " >$hit</a>
-	#end
-	</div>
+	<ul class="qsrecent">	
+		#foreach( $hit in $hits.getPageOfHits())
+		   	#set( $val2 = $hit.getName())
+			##set($one = "$!siteroot$apphome/views/modules/$!{module.id}/index.html?$!{module.id}page=1&field=description&operation=freeform&description.value=$val2&topentityid=$hit.getId()&entityid=$hit.getId()&entitytype=${module.id}")
+			#set($one = "$!siteroot$apphome/views/modules/$!{module.id}/components/gridsample/preview/${rendertype}.html?id=$hit.getId()")
+		<li>
+		
+			<a href="$one" 
+			class="quicksearchlinks emdialog entity-dialog" 
+			title="[[View]] #text($module): #esc($hit) " >$hit</a>
+		</li>	
+		#end
+	</ul>
 	</div>
 #end
 
@@ -117,6 +115,7 @@ $context.putPageValue("filter", $filter)
 #if ($assetmodule.moduleicon)
 	#set($moduleicon = $assetmodule.moduleicon)
 #end
+
 #set($entityurl = "$!siteroot$apphome/views/modules/asset/search.html?field=description&operation=freeform&description.value=$val")
 <a href="$entityurl" 
 		class="ajax qsresultsEntity" 
@@ -128,8 +127,28 @@ $context.putPageValue("filter", $filter)
 		data-profilepreference.value="$!assetmodule.getId()"
 		title="[[View Media Keywords]]" >
 	<img src="$siteroot$apphome/theme/images/entity/${moduleicon}.svg"	style="height: 25px; max-width:20px;"> 
-	<span class="qsresultsEntitytext">[[Media Files]] (See $assethits.size())</span>
-</a>
+	<span class="qsresultsEntitytext">[[Media Keywords]]</span>
+	</a>
+<ul class="qsrecent">
+#foreach ($suggestion in $livesuggestions)
+	#set( $k = $suggestion.getKeyword() )
+	##if (!$ajax)
+	##set($url = "$url?operation=contains&field=description&description.value=#esc($k)&clearfilters=true")
+	##end		
+	<li>
+		<a href="$url" 
+			data-oemaxlevel="3" 
+			data-searchtype="applicationmaincontent" 
+			data-field="description" 
+			data-operation="contains" 
+			data-targetdivinner="applicationmaincontent"
+			data-description.value="#esc($k)" 
+			class="ajax quicksearchlinks" >
+			 <span>$suggestion.getBold()</span></a>  ##make bold
+	</li>	 
+#end
+</ul>
+<div class="clearfix"></div>
 #end
 
 </div>
