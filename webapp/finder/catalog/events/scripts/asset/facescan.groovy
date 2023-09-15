@@ -39,7 +39,9 @@ public void init()
 			Asset asset = archive.getAssetSearcher().loadData(hit);
 			manager.extractFaces(asset);
 		}
-		log.info("processed  " + hits.size());
+		if (hits.size() > 0) {
+			log.info("("+archive.getCatalogId()+") Facescan processed  " + hits.size());
+		}
 	}
 	finally
 	{
