@@ -3921,57 +3921,23 @@ showajaxstatus = function(uid)
 var resizecolumns = function() {
 	var windowh = $(window).height();
 	//make them same top
-	var sidebarsposition = $("#resultsdiv").position();
-	var sidebarstop = 0;
-	/*if (typeof sidebarsposition != "undefined") {
-		sidebarstop = sidebarsposition.top;
-		$('.col-filters').css('top',sidebarstop + 'px');
-		$('.col-left').css('top',sidebarstop + 'px');
-	}*/
 	
 	var header_height = $("#header").outerHeight()
 	var footer_height = $("#footer").outerHeight();
 	var resultsheader_height = 0;
 	
 	
-	if($(".collection-header").outerHeight()) {
-		resultsheader_height = $(".collection-header").outerHeight();
-	}
-	else if ($(".filtered").outerHeight()) {
-		resultsheader_height = $(".filtered").outerHeight();
-	}
-	
-	//var columnsheight = $("body").outerHeight() - allheights;
 	var columnsheight = 0;
-	var sidebartop = 1;
 
 	//togglers always screen height
 	var coltogglers = $(".col-sidebar-togglers");
-	coltogglers.css("height", windowh);
+	coltogglers.css("height", windowh - 1);
 	var colsidebar = $(".col-mainsidebar");
-	colsidebar.css("height", windowh);
+	colsidebar.css("height", windowh - 1);
 	
-	
-/*
- * 	
- 	var coltogglers = $(".col-sidebar-togglers > .col-main-inner");
-	if (coltogglers.length) {
-		columnsheight = coltogglers.outerHeight();
-	}
-*/
-	/*
-	var colsidebar = $(".col-mainsidebar").find(".col-main-inner");
-	if (colsidebar.length) {
-		var thisheight = colsidebar.outerHeight();
-		if (thisheight>columnsheight) {
-			columnsheight = thisheight;
-		}
-	}
-	*/
 	//reset some heights
-	if($(".settingslayout").length) {
-		$(".settingslayout").css("height","auto");
-	}
+	$(".settingslayout").css("height","auto");
+	$(".col-content-main").css("height","auto"); //reset
 	
 	var colmaincontet = $(".col-content-main").find(".col-main-inner");
 	if (colmaincontet.length) {
@@ -3983,36 +3949,14 @@ var resizecolumns = function() {
 	else if($("#application").find(".finderlargearea")) {
 		columnsheight = $("#application").find(".finderlargearea").outerHeight();
 	}
-	if(columnsheight<100) {
-		columnsheight = 360;
+	if(columnsheight<windowh) {
+		columnsheight = (windowh - 50);
 	}
 	
-	var allheights  = header_height + resultsheader_height;
-	//$(".col-sidebar-togglers").css("height", columnsheight + allheights);
-
-	if(!$(".col-mainsidebar").hasClass("fixedheight")) {
-		//$(".col-mainsidebar").css("height", columnsheight + allheights);
-	}
-	else {
-		allheights  = header_height + resultsheader_height;
-		
-		windowh = windowh - allheights;
-		$(".col-left").css("height", columnsheight);
-		$(".col-left > .col-main-inner").css("height", windowh);
-	}
 	
-	//$(".col-sidebar").css("min-height", columnsheight);
-	if ($(".col-content-main").find(".settingslayout").length) {
-		$(".col-content-main").css("height", columnsheight + sidebarstop + "px");
-		$(".settingslayout").css("height", columnsheight + sidebarstop + "px");
-	}
-	else {
-		$(".col-content-main").css("height", columnsheight + allheights - header_height);
-	}
+	$(".col-content-main").css("height", columnsheight);
+	/*$("#application").css("height", columnsheight)*/	
 	
-	$("#application").css("height", columnsheight + allheights)
-	
-	//$(".pushcontent").css("height","calc(100% - " + resultsheader_height + "px)");
 }
 
 
@@ -4100,7 +4044,6 @@ jQuery(document).ready(function() {
 });
 
 jQuery(window).on('resize',function(){
-	//console.log("resizing...");
 	gridResize();
 	resizegallery();
 	adjustdatamanagertable();
