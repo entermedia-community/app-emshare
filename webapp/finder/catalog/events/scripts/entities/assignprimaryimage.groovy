@@ -37,7 +37,7 @@ public void init()
 						
 						Category entitycategory = archive.getEntityManager().loadDefaultFolder(module, entity, null, false);
 						if(entitycategory != null) {
-							Data asset = (Data)archive.getAssetSearcher().query().match("category", entitycategory.getId()).sort("uploadeddate").searchOne(context);
+							Data asset = (Data)archive.getAssetSearcher().query().match("category", entitycategory.getId()).orgroup("assettype", "photo|video").sort("uploadeddate").searchOne(context);
 							if (asset) {
 								entity.setValue("primaryimage", asset.getId());
 								tosave.add(entity);
