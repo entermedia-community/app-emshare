@@ -3,6 +3,7 @@ package entities;
 import org.entermediadb.asset.MediaArchive
 import org.entermediadb.asset.Category
 import org.openedit.Data
+import java.util.regex.*
 import org.openedit.MultiValued
 import org.openedit.data.Searcher
 import org.openedit.hittracker.HitTracker
@@ -31,6 +32,54 @@ public void init()
 		processChildren(mediaArchive, module, root,deeplevel, count);		
 	}	
 }
+				/*
+				 * 2023-08-25 Orientation_JKnight
+				 * 2014-15 Alumni_Gameday
+				 * 2017 Softball_NCAA Regional
+				 * Alpine Ski_180120
+				 * */
+
+Pattern normal = Pattern.compile("(\\d{4}-\\d{2}-\\d{2})");
+Pattern yearmonth = Pattern.compile("^(\\d{4}-\\d{2})");
+Pattern startyear = Pattern.compile("^(\\d{4})");
+Pattern endyear = Pattern.compile("(\\d{6}");
+
+public Date findDate(String inName)
+{
+	Date date = null;
+	Matcher m = normal.matcher(inName);
+	if (m.find()) 
+	{
+	     date = new SimpleDateFormat("yyyy-MM-dd").parse(m.group(1));
+	}
+	else
+	{
+		m = yearmonth.matcher(inName);
+		if (m.find()) 
+		{
+		     date = new SimpleDateFormat("yyyy-MM").parse(m.group(1));
+		}
+		else
+		{
+			m = startyear.matcher(inName);
+			if (m.find()) 
+			{
+			     date = new SimpleDateFormat("yyyy").parse(m.group(1));
+			}
+			else
+			{
+				m = endyear.matcher(inName);
+				if (m.find()) 
+				{
+				     date = new SimpleDateFormat("ddMMyy").parse(m.group(1));
+				}	
+			}
+		}
+	}
+	return date;
+	
+}
+
 public void processChildren(MediaArchive mediaArchive, Data inmodule, Category parent, int startfromdeep, int currentdeep)
 {
 	if(startfromdeep == currentdeep )
@@ -41,16 +90,15 @@ public void processChildren(MediaArchive mediaArchive, Data inmodule, Category p
 			 String id = category.getValue(inmodule.getId());
 			 if( id == null )
 			 {
-			 	Data newchild = mediaArchive.getSearcher(inmodule.getId()).createNewData();
 				 
 				String categoryname = category.getName();
+				Date date = findDate(categoryname);
+				if(date == null)
+				{
+					continue;
+				}
+			 	Data newchild = mediaArchive.getSearcher(inmodule.getId()).createNewData();
 				
-				/*
-				 * 2014-15 Alumni_Gameday
-				 * 2017 Softball_NCAA Regional
-				 * 2023-08-25 Orientation_JKnight
-				 * Alpine Ski_180120
-				 * */
 				
 				
 				
