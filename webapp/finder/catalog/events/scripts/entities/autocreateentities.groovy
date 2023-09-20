@@ -22,7 +22,7 @@ public void init()
 	{
 		String startingpath = module.get("autocreatestartingpath");
 		int deeplevel = module.getInt("autocreatedeep");
-		log.info("Scanning: " + module + "for " + startingpath);
+		log.info("Scanning: " + module + " for: " + startingpath);
 		//scan folders till deep
 		Category root = mediaArchive.createCategoryPath(startingpath);
 		int count = root.getParentCategories().size();
@@ -55,8 +55,8 @@ public Date findDate(String inName)
 
 	for (Data rule in rules)
 	{
-		Pattern pattern = Pattern.compile(rule.pattern), 
-
+		Pattern pattern = Pattern.compile(rule.pattern); 
+		log.info("Matching: " + rule.pattern);
 		Matcher m = pattern.matcher(inName);
 		if (m.find()) 
 		{
@@ -82,11 +82,11 @@ public void processChildren(MediaArchive mediaArchive, Data inmodule, Category p
 			 	Data newchild = mediaArchive.getSearcher(inmodule.getId()).createNewData();
 			 	newchild.setName(categoryname);
 				Date date = findDate(categoryname);
+				
 				if(date != null)
 				{
 					newchild.setValue("entity_date", date);
 				}
-				
 			 	
 			 	//TODO Check parent for any entites and pass those down
 			 	for( String key in parent.getProperties().keySet() )
@@ -108,12 +108,12 @@ public void processChildren(MediaArchive mediaArchive, Data inmodule, Category p
 	}
 	else
 	{
-		log.info("processChildren Folder:" + parent + " Actual:" + currentdeep + " Matches? " + startfromdeep);
+		log.info("Process Children Folder: " + parent + " Actual: " + currentdeep + " Matches: " + startfromdeep);
 	
 		int nextdeep = currentdeep + 1;
 		for (Data child in parent.getChildren())
 		{
-			processChildren(mediaArchive,inmodule, child,startfromdeep, nextdeep);
+			processChildren(mediaArchive,inmodule, child, startfromdeep, nextdeep);
 		}
 	}
 }
