@@ -56,7 +56,6 @@ public Date findDate(String inName)
 	for (Data rule in rules)
 	{
 		Pattern pattern = Pattern.compile(rule.pattern); 
-		log.info("Matching: " + rule.pattern);
 		Matcher m = pattern.matcher(inName);
 		if (m.find()) 
 		{
