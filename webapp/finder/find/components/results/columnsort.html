@@ -2,4 +2,10 @@
 
 #set( $searchhome = $context.findValue("searchhome") )
 #set( $moduleid = $context.findValue("module") )
+
+#set($isembedmodule = $context.getRequestParameter("embedmodule"))
+#if($isembedmodule)
+$pages.include("$searchhome/indexembed.html", $context)
+#else
 $pages.include("$searchhome/index.html", $context)
+#end

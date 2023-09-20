@@ -1,4 +1,4 @@
-	<div id="detail_${detail.id}" valign="middle">
+<div id="$!{idprefix}detail_${detail.id}" valign="middle">
 	<div class="form-group">
 		<input name="field" value="$searcher.getCatalogId():$view:${detail.getId()}" type="hidden">
 
@@ -46,7 +46,7 @@
 		<input name="${detail.getId()}.searchtype" value="${detail.getSearchType()}" type="hidden" />
 		<div class="filter-box">
 			<div class="filter-box-header">
-					<span class="toggle-filter sidetoggle" data-target="filterbox${detail.getId()}">
+					<span class="toggle-filter sidetoggle" data-target="$!{idprefix}filterbox${detail.getId()}">
 					<i class="caret fas 
 							#set($minimized = $detail.getId())
 							#set($preference = '#set($selectedpreference = ' + '$userprofile.' + 'minimizefilterbox' + $minimized + ')')
@@ -71,19 +71,12 @@
 					##if ($edit == "true" && $detail.searchType)   (${detail.searchType} ) #end
 			</div>
 			<div class="filter-box-options" 
-				id="filterbox${detail.getId()}" #if($selectedpreference == "true") style="display: none;" #end
+				id="$!{idprefix}filterbox${detail.getId()}" 
+				#if($selectedpreference == "true") style="display: none;" #end
 				data-viewtype="${viewtype}">
 			
-			##if ($detail.isFilter())
-			
-			
 				$pages.include("/${applicationid}/components/filters/types/${viewtype}.html?search=true", $context)
-			
-			
-			##else
-                ##$context.putPageValue("removeclear",true)
-				##$pages.include("/${applicationid}/components/xml/types/${viewtype}.html?search=true", $context)
-			##end
+		
 			</div>
 		</div>
 		</div>

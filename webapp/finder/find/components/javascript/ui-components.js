@@ -237,8 +237,7 @@ runajaxonthis = function(inlink,e)
 			//Close Dialog
 			var closedialog = inlink.data("closedialog");
 			if (closedialog && inlinkmodal != null) {
-					inlinkmodal.modal("hide");
-					$("body").removeClass("modal-open");
+					closeemdialog(inlinkmodal);
 			}
 			//Close MediaViewer
 			var closemediaviewer = inlink.data("closemediaviewer");
@@ -1037,8 +1036,7 @@ uiload = function() {
 		
 	
 	emdialog = function(dialog, event) {
-		if( event )
-		{
+		if( event )	{
 			event.stopPropagation();
 		}
 		var dialog = dialog;
@@ -1050,11 +1048,11 @@ uiload = function() {
 		if (!id) {
 			id = "modals";	
 		}
-		
+
 		var modaldialog = $("#" + id);
 		if (modaldialog.length == 0) {
 			jQuery("#application").append(
-					'<div class="modal " tabindex="-1" id="' + id
+					'<div class="modal" tabindex="-1" id="' + id
 							+ '" style="display:none" ></div>');
 			modaldialog = jQuery("#" + id);
 		}
@@ -1083,7 +1081,6 @@ uiload = function() {
 			url: link,
 			data: options,
 			success: function(data) {
-				
 				//--Entities
 				if(dialog.hasClass("entity-dialog") && dialog.closest(".modal").length !== 0) {
 					//find tab
@@ -1106,9 +1103,7 @@ uiload = function() {
 				}
 				else {
 					modaldialog.html(data);
-					
 					if (width) {
-						
 						if( width >  $(window).width() )
 						{
 							width =  $(window).width();
@@ -1120,37 +1115,30 @@ uiload = function() {
 						$(".modal-lg").css("max-width", maxwidth + "px");
 					}
 					
-					var modalkeyboard = true;
-					var noesc = dialog.data("noesc");
-					if (noesc != null && noesc == "true") {
-						 modalkeyboard = false;
+					var modalkeyboard = false;
+					var modalbackdrop = true;
+					if($('.modal-backdrop').length) {
+						modalbackdrop = false;
 					}
-					//Verify if modal was open on top of Asset Media Viewer
-					if(modalkeyboard) {
-						var mainmedia = $("#hiddenoverlay");
-						if(mainmedia.length  && mainmedia.hasClass("show")) {
-							modalkeyboard = false;
-						}
-					}
-					
-					modalkeyboard = false;
 					
 					var modalinstance;
 					if(modalkeyboard) {
 						modalinstance = modaldialog.modal({
 								closeExisting: false,
-								"show" : true
+								"show" : true,
+								backdrop: modalbackdrop
 						});
 					}else {
 						modalinstance = modaldialog.modal({
 							keyboard : false,
 							closeExisting: false,
-							"show" : true
+							"show" : true,
+							backdrop: modalbackdrop
 						});
 					}
 					
 					
-					jQuery('.modal-backdrop').insertAfter(modalinstance);
+					//jQuery('.modal-backdrop').insertAfter(modalinstance);
 						
 					var firstform = $('form', modaldialog);
 					firstform.data("openedfrom", openfrom);
@@ -1207,7 +1195,7 @@ uiload = function() {
 					$(window).trigger("resize");
 					
 					modalinstance.on('hidden.bs.modal', function () {
-						
+  						closeemdialog($(this));
 						$(window).trigger("resize");
 					});
 					
@@ -1276,6 +1264,11 @@ uiload = function() {
 		if (modaldialog.modal) {
 			modaldialog.modal("hide");
 			modaldialog.remove();
+		}
+		//other modals?
+		var othermodal = $(".modal");
+		if(othermodal.length) {
+			adjustzindex(othermodal);
 		}
 	};
 	
@@ -3794,7 +3787,7 @@ uiload = function() {
 	
 	$(document).keydown(function(e) {
     switch(e.which) {
-        case 27: // esc
+        case 27: //esckey
         	var ismodal = $('.modal.onfront');
         	if (ismodal.length) {
         		// Close modal only
