@@ -32,52 +32,39 @@ public void init()
 				/*
 				 * 2023-08-25 Orientation_JKnight
 				 * 2014-15 Alumni_Gameday
-				 * 2017 Softball_NCAA Regional
 				 * Alpine Ski_180120
+				 * 2017 Softball_NCAA Regional
 				 * */
 
 
 
 public Date findDate(String inName)
 {
-	Pattern normal = Pattern.compile("(\\d{4}-\\d{2}-\\d{2})");
-	Pattern yearmonth = Pattern.compile("^(\\d{4}-\\d{2})");
-	Pattern startyear = Pattern.compile("^(\\d{4})");
-	Pattern endyear = Pattern.compile("(\\d{6})");
-	
-	
-	Date date = null;
-	Matcher m = normal.matcher(inName);
-	if (m.find()) 
+	/*
+		Pattern[] all = new Pattern[] {
+			Pattern.compile("(\\d{4}-\\d{2}-\\d{2})"), 
+			Pattern.compile("^(\\d{4}-\\d{2})"),
+			Pattern.compile("^(\\d{4})"),
+			Pattern.compile("(\\d{6})")
+		};
+		String[] formats = {"yyyy-MM-dd","yyyy-MM","yyyy","yyMMdd"};	
+	*/		
+
+	MediaArchive mediaArchive = (MediaArchive)context.getPageValue("mediaarchive");
+	Collection rules = mediaArchive.getList("entitydateformatrules");
+
+	for (Data rule in rules)
 	{
-	     date = new SimpleDateFormat("yyyy-MM-dd").parse(m.group(1));
-	}
-	else
-	{
-		m = yearmonth.matcher(inName);
+		Pattern pattern = Pattern.compile(rule.pattern), 
+
+		Matcher m = pattern.matcher(inName);
 		if (m.find()) 
 		{
-		     date = new SimpleDateFormat("yyyy-MM").parse(m.group(1));
-		}
-		else
-		{
-			m = startyear.matcher(inName);
-			if (m.find()) 
-			{
-			     date = new SimpleDateFormat("yyyy").parse(m.group(1));
-			}
-			else
-			{
-				m = endyear.matcher(inName);
-				if (m.find()) 
-				{
-				     date = new SimpleDateFormat("ddMMyy").parse(m.group(1));
-				}	
-			}
+		     Date date = new SimpleDateFormat(rule.dateformat).parse(m.group(1));
+		     return date;
 		}
 	}
-	return date;
-	
+	return null;	
 }
 
 public void processChildren(MediaArchive mediaArchive, Data inmodule, Category parent, int startfromdeep, int currentdeep)
@@ -92,15 +79,14 @@ public void processChildren(MediaArchive mediaArchive, Data inmodule, Category p
 			 {
 				 
 				String categoryname = category.getName();
-				Date date = findDate(categoryname);
-				if(date == null)
-				{
-					continue;
-				}
 			 	Data newchild = mediaArchive.getSearcher(inmodule.getId()).createNewData();
-				
-				newchild.setValue("entity_date", date);
 			 	newchild.setName(categoryname);
+				Date date = findDate(categoryname);
+				if(date != null)
+				{
+					newchild.setValue("entity_date", date);
+				}
+				
 			 	
 			 	//TODO Check parent for any entites and pass those down
 			 	for( String key in parent.getProperties().keySet() )
