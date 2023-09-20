@@ -78,6 +78,10 @@ public void processChildren(MediaArchive mediaArchive, Data inmodule, Category p
 			 {
 				 
 				String categoryname = category.getName();
+				if (categoryname == null) {
+					log.info("Empty Category: " + category.getId());
+					continue;
+				}
 			 	Data newchild = mediaArchive.getSearcher(inmodule.getId()).createNewData();
 			 	newchild.setName(categoryname);
 				Date date = findDate(categoryname);
