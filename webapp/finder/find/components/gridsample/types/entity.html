@@ -64,20 +64,19 @@ $context.putPageValue("previewurl", $previewurl)
 		
 		##look for primaryimage
 		#foreach( $detail in $details )
-			#if($detail.getId() == "primaryimage")
-				#set( $primaryasset = $mediaarchive.getAsset($entity.primaryimage))
+			#if($detail.getId() == "primarymedia")
+				#set( $primarymedia = $mediaarchive.getCachedAsset($entity.primarymedia))
 			#end
 			
-			#ifnull($primaryasset)
-				#if($detail.viewType == "asset")
-					#set($assetfieldid = $detail.getId()) 
-					#set( $primaryasset = $mediaarchive.getAsset($entity.get($assetfieldid)))
+			#ifnull($primarymedia)
+				#if($detail.getId() == "primaryimage")
+					#set( $primarymedia = $mediaarchive.getCachedAsset($entity.primaryimage))
 				#end
 				
 			#end
 		#end
 		
-		$context.putPageValue("primaryasset", $primaryasset)
+		$context.putPageValue("primarymedia", $primarymedia)
 	    $context.putPageValue("viewer", "e_m_g_${entity.id}")
 		
 		#set($defaultfolder =  $mediaarchive.getBean("entityManager").loadDefaultFolder($module, $entity, $context.getUser()))
@@ -112,7 +111,7 @@ $context.putPageValue("previewurl", $previewurl)
 			       		data-assetsshown="$!assetsshown"
 			       		data-attachedmediaurl="$!siteroot$componenthome/gridsample/types/entity.html"
 			       		data-targetdiv="emgridentity$!moduleid$!entityid"> 
-					#if($primaryasset)
+					#if($primarymedia)
 					        $pages.include("$componenthome/gridsample/types/attachedmedia/entity2.html", $context)
 				   #else
 					   	#set($moduleicon = "entity")

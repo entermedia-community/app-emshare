@@ -19,7 +19,10 @@ public void init()
 	Searcher modulesearcher = archive.getSearcher("module");
 	AssetSearcher assetsearcher = (AssetSearcher)archive.getAssetSearcher();
 	
-	HitTracker modulehits = modulesearcher.query().exact('isentity', true).search();
+	HitTracker modulehits = modulesearcher.query().exact('isentity', true).exact("enableuploading", true).search();
+	
+	Boolean changed = false;
+	
 	modulehits.each{
 		Data module = it;
 		if(!module.getId().equals("asset")) {
@@ -28,7 +31,7 @@ public void init()
 			if(searcher != null) {
 				//HitTracker hits = archive.getAssetSearcher().query().all().search();
 		
-				HitTracker entities = searcher.query().missing('primaryimage').search();
+				HitTracker entities = searcher.query().and().missing("primaryimage").missing("primarymedia").search();
 				
 				entities.enableBulkOperations();
 				List tosave = new ArrayList();
@@ -37,11 +40,12 @@ public void init()
 						
 						Category entitycategory = archive.getEntityManager().loadDefaultFolder(module, entity, null, false);
 						if(entitycategory != null) {
-							Data asset = (Data)archive.getAssetSearcher().query().match("category", entitycategory.getId()).orgroup("assettype", "photo|video").sort("uploadeddate").searchOne(context);
+							Data asset = (Data)archive.getAssetSearcher().query().match("category", entitycategory.getId()).orgroup("assettype", "photo|video|audio").sort("uploadeddate").searchOne(context);
 							if (asset) {
 								entity.setValue("primaryimage", asset.getId());
 								tosave.add(entity);
 								log.info("Saving: "+ entity + " asset: " + asset.getName());
+								changed = true;
 							}
 								
 							if( tosave.size() == 1000)	{
@@ -57,7 +61,12 @@ public void init()
 					log.info("Saved: "+ tosave.size() + " " + searchtype);
 				}
 			}
+			
 		}
+	}
+	//Clear Cache if something changed
+	if (changed) {
+		archive.clearCaches();
 	}
 }
 
