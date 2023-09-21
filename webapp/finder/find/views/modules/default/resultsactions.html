@@ -59,7 +59,26 @@ $context.putPageValue("moduleid", $moduleid)
 							#end
 						#end
 					#end
-					
+					#if($hits)
+						<li class="navbarfilter">
+						<a href="$applink/views/modules/${module.id}/components/filters/dialog.html"
+							class="emdialog"
+							data-dialogid="entityfilters"
+							data-hidebackdrop="true"
+							data-hidefooter="true"
+							data-modalsize="sm"
+							data-moduleid="asset"
+							data-hitssessionid="$hits.getSessionId()"
+							data-categoryid="$!categoryid"
+							data-rootcategory="$!rootcategory"
+							data-targetdiv="$!{module.id}resultscontainer"
+							title="[[Filter Results]]"
+							><i class="fas fa-search"></i> &nbsp;[[Add Filter]]</a>
+						</li>
+						<li id="filtersselected">
+							$pages.include("$componenthome/filters/filters-inline.html", $context)
+						</li>
+					#end
 					</ul>
 			
 	

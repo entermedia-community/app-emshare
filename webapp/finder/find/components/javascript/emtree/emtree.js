@@ -151,6 +151,7 @@ $(document).ready(function()
 		options['treeleftlocation'] = leftlocation;
 		options['depth'] = depth;
 		options['categoryid'] = nodeid;
+		options['rootcategory'] = tree.data("rootnodeid");;
 		
 		if(collectionid)
 		{

@@ -25,6 +25,14 @@
 	#set($categoryid = $context.getRequestParameter("categoryid"))
 #end
 
+
+#set($targetdiv = $context.getRequestParameter("targetdiv"))
+#ifnull($targetdiv)
+	#set($targetdiv = "$!{moduleid}resultscontainerembed")
+#end
+
+$topmodule
+
 <div id="moduleadvfilterpanel" class="advfilterpanel" >
 
 	<div class="advfilterpanelcontent" >
@@ -39,7 +47,19 @@
 		$context.putPageValue("usestartswith",$usestartswith)
 		$context.putPageValue("caneditlists",false)
 		
-		#set($targetdiv = "$!{moduleid}resultscontainerembed")
+		
+		#set( $targetmodule = $context.getRequestParameter("targetmodule"))
+		
+		
+		##########
+		
+		##pass target module to control target div and results/index to load
+		
+		
+		#########
+		
+		
+		
 		
 	##SORT
 	<form  	name="filtersortform" 
@@ -128,6 +148,7 @@
 			method="POST" 
 			data-targetdiv="$targetdiv" 
 			data-oemaxlevel="1" 
+			data-closedialog="true"
 			action="$siteroot$apphome/views/modules/$moduleid/indexembed.html" 
 	>
 		<input name="embedmodule" type="hidden" value="true" />
@@ -138,6 +159,11 @@
 		#if($categoryid)
 			<input name="categoryid" type="hidden" value="$categoryid" />
 		#end
+		#set($rootcategory = $context.getRequestParameter("rootcategory"))
+		#if($rootcategory)
+			<input name="rootcategory" type="hidden" value="$rootcategory" />
+		#end
+		
 		#if( $librarycol)
 			<input name="collectionid" type="hidden" value="$!librarycol.getId()">
 		#end
@@ -194,7 +220,8 @@
 		#if( !$resultview )
 		<input type="hidden" name="resultstype" value="table" />
 		#end
-		<input type="submit" class="btn btn-sm btn-primary" value="[[Submit]]">
+		##<input type="b" class="btn btn-sm btn-primary" value="[[Close]]">
+		<a href="" class="btn btn-sm btn-primary" data-dismiss="modal">[[Close]]</a>
 	</form>
 	
 	#if( !$edit )
