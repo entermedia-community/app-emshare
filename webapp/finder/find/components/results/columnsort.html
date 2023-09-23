@@ -3,9 +3,12 @@
 #set( $searchhome = $context.findValue("searchhome") )
 #set( $moduleid = $context.findValue("module") )
 
-#set($isembedmodule = $context.getRequestParameter("embedmodule"))
-#if($isembedmodule)
-$pages.include("$searchhome/indexembed.html", $context)
+#set($dialogresults = $context.getRequestParameter("dialogresults"))
+
+#if($dialogresults)
+	$pages.include("$searchhome/dialogindex.html", $context)
+	
+	##$pages.include("$componenthome/results/index.html", $context)
 #else
-$pages.include("$searchhome/index.html", $context)
+	$pages.include("$searchhome/index.html", $context)
 #end

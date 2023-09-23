@@ -2,18 +2,26 @@
 #if(!$moduleid)
 #set($moduleid = $context.getRequestParameter("moduleid"))
 #end
-
 	
 #set($reloadsearchtype = $moduleid)
+#set($updateurl = "true")
+#set($oemaxlevel = "1")
+#set($targetdiv = "$!{moduleid}resultscontainer")
 
 #if($moduleid=="asset")
 		#if($categoryid || $collectionid)
-			#set($resultsPage = "$applink/views/modules/asset/showcategory.html")
-			#set($resultsPage = "$resultsPage?hitssessionid=$!hits.sessionId")
-			##set($resultsPage = "$resultsPage&searchtype=$!hits.getSearchType()")
-			#if($nodeID)
-				#set($resultsPage = "$resultsPage&nodeID=$!categoryid")
+			#if($dialogresults)
+				#set($resultsPage = "$applink/views/modules/asset/dialogindex.html?hitssessionid=$!hits.sessionId")
+				#set($resultsPage = "$resultsPage&topmodule=$!topmodule")
+				#set($resultsPage = "$resultsPage&rootcategory=$!rootcategory")
+				#set($resultsPage = "$resultsPage&categoryid=$!categoryid")
+				#set($updateurl = "false")
+				#set($targetdiv = "dialog$!{moduleid}resultscontainer")
+			#else
+				#set($resultsPage = "$applink/views/modules/asset/viewfiles/${categoryid}/#dash($category).html?hitssessionid=$!hits.sessionId")
+				#set($oemaxlevel = "2")
 			#end
+			
 			#if($collectionid)
 				#set($resultsPage = "$resultsPage&collectionid=$!collectionid")
 			#end
@@ -22,10 +30,7 @@
 			#set($resultsPage = "$applink/views/modules/asset/index.html?hitssessionid=$!hits.sessionId&$!{hits.getSearchType()}pageposition")
 			##set($resultsPage = "$componenthome/results/index.html?hitssessionid=$!hits.sessionId&$!{hits.getSearchType()}pageposition")
 		#end
-		
-		#set($oemaxlevel = "1")
-		
-		#set($targetdivinner = "$!{moduleid}resultscontainer")
+
 		
 #elseif($moduleid=="librarycollection")
 		#if(!$resultsPage)
@@ -41,7 +46,7 @@
 			#set($reloadsearchtype = "asset")
 		#end
 		
-		#set($targetdivinner = "${moduleid}resultscontainer")
+		#set($targetdiv = "${moduleid}resultscontainer")
 		
 #else
 	#if(!$resultsPage)
@@ -59,11 +64,11 @@
 	#set($resultsPage = "$resultsPage&$!{hits.getSearchType()}pageposition")
 	#set($oemaxlevel = "1")
 	
-	#set($targetdivinner = "${moduleid}resultscontainer")
+	#set($targetdiv = "${moduleid}resultscontainer")
 	
 #end
 
-#set($updateurl = "true")
+
 #set($total = $hits.getTotalPages() )
 
 #set($currentpage = $context.getRequestParameter("currentpagenum"))
@@ -81,14 +86,14 @@
 data-hitssessionid="$!hits.getSessionId()" data-searchtype="$!hits.getSearchType()" data-currentpagenum="$prhits.getPage()">
  <ul>
 	#if(!$befores.isEmpty() && $befores.get(0)>1)
-		<li><a class="ajax firstposition" data-targetdivinner="$targetdivinner" data-updateurl="$!updateurl" data-oemaxlevel="$oemaxlevel" href="$resultsPage=$prhits.getStartingPosition()" >$prhits.getStartingPosition()</a></li>	
+		<li><a class="ajax firstposition" data-targetdiv="$targetdiv" data-updateurl="$!updateurl" data-oemaxlevel="$oemaxlevel" href="$resultsPage=$prhits.getStartingPosition()" >$prhits.getStartingPosition()</a></li>	
 	    <li class="ellipsis">...</li>
 	#end
 	#foreach( $before in $befores )
 		#set( $pos = $prhits.toPosition($before) )
 		<li class="currentposition${pos}">
 			<a class="ajax" 
-				data-targetdivinner="$targetdivinner" 
+				data-targetdiv="$targetdiv" 
 				data-updateurl="$!updateurl" 
 				data-oemaxlevel="$oemaxlevel"
 				data-position="$pos" 
@@ -100,7 +105,7 @@ data-hitssessionid="$!hits.getSessionId()" data-searchtype="$!hits.getSearchType
 	
 	<li class="current currentposition${pos}">
 		<a  class="ajax" 
-			data-targetdivinner="$targetdivinner" 
+			data-targetdiv="$targetdiv" 
 			data-updateurl="$!updateurl"  
 			data-oemaxlevel="$oemaxlevel" 
 			data-position="$pos"  
@@ -114,7 +119,7 @@ data-hitssessionid="$!hits.getSessionId()" data-searchtype="$!hits.getSearchType
 		#set( $pos = $prhits.toPosition($after) )
 		<li class="currentposition${pos}">
 			<a  class="ajax" 
-				data-targetdivinner="$targetdivinner" 
+				data-targetdiv="$targetdiv" 
 				data-updateurl="$!updateurl" 
 				data-oemaxlevel="$oemaxlevel" 
 				data-position="$pos"  
@@ -128,15 +133,15 @@ data-hitssessionid="$!hits.getSessionId()" data-searchtype="$!hits.getSearchType
 		#if ($afters.get($size)< $prhits.getTotalPages() )
 			<li class="ellipsis">...</li>
 			##if($hits.size() < 9999)
-                    <li><a  class="ajax lastposition" data-targetdivinner="$targetdivinner" data-updateurl="$!updateurl" data-oemaxlevel="$oemaxlevel" href="$resultsPage=$hits.getEndingPosition()" >$hits.getEndingPosition()</a></li>	
+                    <li><a  class="ajax lastposition" data-targetdiv="$targetdiv" data-updateurl="$!updateurl" data-oemaxlevel="$oemaxlevel" href="$resultsPage=$hits.getEndingPosition()" >$hits.getEndingPosition()</a></li>	
             ##end
 		#end
 	#end
 	#if( $prhits.prevPage() )
-		<li class="pagenav"><a class="ajax" data-targetdivinner="$targetdivinner"  data-updateurl="$!updateurl"  data-oemaxlevel="$oemaxlevel" href="$resultsPage=$prhits.toPosition($prhits.prevPage())" title="Previous ( alt p enter)" accesskey="p" ><span class="fas fa-caret-left overlay-nav gocaret"></span></a></li>
+		<li class="pagenav"><a class="ajax" data-targetdiv="$targetdiv"  data-updateurl="$!updateurl"  data-oemaxlevel="$oemaxlevel" href="$resultsPage=$prhits.toPosition($prhits.prevPage())" title="Previous ( alt p enter)" accesskey="p" ><span class="fas fa-caret-left overlay-nav gocaret"></span></a></li>
 	#end
 	#if ( $prhits.nextPage() )
-		<li class="pagenav"><a id="next" class="ajax" data-updateurl="$!updateurl" data-oemaxlevel="$oemaxlevel" data-targetdivinner="$targetdivinner"  href="$resultsPage=$prhits.toPosition($prhits.nextPage())" title="Next (alt n enter)" accesskey="n"><span class="fas fa-caret-right overlay-nav gocaret"></span></a></li>
+		<li class="pagenav"><a id="next" class="ajax" data-updateurl="$!updateurl" data-oemaxlevel="$oemaxlevel" data-targetdiv="$targetdiv"  href="$resultsPage=$prhits.toPosition($prhits.nextPage())" title="Next (alt n enter)" accesskey="n"><span class="fas fa-caret-right overlay-nav gocaret"></span></a></li>
 	#end
 	
 	#if($total>2)

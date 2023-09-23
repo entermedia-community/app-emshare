@@ -24,23 +24,31 @@ $context.putPageValue("categoryid", $categoryid)
 	###set( $librarycol = $mediaarchive.query("librarycollection").orgroup("rootcategory", $rootcategories).searchOne() )
 #end
 
-#if($parentsearchtype)
-	#set($topmodule = $mediaarchive.getCachedData("module", $parentsearchtype))
+#if(!$topmodule)
+	#set ( $topmodule = $context.getRequestParameter("topmodule") )
+	#if(!$topmodule)
+		#set($topmodule = $mediaarchive.getCachedData("module", $parentsearchtype))
+	#end
+	$context.putPageValue("topmodule", $topmodule)
 #end
 
+#set($maintargetdiv = "dialogassetresultscontainer")
+$context.putPageValue("maintargetdiv", $maintargetdiv)
 
+$context.putPageValue("dialogresults", true)
 
-<div id="$!{module.getId()}resultscontainerembed" class="h-100">
-<div id="assetresults"
-	class="assetresults h-100" 
-	#if($categoryid)
-		data-url="$apphome/views/modules/asset/indexembed.html"
+<div id="$maintargetdiv"
+	class="assetresults h-100 resultsdiv" 
+
+		data-url="$apphome/views/modules/asset/dialogindex.html"
 		data-categoryid="$!categoryid"
 		data-nodeID="$!categoryid"
-		data-oemaxlevel="1"
-	#else
-		data-url="$apphome/views/modules/asset/index.html"
-	#end  
+	
+	data-dialogresults="true"
+	data-hitssessionid="$!hits.getSessionId()"
+	data-searchhome="$!home$!componenthome/results"
+	data-targetdiv="$maintargetdiv"
+	data-topmodule="$!topmodule"
 	data-oemaxlevel="1"
 	>
 	
@@ -109,17 +117,18 @@ $context.putPageValue("categoryid", $categoryid)
 				#set( $rootcategory = $categoryid)
 			#end
 			$context.putPageValue("rootcategory", $rootcategory)
-			#set( $targetembedmedia = "embedmedia$!{embedmediadialogid}")
+			#set( $targetdivmedia = "dialogmediaentity")
+			$context.putPageValue("targetdivmedia", $targetdivmedia)
 			#set( $link = "$componenthome/emtree/tree.html")
 		    #set( $link = "${link}?entitymediatreeroot=$rootcategory&treename=entitymediatree&editabletree=true" )
-		    #set( $link = "${link}&targetdivinner=${targetembedmedia}&maxlevelclick=1&updateAddressBar=false&uploadmaxlevel=1" )
+		    #set( $link = "${link}&maintargetdiv=$!maintargetdiv&targetdiv=$!targetdivmedia&maxlevelclick=1&updateAddressBar=false&uploadmaxlevel=1" )
 			#set( $link = "${link}&customurladdmedia=$apphome/views/modules/asset/add/entityaddmedia.html" )
-		    #set( $link = "${link}&urlprefix=$apphome/views/modules/asset/showcategory.html" )
+		    #set( $link = "${link}&oemaxlevel=1&urlprefix=$apphome/views/modules/asset/dialogshowcategory.html" )
 		    
 			$pages.include($link, $context)
 		</div>
 		
-		<div class="embedmediacol embedmediacol-results" id="embedmedia$!{embedmediadialogid}" >
+		<div class="embedmediacol embedmediacol-results" id="$!{targetdivmedia}" >
 			$pages.include("$componenthome/results/index.html", $context)
 		</div>
 		</div>
@@ -127,5 +136,4 @@ $context.putPageValue("categoryid", $categoryid)
 	</div>
 
 
-</div>
 </div>

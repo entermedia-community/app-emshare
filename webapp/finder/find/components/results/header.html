@@ -17,12 +17,6 @@
 	#if(!$searchtype)
 		#set ( $searchtype = "asset" )
 	#end
-	#if(!$ismodulesearch)
-		#set ( $ismodulesearch = $content.get("ismodulesearch") )
-	#end
-	#if(!$ismodulesearch)
-		#set ( $ismodulesearch = $context.getRequestParameter("ismodulesearch") )
-	#end
 	
 	#set( $categoryid = $hits.getInput("categoryid") )
 	#if (!$categoryid)
@@ -52,7 +46,6 @@
 	#if( $librarycol )	
 		$context.putPageValue("librarycol",$librarycol)
 	#end
-
 	
 	#set($reloadsearchtype = $searchtype)
 	#set($librarycollectionassets = $context.findValue("librarycollectionassets"))
@@ -60,6 +53,11 @@
 		#if($librarycollectionassets)
 			#set($reloadsearchtype = "asset")
 		#end
+	#end
+	
+	#if(!$maintargetdiv)
+		#set ( $maintargetdiv = $context.getRequestParameter("maintargetdiv") )
+		$context.putPageValue("maintargetdiv",$maintargetdiv)
 	#end
 	
 	
@@ -171,8 +169,10 @@
 				data-hitssessionid="$hits.getSessionId()"
 				data-categoryid="$!categoryid"
 				data-rootcategory="$!rootcategory"
+				data-topmodule="$!topmodule"
+				data-targetdiv="$!maintargetdiv"
 				title="[[Filter Results]]"
-				><i class="fas fa-search"></i> &nbsp;[[Add Filter]] </a>
+				><i class="fas fa-search"></i> &nbsp;[[Add Filter]]</a>
 			</li>
 			<li id="filtersselected">
 				$pages.include("$componenthome/filters/filters-inline.html", $context)

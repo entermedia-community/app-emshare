@@ -48,16 +48,10 @@
 		
 		
 		#set( $targetmodule = $context.getRequestParameter("targetmodule"))
-		
-		
-		##########
-		
-		##pass target module to control target div and results/index to load
-		
-		
-		#########
-		
-		
+	
+		#if(!$topmodule)
+			#set ( $topmodule = $context.getRequestParameter("topmodule") )
+		#end
 		
 		
 	##SORT
@@ -69,7 +63,10 @@
 			data-oemaxlevel="2" 
 			action="$siteroot$apphome/views/modules/$moduleid/components/results/columnsort.html" 
 		>
+		#if($topmodule)
+		<input name="topmodule" type="hidden" value="$topmodule" />
 		<input name="embedmodule" type="hidden" value="true" />
+		#end
 		<input name="searchtype" type="hidden" value="$!moduleid" />
 		<input name="hitssessionid" type="hidden" value="$!hits.getSessionId()" />
 		#if($categoryid)
@@ -148,13 +145,20 @@
 			data-targetdiv="$targetdiv" 
 			data-oemaxlevel="1" 
 			data-closedialog="true"
-			action="$siteroot$apphome/views/modules/$moduleid/indexembed.html" 
+			data-updateurl="false"
+			#if($topmodule)
+			action="$siteroot$apphome/views/modules/$moduleid/dialogindex.html"
+			#else
+			action="$siteroot$apphome/views/modules/$moduleid/index.html"
+			#end 
 	>
 		<input name="embedmodule" type="hidden" value="true" />
 		<input name="searchtype" type="hidden" value="$!moduleid" />
 		<input name="hitssessionid" type="hidden" value="$!hits.getSessionId()" />
 		<input type="hidden" name="$!{moduleid}endusersearch" value="true" />
-		
+		#if($topmodule)
+			<input name="topmodule" type="hidden" value="$topmodule" />
+		#end
 		#if($categoryid)
 			<input name="categoryid" type="hidden" value="$categoryid" />
 		#end

@@ -1218,12 +1218,16 @@ jQuery(document).ready(function(url,params)
             var options="";
             var targetdiv="";
             
-            resultsdiv = $(this).closest("#resultsdiv");
+            resultsdiv = $(this).closest(".resultsdiv");
+            if(!resultsdiv.length) {
+            	resultsdiv = $(this).closest("#resultsdiv");
+            }
         	searchhome = resultsdiv.data('searchhome');
+			targetdiv = resultsdiv.data("targetdiv");
+			options = resultsdiv.data();
+			targetdiv = $("#"+targetdiv);
 			
-        	options = resultsdiv.data();
-			
-			
+			/*
             var moduletable = $(this).closest(".emselectablesortable");;
             var targetdiv_ = moduletable.data("targetdiv");
             if (moduletable && targetdiv_) {
@@ -1238,7 +1242,7 @@ jQuery(document).ready(function(url,params)
             else {
             	targetdiv = $(this).closest(".moduleindex");
             }
-            
+            */
 			// var columnsort = searchhome +
 			// '/columnsort.html?oemaxlevel=1&searchtype=' + searchtype +
 			// '&viewpath=' + viewpath + '&viewid=' + viewid + '&hitssessionid='

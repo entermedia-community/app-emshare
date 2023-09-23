@@ -100,27 +100,10 @@ $(document).ready(function()
 		var appnavtab = $("#appnavtab").data("openmodule");
         if( prefix == undefined || prefix == "" )
 		{
-        	//debugger;
-			// Always load Assets Layout if not prefix
-			/*
-			if( collectionid != undefined && collectionid != "")
-            {
-
-            	reloadurl = home + "/views/modules/librarycollection/media/showcategory.html";                
-            	//reloadurl = home + "/views/modules/asset/showcategory.html";
-                
-            	prefix = home + "/views/modules/librarycollection/media/showcategory.html";
-            	//prefix = home + "/views/modules/asset/showcategory.html";
-                //maxlevel = 2;
-            }
-            else 
-            {
-			*/
-				
-        //Asset Module
-        reloadurl = home + "/views/modules/asset/viewfiles/"+nodeid+"/" + node.data("categorynameesc") + ".html";
-        prefix = reloadurl;
-            //}
+	        //Asset Module
+	        reloadurl = home + "/views/modules/asset/viewfiles/"+nodeid+"/" + node.data("categorynameesc") + ".html";
+	        prefix = reloadurl;
+	            //}
         }
         else {
         	var customprefix= tree.data('customurlprefix');
@@ -136,11 +119,20 @@ $(document).ready(function()
 		//reloadurl = reloadurl + "?nodeID="+ nodeid;
 		
 		
-		
-		var hitssessionid = $('#resultsdiv').data('hitssessionid');
+		var resultsdiv = tree.closest(".assetresults");
+		if(!resultsdiv)
+		{
+			resultsdiv = $('#resultsdiv')
+		}
+		var hitssessionid = resultsdiv.data("hitssessionid");
 		if( hitssessionid )
 		{
 			reloadurl = reloadurl + "?hitssessionid=" + hitssessionid;
+		}
+		
+		var topmodule = resultsdiv.data("topmodule");
+		if(!topmodule) {
+			topmodule = '';
 		}
 		
 		var options =  structuredClone(tree.data());
@@ -151,7 +143,9 @@ $(document).ready(function()
 		options['treeleftlocation'] = leftlocation;
 		options['depth'] = depth;
 		options['categoryid'] = nodeid;
-		options['rootcategory'] = tree.data("rootnodeid");;
+		options['rootcategory'] = tree.data("rootnodeid");
+		options['topmodule'] = topmodule;
+		options['hitssessionid'] = hitssessionid;
 		
 		if(collectionid)
 		{
@@ -174,22 +168,23 @@ $(document).ready(function()
 				function(data) 
 				{
 					data = $(data);
-					var targetdivinner = tree.data("targetdivinner");
-					if( targetdivinner)
+
+					var targetdiv = tree.data("targetdivinner");
+					if( targetdiv)
 					{
-						var cell = jQuery("#" + targetdivinner); 
+						var cell = jQuery("#" + targetdiv); 
 						cell.html(data);
 					}
 					else
 					{
-						var targetdiv = tree.data("targetdiv");
+						targetdiv = tree.data("targetdiv");
 						if( targetdiv)
 						{
 							var cell = jQuery("#" + targetdiv); 
 							cell.replaceWith(data);
 						}
 					}
-					
+				
 					if (typeof global_updateurl !== "undefined" && global_updateurl == false) {
 						//globaly disabled updateurl
 					}
