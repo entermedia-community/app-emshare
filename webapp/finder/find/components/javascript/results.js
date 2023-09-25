@@ -55,7 +55,13 @@ jQuery(document).ready(function(url,params)
 			}
 			
 			options.resultviewtype = moduleid+"resultview";
-			options.resultview = select.val();
+			
+			var resultviewselected =select.val(); 
+			options.resultview = resultviewselected;
+			if (resultviewselected == "stackedgallery") {
+				options.page = "1";
+				options.hitsperpage = 20;
+			}
 					 
 			$.get(href, options, function(data) 
 			{

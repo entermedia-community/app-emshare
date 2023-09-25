@@ -685,17 +685,16 @@ onloadselectors = function() {
 										var node = $(this);
 										var destination = this.id;
 
-										var resultsdiv = $(this).data(
-												"targetdiv");
-
-										if (resultsdiv) {
-											resultsdiv = $("#" + resultsdiv);
-										} else {
-											resultsdiv = $(this).closest(
-													"#resultsdiv");
+										var resultsdiv = $(this).closest(".resultsdiv");
+							            if(!resultsdiv.length) {
+							            	resultsdiv = $(this).closest("#resultsdiv");
+							            }
+							            if(!resultsdiv.length) {
+            								resultsdiv = $(this).data("targetdiv");
+            								resultsdiv = $("#" + resultsdiv);
 										}
-										var searchhome = resultsdiv
-												.data('searchhome');
+										
+										var searchhome = resultsdiv.data('searchhome');
 										var options = resultsdiv.data();
 										options.source = source;
 										options.destination = destination;

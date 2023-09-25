@@ -1,12 +1,10 @@
 
-#set($searchtype = $searcher.getSearchType() )
+
 #set($moduleid = $context.getRequestParameter("moduleid"))
-#if( $searchtype == "asset")
-	$pages.include("$componenthome/results/table.html")
+#set($dialogresults = $context.getRequestParameter("dialogresults"))
+
+#if($dialogresults)
+	$pages.include("/${applicationid}/views/modules/${moduleid}/dialogindex.html", $context)
 #else
-	#if($moduleid)
-		$pages.include("$apphome/views/modules/${searchtype}/components/results/types/table.html?oemaxlevel=2")
-	#else
-		$pages.include("$apphome/components/table/results.html")
-	#end
+	$pages.include("/${applicationid}/views/modules/${moduleid}/index.html", $context)
 #end

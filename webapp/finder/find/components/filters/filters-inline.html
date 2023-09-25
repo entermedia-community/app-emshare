@@ -38,7 +38,13 @@
 			#set($oemaxlevel = "3")
 		#else
 			#if($moduleid=="asset")
-				#set($href = "$siteroot$apphome/views/modules/$moduleid/dialogindex.html?hitssessionid=$!hits.getSessionId()&topmodule=$!topmodule&rootcategory=$!rootcategory&categoryid=$!{categoryid}&removeterm=$!term.getId()")
+				#set($dialogresults = $context.getRequestParameter("dialogresults"))
+					
+				#if($dialogresults)
+					#set($href = "$siteroot$apphome/views/modules/$moduleid/dialogindex.html?hitssessionid=$!hits.getSessionId()&topmodule=$!topmodule&rootcategory=$!rootcategory&categoryid=$!{categoryid}&removeterm=$!term.getId()")
+				#else
+					#set($href = "$siteroot$apphome/views/modules/$moduleid/index.html?hitssessionid=$!hits.getSessionId()&topmodule=$!topmodule&rootcategory=$!rootcategory&categoryid=$!{categoryid}&removeterm=$!term.getId()")		
+				#end
 				#set($oemaxlevel = "1")
 			#else
 				#set($href = "$siteroot$apphome/views/modules/$moduleid/index.html?hitssessionid=$!hits.getSessionId()&removeterm=$!term.getId()")
