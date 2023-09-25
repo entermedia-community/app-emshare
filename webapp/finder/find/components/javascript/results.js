@@ -22,92 +22,89 @@ jQuery(document).ready(function(url,params)
 	lQuery("select#selectresultview").livequery( function()
 	{
 		var select = $(this);
+		var resultsdiv = select.closest(".resultsdiv");
+		if(!resultsdiv) {
+			resultsdiv = select.closest("#resultsdiv");
+		}
+		
 		select.on("change",function() 
 		{
-			var componenthome = select.data('componenthome');
-			var moduleid = select.data('moduleid');
-			var originalhitsperpage = select.data("hitsperpage");
-			var href = '';
-			var searchtype = select.data('searchtype');
-			if(!moduleid) {
-				moduleid = searchtype;
-			}
-			var targetdivid = select.data('targetdiv');
-			var targetdiv = select.closest('#'+targetdivid);
-			if (!targetdiv.length) {
-				targetdiv = $('#'+targetdivid)
-			}
-			var ismodulesearch = select.data('ismodulesearch');
-			var oemaxlevel = select.data('oemaxlevel');
+			var options = resultsdiv.data();
+					
+			var componenthome = resultsdiv.data('componenthome');
+			var moduleid = resultsdiv.data('moduleid');
+			var originalhitsperpage = resultsdiv.data("hitsperpage");
+			var targetdiv = resultsdiv.data('targetdiv');
+			
+			var oemaxlevel = select.data('oemaxlevel'); //could be custom
+			
 			if(!oemaxlevel) {
 				oemaxlevel = 1;
 			}
 
-				if(searchtype=='asset') {
-					if(originalhitsperpage){
-						href = componenthome  +  "/results/changeresultview.html?cache=false&hitsperpage=" + originalhitsperpage;
-					}
-					else{
-						href = componenthome  +  "/results/changeresultview.html";
-					}
+			if(moduleid=='asset') {
+				if(originalhitsperpage){
+					href = componenthome  +  "/results/changeresultview.html?cache=false&hitsperpage=" + originalhitsperpage;
 				}
-				else {
-					href = siteroot+"/views/modules/"+moduleid+"/components/results/changeresultview.html";
+				else{
+					href = componenthome  +  "/results/changeresultview.html";
 				}
+			}
+			else {
+				href = siteroot+"/views/modules/"+moduleid+"/components/results/changeresultview.html";
+			}
 			
-			var args = { hitssessionid: select.data("hitssessionid") ,
-						 searchtype:  searchtype ,
-						 page:  select.data("page") ,
-						 showremoveselections:  select.data("showremoveselections") ,
-						 moduleid: moduleid,
-						 resultviewtype: searchtype+"resultview",
-						 oemaxlevel: oemaxlevel,
-						  };
-						 
-			var category = $("#resultsdiv").data("category");
-			if( category )
-			{
-				args.category = category;
-			}
-			var collectionid = $("#resultsdiv").data("collectionid");
-			if( collectionid )
-			{
-				args.collectionid = collectionid;
-			}
-			args.resultview = select.val();
+			options.resultviewtype = moduleid+"resultview";
+			options.resultview = select.val();
 					 
-			$.get(href, args, function(data) 
+			$.get(href, options, function(data) 
 			{
-				$(targetdiv).replaceWith(data);
+				$("#"+targetdiv).replaceWith(data);
 				$(window).trigger( "resize" );
 			});
 		});
 	});
 	
 	
-	lQuery("select#hitsperpagechange").livequery( function() {
+	lQuery(".hitsperpagechange").livequery( function() {
 
 				var select = $(this);
 				
+				var resultsdiv = select.closest(".resultsdiv");
+				if(!resultsdiv) {
+					resultsdiv = select.closest("#resultsdiv");
+				}
+				
+				var dropdownParent = select.data('dropdownparent');
+				if (dropdownParent && $("#" + dropdownParent).length) {
+					dropdownParent = $("#" + dropdownParent);
+				}
+				else {
+					dropdownParent = $(this).parent();
+				}
+				var parent = select.parents(".modal-content");
+				if (parent.length) {
+					dropdownParent = parent;
+				}
+				
 				select.select2({
-					  tags: true
+					  tags: true,
+					  dropdownParent : dropdownParent,
 				});
 				
-				select.on("change",function() 
-				{
-					var componenthome = select.data('componenthome');
-					var moduleid = select.data('moduleid');
-					var originalhitsperpage = select.data("hitsperpage");
-					var href = '';
-					var searchtype = select.data('searchtype');
-					var targetdiv = select.data('targetdiv');
-					var ismodulesearch = select.data('ismodulesearch');
-					var oemaxlevel = select.data('oemaxlevel');
-					if(!oemaxlevel) {
-						oemaxlevel = 1;
-					}
+				select.on("change",function() {
+					
+					var options = resultsdiv.data();
+					
+					var componenthome = resultsdiv.data('componenthome');
+					var moduleid = resultsdiv.data('moduleid');
+					var originalhitsperpage = resultsdiv.data("hitsperpage");
+					var targetdiv = resultsdiv.data('targetdiv');
+					
+					var oemaxlevel = select.data('oemaxlevel'); //could be custom
 
-					if(searchtype=='asset') {
+					var href = '';
+					if(moduleid=='asset') {
 						if(originalhitsperpage){
 							href = componenthome  +  "/results/changehitsperpage.html?cache=false&hitsperpage=" + originalhitsperpage;
 						}
@@ -118,33 +115,13 @@ jQuery(document).ready(function(url,params)
 					else {
 						href = siteroot+"/views/modules/"+moduleid+"/components/results/changehitsperpage.html";
 					}
-				
-					var args = { hitssessionid: select.data("hitssessionid") ,
-								 searchtype:  searchtype ,
-								 page:  select.data("page") ,
-								 showremoveselections:  select.data("showremoveselections") ,
-								 ismodulesearch: ismodulesearch,
-								 resultviewtype: searchtype+"resultview",
-								 oemaxlevel: oemaxlevel,
-								  };
-								 
-					var category = $("#resultsdiv").data("category");
-					if( category )
-					{
-						args.category = category;
-					}
-					var collectionid = $("#resultsdiv").data("collectionid");
-					if( collectionid )
-					{
-						args.collectionid = collectionid;
-					}
 					
 					// the selected option
-					args.hitsperpage = select.val();
+					options.hitsperpage = select.val();
 							 
-					$.get(href, args, function(data) 
+					$.get(href, options, function(data) 
 					{
-						$("#"+targetdiv).html(data);
+						$("#"+targetdiv).replaceWith(data);
 						$(window).trigger( "resize" );
 						
 						// should I call in a trigger?

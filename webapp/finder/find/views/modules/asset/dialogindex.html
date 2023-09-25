@@ -10,6 +10,9 @@ $context.putPageValue("componenthome", $componenthome)
 
 #if( !$category)
 	#set($categoryid = $context.getRequestParameter("categoryid"))
+	#if(!$categoryid)
+		#set($categoryid = $context.getRequestParameter("rootcategory"))
+	#end
 	#if($categoryid)
 		#set($category = $mediaarchive.getCachedData("category", $categoryid))
 	#end
@@ -22,6 +25,10 @@ $context.putPageValue("categoryid", $categoryid)
 #if( !$librarycol && $category )
 	#set($rootcategories = $category.getParentCategories()) 
 	###set( $librarycol = $mediaarchive.query("librarycollection").orgroup("rootcategory", $rootcategories).searchOne() )
+#end
+#set($rootcategory = $context.getRequestParameter("rootcategory"))
+#if(!$rootcategory)
+	#set( $rootcategory = $categoryid)
 #end
 
 #if(!$topmodule)
@@ -39,16 +46,19 @@ $context.putPageValue("dialogresults", true)
 
 <div id="$maintargetdiv"
 	class="assetresults h-100 resultsdiv" 
-
-		data-url="$apphome/views/modules/asset/dialogindex.html"
-		data-categoryid="$!categoryid"
-		data-nodeID="$!categoryid"
+	data-moduleid="asset"
+	
+	data-url="$apphome/views/modules/asset/dialogindex.html"
+	data-categoryid="$!categoryid"
+	data-nodeID="$!categoryid"
 	
 	data-dialogresults="true"
 	data-hitssessionid="$!hits.getSessionId()"
+	data-componenthome = "$!componenthome"
 	data-searchhome="$!home$!componenthome/results"
 	data-targetdiv="$maintargetdiv"
 	data-topmodule="$!topmodule"
+	data-rootcategory="$!rootcategory"
 	data-oemaxlevel="1"
 	>
 	
@@ -112,10 +122,7 @@ $context.putPageValue("dialogresults", true)
 					#end
 				
 			</div>
-			#set($rootcategory = $context.getRequestParameter("rootcategory"))
-			#if(!$rootcategory)
-				#set( $rootcategory = $categoryid)
-			#end
+			
 			$context.putPageValue("rootcategory", $rootcategory)
 			#set( $targetdivmedia = "dialogmediaentity")
 			$context.putPageValue("targetdivmedia", $targetdivmedia)

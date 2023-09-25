@@ -10,55 +10,72 @@
 	$context.putPageValue("hits", $hits)
 #end
 
+#if(!$searchtype)
+	#set ( $searchtype = $context.getRequestParameter("searchtype") )
+#end
+#if(!$searchtype)
+	#set ( $searchtype = "asset" )
+#end
 
-	#if(!$searchtype)
-		#set ( $searchtype = $context.getRequestParameter("searchtype") )
-	#end
-	#if(!$searchtype)
-		#set ( $searchtype = "asset" )
-	#end
-	
-	#set( $categoryid = $hits.getInput("categoryid") )
-	#if (!$categoryid)
-		#set( $categoryid = $context.getRequestParameter("category"))
-	#end
-	#set( $nodeID = $context.getRequestParameter("nodeID"))
-	#if (!$categoryid && $nodeID)
-		#set( $categoryid = $nodeID )
-	#end
-	#if ($categoryid)
-		$context.putPageValue("catid",$categoryid)  ##used?
-		$context.putPageValue("categoryid",$categoryid)
-	#end
-	#if( $categoryid && !$category)
-		#set( $category = $mediaarchive.getData("category",$categoryid) )
-	#end
-	#set( $orderid = $hits.getInput("orderid") )
-	#if( $orderid )
-		#set( $order = $mediaarchive.getData("order",$orderid) )
-		$context.putPageValue("order",$order)
-	#end
-	
-	#if( !$librarycol && $category ) 
-		#set( $librarycol = $mediaarchive.query("librarycollection").orgroup("rootcategory",$category.getParentCategories()).searchOne() )
-	#end
+#set( $categoryid = $hits.getInput("categoryid") )
+#if (!$categoryid)
+	#set( $categoryid = $context.getRequestParameter("category"))
+#end
+#set( $nodeID = $context.getRequestParameter("nodeID"))
+#if (!$categoryid && $nodeID)
+	#set( $categoryid = $nodeID )
+#end
+#if ($categoryid)
+	$context.putPageValue("catid",$categoryid)  ##used?
+	$context.putPageValue("categoryid",$categoryid)
+#end
+#if( $categoryid && !$category)
+	#set( $category = $mediaarchive.getData("category",$categoryid) )
+#end
 
-	#if( $librarycol )	
-		$context.putPageValue("librarycol",$librarycol)
+
+#if(!$rootcategory)
+	#set($rootcategory = $context.getRequestParameter("rootcategory"))
+	#if(!$rootcategory)
+		#set( $rootcategory = $categoryid)
 	#end
-	
-	#set($reloadsearchtype = $searchtype)
-	#set($librarycollectionassets = $context.findValue("librarycollectionassets"))
-	#if($searchtype=="librarycollection")
-		#if($librarycollectionassets)
-			#set($reloadsearchtype = "asset")
-		#end
+#end
+
+#if(!$topmodule)
+	#set($topmodule = $context.getRequestParameter("topmodule"))
+#end
+
+#if(!$maintargetdiv)
+	#set($maintargetdiv = $context.getRequestParameter("maintargetdiv"))
+#end
+
+
+#set( $orderid = $hits.getInput("orderid") )
+#if( $orderid )
+	#set( $order = $mediaarchive.getData("order",$orderid) )
+	$context.putPageValue("order",$order)
+#end
+
+#if( !$librarycol && $category ) 
+	#set( $librarycol = $mediaarchive.query("librarycollection").orgroup("rootcategory",$category.getParentCategories()).searchOne() )
+#end
+
+#if( $librarycol )	
+	$context.putPageValue("librarycol",$librarycol)
+#end
+
+#set($reloadsearchtype = $searchtype)
+#set($librarycollectionassets = $context.findValue("librarycollectionassets"))
+#if($searchtype=="librarycollection")
+	#if($librarycollectionassets)
+		#set($reloadsearchtype = "asset")
 	#end
-	
-	#if(!$maintargetdiv)
-		#set ( $maintargetdiv = $context.getRequestParameter("maintargetdiv") )
-		$context.putPageValue("maintargetdiv",$maintargetdiv)
-	#end
+#end
+
+#if(!$maintargetdiv)
+	#set ( $maintargetdiv = $context.getRequestParameter("maintargetdiv") )
+	$context.putPageValue("maintargetdiv",$maintargetdiv)
+#end
 	
 	
 	<div id="resultsheader" class="resultsheader">
@@ -184,7 +201,6 @@
 				
 			</ul>
 			<ul class="resultsnavright">
-			
 				#if(!$resultview)
 					#set($resultview = $userprofile.get("$!{searchtype}resultview"))
 					#if (!$resultview)
@@ -199,48 +215,49 @@
 				
 				
 				#if(!$edit || $edit == "false"  )
+				
+					##-PAGINATION
+				
 					#set($total = $hits.getTotalPages() )
 					#if( $total > 1)
-					<li class="resultpages">			
-						$pages.include("$componenthome/results/positions.html", $context)
+						<li class="resultpages">			
+							$pages.include("$componenthome/results/positions.html", $context)
+						</li>
 					#end
+					
+					
+					##-HITSPERPAGE
+					
 					#if($resultview != "stackedgallery")
-						<li class="resultsnavtitem" style="width:61px;">
-								#set( $currenthitsperpage = $userprofile.get("modulehitsperpage"))
+						#if($dialogresults)
+							#set($targetdiv= "dialog$!{moduleid}resultscontainer")
+						#else
+							#set($targetdiv= "$!{moduleid}resultscontainer")
+						#end
+					
+						<li class="resultsnavtitem" style="width:65px;">
+								#set( $currenthitsperpage = $userprofile.get("$!{moduleid}hitsperpage"))
+								#if(!$currenthitsperpage)
+									#set( $currenthitsperpage = $userprofile.get("modulehitsperpage"))
+								#end
 								#set($hitcountoptions = $mediaarchive.getList("hitcount"))
-								<select class="form-control resultsnavselect" 
-									id="hitsperpagechange"
-										data-hitssessionid="$!hits.getSessionId()" 
-										data-searchtype="$!reloadsearchtype"
-										data-moduleid="$!moduleid"
-										data-ismodulesearch = "$!ismodulesearch" 
-										data-componenthome = "$apphome/views/modules/$moduleid/components"
-										data-page="$!hits.getPage()" 
-										data-showremoveselections="$!showremoveselections" 
-										data-collectionid="$!librarycol.getId()"
-										data-targetdiv="$!{moduleid}resultscontainer">
-								#foreach($ho in $hitcountoptions)
-								<option value="$ho.id" #if($currenthitsperpage==$ho.id) selected="selected"#end>#text($ho)</option>
-								#end	
+								<select class="form-control form-select-sm hitsperpagechange resultsnavselect" 
+										id="hitsperpagechange$!topmodule"
+										data-oemaxlevel="1">
+									#foreach($ho in $hitcountoptions)
+									<option value="$ho.id" #if($currenthitsperpage==$ho.id) selected="selected"#end>#text($ho)</option>
+									#end	
 								</select>
 						</li>	
 					#end	
-				#end
-				
-				#if(!$edit || $edit == "false"  )
+					
+					
+					##-RESULTS TYPE
+					
 					<li class="resultsnavtitem">
 						<select class="form-control" 
 							name="resultview" 
-							id="selectresultview"  
-							data-hitssessionid="$!hits.getSessionId()" 
-							data-searchtype="$!reloadsearchtype"
-							data-ismodulesearch = "$!ismodulesearch" 
-							data-componenthome = "$!componenthome"
-							data-page="$!hits.getPage()" 
-							data-showremoveselections="$!showremoveselections" 
-							data-collectionid="$!librarycol.getId()"
-							data-targetdiv="$!module.getId()resultsarea"
-							data-oemaxlevel="1">
+							id="selectresultview">
 							#set( $types = $mediaarchive.getList("resulttype"))
 							#foreach($type in $types)
 								<option value="$!type.getId()" #if( $resultview == "$type.getId()") selected #end>$type.getName($context)</option>
@@ -252,7 +269,7 @@
 				#end	
 				
 				
-				#if (!$resultview || $resultview == 'table')
+				#if(!$resultview || $resultview == 'table')
 					#if( $canedittablecolumns )
 						#if( $edit )
 							
