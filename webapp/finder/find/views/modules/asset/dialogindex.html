@@ -31,12 +31,16 @@ $context.putPageValue("categoryid", $categoryid)
 	#set( $rootcategory = $categoryid)
 #end
 
-#if(!$topmodule)
-	#set ( $topmodule = $context.getRequestParameter("topmodule") )
-	#if(!$topmodule)
+#if(!$topmoduleid)
+	#set ( $topmoduleid = $context.getRequestParameter("topmoduleid") )
+	#ifnotnull($topmoduleid)
+		#set($topmodule = $mediaarchive.getCachedData("module", $topmoduleid))
+	#end
+	#ifnull($topmodule)
 		#set($topmodule = $mediaarchive.getCachedData("module", $parentsearchtype))
 	#end
 	$context.putPageValue("topmodule", $topmodule)
+	$context.putPageValue("topmoduleid", $topmoduleid)
 #end
 
 #set($maintargetdiv = "dialogassetresultscontainer")
@@ -57,7 +61,7 @@ $context.putPageValue("dialogresults", true)
 	data-componenthome = "$!componenthome"
 	data-searchhome="$!home$!componenthome/results"
 	data-targetdiv="$maintargetdiv"
-	data-topmodule="$!topmodule"
+	data-topmoduleid="$!topmoduleid"
 	data-rootcategory="$!rootcategory"
 	data-oemaxlevel="1"
 	>
@@ -111,15 +115,18 @@ $context.putPageValue("dialogresults", true)
 				<a href="" 
 					class="float-left createfoldertree"
 					data-tree="entitymediatreetree" 
-					style="border-right:1px solid #444;" 
-					title="[[Add Folder]]"><i class="fas fa-folder-plus"></i></a>
-					#if($topmodule.getBoolean("enableuploading") && $permissions.can($topmoduleid, "upload_files"))
-						<a href="$siteroot$applink/views/modules/asset/add/entityaddmedia.html?categoryid=$!categoryid" 
-							class="ajax float-right" 
-							data-targetdivinner="embedmediaentity"
-							data-oemaxlevel="1"
-							style="border-left:1px solid #444;" title="[[Upload]]"><i class="fas fa-upload"></i></a>
-					#end
+					style="border-right:1px solid #444; width:32px; text-align: center;" 
+					title="[[Add Sub-Folder]]"><i class="fas fa-folder-plus"></i></a>
+				#if($topmodule.getBoolean("enableuploading") && $permissions.can($topmoduleid, "upload_files"))
+					<a href="$siteroot$applink/views/modules/asset/add/entityaddmedia.html?categoryid=$!categoryid" 
+						class="ajax float-left" 
+						data-targetdivinner="embedmediaentity"
+						data-oemaxlevel="1"
+						style="border-right:1px solid #444; width:32px;" title="[[Upload]]"><i class="fas fa-upload"></i></a>
+				#end
+				
+					
+					
 				
 			</div>
 			

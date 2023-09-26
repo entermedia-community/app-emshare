@@ -1210,26 +1210,7 @@ jQuery(document).ready(function(url,params)
 			options = resultsdiv.data();
 			targetdiv = $("#"+targetdiv);
 			
-			/*
-            var moduletable = $(this).closest(".emselectablesortable");;
-            var targetdiv_ = moduletable.data("targetdiv");
-            if (moduletable && targetdiv_) {
-				
-            	targetdiv = $("#"+targetdiv_);
-            	if(!targetdiv.length) {
-					targetdiv = $("."+targetdiv_);
-				}
-            	searchhome = moduletable.data('searchhome');
-            	options = moduletable.data();
-            }
-            else {
-            	targetdiv = $(this).closest(".moduleindex");
-            }
-            */
-			// var columnsort = searchhome +
-			// '/columnsort.html?oemaxlevel=1&searchtype=' + searchtype +
-			// '&viewpath=' + viewpath + '&viewid=' + viewid + '&hitssessionid='
-			// + sessionid;
+		
 			var link = searchhome + '/columnsort.html';
 			
             if ( $(this).hasClass('currentsort') ) {

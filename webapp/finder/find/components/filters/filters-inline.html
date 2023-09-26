@@ -17,9 +17,10 @@
 	$context.putPageValue("librarycol",$librarycol)
 #end
 
-#if(!$topmodule)
-	#set ( $topmodule = $context.getRequestParameter("topmodule") )
+#if(!$topmoduleid)
+	#set ( $topmoduleid = $context.getRequestParameter("topmoduleid") )
 #end
+
 
 
 #set($targetdiv = $maintargetdiv) 
@@ -38,12 +39,14 @@
 			#set($oemaxlevel = "3")
 		#else
 			#if($moduleid=="asset")
-				#set($dialogresults = $context.getRequestParameter("dialogresults"))
-					
+				
+				#if(!$dialogresults)
+					#set($dialogresults = $context.getRequestParameter("dialogresults"))
+				#end
 				#if($dialogresults)
-					#set($href = "$siteroot$apphome/views/modules/$moduleid/dialogindex.html?hitssessionid=$!hits.getSessionId()&topmodule=$!topmodule&rootcategory=$!rootcategory&categoryid=$!{categoryid}&removeterm=$!term.getId()")
+					#set($href = "$siteroot$apphome/views/modules/$moduleid/dialogindex.html?hitssessionid=$!hits.getSessionId()&topmoduleid=$!topmoduleid&rootcategory=$!rootcategory&categoryid=$!{categoryid}&removeterm=$!term.getId()")
 				#else
-					#set($href = "$siteroot$apphome/views/modules/$moduleid/index.html?hitssessionid=$!hits.getSessionId()&topmodule=$!topmodule&rootcategory=$!rootcategory&categoryid=$!{categoryid}&removeterm=$!term.getId()")		
+					#set($href = "$siteroot$apphome/views/modules/$moduleid/index.html?hitssessionid=$!hits.getSessionId()&topmoduleid=$!topmoduleid&rootcategory=$!rootcategory&categoryid=$!{categoryid}&removeterm=$!term.getId()")		
 				#end
 				#set($oemaxlevel = "1")
 			#else

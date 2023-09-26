@@ -9,9 +9,12 @@ $context.putPageValue("parentsearchtype", $parentsearchtype)
 #if(!$currenttab)
 	#set($currenttab = $context.getRequestParameter("currenttab"))
 #end
-#if(!$topmodule)
-	#set ( $topmodule = $context.getRequestParameter("topmodule") )
-	$context.putPageValue("topmodule", $topmodule)
+#if(!$topmoduleid)
+	#set ( $topmoduleid = $context.getRequestParameter("topmoduleid") )
+	$context.putPageValue("topmoduleid", $topmoduleid)
+#end
+#ifnotnull($topmoduleid)
+		#set($topmodule = $mediaarchive.getCachedData("module", $topmoduleid))
 #end
 <div id="tab_media" 
 class=" entity-tab-content entity-tab-media tabtypemedia" 
@@ -20,7 +23,7 @@ data-tabid="tab_media"
 data-entityid="$!entityid"
 data-currenttab="$!currenttab"
 data-parentsearchtype="$!parentsearchtype"
-data-topmodule="$!topmodule"
+data-topmoduleid="$!topmoduleid"
 data-url="$componenthome/gridsample/preview/entitytabmedia.html"
 #if($hidesubmodule) style="display: none; #end">
 <div id="$!submodulepickerid" class="submodulepicker entity-tab-content" style="border-bottom:1px solid #252e3c">

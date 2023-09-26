@@ -1353,6 +1353,11 @@ uiload = function() {
 		}
 	});
 	
+	lQuery(".entityclose").livequery("click", function(event) {
+		event.preventDefault();
+		closeemdialog($(this).closest(".modal"));
+		});
+	
 	lQuery(".mediaboxheader").livequery("click", function(event) {
 		event.preventDefault();
 		var box = $(this).closest(".entity-media-box");

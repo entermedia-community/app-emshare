@@ -21,7 +21,7 @@
 #set($module = $mediaarchive.getData("module", $searchtype))
 #set($moduleid = $module.getId())
 $context.putPageValue("moduleid", $moduleid)
-$context.putPageValue("topmodule", $moduleid)
+$context.putPageValue("topmoduleid", $moduleid)
 
 #set($viewsearcher = $searcherManager.getSearcher($catalogid, "view"))
 #set($enttiyviews = $viewsearcher.query().exact("moduleid", $moduleid).exact("rendertype","table").exact("systemdefined","false").sort("orderingUp").search($context) )
@@ -71,6 +71,9 @@ $context.putPageValue("topmodule", $moduleid)
 	data-entityid="$!entityid" 
 	data-oemaxlevel="1"
 	data-url="$componenthome/gridsample/preview/entity.html">
+	
+	<div class="entityclose largeicon"><span title="[[Esc to Close]]" class="fas fa-window-close"></span></div>
+	
 	<div class="entity-wraper">
 	<h2>
 	<a href="#" id="backbtn#eid($!dialogtabid)" class="entitydialogback" style="display: none;">
