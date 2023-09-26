@@ -23,14 +23,18 @@ $context.putPageValue("topmodule", $topmodule)
 $context.putPageValue("uploadsourcepath", $uploadsourcepath)
 
 
-<div id="$!{moduleid}resultscontainer"
+#set($maintargetdiv = "$!{moduleid}resultscontainer")
+$context.putPageValue("maintargetdiv", $maintargetdiv)
+
+<div id="$maintargetdiv"
 	class="resultsdiv"
+	data-moduleid="$topmodule.getId()"
 	data-hitssessionid="$!hits.getSessionId()"
 	data-url="$apphome/views/modules/$!{module.id}/index.html"
 	data-searchhome="$!home$!componenthome/results"
-	data-targetdiv="$!{moduleid}resultscontainer"
+	data-targetdiv="$maintargetdiv"
 	#if($topentityid) data-topentityid="$topentityid" #end
-	data-oemaxlevel="2">
+	data-oemaxlevel="1">
 	
  	<div class="emgrid-box expandedmodule">
  		<div class="emgrid-subtitle">
@@ -51,9 +55,9 @@ $context.putPageValue("uploadsourcepath", $uploadsourcepath)
 			$context.putPageValue("moduleid", $moduleid)
 			$pages.include("$apphome/views/modules/${moduleid}/contextmenu.html", $context)
 			</h3>
-			$pages.include("$apphome/components/gridfilters/filter-selected-entity.html", $context)
-					 
 			
+			##$pages.include("$apphome/components/gridfilters/filter-selected-entity.html", $context)
+						
 			<div class="clearfix"></div>
 		</div>
 

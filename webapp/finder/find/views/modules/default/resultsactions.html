@@ -97,16 +97,7 @@ $context.putPageValue("moduleid", $moduleid)
 							#set( $currenthitsperpage = $hits.getHitsPerPage())
 							#set($hitcountoptions = $mediaarchive.getList("hitcount"))
 							<select class="form-control hitsperpagechange resultsnavselect" 
-								id="hitsperpagechange$!{moduleid}"
-									data-hitssessionid="$!hits.getSessionId()" 
-									data-searchtype="$!reloadsearchtype"
-									data-moduleid="$!moduleid"
-									data-ismodulesearch = "$!ismodulesearch" 
-									data-componenthome = "$apphome/views/modules/$moduleid/components"
-									data-page="$!hits.getPage()" 
-									data-showremoveselections="$!showremoveselections" 
-									data-collectionid="$!librarycol.getId()"
-									data-targetdiv="$!{moduleid}resultscontainer">
+								id="hitsperpagechange$!{moduleid}">
 							#foreach($ho in $hitcountoptions)
 							<option value="$ho.id" #if($currenthitsperpage==$ho.id) selected="selected"#end>#text($ho)</option>
 							#end	
@@ -119,20 +110,9 @@ $context.putPageValue("moduleid", $moduleid)
 						<select class="form-control" 
 							name="resultview" 
 							id="selectresultview"  
-							data-hitssessionid="$!hits.getSessionId()"
-							data-searchtype="$!moduleid"
-							data-moduleid="$moduleid"
-							data-componenthome = "$apphome/views/modules/$moduleid/components"
-							data-page="$!hits.getPage()" 
-							data-showremoveselections="$!showremoveselections" 
-							data-collectionid="$!librarycol.getId()"
-							data-targetdiv="$!{moduleid}resultsarea"
-							readonly="readonly">
-							
+							>
 							<option value="grid" #if( $resultview == "grid") selected #end>[[Grid]]</option>
 							<option value="table" #if( $resultview == "table") selected #end>[[Table]]</option>
-							##<option value="map" #if( $resultview == "map") selected #end>[[Map]]</option>
-							
 						</select>
 						
 					</li>
