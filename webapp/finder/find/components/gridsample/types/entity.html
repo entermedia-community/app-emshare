@@ -42,9 +42,7 @@ $context.putPageValue("previewurl", $previewurl)
 		data-id="${entityid}"
    	 	data-moduleid="$!moduleid"
    	 	data-rendertype="entity">
-
-
-   	 	
+  	 	
    	 
    	 	##check for view
 		#set($viewid = "${moduleid}gridfields")
@@ -66,15 +64,28 @@ $context.putPageValue("previewurl", $previewurl)
 		#foreach( $detail in $details )
 			#if($detail.getId() == "primarymedia")
 				#set( $primarymedia = $mediaarchive.getCachedAsset($entity.primarymedia))
-			#end
-			
-			#ifnull($primarymedia)
-				#if($detail.getId() == "primaryimage")
-					#set( $primarymedia = $mediaarchive.getCachedAsset($entity.primaryimage))
+				#if($primarymedia)
+					#if($primarymedia.assettype == 'photo' || $primarymedia.assettype == 'video' )
+						#break
+					#else
+						#set($primarymedia = '')
+					#end
 				#end
-				
+				#ifnull($primarymedia)
+					#ifnotnull($entity.primaryimage)
+						#set( $primarymedia = $mediaarchive.getCachedAsset($entity.primaryimage))
+						#if($primarymedia.assettype == 'photo' || $primarymedia.assettype == 'video' )
+							#break
+						#else
+							#set($primarymedia = '')
+						#end
+						
+					#end
+				#end
 			#end
 		#end
+		
+		
 		
 		$context.putPageValue("primarymedia", $primarymedia)
 	    $context.putPageValue("viewer", "e_m_g_${entity.id}")
@@ -100,7 +111,7 @@ $context.putPageValue("previewurl", $previewurl)
 				data-oemaxlevel="5"
 				data-field=""
 				data-updateurl="true"
-				title="[[View]]">
+				title="">
 				
 				<div class="emgridC-entitymedia assetdropentity drop-over"
 					style="text-align: center;"
@@ -124,7 +135,7 @@ $context.putPageValue("previewurl", $previewurl)
 			   		<div class="clearfix"></div>
 			   </div>
 			        
-			   <div class="emgridC-name">#text($!entity)</div>     
+			        
 				</a>
 			#end
 		#end
@@ -137,7 +148,8 @@ $context.putPageValue("previewurl", $previewurl)
    	 	id="clickid${entityid}"  
    	 	data-id="${entityid}"
    	 	data-moduleid="$!moduleid"
-   	 	title="#text($!entity.name)">
+   	 	title="[[View]]: #text($!entity.name)">
+   	 	<div class="emgridC-name">#text($!entity)</div>
 		<i class="fas fa-external-link-alt"></i>
    	 	</a>
        
