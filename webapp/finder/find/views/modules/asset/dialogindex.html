@@ -31,17 +31,21 @@ $context.putPageValue("categoryid", $categoryid)
 	#set( $rootcategory = $categoryid)
 #end
 
+
+
 #if(!$topmoduleid)
 	#set ( $topmoduleid = $context.getRequestParameter("topmoduleid") )
-	#ifnotnull($topmoduleid)
-		#set($topmodule = $mediaarchive.getCachedData("module", $topmoduleid))
-	#end
-	#ifnull($topmodule)
-		#set($topmodule = $mediaarchive.getCachedData("module", $parentsearchtype))
-	#end
-	$context.putPageValue("topmodule", $topmodule)
-	$context.putPageValue("topmoduleid", $topmoduleid)
 #end
+#ifnotnull($topmoduleid)
+	#set($topmodule = $mediaarchive.getCachedData("module", $topmoduleid))
+#end
+#ifnull($topmodule)
+	#set($topmodule = $mediaarchive.getCachedData("module", $parentsearchtype))
+	
+#end
+$context.putPageValue("topmodule", $topmodule)
+$context.putPageValue("topmoduleid", $topmoduleid)
+
 
 #set($maintargetdiv = "dialogassetresultscontainer")
 $context.putPageValue("maintargetdiv", $maintargetdiv)
@@ -117,10 +121,11 @@ $context.putPageValue("dialogresults", true)
 					data-tree="entitymediatreetree" 
 					style="border-right:1px solid #444; width:32px; text-align: center;" 
 					title="[[Add Sub-Folder]]"><i class="fas fa-folder-plus"></i></a>
+					
 				#if($topmodule.getBoolean("enableuploading") && $permissions.can($topmoduleid, "upload_files"))
 					<a href="$siteroot$applink/views/modules/asset/add/entityaddmedia.html?categoryid=$!categoryid" 
 						class="ajax float-left" 
-						data-targetdivinner="embedmediaentity"
+						data-targetdivinner="dialogmediaentity"
 						data-oemaxlevel="1"
 						style="border-right:1px solid #444; width:32px;" title="[[Upload]]"><i class="fas fa-upload"></i></a>
 				#end
