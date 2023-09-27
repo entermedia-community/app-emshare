@@ -49,8 +49,8 @@
 		
 		#set( $targetmodule = $context.getRequestParameter("targetmodule"))
 	
-		#if(!$topmodule)
-			#set ( $topmodule = $context.getRequestParameter("topmodule") )
+		#if(!$topmoduleid)
+			#set ( $topmoduleid = $context.getRequestParameter("topmoduleid") )
 		#end
 		
 		
@@ -63,13 +63,11 @@
 			data-oemaxlevel="2" 
 			action="$siteroot$apphome/views/modules/$moduleid/components/results/columnsort.html" 
 		>
-		#if($topmodule)
-		<input name="topmodule" type="hidden" value="$topmodule" />
+		#if($topmoduleid)
+		<input name="topmoduleid" type="hidden" value="$topmoduleid" />
 		<input name="dialogresults" type="hidden" value="true" />
 		#end
-		#if($topmodule)
-			<input name="topmodule" type="hidden" value="$topmodule" />
-		#end
+		
 		<input name="searchtype" type="hidden" value="$!moduleid" />
 		<input name="hitssessionid" type="hidden" value="$!hits.getSessionId()" />
 		#if($categoryid)
@@ -149,18 +147,19 @@
 			data-oemaxlevel="1" 
 			data-closedialog="true"
 			data-updateurl="false"
-			#if($topmodule)
+			#if($topmoduleid)
 			action="$siteroot$apphome/views/modules/$moduleid/dialogindex.html"
 			#else
 			action="$siteroot$apphome/views/modules/$moduleid/index.html"
 			#end 
 	>
-		<input name="embedmodule" type="hidden" value="true" />
+		
 		<input name="searchtype" type="hidden" value="$!moduleid" />
 		<input name="hitssessionid" type="hidden" value="$!hits.getSessionId()" />
 		<input type="hidden" name="$!{moduleid}endusersearch" value="true" />
-		#if($topmodule)
-			<input name="topmodule" type="hidden" value="$topmodule" />
+		#if($topmoduleid)
+			<input name="topmoduleid" type="hidden" value="topmoduleid" />
+			<input name="dialogresults" type="hidden" value="true" />
 		#end
 		#if($categoryid)
 			<input name="categoryid" type="hidden" value="$categoryid" />

@@ -6,11 +6,11 @@ jQuery(document).ready(function(url,params)
 	var siteroot = appdiv.data('siteroot') + appdiv.data('apphome');
 	var componenthome = appdiv.data('siteroot') + appdiv.data('componenthome');
 
-	var refreshdiv = function(url,params)
+	var refreshdiv = function(targetdiv, url, params)
 	{
 		jQuery.ajax({
 			url: url, async: false, data: params, success: function (data) {
-				jQuery("#resultsheader").replaceWith(data);
+				targetdiv.replaceWith(data);
 			},
 			xhrFields: {
                 withCredentials: true
@@ -230,10 +230,14 @@ jQuery(document).ready(function(url,params)
 	
 	lQuery("a.selectpage").livequery( 'click', function() 
 	{
-		jQuery('input[name=pagetoggle]').prop('checked',true);
-		jQuery('.selectionbox').prop('checked',true);
-		$('.selectionbox').closest(".resultsassetcontainer").addClass("emrowselected");
-		$('.selectionbox').closest(".emboxthumb").addClass("emrowselected");
+		var resultsdiv = $(this).closest(".resultsdiv");
+		if (!resultsdiv) {
+			resultsdiv = $("#resultsdiv");
+		}
+		jQuery('input[name=pagetoggle]', resultsdiv).prop('checked',true);
+		jQuery('.selectionbox', resultsdiv).prop('checked',true);
+		$('.selectionbox',resultsdiv).closest(".resultsassetcontainer").addClass("emrowselected");
+		$('.selectionbox', resultsdiv).closest(".emboxthumb").addClass("emrowselected");
 		if(typeof(refreshSelections) != 'undefined'){
 			refreshSelections();
 		}
@@ -1013,7 +1017,8 @@ jQuery(document).ready(function(url,params)
 			
 			data['dataid'] = dataid;
 			var toggleurl = componenthome + "/results/toggle.html";
-			refreshdiv( toggleurl, data);
+			var targetdiv = resultsdiv.find("#resultsheader");
+			refreshdiv(targetdiv, toggleurl, data);
 			if(typeof(refreshSelections) != 'undefined'){
 				refreshSelections();
 			}
@@ -1031,10 +1036,15 @@ jQuery(document).ready(function(url,params)
 	
 	lQuery("a.deselectpage").livequery( 'click', function() 
 	{
-		$('input[name=pagetoggle]').prop('checked',false);
-		$('.selectionbox').prop('checked',false); // Not firing the page
-		$('.selectionbox').closest(".resultsassetcontainer").removeClass("emrowselected");
-		$('.selectionbox').closest(".emboxthumb").removeClass("emrowselected");
+		
+		var resultsdiv = $(this).closest(".resultsdiv");
+		if (!resultsdiv) {
+			resultsdiv = $("#resultsdiv");
+		}
+		$('input[name=pagetoggle]', resultsdiv).prop('checked',false);
+		$('.selectionbox', resultsdiv).prop('checked',false); // Not firing the page
+		$('.selectionbox', resultsdiv).closest(".resultsassetcontainer").removeClass("emrowselected");
+		$('.selectionbox', resultsdiv).closest(".emboxthumb").removeClass("emrowselected");
 		if(typeof(refreshSelections) != 'undefined'){
 			refreshSelections();
 		}
@@ -1043,23 +1053,30 @@ jQuery(document).ready(function(url,params)
 	
 	lQuery("input[name=pagetoggle]").livequery( 'click', function() 
 	{
-		  var hitssessionid = $('#resultsdiv').data('hitssessionid');
-		   var options = $('#resultsdiv').data();
-		   var componenthome = options.componenthome;
+		var input = $(this);
+		var resultsdiv = $(this).closest(".resultsdiv");
+		if (!resultsdiv) {
+			resultsdiv = $("#resultsdiv");
+		}
+		  var hitssessionid = resultsdiv.data('hitssessionid');
+		   var options = resultsdiv.data();
+		   var componenthome = resultsdiv.data("componenthome");
 		   options.oemaxlevel = 1;
 		   
-		   var status = $('input[name=pagetoggle]').is(':checked');
+		   var status = input.is(':checked');
+		   
+		   var targetdiv = resultsdiv.find("#resultsheader");
 		   if(status)
 		   {
 			   options.action = "page";
-			   refreshdiv( componenthome + "/results/togglepage.html", options);
-			   $('.selectionbox').prop('checked', true);
+			   refreshdiv( targetdiv, componenthome + "/results/togglepage.html", options);
+			   $('.selectionbox', resultsdiv).prop('checked', true);
 	       }
 	       else
 	       {
 	       	   options.action = "pagenone";
-	    	   refreshdiv( componenthome + "/results/togglepage.html", options);  
-	   	       $('.selectionbox').prop('checked', false);  
+	    	   refreshdiv(targetdiv, componenthome + "/results/togglepage.html", options);  
+	   	       $('.selectionbox', resultsdiv).prop('checked', false);  
 	   	   }
 	});
 	

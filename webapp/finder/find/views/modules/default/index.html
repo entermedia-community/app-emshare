@@ -22,18 +22,20 @@ $context.putPageValue("topmodule", $topmodule)
 #set($uploadsourcepath =  $topmodule.getValue("uploadsourcepath"))
 $context.putPageValue("uploadsourcepath", $uploadsourcepath)
 
-
 #set($maintargetdiv = "$!{moduleid}resultscontainer")
 $context.putPageValue("maintargetdiv", $maintargetdiv)
+
+
 
 <div id="$maintargetdiv"
 	class="resultsdiv"
 	data-moduleid="$topmodule.getId()"
 	data-hitssessionid="$!hits.getSessionId()"
 	data-url="$apphome/views/modules/$!{module.id}/index.html"
+	data-componenthome = "$!componenthome"
 	data-searchhome="$!home$!componenthome/results"
 	data-targetdiv="$maintargetdiv"
-	#if($topentityid) data-topentityid="$topentityid" #end
+		#if($topentityid) data-topentityid="$topentityid" #end
 	data-oemaxlevel="1">
 	
  	<div class="emgrid-box expandedmodule">
@@ -44,7 +46,7 @@ $context.putPageValue("maintargetdiv", $maintargetdiv)
 	     		#set($moduleicon = $module.moduleicon)
 	     	#end
 	     	
-	    		#set($entityurl = "$siteroot$apphome/views/modules/$module.id/index.html")
+	    	#set($entityurl = "$siteroot$apphome/views/modules/$module.id/index.html")
 	
 			<img src="$siteroot$apphome/theme/images/entity/${moduleicon}.svg" style="height: 26px;"> 
 	

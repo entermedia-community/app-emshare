@@ -130,9 +130,9 @@ $(document).ready(function()
 			reloadurl = reloadurl + "?hitssessionid=" + hitssessionid;
 		}
 		
-		var topmodule = resultsdiv.data("topmodule");
-		if(!topmodule) {
-			topmodule = '';
+		var topmoduleid = resultsdiv.data("topmoduleid");
+		if(!topmoduleid) {
+			topmoduleid = '';
 		}
 		
 		var options =  structuredClone(tree.data());
@@ -144,7 +144,7 @@ $(document).ready(function()
 		options['depth'] = depth;
 		options['categoryid'] = nodeid;
 		options['rootcategory'] = tree.data("rootnodeid");
-		options['topmodule'] = topmodule;
+		options['topmoduleid'] = topmoduleid;
 		options['hitssessionid'] = hitssessionid;
 		
 		if(collectionid)
@@ -323,6 +323,7 @@ $(document).ready(function()
 				var nodeid = node.data('nodeid');
 				var link = tree.data("home") + "/views/modules/category/edit/editdialog.html?categoryid=" + nodeid + "&id=" + nodeid + "&viewid=categorygeneral&viewpath=category/categorygeneral";
 				$(this).attr('href',link);
+				$(this).data('dialogid', 'categoryproperties')
 				emdialog($(this), event);
 				//document.location = link;
 				return false;
@@ -353,14 +354,7 @@ $(document).ready(function()
 				
 				//clear other entities on Upload Form
 				var options = [];
-				options["clearotherentities"] = "true";
-				if($(this).data("oemaxlevel")) {
-						options["oemaxlevel"] = $(this).data("oemaxlevel");
-				}
-				else {
-                	options["oemaxlevel"] = "2";
-                }
-				
+			
 				var customurladdmedia = tree.data("customurladdmedia");
 				if (customurladdmedia) {
 					var url = customurladdmedia;
