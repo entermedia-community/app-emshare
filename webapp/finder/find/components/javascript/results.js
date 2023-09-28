@@ -1015,13 +1015,13 @@ jQuery(document).ready(function(url,params)
 			resultsdiv = $("#resultsdiv");
 		}
 		if (resultsdiv != null) {
-			var data = resultsdiv.data();
-			var componenthome = data.componenthome;
-			
-			data['dataid'] = dataid;
-			var toggleurl = componenthome + "/results/toggle.html";
+			var options = resultsdiv.data();
+			var componenthome = resultsdiv.data("componenthome");
+			options['dataid'] = dataid;
 			var targetdiv = resultsdiv.find("#resultsheader");
-			refreshdiv(targetdiv, toggleurl, data);
+
+			refreshdiv(targetdiv, componenthome + "/results/toggle.html", options);
+
 			if(typeof(refreshSelections) != 'undefined'){
 				refreshSelections();
 			}
@@ -1061,7 +1061,7 @@ jQuery(document).ready(function(url,params)
 		if (!resultsdiv) {
 			resultsdiv = $("#resultsdiv");
 		}
-		  var hitssessionid = resultsdiv.data('hitssessionid');
+		   //var hitssessionid = resultsdiv.data('hitssessionid');
 		   var options = resultsdiv.data();
 		   var componenthome = resultsdiv.data("componenthome");
 		   options.oemaxlevel = 1;

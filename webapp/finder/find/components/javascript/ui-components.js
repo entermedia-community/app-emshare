@@ -1109,10 +1109,10 @@ uiload = function() {
 							width =  $(window).width();
 						}
 						
-						$(".modal-lg").css("min-width", width + "px");
+						$(".modal-lg", modaldialog).css("min-width", width + "px");
 					}
 					if (maxwidth) {
-						$(".modal-lg").css("max-width", maxwidth + "px");
+						$(".modal-lg", modaldialog).css("max-width", maxwidth + "px");
 					}
 					
 					var modalkeyboard = false;
