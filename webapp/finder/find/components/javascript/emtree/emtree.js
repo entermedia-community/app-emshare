@@ -34,9 +34,6 @@ $(document).ready(function()
 	{
 		event.stopPropagation();
 		
-		
-		
-		
         var tree = $(this).closest(".emtree");
         var treename = tree.data("treename");
 		var node = $(this).closest('.noderow');
@@ -59,10 +56,15 @@ $(document).ready(function()
 			var home = tree.data("home");
 			tree.find(nodeid + "_add").remove();
 			var depth = node.data('depth');	
+			
         }
         else {  //Regular Tree
         	var options  = [];
-        		
+        	var resultsdiv = tree.closest(".resultsdiv");
+			if(resultsdiv.length) {
+				resultsdiv.data("categoryid", nodeid);
+				resultsdiv.data("nodeID", nodeid);
+			}
             gotopage(tree, node, maxlevel, prefix, options);
         }
 		var event = $.Event( "emtreeselect" );

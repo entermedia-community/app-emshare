@@ -444,8 +444,8 @@ jQuery(document).ready(function(url,params)
 		$("body").css({ overflow: 'auto' })
 		inOverlay.hide();
 		inOverlay.removeClass("show");
-		if($('.modal:visible').length) {
-			adjustzindex($('.modal:visible'));
+		if($('.modal.behind').length) {
+			adjustzindex($('.modal.behind'));
 		}
 		
 		var reloadonclose =  $('#resultsdiv').data('reloadresults');
@@ -658,7 +658,7 @@ jQuery(document).ready(function(url,params)
 					async: false, 
 					data: {oemaxlevel:1}, 
 					success: function(data) {
-						$('#application').prepend(data);
+						$('#application').append(data);
 						hidden = $("#hiddenoverlay");
 						initKeyBindings(hidden);
 					}	
@@ -1100,8 +1100,9 @@ jQuery(document).ready(function(url,params)
 	lQuery('a#multiedit-menu').livequery('click',function(e)
 	{
 		e.preventDefault();
-		var catalogid = $("#application").data("catalogid");
-		showAsset("multiedit:hitsasset"+catalogid,1);
+		var link = $(this);
+		var hitssessionid = link.data("hitssessionid");
+		showAsset(hitssessionid,1);
 		return false;
 	});
 	

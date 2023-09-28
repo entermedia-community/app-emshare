@@ -8,45 +8,50 @@
 		<div class="dropdown-menu" aria-labelledby="navbarActionsDropdown">
 		#if(!$canforcebasiccollections)
 		#if( $caneditcollection || $caneditallassets )
-			<a class="dropdown-item emdialog" data-dialogid="approveasset" title="[[Approve Pending]]" href="$siteroot$apphome/views/modules/asset/approval/confirmapprove.html?hitssessionid=$hits.getSessionId()&collectionid=$!librarycol.getId()&nodeID=$!categoryid">[[Approve]]</a>
-	    	<a class="dropdown-item emdialog" data-dialogid="approveasset" title="[[Reject Pending]]" href="$siteroot$apphome/views/modules/asset/approval/confirmreject.html?hitssessionid=$hits.getSessionId()&collectionid=$!librarycol.getId()&nodeID=$!categoryid">[[Reject]]</a>
+			<a class="dropdown-item emdialog" 
+				data-dialogid="approveasset" 
+				title="[[Approve Pending]]" 
+				href="$siteroot$apphome/views/modules/asset/approval/confirmapprove.html?hitssessionid=$hits.getSessionId()&collectionid=$!librarycol.getId()&nodeID=$!categoryid&dialogresults=$!dialogresults">[[Approve]]</a>
+	    	<a class="dropdown-item emdialog" 
+	    		data-dialogid="approveasset" 
+	    		title="[[Reject Pending]]" 
+	    		href="$siteroot$apphome/views/modules/asset/approval/confirmreject.html?hitssessionid=$hits.getSessionId()&collectionid=$!librarycol.getId()&nodeID=$!categoryid&dialogresults=$!dialogresults">[[Reject]]</a>
 	    #end
 	    #end	
-	    #if ( $canviewbasket  )
-			#if($order)
-				<a class="dropdown-item updatebasket" data-action="remove" targetdiv="basket-paint"  href="$siteroot$componenthome/basket/removeselection.html?hitssessionid=$hits.getSessionId()" ">[[Remove From Cart]]</a>
-			#else
-				<a class="dropdown-item updatebasket" targetdiv="basket-paint"  href="$siteroot$componenthome/basket/addselection.html?hitssessionid=$hits.getSessionId()" ">[[Add To Cart]]</a>
-			#end
-		#end
-		#if( $canaddnewcollection )
-			<a class="dropdown-item emdialog"
-			   id="selectedmenuaddtoalbum" 
-			   data-hidefooter="true"
-			   data-targetdiv="applicationmaincontent"
-			   data-targeturl="$siteroot$apphome/views/modules/librarycollection/media/addselections.html?oemaxlevel=2"
-			   data-hitssessionid="$hits.getSessionId()" 
-			   title="[[Add to Album]]"  
-			   href="$siteroot$componenthome/opencollections/searchcollection.html?hitssessionid=$hits.getSessionId()&searchtype=asset&searchcollectinolauncher=selectedmenuaddtoalbum">[[Add To Album]]</a>
-		#end
+##	    #if ( $canviewbasket  )
+##			#if($order)
+##				<a class="dropdown-item updatebasket" data-action="remove" targetdiv="basket-paint"  href="$siteroot$componenthome/basket/removeselection.html?hitssessionid=$hits.getSessionId()" >[[Remove From Cart]]</a>
+##			#else
+##				<a class="dropdown-item updatebasket" targetdiv="basket-paint"  href="$siteroot$componenthome/basket/addselection.html?hitssessionid=$hits.getSessionId()" >[[Add To Cart]]</a>
+##			#end
+##		#end
+##		#if( $canaddnewcollection )
+##			<a class="dropdown-item emdialog"
+##			   id="selectedmenuaddtoalbum" 
+##			   data-hidefooter="true"
+##			   data-targetdiv="applicationmaincontent"
+##			   data-targeturl="$siteroot$apphome/views/modules/librarycollection/media/addselections.html?oemaxlevel=2"
+##			   data-hitssessionid="$hits.getSessionId()" 
+##			   title="[[Add to Album]]"  
+##			   href="$siteroot$componenthome/opencollections/searchcollection.html?hitssessionid=$hits.getSessionId()&searchtype=asset&searchcollectinolauncher=selectedmenuaddtoalbum">[[Add To Album]]</a>
+##		#end
 		
-		#if(!$canforcebasiccollections)
-			#if( $librarycol && ( $canaddnewcollection || $caneditcollection ) )
-				 #if( $caneditcollection)
-					<a class="dropdown-item confirm" href="$siteroot$apphome/views/modules/librarycollection/removefromcollection.html?hitssessionid=$!hits.getSessionId()&collectionid=$!librarycol.getId()" title="[[Edit one or more selected records]]" confirm="[[Remove from collection?]]" >[[Remove from Collection]]</a>
-				#end
-				#if( $canaddnewcollection)
-					<a class="dropdown-item emdialog" href="$siteroot$apphome/views/modules/librarycollection/copycollection.html?collectionid=$!librarycol.getId()" title="[[Create a copy of this Album]]">[[Copy Album]]</a>
-				 #end
-			#end
-		#end
+##		#if(!$canforcebasiccollections)
+##			#if( $librarycol && ( $canaddnewcollection || $caneditcollection ) )
+##				 #if( $caneditcollection)
+##					<a class="dropdown-item confirm" href="$siteroot$apphome/views/modules/librarycollection/removefromcollection.html?hitssessionid=$!hits.getSessionId()&collectionid=$!librarycol.getId()" title="[[Edit one or more selected records]]" confirm="[[Remove from collection?]]" >[[Remove from Collection]]</a>
+##				#end
+##				#if( $canaddnewcollection)
+##					<a class="dropdown-item emdialog" href="$siteroot$apphome/views/modules/librarycollection/copycollection.html?collectionid=$!librarycol.getId()" title="[[Create a copy of this Album]]">[[Copy Album]]</a>
+##				 #end
+##			#end
+##		#end
 		
-		#if( $canaddtofavorites && $librarycol.id != "${user.id}-favorites" )
+		#if(1==2 && $canaddtofavorites && $librarycol.id != "${user.id}-favorites" )
 			<a class="dropdown-item ajax"
 				data-targetdivinner="resultsmessages"
 				data-oemaxlevel="2" 
 			   title="[[Add to Favorites]]"  
-			   ##href="$siteroot$apphome/views/modules/librarycollection/media/addselections.html?hitssessionid=$hits.getSessionId()&searchtype=asset&collectionid=${user.id}-favorites"
 			   href="$siteroot$apphome/views/modules/asset/editor/favorite/favorite-add-multi.html?hitssessionid=$hits.getSessionId()"
 			   >
 			   [[Add To Favorites]]</a>
@@ -55,7 +60,11 @@
 		
 		#if ($canmultiedit && $hits.getSelectionSize() && $hits.getSelectionSize() > 1)
   				#set($text = "[[Multi Edit]] ($hits.getSelectionSize())")
-				<a id="multiedit-menu" class="dropdown-item" href="#" title="[[Edit selected records]]">$text</a>
+				<a id="multiedit-menu"
+					data-hitssessionid="multiedit:$hits.getSessionId()" 
+					class="dropdown-item" 
+					href="#" 
+					title="[[Edit selected records]]">$text</a>
 		#end
 		#if($canmultidelete)
 			#set($deleteurl = "$siteroot$componenthome/mediaviewer/fullscreen/delete/index.html?hitssessionid=$hits.getSessionId()&nodeID=$!catid")
@@ -75,9 +84,15 @@
 			
 			#if( $enabled )
 				#if($mediaarchive.isCatalogSettingTrue("preventupscaling")) 
-					<a class="dropdown-item" href="$siteroot$apphome/views/modules/asset/activity/customdownloadassets.html?hitssessionid=$!hits.getSessionId()&collectionid=$!{librarycol.getId()}"  data-hidefooter="true" >[[Download]]</a>
+					<a class="dropdown-item" 
+						href="$siteroot$apphome/views/modules/asset/activity/customdownloadassets.html?hitssessionid=$!hits.getSessionId()&collectionid=$!{librarycol.getId()}"  
+						data-hidefooter="true" >[[Download]]</a>
 				#else
-					<a class="dropdown-item emdialog" href="$siteroot$apphome/views/modules/asset/activity/downloadassets.html?hitssessionid=$!hits.getSessionId()&collectionid=$!{librarycol.getId()}"  data-hidefooter="true" >[[Download]]</a>
+					<a class="dropdown-item emdialog" 
+						data-dialogid="downloadeasset"
+						data-hidefooter="true"
+						href="$siteroot$apphome/views/modules/asset/activity/downloadassets.html?hitssessionid=$!hits.getSessionId()&collectionid=$!{librarycol.getId()}"  
+						 >[[Download]]</a>
 				#end
 			#else		
 				<a class="dropdown-item" href="#">[[Download]]</a>

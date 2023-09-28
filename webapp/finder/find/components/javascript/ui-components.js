@@ -1293,8 +1293,11 @@ uiload = function() {
 			if(element.hasClass("modalmediaviewer")) {
 				$('.modal:visible').css('z-index', zIndex);	
 				$('.modal:visible').off();
+				$('.modal:visible').addClass("behind");
+				$('.modal:visible').hide();
 			}
 			else {
+				
 				$('.modalmediaviewer').css('z-index', zIndex);
 				$('.modal:visible').css('z-index', zIndex - 1); //reset others?		
 				$('.modal-backdrop').not('.modal-stack').css('z-index', zIndex - 1).addClass('modal-stack');	
@@ -1302,6 +1305,7 @@ uiload = function() {
 			adjust = 1 + (1 * $('.modal:visible').length);
 			element.css('z-index', zIndex + adjust);
 			$('.onfront').removeClass("onfront");
+			element.show();
 			element.addClass("onfront");
 		}, 0);
 	}
