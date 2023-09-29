@@ -64,8 +64,12 @@ $context.putPageValue("topmoduleid", $moduleid)
 
 
 #set( $enablebackbutton = $context.getRequestParameter("enablebackbutton"))
-#set($dialogtabid = "${moduleid}$!{entityid}")
-<div class="entitydialog #if($enablebackbutton) enablebackbtn #end"
+#if ($addnew)
+	#set($dialogtabid = "addnew${moduleid}")
+#else
+	#set($dialogtabid = "${moduleid}$!{entityid}")
+#end
+<div class="entitydialog #if($enablebackbutton || $addnew) enablebackbtn #end"
 	id="#eid($!dialogtabid)" 
 	data-moduleid="$moduleid" 
 	data-entityid="$!entityid" 

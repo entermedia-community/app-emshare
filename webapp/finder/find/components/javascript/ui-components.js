@@ -866,6 +866,10 @@ uiload = function() {
 		                    	closeemdialog(formmodal);
 		                    }
 		                }
+		                
+		                
+		                //tabbackbutton
+		                formsavebackbutton(form);
 						
 						//who uses this?
 		        		$('#resultsdiv').data('reloadresults',true);
@@ -1085,6 +1089,9 @@ uiload = function() {
 				if(dialog.hasClass("entity-dialog") && dialog.closest(".modal").length !== 0) {
 					//find tab
 					var tabid = dialog.data("tabid");
+					if(!tabid) {
+						tabid = 'tab_metadata';
+					}
 					if(tabid) {
 						var container = dialog.closest(".entity-body");
 						var tabs = container.find(".entity-tab-content");
