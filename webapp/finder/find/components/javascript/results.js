@@ -104,6 +104,7 @@ jQuery(document).ready(function(url,params)
 					
 					var componenthome = resultsdiv.data('componenthome');
 					var moduleid = resultsdiv.data('moduleid');
+					var resultview = resultsdiv.data('resultview');
 					var originalhitsperpage = resultsdiv.data("hitsperpage");
 					var targetdiv = resultsdiv.data('targetdiv');
 					
@@ -1505,9 +1506,12 @@ checkScroll = function()
 function gridupdatepositions(grid) {
 	
 	//console.log("Checking Old Position: " + oldposition);
-	var resultsDiv = grid.closest("#resultsdiv");
+	var resultsdiv = grid.closest(".resultsdiv");
+	if (!resultsdiv) {
+		resultsdiv = grid.closest(".resultsdiv");
+	}
 	
-	var positionsDiv = resultsDiv.find(".resultspositions");
+	var positionsDiv = resultsdiv.find(".resultspositions");
 	console.log("positionsDiv:", positionsDiv);
 	
 	if(positionsDiv.length  > 0) {

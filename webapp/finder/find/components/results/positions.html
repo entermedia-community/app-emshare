@@ -8,28 +8,42 @@
 #set($oemaxlevel = "1")
 #set($targetdiv = "$!{moduleid}resultscontainer")
 
+#if(!$dialogresults)
+#set($dialogresults = $context.getRequestParameter("dialogresults"))
+#end
+#if(!$topmoduleid)
+#set($topmoduleid = $context.getRequestParameter("topmoduleid"))
+#end
+#if(!$rootcategory)
+#set($rootcategory = $context.getRequestParameter("rootcategory"))
+#end
+#if(!$categoryid)
+#set($categoryid = $context.getRequestParameter("categoryid"))
+#end
 #if($moduleid=="asset")
-		#if($categoryid || $collectionid)
+		
 			#if($dialogresults)
 				#set($resultsPage = "$applink/views/modules/asset/dialogindex.html?hitssessionid=$!hits.sessionId")
-				#set($resultsPage = "$resultsPage&topmodule=$!topmodule")
+				#set($resultsPage = "$resultsPage&topmoduleid=$!topmoduleid")
 				#set($resultsPage = "$resultsPage&rootcategory=$!rootcategory")
 				#set($resultsPage = "$resultsPage&categoryid=$!categoryid")
 				#set($updateurl = "false")
 				#set($targetdiv = "dialog$!{moduleid}resultscontainer")
 			#else
-				#set($resultsPage = "$applink/views/modules/asset/viewfiles/${categoryid}/#dash($category).html?hitssessionid=$!hits.sessionId")
-				#set($oemaxlevel = "2")
+				#if($categoryid || $collectionid)
+					#set($resultsPage = "$applink/views/modules/asset/viewfiles/${categoryid}/#dash($category).html?hitssessionid=$!hits.sessionId")
+					#set($oemaxlevel = "2")
+				#else
+					#set($resultsPage = "$applink/views/modules/asset/index.html?hitssessionid=$!hits.sessionId&$!{hits.getSearchType()}pageposition")
+					##set($resultsPage = "$componenthome/results/index.html?hitssessionid=$!hits.sessionId&$!{hits.getSearchType()}pageposition")
+				#end
 			#end
 			
 			#if($collectionid)
 				#set($resultsPage = "$resultsPage&collectionid=$!collectionid")
 			#end
 			#set($resultsPage = "$resultsPage&$!{hits.getSearchType()}pageposition")
-		#else
-			#set($resultsPage = "$applink/views/modules/asset/index.html?hitssessionid=$!hits.sessionId&$!{hits.getSearchType()}pageposition")
-			##set($resultsPage = "$componenthome/results/index.html?hitssessionid=$!hits.sessionId&$!{hits.getSearchType()}pageposition")
-		#end
+		
 
 		
 #elseif($moduleid=="librarycollection")
@@ -81,9 +95,16 @@
 #set( $befores = $prhits.linksBefore() )
 #set( $afters = $prhits.linksAfter() )
 
-
-<div class="resultspositions" data-url="$componenthome/results/positions.html" data-moduleid="$moduleid" 
-data-hitssessionid="$!hits.getSessionId()" data-searchtype="$!hits.getSearchType()" data-currentpagenum="$prhits.getPage()">
+<div class="resultspositions" 
+	data-url="$componenthome/results/positions.html" 
+	data-moduleid="$moduleid"
+	data-categoryid="$!categoryid"
+	data-topmoduleid="$!topmoduleid" 
+	data-rootcategory="$!rootcategory"
+	data-hitssessionid="$!hits.getSessionId()" 
+	data-searchtype="$!hits.getSearchType()" 
+	data-dialogresults="$!dialogresults"
+	data-currentpagenum="$prhits.getPage()">
  <ul>
 	#if(!$befores.isEmpty() && $befores.get(0)>1)
 		<li><a class="ajax firstposition" data-targetdiv="$targetdiv" data-updateurl="$!updateurl" data-oemaxlevel="$oemaxlevel" href="$resultsPage=$prhits.getStartingPosition()" >$prhits.getStartingPosition()</a></li>	

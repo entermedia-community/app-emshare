@@ -1200,6 +1200,7 @@ uiload = function() {
 					adjustzindex(modalinstance);
 					
 					$(window).trigger("resize");
+					gridResize(); 
 					
 					modalinstance.on('hidden.bs.modal', function () {
   						closeemdialog($(this));
