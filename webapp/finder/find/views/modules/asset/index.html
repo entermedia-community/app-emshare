@@ -17,6 +17,7 @@ $context.putPageValue("categoryid", $categoryid)
 	#set( $librarycol = $mediaarchive.query("librarycollection").orgroup("rootcategory", $rootcategories).searchOne() )
 #end
 
+#set($resultview = $userprofile.get("assetresultview"))
 
 #set( $count = $hits.size())
 	
@@ -30,6 +31,7 @@ $context.putPageValue("maintargetdiv", $maintargetdiv)
 <div id="assetresultscontainer"
 	class="assetresults resultsdiv"
 	data-moduleid="asset" 
+	data-resultview = "$!resultview"
 	data-hitssessionid="$!hits.getSessionId()"
 	#if($category)
 		data-url="$apphome/views/modules/asset/viewfiles/$!categoryid/#dash($category).html"
