@@ -229,6 +229,27 @@ jQuery(document).ready(function(url,params)
 		return false;
 	});
 	
+	//clearfiltersearch
+	
+	lQuery(".clearfiltersearch").livequery("click", function(e){
+		// debugger;
+		var box = $(this).parent().find(".inlinefiltersearch");
+		if(box.length) {
+			box.val("");
+		}
+		$(this).hide();
+	});
+	
+	lQuery(".inlinefiltersearch").livequery("keydown", function(e){
+		if( e.which == 13)
+		{
+			$(".clearfiltersearch").show();
+			}
+	});
+	
+	
+
+	
 	lQuery("a.selectpage").livequery( 'click', function() 
 	{
 		var resultsdiv = $(this).closest(".resultsdiv");

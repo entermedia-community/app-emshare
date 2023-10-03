@@ -78,30 +78,20 @@
 			<input name="collectionid" type="hidden" value="$!{librarycol.getId()}" />
 		#end
 		
+
+		
+		
 		<div class="form-group">
-			<div class="filter-box">
-				<div class="filter-box-header">
-						<span class="toggle-filter sidetoggle" data-target="filterboxsorting">
-						#set($minimizedfilterbox = true)
-						#if(!$userprofile.minimizefilterboxsorting || $userprofile.minimizefilterboxsorting == "false")
-							#set($minimizedfilterbox = false)
-						#end
-						<i class="caret fas 
-							#if($minimizedfilterbox) 
-								 fa-caret-right 
-						  	#else 
-						  		 fa-caret-down 
-						  	#end"></i>
-						</span> 
-						[[Sort]]
-				</div>
+			<div class="filter-box" style="display:flex;">
+				<div class="filter-box-header" style="line-height: 1.65; padding-right: 6px;">[[Sort]]:</div>
 			
 			<div class="filter-box-options" 
-				 id="filterboxsorting" #if($minimizedfilterbox) style="display: none;" #end>
+				 id="filterboxsorting"
+				 style="width:255px; padding-right:6px">
 				#set ($alldetails = $searcher.getUserPropertyDetails() )
-				<div style="width:145px; display: inline-block;">
+				<div >
 				<select data-sortup="$hits.searchQuery.isSortUp()" 
-						class="form-control form-control-sm select2 autosubmited" 
+						class="form-control  select2 autosubmited" 
 						name="sortby" 
 						id="$!{moduleid}dialogsortby" 
 						data-allowclear="false" 
@@ -125,7 +115,8 @@
 				</select>
 				
 				</div>
-				<div class=" float-right" >
+				</div>
+				<div class=" " >
 				<a href="#" 
 					class="filterschangesort"
 					data-sortbyfield="${moduleid}dialogsortby" 
@@ -134,7 +125,7 @@
 				</a>
 				</div>
 				
-			</div>
+			
 		</div>
 		</div>
 	</form>	
@@ -188,6 +179,55 @@
 		
 		$context.putPageValue("idprefix","entitysearch")
 	
+		## Open search?
+		#if( $hits.getSearchQuery().hasMainInput())
+		#set($currentsearch = $hits.getSearchQuery().getMainInput())
+		#end
+		<div style="padding:10px 0 20px">
+		<div class="form-group" style="    margin: -10px; padding: 15px;    background-color: #d1d1d1d1;">
+			<input name="field" value="description" type="hidden">
+			<input name="operation" value="freeform" type="hidden">
+			<div class="filter-box">
+				<div class="filter-box-options" id="filterboxdescription" style="position:relative">
+					<input type="text" 
+						autocomplete="off" 
+						class="form-control detail_description focusme inlinefiltersearch" 
+						value="$!currentsearch" 
+						id="description.value" 
+						name="description.value"
+						placeholder="[[Search...]]"
+						 />
+					
+						#if($moduleid=="asset")
+							#if(!$dialogresults)
+								#set($dialogresults = $context.getRequestParameter("dialogresults"))
+							#end
+							#if($dialogresults)
+								#set($href = "$siteroot$apphome/views/modules/$moduleid/dialogindex.html?hitssessionid=$!hits.getSessionId()&topmoduleid=$!topmoduleid&rootcategory=$!rootcategory&categoryid=$!{categoryid}&removeterm=description")
+							#else
+								#set($href = "$siteroot$apphome/views/modules/$moduleid/index.html?hitssessionid=$!hits.getSessionId()&topmoduleid=$!topmoduleid&rootcategory=$!rootcategory&categoryid=$!{categoryid}&removeterm=description")		
+							#end
+							#set($oemaxlevel = "1")
+						#else
+							#set($href = "$siteroot$apphome/views/modules/$moduleid/index.html?hitssessionid=$!hits.getSessionId()&removeterm=$!term.getId()")
+							#set($oemaxlevel = "1")
+						#end
+						<a href="$href" 
+							class=" ajax clearfiltersearch"
+							
+							title="[[Clear]]: #esc($hits.getSearchQuery().getMainInput())"
+							data-targetdiv="$!targetdiv" 
+							data-oemaxlevel="$oemaxlevel"
+							data-updateurl="false" 
+							style="    
+								position: absolute; top: 5px;    right: 10px;
+								display:none; #if($currentsearch)	display:block;	#end"><i class="fas fa-times"></i></a>
+					
+				</div>
+			</div>
+		</div>
+		</div>
+		
 		
 	
 		##FILTERS
@@ -236,7 +276,7 @@
 		#if( !$resultview )
 		<input type="hidden" name="resultstype" value="table" />
 		#end
-		##<input type="b" class="btn btn-sm btn-primary" value="[[Close]]">
+		##<input type="button" class="btn btn-sm btn-primary" value="[[Close]]">
 		
 	</form>
 	
@@ -317,13 +357,14 @@
 	
 		#if( !$edit )
 		<div class="filters-edit-icon float-right">
-			<a class="ajax btn btn-xs btn-secondary" data-targetdiv="moduleadvfilterpanel" 
-				href="$!siteroot$apphome/views/modules/$moduleid/components/filters/dialog.html?editfilters=true&oemaxlevel=1&collectionid=$!collectionid&moduleid=$!moduleid">
-				<i class="fas fa-plus"></i> [[Add Filters]]</a>
+			<a class="ajax btn btn-sm btn-secondary" data-targetdiv="moduleadvfilterpanel" 
+				href="$!siteroot$apphome/views/modules/$moduleid/components/filters/dialog.html?editfilters=true&oemaxlevel=1&collectionid=$!collectionid&moduleid=$!moduleid"
+				title="[[Add Filters]]">
+				<i class="fas fa-plus"></i> [[Filters]]</a>
 		</div>
 	#end
 	
 	
-	<a href="" class="btn btn-sm btn-primary" data-dismiss="modal">[[Close]]</a>
+	<a href="" title="[[Close Filters]]" class="btn btn-sm btn-primary" data-dismiss="modal">[[Close]]</a>
 	
 </div>

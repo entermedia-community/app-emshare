@@ -1170,16 +1170,6 @@ uiload = function() {
 					if (hidefooter != null) {
 						$(".modal-footer", modaldialog).hide();
 					}
-					var focuselement = dialog.data("focuson");
-		
-					if (focuselement) {
-						//console.log(focuselement);
-						var elmnt = document.getElementById(focuselement);
-						elmnt.scrollIntoView();
-					} else {
-						$('form', modaldialog).find('*').filter(
-								':input:visible:first').focus();
-					}
 					
 					if (typeof global_updateurl !== "undefined" && global_updateurl == false) {
 						//globaly disabled updateurl
@@ -1216,6 +1206,24 @@ uiload = function() {
 		
 		$(modaldialog).on('shown.bs.modal', function () {
 		       //adjustzindex($(this));
+	       var focuselement = modaldialog.data("focuson");
+			if (focuselement) {
+				//console.log(focuselement);
+				var elmnt = document.getElementById(focuselement);
+				elmnt.scrollIntoView();
+			} else {
+				var focusme = modaldialog.find('.focusme');
+				if(focusme.length) {
+					setTimeout( function(){
+				       focusme.focus();
+				    },1000);
+					
+				}
+				else {
+					$('form', modaldialog).find('*').filter(':input:visible:first').focus();
+				}
+			}
+				
 		});
 		
 		$(modaldialog).on('hide.bs.modal', function (e) {
