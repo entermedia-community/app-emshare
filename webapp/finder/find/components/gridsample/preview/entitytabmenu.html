@@ -14,9 +14,9 @@
 	#set($tabtype = $context.getRequestParamenter("tabtype"))
 #end
 #if($tabtype == "submodulehome")
-	#set($tabid = "tabsubentity_$!{targetviewid}")
+	#set($tabid = "tab_${viewid}")
 	#set($viewsearcher = $searcherManager.getSearcher($catalogid, "view"))
-	#set($viewdata = $viewsearcher.searchById($targetviewid))
+	##set($viewdata = $viewsearcher.searchById($viewid))
 	#set($name = $viewdata.getName($context))
 #elseif($tabtype=="media")
 	#set($tabid = "tab_media")
@@ -38,7 +38,8 @@
 			#end
 		#else
 			#if($entity.getName($context))
-				#set($name = $!entity.getName($context))
+					###set($name = $!entity.getName($context))
+				#set($name = $viewdata.getName($context))
 			#else 
 				#if($addnew=='true')
 					#set($name = "[[Add New]]")
@@ -46,10 +47,11 @@
 			#end
 		#end
 		#set($targetentitytabid = "entity-tab-#eid($!{id})")
-		#set($tabid = "tab_metadata")
+		#set($tabid = "tab_$viewid")
 	#end
 
 #end
+
 <div class="entity-tab  #if($currenttab == $tabid) current-entity #end" 
 	#if(!$tabtype) data-entityid="$!entity.getId() #end">
 	<a 
@@ -65,6 +67,7 @@
 		data-toggle="tab"
 		data-target="$!targetentitytabid"
 		data-topmodule="$!topmodule"
+		data-moduleid="$!moduleid"
 		#if($id.startsWith("multiedit"))
 			data-ismultiedit="true"
 		#end 
@@ -84,8 +87,7 @@
 		#elseif($tabtype=="media") 
 			 #text($tabmodule)
 		#else
-			###text($name)
-			[[General]]
+			#text($name)
 		#end
 		</a>
 		

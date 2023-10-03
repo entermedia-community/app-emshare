@@ -57,11 +57,22 @@ $context.putPageValue("showmedia", $showmedia)
 	#set($currenttab = $context.getRequestParameter("currenttab"))
 #end
 
-<div id="tab_metadata"
+#ifnull($viewid)
+#set($viewid = $context.getRequestParameter("viewid"))
+#end
+
+#set($tabid = $context.getRequestParameter("tabid"))
+#ifnull($tabid)
+	#set($tabid = "tab_$viewid")
+#end
+
+<div id="$tabid"
 	class="#eid($entityid)tab-content reloadonupload entity-tab-content tabtype$!tabtype"
-	style=" #if($currenttab != 'tab_metadata') display:none; #end" 
+	style=" #if($currenttab != $tabid) display:none; #end" 
 	data-id="$!entity.id" 
 	data-tabtype="metadata"
+	data-tabid="$tabid"
+	data-viewid="$viewid"
 	data-currenttab="$!currenttab"
 	data-searchtype="$searchtype"
 	data-autoreloadevents="uploadend"
