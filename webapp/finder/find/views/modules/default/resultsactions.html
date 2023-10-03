@@ -44,6 +44,18 @@ $context.putPageValue("moduleid", $moduleid)
 			
 					<ul class="resultsnav">
 					
+					#if($permissions.can($moduleid, "create") && $moduleid!="faceprofilegroup")
+				 		#set($addurl = "$siteroot$applink/views/modules/${moduleid}/components/gridsample/preview/$!{entityrendertype}.html?edit=true&addnew=true&viewid=$!{moduleid}addnew")
+				 		#ifnotnull($topentityid)
+				 			#set($addurl = "$addurl&fieldexternalid=${topmodule.getId()}&fieldexternalvalue=${topentityid}&reloadtargets=topmodulecontainer")
+				 		#end
+				 		<li>
+				 		<a class=" emdialog" 
+				 			href="$addurl" 
+				 			title="[[Add New]]"><i class="fas fa-plus"></i> [[New]]</a>
+				 		</li>
+				 	#end
+					
 					#if($resultview == "grid")
 						#if($hits.getTotalPages() >  1  )
 							$pages.include("$apphome/views/modules/$module.id/navigate.html", $context)
