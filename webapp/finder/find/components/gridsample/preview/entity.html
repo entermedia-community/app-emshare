@@ -51,8 +51,8 @@ $context.putPageValue("topmoduleid", $moduleid)
 		#if($entitytabopen.equals($tabid))
 			#set($foundtab = $tabid)
 		#end
-		#ifnull($firsttab)
-			#set($firsttab = $tabid)
+		#ifnull($firstview)
+			#set($firstview = $viewid)
 		#end
 	#end
 #end
@@ -89,7 +89,7 @@ $context.putPageValue("topmoduleid", $moduleid)
 	#else 
 		#if($addnew=='true')
 			#set($name = "[[Add New]]")
-			#set($entitytabopen = $firsttab)
+			
 			$context.putPageValue("addnew", $addnew)
 		#end
 	#end
@@ -102,6 +102,13 @@ $context.putPageValue("topmoduleid", $moduleid)
 	  	<div class="nav nav-tabs entity-navigation" id="entity-nav-tab" role="tablist" 
 	  		 data-tabmenuurl="gridsample/preview/entitytabmenu.html">
 			
+			#ifnull($id)
+			
+				$context.putPageValue("viewid", $firstview)
+				#set($entitytabopen = "tab_${firstview}")
+				$context.putPageValue("currenttab", $entitytabopen)
+				$pages.include("$componenthome/gridsample/preview/entitytabmenu.html", $context)
+			#end
 			#ifnotnull($id)
 				#if($enttiyviews)		
 					#foreach( $targetview in $enttiyviews)
@@ -162,7 +169,12 @@ $context.putPageValue("topmoduleid", $moduleid)
 		
 		<div class="tab-content entity-body" id="entity-nav-tabContent">
 
-				
+				#ifnull($id)
+					$context.putPageValue("viewid", $firstview)
+					#set($entitytabopen = "tab_${firstview}")
+					$context.putPageValue("currenttab", $entitytabopen)
+					$pages.include("$componenthome/gridsample/preview/entitytab.html", $context)
+				#end
 				#ifnotnull($id)
 					##submodules
 					#if($enttiyviews)		
