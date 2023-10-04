@@ -46,10 +46,10 @@
 		<input name="${detail.getId()}.searchtype" value="${detail.getSearchType()}" type="hidden" />
 		<div class="filter-box">
 			<div class="filter-box-header">
-					<span class="toggle-filter sidetoggle" data-target="$!{idprefix}filterbox${detail.getId()}">
+					#set($filterboxid = "$!{idprefix}filterbox${detail.getId()}")
+					<span class="toggle-filter sidetoggle" data-target="$filterboxid">
 					<i class="caret fas 
-							#set($minimized = $detail.getId())
-							#set($preference = '#set($selectedpreference = ' + '$userprofile.' + 'minimizefilterbox' + $minimized + ')')
+							#set($preference = '#set($selectedpreference = ' + '$!userprofile.minimize'  + $filterboxid + ')')
 							#evaluate($preference)
 							#ifnull($selectedpreference)
 							#set($selectedpreference = "false")
@@ -72,7 +72,7 @@
 					##if ($edit == "true" && $detail.searchType)   (${detail.searchType} ) #end
 			</div>
 			<div class="filter-box-options" 
-				id="$!{idprefix}filterbox${detail.getId()}" 
+				id="$filterboxid" 
 				#if($selectedpreference == "true") style="display: none;" #end
 				data-viewtype="${viewtype}">
 			

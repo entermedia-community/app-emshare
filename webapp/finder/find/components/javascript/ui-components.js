@@ -1825,6 +1825,9 @@ uiload = function() {
 		if ($(event.target).is("a")) {
 			return true;
 		}
+		if ($(event.target).closest(".jp-audio").length) {
+			return true;
+		}
 		var emselectable = clicked.closest(".emselectableentitymodule");
 		
 		var row = $(clicked.closest("tr"));
@@ -2216,6 +2219,114 @@ uiload = function() {
 																// term
 							search["sortby"] = sortby; // search
 														// term
+							return search;
+						},
+						processResults : function(data,
+								params) { // parse the
+											// results
+											// into the
+											// format
+											// expected
+											// by
+											// Select2.
+							params.page = params.page || 1;
+							return {
+								results : data.rows,
+								pagination : {
+									more : false
+								// (params.page * 30) <
+								// data.total_count
+								}
+							};
+						}												
+					},
+					escapeMarkup : function(m) {
+						return m;
+					},
+					templateResult : select2formatResult,
+					templateSelection : select2Selected,
+					tokenSeparators : [ "|" ],
+					separator : '|'
+					
+				});
+		}
+		theinput.on("select2:select" , function() {
+			if ($(this).parents(".ignore").length == 0) {
+				$(this).valid(); 
+			}
+	   });
+	   theinput.on("select2:unselect" , function() {
+			if ($(this).parents(".ignore").length == 0) {
+				$(this).valid(); 
+			}
+		});
+	});
+	
+	
+	lQuery("select.searchtags").livequery(function() {
+		var theinput = $(this);
+		var dropdownParent = theinput.data('dropdownparent');
+		if (dropdownParent && $("#" + dropdownParent).length) {
+			dropdownParent = $("#" + dropdownParent);
+		}
+		else {
+			dropdownParent = $(this).parent();
+		}
+		var parent = theinput.closest("#main-media-container");
+		if (parent.length) {
+			dropdownParent = parent;
+		} 
+		var parent = theinput.parents(".modal-content");
+		if (parent.length) {
+			dropdownParent = parent;
+		}
+		
+		var searchfield = theinput.data('searchfield');
+		var sortby = theinput.data('sortby');
+		var defaulttext = theinput.data('showdefault');
+		if (!defaulttext) {
+			defaulttext = "Search";
+        }
+        var allowClear = $(this).data('allowclear');
+        if (allowClear == undefined)  {
+            allowClear = true;
+        }
+        
+		var url = theinput.data("url");
+		if(!url) { 
+			url = apphome + "/components/xml/types/autocomplete/tagsearch.txt";
+		}
+				
+		if($.fn.select2 ) {
+			theinput.select2(
+				{
+					tags : true,
+					placeholder : defaulttext,
+					allowClear : allowClear,
+					dropdownParent : dropdownParent,
+					selectOnBlur : true,
+					delay : 150,
+					minimumInputLength : 1,
+					ajax : { // instead of writing
+								// the function to
+								// execute the request
+								// we use Select2's
+								// convenient helper
+						url : url,
+						xhrFields: {
+					        withCredentials: true
+					    },
+						crossDomain: true,
+						dataType : 'json',
+						data : function(params) {
+							var search = {
+								page_limit : 15,
+								page : params.page
+							};
+							search["field"] = searchfield;
+							search["operation"] = "contains";
+							search[searchfield+ ".value"] = params.term; 
+							
 							return search;
 						},
 						processResults : function(data,

@@ -26,9 +26,9 @@
 #end
 
 
-#set($targetdiv = $context.getRequestParameter("targetdiv"))
-#ifnull($targetdiv)
-	#set($targetdiv = "$!{moduleid}resultscontainerembed")
+#set($targetdivsearch = $context.getRequestParameter("targetdivsearch"))
+#ifnull($targetdivsearch)
+	#set($targetdivsearch = "$!{moduleid}resultscontainerembed")
 #end
 
 
@@ -52,85 +52,6 @@
 		#if(!$topmoduleid)
 			#set ( $topmoduleid = $context.getRequestParameter("topmoduleid") )
 		#end
-		
-	#if(!$edit)	
-		
-	##SORT
-	<form  	name="filtersortform" 
-			id="filtersortformdialog" 
-			class="filterform ajaxform"
-			method="POST"   
-			data-targetdivinner="$targetdiv" 
-			data-oemaxlevel="2" 
-			action="$siteroot$apphome/views/modules/$moduleid/components/results/columnsort.html" 
-		>
-		#if($topmoduleid)
-		<input name="topmoduleid" type="hidden" value="$topmoduleid" />
-		<input name="dialogresults" type="hidden" value="true" />
-		#end
-		
-		<input name="searchtype" type="hidden" value="$!moduleid" />
-		<input name="hitssessionid" type="hidden" value="$!hits.getSessionId()" />
-		#if($categoryid)
-			<input name="categoryid" type="hidden" value="$categoryid" />
-		#end
-		#if( $librarycol)
-			<input name="collectionid" type="hidden" value="$!{librarycol.getId()}" />
-		#end
-		
-
-		
-		
-		<div class="form-group">
-			<div class="filter-box" style="display:flex;">
-				<div class="filter-box-header" style="line-height: 1.65; padding-right: 6px;">[[Sort]]:</div>
-			
-			<div class="filter-box-options" 
-				 id="filterboxsorting"
-				 style="width:255px; padding-right:6px">
-				#set ($alldetails = $searcher.getUserPropertyDetails() )
-				<div >
-				<select data-sortup="$hits.searchQuery.isSortUp()" 
-						class="form-control  select2 autosubmited" 
-						name="sortby" 
-						id="$!{moduleid}dialogsortby" 
-						data-allowclear="false" 
-						style="" >
-					#foreach( $detail in $alldetails)
-						
-						 #if($hits.searchQuery.isSortUp())
-						 	#set($value = "${detail.id}Up")
-						 	#set($currentSortOrder = "up")
-						 #else
-						 	#set($value = "${detail.id}Down")
-						 	#set($currentSortOrder = "down")
-						 #end
-						<option data-detailid="${detail.id}" 
-								value="$value" 
-								#if($hits.isSortedBy($detail.id)) 
-									selected="selected" 
-									#set($currentSort = $detail.getText($context))
-								#end>$detail.getText($context)</option>
-					#end
-				</select>
-				
-				</div>
-				</div>
-				<div class=" " >
-				<a href="#" 
-					class="filterschangesort"
-					data-sortbyfield="${moduleid}dialogsortby" 
-					title='[[Sort by]] $currentSort #if($currentSortOrder == "up") [[Down]] #else [[Up]] #end'>
-					<i class=" fas #if($hits.searchQuery.isSortUp()) fa-sort-alpha-down #else fa-sort-alpha-up #end" style="padding-top:5px"></i>
-				</a>
-				</div>
-				
-			
-		</div>
-		</div>
-	</form>	
-	
-	#end
 	
 	
 	
@@ -139,7 +60,7 @@
 			id="filterform" 
 			class="ajaxform autosubmitform filterform"
 			method="POST" 
-			data-targetdiv="$targetdiv" 
+			data-targetdiv="$targetdivsearch" 
 			data-oemaxlevel="1" 
 			data-closedialog="true"
 			data-updateurl="false"
@@ -150,7 +71,7 @@
 			#end 
 	>
 		
-		<input name="searchtype" type="hidden" value="$!moduleid" />
+		##<input name="searchtype" type="hidden" value="$!moduleid" />
 		<input name="hitssessionid" type="hidden" value="$!hits.getSessionId()" />
 		<input type="hidden" name="$!{moduleid}endusersearch" value="true" />
 		#if($topmoduleid)
@@ -189,14 +110,34 @@
 			<input name="operation" value="freeform" type="hidden">
 			<div class="filter-box">
 				<div class="filter-box-options" id="filterboxdescription" style="position:relative">
-					<input type="text" 
-						autocomplete="off" 
-						class="form-control detail_description focusme inlinefiltersearch" 
-						value="$!currentsearch" 
-						id="description.value" 
-						name="description.value"
-						placeholder="[[Search...]]"
-						 />
+					
+						 
+												 
+						
+						#set( $detailid = "description" )
+						
+						##TODO Use $values
+						#set( $vals = $currentsearch.split("\s*\|\s*") )
+						
+						<select name="${detailid}.value" 
+								id="$!{idprefix}list-${detailid}0value" 
+								multiple="multiple" 
+								class="searchtags filterstags "
+								data-url="$componenthome/xml/types/autocomplete/tagsearch.txt" 
+								data-searchfield="$detailid"
+								data-sortby="" 
+								data-placeholder=""
+						        data-width="100%"
+								>
+							#foreach($vtag in $vals)
+								#if($vtag && $vtag != "")
+									<option value="$!vtag" selected="selected">#esc($vtag)</option>
+								#end
+							#end
+							#if( $foundrow )
+							  <option value="$!val" selected="selected">#esc($label)</option>
+							#end
+						</select>
 					
 						#if($moduleid=="asset")
 							#if(!$dialogresults)
@@ -212,6 +153,9 @@
 							#set($href = "$siteroot$apphome/views/modules/$moduleid/index.html?hitssessionid=$!hits.getSessionId()&removeterm=$!term.getId()")
 							#set($oemaxlevel = "1")
 						#end
+						
+						
+						
 						<a href="$href" 
 							class=" ajax clearfiltersearch"
 							
@@ -280,6 +224,88 @@
 		
 	</form>
 	
+	
+		
+	#if(!$edit)	
+		
+	##SORT
+	<form  	name="filtersortform" 
+			id="filtersortformdialog" 
+			class="filterform ajaxform"
+			method="POST"   
+			data-targetdivinner="$targetdivsearch" 
+			data-oemaxlevel="2" 
+			action="$siteroot$apphome/views/modules/$moduleid/components/results/columnsort.html" 
+		>
+		#if($topmoduleid)
+		<input name="topmoduleid" type="hidden" value="$topmoduleid" />
+		<input name="dialogresults" type="hidden" value="true" />
+		#end
+		
+		<input name="searchtype" type="hidden" value="$!moduleid" />
+		<input name="hitssessionid" type="hidden" value="$!hits.getSessionId()" />
+		#if($categoryid)
+			<input name="categoryid" type="hidden" value="$categoryid" />
+		#end
+		#if( $librarycol)
+			<input name="collectionid" type="hidden" value="$!{librarycol.getId()}" />
+		#end
+		
+
+		
+		
+		<div class="form-group" style="margin:15px 0;">
+			<div class="filter-box" style="display:flex;">
+				<div class="filter-box-header" style="line-height: 1.65; padding-right: 6px;">[[Sort]]:</div>
+			
+			<div class="filter-box-options" 
+				 id="filterboxsorting"
+				 style="width:255px; padding-right:6px">
+				#set ($alldetails = $searcher.getUserPropertyDetails() )
+				<div >
+				<select data-sortup="$hits.searchQuery.isSortUp()" 
+						class="form-control  select2 autosubmited" 
+						name="sortby" 
+						id="$!{moduleid}dialogsortby" 
+						data-allowclear="false" 
+						style="" >
+					#foreach( $detail in $alldetails)
+						
+						 #if($hits.searchQuery.isSortUp())
+						 	#set($value = "${detail.id}Up")
+						 	#set($currentSortOrder = "up")
+						 #else
+						 	#set($value = "${detail.id}Down")
+						 	#set($currentSortOrder = "down")
+						 #end
+						<option data-detailid="${detail.id}" 
+								value="$value" 
+								#if($hits.isSortedBy($detail.id)) 
+									selected="selected" 
+									#set($currentSort = $detail.getText($context))
+								#end>$detail.getText($context)</option>
+					#end
+				</select>
+				
+				</div>
+				</div>
+				<div class=" " >
+				<a href="#" 
+					class="filterschangesort"
+					data-sortbyfield="${moduleid}dialogsortby" 
+					title='[[Sort by]] $currentSort #if($currentSortOrder == "up") [[Down]] #else [[Up]] #end'>
+					<i class=" fas #if($hits.searchQuery.isSortUp()) fa-sort-alpha-down #else fa-sort-alpha-up #end" style="padding-top:5px"></i>
+				</a>
+				</div>
+				
+			
+		</div>
+		</div>
+	</form>	
+	
+	#end
+	
+	
 
 		
 		
@@ -301,6 +327,7 @@
 				<input type="hidden" name="view" value="$view"/>
 				<input type="hidden" name="catalogid" value="$searcher.getCatalogId()"/>
 				<input type="hidden" name="collectionid" value="$!collectionid"/>
+				<input type="hidden" name="categoryid" value="$!categoryid"/>
 				<input type="hidden" name="moduleid" value="$!moduleid"/>
 				<input type="hidden" name="searchtype" value="$searcher.getSearchType()"/>
 				<div class="form-group">
@@ -318,30 +345,16 @@
 					#end	
 				</select>
 				</div>
-				<div class="form-group">
-				<select class="form-control" name="field" onChange="jQuery('#searchaddfield').submit();">
-					<option value="">[[Album]]</option>
-					#set( $librarydetails = $mediaarchive.getSearcher("librarycollection").getUserPropertyDetails() )
-					#foreach( $detail in $librarydetails)
-					<option value="librarycollection.${detail.id}" style="margin-left: 10px;">$detail.getText($context)</option>
-					#end
-				</select>
-				</div>
-				<div class="form-group">
-				<select  class="form-control"  name="field" onChange="jQuery('#searchaddfield').submit();">
-					<option value="">[[Library]]</option>
-					#set( $librarydetails = $mediaarchive.getSearcher("library").getUserPropertyDetails() )
-					#foreach( $detail in $librarydetails)
-					<option value="library.${detail.id}" style="margin-left: 10px;">$detail.getText($context)</option>
-					#end
-				</select>
-				</div>
-			<div class="form-group">
-				###set($doneUrl = "$siteroot$componenthome/filters/index.html?oemaxlevel=1&collectionid=$!collectionid&moduleid=$!moduleid")
 				
-				#set($doneUrl = "$siteroot$apphome/views/modules/$moduleid/index.html?collectionid=$!collectionid&moduleid=$!moduleid")
-				<a class="btn btn-sm btn-secondary ajax"  data-targetdiv="applicationcontent" data-oemaxlevel="4" href="$doneUrl">[[Done Editing]]</a>
-			</div>	
+					
+				<div class="form-group">
+					###set($doneUrl = "$siteroot$componenthome/filters/index.html?oemaxlevel=1&collectionid=$!collectionid&moduleid=$!moduleid")
+					
+					#set($doneUrl = "$siteroot$componenthome/filters/dialog.html")
+					<a class="btn btn-sm btn-secondary ajax"  
+						data-targetdiv="moduleadvfilterpanel" 
+						data-oemaxlevel="1" href="$doneUrl">[[Done Editing]]</a>
+				</div>	
 			</form>
 			</div>
 		#end
