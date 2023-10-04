@@ -2177,12 +2177,11 @@ uiload = function() {
             allowClear = true;
         }
         
-		var url = apphome
-				+ "/components/xml/types/autocomplete/tagsearch.txt?"
-				+ "field=" + searchfield
-				+ "&operation=contains&searchtype="
-				+ searchtype;
-		
+		var url = theinput.data("url");
+		if(!url) { 
+			url = apphome + "/components/xml/types/autocomplete/tagsearch.txt";
+		}
+				
 		if($.fn.select2 ) {
 			theinput.select2(
 				{
@@ -2209,6 +2208,9 @@ uiload = function() {
 								page_limit : 15,
 								page : params.page
 							};
+							search["field"] = searchfield;
+							search["operation"] = "contains";
+							search["searchtype"] = searchtype;
 							search[searchfield
 									+ ".value"] = params.term; // search
 																// term
