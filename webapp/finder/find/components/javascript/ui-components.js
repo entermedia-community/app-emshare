@@ -1335,14 +1335,14 @@ uiload = function() {
 		}
 		$(".entity-tab").removeClass("current-entity");
 		link.closest(".entity-tab").addClass("current-entity");
-		var moduleid= link.data("moduleid");
+		var topmoduleid= link.data("topmoduleid");
 		var entityid = link.data("entityid");
 		var container = link.attr("href");
 		container = $(container);
 		container.data("currenttab", link.data("tabid")); //me
 		$(".entity-tab-content").hide(); 
 		
-		saveProfileProperty(moduleid+"_entitytabopen", link.data("tabid"), function(){});
+		saveProfileProperty(topmoduleid+"_entitytabopen", link.data("tabid"), function(){});
 		
 		
 		autoreload(container);

@@ -30,7 +30,9 @@ $context.putPageValue("topmoduleid", $moduleid)
 #set( $entitytabopen = $context.getRequestParameter("entitytabopen"))
 #ifnull($entitytabopen)
 	#set( $entitytabopen = $userprofile.get("${moduleid}_entitytabopen"))
+	
 #end
+
 
 #if($entitytabopen.equals("undefined"))
 	#set( $entitytabopen = "")
@@ -44,7 +46,7 @@ $context.putPageValue("topmoduleid", $moduleid)
 #end
 
 ##default to frist if not submodules (view) exists in this Entity
-#if($enttiyviews)
+#if(!$entitytabopen && $enttiyviews)
 	#foreach( $targetview in $enttiyviews)
 		#set( $viewid = $targetview.getId())
 		#set($tabid = "tab_$!{viewid}")
@@ -55,16 +57,23 @@ $context.putPageValue("topmoduleid", $moduleid)
 			#set($firstview = $viewid)
 		#end
 	#end
+	#if($foundtab)
+		#set($entitytabopen = $foundtab)
+	#else
+		#set($entitytabopen = "")
+	#end
 #end
-#if($foundtab)
-	#set($entitytabopen = $foundtab)
-#else
-	#set($entitytabopen = "")
-#end
+
 
 
 #set( $enablebackbutton = $context.getRequestParameter("enablebackbutton"))
 #if ($addnew)
+	#foreach( $targetview in $enttiyviews)
+		#set( $viewid = $targetview.getId())
+		#ifnull($firstview)
+			#set($firstview = $viewid)
+		#end
+	#end
 	#set($dialogtabid = "addnew${moduleid}")
 #else
 	#set($dialogtabid = "${moduleid}$!{entityid}")
