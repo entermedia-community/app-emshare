@@ -102,62 +102,44 @@ $context.putPageValue("previewurl", $previewurl)
 				#else
 					#set($link = "$link?entityid=$!entity.getId()&entitytype=$!moduleid&topentityid=$!topentityid")
 				#end
-				<a href="$link"
-			
-				class=" ajax activelistenerparent"
-				data-targetdiv="application"
-				data-defaultfolder="$defaultfolder.getId()"
-				data-entity="$!entity.getId()"
 				
-				data-oemaxlevel="5"
-				data-field=""
-				data-updateurl="true"
-				title="">
-				
-				<div class="emgridC-entitymedia assetdropentity drop-over"
-					style="text-align: center;"
-			       		id="attachedmedia$entityid" 
-			       		data-moduleid="$!moduleid" 
-			       		data-entityid="$!entityid" 
-			       		data-categoryid="$!defaultfolder.getId()"
-			       		data-assetsshown="$!assetsshown"
-			       		data-attachedmediaurl="$!siteroot$componenthome/gridsample/types/entity.html"
-			       		data-targetdiv="emgridentity$!moduleid$!entityid"> 
-					#if($primarymedia)
+		        <a href="$previewurl" 
+		   	 	class="emdialog entity-dialog" 
+		   	 	data-hidefooter="true" 
+		   	 	data-hideheader="true"
+		   	 	id="clickid${entityid}"  
+		   	 	data-id="${entityid}"
+		   	 	data-moduleid="$!moduleid"
+		   	 	title="[[View]]: #text($!entity.name)">
 					
-					        $pages.include("$componenthome/gridsample/types/attachedmedia/entity2.html", $context)
-				   #else
-					   	#set($moduleicon = "entity")
-				     	#if ($module.moduleicon)
-				     		#set($moduleicon = $module.moduleicon)
-				     	#end
-				     	<img src="$siteroot$apphome/theme/images/entity/${moduleicon}.svg" 
-				     	style="height: 90%; margin-top:5px;">
-				   #end
-			   		<div class="clearfix"></div>
-			   </div>
-			        
-			        
+					<div class="emgridC-entitymedia assetdropentity drop-over"
+						style="text-align: center;"
+				       		id="attachedmedia$entityid" 
+				       		data-moduleid="$!moduleid" 
+				       		data-entityid="$!entityid" 
+				       		data-categoryid="$!defaultfolder.getId()"
+				       		data-assetsshown="$!assetsshown"
+				       		data-attachedmediaurl="$!siteroot$componenthome/gridsample/types/entity.html"
+				       		data-targetdiv="emgridentity$!moduleid$!entityid"> 
+						#if($primarymedia)
+						
+						        $pages.include("$componenthome/gridsample/types/attachedmedia/entity2.html", $context)
+					   #else
+						   	#set($moduleicon = "entity")
+					     	#if ($module.moduleicon)
+					     		#set($moduleicon = $module.moduleicon)
+					     	#end
+					     	<img src="$siteroot$apphome/theme/images/entity/${moduleicon}.svg" 
+					     	style="height: 90%; margin-top:5px;">
+					   #end
+				   		<div class="clearfix"></div>
+				   </div>
+				   <div class="emgridC-name">#text($!entity)</div>
+				        
 				</a>
 			#end
 		#end
 		
-       
-        <a href="$previewurl" 
-   	 	class="emdialog entity-dialog emgridpreviewlink" 
-   	 	data-hidefooter="true" 
-   	 	data-hideheader="true"
-   	 	id="clickid${entityid}"  
-   	 	data-id="${entityid}"
-   	 	data-moduleid="$!moduleid"
-   	 	title="[[View]]: #text($!entity.name)">
-   	 	<div class="emgridC-name">#text($!entity)</div>
-		<i class="fas fa-external-link-alt"></i>
-   	 	</a>
-       
-       
-       
-       
 </div>
 
 

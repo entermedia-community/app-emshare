@@ -1448,8 +1448,8 @@ uiload = function() {
 		if(!applicationcontentwidth) {
 			applicationcontentwidth = $("#header").width();
 		}
-		modaldialog.css("width", (applicationcontentwidth - 80) + "px");
-		var topposition =  input.position().top + 60;
+		modaldialog.css("width", (applicationcontentwidth - 100) + "px");
+		var topposition =  input.position().top + 40;
 		modaldialog.css("top", topposition+"px");
 		modaldialog.css("left", "40px");
 

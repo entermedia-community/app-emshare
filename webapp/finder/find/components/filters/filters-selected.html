@@ -68,7 +68,7 @@
 	</ul>
 	</div>
 #end
-
+#if( $category )
 <div class="filtered filteredmain">
 
 	## BREADCRUMB
@@ -76,29 +76,6 @@
 		<div class="filtered-breadcrumb">
 			#set($topentityid = $context.getRequestParameter("topentityid"))
 			#set($entityid = $context.getRequestParameter("entityid"))
-		
-			#if($topentityid && $topmodule)
-				#set($topentity = $mediaarchive.getCachedData($topmodule.getId(), $topentityid))
-				#set($clearfiltershref = "$siteroot$apphome/views/modules/${topmodule.getId()}/index.html?hitssessionid=$!hits.getSessionId()&${topmodule.getId()}clearresults=true&${topmodule.getId()}clearselection=true&clearselection=true&clearfilters=true")
-				#set($oemaxlevel = "4")
-					[[Showing]]: <span class="searchterm">#text($topentity)</span>
-					#set($entitytype = $context.getRequestParameter("entitytype"))
-					
-					#if($entitytype && $entityid && !$entityid.equals($topentityid))
-						#set($entitymodule = $mediaarchive.getCachedData($entitytype, $entityid))
-						\ <span class="searchterm">#text($entitymodule)</span>
-					#end
-			#else
-		
-				#if( $hits.getSearchQuery().hasMainInput())
-					#if($librarycol)
-						[[Searching within]]: <strong><em>$librarycol</em> </strong> [[for]]:  <span class="searchterm">$hits.getSearchQuery().getMainInput()</span>
-					#else
-						[[Searching for]]:  <span class="searchterm">$hits.getSearchQuery().getMainInput()</span>
-					#end
-				#end
-				
-			#end
 			
 			#set($currentSort = $hits.getSearchQuery().getSortBy())
 			
@@ -192,5 +169,5 @@
 	<div class="clearfix"></div>
 
 </div>
-
+#end
 
