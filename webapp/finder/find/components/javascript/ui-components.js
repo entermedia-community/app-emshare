@@ -1422,12 +1422,12 @@ uiload = function() {
 		
 		var modaldialog = $("#" + id);
 		if (modaldialog.length == 0) {
-			input.parent().append(
+			$("#header").append(
 					'<div class="typeaheadmodal" tabindex="-1" id="' + id
 							+ '" style="display:none" ></div>');
 			modaldialog = $("#" + id);
 		}
-		
+		/*
 		var width = input.parent().width();
 		var minwidth = input.data("minwidth");
 
@@ -1442,6 +1442,16 @@ uiload = function() {
 		var topposition =  input.height() + 5;
 		modaldialog.css("top", topposition+"px");
 		modaldialog.css("left", input.position().left+"px");
+		*/
+		
+		var applicationcontentwidth = $("#applicationmaincontent").width();
+		if(!applicationcontentwidth) {
+			applicationcontentwidth = $("#header").width();
+		}
+		modaldialog.css("width", (applicationcontentwidth - 80) + "px");
+		var topposition =  input.position().top + 60;
+		modaldialog.css("top", topposition+"px");
+		modaldialog.css("left", "40px");
 
 		var options = input.data();
 		
@@ -1588,10 +1598,9 @@ uiload = function() {
 					url: url, async: true, 
 					data: options,
 					timeout: 5000,
-					success: function(data) 
-					{
-						if(data) 
-						{
+					success: function(data)	{
+						if(data) {
+
 							modaldialog.html(data);
 							/*
 							var lis = modaldialog.find("li");
@@ -1606,6 +1615,7 @@ uiload = function() {
 							}
 							*/
 							modaldialog.show();
+							
 						}	
 						typeaheadloading.hide();
 					}
@@ -1624,6 +1634,7 @@ uiload = function() {
 					
 					if( lastsearch )
 					{
+						typeaheadloading.hide();
 						lastsearch.abort();
 					}
 					options["oemaxlevel"] = input.data("oemaxlevel");
