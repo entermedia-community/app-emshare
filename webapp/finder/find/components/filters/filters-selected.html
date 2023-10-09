@@ -19,8 +19,12 @@
 	$context.putPageValue("librarycol",$librarycol)
 #end
 
+#set($tab = $content.tab)
+
 #if($canviewentitiestopmenu)
+	#ifnull($tab)
 	#set($selected = $context.findValue("module") )
+	#end
 	<div class="entitynabarcontainer">
 	<ul class="entity-navbar">
 		
@@ -55,6 +59,21 @@
 					</a>
 				</li>
 			#end
+			
+			#if($user)
+			<li >
+					<a href="$applink/views/myaccount/myassets/index.html" 
+						class='ajax activelistener #if( $tab=="myassets") active #end' 
+						data-targetdiv="applicationcontent" 
+						data-oemaxlevel="4" 
+						data-updateurl="true"
+						title="[[View My Files]]">
+							[[My Files]] 
+							
+					</a>
+			</li>
+			#end
+				
 			#if($canviewsettings)
 				<li class="settingslinkmenu">
 					<a href="$applink/views/settings/modules/setup/index.html" 
