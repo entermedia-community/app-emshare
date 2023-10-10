@@ -1452,6 +1452,11 @@ uiload = function() {
 		var topposition =  input.position().top + 40;
 		modaldialog.css("top", topposition+"px");
 		modaldialog.css("left", "40px");
+		
+		var wh = window.innerHeight;
+		if (wh) {
+			modaldialog.css("height", (wh - 90) + "px");
+		}
 
 		var options = input.data();
 		
