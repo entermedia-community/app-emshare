@@ -367,7 +367,7 @@ $(document).ready(function()
 
 					var url = tree.data("home") + "/views/modules/asset/add/start.html";
                     var maxlevel = 1;
-                    
+                    options["oemaxlevel"] = $(this).data('oemaxlevel');
                     options["sidebarcomponent"] = "categories";
 					gotopage(tree,node,maxlevel,url, options);
 					
