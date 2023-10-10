@@ -20,10 +20,12 @@
 #end
 
 #set($tab = $content.tab)
-
 #if($canviewentitiestopmenu)
-	#ifnull($tab)
+	
 	#set($selected = $context.findValue("module") )
+	
+	#if($moduleid == "asset" && $tab=="myassets")
+		#set($selected = "myassets")
 	#end
 	<div class="entitynabarcontainer">
 	<ul class="entity-navbar">
@@ -63,7 +65,7 @@
 			#if($user)
 			<li >
 					<a href="$applink/views/myaccount/myassets/index.html" 
-						class='ajax activelistener #if( $tab=="myassets") active #end' 
+						class='ajax activelistener #if( $selected=="myassets") active #end' 
 						data-targetdiv="applicationcontent" 
 						data-oemaxlevel="4" 
 						data-updateurl="true"
