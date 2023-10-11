@@ -1,4 +1,6 @@
 #set($moduleid = $module.getId())
+$context.putPageValue("moduleid", $moduleid)
+
 #set($filter = $modulehits.findFilterValue("entitysourcetype") )
 $context.putPageValue("filter", $filter)
 
@@ -41,10 +43,13 @@ $context.putPageValue("filter", $filter)
 					#text($module)
 					 <span class="count">($count)</span>
 					</a>
-					$context.putPageValue("moduleid", $moduleid)
-					$pages.include("$apphome/views/modules/${moduleid}/contextmenu.html", $context)
+					
+					#if($topmoduleid != "favorites")
+						$pages.include("$apphome/views/modules/${moduleid}/contextmenu.html", $context)
+					#end
 			</h3>
 			
+			#if($topmoduleid != "favorites")
 			<div style="float:right" >
 				#if($moduleid=="asset")
 					
@@ -70,6 +75,7 @@ $context.putPageValue("filter", $filter)
 				
 				#end
 			</div>
+			#end
 		<div class="clearfix"></div>
    		</div>
 

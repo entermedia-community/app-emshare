@@ -1,9 +1,37 @@
 $context.putPageValue("hits", $modulehits)
 
-
 <div class="finder-title">
 <h2>[[Favorites]]</h2> 
 </div>
  
  
- $pages.include("$componenthome/results/index.html",$context)
+ ##$pages.include("$componenthome/results/index.html",$context)
+  
+ 
+ #foreach($module in $organizedModules)
+ 		#set($idhits = $organizedHits.get($module.id))
+		$context.putPageValue("hits", $idhits)
+		$context.putPageValue("module", $module)
+		$context.putPageValue("moduleid", $module.id)
+		$context.putPageValue("componenthome", "$apphome/views/modules/$module.id/components")
+		
+		$context.putPageValue("topmoduleid", "favorites")
+ 
+	#if($module.id != "asset")
+	   	#set($modulerendertype = "entity")
+	   	#if ($module.homepagerendertype)
+	   		#set($modulerendertype = $module.homepagerendertype)
+	   	#end
+	   	
+	   	$context.putPageValue("modulerendertype", $modulerendertype)
+	  	
+	   	#set( $favorites = $userprofile.get("favorites_"+$module.id))
+		$context.putPageValue("favorites", $favorites)
+
+		$pages.include("$apphome/components/gridsample/modulegrid.html", $context)
+	#else
+	
+		$pages.include("$apphome/views/modules/asset/index.html", $context)
+		
+	#end 
+#end
