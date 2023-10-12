@@ -2047,7 +2047,7 @@ uiload = function() {
 					dropdownParent : dropdownParent,
 					selectOnBlur : true,
 					delay : 150,
-					minimumInputLength : 1,
+					minimumInputLength : 2,
 					ajax : { 
 						url : url,
 						xhrFields: {
@@ -2188,7 +2188,7 @@ uiload = function() {
 				allowClear : allowClear,
 				selectOnBlur : true,
 				delay : 150,
-				minimumInputLength : 1,
+				minimumInputLength : 2,
 				ajax : { 
 					url : url,
 					xhrFields: {
@@ -2275,9 +2275,12 @@ uiload = function() {
 				
 			}
 	   });
-	   theinput.on("select2:unselect" , function() {
+	   theinput.on("select2:unselect" , function(e) {
 			if ($(this).parents(".ignore").length == 0) {
 				$(this).valid(); 
+				var terms = e.params.data;
+				modaldialog.hide();
+				typeaheadloading.hide();
 			}
 		});
 		
