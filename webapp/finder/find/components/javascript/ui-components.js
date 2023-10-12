@@ -1402,282 +1402,7 @@ uiload = function() {
 		expandmediabox($(this));
 	});
 	
-	var lasttypeahead;
-	var lastsearch;
 	
-	lQuery(".typeaheaddropdown").livequery(function() {  //TODO: Move to results.js
-		
-		var input = $(this);
-		
-		var typeaheadloading = $('.quicksearchloading');
-		typeaheadloading.html('<i class="fas fa-spinner fa-spin"></i>');
-		typeaheadloading.hide();
-		
-		var hidescrolling = input.data("hidescrolling");
-
-		var id = input.data("dialogid");
-		if (!id) {
-			id = "typeahead";	
-		}
-		
-		var modaldialog = $("#" + id);
-		if (modaldialog.length == 0) {
-			$("#header").append(
-					'<div class="typeaheadmodal" tabindex="-1" id="' + id
-							+ '" style="display:none" ></div>');
-			modaldialog = $("#" + id);
-		}
-		/*
-		var width = input.parent().width();
-		var minwidth = input.data("minwidth");
-
-		if (minwidth && width) {
-			if( minwidth >  width )
-			{
-				width =  minwidth;
-			}
-		}
-		
-		modaldialog.css("width", width + "px");
-		var topposition =  input.height() + 5;
-		modaldialog.css("top", topposition+"px");
-		modaldialog.css("left", input.position().left+"px");
-		*/
-		
-		var applicationcontentwidth = $("#applicationmaincontent").width();
-		if(!applicationcontentwidth) {
-			applicationcontentwidth = $("#header").width();
-		}
-		modaldialog.css("width", (applicationcontentwidth - 100) + "px");
-		var topposition =  input.position().top + 40;
-		modaldialog.css("top", topposition+"px");
-		modaldialog.css("left", "40px");
-		
-		var wh = window.innerHeight;
-		if (wh) {
-			modaldialog.css("height", (wh - 90) + "px");
-		}
-
-		var options = input.data();
-		
-		var searchurltargetdiv = input.data("searchurltargetdiv");
-			
-		var typeaheadtargetdiv = input.data("typeaheadtargetdiv");
-		
-		if(typeaheadtargetdiv == null) {
-			typeaheadtargetdiv = "applicationmaincontent"
-		}	
-		
-		var searchurlentertargetdiv = input.data("searchurlentertargetdiv");
-		
-		//var moduleid = $("#applicationcontent").data("moduleid");
-		//var searchurl = apphome + "/views/modules/" + moduleid + "/index.html";
-		//var searchurl = apphome + "/index.html";
-		//options["moduleid"] = moduleid;
-		
-		var updateurl = input.data("updateurl");
-		
-		if(searchurlentertargetdiv != null)
-		{
-			input.on("keydown", function(e)
-			{
-				var q = input.val();
-				q = q.trim();
-				
-				typeaheadloading.show();
-				
-				//var moduleid = $("#applicationcontent").data("moduleid");
-				//var searchurl = apphome + "/views/modules/" + moduleid + "/index.html";
-				//options["moduleid"] = moduleid;
-
-				var searchurl = input.data("searchurl");//apphome + "/index.html";
-				
-				if( e.which == 9)
-				{
-					typeaheadloading.hide();
-					return;
-				}
-				if( searchurl && e.which == 13)
-				{
-					e.preventDefault();
-					modaldialog.hide();
-					if (q == null || q=="") {
-						typeaheadloading.hide();
-						return;
-					}
-					input.data("searching","true");
-					input.css( "cursor","wait");
-					$("body").css( "cursor","wait");
-					
-					//Show results below
-					//console.log("enter running " + q);
-					options["oemaxlevel"] = input.data("searchurlenteroemaxlevel");
-					//var updateurl = input.data("updateurl");
-
-									
-					if (typeof global_updateurl !== "undefined" && global_updateurl == false) {
-						//globaly disabled updateurl
-					}
-					else {
-						if( updateurl )
-						{
-							history.pushState($("#application").html(), null, searchurl);
-							window.scrollTo(0, 0);
-						}
-					}
-
-	
-					$.ajax({ url: searchurl, async: true, data: options, 
-						success: function(data) 
-						{
-							input.data("searching","false");
-							if(data) 
-							{
-								var q2 = input.val();
-								if( q2 == q)
-								{
-									$("#"+searchurlentertargetdiv).html(data);
-										
-									$(window).trigger("resize");
-								}	
-							}
-							
-							typeaheadloading.hide();
-							
-							
-						}	
-						,
-						complete:  function(data) 
-						{
-							input.data("searching", "false");
-							$("body").css( "cursor","");
-							input.css( "cursor","");
-							typeaheadloading.hide();
-							
-						}
-					});
-				}
-			});
-		}
-		input.on("keyup", function(e) //Keyup sets the value first 
-		{
-			var q = input.val();
-			q = q.trim();
-			options["description.value"] = q;
-			
-			typeaheadloading.show();
-			
-			//var moduleid = $("#applicationcontent").data("moduleid");
-			//var searchurl = apphome + "/views/modules/" + moduleid + "/index.html";
-
-			//options["moduleid"] = moduleid;
-			
-			
-			if( q && q.length < 2)
-			{
-				typeaheadloading.hide();
-				return;
-			}
-			if( q.endsWith(" "))
-			{
-				return;
-			}
-			var url = input.data("typeaheadurl");
-			
-			if( e.which == 27) //Tab?
-			{
-				modaldialog.hide();
-				typeaheadloading.hide();	
-			}
-			else if(q != "" && (e.which == 8 || (e.which != 37 && e.which != 39 && e.which > 32) ) ) //Real words and backspace
-			{
-				//console.log("\"" + q + "\" type aheading on " + e.which);
-				//Typeahead
-				if( lasttypeahead )
-				{
-					lasttypeahead.abort();
-				}
-				//Typeahead ajax call
-				lasttypeahead = $.ajax(
-				{ 
-					url: url, async: true, 
-					data: options,
-					timeout: 5000,
-					success: function(data)	{
-						if(data) {
-
-							modaldialog.html(data);
-							/*
-							var lis = modaldialog.find("li");
-							if( lis.length > 0)
-							{
-								//modaldialog.css("min-height",lis.length * 42 + 25);
-								modaldialog.show();
-							}
-							else
-							{
-								modaldialog.hide();
-							}
-							*/
-							modaldialog.show();
-							
-						}	
-						typeaheadloading.hide();
-					}
-				});
-
-				var searching = input.data("searching");
-				if( searching == "true")
-				{
-					//console.log("already searching"  + searching);
-				}
-				var searchurl = input.data("searchurl");//apphome + "/index.html";
-
-				if (searchurl != null) {
-					console.log(q + " searching");
-					input.data("searching","true");
-					
-					if( lastsearch )
-					{
-						typeaheadloading.hide();
-						lastsearch.abort();
-					}
-					options["oemaxlevel"] = input.data("oemaxlevel");
-					//Regular Search Ajax Call
-					lastsearch = $.ajax({ url: searchurl, async: true, data: options, 
-						success: function(data) 
-						{
-							input.data("searching","false");
-							//if(data) 
-							{
-								//var q2 = input.val();
-								//if( q2 == q)
-								{
-									$("#"+searchurltargetdiv).html(data);
-									$(window).trigger("resize");
-								}	
-							}
-							
-							setTimeout(function() {
-								typeaheadloading.hide();
-							}, 1500);
-						}
-						,
-						complete:  function(data) 
-						{
-							input.data("searching","false");
-							input.css( "cursor","");
-						}
-					});
-				}
-			}
-		});
-		
-		jQuery("body").on("click", function(event){
-			modaldialog.hide();
-			typeaheadloading.hide();
-		});
-	});
 	
 	
 
@@ -2323,11 +2048,7 @@ uiload = function() {
 					selectOnBlur : true,
 					delay : 150,
 					minimumInputLength : 1,
-					ajax : { // instead of writing
-								// the function to
-								// execute the request
-								// we use Select2's
-								// convenient helper
+					ajax : { 
 						url : url,
 						xhrFields: {
 					        withCredentials: true
@@ -2345,14 +2066,7 @@ uiload = function() {
 							
 							return search;
 						},
-						processResults : function(data,
-								params) { // parse the
-											// results
-											// into the
-											// format
-											// expected
-											// by
-											// Select2.
+						processResults : function(data,	params) { 
 							params.page = params.page || 1;
 							return {
 								results : data.rows,
@@ -2385,25 +2099,367 @@ uiload = function() {
 			}
 		});
 	});
+	
+		var lasttypeahead;
+	var lastsearch;
+	
+	
+	lQuery("select.mainsearch").livequery(function() {
+	
+		var theinput = $(this);
+		var dropdownParent = theinput.data('dropdownparent');
+		if (dropdownParent && $("#" + dropdownParent).length) {
+			dropdownParent = $("#" + dropdownParent);
+		}
+		else {
+			dropdownParent = $(this).parent();
+		}
+		var parent = theinput.closest("#main-media-container");
+		if (parent.length) {
+			dropdownParent = parent;
+		} 
+		var parent = theinput.parents(".modal-content");
+		if (parent.length) {
+			dropdownParent = parent;
+		}
+		
+		var typeaheadloading = $('.quicksearchloading');
+		typeaheadloading.html('<i class="fas fa-spinner fa-spin"></i>');
+		typeaheadloading.hide();
+		
+		var hidescrolling = theinput.data("hidescrolling");
+
+		var id = theinput.data("dialogid");
+		if (!id) {
+			id = "typeahead";	
+		}
+		
+		var modaldialog = $("#" + id);
+		if (modaldialog.length == 0) {
+			$("#header").append(
+					'<div class="typeaheadmodal" tabindex="-1" id="' + id
+							+ '" style="display:none" ></div>');
+			modaldialog = $("#" + id);
+		}
+		
+		var applicationcontentwidth = $("#applicationmaincontent").width();
+		if(!applicationcontentwidth) {
+			applicationcontentwidth = $("#header").width();
+		}
+		modaldialog.css("width", (applicationcontentwidth - 100) + "px");
+		var topposition =  theinput.position().top + 70;
+		modaldialog.css("top", topposition+"px");
+		modaldialog.css("left", "40px");
+		
+		var wh = window.innerHeight;
+		if (wh) {
+			modaldialog.css("height", (wh - 90) + "px");
+		}
+
+		var options = theinput.data();
+		var searchurltargetdiv = theinput.data("searchurltargetdiv");
+		var typeaheadtargetdiv = theinput.data("typeaheadtargetdiv");
+		
+		if(typeaheadtargetdiv == null) {
+			typeaheadtargetdiv = "applicationmaincontent"
+		}	
+		
+		var searchurlentertargetdiv = theinput.data("searchurlentertargetdiv");
+	
+		var searchfield = theinput.data('searchfield');
+		var sortby = theinput.data('sortby');
+		var defaulttext = theinput.data('showdefault');
+		if (!defaulttext) {
+			defaulttext = "Search";
+        }
+        var allowClear = theinput.data('allowclear');
+        if (allowClear == undefined)  {
+            allowClear = true;
+        }
+        
+		var url = theinput.data("typeaheadurl");
+				
+		if($.fn.select2 ) {
+			theinput.select2({
+				tags : true,
+				placeholder : defaulttext,
+				dropdownParent : dropdownParent,
+			    width: 'style',
+				allowClear : allowClear,
+				selectOnBlur : true,
+				delay : 150,
+				minimumInputLength : 1,
+				ajax : { 
+					url : url,
+					xhrFields: {
+				        withCredentials: true
+				    },
+					crossDomain: true,
+					data : function(params) {
+						var search = {
+							page_limit : 15,
+							page : params.page
+						};
+						search["field"] = searchfield;
+						search["operation"] = "contains";
+						search[searchfield+ ".value"] = params.term; 
+						
+						return search;
+					},
+					processResults : function(data,	params) {
+						if(data) {
+							modaldialog.html(data);
+							modaldialog.show();
+							var results = [];
+							var lis = modaldialog.find("li.lisuggestion",);
+							if( lis.length > 0)
+							{
+								var results;
+								$.each(lis, function(){
+									var item = $(this);
+									var result = {
+										id: item.data("suggestionid"),
+										name: item.data("suggestionname")
+									}
+									results.push(result);
+								});
+								return {
+									results: results
+								}
+								
+							}
+						
+						}
+
+					}												
+				},
+				escapeMarkup : function(m) {
+					return m;
+				},
+				templateResult : select2formatResult,
+				templateSelection : select2Selected,
+				tokenSeparators : [ "|" ],
+				separator : '|'
+				
+			});
+		}
+		theinput.on("select2:select" , function(e) {
+			if ($(this).parents(".ignore").length == 0) {
+				$(this).valid(); 
+				
+				var terms = e.params.data;
+				var search2 = {
+					field: "description",
+					operation: "contains",
+					"description.value":  terms.id
+				}; 
+				if( lasttypeahead )
+				{
+					lasttypeahead.abort();
+				}
+				lasttypeahead = $.ajax(
+				{ 
+					url: url, 
+					async: true, 
+					type: 'POST',
+					data:  search2,
+					timeout: 1000,
+					success: function(data)	{
+						if(data) {
+							modaldialog.html(data);
+							modaldialog.show();
+						}	
+						typeaheadloading.hide();
+					}
+				});
+				
+			}
+	   });
+	   theinput.on("select2:unselect" , function() {
+			if ($(this).parents(".ignore").length == 0) {
+				$(this).valid(); 
+			}
+		});
+		
+		jQuery("body").on("click", function(event){
+			modaldialog.hide();
+			typeaheadloading.hide();
+		});
+	});
+	
+	
+	
+	
+/*
+	
+	lQuery(".typeaheaddropdown").livequery(function() {  //TODO: Move to results.js
+		
+		var input = $(this);
+		
+		var typeaheadloading = $('.quicksearchloading');
+		typeaheadloading.html('<i class="fas fa-spinner fa-spin"></i>');
+		typeaheadloading.hide();
+		
+		var hidescrolling = input.data("hidescrolling");
+
+		var id = input.data("dialogid");
+		if (!id) {
+			id = "typeaheadX";	
+		}
+		
+		var modaldialogth = $("#" + id);
+		if (modaldialogth.length == 0) {
+			$("#header").append(
+					'<div class="typeaheadmodal" tabindex="-1" id="' + id
+							+ '" style="display:none" ></div>');
+			modaldialogth = $("#" + id);
+		}
+		
+		var applicationcontentwidth = $("#applicationmaincontent").width();
+		if(!applicationcontentwidth) {
+			applicationcontentwidth = $("#header").width();
+		}
+		modaldialogth.css("width", (applicationcontentwidth - 100) + "px");
+		var topposition =  input.position().top + 40;
+		modaldialogth.css("top", topposition+"px");
+		modaldialogth.css("left", "40px");
+		
+		var wh = window.innerHeight;
+		if (wh) {
+			modaldialogth.css("height", (wh - 90) + "px");
+		}
+
+		var options = input.data();
+		
+		var searchurltargetdiv = input.data("searchurltargetdiv");
+			
+		var typeaheadtargetdiv = input.data("typeaheadtargetdiv");
+		
+		if(typeaheadtargetdiv == null) {
+			typeaheadtargetdiv = "applicationmaincontent"
+		}	
+		
+		var searchurlentertargetdiv = input.data("searchurlentertargetdiv");
+		
+		//var moduleid = $("#applicationcontent").data("moduleid");
+		//var searchurl = apphome + "/views/modules/" + moduleid + "/index.html";
+		//var searchurl = apphome + "/index.html";
+		//options["moduleid"] = moduleid;
+		
+		var updateurl = input.data("updateurl");
+			
+		input.on("keyup", function(e) //Keyup sets the value first 
+		{
+			var q = input.val();
+			q = q.trim();
+			options["description.value"] = q;
+			
+			typeaheadloading.show();
+
+			if( q && q.length < 2)
+			{
+				typeaheadloading.hide();
+				return;
+			}
+			if( q.endsWith(" "))
+			{
+				return;
+			}
+			var url = input.data("typeaheadurl");
+			
+			if( e.which == 27) //Tab?
+			{
+				modaldialogth.hide();
+				typeaheadloading.hide();	
+			}
+			else if(q != "" && (e.which == 8 || (e.which != 37 && e.which != 39 && e.which > 32) ) ) //Real words and backspace
+			{
+				//console.log("\"" + q + "\" type aheading on " + e.which);
+				//Typeahead
+				if( lasttypeahead )
+				{
+					lasttypeahead.abort();
+				}
+				//Typeahead ajax call
+				lasttypeahead = $.ajax(
+				{ 
+					url: url, 
+					async: true, 
+					data: options,
+					timeout: 5000,
+					success: function(data)	{
+						if(data) {
+
+							modaldialogth.html(data);
+							
+							modaldialogth.show();
+							
+						}	
+						typeaheadloading.hide();
+					}
+				});
+
+				var searching = input.data("searching");
+				if( searching == "true")
+				{
+					//console.log("already searching"  + searching);
+				}
+				var searchurl = input.data("searchurl");//apphome + "/index.html";
+
+				if (searchurl != null) {
+					console.log(q + " searching");
+					input.data("searching","true");
+					
+					if( lastsearch )
+					{
+						typeaheadloading.hide();
+						lastsearch.abort();
+					}
+					options["oemaxlevel"] = input.data("oemaxlevel");
+					//Regular Search Ajax Call
+					lastsearch = $.ajax({ url: searchurl, async: true, data: options, 
+						success: function(data) 
+						{
+							input.data("searching","false");
+							//if(data) 
+							{
+								//var q2 = input.val();
+								//if( q2 == q)
+								{
+									$("#"+searchurltargetdiv).html(data);
+									$(window).trigger("resize");
+								}	
+							}
+							
+							setTimeout(function() {
+								typeaheadloading.hide();
+							}, 1500);
+						}
+						,
+						complete:  function(data) 
+						{
+							input.data("searching","false");
+							input.css( "cursor","");
+						}
+					});
+				}
+			}
+		});
+		
+		jQuery("body").on("click", function(event){
+			modaldialogth.hide();
+			typeaheadloading.hide();
+		});
+	});
+	
+	
+*/
+
+	
 
 	lQuery(".grabfocus").livequery(function() {
 		var theinput = $(this);
-		//theinput.css("color", "#666");
-//		if (theinput.val() == "") {
-//			var newval = theinput.data("initialtext");
-//			theinput.val(newval);
-//		}
-//		theinput.click(function() {
-//			//theinput.css("color", "#000");
-//			var initial = theinput.data("initialtext");
-//			console.log(initial, theinput.val());
-//			if (theinput.val() === initial) {
-//				theinput.val('');
-//				theinput.unbind('click');
-//			}
-//		});
 		theinput.focus();
-		
 		var val = theinput.val();
 		theinput.val("");
 		theinput.val(val);

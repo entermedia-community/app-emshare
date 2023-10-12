@@ -11,7 +11,6 @@
 
 #set( $url = "$applink/views/modules/asset/index.html")
 
-
 #set($ajax = $context.getRequestParameter("ajax")) 
 
 <div class="quicksearchresults">
@@ -25,7 +24,7 @@ $context.putPageValue("filter", $filter)
 #foreach($module in $organizedModules)
 	#set($hits = $organizedHits.get($module.id))
 	
-	$context.putPageValue("hits", $hits)
+	
 	$context.putPageValue("module", $module)
 	$context.putPageValue("moduleid", $module.id)
 
@@ -58,9 +57,8 @@ $context.putPageValue("filter", $filter)
 	#ifnull($count)
 		#set( $count = $hits.size()) 
 	#end
-	#text($module)
+	#text($module) ($count)
 	</span>
-	 ##<span class="count">([[Found]]: $count)</span>
 	</a>
 	##set($entityurlall = "$!siteroot$apphome/views/modules/$!{module.id}/index.html?$!{module.id}page=1")
 	<a href="$entityurl" 
@@ -82,7 +80,7 @@ $context.putPageValue("filter", $filter)
 	#ifnull($count)
 		#set( $count = $hits.size()) 
 	#end
-	([[View]] <span class="count">$count</span>)
+	([[View All]])
 	</span>
 	</a>
 	
@@ -107,7 +105,8 @@ $context.putPageValue("filter", $filter)
 	#end
    	$context.putPageValue("details", $details)
    
-   $hits.setHitsPerPage(4)
+   $hits.setHitsPerPage(10)
+   $context.putPageValue("hits", $hits)
 	
 	<div class="emgridflex">  	
 		<div id="galleryimg-${rendertype}" 
@@ -128,48 +127,14 @@ $context.putPageValue("filter", $filter)
 	</div>
 #end
 
+##hidden, will fill sugestions on the searchbox
 #if($livesuggestions.size())
-
-#set($assetmodule = $mediaarchive.getModule("asset"))
-
-#set($moduleicon = "entity")
-#if ($assetmodule.moduleicon)
-	#set($moduleicon = $assetmodule.moduleicon)
-#end
-
-#set($entityurl = "$!siteroot$apphome/views/modules/asset/search.html?field=description&operation=freeform&description.value=$val")
-<a href="$entityurl" 
-		class="ajax qsresultsEntity" 
-		style=""
-		data-targetdiv="applicationmaincontent" 
-		data-oemaxlevel="3" 
-		data-updateurl="true" 
-		data-profilepreference="defaultmodule"
-		data-profilepreference.value="$!assetmodule.getId()"
-		title="[[View Media Keywords]]" >
-	<img src="$siteroot$apphome/theme/images/entity/${moduleicon}.svg"	style="height: 25px; max-width:20px;"> 
-	<span class="qsresultsEntitytext">[[Media Keywords]]</span>
-	</a>
-<ul class="qsrecent">
+<ul class="qsrecent" style="display:none;">
 #foreach ($suggestion in $livesuggestions)
 	#set( $k = $suggestion.getKeyword() )
-	##if (!$ajax)
-	##set($url = "$url?operation=contains&field=description&description.value=#esc($k)&clearfilters=true")
-	##end		
-	<li>
-		<a href="$url" 
-			data-oemaxlevel="3" 
-			data-searchtype="applicationmaincontent" 
-			data-field="description" 
-			data-operation="contains" 
-			data-targetdivinner="applicationmaincontent"
-			data-description.value="#esc($k)" 
-			class="ajax quicksearchlinks" >
-			 <span>$suggestion.getBold()</span></a>  ##make bold
-	</li>	 
+	<li class="lisuggestion" data-suggestionid="#esc($k)" data-suggestionname="#esc($k)"></li>	 
 #end
 </ul>
-<div class="clearfix"></div>
 #end
 
 </div>
