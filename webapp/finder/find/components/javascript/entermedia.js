@@ -683,7 +683,11 @@ onloadselectors = function() {
 									drop : function(event, ui) {
 										var source = ui.draggable.attr("id");
 										var node = $(this);
-										var destination = this.id;
+										var destination = $(this).attr("id");
+										
+										if (!node || !destination) {
+											return;
+										}
 
 										var resultsdiv = $(this).closest(".resultsdiv");
 							            if(!resultsdiv.length) {

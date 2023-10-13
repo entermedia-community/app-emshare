@@ -2102,7 +2102,7 @@ uiload = function() {
 	
 		var lasttypeahead;
 	var lastsearch;
-	
+	var searchmodaldialog;
 	
 	lQuery("select.mainsearch").livequery(function() {
 	
@@ -2134,26 +2134,26 @@ uiload = function() {
 			id = "typeahead";	
 		}
 		
-		var modaldialog = $("#" + id);
-		if (modaldialog.length == 0) {
+		searchmodaldialog = $("#" + id);
+		if (searchmodaldialog.length == 0) {
 			$("#header").append(
 					'<div class="typeaheadmodal" tabindex="-1" id="' + id
 							+ '" style="display:none" ></div>');
-			modaldialog = $("#" + id);
+			searchmodaldialog = $("#" + id);
 		}
 		
 		var applicationcontentwidth = $("#applicationmaincontent").width();
 		if(!applicationcontentwidth) {
 			applicationcontentwidth = $("#header").width();
 		}
-		modaldialog.css("width", (applicationcontentwidth - 100) + "px");
+		searchmodaldialog.css("width", (applicationcontentwidth - 100) + "px");
 		var topposition =  theinput.position().top + 70;
-		modaldialog.css("top", topposition+"px");
-		modaldialog.css("left", "40px");
+		searchmodaldialog.css("top", topposition+"px");
+		searchmodaldialog.css("left", "40px");
 		
 		var wh = window.innerHeight;
 		if (wh) {
-			modaldialog.css("height", (wh - 90) + "px");
+			searchmodaldialog.css("height", (wh - 90) + "px");
 		}
 
 		var options = theinput.data();
@@ -2208,10 +2208,10 @@ uiload = function() {
 					},
 					processResults : function(data,	params) {
 						if(data) {
-							modaldialog.html(data);
-							modaldialog.show();
+							searchmodaldialog.html(data);
+							searchmodaldialog.show();
 							var results = [];
-							var lis = modaldialog.find("li.lisuggestion",);
+							var lis = searchmodaldialog.find("li.lisuggestion",);
 							if( lis.length > 0)
 							{
 								var results;
@@ -2247,12 +2247,15 @@ uiload = function() {
 			if ($(this).parents(".ignore").length == 0) {
 				$(this).valid(); 
 				
-				var terms = e.params.data;
-				var search2 = {
-					field: "description",
-					operation: "contains",
-					"description.value":  terms.id
-				}; 
+				
+				var selected= $(this).select2("data");
+				
+				var terms = "field=description&operation=contains";
+				selected.forEach(function (item, index, arr) {
+						terms = terms + '&description.value='+item["id"]+''
+				});
+		
+				
 				if( lasttypeahead )
 				{
 					lasttypeahead.abort();
@@ -2261,13 +2264,13 @@ uiload = function() {
 				{ 
 					url: url, 
 					async: true, 
-					type: 'POST',
-					data:  search2,
+					type: 'GET',
+					data:  terms,
 					timeout: 1000,
 					success: function(data)	{
 						if(data) {
-							modaldialog.html(data);
-							modaldialog.show();
+							searchmodaldialog.html(data);
+							searchmodaldialog.show();
 						}	
 						typeaheadloading.hide();
 					}
@@ -2279,13 +2282,22 @@ uiload = function() {
 			if ($(this).parents(".ignore").length == 0) {
 				$(this).valid(); 
 				var terms = e.params.data;
-				modaldialog.hide();
+				searchmodaldialog.hide();
 				typeaheadloading.hide();
 			}
 		});
 		
+		theinput.on("keyup" , function(e) {
+			 if (e.keyCode == 27) {
+				 console.log("closing");
+			        searchmodaldialog.hide();
+					typeaheadloading.hide();
+					theinput.select2("close");
+			    } 
+		});
+		
 		jQuery("body").on("click", function(event){
-			modaldialog.hide();
+			searchmodaldialog.hide();
 			typeaheadloading.hide();
 		});
 	});
