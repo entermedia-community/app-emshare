@@ -2210,6 +2210,7 @@ uiload = function() {
 						if(data) {
 							searchmodaldialog.html(data);
 							searchmodaldialog.show();
+							gridResize();
 							var results = [];
 							var lis = searchmodaldialog.find("li.lisuggestion",);
 							if( lis.length > 0)
@@ -2271,6 +2272,7 @@ uiload = function() {
 						if(data) {
 							searchmodaldialog.html(data);
 							searchmodaldialog.show();
+							gridResize();
 						}	
 						typeaheadloading.hide();
 					}

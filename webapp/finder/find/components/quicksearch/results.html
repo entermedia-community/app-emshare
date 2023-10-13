@@ -23,9 +23,7 @@ $context.putPageValue("filter", $filter)
 
 #foreach($module in $organizedModules)
 	#set($hits = $organizedHits.get($module.id))
-	
-	
-	
+		
 	$context.putPageValue("module", $module)
 	$context.putPageValue("moduleid", $module.id)
 
@@ -61,29 +59,24 @@ $context.putPageValue("filter", $filter)
 	#text($module) ($count)
 	</span>
 	</a>
-	##set($entityurlall = "$!siteroot$apphome/views/modules/$!{module.id}/index.html?$!{module.id}page=1")
-	<a href="$entityurl" 
-		class="ajax qsresultsEntityall" 
-		style=""
-		data-targetdiv="applicationmaincontent" 
-		data-oemaxlevel="3" 
-		data-updateurl="true" 
-		data-profilepreference="defaultmodule"
-		data-profilepreference.value="$!module.getId()"
-		title="[[View]] $count: #text($module)" >
+	#if($count>10)
+		##set($entityurlall = "$!siteroot$apphome/views/modules/$!{module.id}/index.html?$!{module.id}page=1")
+		<a href="$entityurl" 
+			class="ajax qsresultsEntityall" 
+			style=""
+			data-targetdiv="applicationmaincontent" 
+			data-oemaxlevel="3" 
+			data-updateurl="true" 
+			data-profilepreference="defaultmodule"
+			data-profilepreference.value="$!module.getId()"
+			title="[[View]] $count: #text($module)" >
+		
+		<span class="qsresultsEntitytext">
 	
-	<span class="qsresultsEntitytext">
-	#if( $module.id == "asset") ##this is safe
-		#set( $count = $hits.size()) 
-	#else
-		#set( $count = $filter.getCount($module.id) ) 
+		([[View All]])
+		</span>
+		</a>
 	#end
-	#ifnull($count)
-		#set( $count = $hits.size()) 
-	#end
-	([[View All]])
-	</span>
-	</a>
 	
 	#set($rendertype = $module.modulerendertype)
 	#if (!$rendertype)
@@ -125,6 +118,65 @@ $context.putPageValue("filter", $filter)
 	</div>
 	
 
+	</div>
+#end
+
+#if($assethits)
+
+#set($assetmodule = $mediaarchive.getCachedData("module","asset"))
+
+#set($moduleicon = "entity")
+#if ($assetmodule.moduleicon)
+	#set($moduleicon = $assetmodule.moduleicon)
+#end
+
+#set($hits = $assethits)
+#set($entityurl = "$!siteroot$apphome/views/modules/asset/search.html?field=description&operation=freeform&description.value=$val")
+#set( $count = $assethits.size())
+<a href="$entityurl" 
+		class="ajax qsresultsEntity" 
+		style=""
+		data-targetdiv="applicationmaincontent" 
+		data-oemaxlevel="3" 
+		data-updateurl="true" 
+		data-profilepreference="defaultmodule"
+		data-profilepreference.value="$!assetmodule.getId()"
+		title="[[View]] #text($assetmodule)" >
+	<img src="$siteroot$apphome/theme/images/entity/${moduleicon}.svg"	style="height: 25px; max-width:20px;"> 
+	<span class="qsresultsEntitytext">#text($assetmodule) ($count)</span>
+	</a>
+	
+	#if($count>15)
+	
+	<a href="$entityurl" 
+		class="ajax qsresultsEntityall" 
+		style=""
+		data-targetdiv="applicationmaincontent" 
+		data-oemaxlevel="3" 
+		data-updateurl="true" 
+		data-profilepreference="defaultmodule"
+		data-profilepreference.value="$!module.getId()"
+		title="[[View]] $count: #text($assetmodule)" >
+	
+	<span class="qsresultsEntitytext">
+
+	 
+
+	([[View All]])
+	</span>
+	</a>
+	#end
+	
+	<div class="masonry-grid" 
+		data-maxheight="100" 
+		data-cellpadding="4"
+		data-makebox="true"
+		data-visibleposition="$hits.getStartingPosition()"
+	>
+	#foreach( $hit in $hits.getPageOfHits() )
+		$context.putPageValue("hit", $hit)
+	    $pages.include("$apphome/views/modules/asset/components/gridsample/types/media.html", $context)
+	#end
 	</div>
 #end
 
