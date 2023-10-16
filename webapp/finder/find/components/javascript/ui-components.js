@@ -2037,10 +2037,11 @@ uiload = function() {
 		if(!url) { 
 			url = apphome + "/components/xml/types/autocomplete/tagsearch.txt";
 		}
+		
+		var form = theinput.closest("form");
 				
 		if($.fn.select2 ) {
-			theinput.select2(
-				{
+			theinput.select2({
 					tags : true,
 					placeholder : defaulttext,
 					allowClear : allowClear,
@@ -2066,7 +2067,16 @@ uiload = function() {
 							
 							return search;
 						},
-						processResults : function(data,	params) { 
+						processResults : function(data,	params) {
+							var term =  params.term;
+							var currentterms = $(theinput).val();
+							if(currentterms) {
+								term = currentterms.join(' ') + ' ' + term;
+							}
+							
+							$("#descriptionvalue", form).val(term.trim());
+							form.trigger('submit');
+							
 							params.page = params.page || 1;
 							return {
 								results : data.rows,
@@ -2091,16 +2101,31 @@ uiload = function() {
 		theinput.on("select2:select" , function() {
 			if ($(this).parents(".ignore").length == 0) {
 				$(this).valid(); 
+				var selected= $(this).select2("data");
+				var terms = "";
+				selected.forEach(function (item, index, arr) {
+						terms = terms + ' '+item["id"]+''
+				});
+				$("#descriptionvalue", form).val(terms);
+				form.trigger('submit');
 			}
 	   });
 	   theinput.on("select2:unselect" , function() {
 			if ($(this).parents(".ignore").length == 0) {
 				$(this).valid(); 
+				var selected= $(this).select2("data");
+				var terms = "";
+				selected.forEach(function (item, index, arr) {
+						terms = terms + ' '+item["id"]+''
+				});
+				$("#descriptionvalue", form).val(terms);
+				form.trigger('submit');
 			}
 		});
 	});
 	
-		var lasttypeahead;
+	
+	var lasttypeahead;
 	var lastsearch;
 	var searchmodaldialog;
 	

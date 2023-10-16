@@ -300,12 +300,16 @@ jQuery(document).ready(function(url,params)
 		if ($(form).hasClass("autosubmitform")) {
 			$('select',form).on('select2:select', function() 
 			{
-			    form.trigger("submit");
+				if(!$(this).hasClass('cancelautosubmit')) {
+			    	form.trigger("submit");
+			    }
 			});
 			$('select',form).on("select2:unselect", function() 
 			{
-				$("#filtersremoveterm", form).val($(this).data("searchfield"));
-				form.trigger("submit");
+				if(!$(this).hasClass('cancelautosubmit')) {
+					$("#filtersremoveterm", form).val($(this).data("searchfield"));
+					form.trigger("submit");
+				}
 			});
 			$('input[type=checkbox]',form).change( function() 
 			{

@@ -53,9 +53,6 @@
 			#set ( $topmoduleid = $context.getRequestParameter("topmoduleid") )
 		#end
 	
-	
-	
-	
 	<form  	name="filterform" 
 			id="filterform" 
 			class="ajaxform autosubmitform filterform"
@@ -71,7 +68,6 @@
 			#end 
 	>
 		
-		##<input name="searchtype" type="hidden" value="$!moduleid" />
 		<input name="hitssessionid" type="hidden" value="$!hits.getSessionId()" />
 		<input type="hidden" name="$!{moduleid}endusersearch" value="true" />
 		#if($topmoduleid)
@@ -108,6 +104,7 @@
 		<div class="form-group" style="    margin: -10px; padding: 15px;    background-color: #d1d1d1d1;">
 			<input name="field" value="description" type="hidden">
 			<input name="operation" value="freeform" type="hidden">
+			<input id="descriptionvalue" name="description.value" value="" type="hidden">
 			<div class="filter-box">
 				<div class="filter-box-options filterbox-mainsearch" id="filterboxdescription" style="position:relative">
 						
@@ -116,10 +113,10 @@
 						##TODO Use $values
 						#set( $vals = $currentsearch.split("\s*\|\s*") )
 						
-						<select name="${detailid}.value" 
+						<select name="${detailid}selector" 
 								id="$!{idprefix}list-${detailid}0value" 
 								multiple="multiple" 
-								class="searchtags filterstags "
+								class="searchtags filterstags cancelautosubmit"
 								data-url="$componenthome/xml/types/autocomplete/tagsearch.txt" 
 								data-searchfield="$detailid"
 								data-sortby="" 
