@@ -23,23 +23,7 @@ $context.putPageValue("title",$title)
 		#if($selectedrow) checked #end 
 		data-dataid="${hit.id}" 
 		#if($canquickdownload) style="margin-right: 1px;" #end />
-		#if($canquickdownload)
-        	#if( $desktop )
-		       	<a href="#" class="emdesktopdownload grid-gallery-download" data-assetid="$hit.id" title="[[Download]] $!title">
-		       	<i class="fas fa-download"> </i>
-		       	</a> 
-	      	#else
-				#set($dlink = $mediaarchive.asLinkToOriginal($hit))
-				#set($dlink = "$siteroot/$mediadbappid/services/module/asset/downloads/originals/$dlink?assetid=$!hit.getId()")
-				#if($collectionid)
-					#set($dlink = "$dlink&collectionid=$!{collectionid}")
-				#end
-			
-	       	<a href="$dlink" class="grid-gallery-download" data-assetid="$hit.id" title="[[Download]] $!title">
-	       	<i class="fas fa-download"> </i>
-	       	</a>
-	       	#end
-	    #end
+		
 	</td>
 #end	
 
@@ -81,5 +65,31 @@ $context.putPageValue("title",$title)
 
 	        
 		</td>	
-	#end	
+	#end
+	
+		<td class="rowactions" noclick="true">
+			
+			$context.putPageValue("assetid",$hit.id)
+		    <div id="mvassetfavorite-$hit.id" class="media-info-icons">
+	        	$pages.include("$apphome/views/modules/asset/editor/favorite/index.html?targetdiv=mvassetfavorite", $context)
+	   		</div>
+			
+			#if($canquickdownload)
+        	#if( $desktop )
+		       	<a href="#" class="emdesktopdownload grid-gallery-download" data-assetid="$hit.id" title="[[Download]] $!title">
+		       	<i class="fas fa-download"> </i>
+		       	</a> 
+	      	#else
+				#set($dlink = $mediaarchive.asLinkToOriginal($hit))
+				#set($dlink = "$siteroot/$mediadbappid/services/module/asset/downloads/originals/$dlink?assetid=$!hit.getId()")
+				#if($collectionid)
+					#set($dlink = "$dlink&collectionid=$!{collectionid}")
+				#end
+			
+	       	<a href="$dlink" class="grid-gallery-download" data-assetid="$hit.id" title="[[Download]] $!title">
+	       	<i class="fas fa-download"> </i>
+	       	</a>
+	       	#end
+	    #end
+			</td>	
  </tr>   

@@ -1,9 +1,12 @@
 #if($canaddtofavorites)
-	#set($itemid = $context.getRequestParameter("id"))
-	#set($searchtype = $context.getRequestParameter("searchtype"))
+	
+	#if(!$itemid)
+		#set($itemid = $context.getRequestParameter("id"))
+	#end
+	#set($moduleid = $context.getRequestParameter("moduleid"))
 	
 	
-	#set( $favorites = $userprofile.get("favorites_"+$searchtype))
+	#set( $favorites = $userprofile.get("favorites_"+$moduleid))
 	#set($isfav="false")
 	
 	#if($favorites && $favorites.indexOf($itemid) != -1)
@@ -14,13 +17,13 @@
 	 <a href="" 
 	 	class="favclick favorite-star #if($isfav=='true')  star-full itemfavorited #end" 
 	 	data-id="$itemid"
-	 	data-searchtype="$searchtype"
+	 	data-moduleid="$moduleid"
 	 	data-targetdiv="itemfav$itemid"
 	 	data-favurl="$siteroot$componenthome/gridsample/favorites.html"
 	 	#if($isfav=='true')
-	 	title="[[Remove from Favorites]]"
+	 	title="[[Remove from Saved]]"
 	 	#else
-	 	title="[[Add to Favorites]]"
+	 	title="[[Add to Saved]]"
 	 	#end
 	 	>
 	 	<i class="fas fa-bookmark"></i>

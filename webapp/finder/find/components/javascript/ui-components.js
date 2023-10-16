@@ -3832,7 +3832,7 @@ uiload = function() {
 		e.preventDefault();
 		var item = $(this);
 		var itemid = item.data("id");
-		var searchtype = item.data("searchtype");
+		var moduleid = item.data("moduleid");
 		var favurl= item.data("favurl");
 		var targetdiv= item.data("targetdiv");
 		var options = item.data();
@@ -3840,7 +3840,7 @@ uiload = function() {
 			if (item.hasClass("itemfavorited")){
 				jQuery.ajax(
 						{
-							url:  apphome + "/components/userprofile/favoritesremove.html?profilepreference=" + "favorites_"+searchtype + "&profilepreference.value=" + itemid,
+							url:  apphome + "/components/userprofile/favoritesremove.html?profilepreference=" + "favorites_"+moduleid + "&profilepreference.value=" + itemid,
 							success: function() {
 								//item.removeClass("ibmfavorited");
 								jQuery.get(favurl, options, function(data) 
@@ -3853,7 +3853,7 @@ uiload = function() {
 			}else {
 				jQuery.ajax(
 					{
-							url:  apphome + "/components/userprofile/favoritesadd.html?profilepreference=" + "favorites_"+searchtype + "&profilepreference.value=" + itemid,
+							url:  apphome + "/components/userprofile/favoritesadd.html?profilepreference=" + "favorites_"+moduleid + "&profilepreference.value=" + itemid,
 							success: function(){
 								//item.addClass("ibmfavorited");
 								jQuery.get(favurl, options, function(data) 
