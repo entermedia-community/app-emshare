@@ -116,13 +116,14 @@ $context.putPageValue("dialogresults", true)
 		<div class="embedmediacontainer">
 		<div class="embedmediacol embedmediacol-tree">
 			<div class="embedmediacolheader">
+				#if($topmodule.getBoolean("enableuploading") && $permissions.can($topmoduleid, "upload_files"))
 				<a href="" 
 					class="float-left createfoldertree"
 					data-tree="entitymediatreetree" 
 					style="border-right:1px solid #444; width:32px; text-align: center;" 
 					title="[[Add Sub-Folder]]"><i class="fas fa-folder-plus"></i></a>
 					
-				#if($topmodule.getBoolean("enableuploading") && $permissions.can($topmoduleid, "upload_files"))
+				
 					<a href="$siteroot$applink/views/modules/asset/add/entityaddmedia.html?categoryid=$!categoryid" 
 						class="ajax float-left" 
 						data-targetdiv="dialogmediaentity"
@@ -141,6 +142,15 @@ $context.putPageValue("dialogresults", true)
 			#if($categoryid != $rootcategory)
 				$context.putPageValue("selectednodes", $categoryid)
 			#end
+			
+			#set($canupload = false)
+			#if($canviewupload || $canviewcategoryupload)
+				#if($topmodule.getBoolean("enableuploading") && $permissions.can($topmoduleid, "upload_files"))
+					#set($canupload = true)
+				#end
+			#end
+			$context.putPageValue("canupload", $canupload)
+			
 			#set( $link = "$componenthome/emtree/tree.html")
 		    #set( $link = "${link}?entitymediatreeroot=$rootcategory&treename=entitymediatree&editabletree=true" )
 		    #set( $link = "${link}&maintargetdiv=$!maintargetdiv&targetdiv=$!targetdivmedia&maxlevelclick=1&updateAddressBar=false&uploadmaxlevel=1" )
