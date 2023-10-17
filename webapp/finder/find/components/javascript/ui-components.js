@@ -3845,7 +3845,8 @@ uiload = function() {
 								//item.removeClass("ibmfavorited");
 								jQuery.get(favurl, options, function(data) 
 										{
-											$("."+targetdiv).replaceWith(data);
+											$("."+targetdiv).replaceWith(data).hide().fadeIn('slow');
+											
 										});
 								}
 						}
@@ -3858,7 +3859,7 @@ uiload = function() {
 								//item.addClass("ibmfavorited");
 								jQuery.get(favurl, options, function(data) 
 										{
-											$("."+targetdiv).replaceWith(data);
+											$("."+targetdiv).replaceWith(data).hide().fadeIn();
 										});
 								}
 					});
