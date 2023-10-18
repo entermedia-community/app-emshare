@@ -38,26 +38,31 @@
 
 #if( $canviewupload )
 <td class="headeruploadarea">
-$pages.include("$apphome/components/upload/types/html5inlinetop.html", $context)
+##$pages.include("$apphome/components/upload/types/html5inlinetop.html", $context)
 
 
 <div class="dropdown show">
   <a class="btn btn-upload dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-    [[Upload]]
+    [[Upload to]]
   </a>
 
   <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-  	#if($permissions.can($moduleid, "create") && $moduleid!="faceprofilegroup" && $moduleid!="asset" && $moduleid!="modulesearch")
-  		#set($entityrendertype = "entity")
-		#if ($module.modulerendertype)
-			#set($entityrendertype = $module.modulerendertype)
-		#end
- 		#set($addurl = "$siteroot$applink/views/modules/${moduleid}/components/gridsample/preview/$!{entityrendertype}.html?edit=true&addnew=true&viewid=$!{moduleid}addnew")
- 		#ifnotnull($topentityid)
- 			#set($addurl = "$addurl&fieldexternalid=${topmodule.getId()}&fieldexternalvalue=${topentityid}&reloadtargets=topmodulecontainer")
- 		#end
-    	<a class="dropdown-item emdialog" 
-    		href="$addurl" >[[Add]] #text($module)</a>
+  	#foreach ( $amodule in $userprofile.getEntities() )
+  		#set($amoduleid = $amodule.getId())
+  		#if($amodule.getBoolean("enableuploading"))
+		  	#if($permissions.can($amoduleid, "create") && $amoduleid!="faceprofilegroup" && $amoduleid!="asset" && $amoduleid!="modulesearch")
+		  		#set($entityrendertype = "entity")
+				#if ($amodule.modulerendertype)
+					#set($entityrendertype = $amodule.modulerendertype)
+				#end
+		 		#set($addurl = "$siteroot$applink/views/modules/${amoduleid}/components/gridsample/preview/$!{entityrendertype}.html?edit=true&addnew=true&viewid=$!{moduleid}addnew")
+		 		#ifnotnull($topentityid)
+		 			#set($addurl = "$addurl&fieldexternalid=${topmodule.getId()}&fieldexternalvalue=${topentityid}&reloadtargets=topmodulecontainer")
+		 		#end
+		    	<a class="dropdown-item emdialog" 
+		    		href="$addurl" >#text($amodule)</a>
+		    #end
+	    #end
     #end
     <a class="dropdown-item ajax sidebarselected"
     	data-updateurl="true" data-targetdivinner="applicationmaincontent" data-oemaxlayout="3"
