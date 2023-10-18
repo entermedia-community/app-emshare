@@ -27,7 +27,7 @@ $context.putPageValue("topmoduleid", $moduleid)
 #set($enttiyviews = $viewsearcher.query().exact("moduleid", $moduleid).exact("systemdefined","false").sort("orderingUp").search($context) )
 
 
-#set($userentities = $userprofile.getEntities())
+#set($userentities = $userprofile.getEntitiesIds())
 
 #set( $entitytabopen = $context.getRequestParameter("entitytabopen"))
 
@@ -140,14 +140,14 @@ $context.putPageValue("topmoduleid", $moduleid)
 							#ifnotnull($subentitysearchtype)
 								##Permission check
 								##$subentitysearchtype $userentities.contains($subentitysearchtype)
-								##if($userentities.contains($subentitysearchtype))
+								#if($userentities.contains($subentitysearchtype))
 									#set($submodule = $mediaarchive.getCachedData("module", $viewdata.rendertable))
 									$context.putPageValue("tabmodule", $submodule)
 									#set($tabtype= "submodulehome")
 									$context.putPageValue("tabtype", $tabtype)
 									#set($subcomponenthome = "$apphome/views/modules/$subentitysearchtype/components")
 									$pages.include("$subcomponenthome/gridsample/preview/entitytabmenu.html", $context)
-								##end
+								#end
 							#end
 						#else
 							####Metadata Tabs
@@ -209,10 +209,10 @@ $context.putPageValue("topmoduleid", $moduleid)
 										#set( $viewdata = $viewsearcher.searchById($viewid))
 										#set( $subentitysearchtype = $viewdata.rendertable )
 										##Permission check
-										##if($userentities.contains($subentitysearchtype))
+										#if($userentities.contains($subentitysearchtype))
 											#set($subcomponenthome = "$apphome/views/modules/$subentitysearchtype/components")
 											$pages.include("$subcomponenthome/gridsample/preview/entitytabsub.html", $context)
-										##end
+										#end
 									#else
 										#set($tabtype= "metadata")
 										$context.putPageValue("tabtype", $tabtype)
