@@ -2222,7 +2222,6 @@ uiload = function() {
 			}
 			else if((q != '' && e.which == undefined) || (e.which == 8 || (e.which != 37 && e.which != 39 && e.which > 32))  ) //Real words and backspace
 			{
-				console.log(q + ' - '+ e.which );
 				typeaheadloading.show();
 				
 				var terms = "field=description&operation=contains"+ '&description.value='+q;
