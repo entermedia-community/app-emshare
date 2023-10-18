@@ -5,13 +5,19 @@
 #set( $xmledithome = "$componenthome/xml")
 #set( $candelete = $context.getRequestParameter("candelete"))
 
-#set( $viewid = $context.getRequestParameter("viewid"))
-#set( $viewpath = $context.getRequestParameter("viewpath"))
-#if( !$viewpath )
-	#set( $viewpath = "${searchtype}/${viewid}")
+#set( $parentviewid = $context.getRequestParameter("parentviewid"))
+#if($parentviewid)
+	#set( $viewid = $parentviewid)
+	#set( $viewpath = "${parentsearchtype}/${viewid}")
+#else
+	#set( $viewid = $context.getRequestParameter("viewid"))
+	#set( $viewpath = $context.getRequestParameter("viewpath"))
+	#if( !$viewpath )
+		#set( $viewpath = "${searchtype}/${viewid}")
+	#end
+		
 #end
 
-#set( $parentviewid = $context.getRequestParameter("parentviewid"))
 
 #set( $fieldexternalid = $context.getRequestParameter("fieldexternalid"))
 #set( $fieldexternalvalue = $context.getRequestParameter("fieldexternalvalue"))
@@ -180,7 +186,7 @@ $context.putPageValue("targetdivtablepositions", $targetdivtablepositions)
 				#end' 
 				id="th-$detail.id" 
 				data-sortby="$detail.id"
-				style='#if($detail.viewType =="asset")width:200px;#end'>
+				style='#if($detail.viewType =="asset" || $detail.viewType =="primarymedia" )width:200px;#end'>
 				#text($detail.text) 
 				
 				#if ($sortable && $sortby.startsWith($detail.getId()))
