@@ -2125,11 +2125,13 @@ uiload = function() {
 	});
 	
 	
+	
+	
 	var lasttypeahead;
 	var lastsearch;
 	var searchmodaldialog;
 	
-	lQuery("select.mainsearch").livequery(function() {
+	lQuery(".mainsearch").livequery(function() {
 	
 		var theinput = $(this);
 		var dropdownParent = theinput.data('dropdownparent');
@@ -2204,83 +2206,26 @@ uiload = function() {
         
 		var url = theinput.data("typeaheadurl");
 				
-		if($.fn.select2 ) {
-			theinput.select2({
-				tags : true,
-				placeholder : defaulttext,
-				dropdownParent : dropdownParent,
-			    width: 'style',
-				allowClear : allowClear,
-				selectOnBlur : true,
-				delay : 150,
-				minimumInputLength : 2,
-				ajax : { 
-					url : url,
-					xhrFields: {
-				        withCredentials: true
-				    },
-					crossDomain: true,
-					data : function(params) {
-						var search = {
-							page_limit : 15,
-							page : params.page
-						};
-						search["field"] = searchfield;
-						search["operation"] = "contains";
-						search[searchfield+ ".value"] = params.term; 
-						
-						return search;
-					},
-					processResults : function(data,	params) {
-						if(data) {
-							searchmodaldialog.html(data);
-							searchmodaldialog.show();
-							gridResize();
-							var results = [];
-							var lis = searchmodaldialog.find("li.lisuggestion",);
-							if( lis.length > 0)
-							{
-								var results;
-								$.each(lis, function(){
-									var item = $(this);
-									var result = {
-										id: item.data("suggestionid"),
-										name: item.data("suggestionname")
-									}
-									results.push(result);
-								});
-								return {
-									results: results
-								}
-								
-							}
-						
-						}
-
-					}												
-				},
-				escapeMarkup : function(m) {
-					return m;
-				},
-				templateResult : select2formatResult,
-				templateSelection : select2Selected,
-				tokenSeparators : [ "|" ],
-				separator : '|'
-				
-			});
-		}
-		theinput.on("select2:select" , function(e) {
-			if ($(this).parents(".ignore").length == 0) {
-				$(this).valid(); 
-				
-				
-				var selected= $(this).select2("data");
-				
-				var terms = "field=description&operation=contains";
-				selected.forEach(function (item, index, arr) {
-						terms = terms + '&description.value='+item["id"]+''
-				});
 		
+	
+		theinput.on("keyup change" , function(e) {
+			var q = theinput.val();
+			if(!q) {
+				searchmodaldialog.hide();
+				return;
+			}
+			
+			 if (e.keyCode == 27) {
+				 console.log("closing");
+			        searchmodaldialog.hide();
+					typeaheadloading.hide();
+			}
+			else if((q != '' && e.which == undefined) || (e.which == 8 || (e.which != 37 && e.which != 39 && e.which > 32))  ) //Real words and backspace
+			{
+				console.log(q + ' - '+ e.which );
+				typeaheadloading.show();
+				
+				var terms = "field=description&operation=contains"+ '&description.value='+q;
 				
 				if( lasttypeahead )
 				{
@@ -2300,30 +2245,22 @@ uiload = function() {
 							gridResize();
 						}	
 						typeaheadloading.hide();
+					},
+					complete: function(data) {
+						typeaheadloading.hide();
 					}
 				});
-				
-			}
-	   });
-	   theinput.on("select2:unselect" , function(e) {
-			if ($(this).parents(".ignore").length == 0) {
-				$(this).valid(); 
-				var terms = e.params.data;
-				searchmodaldialog.hide();
-				typeaheadloading.hide();
-			}
+			 }
+			  
 		});
 		
-		theinput.on("keyup" , function(e) {
-			 if (e.keyCode == 27) {
-				 console.log("closing");
-			        searchmodaldialog.hide();
-					typeaheadloading.hide();
-					theinput.select2("close");
-			    } 
+		lQuery('.qssuggestion').livequery("click", function() {
+			var suggestion = $(this).data("suggestion");
+				theinput.val(suggestion);
+				theinput.trigger("change");
 		});
 		
-		jQuery("body").on("click", function(event){
+		lQuery('.closemainsearch').livequery("click", function() {
 			searchmodaldialog.hide();
 			typeaheadloading.hide();
 		});

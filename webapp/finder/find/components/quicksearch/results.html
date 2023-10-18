@@ -15,8 +15,24 @@
 
 <div class="quicksearchresults">
 <div style="position:absolute; top:0px; right:2px; color:#333;">
-<span title="[[Esc to Close]]" class="fas fa-window-close"></span>
+<span title="[[Esc to Close]]" class="fas fa-window-close closemainsearch"></span>
 </div>
+
+
+#if($livesuggestions.size())
+<ul class="qsrecent">
+#foreach ($suggestion in $livesuggestions)
+	#set( $k = $suggestion.getKeyword() )
+	<li class="lisuggestion">
+		<a href="#" class="qssuggestion" data-suggestion="#esc($k)">#esc($k)</a>
+	</li>	 
+#end
+</ul>
+#end
+
+
+
+
 #set($filter = $modulehits.findFilterValue("entitysourcetype") )
 $context.putPageValue("filter", $filter)
 
@@ -180,14 +196,5 @@ $context.putPageValue("filter", $filter)
 	</div>
 #end
 
-##hidden, will fill sugestions on the searchbox
-#if($livesuggestions.size())
-<ul class="qsrecent" style="display:none;">
-#foreach ($suggestion in $livesuggestions)
-	#set( $k = $suggestion.getKeyword() )
-	<li class="lisuggestion" data-suggestionid="#esc($k)" data-suggestionname="#esc($k)"></li>	 
-#end
-</ul>
-#end
 
 </div>

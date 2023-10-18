@@ -63,26 +63,19 @@ $context.putPageValue("hits",$hits)
 		
 		
 		<div class="input-group" >
-			<select name="description.value" 
+			<input name="description.value" 
 					id="mainsearchvalue" 
-					multiple="multiple" 
-					class="mainsearch filterstags "
+					class="form-control mainsearch  "
 					##data-url="$componenthome/xml/types/autocomplete/tagsearch.txt" 
-					data-searchfield="description"
 					data-typeaheadurl="$siteroot$applink/components/quicksearch/results.html"
 					data-sortby="" 
-					data-placeholder=""
+					value="#esc($input)"
+					autocomplete="off"
+					placeholder="[[Search...]]"
 			        data-width="100%"
-					>
-				#foreach($vtag in $vals)
-					#if($vtag && $vtag != "")
-						<option value="$!vtag" selected="selected">#esc($vtag)</option>
-					#end
-				#end
-				#if( $foundrow )
-				  <option value="$!val" selected="selected">#esc($label)</option>
-				#end
-			</select>
+					/>
+
+			<div class="quicksearchloading"></div>
 		</div>
 		
 		

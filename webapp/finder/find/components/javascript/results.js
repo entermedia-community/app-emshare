@@ -1407,7 +1407,7 @@ checkScroll = function()
 	var gridcells = $(".masonry-grid-cell", resultsdiv);
 	 if( gridcells.length == 0 )
 	 {
-	 	console.log("No grid found, dont load more")
+	 	//console.log("No grid found")
 
 	 	return; //No results?
 	 }
