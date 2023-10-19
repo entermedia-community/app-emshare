@@ -2216,12 +2216,19 @@ uiload = function() {
 			}
 			
 			 if (e.keyCode == 27) {
-				 console.log("closing");
+				 	//console.log("closing");
 			        searchmodaldialog.hide();
 					typeaheadloading.hide();
 			}
 			else if((q != '' && e.which == undefined) || (e.which == 8 || (e.which != 37 && e.which != 39 && e.which > 32))  ) //Real words and backspace
 			{
+				
+				if( q && q.length < 2)
+				{
+					searchmodaldialog.hide();
+					typeaheadloading.hide();
+					return;
+				}
 				typeaheadloading.show();
 				
 				var terms = "field=description&operation=contains"+ '&description.value='+q;
