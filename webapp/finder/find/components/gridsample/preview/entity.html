@@ -94,15 +94,22 @@ $context.putPageValue("topmoduleid", $moduleid)
 	<h2>
 	<a href="#" id="backbtn#eid($!dialogtabid)" class="entitydialogback" style="display: none;">
 	<i class="fas fa-arrow-left"></i></a>
-	#text($module) \ 
+	#text($module) - 
 	
-	#if($entity.getName($context))
-			#set($name = $!entity.getName($context))
-	#else 
-		#if($addnew=='true')
-			#set($name = "[[Add New]]")
-			
-			$context.putPageValue("addnew", $addnew)
+	#if($moduleid == "faceprofilegroup")
+	
+		#set($name = $searcherManager.getValue($searcher, $entity, "name"))
+		#set($name = "[[Profile]] $!name")
+	#else
+	
+		#if($entity.getName($context))
+				#set($name = $!entity.getName($context))
+		#else 
+			#if($addnew=='true')
+				#set($name = "[[Add New]]")
+				
+				$context.putPageValue("addnew", $addnew)
+			#end
 		#end
 	#end
 	
@@ -115,8 +122,10 @@ $context.putPageValue("topmoduleid", $moduleid)
 	  		 data-tabmenuurl="gridsample/preview/entitytabmenu.html">
 			
 			#ifnull($id)
-			
-				$context.putPageValue("viewid", $firstview)
+				#set( $viewid = $firstview)
+				$context.putPageValue("viewid", $viewid)
+				#set( $viewdata = $viewsearcher.searchById($viewid))
+				$context.putPageValue("viewdata", $viewdata)
 				#set($entitytabopen = "tab_${firstview}")
 				$context.putPageValue("currenttab", $entitytabopen)
 				$pages.include("$componenthome/gridsample/preview/entitytabmenu.html", $context)
