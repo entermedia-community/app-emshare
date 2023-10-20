@@ -2231,7 +2231,7 @@ uiload = function() {
 				}
 				typeaheadloading.show();
 				
-				var terms = "field=description&operation=contains"+ '&description.value='+q;
+				var terms = "field=description&operation=contains"+ '&description.value='+encodeURI(q);
 				
 				if( lasttypeahead )
 				{
@@ -2262,7 +2262,7 @@ uiload = function() {
 		
 		lQuery('.qssuggestion').livequery("click", function() {
 			var suggestion = $(this).data("suggestion");
-				theinput.val(suggestion);
+				theinput.val(decodeURI(suggestion));
 				theinput.trigger("change");
 		});
 		
