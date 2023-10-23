@@ -87,23 +87,27 @@
 				#set ($enabled = true)
 			#end
 			
-			#if($dialogtreestatus == "close")
-			<li>
-			<a href="" 
-					class="toggledialogtree"
-					data-targetdiv="dialogassetresultscontainer"
-					data-oemaxlevel="1"
-					data-url="$applink/views/modules/asset/dialogindex.html"
-					data-categoryid="$!categoryid"
-					data-topmoduleid="$!topmoduleid"
-					data-rootcategory="$!rootcategory"
-					data-treestatus="open"
-					title="[[Expand Tree]]">
-					<i class="fas fa-angle-double-right "></i>
-					</a>
-			</li>
+			#if($dialogresults)
+				#ifnull($dialogtreestatus)
+				#set($dialogtreestatus = $userprofile.get("dialogtreestatus"))
+				#end
+				#if($dialogtreestatus == "close")
+				<li>
+				<a href="" 
+						class="toggledialogtree"
+						data-targetdiv="dialogassetresultscontainer"
+						data-oemaxlevel="1"
+						data-url="$applink/views/modules/asset/dialogindex.html"
+						data-categoryid="$!categoryid"
+						data-topmoduleid="$!topmoduleid"
+						data-rootcategory="$!rootcategory"
+						data-treestatus="open"
+						title="[[Expand Tree]]">
+						<i class="fas fa-angle-double-right "></i>
+						</a>
+				</li>
+				#end
 			#end
-			
 			
 			#if ($resultview != "map")
 			
