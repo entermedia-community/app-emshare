@@ -97,9 +97,12 @@ $context.putPageValue("topmoduleid", $moduleid)
 	#text($module) - 
 	
 	#if($moduleid == "faceprofilegroup")
-	
-		#set($name = $searcherManager.getValue($searcher, $entity, "name"))
-		#set($name = "[[Profile]] $!name")
+		#if($entity.entitypeople)
+			#set($name = $searcherManager.getValue($searcher, $entity, "name"))
+			#set($name = "[[Profile]] $name")
+		#else
+			#set($name = "$entity.samplecount")
+		#end
 	#else
 	
 		#if($entity.getName($context))
