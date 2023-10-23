@@ -3355,6 +3355,29 @@ uiload = function() {
 		
 	});
 	
+	
+	lQuery(".toggledialogtree").livequery("click", function(e) {
+		e.preventDefault();
+		e.stopImmediatePropagation();
+		var toggler = $(this);
+		var options = toggler.data();
+		var url = toggler.data("url");
+		var targetdiv = toggler.data('targetdiv');
+		var treestatus = toggler.data("treestatus");
+		saveProfileProperty("dialogtreestatus", treestatus, function(){});
+			jQuery.ajax({
+				url: url, 
+				async: false, 
+				data: options, 
+				success: function (data) {
+					
+					data = $(data);
+					$("#"+targetdiv).replaceWith(data);
+				}
+			});
+
+	});
+	
 	lQuery('.col-mainsidebarZ').livequery("mouseenter mouseleave", function(e) {
 		
 		var toggler = $(this).find(".sidebar-toggler-hide");

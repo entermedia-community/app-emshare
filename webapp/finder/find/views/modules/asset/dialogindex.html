@@ -113,53 +113,83 @@ $context.putPageValue("dialogresults", true)
 			<div class="clearfix"></div>
 		</div>
 		
-		<div class="embedmediacontainer">
-		<div class="embedmediacol embedmediacol-tree">
-			<div class="embedmediacolheader">
-				#if($topmodule.getBoolean("enableuploading") && $permissions.can($topmoduleid, "upload_files"))
-				<a href="" 
-					class="float-left createfoldertree"
-					data-tree="entitymediatreetree" 
-					style="border-right:1px solid #444; width:32px; text-align: center;" 
-					title="[[Add Sub-Folder]]"><i class="fas fa-folder-plus"></i></a>
-					
-				
-					<a href="$siteroot$applink/views/modules/asset/add/entityaddmedia.html?categoryid=$!categoryid" 
-						class="ajax float-left" 
-						data-targetdiv="dialogmediaentity"
-						data-oemaxlevel="1"
-						style="border-right:1px solid #444; width:32px;" title="[[Upload]]"><i class="fas fa-upload"></i></a>
-				#end
-				
-					
-					
-				
-			</div>
-			
-			$context.putPageValue("rootcategory", $rootcategory)
-			#set( $targetdivmedia = "dialogmediaentity")
-			$context.putPageValue("targetdivmedia", $targetdivmedia)
-			#if($categoryid != $rootcategory)
-				$context.putPageValue("selectednodes", $categoryid)
-			#end
-			
-			#set($canupload = false)
-			#if($canviewupload || $canviewcategoryupload)
-				#if($topmodule.getBoolean("enableuploading") && $permissions.can($topmoduleid, "upload_files"))
-					#set($canupload = true)
-				#end
-			#end
-			$context.putPageValue("canupload", $canupload)
-			
-			#set( $link = "$componenthome/emtree/tree.html")
-		    #set( $link = "${link}?entitymediatreeroot=$rootcategory&treename=entitymediatree&editabletree=true" )
-		    #set( $link = "${link}&maintargetdiv=$!maintargetdiv&targetdiv=$!targetdivmedia&maxlevelclick=1&updateAddressBar=false&uploadmaxlevel=1" )
-			#set( $link = "${link}&customurladdmedia=$apphome/views/modules/asset/add/entityaddmedia.html" )
-		    #set( $link = "${link}&oemaxlevel=1&urlprefix=$apphome/views/modules/asset/dialogshowcategory.html" )
-		    
-			$pages.include($link, $context)
-		</div>
 		
+		$context.putPageValue("rootcategory", $rootcategory)
+		#set( $targetdivmedia = "dialogmediaentity")
+		$context.putPageValue("targetdivmedia", $targetdivmedia)
+		#if($categoryid != $rootcategory)
+			$context.putPageValue("selectednodes", $categoryid)
+		#end
+		
+		#set($canupload = false)
+		#if($canviewupload || $canviewcategoryupload)
+			#if($topmodule.getBoolean("enableuploading") && $permissions.can($topmoduleid, "upload_files"))
+				#set($canupload = true)
+			#end
+		#end
+		$context.putPageValue("canupload", $canupload)
+		
+		#set($dialogtreestatus = $userprofile.get("dialogtreestatus"))
+		#ifnotnull($dialogtreestatus)
+			#if($dialogtreestatus != "open")
+				#set($dialogtreestatus = "close")
+			#end
+		#end
+		#ifnull($dialogtreestatus)
+			#set($dialogtreestatus = "open")
+		#end
+		$context.putPageValue("dialogtreestatus", $dialogtreestatus)
+		
+		<div class="embedmediacontainer">
+		
+		#if($dialogtreestatus == "open")
+			<div class="embedmediacol embedmediacol-tree embedtreestatus$dialogtreestatus">
+				<div class="embedmediacolheader">
+					#if($topmodule.getBoolean("enableuploading") && $permissions.can($topmoduleid, "upload_files"))
+					<a href="" 
+						class="float-left createfoldertree"
+						data-tree="entitymediatreetree" 
+						style="border-right:1px solid #444; width:32px; text-align: center;" 
+						title="[[Add Sub-Folder]]"><i class="fas fa-folder-plus"></i></a>
+						
+					
+						<a href="$siteroot$applink/views/modules/asset/add/entityaddmedia.html?categoryid=$!categoryid" 
+							class="ajax float-left" 
+							data-targetdiv="dialogmediaentity"
+							data-oemaxlevel="1"
+							style="border-right:1px solid #444; width:32px;" title="[[Upload]]"><i class="fas fa-upload"></i></a>
+					#end
+					
+					<a href="" 
+					class="toggledialogtree toggledialogclose"
+					
+					data-targetdiv="dialogassetresultscontainer"
+					data-oemaxlevel="1"
+					data-url="$applink/views/modules/asset/dialogindex.html"
+					data-categoryid="$categoryid"
+					data-topmoduleid="$!topmoduleid"
+					data-rootcategory="$!rootcategory"
+					data-treestatus="close"
+					title="[[Collapse Tree]]">
+					<i class="fas fa-angle-double-left "></i>
+					</a>
+						
+						
+					
+				</div>
+				
+				
+				
+				
+				#set( $link = "$componenthome/emtree/tree.html")
+			    #set( $link = "${link}?entitymediatreeroot=$rootcategory&treename=entitymediatree&editabletree=true" )
+			    #set( $link = "${link}&maintargetdiv=$!maintargetdiv&targetdiv=$!targetdivmedia&maxlevelclick=1&updateAddressBar=false&uploadmaxlevel=1" )
+				#set( $link = "${link}&customurladdmedia=$apphome/views/modules/asset/add/entityaddmedia.html" )
+			    #set( $link = "${link}&oemaxlevel=1&urlprefix=$apphome/views/modules/asset/dialogshowcategory.html" )
+			    
+				$pages.include($link, $context)
+			</div>
+		#end
 		<div class="embedmediacol embedmediacol-results" id="$!{targetdivmedia}" >
 			$pages.include("$componenthome/results/index.html", $context)
 		</div>
