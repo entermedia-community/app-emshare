@@ -99,6 +99,7 @@
 				<li>
 				<a href="" 
 						class="toggledialogtree"
+						style="padding:0 10px"
 						data-targetdiv="dialogassetresultscontainer"
 						data-oemaxlevel="1"
 						data-url="$applink/views/modules/asset/dialogindex.html"
@@ -110,6 +111,19 @@
 						<i class="fas fa-angle-double-right "></i>
 						</a>
 				</li>
+				#ifnull($topmodule)
+					#set($topmodule = $mediaarchive.getCachedData("module", $topmoduleid))
+					
+				#end
+				#if($topmodule.getBoolean("enableuploading") && $permissions.can($topmoduleid, "upload_files"))
+					<li>
+						<a href="$siteroot$applink/views/modules/asset/add/entityaddmedia.html?categoryid=$!categoryid" 
+							class="ajax" 
+							data-targetdiv="dialogmediaentity"
+							data-oemaxlevel="1"
+							style="border-left:1px solid #444; padding: 0 10px" title="[[Upload]]"><i class="fas fa-upload"></i></a>
+					</li>
+					#end
 				#end
 			#end
 			
