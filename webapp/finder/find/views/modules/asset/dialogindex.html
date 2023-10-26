@@ -71,48 +71,6 @@ $context.putPageValue("dialogresults", true)
 	>
 	
 	<div class="emgrid-module emgrid-box emgrid-module-asset h-100">
-		<div class="emgrid-subtitle">
-	  		
-	     	#set($moduleicon = "entity")
-	     	#if ($module.moduleicon)
-	     		#set($moduleicon = $module.moduleicon)
-	     	#end
-	     	
-			#set( $count = $hits.size())
-			 
-				##<img src="$siteroot$apphome/theme/images/entity/${moduleicon}.svg" style="height: 26px;"> 
-						
-				#if( $category )
-					<div class="filtered-breadcrumb">
-						#set($parentcategories = $category.getParentCategories())
-						
-						#if(!$parentcategories.isEmpty())
-							#foreach( $parent in $parentcategories)
-								#if( ${foreach.count} > 1) / #end
-								
-								<a style="padding:0px 4px 0;" 
-									href="$siteroot$apphome/views/modules/asset/viewfiles/$!{parent.id}/#dash($parent).html?hitssessionid=$!hits.getSessionId()"
-									title="[[View Files]]: $parent"
-									class="ajax"
-									data-targetdiv="applicationcontent"
-									data-oemaxlevel="5"
-									data-scrolltocat="true"
-									data-updateurl="true"
-									data-closedialog="true"
-									data-sidebarcomponent="categories">#text($parent)</a>
-					
-							#end
-						
-							#if($count)&nbsp;<span class="count">($count)</span>#end 
-						#end
-						</div>
-						
-					
-				#end
-			
-			<div class="clearfix"></div>
-		</div>
-		
 		
 		$context.putPageValue("rootcategory", $rootcategory)
 		#set( $targetdivmedia = "dialogmediaentity")
@@ -136,7 +94,7 @@ $context.putPageValue("dialogresults", true)
 			#end
 		#end
 		#ifnull($dialogtreestatus)
-			#set($dialogtreestatus = "open")
+			#set($dialogtreestatus = "close")
 		#end
 		$context.putPageValue("dialogtreestatus", $dialogtreestatus)
 		
