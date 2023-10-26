@@ -123,7 +123,21 @@ $context.putPageValue("topmoduleid", $moduleid)
 		<nav>
 	  	<div class="nav nav-tabs entity-navigation" id="entity-nav-tab" role="tablist" 
 	  		 data-tabmenuurl="gridsample/preview/entitytabmenu.html">
-			
+			##media
+			#ifnotnull($id)
+				#if($module.getBoolean("enableuploading") && $permissions.can($moduleid, "view_files"))
+						#set($submodule = $mediaarchive.getCachedData("module", "asset"))
+						$context.putPageValue("tabmodule", $submodule)
+						$context.putPageValue("tabtype", "media")
+						#set($tabid = "tab_media")
+						$context.putPageValue("tabid", $tabid)
+						#if($entitytabopen == $tabid)
+				  			$context.putPageValue("currenttab", $tabid)
+						#end
+						#set($subcomponenthome = "$apphome/views/modules/asset/components")
+						$pages.include("$subcomponenthome/gridsample/preview/entitytabmenu.html", $context)
+				#end
+			#end
 			#ifnull($id)
 				#set( $viewid = $firstview)
 				$context.putPageValue("viewid", $viewid)
@@ -178,19 +192,7 @@ $context.putPageValue("topmoduleid", $moduleid)
 					#end
 				#end	
 				
-				##media
-				#if($module.getBoolean("enableuploading") && $permissions.can($moduleid, "view_files"))
-					#set($submodule = $mediaarchive.getCachedData("module", "asset"))
-					$context.putPageValue("tabmodule", $submodule)
-					$context.putPageValue("tabtype", "media")
-					#set($tabid = "tab_media")
-					$context.putPageValue("tabid", $tabid)
-					#if($entitytabopen == $tabid)
-			  			$context.putPageValue("currenttab", $tabid)
-					#end
-					#set($subcomponenthome = "$apphome/views/modules/asset/components")
-					$pages.include("$subcomponenthome/gridsample/preview/entitytabmenu.html", $context)
-				#end
+
 			#end	
 		</div>
 		</nav>
