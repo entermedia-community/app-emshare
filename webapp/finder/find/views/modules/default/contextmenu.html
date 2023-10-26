@@ -5,11 +5,30 @@
  	
  	
  	#if($canviewsettings)
- 		<a class="ajax" 
+ 		<a class="ajax entitycontextmenu" 
  		  href="$apphome/views/settings/modules/${module.getId()}/info/module-setup.html"
  		  data-targetdiv="applicationcontent" 
  		  data-oemaxlevel="5"
  		  data-sidebarcomponent="settings"
  		  title="[[Properties]]"><i class="fas fa-cog"></i></a>
  	#end
+ 	
+		<a href="$applink/views/modules/${module.id}/components/filters/dialog.html"
+			class="emdialog inlinefilteropen"
+			data-dialogid="entityfilters"
+			data-hidebackdrop="true"
+			data-hidefooter="true"
+			data-modalsize="sm"
+			data-moduleid="asset"
+			data-hitssessionid="$hits.getSessionId()"
+			data-categoryid="$!categoryid"
+			data-rootcategory="$!rootcategory"
+			data-targetdivsearch="$!{module.id}resultscontainer"
+			title="#text($module) [[Filter Search]]"
+			><i class="fas fa-search"></i> [[Filter]] #text($module) </a>
+
+
+			$pages.include("$componenthome/filters/filters-inline.html", $context)
+ 	
+ 	
 ##	</div>
