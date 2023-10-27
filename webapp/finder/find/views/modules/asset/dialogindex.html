@@ -102,12 +102,12 @@ $context.putPageValue("dialogresults", true)
 		
 		#if($dialogtreestatus == "open")
 			<div class="embedmediacol embedmediacol-tree embedtreestatus$dialogtreestatus">
-				<div class="embedmediacolheader">
+				<div class="embedmediacolactions">
 					#if($topmodule.getBoolean("enableuploading") && $permissions.can($topmoduleid, "upload_files"))
 					<a href="" 
 						class="float-left createfoldertree"
 						data-tree="entitymediatreetree" 
-						style="border-right:1px solid #444; width:32px; text-align: center;" 
+						style="width:32px;" 
 						title="[[Add Sub-Folder]]"><i class="fas fa-folder-plus"></i></a>
 						
 					
@@ -115,7 +115,7 @@ $context.putPageValue("dialogresults", true)
 							class="ajax float-left" 
 							data-targetdiv="dialogmediaentity"
 							data-oemaxlevel="1"
-							style="border-right:1px solid #444; width:32px;" title="[[Upload]]"><i class="fas fa-upload"></i></a>
+							style="width:32px;" title="[[Upload]]"><i class="fas fa-upload"></i></a>
 					#end
 					
 					<a href="" 
@@ -131,13 +131,12 @@ $context.putPageValue("dialogresults", true)
 					title="[[Collapse Tree]]">
 					<i class="fas fa-angle-double-left "></i>
 					</a>
+				</div>		
 						
-						
-					
-				</div>
+				<div class="embedmediacolheader">[[Folders]]</div>
 				
 				
-				
+				<div class="embedmediatree">
 				
 				#set( $link = "$componenthome/emtree/tree.html")
 			    #set( $link = "${link}?entitymediatreeroot=$rootcategory&treename=entitymediatree&editabletree=true" )
@@ -146,6 +145,7 @@ $context.putPageValue("dialogresults", true)
 			    #set( $link = "${link}&oemaxlevel=1&urlprefix=$apphome/views/modules/asset/dialogshowcategory.html" )
 			    
 				$pages.include($link, $context)
+				</div>
 			</div>
 		#end
 		<div class="embedmediacol embedmediacol-results" id="$!{targetdivmedia}" >

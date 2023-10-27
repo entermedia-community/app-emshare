@@ -63,9 +63,12 @@
 			data-entityid="$!entity.getId()"
 		#end 
 		title="#esc($name)">
-		#set($moduleicon = "entity")
-	   	#if ($tabmodule.moduleicon)
+		
+	   	#if (!$moduleicon && $tabmodule.moduleicon)
 	   		#set($moduleicon = $tabmodule.moduleicon)
+	   	#end
+	   	#if(!$moduleicon)
+	   		#set($moduleicon = "data")
 	   	#end
 	   	<img src="$siteroot$apphome/theme/images/entity/${moduleicon}.svg" style="height: 22px;"> 
 		#if($tabtype == "submodulehome")

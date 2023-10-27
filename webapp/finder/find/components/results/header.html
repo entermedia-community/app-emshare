@@ -17,7 +17,8 @@
 	#set ( $searchtype = "asset" )
 #end
 
-#set( $categoryid = $hits.getInput("categoryid") )
+##set( $categoryid = $hits.getInput("categoryid") )
+#set($categoryid = $context.getRequestParameter("categoryid"))
 #if (!$categoryid)
 	#set( $categoryid = $context.getRequestParameter("category"))
 #end
@@ -40,7 +41,9 @@
 	#end
 	$context.putPageValue("rootcategory",$rootcategory)
 #end
-
+#if(!$categoryid && $rootcategory)
+	#set($categoryid = $rootcategory)
+#end
 #if(!$topmoduleid)
 	#set($topmoduleid = $context.getRequestParameter("topmoduleid"))
 	$context.putPageValue("topmoduleid",$topmoduleid)
@@ -121,7 +124,7 @@
 							class="ajax" 
 							data-targetdiv="dialogmediaentity"
 							data-oemaxlevel="1"
-							style="border-left:1px solid #444; padding: 0 10px" title="[[Upload]]"><i class="fas fa-upload"></i></a>
+							style="padding: 0 10px" title="[[Upload]]"><i class="fas fa-upload"></i></a>
 					</li>
 					#end
 				#end
@@ -216,6 +219,33 @@
 				$pages.include("$componenthome/desktop/menu.html?collectionid=$librarycol.getId()",$context)
 			#end
 			
+
+		#if($dialogresults)
+			#if($topmoduleid != "favorites")
+				
+				<li class="nav-li">
+				<a href="$applink/views/modules/asset/components/filters/dialog.html"
+					class="emdialog"
+					data-dialogid="entityfilters"
+					data-hidebackdrop="true"
+					data-hidefooter="true"
+					data-modalsize="sm"
+					data-moduleid="asset"
+					data-hitssessionid="$hits.getSessionId()"
+					data-categoryid="$!categoryid"
+					data-rootcategory="$!rootcategory"
+					data-topmoduleid="$!topmoduleid"
+					data-targetdivsearch="$!maintargetdiv"
+					data-dialogresults="$!dialogresults"
+					title="#text($module) [[Filter Search]]"
+					><i class="fas fa-filter" style="font-size:0.9em;"></i> [[Filter]]</a>
+				</li>
+				<li>
+				$pages.include("$componenthome/filters/filters-inline.html", $context)
+				</li>
+				#end
+			#end
+
 
 			
 			<li style="position:absolute; left: 45%;">
