@@ -10,11 +10,16 @@
 		#set($permissionassigned = $permissionManager.loadEntitySettingsGroupPermissions($moduleid, $groupid))
 	#end
 #end
+<div id="savepermissions">
 <form method="post" 
 	action="$siteroot$apphome/views/settings/modules/$moduleid/permissions/views/save.html"
-	class="autosubmit">
+	class="autosubmit"
+	data-oemaxlevel="1"
+	data-targetdiv="savepermissions"
+	>
 
 	
+	<input type="hidden" name="oemaxlevel" value="1" />
 	<input type="hidden" name="settingsgroupid" value="$groupid" />
 	<input type="hidden" name="moduleid" value="$moduleid" />
 
@@ -27,9 +32,7 @@
         #end
         
 	    #set( $hits = $permissionsearcher.query().match("permissionentitytype", $permissionentitytype).sort("ordering").search() )
-	    
     	<table class="table table-striped emdata settings-table">	
-		    
 		    #set( $section = "none")
 	    	#foreach($item in $hits )
 	        		
@@ -44,11 +47,21 @@
 	        			</tr>
 	        		</thead>
 	        		#set( $section = $item.permissionentitytype)
+
+		        		<tr class="">
+		        		<td valign="middle" style="text-align: center; width: 35px;">
+		        		<input class="permission-radio" type="checkbox" name="noname" value="" disabled="disabled"
+		        			#if( $permissionassigned.isEmpty() )
+		        		  		 checked      		  		#end />
+		        		
+		        		</td>
+		        		<td valign="middle"><label for="checkbox-$!item.id" style="padding:5px 0 1px 0;">[[Allow All Permissions]]</label></td>
+		        		<td class="caption">[[If no permissions are checked then all enabled]]</td>		        			
+		        		</tr>					
 	        		
 	        			
 	        		#end
-	        		
-	        		
+
 	        		#set($val = $permissionassigned.get($item.id))
 	        		<tr class="$item.permissionentitytype">
 	        		<td valign="middle" style="text-align: center; width: 35px;">
@@ -79,3 +92,4 @@ jQuery(".permission-radio").bind("click", function () {
 	}
 });
 </script>
+</div>

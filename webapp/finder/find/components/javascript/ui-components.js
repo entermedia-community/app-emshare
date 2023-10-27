@@ -217,6 +217,8 @@ runajaxonthis = function(inlink,e)
                 	    fnc(inlink);  //execute it
                 	}
                 }
+                checkautoreload(inlink);
+
 				
 			},
 			type: "POST",
@@ -837,19 +839,7 @@ uiload = function() {
 					},
 					success : function(result, status, xhr, $form) 
 					{
-						//new ajaxautoreload
-						var classes = form.data("ajaxreloadtargets"); //assetresults, projectpage, sidebaralbums
-						if(classes) 
-						{
-							var splitnames = classes.split(",");
-							$.each(splitnames,function(index,classname)
-							{
-								$("." + classname).each(function(index,div)
-								{
-							  	 	autoreload($(div));
-								});
-							});
-						}
+						checkautoreload(form);
 						var targetdivinner = form.data("targetdivinner");
 						if( targetdivinner )
 						{
@@ -4087,6 +4077,22 @@ replaceelement = function(url, div, options, callback) {
 	});
 }
 
+
+checkautoreload = function(indiv) 
+{
+	var classes = indiv.data("ajaxreloadtargets"); //assetresults, projectpage, sidebaralbums
+	if(classes) 
+	{
+		var splitnames = classes.split(",");
+		$.each(splitnames,function(index,classname)
+		{
+			$("." + classname).each(function(index,div)
+			{
+		  	 	autoreload($(div));
+			});
+		});
+	}
+};
 autoreload = function(div, callback) {
 	var url = div.data("url");
 	if(url != undefined) {
