@@ -21,7 +21,9 @@
 	#set ( $topmoduleid = $context.getRequestParameter("topmoduleid") )
 #end
 
-
+#if(!$dialogresults)
+	#set($dialogresults = $context.getRequestParameter("dialogresults"))
+#end
 
 #set($targetdiv = $maintargetdiv) 
 
@@ -35,11 +37,7 @@
 	#end
 	
 	#if( $hits.getSearchQuery().hasMainInput())
-	
 			#if($moduleid=="asset")
-				#if(!$dialogresults)
-					#set($dialogresults = $context.getRequestParameter("dialogresults"))
-				#end
 				#if($dialogresults)
 					#set($href = "$siteroot$apphome/views/modules/$moduleid/dialogindex.html?hitssessionid=$!hits.getSessionId()&topmoduleid=$!topmoduleid&rootcategory=$!rootcategory&categoryid=$!{categoryid}&removeterm=description")
 				#else
@@ -56,15 +54,15 @@
 			data-targetdiv="$!targetdiv" 
 			data-oemaxlevel="$oemaxlevel"
 			data-updateurl="false" ><i class="fas fa-times"></i>&nbsp;$hits.getSearchQuery().getMainInput()</a>
+			
+			#set($filtercount = $filtercount+1)
 	#end
 	
 	#foreach( $term in $terms)
 		
 			#if($moduleid=="asset")
 				
-				#if(!$dialogresults)
-					#set($dialogresults = $context.getRequestParameter("dialogresults"))
-				#end
+				
 				#if($dialogresults)
 					#set($href = "$siteroot$apphome/views/modules/$moduleid/dialogindex.html?hitssessionid=$!hits.getSessionId()&topmoduleid=$!topmoduleid&rootcategory=$!rootcategory&categoryid=$!{categoryid}&removeterm=$!term.getId()")
 				#else
@@ -127,6 +125,29 @@
 			#end</a>
 			#set($filtercount = $filtercount+1)
 	#end
+	
+	
+	
+	#if( $filtercount )
+		#if($moduleid=="asset")
+				#if($dialogresults)
+					#set($href = "$siteroot$apphome/views/modules/$moduleid/dialogindex.html?hitssessionid=$!hits.getSessionId()&topmoduleid=$!topmoduleid&rootcategory=$!rootcategory&categoryid=$!{categoryid}&${moduleid}clearresults=true&${moduleid}clearselection=true&clearselection=true&clearfilters=true")
+				#else
+					#set($href = "$siteroot$apphome/views/modules/$moduleid/index.html?hitssessionid=$!hits.getSessionId()&topmoduleid=$!topmoduleid&rootcategory=$!rootcategory&categoryid=$!{categoryid}&${moduleid}clearresults=true&${moduleid}clearselection=true&clearselection=true&clearfilters=true")		
+				#end
+				#set($oemaxlevel = "4")
+			#else
+				#set($href = "$siteroot$apphome/views/modules/$moduleid/index.html?hitssessionid=$!hits.getSessionId()&${moduleid}clearresults=true&${moduleid}clearselection=true&clearselection=true&clearfilters=true")
+				#set($oemaxlevel = "4")
+			#end
+	<a class="clearallfilters ajax  btn-clearall " 
+		href="$href"
+		data-targetdiv="applicationcontent" 
+		data-oemaxlevel="$oemaxlevel" 
+		data-updateurl="true" 
+		data-onsuccess="closetypeaheadmodal"
+		title="[[Clear All Filters]]"><i class="fas fa-times"></i> [[Clear Filters]]</a>
+#end
 
 
 
