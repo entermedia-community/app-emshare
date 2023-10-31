@@ -31,6 +31,8 @@
 	#set($targetdivsearch = "$!{moduleid}resultscontainerembed")
 #end
 
+#set($rootcategory = $context.getRequestParameter("rootcategory"))
+
 
 <div id="moduleadvfilterpanel" class="advfilterpanel" >
 
@@ -52,6 +54,61 @@
 		#if(!$topmoduleid)
 			#set ( $topmoduleid = $context.getRequestParameter("topmoduleid") )
 		#end
+		
+		
+		##EDITING
+		
+		#if ($edit == "true")
+			##TODO: Pass this view name in
+			#set ($alldetails = $searcher.getUserPropertyDetails() )
+			<div class="advancedsearcheditform">
+			<strong style="margin-bottom:10px;display:block">[[Add Filters]]:</strong>
+			<form id="searchaddfield" 
+				class="ajaxform" 
+				data-targetdiv="moduleadvfilterpanel" 
+				action="$siteroot$apphome/views/modules/$moduleid/components/filters/addfield.html" 
+				method="post">
+				<input type="hidden" name="dialogfilters" value="true"/>
+				<input type="hidden" name="oemaxlevel" value="1"/>
+				<input type="hidden" name="editadvsearch" value="true"/>
+				<input type="hidden" name="view" value="$view"/>
+				<input type="hidden" name="catalogid" value="$searcher.getCatalogId()"/>
+				<input type="hidden" name="collectionid" value="$!collectionid"/>
+				<input type="hidden" name="categoryid" value="$!categoryid"/>
+				<input type="hidden" name="moduleid" value="$!moduleid"/>
+				#if($topmoduleid)
+					<input name="topmoduleid" type="hidden" value="$topmoduleid" />
+					<input name="dialogresults" type="hidden" value="true" />
+				#end
+				<input type="hidden" name="searchtype" value="$searcher.getSearchType()"/>
+				<div class="form-group">
+				<select  class="form-control"  name="field" onChange="jQuery('#searchaddfield').submit();">
+					
+					#foreach( $detail in $alldetails)
+						#if($detail.isLeaf())
+						<option value="$detail.id" style="margin-left: 10px;">$detail.getText($context)</option>
+						#else							
+							<optgroup label="$detail.title"></optgroup>
+							#foreach($child in $detail)
+							<option value="$child.id" style="margin-left: 10px;">$child.getText($context)</option>
+							#end
+						#end
+					#end	
+				</select>
+				</div>
+				
+					
+				<div class="form-group">
+					###set($doneUrl = "$siteroot$componenthome/filters/index.html?oemaxlevel=1&collectionid=$!collectionid&moduleid=$!moduleid")
+					
+					#set($doneUrl = "$siteroot$componenthome/filters/dialog.html")
+					<a class="btn btn-sm btn-secondary ajax"  
+						data-targetdiv="moduleadvfilterpanel" 
+						data-oemaxlevel="1" href="$doneUrl">[[Apply]]</a>
+				</div>	
+			</form>
+			</div>
+		#end	
 	
 	<form  	name="filterform" 
 			id="filterform" 
@@ -77,7 +134,7 @@
 		#if($categoryid)
 			<input name="categoryid" type="hidden" value="$categoryid" />
 		#end
-		#set($rootcategory = $context.getRequestParameter("rootcategory"))
+		
 		#if($rootcategory)
 			<input name="rootcategory" type="hidden" value="$rootcategory" />
 		#end
@@ -95,6 +152,9 @@
 		#end
 		
 		$context.putPageValue("idprefix","entitysearch")
+	
+	
+		#if( !$edit )
 	
 		## Open search?
 		#if( $hits.getSearchQuery().hasMainInput())
@@ -165,7 +225,7 @@
 			</div>
 		</div>
 		</div>
-		
+		#end
 		
 		#if( !$edit )
 		<div class="filters-edit-icon float-right">
@@ -177,55 +237,7 @@
 		#end
 		
 		
-		##EDITING
 		
-		#if ($edit == "true")
-			##TODO: Pass this view name in
-			#set ($alldetails = $searcher.getUserPropertyDetails() )
-			<div class="advancedsearcheditform">
-			<strong style="margin-bottom:10px;display:block">[[Add Filters]]:</strong>
-			<form id="searchaddfield" 
-				class="ajaxform" 
-				data-targetdiv="moduleadvfilterpanel" 
-				action="$siteroot$apphome/views/modules/$moduleid/components/filters/addfield.html" 
-				method="post">
-				<input type="hidden" name="dialogfilters" value="true"/>
-				<input type="hidden" name="oemaxlevel" value="1"/>
-				<input type="hidden" name="editadvsearch" value="true"/>
-				<input type="hidden" name="view" value="$view"/>
-				<input type="hidden" name="catalogid" value="$searcher.getCatalogId()"/>
-				<input type="hidden" name="collectionid" value="$!collectionid"/>
-				<input type="hidden" name="categoryid" value="$!categoryid"/>
-				<input type="hidden" name="moduleid" value="$!moduleid"/>
-				<input type="hidden" name="searchtype" value="$searcher.getSearchType()"/>
-				<div class="form-group">
-				<select  class="form-control"  name="field" onChange="jQuery('#searchaddfield').submit();">
-					
-					#foreach( $detail in $alldetails)
-						#if($detail.isLeaf())
-						<option value="$detail.id" style="margin-left: 10px;">$detail.getText($context)</option>
-						#else							
-							<optgroup label="$detail.title"></optgroup>
-							#foreach($child in $detail)
-							<option value="$child.id" style="margin-left: 10px;">$child.getText($context)</option>
-							#end
-						#end
-					#end	
-				</select>
-				</div>
-				
-					
-				<div class="form-group">
-					###set($doneUrl = "$siteroot$componenthome/filters/index.html?oemaxlevel=1&collectionid=$!collectionid&moduleid=$!moduleid")
-					
-					#set($doneUrl = "$siteroot$componenthome/filters/dialog.html")
-					<a class="btn btn-sm btn-secondary ajax"  
-						data-targetdiv="moduleadvfilterpanel" 
-						data-oemaxlevel="1" href="$doneUrl">[[Apply]]</a>
-				</div>	
-			</form>
-			</div>
-		#end	
 	
 		
 		<div style="padding-top:15px;">
