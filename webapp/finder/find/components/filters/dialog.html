@@ -115,15 +115,21 @@
 			class="ajaxform autosubmitform filterform"
 			method="POST" 
 			data-targetdiv="$targetdivsearch" 
-			data-oemaxlevel="1" 
 			data-closedialog="true"
 			data-updateurl="false"
 			#if($topmoduleid)
 			action="$siteroot$apphome/views/modules/$moduleid/dialogindex.html"
 			#else
-			action="$siteroot$apphome/views/modules/$moduleid/index.html"
+				#if($moduleid== "asset" && $categoryid)
+					action="$siteroot$apphome/views/modules/$moduleid/showcategory.html"
+					data-oemaxlevel="2"
+				#else
+					action="$siteroot$apphome/views/modules/$moduleid/index.html"
+					 
+				#end
 			#end 
 	>
+		##<input name="oemaxlevel" type="hidden" value="1" />
 		
 		<input name="hitssessionid" type="hidden" value="$!hits.getSessionId()" />
 		<input type="hidden" name="$!{moduleid}endusersearch" value="true" />
@@ -132,6 +138,7 @@
 			<input name="dialogresults" type="hidden" value="true" />
 		#end
 		#if($categoryid)
+		
 			<input name="categoryid" type="hidden" value="$categoryid" />
 		#end
 		

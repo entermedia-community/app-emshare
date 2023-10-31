@@ -38,8 +38,8 @@ jQuery(document).ready(function(url,params)
 			
 			var oemaxlevel = select.data('oemaxlevel'); //could be custom
 			
-			if(!oemaxlevel) {
-				oemaxlevel = 1;
+			if (oemaxlevel) {
+				options.oemaxlevel = oemaxlevel;
 			}
 
 			if(moduleid=='asset') {
