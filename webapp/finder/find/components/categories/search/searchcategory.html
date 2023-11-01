@@ -56,6 +56,16 @@ $context.putPageValue("targetdiv",$targetdiv)
 
 #set( $assetid = $context.getRequestParameter("assetid") )
 
+
+#set($canupload = false)
+#if($canviewupload || $canviewcategoryupload)
+	##if($topmodule.getBoolean("enableuploading") && $permissions.can("asset", "upload_files"))
+		#set($canupload = true)
+	##end
+#end
+$context.putPageValue("canupload", $canupload)
+		
+		
 <div class="searchcategories-tree">
     <div class="assetdropcategory assetdropcategorymove searchcategories-treecontainer categorytreescrolllable" >
         #set( $link = "$apphome/components/emtree/tree.html")

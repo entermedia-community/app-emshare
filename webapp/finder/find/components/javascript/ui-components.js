@@ -2196,10 +2196,13 @@ uiload = function() {
         
 		var url = theinput.data("typeaheadurl");
 				
-		
+		var q = '';
 	
 		theinput.on("keyup change" , function(e) {
-			var q = theinput.val();
+			if (theinput.val() == q ) {
+				return;
+			}
+			q = theinput.val();
 			if(!q) {
 				searchmodaldialog.hide();
 				return;
@@ -2260,6 +2263,12 @@ uiload = function() {
 			searchmodaldialog.hide();
 			typeaheadloading.hide();
 		});
+		$(document).on("click", function (event) {
+		    if ($(event.target).closest(searchmodaldialog).length === 0) {
+		    	searchmodaldialog.hide();
+				typeaheadloading.hide();
+		    }
+		  });
 	});
 	
 	
