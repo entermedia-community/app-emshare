@@ -15,22 +15,20 @@
 #end
 #if($tabtype == "submodulehome")
 	#set($tabid = "tab_${viewid}")
-	#set($viewsearcher = $searcherManager.getSearcher($catalogid, "view"))
-	##set($viewdata = $viewsearcher.searchById($viewid))
-	#set($name = $viewdata.getName($context))
+	#set($tabname = $viewdata.getName($context))
 #elseif($tabtype=="media")
 	#set($tabid = "tab_media")
-	#set($name = $tabmodule.getName($context))
+	#set($tabname = $tabmodule.getName($context))
 #else
 	#if($id.startsWith("multiedit"))
-		#set($name = "[[Multi Edit]] $!entity.getSelectedResults().size() [[Items]]")
+		#set($tabname = "[[Multi Edit]] $!entity.getSelectedResults().size() [[Items]]")
 		#set($targetentitytabid = "entity-tab-multiedit")
 	#else
 		#if( !$entity)
 			#set( $entity  = $mediaarchive.getData($searchtype, $id) )
 		#end
 
-		#set($name = $viewdata.getName($context))
+		#set($tabname = $viewdata.getName($context))
 
 		#set($targetentitytabid = "entity-tab-#eid($!{id})")
 		#set($tabid = "tab_$viewid")
@@ -62,7 +60,7 @@
 			aria-controls="$targetentitytabid" 
 			data-entityid="$!entity.getId()"
 		#end 
-		title="#esc($name)">
+		title="#esc($tabname)">
 		
 	   	#if (!$moduleicon && $tabmodule.moduleicon)
 	   		#set($moduleicon = $tabmodule.moduleicon)
@@ -72,11 +70,11 @@
 	   	#end
 	   	<img src="$siteroot$apphome/theme/images/entity/${moduleicon}.svg" style="height: 22px;"> 
 		#if($tabtype == "submodulehome")
-			#text($name)
+			#text($tabname)
 		#elseif($tabtype=="media") 
 			 #text($tabmodule)
 		#else
-			#text($name)
+			#text($tabname)
 		#end
 		</a>
 		
