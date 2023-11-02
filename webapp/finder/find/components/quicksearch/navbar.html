@@ -11,11 +11,10 @@
 <div class="nav-form nav-quicksearch">
 ##TODO  Remember last selected module of profile
 
-#if(!$hits)
-#set( $hits = $modulehits)
-$context.putPageValue("hits",$hits)
+#ifnull($hits)
+	#set($hits = $modulehits)
 #end
-		#set( $input = $hits.getInput("description") )
+		#set( $input = $hits.getSearchQuery().getMainInput())
 		#if (!$input)
 			#set( $input = "")
 		#end
