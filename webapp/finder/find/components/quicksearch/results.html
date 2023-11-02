@@ -31,7 +31,7 @@
 </ul>
 #end
 
-
+#set( $val = $hits.getInput("description"))
 #set($filter = $modulehits.findFilterValue("entitysourcetype") )
 $context.putPageValue("filter", $filter)
 
@@ -47,10 +47,10 @@ $context.putPageValue("filter", $filter)
    		#set($moduleicon = $module.moduleicon)
    	#end
    	
-   	#set( $val = $hits.getInput("description"))
+   	
    	
 	#set($entityurl = "$!siteroot$apphome/views/modules/$!{module.id}/index.html?$!{module.id}page=1&field=description&operation=freeform&description.value=$val")
-	<div style="margin-bottom: 10px;">
+	<div style="margin-bottom: 20px;">
 	<a href="$entityurl" 
 		class="ajax qsresultsEntity" 
 		style=""
@@ -120,8 +120,8 @@ $context.putPageValue("filter", $filter)
 	<div class="emgridflex">  	
 		<div id="galleryimg-${rendertype}" 
 				class='emgrid #if($section != "favorites")emgridlimited#end entitiescontainer' 
-				style="width:800px"
-				data-fixedwidth="125" 
+				style="width:1000px"
+				data-fixedwidth="180" 
 				data-cellpadding="10"
 				data-entityrenderurl="$!{siteroot}$apphome/views/modules/${module.id}/components/gridsample/gridcell.html"
 				data-rendertype="$rendertype">
@@ -183,14 +183,18 @@ $context.putPageValue("filter", $filter)
 	#end
 	
 	<div class="masonry-grid" 
-		data-maxheight="100" 
+		data-maxheight="110" 
 		data-cellpadding="4"
 		data-makebox="true"
 		data-visibleposition="$hits.getStartingPosition()"
 	>
+	#set($count = 0)
 	#foreach( $hit in $hits.getPageOfHits() )
+		#if($count<30)
 		$context.putPageValue("hit", $hit)
 	    $pages.include("$apphome/views/modules/asset/components/gridsample/types/media.html", $context)
+	    #set($count = $count +1)
+	    #end
 	#end
 	</div>
 #end
