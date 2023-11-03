@@ -2120,22 +2120,23 @@ uiload = function() {
 	var lasttypeahead;
 	var lastsearch;
 	var searchmodaldialog;
+	var mainsearcheinput;
 	
 	lQuery(".mainsearch").livequery(function() {
 	
-		var theinput = $(this);
-		var dropdownParent = theinput.data('dropdownparent');
+		mainsearcheinput = $(this);
+		var dropdownParent = mainsearcheinput.data('dropdownparent');
 		if (dropdownParent && $("#" + dropdownParent).length) {
 			dropdownParent = $("#" + dropdownParent);
 		}
 		else {
 			dropdownParent = $(this).parent();
 		}
-		var parent = theinput.closest("#main-media-container");
+		var parent = mainsearcheinput.closest("#main-media-container");
 		if (parent.length) {
 			dropdownParent = parent;
 		} 
-		var parent = theinput.parents(".modal-content");
+		var parent = mainsearcheinput.parents(".modal-content");
 		if (parent.length) {
 			dropdownParent = parent;
 		}
@@ -2144,27 +2145,22 @@ uiload = function() {
 		typeaheadloading.html('<i class="fas fa-spinner fa-spin"></i>');
 		typeaheadloading.hide();
 		
-		var hidescrolling = theinput.data("hidescrolling");
+		var hidescrolling = mainsearcheinput.data("hidescrolling");
 
-		var id = theinput.data("dialogid");
+		var id = mainsearcheinput.data("dialogid");
 		if (!id) {
 			id = "typeahead";	
 		}
 		
-		searchmodaldialog = $("#" + id);
-		if (searchmodaldialog.length == 0) {
-			$("#header").append(
-					'<div class="typeaheadmodal" tabindex="-1" id="' + id
-							+ '" style="display:none" ></div>');
-			searchmodaldialog = $("#" + id);
-		}
+		searchmodaldialog = getmodalsearchdialog(id);
+		
 		
 		var applicationcontentwidth = $("#applicationmaincontent").width();
 		if(!applicationcontentwidth) {
 			applicationcontentwidth = $("#header").width();
 		}
 		searchmodaldialog.css("width", (applicationcontentwidth - 100) + "px");
-		var topposition =  theinput.position().top + 70;
+		var topposition =  mainsearcheinput.position().top + 70;
 		searchmodaldialog.css("top", topposition+"px");
 		searchmodaldialog.css("left", "40px");
 		
@@ -2173,43 +2169,47 @@ uiload = function() {
 			searchmodaldialog.css("height", (wh - 90) + "px");
 		}
 
-		var options = theinput.data();
-		var searchurltargetdiv = theinput.data("searchurltargetdiv");
-		var typeaheadtargetdiv = theinput.data("typeaheadtargetdiv");
+		var options = mainsearcheinput.data();
+		var searchurltargetdiv = mainsearcheinput.data("searchurltargetdiv");
+		var typeaheadtargetdiv = mainsearcheinput.data("typeaheadtargetdiv");
 		
 		if(typeaheadtargetdiv == null) {
 			typeaheadtargetdiv = "applicationmaincontent"
 		}	
 		
-		var searchurlentertargetdiv = theinput.data("searchurlentertargetdiv");
+		var searchurlentertargetdiv = mainsearcheinput.data("searchurlentertargetdiv");
 	
-		var searchfield = theinput.data('searchfield');
-		var sortby = theinput.data('sortby');
-		var defaulttext = theinput.data('showdefault');
+		var searchfield = mainsearcheinput.data('searchfield');
+		var sortby = mainsearcheinput.data('sortby');
+		var defaulttext = mainsearcheinput.data('showdefault');
 		if (!defaulttext) {
 			defaulttext = "Search";
         }
-        var allowClear = theinput.data('allowclear');
+        var allowClear = mainsearcheinput.data('allowclear');
         if (allowClear == undefined)  {
             allowClear = true;
         }
         
-		var url = theinput.data("typeaheadurl");
+		var url = mainsearcheinput.data("typeaheadurl");
 				
 		var q = '';
-	
-		theinput.on("keyup change" , function(e) {
-			if (theinput.val() == q ) {
+		mainsearcheinput.on("keydown" , function(e) {
+			if (e.keyCode == 27) {
+			        searchmodaldialog.hide();
+					typeaheadloading.hide();
+			}
+		});
+		mainsearcheinput.on("keyup change" , function(e) {
+			if (mainsearcheinput.val() == q ) {
 				return;
 			}
-			q = theinput.val();
+			q = mainsearcheinput.val();
 			if(!q) {
 				searchmodaldialog.hide();
 				return;
 			}
 			
-			 if (e.keyCode == 27) {
-				 	//console.log("closing");
+			if (e.keyCode == 27) {
 			        searchmodaldialog.hide();
 					typeaheadloading.hide();
 			}
@@ -2255,8 +2255,8 @@ uiload = function() {
 		
 		lQuery('.qssuggestion').livequery("click", function() {
 			var suggestion = $(this).data("suggestion");
-				theinput.val(decodeURI(suggestion));
-				theinput.trigger("change");
+				mainsearcheinput.val(decodeURI(suggestion));
+				mainsearcheinput.trigger("change");
 		});
 		
 		lQuery('.closemainsearch').livequery("click", function() {
@@ -2269,6 +2269,51 @@ uiload = function() {
 				typeaheadloading.hide();
 		    }
 		  });
+		  lQuery('.quicksearchexpand').livequery("click", function(e) {
+			  e.preventDefault();
+			  e.stopPropagation();
+			  if(searchmodaldialog.length) {
+				var q = mainsearcheinput.val();
+				var terms = '';
+				if(q) {
+					terms = "field=description&operation=contains"+ '&description.value='+encodeURI(q);
+				}
+				var url = mainsearcheinput.data("typeaheadurl");
+				
+				var content = $.ajax(
+						{ 
+							url: url, 
+							async: true, 
+							type: 'GET',
+							data: terms,
+							timeout: 1000,
+							success: function(data)	{
+								if(data) {
+									searchmodaldialog.html(data);
+									searchmodaldialog.show();
+									$("#mainsearchvalue").focus();
+									gridResize();
+								}	
+								typeaheadloading.hide();
+							},
+							complete: function(data) {
+								typeaheadloading.hide();
+							}
+						});
+					
+				}
+		});
+		 
+		function getmodalsearchdialog() {
+			searchmodaldialog = $("#" + id);
+			if (searchmodaldialog.length == 0) {
+				$("#header").append(
+						'<div class="typeaheadmodal" tabindex="-1" id="' + id
+								+ '" style="display:none" ></div>');
+				searchmodaldialog = $("#" + id);
+			}
+			return searchmodaldialog;
+		}
 	});
 	
 	
@@ -4011,12 +4056,13 @@ uiload = function() {
         	if (ismodal.length) {
         		// Close modal only
         		closeemdialog(ismodal);
+        		e.stopPropagation();
+       			e.preventDefault();
         	}
         	else{
         		hideOverlayDiv(getOverlay());
         	}
-       		e.stopPropagation();
-       		e.preventDefault();
+       		
 			return;
         break;
         

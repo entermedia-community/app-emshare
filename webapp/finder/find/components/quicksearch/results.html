@@ -19,6 +19,34 @@
 </div>
 
 
+#if(!$livesuggestions.size() && !$organizedModules)
+	<div class="startsearch">[[Start typing to search]]</div>
+	<div class="quicksearchmodules">
+  	#foreach ( $amodule in $userprofile.getEntities() )
+  		#set($amoduleid = $amodule.getId())
+	  	#if($amoduleid!="modulesearch")
+	  		#set($entityrendertype = "entity")
+			#if ($amodule.modulerendertype)
+				#set($entityrendertype = $amodule.modulerendertype)
+			#end
+			#set($moduleicon = "entity")
+		   	#if ($module.moduleicon)
+		   		#set($moduleicon = $module.moduleicon)
+		   	#end
+	 		#set($entityurl = "$!siteroot$apphome/views/modules/$!{amodule.id}/index.html")
+	 		<div class="qsmodule">
+	    	<a class=""
+	    		title="[[View]] #text($amodule)" 
+	    		href="$entityurl" >
+	    		<div></fiv><img src="$siteroot$apphome/theme/images/entity/${moduleicon}.svg"style="height: 50px; max-width:50px;" /></div>
+	    		#text($amodule)</a>
+	    	</div>
+	    #end
+    #end
+    </div>
+#end
+
+
 #if($livesuggestions.size())
 <ul class="qsrecent">
 #foreach ($suggestion in $livesuggestions)

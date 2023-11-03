@@ -573,12 +573,15 @@ function getPosition(e) {
 	    switch(e.which) {
 	        case 27: // esc
 	        	var $contextMenu = $(".treecontext");
-	         	$contextMenu.hide();
-	         	$(".categorydroparea").removeClass('selected');
+	        	if($contextMenu.length) {
+		         	$contextMenu.hide();
+		         	$(".categorydroparea").removeClass('selected');
+		         	e.preventDefault();
+	         	}
 	        break;
 	        default: return; // exit this handler for other keys
 	    }
-	    e.preventDefault();
+	    
   });
 
 	//end document ready
