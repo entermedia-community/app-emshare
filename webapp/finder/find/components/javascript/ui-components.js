@@ -178,8 +178,6 @@ runajaxonthis = function(inlink,e)
 					//console.log("Saving state ", updateurl);
 					history.pushState($("#application").html(), null, nextpage);
 				}
-				
-				//window.addEventListener("hashchange", function(e) { reload using ajax
 			}
 
 		
@@ -217,8 +215,14 @@ runajaxonthis = function(inlink,e)
                 	    fnc(inlink);  //execute it
                 	}
                 }
+                
                 checkautoreload(inlink);
-
+                
+                //actions after autoreload?
+				var message = inlink.data("alertmessage");
+				if(message) {
+					$("#resultsmessages").append('<div class="alert alert-success fader alert-save">'+message+'</div>');
+				}
 				
 			},
 			type: "POST",
@@ -260,40 +264,6 @@ runajaxonthis = function(inlink,e)
 		
 		
 	}	
-	else
-	{
-		/*
-		//add oemaxlevel as data
-		var loaddiv = inlink.data("targetdivinner");
-		if( !loaddiv )
-		{
-			loaddiv = inlink.attr("targetdivinner");
-		}
-		loaddiv = loaddiv.replace(/\//g, "\\/");
-		//$("#"+loaddiv).load(nextpage);
-		jQuery.get(nextpage, options, function(data) 
-				{
-					var cell;
-					
-					if(useparent && useparent == "true")
-					{
-						cell = $("#" + loaddiv, window.parent.document);
-					}
-					else
-					{
-						cell = findclosest(inlink,"#" + loaddiv);
-					}
-					cell.html(data);
-					$(window).trigger( "resize" );
-				}).always(function()
-						{
-					$(".ajaxprogress").hide();
-
-							//inlink.css("enabled",true);
-							inlink.removeAttr('disabled');
-						});		
-		*/
-	}
 	
 	inlink.css( "cursor","");
 	$("body").css( "cursor","");
@@ -309,11 +279,6 @@ runajax = function(e)
 
 
 uiload = function() {
-	
-	// https://github.com/select2/select2/issues/600
-	//$.fn.select2.defaults.set("theme", "bootstrap4");
-	//$.fn.modal.Constructor.prototype._enforceFocus = function() {
-	//}; // Select2 on Modals
 	
 	var app = jQuery("#application");
 	var apphome = app.data("siteroot") + app.data("apphome");
@@ -2316,175 +2281,6 @@ uiload = function() {
 		}
 	});
 	
-	
-	
-	
-/*
-	
-	lQuery(".typeaheaddropdown").livequery(function() {  //TODO: Move to results.js
-		
-		var input = $(this);
-		
-		var typeaheadloading = $('.quicksearchloading');
-		typeaheadloading.html('<i class="fas fa-spinner fa-spin"></i>');
-		typeaheadloading.hide();
-		
-		var hidescrolling = input.data("hidescrolling");
-
-		var id = input.data("dialogid");
-		if (!id) {
-			id = "typeaheadX";	
-		}
-		
-		var modaldialogth = $("#" + id);
-		if (modaldialogth.length == 0) {
-			$("#header").append(
-					'<div class="typeaheadmodal" tabindex="-1" id="' + id
-							+ '" style="display:none" ></div>');
-			modaldialogth = $("#" + id);
-		}
-		
-		var applicationcontentwidth = $("#applicationmaincontent").width();
-		if(!applicationcontentwidth) {
-			applicationcontentwidth = $("#header").width();
-		}
-		modaldialogth.css("width", (applicationcontentwidth - 100) + "px");
-		var topposition =  input.position().top + 40;
-		modaldialogth.css("top", topposition+"px");
-		modaldialogth.css("left", "40px");
-		
-		var wh = window.innerHeight;
-		if (wh) {
-			modaldialogth.css("height", (wh - 90) + "px");
-		}
-
-		var options = input.data();
-		
-		var searchurltargetdiv = input.data("searchurltargetdiv");
-			
-		var typeaheadtargetdiv = input.data("typeaheadtargetdiv");
-		
-		if(typeaheadtargetdiv == null) {
-			typeaheadtargetdiv = "applicationmaincontent"
-		}	
-		
-		var searchurlentertargetdiv = input.data("searchurlentertargetdiv");
-		
-		//var moduleid = $("#applicationcontent").data("moduleid");
-		//var searchurl = apphome + "/views/modules/" + moduleid + "/index.html";
-		//var searchurl = apphome + "/index.html";
-		//options["moduleid"] = moduleid;
-		
-		var updateurl = input.data("updateurl");
-			
-		input.on("keyup", function(e) //Keyup sets the value first 
-		{
-			var q = input.val();
-			q = q.trim();
-			options["description.value"] = q;
-			
-			typeaheadloading.show();
-
-			if( q && q.length < 2)
-			{
-				typeaheadloading.hide();
-				return;
-			}
-			if( q.endsWith(" "))
-			{
-				return;
-			}
-			var url = input.data("typeaheadurl");
-			
-			if( e.which == 27) //Tab?
-			{
-				modaldialogth.hide();
-				typeaheadloading.hide();	
-			}
-			else if(q != "" && (e.which == 8 || (e.which != 37 && e.which != 39 && e.which > 32) ) ) //Real words and backspace
-			{
-				//console.log("\"" + q + "\" type aheading on " + e.which);
-				//Typeahead
-				if( lasttypeahead )
-				{
-					lasttypeahead.abort();
-				}
-				//Typeahead ajax call
-				lasttypeahead = $.ajax(
-				{ 
-					url: url, 
-					async: true, 
-					data: options,
-					timeout: 5000,
-					success: function(data)	{
-						if(data) {
-
-							modaldialogth.html(data);
-							
-							modaldialogth.show();
-							
-						}	
-						typeaheadloading.hide();
-					}
-				});
-
-				var searching = input.data("searching");
-				if( searching == "true")
-				{
-					//console.log("already searching"  + searching);
-				}
-				var searchurl = input.data("searchurl");//apphome + "/index.html";
-
-				if (searchurl != null) {
-					console.log(q + " searching");
-					input.data("searching","true");
-					
-					if( lastsearch )
-					{
-						typeaheadloading.hide();
-						lastsearch.abort();
-					}
-					options["oemaxlevel"] = input.data("oemaxlevel");
-					//Regular Search Ajax Call
-					lastsearch = $.ajax({ url: searchurl, async: true, data: options, 
-						success: function(data) 
-						{
-							input.data("searching","false");
-							//if(data) 
-							{
-								//var q2 = input.val();
-								//if( q2 == q)
-								{
-									$("#"+searchurltargetdiv).html(data);
-									$(window).trigger("resize");
-								}	
-							}
-							
-							setTimeout(function() {
-								typeaheadloading.hide();
-							}, 1500);
-						}
-						,
-						complete:  function(data) 
-						{
-							input.data("searching","false");
-							input.css( "cursor","");
-						}
-					});
-				}
-			}
-		});
-		
-		jQuery("body").on("click", function(event){
-			modaldialogth.hide();
-			typeaheadloading.hide();
-		});
-	});
-	
-	
-*/
-
-	
 
 	lQuery(".grabfocus").livequery(function() {
 		var theinput = $(this);
@@ -4110,7 +3906,7 @@ function switchsubmodulebox(item) {
 }
 
 replaceelement = function(url, div, options, callback) {
-	var options = div.data();
+	
 	jQuery.ajax({
 		url: url, 
 		async: false, 
@@ -4141,9 +3937,10 @@ checkautoreload = function(indiv)
 		var splitnames = classes.split(",");
 		$.each(splitnames,function(index,classname)
 		{
-			$("." + classname).each(function(index,div)
+			$("." + classname).each(function(index, div)
 			{
 		  	 	autoreload($(div));
+		  	 	
 			});
 		});
 	}
