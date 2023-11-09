@@ -2160,8 +2160,7 @@ uiload = function() {
 		var q = '';
 		mainsearcheinput.on("keydown" , function(e) {
 			if (e.keyCode == 27) {
-			        searchmodaldialog.hide();
-					typeaheadloading.hide();
+			        togglemodaldialog('hide');
 			}
 		});
 		mainsearcheinput.on("keyup change" , function(e) {
@@ -2170,26 +2169,24 @@ uiload = function() {
 			}
 			q = mainsearcheinput.val();
 			if(!q) {
-				searchmodaldialog.hide();
+				togglemodaldialog('hide');
 				return;
 			}
 			
 			if (e.keyCode == 27) {
-			        searchmodaldialog.hide();
-					typeaheadloading.hide();
+				togglemodaldialog('hide');
 			}
 			else if((q != '' && e.which == undefined) || (e.which == 8 || (e.which != 37 && e.which != 39 && e.which > 32))  ) //Real words and backspace
 			{
 				
 				if( q && q.length < 2)
 				{
-					searchmodaldialog.hide();
-					typeaheadloading.hide();
+					togglemodaldialog('hide');
 					return;
 				}
 				typeaheadloading.show();
 				
-				var terms = "field=description&operation=contains"+ '&description.value='+encodeURI(q);
+				var terms = "field=description&operation=contains"+ '&description.value='+encodeURIComponent(q);
 				
 				if( lasttypeahead )
 				{
@@ -2205,7 +2202,7 @@ uiload = function() {
 					success: function(data)	{
 						if(data) {
 							searchmodaldialog.html(data);
-							searchmodaldialog.show();
+							togglemodaldialog('show');
 							gridResize();
 						}	
 						typeaheadloading.hide();
@@ -2214,6 +2211,9 @@ uiload = function() {
 						typeaheadloading.hide();
 					}
 				});
+			 }
+			 else {
+				 console.log(e.keyCode);
 			 }
 			  
 		});
@@ -2225,13 +2225,11 @@ uiload = function() {
 		});
 		
 		lQuery('.closemainsearch').livequery("click", function() {
-			searchmodaldialog.hide();
-			typeaheadloading.hide();
+			togglemodaldialog('hide');
 		});
 		$(document).on("click", function (event) {
 		    if ($(event.target).closest(searchmodaldialog).length === 0) {
-		    	searchmodaldialog.hide();
-				typeaheadloading.hide();
+		    	togglemodaldialog('hide');
 		    }
 		  });
 		  lQuery('.quicksearchexpand').livequery("click", function(e) {
@@ -2255,7 +2253,7 @@ uiload = function() {
 							success: function(data)	{
 								if(data) {
 									searchmodaldialog.html(data);
-									searchmodaldialog.show();
+									togglemodaldialog('show');
 									$("#mainsearchvalue").focus();
 									gridResize();
 								}	
@@ -2278,6 +2276,15 @@ uiload = function() {
 				searchmodaldialog = $("#" + id);
 			}
 			return searchmodaldialog;
+		}
+		
+		function togglemodaldialog(action) {
+			if(action=="show") {
+				searchmodaldialog.show();
+			}else {
+				searchmodaldialog.hide();
+				typeaheadloading.hide();
+			}
 		}
 	});
 	
