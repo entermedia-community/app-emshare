@@ -68,8 +68,9 @@
 	                <label>[[Custom Render Type]]</label>
 	            	<select name="rendertype.value" class="form-control form-control-sm">
 	            		<option value="default"></option>
-	            		<option value="table" #if($view.rendertable) selected #end>[[One to Many]]</option>
-	            		<option value="external" #if($view.rendertype == "external") selected #end>[[One to One]]</option>
+	            		#foreach( $type in $mediaarchive.getList("entitytabrendertype") )
+	            			<option value="$type.getId()" #if($type == $!view.rendertype) [[selected]] #end>$type</option>
+	            		#end
 	            	</select>
 	            
             </div>

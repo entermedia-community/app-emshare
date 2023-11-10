@@ -182,7 +182,6 @@ $context.putPageValue("topmoduleid", $moduleid)
 				  			$context.putPageValue("currenttab", $tabid)
 						#end
 						
-						####One no many (Subentities)
 						#if($targetview.rendertype=="table")
 							#set( $subentitysearchtype = $viewdata.rendertable )
 							#ifnotnull($subentitysearchtype)
@@ -198,10 +197,14 @@ $context.putPageValue("topmoduleid", $moduleid)
 								#end
 							#end
 						#else
-							####Metadata Tabs
+							####Other Tabs
+							
+							#set($tabtype= "entitytab")
+							#ifnotnull($targetview.rendertype)
+								#set($tabtype= $targetview.rendertype)
+							#end
+							
 					  		$context.putPageValue("tabmodule", $module)
-					  		
-							#set($tabtype= "metadata")
 							$context.putPageValue("tabtype", $tabtype)
 							
 							#if(!$entitytabopen)
@@ -227,7 +230,6 @@ $context.putPageValue("topmoduleid", $moduleid)
 					$pages.include("$componenthome/gridsample/preview/entitytab.html", $context)
 				#end
 				#ifnotnull($id)
-					##submodules
 					#if($enttiyviews)		
 						#foreach( $targetview in $enttiyviews)
 							#set( $viewid = $targetview.getId())
@@ -240,6 +242,7 @@ $context.putPageValue("topmoduleid", $moduleid)
 									#if($entitytabopen.equals($tabid))
 							  			$context.putPageValue("currenttab", $tabid)
 									#end
+									
 									#if($targetview.rendertype=="table")
 										#set($tabtype= "submodulehome")
 										#set( $viewdata = $viewsearcher.searchById($viewid))
@@ -250,14 +253,19 @@ $context.putPageValue("topmoduleid", $moduleid)
 											$pages.include("$subcomponenthome/gridsample/preview/entitytabsub.html", $context)
 										#end
 									#else
-										#set($tabtype= "metadata")
+										#set($tabtype= "entitytab")
+										#ifnotnull($targetview.rendertype)
+											#set($tabtype= $targetview.rendertype)
+										#end
+										
 										$context.putPageValue("tabtype", $tabtype)
+										
 										#if(!$entitytabopen)
 											#set($entitytabopen = $tabid)
 							  				$context.putPageValue("currenttab", $tabid)
 										#end
 										
-										$pages.include("$componenthome/gridsample/preview/entitytab.html", $context)
+										$pages.include("$componenthome/gridsample/preview/${tabtype}.html", $context)
 									#end
 								
 						#end
