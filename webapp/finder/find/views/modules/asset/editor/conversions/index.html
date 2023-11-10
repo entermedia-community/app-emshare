@@ -45,26 +45,42 @@
 	    #end
 	</div>
 
-#if($candownload)	
+
 <div style="margin:10px 0; text-align: center;">
-	#if( $desktop )
-       	<a href="#" class="emdesktopdownload btn btn-dark" data-assetid="$asset.id" title="[[Download]] #text($!title)">
-       	<i class="fas fa-download"> </i> [[Download Original]]
-       	</a>
-    #else
-		#set($dlink = $mediaarchive.asLinkToOriginal($asset))
-		#ifnotnull($dlink)
-			#set($dlink = "$siteroot/$mediadbappid/services/module/asset/downloads/originals/$dlink?assetid=$!asset.getId()")
-			#if($collectionid)
-				#set($dlink = "$dlink&collectionid=$!{collectionid}")
-			#end
-	       	<a href="$!dlink" class="btn  btn-dark" data-assetid="$asset.id" title="[[Download]] $!title">
-	       	<i class="fas fa-download"></i> [[Download Original]]
+	#if($candownload)	
+		#if( $desktop )
+	       	<a href="#" class="emdesktopdownload btn btn-dark" data-assetid="$asset.id" title="[[Download]] #text($!title)">
+	       	<i class="fas fa-download"> </i> [[Download Original]]
 	       	</a>
-       	#end
-   	#end
+	    #else
+			#set($dlink = $mediaarchive.asLinkToOriginal($asset))
+			#ifnotnull($dlink)
+				#set($dlink = "$siteroot/$mediadbappid/services/module/asset/downloads/originals/$dlink?assetid=$!asset.getId()")
+				#if($collectionid)
+					#set($dlink = "$dlink&collectionid=$!{collectionid}")
+				#end
+		       	<a href="$!dlink" class="btn  btn-dark" data-assetid="$asset.id" title="[[Download]] $!title">
+		       	<i class="fas fa-download"></i> [[Download Original]]
+		       	</a>
+	       	#end
+	   	#end
+	#end   	
+   	#if($caneditasset)
+   	<div style="padding:10px 0;"><a  href="$applink/views/modules/asset/editor/conversions/upload.html"
+   	 	class="emdialog btn btn-dark"
+   		data-width="600" data-height="300" data-hidefooter="true" 
+   		data-assetid="$asset.id"
+   		data-presetid="0"
+   		title="[[Replace]] #text($!title)">
+       	<i class="fas fa-upload"> </i> [[Replace Original]]
+       	</a>
+       	</div>
+	#end
 </div>
-#end
+
+
+
+	
 
 #if($caneditasset && $rendertype=="image")
 	<div style="padding:10px 0 0; text-align: center;">
