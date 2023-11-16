@@ -98,7 +98,7 @@
 				#ifnull($dialogtreestatus)
 				#set($dialogtreestatus = $userprofile.get("dialogtreestatus"))
 				#end
-				#if($dialogtreestatus == "close")
+				#if(!$hidedialogtree && $dialogtreestatus == "close")
 				<li>
 				<a href="" 
 						class="toggledialogtree"
@@ -131,7 +131,6 @@
 			#end
 			
 			#if ($resultview != "map")
-			
 				#if($searchtype=="librarycollection" && $librarycol )
 				<li class=" dropdown">
 				<a href="#" class="dropdown-toggle dropdown-noarrow" data-toggle="dropdown" data-bs-toggle="dropdown" title="[[Album Actions]]">
@@ -218,7 +217,6 @@
 			#if($desktop && $user && ($candownload || $canconvert || $candownloadfpo ) )
 				$pages.include("$componenthome/desktop/menu.html?collectionid=$librarycol.getId()",$context)
 			#end
-			
 
 		#if($dialogresults)
 			#if($topmoduleid != "favorites")
