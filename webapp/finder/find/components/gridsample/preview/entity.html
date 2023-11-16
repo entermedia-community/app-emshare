@@ -169,7 +169,7 @@ $context.putPageValue("topmoduleid", $moduleid)
 				$context.putPageValue("currenttab", $entitytabopen)
 				$pages.include("$componenthome/gridsample/preview/entitytabmenu.html", $context)
 			#end
-			#ifnotnull($id) 
+			#ifnotnull($id)  
 				#if($enttiyviews)		
 				
 					#foreach( $targetview in $enttiyviews)
@@ -203,6 +203,10 @@ $context.putPageValue("topmoduleid", $moduleid)
 							#set($tabtype= "entitytab")
 							#ifnotnull($targetview.rendertype)
 								#set($tabtype= $targetview.rendertype)
+							#end
+							
+							#if($tabtype=="default")
+								#set($tabtype= "entitytab")
 							#end
 							
 					  		$context.putPageValue("tabmodule", $module)
@@ -257,6 +261,9 @@ $context.putPageValue("topmoduleid", $moduleid)
 										#set($tabtype= "entitytab")
 										#ifnotnull($targetview.rendertype)
 											#set($tabtype= $targetview.rendertype)
+										#end
+										#if($tabtype=="default")
+											#set($tabtype= "entitytab")
 										#end
 										
 										$context.putPageValue("tabtype", $tabtype)
