@@ -1,0 +1,101 @@
+#set($hits = $entityassethits)
+$context.putPageValue("hits", $hits)
+
+#set($module = $mediaarchive.getCachedData("module", "asset"))
+#set($moduleid = $module.getId())
+
+$context.putPageValue("module", $module)
+#set($componenthome = "$apphome/views/modules/asset/components")
+$context.putPageValue("componenthome", $componenthome)
+
+#if( !$category)
+	#set($categoryid = $context.getRequestParameter("categoryid"))
+	#if(!$categoryid)
+		#set($categoryid = $context.getRequestParameter("rootcategory"))
+	#end
+	#if($categoryid)
+		#set($category = $mediaarchive.getCachedData("category", $categoryid))
+	#end
+#end
+#if( !$categoryid && $category)
+	#set( $categoryid= $category.getId())
+#end
+$context.putPageValue("category", $category)
+$context.putPageValue("categoryid", $categoryid)
+#if( !$librarycol && $category )
+	#set($rootcategories = $category.getParentCategories()) 
+	###set( $librarycol = $mediaarchive.query("librarycollection").orgroup("rootcategory", $rootcategories).searchOne() )
+#end
+#set($rootcategory = $context.getRequestParameter("rootcategory"))
+#if(!$rootcategory)
+	#set( $rootcategory = $categoryid)
+#end
+
+#if(!$topmoduleid)
+	#set ( $topmoduleid = $context.getRequestParameter("topmoduleid") )
+#end
+#ifnotnull($topmoduleid)
+	#set($topmodule = $mediaarchive.getCachedData("module", $topmoduleid))
+#end
+#ifnull($topmodule)
+	#set($topmodule = $mediaarchive.getCachedData("module", $parentsearchtype))
+	
+#end
+$context.putPageValue("topmodule", $topmodule)
+$context.putPageValue("topmoduleid", $topmoduleid)
+
+#set($resultview = $userprofile.get("assetresultview"))
+
+
+#set($maintargetdiv = "dialogassetresultscontainer")
+$context.putPageValue("maintargetdiv", $maintargetdiv)
+
+$context.putPageValue("dialogresults", true)
+
+<div id="$maintargetdiv"
+	class="assetresults h-100 resultsdiv" 
+	data-moduleid="asset"
+	data-resultview="$!resultview"
+	data-url="$apphome/views/modules/asset/dialogindex.html"
+	data-categoryid="$!categoryid"
+	data-nodeID="$!categoryid"
+	
+	data-dialogresults="true"
+	data-hitssessionid="$!hits.getSessionId()"
+	data-componenthome = "$!componenthome"
+	data-searchhome="$!home$!componenthome/results"
+	data-targetdiv="$maintargetdiv"
+	data-topmoduleid="$!topmoduleid"
+	data-rootcategory="$!rootcategory"
+	data-oemaxlevel="1"
+	>
+	
+	<div class="emgrid-module emgrid-box emgrid-module-asset h-100">
+		
+		#set( $targetdivmedia = "dialogmediaentity")
+		$context.putPageValue("targetdivmedia", $targetdivmedia)
+		
+		#ifnull($dialogtreestatus)
+			#set($dialogtreestatus = "close")
+		#end
+		$context.putPageValue("dialogtreestatus", $dialogtreestatus)
+		$context.putPageValue("hidedialogtree", true)
+		
+		<div class="embedmediacontainer">
+		
+		
+		<div class="embedmediacol embedmediacol-results" id="$!{targetdivmedia}" >
+			#set( $addednew = $context.getRequestParameter("addednew"))
+			#if($addednew && $canupload)
+				$pages.include("$apphome/views/modules/asset/add/entityaddmedia.html?categoryid=$rootcategory", $context)
+			#else
+				
+				$pages.include("$componenthome/results/index.html", $context)
+			#end
+		</div>
+		</div>
+		
+	</div>
+
+
+</div>
