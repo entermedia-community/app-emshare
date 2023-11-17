@@ -49,12 +49,18 @@
 #end
 
 #if($permissions.can($listid , "create"))
-	#set($addentitylink = "$!siteroot$applink/views/modules/${listid}/components/gridsample/preview/${rendertype}.html?edit=true&addnew=true")
-	<a class="btn btn-xs btn-secondary emdialog entity-dialog"
-	data-redirectto="$!currententiycontainer"  
-	style="margin-top:5px;"
-	href="$addentitylink" 
-	title="[[Add]] #text($detail)"><i class="fas fa-plus"></i> #text($detail)</a>
+		##	#set($addentitylink = "$!siteroot$applink/views/modules/${listid}/components/gridsample/preview/${rendertype}.html?edit=true&addnew=true")
+		##	<a class="btn btn-xs btn-secondary emdialog entity-dialog"
+		##	data-redirectto="$!currententiycontainer"  
+		##	style="margin-top:5px;"
+		##	href="$addentitylink" 
+		##	title="[[Add]] #text($detail)"><i class="fas fa-plus"></i> #text($detail)</a>
+
+	<a class="emdialog addnewitem btn btn-xs btn-light" 
+		data-dialogid="inlineedit" 
+		href="$!siteroot$apphome/views/settings/lists/datamanager/edit/inline.html?searchtype=$listid&update=${valueid}value" 
+		title="[[Add New]] $detail" 
+		data-hidefooter="true">+ [[New]] $detail</a>
 
 #end
 

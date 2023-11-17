@@ -84,14 +84,60 @@ $context.putPageValue("dialogresults", true)
 		<div class="embedmediacontainer">
 		
 		
-		<div class="embedmediacol embedmediacol-results" id="$!{targetdivmedia}" >
-			#set( $addednew = $context.getRequestParameter("addednew"))
-			#if($addednew && $canupload)
-				$pages.include("$apphome/views/modules/asset/add/entityaddmedia.html?categoryid=$rootcategory", $context)
-			#else
+		<div class="embedmediacolX embedmediacol-resultsX" id="$!{targetdivmedia}" >
+			#set($facemanager = $mediaarchive.getBean("faceProfileManager") )
+			
+			#set( $primaryimage = $entity.primaryimage ) ##primaryimage
+			
 				
-				$pages.include("$componenthome/results/index.html", $context)
-			#end
+				#foreach($face in $faceassets)
+					
+					#set($faceprofilegroup = $face.getFaceProfileGroup())		
+						
+					#set($hit = $face.getAsset())
+				
+					#set($h = "180.0")
+					#set($r =  $mathutil.divide("${h}", "${hit.height}"))
+			 		#set($w = $hit.width * $r)
+			 		
+					#set($imagelocation = $facemanager.getImageAndLocationForGroup($hit, $faceprofilegroup.getId(), $w, $h) )
+					
+					#set($link = $mediaarchive.asLinkToPreview($hit, "image550x350.jpg"))
+				 
+			 		#if($imagelocation.timecodestartseconds > -1)
+						 #set($link = "$link?timeoffset=$imagelocation.timecodestartseconds")
+			 		#end
+			 		
+			 		
+					##TODO get offset for video
+				 	<div class="faceprofile-attachedmedia  #if($primaryimage==$hit.id) grid-isprimaryimage #end">
+					<div class=" " data-assetid="$hit.getId()" > 
+					 	<a class="stackedplayer imagearea" data-assetid="$hit.getId()"  href="#" title="$hit.name">
+						<div class="emshowbox" 
+							data-faceprofilegroup="$entityid" 
+							data-showbox="$imagelocation.locationxy"
+							data-imagewidth="${w}"
+							data-imageheight="${h}">
+							<img class="imagethumb" style="height:${h}px; ${w}px" border="0"  data-assetid="$hit.getId()" alt="[[View]]: $!hit.getName()" draggable="true" 
+							data-sourcepath="$hit.getSourcePath()"  src="$!link">
+						</div>
+						</a>
+						
+					</div>
+						#if(false && $primaryimage!=$hit.id)
+						<div class="grid-makeprimary">
+						<a href="$siteroot$applink/components/gridsample/preview/makeprimaryimage.html?assetid=${hit.id}&entityid=$entityid&moduleid=${moduleid}"
+							class="ajax"
+							data-targetdivinner="entitydialog"
+							data-oemaxlevel=""><i class="fas fa-image"></i> [[Make Primary Image]]</a>
+						</div>
+						#end
+					</div>
+				#end
+				<div class="clearfix"></div>
+				
+			
+			
 		</div>
 		</div>
 		
