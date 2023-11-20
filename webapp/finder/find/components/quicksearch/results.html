@@ -47,13 +47,11 @@
 #end
 
 
-#if($livesuggestions.size())
+#if(!$livesuggestions.isEmpty())
 <ul class="qsrecent">
 #foreach ($suggestion in $livesuggestions)
-	#set( $k = $suggestion.getKeyword() )
 	<li class="lisuggestion">
-		<a href="#" class="qssuggestion" data-suggestion="#esc($k)">$suggestion.getBold()</a>
-
+		<a href="#" class="qssuggestion" data-suggestion="#esc($suggestion)">$highlighter.highlight($livesearchfor,$suggestion, 20,true)</a>
 	</li>	 
 #end
 </ul>
