@@ -94,59 +94,7 @@ $context.putPageValue("showmedia", $showmedia)
 			$context.putPageValue("defaultfolder", $defaultfolder)
 	#end
 
-		
-	<div class="entity-actions-bar">
-		##if($canviewsettings && $entityid)
-		##<span >Id: $entityid</span>
-		##end
-		
-		$context.putPageValue("itemid", $entity.id)
-		$pages.include("$componenthome/gridsample/favorites.html?id=$entity.id&moduleid=$moduleid", $context)
-		
-		#ifnotnull($defaultfolder)
-			
-			#if($permissions.can($moduleid, "share"))
-			<a href="$applink/components/share/entity.html?moduleid=$moduleid&categoryid=${defaultfolder.getId()}" 
-			class="emdialog"
-			data-dialogid="entitysharedialog"
-			data-hidefooter="true"
-			title="[[Share]] #text($entity.name)"><i class="fas fa-share-alt"></i></a>
-			#end
-			
-			#if($canviewsettings)
-			<a href="$applink/views/modules/$moduleid/edit/editdialog.html?id=${entityid}&viewid=entitypermissions"
-				class="emdialog"
-				data-hidefooter="true"
-				data-dialogid="entitypermissionsdialog"
-				title="#text($module)\ #text($entity) [[Permissions]]"><i class="fas fa-user-lock"></i></a>
-				
-				
-			<a href="$applink/views/settings/modules/$moduleid/info/module-setup.html"
-				class="ajax"
-				data-targetdiv="applicationcontainer"
-				data-oemaxlevel="5"
-				data-updateurl="true"
-				data-closedialog="true"
-				data-sidebarcomponent="settings"
-				title="#text($module) [[Properties]]"><i class="fas fa-cog"></i></a>
-			#end
-			
-			#set($link = "$applink/views/modules/asset/viewfiles/${defaultfolder.getId()}/#dash($entity.name).html")
-			<a href="$link" 			
-				class="btn-sm btn-blue entity-add-media ajax"
-				data-targetdiv="applicationcontent"
-				data-sidebarcomponent="categories"
-				data-updateurl="true"
-				data-oemaxlevel="5"
-				data-closedialog="true"
-				title="[[View Media]]">
-			<i class="fas fa-external-link-alt"></i> [[View Media]]</a>
-		
-		#end
-		
-		
-		
-	</div>
+	
 
 
 </div>

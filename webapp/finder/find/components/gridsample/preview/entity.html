@@ -141,6 +141,54 @@ $context.putPageValue("topmoduleid", $moduleid)
 	#text($name)
 	
 	</h2>
+	
+	
+		
+	<div class="entity-actions-bar">
+		##if($canviewsettings && $entityid)
+		##<span >Id: $entityid</span>
+		##end
+		
+		$context.putPageValue("itemid", $entity.id)
+		$pages.include("$componenthome/gridsample/favorites.html?id=$entity.id&moduleid=$moduleid", $context)
+		
+
+			
+		#if($permissions.can($moduleid, "edit"))
+		<a href="$applink/views/modules/$moduleid/edit/editdialog.html?id=${entityid}&viewid=entitypermissions"
+			class="emdialog btn btn-sm btn-secondary"
+			data-hidefooter="true"
+			data-dialogid="entitypermissionsdialog"
+			title="#text($module)\ #text($entity) [[Permissions]]"><i class="fas fa-user-lock"></i> [[Permissions]]</a>
+		#end
+		#if($canviewsettings)	
+		<a href="$applink/views/settings/modules/$moduleid/info/module-setup.html"
+			class="ajax btn btn-sm btn-secondary"
+			data-targetdiv="applicationcontainer"
+			data-oemaxlevel="5"
+			data-updateurl="true"
+			data-closedialog="true"
+			data-sidebarcomponent="settings"
+			title="#text($module) [[Settings]]"><i class="fas fa-cog"></i> [[Settings]]</a>
+		#end
+			
+		#ifnotnull($defaultfolder)
+			
+			#if($permissions.can($moduleid, "share"))
+			<a href="$applink/components/share/entity.html?moduleid=$moduleid&categoryid=${defaultfolder.getId()}" 
+			class="emdialog btn btn-sm btn-secondary"
+			data-dialogid="entitysharedialog"
+			data-hidefooter="true"
+			title="[[Share]] #text($entity.name)"><i class="fas fa-share-alt"></i></a>
+			#end
+		
+		#end
+		
+		
+		
+	</div>
+	
+	
 		
 		<nav>
 	  	<div class="nav nav-tabs entity-navigation" id="entity-nav-tab" role="tablist" 

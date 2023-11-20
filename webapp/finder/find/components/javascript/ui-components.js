@@ -3998,6 +3998,7 @@ showajaxstatus = function(uid)
 
 var resizecolumns = function() {
 	var windowh = $(window).height();
+	var windoww = $(window).width();
 	//make them same top
 	
 	var header_height = $("#header").outerHeight()
@@ -4017,6 +4018,7 @@ var resizecolumns = function() {
 	$(".settingslayout").css("height","auto");
 	$(".col-content-main").css("height","auto"); //reset
 	
+	var headerw = 0;
 	var colmaincontet = $(".col-content-main").find(".col-main-inner");
 	if (colmaincontet.length) {
 		var thisheight = colmaincontet.outerHeight();
@@ -4027,13 +4029,25 @@ var resizecolumns = function() {
 	else if($("#application").find(".finderlargearea")) {
 		columnsheight = $("#application").find(".finderlargearea").outerHeight();
 	}
+	if( colsidebar.length )
+	{
+		headerw = windoww - colsidebar.width() - 62 ;
+	}
+	else
+	{
+		headerw = windoww - 62;
+	}
+	$(".autostickywidth").css("min-width",headerw+ "px");
+	
 	if(columnsheight<windowh) {
 		columnsheight = (windowh - 50);
+		
 	}
-	
 	
 	$(".col-content-main").css("height", columnsheight);
 	/*$("#application").css("height", columnsheight)*/	
+	
+	
 	
 }
 
@@ -4127,6 +4141,15 @@ jQuery(window).on('resize',function(){
 	adjustdatamanagertable();
 	resizesearchcategories();
 	resizecolumns();
+	/*
+	var tablewidth = $("#main-results-table").width();
+	if(tablewidth !== undefined) {
+		var containerswidth = $(".autostickywidth").width();
+		if(tablewidth > containerswidth) {
+			$(".autostickywidth").css("min-width",( + 62) + "px");
+		}
+	}*/
+	
 	
 	
 });

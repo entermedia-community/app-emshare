@@ -21,4 +21,12 @@ $context.putPageValue('val', $val )
 #end 
 $context.putPageValue("thumbsize","crop")
 $context.putPageValue("linkintext",true)
-$pages.include("$apphome/components/xml/detailreadonly.html", $context)
+
+#if($viewtype =="primarymedia")
+$context.putPageValue("hit", $data)
+<div class="emgridcell emgridcellC emgridcell-$rendertype activelistcontainer 	" style="visibility: visible; width: 180px; position: relative;">  
+	$pages.include("$componenthome/gridsample/types/qsresult.html", $context)
+</div>
+#else
+	$pages.include("$apphome/components/xml/detailreadonly.html", $context)
+#end
