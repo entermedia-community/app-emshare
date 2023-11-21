@@ -117,8 +117,11 @@
 			data-targetdiv="$targetdivsearch" 
 			data-closedialog="true"
 			data-updateurl="false"
-			#if($topmoduleid)
-			action="$siteroot$apphome/views/modules/$moduleid/dialogindex.html"
+			#set($resultslink = $context.getRequestParameter("resultslink"))
+			#if($resultslink)
+				action="$resultslink"
+			#elseif($topmoduleid)
+				action="$siteroot$apphome/views/modules/$moduleid/dialogindex.html"
 			#else
 				#if($moduleid== "asset" && $categoryid)
 					action="$siteroot$apphome/views/modules/$moduleid/showcategory.html"

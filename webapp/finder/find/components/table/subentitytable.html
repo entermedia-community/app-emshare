@@ -86,10 +86,12 @@ $context.putPageValue("targetdivtablepositions", $targetdivtablepositions)
 		#set($resultsLink = "/$applicationid/views/modules/$!{searchtype}/components/table/subentitytable.html")
 		#set( $args = "searchtype=$!searchtype&fieldexternalid=$!fieldexternalid&fieldexternalvalue=$!fieldexternalvalue")
 		#set( $args = "$args&field=$!fieldexternalid&$!{fieldexternalid}.value=$!fieldexternalvalue&operation=$fieldexternaloperation")
-		#set( $args = "$args&parentviewid=$parentviewid&viewid=$!viewid&viewpath=$!viewpath&targetrendertype=$!targetrendertype&tabletype=$tabletype")
+		#set( $args = "$args&parentviewid=$!parentviewid&viewid=$!viewid&viewpath=$!viewpath&targetrendertype=$!targetrendertype&tabletype=$tabletype")
 		#set($resultsLink = "${resultsLink}?${args}")
 		
 		$context.putPageValue("resultsLink", $resultsLink)
+		
+		
 		
 		<div id="sub-nav-tab" class="emsubnav sub-nav-${viewid}">
 		<ul class="resultsnav">
@@ -101,10 +103,11 @@ $context.putPageValue("targetdivtablepositions", $targetdivtablepositions)
 					data-hidefooter="true"
 					data-modalsize="sm"
 					data-moduleid="${searchtype}"
-					data-hitssessionid="$hits.getSessionId()"
+					data-hitssessionid="$!hits.getSessionId()"
 					data-topmoduleid="$!moduleid"
-					data-targetdivsearch="$!maintargetdiv"
+					data-targetdivsearch="$!submoduleresults"
 					data-dialogresults="$!dialogresults"
+					data-resultslink="$resultsLink"
 					title="[[Filter]] #text($module)"
 					><i class="fas fa-filter" style="font-size:0.9em;"></i> [[Filter]]</a>
 				</li>

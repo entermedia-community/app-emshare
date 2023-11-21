@@ -61,8 +61,6 @@
 	#foreach( $term in $terms)
 		
 			#if($moduleid=="asset")
-				
-				
 				#if($dialogresults)
 					#set($href = "$siteroot$apphome/views/modules/$moduleid/dialogindex.html?hitssessionid=$!hits.getSessionId()&topmoduleid=$!topmoduleid&rootcategory=$!rootcategory&categoryid=$!{categoryid}&removeterm=$!term.getId()")
 				#else
@@ -135,17 +133,18 @@
 				#else
 					#set($href = "$siteroot$apphome/views/modules/$moduleid/index.html?hitssessionid=$!hits.getSessionId()&topmoduleid=$!topmoduleid&rootcategory=$!rootcategory&categoryid=$!{categoryid}&${moduleid}clearresults=true&${moduleid}clearselection=true&clearselection=true&clearfilters=true")		
 				#end
-				#set($oemaxlevel = "4")
+				#set($oemaxlevel = "1")
 			#else
 				#set($href = "$siteroot$apphome/views/modules/$moduleid/index.html?hitssessionid=$!hits.getSessionId()&${moduleid}clearresults=true&${moduleid}clearselection=true&clearselection=true&clearfilters=true")
-				#set($oemaxlevel = "4")
+				#set($oemaxlevel = "1")
 			#end
 	<a class="clearallfilters ajax  btn-clearall " 
 		href="$href"
-		data-targetdiv="applicationcontent" 
+		data-targetdiv="$!targetdiv" 
 		data-oemaxlevel="$oemaxlevel" 
 		data-updateurl="true" 
 		data-onsuccess="closetypeaheadmodal"
+		data-updateurl="false" 
 		title="[[Clear All Filters]]"><i class="fas fa-times"></i> [[Clear Filters]]</a>
 #end
 

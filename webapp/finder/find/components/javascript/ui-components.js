@@ -2017,7 +2017,7 @@ uiload = function() {
 								page : params.page
 							};
 							search["field"] = searchfield;
-							search["operation"] = "contains";
+							search["operation"] = "freeform";
 							search[searchfield+ ".value"] = params.term; 
 							
 							return search;
