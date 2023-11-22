@@ -30,15 +30,13 @@
 	#end
 
 
-
-
  <div class="row no-gutters">
  #foreach( $detail in $details )
- 	
+ 	#set($detailid = $detail.getId())
 	#set( $val = false )
 	
 	#if($editrow)
-		#set( $target = "${detail.id}.value" )
+		#set( $target = "${detailid}.value" )
 		#set( $val = $context.getRequestParameter($target) )	
 		#if( !$val )
 			#set( $val = $context.getPageValue($target) )
@@ -47,20 +45,24 @@
 	
 	#if( !$val )
 		#if( $searcherManager )
-			#set( $val = $searcherManager.getValue($data,$detail) )	
+			#set( $val = $searcherManager.getValue($data, $detail) )	
 		#else
-			#set( $val = $!{data.getProperty($detail.getId())} )
+			#set( $val = $!{data.getProperty($detailid)} )
 		#end
 	#end
 	#if( !$val )
-		#set( $val = $!{data.get($detail.getId())} )
+		#set( $val = $data.get($detailid) )
+	#end
+	
+	#if(!$val && $detailid=="primarymedia")
+		#set( $val = $!data.getValue("primaryimage") )
 	#end
 	
 	#if( !$val) 
 		#set( $val = "") 
 	#end
 	#set( $editrow = $detail.isEditable() && $readonly != "true") 
-	
+		
 	#if( $editrow || $val )
 	 	<div class="$detailviewercolumnclass detail-${detail.id}">
 		$!context.putPageValue("val",$val)
