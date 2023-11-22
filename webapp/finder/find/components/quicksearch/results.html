@@ -18,11 +18,13 @@
 <span title="[[Esc to Close]]" class="fas fa-window-close closemainsearch"></span>
 </div>
 
+#set( $val = $hits.getInput("description"))
 
-#if(!$livesuggestions.size() && !$organizedModules)
+
+#ifnull($hits)
 	<div class="startsearch">[[Start typing to search]]</div>
 	<div class="quicksearchmodules">
-  	#foreach ( $amodule in $userprofile.getEntities() )
+  	#foreach ( $amodule in $userprofile.getSearchableEntities() )
   		#set($amoduleid = $amodule.getId())
 	  	#if($amoduleid!="modulesearch")
 	  		#set($entityrendertype = "entity")
@@ -57,9 +59,9 @@
 </ul>
 #end
 
-#set( $val = $hits.getInput("description"))
 #set($filter = $modulehits.findFilterValue("entitysourcetype") )
 $context.putPageValue("filter", $filter)
+
 
 
 #foreach($module in $organizedModules)
