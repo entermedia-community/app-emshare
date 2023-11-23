@@ -89,27 +89,15 @@ $context.putPageValue("dialogresults", true)
 			
 			#set( $primaryimage = $entity.primaryimage ) ##primaryimage
 			
-				
 				#foreach($face in $faceassets)
-					
-					#set($faceprofilegroup = $face.getFaceProfileGroup())		
-						
 					#set($hit = $face.getAsset())
-				
+					#set($faceprofilegroup = $face.getFaceProfileGroup())		
 					#set($h = 180)
-					
-			 		
-			 		
 					#set($imagelocation = $facemanager.getImageAndLocationForFaceAsset($face, $h) )
-					
-					
-					
 					#set($link = $mediaarchive.asLinkToPreview($hit, "image550x350.jpg"))
-				 
 			 		#if($imagelocation.timecodestartseconds > -1)
 						 #set($link = "$link?timeoffset=$imagelocation.timecodestartseconds")
 			 		#end
-			 		
 			 		
 					##TODO get offset for video
 				 	<div class="faceprofile-attachedmedia  #if($primaryimage==$hit.id) grid-isprimaryimage #end">
@@ -118,10 +106,16 @@ $context.putPageValue("dialogresults", true)
 						<div class="emshowbox" 
 							data-faceprofilegroup="$entityid" 
 							data-showbox="$imagelocation.locationxy"
-							data-imagewidth="${w}"
+							data-imagewidth=""
 							data-imageheight="${h}">
-							<img class="imagethumb" style="height:${h}px; ${w}px" border="0"  data-assetid="$hit.getId()" alt="[[View]]: $!hit.getName()" draggable="true" 
-							data-sourcepath="$hit.getSourcePath()"  src="$!link">
+							<img src="$!link"
+								class="imagethumb" 
+								style="height:${h}px;" 
+								border="0"  
+								data-assetid="$hit.getId()" 
+								alt="[[View]]: $!hit.getName()" 
+								draggable="true"
+								data-sourcepath="$hit.getSourcePath()" />
 						</div>
 						</a>
 						
