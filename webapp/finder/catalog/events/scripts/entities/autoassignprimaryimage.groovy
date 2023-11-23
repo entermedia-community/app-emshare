@@ -85,18 +85,20 @@ public void init()
 			Data entity = it;		
 				
 				HitTracker profiles = archive.getSearcher("faceprofilegroup").query().exact("entityperson", entity.getId()).search();
-				Data asset = (Data)archive.getAssetSearcher().query().orgroup("faceprofiles.faceprofilegroup", profiles).sort("uploadeddate").searchOne();
-				if (asset) {
-					entity.setValue("primaryimage", asset.getId());
-					tosave.add(entity);
-					log.info("Saving: "+ entity + " asset: " + asset.getName());
-					changed = true;
-				}
-					
-				if( tosave.size() == 1000)	{
-					searcher.saveAllData(tosave, null);
-					tosave.clear();
-					log.info("Saved: 1000");
+				if(profiles != null && profiles.size()>0) {
+					Data asset = (Data)archive.getAssetSearcher().query().orgroup("faceprofiles.faceprofilegroup", profiles).sort("uploadeddate").searchOne();
+					if (asset) {
+						entity.setValue("primaryimage", asset.getId());
+						tosave.add(entity);
+						log.info("Saving: "+ entity + " asset: " + asset.getName());
+						changed = true;
+					}
+						
+					if( tosave.size() == 1000)	{
+						searcher.saveAllData(tosave, null);
+						tosave.clear();
+						log.info("Saved: 1000");
+					}
 				}
 			
 		}
