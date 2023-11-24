@@ -7,15 +7,18 @@
 	$context.putPageValue("id", $id)
 #end
 
+
 #if($id.startsWith("multiedit"))
 
 #else
-	#if( !$entity)
+	#if( !$entity && $id)
 		#set( $entity  = $mediaarchive.getData($searchtype, $id) )
 	#end
-	#set($entityid = $entity.id)
-	$context.putPageValue("entity", $entity)
-	$context.putPageValue("entityid", $entityid)
+	#if($entity)
+		#set($entityid = $entity.id)
+		$context.putPageValue("entity", $entity)
+		$context.putPageValue("entityid", $entityid)
+	#end
 #end
 
 #set($module = $mediaarchive.getData("module", $searchtype))
@@ -277,10 +280,12 @@ $context.putPageValue("topmoduleid", $moduleid)
 		</nav>
 		
 		<div class="tab-content entity-body" id="entity-nav-tabContent">
+			
 				#ifnull($id)
 					$context.putPageValue("viewid", $firstview)
 					#set($entitytabopen = "tab_${firstview}")
 					$context.putPageValue("currenttab", $entitytabopen)
+					
 					$pages.include("$componenthome/gridsample/preview/entitytab.html", $context)
 				#end
 				#ifnotnull($id)

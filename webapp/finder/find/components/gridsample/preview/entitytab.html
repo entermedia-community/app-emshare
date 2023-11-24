@@ -7,7 +7,7 @@
 	#set($searchtype = $context.getRequestParameter("searchtype")) 
 #end
 
-#set( $id = $context.getRequestParameter("id"))
+#set( $id = $context.getRequestParameter("entityid"))
 
 ##ifnotnull($id)
 
@@ -15,23 +15,19 @@
 	#set($entityid = $entity.id)
 	#set($entitytabid = "entity-tab-multiedit")
 #else
-	#if(!$entity)
+	#if(!$entity && $id)
 		#set( $entity  = $mediaarchive.getData($searchtype, $id) )
 	#end
-	#set($entityid = $entity.id)
-	$context.putPageValue("entity", $entity)
-	#if(!$id)
-		#set($id= $entity.id)
-	#end
-	#if(!$id)
-		#set($id= "")
+	#ifnotnull($entity)
+		#set($entityid = $entity.id)
+		$context.putPageValue("entity", $entity)
 	#end
 #end
 #set($module = $mediaarchive.getData("module", $searchtype))
 #set($moduleid = $module.getId())
 
-$context.putPageValue("entityid", $entityid)
-$context.putPageValue("moduleid", $moduleid)
+$context.putPageValue("entityid", $!entityid)
+$context.putPageValue("moduleid", $!moduleid)
 
 #if(!$entitytabid)
 	#set($entitytabid = "${module.getId()}$!{entityid}")
@@ -44,7 +40,6 @@ $context.putPageValue("moduleid", $moduleid)
 #end
 $context.putPageValue("edit", $edit)
 
-#set($entityid = $entity.id)
 #ifnull($entityid)
 	#set($entityid = "")
 #end
@@ -85,6 +80,7 @@ $context.putPageValue("showmedia", $showmedia)
 		$context.putPageValue("id", $entityid)
 		$context.putPageValue("data", $entity)
 		$context.putPageValue("searchtype", $searchtype)
+
 		$pages.include("$componenthome/gridsample/preview/metadata.html", $context)
 	</div>
 	<div class="clearfix"></div>
