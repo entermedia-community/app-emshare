@@ -72,7 +72,10 @@ public void init()
 	//entityPerson entity
 	Data module = modulesearcher.query().exact('id', 'entityperson').searchOne();
 	changed = false;
-	
+	if( module == null
+	{
+		return;
+	}
 	String searchtype = module.getId();
 	
 	Searcher searcher = archive.getSearcher(searchtype);

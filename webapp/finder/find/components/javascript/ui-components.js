@@ -418,7 +418,7 @@ uiload = function() {
 		var placeholder = $(this).data('placeholder');
 		if( placeholder  == undefined)
 		{
-			placeholder = "...";
+			placeholder = "";
 		}
 		if($.fn.select2 ) {
 			theinput.select2({
