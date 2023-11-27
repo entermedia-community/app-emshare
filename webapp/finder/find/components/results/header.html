@@ -288,8 +288,12 @@
 						#end
 					
 						<li class="resultsnavtitem" style="width:65px;">
-								#set( $currenthitsperpage = $userprofile.get("${resultview}assethitsperpage"))
-								
+								#if(!$currenthitsperpage)
+									#set( $currenthitsperpage = $hits.getHitsPerPage())
+								#end
+								#if(!$currenthitsperpage)
+									#set( $currenthitsperpage = $userprofile.get("${resultview}assethitsperpage"))
+								#end
 								#if(!$currenthitsperpage)
 									#set( $currenthitsperpage = $userprofile.get("assethitsperpage"))
 								#end
@@ -297,9 +301,9 @@
 								<select class="form-control form-select-sm hitsperpagechange resultsnavselect" 
 										id="hitsperpagechange$!topmodule"
 										data-oemaxlevel="1">
-									#foreach($ho in $hitcountoptions)
-									<option value="$ho.id" #if($currenthitsperpage==$ho.id) selected="selected"#end>#text($ho)</option>
-									#end	
+										#foreach($ho in $hitcountoptions)
+											<option value="$ho.id" #if($currenthitsperpage==$ho.id) selected="selected"#end>#text($ho)</option>
+										#end	
 								</select>
 						</li>	
 					##end	
@@ -311,7 +315,8 @@
 						<select class="form-control" 
 							name="resultview" 
 							id="selectresultview"
-							data-oemaxlevel="1">
+							data-oemaxlevel="1"
+							data-hitsperpage="$!currenthitsperpage ">
 							#set( $types = $mediaarchive.getList("resulttype"))
 							#foreach($type in $types)
 								<option value="$!type.getId()" #if( $resultview == "$type.getId()") selected #end>$type.getName($context)</option>

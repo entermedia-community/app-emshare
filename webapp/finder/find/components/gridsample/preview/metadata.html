@@ -50,15 +50,13 @@ $context.putPageValue("edit", $edit)
 class='entitymetadatamodal #if($edit=="true") entitymetadataediting #else entitymetadatapreview #end' data-id="$!id">
 
 #if($id.startsWith("multiedit"))
-	###set($viewid = "${searchtype}${viewid}")
 	#set($targetentitytabid = "entity-tab-multiedit")
 #else
 	#set($addnew = $context.getRequestParameter("addnew"))
 	#if($addnew)
 		#set($viewid = "${searchtype}addnew")
 		#set($reloadtargets = $context.getRequestParameter("reloadtargets"))
-	#else
-		###set($viewid = "${searchtype}${viewid}")
+	
 	#end
 	#set($targetentitytabid = "entity-tab-#eid($id)")
 #end
@@ -129,7 +127,7 @@ class='entitymetadatamodal #if($edit=="true") entitymetadataediting #else entity
 				<button id="closebutton" style="margin-right: 10px;"  type="button" class="btn btn-sm btn-dark" data-dismiss="modal">[[Cancel]]</button>
 			#else
 				<a class="btn btn-sm btn-dark ajax" style="margin-right: 10px;" data-targetdiv="editentitymetadata" 
-					href="$!siteroot$applink/views/modules/$!{moduleid}/components/gridsample/preview/metadata.html?id=$!id&moduleid=$!moduleid&showmedia=$!showmedia&viewid=$!viewid">[[Cancel]]</a>
+					href="$!siteroot$applink/views/modules/$!{moduleid}/components/gridsample/preview/metadata.html?entityid=$!id&moduleid=$!moduleid&showmedia=$!showmedia&viewid=$!viewid">[[Cancel]]</a>
 			#end
 		#else
 			<a class="btn btn-sm btn-dark submitform" style="margin-right: 10px;"><i class="fas fa-caret-right"></i> [[Next]]</a>
@@ -149,7 +147,7 @@ class='entitymetadatamodal #if($edit=="true") entitymetadataediting #else entity
 			<a class="ajax btn btn-sm btn-darkless float-right" data-targetdiv="applicationcontent" data-updateurl="true" data-closedialog="true" data-oemaxlayout="2" href="$siteroot$apphome/views/settings/modules/$!{searcher.searchType}/metadata/views/index.html?viewid=$viewid&viewpath=$!view&moduleid=$!moduleid"><i class="fas fa-cog"></i> [[Fields]]</a>
 		#end
 		<a class="ajax btn btn-sm btn-darkless float-right" style="margin-right:5px;" data-targetdiv="editentitymetadata" 
-			href="$!siteroot$applink/views/modules/$!{moduleid}/components/gridsample/preview/metadata.html?edit=true&id=$data.id&detailviewercolumns=$changedetailviewercolumns&moduleid=$!moduleid">
+			href="$!siteroot$applink/views/modules/$!{moduleid}/components/gridsample/preview/metadata.html?edit=true&entityid=$!{data.id}&detailviewercolumns=${changedetailviewercolumns}&moduleid=$!{moduleid}&viewid=$!{viewid}">
 			<i class="fas fa-$icondetailviewercolumns"></i>
 		</a>
 		
@@ -160,7 +158,7 @@ class='entitymetadatamodal #if($edit=="true") entitymetadataediting #else entity
 	
 	#if($edit!="true")
 		#if($permissions.can($moduleid, "edit"))
-			<a href="$!siteroot$applink/views/modules/$!{moduleid}/components/gridsample/preview/metadata.html?edit=true&id=$!data.id&moduleid=$!moduleid&showmedia=$!showmedia&viewid=$!viewid" 
+			<a href="$!siteroot$applink/views/modules/$!{moduleid}/components/gridsample/preview/metadata.html?edit=true&entityid=$!data.id&moduleid=$!moduleid&showmedia=$!showmedia&viewid=$!viewid" 
 				data-targetdiv="editentitymetadata" 
 				class="ajax btn btn-sm btn-dark" 
 				style="margin-right:10px;"><i class="fas fa-edit"></i> [[Edit]]</a>

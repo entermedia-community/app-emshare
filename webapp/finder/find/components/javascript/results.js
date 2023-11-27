@@ -109,6 +109,9 @@ jQuery(document).ready(function(url,params)
 					var targetdiv = resultsdiv.data('targetdiv');
 					
 					var oemaxlevel = select.data('oemaxlevel'); //could be custom
+					if(oemaxlevel) {
+						options.oemaxlevel = oemaxlevel;
+					}
 
 					var href = '';
 					if(moduleid=='asset') {
