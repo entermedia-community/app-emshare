@@ -8,28 +8,6 @@ $context.putPageValue("module", $module)
 #set($componenthome = "$apphome/views/modules/asset/components")
 $context.putPageValue("componenthome", $componenthome)
 
-#if( !$category)
-	#set($categoryid = $context.getRequestParameter("categoryid"))
-	#if(!$categoryid)
-		#set($categoryid = $context.getRequestParameter("rootcategory"))
-	#end
-	#if($categoryid)
-		#set($category = $mediaarchive.getCachedData("category", $categoryid))
-	#end
-#end
-#if( !$categoryid && $category)
-	#set( $categoryid= $category.getId())
-#end
-$context.putPageValue("category", $category)
-$context.putPageValue("categoryid", $categoryid)
-#if( !$librarycol && $category )
-	#set($rootcategories = $category.getParentCategories()) 
-	###set( $librarycol = $mediaarchive.query("librarycollection").orgroup("rootcategory", $rootcategories).searchOne() )
-#end
-#set($rootcategory = $context.getRequestParameter("rootcategory"))
-#if(!$rootcategory)
-	#set( $rootcategory = $categoryid)
-#end
 
 #if(!$topmoduleid)
 	#set ( $topmoduleid = $context.getRequestParameter("topmoduleid") )
@@ -46,8 +24,8 @@ $context.putPageValue("topmoduleid", $topmoduleid)
 
 #set($resultview = $userprofile.get("assetresultview"))
 
-
 #set($maintargetdiv = "dialogassetresultscontainer")
+
 $context.putPageValue("maintargetdiv", $maintargetdiv)
 
 $context.putPageValue("dialogresults", true)
