@@ -1,19 +1,31 @@
-
 #if( $hits && $hits.getTotalPages() >  1  )
+
+
+#set($pickone = $context.getRequestParameter("pickone") )
+#if($pickone)
+	#set($resultscontainer = "categoryresultspickone")
+#else
+	#set($resultscontainer = "categoryresults")
+#end
+
+
 	#if($categorycarousel == "true" && $category)
 		#set($categoryid = $category)
 	#else
 		#set($categoryid = "")
 	#end
 	#set($module = $content.module)
+
+	#set($assetid = $context.getRequestParameter("assetid") )
 	#set($resultsPage = "$home$apphome/components/categories/search/results.html?hitssessionid=$hits.sessionId&searchtype=categories&hitsperpage=$!hits.hitsPerPage&oemaxlevel=1")
+	#set($resultsPage = "$resultsPage&pickone=$!pickone&assetid=$!assetid")
 	#set($resultsPage = "$resultsPage&page")
 	#set($thispage = $hits.getPage())
 	
 	
 	
 	
-	#set($targetdiv = "categoryresults")
+	#set($targetdiv = $resultscontainer)
 	<div id="categoriespages" class="pages categoriespages">
 		<ul>
 			#if( $hits.prevPage() )

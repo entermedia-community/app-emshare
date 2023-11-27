@@ -72,7 +72,7 @@ public void init()
 	//entityPerson entity
 	Data module = modulesearcher.query().exact('id', 'entityperson').searchOne();
 	changed = false;
-	if( module == null
+	if( module == null )
 	{
 		return;
 	}
