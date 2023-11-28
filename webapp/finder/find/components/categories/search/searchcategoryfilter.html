@@ -3,6 +3,9 @@
 #set( $results = $searcher.query().exact("parents",$nodeID).sort("categorypathUp").search($context) )
 #set( $action = $context.getRequestParameter("pickedcategoryaction") )
 
+#set($pickone = $context.getRequestParameter("pickone") )
+#set($assetid = $context.getRequestParameter("assetid") )
+
 $context.putPageValue("hits",$results)
 $context.putPageValue("searcher",$searcher)
 #set ($details = $searcher.getDetailsForView("category/searchcategory", $userprofile))
@@ -11,7 +14,11 @@ $context.putPageValue("searcher",$searcher)
 			name="autosubmitfilter" 
 			class="autosubmit ajaxform" 
 			autocomplete="off"  
-			data-targetdiv="categoryresults" 
+			#if($pickone)
+				data-targetdiv="categoryresultspickone"
+			#else
+				data-targetdiv="categoryresults"
+			#end 
 			action="$siteroot$apphome/components/categories/search/searchpath.html"
 			>
 		<input type="hidden" name="searchtype" value="category" />
@@ -19,6 +26,9 @@ $context.putPageValue("searcher",$searcher)
 		<input type="hidden" name="field" value="parents" />
 		<input type="hidden" name="operation" value="exact" />
 		<input type="hidden" name="parents.value" id="parentfilter" value="$!nodeID" />
+		
+		<input type="hidden" name="pickone" value="$!pickone" />
+		<input type="hidden" name="assetid" value="$!assetid" />
 		
 		<div class="emsearchfieldrow">
 			<div id="detail_categorypath" align="left" class="emsearchfieldvalue">

@@ -16,7 +16,7 @@ $context.putPageValue("targetdiv",$targetdiv)
 
 #set( $pickone = $context.getRequestParameter("pickone") )
 #if (!$pickone)
-	#set( $pickone = true )
+	#set( $pickone = false )
 #end
 #set( $categories = $context.getRequestParameter("${detailid}.value") )
 #if(!$categories)
@@ -57,26 +57,39 @@ $context.putPageValue("targetdiv",$targetdiv)
 #set( $assetid = $context.getRequestParameter("assetid") )
 
 
-#set($canupload = false)
+
 #if($canviewupload || $canviewcategoryupload)
-	##if($topmodule.getBoolean("enableuploading") && $permissions.can("asset", "upload_files"))
-		#set($canupload = true)
-	##end
+	#set($canupload = true)
 #end
-$context.putPageValue("canupload", $canupload)
+$context.putPageValue("canupload", $!canupload)
 		
 		
 <div class="searchcategories-tree">
     <div class="assetdropcategory assetdropcategorymove searchcategories-treecontainer categorytreescrolllable" >
-        #set( $link = "$apphome/components/emtree/tree.html")
-        #set( $link = "${link}?treename=$treename&editabletree=true&clearselection=$!clearselection" )
-        #set( $link = "${link}&oemaxlevel=4&uploadmaxlevel=2&targetdiv=applicationmaincontent&maxlevelclick=$!maxlevelclick" )
+		
+        
+        
+        #if ($pickone)
+        	##AssetPicker Media Viewer
+        	#set( $link = "$apphome/components/emtree/tree.html")
+        	#set( $link = "${link}?treename=$treename&editabletree=false&clearselection=$!clearselection&updateAddressBar=false&hidecontextmenu=true" )
+        	#set( $link = "${link}&oemaxlevel=4&uploadmaxlevel=2&maxlevelclick=$!maxlevelclick" )
+        	#set($link = "$link&targetdivinner=searchareacontent&urlprefix=$apphome/components/categories/search/searchcategoryfilter.html")
+        	
+        	$context.putPageValue("canupload", false)
+        #else
+        	##General Category Tree
+        	#set( $link = "$apphome/components/emtree/tree.html")
+        	#set( $link = "${link}?treename=$treename&editabletree=true&clearselection=$!clearselection" )
+        	#set( $link = "${link}&oemaxlevel=4&uploadmaxlevel=2&maxlevelclick=$!maxlevelclick" )
+        	#set($link = "$link&targetdiv=applicationmaincontent")
+        #end
         
 		$pages.include($link, $context)  
 	</div>
 </div>
 <div class="searchcategories-filter">
-	<div id="searchareacontent"> 
+	<div id="searchareacontent" class="searchcategories-results"> 
 	$pages.include("$apphome/components/categories/search/searchcategoryfilter.html?nodeID=$!initialcategory",$context)
 	</div>
 </div>

@@ -1653,6 +1653,12 @@ uiload = function() {
 	
 	
 	
+	lQuery(".pickcategorylink").livequery("click", function() {
+		
+		
+	});
+	
+	
 	
 	
 	lQuery(".assetpickerselectrow").livequery("click", function() {
