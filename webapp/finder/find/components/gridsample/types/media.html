@@ -3,7 +3,14 @@
 	
 	#set($type = $hit.getSearchHit().getType())
 	#set($rendertype = $mediaarchive.getMediaRenderType($hit.fileformat))
+	#if(!$rendertype || $type =="rendertype")
+		#set( $rendertype = "mime" )
+	#elseif( $rendertype =="video")
+		#set( $rendertype = "videothumbnail" )
+	#end
 	$context.putPageValue("type", $rendertype)
+	
+	
 	
 	$context.putPageValue("assetid", $hit.id)
 	$context.putPageValue("count", $count )
@@ -12,6 +19,9 @@
 	
 	#set($sourcepath = $hit.sourcepath)
 	#set($assetwidth = $mediaarchive.getRealImageWidth($hit))
+	#if($assetwidth==0 && $rendertype=="audio")
+		#set($assetwidth = "200")
+	#end
 	#set($assetheight = $mediaarchive.getRealImageHeight($hit))
 	#set($click = "$siteroot$viewerlink?hitssessionid=${hits.getSessionId()}&assetid=${hit.id}")
 	#set($isselected = $hits.isSelectedOnPage(${hit.id}) )
@@ -21,11 +31,7 @@
 	data-height="$assetheight" 
 	data-draggholderclone="grid-thumbimage" >
 	<div class="grid-thumbimage " data-assetid="$!hit.id">
-    	#if(!$rendertype || $type =="rendertype")
-    		#set( $rendertype = "mime" )
-    	#elseif( $rendertype =="video")
-    		#set( $rendertype = "videothumbnail" )
-    	#end
+    	
    	    $pages.include("$componenthome/results/thumbnails/${rendertype}.html", $context)
    	</div>
 	    		
