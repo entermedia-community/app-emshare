@@ -33,30 +33,30 @@
 
 #set($rootcategory = $context.getRequestParameter("rootcategory"))
 
+#set( $view = "$moduleid/$!{moduleid}advancedfilter")
+	
+#set( $searcher = $mediaarchive.getSearcher($moduleid))
+
+$context.putPageValue("view", $view)
+$context.putPageValue("searcher", $searcher)
+
+#set($usestartswith = $page.isPropertyTrue('usestartswith'))
+$context.putPageValue("usestartswith",$usestartswith)
+$context.putPageValue("caneditlists",false)
+
+
+#set( $targetmodule = $context.getRequestParameter("targetmodule"))
+
+#if(!$topmoduleid)
+	#set ( $topmoduleid = $context.getRequestParameter("topmoduleid") )
+#end
+
 
 <div id="moduleadvfilterpanel" class="advfilterpanel" >
 
-	<div class="advfilterpanelcontent" >
-		#set( $view = "$moduleid/$!{moduleid}advancedfilter")
-	
-		#set( $searcher = $mediaarchive.getSearcher($moduleid))
+	<div class="advfilterpanelcontent" data-view="$!view">
 		
-		$context.putPageValue("view", $view)
-		$context.putPageValue("searcher", $searcher)
-		
-		#set($usestartswith = $page.isPropertyTrue('usestartswith'))
-		$context.putPageValue("usestartswith",$usestartswith)
-		$context.putPageValue("caneditlists",false)
-		
-		
-		#set( $targetmodule = $context.getRequestParameter("targetmodule"))
-	
-		#if(!$topmoduleid)
-			#set ( $topmoduleid = $context.getRequestParameter("topmoduleid") )
-		#end
-		
-	
-	<form  	name="filterform" 
+		<form  	name="filterform" 
 			id="filterform" 
 			class="ajaxform autosubmitform filterform"
 			method="POST" 
@@ -235,7 +235,7 @@
 		<script type="text/javascript">
 			deleteFilterField = function(inType,inFieldId)
 			{	
-				var params = 'dialogfilters=true&oemaxlevel=1&editfilters=true&collectionid=$!collectionid&view=$view&catalogid=$searcher.getCatalogId()&searchtype=' + inType + "&field=" + inFieldId+"&moduleid=$!moduleid";
+				var params = 'dialogfilters=true&oemaxlevel=1&editfilters=true&collectionid=$!collectionid&view=$view&catalogid=$searcher.getCatalogId()&searchtype=' + inType + "&field=" + inFieldId+"&moduleid=$!moduleid&targetdivsearch=$!targetdivsearch&hitssessionid=$!hits.getSessionId()&topmoduleid=$!topmoduleid";
 				jQuery('#moduleadvfilterpanel').load("$siteroot$componenthome/filters/deletefield.html?" + params)
 			}
 		</script>
