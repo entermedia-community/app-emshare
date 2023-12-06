@@ -82,7 +82,13 @@
 		
 		#set($sourcepath = $hit.sourcepath)
 		#set($assetwidth = $mediaarchive.getRealImageWidth($hit))
-		#set($assetheight = $mediaarchive.getRealImageHeight($hit))
+		#if($assetwidth==0 && $rendertype=="audio")
+			#set($assetwidth = "300")
+			#set($assetheight = "160")
+		#else
+			#set($assetheight = $mediaarchive.getRealImageHeight($hit))
+		#end
+		
 		#set($click = "$siteroot$viewerlink?hitssessionid=${hits.getSessionId()}&assetid=${hit.id}")
 		#set($isselected = $hits.isSelectedOnPage(${hit.id}) )
 		

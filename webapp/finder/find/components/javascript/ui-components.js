@@ -1280,6 +1280,17 @@ uiload = function() {
 			element.addClass("onfront");
 		}, 0);
 	}
+	
+	lQuery("a.triggerjs").livequery("click", function(event) {
+		event.preventDefault();
+		var link = $(this);
+		var id = link.data("triggerid");
+		var action = link.data("triggeraction");
+		if(id) {
+			$("#"+id).trigger(action); //callback?
+		}
+		return;
+	});
 
 
 	lQuery("a.entity-tab-label").livequery("click", function(event) {
