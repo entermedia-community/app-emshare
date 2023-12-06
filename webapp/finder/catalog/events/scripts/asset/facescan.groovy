@@ -26,7 +26,7 @@ public void init()
 		return;
 	}
 	
-	
+	int count = 0;
 
 	try
 	{	
@@ -34,13 +34,16 @@ public void init()
 		hits.enableBulkOperations();
 			
 		FaceProfileManager manager = archive.getBean("faceProfileManager");
-		for(Data hit in hits)
-		{
-			Asset asset = archive.getAssetSearcher().loadData(hit);
-			manager.extractFaces(asset);
-		}
 		if (hits.size() > 0) {
-			log.info("("+archive.getCatalogId()+") Facescan processed  " + hits.size());
+			for(Data hit in hits)
+			{
+				Asset asset = archive.getAssetSearcher().loadData(hit);
+				if(manager.extractFaces(asset)) {
+					count = count +1;
+				}
+			}
+			
+			log.info("("+archive.getCatalogId()+") Facescan processed  " + hits.size() + " assets, " + count + " faces detected");
 		}
 	}
 	finally
