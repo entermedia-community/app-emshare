@@ -10,8 +10,6 @@
 	#end
 	$context.putPageValue("type", $rendertype)
 	
-	
-	
 	$context.putPageValue("assetid", $hit.id)
 	$context.putPageValue("count", $count )
 	$context.putPageValue("sourcepath", $hit.sourcepath )
@@ -20,9 +18,11 @@
 	#set($sourcepath = $hit.sourcepath)
 	#set($assetwidth = $mediaarchive.getRealImageWidth($hit))
 	#if($assetwidth==0 && $rendertype=="audio")
-		#set($assetwidth = "200")
+		#set($assetwidth = "300")
+		#set($assetheight = "160")
+	#else
+		#set($assetheight = $mediaarchive.getRealImageHeight($hit))
 	#end
-	#set($assetheight = $mediaarchive.getRealImageHeight($hit))
 	#set($click = "$siteroot$viewerlink?hitssessionid=${hits.getSessionId()}&assetid=${hit.id}")
 	#set($isselected = $hits.isSelectedOnPage(${hit.id}) )
 <div class="masonry-grid-cell assetdraggable ui-draggable" 
@@ -51,7 +51,7 @@
 	     	#end
 	     #end
          <a class="stackedplayer grid-caption-link" id="clickid${hit.id}" data-assetid="$hit.id" href="#" title="#esc($!title)">
-         <div>#esc($title)</div>
+         <div class="grid-caption-title">#esc($title)</div>
          
          ##Show entities or something more?
          #foreach( $asetmodule in $mediaarchive.getList("module") )

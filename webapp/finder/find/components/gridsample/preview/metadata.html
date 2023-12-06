@@ -130,7 +130,7 @@ class='entitymetadatamodal #if($edit=="true") entitymetadataediting #else entity
 					href="$!siteroot$applink/views/modules/$!{moduleid}/components/gridsample/preview/metadata.html?entityid=$!id&moduleid=$!moduleid&showmedia=$!showmedia&viewid=$!viewid">[[Cancel]]</a>
 			#end
 		#else
-			<a class="btn btn-sm btn-dark submitform" style="margin-right: 10px;"><i class="fas fa-caret-right"></i> [[Next]]</a>
+			<a class="btn btn-sm btn-dark submitform" style="margin-right: 10px;"><i class="fas fa-caret-right"></i> [[Save]]</a>
 			
 			<button id="closebutton" style="margin-right: 10px;"  type="button" class="btn btn-sm btn-dark" data-dismiss="modal">[[Cancel]]</button>
 		#end
@@ -162,6 +162,13 @@ class='entitymetadatamodal #if($edit=="true") entitymetadataediting #else entity
 				data-targetdiv="editentitymetadata" 
 				class="ajax btn btn-sm btn-dark" 
 				style="margin-right:10px;"><i class="fas fa-edit"></i> [[Edit]]</a>
+		#end
+		#if($module.getBoolean("enableuploading") && $permissions.can($moduleid, "view_files"))
+			<a href="#tab_media" 
+				class="triggerjs btn btn-sm btn-dark"
+				data-triggerid="tab_tab_media"
+				data-triggeraction="click" 
+				style="margin-right:10px;"><i class="fas fa-image"></i> [[View/Upload Files]]</a>
 		#end
 		#if($permissions.can($moduleid, "delete"))
 		<a href="$!siteroot$applink/views/modules/$!{moduleid}/components/entities/delete.html?id=$data.id" 

@@ -36,10 +36,10 @@ $context.putPageValue("topmoduleid", $moduleid)
 
 #if($addednew)
 	##just added new entity, open Media and Upload if available
-	
-	#if($module.getBoolean("enableuploading") && $permissions.can($moduleid, "view_files"))
-		#set($entitytabopen = "tab_media")
-	#end
+	##
+	###if($module.getBoolean("enableuploading") && $permissions.can($moduleid, "view_files"))
+	##	#set($entitytabopen = "tab_media")
+	###end
 #else
 	#if ($addnew)
 		#foreach( $targetview in $enttiyviews)
@@ -201,21 +201,7 @@ $context.putPageValue("topmoduleid", $moduleid)
 		<nav>
 	  	<div class="nav nav-tabs entity-navigation" id="entity-nav-tab" role="tablist" 
 	  		 data-tabmenuurl="gridsample/preview/entitytabmenu.html">
-			##media
-			#ifnotnull($id)
-				#if($module.getBoolean("enableuploading") && $permissions.can($moduleid, "view_files"))
-						#set($submodule = $mediaarchive.getCachedData("module", "asset"))
-						$context.putPageValue("tabmodule", $submodule)
-						$context.putPageValue("tabtype", "media")
-						#set($tabid = "tab_media")
-						$context.putPageValue("tabid", $tabid)
-						#if($entitytabopen == $tabid)
-				  			$context.putPageValue("currenttab", $tabid)
-						#end
-						#set($subcomponenthome = "$apphome/views/modules/asset/components")
-						$pages.include("$subcomponenthome/gridsample/preview/entitytabmenu.html", $context)
-				#end
-			#end
+
 			#ifnull($id)
 				#set( $viewid = $firstview)
 				$context.putPageValue("viewid", $viewid)
@@ -277,8 +263,22 @@ $context.putPageValue("topmoduleid", $moduleid)
 						#end
 					#end
 				#end	
-				
-
+			#end
+			
+			##media
+			#ifnotnull($id)
+				#if($module.getBoolean("enableuploading") && $permissions.can($moduleid, "view_files"))
+						#set($submodule = $mediaarchive.getCachedData("module", "asset"))
+						$context.putPageValue("tabmodule", $submodule)
+						$context.putPageValue("tabtype", "media")
+						#set($tabid = "tab_media")
+						$context.putPageValue("tabid", $tabid)
+						#if($entitytabopen == $tabid)
+				  			$context.putPageValue("currenttab", $tabid)
+						#end
+						#set($subcomponenthome = "$apphome/views/modules/asset/components")
+						$pages.include("$subcomponenthome/gridsample/preview/entitytabmenu.html", $context)
+				#end
 			#end	
 		</div>
 		</nav>
