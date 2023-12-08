@@ -4048,13 +4048,16 @@ var resizecolumns = function() {
 	}
 	if( colsidebar.length )
 	{
-		headerw = windoww - colsidebar.width() - 62 ;
+		headerw = windoww - colsidebar.width() - 62;
 	}
 	else
 	{
 		headerw = windoww - 62;
 	}
-	$(".autostickywidth").css("min-width",headerw+ "px");
+	$(".autostickywidthX").css("min-width",headerw+ "px");
+	
+	//filters
+	$(".emresultscontainer").css("min-width",(headerw - 200)+ "px");
 	
 	if(columnsheight<windowh) {
 		columnsheight = (windowh - 50);
