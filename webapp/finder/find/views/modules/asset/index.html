@@ -10,81 +10,60 @@
 #if( !$categoryid && $category)
 	#set( $categoryid= $category.getId())
 #end
+
 $context.putPageValue("category", $category)
 $context.putPageValue("categoryid", $categoryid)
+
 #if( !$librarycol && $category )
-	#set($rootcategories = $category.getParentCategories()) 
+	#set($rootcategories = $category.getParentCategories())
 	#set( $librarycol = $mediaarchive.query("librarycollection").orgroup("rootcategory", $rootcategories).searchOne() )
 #end
 
 #set($resultview = $userprofile.get("assetresultview"))
 
 #set( $count = $hits.size())
-	
+
 #set($entityurl = "$siteroot$apphome/views/modules/$module.id/index.html")
 
 #set( $entities = $userprofile.getEntitiesInParent($category) )
 
 #set($maintargetdiv = "assetresultscontainer")
+
 $context.putPageValue("maintargetdiv", $maintargetdiv)
 
-<div id="assetresultscontainer"
-	class="assetresults resultsdiv"
-	data-moduleid="asset" 
-	data-resultview = "$!resultview"
-	data-hitssessionid="$!hits.getSessionId()"
-	#if($category)
-		data-url="$apphome/views/modules/asset/viewfiles/$!categoryid/#dash($category).html"
-		data-oemaxlevel="2"
-	#else
-		data-url="$apphome/views/modules/asset/index.html"
-		data-oemaxlevel="1"
-	#end
-	data-componenthome = "$!componenthome"
-	data-searchhome="$!home$!componenthome/results"
-	data-targetdiv="assetresultscontainer"
-	
-	data-category="$!categoryid"
-	>  
+<div id="assetresultscontainer" class="assetresults resultsdiv" data-moduleid="asset" data-resultview="$!resultview"
+	data-hitssessionid="$!hits.getSessionId()" #if($category)
+	data-url="$apphome/views/modules/asset/viewfiles/$!categoryid/#dash($category).html" data-oemaxlevel="2" #else
+	data-url="$apphome/views/modules/asset/index.html" data-oemaxlevel="1" #end data-componenthome="$!componenthome"
+	data-searchhome="$!home$!componenthome/results" data-targetdiv="assetresultscontainer" data-category="$!categoryid">
 
-	#if($showcategoriesheader)
-		#if( $category)
-			$pages.include("$apphome/views/modules/category/showchildren.html", $context)
-		#end
+	#if($showcategoriesheader && $category)
+		$pages.include("$apphome/views/modules/category/showchildren.html", $context)
 	#end
-	
-	
-	<div class="emgrid-box expandedmodule emgrid-module-asset" style=" margin:0 0 10px;">
-	
+
+
+	<div class="emgrid-box expandedmodule emgrid-module-asset"  >
+
 		<div class="emgrid-subtitle autostickywidth">
-	  		<h3>
-		     	#set($moduleicon = "entity")
-		     	#if ($module.moduleicon)
-		     		#set($moduleicon = $module.moduleicon)
-		     	#end
-		     	
-		    	#set($entityurl = "$siteroot$apphome/views/modules/$module.id/index.html")
-		
-				<img src="$siteroot$apphome/theme/images/entity/${moduleicon}.svg" style="height: 26px;"> 
-		
-				#set( $count = $hits.size()) 
+			<h3>
+				#set($moduleicon = "entity")
+				#if ($module.moduleicon)
+					#set($moduleicon = $module.moduleicon)
+				#end
+
+				#set($entityurl = "$siteroot$apphome/views/modules/$module.id/index.html")
+
+				<img src="$siteroot$apphome/theme/images/entity/${moduleicon}.svg" style="height: 26px;">
+
+				#set( $count = $hits.size())
 				#text($module)
 				<span class="count">($count)</span>
 			</h3>
-				 $context.putPageValue("moduleid", $moduleid)
-				 #if($topmoduleid != "favorites")
-				 	$pages.include("$apphome/views/modules/asset/contextmenu.html", $context)
-				 #end
-			
-			<div class="clearfix"></div>
+			$context.putPageValue("moduleid", $moduleid)
+			#if($topmoduleid != "favorites")
+				$pages.include("$apphome/views/modules/asset/contextmenu.html", $context)
+			#end 
 		</div>
-		
-		
-		
-		
 		$pages.include("$componenthome/results/index.html", $context)
-		
 	</div>
-
-
 </div>

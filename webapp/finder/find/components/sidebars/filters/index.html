@@ -1,28 +1,28 @@
 #set( $moduleid = $module.getId())
+ 
+<div class="summary-container">
+	<div class="d-flex align-items-center justify-content-between">
+		<div class="summary-header">
+			<h3>[[Summary]]</h3>
+		</div>
+		<button class="btn summary-toggler">
+			<i class="fas fa-angle-double-right"></i>
+		</button>
+	</div>
+	<div class="px-1" style="border-left:1px solid #e5e5e5;height:100%">
+		<div class="col-sidebar-scroll">
+			#if($module.getId()=="modulesearch")
+			$pages.include("$apphome/components/gridfilters/index.html", $context)
 
-<div style="background-color: #eee;">
-<div class="col-sidebar-header">
-		<h3>[[Summary]]</h3>		<a href="#"
-		title="[[Hide Search Sidebar]]"
-		class="sidebar-toggler sidebar-toggler-hide"
-		data-action="hide" 
-		data-targetdiv="col-sidebars">
-		<i class="fas fa-angle-double-left closebar"></i>
-		</a>
+			## #set($componenthome = "$apphome/views/modules/asset/components")
+			## $context.putPageValue("moduleid","asset")
 
-</div>
-<div class="col-sidebar-scroll">
-	#if($module.getId()=="modulesearch")
-		$pages.include("$apphome/components/gridfilters/index.html", $context)
 
-	##	#set($componenthome = "$apphome/views/modules/asset/components")
-	##	$context.putPageValue("moduleid","asset")
-		
-				
-	#else
-	
-		$pages.include("$componenthome/filters/index.html", $context)
-	
-	#end
-</div>
+			#else
+
+			$pages.include("$componenthome/filters/index.html", $context)
+
+			#end
+		</div>
+	</div>
 </div>

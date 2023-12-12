@@ -1,302 +1,241 @@
 #set ($moduleid = $module.getId())
-<div  id="col-sidebars" class="col-sidebars-sticky sidebarcontent"
-	#set( $title = $mediaarchive.getCatalogSettingValue("sitetitle"))
-	#set( $section = $context.getRequestParameter("sitetitle"))
-	#ifnotnull( $section )
-		data-setpagetitle="#text($section) - $title" 
-	#end
-	#ifnull( $section )
-		data-setpagetitle="$title"
-	#end	
-
- data-url="$applink/components/sidebars/index.html" >
+<div id="col-sidebars" class="col-sidebars-sticky sidebarcontent" #set(
+	$title=$mediaarchive.getCatalogSettingValue("sitetitle")) #set( $section=$context.getRequestParameter("sitetitle"))
+	#ifnotnull( $section ) data-setpagetitle="#text($section) - $title" #end #ifnull( $section )
+	data-setpagetitle="$title" #end data-url="$applink/components/sidebars/index.html">
 	<div class="col-main col-sidebar-togglers sidebar-togglers-bar">
-	<div class="col-main-inner">
-	
-	##force specific sidebar from URL only if sidebars open
-	#set($forcedsidebarcomponent = $context.getRequestParameter("sidebarcomponent"))
-	
-	#ifnull($forcedsidebarcomponent)
-		#set($forcedsidebarcomponent = $content.sidebarcomponent)
-	#end 
-	
-	#ifnotnull($forcedsidebarcomponent)
-		#set( $sidebarcomponent = $forcedsidebarcomponent )
-	#end
-	
-	#ifnull($sidebarcomponent)
-		#set( $sidebarcomponent = $userprofile.get("sidebarcomponent"))
-	#end
-	
-	##very first time
-	#if( !$sidebarcomponent && $modulehits.isEmpty() )
-		#set( $sidebarcomponent = "guide" ) 
-	#end
+		<div class="col-main-inner">
 
-		<div class="sidebar-togglers ">
-		#set( $menu = $mediaarchive.query("appsection").named("topmenuhits").all().sort("ordering").search($context) )
-		#if( $menu.isEmpty())
-		<a href="$!apphome/index.html"
-		#else
-		#set( $link = $menu.iterator().next())
-		<a href="$!apphome/views/modules/$link.get("toplevelentity")/index.html"
-		#end 
-			class="sidebar-toggler sidebar-toggler-show light" 
-			data-action="home" 
-			data-targetdiv="applicationcontent"
-			data-oemaxlevel="4"
-			data-sidebarcomponent="home"
-			data-updateurl="true"
-			data-sitetitle="[[Home]]"
-			 data-clearfilters="true"
-			title="[[eMediaWorkspace Home]]">
-		<i class="fas fa-home"></i> 
-		</a>
-		</div>
+			##force specific sidebar from URL only if sidebars open
+			#set($forcedsidebarcomponent = $context.getRequestParameter("sidebarcomponent"))
 
-		#if($user)
-		<div class="sidebar-togglers #if($sidebarcomponent == "guide") sidebar-selected #end">
-		<a href="#" 
-			class="sidebar-toggler sidebar-toggler-show light" 
-			data-action="show" 
-			data-targetdiv="col-sidebars"
-			data-sidebar="guide"
-			data-modulesearchhitssessionid="$modulehits.sessionId"
-			data-sitetitle="[[User Guide]]"
-			title="[[User Guide]]">
-		<i class="fas fa-question-circle"></i> 
-		</a>
-		</div>
-		#end
-		
-		#if(1==2 && $caneditadvancedsearch)
-		<div class="sidebar-togglers #if($sidebarcomponent == "filters") sidebar-selected #end">
-		<a href="#" 
-			class="sidebar-toggler sidebar-toggler-show light sidebar-$moduleid" 
-			data-action="show"
-			data-sidebar="filters"
-			#if($moduleid)
-				data-moduleid="$moduleid"
+			#ifnull($forcedsidebarcomponent)
+			#set($forcedsidebarcomponent = $content.sidebarcomponent)
+			#end
 
+			#ifnotnull($forcedsidebarcomponent)
+			#set( $sidebarcomponent = $forcedsidebarcomponent )
+			#end
+
+			#ifnull($sidebarcomponent)
+			#set( $sidebarcomponent = $userprofile.get("sidebarcomponent"))
+			#end
+
+			##very first time
+			#if( !$sidebarcomponent && $modulehits.isEmpty() )
+			#set( $sidebarcomponent = "guide" )
+			#end
+
+			<div class="sidebar-togglers ">
+				#set( $menu =
+				$mediaarchive.query("appsection").named("topmenuhits").all().sort("ordering").search($context) )
+				#if( $menu.isEmpty())
+				<a href="$!apphome/index.html" #else #set( $link=$menu.iterator().next()) <a
+					href="$!apphome/views/modules/$link.get(" toplevelentity")/index.html" #end
+					class="sidebar-toggler sidebar-toggler-show light" data-action="home"
+					data-targetdiv="applicationcontent" data-oemaxlevel="4" data-sidebarcomponent="home"
+					data-updateurl="true" data-sitetitle="[[Home]]" data-clearfilters="true"
+					title="[[eMediaWorkspace Home]]">
+					<i class="fas fa-home"></i>
+				</a>
+			</div>
+
+			#if($user)
+			<div class="sidebar-togglers #if($sidebarcomponent == " guide") sidebar-selected #end">
+				<a href="#" class="sidebar-toggler sidebar-toggler-show light" data-action="show"
+					data-targetdiv="col-sidebars" data-sidebar="guide"
+					data-modulesearchhitssessionid="$modulehits.sessionId" data-sitetitle="[[User Guide]]"
+					title="[[User Guide]]">
+					<i class="fas fa-question-circle"></i>
+				</a>
+			</div>
+			#end
+
+			#if(1==2 && $caneditadvancedsearch)
+			<div class="sidebar-togglers #if($sidebarcomponent == " filters") sidebar-selected #end">
+				<a href="#" class="sidebar-toggler sidebar-toggler-show light sidebar-$moduleid" data-action="show"
+					data-sidebar="filters" #if($moduleid) data-moduleid="$moduleid"
 					data-contenturl="$siteroot$apphome/views/modules/$moduleid/index.html?sidebarcomponent=filters"
-					data-oemaxlevel="4"
-					data-targetdiv="applicationcontent"
-
-			#else
-				data-targetdiv="col-sidebars"
-			#end
-			data-modulesearchhitssessionid="$!modulehits.sessionId"
-			data-sitetitle="[[Search]]"
-			title="[[Search]]">
-		<i class="fas fa-filter"></i>
-		</a>
-	
-		</div>
-	#end
-	
-		
-	#if( $canviewcategorynavcollections ) 	
-		<div class="sidebar-togglers #if($sidebarcomponent == "topics") sidebar-selected #end">
-		<a href="#" 
-			class="sidebar-toggler sidebar-toggler-show light" 
-			data-modulesearchhitssessionid="$!modulehits.sessionId"
-			data-action="show"
-			data-targetdiv="col-sidebars"
-			data-sidebar="topics"
-			data-sitetitle="[[Tags]]"
-		title="[[Tags]]">
-		<i class="fas fa-tags"></i>
-		</a>
-		</div>
-	#end
-	
-	#if( $canviewcategorynav || ( $librarycol && $canviewcategorynavcollections ) )
-			<div class="sidebar-togglers #if($sidebarcomponent == "categories") sidebar-selected #end">
-			<a href="#" 
-				class="sidebar-toggler sidebar-toggler-show light" 
-				data-action="show" 
-				data-targetdiv="col-sidebars"
-				data-sidebar="categories"
-				data-sitetitle="[[Cloud Folders]]"
-				data-modulesearchhitssessionid="$!modulehits.sessionId"
-			title="[[Cloud Folders]]">
-			<i class="fas fa-folder"></i>
-			</a>
+					data-oemaxlevel="4" data-targetdiv="applicationcontent" #else data-targetdiv="col-sidebars" #end
+					data-modulesearchhitssessionid="$!modulehits.sessionId" data-sitetitle="[[Search]]"
+					title="[[Search]]">
+					<i class="fas fa-filter"></i>
+				</a>
 			</div>
-	#end
-		
-	#if( $canviewopencollections )
-		<div class="sidebar-togglers #if($sidebarcomponent == "libraries") sidebar-selected #end">
-		<a href="#" 
-			class="sidebar-toggler sidebar-toggler-show light" 
-			data-action="show" 
-			data-targetdiv="col-sidebars"
-			data-sidebar="libraries"
-			data-modulesearchhitssessionid="$!modulehits.sessionId"
-			data-sitetitle="[[Albums]]"
-		title="[[Recent Albums]]">
-		<i class="fas fa-sitemap"></i> 
-		</a>
-		</div>
-	#end
-		
-	#if($desktop)
-		<div class="sidebar-togglers #if($sidebarcomponent == "localdrives") sidebar-selected #end sidebartogglerlocaldrives">
-			<a href="#" 
-				id="sidebarUserUploads"
-				class="sidebar-toggler sidebar-toggler-show light" 
-				data-action="show" 
-				data-targetdiv="col-sidebars"
-				data-sidebar="localdrives"
-				data-modulesearchhitssessionid="$modulehits.sessionId"
-			title="[[Desktop Uploads]]">
-			<i class="fas fa-cloud-upload-alt"></i>
-			</a>
-		</div>
+			#end
 
-	
-		#if($user.getId())
-			<div class="sidebar-togglers #if($sidebarcomponent == "userdownloads") sidebar-selected #end">
-			<a href="#" 
-				class="sidebar-toggler sidebar-toggler-show light" 
-				data-action="show" 
-				data-targetdiv="col-sidebars"
-				data-sidebar="userdownloads"
-				data-modulesearchhitssessionid="$!modulehits.sessionId"
-			title="[[Desktop Downloads]]">	
-			##		<div class="downloadsUpdateWrapper">
-			##			<div class="downloadsUpdate">
-			##				#if($user && $sidebarcomponent != "userdownloads")
-			##					#set($recentdownloads = $mediaarchive.query("userdownloads").named("udownloadshits").exact("user",$user.getId()).sort("dateDown").search($context))
-			##					$!recentdownloads.size()
-			##				#end
-			##			</div>
-			##		</div>
+
+			#if( $canviewcategorynavcollections )
+			<div class="sidebar-togglers #if($sidebarcomponent == " topics") sidebar-selected #end">
+				<a href="#" class="sidebar-toggler sidebar-toggler-show light"
+					data-modulesearchhitssessionid="$!modulehits.sessionId" data-action="show"
+					data-targetdiv="col-sidebars" data-sidebar="topics" data-sitetitle="[[Tags]]" title="[[Tags]]">
+					<i class="fas fa-tags"></i>
+				</a>
+			</div>
+			#end
+
+			#if( $canviewcategorynav || ( $librarycol && $canviewcategorynavcollections ) )
+			<div class="sidebar-togglers #if($sidebarcomponent == " categories") sidebar-selected #end">
+				<a href="#" class="sidebar-toggler sidebar-toggler-show light" data-action="show"
+					data-targetdiv="col-sidebars" data-sidebar="categories" data-sitetitle="[[Cloud Folders]]"
+					data-modulesearchhitssessionid="$!modulehits.sessionId" title="[[Cloud Folders]]">
+					<i class="fas fa-folder"></i>
+				</a>
+			</div>
+			#end
+
+			#if( $canviewopencollections )
+			<div class="sidebar-togglers #if($sidebarcomponent == " libraries") sidebar-selected #end">
+				<a href="#" class="sidebar-toggler sidebar-toggler-show light" data-action="show"
+					data-targetdiv="col-sidebars" data-sidebar="libraries"
+					data-modulesearchhitssessionid="$!modulehits.sessionId" data-sitetitle="[[Albums]]"
+					title="[[Recent Albums]]">
+					<i class="fas fa-sitemap"></i>
+				</a>
+			</div>
+			#end
+
+			#if($desktop)
+			<div class="sidebar-togglers #if($sidebarcomponent == " localdrives") sidebar-selected #end
+				sidebartogglerlocaldrives">
+				<a href="#" id="sidebarUserUploads" class="sidebar-toggler sidebar-toggler-show light"
+					data-action="show" data-targetdiv="col-sidebars" data-sidebar="localdrives"
+					data-modulesearchhitssessionid="$modulehits.sessionId" title="[[Desktop Uploads]]">
+					<i class="fas fa-cloud-upload-alt"></i>
+				</a>
+			</div>
+
+
+			#if($user.getId())
+			<div class="sidebar-togglers #if($sidebarcomponent == " userdownloads") sidebar-selected #end">
+				<a href="#" class="sidebar-toggler sidebar-toggler-show light" data-action="show"
+					data-targetdiv="col-sidebars" data-sidebar="userdownloads"
+					data-modulesearchhitssessionid="$!modulehits.sessionId" title="[[Desktop Downloads]]">
+					## <div class="downloadsUpdateWrapper">
+						## <div class="downloadsUpdate">
+							## #if($user && $sidebarcomponent != "userdownloads")
+							## #set($recentdownloads =
+							$mediaarchive.query("userdownloads").named("udownloadshits").exact("user",$user.getId()).sort("dateDown").search($context))
+							## $!recentdownloads.size()
+							## #end
+							## </div>
+						## </div>
 					<i class="fas fa-cloud-download-alt"></i>
-					</a>
-					</div>
-		#end
-#end
-	
-	#if($canviewmodulelist)
-		#if( $userprofile.getModules().size() > 1 )
+				</a>
+			</div>
+			#end
+			#end
+
+			#if($canviewmodulelist)
+			#if( $userprofile.getModules().size() > 1 )
 			#set( $urlbase = "$siteroot$applink/views/modules" )
-		
-		
-			<div class="sidebar-togglers #if($sidebarcomponent == "addentity") sidebar-selected #end">
-			<a href="#" 
-				class="ajax sidebar-toggler sidebar-toggler-show light" 
-				data-modulesearchhitssessionid="$!modulehits.sessionId"
-				data-action="show"
-				data-targetdiv="col-sidebars"
-				data-sidebar="addentity"
-			title="[[Database]]">
-			<i class="fas fa-database"></i>
-			</a>
+
+
+			<div class="sidebar-togglers #if($sidebarcomponent == " addentity") sidebar-selected #end">
+				<a href="#" class="ajax sidebar-toggler sidebar-toggler-show light"
+					data-modulesearchhitssessionid="$!modulehits.sessionId" data-action="show"
+					data-targetdiv="col-sidebars" data-sidebar="addentity" title="[[Database]]">
+					<i class="fas fa-database"></i>
+				</a>
 			</div>
-		#end
-	#end
-	
-	#if( $canviewsettings ) 
-			<div class="sidebar-togglers #if($sidebarcomponent == "settings") sidebar-selected #end">
-			<a href="#" 
-				class="sidebar-toggler sidebar-toggler-show light" 
-				data-action="show" 
-				data-targetdiv="col-sidebars"
-				data-sidebar="settings"
-				data-modulesearchhitssessionid="$!modulehits.sessionId"
-				data-sitetitle="[[Settings]]"
-			title="[[Settings]]">
-			<i class="fas fa-cog"></i>
-			</a>
+			#end
+			#end
+
+			#if( $canviewsettings )
+			<div class="sidebar-togglers #if($sidebarcomponent == " settings") sidebar-selected #end">
+				<a href="#" class="sidebar-toggler sidebar-toggler-show light" data-action="show"
+					data-targetdiv="col-sidebars" data-sidebar="settings"
+					data-modulesearchhitssessionid="$!modulehits.sessionId" data-sitetitle="[[Settings]]"
+					title="[[Settings]]">
+					<i class="fas fa-cog"></i>
+				</a>
 			</div>
-		#end
-		
+			#end
+
+		</div>
 	</div>
-	</div>
-	
-	
+
+
 	#if($cantogglesidebar)
-	
-		#if($sidebarcomponent)
-			#if($sidebarcomponent == "libraries" )
-				#set($sidebarurl = "$apphome/components/sidebars/libraries/index.html")
-			#end
-		
-			#if($sidebarcomponent == "guide" )
-				#set($sidebarurl = "$apphome/components/sidebars/guide/index.html")
-			#end
-		
-			
-			#if($sidebarcomponent == "filters" )
-				#set($sidebarurl = "$apphome/components/sidebars/filters/index.html")
-			#end
-			
-			#if($sidebarcomponent == "topics" )
-				#set($sidebarurl = "$apphome/components/sidebars/tags/index.html")
-			#end
-			
-			#if($sidebarcomponent == "faceprofiles" )
-				#set($sidebarurl = "$apphome/components/sidebars/faceprofiles/index.html")
-			#end
-			
-			#if($sidebarcomponent == "favorites" )
-				#set($sidebarurl = "$applink/views/modules/modulesearch/favorites.html?clearselection=true&clearfilters=true")
-			#end
-			
-			
-			#if($sidebarcomponent == "categories" )
-				#if( $canviewcategorynav || ( $librarycol && $canviewcategorynavcollections ) )
-					#set($sidebarurl = "$apphome/components/sidebars/categories/index.html")
-				#end
-			#end
-			
-			#if($sidebarcomponent == "localdrives" )   
-				#if( $canviewcategorynav)
-					#set($sidebarurl = "$apphome/components/sidebars/localdrives/index.html")
-				#end
-			#end
-		
-			#if($sidebarcomponent == "addentity" )
-				#set($sidebarurl = "$apphome/components/sidebars/addentity/index.html?selectedmodule=$!module.id")
-			#end
-		
-			#if($sidebarcomponent == "userdownloads" )
-				#set($sidebarurl = "$apphome/components/sidebars/userdownloads/index.html")
-			#end
-			
-			#if($sidebarcomponent == "settings" )
-				#set($sidebarurl = "$apphome/components/sidebars/settings/index.html")
-			#end
-		
-		
-			##SIDEBAR WIDTH
-			
-			#set( $sidebarwidth = $userprofile.get("sidebarwidth"))
-		
-			#if($sidebarurl)
-				#if($sidebarwidth=='' || $sidebarwidth=='undefined')
-					#set($sidebarwidth = 280)
-				#end
-			
-			
-				<div class="col-main col-mainsidebar #if($sidebarwidth && $sidebarwidth>320)sidebarwide #end"   
-				 style="#if($sidebarwidth) width:${sidebarwidth}px;#end"
-				 data-sidebarwidth="$!sidebarwidth">
-				<div id="col-$sidebarcomponent" class="col-left col-$sidebarcomponent">
-				 	<div class="col-main-inner">
-				 	
-					$pages.include($sidebarurl, $context)
-					<div class="colslidercontainer">
-						<a href="#" class="col-resize" title="[[Resize Sidebar]]"></a>
-					</div>
-					</div>
+
+	#if($sidebarcomponent)
+	#if($sidebarcomponent == "libraries" )
+	#set($sidebarurl = "$apphome/components/sidebars/libraries/index.html")
+	#end
+
+	#if($sidebarcomponent == "guide" )
+	#set($sidebarurl = "$apphome/components/sidebars/guide/index.html")
+	#end
+
+
+	#if($sidebarcomponent == "filters" )
+	#set($sidebarurl = "$apphome/components/sidebars/filters/index.html")
+	#end
+
+	#if($sidebarcomponent == "topics" )
+	#set($sidebarurl = "$apphome/components/sidebars/tags/index.html")
+	#end
+
+	#if($sidebarcomponent == "faceprofiles" )
+	#set($sidebarurl = "$apphome/components/sidebars/faceprofiles/index.html")
+	#end
+
+	#if($sidebarcomponent == "favorites" )
+	#set($sidebarurl = "$applink/views/modules/modulesearch/favorites.html?clearselection=true&clearfilters=true")
+	#end
+
+
+	#if($sidebarcomponent == "categories" )
+	#if( $canviewcategorynav || ( $librarycol && $canviewcategorynavcollections ) )
+	#set($sidebarurl = "$apphome/components/sidebars/categories/index.html")
+	#end
+	#end
+
+	#if($sidebarcomponent == "localdrives" )
+	#if( $canviewcategorynav)
+	#set($sidebarurl = "$apphome/components/sidebars/localdrives/index.html")
+	#end
+	#end
+
+	#if($sidebarcomponent == "addentity" )
+	#set($sidebarurl = "$apphome/components/sidebars/addentity/index.html?selectedmodule=$!module.id")
+	#end
+
+	#if($sidebarcomponent == "userdownloads" )
+	#set($sidebarurl = "$apphome/components/sidebars/userdownloads/index.html")
+	#end
+
+	#if($sidebarcomponent == "settings" )
+	#set($sidebarurl = "$apphome/components/sidebars/settings/index.html")
+	#end
+
+
+	##SIDEBAR WIDTH
+
+	#set( $sidebarwidth = $userprofile.get("sidebarwidth"))
+
+	#if($sidebarurl)
+	#if($sidebarwidth=='' || $sidebarwidth=='undefined')
+	#set($sidebarwidth = 280)
+	#end
+
+
+	<div class="col-main col-mainsidebar #if($sidebarwidth && $sidebarwidth>320)sidebarwide #end"
+		style="#if($sidebarwidth) width:${sidebarwidth}px;#end" data-sidebarwidth="$!sidebarwidth">
+		<div id="col-$sidebarcomponent" class="col-left col-$sidebarcomponent">
+			<div class="col-main-inner">
+
+				$pages.include($sidebarurl, $context)
+				<div class="colslidercontainer">
+					<a href="#" class="col-resize" title="[[Resize Sidebar]]"></a>
 				</div>
-				</div>
-			#end
-		
-		#end
+			</div>
+		</div>
+	</div>
+	#end
+
+	#end
 	#end
 
 </div>
-

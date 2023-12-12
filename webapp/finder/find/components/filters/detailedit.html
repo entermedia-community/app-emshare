@@ -45,9 +45,10 @@
 		#end	
 		<input name="${detail.getId()}.searchtype" value="${detail.getSearchType()}" type="hidden" />
 		<div class="filter-box">
+			#set($filterboxid = "$!{idprefix}filterbox${detail.getId()}")
 			<div class="filter-box-header">
-					#set($filterboxid = "$!{idprefix}filterbox${detail.getId()}")
-					<span class="toggle-filter sidetoggle" data-target="$filterboxid">
+				<div class="d-flex align-items-center toggle-filter sidetoggle flex-grow-1" data-target="$filterboxid">
+					<span class="mr-2" >
 					<i class="caret fas 
 							#set($preference = '#set($selectedpreference = ' + '$!userprofile.minimize'  + $filterboxid + ')')
 							#evaluate($preference)
@@ -60,8 +61,8 @@
 						  		 fa-caret-right 
 						  	#end"></i>
 					</span> 
-					
-					$!detail.getText($context)
+					<p class="m-0 flex-grow-1">$!detail.getText($context)</p>
+					</div>
 					##if ($edit == "true")
 						<a class="filter-box-remove float-right" title="[[Remove Filter]]" href="#" 
 							onclick="javascript:deleteFilterField('$!{detail.getSearchType()}','$!{detail.id}'); return false;">
