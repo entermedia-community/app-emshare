@@ -13,7 +13,9 @@ $context.putPageValue("cdnprefix",$siteroot)
 #if($asset.fileformat=="gif")
 	$context.putPageValue("useoriginal", "true")
 #end
-
-$pages.include("/${mediadbappid}/services/module/asset/players/large2/${type}.html", $context)
-	
+#if($type)
+	$pages.include("/${mediadbappid}/services/module/asset/players/large2/${type}.html", $context)
+#else
+	<div style="text-align: center; padding:20px">[[No viewer for asset type]] ($type)</div>
+#end
 </div>

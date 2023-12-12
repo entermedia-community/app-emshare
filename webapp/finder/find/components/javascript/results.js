@@ -486,8 +486,8 @@ jQuery(document).ready(function(url,params)
 		}
 		else
 		{
-			$(document).trigger("domchanged");
-			$(window).trigger( "resize" );
+			//$(document).trigger("domchanged");
+			//$(window).trigger( "resize" );
 			// gridResize();
 		}
 		var lastscroll = getOverlay().data("lastscroll");
@@ -1599,6 +1599,10 @@ gridResize = function()
 	var grid = getCurrentGrid();
 	if( !grid )
 	{
+		return;
+	}
+	
+	if (!grid.is("visible")) {
 		return;
 	}
 	
