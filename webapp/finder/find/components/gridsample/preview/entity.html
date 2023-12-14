@@ -110,92 +110,86 @@ $context.putPageValue("topmoduleid", $moduleid)
 	data-oemaxlevel="1"
 	data-url="$componenthome/gridsample/preview/entity.html">
 	
-	<div class="entityclose largeicon"><span title="[[Esc to Close]]" class="fas fa-window-close"></span></div>
-	
 	<div class="entity-wraper">
-	<h2>
-	<a href="#" id="backbtn#eid($!dialogtabid)" class="entitydialogback" style="display: none;">
-	<i class="fas fa-arrow-left"></i></a>
 	
-	#set($moduleicon = "entity")
-   	#if ($module.moduleicon)
-   		#set($moduleicon = $module.moduleicon)
-   	#end
-   	
-   	<img src="$siteroot$apphome/theme/images/entity/${moduleicon}.svg" style="height: 22px;" /> 
-	#text($module) - 
-	
-	#if($moduleid == "faceprofilegroup")
-		#if($entity.entitypeople)
-			#set($name = $searcherManager.getValue($searcher, $entity, "name"))
-			#set($name = "[[Profile]] $name")
-		#else
-			#set($name = "$entity.samplecount")
-		#end
-	#else
-	
-		#if($entity.getName($context))
-				#set($name = $!entity.getName($context))
-		#else 
-			#if($addnew=='true')
-				#set($name = "[[Add New]]")
-				
-				$context.putPageValue("addnew", $addnew)
+	<div class="d-flex align-items-center justify-content-between" style="margin-bottom: 8px;">
+		<h2>
+			<a href="#" id="backbtn#eid($!dialogtabid)" class="entitydialogback" style="display: none;">
+				<i class="fas fa-arrow-left"></i>
+			</a>
+		
+			#set($moduleicon = "entity")
+			#if ($module.moduleicon)
+				#set($moduleicon = $module.moduleicon)
 			#end
-		#end
-	#end
-	
-	#text($name)
-	
-	</h2>
-	
-	
 		
-	<div class="entity-actions-bar">
-		##if($canviewsettings && $entityid)
-		##<span >Id: $entityid</span>
-		##end
-		
-		$context.putPageValue("itemid", $entity.id)
-		$pages.include("$componenthome/gridsample/favorites.html?id=$entity.id&moduleid=$moduleid", $context)
-		
+			<img src="$siteroot$apphome/theme/images/entity/${moduleicon}.svg" style="height: 22px;" /> 
+			#text($module) - 
+			
+			#if($moduleid == "faceprofilegroup")
+				#if($entity.entitypeople)
+					#set($name = $searcherManager.getValue($searcher, $entity, "name"))
+					#set($name = "[[Profile]] $name")
+				#else
+					#set($name = "$entity.samplecount")
+				#end
+			#else
+			
+				#if($entity.getName($context))
+						#set($name = $!entity.getName($context))
+				#else 
+					#if($addnew=='true')
+						#set($name = "[[Add New]]")
+						
+						$context.putPageValue("addnew", $addnew)
+					#end
+				#end
+			#end
+			
+			#text($name)
+		</h2>
 
+		<div class="entity-actions-bar" style="margin-bottom: 10px;">
+			##if($canviewsettings && $entityid)
+			##<span >Id: $entityid</span>
+			##end
 			
-		#if($permissions.can($moduleid, "edit"))
-		<a href="$applink/views/modules/$moduleid/edit/editdialog.html?id=${entityid}&viewid=entitypermissions"
-			class="emdialog btn btn-sm btn-secondary"
-			data-hidefooter="true"
-			data-dialogid="entitypermissionsdialog"
-			title="#text($module)\ #text($entity) [[Permissions]]"><i class="fas fa-user-lock"></i> [[Permissions]]</a>
-		#end
-		#if($canviewsettings)	
-		<a href="$applink/views/settings/modules/$moduleid/info/module-setup.html"
-			class="ajax btn btn-sm btn-secondary"
-			data-targetdiv="applicationcontent"
-			data-oemaxlevel="5"
-			data-updateurl="true"
-			data-closedialog="true"
-			data-sidebarcomponent="settings"
-			data-scrolltotop="true"
-			title="#text($module) [[Settings]]"><i class="fas fa-cog"></i> [[Settings]]</a>
-		#end
+			$context.putPageValue("itemid", $entity.id)
+			$pages.include("$componenthome/gridsample/favorites.html?id=$entity.id&moduleid=$moduleid", $context)
 			
-		#ifnotnull($defaultfolder)
-			
-			#if($permissions.can($moduleid, "share"))
-			<a href="$applink/components/share/entity.html?moduleid=$moduleid&categoryid=${defaultfolder.getId()}" 
-			class="emdialog btn btn-sm btn-secondary"
-			data-dialogid="entitysharedialog"
-			data-hidefooter="true"
-			title="[[Share]] #text($entity.name)"><i class="fas fa-share-alt"></i></a>
+			#if($permissions.can($moduleid, "edit"))
+			<a href="$applink/views/modules/$moduleid/edit/editdialog.html?id=${entityid}&viewid=entitypermissions"
+				class="emdialog btn btn-sm btn-brand"
+				data-hidefooter="true"
+				data-dialogid="entitypermissionsdialog"
+				title="#text($module)\ #text($entity) [[Permissions]]"><i class="fas fa-user-lock"></i> [[Permissions]]</a>
 			#end
-		
-		#end
-		
-		
-		
+
+			#if($canviewsettings)	
+			<a href="$applink/views/settings/modules/$moduleid/info/module-setup.html"
+				class="ajax btn btn-sm btn-brand"
+				data-targetdiv="applicationcontent"
+				data-oemaxlevel="5"
+				data-updateurl="true"
+				data-closedialog="true"
+				data-sidebarcomponent="settings"
+				data-scrolltotop="true"
+				title="#text($module) [[Settings]]"><i class="fas fa-cog"></i> [[Settings]]</a>
+			#end
+				
+			#ifnotnull($defaultfolder)
+				#if($permissions.can($moduleid, "share"))
+				<a href="$applink/components/share/entity.html?moduleid=$moduleid&categoryid=${defaultfolder.getId()}" 
+				class="emdialog btn btn-sm btn-brand"
+				data-dialogid="entitysharedialog"
+				data-hidefooter="true"
+				title="[[Share]] #text($entity.name)"><i class="fas fa-share-alt"></i></a>
+				#end
+			#end
+
+			<div class="entityclose ml-2"><span title="[[Esc to Close]]" class="close-button white"></span></div>
+		</div>
 	</div>
-	
 	
 		
 		<nav>

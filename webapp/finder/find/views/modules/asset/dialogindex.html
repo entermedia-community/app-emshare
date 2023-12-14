@@ -102,10 +102,24 @@ $context.putPageValue("dialogresults", true)
 		
 		#if($dialogtreestatus == "open")
 			<div class="embedmediacol embedmediacol-tree embedtreestatus$dialogtreestatus">
-				<div class="embedmediacolactions">
+				<div class="embedmediacolactions d-flex align-items-center">
+					<a href="" class="d-flex align-items-center toggledialogtree toggledialogclose"
+					
+					data-targetdiv="dialogassetresultscontainer"
+					data-oemaxlevel="1"
+					data-url="$applink/views/modules/asset/dialogindex.html"
+					data-categoryid="$categoryid"
+					data-topmoduleid="$!topmoduleid"
+					data-rootcategory="$!rootcategory"
+					data-treestatus="close"
+					title="[[Collapse Tree]]">
+						<i class="fas fa-angle-double-left"></i>
+						<h3 class="embedmediacolheader">[[Folders]]</h3>
+					</a>
+
 					#if($topmodule.getBoolean("enableuploading") && $permissions.can($topmoduleid, "upload_files"))
 					<a href="" 
-						class="float-left createfoldertree"
+						class="createfoldertree"
 						data-tree="entitymediatreetree" 
 						style="width:32px;" 
 						title="[[Add Sub-Folder]]"><i class="fas fa-folder-plus"></i></a>
@@ -117,23 +131,7 @@ $context.putPageValue("dialogresults", true)
 							data-oemaxlevel="1"
 							style="width:32px;" title="[[Upload]]"><i class="fas fa-upload"></i></a>
 					#end
-					
-					<a href="" 
-					class="toggledialogtree toggledialogclose"
-					
-					data-targetdiv="dialogassetresultscontainer"
-					data-oemaxlevel="1"
-					data-url="$applink/views/modules/asset/dialogindex.html"
-					data-categoryid="$categoryid"
-					data-topmoduleid="$!topmoduleid"
-					data-rootcategory="$!rootcategory"
-					data-treestatus="close"
-					title="[[Collapse Tree]]">
-					<i class="fas fa-angle-double-left "></i>
-					</a>
-				</div>		
-						
-				<div class="embedmediacolheader">[[Folders]]</div>
+				</div>
 				
 				
 				<div class="embedmediatree">

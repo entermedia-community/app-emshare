@@ -17,7 +17,7 @@ $context.putPageValue("title",$title)
 
 
 
-<div class="emthumbbox embox$thumbsize resultsassetcontainer" id="cell${catalogid}_${hit.id}">
+<div class="emthumbbox embox$thumbsize resultsassetcontainer" id="cell${catalogid}_${hit.id}"> 
 ##	#if($showtoolbar)
 	<div class="gallery-checkbox resultsselection">
 		<input type="checkbox" 
@@ -28,43 +28,18 @@ $context.putPageValue("title",$title)
 				data-dataid="${hit.id}" />
 	</div>
 ##	#end
+<div class="d-flex align-items-center assetVoteTool">
+	$pages.include("$componenthome/results/badges.html", $context)
+
 	$context.putPageValue("assetid", $hit.id) 
-	
 	#if( $canviewvoting )
-	<div class="assetVoteTool gallerycell-favorite">
+	<div class="gallerycell-favorite">
 		<div id="galleryassetfavorite-${hit.id}" class="media-info-icons">
         	 $pages.include("$apphome/views/modules/asset/editor/favorite/index.html?targetdiv=galleryassetfavorite", $context)
    		</div>
 	</div>
-	#end 
-	<a class="hovering stackedplayer" href="$click"  data-assetid="$hit.id">
-		<div class="emthumbimage em$thumbsize assetdraggable"
-			data-assetid="${hit.id}" title="$sourcepath">
-			$context.putPageValue("thumbsize", "mediumplus" )
-   	    	#if(!$type)
-   	    		#set( $type = "mime" )
-   	    	#elseif( $type =="video")
-   	    		#set( $type = "videothumbnail" )
-   	    	#end
-			$pages.include("$componenthome/results/thumbnails/${type}.html", $context)
-			$pages.include("$componenthome/results/badges.html", $context)
-			
-			
-		</div>
-	</a> 
-		 
-	#if( $showcaption )
-	<div class="gallery-caption">
-		<div class="gallery-field-info">
-			  	 
-
-				<a href="$click" class="stackedplayer" title="#esc($title)"  data-assetid="$hit.id"> #esc($title)</a>
-		</div>
-		###if($canviewbasket)
-		##$pages.include("$componenthome/basket/toggleitem.html", $context)
-		###end
-		
-		#if($canquickdownload)
+	#end
+			#if($canquickdownload)
 	    #if( $desktop )
         	<a href="#" class="emdesktopdownload gallerycell-download" data-assetid="$hit.id" title="[[Download]] $!title">
         	<i class="fas fa-download"> </i>
@@ -80,6 +55,30 @@ $context.putPageValue("title",$title)
         	</a>
        	#end
        #end
+</div>
+	<a class="hovering stackedplayer" href="$click"  data-assetid="$hit.id">
+		<div class="emthumbimage em$thumbsize assetdraggable"
+			data-assetid="${hit.id}" title="$sourcepath">
+			$context.putPageValue("thumbsize", "mediumplus" )
+   	    	#if(!$type)
+   	    		#set( $type = "mime" )
+   	    	#elseif( $type =="video")
+   	    		#set( $type = "videothumbnail" )
+   	    	#end
+			$pages.include("$componenthome/results/thumbnails/${type}.html", $context)
+		</div>
+	</a> 
+		 
+	#if( $showcaption )
+	<div class="gallery-caption">
+		<div class="gallery-field-info">
+			  	 
+
+				<a href="$click" class="stackedplayer" title="#esc($title)"  data-assetid="$hit.id"> #esc($title)</a>
+		</div>
+		###if($canviewbasket)
+		##$pages.include("$componenthome/basket/toggleitem.html", $context)
+		###end
 	</div>
 	#end
 </div>

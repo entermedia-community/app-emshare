@@ -3930,7 +3930,13 @@ var resizecolumns = function () {
   $(".autostickywidthX").css("min-width", headerw + "px");
 
   //filters
-  $(".emresultscontainer").css("min-width", headerw - 300 + "px");
+  var emresultscontainer = $(".emresultscontainer");
+  emresultscontainer.each(function () {
+    if ($(this).attr("id") !== "resultsviewcontainerasset") {
+      $(this).css("min-width", headerw - 300 + "px");
+    }
+  });
+  // $("#resultsviewcontainerasset").css("min-width", windoww * 0.92 - 300 + "px");
 
   if (columnsheight < windowh) {
     columnsheight = windowh - 50;

@@ -108,15 +108,15 @@
 		<div class="m-1 rounded masonry-grid-cell stackedplayer-cell assetdraggable ui-draggable resultsassetcontainer #if($isselected) emrowselected #end" 
 			 id="gallerycell_${hit.id}"
 			 data-assetid="$hit.id" 
-			 data-width="$assetwidth" 
-			 style="height:180px;width:250px;"
+			 data-width="$assetwidth"
 			 data-height="$assetheight"
 			 data-pagenum="$hits.getPage()"
 			 >
-			<div class="grid-cell-hover"></div>
+			<div class="grid-cell-hover" style="opacity: 1;"></div>
 			<div class="grid-gallery-checkbox resultsselection">
 				<input type="checkbox" class="selectionbox" name="count" value="${hit.id}" 
 			        	#if($isselected) checked #end data-dataid="${hit.id}" />          
+						<div class="selected-overlay"></div>
 			</div>
 			    	#if(!$rendertype || $type =="rendertype")
 	    	    		#set( $rendertype = "mime" )
@@ -132,35 +132,36 @@
 		    	 	<div class="grid-caption grid-caption-${rendertype} #if($rendertype=="default") grid-caption-show #end draggholder ui-draggable-handle" data-assetid="$hit.id">
 		    	 		
 				         <a class="stackedplayer grid-caption-link" 
-				         	id="clickid${hit.id}" data-assetid="$hit.id" href="#" 
+				         	id="clickid${hit.id}" data-assetid="$hit.id" href="#"
 				         	title="#esc($!title)">
 					        $context.putPageValue("data",$asset)	
 							$context.putPageValue("searcher",$mediaarchive.getAssetSearcher() )	
 							$context.putPageValue("view", "asset/stackedgallery")
 							$pages.include("/$applicationid/components/xml/detailviewer-stackedgallery.html", $context)
 						</a>
-				        <div class="grid-gallery-footer"> 
-		        	   	$pages.include("$componenthome/results/badges.html", $context)
-		        	   		 ##look for datefields
+						$pages.include("$componenthome/results/badges.html", $context)
+				        <div class="grid-gallery-footer d-flex align-items-center justify-content-between"> 
+		        	   		##look for datefields
 							#foreach( $detail in $details )
 								#if($detail.getId() == "assetaddeddate")
 									#set( $assetdate = $hit.getValue($detail.getId()))
 								#end
 							#end
-							
 							#ifnotnull ($assetdate)
-					         	$!context.getDate($assetdate)
-					         #end
-				        	 <div class="float-right">
+								<span>
+									$!context.getDate($assetdate)
+								</span>
+					        #end
+				        	<div class="d-flex align-items-center">
 								#if($canaddtofavorites)
-				  	        	<div id="gsassetfavorite-${hit.id}" class="media-info-icons">
-						        	 $pages.include("$apphome/views/modules/asset/editor/favorite/index.html?targetdiv=gsassetfavorite", $context)
-						   		</div>
+									<div id="gsassetfavorite-${hit.id}" class="media-info-icons mr-2">
+										$pages.include("$apphome/views/modules/asset/editor/favorite/index.html?targetdiv=gsassetfavorite", $context)
+									</div>
 				  	        	#end
 				  	        	#if($canquickdownload)
 					  	        	#if( $desktop )
 							        	<a href="#" class="emdesktopdownload grid-gallery-download" data-assetid="$hit.id" title="[[Download]] #esc($!title)">
-							        	<i class="fas fa-download"> </i>
+							        		<i class="fas fa-download"></i>
 							        	</a>
 						        	#else
 										#set($dlink = $mediaarchive.asLinkToOriginal($hit))
@@ -169,17 +170,13 @@
 											#set($dlink = "$dlink&collectionid=$!{collectionid}")
 										#end
 							        	<a href="$dlink" class="grid-gallery-download" data-assetid="$hit.id" title="[[Download]] #esc($!title)">
-							        	<i class="fas fa-download"> </i>
+							        		<i class="fas fa-download"> </i>
 							        	</a>
 						        	#end
 						        #end 
-						        </div>
+						    </div>
 			        	</div>
 			       </div>
-			 
-			 
-			        	
-			  
 			</div>
 	       #set ( $count = $count + 1) 
 	   
@@ -188,4 +185,3 @@
 	<div class="clearfix"></div>
 	</div>
 ##end
-	
