@@ -1,13 +1,7 @@
-
-
 #if( $user && $hits.size()>0 && $hits.hasSelections() )
 
 <li class="dropdown">
-
-
-
-	<a class="dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="navbarActionsDropdown">[[Actions]]
-	</a> 
+	<a class="dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="navbarActionsDropdown">[[Actions]]</a> 
 		<div class="dropdown-menu" aria-labelledby="navbarActionsDropdown">
 		#if(!$canforcebasiccollections)
 		#if( $caneditcollection || $caneditallassets )
@@ -101,11 +95,35 @@
 				<a class="dropdown-item" href="#">[[Download]]</a>
 			#end
 		#end
-
-
 		</div>
-	
 </li>
+
+<li class=" dropdown">
+	<a class="dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="navbarActionsDropdown">[[Add to]]</a>
+	<div class="dropdown-menu">
+		#foreach ( $amodule in $userprofile.getEntities() )
+  		#set($amoduleid = $amodule.getId())
+  		#if($amodule.getBoolean("enableuploading"))
+		  	#if($permissions.can($amoduleid, "create") && $amoduleid!="faceprofilegroup" && $amoduleid!="asset" && $amoduleid!="modulesearch")
+		  		#set($entityrendertype = "entity")
+				#if ($amodule.modulerendertype)
+					#set($entityrendertype = $amodule.modulerendertype)
+				#end
+		 		#set($addtourl = "$siteroot$applink/views/modules/${amoduleid}/components/entities/search/searchpicker.html")
+		 		#ifnotnull($topentityid)
+		 			#set($addtourl = "$addurl&fieldexternalid=${topmodule.getId()}&fieldexternalvalue=${topentityid}&reloadtargets=topmodulecontainer")
+		 		#end
+		    	<a class="dropdown-item emdialog" 
+		    		data-dialogid="addtoentity"
+		    		data-hidefooter="true"
+		    		data-assethitssessionid="$hits.getSessionId()"
+		    		href="$addtourl" >#text($amodule)</a>
+		    #end
+	    #end
+    #end
+	</div>
+</li>
+
 #end
 
 

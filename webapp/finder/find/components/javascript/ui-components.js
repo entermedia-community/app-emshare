@@ -1604,6 +1604,8 @@ uiload = function () {
 
   lQuery(".pickcategorylink").livequery("click", function () {});
 
+
+
   lQuery(".assetpickerselectrow").livequery("click", function () {
     var assetid = $(this).data("assetid");
     jQuery("#" + targetdiv).attr("value", assetid);
@@ -1637,6 +1639,51 @@ uiload = function () {
       }
     }
   });
+  
+  
+  
+  //newpicker
+  lQuery(".pickerselectrow").livequery("click", function () {
+	var row = $(this).parent('tr');
+    var pickerresults = $(this).closest(".pickerresults");
+    
+    if (pickerresults.length) {
+      
+      var options = pickerresults.data();
+      //options.assetid = assetid;
+	
+      options.id  = row.data("id");
+      var clickurl = pickerresults.data("clickurl");
+      if (clickurl && clickurl != "") {
+        var targetdiv = pickerresults.data("clicktargetdiv");
+        if (targetdiv != "") {
+          jQuery.ajax({
+            url: clickurl,
+            data: options,
+            success: function (data) {
+              if (!targetdiv.jquery) {
+                targetdiv = $("#" + targetdiv);
+              }
+              //ToDo make it generic
+              var targettype = pickerresults.data("clicktargettype");
+              if(targettype == "message") {
+				  targetdiv.prepend(data);
+				  targetdiv.find(".fader").fadeOut(3000, "linear");
+			  }
+			  else {
+				  //regular targetdiv
+				  targetdiv.replaceWith(data);
+			  }
+              
+              closeemdialog(pickerresults.closest(".modal"));
+            },
+          });
+        }
+        return;
+      }
+    }
+  });
+  
 
   showmodal = function (emselecttable, url) {
     var id = "modals";

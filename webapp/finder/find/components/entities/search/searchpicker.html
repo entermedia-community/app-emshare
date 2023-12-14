@@ -1,0 +1,82 @@
+<div  id="pickersearchentities" >
+	 
+	#set( $searcher = $mediaarchive.getSearcher($searchtype) )
+	$context.putPageValue("searcher",$searcher)
+	
+	#set($assethitssessionid = $context.getRequestParameter("assethitssessionid"))
+
+	#if( $hits && $hits.getSelectionSize() > 0)	
+		<div class="alert alert-info">
+	  		<strong>[[Adding]]</strong> $hits.getSelectionSize() [[assets]]
+		</div>
+	#elseif($assetid)	
+	
+	#end	
+	
+	
+	<a class="btn btn-sm btn-blue emdialog"
+		style="margin-bottom: 10px;"
+		href="$apphome/views/modules/$searchtype/components/gridsample/preview/entity.html?edit=true&addnew=true&action=addassets&assethitssessionid=$assethitssessionid" 
+		>
+		[[New]] $module</a>
+     
+    <form  id="colsearchform" 
+    class="ajaxform autosubmit"  
+    data-targetdivinner="entitypickerresults" 
+    action="$home$apphome/views/modules/$searchtype/components/entities/search/results.html">
+
+		<input type="hidden" name="sortby" value="name" />
+		<input type="hidden" name="assetid" value="$!asset.id" />
+		<table  width="100%">
+		<tr>
+		<td>
+		<div class="row inlinesearch" style="margin-bottom: 10px;;" >
+			$context.putPageValue("autocomplete","off")
+			<input type="hidden" name="operation" value="contains" />
+			<input type="hidden" name="field" value="description" />
+			<div class="col">
+			<input type="text" name="description.value" class="form-control" placeholder="[[Or search for existing]]" autocomplete="off" />
+			</div>
+	
+##			#foreach( $detail in $details)
+##			<div class="col">
+##					$context.putPageValue("detail", $detail)
+##					$pages.include("/${applicationid}/components/advancedsearch/detaileditinline.html", $context)
+##			</div>
+##			#if( $counter == 4)
+##				</div>
+##				<div  class="row" >
+##			#end	
+##			#end
+	
+		</div>	
+		</td>
+		
+		</tr>
+		</table>
+	</form>
+	
+	
+	<div id="entitypickerresults"
+		class="pickerresults"
+		data-clickurl="$applink/views/modules/$searchtype/components/entities/addassetstoentity.html"
+		data-clicktargetdiv="applicationmaincontent"
+		data-clicktargettype="message"
+		data-moduleid="$searchtype"
+		data-assethitssessionid="$assethitssessionid"
+		
+		#if($assetid)
+		data-assetid="$assetid"
+		#end>
+	$pages.include("$apphome/components/entities/search/results.html",$context)
+	</div>
+	
+	
+	#if($canaddnewcollectionX)
+	<h4>[[Or]]</h4>
+       <a  class="emdialog btn btn-primary" 
+       	title="[[Create New Album]]" 
+       	href="$home$apphome/components/opencollections/pickcollectionaddnew.html?searchtype=librarycollection&assetid=$!asset.id&targetdiv=assetcategoryresults&library.value=$!library.getId()">
+       	<i class="fa fa-plus-square"></i> [[Create New Album]]</a>
+    #end
+</div>	
