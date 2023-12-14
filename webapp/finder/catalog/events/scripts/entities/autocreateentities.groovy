@@ -3,14 +3,18 @@ package entities;
 import java.text.*
 import java.util.*
 import java.util.regex.*
+import java.nio.charsets.*
 
 import org.entermediadb.asset.Category
 import org.entermediadb.asset.MediaArchive
 import org.openedit.Data
+import org.openedit.repository.*
 import org.openedit.hittracker.HitTracker
+import org.apache.commons.io.IOUtils
+import java.nio.charset.StandardCharsets
 
 
-public void init()
+public void init() throws Exception
 {
 	MediaArchive mediaArchive = (MediaArchive)context.getPageValue("mediaarchive");
 
@@ -66,7 +70,7 @@ public Date findDate(String inName)
 	return null;	
 }
 
-public void processChildren(MediaArchive mediaArchive, Data inmodule, Category parent, int startfromdeep, int currentdeep)
+public void processChildren(MediaArchive mediaArchive, Data inmodule, Category parent, int startfromdeep, int currentdeep) throws Exception
 {
 	if(startfromdeep == currentdeep )
 	{
@@ -76,7 +80,6 @@ public void processChildren(MediaArchive mediaArchive, Data inmodule, Category p
 			 String id = category.getValue(inmodule.getId());
 			 if( id == null )
 			 {
-				 
 				String categoryname = category.getName();
 				if (categoryname == null) {
 					log.info("Empty Category: " + category.getId());
@@ -101,9 +104,19 @@ public void processChildren(MediaArchive mediaArchive, Data inmodule, Category p
 			 		}
 			 	}
 			 	
+			 	//Look for ingest files
+			 	ContentItem item = mediaArchive.getContent("/WEB-INF/data/" + mediaArchive.getCatalogId() + "/originals/" + category.getCategoryPath() + "/_ingest.txt");
+			 	log.info("Looking for" + item.getAbsolutePath() );
+			 	if( item.exists() )
+			 	{
+			 		 String result = IOUtils.toString(item.getInputStream(), StandardCharsets.UTF_8);
+			 		 log.info("Read in" + result);
+				 	 newchild.setValue("longcaption",result);
+			 	}
 			 	newchild.setValue("uploadsourcepath",category.getCategoryPath());
 			 	mediaArchive.saveData(inmodule.getId(),newchild);
 			 	category.setValue(inmodule.getId(), newchild.getId());
+			 	
 			 	mediaArchive.saveData("category",category);
 			 	log.info("Save new entity " + inmodule + " / " + newchild);
 			 }
@@ -121,5 +134,11 @@ public void processChildren(MediaArchive mediaArchive, Data inmodule, Category p
 	}
 }
 
-init();
-
+try
+{
+	init();
+}
+catch(Exception ex)
+{
+	log.error("Could not process" , ex);	
+}
