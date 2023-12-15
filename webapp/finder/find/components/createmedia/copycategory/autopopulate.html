@@ -1,0 +1,65 @@
+<ul id="cat-list" class="list-group list-group-striped list-group-hover autopopulate-list">
+
+
+
+			<li class="collectionBox  " >
+							
+				
+				<div class="text-right">
+
+				<label for="select-all">[[Select All]]:</label> <input type="checkbox" id="select-all" class="select-all" /> 
+
+				</div>
+			</li>
+
+
+			#foreach($categoryid in $foundcategories)
+			#set($category  = $mediaarchive.getCategory($categoryid))
+
+			<li id="auto-${categoryid}" class="collectionBox" data-nodeid="$categoryid" data-categoryname="$category.getName()">
+				<a class="category" title="$category.getCategoryPath()" target="_blank" href="$home$apphome/views/categories/${category.id}.html" >$category.getCategoryPath() </a>
+				<div class="collectionIcons">
+					<input type="checkbox" id="categoryvalues" class="collection-list" name="categoryid" value="$categoryid" />
+				</div>
+			</li>
+		#end
+
+#foreach($asset in $assets)
+			<li id="auto-${asset.id}" class=" collectionBox">
+
+				#set ($mime = $mediaarchive.getMimeTypeIcon($asset.fileformat))
+				#set( $thumbpath =  "/${applicationid}/theme/images/mimetypes/${mime}.png" )
+					#if($canquickdownload)
+						#set($dlink = $mediaarchive.asLinkToOriginal($asset))
+							<a  href="#urlencode("$home/$mediadbappid/services/module/asset/downloads/originals/$dlink?collectionid=${collectionid}&assetid=$asset.getId()")">
+							<i class="fas fa-download"></i>&nbsp;
+							<img class="mimethumb" style="height:17px; position:absolute; margin:auto;" src="$!cdn$home$thumbpath" border="0"/>
+							</a>
+					#else
+						<img class="mimethumb" style="height:17px; position:absolute; margin:auto;" src="$!cdn$home$thumbpath" border="0"/>	
+				
+					#end					
+						<a class="stackedplayer" data-assetid="$asset.id" style="padding-left: 20px;" title="$asset.name" href="$home$apphome/views/modules/asset/editor/viewer/index.html?assetid=$asset.id" >
+							$asset.sourcepath $asset.name
+						</a>
+							<div class="collectionIcons">
+								<input type="checkbox" id="assetvalues" class="collection-list" name="assetid" value="$asset.id" />
+							</div>
+	
+						
+			</li>
+		#end	
+</ul>
+<div class="clearfix"></div>
+   
+   <script type="text/javascript">
+   jQuery("#select-all").on("click", function () {
+		if(jQuery(this).is(":checked")){
+			jQuery(".collection-list").prop('checked', true);
+		} else{
+			jQuery(".collection-list").prop('checked', false);
+		}
+	   
+	} );
+   
+   </script>
