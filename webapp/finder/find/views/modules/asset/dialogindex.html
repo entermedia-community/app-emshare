@@ -1,3 +1,4 @@
+
 #set($hits = $entityassethits)
 $context.putPageValue("hits", $hits)
 
@@ -51,6 +52,7 @@ $context.putPageValue("topmoduleid", $topmoduleid)
 $context.putPageValue("maintargetdiv", $maintargetdiv)
 
 $context.putPageValue("dialogresults", true)
+
 
 <div id="$maintargetdiv"
 	class="dialogassetresults assetresults h-100 resultsdiv" 
@@ -148,7 +150,7 @@ $context.putPageValue("dialogresults", true)
 		#end
 		<div class="embedmediacol embedmediacol-results" id="$!{targetdivmedia}" >
 			#set( $addednew = $context.getRequestParameter("addednew"))
-			#if($addednew && $canupload)
+			#if($hits.isEmpty() && $addednew && $canupload)
 				$pages.include("$apphome/views/modules/asset/add/entityaddmedia.html?categoryid=$rootcategory", $context)
 			#else
 				
