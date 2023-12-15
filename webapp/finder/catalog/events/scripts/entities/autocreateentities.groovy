@@ -78,7 +78,20 @@ public void processChildren(MediaArchive mediaArchive, Data inmodule, Category p
 		for (Data category in parent.getChildren())
 		{
 			 String id = category.getValue(inmodule.getId());
+			 boolean createrow = false;
 			 if( id == null )
+			 {
+			    createrow = true;
+			 }
+			 else
+			 {
+			 	Data found = mediaArchive.getCachedData(inmodule.getId().id);
+				if( found == null)
+				{
+					createrow = true;
+				}			 	
+			 }			 
+			 if( createrow )
 			 {
 				String categoryname = category.getName();
 				if (categoryname == null) {
@@ -86,7 +99,8 @@ public void processChildren(MediaArchive mediaArchive, Data inmodule, Category p
 					continue;
 				}
 			 	Data newchild = mediaArchive.getSearcher(inmodule.getId()).createNewData();
-			 	newchild.setName(categoryname);
+			 	newchild.setId(id);
+				 	newchild.setName(categoryname);
 				Date date = findDate(categoryname);
 				
 				if(date != null)
