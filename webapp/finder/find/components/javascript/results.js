@@ -1593,16 +1593,11 @@ function getCurrentGrid(){
 
 	return grid;
 }
-
 gridResize = function() 
 {
 	var grid = getCurrentGrid();
 	if( !grid )
 	{
-		return;
-	}
-	
-	if (!grid.is("visible")) {
 		return;
 	}
 	
@@ -1668,6 +1663,7 @@ gridResize = function()
 	
 	checkScroll();
 }
+
 
 /**
  * A = W / H H = W / A W = A * H
