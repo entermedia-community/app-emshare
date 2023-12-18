@@ -27,7 +27,7 @@
 
 #set($targetdiv = $maintargetdiv) 
 
-<div class="filteredinline">
+<div class="d-flex flex-column selected-filters">
 #set($filtercount = 0)
 	#set( $terms = $hits.getFilteredTerms($context,"advancedfilter") )
 	
@@ -49,12 +49,14 @@
 				#set($oemaxlevel = "1")
 			#end
 			<a href="$href"
-			class=" ajax"
-			title="[[Clear]]: #esc($hits.getSearchQuery().getMainInput())"
-			data-targetdiv="$!targetdiv" 
-			data-oemaxlevel="$oemaxlevel"
-			data-updateurl="false" ><i class="fas fa-times"></i>&nbsp;$hits.getSearchQuery().getMainInput()</a>
-			
+				class=" ajax"
+				title="[[Clear]]: #esc($hits.getSearchQuery().getMainInput())"
+				data-targetdiv="$!targetdiv" 
+				data-oemaxlevel="$oemaxlevel"
+				data-updateurl="false">
+				<i class="fas fa-times text-muted"></i>
+				&nbsp;$hits.getSearchQuery().getMainInput()
+			</a>
 			#set($filtercount = $filtercount+1)
 	#end
 	
@@ -80,11 +82,13 @@
 		#end
 	
 		<a href="$href"
-			class=" ajax"
+			class="ajax"
 			title="[[Clear]] $term.getDetail()"
 			data-targetdiv="$!targetdiv" 
 			data-oemaxlevel="$oemaxlevel"
-			data-updateurl="false" ><i class="fas fa-times"></i>&nbsp;$term.getDetail(): 
+			data-updateurl="false">
+			<i class="fas fa-times text-muted"></i>
+			&nbsp;$term.getDetail(): 
 			#foreach( $val in $term.getValueCollection() )
 				
 			 	#if ($term.getDetail().getId() == "keywords")
@@ -120,7 +124,8 @@
 		                $val
 		            #end
 				#end
-			#end</a>
+			#end
+		</a>
 			#set($filtercount = $filtercount+1)
 	#end
 	
@@ -138,20 +143,18 @@
 				#set($href = "$siteroot$apphome/views/modules/$moduleid/index.html?hitssessionid=$!hits.getSessionId()&${moduleid}clearresults=true&${moduleid}clearselection=true&clearselection=true&clearfilters=true")
 				#set($oemaxlevel = "1")
 			#end
-	<a class="clearallfilters ajax  btn-clearall " 
+	<a class="clearallfilters ajax btn-clearall text-muted" 
 		href="$href"
 		data-targetdiv="$!targetdiv" 
 		data-oemaxlevel="$oemaxlevel" 
 		data-updateurl="false" 
 		data-onsuccess="closetypeaheadmodal"
 		data-updateurl="false" 
-		title="[[Clear All Filters]]"><i class="fas fa-times"></i> [[Clear Filters]]</a>
+		title="[[Clear All Filters]]">
+		<i class="fas fa-times"></i>
+		[[Clear All Filters]]
+	</a>
 #end
-
-
-
-	<div class="clearfix"></div>
-
 </div>
 
 
