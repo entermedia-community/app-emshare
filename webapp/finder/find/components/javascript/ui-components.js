@@ -1286,9 +1286,49 @@ uiload = function () {
     }
   });
 
+  function confirmModalClose(modal) {
+    var checkForm = modal.find("form.checkCloseDialog");
+    if (!checkForm) {
+      closeemdialog(modal);
+    } else {
+      var prevent = false;
+      $(checkForm)
+        .find("input, textarea, select")
+        .each(function () {
+          if ($(this).attr("type") == "hidden") {
+            return true;
+          }
+          var value = $(this).val();
+          if (value) {
+            prevent = value.length > 0;
+            return false;
+          }
+        });
+
+      if (prevent) {
+        if (confirm("Are you sure you want to close this dialog?")) {
+          closeemdialog(modal);
+        } else {
+          return false;
+        }
+      } else {
+        closeemdialog(modal);
+      }
+    }
+  }
+
+  lQuery(".modal").livequery("click", function (e) {
+    e.stopPropagation();
+    e.stopImmediatePropagation();
+    if (e.target.classList.contains("modal")) {
+      confirmModalClose($(this));
+    }
+  });
+
   lQuery(".entityclose").livequery("click", function (event) {
     event.preventDefault();
-    closeemdialog($(this).closest(".modal"));
+    var targetModal = $(this).closest(".modal");
+    confirmModalClose(targetModal);
   });
 
   lQuery(".mediaboxheader").livequery("click", function (event) {
@@ -1604,8 +1644,6 @@ uiload = function () {
 
   lQuery(".pickcategorylink").livequery("click", function () {});
 
-
-
   lQuery(".assetpickerselectrow").livequery("click", function () {
     var assetid = $(this).data("assetid");
     jQuery("#" + targetdiv).attr("value", assetid);
@@ -1639,20 +1677,17 @@ uiload = function () {
       }
     }
   });
-  
-  
-  
+
   //newpicker
   lQuery(".pickerselectrow").livequery("click", function () {
-	var row = $(this).parent('tr');
+    var row = $(this).parent("tr");
     var pickerresults = $(this).closest(".pickerresults");
-    
+
     if (pickerresults.length) {
-      
       var options = pickerresults.data();
       //options.assetid = assetid;
-	
-      options.id  = row.data("id");
+
+      options.id = row.data("id");
       var clickurl = pickerresults.data("clickurl");
       if (clickurl && clickurl != "") {
         var targetdiv = pickerresults.data("clicktargetdiv");
@@ -1666,15 +1701,14 @@ uiload = function () {
               }
               //ToDo make it generic
               var targettype = pickerresults.data("clicktargettype");
-              if(targettype == "message") {
-				  targetdiv.prepend(data);
-				  targetdiv.find(".fader").fadeOut(3000, "linear");
-			  }
-			  else {
-				  //regular targetdiv
-				  targetdiv.replaceWith(data);
-			  }
-              
+              if (targettype == "message") {
+                targetdiv.prepend(data);
+                targetdiv.find(".fader").fadeOut(3000, "linear");
+              } else {
+                //regular targetdiv
+                targetdiv.replaceWith(data);
+              }
+
               closeemdialog(pickerresults.closest(".modal"));
             },
           });
@@ -1683,7 +1717,6 @@ uiload = function () {
       }
     }
   });
-  
 
   showmodal = function (emselecttable, url) {
     var id = "modals";
