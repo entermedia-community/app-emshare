@@ -1306,7 +1306,11 @@ uiload = function () {
         });
 
       if (prevent) {
-        if (confirm("Are you sure you want to close this dialog?")) {
+        if (
+          confirm(
+            "You have unsaved changes. Are you sure you want to close this dialog?"
+          )
+        ) {
           closeemdialog(modal);
         } else {
           return false;
