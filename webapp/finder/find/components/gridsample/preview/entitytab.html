@@ -7,6 +7,12 @@
 	#set($searchtype = $context.getRequestParameter("searchtype")) 
 #end
 
+#set($edit = $context.getRequestParameter("edit"))
+#if($edit!="true")
+	#set($edit="false")
+#end
+
+
 #set( $id = $context.getRequestParameter("entityid"))
 
 ##ifnotnull($id)
@@ -14,6 +20,7 @@
 #if($id.startsWith("multiedit"))
 	#set($entityid = $entity.id)
 	#set($entitytabid = "entity-tab-multiedit")
+	#set($edit="true")
 #else
 	#if(!$entity && $id)
 		#set( $entity  = $mediaarchive.getData($searchtype, $id) )
@@ -34,10 +41,6 @@ $context.putPageValue("moduleid", $!moduleid)
 	#set($entitytabid = "#eid($entitytabid)")
 #end
 
-#set($edit = $context.getRequestParameter("edit"))
-#if($edit!="true")
-	#set($edit="false")
-#end
 $context.putPageValue("edit", $edit)
 
 #ifnull($entityid)
@@ -61,8 +64,10 @@ $context.putPageValue("showmedia", $showmedia)
 	#set($tabid = "tab_$viewid")
 #end
 
+
+
 <div id="$tabid"
-	class="#eid($entityid)tab-content reloadonupload entity-tab-content tabtype$!tabtype"
+	class=" reloadonupload entity-tab-content tabtype$!tabtype"
 	style=" #if($currenttab != $tabid) display:none; #end" 
 	data-entityid="$!entity.id" 
 	data-tabtype="metadata"
@@ -70,6 +75,7 @@ $context.putPageValue("showmedia", $showmedia)
 	data-viewid="$!viewid"
 	data-currenttab="$!currenttab"
 	data-searchtype="$searchtype"
+	data-edit="$!edit"
 	data-autoreloadevents="uploadend"
 	data-url="$componenthome/gridsample/preview/entitytab.html">
 	

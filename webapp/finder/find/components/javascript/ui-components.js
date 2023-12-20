@@ -1239,7 +1239,7 @@ uiload = function () {
     event.preventDefault();
     var link = $(this);
     if (link.data("ismultiedit")) {
-      return;
+      //return;
     }
     $(".entity-tab").removeClass("current-entity");
     link.closest(".entity-tab").addClass("current-entity");

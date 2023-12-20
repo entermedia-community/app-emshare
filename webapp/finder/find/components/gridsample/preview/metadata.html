@@ -6,12 +6,13 @@
 	#set( $searchtype = $context.findValue("module"))
 	$context.putPageValue("searchtype",$searchtype)
 #end
+#ifnull($id)
+	#set( $id = $context.getRequestParameter("entityid"))
+	$context.putPageValue("id", $id)
+#end
 
 #if(!$data)
-	#set($id = $context.getRequestParameter("entityid"))
-	#if($searchtype && $id && !$id.startsWith("multiedit"))
-		#set( $data  = $mediaarchive.getCachedData($searchtype, $id) )
-	#end	
+	#set($data = $entity)
 #end
 
 #if(!$data)
@@ -91,6 +92,7 @@ class='entitymetadatamodal #if($edit=="true") entitymetadataediting #else entity
     		
     	#end
     	<input name="id" type="hidden" value="$!id" />
+    	<input name="entityid" type="hidden" value="$!id" />
     	<input name="searchtype" type="hidden" value="$searchtype" />
     	<input name="moduleid" type="hidden" value="$moduleid" />
     	<input name="viewid" type="hidden" value="$viewid" />
@@ -168,14 +170,14 @@ class='entitymetadatamodal #if($edit=="true") entitymetadataediting #else entity
 				class="ajax btn btn-sm btn-dark" 
 				style="margin-right:10px;"><i class="fas fa-edit"></i> [[Edit]]</a>
 		#end
-		#if($module.getBoolean("enableuploading") && $permissions.can($moduleid, "view_files"))
+		#if(!$ismulti && $module.getBoolean("enableuploading") && $permissions.can($moduleid, "view_files"))
 			<a href="#tab_media" 
 				class="triggerjs btn btn-sm btn-dark"
 				data-triggerid="tab_tab_media"
 				data-triggeraction="click" 
 				style="margin-right:10px;"><i class="fas fa-image"></i> [[View/Upload Files]]</a>
 		#end
-		#if($permissions.can($moduleid, "delete"))
+		#if(!$ismulti && $permissions.can($moduleid, "delete"))
 		<a href="$!siteroot$applink/views/modules/$!{moduleid}/components/entities/delete.html?id=$data.id" 
 			class="ajax btn btn-sm btn-dark" 
 			data-targetdiv="editentitymetadata" 

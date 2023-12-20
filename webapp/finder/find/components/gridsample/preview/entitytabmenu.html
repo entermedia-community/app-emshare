@@ -20,19 +20,16 @@
 	#set($tabid = "tab_media")
 	#set($tabname = $tabmodule.getName($context))
 #else
-	#if($id.startsWith("multiedit"))
-		#set($tabname = "[[Multi Edit]] $!entity.getSelectedResults().size() [[Items]]")
-		#set($targetentitytabid = "entity-tab-multiedit")
-	#else
+	
 		#if( !$entity)
 			#set( $entity  = $mediaarchive.getData($searchtype, $id) )
 		#end
 
 		#set($tabname = $viewdata.getName($context))
 
-		#set($targetentitytabid = "entity-tab-#eid($!{id})")
+		#set($targetentitytabid = "entity-tab-#eid($!{viewid})")
 		#set($tabid = "tab_$viewid")
-	#end
+	
 
 #end
 
@@ -55,6 +52,7 @@
 		data-moduleid="$!moduleid"
 		#if($id.startsWith("multiedit"))
 			data-ismultiedit="true"
+			data-edit="true"
 		#end 
 		role="tab" 
 		#if(!$tabtype)

@@ -7,8 +7,9 @@
 	$context.putPageValue("id", $id)
 #end
 
-
-#if($id.startsWith("multiedit"))
+#set( $ismulti = $id.startsWith("multiedit:") || $context.getRequestParameter("multi") == "true")
+$context.putPageValue("ismulti", $ismulti)
+#if($ismulti)
 
 #else
 	#if( !$entity && $id)
@@ -80,7 +81,7 @@ $context.putPageValue("topmoduleid", $moduleid)
 #end
 
 ##default to frist if not submodules (view) exists in this Entity
-#if(!$entitytabopen && $enttiyviews)
+#if($ismulti || !$entitytabopen && $enttiyviews)
 	#foreach( $targetview in $enttiyviews)
 		#set( $viewid = $targetview.getId())
 		#set($tabid = "tab_$!{viewid}")
@@ -133,62 +134,72 @@ $context.putPageValue("topmoduleid", $moduleid)
 				#else
 					#set($name = "$entity.samplecount")
 				#end
+				
+				#text($name)
+				
 			#else
+				#if($ismulti)
+					[[Multi Edit]] $!entity.getSelectedResults().size() [[Items]]		
+				#else	
+					#if($entity.getName($context))
+							#set($name = $!entity.getName($context))
+					#else 
+						#if($addnew=='true')
+							#set($name = "[[Add New]]")
+							
+							$context.putPageValue("addnew", $addnew)
+						#end
+					#end
+					
+					#text($name)
+					
+				#end
+			#end
 			
-				#if($entity.getName($context))
-						#set($name = $!entity.getName($context))
-				#else 
-					#if($addnew=='true')
-						#set($name = "[[Add New]]")
-						
-						$context.putPageValue("addnew", $addnew)
+			
+		</h2>
+		#if(!$ismulti)
+			<div class="entity-actions-bar" style="margin-bottom: 10px;">
+				##if($canviewsettings && $entityid)
+				##<span >Id: $entityid</span>
+				##end
+				
+				$context.putPageValue("itemid", $entity.id)
+				$pages.include("$componenthome/gridsample/favorites.html?id=$entity.id&moduleid=$moduleid", $context)
+				
+				#if($permissions.can($moduleid, "edit"))
+				<a href="$applink/views/modules/$moduleid/edit/editdialog.html?id=${entityid}&viewid=entitypermissions"
+					class="emdialog btn btn-sm btn-brand"
+					data-hidefooter="true"
+					data-dialogid="entitypermissionsdialog"
+					title="#text($module)\ #text($entity) [[Permissions]]"><i class="fas fa-user-lock"></i> [[Permissions]]</a>
+				#end
+	
+				#if($canviewsettings)	
+				<a href="$applink/views/settings/modules/$moduleid/info/module-setup.html"
+					class="ajax btn btn-sm btn-brand"
+					data-targetdiv="applicationcontent"
+					data-oemaxlevel="5"
+					data-updateurl="true"
+					data-closedialog="true"
+					data-sidebarcomponent="settings"
+					data-scrolltotop="true"
+					title="#text($module) [[Settings]]"><i class="fas fa-cog"></i> [[Settings]]</a>
+				#end
+					
+				#ifnotnull($defaultfolder)
+					#if($permissions.can($moduleid, "share"))
+					<a href="$applink/components/share/entity.html?moduleid=$moduleid&categoryid=${defaultfolder.getId()}" 
+					class="emdialog btn btn-sm btn-brand"
+					data-dialogid="entitysharedialog"
+					data-hidefooter="true"
+					title="[[Share]] #text($entity.name)"><i class="fas fa-share-alt"></i></a>
 					#end
 				#end
-			#end
-			
-			#text($name)
-		</h2>
-
-		<div class="entity-actions-bar" style="margin-bottom: 10px;">
-			##if($canviewsettings && $entityid)
-			##<span >Id: $entityid</span>
-			##end
-			
-			$context.putPageValue("itemid", $entity.id)
-			$pages.include("$componenthome/gridsample/favorites.html?id=$entity.id&moduleid=$moduleid", $context)
-			
-			#if($permissions.can($moduleid, "edit"))
-			<a href="$applink/views/modules/$moduleid/edit/editdialog.html?id=${entityid}&viewid=entitypermissions"
-				class="emdialog btn btn-sm btn-brand"
-				data-hidefooter="true"
-				data-dialogid="entitypermissionsdialog"
-				title="#text($module)\ #text($entity) [[Permissions]]"><i class="fas fa-user-lock"></i> [[Permissions]]</a>
-			#end
-
-			#if($canviewsettings)	
-			<a href="$applink/views/settings/modules/$moduleid/info/module-setup.html"
-				class="ajax btn btn-sm btn-brand"
-				data-targetdiv="applicationcontent"
-				data-oemaxlevel="5"
-				data-updateurl="true"
-				data-closedialog="true"
-				data-sidebarcomponent="settings"
-				data-scrolltotop="true"
-				title="#text($module) [[Settings]]"><i class="fas fa-cog"></i> [[Settings]]</a>
-			#end
-				
-			#ifnotnull($defaultfolder)
-				#if($permissions.can($moduleid, "share"))
-				<a href="$applink/components/share/entity.html?moduleid=$moduleid&categoryid=${defaultfolder.getId()}" 
-				class="emdialog btn btn-sm btn-brand"
-				data-dialogid="entitysharedialog"
-				data-hidefooter="true"
-				title="[[Share]] #text($entity.name)"><i class="fas fa-share-alt"></i></a>
-				#end
-			#end
-
-			<div class="entityclose ml-2"><span title="[[Esc to Close]]" class="close-button white"></span></div>
-		</div>
+	
+				<div class="entityclose ml-2"><span title="[[Esc to Close]]" class="close-button white"></span></div>
+			</div>
+		#end
 	</div>
 	
 		
@@ -220,40 +231,43 @@ $context.putPageValue("topmoduleid", $moduleid)
 						#end
 						
 						#if($targetview.rendertype=="table")
-							#set( $subentitysearchtype = $viewdata.rendertable )
-							#ifnotnull($subentitysearchtype)
-								##Permission check
-								##$subentitysearchtype $userentities.contains($subentitysearchtype)
-								#if($userentities.contains($subentitysearchtype))
-									#set($submodule = $mediaarchive.getCachedData("module", $viewdata.rendertable))
-									$context.putPageValue("tabmodule", $submodule)
-									#set($tabtype= "submodulehome")
-									$context.putPageValue("tabtype", $tabtype)
-									#set($subcomponenthome = "$apphome/views/modules/$subentitysearchtype/components")
-									$pages.include("$subcomponenthome/gridsample/preview/entitytabmenu.html", $context)
+							#if(!$ismulti)
+								#set( $subentitysearchtype = $viewdata.rendertable )
+								#ifnotnull($subentitysearchtype)
+									##Permission check
+									##$subentitysearchtype $userentities.contains($subentitysearchtype)
+									#if($userentities.contains($subentitysearchtype))
+										#set($submodule = $mediaarchive.getCachedData("module", $viewdata.rendertable))
+										$context.putPageValue("tabmodule", $submodule)
+										#set($tabtype= "submodulehome")
+										$context.putPageValue("tabtype", $tabtype)
+										#set($subcomponenthome = "$apphome/views/modules/$subentitysearchtype/components")
+										$pages.include("$subcomponenthome/gridsample/preview/entitytabmenu.html", $context)
+									#end
 								#end
 							#end
 						#else
 							####Other Tabs
 							
-							#set($tabtype= "entitytab")
-							#ifnotnull($targetview.rendertype)
-								#set($tabtype= $targetview.rendertype)
-							#end
-							
-							#if($tabtype=="default")
 								#set($tabtype= "entitytab")
-							#end
+								#ifnotnull($targetview.rendertype)
+									#set($tabtype= $targetview.rendertype)
+								#end
+								
+								#if($tabtype=="default")
+									#set($tabtype= "entitytab")
+								#end
+								
+						  		$context.putPageValue("tabmodule", $module)
+								$context.putPageValue("tabtype", $tabtype)
+								
+								#if(!$entitytabopen)
+									#set($entitytabopen = $tabid)
+						  			$context.putPageValue("currenttab", $tabid)
+								#end
+								
+								$pages.include("$componenthome/gridsample/preview/entitytabmenu.html", $context)
 							
-					  		$context.putPageValue("tabmodule", $module)
-							$context.putPageValue("tabtype", $tabtype)
-							
-							#if(!$entitytabopen)
-								#set($entitytabopen = $tabid)
-					  			$context.putPageValue("currenttab", $tabid)
-							#end
-							
-							$pages.include("$componenthome/gridsample/preview/entitytabmenu.html", $context)
 						#end
 					#end
 				#end	
@@ -261,7 +275,8 @@ $context.putPageValue("topmoduleid", $moduleid)
 			
 			##media
 			#ifnotnull($id)
-				#if($module.getBoolean("enableuploading") && $permissions.can($moduleid, "view_files"))
+				#if(!$ismulti)
+					#if($module.getBoolean("enableuploading") && $permissions.can($moduleid, "view_files"))
 						#set($submodule = $mediaarchive.getCachedData("module", "asset"))
 						$context.putPageValue("tabmodule", $submodule)
 						$context.putPageValue("tabtype", "media")
@@ -272,6 +287,7 @@ $context.putPageValue("topmoduleid", $moduleid)
 						#end
 						#set($subcomponenthome = "$apphome/views/modules/asset/components")
 						$pages.include("$subcomponenthome/gridsample/preview/entitytabmenu.html", $context)
+					#end
 				#end
 			#end	
 		</div>
@@ -302,13 +318,15 @@ $context.putPageValue("topmoduleid", $moduleid)
 									#end
 									
 									#if($targetview.rendertype=="table")
-										#set($tabtype= "submodulehome")
-										#set( $viewdata = $viewsearcher.searchById($viewid))
-										#set( $subentitysearchtype = $viewdata.rendertable )
-										##Permission check
-										#if($userentities.contains($subentitysearchtype))
-											#set($subcomponenthome = "$apphome/views/modules/$subentitysearchtype/components")
-											$pages.include("$subcomponenthome/gridsample/preview/entitytabsub.html", $context)
+										#if(!$ismulti)
+											#set($tabtype= "submodulehome")
+											#set( $viewdata = $viewsearcher.searchById($viewid))
+											#set( $subentitysearchtype = $viewdata.rendertable )
+											##Permission check
+											#if($userentities.contains($subentitysearchtype))
+												#set($subcomponenthome = "$apphome/views/modules/$subentitysearchtype/components")
+												$pages.include("$subcomponenthome/gridsample/preview/entitytabsub.html", $context)
+											#end
 										#end
 									#else
 										#set($tabtype= "entitytab")
@@ -333,13 +351,15 @@ $context.putPageValue("topmoduleid", $moduleid)
 					#end
 						
 					#if($module.getBoolean("enableuploading") && $permissions.can($moduleid, "view_files"))
-						$context.putPageValue("parentsearchtype", $parentsearchtype)
-						$context.putPageValue("hidesubmodule", true)
-						#set($tabtype= "media")
-						#if($entitytabopen == $tabtype)
-				  			$context.putPageValue("currenttab", $tabtype)
-				  		#end
-						$pages.include("$subcomponenthome/gridsample/preview/entitytabmedia.html?entityid=$id", $context)
+						#if(!$ismulti)
+							$context.putPageValue("parentsearchtype", $parentsearchtype)
+							$context.putPageValue("hidesubmodule", true)
+							#set($tabtype= "media")
+							#if($entitytabopen == $tabtype)
+					  			$context.putPageValue("currenttab", $tabtype)
+					  		#end
+							$pages.include("$subcomponenthome/gridsample/preview/entitytabmedia.html?entityid=$id", $context)
+						#end
 					#end
 			#end
 		</div>
