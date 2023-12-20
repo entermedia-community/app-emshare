@@ -49,7 +49,7 @@
 				#set($oemaxlevel = "1")
 			#end
 			<a href="$href"
-				class=" ajax"
+				class="ajax"
 				title="[[Clear]]: #esc($hits.getSearchQuery().getMainInput())"
 				data-targetdiv="$!targetdiv" 
 				data-oemaxlevel="$oemaxlevel"
@@ -80,15 +80,31 @@
 		#if($currentSort)
 			#set($href = $href + "&sortby=${currentSort}")
 		#end
-	
-		<a href="$href"
-			class="ajax"
-			title="[[Clear]] $term.getDetail()"
-			data-targetdiv="$!targetdiv" 
-			data-oemaxlevel="$oemaxlevel"
-			data-updateurl="false">
-			<i class="fas fa-times text-muted"></i>
-			&nbsp;$term.getDetail(): 
+
+		<div class="selected-filter">
+			<a href="$href"
+				class="ajax dissmiss"
+				title="[[Clear]] $term.getDetail()"
+				data-targetdiv="$!targetdiv" 
+				data-oemaxlevel="$oemaxlevel"
+				data-updateurl="false">
+				<i class="fas fa-times"></i>
+			</a>
+			#set($op = $term.operation)
+			<h5>
+				#if($term.getDetail().isDate())
+					#if($op == "afterdate")
+						[[After]]
+					#elseif($op == "beforedate")
+						[[Before]]
+					#elseif($op == "betweendates")
+						[[Between]]
+					#end
+				#else
+					$term.getDetail()
+				#end
+			</h5>
+			<div class="filters">
 			#foreach( $val in $term.getValueCollection() )
 				
 			 	#if ($term.getDetail().getId() == "keywords")
@@ -99,7 +115,7 @@
 				
 				#if($term.getDetail().isList())
 					#set($data = $mediaarchive.getCachedData($term.getDetail().getListId(),$val))
-					$!context.getText( $data )
+					<span class="chip filled">$!context.getText( $data )</span>
 				#elseif($term.getDetail().isBoolean())
 					#if($term.getValue() == "true")
 						[[True]]
@@ -107,16 +123,9 @@
 						[[False]]
 					#end
 				#elseif($term.getDetail().isDate())
-					#set($op = $term.operation)
-					#if($op == "afterdate")
-						[[After]]:
-					#elseif($op == "beforedate")
-						[[Before]]:
-					#elseif($op == "betweendates")
-						[[Between]]:
-					#end
-					
-		            $term.getValue()
+					<p class="formatDate" data-datetype="$op">
+						$term.getValue()
+					</p>
 				#else
 		            #if($term.getValue())
 		                $term.getValue()
@@ -125,8 +134,9 @@
 		            #end
 				#end
 			#end
-		</a>
-			#set($filtercount = $filtercount+1)
+			</div> 
+		</div>
+		#set($filtercount = $filtercount+1)
 	#end
 	
 	
@@ -143,7 +153,7 @@
 				#set($href = "$siteroot$apphome/views/modules/$moduleid/index.html?hitssessionid=$!hits.getSessionId()&${moduleid}clearresults=true&${moduleid}clearselection=true&clearselection=true&clearfilters=true")
 				#set($oemaxlevel = "1")
 			#end
-	<a class="clearallfilters ajax btn-clearall text-muted" 
+	<a class="clearallfilters ajax btn-clearall bg-danger" 
 		href="$href"
 		data-targetdiv="$!targetdiv" 
 		data-oemaxlevel="$oemaxlevel" 

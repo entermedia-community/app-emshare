@@ -15,9 +15,9 @@ $context.putPageValue("title",$title)
      
 <tr data-rowid="$hit.id" title="$sourcepath" class="resultsassetcontainer #if($selectedrow) emrowselected #end" >
 #if( $showtoolbar )
-	<td class="borderedcell checkbox resultsselection" noclick="true"> 
+	<td class="borderedcell checkbox" noclick="true"> 
 		<input type="checkbox" 
-		class="selectionbox" 
+		class="selectionbox resultsselection" 
 		name="count" 
 		value="" 
 		#if($selectedrow) checked #end 
@@ -70,14 +70,14 @@ $context.putPageValue("title",$title)
 		<td class="rowactions" noclick="true">
 			
 			$context.putPageValue("assetid",$hit.id)
-		    <div id="mvassetfavorite-$hit.id" class="media-info-icons">
+		    <div id="mvassetfavorite-$hit.id" class="media-info-icons mb-2">
 	        	$pages.include("$apphome/views/modules/asset/editor/favorite/index.html?targetdiv=mvassetfavorite", $context)
 	   		</div>
 			
-			#if($canquickdownload)
+		#if($canquickdownload)
         	#if( $desktop )
 		       	<a href="#" class="emdesktopdownload grid-gallery-download" data-assetid="$hit.id" title="[[Download]] $!title">
-		       	<i class="fas fa-download"> </i>
+		       		<img src="$apphome/find/theme/images/download.svg" alt="[[Download]] $!title" />
 		       	</a> 
 	      	#else
 				#set($dlink = $mediaarchive.asLinkToOriginal($hit))
@@ -87,9 +87,9 @@ $context.putPageValue("title",$title)
 				#end
 			
 	       	<a href="$dlink" class="grid-gallery-download" data-assetid="$hit.id" title="[[Download]] $!title">
-	       	<i class="fas fa-download"> </i>
+				<img src="$apphome/theme/images/download.svg" alt="[[Download]] $!title" />
 	       	</a>
 	       	#end
 	    #end
 			</td>	
- </tr>   
+ </tr>
