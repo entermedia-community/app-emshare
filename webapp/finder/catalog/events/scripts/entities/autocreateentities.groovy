@@ -85,7 +85,7 @@ public void processChildren(MediaArchive mediaArchive, Data inmodule, Category p
 			 }
 			 else
 			 {
-			 	Data found = mediaArchive.getCachedData(inmodule.getId().id);
+			 	Data found = mediaArchive.getCachedData(inmodule.getId(),id);
 				if( found == null)
 				{
 					createrow = true;
