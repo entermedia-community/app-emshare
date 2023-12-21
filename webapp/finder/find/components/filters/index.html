@@ -12,26 +12,20 @@
 	$context.putPageValue("edit",$edit)
 #end
 
-$librarycol -
-
-#if( !$librarycol )
-	#set($collectionid = $context.getRequestParameter("collectionid"))
-	#if($module=="librarycollection" && $collectionid)
-		#set( $librarycol = $mediaarchive.query("librarycollection").exact("id",$collectionid).searchOne() )
-	#end
+#if(!$categoryid)
+	#set($categoryid = $context.getRequestParameter("categoryid"))
 #end
-
-#if( $librarycol )	
-	$context.putPageValue("librarycol",$librarycol)
-	$context.putPageValue("collectionid", $librarycol.getId())
+#if(!$topmoduleid)
+	#set ( $topmoduleid = $context.getRequestParameter("topmoduleid") )
 #end
-
-
+#if(!$targetdivsearch)
+	#set ( $targetdivsearch = $context.getRequestParameter("targetdivsearch") )
+#end
 
 <div id="moduleadvfilterpanel" class="advfilterpanel" >
 	
 
-	$pages.include("$componenthome/filters/filters-inline.html", $context)
+$pages.include("$componenthome/filters/filters-inline.html", $context)
 
 
 <div class="advfilterpanelcontent" >
@@ -56,12 +50,18 @@ $librarycol -
 			class="ajaxform autosubmitform filterform"
 			method="POST" 
 			data-targetdiv="$targetdivsearch" 
-			data-oemaxlevel="4" 
+			
 			#set($resultslink = $context.getRequestParameter("resultslink"))
 			#if($resultslink)
 				action="$resultslink"
 			#elseif($topmoduleid)
-				action="$siteroot$apphome/views/modules/$moduleid/dialogindex.html"
+				#if($moduleid== "asset" && $categoryid)
+					action="$siteroot$apphome/views/modules/$moduleid/dialogshowcategory.html"
+					data-oemaxlevel="3"
+				#else
+					action="$siteroot$apphome/views/modules/$moduleid/dialogindex.html"
+				#end
+				
 				data-updateurl="false"
 			#else
 				#if($moduleid== "asset" && $categoryid)
@@ -69,7 +69,6 @@ $librarycol -
 					data-oemaxlevel="2"
 				#else
 					action="$siteroot$apphome/views/modules/$moduleid/index.html"
-					 
 				#end
 			#end  
 	>
@@ -116,24 +115,14 @@ $librarycol -
 		
 		#set( $nodeID = $context.getRequestParameter("nodeID"))
 		
+		#if($topmoduleid)
+			<input name="topmoduleid" type="hidden" value="$topmoduleid" />
+			<input name="dialogresults" type="hidden" value="true" />
+			<input name="targetdivsearch" type="hidden" value="$!targetdivsearch" />
+		#end
 		
-		#if( $librarycol.rootcategory )
-			<input type="hidden" name="field" value="category" />
-			<input type="hidden" name="operation" value="exact" />
-			<input type="hidden" name="collectionid" value="$!librarycol.getId()" />
-			#if($nodeID && $nodeID != $librarycol.rootcategory) 
-				<input type="hidden" name="category.value" value="$!nodeID" />
-				<input type="hidden" name="nodeID" value="$!nodeID" />
-			#else
-				<input type="hidden" name="category.value" value="$librarycol.rootcategory" />
-			#end
-		#elseif( $selectedlibrary.categoryid )
-			<input type="hidden" name="field" value="category" />
-			<input type="hidden" name="operation" value="exact" />
-			<input type="hidden" name="category.value" value="$selectedlibrary.categoryid" />
-			<input type="hidden" name="selectedlibrary" value="$selectedlibrary.getId()" />
-		#elseif( $category )
-			#set($categoryid = $category.getId())
+		#if( $categoryid )
+		
 			<input type="hidden" name="field" value="category" />
 			<input type="hidden" name="operation" value="exact" />
 			<input type="hidden" name="category.value" value="$categoryid" />
@@ -223,12 +212,5 @@ $librarycol -
 			</div>
 		#end
 	
-		<script type="text/javascript">
-			deleteFilterField = function(inType,inFieldId)
-			{	
-				var params = 'oemaxlevel=1&editfilters=true&collectionid=$!collectionid&view=$view&catalogid=$searcher.getCatalogId()&searchtype=' + inType + "&field=" + inFieldId+"&moduleid=$!moduleid";
-				jQuery('#moduleadvfilterpanel').load("$siteroot$componenthome/filters/deletefield.html?" + params)
-			}
-		</script>
 	</div>
 </div>

@@ -343,14 +343,14 @@ jQuery(document).ready(function (url, params) {
           var fieldname = $(this).data("fieldname");
           var fieldtype = $(this).data("fieldtype");
           if (fieldtype == "boolean") {
-            if ($("#filtersremoveterm").length) {
-              $("#filtersremoveterm").val(fieldname);
+            if ($("#filtersremoveterm", form).length) {
+              $("#filtersremoveterm", form).val(fieldname);
             }
           }
-          var boxes = $(".filtercheck" + fieldname + ":checkbox:checked");
+          var boxes = $(".filtercheck" + fieldname + ":checkbox:checked", form);
           if (boxes.length == 0) {
-            if ($("#filtersremoveterm").length) {
-              $("#filtersremoveterm").val(fieldname);
+            if ($("#filtersremoveterm", form).length) {
+              $("#filtersremoveterm", form).val(fieldname);
             }
           }
         }
