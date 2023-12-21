@@ -31,6 +31,10 @@ body {
 	color: #fff;
 }
 
+.tableheader {
+	box-shadow: 0 0 3px #262e3f;
+}
+
 .emnav,
 .table #tableheader,
 .emdata .tableheader,
@@ -3024,42 +3028,56 @@ li.dropdown {
 .emdata th {
 	padding: 0px 10px;
 	border-top: 0 none;
-	border-right: 1px solid #5f739e;
-	white-space: nowrap;
+	/* border-right: 1px solid #5f739e; */
+	/* white-space: nowrap; */
 	font-size: 0.8rem;
 	line-height: 32px;
 	height: 32px;
 	/*position:relative;*/
 	text-align: center;
+	position: relative;
 }
 
-#main-results-table th:last-of-type,
+#main-results-table th::after,
+.emresultstable th::after,
+.emdata th::after {
+	content: "";
+	position: absolute;
+	top: 0;
+	right: -1px;
+	width: 1px;
+	height: 100%;
+	background-color: #5f739e;
+	z-index: 10;
+}
+
+/* #main-results-table th:last-of-type,
 .emdata th:last-of-type {
 	border-right: 0 none;
-}
+} */
 
 .emresultstable {
 	position: relative;
 }
 
 .emresultstable thead tr th {
-	/* position: sticky; */
-	top: 208px;
 	background-color: #4d5d80;
-	z-index: 210;
-}
-
-.assetresults .emresultstable thead tr th {
-	top: 258px;
 }
 
 .dialogassetresults .emresultstable thead tr th {
 	top: 36px;
 }
 
-.emresultstable .autoresize-inner {
+.table-autoresize-inner {
 	position: relative;
+	max-height: calc(100vh - 275px);
+	overflow: auto;
+}
 
+.table-autoresize-inner thead {
+	position: sticky;
+	top: 0;
+	z-index: 1024;
 }
 
 .tableheader th.sortable {
@@ -6467,15 +6485,48 @@ table.table-striped tbody td.emdatafield {
 	padding: 0 5px;
 }
 
+.table-autoresize-inner,
+.emselectableentitymodule {
+	scrollbar-width: thin;
+	scrollbar-color: #8090b3 #efefef;
+}
+
+.table-autoresize-inner::-webkit-scrollbar,
+.emselectableentitymodule::-webkit-scrollbar {
+	width: 5px;
+	height: 5px;
+	background-color: #efefef;
+}
+
+.table-autoresize-inner::-webkit-scrollbar-thumb,
+.emselectableentitymodule::-webkit-scrollbar-thumb {
+	background-color: #8090b3;
+}
+
+.table-autoresize-inner::-webkit-scrollbar-track,
+.emselectableentitymodule::-webkit-scrollbar-track {
+	background-color: #efefef;
+}
+
+.emselectableentitymodule {
+	max-height: calc(100vh - 275px);
+	overflow: auto;
+	position: relative;
+}
+
 table.table-striped tbody td {
 	padding: 5px 10px;
 	font-size: 0.9rem;
 }
 
-tableheader th {
-	text-shadow: 0 1px 0 rgba(0, 0, 0, 0.2);
-	font-weight: bold;
-	font-size: 1rem;
+.tableheader th {
+	position: relative;
+}
+
+.emselectableentitymodule thead {
+	position: sticky;
+	top: 0;
+	z-index: 1024;
 }
 
 table.stackedplayertable tbody tr {
