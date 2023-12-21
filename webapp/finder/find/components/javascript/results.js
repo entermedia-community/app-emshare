@@ -18,6 +18,24 @@ jQuery(document).ready(function (url, params) {
     });
   };
 
+  $(".emlogo").click(function (e) {
+    e.preventDefault();
+    var href = $(this).attr("href");
+    var url = window.location.href;
+    if (href === url) {
+      if (window.screenY > 0) {
+        window.focus();
+        window.scrollTo({
+          top: 0,
+          behavior: "smooth",
+        });
+      }
+      $("#emselectable").animate({ scrollTop: 0 }, 500);
+    } else {
+      window.location.href = href;
+    }
+  });
+
   lQuery(".formatDate").livequery(function () {
     var _this = $(this);
     _this.each(function () {
