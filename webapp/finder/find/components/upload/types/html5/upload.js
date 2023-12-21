@@ -20,6 +20,11 @@ $(document).ready(function()
 		//reset array
 		allfiles = new Array();
      });
+     
+    lQuery('#dialogmediaentity').livequery(function(e){
+		//reset array
+		allfiles = new Array();
+     }); 
 
 
 	lQuery(".upload_field").livequery( function() 

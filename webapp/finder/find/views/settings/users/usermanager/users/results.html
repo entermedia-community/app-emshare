@@ -19,24 +19,24 @@ $context.putPageValue("hits", $userTracker)
 	#set( $selecteduser = $context.getRequestParameter("username" ) )
 	<thead>
 		<tr id="tableheader">
-		#set( $sortby = $userTracker.getSearchQuery().getSortBy() )
-		#foreach( $detail in $details )
-		<th align="left" nowrap class="sortable #if( $edit)editcolumnheader #end #if( $sortby.startsWith($detail.getId() ) ) currentsort #if( $sortby.endsWith("Up") ) up #else down #end #end" id="$detail.id">
-		$detail.getText($context)
-		#if ($sortby.startsWith($detail.getId()))
-				#if($sortby.endsWith("Up"))
-					#set($sorticon="up")
-				#else
-					#set($sorticon="down")
-				#end	
-				&nbsp;&nbsp;&nbsp;<i class="fas fa-caret-$sorticon"></i>
-		#end
-		</th>
-		#end
-		<th>
-			[[Role]] 
-		</th>
-	</tr>
+			#set( $sortby = $userTracker.getSearchQuery().getSortBy() )
+			#foreach( $detail in $details )
+			<th align="left" nowrap class="sortable #if( $edit)editcolumnheader #end #if( $sortby.startsWith($detail.getId() ) ) currentsort #if( $sortby.endsWith("Up") ) up #else down #end #end" id="$detail.id">
+				$detail.getText($context)
+				#if ($sortby.startsWith($detail.getId()))
+						#if($sortby.endsWith("Up"))
+							#set($sorticon="up")
+						#else
+							#set($sorticon="down")
+						#end	
+						&nbsp;&nbsp;&nbsp;<i class="fas fa-caret-$sorticon"></i>
+				#end
+			</th>
+			#end
+			<th>
+				[[Role]] 
+			</th>
+		</tr>
 	</thead>
 #set ($userProfileSearcher = $searcherManager.getSearcher($catalogid, "userprofile"))
 <tbody>

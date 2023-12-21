@@ -54,7 +54,7 @@
 				data-targetdiv="$!targetdiv" 
 				data-oemaxlevel="$oemaxlevel"
 				data-updateurl="false">
-				<i class="fas fa-times text-muted"></i>
+				<i class="fas fa-times"></i>
 				&nbsp;$hits.getSearchQuery().getMainInput()
 			</a>
 			#set($filtercount = $filtercount+1)
@@ -87,10 +87,11 @@
 			data-targetdiv="$!targetdiv" 
 			data-oemaxlevel="$oemaxlevel"
 			data-updateurl="false">
-			<i class="fas fa-times text-muted"></i>
-			&nbsp;$term.getDetail(): 
+			<i class="fas fa-times"></i>
+			&nbsp;$term.getDetail():
+			<strong> 
 			#foreach( $val in $term.getValueCollection() )
-				
+				($foreach.count --)
 			 	#if ($term.getDetail().getId() == "keywords")
 					#if( $foreach.count > 1) [[and]] #end
 				#else
@@ -125,6 +126,7 @@
 		            #end
 				#end
 			#end
+			</strong>
 		</a>
 			#set($filtercount = $filtercount+1)
 	#end
