@@ -41,6 +41,10 @@ jQuery(document).ready(function (url, params) {
     });
   });
 
+  $(document).on("click", ".datepicker", function () {
+    $(this).next().trigger("click");
+  });
+
   lQuery("select#selectresultview").livequery(function () {
     var select = $(this);
     var resultsdiv = select.closest(".resultsdiv");
