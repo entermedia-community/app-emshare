@@ -12,6 +12,8 @@
 	$context.putPageValue("edit",$edit)
 #end
 
+$librarycol -
+
 #if( !$librarycol )
 	#set($collectionid = $context.getRequestParameter("collectionid"))
 	#if($module=="librarycollection" && $collectionid)
@@ -44,17 +46,32 @@
 	$context.putPageValue("usestartswith",$usestartswith)
 	$context.putPageValue("caneditlists",false)
 	
-	#set($targetdiv = "$!{moduleid}resultscontainer")
-	
+	#if(!$targetdivsearch)
+		#set($targetdivsearch = "$!{moduleid}resultscontainer")
+	#end
 
 	
 	<form  	name="filterform" 
 			id="filterform" 
 			class="ajaxform autosubmitform filterform"
 			method="POST" 
-			data-targetdiv="applicationcontent" 
+			data-targetdiv="$targetdivsearch" 
 			data-oemaxlevel="4" 
-			action="$siteroot$apphome/views/modules/$moduleid/index.html" 
+			#set($resultslink = $context.getRequestParameter("resultslink"))
+			#if($resultslink)
+				action="$resultslink"
+			#elseif($topmoduleid)
+				action="$siteroot$apphome/views/modules/$moduleid/dialogindex.html"
+				data-updateurl="false"
+			#else
+				#if($moduleid== "asset" && $categoryid)
+					action="$siteroot$apphome/views/modules/$moduleid/showcategory.html"
+					data-oemaxlevel="2"
+				#else
+					action="$siteroot$apphome/views/modules/$moduleid/index.html"
+					 
+				#end
+			#end  
 	>
 		#if( $librarycol)
 			<input name="collectionid" type="hidden" value="$!librarycol.getId()">
@@ -62,13 +79,11 @@
 		
 		##We need 2 things passed in: $searcher, $view or $searcher $details
 	
-	
-	
-		#if (!$details && $userprofile)
-			#set ($details = $searcher.getDetailsForView($view, $userprofile))
-		#else
+##		#if (!$details && $userprofile)
+##			#set ($details = $searcher.getDetailsForView($view, $userprofile))
+##		#else
 			#set ($details = $searcher.getDetailsForView($view))
-		#end
+##		#end
 		
 		$context.putPageValue("idprefix","search")
 	
@@ -123,6 +138,7 @@
 			<input type="hidden" name="operation" value="exact" />
 			<input type="hidden" name="category.value" value="$categoryid" />
 			<input type="hidden" name="nodeID" value="$!nodeID" />
+			<input type="hidden" name="categoryid" value="$categoryid" />
 		#end
 		
 
