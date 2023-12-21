@@ -91,39 +91,41 @@
 			&nbsp;$term.getDetail():
 			<strong> 
 			#foreach( $val in $term.getValueCollection() )
-				($foreach.count --)
-			 	#if ($term.getDetail().getId() == "keywords")
-					#if( $foreach.count > 1) [[and]] #end
-				#else
-					#if( $foreach.count > 1) [[or]] #end
-				#end
+				#if($val && $term.getDetail().getId())
 				
-				#if($term.getDetail().isList())
-					#set($data = $mediaarchive.getCachedData($term.getDetail().getListId(),$val))
-					$!context.getText( $data )
-				#elseif($term.getDetail().isBoolean())
-					#if($term.getValue() == "true")
-						[[True]]
+				 	#if ($term.getDetail().getId() == "keywords")
+						#if( $foreach.count > 1) [[and]] #end
 					#else
-						[[False]]
-					#end
-				#elseif($term.getDetail().isDate())
-					#set($op = $term.operation)
-					#if($op == "afterdate")
-						[[After]]:
-					#elseif($op == "beforedate")
-						[[Before]]:
-					#elseif($op == "betweendates")
-						[[Between]]:
+						#if( $foreach.count > 1) [[or]] #end
 					#end
 					
-		            $term.getValue()
-				#else
-		            #if($term.getValue())
-		                $term.getValue()
-		            #elseif($val)
-		                $val
-		            #end
+					#if($term.getDetail().isList())
+						#set($data = $mediaarchive.getCachedData($term.getDetail().getListId(),$val))
+						$!context.getText( $data )
+					#elseif($term.getDetail().isBoolean())
+						#if($term.getValue() == "true")
+							[[True]]
+						#else
+							[[False]]
+						#end
+					#elseif($term.getDetail().isDate())
+						#set($op = $term.operation)
+						#if($op == "afterdate")
+							[[After]]:
+						#elseif($op == "beforedate")
+							[[Before]]:
+						#elseif($op == "betweendates")
+							[[Between]]:
+						#end
+						
+			            $term.getValue()
+					#else
+			            #if($term.getValue())
+			                $term.getValue()
+			            #elseif($val)
+			                $val
+			            #end
+					#end
 				#end
 			#end
 			</strong>
