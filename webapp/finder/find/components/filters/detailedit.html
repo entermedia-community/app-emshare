@@ -47,19 +47,14 @@
 		<div class="filter-box">
 			#set($filterboxid = "$!{idprefix}filterbox${detail.getId()}")
 			<div class="filter-box-header">
+				#set($preference = '#set($selectedpreference = ' + '$!userprofile.minimize'  + $filterboxid + ')')
+				#evaluate($preference)
+				#ifnull($selectedpreference)
+					#set($selectedpreference = "false")
+				#end
 				<div class="d-flex align-items-center toggle-filter sidetoggle flex-grow-1" data-target="$filterboxid">
 					<span class="mr-2" >
-					<i class="caret fas 
-							#set($preference = '#set($selectedpreference = ' + '$!userprofile.minimize'  + $filterboxid + ')')
-							#evaluate($preference)
-							#ifnull($selectedpreference)
-							#set($selectedpreference = "false")
-							#end
-							#if($selectedpreference == "false") 
-								 fa-caret-down 
-						  	#else 
-						  		 fa-caret-right 
-						  	#end"></i>
+					<i class="caret fas fa-caret-right#if($selectedpreference == "false") exp#end"></i>
 					</span> 
 					<p class="m-0 flex-grow-1">$!detail.getText($context)</p>
 					</div>
@@ -70,14 +65,8 @@
 				id="$filterboxid" 
 				#if($selectedpreference == "true") style="display: none;" #end
 				data-viewtype="${viewtype}">
-			
 				$pages.include("/${applicationid}/components/filters/types/${viewtype}.html?search=true", $context)
-		
 			</div>
 		</div>
-		</div>
 	</div>
-
-
-
-
+</div>

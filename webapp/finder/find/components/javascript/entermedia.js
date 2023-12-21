@@ -1077,9 +1077,9 @@ emcomponents = function () {
       $("#" + target).slideToggle("fast", function () {
         $(window).trigger("resize");
       });
+      div.find(".caret").toggleClass("exp");
       div.toggleClass("expanded");
       div.toggleClass("minimized");
-      div.find(".caret").toggleClass("exp");
       div.find(".component-actions").toggle();
     });
   });

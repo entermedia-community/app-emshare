@@ -19,14 +19,13 @@ $context.putPageValue("title",$title)
 
 <div class="emthumbbox embox$thumbsize resultsassetcontainer" id="cell${catalogid}_${hit.id}"> 
 ##	#if($showtoolbar)
-	<div class="gallery-checkbox resultsselection">
-		<input type="checkbox" 
-				class="selectionbox" 
-				name="count" 
-				value=""
-				#if($hits.isSelectedOnPage(${hit.id})) checked #end
-				data-dataid="${hit.id}" />
-	</div>
+	<input type="checkbox" class="selectionbox resultsselection show" name="count" id="${hit.id}" #if($hits.isSelectedOnPage(${hit.id})) checked #end data-dataid="${hit.id}" />
+	<label class="selectionbox-label" for="${hit.id}">
+		<i class="fas fa-check"></i>
+	</label>
+	<div class="grid-gallery-checked"></div>
+	<!-- <div class="gallery-checkbox">
+	</div> -->
 ##	#end
 <div class="d-flex align-items-center assetVoteTool">
 	$pages.include("$componenthome/results/badges.html", $context)
@@ -34,28 +33,29 @@ $context.putPageValue("title",$title)
 	$context.putPageValue("assetid", $hit.id) 
 	#if( $canviewvoting )
 	<div class="gallerycell-favorite">
-		<div id="galleryassetfavorite-${hit.id}" class="media-info-icons">
+		<div id="galleryassetfavorite-${hit.id}" class="media-info-icons" style="margin-top: 2px;">
         	 $pages.include("$apphome/views/modules/asset/editor/favorite/index.html?targetdiv=galleryassetfavorite", $context)
    		</div>
 	</div>
 	#end
-			#if($canquickdownload)
-	    #if( $desktop )
-        	<a href="#" class="emdesktopdownload gallerycell-download" data-assetid="$hit.id" title="[[Download]] $!title">
-        	<i class="fas fa-download"> </i>
-        	</a>
-       	#else
-			#set($dlink = $mediaarchive.asLinkToOriginal($hit))
-			#set($dlink = "$siteroot/$mediadbappid/services/module/asset/downloads/originals/$dlink?assetid=$!hit.getId()")
-			#if($collectionid)
-				#set($dlink = "$dlink&collectionid=$!{collectionid}")
+		#if($canquickdownload)
+			#if( $desktop )
+				<a href="#" class="emdesktopdownload gallerycell-download" data-assetid="$hit.id" title="[[Download]] $!title">
+					<img src="$apphome/theme/images/download.svg" alt="[[Download]] $!title" />
+				</a>
+			#else
+				#set($dlink = $mediaarchive.asLinkToOriginal($hit))
+				#set($dlink = "$siteroot/$mediadbappid/services/module/asset/downloads/originals/$dlink?assetid=$!hit.getId()")
+				#if($collectionid)
+					#set($dlink = "$dlink&collectionid=$!{collectionid}")
+				#end
+				<a href="$dlink" class="gallerycell-download" data-assetid="$hit.id" title="[[Download]] $!title">
+					<img src="$apphome/theme/images/download.svg" alt="[[Download]] $!title" />
+				</a>
 			#end
-        	<a href="$dlink" class="gallerycell-download" data-assetid="$hit.id" title="[[Download]] $!title">
-        	<i class="fas fa-download"> </i>
-        	</a>
        	#end
-       #end
 </div>
+
 	<a class="hovering stackedplayer" href="$click"  data-assetid="$hit.id">
 		<div class="emthumbimage em$thumbsize assetdraggable"
 			data-assetid="${hit.id}" title="$sourcepath">
