@@ -1299,6 +1299,7 @@ uiload = function () {
             return true;
           }
           var value = $(this).val();
+          console.log("value: " + value);
           if (value) {
             prevent = value.length > 0;
             return false;
@@ -1321,7 +1322,7 @@ uiload = function () {
     }
   }
 
-  lQuery(".modal").livequery("click", function (e) {
+  $(document).on("click", ".modal", function (e) {
     e.stopPropagation();
     e.stopImmediatePropagation();
     if (e.target.classList.contains("modal")) {
