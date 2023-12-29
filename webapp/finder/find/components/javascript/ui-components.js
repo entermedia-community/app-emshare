@@ -4076,6 +4076,10 @@ lQuery(".ajaxstatus").livequery(function () {
   setTimeout('showajaxstatus("' + uid + '");', timeout); //First one is always faster
 });
 
+lQuery(".autoopenemdialog").livequery(function () {
+	emdialog($(this));
+});
+
 var resizegallery = function () {
   var container = $("#emslidesheet");
   if (container.length) {
