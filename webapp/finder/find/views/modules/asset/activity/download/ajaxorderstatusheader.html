@@ -1,4 +1,6 @@
 
+##Todo: Load this always on header???
+#if($order)
 #if( $order.orderstatus == "complete" && $order.orderreadystatus == "false")
 
 <a href="$apphome/views/modules/asset/activity/download/listitems.html?orderid=${order.id}" 
@@ -8,16 +10,13 @@
 	
 #elseif( $order.orderstatus == "error" )
 
-	[[Error]]
-	##$!order.orderstatusdetail
-	##$pages.include("$apphome/views/modules/asset/activity/download/listitems.html")
+	[[Download Error]]
 
 #else
 
 <div id="status$order.id" class="ajaxstatus" ajaxpath="$home$apphome/views/modules/asset/activity/download/ajaxorderstatusheader.html?orderid=$order.id&id=$order.id" period="2000">
-
 <a href="" title="$order"><i class="fas fa-spinner fa-spin"></i> [[Preparing Download]]</a>
-
 </div>
 
+#end
 #end

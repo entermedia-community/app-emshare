@@ -1,6 +1,8 @@
+#if($orders)
 
-#set( $ordersearcher = $searcherManager.getSearcher($catalogid,"order") )
-#foreach( $order in $orders )
-	#set( $order = $ordersearcher.loadData($order) )
-	<a href="" title="$order"><i class="fas fa-spinner fa-spin"></i> [[Download]]</a> 
+	#foreach($order in $orders)
+		$context.putPageValue("order", $order)
+		$pages.include("$apphome/views/modules/asset/activity/download/ajaxorderstatusheader.html",$context)
+		#break
+	#end
 #end
