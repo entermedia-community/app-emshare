@@ -74,7 +74,11 @@
 						<a class="btn btn-sm btn-primary" href=$asset.linkurl>[[Download]]</a>
 					#else
 					#set ($originalpath = $mediaarchive.asLinkToOriginal($asset) )
-					<a class="btn btn-sm btn-primary" href="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/originals/#urlencode($originalpath)?orderid=${order.id}&collectionid=$!{order.collectionid}">[[Download]]</a>
+					#set ($downloadlink = "$!cdnprefix$!home/$!{mediadbappid}/services/module/asset/downloads/originals/#urlencode($originalpath)?orderid=${order.id}" )
+					#ifnotnull($order.collectionid)
+						#set ($downloadlink = "${downloadlink}&collectionid=$!{order.collectionid}")
+					#end
+					<a class="btn btn-sm btn-primary" href="$downloadlink">[[Download]]</a>
 					#end
 					#set( $downloadall = true)
 					
@@ -112,7 +116,7 @@
 </table>
 #if($downloadall)
 	<div style="text-align:right; padding:20px 0;"> 
-	<a class="btn btn-sm btn-primary" style="margin-right:20px" href="$home$apphome/views/modules/asset/activity/download/zip/${order.id}.zip?orderid=${order.id}" >[[Download All (Zip)]]</a>
+	<a class="btn btn-sm btn-primary" style="margin-right:20px" href="$!home$apphome/views/modules/asset/activity/download/zip/${order.id}.zip?orderid=${order.id}" >[[Download All (Zip)]]</a>
 	<a class="btn btn-sm btn-primary" href="$home$apphome/views/modules/asset/activity/download/metadata/export.csv?hitssessionid=none&orderid=$order.id&friendly=true">[[Download Metadata]]</a>
 	</div>
 #end	
