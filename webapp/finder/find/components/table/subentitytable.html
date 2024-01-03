@@ -95,22 +95,7 @@ $context.putPageValue("targetdivtablepositions", $targetdivtablepositions)
 		
 		<div id="sub-nav-tab" class="emsubnav sub-nav-${viewid}">
 		<ul class="resultsnav">
-		<li class="nav-li">
-				<a href="$applink/views/modules/${searchtype}/components/filters/dialog.html"
-					class="emdialog"
-					data-dialogid="entityfilters"
-					data-hidebackdrop="true"
-					data-hidefooter="true"
-					data-modalsize="sm"
-					data-moduleid="${searchtype}"
-					data-hitssessionid="$!hits.getSessionId()"
-					data-topmoduleid="$!moduleid"
-					data-targetdivsearch="$!submoduleresults"
-					data-dialogresults="$!dialogresults"
-					data-resultslink="$resultsLink"
-					title="[[Filter]] #text($module)"
-					><i class="fas fa-filter" style="font-size:0.9em;"></i> [[Filter]]</a>
-				</li>
+
 				<li>
 				$pages.include("$componenthome/filters/filters-inline.html", $context)
 				</li>
@@ -277,8 +262,7 @@ $context.putPageValue("targetdivtablepositions", $targetdivtablepositions)
 			</tr>
 			</tbody>
 		</table>
-		
-		
+
 		
 		#set($link = $context.getRequestParameter("selectlink"))
 		
@@ -315,7 +299,11 @@ $context.putPageValue("targetdivtablepositions", $targetdivtablepositions)
 					<input type="hidden" name="searchtype" value="${searchtype}" />
 				</form>
 		#end
+	
+	
 	</div>
+	$context.putPageValue("targetdivsearch","results$!{viewid}")
+	$pages.include("$apphome/components/sidebars/filters/index.html", $context)
 		
 	</div>
 

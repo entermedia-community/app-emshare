@@ -16,29 +16,37 @@
 	#set($idcount = "")
 #end
 #set( $valueid = "list-${detailid}${idcount}value")
-<select name="${detail.getId()}.value"  
-		id="$!{idprefix}$valueid"  
-		class="listautocompletemulti form-control #if($detail.isRequired() && !$multiedit && !$searchfrom) required #end" 
-		data-searchfield="name" 
-		data-searchtype="$detail.listId" 
-		data-listcatalogid="$detail.listCatalogId" 
-		data-foreignkeyid="" 
-		data-placeholder="$detail.getText($context)" 
-		data-sortby="$!detail.sort"
-		multiple>
-	#foreach( $type in $values )
-			#set( $row = false )
-			#set( $row = $searcher.searchById($type) )
-		    #if( $row )
-			    #if( $searcher.getDetail("name").isMultiLanguage())
-			    	#set($name = $row.getName($context.getLocale()))
-			    #else
-			    	#set($name = $row)
-			    #end
-			    #set($entityid = $row.id)
-			 #end
-		<option value="$row.getId()"  selected="selected">#text($row)</option>
+
+#set( $fieldname = $detail.getId() )
+#set( $values = $filternode.children)
+
+	#set( $count = 0 )
+	#foreach($entry in $values)
+		#if($count<=10)
+			<div>
+			<input class="filtercheck filtercheck${fieldname}" data-fieldname="${fieldname}" type="checkbox" name="${fieldname}.value" id="$entry.getId()${fieldname}_val" value="$entry.getId()" #if( $hits.getSearchQuery().hasTermValue($filternode.id,$entry.getId()) ) checked #end />
+			<label for="$entry.getId()${fieldname}_val">$entry.getText($context) ($entry.count)</label>
+			#set($count = $count +1)
+			</div>
+		#end
 	#end
-</select>	
+	#if ($values.size() > 10)
+		<select id="${fieldname}select2" 
+				name="${fieldname}.value" 
+				class="listdropdown choose-select detail-select form-control #if($detail.isRequired() && !$multiedit) required #end" 
+				listid="${fieldname}filter" 
+				data-listid="${fieldname}filter" 
+				data-searchtype= '$searchtype'
+				data-searchfield="$searchfield"
+				onchange="if( typeof updatelisteners == 'function' )updatelisteners('$catalogid','$searchtype','$!view','$fieldname');"
+				data-allowclear="false">
+			<option value=""></option>
+		#foreach($entry in $values)
+			<option value="$entry.getId()" #if(  $hits.getSearchQuery().hasTermValue($filternode.id,$entry.getId()) ) selected #end>#esc($entry.getText($context))</option>
+		#end
+		</select>
+	#end
+
+
 </div>
 
