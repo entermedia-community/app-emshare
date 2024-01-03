@@ -45,51 +45,40 @@
 		
 		
 		<div class="form-group" style="margin:15px 0;">
-			<div class="filter-box" style="display:flex;">
-				<div class="filter-box-header" style="line-height: 1.65; padding-right: 6px;">[[Sort]]:</div>
-			
-			<div class="filter-box-options" 
-				 id="filterboxsorting"
-				 style="width:255px; padding-right:6px">
-				#set ($alldetails = $searcher.getUserPropertyDetails() )
-				<div >
-				<select data-sortup="$hits.searchQuery.isSortUp()" 
-						class="form-control  select2 autosubmited" 
-						name="sortby" 
-						id="$!{moduleid}dialogsortby" 
-						data-allowclear="false" 
-						style="" >
-					#foreach( $detail in $alldetails)
-						
-						 #if($hits.searchQuery.isSortUp())
-						 	#set($value = "${detail.id}Up")
-						 	#set($currentSortOrder = "up")
-						 #else
-						 	#set($value = "${detail.id}Down")
-						 	#set($currentSortOrder = "down")
-						 #end
-						<option data-detailid="${detail.id}" 
-								value="$value" 
-								#if($hits.isSortedBy($detail.id)) 
-									selected="selected" 
-									#set($currentSort = $detail.getText($context))
-								#end>$detail.getText($context)</option>
-					#end
-				</select>
-				
+			<div class="filter-box d-flex align-items-center px-1">
+				<div class="fw-bold">[[Sort by]]:</div>
+				<div class="filter-box-options flex-grow-1 mx-1" id="filterboxsorting">
+					#set ($alldetails = $searcher.getUserPropertyDetails() )
+					<select data-sortup="$hits.searchQuery.isSortUp()" 
+							class="form-control  select2 autosubmited" 
+							name="sortby" 
+							id="$!{moduleid}dialogsortby" 
+							data-allowclear="false">
+						#foreach( $detail in $alldetails)
+							
+							#if($hits.searchQuery.isSortUp())
+								#set($value = "${detail.id}Up")
+								#set($currentSortOrder = "up")
+							#else
+								#set($value = "${detail.id}Down")
+								#set($currentSortOrder = "down")
+							#end
+							<option data-detailid="${detail.id}" 
+									value="$value" 
+									#if($hits.isSortedBy($detail.id)) 
+										selected="selected" 
+										#set($currentSort = $detail.getText($context))
+									#end>$detail.getText($context)</option>
+						#end
+					</select>
 				</div>
-				</div>
-				<div class=" " >
 				<a href="#" 
-					class="filterschangesort"
+					class="filterschangesort px-1 py-2"
 					data-sortbyfield="${moduleid}dialogsortby" 
 					title='[[Sort by]] $currentSort #if($currentSortOrder == "up") [[Down]] #else [[Up]] #end'>
 					<i class=" fas #if($hits.searchQuery.isSortUp()) fa-sort-alpha-down #else fa-sort-alpha-up #end" style="padding-top:5px"></i>
-				</a>
-				</div>
-				
-			
-		</div>
+				</a> 
+			</div>
 		</div>
 	</form>	
 	
