@@ -91,184 +91,187 @@ $context.putPageValue("targetdivtablepositions", $targetdivtablepositions)
 		
 		$context.putPageValue("resultsLink", $resultsLink)
 		
-		
-		
-		<div id="sub-nav-tab" class="emsubnav sub-nav-${viewid}">
-		<ul class="resultsnav">
+		<div class="d-flex">
+			<div class="flex-grow-1">
+				<div id="sub-nav-tab" class="emsubnav sub-nav-${viewid}" style="border-bottom: 1px solid #5f739e;">
+					<ul class="resultsnav">
+						<li>
+						$pages.include("$componenthome/filters/filters-inline.html", $context)
+						</li>
+					</ul>
+					<ul class="resultsnavright">
+						<li class="resultsnavtitem">
+							<button class="btn summary-toggler summary-opener">
+								<i class="fas fa-angle-double-left"></i> [[Summary]]
+							</button>
+						</li>
+					</ul>
 
-				<li>
-				$pages.include("$componenthome/filters/filters-inline.html", $context)
-				</li>
-		</ul>
 
+					#if($hits.totalPages > 1)
+					<ul class="table-positions-top domdatacontext" 
+						data-targetdiv="$!targetdivtablepositions"
+						data-oemaxlevel="1" 
+						data-viewid="$!viewid"
+						#if ($fieldexternalid)
+							data-field="$fieldexternalid"
+							data-$!{fieldexternalid}.value="$!fieldexternalvalue"
+							data-operation="$fieldexternaloperation"
+							data-fieldexternalid="$!fieldexternalid"
+							data-fieldexternalvalue="$!fieldexternalvalue"
+						#end
+						>
+						<li class="resultpages">
+						
+						$pages.include("/$applicationid/components/table/positions.html", $context)
+						</li>
+					</ul>
+					#end
+				</div>
 
-		#if($hits.totalPages > 1)
-		<ul class="table-positions-top domdatacontext" 
-			data-targetdiv="$!targetdivtablepositions"
-			data-oemaxlevel="1" 
-			data-viewid="$!viewid"
-			#if ($fieldexternalid)
-				data-field="$fieldexternalid"
-				data-$!{fieldexternalid}.value="$!fieldexternalvalue"
-				data-operation="$fieldexternaloperation"
-				data-fieldexternalid="$!fieldexternalid"
-				data-fieldexternalvalue="$!fieldexternalvalue"
-			#end
-			>
-			<li class="resultpages">
+				<div id="${searchtype}_table_entities" class="tableholder">
 			
-			$pages.include("/$applicationid/components/table/positions.html", $context)
-			</li>
-		</ul>
-		
-		#end
-		
-		</div>
-		<div class="clearfix"></div>
-		
-		<div id="${searchtype}_table_entities" class="tableholder">
-		
-		
-		#if($tabletype == "subentity")
-			#set($tableclass = "emselectableentity" )
-		#elseif($tabletype == "subentityadd")
-			#set($tableclass = "emselectableentityadd" )
-		#else
-			#set($tableclass = "emselectable" )
-		#end
+			
+				#if($tabletype == "subentity")
+					#set($tableclass = "emselectableentity" )
+				#elseif($tabletype == "subentityadd")
+					#set($tableclass = "emselectableentityadd" )
+				#else
+					#set($tableclass = "emselectable" )
+				#end
 		   
 		
-			<div id="emselectable"
-				class='$tableclass emselectablesortable' 
-				data-viewid="$!viewid" 
-				data-viewpath="$viewpath"
-				#if ($fieldexternalid)
-				data-field="$fieldexternalid"
-				data-$!{fieldexternalid}.value="$!fieldexternalvalue"
-				data-operation="exact"
-				data-fieldexternalid="$!fieldexternalid"
-				data-fieldexternalvalue="$!fieldexternalvalue"
-				#end
-				data-hitssessionid="$hits.getSessionId()" 
-				data-pagenum="$hits.getPage()" 
-				data-hitsperpage="$!hits.hitsPerPage"
-				data-totalpages="$hits.getTotalPages()"
-				##data-module="$!moduleid"
-				
-				#if($id) data-id="$!id" #end
-				data-searchtype="$!searchtype" 
-				
-				data-tabletype="$!tabletype"
-				#if($tabletype == "subentity" && $targetrendertype)
-					data-targetcomponenthome="/$applicationid/views/modules/$!searchtype/components"
-					data-searchhome="/$applicationid/views/modules/$!searchtype/components/table"
-					data-targetrendertype="$!targetrendertype"
-					data-targetdiv="$!targetdiv"
-					data-oemaxlevel="1"
+				<div id="emselectable"
+					class='$tableclass emselectablesortable' 
+					data-viewid="$!viewid" 
+					data-viewpath="$viewpath"
+					#if ($fieldexternalid)
+					data-field="$fieldexternalid"
+					data-$!{fieldexternalid}.value="$!fieldexternalvalue"
+					data-operation="exact"
+					data-fieldexternalid="$!fieldexternalid"
+					data-fieldexternalvalue="$!fieldexternalvalue"
+					#end
+					data-hitssessionid="$hits.getSessionId()" 
+					data-pagenum="$hits.getPage()" 
+					data-hitsperpage="$!hits.hitsPerPage"
+					data-totalpages="$hits.getTotalPages()"
+					##data-module="$!moduleid"
 					
-					data-parentsearchtype="$!parentsearchtype"
-				#elseif($tabletype == "subentityadd")
-					data-parentviewid="$!parentviewid"
-					data-targetdiv="$!targetdiv"
-					data-oemaxlevel="2"
-				#end
-				#if($emselectableform)
-					data-emselectableform="$emselectableform"
-				#end
-				
+					#if($id) data-id="$!id" #end
+					data-searchtype="$!searchtype" 
+					
+					data-tabletype="$!tabletype"
+					#if($tabletype == "subentity" && $targetrendertype)
+						data-targetcomponenthome="/$applicationid/views/modules/$!searchtype/components"
+						data-searchhome="/$applicationid/views/modules/$!searchtype/components/table"
+						data-targetrendertype="$!targetrendertype"
+						data-targetdiv="$!targetdiv"
+						data-oemaxlevel="1"
+						
+						data-parentsearchtype="$!parentsearchtype"
+					#elseif($tabletype == "subentityadd")
+						data-parentviewid="$!parentviewid"
+						data-targetdiv="$!targetdiv"
+						data-oemaxlevel="2"
+					#end
+					#if($emselectableform)
+						data-emselectableform="$emselectableform"
+					#end
+					
 				>
 	
-		#set($selectedid = $context.getRequestParameter("selectedid"))
-		#set( $sortby = $hits.getSearchQuery().getSortBy() )
-		<table id="main-results-table" 
-				class="emdata table table-striped table-hover tabletype$!tabletype"
-				data-hitssessionid="$!hits.sessionId">
-			<thead>
-			<tr id="tableheader" class="tableheader">
-			
-			#foreach( $detail in $details )
-			<th class='$!sortable 
-				#if($edit)editcolumnheader #end 
-				#if($sortable && $sortby.startsWith($detail.getId())) 
-				currentsort 
-				#if($sortby.endsWith("Up")) up #else down #end 
-				#end' 
-				id="th-$detail.id" 
-				data-sortby="$detail.id"
-				style='#if($detail.viewType =="asset" || $detail.viewType =="primarymedia" )width:180px;#end'>
-				#text($detail.text) 
-				
-				#if ($sortable && $sortby.startsWith($detail.getId()))
-						#if($sortby.endsWith("Up"))
-							#set($sorticon="up")
-						#else
-							#set($sorticon="down")
-						#end	
-						&nbsp;&nbsp;&nbsp;<span class="sorticon fas fa-caret-$sorticon"></span>
-				#end
-			</th>
-			#end
-			#if($candelete && $candelete == true && $showdelete == "true")
-			<th></th>
-			#end
-			</tr>
-			</thead>
-			<tbody>
-			#set($rowidfield = $context.getRequestParameter("rowidfield"))
-			#set($rowidname = $context.getRequestParameter("rowidname"))
-			#foreach ( $hit in $hits.getPageOfHits() )
-				#if($rowidfield)
-					#set($rowid = $hit.getValue($rowidfield))
-				#else
-					#set($rowid = $hit.id)
-				#end	
-				<tr #if($candelete != "false") rowid="$!rowid" #end 
-					#if($rowidname) data-${rowidname}="$!rowid" #end
-					class="#if($selectedid == $hit.id) emhighlight #end rowclick domdatacontext"
-					>
-				#foreach( $detail in $details )
-					<td class="subentitycell-$!{detail.viewType}">
+				#set($selectedid = $context.getRequestParameter("selectedid"))
+				#set( $sortby = $hits.getSearchQuery().getSortBy() )
+				<table id="main-results-table" 
+						class="emdata table table-striped table-hover tabletype$!tabletype"
+						data-hitssessionid="$!hits.sessionId">
+					<thead>
+					<tr id="tableheader" class="tableheader">
 					
-						#set( $val = "$!hit.get($detail.id)" )
-						#set( $values = false )
-						#set( $values = $hit.getValues($detail.id) )
-						#if($detail.rendermask)
-							#set( $val = $searcherManager.getValue($catalogid, $detail.rendermask, $hit.properties))
-							#set( $values = $searcherManager.getValues($catalogid, $detail.rendermask, $hit.properties))
+					#foreach( $detail in $details )
+					<th class='$!sortable 
+						#if($edit)editcolumnheader #end 
+						#if($sortable && $sortby.startsWith($detail.getId())) 
+						currentsort 
+						#if($sortby.endsWith("Up")) up #else down #end 
+						#end' 
+						id="th-$detail.id" 
+						data-sortby="$detail.id"
+						style='#if($detail.viewType =="asset" || $detail.viewType =="primarymedia" )width:180px;#end'>
+						#text($detail.text) 
+						
+						#if ($sortable && $sortby.startsWith($detail.getId()))
+								#if($sortby.endsWith("Up"))
+									#set($sorticon="up")
+								#else
+									#set($sorticon="down")
+								#end	
+								&nbsp;&nbsp;&nbsp;<span class="sorticon fas fa-caret-$sorticon"></span>
+						#end
+					</th>
+					#end
+					#if($candelete && $candelete == true && $showdelete == "true")
+					<th></th>
+					#end
+					</tr>
+					</thead>
+					<tbody>
+					#set($rowidfield = $context.getRequestParameter("rowidfield"))
+					#set($rowidname = $context.getRequestParameter("rowidname"))
+					#foreach ( $hit in $hits.getPageOfHits() )
+						#if($rowidfield)
+							#set($rowid = $hit.getValue($rowidfield))
+						#else
+							#set($rowid = $hit.id)
+						#end	
+						<tr #if($candelete != "false") rowid="$!rowid" #end 
+							#if($rowidname) data-${rowidname}="$!rowid" #end
+							class="#if($selectedid == $hit.id) emhighlight #end rowclick domdatacontext"
+							>
+						#foreach( $detail in $details )
+							<td class="subentitycell-$!{detail.viewType}">
+							
+								#set( $val = "$!hit.get($detail.id)" )
+								#set( $values = false )
+								#set( $values = $hit.getValues($detail.id) )
+								#if($detail.rendermask)
+									#set( $val = $searcherManager.getValue($catalogid, $detail.rendermask, $hit.properties))
+									#set( $values = $searcherManager.getValues($catalogid, $detail.rendermask, $hit.properties))
+								#end
+								
+								$context.putPageValue("detail",$detail)
+								$context.putPageValue("values",$values)
+								$context.putPageValue("val",$val)
+								$context.putPageValue("hit",$hit)
+								$context.putPageValue("data",$hit)
+								$context.putPageValue("thumbsize","crop")
+								$context.putPageValue("linkintext",true)
+								
+								
+								$pages.include("$xmledithome/detailreadonly.html", $context)
+							</td>
 						#end
 						
-						$context.putPageValue("detail",$detail)
-						$context.putPageValue("values",$values)
-						$context.putPageValue("val",$val)
-						$context.putPageValue("hit",$hit)
-						$context.putPageValue("data",$hit)
-						$context.putPageValue("thumbsize","crop")
-						$context.putPageValue("linkintext",true)
-						
-						
-						$pages.include("$xmledithome/detailreadonly.html", $context)
-					</td>
-				#end
-				
-				#if($candelete && $candelete == true && $showdelete == "true")
-					<td>
-					<a href="#" onclick="if(confirm('Delete Item?')) { showpath('${searchtype}_table', '$home/system/components/xml/table-deleterow.html?delete=true&$editargs'); } return false;">
-						[[delete]]
-					</a>
-					</td>
-				#end		
-				</tr>
-			#end
-			</tr>
-			</tbody>
-		</table>
+						#if($candelete && $candelete == true && $showdelete == "true")
+							<td>
+							<a href="#" onclick="if(confirm('Delete Item?')) { showpath('${searchtype}_table', '$home/system/components/xml/table-deleterow.html?delete=true&$editargs'); } return false;">
+								[[delete]]
+							</a>
+							</td>
+						#end		
+						</tr>
+					#end
+					</tr>
+					</tbody>
+				</table>
 
-		
-		#set($link = $context.getRequestParameter("selectlink"))
-		
-		#set($jumptomodule = $context.getRequestParameter("jumptomodule"))
-		
-		#if($link)
+				
+				#set($link = $context.getRequestParameter("selectlink"))
+				
+				#set($jumptomodule = $context.getRequestParameter("jumptomodule"))
+				
+				#if($link)
 		
 			###<div id="$!editlink" data-targetdiv="${viewid}editor" data-link="$home$editpath?$args&edit=true&oemaxlevel=1"></div>
 			<div id="$!editlink" data-targetdiv="$!{targetdiv}" data-link="$link"></div>
@@ -302,9 +305,11 @@ $context.putPageValue("targetdivtablepositions", $targetdivtablepositions)
 	
 	
 	</div>
-	$context.putPageValue("targetdivsearch","results$!{viewid}")
-	$pages.include("$apphome/components/sidebars/filters/index.html", $context)
-		
+	
+</div>
+</div>
+$context.putPageValue("targetdivsearch","results$!{viewid}")
+$pages.include("$apphome/components/sidebars/filters/index.html", $context)
 	</div>
 
 
