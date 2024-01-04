@@ -1,23 +1,11 @@
+##requires $viewtype
+##$viewtype
+
 <div id="$!{idprefix}detail_${detail.id}" valign="middle">
 	<div class="form-group">
 		<input name="field" value="$searcher.getCatalogId():$view:${detail.getId()}" type="hidden">
-
-		#set( $viewtype = $detail.searchcomponent )
 		
-		#if (!$viewtype)
-			#set( $viewtype = $detail.viewType )
-		#end
-		#if (!$viewtype)
-			#set ($viewtype = $detail.dataType)
-		#end
-		#if (!$viewtype || $viewtype == "text" || $detail.isMultiLanguage() || $viewtype == "textarea" || $viewtype == "html")
-			#set ($viewtype = "default")
-		#end
-		#if ($viewtype == "date")
-			#set ($viewtype = "datesearch")
-		#end
 		
-		##$viewtype
 		
 		#if(!$detail.isDate() && $detail.getId() != "category" && !$viewtype.endsWith("search") )
 			#if($detail.defaultoperation && $detail.defaultoperation != "")

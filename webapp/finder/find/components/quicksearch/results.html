@@ -66,102 +66,101 @@ $context.putPageValue("filter", $filter)
 
 #foreach($module in $organizedModules)
 	#set($hits = $organizedHits.get($module.id))
+	#ifnotnull($hits)
+			$context.putPageValue("module", $module)
+			$context.putPageValue("moduleid", $module.id)
 		
-	$context.putPageValue("module", $module)
-	$context.putPageValue("moduleid", $module.id)
-
-   	#set($moduleicon = "entity")
-   	#if ($module.moduleicon)
-   		#set($moduleicon = $module.moduleicon)
-   	#end
-   	
-   	
-   	
-	#set($entityurl = "$!siteroot$apphome/views/modules/$!{module.id}/index.html?$!{module.id}page=1&field=description&operation=freeform&description.value=$val")
-	<div style="margin-bottom: 20px;">
-	<a href="$entityurl" 
-		class="ajax qsresultsEntity" 
-		style=""
-		data-targetdiv="applicationmaincontent" 
-		data-oemaxlevel="3" 
-		data-updateurl="true" 
-		data-profilepreference="defaultmodule"
-		data-profilepreference.value="$!module.getId()"
-		title="[[View]]: #text($module)" >
-	<img src="$siteroot$apphome/theme/images/entity/${moduleicon}.svg" 
-	style="height: 25px; max-width:20px;"> 
-	<span class="qsresultsEntitytext">
-	#if( $module.id == "asset") ##this is safe
-		#set( $count = $hits.size()) 
-	#else
-		#set( $count = $filter.getCount($module.id) ) 
-	#end
-	#ifnull($count)
-		#set( $count = $hits.size()) 
-	#end
-	#text($module) ($count)
-	</span>
-	</a>
-	#if($count>10)
-		##set($entityurlall = "$!siteroot$apphome/views/modules/$!{module.id}/index.html?$!{module.id}page=1")
-		<a href="$entityurl" 
-			class="ajax qsresultsEntityall" 
-			style=""
-			data-targetdiv="applicationmaincontent" 
-			data-oemaxlevel="3" 
-			data-updateurl="true" 
-			data-profilepreference="defaultmodule"
-			data-profilepreference.value="$!module.getId()"
-			title="[[View]] $count: #text($module)" >
+		   	#set($moduleicon = "entity")
+		   	#if ($module.moduleicon)
+		   		#set($moduleicon = $module.moduleicon)
+		   	#end
+		   	
+		   	
+		   	
+			#set($entityurl = "$!siteroot$apphome/views/modules/$!{module.id}/index.html?$!{module.id}page=1&field=description&operation=freeform&description.value=$val")
+			<div style="margin-bottom: 20px;">
+			<a href="$entityurl" 
+				class="ajax qsresultsEntity" 
+				style=""
+				data-targetdiv="applicationmaincontent" 
+				data-oemaxlevel="3" 
+				data-updateurl="true" 
+				data-profilepreference="defaultmodule"
+				data-profilepreference.value="$!module.getId()"
+				title="[[View]]: #text($module)" >
+			<img src="$siteroot$apphome/theme/images/entity/${moduleicon}.svg" 
+			style="height: 25px; max-width:20px;"> 
+			<span class="qsresultsEntitytext">
+			#if( $module.id == "asset") ##this is safe
+				#set( $count = $hits.size()) 
+			#else
+				#set( $count = $filter.getCount($module.id) ) 
+			#end
+			#ifnull($count)
+				#set( $count = $hits.size()) 
+			#end
+			#text($module) ($count)
+			</span>
+			</a>
+			#if($count>10)
+				##set($entityurlall = "$!siteroot$apphome/views/modules/$!{module.id}/index.html?$!{module.id}page=1")
+				<a href="$entityurl" 
+					class="ajax qsresultsEntityall" 
+					style=""
+					data-targetdiv="applicationmaincontent" 
+					data-oemaxlevel="3" 
+					data-updateurl="true" 
+					data-profilepreference="defaultmodule"
+					data-profilepreference.value="$!module.getId()"
+					title="[[View]] $count: #text($module)" >
+				
+				<span class="qsresultsEntitytext">
+			
+				([[View All]])
+				</span>
+				</a>
+			#end
+			
+			#set($rendertype = $module.modulerendertype)
+			#if (!$rendertype)
+			   	#set($rendertype = "entity")
+			#end
+		 	$context.putPageValue("rendertype", $rendertype)
+		   	$context.putPageValue("rendermoduleid", $module.id)
+			   	
+		   	##check for view
+			#set($viewid = "${moduleid}gridfields")
+			#set($view = "$moduleid/$viewid")
 		
-		<span class="qsresultsEntitytext">
-	
-		([[View All]])
-		</span>
-		</a>
-	#end
-	
-	#set($rendertype = $module.modulerendertype)
-	#if (!$rendertype)
-	   	#set($rendertype = "entity")
-	#end
- 	$context.putPageValue("rendertype", $rendertype)
-   	$context.putPageValue("rendermoduleid", $module.id)
-	   	
-   	##check for view
-	#set($viewid = "${moduleid}gridfields")
-	#set($view = "$moduleid/$viewid")
-
-	#if( $context.getUserProfile() )
-		#set($searcher = $searcherManager.getSearcher($catalogid,$moduleid))
-		#set ($details = $searcher.getDetailsForView($view, $context.getUserProfile()))
-		
-	#else
-		#set ($details = $searcher.getDetailsForView($view))
-		
-	#end
-   	$context.putPageValue("details", $details)
-   
-   $hits.setHitsPerPage(10)
-   $context.putPageValue("hits", $hits)
-	
-	<div class="emgridflex">  	
-		<div id="galleryimg-${rendertype}" 
-				class='emgrid #if($section != "favorites")emgridlimited#end entitiescontainer' 
-				style="width:1000px"
-				data-fixedwidth="180" 
-				data-cellpadding="10"
-				data-entityrenderurl="$!{siteroot}$apphome/views/modules/${module.id}/components/gridsample/gridcell.html"
-				data-rendertype="$rendertype">
-				#foreach( $hit in $hits.getPageOfHits() )
-					$context.putPageValue("hit", $hit)
-				    $pages.include("$apphome/components/gridsample/gridcellquicksearch.html", $context)
-				#end
+			#if( $context.getUserProfile() )
+				#set($searcher = $searcherManager.getSearcher($catalogid,$moduleid))
+				#set ($details = $searcher.getDetailsForView($view, $context.getUserProfile()))
+				
+			#else
+				#set ($details = $searcher.getDetailsForView($view))
+				
+			#end
+		   	$context.putPageValue("details", $details)
+		   
+		   $hits.setHitsPerPage(10)
+		   $context.putPageValue("hits", $hits)
+			
+			<div class="emgridflex">  	
+				<div id="galleryimg-${rendertype}" 
+						class='emgrid #if($section != "favorites")emgridlimited#end entitiescontainer' 
+						style="width:1000px"
+						data-fixedwidth="180" 
+						data-cellpadding="10"
+						data-entityrenderurl="$!{siteroot}$apphome/views/modules/${module.id}/components/gridsample/gridcell.html"
+						data-rendertype="$rendertype">
+						#foreach( $hit in $hits.getPageOfHits() )
+							$context.putPageValue("hit", $hit)
+						    $pages.include("$apphome/components/gridsample/gridcellquicksearch.html", $context)
+						#end
+				</div>
+			</div>
 		</div>
-	</div>
-	
-
-	</div>
+	#end
 #end
 
 #if($assethits)
