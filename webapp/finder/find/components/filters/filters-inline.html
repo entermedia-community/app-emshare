@@ -3,7 +3,11 @@
 #end
 
 #set($hitssessionid = $hits.getSessionId())
+
+#if(!$moduleid)
 #set($moduleid = $module.id)
+#end
+
 #if (!$nodeID)
 	#set($nodeID = $context.getRequestParameter("nodeID"))
 	$context.putPageValue("nodeID",$nodeID)
@@ -54,8 +58,8 @@
 				data-targetdiv="$!targetdiv" 
 				data-oemaxlevel="$oemaxlevel"
 				data-updateurl="false">
-				<i class="fas fa-times"></i>
-				&nbsp;$hits.getSearchQuery().getMainInput()
+				$hits.getSearchQuery().getMainInput()
+				&nbsp;<i class="fas fa-times"></i>
 			</a>
 			#set($filtercount = $filtercount+1)
 	#end
@@ -87,8 +91,7 @@
 			data-targetdiv="$!targetdiv" 
 			data-oemaxlevel="$oemaxlevel"
 			data-updateurl="false">
-			<i class="fas fa-times"></i>
-			&nbsp;$term.getDetail():
+			$term.getDetail():
 			<strong> 
 			#foreach( $val in $term.getValueCollection() )
 				#if($val && $term.getDetail().getId())
@@ -129,6 +132,7 @@
 				#end
 			#end
 			</strong>
+			<i class="fas fa-times"></i>
 		</a>
 			#set($filtercount = $filtercount+1)
 	#end

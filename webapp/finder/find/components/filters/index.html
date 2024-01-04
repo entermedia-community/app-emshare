@@ -1,6 +1,6 @@
-#set( $moduleid = $module.getId())
-
-
+#if(!$moduleid)
+	#set( $moduleid = $module.getId())
+#end
 ##$hits
 
 #if ($editfilters)
@@ -28,6 +28,7 @@
 ##$pages.include("$componenthome/filters/filters-inline.html", $context)
 
 
+
 <div class="advfilterpanelcontent" >
 	#set( $view = "$moduleid/$!{moduleid}advancedfilter")
 
@@ -44,6 +45,9 @@
 		#set($targetdivsearch = "$!{moduleid}resultscontainer")
 	#end
 
+	#if(!$resultslink)
+	#set($resultslink = $context.getRequestParameter("resultslink"))
+	#end
 	
 	<form  	name="filterform" 
 			id="filterform" 
@@ -51,7 +55,7 @@
 			method="POST" 
 			data-targetdiv="$targetdivsearch" 
 			
-			#set($resultslink = $context.getRequestParameter("resultslink"))
+			
 			#if($resultslink)
 				action="$resultslink"
 			#elseif($topmoduleid)
@@ -84,8 +88,10 @@
 			#set ($details = $searcher.getDetailsForView($view))
 ##		#end
 		
+		#ifnull($idprefix)
 		$context.putPageValue("idprefix","search")
-	
+		#end
+		
 		##FILTERS
 		#foreach( $detail in $details)   
 			#set( $viewpermission = $context.getPageValue("canviewfilter${detail.getId()}") )
@@ -137,9 +143,6 @@
 		<input type="hidden" name="customproperty" value="userinputsearch"/>
 		<input type="hidden" name="userinputsearch.value" value="true"/>
 		<input type="hidden" name="removeterm" id="filtersremoveterm" value=""/>
-					
-				    
-					
 			
 		#set ($resultview = $userprofile.get('resultview'))
 		
@@ -149,69 +152,6 @@
 		
 		</form>
 		
-		
-		##EDITING
-		
-		#if ($edit == "true")
-			##TODO: Pass this view name in
-			#set ($alldetails = $searcher.getUserPropertyDetails() )
-			<div class="advancedsearcheditform">
-			<strong style="margin-bottom:10px;display:block">[[Edit Filters]]:</strong>
-			<form id="searchaddfield" 
-				class="ajaxform" 
-				data-targetdiv="moduleadvfilterpanel" 
-				action="$siteroot$apphome/views/modules/$moduleid/components/filters/addfield.html" 
-				method="post">
-			
-				<input type="hidden" name="oemaxlevel" value="1"/>
-				<input type="hidden" name="editadvsearch" value="true"/>
-				<input type="hidden" name="view" value="$view"/>
-				<input type="hidden" name="catalogid" value="$searcher.getCatalogId()"/>
-				<input type="hidden" name="collectionid" value="$!collectionid"/>
-				<input type="hidden" name="moduleid" value="$!moduleid"/>
-				<input type="hidden" name="searchtype" value="$searcher.getSearchType()"/>
-				<div class="form-group">
-				<select  class="form-control"  name="field" onChange="jQuery('#searchaddfield').submit();">
-					<option value="">#text($module)</option>
-					#foreach( $detail in $alldetails)
-						#if($detail.isLeaf())
-						<option value="$detail.id" style="margin-left: 10px;">$detail.getText($context)</option>
-						#else							
-							<optgroup label="$detail.title"></optgroup>
-							#foreach($child in $detail)
-							<option value="$child.id" style="margin-left: 10px;">$child.getText($context)</option>
-							#end
-						#end
-					#end	
-				</select>
-				</div>
-				<div class="form-group">
-				<select class="form-control" name="field" onChange="jQuery('#searchaddfield').submit();">
-					<option value="">[[Album]]</option>
-					#set( $librarydetails = $mediaarchive.getSearcher("librarycollection").getUserPropertyDetails() )
-					#foreach( $detail in $librarydetails)
-					<option value="librarycollection.${detail.id}" style="margin-left: 10px;">$detail.getText($context)</option>
-					#end
-				</select>
-				</div>
-				<div class="form-group">
-				<select  class="form-control"  name="field" onChange="jQuery('#searchaddfield').submit();">
-					<option value="">[[Library]]</option>
-					#set( $librarydetails = $mediaarchive.getSearcher("library").getUserPropertyDetails() )
-					#foreach( $detail in $librarydetails)
-					<option value="library.${detail.id}" style="margin-left: 10px;">$detail.getText($context)</option>
-					#end
-				</select>
-				</div>
-			<div class="form-group">
-				###set($doneUrl = "$siteroot$componenthome/filters/index.html?oemaxlevel=1&collectionid=$!collectionid&moduleid=$!moduleid")
-				
-				#set($doneUrl = "$siteroot$apphome/views/modules/$moduleid/index.html?collectionid=$!collectionid&moduleid=$!moduleid")
-				<a class="btn btn-sm btn-secondary ajax"  data-targetdiv="applicationcontent" data-oemaxlevel="4" href="$doneUrl">[[Done Editing]]</a>
-			</div>	
-			</form>
-			</div>
-		#end
 	
 	</div>
 </div>

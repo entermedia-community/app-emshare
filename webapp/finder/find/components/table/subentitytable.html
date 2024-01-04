@@ -61,7 +61,7 @@ $context.putPageValue("targetdivtablepositions", $targetdivtablepositions)
 
 #set($emselectableform = $context.getRequestParameter("emselectableform"))
 
-#set($hits = $tablehits)
+#set($hits = $subtablehits)
 #set($submoduleresults = "results$!{viewid}")
 <div id="$!submoduleresults" class="submodulepicker">
 #if( $hits && $hits.size() > 0 )
@@ -95,7 +95,7 @@ $context.putPageValue("targetdivtablepositions", $targetdivtablepositions)
 			<div class="flex-grow-1">
 				<div id="sub-nav-tab" class="emsubnav sub-nav-${viewid}" style="border-bottom: 1px solid #5f739e;">
 					<ul class="resultsnav">
-						<li>
+						<li class="filtersselected">
 						$pages.include("$componenthome/filters/filters-inline.html", $context)
 						</li>
 					</ul>
@@ -309,6 +309,8 @@ $context.putPageValue("targetdivtablepositions", $targetdivtablepositions)
 </div>
 </div>
 $context.putPageValue("targetdivsearch","results$!{viewid}")
+$context.putPageValue("resultslink", $resultsLink)
+$context.putPageValue("idprefix","entitysearch")
 $pages.include("$apphome/components/sidebars/filters/index.html", $context)
 	</div>
 

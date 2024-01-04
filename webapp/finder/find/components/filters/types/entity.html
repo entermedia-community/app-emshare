@@ -1,9 +1,10 @@
-
-<div id="$!{idprefix}listdetail_$fieldname" class="listdetailpicker" data-rendertype="multiselect">
+#set( $fieldname = $detail.getId() )
+#set( $values = $filternode.children)
 #if( !$values && $data )
 	#set($values = $data.getValues($detail.id) )
 #end
 
+<div id="$!{idprefix}listdetail_$fieldname" class="listdetailpicker" data-rendertype="multiselect">
 #set($searcher = $searcherManager.getSearcher($detail.getListCatalogId(), $detail.getListId() ))
 #set($entity_module = $detail.getListId())
 
@@ -17,15 +18,16 @@
 #end
 #set( $valueid = "list-${detailid}${idcount}value")
 
-#set( $fieldname = $detail.getId() )
-#set( $values = $filternode.children)
+
 
 	#set( $count = 0 )
 	#foreach($entry in $values)
 		#if($count<=10)
 			<div>
-			<input class="filtercheck filtercheck${fieldname}" data-fieldname="${fieldname}" type="checkbox" name="${fieldname}.value" id="$entry.getId()${fieldname}_val" value="$entry.getId()" #if( $hits.getSearchQuery().hasTermValue($filternode.id,$entry.getId()) ) checked #end />
-			<label for="$entry.getId()${fieldname}_val">$entry.getText($context) ($entry.count)</label>
+			<input class="filtercheck filtercheck${fieldname}" 
+				data-fieldname="${fieldname}" type="checkbox" name="${fieldname}.value" 
+				id="$!{idprefix}$entry.getId()${fieldname}_val" value="$entry.getId()" #if( $hits.getSearchQuery().hasTermValue($filternode.id,$entry.getId()) ) checked #end />
+			<label for="$!{idprefix}$entry.getId()${fieldname}_val">$entry.getText($context) ($entry.count)</label>
 			#set($count = $count +1)
 			</div>
 		#end
