@@ -92,7 +92,7 @@
 			data-oemaxlevel="$oemaxlevel"
 			data-updateurl="false">
 			$term.getDetail():
-			<strong> 
+			<span> 
 			#foreach( $val in $term.getValueCollection() )
 				#if($val && $term.getDetail().getId())
 				
@@ -103,8 +103,8 @@
 					#end
 					
 					#if($term.getDetail().isList())
-						#set($data = $mediaarchive.getCachedData($term.getDetail().getListId(),$val))
-						$!context.getText( $data )
+						#set($data = $mediaarchive.getCachedData($term.getDetail().getListId(), $val))
+						<strong>$!context.getText( $data )</strong>
 					#elseif($term.getDetail().isBoolean())
 						#if($term.getValue() == "true")
 							[[True]]
@@ -114,25 +114,25 @@
 					#elseif($term.getDetail().isDate())
 						#set($op = $term.operation)
 						#if($op == "afterdate")
-							[[After]]:
+							[[After]]
 						#elseif($op == "beforedate")
-							[[Before]]:
+							[[Before]]
 						#elseif($op == "betweendates")
-							[[Between]]:
+							[[Between]]
 						#end
 						
-			            $term.getValue()
+			            <strong>$term.getValue()</strong>
 					#else
 			            #if($term.getValue())
-			                $term.getValue()
+			                <strong>$term.getValue()</strong>
 			            #elseif($val)
-			                $val
+			                <strong>$val</strong>
 			            #end
 					#end
 				#end
 			#end
-			</strong>
-			<i class="fas fa-times"></i>
+			</span>
+			<i class="fas fa-times ml-1"></i>
 		</a>
 			#set($filtercount = $filtercount+1)
 	#end
