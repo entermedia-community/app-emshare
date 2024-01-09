@@ -353,6 +353,13 @@ jQuery(document).ready(function (url, params) {
               $("#filtersremoveterm", form).val(fieldname);
             }
           }
+        } else {
+          var parent = $(this).closest(".boolean-switches");
+          if ($(this).hasClass("true-switch")) {
+            parent.find(".false-switch").prop("checked", false);
+          } else {
+            parent.find(".true-switch").prop("checked", false);
+          }
         }
         form.trigger("submit");
       });
@@ -1034,7 +1041,7 @@ jQuery(document).ready(function (url, params) {
 
   lQuery("input[name=pagetoggle]").livequery("click", function () {
     var input = $(this);
-    var resultsdiv = $(this).closest(".resultsdiv");
+    var resultsdiv = input.closest(".resultsdiv");
     if (!resultsdiv) {
       resultsdiv = $("#resultsdiv");
     }
@@ -1063,6 +1070,29 @@ jQuery(document).ready(function (url, params) {
       );
       $(".selectionbox", resultsdiv).prop("checked", false);
     }
+  });
+
+  lQuery("a.selectpage").livequery("click", function (e) {
+    e.preventDefault();
+    e.stopPropagation();
+    var selectpage = $(this);
+    var resultsdiv = selectpage.closest(".resultsdiv");
+    if (!resultsdiv) {
+      resultsdiv = $("#resultsdiv");
+    }
+    //var hitssessionid = resultsdiv.data('hitssessionid');
+    var options = resultsdiv.data();
+    var componenthome = resultsdiv.data("componenthome");
+    options.oemaxlevel = 1;
+
+    var targetdiv = resultsdiv.find("#resultsheader");
+    options.action = selectpage.data("action");
+    refreshdiv(targetdiv, componenthome + "/results/togglepage.html", options);
+    $(".selectionbox", resultsdiv).prop("checked", options.action != "none");
+    $("input[name=pagetoggle]", resultsdiv).prop(
+      "checked",
+      options.action != "none"
+    );
   });
 
   lQuery(".showasset").livequery("click", function (e) {

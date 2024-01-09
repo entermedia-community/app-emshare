@@ -1826,7 +1826,6 @@ uiload = function () {
       .siblings(".select-dropdown-open")
       .addClass("down");
     $(this).closest(".select-dropdown").hide();
-    console.log("Clicked");
   });
 
   function select2formatResult(emdata) {
@@ -4077,7 +4076,7 @@ lQuery(".ajaxstatus").livequery(function () {
 });
 
 lQuery(".autoopenemdialog").livequery(function () {
-	emdialog($(this));
+  emdialog($(this));
 });
 
 var resizegallery = function () {
