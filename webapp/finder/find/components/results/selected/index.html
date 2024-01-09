@@ -1,20 +1,156 @@
 #if( $user && $hits.size()>0 && $hits.hasSelections() )
 
 <li class="dropdown">
-	<a class="dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="navbarActionsDropdown">[[Actions]]</a> 
-		<div class="dropdown-menu" aria-labelledby="navbarActionsDropdown">
-		#if(!$canforcebasiccollections)
+	<a class="dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="navbarFile$!{moduleid}">[[File]]</a> 
+		<div class="dropdown-menu" aria-labelledby="navbarFile$!{moduleid}">
+			
+			#if( $user && ($candownload || $canconvert || $candownloadfpo ) )
+			#set ($enabled=$hits.getSelectionSize() > 0)
+			
+			#if( $enabled )
+				#if($mediaarchive.isCatalogSettingTrue("preventupscaling")) 
+					<a class="dropdown-item" 
+						href="$siteroot$apphome/views/modules/asset/activity/customdownloadassets.html?hitssessionid=$!hits.getSessionId()&collectionid=$!{librarycol.getId()}"  
+						data-hidefooter="true" >[[Download]]</a>
+				#else
+					<a class="dropdown-item emdialog" 
+						data-dialogid="downloadeasset"
+						data-hidefooter="true"
+						href="$siteroot$apphome/views/modules/asset/activity/downloadassets.html?hitssessionid=$!hits.getSessionId()&collectionid=$!{librarycol.getId()}"  
+						 >[[Download]]</a>
+				#end
+			#else		
+				<a class="dropdown-item" href="#">[[Download]]</a>
+			#end
+		#end
+		
+		
+		#if($canexportdata)
+			<a class="dropdown-item" href="$siteroot$apphome/views/modules/asset/export/download/export_asset.csv?hitssessionid=$hits.sessionId&searchtype=asset">[[Export results to CSV]]</a>
+			<a class="dropdown-item" href="$siteroot$apphome/views/modules/asset/export/download/export_asset.csv?hitssessionid=$hits.sessionId&friendly=true&searchtype=asset&view=asset/resultstable">[[Export to CSV (friendly)]]</a>
+		#end
+		
+		#if($canmultidelete)
+			#set($deleteurl = "$siteroot$componenthome/mediaviewer/fullscreen/delete/index.html?hitssessionid=$hits.getSessionId()&nodeID=$!catid")
+			#if($module=="librarycollection")
+				#set($deleteurl = "${deleteurl}&collectionid=$!librarycol.getId()")
+			#end	    
+	 		<a class="dropdown-item emdialog"
+	 			data-dialogid="deleteasset"
+	 			data-maxwidth="600" 
+	 			href="$deleteurl">[[Delete Selected Assets]]</a>
+	   	#end 
+	   	
+	   	#if($canprintpreview)
+	    	 <a class="dropdown-item" href="$siteroot$apphome/views/modules/asset/editor/printpreview/printselections.html?hitssessionid=$hits.getSessionId()">[[Print Assets]]</a>
+		#end
+	</div>
+	</li>
+
+	#if ($canmultiedit)
+	<li class=" dropdown">
+		<a class=" dropdown-toggle" href="#" id="navbarEdit$!{moduleid}" role="button" data-toggle="dropdown"  data-bs-toggle="dropdown">[[Edit]]</a>
+		<div class="dropdown-menu" aria-labelledby="navbarEdit$!{moduleid}">
+  				#set($text = "[[Multi Edit]] ($hits.getSelectionSize())")
+				<a id="multiedit-menu"
+					data-hitssessionid="multiedit:$hits.getSessionId()" 
+					class="dropdown-item" 
+					href="#" 
+					title="[[Edit selected Assets]]">$text</a>
+					
+					<a class="ajax selectpage" data-targetdiv="resultsheader" href="$siteroot$componenthome/results/togglepage.html?oemaxlevel=1&hitssessionid=$hits.getSessionId()&action=page">[[Select This Page]]</a>
+    	        <a class="ajax  selectpage" data-targetdiv="resultsheader" href="$siteroot$componenthome/results/togglepage.html?oemaxlevel=1&hitssessionid=$hits.getSessionId()&action=all">[[Select All Results]]</a>
+    	        <a class="ajax  deselectpage" data-targetdiv="resultsheader" href="$siteroot$componenthome/results/togglepage.html?oemaxlevel=1&hitssessionid=$hits.getSessionId()&action=none">[[Deselect All]]</a>
+		</div>
+	</li>
+	#end	
+	
+	<li class=" dropdown">
+		<a class="dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="navbarAddto$!{moduleid}">[[Add to]]</a>
+		<div class="dropdown-menu" aria-labelledby="navbarAddto$!{moduleid}">
+			#foreach ( $amodule in $userprofile.getEntities() )
+	  		#set($amoduleid = $amodule.getId())
+	  		#if($amodule.getBoolean("enableuploading"))
+			  	#if($permissions.can($amoduleid, "create") && $amoduleid!="faceprofilegroup" && $amoduleid!="asset" && $amoduleid!="modulesearch")
+			  		#set($entityrendertype = "entity")
+					#if ($amodule.modulerendertype)
+						#set($entityrendertype = $amodule.modulerendertype)
+					#end
+			 		#set($addtourl = "$siteroot$applink/views/modules/${amoduleid}/components/entities/search/searchpicker.html")
+			 		#ifnotnull($topentityid)
+			 			#set($addtourl = "$addurl&fieldexternalid=${topmodule.getId()}&fieldexternalvalue=${topentityid}&reloadtargets=topmodulecontainer")
+			 		#end
+			    	<a class="dropdown-item emdialog" 
+			    		data-dialogid="addtoentity"
+			    		data-hidefooter="true"
+			    		data-assethitssessionid="$hits.getSessionId()"
+			    		href="$addtourl" >#text($amodule)</a>
+				    #end
+			    #end
+		    #end
+		    #if(1==2 && $canaddtofavorites && $librarycol.id != "${user.id}-favorites" )
+				<a class="dropdown-item ajax"
+					data-targetdivinner="resultsmessages"
+					data-oemaxlevel="2" 
+				   title="[[Add to Favorites]]"  
+				   href="$siteroot$apphome/views/modules/asset/editor/favorite/favorite-add-multi.html?hitssessionid=$hits.getSessionId()"
+				   >
+				   [[Add To Favorites]]</a>
+			#end
+		</div>
+	</li>
+	
+	#if($canpublish || $canemaillink || $canquickgallery)
+	<li class=" dropdown">
+	<a class=" dropdown-toggle" href="#" id="navbarShare$!{moduleid}" role="button" data-toggle="dropdown"  data-bs-toggle="dropdown"
+		aria-haspopup="true" aria-expanded="false">[[Share]]</a>
+		<div class="dropdown-menu" aria-labelledby="navbarShare$!{moduleid}">
+			#if( $canemaillink )
+				<a class="dropdown-item emdialog" 
+					data-hidefooter="true"
+					data-dialogid="sharedialog" 
+					href="$siteroot$apphome/views/modules/asset/activity/emailassets.html?hitssessionid=$!hits.getSessionId()" >[[Email Assets]]</a>
+			#end
+			#if( $canpublish)
+				<a  class="dropdown-item emdialog" 
+					data-hidefooter="true"
+					data-dialogid="publishdialog" 
+					href="$siteroot$apphome/views/modules/asset/activity/publishassets.html?hitssessionid=$!hits.getSessionId()" >[[Publish Assets to Server]]</a>
+			#end
+			#if( $canquickgallery)
+				<a  class="dropdown-item emdialog" 
+				data-hidefooter="true"
+				data-id="quickgallerydialog" 
+				href="$siteroot$apphome/views/modules/asset/activity/creategallerycollection.html?hitssessionid=$!hits.getSessionId()" >[[Create a shareable gallery]]</a>
+			#end
+		</div>
+	</li>
+	#end
+	
+	#if(!$canforcebasiccollections)
 		#if( $caneditcollection || $caneditallassets )
-			<a class="dropdown-item emdialog" 
-				data-dialogid="approveasset" 
-				title="[[Approve Pending]]" 
-				href="$siteroot$apphome/views/modules/asset/approval/confirmapprove.html?hitssessionid=$hits.getSessionId()&collectionid=$!librarycol.getId()&nodeID=$!categoryid&dialogresults=$!dialogresults">[[Approve]]</a>
-	    	<a class="dropdown-item emdialog" 
-	    		data-dialogid="approveasset" 
-	    		title="[[Reject Pending]]" 
-	    		href="$siteroot$apphome/views/modules/asset/approval/confirmreject.html?hitssessionid=$hits.getSessionId()&collectionid=$!librarycol.getId()&nodeID=$!categoryid&dialogresults=$!dialogresults">[[Reject]]</a>
-	    #end
-	    #end	
+			<li class=" dropdown">
+			<a class=" dropdown-toggle" href="#" id="navbarApprove$!{moduleid}" role="button" data-toggle="dropdown"  data-bs-toggle="dropdown"
+				aria-haspopup="true" aria-expanded="false">[[Approval]]</a>
+				<div class="dropdown-menu" aria-labelledby="navbarApprove$!{moduleid}">
+		
+						<a class="dropdown-item emdialog" 
+							data-dialogid="approveasset" 
+							title="[[Approve Pending]]" 
+							href="$siteroot$apphome/views/modules/asset/approval/confirmapprove.html?hitssessionid=$hits.getSessionId()&collectionid=$!librarycol.getId()&nodeID=$!categoryid&dialogresults=$!dialogresults">[[Approve]]</a>
+				    	<a class="dropdown-item emdialog" 
+				    		data-dialogid="approveasset" 
+				    		title="[[Reject Pending]]" 
+				    		href="$siteroot$apphome/views/modules/asset/approval/confirmreject.html?hitssessionid=$hits.getSessionId()&collectionid=$!librarycol.getId()&nodeID=$!categoryid&dialogresults=$!dialogresults">[[Reject]]</a>
+		
+				</div>
+			</li>
+		  #end
+	  #end
+	
+	
+			
+	
 ##	    #if ( $canviewbasket  )
 ##			#if($order)
 ##				<a class="dropdown-item updatebasket" data-action="remove" targetdiv="basket-paint"  href="$siteroot$componenthome/basket/removeselection.html?hitssessionid=$hits.getSessionId()" >[[Remove From Cart]]</a>
@@ -44,85 +180,25 @@
 ##			#end
 ##		#end
 		
-		#if(1==2 && $canaddtofavorites && $librarycol.id != "${user.id}-favorites" )
-			<a class="dropdown-item ajax"
-				data-targetdivinner="resultsmessages"
-				data-oemaxlevel="2" 
-			   title="[[Add to Favorites]]"  
-			   href="$siteroot$apphome/views/modules/asset/editor/favorite/favorite-add-multi.html?hitssessionid=$hits.getSessionId()"
-			   >
-			   [[Add To Favorites]]</a>
-		#end
 		
 		
-		#if ($canmultiedit && $hits.getSelectionSize() && $hits.getSelectionSize() > 1)
-  				#set($text = "[[Multi Edit]] ($hits.getSelectionSize())")
-				<a id="multiedit-menu"
-					data-hitssessionid="multiedit:$hits.getSessionId()" 
-					class="dropdown-item" 
-					href="#" 
-					title="[[Edit selected records]]">$text</a>
+		#if($canquickpublish )
+			#set($quickpublishlist = $mediaarchive.getList("quickpublish"))
+			<li class="">
+				<a class="" href="#" id="navbarPublishDropdown" role="button" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">[[Publish]]</a>
+					<div class="dropdown-menu" aria-labelledby="navbarPublishDropdown">
+						#foreach($item in $quickpublishlist)
+							<a class="dropdown-item" href="$siteroot$apphome/views/modules/asset/activity/publish/quickpublish.html?hitssessionid=$!hits.getSessionId()&quickid=$item.id"   >$item.name</a>
+						#end
+					</div>
+				</li>
 		#end
-		#if($canmultidelete)
-			#set($deleteurl = "$siteroot$componenthome/mediaviewer/fullscreen/delete/index.html?hitssessionid=$hits.getSessionId()&nodeID=$!catid")
-			#if($module=="librarycollection")
-				#set($deleteurl = "${deleteurl}&collectionid=$!librarycol.getId()")
-			#end	    
-	 		<a class="dropdown-item emdialog"
-	 			data-dialogid="deleteasset"
-	 			data-maxwidth="600" 
-	 			href="$deleteurl">[[Delete Assets]]</a>
-	   	#end    
-		#if($canprintpreview)
-	    	 <a class="dropdown-item" href="$siteroot$apphome/views/modules/asset/editor/printpreview/printselections.html?hitssessionid=$hits.getSessionId()">[[Print Assets]]</a>
-		#end
-		#if( $user && ($candownload || $canconvert || $candownloadfpo ) )
-			#set ($enabled=$hits.getSelectionSize() > 0)
-			
-			#if( $enabled )
-				#if($mediaarchive.isCatalogSettingTrue("preventupscaling")) 
-					<a class="dropdown-item" 
-						href="$siteroot$apphome/views/modules/asset/activity/customdownloadassets.html?hitssessionid=$!hits.getSessionId()&collectionid=$!{librarycol.getId()}"  
-						data-hidefooter="true" >[[Download]]</a>
-				#else
-					<a class="dropdown-item emdialog" 
-						data-dialogid="downloadeasset"
-						data-hidefooter="true"
-						href="$siteroot$apphome/views/modules/asset/activity/downloadassets.html?hitssessionid=$!hits.getSessionId()&collectionid=$!{librarycol.getId()}"  
-						 >[[Download]]</a>
-				#end
-			#else		
-				<a class="dropdown-item" href="#">[[Download]]</a>
-			#end
-		#end
-		</div>
-</li>
+		
+		   
 
-<li class=" dropdown">
-	<a class="dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="navbarActionsDropdown">[[Add to]]</a>
-	<div class="dropdown-menu">
-		#foreach ( $amodule in $userprofile.getEntities() )
-  		#set($amoduleid = $amodule.getId())
-  		#if($amodule.getBoolean("enableuploading"))
-		  	#if($permissions.can($amoduleid, "create") && $amoduleid!="faceprofilegroup" && $amoduleid!="asset" && $amoduleid!="modulesearch")
-		  		#set($entityrendertype = "entity")
-				#if ($amodule.modulerendertype)
-					#set($entityrendertype = $amodule.modulerendertype)
-				#end
-		 		#set($addtourl = "$siteroot$applink/views/modules/${amoduleid}/components/entities/search/searchpicker.html")
-		 		#ifnotnull($topentityid)
-		 			#set($addtourl = "$addurl&fieldexternalid=${topmodule.getId()}&fieldexternalvalue=${topentityid}&reloadtargets=topmodulecontainer")
-		 		#end
-		    	<a class="dropdown-item emdialog" 
-		    		data-dialogid="addtoentity"
-		    		data-hidefooter="true"
-		    		data-assethitssessionid="$hits.getSessionId()"
-		    		href="$addtourl" >#text($amodule)</a>
-		    #end
-	    #end
-    #end
-	</div>
-</li>
+		
+	
+
 
 #end
 
