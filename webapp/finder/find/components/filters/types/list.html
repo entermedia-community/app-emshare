@@ -12,11 +12,11 @@
 		#set( $count = 0 )
 		#foreach($entry in $values)
 			#if($count<=10)
-				<div>
+				<div class="d-flex align-items-start">
 				##<a class="addfilter #if ($first) filter-current #end" data-filtertype="$filternode.getId()" data-filtervalue="$entry.getId()" data-filterlabel="$entry.getText($context)" href="#" title="($entry.count)">
 				##<i class="fas  #if ($first) fa-check-square #else fa-square #end"></i>
-				<input class="filtercheck filtercheck${fieldname}" data-fieldname="${fieldname}" type="checkbox" name="${fieldname}.value" id="$entry.getId()${fieldname}_val" value="$entry.getId()" #if( $hits.getSearchQuery().hasTermValue($filternode.id,$entry.getId()) ) checked #end />
-				<label for="$entry.getId()${fieldname}_val">$entry.getText($context) ($entry.count)</label>
+				<input style="margin-top:4px" class="filtercheck filtercheck${fieldname}" data-fieldname="${fieldname}" type="checkbox" name="${fieldname}.value" id="$entry.getId()${fieldname}_val" value="$entry.getId()" #if( $hits.getSearchQuery().hasTermValue($filternode.id,$entry.getId()) ) checked #end />
+				<label for="$entry.getId()${fieldname}_val" class="ml-1">$entry.getText($context) ($entry.count)</label>
 				##</a>
 				#set($count = $count +1)
 				</div>
@@ -38,6 +38,5 @@
 		#end
 		</select>
 		#end
-				
 	#end  ##permission
-#end 
+#end
