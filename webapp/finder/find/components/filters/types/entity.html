@@ -17,9 +17,6 @@
 	#set($idcount = "")
 #end
 #set( $valueid = "list-${detailid}${idcount}value")
-
-
-
 	#set( $count = 0 )
 	#foreach($entry in $values)
 		#if($count<=10)
@@ -27,7 +24,10 @@
 			<input class="filtercheck filtercheck${fieldname}" 
 				data-fieldname="${fieldname}" type="checkbox" name="${fieldname}.value" 
 				id="$!{idprefix}$entry.getId()${fieldname}_val" value="$entry.getId()" #if( $hits.getSearchQuery().hasTermValue($filternode.id,$entry.getId()) ) checked #end />
-			<label for="$!{idprefix}$entry.getId()${fieldname}_val">$entry.getText($context) ($entry.count)</label>
+				
+				#set($label = $searcherManager.getCachedData($catalogid, $detail.getListId(), $entry.getId()))
+				
+			<label for="$!{idprefix}$entry.getId()${fieldname}_val">#esc($label) ($entry.count)</label>
 			#set($count = $count +1)
 			</div>
 		#end
