@@ -179,50 +179,6 @@
 
 				$pages.include("$componenthome/results/selected/index.html",$context)
 	
-				#if( $enabled && ($canpublish || $canemaillink || $canexportdata ) )
-				  <li class=" dropdown">
-					<a class=" dropdown-toggle" href="#" id="navbarSharehDropdown" role="button" data-toggle="dropdown"  data-bs-toggle="dropdown"
-						aria-haspopup="true" aria-expanded="false">[[Share]]</a>
-						<div class="dropdown-menu" aria-labelledby="navbarShareDropdown">
-							#if($canpublish || $canemaillink )				
-									#if( $canemaillink )
-										<a class="dropdown-item emdialog" 
-											data-hidefooter="true"
-											data-dialogid="sharedialog" 
-											href="$siteroot$apphome/views/modules/asset/activity/emailassets.html?hitssessionid=$!hits.getSessionId()" >[[Email Assets]]</a>
-									#end
-									#if( $canpublish)
-										<a  class="dropdown-item emdialog" 
-											data-hidefooter="true"
-											data-dialogid="publishdialog" 
-											href="$siteroot$apphome/views/modules/asset/activity/publishassets.html?hitssessionid=$!hits.getSessionId()" >[[Publish Assets to Server]]</a>
-									#end
-									#if( $canquickgallery)
-										<a  class="dropdown-item emdialog" 
-										data-hidefooter="true"
-										data-id="quickgallerydialog" 
-										href="$siteroot$apphome/views/modules/asset/activity/creategallerycollection.html?hitssessionid=$!hits.getSessionId()" >[[Create a shareable gallery]]</a>
-									#end
-							#end
-							#if($canexportdata)
-								<a class="dropdown-item" href="$siteroot$apphome/views/modules/asset/export/download/export_asset.csv?hitssessionid=$hits.sessionId&searchtype=asset">[[Export results to CSV]]</a>
-								<a class="dropdown-item" href="$siteroot$apphome/views/modules/asset/export/download/export_asset.csv?hitssessionid=$hits.sessionId&friendly=true&searchtype=asset&view=asset/resultstable">[[Export to CSV (friendly)]]</a>
-							#end		
-						</div>
-					</li>
-				#end
-			
-				#if($enabled && $canquickpublish )
-					#set($quickpublishlist = $mediaarchive.getList("quickpublish"))
-					<li class="">
-						<a class="" href="#" id="navbarPublishDropdown" role="button" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">[[Publish]]</a>
-							<div class="dropdown-menu" aria-labelledby="navbarPublishDropdown">
-								#foreach($item in $quickpublishlist)
-									<a class="dropdown-item" href="$siteroot$apphome/views/modules/asset/activity/publish/quickpublish.html?hitssessionid=$!hits.getSessionId()&quickid=$item.id"   >$item.name</a>
-								#end
-							</div>
-						</li>
-				#end
 	  			#set( $edit = $context.getRequestParameter("editheader") )
 			
 				#if ( $cancheckout && $order)
