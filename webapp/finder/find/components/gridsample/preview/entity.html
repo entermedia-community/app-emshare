@@ -32,32 +32,33 @@ $context.putPageValue("topmoduleid", $moduleid)
 
 #set($userentities = $userprofile.getEntitiesIds())
 
-#set( $addednew = $context.getRequestParameter("addednew"))
+#set($dialogtabid = "${moduleid}$!{entityid}")
+
+#set( $viewfiles = $context.getRequestParameter("viewfiles"))
 #set( $addnew = $context.getRequestParameter("addnew"))
 
-#if($addednew)
-	##just added new entity, open Media and Upload if available
-	##
-	###if($module.getBoolean("enableuploading") && $permissions.can($moduleid, "view_files"))
-	##	#set($entitytabopen = "tab_media")
-	###end
-#else
-	#if ($addnew)
-		#foreach( $targetview in $enttiyviews)
+
+#if ($addnew)
+	#foreach( $targetview in $enttiyviews)
 			#set( $viewid = $targetview.getId())
 			#set($tabid = "tab_$!{viewid}")
 			#ifnull($firstview)
 				#set($firstview = $viewid)
 			#end
-		#end
-		#if($firstview)
+	#end
+	#if($firstview)
 			#set($entitytabopen = "tab_$firstview")
-		#else
-			#set($entitytabopen = "")
-		#end
-		#set($dialogtabid = "addnew${moduleid}")
 	#else
-		#set($dialogtabid = "${moduleid}$!{entityid}")
+			#set($entitytabopen = "")
+	#end
+	
+	#set($dialogtabid = "addnew${moduleid}")
+
+#else
+	#if($viewfiles)
+		#if($module.getBoolean("enableuploading") && $permissions.can($moduleid, "view_files"))
+			#set($entitytabopen = "tab_media")
+		#end
 	#end
 #end
 

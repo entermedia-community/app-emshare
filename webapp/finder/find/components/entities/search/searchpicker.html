@@ -4,19 +4,28 @@
 	$context.putPageValue("searcher",$searcher)
 	
 	#set($assethitssessionid = $context.getRequestParameter("assethitssessionid"))
-
-	#if( $hits && $hits.getSelectionSize() > 0)	
-		<div class="alert alert-info">
-	  		<strong>[[Adding]]</strong> $hits.getSelectionSize() [[assets]]
-		</div>
-	#elseif($assetid)	
-	
-	#end	
+	#set($assetid = $context.getRequestParameter("assetid"))
 	
 	
+	<div class="alert alert-info">
+		#set( $hits = $context.getSessionValue($assethitssessionid))
+		#if( $hits && $hits.getSelectionSize() > 0)	
+		  		<strong>[[Adding]]</strong> $hits.getSelectionSize() [[assets]]
+		#elseif($assetid)	
+				<strong>[[Adding]]</strong> 1 [[asset]]
+		#end	
+	</div>
+	
+	#set($addnew = "$apphome/views/modules/$searchtype/components/gridsample/preview/entity.html")
+	
+	#if($assetid)
+		#set($addnew = "${addnew}?edit=true&addnew=true&viewfiles=true&saveaction=addassets&assetid=$assetid")
+	#else
+		#set($addnew = "${addnew}?edit=true&addnew=true&viewfiles=true&saveaction=addassets&assethitssessionid=$assethitssessionid")
+	#end
 	<a class="btn btn-sm btn-blue emdialog"
 		style="margin-bottom: 10px;"
-		href="$apphome/views/modules/$searchtype/components/gridsample/preview/entity.html?edit=true&addnew=true&action=addassets&assethitssessionid=$assethitssessionid" 
+		href="$addnew" 
 		>
 		[[New]] $module</a>
      
@@ -63,7 +72,11 @@
 		data-clicktargetdiv="applicationmaincontent"
 		data-clicktargettype="message"
 		data-moduleid="$searchtype"
-		data-assethitssessionid="$assethitssessionid"
+		#if($assetid)
+			data-assetid="$assetid"
+		#else
+			data-assethitssessionid="$assethitssessionid"
+		#end
 		
 		#if($assetid)
 		data-assetid="$assetid"

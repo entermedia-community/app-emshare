@@ -1,7 +1,6 @@
 package asset
 
 import org.entermediadb.asset.*
-import org.entermediadb.asset.facedetect.FaceDetectManager
 import org.json.simple.JSONArray
 import org.openedit.Data
 import org.openedit.hittracker.HitTracker

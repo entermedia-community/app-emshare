@@ -83,13 +83,16 @@ class='entitymetadatamodal #if($edit=="true") entitymetadataediting #else entity
 		action="$action"
 		enctype="multipart/form-data">
     	<input name="save" type="hidden" value="true" />
-    	#if($addnew)
-    		<input name="addednew" type="hidden" value="true" />
-    		#set($action = $context.getRequestParameter("action"))
-    		<input name="actiononsave" type="hidden" value="$!action" />
+    	
+    	#set($viewfiles = $context.getRequestParameter("viewfiles"))
+    	#if($viewfiles)
+    		<input name="viewfiles" type="hidden" value="true" />
+    		#set($saveaction = $context.getRequestParameter("saveaction"))
+    		<input name="actiononsave" type="hidden" value="$!saveaction" />
     		#set($assethitssessionid = $context.getRequestParameter("assethitssessionid"))
     		<input name="assethitssessionid" type="hidden" value="$!assethitssessionid" />
-    		
+    		#set($assetid = $context.getRequestParameter("assetid"))
+    		<input name="assetid" type="hidden" value="$!assetid" />
     	#end
     	<input name="id" type="hidden" value="$!id" />
     	<input name="entityid" type="hidden" value="$!id" />
