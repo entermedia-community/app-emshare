@@ -118,15 +118,6 @@
 					#set($topmodule = $mediaarchive.getCachedData("module", $topmoduleid))
 					
 				#end
-				#if($topmodule.getBoolean("enableuploading") && $permissions.can($topmoduleid, "upload_files"))
-					<li>
-						<a href="$siteroot$applink/views/modules/asset/add/entityaddmedia.html?categoryid=$!categoryid" 
-							class="ajax" 
-							data-targetdiv="dialogmediaentity"
-							data-oemaxlevel="1"
-							style="padding: 0 10px" title="[[Upload]]"><i class="fas fa-upload"></i></a>
-					</li>
-					#end
 				#end
 			#end
 			
@@ -168,6 +159,15 @@
 					</li>
 				#end
 
+				#if($permissions.can($topmoduleid, "upload_files"))
+					<li>
+						<a href="$siteroot$applink/views/modules/asset/add/entityaddmedia.html?categoryid=$!categoryid" 
+							class="ajax" 
+							data-targetdiv="dialogmediaentity"
+							data-oemaxlevel="1"
+							style="padding: 0 10px" title="[[Upload]]"><i class="fas fa-upload"></i></a>
+					</li>
+				#end
 				<li class="dropdown">
 					<a class="dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="navbarActionsDropdown">Select</a>
 					<div class="dropdown-menu">
@@ -321,13 +321,7 @@
 					#end								
 				#end
 				<li class="resultsnavtitem">
-					#set($preferencename = "${moduleid}summary")
-					#set($preference = '#set($selectedpreference = ' + '$!userprofile.minimize'  + $preferencename + ')')
-					#evaluate($preference)
-					#ifnull($selectedpreference)
-						#set($selectedpreference = "false")
-					#end
-					<button class='btn summary-opener #if($selectedpreference == "true") closed #end' data-target="$preferencename">
+					<button class="btn summary-toggler summary-opener">
 						<i class="fas fa-angle-double-left"></i> [[Summary]]
 					</button>
 				</li>
