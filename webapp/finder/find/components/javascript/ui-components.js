@@ -1709,7 +1709,10 @@ uiload = function () {
               if (targettype == "message") {
                 targetdiv.prepend(data);
                 targetdiv.find(".fader").fadeOut(3000, "linear");
-              } else {
+              } else if(targettype == "entitydialog") {
+				  
+				}
+				else {
                 //regular targetdiv
                 targetdiv.replaceWith(data);
               }
@@ -3101,16 +3104,41 @@ uiload = function () {
       return false;
     }
   );
+  
+  lQuery(".sidetoggle").livequery("click", function () {
+    var div = $(this);
+    var target = $(this).data("target");
+    toggleUserProperty("minimize" + target, function () {
+      $("#" + target).slideToggle("fast", function () {
+        $(window).trigger("resize");
+      });
+      div.find(".caret").toggleClass("exp");
+      div.toggleClass("expanded");
+      div.toggleClass("minimized");
+      div.find(".component-actions").toggle();
+    });
+  });
 
   lQuery(".summary-toggler").livequery("click", function (e) {
     var parent = $(this).closest(".summary-container");
     parent.toggleClass("closed");
-    $(".summary-opener").toggle();
+    var target = $(this).data("target");
+    saveProfileProperty("minimize" + target, "false", function () {
+    		$(".summary-opener").removeClass("closed");
+        	$(window).trigger("resize");
+    });
   });
 
   lQuery(".summary-opener").livequery("click", function (e) {
-    $(".summary-container").removeClass("closed");
-    $(this).hide();
+    var opener = $(this);
+  
+    var target = $(this).data("target");
+    saveProfileProperty("minimize" + target, "true", function () {
+			opener.addClass("closed");
+    		$(".summary-container").removeClass("closed");
+        	$(window).trigger("resize");
+    });
+    
   });
 
   lQuery(".sidebar-toggler").livequery("click", function (e) {

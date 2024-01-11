@@ -320,7 +320,13 @@
 					#end								
 				#end
 				<li class="resultsnavtitem">
-					<button class="btn summary-toggler summary-opener">
+					#set($preferencename = "${moduleid}summary")
+					#set($preference = '#set($selectedpreference = ' + '$!userprofile.minimize'  + $preferencename + ')')
+					#evaluate($preference)
+					#ifnull($selectedpreference)
+						#set($selectedpreference = "false")
+					#end
+					<button class='btn summary-opener #if($selectedpreference == "true") closed #end' data-target="$preferencename">
 						<i class="fas fa-angle-double-left"></i> [[Summary]]
 					</button>
 				</li>
