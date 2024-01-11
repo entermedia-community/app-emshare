@@ -216,21 +216,20 @@
 				
 				
 				#if(!$edit || $edit == "false"  )
+
+					#if($resultview != "stackedgallery")
 				
-					##-PAGINATION
-				
-					#set($total = $hits.getTotalPages() )
-					#if( $total > 1)
-						<li class="resultpages">		
-							
-							$pages.include("$componenthome/results/positions.html", $context)
-						</li>
-					#end
-					
-					
-					##-HITSPERPAGE
-					
-					##if($resultview != "stackedgallery")
+						##-PAGINATION
+						
+						#set($total = $hits.getTotalPages())
+						#if( $total > 1)
+							<li class="resultpages">		
+								$pages.include("$componenthome/results/positions.html", $context)
+							</li>
+						#end
+
+						##-HITSPERPAGE
+
 						#if($dialogresults)
 							#set($targetdiv= "dialog$!{moduleid}resultscontainer")
 						#else
@@ -256,7 +255,9 @@
 										#end	
 								</select>
 						</li>	
-					##end	
+					#else
+						## TODO?: infinie scroll for stacked media
+					#end
 					
 					
 					##-RESULTS TYPE

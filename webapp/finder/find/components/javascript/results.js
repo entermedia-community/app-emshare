@@ -190,23 +190,38 @@ jQuery(document).ready(function (url, params) {
 
   lQuery("input#jumptopageresults").livequery(function () {
     var input = $(this);
+    input.on("keydown", function (e) {
+      if (e.key === "Enter" || e.keyCode === 13) {
+        var page = input.val();
+        var maxpage = input.data("maxpage");
 
-    input.on("change", function () {
-      var url = input.data("url");
-      var targetdiv = input.data("targetdiv");
-      var oemaxlevel = input.data("oemaxlevel");
-      var page = input.val();
+        if (!page || page < 1 || page > maxpage) {
+          alert(
+            "Invalid page number. Enter a number between 1 - " + maxpage + "."
+          );
+          input.val("");
+          return;
+        }
 
-      var args = {
-        hitssessionid: input.data("hitssessionid"),
-        oemaxlevel: oemaxlevel,
-      };
-      url = url + page;
-      $.get(url, args, function (data) {
-        $("#" + targetdiv).html(data);
-        history.pushState($("#application").html(), null, url);
-        $(window).trigger("resize");
-      });
+        var url = input.data("url");
+        var targetdiv = input.data("targetdiv");
+        var oemaxlevel = input.data("oemaxlevel");
+        var updateurl = input.data("updateurl");
+        var args = {
+          hitssessionid: input.data("hitssessionid"),
+          oemaxlevel: oemaxlevel,
+        };
+        url = url + page;
+        $.get(url, args, function (data) {
+          $("#" + targetdiv).html(data);
+          history.pushState(
+            $("#application").html(),
+            null,
+            updateurl ? url : undefined
+          );
+          $(window).trigger("resize");
+        });
+      }
     });
   });
 
