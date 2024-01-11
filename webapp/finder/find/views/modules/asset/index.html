@@ -23,8 +23,6 @@ $context.putPageValue("categoryid", $categoryid)
 
 #set( $count = $hits.size())
 
-#set($entityurl = "$siteroot$apphome/views/modules/$module.id/index.html")
-
 #set( $entities = $userprofile.getEntitiesInParent($category) )
 
 #set($maintargetdiv = "assetresultscontainer")
@@ -43,26 +41,34 @@ $context.putPageValue("maintargetdiv", $maintargetdiv)
 
 
 	<div class="emgrid-box expandedmodule emgrid-module-asset"  >
-
-		<div class="emgrid-subtitle autostickywidth d-flex align-items-center">
-			<h3 class="d-flex align-items-center">
-				#set($moduleicon = "entity")
-				#if ($module.moduleicon)
-					#set($moduleicon = $module.moduleicon)
-				#end
-
-				#set($entityurl = "$siteroot$apphome/views/modules/$module.id/index.html")
-
-				<img src="$siteroot$apphome/theme/images/entity/${moduleicon}.svg" style="height: 26px">
-
-				#set( $count = $hits.size())
-				<div class="mx-1">#text($module)&nbsp;<span class="count">($count)</span></div>
-			</h3>
+			#set( $count = $hits.size())
 			$context.putPageValue("moduleid", $moduleid)
-			#if($topmoduleid != "favorites")
-				$pages.include("$apphome/views/modules/asset/contextmenu.html", $context)
-			#end 
-		</div>
+			#if( $hits.getSearchQuery().hasMainInput())
+				#if($moduleid=="asset")
+					#if($dialogresults)
+						#set($href = "$siteroot$apphome/views/modules/$moduleid/dialogindex.html?hitssessionid=$!hits.getSessionId()&topmoduleid=$!topmoduleid&rootcategory=$!rootcategory&categoryid=$!{categoryid}&removeterm=description")
+					#else
+						#set($href = "$siteroot$apphome/views/modules/$moduleid/index.html?hitssessionid=$!hits.getSessionId()&topmoduleid=$!topmoduleid&rootcategory=$!rootcategory&categoryid=$!{categoryid}&removeterm=description")		
+					#end
+					#set($oemaxlevel = "1")
+				#else
+					#set($href = "$siteroot$apphome/views/modules/$moduleid/index.html?hitssessionid=$!hits.getSessionId()&removeterm=$!term.getId()")
+					#set($oemaxlevel = "1")
+				#end
+				<div class="emgrid-subtitle autostickywidth d-flex align-items-center">
+					<p class="mb-0 ml-2 search-term">
+						<span style="font-size: 1rem;">Found <strong>$count</strong> results for "<strong>$hits.getSearchQuery().getMainInput()</strong>"</span>
+						<a href="$href"
+							class="ajax"
+							title="[[Clear]]: #esc($hits.getSearchQuery().getMainInput())"
+							data-targetdiv="$!maintargetdiv" 
+							data-oemaxlevel="$oemaxlevel"
+							data-updateurl="false"> 
+							<i class="fas fa-times ml-1"></i>
+						</a>
+					</p>
+				</div>
+			#end
 		$pages.include("$componenthome/results/index.html", $context)
 	</div>
 </div>
