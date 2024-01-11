@@ -6,16 +6,18 @@
 	#set($assethitssessionid = $context.getRequestParameter("assethitssessionid"))
 	#set($assetid = $context.getRequestParameter("assetid"))
 	
+	#set( $hits = $context.getSessionValue($assethitssessionid))
 	
+	#if( $hits || $assetid)
 	<div class="alert alert-info">
-		#set( $hits = $context.getSessionValue($assethitssessionid))
+		
 		#if( $hits && $hits.getSelectionSize() > 0)	
 		  		<strong>[[Adding]]</strong> $hits.getSelectionSize() [[assets]]
 		#elseif($assetid)	
 				<strong>[[Adding]]</strong> 1 [[asset]]
 		#end	
 	</div>
-	
+	#end
 	#set($addnew = "$apphome/views/modules/$searchtype/components/gridsample/preview/entity.html")
 	
 	#if($assetid)
@@ -71,25 +73,15 @@
 		data-clickurl="$applink/views/modules/$searchtype/components/entities/addassetstoentity.html"
 		data-clicktargetdiv="applicationmaincontent"
 		data-clicktargettype="message"
+		data-viewfiles="true"
 		data-moduleid="$searchtype"
 		#if($assetid)
 			data-assetid="$assetid"
 		#else
 			data-assethitssessionid="$assethitssessionid"
-		#end
-		
-		#if($assetid)
-		data-assetid="$assetid"
 		#end>
 	$pages.include("$apphome/components/entities/search/results.html",$context)
 	</div>
 	
-	
-	#if($canaddnewcollectionX)
-	<h4>[[Or]]</h4>
-       <a  class="emdialog btn btn-primary" 
-       	title="[[Create New Album]]" 
-       	href="$home$apphome/components/opencollections/pickcollectionaddnew.html?searchtype=librarycollection&assetid=$!asset.id&targetdiv=assetcategoryresults&library.value=$!library.getId()">
-       	<i class="fa fa-plus-square"></i> [[Create New Album]]</a>
-    #end
+
 </div>	

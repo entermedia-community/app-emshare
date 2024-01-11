@@ -1070,19 +1070,6 @@ emcomponents = function () {
     });
   });
 
-  lQuery(".sidetoggle").livequery("click", function () {
-    var div = $(this);
-    var target = $(this).data("target");
-    toggleUserProperty("minimize" + target, function () {
-      $("#" + target).slideToggle("fast", function () {
-        $(window).trigger("resize");
-      });
-      div.find(".caret").toggleClass("exp");
-      div.toggleClass("expanded");
-      div.toggleClass("minimized");
-      div.find(".component-actions").toggle();
-    });
-  });
 
   lQuery(".newcollectiondroparea").livequery(function () {
     $(this).droppable({
