@@ -35,17 +35,14 @@
 	#if ($values.size() > 10)
 		<select id="${fieldname}select2" 
 				name="${fieldname}.value" 
-				class="listdropdown choose-select detail-select form-control #if($detail.isRequired() && !$multiedit) required #end" 
+				class="listautocomplete choose-select detail-select form-control #if($detail.isRequired() && !$multiedit) required #end" 
 				listid="${fieldname}filter" 
 				data-listid="${fieldname}filter" 
-				data-searchtype= '$searchtype'
+				data-searchtype= '$detail.getListId()'
 				data-searchfield="$searchfield"
-				onchange="if( typeof updatelisteners == 'function' )updatelisteners('$catalogid','$searchtype','$!view','$fieldname');"
+				data-sortby="$!detail.sort"
 				data-allowclear="false">
 			<option value=""></option>
-		#foreach($entry in $values)
-			<option value="$entry.getId()" #if(  $hits.getSearchQuery().hasTermValue($filternode.id,$entry.getId()) ) selected #end>#esc($entry.getText($context))</option>
-		#end
 		</select>
 	#end
 
