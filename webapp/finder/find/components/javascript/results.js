@@ -3,6 +3,23 @@ jQuery(document).ready(function (url, params) {
   var siteroot = appdiv.data("siteroot") + appdiv.data("apphome");
   var componenthome = appdiv.data("siteroot") + appdiv.data("componenthome");
 
+  var headerHeight = $("#header").outerHeight(true);
+  if (!headerHeight) {
+    headerHeight = 0;
+  }
+  $("#entitynabarcontainer").css("top", headerHeight + "px");
+  var entityNavHeight = $("#entitynabarcontainer").outerHeight(true);
+  if (!entityNavHeight) {
+    entityNavHeight = 0;
+  }
+  var stickyTop = headerHeight + entityNavHeight;
+  lQuery("#default-expandedmodule").livequery(function () {
+    $(this).css("top", stickyTop + "px");
+  });
+  lQuery("#filteredmain").livequery(function () {
+    $(this).css("top", stickyTop + "px");
+  });
+
   var refreshdiv = function (targetdiv, url, params) {
     jQuery.ajax({
       url: url,

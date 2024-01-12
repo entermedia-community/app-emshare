@@ -1,4 +1,17 @@
 //EM Media Finder
+var lwt;
+
+function showLoader() {
+  clearTimeout(lwt);
+  lwt = setTimeout(function () {
+    $("#loading-window").addClass("d-flex");
+  }, 200); //don't show loader if the page loads within 200ms
+}
+
+function hideLoader() {
+  clearTimeout(lwt);
+  $("#loading-window").removeClass("d-flex");
+}
 
 formatHitCountResult = function (inRow) {
   return inRow[1];
@@ -156,7 +169,7 @@ runajaxonthis = function (inlink, e) {
         history.pushState($("#application").html(), null, nextpage);
       }
     }
-
+    showLoader();
     jQuery
       .ajax({
         url: nextpage,
@@ -239,6 +252,7 @@ runajaxonthis = function (inlink, e) {
         }
 
         $(window).trigger("resize");
+        hideLoader();
       });
   }
 
@@ -982,132 +996,137 @@ uiload = function () {
     }
     var openfrom = window.location.href;
 
-    jQuery.ajax({
-      xhrFields: {
-        withCredentials: true,
-      },
-      crossDomain: true,
-      url: link,
-      data: options,
-      success: function (data) {
-        //--Entities
-        if (
-          dialog.hasClass("entity-dialog") &&
-          dialog.closest(".modal").length !== 0
-        ) {
-          //find tab
-          var tabid = dialog.data("tabid");
-          if (!tabid) {
-            tabid = "tab_metadata";
-          }
-          if (tabid) {
-            var container = dialog.closest(".entity-body");
-            var tabs = container.find(".entity-tab-content");
-            if (tabs.length >= 8) {
-              alert("Max Tabs Limit");
+    showLoader();
+    jQuery
+      .ajax({
+        xhrFields: {
+          withCredentials: true,
+        },
+        crossDomain: true,
+        url: link,
+        data: options,
+        success: function (data) {
+          //--Entities
+          if (
+            dialog.hasClass("entity-dialog") &&
+            dialog.closest(".modal").length !== 0
+          ) {
+            //find tab
+            var tabid = dialog.data("tabid");
+            if (!tabid) {
+              tabid = "tab_metadata";
+            }
+            if (tabid) {
+              var container = dialog.closest(".entity-body");
+              var tabs = container.find(".entity-tab-content");
+              if (tabs.length >= 8) {
+                alert("Max Tabs Limit");
+                return;
+              }
+
+              //open new entity full
+              var parent = container.closest(".entitydialog");
+              container = dialog.closest(".entity-wraper");
+              container.replaceWith(data);
+              tabbackbutton(parent);
               return;
             }
-
-            //open new entity full
-            var parent = container.closest(".entitydialog");
-            container = dialog.closest(".entity-wraper");
-            container.replaceWith(data);
-            tabbackbutton(parent);
-            return;
-          }
-        } else {
-          modaldialog.html(data);
-          if (width) {
-            if (width > $(window).width()) {
-              width = $(window).width();
-            }
-
-            $(".modal-lg", modaldialog).css("min-width", width + "px");
-          }
-          if (maxwidth) {
-            $(".modal-lg", modaldialog).css("max-width", maxwidth + "px");
-          }
-
-          var modalkeyboard = false;
-          var modalbackdrop = true;
-          if ($(".modal-backdrop").length) {
-            modalbackdrop = false;
-          }
-
-          var modalinstance;
-          if (modalkeyboard) {
-            modalinstance = modaldialog.modal({
-              closeExisting: false,
-              show: true,
-              backdrop: modalbackdrop,
-            });
           } else {
-            modalinstance = modaldialog.modal({
-              keyboard: false,
-              closeExisting: false,
-              show: true,
-              backdrop: modalbackdrop,
-            });
-          }
+            modaldialog.html(data);
+            if (width) {
+              if (width > $(window).width()) {
+                width = $(window).width();
+              }
 
-          //jQuery('.modal-backdrop').insertAfter(modalinstance);
-
-          var firstform = $("form", modaldialog);
-          firstform.data("openedfrom", openfrom);
-          // fix submit button
-          var justok = dialog.data("cancelsubmit");
-          if (justok != null) {
-            $(".modal-footer #submitbutton", modaldialog).hide();
-          } else {
-            var id = $("form", modaldialog).attr("id");
-            $("#submitbutton", modaldialog).attr("form", id);
-          }
-          var hidetitle = dialog.data("hideheader");
-          if (hidetitle == null) {
-            var title = dialog.attr("title");
-            if (title == null) {
-              title = dialog.text();
+              $(".modal-lg", modaldialog).css("min-width", width + "px");
             }
-            $(".modal-title", modaldialog).text(title);
-          }
-          var hidefooter = dialog.data("hidefooter");
-          if (hidefooter != null) {
-            $(".modal-footer", modaldialog).hide();
-          }
-
-          if (
-            typeof global_updateurl !== "undefined" &&
-            global_updateurl == false
-          ) {
-            //globaly disabled updateurl
-          } else {
-            //Update Address Bar
-            var updateurl = dialog.data("urlbar");
-            if (!updateurl) {
-              updateurl = dialog.data("updateurl");
+            if (maxwidth) {
+              $(".modal-lg", modaldialog).css("max-width", maxwidth + "px");
             }
-            if (updateurl) {
-              history.pushState($("#application").html(), null, link);
-              window.scrollTo(0, 0);
+
+            var modalkeyboard = false;
+            var modalbackdrop = true;
+            if ($(".modal-backdrop").length) {
+              modalbackdrop = false;
             }
-          }
 
-          adjustzindex(modalinstance);
+            var modalinstance;
+            if (modalkeyboard) {
+              modalinstance = modaldialog.modal({
+                closeExisting: false,
+                show: true,
+                backdrop: modalbackdrop,
+              });
+            } else {
+              modalinstance = modaldialog.modal({
+                keyboard: false,
+                closeExisting: false,
+                show: true,
+                backdrop: modalbackdrop,
+              });
+            }
 
-          $(window).trigger("resize");
-          gridResize();
+            //jQuery('.modal-backdrop').insertAfter(modalinstance);
 
-          modalinstance.on("hidden.bs.modal", function () {
-            closeemdialog($(this));
+            var firstform = $("form", modaldialog);
+            firstform.data("openedfrom", openfrom);
+            // fix submit button
+            var justok = dialog.data("cancelsubmit");
+            if (justok != null) {
+              $(".modal-footer #submitbutton", modaldialog).hide();
+            } else {
+              var id = $("form", modaldialog).attr("id");
+              $("#submitbutton", modaldialog).attr("form", id);
+            }
+            var hidetitle = dialog.data("hideheader");
+            if (hidetitle == null) {
+              var title = dialog.attr("title");
+              if (title == null) {
+                title = dialog.text();
+              }
+              $(".modal-title", modaldialog).text(title);
+            }
+            var hidefooter = dialog.data("hidefooter");
+            if (hidefooter != null) {
+              $(".modal-footer", modaldialog).hide();
+            }
+
+            if (
+              typeof global_updateurl !== "undefined" &&
+              global_updateurl == false
+            ) {
+              //globaly disabled updateurl
+            } else {
+              //Update Address Bar
+              var updateurl = dialog.data("urlbar");
+              if (!updateurl) {
+                updateurl = dialog.data("updateurl");
+              }
+              if (updateurl) {
+                history.pushState($("#application").html(), null, link);
+                window.scrollTo(0, 0);
+              }
+            }
+
+            adjustzindex(modalinstance);
+
             $(window).trigger("resize");
-          });
+            gridResize();
 
-          modalinstance.on("scroll", function () {
-            checkScroll();
-          });
-        }
-      },
-    });
+            modalinstance.on("hidden.bs.modal", function () {
+              closeemdialog($(this));
+              $(window).trigger("resize");
+            });
+
+            modalinstance.on("scroll", function () {
+              checkScroll();
+            });
+          }
+        },
+      })
+      .always(function () {
+        hideLoader();
+      });
 
     $(modaldialog).on("shown.bs.modal", function () {
       //adjustzindex($(this));
@@ -1185,6 +1204,7 @@ uiload = function () {
     if (othermodal.length) {
       adjustzindex(othermodal);
     }
+    hideLoader();
   };
 
   lQuery(".entitydialogback").livequery("click", function (event) {
@@ -1334,6 +1354,7 @@ uiload = function () {
     event.preventDefault();
     var targetModal = $(this).closest(".modal");
     confirmModalClose(targetModal);
+    hideLoader();
   });
 
   lQuery(".mediaboxheader").livequery("click", function (event) {
@@ -1709,10 +1730,8 @@ uiload = function () {
               if (targettype == "message") {
                 targetdiv.prepend(data);
                 targetdiv.find(".fader").fadeOut(3000, "linear");
-              } else if(targettype == "entitydialog") {
-				  
-				}
-				else {
+              } else if (targettype == "entitydialog") {
+              } else {
                 //regular targetdiv
                 targetdiv.replaceWith(data);
               }
@@ -3104,7 +3123,7 @@ uiload = function () {
       return false;
     }
   );
-  
+
   lQuery(".sidetoggle").livequery("click", function () {
     var div = $(this);
     var target = $(this).data("target");
@@ -3124,21 +3143,20 @@ uiload = function () {
     parent.toggleClass("closed");
     var target = $(this).data("target");
     saveProfileProperty("minimize" + target, "false", function () {
-    		$(".summary-opener").removeClass("closed");
-        	$(window).trigger("resize");
+      $(".summary-opener").removeClass("closed");
+      $(window).trigger("resize");
     });
   });
 
   lQuery(".summary-opener").livequery("click", function (e) {
     var opener = $(this);
-  
+
     var target = $(this).data("target");
     saveProfileProperty("minimize" + target, "true", function () {
-			opener.addClass("closed");
-    		$(".summary-container").removeClass("closed");
-        	$(window).trigger("resize");
+      opener.addClass("closed");
+      $(".summary-container").removeClass("closed");
+      $(window).trigger("resize");
     });
-    
   });
 
   lQuery(".sidebar-toggler").livequery("click", function (e) {
