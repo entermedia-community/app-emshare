@@ -30,7 +30,7 @@ public void init()
 
 	try
 	{	
-		HitTracker hits = archive.query("asset").exact("facescancomplete", "false").exact("importstatus","complete").search();
+		HitTracker hits = archive.query("asset").exact("facescancomplete", "false").exact("importstatus","complete").sort("assetaddeddateDown").search();
 		hits.enableBulkOperations();
 			
 		FaceProfileManager manager = archive.getBean("faceProfileManager");
