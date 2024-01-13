@@ -19,12 +19,36 @@
 							class="ajax btn btn-xs btn-light" 
 							data-oemaxlevel="5"
 							data-targetdiv="applicationmaincontent"
-							title="[[Open Database Table]]"
-							style=""><i class="fas fa-table"></i> [[Table]]</a>
+							title="[[Open Database Table]]">
+							<i class="fas fa-table"></i> [[Table]]</a>
 					</div>
 		
 				</div>
 		</div>
+
+#set ( $urlutils = $context.getPageValue("url_util"))
+#if (!$urlutils)
+	#set ($urlenc = $hit.sourcepath)
+#else
+	#set ( $urlenc = $urlutils.encode($hit.sourcepath))
+	#set ( $urlenc = $urlenc.replace("%2F", "/") )
+#end
+##$apphome/views/settings/modules/${module.getId()}/info/module-setup.html?icon=$icon[0]
+		<div class="d-flex align-items-start">
+			<a class="rounded text-white mb-3" data-targetdiv="applicationcontent" href="$applink/views/settings/modules/entityactivity/info/icon-picker.html?edit=true" oemaxlevel="2">
+				<div class="d-flex align-items-center btn-brand pl-2 pr-3 py-1 rounded">
+					#set($selectedIcon = "card-text")
+					#set($query = $urlutils.requestPathWithArguments().split("icon="))
+					#if($query.size() > 1)
+						#set($checkIcon = $query[1].split("&"))
+						#set($selectedIcon = $checkIcon[0])
+					#end
+					<i class="bi bi-$selectedIcon m-1" style="font-size: 2rem;line-height: 1;"></i>
+					<span class="ml-2" style="font-size: 1rem;">[[Choose an Icon]]</span>
+				</div>
+			</a>
+		</div>
+
 		$pages.include("/$applicationid/components/xml/detaileditorcss.html", $context)
 
 	<input type="hidden" name="save" value="true" />
@@ -33,8 +57,7 @@
 	<input class="btn btn-primary btn-sm" type="submit" value="[[Save]]" />
 
 		<div class="delete" style="float:right">
-			<a class="btn btn-sm btn-danger" style=""
-			 href="$home$apphome/views/settings/modules/setup/remove.html?id=$module.id" confirm="[[Are you sure]]?">[[Delete]]</a>
+			<a class="btn btn-sm btn-danger" href="$home$apphome/views/settings/modules/setup/remove.html?id=$module.id" confirm="[[Are you sure]]?">[[Delete]]</a>
 		</div>
 
 	
