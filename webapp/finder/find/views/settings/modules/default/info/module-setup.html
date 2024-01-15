@@ -1,66 +1,74 @@
-<div id="emvalueeditor" class="" style="max-width:600px	">
+<div id="emvalueeditor" class="" style="max-width: 600px">
+  <form
+    name="adder"
+    class="ajaxform validate-inputs"
+    targetdiv="emvalueeditor"
+    action="$home$apphome/views/settings/modules/$module.id/info/save.html"
+  >
+    $context.putPageValue("searcher",$searcherManager.getSearcher($catalogid,"module")
+    ) $context.putPageValue("view","module/edit")
+    $context.putPageValue("data",$module)
+    <div class="inputformrow">
+      <label class="emdatafield"> [[Id]] </label>
+      <div id="detail_id" class="emdatafieldvalue emdatafieldvalue-number">
+        <div class="emfield-number">
+          $!module.getId() &nbsp;&nbsp;&nbsp;
+          <a
+            href="$applink/views/settings/lists/datamanager/list/index.html?searchtype=$!module.getId()"
+            class="ajax btn btn-xs btn-light"
+            data-oemaxlevel="5"
+            data-targetdiv="applicationmaincontent"
+            title="[[Open Database Table]]"
+          >
+            <i class="bi bi-table mr-1"></i> [[Table]]</a
+          >
+        </div>
+      </div>
+    </div>
 
-<form name="adder" class="ajaxform  validate-inputs" targetdiv="emvalueeditor" 
-	action="$home$apphome/views/settings/modules/$module.id/info/save.html">
+    #set ( $urlutils = $context.getPageValue("url_util")) 
+	#if (!$urlutils)
+		#set($urlenc = $hit.sourcepath) 
+	#else 
+		#set ( $urlenc = $urlutils.encode($hit.sourcepath))
+		#set ( $urlenc = $urlenc.replace("%2F", "/")) 
+	#end
+    ##$apphome/views/settings/modules/${module.getId()}/info/module-setup.html?icon=$icon[0]
+    <div class="d-flex align-items-start">
+      <a
+        class="rounded text-white mb-3"
+        data-targetdiv="applicationcontent"
+        href="$applink/views/settings/modules/entityactivity/info/icon-picker.html?edit=true"
+        oemaxlevel="2"
+      >
+        <div class="d-flex align-items-center btn-brand pl-2 pr-3 py-1 rounded">
+          #set($selectedIcon = "card-text") #set($query =
+          $urlutils.requestPathWithArguments().split("icon=")) #if($query.size()
+          > 1) #set($checkIcon = $query[1].split("&")) #set($selectedIcon =
+          $checkIcon[0]) #end
+          <input type="hidden" name="icon" value="$selectedIcon" />
+          <i
+            class="bi bi-$selectedIcon m-1"
+            style="font-size: 2rem; line-height: 1"
+          ></i>
+          <span class="ml-2" style="font-size: 1rem">[[Choose an Icon]]</span>
+        </div>
+      </a>
+    </div>
 
-		$context.putPageValue("searcher",$searcherManager.getSearcher($catalogid,"module") )	
-		$context.putPageValue("view","module/edit")	
-		$context.putPageValue("data",$module)
-		<div class="inputformrow">
-	
-				<label class="emdatafield">
-						[[Id]]
-				</label>
-				<div id="detail_id" class="emdatafieldvalue emdatafieldvalue-number ">
-			
-					<div class="emfield-number">
-						$!module.getId() &nbsp;&nbsp;&nbsp;
-						<a href="$applink/views/settings/lists/datamanager/list/index.html?searchtype=$!module.getId()"
-							class="ajax btn btn-xs btn-light" 
-							data-oemaxlevel="5"
-							data-targetdiv="applicationmaincontent"
-							title="[[Open Database Table]]">
-							<i class="fas fa-table"></i> [[Table]]</a>
-					</div>
-		
-				</div>
-		</div>
+    $pages.include("/$applicationid/components/xml/detaileditorcss.html", $context)
 
-#set ( $urlutils = $context.getPageValue("url_util"))
-#if (!$urlutils)
-	#set ($urlenc = $hit.sourcepath)
-#else
-	#set ( $urlenc = $urlutils.encode($hit.sourcepath))
-	#set ( $urlenc = $urlenc.replace("%2F", "/") )
-#end
-##$apphome/views/settings/modules/${module.getId()}/info/module-setup.html?icon=$icon[0]
-		<div class="d-flex align-items-start">
-			<a class="rounded text-white mb-3" data-targetdiv="applicationcontent" href="$applink/views/settings/modules/entityactivity/info/icon-picker.html?edit=true" oemaxlevel="2">
-				<div class="d-flex align-items-center btn-brand pl-2 pr-3 py-1 rounded">
-					#set($selectedIcon = "card-text")
-					#set($query = $urlutils.requestPathWithArguments().split("icon="))
-					#if($query.size() > 1)
-						#set($checkIcon = $query[1].split("&"))
-						#set($selectedIcon = $checkIcon[0])
-					#end
-					<input type="hidden" name="icon" value="$selectedIcon" />
-					<i class="bi bi-$selectedIcon m-1" style="font-size: 2rem;line-height: 1;"></i>
-					<span class="ml-2" style="font-size: 1rem;">[[Choose an Icon]]</span>
-				</div>
-			</a>
-		</div>
+    <input type="hidden" name="save" value="true" />
+    <input type="hidden" name="id" value="$module.id" />
 
-		$pages.include("/$applicationid/components/xml/detaileditorcss.html", $context)
+    <button class="btn btn-primary btn-sm" type="submit">[[Save]]</button>
 
-	<input type="hidden" name="save" value="true" />
-	<input type="hidden" name="id" value="$module.id" />
-	
-	<input class="btn btn-primary btn-sm" type="submit" value="[[Save]]" />
-
-		<div class="delete" style="float:right">
-			<a class="btn btn-sm btn-danger" href="$home$apphome/views/settings/modules/setup/remove.html?id=$module.id" confirm="[[Are you sure]]?">[[Delete]]</a>
-		</div>
-
-	
-</form>
+    <div class="delete" style="float: right">
+      <a class="btn btn-sm btn-danger"
+        href="$home$apphome/views/settings/modules/setup/remove.html?id=$module.id"
+        confirm="[[Are you sure]]?">
+		[[Delete]]
+	</a>
+    </div>
+  </form>
 </div>

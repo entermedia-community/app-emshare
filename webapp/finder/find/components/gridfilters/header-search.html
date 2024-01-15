@@ -23,57 +23,19 @@
 
 
 
-<div class="filters-container d-flex align-items-center #if ($canquicksearch) mainheadertable #else mainheadertablesmall #end"> 
+<div class="filters-container d-flex align-items-center justify-content-center #if ($canquicksearch) mainheadertable #else mainheadertablesmall #end"> 
 	#if ($canquicksearch)
 		<div class="headersearchbar">
+			<div id="quicksearch-mask" style="display: none;"></div>
 			<div class="navbar-quicksearch" id="nav-quicksearch" style="margin: 0 auto;">
 					$pages.include("$apphome/components/quicksearch/navbar.html", $context)
 			</div>
 		</div>
 	#end
-	#if( $canviewupload )
-		<div class="headeruploadarea">
-			##$pages.include("$apphome/components/upload/types/html5inlinetop.html", $context)
-			<div class="dropdown show">
-				<a class="btn btn-upload dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-					[[Upload to]]
-				</a>
-				<div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-					#foreach ( $amodule in $userprofile.getEntities() )
-						#set($amoduleid = $amodule.getId())
-						#if($amodule.getBoolean("enableuploading"))
-							#if($permissions.can($amoduleid, "create") && $amoduleid!="faceprofilegroup" && $amoduleid!="asset" && $amoduleid!="modulesearch")
-								#set($entityrendertype = "entity")
-								#if ($amodule.modulerendertype)
-									#set($entityrendertype = $amodule.modulerendertype)
-								#end
-								##set($addurl = "$siteroot$applink/views/modules/${amoduleid}/components/gridsample/preview/$!{entityrendertype}.html?edit=true&addnew=true&viewid=$!{moduleid}addnew")
-								
-								#set($addurl = "$siteroot$applink/views/modules/${amoduleid}/components/entities/search/searchpicker.html")
-								
-								#ifnotnull($topentityid)
-									#set($addurl = "$addurl&fieldexternalid=${topmodule.getId()}&fieldexternalvalue=${topentityid}&reloadtargets=topmodulecontainer")
-								#end
-								<a class="dropdown-item emdialog" 
-									href="$addurl" 
-									data-viewfiles="true">#text($amodule)</a>
-							#end
-						#end
-					#end
-					<a class="dropdown-item ajax sidebarselected"
-						data-updateurl="true" 
-						data-targetdivinner="applicationmaincontent" 
-						data-oemaxlayout="3"
-						href="$siteroot$applink/views/modules/asset/add/start.html"
-						title="[[Upload Media]]">[[My Files]]</a>
-				</div>
-			</div>
-		</div>
-	#end
-	
+	#if($order)
 	<div id="headerdownloadarea" class="headerdownloadarea">
 		$pages.include("$apphome/components/orders/download/headerstatus.html", $context)
 		##$pages.include("$apphome/views/modules/asset/activity/download/ajaxorderstatusheader.html",$context)
 	</div>
-	
+	#end
 </div>

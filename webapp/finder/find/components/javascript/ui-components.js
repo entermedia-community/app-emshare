@@ -296,7 +296,8 @@ uiload = function () {
       $.datepicker.setDefaults(
         $.extend({
           showOn: "button",
-          buttonImage: themeprefix + "/entermedia/images/cal.gif",
+          buttonImage:
+            "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' fill='%234d5d80' class='bi bi-calendar-plus' viewBox='0 0 16 16'%3E%3Cpath d='M8 7a.5.5 0 0 1 .5.5V9H10a.5.5 0 0 1 0 1H8.5v1.5a.5.5 0 0 1-1 0V10H6a.5.5 0 0 1 0-1h1.5V7.5A.5.5 0 0 1 8 7'/%3E%3Cpath d='M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5M1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4z'/%3E%3C/svg%3E",
           buttonImageOnly: true,
           changeMonth: true,
           changeYear: true,
@@ -312,6 +313,9 @@ uiload = function () {
         beforeShow: function (input, inst) {
           setTimeout(function () {
             $("#application").append($("#ui-datepicker-div"));
+            // var quickSelect = $("#operationentitydatefindercatalog");
+            // quickSelect.css("display", "block");
+            // $("#ui-datepicker-div").append(quickSelect);
             //Fix Position if in bootstrap modal
             var modal = $("#modals");
             if (modal.length) {
@@ -2130,6 +2134,7 @@ uiload = function () {
   var lasttypeahead;
   var lastsearch;
   var searchmodaldialog;
+  var searchmodalmask;
   var mainsearcheinput;
 
   lQuery(".mainsearch").livequery(function () {
@@ -2161,20 +2166,29 @@ uiload = function () {
     }
 
     searchmodaldialog = getmodalsearchdialog(id);
+    searchmodalmask = $("#quicksearch-mask");
 
-    var applicationcontentwidth = $("#applicationmaincontent").width();
-    if (!applicationcontentwidth) {
-      applicationcontentwidth = $("#header").width();
-    }
-    searchmodaldialog.css("width", applicationcontentwidth - 100 + "px");
-    var topposition = mainsearcheinput.position().top + 70;
-    searchmodaldialog.css("top", topposition + "px");
-    searchmodaldialog.css("left", "40px");
+    function setSearchModalSize() {
+      var applicationcontentwidth = $("#applicationmaincontent").width();
+      if (!applicationcontentwidth) {
+        applicationcontentwidth = $("#header").width();
+      }
+      searchmodaldialog.css("width", applicationcontentwidth - 100 + "px");
+      var topposition = $("#header").outerHeight();
+      topposition -= 40;
+      topposition /= 2;
+      topposition += 56;
+      searchmodaldialog.css("top", topposition + "px");
+      searchmodaldialog.css("left", "50%");
+      searchmodaldialog.css("transform", "translateX(-50%)");
 
-    var wh = window.innerHeight;
-    if (wh) {
-      searchmodaldialog.css("height", wh - 90 + "px");
+      var wh = window.innerHeight;
+      if (wh) {
+        searchmodaldialog.css("height", wh - topposition - 20 + "px");
+      }
     }
+    setSearchModalSize();
+    window.onresize = setSearchModalSize;
 
     var options = mainsearcheinput.data();
     var searchurltargetdiv = mainsearcheinput.data("searchurltargetdiv");
@@ -2271,6 +2285,9 @@ uiload = function () {
     lQuery(".closemainsearch").livequery("click", function () {
       togglemodaldialog("hide");
     });
+    lQuery(searchmodalmask).livequery("click", function () {
+      togglemodaldialog("hide");
+    });
     $(document).on("click", function (event) {
       if ($(event.target).closest(searchmodaldialog).length === 0) {
         togglemodaldialog("hide");
@@ -2328,7 +2345,9 @@ uiload = function () {
     function togglemodaldialog(action) {
       if (action == "show") {
         searchmodaldialog.show();
+        searchmodalmask.show();
       } else {
+        searchmodalmask.hide();
         searchmodaldialog.hide();
         typeaheadloading.hide();
       }
