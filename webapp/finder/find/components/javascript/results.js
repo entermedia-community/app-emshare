@@ -20,6 +20,20 @@ jQuery(document).ready(function (url, params) {
     $(this).css("top", stickyTop + "px");
   });
 
+  lQuery("#assetlocked").livequery("change", function () {
+    var locked = $(this).prop("checked");
+    var uncheckedlabel = $(this).data("uncheckedlabel");
+    var checkedlabel = $(this).data("checkedlabel");
+    var user = $(this).data("user");
+    if (locked) {
+      $(this)
+        .next("label")
+        .html(checkedlabel + " <strong>" + user + "</strong>");
+    } else {
+      $(this).next("label").text(uncheckedlabel);
+    }
+  });
+
   var refreshdiv = function (targetdiv, url, params) {
     jQuery.ajax({
       url: url,
