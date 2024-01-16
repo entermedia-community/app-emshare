@@ -154,8 +154,8 @@ $(window).bind("popstate", function change(e) {
   // alert('popped');
   var state = e.originalEvent.state;
   if (state) {
-    console.log("Editing html");
     $("#application").html(state);
+    $(".modal-backdrop").remove();
   }
 });
 
@@ -1069,7 +1069,6 @@ emcomponents = function () {
       out: unoutlineSelectionCol,
     });
   });
-
 
   lQuery(".newcollectiondroparea").livequery(function () {
     $(this).droppable({
