@@ -1831,14 +1831,16 @@ jQuery(document).ready(function () {
       }
     });
 
-    var iconElements = document.querySelectorAll("#icons-list i");
+    var iconElements = document.querySelectorAll("#icons-list a");
     var iconElementList = Array.from(iconElements);
 
-    var iconDataList = iconElementList.map((element) => ({
-      name: element.dataset.name,
-      categories: element.dataset.categories.split(" "),
-      tags: element.dataset.tags.split(" "),
-    }));
+    var iconDataList = iconElementList.map((element) => {
+      return {
+        name: element.dataset.name,
+        categories: element.dataset.categories.split(" "),
+        tags: element.dataset.tags.split(" "),
+      };
+    });
 
     var fuse = new Fuse(iconDataList, {
       ignoreLocation: true,
