@@ -80,9 +80,9 @@
 			
 			#if( $detail.hidelabel == true )
 			#else
-					<label class="emdatafield emdatafield-$!{detail.viewType}" >
-							$!detail.getText($context)
-					</label>
+				<label class="emdatafield emdatafield-$!{detail.viewType}" >
+						$!detail.getText($context)
+				</label>
 			#end
 			<div id="detail_$detail.id" class="emdatafieldvalue emdatafieldvalue-$!{detail.viewType} #if ($detail.isRequired()) requiredfield #end">
 				#if( $editrow )	
@@ -95,6 +95,8 @@
 				#end
 				#if ( $detail.note )
 					<span class="detail-note">$context.getText($detail.note.toString())<span>
+				#elseif($detail.viewType == "tageditor")
+					<span class="text-muted d-inline-block mt-1" style="font-size: 13px;">Hit <kbd>enter</kbd> or <kbd>return</kbd> key after typing each tag<span>
 				#end
 			</div>
 		#end
