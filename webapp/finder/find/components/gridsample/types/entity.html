@@ -31,18 +31,28 @@ $context.putPageValue("moduleid", $moduleid)
 #set($topentityid = $context.getRequestParameter("topentityid"))
 $context.putPageValue("topentityid", $topentityid)
 
-
 #set($previewurl = "$!{siteroot}$apphome/views/modules/$!moduleid/components/gridsample/preview/entity.html?id=$entityid&hitssessionid=$!hits.sessionId")
 $context.putPageValue("previewurl", $previewurl)
-<div class="emgridcellC-header"></div>
+
+<div class="emgridcellC-header">
+	<a href="$!{previewurl}" 
+		class="emdialog entity-dialog" 
+   	 	data-hidefooter="true" 
+   	 	data-hideheader="true" 
+		id="clickid${entityid}"  
+   	 	data-id="${entityid}"
+   	 	data-moduleid="$!moduleid" 
+		title="[[View]]: #text($!entity)">
+		#text($!entity)
+	</a>
+</div>
 
 <div class="emgrid-content emgrid-type-$!moduleid entitycontainer entity$!moduleid$!entityid" 
 	 id="emgridentity$!moduleid$!entityid"
 		data-id="${entityid}"
    	 	data-moduleid="$!moduleid"
    	 	data-rendertype="entity">
-  	 	
-   	 
+  	 
    	 	##check for view
 		#set($viewid = "${moduleid}gridfields")
 		#set($view = "$moduleid/$viewid")
@@ -59,16 +69,13 @@ $context.putPageValue("previewurl", $previewurl)
 		$context.putPageValue("details", $details)
 		
 		##look for primaryimage
-		
-		
+	
 		#set( $primarymediafield = $searcher.getDetailForView($view, "primarymedia", $user) )
 		#if($primarymediafield)
-			#set( $primarymedia = $mediaarchive.getCachedAsset($entity.primarymedia))
-				#if($primarymedia)
-					#if($primarymedia.assettype == 'photo' || $primarymedia.assettype == 'video' )
-						##break
-					#else
-						#set($primarymedia = '')
+			#set( $primarymediatemp = $mediaarchive.getCachedAsset($entity.primarymedia))
+				#ifnotnull($primarymediatemp)
+					#if($primarymediatemp.assettype == 'photo' || $primarymediatemp.assettype == 'video' )				
+						#set($primarymedia = $primarymediatemp)
 					#end
 			#end
 		#end
@@ -88,57 +95,49 @@ $context.putPageValue("previewurl", $previewurl)
 				
 		$context.putPageValue("primarymedia", $primarymedia)
 	    $context.putPageValue("viewer", "e_m_g_${entity.id}")
+	    			   	
+	   	#set($link = "$!siteroot$applink/views/modules/$!topmodule.getId()/index.html")
+	   	
+		#if( $topmodule == $module)
+			#set($link = "$link?entityid=$!entity.getId()&entitytype=$!moduleid&topentityid=$!entity.getId()")
+		#else
+			#set($link = "$link?entityid=$!entity.getId()&entitytype=$!moduleid&topentityid=$!topentityid")
+		#end
 		
-		##set($defaultfolder =  $mediaarchive.getBean("entityManager").loadDefaultFolder($module, $entity, $context.getUser()))
-		
-        ###if($defaultfolder.getId() != $category.getId())
-		##	#ifnotnull($defaultfolder)
-			   	
-			   	#set($link = "$!siteroot$applink/views/modules/$!topmodule.getId()/index.html")
-			   	
-				#if( $topmodule == $module)
-					#set($link = "$link?entityid=$!entity.getId()&entitytype=$!moduleid&topentityid=$!entity.getId()")
-				#else
-					#set($link = "$link?entityid=$!entity.getId()&entitytype=$!moduleid&topentityid=$!topentityid")
-				#end
-				
-		        <a href="$previewurl" 
-		   	 	class="emdialog entity-dialog" 
-		   	 	data-hidefooter="true" 
-		   	 	data-hideheader="true"
-		   	 	id="clickid${entityid}"  
-		   	 	data-id="${entityid}"
-		   	 	data-moduleid="$!moduleid"
-		   	 	title="[[View]]: #text($!entity.name)">
-					
-					<div class="emgridC-entitymedia assetdropentity drop-over"
-						style="text-align: center;"
-				       		id="attachedmedia$entityid" 
-				       		data-moduleid="$!moduleid" 
-				       		data-entityid="$!entityid" 
-				       		##data-categoryid="$!defaultfolder.getId()"
-				       		data-assetsshown="$!assetsshown"
-				       		data-attachedmediaurl="$!siteroot$componenthome/gridsample/types/entity.html"
-				       		data-targetdiv="emgridentity$!moduleid$!entityid"> 
-						#if($primarymedia)
-						
-						        $pages.include("$componenthome/gridsample/types/attachedmedia/entity2.html", $context)
-					   #else
-					   
-						   	#set($moduleicon = "entity")
-					     	#if ($module.moduleicon)
-					     		#set($moduleicon = $module.moduleicon)
-					     	#end
-					     	<img src="$siteroot$apphome/theme/images/entity/${moduleicon}.svg" 
-					     	style="height: 90%; margin-top:5px;">
-					   #end
-				   		<div class="clearfix"></div>
-				   </div>
-				   <div class="emgridC-name">#text($!entity)</div>
-				        
-				</a>
-		##	#end
-		###end
+        <a href="$!{previewurl}" 
+   	 	class="emdialog entity-dialog" 
+   	 	data-hidefooter="true" 
+   	 	data-hideheader="true"
+   	 	id="clickid${entityid}"  
+   	 	data-id="${entityid}"
+   	 	data-moduleid="$!moduleid"
+   	 	title="[[View]]: #text($!entity)">
+			
+			<div class="emgridC-entitymedia assetdropentity drop-over"
+				style="text-align: center;"
+		       		id="attachedmedia$entityid" 
+		       		data-moduleid="$!moduleid" 
+		       		data-entityid="$!entityid" 
+		       		data-assetsshown="$!assetsshown"
+		       		data-attachedmediaurl="$!siteroot$componenthome/gridsample/types/entity.html"
+		       		data-targetdiv="emgridentity$!moduleid$!entityid">
+		       		 
+				#if($primarymedia)
+					  ## <img src="$siteroot$apphome/theme/images/icon-entity-dialog.svg" class="assettablelink" />	
+				       $pages.include("$componenthome/gridsample/types/attachedmedia/entity2.html", $context)
+			   #else
+				   	#set($moduleicon = "entity")
+			     	#if ($module.moduleicon)
+			     		#set($moduleicon = $module.moduleicon)
+			     	#end
+			     	<img src="$siteroot$apphome/theme/images/entity/${moduleicon}.svg" 
+			     	style="height: 90%; margin-top:5px;">
+			   #end
+		   		<div class="clearfix"></div>
+		   </div>
+		   ##<div class="emgridC-name">#text($!entity)</div>
+		        
+		</a>
 		
 </div>
 

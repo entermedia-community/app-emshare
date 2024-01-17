@@ -14,46 +14,34 @@ public void init()
 {
 	WebPageRequest req = context;
 	MediaArchive archive = req.getPageValue("mediaarchive");
-	Searcher modulesearcher = archive.getSearcher("module");
+	Searcher searcher = archive.getAssetSearcher();
+	HitTracker hits = searcher.query().all().search();
 	
-	HitTracker modulehits = modulesearcher.query().exact('isentity', true).search();
-	modulehits.each{
-		Data module = it;
-		if(!module.getId().equals("asset") && !module.getId().equals("faceprofilegroup")) {
-			String searchtype = module.getId();
-			Searcher searcher = archive.getSearcher(searchtype);
-			if(searcher != null) {
+	
+	hits.enableBulkOperations();
+	List tosave = new ArrayList();
+	hits.each{
+		Data hit = it;		
+		
 			
-				//HitTracker hits = archive.getAssetSearcher().query().all().search();
-				
-				HitTracker hits = searcher.query().exists('primaryimage').search();
-				
-				hits.enableBulkOperations();
-				List tosave = new ArrayList();
-				hits.each{
-					Data hit = it;		
-					
-						
-						hit.setValue("primarymedia", hit.getValue("primaryimage") );
-						hit.setValue("primaryimage", "");
-						
-						tosave.add(hit);			
-						if( tosave.size() == 1000)
-						{
-							searcher.saveAllData(tosave, null);
-							tosave.clear();
-							log.info("Saved: 1000");
-						}
-					
-				}
-				if (tosave.size() > 0) {
-					searcher.saveAllData(tosave, null);
-					log.info("Saved: "+ tosave.size());
-				}
-				log.info("Done updating: " +searchtype);
+			hit.setValue("facescancomplete", "false" );
+			hit.setValue("facehasprofile", "false" );
+			hit.setValue("faceprofiles", "");
+			
+			tosave.add(hit);			
+			if( tosave.size() == 1000)
+			{
+				searcher.saveAllData(tosave, null);
+				tosave.clear();
+				log.info("Saved: 1000");
 			}
-		}
+		
 	}
+	if (tosave.size() > 0) {
+		searcher.saveAllData(tosave, null);
+		log.info("Saved: "+ tosave.size());
+	}
+	
 }
 
 
