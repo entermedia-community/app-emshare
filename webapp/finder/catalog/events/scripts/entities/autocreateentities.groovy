@@ -8,6 +8,7 @@ import java.nio.charsets.*
 import org.entermediadb.asset.Category
 import org.entermediadb.asset.MediaArchive
 import org.openedit.Data
+import org.openedit.data.Searcher
 import org.openedit.repository.*
 import org.openedit.hittracker.HitTracker
 import org.apache.commons.io.IOUtils
@@ -74,6 +75,8 @@ public void processChildren(MediaArchive mediaArchive, Data inmodule, Category p
 {
 	if(startfromdeep == currentdeep )
 	{
+		
+		
 		//Check each child
 		for (Data category in parent.getChildren())
 		{
@@ -94,40 +97,49 @@ public void processChildren(MediaArchive mediaArchive, Data inmodule, Category p
 			 if( createrow )
 			 {
 				String categoryname = category.getName();
-				if (categoryname == null) {
+				if (categoryname == null) 
+				{
 					log.info("Empty Category: " + category.getId());
 					continue;
 				}
-			 	Data newchild = mediaArchive.getSearcher(inmodule.getId()).createNewData();
-			 	newchild.setId(id);
-				 	newchild.setName(categoryname);
-				Date date = findDate(categoryname);
 				
+				Searcher entitysearcher = mediaArchive.getSearcher(inmodule.getId());
+			 	Data newchild = entitysearcher.createNewData();
+			 	newchild.setId(id);
+				newchild.setName(categoryname);
+				Date date = findDate(categoryname);
+						
 				if(date != null)
 				{
 					newchild.setValue("entity_date", date);
 				}
 			 	
 			 	//TODO Check parent for any entites and pass those down
-			 	for( String key in parent.getProperties().keySet() )
+			 	
+			 	HitTracker allentities = mediaArchive.query("module").sort("ordering").search();
+			 	for (Data entity in allentities)
 			 	{
-			 		if( mediaArchive.getCachedData("module",key ) != null )
+			 		
+			 		if ( entitysearcher.getDetail(entity.getId()) != null )  //if Activity has a field for Departments
 			 		{
-			 			String val = parent.get(key);
-			 			newchild.setValue(key,val);
+			 			//Search cateogry path for it
+						String parententity = category.findValue(entity.getId());
+						log.info(entity.getId() +" - " + parententity);
+			 			newchild.setValue(entity.getId(), parententity);
 			 		}
 			 	}
 			 	
 			 	//Look for ingest files
 			 	ContentItem item = mediaArchive.getContent("/WEB-INF/data/" + mediaArchive.getCatalogId() + "/originals/" + category.getCategoryPath() + "/_ingest.txt");
-			 	log.info("Looking for" + item.getAbsolutePath() );
+			 	log.info("Looking for: " + item.getAbsolutePath() );
 			 	if( item.exists() )
 			 	{
 			 		 String result = IOUtils.toString(item.getInputStream(), StandardCharsets.UTF_8);
-			 		 log.info("Read in" + result);
+			 		 log.info("Read in " + result);
 				 	 newchild.setValue("longcaption",result);
 			 	}
 			 	newchild.setValue("uploadsourcepath",category.getCategoryPath());
+			 	
 			 	mediaArchive.saveData(inmodule.getId(),newchild);
 			 	category.setValue(inmodule.getId(), newchild.getId());
 			 	
@@ -138,7 +150,7 @@ public void processChildren(MediaArchive mediaArchive, Data inmodule, Category p
 	}
 	else
 	{
-		log.info("Process Children Folder: " + parent + " Actual: " + currentdeep + " Matches: " + startfromdeep);
+		//log.info("Process Children Folder: " + parent + " Actual: " + currentdeep + " Matches: " + startfromdeep);
 	
 		int nextdeep = currentdeep + 1;
 		for (Data child in parent.getChildren())
