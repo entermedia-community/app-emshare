@@ -111,260 +111,260 @@ $context.putPageValue("topmoduleid", $moduleid)
 	data-entityid="$!entityid" 
 	data-oemaxlevel="1"
 	data-url="$componenthome/gridsample/preview/entity.html">
-	
 	<div class="entity-wraper">
-	
-	<div class="d-flex align-items-center justify-content-between mb-2">
-		<h2>
-			<a href="#" id="backbtn#eid($!dialogtabid)" class="entitydialogback" style="display: none;">
-				<i class="fas fa-arrow-left"></i>
-			</a>
-		
-			#set($moduleicon = "entity")
-			#if ($module.moduleicon)
-				#set($moduleicon = $module.moduleicon)
-			#end
-		
-			<img src="$siteroot$apphome/theme/images/entity/${moduleicon}.svg" style="height: 22px;" /> 
-			#text($module) - 
-			
-			#if($moduleid == "faceprofilegroup")
-				#if($entity.entitypeople)
-					#set($name = $searcherManager.getValue($searcher, $entity, "name"))
-					#set($name = "[[Profile]] $name")
-				#else
-					#set($name = "$entity.samplecount")
-				#end
-				
-				#text($name)
-				
-			#else
-				#if($ismulti)
-					[[Multi Edit]] $!entity.getSelectedResults().size() [[Items]]		
-				#else	
-					#if($entity.getName($context))
-							#set($name = $!entity.getName($context))
-					#else 
-						#if($addnew=='true')
-							#set($name = "[[Add New]]")
-							
-							$context.putPageValue("addnew", $addnew)
+		<div class="entity-header d-flex align-items-center justify-content-between">
+			<div class="d-flex align-items-center">
+				<h2 class="d-flex align-items-center">
+					<a href="#" id="backbtn#eid($!dialogtabid)" class="entitydialogback" style="display: none;">
+						<i class="fas fa-arrow-left"></i>
+					</a>
+					#set($moduleicon = "entity")
+					#if ($module.moduleicon)
+						#set($moduleicon = $module.moduleicon)
+					#end
+					<img src="$siteroot$apphome/theme/images/entity/${moduleicon}.svg" style="height: 22px;margin-right: 8px;" /> 
+					#text($module) <i class="bi bi-chevron-right mx-1" style="transform: scale(0.8);"></i> 
+					#if($moduleid == "faceprofilegroup")
+						#if($entity.entitypeople)
+							#set($name = $searcherManager.getValue($searcher, $entity, "name"))
+							#set($name = "[[Profile]] $name")
+						#else
+							#set($name = "$entity.samplecount")
+						#end
+						#text($name)
+					#else
+						#if($ismulti)
+							[[Multi Edit]] $!entity.getSelectedResults().size() [[Items]]		
+						#else	
+							#if($entity.getName($context))
+								#set($name = $!entity.getName($context))
+							#else 
+								#if($addnew=='true')
+									#set($name = "[[Add New]]")	
+									$context.putPageValue("addnew", $addnew)
+								#end
+							#end
+							#text($name)	
 						#end
 					#end
-					
-					#text($name)
-					
-				#end
-			#end
+				</h2>
+				#if(!$ismulti)
+					<div class="entity-actions-bar">
+						#if($permissions.can($moduleid, "edit"))
+						<a href="$applink/views/modules/$moduleid/edit/editdialog.html?id=${entityid}&viewid=entitypermissions"
+							class="emdialog btn btn-sm btn-brand"
+							data-hidefooter="true"
+							data-dialogid="entitypermissionsdialog"
+							title="#text($module)\ #text($entity) [[Permissions]]"><i class="bi bi-person-lock"></i> [[Permissions]]</a>
+						#end
 			
+						#if($canviewsettings)	
+						<a href="$applink/views/settings/modules/$moduleid/info/module-setup.html"
+							class="ajax btn btn-sm btn-brand"
+							data-targetdiv="applicationcontent"
+							data-oemaxlevel="5"
+							data-updateurl="true"
+							data-closedialog="true"
+							data-sidebarcomponent="settings"
+							data-scrolltotop="true"
+							title="#text($module) [[Settings]]"><i class="bi bi-gear-fill"></i></a>
+						#end
+							
+						#ifnotnull($defaultfolder)
+							#if($permissions.can($moduleid, "share"))
+							<a href="$applink/components/share/entity.html?moduleid=$moduleid&categoryid=${defaultfolder.getId()}" 
+							class="emdialog btn btn-sm btn-brand"
+							data-dialogid="entitysharedialog"
+							data-hidefooter="true"
+							title="[[Share]] #text($entity.name)"><i class="bi bi-share-fill"></i></a>
+							#end
+						#end
+
+						$context.putPageValue("itemid", $entity.id)
+						$pages.include("$componenthome/gridsample/favorites.html?id=$entity.id&moduleid=$moduleid", $context)
+					</div>
+				#end
+			</div>
+
+			##<span class="text-white">$hits.indexOfId($defaultfolder.getId())</span>
+			##set( $index = $hits.indexOfId($defaultfolder.getId()))
+			##set( $previous = false )
+			##set( $previous = $hits.previous($index))
+			##set( $next = false )
+			##set( $next = $!hits.next($index))
 			
-		</h2>
-		#if(!$ismulti)
-			<div class="entity-actions-bar" style="margin-bottom: 10px;">
-				##if($canviewsettings && $entityid)
-				##<span >Id: $entityid</span>
-				##end
-				
-				$context.putPageValue("itemid", $entity.id)
-				$pages.include("$componenthome/gridsample/favorites.html?id=$entity.id&moduleid=$moduleid", $context)
-				
-				#if($permissions.can($moduleid, "edit"))
-				<a href="$applink/views/modules/$moduleid/edit/editdialog.html?id=${entityid}&viewid=entitypermissions"
-					class="emdialog btn btn-sm btn-brand"
-					data-hidefooter="true"
-					data-dialogid="entitypermissionsdialog"
-					title="#text($module)\ #text($entity) [[Permissions]]"><i class="bi bi-person-lock"></i> [[Permissions]]</a>
-				#end
-	
-				#if($canviewsettings)	
-				<a href="$applink/views/settings/modules/$moduleid/info/module-setup.html"
-					class="ajax btn btn-sm btn-brand"
-					data-targetdiv="applicationcontent"
-					data-oemaxlevel="5"
-					data-updateurl="true"
-					data-closedialog="true"
-					data-sidebarcomponent="settings"
-					data-scrolltotop="true"
-					title="#text($module) [[Settings]]"><i class="bi bi-gear-fill"></i> [[Settings]]</a>
-				#end
-					
-				#ifnotnull($defaultfolder)
-					#if($permissions.can($moduleid, "share"))
-					<a href="$applink/components/share/entity.html?moduleid=$moduleid&categoryid=${defaultfolder.getId()}" 
-					class="emdialog btn btn-sm btn-brand"
-					data-dialogid="entitysharedialog"
-					data-hidefooter="true"
-					title="[[Share]] #text($entity.name)"><i class="bi bi-share-fill"></i></a>
-					#end
-				#end
-	
-				<div class="entityclose ml-2 text-white btn btn-sm btn-brand px-2">
+			<div class="d-flex align-items-center text-white">
+				<div class="d-flex align-items-center entity-navigator">
+					<a class="text-white btn btn-sm btn-brand mr-1">
+						<i class="bi bi-caret-left-fill"></i> <span>[[Prev]]</span>
+					</a>
+					<a class="text-white btn btn-sm btn-brand ml-1">
+						<span>[[Next]]</span> <i class="bi bi-caret-right-fill"></i>
+					</a>
+				</div>
+				<div class="entityclose ml-1 text-white btn btn-sm btn-brand">
 					<span title="[[Esc to Close]]" class="bi bi-x-lg" style="transform: scale(1.5);"></span>
 				</div>
 			</div>
-		#end
-	</div>
-	
-		
-		<nav>
-	  	<div class="nav nav-tabs entity-navigation" id="entity-nav-tab" role="tablist" 
-	  		 data-tabmenuurl="gridsample/preview/entitytabmenu.html">
-
-			#ifnull($id)
-				#set( $viewid = $firstview)
-				$context.putPageValue("viewid", $viewid)
-				#set( $viewdata = $viewsearcher.searchById($viewid))
-				$context.putPageValue("viewdata", $viewdata)
-				#set($entitytabopen = "tab_${firstview}")
-				$context.putPageValue("currenttab", $entitytabopen)
-				$pages.include("$componenthome/gridsample/preview/entitytabmenu.html", $context)
-			#end
-			#ifnotnull($id)  
-				#if($enttiyviews)		
-				
-					#foreach( $targetview in $enttiyviews)
-						#set( $viewid = $targetview.getId())
-						$context.putPageValue("viewid", $viewid)
-						#set( $viewdata = $viewsearcher.searchById($viewid))
-						$context.putPageValue("viewdata", $viewdata)
-						
-						#set($tabid = "tab_${viewid}")
-						#if($entitytabopen.equals($tabid))
-				  			$context.putPageValue("currenttab", $tabid)
-						#end
-						
-						#if($targetview.rendertype=="table")
-							#if(!$ismulti)
-								#set( $subentitysearchtype = $viewdata.rendertable )
-								#ifnotnull($subentitysearchtype)
-									##Permission check
-									##$subentitysearchtype $userentities.contains($subentitysearchtype)
-									#if($userentities.contains($subentitysearchtype))
-										#set($submodule = $mediaarchive.getCachedData("module", $viewdata.rendertable))
-										$context.putPageValue("tabmodule", $submodule)
-										#set($tabtype= "submodulehome")
-										$context.putPageValue("tabtype", $tabtype)
-										#set($subcomponenthome = "$apphome/views/modules/$subentitysearchtype/components")
-										$pages.include("$subcomponenthome/gridsample/preview/entitytabmenu.html", $context)
-									#end
-								#end
-							#end
-						#else
-							####Other Tabs
-							
-								#set($tabtype= "entitytab")
-								#ifnotnull($targetview.rendertype)
-									#set($tabtype= $targetview.rendertype)
-								#end
-								
-								#if($tabtype=="default")
-									#set($tabtype= "entitytab")
-								#end
-								
-						  		$context.putPageValue("tabmodule", $module)
-								$context.putPageValue("tabtype", $tabtype)
-								
-								#if(!$entitytabopen)
-									#set($entitytabopen = $tabid)
-						  			$context.putPageValue("currenttab", $tabid)
-								#end
-								
-								$pages.include("$componenthome/gridsample/preview/entitytabmenu.html", $context)
-							
-						#end
-					#end
-				#end	
-			#end
-			
-			##media
-			#ifnotnull($id)
-				#if(!$ismulti)
-					#if($module.getBoolean("enableuploading") && $permissions.can($moduleid, "view_files"))
-						#set($submodule = $mediaarchive.getCachedData("module", "asset"))
-						$context.putPageValue("tabmodule", $submodule)
-						$context.putPageValue("tabtype", "media")
-						#set($tabid = "tab_media")
-						$context.putPageValue("tabid", $tabid)
-						#if($entitytabopen == $tabid)
-				  			$context.putPageValue("currenttab", $tabid)
-						#end
-						#set($subcomponenthome = "$apphome/views/modules/asset/components")
-						$pages.include("$subcomponenthome/gridsample/preview/entitytabmenu.html", $context)
-					#end
-				#end
-			#end	
 		</div>
-		</nav>
-		
-		<div class="tab-content entity-body" id="entity-nav-tabContent">
-			
+		<nav>
+			<div class="nav nav-tabs entity-navigation" id="entity-nav-tab" role="tablist" 
+				data-tabmenuurl="gridsample/preview/entitytabmenu.html">
+
 				#ifnull($id)
-					$context.putPageValue("viewid", $firstview)
+					#set( $viewid = $firstview)
+					$context.putPageValue("viewid", $viewid)
+					#set( $viewdata = $viewsearcher.searchById($viewid))
+					$context.putPageValue("viewdata", $viewdata)
 					#set($entitytabopen = "tab_${firstview}")
 					$context.putPageValue("currenttab", $entitytabopen)
-					
-					$pages.include("$componenthome/gridsample/preview/entitytab.html", $context)
+					$pages.include("$componenthome/gridsample/preview/entitytabmenu.html", $context)
 				#end
-				#ifnotnull($id)
+				#ifnotnull($id)  
 					#if($enttiyviews)		
+					
 						#foreach( $targetview in $enttiyviews)
 							#set( $viewid = $targetview.getId())
 							$context.putPageValue("viewid", $viewid)
-							$context.putPageValue("parentsearchtype", $parentsearchtype)
-							$context.putPageValue("parentid", $id)
-							##$context.putPageValue("hidesubmodule", true) 
-							## hide should not load the next html for fast load
+							#set( $viewdata = $viewsearcher.searchById($viewid))
+							$context.putPageValue("viewdata", $viewdata)
 							
-									#set($tabid = "tab_${viewid}")
-									#if($entitytabopen.equals($tabid))
-							  			$context.putPageValue("currenttab", $tabid)
-							  			$context.putPageValue("hidesubmodule", false)
+							#set($tabid = "tab_${viewid}")
+							#if($entitytabopen.equals($tabid))
+								$context.putPageValue("currenttab", $tabid)
+							#end
+							
+							#if($targetview.rendertype=="table")
+								#if(!$ismulti)
+									#set( $subentitysearchtype = $viewdata.rendertable )
+									#ifnotnull($subentitysearchtype)
+										##Permission check
+										##$subentitysearchtype $userentities.contains($subentitysearchtype)
+										#if($userentities.contains($subentitysearchtype))
+											#set($submodule = $mediaarchive.getCachedData("module", $viewdata.rendertable))
+											$context.putPageValue("tabmodule", $submodule)
+											#set($tabtype= "submodulehome")
+											$context.putPageValue("tabtype", $tabtype)
+											#set($subcomponenthome = "$apphome/views/modules/$subentitysearchtype/components")
+											$pages.include("$subcomponenthome/gridsample/preview/entitytabmenu.html", $context)
+										#end
+									#end
+								#end
+							#else
+								####Other Tabs
+								
+									#set($tabtype= "entitytab")
+									#ifnotnull($targetview.rendertype)
+										#set($tabtype= $targetview.rendertype)
 									#end
 									
-									#if($targetview.rendertype=="table")
-										#if(!$ismulti)
-											#set($tabtype= "submodulehome")
-											#set( $viewdata = $viewsearcher.searchById($viewid))
-											#set( $subentitysearchtype = $viewdata.rendertable )
-											##Permission check
-											#if($userentities.contains($subentitysearchtype))
-												#set($subcomponenthome = "$apphome/views/modules/$subentitysearchtype/components")
-												$pages.include("$subcomponenthome/gridsample/preview/entitytabsub.html", $context)
-											#end
-										#end
-									#else
+									#if($tabtype=="default")
 										#set($tabtype= "entitytab")
-										#ifnotnull($targetview.rendertype)
-											#set($tabtype= $targetview.rendertype)
-										#end
-										#if($tabtype=="default")
-											#set($tabtype= "entitytab")
-										#end
-										
-										$context.putPageValue("tabtype", $tabtype)
-										
-										#if(!$entitytabopen)
-											#set($entitytabopen = $tabid)
-							  				$context.putPageValue("currenttab", $tabid)
-										#end
-										
-										$pages.include("$componenthome/gridsample/preview/${tabtype}.html", $context)
 									#end
+									
+									$context.putPageValue("tabmodule", $module)
+									$context.putPageValue("tabtype", $tabtype)
+									
+									#if(!$entitytabopen)
+										#set($entitytabopen = $tabid)
+										$context.putPageValue("currenttab", $tabid)
+									#end
+									
+									$pages.include("$componenthome/gridsample/preview/entitytabmenu.html", $context)
 								
+							#end
+						#end
+					#end	
+				#end
+				
+				##media
+				#ifnotnull($id)
+					#if(!$ismulti)
+						#if($module.getBoolean("enableuploading") && $permissions.can($moduleid, "view_files"))
+							#set($submodule = $mediaarchive.getCachedData("module", "asset"))
+							$context.putPageValue("tabmodule", $submodule)
+							$context.putPageValue("tabtype", "media")
+							#set($tabid = "tab_media")
+							$context.putPageValue("tabid", $tabid)
+							#if($entitytabopen == $tabid)
+								$context.putPageValue("currenttab", $tabid)
+							#end
+							#set($subcomponenthome = "$apphome/views/modules/asset/components")
+							$pages.include("$subcomponenthome/gridsample/preview/entitytabmenu.html", $context)
 						#end
 					#end
+				#end	
+			</div>
+		</nav>
+		
+		<div class="tab-content entity-body" id="entity-nav-tabContent">
+			#ifnull($id)
+				$context.putPageValue("viewid", $firstview)
+				#set($entitytabopen = "tab_${firstview}")
+				$context.putPageValue("currenttab", $entitytabopen)
+				
+				$pages.include("$componenthome/gridsample/preview/entitytab.html", $context)
+			#end
+			#ifnotnull($id)
+				#if($enttiyviews)		
+					#foreach( $targetview in $enttiyviews)
+						#set( $viewid = $targetview.getId())
+						$context.putPageValue("viewid", $viewid)
+						$context.putPageValue("parentsearchtype", $parentsearchtype)
+						$context.putPageValue("parentid", $id)
+						##$context.putPageValue("hidesubmodule", true) 
+						## hide should not load the next html for fast load
 						
-					#if($module.getBoolean("enableuploading") && $permissions.can($moduleid, "view_files"))
-						#if(!$ismulti)
-							$context.putPageValue("parentsearchtype", $parentsearchtype)
-							##$context.putPageValue("hidesubmodule", true)
-							#set($tabtype= "media")
-							#if($entitytabopen == $tabtype)
-					  			$context.putPageValue("currenttab", $tabtype)
-					  		#end
-							$pages.include("$subcomponenthome/gridsample/preview/entitytabmedia.html?entityid=$id", $context)
-						#end
+								#set($tabid = "tab_${viewid}")
+								#if($entitytabopen.equals($tabid))
+									$context.putPageValue("currenttab", $tabid)
+									$context.putPageValue("hidesubmodule", false)
+								#end
+								
+								#if($targetview.rendertype=="table")
+									#if(!$ismulti)
+										#set($tabtype= "submodulehome")
+										#set( $viewdata = $viewsearcher.searchById($viewid))
+										#set( $subentitysearchtype = $viewdata.rendertable )
+										##Permission check
+										#if($userentities.contains($subentitysearchtype))
+											#set($subcomponenthome = "$apphome/views/modules/$subentitysearchtype/components")
+											$pages.include("$subcomponenthome/gridsample/preview/entitytabsub.html", $context)
+										#end
+									#end
+								#else
+									#set($tabtype= "entitytab")
+									#ifnotnull($targetview.rendertype)
+										#set($tabtype= $targetview.rendertype)
+									#end
+									#if($tabtype=="default")
+										#set($tabtype= "entitytab")
+									#end
+									
+									$context.putPageValue("tabtype", $tabtype)
+									
+									#if(!$entitytabopen)
+										#set($entitytabopen = $tabid)
+										$context.putPageValue("currenttab", $tabid)
+									#end
+									
+									$pages.include("$componenthome/gridsample/preview/${tabtype}.html", $context)
+								#end
+							
 					#end
+				#end
+					
+				#if($module.getBoolean("enableuploading") && $permissions.can($moduleid, "view_files"))
+					#if(!$ismulti)
+						$context.putPageValue("parentsearchtype", $parentsearchtype)
+						##$context.putPageValue("hidesubmodule", true)
+						#set($tabtype= "media")
+						#if($entitytabopen == $tabtype)
+							$context.putPageValue("currenttab", $tabtype)
+						#end
+						$pages.include("$subcomponenthome/gridsample/preview/entitytabmedia.html?entityid=$id", $context)
+					#end
+				#end
 			#end
 		</div>
 	</div>
