@@ -88,10 +88,11 @@ public void processChildren(MediaArchive mediaArchive, Data inmodule, Category p
 			 }
 			 else
 			 {
-			 	Data found = mediaArchive.getCachedData(inmodule.getId(),id);
+			 	Data found = mediaArchive.getData(inmodule.getId(),id);
 				if( found != null)
 				{
-					readInSideCart(mediaArchive,category,found);			 	
+					readInSideCart(mediaArchive,category,found);	
+					mediaArchive.saveData(inmodule.getId(),found);		 	
 				}
 				else
 				{
@@ -158,11 +159,12 @@ public void processChildren(MediaArchive mediaArchive, Data inmodule, Category p
 
 public readInSideCart(MediaArchive mediaArchive,Category category,Data newchild)
 {
+	
 	if( newchild.getValue("longcaption") == null )
 	{
 			 	//Look for ingest files
 			 	ContentItem item = mediaArchive.getContent("/WEB-INF/data/" + mediaArchive.getCatalogId() + "/originals/" + category.getCategoryPath() + "/_ingest.txt");
-			 	log.info("Looking for: " + item.getAbsolutePath() );
+			 	//log.info("Looking for: " + item.getAbsolutePath() );
 			 	if( item.exists() )
 			 	{
 			 		 String result = IOUtils.toString(item.getInputStream(), StandardCharsets.UTF_8);
