@@ -89,7 +89,11 @@ public void processChildren(MediaArchive mediaArchive, Data inmodule, Category p
 			 else
 			 {
 			 	Data found = mediaArchive.getCachedData(inmodule.getId(),id);
-				if( found == null)
+				if( found != null)
+				{
+					readInSideCart(mediaArchive,category,found);			 	
+				}
+				else
 				{
 					createrow = true;
 				}			 	
@@ -128,16 +132,8 @@ public void processChildren(MediaArchive mediaArchive, Data inmodule, Category p
 			 			newchild.setValue(entity.getId(), parententity);
 			 		}
 			 	}
-			 	
-			 	//Look for ingest files
-			 	ContentItem item = mediaArchive.getContent("/WEB-INF/data/" + mediaArchive.getCatalogId() + "/originals/" + category.getCategoryPath() + "/_ingest.txt");
-			 	log.info("Looking for: " + item.getAbsolutePath() );
-			 	if( item.exists() )
-			 	{
-			 		 String result = IOUtils.toString(item.getInputStream(), StandardCharsets.UTF_8);
-			 		 log.info("Read in " + result);
-				 	 newchild.setValue("longcaption",result);
-			 	}
+
+				readInSideCart(mediaArchive,category,newchild);			 	
 			 	newchild.setValue("uploadsourcepath",category.getCategoryPath());
 			 	
 			 	mediaArchive.saveData(inmodule.getId(),newchild);
@@ -157,6 +153,22 @@ public void processChildren(MediaArchive mediaArchive, Data inmodule, Category p
 		{
 			processChildren(mediaArchive,inmodule, child, startfromdeep, nextdeep);
 		}
+	}
+}
+
+public readInSideCart(MediaArchive mediaArchive,Category category,Data newchild)
+{
+	if( newchild.getValue("longcaption") == null )
+	{
+			 	//Look for ingest files
+			 	ContentItem item = mediaArchive.getContent("/WEB-INF/data/" + mediaArchive.getCatalogId() + "/originals/" + category.getCategoryPath() + "/_ingest.txt");
+			 	log.info("Looking for: " + item.getAbsolutePath() );
+			 	if( item.exists() )
+			 	{
+			 		 String result = IOUtils.toString(item.getInputStream(), StandardCharsets.UTF_8);
+			 		 log.info("Read in " + result);
+				 	 newchild.setValue("longcaption",result);
+			 	}
 	}
 }
 
