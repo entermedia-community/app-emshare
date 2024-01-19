@@ -3,21 +3,62 @@ jQuery(document).ready(function (url, params) {
   var siteroot = appdiv.data("siteroot") + appdiv.data("apphome");
   var componenthome = appdiv.data("siteroot") + appdiv.data("componenthome");
 
-  var headerHeight = $("#header").outerHeight(true);
+  var header = $("#header");
+
+  var headerHeight = header.outerHeight(true);
   if (!headerHeight) {
     headerHeight = 0;
   }
-  $("#entitynabarcontainer").css("top", headerHeight + "px");
-  var entityNavHeight = $("#entitynabarcontainer").outerHeight(true);
-  if (!entityNavHeight) {
-    entityNavHeight = 0;
-  }
-  var stickyTop = headerHeight + entityNavHeight;
-  lQuery("#default-expandedmodule").livequery(function () {
-    $(this).css("top", stickyTop + "px");
+
+  lQuery("#entityNavBarContainer").livequery(function () {
+    var _top = headerHeight;
+    $(this).css("top", _top + "px");
+    _top += $(this).outerHeight(true);
+    var breadCrumbContainer = $("#breadCrumbContainer");
+    if (breadCrumbContainer) {
+      breadCrumbContainer.css("top", _top + "px");
+    }
+    _top += breadCrumbContainer.outerHeight(true);
+    var defaultExpandedModule = $("#defaultExpandedModule");
+    if (defaultExpandedModule.length) {
+      defaultExpandedModule.css("top", _top + "px");
+    }
+    var assetresultscontainer = $("#assetresultscontainer");
+    if (assetresultscontainer.length) {
+      assetresultscontainer.css("top", _top + "px");
+    }
   });
-  lQuery("#filteredmain").livequery(function () {
-    $(this).css("top", stickyTop + "px");
+
+  function setMaxHeight(elm, child, offset = 32) {
+    if (!elm || !elm.length) {
+      return;
+    }
+    var target = elm;
+    if (child) {
+      target = elm.find(child);
+      if (!target || !target.length) {
+        return;
+      }
+    }
+    var top = $(window).height() - elm.offset().top - offset;
+    console.log(target.attr("id"), elm.offset().top, top);
+    target.css("max-height", top + "px");
+  }
+
+  lQuery("#assetresultscontainer").livequery(function () {
+    setMaxHeight($(this), ".resultsarea");
+  });
+
+  lQuery("#entityactivityresultsarea").livequery(function () {
+    setMaxHeight($(this));
+    setMaxHeight($(this), "#emselectable");
+  });
+
+  $(window).resize(function () {
+    setMaxHeight($("#assetresultscontainer"), ".resultsarea");
+    var entityactivityresultsarea = $("#entityactivityresultsarea");
+    setMaxHeight(entityactivityresultsarea);
+    setMaxHeight(entityactivityresultsarea, "#emselectable");
   });
 
   lQuery("#assetlocked").livequery("change", function () {
