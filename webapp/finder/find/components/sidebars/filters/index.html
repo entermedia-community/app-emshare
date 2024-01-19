@@ -18,6 +18,17 @@
 		</div>
 	</div>
 	<ul class="summary-secondary-nav">
+		#set( $edit = $context.getRequestParameter("editheader"))
+		#if(!$edit || $edit == "false") 
+			<li>
+				<a class="ajax nav-hover text-center" 
+					id="table-editor-close" 
+					data-targetdiv="$!{moduleid}topcontainer"
+					data-oemaxlevel="2" 
+					title="[[Edit Table Header]]"
+					href="${searchhome}/index.html?hitssessionid=$hits.getSessionId()&editheader=true&moduleid=$!moduleid"><i class="bi bi-pencil-square"></i></a>
+			</li>
+		#end
 		<li>
 			<a href="$applink/views/modules/${moduleid}/components/filters/dialogsort.html" 
 				class="emdialog emsort #if($selectedpreference == "true") closed #end"
@@ -84,18 +95,19 @@
 		#set($href = "$siteroot$apphome/views/modules/$moduleid/index.html?hitssessionid=$!hits.getSessionId()&removeterm=$!term.getId()")
 		#set($oemaxlevel = "1")
 	#end
-	<div class="d-flex w-100 justify-content-center mt-1 mb-3">
-		<div class="d-inline search-term text-brand" style="font-size: 0.8rem;">
-			<i class="bi bi-search mr-1"></i> <span>"<strong>$hits.getSearchQuery().getMainInput()</strong>"</span>
+	<div class="d-flex w-100 justify-content-center mt-1 mb-2">
+		<label class="d-inline search-term text-brand" style="font-size: 0.8rem;" for="editSearch">
+			<i class="bi bi-search mr-1"></i>
+			<input value="$hits.getSearchQuery().getMainInput()" class="filter-search" id="editSearch" />
 			<a href="$href"
-				class="ajax"
+				class="ajax text-brand"
 				title="[[Clear]]: #esc($hits.getSearchQuery().getMainInput())"
 				data-targetdiv="$!maintargetdiv" 
 				data-oemaxlevel="$oemaxlevel"
 				data-updateurl="false"> 
 				<i class="bi bi-x ml-1"></i>
 			</a>
-		</div>
+		</label>
 	</div>
 #end
 
