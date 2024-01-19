@@ -36,102 +36,61 @@ $context.putPageValue("moduleid", $moduleid)
 			#set($resultview = "table")
 		#end
 	#end
-	
-		<div id="resultsheader" class="resultsheader">
-		
-		
+	<div id="resultsheader" class="resultsheader">
 		<div id="sub-nav" class="search-views emsubnav sub-nav-$!moduleid">
-			
-					<ul class="resultsnav">
+			<ul class="resultsnav">
+				#if($permissions.can($moduleid, "create") && $moduleid!="faceprofilegroup")
+					#set($addurl = "$siteroot$applink/views/modules/${moduleid}/components/gridsample/preview/$!{entityrendertype}.html?edit=true&addnew=true&viewid=$!{moduleid}addnew")
+					#ifnotnull($topentityid)
+						#set($addurl = "$addurl&fieldexternalid=${topmodule.getId()}&fieldexternalvalue=${topentityid}&reloadtargets=topmodulecontainer")
+					#end
+					<li>
+						<a class="emdialog" href="$addurl" title="[[Add New]]">
+							<i class="bi bi-plus-lg mr-1"></i> [[New]]
+						</a>
+					</li>
+				#end
 					
-					#if($permissions.can($moduleid, "create") && $moduleid!="faceprofilegroup")
-				 		#set($addurl = "$siteroot$applink/views/modules/${moduleid}/components/gridsample/preview/$!{entityrendertype}.html?edit=true&addnew=true&viewid=$!{moduleid}addnew")
-				 		#ifnotnull($topentityid)
-				 			#set($addurl = "$addurl&fieldexternalid=${topmodule.getId()}&fieldexternalvalue=${topentityid}&reloadtargets=topmodulecontainer")
-				 		#end
-				 		<li>
-				 		<a class="emdialog" 
-				 			href="$addurl" 
-				 			title="[[Add New]]"><i class="bi bi-plus-lg mr-1"></i> [[New]]</a>
-				 		</li>
-				 	#end
+				#if($resultview == "grid")
+					#if($hits.getTotalPages() >  1  )
+						$pages.include("$apphome/views/modules/$module.id/navigate.html", $context)
 					
-					#if($resultview == "grid")
-						#if($hits.getTotalPages() >  1  )
-							$pages.include("$apphome/views/modules/$module.id/navigate.html", $context)
-						
+					#end
+				#end
+					
+				#if($moduleid != "faceprofilegroup")
+					#if(!$edit)
+					
+						#if($hits && $resultview == "table" && $hits.hasSelections())
+							$pages.include("$searchhome/selectionactions.html", $context)
 						#end
 					#end
-					
-					#if($moduleid != "faceprofilegroup")
-						#if(!$edit)
-						
-							#if($hits && $resultview == "table" && $hits.hasSelections())
-								$pages.include("$searchhome/selectionactions.html", $context)
-							#end
-						#end
-					#end
-				
-			<li id="filtersselected" class="filtersselected">
-				$pages.include("$componenthome/filters/filters-inline.html", $context)
-			</li>	
-			<li> 
-			<div id="resultsmessages"></div>
-			</li>
-					
-					</ul>
+				#end
+				<li id="filtersselected" class="filtersselected">
+					$pages.include("$componenthome/filters/filters-inline.html", $context)
+				</li>
+				<li> 
+					<div id="resultsmessages"></div>
+				</li>	
+			</ul>
 			
 	
 		#if($hits)
 		<ul class="resultsnavright">
 			#if($edit != "true")
-				<li>
-					<a href="$applink/views/modules/${moduleid}/components/filters/dialogsort.html" 
-					class="emdialog"
-					data-dialogid="sortdialog"
-					data-hidebackdrop="true"
-					data-hidefooter="true"
-					data-modalsize="sm"
-					data-moduleid="$!{moduleid}"
-					data-hitssessionid="$hits.getSessionId()"
-					data-categoryid="$!categoryid"
-					data-rootcategory="$!rootcategory"
-					data-targetdivsearch="$!{moduleid}resultscontainer"
-					 style="padding:0 8px 0 10px;" title="[[Sort Results]]"><i class="bi bi-sort-down"></i></a>
-				</li>
-			
-			
 				#set($total = $hits.getTotalPages() )
-				
 				#if( $total > 1)
-				<li class="resultpages">	 
-					$pages.include("/${searchhome}/components/results/positions.html", $context)
-				</li>
+					<li class="resultpages">	 
+						$pages.include("/${searchhome}/components/results/positions.html", $context)
+					</li>
 				#end
-				
-				#if($resultview != "stackedgallery")
-					<li class="resultsnavtitem" style="width:61px;">
-							#set( $currenthitsperpage = $hits.getHitsPerPage())
-							#set($hitcountoptions = $mediaarchive.getList("hitcount"))
-							<select class="form-control hitsperpagechange resultsnavselect" 
-								id="hitsperpagechange$!{moduleid}">
-							#foreach($ho in $hitcountoptions)
-							<option value="$ho.id" #if($currenthitsperpage==$ho.id) selected="selected"#end>#text($ho)</option>
-							#end	
-							</select>
-					</li>		
-				#end
-				
-
 			#end
+
 			#if (!$resultview || $resultview == 'table')
-				#if( $canedittablecolumns )
-					#if( $edit )
-						
+				#if($canedittablecolumns)
+					#if($edit)
 						<li class="resultsnavtitem" style="min-width:180px">
-						
 							#set ($alldetails = $searcher.getUserPropertyDetails() )
-							
 							<span class="hint">*[[Drag columns to move them]]</span>
 							<select class="form-control form-control-sm select2 tableresultsaddcolumn" 
 									name="addcolumn"
@@ -140,37 +99,28 @@ $context.putPageValue("moduleid", $moduleid)
 									data-oemaxlevel="1" 
 									data-allowclear="false" >
 								<option>[[Add Column]]</option>
-								#foreach( $detail in $alldetails) <option value="$detail.id">$detail.getText($context)</option>
+								#foreach( $detail in $alldetails) 
+									<option value="$detail.id">$detail.getText($context)</option>
 								#end
 							</select>
-							
 						</li>
 						##Close Icon
-						<li>
+						<li style="border-left: none;background-color: transparent;">
 							<a class="ajax table-edit-close" 
 								data-targetdiv="$!{moduleid}topcontainer"
 								data-oemaxlevel="2" 
-								href="${searchhome}/index.html?searchtype=$!moduleid&hitssessionid=$!hits.getSessionId()&editheader=false&moduleid=$!moduleid"><i class="fas fa-times"></i></a>
-						</li>
-					#else 
-						##Edit
-						<li >
-							<a class="ajax nav-hover" 
-								id="table-editor-close" 
-								data-targetdiv="$!{moduleid}topcontainer"
-								data-oemaxlevel="2" 
-								href="${searchhome}/index.html?hitssessionid=$hits.getSessionId()&editheader=true&moduleid=$!moduleid"><i class="bi bi-pencil-square"></i></a>
-						</li>
+								href="${searchhome}/index.html?searchtype=$!moduleid&hitssessionid=$!hits.getSessionId()&editheader=false&moduleid=$!moduleid"><i class="bi bi-x"></i></a>
+						</li> 
 					#end	
 				#end								
 			#end
+			#set($preferencename = "${moduleid}summary")
+			#set($preference = '#set($selectedpreference = ' + '$!userprofile.minimize'  + $preferencename + ')')
+			#evaluate($preference)
+			#ifnull($selectedpreference)
+				#set($selectedpreference = "true")
+			#end
 			<li class="resultsnavtitem">
-				#set($preferencename = "${moduleid}summary")
-				#set($preference = '#set($selectedpreference = ' + '$!userprofile.minimize'  + $preferencename + ')')
-				#evaluate($preference)
-				#ifnull($selectedpreference)
-					#set($selectedpreference = "true")
-				#end
 				<button class='btn summary-opener #if($selectedpreference == "true") closed #end' data-target="$preferencename">
 					<i class="bi bi-chevron-double-left"></i> [[Summary]]
 				</button>

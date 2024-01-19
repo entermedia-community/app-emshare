@@ -7,6 +7,7 @@
 #ifnull($selectedpreference)
 	#set($selectedpreference = "true")
 #end
+
 <div class="summary-container #if($selectedpreference == "false") closed#end">
 	<div class="d-flex align-items-center justify-content-between">
 		<div class="summary-header summary-toggler" data-target="$preferencename">
@@ -16,7 +17,101 @@
 			</button>
 		</div>
 	</div>
-	<div class="p-1" style="border-left:1px solid #e5e5e5;height:100%">
+	<ul class="summary-secondary-nav">
+		#set( $edit = $context.getRequestParameter("editheader"))
+		#if(!$edit || $edit == "false") 
+			<li>
+				<a class="ajax nav-hover text-center" 
+					id="table-editor-close" 
+					data-targetdiv="$!{moduleid}topcontainer"
+					data-oemaxlevel="2" 
+					title="[[Edit Table Header]]"
+					href="${searchhome}/index.html?hitssessionid=$hits.getSessionId()&editheader=true&moduleid=$!moduleid"><i class="bi bi-pencil-square"></i></a>
+			</li>
+		#end
+		<li>
+			<a href="$applink/views/modules/${moduleid}/components/filters/dialogsort.html" 
+				class="emdialog emsort #if($selectedpreference == "true") closed #end"
+				data-dialogid="sortdialog"
+				data-hidebackdrop="true"
+				data-hidefooter="true"
+				data-modalsize="sm"
+				data-moduleid="$!{moduleid}"
+				data-hitssessionid="$hits.getSessionId()"
+				data-categoryid="$!categoryid"
+				data-rootcategory="$!rootcategory"
+				data-targetdivsearch="$!{moduleid}resultscontainer"
+				style="padding:0 8px 0 10px;" 
+				title="[[Sort Results]]"><i class="bi bi-sort-down"></i> Sort</a>
+		</li>
+		#if($resultview != "stackedgallery")
+			<li  style="width:61px;height: 36px;" title="[[Results per page]]">
+				#set( $currenthitsperpage = $hits.getHitsPerPage())
+				#set($hitcountoptions = $mediaarchive.getList("hitcount"))
+				<select class="form-control hitsperpagechange" id="hitsperpagechange$!{moduleid}">
+					#foreach($ho in $hitcountoptions)
+						<option value="$ho.id" #if($currenthitsperpage==$ho.id) selected="selected"#end>#text($ho)</option>
+					#end	
+				</select>
+			</li>		
+		#end
+	</ul>
+
+	#set($currentpage = $context.getRequestParameter("currentpagenum"))
+	#set( $prhits = $hits.getPositionRender() )
+	#ifnotnull($currentpage)
+		$prhits.setPageOneBased($currentpage)
+	#end
+
+	#set( $selectedpos = $prhits.toPosition($prhits.getPage()))
+
+	#set($totalResults = $hits.size())
+
+	#set( $hitsPerPage = $hits.getHitsPerPage())
+	#set($showingFrom = ($selectedpos - 1) * $hitsPerPage)
+	#set($showingTo = $showingFrom + $hitsPerPage)
+
+	#if($showingTo > $totalResults)
+		#set($showingTo = $totalResults)
+	#end
+	
+	#set($showingFrom = $showingFrom + 1)
+
+	#if($resultview != "stackedgallery")
+		<span class="d-inline-block text-center text-brand px-3 py-1 w-100 showing">
+			Showing <strong>$showingFrom</strong> - <strong>$showingTo</strong> of <strong>$totalResults</strong> #text($module)
+		</span>
+	#end
+
+	#if( $hits.getSearchQuery().hasMainInput())
+	#if($moduleid=="asset")
+		#if($dialogresults)
+			#set($href = "$siteroot$apphome/views/modules/$moduleid/dialogindex.html?hitssessionid=$!hits.getSessionId()&topmoduleid=$!topmoduleid&rootcategory=$!rootcategory&categoryid=$!{categoryid}&removeterm=description")
+		#else
+			#set($href = "$siteroot$apphome/views/modules/$moduleid/index.html?hitssessionid=$!hits.getSessionId()&topmoduleid=$!topmoduleid&rootcategory=$!rootcategory&categoryid=$!{categoryid}&removeterm=description")		
+		#end
+		#set($oemaxlevel = "1")
+	#else
+		#set($href = "$siteroot$apphome/views/modules/$moduleid/index.html?hitssessionid=$!hits.getSessionId()&removeterm=$!term.getId()")
+		#set($oemaxlevel = "1")
+	#end
+	<div class="d-flex w-100 justify-content-center mt-1 mb-2">
+		<label class="d-inline search-term text-brand" style="font-size: 0.8rem;" for="editSearch">
+			<i class="bi bi-search mr-1"></i>
+			<input value="$hits.getSearchQuery().getMainInput()" class="filter-search" id="editSearch" />
+			<a href="$href"
+				class="ajax text-brand"
+				title="[[Clear]]: #esc($hits.getSearchQuery().getMainInput())"
+				data-targetdiv="$!maintargetdiv" 
+				data-oemaxlevel="$oemaxlevel"
+				data-updateurl="false"> 
+				<i class="bi bi-x ml-1"></i>
+			</a>
+		</label>
+	</div>
+#end
+
+	<div class="p-1 flex-grow-1" style="border-left:1px solid #e5e5e5;height:100%">
 		<div class="col-sidebar-scroll">
 		#if($module.getId()=="modulesearch")
 			$pages.include("$apphome/components/gridfilters/index.html", $context)
