@@ -59,13 +59,14 @@ $context.putPageValue("showalllanguagevalues",true)
 					<div class="folder-list-actions">
 					<a href="$apphome/components/categories/search/pickcategory.html?targetdiv=assetcategoryresultsmediaviewer&multivalue=false&pickone=true&detailid=categoryid&amp;existingcategories=$!{existingcategories}&amp;assetid=${asset.id}" 
 					   class="detail-edit-icon btn   btn-dark emdialog"
+					    style="margin-right:10px;"
 					   data-cancelsubmit="true" 
 					   data-parameterdata="categoryvalues"
 					   data-noesc="true"
 					   title="[[Pick Folder]]"><i class="fas fa-plus"></i> [[Add to Folder]]</a>
 				   </div>
 				#end
-				#if(false&&  $caneditassetcategories )
+				#if(false &&  $caneditassetcategories )
 				<a href="$siteroot$apphome/components/opencollections/asset/searchcollectionpicker.html?assetid=$asset.id" 
 						   class="detail-edit-icon emdialog btn btn-dark"
 						   style="margin-left:10px;"
@@ -74,35 +75,37 @@ $context.putPageValue("showalllanguagevalues",true)
 						   title="[[Add Asset to Album]]"><i class="fas fa-plus"></i> [[Add to Album]]</a>
 				#end
 				#if( $canviewupload )
-					<div class="dropdown show">
-						<a class="btn btn-dark dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="border-color:#444">
-							<i class="fas fa-plus"></i> [[Add to Entity]]
-						</a>
-						<div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-							#foreach ( $amodule in $userprofile.getEntities() )
-								#set($amoduleid = $amodule.getId())
-								#if($amodule.getBoolean("enableuploading"))
-									#if($permissions.can($amoduleid, "create") && $amoduleid!="faceprofilegroup" && $amoduleid!="asset" && $amoduleid!="modulesearch")
-										#set($entityrendertype = "entity")
-										#if ($amodule.modulerendertype)
-											#set($entityrendertype = $amodule.modulerendertype)
-										#end
-										
-										#set($addurl = "$siteroot$applink/views/modules/${amoduleid}/components/entities/search/searchpicker.html")
-										#ifnotnull($topentityid)
-											#set($addurl = "$addurl&fieldexternalid=${topmodule.getId()}&fieldexternalvalue=${topentityid}&reloadtargets=topmodulecontainer")
-										#end
-										<a class="dropdown-item emdialog" 
-											href="$addurl"
-											#if( $ismulti )
-												data-assethitssessionid="$hits.getSessionId()"
-											#else
-												data-assetid="${asset.id}"
+					<div class="folder-list-actions">
+						<div class="dropdown show">
+							<a class="btn btn-dark dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="border-color:#444">
+								<i class="fas fa-plus"></i> [[Add to Entity]]
+							</a>
+							<div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+								#foreach ( $amodule in $userprofile.getEntities() )
+									#set($amoduleid = $amodule.getId())
+									#if($amodule.getBoolean("enableuploading"))
+										#if($permissions.can($amoduleid, "create") && $amoduleid!="faceprofilegroup" && $amoduleid!="asset" && $amoduleid!="modulesearch")
+											#set($entityrendertype = "entity")
+											#if ($amodule.modulerendertype)
+												#set($entityrendertype = $amodule.modulerendertype)
 											#end
-											>#text($amodule)</a>
+											
+											#set($addurl = "$siteroot$applink/views/modules/${amoduleid}/components/entities/search/searchpicker.html")
+											#ifnotnull($topentityid)
+												#set($addurl = "$addurl&fieldexternalid=${topmodule.getId()}&fieldexternalvalue=${topentityid}&reloadtargets=topmodulecontainer")
+											#end
+											<a class="dropdown-item emdialog" 
+												href="$addurl"
+												#if( $ismulti )
+													data-assethitssessionid="$hits.getSessionId()"
+												#else
+													data-assetid="${asset.id}"
+												#end
+												>#text($amodule)</a>
 									#end
 								#end
 							#end
+							</div>
 						</div>
 					</div>
 				#end
