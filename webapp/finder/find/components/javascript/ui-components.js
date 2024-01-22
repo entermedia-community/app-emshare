@@ -1551,10 +1551,11 @@ uiload = function () {
 
       var emdialoglink = emselectable.data("emdialoglink");
       if (emdialoglink && emdialoglink != "") {
-        emdialoglink = emdialoglink + "&id=" + rowid;
+		emdialoglink += (emdialoglink.indexOf("?") >= 0 ? "&" : "?") + "id=" + rowid;		  
         row.data("emdialoglink", emdialoglink);
         row.data("id", rowid);
         row.data("searchtype", emselectable.data("searchtype"));
+        row.data("hitssessionid", emselectable.data("hitssessionid"));
         emdialog(row, event);
       }
     }

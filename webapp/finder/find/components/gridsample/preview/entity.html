@@ -186,26 +186,41 @@ $context.putPageValue("topmoduleid", $moduleid)
 				#end
 			</div>
 
-			##<span class="text-white">$hits.indexOfId($defaultfolder.getId())</span>
-			##set( $index = $hits.indexOfId($defaultfolder.getId()))
-			##set( $previous = false )
-			##set( $previous = $hits.previous($index))
-			##set( $next = false )
-			##set( $next = $!hits.next($index))
+			##<span class="text-white">$hits.indexOfId($entity.getId())</span>
 			
-			<div class="d-flex align-items-center text-white">
-				<div class="d-flex align-items-center entity-navigator">
-					<a class="text-white btn btn-sm btn-brand mr-1">
-						<i class="bi bi-caret-left-fill"></i> <span>[[Prev]]</span>
-					</a>
-					<a class="text-white btn btn-sm btn-brand ml-1">
-						<span>[[Next]]</span> <i class="bi bi-caret-right-fill"></i>
-					</a>
+			#if($entityhits && $entityhits.size() > 1)
+				#set( $index = $entityhits.indexOfId($entity.getId()))
+				#set( $previous = false )
+				#set( $previous = $entityhits.previous($index))
+				#set( $next = false )
+				#set( $next = $!entityhits.next($index))
+				
+				
+				<div class="d-flex align-items-center text-white">
+					<div class="d-flex align-items-center entity-navigator">
+						#if($previous)
+						<a class="text-white btn btn-sm btn-brand mr-1 emdialog" 
+							href="$componenthome/gridsample/preview/entity.html?id=$previous.getId()"
+							data-hitssessionid="$entityhits.getSessionId()"
+							title="#text($previous)">
+							<i class="bi bi-caret-left-fill"></i> <span>[[Prev]]</span>
+						</a>
+						#end
+						#if($next)
+						<a class="text-white btn btn-sm btn-brand ml-1 emdialog"  
+							href="$componenthome/gridsample/preview/entity.html?id=$next.getId()"
+							data-hitssessionid="$entityhits.getSessionId()" 
+							title="#text($next)">
+							<span>[[Next]]</span> <i class="bi bi-caret-right-fill"></i>
+						</a>
+						#end
+					</div>
+					
+					<div class="entityclose ml-1 text-white btn btn-sm btn-brand">
+						<span title="[[Esc to Close]]" class="bi bi-x-lg" style="transform: scale(1.5);"></span>
+					</div>
 				</div>
-				<div class="entityclose ml-1 text-white btn btn-sm btn-brand">
-					<span title="[[Esc to Close]]" class="bi bi-x-lg" style="transform: scale(1.5);"></span>
-				</div>
-			</div>
+			#end
 		</div>
 		<nav>
 			<div class="nav nav-tabs entity-navigation" id="entity-nav-tab" role="tablist" 
