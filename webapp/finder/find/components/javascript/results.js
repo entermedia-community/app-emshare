@@ -41,7 +41,6 @@ jQuery(document).ready(function (url, params) {
       }
     }
     var top = $(window).height() - elm.offset().top - offset;
-    console.log(target.attr("id"), elm.offset().top, top);
     target.css("max-height", top + "px");
   }
 
