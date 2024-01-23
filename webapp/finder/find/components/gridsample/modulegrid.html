@@ -111,7 +111,16 @@ $context.putPageValue("filter", $filter)
 				data-rendertype="$rendertype">
 				#foreach( $hit in $hits.getPageOfHits() )
 					$context.putPageValue("hit", $hit)
-				    $pages.include("$apphome/components/gridsample/gridcell.html", $context)
+				    ##$pages.include("$apphome/components/gridsample/gridcell.html", $context)
+				     <div class="emgridcell emgridcell-$rendertype activelistcontainer 
+		 			#if($selectedid == $hit.getId() || $topselectedid == $hit.getId()) active #end
+		 			"> 
+					#set($rendertype = $module.modulerendertype)
+					#if (!$rendertype)
+			   			#set($rendertype = "entity")
+					#end
+				    $pages.include("$apphome/views/modules/$!{moduleid}/components/gridsample/types/${rendertype}.html", $context)
+				    </div>
 				#end
 		</div>
 		
