@@ -176,11 +176,6 @@ runajaxonthis = function (inlink, e) {
         data: options,
         success: function (data) {
           var cell;
-          data = $(data);
-          var setpagetitle = data.data("setpagetitle");
-          if (setpagetitle) {
-            document.title = setpagetitle;
-          }
 
           if (useparent && useparent == "true") {
             cell = $("#" + targetDiv, window.parent.document);
@@ -281,6 +276,13 @@ uiload = function () {
       });
     });
   }
+  
+  lQuery(".setpagetitle").livequery(function () {
+      var setpagetitle = $(this).data("setpagetitle");
+      if (setpagetitle) {
+        document.title = setpagetitle;
+      }
+  });
 
   lQuery("a.ajax").livequery("click", runajax);
 
@@ -1168,10 +1170,7 @@ uiload = function () {
         }
       }
     });
-    $(modaldialog).on("hidden.bs.modal", function (e) {
-      //console.log('modal hidden')
-    });
-
+    
     //Close drodpown if exists
     if (dialog.closest(".dropdown-menu").length !== 0) {
       dialog.closest(".dropdown-menu").removeClass("show");
@@ -1181,7 +1180,9 @@ uiload = function () {
     }
 
     return false;
-  };
+  };//emdialog
+  
+  
 
   lQuery("a.openemdialog").livequery(function () {
     var link = $(this);
@@ -1360,6 +1361,13 @@ uiload = function () {
     confirmModalClose(targetModal);
     hideLoader();
   });
+  
+  lQuery(".autoopenemdialog").livequery(function () {
+  	emdialog($(this));
+  });
+  
+  
+  
 
   lQuery(".mediaboxheader").livequery("click", function (event) {
     event.preventDefault();
@@ -4139,10 +4147,6 @@ lQuery(".ajaxstatus").livequery(function () {
   }
 
   setTimeout('showajaxstatus("' + uid + '");', timeout); //First one is always faster
-});
-
-lQuery(".autoopenemdialog").livequery(function () {
-  emdialog($(this));
 });
 
 var resizegallery = function () {
