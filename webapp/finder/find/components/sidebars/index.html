@@ -1,5 +1,5 @@
 #set ($moduleid = $module.getId())
-<div id="col-sidebars" class="col-sidebars-sticky sidebarcontent" #set(
+<div id="col-sidebars" class="col-sidebars-sticky sidebarcontent setpagetitle" #set(
 	$title=$mediaarchive.getCatalogSettingValue("sitetitle")) #set( $section=$context.getRequestParameter("sitetitle"))
 	#ifnotnull( $section ) data-setpagetitle="#text($section) - $title" #end #ifnull( $section )
 	data-setpagetitle="$title" #end data-url="$applink/components/sidebars/index.html">
@@ -95,7 +95,7 @@
 			</div>
 			#end
 
-			#if( $canviewopencollections )
+			#if(false && $canviewopencollections )
 			<div class="sidebar-togglers #if($sidebarcomponent == " libraries") sidebar-selected #end">
 				<a href="#" class="sidebar-toggler sidebar-toggler-show light" data-action="show"
 					data-targetdiv="col-sidebars" data-sidebar="libraries"
@@ -115,13 +115,19 @@
 					<i class="fas fa-cloud-upload-alt"></i>
 				</a>
 			</div>
-
+			#end
 
 			#if($user.getId())
 			<div class="sidebar-togglers #if($sidebarcomponent == " userdownloads") sidebar-selected #end">
 				<a href="#" class="sidebar-toggler sidebar-toggler-show light" data-action="show"
 					data-targetdiv="col-sidebars" data-sidebar="userdownloads"
-					data-modulesearchhitssessionid="$!modulehits.sessionId" title="[[Desktop Downloads]]">
+					data-modulesearchhitssessionid="$!modulehits.sessionId" title="[[Download Orders]]">
+					
+					<div id="downloadsStatus">
+						##$pages.include("$apphome/components/orders/download/downloadsstatus.html", $context)
+						$pages.include("$home$apphome/components/orders/download/ajaxorderstatus.html",$context)
+					</div>
+					
 					## <div class="downloadsUpdateWrapper">
 						## <div class="downloadsUpdate">
 							## #if($user && $sidebarcomponent != "userdownloads")
@@ -130,11 +136,11 @@
 							## #end
 							## </div>
 						## </div>
-					<i class="fas fa-cloud-download-alt"></i>
+					
 				</a>
 			</div>
 			#end
-			#end
+			
 
 			#if($canviewmodulelist)
 			#if( $userprofile.getModules().size() > 1 )
