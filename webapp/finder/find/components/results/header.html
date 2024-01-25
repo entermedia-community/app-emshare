@@ -158,7 +158,8 @@
 				</li>
 				#end
 
-				#if($topmoduleid && $permissions.can($topmoduleid, "upload_files"))
+				#if($topmoduleid)
+					#if($permissions.can($topmoduleid, "upload_files"))
 					<li>
 						<a href="$siteroot$applink/views/modules/asset/add/entityaddmedia.html?categoryid=$!categoryid" 
 							class="ajax" 
@@ -166,8 +167,9 @@
 							data-oemaxlevel="1"
 							style="padding: 0 10px" title="[[Upload]]"><i class="bi bi-upload"></i></a>
 					</li>
+					#end
 				#else
-					#if($moduleid == "asset")
+					#if($moduleid == "asset" && $canviewupload)
 					<li>
 						<a  class="ajax" 
 							data-updateurl="true" 
