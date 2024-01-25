@@ -227,6 +227,16 @@
 				
 				$context.putPageValue("resultview", $resultview)
 				
+				#if(!$currenthitsperpage)
+					#set( $currenthitsperpage = $hits.getHitsPerPage())
+				#end
+				#if(!$currenthitsperpage)
+					#set( $currenthitsperpage = $userprofile.get("asset${resultview}hitsperpage"))
+				#end
+				#if(!$currenthitsperpage)
+					#set( $currenthitsperpage = $userprofile.get("assethitsperpage"))
+				#end
+				
 				
 				#if(!$edit || $edit == "false"  )
 
@@ -250,15 +260,7 @@
 						#end
 					
 						<li class="resultsnavtitem subnav-dropdown" style="width:65px;height:36px">
-								#if(!$currenthitsperpage)
-									#set( $currenthitsperpage = $hits.getHitsPerPage())
-								#end
-								#if(!$currenthitsperpage)
-									#set( $currenthitsperpage = $userprofile.get("${resultview}assethitsperpage"))
-								#end
-								#if(!$currenthitsperpage)
-									#set( $currenthitsperpage = $userprofile.get("assethitsperpage"))
-								#end
+								
 								#set($hitcountoptions = $mediaarchive.getList("hitcount"))
 								<select class="form-control form-select-sm hitsperpagechange resultsnavselect" 
 										id="hitsperpagechange$!topmodule"
@@ -280,7 +282,7 @@
 							name="resultview" 
 							id="selectresultview"
 							data-oemaxlevel="1"
-							data-hitsperpage="$!currenthitsperpage ">
+							data-hitsperpage="$!currenthitsperpage">
 							#set( $types = $mediaarchive.getList("resulttype"))
 							#foreach($type in $types)
 								<option value="$!type.getId()" #if( $resultview == "$type.getId()") selected #end>$type.getName($context)</option>
