@@ -1,0 +1,20 @@
+<div class="sidebarorders">
+#foreach($order in $orders.getPageOfHits())
+	<div class="sidebarorder d-flex align-items-center justify-content-between mx-1">
+			<div>$!context.getDateTime($order.date)</div>
+			<div class="">
+				
+				#if($order.orderstatus =="complete" )
+				<i class="fas fa-check-circle"></i> 
+				#elseif($order.orderstatus=="processing")
+				<i class="fas fa-spinner fa-spin"></i>
+				#end
+				
+				#set($status = $mediaarchive.getCachedData("orderstatus", $order.orderstatus ))
+				#text($status)
+				
+				<a href="$apphome/views/modules/asset/activity/download/listitems.html?orderid=${order.id}" class="emdialog ml-2"><i class="bi bi-window"></i></a>
+			</div>
+	</div>
+#end
+</div>

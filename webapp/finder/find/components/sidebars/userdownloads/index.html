@@ -1,9 +1,9 @@
-#if($desktop)
+##if($desktop)
 <div id="userdownloadlist" class="ajaxstatusX" data-ajaxpath="$siteroot$applink/components/sidebars/userdownloads/index.html" >
-#set($recentdownloads = $mediaarchive.query("userdownloads").exact("user",$user.getId()).sort("dateDown").search($context))
+##set($recentdownloads = $mediaarchive.query("userdownloads").exact("user",$user.getId()).sort("dateDown").search($context))
 <div class="col-sidebar-header">
 		<h2>
-		[[Desktop Downloads]] ($recentdownloads.size()) 
+		[[Download History]] 
 				
 		</h2>
 		<a href="#"
@@ -16,12 +16,7 @@
 				</div>
 	
 	<div id="targetmodulecontainerdownloads" class="domdatacontext" data-onlyassets="true">
-		#set($clickurl = "$applink/views/modules/asset/activity/details/vieworder.html")
-		#set($clickurltargetdiv = "applicationmaincontent")
-		#set($clickurloemaxlevel = "2")
-			#set( $args = "searchtype=order&field=userid&userid.value=$user.id&operation=exact&sortby=dateDown&viewid=downloads&hitsperpage=10&positionsmaxpages=5")
-			#set ($args = "$args&clickurl=$clickurl&clickurltargetdiv=$clickurltargetdiv&clickurloemaxlevel=$clickurloemaxlevel")
-			$pages.include("/$applicationid/components/table/table.html?$!args",$context)						
+			$pages.include("/$applicationid/components/orders/download/recentorders.html",$context)						
 		</div>
 </div>
-#end
+##end
