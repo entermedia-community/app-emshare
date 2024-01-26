@@ -4081,14 +4081,6 @@ showajaxstatus = function (uid) {
 
 var resizecolumns = function () {
   var windowh = $(window).height();
-  var windoww = $(window).width();
-  //make them same top
-
-  var header_height = $("#header").outerHeight();
-  var footer_height = $("#footer").outerHeight();
-  var resultsheader_height = 0;
-
-  var columnsheight = 0;
 
   //togglers always screen height
   var coltogglers = $(".col-sidebar-togglers");
@@ -4100,12 +4092,7 @@ var resizecolumns = function () {
   $(".settingslayout").css("height", "auto");
   $(".col-content-main").css("height", "auto"); //reset
 
-  /*setMaxHeight($("#assetresultscontainer"), ".resultsarea");
-	var entityactivityresultsarea = $("#entityactivityresultsarea");
-	setMaxHeight(entityactivityresultsarea);
-	setMaxHeight(entityactivityresultsarea, "#emselectable");
-	*/
-  $(".resultsarea").each(function () {
+  $(".adjustHeight").each(function () {
     setMaxHeight($(this));
   });
 };
@@ -4149,6 +4136,7 @@ function setMaxHeight(elm, child, offset = 32) {
     }
   }
   var top = $(window).height() - elm.offset().top - offset;
+  top = Math.max(top, 400);
   target.css("height", top + "px");
 }
 
