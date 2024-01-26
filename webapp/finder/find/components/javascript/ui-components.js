@@ -276,12 +276,12 @@ uiload = function () {
       });
     });
   }
-  
+
   lQuery(".setpagetitle").livequery(function () {
-      var setpagetitle = $(this).data("setpagetitle");
-      if (setpagetitle) {
-        document.title = setpagetitle;
-      }
+    var setpagetitle = $(this).data("setpagetitle");
+    if (setpagetitle) {
+      document.title = setpagetitle;
+    }
   });
 
   lQuery("a.ajax").livequery("click", runajax);
@@ -1170,7 +1170,7 @@ uiload = function () {
         }
       }
     });
-    
+
     //Close drodpown if exists
     if (dialog.closest(".dropdown-menu").length !== 0) {
       dialog.closest(".dropdown-menu").removeClass("show");
@@ -1180,9 +1180,7 @@ uiload = function () {
     }
 
     return false;
-  };//emdialog
-  
-  
+  }; //emdialog
 
   lQuery("a.openemdialog").livequery(function () {
     var link = $(this);
@@ -1361,13 +1359,10 @@ uiload = function () {
     confirmModalClose(targetModal);
     hideLoader();
   });
-  
+
   lQuery(".autoopenemdialog").livequery(function () {
-  	emdialog($(this));
+    emdialog($(this));
   });
-  
-  
-  
 
   lQuery(".mediaboxheader").livequery("click", function (event) {
     event.preventDefault();
@@ -1394,6 +1389,40 @@ uiload = function () {
       .removeClass("fa-caret-right")
       .addClass("fa-caret-down");
   }
+
+  lQuery(".trim-text").livequery(function () {
+    var maxLength = $(this).data("max");
+    var text = $(this).text();
+    if (text.length <= maxLength) return;
+    var minimizedText = text.substring(0, maxLength).trim();
+    $(this).text(minimizedText);
+    $(this).data("text", text);
+    $(this).append('<button class="see-more">(...see more)</button>');
+  });
+
+  lQuery(".see-more").livequery("click", function () {
+    var textParent = $(this).parent();
+    var text = textParent.data("text");
+    if (!text) {
+      $(this).remove();
+      return;
+    }
+    textParent.text(text);
+    textParent.append('<button class="see-less">(...see less)</button>');
+  });
+
+  lQuery(".see-less").livequery("click", function () {
+    var textParent = $(this).parent();
+    var maxLength = textParent.data("max");
+    var text = textParent.data("text");
+    if (!maxLength || !text) {
+      $(this).remove();
+      return;
+    }
+    var minimizedText = text.substring(0, maxLength).trim();
+    textParent.text(minimizedText);
+    textParent.append('<button class="see-more">(...see more)</button>');
+  });
 
   lQuery(".expandmediabox").livequery("click", function (e) {
     expandmediabox($(this));
@@ -1559,7 +1588,8 @@ uiload = function () {
 
       var emdialoglink = emselectable.data("emdialoglink");
       if (emdialoglink && emdialoglink != "") {
-		emdialoglink += (emdialoglink.indexOf("?") >= 0 ? "&" : "?") + "id=" + rowid;		  
+        emdialoglink +=
+          (emdialoglink.indexOf("?") >= 0 ? "&" : "?") + "id=" + rowid;
         row.data("emdialoglink", emdialoglink);
         row.data("id", rowid);
         row.data("searchtype", emselectable.data("searchtype"));
@@ -4050,7 +4080,6 @@ showajaxstatus = function (uid) {
 };
 
 var resizecolumns = function () {
-	
   var windowh = $(window).height();
   var windoww = $(window).width();
   //make them same top
@@ -4070,17 +4099,15 @@ var resizecolumns = function () {
   //reset some heights
   $(".settingslayout").css("height", "auto");
   $(".col-content-main").css("height", "auto"); //reset
-  
-  
+
   /*setMaxHeight($("#assetresultscontainer"), ".resultsarea");
 	var entityactivityresultsarea = $("#entityactivityresultsarea");
 	setMaxHeight(entityactivityresultsarea);
 	setMaxHeight(entityactivityresultsarea, "#emselectable");
 	*/
-	$(".resultsarea").each(function () {
-		setMaxHeight($(this));
-	});
-
+  $(".resultsarea").each(function () {
+    setMaxHeight($(this));
+  });
 };
 
 var resizesearchcategories = function () {
@@ -4111,19 +4138,19 @@ var resizesearchcategories = function () {
 };
 
 function setMaxHeight(elm, child, offset = 32) {
-    if (!elm || !elm.length) {
+  if (!elm || !elm.length) {
+    return;
+  }
+  var target = elm;
+  if (child) {
+    target = elm.find(child);
+    if (!target || !target.length) {
       return;
     }
-    var target = elm;
-    if (child) {
-      target = elm.find(child);
-      if (!target || !target.length) {
-        return;
-      }
-    }
-    var top = $(window).height() - elm.offset().top - offset;
-    target.css("height", top + "px");
   }
+  var top = $(window).height() - elm.offset().top - offset;
+  target.css("height", top + "px");
+}
 
 var ranajaxon = new Array();
 
@@ -4191,9 +4218,6 @@ jQuery(document).on("domchanged", function () {
   resizecolumns();
   jQuery(window).trigger("resize");
 });
-
-
-
 
 jQuery(document).on("emtreeselect", function (event) {
   var treename = event.tree.data("treename");
