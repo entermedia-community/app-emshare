@@ -11,7 +11,10 @@
 <div class="summary-container #if($selectedpreference == "false") closed#end">
 	<div class="d-flex align-items-center justify-content-between">
 		<div class="summary-header summary-toggler" data-target="$preferencename">
-			<h3>[[Summary]]</h3>
+			<div class="header-container d-flex flex-grow-1 flex-column align-items-center">
+				<small>#text($module)</small>
+				<h3>[[Summary]]</h3>
+			</div>
 			<button class="btn">
 				<i class="bi bi-chevron-double-right"></i>
 			</button>
@@ -23,10 +26,10 @@
 			<li>
 				<a class="ajax nav-hover text-center" 
 					id="table-editor-close" 
-					data-targetdiv="$!{moduleid}topcontainer"
+					data-targetdiv="$!module.getId()resultsarea"
 					data-oemaxlevel="2" 
 					title="[[Edit Table Header]]"
-					href="${searchhome}/index.html?hitssessionid=$hits.getSessionId()&editheader=true&moduleid=$!moduleid"><i class="bi bi-pencil-square"></i></a>
+					href="$siteroot$componenthome/results/index.html?searchtype=asset&hitssessionid=$hits.getSessionId()&editheader=true"><i class="bi bi-pencil-square"></i></a>
 			</li>
 		#end
 		<li>
@@ -79,12 +82,22 @@
 
 	#if($resultview != "stackedgallery")
 		<span class="d-inline-block text-center text-brand px-3 py-1 w-100 showing" style="border-left:1px solid #e5e5e5">
-			[[Showing]] <strong>$showingFrom</strong>-<strong>$showingTo</strong> [[of]] <strong>$totalResults</strong> #text($module)
+			[[Showing]] <strong>$showingFrom</strong>-<strong>$showingTo</strong> [[of]] <strong>$totalResults</strong>
 		</span>
 	#else
 		<span class="d-inline-block text-center text-brand px-3 py-1 w-100 showing">
-			[[Showing]] <strong>$totalResults</strong> #text($module)
+			[[Showing]] <strong>$totalResults</strong>
 		</span>
+	#end
+
+	#set($desc = $entity.get('longcaption'))
+	#if($dialogresults && $desc)
+	<p class="text-brand m-0 px-2 pt-1 border-top">
+		<strong>[[Description]]:</strong>
+		<span class="trim-text" data-max="150">
+			$desc
+		</span>
+	</p>
 	#end
 
 	#if( $hits.getSearchQuery().hasMainInput())

@@ -258,18 +258,6 @@
 						#else
 							#set($targetdiv= "$!{moduleid}resultscontainer")
 						#end
-					
-						<li class="resultsnavtitem subnav-dropdown" style="width:65px;height:36px">
-								
-								#set($hitcountoptions = $mediaarchive.getList("hitcount"))
-								<select class="form-control form-select-sm hitsperpagechange resultsnavselect" 
-										id="hitsperpagechange$!topmodule"
-										data-oemaxlevel="1">
-										#foreach($ho in $hitcountoptions)
-											<option value="$ho.id" #if($currenthitsperpage==$ho.id) selected="selected"#end>#text($ho)</option>
-										#end	
-								</select>
-						</li>	
 					#else
 						## TODO?: infinie scroll for stacked media
 					#end
@@ -313,24 +301,13 @@
 								</select>
 								
 							</li>
-							<li>
+							<li style="border-left: none;background-color: transparent;">
 								<a class="ajax table-edit-close" 
 									data-targetdiv="$!module.getId()resultsarea"
 									data-oemaxlevel="1" 
 									title="[[Close Edit Columns Mode]]"
-									href="$siteroot$componenthome/results/index.html?searchtype=asset&hitssessionid=$hits.getSessionId()&editheader="><i class="fas fa-times"></i></a>
-							</li>		
-							<li class="resultsnavtitem">
-								
-							</li>
-						#else 
-							<li >
-								<a class="ajax nav-hover" 
-									id="table-editor" 
-									data-targetdiv="$!module.getId()resultsarea"
-									data-oemaxlevel="1" 
-									href="$siteroot$componenthome/results/index.html?searchtype=asset&hitssessionid=$hits.getSessionId()&editheader=true">
-									<i class="bi bi-pencil-square"></i></a>
+									href="$siteroot$componenthome/results/index.html?searchtype=asset&hitssessionid=$hits.getSessionId()&editheader=">
+									<i class="bi bi-x"></i></a>
 							</li>
 						#end	
 					#end								
