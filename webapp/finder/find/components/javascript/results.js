@@ -29,36 +29,6 @@ jQuery(document).ready(function (url, params) {
     }
   });
 
-  function setMaxHeight(elm, child, offset = 32) {
-    if (!elm || !elm.length) {
-      return;
-    }
-    var target = elm;
-    if (child) {
-      target = elm.find(child);
-      if (!target || !target.length) {
-        return;
-      }
-    }
-    var top = $(window).height() - elm.offset().top - offset;
-    target.css("max-height", top + "px");
-  }
-
-  lQuery("#assetresultscontainer").livequery(function () {
-    setMaxHeight($(this), ".resultsarea");
-  });
-
-  lQuery("#entityactivityresultsarea").livequery(function () {
-    setMaxHeight($(this));
-    setMaxHeight($(this), "#emselectable");
-  });
-
-  $(window).resize(function () {
-    setMaxHeight($("#assetresultscontainer"), ".resultsarea");
-    var entityactivityresultsarea = $("#entityactivityresultsarea");
-    setMaxHeight(entityactivityresultsarea);
-    setMaxHeight(entityactivityresultsarea, "#emselectable");
-  });
 
   lQuery("#assetlocked").livequery("change", function () {
     var locked = $(this).prop("checked");
@@ -1366,26 +1336,26 @@ jQuery(document).ready(function (url, params) {
     }
   }
 
-  gridResize();
+  //gridResize();
 
   // jQuery(".masonry-grid img.imagethumb:eq(10)").on('load', function() {
 
   // gridResize();
 
   // });
+  
+  //jQuery(".scrollview").on('scroll', function (e) {
+	lQuery(".scrollview").livequery("scroll", function () {
+	  console.log("grid scroll");
+	  checkScroll();
+  //gridResize();
+	});
 }); // document ready
 
 document.addEventListener("touchmove", function (e) {
   checkScroll();
 });
-jQuery(window).on("scroll", function (e) {
-  //console.log("main scroll");
-  checkScroll();
-});
 
-jQuery(window).on("resize", function () {
-  // gridResize();
-});
 
 // TODO: remove this. using ajax Used for modules
 togglehits = function (action) {
@@ -1426,7 +1396,8 @@ checkScroll = function () {
     //change to parent for multiple
     currentscroll = $(".modal").scrollTop();
   } else {
-    currentscroll = $(window).scrollTop();
+    //currentscroll = $(window).scrollTop();
+    currentscroll = $(".scrollview").scrollTop();
   }
   if (lastcheck == currentscroll) {
     //Dom events cause it to fire recursively

@@ -4050,6 +4050,7 @@ showajaxstatus = function (uid) {
 };
 
 var resizecolumns = function () {
+	
   var windowh = $(window).height();
   var windoww = $(window).width();
   //make them same top
@@ -4069,39 +4070,17 @@ var resizecolumns = function () {
   //reset some heights
   $(".settingslayout").css("height", "auto");
   $(".col-content-main").css("height", "auto"); //reset
+  
+  
+  /*setMaxHeight($("#assetresultscontainer"), ".resultsarea");
+	var entityactivityresultsarea = $("#entityactivityresultsarea");
+	setMaxHeight(entityactivityresultsarea);
+	setMaxHeight(entityactivityresultsarea, "#emselectable");
+	*/
+	$(".resultsarea").each(function () {
+		setMaxHeight($(this));
+	});
 
-  var headerw = 0;
-  var colmaincontet = $(".col-content-main").find(".col-main-inner");
-  if (colmaincontet.length) {
-    var thisheight = colmaincontet.outerHeight();
-    if (thisheight > columnsheight) {
-      columnsheight = thisheight;
-    }
-  } else if ($("#application").find(".finderlargearea")) {
-    columnsheight = $("#application").find(".finderlargearea").outerHeight();
-  }
-  if (colsidebar.length) {
-    headerw = windoww - colsidebar.width() - 62;
-  } else {
-    headerw = windoww - 62;
-  }
-  $(".autostickywidthX").css("min-width", headerw + "px");
-
-  //filters
-  var emresultscontainer = $(".emresultscontainer");
-  emresultscontainer.each(function () {
-    if ($(this).attr("id") !== "resultsviewcontainerasset") {
-      $(this).css("min-width", headerw - 300 + "px");
-    }
-  });
-  // $("#resultsviewcontainerasset").css("min-width", windoww * 0.92 - 300 + "px");
-
-  if (columnsheight < windowh) {
-    columnsheight = windowh - 50;
-  }
-
-  $(".col-content-main").css("height", columnsheight);
-  /*$("#application").css("height", columnsheight)*/
 };
 
 var resizesearchcategories = function () {
@@ -4130,6 +4109,21 @@ var resizesearchcategories = function () {
   }
   //console.log(h);
 };
+
+function setMaxHeight(elm, child, offset = 32) {
+    if (!elm || !elm.length) {
+      return;
+    }
+    var target = elm;
+    if (child) {
+      target = elm.find(child);
+      if (!target || !target.length) {
+        return;
+      }
+    }
+    var top = $(window).height() - elm.offset().top - offset;
+    target.css("height", top + "px");
+  }
 
 var ranajaxon = new Array();
 
@@ -4177,11 +4171,11 @@ jQuery(document).ready(function () {
 });
 
 jQuery(window).on("resize", function () {
-  gridResize();
-  resizegallery();
+  //resizegallery(); //old
   adjustdatamanagertable();
   resizesearchcategories();
   resizecolumns();
+  gridResize();
   /*
 	var tablewidth = $("#main-results-table").width();
 	if(tablewidth !== undefined) {
@@ -4193,10 +4187,13 @@ jQuery(window).on("resize", function () {
 });
 
 jQuery(document).on("domchanged", function () {
-  gridResize();
+  //gridResize();
   resizecolumns();
-  //jQuery(window).trigger("resize");
+  jQuery(window).trigger("resize");
 });
+
+
+
 
 jQuery(document).on("emtreeselect", function (event) {
   var treename = event.tree.data("treename");
