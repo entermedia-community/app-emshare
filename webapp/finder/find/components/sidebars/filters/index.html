@@ -20,7 +20,7 @@
 			</button>
 		</div>
 	</div>
-	<ul class="summary-secondary-nav">
+	<ul class="summary-secondary-nav mb-1">
 		#set( $edit = $context.getRequestParameter("editheader"))
 		#if(!$edit || $edit == "false") 
 			<li>
@@ -60,45 +60,62 @@
 		#end
 	</ul>
 
-	#set($currentpage = $context.getRequestParameter("currentpagenum"))
-	#set( $prhits = $hits.getPositionRender() )
-	#ifnotnull($currentpage)
-		$prhits.setPageOneBased($currentpage)
-	#end
+	<div class="d-flex flex-column px-2" style="border-left:1px solid #e5e5e5">
+		#set($currentpage = $context.getRequestParameter("currentpagenum"))
+		#set( $prhits = $hits.getPositionRender() )
+		#ifnotnull($currentpage)
+			$prhits.setPageOneBased($currentpage)
+		#end
 
-	#set( $selectedpos = $prhits.toPosition($prhits.getPage()))
+		#set( $selectedpos = $prhits.toPosition($prhits.getPage()))
 
-	#set($totalResults = $hits.size())
+		#set($totalResults = $hits.size())
 
-	#set( $hitsPerPage = $hits.getHitsPerPage())
-	#set($showingFrom = ($selectedpos - 1) * $hitsPerPage)
-	#set($showingTo = $showingFrom + $hitsPerPage)
+		#set( $hitsPerPage = $hits.getHitsPerPage())
+		#set($showingFrom = ($selectedpos - 1) * $hitsPerPage)
+		#set($showingTo = $showingFrom + $hitsPerPage)
 
-	#if($showingTo > $totalResults)
-		#set($showingTo = $totalResults)
-	#end
-	
-	#set($showingFrom = $showingFrom + 1)
+		#if($showingTo > $totalResults)
+			#set($showingTo = $totalResults)
+		#end
+		
+		#set($showingFrom = $showingFrom + 1)
 
-	#if($resultview != "stackedgallery")
-		<span class="d-inline-block text-center text-brand px-3 py-1 w-100 showing" style="border-left:1px solid #e5e5e5">
-			[[Showing]] <strong>$showingFrom</strong>-<strong>$showingTo</strong> [[of]] <strong>$totalResults</strong>
+		#if($resultview != "stackedgallery")
+			<span class="d-inline-block text-brand pb-1 w-100 showing" >
+				[[Showing]] <strong>$showingFrom</strong>-<strong>$showingTo</strong> [[of]] <strong>$totalResults</strong>
+			</span>
+		#else
+			<span class="d-inline-block text-brand pb-1 w-100 showing">
+				[[Showing]] <strong>$totalResults</strong>
+			</span>
+		#end
+
+		#set ($allSortType = $searcher.getUserPropertyDetails() )
+		#foreach( $sortType in $allSortType)
+			#if($hits.searchQuery.isSortUp())
+				#set($sortOrder = "asc")
+			#else
+				#set($sortOrder = "desc")
+			#end
+			#if($hits.isSortedBy($sortType.id)) 
+				#set($currentSort = $sortType.getText($context))
+				#break
+			#end
+		#end
+		<span class="d-inline-block text-brand pb-1 w-100 showing">
+			[[Sorted by]] <strong>$currentSort</strong> ($sortOrder.)
 		</span>
-	#else
-		<span class="d-inline-block text-center text-brand px-3 py-1 w-100 showing">
-			[[Showing]] <strong>$totalResults</strong>
-		</span>
-	#end
-
-	#set($desc = $entity.get('longcaption'))
-	#if($dialogresults && $desc)
-	<p class="text-brand m-0 px-2 pt-1 border-top">
-		<strong>[[Description]]:</strong>
-		<span class="trim-text" data-max="150">
-			$desc
-		</span>
-	</p>
-	#end
+		#set($desc = $entity.get('longcaption'))
+		#if($dialogresults && $desc)
+		<p class="text-brand pt-1 mb-0 border-top">
+			<strong>[[Description]]:</strong>
+			<span class="trim-text" data-max="150">
+				$desc
+			</span>
+		</p>
+		#end
+	</div>
 
 	#if( $hits.getSearchQuery().hasMainInput())
 	#if($moduleid=="asset")
