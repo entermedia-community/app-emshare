@@ -19,7 +19,7 @@ public void init()
 	MediaArchive archive = context.getPageValue("mediaarchive");
 	AssetSearcher searcher = mediaarchive.getAssetSearcher();
 	
-	String foundcategory = "AYyDQU31oRsY97PbIb-R"; //Category containing recovered assets
+	String foundcategory = "AYvVBzbT4bwaYKlXOfJN"; //Category containing recovered assets
 	
 	Collection foundassets = mediaarchive.query("asset").match("category", foundcategory).search();
 	
