@@ -29,7 +29,6 @@ jQuery(document).ready(function (url, params) {
     }
   });
 
-
   lQuery("#assetlocked").livequery("change", function () {
     var locked = $(this).prop("checked");
     var uncheckedlabel = $(this).data("uncheckedlabel");
@@ -1343,19 +1342,18 @@ jQuery(document).ready(function (url, params) {
   // gridResize();
 
   // });
-  
+
   //jQuery(".scrollview").on('scroll', function (e) {
-	lQuery(".scrollview").livequery("scroll", function () {
-	  console.log("grid scroll");
-	  checkScroll();
-  //gridResize();
-	});
+  lQuery(".scrollview").livequery("scroll", function () {
+    console.log("grid scroll");
+    checkScroll();
+    //gridResize();
+  });
 }); // document ready
 
 document.addEventListener("touchmove", function (e) {
   checkScroll();
 });
-
 
 // TODO: remove this. using ajax Used for modules
 togglehits = function (action) {
@@ -1771,6 +1769,12 @@ lQuery("div.assetpreview").livequery("click", function (e) {
   var id = div.data("assetid");
   showAsset(id);
   saveProfileProperty("assetopentab", "viewpreview", function () {});
+});
+
+lQuery("div.thumb").livequery("click", function (e) {
+  e.preventDefault();
+  $(this).siblings().removeClass("selected");
+  $(this).toggleClass("selected");
 });
 
 lQuery("a.assettab").livequery("click", function (e) {
