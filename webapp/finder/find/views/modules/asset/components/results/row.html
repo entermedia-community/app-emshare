@@ -21,8 +21,7 @@ $context.putPageValue("title",$title)
 		name="count" 
 		value="" 
 		#if($selectedrow) checked #end 
-		data-dataid="${hit.id}" 
-		#if($canquickdownload) style="margin-right: 1px;" #end />
+		data-dataid="${hit.id}"	/>
 		
 	</td>
 #end	
@@ -75,21 +74,14 @@ $context.putPageValue("title",$title)
 	   		</div>
 			
 		#if($canquickdownload)
-        	#if( $desktop )
-		       	<a href="#" class="emdesktopdownload grid-gallery-download" data-assetid="$hit.id" title="[[Download]] $!title">
-		       		<img src="$apphome/theme/images/download.svg" alt="[[Download]] $!title" />
-		       	</a> 
-	      	#else
-				#set($dlink = $mediaarchive.asLinkToOriginal($hit))
-				#set($dlink = "$siteroot/$mediadbappid/services/module/asset/downloads/originals/$dlink?assetid=$!hit.getId()")
-				#if($collectionid)
-					#set($dlink = "$dlink&collectionid=$!{collectionid}")
-				#end
-			
-	       	<a href="$dlink" class="grid-gallery-download" data-assetid="$hit.id" title="[[Download]] $!title">
-				<img src="$apphome/theme/images/download.svg" alt="[[Download]] $!title" />
-	       	</a>
-	       	#end
+		
+			#set($dlink =  "$applink/views/modules/asset/activity/downloadassets.html")
+		   	<a href="$dlink" 
+		   		class="emdialog" data-assetid="$hit.id" data-hidefooter="true" title="[[Download]] $!title">
+		       	<img src="$apphome/theme/images/download.svg" alt="[[Download]] $!title" />
+		    </a>
+		    
+		    
 	    #end
 			</td>	
  </tr>

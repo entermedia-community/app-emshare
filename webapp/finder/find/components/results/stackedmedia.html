@@ -123,20 +123,11 @@ class="scroll-resultsdiv"
 						</div>
 					#end
 					#if($canquickdownload)
-						#if( $desktop )
-							<a href="#" class="emdesktopdownload grid-gallery-download" data-assetid="$hit.id" title="[[Download]] $!title">
-								<i class="fas fa-download"> </i>
-							</a>
-						#else
-							#set($dlink = $mediaarchive.asLinkToOriginal($hit))
-							#set($dlink = "$siteroot/$mediadbappid/services/module/asset/downloads/originals/$dlink?assetid=$!hit.getId()")
-							#if($collectionid)
-								#set($dlink = "$dlink&collectionid=$!{collectionid}")
-							#end
-							<a href="$dlink" class="grid-gallery-download" data-assetid="$hit.id" title="[[Download]] $!title">
-								<i class="fas fa-download"> </i>
-							</a>
-						#end
+						#set($dlink =  "$applink/views/modules/asset/activity/downloadassets.html")
+					   	<a href="$dlink" 
+					   		class="emdialog" data-assetid="$hit.id" data-hidefooter="true" title="[[Download]] $!title">
+					       	<img src="$apphome/theme/images/download.svg" alt="[[Download]] $!title" />
+					    </a>
 					#end 
 				</div>
 			</div>

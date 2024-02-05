@@ -48,22 +48,15 @@
 
 <div style="margin:10px 0; text-align: center;">
 	#if($candownload)	
-		#if( $desktop )
-	       	<a href="#" class="emdesktopdownload btn btn-dark" data-assetid="$asset.id" title="[[Download]] #text($!title)">
-	       	<i class="fas fa-download"> </i> [[Download Original]]
-	       	</a>
-	    #else
-			#set($dlink = $mediaarchive.asLinkToOriginal($asset))
-			#ifnotnull($dlink)
-				#set($dlink = "$siteroot/$mediadbappid/services/module/asset/downloads/originals/$dlink?assetid=$!asset.getId()")
-				#if($collectionid)
-					#set($dlink = "$dlink&collectionid=$!{collectionid}")
-				#end
-		       	<a href="$!dlink" class="btn  btn-dark" data-assetid="$asset.id" title="[[Download]] $!title">
+	
+	#set($dlink =  "$applink/views/modules/asset/activity/downloadassets.html")
+		   	<a href="$dlink" 
+		   		class="emdialog btn  btn-dark" data-assetid="$asset.id" data-hidefooter="true" title="[[Download]] $!title">
 		       	<i class="fas fa-download"></i> [[Download Original]]
-		       	</a>
-	       	#end
-	   	#end
+		    </a>
+		    
+		    
+	
 	#end   	
    	#if($caneditasset)
    	<div style="padding:10px 0;"><a  href="$applink/views/modules/asset/editor/conversions/upload.html"
