@@ -101,37 +101,30 @@
 					[[Bookmarks]] <i class="bi bi-bookmarks-fill ml-1"></i>
 			</a> 
 		#end
-		<div class="position-relative">
-			<button class="em navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+		<div class="position-relative em">
+			<button class="dropdown-toggle" type="button" data-toggle="dropdown">
 				<span class="navbar-toggler-icon text-white"></span>
 			</button> 
-			<div class="navbar-collapse collapse" id="navbarNavDropdown">
-				<ul class="navbar-nav d-flex flex-column">
+			<div class="dropdown-menu dropdown-menu-right"> 
 				#if($canviewsettings)
-					<li class="nav-item">
-						<a href="$!{siteroot}$apphome/views/dashboard/index.html" class="nav-link ajax" 
-							data-targetdivinner="application" data-updateurl="true" data-oemaxlevel="4" title="[[Dashboard]]">
-							[[Dashboard]]
-						</a>
-					</li>
+					<a href="$!{siteroot}$apphome/views/dashboard/index.html" class="dropdown-item ajax" 
+						data-targetdivinner="application" data-updateurl="true" data-oemaxlevel="4" title="[[Dashboard]]">
+						[[Dashboard]]
+					</a>
 				#end
 				#if( $user )
 					#if( $canviewmyaccount ) 
-						<li class="nav-item">
-							<a class="nav-link ajax" data-targetdivinner="application" data-updateurl="true" data-oemaxlevel="4" href="$!siteroot$apphome/views/myaccount/index.html"  title="[[Account Settings]]">
-								[[My Account]]
-							</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link ajax" data-targetdivinner="application" data-updateurl="true" data-oemaxlevel="4" href="$!siteroot$apphome/views/myaccount/orders/index.html"  title="[[My Orders]]">
-								[[My Orders]]
-							</a>
-						</li>
+						<a class="dropdown-item ajax" data-targetdivinner="application" data-updateurl="true" data-oemaxlevel="4" href="$!siteroot$apphome/views/myaccount/index.html"  title="[[Account Settings]]">
+							[[My Account]]
+						</a>
+						<a class="dropdown-item ajax" data-targetdivinner="application" data-updateurl="true" data-oemaxlevel="4" href="$!siteroot$apphome/views/myaccount/orders/index.html"  title="[[My Orders]]">
+							[[My Orders]]
+						</a>
 					#end
 					#set( $localesearcher = $mediaarchive.getSearcher("locale") )
 					#set($currentlang = $localesearcher.searchById($context.language))
-					<li class="nav-item dropdown dropleft">
-						<a class="nav-link  dropdown-toggle" href="#" data-toggle="dropdown">
+					<div class="dropdown dropleft">
+						<a class="dropdown-item dropdown-toggle" href="#" data-toggle="dropdown">
 							#if($currentlang)
 								$currentlang
 							#else
@@ -142,23 +135,18 @@
 							#set( $languages = $localesearcher.query().named("localehits").match("enabled", "true").search($context) )
 							#foreach( $lang in $languages)
 								#set($langurl = "$home$apphome/components/languages/changelanguage.html?newlang=locale_${lang.id}&origURL=$context.getPathUrl()")
-								<a class="nav-link" href="#urlescape($langurl)">$lang</a>
+								<a class="dropdown-item" href="#urlescape($langurl)">$lang</a>
 							#end
 						</div> 
-					</li>
-					<li  class="nav-item">
-						<a class="nav-link" href="$!siteroot$apphome/authentication/logout.html" title="[[Logout]]">
-							[[Logout]] ($user)
-						</a>
-					</li> 
-				#else 
-					<li  class="nav-item">
-						<a class="nav-link" href="$!siteroot$apphome/authentication/login.html"  title="[[Login]]">
-							[[Login]]
-						</a>
-					</li> 
-				#end
-				</ul>
+					</div> 
+					<a class="dropdown-item" href="$!siteroot$apphome/authentication/logout.html" title="[[Logout]]">
+						[[Logout]] ($user)
+					</a> 
+				#else  
+					<a class="dropdown-item" href="$!siteroot$apphome/authentication/login.html"  title="[[Login]]">
+						[[Login]]
+					</a> 
+				#end 
 			</div>
 		</div>
 	</div>
