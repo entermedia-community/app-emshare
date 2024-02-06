@@ -16,7 +16,7 @@
 	
 
 	<tr>
-	<td class="asset-thumb" style="width:200px; padding:10px">		
+	<td class="asset-thumb" style="width:160px; padding:10px">		
 		$context.putPageValue("asset", $asset)
 		$context.putPageValue("item", $item)
 		$context.setRequestParameter("sourcepath", $sourcepath)					
@@ -45,10 +45,10 @@
 	</td>
 	<td class="asset-name">
 	
-	$context.putPageValue("searcher",$searcherManager.getSearcher($catalogid,"asset") )	
-	$context.putPageValue("view","asset/downloaddetails")	
-	$context.putPageValue("data",$asset)
-	$pages.include("/$applicationid/components/xml/detaileditorcss.html?detailsreadonly=true", $context)
+		$context.putPageValue("searcher",$searcherManager.getSearcher($catalogid,"asset") )	
+		$context.putPageValue("view","asset/downloaddetails")	
+		$context.putPageValue("data",$asset)
+		$pages.include("/$applicationid/components/xml/detaileditorcss.html?detailsreadonly=true", $context)
 
 	</td>
 	#set( $publishqueueid = $item.get("publishqueueid"))
@@ -66,7 +66,7 @@
 			#set( $presetid = $publishqueue.get("presetid") )
 			#if( $presetid == "0")
 				<td></td>
-				<td style="text-align:right;">
+				<td  style="width: 90px; text-align: center;">
 					#if($asset.googleid && $asset.googledownloadurl)
 					<!-- Google puts quotes on the returned data so the href is correct below.   -->
 						<a class="btn btn-sm btn-primary" href="$asset.googledownloadurl">[[Download]]</a>
@@ -85,26 +85,31 @@
 				</td>
 			#else
 				<td>
-				${publishqueue.exportname}
+				
 				</td>
-				<td align="right">
+				<td style="width: 90px; text-align: center;">
+					#if($publishqueue.status=='error')
+						<strong>[[Error]]</strong><br>
+						$publishqueue.errordetails
+					#else
 						#set($convertpreset = $searcherManager.getData($catalogid, "convertpreset", $presetid ) )
-					<a class="btn btn-sm btn-primary" href="#urlencode("$cdnprefix$home/$mediadbappid/services/module/asset/downloads/generated/${asset.sourcepath}/${convertpreset.generatedoutputfile}/${publishqueue.exportname}?orderid=${order.id}&collectionid=$!{order.collectionid}")">[[Download]]</a>
-							#set( $downloadall = true)
+						<a class="btn btn-sm btn-primary" href="#urlencode("$cdnprefix$home/$mediadbappid/services/module/asset/downloads/generated/${asset.sourcepath}/${convertpreset.generatedoutputfile}/${publishqueue.exportname}?orderid=${order.id}&collectionid=$!{order.collectionid}")">[[Download]]</a>
+						#set( $downloadall = true)
+					#end
 				</td>
 			#end
 		#end	
 	#elseif( $publishqueue.publishdestination == "1" )
 		<td></td>
-		<td style="text-align:right;">
+		<td  style="width: 90px; text-align: center;">
 			#if( $destination.publishtype == "aspera")
-			#if( $item.status == "complete" || $item.status == "delivered" )
-			<ul class="embuttons">
-				<li><a class="btn btn-sm btn-primary" href="$home$apphome/views/modules/asset/activity/aspera/asperadownload.html?orderid=$order.id&itemid=$item.id">[[Download]]</a></li>
-								#set( $downloadall = true)
-			</ul>
-			#end
-		#end	
+				#if( $item.status == "complete" || $item.status == "delivered" )
+				<ul class="embuttons">
+					<li><a class="btn btn-sm btn-primary" href="$home$apphome/views/modules/asset/activity/aspera/asperadownload.html?orderid=$order.id&itemid=$item.id">[[Download]]</a></li>
+									#set( $downloadall = true)
+				</ul>
+				#end
+			#end	
 		</td>
 	#else
 		<td>$item.get("publishqueueid")</td>		
