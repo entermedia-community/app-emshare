@@ -1,0 +1,74 @@
+#if( $asset.assettitle )
+  #set($title =  $asset.assettitle) 
+#else 
+  #set($title = $asset.name) 
+#end
+
+#set($cdnprefix = $context.siteRoot )
+#set( $type = $mediaarchive.getMediaRenderType($asset.fileformat))
+#set($newpreset = $context.findValue("newpreset"))
+$context.putPageValue("asset", $asset)
+#set($mediadbappid=$mediaarchive.getMediaDbId())
+#set($type =$mediaarchive.getMediaRenderType($asset.fileformat))
+#set($results = $conversionUtil.getActivePresetList($catalogid,$type) )
+$context.putPageValue("results", $results)
+
+$context.putPageValue("viewer", "media_download_")
+#set($rendertype = $mediaarchive.getMediaRenderType($asset.fileformat))
+
+#if(!$rendertype || $type =="rendertype")
+    #set( $rendertype = "mime" )
+#elseif( $rendertype =="video")
+    #set( $rendertype = "videothumbnail" )
+#end
+
+$context.putPageValue("thumbsize", "small" )
+$context.putPageValue("urlparams", "?cache=false&_=$mathutil.getRandomValue(99999)" )
+ 
+<div class="photo-editor-container">
+  <div class="photo-selection-column">
+    <h2>[[Available Renditions]]</h2>
+    <div class="w-100 selection-images">
+      #foreach ($result in $results)
+        #set($cancrop = false)
+        #set($cancrop = $conversionUtil.canCrop($catalogid,$result.id,$asset.id))
+
+        #if(!$cancrop)
+          #if( $mediaarchive.isCatalogSettingTrue("preventupscaling"))
+            #set($show = false)
+          #else
+            #set($show = true)
+          #end
+        #else
+          #set($show = true)
+        #end
+        #set($url = "$siteroot/$mediadbappid/services/module/asset/downloads/generated/$asset.sourcepath/$result.generatedoutputfile/$mediaarchive.asExportFileName($asset, $result)?includemetadata=true")
+        #if($conversionUtil.doesExist($catalogid, $asset.id,$asset.sourcePath, $result.id) && $show)
+        #set($dimension = $conversionUtil.getConvertPresetDimension($catalogid,$result.id))
+        #set($height = $mathtool.toInteger($dimension.getHeight()))
+        #set($width = $mathtool.toInteger($dimension.getWidth()))
+        <div class="thumb" role="button" tabindex="0">
+          <img src="#urlescape($url)" />
+          <div class="d-flex align-items-end justify-content-between"> 
+            <small>$result.name</small> 
+            #if ($height && $height > 0 && $width && $width > 0)
+              <small class="ml-1">${width}&times;${height}</small>
+            #end
+          </div>
+          <a href="#urlescape($url)" class="btn btn-sm btn-secondary dl" title="[[Download]]"><i class="bi bi-download"></i></a>
+          #if($canembedasset)
+            <a class="btn btn-sm btn-secondary emdialog" 
+              href="$siteroot$apphome/views/modules/asset/editor/media/share.html?assetid=${asset.id}&presetid=${result.id}"
+              data-noesc="true"
+              data-hidefooter="true"
+              title="[[Share]] $!result.name"><i class="fas fa-share-alt"></i></a>
+          #end
+        </div>
+        #end
+      #end    
+    </div>
+  </div>
+  <div id="photoEditorColumn">
+    // TODO
+  </div>
+</div>
