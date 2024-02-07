@@ -125,207 +125,90 @@ $context.putPageValue("asset",$asset)
 
 $context.putPageValue("results", $results)
 
+$context.putPageValue("viewer", "media_download_")
+#set($rendertype = $mediaarchive.getMediaRenderType($asset.fileformat))
 
-#if($results.size()>0)
-	<div class="conversionsall emdata" >
-	<table class="table table-striped table-hover tabe-conversions" id="conversionstable" style="max-width: 1200px; margin-top:0px;">
-	<thead>
-		<tr class="tableheader">
-		    <th style="width:120px;">[[Download]]</th>
-			<th>[[Description]]</th>
-			<th style="width:100px;">[[Size]]</th>
-			<th style="width:100px;">[[Aspect Ratio]]</th>
-			#if( $canviewconversions )
-			<th style="width:95px;">[[Status]]</th>
-			<th style="width:195px;">[[Last Updated]]</th>
-			#end
-			<th style="width:110px;">[[Crop]]</th>
-		</tr>
-	</thead>
-	#foreach ($result in $results)
-		$context.putPageValue("presetdata",$result)
-		#set($presetdata = $result)
-		#set($cancrop = false)
-		#set($cancrop = $conversionUtil.canCrop($catalogid,$result.id,$asset.id))
-		#if(!$cancrop)
-			#if( $mediaarchive.isCatalogSettingTrue("preventupscaling"))
-				#set($show = false)
-			#else
-			
-				#set($show = true)
-			#end
-		#else
-			#set($show = true)
-		#end
-	
-		#if($conversionUtil.doesExist($catalogid, $asset.id,$asset.sourcePath, $result.id) && $show)
-			#set($dimension = $conversionUtil.getConvertPresetDimension($catalogid,$result.id))
-			#set($height = $mathtool.toInteger($dimension.getHeight()))
-			#set($width = $mathtool.toInteger($dimension.getWidth()))
-			
-			##$context.putPageValue("height", $height)
-			##$context.putPageValue("width", $width)
-			
-			#set($aspectratio = $conversionUtil.getConvertPresetAspectRatio($dimension))
-			#set($description = $conversionUtil.getConvertPresetParameter($catalogid,$result.id, "imagelocation"))
-			<tr>
-			
-			<td class="text-center"> 
-				
-				
-				<div style=" padding:5px 0;">
-				
-				 #set($url = "$siteroot/$mediadbappid/services/module/asset/downloads/generated/$asset.sourcepath/$presetdata.generatedoutputfile/$mediaarchive.asExportFileName($asset, $presetdata)?includemetadata=true")
-				<a href="#urlescape($url)" 
-					class="btn btn-sm btn-secondary" title="[[Download]]"><i class="fas fa-download"></i></a>
-			  	
-				#if($canembedasset)
-				
-					<a class="btn btn-sm btn-secondary emdialog" 
-				    	href="$siteroot$apphome/views/modules/asset/editor/media/share.html?assetid=${asset.id}&presetid=${presetdata.id}"
-				    	data-noesc="true"
-				    	data-hidefooter="true"
-				    	title="[[Share]] $!presetdata.name"><i class="fas fa-share-alt"></i></a>
-				
-				 #end
-			  	</div>
-				  
-			</td>
-			<td>
-			$result.name 
-			</td>
-			<td class="text-center">
-			#if ($height && $height > 0 && $width && $width > 0)
-				<span class="h2e">${width}x${height}</span>
-				###if($description && $description!="") <span style="font-size:smaller;">$description</span> #end
-			#end
-			#set($description = "")
-			</td>
-			<td class="text-center">
-			#if ($aspectratio)
-				<span class="h2e">$aspectratio</span>
-			#end
-			</td>
-			
-			#if( $canviewconversions )
-				$pages.include("$apphome/views/modules/asset/editor/conversions/modify.html", $context)
-			#end
-			
-			<td>
-			<div style="position:relative">
-				##ACTIONS
-				#set($isready = $conversionUtil.isConvertPresetReady($catalogid,$asset.id,$asset.sourcePath, $result.id))
-				
-				
-				
-				#if($isready)
-					##SHARE
-					$pages.include("$apphome/views/modules/asset/editor/conversions/share.html", $context)
-				#else
-					#set($notready = true)
-				#end
-				
-				
-				#set($mediaurl = "$siteroot/$mediadbappid/services/module/asset/downloads/preset/$asset.sourcepath/$presetdata.generatedoutputfile")	  
-				#set($previewurl="$siteroot$apphome/components/asseteditor/preview.html?previewimg=$mediaurl")
-					
-	
-			</div>
-			</td>
-			</tr>
-		#end
-	
-	#end  ##foreach
-	</table>
-	</div>
+#if(!$rendertype || $type =="rendertype")
+    #set( $rendertype = "mime" )
+#elseif( $rendertype =="video")
+    #set( $rendertype = "videothumbnail" )
 #end
 
+$context.putPageValue("thumbsize", "small" )
+$context.putPageValue("urlparams", "?cache=false&_=$mathutil.getRandomValue(99999)" )
 
+#set($initSelection = "")
 
+#set( $originalpath = $mediaarchive.asLinkToOriginal($asset, true) )
 
-#if($caneditasset)
-	#if($newpreset)
-		$context.putPageValue("omitpreset",$newpreset)
-	#end
-	
-	$pages.include("$apphome/views/modules/asset/editor/conversions/createnewconversion.html", $context)
-#end
+<div class="photo-editor-container">
+  <div class="photo-selection-column">
+    <div class="d-flex align-items-center">
+      <h2>[[Saved Copies]]</h2> 
+    </div>
+    <div class="w-100 selection-images">
+      #foreach ($result in $results)
+        #set($cancrop = false)
+        #set($cancrop = $conversionUtil.canCrop($catalogid,$result.id,$asset.id))
 
-$pages.include("$apphome/views/modules/asset/editor/conversions/sendalltofatwire.html", $context)
+        #if(!$cancrop)
+          #if( $mediaarchive.isCatalogSettingTrue("preventupscaling"))
+            #set($show = false)
+          #else
+            #set($show = true)
+          #end
+        #else
+          #set($show = true)
+        #end
 
+        #set($expfilename = $mediaarchive.asExportFileName($asset, $result))
+        #set($ext = $!url_util.getPathUtilities().extractPageType($expfilename))
+        #set($url = "$siteroot/$mediadbappid/services/module/asset/downloads/generated/$asset.sourcepath/$result.generatedoutputfile/$expfilename")
+        #if($conversionUtil.doesExist($catalogid, $asset.id,$asset.sourcePath, $result.id) && $show)
+        #set($dimension = $conversionUtil.getConvertPresetDimension($catalogid,$result.id))
+        #set($height = $mathtool.toInteger($dimension.getHeight()))
+        #set($width = $mathtool.toInteger($dimension.getWidth())) 
 
+        #if($result.id == "largeimage")
+          #set($initSelection = "/$apphome/views/modules/asset/editor/media/editorarea.html?assetid=${asset.id}&assetsource=${asset.sourcepath}&resultid=${result.id}&resultoutput=${result.generatedoutputfile}&expfilename=${expfilename}&catalogid=${catalogid}&width=${width}&height=${height}&oemaxlevel=1")
+        #end
 
-<div class="conversionsheader" style="padding:20px 0;">
-
-#if($caneditasset)
-	##<a class="btn btn-sm btn-secondary ajax" data-targetdivinner="asset-editor-container" data-oemaxlevel="1"   href="$siteroot$apphome/views/modules/asset/editor/conversions/previewcrop.html?assetid=$asset.id&presetid=largeimage&noaspect=true&savetoall=true">[[Crop]]</a>
-
-	#if($canshowadmintoolbar)
-			<a class="btn btn-sm btn-secondary previewcrop-btn" 
-			style="margin:10px 0;"
-				data-oemaxlevel="1"  
-				target="_new"
-				href="$siteroot/openedit/views/filemanager/tab.html?path=/WEB-INF/data/$catalogid/generated/$asset.getSourcePath()"
-				title="[[File Manager]]"><i class="fas fa-upload"></i> [[Open File Manager]]</a> 
-		#end
-
-	<a class="btn btn-sm btn-secondary ajax" data-targetdivinner="asset-editor-container" data-oemaxlevel="1" 
-   	   href="$siteroot$apphome/views/modules/asset/editor/conversions/reloadthumbs.html?assetid=$asset.id"><i class="fas fa-images"></i>  [[Recreate Conversions]]</a>
-   	   
-   	   
-   	<span class="ajaxprogress">&nbsp;&nbsp;<i class="fas fa-spinner fa-spin"></i></span>
-   	
-	
-	
-#end
-
-</div>
-
-</div>
-</div>
-
-
-<script>
-$(document).ready(function(){
-
-	#if ($notready)
-
-		var reloadingconversionspage = setTimeout(function(){
-		//reloadpageajax("$siteroot$apphome/views/modules/asset/editor/conversions/index.html?assetid=$asset.id&oemaxlevel=1", "asset-editor-container")
-		var nextpage = "$siteroot$apphome/views/modules/asset/editor/conversions/index.html?assetid=$asset.id&oemaxlevel=1";
-		var targetDiv = "asset-editor-container";
-		if ($("#conversionstable").length) {
-			//console.log("Reloading...")
-			var options;
-			targetDiv = targetDiv.replace(/\//g, "\\/");
-			$.get(nextpage, options, function(data) 
-					{
-						var cell;
-						cell = $("#" + targetDiv);
-						//Call replacer to pull $scope variables
-						cell.replaceWith(data);
-						$(window).trigger( "resize" );
-					}
-			);
-			}
-		}, 5000);
-	#end
-});
-</script>
-
-
-
-#if($caneditasset && $rendertype != "audio" && $asset.sourcePath)
-	<div style="padding:20px 0">
-	<p>[[You can specify custom width, height or formats. For example, a large PDF]]:</p>
-	<p><i>
-		$siteroot/$mediadbappid/services/module/asset/downloads/preview/cache/$!asset.sourcePath/image2000x2000.pdf </i>
-	</p>
-	</div>
-#end
-
-
-</div>
-</div>
+        <div 
+          class="thumb #if($result.id == "largeimage") selected #end" 
+          role="button" 
+          tabindex="0" 
+          data-href="$siteroot$apphome/views/modules/asset/editor/media/editorarea.html"
+          data-assetid="${asset.id}"
+          data-assetsource="${asset.sourcepath}"
+          data-resultid="${result.id}"
+          data-resultoutput="${result.generatedoutputfile}"
+          data-expfilename="${expfilename}"
+          data-catalogid=${catalogid}" 
+          data-oemaxlevel="1"
+        > 
+          <img src="#urlescape($url)" />
+          <div class="d-flex align-items-end justify-content-between"> 
+            <small>$expfilename</small> 
+            <!-- <small>$ext</small>  -->
+          </div>
+          <strong class="img-size">${width}&times;${height}</strong>
+          <a href="#urlescape($url)" class="btn btn-sm btn-secondary dl" title="[[Download]]"><i class="bi bi-download"></i></a>
+          #if($canembedasset)
+            <a class="btn btn-sm btn-secondary emdialog" 
+              href="$siteroot$apphome/views/modules/asset/editor/media/share.html?assetid=${asset.id}&presetid=${result.id}"
+              data-noesc="true"
+              data-hidefooter="true"
+              title="[[Share]] $!result.name"><i class="fas fa-share-alt"></i></a>
+          #end
+        </div>
+        #end
+      #end    
+    </div>
+  </div>
+  <div id="photoEditorColumn">
+    #if($initSelection)
+      $pages.include($initSelection)
+    #end
+  </div>
 </div>
 

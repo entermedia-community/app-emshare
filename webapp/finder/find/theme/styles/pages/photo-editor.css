@@ -1,25 +1,44 @@
 .photo-editor-container {
   display: flex;
   align-items: flex-start;
+  flex-direction: row-reverse;
   height: 100%;
 }
 .photo-selection-column {
   height: 100%;
   width: 250px;
+  min-width: 250px;
   display: flex;
   flex-direction: column;
+  position: relative;
+}
+#photoEditorColumn {
+  width: calc(100% - 250px);
 }
 .photo-selection-column h2 {
-  background-color: #262e40;
+  background-color: #202835;
   font-size: 18px;
   text-align: center;
   margin: 0;
-  padding: 14px 8px 8px 8px;
+  width: calc(100% - 8px);
+  line-height: 45px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 100;
+}
+#photoEditorColumn h2 {
+  /* background-color: #202835; */
+  font-size: 18px;
+  margin: 0;
+  padding-left: 16px;
+  /* width: 100%; */
+  line-height: 45px;
 }
 .photo-selection-column .selection-images {
   overflow-y: scroll;
-  background-color: #262e40;
   flex: 1;
+  padding-top: 45px;
   scrollbar-width: thin;
   scrollbar-color: #8090b3 #333e55;
 }
@@ -27,8 +46,7 @@
   background-color: #333e55;
 }
 .photo-selection-column .selection-images::-webkit-scrollbar {
-  width: 5px;
-  height: 5px;
+  width: 8px;
   background-color: #333e55;
 }
 .photo-selection-column .selection-images::-webkit-scrollbar-thumb {
@@ -53,6 +71,15 @@
   background: #4d5d80;
 }
 
+.selection-images .thumb .img-size {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  line-height: 30px;
+  padding: 0 8px;
+  font-size: 14px;
+  background-color: #4d5d80aa;
+}
 .selection-images .thumb a {
   position: absolute;
   top: 16px;
@@ -66,13 +93,13 @@
   background: #4d5d80;
   box-shadow: 0 0 2px #333e55;
   z-index: 100;
-  transform: translateY(-16px);
-  opacity: 0;
+  /* transform: translateY(-16px); */
+  /* opacity: 0; */
   transition: all 0.2s ease-in;
 }
 .selection-images .thumb:hover a {
   opacity: 1;
-  transform: translateY(0);
+  /* transform: translateY(0); */
 }
 .selection-images .thumb a.dl {
   top: 16px;
@@ -90,6 +117,97 @@
 #photoEditorColumn {
   flex: 1;
   background: #262e40;
-  padding: 0 16px;
   height: 100%;
+}
+.editorarea {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  height: calc(100% - 45px);
+}
+.editorarea span {
+  font-size: 16px;
+}
+.editorarea .editor {
+  flex-direction: row-reverse;
+  height: calc(100% - 45px);
+}
+.editorarea .top-toolbar,
+.editorarea .side-toolbar {
+  background-color: #333e55;
+}
+.editorarea .top-toolbar {
+  padding-right: 56px;
+}
+.editorarea .top-toolbar a,
+.editorarea .side-toolbar a {
+  background-color: #4d5d80;
+  text-align: center;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 4px;
+  transition: all 0.2s ease-in;
+}
+.editorarea .top-toolbar a {
+  /* display: inline-block; */
+  /* padding: 0; */
+  flex-direction: row;
+  /* width: 46px; */
+  height: 46px;
+  line-height: 46px;
+  margin-right: 1px;
+  padding: 0 12px;
+}
+.editorarea .top-toolbar a:last-child {
+  margin-right: 0;
+}
+.editorarea .side-toolbar a {
+  width: 56px;
+  justify-content: flex-start;
+  margin-top: 1px;
+}
+.editorarea .side-toolbar a:first-child {
+  margin-top: 0;
+}
+.editorarea .top-toolbar a:hover,
+.editorarea .side-toolbar a:hover {
+  background-color: #5f739e;
+}
+.editorarea .top-toolbar a i {
+  margin-right: 8px;
+}
+.editorarea .top-toolbar a label {
+  font-size: 14px;
+  margin: 0;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.editorarea .side-toolbar a label {
+  font-size: 10px;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+#editingCandidate {
+  display: none;
+}
+#canvas-container {
+  height: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.editorarea select {
+  height: 46px;
+  background-color: #333e55;
+  color: white;
+  border: none;
+  padding: 0 8px;
+  margin: 0;
+  font-size: 14px;
+  text-transform: uppercase;
+  cursor: pointer;
 }
