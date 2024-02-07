@@ -61,7 +61,12 @@ $context.putPageValue("targetdivtablepositions", $targetdivtablepositions)
 
 #set($emselectableform = $context.getRequestParameter("emselectableform"))
 
-#set($hits = $subtablehits)
+#set($hitsname = $context.getRequestParameter("${searchtype}hitsname"))
+#if($hitsname)
+	#set($hits = $context.getPageValue($hitsname))
+#else
+	#set($hits = $subtablehits)
+#end
 
 #set($submoduleresults = "results$!{viewid}")
 <div id="$!submoduleresults" class="submodulepicker">
@@ -160,7 +165,8 @@ $context.putPageValue("targetdivtablepositions", $targetdivtablepositions)
 					##data-module="$!moduleid"
 					
 					#if($id) data-id="$!id" #end
-					data-searchtype="$!searchtype" 
+					data-searchtype="$!searchtype"
+					data-$!{searchtype}hitsname="$hitsname" 
 					
 					data-tabletype="$!tabletype"
 					#if($tabletype == "subentity" && $targetrendertype)

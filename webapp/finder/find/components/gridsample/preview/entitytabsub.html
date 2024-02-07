@@ -53,37 +53,41 @@
 		data-url="$componenthome/gridsample/preview/entitytabsub.html"
 		#if($hidesubmodule) style="display: none; #end">
 		
+		#if($currenttab == $tabid)
 		
-			#set( $args = "parentid=$!parentid&searchtype=$!subentitysearchtype&$!{subentitysearchtype}clearresults=true")
+			#set( $args = "${submodule.getId()}hitsname=$!{viewid}hits&${subentitysearchtype}clearfilters=true&parentid=$!parentid&searchtype=$!subentitysearchtype&$!{subentitysearchtype}clearresults=true")
 			#set( $args = "$args&fieldexternalid=$!fieldexternalid&fieldexternalvalue=$!fieldexternalvalue")
 			#set( $args = "$args&field=$!fieldexternalid&$!{fieldexternalid}.value=$!fieldexternalvalue&operation=exact")
 			#set( $args = "$args&viewid=$!viewid&viewpath=$!targetviewpath&hitsperpage=6&targetrendertype=$!targetrendertype")
 			#set( $args = "$args&parentsearchtype=$!parentsearchtype&targetdiv=submodulepicker&sortby=$!sortby")
 			
 			$context.putPageValue("moduleid", $!submodule.getId() )
-			$context.putPageValue("submoduleresults", $!submoduleresults )				
+			$context.putPageValue("submoduleresults", $!submoduleresults )	
+			
+					
 			$pages.include("/$applicationid/views/modules/$!subentitysearchtype/components/table/subentitytable.html?$!args",$context)
 		
 		
-		#set($addentitylink = "$!siteroot$applink/views/modules/${submodule.getId()}/edit/table/generictablesearch.html")
-		#set($addentitylink = "$addentitylink?submodulesearchtype=$subentitysearchtype&fieldexternalid=$fieldexternalid&fieldexternalvalue=$!fieldexternalvalue&parentviewid=$!viewid&parentviewpath=$!viewpath&parentid=$!id&parentsearchtype=$!parentsearchtype&rendertype=$!targetrendertype")
+			#set($addentitylink = "$!siteroot$applink/views/modules/${submodule.getId()}/edit/table/generictablesearch.html")
+			#set($addentitylink = "$addentitylink?submodulesearchtype=$subentitysearchtype&fieldexternalid=$fieldexternalid&fieldexternalvalue=$!fieldexternalvalue&parentviewid=$!viewid&parentviewpath=$!viewpath&parentid=$!id&parentsearchtype=$!parentsearchtype&rendertype=$!targetrendertype")
 		
-		#if($permissions.can($topmoduleid, "edit"))
-			#if($permissions.can($!submodule.getId() , "create"))
-			<div class="submodule-actions">
-				<a class="btn btn-sm btn-blue ajax  submoduleedit"  
-				href="$addentitylink" 
-				##data-targetdiv="$submodulepickerid"
-				data-targetdivinner="$tabid"
-				data-oemaxlevel="1"
-				data-parentviewid="$!viewid"
-				data-parentviewpath="$!viewpath"
-				data-parenttargetdiv="entity-wraper"
-				data-parentid="$!id"
-				data-hidefooter="true"
-				data-onbefore="switchsubmodulebox"
-				title="[[Add]] #text($viewdata)"><i class="fas fa-plus"></i> #text($viewdata)</a>
-			</div>
+			#if($permissions.can($topmoduleid, "edit"))
+				#if($permissions.can($!submodule.getId() , "create"))
+				<div class="submodule-actions">
+					<a class="btn btn-sm btn-blue ajax  submoduleedit"  
+					href="$addentitylink" 
+					##data-targetdiv="$submodulepickerid"
+					data-targetdivinner="$tabid"
+					data-oemaxlevel="1"
+					data-parentviewid="$!viewid"
+					data-parentviewpath="$!viewpath"
+					data-parenttargetdiv="entity-wraper"
+					data-parentid="$!id"
+					data-hidefooter="true"
+					data-onbefore="switchsubmodulebox"
+					title="[[Add]] #text($viewdata)"><i class="fas fa-plus"></i> #text($viewdata)</a>
+				</div>
+				#end
 			#end
 		#end
 	</div>
