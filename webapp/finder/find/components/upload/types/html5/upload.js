@@ -14,7 +14,6 @@ $(document).ready(function()
 		apphome =  siteroot + $("#application").data("apphome");
 	}
 	
-	var allfiles = new Array();
 	
 	lQuery('#createmediapanel').livequery(function(e){
 		//reset array
@@ -31,14 +30,14 @@ $(document).ready(function()
 	{
 		var inputfield = $(this);
 		inputfield.val('');
-		initUpload(inputfield);
+		inputfield.initUpload();
 	});
 	
 	lQuery(".upload_folder").livequery( function() 
 	{
 		var inputfield = $(this);
 		inputfield.val('');
-		initUpload(inputfield);
+		inputfield.initUpload();
 	});
 
 	jQuery(".upload_field").val('');
@@ -52,87 +51,7 @@ $(document).ready(function()
 		$(this).empty();
 	});	
 	
-	function filesPicked(event, files) 
-	{
-		var uploadformarea = $(this).closest(".uploadformarea");
 
-		//merge them together
-		for (var i = 0; i < files.length; i++) 
-	 	{
-	    	var file = files[i];
-	    	if( file.size > 0)
-		    {
-	    		allfiles.push(file);
-		    }
-	    }
-		
-	    files = allfiles;
-		var inputbox = uploadformarea.find(".upload_field")[0];
-		
-		var upload_field = uploadformarea.find(".upload_field");
-		upload_field.triggerHandler("html5_upload.setFiles",[allfiles]);
-		
-		//inputbox.count = allfiles.length;
-		
-	 	//$("#upload_field").setFiles( allfiles );
-	 	
-	 	//inline
-	 	var uploadformareainline = $(this).closest(".uploadformareainline");
-	 	uploadformareainline.find("#drop-area").hide();
-	 	uploadformareainline.find("#completed-uploads").show();
-	 	
-	 	
-	 	//Upload page
-	 	uploadformarea.find(".uploadinstructionsafter").hide();
-		var startb = uploadformarea.find(".startbutton");
-		//$(startb).text("Upload");
-		$(startb).prop('disabled', false);
-		uploadformarea.find(".uploadinstructionsafter").show();
-		uploadformarea.find(".showonselect").show();
-		
-		var regex = new RegExp("currentupload", 'g');  
-		 
-	    var uplist = uploadformarea.find(".up-files-list");
-	    
-	    $.each(uplist,function()
-		{
-			$(this).empty();
-		});
-	    
-	     //return confirm("You are trying to upload " + total + " files. Are you sure?");
-		 for (var i = 0; i < files.length; i++) 
-		 {
-		    var file = files[i];
-		    if( file.size > 0)
-		    {
-		    	if(i < 101){
-		    		var html = uploadformarea.find(".progress_report_template").html();
-	        	    
-	        	    html = html.replace(regex,i);
-	        	    uploadformarea.find(".up-files-list-pending").append(html);
-	        	    
-	        	    //TODO: set the name and size of each row
-	        	    var name = file.name;
-	        	    if(file.webkitRelativePath){
-	        	    	name = file.webkitRelativePath;
-	        	    }
-	        	    
-	    	    	uploadformarea.find(".progress_report_name" + i).text(name);
-	        	    var size = bytesToSize(file.size,2);
-	        	    uploadformarea.find(".progress_report_size" + i).text(size);
-		    	}
-		    }
-		    
-		 }
-		 //console.log("Picked " + files.length );
- 		if( upload_field.data("autostartupload") == true)
-		{
-			upload_field.triggerHandler("html5_upload.start");
-		}
-
-		
-	}
-	
 	
 	lQuery('.removefile').livequery('click',function(e){
 		e.preventDefault(); 
@@ -268,7 +187,173 @@ $(document).ready(function()
 		  allfiles.splice(index,1);
 	}
 	
-	initUpload = function(inputfield) {
+
+
+	lQuery(".viewassetsbtn").livequery("click", function(e) {
+		
+		var btn = jQuery(this);
+		var href = null;
+		if(btn.data("entityupload")) {
+			//display entity dialog
+			btn.addClass("emdialog");
+			btn.addClass("entity-dialog");
+			var entitytype = $("#entitypickerentities").data("selectedentity");
+			var entityid = $("#entitypickerentities").data("selectedentityid");
+			if (entitytype && entityid) {
+				href = apphome+"/views/modules/"+entitytype+"/components/gridsample/preview/entity.html?id="+entityid+"&searchtype="+entitytype;
+				btn.attr("href", href);
+				console.log(href);
+				emdialog(btn, e);
+				return;
+			}
+		}
+		
+		e.preventDefault();
+		
+	    var options = btn.data();
+		var collectionid = jQuery("#currentcollection").val();
+		var nodeid = $("#nodeid").val();
+	    
+	    var customviewupload = btn.data("customviewupload");
+
+	    if(customviewupload) {
+	    		href= customviewupload;
+	    		if (collectionid) {
+	    			if (href.indexOf("?") > -1) {
+	    				href = href + "&";
+	    			}
+	    			else {
+	    				href = href + "?";
+	    			}
+	    			href = href + "collectionid=" + collectionid;
+	    		}
+	    		if( nodeid)
+		    	{
+		    		href = href + "&nodeID=" + nodeid;
+		    	}
+	    		href = href + "&sortby=assetaddeddateDown"
+	    }
+	    else if(collectionid) {
+	    	href = apphome+"/views/modules/librarycollection/media/showcategory.html?collectionid="+collectionid+"&clearfilters=true&sortby=assetaddeddateDown";
+	    	if( nodeid)	{
+				 href = apphome+"/views/modules/asset/viewfiles/"+ nodeid +"/index.html?sortby=assetaddeddateDown";
+	    		
+	    	}
+	    	else {
+	    		var currentcollectionrootcategory = jQuery("#currentcollectionrootcategory").val();
+	    		if (currentcollectionrootcategory) {
+	    			href = href + "&nodeID=" + currentcollectionrootcategory;
+	    		}
+	    	}
+	    	options.oemaxlevel = btn.data("oemaxlevel");
+	    }
+	    else if( nodeid) {
+	         href = apphome+"/views/modules/asset/viewfiles/"+ nodeid +"/index.html?sortby=assetaddeddateDown";
+		     options.oemaxlevel = btn.data("oemaxlevel");	
+		}
+	    else  {
+	        href = apphome+"/views/modules/asset/index.html?sortby=assetaddeddateDown";
+	    	options.oemaxlevel = 2;	
+		}
+	    //console.log(href);
+	    //document.location.href = href;
+	    var targetdiv = btn.data("targetdivinner");
+
+		jQuery.ajax({
+
+			url: href, 
+			async: false, 
+			data: options, 
+			success: function (data) {
+				jQuery('#'+targetdiv).html(data);
+				 if (typeof global_updateurl !== "undefined" && global_updateurl == false) {
+	        			//globaly disabled updateurl
+	        		}
+	        		else {
+	        			//Update Address Bar
+     					history.pushState({}, null, href);
+     					window.scrollTo(0, 0);
+	        	}
+				jQuery(window).trigger("resize");
+			}
+		});
+	    
+	});
+	
+	
+	
+	//Detect Youtube Link
+	$("#uploaddescription").on("keyup", function() {
+		var input = $("#uploaddescription");
+		var inputtext = input.val();
+		var targetdiv = input.data("targetdiv");
+		var targeturl = apphome+"/collective/channel/addnewlink.html";
+		delay(function () {
+			var p = /(https:\/\/www\.(yotu\.be\/|youtube\.com)\/)(?:(?:.+\/)?(?:watch(?:\?v=|.+&v=))?(?:v=)?)([\w_-]{11})(&\.+)?/;
+		    if(inputtext.match(p)){
+				var videoURL = inputtext.match(p)[0];
+				var videoID = inputtext.match(p)[3];
+				var removelink = inputtext.replace(p, "");
+				input.val(removelink);
+				
+				$("#"+targetdiv).load(targeturl+'?videoID='+videoID);
+		    }            
+			else {
+			}
+        	            
+    	}, 500);
+	
+	});
+	
+	lQuery('.hideuploadarea').livequery('click',function(e){
+		e.preventDefault(); 
+		$(".globaluploadarea").toggle();
+		
+     });
+	
+	
+}); 
+	
+var delay = (function () {
+    var timer = 0;
+    return function (callback, ms) {
+        clearTimeout(timer);
+        timer = setTimeout(callback, ms);
+    };
+})();
+
+function bytesToSize(bytes, precision)
+{  
+    var kilobyte = 1024;
+    var megabyte = kilobyte * 1024;
+    var gigabyte = megabyte * 1024;
+    var terabyte = gigabyte * 1024;
+   
+    if ((bytes >= 0) && (bytes < kilobyte)) {
+        return bytes + ' B';
+ 
+    } else if ((bytes >= kilobyte) && (bytes < megabyte)) {
+        return (bytes / kilobyte).toFixed(precision) + ' KB';
+ 
+    } else if ((bytes >= megabyte) && (bytes < gigabyte)) {
+        return (bytes / megabyte).toFixed(precision) + ' MB';
+ 
+    } else if ((bytes >= gigabyte) && (bytes < terabyte)) {
+        return (bytes / gigabyte).toFixed(precision) + ' GB';
+ 
+    } else if (bytes >= terabyte) {
+        return (bytes / terabyte).toFixed(precision) + ' TB';
+ 
+    } else {
+        return bytes + ' B';
+    }
+}
+
+	var allfiles = new Array();
+
+
+	$.fn.initUpload = function() {
+		var inputfield = $(this);
 		var uploadformarea = inputfield.closest(".uploadformarea");
 		var autostart = false;
 		inputfield.html5_upload(
@@ -436,164 +521,84 @@ $(document).ready(function()
 		
 	}
 				
-	
+	function filesPicked(event, files) 
+	{
+		var uploadformarea = $(this).closest(".uploadformarea");
 
-	lQuery(".viewassetsbtn").livequery("click", function(e) {
+		//merge them together
+		for (var i = 0; i < files.length; i++) 
+	 	{
+	    	var file = files[i];
+	    	if( file.size > 0)
+		    {
+	    		allfiles.push(file);
+		    }
+	    }
 		
-		var btn = jQuery(this);
-		var href = null;
-		if(btn.data("entityupload")) {
-			//display entity dialog
-			btn.addClass("emdialog");
-			btn.addClass("entity-dialog");
-			var entitytype = $("#entitypickerentities").data("selectedentity");
-			var entityid = $("#entitypickerentities").data("selectedentityid");
-			if (entitytype && entityid) {
-				href = apphome+"/views/modules/"+entitytype+"/components/gridsample/preview/entity.html?id="+entityid+"&searchtype="+entitytype;
-				btn.attr("href", href);
-				console.log(href);
-				emdialog(btn, e);
-				return;
-			}
-		}
+	    files = allfiles;
+		var inputbox = uploadformarea.find(".upload_field")[0];
 		
-		e.preventDefault();
+		var upload_field = uploadformarea.find(".upload_field");
+		upload_field.triggerHandler("html5_upload.setFiles",[allfiles]);
 		
-	    var options = btn.data();
-		var collectionid = jQuery("#currentcollection").val();
-		var nodeid = $("#nodeid").val();
+		//inputbox.count = allfiles.length;
+		
+	 	//$("#upload_field").setFiles( allfiles );
+	 	
+	 	//inline
+	 	var uploadformareainline = $(this).closest(".uploadformareainline");
+	 	uploadformareainline.find("#drop-area").hide();
+	 	uploadformareainline.find("#completed-uploads").show();
+	 	
+	 	
+	 	//Upload page
+	 	uploadformarea.find(".uploadinstructionsafter").hide();
+		var startb = uploadformarea.find(".startbutton");
+		//$(startb).text("Upload");
+		$(startb).prop('disabled', false);
+		uploadformarea.find(".uploadinstructionsafter").show();
+		uploadformarea.find(".showonselect").show();
+		
+		var regex = new RegExp("currentupload", 'g');  
+		 
+	    var uplist = uploadformarea.find(".up-files-list");
 	    
-	    var customviewupload = btn.data("customviewupload");
-
-	    if(customviewupload) {
-	    		href= customviewupload;
-	    		if (collectionid) {
-	    			if (href.indexOf("?") > -1) {
-	    				href = href + "&";
-	    			}
-	    			else {
-	    				href = href + "?";
-	    			}
-	    			href = href + "collectionid=" + collectionid;
-	    		}
-	    		if( nodeid)
-		    	{
-		    		href = href + "&nodeID=" + nodeid;
-		    	}
-	    		href = href + "&sortby=assetaddeddateDown"
-	    }
-	    else if(collectionid) {
-	    	href = apphome+"/views/modules/librarycollection/media/showcategory.html?collectionid="+collectionid+"&clearfilters=true&sortby=assetaddeddateDown";
-	    	if( nodeid)	{
-				 href = apphome+"/views/modules/asset/viewfiles/"+ nodeid +"/index.html?sortby=assetaddeddateDown";
-	    		
-	    	}
-	    	else {
-	    		var currentcollectionrootcategory = jQuery("#currentcollectionrootcategory").val();
-	    		if (currentcollectionrootcategory) {
-	    			href = href + "&nodeID=" + currentcollectionrootcategory;
-	    		}
-	    	}
-	    	options.oemaxlevel = btn.data("oemaxlevel");
-	    }
-	    else if( nodeid) {
-	         href = apphome+"/views/modules/asset/viewfiles/"+ nodeid +"/index.html?sortby=assetaddeddateDown";
-		     options.oemaxlevel = btn.data("oemaxlevel");	
-		}
-	    else  {
-	        href = apphome+"/views/modules/asset/index.html?sortby=assetaddeddateDown";
-	    	options.oemaxlevel = 2;	
-		}
-	    //console.log(href);
-	    //document.location.href = href;
-	    var targetdiv = btn.data("targetdivinner");
-
-		jQuery.ajax({
-
-			url: href, 
-			async: false, 
-			data: options, 
-			success: function (data) {
-				jQuery('#'+targetdiv).html(data);
-				 if (typeof global_updateurl !== "undefined" && global_updateurl == false) {
-	        			//globaly disabled updateurl
-	        		}
-	        		else {
-	        			//Update Address Bar
-     					history.pushState({}, null, href);
-     					window.scrollTo(0, 0);
-	        	}
-				jQuery(window).trigger("resize");
-			}
+	    $.each(uplist,function()
+		{
+			$(this).empty();
 		});
 	    
-	});
-	
-	
-	
-	//Detect Youtube Link
-	$("#uploaddescription").on("keyup", function() {
-		var input = $("#uploaddescription");
-		var inputtext = input.val();
-		var targetdiv = input.data("targetdiv");
-		var targeturl = apphome+"/collective/channel/addnewlink.html";
-		delay(function () {
-			var p = /(https:\/\/www\.(yotu\.be\/|youtube\.com)\/)(?:(?:.+\/)?(?:watch(?:\?v=|.+&v=))?(?:v=)?)([\w_-]{11})(&\.+)?/;
-		    if(inputtext.match(p)){
-				var videoURL = inputtext.match(p)[0];
-				var videoID = inputtext.match(p)[3];
-				var removelink = inputtext.replace(p, "");
-				input.val(removelink);
-				
-				$("#"+targetdiv).load(targeturl+'?videoID='+videoID);
-		    }            
-			else {
-			}
-        	            
-    	}, 500);
-	
-	});
-	
-	lQuery('.hideuploadarea').livequery('click',function(e){
-		e.preventDefault(); 
-		$(".globaluploadarea").toggle();
-		
-     });
-	
-	
-}); 
-	
-var delay = (function () {
-    var timer = 0;
-    return function (callback, ms) {
-        clearTimeout(timer);
-        timer = setTimeout(callback, ms);
-    };
-})();
+	     //return confirm("You are trying to upload " + total + " files. Are you sure?");
+		 for (var i = 0; i < files.length; i++) 
+		 {
+		    var file = files[i];
+		    if( file.size > 0)
+		    {
+		    	if(i < 101){
+		    		var html = uploadformarea.find(".progress_report_template").html();
+	        	    
+	        	    html = html.replace(regex,i);
+	        	    uploadformarea.find(".up-files-list-pending").append(html);
+	        	    
+	        	    //TODO: set the name and size of each row
+	        	    var name = file.name;
+	        	    if(file.webkitRelativePath){
+	        	    	name = file.webkitRelativePath;
+	        	    }
+	        	    
+	    	    	uploadformarea.find(".progress_report_name" + i).text(name);
+	        	    var size = bytesToSize(file.size,2);
+	        	    uploadformarea.find(".progress_report_size" + i).text(size);
+		    	}
+		    }
+		    
+		 }
+		 //console.log("Picked " + files.length );
+ 		if( upload_field.data("autostartupload") == true)
+		{
+			upload_field.triggerHandler("html5_upload.start");
+		}
 
-function bytesToSize(bytes, precision)
-{  
-    var kilobyte = 1024;
-    var megabyte = kilobyte * 1024;
-    var gigabyte = megabyte * 1024;
-    var terabyte = gigabyte * 1024;
-   
-    if ((bytes >= 0) && (bytes < kilobyte)) {
-        return bytes + ' B';
- 
-    } else if ((bytes >= kilobyte) && (bytes < megabyte)) {
-        return (bytes / kilobyte).toFixed(precision) + ' KB';
- 
-    } else if ((bytes >= megabyte) && (bytes < gigabyte)) {
-        return (bytes / megabyte).toFixed(precision) + ' MB';
- 
-    } else if ((bytes >= gigabyte) && (bytes < terabyte)) {
-        return (bytes / gigabyte).toFixed(precision) + ' GB';
- 
-    } else if (bytes >= terabyte) {
-        return (bytes / terabyte).toFixed(precision) + ' TB';
- 
-    } else {
-        return bytes + ' B';
-    }
-}
+		
+	}
+	
