@@ -1,16 +1,128 @@
+<div id="asset-editor-container">
+
+<div class="assetpanel-editorinner">
+
+<div style="padding:20px;">
+
 #if( $asset.assettitle )
-  #set($title =  $asset.assettitle) 
-#else 
-  #set($title = $asset.name) 
+     	#set($title =  $asset.assettitle) 
+   #else 
+     	#set($title = $asset.name) 
+   #end
+
+<div class="row">
+<div class="col-md-3">
+##<h2>[[Asset Downloads]]</h2>
+<div class="clearfix"></div>
+
+	##set($mediaurl = "$siteroot/$mediadbappid/services/module/asset/downloads/preset/$asset.sourcepath/$presetdata.generatedoutputfile")	  
+	##set($previewurl="$siteroot$apphome/components/asseteditor/preview.html?previewimg=$mediaurl")
+	
+	##set($$assetthpath = $mediaarchive.asLinkToPreview($asset, null, "image200x200.jpg", true))
+	##set($imgurl="$mediaurl?_=$mathutil.getRandomValue(9999)")
+	
+	$context.putPageValue("asset", $asset)
+	$context.putPageValue("viewer", "media_download_")
+	
+	#set($rendertype = $mediaarchive.getMediaRenderType($asset.fileformat))
+	 	#if(!$rendertype || $type =="rendertype")
+		   	#set( $rendertype = "mime" )
+		#elseif( $rendertype =="video")
+		   	#set( $rendertype = "videothumbnail" )
+		#end
+		$context.putPageValue("thumbsize", "small" )
+		$context.putPageValue("urlparams", "?cache=false&_=$mathutil.getRandomValue(99999)" )
+		
+		
+	<div class="text-center conversionsmainpreview conversionsmainpreview-$!rendertype">
+	##<img src="$assetthpath?cache=false" alt="$title" style="max-width: 200px; max-height: 200px" />
+		#if($rendertype == "audio")
+			$pages.include("$componenthome/results/thumbnails/${rendertype}.html", $context)
+
+			<div class="conversionassetfilename">#text($title)</div>
+		#else
+	    	$pages.include("$componenthome/results/thumbnails/${rendertype}.html", $context)
+	    #end
+	</div>
+
+
+<div style="margin:10px 0; text-align: center;">
+	#if($candownload)	
+		#if( $desktop )
+	       	<a href="#" class="emdesktopdownload btn btn-dark" data-assetid="$asset.id" title="[[Download]] #text($!title)">
+	       	<i class="fas fa-download"> </i> [[Download Original]]
+	       	</a>
+	    #else
+			#set($dlink = $mediaarchive.asLinkToOriginal($asset))
+			#ifnotnull($dlink)
+				#set($dlink = "$siteroot/$mediadbappid/services/module/asset/downloads/originals/$dlink?assetid=$!asset.getId()")
+				#if($collectionid)
+					#set($dlink = "$dlink&collectionid=$!{collectionid}")
+				#end
+		       	<a href="$!dlink" class="btn  btn-dark" data-assetid="$asset.id" title="[[Download]] $!title">
+		       	<i class="fas fa-download"></i> [[Download Original]]
+		       	</a>
+	       	#end
+	   	#end
+	#end   	
+   	#if($caneditasset)
+   	<div style="padding:10px 0;"><a  href="$applink/views/modules/asset/editor/conversions/upload.html"
+   	 	class="emdialog btn btn-dark"
+   		data-width="600" data-height="300" data-hidefooter="true" 
+   		data-assetid="$asset.id"
+   		data-presetid="0"
+   		title="[[Replace]] #text($!title)">
+       	<i class="fas fa-upload"> </i> [[Replace Original]]
+       	</a>
+       	</div>
+	#end
+</div>
+
+
+
+	
+
+#if($caneditasset && $rendertype=="image")
+	<div style="padding:10px 0 0; text-align: center;">
+	<a class="btn btn-sm btn-secondary ajax" data-targetdivinner="asset-editor-container" data-oemaxlevel="1" 
+	   href="$siteroot$apphome/views/modules/asset/editor/conversions/rotate.html?rotate=90&assetid=$asset.id">[[Rotate +90]]</a>
+	</div>
+##	<div style="padding-top:5px">
+##	<form id="uploadform" class="ajaxform" data-targetdiv="asset-editor-container" name="wizard" method="post" enctype="multipart/form-data" action="$siteroot${apphome}/views/modules/asset/editor/conversions/customthumb.html">
+##		<span class="btn btn-sm btn-secondary btn-default btn-file">
+##		    [[Replace Image]] <input type="file" name="file.0" id="file0-file" onchange='$("#file0-file-info").html($(this).val());'>
+##		</span>
+##		<span id="file0-file-info" style="font-size:90%"></span>
+		##[[Replace Image]]:<input type="file" size="50" name="file.0">
+##		<input type="hidden" name="unzip" value="false" />
+##		<input type="hidden" name="sourcepath" value="$!context.getRequestParameter('assetid')" />
+##		<input type="hidden" name="assetid" value="$!context.getRequestParameter('assetid')" />
+##		<input type="hidden" name="presetid" value="$!context.getRequestParameter('presetid')" />
+##		<input type="submit" id="finishbutton" value="[[Upload]]" class="btn btn-sm btn-primary" >
+##	</form>
+##	</div>
 #end
 
+
+</div>
+<div class="col-md-9">
+
+
+###set( $cdnprefix = $mediaarchive.getCatalogSettingValue("cdn_prefix") )
 #set($cdnprefix = $context.siteRoot )
+
 #set( $type = $mediaarchive.getMediaRenderType($asset.fileformat))
 #set($newpreset = $context.findValue("newpreset"))
-$context.putPageValue("asset", $asset)
+
+$context.putPageValue("asset",$asset)
+
+
 #set($mediadbappid=$mediaarchive.getMediaDbId())
 #set($type =$mediaarchive.getMediaRenderType($asset.fileformat))
 #set($results = $conversionUtil.getActivePresetList($catalogid,$type) )
+
+
+
 $context.putPageValue("results", $results)
 
 $context.putPageValue("viewer", "media_download_")
@@ -99,3 +211,4 @@ $context.putPageValue("urlparams", "?cache=false&_=$mathutil.getRandomValue(9999
     #end
   </div>
 </div>
+
