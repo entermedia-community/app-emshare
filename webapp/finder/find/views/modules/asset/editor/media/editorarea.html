@@ -1,0 +1,89 @@
+
+#set($catalogid = $context.getRequestParameter("catalogid"))
+#set($assetid = $context.getRequestParameter("assetid"))
+#set($assetsource = $context.getRequestParameter("assetsource")) 
+#set($resultid = $context.getRequestParameter("resultid")) 
+#set($resultoutput = $context.getRequestParameter("resultoutput")) 
+#set($expfilename = $context.getRequestParameter("expfilename"))  
+#set($url = "$siteroot/$mediadbappid/services/module/asset/downloads/generated/$assetsource/$resultoutput/$expfilename")
+
+<div class="d-flex flex-column h-100 m-1">
+    <div class="d-flex align-items-center justify-content-start"> 
+    <!-- <h2>Customized Image Copy</h2> -->
+    <!-- <input type="text" value="$expfilename" /> -->
+    </div>
+    <div class="editorarea">
+        <div class="d-flex align-items-center justify-content-between top-toolbar">
+            <div class="d-flex align-items-center"> 
+                <strong class="d-inline-block mx-2">Save as:</strong>
+                <span class="d-inline-block mx-2"> $!url_util.getPathUtilities().extractPageName($expfilename)</span>
+                <select>
+                    <option selected>select format</option>
+                    <option>png</option>
+                    <option>jpg</option>
+                    <option>gif</option>
+                </select>
+                <select class="mr-2">
+                    <option selected>select a size</option>
+                    <option>original size</option>
+                    <option>1500x1500</option>
+                    <option>550x550</option>
+                </select>
+                <a href="#">
+                    <i class="bi bi-download"></i> 
+                    <label>download</label>
+
+                </a>
+                <span class="d-inline-block mx-2">or</span>
+                <a href="#">
+                    <i class="bi bi-floppy"></i>
+                    <label>save a copy</label>
+                </a> 
+                <!-- <a href="#">
+                    <i class="bi bi-share"></i>
+                </a> -->
+            </div>
+            <div class="d-flex align-items-center">
+                <!-- <a href="#">
+                    <i class="bi bi-arrow-clockwise"></i>
+                </a>
+                <a href="#">
+                    <i class="bi bi-arrow-counterclockwise"></i>
+                </a> -->
+            </div>
+        </div>
+        <div class="d-flex editor"> 
+            <div id="canvas-container">
+                <canvas id="canvas"></canvas>
+            </div>
+            <div class="d-flex flex-column side-toolbar">
+            <!-- <a href="#">
+                <i class="bi bi-aspect-ratio"></i>
+                <label>resize</label>
+            </a> -->
+            <a href="#">
+                <i class="bi bi-crop"></i>
+                <label>crop</label>
+            </a>
+            <a href="#" data-action="rotate">
+                <i class="bi bi-arrow-repeat"></i>
+                <label>rotate</label>
+            </a>
+            <a href="#">
+                <i class="bi bi-fonts"></i>
+                <label>text</label>
+            </a>
+            <a href="#">
+                <i class="bi bi-images"></i>
+                <label>image</label>
+            </a>
+            <!-- <a href="#">
+                <i class="bi bi-person-x"></i>
+                <label>remove</label>
+            </a> -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<div data-src="#urlescape($url)" id="editingCandidate"></div>
