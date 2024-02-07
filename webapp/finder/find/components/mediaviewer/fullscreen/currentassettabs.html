@@ -81,15 +81,7 @@
 					<i class="bi bi-image mr-1"></i> [[Image Editor]]  
 					</a>
 			   	</li>
-			 #else
-			 	#if($candownload && $asset.getFileFormat()  != "pdf")
-			 		<li class="footermenu bottomtab" >
-				    <a class="expandmenu" data-assetid="${asset.id}" href="$siteroot/$mediadbappid/services/module/asset/downloads/originals/$originalpath" >
-			 		<i class="bi bi-cloud-arrow-down mr-1"></i> [[Download Original]]
-			 		</a>
-			 		</li>
-			 		
-			 	#end
+			 	
 			 #end
 			 
 			           
@@ -161,7 +153,7 @@
 						
 			#if(!$ismulti && ($rendertype == "video"))
 		   		#if($canviewtimeline)
-		   			<li class="footermenu bottomtab #if($opentab == "viewtimeline")tabselected#end"">
+		   			<li class='footermenu bottomtab #if($opentab == "viewtimeline")tabselected#end'>
 				   	<a class="expandmenu assettab" 
 							data-link="$siteroot$componenthome/mediaviewer/fullscreen/tabs/viewactions.html?action=timeline" title="[[Timeline]]"
 							data-assettab="viewtimeline"
@@ -174,7 +166,7 @@
 			
 			#if(!$ismulti && ($rendertype == "video" || $rendertype == "audio"))
 			   		#if($canviewclosedcaptions)
-			   			<li class="footermenu bottomtab #if($opentab == "viewclosedcaptions")tabselected#end"">
+			   			<li class='footermenu bottomtab #if($opentab == "viewclosedcaptions")tabselected#end'>
 					   	<a class="expandmenu assettab" 
 								data-link="$siteroot$componenthome/mediaviewer/fullscreen/tabs/viewactions.html?action=closedcaptions" title="[[Closed Captions]]"
 								data-assettab="viewclosedcaptions"
@@ -187,7 +179,7 @@
 			 
 			 
 			 #if (!$previewonly && ($canviewcomments || $canassetannotate))
-				 <li class="footermenu hidemulti bottomtab #if($opentab == "viewcollaborate")tabselected#end">
+				 <li class='footermenu hidemulti bottomtab #if($opentab == "viewcollaborate")tabselected#end'>
 					<a class="expandmenu assettab" 
 						data-link="$siteroot$componenthome/mediaviewer/fullscreen/tabs/viewcollaborate.html" title="[[Approvals]]"
 						data-assettab="viewcollaborate" >
@@ -334,22 +326,39 @@
 		    #end
 		    #end
 		    #if(!$ismulti )
-			<li class="footermenu bottomtab">
-				<form name="lockform" class="autosubmit ajaxform" action="$siteroot$componenthome/mediaviewer/player/summary-mini.html?oemaxlevel=1" data-targetdiv="summary-mini">
-					<input type="hidden" name="assetid" value="${asset.id}"/>
-					<div class="assetlocked">
-						<input id="assetlocked" class="togglelock form-check-input" data-uncheckedlabel="[[Lock Asset]]" data-checkedlabel="[[Asset locked by]]" data-user="$user" type="checkbox" #if($asset.isLocked()) checked #end /> 
-						<label for="assetlocked" class="form-check-label-left m-0">
-							#if(!$asset.isLocked())
-								[[Lock]]
-							#else
-								[[Asset locked by]] <strong>$asset.getLockOwner()</strong>
-							#end
-						</label>
-					</div> 
-				</form>
-			</li>
+				<li class="footermenu bottomtab">
+					<form name="lockform" class="autosubmit ajaxform" action="$siteroot$componenthome/mediaviewer/player/summary-mini.html?oemaxlevel=1" data-targetdiv="summary-mini">
+						<input type="hidden" name="assetid" value="${asset.id}"/>
+						<div class="assetlocked">
+							<input id="assetlocked" class="togglelock form-check-input" data-uncheckedlabel="[[Lock Asset]]" data-checkedlabel="[[Asset locked by]]" data-user="$user" type="checkbox" #if($asset.isLocked()) checked #end /> 
+							<label for="assetlocked" class="form-check-label-left m-0">
+								#if(!$asset.isLocked())
+									[[Lock]]
+								#else
+									[[Asset locked by]] <strong>$asset.getLockOwner()</strong>
+								#end
+							</label>
+						</div> 
+					</form>
+				</li>
 			#end
+			
+			#if($candownload && $asset.getFileFormat()  != "pdf")
+			 		<li class="footermenu bottomtab" >
+						 #set($dlink =  "$applink/views/modules/asset/activity/downloadassets.html") 
+					    <a href="$dlink"
+					    	class="emdialog expandmenu" 
+					    	data-hidefooter="true" 
+					    	data-dialogid="donwloadasset" 
+					    	data-assetid="${asset.id}"
+					    	data-hitssessionid="$!hitssessionid"  >
+				 		<i class="bi bi-cloud-arrow-down mr-1"></i> [[Download Original]]
+				 		</a>
+			 		</li>
+			 		
+			 	#end
+			
+			
 		</ul>
 		<ul class="footermenu-assetnav">
 		<li class="footermenu">
