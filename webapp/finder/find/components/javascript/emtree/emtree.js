@@ -27,7 +27,9 @@ $(document).ready(function () {
           "&nodeID=" +
           nodeid +
           "&depth=" +
-          depth,
+          depth+
+          "&canupload=" +
+          tree.data("canupload"),
         function () {
           $(window).trigger("resize");
         }
@@ -48,7 +50,7 @@ $(document).ready(function () {
       $("ul li div", tree).removeClass("selected cat-current");
       $("div:first", node).addClass("cat-current");
       var nodeid = node.data("nodeid");
-
+	  tree.data("currentnodeid", nodeid);
       var prefix = tree.data("urlprefix");
       var postfix = tree.data("urlpostfix");
       var targetdiv = tree.data("targetdiv");
@@ -72,6 +74,8 @@ $(document).ready(function () {
         }
         gotopage(tree, node, maxlevel, prefix, options);
       }
+      
+      
       var event = $.Event("emtreeselect");
       event.tree = tree;
       event.nodeid = nodeid;
@@ -85,7 +89,7 @@ $(document).ready(function () {
 
     var position =
       scrollTo.offset().top - tree.offset().top + tree.scrollTop() - 100;
-    console.log(position);
+    //console.log(position);
     tree.scrollTop(position);
   });
 
@@ -192,10 +196,6 @@ $(document).ready(function () {
             history.pushState($("#application").html(), null, reloadurl);
           }
         }
-        var setpagetitle = data.data("setpagetitle");
-        if (setpagetitle) {
-          document.title = setpagetitle;
-        }
 
         $(window).trigger("resize");
       })
@@ -204,32 +204,6 @@ $(document).ready(function () {
       });
   };
 
-  /*	
-	$(".emtree-widget .delete").livequery('click', function(event) {
-			event.stopPropagation();
-
-			var id = $(this).data('parent');
-			
-			var agree=confirm("Are you sure you want to delete?");
-			if (agree)
-			{
-				var tree = $(this).closest(".emtree");
-				var home = tree.data("home");
-
-				$.get(home + "/components/emtree/deletecategory.html", {
-					categoryid: id,
-					'treename': tree.data("treename"),
-					} ,function () {
-						tree.find("#" + id + "_row").hide( 'fast', function(){
-							repaintEmTree(tree); 
-						} );
-						
-					});
-			} else {
-				return false;
-			}
-	} );
-*/
   //need to init this with the tree
   lQuery("div#treeholder").livequery(function () {
     var treeholder = $(this);
@@ -283,10 +257,13 @@ $(document).ready(function () {
       } else {
         node = node.parent(".noderow");
         nodeid = node.data("nodeid");
-        //console.log("Dont want to save",node);
         if (nodeid != undefined) {
           link = link + "&parentNodeID=" + nodeid;
         }
+        var currentnodeid = tree.data("currentnodeid");
+        if(currentnodeid) {
+			link = link + "&currentnodeID=" + currentnodeid;
+		}
       }
       //tree.closest("#treeholder").load(link, {edittext: value}, function() {
       var options = tree.data();
@@ -364,7 +341,8 @@ $(document).ready(function () {
       } else {
         var url = tree.data("home") + "/views/modules/asset/add/start.html";
         var maxlevel = 1;
-        options["oemaxlevel"] = $(this).data("oemaxlevel");
+        //options["oemaxlevel"] = $(this).data("oemaxlevel");
+        options["oemaxlevel"] = tree.data("uploadmaxlevel");
         options["sidebarcomponent"] = "categories";
         gotopage(tree, node, maxlevel, url, options);
       }
@@ -429,12 +407,14 @@ $(document).ready(function () {
       "&depth=" +
       node.data("depth");
     $.get(link, function (data) {
-      node.append(data);
-      var theinput = node.find("input");
-      theinput.focus({ preventScroll: false });
-      //theinput.select();
-      theinput.focus();
-      $(document).trigger("domchanged");
+	      node.append(data);
+	      var theinput = $("#treeaddnodeinput");
+	      if(theinput.length) {
+		      theinput.focus({ preventScroll: false });
+		      //theinput.select();
+		      theinput.focus();
+	      }
+	      $(document).trigger("domchanged");
     });
     return false;
   });
@@ -550,7 +530,7 @@ $(document).ready(function () {
     noderow.find("> .categorydroparea").addClass("selected"); //Keep it highlighted
     var emtreediv = noderow.closest(".emtree");
 
-    console.log(noderow);
+    //console.log(noderow);
 
     var treename = emtreediv.data("treename");
     var contextMenu = $("#" + treename + "contextMenu");
@@ -631,7 +611,6 @@ repaintEmTree = function (tree) {
   var options = tree.data();
   options["treename"] = tree.data("treename"); //why?
   $.get(link, options, function (data) {
-    console.log("tree repainted");
     tree.closest("#treeholder").replaceWith(data);
     $(document).trigger("domchanged");
   });

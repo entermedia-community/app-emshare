@@ -22,6 +22,9 @@
 #end
 
 #ifnull($canupload)
+	#set( $canupload = $context.getRequestParameter("canupload" ) )
+#end
+#ifnull($canupload)
 	#if($canviewupload || $canviewcategoryupload)
 			#set($canupload = true)
 	#end
@@ -58,6 +61,9 @@
 			 > 
 			#set( $checked = $render.isIdSelected($cat.id) )
 			#set ( $padding = (8 * ($depth - 1)) )
+			#if($padding == 0)
+				#set($padding  = 4)
+			#end
 			<div class="treerow categorydroparea #if( $isselected ) cat-current #if( $scrolltocat ) scrolltocat #end #end  #if( $checked) idchecked #end #if($expanded) expanded #end" 
 			     style="padding-left: $!{padding}px" title="[[Category id]]: $cat.id">
 				#if($haschildren)
@@ -85,7 +91,7 @@
 				    <a href="#" class="cat-menu cat-options" title="$cat.name"><i class="fas fa-ellipsis-v"></i></a>
                 #end
                 
-				#if( $canupload )
+				#if( $canupload == "true")
                     <a href="#" class="cat-options cat-uploadfromtree" data-oemaxlevel="$!uploadmaxlevel" title="[[Upload]]"><i class="fas fa-upload"></i></a>
                 #end
                 
@@ -157,6 +163,7 @@
 			data-treename="$!treename"
 			data-$!{treename}root="$rootcategory.getId()" 
 			data-rootnodeid="$rootcategory.getId()"
+			
 			data-editable="$!editable" 
 			data-urlprefix="$!prefix" 
 			data-urlpostfix="$!postfix" 
@@ -185,6 +192,8 @@
 			#if( $oemaxlevel )
 				data-oemaxlevel="$oemaxlevel"
 			#end	
+			
+			
 			#if( $uploadmaxlevel )
 				data-uploadmaxlevel="$uploadmaxlevel"
 			#end
@@ -203,6 +212,8 @@
 			#if( $canupload )
 				data-canupload="true"
 				data-customurladdmedia="$!customurladdmedia"
+			#else
+				data-canupload="false"
 			#end
 			>
 				<ul  class="open" >
