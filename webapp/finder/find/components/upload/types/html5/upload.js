@@ -3,6 +3,8 @@ var home = null;
 var currentupload = 0;
 var haderror = false;
 var uploadid;
+
+var allfiles = new Array();
 	
 // wait for the DOM to be loaded 
 $(document).ready(function() 
@@ -42,7 +44,7 @@ $(document).ready(function()
 
 	jQuery(".upload_field").val('');
 
-	var allfiles = new Array();
+	
 	
 	var uplist = $(".up-files-list");
 	
@@ -349,7 +351,7 @@ function bytesToSize(bytes, precision)
     }
 }
 
-	var allfiles = new Array();
+	
 
 
 	$.fn.initUpload = function() {
