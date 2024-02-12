@@ -1,5 +1,5 @@
 <div class="sidebarorders">
-	$orders.setHitsPerPage(20)
+	$orders.setHitsPerPage(10)
 #foreach($order in $orders.getPageOfHits())
 	<div class="sidebarorder  py-2 px-2">
 			
@@ -13,12 +13,16 @@
 				
 				#set($status = $mediaarchive.getCachedData("orderstatus", $order.orderstatus ))
 				#text($status)
-				
+				#if($order.itemsuccesscount!="0")
 				$order.itemsuccesscount [[of]] $order.itemcount
+				#else
+				$order.itemcount
+				#end
 				</div>
 				<div class="">
 					<a href="$apphome/views/modules/asset/activity/download/listitems.html?orderid=${order.id}" 
 					class="emdialog ml-2"
+					data-hidefooter="true"
 					title="[[Download]]"><i class="bi bi-window"></i></a>
 				</div>
 			</div>
