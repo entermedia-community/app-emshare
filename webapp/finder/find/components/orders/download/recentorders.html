@@ -1,4 +1,5 @@
 <div class="sidebarorders">
+	$orders.setHitsPerPage(20)
 #foreach($order in $orders.getPageOfHits())
 	<div class="sidebarorder d-flex align-items-center justify-content-between mx-1">
 			<div>$!context.getDateTime($order.date)</div>
@@ -13,7 +14,9 @@
 				#set($status = $mediaarchive.getCachedData("orderstatus", $order.orderstatus ))
 				#text($status)
 				
-				<a href="$apphome/views/modules/asset/activity/download/listitems.html?orderid=${order.id}" class="emdialog ml-2"><i class="bi bi-window"></i></a>
+				<a href="$apphome/views/modules/asset/activity/download/listitems.html?orderid=${order.id}" 
+				class="emdialog ml-2"
+				title="[[Download]]"><i class="bi bi-window"></i></a>
 			</div>
 	</div>
 #end
