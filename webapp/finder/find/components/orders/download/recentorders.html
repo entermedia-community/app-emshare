@@ -1,10 +1,10 @@
 <div class="sidebarorders">
 	$orders.setHitsPerPage(20)
 #foreach($order in $orders.getPageOfHits())
-	<div class="sidebarorder d-flex align-items-center justify-content-between mx-1">
-			<div>$!context.getDateTime($order.date)</div>
-			<div class="">
-				
+	<div class="sidebarorder  py-2 px-2">
+			
+			<div class="d-flex justify-content-between mb-2">
+				<div class="">
 				#if($order.orderstatus =="complete" )
 				<i class="fas fa-check-circle"></i> 
 				#elseif($order.orderstatus=="processing")
@@ -14,10 +14,18 @@
 				#set($status = $mediaarchive.getCachedData("orderstatus", $order.orderstatus ))
 				#text($status)
 				
-				<a href="$apphome/views/modules/asset/activity/download/listitems.html?orderid=${order.id}" 
-				class="emdialog ml-2"
-				title="[[Download]]"><i class="bi bi-window"></i></a>
+				$order.itemsuccesscount [[of]] $order.itemcount
+				</div>
+				<div class="">
+					<a href="$apphome/views/modules/asset/activity/download/listitems.html?orderid=${order.id}" 
+					class="emdialog ml-2"
+					title="[[Download]]"><i class="bi bi-window"></i></a>
+				</div>
+			</div>
+			<div class="d-flex justify-content-end sidebarorder-orderdate">
+				<div>$!context.getDateTime($order.date)</div>
 			</div>
 	</div>
+	
 #end
 </div>
