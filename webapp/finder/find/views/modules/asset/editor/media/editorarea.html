@@ -1,20 +1,19 @@
-
 #set($catalogid = $context.getRequestParameter("catalogid"))
 #set($assetid = $context.getRequestParameter("assetid"))
-#set($assetsource = $context.getRequestParameter("assetsource")) 
-#set($resultid = $context.getRequestParameter("resultid")) 
-#set($resultoutput = $context.getRequestParameter("resultoutput")) 
-#set($expfilename = $context.getRequestParameter("expfilename"))  
+#set($assetsource = $context.getRequestParameter("assetsource"))
+#set($resultid = $context.getRequestParameter("resultid"))
+#set($resultoutput = $context.getRequestParameter("resultoutput"))
+#set($expfilename = $context.getRequestParameter("expfilename"))
 #set($url = "$siteroot/$mediadbappid/services/module/asset/downloads/generated/$assetsource/$resultoutput/$expfilename")
 
-<div class="d-flex flex-column h-100 m-1">
-    <div class="d-flex align-items-center justify-content-start"> 
-    <!-- <h2>Customized Image Copy</h2> -->
-    <!-- <input type="text" value="$expfilename" /> -->
+<div class="d-flex flex-column h-100">
+    <div class="d-flex align-items-center justify-content-start">
+        <!-- <h2>Customized Image Copy</h2> -->
+        <!-- <input type="text" value="$expfilename" /> -->
     </div>
     <div class="editorarea">
         <div class="d-flex align-items-center justify-content-between top-toolbar">
-            <div class="d-flex align-items-center"> 
+            <div class="d-flex align-items-center">
                 <strong class="d-inline-block mx-2">Save as:</strong>
                 <span class="d-inline-block mx-2"> $!url_util.getPathUtilities().extractPageName($expfilename)</span>
                 <select>
@@ -30,7 +29,7 @@
                     <option>550x550</option>
                 </select>
                 <a href="#">
-                    <i class="bi bi-download"></i> 
+                    <i class="bi bi-download"></i>
                     <label>download</label>
 
                 </a>
@@ -38,7 +37,7 @@
                 <a href="#">
                     <i class="bi bi-floppy"></i>
                     <label>save a copy</label>
-                </a> 
+                </a>
                 <!-- <a href="#">
                     <i class="bi bi-share"></i>
                 </a> -->
@@ -52,32 +51,32 @@
                 </a> -->
             </div>
         </div>
-        <div class="d-flex editor"> 
+        <div class="d-flex editor">
             <div id="canvas-container">
                 <canvas id="canvas"></canvas>
             </div>
             <div class="d-flex flex-column side-toolbar">
-            <!-- <a href="#">
-                <i class="bi bi-aspect-ratio"></i>
-                <label>resize</label>
-            </a> -->
-            <a href="#">
-                <i class="bi bi-crop"></i>
-                <label>crop</label>
-            </a>
-            <a href="#" data-action="rotate">
-                <i class="bi bi-arrow-repeat"></i>
-                <label>rotate</label>
-            </a>
-            <a href="#">
-                <i class="bi bi-fonts"></i>
-                <label>text</label>
-            </a>
-            <a href="#">
-                <i class="bi bi-images"></i>
-                <label>image</label>
-            </a>
-            <!-- <a href="#">
+                <a href="#" data-action="filter">
+                    <i class="bi bi-transparency"></i>
+                    <label>filters</label>
+                </a>
+                <a href="#" data-action="crop">
+                    <i class="bi bi-crop"></i>
+                    <label>crop</label>
+                </a>
+                <a href="#" data-action="rotate">
+                    <i class="bi bi-arrow-repeat"></i>
+                    <label>rotate</label>
+                </a>
+                <a href="#" data-action="text">
+                    <i class="bi bi-fonts"></i>
+                    <label>text</label>
+                </a>
+                <a href="#" data-action="image">
+                    <i class="bi bi-images"></i>
+                    <label>image</label>
+                </a>
+                <!-- <a href="#">
                 <i class="bi bi-person-x"></i>
                 <label>remove</label>
             </a> -->
@@ -86,4 +85,171 @@
     </div>
 </div>
 
-<div data-src="#urlescape($url)" id="editingCandidate"></div>
+<img style="display: none;" src="#urlescape($url)" id="editingCandidate" />
+<div class="text-editor panel"> 
+    <div class="x-close text-white ml-auto pt-1">
+        <i class="bi bi-x"></i>
+    </div>
+    <div class="w-100">
+        <label for="textField">Text</label>
+        <textarea rows="3" type="text" id="textField" placeholder="Start typing..." ></textarea>
+    </div>
+
+    <label for="font-family" class="mt-1">Font Family</label>
+    <select id="font-family">
+        <option value="Roboto">Roboto</option>
+        <option value="Ubuntu">Ubuntu</option>
+        <option value="Mali">Mali</option>
+    </select>
+
+    <label for="font-weight" class="mt-1">Font Weight</label>
+    <select id="font-weight">
+        <option value='{"weight":300,"style":"normal"}'>Lite</option>
+        <option value='{"weight":300,"style":"italic"}'>Lite Italic</option>
+        <option value='{"weight":400,"style":"normal"}' selected>Regular</option>
+        <option value='{"weight":400,"style":"italic"}'>Regular Italic</option>
+        <option value='{"weight":700,"style":"normal"}'>Bold</option>
+        <option value='{"weight":700,"style":"italic"}'>Bold Italic</option>
+    </select>
+
+    <div class="d-flex align-items-center mt-2 mb-1">
+        <label for="font-color" class="mb-0 mr-2">Color</label>
+        <input type="text" id="font-color" value="#ffffff">
+    </div>
+    <div class="d-flex align-items-center">
+        <label for="font-color" class="mb-0 mr-2">Align</label>
+        <button data-action="left" class="text-align-btn"><i class="bi bi-text-left"></i></button>
+        <button data-action="center" class="text-align-btn"><i class="bi bi-text-center"></i></button>
+        <button data-action="right" class="text-align-btn"><i class="bi bi-text-right"></i></button>
+        <button data-action="justify" class="text-align-btn"><i class="bi bi-justify"></i></button>
+    </div>
+</div>
+<div class="image-editor panel">
+    <div class="x-close text-white ml-auto pt-1">
+        <i class="bi bi-x"></i>
+    </div>
+    <label for="imageField" class="mt-1">
+        <input type="file" id="imageField" accept="image/*" />
+        <img src="#" id="imagePreview" style="display: none;" />
+    </label>
+    <div class="align-items-center justify-content-between" style="display: none;">
+        <button id="insertImg">Insert</button>
+        <button id="removeImg">
+            <i class="bi bi-trash"></i>
+        </button>
+    </div>
+</div>
+<div class="filter-editor panel">
+    <div class="x-close text-white ml-auto pt-1">
+        <i class="bi bi-x"></i>
+    </div>
+    <div class="d-flex flex-column justify-content-center">
+        <div class="d-flex align-items-center justify-content-center" id="preDefFilters"> 
+            <a href="#" data-action="Grayscale"> 
+                <img src="#urlescape($url)" style="filter: grayscale();" /> 
+            </a>
+            <a href="#" data-action="Sepia"> 
+                <img src="#urlescape($url)" style="filter: sepia();" /> 
+            </a> 
+            <a href="#" data-action="Invert"> 
+                <img src="#urlescape($url)" style="filter: invert();" /> 
+            </a>
+        </div>
+        <div class="filter-controls">
+            <div class="d-flex align-items-center fltr" id="Brightness">
+                <input type="checkbox" />
+                <label>Brightness:<input type="range" disabled value="0" min="-1" max="1" step="0.003921"></label>
+            </div>
+            <div class="py-1" style="background-color: #343e55;">
+                <label class="text-white justify-content-center m-0 fltr" id="Gamma">Gamma <input type="checkbox" /></label>
+                <div class="d-flex align-items-center fltr" data-id="Gamma">
+                    <label>Red: <input type="range" id="gamma-red" disabled value="1" min="0.2" max="2.2" step="0.003921"></label>
+                </div>
+                <div class="d-flex align-items-center fltr" data-id="Gamma"> 
+                    <label>Green: <input type="range" id="gamma-green" disabled value="1" min="0.2" max="2.2" step="0.003921"></label>
+                </div>
+                <div class="d-flex align-items-center fltr" data-id="Gamma"> 
+                    <label>Blue: <input type="range" id="gamma-blue" disabled value="1" min="0.2" max="2.2" step="0.003921"></label>
+                </div>
+            </div>
+            <div class="d-flex align-items-center fltr" id="Contrast">
+                <input type="checkbox" />
+                <label>Contrast:<input type="range" disabled class="form-range" value="0" min="-1" max="1" step="0.003921"></label>
+            </div>
+            <div class="d-flex align-items-center fltr" id="Saturation">
+                <input type="checkbox" />
+                <label>Saturation:<input type="range" disabled value="0" min="-1" max="1" step="0.003921"></label>
+            </div>
+            <div class="d-flex align-items-center fltr" id="Vibrance">
+                <input type="checkbox" />
+                <label>Vibrance:<input type="range" disabled value="0" min="-1" max="1" step="0.003921"></label>
+            </div>
+            <div class="d-flex align-items-center fltr" id="HueRotation" data-prop="rotation">
+                <input type="checkbox" />
+                <label>Hue:<input type="range" disabled value="0" min="-2" max="2" step="0.002"></label>
+            </div>
+            <div class="d-flex align-items-center fltr" id="Noise">
+                <input type="checkbox" />
+                <label>Noise:<input type="range" disabled value="100" min="0" max="1000"></label>
+            </div>
+            <div class="d-flex align-items-center fltr" id="Pixelate">
+                <input type="checkbox" />
+                <label>Pixelate:<input type="range" disabled value="4" min="2" max="20"></label>
+            </div>
+            <div class="d-flex align-items-center fltr" id="Blur">
+                <input type="checkbox" />
+                <label>Blur:<input type="range" disabled value="0.1" min="0" max="1" step="0.01"></label>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="rotate-editor panel">
+    <div class="x-close text-white ml-auto pt-1">
+        <i class="bi bi-x"></i>
+    </div>
+    <div class="d-flex align-items-center justify-content-between">
+        <button class="icon-button" data-action="rotateLeft">
+            <i class="bi bi-arrow-counterclockwise"></i>
+            <span>-90&deg;</span>
+        </button>
+        <button class="icon-button" data-action="rotateRight">
+            <i class="bi bi-arrow-clockwise"></i>
+            <span>+90&deg;</span>
+        </button>
+    </div>
+    <div class="d-flex align-items-center justify-content-between">
+        <button class="icon-button" data-action="flipX">
+            <i class="bi bi-vr"></i>
+            <span>Flip X</span>
+        </button>
+        <button class="icon-button" data-action="flipY">
+            <i class="bi bi-hr"></i>
+            <span>Flip Y</span>
+        </button>
+    </div>
+</div>
+<div class="crop-editor panel">
+    <div class="x-close text-white ml-auto pt-1">
+        <i class="bi bi-x"></i>
+    </div> 
+    <label for="aspectRatio" class="mt-1">Aspect Ratio</label>
+    <select id="aspectRatio">
+        <option value="free">Original</option>
+        <option value="1">1:1</option>
+        <option value="16/9">16:9</option>
+        <option value="4/3">4:3</option>
+        <option value="3/2">3:2</option>
+        <option value="2/1">2:1</option>
+        <option value="free">Free</option>
+    </select>
+    <div class="d-flex justify-content-center">
+        <button id="cropBtn">Crop</button>
+    </div>
+</div>
+<div id="toast" class="alert alert-secondary alert-dismissible fade hide" role="alert">
+  <span></span>
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <i class="bi bi-x"></i>
+  </button>
+</div>
+<script type="text/javascript" src="$siteroot$apphome/theme/photo-editor.js"></script>
