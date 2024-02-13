@@ -141,6 +141,8 @@ img.onload = function () {
       visible: false,
     }),
   };
+  delete cropClip.controls.deleteControl;
+  delete cropClip.controls.clone;
   var renderWidth = img.width * ratio - padding;
   var renderHeight = img.height * ratio - padding;
   imgInstance = new fabric.Image(imgElement, {
