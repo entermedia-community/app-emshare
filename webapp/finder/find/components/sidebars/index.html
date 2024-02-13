@@ -10,15 +10,15 @@
 			#set($forcedsidebarcomponent = $context.getRequestParameter("sidebarcomponent"))
 
 			#ifnull($forcedsidebarcomponent)
-			#set($forcedsidebarcomponent = $content.sidebarcomponent)
+				#set($forcedsidebarcomponent = $content.sidebarcomponent)
 			#end
 
 			#ifnotnull($forcedsidebarcomponent)
-			#set( $sidebarcomponent = $forcedsidebarcomponent )
+				#set( $sidebarcomponent = $forcedsidebarcomponent )
 			#end
 
 			#ifnull($sidebarcomponent)
-			#set( $sidebarcomponent = $userprofile.get("sidebarcomponent"))
+				#set( $sidebarcomponent = $userprofile.get("sidebarcomponent"))
 			#end
 
 			##very first time
@@ -172,84 +172,83 @@
 	</div>
 
 
-	#if($cantogglesidebar)
-
+#if($cantogglesidebar)
 	#if($sidebarcomponent)
-	#if($sidebarcomponent == "libraries" )
-	#set($sidebarurl = "$apphome/components/sidebars/libraries/index.html")
-	#end
-
-	#if($sidebarcomponent == "guide" )
-	#set($sidebarurl = "$apphome/components/sidebars/guide/index.html")
-	#end
-
-
-	#if($sidebarcomponent == "filters" )
-	#set($sidebarurl = "$apphome/components/sidebars/filters/index.html")
-	#end
-
-	#if($sidebarcomponent == "topics" )
-	#set($sidebarurl = "$apphome/components/sidebars/tags/index.html")
-	#end
-
-	#if($sidebarcomponent == "faceprofiles" )
-	#set($sidebarurl = "$apphome/components/sidebars/faceprofiles/index.html")
-	#end
-
-	#if($sidebarcomponent == "favorites" )
-	#set($sidebarurl = "$applink/views/modules/modulesearch/favorites.html?clearselection=true&clearfilters=true")
-	#end
-
-
-	#if($sidebarcomponent == "categories" )
-	#if( $canviewcategorynav || ( $librarycol && $canviewcategorynavcollections ) )
-	#set($sidebarurl = "$apphome/components/sidebars/categories/index.html")
-	#end
-	#end
-
-	#if($sidebarcomponent == "localdrives" )
-	#if( $canviewcategorynav)
-	#set($sidebarurl = "$apphome/components/sidebars/localdrives/index.html")
-	#end
-	#end
-
-	#if($sidebarcomponent == "addentity" )
-	#set($sidebarurl = "$apphome/components/sidebars/addentity/index.html?selectedmodule=$!module.id")
-	#end
-
-	#if($sidebarcomponent == "userdownloads" )
-	#set($sidebarurl = "$apphome/components/sidebars/userdownloads/index.html")
-	#end
-
-	#if($sidebarcomponent == "settings" )
-	#set($sidebarurl = "$apphome/components/sidebars/settings/index.html")
-	#end
-
-
-	##SIDEBAR WIDTH
-
-	#set( $sidebarwidth = $userprofile.get("sidebarwidth"))
-
-	#if($sidebarurl)
-	#if($sidebarwidth=='' || $sidebarwidth=='undefined')
-	#set($sidebarwidth = 280)
-	#end
-
-
-	<div class="col-main col-mainsidebar #if($sidebarwidth && $sidebarwidth>320)sidebarwide #end"
-		style="#if($sidebarwidth) width:${sidebarwidth}px;#end" data-sidebarwidth="$!sidebarwidth">
-		<div id="col-$sidebarcomponent" class="col-left col-$sidebarcomponent">
-			<div class="col-main-inner">
-
-				$pages.include($sidebarurl, $context)
-				<div class="colslidercontainer">
-					<a href="#" class="col-resize" title="[[Resize Sidebar]]"><i class="bi bi-arrows-expand-vertical"></i></a>
-					
+		#if($sidebarcomponent == "libraries" )
+		#set($sidebarurl = "$apphome/components/sidebars/libraries/index.html")
+		#end
+	
+		#if($sidebarcomponent == "guide" )
+		#set($sidebarurl = "$apphome/components/sidebars/guide/index.html")
+		#end
+	
+	
+		#if($sidebarcomponent == "filters" )
+		#set($sidebarurl = "$apphome/components/sidebars/filters/index.html")
+		#end
+	
+		#if($sidebarcomponent == "topics" )
+		#set($sidebarurl = "$apphome/components/sidebars/tags/index.html")
+		#end
+	
+		#if($sidebarcomponent == "faceprofiles" )
+		#set($sidebarurl = "$apphome/components/sidebars/faceprofiles/index.html")
+		#end
+	
+		#if($sidebarcomponent == "favorites" )
+		#set($sidebarurl = "$applink/views/modules/modulesearch/favorites.html?clearselection=true&clearfilters=true")
+		#end
+	
+	
+		#if($sidebarcomponent == "categories" )
+		#if( $canviewcategorynav || ( $librarycol && $canviewcategorynavcollections ) )
+		#set($sidebarurl = "$apphome/components/sidebars/categories/index.html")
+		#end
+		#end
+	
+		#if($sidebarcomponent == "localdrives" )
+		#if( $canviewcategorynav)
+		#set($sidebarurl = "$apphome/components/sidebars/localdrives/index.html")
+		#end
+		#end
+	
+		#if($sidebarcomponent == "addentity" )
+		#set($sidebarurl = "$apphome/components/sidebars/addentity/index.html?selectedmodule=$!module.id")
+		#end
+	
+		#if($sidebarcomponent == "userdownloads" )
+		#set($sidebarurl = "$apphome/components/sidebars/userdownloads/index.html")
+		#end
+	
+		#if($sidebarcomponent == "settings" )
+		#set($sidebarurl = "$apphome/components/sidebars/settings/index.html")
+		#end
+	
+	
+		##SIDEBAR WIDTH
+	
+		#set( $sidebarwidth = $userprofile.get("sidebarwidth"))
+	
+		#if($sidebarurl)
+		#if($sidebarwidth=='' || $sidebarwidth=='undefined')
+		#set($sidebarwidth = 280)
+		#end
+	
+	
+		<div class="col-main col-mainsidebar #if($sidebarwidth && $sidebarwidth>320)sidebarwide #end"
+			style="#if($sidebarwidth) width:${sidebarwidth}px;#end" data-sidebarwidth="$!sidebarwidth">
+			<div id="col-$sidebarcomponent" class="col-left col-$sidebarcomponent">
+				<div class="col-main-inner">
+	
+					$pages.include($sidebarurl, $context)
+					<div class="colslidercontainer">
+						<a href="#" class="col-resize" title="[[Resize Sidebar]]"><i class="bi bi-arrows-expand-vertical"></i></a>
+						
+					</div>
 				</div>
 			</div>
 		</div>
-	</div>
-	#end
+		#end
 
 	#end
 	#end
