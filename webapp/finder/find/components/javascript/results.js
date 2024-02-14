@@ -1428,13 +1428,10 @@ checkScroll = function () {
   var resultsdiv = $(grid).closest("#resultsdiv");
   var lastcheck = $(resultsdiv).data("lastscrollcheck");
   var currentscroll = 0;
-  if (grid.closest(".modal").length) {
-    //change to parent for multiple
-    currentscroll = $(".modal").scrollTop();
-  } else {
+
     //currentscroll = $(window).scrollTop();
     currentscroll = $(".scrollview").scrollTop();
-  }
+
   if (lastcheck == currentscroll) {
     //Dom events cause it to fire recursively
     return false;
