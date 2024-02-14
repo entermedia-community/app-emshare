@@ -1220,7 +1220,7 @@ uiload = function () {
     }
     //other modals?
     var othermodal = $(".modal");
-    if (othermodal.length) {
+    if (othermodal.length && !othermodal.is(":hidden")) {
       adjustzindex(othermodal);
     }
     hideLoader();
