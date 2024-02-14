@@ -1,4 +1,4 @@
-<div  id="pickersearchentities" >
+<div id="pickersearchentities" >
 	 
 	#set( $searcher = $mediaarchive.getSearcher($searchtype) )
 	$context.putPageValue("searcher",$searcher)
@@ -18,12 +18,13 @@
 		#end	
 	</div>
 	#end
+	
 	#set($addnew = "$apphome/views/modules/$searchtype/components/gridsample/preview/entity.html")
 	
 	#if($assetid)
 		#set($addnew = "${addnew}?edit=true&addnew=true&viewfiles=true&saveaction=addassets&assetid=$assetid")
 	#else
-		#set($addnew = "${addnew}?edit=true&addnew=true&viewfiles=true&saveaction=addassets&assethitssessionid=$assethitssessionid")
+		#set($addnew = "${addnew}?edit=true&addnew=true&viewfiles=true&uploadmedia=true&assethitssessionid=$assethitssessionid")
 	#end
 	<a class="btn btn-sm btn-blue emdialog"
 		style="margin-bottom: 10px;"
@@ -32,9 +33,9 @@
 		[[New]] $module</a>
      
     <form  id="colsearchform" 
-    class="ajaxform autosubmit"  
-    data-targetdivinner="entitypickerresults" 
-    action="$home$apphome/views/modules/$searchtype/components/entities/search/results.html">
+	    class="ajaxform autosubmit"  
+	    data-targetdivinner="entitypickerresults" 
+	    action="$home$apphome/views/modules/$searchtype/components/entities/search/results.html">
 
 		<input type="hidden" name="sortby" value="name" />
 		<input type="hidden" name="assetid" value="$!asset.id" />
@@ -70,17 +71,29 @@
 	
 	<div id="entitypickerresults"
 		class="pickerresults"
-		data-clickurl="$applink/views/modules/$searchtype/components/entities/addassetstoentity.html"
-		data-clicktargetdiv="applicationmaincontent"
-		data-clicktargettype="message"
+			
+		#if($assetid)
+			data-clickurl="$applink/views/modules/$searchtype/components/entities/addassetstoentity.html"
+			data-clicktargetdiv="applicationmaincontent"
+			data-clicktargettype="message"
+			data-assetid="$assetid"
+		#else
+			data-clicktargettype="entitydialog"
+			data-emdialoglink="$applink/views/modules/${searchtype}/components/gridsample/preview/entity.html"
+			data-uploadmedia="true"
+		#end
+		
+		
 		data-viewfiles="true"
 		data-moduleid="$searchtype"
 		#if($assetid)
-			data-assetid="$assetid"
+			
 		#else
-			data-assethitssessionid="$assethitssessionid"
+			data-assethitssessionid="$!assethitssessionid"
 		#end>
-	$pages.include("$apphome/components/entities/search/results.html",$context)
+	
+		$pages.include("$apphome/components/entities/search/results.html",$context)
+		
 	</div>
 	
 
