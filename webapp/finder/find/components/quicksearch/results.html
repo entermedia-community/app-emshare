@@ -31,16 +31,17 @@
 			#if ($amodule.modulerendertype)
 				#set($entityrendertype = $amodule.modulerendertype)
 			#end
-			#set($moduleicon = "entity")
-		   	#if ($module.moduleicon)
-		   		#set($moduleicon = $module.moduleicon)
+			#set($moduleicon = "grid")
+			#if ($amodule.moduleicon)
+		   		#set($moduleicon = $amodule.moduleicon)
 		   	#end
+	   	
 	 		#set($entityurl = "$!siteroot$apphome/views/modules/$!{amodule.id}/index.html")
 	 		<div class="qsmodule">
 	    	<a class=""
 	    		title="[[View]] #text($amodule)" 
 	    		href="$entityurl" >
-	    		<div></fiv><img src="$siteroot$apphome/theme/images/entity/${moduleicon}.svg"style="height: 50px; max-width:50px;" /></div>
+	    		<div class="p-2"><i class="bi bi-$!{moduleicon} module-icon" style="font-size:3em;line-height:1;opacity:0.85;"></i> </div>
 	    		#text($amodule)</a>
 	    	</div>
 	    #end
@@ -70,7 +71,7 @@ $context.putPageValue("filter", $filter)
 			$context.putPageValue("module", $module)
 			$context.putPageValue("moduleid", $module.id)
 		
-		   	#set($moduleicon = "entity")
+		   	#set($moduleicon = "grid")
 		   	#if ($module.moduleicon)
 		   		#set($moduleicon = $module.moduleicon)
 		   	#end
@@ -78,7 +79,7 @@ $context.putPageValue("filter", $filter)
 		   	
 		   	
 			#set($entityurl = "$!siteroot$apphome/views/modules/$!{module.id}/index.html?$!{module.id}page=1&field=description&operation=freeform&description.value=$val")
-			<div style="margin-bottom: 20px;">
+			<div style="margin-bottom: 3em;">
 			<a href="$entityurl" 
 				class="ajax qsresultsEntity" 
 				style=""
@@ -88,9 +89,9 @@ $context.putPageValue("filter", $filter)
 				data-profilepreference="defaultmodule"
 				data-profilepreference.value="$!module.getId()"
 				title="[[View]]: #text($module)" >
-			<img src="$siteroot$apphome/theme/images/entity/${moduleicon}.svg" 
-			style="height: 25px; max-width:20px;"> 
-			<span class="qsresultsEntitytext">
+				
+				<i class="bi bi-$!{moduleicon} module-icon" style="font-size:0.9em;line-height:1;opacity:0.85;"></i> 
+				<span class="qsresultsEntitytext">
 			#if( $module.id == "asset") ##this is safe
 				#set( $count = $hits.size()) 
 			#else
@@ -106,7 +107,6 @@ $context.putPageValue("filter", $filter)
 				##set($entityurlall = "$!siteroot$apphome/views/modules/$!{module.id}/index.html?$!{module.id}page=1")
 				<a href="$entityurl" 
 					class="ajax qsresultsEntityall" 
-					style=""
 					data-targetdiv="applicationmaincontent" 
 					data-oemaxlevel="3" 
 					data-updateurl="true" 
@@ -148,7 +148,7 @@ $context.putPageValue("filter", $filter)
 			<div class="emgridflex">  	
 				<div id="galleryimg-${rendertype}" 
 						class='emgrid #if($section != "favorites")emgridlimited#end entitiescontainer' 
-						style="width:1000px"
+						style="width:100%"
 						data-fixedwidth="180" 
 						data-cellpadding="10"
 						data-entityrenderurl="$!{siteroot}$apphome/views/modules/${module.id}/components/gridsample/gridcell.html"
@@ -161,7 +161,7 @@ $context.putPageValue("filter", $filter)
 							#end
 							 <div class="emgridcell emgridcellqs emgridcell-$rendertype activelistcontainer 
 					 			#if($selectedid == $hit.getId() || $topselectedid == $hit.getId()) active #end
-					 			"> 
+					 			" style="width: 180px;"> 
 							    $pages.include("$apphome/views/modules/$!{module.id}/components/gridsample/types/qsresult.html", $context)
 							   	#set($highlight =  $hits.highlight($hit, "description", 20, true))
 							   	#if($highlight)
@@ -179,7 +179,7 @@ $context.putPageValue("filter", $filter)
 
 #set($assetmodule = $mediaarchive.getCachedData("module","asset"))
 
-#set($moduleicon = "entity")
+#set($moduleicon = "grid")
 #if ($assetmodule.moduleicon)
 	#set($moduleicon = $assetmodule.moduleicon)
 #end
@@ -196,7 +196,7 @@ $context.putPageValue("filter", $filter)
 		data-profilepreference="defaultmodule"
 		data-profilepreference.value="$!assetmodule.getId()"
 		title="[[View]] #text($assetmodule)" >
-	<img src="$siteroot$apphome/theme/images/entity/${moduleicon}.svg"	style="height: 25px; max-width:20px;"> 
+	<i class="bi bi-$!{moduleicon} module-icon" style="font-size:0.9em;line-height:1;opacity:0.85;"></i>  
 	<span class="qsresultsEntitytext">#text($assetmodule) ($count)</span>
 	</a>
 	
