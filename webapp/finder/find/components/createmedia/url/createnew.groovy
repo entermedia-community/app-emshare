@@ -1,6 +1,7 @@
 import groovy.json.JsonSlurper
 
 import org.entermediadb.asset.Asset
+import org.entermediadb.asset.Category
 import org.entermediadb.asset.MediaArchive
 import org.entermediadb.projects.ProjectManager
 import org.openedit.page.*
@@ -21,8 +22,10 @@ public void init()
 	
 	//String assettype = context.getRequestParameter("assettype");
 	//asset.setProperty("assettype", assettype);
-	branch = mediaarchive.getCategoryArchive().createCategoryTree("/newassets/${context.getUserName()}");
-	asset.addCategory(branch);
+	//branch = mediaarchive.getCategoryArchive().createCategoryTree("/newassets/${context.getUserName()}");
+	String categoryid = context.getRequestParameter("categoryid");
+	Category cat = mediaarchive.getCategory(categoryid);
+	asset.addCategory(cat);
 	
 	String assetname = '';
 	
