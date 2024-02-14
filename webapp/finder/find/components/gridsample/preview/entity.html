@@ -64,8 +64,8 @@ $context.putPageValue("topmoduleid", $moduleid)
 
 #ifnull($entitytabopen)
 	#set( $entitytabopen = $context.getRequestParameter("entitytabopen"))
+	
 #end
-
 #ifnull($entitytabopen)
 	#set( $entitytabopen = $userprofile.get("${moduleid}_entitytabopen"))
 #end
@@ -174,9 +174,10 @@ $context.putPageValue("topmoduleid", $moduleid)
 						#ifnotnull($defaultfolder)
 							#if($permissions.can($moduleid, "share"))
 							<a href="$applink/components/share/entity.html?moduleid=$moduleid&entityid=$!{entityid}&categoryid=$!{defaultfolder.getId()}" 
-							class="emdialog btn btn-sm btn-brand"
+							class="emdialog btn btn-sm btn-brand entityshare"
 							data-dialogid="entitysharedialog"
 							data-hidefooter="true"
+							data-entitytabopen="$!{entitytabopen}"
 							title="[[Share]] #text($entity.name)"><i class="bi bi-share-fill"></i></a>
 							#end
 						#end

@@ -6,8 +6,12 @@
 		#set($moduleid = $context.getRequestParameter("moduleid"))
 		#set($entityid = $context.getRequestParameter("entityid"))
 		#set($categoryid = $context.getRequestParameter("categoryid"))
+		#set($entitytabopen = $context.getRequestParameter('entitytabopen'))
 		#if($moduleid)
-			#set( $sharelink = "$siteroot$apphome/views/modules/${moduleid}/components/gridsample/preview/entity.html?id=")
+			#set( $sharelink = "$siteroot$apphome/views/modules/${moduleid}/index.html?entity=$!{entityid}")
+			#if($entitytabopen)
+				#set( $sharelink = "${sharelink}&entitytabopen=$!{entitytabopen}") 
+			#end
 			
 			#if( $categoryid)
 				#set($category = $mediaarchive.getCategory($categoryid))
@@ -18,7 +22,7 @@
 		#ifnotnull($sharelink )
 			<div id="embedalertdialog" style="display:none; position: absolute;" class="alert alert-success fader">[[Copied to Clipboard]]</div>
 				<div style="margin-bottom:20px">
-				<h5>[[Entity Category Page]]:</h5> 
+				<h5>[[Entity]]:</h5> 
 				<div class="hyphenate" style="margin:5px 0">
 					<span class="sharelink">$sharelink</span> 
 					<a href="#" 

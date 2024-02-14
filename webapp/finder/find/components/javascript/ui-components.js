@@ -1299,14 +1299,21 @@ uiload = function () {
     if (link.data("ismultiedit")) {
       //return;
     }
+   var tabid = link.data("tabid");
     $(".entity-tab").removeClass("current-entity");
     link.closest(".entity-tab").addClass("current-entity");
     var topmoduleid = link.data("topmoduleid");
     var entityid = link.data("entityid");
     var container = link.attr("href");
     container = $(container);
-    container.data("currenttab", link.data("tabid")); //me
+    container.data("currenttab", tabid); //me
     $(".entity-tab-content").hide();
+    
+    var entitydialog = link.closest(".entitydialog");
+    var entityshare = entitydialog.find(".entityshare");
+    if (entityshare.length) {
+		entityshare.data("entitytabopen", tabid)
+	}
 
     saveProfileProperty(
       topmoduleid + "_entitytabopen",
