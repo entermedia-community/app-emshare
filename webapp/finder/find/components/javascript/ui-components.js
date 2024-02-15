@@ -1016,7 +1016,7 @@ uiload = function () {
         url: link,
         data: options,
         success: function (data) {
-<<<<<<< HEAD
+
 	          //--Entities
 	          if (
 	            dialog.hasClass("entity-dialog") &&
@@ -1139,129 +1139,7 @@ uiload = function () {
 	              checkScroll();
 	            });
 	          }
-=======
-          //--Entities
-          if (
-            dialog.hasClass("entity-dialog") &&
-            dialog.closest(".modal").length !== 0
-          ) {
-            //find tab
-            var tabid = dialog.data("tabid");
-            if (!tabid) {
-              tabid = "tab_metadata";
-            }
-            if (tabid) {
-              var container = dialog.closest(".entity-body");
-              var tabs = container.find(".entity-tab-content");
-              if (tabs.length >= 8) {
-                alert("Max Tabs Limit");
-                return;
-              }
 
-              //open new entity full
-              var parent = container.closest(".entitydialog");
-              container = dialog.closest(".entity-wraper");
-              container.replaceWith(data);
-              tabbackbutton(parent);
-              return;
-            }
-          } else {
-            modaldialog.html(data);
-            if (width) {
-              if (width > $(window).width()) {
-                width = $(window).width();
-              }
-
-              $(".modal-lg", modaldialog).css("min-width", width + "px");
-            }
-            if (maxwidth) {
-              $(".modal-lg", modaldialog).css("max-width", maxwidth + "px");
-            }
-
-            var modalkeyboard = false;
-            var modalbackdrop = true;
-            if ($(".modal-backdrop").length) {
-              modalbackdrop = false;
-            }
-
-            var modalinstance;
-            if (modalkeyboard) {
-              modalinstance = modaldialog.modal({
-                closeExisting: false,
-                show: true,
-                backdrop: modalbackdrop,
-              });
-            } else {
-              modalinstance = modaldialog.modal({
-                keyboard: false,
-                closeExisting: false,
-                show: true,
-                backdrop: modalbackdrop,
-              });
-            }
-
-            var searchpagetitle = modaldialog.find("[data-setpagetitle]");
-            if (searchpagetitle) {
-              setPageTitle(searchpagetitle);
-            }
-
-            //jQuery('.modal-backdrop').insertAfter(modalinstance);
-
-            var firstform = $("form", modaldialog);
-            firstform.data("openedfrom", openfrom);
-            // fix submit button
-            var justok = dialog.data("cancelsubmit");
-            if (justok != null) {
-              $(".modal-footer #submitbutton", modaldialog).hide();
-            } else {
-              var id = $("form", modaldialog).attr("id");
-              $("#submitbutton", modaldialog).attr("form", id);
-            }
-            var hidetitle = dialog.data("hideheader");
-            if (hidetitle == null) {
-              var title = dialog.attr("title");
-              if (title == null) {
-                title = dialog.text();
-              }
-              $(".modal-title", modaldialog).text(title);
-            }
-            var hidefooter = dialog.data("hidefooter");
-            if (hidefooter != null) {
-              $(".modal-footer", modaldialog).hide();
-            }
-
-            if (
-              typeof global_updateurl !== "undefined" &&
-              global_updateurl == false
-            ) {
-              //globaly disabled updateurl
-            } else {
-              //Update Address Bar
-              var updateurl = dialog.data("urlbar");
-              if (!updateurl) {
-                updateurl = dialog.data("updateurl");
-              }
-              if (updateurl) {
-                history.pushState($("#application").html(), null, link);
-                window.scrollTo(0, 0);
-              }
-            }
-
-            adjustzindex(modalinstance);
-
-            $(window).trigger("resize");
-            gridResize();
-
-            modalinstance.on("hidden.bs.modal", function () {
-              closeemdialog($(this));
-              $(window).trigger("resize");
-            });
-
-            modalinstance.on("scroll", function () {
-              checkScroll();
-            });
-          }
->>>>>>> dcaeb433eae5bb67767f10b74d349c60a420d36e
         },
       })
       .always(function () {
@@ -1342,11 +1220,7 @@ uiload = function () {
       adjustzindex(othermodal);
     }
     hideLoader();
-<<<<<<< HEAD
-       
-=======
 
->>>>>>> dcaeb433eae5bb67767f10b74d349c60a420d36e
     setPageTitle();
   };
 
