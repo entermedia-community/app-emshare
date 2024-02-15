@@ -64,8 +64,8 @@ $context.putPageValue("topmoduleid", $moduleid)
 
 #ifnull($entitytabopen)
 	#set( $entitytabopen = $context.getRequestParameter("entitytabopen"))
+	
 #end
-
 #ifnull($entitytabopen)
 	#set( $entitytabopen = $userprofile.get("${moduleid}_entitytabopen"))
 #end
@@ -110,7 +110,8 @@ $context.putPageValue("topmoduleid", $moduleid)
 	data-moduleid="$moduleid" 
 	data-entityid="$!entityid" 
 	data-oemaxlevel="1"
-	data-url="$componenthome/gridsample/preview/entity.html">
+	data-url="$componenthome/gridsample/preview/entity.html"
+	data-setpagetitle="$entity ---">
 	<div class="entity-wraper">
 		<div class="entity-header d-flex align-items-center justify-content-between">
 			<div class="d-flex align-items-center">
@@ -172,10 +173,11 @@ $context.putPageValue("topmoduleid", $moduleid)
 							
 						#ifnotnull($defaultfolder)
 							#if($permissions.can($moduleid, "share"))
-							<a href="$applink/components/share/entity.html?moduleid=$moduleid&categoryid=${defaultfolder.getId()}" 
-							class="emdialog btn btn-sm btn-brand"
+							<a href="$applink/components/share/entity.html?moduleid=$moduleid&entityid=$!{entityid}&categoryid=$!{defaultfolder.getId()}" 
+							class="emdialog btn btn-sm btn-brand entityshare"
 							data-dialogid="entitysharedialog"
 							data-hidefooter="true"
+							data-entitytabopen="$!{entitytabopen}"
 							title="[[Share]] #text($entity.name)"><i class="bi bi-share-fill"></i></a>
 							#end
 						#end

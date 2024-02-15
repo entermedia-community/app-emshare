@@ -171,7 +171,7 @@ $(document).ready(function () {
     //jQuery.get(prefix + nodeid + postfix,
     jQuery
       .get(prefix, options, function (data) {
-        data = $(data);
+        //data = $(data);
 
         var targetdiv = tree.data("targetdivinner");
         if (targetdiv) {

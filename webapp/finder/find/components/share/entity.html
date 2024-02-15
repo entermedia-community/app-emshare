@@ -1,37 +1,41 @@
 #set( $type = $mediaarchive.getMediaRenderType($asset.fileFormat))
 <div id="embed-wrapper">
-<div class="embedlink">
-
-#set( $mediadbappid = $mediaarchive.getMediaDbId() )
-
-#set($moduleid = $context.getRequestParameter("moduleid"))
-#set($categoryid = $context.getRequestParameter("categoryid"))
-#if($moduleid && $categoryid)
-#set($category = $mediaarchive.getCategory($categoryid))
-#set( $sharelink = "$siteroot$apphome/views/modules/asset/sharefiles/${categoryid}/#dash($category).html")
-#end
-#ifnotnull($sharelink )
-<div id="embedalertdialog" style="display:none; position: absolute;" class="alert alert-success fader">[[Copied to Clipboard]]</div>
-	<div style="margin-bottom:20px">
-	<h5>[[Entity Category Page]]:</h5> 
-	<div class="hyphenate" style="margin:5px 0">
-		<span class="sharelink">$sharelink</span> 
-		<a href="#" 
-			class="copytoclipboard btn btn-xxs btn-secondary"
-			data-targetdiv="embedalertdialog"
-			data-copytext="previewlink" title="[[Copy to Clipboard]]"><i class="far fa-copy"></i> [[Copy]]</a>
-	
-	
-		<input class="sharelink" style="position:absolute; top:-1000px;" id="previewlink" value="$sharelink" />
-	
+	<div class="embedlink">
+		#set( $mediadbappid = $mediaarchive.getMediaDbId() )
+		
+		#set($moduleid = $context.getRequestParameter("moduleid"))
+		#set($entityid = $context.getRequestParameter("entityid"))
+		#set($categoryid = $context.getRequestParameter("categoryid"))
+		#set($entitytabopen = $context.getRequestParameter('entitytabopen'))
+		#if($moduleid)
+			#set( $sharelink = "$siteroot$apphome/views/modules/${moduleid}/index.html?entity=$!{entityid}")
+			#if($entitytabopen)
+				#set( $sharelink = "${sharelink}&entitytabopen=$!{entitytabopen}") 
+			#end
+			
+			#if( $categoryid)
+				#set($category = $mediaarchive.getCategory($categoryid))
+				#set( $sharefilelink = "$siteroot$apphome/views/modules/asset/sharefiles/${categoryid}/#dash($category).html")
+			#end
+			
+		#end
+		#ifnotnull($sharelink )
+			<div id="embedalertdialog" style="display:none; position: absolute;" class="alert alert-success fader">[[Copied to Clipboard]]</div>
+				<div style="margin-bottom:20px">
+				<h5>[[Entity]]:</h5> 
+				<div class="hyphenate" style="margin:5px 0">
+					<span class="sharelink">$sharelink</span> 
+					<a href="#" 
+						class="copytoclipboard btn btn-xxs btn-secondary"
+						data-targetdiv="embedalertdialog"
+						data-copytext="previewlink" title="[[Copy to Clipboard]]"><i class="far fa-copy"></i> [[Copy]]</a>
+				
+				
+					<input class="sharelink" style="position:absolute; top:-1000px;" id="previewlink" value="$sharelink" />
+				
+				</div>
+				</div>
+		#end
+		
 	</div>
-	</div>
-	
-	##action=viewcategory
-	
-	
-#end
-
-	
-</div>
 </div>
