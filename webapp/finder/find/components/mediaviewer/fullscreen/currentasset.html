@@ -13,8 +13,6 @@ $context.putPageValue("cdn",$cdnprefix)
 
 #set( $mediadbappid=$mediaarchive.getMediaDbId())
 
-####$hits ?
-
 #set( $index = $hits.indexOfId($asset.id))
 #set( $previous = false )
 #set( $previous = $hits.previous($index))
@@ -58,13 +56,17 @@ $context.putPageValue("opentabactions",$opentabactions)
 
 #set( $hitssessionid = $hits.getSessionId())
 $context.putPageValue("hitssessionid",$hitssessionid)
+#set( $hitsname = $hits.getHitsName())
+
+
 <div id="main-media-container">
 
 $pages.include("$componenthome/mediaviewer/fullscreen/currentassettabs.html",$context)
 
 <div id="main-media-viewer" 
 data-opentab="$opentab" 
-data-hitssessionid="$hitssessionid" 
+data-hitssessionid="$!hitssessionid"
+data-hitsname="$!hitsname" 
 data-searchtype="asset" 
 data-oemaxlevel="1" 
 data-editable="$caneditasset" 

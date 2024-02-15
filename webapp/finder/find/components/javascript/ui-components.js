@@ -1132,7 +1132,6 @@ uiload = function () {
 	            adjustzindex(modalinstance);
 	
 	            $(window).trigger("resize");
-	            gridResize();
 	
 	            modalinstance.on("hidden.bs.modal", function () {
 	              closeemdialog($(this));
@@ -1224,7 +1223,7 @@ uiload = function () {
       adjustzindex(othermodal);
     }
     hideLoader();
-    
+       
     setPageTitle();
   };
   
@@ -1279,7 +1278,11 @@ uiload = function () {
       $(".onfront").removeClass("onfront");
       element.show();
       element.addClass("onfront");
+      
+      $(window).trigger("resize");
+      
     }, 0);
+    
   };
 
   lQuery("a.triggerjs").livequery("click", function (event) {
@@ -4247,8 +4250,8 @@ jQuery(window).on("resize", function () {
 
 jQuery(document).on("domchanged", function () {
   //gridResize();
-  resizecolumns();
-  jQuery(window).trigger("resize");
+  //resizecolumns();
+  //jQuery(window).trigger("resize");
 });
 
 jQuery(document).on("emtreeselect", function (event) {
