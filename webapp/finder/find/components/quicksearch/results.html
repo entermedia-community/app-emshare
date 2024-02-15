@@ -13,9 +13,16 @@
 
 #set($ajax = $context.getRequestParameter("ajax")) 
 
+<div style="position:absolute;top:4px;right:8px;color:#333;font-size:1rem;">
+	<span title="[[Esc to Close]]" class="bi bi-x-circle closemainsearch"></span>
+</div>
+
 <div class="quicksearchresults">
-	<div style="position:absolute;top:4px;right:8px;color:#333;font-size:1rem;">
-		<span title="[[Esc to Close]]" class="bi bi-x-circle closemainsearch"></span>
+	<div id="searchLoading">
+		<div class="d-flex flex-column align-items-center">
+			<div class="lds-dual-ring"></div>
+			<div class="loading-text">Searching for results</div> 
+		</div>
 	</div>
 
 #set( $val = $hits.getInput("description"))
@@ -82,16 +89,14 @@ $context.putPageValue("filter", $filter)
 			<div style="margin-bottom: 3em;">
 			<a href="$entityurl" 
 				class="ajax qsresultsEntity" 
-				style=""
 				data-targetdiv="applicationmaincontent" 
 				data-oemaxlevel="3" 
 				data-updateurl="true" 
 				data-profilepreference="defaultmodule"
 				data-profilepreference.value="$!module.getId()"
 				title="[[View]]: #text($module)" >
-				
-				<i class="bi bi-$!{moduleicon} module-icon" style="font-size:0.9em;line-height:1;opacity:0.85;"></i> 
-				<span class="qsresultsEntitytext">
+			<i class="bi bi-$moduleicon module-icon"></i>
+			<span class="qsresultsEntitytext">
 			#if( $module.id == "asset") ##this is safe
 				#set( $count = $hits.size()) 
 			#else
