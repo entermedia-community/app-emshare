@@ -1,35 +1,39 @@
 <div class="sidebarorders">
 	$orders.setHitsPerPage(10)
-#foreach($order in $orders.getPageOfHits())
-	<div class="sidebarorder  py-2 px-2">
-			
-			<div class="d-flex justify-content-between mb-2">
-				<div class=""> 
+	#foreach($order in $orders.getPageOfHits())
+	<a href="$apphome/views/modules/asset/activity/download/listitems.html?orderid=${order.id}" 
+		class="emdialog sidebarorder d-block py-2 px-2 $order.orderstatus"
+		data-hidefooter="true"
+		title="[[Download]]"> 
+		#set($percentage = 100) ##TODO
+		<div id="downloadProgress" style="width:$percentage%"></div> 
+		<div class="d-flex justify-content-between mb-2">
+			<div class="status-text"> 
 				#if($order.orderstatus =="complete" )
-				<i class="fas fa-check-circle"></i> 
+					<i class="fas fa-check-circle"></i> 
 				#elseif($order.orderstatus=="processing")
-				<i class="fas fa-spinner fa-spin"></i>
+					<i class="fas fa-spinner fa-spin"></i>
 				#end
 				
 				#set($status = $mediaarchive.getCachedData("orderstatus", $order.orderstatus ))
 				#text($status)
 				#if($order.itemsuccesscount != 0)
-				$order.itemsuccesscount [[of]] $order.itemcount
+					$order.itemsuccesscount [[of]] $order.itemcount
 				#else
-				$order.itemcount [[items]]
+					$order.itemcount [[items]]
 				#end
-				</div>
-				<div class="">
-					<a href="$apphome/views/modules/asset/activity/download/listitems.html?orderid=${order.id}" 
-					class="emdialog ml-2"
-					data-hidefooter="true"
-					title="[[Download]]"><i class="bi bi-window"></i></a>
-				</div>
+			</div> 
+
+			<i class="bi bi-window ml-2"></i>
+		</div>
+		<div class="d-flex justify-content-between sidebarorder-orderdate">
+			<div>$!context.getDateTime($order.date)</div>
+			<div>
+				#if($order.orderstatus=="processing")
+					<i class="fas fa-spinner fa-spin"></i> $percentage% ##TODO
+				#end
 			</div>
-			<div class="d-flex justify-content-end sidebarorder-orderdate">
-				<div>$!context.getDateTime($order.date)</div>
-			</div>
-	</div>
-	
-#end
+		</div> 
+	</a>
+	#end
 </div>

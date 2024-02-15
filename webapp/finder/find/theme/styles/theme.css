@@ -3795,16 +3795,22 @@ li.filtersselected .selected-filters a strong {
   cursor: pointer;
   padding: 0 1rem;
 }
-
-.quicksearchloading {
-  color: #333;
-  position: absolute;
-  top: 6px;
-  right: 6px;
-  display: inline-block;
-  z-index: 100;
+.quicksearchresults {
+  position: relative;
 }
-
+#searchLoading {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  background: rgb(255 255 255 / 75%);
+  z-index: 1000;
+}
+#searchLoading.show {
+  display: flex;
+}
 .quicksearchexpand {
   color: #5f739e;
   position: absolute;
@@ -8903,6 +8909,34 @@ a.bg-brand:hover {
 
 .sidebarorder {
   border-bottom: 1px solid #ddd;
+  position: relative;
+}
+.sidebarorder.complete {
+  border-color: #bfe6d4;
+}
+.sidebarorder.complete .status-text,
+.sidebarorder.complete .bi-window {
+  color: #2d8655;
+}
+#downloadProgress {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 20%;
+  background-color: rgba(60, 179, 113, 0.2);
+}
+#downloadProgress::after {
+  background-color: red;
+  width: 75%;
+}
+@keyframes slide {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
 }
 .module-icon {
   padding: 0 4px;
@@ -8915,9 +8949,9 @@ h2 .module-icon {
   padding: 0;
   padding-right: 9px;
   line-height: 1;
-  font-size: 0.86em;;
+  font-size: 0.86em;
 }
 .sidebarorder-orderdate {
-  color: #555;
-  font-size: 0.9em;
+  color: #9a9a9a;
+  font-size: 0.75em;
 }
