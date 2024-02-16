@@ -21,6 +21,7 @@ var imgSrc = $("#editingCandidate").attr("src");
 var editorWidth = $("#photoEditorColumn").width() - 56;
 var editorHeight = $("#photoEditorColumn").height() - 91;
 
+fabric.textureSize = 4096;
 var canvas = new fabric.Canvas("canvas");
 canvas.setWidth(editorWidth);
 canvas.setHeight(editorHeight);
@@ -107,7 +108,6 @@ img.onload = function () {
   var centerShift_x = (editorWidth - img.width * ratio) / 2;
   var centerShift_y = (editorHeight - img.height * ratio) / 2;
   var padding = 16;
-  var imgElement = document.getElementById("editingCandidate");
 
   cropClip = new fabric.Rect({
     left: centerShift_x + padding / 2,
@@ -142,7 +142,7 @@ img.onload = function () {
   var renderWidth = img.width * ratio - padding;
   var renderHeight = img.height * ratio - padding;
 
-  imgInstance = new fabric.Image(imgElement, {
+  imgInstance = new fabric.Image(img, {
     left: centerShift_x + padding / 2 + renderWidth / 2,
     top: centerShift_y + padding / 2 + renderHeight / 2,
     selectable: false,
@@ -150,8 +150,8 @@ img.onload = function () {
     originX: "center",
     originY: "center",
   });
-  imgInstance.scaleToWidth(renderWidth);
-  imgInstance.scaleToHeight(renderHeight);
+  imgInstance.scaleToWidth(renderWidth, false);
+  imgInstance.scaleToHeight(renderHeight, false);
   $("#editCandidateLoader").hide();
   canvas.add(imgInstance);
   canvas.sendToBack(imgInstance);
@@ -159,11 +159,30 @@ img.onload = function () {
 };
 lQuery("#editingCandidate").livequery(function () {});
 
+var imgElement = document.getElementById("editingCandidate");
+$("#preDefFilters a").each(function () {
+  var filter = $(this).data("action");
+  var fpCanvas = new fabric.StaticCanvas("fpCanvas");
+  fpCanvas.width = 100;
+  fpCanvas.height = 100;
+  var fpFilter = new fabric.Image.filters[filter]();
+  var fpImgInstance = new fabric.Image(imgElement, { left: 0, top: 0 });
+  fpImgInstance.scaleToWidth(100);
+  fpImgInstance.scaleToHeight(100);
+  fpImgInstance.filters.push(fpFilter);
+  fpImgInstance.applyFilters();
+  fpCanvas.add(fpImgInstance);
+  fpCanvas.requestRenderAll();
+  $(this).find("img").attr("src", fpCanvas.toDataURL());
+  fpCanvas.dispose();
+  $(this).show();
+});
+
 $("#preDefFilters a").click(function (e) {
   e.preventDefault();
+  var filter = $(this).data("action");
   var isActive = $(this).hasClass("active");
   $(this).toggleClass("active");
-  var filter = $(this).data("action");
   if (!isActive) {
     var filterInstance = new fabric.Image.filters[filter]();
     imgInstance.filters.push(filterInstance);
