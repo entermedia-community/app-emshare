@@ -19,7 +19,7 @@ public void init()
 		{
 	
 			Asset asset = assetsearcher.loadData(hit);
-			mediaarchive.removeGeneratedPages(asset, "image1500x1500");
+			mediaarchive.removeGeneratedPages(asset, "image3000x3000");
 
 	
 		}

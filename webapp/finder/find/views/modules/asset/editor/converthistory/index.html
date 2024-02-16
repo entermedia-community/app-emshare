@@ -14,10 +14,30 @@
 #set( $view = "conversions/details")
 #set( $viewid = $context.getRequestParameter("viewid"))
 
-#set( $args = "parentid=$asset.id&assetid=$asset.id&catalogid=$mediaarchive.getCatalogId()&searchtype=$searchtype&fieldexternalid=$fieldexternalid&fieldexternalvalue=$fieldexternalvalue&listid=$!listid&listexternalid=$!listexternalid&permissionname=$permissionname&view=$view")
+#set( $args = "parentid=$!asset.id&assetid=$asset.id&catalogid=$mediaarchive.getCatalogId()&searchtype=$searchtype&fieldexternalid=$fieldexternalid&fieldexternalvalue=$fieldexternalvalue&listid=$!listid&listexternalid=$!listexternalid&permissionname=$permissionname&view=$view")
 #set( $args = "$args&selectlink=$home$apphome/views/modules/asset/editor/converthistory/index.html")
 
 $pages.include("$apphome/components/detaileditor/generictable.html?$args", $context)
+
+
+#if($caneditasset)
+	##<a class="btn btn-sm btn-secondary ajax" data-targetdivinner="asset-editor-container" data-oemaxlevel="1"   href="$siteroot$apphome/views/modules/asset/editor/conversions/previewcrop.html?assetid=$asset.id&presetid=largeimage&noaspect=true&savetoall=true">[[Crop]]</a>
+
+	#if($canshowadmintoolbar)
+			<a class="btn btn-sm btn-secondary previewcrop-btn" 
+			style="margin:10px 0;"
+				data-oemaxlevel="1"  
+				target="_new"
+				href="$siteroot/openedit/views/filemanager/tab.html?path=/WEB-INF/data/$catalogid/generated/$asset.getSourcePath()"
+				title="[[File Manager]]"><i class="fas fa-upload"></i> [[Open File Manager]]</a> 
+		#end
+
+	<a class="btn btn-sm btn-secondary ajax" data-targetdivinner="asset-editor-container" data-oemaxlevel="1" 
+   	   href="$siteroot$apphome/views/modules/asset/editor/conversions/reloadthumbs.html?assetid=$asset.id"><i class="fas fa-images"></i>  [[Recreate Conversions]]</a>
+   	   
+   	   
+#end
+
   
 #if( !$ismulti && $canviewconversions   && $canviewassetedit)
   	<div class="btns">
