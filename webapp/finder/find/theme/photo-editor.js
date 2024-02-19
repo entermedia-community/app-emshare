@@ -28,6 +28,70 @@ canvas.setHeight(editorHeight);
 canvas.preserveObjectStacking = true;
 canvas.selection = false;
 
+canvas.on("mouse:wheel", function (opt) {
+  var delta = opt.e.deltaY;
+  var zoom = canvas.getZoom();
+  zoom *= 0.999 ** delta;
+  if (zoom > 3) zoom = 3;
+  if (zoom < 0.1) zoom = 0.1;
+  canvas.zoomToPoint({ x: opt.e.offsetX, y: opt.e.offsetY }, zoom);
+  opt.e.preventDefault();
+  opt.e.stopPropagation();
+});
+
+$(".zoom-pan button").click(function () {
+  var action = $(this).data("action");
+  if (action === "reset") {
+    canvas.setViewportTransform([1, 0, 0, 1, 0, 0]);
+  } else {
+    var zoom = canvas.getZoom();
+    if (action === "zoomIn") {
+      zoom *= 1.1;
+    }
+    if (action === "zoomOut") {
+      zoom /= 1.1;
+    }
+    if (zoom > 3) zoom = 3;
+    if (zoom < 0.1) zoom = 0.1;
+    canvas.setZoom(zoom);
+  }
+});
+
+document.addEventListener("keydown", function (e) {
+  if (e.code === "Numpad0" && e.ctrlKey) {
+    canvas.setViewportTransform([1, 0, 0, 1, 0, 0]);
+    canvas.requestRenderAll();
+  }
+});
+
+canvas.on("mouse:down", function (opt) {
+  var evt = opt.e;
+  if (evt.altKey === true) {
+    this.isDragging = true;
+    this.selection = false;
+    this.lastPosX = evt.clientX;
+    this.lastPosY = evt.clientY;
+  }
+});
+canvas.on("mouse:move", function (opt) {
+  if (this.isDragging) {
+    var e = opt.e;
+    var vpt = this.viewportTransform;
+    vpt[4] += e.clientX - this.lastPosX;
+    vpt[5] += e.clientY - this.lastPosY;
+    this.requestRenderAll();
+    this.lastPosX = e.clientX;
+    this.lastPosY = e.clientY;
+  }
+});
+canvas.on("mouse:up", function (opt) {
+  // on mouse up we want to recalculate new interaction
+  // for all objects, so we call setViewportTransform
+  this.setViewportTransform(this.viewportTransform);
+  this.isDragging = false;
+  this.selection = true;
+});
+
 var deleteIcon =
   "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNiIgZmlsbD0iI2ZmM2M0MSIgdmlld0JveD0iMCAwIDE2IDE2Ij4KICA8cGF0aCBkPSJNNS41IDUuNUEuNS41IDAgMCAxIDYgNnY2YS41LjUgMCAwIDEtMSAwVjZhLjUuNSAwIDAgMSAuNS0uNW0yLjUgMGEuNS41IDAgMCAxIC41LjV2NmEuNS41IDAgMCAxLTEgMFY2YS41LjUgMCAwIDEgLjUtLjVtMyAuNWEuNS41IDAgMCAwLTEgMHY2YS41LjUgMCAwIDAgMSAweiIvPgogIDxwYXRoIGQ9Ik0xNC41IDNhMSAxIDAgMCAxLTEgMUgxM3Y5YTIgMiAwIDAgMS0yIDJINWEyIDIgMCAwIDEtMi0yVjRoLS41YTEgMSAwIDAgMS0xLTFWMmExIDEgMCAwIDEgMS0xSDZhMSAxIDAgMCAxIDEtMWgyYTEgMSAwIDAgMSAxIDFoMy41YTEgMSAwIDAgMSAxIDF6TTQuMTE4IDQgNCA0LjA1OVYxM2ExIDEgMCAwIDAgMSAxaDZhMSAxIDAgMCAwIDEtMVY0LjA1OUwxMS44ODIgNHpNMi41IDNoMTFWMmgtMTF6Ii8+Cjwvc3ZnPg==";
 var copyIcon =
