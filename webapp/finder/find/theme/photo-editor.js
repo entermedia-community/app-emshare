@@ -16,18 +16,15 @@ $("div.thumb").on("click", function (e) {
     },
   });
 });
-var editorCanvas;
-var ctx;
 
 var imgSrc = $("#editingCandidate").attr("src");
-var editorCanvas = document.getElementById("canvas");
-var width = $("#photoEditorColumn").width() - 56;
-var height = $("#photoEditorColumn").height() - 91;
-editorCanvas.width = width;
-editorCanvas.height = height;
+var editorWidth = $("#photoEditorColumn").width() - 56;
+var editorHeight = $("#photoEditorColumn").height() - 91;
 
+fabric.textureSize = 4096;
 var canvas = new fabric.Canvas("canvas");
-this.__canvas = canvas;
+canvas.setWidth(editorWidth);
+canvas.setHeight(editorHeight);
 canvas.preserveObjectStacking = true;
 canvas.selection = false;
 
@@ -104,14 +101,13 @@ var imgInstance, cropClip;
 var img = new Image();
 img.src = imgSrc;
 img.onload = function () {
-  var hRatio = width / img.width;
-  var vRatio = height / img.height;
+  var hRatio = editorWidth / img.width;
+  var vRatio = editorHeight / img.height;
   var ratio = Math.min(hRatio, vRatio);
   if (ratio > 1) ratio = 1;
-  var centerShift_x = (width - img.width * ratio) / 2;
-  var centerShift_y = (height - img.height * ratio) / 2;
+  var centerShift_x = (editorWidth - img.width * ratio) / 2;
+  var centerShift_y = (editorHeight - img.height * ratio) / 2;
   var padding = 16;
-  var imgElement = document.getElementById("editingCandidate");
 
   cropClip = new fabric.Rect({
     left: centerShift_x + padding / 2,
@@ -145,31 +141,48 @@ img.onload = function () {
   delete cropClip.controls.clone;
   var renderWidth = img.width * ratio - padding;
   var renderHeight = img.height * ratio - padding;
-  imgInstance = new fabric.Image(imgElement, {
+
+  imgInstance = new fabric.Image(img, {
     left: centerShift_x + padding / 2 + renderWidth / 2,
     top: centerShift_y + padding / 2 + renderHeight / 2,
-    width: renderWidth,
-    height: renderHeight,
     selectable: false,
     evented: false,
     originX: "center",
     originY: "center",
   });
+  imgInstance.scaleToWidth(renderWidth, false);
+  imgInstance.scaleToHeight(renderHeight, false);
+  $("#editCandidateLoader").hide();
   canvas.add(imgInstance);
   canvas.sendToBack(imgInstance);
   canvas.add(cropClip);
-  // var filter = new fabric.Image.filters.Grayscale();
-  // imgInstance.filters.push(filter);
-  // imgInstance.applyFilters();
-  // canvas.renderAll();
-  // console.log(imgInstance.filters.find((f) => f.type === "Grayscale"));
 };
+lQuery("#editingCandidate").livequery(function () {});
+
+var imgElement = document.getElementById("editingCandidate");
+$("#preDefFilters a").each(function () {
+  var filter = $(this).data("action");
+  var fpCanvas = new fabric.StaticCanvas("fpCanvas");
+  fpCanvas.width = 100;
+  fpCanvas.height = 100;
+  var fpFilter = new fabric.Image.filters[filter]();
+  var fpImgInstance = new fabric.Image(imgElement, { left: 0, top: 0 });
+  fpImgInstance.scaleToWidth(100);
+  fpImgInstance.scaleToHeight(100);
+  fpImgInstance.filters.push(fpFilter);
+  fpImgInstance.applyFilters();
+  fpCanvas.add(fpImgInstance);
+  fpCanvas.requestRenderAll();
+  $(this).find("img").attr("src", fpCanvas.toDataURL());
+  fpCanvas.dispose();
+  $(this).show();
+});
 
 $("#preDefFilters a").click(function (e) {
   e.preventDefault();
+  var filter = $(this).data("action");
   var isActive = $(this).hasClass("active");
   $(this).toggleClass("active");
-  var filter = $(this).data("action");
   if (!isActive) {
     var filterInstance = new fabric.Image.filters[filter]();
     imgInstance.filters.push(filterInstance);
@@ -268,8 +281,8 @@ $("#textField").keyup(function () {
   } else {
     canvas.discardActiveObject();
     var text = new fabric.Textbox($(this).val(), {
-      left: canvas.width / 2 - 100,
-      top: canvas.height / 2 - 100,
+      left: editorWidth / 2 - 100,
+      top: editorHeight / 2 - 100,
       width: 150,
       fontSize: 20,
       fill: $("#font-color").minicolors("value"),
@@ -401,8 +414,8 @@ $("#imageField").change(function () {
   fileReader.onload = function (e) {
     var img = new Image();
     img.onload = function () {
-      var hRatio = canvas.width / img.width;
-      var vRatio = canvas.height / img.height;
+      var hRatio = editorWidth / img.width;
+      var vRatio = editorHeight / img.height;
       var ratio = Math.min(hRatio, vRatio);
       if (ratio > 1) ratio = 1;
       $("#imagePreview").attr("src", img.src).show();
@@ -430,4 +443,29 @@ $("#insertImg").click(function () {
   $("#imagePreview").hide();
   $(this).parent().removeClass("d-flex").hide();
   $(this).parent().parent().removeClass("active");
+});
+
+$("#aspectRatio").change(function () {
+  var ratio = parseFloat($(this).val());
+  var activeObject = canvas.getActiveObject();
+  if (activeObject) {
+    var newWidth = window.__imageRenderWidth;
+    var newHeight = window.__imageRenderHeight;
+    if (ratio === 1) {
+      var min = Math.min(newWidth, newHeight);
+      newWidth = min;
+      newHeight = min;
+    } else {
+      if (ratio < 1) {
+        newHeight = newWidth / ratio;
+      }
+      if (ratio > 1) {
+        newWidth = newHeight * ratio;
+      }
+    }
+    console.log({ ratio, newWidth, newHeight });
+    activeObject.set("width", newWidth);
+    activeObject.set("height", newHeight);
+    canvas.requestRenderAll();
+  }
 });
