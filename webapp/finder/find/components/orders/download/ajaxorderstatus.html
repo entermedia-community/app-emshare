@@ -1,18 +1,69 @@
 #if($showorders)
-	<span data-emdialoglink="$apphome/views/modules/asset/activity/download/listitems.html?orderid=$!{showorder.id}" 
-			class="emdialog autoopenemdialog"
-			data-dialogid="downloadlistitems"
-			data-hidefooter="true" 
-			title="[[Download]]"
-			></span>
+	#set($order = $showorder)
+
+	#set( $cdnprefix = $mediaarchive.getCatalogSettingValue("cdn_prefix") )
+	#set( $mediadbappid=$mediaarchive.getMediaDbId())
+	#if( !$cdnprefix )
+		#set( $cdnprefix = $context.siteRoot )
+	#end
+
+	#set($filename = "${order.id}.zip")	
+
+
+	#set($orderitems = $mediaarchive.getSearcher("orderitem").query().exact("orderid", $order.id).search())
+
+	#if($orderitems.size() == 0)
+		##TODO: error message
+	#elseif($orderitems.size() > 1)
+		#set ($downloadlink = "$!home$apphome/views/modules/asset/activity/download/zip/${order.id}.zip?orderid=${order.id}")
+	#else
+		#set( $item = $orderitems.get(0) )
+		#set( $asset = $mediaarchive.getAssetBySourcePath($item.assetsourcepath))
+		#set( $sourcepath = $asset.sourcePath )
+		#set( $click = "$home$apphome/views/modules/asset/editor/index.html?hitssessionid=$rootid&assetid=${asset.getId()}&orderid=$order.id" )
+		#set( $publishqueueid = $item.get("publishqueueid"))
+		#set($publishqueue = $searcherManager.getData($catalogid, "publishqueue",$item.get("publishqueueid") ) )
+		#set( $presetid = $publishqueue.get("presetid") )
+
+		#if( $presetid == "0")
+			#set($filename = "$asset")
+		#else
+			#set($convertpreset = $searcherManager.getCachedData($catalogid, "convertpreset", $presetid ) )
+			#set($filename = "$publishqueue.exportname")
+		#end
+
+		#if( $presetid == "0") 
+			#if($asset.googleid && $asset.googledownloadurl)
+				#set($downloadlink = "$asset.googledownloadurl")
+			#elseif($asset.googleid && $asset.linkurl)
+				#set($downloadlink = "$asset.linkurl")
+			#else
+				#set ($originalpath = $mediaarchive.asLinkToOriginal($asset) )
+				#set ($downloadlink = "$!cdnprefix$!home/$!{mediadbappid}/services/module/asset/downloads/originals/${originalpath}?orderid=${order.id}" )
+				#ifnotnull($order.collectionid)
+					#set ($downloadlink = "${downloadlink}&collectionid=$!{order.collectionid}")
+				#end
+			#end
+		#else
+			#if($publishqueue.status!='error') 
+				#set($convertpreset = $searcherManager.getCachedData($catalogid, "convertpreset", $presetid ) )
+				#set ($downloadlink = "$cdnprefix$home/$mediadbappid/services/module/asset/downloads/generated/${asset.sourcepath}/${convertpreset.generatedoutputfile}/${publishqueue.exportname}?orderid=${order.id}&collectionid=$!{order.collectionid}")
+			#end
+		#end
+	#end
+	<div 
+	class="btn btn-sm btn-primary xhrDownload" 
+	data-orderid="d-$order.id" 
+	data-filename="$filename"
+	data-href="$downloadlink"
+	data-componenthome="$componenthome"
+	></div>
 #end
 
 #if($haspendingorders)
-		
 		<div id="statusdownloadpending" class="ajaxstatus" ajaxpath="$home$apphome/components/orders/download/ajaxorderstatus.html" period="2000">
 			<i class="fas fa-spinner fa-spin"></i>
 		</div>
 #else
-
 	<i class="fas fa-cloud-download-alt"></i>
 #end
