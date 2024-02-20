@@ -169,20 +169,23 @@ img.onload = function () {
   var vRatio = editorHeight / img.height;
   var ratio = Math.min(hRatio, vRatio);
   if (ratio > 1) ratio = 1;
-  var centerShift_x = (editorWidth - img.width * ratio) / 2;
-  var centerShift_y = (editorHeight - img.height * ratio) / 2;
-  var padding = 16;
+
+  var renderWidth = Math.floor(img.width * ratio);
+  var renderHeight = Math.round(img.height * ratio);
+  var primaryOffsetLeft = Math.round((editorWidth - renderWidth) / 2);
+  var primaryOffsetTop = Math.round((editorHeight - renderHeight) / 2);
+
+  window.__imageRenderWidth = renderWidth;
+  window.__imageRenderHeight = renderHeight;
+  window.__imageRenderLeft = primaryOffsetLeft;
+  window.__imageRenderTop = primaryOffsetTop;
 
   cropClip = new fabric.Rect({
-    left: centerShift_x + padding / 2,
-    top: centerShift_y + padding / 2,
-    width: img.width * ratio - padding,
-    height: img.height * ratio - padding,
-    absolutePositioned: true,
-    fill: "rgba(255,255,255,0.1)",
-    originX: "left",
-    originY: "top",
-    opacity: 1,
+    left: primaryOffsetLeft,
+    top: primaryOffsetTop,
+    width: img.naturalWidth,
+    height: img.naturalHeight,
+    fill: "rgba(255,255,255,0.35)",
     transparentCorners: false,
     stroke: "black",
     strokeDashArray: [2, 5],
@@ -192,30 +195,28 @@ img.onload = function () {
     cornerStyle: "circle",
     borderColor: "transparent",
     visible: false,
-    uniformScaling: false,
   });
 
-  cropClip.controls = {
-    ...fabric.Object.prototype.controls,
-    mtr: new fabric.Control({
-      visible: false,
-    }),
-  };
-  delete cropClip.controls.deleteControl;
-  delete cropClip.controls.clone;
-  var renderWidth = img.width * ratio - padding;
-  var renderHeight = img.height * ratio - padding;
+  cropClip.scaleToWidth(renderWidth);
+  cropClip.scaleToHeight(renderHeight);
+
+  cropClip.setControlVisible("mtr", false);
+  cropClip.setControlVisible("mt", false);
+  cropClip.setControlVisible("mb", false);
+  cropClip.setControlVisible("ml", false);
+  cropClip.setControlVisible("mr", false);
+  cropClip.setControlVisible("deleteControl", false);
+  cropClip.setControlVisible("clone", false);
 
   imgInstance = new fabric.Image(img, {
-    left: centerShift_x + padding / 2 + renderWidth / 2,
-    top: centerShift_y + padding / 2 + renderHeight / 2,
+    left: primaryOffsetLeft,
+    top: primaryOffsetTop,
     selectable: false,
     evented: false,
-    originX: "center",
-    originY: "center",
   });
-  imgInstance.scaleToWidth(renderWidth, false);
-  imgInstance.scaleToHeight(renderHeight, false);
+  imgInstance.scaleToWidth(renderWidth);
+  imgInstance.scaleToHeight(renderHeight);
+
   $("#editCandidateLoader").hide();
   canvas.add(imgInstance);
   canvas.sendToBack(imgInstance);
@@ -256,6 +257,9 @@ $("#preDefFilters a").click(function (e) {
     imgInstance.applyFilters();
   }
   canvas.requestRenderAll();
+});
+$("#cropBtn").click(function () {
+  //TODO: crop image
 });
 
 $(".rotate-editor button").click(function () {
@@ -511,7 +515,9 @@ $("#insertImg").click(function () {
 
 $("#aspectRatio").change(function () {
   var ratio = parseFloat($(this).val());
-  var activeObject = canvas.getActiveObject();
+  var activeObject;
+  if (cropClip) activeObject = cropClip;
+  else activeObject = canvas.getActiveObject();
   if (activeObject) {
     var newWidth = window.__imageRenderWidth;
     var newHeight = window.__imageRenderHeight;
@@ -532,4 +538,18 @@ $("#aspectRatio").change(function () {
     activeObject.set("height", newHeight);
     canvas.requestRenderAll();
   }
+});
+
+$("#downloadImg").click(function () {
+  console.log(window.__imageRenderWidth);
+  var a = document.createElement("a");
+  var filename = $(this).data("filename");
+  a.href = canvas.toDataURL({
+    left: window.__imageRenderLeft,
+    top: window.__imageRenderTop,
+    width: window.__imageRenderWidth,
+    height: window.__imageRenderHeight,
+  });
+  a.download = filename + ".png";
+  a.click();
 });

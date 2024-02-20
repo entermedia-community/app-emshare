@@ -15,7 +15,8 @@
         <div class="d-flex align-items-center justify-content-between top-toolbar">
             <div class="d-flex align-items-center">
                 <strong class="d-inline-block mx-2">Save as:</strong>
-                <span class="d-inline-block mx-2"> $!url_util.getPathUtilities().extractPageName($expfilename)</span>
+                #set($filename = "$!url_util.getPathUtilities().extractPageName($expfilename)")
+                <span class="d-inline-block mx-2">$filename</span>
                 <select>
                     <option selected>select format</option>
                     <option>png</option>
@@ -28,10 +29,9 @@
                     <option>3000x3000</option>
                     <option>550x550</option>
                 </select>
-                <a href="#">
+                <a href="#" id="downloadImg" data-filename="$filename">
                     <i class="bi bi-download"></i>
                     <label>download</label>
-
                 </a>
                 <span class="d-inline-block mx-2">or</span>
                 <a href="#">
@@ -272,8 +272,9 @@
         <option value="0.5">1:2</option>
         <option value="-1">Free Transform</option>
     </select>
-    <div class="d-flex justify-content-center">
+    <div class="d-flex justify-content-between">
         <button id="cropBtn">Crop</button>
+        <button id="resetBtn">reset</button>
     </div>
 </div>
 <div id="toast" class="alert alert-secondary alert-dismissible fade hide" role="alert">
