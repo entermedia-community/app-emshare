@@ -1016,130 +1016,126 @@ uiload = function () {
         url: link,
         data: options,
         success: function (data) {
+          //--Entities
+          if (
+            dialog.hasClass("entity-dialog") &&
+            dialog.closest(".modal").length !== 0
+          ) {
+            //find tab
+            var tabid = dialog.data("tabid");
+            if (!tabid) {
+              tabid = "tab_metadata";
+            }
+            if (tabid) {
+              var container = dialog.closest(".entity-body");
+              var tabs = container.find(".entity-tab-content");
+              if (tabs.length >= 8) {
+                alert("Max Tabs Limit");
+                return;
+              }
 
-	          //--Entities
-	          if (
-	            dialog.hasClass("entity-dialog") &&
-	            dialog.closest(".modal").length !== 0
-	          ) {
-	            //find tab
-	            var tabid = dialog.data("tabid");
-	            if (!tabid) {
-	              tabid = "tab_metadata";
-	            }
-	            if (tabid) {
-	              var container = dialog.closest(".entity-body");
-	              var tabs = container.find(".entity-tab-content");
-	              if (tabs.length >= 8) {
-	                alert("Max Tabs Limit");
-	                return;
-	              }
-	
-	              //open new entity full
-	              var parent = container.closest(".entitydialog");
-	              container = dialog.closest(".entity-wraper");
-	              container.replaceWith(data);
-	              tabbackbutton(parent);
-	              return;
-	            }
-	          } else {
-	            modaldialog.html(data);
-	            if (width) {
-	              if (width > $(window).width()) {
-	                width = $(window).width();
-	              }
-	
-	              $(".modal-lg", modaldialog).css("min-width", width + "px");
-	            }
-	            if (maxwidth) {
-	              $(".modal-lg", modaldialog).css("max-width", maxwidth + "px");
-	            }
-	
-	            var modalkeyboard = false;
-	            var modalbackdrop = true;
-	            if ($(".modal-backdrop").length) {
-	              modalbackdrop = false;
-	            }
-	
-	            var modalinstance;
-	            if (modalkeyboard) {
-	              modalinstance = modaldialog.modal({
-	                closeExisting: false,
-	                show: true,
-	                backdrop: modalbackdrop,
-	              });
-	            } else {
-	              modalinstance = modaldialog.modal({
-	                keyboard: false,
-	                closeExisting: false,
-	                show: true,
-	                backdrop: modalbackdrop,
-	              });
-	            }
-	            
-	            var searchpagetitle = modaldialog.find("[data-setpagetitle]");
-			      if (searchpagetitle) {
-			      		setPageTitle(searchpagetitle);
-			      }
-			      
-			    
-	
-	            //jQuery('.modal-backdrop').insertAfter(modalinstance);
-	
-	            var firstform = $("form", modaldialog);
-	            firstform.data("openedfrom", openfrom);
-	            // fix submit button
-	            var justok = dialog.data("cancelsubmit");
-	            if (justok != null) {
-	              $(".modal-footer #submitbutton", modaldialog).hide();
-	            } else {
-	              var id = $("form", modaldialog).attr("id");
-	              $("#submitbutton", modaldialog).attr("form", id);
-	            }
-	            var hidetitle = dialog.data("hideheader");
-	            if (hidetitle == null) {
-	              var title = dialog.attr("title");
-	              if (title == null) {
-	                title = dialog.text();
-	              }
-	              $(".modal-title", modaldialog).text(title);
-	            }
-	            var hidefooter = dialog.data("hidefooter");
-	            if (hidefooter != null) {
-	              $(".modal-footer", modaldialog).hide();
-	            }
-	
-	            if (
-	              typeof global_updateurl !== "undefined" &&
-	              global_updateurl == false
-	            ) {
-	              //globaly disabled updateurl
-	            } else {
-	              //Update Address Bar
-	              var updateurl = dialog.data("urlbar");
-	              if (!updateurl) {
-	                updateurl = dialog.data("updateurl");
-	              }
-	              if (updateurl) {
-	                history.pushState($("#application").html(), null, link);
-	                window.scrollTo(0, 0);
-	              }
-	            }
-	
-	            adjustzindex(modalinstance);
-	
-	            $(window).trigger("resize");
-	
-	            modalinstance.on("hidden.bs.modal", function () {
-	              closeemdialog($(this));
-	              $(window).trigger("resize");
-	            });
-	
-	            modalinstance.on("scroll", function () {
-	              checkScroll();
-	            });
-	          }
+              //open new entity full
+              var parent = container.closest(".entitydialog");
+              container = dialog.closest(".entity-wraper");
+              container.replaceWith(data);
+              tabbackbutton(parent);
+              return;
+            }
+          } else {
+            modaldialog.html(data);
+            if (width) {
+              if (width > $(window).width()) {
+                width = $(window).width();
+              }
 
+              $(".modal-lg", modaldialog).css("min-width", width + "px");
+            }
+            if (maxwidth) {
+              $(".modal-lg", modaldialog).css("max-width", maxwidth + "px");
+            }
+
+            var modalkeyboard = false;
+            var modalbackdrop = true;
+            if ($(".modal-backdrop").length) {
+              modalbackdrop = false;
+            }
+
+            var modalinstance;
+            if (modalkeyboard) {
+              modalinstance = modaldialog.modal({
+                closeExisting: false,
+                show: true,
+                backdrop: modalbackdrop,
+              });
+            } else {
+              modalinstance = modaldialog.modal({
+                keyboard: false,
+                closeExisting: false,
+                show: true,
+                backdrop: modalbackdrop,
+              });
+            }
+
+            var searchpagetitle = modaldialog.find("[data-setpagetitle]");
+            if (searchpagetitle) {
+              setPageTitle(searchpagetitle);
+            }
+
+            //jQuery('.modal-backdrop').insertAfter(modalinstance);
+
+            var firstform = $("form", modaldialog);
+            firstform.data("openedfrom", openfrom);
+            // fix submit button
+            var justok = dialog.data("cancelsubmit");
+            if (justok != null) {
+              $(".modal-footer #submitbutton", modaldialog).hide();
+            } else {
+              var id = $("form", modaldialog).attr("id");
+              $("#submitbutton", modaldialog).attr("form", id);
+            }
+            var hidetitle = dialog.data("hideheader");
+            if (hidetitle == null) {
+              var title = dialog.attr("title");
+              if (title == null) {
+                title = dialog.text();
+              }
+              $(".modal-title", modaldialog).text(title);
+            }
+            var hidefooter = dialog.data("hidefooter");
+            if (hidefooter != null) {
+              $(".modal-footer", modaldialog).hide();
+            }
+
+            if (
+              typeof global_updateurl !== "undefined" &&
+              global_updateurl == false
+            ) {
+              //globaly disabled updateurl
+            } else {
+              //Update Address Bar
+              var updateurl = dialog.data("urlbar");
+              if (!updateurl) {
+                updateurl = dialog.data("updateurl");
+              }
+              if (updateurl) {
+                history.pushState($("#application").html(), null, link);
+                window.scrollTo(0, 0);
+              }
+            }
+
+            adjustzindex(modalinstance);
+
+            $(window).trigger("resize");
+
+            modalinstance.on("hidden.bs.modal", function () {
+              closeemdialog($(this));
+              $(window).trigger("resize");
+            });
+
+            modalinstance.on("scroll", function () {
+              checkScroll();
+            });
+          }
         },
       })
       .always(function () {
@@ -1274,11 +1270,9 @@ uiload = function () {
       $(".onfront").removeClass("onfront");
       element.show();
       element.addClass("onfront");
-      
+
       $(window).trigger("resize");
-      
     }, 0);
-    
   };
 
   lQuery("a.triggerjs").livequery("click", function (event) {
@@ -3969,6 +3963,61 @@ uiload = function () {
       detail.data("status", "open");
     }
   };
+  function downloadLocally() {
+    autoreload($("#userdownloadlist"));
+    var _this = $(this);
+    var request = new XMLHttpRequest();
+    var file = _this.data("href");
+    var filename = _this.data("filename");
+    var orderid = _this.data("orderid");
+    var progressEl = $(".downloadProgress." + orderid);
+    console.log(".downloadProgress." + orderid);
+    // progressEl.show();
+    // progressEl.css("width", "50%");
+    // return;
+    request.responseType = "blob";
+    request.open("GET", file);
+    request.addEventListener("abort", function () {
+      progressEl.hide();
+    });
+    request.addEventListener("error", function () {
+      progressEl.css("background-color", "red");
+      progressEl.find(".shine").hide();
+    });
+    request.addEventListener("progress", function (e) {
+      if (e.lengthComputable) {
+        var percentComplete = e.loaded / e.total;
+        console.log(percentComplete);
+        progressEl.css("width", Math.floor(percentComplete * 100) + "%");
+      }
+    });
+    request.addEventListener("loadstart", function () {
+      progressEl.show();
+      progressEl.find(".shine").show();
+    });
+    request.addEventListener("load", function () {
+      var a = document.createElement("a");
+      var url = URL.createObjectURL(request.response);
+      a.href = url;
+      a.download = filename;
+      a.click();
+      console.log("TODO: Mark as downloaded");
+      progressEl.css("width", "100%");
+      progressEl.find(".shine").hide();
+      $.ajax({
+        url:
+          _this.data("componenthome") +
+          "/orders/download/updateorderstatus.html?orderid=" +
+          orderid.substring(2),
+        success: function () {
+          autoreload($("#userdownloadlist"));
+        },
+      });
+      _this.remove();
+    });
+    request.send();
+  }
+  lQuery(".xhrDownload").livequery(downloadLocally);
 
   lQuery(".togglesharelink").livequery("change", function (e) {
     var url = $("input.sharelink").val();

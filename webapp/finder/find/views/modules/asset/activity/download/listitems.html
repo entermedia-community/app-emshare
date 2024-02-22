@@ -46,22 +46,24 @@
 			$pages.include("${apphome}/components/results/thumbnails/${type}.html", $context)
 			##</a>
 	</td>
-	<td class="asset-name">
-	
-		$context.putPageValue("searcher",$searcherManager.getSearcher($catalogid,"asset") )	
-		$context.putPageValue("view","asset/downloaddetails")	
-		$context.putPageValue("data",$asset)
-		##$pages.include("/$applicationid/components/xml/detaileditorcss.html?detailsreadonly=true", $context)
-		
-		#set( $presetid = $publishqueue.get("presetid") )
-		#if( $presetid == "0")
-			#text($asset)
-		#else	
-			#set($convertpreset = $searcherManager.getCachedData($catalogid, "convertpreset", $presetid ) )
-			#text($publishqueue.exportname)
-		#end
-		
 
+	$context.putPageValue("searcher",$searcherManager.getSearcher($catalogid,"asset") )	
+	$context.putPageValue("view","asset/downloaddetails")	
+	$context.putPageValue("data",$asset)
+	##$pages.include("/$applicationid/components/xml/detaileditorcss.html?detailsreadonly=true", $context)
+	
+	#set( $presetid = $publishqueue.get("presetid") )
+
+	#set($filename = "")
+	#if( $presetid == "0")
+		#set($filename = "$asset")
+	#else	
+		#set($convertpreset = $searcherManager.getCachedData($catalogid, "convertpreset", $presetid ) )
+		#set($filename = "$publishqueue.exportname")
+	#end
+
+	<td class="asset-name">
+		$filename
 	</td>
 	
 	#if( $publishqueue.publishdestination == "0" || $publishqueue.publishdestination == "pushhttp")   ##download with the browser
@@ -88,7 +90,7 @@
 					#ifnotnull($order.collectionid)
 						#set ($downloadlink = "${downloadlink}&collectionid=$!{order.collectionid}")
 					#end
-					<a class="btn btn-sm btn-primary" href="$downloadlink">[[Download]]</a>
+					<a class="btn btn-sm btn-primary" data-assetid="$asset.id" data-filename="$filename" href="$downloadlink">[[Download]]</a>
 					#end
 					#set( $downloadall = true)
 					
@@ -128,7 +130,14 @@
 		<td>$item.get("publishqueueid")</td>		
 		<td style="text-align:right;"><a class="btn btn-sm btn-primary showasset"  data-assetid="$asset.id" href="#" >[[View]]</a></td>
 	#end	
-	</tr>	
+	</tr>
+	<tr>
+		<td colspan="4" class="p-0">
+			<div class="w-100" style="background-color: #efefef;">
+				<div class="xhrProgress $asset.id progress-bar-striped progress-bar-animated"style="height:5px;background-color:#4d5d80;width: 0%;display:none"></div>
+			</div>
+		</td> 
+	</tr>
 	#end
 	
 </table>

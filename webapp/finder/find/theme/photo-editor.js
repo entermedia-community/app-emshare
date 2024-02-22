@@ -28,6 +28,70 @@ canvas.setHeight(editorHeight);
 canvas.preserveObjectStacking = true;
 canvas.selection = false;
 
+canvas.on("mouse:wheel", function (opt) {
+  var delta = opt.e.deltaY;
+  var zoom = canvas.getZoom();
+  zoom *= 0.999 ** delta;
+  if (zoom > 3) zoom = 3;
+  if (zoom < 0.1) zoom = 0.1;
+  canvas.zoomToPoint({ x: opt.e.offsetX, y: opt.e.offsetY }, zoom);
+  opt.e.preventDefault();
+  opt.e.stopPropagation();
+});
+
+$(".zoom-pan button").click(function () {
+  var action = $(this).data("action");
+  if (action === "reset") {
+    canvas.setViewportTransform([1, 0, 0, 1, 0, 0]);
+  } else {
+    var zoom = canvas.getZoom();
+    if (action === "zoomIn") {
+      zoom *= 1.1;
+    }
+    if (action === "zoomOut") {
+      zoom /= 1.1;
+    }
+    if (zoom > 3) zoom = 3;
+    if (zoom < 0.1) zoom = 0.1;
+    canvas.setZoom(zoom);
+  }
+});
+
+document.addEventListener("keydown", function (e) {
+  if (e.code === "Numpad0" && e.ctrlKey) {
+    canvas.setViewportTransform([1, 0, 0, 1, 0, 0]);
+    canvas.requestRenderAll();
+  }
+});
+
+canvas.on("mouse:down", function (opt) {
+  var evt = opt.e;
+  if (evt.altKey === true) {
+    this.isDragging = true;
+    this.selection = false;
+    this.lastPosX = evt.clientX;
+    this.lastPosY = evt.clientY;
+  }
+});
+canvas.on("mouse:move", function (opt) {
+  if (this.isDragging) {
+    var e = opt.e;
+    var vpt = this.viewportTransform;
+    vpt[4] += e.clientX - this.lastPosX;
+    vpt[5] += e.clientY - this.lastPosY;
+    this.requestRenderAll();
+    this.lastPosX = e.clientX;
+    this.lastPosY = e.clientY;
+  }
+});
+canvas.on("mouse:up", function (opt) {
+  // on mouse up we want to recalculate new interaction
+  // for all objects, so we call setViewportTransform
+  this.setViewportTransform(this.viewportTransform);
+  this.isDragging = false;
+  this.selection = true;
+});
+
 var deleteIcon =
   "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNiIgZmlsbD0iI2ZmM2M0MSIgdmlld0JveD0iMCAwIDE2IDE2Ij4KICA8cGF0aCBkPSJNNS41IDUuNUEuNS41IDAgMCAxIDYgNnY2YS41LjUgMCAwIDEtMSAwVjZhLjUuNSAwIDAgMSAuNS0uNW0yLjUgMGEuNS41IDAgMCAxIC41LjV2NmEuNS41IDAgMCAxLTEgMFY2YS41LjUgMCAwIDEgLjUtLjVtMyAuNWEuNS41IDAgMCAwLTEgMHY2YS41LjUgMCAwIDAgMSAweiIvPgogIDxwYXRoIGQ9Ik0xNC41IDNhMSAxIDAgMCAxLTEgMUgxM3Y5YTIgMiAwIDAgMS0yIDJINWEyIDIgMCAwIDEtMi0yVjRoLS41YTEgMSAwIDAgMS0xLTFWMmExIDEgMCAwIDEgMS0xSDZhMSAxIDAgMCAxIDEtMWgyYTEgMSAwIDAgMSAxIDFoMy41YTEgMSAwIDAgMSAxIDF6TTQuMTE4IDQgNCA0LjA1OVYxM2ExIDEgMCAwIDAgMSAxaDZhMSAxIDAgMCAwIDEtMVY0LjA1OUwxMS44ODIgNHpNMi41IDNoMTFWMmgtMTF6Ii8+Cjwvc3ZnPg==";
 var copyIcon =
@@ -105,20 +169,23 @@ img.onload = function () {
   var vRatio = editorHeight / img.height;
   var ratio = Math.min(hRatio, vRatio);
   if (ratio > 1) ratio = 1;
-  var centerShift_x = (editorWidth - img.width * ratio) / 2;
-  var centerShift_y = (editorHeight - img.height * ratio) / 2;
-  var padding = 16;
+
+  var renderWidth = Math.floor(img.width * ratio);
+  var renderHeight = Math.round(img.height * ratio);
+  var primaryOffsetLeft = Math.round((editorWidth - renderWidth) / 2);
+  var primaryOffsetTop = Math.round((editorHeight - renderHeight) / 2);
+
+  window.__imageRenderWidth = renderWidth;
+  window.__imageRenderHeight = renderHeight;
+  window.__imageRenderLeft = primaryOffsetLeft;
+  window.__imageRenderTop = primaryOffsetTop;
 
   cropClip = new fabric.Rect({
-    left: centerShift_x + padding / 2,
-    top: centerShift_y + padding / 2,
-    width: img.width * ratio - padding,
-    height: img.height * ratio - padding,
-    absolutePositioned: true,
-    fill: "rgba(255,255,255,0.1)",
-    originX: "left",
-    originY: "top",
-    opacity: 1,
+    left: primaryOffsetLeft,
+    top: primaryOffsetTop,
+    width: img.naturalWidth,
+    height: img.naturalHeight,
+    fill: "rgba(255,255,255,0.35)",
     transparentCorners: false,
     stroke: "black",
     strokeDashArray: [2, 5],
@@ -128,30 +195,28 @@ img.onload = function () {
     cornerStyle: "circle",
     borderColor: "transparent",
     visible: false,
-    uniformScaling: false,
   });
 
-  cropClip.controls = {
-    ...fabric.Object.prototype.controls,
-    mtr: new fabric.Control({
-      visible: false,
-    }),
-  };
-  delete cropClip.controls.deleteControl;
-  delete cropClip.controls.clone;
-  var renderWidth = img.width * ratio - padding;
-  var renderHeight = img.height * ratio - padding;
+  cropClip.scaleToWidth(renderWidth);
+  cropClip.scaleToHeight(renderHeight);
+
+  cropClip.setControlVisible("mtr", false);
+  cropClip.setControlVisible("mt", false);
+  cropClip.setControlVisible("mb", false);
+  cropClip.setControlVisible("ml", false);
+  cropClip.setControlVisible("mr", false);
+  cropClip.setControlVisible("deleteControl", false);
+  cropClip.setControlVisible("clone", false);
 
   imgInstance = new fabric.Image(img, {
-    left: centerShift_x + padding / 2 + renderWidth / 2,
-    top: centerShift_y + padding / 2 + renderHeight / 2,
+    left: primaryOffsetLeft,
+    top: primaryOffsetTop,
     selectable: false,
     evented: false,
-    originX: "center",
-    originY: "center",
   });
-  imgInstance.scaleToWidth(renderWidth, false);
-  imgInstance.scaleToHeight(renderHeight, false);
+  imgInstance.scaleToWidth(renderWidth);
+  imgInstance.scaleToHeight(renderHeight);
+
   $("#editCandidateLoader").hide();
   canvas.add(imgInstance);
   canvas.sendToBack(imgInstance);
@@ -192,6 +257,9 @@ $("#preDefFilters a").click(function (e) {
     imgInstance.applyFilters();
   }
   canvas.requestRenderAll();
+});
+$("#cropBtn").click(function () {
+  //TODO: crop image
 });
 
 $(".rotate-editor button").click(function () {
@@ -447,7 +515,9 @@ $("#insertImg").click(function () {
 
 $("#aspectRatio").change(function () {
   var ratio = parseFloat($(this).val());
-  var activeObject = canvas.getActiveObject();
+  var activeObject;
+  if (cropClip) activeObject = cropClip;
+  else activeObject = canvas.getActiveObject();
   if (activeObject) {
     var newWidth = window.__imageRenderWidth;
     var newHeight = window.__imageRenderHeight;
@@ -468,4 +538,18 @@ $("#aspectRatio").change(function () {
     activeObject.set("height", newHeight);
     canvas.requestRenderAll();
   }
+});
+
+$("#downloadImg").click(function () {
+  console.log(window.__imageRenderWidth);
+  var a = document.createElement("a");
+  var filename = $(this).data("filename");
+  a.href = canvas.toDataURL({
+    left: window.__imageRenderLeft,
+    top: window.__imageRenderTop,
+    width: window.__imageRenderWidth,
+    height: window.__imageRenderHeight,
+  });
+  a.download = filename + ".png";
+  a.click();
 });

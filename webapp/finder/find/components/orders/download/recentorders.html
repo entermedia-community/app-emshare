@@ -1,31 +1,42 @@
+
+
 <div class="sidebarorders overflow-y">
 	$orders.setHitsPerPage(10)
 	#foreach($order in $orders.getPageOfHits())
-	<a href="$apphome/views/modules/asset/activity/download/listitems.html?orderid=${order.id}" 
-		class="emdialog sidebarorder d-block py-2 px-2 $order.orderstatus"
-		data-hidefooter="true"
-		title="[[Download]]"> 
+	<div class="sidebarorder d-block py-2 px-2 $order.orderstatus">
 		#set($percentage = 100) ##TODO
-		<div id="downloadProgress" style="width:$percentage%">
-			#if($percentage < 100)
-				<div class="shine"></div>
-			#end
+		##<div class="processingProgress" style="width:$percentage%">
+		##	#if($percentage < 100)
+		##		<div class="shine"></div>
+		##	#end
+		##</div>
+
+		#set($downloadPercentage = 0)
+		#if($order.downloadedstatus == "complete")
+			#set($downloadPercentage = 100)
+		#end
+			
+		<div class="downloadProgress d-${order.id}" style="display:#if($downloadPercentage==100) block #else none #end;width:$downloadPercentage%">
+			<div class="shine" style="display:#if($downloadPercentage<100) block #else none #end;"></div>
 		</div>
-		<div class="d-flex justify-content-between mb-2">
-			<div class="status-text"> 
-				#if($order.orderstatus =="complete" )
-					<i class="fas fa-check-circle"></i> 
-				#elseif($order.orderstatus=="processing")
+		<div class="d-flex align-items-center justify-content-between mb-2">
+			<div class="status-text">
+				#if($order.orderstatus == "processing" )
 					<i class="fas fa-spinner fa-spin"></i>
-				#end
-				
-				#set($status = $mediaarchive.getCachedData("orderstatus", $order.orderstatus ))
-				#text($status) 
-				## Converting <i class="bi bi-chevron-right mx-2"></i> Downloading <i class="bi bi-chevron-right"></i> Complete
-				#if($order.itemsuccesscount != 0)
-					$order.itemsuccesscount [[of]] $order.itemcount
+					<span>Converting</span>
 				#else
-					$order.itemcount [[items]]
+					<i class="fas fa-check-circle text-muted"></i>
+					<span class="text-muted">Converted</span>
+					<i class="bi bi-chevron-right" style="transform: scale(1);"></i>
+					#if($order.orderstatus == "complete") 
+						#if($order.downloadedstatus == "new")
+							<i class="fas fa-spinner fa-spin"></i>
+							<span>Pending Download</span>
+						#else 
+							<i class="fas fa-check-circle"></i>
+							<span>Downloaded</span>
+						#end
+					#end
 				#end
 			</div>
 		</div>
@@ -36,7 +47,7 @@
 			<img src="https://placehold.co/40" class="mr-1" alt="user" style="pointer-events: none;">
 			<p class="ml-1 m-0 text-muted">+ 4 more</p>
 		</div>
-		<div class="d-flex justify-content-between sidebarorder-orderdate">
+		<div class="d-flex align-items-center justify-content-between sidebarorder-orderdate">
 			##<div>$!context.getDateTime($order.date)</div>
 			<p class="m-0 text-muted">
 				<strong>240 MB</strong>
@@ -47,9 +58,20 @@
 				#if($order.orderstatus=="processing")
 					<i class="fas fa-spinner fa-spin mr-1"></i> $percentage% ##TODO
 					<button class="cancel-download ml-2">cancel</button>
+				#elseif($order.orderstatus=="complete")
+					<button class="download-btn d-none">
+						<i class="bi bi-download"></i> 
+						<span>
+							#if($order.downloadedstatus == "new")
+								Download
+							#else
+								Download Again
+							#end
+						</span>
+					</button> 
 				#end
 			</div>
 		</div> 
-	</a>
+	</div>
 	#end
 </div>
