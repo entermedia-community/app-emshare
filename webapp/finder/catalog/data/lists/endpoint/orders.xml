@@ -15,22 +15,6 @@
   	<samplerequest><![CDATA[{"orderid":"2233422"}]]></samplerequest>
   </endpoint>
 	
-  <endpoint id="recentorderitems" name="Recent Order Items" url="/${applicationid}/services/module/order/recentorderitems" docsection="moduleorder" caption="[[List Recent orderitems]]" httpmethod="POST">
-  	<samplerequest><![CDATA[
-{
-    "page": "1", 
-    "hitsperpage":"20",
-    "query": 
-    {
-      	"terms":[{
-       	"field": "ordertype",
-		"operation": "exact",
-		"value": "download"
-		}]
-	}
-} 
-]]></samplerequest>
-  </endpoint>
 	
   <endpoint id="emailassets" name="Create Email Order" url="/${applicationid}/services/module/order/orderemail" docsection="moduleorder" caption="[[Create order for emailing assets]]" httpmethod="POST">
 	<samplerequest><![CDATA[{
@@ -51,14 +35,42 @@
 	"assetid":["101"]
 	}]]></samplerequest>
 </endpoint>  
+
+
+  <endpoint id="recentorderitems" name="Recent Order Items" url="/${applicationid}/services/module/order/recentorderitems" docsection="moduleorder" caption="[[List Recent orderitems]]" httpmethod="POST">
+  	<samplerequest><![CDATA[
+{
+    "page": "1", 
+    "hitsperpage":"20",
+    "query": 
+    {
+      	"terms":[{
+       	"field": "ordertype",
+		"operation": "exact",
+		"value": "download"
+		}]
+	}
+} 
+]]></samplerequest>
+  </endpoint>
+
+  <endpoint id="listdownloadorderitems" name="List Download Order Items" url="/${applicationid}/services/module/order/downloadorderitems" docsection="moduleorder" caption="[[List Download Order Items]]" httpmethod="POST">
+  	<samplerequest><![CDATA[
+{
+    "userid": "admin",
+    "hitsperpage": "3"
+} 
+]]></samplerequest>
+  </endpoint>
+
   <endpoint id="updatestatus" name="[[Update Order Status]]" url="/${applicationid}/services/module/order/updateorderstatus" 
   	docsection="moduleorder" caption="[[Check the conversion status of a pending order]]" httpmethod="POST">
 	<samplerequest><![CDATA[{"orderid":"ertFGErre3234"}]]></samplerequest>
   </endpoint>
   
   <endpoint id="updateorderitemstatus" name="[[Update Order Item Status]]" url="/${applicationid}/services/module/order/updateorderitemstatus" 
-  	docsection="moduleorder" caption="[[Set the status of a pending order item for uploads]]" httpmethod="POST">
+  	docsection="moduleorder" caption="[[Set the status of a pending order item for uploads publishingexternal or complete]]" httpmethod="POST">
 	<samplerequest><![CDATA[{
-	"orderitemid":"ertFGErre3234","downloaditemstatus": "inprogress" ,"downloaditemdownloadedfilesize":"4323345"}]]></samplerequest>
+	"orderitemid":"ertFGErre3234","publishstatus": "publishingexternal" ,"downloaditemdownloadedfilesize":"4323345"}]]></samplerequest>
   </endpoint>
  </endpoints>

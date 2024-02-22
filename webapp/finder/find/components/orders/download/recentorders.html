@@ -1,56 +1,58 @@
 
+#set( $downloadorders = $ordermanager.findDownloadOrdersForUser( $context,  $user))
 
 <div class="sidebarorders overflow-y">
-	$orders.setHitsPerPage(10)
-	#foreach($order in $orders.getPageOfHits())
+	#foreach($downloadorder in $downloadorders)
 	<div class="sidebarorder d-block py-2 px-2 $order.orderstatus">
-		#set($percentage = 100) ##TODO
-		##<div class="processingProgress" style="width:$percentage%">
-		##	#if($percentage < 100)
-		##		<div class="shine"></div>
-		##	#end
-		##</div>
+		#set( $order = $downloadorder.getOrder())
+		#set($downloadPercentage = $downloadorder.percentage() )
 
-		#set($downloadPercentage = 0)
-		#if($order.downloadedstatus == "complete")
-			#set($downloadPercentage = 100)
-		#end
-			
-		<div class="downloadProgress d-${order.id}" style="display:#if($downloadPercentage==100) block #else none #end;width:$downloadPercentage%">
-			<div class="shine" style="display:#if($downloadPercentage<100) block #else none #end;"></div>
+		<div class="downloadProgress d-${order.id}" style="display:#if($downloadPercentage==1) block #else none #end;width:$downloadPercentage%">
+			<div class="shine" style="display:#if($downloadPercentage<1) block #else none #end;"></div>
 		</div>
 		<div class="d-flex align-items-center justify-content-between mb-2">
 			<div class="status-text">
-				#if($order.orderstatus == "processing" )
-					<i class="fas fa-spinner fa-spin"></i>
-					<span>Converting</span>
-				#else
+				#if($order.orderstatus == "completed" )
 					<i class="fas fa-check-circle text-muted"></i>
 					<span class="text-muted">Converted</span>
+					<i class="fas fa-check-circle"></i>
+					<span>Downloaded</span>
+				#else	
 					<i class="bi bi-chevron-right" style="transform: scale(1);"></i>
-					#if($order.orderstatus == "complete") 
-						#if($order.downloadedstatus == "new")
-							<i class="fas fa-spinner fa-spin"></i>
-							<span>Pending Download</span>
-						#else 
+						<i class="fas fa-spinner fa-spin"></i>
+						#if( $downloadorder.getCurrentItem().get("publishstatus") == "readytopublish" )
 							<i class="fas fa-check-circle"></i>
-							<span>Downloaded</span>
+							<span class="text-muted">Converted</span>
+							<i class="fas fa-check-circle text-muted"></i>
+							<span>Downloading</span>						
+						#elseif( $downloadorder.getCurrentItem().get("publishstatus") == "publishexternal" )
+							<i class="fas fa-check-circle"></i>
+							<span class="text-muted">Converted</span>
+							<i class="fas fa-check-circle"></i>
+							<span>Downloading</span>
 						#end
-					#end
 				#end
+
 			</div>
 		</div>
-		<div class="d-flex align-items-center mb-2 overflow-x"> 
+		
+		##show as zip? or item
+#if( $downloadorder.getItemCount() > 1 )
+zip download
+	<div class="d-flex align-items-center mb-2 overflow-x"> 
 			<img src="https://placehold.co/40" class="mr-1" alt="user" style="pointer-events: none;">
 			<img src="https://placehold.co/40" class="mr-1" alt="user" style="pointer-events: none;">
 			<img src="https://placehold.co/40" class="mr-1" alt="user" style="pointer-events: none;">
 			<img src="https://placehold.co/40" class="mr-1" alt="user" style="pointer-events: none;">
-			<p class="ml-1 m-0 text-muted">+ 4 more</p>
+			<p class="ml-1 m-0 text-muted">+  $!downloadorder.getItemCount() more</p>
 		</div>
+#else
+	$downloadorder.getCurrentItem()	
+#end		
 		<div class="d-flex align-items-center justify-content-between sidebarorder-orderdate">
 			##<div>$!context.getDateTime($order.date)</div>
 			<p class="m-0 text-muted">
-				<strong>240 MB</strong>
+				<strong>$ filesizer.toEnglish $downloadorder.totalBytes() </strong>
 				&middot;
 				#if($order.orderstatus =="complete" ) 2h ago #else 2h 5m remaining #end
 			</p>
