@@ -50,11 +50,11 @@ zip download
 	$downloadorder.getCurrentItem()	
 #end		
 		<div class="d-flex align-items-center justify-content-between sidebarorder-orderdate">
-			##<div>$!context.getDateTime($order.date)</div>
+			##<div>$!context.getAge($order.date)</div>
 			<p class="m-0 text-muted">
 				<strong>$sizer.inEnglish( $downloadorder.totalBytes() ) </strong>
 				&middot;
-				#if($order.orderstatus =="complete" ) 2h ago #else 2h 5m remaining #end
+				#if($order.orderstatus =="complete" ) $context.getAge($downloadorder.getEstimatedEndDate() ) 2h ago #else 2h 5m remaining #end
 			</p>
 			<div class="d-flex align-items-center">
 				#if($order.orderstatus=="processing")
