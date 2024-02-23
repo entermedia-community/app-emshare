@@ -3967,24 +3967,20 @@ uiload = function () {
     autoreload($("#userdownloadlist"));
     
     
-    
-    {
-  "userid": "admin",
-  "hitsperpage": "3"
-}
+
     var mediadb = $("#application").data("mediadb");
     jQuery.ajax({
       url: mediadb + "/services/module/order/downloadorderitems" + json,
       
       success()
       {
-		  //loop over each orderitem
+/*		  //loop over each orderitem
 		  foreach json.orderitems
 		  
 		  item.publishstatus == "readytopublish"
 		  
 		     item.itemdownloadurl
-		     
+	*/	     
 	  }
       
     });
@@ -4034,14 +4030,14 @@ uiload = function () {
           
           mediadb + "/services/module/order/updateorderitemstatus ?orderid=" +
           orderid.substring(2),
-          
+       /*   
           
           {
   "orderitemid": "ertFGErre3234",
   "publishstatus": "publishingexternal",
   "downloaditemdownloadedfilesize": "4323345"
 }
-          
+         */ 
         success: function () {
           autoreload($("#userdownloadlist"));
         },
