@@ -1,79 +1,89 @@
 
 #set( $downloadorders = $ordermanager.findDownloadOrdersForUser( $context,  $user))
 
+
+
+
 <div class="sidebarorders overflow-y">
 	#foreach($downloadorder in $downloadorders)
-	<div class="sidebarorder d-block py-2 px-2 $order.orderstatus">
-		#set( $order = $downloadorder.getOrder())
-		#set($downloadPercentage = $downloadorder.percentage() )
 
-		<div class="downloadProgress d-${order.id}" style="display:#if($downloadPercentage==1) block #else none #end;width:$downloadPercentage%">
-			<div class="shine" style="display:#if($downloadPercentage<1) block #else none #end;"></div>
-		</div>
-		<div class="d-flex align-items-center justify-content-between mb-2">
-			<div class="status-text">
-				#if($order.orderstatus == "completed" )
-					<i class="fas fa-check-circle text-muted"></i>
-					<span class="text-muted">Converted</span>
-					<i class="fas fa-check-circle"></i>
-					<span>Downloaded</span>
-				#else	
-					<i class="bi bi-chevron-right" style="transform: scale(1);"></i>
-						<i class="fas fa-spinner fa-spin"></i>
-						#if( $downloadorder.getCurrentItem().get("publishstatus") == "readytopublish" )
-							<i class="fas fa-check-circle"></i>
-							<span class="text-muted">Converted</span>
-							<i class="fas fa-check-circle text-muted"></i>
-							<span>Downloading</span>						
-						#elseif( $downloadorder.getCurrentItem().get("publishstatus") == "publishexternal" )
-							<i class="fas fa-check-circle"></i>
-							<span class="text-muted">Converted</span>
-							<i class="fas fa-check-circle"></i>
-							<span>Downloading</span>
-						#end
-				#end
+		#set($assetid = $downloadorder.getCurrentItem().get("assetid"))
+		#set($asset = $mediaarchive.getAsset($assetid))
+		#set($publishstatus = $downloadorder.getCurrentItem().get("publishstatus"))
 
+		<div class="sidebarorder d-block py-2 px-2 $publishstatus">
+
+			#set( $order = $downloadorder.getOrder())
+			#set($downloadPercentage = $downloadorder.percentage() )
+
+			<div class="downloadProgress d-${order.id}" style="display:#if($downloadPercentage==1) block #else none #end;width:$downloadPercentage%">
+				<div class="shine" style="display:#if($downloadPercentage<1) block #else none #end;"></div>
 			</div>
-		</div>
-		
-		##show as zip? or item
-#if( $downloadorder.getItemCount() > 1 )
-zip download
-	<div class="d-flex align-items-center mb-2 overflow-x"> 
-			<img src="https://placehold.co/40" class="mr-1" alt="user" style="pointer-events: none;">
-			<img src="https://placehold.co/40" class="mr-1" alt="user" style="pointer-events: none;">
-			<img src="https://placehold.co/40" class="mr-1" alt="user" style="pointer-events: none;">
-			<img src="https://placehold.co/40" class="mr-1" alt="user" style="pointer-events: none;">
-			<p class="ml-1 m-0 text-muted">+  $!downloadorder.getItemCount() more</p>
-		</div>
-#else
-	$downloadorder.getCurrentItem()	
-#end		
-		<div class="d-flex align-items-center justify-content-between sidebarorder-orderdate">
-			##<div>$!context.getAge($order.date)</div>
-			<p class="m-0 text-muted">
-				<strong>$sizer.inEnglish( $downloadorder.totalBytes() ) </strong>
-				&middot;
-				#if($order.orderstatus =="complete" ) $context.getAge($downloadorder.getEstimatedEndDate() ) 2h ago #else 2h 5m remaining #end
-			</p>
+
 			<div class="d-flex align-items-center">
-				#if($order.orderstatus=="processing")
-					<i class="fas fa-spinner fa-spin mr-1"></i> $percentage% ##TODO
-					<button class="cancel-download ml-2">cancel</button>
-				#elseif($order.orderstatus=="complete")
-					<button class="download-btn d-none">
-						<i class="bi bi-download"></i> 
-						<span>
-							#if($order.downloadedstatus == "new")
-								Download
+				#set ($mime = $mediaarchive.getMimeTypeIcon($asset.fileformat))
+				#set( $thumbpath =  "$themeprefix/images/mimetypes/${mime}.png" )
+				
+				<img class="format-thumb" src="$!cdn$siteroot$thumbpath" />
+			
+				<div class="d-flex align-items-center justify-content-between flex-grow-1">
+					<div class="d-flex flex-column flex-grow-1">
+						<div class="order-name">
+							$downloadorder.getCurrentItem().get("itemexportname")
+						</div>
+						<div class="order-filetype">
+							#if( $downloadorder.getItemCount() > 1 )
+								Zip File
 							#else
-								Download Again ##TODO
+								Image File
 							#end
-						</span>
-					</button> 
-				#end
+						</div>
+						<div class="d-flex align-items-center justify-content-between">
+							#set( $order = $!context.getAge($downloadorder.getEstimatedEndDate()))
+							#ifnotnull($order)
+								<span class="date">
+									$!context.getAge($downloadorder.getEstimatedEndDate())
+								</span>
+							#end
+							<span class="status">$order.orderstatus</span>
+							<span class="file-size">2.3 GB</span>
+						</div>
+					</div>
+				</div>
+				<div class="file-thumb">
+					#if($publishstatus == "complete" )
+						<i class="bi bi-check-circle-fill success"></i>
+					#elseif($order.orderstatus == "processing" ) 
+						<i class="bi bi-hourglass-split processing"></i>
+					#end
+					#if($downloadorder.getCurrentItem().get("status") == "error")
+						<i class="bi bi-x-circle-fill error"></i>
+					#end
+					<img src="https://picsum.photos/300/200" alt="">
+				</div>
+				<div class="actions">
+					#if( $downloadorder.getItemCount() > 1 )
+						<a href="#">
+							<i class="bi bi-card-list"></i>
+						</a>
+					#end 
+					#if($publishstatus == "readytopublish" )
+						<a href="#" title="[[Download Again]]">
+							<i class="bi bi-download"></i>
+						</a>
+					#end
+					#if($publishstatus == "complete" )
+						<a href="#" title="[[Downloading]]">
+							<i class="fas fa-check-circle"></i>
+						</a>
+					#end
+					#if($publishstatus== "readytopublish" || $publishstatus == "new" )
+						<a href="#">
+							<i class="bi bi-x-circle"></i>
+						</a>
+					#end
+				</div>
 			</div>
-		</div> 
-	</div>
+		</div>
 	#end
 </div>
