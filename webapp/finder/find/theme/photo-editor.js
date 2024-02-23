@@ -221,6 +221,7 @@ img.onload = function () {
   canvas.add(imgInstance);
   canvas.sendToBack(imgInstance);
   canvas.add(cropClip);
+  canvas.setZoom(0.95);
 };
 lQuery("#editingCandidate").livequery(function () {});
 
@@ -552,4 +553,27 @@ $("#downloadImg").click(function () {
   });
   a.download = filename + ".png";
   a.click();
+});
+
+$("#saveAs").click(function () {
+  var mask = $(this).siblings(".mask");
+  var saveAs = $(this).siblings(".save-as-menu");
+  mask.addClass("active");
+  saveAs.addClass("active");
+});
+function closeSaveAs() {
+  $(".mask").removeClass("active");
+  $(".save-as-menu").removeClass("active");
+}
+$(".mask").click(closeSaveAs);
+$("#saveAsCancel").click(closeSaveAs);
+
+$("#saveAsConfirm").click(function () {
+  var saveAsName = $("#saveAsName").val();
+  if (!saveAsName) {
+    saveAsName = $("#saveAsName").data("filename");
+  }
+  var saveAsType = $("input[name=saveAsType]:checked").val();
+  var saveAsDimension = $("input[name=saveAsDimension]:checked").val();
+  console.log(saveAsType, saveAsDimension, saveAsName);
 });
