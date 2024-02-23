@@ -3965,6 +3965,27 @@ uiload = function () {
   };
   function downloadLocally() {
     autoreload($("#userdownloadlist"));
+    
+    
+
+    var mediadb = $("#application").data("mediadb");
+    jQuery.ajax({
+      url: mediadb + "/services/module/order/downloadorderitems" + json,
+      
+      success()
+      {
+/*		  //loop over each orderitem
+		  foreach json.orderitems
+		  
+		  item.publishstatus == "readytopublish"
+		  
+		     item.itemdownloadurl
+	*/	     
+	  }
+      
+    });
+
+    
     var _this = $(this);
     var request = new XMLHttpRequest();
     var file = _this.data("href");
@@ -4006,9 +4027,17 @@ uiload = function () {
       progressEl.find(".shine").hide();
       $.ajax({
         url:
-          _this.data("componenthome") +
-          "/orders/download/updateorderstatus.html?orderid=" +
+          
+          mediadb + "/services/module/order/updateorderitemstatus ?orderid=" +
           orderid.substring(2),
+       /*   
+          
+          {
+  "orderitemid": "ertFGErre3234",
+  "publishstatus": "publishingexternal",
+  "downloaditemdownloadedfilesize": "4323345"
+}
+         */ 
         success: function () {
           autoreload($("#userdownloadlist"));
         },

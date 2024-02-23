@@ -72,11 +72,16 @@
 	<div id="entitypickerresults"
 		class="pickerresults"
 			
-		#if($assetid)
+		#if( $hits || $assetid)
+			#if($assetid)
+				data-assetid="$assetid"
+			#else
+				data-assethitssessionid="$!assethitssessionid"
+			#end
 			data-clickurl="$applink/views/modules/$searchtype/components/entities/addassetstoentity.html"
 			data-clicktargetdiv="applicationmaincontent"
 			data-clicktargettype="message"
-			data-assetid="$assetid"
+			
 		#else
 			data-clicktargettype="entitydialog"
 			data-emdialoglink="$applink/views/modules/${searchtype}/components/gridsample/preview/entity.html"
@@ -89,7 +94,7 @@
 		#if($assetid)
 			
 		#else
-			data-assethitssessionid="$!assethitssessionid"
+			
 		#end>
 	
 		$pages.include("$apphome/components/entities/search/results.html",$context)
