@@ -29,19 +29,24 @@
 						</div>
 						<div class="order-filetype">
 							#if( $downloadorder.getItemCount() > 1 )
-								Zip File
+								[[Zip File]]
 							#else
-								Image File
+								$mediaarchive.getCachedData("assettype", $asset.assettype)
 							#end
 						</div>
 						<div class="d-flex align-items-center">
-							#set( $orderage = $!context.getAge($downloadorder.getEstimatedEndDate()))
-							#ifnotnull($orderage)
-								<span class="date">
-									$orderage
-								</span>
-								<i class="bi bi-dot mx-1"></i>
+							#if($publishstatus == "complete" )
+								#set( $orderage = $!context.getAge($downloadorder.getPublishedDate()))
+							#else
+								#set( $orderage = $!context.getAge($downloadorder.getEstimatedEndDate()))
 							#end
+								#ifnotnull($orderage)
+									<span class="date">
+										$orderage
+									</span>
+									<i class="bi bi-dot mx-1"></i>
+								#end
+							
 							<span class="status">
 								#if($publishstatus == "readytopublish" )
 									[[Ready to Download]]

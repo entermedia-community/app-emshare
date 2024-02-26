@@ -4124,7 +4124,9 @@ uiload = function () {
           mediadb +
           "/services/module/order/updateorderitemstatus?orderitemid=" +
           orderitemid +
-          "&publishstatus=complete",
+          "&publishstatus=complete" +
+          "&publisheddate=" +
+          new Date().toISOString(),
         success: function () {
           autoreload($("#userdownloadlist"));
         },
