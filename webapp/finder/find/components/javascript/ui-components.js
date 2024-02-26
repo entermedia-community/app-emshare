@@ -806,7 +806,10 @@ uiload = function () {
               closeemdialog(formmodal);
             }
           }
-
+          var autoreloaddiv = form.data("autoreload");
+          if (autoreloaddiv) {
+            checkForPendingDownloads();
+          }
           //tabbackbutton
           formsavebackbutton(form);
 
@@ -3984,8 +3987,7 @@ uiload = function () {
   var siteroot = $("#application").data("siteroot");
   var mediadb = $("#application").data("mediadbappid");
   var downloadInProgress = {};
-
-  lQuery("#triggerpendingdownloads").livequery(function () {
+  function checkForPendingDownloads() {
     jQuery.ajax({
       dataType: "json",
       url:
@@ -4010,13 +4012,14 @@ uiload = function () {
               itemdownloadurl: item.itemdownloadurl,
             };
             var itemEl = $("#d-" + item.id);
-            console.log(itemEl);
             downloadMediaLocally(item.id, file, itemEl);
           }
         }
       },
     });
-  });
+  }
+  lQuery("#triggerpendingdownloads").livequery(checkForPendingDownloads);
+
   function showDownloadProgress(orderitemid) {
     console.log($("#dl-" + orderitemid));
     $("#dl-" + orderitemid).show();
@@ -4043,9 +4046,32 @@ uiload = function () {
       .hide();
   }
 
-  function downloadMediaLocally(orderitemid, file, itemEl) {
+  window.onbeforeunload = function () {
+    for (var key in downloadInProgress) {
+      if (downloadInProgress.hasOwnProperty(key)) {
+        return "Downloads are in progress. Are you sure you want to leave?";
+      }
+    }
+  };
+
+  function downloadMediaLocally(orderitemid, file, itemEl, retries = 0) {
     if (downloadInProgress[orderitemid])
       downloadInProgress[orderitemid].abort();
+    if (retries > 3) {
+      $.ajax({
+        url:
+          siteroot +
+          "/" +
+          mediadb +
+          "/services/module/order/updateorderitemstatus?orderitemid=" +
+          orderitemid +
+          "&publishstatus=cancelled",
+        success: function () {
+          autoreload($("#userdownloadlist"));
+        },
+      });
+      return;
+    }
     downloadInProgress[orderitemid] = new XMLHttpRequest();
     var request = downloadInProgress[orderitemid];
     request.responseType = "blob";
@@ -4055,6 +4081,7 @@ uiload = function () {
     });
     request.addEventListener("error", function () {
       errorDownloadProgress(orderitemid);
+      downloadMediaLocally(orderitemid, file, itemEl, retries + 1);
     });
     request.addEventListener("progress", function (e) {
       if (e.lengthComputable) {
@@ -4131,7 +4158,7 @@ uiload = function () {
         mediadb +
         "/services/module/order/updateorderitemstatus?orderitemid=" +
         orderitemid +
-        "&publishstatus=complete",
+        "&publishstatus=cancelled",
       success: function () {
         autoreload($("#userdownloadlist"));
       },

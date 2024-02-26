@@ -545,6 +545,8 @@ $("#downloadImg").click(function () {
   console.log(window.__imageRenderWidth);
   var a = document.createElement("a");
   var filename = $(this).data("filename");
+  // const formdata = new FormData();
+  // formdata.append("image", dataUrl);
   a.href = canvas.toDataURL({
     left: window.__imageRenderLeft,
     top: window.__imageRenderTop,

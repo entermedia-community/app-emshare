@@ -49,6 +49,8 @@
 									[[Downloading]]
 								#elseif($publishstatus == "complete" )
 									[[Downloaded]]
+								#elseif($publishstatus == "cancelled" ) 
+									[[Cancelled]]
 								#elseif($publishstatus == "new" ) 
 									[[Processing]]
 								#end
@@ -68,6 +70,8 @@
 						<i class="bi bi bi-cloud-arrow-down-fill ready"></i>
 					#elseif($publishstatus == "publishingexternal" ) 
 						<div class="spinner-border text-white"></div>
+					#elseif($publishstatus == "cancelled" ) 
+						<i class="bi bi-slash-circle-fill cancelled"></i>
 					#elseif($publishstatus == "new" ) 
 						<i class="bi bi-hourglass-split processing"></i>
 					#end
@@ -82,7 +86,7 @@
 							<i class="bi bi-card-list"></i>
 						</a>
 					#end 
-					#if($publishstatus == "complete" || $publishstatus == "readytopublish")
+					#if($publishstatus == "complete" || $publishstatus == "readytopublish" || $publishstatus == "cancelled")
 						<a href="#" class="redownloadorder" 
 							data-orderitemid="$downloadorder.getCurrentItem()" 
 							data-itemexportname='$downloadorder.getCurrentItem().get("itemexportname")'
