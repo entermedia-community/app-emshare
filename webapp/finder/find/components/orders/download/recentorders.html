@@ -29,24 +29,30 @@
 						</div>
 						<div class="order-filetype">
 							#if( $downloadorder.getItemCount() > 1 )
-								[[Zip File]]
-							#else
-								$mediaarchive.getCachedData("assettype", $asset.assettype)
+								[[Zip File]] ($downloadorder.getItemCount() [[files]])
 							#end
 						</div>
 						<div class="d-flex align-items-center">
 							#if($publishstatus == "complete" )
 								#set( $orderage = $!context.getAge($downloadorder.getPublishedDate()))
-							#else
-								#set( $orderage = $!context.getAge($downloadorder.getEstimatedEndDate()))
-							#end
-								#ifnotnull($orderage)
+								#ifnotnull($orderage )
 									<span class="date">
-										$orderage
+										$orderage [[ago]]
 									</span>
 									<i class="bi bi-dot mx-1"></i>
 								#end
+							#else
+								#set( $orderage = $!context.getAge($downloadorder.getEstimatedEndDate()))
+								#ifnotnull($orderage )
+									<span class="date">
+											$orderage [[remaining]]
+									</span>
+									<i class="bi bi-dot mx-1"></i>
+								#end
+							#end
 							
+							
+											
 							<span class="status">
 								#if($publishstatus == "readytopublish" )
 									[[Ready to Download]]
@@ -83,7 +89,11 @@
 					#if($status == "error")
 						<i class="bi bi-x-circle-fill error"></i>
 					#end
-					<img src="https://picsum.photos/300/200" alt="">
+					
+					$context.putPageValue("asset", $asset)
+					$context.putPageValue("thumbsize","carousel")
+					$pages.include("$componenthome/results/thumbnails/small.html",$context)
+					
 				</div>
 				<div class="actions">
 					#if( $downloadorder.getItemCount() > 1 )
