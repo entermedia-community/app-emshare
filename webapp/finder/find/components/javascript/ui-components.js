@@ -806,10 +806,10 @@ uiload = function () {
               closeemdialog(formmodal);
             }
           }
-        //  var autoreloaddiv = form.data("autoreload");
-        //  if (autoreloaddiv) {
-        //    checkForPendingDownloads();
-        //  }
+          //  var autoreloaddiv = form.data("autoreload");
+          //  if (autoreloaddiv) {
+          //    checkForPendingDownloads();
+          //  }
           //tabbackbutton
           formsavebackbutton(form);
 
@@ -4021,7 +4021,6 @@ uiload = function () {
   lQuery("#triggerpendingdownloads").livequery(checkForPendingDownloads);
 
   function showDownloadProgress(orderitemid) {
-    console.log($("#dl-" + orderitemid));
     $("#dl-" + orderitemid).show();
     $("#dl-" + orderitemid)
       .first()
@@ -4048,17 +4047,14 @@ uiload = function () {
 
   window.onbeforeunload = function () {
     for (var key in downloadInProgress) {
-      if (downloadInProgress.hasOwnProperty(key)) {
+      if (downloadInProgress[key] != null) {
         return "Downloads are in progress. Are you sure you want to leave?";
       }
     }
   };
-  
-  
 
   function downloadMediaLocally(orderitemid, file, itemEl, retries = 0) {
-    if (downloadInProgress[orderitemid])
-      downloadInProgress[orderitemid].abort();
+    if (downloadInProgress[orderitemid]) return;
     if (retries > 3) {
       $.ajax({
         url:
@@ -4083,6 +4079,7 @@ uiload = function () {
     });
     request.addEventListener("error", function () {
       errorDownloadProgress(orderitemid);
+      downloadInProgress[orderitemid] = null;
       downloadMediaLocally(orderitemid, file, itemEl, retries + 1);
     });
     request.addEventListener("progress", function (e) {
@@ -4090,35 +4087,33 @@ uiload = function () {
         var percentComplete = Math.floor((e.loaded / e.total) * 100);
         $("#dl-" + orderitemid).css("width", percentComplete + "%");
         $("#dlp-" + orderitemid).text(humanFileSize(e.loaded) + " / ");
-        
+
         var lastupdated = $("#userdownloadlist").data("lastupdated");
-        if( lastupdated === undefined)
-        {
-			lastupdated = new  Date();
-			$("#userdownloadlist").data("lastupdated", lastupdated);	
-		}
-        var diff = (new  Date().getTime() - lastupdated.getTime());
-        console.log(diff); 
-        if ( diff> 5000) {
-			$("#userdownloadlist").data("lastupdated", new  Date());
-	        $.ajax({
-		        url:
-		          siteroot +
-		          "/" +
-		          mediadb +
-		          "/services/module/order/updateorderitemstatus?orderitemid=" +
-		          orderitemid +
-		          "&publishstatus=publishingexternal" +
-		          "&downloaditemdownloadedfilesize=" +
-		          e.loaded,
-		        success: function () {
-		           autoreload($("#userdownloadlist"));
-		           $("#dl-" + orderitemid).css("width", percentComplete + "%");
-        		   $("#dlp-" + orderitemid).text(humanFileSize(e.loaded) + " / ");
-		           showDownloadProgress(orderitemid);
-		        },
-		      });
-	      }
+        if (lastupdated === undefined) {
+          lastupdated = new Date();
+          $("#userdownloadlist").data("lastupdated", lastupdated);
+        }
+        var diff = new Date().getTime() - lastupdated.getTime();
+        if (diff > 5000) {
+          $("#userdownloadlist").data("lastupdated", new Date());
+          $.ajax({
+            url:
+              siteroot +
+              "/" +
+              mediadb +
+              "/services/module/order/updateorderitemstatus?orderitemid=" +
+              orderitemid +
+              "&publishstatus=publishingexternal" +
+              "&downloaditemdownloadedfilesize=" +
+              e.loaded,
+            success: function () {
+              autoreload($("#userdownloadlist"));
+              $("#dl-" + orderitemid).css("width", percentComplete + "%");
+              $("#dlp-" + orderitemid).text(humanFileSize(e.loaded) + " / ");
+              showDownloadProgress(orderitemid);
+            },
+          });
+        }
       }
     });
     var downloadStartDate;
@@ -4146,7 +4141,6 @@ uiload = function () {
       a.href = url;
       a.download = file.itemexportname;
       a.click();
-      console.log(itemEl);
       successDownloadProgress(orderitemid);
       $.ajax({
         url:
@@ -4181,8 +4175,10 @@ uiload = function () {
     var confirmed = confirm("Are you sure you want to cancel the download?");
     if (!confirmed) return;
     var orderitemid = $(this).data("orderitemid");
-    if (downloadInProgress[orderitemid])
+    if (downloadInProgress[orderitemid]) {
       downloadInProgress[orderitemid].abort();
+      downloadInProgress[orderitemid] = null;
+    }
 
     $.ajax({
       url:
