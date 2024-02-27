@@ -65,10 +65,10 @@ $context.putPageValue("thumbsize", $thumbsize)
 		$pages.include("$componenthome/convertqueue/importstatus.html?assetid=$!{hit.id}",$context)
 	#elseif( $hit.previewstatus && $hit.previewstatus == "mime")
 		#set ($mime = $mediaarchive.getMimeTypeIcon($hit.fileformat))
-		#set( $thumbpath =  "$themeprefix/images/mimetypes/${mime}.png" )
+		
 		<div class="mimethumbcontainer">
-			<img class="mimethumb" alt="#if($title) #esc($title) #else $!hit.name #end" src="$siteroot$thumbpath$!urlparams" border="0" alt="$!hit.name" />
-		</div>
+       		<i class="bi bi-$!mime mimeicon"  title="#if($title)#esc($title)#else$!{hit.name}#end" ></i>
+       </div>
 	#else	
 		#if($useoriginal)
 			#set($tpath = "$siteroot/$mediadbappid/services/module/asset/downloads/originals/"+$mediaarchive.asLinkToOriginal($hit))

@@ -12,10 +12,10 @@
 <div class="small-thumb-container draggholder" > 
    #if( ($hit.previewstatus && $hit.previewstatus == "mime") || $alwaysmime)
        #set ($mime = $mediaarchive.getMimeTypeIcon($hit.fileformat))
-       #set( $thumbpath =  "$themeprefix/images/mimetypes/${mime}.png" )
-       
-       <img class="mimethumb  emnothumbnail" style="height:64px" src="$siteroot$thumbpath" border="0"/>
-       
+       ##set( $thumbpath =  "$themeprefix/images/mimetypes/${mime}.png" )
+       <div class="mimethumbcontainer">
+       <i class="bi bi-$!mime mimeicon"  title="#if($title)#esc($title)#else$!{hit.name}#end" ></i>
+       </div>
     #elseif( ($hit.previewstatus != "2" && $hit.previewstatus != "exif" && $hit.previewstatus != "1" && $hit.previewstatus != "generated") && !$mediaarchive.isCatalogSettingTrue("realtimethumbs"))
        $pages.include("$componenthome/convertqueue/previewstatus.html?assetid=$!{hit.id}",$context)
    #else   

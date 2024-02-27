@@ -9,28 +9,19 @@
 
 #if($conversionerrors && $conversionerrors.size() >0)
 	#set ($mime = $mediaarchive.getMimeTypeIcon($hit.fileformat))
-	#set( $thumbpath =  "$themeprefix/images/mimetypes/${mime}.png" )
 	<div class="mimethumbcontainer">
-		<img title="[[Conversion Error]]" class="mimethumb" src="$siteroot$thumbpath" border="0"/>
+		<i class="bi bi-$!mime mimeicon" title="[[Conversion Error]]" ></i>
     	<div class="mimeconversionerror">[[Conversion Error]]</div>
     </div>
 #elseif($publisherrors && $publisherrors.size() >0)
 	#set ($mime = $mediaarchive.getMimeTypeIcon($hit.fileformat))
-	#set( $thumbpath =  "$themeprefix/images/mimetypes/${mime}.png" )
 	<div class="mimethumbcontainer">
-		<img title="[[Publish Error]]" class="mimethumb" style="height:64px" src="$siteroot$thumbpath" border="0"/>
+		<i class="bi bi-$!mime mimeicon" title="[[Publish Error]]" ></i>
     	<div class="mimeconversionerror">[[Publish Error]]</div>
     </div>
 #elseif( $hit.importstatus && $hit.importstatus == "complete")
     $context.putPageValue("hit", $hit)
     #set( $rendertype = $mediaarchive.getMediaRenderType($hit.fileformat))
-    ##$context.putPageValue("type", $rendertype)
-    
-    ###if($thumbsize == "crop")
-    ##$pages.include("$apphome/components/results/thumbnails/small.html",$context)
-    ###else
-    ##$pages.include("$apphome/components/results/thumbnails/image.html",$context)
-    ###end
     
     #if(!$rendertype || $type =="rendertype")
    		#set( $rendertype = "mime" )
@@ -71,11 +62,10 @@
         #end
 
         #set ($mime = $mediaarchive.getMimeTypeIcon($hit.fileformat))
-		
-		#set( $thumbpath =  "$themeprefix/images/mimetypes/${mime}.png" )
-	
+
 		<div class="mimethumbcontainer">
-			<img title="[[Conversions in process]]" class="mimethumb" src="$!siteroot$thumbpath" border="0"/>
+			##<img class="mimethumb" src="$!siteroot$thumbpath" border="0"/>
+			<i class="bi bi-$!mime mimeicon" title="[[Conversions in process]]" ></i>
 			#set( $completed = $totalcount - $remaining )
 	        #set( $total = 80 * $mathutil.getPercentage($completed, $totalcount) )
 	        #set( $total = $total + 20 )
