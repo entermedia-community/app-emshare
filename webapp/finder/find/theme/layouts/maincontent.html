@@ -2,66 +2,65 @@
 	$pages.include("${themeprefix}/layouts/header.html", $context)
 	
 	#set($tab = $content.tab)
-#if($canviewentitiestopmenu)
 	
-	#set($selected = $context.findValue("module") )
-	
-	#ifnull($selected)
-	#set($selected = $moduleid )
-	#end 
-	
-	<div class="entityNavBarContainer autostickywidth" id="entityNavBarContainer">
-	<ul class="entity-navbar">
+	#if($canviewentitiestopmenu)
 		
-		#if($topmenu.isEmpty())
-		<li>
-			<a href="$applink/index.html" class="ajax #ifnull($selected) active #end" 
-				data-targetdiv="applicationcontent" 
-				data-oemaxlevel="3" 
-				data-updateurl="true"
-				data-sidebarcomponent="categories"
-				data-profilepreference="defaultmodule" 
-				data-profilepreference.value="" 
-				data-scrolltotop="true"
-			 	title="[[View All]]">
-					  [[Folders]]
-			</a>
-		</li>
-		#else
-			#foreach( $link in $topmenu)
-				#set( $entity = $mediaarchive.getCachedData("module",$link.toplevelentity) )
-				##sort type			
-				<li >
-					<a href="$applink/views/modules/$entity.getId()/index.html?${entity.getId()}page=1" 
-						class="ajax activelistener #ifnotnull($selected) #if( $selected == $entity.getId()) active#end #end" 
-						data-targetdiv="applicationcontent" 
-						data-oemaxlevel="4" 
-						data-updateurl="true"
-						data-profilepreference="defaultmodule" 
-						data-profilepreference.value="${entity.getId()}" 
-						data-scrolltotop="true"
-						#if($entity.getId() =="asset") data-sidebarcomponent="categories" #end
-						title="[[View]] #text($link)">
-							#text($link)
-					</a>
-				</li>
-			#end
-
-				
-			#if($canviewsettings)
-				<li class="settingslinkmenu">
-					<a href="$applink/views/settings/modules/setup/index.html" 
-					class="ajax" data-targetdiv="applicationcontent" data-oemaxlevel="5"
-					data-sidebarcomponent="settings" 
+		#set($selected = $context.findValue("module") )
+		
+		#ifnull($selected)
+			#set($selected = $moduleid )
+		#end 
+		
+		<div class="entityNavBarContainer autostickywidth" id="entityNavBarContainer">
+		<ul class="entity-navbar">
+			
+			#if($topmenu.isEmpty())
+			<li>
+				<a href="$applink/index.html" class="ajax #ifnull($selected) active #end" 
+					data-targetdiv="applicationcontent" 
+					data-oemaxlevel="3" 
+					data-updateurl="true"
+					data-sidebarcomponent="categories"
+					data-profilepreference="defaultmodule" 
+					data-profilepreference.value="" 
 					data-scrolltotop="true"
-					title="[[Add Menu Options]]">
-					<i class="bi bi-plus-lg"></i></a>
-				</li>
+				 	title="[[View All]]">
+						  [[Folders]]
+				</a>
+			</li>
+			#else
+				#foreach( $link in $topmenu)
+					#set( $entity = $mediaarchive.getCachedData("module",$link.toplevelentity) )
+					<li >
+						<a href="$applink/views/modules/$entity.getId()/index.html?${entity.getId()}page=1" 
+							class="ajax activelistener #ifnotnull($selected) #if( $selected == $entity.getId()) active#end #end" 
+							data-targetdiv="applicationcontent" 
+							data-oemaxlevel="4" 
+							data-updateurl="true"
+							data-profilepreference="defaultmodule" 
+							data-profilepreference.value="${entity.getId()}" 
+							data-scrolltotop="true"
+							#if($entity.getId() =="asset") data-sidebarcomponent="categories" #end
+							title="[[View]] #text($link)">
+								#text($link)
+						</a>
+					</li>
+				#end
+					
+				#if($canviewsettings)
+					<li class="settingslinkmenu">
+						<a href="$applink/views/settings/modules/setup/index.html" 
+						class="ajax" data-targetdiv="applicationcontent" data-oemaxlevel="5"
+						data-sidebarcomponent="settings" 
+						data-scrolltotop="true"
+						title="[[Add Menu Options]]">
+						<i class="bi bi-plus-lg"></i></a>
+					</li>
+				#end
 			#end
-		#end
-	</ul>
-	</div>
-#end
+		</ul>
+		</div>
+	#end
 
 
 
