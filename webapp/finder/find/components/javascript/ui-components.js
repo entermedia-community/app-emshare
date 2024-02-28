@@ -4066,6 +4066,7 @@ uiload = function () {
           "&publishstatus=cancelled",
         success: function () {
           autoreload($("#userdownloadlist"));
+          showDownloadToast(orderitemid, "error", file.itemexportname);
         },
       });
       return;
@@ -4086,6 +4087,7 @@ uiload = function () {
       if (e.lengthComputable) {
         var percentComplete = Math.floor((e.loaded / e.total) * 100);
         $("#dl-" + orderitemid).css("width", percentComplete + "%");
+        $("#dtt-" + orderitemid).text(percentComplete + "%");
         $("#dlp-" + orderitemid).text(humanFileSize(e.loaded) + " / ");
 
         var lastupdated = $("#userdownloadlist").data("lastupdated");
@@ -4109,6 +4111,7 @@ uiload = function () {
             success: function () {
               autoreload($("#userdownloadlist"));
               $("#dl-" + orderitemid).css("width", percentComplete + "%");
+              // $("#dtt-" + orderitemid).text(percentComplete + "%");
               $("#dlp-" + orderitemid).text(humanFileSize(e.loaded) + " / ");
               showDownloadProgress(orderitemid);
             },
@@ -4130,6 +4133,7 @@ uiload = function () {
           "&downloadstartdate=" +
           (downloadStartDate ? downloadStartDate : new Date().toISOString()),
         success: function () {
+          showDownloadToast(orderitemid, "downloading", file.itemexportname);
           autoreload($("#userdownloadlist"));
           showDownloadProgress(orderitemid);
         },
@@ -4153,6 +4157,8 @@ uiload = function () {
           "&publisheddate=" +
           new Date().toISOString(),
         success: function () {
+          downloadInProgress[orderitemid] = null;
+          showDownloadToast(orderitemid, "complete", file.itemexportname);
           autoreload($("#userdownloadlist"));
         },
       });
@@ -4190,9 +4196,80 @@ uiload = function () {
         "&publishstatus=cancelled",
       success: function () {
         autoreload($("#userdownloadlist"));
+        var toast = $("#dt-" + orderitemid);
+        toast.toast("hide");
       },
     });
   });
+
+  var toastTypes = {
+    downloading: {
+      label: "Downloading",
+      icon: "bi bi-download",
+      color: "primary",
+    },
+    complete: {
+      label: "Download Complete",
+      icon: "bi bi-check-circle-fill",
+      color: "success",
+    },
+    error: {
+      label: "Download Error",
+      icon: "bi bi-exclamation-triangle",
+      color: "danger",
+    },
+  };
+  function getToastTemplate(id, type, filename) {
+    var template = "";
+    template += '<div role="alert" id="dt-' + id + '" class="toast">';
+    template += '<div class="toast-header">';
+    template +=
+      '<i class="' +
+      toastTypes[type].icon +
+      " text-" +
+      toastTypes[type].color +
+      '"></i>';
+    template +=
+      '<strong class="downloadToastLabel text-' +
+      toastTypes[type].color +
+      '">' +
+      toastTypes[type].label +
+      "</strong>";
+    // template += '<a class="open">view</a>';
+    template +=
+      '<button type="button" class="close" data-dismiss="toast">hide</button>';
+    template += "</div>";
+    template += '<div class="toast-body">';
+    template += '<span class="toast-filename">' + filename + "</span>";
+    if (type == "downloading")
+      template += '<span class="dprog" id="dtt-' + id + '"></span>';
+    template += "</div>";
+    template += "</div>";
+    return $(template);
+  }
+
+  function showDownloadToast(id, type, filename) {
+    var check = $("#toastList");
+    if (!check.length) {
+      var div = $('<div id="toastList"></div>');
+      $("body").append(div);
+    }
+    check = $("#dt-" + id);
+    if (check.length) {
+      check.remove();
+    }
+
+    var div = getToastTemplate(id, type, filename);
+    console.log(div.html());
+    $("#toastList").append(div);
+    var toast = $("#dt-" + id);
+    toast.toast({ autohide: true, delay: 15000 });
+    toast.toast("show");
+    toast.on("hidden.bs.toast", function () {
+      toast.remove();
+    });
+  }
+
   lQuery(".togglesharelink").livequery("change", function (e) {
     var url = $("input.sharelink").val();
     var value = $(this).data("value");
