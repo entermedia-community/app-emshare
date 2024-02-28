@@ -13,28 +13,7 @@
 ##		<a class="btn btn-sm btn-secondary emdialog" href="$home$content.dataroot/list/viewmapping.html?searchtype=$searcher.searchType"  >[[View Mapping]]</a>
 
 
-        <a class="btn btn-sm btn-secondary " style="display:inline-block;" id="advanced-dm-search-btn">[[Search]]</a>
-        <script>
-            $('#advanced-dm-search-btn').click(function(){
-                    $('#advanced-dm-search').toggle();
-            });
-        </script>
-         
-        <div id="advanced-dm-search" style="display: none;">
-            <form id="simple-dm-search-h" class="novalidate" style="width: 100%" name="search" method="post" 
-            	action="$home$content.dataroot/list/index.html"
-            	class="inlineform ajaxform"
-        		data-targetdivinner="datamanager-workarea">
-        			#if( $hits.getInput("id") == "*")
-        				All
-        				$context.putPageValue("hits",false)
-        			#end
-        			
-                    $pages.include("/${applicationid}/components/xml/searchfields.html",$context)
-                    <input type="hidden" name="catalogid" value="$!searcher.catalogId" />
-                    <input type="hidden" name="searchtype" value="$!searcher.searchType" />
-                    <input type="hidden" name="view" value="$!view" />
-                    <input class="btn btn-sm btn-primary" type="submit" value="[[Search]]" />
-            </form>
-        </div>
+        <a class="btn btn-sm btn-secondary emdialog" style="display:inline-block;" href="$home$content.dataroot/list/search.html" data-view="$!view" data-searchtype="$searchtype"  data-hidefooter="true">[[Search]]</a>
+
+        
 </div>
