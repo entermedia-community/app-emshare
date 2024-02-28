@@ -3,20 +3,41 @@
 	class="emfinderapp setpagetitle"
 	data-user="$!user.getId()" 
 	data-siteroot="$siteroot"
-	data-home="$siteroot"
-	data-apphome="$apphome" 
-	data-catalogid="$catalogid" 
+	data-home="$!siteroot"
+	data-apphome="$!apphome" 
+	data-catalogid="$!catalogid" 
 	data-themeprefix="${themeprefix}" 
 	data-browserlanguage="$!{browserlanguage}" 
-	data-componenthome="$componenthome"
+	data-componenthome="$!componenthome"
 	data-moduleid="$!module.getId()" 
 	
 	data-titlepostfix='$!mediaarchive.getCatalogSettingValue("sitetitle")'
-	data-setpagetitle="#text($category)#text($selectedentity)#text($module)"
+	data-setpagetitle="#text($!category)#text($selectedentity)#text($module)"
 	
 	data-mediadbappid="$!mediaarchive.getMediaDbId()"
 	data-entermediakey="$!mediaarchive.getUserManager().getEnterMediaKey($user)"
 	data-editmode='$!user.get("oe_edit_mode")'>
+    
+    
+    #if ( $canviewappsmenu && !$appsmenu.isEmpty())
+    	<div id="appsmenu" class="appsmenu">
+			<ul>
+				#foreach( $link in $appsmenu)
+					#set($linkurl = $link.get("url"))
+					#ifnotnull($linkurl)
+						<li >
+							<a href='$linkurl' 
+								class='#if( $link.deploypath == $apphome) active#end' 
+								title='#if( $link.deploypath != $apphome)[[Go to]] #end #text($link)'>
+									#text($link)
+							</a>
+						</li>
+					#end
+				#end
+			</ul>
+		</div>
+    #end
+    
     
 	#if ( $canviewerrors )
 		<div id="errordiv"></div>
@@ -24,17 +45,13 @@
 	<div id="loading-window">
 		<div class="d-flex flex-column align-items-center">
 			<div class="lds-dual-ring"></div>
-			<div class="loading-text">Loading</div> 
+			<div class="loading-text">[[Loading]]</div> 
 		</div>
 	</div>
-	##<div id="applicationcontainer" class="mediaappcontent emfinderapp">
 		
-		  ##$pages.include("${themeprefix}/layouts/header.html", $context)
 		  
-		  $pages.includeContent()
+    $pages.includeContent()
 		  
-	##<div class="clearfix"></div>	 
-	##</div>
 	 
 	<div id="footer" role="contentinfo" class="emfooter">
 		$pages.include("${themeprefix}/layouts/footer.html", $context)
