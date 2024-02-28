@@ -49,6 +49,32 @@
 				</a>
 			</li>
 			#end
+			
+			#if(!$ismulti && ($rendertype == "video"))
+		   		#if($canviewtimeline)
+		   			<li class='footermenu bottomtab #if($opentab == "viewtimeline")tabselected#end'>
+				   	<a class="expandmenu assettab" 
+							data-link="$siteroot$componenthome/mediaviewer/fullscreen/tabs/viewactions.html?action=timeline" title="[[Timeline]]"
+							data-assettab="viewtimeline"
+							data-assettabname="[[Timeline]]" >
+						<i class="bi bi-play-circle mr-1"></i> [[Timeline]]
+						</a>
+				   	</li>
+		   		#end
+			#end
+			
+			#if(!$ismulti && ($rendertype == "video" || $rendertype == "audio"))
+			   		#if($canviewclosedcaptions)
+			   			<li class='footermenu bottomtab #if($opentab == "viewclosedcaptions")tabselected#end'>
+					   	<a class="expandmenu assettab" 
+								data-link="$siteroot$componenthome/mediaviewer/fullscreen/tabs/viewactions.html?action=closedcaptions" title="[[Closed Captions]]"
+								data-assettab="viewclosedcaptions"
+								data-assettabname="[[Closed Captions]]" >
+							<i class="bi bi-badge-cc mr-1"></i> [[Closed Captions]]
+							</a>
+					   	</li>
+			   		#end
+			#end
 
 			
 			#if (!$ismulti)
@@ -69,9 +95,9 @@
 ##			   	</li>
 ##			 #end
 			 
-			 #set( $originalpath = $mediaarchive.asLinkToOriginal($asset) )
+			#set( $originalpath = $mediaarchive.asLinkToOriginal($asset) )
 			 
-			#if(!$previewonly && !$ismulti && $canviewconversions)
+			#if(!$previewonly && !$ismulti && $canviewconversions && ($rendertype != "audio"))
 			   	<li class="footermenu hidemulti bottomtab #if($opentab == 'viewdownloads')tabselected #end">
 			   	<a class="expandmenu assettab " 
 						data-link="$siteroot$componenthome/mediaviewer/fullscreen/tabs/viewactions.html?action=conversions" 
@@ -153,43 +179,9 @@
 		   		</div>
 			#end
 						
-			#if(!$ismulti && ($rendertype == "video"))
-		   		#if($canviewtimeline)
-		   			<li class='footermenu bottomtab #if($opentab == "viewtimeline")tabselected#end'>
-				   	<a class="expandmenu assettab" 
-							data-link="$siteroot$componenthome/mediaviewer/fullscreen/tabs/viewactions.html?action=timeline" title="[[Timeline]]"
-							data-assettab="viewtimeline"
-							data-assettabname="[[Timeline]]" >
-						<i class="bi bi-play-circle mr-1"></i> [[Timeline]]
-						</a>
-				   	</li>
-		   		#end
-			#end
 			
-			#if(!$ismulti && ($rendertype == "video" || $rendertype == "audio"))
-			   		#if($canviewclosedcaptions)
-			   			<li class='footermenu bottomtab #if($opentab == "viewclosedcaptions")tabselected#end'>
-					   	<a class="expandmenu assettab" 
-								data-link="$siteroot$componenthome/mediaviewer/fullscreen/tabs/viewactions.html?action=closedcaptions" title="[[Closed Captions]]"
-								data-assettab="viewclosedcaptions"
-								data-assettabname="[[Closed Captions]]" >
-							<i class="bi bi-badge-cc mr-1"></i> [[Closed Captions]]
-							</a>
-					   	</li>
-			   		#end
-			   	#end
 			 
 			 
-			 #if (!$previewonly && ($canviewcomments || $canassetannotate))
-				 <li class='footermenu hidemulti bottomtab #if($opentab == "viewcollaborate")tabselected#end'>
-					<a class="expandmenu assettab" 
-						data-link="$siteroot$componenthome/mediaviewer/fullscreen/tabs/viewcollaborate.html" title="[[Approvals]]"
-						data-assettab="viewcollaborate" >
-					<i class="bi bi-chat-dots mr-1"></i> [[Chat]]  
-					</a>
-				</li>
- 			#end
-
 			#if ( $canshareasset && !$ismulti )
 			#if ($canpublish ||
 			$canemaillink ||
@@ -327,23 +319,7 @@
 		    </li>
 		    #end
 		    #end
-		    #if(!$ismulti )
-				<li class="footermenu bottomtab">
-					<form name="lockform" class="autosubmit ajaxform" action="$siteroot$componenthome/mediaviewer/player/summary-mini.html?oemaxlevel=1" data-targetdiv="summary-mini">
-						<input type="hidden" name="assetid" value="${asset.id}"/>
-						<div class="assetlocked">
-							<input id="assetlocked" class="togglelock form-check-input" data-uncheckedlabel="[[Lock Asset]]" data-checkedlabel="[[Asset locked by]]" data-user="$user" type="checkbox" #if($asset.isLocked()) checked #end /> 
-							<label for="assetlocked" class="form-check-label-left m-0">
-								#if(!$asset.isLocked())
-									[[Lock]]
-								#else
-									[[Asset locked by]] <strong>$asset.getLockOwner()</strong>
-								#end
-							</label>
-						</div> 
-					</form>
-				</li>
-			#end
+		    
 			
 			#if($candownload && $asset.getFileFormat()  != "pdf")
 			 		<li class="footermenu bottomtab" >

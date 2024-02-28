@@ -127,6 +127,22 @@ $context.putPageValue("showalllanguagevalues",true)
 							<a class="ajax"
 								href="$siteroot$apphome/views/modules/asset/editor/edit/metadata/write.html?oemaxlevel=1&assetid=$asset.getId()&force=true" 
 								data-targetdiv="assetrwmetadata" ><i class="fas fa-download"></i> [[Rewrite Metadata]]</a>
+							
+							<form name="lockform" class="autosubmit ajaxform" style="display: inline-block;" action="$siteroot$componenthome/mediaviewer/player/summary-mini.html?oemaxlevel=1" data-targetdiv="summary-mini">
+								<input type="hidden" name="assetid" value="${asset.id}"/>
+								<div class="assetlocked">
+									<input id="assetlocked" class="togglelock form-check-input" data-uncheckedlabel="[[Lock Asset]]" data-checkedlabel="[[Asset locked by]]" data-user="$user" type="checkbox" #if($asset.isLocked()) checked #end /> 
+									<label for="assetlocked" class="form-check-label-left m-0">
+										#if(!$asset.isLocked())
+											[[Lock]]
+										#else
+											[[Asset locked by]] <strong>$asset.getLockOwner()</strong>
+										#end
+									</label>
+								</div> 
+							</form>
+							
+							
 							<span id="assetrwmetadata"></span>
 					</div>
 							
