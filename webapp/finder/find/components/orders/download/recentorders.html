@@ -8,8 +8,11 @@
 		#set($asset = $mediaarchive.getAsset($assetid))
 		#set($publishstatus = $downloadorder.getCurrentItem().get("publishstatus"))
 		#set($status = $downloadorder.getCurrentItem().get("status"))
+		
+		##set($errordetails = $downloadorder.getCurrentItem().get("errordetails"))
 
-		<div class="sidebarorder d-block py-2 px-2 $publishstatus" id="d-$downloadorder.getCurrentItem()">
+
+		<div class="sidebarorder d-block py-2 px-2 $publishstatus $status" id="d-$downloadorder.getCurrentItem()">
 
 			<div id="dl-$downloadorder.getCurrentItem()" class="downloadProgress" style="display:none;width:0%">
 				<div class="shine" style="display:none;"></div>
@@ -32,27 +35,7 @@
 								[[Zip File]] ($downloadorder.getItemCount() [[files]])
 							#end
 						</div>
-						<div class="d-flex align-items-center">
-							#if($publishstatus == "complete" )
-								#set( $orderage = $!context.getAge($downloadorder.getPublishedDate()))
-								#ifnotnull($orderage )
-									<span class="date">
-										$orderage [[ago]]
-									</span>
-									<i class="bi bi-dot mx-1"></i>
-								#end
-							#else
-								#set( $orderage = $!context.getAge($downloadorder.getEstimatedEndDate()))
-								#ifnotnull($orderage )
-									<span class="date">
-											$orderage [[remaining]]
-									</span>
-									<i class="bi bi-dot mx-1"></i>
-								#end
-							#end
-							
-							
-											
+						<div class="d-flex align-items-center">			
 							<span class="status">
 								#if($publishstatus == "readytopublish" )
 									[[Ready to Download]]
@@ -72,36 +55,48 @@
 								$sizer.inEnglish( $downloadorder.totalBytes() )
 							</span>
 						</div>
+						<div class="d-flex align-items-center">	
+							#if($publishstatus == "complete" )
+								#set( $orderage = $!context.getAge($downloadorder.getPublishedDate()))
+								#ifnotnull($orderage )
+									<span class="date">
+										$orderage [[ago]]
+									</span>
+								#end
+							#else
+								#set( $orderage = $!context.getAge($downloadorder.getEstimatedEndDate()))
+								#ifnotnull($orderage )
+									<span class="date">
+											$orderage [[remaining]]
+									</span>
+								#end
+							#end
+						</div>
 					</div>
 				</div>
 				<div class="file-thumb">
-					#if($publishstatus == "complete")
-						<i class="bi bi-check-circle-fill success"></i>
-					#elseif($publishstatus == "readytopublish" )
-						<i class="bi bi bi-cloud-arrow-down-fill ready"></i>
-					#elseif($publishstatus == "publishingexternal" ) 
-						<div class="spinner-border text-white"></div>
-					#elseif($publishstatus == "cancelled" ) 
-						<i class="bi bi-slash-circle-fill cancelled"></i>
-					#elseif($publishstatus == "new" ) 
-						<i class="bi bi-hourglass-split processing"></i>
-					#end
 					#if($status == "error")
 						<i class="bi bi-x-circle-fill error"></i>
+					#else
+						#if($publishstatus == "complete")
+							<i class="bi bi-check-circle-fill success"></i>
+						#elseif($publishstatus == "readytopublish" )
+							<i class="bi bi bi-cloud-arrow-down-fill ready"></i>
+						#elseif($publishstatus == "publishingexternal" ) 
+							<div class="spinner-border text-white"></div>
+						#elseif($publishstatus == "cancelled" ) 
+							<i class="bi bi-slash-circle-fill cancelled"></i>
+						#elseif($publishstatus == "new" ) 
+							<i class="bi bi-hourglass-split processing"></i>
+						#end
 					#end
-					
 					$context.putPageValue("asset", $asset)
 					$context.putPageValue("thumbsize","carousel")
 					$pages.include("$componenthome/results/thumbnails/small.html",$context)
 					
 				</div>
 				<div class="actions">
-					#if( $downloadorder.getItemCount() > 1 )
-						<a href="#">
-							<i class="bi bi-card-list"></i>
-						</a>
-					#end 
-					#if($publishstatus == "complete" || $publishstatus == "readytopublish" || $publishstatus == "cancelled")
+					#if($status != "error" && ($publishstatus == "complete" || $publishstatus == "readytopublish" || $publishstatus == "cancelled"))
 						<a href="#" class="redownloadorder" 
 							data-orderitemid="$downloadorder.getCurrentItem()" 
 							data-itemexportname='$downloadorder.getCurrentItem().get("itemexportname")'
@@ -128,4 +123,17 @@
 	#if( $downloadorders.size() == 0 )
 		<p class="text-center text-muted mt-4">[[No recent downloads]]</p>
 	#end
+</div>
+<div role="alert" id="downloadToast" class="toast" data-autohide="false">
+  <div class="toast-header">
+    <i class="bi bi-info-circle-fill text-primary"></i>
+    <strong class="mr-auto">Bootstrap</strong>
+    <small>11 mins ago</small>
+    <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="toast-body">
+    Hello, world! This is a toast message.
+  </div>
 </div>
