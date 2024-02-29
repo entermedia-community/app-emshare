@@ -557,6 +557,36 @@ $("#downloadImg").click(function () {
   a.click();
 });
 
+
+
+$("#saveAsImg").click(function () {
+  
+  console.log(window.__imageRenderWidth);
+  var form = $("#saveasform");
+  
+  var formdata = new FormData(form[0]);
+  formdata.append("image", 
+	  canvas.toDataURL({
+	    left: window.__imageRenderLeft,
+	    top: window.__imageRenderTop,
+	    width: window.__imageRenderWidth,
+	    height: window.__imageRenderHeight,
+	  })
+  );
+
+  $.ajax({
+    url: form.attr("action"),
+    data: formdata,
+    type: 'POST',
+    contentType: false, // NEEDED, DON'T OMIT THIS (requires jQuery 1.6+)
+    processData: false, // NEEDED, DON'T OMIT THIS
+    //Refresh imageeditor
+  });
+  
+});
+
+
+
 $("#saveAs").click(function () {
   var mask = $(this).siblings(".mask");
   var saveAs = $(this).siblings(".save-as-menu");
