@@ -192,50 +192,24 @@ $(document).ready(function()
 
 
 	lQuery(".viewassetsbtn").livequery("click", function(e) {
-		
-		var btn = jQuery(this);
-		var href = null;
-		if(btn.data("entityupload")) {
-			//display entity dialog
-			btn.addClass("emdialog");
-			btn.addClass("entity-dialog");
-			var entitytype = $("#entitypickerentities").data("selectedentity");
-			var entityid = $("#entitypickerentities").data("selectedentityid");
-			if (entitytype && entityid) {
-				href = apphome+"/views/modules/"+entitytype+"/components/gridsample/preview/entity.html?id="+entityid+"&searchtype="+entitytype;
-				btn.attr("href", href);
-				console.log(href);
-				emdialog(btn, e);
-				return;
-			}
-		}
-		
 		e.preventDefault();
 		
-	    var options = btn.data();
+		var btn = jQuery(this);
+		var options = btn.data();
+		var href = null;
 		var collectionid = jQuery("#currentcollection").val();
 		var nodeid = $("#nodeid").val();
-	    
-	    var customviewupload = btn.data("customviewupload");
+		
+		if(btn.data("entityupload")) {
+			var tab_media = $("#tab_tab_media");
+			var selector = tab_media.attr("href");
+			var container = $(selector);
+			container.data("sortby", "assetaddeddateDown");
+			tab_media.trigger("click");
+			return;
+		}
 
-	    if(customviewupload) {
-	    		href= customviewupload;
-	    		if (collectionid) {
-	    			if (href.indexOf("?") > -1) {
-	    				href = href + "&";
-	    			}
-	    			else {
-	    				href = href + "?";
-	    			}
-	    			href = href + "collectionid=" + collectionid;
-	    		}
-	    		if( nodeid)
-		    	{
-		    		href = href + "&nodeID=" + nodeid;
-		    	}
-	    		href = href + "&sortby=assetaddeddateDown"
-	    }
-	    else if(collectionid) {
+		if(href == null && collectionid) {
 	    	href = apphome+"/views/modules/librarycollection/media/showcategory.html?collectionid="+collectionid+"&clearfilters=true&sortby=assetaddeddateDown";
 	    	if( nodeid)	{
 				 href = apphome+"/views/modules/asset/viewfiles/"+ nodeid +"/index.html?sortby=assetaddeddateDown";
@@ -249,11 +223,11 @@ $(document).ready(function()
 	    	}
 	    	options.oemaxlevel = btn.data("oemaxlevel");
 	    }
-	    else if( nodeid) {
+	    else if(href == null &&  nodeid) {
 	         href = apphome+"/views/modules/asset/viewfiles/"+ nodeid +"/index.html?sortby=assetaddeddateDown";
 		     options.oemaxlevel = btn.data("oemaxlevel");	
 		}
-	    else  {
+	    else if(href == null )  {
 	        href = apphome+"/views/modules/asset/index.html?sortby=assetaddeddateDown";
 	    	options.oemaxlevel = 2;	
 		}
@@ -479,6 +453,7 @@ function bytesToSize(bytes, precision)
 								  
 
 		    				   }
+		    				   /*
 		    				   //new ajaxautoreload
 								var classes = uploadformarea.data("ajaxreloadtargets"); //assetresults, projectpage, sidebaralbums
 								if(classes) 
@@ -493,7 +468,8 @@ function bytesToSize(bytes, precision)
 									  	 	}
 										});
 									});
-								}
+								}*/
+								
 		    				   /*
 		    				   if(uploadformarea.data("onupload")=="reloadentity") {
 		    					   var entityid=uploadformarea.data("entityid");
