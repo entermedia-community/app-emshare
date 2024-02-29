@@ -4037,6 +4037,8 @@ autoreload = function (div, callback) {
   if (url != undefined) {
     var options = div.data();
     replaceelement(url, div, options, callback);
+    
+    gridResize();
   }
 };
 
@@ -4179,19 +4181,12 @@ jQuery(document).ready(function () {
 });
 
 jQuery(window).on("resize", function () {
-  //resizegallery(); //old
+
   adjustdatamanagertable();
   resizesearchcategories();
   resizecolumns();
   gridResize();
-  /*
-	var tablewidth = $("#main-results-table").width();
-	if(tablewidth !== undefined) {
-		var containerswidth = $(".autostickywidth").width();
-		if(tablewidth > containerswidth) {
-			$(".autostickywidth").css("min-width",( + 62) + "px");
-		}
-	}*/
+
 });
 
 jQuery(document).on("domchanged", function () {

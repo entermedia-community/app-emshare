@@ -1657,11 +1657,16 @@ function getCurrentGrid() {
   return grid;
 }
 gridResize = function () {
+	console.log("gridResize");
   var grid = getCurrentGrid();
   if (!grid) {
     return;
   }
-
+  
+  if(!grid.is(":visible")) {
+	  return;
+  }
+console.log("gridResize resizing");
   var fixedheight = grid.data("maxheight");
   if (fixedheight == null || fixedheight.length == 0) {
     fixedheight = 200;
