@@ -211,19 +211,29 @@ runajaxonthis = function (inlink, e) {
         $(".ajaxprogress").hide();
         //inlink.css("enabled",true);
         inlink.removeAttr("disabled");
-        //Close Dialog
-        var closedialog = inlink.data("closedialog");
-        if (closedialog && inlinkmodal != null) {
-          closeemdialog(inlinkmodal);
-        }
-        //Close MediaViewer
-        var closemediaviewer = inlink.data("closemediaviewer");
-        if (closemediaviewer) {
-          var overlay = $("#hiddenoverlay");
-          if (overlay.length) {
-            hideOverlayDiv(overlay);
-          }
-        }
+        
+        //Close All Dialogs
+        var closealldialogs = inlink.data("closealldialogs");
+        if(closealldialogs)
+        {
+			closeallemdialogs();	
+		}
+		else 
+		{
+	        //Close Dialog
+	        var closedialog = inlink.data("closedialog");
+	        if (closedialog && inlinkmodal != null) {
+	          closeemdialog(inlinkmodal);
+	        }
+	        //Close MediaViewer
+	        var closemediaviewer = inlink.data("closemediaviewer");
+	        if (closemediaviewer) {
+	          var overlay = $("#hiddenoverlay");
+	          if (overlay.length) {
+	            hideOverlayDiv(overlay);
+	          }
+	        }
+	     }
         //Close Navbar if exists
         var navbar = inlink.closest(".navbar-collapse");
         if (navbar) {
@@ -1224,6 +1234,18 @@ uiload = function () {
 
     setPageTitle();
   };
+  
+    closeallemdialogs = function () {
+		$(".modal").each(function() {
+			var modaldialog = $(this);
+			modaldialog.modal("hide");
+			modaldialog.remove();
+		}); 
+		var overlay = $("#hiddenoverlay");
+	      if (overlay.length) {
+	        hideOverlayDiv(overlay);
+	      }
+    };
 
   setPageTitle = function (element) {
     if (element && !element.length) {
