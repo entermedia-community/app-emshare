@@ -31,24 +31,27 @@ $context.putPageValue("showalllanguagevalues",true)
 			$pages.include("$componenthome/detaileditor/generalinformation/metadatapanel.html", $context)
 		
 			#set( $libraries = $asset.getLibraries())
-			#if( $libraries.size() > 0)
-	  				
-	  				<div class="asset-data-detail assetpanel-editor-box" >
-	  				  <h4>[[Libraries]]</h4>
-	  				  <div class="emlist">
-	          				#foreach($library in $libraries)
-	          					 #set( $division = $mediaarchive.getData("division",$library.division ) )
-	          					 #if($division)
-	          					 	#set($ldata = "$division.getName($context) / $library.getName($context)" )
-	          					 #else
-	          					 	#set($ldata = $library.getName($context) )
-	          					 #end
-	          					<a href="$siteroot$apphome/views/modules/library/view/view.html?id=$library.getId()" class="list-library list-hover"><i class="fas fa-boxes"></i> $ldata</a>
-	          			
-	          				#end
-	  				  </div>
-	  				</div>
-			#end	
+			
+			#ifnotnull($libraries))
+				#if( $libraries.size() > 0)
+		  				
+		  				<div class="asset-data-detail assetpanel-editor-box" >
+		  				  <h4>[[Libraries]]</h4>
+		  				  <div class="emlist">
+		          				#foreach($library in $libraries)
+		          					 #set( $division = $mediaarchive.getData("division",$library.division ) )
+		          					 #if($division)
+		          					 	#set($ldata = "$division.getName($context) / $library.getName($context)" )
+		          					 #else
+		          					 	#set($ldata = $library.getName($context) )
+		          					 #end
+		          					<a href="$siteroot$apphome/views/modules/library/view/view.html?id=$library.getId()" class="list-library list-hover"><i class="fas fa-boxes"></i> $ldata</a>
+		          			
+		          				#end
+		  				  </div>
+		  				</div>
+				#end	
+			#end
 									
 			$pages.include("$componenthome/categories/asset/listassetcategories.html",$context)
 				
