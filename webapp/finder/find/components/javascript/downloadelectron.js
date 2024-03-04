@@ -139,7 +139,6 @@ jQuery(document).ready(function () {
     });
 
     ipcRenderer.on(`download-progress-${orderitemid}`, (event, progress) => {
-        if (progress.lengthComputable) {
             var percentComplete = Math.floor((progress.loaded / progress.total) * 100);
             $("#dl-" + orderitemid).css("width", percentComplete + "%");
             $("#dtt-" + orderitemid).text(percentComplete + "%");
@@ -169,7 +168,6 @@ jQuery(document).ready(function () {
                         showDownloadProgress(orderitemid);
                     },
                 });
-            }
         }
     });
 
@@ -184,11 +182,6 @@ jQuery(document).ready(function () {
     });
 
     ipcRenderer.on(`download-finished-${orderitemid}`, (event, filePath) => {
-        var a = document.createElement("a");
-        var url = URL.createObjectURL(filePath);
-        a.href = url;
-        a.download = file.itemexportname;
-        a.click();
         successDownloadProgress(orderitemid);
         $.ajax({
             url:
@@ -225,7 +218,7 @@ jQuery(document).ready(function () {
     if (!confirmed) return;
     var orderitemid = $(this).data("orderitemid");
     if (downloadInProgress[orderitemid]) {
-      downloadInProgress[orderitemid].abort();
+      ipcRenderer.send('cancel-download', { orderitemid });
       downloadInProgress[orderitemid] = null;
     }
 
