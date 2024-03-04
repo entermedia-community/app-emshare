@@ -105,18 +105,7 @@ runajaxonthis = function (inlink, e) {
   var targetDiv = finddata(inlink, "targetdiv");
   var replaceHtml = true;
 
-  /*
-	 * Moved to always search targetdivinner
-	if( !targetDiv )
-	{
-		targetDiv = finddata(inlink,"targetdivinner");
-		if (targetDiv) {
-			replaceHtml = false;
-		}
-	}*/
-
   var targetDivInner = finddata(inlink, "targetdivinner");
-  //if (!targetDiv && targetDivInner) {
   if (targetDivInner) {
     targetDiv = targetDivInner;
     replaceHtml = false;
@@ -135,7 +124,6 @@ runajaxonthis = function (inlink, e) {
     var row = inlink.closest("li");
     row.addClass("current");
   }
-  //var options = findalldata(inlink); //-- causing issues with ajax regular links, moved down
 
   var options = $(inlink).data();
   if (options.isEmptyObject || $(inlink).data("findalldata")) {
@@ -160,15 +148,7 @@ runajaxonthis = function (inlink, e) {
       }
     }
 
-    if (typeof global_updateurl !== "undefined" && global_updateurl == false) {
-      //globaly disabled updateurl
-    } else {
-      var updateurl = inlink.data("updateurl");
-      if (updateurl) {
-        //console.log("Saving state ", updateurl);
-        history.pushState($("#application").html(), null, nextpage);
-      }
-    }
+   
     showLoader();
     jQuery
       .ajax({
@@ -231,27 +211,50 @@ runajaxonthis = function (inlink, e) {
         $(".ajaxprogress").hide();
         //inlink.css("enabled",true);
         inlink.removeAttr("disabled");
-        //Close Dialog
-        var closedialog = inlink.data("closedialog");
-        if (closedialog && inlinkmodal != null) {
-          closeemdialog(inlinkmodal);
-        }
-        //Close MediaViewer
-        var closemediaviewer = inlink.data("closemediaviewer");
-        if (closemediaviewer) {
-          var overlay = $("#hiddenoverlay");
-          if (overlay.length) {
-            hideOverlayDiv(overlay);
-          }
-        }
+        
+        //Close All Dialogs
+        var closealldialogs = inlink.data("closealldialogs");
+        if(closealldialogs)
+        {
+			closeallemdialogs();	
+		}
+		else 
+		{
+	        //Close Dialog
+	        var closedialog = inlink.data("closedialog");
+	        if (closedialog && inlinkmodal != null) {
+	          closeemdialog(inlinkmodal);
+	        }
+	        //Close MediaViewer
+	        var closemediaviewer = inlink.data("closemediaviewer");
+	        if (closemediaviewer) {
+	          var overlay = $("#hiddenoverlay");
+	          if (overlay.length) {
+	            hideOverlayDiv(overlay);
+	          }
+	        }
+	     }
         //Close Navbar if exists
         var navbar = inlink.closest(".navbar-collapse");
         if (navbar) {
           navbar.collapse("hide");
         }
+        
+      
 
         $(window).trigger("resize");
+        
         hideLoader();
+        
+       if (typeof global_updateurl !== "undefined" && global_updateurl == false) {
+	      //globaly disabled updateurl
+	    } else {
+	      var updateurl = inlink.data("updateurl");
+	      if (updateurl) {
+	        //console.log("Saving state ", updateurl);
+	        history.pushState($("#application").html(), null, nextpage);
+	      }
+	    }
       });
   }
 
@@ -764,24 +767,6 @@ uiload = function () {
 
       var formmodal = form.closest(".modal");
 
-      if (
-        typeof global_updateurl !== "undefined" &&
-        global_updateurl == false
-      ) {
-        //globaly disabled updateurl
-      } else {
-        //Update Address Bar
-        var updateurl = form.data("updateurl");
-        if (updateurl) {
-          //serialize and attach
-          var params = form.serialize();
-          var url = form.attr("action");
-          url += (url.indexOf("?") >= 0 ? "&" : "?") + params;
-          history.pushState($("#application").html(), null, url);
-          window.scrollTo(0, 0);
-        }
-      }
-
       form.ajaxSubmit({
         data: data,
         xhrFields: {
@@ -855,6 +840,23 @@ uiload = function () {
       var reset = form.data("reset");
       if (reset == true) {
         form.get(0).reset();
+      }
+      
+      
+      if (typeof global_updateurl !== "undefined" && global_updateurl == false) 
+      {
+        //globaly disabled updateurl
+      } else {
+        //Update Address Bar
+        var updateurl = form.data("updateurl");
+        if (updateurl) {
+          //serialize and attach
+          var params = form.serialize();
+          var url = form.attr("action");
+          url += (url.indexOf("?") >= 0 ? "&" : "?") + params;
+          history.pushState($("#application").html(), null, url);
+          window.scrollTo(0, 0);
+        }
       }
       return false;
     }
@@ -1025,10 +1027,8 @@ uiload = function () {
         data: options,
         success: function (data) {
           //--Entities
-          if (
-            dialog.hasClass("entity-dialog") &&
-            dialog.closest(".modal").length !== 0
-          ) {
+           if ( dialog.hasClass("entity-dialog") &&   dialog.closest(".modal").length !== 0 ) 
+          {
             //find tab
             var tabid = dialog.data("tabid");
             if (!tabid) {
@@ -1047,8 +1047,10 @@ uiload = function () {
               container = dialog.closest(".entity-wraper");
               container.replaceWith(data);
               tabbackbutton(parent);
+            
               return;
             }
+                
           } else {
             modaldialog.html(data);
             if (width) {
@@ -1121,14 +1123,19 @@ uiload = function () {
               //globaly disabled updateurl
             } else {
               //Update Address Bar
-              var updateurl = dialog.data("urlbar");
-              if (!updateurl) {
-                updateurl = dialog.data("updateurl");
+              var updateurl = dialog.data("updateurl");
+              if (updateurl) 
+              {
+				  var urlbar = dialog.data("urlbar");
+				  if(!urlbar) 
+				  {
+					  urlbar = link;
+					}
+                	history.pushState($("#application").html(), null, urlbar);
+                	window.scrollTo(0, 0);
               }
-              if (updateurl) {
-                history.pushState($("#application").html(), null, link);
-                window.scrollTo(0, 0);
-              }
+                         
+              
             }
 
             adjustzindex(modalinstance);
@@ -1227,6 +1234,18 @@ uiload = function () {
 
     setPageTitle();
   };
+  
+    closeallemdialogs = function () {
+		$(".modal").each(function() {
+			var modaldialog = $(this);
+			modaldialog.modal("hide");
+			modaldialog.remove();
+		}); 
+		var overlay = $("#hiddenoverlay");
+	      if (overlay.length) {
+	        hideOverlayDiv(overlay);
+	      }
+    };
 
   setPageTitle = function (element) {
     if (element && !element.length) {
@@ -1321,8 +1340,12 @@ uiload = function () {
       link.data("tabid"),
       function () {}
     );
-
     autoreload(container);
+    
+    var url = apphome + '/views/modules/' +topmoduleid + '/index.html?entity=' + entityid + '&entitytabopen=' + tabid;
+    history.pushState($("#application").html(), null, url);
+
+    
   });
 
   lQuery("a.entity-tab-close").livequery("click", function (event) {
@@ -1635,8 +1658,10 @@ uiload = function () {
           (emdialoglink.indexOf("?") >= 0 ? "&" : "?") + "id=" + rowid;
         row.data("emdialoglink", emdialoglink);
         row.data("id", rowid);
-        row.data("searchtype", emselectable.data("searchtype"));
         row.data("hitssessionid", emselectable.data("hitssessionid"));
+        row.data("updateurl", true);
+        var urlbar = apphome + '/views/modules/' +emselectable.data("searchtype") + '/index.html?entity=' + rowid;
+        row.data("urlbar", urlbar );
         emdialog(row, event);
       }
     }
@@ -3278,7 +3303,7 @@ uiload = function () {
     if (toggler.data("action") == "home") {
       options["sidebarcomponent.value"] = "";
       options["sidebarcomponent"] = "home";
-      history.pushState($("#application").html(), null, url);
+      
       jQuery.ajax({
         url: url,
         async: false,
@@ -3294,6 +3319,8 @@ uiload = function () {
           setPageTitle(cell);
 
           $(window).trigger("resize");
+          
+          history.pushState($("#application").html(), null, url);
         },
         xhrFields: {
           withCredentials: true,
@@ -3321,6 +3348,8 @@ uiload = function () {
           setPageTitle(cell);
 
           $(window).trigger("resize");
+          
+          history.pushState($("#application").html(), null, url);
         },
         xhrFields: {
           withCredentials: true,
@@ -4037,6 +4066,8 @@ autoreload = function (div, callback) {
   if (url != undefined) {
     var options = div.data();
     replaceelement(url, div, options, callback);
+    
+    gridResize();
   }
 };
 
@@ -4179,19 +4210,12 @@ jQuery(document).ready(function () {
 });
 
 jQuery(window).on("resize", function () {
-  //resizegallery(); //old
+
   adjustdatamanagertable();
   resizesearchcategories();
   resizecolumns();
   gridResize();
-  /*
-	var tablewidth = $("#main-results-table").width();
-	if(tablewidth !== undefined) {
-		var containerswidth = $(".autostickywidth").width();
-		if(tablewidth > containerswidth) {
-			$(".autostickywidth").css("min-width",( + 62) + "px");
-		}
-	}*/
+
 });
 
 jQuery(document).on("domchanged", function () {

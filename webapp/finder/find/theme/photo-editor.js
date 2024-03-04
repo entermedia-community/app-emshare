@@ -517,32 +517,43 @@ $(document).ready(function () {
     $(this).parent().parent().removeClass("active");
   });
 
-  $("#aspectRatio").change(function () {
-    var ratio = parseFloat($(this).val());
-    var activeObject;
-    if (cropClip) activeObject = cropClip;
-    else activeObject = canvas.getActiveObject();
-    if (activeObject) {
-      var newWidth = window.__imageRenderWidth;
-      var newHeight = window.__imageRenderHeight;
-      if (ratio === 1) {
-        var min = Math.min(newWidth, newHeight);
-        newWidth = min;
-        newHeight = min;
-      } else {
-        if (ratio < 1) {
-          newHeight = newWidth / ratio;
-        }
-        if (ratio > 1) {
-          newWidth = newHeight * ratio;
-        }
-      }
-      console.log({ ratio, newWidth, newHeight });
-      activeObject.set("width", newWidth);
-      activeObject.set("height", newHeight);
-      canvas.requestRenderAll();
-    }
+  $("#saveAsImg").click(function () {
+    console.log(window.__imageRenderWidth);
+    var form = $("#saveasform");
+
+    var formdata = new FormData(form[0]);
+    formdata.append(
+      "image",
+      canvas.toDataURL({
+        left: window.__imageRenderLeft,
+        top: window.__imageRenderTop,
+        width: window.__imageRenderWidth,
+        height: window.__imageRenderHeight,
+      })
+    );
+
+    $.ajax({
+      url: form.attr("action"),
+      data: formdata,
+      type: "POST",
+      contentType: false, // NEEDED, DON'T OMIT THIS (requires jQuery 1.6+)
+      processData: false, // NEEDED, DON'T OMIT THIS
+      //Refresh imageeditor
+    });
   });
+
+  $("#saveAs").click(function () {
+    var mask = $(this).siblings(".mask");
+    var saveAs = $(this).siblings(".save-as-menu");
+    mask.addClass("active");
+    saveAs.addClass("active");
+  });
+  function closeSaveAs() {
+    $(".mask").removeClass("active");
+    $(".save-as-menu").removeClass("active");
+  }
+  $(".mask").click(closeSaveAs);
+  $("#saveAsCancel").click(closeSaveAs);
 
   $("#downloadImg").click(function () {
     console.log(window.__imageRenderWidth);

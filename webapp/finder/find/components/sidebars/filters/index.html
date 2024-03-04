@@ -43,7 +43,7 @@
 					data-rootcategory="$!rootcategory"
 					data-targetdivsearch="$!{moduleid}resultscontainer"
 					style="padding:0 8px 0 10px;" 
-					title="[[Sort Results]]"><i class="bi bi-sort-down"></i> Sort</a>
+					title="[[Sort Results]]"><i class="bi bi-sort-down"></i> [[Sort]]</a>
 			</li>
 			#if($resultview != "stackedgallery")
 				<li style="width:61px;height:36px" title="[[Results per page]]">
@@ -97,21 +97,15 @@
 			#end
 		</div>
 
-		#set ($allSortType = $searcher.getUserPropertyDetails() )
-		#foreach( $sortType in $allSortType)
-			#if($hits.searchQuery.isSortUp())
-				#set($sortOrder = "asc")
-			#else
-				#set($sortOrder = "desc")
-			#end
-			#if($hits.isSortedBy($sortType.id)) 
-				#set($currentSort = $sortType.getText($context))
-				#break
-			#end
+		#set ($currentSort = $hits.searchQuery.getSortByDetail() )
+		#if($hits.searchQuery.isSortUp())
+			#set($sortOrder = "asc")
+		#else
+			#set($sortOrder = "desc")
 		#end
 		#ifnotnull($currentSort)
 		<span class="d-inline-block text-brand pb-1 w-100 showing">
-			[[Sorted by]] <strong>$currentSort</strong> ($sortOrder.)
+			[[Sorted by]] <strong>#text($currentSort)</strong> (${sortOrder}.)
 		</span>
 		#end
 		#set($desc = $entity.get('longcaption'))

@@ -150,28 +150,10 @@
 		
 		
 		<div id="uploadmetadata">
-	
-		
-		
-		
-		##Disabled 		
-		#if(1==2)
-			#set( $entityupload = $context.getRequestParameter("entityupload") )
-			#set( $entitytype = $context.getRequestParameter("entitytype") )
-			
-			#if($entitytype)
-				#set( $addselection = $context.getRequestParameter("addselection") )
-				#if($addselection)
-					#set($customredirect = "$siteroot$apphome/views/modules/asset/index.html?clearfilters=true&field=$!entitytype&operation=matches&${entitytype}.value=$!addselection")
-				#end
-			#end
-			
-			$pages.include("$apphome/components/upload/entities/picker.html", $context)
-			
-		#end
-				#set($viewid = "multipleupload")  ##Default finder
-				#set($viewpath = "asset/$viewid") 
-				$context.putPageValue("view",$viewpath)
+
+			#set($viewid = "multipleupload")  ##Default finder
+			#set($viewpath = "asset/$viewid") 
+			$context.putPageValue("view",$viewpath)
 		
 			<div class="upload-detail-box">
 		    <div class="ui-widget-header toggle-upload-details" data-status="open">
@@ -200,13 +182,22 @@
 			</div>
 			
 			##have the cancel delete these assets?
-					<div class="uploadinstructionsafter" style="display: none;">
-			   			<a class="btn btn-primary btn-lg btn-uploadnow startbutton"  
-							data-uploadreadytext="[[Upload]]" data-complete="[[Upload Complete]]" 
-			   				href="#"> [[Start Uploading]]</a>
+			<div class="uploadinstructionsafter" style="display: none;">
+	   			<a class="btn btn-primary btn-lg btn-uploadnow startbutton"  
+					data-uploadreadytext="[[Upload]]" data-complete="[[Upload Complete]]" 
+	   				href="#"> [[Start Uploading]]</a>
 
-							 
-			  		</div>
+					 <a  
+					style="display:none;" 
+					class="viewassetsbtn autoclick btn btn-sm btn-primary" 
+					disabled 
+					href ="#" 
+					data-entityupload="true"
+					data-targetdivinner="dialogmediaentity" 
+					data-oemaxlevel="1" 
+
+					data-updateurl="true"> [[View Uploads]]</a>
+	  		</div>
 		</div>
 		</div>
 	</div>
