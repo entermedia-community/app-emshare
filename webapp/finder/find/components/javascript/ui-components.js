@@ -867,33 +867,20 @@ uiload = function () {
     }
   );
 
-  lQuery("form.autosubmit").livequery(function () {
-    var form = $(this);
-    var targetdiv = form.data("targetdiv");
-    if (!targetdiv) {
-      targetdiv = form.data("targetdivinner");
-    }
-    $("select", form).change(function () {
-      $(form).ajaxSubmit({
-        target: "#" + $.escapeSelector(targetdiv),
-      });
-    });
-    $("input", form).on("focus", function (event) {
-      $("#" + $.escapeSelector(targetdiv)).show();
-    });
 
+lQuery("form.autosubmit").livequery(function () {
+    var form = $(this);
+    $("select", form).change(function () {
+      $(form).trigger("submit");
+    });
+    $("input", form).on("focusout", function (event) {
+      $(form).trigger("submit");
+    });
     $("input", form).on("keyup", function (e) {
       $(form).trigger("submit");
     });
-    $('input[type="file"]', form).on("change", function () {
-      $(form).ajaxSubmit({
-        target: "#" + $.escapeSelector(targetdiv),
-      });
-    });
-    $('input[type="checkbox"]', form).on("change", function () {
-      $(form).ajaxSubmit({
-        target: "#" + $.escapeSelector(targetdiv),
-      });
+    $('input[type="file"],input[name="date.after"],input[type="checkbox"]', form).on("change", function () {
+      $(form).trigger("submit");
     });
   });
 
