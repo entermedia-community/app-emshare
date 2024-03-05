@@ -148,6 +148,7 @@ runajaxonthis = function (inlink, e) {
       }
     }
 
+
    
     showLoader();
     jQuery
@@ -155,23 +156,26 @@ runajaxonthis = function (inlink, e) {
         url: nextpage,
         data: options,
         success: function (data) {
-          var cell;
 
+		  var cell;
           if (useparent && useparent == "true") {
             cell = $("#" + targetDiv, window.parent.document);
           } else {
             cell = findclosest(inlink, "#" + targetDiv);
           }
+          var onpage;
           if (replaceHtml) {
             //Call replacer to pull $scope variables
-            cell = cell.replaceWith(data); //Cant get a valid dom element
+            onpage = cell.parent();
+            cell.replaceWith(data); //Cant get a valid dom element
           } else {
+			onpage = cell;
             cell.html(data);
           }
-
+          cell = findclosest(onpage, "#" + targetDiv);
           //still old element
-          var newcell = $(cell);
-          setPageTitle(newcell);
+          setPageTitle(cell);
+
 
           //on success execute extra JS
           if (inlink.data("onsuccess")) {
@@ -207,6 +211,7 @@ runajaxonthis = function (inlink, e) {
         if (scrolltotop) {
           window.scrollTo(0, 0);
         }
+
 
         $(".ajaxprogress").hide();
         //inlink.css("enabled",true);
