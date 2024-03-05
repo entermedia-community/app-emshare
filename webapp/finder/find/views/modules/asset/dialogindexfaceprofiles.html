@@ -78,7 +78,7 @@ $context.putPageValue("dialogresults", true)
 			 		#end
 			 		
 					##TODO get offset for video
-				 	<div class="faceprofile-attachedmedia  #if($primaryimage==$hit.id) grid-isprimaryimage #end">
+				 	<div id="fpa${hit.getId()}" class="faceprofile-attachedmedia  #if($primaryimage==$hit.id) grid-isprimaryimage #end">
 					<div class=" " data-assetid="$!hit.getId()" > 
 					 	<a class="stackedplayer imagearea" data-assetid="$hit.getId()"  href="#" title="$hit.name">
 						<div class="emshowbox" 
@@ -96,6 +96,10 @@ $context.putPageValue("dialogresults", true)
 								data-sourcepath="$hit.getSourcePath()" />
 						</div>
 						</a>
+						<a href="$siteroot$applink/views/modules/asset/editor/faceprofiles/removefromprofile.html?assetid=$hit.getId()&profileid=$faceprofilegroup.getId()" 
+						class="ajax removeprofile"
+						data-targetdiv="fpa${hit.getId()}" 
+						data-confirm="[[You want to remove this asset from the Profile?]]"><i class="bi bi-person-x-fill"></i></a>
 						
 					</div>
 						#if(false && $primaryimage!=$hit.id)
