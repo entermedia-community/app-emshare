@@ -1110,6 +1110,9 @@ uiload = function () {
             ) {
               //globaly disabled updateurl
             } else {
+			  //backup url
+                var currenturl = window.location.href;
+                modalinstance.data("oldurlbar", currenturl);
               //Update Address Bar
               var updateurl = dialog.data("updateurl");
               if (updateurl) {
@@ -1117,6 +1120,7 @@ uiload = function () {
                 if (!urlbar) {
                   urlbar = link;
                 }
+              
                 history.pushState($("#application").html(), null, urlbar);
                 window.scrollTo(0, 0);
               }
@@ -1205,6 +1209,9 @@ uiload = function () {
   });
 
   closeemdialog = function (modaldialog) {
+	
+	var oldurlbar = modaldialog.data("oldurlbar");
+	
     if (modaldialog.modal) {
       modaldialog.modal("hide");
       modaldialog.remove();
@@ -1214,9 +1221,17 @@ uiload = function () {
     if (othermodal.length && !othermodal.is(":hidden")) {
       adjustzindex(othermodal);
     }
+    
     hideLoader();
+	
+	setPageTitle();
+	
+	
+	if(oldurlbar !== undefined) {
+		history.pushState($("#application").html(), null, oldurlbar);
+	}
 
-    setPageTitle();
+    
   };
 
   closeallemdialogs = function () {

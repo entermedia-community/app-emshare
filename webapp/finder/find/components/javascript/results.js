@@ -1080,6 +1080,11 @@ jQuery(document).ready(function (url, params) {
 		  if(moduleid && componenthome) {
 			  var url = componenthome + '/gridsample/preview/entity.html';
 			  entity.data("emdialoglink", url);
+		      entity.data("updateurl", true);
+		      entity.data("urlbar", window.location.href);
+			  var currenturl = window.location.origin + window.location.pathname;
+			  history.pushState($("#application").html(), null, currenturl);
+			  
 			  emdialog(entity)
 		  }
 	  }
@@ -1402,6 +1407,7 @@ jQuery(document).ready(function (url, params) {
 
   }
   
+ 
   showEntity();
 
   //gridResize();
