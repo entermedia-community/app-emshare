@@ -147,10 +147,9 @@ runajaxonthis = function (inlink, e) {
         fnc(inlink); //execute it
       }
     }
-
-
-   
+  
     showLoader();
+    
     jQuery
       .ajax({
         url: nextpage,
@@ -173,9 +172,8 @@ runajaxonthis = function (inlink, e) {
             cell.html(data);
           }
           cell = findclosest(onpage, "#" + targetDiv);
-          //still old element
+          
           setPageTitle(cell);
-
 
           //on success execute extra JS
           if (inlink.data("onsuccess")) {
@@ -1240,9 +1238,20 @@ lQuery("form.autosubmit").livequery(function () {
     };
 
   setPageTitle = function (element) {
-    if (element && !element.length) {
+    if (element === undefined) {
+      element = $("#applicationcontent");
+    }
+    if (element === undefined || $(element).data("setpagetitle") == null) {
       element = $("#application");
     }
+    /*
+    var elements =  $(element).find('[data-setpagetitle]');
+    var setpagetitle = elements.last().data("setpagetitle");
+    if (!setpagetitle)
+    {
+		setpagetitle = $(element).data("setpagetitle");	
+	}
+    */
     var setpagetitle = $(element).data("setpagetitle");
     var titlepostfix = $("#application").data("titlepostfix");
     var title = "";
