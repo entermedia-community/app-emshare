@@ -1,23 +1,4 @@
 $(document).ready(function () {
-  $("div.thumb").on("click", function (e) {
-    e.preventDefault();
-    $(this).siblings().removeClass("selected");
-    $(this).toggleClass("selected");
-    var href = $(this).data("href");
-
-    var data = $(this).data();
-    delete data.href;
-
-    $.ajax({
-      url: href,
-      data: data,
-      async: false,
-      success: function (data) {
-        $("#photoEditorColumn").html(data);
-      },
-    });
-  });
-
   var imgSrc = $("#editingCandidate").attr("src");
   var editorWidth = $("#photoEditorColumn").width() - 56;
   var editorHeight = $("#photoEditorColumn").height() - 91;
@@ -161,7 +142,7 @@ $(document).ready(function () {
     });
   }
 
-  var imgInstance, cropClip;
+  var imgInstance, selectionRect, cropRect;
 
   var img = new Image();
   img.src = imgSrc;
@@ -181,7 +162,7 @@ $(document).ready(function () {
     window.__imageRenderLeft = primaryOffsetLeft;
     window.__imageRenderTop = primaryOffsetTop;
 
-    cropClip = new fabric.Rect({
+    selectionRect = new fabric.Rect({
       left: primaryOffsetLeft,
       top: primaryOffsetTop,
       width: img.naturalWidth,
@@ -198,16 +179,16 @@ $(document).ready(function () {
       visible: false,
     });
 
-    cropClip.scaleToWidth(renderWidth);
-    cropClip.scaleToHeight(renderHeight);
+    selectionRect.scaleToWidth(renderWidth);
+    selectionRect.scaleToHeight(renderHeight);
 
-    cropClip.setControlVisible("mtr", false);
-    cropClip.setControlVisible("mt", false);
-    cropClip.setControlVisible("mb", false);
-    cropClip.setControlVisible("ml", false);
-    cropClip.setControlVisible("mr", false);
-    cropClip.setControlVisible("deleteControl", false);
-    cropClip.setControlVisible("clone", false);
+    selectionRect.setControlVisible("mtr", false);
+    selectionRect.setControlVisible("mt", false);
+    selectionRect.setControlVisible("mb", false);
+    selectionRect.setControlVisible("ml", false);
+    selectionRect.setControlVisible("mr", false);
+    selectionRect.setControlVisible("deleteControl", false);
+    selectionRect.setControlVisible("clone", false);
 
     imgInstance = new fabric.Image(img, {
       left: primaryOffsetLeft,
@@ -221,8 +202,10 @@ $(document).ready(function () {
     $("#editCandidateLoader").hide();
     canvas.add(imgInstance);
     canvas.sendToBack(imgInstance);
-    canvas.add(cropClip);
+    canvas.add(selectionRect);
     canvas.setZoom(0.95);
+    window.__imageRenderWidth = imgInstance.getScaledWidth();
+    window.__imageRenderHeight = imgInstance.getScaledHeight();
   };
   lQuery("#editingCandidate").livequery(function () {});
 
@@ -263,7 +246,26 @@ $(document).ready(function () {
     canvas.requestRenderAll();
   });
   $("#cropBtn").click(function () {
-    //TODO: crop image
+    canvas.renderAll();
+    window.__imageRenderWidth = selectionRect.getScaledWidth();
+    window.__imageRenderHeight = selectionRect.getScaledHeight();
+    window.__imageRenderLeft = selectionRect.left;
+    window.__imageRenderTop = selectionRect.top;
+    cropRect = new fabric.Rect({
+      left: __imageRenderLeft,
+      top: __imageRenderTop,
+      width: __imageRenderWidth,
+      height: __imageRenderHeight,
+      absolutePositioned: true,
+    });
+
+    imgInstance.clipPath = cropRect;
+
+    selectionRect.visible = false;
+    canvas.centerObject(cropRect);
+    canvas.discardActiveObject();
+    canvas.renderAll();
+    $(".crop-editor").removeClass("active");
   });
 
   $(".rotate-editor button").click(function () {
@@ -297,11 +299,11 @@ $(document).ready(function () {
     $(panel).css("top", $(this).offset().top);
     $(panel).toggleClass("active");
     if (action === "crop") {
-      cropClip.visible = true;
-      canvas.setActiveObject(cropClip);
+      selectionRect.visible = true;
+      canvas.setActiveObject(selectionRect);
       canvas.requestRenderAll();
     } else {
-      cropClip.visible = false;
+      selectionRect.visible = false;
       canvas.discardActiveObject();
       canvas.requestRenderAll();
     }
@@ -309,7 +311,7 @@ $(document).ready(function () {
 
   $(".x-close").click(function () {
     $(this).parent().removeClass("active");
-    cropClip.visible = false;
+    selectionRect.visible = false;
     canvas.requestRenderAll();
   });
 
@@ -539,6 +541,9 @@ $(document).ready(function () {
       contentType: false, // NEEDED, DON'T OMIT THIS (requires jQuery 1.6+)
       processData: false, // NEEDED, DON'T OMIT THIS
       //Refresh imageeditor
+      success: function (data) {
+        $("#photo-editor").html(data);
+      },
     });
   });
 
@@ -548,41 +553,41 @@ $(document).ready(function () {
     mask.addClass("active");
     saveAs.addClass("active");
   });
+  $("#exportAs").click(function () {
+    var mask = $(this).siblings(".mask");
+    var exportAs = $(this).siblings(".export-menu");
+    mask.addClass("active");
+    exportAs.addClass("active");
+  });
+
   function closeSaveAs() {
     $(".mask").removeClass("active");
     $(".save-as-menu").removeClass("active");
+    $(".export-menu").removeClass("active");
   }
   $(".mask").click(closeSaveAs);
   $("#saveAsCancel").click(closeSaveAs);
+  $("#exportAsCancel").click(closeSaveAs);
 
   $("#downloadImg").click(function () {
-    console.log(window.__imageRenderWidth);
     var a = document.createElement("a");
     var filename = $(this).data("filename");
-    // const formdata = new FormData();
-    // formdata.append("image", dataUrl);
+    if (!filename) filename = "image";
+    filename = filename.split(".")[0];
+
+    var ext = $("input[name=exportAsType]:checked").val();
+    if (!ext) ext = "png";
+
     a.href = canvas.toDataURL({
+      format: ext,
       left: window.__imageRenderLeft,
       top: window.__imageRenderTop,
       width: window.__imageRenderWidth,
       height: window.__imageRenderHeight,
     });
-    a.download = filename + ".png";
+    a.download = filename + "." + ext;
     a.click();
   });
-
-  $("#saveAs").click(function () {
-    var mask = $(this).siblings(".mask");
-    var saveAs = $(this).siblings(".save-as-menu");
-    mask.addClass("active");
-    saveAs.addClass("active");
-  });
-  function closeSaveAs() {
-    $(".mask").removeClass("active");
-    $(".save-as-menu").removeClass("active");
-  }
-  $(".mask").click(closeSaveAs);
-  $("#saveAsCancel").click(closeSaveAs);
 
   $("#saveAsConfirm").click(function () {
     var saveAsName = $("#saveAsName").val();
@@ -592,5 +597,63 @@ $(document).ready(function () {
     var saveAsType = $("input[name=saveAsType]:checked").val();
     var saveAsDimension = $("input[name=saveAsDimension]:checked").val();
     console.log(saveAsType, saveAsDimension, saveAsName);
+  });
+
+  $("#aspectRatio").change(function () {
+    var ratio = $(this).val();
+    var newWidth = __imageRenderWidth;
+    var newHeight = __imageRenderHeight;
+    var top = 0;
+    var left = 0;
+    if (ratio == -1) {
+      selectionRect.setControlVisible("mt", true);
+      selectionRect.setControlVisible("mb", true);
+      selectionRect.setControlVisible("ml", true);
+      selectionRect.setControlVisible("mr", true);
+    } else {
+      selectionRect.setControlVisible("mt", false);
+      selectionRect.setControlVisible("mb", false);
+      selectionRect.setControlVisible("ml", false);
+      selectionRect.setControlVisible("mr", false);
+
+      if (ratio == 1) {
+        newWidth = Math.min(__imageRenderWidth, __imageRenderHeight);
+        newHeight = newWidth;
+        left = newWidth / 2;
+        top = newWidth / 2;
+        if (__imageRenderWidth > __imageRenderHeight) {
+          top = newWidth / 4;
+          left = __imageRenderWidth / 2 - newWidth / 4;
+        } else {
+          left = newWidth / 4;
+          top = __imageRenderHeight / 2 - newWidth / 4;
+        }
+      } else if (ratio > 1) {
+        if (__imageRenderWidth > __imageRenderHeight) {
+          newWidth = __imageRenderWidth;
+          newHeight = __imageRenderWidth / ratio;
+        } else {
+          newHeight = __imageRenderHeight;
+          newWidth = __imageRenderHeight * ratio;
+        }
+        left = (__imageRenderWidth - newWidth) / 2;
+        top = (__imageRenderHeight - newHeight) / 2;
+      } else {
+        if (__imageRenderWidth > __imageRenderHeight) {
+          newHeight = __imageRenderHeight;
+          newWidth = __imageRenderHeight * ratio;
+        } else {
+          newWidth = __imageRenderWidth;
+          newHeight = __imageRenderWidth / ratio;
+        }
+        left = (__imageRenderWidth - newWidth) / 2;
+        top = (__imageRenderHeight - newHeight) / 2;
+      }
+      selectionRect.set("width", newWidth);
+      selectionRect.set("height", newHeight);
+      selectionRect.set("left", __imageRenderLeft + left);
+      selectionRect.set("top", __imageRenderTop + top);
+    }
+    canvas.requestRenderAll();
   });
 });

@@ -53,33 +53,16 @@ $context.putPageValue("urlparams", "?cache=false&_=$mathutil.getRandomValue(9999
         #end
 
         #set($expfilename = $mediaarchive.asExportFileName($asset, $result))
-        #set($ext = $!url_util.getPathUtilities().extractPageType($expfilename))
         #set($url = "$siteroot/$mediadbappid/services/module/asset/downloads/generated/$asset.sourcepath/$result.generatedoutputfile/$expfilename")
         #if($conversionUtil.doesExist($catalogid, $asset.id,$asset.sourcePath, $result.id) && $show)
         #set($dimension = $conversionUtil.getConvertPresetDimension($catalogid,$result.id))
         #set($height = $mathtool.toInteger($dimension.getHeight()))
         #set($width = $mathtool.toInteger($dimension.getWidth())) 
 
-        #if($result.id == "largeimage")
-          #set($initSelection = "/$apphome/views/modules/asset/editor/media/editorarea.html?assetid=${asset.id}&assetsource=${asset.sourcepath}&resultid=${result.id}&resultoutput=${result.generatedoutputfile}&expfilename=${expfilename}&catalogid=${catalogid}&width=${width}&height=${height}&oemaxlevel=1")
-        #end
-
-        <div 
-          class='thumb #if($result.id == "largeimage") selected #end' 
-          role="button" 
-          tabindex="0" 
-          data-href="$siteroot$apphome/views/modules/asset/editor/media/editorarea.html"
-          data-assetid="${asset.id}"
-          data-assetsource="${asset.sourcepath}"
-          data-resultid="${result.id}"
-          data-resultoutput="${result.generatedoutputfile}"
-          data-expfilename="${expfilename}"
-          data-catalogid="${catalogid}" 
-          data-oemaxlevel="1"        > 
+        <div class='thumb'> 
           <img src="#urlescape($url)" />
           <div class="d-flex align-items-end justify-content-between"> 
             <small>$expfilename</small> 
-            <!-- <small>$ext</small>  -->
           </div>
           <strong class="img-size">${width}&times;${height}</strong>
           
@@ -98,9 +81,7 @@ $context.putPageValue("urlparams", "?cache=false&_=$mathutil.getRandomValue(9999
       #end    
     </div>
   </div>
-  <div id="photoEditorColumn">
-    #if($initSelection)
-      $pages.include($initSelection)
-    #end
+  <div id="photoEditorColumn"> 
+    $pages.include("/$apphome/views/modules/asset/editor/media/editorarea.html") 
   </div>
 </div> 

@@ -1,39 +1,29 @@
-#set($catalogid = $context.getRequestParameter("catalogid"))
-#set($assetid = $context.getRequestParameter("assetid"))
-#set($assetsource = $context.getRequestParameter("assetsource"))
-#set($resultid = $context.getRequestParameter("resultid"))
-#set($resultoutput = $context.getRequestParameter("resultoutput"))
-#set($expfilename = $context.getRequestParameter("expfilename"))
-#set($url = "$siteroot/$mediadbappid/services/module/asset/downloads/generated/$assetsource/$resultoutput/$expfilename")
-#set($filename = "$!url_util.getPathUtilities().extractPageName($expfilename)")
+#set($url = $mediaarchive.asLinkToPreview($asset, "image3000x3000.jpg"))
+#set($filename = "$asset.name")
 
-<div class="d-flex flex-column h-100">
-    <div class="d-flex align-items-center justify-content-start">
-        <!-- <h2>Customized Image Copy</h2> -->
-        <!-- <input type="text" value="$expfilename" /> -->
-    </div>
+<div class="d-flex flex-column h-100" id="photo-editor">
     <div class="editorarea">
         <div class="d-flex align-items-center justify-content-end top-toolbar">
             <div class="d-flex align-items-center justify-content-end position-relative">
-                <a href="#" id="exportAs">
-                    <i class="bi bi-floppy"></i>
-                    <label>[[Export]]</label>
-                </a>
                 <a href="#" id="saveAs">
-                    <i class="bi bi-floppy"></i>
+                    <i class="bi bi-floppy-fill"></i>
                     <label>[[Save as]]</label>
+                </a>
+                <a href="#" id="exportAs">
+                    <label>[[Export]]</label>
+                    <i class="bi bi-download"></i>
                 </a>
                 <div class="mask" role="button"></div>
                 <div class="save-as-menu">
-	                    <form class="d-flex flex-column" id="saveasform" action="$applink/views/modules/asset/editor/media/savepresetfile.html">
+	                <form class="d-flex flex-column" id="saveasform" action="$applink/views/modules/asset/editor/media/savepresetfile.html">
                         <h4 class="text-center">[[Save As]]</h4>
 
                         <div class="d-flex mb-2">
                             #set($type =$mediaarchive.getMediaRenderType($asset.fileformat))
-							#set($results = $conversionUtil.getActivePresetList($catalogid,$type) )
+							#set($results = $conversionUtil.getActivePresetList($mediaarchive.getCatalogId(), $type) )
 							<div class="d-flex flex-column">
 								#foreach ($presetdata in $results)
-									#set($dimension = $conversionUtil.getConvertPresetDimension($catalogid,$presetdata.id))
+									#set($dimension = $conversionUtil.getConvertPresetDimension($mediaarchive.getCatalogId(),$presetdata.id))
 									#set($height = $mathtool.toInteger($dimension.getHeight()))
 									#set($width = $mathtool.toInteger($dimension.getWidth()))
 									#set($aspectratio = $conversionUtil.getConvertPresetAspectRatio($dimension))
@@ -45,11 +35,11 @@
 
                             </div>
                         </div>
-                        <div class="d-flex justify-content-between mt-3">
+                        <div class="d-flex justify-content-center mt-3 mb-2">
                             <div class="d-flex align-items-center">
                                 <a href="#" id="saveAsImg" data-filename="$filename">
-                                    <i class="bi bi-download"></i>
-                                    <label>[[Save As]]</label>
+                                    <i class="bi bi-floppy"></i>
+                                    <label>[[Save]]</label>
                                 </a>
                             </div>
                             <a id="saveAsCancel" type="reset" class="rounded">
@@ -59,57 +49,31 @@
                     </form>
                 </div>
                 
-                
-                
-                
-                <div class="export-menu" style="display: none;">
+                <div class="export-menu">
                     <form class="d-flex flex-column">
                         <h4 class="text-center">export As</h4>
                         <div class="d-flex align-items-center mb-2">
-                            <label for="saveAsName" class="mb-0 mr-1" style="width: 60px;">[[Name]]:</label>
-                            <input class="flex-grow-1 py-1 px-2 rounded border-0" type="text" id="saveAsName" name="saveAsName" data-filename="$filename" value="$filename" />
-                        </div>
-                        <div class="d-flex align-items-center mb-2">
                             <label class="mb-0 mr-1" style="width: 60px;">[[Format]]:</label>
                             <label class="mb-0 mr-3 d-flex align-items-center">
-                                <input type="radio" name="saveAsType" value="png" class="mr-1" checked /> PNG
+                                <input type="radio" name="exportAsType" value="png" class="mr-1" checked /> PNG
                             </label>
                             <label class="mb-0 d-flex align-items-center">
-                                <input type="radio" name="saveAsType" value="jpg" class="mr-1" /> JPG
+                                <input type="radio" name="exportAsType" value="jpeg" class="mr-1" /> JPG
                             </label>
                         </div>
-                        <div class="d-flex mb-2">
-                            <label class="mb-0 mr-1" style="width: 115px;">[[Max Dimension]]:</label>
-                            <div class="d-flex flex-column">
-                                <label class="mb-0 mr-3 d-flex align-items-center">
-                                    <input type="radio" name="saveAsDimension" class="mr-1" value="3000" checked /> 3000 &times; 3000
-                                </label>
-                                <label class="mb-0 d-flex align-items-center">
-                                    <input type="radio" name="saveAsDimension" class="mr-1" value="2000" /> 2000 &times; 2000
-                                </label>
-                                <label class="mb-0 mr-3 d-flex align-items-center">
-                                    <input type="radio" name="saveAsDimension" class="mr-1" value="1024" /> 1024 &times; 1024
-                                </label>
-                                <label class="mb-0 d-flex align-items-center">
-                                    <input type="radio" name="saveAsDimension" class="mr-1" value="512" /> 512 &times; 512
-                                </label>
-                            </div>
-                        </div>
-                        <div class="d-flex justify-content-between mt-3">
+                        <div class="d-flex justify-content-end mt-3">
                             <div class="d-flex align-items-center">
                                 <a href="#" id="downloadImg" data-filename="$filename">
-                                    <i class="bi bi-download"></i>
                                     <label>export</label>
+                                    <i class="bi bi-download"></i>
                                 </a>
                             </div>
-                            <a id="saveAsCancel" type="reset" class="rounded">
+                            <a id="exportAsCancel" type="reset" class="rounded">
                                 <i class="bi bi-x mr-0"></i>
                             </a>
                         </div>
                     </form>
                 </div>
-                
-                
             </div>
         </div>
         <div class="d-flex editor">
@@ -147,7 +111,7 @@
     </div>
 </div>
 
-<img style="display: none;" src="#urlescape($url)" id="editingCandidate" />
+<img style="display: none;" src="$url" id="editingCandidate" />
 
 <div class="text-editor panel"> 
     <div class="x-close text-white ml-auto pt-1">
