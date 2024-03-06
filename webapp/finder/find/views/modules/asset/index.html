@@ -29,18 +29,77 @@ $context.putPageValue("categoryid", $categoryid)
 
 $context.putPageValue("maintargetdiv", $maintargetdiv)
 
-<div id="assetresultscontainer" class="assetresults resultsdiv adjustHeight" data-moduleid="asset" data-resultview="$!resultview"
+<div id="assetresultscontainer" 
+	class="assetresults resultsdiv adjustHeight" data-moduleid="asset" data-resultview="$!resultview"
 	data-hitssessionid="$!hits.getSessionId()" #if($category)
 	data-url="$apphome/views/modules/asset/viewfiles/$!categoryid/#dash($category).html" data-oemaxlevel="2" #else
 	data-url="$apphome/views/modules/asset/index.html" data-oemaxlevel="1" #end data-componenthome="$!componenthome"
 	data-searchhome="$!home$!componenthome/results" data-targetdiv="assetresultscontainer" data-category="$!categoryid">
+
+	
 
 	#if($showcategoriesheader && $category)
 		$pages.include("$apphome/views/modules/category/showchildren.html", $context)
 	#end
 
 	<div class="emgrid-box expandedmodule emgrid-module-asset"  >
-			#set( $count = $hits.size())
+		#set( $count = $hits.size())
+		
+		
+		#if($showheader)
+		<div class="emgrid-subtitle">
+	   		<h3>
+		     	#set($moduleicon = "grid")
+		     	#if ($module.moduleicon)
+		     		#set($moduleicon = $module.moduleicon)
+		     	#end
+		     	
+		     	#set($rendertype = $module.modulerendertype)
+				
+				#if (!$rendertype)
+				   	#set($rendertype = "entity")
+				#end
+				$context.putPageValue("entityrendertype", $rendertype)
+		     	
+	     		#set($entityurl = "$!siteroot$apphome/views/modules/$!{module.id}/index.html?$!{module.id}page=1&hitssessionid=$!hits.getSessionId()")
+	
+				<a href="$entityurl" 
+					class="ajax minimizeexpandedmoduleX" 
+					data-targetdiv="applicationcontent" 
+					data-oemaxlevel="4" 
+					data-updateurl="true" 
+					data-profilepreference="defaultmodule"
+					data-profilepreference.value="$!module.getId()"
+					title="#text($module)" >
+				
+					<i class="bi bi-$!{moduleicon} module-icon" style="font-size:0.9em;line-height:1;"></i> 
+				
+					#ifnull($count)
+						#set( $count = $hits.size()) 
+					#end
+					#text($module)
+					 <span class="count">($count)</span>
+					</a>
+					
+					#if($topmoduleid == "favorites")
+						<a href="$apphome/views/modules/modulesearch/bookmarksremove.html?moduleid=${module.id}" 
+							class="ajax removemodulebookmarks"
+							data-targetdiv="modulesearchtopcontainer"
+							data-oemaxlevel="1"
+							data-confirm="[[Are you sure to remove items from Bookmars?]]"
+							title="[[Remove from Bookmarks]]"><i class="bi bi-archive"></i> &nbsp;[[Remove All]]</a>
+					#end
+			</h3>
+			
+			<div style="float:right" >
+				
+			</div>
+		<div class="clearfix"></div>
+   		</div>
+	#end
+	
+	
+
 			$context.putPageValue("moduleid", $moduleid)
 			#if( $hits.getSearchQuery().hasMainInput())
 				#if($moduleid=="asset")

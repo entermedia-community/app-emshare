@@ -32,11 +32,6 @@ $context.putPageValue("filter", $filter)
 				
 					<i class="bi bi-$!{moduleicon} module-icon" style="font-size:0.9em;line-height:1;"></i> 
 				
-					#if( $module.id == "asset") ##this is safe
-						#set( $count = $hits.size()) 
-					#else
-						#set( $count = $filter.getCount($module.id) ) 
-					#end
 					#ifnull($count)
 						#set( $count = $hits.size()) 
 					#end
@@ -44,38 +39,20 @@ $context.putPageValue("filter", $filter)
 					 <span class="count">($count)</span>
 					</a>
 					
-					#if($topmoduleid != "favorites")
-						$pages.include("$apphome/views/modules/${moduleid}/contextmenu.html", $context)
+					#if($topmoduleid == "favorites")
+						<a href="$apphome/views/modules/modulesearch/bookmarksremove.html?moduleid=${module.id}" 
+							class="ajax removemodulebookmarks"
+							data-targetdivinner="modulesearchtopcontainer"
+							data-oemaxlevel="1"
+							data-confirm="[[Are you sure to remove items from Bookmars??]]"
+							title="[[Remove from Bookmarks]]"><i class="bi bi-archive"></i> &nbsp;[[Remove All]]</a>
 					#end
+					
+					
+					
 			</h3>
 			
-			#if($topmoduleid != "favorites")
-			<div style="float:right" >
-				#if($moduleid=="asset")
-					
-					<a href="$entityurl" 
-					class="btn-sm btn-blue btn-view-media entity-add-media ajax"
-					data-targetdiv="applicationcontent"
-					data-sidebarcomponent="categories"
-					data-oemaxlevel="4"
-					title="[[View Media]]" 
-					data-profilepreference="defaultmodule"
-					data-profilepreference.value="$!module.getId()">
-					<i class="fas fa-images"></i> [[View Media]]</a>
-				#else
-					<a href="$entityurl" 
-					class="ajax minimizeexpandedmodule" 
-					data-targetdiv="applicationcontent" 
-					data-oemaxlevel="4" 
-					data-updateurl="true" 
-					data-profilepreference="defaultmodule"
-					data-profilepreference.value="$!module.getId()"
-					title="[[Expand]] #text($module)">
-					<i class="fas fa-window-maximize"></i></a>
-				
-				#end
-			</div>
-			#end
+
 		<div class="clearfix"></div>
    		</div>
 

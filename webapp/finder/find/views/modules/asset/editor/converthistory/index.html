@@ -1,11 +1,5 @@
 <div id="asset-editor-container" class=" assetpanel-editor-box">
-<div class="assetpanel-editortitle">
-<h3>[[Conversions]]</h3>
-</div>
-<div class="assetpanel-editorinner">
-
-
-##  $pages"converthistory/conversions.html" "$asset.id" "conversions/details" $print)
+	##  $pages"converthistory/conversions.html" "$asset.id" "conversions/details" $print)
  
 #set( $searchtype = "conversiontask")
 #set( $fieldexternalid = "assetid")
@@ -14,15 +8,24 @@
 #set( $view = "conversions/details")
 #set( $viewid = $context.getRequestParameter("viewid"))
 
-#set( $args = "parentid=$!asset.id&assetid=$asset.id&catalogid=$mediaarchive.getCatalogId()&searchtype=$searchtype&fieldexternalid=$fieldexternalid&fieldexternalvalue=$fieldexternalvalue&listid=$!listid&listexternalid=$!listexternalid&permissionname=$permissionname&view=$view")
-#set( $args = "$args&selectlink=$home$apphome/views/modules/asset/editor/converthistory/index.html")
-
-$pages.include("$apphome/components/detaileditor/generictable.html?$args", $context)
-
-
-#if($caneditasset)
-	##<a class="btn btn-sm btn-secondary ajax" data-targetdivinner="asset-editor-container" data-oemaxlevel="1"   href="$siteroot$apphome/views/modules/asset/editor/conversions/previewcrop.html?assetid=$asset.id&presetid=largeimage&noaspect=true&savetoall=true">[[Crop]]</a>
-
+#if($caneditasset && $canconvert)
+	<div class="assetpanel-editortitle">
+	<h3>[[Conversions]]</h3>
+	</div>
+	<div class="assetpanel-editorinner">
+	
+	
+	
+	 
+	
+	#set( $args = "parentid=$!asset.id&assetid=$asset.id&catalogid=$mediaarchive.getCatalogId()&searchtype=$searchtype&fieldexternalid=$fieldexternalid&fieldexternalvalue=$fieldexternalvalue&listid=$!listid&listexternalid=$!listexternalid&permissionname=$permissionname&view=$view")
+	#set( $args = "$args&selectlink=$home$apphome/views/modules/asset/editor/converthistory/index.html")
+	
+	$pages.include("$apphome/components/detaileditor/generictable.html?$args", $context)
+	
+	
+	
+	
 	#if($canshowadmintoolbar)
 			<a class="btn btn-sm btn-secondary previewcrop-btn" 
 			style="margin:10px 0;"
@@ -30,20 +33,23 @@ $pages.include("$apphome/components/detaileditor/generictable.html?$args", $cont
 				target="_new"
 				href="$siteroot/openedit/views/filemanager/tab.html?path=/WEB-INF/data/$catalogid/generated/$asset.getSourcePath()"
 				title="[[File Manager]]"><i class="fas fa-upload"></i> [[Open File Manager]]</a> 
-		#end
-
+	#end
+	#if($caneditasset && $canconvert) 
 	<a class="btn btn-sm btn-secondary ajax" data-targetdivinner="asset-editor-container" data-oemaxlevel="1" 
-   	   href="$siteroot$apphome/views/modules/asset/editor/conversions/reloadthumbs.html?assetid=$asset.id"><i class="fas fa-images"></i>  [[Recreate Conversions]]</a>
-   	   
-   	   
-#end
-
-  
-#if( !$ismulti && $canviewconversions   && $canviewassetedit)
-  	<div class="btns">
-		<a class="btn btn-sm btn-primary ajax" targetdivinner="asset-editor-container" data-oemaxlevel="1" href="$home$apphome/views/modules/asset/editor/converthistory/reloadthumbs.html?assetid=$asset.id">[[Re-Convert]]</a>
-		##<a class="btn emdialog" href="$home$apphome/views/settings/events/triggers/run.html?forcerun=true&runpath=$cataloghome/events/conversions/runconversions.html&assetid=$asset.getId()">Process Conversion Queue now</a>
+	   href="$siteroot$apphome/views/modules/asset/editor/conversions/reloadthumbs.html?assetid=$asset.id"><i class="fas fa-images"></i>  [[Recreate Conversions]]</a>
+	#end
+	   	   
+	
+	
+	  
+	#if( !$ismulti && $canconvert && $canviewconversions && $canviewassetedit)
+	  	<div class="btns">
+			<a class="btn btn-sm btn-primary ajax" targetdivinner="asset-editor-container" data-oemaxlevel="1" href="$home$apphome/views/modules/asset/editor/converthistory/reloadthumbs.html?assetid=$asset.id">[[Re-Convert]]</a>
+			##<a class="btn emdialog" href="$home$apphome/views/settings/events/triggers/run.html?forcerun=true&runpath=$cataloghome/events/conversions/runconversions.html&assetid=$asset.getId()">Process Conversion Queue now</a>
+		</div>
+	#end
+	
+	
 	</div>
-#end
-</div>
+	#end
 </div>

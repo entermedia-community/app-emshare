@@ -97,7 +97,7 @@
 			 
 			#set( $originalpath = $mediaarchive.asLinkToOriginal($asset) )
 			 
-			#if(!$previewonly && !$ismulti && $canviewconversions && ($rendertype != "audio"))
+			#if(!$previewonly && !$ismulti && $canviewmediaedit && $canviewconversions && ($rendertype != "audio"))
 			   	<li class="footermenu hidemulti bottomtab #if($opentab == 'viewdownloads')tabselected #end">
 			   	<a class="expandmenu assettab " 
 						data-link="$siteroot$componenthome/mediaviewer/fullscreen/tabs/viewactions.html?action=conversions" 
@@ -321,7 +321,7 @@
 		    #end
 		    
 			
-			#if($candownload && $asset.getFileFormat()  != "pdf")
+			#if(!$ismulti && ($candownload || $canconvert || $candownloadfpo) && $asset.getFileFormat()  != "pdf")
 			 		<li class="footermenu bottomtab" >
 						 #set($dlink =  "$applink/views/modules/asset/activity/downloadassets.html") 
 					    <a href="$dlink"

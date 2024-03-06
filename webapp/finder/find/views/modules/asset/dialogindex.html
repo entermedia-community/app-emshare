@@ -82,7 +82,7 @@ $context.putPageValue("dialogresults", true)
 		#end
 		
 		#set($canupload = false)
-		#if($canviewupload || $canviewcategoryupload)
+		#if($canviewupload && $canviewcategoryupload)
 			#if($topmodule.getBoolean("enableuploading") && $permissions.can($topmoduleid, "upload_files"))
 				#set($canupload = true)
 			#end
@@ -119,7 +119,7 @@ $context.putPageValue("dialogresults", true)
 						<h3 class="embedmediacolheader">[[Files]]</h3>
 					</a>
 
-					#if($topmodule.getBoolean("enableuploading") && $permissions.can($topmoduleid, "upload_files"))
+					#if($canviewupload && $topmodule.getBoolean("enableuploading") && $permissions.can($topmoduleid, "upload_files"))
 					<a href="" 
 						class="createfoldertree"
 						data-tree="entitymediatreetree" 

@@ -11,10 +11,16 @@
 	#set( $sidebarcomponent = "guide" )
 #end
 
-#set( $sidebarwidth = $userprofile.get("sidebarwidth"))
-#if($sidebarwidth=='' || $sidebarwidth=='undefined')
-	#set($sidebarwidth = 280)
+#if($sidebarcomponent == "categories" && !$canviewcategorynav)
+	#set( $sidebarcomponent = "" )
 #end
+
+#if($sidebarcomponent)
+	#set( $sidebarwidth = $userprofile.get("sidebarwidth"))
+	#if($sidebarwidth=='' || $sidebarwidth=='undefined')
+		#set($sidebarwidth = 280)
+	#end
+	#end
 #end
 
 
@@ -26,19 +32,16 @@
 	data-setpagetitle="#text($category)#text($selectedentity)#text($module)"
 >
 
-	#if($user && $cansidebar)
+	#if($user )
 		 $pages.include("$componenthome/sidebars/index.html",$context)
 	#end
 	
 	 <div class="col-main col-content-main">
 		<div class="pushcontent finderlayout col-main-inner #if($cansidebar && $cantogglesidebar && $sidebarcomponent) pushcontent-open pushcontent-$sidebarcomponent #else pushcontent-fullwidth #end" 
 			  style="#if($cansidebar && $sidebarcomponent && $sidebarwidth) margin-left:$!{sidebarwidth}px;#end">
-			  ##<div class=" ">
-				
+ 				
 				$pages.includeContent()
 				
-			##</div>
-					
 		</div>
 	</div>
 	

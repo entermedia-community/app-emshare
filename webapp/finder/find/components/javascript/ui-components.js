@@ -155,22 +155,23 @@ runajaxonthis = function (inlink, e) {
         data: options,
         success: function (data) {
           var cell;
-
           if (useparent && useparent == "true") {
             cell = $("#" + targetDiv, window.parent.document);
           } else {
             cell = findclosest(inlink, "#" + targetDiv);
           }
+          var onpage;
           if (replaceHtml) {
             //Call replacer to pull $scope variables
-            cell = cell.replaceWith(data); //Cant get a valid dom element
+            onpage = cell.parent();
+            cell.replaceWith(data); //Cant get a valid dom element
           } else {
+            onpage = cell;
             cell.html(data);
           }
-
+          cell = findclosest(onpage, "#" + targetDiv);
           //still old element
-          var newcell = $(cell);
-          setPageTitle(newcell);
+          setPageTitle(cell);
 
           //on success execute extra JS
           if (inlink.data("onsuccess")) {
@@ -860,31 +861,20 @@ uiload = function () {
 
   lQuery("form.autosubmit").livequery(function () {
     var form = $(this);
-    var targetdiv = form.data("targetdiv");
-    if (!targetdiv) {
-      targetdiv = form.data("targetdivinner");
-    }
     $("select", form).change(function () {
-      $(form).ajaxSubmit({
-        target: "#" + $.escapeSelector(targetdiv),
-      });
+      $(form).trigger("submit");
     });
-    $("input", form).on("focus", function (event) {
-      $("#" + $.escapeSelector(targetdiv)).show();
+    $("input", form).on("focusout", function (event) {
+      $(form).trigger("submit");
     });
-
     $("input", form).on("keyup", function (e) {
       $(form).trigger("submit");
     });
-    $('input[type="file"]', form).on("change", function () {
-      $(form).ajaxSubmit({
-        target: "#" + $.escapeSelector(targetdiv),
-      });
-    });
-    $('input[type="checkbox"]', form).on("change", function () {
-      $(form).ajaxSubmit({
-        target: "#" + $.escapeSelector(targetdiv),
-      });
+    $(
+      'input[type="file"],input[name="date.after"],input[type="checkbox"]',
+      form
+    ).on("change", function () {
+      $(form).trigger("submit");
     });
   });
 
