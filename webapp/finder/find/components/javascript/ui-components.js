@@ -148,7 +148,6 @@ runajaxonthis = function (inlink, e) {
       }
     }
 
-   
     showLoader();
     jQuery
       .ajax({
@@ -211,50 +210,48 @@ runajaxonthis = function (inlink, e) {
         $(".ajaxprogress").hide();
         //inlink.css("enabled",true);
         inlink.removeAttr("disabled");
-        
+
         //Close All Dialogs
         var closealldialogs = inlink.data("closealldialogs");
-        if(closealldialogs)
-        {
-			closeallemdialogs();	
-		}
-		else 
-		{
-	        //Close Dialog
-	        var closedialog = inlink.data("closedialog");
-	        if (closedialog && inlinkmodal != null) {
-	          closeemdialog(inlinkmodal);
-	        }
-	        //Close MediaViewer
-	        var closemediaviewer = inlink.data("closemediaviewer");
-	        if (closemediaviewer) {
-	          var overlay = $("#hiddenoverlay");
-	          if (overlay.length) {
-	            hideOverlayDiv(overlay);
-	          }
-	        }
-	     }
+        if (closealldialogs) {
+          closeallemdialogs();
+        } else {
+          //Close Dialog
+          var closedialog = inlink.data("closedialog");
+          if (closedialog && inlinkmodal != null) {
+            closeemdialog(inlinkmodal);
+          }
+          //Close MediaViewer
+          var closemediaviewer = inlink.data("closemediaviewer");
+          if (closemediaviewer) {
+            var overlay = $("#hiddenoverlay");
+            if (overlay.length) {
+              hideOverlayDiv(overlay);
+            }
+          }
+        }
         //Close Navbar if exists
         var navbar = inlink.closest(".navbar-collapse");
         if (navbar) {
           navbar.collapse("hide");
         }
-        
-      
 
         $(window).trigger("resize");
-        
+
         hideLoader();
-        
-       if (typeof global_updateurl !== "undefined" && global_updateurl == false) {
-	      //globaly disabled updateurl
-	    } else {
-	      var updateurl = inlink.data("updateurl");
-	      if (updateurl) {
-	        //console.log("Saving state ", updateurl);
-	        history.pushState($("#application").html(), null, nextpage);
-	      }
-	    }
+
+        if (
+          typeof global_updateurl !== "undefined" &&
+          global_updateurl == false
+        ) {
+          //globaly disabled updateurl
+        } else {
+          var updateurl = inlink.data("updateurl");
+          if (updateurl) {
+            //console.log("Saving state ", updateurl);
+            history.pushState($("#application").html(), null, nextpage);
+          }
+        }
       });
   }
 
@@ -276,8 +273,6 @@ uiload = function () {
   var siteroot = $("#application").data("siteroot");
   var mediadb = $("#application").data("mediadbappid");
 
-
-  
   if ($.fn.tablesorter) {
     $("#tablesorter").tablesorter();
   }
@@ -841,10 +836,11 @@ uiload = function () {
       if (reset == true) {
         form.get(0).reset();
       }
-      
-      
-      if (typeof global_updateurl !== "undefined" && global_updateurl == false) 
-      {
+
+      if (
+        typeof global_updateurl !== "undefined" &&
+        global_updateurl == false
+      ) {
         //globaly disabled updateurl
       } else {
         //Update Address Bar
@@ -1027,8 +1023,10 @@ uiload = function () {
         data: options,
         success: function (data) {
           //--Entities
-           if ( dialog.hasClass("entity-dialog") &&   dialog.closest(".modal").length !== 0 ) 
-          {
+          if (
+            dialog.hasClass("entity-dialog") &&
+            dialog.closest(".modal").length !== 0
+          ) {
             //find tab
             var tabid = dialog.data("tabid");
             if (!tabid) {
@@ -1047,10 +1045,9 @@ uiload = function () {
               container = dialog.closest(".entity-wraper");
               container.replaceWith(data);
               tabbackbutton(parent);
-            
+
               return;
             }
-                
           } else {
             modaldialog.html(data);
             if (width) {
@@ -1124,18 +1121,14 @@ uiload = function () {
             } else {
               //Update Address Bar
               var updateurl = dialog.data("updateurl");
-              if (updateurl) 
-              {
-				  var urlbar = dialog.data("urlbar");
-				  if(!urlbar) 
-				  {
-					  urlbar = link;
-					}
-                	history.pushState($("#application").html(), null, urlbar);
-                	window.scrollTo(0, 0);
+              if (updateurl) {
+                var urlbar = dialog.data("urlbar");
+                if (!urlbar) {
+                  urlbar = link;
+                }
+                history.pushState($("#application").html(), null, urlbar);
+                window.scrollTo(0, 0);
               }
-                         
-              
             }
 
             adjustzindex(modalinstance);
@@ -1234,18 +1227,18 @@ uiload = function () {
 
     setPageTitle();
   };
-  
-    closeallemdialogs = function () {
-		$(".modal").each(function() {
-			var modaldialog = $(this);
-			modaldialog.modal("hide");
-			modaldialog.remove();
-		}); 
-		var overlay = $("#hiddenoverlay");
-	      if (overlay.length) {
-	        hideOverlayDiv(overlay);
-	      }
-    };
+
+  closeallemdialogs = function () {
+    $(".modal").each(function () {
+      var modaldialog = $(this);
+      modaldialog.modal("hide");
+      modaldialog.remove();
+    });
+    var overlay = $("#hiddenoverlay");
+    if (overlay.length) {
+      hideOverlayDiv(overlay);
+    }
+  };
 
   setPageTitle = function (element) {
     if (element && !element.length) {
@@ -1341,11 +1334,16 @@ uiload = function () {
       function () {}
     );
     autoreload(container);
-    
-    var url = apphome + '/views/modules/' +topmoduleid + '/index.html?entity=' + entityid + '&entitytabopen=' + tabid;
-    history.pushState($("#application").html(), null, url);
 
-    
+    var url =
+      apphome +
+      "/views/modules/" +
+      topmoduleid +
+      "/index.html?entity=" +
+      entityid +
+      "&entitytabopen=" +
+      tabid;
+    history.pushState($("#application").html(), null, url);
   });
 
   lQuery("a.entity-tab-close").livequery("click", function (event) {
@@ -1660,8 +1658,13 @@ uiload = function () {
         row.data("id", rowid);
         row.data("hitssessionid", emselectable.data("hitssessionid"));
         row.data("updateurl", true);
-        var urlbar = apphome + '/views/modules/' +emselectable.data("searchtype") + '/index.html?entity=' + rowid;
-        row.data("urlbar", urlbar );
+        var urlbar =
+          apphome +
+          "/views/modules/" +
+          emselectable.data("searchtype") +
+          "/index.html?entity=" +
+          rowid;
+        row.data("urlbar", urlbar);
         emdialog(row, event);
       }
     }
@@ -3303,7 +3306,7 @@ uiload = function () {
     if (toggler.data("action") == "home") {
       options["sidebarcomponent.value"] = "";
       options["sidebarcomponent"] = "home";
-      
+
       jQuery.ajax({
         url: url,
         async: false,
@@ -3319,7 +3322,7 @@ uiload = function () {
           setPageTitle(cell);
 
           $(window).trigger("resize");
-          
+
           history.pushState($("#application").html(), null, url);
         },
         xhrFields: {
@@ -3348,7 +3351,7 @@ uiload = function () {
           setPageTitle(cell);
 
           $(window).trigger("resize");
-          
+
           history.pushState($("#application").html(), null, url);
         },
         xhrFields: {
@@ -3899,6 +3902,12 @@ uiload = function () {
       }
     }
   );
+  lQuery("a.clear-bookmarks").livequery("click", function (e) {
+    e.preventDefault();
+    if (confirm("Are you sure you want to clear all bookmarks?")) {
+      //TODO: Implement
+    }
+  });
 
   lQuery("#assetcollectionresultsdialog .rowclick").livequery(
     "click",
@@ -3950,8 +3959,6 @@ uiload = function () {
       detail.data("status", "open");
     }
   };
-
-
 
   lQuery(".togglesharelink").livequery("change", function (e) {
     var url = $("input.sharelink").val();
@@ -4066,7 +4073,7 @@ autoreload = function (div, callback) {
   if (url != undefined) {
     var options = div.data();
     replaceelement(url, div, options, callback);
-    
+
     gridResize();
   }
 };
@@ -4210,12 +4217,10 @@ jQuery(document).ready(function () {
 });
 
 jQuery(window).on("resize", function () {
-
   adjustdatamanagertable();
   resizesearchcategories();
   resizecolumns();
   gridResize();
-
 });
 
 jQuery(document).on("domchanged", function () {
