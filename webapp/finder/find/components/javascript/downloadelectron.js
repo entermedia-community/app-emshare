@@ -110,7 +110,7 @@ jQuery(document).ready(function () {
 
     downloadInProgress[orderitemid] = true;
     var entermediakey = '';
-	if (app && app.data('entermediakey') != null) {
+	if (app && app.data('entermediakey') != null) { // app variable is from dom 
 		entermediakey = app.data('entermediakey');
 	}
 	

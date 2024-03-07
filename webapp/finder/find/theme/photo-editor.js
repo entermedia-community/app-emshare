@@ -1,7 +1,7 @@
 $(document).ready(function () {
   var imgSrc = $("#editingCandidate").attr("src");
-  var editorWidth = $("#photoEditorColumn").width() - 56;
-  var editorHeight = $("#photoEditorColumn").height() - 91;
+  var editorWidth = $("#canvasContainer").width();
+  var editorHeight = $("#canvasContainer").height();
 
   fabric.textureSize = 4096;
   var canvas = new fabric.Canvas("canvas");
@@ -23,8 +23,14 @@ $(document).ready(function () {
 
   $(".zoom-pan button").click(function () {
     var action = $(this).data("action");
-    if (action === "reset") {
-      canvas.setViewportTransform([1, 0, 0, 1, 0, 0]);
+    if (action === "tips") {
+      $(this).popover({
+        container: "body",
+        html: true,
+      });
+      $(this).popover("show");
+    } else if (action === "reset") {
+      centerViewPort();
     } else {
       var zoom = canvas.getZoom();
       if (action === "zoomIn") {
@@ -41,10 +47,20 @@ $(document).ready(function () {
 
   document.addEventListener("keydown", function (e) {
     if (e.code === "Numpad0" && e.ctrlKey) {
-      canvas.setViewportTransform([1, 0, 0, 1, 0, 0]);
-      canvas.requestRenderAll();
+      centerViewPort();
     }
   });
+
+  function centerViewPort() {
+    canvas.setViewportTransform([
+      1,
+      0,
+      0,
+      1,
+      -__imageRenderLeft + canvas.width / 2 - __imageRenderWidth / 2,
+      -__imageRenderTop + canvas.height / 2 - __imageRenderHeight / 2,
+    ]);
+  }
 
   canvas.on("mouse:down", function (opt) {
     var evt = opt.e;
@@ -67,8 +83,6 @@ $(document).ready(function () {
     }
   });
   canvas.on("mouse:up", function (opt) {
-    // on mouse up we want to recalculate new interaction
-    // for all objects, so we call setViewportTransform
     this.setViewportTransform(this.viewportTransform);
     this.isDragging = false;
     this.selection = true;
@@ -147,15 +161,15 @@ $(document).ready(function () {
   var img = new Image();
   img.src = imgSrc;
   img.onload = function () {
-    var hRatio = editorWidth / img.width;
-    var vRatio = editorHeight / img.height;
+    var hRatio = (editorWidth - 16) / img.width;
+    var vRatio = (editorHeight - 16) / img.height;
     var ratio = Math.min(hRatio, vRatio);
     if (ratio > 1) ratio = 1;
 
     var renderWidth = Math.floor(img.width * ratio);
     var renderHeight = Math.round(img.height * ratio);
-    var primaryOffsetLeft = Math.round((editorWidth - renderWidth) / 2);
-    var primaryOffsetTop = Math.round((editorHeight - renderHeight) / 2);
+    var primaryOffsetLeft = 0; // Math.round((editorWidth - renderWidth) / 2);
+    var primaryOffsetTop = 0; // Math.round((editorHeight - renderHeight) / 2);
 
     window.__imageRenderWidth = renderWidth;
     window.__imageRenderHeight = renderHeight;
@@ -203,7 +217,7 @@ $(document).ready(function () {
     canvas.add(imgInstance);
     canvas.sendToBack(imgInstance);
     canvas.add(selectionRect);
-    canvas.setZoom(0.95);
+    canvas.setViewportTransform([1, 0, 0, 1, 8, 8]);
     window.__imageRenderWidth = imgInstance.getScaledWidth();
     window.__imageRenderHeight = imgInstance.getScaledHeight();
   };
@@ -262,7 +276,15 @@ $(document).ready(function () {
     imgInstance.clipPath = cropRect;
 
     selectionRect.visible = false;
-    canvas.centerObject(cropRect);
+    canvas.setZoom(1);
+    canvas.setViewportTransform([
+      1,
+      0,
+      0,
+      1,
+      -__imageRenderLeft + canvas.width / 2 - __imageRenderWidth / 2,
+      -__imageRenderTop + canvas.height / 2 - __imageRenderHeight / 2,
+    ]);
     canvas.discardActiveObject();
     canvas.renderAll();
     $(".crop-editor").removeClass("active");
@@ -372,7 +394,6 @@ $(document).ready(function () {
     change: function (hex) {
       var activeObject = canvas.getActiveObject();
       if (activeObject && typeof activeObject.text !== "undefined") {
-        console.log(activeObject);
         activeObject.set("fill", hex);
         canvas.requestRenderAll();
       }
@@ -423,7 +444,6 @@ $(document).ready(function () {
         ef.removeClass("show").addClass("hide");
       })
       .catch(function (e) {
-        console.log(e);
         console.error("font loading failed " + font);
         ef.removeClass("show").addClass("hide");
       });
@@ -520,19 +540,19 @@ $(document).ready(function () {
   });
 
   $("#saveAsImg").click(function () {
-    console.log(window.__imageRenderWidth);
     var form = $("#saveasform");
 
     var formdata = new FormData(form[0]);
     formdata.append(
       "image",
-      canvas.toDataURL({
+      imgInstance.toDataURL({
         left: window.__imageRenderLeft,
         top: window.__imageRenderTop,
         width: window.__imageRenderWidth,
         height: window.__imageRenderHeight,
       })
     );
+    formdata.append("oemaxlevel", 1);
 
     $.ajax({
       url: form.attr("action"),
@@ -542,7 +562,7 @@ $(document).ready(function () {
       processData: false, // NEEDED, DON'T OMIT THIS
       //Refresh imageeditor
       success: function (data) {
-        $("#photo-editor").html(data);
+        $("#photo-editor-container").html(data);
       },
     });
   });
@@ -570,6 +590,7 @@ $(document).ready(function () {
   $("#exportAsCancel").click(closeSaveAs);
 
   $("#downloadImg").click(function () {
+    canvas.renderAll();
     var a = document.createElement("a");
     var filename = $(this).data("filename");
     if (!filename) filename = "image";
@@ -577,8 +598,7 @@ $(document).ready(function () {
 
     var ext = $("input[name=exportAsType]:checked").val();
     if (!ext) ext = "png";
-
-    a.href = canvas.toDataURL({
+    a.href = imgInstance.toDataURL({
       format: ext,
       left: window.__imageRenderLeft,
       top: window.__imageRenderTop,
@@ -587,16 +607,6 @@ $(document).ready(function () {
     });
     a.download = filename + "." + ext;
     a.click();
-  });
-
-  $("#saveAsConfirm").click(function () {
-    var saveAsName = $("#saveAsName").val();
-    if (!saveAsName) {
-      saveAsName = $("#saveAsName").data("filename");
-    }
-    var saveAsType = $("input[name=saveAsType]:checked").val();
-    var saveAsDimension = $("input[name=saveAsDimension]:checked").val();
-    console.log(saveAsType, saveAsDimension, saveAsName);
   });
 
   $("#aspectRatio").change(function () {
