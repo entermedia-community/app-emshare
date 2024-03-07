@@ -3434,6 +3434,7 @@ uiload = function () {
       success: function (data) {
         data = $(data);
         $("#" + targetdiv).replaceWith(data);
+        $(window).trigger("resize");
       },
     });
   });

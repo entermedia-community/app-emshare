@@ -9,17 +9,21 @@
 	#set( $favorites = $userprofile.get("favorites_"+$moduleid))
 	#set($isfav="false")
 	
+	
 	#if($favorites && $favorites.indexOf($itemid) != -1)
 		#set($isfav="true")
+		###set($url="$apphome/components/userprofile/favoritesremove.html?profilepreference=favorites_${moduleid}&profilepreference.value=${itemid}")
+	#else
+		###set($url="$apphome/components/userprofile/favoritesadd.html?profilepreference=favorites_${moduleid}&profilepreference.value=${itemid}")
 	#end
 	
+	
+	
 	<div id="itemfav$itemid" class="itemfav$itemid emgrid-favoriteicon">
-	 <a href="" 
-	 	class="favclick favorite-star #if($isfav=='true') itemfavorited #end" 
-	 	data-id="$itemid"
-	 	data-moduleid="$moduleid"
+	 <a  href="$!{page.path}?field=favorites_${moduleid}&profilepreference.value=${itemid}&id=${itemid}&moduleid=$moduleid" 
+	 	class="ajax favorite-star #if($isfav=='true') itemfavorited #end" 
 	 	data-targetdiv="itemfav$itemid"
-	 	data-favurl="$siteroot$componenthome/gridsample/favorites.html"
+	 	data-ajaxreloadtargets="bookmarksarea"
 	 	#if($isfav=='true')
 	 		title="[[Remove from Bookmarks]]"
 	 	#else
