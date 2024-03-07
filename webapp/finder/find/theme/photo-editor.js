@@ -262,7 +262,20 @@ $(document).ready(function () {
     imgInstance.clipPath = cropRect;
 
     selectionRect.visible = false;
-    canvas.centerObject(cropRect);
+    canvas.setZoom(1);
+    var canvasCenter = canvas.getCenterPoint();
+    console.log(
+      [canvasCenter.x, __imageRenderLeft, __imageRenderWidth],
+      [canvasCenter.y, __imageRenderTop, __imageRenderHeight / 2]
+    );
+    canvas.setViewportTransform([
+      1,
+      0,
+      0,
+      1,
+      -__imageRenderLeft + canvas.width / 2 - __imageRenderWidth / 2,
+      -__imageRenderTop + canvas.height / 2 - __imageRenderHeight / 2,
+    ]);
     canvas.discardActiveObject();
     canvas.renderAll();
     $(".crop-editor").removeClass("active");
@@ -520,19 +533,19 @@ $(document).ready(function () {
   });
 
   $("#saveAsImg").click(function () {
-    console.log(window.__imageRenderWidth);
     var form = $("#saveasform");
 
     var formdata = new FormData(form[0]);
     formdata.append(
       "image",
-      canvas.toDataURL({
+      imgInstance.toDataURL({
         left: window.__imageRenderLeft,
         top: window.__imageRenderTop,
         width: window.__imageRenderWidth,
         height: window.__imageRenderHeight,
       })
     );
+    formdata.append("oemaxlevel", 1);
 
     $.ajax({
       url: form.attr("action"),
@@ -542,7 +555,7 @@ $(document).ready(function () {
       processData: false, // NEEDED, DON'T OMIT THIS
       //Refresh imageeditor
       success: function (data) {
-        $("#photo-editor").html(data);
+        $("#photo-editor-container").html(data);
       },
     });
   });
@@ -570,6 +583,7 @@ $(document).ready(function () {
   $("#exportAsCancel").click(closeSaveAs);
 
   $("#downloadImg").click(function () {
+    canvas.renderAll();
     var a = document.createElement("a");
     var filename = $(this).data("filename");
     if (!filename) filename = "image";
@@ -577,8 +591,7 @@ $(document).ready(function () {
 
     var ext = $("input[name=exportAsType]:checked").val();
     if (!ext) ext = "png";
-
-    a.href = canvas.toDataURL({
+    a.href = imgInstance.toDataURL({
       format: ext,
       left: window.__imageRenderLeft,
       top: window.__imageRenderTop,
