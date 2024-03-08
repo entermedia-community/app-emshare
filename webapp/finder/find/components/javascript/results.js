@@ -571,23 +571,23 @@ jQuery(document).ready(function (url, params) {
   showAsset = function (element, assetid, pagenum) {
     if (assetid) {
       var mainmedia = $("#main-media-viewer");
-      
+
       var resultsdiv;
-      if(element) {
-		  resultsdiv = element.closest("#resultsdiv");
-	  }
+      if (element) {
+        resultsdiv = element.closest("#resultsdiv");
+      }
       if (typeof resultsdiv == "undefined" || !resultsdiv.length) {
-		  resultsdiv = mainmedia;
-	  }
-	  if(typeof resultsdiv == "undefined" ||  !resultsdiv.length) {
-      	  resultsdiv = $("#resultsdiv");
+        resultsdiv = mainmedia;
+      }
+      if (typeof resultsdiv == "undefined" || !resultsdiv.length) {
+        resultsdiv = $("#resultsdiv");
       }
       if (!pagenum) {
-		if(element) {
-			pagenum = element.data("pagenum");
-		}
-		if (!pagenum) {
-        	pagenum = mainmedia.data("pagenum");
+        if (element) {
+          pagenum = element.data("pagenum");
+        }
+        if (!pagenum) {
+          pagenum = mainmedia.data("pagenum");
         }
         if (!pagenum) {
           pagenum = resultsdiv.data("pagenum");
@@ -601,18 +601,16 @@ jQuery(document).ready(function (url, params) {
         link = componenthome + "/mediaviewer/fullscreen/currentasset.html";
       }
       var hitssessionid, hitsname;
-      
-      if(element != null && element.data("hitssessionid")) {
-		  hitssessionid = element.data("hitssessionid");
-	  }
-	  else {
-		  hitssessionid = resultsdiv.data("hitssessionid");
-	  }
-      if(element != null && element.data("hitsname")) {
-		  hitsname = element.data("hitsname");
-	  }
-      else {
-      	hitsname = resultsdiv.data("hitsname");
+
+      if (element != null && element.data("hitssessionid")) {
+        hitssessionid = element.data("hitssessionid");
+      } else {
+        hitssessionid = resultsdiv.data("hitssessionid");
+      }
+      if (element != null && element.data("hitsname")) {
+        hitsname = element.data("hitsname");
+      } else {
+        hitsname = resultsdiv.data("hitsname");
       }
       var params = {
         embed: true,
@@ -646,10 +644,9 @@ jQuery(document).ready(function (url, params) {
 
         var container = $("#main-media-container");
         container.replaceWith(data);
-        
+
         mainmedia = $("#main-media-viewer");
 
-        
         var previousid = mainmedia.data("previous");
         if (typeof previousid != "undefined" && previousid != "") {
           enable(previousid, ".goleftclick");
@@ -1068,27 +1065,25 @@ jQuery(document).ready(function (url, params) {
       return false;
     }
   });
-  
-  
-  
-  showEntity = function(entityid) {
-	  var entity = $(".showentity");
-	  if (entity.length) {
-		  var resultsdiv = $(".resultsdiv");
-		  var moduleid = resultsdiv.data("moduleid");
-		  var componenthome = resultsdiv.data("componenthome");
-		  if(moduleid && componenthome) {
-			  var url = componenthome + '/gridsample/preview/entity.html';
-			  entity.data("emdialoglink", url);
-		      entity.data("updateurl", true);
-		      entity.data("urlbar", window.location.href);
-			  var currenturl = window.location.origin + window.location.pathname;
-			  history.pushState($("#application").html(), null, currenturl);
-			  
-			  emdialog(entity)
-		  }
-	  }
-	  /*
+
+  showEntity = function (entityid) {
+    var entity = $(".showentity");
+    if (entity.length) {
+      var resultsdiv = $(".resultsdiv");
+      var moduleid = resultsdiv.data("moduleid");
+      var componenthome = resultsdiv.data("componenthome");
+      if (moduleid && componenthome) {
+        var url = componenthome + "/gridsample/preview/entity.html";
+        entity.data("emdialoglink", url);
+        entity.data("updateurl", true);
+        entity.data("urlbar", window.location.href);
+        var currenturl = window.location.origin + window.location.pathname;
+        history.pushState($("#application").html(), null, currenturl);
+
+        emdialog(entity);
+      }
+    }
+    /*
 	  if(entityid) {
 		  var resultsdiv = $(".resultsdiv");
 		  var moduleid = resultsdiv.data("moduleid");
@@ -1103,8 +1098,7 @@ jQuery(document).ready(function (url, params) {
 		  }
 	  }
 	  */
-  }
-  
+  };
 
   // Selections
 
@@ -1393,21 +1387,18 @@ jQuery(document).ready(function (url, params) {
 
   var hash = window.location.hash;
   var hidemediaviewer = $("body").data("hidemediaviewer");
-  
-    
-  if(hash) {
-    if (hash.startsWith("#asset-")) {
-		if (!hidemediaviewer) {
-	  		var assetid = hash.substring(7, hash.length);
-	  		if (assetid) {
-	    		showAsset(null, assetid);
-	  		}
-		}
-  	}
 
+  if (hash) {
+    if (hash.startsWith("#asset-")) {
+      if (!hidemediaviewer) {
+        var assetid = hash.substring(7, hash.length);
+        if (assetid) {
+          showAsset(null, assetid);
+        }
+      }
+    }
   }
-  
- 
+
   showEntity();
 
   //gridResize();
@@ -1466,8 +1457,8 @@ checkScroll = function () {
   var lastcheck = $(resultsdiv).data("lastscrollcheck");
   var currentscroll = 0;
 
-    //currentscroll = $(window).scrollTop();
-    currentscroll = $(".scrollview").scrollTop();
+  //currentscroll = $(window).scrollTop();
+  currentscroll = $(".scrollview").scrollTop();
 
   if (lastcheck == currentscroll) {
     //Dom events cause it to fire recursively
@@ -1663,16 +1654,16 @@ function getCurrentGrid() {
   return grid;
 }
 gridResize = function () {
-	console.log("gridResize");
+  console.log("gridResize");
   var grid = getCurrentGrid();
   if (!grid) {
     return;
   }
-  
-  if(!grid.is(":visible")) {
-	  return;
+
+  if (!grid.is(":visible")) {
+    return;
   }
-console.log("gridResize resizing");
+  console.log("gridResize resizing");
   var fixedheight = grid.data("maxheight");
   if (fixedheight == null || fixedheight.length == 0) {
     fixedheight = 200;

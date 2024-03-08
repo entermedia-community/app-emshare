@@ -2,9 +2,10 @@
   display: flex;
   align-items: flex-start;
   flex-direction: row-reverse;
-  width: 100%;
+  width: 100vw;
   height: 100%;
   border-top: 1px solid #333e55;
+  overflow: hidden;
 }
 .photo-selection-column {
   height: 100%;
@@ -140,8 +141,29 @@
   border-top: 4px solid #333e55;
   border-bottom: 4px solid #333e55;
 }
+form#clearAllPreset {
+  margin: 0;
+  height: 46px;
+}
+form#clearAllPreset button {
+  height: 46px;
+  background-color: #4d5d80;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease-in;
+  padding: 0 12px;
+  margin-right: 1px;
+}
+form#clearAllPreset button:active {
+  background-color: #5f739e;
+  border: none;
+  outline: none;
+}
+
 .top-toolbar a,
 .side-toolbar a {
+  border: none;
   background-color: #4d5d80;
   text-align: center;
   color: white;
@@ -178,11 +200,11 @@
 .side-toolbar a.active {
   background-color: #333e55;
 }
-.top-toolbar a i {
+.top-toolbar a#saveAs i {
   margin-right: 8px;
+  padding: 0;
 }
-.top-toolbar a i.bi-download {
-  margin-right: 0;
+.top-toolbar a i {
   padding: 0 6px;
 }
 .top-toolbar a label {
@@ -197,9 +219,6 @@
   cursor: pointer;
   margin-bottom: 0;
   margin-top: 4px;
-}
-#editingCandidate {
-  display: none;
 }
 #canvasContainer {
   width: 100%;
@@ -252,6 +271,7 @@
   padding: 0 8px 8px;
   border-radius: 8px;
   border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
   /* width: 200px;
   min-height: 200px; */
   background-color: #4d5d80;
@@ -361,8 +381,8 @@
   color: #ccc;
 }
 .filter-editor {
-  padding: 0;
   width: 260px;
+  max-height: calc(100vh - 100px);
 }
 .filter-editor img {
   width: 100px;
@@ -374,8 +394,7 @@
   height: 280px;
 }
 #preDefFilters a {
-  margin: 2px;
-  padding: 8px;
+  margin: 5px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -405,8 +424,8 @@
   font-weight: 400 !important;
   font-size: 2em;
   z-index: 100;
-  left: 8px;
-  top: 8px;
+  left: 0;
+  top: 0;
   width: 100px;
   height: 100px;
   display: flex;
@@ -475,6 +494,10 @@
   box-shadow: 0 0 8px #202835;
   pointer-events: none;
 }
+.save-as-menu {
+  padding: 16px;
+  min-width: 360px;
+}
 .export-menu a,
 .save-as-menu a {
   height: 36px;
@@ -513,4 +536,78 @@
 #downloadImg,
 #saveAsImg {
   border-radius: 4px;
+}
+
+.fltr {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 8px;
+}
+.fltr .row-1 {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.fltr .row-1 label {
+  width: auto;
+  padding: 0;
+  margin-right: 8px;
+}
+.fltr .row-1 .bi {
+  transform: scale(1);
+}
+.fltr .row-2 {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+.fltr a {
+  color: white;
+}
+.fltr input[type="range"] {
+  flex: 1;
+}
+.fltr input[type="text"] {
+  padding: 0 4px;
+  width: 54px;
+  height: 26px;
+  line-height: 26px;
+  text-align: center;
+  margin-left: 8px;
+}
+.fltr .row-2 span {
+  display: inline-block;
+  margin-left: 4px;
+  width: 14px;
+}
+.fltr .row-2 sup {
+  font-size: 16px;
+  top: -0.25em;
+}
+.fltr input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 26px;
+  padding: 0 5px;
+  background: #343e55;
+  outline: none;
+}
+.fltr input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 8px;
+  background: #7082a9;
+  cursor: pointer;
+}
+
+.fltr input[type="range"]::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  background: #7082a9;
+  border-radius: 8px;
+  cursor: pointer;
 }

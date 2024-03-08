@@ -5,10 +5,19 @@
     <div class="editorarea">
         <div class="d-flex align-items-center justify-content-end top-toolbar">
             <div class="d-flex align-items-center justify-content-end position-relative">
-                <a href="#" id="exportAs">
+                <form id="clearAllPreset" action="$applink/views/modules/asset/editor/media/resetpresetfile.html">
+                    <input type="hidden" name="assetid" value="$asset.id" />
+                    <button type="submit" title="[[Clear all]]">
+                        [[CLEAR ALL]]
+                    </button>
+                </form>
+                <a href="#" id="copyImg" title="[[Copy image to clipboard]]">
+                    <i class="bi bi-clipboard"></i>
+                </a>
+                <a href="#" id="exportAs" title="[[Download to your device]]">
                     <i class="bi bi-download"></i>
                 </a>
-                <a href="#" id="saveAs">
+                <a href="#" id="saveAs" title="[[Save as preset file]]">
                     <i class="bi bi-floppy-fill"></i>
                     <label>[[Save as]]</label>
                 </a>
@@ -21,17 +30,21 @@
                             #set($type =$mediaarchive.getMediaRenderType($asset.fileformat))
 							#set($results = $conversionUtil.getActivePresetList($mediaarchive.getCatalogId(), $type) )
 							<div class="d-flex flex-column">
-								#foreach ($presetdata in $results)
-									#set($dimension = $conversionUtil.getConvertPresetDimension($mediaarchive.getCatalogId(),$presetdata.id))
-									#set($height = $mathtool.toInteger($dimension.getHeight()))
-									#set($width = $mathtool.toInteger($dimension.getWidth()))
-									#set($aspectratio = $conversionUtil.getConvertPresetAspectRatio($dimension))
-									<label class="mb-0 mr-3 d-flex align-items-center">
-	                                    <input type="radio" name="presetid" class="mr-1" value="$presetdata.id" checked /> $width &times; $height #text($presetdata)
-	                                </label>
-	                                <input type="hidden" name="assetid" value="$asset.id" />
-								#end
-
+                                <input type="hidden" name="assetid" value="$asset.id" />
+                                <label class="mb-2 mr-3 d-flex align-items-center">
+                                    <input type="checkbox" name="replaceall" class="mr-1" value="true" checked /> [[Replace all]]
+                                </label>
+                                <div id="customSizeOptions" style="display: none;">
+                                    #foreach ($presetdata in $results)
+                                        #set($dimension = $conversionUtil.getConvertPresetDimension($mediaarchive.getCatalogId(),$presetdata.id))
+                                        #set($height = $mathtool.toInteger($dimension.getHeight()))
+                                        #set($width = $mathtool.toInteger($dimension.getWidth()))
+                                        #set($aspectratio = $conversionUtil.getConvertPresetAspectRatio($dimension))
+                                        <label class="mb-0 mr-3 d-flex align-items-center">
+                                            <input type="radio" name="presetid" class="mr-1" value="$presetdata.id" data-ext="$presetdata.extension" /> $width &times; $height #text($presetdata)
+                                        </label>
+                                    #end
+                                </div>
                             </div>
                         </div>
                         <div class="d-flex justify-content-center mt-3 mb-2">
@@ -109,8 +122,6 @@
     </div>
 </div>
 
-<img style="display: none;" src="$url" id="editingCandidate" />
-
 <div class="text-editor panel"> 
     <div class="x-close text-white ml-auto pt-1">
         <i class="bi bi-x"></i>
@@ -164,60 +175,111 @@
         </button>
     </div>
 </div>
-<div class="filter-editor panel">
+<div class="filter-editor panel overflow-y">
     <div class="x-close text-white ml-auto pt-1">
         <i class="bi bi-x"></i>
     </div>
     <canvas id="fpCanvas" style="display: none;"></canvas>
     <div class="d-flex flex-column justify-content-center">
-        <div class="filter-controls">
-            <h5 class="text-white m-0 text-center">Custom Filters</h5>
-            <div class="d-flex align-items-center fltr" id="Brightness">
-                <input type="checkbox" />
-                <label>Brightness:<input type="range" disabled value="0" min="-1" max="1" step="0.003921"></label>
-            </div>
-            <div class="py-1" style="background-color: #343e55;">
-                <label class="text-white justify-content-center m-0 fltr" id="Gamma">Gamma <input type="checkbox" /></label>
-                <div class="d-flex align-items-center fltr" data-id="Gamma">
-                    <label>Red: <input type="range" id="gamma-red" disabled value="1" min="0.2" max="2.2" step="0.003921"></label>
+        <div class="filter-controls"> 
+            <div class="fltr" id="Brightness">
+                <div class="row-1">
+                    <label>Brightness:</label>
+                    <a href="#" data-id="Brightness" title="[[Reset]]"><i class="bi bi-arrow-repeat"></i></a>
                 </div>
-                <div class="d-flex align-items-center fltr" data-id="Gamma"> 
-                    <label>Green: <input type="range" id="gamma-green" disabled value="1" min="0.2" max="2.2" step="0.003921"></label>
-                </div>
-                <div class="d-flex align-items-center fltr" data-id="Gamma"> 
-                    <label>Blue: <input type="range" id="gamma-blue" disabled value="1" min="0.2" max="2.2" step="0.003921"></label>
+                <div class="row-2">
+                    <input type="range" defaultValue="0" value="0" min="-1" max="1" step="0.01">
+                    <input type="text" value="0" data-type="percentage" />
+                    <span>%</span>
                 </div>
             </div>
-            <div class="d-flex align-items-center fltr" id="Contrast">
-                <input type="checkbox" />
-                <label>Contrast:<input type="range" disabled class="form-range" value="0" min="-1" max="1" step="0.003921"></label>
+            <div class="fltr" id="Contrast">
+                <div class="row-1">
+                    <label>Contrast:</label>
+                    <a href="#" data-id="Contrast" title="[[Reset]]"><i class="bi bi-arrow-repeat"></i></a>
+                </div>
+                <div class="row-2">
+                    <input type="range" defaultValue="0" value="0" min="-1" max="1" step="0.01">
+                    <input type="text" value="0" data-type="percentage" />
+                    <span>%</span>
+                </div>
             </div>
-            <div class="d-flex align-items-center fltr" id="Saturation">
-                <input type="checkbox" />
-                <label>Saturation:<input type="range" disabled value="0" min="-1" max="1" step="0.003921"></label>
+            <div class="fltr" id="Saturation">
+                <div class="row-1">
+                    <label>Saturation:</label>
+                    <a href="#" data-id="Saturation" title="[[Reset]]"><i class="bi bi-arrow-repeat"></i></a>
+                </div>
+                <div class="row-2">
+                    <input type="range" defaultValue="0" value="0" min="-1" max="1" step="0.01">
+                    <input type="text" value="0" data-type="percentage" />
+                    <span>%</span>
+                </div>
             </div>
-            <div class="d-flex align-items-center fltr" id="Vibrance">
-                <input type="checkbox" />
-                <label>Vibrance:<input type="range" disabled value="0" min="-1" max="1" step="0.003921"></label>
+            <div class="fltr" id="HueRotation" data-prop="rotation">
+                <div class="row-1">
+                    <label>Hue Rotation:</label>
+                    <a href="#" data-id="HueRotation" title="[[Reset]]"><i class="bi bi-arrow-repeat"></i></a>
+                </div>
+                <div class="row-2">
+                    <input type="range" defaultValue="0" value="0" min="-2" max="2" step="0.01">
+                    <input type="text" value="0" data-type="degree" />
+                    <span><sup>&deg;</sup></span>
+                </div>
             </div>
-            <div class="d-flex align-items-center fltr" id="HueRotation" data-prop="rotation">
-                <input type="checkbox" />
-                <label>Hue:<input type="range" disabled value="0" min="-2" max="2" step="0.002"></label>
+            <div class="fltr" id="Vibrance">
+                <div class="row-1">
+                    <label>Vibrance:</label>
+                    <a href="#" data-id="Vibrance" title="[[Reset]]"><i class="bi bi-arrow-repeat"></i></a>
+                </div>
+                <div class="row-2">
+                    <input type="range" defaultValue="0" value="0" min="-1" max="1" step="0.01">
+                    <input type="text" value="0" data-type="percentage" />
+                    <span>%</span>
+                </div>
             </div>
-            <div class="d-flex align-items-center fltr" id="Noise">
-                <input type="checkbox" />
-                <label>Noise:<input type="range" disabled value="0" min="0" max="1000"></label>
+            <div class="fltr" id="Blur">
+                <div class="row-1">
+                    <label>Blur:</label>
+                    <a href="#" data-id="Blur" title="[[Reset]]"><i class="bi bi-arrow-repeat"></i></a>
+                </div>
+                <div class="row-2">
+                    <input type="range" defaultValue="0" value="0" min="0" max="1" step="0.01">
+                    <input type="text" value="0" data-type="percentage" />
+                    <span>%</span>
+                </div>
             </div>
-            <div class="d-flex align-items-center fltr" id="Pixelate">
-                <input type="checkbox" />
-                <label>Pixelate:<input type="range" disabled value="0" min="2" max="20"></label>
+            <div class="fltr" id="Noise">
+                <div class="row-1">
+                    <label>Noise:</label>
+                    <a href="#" data-id="Noise" title="[[Reset]]"><i class="bi bi-arrow-repeat"></i></a>
+                </div>
+                <div class="row-2">
+                    <input type="range" defaultValue="0" value="0" min="0" max="1000" step="1">
+                    <input type="text" value="0" />
+                </div>
             </div>
-            <div class="d-flex align-items-center fltr" id="Blur">
-                <input type="checkbox" />
-                <label>Blur:<input type="range" disabled value="0" min="0" max="1" step="0.01"></label>
+            <div class="fltr" id="Pixelate">
+                <div class="row-1">
+                    <label>Pixelate:</label>
+                    <a href="#" data-id="Pixelate" title="[[Reset]]"><i class="bi bi-arrow-repeat"></i></a>
+                </div>
+                <div class="row-2">
+                    <input type="range" defaultValue="0" value="0" min="0" max="20">
+                    <input type="text" value="0" />
+                </div>
+            </div>
+            <div class="d-flex align-items-center flex-wrap">
+                <div class="d-flex align-items-center">
+                    <input type="checkbox" id="sharpen" />
+                    <label for="sharpen" class="mb-0 ml-1">Sharpen</label>
+                </div>
+                <div class="d-flex align-items-center">
+                    <input type="checkbox" id="emboss" />
+                    <label for="emboss" class="mb-0 ml-1">Emboss</label>
+                </div>
             </div>
         </div>
-        <h5 class="text-white mb-0 mt-4 text-center">Built-In Filters</h5>
+        <h5 class="text-white mb-0 mt-2 text-center">Built-In Filters</h5>
         <div class="d-flex flex-wrap align-items-center justify-content-center overflow-y" id="preDefFilters">
             <a href="#" data-action="Grayscale" style="display: none;"> 
                 <img src="#urlescape($url)" />
@@ -319,9 +381,10 @@
                 <path d="M9 9V3H7v2.59L3.91 2.5 2.5 3.91 5.59 7H3v2zm12 0V7h-2.59l3.09-3.09-1.41-1.41L17 5.59V3h-2v6zM3 15v2h2.59L2.5 20.09l1.41 1.41L7 18.41V21h2v-6zm12 0v6h2v-2.59l3.09 3.09 1.41-1.41L18.41 17H21v-2z"></path>
             </svg>
         </button>
-        <button class="icon-button" data-action="tips" data-toggle="popover" data-html="true" title="Controls" data-content="Press <b>Alt</b> or <b>Option</b> and move your mouse to drag<br><br>Press <b>Ctrl</b>+<b>0</b> to recenter<br><br>Scroll up to <b>zoom in</b> and scroll down to <b>zoom out</b>">
+        <button class="icon-button" data-action="tips" data-toggle="popover" data-html="true" title="Controls" data-content="Press <b>Ctrl</b>+<b>0</b> to recenter<br><br>Press and hold <b>Ctrl</b>, then scroll up or down to <b>zoom in/out</b>">
             <i class="bi bi-question-circle"></i>
         </button>
     </div>
 </div>
-<script type="text/javascript" src="$siteroot$apphome/theme/photo-editor.js"></script> 
+
+<img style="display: none;" src="$url" id="editingCandidate" />
