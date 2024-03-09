@@ -10,13 +10,35 @@ function isWebGLEnabled() {
   }
 }
 
+var fabricFilters = [
+  "Brightness",
+  "Contrast",
+  "Saturation",
+  "HueRotation",
+  "Vibrance",
+  "Blur",
+  "Noise",
+  "Pixelate",
+  "Sharpen",
+  "Grayscale",
+  "BlackWhite",
+  "Sepia",
+  "Invert",
+  "Vintage",
+  "Technicolor",
+  "Polaroid",
+  "Kodachrome",
+  "Sharpen",
+  "Emboss",
+  "Edge",
+];
+var convolutionMatrices = {
+  Emboss: [-2, -1, 0, -1, 1, 1, 0, 1, 2],
+  Sharpen: [0, -1, 0, -1, 5, -1, 0, -1, 0],
+  Edge: [1, 1, 1, 1, -7, 1, 1, 1, 1],
+};
+
 $("document").ready(function () {
-  var imgs = document.querySelectorAll("img.thumb");
-  imgs.forEach(function (img) {
-    img.addEventListener("error", function () {
-      console.log("error loading image");
-    });
-  });
   function initializeEditor() {
     $(".photo-editor-container").css("width", window.innerWidth);
     var imgSrc = $(this).attr("src");
@@ -251,6 +273,10 @@ $("document").ready(function () {
 
       centerViewPort();
 
+      fabricFilters.forEach(function (_, i) {
+        imgInstance.filters[i] = false;
+      });
+
       $("#preDefFilters a").each(function () {
         var filter = $(this).data("action");
         var fpCanvas = new fabric.StaticCanvas("fpCanvas");
@@ -258,8 +284,17 @@ $("document").ready(function () {
         fpCanvas.height = 100;
         var fpFilter = new fabric.Image.filters[filter]();
         var fpImgInstance = new fabric.Image(img, { left: 0, top: 0 });
-        fpImgInstance.scaleToWidth(100);
-        fpImgInstance.scaleToHeight(100);
+        var fpRatio = img.width / img.height;
+        var fpW, fpH;
+        if (fpRatio > 1) {
+          fpH = 100;
+          fpW = 100 * fpRatio;
+        } else {
+          fpW = 100;
+          fpH = 100 / fpRatio;
+        }
+        fpImgInstance.scaleToWidth(fpW);
+        fpImgInstance.scaleToHeight(fpH);
         fpImgInstance.filters.push(fpFilter);
         fpImgInstance.applyFilters();
         fpCanvas.add(fpImgInstance);
@@ -276,18 +311,16 @@ $("document").ready(function () {
     $("#preDefFilters a").click(function (e) {
       e.preventDefault();
       var filter = $(this).data("action");
+      var filterIdx = fabricFilters.indexOf(filter);
       var isActive = $(this).hasClass("active");
       $(this).toggleClass("active");
       if (!isActive) {
         var filterInstance = new fabric.Image.filters[filter]();
-        imgInstance.filters.push(filterInstance);
-        imgInstance.applyFilters();
+        imgInstance.filters[filterIdx] = filterInstance;
       } else {
-        imgInstance.filters = imgInstance.filters.filter(
-          (f) => f.type !== filter
-        );
-        imgInstance.applyFilters();
+        imgInstance.filters[filterIdx] = false;
       }
+      imgInstance.applyFilters();
       canvas.requestRenderAll();
     });
     $("#cropBtn").click(function () {
@@ -481,28 +514,6 @@ $("document").ready(function () {
         });
     }
 
-    // $(".fltr").each(function () {
-    //   var id = $(this).attr("id");
-    //   if (!id) id = $(this).data("id");
-    //   var filterValue;
-    //   if (id == "Gamma") {
-    //     filterValue = [
-    //       $("input#gamma-red").val(),
-    //       $("input#gamma-green").val(),
-    //       $("input#gamma-blue").val(),
-    //     ];
-    //   } else {
-    //     filterValue = $(this).find("input[type=range]").val();
-    //     console.log(filterValue);
-    //     if (filterValue == "0") filterValue = null;
-    //   }
-    //   var filterInstance = new fabric.Image.filters[id]({
-    //     [id.toLowerCase()]: filterValue,
-    //   });
-    //   imgInstance.filters.push(filterInstance);
-    //   imgInstance.applyFilters();
-    // });
-
     $(".fltr input[type=range]").on("input", function () {
       var valInput = $(this).next("input");
       var dataType = valInput.data("type");
@@ -517,62 +528,45 @@ $("document").ready(function () {
       var primaryParent = $(this).parent().parent();
       var id = primaryParent.attr("id");
       if (!id) id = primaryParent.data("id");
+      var filterIdx = fabricFilters.indexOf(id);
 
-      // if (id == "Gamma") {
-      //   filterValue = [
-      //     $("input#gamma-red").val(),
-      //     $("input#gamma-green").val(),
-      //     $("input#gamma-blue").val(),
-      //   ];
-      // }
       var prop = primaryParent.data("prop");
       if (!prop) prop = id.toLowerCase();
       var filterInstance = imgInstance.filters.find((f) => f.type === id);
-      if (id === "Red" || id === "Green" || id === "Blue") {
-        id = "Gamma";
-        prop = "gamma";
-        filterValue = [
-          $("#Red").find("input[type=range]").val(),
-          $("#Green").find("input[type=range]").val(),
-          $("#Blue").find("input[type=range]").val(),
-        ];
-      }
       if (!filterInstance) {
         filterInstance = new fabric.Image.filters[id]();
-        imgInstance.filters.push(filterInstance);
+        imgInstance.filters[filterIdx] = filterInstance;
       }
       filterInstance[prop] = filterValue;
       imgInstance.applyFilters();
       canvas.requestRenderAll();
     });
-    $("#sharpen").click(function () {
+
+    $(".matrixFilter input[type=checkbox]").click(function () {
+      var action = $(this).data("action");
+      var filterIdx = fabricFilters.indexOf(action);
       var checked = $(this).prop("checked");
+      var matrix = convolutionMatrices[action];
       if (checked) {
-        var filterInstance = imgInstance.filters.find(
-          (f) => f.type === "sharpen"
-        );
-        if (!filterInstance) {
-          filterInstance = new fabric.Image.filters["Convolute"]();
-          imgInstance.filters.push(filterInstance);
-        }
-        filterInstance["matrix"] = [0, -1, 0, -1, 5, -1, 0, -1, 0];
+        var filterInstance = new fabric.Image.filters["Convolute"]({
+          matrix: matrix,
+        });
+        imgInstance.filters[filterIdx] = filterInstance;
       } else {
-        imgInstance.filters = imgInstance.filters.filter(
-          (f) => f.type !== "sharpen"
-        );
+        imgInstance.filters[filterIdx] = false;
       }
       imgInstance.applyFilters();
       canvas.requestRenderAll();
     });
-    $("emboss").onclick = function () {
-      applyFilter(
-        13,
-        this.checked &&
-          new fabric.Image.filters.Convolute({
-            matrix: [1, 1, 1, 1, 0.7, -1, -1, -1, -1],
-          })()
-      );
-    };
+
+    $(".fltr a").click(function () {
+      var id = $(this).data("id");
+      var filterIdx = fabricFilters.indexOf(id);
+      imgInstance.filters[filterIdx] = false;
+      imgInstance.applyFilters();
+      canvas.requestRenderAll();
+    });
+
     $("#imageField").change(function () {
       var fileReader = new FileReader();
       fileReader.onload = function (e) {
@@ -795,7 +789,6 @@ $("document").ready(function () {
   lQuery("#editingCandidate").livequery(initializeEditor);
 
   $("form#clearAllPreset").submit(function (e) {
-    console.log("object");
     e.preventDefault();
     if (confirm("Are you sure you want to clear all?")) {
       this.submit();
