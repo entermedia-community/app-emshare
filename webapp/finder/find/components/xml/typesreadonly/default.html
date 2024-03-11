@@ -13,7 +13,7 @@
 </ul>
 #else
 <div class="emdatafieldreadonly emdatafieldreadonly-default">
-#if(!$val && $detail.rendermask && $data)
+#if($val == null && $detail.rendermask && $data)
 	#set($label = $searcherManager.getValue($detail.getListCatalogId(), $detail.render, $data.properties))
 	#esc( $label ) 
 #elseif($detail.isMultiLanguage()) 
@@ -37,7 +37,7 @@
 		#if($lval) $keyid:$lval <br>#end 
 	#end		
 #else
-	#if( $val.length() > 80)
+	#if( $val != null && $val.length() > 80)
 	 <span class="trim-text" #if($detail.id == "name") data-max="80" #else data-max="150" #end> #esc($val)</span>
 	#else
 		#esc($!val) 	
