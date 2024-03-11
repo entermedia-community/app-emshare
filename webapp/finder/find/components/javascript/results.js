@@ -1878,7 +1878,7 @@ lQuery("a.assettab").livequery("click", function (e) {
     // save to profile only pewview, properties and media
     if (
       assettab == "viewproperties" ||
-      assettab == "viewmedia" ||
+      assettab == "imageeditor" ||
       assettab == "viewdownloads" ||
       assettab == "viewtimeline" ||
       assettab == "viewclosedcaptions"
