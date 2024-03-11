@@ -5,12 +5,8 @@
 
 #set($mediadbappid=$mediaarchive.getMediaDbId())
 #set($type =$mediaarchive.getMediaRenderType($asset.fileformat))
-#set($results = $conversionUtil.getCompletedPresetList($mediaarchive,$asset) )
-
-#set($isready = $conversionUtil.isReady($mediaarchive,$results) )
-
-
-$context.putPageValue("results", $results)
+#set($presets = $conversionUtil.getActivePresetList($mediaarchive,$asset) )
+#set($isconverting = $conversionUtil.isConverting($mediaarchive,$asset) )
 
 $context.putPageValue("viewer", "media_download_")
 #set($rendertype = $mediaarchive.getMediaRenderType($asset.fileformat))
@@ -22,38 +18,27 @@ $context.putPageValue("viewer", "media_download_")
 #end
 
 $context.putPageValue("thumbsize", "small" )
-$context.putPageValue("urlparams", "?cache=false&_=$mathutil.getRandomValue(99999)" )
+##$context.putPageValue("urlparams", "?cache=false&_=$mathutil.getRandomValue(99999)" )
 
-<div id="sidebar" class="photo-selection-column #if(!$isready) ajaxstatus #end" 
+<div id="imageeditorsidebar" class="photo-selection-column #if($isconverting) ajaxstatus #end" 
 	data-assetid="$asset.id"
-	data-url="$applink/views/modules/asset/editor/imageeditor/thumb-sidebar.html">
+	data-oemaxlevel="1"
+	data-ajaxpath="$applink/views/modules/asset/editor/imageeditor/thumb-sidebar.html">
     <div class="d-flex align-items-center">
-      <h2>[[Saved Copies]]</h2>
+      <h2>[[Saved Copies]] #if( $isconverting) ([[rendering]]...) #end</h2>
     </div>
     <div class="w-100 selection-images">
-      #foreach ($result in $results)
-        #set($cancrop = false)
-        #set($cancrop = $conversionUtil.canCrop($catalogid,$result.id,$asset.id))
-
-        #if(!$cancrop)
-          #if( $mediaarchive.isCatalogSettingTrue("preventupscaling"))
-            #set($show = false)
-          #else
-            #set($show = true)
-          #end
-        #else
-          #set($show = true)
-        #end
-
+      #foreach ($result in $presets)
         #set($expfilename = $mediaarchive.asExportFileName($asset, $result))
         #set($url = "$siteroot/$mediadbappid/services/module/asset/downloads/generated/$asset.sourcepath/$result.generatedoutputfile/$expfilename")
-        #if($conversionUtil.doesConvertedFileExist($mediaarchive, $asset,$result) && $show)
+        #set( $contentitem = $conversionUtil.outPutForPreset($mediaarchive, $asset,$result))
+        #if($contentitem.exists())
           #set($dimension = $conversionUtil.getConvertPresetDimension($catalogid,$result.id))
           #set($height = $mathtool.toInteger($dimension.getHeight()))
           #set($width = $mathtool.toInteger($dimension.getWidth())) 
 
           <div class='thumb'> 
-            <img src="#urlescape($url)" />
+            <img src="#urlescape($url)?_=$contentitem.getLastModified()" />
             <div class="d-flex align-items-end justify-content-between"> 
               <small>$expfilename</small> 
             </div>
@@ -70,6 +55,8 @@ $context.putPageValue("urlparams", "?cache=false&_=$mathutil.getRandomValue(9999
                 title="[[Share]] $!result.name"><i class="fas fa-share-alt"></i></a>
             #end
           </div>
+        #else
+        	  ##$result
         #end
       #end    
     </div>

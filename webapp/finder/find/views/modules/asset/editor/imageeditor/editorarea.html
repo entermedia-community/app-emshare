@@ -3,7 +3,6 @@
 <div class="d-flex flex-column h-100" id="photo-editor" >
     <div class="editorarea">
         <div class="d-flex align-items-center justify-content-end top-toolbar"> 
-        	#if(!$isready)[[Loading]]... $isready#end 
             <div class="d-flex align-items-center justify-content-end position-relative">
                 <form id="clearAllPreset" class="ajaxform" data-targetdiv="photo-editor-container" action="$applink/views/modules/asset/editor/imageeditor/reloadthumbs.html">
                     <input type="hidden" name="assetid" value="$asset.id" />
@@ -29,7 +28,7 @@
 
                         <div class="d-flex mb-2">
                             #set($type =$mediaarchive.getMediaRenderType($asset.fileformat))
-							#set($results = $conversionUtil.getActivePresetList($mediaarchive.getCatalogId(), $type) )
+							#set($results = $conversionUtil.getActivePresetList($mediaarchive, $asset) )
 							<div class="d-flex flex-column">
                                 <input type="hidden" name="assetid" value="$asset.id" />
                                 <label class="mb-2 mr-3 d-flex align-items-center">
@@ -42,7 +41,7 @@
                                         #set($width = $mathtool.toInteger($dimension.getWidth()))
                                         #set($aspectratio = $conversionUtil.getConvertPresetAspectRatio($dimension))
                                         <label class="mb-0 mr-3 d-flex align-items-center">
-                                            <input type="radio" name="presetid" class="mr-1" value="$presetdata.id" data-ext="$presetdata.extension" /> $width &times; $height #text($presetdata)
+                                            <input type="radio" name="presetid" class="mr-1" value="$presetdata.id" data-ext="$presetdata.extension" /> $width &times; $height #text($presetdata) $presetdata.extension
                                         </label>
                                     #end
                                 </div>
@@ -391,9 +390,6 @@
         </button>
     </div>
 </div>
-
-$url
-<img style="display: none;" src="$url" id="editingCandidate" />
-
-
+#set( $contentitem = $conversionUtil.outPutForPreset($mediaarchive, $asset,"image3000x3000.jpg"))
+<img style="display: none;" src="${url}?_=$contentitem.getLastModified()" id="editingCandidate" />
 

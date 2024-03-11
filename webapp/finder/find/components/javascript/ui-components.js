@@ -4111,11 +4111,13 @@ showajaxstatus = function (uid) {
       if (app && app.data("entermediakey") != null) {
         entermediakey = app.data("entermediakey");
       }
+	 var data = cell.data();
+
       //TODO: entermedia key or serialize
       jQuery.ajax({
         url: path,
         async: false,
-        data: {},
+        data: data,
         success: function (data) {
           cell.replaceWith(data);
         },
