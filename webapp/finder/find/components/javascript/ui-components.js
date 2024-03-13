@@ -147,9 +147,9 @@ runajaxonthis = function (inlink, e) {
         fnc(inlink); //execute it
       }
     }
-  
+
     showLoader();
-    
+
     jQuery
       .ajax({
         url: nextpage,
@@ -171,7 +171,7 @@ runajaxonthis = function (inlink, e) {
             cell.html(data);
           }
           cell = findclosest(onpage, "#" + targetDiv);
-          
+
           setPageTitle(cell);
 
           //on success execute extra JS
@@ -685,6 +685,11 @@ uiload = function () {
       e.preventDefault();
       e.stopImmediatePropagation();
 
+      var warning = $(this).data("warning");
+      if (warning && !confirm(warning)) {
+        return;
+      }
+
       if (typeof CKEDITOR !== "undefined") {
         for (instance in CKEDITOR.instances) {
           var editor = CKEDITOR.instances[instance];
@@ -1110,9 +1115,9 @@ uiload = function () {
             ) {
               //globaly disabled updateurl
             } else {
-			  //backup url
-                var currenturl = window.location.href;
-                modalinstance.data("oldurlbar", currenturl);
+              //backup url
+              var currenturl = window.location.href;
+              modalinstance.data("oldurlbar", currenturl);
               //Update Address Bar
               var updateurl = dialog.data("updateurl");
               if (updateurl) {
@@ -1120,7 +1125,7 @@ uiload = function () {
                 if (!urlbar) {
                   urlbar = link;
                 }
-              
+
                 history.pushState($("#application").html(), null, urlbar);
                 window.scrollTo(0, 0);
               }
@@ -1209,9 +1214,8 @@ uiload = function () {
   });
 
   closeemdialog = function (modaldialog) {
-	
-	var oldurlbar = modaldialog.data("oldurlbar");
-	
+    var oldurlbar = modaldialog.data("oldurlbar");
+
     if (modaldialog.modal) {
       modaldialog.modal("hide");
       modaldialog.remove();
@@ -1221,17 +1225,14 @@ uiload = function () {
     if (othermodal.length && !othermodal.is(":hidden")) {
       adjustzindex(othermodal);
     }
-    
-    hideLoader();
-	
-	setPageTitle();
-	
-	
-	if(oldurlbar !== undefined) {
-		history.pushState($("#application").html(), null, oldurlbar);
-	}
 
-    
+    hideLoader();
+
+    setPageTitle();
+
+    if (oldurlbar !== undefined) {
+      history.pushState($("#application").html(), null, oldurlbar);
+    }
   };
 
   closeallemdialogs = function () {
@@ -4111,7 +4112,7 @@ showajaxstatus = function (uid) {
       if (app && app.data("entermediakey") != null) {
         entermediakey = app.data("entermediakey");
       }
-	 var data = cell.data();
+      var data = cell.data();
 
       //TODO: entermedia key or serialize
       jQuery.ajax({

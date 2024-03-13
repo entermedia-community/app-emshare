@@ -1654,7 +1654,6 @@ function getCurrentGrid() {
   return grid;
 }
 gridResize = function () {
-  console.log("gridResize");
   var grid = getCurrentGrid();
   if (!grid) {
     return;

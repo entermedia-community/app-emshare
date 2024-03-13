@@ -1,10 +1,17 @@
+#set( $contentitem = $conversionUtil.outPutForPreset($mediaarchive, $asset,"image3000x3000.jpg"))
+ 
+<div id="imageeditorarea" class="w-100 h-100 #if(!$contentitem.exists()) ajaxstatus #end" 
+	data-assetid="$asset.id"
+	data-oemaxlevel="1"
+	data-ajaxpath="$applink/views/modules/asset/editor/imageeditor/editorarea.html">
+
 #set($url = $mediaarchive.asLinkToPreview($asset, "image3000x3000.jpg"))
 #set($filename = "$asset.name")
 <div class="d-flex flex-column h-100" id="photo-editor" >
     <div class="editorarea">
         <div class="d-flex align-items-center justify-content-end top-toolbar"> 
             <div class="d-flex align-items-center justify-content-end position-relative">
-                <form id="clearAllPreset" class="ajaxform" data-targetdiv="photo-editor-container" action="$applink/views/modules/asset/editor/imageeditor/reloadthumbs.html">
+                <form id="clearAllPreset" class="ajaxform" data-targetdiv="photo-editor-container" data-warning="[[Are you sure you want to reset all the image back to original?]]" action="$applink/views/modules/asset/editor/imageeditor/reloadthumbs.html">
                     <input type="hidden" name="assetid" value="$asset.id" />
                     <input type="hidden" name="oemaxlevel" value="1" />
                     <button type="submit" title="[[Clear all]]">
@@ -25,7 +32,6 @@
                 <div class="save-as-menu">
 	                <form class="d-flex flex-column" id="saveasform" action="$applink/views/modules/asset/editor/imageeditor/savepresetfile.html">
                         <h4 class="text-center">[[Save As]]</h4>
-
                         <div class="d-flex mb-2">
                             #set($type =$mediaarchive.getMediaRenderType($asset.fileformat))
 							#set($results = $conversionUtil.getActivePresetList($mediaarchive, $asset) )
@@ -40,8 +46,9 @@
                                         #set($height = $mathtool.toInteger($dimension.getHeight()))
                                         #set($width = $mathtool.toInteger($dimension.getWidth()))
                                         #set($aspectratio = $conversionUtil.getConvertPresetAspectRatio($dimension))
-                                        <label class="mb-0 mr-3 d-flex align-items-center">
-                                            <input type="radio" name="presetid" class="mr-1" value="$presetdata.id" data-ext="$presetdata.extension" /> $width &times; $height #text($presetdata) $presetdata.extension
+                                        <label class="mb-1 mr-3 d-flex align-items-start">
+                                            <input type="radio" name="presetid" class="mr-1" value="$presetdata.id" data-ext="$presetdata.extension" />
+                                            <span>$width &times; $height #text($presetdata) $presetdata.extension</span>
                                         </label>
                                     #end
                                 </div>
@@ -386,10 +393,11 @@
             </svg>
         </button>
         <button class="icon-button" data-action="tips" data-toggle="popover" data-html="true" title="Controls" data-content="Press <b>Ctrl</b>+<b>0</b> to recenter<br><br>Press and hold <b>Ctrl</b>, then scroll up or down to <b>zoom in/out</b>">
-            <i class="bi bi-question-cir"></i>
+            <i class="bi bi-question-circle"></i>
         </button>
     </div>
 </div>
-#set( $contentitem = $conversionUtil.outPutForPreset($mediaarchive, $asset,"image3000x3000.jpg"))
-<img style="display: none;" src="${url}?_=$contentitem.getLastModified()" id="editingCandidate" />
-
+#if($contentitem.exists())
+    <img style="display: none;" src="${url}?_=$contentitem.getLastModified()" id="editingCandidate" />
+#end
+</div>

@@ -46,11 +46,11 @@ $("document").ready(function () {
     var editorWidth = window.innerWidth - 350;
     var editorHeight = window.innerHeight - 100;
 
-    fabric.filterBackend = fabric.initFilterBackend();
     fabric.Object.prototype.transparentCorners = false;
 
     fabric.textureSize = 4096;
     var canvas = new fabric.Canvas("canvas");
+    console.log(canvas);
     canvas.setWidth(editorWidth);
     canvas.setHeight(editorHeight);
     canvas.preserveObjectStacking = true;
@@ -210,6 +210,7 @@ $("document").ready(function () {
 
     var img = new Image();
     img.onload = function () {
+      console.log(img.width, img.height);
       var hRatio = (editorWidth - 16) / img.width;
       var vRatio = (editorHeight - 16) / img.height;
       var ratio = Math.min(hRatio, vRatio);
