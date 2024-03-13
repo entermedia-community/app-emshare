@@ -1478,7 +1478,12 @@ uiload = function () {
       return;
     }
     $(this).click(function (e) {
-      e.stopPropagation();
+      if (
+        e.target.classList.contains("see-more") ||
+        e.target.classList.contains("see-less")
+      ) {
+        e.stopPropagation();
+      }
     });
     var maxLength = $(this).data("max");
     var text = $(this).text();
