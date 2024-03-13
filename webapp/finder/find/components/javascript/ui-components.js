@@ -1393,6 +1393,7 @@ uiload = function () {
 
   function confirmModalClose(modal) {
     var checkForm = modal.find("form.checkCloseDialog");
+    
     if (!checkForm) {
       closeemdialog(modal);
     } else {

@@ -45,8 +45,7 @@ jQuery(document).ready(function () {
               itemexportname: item.itemexportname,
               itemdownloadurl: item.itemdownloadurl,
             };
-            var itemEl = $("#d-" + item.id);
-            downloadMediaLocally(item.id, file, itemEl);
+            downloadMediaLocally(item.id, file);
           }
         }
       },
@@ -87,7 +86,7 @@ jQuery(document).ready(function () {
     }
   };
 
-  function downloadMediaLocally(orderitemid, file, itemEl, retries = 0) {
+  function downloadMediaLocally(orderitemid, file, retries = 0) {
     if (downloadInProgress[orderitemid]) return;
     if (retries > 3) {
       $.ajax({
@@ -115,7 +114,7 @@ jQuery(document).ready(function () {
     request.addEventListener("error", function () {
       errorDownloadProgress(orderitemid);
       downloadInProgress[orderitemid] = null;
-      downloadMediaLocally(orderitemid, file, itemEl, retries + 1);
+      downloadMediaLocally(orderitemid, file,  retries + 1);
     });
     request.addEventListener("progress", function (e) {
       if (e.lengthComputable) {
@@ -202,14 +201,13 @@ jQuery(document).ready(function () {
 
   lQuery(".redownloadorder").livequery("click", function (e) {
     var orderitemid = $(this).data("orderitemid");
-    var itemEl = $("#d-" + orderitemid);
     var itemexportname = $(this).data("itemexportname");
     var itemdownloadurl = $(this).data("itemdownloadurl");
     var file = {
       itemexportname: itemexportname,
       itemdownloadurl: itemdownloadurl,
     };
-    downloadMediaLocally(orderitemid, file, itemEl);
+    downloadMediaLocally(orderitemid, file);
   });
   lQuery(".abortdownloadorder").livequery("click", function (e) {
     var confirmed = confirm("Are you sure you want to cancel the download?");
