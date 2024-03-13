@@ -28,11 +28,10 @@
 				<div class="d-flex align-items-center justify-content-between flex-grow-1">
 					<div class="d-flex flex-column flex-grow-1">
 						<div class="order-name">
-							$downloadorder.getCurrentItem().get("itemexportname")
-						</div>
-						<div class="order-filetype">
 							#if( $downloadorder.getItemCount() > 1 )
-								[[Zip File]] ($downloadorder.getItemCount() [[files]])
+								$downloadorder.getItemCount() [[files]]
+							#else
+								$downloadorder.getCurrentItem().get("itemexportname")
 							#end
 						</div>
 						<div class="d-flex align-items-center">			
@@ -74,7 +73,7 @@
 						</div>
 					</div>
 				</div>
-				<div class="file-thumb">
+				<div class="file-thumb #if($downloadorder.getItemCount() > 1) multiple #end">
 					#if($status == "error")
 						<i class="bi bi-x-circle-fill error"></i>
 					#else

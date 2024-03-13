@@ -1472,7 +1472,14 @@ uiload = function () {
       .addClass("fa-caret-down");
   }
 
-  lQuery(".trim-text").livequery(function () {
+  lQuery(".trim-text").livequery(function (e) {
+    var check = $(this).closest(".entitymetadatamodal");
+    if (check.length > 0) {
+      return;
+    }
+    $(this).click(function (e) {
+      e.stopPropagation();
+    });
     var maxLength = $(this).data("max");
     var text = $(this).text();
     if (text.length <= maxLength) return;
