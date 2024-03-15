@@ -43,9 +43,12 @@ $context.putPageValue("previewonly", $previewonly)
 	#set( $opentab = "viewpreview")
 #end
 
+#if($opentab == "imageeditor" && $rendertype != "image")
+	#set( $opentab = "viewpreview")
+#end
+
 #if($opentab == "viewdownloads" && !$canviewmediaedit)
 	#set( $opentab = "viewpreview")
-	
 #end
 
 #set( $ismulti = $asset.id.startsWith("multiedit:") || $context.getRequestParameter("multi") == "true")
@@ -53,7 +56,6 @@ $context.putPageValue("previewonly", $previewonly)
 	#set( $opentab = "viewproperties")
 	$context.putPageValue("ismulti",$ismulti)
 #end
-
 
 
 $context.putPageValue("opentab",$opentab)
