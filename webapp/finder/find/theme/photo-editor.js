@@ -104,8 +104,8 @@ $("document").ready(function () {
         0,
         0,
         1,
-        -__imageRenderLeft + canvas.width / 2 - __imageRenderWidth / 2,
-        -__imageRenderTop + canvas.height / 2 - __imageRenderHeight / 2,
+        -imageRenderLeft + canvas.width / 2 - imageRenderWidth / 2,
+        -imageRenderTop + canvas.height / 2 - imageRenderHeight / 2,
       ]);
     }
 
@@ -221,9 +221,13 @@ $("document").ready(function () {
       var primaryOffsetLeft = 0; // Math.round((editorWidth - renderWidth) / 2);
       var primaryOffsetTop = 0; // Math.round((editorHeight - renderHeight) / 2);
 
+      window.imageRenderWidth = renderWidth;
       window.__imageRenderWidth = renderWidth;
+      window.imageRenderHeight = renderHeight;
       window.__imageRenderHeight = renderHeight;
+      window.imageRenderLeft = primaryOffsetLeft;
       window.__imageRenderLeft = primaryOffsetLeft;
+      window.imageRenderTop = primaryOffsetTop;
       window.__imageRenderTop = primaryOffsetTop;
 
       selectionRect = new fabric.Rect({
@@ -267,8 +271,8 @@ $("document").ready(function () {
       canvas.sendToBack(imgInstance);
       canvas.add(selectionRect);
       canvas.setViewportTransform([1, 0, 0, 1, 8, 8]);
-      window.__imageRenderWidth = imgInstance.getScaledWidth();
-      window.__imageRenderHeight = imgInstance.getScaledHeight();
+      window.imageRenderWidth = imgInstance.getScaledWidth();
+      window.imageRenderHeight = imgInstance.getScaledHeight();
 
       $("#editCandidateLoader").hide();
 
@@ -324,17 +328,30 @@ $("document").ready(function () {
       imgInstance.applyFilters();
       canvas.requestRenderAll();
     });
+    $("#resetCrop").click(function () {
+      window.imageRenderWidth = window.__imageRenderWidth;
+      window.imageRenderHeight = window.__imageRenderHeight;
+      window.imageRenderLeft = window.__imageRenderLeft;
+      window.imageRenderTop = window.__imageRenderTop;
+      imgInstance.clipPath = null;
+      selectionRect.visible = false;
+      canvas.setZoom(1);
+      centerViewPort();
+      canvas.discardActiveObject();
+      canvas.renderAll();
+      $(".crop-editor").removeClass("active");
+    });
     $("#cropBtn").click(function () {
       canvas.renderAll();
-      window.__imageRenderWidth = selectionRect.getScaledWidth();
-      window.__imageRenderHeight = selectionRect.getScaledHeight();
-      window.__imageRenderLeft = selectionRect.left;
-      window.__imageRenderTop = selectionRect.top;
+      window.imageRenderWidth = selectionRect.getScaledWidth();
+      window.imageRenderHeight = selectionRect.getScaledHeight();
+      window.imageRenderLeft = selectionRect.left;
+      window.imageRenderTop = selectionRect.top;
       cropRect = new fabric.Rect({
-        left: __imageRenderLeft,
-        top: __imageRenderTop,
-        width: __imageRenderWidth,
-        height: __imageRenderHeight,
+        left: imageRenderLeft,
+        top: imageRenderTop,
+        width: imageRenderWidth,
+        height: imageRenderHeight,
         absolutePositioned: true,
       });
 
@@ -347,8 +364,8 @@ $("document").ready(function () {
         0,
         0,
         1,
-        -__imageRenderLeft + canvas.width / 2 - __imageRenderWidth / 2,
-        -__imageRenderTop + canvas.height / 2 - __imageRenderHeight / 2,
+        -imageRenderLeft + canvas.width / 2 - imageRenderWidth / 2,
+        -imageRenderTop + canvas.height / 2 - imageRenderHeight / 2,
       ]);
       canvas.discardActiveObject();
       canvas.renderAll();
@@ -359,6 +376,7 @@ $("document").ready(function () {
       var action = $(this).data("action");
       var activeObject = canvas.getActiveObject();
       if (!activeObject) {
+        centerViewPort();
         activeObject = imgInstance;
       }
       if (action === "flipX") {
@@ -409,7 +427,7 @@ $("document").ready(function () {
       if (typeof obj.selected[0].text !== "undefined") {
         $("#textField").val(obj.selected[0].text);
         $("#font-color").minicolors("value", obj.selected[0].fill);
-        $("#font-family").val(obj.selected[0].fontFamily);
+        fontFamily.val(obj.selected[0].fontFamily);
         $("#font-weight").val(
           JSON.stringify({
             weight: obj.selected[0].fontWeight,
@@ -429,7 +447,7 @@ $("document").ready(function () {
     function resetTextPanel() {
       $("#textField").val("");
       $("#font-color").minicolors("value", "#ffffff");
-      $("#font-family").val("Roboto");
+      fontFamily.val("Roboto");
       $("#font-weight").val("{weight:400,style:normal}");
       $("button.text-align-btn").removeClass("active");
       $("button.text-align-btn").first().addClass("active");
@@ -452,9 +470,9 @@ $("document").ready(function () {
         });
         canvas.add(text);
         canvas.setActiveObject(text);
-        $("#font-family").val("Roboto");
+        fontFamily.val("Roboto");
         $("#font-weight").val(`{"weight":400,"style":"normal"}`);
-        loadFontAndUse("Roboto", { weight: 400, style: "normal" });
+        loadFontAndUse("Charmonman", { weight: 400, style: "normal" });
       }
     });
     $("#font-color").minicolors({
@@ -481,6 +499,7 @@ $("document").ready(function () {
     var fontWeight = $("#font-weight");
 
     fontFamily.change(function () {
+      console.log($(this).val(), JSON.parse(fontWeight.val()));
       loadFontAndUse($(this).val(), JSON.parse(fontWeight.val()));
     });
     fontWeight.change(function () {
@@ -616,10 +635,10 @@ $("document").ready(function () {
         "image",
         canvas.toDataURL({
           format: format,
-          left: window.__imageRenderLeft,
-          top: window.__imageRenderTop,
-          width: window.__imageRenderWidth,
-          height: window.__imageRenderHeight,
+          left: window.imageRenderLeft,
+          top: window.imageRenderTop,
+          width: window.imageRenderWidth,
+          height: window.imageRenderHeight,
         })
       );
       centerViewPort();
@@ -672,10 +691,10 @@ $("document").ready(function () {
       canvas.setViewportTransform([1, 0, 0, 1, 0, 0]);
       a.href = canvas.toDataURL({
         format: ext,
-        left: window.__imageRenderLeft,
-        top: window.__imageRenderTop,
-        width: window.__imageRenderWidth,
-        height: window.__imageRenderHeight,
+        left: window.imageRenderLeft,
+        top: window.imageRenderTop,
+        width: window.imageRenderWidth,
+        height: window.imageRenderHeight,
       });
       centerViewPort();
       a.download = filename + "." + ext;
@@ -684,10 +703,8 @@ $("document").ready(function () {
 
     $("#aspectRatio").change(function () {
       var ratio = $(this).val();
-      var newWidth = __imageRenderWidth;
-      var newHeight = __imageRenderHeight;
-      var top = 0;
-      var left = 0;
+      var newWidth = window.imageRenderWidth;
+      var newHeight = window.imageRenderHeight;
       if (ratio == -1) {
         selectionRect.setControlVisible("mt", true);
         selectionRect.setControlVisible("mb", true);
@@ -699,44 +716,37 @@ $("document").ready(function () {
         selectionRect.setControlVisible("ml", false);
         selectionRect.setControlVisible("mr", false);
 
-        if (ratio == 1) {
-          newWidth = Math.min(__imageRenderWidth, __imageRenderHeight);
-          newHeight = newWidth;
-          left = newWidth / 2;
-          top = newWidth / 2;
-          if (__imageRenderWidth > __imageRenderHeight) {
-            top = newWidth / 4;
-            left = __imageRenderWidth / 2 - newWidth / 4;
-          } else {
-            left = newWidth / 4;
-            top = __imageRenderHeight / 2 - newWidth / 4;
+        var minDim = Math.min(imageRenderWidth, imageRenderHeight);
+        if (ratio != 0) {
+          if (ratio == 1) {
+            newWidth = minDim;
+            newHeight = newWidth;
+          } else if (ratio > 1) {
+            if (imageRenderWidth > imageRenderHeight) {
+              newWidth = minDim;
+              newHeight = minDim / ratio;
+            } else {
+              newHeight = minDim;
+              newWidth = minDim * ratio;
+            }
+          } else if (ratio < 1) {
+            if (imageRenderWidth > imageRenderHeight) {
+              newHeight = imageRenderHeight;
+              newWidth = imageRenderHeight * ratio;
+            } else {
+              newWidth = imageRenderWidth;
+              newHeight = imageRenderWidth / ratio;
+            }
           }
-        } else if (ratio > 1) {
-          if (__imageRenderWidth > __imageRenderHeight) {
-            newWidth = __imageRenderWidth;
-            newHeight = __imageRenderWidth / ratio;
-          } else {
-            newHeight = __imageRenderHeight;
-            newWidth = __imageRenderHeight * ratio;
-          }
-          left = (__imageRenderWidth - newWidth) / 2;
-          top = (__imageRenderHeight - newHeight) / 2;
-        } else {
-          if (__imageRenderWidth > __imageRenderHeight) {
-            newHeight = __imageRenderHeight;
-            newWidth = __imageRenderHeight * ratio;
-          } else {
-            newWidth = __imageRenderWidth;
-            newHeight = __imageRenderWidth / ratio;
-          }
-          left = (__imageRenderWidth - newWidth) / 2;
-          top = (__imageRenderHeight - newHeight) / 2;
         }
-        selectionRect.set("width", newWidth);
-        selectionRect.set("height", newHeight);
-        selectionRect.set("left", __imageRenderLeft + left);
-        selectionRect.set("top", __imageRenderTop + top);
       }
+      console.log(newWidth, newHeight, imgInstance.scaleX);
+      selectionRect.set("width", newWidth);
+      selectionRect.set("height", newHeight);
+      selectionRect.set("left", imgInstance.left);
+      selectionRect.set("top", imgInstance.top);
+      selectionRect.set("scaleX", 1);
+      selectionRect.set("scaleY", 1);
       canvas.requestRenderAll();
     });
     $("input[name=replaceall]").click(function () {
@@ -752,10 +762,10 @@ $("document").ready(function () {
         _this.html('<i class="fas fa-spinner fa-spin"></i>');
         canvas.setViewportTransform([1, 0, 0, 1, 0, 0]);
         var dataURL = canvas.toDataURL({
-          left: window.__imageRenderLeft,
-          top: window.__imageRenderTop,
-          width: window.__imageRenderWidth,
-          height: window.__imageRenderHeight,
+          left: window.imageRenderLeft,
+          top: window.imageRenderTop,
+          width: window.imageRenderWidth,
+          height: window.imageRenderHeight,
         });
         centerViewPort();
         fetch(dataURL)
@@ -785,6 +795,28 @@ $("document").ready(function () {
         alert("Clipboard API not supported");
         return;
       }
+    });
+    fontFamily.select2({
+      minimumResultsForSearch: Infinity,
+      templateResult: function (state) {
+        if (!state.id) {
+          return state.text;
+        }
+        var $state = $(
+          `<span style="font-family:${state.id};font-size:1.25em">${state.text}</span>`
+        );
+        return $state;
+      },
+      templateSelection: function (state) {
+        if (!state.id) {
+          return state.text;
+        }
+        var $state = $(
+          `<span style="font-family:${state.id};font-size:1.25em">${state.text}</span>`
+        );
+        return $state;
+      },
+      dropdownParent: fontFamily.parent(),
     });
   }
   lQuery("#editingCandidate").livequery(initializeEditor);
