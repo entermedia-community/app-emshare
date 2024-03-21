@@ -723,19 +723,19 @@ $("document").ready(function () {
             newHeight = newWidth;
           } else if (ratio > 1) {
             if (imageRenderWidth > imageRenderHeight) {
-              newWidth = minDim;
-              newHeight = minDim / ratio;
-            } else {
               newHeight = minDim;
               newWidth = minDim * ratio;
+            } else {
+              newWidth = minDim / ratio;
+              newHeight = minDim;
             }
           } else if (ratio < 1) {
             if (imageRenderWidth > imageRenderHeight) {
-              newHeight = imageRenderHeight;
-              newWidth = imageRenderHeight * ratio;
+              newHeight = minDim;
+              newWidth = minDim * ratio;
             } else {
-              newWidth = imageRenderWidth;
-              newHeight = imageRenderWidth / ratio;
+              newWidth = minDim;
+              newHeight = minDim * ratio;
             }
           }
         }
