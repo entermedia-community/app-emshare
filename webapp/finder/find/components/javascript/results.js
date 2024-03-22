@@ -1228,8 +1228,8 @@ jQuery(document).ready(function (url, params) {
   lQuery("a#multiedit-menu").livequery("click", function (e) {
     e.preventDefault();
     var link = $(this);
-    var hitssessionid = link.data("hitssessionid");
-    showAsset(link, hitssessionid, 1);
+    var assetid = link.data("assetid");
+    showAsset(link, assetid, 1);
     return false;
   });
 
