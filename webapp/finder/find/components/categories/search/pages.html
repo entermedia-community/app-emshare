@@ -41,10 +41,16 @@
 			#end
 			#set( $afters = $hits.linksAfter() )
 			#foreach( $before in $befores )
+        #if($foreach.count > 4)
+          #break
+        #end
 				<li><a class="ajax" targetdiv="$targetdiv" href="$resultsPage=$before" >$before</a></li>		
 			#end
 			<li class="current"><a  class="ajax" targetdiv="$targetdiv" href="$resultsPage=$thispage" >$!thispage</a></li>
 			#foreach( $after in $afters )
+        #if($foreach.count > 4)
+          #break
+        #end
 				<li><a  class="ajax" targetdiv="$targetdiv" href="$resultsPage=$after">$after</a></li>		
 			#end
 			#set($size=${afters.size()})
@@ -58,7 +64,7 @@
 			#if ( $hits.nextPage() )
 				<li class="pagenav"><a id="next" class="ajax" targetdiv="$targetdiv" href="$resultsPage=$hits.nextPage()" title="[[Next]]" accesskey="n"><span class="bi bi-caret-right-fill overlay-nav gocaret"></span></a></li>
 			#end
-		</ul>
+		</ul> 
 	</div>
 #end
 
