@@ -7,7 +7,7 @@ import org.openedit.hittracker.HitTracker
 
 
 public void runExport(){
-	log.info("about to start:");
+	//log.info("about to start:");
 
 	HitTracker hits = (HitTracker) context.getPageValue("hits");
 	if(hits == null){
@@ -48,16 +48,17 @@ public void runExport(){
 		count++;
 	}
 	writer.writeNext(headers);
-	log.info("about to start: " + hits);
+	
 	Iterator i = null;
 	HitTracker selectedhits = hits.getSelectedHitracker();
 	selectedhits.enableBulkOperations();
+	log.info("about to start: " + selectedhits.size());
 	
 	for (Iterator iterator = selectedhits.iterator(); iterator.hasNext();)
 	{
 		hit =  iterator.next();
 		tracker = searcher.loadData(hit);
-
+		log.info("Export hit: " + hit);
 		nextrow = new String[details.size()];//make an extra spot for c
 		int fieldcount = 0;
 		for (Iterator detailiter = details.iterator(); detailiter.hasNext();)
@@ -66,11 +67,14 @@ public void runExport(){
 			String value = tracker.get(detail.getId());
 			//do special logic here
 			if(detail.isList() && friendly){
-				valuelist = tracker.getValues(detail.getId());
+				//Collection valuelist = null;
+			
+				valuelist = tracker.getValues(detail.getId());	
+				
 				StringBuffer endval = new StringBuffer();
 				valuelist.each {
 					Data remote  = searcherManager.getData( detail.getListCatalogId(),detail.getListId(), it);
-
+					
 					if(remote != null){
 						
 						endval.append(remote.getName());
@@ -80,17 +84,13 @@ public void runExport(){
 						}
 
 					} else {
-						endval.append("Not Found: " + it  + " " + detail.getListCatalogId() + " " + detail.getListId());
+						//endval.append("Not Found: " + it  + " " + detail.getListCatalogId() + " " + detail.getListId());
+						endval.append("");
 					}
 				}
 				
 				value = endval.toString()
 				
-			}
-			String render = detail.get("render");
-			if(render != null)
-			{
-				value = searcherManager.getValue(detail.getListCatalogId(), render, tracker.getProperties());
 			}
 
 			nextrow[fieldcount] = value;
