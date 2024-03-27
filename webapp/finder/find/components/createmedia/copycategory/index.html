@@ -1,4 +1,4 @@
-#set( $collectionid = $context.getRequestParameter("collectionid") )
+#set( $entityid = $context.getRequestParameter("entityid") )
 #set($auto = $context.getRequestParameter("autorun"))
 
 
@@ -10,16 +10,16 @@
 		action="$home$apphome/components/createmedia/copycategory/createnew.html">
 	    <input type="hidden" name="collectionid" id="urlcurrentcollection" value="$collectionid"/>
 	#if($auto == "true")
-	<div class="alert alert-info" role="alert">[[This collection hasn't been populated yet!  Please choose the categories and assets you'd like to show below]]</div>
+	<div class="alert alert-info" role="alert">[[This entity hasn't been populated yet!  Please choose the categories and assets you'd like to show below]]</div>
 	
 	#end
 	    <a #if($auto == "true") style="display: none;" #end 
 	    	class="ajax btn" id="poptrigger" 
 	    	targetdivinner="auto-pop"  
 			data-hidefooter="true" 
-			href="$apphome/components/createmedia/copycategory/autopopulate.html?collectionid=$!{collectionid}" 
+			href="$apphome/components/createmedia/copycategory/autopopulate.html?id=$!{entityid}" 
 			class="btn" >
-			<i class="far fa-arrow-alt-circle-down"></i> Auto Populate</a>
+			<i class="far fa-arrow-alt-circle-down"></i> [[Auto Populate]]</a>
 
 		
 	   <a class="emdialog btn btn-primary" href="$home$apphome/components/categories/search/searchcategory.html?targetdiv=autocategoriespicked&clearselection=$!clear&action=${page.directory}/picked.html"

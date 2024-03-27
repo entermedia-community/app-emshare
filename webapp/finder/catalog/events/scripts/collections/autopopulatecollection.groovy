@@ -13,35 +13,20 @@ import org.openedit.hittracker.SearchQuery
 public void init(){
 
 	MediaArchive archive = context.getPageValue("mediaarchive");
-	Searcher collectionsearcher = archive.getSearcher("librarycollection");
-
-	String collectionid = context.getRequestParameter("collectionid");
-	HitTracker collections = null;
-	if(collectionid == null){
-		collections = collectionsearcher.getAllHits();
-	} else{
-
-		collections = collectionsearcher.fieldSearch("id", collectionid);
-	}
-	ProjectManager projects = archive.getProjectManager();
-	collections.enableBulkOperations();
+	
+	String id = context.getRequestParameter("id");
+	
 	Searcher catsearcher = archive.getSearcher("category");
 	ArrayList rootcats = new ArrayList(); 
-	collections.each{
-		String name = it.name;
+		String name = id;
 
 		String [] splits = name.split("-");
 		String searchstring = splits[splits.length -1];
 		//searchstring = searchstring.replaceFirst("^0+(?!\$)", "")
 
-		String colid = it.id;
-		Data collection = archive.getData("librarycollection", colid);
 		//log.info("Searching for categories contains categorypath = " +  searchstring);
 		HitTracker categories =  catsearcher.query().contains("categorypath", searchstring).sort("categorypathUp").search();
 		//log.info("Found ${categories.size()} existing categories");
-		
-		
-		
 		categories.enableBulkOperations();
 		if(categories.size() > 0){
 			rootcats = findCommonRoots(categories);
@@ -68,13 +53,6 @@ public void init(){
 		//log.info(hits.getSearchQuery().getTerms());
 		
 		context.putPageValue("assets", hits);
-		
-		
-	}
-	
-
-	
-	
 	
 }
 
