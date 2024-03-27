@@ -30,7 +30,7 @@ public void init(){
 		categories.enableBulkOperations();
 		if(categories.size() > 0){
 			rootcats = findCommonRoots(categories);
-			rootcats.remove(collection.get("rootcategory"));
+			//rootcats.remove(collection.get("rootcategory"));
 			
 			context.putPageValue("foundcategories", rootcats);
 		}
