@@ -237,6 +237,21 @@ jQuery(document).ready(function () {
       },
     });
   });
+  
+  lQuery(".opendownloadedfile").livequery("click", function (e) {
+	e.preventDefault();
+    
+    
+    var itemexportname = $(this).data("itemexportname");
+    var itemdownloadurl = $(this).data("itemdownloadurl");
+    var file = {
+      "itemexportname": itemexportname,
+      "itemdownloadurl": itemdownloadurl,
+    };
+    
+    ipcRenderer.send('onOpenFile',  file );
+    //downloadMediaLocally(orderitemid, file, itemEl);
+  });
 
 
   var toastTypes = {
@@ -277,7 +292,14 @@ jQuery(document).ready(function () {
       '<button type="button" class="close" data-dismiss="toast">hide</button>';
     template += "</div>";
     template += '<div class="toast-body">';
+    var isdesktop = $("#application").data("desktop");
+    if(type == "complete" && isdesktop) {
+		template += '<a href="#" class="opendownloadedfile" data-itemexportname="' + filename + '" title="Open File"><i class="bi bi-box-arrow-up-right"></i>&nbsp; ';	
+	}
     template += '<span class="toast-filename">' + filename + "</span>";
+    if(type == "complete" && isdesktop) {
+		template += '</a>';
+	}
     if (type == "downloading")
       template += '<span class="dprog" id="dtt-' + id + '"></span>';
     template += "</div>";
