@@ -3,6 +3,7 @@
 #ifnull($viewid)
 	#set($viewid = $context.getRequestParameter("viewid"))
 #end
+
 #ifnull($parentsearchtype)
 	#set($parentsearchtype = $context.getRequestParameter("parentsearchtype"))
 #end
@@ -42,18 +43,17 @@
 #if($subentitysearchtype)
 	<div id="$tabid" 
 		class="editentitymetadata-submodule entity-tab-content tabtype$!tabtype" 
-		style=" #if($currenttab != $tabid) display:none; #end"
-		data-tabtype="submodulehome"
+		data-tabtype="tabsubmodulehome"
 		data-viewid="$!viewid"
 		data-currenttab="$currenttab"
 		data-submoduleid="$!submodule.getId()"
 		data-viewid="$!viewid"
 		data-parentsearchtype="$!parentsearchtype"
-		data-parentid=$!parentid
-		data-url="$componenthome/gridsample/preview/entitytabsub.html"
+		data-parentid="$!parentid"
+		data-url="$componenthome/gridsample/preview/tabsubmodulehome.html"
 		#if($hidesubmodule) style="display: none; #end">
 		
-		#if($currenttab == $tabid)
+		#if($currenttab == $viewid)
 		
 			#set( $args = "${submodule.getId()}hitsname=$!{viewid}hits&${subentitysearchtype}clearfilters=true&parentid=$!parentid&searchtype=$!subentitysearchtype&$!{subentitysearchtype}clearresults=true")
 			#set( $args = "$args&fieldexternalid=$!fieldexternalid&fieldexternalvalue=$!fieldexternalvalue")

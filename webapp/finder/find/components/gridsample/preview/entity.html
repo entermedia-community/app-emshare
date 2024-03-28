@@ -1,6 +1,8 @@
 #set( $searchtype = $context.findValue("searchtype"))
 #set( $parentsearchtype = $searchtype)
 #set( $id = $context.getRequestParameter("id"))
+$context.putPageValue("parentsearchtype", $parentsearchtype)
+$context.putPageValue("parentid", $id)
 
 #ifnull($id)
 	#set( $id = $context.getRequestParameter("entityid"))
@@ -19,6 +21,9 @@ $context.putPageValue("ismulti", $ismulti)
 		#set($entityid = $entity.id)
 		$context.putPageValue("entity", $entity)
 		$context.putPageValue("entityid", $entityid)
+		
+		##Publications
+		#set($enabledpublishing = $entity.get("enablepublishing"))
 	#end
 #end
 
@@ -29,6 +34,7 @@ $context.putPageValue("topmoduleid", $moduleid)
 
 #set($viewsearcher = $searcherManager.getSearcher($catalogid, "view"))
 #set($enttiyviews = $viewsearcher.query().exact("moduleid", $moduleid).exact("systemdefined","false").sort("orderingUp").search($context) )
+#set($firstviewid = $enttiyviews.get(0).getId())
 
 #set($userentities = $userprofile.getEntitiesIds())
 
@@ -37,74 +43,48 @@ $context.putPageValue("topmoduleid", $moduleid)
 #set( $viewfiles = $context.getRequestParameter("viewfiles"))
 #set( $addnew = $context.getRequestParameter("addnew"))
 
+#set($entitytabopen = "")
 
 #if ($addnew)
-	#foreach( $targetview in $enttiyviews)
-			#set( $viewid = $targetview.getId())
-			#set($tabid = "tab_$!{viewid}")
-			#ifnull($firstview)
-				#set($firstview = $viewid)
-			#end
-	#end
-	#if($firstview)
-			#set($entitytabopen = "tab_$firstview")
-	#else
-			#set($entitytabopen = "")
-	#end
-	
+	#set($entitytabopen = $firstviewid)
 	#set($dialogtabid = "addnew${moduleid}")
-
-#else
-	#if($viewfiles)
-		#if($module.getBoolean("enableuploading") && $permissions.can($moduleid, "view_files"))
-			#set($entitytabopen = "tab_media")
-		#end
-	#end
 #end
 
-#ifnull($entitytabopen)
+#if(!$entitytabopen)
 	#set( $entitytabopen = $context.getRequestParameter("entitytabopen"))
-	
 #end
-#ifnull($entitytabopen)
+
+#if(!$entitytabopen)
 	#set( $entitytabopen = $userprofile.get("${moduleid}_entitytabopen"))
 #end
- 
-#if(!$entitytabopen || $entitytabopen.equals("undefined"))
-	#set( $entitytabopen = "")
+#if(!$entitytabopen && $viewfiles)
+	#set($entitytabopen = "media")
 #end
-
 ##default to (Data)General tab if not media allowed
-#if($entitytabopen == 'tab_media')
+#if($entitytabopen == 'media')
 	#if(!$module.getBoolean("enableuploading") || !$permissions.can($moduleid, "view_files"))
 		#set($entitytabopen = "")
 	#end
 #end
 
+#if($entitytabopen == "publications" && !$enabledpublishing)
+	#set($entitytabopen = "")
+#end
+
+#if(!$entitytabopen || $entitytabopen.equals("undefined"))
+	#set( $entitytabopen = "")
+#end
 ##default to frist if not submodules (view) exists in this Entity
-#if($ismulti || !$entitytabopen && $enttiyviews)
-	#foreach( $targetview in $enttiyviews)
-		#set( $viewid = $targetview.getId())
-		#set($tabid = "tab_$!{viewid}")
-		#ifnull($firstview)
-			#set($firstview = $viewid)
-		#end
-	#end
-	#if($firstview)
-		#set($entitytabopen = "tab_$firstview")
-	#else
-		#set($entitytabopen = "")
-	#end
+#if($ismulti || !$entitytabopen)
+	#set($entitytabopen = $firstviewid)
 #end
 
 #set( $enablebackbutton = $context.getRequestParameter("enablebackbutton"))
 
-	#if($moduleid && $entityid)
-			#set($defaultfolder =  $mediaarchive.getBean("entityManager").loadDefaultFolder($module, $entity, $context.getUser()))
-			$context.putPageValue("defaultfolder", $defaultfolder)
-	#end
-
-
+#if($moduleid && $entityid)
+	#set($defaultfolder =  $mediaarchive.getBean("entityManager").loadDefaultFolder($module, $entity, $context.getUser()))
+	$context.putPageValue("defaultfolder", $defaultfolder)
+#end
 <div class="entitydialog #if($enablebackbutton || $addnew) enablebackbtn #end"
 	id="#eid($!dialogtabid)" 
 	data-moduleid="$moduleid" 
@@ -112,9 +92,9 @@ $context.putPageValue("topmoduleid", $moduleid)
 	data-oemaxlevel="1"
 	data-url="$componenthome/gridsample/preview/entity.html"
 	#if($entity)
-	data-setpagetitle="#text($entity)"
+		data-setpagetitle="#text($entity)"
 	#else
-	data-setpagetitle="[[Add New]]"
+		data-setpagetitle="[[Add New]]"
 	#end
 	>
 	<div class="entity-wraper">
@@ -186,6 +166,8 @@ $context.putPageValue("topmoduleid", $moduleid)
 							title="[[Share]] #text($entity.name)"><i class="bi bi-share-fill"></i></a>
 							#end
 						#end
+						
+						
 
 						$context.putPageValue("itemid", $entity.id)
 						$pages.include("$componenthome/gridsample/favorites.html?id=$entity.id&moduleid=$moduleid", $context)
@@ -233,17 +215,17 @@ $context.putPageValue("topmoduleid", $moduleid)
 				data-tabmenuurl="gridsample/preview/entitytabmenu.html">
 
 				#ifnull($id)
-					#set( $viewid = $firstview)
+					#set( $viewid = $firstviewid)
 					$context.putPageValue("viewid", $viewid)
 					#set( $viewdata = $viewsearcher.searchById($viewid))
 					$context.putPageValue("viewdata", $viewdata)
-					#set($entitytabopen = "tab_${firstview}")
+					#set($entitytabopen = $firstviewid)
 					$context.putPageValue("currenttab", $entitytabopen)
 					$pages.include("$componenthome/gridsample/preview/entitytabmenu.html", $context)
 				#end
 				#ifnotnull($id)  
 					#if($enttiyviews)		
-					
+						$context.putPageValue("currenttab", $entitytabopen)
 						#foreach( $targetview in $enttiyviews)
 							#set( $viewid = $targetview.getId())
 							$context.putPageValue("viewid", $viewid)
@@ -251,9 +233,6 @@ $context.putPageValue("topmoduleid", $moduleid)
 							$context.putPageValue("viewdata", $viewdata)
 							
 							#set($tabid = "tab_${viewid}")
-							#if($entitytabopen.equals($tabid))
-								$context.putPageValue("currenttab", $tabid)
-							#end
 							
 							#if($targetview.rendertype=="table")
 								#if(!$ismulti)
@@ -264,7 +243,7 @@ $context.putPageValue("topmoduleid", $moduleid)
 										#if($userentities.contains($subentitysearchtype))
 											#set($submodule = $mediaarchive.getCachedData("module", $viewdata.rendertable))
 											$context.putPageValue("tabmodule", $submodule)
-											#set($tabtype= "submodulehome")
+											#set($tabtype= "tabsubmodulehome")
 											$context.putPageValue("tabtype", $tabtype)
 											#set($subcomponenthome = "$apphome/views/modules/$subentitysearchtype/components")
 											$pages.include("$subcomponenthome/gridsample/preview/entitytabmenu.html", $context)
@@ -286,11 +265,6 @@ $context.putPageValue("topmoduleid", $moduleid)
 									$context.putPageValue("tabmodule", $module)
 									$context.putPageValue("tabtype", $tabtype)
 									
-									#if(!$entitytabopen)
-										#set($entitytabopen = $tabid)
-										$context.putPageValue("currenttab", $tabid)
-									#end
-									
 									$pages.include("$componenthome/gridsample/preview/entitytabmenu.html", $context)
 								
 							#end
@@ -298,21 +272,37 @@ $context.putPageValue("topmoduleid", $moduleid)
 					#end	
 				#end
 				
-				##media
 				#ifnotnull($id)
 					#if(!$ismulti)
+						##publications tab
+						#if($enabledpublishing)
+							##permissions here
+							#set($tabtype= "tabpublishing")
+							$context.putPageValue("tabtype", $tabtype)
+							#set($tabid = "tab_publications")
+							$context.putPageValue("tabid", $tabid)
+							#if($entitytabopen == "publications")
+								$context.putPageValue("currenttab", $entitytabopen)
+							#end
+							$context.putPageValue("tabtype", $tabtype)
+									
+							$pages.include("$componenthome/gridsample/preview/entitytabmenu.html", $context)
+						#end						
+						
+						##media tab
 						#if($module.getBoolean("enableuploading") && $permissions.can($moduleid, "view_files"))
 							#set($submodule = $mediaarchive.getCachedData("module", "asset"))
 							$context.putPageValue("tabmodule", $submodule)
-							$context.putPageValue("tabtype", "media")
+							$context.putPageValue("tabtype", "entitytabmedia")
 							#set($tabid = "tab_media")
 							$context.putPageValue("tabid", $tabid)
-							#if($entitytabopen == $tabid)
-								$context.putPageValue("currenttab", $tabid)
+							#if($entitytabopen == "media")
+								$context.putPageValue("currenttab", $entitytabopen)
 							#end
 							#set($subcomponenthome = "$apphome/views/modules/asset/components")
 							$pages.include("$subcomponenthome/gridsample/preview/entitytabmenu.html", $context)
 						#end
+						
 					#end
 				#end	
 			</div>
@@ -321,68 +311,68 @@ $context.putPageValue("topmoduleid", $moduleid)
 		<div class="tab-content entity-body" id="entity-nav-tabContent">
 			#ifnull($id)
 				$context.putPageValue("viewid", $firstview)
-				#set($entitytabopen = "tab_${firstview}")
+				#set($entitytabopen = $firstviewid)
 				$context.putPageValue("currenttab", $entitytabopen)
 				
 				$pages.include("$componenthome/gridsample/preview/entitytab.html", $context)
 			#end
 			#ifnotnull($id)
-				#if($enttiyviews)		
-					#foreach( $targetview in $enttiyviews)
-						#set( $viewid = $targetview.getId())
-						$context.putPageValue("viewid", $viewid)
-						$context.putPageValue("parentsearchtype", $parentsearchtype)
-						$context.putPageValue("parentid", $id)
-						##$context.putPageValue("hidesubmodule", true) 
-						## hide should not load the next html for fast load
+				#if($enttiyviews && $entitytabopen  != "media"  && $entitytabopen  != "publishing")		
+						#set( $viewid = $entitytabopen)
+						#set( $targetview = $viewsearcher.searchById($viewid))
 						
-								#set($tabid = "tab_${viewid}")
-								#if($entitytabopen.equals($tabid))
-									$context.putPageValue("currenttab", $tabid)
-									$context.putPageValue("hidesubmodule", false)
+						$context.putPageValue("viewid", $viewid)
+						
+						#set($tabid = "tab_${viewid}")
+						#if($entitytabopen.equals($viewid))
+							$context.putPageValue("currenttab", $viewid)
+							$context.putPageValue("hidesubmodule", false)
+						#end
+						
+						#set($tabtype= $targetview.rendertype)
+						
+						#if($tabtype == "table")
+							#if(!$ismulti)
+								#set($tabtype= "tabsubmodulehome")
+								$context.putPageValue("tabtype", $tabtype)
+								#set( $viewdata = $viewsearcher.searchById($viewid))
+								#set( $subentitysearchtype = $viewdata.rendertable )
+								##Permission check
+								#if($userentities.contains($subentitysearchtype))
+									#set($subcomponenthome = "$apphome/views/modules/${subentitysearchtype}/components")
+									$pages.include("$subcomponenthome/gridsample/preview/tabsubmodulehome.html", $context)
 								#end
-								
-								#if($targetview.rendertype=="table")
-									#if(!$ismulti)
-										#set($tabtype= "submodulehome")
-										#set( $viewdata = $viewsearcher.searchById($viewid))
-										#set( $subentitysearchtype = $viewdata.rendertable )
-										##Permission check
-										#if($userentities.contains($subentitysearchtype))
-											#set($subcomponenthome = "$apphome/views/modules/$subentitysearchtype/components")
-											$pages.include("$subcomponenthome/gridsample/preview/entitytabsub.html", $context)
-										#end
-									#end
-								#else
-									#set($tabtype= "entitytab")
-									#ifnotnull($targetview.rendertype)
-										#set($tabtype= $targetview.rendertype)
-									#end
-									#if($tabtype=="default")
-										#set($tabtype= "entitytab")
-									#end
-									
-									$context.putPageValue("tabtype", $tabtype)
-									
-									#if(!$entitytabopen)
-										#set($entitytabopen = $tabid)
-										$context.putPageValue("currenttab", $tabid)
-									#end
-									
-									$pages.include("$componenthome/gridsample/preview/${tabtype}.html", $context)
-								#end
+							#end
+						#else
+							#ifnotnull($targetview.rendertype)
+								#set($tabtype= $targetview.rendertype)
+							#end
+							#if(!$tabtype || $tabtype=="default")
+								#set($tabtype= "entitytab")
+							#end
 							
+							$context.putPageValue("tabtype", $tabtype)
+
+							$pages.include("$componenthome/gridsample/preview/${tabtype}.html", $context)
+
+						#end
+				#end
+				
+				#if($entitytabopen == "publishing" && $enabledpublishing)
+					#if(!$ismulti)
+						#set($tabtype= "tabpublishing")
+						$context.putPageValue("tabtype", $tabtype)
+						$context.putPageValue("currenttab", "publishing")
+						$pages.include("$subcomponenthome/gridsample/preview/tabpublishing.html?entityid=$id", $context)
 					#end
 				#end
 					
-				#if($module.getBoolean("enableuploading") && $permissions.can($moduleid, "view_files"))
+				#if( $entitytabopen == "media" && $module.getBoolean("enableuploading") && $permissions.can($moduleid, "view_files"))
 					#if(!$ismulti)
 						$context.putPageValue("parentsearchtype", $parentsearchtype)
-						##$context.putPageValue("hidesubmodule", true)
 						#set($tabtype= "media")
-						#if($entitytabopen == $tabtype)
-							$context.putPageValue("currenttab", $tabtype)
-						#end
+						$context.putPageValue("tabtype", $tabtype)
+						$context.putPageValue("currenttab", "media")
 						$pages.include("$subcomponenthome/gridsample/preview/entitytabmedia.html?entityid=$id", $context)
 					#end
 				#end
