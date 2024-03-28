@@ -2,15 +2,15 @@
 #set($auto = $context.getRequestParameter("autorun"))
 
 
-<div id="resultsdiv">
-	
-	<h3 class="collection-config-title">[[Copy Existing Folders]]</h3>
-	<div style="padding:0 20px;">
+<div id="resultsdiv" class="h-100">
+#if( $entityid )	
+	<h3 class="collection-config-title">[[Import Existing Folders]]</h3>
+	<div style="padding:0 20px; height: calc(100% - 40px);" 
 	<form  name="wizard" method="post"  class="" targetdiv="addcategoryform"
 		action="$home$apphome/components/createmedia/copycategory/createnew.html">
 	    <input type="hidden" name="collectionid" id="urlcurrentcollection" value="$collectionid"/>
 	#if($auto == "true")
-	<div class="alert alert-info" role="alert">[[This entity hasn't been populated yet!  Please choose the categories and assets you'd like to show below]]</div>
+	<div class="alert alert-info" role="alert">[[Please choose the categories and assets you'd like to import]]</div>
 	
 	#end
 	    <a #if($auto == "true") style="display: none;" #end 
@@ -28,14 +28,15 @@
 		<div class="ajaxprogress" style="display:none;">[[Loading, please wait..]]<img src="$apphome/components/search/images/spinner.gif"/></div>
 	
 		
-		<div class="inner-content" id="autocategoriespicked" style="height: calc(100% - 40px); overflow-y: auto;">
+		<div class="inner-content" id="autocategoriespicked" >
 		$pages.include("$apphome/components/createmedia/copycategory/picked.html",$context)	
 		</div>
-		<div id="auto-pop" ></div>
+		<div id="auto-pop" style=" overflow-y: auto;"></div>
 		<br><br>
 		<input class="btn btn-primary" type="submit" value="[[Import]]" />	
 	</form>
 	</div>
+#end
 </div>
 
 
