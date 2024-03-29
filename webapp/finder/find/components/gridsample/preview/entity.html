@@ -85,6 +85,8 @@ $context.putPageValue("topmoduleid", $moduleid)
 	#set($defaultfolder =  $mediaarchive.getBean("entityManager").loadDefaultFolder($module, $entity, $context.getUser()))
 	$context.putPageValue("defaultfolder", $defaultfolder)
 #end
+
+
 <div class="entitydialog #if($enablebackbutton || $addnew) enablebackbtn #end"
 	id="#eid($!dialogtabid)" 
 	data-moduleid="$moduleid" 
@@ -104,9 +106,12 @@ $context.putPageValue("topmoduleid", $moduleid)
 					<a href="#" id="backbtn#eid($!dialogtabid)" class="entitydialogback" style="display: none;">
 						<i class="fas fa-arrow-left"></i>
 					</a>
-					#set($moduleicon = "grid")
+					
 					#if ($module.moduleicon)
 						#set($moduleicon = $module.moduleicon)
+					#end
+					#ifnull($moduleicon)
+						#set($moduleicon = "grid")
 					#end
 					<i class="bi bi-${moduleicon} module-icon"></i> 
 					#text($module) <i class="bi bi-chevron-right mx-1" style="transform: scale(0.8);"></i> 
