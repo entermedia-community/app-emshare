@@ -1325,33 +1325,59 @@ uiload = function () {
   });
 
   lQuery("a.entity-tab-label").livequery("click", function (event) {
-    event.preventDefault();
-    var link = $(this);
+	event.preventDefault();
+	event.stopPropagation();
+    entitytabclick($(this));
+    return;
+   
+  });
+  
+  function entitytabclick(link) {
+	
     if (link.data("ismultiedit")) {
       //return;
     }
     var tabid = link.data("tabid");
+    var currenttab = link.data("currenttab");
     $(".entity-tab").removeClass("current-entity");
     link.closest(".entity-tab").addClass("current-entity");
     var topmoduleid = link.data("topmoduleid");
     var entityid = link.data("entityid");
+    
+    var options = link.data();
+    options["oemaxlevel"] = 1;
+    var url = link.attr("href");
+    
+    $.ajax({
+        xhrFields: {
+          withCredentials: true,
+        },
+        crossDomain: true,
+        url: url,
+        data: options,
+        success: function (data) {
+    		$(".entity-tab-content").replaceWith(data);
+    	},
+	});
+    /*
     var container = link.attr("href");
     container = $(container);
-    container.data("currenttab", tabid); //me
+    container.data("currenttab", currenttab); //me
     $(".entity-tab-content").hide();
+    */
 
     var entitydialog = link.closest(".entitydialog");
     var entityshare = entitydialog.find(".entityshare");
     if (entityshare.length) {
-      entityshare.data("entitytabopen", tabid);
+      entityshare.data("entitytabopen", currenttab);
     }
 
     saveProfileProperty(
       topmoduleid + "_entitytabopen",
-      link.data("tabid"),
+      link.data("currenttab"),
       function () {}
     );
-    autoreload(container);
+    
 
     var url =
       apphome +
@@ -1360,9 +1386,11 @@ uiload = function () {
       "/index.html?entity=" +
       entityid +
       "&entitytabopen=" +
-      tabid;
+      currenttab;
     history.pushState($("#application").html(), null, url);
-  });
+  }
+  
+  
 
   lQuery("a.entity-tab-close").livequery("click", function (event) {
     event.preventDefault();
