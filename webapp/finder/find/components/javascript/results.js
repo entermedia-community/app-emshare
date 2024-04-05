@@ -418,7 +418,7 @@ jQuery(document).ready(function (url, params) {
         }
         form.trigger("submit");
       });
-      $("input[type=radio]", form).change(function () {
+      $("input[type=radio], .selectbox", form).change(function () {
         form.trigger("submit");
       });
 
