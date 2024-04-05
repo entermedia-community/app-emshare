@@ -867,20 +867,23 @@ uiload = function () {
 
   lQuery("form.autosubmit").livequery(function () {
     var form = $(this);
+    
     $("select", form).change(function () {
       $(form).trigger("submit");
+      
     });
     $("input", form).on("focusout", function (event) {
       $(form).trigger("submit");
+      
     });
     $("input", form).on("keyup", function (e) {
       $(form).trigger("submit");
+      
     });
-    $(
-      'input[type="file"],input[name="date.after"],input[type="checkbox"]',
-      form
-    ).on("change", function () {
+    $('input[type="file"],input[name="date.after"],input[type="checkbox"]', form)
+    .on("change", function () {
       $(form).trigger("submit");
+      
     });
   });
 
@@ -1469,6 +1472,29 @@ uiload = function () {
     var targetModal = $(this).closest(".modal");
     confirmModalClose(targetModal);
     hideLoader();
+  });
+  
+   lQuery(".enablepublishing").livequery("click", function (event) {
+    event.preventDefault();
+    var link = $(this);
+    var options = link.data();
+    
+    var url = link.attr("href");
+    
+    $.ajax({
+        xhrFields: {
+          withCredentials: true,
+        },
+        crossDomain: true,
+        url: url,
+        data: options,
+        success: function (data) {
+			var entity = $(".entitydialog");
+			entity.data("entitytabopen", "publishing");
+			autoreload(entity);
+    	},
+	});
+    
   });
 
   lQuery(".autoopenemdialog").livequery(function () {
@@ -4065,6 +4091,21 @@ uiload = function () {
         return; // exit this handler for other keys
     }
   });
+  
+  
+  
+
+
+lQuery(".emcarousel-link").livequery("click", function (e) {
+	e.preventDefault();
+	var image = $("#emcarousel-image");
+	var link = $(this);
+	image.attr("src", link.attr("href"));
+	image.attr("alt", link.attr("title"));
+	image.data("assetid", link.data("assetid"));
+});
+
+  
 }; // uiload
 
 function formsavebackbutton(form) {
@@ -4320,3 +4361,7 @@ jQuery(window).on("ajaxsocketautoreload", function () {
     });
   });
 });
+
+
+
+
