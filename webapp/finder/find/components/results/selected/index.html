@@ -66,6 +66,8 @@
 	</li>
 	#end	
 	
+	#set($section = $context.getRequestParameter("section"))
+	
 	<li class=" dropdown">
 		<a class="dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="navbarAddto$!{moduleid}">[[Add to]]</a>
 		<div class="dropdown-menu" aria-labelledby="navbarAddto$!{moduleid}">
@@ -89,6 +91,12 @@
 				    #end
 			    #end
 		    #end
+		    #if ( $canviewbasket && $section != "basket"  )
+				<a class="dropdown-item updatebasket" 
+					targetdiv="basket-paint"  
+					href="$siteroot$componenthome/basket/addselection.html?hitssessionid=$hits.getSessionId()" >[[Cart]]</a>
+			#end
+		
 		    #if($canaddtofavorites && $librarycol.id != "${user.id}-favorites" )
 				<a class="dropdown-item ajax"
 					data-targetdivinner="resultsmessages"
@@ -100,6 +108,12 @@
 			#end
 		</div>
 	</li>
+	
+	#if($canviewbasket   && $section=="basket")
+		<li>
+			<a class="dropdown-item updatebasket" data-action="remove" targetdiv="basket-paint"  href="$siteroot$componenthome/basket/removeselection.html?hitssessionid=$hits.getSessionId()" >[[Remove From Cart]]</a>
+		</li>
+	#end
 	
 	#if($canpublish || $canemaillink || $canquickgallery)
 	<li class=" dropdown">
@@ -151,13 +165,7 @@
 	
 			
 	
-##	    #if ( $canviewbasket  )
-##			#if($order)
-##				<a class="dropdown-item updatebasket" data-action="remove" targetdiv="basket-paint"  href="$siteroot$componenthome/basket/removeselection.html?hitssessionid=$hits.getSessionId()" >[[Remove From Cart]]</a>
-##			#else
-##				<a class="dropdown-item updatebasket" targetdiv="basket-paint"  href="$siteroot$componenthome/basket/addselection.html?hitssessionid=$hits.getSessionId()" >[[Add To Cart]]</a>
-##			#end
-##		#end
+	    
 ##		#if( $canaddnewcollection )
 ##			<a class="dropdown-item emdialog"
 ##			   id="selectedmenuaddtoalbum" 

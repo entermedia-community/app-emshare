@@ -1108,10 +1108,10 @@ jQuery(document).ready(function (url, params) {
       var clicked = $(this);
       var dataid = $(clicked).data("dataid");
       var resultsdiv = $(this).closest(".resultsdiv");
-      if (!resultsdiv) {
+      if (!resultsdiv.length) {
         resultsdiv = $("#resultsdiv");
       }
-      if (resultsdiv != null) {
+      if (resultsdiv.length) {
         var options = resultsdiv.data();
         var componenthome = resultsdiv.data("componenthome");
         options["dataid"] = dataid;
