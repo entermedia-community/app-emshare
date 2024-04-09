@@ -1,8 +1,14 @@
-<div class="acceptterms">
+<div id="checkoutterms" class="acceptterms">
 	
 #set( $requestapproveremail = $mediaarchive.getCatalogSettingsValue("requestapproveremail"))
-#if($requestapproveremail)
-<form id="processorder" name="placeorder" action="$apphome/views/modules/asset/activity/checkout/processorder.html">
+
+##if($requestapproveremail)
+<form id="processorder" 
+	name="emailprocess"
+	class="ajaxform"
+	method="post"
+	data-targetdiv="checkoutterms" 
+	action="$apphome/views/modules/asset/activity/checkout/processorder.html">
 
 $context.putPageValue("searcher",$mediaarchive.getSearcher("order") )	
 $context.putPageValue("view","order/ordercheckoutconfirm")	
@@ -12,11 +18,10 @@ $pages.include("$apphome/views/modules/asset/activity/checkout/termsconditions.h
 
 
 </form>
-#else
-	[[Missing Request Approver Email, contact your Administrator.]]
-	
-	#if($canviewsettings)
-	<pre>Catalog Setting value: requestapproveremail</pre>
-	#end
-#end
+##else
+##	[[Missing Request Approver Email, contact your Administrator.]]
+##	#if($canviewsettings)
+##	<pre>Catalog Setting value: requestapproveremail</pre>
+##	#end
+##end
 </div>

@@ -1140,7 +1140,7 @@ jQuery(document).ready(function (url, params) {
 
   lQuery("a.deselectpage").livequery("click", function () {
     var resultsdiv = $(this).closest(".resultsdiv");
-    if (!resultsdiv) {
+    if (!resultsdiv.length) {
       resultsdiv = $("#resultsdiv");
     }
     $("input[name=pagetoggle]", resultsdiv).prop("checked", false);
@@ -1159,7 +1159,7 @@ jQuery(document).ready(function (url, params) {
   lQuery("input[name=pagetoggle]").livequery("click", function () {
     var input = $(this);
     var resultsdiv = input.closest(".resultsdiv");
-    if (!resultsdiv) {
+    if (!resultsdiv.length) {
       resultsdiv = $("#resultsdiv");
     }
     //var hitssessionid = resultsdiv.data('hitssessionid');
@@ -1194,7 +1194,7 @@ jQuery(document).ready(function (url, params) {
     e.stopPropagation();
     var selectpage = $(this);
     var resultsdiv = selectpage.closest(".resultsdiv");
-    if (!resultsdiv) {
+    if (!resultsdiv.length) {
       resultsdiv = $("#resultsdiv");
     }
     //var hitssessionid = resultsdiv.data('hitssessionid');

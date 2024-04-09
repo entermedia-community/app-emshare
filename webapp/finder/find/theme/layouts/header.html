@@ -170,4 +170,20 @@
 		</div>
 	</div>
 	#end
+	
+	
+	#if( $userprofile.hasModule("order") )
+	#set( $orders = $mediaarchive.query("order").exact("checkoutstatus","pending").search($context))
+	#if( $orders.size() > 0)
+	<div id="headerstatusarea"  class="alert alert-primary" role="alert">
+	<a href="$apphome/views/modules/order/fieldsearch.html?field=checkoutstatus&checkoutstatus.value=pending&operation=exact"
+	 class="ajax"
+	 data-targetdiv="applicationmaincontent"
+	 data-oemaxlevel="2"
+	 data-updateurl="true">
+		<i class="fas fa-info-circle"></i>
+		[[Pending Orders]]  ($orders.size())</a>
+	</div>
+	#end
+	#end
 </div>
