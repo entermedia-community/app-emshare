@@ -337,6 +337,11 @@ jQuery(document).ready(function (url, params) {
       $(".clearfiltersearch").show();
     }
   });
+  
+  
+  lQuery("a.clearsearchbar").livequery("click", function () {
+	  $("#mainsearchvalue").val("");
+	 });
 
   lQuery("a.selectpage").livequery("click", function () {
     var resultsdiv = $(this).closest(".resultsdiv");

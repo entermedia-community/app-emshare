@@ -2552,6 +2552,71 @@ uiload = function () {
       }
     }
   });
+  
+  
+  var lasttypeaheadsummary;
+  var searchmodaldialog;
+  var searchmodalmask;
+  var mainsearcheinput;
+
+  lQuery(".filtertypeahead").livequery(function () {
+    mainsearcheinput = $(this);
+  	var q = "";
+  	var form = mainsearcheinput.closest("#filterform");
+  	form.data("onsuccess", "filtertypeaheadsuccess");
+  	var url = form.attr("action");
+  	
+    mainsearcheinput.on("keydown", function (e) {
+      if (e.keyCode == 27) {
+        
+      }
+    });
+    mainsearcheinput.on("keyup change", function (e) {
+      if (mainsearcheinput.val() == q) {
+        return;
+      }
+      q = mainsearcheinput.val();
+      if (!q) {
+        
+        return;
+      }
+
+      if (e.keyCode == 27) {
+        
+      } else if (
+        (q != "" && e.which == undefined) ||
+        e.which == 8 ||
+        (e.which != 37 && e.which != 39 && e.which > 32)
+      ) {
+        //Real words and backspace
+        if (q && q.length < 2) {
+          
+          return;
+        } else {
+          
+        }
+
+        var terms =
+          "field=description&operation=contains" +
+          "&description.value=" +
+          encodeURIComponent(q);
+
+        if (lasttypeaheadsummary) {
+          lasttypeaheadsummary.abort();
+        }
+        
+        form.trigger("submit");
+        
+      } else {
+        console.log(e.keyCode);
+      }
+    });
+    function filtertypeaheadsuccess() {
+  	$( ".filtertypeahead" ).trigger( "focus" );
+  }
+  });  
+    
+  
 
   lQuery(".grabfocus").livequery(function () {
     var theinput = $(this);
