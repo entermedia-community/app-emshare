@@ -209,7 +209,8 @@
 			
 			<li id="filtersselected" class="filtersselected">
 				#if($dialogresults)
-				#if( $hits.getSearchQuery().hasMainInput())
+				#set ($searching = $context.getRequestParameter("searching") )
+				#if( $searching == "true" )
 					#if($moduleid=="asset")
 						#if($dialogresults)
 							#set($href = "$siteroot$apphome/views/modules/$moduleid/dialogindex.html?hitssessionid=$!hits.getSessionId()&topmoduleid=$!topmoduleid&rootcategory=$!rootcategory&categoryid=$!{categoryid}&removeterm=description")
@@ -224,11 +225,16 @@
 					<div class="d-flex align-items-center selected-filters ">
 					<a href="$href"
 					class="ajax clearsearchbar"
-					title="[[Clear]]: #esc($hits.getSearchQuery().getMainInput())"
+					title="[[Clear Search]]"
 					data-targetdiv="dialogassetresultscontainer" 
 					data-oemaxlevel="$oemaxlevel"
 					data-updateurl="false">
-					[[Found]] $hits.size() [[results for]]: <span><b>"$hits.getSearchQuery().getMainInput()"</b></span>
+					#if($hits.size() > 0)
+						[[Found]] $hits.size() [[results for]]: <span><b>"$hits.getSearchQuery().getMainInput()"</b></span>
+					#else
+						#set ($searchingfor = $context.getRequestParameter("description.value") )
+						[[Found]] 0 [[results for]]: <span><b>"$!searchingfor"</b></span>
+					#end
 					<i class="bi bi-x ml-1"></i>
 					</a>
 					</div>
