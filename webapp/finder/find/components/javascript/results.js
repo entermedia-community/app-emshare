@@ -1079,7 +1079,7 @@ jQuery(document).ready(function (url, params) {
       var componenthome = resultsdiv.data("componenthome");
       if (moduleid && componenthome) {
         var url = componenthome + "/gridsample/preview/entity.html";
-        entity.data("emdialoglink", url);
+        entity.data("targetlink", url);
         entity.data("updateurl", true);
         entity.data("urlbar", window.location.href);
         var currenturl = window.location.origin + window.location.pathname;
