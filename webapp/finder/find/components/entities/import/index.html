@@ -1,16 +1,17 @@
 #set( $entityid = $context.getRequestParameter("entityid") )
 #set($auto = $context.getRequestParameter("autorun"))
 
-
+#set($categoryroot = $mediaarchive.getBean("entityManager").createDefaultFolder($entity, $context.getUser()))
 <div id="resultsdiv" class="h-100">
 #if( $entityid )	
 	<h3 class="collection-config-title">[[Add Existing Files]] </h3>
 	<div style="padding:0 20px; height: calc(100% - 70px); overflow-y: auto;"> 
 	<form  name="wizard" method="post"  class="" targetdiv="addcategoryform"
-		action="$home$apphome/components/createmedia/copycategory/createnew.html">
-	    <input type="hidden" name="collectionid" id="urlcurrentcollection" value="$collectionid"/>
+		action="$home$apphome/components/entities/import/import.html">
+	    <input type="hidden" name="targetcategoryid" value="$categoryroot.getId()"/>
 	   
-	   <a class="emdialog btn btn-primary" data-dialogid="catpicker" href="$home$apphome/components/categories/search/searchcategory.html?pickone=true&targetdiv=autocategoriespicked&clearselection=$!clear&action=${page.directory}/picked.html"
+	   <a class="emdialog btn btn-primary" data-dialogid="catpicker" 
+	   href="$home$apphome/components/entities/import/search/searchcategory.html?pickone=true&targetdiv=autocategoriespicked&clearselection=$!clear&action=${page.directory}/picked.html"
 	    data-hidefooter="true" data-parameterdata="categoryvalues"><i class="fas fa-search"></i> [[Add Category]]</a>
 	    
 	   <a #if($auto == "true") style="display: noneXX;" #end 
@@ -18,7 +19,7 @@
 	    	targetdivinner="auto-pop"  
 			data-hidefooter="true" 
 			title="ID: ($entityid)"
-			href="$apphome/components/createmedia/copycategory/autopopulate.html?id=$!{entityid}" 
+			href="$apphome/components/entities/import/autopopulate.html?id=$!{entity.get("pub-item")}" 
 			 >
 			<i class="far fa-arrow-alt-circle-down"></i> [[Search By Id]] </a> 
 
@@ -28,7 +29,7 @@
 	
 		
 		<div class="inner-content" id="autocategoriespicked" >
-		$pages.include("$apphome/components/createmedia/copycategory/picked.html",$context)	
+		$pages.include("$apphome/components/entities/import/picked.html",$context)	
 		</div>
 		<div id="auto-pop"></div>
 		<br><br>
@@ -37,23 +38,3 @@
 	</div>
 #end
 </div>
-
-
-<script type="text/javascript">
-lQuery(".auto-remove").livequery("click", function() {
-	var catid = jQuery(this).data('categoryid');
-	
-	jQuery("#auto-" + catid).remove();
-	
-	
-});
-
-##TODO: Move this sompleace else or use jquery more
-jQuery(document).ready(function(){
-	jQuery("#poptrigger").trigger("click");
-});
-
-</script>		
-	
-
-
