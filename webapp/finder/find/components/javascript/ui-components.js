@@ -994,7 +994,7 @@ uiload = function () {
     var options = dialog.data();
     var link = dialog.attr("href");
     if (!link) {
-      link = dialog.data("emdialoglink");
+      link = dialog.data("targetlink");
     }
     if (
       dialog.hasClass("entity-dialog") &&
@@ -1714,8 +1714,7 @@ uiload = function () {
   });
 
   //Entity Dialog Table
-  lQuery(".emselectableentitymodule table td").livequery(
-    "click",
+  lQuery(".emselectablemodule table td").livequery("click",
     function (event) {
       var clicked = $(this);
       if (clicked.attr("noclick") == "true") {
@@ -1730,27 +1729,47 @@ uiload = function () {
       if ($(event.target).closest(".jp-audio").length) {
         return true;
       }
-      var emselectable = clicked.closest(".emselectableentitymodule");
+      
+      var emselectable = clicked.closest(".emselectablemodule");
 
       var row = $(clicked.closest("tr"));
       var rowid = row.attr("rowid");
 
-      var emdialoglink = emselectable.data("emdialoglink");
-      if (emdialoglink && emdialoglink != "") {
-        emdialoglink +=
-          (emdialoglink.indexOf("?") >= 0 ? "&" : "?") + "id=" + rowid;
-        row.data("emdialoglink", emdialoglink);
-        row.data("id", rowid);
-        row.data("hitssessionid", emselectable.data("hitssessionid"));
-        row.data("updateurl", true);
-        var urlbar =
-          apphome +
-          "/views/modules/" +
-          emselectable.data("searchtype") +
-          "/index.html?entity=" +
-          rowid;
-        row.data("urlbar", urlbar);
-        emdialog(row, event);
+      var targetlink = emselectable.data("targetlink");
+      
+      if(emselectable.hasClass("emselectablemodule_order")) {
+		  //Order Module
+		  var targetdiv = emselectable.data("targetdiv");
+		  if (targetlink && targetlink != "") {
+	        targetlink += (targetlink.indexOf("?") >= 0 ? "&" : "?") + "id=" + rowid;
+
+	        $.ajax({
+		        url: targetlink,
+		        data: { oemaxlevel: "3" },
+		        success: function (data) {
+		    		$("#" + targetdiv).replaceWith(data);
+		    		jQuery(window).trigger("resize");
+		    	},
+			});
+	  	}
+	  }
+	  else {
+		  //All entities
+	      if (targetlink && targetlink != "") {
+	        targetlink += (targetlink.indexOf("?") >= 0 ? "&" : "?") + "id=" + rowid;
+	        row.data("targetlink", targetlink);
+	        row.data("id", rowid);
+	        row.data("hitssessionid", emselectable.data("hitssessionid"));
+	        row.data("updateurl", true);
+	        var urlbar =
+	          apphome +
+	          "/views/modules/" +
+	          emselectable.data("searchtype") +
+	          "/index.html?entity=" +
+	          rowid;
+	        row.data("urlbar", urlbar);
+	        emdialog(row, event);
+	  	}
       }
     }
   );

@@ -1,9 +1,10 @@
+<div class="maincontentlayout" id="myaccountcontent" style="margin:0; height: 100%; overflow-y: auto;">
 <div id="order-details">
     #set($order = $data)
     #set($orderitemsearcher = $searcherManager.getSearcher($catalogid, "orderitem"))
     #set($ordersearcher = $searcherManager.getSearcher($catalogid, "order"))
     #set($owner = $userManager.getUser($order.userid))
-    <h2>[[Customer]]: <a href="$home/$applicationid/views/settings/users/usermanager/user/index.html?username=$owner.id">$owner</a></h2>
+    <h3>[[Customer]]: <a href="$home/$applicationid/views/settings/users/usermanager/user/index.html?username=$owner.id">$owner</a></h3>
     #set($usersearcher = $searcherManager.getSearcher("system", "user"))
     $context.putPageValue("searcher", $usersearcher)	 
     $context.putPageValue("view", "user/useredit")	
@@ -15,14 +16,15 @@
    
    
     <form class="ajaxform" targetdiv="itemsaved" id="itemsave" name="itemform" method="POST" action="$home$apphome/views/modules/order/edit/saveitems.html" >
-    <h2>[[Order Details]]</h2>
+    <h3>[[Order Details]]</h3>
     <table class="settings-table" id="order-details">
        <input type="hidden" name="id" value="$order.id"/>
        <input type="hidden" name="orderid" value="$order.id"/>
        <input type="hidden" name="sourcepath" value="$order.sourcepath"/>      
      </tr>
    </table> 
-   
+
+	
     #set($details = $mediaarchive.getAssetSearcher().getDetailsForView("asset/orderitems",$user) )
     #foreach( $detail in $details )
      #if($detail.isEditable())
@@ -37,6 +39,7 @@
     $pages.include("/$applicationid/components/xml/detaileditor.html?detailsreadonly=false", $context)
     
     
+   
 
     
     
@@ -50,7 +53,7 @@
         <div id="itemsaved"></div>
         <span id="itemsent"></span>
     #if($orderitems)
-    <h2>[[Assets]]</h2>
+    <h3>[[Assets]]</h3>
     <table class="emdata table table-striped table-hover">
         <tr class="tableheader">
             <th>[[Asset]]</th>
@@ -79,10 +82,6 @@
     #end
     </form>
     </div>
-#if( $caneditmetadatasetup )
-	<div class="clearfix"></div>
-	 <a class="btn btn-sm btn-light float-right" href="$home$apphome/views/settings/modules/${searcher.searchType}/metadata/views/index.html?viewid=$viewid&viewpath=$viewpath"><i class="fas fa-cog"></i> [[Edit View]]</a>
-	#end
     
    
      </div>
@@ -96,6 +95,7 @@
     
     
     </form>
+</div>
 </div>
 
     

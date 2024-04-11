@@ -23,7 +23,6 @@
 		data-searchtype="$!searchtype" 
 		data-pagenum="$!hits.getPage()" 
 		data-totalpages="$!hits.getTotalPages()"
-		##data-module="$!moduleid"
 		data-moduleid="$!moduleid"
 		data-viewid="$!viewid">
 
@@ -58,19 +57,26 @@ $pages.include("${searchhome}/resultsactions.html",$context)
 		#if(!$defaultviewid)
 			#set($defaultviewid = "${moduleid}general" )
 		#end
+		
+		
+		#set($targetlink = "$!searchhome/components/gridsample/preview/$!{rowrendertype}.html")
+		
+		#if($moduleid == "order")
+			#set($targetlink = "$!apphome/views/modules/order/edit/edit.html")
+		#end
+		
 		<div id="emselectable" 
-				class="emselectableentitymodule adjustHeight" 
+				class="emselectablemodule emselectablemodule_${moduleid} adjustHeight" 
 				data-viewid="$!defaultviewid"
 				data-hitssessionid="$hits.getSessionId()" 
 				data-id="$!id"
 				data-searchtype="$!searchtype" 
 				data-searchhome="$!searchhome"
-				data-editpath="$!home$!editpath?$!{args}&edit=true&oemaxlevel=2" 
+				##data-editpath="$!home$!editpath?$!{args}&edit=true&oemaxlevel=2" 
 				
-				data-emdialoglink="$!searchhome/components/gridsample/preview/$!{rowrendertype}.html"
-				
-				
-				data-targetdiv="resultsviewcontainer$!moduleid"
+				data-targetlink="$!targetlink"
+				##data-targetdiv="resultsviewcontainer$!moduleid"
+				data-targetdiv="applicationmaincontent"
 		>
 		
 			<table class="table table-striped table-hover" 
