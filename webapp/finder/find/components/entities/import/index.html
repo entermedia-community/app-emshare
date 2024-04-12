@@ -1,40 +1,46 @@
 #set( $entityid = $entity.getId() )
-#set($auto = $context.getRequestParameter("autorun"))
 
 #set($categoryroot = $mediaarchive.getBean("entityManager").createDefaultFolder($entity, $context.getUser()))
-<div id="resultsdiv" class="h-100">
-#if( $entityid )	
-	<h3 class="collection-config-title">[[Add Existing Files]] </h3>
-	<div style="padding:0 20px; height: calc(100% - 70px); overflow-y: auto;"> 
-	<form  name="wizard" method="post"  class="" targetdiv="addcategoryform"
+#set( $searchby = $entity.get("pub-item"))
+<div class="h-100">
+	<h3 class="collection-config-title"> 
+       <a class="emdialog btn btn-primary" data-dialogid="catpicker" onclick='$("#searcher").hide();$("#picker").show();' 
+	   href="$home$apphome/components/entities/import/search/searchcategory.html?targetdiv=autocategoriespicked&clearselection=$!clear&action=${page.directory}/picked.html"
+	    data-hidefooter="true" data-parameterdata="categoryvalues"><i class="fas fa-search"></i> [[Add Category]]</a>
+	
+	   <a  	class="ajax btn btn-primary" id="poptrigger" 
+	    	data-targetdivinner="auto-popsearch"  
+			data-hidefooter="true" 
+			data-oemaxlevel="1"
+			data-targetcategoryid="$categoryroot.id"
+			onclick='$("#searcher").show();$("#picker").hide();'
+			title="ID: ($entityid)"
+			href="$apphome/components/entities/import/autopopulate.html?id=$!searchby" 
+			 >
+			<i class="far fa-arrow-alt-circle-down"></i> [[Search By Pub Id]] </a> 
+	</h3>
+
+	<div id="importresultsdiv" style="padding:0 20px; height: calc(100% - 70px); overflow-y: auto;"> 
+
+	<form  style="display: none;" id="picker" name="wizard2" method="post"  class="ajaxform" data-oemaxlevel="1" data-targetdivinner="importresultsdiv"
 		action="$home$apphome/components/entities/import/import.html">
 	    <input type="hidden" name="targetcategoryid" value="$categoryroot.getId()"/>
-	   
-	   <a class="emdialog btn btn-primary" data-dialogid="catpicker" 
-	   href="$home$apphome/components/entities/import/search/searchcategory.html?pickone=true&targetdiv=autocategoriespicked&clearselection=$!clear&action=${page.directory}/picked.html"
-	    data-hidefooter="true" data-parameterdata="categoryvalues"><i class="fas fa-search"></i> [[Add Category]]</a>
-	    
-	   <a #if($auto == "true") style="display: noneXX;" #end 
-	    	class="ajax btn btn-primary" id="poptrigger" 
-	    	targetdivinner="auto-pop"  
-			data-hidefooter="true" 
-			title="ID: ($entityid)"
-			href="$apphome/components/entities/import/autopopulate.html?id=$!{entity.get("pub-item")}" 
-			 >
-			<i class="far fa-arrow-alt-circle-down"></i> [[Search By Id]] </a> 
 
-		
-		
-		<div class="ajaxprogress" style="display:none;">[[Loading, please wait..]]<img src="$apphome/components/search/images/spinner.gif"/></div>
-	
-		
 		<div class="inner-content" id="autocategoriespicked" >
 		$pages.include("$apphome/components/entities/import/picked.html",$context)	
 		</div>
-		<div id="auto-pop"></div>
 		<br><br>
-		<input class="btn btn-primary" type="submit" value="[[Import]]" />	
+		<input  class="btn btn-primary" type="submit" value="[[Import]]" />	
 	</form>
+
+	<div id="searcher"  style="display: none;">
+	<form  id="filesearch" method="post" name="wizard3" method="post"  class="ajaxform" data-oemaxlevel="1" data-targetdivinner="searcheveryplace"
+		action="$apphome/components/entities/import/autopopulate.html">
+	    <input type="text" name="id" value="$!searchby"/> 	<input  class="btn btn-primary" type="submit" value="[[Search]]" />	
+	    <input type="hidden" name="targetcategoryid" valyue="$categoryroot.id" />
+	</form>
+	<div id="auto-popsearch"></div>
+	
 	</div>
-#end
+	</div>
 </div>

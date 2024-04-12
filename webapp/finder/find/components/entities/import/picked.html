@@ -4,13 +4,24 @@
 	   <input type="hidden" id="categoryvalues" name="category.value" value="$existing" />
 			#set($category  = $mediaarchive.getCategory($existing))
 			#if( $category )
-			<div id="auto-${categoryid}" class="row categorydraggable ui-draggable ui-draggable-handle collectionBox" data-nodeid="$categoryid" data-categoryname="$category.getName()">
-				<input type="hidden" id="categoryvalues" name="categoryid" value="$categoryid" />
+			<div id="auto-${category.id}" class="row categorydraggable ui-draggable ui-draggable-handle collectionBox" data-nodeid="$category.id" data-categoryname="$category.getName()">
+				<input type="hidden" id="categoryvalues" name="categoryid" value="$category.id" />
 				<a class="category" title="$category.getCategoryPath()" target="_blank" href="$home$apphome/views/categories/${category.id}.html" >$category.getCategoryPath()</a>
 						<a href="#" title="[[Remove]]">
-							<span class="ui-icon ui-icon-closethick  auto-remove" data-categoryid="$categoryid"></span>
+							<span class="ui-icon ui-icon-closethick  auto-remove" data-categoryid="$category.id"></span>
 						</a>
 			</div>
 			#end
 		#end
+
+	<script type="text/javascript">
+	$(".auto-remove").on("click", function() {
+		var catid = jQuery(this).data('categoryid');
+		
+		jQuery("#auto-" + catid).remove();
+	});
+
+	</script>		
+
+
 <div id="addpickedcategory"></div>
