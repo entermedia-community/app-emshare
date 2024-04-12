@@ -1,35 +1,41 @@
 #set($id = $context.getRequestParameter("id"))
-#set($categoryrootid = $context.getRequestParameter("targetcategoryid"))
-$categoryrootid
-<div id="searcheveryplace">
+#set($targetcategoryid = $context.getRequestParameter("targetcategoryid"))
+<div id="autosearch">
 
 	<form  name="wizard"    
 		class="ajaxform" data-oemaxlevel="1" data-targetdivinner="importresultsdiv"
 		action="$home$apphome/components/entities/import/import.html">
-	    <input type="hidden" name="targetcategoryid" value="$categoryrootid"/>
+	    <input type="hidden" name="targetcategoryid" value="$targetcategoryid"/>
 		
 		<div class="ajaxprogress" style="display:none;">[[Loading, please wait..]]<img src="$apphome/components/search/images/spinner.gif"/></div>
 		
 
 
-<ul id="cat-list" class="list-group list-group-striped list-group-hover autopopulate-list">
 
-			<li class="collectionBox  " >
 				<div class="text-right">
 				<label for="select-all">[[Select All]]:</label> <input type="checkbox" id="select-all" class="select-all" /> 
 				</div>
-			</li>
+
+<ul id="cat-list" class="list-group list-group-striped list-group-hover autopopulate-list">
+
+#ifnull( $foundcategories )
+<li>No folders found</li>
+#end
 
 			#foreach($categoryid in $foundcategories)
 			#set($category  = $mediaarchive.getCategory($categoryid))
 
 			<li id="auto-${categoryid}" class="collectionBox" data-nodeid="$categoryid" data-categoryname="$category.getName()">
-				<a class="category" title="$category.getCategoryPath()" target="_blank" href="$home$apphome/views/categories/${category.id}.html" >$category.getCategoryPath() </a>
+				<a class="category" title="$category.getCategoryPath()" target="_blank" href="$applink/views/modules/asset/viewfiles/${category.getId()}/#esc($category).html" >$category.getCategoryPath() </a>
 				<div class="collectionIcons">
 					<input type="checkbox" id="categoryvalues" class="collection-list" name="categoryid" value="$categoryid" />
 				</div>
 			</li>
 		#end
+
+#if( $assets.isEmpty() )
+<li>No files found</li>
+#end
 
 #foreach($asset in $assets)
 			<li id="auto-${asset.id}" class=" collectionBox">
