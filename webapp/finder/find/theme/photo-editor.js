@@ -375,9 +375,8 @@ $("document").ready(function () {
     $(".rotate-editor button").click(function () {
       var action = $(this).data("action");
       var activeObject = canvas.getActiveObject();
-      if (!activeObject) {
-        centerViewPort();
-        activeObject = imgInstance;
+      if (!activeObject || activeObject.get("type") !== "text") {
+        return;
       }
       if (action === "flipX") {
         activeObject.flipX = !activeObject.flipX;
@@ -407,6 +406,10 @@ $("document").ready(function () {
         selectionRect.visible = true;
         canvas.setActiveObject(selectionRect);
         canvas.requestRenderAll();
+      } else if (
+        ["flipX", "flipY", "rotateLeft", "rotateRight"].includes(action)
+      ) {
+        selectionRect.visible = false;
       } else {
         selectionRect.visible = false;
         canvas.discardActiveObject();
