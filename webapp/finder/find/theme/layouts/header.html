@@ -102,6 +102,11 @@
 				</div>
 			</div>
 		#end
+		
+		#if($canviewbasket)
+			$pages.include("$apphome/components/basket/menuitem.html")
+		#end
+		
 		#if($user && $canaddtofavorites)
 			<a href="$siteroot$applink/views/modules/modulesearch/bookmarks.html" 
 				class='ajax activelistener btn-upload #if( $selected=="favorites" || $selected=="modulesearch") active #end' 
@@ -164,5 +169,21 @@
 			</div>
 		</div>
 	</div>
+	#end
+	
+	
+	#if( $userprofile.hasModule("order") )
+	#set( $orders = $mediaarchive.query("order").exact("checkoutstatus","pending").search($context))
+	#if( $orders.size() > 0)
+	<div id="headerstatusarea"  class="alert alert-primary" role="alert">
+	<a href="$apphome/views/modules/order/pending.html"
+	 class="ajax"
+	 data-targetdiv="applicationmaincontent"
+	 data-oemaxlevel="3"
+	 data-updateurl="true">
+		<i class="fas fa-info-circle"></i>
+		[[Pending Orders]]  ($orders.size())</a>
+	</div>
+	#end
 	#end
 </div>

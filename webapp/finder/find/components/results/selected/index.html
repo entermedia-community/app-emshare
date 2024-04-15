@@ -1,7 +1,7 @@
 #if( $user && $hits.size() > 0 && $hits.hasSelections() )
 
 <li class="dropdown">
-	<a class="dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="navbarFile$!{moduleid}">[[File]]</a> 
+	<a class="resultsnavlink dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="navbarFile$!{moduleid}">[[File]]</a> 
 		<div class="dropdown-menu" aria-labelledby="navbarFile$!{moduleid}">
 			
 			#if( $user && ($candownload || $canconvert || $candownloadfpo ) )
@@ -49,7 +49,7 @@
 
 	#if ($canmultiedit)
 	<li class=" dropdown">
-		<a class=" dropdown-toggle" href="#" id="navbarEdit$!{moduleid}" role="button" data-toggle="dropdown"  data-bs-toggle="dropdown">[[Edit]]</a>
+		<a class="resultsnavlink dropdown-toggle" href="#" id="navbarEdit$!{moduleid}" role="button" data-toggle="dropdown"  data-bs-toggle="dropdown">[[Edit]]</a>
 		<div class="dropdown-menu" aria-labelledby="navbarEdit$!{moduleid}">
   				#set($text = "[[Multi Edit]] ($hits.getSelectionSize())")
 				<a id="multiedit-menu"
@@ -59,15 +59,17 @@
 					href="#" 
 					title="[[Edit selected Assets]]">$text</a>
 					
-					<a class="ajax selectpage" data-targetdiv="resultsheader" href="$siteroot$componenthome/results/togglepage.html?oemaxlevel=1&hitssessionid=$hits.getSessionId()&action=page">[[Select This Page]]</a>
-    	        <a class="ajax  selectpage" data-targetdiv="resultsheader" href="$siteroot$componenthome/results/togglepage.html?oemaxlevel=1&hitssessionid=$hits.getSessionId()&action=all">[[Select All Results]]</a>
-    	        <a class="ajax  deselectpage" data-targetdiv="resultsheader" href="$siteroot$componenthome/results/togglepage.html?oemaxlevel=1&hitssessionid=$hits.getSessionId()&action=none">[[Deselect All]]</a>
+					<a class="dropdown-item ajax selectpage" data-targetdiv="resultsheader" href="$siteroot$componenthome/results/togglepage.html?oemaxlevel=1&hitssessionid=$hits.getSessionId()&action=page">[[Select This Page]]</a>
+    	        <a class="dropdown-item ajax  selectpage" data-targetdiv="resultsheader" href="$siteroot$componenthome/results/togglepage.html?oemaxlevel=1&hitssessionid=$hits.getSessionId()&action=all">[[Select All Results]]</a>
+    	        <a class="dropdown-item ajax  deselectpage" data-targetdiv="resultsheader" href="$siteroot$componenthome/results/togglepage.html?oemaxlevel=1&hitssessionid=$hits.getSessionId()&action=none">[[Deselect All]]</a>
 		</div>
 	</li>
 	#end	
 	
-	<li class=" dropdown">
-		<a class="dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="navbarAddto$!{moduleid}">[[Add to]]</a>
+	#set($section = $context.getRequestParameter("section"))
+	
+	<li class="resultsnavlink dropdown">
+		<a class="resultsnavlink dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="navbarAddto$!{moduleid}">[[Add to]]</a>
 		<div class="dropdown-menu" aria-labelledby="navbarAddto$!{moduleid}">
 			#foreach ( $amodule in $userprofile.getEntities() )
 	  		#set($amoduleid = $amodule.getId())
@@ -89,6 +91,12 @@
 				    #end
 			    #end
 		    #end
+		    #if ( $canviewbasket && $section != "basket"  )
+				<a class="dropdown-item updatebasket" 
+					targetdiv="basket-paint"  
+					href="$siteroot$componenthome/basket/addselection.html?hitssessionid=$hits.getSessionId()" >[[Cart]]</a>
+			#end
+		
 		    #if($canaddtofavorites && $librarycol.id != "${user.id}-favorites" )
 				<a class="dropdown-item ajax"
 					data-targetdivinner="resultsmessages"
@@ -101,9 +109,15 @@
 		</div>
 	</li>
 	
+	#if($canviewbasket   && $section=="basket")
+		<li>
+			<a class="resultsnavlink dropdown-item updatebasket" data-action="remove" targetdiv="basket-paint"  href="$siteroot$componenthome/basket/removeselection.html?hitssessionid=$hits.getSessionId()" >[[Remove From Cart]]</a>
+		</li>
+	#end
+	
 	#if($canpublish || $canemaillink || $canquickgallery)
 	<li class=" dropdown">
-	<a class=" dropdown-toggle" href="#" id="navbarShare$!{moduleid}" role="button" data-toggle="dropdown"  data-bs-toggle="dropdown"
+	<a class="resultsnavlink dropdown-toggle" href="#" id="navbarShare$!{moduleid}" role="button" data-toggle="dropdown"  data-bs-toggle="dropdown"
 		aria-haspopup="true" aria-expanded="false">[[Share]]</a>
 		<div class="dropdown-menu" aria-labelledby="navbarShare$!{moduleid}">
 			#if( $canemaillink )
@@ -128,10 +142,10 @@
 	</li>
 	#end
 	
-	#if(!$canforcebasiccollections)
+	
 		#if( $canviewapprovereject && ($caneditcollection || $caneditallassets ))
 			<li class=" dropdown">
-			<a class=" dropdown-toggle" href="#" id="navbarApprove$!{moduleid}" role="button" data-toggle="dropdown"  data-bs-toggle="dropdown"
+			<a class="resultsnavlink dropdown-toggle" href="#" id="navbarApprove$!{moduleid}" role="button" data-toggle="dropdown"  data-bs-toggle="dropdown"
 				aria-haspopup="true" aria-expanded="false">[[Approval]]</a>
 				<div class="dropdown-menu" aria-labelledby="navbarApprove$!{moduleid}">
 		
@@ -147,18 +161,11 @@
 				</div>
 			</li>
 		  #end
-	  #end
 	
 	
 			
 	
-##	    #if ( $canviewbasket  )
-##			#if($order)
-##				<a class="dropdown-item updatebasket" data-action="remove" targetdiv="basket-paint"  href="$siteroot$componenthome/basket/removeselection.html?hitssessionid=$hits.getSessionId()" >[[Remove From Cart]]</a>
-##			#else
-##				<a class="dropdown-item updatebasket" targetdiv="basket-paint"  href="$siteroot$componenthome/basket/addselection.html?hitssessionid=$hits.getSessionId()" >[[Add To Cart]]</a>
-##			#end
-##		#end
+	    
 ##		#if( $canaddnewcollection )
 ##			<a class="dropdown-item emdialog"
 ##			   id="selectedmenuaddtoalbum" 

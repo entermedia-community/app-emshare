@@ -202,7 +202,7 @@ $(document).ready(function()
 		
 		if(btn.data("entityupload")) {
 			var tab_media = $("#tab_tab_media");
-			var selector = tab_media.attr("href");
+			var selector = tab_media.data("tabid");
 			var container = $(selector);
 			container.data("sortby", "assetaddeddateDown");
 			tab_media.trigger("click");

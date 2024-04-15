@@ -34,7 +34,7 @@ $context.putPageValue("topmoduleid", $moduleid)
 
 #set($viewsearcher = $searcherManager.getSearcher($catalogid, "view"))
 #set($enttiyviews = $viewsearcher.query().exact("moduleid", $moduleid).exact("systemdefined","false").sort("orderingUp").search($context) )
-#set($firstviewid = $enttiyviews.get(0).getId())
+#set($firstviewid = $enttiyviews.first().getId())
 
 #set($userentities = $userprofile.getEntitiesIds())
 
@@ -176,6 +176,18 @@ $context.putPageValue("topmoduleid", $moduleid)
 
 						$context.putPageValue("itemid", $entity.id)
 						$pages.include("$componenthome/gridsample/favorites.html?id=$entity.id&moduleid=$moduleid", $context)
+						
+						
+						#if($entityid && $enabledpublishing != "true")	
+						<a href="$applink/views/modules/$moduleid/publishing/enablepublishing.html"
+							class="enablepublishing btn btn-sm btn-brand"
+							data-updateurl="false"
+							data-closedialog="true"
+							data-entityid="$!entityid"
+							data-moduleid="$moduleid"
+							title="[[Publish]] #text($module) "><i class="bi bi-columns-gap"></i> [[Publish]]</a>
+						#end
+						
 					</div>
 				#end
 			</div>
@@ -279,14 +291,14 @@ $context.putPageValue("topmoduleid", $moduleid)
 				
 				#ifnotnull($id)
 					#if(!$ismulti)
-						##publications tab
+						##publishing tab
 						#if($enabledpublishing == "true")
 							##permissions here
 							#set($tabtype= "tabpublishing")
 							$context.putPageValue("tabtype", $tabtype)
-							#set($tabid = "tab_publications")
+							#set($tabid = "tab_publishing")
 							$context.putPageValue("tabid", $tabid)
-							#if($entitytabopen == "publications")
+							#if($entitytabopen == "publishing")
 								$context.putPageValue("currenttab", $entitytabopen)
 							#end
 							$context.putPageValue("tabtype", $tabtype)
@@ -368,6 +380,7 @@ $context.putPageValue("topmoduleid", $moduleid)
 						#set($tabtype= "tabpublishing")
 						$context.putPageValue("tabtype", $tabtype)
 						$context.putPageValue("currenttab", "publishing")
+						$context.putPageValue("viewid", "publishing")
 						$pages.include("$subcomponenthome/gridsample/preview/tabpublishing.html?entityid=$id", $context)
 					#end
 				#end

@@ -337,6 +337,11 @@ jQuery(document).ready(function (url, params) {
       $(".clearfiltersearch").show();
     }
   });
+  
+  
+  lQuery("a.clearsearchbar").livequery("click", function () {
+	  $("#mainsearchvalue").val("");
+	 });
 
   lQuery("a.selectpage").livequery("click", function () {
     var resultsdiv = $(this).closest(".resultsdiv");
@@ -418,7 +423,7 @@ jQuery(document).ready(function (url, params) {
         }
         form.trigger("submit");
       });
-      $("input[type=radio]", form).change(function () {
+      $("input[type=radio], .selectbox", form).change(function () {
         form.trigger("submit");
       });
 
@@ -1074,7 +1079,7 @@ jQuery(document).ready(function (url, params) {
       var componenthome = resultsdiv.data("componenthome");
       if (moduleid && componenthome) {
         var url = componenthome + "/gridsample/preview/entity.html";
-        entity.data("emdialoglink", url);
+        entity.data("targetlink", url);
         entity.data("updateurl", true);
         entity.data("urlbar", window.location.href);
         var currenturl = window.location.origin + window.location.pathname;
@@ -1108,10 +1113,10 @@ jQuery(document).ready(function (url, params) {
       var clicked = $(this);
       var dataid = $(clicked).data("dataid");
       var resultsdiv = $(this).closest(".resultsdiv");
-      if (!resultsdiv) {
+      if (!resultsdiv.length) {
         resultsdiv = $("#resultsdiv");
       }
-      if (resultsdiv != null) {
+      if (resultsdiv.length) {
         var options = resultsdiv.data();
         var componenthome = resultsdiv.data("componenthome");
         options["dataid"] = dataid;
@@ -1140,7 +1145,7 @@ jQuery(document).ready(function (url, params) {
 
   lQuery("a.deselectpage").livequery("click", function () {
     var resultsdiv = $(this).closest(".resultsdiv");
-    if (!resultsdiv) {
+    if (!resultsdiv.length) {
       resultsdiv = $("#resultsdiv");
     }
     $("input[name=pagetoggle]", resultsdiv).prop("checked", false);
@@ -1159,7 +1164,7 @@ jQuery(document).ready(function (url, params) {
   lQuery("input[name=pagetoggle]").livequery("click", function () {
     var input = $(this);
     var resultsdiv = input.closest(".resultsdiv");
-    if (!resultsdiv) {
+    if (!resultsdiv.length) {
       resultsdiv = $("#resultsdiv");
     }
     //var hitssessionid = resultsdiv.data('hitssessionid');
@@ -1194,7 +1199,7 @@ jQuery(document).ready(function (url, params) {
     e.stopPropagation();
     var selectpage = $(this);
     var resultsdiv = selectpage.closest(".resultsdiv");
-    if (!resultsdiv) {
+    if (!resultsdiv.length) {
       resultsdiv = $("#resultsdiv");
     }
     //var hitssessionid = resultsdiv.data('hitssessionid');

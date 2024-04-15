@@ -867,20 +867,23 @@ uiload = function () {
 
   lQuery("form.autosubmit").livequery(function () {
     var form = $(this);
+    
     $("select", form).change(function () {
       $(form).trigger("submit");
+      
     });
     $("input", form).on("focusout", function (event) {
       $(form).trigger("submit");
+      
     });
     $("input", form).on("keyup", function (e) {
       $(form).trigger("submit");
+      
     });
-    $(
-      'input[type="file"],input[name="date.after"],input[type="checkbox"]',
-      form
-    ).on("change", function () {
+    $('input[type="file"],input[name="date.after"],input[type="checkbox"]', form)
+    .on("change", function () {
       $(form).trigger("submit");
+      
     });
   });
 
@@ -991,7 +994,7 @@ uiload = function () {
     var options = dialog.data();
     var link = dialog.attr("href");
     if (!link) {
-      link = dialog.data("emdialoglink");
+      link = dialog.data("targetlink");
     }
     if (
       dialog.hasClass("entity-dialog") &&
@@ -1470,6 +1473,29 @@ uiload = function () {
     confirmModalClose(targetModal);
     hideLoader();
   });
+  
+   lQuery(".enablepublishing").livequery("click", function (event) {
+    event.preventDefault();
+    var link = $(this);
+    var options = link.data();
+    
+    var url = link.attr("href");
+    
+    $.ajax({
+        xhrFields: {
+          withCredentials: true,
+        },
+        crossDomain: true,
+        url: url,
+        data: options,
+        success: function (data) {
+			var entity = $(".entitydialog");
+			entity.data("entitytabopen", "publishing");
+			autoreload(entity);
+    	},
+	});
+    
+  });
 
   lQuery(".autoopenemdialog").livequery(function () {
     emdialog($(this));
@@ -1688,8 +1714,7 @@ uiload = function () {
   });
 
   //Entity Dialog Table
-  lQuery(".emselectableentitymodule table td").livequery(
-    "click",
+  lQuery(".emselectablemodule table td").livequery("click",
     function (event) {
       var clicked = $(this);
       if (clicked.attr("noclick") == "true") {
@@ -1704,27 +1729,47 @@ uiload = function () {
       if ($(event.target).closest(".jp-audio").length) {
         return true;
       }
-      var emselectable = clicked.closest(".emselectableentitymodule");
+      
+      var emselectable = clicked.closest(".emselectablemodule");
 
       var row = $(clicked.closest("tr"));
       var rowid = row.attr("rowid");
 
-      var emdialoglink = emselectable.data("emdialoglink");
-      if (emdialoglink && emdialoglink != "") {
-        emdialoglink +=
-          (emdialoglink.indexOf("?") >= 0 ? "&" : "?") + "id=" + rowid;
-        row.data("emdialoglink", emdialoglink);
-        row.data("id", rowid);
-        row.data("hitssessionid", emselectable.data("hitssessionid"));
-        row.data("updateurl", true);
-        var urlbar =
-          apphome +
-          "/views/modules/" +
-          emselectable.data("searchtype") +
-          "/index.html?entity=" +
-          rowid;
-        row.data("urlbar", urlbar);
-        emdialog(row, event);
+      var targetlink = emselectable.data("targetlink");
+      
+      if(emselectable.hasClass("emselectablemodule_order")) {
+		  //Order Module
+		  var targetdiv = emselectable.data("targetdiv");
+		  if (targetlink && targetlink != "") {
+	        targetlink += (targetlink.indexOf("?") >= 0 ? "&" : "?") + "id=" + rowid;
+
+	        $.ajax({
+		        url: targetlink,
+		        data: { oemaxlevel: "3" },
+		        success: function (data) {
+		    		$("#" + targetdiv).replaceWith(data);
+		    		jQuery(window).trigger("resize");
+		    	},
+			});
+	  	}
+	  }
+	  else {
+		  //All entities
+	      if (targetlink && targetlink != "") {
+	        targetlink += (targetlink.indexOf("?") >= 0 ? "&" : "?") + "id=" + rowid;
+	        row.data("targetlink", targetlink);
+	        row.data("id", rowid);
+	        row.data("hitssessionid", emselectable.data("hitssessionid"));
+	        row.data("updateurl", true);
+	        var urlbar =
+	          apphome +
+	          "/views/modules/" +
+	          emselectable.data("searchtype") +
+	          "/index.html?entity=" +
+	          rowid;
+	        row.data("urlbar", urlbar);
+	        emdialog(row, event);
+	  	}
       }
     }
   );
@@ -2526,6 +2571,71 @@ uiload = function () {
       }
     }
   });
+  
+  
+  var lasttypeaheadsummary;
+  var searchmodaldialog;
+  var searchmodalmask;
+  var mainsearcheinput;
+
+  lQuery(".filtertypeahead").livequery(function () {
+    mainsearcheinput = $(this);
+  	var q = "";
+  	var form = mainsearcheinput.closest("#filterform");
+  	form.data("onsuccess", "filtertypeaheadsuccess");
+  	var url = form.attr("action");
+  	
+    mainsearcheinput.on("keydown", function (e) {
+      if (e.keyCode == 27) {
+        
+      }
+    });
+    mainsearcheinput.on("keyup change", function (e) {
+      if (mainsearcheinput.val() == q) {
+        return;
+      }
+      q = mainsearcheinput.val();
+      if (!q) {
+        
+        return;
+      }
+
+      if (e.keyCode == 27) {
+        
+      } else if (
+        (q != "" && e.which == undefined) ||
+        e.which == 8 ||
+        (e.which != 37 && e.which != 39 && e.which > 32)
+      ) {
+        //Real words and backspace
+        if (q && q.length < 2) {
+          
+          return;
+        } else {
+          
+        }
+
+        var terms =
+          "field=description&operation=contains" +
+          "&description.value=" +
+          encodeURIComponent(q);
+
+        if (lasttypeaheadsummary) {
+          lasttypeaheadsummary.abort();
+        }
+        
+        form.trigger("submit");
+        
+      } else {
+        console.log(e.keyCode);
+      }
+    });
+    function filtertypeaheadsuccess() {
+  	$( ".filtertypeahead" ).trigger( "focus" );
+  }
+  });  
+    
+  
 
   lQuery(".grabfocus").livequery(function () {
     var theinput = $(this);
@@ -4065,6 +4175,21 @@ uiload = function () {
         return; // exit this handler for other keys
     }
   });
+  
+  
+  
+
+
+lQuery(".emcarousel-link").livequery("click", function (e) {
+	e.preventDefault();
+	var image = $("#emcarousel-image");
+	var link = $(this);
+	image.attr("src", link.attr("href"));
+	image.attr("alt", link.attr("title"));
+	image.data("assetid", link.data("assetid"));
+});
+
+  
 }; // uiload
 
 function formsavebackbutton(form) {
@@ -4320,3 +4445,7 @@ jQuery(window).on("ajaxsocketautoreload", function () {
     });
   });
 });
+
+
+
+
