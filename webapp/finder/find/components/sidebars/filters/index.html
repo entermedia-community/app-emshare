@@ -11,52 +11,11 @@
 <div class="summary-container #if($selectedpreference == "false") closed#end">
 	<div class="d-flex align-items-center justify-content-between">
 		<div class="summary-header summary-toggler" data-target="$preferencename"> 
-			<h3>[[Summary]]</h3> 
 			<button class="btn">
 				<i class="bi bi-chevron-double-right"></i>
 			</button>
+			<h3>[[Summary]]</h3>
 		</div>
-	</div>
-	<div class="d-flex justify-content-between bg-brand mb-1 border-top-subtle">
-		<ul class="summary-secondary-nav">
-			#set( $edit = $context.getRequestParameter("editheader"))
-			#if(!$edit || $edit == "false") 
-				<li>
-					<a class="ajax nav-hover text-center" 
-						id="table-editor-close" 
-						data-targetdiv="$!module.getId()resultsarea"
-						data-oemaxlevel="2" 
-						title="[[Edit Table Header]]"
-						href="$siteroot$componenthome/results/index.html?searchtype=asset&hitssessionid=$hits.getSessionId()&editheader=true"><i class="bi bi-pencil-square"></i></a>
-				</li>
-			#end
-			<li>
-				<a href="$applink/views/modules/${moduleid}/components/filters/dialogsort.html" 
-					class="emdialog emsort #if($selectedpreference == "true") closed #end"
-					data-dialogid="sortdialog"
-					data-hidebackdrop="true"
-					data-hidefooter="true"
-					data-modalsize="sm"
-					data-moduleid="$!{moduleid}"
-					data-hitssessionid="$hits.getSessionId()"
-					data-categoryid="$!categoryid"
-					data-rootcategory="$!rootcategory"
-					data-targetdivsearch="$!{moduleid}resultscontainer"
-					style="padding:0 8px 0 10px;" 
-					title="[[Sort Results]]"><i class="bi bi-sort-down"></i> [[Sort]]</a>
-			</li>
-			#if($resultview != "stackedgallery")
-				<li style="width:61px;height:36px" title="[[Results per page]]">
-					#set( $currenthitsperpage = $hits.getHitsPerPage())
-					#set($hitcountoptions = $mediaarchive.getList("hitcount"))
-					<select class="form-control hitsperpagechange" id="hitsperpagechange$!{moduleid}">
-						#foreach($ho in $hitcountoptions)
-							<option value="$ho.id" #if($currenthitsperpage==$ho.id) selected="selected"#end>#text($ho)</option>
-						#end	
-					</select>
-				</li>		
-			#end
-		</ul>
 		#if($caneditmetadatasetup)
 		<a href="$applink/views/settings/modules/${moduleid}/metadata/viewssystem/index.html?viewid=${moduleid}advancedfilter&viewpath=${moduleid}/${moduleid}advancedfilter" class="bg-brand menu-36 text-center" title="[[Customize Summary Contents]]">
 			<i class="bi bi-gear"></i>

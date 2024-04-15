@@ -86,7 +86,7 @@
 	$context.putPageValue("maintargetdiv",$maintargetdiv)
 #end
 	
-	<div id="resultsheader" class="resultsheader #if(!$dialogresults) autostickywidth #end" >
+<div id="resultsheader" class="resultsheader #if(!$dialogresults) autostickywidth #end" >
 	<div id="sub-nav" class="emsubnav sub-nav-${module.id}">
 		<ul class="resultsnav">
 			#set ($enabled = false)
@@ -205,164 +205,157 @@
 			##	$pages.include("$componenthome/desktop/menu.html?collectionid=$librarycol.getId()",$context)
 			##end
 
-			
-			
-			<li id="filtersselected" class="filtersselected">
-				#if($dialogresults)
-				#set ($searching = $context.getRequestParameter("searching") )
-				#if( $searching == "true" )
-					#if($moduleid=="asset")
-						#if($dialogresults)
-							#set($href = "$siteroot$apphome/views/modules/$moduleid/dialogindex.html?hitssessionid=$!hits.getSessionId()&topmoduleid=$!topmoduleid&rootcategory=$!rootcategory&categoryid=$!{categoryid}&removeterm=description")
-						#else
-							#set($href = "$siteroot$apphome/views/modules/$moduleid/index.html?hitssessionid=$!hits.getSessionId()&topmoduleid=$!topmoduleid&rootcategory=$!rootcategory&categoryid=$!{categoryid}&removeterm=description")		
-						#end
-						#set($oemaxlevel = "1")
-					#else
-						#set($href = "$siteroot$apphome/views/modules/$moduleid/index.html?hitssessionid=$!hits.getSessionId()&removeterm=$!term.getId()")
-						#set($oemaxlevel = "1")
-					#end
-					<div class="d-flex align-items-center selected-filters ">
-					<a href="$href"
-					class="ajax clearsearchbar"
-					title="[[Clear Search]]"
-					data-targetdiv="dialogassetresultscontainer" 
-					data-oemaxlevel="$oemaxlevel"
-					data-updateurl="false">
-					#if($hits.size() > 0)
-						[[Found]] $hits.size() [[results for]]: <span><b>"$hits.getSearchQuery().getMainInput()"</b></span>
-					#else
-						#set ($searchingfor = $context.getRequestParameter("description.value") )
-						[[Found]] 0 [[results for]]: <span><b>"$!searchingfor"</b></span>
-					#end
-					<i class="bi bi-x ml-1"></i>
-					</a>
-					</div>
-					#end
-					#end
-				$pages.include("$componenthome/filters/filters-inline.html", $context)
-			</li>	
-			
-			
-			
-			
 			<li>
-			<div id="resultsmessages"></div>
+				<div id="resultsmessages"></div>
 			</li>
-				
-			</ul>
-			<ul class="resultsnavright">
-				#if(!$resultview)
-					#set($resultview = $userprofile.get("$!{searchtype}resultview"))
-					#if (!$resultview)
-						#set($resultview = $content.get("resultview"))
-					#end
-					#if (!$resultview)
-						#set($resultview = "stackedgallery")
-					#end
-				#end
-				
-				$context.putPageValue("resultview", $resultview)
-				
-				#if(!$currenthitsperpage)
-					#set( $currenthitsperpage = $hits.getHitsPerPage())
-				#end
-				#if(!$currenthitsperpage)
-					#set( $currenthitsperpage = $userprofile.get("asset${resultview}hitsperpage"))
-				#end
-				#if(!$currenthitsperpage)
-					#set( $currenthitsperpage = $userprofile.get("assethitsperpage"))
-				#end
-				
-				
-				#if(!$edit || $edit == "false"  )
-
-					#if($resultview != "stackedgallery")
-				
-						##-PAGINATION
-						
-						#set($total = $hits.getTotalPages())
-						#if( $total > 1)
-							<li class="resultpages">		
-								$pages.include("$componenthome/results/positions.html", $context)
-							</li>
-						#end
-
-						##-HITSPERPAGE
-
-						#if($dialogresults)
-							#set($targetdiv= "dialog$!{moduleid}resultscontainer")
-						#else
-							#set($targetdiv= "$!{moduleid}resultscontainer")
-						#end
-					#else
-						## TODO?: infinie scroll for stacked media
-					#end
-					
-					
-					##-RESULTS TYPE
-					
-					<li class="resultsnavtitem">
-						<select class="form-control" 
-							name="resultview" 
-							id="selectresultview"
-							data-oemaxlevel="1"
-							data-hitsperpage="$!currenthitsperpage">
-							#set( $types = $mediaarchive.getList("resulttype"))
-							#foreach($type in $types)
-								<option value="$!type.getId()" #if( $resultview == "$type.getId()") selected #end>$type.getName($context)</option>
-							#end
-						</select>
-						
-					</li>
-					
-				#end	
-				
-				
-				#if(!$resultview || $resultview == 'table')
-					#if( $canedittablecolumns )
-						#if( $edit )
-							
-							<li class="resultsnavtitem" style="min-width:180px;">
-								#set ($alldetails = $searcher.getUserPropertyDetails() )
-								<span class="hint">*[[Drag columns to move them]]</span>
-								<select class="form-control form-control-sm select2 tableresultsaddcolumn" 
-										name="addcolumn"
-										data-componenthome="$!siteroot$componenthome/results/addremovecolumns.html?searchtype=asset&hitssessionid=$hits.getSessionId()&editheader=true"
-										data-targetdiv="$!module.getId()resultsarea" 
-										data-oemaxlevel="1"
-										data-allowclear="false">
-									<option>[[Add Column]]</option>
-									#foreach( $detail in $alldetails) <option value="$!detail.id">$detail.getText($context)</option>
-									#end
-								</select>
-								
-							</li>
-							<li style="border-left: none;background-color: transparent;">
-								<a class="ajax table-edit-close" 
-									data-targetdiv="$!module.getId()resultsarea"
-									data-oemaxlevel="1" 
-									title="[[Close Edit Columns Mode]]"
-									href="$siteroot$componenthome/results/index.html?searchtype=asset&hitssessionid=$hits.getSessionId()&editheader=">
-									<i class="bi bi-x"></i></a>
-							</li>
-						#end	
-					#end								
-				#end 
-				<li class="resultsnavtitem">
-					
-					#set($preferencename = "assetsummary")
-					#set($preference = '#set($selectedpreference = ' + '$!userprofile.minimize'  + $preferencename + ')' )
-					#evaluate($preference)
-					#ifnull($selectedpreference)
-						#set($selectedpreference = "true")
-					#end
-					<button class='btn summary-opener #if($selectedpreference == "true") closed #end' data-target="$!preferencename">
-						<i class="bi bi-chevron-double-left"></i> [[Summary]]
-					</button>
-				</li>
 		</ul>
-		
+
+		<ul class="resultsnavright">
+			#if(!$resultview)
+				#set($resultview = $userprofile.get("$!{searchtype}resultview"))
+				#if (!$resultview)
+					#set($resultview = $content.get("resultview"))
+				#end
+				#if (!$resultview)
+					#set($resultview = "stackedgallery")
+				#end
+			#end
+				
+			$context.putPageValue("resultview", $resultview)
+				
+			#if(!$currenthitsperpage)
+				#set( $currenthitsperpage = $hits.getHitsPerPage())
+			#end
+
+			#if(!$currenthitsperpage)
+				#set( $currenthitsperpage = $userprofile.get("asset${resultview}hitsperpage"))
+			#end
+
+			#if(!$currenthitsperpage)
+				#set( $currenthitsperpage = $userprofile.get("assethitsperpage"))
+			#end
+				
+			#if(!$edit || $edit == "false"  )
+
+				#if($resultview != "stackedgallery")
+			
+					##-PAGINATION
+					
+					#set($total = $hits.getTotalPages())
+					#if( $total > 1)
+						<li class="resultpages">		
+							$pages.include("$componenthome/results/positions.html", $context)
+						</li>
+					#end
+
+					##-HITSPERPAGE
+
+					#if($dialogresults)
+						#set($targetdiv= "dialog$!{moduleid}resultscontainer")
+					#else
+						#set($targetdiv= "$!{moduleid}resultscontainer")
+					#end
+				#else
+					## TODO?: infinie scroll for stacked media
+				#end
+				
+				
+				##-RESULTS TYPE
+				
+				<li class="resultsnavtitem">
+					<select class="form-control" 
+						name="resultview" 
+						id="selectresultview"
+						data-oemaxlevel="1"
+						data-hitsperpage="$!currenthitsperpage">
+						#set( $types = $mediaarchive.getList("resulttype"))
+						#foreach($type in $types)
+							<option value="$!type.getId()" #if( $resultview == "$type.getId()") selected #end>$type.getName($context)</option>
+						#end
+					</select>
+					
+				</li>
+				
+			#end
+				
+			#if(!$resultview || $resultview == 'table')
+				#if( $canedittablecolumns )
+					#if( $edit )
+						
+						<li class="resultsnavtitem" style="min-width:180px;">
+							#set ($alldetails = $searcher.getUserPropertyDetails() )
+							<span class="hint">*[[Drag columns to move them]]</span>
+							<select class="form-control form-control-sm select2 tableresultsaddcolumn" 
+									name="addcolumn"
+									data-componenthome="$!siteroot$componenthome/results/addremovecolumns.html?searchtype=asset&hitssessionid=$hits.getSessionId()&editheader=true"
+									data-targetdiv="$!module.getId()resultsarea" 
+									data-oemaxlevel="1"
+									data-allowclear="false">
+								<option>[[Add Column]]</option>
+								#foreach( $detail in $alldetails) <option value="$!detail.id">$detail.getText($context)</option>
+								#end
+							</select>
+							
+						</li>
+						<li style="border-left: none;background-color: transparent;">
+							<a class="ajax table-edit-close" 
+								data-targetdiv="$!module.getId()resultsarea"
+								data-oemaxlevel="1" 
+								title="[[Close Edit Columns Mode]]"
+								href="$siteroot$componenthome/results/index.html?searchtype=asset&hitssessionid=$hits.getSessionId()&editheader=">
+								<i class="bi bi-x"></i></a>
+						</li>
+					#end	
+				#end								
+			#end 
+			<li>
+				<a href="$applink/views/modules/${moduleid}/components/filters/dialogsort.html" 
+					class="emdialog emsort #if($selectedpreference == "true") closed #end"
+					data-dialogid="sortdialog"
+					data-hidebackdrop="true"
+					data-hidefooter="true"
+					data-modalsize="sm"
+					data-moduleid="$!{moduleid}"
+					data-hitssessionid="$hits.getSessionId()"
+					data-categoryid="$!categoryid"
+					data-rootcategory="$!rootcategory"
+					data-targetdivsearch="$!{moduleid}resultscontainer"
+					style="padding:0 8px 0 10px;" 
+					title="[[Sort Results]]"><i class="bi bi-sort-down"></i> [[Sort]]</a>
+			</li>
+			#if($resultview != "stackedgallery")
+				<li style="width:61px;height:36px" title="[[Results per page]]">
+					#set( $currenthitsperpage = $hits.getHitsPerPage())
+					#set($hitcountoptions = $mediaarchive.getList("hitcount"))
+					<select class="form-control hitsperpagechange" id="hitsperpagechange$!{moduleid}">
+						#foreach($ho in $hitcountoptions)
+							<option value="$ho.id" #if($currenthitsperpage==$ho.id) selected="selected"#end>#text($ho)</option>
+						#end	
+					</select>
+				</li>		
+			#end
+			#if(!$edit || $edit == "false") 
+				<li>
+					<a class="ajax nav-hover text-center" 
+						id="table-editor-close" 
+						data-targetdiv="$!module.getId()resultsarea"
+						data-oemaxlevel="2" 
+						title="[[Edit Table Header]]"
+						href="$siteroot$componenthome/results/index.html?searchtype=asset&hitssessionid=$hits.getSessionId()&editheader=true"><i class="bi bi-pencil-square"></i></a>
+				</li>
+			#end
+			<li class="resultsnavtitem">
+				#set($preferencename = "assetsummary")
+				#set($preference = '#set($selectedpreference = ' + '$!userprofile.minimize'  + $preferencename + ')' )
+				#evaluate($preference)
+				#ifnull($selectedpreference)
+					#set($selectedpreference = "true")
+				#end
+				<button class='btn summary-opener #if($selectedpreference == "true") closed #end' data-target="$!preferencename">
+					<i class="bi bi-chevron-double-left"></i> [[Summary]]
+				</button>
+			</li>
+		</ul>
 	</div>
-	<div class="clearfix"></div>
-	</div>
+	$pages.include("$componenthome/filters/filters-inline.html", $context)
+</div>
