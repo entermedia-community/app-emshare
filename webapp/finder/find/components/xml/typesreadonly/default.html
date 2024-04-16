@@ -39,8 +39,12 @@
 #else
 
 	#ifnotnull($val)
+		#set($dmax = 150)
+		#if($detail.id == "name")
+			#set($dmax = 80)
+		#end
 		#if( $val.length() > 80)
-			 <span class="trim-text" #if($detail.id == "name") data-max="80" #else data-max="150" #end> #esc($val)</span>
+			 <span class="trim-text" data-max="$dmax">$val</span>
 		#else
 			#esc($!val) 	
 		#end
