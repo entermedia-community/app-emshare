@@ -80,13 +80,25 @@
 							[[Pending]]
 						#else
 							#if($item.status == "approved")
-						<a class="btn btn-sm btn-secondary" href="/${mediadbappid}/services/module/asset/downloads/orders/originals/#urlencode($originalpath)?orderid=${order.id}">[[Download]]</a>
+						
+							
+								<a href="#" class="btn btn-sm btn-primary redownloadorder" 
+									data-orderitemid="$item.getId()" 
+									data-itemexportname='$item.itemexportname'
+									data-itemdownloadurl='$item.get("itemdownloadurl")'
+									
+									title="[[Download]]">
+									<i class="bi bi-download"></i> &nbsp;[[Download]]
+								</a>
+								#set( $downloadall = true)
+						
+							##<a class="btn btn-sm btn-secondary" href="/${mediadbappid}/services/module/asset/downloads/orders/originals/#urlencode($originalpath)?orderid=${order.id}">[[Download]]</a>
 						#else
 						[[Not Approved for Download]] 
 						#end
 						#end
 					#end
-					#set( $downloadall = true)
+					
 					
 				</td>
 			#else
