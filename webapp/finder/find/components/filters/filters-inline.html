@@ -142,6 +142,12 @@
 			</div>
 			#end
 		</div>
-		<a href="#" title="[[Clear All Filters]]" class="clear-all"><i class="bi bi-x"></i> [[Clear All]]</a>
+		#if($moduleid=="asset" && $dialogresults)
+			#set($href = "$siteroot$apphome/views/modules/$moduleid/dialogindex.html?hitssessionid=$!hits.getSessionId()&topmoduleid=$!topmoduleid&rootcategory=$!rootcategory&categoryid=$!{categoryid}&${moduleid}clearfilters=true")
+			#set($targetdiv = "dialogassetresultscontainer")
+		#else	
+			#set($href = "$siteroot$apphome/views/modules/$moduleid/index.html?hitssessionid=$!hits.getSessionId()&${moduleid}clearfilters=true")
+		#end
+		<a href="$href" title="[[Clear All Filters]]" class="clear-all ajax" data-oemaxlevel="1" data-targetdiv="$targetdiv"><i class="bi bi-x"></i> [[Clear All]]</a>
 	</div>
 #end
