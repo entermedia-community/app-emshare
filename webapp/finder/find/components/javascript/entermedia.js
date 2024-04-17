@@ -180,7 +180,7 @@ showHoverMenu = function (inDivId) {
 
 updatebasket = function (e) {
   var action = $(this).data("action");
-  if(action == "addtocart") {
+  if(action == "addtocart" || action == "remove") {
     var nextpage = $(this).attr("href");
 	var targetDiv = $(this).attr("targetdiv");
   	targetDiv = targetDiv.replace(/\//g, "\\/");
@@ -195,20 +195,19 @@ updatebasket = function (e) {
 	      url: url,
 	      success: function (data) {
 	        $("#basket-paint").replaceWith(data);
+	           if (action == "remove") {
+				   var checkoutpage = $("#collectionbasket")
+				   if(checkoutpage.length > 0) {
+					    window.location.reload();
+				   }
+			   }
 	      },
 	    });
 	    });
-   }    
-   if (action == "remove") {
-      $(".selectionbox:checked").closest("tr").hide("slow");
-      $(".selectionbox:checked").closest(".emthumbbox").hide("slow");
-      jQuery(".selectionbox:checked")
-        .closest(".grid-gallery-checkbox")
-        .hide("slow");
-    }
-
+	}
   return false;
 };
+
 updatebasketmediaviewer = function (e) {
   var nextpage = $(this).attr("href");
   var targetDiv = $(this).attr("targetdiv");
@@ -227,6 +226,11 @@ updatebasketmediaviewer = function (e) {
   e.preventDefault();
   return false;
 };
+
+checkoutrefresh = function (e) {
+	window.location.reload();
+};
+
 
 // Is this being used?
 getConfirmation = function (inText) {

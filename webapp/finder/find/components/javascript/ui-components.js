@@ -1148,6 +1148,16 @@ uiload = function () {
             $(window).trigger("resize");
 
             modalinstance.on("hidden.bs.modal", function () {
+			  //on close execute extra JS -- Todo: Move it to closedialog()
+			  if (dialog.data("onclose")) {
+			    var onclose = dialog.data("onclose");
+			    var fnc = window[onclose];
+			    if (fnc && typeof fnc === "function") {
+			      //make sure it exists and it is a function
+			      fnc(dialog); //execute it
+			    }
+			  }
+			      
               closeemdialog($(this));
               $(window).trigger("resize");
             });
