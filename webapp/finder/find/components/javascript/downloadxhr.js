@@ -200,12 +200,14 @@ jQuery(document).ready(function () {
   }
 
   lQuery(".redownloadorder").livequery("click", function (e) {
+	var orderid = $(this).data("orderid");
     var orderitemid = $(this).data("orderitemid");
     var itemexportname = $(this).data("itemexportname");
     var itemdownloadurl = $(this).data("itemdownloadurl");
     var file = {
       itemexportname: itemexportname,
       itemdownloadurl: itemdownloadurl,
+      orderid: orderid
     };
     downloadMediaLocally(orderitemid, file);
   });

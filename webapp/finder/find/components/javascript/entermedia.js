@@ -179,11 +179,7 @@ showHoverMenu = function (inDivId) {
 };
 
 updatebasket = function (e) {
-  var nextpage = $(this).attr("href");
-  var targetDiv = $(this).attr("targetdiv");
-  targetDiv = targetDiv.replace(/\//g, "\\/");
   var action = $(this).data("action");
-  $("#" + targetDiv).load(nextpage, function () {
     $("#basket-paint").load(apphome + "/components/basket/menuitem.html");
     if (action == "remove") {
       $(".selectionbox:checked").closest("tr").hide("slow");
@@ -192,8 +188,7 @@ updatebasket = function (e) {
         .closest(".grid-gallery-checkbox")
         .hide("slow");
     }
-  });
-  e.preventDefault();
+
   return false;
 };
 updatebasketmediaviewer = function (e) {

@@ -1131,6 +1131,17 @@ uiload = function () {
                 window.scrollTo(0, 0);
               }
             }
+            
+            
+              //on success execute extra JS
+	          if (dialog.data("onsuccess")) {
+	            var onsuccess = dialog.data("onsuccess");
+	            var fnc = window[onsuccess];
+	            if (fnc && typeof fnc === "function") {
+	              //make sure it exists and it is a function
+	              fnc(dialog); //execute it
+	            }
+	          }
 
             adjustzindex(modalinstance);
 
