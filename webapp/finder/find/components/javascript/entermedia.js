@@ -180,8 +180,26 @@ showHoverMenu = function (inDivId) {
 
 updatebasket = function (e) {
   var action = $(this).data("action");
-    $("#basket-paint").load(apphome + "/components/basket/menuitem.html");
-    if (action == "remove") {
+  if(action == "addtocart") {
+    var nextpage = $(this).attr("href");
+	var targetDiv = $(this).attr("targetdiv");
+  	targetDiv = targetDiv.replace(/\//g, "\\/");
+
+ 	$("#" + targetDiv).load(nextpage, function () {
+	  var url = apphome + "/components/basket/menuitem.html";
+	  $.ajax({
+	      xhrFields: {
+	        withCredentials: true,
+	      },
+	      crossDomain: true,
+	      url: url,
+	      success: function (data) {
+	        $("#basket-paint").replaceWith(data);
+	      },
+	    });
+	    });
+   }    
+   if (action == "remove") {
       $(".selectionbox:checked").closest("tr").hide("slow");
       $(".selectionbox:checked").closest(".emthumbbox").hide("slow");
       jQuery(".selectionbox:checked")
