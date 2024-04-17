@@ -59,9 +59,11 @@ $pages.include("${searchhome}/resultsactions.html",$context)
 		#end
 		
 		
+		#set($targetdiv = "applicationmaincontent")
 		#set($targetlink = "$!searchhome/components/gridsample/preview/$!{rowrendertype}.html")
 		
 		#if($moduleid == "order")
+			#set($targetdiv = "orderresultsarea")
 			#set($targetlink = "$!apphome/views/modules/order/edit/edit.html")
 		#end
 		
@@ -72,11 +74,9 @@ $pages.include("${searchhome}/resultsactions.html",$context)
 				data-id="$!id"
 				data-searchtype="$!searchtype" 
 				data-searchhome="$!searchhome"
-				##data-editpath="$!home$!editpath?$!{args}&edit=true&oemaxlevel=2" 
 				
 				data-targetlink="$!targetlink"
-				##data-targetdiv="resultsviewcontainer$!moduleid"
-				data-targetdiv="applicationmaincontent"
+				data-targetdiv="$!targetdiv"
 		>
 		
 			<table class="table table-striped table-hover" 
@@ -139,7 +139,10 @@ $pages.include("${searchhome}/resultsactions.html",$context)
 						</div>
 					 </th>
 				#end
-				<th class="lastheader">				</th>
+				
+				#if(!$hiderowactions)
+				<th class="lastheader"></th>
+				#end
 			</tr>
 			</thead>
 			
@@ -194,9 +197,13 @@ $pages.include("${searchhome}/resultsactions.html",$context)
 				    </div>
 				</td>
 			#end
+			
+			#if(!$hiderowactions)
 			<td class="rowactions" noclick="true">
 				$pages.include("$componenthome/gridsample/favorites.html?id=$!{cell.id}&moduleid=$moduleid", $context)
 			</td>
+			#end
+			
 			</tr>
 			#set($count = $count + 1)
 			#end

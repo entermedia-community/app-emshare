@@ -1750,7 +1750,7 @@ uiload = function () {
 
         $.ajax({
           url: targetlink,
-          data: { oemaxlevel: "3" },
+          data: { oemaxlevel: "2" },
           success: function (data) {
             $("#" + targetdiv).replaceWith(data);
             jQuery(window).trigger("resize");
