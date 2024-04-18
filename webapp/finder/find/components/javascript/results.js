@@ -945,22 +945,6 @@ jQuery(document).ready(function (url, params) {
     isMouseDown = false;
   });
 
-  // Select multiple assets with CTRL key
-  var ctrlPressed = false;
-  $(window)
-    .keydown(function (evt) {
-      if (evt.which == 17) {
-        // ctrl
-        ctrlPressed = true;
-      }
-    })
-    .keyup(function (evt) {
-      if (evt.which == 17) {
-        // ctrl
-        ctrlPressed = false;
-      }
-    });
-
   // Click on asset
   var selectStart = null;
   // Table clicking
@@ -973,7 +957,7 @@ jQuery(document).ready(function (url, params) {
       return true;
     }
     // click+ctrl
-    if (ctrlPressed) {
+    if (e.ctrlKey) {
       var chkbox = clicked.closest("tr").find(".selectionbox");
       if (chkbox) {
         var ischecked = $(chkbox).prop("checked");
