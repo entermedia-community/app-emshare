@@ -25,8 +25,8 @@ $context.putPageValue("showalllanguagevalues",true)
 				$pages.include("$componenthome/mediaviewer/player/summary.html",$context)
 			#end
 	</div>	
-	<div class="col-6">
-		<div class="tab-details h-100">
+	<div class="col-6 h-100">
+		<div class="tab-details" style="height: calc(100% - 32px);; overflow-y: auto;">
 		
 			$pages.include("$componenthome/detaileditor/generalinformation/metadatapanel.html", $context)
 		
@@ -115,44 +115,45 @@ $context.putPageValue("showalllanguagevalues",true)
 				<div class="clearfix"></div>
 				</div>
 				
+			</div>	
 				
-				#if($caneditasset)
-					##$pages.include("/$applicationid/views/modules/asset/editor/edit/metadata/assetreadmetadata.html")
-				
-				
-					#set($view = "assetreadmetadata")
-					#set($hitssessionid = $context.findValue("hitssessionid"))
-					<div class="asset-data-readwritemetadata">
-							
-							<a class="ajax"
-								href="$siteroot$apphome/views/modules/asset/editor/edit/metadata/read.html?oemaxlevel=1&assetid=$asset.getId()&force=true" 
-								data-targetdiv="assetrwmetadata" ><i class="fas fa-upload"></i> [[Read Metadata]]</a>
-							<a class="ajax"
-								href="$siteroot$apphome/views/modules/asset/editor/edit/metadata/write.html?oemaxlevel=1&assetid=$asset.getId()&force=true" 
-								data-targetdiv="assetrwmetadata" ><i class="fas fa-download"></i> [[Rewrite Metadata]]</a>
-							
-							<form name="lockform" class="autosubmit ajaxform" style="display: inline-block;" action="$siteroot$componenthome/mediaviewer/player/summary-mini.html?oemaxlevel=1" data-targetdiv="summary-mini">
-								<input type="hidden" name="assetid" value="${asset.id}"/>
-								<div class="assetlocked">
-									<input id="assetlocked" class="togglelock form-check-input" data-uncheckedlabel="[[Lock Asset]]" data-checkedlabel="[[Asset locked by]]" data-user="$user" type="checkbox" #if($asset.isLocked()) checked #end /> 
-									<label for="assetlocked" class="form-check-label-left m-0">
-										#if(!$asset.isLocked())
-											[[Lock]]
-										#else
-											[[Asset locked by]] <strong>$asset.getLockOwner()</strong>
-										#end
-									</label>
-								</div> 
-							</form>
-							
-							
-							<span id="assetrwmetadata"></span>
-					</div>
-							
-				#end
+			#if($caneditasset)
+				##$pages.include("/$applicationid/views/modules/asset/editor/edit/metadata/assetreadmetadata.html")
 			
 			
-	</div>					
+				#set($view = "assetreadmetadata")
+				#set($hitssessionid = $context.findValue("hitssessionid"))
+				<div class="asset-data-readwritemetadata">
+						
+						<a class="ajax"
+							href="$siteroot$apphome/views/modules/asset/editor/edit/metadata/read.html?oemaxlevel=1&assetid=$asset.getId()&force=true" 
+							data-targetdiv="assetrwmetadata" ><i class="fas fa-upload"></i> [[Read Metadata]]</a>
+						<a class="ajax"
+							href="$siteroot$apphome/views/modules/asset/editor/edit/metadata/write.html?oemaxlevel=1&assetid=$asset.getId()&force=true" 
+							data-targetdiv="assetrwmetadata" ><i class="fas fa-download"></i> [[Rewrite Metadata]]</a>
+						
+						<form name="lockform" class="autosubmit ajaxform" style="display: inline-block;" action="$siteroot$componenthome/mediaviewer/player/summary-mini.html?oemaxlevel=1" data-targetdiv="summary-mini">
+							<input type="hidden" name="assetid" value="${asset.id}"/>
+							<div class="assetlocked">
+								<input id="assetlocked" class="togglelock form-check-input" data-uncheckedlabel="[[Lock Asset]]" data-checkedlabel="[[Asset locked by]]" data-user="$user" type="checkbox" #if($asset.isLocked()) checked #end /> 
+								<label for="assetlocked" class="form-check-label-left m-0">
+									#if(!$asset.isLocked())
+										[[Lock]]
+									#else
+										[[Asset locked by]] <strong>$asset.getLockOwner()</strong>
+									#end
+								</label>
+							</div> 
+						</form>
+						
+						
+						<span id="assetrwmetadata"></span>
+				</div>
+						
+			#end
+			
+			
+					
 		
 </div>
 </div>
