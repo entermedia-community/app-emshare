@@ -1738,14 +1738,15 @@ trimRowToFit = function (targetheight, row, totalavailablew) {
     // div.css("line-height",fixedheight + "px");
     div.css("height", fixedheight + "px");
     $("img.imagethumb", div).height(fixedheight);
-
+	
     var a = div.data("aspect");
     var neww = fixedheight * a;
 
     neww = Math.round(neww); // make sure we dont round too high across lots
     // of widths
     div.css("width", neww + "px");
-
+	$("img.imagethumb", div).width(neww);
+	
     totalwused = totalwused + neww;
   });
 

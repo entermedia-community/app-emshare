@@ -80,16 +80,24 @@ $context.putPageValue("thumbsize", $thumbsize)
 			#set($tpath = "${tpath}?_=$tstamp")
 		#end
 		
-		<img class="imagethumb img-fluid  img$!thumbsize "
-				sourcepath="$sourcepath" 
-				catalogid="$catalogid" 
-				assetid="$hit.id" 
-				alt="#if($title)#esc($title)#else$!{hit.name}#end"
-				draggable="true"  
-				data-sourcepath="$sourcepath" 
-				data-name="#if($title)#esc($title)#else$!{hit.name}#end" 		
-				src="$tpath$!urlparams" 
-		/>
+		
+		#if($topmoduleid=="faceprofilegroup")
+				$context.putPageValue("asset", $asset)
+				$context.putPageValue("faceprofilegroupid", $entity.id)
+				$pages.include("$componenthome/results/thumbnails/faceprofilebox.html", $context)
+		#else
+		
+			<img class="imagethumb img-fluid  img$!thumbsize "
+					sourcepath="$sourcepath" 
+					catalogid="$catalogid" 
+					assetid="$hit.id" 
+					alt="#if($title)#esc($title)#else$!{hit.name}#end"
+					draggable="true"  
+					data-sourcepath="$sourcepath" 
+					data-name="#if($title)#esc($title)#else$!{hit.name}#end" 		
+					src="$tpath$!urlparams" 
+			/>
+		#end			
 	#end
 </div>
 

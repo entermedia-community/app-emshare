@@ -18,6 +18,9 @@
 #if(!$topmoduleid)
 	#set ( $topmoduleid = $context.getRequestParameter("topmoduleid") )
 #end
+#if(!$entityid)
+	#set ( $entityid = $context.getRequestParameter("entityid") )
+#end
 #if(!$targetdivsearch)
 	#set ( $targetdivsearch = $context.getRequestParameter("targetdivsearch") )
 #end
@@ -177,8 +180,11 @@
 		#set( $nodeID = $context.getRequestParameter("nodeID"))
 		
 		#if($topmoduleid)
-			<input name="topmoduleid" type="hidden" value="$topmoduleid" />
+			<input name="topmoduleid" type="hidden" value="$!topmoduleid" />
+			<input name="entityid" type="hidden" value="$!entityid" />
 			<input name="dialogresults" type="hidden" value="true" />
+			#set($dialogindextype = $context.getRequestParameter("dialogindextype"))
+			<input name="dialogindextype" type="hidden" value="$!dialogindextype" />
 			<input name="targetdivsearch" type="hidden" value="$!targetdivsearch" />
 		#end
 		

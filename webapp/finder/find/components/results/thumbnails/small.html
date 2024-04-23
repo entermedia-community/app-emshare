@@ -20,12 +20,15 @@
    #else   
        #set( $type = $mediaarchive.getMediaRenderType($hit.fileformat))
 	   #set ($thumbsize = $context.getPageValue("thumbsize"))
-       #if( $type == "audio" || $type == "default")
+	   
+	   #if($resulttype == "faceprofilegroupassets")
+	   	   $pages.include("$componenthome/results/thumbnails/faceprofilebox.html", $context)
+       #elseif( $type == "audio" || $type == "default")
            $pages.include("$componenthome/results/thumbnails/${type}.html", $context)             
        #else
 	     	#set($tabletarget = $mediaarchive.getCatalogSettingValue("tablethumbnail"))
 	    	#if($tabletarget)
-	     		#set( $img = $mediaarchive.asLinkToPreview($hit,	$librarycol.id,$tabletarget))  
+	     		#set( $img = $mediaarchive.asLinkToPreview($hit, $librarycol.id,$tabletarget))  
 			#else
 				#if($thumbsize == "carousel")
 					#set($imagesize = "image200x200.jpg")

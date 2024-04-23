@@ -69,7 +69,8 @@ class="scroll-resultsdiv"
 		id="gallerycell_${hit.id}"
 		data-assetid="$hit.id" 
 		data-width="$assetwidth" 
-		style="height:180px;width:250px;"
+		style="height:180px;width:250px;" 
+		$context.putPageValue("thumbheight", "180" )
 		data-height="$assetheight">
 		<div class="grid-cell-hover"></div>
 		<input type="checkbox" class="selectionbox resultsselection" name="count" id="${hit.id}" value="${hit.id}" #if($isselected) checked #end data-dataid="${hit.id}"  />
@@ -83,9 +84,12 @@ class="scroll-resultsdiv"
 			#set( $rendertype = "videothumbnail" )
 		#end
 		<div class="grid-thumbimage" data-assetid="$!hit.id" data-rendertype="$!rendertype">
-			$pages.include("$componenthome/results/thumbnails/${rendertype}.html", $context)
+			
+				$pages.include("$componenthome/results/thumbnails/${rendertype}.html", $context)
+			
 		</div>
-	    		##Caption
+	    
+	    ##Caption
 		<div class="grid-caption grid-caption-${rendertype} #if($rendertype=="default") grid-caption-show #end">
 			#if($stackedfield)
 				#set($title = $hit.get($stackedfield))
