@@ -316,8 +316,8 @@ jQuery(document).ready(function (url, params) {
 
       dropdown.data("sortup", true);
     }
-
-    selected.closest("form").submit();
+	var form =  selected.closest("form");
+	form.trigger("submit");
     return false;
   });
 
@@ -1390,19 +1390,13 @@ jQuery(document).ready(function (url, params) {
 
   showEntity();
 
-  //gridResize();
-
   // jQuery(".masonry-grid img.imagethumb:eq(10)").on('load', function() {
-
-  // gridResize();
 
   // });
 
-  //jQuery(".scrollview").on('scroll', function (e) {
   lQuery(".scrollview").livequery("scroll", function () {
     console.log("grid scroll");
     checkScroll();
-    //gridResize();
   });
 }); // document ready
 
@@ -1572,15 +1566,13 @@ checkScroll = function () {
       //$(".masonry-grid",resultsdiv).append(code);
       $(grid).append(code);
       // $(resultsdiv).append(code);
-      gridResize();
+      //gridResize();
+      $(window).trigger("resize");
 
       stopautoscroll = false;
-      // Once that is all done loading we can see if we need a second
-      // page?
-      // console.log( page + " Loaded get some more?" +
-      // getOverlay().is(':hidden') );
+      
       if (getOverlay().is(":hidden")) {
-        checkScroll(); // Might need to load up two pages worth
+        checkScroll(); 
       }
     },
   });
@@ -1651,7 +1643,7 @@ gridResize = function () {
   if (!grid.is(":visible")) {
     return;
   }
-  console.log("gridResize resizing");
+  console.log("gridResize resizing "	);
   var fixedheight = grid.data("maxheight");
   if (fixedheight == null || fixedheight.length == 0) {
     fixedheight = 200;
@@ -1661,7 +1653,7 @@ gridResize = function () {
   var totalwidth = 0;
   var totalheight = fixedheight;
   var rownum = 0;
-  var totalavailablew = grid.width();
+  var totalavailablew = grid.width() - 5;
 
   // Two loops, one to make rows and one to render cells
   var sofarusedw = 0;
@@ -1710,7 +1702,7 @@ gridResize = function () {
     }
   }
 
-  checkScroll();
+ // checkScroll();
 };
 
 /**
@@ -1724,9 +1716,9 @@ trimRowToFit = function (targetheight, row, totalavailablew) {
     totalwidthused = totalwidthused + usedw;
   });
   var existingaspect = targetheight / totalwidthused; // Existing aspec ratio
-  var overwidth = totalwidthused - totalavailablew;
+  var overwidth = Math.abs(totalwidthused - totalavailablew);
   var changeheight = existingaspect * overwidth;
-  var fixedheight = targetheight - changeheight;
+  var fixedheight = targetheight + changeheight;
   if (fixedheight > targetheight * 1.7) {
     fixedheight = targetheight;
   }

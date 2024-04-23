@@ -7,9 +7,23 @@
 
 #set($targetdivsearch = $context.getRequestParameter("targetdivsearch"))
 #ifnull($targetdivsearch)
-	#set($targetdivsearch = "$!{moduleid}resultscontainerembed")
+	#set($targetdivsearch = "$!{moduleid}resultscontainer")
 #end
-
+#if(!$topmoduleid)
+	#set ( $topmoduleid = $context.getRequestParameter("topmoduleid") )
+#end
+#if($topmoduleid)
+	#set($targetdivsearch = "dialog$!{moduleid}resultscontainer")
+#end
+#if(!$entityid)
+	#set ( $entityid = $context.getRequestParameter("entityid") )
+#end
+#if(!$entityid)
+	#set ( $entityid = $context.getRequestParameter("entityid") )
+#end
+#if(!$dialogindextype)
+	#set ( $dialogindextype = $context.getRequestParameter("dialogindextype") )
+#end
 
 ##SORT
 	<form  	name="filtersortform" 
@@ -18,14 +32,14 @@
 			method="POST"   
 			data-targetdivinner="$targetdivsearch" 
 			data-oemaxlevel="2" 
-			action="$siteroot$apphome/views/modules/$moduleid/components/results/columnsort.html" 
+			action="$siteroot$apphome/views/modules/${moduleid}/components/results/columnsort.html" 
 		>
-		#if(!$topmoduleid)
-			#set ( $topmoduleid = $context.getRequestParameter("topmoduleid") )
-		#end
+
 		#if($topmoduleid)
 		<input name="topmoduleid" type="hidden" value="$topmoduleid" />
+		<input name="entityid" type="hidden" value="$!entityid" />
 		<input name="dialogresults" type="hidden" value="true" />
+		<input name="dialogindextype" type="hidden" value="$!dialogindextype" />
 		#end
 		
 		<input name="searchtype" type="hidden" value="$!moduleid" />
