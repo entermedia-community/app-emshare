@@ -1,5 +1,7 @@
 //EM Media Finder
 var lwt;
+var trackKeydown = false;
+var exitWarning = false;
 
 function showLoader() {
   clearTimeout(lwt);
@@ -1172,6 +1174,7 @@ uiload = function () {
       });
 
     $(modaldialog).on("shown.bs.modal", function () {
+      trackKeydown = true;
       //adjustzindex($(this));
       var focuselement = modaldialog.data("focuson");
       if (focuselement) {
@@ -1194,6 +1197,7 @@ uiload = function () {
     });
 
     $(modaldialog).on("hide.bs.modal", function (e) {
+      trackKeydown = false;
       if (!$(this).hasClass("onfront")) {
         e.stopPropagation();
         return;
@@ -1441,6 +1445,14 @@ uiload = function () {
     }
   });
 
+  $(window).on("keydown", function (e) {
+    if (trackKeydown) {
+      exitWarning = true;
+    } else {
+      exitWarning = false;
+    }
+  });
+
   function confirmModalClose(modal) {
     var checkForm = modal.find("form.checkCloseDialog");
 
@@ -1455,28 +1467,47 @@ uiload = function () {
             return true;
           }
           var value = $(this).val();
-          console.log("value: " + value);
           if (value) {
             prevent = value.length > 0;
             return false;
           }
         });
 
-      if (prevent) {
-        if (
-          confirm(
-            "You have unsaved changes. Are you sure you want to close this dialog?"
-          )
-        ) {
-          closeemdialog(modal);
-        } else {
-          return false;
-        }
+      if (prevent && exitWarning) {
+        $("#exitConfirmationModal").css("display", "flex");
+        return false;
       } else {
         closeemdialog(modal);
       }
+      return false;
     }
+    trackKeydown = false;
   }
+
+  lQuery("form.checkCloseDialog").livequery(function () {
+    var m = $(this).closest(".modal");
+    if (m) {
+      m.modal({
+        backdrop: "static",
+        keyboard: false,
+      });
+      m.on("click", function (e) {
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+        if (e.currentTarget === e.target) {
+          confirmModalClose(m);
+        }
+      });
+    }
+  });
+
+  $("#closeExit").on("click", function () {
+    $("#exitConfirmationModal").hide();
+  });
+  $("#confirmExit").on("click", function () {
+    $("#exitConfirmationModal").hide();
+    closeallemdialogs();
+  });
 
   $(document).on("click", ".modal", function (e) {
     e.stopPropagation();
@@ -1998,6 +2029,7 @@ uiload = function () {
   });
 
   showmodal = function (emselecttable, url) {
+    trackKeydown = true;
     var id = "modals";
     var modaldialog = $("#" + id);
     var width = emselecttable.data("dialogwidth");
