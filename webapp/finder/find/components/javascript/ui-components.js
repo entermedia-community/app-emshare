@@ -1376,10 +1376,12 @@ uiload = function () {
       data: options,
       success: function (data) {
         $(".entity-tab-content").replaceWith(data);
-        
-        $(".entity-tab-content img").last().on('load', function(){
-			$(window).trigger("resize");
-		});
+
+        $(".entity-tab-content img")
+          .last()
+          .on("load", function () {
+            $(window).trigger("resize");
+          });
       },
     });
     /*
@@ -1544,8 +1546,13 @@ uiload = function () {
   }
 
   lQuery(".trim-text").livequery(function (e) {
+    var text = $(this).text();
     var check = $(this).closest(".entitymetadatamodal");
     if (check.length > 0) {
+      text = text.replace(/</g, "&lt;");
+      text = text.replace(/>/g, "&gt;");
+      text = text.replace(/(\r\n|\n|\r)/gm, "<br>");
+      $(this).html(text);
       return;
     }
     $(this).click(function (e) {
@@ -1557,12 +1564,11 @@ uiload = function () {
       }
     });
     var maxLength = $(this).data("max");
-    var text = $(this).text();
     if (text.length <= maxLength) return;
     var minimizedText = text.substring(0, maxLength).trim();
-    minimizedText = minimizedText.replace(/(\r\n|\n|\r)/gm, "<br>");
     minimizedText = minimizedText.replace(/</g, "&lt;");
     minimizedText = minimizedText.replace(/>/g, "&gt;");
+    minimizedText = minimizedText.replace(/(\r\n|\n|\r)/gm, "<br>");
     $(this).html(minimizedText);
     $(this).data("text", text);
     $(this).append('<button class="see-more">(...see more)</button>');
