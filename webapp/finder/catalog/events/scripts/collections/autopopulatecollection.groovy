@@ -16,6 +16,10 @@ public void init(){
 	
 	String id = context.getRequestParameter("id");
 	
+	if(id == null) {
+		return;
+	}
+	
 	Searcher catsearcher = archive.getSearcher("category");
 	ArrayList rootcats = new ArrayList(); 
 		String name = id;
