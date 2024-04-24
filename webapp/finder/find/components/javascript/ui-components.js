@@ -1131,33 +1131,32 @@ uiload = function () {
                 window.scrollTo(0, 0);
               }
             }
-            
-            
-              //on success execute extra JS
-	          if (dialog.data("onsuccess")) {
-	            var onsuccess = dialog.data("onsuccess");
-	            var fnc = window[onsuccess];
-	            if (fnc && typeof fnc === "function") {
-	              //make sure it exists and it is a function
-	              fnc(dialog); //execute it
-	            }
-	          }
+
+            //on success execute extra JS
+            if (dialog.data("onsuccess")) {
+              var onsuccess = dialog.data("onsuccess");
+              var fnc = window[onsuccess];
+              if (fnc && typeof fnc === "function") {
+                //make sure it exists and it is a function
+                fnc(dialog); //execute it
+              }
+            }
 
             adjustzindex(modalinstance);
 
             $(window).trigger("resize");
 
             modalinstance.on("hidden.bs.modal", function () {
-			  //on close execute extra JS -- Todo: Move it to closedialog()
-			  if (dialog.data("onclose")) {
-			    var onclose = dialog.data("onclose");
-			    var fnc = window[onclose];
-			    if (fnc && typeof fnc === "function") {
-			      //make sure it exists and it is a function
-			      fnc(dialog); //execute it
-			    }
-			  }
-			      
+              //on close execute extra JS -- Todo: Move it to closedialog()
+              if (dialog.data("onclose")) {
+                var onclose = dialog.data("onclose");
+                var fnc = window[onclose];
+                if (fnc && typeof fnc === "function") {
+                  //make sure it exists and it is a function
+                  fnc(dialog); //execute it
+                }
+              }
+
               closeemdialog($(this));
               $(window).trigger("resize");
             });
@@ -1558,6 +1557,8 @@ uiload = function () {
     if (text.length <= maxLength) return;
     var minimizedText = text.substring(0, maxLength).trim();
     minimizedText = minimizedText.replace(/(\r\n|\n|\r)/gm, "<br>");
+    minimizedText = minimizedText.replace(/</g, "&lt;");
+    minimizedText = minimizedText.replace(/>/g, "&gt;");
     $(this).html(minimizedText);
     $(this).data("text", text);
     $(this).append('<button class="see-more">(...see more)</button>');
@@ -1570,6 +1571,8 @@ uiload = function () {
       $(this).remove();
       return;
     }
+    textParent.replace(/</g, "&lt;");
+    textParent.replace(/>/g, "&gt;");
     textParent.html(text.replace(/(\r\n|\n|\r)/gm, "<br>"));
     textParent.append('<button class="see-less">(...see less)</button>');
   });
@@ -1584,6 +1587,8 @@ uiload = function () {
     }
     var minimizedText = text.substring(0, maxLength).trim();
     minimizedText = minimizedText.replace(/(\r\n|\n|\r)/gm, "<br>");
+    minimizedText = minimizedText.replace(/</g, "&lt;");
+    minimizedText = minimizedText.replace(/>/g, "&gt;");
     textParent.html(minimizedText);
     textParent.append('<button class="see-more">(...see more)</button>');
   });
