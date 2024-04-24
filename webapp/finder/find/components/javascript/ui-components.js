@@ -1566,8 +1566,8 @@ uiload = function () {
     var maxLength = $(this).data("max");
     if (text.length <= maxLength) return;
     var minimizedText = text.substring(0, maxLength).trim();
-    minimizedText = minimizedText.replace(/</g, "&lt;");
-    minimizedText = minimizedText.replace(/>/g, "&gt;");
+    minimizedText = minimizedText.replace(/</gm, "&lt;");
+    minimizedText = minimizedText.replace(/>/gm, "&gt;");
     minimizedText = minimizedText.replace(/(\r\n|\n|\r)/gm, "<br>");
     $(this).html(minimizedText);
     $(this).data("text", text);
@@ -1581,8 +1581,8 @@ uiload = function () {
       $(this).remove();
       return;
     }
-    textParent.replace(/</g, "&lt;");
-    textParent.replace(/>/g, "&gt;");
+    text = text.replace(/</gm, "&lt;");
+    text = text.replace(/>/gm, "&gt;");
     textParent.html(text.replace(/(\r\n|\n|\r)/gm, "<br>"));
     textParent.append('<button class="see-less">(...see less)</button>');
   });
@@ -1596,9 +1596,10 @@ uiload = function () {
       return;
     }
     var minimizedText = text.substring(0, maxLength).trim();
+    minimizedText = minimizedText.replace(/<br>/gm, "\n");
+    minimizedText = minimizedText.replace(/</gm, "&lt;");
+    minimizedText = minimizedText.replace(/>/gm, "&gt;");
     minimizedText = minimizedText.replace(/(\r\n|\n|\r)/gm, "<br>");
-    minimizedText = minimizedText.replace(/</g, "&lt;");
-    minimizedText = minimizedText.replace(/>/g, "&gt;");
     textParent.html(minimizedText);
     textParent.append('<button class="see-more">(...see more)</button>');
   });
