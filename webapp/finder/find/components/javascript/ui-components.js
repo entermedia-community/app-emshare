@@ -1376,6 +1376,10 @@ uiload = function () {
       data: options,
       success: function (data) {
         $(".entity-tab-content").replaceWith(data);
+        
+        $(".entity-tab-content img").last().on('load', function(){
+			$(window).trigger("resize");
+		});
       },
     });
     /*
