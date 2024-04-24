@@ -1131,33 +1131,32 @@ uiload = function () {
                 window.scrollTo(0, 0);
               }
             }
-            
-            
-              //on success execute extra JS
-	          if (dialog.data("onsuccess")) {
-	            var onsuccess = dialog.data("onsuccess");
-	            var fnc = window[onsuccess];
-	            if (fnc && typeof fnc === "function") {
-	              //make sure it exists and it is a function
-	              fnc(dialog); //execute it
-	            }
-	          }
+
+            //on success execute extra JS
+            if (dialog.data("onsuccess")) {
+              var onsuccess = dialog.data("onsuccess");
+              var fnc = window[onsuccess];
+              if (fnc && typeof fnc === "function") {
+                //make sure it exists and it is a function
+                fnc(dialog); //execute it
+              }
+            }
 
             adjustzindex(modalinstance);
 
             $(window).trigger("resize");
 
             modalinstance.on("hidden.bs.modal", function () {
-			  //on close execute extra JS -- Todo: Move it to closedialog()
-			  if (dialog.data("onclose")) {
-			    var onclose = dialog.data("onclose");
-			    var fnc = window[onclose];
-			    if (fnc && typeof fnc === "function") {
-			      //make sure it exists and it is a function
-			      fnc(dialog); //execute it
-			    }
-			  }
-			      
+              //on close execute extra JS -- Todo: Move it to closedialog()
+              if (dialog.data("onclose")) {
+                var onclose = dialog.data("onclose");
+                var fnc = window[onclose];
+                if (fnc && typeof fnc === "function") {
+                  //make sure it exists and it is a function
+                  fnc(dialog); //execute it
+                }
+              }
+
               closeemdialog($(this));
               $(window).trigger("resize");
             });
@@ -1377,10 +1376,12 @@ uiload = function () {
       data: options,
       success: function (data) {
         $(".entity-tab-content").replaceWith(data);
-        
-        $(".entity-tab-content img").last().on('load', function(){
-			$(window).trigger("resize");
-		});
+
+        $(".entity-tab-content img")
+          .last()
+          .on("load", function () {
+            $(window).trigger("resize");
+          });
       },
     });
     /*
@@ -1545,8 +1546,13 @@ uiload = function () {
   }
 
   lQuery(".trim-text").livequery(function (e) {
+    var text = $(this).text();
     var check = $(this).closest(".entitymetadatamodal");
     if (check.length > 0) {
+      text = text.replace(/</g, "&lt;");
+      text = text.replace(/>/g, "&gt;");
+      text = text.replace(/(\r\n|\n|\r)/gm, "<br>");
+      $(this).html(text);
       return;
     }
     $(this).click(function (e) {
@@ -1558,9 +1564,10 @@ uiload = function () {
       }
     });
     var maxLength = $(this).data("max");
-    var text = $(this).text();
     if (text.length <= maxLength) return;
     var minimizedText = text.substring(0, maxLength).trim();
+    minimizedText = minimizedText.replace(/</gm, "&lt;");
+    minimizedText = minimizedText.replace(/>/gm, "&gt;");
     minimizedText = minimizedText.replace(/(\r\n|\n|\r)/gm, "<br>");
     $(this).html(minimizedText);
     $(this).data("text", text);
@@ -1574,6 +1581,8 @@ uiload = function () {
       $(this).remove();
       return;
     }
+    text = text.replace(/</gm, "&lt;");
+    text = text.replace(/>/gm, "&gt;");
     textParent.html(text.replace(/(\r\n|\n|\r)/gm, "<br>"));
     textParent.append('<button class="see-less">(...see less)</button>');
   });
@@ -1587,6 +1596,9 @@ uiload = function () {
       return;
     }
     var minimizedText = text.substring(0, maxLength).trim();
+    minimizedText = minimizedText.replace(/<br>/gm, "\n");
+    minimizedText = minimizedText.replace(/</gm, "&lt;");
+    minimizedText = minimizedText.replace(/>/gm, "&gt;");
     minimizedText = minimizedText.replace(/(\r\n|\n|\r)/gm, "<br>");
     textParent.html(minimizedText);
     textParent.append('<button class="see-more">(...see more)</button>');
