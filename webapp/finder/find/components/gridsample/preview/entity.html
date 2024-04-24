@@ -139,38 +139,14 @@ $context.putPageValue("topmoduleid", $moduleid)
 						#end
 					#end
 				</h2>
+				
+				
 				#if(!$ismulti)
+				
+					
 					<div class="entity-actions-bar">
-						#if($permissions.can($moduleid, "edit"))
-						<a href="$applink/views/modules/$moduleid/edit/editdialog.html?id=${entityid}&viewid=entitypermissions"
-							class="emdialog btn btn-sm btn-brand"
-							data-hidefooter="true"
-							data-dialogid="entitypermissionsdialog"
-							title="#text($module)\ #text($entity) [[Permissions]]"><i class="bi bi-person-lock"></i> [[Permissions]]</a>
-						#end
-			
-						#if($canviewsettings)	
-						<a href="$applink/views/settings/modules/$moduleid/info/module-setup.html"
-							class="ajax btn btn-sm btn-brand"
-							data-targetdiv="applicationcontent"
-							data-oemaxlevel="5"
-							data-updateurl="true"
-							data-closedialog="true"
-							data-sidebarcomponent="settings"
-							data-scrolltotop="true"
-							title="#text($module) [[Settings]]"><i class="bi bi-gear-fill"></i></a>
-						#end
-							
-						#ifnotnull($defaultfolder)
-							#if($permissions.can($moduleid, "share"))
-							<a href="$applink/components/share/entity.html?moduleid=$moduleid&entityid=$!{entityid}&categoryid=$!{defaultfolder.getId()}" 
-							class="emdialog btn btn-sm btn-brand entityshare"
-							data-dialogid="entitysharedialog"
-							data-hidefooter="true"
-							data-entitytabopen="$!{entitytabopen}"
-							title="[[Share]] #text($entity.name)"><i class="bi bi-share-fill"></i></a>
-							#end
-						#end
+						
+					
 						
 						
 
@@ -178,15 +154,7 @@ $context.putPageValue("topmoduleid", $moduleid)
 						$pages.include("$componenthome/gridsample/favorites.html?id=$entity.id&moduleid=$moduleid", $context)
 						
 						
-						#if($entityid && $enabledpublishing != "true")	
-						<a href="$applink/views/modules/$moduleid/publishing/enablepublishing.html"
-							class="enablepublishing btn btn-sm btn-brand"
-							data-updateurl="false"
-							data-closedialog="true"
-							data-entityid="$!entityid"
-							data-moduleid="$moduleid"
-							title="[[Publish]] #text($module) "><i class="bi bi-columns-gap"></i> [[Publish]]</a>
-						#end
+
 						
 					</div>
 				#end
@@ -195,7 +163,43 @@ $context.putPageValue("topmoduleid", $moduleid)
 			##<span class="text-white">$hits.indexOfId($entity.getId())</span>
 			
 			
-			<div class="d-flex align-items-center text-white">
+			<div class="d-flex entity-actions-bar align-items-center text-white">
+				#set($tabtype = "tabimport")
+				<a href="$applink/views/modules/$moduleid/components/gridsample/preview/${tabtype}.html"
+						class="entity-tab-label btn btn-sm btn-brand"
+						id="tab_$!tabid"
+						data-tabid="$!tabid"
+						data-currenttab="import"
+						data-viewid="import"
+						data-tabtype="${tabtype}" 
+						data-toggle="tab"
+						data-entityid="$!entity.getId()" 
+						data-topmoduleid="$!moduleid"
+						data-moduleid="$!moduleid"
+						title="[[Import]] #text($module) "><i class="bi bi-download"></i> &nbsp;[[Import]]</a>
+						
+				<a href="$applink/views/modules/$moduleid/publishing/enablepublishing.html"
+						class="enablepublishing btn btn-sm btn-brand"
+						data-updateurl="false"
+						data-closedialog="true"
+						data-entityid="$!entityid"
+						data-moduleid="$moduleid"
+						title="[[Publish]] #text($module) "><i class="bi bi-share"></i> &nbsp;[[Export]]</a>
+						
+						##href="$applink/views/modules/$moduleid/edit/editdialog.html?id=${entityid}&viewid=entitypermissions"
+				
+				#if($entityid && $enabledpublishing != "true")	
+					<a href="$applink/views/modules/$moduleid/publishing/enablepublishing.html"
+						class="enablepublishing btn btn-sm btn-brand"
+						data-updateurl="false"
+						data-closedialog="true"
+						data-entityid="$!entityid"
+						data-moduleid="$moduleid"
+						title="[[Gallery]] #text($module) "><i class="bi bi-grid"></i> [[Gallery]]</a>
+				#end
+						
+						
+						
 				#if($entityhits && $entityhits.size() > 1)
 					#set( $index = $entityhits.indexOfId($entity.getId()))
 					#set( $previous = false )
@@ -221,7 +225,7 @@ $context.putPageValue("topmoduleid", $moduleid)
 							#end
 						</div>
 					#end
-				<div class="entityclose ml-1 text-white btn btn-sm btn-brand">
+				<div class="entityclose ml-3 text-white btn btn-sm btn-brand">
 					<span title="[[Esc to Close]]" class="bi bi-x-lg" style="transform: scale(1.5);"></span>
 				</div>
 			</div>
@@ -382,6 +386,16 @@ $context.putPageValue("topmoduleid", $moduleid)
 						$context.putPageValue("currenttab", "publishing")
 						$context.putPageValue("viewid", "publishing")
 						$pages.include("$subcomponenthome/gridsample/preview/tabpublishing.html?entityid=$id", $context)
+					#end
+				#end
+				
+				#if($entitytabopen == "import" && $enabledpublishing == "true")
+					#if(!$ismulti)
+						#set($tabtype= "tabimport")
+						$context.putPageValue("tabtype", $tabtype)
+						$context.putPageValue("currenttab", "import")
+						$context.putPageValue("viewid", "import")
+						$pages.include("$subcomponenthome/gridsample/preview/tabimport.html?entityid=$id", $context)
 					#end
 				#end
 					

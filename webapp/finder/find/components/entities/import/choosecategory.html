@@ -1,0 +1,29 @@
+#set($targetcategoryid = $context.getRequestParameter("targetcategoryid"))
+
+<div id="choosecategorycontainer">
+	
+	<h4>[[Choose Categories]]</h4>
+	
+	<a class="emdialog btn btn-primary" 
+		data-dialogid="catpicker" 
+		href="$home$apphome/components/entities/import/search/searchcategory.html?targetdiv=autocategoriespicked&clearselection=$!clear&action=${page.directory}/picked.html"
+	    data-hidefooter="true" data-parameterdata="categoryvalues"><i class="bi bi-plus-lg"></i>[[Add Category]]</a>
+	    
+	    
+	<div>
+		<form  style="display: block;" id="picker" name="wizard2" method="post"  
+		class="ajaxform" 
+		data-oemaxlevel="1" 
+		data-targetdivinner="choosecategorycontainer"
+		action="$home$apphome/components/entities/import/import.html">
+	    <input type="hidden" name="targetcategoryid" value="$!targetcategoryid"/>
+
+		<div class="inner-content" id="autocategoriespicked" >
+		$pages.include("$apphome/components/entities/import/picked.html",$context)	
+		</div>
+		<br><br>
+		<input  class="btn btn-primary" type="submit" value="[[Import]]" />	
+	</form>
+		
+	</div>
+</div>

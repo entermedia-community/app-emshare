@@ -1,0 +1,93 @@
+#set($entityid = $context.getRequestParameter("entityid"))
+#if(!$parentsearchtype)
+	#set($parentsearchtype = $context.getRequestParameter("parentsearchtype"))
+#end
+$context.putPageValue("parentsearchtype", $parentsearchtype)
+#if( !$entity)
+	#set( $entity  = $mediaarchive.getData($parentsearchtype, $entityid) )
+#end
+#set($entityid = $entity.id)
+#if(!$currenttab)
+	#set($currenttab = $context.getRequestParameter("currenttab"))
+#end
+#if(!$topmoduleid)
+	#set ( $topmoduleid = $context.getRequestParameter("topmoduleid") )
+	$context.putPageValue("topmoduleid", $topmoduleid)
+#end
+#ifnotnull($topmoduleid)
+		#set($topmodule = $mediaarchive.getCachedData("module", $topmoduleid))
+#end
+#ifnull($viewid)
+#set($viewid = $context.getRequestParameter("viewid"))
+#end
+#set($tabid = "tab_$viewid")
+
+
+#set($defaultcategory = $mediaarchive.getBean("entityManager").createDefaultFolder($entity, $context.getUser()))
+
+<div id="${tabid}" 
+class=" entity-tab-content entity-tab-media tabtypemedia" 
+##style=" #if($currenttab != $tabid || $hidesubmodule) display:none; #end"
+data-tabid="${tabid}"
+data-viewid="$viewid"
+data-entityid="$!entityid"
+data-currenttab="$!viewid"
+data-parentsearchtype="$!parentsearchtype"
+data-topmoduleid="$!topmoduleid"
+data-url="$componenthome/gridsample/preview/tabpopulatecategory.html"
+>
+	<div id="$!submodulepickerid" class="entity-tab-content d-flex">
+		
+		<div class="entityimport" style="padding: 10px 20px;  flex: 0 0 400px">
+			
+				<div class="px-3 entityimportmenu">
+					
+					<div>
+						<a href="" class="btn btn-lg btn-brand"><i class="bi bi-file-earmark-arrow-up-fill"></i> [[Upload Files]]</a>
+						<a href="" class="btn btn-lg  btn-brand"><i class="bi bi-folder-plus"></i> [[Upload Folder]]</a></div>
+					
+					<div>
+						##<h4 class="text-center">[[Upload from Web]]</h4>
+						<a href="" class="btn btn-lg  btn-brand"><i class="bi bi-link-45deg"></i> [[Import from URL]]</a>
+					</div>
+					
+
+					
+					<div>
+						<h4 class="text-center">[[Import Existing]]</h4>
+						   <a  	class="ajax btn btn-lg  btn-brand" 
+						   	id="poptrigger" 
+					    	data-targetdivinner="tabimportcontent"  
+							data-hidefooter="true" 
+							data-oemaxlevel="1"
+							data-targetcategoryid="$!defaultcategory.id"
+							onclick='$("#searcher").show();$("#picker").hide();'
+							title="ID: ($entityid)"
+							href="$apphome/components/entities/import/autopopulate.html?id=$!searchby" 
+							 >
+							<i class="bi bi-file-check-fill"></i> [[Search Files]]</a>
+							
+							
+							<a class="ajax btn btn-lg  btn-brand"
+								data-targetdivinner="tabimportcontent"  
+								data-oemaxlevel="1"
+								data-targetcategoryid="$!defaultcategory.id"
+								href="$apphome/components/entities/import/choosecategory.html?id=$!searchby"><i class="bi bi-folder-plus"></i> [[Choose Folders]]</a>
+					</div>
+					
+					<div>
+						<h4 class="text-center">[[Synced Import]]</h4>
+						<a href="" class="btn btn-lg  btn-brand"><i class="bi bi-folder-symlink-fill"></i> [[Pull local changes]]</a>
+					</div>
+					
+					
+				</div>
+				
+			
+		</div>
+		<div id="tabimportcontent" class="tabimportcontent" style=";"></div>
+	
+	</div>
+</div>
+
+
