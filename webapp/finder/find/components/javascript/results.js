@@ -1262,33 +1262,10 @@ jQuery(document).ready(function (url, params) {
   lQuery(".emshowbox").livequery(function () {
     var div = $(this);
     div.css("position", "relative");
-    var box = div.data("showbox");
-    // var box = JSON.parse(json);
-
-    div.prepend("<canvas></canvas>");
-
-    var canvas = $(div.find("canvas"));
-    canvas.css("position", "absolute");
-
-    var w = div.data("imagewidth");
-    var h = div.data("imageheight");
-
     var image = $(div.find("img"));
+    
     image.ready(function () {
-      // console.log(image.height());
-      // canvas.width(box[2]);
-      // canvas.height(box[3]);
-      //var w = 240; //box[2]+10;
-      //var h = 240;//box[3]+10;
-
-      canvas.attr({ width: w, height: h });
-      var context = canvas[0].getContext("2d");
-      context.beginPath();
-      context.lineWidth = 1;
-      context.strokeStyle = "#666";
-      context.strokeRect(box[0], box[1], box[2], box[3]);
-      context.strokeStyle = "#fff";
-      context.strokeRect(box[0] - 1, box[1] - 1, box[2] + 1, box[3] + 1);
+		paintimagebox(image);
     });
     var container = div.data("centerbox");
     if (container) {
@@ -1298,6 +1275,35 @@ jQuery(document).ready(function (url, params) {
       }
     }
   });
+  
+  
+  paintimagebox = function(image) {
+	  var div = image.closest(".emshowbox");
+		var box = div.data("custombox");
+
+	    if (!box) {
+	    	box = div.data("showbox");
+	    }
+		var canvas = $(div.find("canvas"));
+		if(canvas.length>=0) {
+			canvas.remove();
+		}
+		div.prepend("<canvas></canvas>");
+		canvas = $(div.find("canvas"));
+	    canvas.css("position", "absolute");
+	
+	    var w = div.data("imagewidth");
+	    var h = div.data("inputheight");
+	  
+      canvas.attr({ width: w, height: image.data("fixedheight") });
+      var context = canvas[0].getContext("2d");
+      context.beginPath();
+      context.lineWidth = 1;
+      context.strokeStyle = "#666";
+      context.strokeRect(box[0], box[1], box[2], box[3]);
+      context.strokeStyle = "#fff";
+      context.strokeRect(box[0] - 1, box[1] - 1, box[2] + 1, box[3] + 1);
+  }
 
   lQuery("select.addremovecolumns").livequery("change", function () {
     var selectedval = $(this).val();
@@ -1643,7 +1649,7 @@ gridResize = function () {
   if (!grid.is(":visible")) {
     return;
   }
-  console.log("gridResize resizing "	);
+  //console.log("gridResize resizing "	);
   var fixedheight = grid.data("maxheight");
   if (fixedheight == null || fixedheight.length == 0) {
     fixedheight = 200;
@@ -1727,9 +1733,11 @@ trimRowToFit = function (targetheight, row, totalavailablew) {
   var totalwused = 0;
   $.each(row, function () {
     var div = this;
+    var image = $("img.imagethumb", div);
     // div.css("line-height",fixedheight + "px");
     div.css("height", fixedheight + "px");
-    $("img.imagethumb", div).height(fixedheight);
+    image.height(fixedheight);
+    image.data("fixedheight", fixedheight);
 	
     var a = div.data("aspect");
     var neww = fixedheight * a;
@@ -1737,7 +1745,23 @@ trimRowToFit = function (targetheight, row, totalavailablew) {
     neww = Math.round(neww); // make sure we dont round too high across lots
     // of widths
     div.css("width", neww + "px");
-	$("img.imagethumb", div).width(neww);
+	
+	image.width(neww);
+	
+	//check if faceprofilebox
+	var faceprofilebox = div.find(".faceprofileboximage");
+	if( faceprofilebox.length > 0) {
+		var inputheight = faceprofilebox.data("inputheight");
+		
+		var scale = fixedheight /inputheight  ;
+		
+		var originalbox = faceprofilebox.data("showbox");
+		var scaledbox = new Array(originalbox[0]*scale, originalbox[1]*scale, originalbox[2]*scale, originalbox[3]*scale);
+		faceprofilebox.data("custombox", scaledbox);
+		
+		//trigger image ready
+		paintimagebox(image);
+	}
 	
     totalwused = totalwused + neww;
   });
