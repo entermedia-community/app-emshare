@@ -2,7 +2,7 @@
 #set($targetcategoryid = $context.getRequestParameter("targetcategoryid"))
 
 	
-<div id="autosearch">
+<div id="autosearch" style="height: 100%; padding-bottom: 2px; overflow-y: auto;">
 	
 	<h4>[[Search Files]]</h4>
 	
@@ -33,26 +33,26 @@
 
 <ul id="cat-list" class="list-group list-group-striped list-group-hover autopopulate-list">
 
-#ifnull( $foundcategories )
-<li>No folders found</li>
-#end
-
-			#foreach($categoryid in $foundcategories)
-			#set($category  = $mediaarchive.getCategory($categoryid))
-
-			<li id="auto-${categoryid}" class="collectionBox" data-nodeid="$categoryid" data-categoryname="$category.getName()">
-				<a class="category" title="$category.getCategoryPath()" target="_blank" href="$applink/views/modules/asset/viewfiles/${category.getId()}/#esc($category).html" >$category.getCategoryPath() </a>
-				<div class="collectionIcons">
-					<input type="checkbox" id="categoryvalues" class="collection-list" name="categoryid" value="$categoryid" />
-				</div>
-			</li>
+		#ifnull( $foundcategories )
+		<li>No folders found</li>
 		#end
 
-#if( $assets.isEmpty() )
-<li>No files found</li>
-#end
+		#foreach($categoryid in $foundcategories)
+		#set($category  = $mediaarchive.getCategory($categoryid))
 
-#foreach($asset in $assets)
+		<li id="auto-${categoryid}" class="collectionBox" data-nodeid="$categoryid" data-categoryname="$category.getName()">
+			<a class="category" title="$category.getCategoryPath()" target="_blank" href="$applink/views/modules/asset/viewfiles/${category.getId()}/#esc($category).html" >$category.getCategoryPath() </a>
+			<div class="collectionIcons">
+				<input type="checkbox" id="categoryvalues" class="collection-list" name="categoryid" value="$categoryid" />
+			</div>
+		</li>
+		#end
+
+		#if( $assets.isEmpty() )
+		<li>No files found</li>
+		#end
+
+		#foreach($asset in $assets)
 			<li id="auto-${asset.id}" class=" collectionBox">
 							<div class="collectionIcons">
 								<input type="checkbox" class="collection-list" name="assetid" value="$asset.id" />
@@ -72,10 +72,11 @@
 						
 			</li>
 		#end	
-</ul>
-<div class="clearfix"></div>
-		<br><br>
-		<input class="btn btn-primary" type="submit" value="[[Import]]" />	
+	</ul>
+	<div class="clearfix"></div>
+		
+	<a href="" class="submitform btn btn-primary mt-2 mb-2"><i class="bi bi-download"></i> &nbsp;[[Import]]</a>
+		
 	</form>
    
    <script type="text/javascript">
