@@ -74,14 +74,18 @@ $context.putPageValue("thumbsize", $thumbsize)
 			#set($tpath = "$siteroot/$mediadbappid/services/module/asset/downloads/originals/"+$mediaarchive.asLinkToOriginal($hit))
 		#else
 			#set($tpath = $mediaarchive.asLinkToPreview($hit, $librarycol.id, $imagesize, true))
+			
 		#end
 		
 		#if($tstamp)
 			#set($tpath = "${tpath}?_=$tstamp")
 		#end
+
+		#if($hits.getInput("showfacebox"))
 		
-		#if($topmoduleid=="faceprofilegroup" || $topmoduleid=="entityperson")
+				$context.putPageValue("faceprofilegroups", $hits.getSearchQuery().getValue("faceprofilegroups"))
 				$context.putPageValue("asset", $asset)
+				$context.putPageValue("imagesize", $imagesize)
 				$context.putPageValue("faceprofilegroupid", $entity.id)
 				$pages.include("$componenthome/results/thumbnails/faceprofilebox.html", $context)
 		#else

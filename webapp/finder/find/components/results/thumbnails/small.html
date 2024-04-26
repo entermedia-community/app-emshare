@@ -21,8 +21,11 @@
        #set( $type = $mediaarchive.getMediaRenderType($hit.fileformat))
 	   #set ($thumbsize = $context.getPageValue("thumbsize"))
 	   
-	   #if($resulttype == "faceprofilegroupassets")
-	   	   $pages.include("$componenthome/results/thumbnails/faceprofilebox.html", $context)
+	#if($hits.getInput("showfacebox"))
+			$context.putPageValue("faceprofilegroups", $hits.getSearchQuery().getValue("faceprofilegroups"))
+			$context.putPageValue("asset", $asset)
+			$context.putPageValue("faceprofilegroupid", $entity.id)
+			$pages.include("$componenthome/results/thumbnails/faceprofilebox.html", $context)
        #elseif( $type == "audio" || $type == "default")
            $pages.include("$componenthome/results/thumbnails/${type}.html", $context)             
        #else
