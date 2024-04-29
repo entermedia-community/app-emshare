@@ -48,6 +48,16 @@ data-url="$componenthome/gridsample/preview/tabpublishing.html"
 		 
 		 <div class="form-group">
 			<div class="form-check form-check-inline">
+				<input type="hidden" value="caption_enabled" name="field" />
+			  <input class="form-check-input" type="checkbox" id="captionlabel" value="true" name="caption_enabled.value" #if($publishing.caption_enabled=="true")checked#end>
+			  <label class="form-check-label" for="captionlabel">[[Caption]]</label>
+			</div>
+			<input type="hidden" value="caption" name="field" />
+		    <textarea  class="form-control"   name="caption.value">$!publishing.caption</textarea>
+		 </div>
+		 
+		 <div class="form-group">
+			<div class="form-check form-check-inline">
 				<input type="hidden" value="footer_enabled" name="field" />
 			  <input class="form-check-input" type="checkbox" id="footerlabel" value="true" name="footer_enabled.value"  #if($publishing.footer_enabled=="true")checked#end>
 			  <label class="form-check-label" for="footerlabel">[[Footer]]</label>
@@ -56,15 +66,7 @@ data-url="$componenthome/gridsample/preview/tabpublishing.html"
 		    <input  class="form-control"  placeholder="[[Enter Footer here]]" name="footer.value" value="$!publishing.footer">
 		 </div>
 		 
-		 <div class="form-group">
-			<div class="form-check form-check-inline">
-				<input type="hidden" value="caption_enabled" name="field" />
-			  <input class="form-check-input" type="checkbox" id="captionlabel" value="true" name="caption_enabled.value" #if($publishing.caption_enabled=="true")checked#end>
-			  <label class="form-check-label" for="captionlabel">[[Caption]]</label>
-			</div>
-			<input type="hidden" value="caption" name="field" />
-		    <textarea  class="form-control"   name="caption.value">$!publishing.caption</textarea>
-		 </div>
+		 
 		
 		
 		<div class="form-group">
@@ -93,18 +95,25 @@ data-url="$componenthome/gridsample/preview/tabpublishing.html"
 		<input type="submit" value="[[Save]]" class="btn btn-sm btn-primary"> 
 		
 		#if($publishing.enabled=="true")
-			<a href="/$mediadbappid/services/publishingdestination/preview.html?publishingid=${publishing.id}" 
-				class="btn btn-sm btn-secondary" 
-				style="margin-left: 10px;;"
-				target="_blank">[[Preview]]</a>
+			<div style="padding: 10px 0;">
+			<strong>[[oEmbed Link]]:</strong>
+			<textarea class="embedlinktextarea form-control" id="embedcode" onclick="this.select();" readonly="readonly" rows="2" cols="45">$!siteroot/$mediadbappid/services/publishingdestination/oembed.json?publishingid=${publishing.id}</textarea>
+			<a href="#" class="copytoclipboard btn btn-xxs btn-light" data-targetdiv="embedalertdialog" data-copytext="embedcode" title="Copy to Clipboard"><i class="far fa-copy"></i> [[Copy]]</a>
+				
+		
+			<a href="/$mediadbappid/services/publishingdestination/previewhtml.html?publishingid=${publishing.id}" 
+				class="" 
+				style="margin-left: 10px; font-size: 0.9em; text-decoration: underline;"
+				target="_blank">[[Live View]]</a>
+				</div>
 		#end
 	</form>
 </div>
 
 
 <div class="tabpulications-col" style="height: 100%;">
-	<div style="background-color: #fff; padding: 20px; height: 100%;  overflow-y: auto;">
-	<div style="text-align: center; padding: 2em; border: 2px solid #333; border-radius: 10px; background-color:rgb(158, 255, 225);">
+	<div style="padding: 20px; height: 100%;  overflow-y: auto;">
+	<div style="text-align: center; margin:0.5em 0em 2em;">
 		#set($title = "[[Title]]")
 		#if($publishing.title_enabled=="true" && $publishing.title)
 			#set($title = $publishing.title)
@@ -115,7 +124,7 @@ data-url="$componenthome/gridsample/preview/tabpublishing.html"
 		#if($publishing.caption_enabled=="true" && $publishing.caption)
 			#set($caption = $publishing.caption)	
 		#end
-	<div style="padding:2em;text-align: center; ">$!caption</div>
+	<div style="padding:1em;text-align: center; ">$!caption</div>
 	
 	
 		#ifnull($defaultfolder)

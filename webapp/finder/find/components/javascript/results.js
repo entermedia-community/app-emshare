@@ -1258,15 +1258,62 @@ jQuery(document).ready(function (url, params) {
       });
     }
   });
+  
+  
+  paintimagebox = function(image) {
+	  var faceprofilebox = image.closest(".emshowbox");
+	  if( faceprofilebox.length == 0) {
+		  return;
+		}
+	  var newheight = image.data("fixedheight");
+	  if(newheight === undefined)
+	  {
+		   newheight = image.height();
+	  }
+	  
+	  //check if faceprofilebox
+		
+		
+		var inputheight = faceprofilebox.data("inputheight");
+		
+		var scale = newheight /inputheight  ;
+		
+		var originalbox = faceprofilebox.data("showbox");
+		var box = new Array(originalbox[0]*scale, originalbox[1]*scale, originalbox[2]*scale, originalbox[3]*scale);
+
+		var canvas = $(faceprofilebox.find("canvas"));
+		if(canvas.length>=0) {
+			canvas.remove();
+		}
+		faceprofilebox.prepend("<canvas></canvas>");
+		canvas = $(faceprofilebox.find("canvas"));
+	    canvas.css("position", "absolute");
+	
+	    var w = faceprofilebox.data("imagewidth");
+	    //var h = faceprofilebox.data("inputheight");
+	  
+      canvas.attr({ width: image.width(), height: image.height() });
+      var context = canvas[0].getContext("2d");
+      context.beginPath();
+      context.lineWidth = 1;
+      context.strokeStyle = "#666";
+      context.strokeRect(box[0], box[1], box[2], box[3]);
+      context.strokeStyle = "#fff";
+      context.strokeRect(box[0] - 1, box[1] - 1, box[2] + 1, box[3] + 1);
+  }
 
   lQuery(".emshowbox").livequery(function () {
     var div = $(this);
     div.css("position", "relative");
     var image = $(div.find("img"));
     
-    image.ready(function () {
+    
+	paintimagebox(image);
+	
+    image.on("load", function () {
 		paintimagebox(image);
     });
+    
     var container = div.data("centerbox");
     if (container) {
       var topbox = box[1];
@@ -1277,33 +1324,7 @@ jQuery(document).ready(function (url, params) {
   });
   
   
-  paintimagebox = function(image) {
-	  var div = image.closest(".emshowbox");
-		var box = div.data("custombox");
-
-	    if (!box) {
-	    	box = div.data("showbox");
-	    }
-		var canvas = $(div.find("canvas"));
-		if(canvas.length>=0) {
-			canvas.remove();
-		}
-		div.prepend("<canvas></canvas>");
-		canvas = $(div.find("canvas"));
-	    canvas.css("position", "absolute");
-	
-	    var w = div.data("imagewidth");
-	    var h = div.data("inputheight");
-	  
-      canvas.attr({ width: w, height: image.data("fixedheight") });
-      var context = canvas[0].getContext("2d");
-      context.beginPath();
-      context.lineWidth = 1;
-      context.strokeStyle = "#666";
-      context.strokeRect(box[0], box[1], box[2], box[3]);
-      context.strokeStyle = "#fff";
-      context.strokeRect(box[0] - 1, box[1] - 1, box[2] + 1, box[3] + 1);
-  }
+  
 
   lQuery("select.addremovecolumns").livequery("change", function () {
     var selectedval = $(this).val();
@@ -1747,21 +1768,6 @@ trimRowToFit = function (targetheight, row, totalavailablew) {
     div.css("width", neww + "px");
 	
 	image.width(neww);
-	
-	//check if faceprofilebox
-	var faceprofilebox = div.find(".faceprofileboximage");
-	if( faceprofilebox.length > 0) {
-		var inputheight = faceprofilebox.data("inputheight");
-		
-		var scale = fixedheight /inputheight  ;
-		
-		var originalbox = faceprofilebox.data("showbox");
-		var scaledbox = new Array(originalbox[0]*scale, originalbox[1]*scale, originalbox[2]*scale, originalbox[3]*scale);
-		faceprofilebox.data("custombox", scaledbox);
-		
-		//trigger image ready
-		paintimagebox(image);
-	}
 	
     totalwused = totalwused + neww;
   });

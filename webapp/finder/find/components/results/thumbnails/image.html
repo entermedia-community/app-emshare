@@ -4,9 +4,7 @@
 #if (!$hit)
 	#set ($hit = $asset)
 #end
-#if (!$hit)
-	#set ($hit = $data)
-#end
+$context.putPageValue("hit", $hit)
 
 #if(!$title)
 	#if(!$asset)
@@ -19,20 +17,8 @@
 	#end
 #end
 
-$context.putPageValue("hit", $hit)
-
-#set ($sourcepath = $hit.sourcepath)
-
-#set ($urlutils = $context.getPageValue("url_util"))
-#if ($urlutils)
-	#set ( $sourcepath = $urlutils.encode($sourcepath))
-	#set ( $sourcepath = $sourcepath.replace("%2F", "/") )
-#end
-
 #set ($thumbsize = $context.getPageValue("thumbsize"))
 #set( $imagesize = "image200x200.jpg")
-
-
 
 #if($thumbsize == "largepreview")
 	#if( $type == "video" )
@@ -71,31 +57,37 @@ $context.putPageValue("thumbsize", $thumbsize)
        </div>
 	#else	
 		#if($useoriginal)
-			#set($tpath = "$siteroot/$mediadbappid/services/module/asset/downloads/originals/"+$mediaarchive.asLinkToOriginal($hit))
+			#set($imagepath = "$siteroot/$mediadbappid/services/module/asset/downloads/originals/"+$mediaarchive.asLinkToOriginal($hit))
 		#else
-			#set($tpath = $mediaarchive.asLinkToPreview($hit, $librarycol.id, $imagesize, true))
+			#set($imagepath = $mediaarchive.asLinkToPreview($hit, $librarycol.id, $imagesize, true))
+			
 		#end
 		
 		#if($tstamp)
-			#set($tpath = "${tpath}?_=$tstamp")
+			#set($imagepath = "${imagepath}?_=$tstamp")
 		#end
+		$context.putPageValue("imagepath", $imagepath)
+		$context.putPageValue("asset", $asset)
+		$context.putPageValue("imagesize", $imagesize)
 		
-		#if($topmoduleid=="faceprofilegroup" || $topmoduleid=="entityperson")
-				$context.putPageValue("asset", $asset)
-				$context.putPageValue("faceprofilegroupid", $entity.id)
+		#if($moduleid == "faceprofilegroup")
+			#set($faceprofilegroups = [$data] )	
+			$context.putPageValue("faceprofilegroups", $faceprofilegroups)		
+			$pages.include("$componenthome/results/thumbnails/faceprofilebox.html", $context)
+		#elseif($hits.getInput("showfacebox"))
+				$context.putPageValue("faceprofilegroups", $hits.getSearchQuery().getValue("faceprofilegroups"))
 				$pages.include("$componenthome/results/thumbnails/faceprofilebox.html", $context)
 		#else
 		
 			<img class="imagethumb img-fluid  img$!thumbsize "
-					sourcepath="$sourcepath" 
 					catalogid="$catalogid" 
 					assetid="$hit.id" 
 					alt="#if($title)#esc($title)#else$!{hit.name}#end"
 					draggable="true"  
-					data-sourcepath="$sourcepath" 
 					data-name="#if($title)#esc($title)#else$!{hit.name}#end" 		
-					src="$tpath$!urlparams" 
+					src="$imagepath$!urlparams" 
 			/>
+			#if($type =="video")<button class="videoplay-button"><span class="videoplay-icon"></span></button>#end
 		#end			
 	#end
 </div>

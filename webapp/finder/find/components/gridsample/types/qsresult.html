@@ -74,7 +74,8 @@ $context.putPageValue("previewurl", $previewurl)
 		#if($primarymediafield)
 			#set( $primarymediatemp = $mediaarchive.getCachedAsset($entity.primarymedia))
 				#ifnotnull($primarymediatemp)
-					#if($primarymediatemp.assettype == 'photo' || $primarymediatemp.assettype == 'video' )				
+					#set($rendertype = $mediaarchive.getMediaRenderType($primarymediatemp.fileformat))
+					#if($rendertype != 'audio')				
 						#set($primarymedia = $primarymediatemp)
 					#end
 			#end
@@ -83,15 +84,16 @@ $context.putPageValue("previewurl", $previewurl)
 			#set( $primarymediafield = $searcher.getDetailForView($view, "primaryimage", $user) )
 			#if($primarymediafield)
 				#ifnotnull($entity.primaryimage)
-						#set( $primarymedia = $mediaarchive.getCachedAsset($entity.primaryimage))
-						#if($primarymedia.assettype == 'photo' || $primarymedia.assettype == 'video' )
-							##break
-						#else
-							#set($primarymedia = '')
+						#set( $primarymediatemp = $mediaarchive.getCachedAsset($entity.primaryimage))
+						#set($rendertype = $mediaarchive.getMediaRenderType($primarymediatemp.fileformat))
+						#if($rendertype != 'audio')
+							#set($primarymedia = $primarymediatemp)
 						#end
 				#end
 			#end
 		#end	
+		
+		$context.putPageValue("type", $rendertype)
 				
 		$context.putPageValue("primarymedia", $primarymedia)
 	    $context.putPageValue("viewer", "e_m_g_${entity.id}")

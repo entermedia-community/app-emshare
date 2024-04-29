@@ -1,48 +1,30 @@
-#if(!$faceprofilegroupid)
-#set($faceprofilegroupid = $entityid)
-#end
-#if($asset && $faceprofilegroupid)
 
 #set( $facemanager = $mediaarchive.getBean("faceProfileManager") )
+#set($thumbimagesize = $mediaarchive.readImageSize($asset, $imagesize) )
 
-#set($h = "80")
-#set($w = "160")
-#set($link = $mediaarchive.asLinkToPreview($hit, "image200x200.jpg"))
-#if(!$thumbsize || $thumbsize=="mediumplus")
-	#set($h = "350")
-	#set($w = "550")
-	#set($link = $mediaarchive.asLinkToPreview($hit, "image550x350.jpg"))
-#elseif($thumbsize=="medium" )
-	#set($h = "200")
-	#set($w = "200")
-	#set($link = $mediaarchive.asLinkToPreview($hit, "image550x350.jpg"))
-#end
-#if($thumbheight)
-	#set($h = $thumbheight)
-#end 
-
-#set($imagelocation = $facemanager.getImageAndLocationForGroup($asset, $faceprofilegroupid, $h) )
-
-#if($imagelocation.timecodestartseconds > -1)
-	 #set($link = "$link?timeoffset=$imagelocation.timecodestartseconds")
-#end
+#set($imagelocation = $facemanager.getImageAndLocationForGroup($asset, $faceprofilegroups, $thumbimagesize.h) )
+#if($imagelocation)
+	#if($imagelocation.timecodestartseconds > -1)
+		 #set($imagepath = "$imagepath?timeoffset=$imagelocation.timecodestartseconds")
+	#end
 	
-<div class="emshowbox faceprofileboximage" 
-	##style="width: ${w}px; "
-	data-faceprofilegroup="$entityid" 
-	data-showbox="$imagelocation.locationxy"
-	data-imagewidth="${w}"
-	data-inputheight="${h}"
-	>
-	<img src="$!link"
-		class="imagethumb" 
-		style="height:${h}px;" 
-		border="0"  
-		data-assetid="$hit.getId()" 
-		alt="[[View]]: $!hit.getName()" 
-		draggable="true"
-		data-sourcepath="$hit.getSourcePath()" />
-</div>
-#end
+	<div class="emshowbox faceprofileboximage h-100" 
+		data-showbox="$imagelocation.locationxy"
+		data-imagewidth="${thumbimagesize.w}"
+		data-inputheight="${thumbimagesize.h}"
+		>
+		<img 
+			class="imagethumb img-fluid  img$!thumbsize "
+			border="0" 
+			catalogid="$catalogid" 
+			assetid="$hit.id" 
+			alt="#if($title)#esc($title)#else$!{hit.name}#end"
+			draggable="true"  
 
+			data-name="#if($title)#esc($title)#else$!{hit.name}#end" 		
+			src="$imagepath$!urlparams"
+			 />
+			 #if($type =="video")<button class="videoplay-button"><span class="videoplay-icon"></span></button>#end
+	</div>
+#end
 
