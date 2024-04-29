@@ -17,7 +17,6 @@
 	#set ( $searchtype = "asset" )
 #end
 
-##set( $categoryid = $hits.getInput("categoryid") )
 #set($categoryid = $context.getRequestParameter("categoryid"))
 #if (!$categoryid)
 	#set( $categoryid = $context.getRequestParameter("category"))
@@ -43,6 +42,10 @@
 #end
 #if(!$categoryid && $rootcategory)
 	#set($categoryid = $rootcategory)
+#end
+#if(!$moduleid)
+	#set($moduleid = $module.getId())
+	$context.putPageValue("moduleid",$moduleid)
 #end
 #if(!$topmoduleid)
 	#set($topmoduleid = $context.getRequestParameter("topmoduleid"))
