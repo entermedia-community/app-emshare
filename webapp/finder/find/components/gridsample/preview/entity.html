@@ -22,8 +22,8 @@ $context.putPageValue("ismulti", $ismulti)
 		$context.putPageValue("entity", $entity)
 		$context.putPageValue("entityid", $entityid)
 		
-		##Publications
-		#set($enabledpublishing = $entity.get("enablepublishing"))
+		##Publishing (Gallery)
+		#set($canpublishing = $entity.get("enablepublishing"))
 	#end
 #end
 
@@ -67,7 +67,7 @@ $context.putPageValue("topmoduleid", $moduleid)
 	#end
 #end
 
-#if($entitytabopen == "publishing" && $enabledpublishing!="true")
+#if($entitytabopen == "publishing" && $canpublishing!="true")
 	#set($entitytabopen = "")
 #end
 
@@ -145,16 +145,9 @@ $context.putPageValue("topmoduleid", $moduleid)
 				
 					
 					<div class="entity-actions-bar">
-						
-					
-						
-						
 
 						$context.putPageValue("itemid", $entity.id)
 						$pages.include("$componenthome/gridsample/favorites.html?id=$entity.id&moduleid=$moduleid", $context)
-						
-						
-
 						
 					</div>
 				#end
@@ -179,7 +172,7 @@ $context.putPageValue("topmoduleid", $moduleid)
 						title="[[Import]] #text($module) "><i class="bi bi-download"></i> &nbsp;[[Import]]</a>
 						
 				<a href="$applink/views/modules/$moduleid/publishing/enablepublishing.html"
-						class="enablepublishing btn btn-sm btn-brand"
+						class="btn btn-sm btn-brand"
 						data-updateurl="false"
 						data-closedialog="true"
 						data-entityid="$!entityid"
@@ -188,14 +181,18 @@ $context.putPageValue("topmoduleid", $moduleid)
 						
 						##href="$applink/views/modules/$moduleid/edit/editdialog.html?id=${entityid}&viewid=entitypermissions"
 				
-				#if($entityid && $enabledpublishing != "true")	
+				#if($entityid && $canpublishing)
+					#if($publishing && $publishing.get("enabled") == true)
+						#set($enabledpublishing = true)
+					#end
 					<a href="$applink/views/modules/$moduleid/publishing/enablepublishing.html"
-						class="enablepublishing btn btn-sm btn-brand"
+						class=" btn btn-sm btn-brand taboptionpublishing #if($enabledpublishing) enabledpublishing #end"
 						data-updateurl="false"
 						data-closedialog="true"
 						data-entityid="$!entityid"
 						data-moduleid="$moduleid"
 						title="[[Gallery]] #text($module) "><i class="bi bi-grid"></i> [[Gallery]]</a>
+						
 				#end
 						
 						
@@ -295,20 +292,7 @@ $context.putPageValue("topmoduleid", $moduleid)
 				
 				#ifnotnull($id)
 					#if(!$ismulti)
-						##publishing tab
-						#if($enabledpublishing == "true")
-							##permissions here
-							#set($tabtype= "tabpublishing")
-							$context.putPageValue("tabtype", $tabtype)
-							#set($tabid = "tab_publishing")
-							$context.putPageValue("tabid", $tabid)
-							#if($entitytabopen == "publishing")
-								$context.putPageValue("currenttab", $entitytabopen)
-							#end
-							$context.putPageValue("tabtype", $tabtype)
-									
-							$pages.include("$componenthome/gridsample/preview/entitytabmenu.html", $context)
-						#end						
+					
 						
 						##media tab
 						#if($module.getBoolean("enableuploading") && $permissions.can($moduleid, "view_files"))
@@ -323,6 +307,21 @@ $context.putPageValue("topmoduleid", $moduleid)
 							#set($subcomponenthome = "$apphome/views/modules/asset/components")
 							$pages.include("$subcomponenthome/gridsample/preview/entitytabmenu.html", $context)
 						#end
+						
+						##publishing tab
+						#if($entitytabopen == "publishing")
+							##permissions here
+							#set($tabtype= "tabpublishing")
+							$context.putPageValue("tabtype", $tabtype)
+							#set($tabid = "tab_publishing")
+							$context.putPageValue("tabid", $tabid)
+							#if($entitytabopen == "publishing")
+								$context.putPageValue("currenttab", $entitytabopen)
+							#end
+							$context.putPageValue("tabtype", $tabtype)
+									
+							$pages.include("$componenthome/gridsample/preview/entitytabmenu.html", $context)
+						#end	
 						
 					#end
 				#end	
@@ -379,17 +378,9 @@ $context.putPageValue("topmoduleid", $moduleid)
 						#end
 				#end
 				
-				#if($entitytabopen == "publishing" && $enabledpublishing == "true")
-					#if(!$ismulti)
-						#set($tabtype= "tabpublishing")
-						$context.putPageValue("tabtype", $tabtype)
-						$context.putPageValue("currenttab", "publishing")
-						$context.putPageValue("viewid", "publishing")
-						$pages.include("$subcomponenthome/gridsample/preview/tabpublishing.html?entityid=$id", $context)
-					#end
-				#end
+
 				
-				#if($entitytabopen == "import" && $enabledpublishing == "true")
+				#if($entitytabopen == "import" && $canpublishing == "true")
 					#if(!$ismulti)
 						#set($tabtype= "tabimport")
 						$context.putPageValue("tabtype", $tabtype)
@@ -406,6 +397,17 @@ $context.putPageValue("topmoduleid", $moduleid)
 						$context.putPageValue("tabtype", $tabtype)
 						$context.putPageValue("currenttab", "media")
 						$pages.include("$subcomponenthome/gridsample/preview/entitytabmedia.html?entityid=$id", $context)
+					#end
+				#end
+				
+				
+				#if($entitytabopen == "publishing" && $canpublishing == "true")
+					#if(!$ismulti)
+						#set($tabtype= "tabpublishing")
+						$context.putPageValue("tabtype", $tabtype)
+						$context.putPageValue("currenttab", "publishing")
+						$context.putPageValue("viewid", "publishing")
+						$pages.include("$subcomponenthome/gridsample/preview/tabpublishing.html?entityid=$id", $context)
 					#end
 				#end
 			#end

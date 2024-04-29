@@ -1400,12 +1400,14 @@ uiload = function () {
     if (entityshare.length) {
       entityshare.data("entitytabopen", currenttab);
     }
-
-    saveProfileProperty(
-      topmoduleid + "_entitytabopen",
-      link.data("currenttab"),
-      function () {}
-    );
+    var tabtype = link.data("tabpublishing");
+	if(tabpublishing != "publishing") {
+	    saveProfileProperty(
+	      topmoduleid + "_entitytabopen",
+	      link.data("currenttab"),
+	      function () {}
+	    );
+    }
 
     var url =
       apphome +
@@ -1524,7 +1526,7 @@ uiload = function () {
     hideLoader();
   });
 
-  lQuery(".enablepublishing").livequery("click", function (event) {
+  lQuery(".taboptionpublishing").livequery("click", function (event) {
     event.preventDefault();
     var link = $(this);
     var options = link.data();
@@ -1544,6 +1546,9 @@ uiload = function () {
         autoreload(entity);
       },
     });
+  });
+  lQuery(".btn-savepublishing").livequery("click", function (event) {
+	  	$(".taboptionpublishing").toggleClass("enabledpublishing");
   });
 
   lQuery(".autoopenemdialog").livequery(function () {
