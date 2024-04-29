@@ -180,31 +180,39 @@ showHoverMenu = function (inDivId) {
 
 updatebasket = function (e) {
   var action = $(this).data("action");
-  if(action == "addtocart" || action == "remove") {
+  if (action == "addtocart" || action == "remove") {
     var nextpage = $(this).attr("href");
-	var targetDiv = $(this).attr("targetdiv");
-  	targetDiv = targetDiv.replace(/\//g, "\\/");
+    var targetDiv = $(this).attr("targetdiv");
+    targetDiv = targetDiv.replace(/\//g, "\\/");
 
- 	$("#" + targetDiv).load(nextpage, function () {
-	  var url = apphome + "/components/basket/menuitem.html";
-	  $.ajax({
-	      xhrFields: {
-	        withCredentials: true,
-	      },
-	      crossDomain: true,
-	      url: url,
-	      success: function (data) {
-	        $("#basket-paint").replaceWith(data);
-	           if (action == "remove") {
-				   var checkoutpage = $("#collectionbasket")
-				   if(checkoutpage.length > 0) {
-					    window.location.reload();
-				   }
-			   }
-	      },
-	    });
-	    });
-	}
+    $("#" + targetDiv).load(nextpage, function () {
+      showLoader();
+      var url = apphome + "/components/basket/menuitem.html";
+      $.ajax({
+        xhrFields: {
+          withCredentials: true,
+        },
+        crossDomain: true,
+        url: url,
+        success: function (data) {
+          $("#basket-paint").replaceWith(data);
+          if (action == "remove") {
+            var checkoutpage = $("#collectionbasket");
+            if (checkoutpage.length > 0) {
+              window.location.reload();
+            }
+          }
+          $("#resultsmessages").append(
+            '<div class="alert alert-success fader alert-save">Added to cart</div>'
+          );
+          hideLoader();
+        },
+        complete: function () {
+          hideLoader();
+        },
+      });
+    });
+  }
   return false;
 };
 
@@ -228,9 +236,8 @@ updatebasketmediaviewer = function (e) {
 };
 
 checkoutrefresh = function (e) {
-	window.location.reload();
+  window.location.reload();
 };
-
 
 // Is this being used?
 getConfirmation = function (inText) {

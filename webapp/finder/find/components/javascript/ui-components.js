@@ -654,8 +654,9 @@ uiload = function () {
   lQuery(".uibutton").livequery(function () {
     $(this).button();
   });
+
   lQuery(".fader").livequery(function () {
-    $(this).fadeOut(2000, "linear");
+    $(this).fadeOut(2500, "linear");
   });
 
   lQuery(".uipanel").livequery(function () {
