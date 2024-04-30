@@ -7,10 +7,20 @@
 	#set($setpagetitle = "[[Settings]]")
 #end
 
+#set($topmenuselected = $context.findValue("module") )
+#ifnull($topmenuselected)
+	#set($topmenuselected = $moduleid )
+#end 
 
+##loop to know if there are submenus
+#foreach( $link in $topmenu)
+	#if($topmenuselected == $link.toplevelentity && $link.get("submenu"))
+		#set($hassubmenu = true) 
+	#end
+#end
 
 <div id="applicationmaincontent" 
-class="applicationmaincontent  applicationmaincontent$section"
+class="applicationmaincontent  applicationmaincontent$section #if($hassubmenu) entitynavsubmenu #end"
 data-setpagetitle="$!setpagetitle"
 data-section="$!section ">
 	$pages.include("${themeprefix}/layouts/header.html", $context)
@@ -19,18 +29,12 @@ data-section="$!section ">
 	
 	#if($canviewentitiestopmenu)
 		
-		#set($selected = $context.findValue("module") )
-		
-		#ifnull($selected)
-			#set($selected = $moduleid )
-		#end 
-		
 		<div class="entityNavBarContainer autostickywidth" id="entityNavBarContainer">
 		<ul class="entity-navbar">
 			
 			#if($topmenu.isEmpty())
 			<li>
-				<a href="$applink/index.html" class="ajax #ifnull($selected) active #end" 
+				<a href="$applink/index.html" class="ajax #ifnull($topmenuselected) active #end" 
 					data-targetdiv="applicationcontent" 
 					data-oemaxlevel="3" 
 					data-updateurl="true"
@@ -44,19 +48,27 @@ data-section="$!section ">
 			</li>
 			#else
 				#foreach( $link in $topmenu)
-					#set( $entity = $mediaarchive.getCachedData("module",$link.toplevelentity) )
+					#set( $topmenuentity = $mediaarchive.getCachedData("module",$link.toplevelentity) )
+					#if($topmenuselected == $topmenuentity.getId() && $link.get("submenu"))
+						#set($submenu = $link.getValue("submenu")) 
+					#end
 					<li >
-						<a href="$applink/views/modules/$entity.getId()/index.html?${entity.getId()}page=1" 
-							class="ajax activelistener #ifnotnull($selected) #if( $selected == $entity.getId()) active#end #end" 
+						<a href="$applink/views/modules/$topmenuentity.getId()/index.html?$!{topmenuentity.getId()}page=1" 
+							class="ajax activelistener #ifnotnull($topmenuselected) #if( $topmenuselected == $topmenuentity.getId()) active#end #end" 
 							data-targetdiv="applicationcontent" 
 							data-oemaxlevel="4" 
 							data-updateurl="true"
 							data-profilepreference="defaultmodule" 
-							data-profilepreference.value="${entity.getId()}" 
+							data-profilepreference.value="${topmenuentity.getId()}" 
 							data-scrolltotop="true"
-							#if($entity.getId() =="asset") data-sidebarcomponent="categories" #end
+							#if($topmenuentity.getId() =="asset") data-sidebarcomponent="categories" #end
 							title="[[View]] #text($link)">
-								#text($link)
+							#set($moduleicon = "grid")
+					     	#if ($topmenuentity.moduleicon)
+					     		#set($moduleicon = $topmenuentity.moduleicon)
+					     	#end
+							<i class="bi bi-${moduleicon} module-icon"></i> 
+							#text($link)
 						</a>
 					</li>
 				#end
@@ -74,6 +86,36 @@ data-section="$!section ">
 			#end
 		</ul>
 		</div>
+		
+		#if($topmenuselected && $submenu)
+			<div class="entity-navbar-sub-container">
+			<ul class="entity-navbar-sub">
+			#foreach( $link in $submenu)
+					#set( $submenuentity = $mediaarchive.getCachedData("module",$link.entity) )
+					
+					#set($menuicon = "grid")
+					#if($submenuentity.moduleicon)
+						#set($menuicon = $submenuentity.moduleicon)
+					#end
+					<li >
+						<a href="$applink/views/modules/$submenuentity.getId()/index.html?$!{submenuentity.getId()}page=1" 
+							class="ajax activelistener #ifnotnull($topmenuselected) #if( $topmenuselected == $submenuentity.getId()) active#end #end" 
+							data-targetdiv="applicationcontent" 
+							data-oemaxlevel="4" 
+							data-updateurl="true"
+							data-profilepreference="defaultmodule" 
+							data-profilepreference.value="${submenuentity.getId()}" 
+							data-scrolltotop="true"
+							#if($submenuentity.getId() =="asset") data-sidebarcomponent="categories" #end
+							title="[[View]] #text($link)">
+								<i class="bi bi-$!{menuicon} module-icon"></i> #text($link)
+						</a>
+					</li>
+				#end
+				</ul>
+				</div>
+		#end
+		
 	#end
 
 
