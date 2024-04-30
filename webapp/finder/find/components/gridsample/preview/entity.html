@@ -86,7 +86,6 @@ $context.putPageValue("topmoduleid", $moduleid)
 	$context.putPageValue("defaultfolder", $defaultfolder)
 #end
 
-
 <div class="entitydialog #if($enablebackbutton || $addnew) enablebackbtn #end"
 	id="#eid($!dialogtabid)" 
 	data-moduleid="$moduleid" 
@@ -157,15 +156,12 @@ $context.putPageValue("topmoduleid", $moduleid)
 			
 			
 			<div class="d-flex entity-actions-bar align-items-center text-white">
-				#set($tabtype = "tabimport")
-				<a href="$applink/views/modules/$moduleid/components/gridsample/preview/${tabtype}.html"
-						class="entity-tab-label btn btn-sm btn-brand"
-						id="tab_$!tabid"
-						data-tabid="$!tabid"
-						data-currenttab="import"
+				
+				<a href="$applink/views/modules/$moduleid/components/gridsample/preview/tabimport.html"
+						class='btn btn-sm btn-brand entitytabactions tabactionimport #if($entitytabopen=="import")enabledaction #end '
+						data-tabaction="import"
 						data-viewid="import"
-						data-tabtype="${tabtype}" 
-						data-toggle="tab"
+						data-tabtype="tabimport" 
 						data-entityid="$!entity.getId()" 
 						data-topmoduleid="$!moduleid"
 						data-moduleid="$!moduleid"
@@ -185,13 +181,17 @@ $context.putPageValue("topmoduleid", $moduleid)
 					#if($publishing && $publishing.get("enabled") == true)
 						#set($enabledpublishing = true)
 					#end
+					
 					<a href="$applink/views/modules/$moduleid/publishing/enablepublishing.html"
-						class=" btn btn-sm btn-brand taboptionpublishing #if($enabledpublishing) enabledpublishing #end"
+						class=' btn btn-sm btn-brand entitytabactions tabactionpublishing #if($entitytabopen=="publishing")enabledaction #end #if($enabledpublishing) statusenabled #end'
+						data-tabaction="publishing"
 						data-updateurl="false"
 						data-closedialog="true"
 						data-entityid="$!entityid"
 						data-moduleid="$moduleid"
-						title="[[Gallery]] #text($module) "><i class="bi bi-grid"></i> [[Gallery]]</a>
+						title="[[Gallery]] #text($module) "><i class="bi bi-grid"></i> [[Gallery]]
+						<i class="bi bi-check-circle-fill tabactivitystatus"></i>
+						</a>
 						
 				#end
 						
@@ -308,6 +308,17 @@ $context.putPageValue("topmoduleid", $moduleid)
 							$pages.include("$subcomponenthome/gridsample/preview/entitytabmenu.html", $context)
 						#end
 						
+						##publishing import
+						#if($entitytabopen == "import")
+							##permissions here
+							#set($tabtype= "tabimport")
+							$context.putPageValue("tabtype", $tabtype)
+							#set($tabid = "tab_import")
+							$context.putPageValue("tabid", $tabid)
+							$context.putPageValue("currenttab", $entitytabopen)
+									
+							$pages.include("$componenthome/gridsample/preview/entitytabmenu.html", $context)
+						#end
 						##publishing tab
 						#if($entitytabopen == "publishing")
 							##permissions here
@@ -315,10 +326,7 @@ $context.putPageValue("topmoduleid", $moduleid)
 							$context.putPageValue("tabtype", $tabtype)
 							#set($tabid = "tab_publishing")
 							$context.putPageValue("tabid", $tabid)
-							#if($entitytabopen == "publishing")
-								$context.putPageValue("currenttab", $entitytabopen)
-							#end
-							$context.putPageValue("tabtype", $tabtype)
+							$context.putPageValue("currenttab", $entitytabopen)
 									
 							$pages.include("$componenthome/gridsample/preview/entitytabmenu.html", $context)
 						#end	

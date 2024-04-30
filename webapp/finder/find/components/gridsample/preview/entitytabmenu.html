@@ -17,6 +17,12 @@
 #if($tabtype == "tabsubmodulehome")
 	#set($tabid = "tab_${viewid}")
 	#set($tabname = $viewdata.getName($context))
+#elseif($tabtype=="tabimport")
+	#set($tabid = "tab_import")
+	#set($tabname = "[[Import]]")
+	#set($viewid = "import")
+	#set($moduleicon = "download")
+
 #elseif($tabtype=="tabpublishing")
 	#set($tabid = "tab_publishing")
 	#set($tabname = "[[Publishing]]")
@@ -70,7 +76,7 @@
 		
 		title="#esc($tabname)">
 
-	   	#if ($tabmodule.moduleicon)
+	   	#if (!$moduleicon && $tabmodule.moduleicon)
 	   		#set($moduleicon = $tabmodule.moduleicon)
 	   	#end
 

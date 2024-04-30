@@ -1401,8 +1401,16 @@ uiload = function () {
     if (entityshare.length) {
       entityshare.data("entitytabopen", currenttab);
     }
-    var tabtype = link.data("tabpublishing");
-	if(tabpublishing != "publishing") {
+    $(".entitytabactions").removeClass("enabledaction");
+    var tabtype = link.data("tabtype");
+	
+    if(tabtype == "tabpublishing") { 
+		$(".tabactionpublishing").addClass("enabledaction");
+	}
+	else if(tabtype == "tabimport") { 
+		$(".tabactionimport").addClass("enabledaction");
+	}
+	else  {
 	    saveProfileProperty(
 	      topmoduleid + "_entitytabopen",
 	      link.data("currenttab"),
@@ -1527,11 +1535,11 @@ uiload = function () {
     hideLoader();
   });
 
-  lQuery(".taboptionpublishing").livequery("click", function (event) {
+  lQuery(".entitytabactions").livequery("click", function (event) {
     event.preventDefault();
     var link = $(this);
     var options = link.data();
-
+	var tabaction = link.data("tabaction");
     var url = link.attr("href");
 
     $.ajax({
@@ -1543,14 +1551,24 @@ uiload = function () {
       data: options,
       success: function (data) {
         var entity = $(".entitydialog");
-        entity.data("entitytabopen", "publishing");
+        entity.data("entitytabopen", tabaction);
         autoreload(entity);
       },
     });
   });
+  
   lQuery(".btn-savepublishing").livequery("click", function (event) {
-	  	$(".taboptionpublishing").toggleClass("enabledpublishing");
+	  var form = $(this).closest('form');
+	  
+	  if ($("#enabledlabel", form).is(':checked')) {
+		$(".tabactionpublishing").addClass("statusenabled");  
+	  }
+	  else {
+		  $(".tabactionpublishing").removeClass("statusenabled");
+	  }
+	  	
   });
+  
 
   lQuery(".autoopenemdialog").livequery(function () {
     emdialog($(this));
