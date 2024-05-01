@@ -95,15 +95,16 @@ $context.putPageValue("entityrendertype", $entityrendertype)
 							#if ($amodule.modulerendertype)
 								#set($entityrendertype = $amodule.modulerendertype)
 							#end
-							#set($addtourl = "$siteroot$applink/views/modules/${amoduleid}/components/entities/search/searchpicker.html")
+							#set($addtourl = "$siteroot$applink/views/modules/${moduleid}/components/entities/copyentities.html")
 							#ifnotnull($topentityid)
 								#set($addtourl = "$addurl&fieldexternalid=${topmodule.getId()}&fieldexternalvalue=${topentityid}&reloadtargets=topmodulecontainer")
 							#end
-							<a class="dropdown-item emdialog" 
-								data-dialogid="addtoentity"
-								data-hidefooter="true"
-								data-searchtype="$amoduleid"
-								data-assethitssessionid="$hits.getSessionId()"
+							<a class="ajax dropdown-item"
+								data-targetdiv="applicationmaincontent"
+								data-oemaxlevel="2" 
+								data-moduleid="$amoduleid"
+								data-copyingsearchtype="$moduleid"
+				    			data-copyinghitssessionid="$hits.getSessionId()"	
 								href="$addtourl" >#text($amodule)</a>
 							#end
 						#end

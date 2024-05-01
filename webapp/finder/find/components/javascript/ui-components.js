@@ -687,6 +687,7 @@ uiload = function () {
     function (e) {
       e.preventDefault();
       e.stopImmediatePropagation();
+      e.stopPropagation();
 
       var warning = $(this).data("warning");
       if (warning && !confirm(warning)) {
@@ -871,20 +872,30 @@ uiload = function () {
   lQuery("form.autosubmit").livequery(function () {
     var form = $(this);
 
-    $("select", form).change(function () {
-      $(form).trigger("submit");
+    $("select", form).change(function (e) {
+		e.stopPropagation();
+      	$(form).trigger("submit");
     });
+    /* Todo: use onblur
     $("input", form).on("focusout", function (event) {
       $(form).trigger("submit");
     });
+    */
     $("input", form).on("keyup", function (e) {
+		//Enter Key handled by default the submit
+		if (e.keyCode == 13) {
+			return;
+		}
+	  e.preventDefault();
+	  e.stopPropagation();
       $(form).trigger("submit");
     });
     $(
       'input[type="file"],input[name="date.after"],input[type="checkbox"]',
       form
-    ).on("change", function () {
-      $(form).trigger("submit");
+    ).on("change", function (e) {
+		e.stopPropagation();
+      	$(form).trigger("submit");
     });
   });
 
@@ -925,6 +936,7 @@ uiload = function () {
   lQuery(".submitform-oehtml, .dialogsubmitbtn").livequery(
     "click",
     function (e) {
+
       var theform = $(this).closest("form");
       if (theform.length == 0) {
         //dialog form?
@@ -932,11 +944,14 @@ uiload = function () {
         theform = $("#" + dialogform);
       }
       if (theform.length) {
+		e.preventDefault();
+      	e.stopImmediatePropagation();
+      	e.stopPropagation();
+      	debugger;
         theform.data("readytosubmit", "true");
         theform.find(".oehtmlinput").trigger("blur");
         theform.trigger("submit");
       }
-      e.preventDefault();
     }
   );
 
