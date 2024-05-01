@@ -33,7 +33,7 @@ $context.putPageValue("topentityid", $topentityid)
 
 #if($moduleid == "searchcategory")
 	#set($previewurl = "$!{siteroot}$apphome/views/modules/modulesearch/searchcategory.html?field=searchcategory&operation=exact&searchcategory.value=$entityid")
-	#set($linktype = "searchcategory")
+	#set($linktype = "ajax searchcategory")
 #else
 	#set($previewurl = "$!{siteroot}$apphome/views/modules/$!moduleid/components/gridsample/preview/entity.html?id=$entityid&hitssessionid=$!hits.sessionId")
 	#set($linktype = "emdialog entity-dialog")
@@ -43,6 +43,8 @@ $context.putPageValue("previewurl", $previewurl)
 <div class="emgridcell-header">
 	<a href="$!{previewurl}" 
 		class="$linktype" 
+		data-targetdiv="searchcategorytopcontainer"
+		data-oemaxlevel="1"
    	 	data-hidefooter="true" 
    	 	data-hideheader="true" 
 		id="clickid${entityid}"  
@@ -112,6 +114,8 @@ $context.putPageValue("previewurl", $previewurl)
 		
         <a href="$!{previewurl}" 
    	 	class="$linktype" 
+   	 	data-targetdiv="searchcategorytopcontainer"
+		data-oemaxlevel="2"
    	 	data-hidefooter="true" 
    	 	data-hideheader="true"
    	 	id="clickid${entityid}"  

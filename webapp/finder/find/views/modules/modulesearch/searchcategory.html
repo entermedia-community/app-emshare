@@ -1,44 +1,7 @@
-$hits
+$context.putPageValue("hits", $searchcategoryhits)
 
-$context.putPageValue("hits", $modulehits)
-<div class="bookmarksarea" data-url="$!{page.path}" data-oemaxlevel="1">
-<div class="finder-title">
-<h2>[[Bookmarks]]</h2>
-</div>
-  
- <div class="favoritescontainer">
+#set($topcategoryid = $context.getRequestParameter("searchcategory.value"))
 
- 
- #foreach($module in $organizedModules)
- 
- 		#set($idhits = $organizedHits.get($module.id))
-		$context.putPageValue("hits", $idhits)
-		$context.putPageValue("module", $module)
-		$context.putPageValue("moduleid", $module.id)
-		$context.putPageValue("componenthome", "$apphome/views/modules/$module.id/components")
-		
-		$context.putPageValue("topmoduleid", "favorites")
-   		
- 
-	#if($module.id != "asset")
-	   	#set($modulerendertype = "entity")
-	   	#if ($module.homepagerendertype)
-	   		#set($modulerendertype = $module.homepagerendertype)
-	   	#end
-	   	
-	   	$context.putPageValue("modulerendertype", $modulerendertype)
-	  	
-	   	#set( $favorites = $userprofile.get("favorites_"+$module.id))
-		$context.putPageValue("favorites", $favorites)
+$context.putPageValue("topcategoryid", $topcategoryid)
 
-		$pages.include("$apphome/components/gridsample/modulegrid.html", $context)
-	#else
-	
-	
-	$context.putPageValue("showheader", true)
-		$pages.include("$apphome/views/modules/asset/index.html", $context)
-		
-	#end 
-#end
-</div>
-</div>
+$pages.include("${componenthome}/gridsample/index.html",$context)
