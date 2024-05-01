@@ -375,9 +375,11 @@ uiload = function () {
   } //datepicker
 
   if ($.fn.minicolors) {
-    $(".color-picker").minicolors({
-      defaultValue: "",
-      letterCase: "uppercase",
+    lQuery(".color-picker").livequery(function () {
+      $(this).minicolors({
+        defaultValue: "",
+        letterCase: "uppercase",
+      });
     });
   }
 
