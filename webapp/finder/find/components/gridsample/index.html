@@ -28,6 +28,7 @@ $prhits.setPageOneBased($currentpage)
 #end
 #set($pos = $prhits.toPosition($prhits.getPage()))
 
+
 #set($resultsPage = "$componenthome/results/index.html?hitssessionid=$!hits.sessionId&pageposition")
 #set($targetdivinner = "${module.id}resultsarea")
 #set($oemaxlevel = "2")
@@ -47,24 +48,13 @@ $prhits.setPageOneBased($currentpage)
 			    <div class="emgridcell emgridcell-$rendertype activelistcontainer 
 	 			#if($selectedid == $hit.getId() || $topselectedid == $hit.getId()) active #end
 	 			">
-				#set($rendertype = $module.modulerendertype)
-				#if (!$rendertype)
-		   			#set($rendertype = "entity")
-				#end
-			    $pages.include("$apphome/views/modules/$!{moduleid}/components/gridsample/types/${rendertype}.html", $context)
+				
+			    $pages.include("$apphome/views/modules/$!{moduleid}/components/gridsample/types/entity.html", $context)
 			    </div>
 			#end
 	</div>  
 	  
-	<div class="emgridnav" style="padding-left:4px;">
-		#if ( $prhits.prevPosition() )
-			<a href="$resultsPage=$prhits.prevPosition()" class="ajax" data-updateurl="$!updateurl" 
-			data-oemaxlevel="$oemaxlevel" data-targetdiv="$targetdivinner">
-			<img src="$apphome/theme/images/arrow-right.svg"	style="width:20px;" />
-			</a>
-		#end
-	</div>
-	
+
 	</div>
 	<div class="clearfix"></div>
 </div>
