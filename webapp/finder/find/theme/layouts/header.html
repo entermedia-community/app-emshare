@@ -44,7 +44,7 @@
 	#end
 	
 	#if($user)
-	<div class="d-flex align-items-center">
+	<div class="d-flex align-items-center z-n1">
 		#set($uploadmodules = 0)
 		#foreach ( $amodule in $userprofile.getEntities() )
 			#if($amodule.getBoolean("enableuploading"))
@@ -116,12 +116,24 @@
 					[[Bookmarks]] <i class="bi bi-bookmarks-fill ml-1"></i>
 			</a> 
 		#end
+
+		#if($canviewsettings && $userprofile.hasModule("order") )
+			#set( $orders = $mediaarchive.query("order").exact("checkoutstatus","pending").search($context))
+		#end
 		<div class="position-relative em">
+			#if( $orders.size() > 0)
+				<div class="dot-badge" role="alert"></div>
+			#end
 			<button class="dropdown-toggle" type="button" data-toggle="dropdown">
 				<span class="navbar-toggler-icon text-white"></span>
 			</button> 
 			<div class="dropdown-menu dropdown-menu-right"> 
 				#if($canviewsettings)
+					#if( $orders.size() > 0)
+						<a href="$apphome/views/modules/order/pending.html" class="dropdown-item ajax" data-targetdiv="applicationmaincontent" data-oemaxlevel="3" data-updateurl="true" title="[[Dashboard]]">
+							$orders.size() [[Pending Orders]]
+						</a>
+					#end
 					<a href="$!{siteroot}$apphome/views/dashboard/index.html" class="dropdown-item ajax" 
 						data-targetdivinner="application" data-updateurl="true" data-oemaxlevel="4" title="[[Dashboard]]">
 						[[Dashboard]]
@@ -165,23 +177,5 @@
 			</div>
 		</div>
 	</div>
-	#end
-	
-	
-	#if($canviewsettings)
-	#if( $userprofile.hasModule("order") )
-	#set( $orders = $mediaarchive.query("order").exact("checkoutstatus","pending").search($context))
-	#if( $orders.size() > 0)
-	<div id="headerstatusarea"  class="alert alert-primary" role="alert">
-	<a href="$apphome/views/modules/order/pending.html"
-	 class="ajax"
-	 data-targetdiv="applicationmaincontent"
-	 data-oemaxlevel="3"
-	 data-updateurl="true">
-		<i class="fas fa-info-circle"></i>
-		[[Pending Orders]]  ($orders.size())</a>
-	</div>
-	#end
-	#end
 	#end
 </div>

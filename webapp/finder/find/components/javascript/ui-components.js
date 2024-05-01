@@ -1403,19 +1403,17 @@ uiload = function () {
     }
     $(".entitytabactions").removeClass("enabledaction");
     var tabtype = link.data("tabtype");
-	
-    if(tabtype == "tabpublishing") { 
-		$(".tabactionpublishing").addClass("enabledaction");
-	}
-	else if(tabtype == "tabimport") { 
-		$(".tabactionimport").addClass("enabledaction");
-	}
-	else  {
-	    saveProfileProperty(
-	      topmoduleid + "_entitytabopen",
-	      link.data("currenttab"),
-	      function () {}
-	    );
+
+    if (tabtype == "tabpublishing") {
+      $(".tabactionpublishing").addClass("enabledaction");
+    } else if (tabtype == "tabimport") {
+      $(".tabactionimport").addClass("enabledaction");
+    } else {
+      saveProfileProperty(
+        topmoduleid + "_entitytabopen",
+        link.data("currenttab"),
+        function () {}
+      );
     }
 
     var url =
@@ -1539,7 +1537,7 @@ uiload = function () {
     event.preventDefault();
     var link = $(this);
     var options = link.data();
-	var tabaction = link.data("tabaction");
+    var tabaction = link.data("tabaction");
     var url = link.attr("href");
 
     $.ajax({
@@ -1556,19 +1554,16 @@ uiload = function () {
       },
     });
   });
-  
+
   lQuery(".btn-savepublishing").livequery("click", function (event) {
-	  var form = $(this).closest('form');
-	  
-	  if ($("#enabledlabel", form).is(':checked')) {
-		$(".tabactionpublishing").addClass("statusenabled");  
-	  }
-	  else {
-		  $(".tabactionpublishing").removeClass("statusenabled");
-	  }
-	  	
+    var form = $(this).closest("form");
+
+    if ($("#enabledlabel", form).is(":checked")) {
+      $(".tabactionpublishing").addClass("statusenabled");
+    } else {
+      $(".tabactionpublishing").removeClass("statusenabled");
+    }
   });
-  
 
   lQuery(".autoopenemdialog").livequery(function () {
     emdialog($(this));
@@ -2651,9 +2646,11 @@ uiload = function () {
       if (action == "show") {
         searchmodaldialog.show();
         searchmodalmask.show();
+        $(".headersearchbar").addClass("searchbaropen");
       } else {
         searchmodalmask.hide();
         searchmodaldialog.hide();
+        $(".headersearchbar").removeClass("searchbaropen");
       }
     }
   });
