@@ -375,9 +375,11 @@ uiload = function () {
   } //datepicker
 
   if ($.fn.minicolors) {
-    $(".color-picker").minicolors({
-      defaultValue: "",
-      letterCase: "uppercase",
+    lQuery(".color-picker").livequery(function () {
+      $(this).minicolors({
+        defaultValue: "",
+        letterCase: "uppercase",
+      });
     });
   }
 
@@ -2662,22 +2664,10 @@ uiload = function () {
         searchmodaldialog.show();
         searchmodalmask.show();
         $(".headersearchbar").addClass("searchbaropen");
-        var leftOffset = $("#col-settings").width();
-        if (leftOffset) {
-          leftOffset = Math.floor(leftOffset / 2);
-          $(".nav-quicksearch .input-group").css(
-            "left",
-            "calc(50% + " + leftOffset + "px)"
-          );
-        } else {
-          leftOffset = 0;
-          $(".nav-quicksearch .input-group").css( "left", "50%" );
-        }
       } else {
         searchmodalmask.hide();
         searchmodaldialog.hide();
         $(".headersearchbar").removeClass("searchbaropen");
-        $(".nav-quicksearch .input-group").css("left", "0");
       }
     }
   });
