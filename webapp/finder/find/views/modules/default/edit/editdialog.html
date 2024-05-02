@@ -9,13 +9,19 @@
 #end
 #set( $moduleid = $context.findValue("module") )
 
+#set( $searcher = $mediaarchive.getSearcher($moduleid) )
+
 #if(!$defaultcategoryid)
 	#set( $defaultcategoryid = $context.getRequestParameter("defaultcategoryid") )
 #end
+
+#set($entityid = $context.getRequestParameter("entityid"))
+
 #if( !$entity)
 	#set( $entity  = $mediaarchive.getData($moduleid, $entityid) )
 #end
 #set($id = $entity.id )
+
 #if( !$id )
 	#set( $id = $context.getRequestParameter("id") )
 #end
@@ -45,8 +51,7 @@ $context.putPageValue("viewid", $view.id)
     	<input name="id" type="hidden" value="$!id" />
         <input name="categoryid" type="hidden" value="$!defaultcategoryid" />
         <input name="nodeID" type="hidden" value="$!defaultcategoryid" />
-    	<input name="catalogid" type="hidden" value="$searcher.catalogId" />
-    	<input name="searchtype" type="hidden" value="$searcher.searchType" />
+    	<input name="searchtype" type="hidden" value="${moduleid}" />
     	<input name="moduleid" type="hidden" value="$!{moduleid}" />
     	<input name="viewid" type="hidden" value="$viewid" />
     	<input name="view" type="hidden" value="$viewpath" />
@@ -59,6 +64,8 @@ $context.putPageValue("viewid", $view.id)
     	
     	$context.putPageValue("view", $viewpath)
     	$context.putPageValue("data", $entity)
+    	$context.putPageValue("searcher", $searcher)
+
 
 		#set( $origURL = $context.getRequestParameter("origURL" ) )
 		#set ( $moduleid = $context.findValue("module") )

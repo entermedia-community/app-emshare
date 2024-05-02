@@ -949,7 +949,7 @@ uiload = function () {
 		e.preventDefault();
       	e.stopImmediatePropagation();
       	e.stopPropagation();
-      	debugger;
+      	
         theform.data("readytosubmit", "true");
         theform.find(".oehtmlinput").trigger("blur");
         theform.trigger("submit");
@@ -1425,6 +1425,8 @@ uiload = function () {
       $(".tabactionpublishing").addClass("enabledaction");
     } else if (tabtype == "tabimport") {
       $(".tabactionimport").addClass("enabledaction");
+     } else if (tabtype == "tabexport") {
+      $(".tabactionexport").addClass("enabledaction");
     } else {
       saveProfileProperty(
         topmoduleid + "_entitytabopen",

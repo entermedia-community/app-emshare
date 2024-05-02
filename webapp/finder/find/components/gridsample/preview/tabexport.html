@@ -45,45 +45,48 @@ $context.putPageValue("tabmode", $tabmode)
 		
 		
 		<div class="entityimport">
-			<a href="$componenthome/share/entity.html?entityid=$!{entityid}&moduleid=$!{topmoduleid}&defaultcategoryid=$defaultcategoryid"
+			<a href="$componenthome/share/entity.html?entityid=$!{entityid}&moduleid=$!{topmoduleid}&defaultcategoryid=$!defaultcategory.getId()"
 				class="btn btn-lg btn-wide ajax"
 				data-targetdivinner="tabexportcontent"
-				data-oemaxlevel="1"><i class="bi bi-share-fill"></i> [[Share with Link]]</a>
+				data-oemaxlevel="1"><i class="bi bi-share-fill"></i> [[Share Settings]]</a>
 
 
+			#if($desktop)
 			<h4 class="text-center">[[Sync Files Locally]]</h4>
-			
 			<a href="#"
-				class="btn btn-lg btn-wide ajax" data-targetdivinner="tabexportcontent"
+				class="btn btn-lg btn-wide" data-targetdivinner="tabexportcontent"
 				data-oemaxlevel="1">
 				<i class="bi bi-folder-symlink"></i> [[Push to Local Drive]]</a>
+			#end
 
-			<h4 class="text-center">[[Download]]</h4>
+			
 
-			<a class="ajax btn btn-lg btn-wide"
-				id="poptrigger"
+			<a class="ajax btn btn-lg btn-wide "
 				data-targetdivinner="tabexportcontent"
-				data-hidefooter="true"
 				data-oemaxlevel="1"
-				data-targetcategoryid="$!defaultcategory.id"
-				onclick='$("#searcher").show();$("#picker").hide();'
-				title="ID: ($entityid)"
-				href="$apphome/components/entities/import/autopopulate.html?id=$!entityid"
-				><i class="bi bi-folder"></i> &nbsp;[[Download Folder]]</a>
+				title="[[Download All Files]]"
+				href="$componenthome/entities/download.html?entityid=$!{entityid}&moduleid=$!{topmoduleid}&defaultcategoryid=$defaultcategory.getId()">
+				><i class="bi bi-folder"></i> &nbsp;[[Download All]]</a>
 				
 				
-			<h4 class="text-center">[[Copy]]</h4>
+			<h4 class="text-center">[[Create New]]</h4>
 
 			<a class="ajax btn btn-lg btn-wide"
 				data-targetdivinner="tabexportcontent"
 				data-oemaxlevel="1"
 				data-targetcategoryid="$!defaultcategory.id"
-				href="$apphome/components/entities/import/choosecategory.html?id=$!searchby">
-				<i class="bi bi-folder-plus"></i> &nbsp;[[Copy]] #text($topmodule) [[to]]</a>
+				href="$componenthome/entities/copydialog.html?entityid=$!{entityid}&moduleid=$!{topmoduleid}&defaultcategoryid=$defaultcategory.getId()">
+				<i class="bi bi-folder-plus"></i> &nbsp;[[Copy To]]</a>
+			<a class="ajax btn btn-lg btn-wide"
+				data-targetdivinner="tabexportcontent"
+				data-oemaxlevel="1"
+				data-targetcategoryid="$!defaultcategory.id"
+				href="$componenthome/entities/movedialog.html?entityid=$!{entityid}&moduleid=$!{topmoduleid}&defaultcategoryid=$defaultcategoryid">
+				<i class="bi bi-folder-plus"></i> &nbsp;[[Move To]]</a>
 		</div>
 		
 		<div id="tabexportcontent" class="tabimportexportcontent">
-			$pages.include("$componenthome/share/entity.html?entityid=$!{entityid}&moduleid=$!{topmoduleid}", $context)
+			##$pages.include("$componenthome/share/entity.html?entityid=$!{entityid}&moduleid=$!{topmoduleid}", $context)
 		</div>
 		
 	</div>
