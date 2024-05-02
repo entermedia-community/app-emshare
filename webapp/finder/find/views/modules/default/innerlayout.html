@@ -19,24 +19,16 @@ $context.putPageValue("topmodule", $topmodule)
 #set($topentityid = $context.getRequestParameter("topentityid"))
 
 <div id="$!{moduleid}topcontainer"
-	class="topmodulecontainer"
+	class="topmodulecontainer $!{moduleid}topcontainer"
 	data-hitssessionid="$!hits.getSessionId()"
 	data-url="$apphome/views/modules/$!{module.id}/index.html"
 	#if($topentityid) data-topentityid="$topentityid" #end
 	data-oemaxlevel="2">
 
 
-$pages.include("$componenthome/filters/filters-selected.html", $context)
-
+	$pages.include("$componenthome/filters/filters-selected.html", $context)
 	
-##<div id="${moduleid}resultscontainer">
 	$pages.includeContent()
-##</div>
-
-
-##<div id="entitymediapreviewselected" class="entitymediapreviewcontainer">
-##$pages.include("$apphome/views/modules/$module.id/children.html", $context)
-##</div>
 
 </div>
 

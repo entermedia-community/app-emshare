@@ -6,19 +6,19 @@
 
 <div id="modulesearchresultsdiv" class="h-100" data-moduleid="$!module.id" >
 	#set( $favorites = $userprofile.get("favorites_"+$module.id))
-$context.putPageValue("favorites", $favorites)
+	$context.putPageValue("favorites", $favorites)
 
-#if (!$rendertype)
-	#set($rendertype = $module.modulerendertype)
 	#if (!$rendertype)
-		#set($rendertype = "entity")
+		#set($rendertype = $module.modulerendertype)
+		#if (!$rendertype)
+			#set($rendertype = "entity")
+		#end
 	#end
-#end
-$context.putPageValue("rendertype", $rendertype)
-$context.putPageValue("rendermoduleid", $module.id)
+	$context.putPageValue("rendertype", $rendertype)
+	$context.putPageValue("rendermoduleid", $module.id)
 
 
-$pages.include("$apphome/views/modules/$module.id/resultsactions.html",$context)
+$pages.include("$apphome/views/modules/${module.id}/resultsactions.html",$context)
 
 #set($currentpage = $context.getRequestParameter("currentpagenum"))
 
@@ -28,13 +28,24 @@ $prhits.setPageOneBased($currentpage)
 #end
 #set($pos = $prhits.toPosition($prhits.getPage()))
 
+
 #set($resultsPage = "$componenthome/results/index.html?hitssessionid=$!hits.sessionId&pageposition")
 #set($targetdivinner = "${module.id}resultsarea")
 #set($oemaxlevel = "2")
 
-
-
-<div class="emgridflex" style="overflow-y: auto; height: calc(100% - 36px);">
+#if($topcategoryid)
+	#set($topcategory = $mediaarchive.getData("searchcategory", $topcategoryid) )
+#end
+<div class="emgridflexcontainer" style="overflow-y: auto; height: calc(100% - 36px);">
+	#if($moduleid=="searchcategory" || $topcategory)
+	<div class="searchcategorybreadcrumb">
+			<a href="" title="[[All Categories]]">[[All]]</a>
+			#if($topcategory)
+			&gt;&nbsp;<a href="" title="[[]]">#text($topcategory.getName())</a>
+			#end
+	</div>
+	#end
+<div class="emgridflex">
 	<div id="galleryimg-${rendertype}" 
 		class='emgrid entitiescontainer' 
 		data-fixedwidth="210" 
@@ -47,25 +58,14 @@ $prhits.setPageOneBased($currentpage)
 			    <div class="emgridcell emgridcell-$rendertype activelistcontainer 
 	 			#if($selectedid == $hit.getId() || $topselectedid == $hit.getId()) active #end
 	 			">
-				#set($rendertype = $module.modulerendertype)
-				#if (!$rendertype)
-		   			#set($rendertype = "entity")
-				#end
-			    $pages.include("$apphome/views/modules/$!{moduleid}/components/gridsample/types/${rendertype}.html", $context)
+				
+			    $pages.include("$apphome/views/modules/$!{moduleid}/components/gridsample/types/entity.html", $context)
 			    </div>
 			#end
 	</div>  
 	  
-	<div class="emgridnav" style="padding-left:4px;">
-		#if ( $prhits.prevPosition() )
-			<a href="$resultsPage=$prhits.prevPosition()" class="ajax" data-updateurl="$!updateurl" 
-			data-oemaxlevel="$oemaxlevel" data-targetdiv="$targetdivinner">
-			<img src="$apphome/theme/images/arrow-right.svg"	style="width:20px;" />
-			</a>
-		#end
+
 	</div>
-	
-	</div>
-	<div class="clearfix"></div>
+</div>
 </div>
 

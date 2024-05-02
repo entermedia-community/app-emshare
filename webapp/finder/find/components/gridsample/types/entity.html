@@ -31,12 +31,20 @@ $context.putPageValue("moduleid", $moduleid)
 #set($topentityid = $context.getRequestParameter("topentityid"))
 $context.putPageValue("topentityid", $topentityid)
 
-#set($previewurl = "$!{siteroot}$apphome/views/modules/$!moduleid/components/gridsample/preview/entity.html?id=$entityid&hitssessionid=$!hits.sessionId")
+#if($moduleid == "searchcategory")
+	#set($previewurl = "$!{siteroot}$apphome/views/modules/modulesearch/searchcategory.html?field=searchcategory&operation=exact&searchcategory.value=$entityid")
+	#set($linktype = "ajax searchcategory")
+#else
+	#set($previewurl = "$!{siteroot}$apphome/views/modules/$!moduleid/components/gridsample/preview/entity.html?id=$entityid&hitssessionid=$!hits.sessionId")
+	#set($linktype = "emdialog entity-dialog")
+#end
 $context.putPageValue("previewurl", $previewurl)
 
 <div class="emgridcell-header">
 	<a href="$!{previewurl}" 
-		class="emdialog entity-dialog" 
+		class="$linktype" 
+		data-targetdiv="searchcategorytopcontainer"
+		data-oemaxlevel="1"
    	 	data-hidefooter="true" 
    	 	data-hideheader="true" 
 		id="clickid${entityid}"  
@@ -105,7 +113,9 @@ $context.putPageValue("previewurl", $previewurl)
 		#end
 		
         <a href="$!{previewurl}" 
-   	 	class="emdialog entity-dialog" 
+   	 	class="$linktype" 
+   	 	data-targetdiv="searchcategorytopcontainer"
+		data-oemaxlevel="2"
    	 	data-hidefooter="true" 
    	 	data-hideheader="true"
    	 	id="clickid${entityid}"  
