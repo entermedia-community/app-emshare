@@ -52,13 +52,15 @@ $prhits.setPageOneBased($currentpage)
 		data-entityrenderurl="$siteroot$apphome/views/modules/$module.id/components/gridsample/gridcell.html"
 		data-rendertype="$rendertype">
 	    	#foreach( $hit in $hits.getPageOfHits())
-				$context.putPageValue("hit", $hit)
+				$context.putPageValue("rendermoduleid", $hit.entitysourcetype)
+				$context.putPageValue("entity", $hit)
+				$context.putPageValue("hit", $hit)								
 			    ##$pages.include("$apphome/components/gridsample/gridcell.html", $context)
 			    <div class="emgridcell emgridcell-$rendertype activelistcontainer 
 	 			#if($selectedid == $hit.getId() || $topselectedid == $hit.getId()) active #end
 	 			">
-				
-			    $pages.include("$apphome/views/modules/$!{moduleid}/components/gridsample/types/entity.html", $context)
+	 			
+			    $pages.include("$apphome/views/modules/${hit.entitysourcetype}/components/gridsample/types/entity.html", $context)
 			    </div>
 			#end
 	</div>  
