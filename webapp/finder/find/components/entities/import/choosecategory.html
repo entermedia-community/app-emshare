@@ -1,13 +1,17 @@
 #set($targetcategoryid = $context.getRequestParameter("targetcategoryid"))
 
 <div id="choosecategorycontainer">
-	
-	<h4>[[Choose Categories]]</h4>
-	
-	<a class="emdialog btn btn-primary" 
-		data-dialogid="catpicker" 
-		href="$home$apphome/components/entities/import/search/searchcategory.html?targetdiv=autocategoriespicked&clearselection=$!clear&action=${page.directory}/picked.html"
-	    data-hidefooter="true" data-parameterdata="categoryvalues"><i class="bi bi-plus-lg"></i>[[Add Category]]</a>
+	<div class="entityuploadheader mb-2" style="font-size:1rem; font-weight: 600;">[[Choose Categories]]</div>
+		<div class="w-100 text-center">
+		<a class="emdialog btn btn-brand" 
+			style="height: 46px;line-height: 36px;font-size: 0.9rem;width:250px"
+			data-dialogid="catpicker" 
+			href="$home$apphome/components/entities/import/search/searchcategory.html?targetdiv=autocategoriespicked&clearselection=$!clear&action=${page.directory}/picked.html"
+				data-hidefooter="true" data-parameterdata="categoryvalues">
+				<i class="bi bi-plus-lg mr-1"></i>[[Add Category]]
+		</a>
+	</div>
+
 	    
 	    
 	<div>
@@ -18,13 +22,18 @@
 		action="$home$apphome/components/entities/import/import.html">
 	    <input type="hidden" name="targetcategoryid" value="$!targetcategoryid"/>
 
-		<div class="inner-content pt-4" id="autocategoriespicked" >
+		<div class="inner-content py-2" id="autocategoriespicked" >
 			<ul id="cat-list" class="list-group list-group-striped list-group-hover autopopulate-list">
-				$pages.include("$apphome/components/entities/import/picked.html",$context)	
+				$pages.include("$apphome/components/entities/import/picked.html",$context)
 			</ul>
 		</div>
-		<br><br>
-		<input  class="btn btn-primary" type="submit" value="[[Import]]" />	
+		
+		<div class="w-100 text-center">
+			<button class="btn btn-brand btn-primary upload-btn" type="submit" id="finishbutton" >
+				<i class="bi bi-box-arrow-in-down rr mr-1" ></i>
+				[[Import]]
+			</button>
+		</div>
 	</form>
 		
 	</div>

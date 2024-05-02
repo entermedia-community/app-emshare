@@ -25,72 +25,57 @@ $context.putPageValue("parentsearchtype", $parentsearchtype)
 
 #set($defaultcategory = $mediaarchive.getBean("entityManager").createDefaultFolder($entity, $context.getUser()))
 
-<div id="${tabid}" 
-class=" entity-tab-content entity-tab-media tabtypemedia" 
-data-tabid="${tabid}"
-data-viewid="$viewid"
-data-entityid="$!entityid"
-data-currenttab="$!viewid"
-data-parentsearchtype="$!parentsearchtype"
-data-topmoduleid="$!topmoduleid"
-data-url="$componenthome/gridsample/preview/tabpopulatecategory.html"
->
-	<div id="$!submodulepickerid" class="d-flex align-items-stretch" style="height: 100%;">
-		
-		<div class="entityimport" style="padding: 10px 20px;  flex: 0 0 400px">
-			
-				<div class="px-3 entityimportmenu">
-					<div>
-						<a href="$apphome/views/modules/asset/add/entityaddmedia.html?categoryid=$!defaultcategory.getId()" 
-							class="btn btn-lg btn-brand ajax"
-							data-targetdivinner="tabimportcontent"
-							data-oemaxlevel="1"><i class="bi bi-file-earmark-arrow-up-fill"></i> &nbsp;[[Upload]]</a>
-					</div>
-					
-					<div>
-						##<h4 class="text-center">[[Upload from Web]]</h4>
-						<a href="$apphome/views/modules/asset/add/entityaddmedia.html?categoryid=$!defaultcategory.getId()" 
-							class="btn btn-lg btn-brand ajax">
-							<i class="bi bi-link-45deg"></i> &nbsp;[[Import from URL]]</a>
-					</div>
-					
+#set($tabmode = 1)
+$context.putPageValue("tabmode", $tabmode)
 
-					
-					<div>
-						<h4 class="text-center">[[Import Existing]]</h4>
-						   <a  	class="ajax btn btn-lg  btn-brand" 
-						   	id="poptrigger" 
-					    	data-targetdivinner="tabimportcontent"  
-							data-hidefooter="true" 
-							data-oemaxlevel="1"
-							data-targetcategoryid="$!defaultcategory.id"
-							onclick='$("#searcher").show();$("#picker").hide();'
-							title="ID: ($entityid)"
-							href="$apphome/components/entities/import/autopopulate.html?id=$!entityid" 
-							 >
-							<i class="bi bi-file-check-fill"></i> &nbsp;[[Search Files]]</a>
-							
-							
-							<a class="ajax btn btn-lg  btn-brand"
-								data-targetdivinner="tabimportcontent"  
-								data-oemaxlevel="1"
-								data-targetcategoryid="$!defaultcategory.id"
-								href="$apphome/components/entities/import/choosecategory.html?id=$!searchby"><i class="bi bi-folder-plus"></i> &nbsp;[[Choose Folders]]</a>
-					</div>
-					
-					<div>
-						<h4 class="text-center">[[Synced Import]]</h4>
-						<a href="" class="btn btn-lg  btn-brand"><i class="bi bi-folder-symlink-fill"></i> &nbsp;[[Pull local changes]]</a>
-					</div>
-					
-					
-				</div>
-				
-			
+<div id="${tabid}"
+	class=" entity-tab-content entity-tab-media tabtypemedia"
+	data-tabid="${tabid}"
+	data-viewid="$viewid"
+	data-entityid="$!entityid"
+	data-currenttab="$!viewid"
+	data-parentsearchtype="$!parentsearchtype"
+	data-topmoduleid="$!topmoduleid"
+	data-url="$componenthome/gridsample/preview/tabpopulatecategory.html"
+>
+	<div id="$!submodulepickerid" class="d-flex align-items-stretch p-2" style="height: 100%;">
+		<div class="entityimport">
+			<a href="$apphome/views/modules/asset/add/tabentityaddmedia.html?categoryid=$!defaultcategory.getId()"
+				class="btn btn-lg btn-wide ajax"
+				data-targetdivinner="tabimportcontent"
+				data-oemaxlevel="1"><i class="bi bi-file-earmark-arrow-up-fill"></i> [[Upload]]</a>
+
+
+			<a href="$siteroot$apphome/components/createmedia/url/start.html?categoryid=$!defaultcategory.getId()"
+				class="btn btn-lg btn-wide ajax" data-targetdivinner="tabimportcontent"
+				data-oemaxlevel="1">
+				<i class="bi bi-link-45deg"></i> [[Import from URL]]</a>
+
+			<h4 class="text-center">[[Import Existing]]</h4>
+
+			<a class="ajax btn btn-lg btn-wide"
+				id="poptrigger"
+				data-targetdivinner="tabimportcontent"
+				data-hidefooter="true"
+				data-oemaxlevel="1"
+				data-targetcategoryid="$!defaultcategory.id"
+				onclick='$("#searcher").show();$("#picker").hide();'
+				title="ID: ($entityid)"
+				href="$apphome/components/entities/import/autopopulate.html?id=$!entityid"
+				><i class="bi bi-file-check-fill"></i> &nbsp;[[Search Files]]</a>
+
+			<a class="ajax btn btn-lg btn-wide"
+				data-targetdivinner="tabimportcontent"
+				data-oemaxlevel="1"
+				data-targetcategoryid="$!defaultcategory.id"
+				href="$apphome/components/entities/import/choosecategory.html?id=$!searchby"><i class="bi bi-folder-plus"></i> &nbsp;[[Choose Folders]]</a>
+
+			<h4 class="text-center">[[Synced Import]]</h4>
+			<a href="" class="btn btn-lg btn-wide"><i class="bi bi-folder-symlink-fill"></i> &nbsp;[[Pull local changes]]</a>
 		</div>
-		<div id="tabimportcontent" class="tabimportcontent"></div>
-	
+
+		<div id="tabimportcontent" class="tabimportcontent">
+			$pages.include("$apphome/views/modules/asset/add/tabentityaddmedia.html?categoryid=$!defaultcategory.getId()")
+		</div>
 	</div>
 </div>
-
-

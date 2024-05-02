@@ -316,8 +316,8 @@ jQuery(document).ready(function (url, params) {
 
       dropdown.data("sortup", true);
     }
-	var form =  selected.closest("form");
-	form.trigger("submit");
+    var form = selected.closest("form");
+    form.trigger("submit");
     return false;
   });
 
@@ -337,11 +337,10 @@ jQuery(document).ready(function (url, params) {
       $(".clearfiltersearch").show();
     }
   });
-  
-  
+
   lQuery("a.clearsearchbar").livequery("click", function () {
-	  $("#mainsearchvalue").val("");
-	 });
+    $("#mainsearchvalue").val("");
+  });
 
   lQuery("a.selectpage").livequery("click", function () {
     var resultsdiv = $(this).closest(".resultsdiv");
@@ -1258,62 +1257,63 @@ jQuery(document).ready(function (url, params) {
       });
     }
   });
-  
-  
-  paintimagebox = function(image) {
-	  var faceprofilebox = image.closest(".emshowbox");
-	  if( faceprofilebox.length == 0) {
-		  return;
-		}
-	  var newheight = image.data("fixedheight");
-	  if(newheight === undefined)
-	  {
-		   newheight = image.height();
-	  }
-	  
-	  //check if faceprofilebox
-		
-		
-		var inputheight = faceprofilebox.data("inputheight");
-		
-		var scale = newheight /inputheight  ;
-		
-		var originalbox = faceprofilebox.data("showbox");
-		var box = new Array(originalbox[0]*scale, originalbox[1]*scale, originalbox[2]*scale, originalbox[3]*scale);
 
-		var canvas = $(faceprofilebox.find("canvas"));
-		if(canvas.length>=0) {
-			canvas.remove();
-		}
-		faceprofilebox.prepend("<canvas></canvas>");
-		canvas = $(faceprofilebox.find("canvas"));
-	    canvas.css("position", "absolute");
-	
-	    var w = faceprofilebox.data("imagewidth");
-	    //var h = faceprofilebox.data("inputheight");
-	  
-      canvas.attr({ width: image.width(), height: image.height() });
-      var context = canvas[0].getContext("2d");
-      context.beginPath();
-      context.lineWidth = 1;
-      context.strokeStyle = "#666";
-      context.strokeRect(box[0], box[1], box[2], box[3]);
-      context.strokeStyle = "#fff";
-      context.strokeRect(box[0] - 1, box[1] - 1, box[2] + 1, box[3] + 1);
-  }
+  paintimagebox = function (image) {
+    var faceprofilebox = image.closest(".emshowbox");
+    if (faceprofilebox.length == 0) {
+      return;
+    }
+    var newheight = image.data("fixedheight");
+    if (newheight === undefined) {
+      newheight = image.height();
+    }
+
+    //check if faceprofilebox
+
+    var inputheight = faceprofilebox.data("inputheight");
+
+    var scale = newheight / inputheight;
+
+    var originalbox = faceprofilebox.data("showbox");
+    var box = new Array(
+      originalbox[0] * scale,
+      originalbox[1] * scale,
+      originalbox[2] * scale,
+      originalbox[3] * scale
+    );
+
+    var canvas = $(faceprofilebox.find("canvas"));
+    if (canvas.length >= 0) {
+      canvas.remove();
+    }
+    faceprofilebox.prepend("<canvas></canvas>");
+    canvas = $(faceprofilebox.find("canvas"));
+    canvas.css("position", "absolute");
+
+    var w = faceprofilebox.data("imagewidth");
+    //var h = faceprofilebox.data("inputheight");
+
+    canvas.attr({ width: image.width(), height: image.height() });
+    var context = canvas[0].getContext("2d");
+    context.beginPath();
+    context.lineWidth = 1;
+    context.strokeStyle = "#666";
+    context.strokeRect(box[0], box[1], box[2], box[3]);
+    context.strokeStyle = "#fff";
+    context.strokeRect(box[0] - 1, box[1] - 1, box[2] + 1, box[3] + 1);
+  };
 
   lQuery(".emshowbox").livequery(function () {
     var div = $(this);
     div.css("position", "relative");
     var image = $(div.find("img"));
-    
-    
-	paintimagebox(image);
-	
+
+    paintimagebox(image);
+
     image.on("load", function () {
-		paintimagebox(image);
+      paintimagebox(image);
     });
-    
+
     var container = div.data("centerbox");
     if (container) {
       var topbox = box[1];
@@ -1322,9 +1322,6 @@ jQuery(document).ready(function (url, params) {
       }
     }
   });
-  
-  
-  
 
   lQuery("select.addremovecolumns").livequery("change", function () {
     var selectedval = $(this).val();
@@ -1597,9 +1594,9 @@ checkScroll = function () {
       $(window).trigger("resize");
 
       stopautoscroll = false;
-      
+
       if (getOverlay().is(":hidden")) {
-        checkScroll(); 
+        checkScroll();
       }
     },
   });
@@ -1729,7 +1726,7 @@ gridResize = function () {
     }
   }
 
- // checkScroll();
+  // checkScroll();
 };
 
 /**
@@ -1759,16 +1756,16 @@ trimRowToFit = function (targetheight, row, totalavailablew) {
     div.css("height", fixedheight + "px");
     image.height(fixedheight);
     image.data("fixedheight", fixedheight);
-	
+
     var a = div.data("aspect");
     var neww = fixedheight * a;
 
     neww = Math.round(neww); // make sure we dont round too high across lots
     // of widths
     div.css("width", neww + "px");
-	
-	image.width(neww);
-	
+
+    image.width(neww);
+
     totalwused = totalwused + neww;
   });
 
@@ -1848,6 +1845,15 @@ lQuery("div.assetpreview").livequery("click", function (e) {
   var assetid = div.data("assetid");
   showAsset($(this), assetid);
   saveProfileProperty("assetopentab", "viewpreview", function () {});
+});
+
+lQuery(".auto-remove").livequery("click", function () {
+  var catid = $(this).data("categoryid");
+  if (catid) {
+    $("#auto-" + catid)
+      .parent()
+      .remove();
+  }
 });
 
 lQuery("a.assettab").livequery("click", function (e) {
