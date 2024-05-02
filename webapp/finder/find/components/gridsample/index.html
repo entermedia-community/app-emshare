@@ -1,7 +1,15 @@
-
-
-#if( $hits.getSearchQuery().hasMainInput())
-	$pages.include("$componenthome/quicksearch/suggestions.html",$context)
+#if($topcategoryid)
+	#set($topcategory = $mediaarchive.getData("searchcategory", $topcategoryid) )
+#end
+#if($moduleid=="searchcategory" || $topcategory)
+<div class="">
+<div class="filtered-breadcrumb ">
+		<a href="$!{siteroot}$apphome/views/modules/searchcategory/index.html" title="[[All Categories]]">[[All]]</a>
+		#if($topcategory)
+		&gt;&nbsp;#text($topcategory.getName()) ($!hits.size())
+		#end
+</div>
+</div>
 #end
 
 <div id="modulesearchresultsdiv" class="h-100" data-moduleid="$!module.id" >
@@ -16,6 +24,8 @@
 	#end
 	$context.putPageValue("rendertype", $rendertype)
 	$context.putPageValue("rendermoduleid", $module.id)
+
+
 
 $pages.include("$apphome/views/modules/${module.id}/resultsactions.html",$context)
 
@@ -32,18 +42,9 @@ $prhits.setPageOneBased($currentpage)
 #set($targetdivinner = "${module.id}resultsarea")
 #set($oemaxlevel = "2")
 
-#if($topcategoryid)
-	#set($topcategory = $mediaarchive.getData("searchcategory", $topcategoryid) )
-#end
+
 <div class="emgridflexcontainer" style="overflow-y: auto; height: calc(100% - 36px);">
-	#if($moduleid=="searchcategory" || $topcategory)
-	<div class="searchcategorybreadcrumb">
-			<a href="" title="[[All Categories]]">[[All]]</a>
-			#if($topcategory)
-			&gt;&nbsp;<a href="" title="[[]]">#text($topcategory.getName())</a>
-			#end
-	</div>
-	#end
+
 <div class="emgridflex">
 	<div id="galleryimg-${rendertype}" 
 		class='emgrid entitiescontainer' 
