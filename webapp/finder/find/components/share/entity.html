@@ -1,15 +1,21 @@
+#set( $mediadbappid = $mediaarchive.getMediaDbId() )
+
+#set($moduleid = $context.getRequestParameter("moduleid"))
+#set($entityid = $context.getRequestParameter("entityid"))
+#set($categoryid = $context.getRequestParameter("categoryid"))
+
+#if( !$entity)
+	#set( $entity  = $mediaarchive.getData($moduleid, $entityid) )
+#end
+
 #set( $type = $mediaarchive.getMediaRenderType($asset.fileFormat))
-<div id="embed-wrapper">
+<div class="entityuploadheader mb-2" style="font-size:1rem; font-weight: 600;">[[Share With Link]]</div>
+<div id="embed-wrapper" class="segment mb-2">
 	<div class="embedlink">
-		#set( $mediadbappid = $mediaarchive.getMediaDbId() )
-		
-		#set($moduleid = $context.getRequestParameter("moduleid"))
-		#set($entityid = $context.getRequestParameter("entityid"))
-		#set($categoryid = $context.getRequestParameter("categoryid"))
 		#set($entitytabopen = $context.getRequestParameter('entitytabopen'))
 		#if($moduleid)
 			#set( $sharelink = "$siteroot$apphome/views/modules/${moduleid}/index.html?entity=$!{entityid}")
-			#if($entitytabopen)
+			#if($entitytabopenX)
 				#set( $sharelink = "${sharelink}&entitytabopen=$!{entitytabopen}") 
 			#end
 			
@@ -24,7 +30,7 @@
 				<div style="margin-bottom:20px">
 				<h5>[[Entity]]:</h5> 
 				<div class="hyphenate" style="margin:5px 0">
-					<span class="sharelink">$sharelink</span> 
+					<span class="sharelink">${sharelink}</span> 
 					<a href="#" 
 						class="copytoclipboard btn btn-xxs btn-secondary"
 						data-targetdiv="embedalertdialog"
@@ -39,3 +45,11 @@
 		
 	</div>
 </div>
+
+
+<div id="embed-wrapper" class=" segment">
+	<h5 class="mb-2">#text($module) / #text($entity) [[Permissions]]</h5>
+	$pages.include("$apphome/views/modules/${moduleid}/edit/editdialog.html?entityid=$!{entityid}&moduleid=$!{topmoduleid}&viewid=entitypermissions", $context)
+</div>
+
+
