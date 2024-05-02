@@ -3,6 +3,7 @@
 	#set($parentsearchtype = $context.getRequestParameter("parentsearchtype"))
 #end
 $context.putPageValue("parentsearchtype", $parentsearchtype)
+
 #if( !$entity)
 	#set( $entity  = $mediaarchive.getData($parentsearchtype, $entityid) )
 #end
@@ -24,6 +25,8 @@ $context.putPageValue("parentsearchtype", $parentsearchtype)
 
 
 #set($defaultcategory = $mediaarchive.getBean("entityManager").createDefaultFolder($entity, $context.getUser()))
+$context.putPageValue("defaultcategory", $defaultcategory)
+$context.putPageValue("defaultcategoryid", $defaultcategory.getId())
 
 #set($tabmode = 1)
 $context.putPageValue("tabmode", $tabmode)
@@ -39,6 +42,49 @@ $context.putPageValue("tabmode", $tabmode)
 	data-url="$componenthome/gridsample/preview/tabexport.html"
 >
 	<div id="$!submodulepickerid" class="d-flex align-items-stretch p-2" style="height: 100%;">
-		[[Export]]
+		
+		
+		<div class="entityimport">
+			<a href="$componenthome/share/entity.html?entityid=$!{entityid}&moduleid=$!{topmoduleid}&defaultcategoryid=$defaultcategoryid"
+				class="btn btn-lg btn-wide ajax"
+				data-targetdivinner="tabexportcontent"
+				data-oemaxlevel="1"><i class="bi bi-share-fill"></i> [[Share with Link]]</a>
+
+
+			<h4 class="text-center">[[Sync Files Locally]]</h4>
+			
+			<a href="$siteroot$apphome/"
+				class="btn btn-lg btn-wide ajax" data-targetdivinner="tabexportcontent"
+				data-oemaxlevel="1">
+				<i class="bi bi-folder-symlink"></i> [[Push to Local Drive]]</a>
+
+			<h4 class="text-center">[[Download]]</h4>
+
+			<a class="ajax btn btn-lg btn-wide"
+				id="poptrigger"
+				data-targetdivinner="tabexportcontent"
+				data-hidefooter="true"
+				data-oemaxlevel="1"
+				data-targetcategoryid="$!defaultcategory.id"
+				onclick='$("#searcher").show();$("#picker").hide();'
+				title="ID: ($entityid)"
+				href="$apphome/components/entities/import/autopopulate.html?id=$!entityid"
+				><i class="bi bi-folder"></i> &nbsp;[[Download Folder]]</a>
+				
+				
+			<h4 class="text-center">[[Copy]]</h4>
+
+			<a class="ajax btn btn-lg btn-wide"
+				data-targetdivinner="tabexportcontent"
+				data-oemaxlevel="1"
+				data-targetcategoryid="$!defaultcategory.id"
+				href="$apphome/components/entities/import/choosecategory.html?id=$!searchby">
+				<i class="bi bi-folder-plus"></i> &nbsp;[[Copy]] #text($topmodule) [[to]]</a>
+		</div>
+		
+		<div id="tabexportcontent" class="tabimportexportcontent">
+			$pages.include("$componenthome/share/entity.html?entityid=$!{entityid}&moduleid=$!{topmoduleid}", $context)
+		</div>
+		
 	</div>
 </div>
