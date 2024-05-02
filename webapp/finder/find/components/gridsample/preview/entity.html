@@ -157,7 +157,7 @@ $context.putPageValue("topmoduleid", $moduleid)
 			
 			<div class="d-flex entity-actions-bar align-items-center text-white">
 				
-				<a href="$applink/views/modules/$moduleid/components/gridsample/preview/tabimport.html"
+				<a href="$applink/views/modules/${moduleid}/components/gridsample/preview/tabimport.html"
 						class='btn btn-sm btn-brand entitytabactions tabactionimport #if($entitytabopen=="import")enabledaction #end '
 						data-tabaction="import"
 						data-viewid="import"
@@ -167,13 +167,15 @@ $context.putPageValue("topmoduleid", $moduleid)
 						data-moduleid="$!moduleid"
 						title="[[Import]] #text($module) "><i class="bi bi-box-arrow-in-right mr-1"></i> [[Import]]</a>
 						
-				<a href="$applink/views/modules/$moduleid/publishing/enablepublishing.html"
-						class="btn btn-sm btn-brand"
-						data-updateurl="false"
-						data-closedialog="true"
-						data-entityid="$!entityid"
-						data-moduleid="$moduleid"
-						title="[[Publish]] #text($module) ">[[Export]]&nbsp;<i class="bi bi-box-arrow-right ml-1"></i></a>
+				<a href="$applink/views/modules/${moduleid}/components/gridsample/preview/tabexport.html"
+						class='btn btn-sm btn-brand entitytabactions tabactionexport #if($entitytabopen=="export")enabledaction #end '
+						data-tabaction="export"
+						data-viewid="export"
+						data-tabtype="tabexport" 
+						data-entityid="$!entity.getId()" 
+						data-topmoduleid="$!moduleid"
+						data-moduleid="$!moduleid"
+						title="[[Export]] #text($module) ">[[Export]]&nbsp;<i class="bi bi-box-arrow-right ml-1"></i></a>
 						
 						##href="$applink/views/modules/$moduleid/edit/editdialog.html?id=${entityid}&viewid=entitypermissions"
 				
@@ -292,8 +294,6 @@ $context.putPageValue("topmoduleid", $moduleid)
 				
 				#ifnotnull($id)
 					#if(!$ismulti)
-					
-						
 						##media tab
 						#if($module.getBoolean("enableuploading") && $permissions.can($moduleid, "view_files"))
 							#set($submodule = $mediaarchive.getCachedData("module", "asset"))
@@ -308,7 +308,7 @@ $context.putPageValue("topmoduleid", $moduleid)
 							$pages.include("$subcomponenthome/gridsample/preview/entitytabmenu.html", $context)
 						#end
 						
-						##publishing import
+						##import tab
 						#if($entitytabopen == "import")
 							##permissions here
 							#set($tabtype= "tabimport")
@@ -319,6 +319,19 @@ $context.putPageValue("topmoduleid", $moduleid)
 									
 							$pages.include("$componenthome/gridsample/preview/entitytabmenu.html", $context)
 						#end
+						
+						##export tab
+						#if($entitytabopen == "export")
+							##permissions here
+							#set($tabtype= "tabexport")
+							$context.putPageValue("tabtype", $tabtype)
+							#set($tabid = "export")
+							$context.putPageValue("tabid", $tabid)
+							$context.putPageValue("currenttab", $entitytabopen)
+									
+							$pages.include("$componenthome/gridsample/preview/entitytabmenu.html", $context)
+						#end
+						
 						##publishing tab
 						#if($entitytabopen == "publishing")
 							##permissions here
@@ -345,7 +358,12 @@ $context.putPageValue("topmoduleid", $moduleid)
 				$pages.include("$componenthome/gridsample/preview/entitytab.html", $context)
 			#end
 			#ifnotnull($id)
-				#if($enttiyviews && $entitytabopen  != "media"  && $entitytabopen  != "publishing"  && $entitytabopen  != "import")		
+				#if($enttiyviews && 
+					$entitytabopen  != "media"  && 
+					$entitytabopen  != "publishing"  && 
+					$entitytabopen  != "import" &&
+					$entitytabopen  != "export")
+							
 						#set( $viewid = $entitytabopen)
 						#set( $targetview = $viewsearcher.searchById($viewid))
 						
@@ -395,6 +413,16 @@ $context.putPageValue("topmoduleid", $moduleid)
 						$context.putPageValue("currenttab", "import")
 						$context.putPageValue("viewid", "import")
 						$pages.include("$componenthome/gridsample/preview/tabimport.html?entityid=$id", $context)
+					#end
+				#end
+				
+				#if($entitytabopen == "export")
+					#if(!$ismulti)
+						#set($tabtype= "tabexport")
+						$context.putPageValue("tabtype", $tabtype)
+						$context.putPageValue("currenttab", "export")
+						$context.putPageValue("viewid", "export")
+						$pages.include("$componenthome/gridsample/preview/tabexport.html?entityid=$id", $context)
 					#end
 				#end
 					
