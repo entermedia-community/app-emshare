@@ -2,33 +2,29 @@
 
 #set($moduleid = $context.getRequestParameter("moduleid"))
 #set($entityid = $context.getRequestParameter("entityid"))
-#set($categoryid = $context.getRequestParameter("categoryid"))
+#set($categoryid = $context.getRequestParameter("defaultcategoryid"))
 
 #if( !$entity)
 	#set( $entity  = $mediaarchive.getData($moduleid, $entityid) )
 #end
 
 #set( $type = $mediaarchive.getMediaRenderType($asset.fileFormat))
-<div class="entityuploadheader mb-2" style="font-size:1rem; font-weight: 600;">[[Share With Link]]</div>
+<div class="entityuploadheader mb-2" style="font-size:1rem; font-weight: 600;">[[Share]]</div>
 <div id="embed-wrapper" class="segment mb-2">
 	<div class="embedlink">
 		#set($entitytabopen = $context.getRequestParameter('entitytabopen'))
 		#if($moduleid)
-			#set( $sharelink = "$siteroot$apphome/views/modules/${moduleid}/index.html?entity=$!{entityid}")
-			#if($entitytabopenX)
-				#set( $sharelink = "${sharelink}&entitytabopen=$!{entitytabopen}") 
-			#end
+			#set( $sharelink = "$siteroot$apphome/views/modules/${moduleid}/userview/${entityid}/#dash($entity).html")
 			
-			#if( $categoryid)
-				#set($category = $mediaarchive.getCategory($categoryid))
-				#set( $sharefilelink = "$siteroot$apphome/views/modules/asset/sharefiles/${categoryid}/#dash($category).html")
-			#end
 			
 		#end
+		
+		
+		
 		#ifnotnull($sharelink )
 			<div id="embedalertdialog" style="display:none; position: absolute;" class="alert alert-success fader">[[Copied to Clipboard]]</div>
 				<div style="margin-bottom:20px">
-				<h5>[[Entity]]:</h5> 
+				<h5>[[Data]]</h5> 
 				<div class="hyphenate" style="margin:5px 0">
 					<span class="sharelink">${sharelink}</span> 
 					<a href="#" 
@@ -40,6 +36,24 @@
 					<input class="sharelink" style="position:absolute; top:-1000px;" id="previewlink" value="$sharelink" />
 				
 				</div>
+				
+				
+				#set( $sharefilelink = "${sharelink}&entitytabopen=tab_media") 
+				
+				<h5 class="pt-4">[[Files]]</h5> 
+				<div class="hyphenate" style="margin:5px 0">
+					<span class="sharelink">${sharefilelink}</span> 
+					<a href="#" 
+						class="copytoclipboard btn btn-xxs btn-secondary"
+						data-targetdiv="embedalertdialog"
+						data-copytext="previewfileslink" title="[[Copy to Clipboard]]"><i class="far fa-copy"></i> [[Copy]]</a>
+				
+				
+					<input class="sharelink" style="position:absolute; top:-1000px;" id="previewfileslink" value="$sharefilelink " />
+				
+				</div>
+				
+				
 				</div>
 		#end
 		
@@ -48,7 +62,8 @@
 
 
 <div id="embed-wrapper" class=" segment">
-	<h5 class="mb-2">#text($module) / #text($entity) [[Permissions]]</h5>
+	<h5 class="mb-2">[[Share With]]</h5>
+	<div class="pb-3" style="font-size: 0.9em;">[[Add users who needs access to this record.]]</div>
 	$pages.include("$apphome/views/modules/${moduleid}/edit/editdialog.html?entityid=$!{entityid}&moduleid=$!{topmoduleid}&viewid=entitypermissions", $context)
 </div>
 
