@@ -1,3 +1,37 @@
+
+#if($topcategoryid)
+		#set($topcategory = $mediaarchive.getData("searchcategory", $topcategoryid) )
+#end
+
+<div class="category-breadcrumb">
+	<div class="d-flex justify-content-between">
+	<div>
+		<a href="$!{siteroot}$apphome/views/modules/searchcategory/index.html" title="[[All Categories]]">[[All]]</a>
+		#if($moduleid=="searchcategory" || $topcategory)
+			#if($topcategory)
+				&nbsp;/&nbsp;&nbsp;#text($topcategory.getName()) ($!hits.size())
+			#end
+		#end
+		</div>
+	
+		<a href="$applink/views/modules/${moduleid}/components/filters/dialogsort.html" 
+						class="emdialog emsort #if($selectedpreference == "true") closed #end"
+						data-dialogid="sortdialog"
+						data-hidebackdrop="true"
+						data-hidefooter="true"
+						data-modalsize="sm"
+						data-moduleid="$!{moduleid}"
+						data-hitssessionid="$hits.getSessionId()"
+						data-categoryid="$!categoryid"
+						data-rootcategory="$!rootcategory"
+						data-topmoduleid="$!topmoduleid"
+						data-entityid="$!entityid"
+						data-dialogindextype="$!dialogindextype" 
+						data-targetdivsearch="$!{moduleid}resultscontainer"
+						style="padding:0 8px 0 10px;" 
+						title="[[Sort Results]]"><i class="bi bi-sort-down"></i> [[Sort]]</a>
+	</div>
+</div>
 <div id="modulesearchresultsdiv" class="h-100" data-moduleid="$!module.id" >
 	#set( $favorites = $userprofile.get("favorites_"+$module.id))
 	$context.putPageValue("favorites", $favorites)
@@ -12,8 +46,7 @@
 	$context.putPageValue("rendermoduleid", $module.id)
 
 
-
-$pages.include("$apphome/views/modules/${module.id}/resultsactions.html",$context)
+##$pages.include("$apphome/views/modules/${module.id}/resultsactions.html",$context)
 
 #set($currentpage = $context.getRequestParameter("currentpagenum"))
 
@@ -38,7 +71,7 @@ $prhits.setPageOneBased($currentpage)
 		data-cellpadding="15"
 		data-entityrenderurl="$siteroot$apphome/views/modules/$module.id/components/gridsample/gridcell.html"
 		data-rendertype="$rendertype">
-	    	#foreach( $hit in $hits.getPageOfHits())
+	  #foreach( $hit in $hits.getPageOfHits())
 				$context.putPageValue("rendermoduleid", $hit.entitysourcetype)
 				$context.putPageValue("entity", $hit)
 				$context.putPageValue("hit", $hit)								
@@ -46,14 +79,27 @@ $prhits.setPageOneBased($currentpage)
 			    <div class="emgridcell emgridcell-$rendertype activelistcontainer 
 	 			#if($selectedid == $hit.getId() || $topselectedid == $hit.getId()) active #end
 	 			">
-	 			
 			    $pages.include("$apphome/views/modules/${hit.entitysourcetype}/components/gridsample/types/entity.html", $context)
-			    </div>
-			#end
+					
+					#set($editurl = "$!{siteroot}$apphome/views/modules/$!moduleid/components/gridsample/preview/entity.html?id=$hit.getId()&hitssessionid=$!hits.sessionId")
+
+					<div class="emgridcell-edit">
+						<a href="$editurl" class="emdialog emgridcell-edit-link"  title="[[Edit]]" >
+							<i class="bi bi-pencil"></i>
+						</a>
+					</div>
+			  </div>
+		#end
+
+		#if($permissions.can($moduleid, "create"))
+			#set($addurl = "$siteroot$applink/views/modules/${moduleid}/components/gridsample/preview/entity.html?edit=true&addnew=true&viewid=$!{moduleid}addnew")
+			<a class="emdialog add-new-category" href="$addurl" title="[[Add New]]">
+				<i class="bi bi-plus-lg mr-1"></i>
+			</a> 
+		#end
 	</div>  
 	  
 
 	</div>
 </div>
 </div>
-
