@@ -50,7 +50,7 @@ $prhits.setPageOneBased($currentpage)
 		data-cellpadding="15"
 		data-entityrenderurl="$siteroot$apphome/views/modules/$module.id/components/gridsample/gridcell.html"
 		data-rendertype="$rendertype">
-	    	#foreach( $hit in $hits.getPageOfHits())
+	  #foreach( $hit in $hits.getPageOfHits())
 				$context.putPageValue("rendermoduleid", $hit.entitysourcetype)
 				$context.putPageValue("entity", $hit)
 				$context.putPageValue("hit", $hit)								
@@ -68,7 +68,14 @@ $prhits.setPageOneBased($currentpage)
 						</a>
 					</div>
 			  </div>
-			#end
+		#end
+
+		#if($permissions.can($moduleid, "create"))
+			#set($addurl = "$siteroot$applink/views/modules/${moduleid}/components/gridsample/preview/entity.html?edit=true&addnew=true&viewid=$!{moduleid}addnew")
+			<a class="emdialog add-new-category" href="$addurl" title="[[Add New]]">
+				<i class="bi bi-plus-lg mr-1"></i>
+			</a> 
+		#end
 	</div>  
 	  
 
