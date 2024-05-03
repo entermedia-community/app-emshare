@@ -1,15 +1,17 @@
-#if(!$module)
-	#set($module = $mediaArchive.getCachedData($context.module))
+#set($moduleid = $context.getRequestParameter("moduleid"))
+#if(!$moduleid)
+	#set($moduleid = $userprofile.mainsearchmodule)
 #end
 
-
-#if($librarycol)
-	#set( $collectionid = $librarycol.getId())
-#else
-	#set( $collectionid = $context.getRequestParameter("collectionid"))
+#set($resetsearch = $context.getRequestParameter("resetsearch"))
+#if($resetsearch == "true")
+	#set($moduleid = "") 
 #end
-<div class="nav-form nav-quicksearch">
-##TODO  Remember last selected module of profile
+
+#if($moduleid)
+	#set($module = $mediaarchive.getCachedData("module", $moduleid))
+#end
+<div class="nav-form nav-quicksearch" id="mainsearchcontainer" data-url="$apphome/components/quicksearch/navbar.html">
 
 #ifnull($hits)
 	#set($hits = $modulehits)
@@ -23,13 +25,24 @@
 		
 		<div class="input-group" >
 			<div class="dropdown search-entity-dropdown">
+				#if(!$moduleid)
 				<a class="dropdown-toggle" href="#" role="button" id="searchEntityDropdown" data-toggle="dropdown">
 					[[All]]
 				</a>
+				#else
+					<a class="dropdown-toggle" href="#" role="button" id="searchEntityDropdown" data-toggle="dropdown">
+						#text($module)
+					</a>
+				#end
 				<div class="dropdown-menu" aria-labelledby="searchEntityDropdown">
+					#if($moduleid)
+						<a class="dropdown-item switchmainsearch" data-moduleid="">
+							[[All]]
+						</a>
+					#end
 					#foreach($amodule in $userprofile.getEntities())
 						#set($amoduleid = $amodule.getId())
-						<a class="dropdown-item">#text($amodule)</a>
+						<a class="dropdown-item switchmainsearch" data-moduleid="$amoduleid">#text($amodule)</a>
 					#end
 				</div>
 			</div>
@@ -38,6 +51,7 @@
 				class="form-control mainsearch"
 				##data-url="$componenthome/xml/types/autocomplete/tagsearch.txt" 
 				data-typeaheadurl="$siteroot$applink/components/quicksearch/results.html"
+				data-mainsearchmodule="$!{moduleid}"
 				data-sortby="" 
 				value="#esc($input)"
 				autocomplete="off"

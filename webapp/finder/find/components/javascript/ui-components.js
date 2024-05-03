@@ -2448,6 +2448,24 @@ uiload = function () {
       }
     });
   });
+  
+  
+  lQuery(".switchmainsearch").livequery("click", function () {
+	  var link = $(this);
+	  var moduleid = link.data("moduleid"); 
+        saveProfileProperty(
+        "mainsearchmodule",
+        moduleid,
+        function () {
+			$("#mainsearchcontainer").data("moduleid", moduleid)
+			autoreload($("#mainsearchcontainer"));
+		}
+      );
+    });
+    
+    lQuery(".resetsearch").livequery("click", function () {
+        saveProfileProperty("mainsearchmodule","", function () {});
+    });  
 
   var lasttypeahead;
   var lastsearch;
@@ -2564,6 +2582,11 @@ uiload = function () {
           "field=description&operation=contains" +
           "&description.value=" +
           encodeURIComponent(q);
+          
+        var mainsearchmodule = mainsearcheinput.data("mainsearchmodule");
+        if(mainsearchmodule != null ){
+			terms = terms + "&mainsearchmodule="+mainsearchmodule;
+		}
 
         if (lasttypeahead) {
           lasttypeahead.abort();
