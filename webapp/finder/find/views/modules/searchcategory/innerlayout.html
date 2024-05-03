@@ -24,17 +24,13 @@ $context.putPageValue("count", $count)
 $context.putPageValue("topmodule", $topmodule)
 
 #set($topentityid = $context.getRequestParameter("topentityid"))
-$pages.include("${componenthome}/gridsample/categorybreadcrumb.html",$context)
-
-
 <div id="$!{moduleid}topcontainer"
 	class="topmodulecontainer $!{moduleid}topcontainer"
 	data-hitssessionid="$!hits.getSessionId()"
 	data-url="$apphome/views/modules/$!{module.id}/index.html"
 	#if($topentityid) data-topentityid="$topentityid" #end
 	data-oemaxlevel="2">
-
-
+$pages.include("${componenthome}/gridsample/categorybreadcrumb.html",$context)
 	$pages.include("$componenthome/filters/filters-selected.html", $context)
 	
 	$pages.includeContent()
