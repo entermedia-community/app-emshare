@@ -875,8 +875,8 @@ uiload = function () {
     var form = $(this);
 
     $("select", form).change(function (e) {
-		e.stopPropagation();
-      	$(form).trigger("submit");
+      e.stopPropagation();
+      $(form).trigger("submit");
     });
     /* Todo: use onblur
     $("input", form).on("focusout", function (event) {
@@ -884,20 +884,20 @@ uiload = function () {
     });
     */
     $("input", form).on("keyup", function (e) {
-		//Enter Key handled by default the submit
-		if (e.keyCode == 13) {
-			return;
-		}
-	  e.preventDefault();
-	  e.stopPropagation();
+      //Enter Key handled by default the submit
+      if (e.keyCode == 13) {
+        return;
+      }
+      e.preventDefault();
+      e.stopPropagation();
       $(form).trigger("submit");
     });
     $(
       'input[type="file"],input[name="date.after"],input[type="checkbox"]',
       form
     ).on("change", function (e) {
-		e.stopPropagation();
-      	$(form).trigger("submit");
+      e.stopPropagation();
+      $(form).trigger("submit");
     });
   });
 
@@ -938,7 +938,6 @@ uiload = function () {
   lQuery(".submitform-oehtml, .dialogsubmitbtn").livequery(
     "click",
     function (e) {
-
       var theform = $(this).closest("form");
       if (theform.length == 0) {
         //dialog form?
@@ -946,10 +945,10 @@ uiload = function () {
         theform = $("#" + dialogform);
       }
       if (theform.length) {
-		e.preventDefault();
-      	e.stopImmediatePropagation();
-      	e.stopPropagation();
-      	
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        e.stopPropagation();
+
         theform.data("readytosubmit", "true");
         theform.find(".oehtmlinput").trigger("blur");
         theform.trigger("submit");
@@ -1425,7 +1424,7 @@ uiload = function () {
       $(".tabactionpublishing").addClass("enabledaction");
     } else if (tabtype == "tabimport") {
       $(".tabactionimport").addClass("enabledaction");
-     } else if (tabtype == "tabexport") {
+    } else if (tabtype == "tabexport") {
       $(".tabactionexport").addClass("enabledaction");
     } else {
       saveProfileProperty(
