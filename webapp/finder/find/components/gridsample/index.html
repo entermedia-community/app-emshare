@@ -4,12 +4,33 @@
 #end
 
 <div class="category-breadcrumb">
-	<a href="$!{siteroot}$apphome/views/modules/searchcategory/index.html" title="[[All Categories]]">[[All]]</a>
-#if($moduleid=="searchcategory" || $topcategory)
-		#if($topcategory)
-			&nbsp;/&nbsp;&nbsp;#text($topcategory.getName()) ($!hits.size())
+	<div class="d-flex justify-content-between">
+	<div>
+		<a href="$!{siteroot}$apphome/views/modules/searchcategory/index.html" title="[[All Categories]]">[[All]]</a>
+		#if($moduleid=="searchcategory" || $topcategory)
+			#if($topcategory)
+				&nbsp;/&nbsp;&nbsp;#text($topcategory.getName()) ($!hits.size())
+			#end
 		#end
-	#end
+		</div>
+	
+		<a href="$applink/views/modules/${moduleid}/components/filters/dialogsort.html" 
+						class="emdialog emsort #if($selectedpreference == "true") closed #end"
+						data-dialogid="sortdialog"
+						data-hidebackdrop="true"
+						data-hidefooter="true"
+						data-modalsize="sm"
+						data-moduleid="$!{moduleid}"
+						data-hitssessionid="$hits.getSessionId()"
+						data-categoryid="$!categoryid"
+						data-rootcategory="$!rootcategory"
+						data-topmoduleid="$!topmoduleid"
+						data-entityid="$!entityid"
+						data-dialogindextype="$!dialogindextype" 
+						data-targetdivsearch="$!{moduleid}resultscontainer"
+						style="padding:0 8px 0 10px;" 
+						title="[[Sort Results]]"><i class="bi bi-sort-down"></i> [[Sort]]</a>
+	</div>
 </div>
 <div id="modulesearchresultsdiv" class="h-100" data-moduleid="$!module.id" >
 	#set( $favorites = $userprofile.get("favorites_"+$module.id))
