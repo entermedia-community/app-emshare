@@ -1554,10 +1554,14 @@ uiload = function () {
   lQuery(".entitytabactions").livequery("click", function (event) {
     event.preventDefault();
     var link = $(this);
-    var options = link.data();
     var tabaction = link.data("tabaction");
-    var url = link.attr("href");
-
+    var uploadmedia = link.data("uploadmedia");
+	var entity = $(".entitydialog");
+        entity.data("entitytabopen", tabaction);
+        entity.data("uploadmedia", uploadmedia)
+        autoreload(entity);
+        
+    /*    
     $.ajax({
       xhrFields: {
         withCredentials: true,
@@ -1566,11 +1570,9 @@ uiload = function () {
       url: url,
       data: options,
       success: function (data) {
-        var entity = $(".entitydialog");
-        entity.data("entitytabopen", tabaction);
-        autoreload(entity);
+        
       },
-    });
+    });*/
   });
 
   lQuery(".btn-savepublishing").livequery("click", function (event) {

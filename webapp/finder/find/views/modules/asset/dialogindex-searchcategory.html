@@ -82,11 +82,12 @@ $context.putPageValue("dialogresults", true)
 		#end
 		
 		#set($canupload = false)
-		#if($canviewupload && $canviewcategoryupload)
+		#if($canviewupload)
 			#if($topmodule.getBoolean("enableuploading") && $permissions.can($topmoduleid, "upload_files"))
 				#set($canupload = true)
 			#end
 		#end
+
 		$context.putPageValue("canupload", $canupload)
 		
 		#set($dialogtreestatus = $userprofile.get("dialogtreestatus"))
@@ -145,6 +146,7 @@ $context.putPageValue("dialogresults", true)
 		#end
 		<div class="embedmediacol embedmediacol-results" id="$!{targetdivmedia}" >
 			#set( $uploadmedia = $context.getRequestParameter("uploadmedia"))
+			
 			#if($uploadmedia && $canupload)
 				$pages.include("$apphome/views/modules/asset/add/entityaddmedia.html?categoryid=$rootcategory", $context)
 			#else
