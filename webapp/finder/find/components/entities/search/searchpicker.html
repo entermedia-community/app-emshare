@@ -7,7 +7,7 @@
 	#end
 	
 	#set($copyinghitssessionid = $context.getRequestParameter("copyinghitssessionid"))
-	#set( $copyinghits = $context.getSessionValue($copyinghitssessionid))
+	#set($copyinghits = $context.getSessionValue($copyinghitssessionid))
 
 	#set($copyingsearchtype = $context.getRequestParameter("copyingsearchtype"))
 	#set($assetid = $context.getRequestParameter("assetid"))
@@ -94,8 +94,12 @@
 			data-clicktargettype="message"
 			
 		#else
-			data-clicktargettype="entitydialog"
-			data-emdialoglink="$applink/views/modules/${moduleid}/components/gridsample/preview/entity.html"
+			#set($entitymodule = $context.getRequestParameter("entitymodule"))
+			#set($pickertarget = $context.getRequestParameter("pickertarget"))
+			data-pickertarget="$pickertarget"
+			data-clicktargettype="entitypicker"
+			
+			data-emdialoglink="$applink/views/modules/${entitymodule}/components/gridsample/preview/entity.html"
 			data-uploadmedia="true"
 		#end
 		

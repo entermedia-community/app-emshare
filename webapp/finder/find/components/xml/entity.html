@@ -2,37 +2,48 @@
 	#set($values = $data.getValues($detail.id) )
 #end
 
+
+
 #set( $searcher = $searcherManager.getSearcher($detail.getListCatalogId(), $detail.getListId() ))
 
 #set($entity_module = $detail.getListId())
 
-	<ul class="entity-value-list">
+	<ul class="entity-value-list" id="entitypicker${detail.id}">
 		#foreach( $type in $values )
 			#set( $row = false )
 			#set( $row = $searcher.searchById($type) )
 		    #if( $row )
-			    #if( $searcher.getDetail("name").isMultiLanguage())
-			    	#set($name = $row.getName($context.getLocale()))
-			    #else
-			    	#set($name = $row)
-			    #end
 			    #set($entityid = $row.id)
-			    #set($rendertype = $row.modulerendertype)
-				#if(!$rendertype)
-					#set($rendertype = "entity")
-				#end
-			    #set($link = "$!{siteroot}$applink/views/modules/$!{entity_module}/components/gridsample/preview/${rendertype}.html?id=$entityid&hitssessionid=$!hits.sessionId")
+			    #set($link = "$!{siteroot}$applink/views/modules/$!{entity_module}/components/gridsample/preview/entity.html?id=$entityid")
 			    <li>
 			    <a href="$link" 
 			    	class="emdialog entity-dialog" 
 			    	data-noesc="true" 
-			    	data-entityid="$!row.getId()"
-			    	data-targetrendertype="$!{rendertype}"
-			    	data-targetcomponenthome="$!{siteroot}$applink/views/modules/$!{entity_module}/components"
-			    	data-searchtype="$!entity_module">$name</a>  x(remove)
+			    	data-entityid="$!row.getId()">#text($row)</a>  
+			    	<a class="removeentity"  href="#" title="[[Remove]]" onclick='$(this).closest("li").remove(); return false;'><i class="bi bi-x"></i></a>
+			    	<input type="hidden" name="${detail.id}.value" value="$!row.getId()" />
 			    </li>
 		    #end 
-		#end	
+		#end
+		 <li style="display: none;" id="pickedtemplateREPLACEID">
+		    <a href="$!{siteroot}$applink/views/modules/$!{entity_module}/components/gridsample/preview/entity.html?id=REPLACEID" 
+		    	class="emdialog entity-dialog" 
+		    	data-noesc="true"></a>  
+		    	<a class="removeentity" href="#" title="[[Remove]]" onclick='$(this).closest("li").remove();  return false;'><i class="bi bi-x"></i></a>
+		    	<input type="hidden" name="${detail.id}.value" value="REPLACEID" />
+		    </li>	
 	</ul>
-
-	<input type="button" value="Add Entities" />
+	
+	#set($pickmoduleid = $detail.getListId())
+	
+	#set($pickerurl= "$applink/views/modules/$!{pickmoduleid}/components/entities/search/searchpicker.html")
+	<a href="$pickerurl" 
+		class="emdialog btn btn-sm btn-primary"
+		data-dialogid="entitypicker"
+		data-entitymodule="${entity_module}"
+		data-pickertarget="entitypicker${detail.id}">[[Add Entities]]</a>
+		
+	
+	
+	
+	

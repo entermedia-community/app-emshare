@@ -2020,16 +2020,19 @@ uiload = function () {
     }
   });
 
+	
+
   //newpicker
   lQuery(".pickerselectrow").livequery("click", function (event) {
     var row = $(this).parent("tr");
+    var rowid = row.data("id")
     var pickerresults = $(this).closest(".pickerresults");
 
     if (pickerresults.length) {
       var options = pickerresults.data();
       //options.assetid = assetid;
 
-      options.id = row.data("id");
+      options.id = rowid;
       var clickurl = pickerresults.data("clickurl");
       var targetdiv = pickerresults.data("clicktargetdiv");
       //ToDo make it generic
@@ -2037,6 +2040,23 @@ uiload = function () {
 
       if (targettype == "entitydialog") {
         emdialog(pickerresults, event);
+        return;
+      }
+      else if (targettype == "entitypicker") {
+        var pickertarget = pickerresults.data("pickertarget");
+        pickertarget = $("#" + pickertarget);
+        if(pickertarget.length > 0) {
+			var template = $("#pickedtemplateREPLACEID", pickertarget).html();//clone().appendTo(pickertarget);
+			var newcode = template.replaceAll("REPLACEID", rowid)
+			pickertarget.prepend("<li>"+ newcode + "</li>");
+			var newrow = pickertarget.find("li:first");
+			newrow.attr("id", rowid);
+			newrow.find("a:first").text(row.data("rowname"));
+			newrow.show();
+			closeemdialog(pickerresults.closest(".modal"));
+		}
+        
+        
         return;
       } else {
         if (targetdiv != "") {
