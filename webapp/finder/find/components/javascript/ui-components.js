@@ -3636,7 +3636,7 @@ uiload = function () {
 
           $(window).trigger("resize");
 
-          history.pushState($("#application").html(), null, url);
+          //history.pushState($("#application").html(), null, url);
         },
         xhrFields: {
           withCredentials: true,
