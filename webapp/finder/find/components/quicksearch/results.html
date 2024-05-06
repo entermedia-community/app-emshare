@@ -131,11 +131,6 @@ $context.putPageValue("filter", $filter)
 				</a>
 			#end
 			
-			#set($rendertype = $module.modulerendertype)
-			#if (!$rendertype)
-			   	#set($rendertype = "entity")
-			#end
-		 	$context.putPageValue("rendertype", $rendertype)
 		   	$context.putPageValue("rendermoduleid", $module.id)
 			   	
 		   	##check for view
@@ -154,6 +149,8 @@ $context.putPageValue("filter", $filter)
 		   
 		   $hits.setHitsPerPage(10)
 		   $context.putPageValue("hits", $hits)
+		   
+		   $context.putPageValue("searchresults", true)
 			
 			<div class="emgridflex">  	
 				<div id="galleryimg-${rendertype}" 
@@ -172,7 +169,10 @@ $context.putPageValue("filter", $filter)
 							 <div class="emgridcell emgridcellqs emgridcell-$rendertype activelistcontainer 
 					 			#if($selectedid == $hit.getId() || $topselectedid == $hit.getId()) active #end
 					 			" style="width: 180px;"> 
-							    $pages.include("$apphome/views/modules/$!{module.id}/components/gridsample/types/qsresult.html", $context)
+							    ##$pages.include("$apphome/views/modules/$!{module.id}/components/gridsample/types/qsresult.html", $context)
+							    
+							    $pages.include("$apphome/views/modules/$!{module.id}/components/gridsample/types/entity.html", $context)
+							   	
 							   	#set($highlight =  $hits.highlight($hit, "description", 20, true))
 							   	#if($highlight)
 							   	<div class="gridcellhighlight">$highlight</div>

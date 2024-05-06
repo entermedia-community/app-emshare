@@ -33,7 +33,11 @@ $context.putPageValue("topentityid", $topentityid)
 
 #if($moduleid == "searchcategory")
 	#set($previewurl = "$!{siteroot}$apphome/views/modules/searchcategory/searchcategory.html?field=searchcategory&operation=exact&searchcategory.value=$entityid")
-	#set($linktype = "ajax searchcategory")
+	#if($searchresults)
+		#set($linktype = "searchcategory")
+	#else
+		#set($linktype = "ajax searchcategory")
+	#end
 #else
 	#set($previewurl = "$!{siteroot}$apphome/views/modules/$!moduleid/components/gridsample/preview/entity.html?id=$entityid&hitssessionid=$!hits.sessionId")
 	#set($linktype = "emdialog entity-dialog")
