@@ -1176,7 +1176,7 @@ uiload = function () {
                 }
               }
 
-              closeemdialog($(this));
+              closeemdialog($(this));  //Without this the asset Browse feature does not close all the way
               $(window).trigger("resize");
             });
 

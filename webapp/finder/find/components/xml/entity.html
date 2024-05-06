@@ -1,32 +1,13 @@
-
-<div id="listdetail_$fieldname" class="listdetailpicker" data-rendertype="multiselect">
 #if( !$values && $data )
 	#set($values = $data.getValues($detail.id) )
 #end
 
-#set($searcher = $searcherManager.getSearcher($detail.getListCatalogId(), $detail.getListId() ))
+#set( $searcher = $searcherManager.getSearcher($detail.getListCatalogId(), $detail.getListId() ))
+
 #set($entity_module = $detail.getListId())
 
-#set ($foreignkeyid = $detail.getListId() )
-
-#set($searchfield = "name")
-#set($detailid = $detail.getId().replace('.','-') )
-#set($idcount = $context.getRequestParameter("idcount"))
-#if(!$idcount)
-	#set($idcount = "")
-#end
-#set( $valueid = "list-${detailid}${idcount}value")
-<select name="${detail.getId()}.value"  
-		id="$valueid"  
-		class="listautocompletemulti form-control #if($detail.isRequired() && !$multiedit && !$searchfrom) required #end" 
-		data-searchfield="name" 
-		data-searchtype="$detail.listId" 
-		data-listcatalogid="$detail.listCatalogId" 
-		data-foreignkeyid="" 
-		data-placeholder="$detail.getText($context)" 
-		data-sortby="$!detail.sort"
-		multiple>
-	#foreach( $type in $values )
+	<ul class="entity-value-list">
+		#foreach( $type in $values )
 			#set( $row = false )
 			#set( $row = $searcher.searchById($type) )
 		    #if( $row )
@@ -36,33 +17,22 @@
 			    	#set($name = $row)
 			    #end
 			    #set($entityid = $row.id)
-			 #end
-		<option value="$row.getId()"  selected="selected">#text($row)</option>
-	#end
-</select>	
+			    #set($rendertype = $row.modulerendertype)
+				#if(!$rendertype)
+					#set($rendertype = "entity")
+				#end
+			    #set($link = "$!{siteroot}$applink/views/modules/$!{entity_module}/components/gridsample/preview/${rendertype}.html?id=$entityid&hitssessionid=$!hits.sessionId")
+			    <li>
+			    <a href="$link" 
+			    	class="emdialog entity-dialog" 
+			    	data-noesc="true" 
+			    	data-entityid="$!row.getId()"
+			    	data-targetrendertype="$!{rendertype}"
+			    	data-targetcomponenthome="$!{siteroot}$applink/views/modules/$!{entity_module}/components"
+			    	data-searchtype="$!entity_module">$name</a>  x(remove)
+			    </li>
+		    #end 
+		#end	
+	</ul>
 
-#set( $listid = $searcher.getSearchType())
-#set($module = $mediaarchive.getData("module", $listid)) 
-#set($rendertype = "entity")
-#if ($module.modulerendertype)
-	#set($rendertype = $module.modulerendertype)
-#end
-
-#if($caneditlists && $permissions.can($listid , "create"))
-		##	#set($addentitylink = "$!siteroot$applink/views/modules/${listid}/components/gridsample/preview/${rendertype}.html?edit=true&addnew=true")
-		##	<a class="btn btn-xs btn-secondary emdialog entity-dialog"
-		##	data-redirectto="$!currententiycontainer"  
-		##	style="margin-top:5px;"
-		##	href="$addentitylink" 
-		##	title="[[Add]] #text($detail)"><i class="fas fa-plus"></i> #text($detail)</a>
-
-	<a class="emdialog addnewitem btn btn-xs btn-light" 
-		data-dialogid="inlineedit" 
-		href="$!siteroot$apphome/views/settings/lists/datamanager/edit/inline.html?searchtype=$listid&update=${valueid}" 
-		title="[[Add New]] $detail" 
-		data-hidefooter="true"><i class="bi bi-plus-lg mr-1"></i> [[New]] $detail</a>
-
-#end
-
-</div>
-
+	<input type="button" value="Add Entities" />
