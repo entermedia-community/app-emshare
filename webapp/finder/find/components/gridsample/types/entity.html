@@ -44,29 +44,7 @@ $context.putPageValue("topentityid", $topentityid)
 #end
 $context.putPageValue("previewurl", $previewurl)
 
-<div class="emgridcell-header">
-	<a href="$!{previewurl}" 
-		id="clickid${entityid}"
-		data-id="${entityid}"
-   	 	data-moduleid="$!moduleid" 
-		title="[[View]]: #text($!entity)"
-		class="$linktype"
-		#if($moduleid == "searchcategory")
-			data-targetdiv="searchcategorytopcontainer"
-			data-oemaxlevel="2"
-	   	 	data-updateurl="true"
-   	 	#else
-   	 		data-hideheader="true" 
-		#end>
-		#text($!entity)
-	</a>
-</div>
 
-<div class="emgrid-content emgrid-type-$!moduleid entitycontainer entity$!moduleid$!entityid" 
-	 id="emgridentity$!moduleid$!entityid"
-		data-id="${entityid}"
-   	 	data-moduleid="$!moduleid"
-   	 	data-rendertype="entity">
   	 
    	 	##check for view
 		#set($viewid = "${moduleid}gridfields")
@@ -119,6 +97,32 @@ $context.putPageValue("previewurl", $previewurl)
 			#set($link = "$link?entityid=$!entity.getId()&entitytype=$!moduleid&topentityid=$!topentityid")
 		#end
 		
+<div class="emgridcell-header">
+	<a href="$!{previewurl}" 
+		id="clickid${entityid}"
+		data-id="${entityid}"
+   	 	data-moduleid="$!moduleid" 
+		title="[[View]]: #text($!entity)"
+		class="$linktype"
+		#if($moduleid == "searchcategory")
+			data-targetdiv="searchcategorytopcontainer"
+			data-oemaxlevel="2"
+	   	 	data-updateurl="true"
+   	 	#else
+   	 		data-hideheader="true" 
+		#end>
+		#if($primarymedia)
+			<i class="bi bi-grid module-small-icon"></i>
+		#end
+		#text($!entity)
+	</a>
+</div>
+
+<div class="emgrid-content emgrid-type-$!moduleid entitycontainer entity$!moduleid$!entityid" 
+	 id="emgridentity$!moduleid$!entityid"
+		data-id="${entityid}"
+   	 	data-moduleid="$!moduleid"
+   	 	data-rendertype="entity">
         <a href="$!{previewurl}" 
    	 	id="clickid${entityid}"
 		data-id="${entityid}"
@@ -141,18 +145,17 @@ $context.putPageValue("previewurl", $previewurl)
 		       		data-assetsshown="$!assetsshown"
 		       		data-attachedmediaurl="$!siteroot$componenthome/gridsample/types/entity.html"
 		       		data-targetdiv="emgridentity$!moduleid$!entityid">
-		       		 
+
+				#set($moduleicon = "grid")
+				#if ($module.moduleicon)
+					#set($moduleicon = $module.moduleicon)
+				#end 
+
 				#if($primarymedia)
-					  ## <img src="$siteroot$apphome/theme/images/icon-entity-dialog.svg" class="assettablelink" />	
-				       $pages.include("$componenthome/gridsample/types/attachedmedia/entity2.html", $context)
+				    $pages.include("$componenthome/gridsample/types/attachedmedia/entity2.html", $context)
 			   #else
-					#set($moduleicon = "grid")
-					#if ($module.moduleicon)
-						#set($moduleicon = $module.moduleicon)
-					#end
 					<i class="bi bi-${moduleicon} module-icon"></i> 
-			   #end
-		   		<div class="clearfix"></div>
+			   #end 
 		   </div>
 		   
 		        

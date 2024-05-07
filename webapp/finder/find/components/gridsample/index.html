@@ -13,25 +13,36 @@
 			#end
 		#end
 		</div>
+
+		<div class="category-header-right">
+			#ifnotnull($topcategory)
+				#if($permissions.can($moduleid, "create")) 
+					<a class="emdialog" href="#" title="[[Add New]]">
+						<i class="bi bi-plus-lg mr-1"></i> [[New]]
+					</a> 
+				#end
+			#end
 	
-		<a href="$applink/views/modules/${moduleid}/components/filters/dialogsort.html" 
-						class="emdialog emsort #if($selectedpreference == "true") closed #end"
-						data-dialogid="sortdialog"
-						data-hidebackdrop="true"
-						data-hidefooter="true"
-						data-modalsize="sm"
-						data-moduleid="$!{moduleid}"
-						data-hitssessionid="$hits.getSessionId()"
-						data-categoryid="$!categoryid"
-						data-rootcategory="$!rootcategory"
-						data-topmoduleid="$!topmoduleid"
-						data-entityid="$!entityid"
-						data-dialogindextype="$!dialogindextype" 
-						data-targetdivsearch="$!{moduleid}resultscontainer"
-						style="padding:0 8px 0 10px;" 
-						title="[[Sort Results]]"><i class="bi bi-sort-down"></i> [[Sort]]</a>
+			<a href="$applink/views/modules/${moduleid}/components/filters/dialogsort.html" 
+				class="emdialog emsort #if($selectedpreference == "true") closed #end"
+				data-dialogid="sortdialog"
+				data-hidebackdrop="true"
+				data-hidefooter="true"
+				data-modalsize="sm"
+				data-moduleid="$!{moduleid}"
+				data-hitssessionid="$hits.getSessionId()"
+				data-categoryid="$!categoryid"
+				data-rootcategory="$!rootcategory"
+				data-topmoduleid="$!topmoduleid"
+				data-entityid="$!entityid"
+				data-dialogindextype="$!dialogindextype" 
+				data-targetdivsearch="$!{moduleid}resultscontainer"
+				style="padding:0 8px 0 10px;" 
+				title="[[Sort Results]]"><i class="bi bi-sort-down"></i> [[Sort]]</a>
+		</div>
 	</div>
 </div>
+
 <div id="modulesearchresultsdiv" class="h-100" data-moduleid="$!module.id" >
 	#set( $favorites = $userprofile.get("favorites_"+$module.id))
 	$context.putPageValue("favorites", $favorites)
@@ -46,60 +57,59 @@
 	$context.putPageValue("rendermoduleid", $module.id)
 
 
-##$pages.include("$apphome/views/modules/${module.id}/resultsactions.html",$context)
+	##$pages.include("$apphome/views/modules/${module.id}/resultsactions.html",$context)
 
-#set($currentpage = $context.getRequestParameter("currentpagenum"))
+	#set($currentpage = $context.getRequestParameter("currentpagenum"))
 
-#set( $prhits = $hits.getPositionRender() )
-#ifnotnull($currentpage)
-$prhits.setPageOneBased($currentpage)
-#end
-#set($pos = $prhits.toPosition($prhits.getPage()))
-
-
-#set($resultsPage = "$componenthome/results/index.html?hitssessionid=$!hits.sessionId&pageposition")
-#set($targetdivinner = "${module.id}resultsarea")
-#set($oemaxlevel = "2")
+	#set( $prhits = $hits.getPositionRender() )
+	#ifnotnull($currentpage)
+		$prhits.setPageOneBased($currentpage)
+	#end
+	#set($pos = $prhits.toPosition($prhits.getPage()))
 
 
-<div class="emgridflexcontainer" style="overflow-y: auto; height: calc(100% - 36px);">
+	#set($resultsPage = "$componenthome/results/index.html?hitssessionid=$!hits.sessionId&pageposition")
+	#set($targetdivinner = "${module.id}resultsarea")
+	#set($oemaxlevel = "2")
 
-<div class="emgridflex">
-	<div id="galleryimg-${rendertype}" 
-		class='emgrid entitiescontainer' 
-		data-fixedwidth="210" 
-		data-cellpadding="15"
-		data-entityrenderurl="$siteroot$apphome/views/modules/$module.id/components/gridsample/gridcell.html"
-		data-rendertype="$rendertype">
-	  #foreach( $hit in $hits.getPageOfHits())
-				$context.putPageValue("rendermoduleid", $hit.entitysourcetype)
-				$context.putPageValue("entity", $hit)
-				$context.putPageValue("hit", $hit)								
-			    ##$pages.include("$apphome/components/gridsample/gridcell.html", $context)
-			    <div class="emgridcell emgridcell-$rendertype activelistcontainer 
-	 			#if($selectedid == $hit.getId() || $topselectedid == $hit.getId()) active #end
-	 			">
-			    $pages.include("$apphome/views/modules/${hit.entitysourcetype}/components/gridsample/types/entity.html", $context)
-					
-					#set($editurl = "$!{siteroot}$apphome/views/modules/$!moduleid/components/gridsample/preview/entity.html?id=$hit.getId()&hitssessionid=$!hits.sessionId")
 
-					<div class="emgridcell-edit">
-						<a href="$editurl" class="emdialog emgridcell-edit-link"  title="[[Edit]]" >
-							<i class="bi bi-pencil"></i>
-						</a>
-					</div>
-			  </div>
-		#end
+	<div class="emgridflexcontainer" style="overflow-y: auto; height: calc(100% - 36px);">
+		<div class="emgridflex">
+			<div id="galleryimg-${rendertype}" 
+				class='emgrid entitiescontainer' 
+				data-fixedwidth="210" 
+				data-cellpadding="15"
+				data-entityrenderurl="$siteroot$apphome/views/modules/$module.id/components/gridsample/gridcell.html"
+				data-rendertype="$rendertype">
+				#foreach( $hit in $hits.getPageOfHits())
+						$context.putPageValue("rendermoduleid", $hit.entitysourcetype)
+						$context.putPageValue("entity", $hit)
+						$context.putPageValue("hit", $hit)								
+							##$pages.include("$apphome/components/gridsample/gridcell.html", $context)
+							<div class="emgridcell emgridcell-$rendertype activelistcontainer 
+						#if($selectedid == $hit.getId() || $topselectedid == $hit.getId()) active #end
+						">
+							$pages.include("$apphome/views/modules/${hit.entitysourcetype}/components/gridsample/types/entity.html", $context)
+							
+							#set($editurl = "$!{siteroot}$apphome/views/modules/${hit.entitysourcetype}/components/gridsample/preview/entity.html?id=$hit.getId()&hitssessionid=$!hits.sessionId")
 
-		#if($permissions.can($moduleid, "create"))
-			#set($addurl = "$siteroot$applink/views/modules/${moduleid}/components/gridsample/preview/entity.html?edit=true&addnew=true&viewid=$!{moduleid}addnew")
-			<a class="emdialog add-new-category" href="$addurl" title="[[Add New]]">
-				<i class="bi bi-plus-lg mr-1"></i>
-			</a> 
-		#end
-	</div>  
-	  
+							<div class="emgridcell-edit">
+								<a href="$editurl" class="emdialog emgridcell-edit-link"  title="[[Edit]]" >
+									<i class="bi bi-pencil"></i>
+								</a>
+							</div>
+						</div>
+				#end
 
+				#ifnull($topcategory)
+					#if($permissions.can($moduleid, "create"))
+						#set($addurl = "$siteroot$applink/views/modules/${moduleid}/components/gridsample/preview/entity.html?edit=true&addnew=true&viewid=$!{moduleid}addnew")
+						<a class="emdialog add-new-category" href="$addurl" title="[[Add New]]">
+							<i class="bi bi-plus-lg mr-1"></i>
+						</a> 
+					#end
+				#end
+			</div>  
+		</div>
 	</div>
-</div>
 </div>
