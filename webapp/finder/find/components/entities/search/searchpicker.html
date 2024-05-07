@@ -24,20 +24,31 @@
 	</div>
 	#end
 	
-	#set($addnew = "$apphome/views/modules/${moduleid}/components/gridsample/preview/entity.html")
-	
-	#if($assetid)
-		#set($addnew = "${addnew}?edit=true&addnew=true&viewfiles=true&saveaction=addassets&assetid=$!assetid")
-	#elseif($copyinghits)
-		#set($addnew = "${addnew}?edit=true&addnew=true&viewfiles=true&copyingsearchtype=$!copyingsearchtype&saveaction=additems&copyinghitssessionid=$!copyinghitssessionid&moduleid=$moduleid")
-	#else
-		#set($addnew = "${addnew}?edit=true&addnew=true&viewfiles=true&uploadmedia=true&copyinghitssessionid=$!copyinghitssessionid")
-	#end
-	<a class="btn btn-sm btn-blue emdialog"
-		style="margin-bottom: 10px;"
-		href="$addnew" 
-		>
+	#set($pickersearchaddnew = $context.getRequestParameter("pickersearchaddnew"))
+	#if($pickersearchaddnew)
+		#set($addnew = "$apphome/views/modules/${moduleid}/components/entities/addnew.html")
+		#set($pickertarget = $context.getRequestParameter("pickertarget"))
+		<a class="btn btn-sm btn-blue mb-2 float-right ajax"
+		data-targetdivinner="pickersearchentities"
+		data-pickertarget="$!pickertarget"
+		data-oemaxlevel="1"
+		href="$addnew">
 		<i class="bi bi-plus-lg mr-1"></i> [[New]] #text($module)</a>
+	#else
+		#set($addnew = "$apphome/views/modules/${moduleid}/components/gridsample/preview/entity.html")
+		
+		#if($assetid)
+			#set($addnew = "${addnew}?edit=true&addnew=true&viewfiles=true&saveaction=addassets&assetid=$!assetid")
+		#elseif($copyinghits)
+			#set($addnew = "${addnew}?edit=true&addnew=true&viewfiles=true&copyingsearchtype=$!copyingsearchtype&saveaction=additems&copyinghitssessionid=$!copyinghitssessionid&moduleid=$moduleid")
+		#else
+			#set($addnew = "${addnew}?edit=true&addnew=true&saveaction=upload")
+		#end
+		<a class="btn btn-sm btn-blue mb-2 float-right emdialog"
+		href="$addnew">
+		<i class="bi bi-plus-lg mr-1"></i> [[New]] #text($module)</a>
+	#end
+	
      
     <form  id="colsearchform" 
 	    class="ajaxform autosubmit"  
@@ -77,7 +88,7 @@
 
 	<div id="entitypickerresults"
 		class="pickerresults"
-			
+		#set($pickertarget = $context.getRequestParameter("pickertarget"))
 		#if( $copyinghits || $assetid)
 			#if($assetid)
 				data-assetid="$assetid"
@@ -92,14 +103,14 @@
 			data-copyingsearchtype="$!copyingsearchtype"
 			data-clicktargetdiv="applicationmaincontent"
 			data-clicktargettype="message"
+			data-pickedmoduleid="$!{moduleid}"
 			
-		#else
-			#set($entitymodule = $context.getRequestParameter("entitymodule"))
-			#set($pickertarget = $context.getRequestParameter("pickertarget"))
-			data-pickertarget="$pickertarget"
+		#elseif($pickertarget)
 			data-clicktargettype="entitypicker"
-			
-			data-emdialoglink="$applink/views/modules/${entitymodule}/components/gridsample/preview/entity.html"
+			data-pickertarget="$pickertarget"
+		#else
+			data-clicktargettype="entitydialog"
+			data-targetlink="$applink/views/modules/${moduleid}/components/gridsample/preview/entity.html"
 			data-uploadmedia="true"
 		#end
 		

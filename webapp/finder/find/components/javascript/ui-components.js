@@ -2048,17 +2048,9 @@ uiload = function () {
         var pickertarget = pickerresults.data("pickertarget");
         pickertarget = $("#" + pickertarget);
         if(pickertarget.length > 0) {
-			var template = $("#pickedtemplateREPLACEID", pickertarget).html();//clone().appendTo(pickertarget);
-			var newcode = template.replaceAll("REPLACEID", rowid)
-			pickertarget.prepend("<li>"+ newcode + "</li>");
-			var newrow = pickertarget.find("li:first");
-			newrow.attr("id", rowid);
-			newrow.find("a:first").text(row.data("rowname"));
-			newrow.show();
+			updateentitylist(pickertarget, rowid, row.data("rowname"));
 			closeemdialog(pickerresults.closest(".modal"));
 		}
-        
-        
         return;
       } else {
         if (targetdiv != "") {
@@ -2086,7 +2078,30 @@ uiload = function () {
       }
     }
   });
-
+  
+  
+  lQuery(".pickerselectadded").livequery(function () {
+	  var link = $(this);
+	  var pickertarget = link.data("pickertarget");
+      pickertarget = $("#" + pickertarget);
+      if(pickertarget.length > 0) {
+  	  		updateentitylist(pickertarget, link.data("id"), link.data("name"));
+  	  }
+  	  closeemdialog(link.closest(".modal"));
+   });
+  
+  updateentitylist = function (pickertarget, id, name) {
+	  
+	  var template = $("#pickedtemplateREPLACEID", pickertarget).html();//clone().appendTo(pickertarget);
+		var newcode = template.replaceAll("REPLACEID", id)
+		pickertarget.prepend("<li>"+ newcode + "</li>");
+		var newrow = pickertarget.find("li:first");
+		newrow.attr("id", id);
+		newrow.find("a:first").text(name);
+		newrow.show();
+  };
+  
+  
   showmodal = function (emselecttable, url) {
     trackKeydown = true;
     var id = "modals";
