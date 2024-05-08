@@ -1,9 +1,13 @@
 $context.putPageValue("hits", $searchcategoryhits)
 
-#set($topcategoryid = $context.getRequestParameter("searchcategory.value"))
-
-$context.putPageValue("topcategoryid", $topcategoryid)
-
+#set($searchcategoryid = $context.getRequestParameter("searchcategoryid"))
+#ifnull($searchcategoryid)
+	#set($searchcategoryid = $context.getRequestParameter("searchcategory.value"))
+#end
+#ifnotnull($searchcategoryid)
+	#set($searchcategory = $mediaarchive.getCachedData("searchcategory", $searchcategoryid))
+#end
+$context.putPageValue("searchcategory", $searchcategory)
 
 #set($moduleid = $module.id)
 #set($expandedmodule = $moduleid)
@@ -28,9 +32,9 @@ $context.putPageValue("topmodule", $topmodule)
 	class="topmodulecontainer $!{moduleid}topcontainer"
 	data-hitssessionid="$!hits.getSessionId()"
 	data-url="$apphome/views/modules/$!{module.id}/index.html"
-	#if($topentityid) data-topentityid="$topentityid" #end
+	#if($topentityid) data-topentityid="$!topentityid" #end
 	data-oemaxlevel="2">
-$pages.include("${componenthome}/gridsample/categorybreadcrumb.html",$context)
+	$pages.include("${componenthome}/gridsample/categorybreadcrumb.html", $context)
 	$pages.include("$componenthome/filters/filters-selected.html", $context)
 	
 	$pages.includeContent()

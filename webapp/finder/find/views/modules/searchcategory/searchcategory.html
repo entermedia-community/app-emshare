@@ -1,19 +1,11 @@
 $context.putPageValue("hits", $searchcategoryhits)
 
 #set($topcategoryid = $context.getRequestParameter("searchcategory.value"))
-
 $context.putPageValue("topcategoryid", $topcategoryid)
 
-
 #set($moduleid = $module.id)
+
 #set($expandedmodule = $moduleid)
-
-#set($rendertype = "entity")
-#if ($module.modulerendertype)
-	#set($rendertype = $module.modulerendertype)
-#end
-
-$context.putPageValue("rendertype", $rendertype)
 
 #if(!$hits.isEmpty())
 	#set( $count = $hits.size())
@@ -25,31 +17,42 @@ $context.putPageValue("topmodule", $topmodule)
 
 #set($topentityid = $context.getRequestParameter("topentityid"))
 
+$context.putPageValue("topmoduleid", "searchcategory")
 
-<div id="$!{moduleid}topcontainer"
-	class="topmodulecontainer $!{moduleid}topcontainer"
-	data-hitssessionid="$!hits.getSessionId()"
-	data-url="$apphome/views/modules/$!{module.id}/index.html"
-	#if($topentityid) data-topentityid="$topentityid" #end
-	data-oemaxlevel="2">
+#foreach($module in $organizedModules)
+ 
+ 		#set($idhits = $organizedHits.get($module.id))
+		$context.putPageValue("hits", $idhits)
+		$context.putPageValue("module", $module)
+		$context.putPageValue("moduleid", $module.id)
+		$context.putPageValue("componenthome", "$apphome/views/modules/$module.id/components")
+ 
+	#if($module.id != "asset")
+	  	
+	   	#set( $favorites = $userprofile.get("favorites_"+$module.id))
+		$context.putPageValue("favorites", $favorites)
 
-$context.putPageValue("hits", $searchcategoryhits)
-#set( $moduleid = "modulesearch")
+		
+		<div id="resultsdiv" 
+			class="searchcategoryresults"
+			data-hitssessionid="$!idhits.getSessionId()"
+			data-componenthome="$apphome/views/modules/$!{module.id}/components" 
+			data-searchtype="$!module.id" 
+			data-moduleid="$!module.id" 
+			data-searchhome="$home$content.searchhome" 
+			data-category="$!category.getId()" 
+			data-pagenum="$!idhits.getPage()"  
+			data-totalpages="$!idhits.getTotalPages()">
+			$pages.include("$apphome/components/gridsample/modulegrid.html", $context)
 
-<div id="resultsdiv" 
-	data-hitssessionid="$!hits.getSessionId()"
-	data-componenthome="$apphome/views/modules/${moduleid}/components" 
-	data-searchtype="$!moduleid" 
-	data-moduleid="$!moduleid" 
-	data-searchhome="$home$content.searchhome" 
-	data-category="$!category.getId()" 
-	data-pagenum="$!hits.getPage()"  
-	data-totalpages="$!hits.getTotalPages()">
-##$context.putPageValue("module", $msmodule)
-	$pages.include("$apphome/views/modules/${moduleid}/components/results/index.html",$context)
-</div>	
+		</div>	
+	#else
+		$context.putPageValue("showheader", true)
+		$pages.include("$apphome/views/modules/asset/index.html", $context)
+		
+	#end 
+#end
 
-</div>
 
 
 

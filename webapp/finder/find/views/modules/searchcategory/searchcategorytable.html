@@ -1,0 +1,9 @@
+#set($moduleid = $context.getRequestParameter("showmoduleid"))
+#set($module = $mediaarchive.getCachedData("module", $moduleid))
+$context.putPageValue("module", $module)
+
+#set($searchcategoryid = $context.getRequestParameter("searchcategoryid"))
+
+#set($url = "$apphome/views/modules/${moduleid}/searchinline.html?field=searchcategory&operation=exact&searchcategory.value=$!searchcategoryid")
+
+$pages.include("$url",$context)

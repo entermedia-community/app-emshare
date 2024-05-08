@@ -1,0 +1,56 @@
+<div class="category-breadcrumb">
+	<div class="d-flex justify-content-between">
+	<div>
+		<a href="$!{siteroot}$apphome/views/modules/searchcategory/index.html" title="[[All Categories]]">[[All]]</a>
+			#set($showmoduleid = $context.getRequestParameter("showmoduleid"))
+			#if($moduleid=="searchcategory" || $searchcategory)
+				#if($searchcategory)
+					&nbsp;/&nbsp;&nbsp;
+					#if($showmoduleid)
+						#set($urlparams = "field=searchcategory&operation=exact&searchcategory.value=$!searchcategory.getId()")
+						<a href="$apphome/views/modules/searchcategory/searchcategory.html?$urlparams">#text($searchcategory)</a>
+					#else
+					#text($searchcategory)
+					#end 
+					#if($hits.size())
+					($!hits.size())
+					#end
+				#end
+			
+				
+				#ifnotnull($showmoduleid)
+					#set($showmodule = $mediaarchive.getCachedData("module", $showmoduleid))			
+					&nbsp;/&nbsp;&nbsp;#text($showmodule) 
+					##($!hits.size())
+				#end
+		#end
+		</div>
+
+		<div class="category-header-right">
+			#ifnotnull($topcategory)
+				#if($permissions.can($moduleid, "create")) 
+					<a class="emdialog" href="#" title="[[Add New]]">
+						<i class="bi bi-plus-lg mr-1"></i> [[New]]
+					</a> 
+				#end
+			#end
+	
+			<a href="$applink/views/modules/${moduleid}/components/filters/dialogsort.html" 
+				class="emdialog emsort #if($selectedpreference == "true") closed #end"
+				data-dialogid="sortdialog"
+				data-hidebackdrop="true"
+				data-hidefooter="true"
+				data-modalsize="sm"
+				data-moduleid="$!{moduleid}"
+				data-hitssessionid="$hits.getSessionId()"
+				data-categoryid="$!categoryid"
+				data-rootcategory="$!rootcategory"
+				data-topmoduleid="$!topmoduleid"
+				data-entityid="$!entityid"
+				data-dialogindextype="$!dialogindextype" 
+				data-targetdivsearch="$!{moduleid}resultscontainer"
+				style="padding:0 8px 0 10px;" 
+				title="[[Sort Results]]"><i class="bi bi-sort-down"></i> [[Sort]]</a>
+		</div>
+	</div>
+</div>

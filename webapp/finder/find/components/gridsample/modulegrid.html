@@ -12,13 +12,6 @@ $context.putPageValue("filter", $filter)
 		     		#set($moduleicon = $module.moduleicon)
 		     	#end
 		     	
-		     	#set($rendertype = $module.modulerendertype)
-				
-				#if (!$rendertype)
-				   	#set($rendertype = "entity")
-				#end
-				$context.putPageValue("entityrendertype", $rendertype)
-		     	
 	     		#set($entityurl = "$!siteroot$apphome/views/modules/$!{module.id}/index.html?$!{module.id}page=1&hitssessionid=$!hits.getSessionId()")
 	
 				<a href="$entityurl" 
@@ -46,6 +39,15 @@ $context.putPageValue("filter", $filter)
 							data-oemaxlevel="1"
 							data-confirm="[[Are you sure to remove items from Bookmarks?]]"
 							title="[[Clear Bookmarks]]"><i class="bi bi-bookmark-x mr-1"></i>[[Remove All]]</a>
+					#elseif($topmoduleid == "searchcategory")
+						#set($searchcategory = $context.getRequestParameter("searchcategory.value"))
+						<a href="$!siteroot$apphome/views/modules/searchcategory/searchcategorytable.html" 
+							class="ajax rounded btn btn-brand ml-2"
+							data-targetdivinner="searchcategorytopcontainer"
+							data-searchcategoryid="$!searchcategory"
+							data-showmoduleid="$!moduleid"
+							data-oemaxlevel="2"
+							title="[[View Results]]">[[View Results]]</a>
 					#end
 					
 								
@@ -77,26 +79,18 @@ $context.putPageValue("filter", $filter)
 		#end
 	   	$context.putPageValue("details", $details)
 	   
-	   $hits.setHitsPerPage(6)
+	 ##$hits.setHitsPerPage(6)
 	 <div class="emgridflex">  	
 		<div id="galleryimg-${rendertype}" 
 				class='emgrid #if($section != "favorites")emgridlimited#end entitiescontainer' 
-				style="width:1125px"
 				data-fixedwidth="175" 
 				data-cellpadding="10"
-				data-entityrenderurl="$!{siteroot}$apphome/views/modules/${module.id}/components/gridsample/gridcell.html"
-				data-rendertype="$rendertype">
+				data-rendertype="$!rendertype">
 				#foreach( $hit in $hits.getPageOfHits() )
 					$context.putPageValue("hit", $hit)
-				    ##$pages.include("$apphome/components/gridsample/gridcell.html", $context)
 				    <div class="emgridcell emgridcell-$rendertype activelistcontainer 
-		 			#if($selectedid == $hit.getId() || $topselectedid == $hit.getId()) active #end
-		 			"> 
-					#set($rendertype = $module.modulerendertype)
-					#if (!$rendertype)
-			   			#set($rendertype = "entity")
-					#end
-				    $pages.include("$apphome/views/modules/$!{moduleid}/components/gridsample/types/${rendertype}.html", $context)
+		 			#if($selectedid == $hit.getId() || $topselectedid == $hit.getId()) active #end"> 
+				    $pages.include("$apphome/views/modules/$!{moduleid}/components/gridsample/types/entity.html", $context)
 					<div class="emgridcell-bookmark">
 						$pages.include("$componenthome/gridsample/favorites.html?id=$hit.getId()&moduleid=$moduleid", $context)
 					</div>
@@ -104,19 +98,7 @@ $context.putPageValue("filter", $filter)
 				#end
 		</div>
 		
-		#if($permissions.can($moduleid, "create") && $moduleid!="faceprofilegroup" && $topmoduleid != "favorites")
-	 		#set($addurl = "$siteroot$applink/views/modules/${moduleid}/components/gridsample/preview/$!{rendertype}.html?edit=true&addnew=true&viewid=$!{moduleid}addnew")
-	 		#ifnotnull($topentityid)
-	 			#set($addurl = "$addurl&fieldexternalid=${topmodule.getId()}&fieldexternalvalue=${topentityid}&reloadtargets=topmodulecontainer")
-	 		#end
-			<div class=" emgrid-addmore " style="">
-				<a href="$addurl"
-				class="emdialog"
-				title="[[Add Record]]"
-				>[[Add New]]</a>
-			</div>
-		#end
-		
+
 		</div>
 	</div>
 		
