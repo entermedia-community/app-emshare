@@ -34,24 +34,21 @@ $context.putPageValue("topentityid", $topentityid)
 #set($previewurl = "$!{siteroot}$apphome/views/modules/$!moduleid/components/gridsample/preview/entity.html?id=$entityid&hitssessionid=$!hits.sessionId")
 $context.putPageValue("previewurl", $previewurl)
 
-<div class="emgridcell-header">
-	<a href="$!{previewurl}" 
-		class="emdialog entity-dialog" 
-   	 	data-hidefooter="true" 
-   	 	data-hideheader="true" 
-		id="clickid${entityid}"  
-   	 	data-id="${entityid}"
-   	 	data-moduleid="$!moduleid" 
-		title="[[View]]: #text($!entity)">
-		#text($!entity)
-	</a>
-</div>
+<div 
+	class="emfolder-wrapper compact emgrid-type-$!moduleid entitycontainer entity$!moduleid$!entityid" 
+	id="emgridentity$!moduleid$!entityid"
+	data-id="${entityid}"
+  data-moduleid="$!moduleid"
+  data-rendertype="entity">
 
-<div class="emgrid-content emgrid-type-$!moduleid entitycontainer entity$!moduleid$!entityid" 
-	 id="emgridentity$!moduleid$!entityid"
+	<a href="$!{previewurl}" 
+		id="clickid${entityid}"  
+		class="emdialog entity-dialog" 
+		data-hidefooter="true" 
+		data-hideheader="true" 
 		data-id="${entityid}"
-   	 	data-moduleid="$!moduleid"
-   	 	data-rendertype="entity">
+		data-moduleid="$!moduleid" 
+		title="[[View]]: #text($!entity)">
   	 
    	 	##check for view
 		#set($viewid = "${moduleid}gridfields")
@@ -106,40 +103,31 @@ $context.putPageValue("previewurl", $previewurl)
 			#set($link = "$link?entityid=$!entity.getId()&entitytype=$!moduleid&topentityid=$!topentityid")
 		#end
 		
-        <a href="$!{previewurl}" 
-   	 	class="emdialog entity-dialog" 
-   	 	data-hidefooter="true" 
-   	 	data-hideheader="true"
-   	 	id="clickid${entityid}"  
-   	 	data-id="${entityid}"
-   	 	data-moduleid="$!moduleid"
-   	 	title="[[View]]: #text($!entity)">
-			
-			<div class="emgrid-entitymedia assetdropentity drop-over d-flex align-items-center justify-content-center"
-				style="text-align: center;"
-		       		id="attachedmedia$entityid" 
-		       		data-moduleid="$!moduleid" 
-		       		data-entityid="$!entityid" 
-		       		data-assetsshown="$!assetsshown"
-		       		data-attachedmediaurl="$!siteroot$componenthome/gridsample/types/entity.html"
-		       		data-targetdiv="emgridentity$!moduleid$!entityid">
-		       		 
+		<div 
+			class="emfolder-inner assetdropentity drop-over" 
+			id="attachedmedia$entityid" 
+			data-moduleid="$!moduleid" 
+			data-entityid="$!entityid" 
+			data-assetsshown="$!assetsshown"
+			data-attachedmediaurl="$!siteroot$componenthome/gridsample/types/entity.html"
+			data-targetdiv="emgridentity$!moduleid$!entityid">
+			<div class="emfolder-icon">
 				#if($primarymedia)
-					  ## <img src="$siteroot$apphome/theme/images/icon-entity-dialog.svg" class="assettablelink" />	
-				       $pages.include("$componenthome/gridsample/types/attachedmedia/entity2.html", $context)
-			   #else
-					#set($moduleicon = "grid")
-					#if ($module.moduleicon)
-						#set($moduleicon = $module.moduleicon)
-					#end
-					<i class="bi bi-${moduleicon} module-icon"></i> 
-			   #end
-		   		<div class="clearfix"></div>
-		   </div>
-		   ##<div class="emgridC-name">#text($!entity)</div>
-		        
-		</a>
-		
+				    $pages.include("$componenthome/gridsample/types/attachedmedia/entity2.html", $context)
+			  #else
+				#set($moduleicon = "grid")
+				#if ($module.moduleicon)
+					#set($moduleicon = $module.moduleicon)
+				#end
+					<i class="bi bi-$moduleicon module-icon"></i> 
+			  #end
+			</div>
+			<div class="emfolder-text">
+				<i class="bi bi-$moduleicon module-icon"></i>
+				<span>#text($!entity)</span>
+			</div>
+		</div>
+	</a>
 </div>
 
 

@@ -16,6 +16,7 @@ body {
 .bi.rr {
   transform: scale(1.2) rotate(270deg);
 }
+.bi-\$moduleicon::before,
 .bi-\$module\.moduleicon::before,
 .bi-media::before,
 .bi-category::before {
@@ -9095,16 +9096,19 @@ h2 .module-icon {
 }
 .emgridcell-edit,
 .emgridcell-bookmark {
+  opacity: 0;
   position: absolute;
-  bottom: 14px;
+  top: 48px;
   right: 0px;
   padding: 0px 8px;
-  transform: translateX(100%);
-  transition: transform 0.2s ease;
+  transform: translateX(calc(100% - 40px));
+  z-index: 100;
+  transition: transform 0.2s ease, opacity 0.5s ease-in;
 }
 .emgridcell:hover .emgridcell-edit,
 .emgridcell:hover .emgridcell-bookmark {
-  transform: translateX(-8px);
+  opacity: 1;
+  transform: translateX(-16px);
 }
 .emgridcell .emgridcell-edit a i.bi,
 .emgridcell .emgridcell-bookmark a i.bi {
@@ -9255,4 +9259,133 @@ h2 .module-icon {
 }
 .login-area .oauthproviderbtn:hover img {
   filter: brightness(1);
+}
+.emfolder-wrapper {
+  width: 220px;
+  height: 180px;
+  margin: 0 auto;
+  border-radius: 16px;
+  display: flex;
+  align-items: flex-end;
+  position: relative;
+}
+.emfolder-wrapper.compact {
+  width: 160px;
+  height: 110px;
+  border-radius: 8px;
+}
+.emfolder-wrapper::after {
+  content: "";
+  width: 20%;
+  height: 45px;
+  background: #5f739e;
+  position: absolute;
+  top: 10px;
+  left: 0;
+  border-top-left-radius: 16px;
+}
+.emfolder-wrapper.compact::after {
+  top: 0;
+  width: 50%;
+  height: 35px;
+  border-top-left-radius: 8px;
+}
+.emfolder-wrapper::before {
+  content: "";
+  width: 70%;
+  height: 40px;
+  background: #5f739e;
+  position: absolute;
+  top: 27px;
+  right: 0;
+  border-top-right-radius: 16px;
+}
+.emfolder-wrapper.compact::before {
+  height: 35px;
+  top: 12px;
+  border-top-left-radius: 8px;
+}
+.emfolder-inner {
+  width: 220px;
+  height: 140px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-radius: 16px;
+  background: #4d5d80;
+  z-index: 1;
+  position: relative;
+}
+.emfolder-wrapper.compact .emfolder-inner {
+  width: 160px;
+  height: 90px;
+  border-radius: 8px;
+}
+.emfolder-inner::before {
+  content: "";
+  width: 70px;
+  height: 30px;
+  clip-path: path("M32,6.6C26.1,2.3,19.1,0,11.8,0H0v30h64.1L32,6.6z");
+  background: #5f739e;
+  position: absolute;
+  top: -30px;
+  left: 20%;
+}
+.emfolder-wrapper.compact .emfolder-inner::before {
+  height: 20px;
+  top: -20px;
+  left: 50%;
+}
+.emfolder-icon {
+  width: 100%;
+  max-height: calc(100% - 26px);
+  flex: 1;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.emfolder-icon i.bi {
+  font-size: 4rem !important;
+  color: #ffffff;
+}
+.emfolder-wrapper.compact .emfolder-icon {
+  max-height: 100%;
+}
+.emfolder-wrapper.compact .emfolder-icon i.bi {
+  font-size: 2rem !important;
+}
+.emfolder-text {
+  padding: 0 16px 8px 16px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.emfolder-text span {
+  display: inline-block;
+  max-width: calc(100% - 22px);
+  height: 20px;
+  line-height: 20px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+.emfolder-text i.bi {
+  font-size: 0.9rem !important;
+  transform: scale(1);
+}
+.emfolder-wrapper.compact .emfolder-text {
+  position: absolute;
+  font-size: 12px;
+  top: -19px;
+  padding: 0 5px;
+  justify-content: flex-start;
+}
+.emfolder-wrapper.compact .emfolder-text i.bi {
+  font-size: 0.8rem !important;
+  padding-left: 0;
+}
+.emfolder-wrapper.compact .emfolder-text span {
+  max-width: calc(100% - 52px);
 }
