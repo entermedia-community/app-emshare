@@ -13,15 +13,6 @@ $context.putPageValue("filter", $filter)
 		     	#end
 		     	
 	     		#set($entityurl = "$!siteroot$apphome/views/modules/$!{module.id}/index.html?$!{module.id}page=1&hitssessionid=$!hits.getSessionId()")
-	
-				<a href="$entityurl" 
-					class="ajax minimizeexpandedmoduleX" 
-					data-targetdiv="applicationcontent" 
-					data-oemaxlevel="4" 
-					data-updateurl="true" 
-					data-profilepreference="defaultmodule"
-					data-profilepreference.value="$!module.getId()"
-					title="#text($module)" >
 				
 					<i class="bi bi-$!{moduleicon} module-icon" style="font-size:0.9em;line-height:1;"></i> 
 				
@@ -29,13 +20,12 @@ $context.putPageValue("filter", $filter)
 						#set( $count = $hits.size()) 
 					#end
 					#text($module)
-					 <span class="count">($count)</span>
-					</a>
+					 
 					
 					#if($topmoduleid == "favorites")
 						<a href="$apphome/views/modules/modulesearch/bookmarksremove.html?moduleid=${module.id}" 
 							class="ajax removemodulebookmarks rounded btn btn-brand clear-bookmarks ml-2"
-							data-targetdivinner="modulesearchtopcontainer"
+							data-targetdiv="modulesearchtopcontainer"
 							data-oemaxlevel="1"
 							data-confirm="[[Are you sure to remove items from Bookmarks?]]"
 							title="[[Clear Bookmarks]]"><i class="bi bi-bookmark-x mr-1"></i>[[Remove All]]</a>
@@ -43,11 +33,11 @@ $context.putPageValue("filter", $filter)
 						#set($searchcategory = $context.getRequestParameter("searchcategory.value"))
 						<a href="$!siteroot$apphome/views/modules/searchcategory/searchcategorytable.html" 
 							class="ajax rounded btn btn-brand ml-2"
-							data-targetdivinner="searchcategorytopcontainer"
+							data-targetdiv="searchcategorytopcontainer"
 							data-searchcategoryid="$!searchcategory"
 							data-showmoduleid="$!moduleid"
 							data-oemaxlevel="2"
-							title="[[View Results]]">[[View Results]]</a>
+							title="[[View Results]]">[[View Results]] <span class="count">($count)</span></a>
 					#end
 					
 								
@@ -82,7 +72,7 @@ $context.putPageValue("filter", $filter)
 	 ##$hits.setHitsPerPage(6)
 	 <div class="emgridflex">  	
 		<div id="galleryimg-${rendertype}" 
-				class='emgrid #if($section != "favorites")emgridlimited#end entitiescontainer' 
+				class='emgrid #if($section != "favorites")emgridlimited#end entitiescontainer emgridFixHeight' 
 				data-fixedwidth="175" 
 				data-cellpadding="10"
 				data-rendertype="$!rendertype">
