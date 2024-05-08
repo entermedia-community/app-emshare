@@ -93,10 +93,10 @@ $context.putPageValue("filter", $filter)
 		 			#if($selectedid == $hit.getId() || $topselectedid == $hit.getId()) active #end
 		 			"> 
 					#set($rendertype = $module.modulerendertype)
-					#if (!$rendertype)
+					#if (!$rendertype || $rendertype == "searchcategory")
 			   			#set($rendertype = "entity")
 					#end
-				    $pages.include("$apphome/views/modules/$!{moduleid}/components/gridsample/types/${rendertype}.html", $context)
+					$pages.include("$apphome/views/modules/$!{moduleid}/components/gridsample/types/${rendertype}.html", $context)
 					<div class="emgridcell-bookmark">
 						$pages.include("$componenthome/gridsample/favorites.html?id=$hit.getId()&moduleid=$moduleid", $context)
 					</div>

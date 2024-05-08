@@ -15,12 +15,15 @@
 		</div>
 
 		<div class="category-header-right">
+			#set($addlink = "add new category link")
 			#ifnotnull($topcategory)
-				#if($permissions.can($moduleid, "create")) 
-					<a class="emdialog" href="#" title="[[Add New]]">
-						<i class="bi bi-plus-lg mr-1"></i> [[New]]
-					</a> 
-				#end
+				##reset $addlink to add new items to selected category
+			#end
+
+			#if($permissions.can($moduleid, "create")) 
+				<a class="emdialog" href="$addlink" title="[[Add New]]">
+					<i class="bi bi-plus-lg mr-1"></i> [[New]]
+				</a> 
 			#end
 	
 			<a href="$applink/views/modules/${moduleid}/components/filters/dialogsort.html" 
