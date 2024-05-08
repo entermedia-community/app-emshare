@@ -102,7 +102,10 @@ $context.putPageValue("previewurl", $previewurl)
 		#else
 			#set($link = "$link?entityid=$!entity.getId()&entitytype=$!moduleid&topentityid=$!topentityid")
 		#end
-		
+		#set($moduleicon = "grid")
+		#if ($module.moduleicon)
+			#set($moduleicon = $module.moduleicon)
+		#end
 		<div 
 			class="emfolder-inner assetdropentity drop-over" 
 			id="attachedmedia$entityid" 
@@ -115,10 +118,6 @@ $context.putPageValue("previewurl", $previewurl)
 				#if($primarymedia)
 				    $pages.include("$componenthome/gridsample/types/attachedmedia/entity2.html", $context)
 			  #else
-				#set($moduleicon = "grid")
-				#if ($module.moduleicon)
-					#set($moduleicon = $module.moduleicon)
-				#end
 					<i class="bi bi-$moduleicon module-icon"></i> 
 			  #end
 			</div>
