@@ -95,19 +95,28 @@
 			#else
 				data-copyinghitssessionid="$!copyinghitssessionid"
 			#end
-			#if($copyingsearchtype == "assets")
-				data-clickurl="$applink/views/modules/${moduleid}/components/entities/addassetstoentity.html"
-			#else 
-				data-clickurl="$applink/views/modules/${moduleid}/components/entities/copytoentity.html"
-			#end
-			data-copyingsearchtype="$!copyingsearchtype"
-			data-clicktargetdiv="applicationmaincontent"
-			data-clicktargettype="message"
-			data-pickedmoduleid="$!{moduleid}"
 			
+			#if($pickertarget=="addtocategory")
+   				data-copyinghitssessionid="$!copyinghitssessionid"
+   				data-copyingsearchtype="$!copyingsearchtype"
+				data-clickurl="$applink/views/modules/searchcategory/savetoentities.html"
+				data-pickedmoduleid="$!{moduleid}"
+			#else
+				#if($copyingsearchtype == "assets")
+					data-clickurl="$applink/views/modules/${moduleid}/components/entities/addassetstoentity.html"
+				#else 
+					data-clickurl="$applink/views/modules/${moduleid}/components/entities/copytoentity.html"
+				#end
+				data-copyingsearchtype="$!copyingsearchtype"
+				data-clicktargetdiv="applicationmaincontent"
+				data-clicktargettype="message"
+				data-pickedmoduleid="$!{moduleid}"
+			#end
 		#elseif($pickertarget)
-			data-clicktargettype="entitypicker"
-			data-pickertarget="$pickertarget"
+
+				data-clicktargettype="entitypicker"
+				data-pickertarget="$pickertarget"
+
 		#else
 			data-clicktargettype="entitydialog"
 			data-targetlink="$applink/views/modules/${moduleid}/components/gridsample/preview/entity.html"

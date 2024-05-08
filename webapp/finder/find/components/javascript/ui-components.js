@@ -1071,10 +1071,10 @@ uiload = function () {
                 width = $(window).width();
               }
 
-              $(".modal-lg", modaldialog).css("min-width", width + "px");
+              $(".modal-dialog", modaldialog).css("min-width", width + "px");
             }
             if (maxwidth) {
-              $(".modal-lg", modaldialog).css("max-width", maxwidth + "px");
+              $(".modal-dialog", modaldialog).css("max-width", maxwidth + "px");
             }
 
             var modalkeyboard = false;
