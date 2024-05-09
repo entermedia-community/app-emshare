@@ -23,7 +23,9 @@ $context.putPageValue("ismulti", $ismulti)
 		$context.putPageValue("entityid", $entityid)
 		
 		##Publishing (Gallery)
-		#set($canpublishing = $entity.get("enablepublishing"))
+		#if($permissions.can($moduleid, "publishinggallery"))
+			#set($canpublishing = true)
+		#end
 	#end
 #end
 
@@ -344,6 +346,7 @@ $context.putPageValue("topmoduleid", $moduleid)
 						#end
 						
 						##publishing tab
+						
 						#if($entitytabopen == "publishing")
 							##permissions here
 							#set($tabtype= "tabpublishing")
