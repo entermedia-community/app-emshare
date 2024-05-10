@@ -155,20 +155,25 @@ $context.putPageValue("entityrendertype", $entityrendertype)
 				#if (!$resultview || $resultview == 'table')
 					#if($canedittablecolumns)
 						#if($edit)
-							<li class="resultsnavtitem" style="min-width:180px">
+							<li class="resultsnavtitem s2h" style="min-width:180px">
 								#set ($alldetails = $searcher.getUserPropertyDetails() )
-								<span class="hint">*[[Drag columns to move them]]</span>
 								<select class="form-control form-control-sm select2 tableresultsaddcolumn" 
 										name="addcolumn"
 										data-componenthome="$siteroot$componenthome/results/addremovecolumns.html?searchtype=$!moduleid&hitssessionid=$hits.getSessionId()&editheader=true&moduleid=$!moduleid&viewid=$!{moduleid}resultstable"
 										data-targetdiv="$!{moduleid}resultsarea"
 										data-oemaxlevel="1" 
-										data-allowclear="false" >
+										data-allowclear="false" 
+									>
 									<option>[[Add Column]]</option>
 									#foreach( $detail in $alldetails) 
 										<option value="$detail.id">$detail.getText($context)</option>
 									#end
 								</select>
+								<span class="hint">*[[Drag columns to move them]]</span>
+								<a href="#" class="reset-columns">
+									<i class="bi bi-arrow-counterclockwise mr-1"></i>
+									[[Reset Columns]]
+								</a>
 							</li>
 							##Close Icon
 						#end	
