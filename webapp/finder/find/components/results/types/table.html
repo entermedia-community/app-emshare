@@ -110,12 +110,16 @@ $pages.include("${searchhome}/resultsactions.html",$context)
 			#end
 				#set( $sortby = $hits.getSearchQuery().getSortBy() )
 				#foreach( $detail in $resultdetail)
-				
-					<th  class="sortable #if( $edit)editcolumnheader #end #if( $sortby.startsWith($detail.getId() ) ) currentsort #if( $sortby.endsWith("Up") ) up #else down #end #end tableheader-${detail.id}"
-						style='#if($detail.viewType =="asset" || $detail.viewType =="primarymedia" )width:180px;#end' 
-							id="th-$detail.id" 
-							sortby="$detail.id" 
-							data-sortby="$detail.id">
+					<th 
+						id="th-$detail.id"
+						#if($detail.id != 'primarymedia')
+							class="sortable #if( $edit)editcolumnheader #end #if( $sortby.startsWith($detail.getId() ) ) currentsort #if( $sortby.endsWith("Up") ) up #else down #end #end tableheader-${detail.id}"
+							style='#if($detail.viewType =="asset" || $detail.viewType =="primarymedia" )width:180px;#end'
+							sortby="$detail.id"
+							data-sortby="$detail.id"
+						#else
+							class="tableheader-${detail.id}"
+						#end >
 						<div id="$detail.id" 
 								hitssessionid="$hits.getSessionId()"  
 								editing="$edit" 
@@ -127,14 +131,15 @@ $pages.include("${searchhome}/resultsactions.html",$context)
 										data-oemaxlevel="1"
 										href="$componenthome/results/addremovecolumns.html?searchtype=${moduleid}&hitssessionid=$hits.getSessionId()&editheader=true&removecolumn=$detail.id">
 										<i class="bi bi-x"></i></a>
-								
 								#elseif ($sortby.startsWith($detail.getId()))
 					 				#if($sortby.endsWith("Up"))
 					 					#set($sorticon="up")
 					 				#else
 					 					#set($sorticon="down")
 					 				#end	
-					 				&nbsp;&nbsp;&nbsp;<i class="bi bi-caret-$sorticon-fill"></i>
+									#if($detail.id != 'primarymedia')
+					 					&nbsp;&nbsp;&nbsp;<i class="bi bi-caret-$sorticon-fill"></i>
+									#end
 								#end
 						</div>
 					 </th>

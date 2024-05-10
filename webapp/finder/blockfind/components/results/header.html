@@ -92,21 +92,23 @@
 				<li>
 						<a class="ajax table-edit-close" data-targetdiv="resultsdiv" href="$siteroot$componenthome/results/table.html?searchtype=asset&hitssessionid=$hits.getSessionId()&editheader="><i class="fas fa-times"></i></a>
 					</li>
-					<li class="resultsnavtitem" style="min-width:180px">
+					<li class="resultsnavtitem s2h" style="min-width:180px">
 							#set ($alldetails = $searcher.getUserPropertyDetails() )
 							<select class="form-control form-control-sm select2 tableresultsaddcolumn" 
 									name="addcolumn"
 									data-componenthome="$siteroot$componenthome/results/addremovecolumns.html?oemaxlevel=1&searchtype=asset&hitssessionid=$hits.getSessionId()&editheader=true"
 									data-targetdiv="resultsdiv" 
-									data-allowclear="false" >
+									data-allowclear="false">
 								<option>[[Add Column]]</option>
-								#foreach( $detail in $alldetails) <option value="$detail.id">$detail.getText($context)</option>
+								#foreach( $detail in $alldetails) 
+									<option value="$detail.id">$detail.getText($context)</option>
 								#end
 							</select>
-					</li>
-						
-					<li class="resultsnavtitem">
-					<span class="" style="padding-right: 10px;" >[[Drag columns to move them]]</span>
+							<span class="hint">[[Drag columns to move them]]</span>
+							<a href="#" class="reset-columns">
+								<i class="bi bi-arrow-counterclockwise mr-1"></i>
+								[[Reset Columns]]
+							</a>
 					</li>
 				#else 
 					<li >
