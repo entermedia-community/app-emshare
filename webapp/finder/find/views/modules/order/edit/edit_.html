@@ -1,60 +1,60 @@
+
+
 <div class="maincontentlayout" id="myaccountcontent" style="margin:0; height: 100%; overflow-y: auto;">
+<div id="order-details">
+    #set($order = $data)
+    #set($orderitemsearcher = $searcherManager.getSearcher($catalogid, "orderitem"))
+    #set($ordersearcher = $searcherManager.getSearcher($catalogid, "order"))
+    #set($owner = $userManager.getUser($order.userid))
+    <h3>[[Customer]]: <a href="$home/$applicationid/views/settings/users/usermanager/user/index.html?username=$owner.id">$owner</a></h3>
+    #set($usersearcher = $searcherManager.getSearcher("system", "user"))
+    $context.putPageValue("searcher", $usersearcher)	 
+    $context.putPageValue("view", "user/useredit")	
+    $context.putPageValue("data", $owner)
+    
+    
+    <div id="default-fields">
+    $pages.include("/$applicationid/components/xml/detaileditor.html?detailsreadonly=true", $context)
+   
+   
+    <form class="ajaxform" targetdiv="itemsaved" id="itemsave" name="itemform" method="POST" action="$home$apphome/views/modules/order/edit/saveitems.html" >
+    <h3>[[Order Details]]</h3>
+    <table class="settings-table" id="order-details">
+       <input type="hidden" name="id" value="$order.id"/>
+       <input type="hidden" name="orderid" value="$order.id"/>
+       <input type="hidden" name="sourcepath" value="$order.sourcepath"/>      
+     </tr>
+   </table> 
 
-<form class="ajaxform" targetdiv="itemsaved" id="itemsave" name="itemform" method="POST" action="$home$apphome/views/modules/order/edit/saveitems.html" >
-<div class="d-flex">
 	
-	<div class="pr-2"style="width: 35%;">
-		#set($order = $data)
-	    #set($orderitemsearcher = $searcherManager.getSearcher($catalogid, "orderitem"))
-	    #set($ordersearcher = $searcherManager.getSearcher($catalogid, "order"))
-	    
-	    <h3>[[Order Details]]</h3>
-	    
-	    #set($owner = $userManager.getUser($order.userid))
-	
-	    <table class="settings-table table table-striped" id="order-details">
-		  <tr id="inputarea_owner">
-			<td class="emdatafield">
-			[[Requester]]
-			</td>
-			<td id="detail_owner" class="emdatafieldvalue  emdatafieldtype">
-			<div class="emdatafieldreadonly emdatafieldreadonly-default">
-				$owner.getName() $owner.get("lastname")
-	    (<a href="$home/$applicationid/views/settings/users/usermanager/user/index.html?username=$owner.id" style="text-decoration: underline;">$owner</a>)
-			</div>
-			</td>
-		</tr>
+    #set($details = $mediaarchive.getAssetSearcher().getDetailsForView("asset/orderitems",$user) )
+    #foreach( $detail in $details )
+     #if($detail.isEditable())
+    	<input type="hidden" name="field" value="$detail.id" />
+      #end
+    #end
+   
+    $context.putPageValue("searcher", $ordersearcher)	 
+    $context.putPageValue("view", "order/vieworder")	
+    $context.putPageValue("data", $order)
+    
+    $pages.include("/$applicationid/components/xml/detaileditor.html?detailsreadonly=false", $context)
+    
+    
+   
 
-	   </table> 
-  		<input type="hidden" name="id" value="$order.id"/>
-	    <input type="hidden" name="orderid" value="$order.id"/>
-	    <input type="hidden" name="sourcepath" value="$order.sourcepath"/>
-	
-	    #set($details = $mediaarchive.getAssetSearcher().getDetailsForView("asset/orderitems",$user) )
-	    #foreach( $detail in $details )
-	     #if($detail.isEditable())
-	    	<input type="hidden" name="field" value="$detail.id" />
-	      #end
-	    #end
-	   
-	    $context.putPageValue("searcher", $ordersearcher)	 
-	    $context.putPageValue("view", "order/viewcheckoutorder")	
-	    $context.putPageValue("data", $order)
-	    
-	    $pages.include("/$applicationid/components/xml/detaileditor.html?detailsreadonly=false", $context)
+    
     
     	<div style="float: right; padding:10px 0 20px;">
             <input class="btn btn-sm btn-secondary" type="button" id="approveall" value="[[Approve All]]"/>
             <input class="btn btn-sm btn-secondary" type="button" value="[[Reject All]]" id="rejectall">
             <input class="btn btn-sm btn-primary" type="submit" id="save" name="Save" value="[[Save]]"/>
-      		##      <input class="btn" type="button" name="Send" id="sendnotification" value="[[Send Notification]]"/>
+      ##      <input class="btn" type="button" name="Send" id="sendnotification" value="[[Send Notification]]"/>
+  
         </div>
         <div id="itemsaved"></div>
         <span id="itemsent"></span>
-	</div>
-	
-	<div  class="pl-2" style="width: 65%;">
-		#if($orderitems)
+    #if($orderitems)
     <h3>[[Assets]]</h3>
     <table class="emdata table table-striped table-hover">
         <tr class="tableheader">
@@ -82,14 +82,11 @@
     
     </table>
     #end
-	</div>
-	
-</div>
-</form>
-</div>
+    </form>
+    </div>
     
    
-</div>
+     </div>
 
 <div style="display: none;">
   <form id="emailform" class="ajaxform" targetdiv="itemsent" name="emailform" action="$home$apphome/views/modules/order/edit/sendnotification.html">
