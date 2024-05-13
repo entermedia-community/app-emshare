@@ -3,7 +3,41 @@
 <form class="ajaxform" targetdiv="itemsaved" id="itemsave" name="itemform" method="POST" action="$home$apphome/views/modules/order/edit/saveitems.html" >
 <div class="d-flex">
 	
-	<div class="pr-2"style="width: 35%;">
+	
+	#if($orderitems)
+	<div  class="pr-2" style="width: 55%;">
+    <h3>[[Assets]]</h3>
+    <table class="emdata table table-striped table-hover">
+		<thead>
+        <tr class="tableheader">
+            <th>[[Asset]]</th>
+            <th style="width: 150px;">[[Status]]</th>
+        </tr>
+    	</thead>
+    ##TODO: Use another form or ajax to deal with items
+    
+        #foreach( $item in $orderitems )
+        	#set($asset = false)
+			#set( $asset = $mediaarchive.getAsset($item.assetid))
+        	
+        	#if( $asset )
+				$context.putPageValue("asset", $asset)
+				$context.putPageValue("item", $item)
+				$context.putPageValue("order", $order)
+				$context.setRequestParameter("sourcepath", $asset.sourcepath)
+				$pages.include("$apphome/components/orders/row.html", $context)
+            #else
+                <tr><td>[[Asset missing]]</td></tr>
+            #end
+		
+        #end
+    
+    </table>
+    
+	</div>
+	#end
+	
+	<div class="pl-2"style="width: 45%;">
 		#set($order = $data)
 	    #set($orderitemsearcher = $searcherManager.getSearcher($catalogid, "orderitem"))
 	    #set($ordersearcher = $searcherManager.getSearcher($catalogid, "order"))
@@ -51,37 +85,6 @@
         </div>
         <div id="itemsaved"></div>
         <span id="itemsent"></span>
-	</div>
-	
-	<div  class="pl-2" style="width: 65%;">
-		#if($orderitems)
-    <h3>[[Assets]]</h3>
-    <table class="emdata table table-striped table-hover">
-        <tr class="tableheader">
-            <th>[[Asset]]</th>
-            <th>[[Status]]</th>
-        </tr>
-    
-    ##TODO: Use another form or ajax to deal with items
-    
-        #foreach( $item in $orderitems )
-        	#set($asset = false)
-			#set( $asset = $mediaarchive.getAsset($item.assetid))
-        	
-        	#if( $asset )
-				$context.putPageValue("asset", $asset)
-				$context.putPageValue("item", $item)
-				$context.putPageValue("order", $order)
-				$context.setRequestParameter("sourcepath", $asset.sourcepath)
-				$pages.include("$apphome/components/orders/row.html", $context)
-            #else
-                <tr><td>[[Asset missing]]</td></tr>
-            #end
-		
-        #end
-    
-    </table>
-    #end
 	</div>
 	
 </div>

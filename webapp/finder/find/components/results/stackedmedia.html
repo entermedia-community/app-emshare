@@ -67,11 +67,18 @@ class="scroll-resultsdiv"
 	<div 
 		class="masonry-grid-cell stackedplayer-cell assetdraggable resultsassetcontainer #if($isselected) emrowselected #end" 
 		id="gallerycell_${hit.id}"
-		data-assetid="$hit.id" 
-		data-width="$assetwidth" 
+		data-assetid="$hit.id"
 		style="height:180px;width:250px;" 
-		$context.putPageValue("thumbheight", "180" )
-		data-height="$assetheight">
+		#if($rendertype == "audio")
+			data-width="220"
+			data-height="180"
+		#else
+			data-width="$assetwidth"
+			data-height="$assetheight"
+			$context.putPageValue("thumbheight", "180" ) 
+		#end
+		 
+		>
 		<div class="grid-cell-hover"></div>
 		<input type="checkbox" class="selectionbox resultsselection" name="count" id="${hit.id}" value="${hit.id}" #if($isselected) checked #end data-dataid="${hit.id}"  />
 		<label class="selectionbox-label" for="${hit.id}">
