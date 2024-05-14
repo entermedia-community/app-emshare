@@ -15,7 +15,8 @@
 
 #set($clearfilters = $context.getPageValue("clearfilters"))
 
-<div class="tageditor-viewer">
+<span class="tageditor-viewer">
+#set($count = 1)
 #foreach( $val in $vals )
 
 	#set($fulllink = "$link?field=${type}&operation=contains&${type}.value=#paramencode($val)")
@@ -23,7 +24,7 @@
 		#set($fulllink = "$fulllink&clearfilters=true")
 	#end
 	<a
-	class="badge badge-tags tageditor-${type} ajax" 
+	class="badge badge-tags tageditor-${type} ajax #if($count>6) seelesstags#end" 
 	href="$fulllink"
 	data-targetdiv="applicationcontent"
 	data-oemaxlevel="4"
@@ -31,7 +32,11 @@
 	data-closemediaviewer="true"
 	data-closedialog="true" 
 	title="#esc($val)">#esc($val)</a> 
+	#set($count = $count + 1)
 #end
-</div>
+</span>
+#if($count>6) 
+<button class="see-more-tags-btn see-more" data-seemore="(...[[see more]])" data-seeless="(...[[see less]])">(...[[see more]])</button>
+#end
 <div class="clearfix"></div>
 #end

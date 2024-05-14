@@ -1655,12 +1655,12 @@ uiload = function () {
       return;
     }
     if($(this).hasClass("see-more")) {
-    text = text.replace(/</gm, "&lt;");
-    text = text.replace(/>/gm, "&gt;");
-    textParent.html(text.replace(/(\r\n|\n|\r)/gm, "<br>"));
-    //textParent.append('<button class="see-less">(...see less)</button>');
-    $(this).removeClass("see-more").addClass("see-less");
-    $(this).html($(this).data("seeless"));
+	    text = text.replace(/</gm, "&lt;");
+	    text = text.replace(/>/gm, "&gt;");
+	    textParent.html(text.replace(/(\r\n|\n|\r)/gm, "<br>"));
+	    //textParent.append('<button class="see-less">(...see less)</button>');
+	    $(this).removeClass("see-more").addClass("see-less");
+	    $(this).html($(this).data("seeless"));
     }
     else {
 		var maxLength = textParent.data("max");
@@ -1679,10 +1679,21 @@ uiload = function () {
 	}
   });
 
-
-  lQuery(".see-more-tags").livequery("click", function () {
-	  var tagsParent = $(this).parent();
-	  $(".see-more-tag", tagsParent).show();
+	
+  lQuery(".see-more-tags-btn").livequery("click", function (e) {
+	  	e.preventDefault();
+		e.stopImmediatePropagation();
+	  var tagsParent = $(this).prev(".tageditor-viewer");
+	  if($(this).hasClass("see-more")) {
+	  	$(".seelesstags", tagsParent).show();
+	  	$(this).removeClass("see-more").addClass("see-less");
+	    $(this).html($(this).data("seeless"));
+	  }
+	  else {
+		  $(".seelesstags", tagsParent).hide();
+		  $(this).removeClass("see-less").addClass("see-more");
+	      $(this).html($(this).data("seemore"));
+	  }
   });
 
   lQuery(".expandmediabox").livequery("click", function (e) {
