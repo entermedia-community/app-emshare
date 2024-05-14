@@ -1641,37 +1641,48 @@ uiload = function () {
     minimizedText = minimizedText.replace(/(\r\n|\n|\r)/gm, "<br>");
     $(this).html(minimizedText);
     $(this).data("text", text);
-    $(this).append('<button class="see-more">(...see more)</button>');
+    var btn = $(this).parent().find('.see-more');
+    btn.html(btn.data("seemore"));
   });
 
-  lQuery(".see-more").livequery("click", function () {
-    var textParent = $(this).parent();
+  lQuery(".see-more-btn").livequery("click", function (e) {
+	e.preventDefault();
+	e.stopImmediatePropagation();
+    var textParent = $(this).prev(".trim-text");
     var text = textParent.data("text");
     if (!text) {
       $(this).remove();
       return;
     }
+    if($(this).hasClass("see-more")) {
     text = text.replace(/</gm, "&lt;");
     text = text.replace(/>/gm, "&gt;");
     textParent.html(text.replace(/(\r\n|\n|\r)/gm, "<br>"));
-    textParent.append('<button class="see-less">(...see less)</button>');
+    //textParent.append('<button class="see-less">(...see less)</button>');
+    $(this).removeClass("see-more").addClass("see-less");
+    $(this).html($(this).data("seeless"));
+    }
+    else {
+		var maxLength = textParent.data("max");
+	    if (!maxLength || !text) {
+	      $(this).remove();
+	      return;
+	    }
+		var minimizedText = text.substring(0, maxLength).trim();
+	    minimizedText = minimizedText.replace(/<br>/gm, "\n");
+	    minimizedText = minimizedText.replace(/</gm, "&lt;");
+	    minimizedText = minimizedText.replace(/>/gm, "&gt;");
+	    minimizedText = minimizedText.replace(/(\r\n|\n|\r)/gm, "<br>");
+	    textParent.html(minimizedText);
+	    $(this).removeClass("see-less").addClass("see-more");
+	    $(this).html($(this).data("seemore"));
+	}
   });
 
-  lQuery(".see-less").livequery("click", function () {
-    var textParent = $(this).parent();
-    var maxLength = textParent.data("max");
-    var text = textParent.data("text");
-    if (!maxLength || !text) {
-      $(this).remove();
-      return;
-    }
-    var minimizedText = text.substring(0, maxLength).trim();
-    minimizedText = minimizedText.replace(/<br>/gm, "\n");
-    minimizedText = minimizedText.replace(/</gm, "&lt;");
-    minimizedText = minimizedText.replace(/>/gm, "&gt;");
-    minimizedText = minimizedText.replace(/(\r\n|\n|\r)/gm, "<br>");
-    textParent.html(minimizedText);
-    textParent.append('<button class="see-more">(...see more)</button>');
+
+  lQuery(".see-more-tags").livequery("click", function () {
+	  var tagsParent = $(this).parent();
+	  $(".see-more-tag", tagsParent).show();
   });
 
   lQuery(".expandmediabox").livequery("click", function (e) {
