@@ -15,8 +15,9 @@
 	$context.putPageValue("rendertype", $rendertype)
 	$context.putPageValue("rendermoduleid", $module.id)
 
-
-	##$pages.include("$apphome/views/modules/${module.id}/resultsactions.html",$context)
+	#if($moduleid != "searchcategory")
+		$pages.include("$apphome/views/modules/${module.id}/resultsactions.html",$context)
+	#end
 
 	#set($currentpage = $context.getRequestParameter("currentpagenum"))
 
@@ -52,22 +53,17 @@
 							
 							#set($editurl = "$!{siteroot}$apphome/views/modules/${hit.entitysourcetype}/components/gridsample/preview/entity.html?id=$hit.getId()&hitssessionid=$!hits.sessionId")
 
+							#if($moduleid == "searchcategory")
 							<div class="emgridcell-edit">
 								<a href="$editurl" class="emdialog emgridcell-edit-link"  title="[[Edit]]" >
 									<i class="bi bi-pencil"></i>
 								</a>
 							</div>
+							#end
 						</div>
 				#end
 
-				#ifnull($topcategory)
-					#if($permissions.can($moduleid, "create"))
-						#set($addurl = "$siteroot$applink/views/modules/${moduleid}/components/gridsample/preview/entity.html?edit=true&addnew=true&viewid=$!{moduleid}addnew")
-						<a class="emdialog add-new-category" href="$addurl" title="[[Add New]]">
-							<i class="bi bi-plus-lg mr-1"></i>
-						</a> 
-					#end
-				#end
+			
 			</div>  
 		</div>
 	</div>
