@@ -1,7 +1,8 @@
 #set($moduleid = $module.getId())
 $context.putPageValue("moduleid", $moduleid)
 
-#set($filter = $modulehits.findFilterValue("entitysourcetype") )
+#set($filter = $searchcategoryhits.findFilterValue("entitysourcetype") )
+
 $context.putPageValue("filter", $filter)
 
 	<div class="emgrid-module emgrid-box emgrid-column emgrid-module-$!rendertype">
@@ -16,9 +17,16 @@ $context.putPageValue("filter", $filter)
 				
 					<i class="bi bi-$!{moduleicon} module-icon" style="font-size:0.9em;line-height:1;"></i> 
 				
+				
+					#if( $module.id == "asset") ##this is safe
+						#set( $count = $hits.size()) 
+					#else
+						#set( $count = $filter.getCount($module.id) ) 
+					#end
 					#ifnull($count)
 						#set( $count = $hits.size()) 
 					#end
+				
 					#text($module)
 					 
 					
@@ -73,6 +81,9 @@ $context.putPageValue("filter", $filter)
 	 <div class="emgridflex">  	
 		<div id="galleryimg-${rendertype}" 
 				class='emgrid #if($section != "favorites")emgridlimited#end entitiescontainer emgridFixHeight' 
+				#if($modulecount==1)
+				style="max-height:600px"
+				#end
 				data-fixedwidth="175" 
 				data-cellpadding="10"
 				data-rendertype="$!rendertype">
