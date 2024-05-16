@@ -92,19 +92,23 @@ data-url="$componenthome/gridsample/preview/tabpublishing.html"
 		<input type="hidden" name="entityid" value="$!entityid" />
 		<input name="save" type="hidden" value="true">
 		
-		<input type="submit" value="[[Save]]" class="btn btn-sm btn-primary btn-savepublishing"> 
+		<button type="submit" class="btn btn-brand btn-savepublishing rounded" style="padding-top: 6px;">
+			<i class="bi bi-save ns mr-1"></i> [[Save]]
+		</button>
 		
 		#if($publishing.enabled=="true")
-			<div style="padding: 10px 0;">
-			<strong>[[oEmbed Link]]:</strong>
-			<textarea class="embedlinktextarea form-control" id="embedcode" onclick="this.select();" readonly="readonly" rows="4" cols="45">$!siteroot/$mediadbappid/services/publishingdestination/view/${publishing.id}</textarea>
-			<a href="#" class="copytoclipboard btn btn-xxs btn-light" data-targetdiv="embedalertdialog" data-copytext="embedcode" title="Copy to Clipboard"><i class="far fa-copy"></i> [[Copy]]</a>
-				
-		
-			<a href="/$mediadbappid/services/publishingdestination/view/${publishing.id}" 
-				class="" 
-				style="margin-left: 10px; font-size: 0.9em; text-decoration: underline;"
-				target="_blank">[[Live View]]</a>
+			<div class="p-1 border my-3 rounded bg-light">
+				<div class="p-1 mb-2">
+					<strong>[[oEmbed Link]]:</strong>
+					<textarea class="embedlinktextarea form-control" id="embedcode" onclick="this.select();" readonly="readonly" rows="3" cols="45">$!siteroot/$mediadbappid/services/publishingdestination/view/${publishing.id}</textarea>
+					<a href="#" class="my-1 px-2 copytoclipboard btn btn-xs btn-outline-brand" data-targetdiv="embedalertdialog" data-copytext="embedcode" title="Copy to Clipboard"><i class="bi bi-copy ns mr-1"></i> [[Copy]]</a>
+				</div>
+				<hr>
+				<div class="p-1">
+					<strong>&lt;[[iframe]]&gt; code:</strong>
+					<textarea class="iframelinktextarea form-control" id="iframecode" onclick="this.select();" readonly="readonly" rows="4" cols="45"><iframe src="$!siteroot/$mediadbappid/services/publishingdestination/view/${publishing.id}" style="width: 100%; height: 100%; border: 0;"></iframe></textarea>
+					<a href="#" class="my-1 px-2 copytoclipboard btn btn-xs btn-outline-brand" data-targetdiv="embedalertdialog" data-copytext="iframecode" title="Copy to Clipboard"><i class="bi bi-copy ns mr-1"></i> [[Copy]]</a>
+				</div>
 			</div>
 		#end
 	</form>
@@ -113,7 +117,16 @@ data-url="$componenthome/gridsample/preview/tabpublishing.html"
 
 <div class="tabpulications-col h-100">
 	<div class="p-1 h-100 overflow-hidden bg-black">
-		<iframe src="$!siteroot/$mediadbappid/services/publishingdestination/view/${publishing.id}" style="width: 100%; height: 100%; border: 0;"></iframe>
+		#if($publishing.enabled == "true")
+			<iframe src="$!siteroot/$mediadbappid/services/publishingdestination/view/${publishing.id}" style="width: 100%; height: 100%; border: 0;"></iframe>
+		#else
+			<div class="d-flex justify-content-center align-items-center h-100">
+				<div class="text-center">
+					<h3>[[No Preview Available]]</h3>
+					<p>[[Please enable the publishing settings to view the preview.]]</p>
+				</div>
+			</div>
+		#end
 	</div>
 </div>
 </div>
