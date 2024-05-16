@@ -75,6 +75,27 @@
 	        			
 	        		</tr>
 	    	#end
+	    	
+	    	#set( $viewsearcher = $searcherManager.getSearcher($catalogid, "view"))
+	    	#set( $query = $viewsearcher.createSearchQuery().append("moduleid",$moduleid).append("systemdefined", false) )
+			$!query.addSortBy("ordering")
+			#set( $views = $viewsearcher.search($query))
+			
+			#foreach( $target in $views)
+				#set($val = $permissionassigned.get($target.id))
+				<tr class="viewpermission">
+	        		<td valign="middle" style="text-align: center; width: 35px;">
+					<input type="hidden" name="field" value="${target.id}" />
+	        		<input class="permission-radio" type="checkbox" name="${target.id}.value" value="true" data-permissionsentity="$target.id" id="checkbox-$target.id"
+	        		 #if($val) checked #end/>
+	        		
+	        		</td>
+	        		<td valign="middle"><label for="checkbox-$!target.id" style="padding:5px 0 1px 0;">#text($target) [[View]]</label></td>
+	        		<td class="caption">#text($target) [[View]]</td>
+	        			
+	        	</tr>
+	    	#end
+	    	
     	</table>
     </div>
 	

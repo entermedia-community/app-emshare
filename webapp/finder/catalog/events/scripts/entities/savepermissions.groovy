@@ -19,7 +19,8 @@ public void init()
 	
 	Searcher permissionsSearcher = mediaarchive.getSearcher("permissionentityassigned");
 
-		for (permissionid in fields) {
+	for (permissionid in fields) {
+	
 		String permissionidvalue = context.getRequestParameter(permissionid+".value");
 		if(permissionidvalue == null && permissionassigned.containsKey(permissionid))
 		{
@@ -34,7 +35,7 @@ public void init()
 			data.setValue("permissionsentity", permissionid);
 			data.setValue("enabled", true);
 			permissionsSearcher.saveData(data);
-			
+			log.info("Permission saved " + permissionid);
 		}
 	}
 	

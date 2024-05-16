@@ -266,40 +266,44 @@ $context.putPageValue("topmoduleid", $moduleid)
 							$context.putPageValue("viewdata", $viewdata)
 							
 							#set($tabid = "tab_${viewid}")
-							
+
 							#if($targetview.rendertype=="table")
 								#if(!$ismulti)
-									#set( $subentitysearchtype = $viewdata.rendertable )
-									#ifnotnull($subentitysearchtype)
-										##Permission check
-										##$subentitysearchtype $userentities.contains($subentitysearchtype)
-										#if($userentities.contains($subentitysearchtype))
-											#set($submodule = $mediaarchive.getCachedData("module", $viewdata.rendertable))
-											$context.putPageValue("tabmodule", $submodule)
-											#set($tabtype= "tabsubmodulehome")
-											$context.putPageValue("tabtype", $tabtype)
-											#set($subcomponenthome = "$apphome/views/modules/$subentitysearchtype/components")
-											$pages.include("$subcomponenthome/gridsample/preview/entitytabmenu.html", $context)
+									##View Permission
+									#if($permissions.can($moduleid, $viewid))
+										#set( $subentitysearchtype = $viewdata.rendertable )
+										#ifnotnull($subentitysearchtype)
+											##Permission check
+											##$subentitysearchtype $userentities.contains($subentitysearchtype)
+											#if($userentities.contains($subentitysearchtype))
+												#set($submodule = $mediaarchive.getCachedData("module", $viewdata.rendertable))
+												$context.putPageValue("tabmodule", $submodule)
+												#set($tabtype= "tabsubmodulehome")
+												$context.putPageValue("tabtype", $tabtype)
+												#set($subcomponenthome = "$apphome/views/modules/$subentitysearchtype/components")
+												$pages.include("$subcomponenthome/gridsample/preview/entitytabmenu.html", $context)
+											#end
 										#end
 									#end
 								#end
 							#else
 								####Other Tabs
-								
-									#set($tabtype= "entitytab")
-									#ifnotnull($targetview.rendertype)
-										#set($tabtype= $targetview.rendertype)
-									#end
-									
-									#if($tabtype=="default")
+									##View Permission
+									#if($permissions.can($moduleid, $viewid))
 										#set($tabtype= "entitytab")
+										#ifnotnull($targetview.rendertype)
+											#set($tabtype= $targetview.rendertype)
+										#end
+										
+										#if($tabtype=="default")
+											#set($tabtype= "entitytab")
+										#end
+										
+										$context.putPageValue("tabmodule", $module)
+										$context.putPageValue("tabtype", $tabtype)
+										
+										$pages.include("$componenthome/gridsample/preview/entitytabmenu.html", $context)
 									#end
-									
-									$context.putPageValue("tabmodule", $module)
-									$context.putPageValue("tabtype", $tabtype)
-									
-									$pages.include("$componenthome/gridsample/preview/entitytabmenu.html", $context)
-								
 							#end
 						#end
 					#end	
@@ -393,28 +397,33 @@ $context.putPageValue("topmoduleid", $moduleid)
 						
 						#if($tabtype == "table")
 							#if(!$ismulti)
-								#set($tabtype= "tabsubmodulehome")
-								$context.putPageValue("tabtype", $tabtype)
-								#set( $viewdata = $viewsearcher.searchById($viewid))
-								#set( $subentitysearchtype = $viewdata.rendertable )
-								##Permission check
-								#if($userentities.contains($subentitysearchtype))
-									#set($subcomponenthome = "$apphome/views/modules/${subentitysearchtype}/components")
-									$pages.include("$subcomponenthome/gridsample/preview/tabsubmodulehome.html", $context)
+								##View Permission
+								#if($permissions.can($moduleid, $viewid))
+									#set($tabtype= "tabsubmodulehome")
+									$context.putPageValue("tabtype", $tabtype)
+									#set( $viewdata = $viewsearcher.searchById($viewid))
+									#set( $subentitysearchtype = $viewdata.rendertable )
+									##Permission check
+									#if($userentities.contains($subentitysearchtype))
+										#set($subcomponenthome = "$apphome/views/modules/${subentitysearchtype}/components")
+										$pages.include("$subcomponenthome/gridsample/preview/tabsubmodulehome.html", $context)
+									#end
 								#end
 							#end
 						#else
-							#ifnotnull($targetview.rendertype)
-								#set($tabtype= $targetview.rendertype)
+							##View Permission
+							#if($permissions.can($moduleid, $viewid))
+								#ifnotnull($targetview.rendertype)
+									#set($tabtype= $targetview.rendertype)
+								#end
+								#if(!$tabtype || $tabtype=="default")
+									#set($tabtype= "entitytab")
+								#end
+								
+								$context.putPageValue("tabtype", $tabtype)
+	
+								$pages.include("$componenthome/gridsample/preview/${tabtype}.html", $context)
 							#end
-							#if(!$tabtype || $tabtype=="default")
-								#set($tabtype= "entitytab")
-							#end
-							
-							$context.putPageValue("tabtype", $tabtype)
-
-							$pages.include("$componenthome/gridsample/preview/${tabtype}.html", $context)
-
 						#end
 				#end
 				

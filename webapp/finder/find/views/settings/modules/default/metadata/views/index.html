@@ -176,10 +176,13 @@
             	<a class="btn btn-sm btn-primary" href="$siteroot$viewsroot/makedefault.html?id=$viewid&viewid=$viewid&viewpath=$viewpath&save=true&searchtype=view">[[Make Default]]</a>
             #end
             
-            #set($editpath = $context.findValue("editPath"))
+          #if($view.rendertable)
+          #set($editpath = $context.findValue("editPath"))
           <a class="ajax btn btn-sm btn-secondary float-right" 
-          		data-targetdiv="permissionedit" 
-          		href="$siteroot$apphome/views/settings/modules/${moduleid}/permissions/xml/edit.html?name=view-${viewid}&editPath=$editpath">[[Edit Permissions]]</a>
+          		data-targetdiv="applicationcontent"
+          		data-oemaxlevel="6" 
+          		href="$siteroot$apphome/views/settings/modules/${view.rendertable}/permissions/xml/edit.html?name=view-${viewid}&editPath=$editpath">[[Edit Permissions]]</a>
+          #end
           </div>
         </form>
           
