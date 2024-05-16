@@ -113,46 +113,9 @@ data-url="$componenthome/gridsample/preview/tabpublishing.html"
 
 <div class="tabpulications-col" style="height: 100%;">
 	<div style="padding: 20px; height: 100%;  overflow-y: auto;">
-	<div style="text-align: center; margin:0.5em 0em 2em;">
-		#if($publishing.title_enabled=="true" && $publishing.title)
-			<h3 style="margin:0;">$publishing.title</h3>
-		#end
-		</div>
-		#if($publishing.caption_enabled=="true" && $publishing.caption)
-			<div style="padding:1em;text-align: center; border-bottom:1px solid #666;">$publishing.caption</div>
-		#end
-	
-	
-		#ifnull($defaultfolder)
-			#ifnull($entity)
-				#set($defaultfolder =  $mediaarchive.getBean("entityManager").loadDefaultFolderForModule($topmodule, $context.getUser()))
-			#end
-			
-			#ifnotnull($entity)
-				#if($topmodule.getId()=="faceprofilegroup")
-					#set($defaultfolder =  $mediaarchive.getBean("entityManager").loadDefaultFolderForModule($topmodule, $context.getUser()))		
-				#else
-					#set($defaultfolder =  $mediaarchive.getBean("entityManager").createDefaultFolder($entity, $context.getUser()))
-				#end
-			#end
-		#end
-		$context.putPageValue("defaultfolder", $defaultfolder)
-		#if(!$currentcategoryid && $defaultfolder)
-			#set( $currentcategoryid = $defaultfolder.getId())
-			$context.putPageValue("categoryid", $currentcategoryid)
-		#end
-		
-		$context.putPageValue("entitydialogid", "entitypublishing")
-		$pages.include("$apphome/views/modules/asset/publishing/index.html", $context)
-	
-		#if($publishing.footer_enabled=="true" && $publishing.footer)
-			<div style="padding:0.5em; font-size: 0.9em;; margin:2em; text-align: center; border-top:1px solid #666;">$publishing.footer</div>
-		#end
+		<iframe src="$!siteroot/$mediadbappid/services/publishingdestination/view/${publishing.id}" style="width: 100%; height: 100%; border: 0;"></iframe>
 	</div>
 </div>
-</div>
-
-
 </div>
 
 
