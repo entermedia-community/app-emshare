@@ -1,21 +1,18 @@
 #set($hits = $publishingentityassethits)
 #if($hits)
 $hits.setHitsPerPage(25)
+<div class="emcarousel" >
+	<div class="emcarousel-gallery">
+		#set($asset = $hits[0])
+		$context.putPageValue("hit", $asset)
+		$context.putPageValue("assetid", $asset.id)
+		$context.putPageValue("sourcepath", $asset.sourcepath)
+		$context.putPageValue("thumbsize", "mediumplus")
 
-    <div class="emcarousel" >
-		<div class="emcarousel-gallery">
-			#set($asset = $hits[0])
-			$context.putPageValue("hit", $asset)
-			$context.putPageValue("assetid", $asset.id)
-			$context.putPageValue("sourcepath", $asset.sourcepath)
-			$context.putPageValue("thumbsize", "mediumplus")
-			##$pages.include("$componenthome/results/thumbnails/image.html",$context)
-			
-			
-			#set($imagesize = "image550x350.jpg")
-			#set($imagelink = $mediaarchive.asLinkToPreview($asset, "", $imagesize, true))
-			
-			<img src="$imagelink" id="emcarousel-image" alt="" data-assetid="$asset.id" /> 
+		#set($imagesize = "image550x350.jpg")
+		#set($imagelink = $mediaarchive.asLinkToPreview($asset, "", $imagesize, true))
+		
+		<img src="$imagelink" id="emcarousel-image" alt="" data-assetid="$asset.id" /> 
 			
 		</div>	
         <div class="emcarousel-inner">
