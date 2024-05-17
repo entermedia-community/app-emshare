@@ -658,7 +658,7 @@ uiload = function () {
   });
 
   lQuery(".fader").livequery(function () {
-    $(this).fadeOut(2500, "linear");
+    $(this).fadeOut(4000, "linear");
   });
 
   lQuery(".uipanel").livequery(function () {
