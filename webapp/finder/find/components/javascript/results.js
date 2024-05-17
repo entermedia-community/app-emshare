@@ -1401,14 +1401,15 @@ jQuery(document).ready(function (url, params) {
   var hash = window.location.hash;
   var hidemediaviewer = $("body").data("hidemediaviewer");
 
-  if (hash) {
-    if (hash.startsWith("#asset-")) {
-      if (!hidemediaviewer) {
-        var assetid = hash.substring(7, hash.length);
-        if (assetid) {
-          showAsset(null, assetid);
-        }
-      }
+  if (
+    hash &&
+    hash.startsWith("#asset-") &&
+    !hidemediaviewer &&
+    !$("#main-media-viewer").length
+  ) {
+    var assetid = hash.substring(7, hash.length);
+    if (assetid) {
+      showAsset(null, assetid);
     }
   }
 
