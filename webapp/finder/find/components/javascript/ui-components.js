@@ -1176,7 +1176,7 @@ uiload = function () {
                 }
               }
 
-              closeemdialog($(this));  //Without this the asset Browse feature does not close all the way
+              closeemdialog($(this)); //Without this the asset Browse feature does not close all the way
               $(window).trigger("resize");
             });
 
@@ -1556,11 +1556,11 @@ uiload = function () {
     var link = $(this);
     var tabaction = link.data("tabaction");
     var uploadmedia = link.data("uploadmedia");
-	var entity = $(".entitydialog");
-        entity.data("entitytabopen", tabaction);
-        entity.data("uploadmedia", uploadmedia)
-        autoreload(entity);
-        
+    var entity = $(".entitydialog");
+    entity.data("entitytabopen", tabaction);
+    entity.data("uploadmedia", uploadmedia);
+    autoreload(entity);
+
     /*    
     $.ajax({
       xhrFields: {
@@ -1641,59 +1641,56 @@ uiload = function () {
     minimizedText = minimizedText.replace(/(\r\n|\n|\r)/gm, "<br>");
     $(this).html(minimizedText);
     $(this).data("text", text);
-    var btn = $(this).parent().find('.see-more');
+    var btn = $(this).parent().find(".see-more");
     btn.html(btn.data("seemore"));
   });
 
   lQuery(".see-more-btn").livequery("click", function (e) {
-	e.preventDefault();
-	e.stopImmediatePropagation();
+    e.preventDefault();
+    e.stopImmediatePropagation();
     var textParent = $(this).prev(".trim-text");
     var text = textParent.data("text");
     if (!text) {
       $(this).remove();
       return;
     }
-    if($(this).hasClass("see-more")) {
-	    text = text.replace(/</gm, "&lt;");
-	    text = text.replace(/>/gm, "&gt;");
-	    textParent.html(text.replace(/(\r\n|\n|\r)/gm, "<br>"));
-	    //textParent.append('<button class="see-less">(...see less)</button>');
-	    $(this).removeClass("see-more").addClass("see-less");
-	    $(this).html($(this).data("seeless"));
+    if ($(this).hasClass("see-more")) {
+      text = text.replace(/</gm, "&lt;");
+      text = text.replace(/>/gm, "&gt;");
+      textParent.html(text.replace(/(\r\n|\n|\r)/gm, "<br>"));
+      //textParent.append('<button class="see-less">(...see less)</button>');
+      $(this).removeClass("see-more").addClass("see-less");
+      $(this).html($(this).data("seeless"));
+    } else {
+      var maxLength = textParent.data("max");
+      if (!maxLength || !text) {
+        $(this).remove();
+        return;
+      }
+      var minimizedText = text.substring(0, maxLength).trim();
+      minimizedText = minimizedText.replace(/<br>/gm, "\n");
+      minimizedText = minimizedText.replace(/</gm, "&lt;");
+      minimizedText = minimizedText.replace(/>/gm, "&gt;");
+      minimizedText = minimizedText.replace(/(\r\n|\n|\r)/gm, "<br>");
+      textParent.html(minimizedText);
+      $(this).removeClass("see-less").addClass("see-more");
+      $(this).html($(this).data("seemore"));
     }
-    else {
-		var maxLength = textParent.data("max");
-	    if (!maxLength || !text) {
-	      $(this).remove();
-	      return;
-	    }
-		var minimizedText = text.substring(0, maxLength).trim();
-	    minimizedText = minimizedText.replace(/<br>/gm, "\n");
-	    minimizedText = minimizedText.replace(/</gm, "&lt;");
-	    minimizedText = minimizedText.replace(/>/gm, "&gt;");
-	    minimizedText = minimizedText.replace(/(\r\n|\n|\r)/gm, "<br>");
-	    textParent.html(minimizedText);
-	    $(this).removeClass("see-less").addClass("see-more");
-	    $(this).html($(this).data("seemore"));
-	}
   });
 
-	
   lQuery(".see-more-tags-btn").livequery("click", function (e) {
-	  	e.preventDefault();
-		e.stopImmediatePropagation();
-	  var tagsParent = $(this).prev(".tageditor-viewer");
-	  if($(this).hasClass("see-more")) {
-	  	$(".seelesstags", tagsParent).show();
-	  	$(this).removeClass("see-more").addClass("see-less");
-	    $(this).html($(this).data("seeless"));
-	  }
-	  else {
-		  $(".seelesstags", tagsParent).hide();
-		  $(this).removeClass("see-less").addClass("see-more");
-	      $(this).html($(this).data("seemore"));
-	  }
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    var tagsParent = $(this).prev(".tageditor-viewer");
+    if ($(this).hasClass("see-more")) {
+      $(".seelesstags", tagsParent).show();
+      $(this).removeClass("see-more").addClass("see-less");
+      $(this).html($(this).data("seeless"));
+    } else {
+      $(".seelesstags", tagsParent).hide();
+      $(this).removeClass("see-less").addClass("see-more");
+      $(this).html($(this).data("seemore"));
+    }
   });
 
   lQuery(".expandmediabox").livequery("click", function (e) {
@@ -2044,12 +2041,10 @@ uiload = function () {
     }
   });
 
-	
-
   //newpicker
   lQuery(".pickerselectrow").livequery("click", function (event) {
     var row = $(this).parent("tr");
-    var rowid = row.data("id")
+    var rowid = row.data("id");
     var pickerresults = $(this).closest(".pickerresults");
 
     if (pickerresults.length) {
@@ -2065,14 +2060,13 @@ uiload = function () {
       if (targettype == "entitydialog") {
         emdialog(pickerresults, event);
         return;
-      }
-      else if (targettype == "entitypicker") {
+      } else if (targettype == "entitypicker") {
         var pickertarget = pickerresults.data("pickertarget");
         pickertarget = $("#" + pickertarget);
-        if(pickertarget.length > 0) {
-			updateentitylist(pickertarget, rowid, row.data("rowname"));
-			closeemdialog(pickerresults.closest(".modal"));
-		}
+        if (pickertarget.length > 0) {
+          updateentitylist(pickertarget, rowid, row.data("rowname"));
+          closeemdialog(pickerresults.closest(".modal"));
+        }
         return;
       } else {
         if (targetdiv != "") {
@@ -2100,30 +2094,27 @@ uiload = function () {
       }
     }
   });
-  
-  
+
   lQuery(".pickerselectadded").livequery(function () {
-	  var link = $(this);
-	  var pickertarget = link.data("pickertarget");
-      pickertarget = $("#" + pickertarget);
-      if(pickertarget.length > 0) {
-  	  		updateentitylist(pickertarget, link.data("id"), link.data("name"));
-  	  }
-  	  closeemdialog(link.closest(".modal"));
-   });
-  
+    var link = $(this);
+    var pickertarget = link.data("pickertarget");
+    pickertarget = $("#" + pickertarget);
+    if (pickertarget.length > 0) {
+      updateentitylist(pickertarget, link.data("id"), link.data("name"));
+    }
+    closeemdialog(link.closest(".modal"));
+  });
+
   updateentitylist = function (pickertarget, id, name) {
-	  
-	  var template = $("#pickedtemplateREPLACEID", pickertarget).html();//clone().appendTo(pickertarget);
-		var newcode = template.replaceAll("REPLACEID", id)
-		pickertarget.prepend("<li>"+ newcode + "</li>");
-		var newrow = pickertarget.find("li:first");
-		newrow.attr("id", id);
-		newrow.find("a:first").text(name);
-		newrow.show();
+    var template = $("#pickedtemplateREPLACEID", pickertarget).html(); //clone().appendTo(pickertarget);
+    var newcode = template.replaceAll("REPLACEID", id);
+    pickertarget.prepend("<li>" + newcode + "</li>");
+    var newrow = pickertarget.find("li:first");
+    newrow.attr("id", id);
+    newrow.find("a:first").text(name);
+    newrow.show();
   };
-  
-  
+
   showmodal = function (emselecttable, url) {
     trackKeydown = true;
     var id = "modals";
@@ -2506,24 +2497,19 @@ uiload = function () {
       }
     });
   });
-  
-  
+
   lQuery(".switchmainsearch").livequery("click", function () {
-	  var link = $(this);
-	  var moduleid = link.data("moduleid"); 
-        saveProfileProperty(
-        "mainsearchmodule",
-        moduleid,
-        function () {
-			$("#mainsearchcontainer").data("moduleid", moduleid)
-			autoreload($("#mainsearchcontainer"));
-		}
-      );
+    var link = $(this);
+    var moduleid = link.data("moduleid");
+    saveProfileProperty("mainsearchmodule", moduleid, function () {
+      $("#mainsearchcontainer").data("moduleid", moduleid);
+      autoreload($("#mainsearchcontainer"));
     });
-    
-    lQuery(".resetsearch").livequery("click", function () {
-        saveProfileProperty("mainsearchmodule","", function () {});
-    });  
+  });
+
+  lQuery(".resetsearch").livequery("click", function () {
+    saveProfileProperty("mainsearchmodule", "", function () {});
+  });
 
   var lasttypeahead;
   var lastsearch;
@@ -2640,11 +2626,11 @@ uiload = function () {
           "field=description&operation=contains" +
           "&description.value=" +
           encodeURIComponent(q);
-          
+
         var mainsearchmodule = mainsearcheinput.data("mainsearchmodule");
-        if(mainsearchmodule != null ){
-			terms = terms + "&mainsearchmodule="+mainsearchmodule;
-		}
+        if (mainsearchmodule != null) {
+          terms = terms + "&mainsearchmodule=" + mainsearchmodule;
+        }
 
         if (lasttypeahead) {
           lasttypeahead.abort();
