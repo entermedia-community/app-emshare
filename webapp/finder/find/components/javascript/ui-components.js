@@ -1585,6 +1585,10 @@ uiload = function () {
     }
   });
 
+  lQuery("#enabledlabel").livequery("change", function () {
+    $(this).closest("form").submit();
+  });
+
   lQuery(".autoopenemdialog").livequery(function () {
     emdialog($(this));
   });
