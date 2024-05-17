@@ -3755,13 +3755,7 @@ uiload = function () {
     });
   });
 
-  lQuery(".col-mainsidebarZ").livequery("mouseenter mouseleave", function (e) {
-    var toggler = $(this).find(".sidebar-toggler-hide");
-    if (toggler) {
-      toggler.toggle();
-    }
-  });
-
+  
   lQuery(".assetpicker .removefieldassetvalue").livequery(
     "click",
     function (e) {
@@ -4206,36 +4200,7 @@ uiload = function () {
     }
   });
 
-  lQuery("#collectionresultsdialogX .rowclick").livequery(
-    "click",
-    function (e) {
-      var launcher = jQuery("#search-collections-dialog").data(
-        "searchcollectinolauncher"
-      );
-      if (launcher != "") {
-        launcher = $("#" + launcher);
-        if (launcher.length) {
-          var nextpage = launcher.data("targeturl");
-          var targetdiv = launcher.data("targetdiv");
-          if (nextpage && targetdiv) {
-            closeemdialog($(this).closest(".modal"));
-            var rowid = $(this).attr("rowid");
-            var options = launcher.data();
-            options.collectionid = rowid;
-            console.log(options);
-            jQuery.ajax({
-              url: nextpage,
-              data: options,
-              success: function (data) {
-                $("#" + targetdiv).html(data);
-                $(window).trigger("resize");
-              },
-            });
-          }
-        }
-      }
-    }
-  );
+
   lQuery("a.clear-bookmarks").livequery("click", function (e) {
     e.preventDefault();
     if (confirm("Are you sure you want to clear all bookmarks?")) {

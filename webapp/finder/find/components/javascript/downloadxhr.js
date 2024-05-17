@@ -22,14 +22,10 @@ jQuery(document).ready(function () {
   }
   
   function checkForPendingDownloads() {
+	var url = siteroot + "/" +  mediadb +  "/services/module/order/downloadorderitems?hitsperpage=10"
     jQuery.ajax({
       dataType: "json",
-      url:
-        siteroot +
-        "/" +
-        mediadb +
-        "/services/module/order/downloadorderitems?hitsperpage=10",
-
+      url: url,
       success: function (json) {
         var items = json.orderitems;
         if (items.length == 0) {
