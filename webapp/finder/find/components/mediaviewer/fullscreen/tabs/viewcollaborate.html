@@ -24,8 +24,7 @@
 				#set( $targetpage = $mediaarchive.getPageManager().getPage("/$applicationid/components/annotations2/annotation.html"))
 				
 				
-				
-				#foreach( $script in $targetpage.getScriptsAfterApp() )
+				#foreach( $script in $pageManager.getScriptPathsWithoutApp($targetpage))
 					<script type="text/javascript" src="#if(!$script.startsWith("http"))$siteroot#end$script">  </script>
 					#if(!$script.startsWith("http"))
 						#set($scripturl ="$siteroot$script")
@@ -36,7 +35,7 @@
 					getScriptIfNotLoaded("$scripturl");
 					</script>
 				#end
-				#foreach( $style in $targetpage.getStylePathsOfContent() )
+				#foreach( $style in $pageManager.getStylePathsWithoutApp($targetpage) )
 					<link rel="stylesheet" type="text/css" href="#if(!$style.startsWith("http"))$siteroot#end$style" />
 				#end
 				

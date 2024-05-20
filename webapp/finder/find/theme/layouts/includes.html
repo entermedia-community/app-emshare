@@ -6,15 +6,16 @@
 <script type="text/javascript" src="/${applicationid}/components/javascript/jquery-ui/i18n/jquery-ui-i18n.js" ></script> 
 
 <script type="text/javascript" src="$siteroot$applink/components/javascript/index.js" ></script>
-<script type="text/javascript" src="$siteroot$apphome/theme/fontfaceobserver.js"></script>
-<script type="text/javascript" src="$siteroot$apphome/theme/fabric.min.js"></script>
 
-#foreach( $script in $targetpage.getScriptsAfterApp() )
+<script type="text/javascript" src="$siteroot$apphome/theme/fontfaceobserver.js"></script>
+
+
+#foreach( $script in $pageManager.getScriptPathsWithoutApp($content))
 	<script type="text/javascript" src="#if(!$script.startsWith("http"))$siteroot#end$script">  </script>
 #end
 
 
-#foreach( $style in $content.getStylePaths() )
+#foreach( $style in $pageManager.getStylePathsFor($content) )
 	<link rel="stylesheet" type="text/css" href="#if(!$style.startsWith("http"))$siteroot#end$style" />
 #end
 
