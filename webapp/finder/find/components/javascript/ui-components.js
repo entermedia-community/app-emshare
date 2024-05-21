@@ -1,19 +1,26 @@
 //EM Media Finder
 var lwt;
+var lwht;
 var trackKeydown = false;
 var exitWarning = false;
 
 function showLoader() {
   clearTimeout(lwt);
+  clearTimeout(lwht);
   lwt = setTimeout(function () {
     $("#loading-window").addClass("d-flex");
   }, 500); //don't show loader if the page loads within 500ms
 
-  setTimeout(hideLoader, 4000);
+  lwht = setTimeout(function () {
+    if ($("#loading-window").hasClass("d-flex")) {
+      $("#loading-window").removeClass("d-flex");
+    }
+  }, 4000);
 }
 
 function hideLoader() {
   clearTimeout(lwt);
+  clearTimeout(lwht);
   $("#loading-window").removeClass("d-flex");
 }
 
