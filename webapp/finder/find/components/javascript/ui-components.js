@@ -1530,10 +1530,10 @@ uiload = function () {
     }
   });
 
-  $("#closeExit").on("click", function () {
+  lQuery("#closeExit").livequery("click", function () {
     $("#exitConfirmationModal").hide();
   });
-  $("#confirmExit").on("click", function () {
+  lQuery("#confirmExit").livequery("click", function () {
     $("#exitConfirmationModal").hide();
     closeallemdialogs();
   });
