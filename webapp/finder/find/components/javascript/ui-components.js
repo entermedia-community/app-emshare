@@ -7,7 +7,9 @@ function showLoader() {
   clearTimeout(lwt);
   lwt = setTimeout(function () {
     $("#loading-window").addClass("d-flex");
-  }, 200); //don't show loader if the page loads within 200ms
+  }, 500); //don't show loader if the page loads within 500ms
+
+  setTimeout(hideLoader, 4000);
 }
 
 function hideLoader() {
@@ -3755,7 +3757,6 @@ uiload = function () {
     });
   });
 
-  
   lQuery(".assetpicker .removefieldassetvalue").livequery(
     "click",
     function (e) {
@@ -4199,7 +4200,6 @@ uiload = function () {
       $(this).hide();
     }
   });
-
 
   lQuery("a.clear-bookmarks").livequery("click", function (e) {
     e.preventDefault();
