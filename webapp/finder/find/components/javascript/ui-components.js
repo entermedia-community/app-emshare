@@ -1596,6 +1596,10 @@ uiload = function () {
 
   lQuery(".wg-autosave").livequery("change", function () {
     $(this).closest("form").submit();
+    $("#wgAutoSaved").show();
+    setTimeout(function () {
+      $("#wgAutoSaved").fadeOut();
+    }, 2000);
   });
 
   lQuery(".autoopenemdialog").livequery(function () {
