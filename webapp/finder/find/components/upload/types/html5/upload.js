@@ -57,6 +57,12 @@ $(document).ready(function () {
     $(row).remove();
   });
 
+  lQuery(".clear-upload-list").livequery("click", function (e) {
+    var uploadformarea = $(this).closest(".uploadformarea");
+    allfiles = new Array();
+    filesPicked(null, null, uploadformarea);
+  });
+
   lQuery(".filePicker").livequery("click", function (e) {
     e.preventDefault();
     var form = $(this).closest(".uploadformarea");
@@ -471,6 +477,12 @@ function filesPicked(_, files, uploadformarea = null) {
         allfiles.push(file);
       }
     }
+  }
+
+  if (allfiles.length === 0) {
+    uploadformarea.find(".clear-upload-list").hide();
+  } else {
+    uploadformarea.find(".clear-upload-list").show();
   }
 
   files = allfiles;
