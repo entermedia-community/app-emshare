@@ -1587,14 +1587,14 @@ uiload = function () {
   lQuery(".btn-savepublishing").livequery("click", function (event) {
     var form = $(this).closest("form");
 
-    if ($("#enabledlabel", form).is(":checked")) {
+    if ($("#wgEnabledLabel", form).is(":checked")) {
       $(".tabactionpublishing").addClass("statusenabled");
     } else {
       $(".tabactionpublishing").removeClass("statusenabled");
     }
   });
 
-  lQuery("#enabledlabel").livequery("change", function () {
+  lQuery(".wg-autosave").livequery("change", function () {
     $(this).closest("form").submit();
   });
 
