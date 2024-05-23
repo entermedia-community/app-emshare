@@ -45,8 +45,11 @@ $context.putPageValue("categoryid", $categoryid)
 $context.putPageValue("topmodule", $topmodule)
 $context.putPageValue("topmoduleid", $topmoduleid)
 
-#set($resultview = $userprofile.get("assetresultview"))
+#ifnull($entityid)
+#set($entityid = $context.getRequestParameter('entityid'))
+#end
 
+#set($resultview = $userprofile.get("assetresultview"))
 
 #set($maintargetdiv = "dialogassetresultscontainer")
 $context.putPageValue("maintargetdiv", $maintargetdiv)
@@ -68,6 +71,7 @@ $context.putPageValue("dialogresults", true)
 	data-searchhome="$!home$!componenthome/results"
 	data-targetdiv="$maintargetdiv"
 	data-topmoduleid="$!topmoduleid"
+	data-entityid="$!entityid"
 	data-rootcategory="$!rootcategory"
 	data-oemaxlevel="1"
 	>

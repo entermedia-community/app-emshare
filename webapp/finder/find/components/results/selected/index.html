@@ -117,6 +117,28 @@
 		</div>
 	</li>
 	
+	#if($entityid && $topmoduleid)
+		#ifnull($entity)
+			#set($entity = $mediaarchive.getCachedData($topmoduleid, $entityid))
+		#end
+		#set($removefrom = "$siteroot$applink/views/modules/$!{topmoduleid}/components/entities/removeassets.html")
+		#set($removefrom = "$removefrom?moduleid=$topmoduleid&entityid=$entityid&copyinghitssessionid=$hits.getSessionId()&reloadtargets=topmodulecontainer")
+		<li class="resultsnavlink dropdown">
+			<a class="resultsnavlink dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="navbarAddto$!{moduleid}">[[Remove from]]</a>
+			<div class="dropdown-menu" aria-labelledby="navbarAddto$!{moduleid}">
+				<a class="dropdown-item ajax"
+					data-targetdiv="tab_media" 
+		    		data-dialogid="addtoentity"
+		    		data-hidefooter="true"
+		    		data-pickedmoduleid="$topmoduleid"
+		    		data-pickedentityid="$entityid"
+		    		data-copyingsearchtype="assets"
+		    		data-copyinghitssessionid="$hits.getSessionId()"
+		    		href="$removefrom" >#text($entity)</a>
+			</div>
+		</li>
+	#end
+	
 	#if($canviewbasket   && $section=="basket")
 		<li>
 			<a class="resultsnavlink dropdown-item updatebasket" 
