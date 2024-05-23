@@ -1594,10 +1594,12 @@ uiload = function () {
     }
   });
 
+  var wgst;
   lQuery(".wg-autosave").livequery("change", function () {
     $(this).closest("form").submit();
     $("#wgAutoSaved").show();
-    setTimeout(function () {
+    if (wgst) clearTimeout(wgst);
+    wgst = setTimeout(function () {
       $("#wgAutoSaved").fadeOut();
     }, 2000);
   });
