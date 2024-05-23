@@ -1697,7 +1697,13 @@ gridResize = function () {
         w = fixedheight;
         h = fixedheight;
       }
-      var a = w / h;
+      var a = 1;
+      if(w>=h) {
+		  a = w / h;
+	  }
+	  else {
+		  a = h/w;
+	  }
       cell.data("aspect", a);
       var neww = a * fixedheight;
       cell.data("targetw", Math.ceil(neww));

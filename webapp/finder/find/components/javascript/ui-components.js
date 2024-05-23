@@ -1447,7 +1447,7 @@ uiload = function () {
       apphome +
       "/views/modules/" +
       topmoduleid +
-      "/index.html?entity=" +
+      "/index.html?entityid=" +
       entityid +
       "&entitytabopen=" +
       currenttab;
@@ -1904,7 +1904,7 @@ uiload = function () {
           apphome +
           "/views/modules/" +
           emselectable.data("searchtype") +
-          "/index.html?entity=" +
+          "/index.html?entityid=" +
           rowid;
         row.data("urlbar", urlbar);
         emdialog(row, event);
