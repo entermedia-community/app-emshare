@@ -2127,10 +2127,12 @@ uiload = function () {
   updateentitylist = function (pickertarget, id, name) {
     var template = $("#pickedtemplateREPLACEID", pickertarget).html(); //clone().appendTo(pickertarget);
     var newcode = template.replaceAll("REPLACEID", id);
+    newcode = newcode.replaceAll("REPLACEFIELDNAME", ""); //prevent submit wrong values
     pickertarget.prepend("<li>" + newcode + "</li>");
     var newrow = pickertarget.find("li:first");
     newrow.attr("id", id);
     newrow.find("a:first").text(name);
+    
     newrow.show();
   };
 
