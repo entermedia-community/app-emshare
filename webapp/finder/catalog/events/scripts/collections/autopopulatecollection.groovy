@@ -9,8 +9,13 @@ import org.openedit.hittracker.SearchQuery
 
 
 
+public void init() {
+	//done in EnterMediaCloudModule.searchEnterMediaAssets
+}
 
-public void init(){
+
+
+public void init_local(){
 
 	MediaArchive archive = context.getPageValue("mediaarchive");
 	
