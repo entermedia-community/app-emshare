@@ -1,0 +1,14 @@
+
+#set($searchcategoryid = $context.getRequestParameter("categoryid"))
+#if(!$searchcategoryid)
+	#set($sectionid = $context.getRequestParameter("section"))
+	#if($sectionid)
+		#set($topmodulesection = $mediaarchive.getCachedData("appsection", $sectionid))
+		#if($topmodulesection)
+			#set($searchcategoryid = $topmodulesection.getValue("toplevelentityid"))
+		#end
+	#end
+#end
+#set($url = "$apphome/views/modules/searchcategory/searchcategory.html?field=searchcategory&operation=exact&searchcategory.value=$!searchcategoryid")
+
+$pages.include("$url",$context)

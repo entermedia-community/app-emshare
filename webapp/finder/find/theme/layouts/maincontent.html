@@ -6,11 +6,10 @@
 #elseif($section == "settings")
 	#set($setpagetitle = "[[Settings]]")
 #end
-
-#set($topmenuselected = $context.findValue("module") )
-#ifnull($topmenuselected)
-	#set($topmenuselected = $moduleid )
-#end 
+#if(!$moduleid)
+	##set($module = $context.findValue("module") )
+	#set($moduleid = $module.getId())
+#end
 
 ##loop to know if there are submenus
 #foreach( $link in $topmenu)
@@ -47,19 +46,39 @@ data-section="$!section ">
 				</a>
 			</li>
 			#else
+			
+			#set($sectionid = $context.getRequestParameter("section"))
+			#set($topmenuselected = $sectionid)
+						
 				#foreach( $link in $topmenu)
 					#set( $topmenuentity = $mediaarchive.getCachedData("module",$link.toplevelentity) )
-					#if($topmenuselected == $topmenuentity.getId() && $link.get("submenu"))
-						#set($submenu = $link.getValue("submenu")) 
+					#set($url = "$applink/views/modules/$topmenuentity.getId()/index.html?$!{topmenuentity.getId()}page=1")
+
+					#if($link.getValue("toplevelentityid"))
+						#set($url = "$applink/views/modules/$topmenuentity.getId()/search.html?section=$link.getId()")
 					#end
+					
+						#if($link.getValue("custompathfinal"))
+							##sample: ${apphome}/views/modules/searchcategory/search.html?categoryid=AY82YpA9RucN_HGNkhB-
+							#set($url = $link.getValue("custompathfinal"))
+						#end
+					#if(!$topmenuselected  && $link.toplevelentity == $moduleid )
+						#set($topmenuselected = $link.getId() )
+						#if($link.get("submenu"))
+							#set($submenu = $link.getValue("submenu"))
+						#end
+					#end
+
 					<li >
-						<a href="$applink/views/modules/$topmenuentity.getId()/index.html?$!{topmenuentity.getId()}page=1" 
-							class="ajax activelistener #ifnotnull($topmenuselected) #if( $topmenuselected == $topmenuentity.getId()) active#end #end" 
+						<a href="$url" 
+							class="ajax activelistener #if( $topmenuselected == $link.getId()) active#end" 
 							data-targetdiv="applicationcontent" 
 							data-oemaxlevel="4" 
 							data-updateurl="true"
-							data-profilepreference="defaultmodule" 
-							data-profilepreference.value="${topmenuentity.getId()}" 
+							#ifnotnull($topmenuentity.getId())
+								data-profilepreference="defaultmodule" 
+								data-profilepreference.value="${topmenuentity.getId()}"
+							#end 
 							data-scrolltotop="true"
 							#if($topmenuentity.getId() =="asset") data-sidebarcomponent="categories" #end
 							title="[[View]] #text($link)">
