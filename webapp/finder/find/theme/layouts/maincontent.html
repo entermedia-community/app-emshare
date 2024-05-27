@@ -52,16 +52,12 @@ data-section="$!section ">
 						
 				#foreach( $link in $topmenu)
 					#set( $topmenuentity = $mediaarchive.getCachedData("module",$link.toplevelentity) )
-					#set($url = "$applink/views/modules/$topmenuentity.getId()/index.html?$!{topmenuentity.getId()}page=1")
+					#set($url = "$applink/views/modules/$topmenuentity.getId()/index.html")
 
-					#if($link.getValue("toplevelentityid"))
-						#set($url = "$applink/views/modules/$topmenuentity.getId()/search.html?section=$link.getId()")
-					#end
-					
-						#if($link.getValue("custompathfinal"))
-							##sample: ${apphome}/views/modules/searchcategory/search.html?categoryid=AY82YpA9RucN_HGNkhB-
+					#if($link.getValue("custompathfinal"))
+							##sample: ${apphome}/views/modules/searchcategory/index.html?categoryid=AY82YpA9RucN_HGNkhB-
 							#set($url = $link.getValue("custompathfinal"))
-						#end
+					#end
 					#if(!$topmenuselected  && $link.toplevelentity == $moduleid )
 						#set($topmenuselected = $link.getId() )
 						#if($link.get("submenu"))
@@ -75,6 +71,7 @@ data-section="$!section ">
 							data-targetdiv="applicationcontent" 
 							data-oemaxlevel="4" 
 							data-updateurl="true"
+							####data-$!{topmenuentity.getId()}page="1"
 							#ifnotnull($topmenuentity.getId())
 								data-profilepreference="defaultmodule" 
 								data-profilepreference.value="${topmenuentity.getId()}"
