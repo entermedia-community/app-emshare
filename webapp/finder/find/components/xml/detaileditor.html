@@ -58,15 +58,12 @@ $context.putPageValue("longform",false)
 
 <table class="settings-table table table-striped">
  #foreach( $detail in $details )
-	#set($val = false)
-	
-	##When is need it? - Its Breaking saving Tags.
-	## #set($target = "${detail.id}.value")
-	## #set( $val = $context.getRequestParameter($target))
-			
-	#if( !$val)
-		#set( $val = $!{data.get($detail.getId())} )
+
+ 	#set( $val = $data.get($detail.id))
+	#if(!$val && $detail.rendermask)
+		#set($val = $searcherManager.getValue($catalogid, $detail.rendermask, $data.getProperties()))
 	#end
+					
 	$!context.putPageValue("detail",$detail)
 	
 	

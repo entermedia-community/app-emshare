@@ -61,7 +61,14 @@ $context.putPageValue("details",$details)
 			<tr rowid="$hit.id">
 			#foreach( $detail in $details )
 			<td>
-			 	$context.putPageValue('val',  $!hit.get($detail.id))
+	
+			 	#set( $val = $hit.get($detail.id))
+				#if(!$val && $detail.rendermask)
+					#set($val = $searcherManager.getValue($catalogid, $detail.rendermask, $hit.getProperties()))
+				#end
+						
+				
+			 	$context.putPageValue('val',  $!val)
              		$context.putPageValue('detail',  $detail)
 				#set ($viewtype = $detail.viewType)
              		#if($viewtype && $viewtype.equals("html"))
