@@ -128,8 +128,13 @@
 		##data-viewfiles="true"
 		data-moduleid="${moduleid}">
 	
-		$pages.include("$apphome/components/entities/search/results.html",$context)
-		
+	#set( $foreignkeyid = $context.getRequestParameter("foreignkeyid") )
+	#set( $foreignkeyvalue = $context.getRequestParameter("foreignkeyvalue") )
+	#if( $foreignkeyid && $foreignkeyvalue )	
+			$pages.include("$apphome/components/entities/search/results.html?field=$foreignkeyid&${foreignkeyid}.value=$foreignkeyvale&operation=exact",$context)
+	#else
+			$pages.include("$apphome/components/entities/search/results.html",$context)
+	#end		
 	</div>
 	
 
