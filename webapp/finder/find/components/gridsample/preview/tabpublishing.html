@@ -122,14 +122,19 @@ data-url="$componenthome/gridsample/preview/tabpublishing.html"
 			#end
 
 			<div class="form-group">
-				<label class="form-check-label">[[Container Dimension]]</label>
+				<div class="form-check form-check-inline">
+					<input type="hidden" value="containerdimension_enabled" name="field" />
+					<input class="form-check-input wg-autosave" type="checkbox" id="wgCDLabel" value="true" name="containerdimension_enabled.value"  #if($publishing.containerdimension_enabled=="true")checked#end>
+					<label class="form-check-label" for="wgCDLabel">[[Use Fixed Dimension]]</label>
+				</div>
 				<input type="hidden" value="containerwidth" name="field" />
 				<input type="hidden" value="containerheight" name="field" />
 				<div class="d-flex align-items-center">
-					<input  class="form-control wg-autosave"  placeholder="[[Container Width]]" name="containerwidth.value" value="$containerwidth" type="number">
+					<input  class="form-control wg-autosave"  placeholder="[[Width]]" name="containerwidth.value" value="$containerwidth" type="number" #if($publishing.containerdimension_enabled!="true")disabled#end>
 					<span class="mx-2">&times;</span>
-					<input  class="form-control wg-autosave"  placeholder="[[Container Height]]" name="containerheight.value" value="$containerheight" type="number">
+					<input  class="form-control wg-autosave"  placeholder="[[Height]]" name="containerheight.value" value="$containerheight" type="number" #if($publishing.containerdimension_enabled!="true")disabled#end>
 				</div>
+				<small class="text-muted">[[Uses container width and height if disabled]]</small>
 			</div>
 
 			<input type="hidden" value="entityid" name="field" />
