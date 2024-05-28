@@ -112,6 +112,26 @@ data-url="$componenthome/gridsample/preview/tabpublishing.html"
 				</div>
 			</div>
 
+			#set($containerwidth = 1000)
+			#if($publishing.containerwidth > 0)
+				#set($containerwidth = $publishing.containerwidth)
+			#end
+			#set($containerheight = 824)
+			#if($publishing.containerheight > 0)
+				#set($containerheight = $publishing.containerheight)
+			#end
+
+			<div class="form-group">
+				<label class="form-check-label">[[Container Dimension]]</label>
+				<input type="hidden" value="containerwidth" name="field" />
+				<input type="hidden" value="containerheight" name="field" />
+				<div class="d-flex align-items-center">
+					<input  class="form-control wg-autosave"  placeholder="[[Container Width]]" name="containerwidth.value" value="$containerwidth" type="number">
+					<span class="mx-2">&times;</span>
+					<input  class="form-control wg-autosave"  placeholder="[[Container Height]]" name="containerheight.value" value="$containerheight" type="number">
+				</div>
+			</div>
+
 			<input type="hidden" value="entityid" name="field" />
 			<input type="hidden" name="entityid.value" value="$!entityid" />
 			#if($publishing)
