@@ -70,6 +70,7 @@
 		#end
 		
 		<table id="shared-asset-table" class="table table-striped download-table" style="margin:10px 0;" >
+			
 		#foreach( $ft in $filetypes)
 			#set($rendertypeid = $ft.get(0))
 			#set($num = $ft.get(1))
@@ -77,9 +78,9 @@
 				<td>
 				<input type="hidden" name="field" value="rendertype"/>
 				<input type="hidden" name="rendertype.value" value="${rendertypeid}"/>
-				#set($rendertype = $!context.getText($searcherManager.getData($catalogid,"rendertype",$rendertypeid)))
+				#set($rendertype = $mediaarchive.getCachedData("rendertype", $rendertypeid))
 				
-				[[Downloading]] $num $rendertype
+				[[Downloading]] $num #text($rendertype) 
 				</td>
 				<td>
 				<input type="hidden" name="field" value="presetid"/>
