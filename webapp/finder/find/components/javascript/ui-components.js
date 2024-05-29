@@ -1702,7 +1702,7 @@ uiload = function () {
     e.stopImmediatePropagation();
     var tagsParent = $(this).prev(".tageditor-viewer");
     if ($(this).hasClass("see-more")) {
-      $(".seelesstags", tagsParent).show();
+      $(".seelesstags", tagsParent).css("display", "inline-block");
       $(this).removeClass("see-more").addClass("see-less");
       $(this).html($(this).data("seeless"));
     } else {
