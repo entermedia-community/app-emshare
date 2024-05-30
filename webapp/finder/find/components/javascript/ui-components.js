@@ -759,6 +759,7 @@ uiload = function () {
         showwaitingtarget.html(
           '<img src="' + apphome + '/theme/images/ajax-loader.gif">'
         );
+        showwaitingtarget.show();
       }
 
       var oemaxlevel = targetdiv.data("oemaxlevel");
@@ -800,6 +801,9 @@ uiload = function () {
         },
         success: function (result, status, xhr, $form) {
           checkautoreload(form);
+          if(showwaitingtarget !== undefined) {
+			  showwaitingtarget.hide();
+		  }
           var targetdivinner = form.data("targetdivinner");
           if (targetdivinner) {
             $("#" + $.escapeSelector(targetdivinner)).html(result);

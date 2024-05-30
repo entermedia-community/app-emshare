@@ -352,6 +352,28 @@ $(document).ready(function () {
       return false;
     }
   );
+  
+  lQuery(".addtomodule").livequery(
+    "click",
+    function (event) {
+	  event.stopPropagation();
+
+	  var link = $(this);
+      var node = getNode(this);
+      var nodeid = node.data("nodeid");
+      var tree = node.closest(".emtree");
+      var collectionid = node.data("collectionid");
+      
+      link.data("copyingcategoryid", nodeid);
+  
+      emdialog(link, event);
+       
+
+      return false;
+    }
+  );
+  
+  
 
   lQuery(".treecontext #renamenode").livequery("click", function (event) {
     event.stopPropagation();

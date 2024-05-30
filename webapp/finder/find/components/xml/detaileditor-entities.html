@@ -34,6 +34,7 @@
  #foreach( $detail in $details )
  	#set($detailid = $detail.getId())
 	#set( $val = false )
+
 	
 	#if($editrow)
 		#set( $target = "${detailid}.value" )
@@ -44,14 +45,12 @@
 	#end
 	
 	#if( !$val )
-		#if( $searcherManager )
-			#set( $val = $searcherManager.getValue($data, $detail) )	
-		#else
-			#set( $val = $!{data.getProperty($detailid)} )
+
+	 	#set( $val = $data.get($detail.id))
+		#if(!$val && $detail.rendermask)
+			#set($val = $searcherManager.getValue($catalogid, $detail.rendermask, $data.getProperties()))
 		#end
-	#end
-	#if( !$val )
-		#set( $val = $data.get($detailid) )
+
 	#end
 	
 	#if(!$val && $detailid=="primarymedia")
