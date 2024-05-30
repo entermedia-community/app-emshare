@@ -1,12 +1,10 @@
 jQuery(document).ready(function () {
-
   var siteroot = $("#application").data("siteroot");
   var mediadb = $("#application").data("mediadbappid");
   var downloadInProgress = {};
-  const { ipcRenderer } = require('electron');
-  
+  const { ipcRenderer } = require("electron");
 
-    function humanFileSize(bytes) {
+  function humanFileSize(bytes) {
     var thresh = 1000;
     if (Math.abs(bytes) < thresh) {
       return bytes + " B";
@@ -16,13 +14,9 @@ jQuery(document).ready(function () {
     do {
       bytes /= thresh;
       ++u;
-    } while (
-      Math.round(Math.abs(bytes) * 10) / 10 >= thresh &&
-      u < units.length - 1
-    );
+    } while (Math.round(Math.abs(bytes) * 10) / 10 >= thresh && u < units.length - 1);
     return bytes.toFixed(1) + units[u];
   }
-
   function checkForPendingDownloads() {
     jQuery.ajax({
       dataType: "json",
@@ -92,115 +86,120 @@ jQuery(document).ready(function () {
   function downloadMediaLocally(orderitemid, file, itemEl, retries = 0) {
     if (downloadInProgress[orderitemid]) return;
     if (retries > 3) {
-        $.ajax({
-            url:
-                siteroot +
-                "/" +
-                mediadb +
-                "/services/module/order/updateorderitemstatus?orderitemid=" +
-                orderitemid +
-                "&publishstatus=cancelled",
-            success: function () {
-                autoreload($("#userdownloadlist"));
-                showDownloadToast(orderitemid, "error", file.itemexportname);
-            },
-        });
-        return;
+      $.ajax({
+        url:
+          siteroot +
+          "/" +
+          mediadb +
+          "/services/module/order/updateorderitemstatus?orderitemid=" +
+          orderitemid +
+          "&publishstatus=cancelled",
+        success: function () {
+          autoreload($("#userdownloadlist"));
+          showDownloadToast(orderitemid, "error", file.itemexportname);
+        },
+      });
+      return;
     }
 
     downloadInProgress[orderitemid] = true;
-    var entermediakey = '';
-	if (app && app.data('entermediakey') != null) { // app variable is from dom 
-		entermediakey = app.data('entermediakey');
-	}
-	
-	var headers = { "X-tokentype": "entermedia", "X-token": entermediakey }
+    var entermediakey = "";
+    if (app && app.data("entermediakey") != null) {
+      // app variable is from dom
+      entermediakey = app.data("entermediakey");
+    }
 
-    ipcRenderer.send('start-download', { orderitemid, file, headers});
+    var headers = { "X-tokentype": "entermedia", "X-token": entermediakey };
+
+    ipcRenderer.send("start-download", { orderitemid, file, headers });
 
     ipcRenderer.on(`download-started-${orderitemid}`, () => {
-        var downloadStartDate = new Date().toISOString();
-        $.ajax({
-            url:
-                siteroot +
-                "/" +
-                mediadb +
-                "/services/module/order/updateorderitemstatus?orderitemid=" +
-                orderitemid +
-                "&publishstatus=publishingexternal" +
-                "&downloadstartdate=" +
-                (downloadStartDate ? downloadStartDate : new Date().toISOString()),
-            success: function () {
-                showDownloadToast(orderitemid, "downloading", file.itemexportname);
-                autoreload($("#userdownloadlist"));
-                showDownloadProgress(orderitemid);
-            },
-        });
+      var downloadStartDate = new Date().toISOString();
+      $.ajax({
+        url:
+          siteroot +
+          "/" +
+          mediadb +
+          "/services/module/order/updateorderitemstatus?orderitemid=" +
+          orderitemid +
+          "&publishstatus=publishingexternal" +
+          "&downloadstartdate=" +
+          (downloadStartDate ? downloadStartDate : new Date().toISOString()),
+        success: function () {
+          showDownloadToast(orderitemid, "downloading", file.itemexportname);
+          autoreload($("#userdownloadlist"));
+          showDownloadProgress(orderitemid);
+        },
+      });
     });
 
     ipcRenderer.on(`download-progress-${orderitemid}`, (event, progress) => {
-            var percentComplete = Math.floor((progress.loaded / progress.total) * 100);
+      var percentComplete = Math.floor(
+        (progress.loaded / progress.total) * 100
+      );
+      $("#dl-" + orderitemid).css("width", percentComplete + "%");
+      $("#dtt-" + orderitemid).text(percentComplete + "%");
+      $("#dlp-" + orderitemid).text(humanFileSize(progress.loaded) + " / ");
+      var lastupdated = $("#userdownloadlist").data("lastupdated");
+      if (lastupdated === undefined) {
+        lastupdated = new Date();
+        $("#userdownloadlist").data("lastupdated", lastupdated);
+      }
+      var diff = new Date().getTime() - lastupdated.getTime();
+      if (diff > 5000) {
+        $("#userdownloadlist").data("lastupdated", new Date());
+        $.ajax({
+          url:
+            siteroot +
+            "/" +
+            mediadb +
+            "/services/module/order/updateorderitemstatus?orderitemid=" +
+            orderitemid +
+            "&publishstatus=publishingexternal" +
+            "&downloaditemdownloadedfilesize=" +
+            progress.loaded,
+          success: function () {
+            autoreload($("#userdownloadlist"));
             $("#dl-" + orderitemid).css("width", percentComplete + "%");
-            $("#dtt-" + orderitemid).text(percentComplete + "%");
-            $("#dlp-" + orderitemid).text(humanFileSize(progress.loaded) + " / ");
-            var lastupdated = $("#userdownloadlist").data("lastupdated");
-            if (lastupdated === undefined) {
-                lastupdated = new Date();
-                $("#userdownloadlist").data("lastupdated", lastupdated);
-            }
-            var diff = new Date().getTime() - lastupdated.getTime();
-            if (diff > 5000) {
-                $("#userdownloadlist").data("lastupdated", new Date());
-                $.ajax({
-                    url:
-                        siteroot +
-                        "/" +
-                        mediadb +
-                        "/services/module/order/updateorderitemstatus?orderitemid=" +
-                        orderitemid +
-                        "&publishstatus=publishingexternal" +
-                        "&downloaditemdownloadedfilesize=" +
-                        progress.loaded,
-                    success: function () {
-                        autoreload($("#userdownloadlist"));
-                        $("#dl-" + orderitemid).css("width", percentComplete + "%");
-                        $("#dlp-" + orderitemid).text(humanFileSize(progress.loaded) + " / ");
-                        showDownloadProgress(orderitemid);
-                    },
-                });
-        }
+            $("#dlp-" + orderitemid).text(
+              humanFileSize(progress.loaded) + " / "
+            );
+            showDownloadProgress(orderitemid);
+          },
+        });
+      }
     });
 
     ipcRenderer.on(`download-error-${orderitemid}`, () => {
-        errorDownloadProgress(orderitemid);
-        downloadInProgress[orderitemid] = null;
-        downloadMediaLocally(orderitemid, file, itemEl, retries + 1);
+      errorDownloadProgress(orderitemid);
+      downloadInProgress[orderitemid] = null;
+      downloadMediaLocally(orderitemid, file, itemEl, retries + 1);
     });
 
     ipcRenderer.on(`download-abort-${orderitemid}`, () => {
-        hideDownloadProgress(orderitemid);
+      hideDownloadProgress(orderitemid);
     });
 
     ipcRenderer.on(`download-finished-${orderitemid}`, (event, filePath) => {
-        successDownloadProgress(orderitemid);
-        $.ajax({
-            url:
-                siteroot +
-                "/" +
-                mediadb +
-                "/services/module/order/updateorderitemstatus?orderitemid=" +
-                orderitemid +
-                "&publishstatus=complete" +
-                "&publisheddate=" +
-                new Date().toISOString(),
-            success: function () {
-                downloadInProgress[orderitemid] = null;
-                showDownloadToast(orderitemid, "complete", file.itemexportname);
-                autoreload($("#userdownloadlist"));
-            },
-        });
+      successDownloadProgress(orderitemid);
+      $.ajax({
+        url:
+          siteroot +
+          "/" +
+          mediadb +
+          "/services/module/order/updateorderitemstatus?orderitemid=" +
+          orderitemid +
+          "&publishstatus=complete" +
+          "&publisheddate=" +
+          new Date().toISOString(),
+        success: function () {
+          downloadInProgress[orderitemid] = null;
+          showDownloadToast(orderitemid, "complete", file.itemexportname);
+          autoreload($("#userdownloadlist"));
+        },
+      });
     });
-}
+  }
 
   lQuery(".redownloadorder").livequery("click", function (e) {
     var orderitemid = $(this).data("orderitemid");
@@ -218,7 +217,7 @@ jQuery(document).ready(function () {
     if (!confirmed) return;
     var orderitemid = $(this).data("orderitemid");
     if (downloadInProgress[orderitemid]) {
-      ipcRenderer.send('cancel-download', { orderitemid });
+      ipcRenderer.send("cancel-download", { orderitemid });
       downloadInProgress[orderitemid] = null;
     }
 
@@ -237,22 +236,20 @@ jQuery(document).ready(function () {
       },
     });
   });
-  
+
   lQuery(".opendownloadedfile").livequery("click", function (e) {
-	e.preventDefault();
-    
-    
+    e.preventDefault();
+
     var itemexportname = $(this).data("itemexportname");
     var itemdownloadurl = $(this).data("itemdownloadurl");
     var file = {
-      "itemexportname": itemexportname,
-      "itemdownloadurl": itemdownloadurl,
+      itemexportname: itemexportname,
+      itemdownloadurl: itemdownloadurl,
     };
-    
-    ipcRenderer.send('onOpenFile',  file );
+
+    ipcRenderer.send("onOpenFile", file);
     //downloadMediaLocally(orderitemid, file, itemEl);
   });
-
 
   var toastTypes = {
     downloading: {
@@ -293,13 +290,16 @@ jQuery(document).ready(function () {
     template += "</div>";
     template += '<div class="toast-body">';
     var isdesktop = $("#application").data("desktop");
-    if(type == "complete" && isdesktop) {
-		template += '<a href="#" class="opendownloadedfile" data-itemexportname="' + filename + '" title="Open File"><i class="bi bi-box-arrow-up-right"></i>&nbsp; ';	
-	}
+    if (type == "complete" && isdesktop) {
+      template +=
+        '<a href="#" class="opendownloadedfile" data-itemexportname="' +
+        filename +
+        '" title="Open File"><i class="bi bi-box-arrow-up-right"></i>&nbsp; ';
+    }
     template += '<span class="toast-filename">' + filename + "</span>";
-    if(type == "complete" && isdesktop) {
-		template += '</a>';
-	}
+    if (type == "complete" && isdesktop) {
+      template += "</a>";
+    }
     if (type == "downloading")
       template += '<span class="dprog" id="dtt-' + id + '"></span>';
     template += "</div>";
@@ -329,8 +329,7 @@ jQuery(document).ready(function () {
     });
   }
 
-
-/**
+  /**
 //Not Used?
   lQuery(".emdesktopdownload").livequery("click", function (e) {
     e.preventDefault();
@@ -384,4 +383,39 @@ jQuery(document).ready(function () {
   });
 */
 
+  //read directory
+  // {
+  //   entityid: "1234",
+  //   moduleid: "entityactivity",
+  //   rootpath: "/home/user/eMedia/",
+  //   files: [{ path: filepath, size: 632532 }],
+  //   folders: [{ path: "/home/user/eMedia/Activities/Sub1/Sub2" }],
+  // }
+  lQuery(".open-folder").livequery("click", function (e) {
+    var path = $(this).data("path");
+    ipcRenderer.send("openFolder", { path });
+  });
+
+  lQuery(".refresh-sync").livequery("click", function (e) {
+    var entitydialog = $(this).closest(".entitydialog");
+    if (entitydialog.length == 0) {
+      return;
+    }
+    var entityid = entitydialog.data("entityid");
+    var moduleid = entitydialog.data("moduleid");
+    ipcRenderer.send("fetchFiles", {
+      entityid,
+      moduleid,
+      rootpath: "/Users/hi/eMedia/Activity/Gemini",
+    });
+  });
+  ipcRenderer.on("files-fetched", (event, data) => {
+    console.log(data);
+    $.ajax({
+      url: "",
+      success: function () {
+        //Refresh side panel
+      },
+    });
+  });
 });
