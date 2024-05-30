@@ -1,0 +1,42 @@
+#set($endpointurl = $mediaarchive.getCatalogSettingValue("remote-assetsearch-mediadb-endpoint"))
+
+<ul id="cat-list" class="list-group list-group-striped list-group-hover autopopulate-list">
+
+		#ifnull( $foundcategories )
+		<li>[[No folders found]]</li>
+		#end
+
+		#foreach($categoryid in $foundcategories)
+		#set($category  = $mediaarchive.getCategory($categoryid))
+
+		<li id="auto-${categoryid}" class="collectionBox" data-nodeid="$categoryid" data-categoryname="$category.getName()">
+			<a class="category" title="$category.getCategoryPath()" target="_blank" href="$applink/views/modules/asset/viewfiles/${category.getId()}/#esc($category).html" >$category.getCategoryPath() </a>
+			<div class="collectionIcons">
+				<input type="checkbox" id="categoryvalues" class="collection-list" name="categoryid" value="$categoryid" />
+			</div>
+		</li>
+		#end
+
+		#if( $assets.isEmpty() )
+		<li>[[No files found]]</li>
+		#end
+
+		#foreach($asset in $assets)
+			<li id="auto-${asset.id}" class=" collectionBox">
+				
+				<div class="collectionIcons">
+					<input type="checkbox" class="collection-list" name="assetid" value="$asset.id" />
+				</div>
+
+				#set ($mime = $mediaarchive.getMimeTypeIcon($asset.fileformat))
+				#set($dlink = $asset.originalurl)
+				<a  href="$!endpointurl/#urlencode($dlink)">
+				<i class="fas fa-download"></i>&nbsp;
+				<i class="bi bi-$!mime mimeicon" title="[[Conversion Error]]" ></i>
+				</a>
+				##<a class="" data-assetid="$asset.id" style="padding-left: 20px;" title="$asset.name"href="" >
+					$asset.sourcepath $asset.name
+				##</a>
+			</li>
+		#end	
+	</ul> 
