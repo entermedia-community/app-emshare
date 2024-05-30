@@ -1,5 +1,4 @@
 <div id="pickersearchentities" >
- 
 	
 	#set($moduleid = $context.getRequestParameter("moduleid"))
 	#if(!$moduleid)
@@ -10,7 +9,10 @@
 	#set($copyinghits = $context.getSessionValue($copyinghitssessionid))
 
 	#set($copyingsearchtype = $context.getRequestParameter("copyingsearchtype"))
+	
 	#set($assetid = $context.getRequestParameter("assetid"))
+	
+	#set($copyingcategoryid = $context.getRequestParameter("copyingcategoryid"))
 	
 
 	#if( $copyinghits || $assetid)
@@ -39,6 +41,8 @@
 		
 		#if($assetid)
 			#set($addnew = "${addnew}?edit=true&addnew=true&viewfiles=true&saveaction=addassets&assetid=$!assetid")
+		#elseif($copyingcategoryid)
+			#set($addnew = "${addnew}?edit=true&addnew=true&viewfiles=true&copyingsearchtype=$!copyingsearchtype&saveaction=additems&copyingcategoryid=$!copyingcategoryid&moduleid=$moduleid")
 		#elseif($copyinghits)
 			#set($addnew = "${addnew}?edit=true&addnew=true&viewfiles=true&copyingsearchtype=$!copyingsearchtype&saveaction=additems&copyinghitssessionid=$!copyinghitssessionid&moduleid=$moduleid")
 		#else
@@ -90,7 +94,7 @@
 	<div id="entitypickerresults"
 		class="pickerresults"
 		#set($pickertarget = $context.getRequestParameter("pickertarget"))
-		#if( $copyinghits || $assetid)
+		#if( $copyinghits || $assetid || $copyingcategoryid) 
 			#if($assetid)
 				data-assetid="$assetid"
 			#else
@@ -105,10 +109,15 @@
 				data-clicktargettype="message"
 				data-pickedmoduleid="$!{moduleid}"
 			#else
-				#if($copyingsearchtype == "assets")
-					data-clickurl="$applink/views/modules/${moduleid}/components/entities/addassetstoentity.html"
-				#else 
-					data-clickurl="$applink/views/modules/${moduleid}/components/entities/copytoentity.html"
+				#if($copyingsearchtype == "category")
+					data-clickurl="$applink/views/modules/${moduleid}/components/entities/addcategorytoentity.html" 
+					data-copyingcategoryid="$!copyingcategoryid"
+				#else
+					#if($copyingsearchtype == "assets")
+						data-clickurl="$applink/views/modules/${moduleid}/components/entities/addassetstoentity.html"
+					#else 
+						data-clickurl="$applink/views/modules/${moduleid}/components/entities/copytoentity.html"
+					#end
 				#end
 				data-copyingsearchtype="$!copyingsearchtype"
 				data-clicktargetdiv="applicationmaincontent"
