@@ -28,6 +28,10 @@
 #if(!$dialogresults)
 	#set($dialogresults = $context.getRequestParameter("dialogresults"))
 #end
+#if(!$dialogindextype)
+	#set($dialogindextype = $context.getRequestParameter("dialogindextype"))
+#end
+
 
 #set($targetdiv = $maintargetdiv) 
 
@@ -45,7 +49,7 @@
 			#if($hits.getSearchQuery().hasMainInput())
 				#if($moduleid=="asset")
 					#if($dialogresults)
-						#set($href = "$siteroot$apphome/views/modules/$moduleid/dialogindex.html?hitssessionid=$!hits.getSessionId()&topmoduleid=$!topmoduleid&entityid=$!entityid&dialogindextype=searchfaceprofile&rootcategory=$!rootcategory&categoryid=$!{categoryid}&removeterm=description")
+						#set($href = "$siteroot$apphome/views/modules/$moduleid/dialogindex.html?hitssessionid=$!hits.getSessionId()&topmoduleid=$!topmoduleid&entityid=$!entityid&dialogindextype=$!dialogindextype&rootcategory=$!rootcategory&categoryid=$!{categoryid}&removeterm=description")
 						#set($targetdiv = "dialogassetresultscontainer")
 					#else
 						#set($href = "$siteroot$apphome/views/modules/$moduleid/index.html?hitssessionid=$!hits.getSessionId()&topmoduleid=$!topmoduleid&rootcategory=$!rootcategory&categoryid=$!{categoryid}&removeterm=description")		
@@ -72,7 +76,8 @@
 				#foreach( $term in $terms)
 						#if($moduleid=="asset")
 							#if($dialogresults)
-								#set($href = "$siteroot$apphome/views/modules/$moduleid/dialogindex.html?hitssessionid=$!hits.getSessionId()&topmoduleid=$!topmoduleid&entityid=$!entityid&dialogindextype=searchfaceprofile&rootcategory=$!rootcategory&categoryid=$!{categoryid}&removeterm=$!term.getId()")
+								#set($href = "$siteroot$apphome/views/modules/$moduleid/dialogindex.html?hitssessionid=$!hits.getSessionId()&topmoduleid=$!topmoduleid&entityid=$!entityid&dialogindextype=$!dialogindextype&rootcategory=$!rootcategory&categoryid=$!{categoryid}&removeterm=$!term.getId()")
+								#set($targetdiv = "dialogassetresultscontainer")
 							#else
 								#set($href = "$siteroot$apphome/views/modules/$moduleid/index.html?hitssessionid=$!hits.getSessionId()&topmoduleid=$!topmoduleid&rootcategory=$!rootcategory&categoryid=$!{categoryid}&removeterm=$!term.getId()")		
 							#end
@@ -144,7 +149,7 @@
 			#end
 		</div>
 		#if($moduleid=="asset" && $dialogresults)
-			#set($href = "$siteroot$apphome/views/modules/$moduleid/dialogindex.html?hitssessionid=$!hits.getSessionId()&topmoduleid=$!topmoduleid&entityid=$!entityid&dialogindextype=searchfaceprofile&rootcategory=$!rootcategory&categoryid=$!{categoryid}&${moduleid}clearfilters=true")
+			#set($href = "$siteroot$apphome/views/modules/$moduleid/dialogindex.html?hitssessionid=$!hits.getSessionId()&topmoduleid=$!topmoduleid&entityid=$!entityid&dialogindextype=$!dialogindextype&rootcategory=$!rootcategory&categoryid=$!{categoryid}&${moduleid}clearfilters=true")
 			#set($targetdiv = "dialogassetresultscontainer")
 		#else	
 			#set($href = "$siteroot$apphome/views/modules/$moduleid/index.html?hitssessionid=$!hits.getSessionId()&${moduleid}clearfilters=true")
