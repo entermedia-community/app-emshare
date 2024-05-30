@@ -403,18 +403,31 @@ jQuery(document).ready(function () {
     }
     var entityid = entitydialog.data("entityid");
     var moduleid = entitydialog.data("moduleid");
+    var categorypath = entitydialog.data("categorypath");
     ipcRenderer.send("fetchFiles", {
       entityid,
       moduleid,
+      categorypath,
       rootpath: "/Users/hi/eMedia/Activity/Gemini",
     });
   });
-  ipcRenderer.on("files-fetched", (event, data) => {
-    console.log(data);
+  ipcRenderer.on("files-fetched", (_, data) => {
     $.ajax({
-      url: "",
-      success: function () {
-        //Refresh side panel
+      type: "POST",
+      url:
+        siteroot +
+        "/" +
+        mediadb +
+        "/services/module/asset/sync/entitypullcheck.json",
+      data: JSON.stringify(data),
+      contentType: "application/json",
+      dataType: "json",
+      success: function (res) {
+        // console.log(res);
+      },
+      //handle error
+      error: function (xhr, status, error) {
+        console.log("error", xhr, status, error);
       },
     });
   });
