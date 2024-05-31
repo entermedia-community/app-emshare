@@ -1331,8 +1331,8 @@ uiload = function () {
 
   lQuery(".entitydialogback").livequery("click", function (event) {
     event.preventDefault();
-    var parentid = $(this).data("parentid");
-    var parent = $("#" + parentid);
+    var parentcontainerid = $(this).data("parentcontainerid");
+    var parent = $("#" + parentcontainerid);
     if (parent.length) {
       var grandparent = parent.parent().closest(".entitydialog");
       autoreload(parent);
@@ -4361,7 +4361,7 @@ function formsavebackbutton(form) {
 function tabbackbutton(parent) {
   var parentid = "";
   if (parent.length) {
-    parentid = parent.attr("id");
+    parentid = parent.data("entityid");
   }
 
   if (parentid != "") {
@@ -4369,6 +4369,7 @@ function tabbackbutton(parent) {
     var backbtn = $(".entitydialogback");
     $(backbtn).show();
     $(backbtn).data("parentid", parentid);
+    $(backbtn).data("parentcontainerid", parent.attr("id"));
   }
 }
 

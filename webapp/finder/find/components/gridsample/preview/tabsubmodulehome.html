@@ -10,6 +10,10 @@
 #ifnull($parentid)
 	#set($parentid = $context.getRequestParameter("parentid"))
 #end
+#ifnull($parentid)
+	#set($parentid = $context.getRequestParameter("entityid"))
+#end
+
 
 #set( $targetviewpath = "${parentsearchtype}/"+$viewid)
 #set( $viewdata = $viewsearcher.searchById($viewid))
@@ -17,7 +21,7 @@
 #set( $submodule = $mediaarchive.getCachedData("module", $subentitysearchtype))
 #set( $fieldexternalid = $viewdata.renderexternalid)
 #set( $fieldexternalvalue = $parentid)
-
+ 
 #set( $sortby = $!viewdata.rendersort)
 #if(!$sortby)
 	#set( $sortby = "name")
