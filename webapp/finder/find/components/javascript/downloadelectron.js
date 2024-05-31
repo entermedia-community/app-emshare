@@ -4,6 +4,14 @@ jQuery(document).ready(function () {
   var downloadInProgress = {};
   const { ipcRenderer } = require("electron");
 
+	var entermediakey = "";
+	if (app && app.data("entermediakey") != null) {
+  	// app variable is from dom
+  	entermediakey = app.data("entermediakey");
+	}
+
+  var headers = { "X-tokentype": "entermedia", "X-token": entermediakey };    
+
   function humanFileSize(bytes) {
     var thresh = 1000;
     if (Math.abs(bytes) < thresh) {
@@ -103,13 +111,6 @@ jQuery(document).ready(function () {
     }
 
     downloadInProgress[orderitemid] = true;
-    var entermediakey = "";
-    if (app && app.data("entermediakey") != null) {
-      // app variable is from dom
-      entermediakey = app.data("entermediakey");
-    }
-
-    var headers = { "X-tokentype": "entermedia", "X-token": entermediakey };
 
     ipcRenderer.send("start-download", { orderitemid, file, headers });
 
@@ -246,10 +247,34 @@ jQuery(document).ready(function () {
       itemexportname: itemexportname,
       itemdownloadurl: itemdownloadurl,
     };
-
-    ipcRenderer.send("onOpenFile", file);
+    console.log("EM: opening " + file);
+    ipcRenderer.send('onOpenFile',  file );
     //downloadMediaLocally(orderitemid, file, itemEl);
   });
+  
+  
+  
+  
+  //Read Local
+lQuery(".readlocalpath").livequery("click", function (e) {
+	e.preventDefault();
+   	var path = $(this).data("path");
+   	//sendReadDirRequest('/home/cristobal/Media/03/05/');
+   	
+    ipcRenderer.send('readDir',  { path });
+ });
+  
+  
+  
+function sendReadDirRequest(path)  {
+	 
+  ipcRenderer.send('readDir', { path, onScan: (fileList) => {
+ 	  console.log('Received files from main process:', fileList.files);
+      console.log('Received folder from main process:', fileList.folders);
+     // Handle the directory listing data here (e.g., display in a UI element)
+  }});
+};
+
 
   var toastTypes = {
     downloading: {
@@ -397,33 +422,30 @@ jQuery(document).ready(function () {
   });
 
   lQuery(".refresh-sync").livequery("click", function (e) {
-    var entitydialog = $(this).closest(".entitydialog");
-    if (entitydialog.length == 0) {
-      return;
-    }
-    var entityid = entitydialog.data("entityid");
-    var moduleid = entitydialog.data("moduleid");
-    var categorypath = entitydialog.data("categorypath");
-    ipcRenderer.send("fetchFiles", {
-      entityid,
-      moduleid,
-      categorypath,
-      rootpath: "/Users/hi/eMedia/Activity/Gemini",
-    });
+	  	e.preventDefault();
+	    var entitydialog = $(this).closest(".entitydialog");
+	    if (entitydialog.length == 0) {
+	      return;
+	    }
+	    var entityid = entitydialog.data("entityid");
+	    var moduleid = entitydialog.data("moduleid");
+	    var categorypath = entitydialog.data("categorypath");
+	    ipcRenderer.send("fetchFiles", {
+	      "categorypath": categorypath
+	    });
   });
+  
   ipcRenderer.on("files-fetched", (_, data) => {
     $.ajax({
       type: "POST",
       url:
-        siteroot +
-        "/" +
-        mediadb +
-        "/services/module/asset/sync/entitypullcheck.json",
+        apphome +
+        "/components/desktop/export/pull.html",
       data: JSON.stringify(data),
       contentType: "application/json",
-      dataType: "json",
+      //dataType: "json",
       success: function (res) {
-        // console.log(res);
+         $("#tabexportcontent").html(res);
       },
       //handle error
       error: function (xhr, status, error) {
@@ -431,4 +453,36 @@ jQuery(document).ready(function () {
       },
     });
   });
+  
+  
+
+   
+  
+    lQuery(".download-pull").livequery("click", function (e) {
+	  	e.preventDefault();
+	  	//var headers = { "X-tokentype": "entermedia", "X-token": entermediakey };
+	    var entitydialog = $(this).closest(".entitydialog");
+	    if (entitydialog.length == 0) {
+	      return;
+	    }
+	    var entityid = entitydialog.data("entityid");
+	    var moduleid = entitydialog.data("moduleid");
+	    var categorypath = entitydialog.data("categorypath");
+	    
+	    $("#pullfiles li").each(function(){
+			var item = $(this);
+			var file = {
+		      itemexportname: categorypath + "/" + item.data("path"),
+		      itemdownloadurl: item.data("url"),
+		      categorypath: categorypath
+		    };
+		    var assetid = item.data("id");
+		    ipcRenderer.send("fetchfilesdownload", { assetid, file, headers });
+		});
+	    
+	 
+	    
+  });
+  
+  
 });
