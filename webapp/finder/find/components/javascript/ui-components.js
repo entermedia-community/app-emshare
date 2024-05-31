@@ -2096,9 +2096,14 @@ uiload = function () {
             url: clickurl,
             data: options,
             success: function (data) {
+			  if (!targetdiv.jquery) {
+                	targetdiv = $("#" + targetdiv);
+              }
               if (targettype == "message") {
-                targetdiv.prepend(data);
-                targetdiv.find(".fader").fadeOut(3000, "linear");
+				  if (targetdiv !== undefined) {
+                		targetdiv.prepend(data);
+                		targetdiv.find(".fader").fadeOut(3000, "linear");
+                	}
               } else if (targettype == "entitypickersubmodule") {
 		        var pickertarget = pickerresults.data("pickertarget");
 		        pickertarget = $("#" + pickertarget);
@@ -2107,9 +2112,6 @@ uiload = function () {
 		        }
 		      } else {
                 //regular targetdiv
-                if (!targetdiv.jquery) {
-                	targetdiv = $("#" + targetdiv);
-              	}
               	if (targetdiv !== undefined) {
                 	targetdiv.replaceWith(data);
                 }
