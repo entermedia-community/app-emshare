@@ -14,6 +14,9 @@
 	
 	#set($copyingcategoryid = $context.getRequestParameter("copyingcategoryid"))
 	
+	#set($fieldexternalid = $context.getRequestParameter("fieldexternalid"))
+	#set($fieldexternalvalue = $context.getRequestParameter("fieldexternalvalue"))	
+	
 
 	#if( $copyinghits || $assetid)
 	<div class="alert alert-info">
@@ -30,9 +33,14 @@
 	#if($pickersearchaddnew)
 		#set($addnew = "$apphome/views/modules/${moduleid}/components/entities/addnew.html")
 		#set($pickertarget = $context.getRequestParameter("pickertarget"))
+		#set($targettype = $context.getRequestParameter("targettype"))
 		<a class="btn btn-sm btn-blue mb-2 float-right ajax"
 		data-targetdivinner="pickersearchentities"
 		data-pickertarget="$!pickertarget"
+		data-targettype="$!targettype"
+
+		data-fieldexternalid="$!fieldexternalid"
+		data-fieldexternalvalue="$!fieldexternalvalue"
 		data-oemaxlevel="1"
 		href="$addnew">
 		<i class="bi bi-plus-lg mr-1"></i> [[New]] #text($module)</a>
@@ -62,6 +70,11 @@
 
 		<input type="hidden" name="sortby" value="name" />
 		<input type="hidden" name="assetid" value="$!asset.id" />
+		#if( $fieldexternalid && $fieldexternalvalue )	
+		<input type="hidden" name="field" value="$!fieldexternalid" />
+		<input type="hidden" name="$!{fieldexternalid}.value" value="$!fieldexternalvalue" />
+		<input type="hidden" name="operation" value="not" />
+		#end
 		<table  width="100%">
 		<tr>
 		<td>
@@ -106,7 +119,7 @@
    				data-copyingsearchtype="$!copyingsearchtype"
 				data-clickurl="$applink/views/modules/searchcategory/savetoentities.html"
 				data-clicktargetdiv="applicationmaincontent"
-				data-clicktargettype="message"
+				data-targettype="message"
 				data-pickedmoduleid="$!{moduleid}"
 			#else
 				#if($copyingsearchtype == "category")
@@ -121,25 +134,34 @@
 				#end
 				data-copyingsearchtype="$!copyingsearchtype"
 				data-clicktargetdiv="applicationmaincontent"
-				data-clicktargettype="message"
+				data-targettype="message"
 				data-pickedmoduleid="$!{moduleid}"
 			#end
 		#elseif($pickertarget)
-				data-clicktargettype="entitypicker"
-				data-pickertarget="$pickertarget"
+			data-pickertarget="$!pickertarget"
+			data-targettype="$!targettype"
+			#if($targettype == "entitypickersubmodule")
+				data-clickurl="$applink/views/modules/${moduleid}/components/entities/savesubmodule.html"
+				data-clicktargetdiv="entitydialog"
+				data-fieldexternalid="$!fieldexternalid"
+				data-fieldexternalvalue="$!fieldexternalvalue"
+			#end
 		#else
-			data-clicktargettype="entitydialog"
+			data-targettype="entitydialog"
 			data-targetlink="$applink/views/modules/${moduleid}/components/gridsample/preview/entity.html"
 			data-saveaction="upload"
 			data-uploadmedia="true"
 		#end
-		
-		##data-viewfiles="true"
+
 		data-moduleid="${moduleid}">
 	
+	##Used? legacy?
 	#set( $foreignkeyid = $context.getRequestParameter("foreignkeyid") )
 	#set( $foreignkeyvalue = $context.getRequestParameter("foreignkeyvalue") )
-	#if( $foreignkeyid && $foreignkeyvalue )	
+
+	#if( $fieldexternalid && $fieldexternalvalue )	
+			$pages.include("$apphome/components/entities/search/results.html?field=$fieldexternalid&${fieldexternalid}.value=$fieldexternalvalue&operation=not",$context)
+	#elseif( $foreignkeyid && $foreignkeyvalue )	
 			$pages.include("$apphome/components/entities/search/results.html?field=$foreignkeyid&${foreignkeyid}.value=$foreignkeyvale&operation=exact",$context)
 	#else
 			$pages.include("$apphome/components/entities/search/results.html",$context)

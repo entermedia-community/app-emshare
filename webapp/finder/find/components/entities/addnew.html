@@ -11,8 +11,9 @@
 	#set ($fieldexternalid = $context.getRequestParameter("fieldexternalid"))
 	#set ($fieldexternalvalue = $context.getRequestParameter("fieldexternalvalue"))
 	#ifnotnull($fieldexternalid)
-		#set($data = $mediaarchive.getSearcher($searchtype).createNewData())
-		$data.setValue($fieldexternalid, $fieldexternalvalue)
+		###set($data = $mediaarchive.getSearcher($searchtype).createNewData())
+		##$data.setValue($fieldexternalid, $fieldexternalvalue)
+		##$context.putPageValue("data",$data)
 	#end
 #end
 
@@ -38,7 +39,7 @@ $context.putPageValue("edit", $edit)
 #set($action = "$siteroot$applink/views/modules/${moduleid}/components/entities/addnewsave.html")
 
 #set($pickertarget = $context.getRequestParameter("pickertarget"))
-
+#set($targettype = $context.getRequestParameter("targettype"))
 
 <form id="searchentitydataeditor" 
 		name="searchentitydataeditor" 
@@ -50,6 +51,7 @@ $context.putPageValue("edit", $edit)
     	<input name="save" type="hidden" value="true" />
     	
     	<input name="pickertarget" type="hidden" value="$!pickertarget" />
+    	<input name="targettype" type="hidden" value="$!targettype" />
     	
     	#set($viewfiles = $context.getRequestParameter("viewfiles"))
     	#if($viewfiles)
@@ -71,7 +73,13 @@ $context.putPageValue("edit", $edit)
     	<input name="moduleid" type="hidden" value="$!moduleid" />
     	<input name="viewid" type="hidden" value="$!viewid" />
     	<input name="view" type="hidden" value="$!view" />
-
+    	
+    	#set ($fieldexternalid = $context.getRequestParameter("fieldexternalid"))
+		#set ($fieldexternalvalue = $context.getRequestParameter("fieldexternalvalue"))
+		#if($fieldexternalid)
+			<input name="field" type="hidden" value="$!fieldexternalid" />
+			<input name="${fieldexternalid}.value" type="hidden" value="$!fieldexternalvalue" />
+		#end
 	
 		#ifnull($showmedia)
 			#set($showmedia = $context.getRequestParameter("showmedia"))
@@ -93,9 +101,9 @@ $context.putPageValue("edit", $edit)
     
     <div class="btns">
 	    
-		<a class="btn btn-sm btn-dark submitform" style="margin-right: 10px;">[[Save]]<i class="ml-1 bi bi-caret-right-fill"></i></a>
+		<a class="btn btn-sm btn-dark submitform mr-4">[[Save]]<i class="ml-1 bi bi-caret-right-fill"></i></a>
 		
-		<button id="closebutton" style="margin-right: 10px;"  type="button" class="btn btn-sm btn-dark" data-dismiss="modal">[[Cancel]]</button>
+		<button id="closebutton" type="button" class="btn btn-sm btn-dark mr-4" data-dismiss="modal">[[Cancel]]</button>
 		
 	    <div class="clearfix"></div>
     </div>

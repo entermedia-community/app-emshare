@@ -1944,7 +1944,7 @@ uiload = function () {
       if (entityid) {
         var container = emselectable.closest(".entity-wraper");
         var tabs = container.find(".entity-tab-content");
-        if (tabs.length >= 6) {
+        if (tabs.length >= 20) {
           alert("Max Tabs Limit");
           return;
         }
@@ -2011,7 +2011,7 @@ uiload = function () {
 			options.oemaxlevel =  finddata(emselectable, "oemaxlevel");
 		}
 		*/
-      if (targetdiv != "") {
+      if (targetdiv !== undefined && targetdiv != "") {
         jQuery.ajax({
           url: clickurl,
           data: options,
@@ -2046,7 +2046,7 @@ uiload = function () {
       var clickurl = launcher.data("clickurl");
       if (clickurl && clickurl != "") {
         var targetdiv = launcher.data("targetdiv");
-        if (targetdiv != "") {
+        if (targetdiv !== undefined) {
           jQuery.ajax({
             url: clickurl,
             data: options,
@@ -2077,13 +2077,12 @@ uiload = function () {
       options.id = rowid;
       var clickurl = pickerresults.data("clickurl");
       var targetdiv = pickerresults.data("clicktargetdiv");
-      //ToDo make it generic
-      var targettype = pickerresults.data("clicktargettype");
+      var targettype = pickerresults.data("targettype");
 
       if (targettype == "entitydialog") {
         emdialog(pickerresults, event);
         return;
-      } else if (targettype == "entitypicker") {
+      } else if (targettype == "entitypickerfield") {
         var pickertarget = pickerresults.data("pickertarget");
         pickertarget = $("#" + pickertarget);
         if (pickertarget.length > 0) {
@@ -2092,21 +2091,28 @@ uiload = function () {
         }
         return;
       } else {
-        if (targetdiv != "") {
+        if (clickurl !== undefined && clickurl != "") {
           jQuery.ajax({
             url: clickurl,
             data: options,
             success: function (data) {
-              if (!targetdiv.jquery) {
-                targetdiv = $("#" + targetdiv);
-              }
-
               if (targettype == "message") {
                 targetdiv.prepend(data);
                 targetdiv.find(".fader").fadeOut(3000, "linear");
-              } else {
+              } else if (targettype == "entitypickersubmodule") {
+		        var pickertarget = pickerresults.data("pickertarget");
+		        pickertarget = $("#" + pickertarget);
+		        if (pickertarget.length > 0) {
+		          autoreload(pickertarget);
+		        }
+		      } else {
                 //regular targetdiv
-                targetdiv.replaceWith(data);
+                if (!targetdiv.jquery) {
+                	targetdiv = $("#" + targetdiv);
+              	}
+              	if (targetdiv !== undefined) {
+                	targetdiv.replaceWith(data);
+                }
               }
 
               closeemdialog(pickerresults.closest(".modal"));
@@ -2120,11 +2126,21 @@ uiload = function () {
 
   lQuery(".pickerselectadded").livequery(function () {
     var link = $(this);
-    var pickertarget = link.data("pickertarget");
-    pickertarget = $("#" + pickertarget);
-    if (pickertarget.length > 0) {
-      updateentitylist(pickertarget, link.data("id"), link.data("name"));
+    var targettype = link.data("targettype");
+    if (targettype == "entitypickerfield") {
+	    var pickertarget = link.data("pickertarget");
+	    pickertarget = $("#" + pickertarget);
+	    if (pickertarget.length > 0) {
+	      updateentitylist(pickertarget, link.data("id"), link.data("name"));
+	    }
     }
+    else if (targettype == "entitypickersubmodule") {
+	    var pickertarget = link.data("pickertarget");
+	    pickertarget = $("#" + pickertarget);
+	    if (pickertarget.length > 0) {
+			autoreload(pickertarget);	      
+	    }
+    } 
     closeemdialog(link.closest(".modal"));
   });
 
