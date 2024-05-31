@@ -4,13 +4,13 @@ jQuery(document).ready(function () {
   var downloadInProgress = {};
   const { ipcRenderer } = require("electron");
 
-	var entermediakey = "";
-	if (app && app.data("entermediakey") != null) {
-  	// app variable is from dom
-  	entermediakey = app.data("entermediakey");
-	}
+  var entermediakey = "";
+  if (app && app.data("entermediakey") != null) {
+    // app variable is from dom
+    entermediakey = app.data("entermediakey");
+  }
 
-  var headers = { "X-tokentype": "entermedia", "X-token": entermediakey };    
+  var headers = { "X-tokentype": "entermedia", "X-token": entermediakey };
 
   function humanFileSize(bytes) {
     var thresh = 1000;
@@ -248,33 +248,29 @@ jQuery(document).ready(function () {
       itemdownloadurl: itemdownloadurl,
     };
     console.log("EM: opening " + file);
-    ipcRenderer.send('onOpenFile',  file );
+    ipcRenderer.send("onOpenFile", file);
     //downloadMediaLocally(orderitemid, file, itemEl);
   });
-  
-  
-  
-  
-  //Read Local
-lQuery(".readlocalpath").livequery("click", function (e) {
-	e.preventDefault();
-   	var path = $(this).data("path");
-   	//sendReadDirRequest('/home/cristobal/Media/03/05/');
-   	
-    ipcRenderer.send('readDir',  { path });
- });
-  
-  
-  
-function sendReadDirRequest(path)  {
-	 
-  ipcRenderer.send('readDir', { path, onScan: (fileList) => {
- 	  console.log('Received files from main process:', fileList.files);
-      console.log('Received folder from main process:', fileList.folders);
-     // Handle the directory listing data here (e.g., display in a UI element)
-  }});
-};
 
+  //Read Local
+  lQuery(".readlocalpath").livequery("click", function (e) {
+    e.preventDefault();
+    var path = $(this).data("path");
+    //sendReadDirRequest('/home/cristobal/Media/03/05/');
+
+    ipcRenderer.send("readDir", { path });
+  });
+
+  function sendReadDirRequest(path) {
+    ipcRenderer.send("readDir", {
+      path,
+      onScan: (fileList) => {
+        console.log("Received files from main process:", fileList.files);
+        console.log("Received folder from main process:", fileList.folders);
+        // Handle the directory listing data here (e.g., display in a UI element)
+      },
+    });
+  }
 
   var toastTypes = {
     downloading: {
@@ -422,30 +418,30 @@ function sendReadDirRequest(path)  {
   });
 
   lQuery(".refresh-sync").livequery("click", function (e) {
-	  	e.preventDefault();
-	    var entitydialog = $(this).closest(".entitydialog");
-	    if (entitydialog.length == 0) {
-	      return;
-	    }
-	    var entityid = entitydialog.data("entityid");
-	    var moduleid = entitydialog.data("moduleid");
-	    var categorypath = entitydialog.data("categorypath");
-	    ipcRenderer.send("fetchFiles", {
-	      "categorypath": categorypath
-	    });
+    e.preventDefault();
+    var entitydialog = $(this).closest(".entitydialog");
+    if (entitydialog.length == 0) {
+      return;
+    }
+    var categorypath = entitydialog.data("categorypath");
+    refreshSync(categorypath);
   });
-  
+
+  function refreshSync(categorypath) {
+    ipcRenderer.send("fetchFiles", {
+      categorypath: categorypath,
+    });
+  }
+
   ipcRenderer.on("files-fetched", (_, data) => {
     $.ajax({
       type: "POST",
-      url:
-        apphome +
-        "/components/desktop/export/pull.html",
+      url: apphome + "/components/desktop/export/pull.html",
       data: JSON.stringify(data),
       contentType: "application/json",
       //dataType: "json",
       success: function (res) {
-         $("#tabexportcontent").html(res);
+        $("#tabexportcontent").html(res);
       },
       //handle error
       error: function (xhr, status, error) {
@@ -453,36 +449,46 @@ function sendReadDirRequest(path)  {
       },
     });
   });
-  
-  
 
-   
-  
-    lQuery(".download-pull").livequery("click", function (e) {
-	  	e.preventDefault();
-	  	//var headers = { "X-tokentype": "entermedia", "X-token": entermediakey };
-	    var entitydialog = $(this).closest(".entitydialog");
-	    if (entitydialog.length == 0) {
-	      return;
-	    }
-	    var entityid = entitydialog.data("entityid");
-	    var moduleid = entitydialog.data("moduleid");
-	    var categorypath = entitydialog.data("categorypath");
-	    
-	    $("#pullfiles li").each(function(){
-			var item = $(this);
-			var file = {
-		      itemexportname: categorypath + "/" + item.data("path"),
-		      itemdownloadurl: item.data("url"),
-		      categorypath: categorypath
-		    };
-		    var assetid = item.data("id");
-		    ipcRenderer.send("fetchfilesdownload", { assetid, file, headers });
-		});
-	    
-	 
-	    
+  ipcRenderer.on("refresh-sync", (_, { categorypath }) => {
+    refreshSync(categorypath);
   });
-  
-  
+
+  lQuery(".download-pull").livequery("click", function (e) {
+    e.preventDefault();
+    //var headers = { "X-tokentype": "entermedia", "X-token": entermediakey };
+    var entitydialog = $(this).closest(".entitydialog");
+    if (entitydialog.length == 0) {
+      return;
+    }
+    var categorypath = entitydialog.data("categorypath");
+
+    $("#pullfiles li").each(function () {
+      var item = $(this);
+      var file = {
+        itemexportname: categorypath + "/" + item.data("path"),
+        itemdownloadurl: item.data("url"),
+        categorypath: categorypath,
+      };
+      var assetid = item.data("id");
+      ipcRenderer.send("fetchfilesdownload", { assetid, file, headers });
+    });
+  });
+  lQuery(".pull-individual").livequery("click", function (e) {
+    e.preventDefault();
+    var entitydialog = $(this).closest(".entitydialog");
+    if (entitydialog.length == 0) {
+      return;
+    }
+    var categorypath = entitydialog.data("categorypath");
+    console.log("categorypath", categorypath);
+    var item = $(this).closest("li");
+    var file = {
+      itemexportname: categorypath + "/" + item.data("path"),
+      itemdownloadurl: item.data("url"),
+      categorypath: categorypath,
+    };
+    var assetid = item.data("id");
+    ipcRenderer.send("fetchfilesdownload", { assetid, file, headers });
+  });
 });

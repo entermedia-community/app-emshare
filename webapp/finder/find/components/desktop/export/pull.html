@@ -15,14 +15,30 @@
 
   #set( $files = $assetmap.files )
   #if($files.size() > 0)
-  <div class="d-flex align-items-center justify-content-between my-3 px-2 py-2 sync-stage new">
-    ##<a> <i class="bi bi-file-plus ns mr-1"></i> $serverassets.size() new or modified files added </a>
-    
-    <ul id="pullfiles">
+  <div class="my-3 py-1 sync-stage new">
+    <div class="d-flex align-items-center justify-content-between px-1 py-2">
+      <a href="#pullfiles" data-toggle="collapse" role="button">
+        <i class="bi bi-file-plus ns mr-1"></i> $files.size() new file#if($files.size()>1)s#end found on the server
+      </a>
+      <button class="btn btn-success rounded ml-2 download-pull">
+        <i class="bi bi-cloud-arrow-down-fill mr-1"></i> Download
+      </button>
+    </div>
+    <ul id="pullfiles" class="collapse list-unstyled overflow-y px-1">
     #foreach( $file in $files)
-    <li style="list-style-type: none;" data-assetid="$file.id" data-categorypath="$!assetmap.categorypath" data-path="$file.path" data-url="$file.url"><span>$file.path</span></li>
+      <li class="d-flex" data-assetid="$file.id" data-categorypath="$!assetmap.categorypath" data-path="$file.path" data-url="$file.url">
+        <a href="$file.url" class="mr-2"> ##should be file preview url
+          <i class="bi bi-eye-fill ns"></i>
+        </a>
+        <span>$file.path</span>
+        <button class="ml-auto mr-2 btn-unstyled pull-individual"> ##should be file preview url
+          <i class="bi bi-download ns"></i>
+        </button>
+      </li>
     #end
     </ul>
+  </div>
+    
 <!-- 
 	#set( $folders = $assetmap.folders )
     <ul id="pullfiles">
@@ -31,13 +47,8 @@
     #end
     </ul>
   -->   
-    <button class="btn btn-success rounded ml-2 download-pull">
-      <i class="bi bi-cloud-arrow-down-fill mr-1"></i>
-      Download
-    </button>
-  </div>
 
-  <div class="d-flex align-items-center justify-content-between my-3 px-2 py-2 sync-stage deleted">
+  <!-- <div class="d-flex align-items-center justify-content-between my-3 px-2 py-2 sync-stage deleted">
     <span>
       <i class="bi bi-file-minus ns mr-1"></i> 0 files deleted
     </span>
@@ -45,7 +56,7 @@
       <i class="bi bi-trash-fill mr-1"></i>
       Delete From Local
     </button>
-  </div>
+  </div> -->
   #else
 
   <div class="d-flex align-items-center justify-content-center my-3 px-2 py-2 sync-stage synced">
