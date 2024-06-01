@@ -1,7 +1,11 @@
 
 #set( $searchtype = $context.getRequestParameter("searchtype"))
 #set( $parentsearchtype = $context.getRequestParameter("parentsearchtype"))
- 
+
+#ifnull($topmoduleid)
+	#set($topmoduleid = $parentsearchtype)
+#end
+
 #set( $xmledithome = "$componenthome/xml")
 #set( $candelete = $context.getRequestParameter("candelete"))
 
@@ -18,6 +22,12 @@
 		
 #end
 
+#set($viewsearcher = $searcherManager.getSearcher($catalogid, "view"))
+#set( $viewdata = $viewsearcher.searchById($viewid))
+#set( $subentitysearchtype = $viewdata.rendertable )
+#set( $submodule = $mediaarchive.getCachedData("module", $subentitysearchtype))
+
+#set($tabid = "tab_${viewid}")
 
 #set( $fieldexternalid = $context.getRequestParameter("fieldexternalid"))
 #set( $fieldexternalvalue = $context.getRequestParameter("fieldexternalvalue"))
@@ -70,24 +80,37 @@ $context.putPageValue("targetdivtablepositions", $targetdivtablepositions)
 
 #set($submoduleresults = "results$!{viewid}")
 <div id="$!submoduleresults" class="submodulepicker">
-#if( $hits && $hits.size() > 0 )
-
-	#if($tabletype == "subentity")
-		#set($entity = $mediaarchive.getCachedData("module", $searchtype))
-		<h3>
-	
+#if($tabletype == "subentity")
+#set($entity = $mediaarchive.getCachedData("module", $searchtype))
+<div class="d-flex align-items-center justify-content-between mb-2">
+	<h3 class="m-0">
 		#set($moduleicon = "box")
-    	#ifnotnull($entity.moduleicon)
-    		#set($moduleicon = $entity.moduleicon)
-    	#end
-    	
-
+		#ifnotnull($entity.moduleicon)
+			#set($moduleicon = $entity.moduleicon)
+		#end	
 		<i class="bi bi-$moduleicon module-icon" style="font-size: 0.8em;;"></i> 
-    	
 		#text($entity) <small>($hits.size())</small>
-		</h3>
+	</h3>
+	#if($permissions.can($topmoduleid, "edit"))
+		#if($permissions.can($!submodule.getId() , "create"))
+			#set($pickerurl= "$applink/views/modules/$!{subentitysearchtype}/components/entities/search/searchpicker.html")
+			<a href="$pickerurl" 
+				class="emdialog btn btn-lg btn-brand light px-5 py-2"
+				data-dialogid="entitypicker"
+				data-width="1200"
+				data-fieldexternalid = '$fieldexternalid'
+				data-fieldexternalvalue = '$fieldexternalvalue'
+				data-entitymodule="$!{subentitysearchtype}"
+				data-pickertarget="$tabid"
+				data-targettype="entitypickersubmodule"
+				data-pickersearchaddnew="true"
+				data-hidefooter="true"><i class="fas fa-plus"></i> [[Add]]</a>
+		#end
 	#end
-		
+</div>
+#end
+
+#if( $hits && $hits.size() > 0 )		
 		#set($total = $hits.getTotalPages() )
 		
 		$context.putPageValue("hits", $hits)
@@ -101,6 +124,7 @@ $context.putPageValue("targetdivtablepositions", $targetdivtablepositions)
 		
 		<div class="d-flex">
 			<div class="flex-grow-1">
+				#*
 				<div id="sub-nav-tab" class="emsubnav sub-nav-${viewid}" style="border-bottom: 1px solid #5f739e;">
 					<ul class="resultsnav">
 						<li class="filtersselected">
@@ -136,8 +160,9 @@ $context.putPageValue("targetdivtablepositions", $targetdivtablepositions)
 					</ul>
 					#end
 				</div>
+				*#
 
-				<div id="${searchtype}_table_entities" class="tableholder">
+				<div id="${searchtype}_table_entities" class="tableholder overflow-hidden">
 			
 			
 				#if($tabletype == "subentity")
@@ -193,7 +218,7 @@ $context.putPageValue("targetdivtablepositions", $targetdivtablepositions)
 				#set($selectedid = $context.getRequestParameter("selectedid"))
 				#set( $sortby = $hits.getSearchQuery().getSortBy() )
 				<table id="main-results-table" 
-						class="emdata table table-striped table-hover tabletype$!tabletype"
+						class="emdata table table-striped table-hover subentitytable tabletype$!tabletype"
 						data-hitssessionid="$!hits.sessionId">
 					<thead>
 					<tr id="tableheader" class="tableheader">
@@ -216,7 +241,7 @@ $context.putPageValue("targetdivtablepositions", $targetdivtablepositions)
 								#else
 									#set($sorticon="down")
 								#end	
-								&nbsp;&nbsp;&nbsp;<span class="sorticon bi bi-caret-$sorticon-fill"></span>
+								&nbsp;&nbsp;&nbsp;<span class="sorticon bi bi-caret-$sorticon-fill ns"></span>
 						#end
 					</th>
 					#end
