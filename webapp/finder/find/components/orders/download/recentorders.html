@@ -4,6 +4,7 @@
 <div class="sidebarorders overflow-y">
 	#foreach($downloadorder in $downloadorders)
 
+		#set($downloadordercompleted = $downloadorder.getOrder().get("orderstatus") == "complete")
 		#set($downloadorderitem = $downloadorder.getCurrentItem())
 		#set($assetid = $downloadorderitem.get("assetid"))
 		#set($asset = $mediaarchive.getAsset($assetid))
@@ -37,16 +38,24 @@
 						</div>
 						<div class="d-flex align-items-center">			
 							<span class="status">
-								#if($publishstatus == "readytopublish" )
-									[[Ready to Download]]
-								#elseif($publishstatus == "publishingexternal" )
-									[[Downloading]]
-								#elseif($publishstatus == "complete" )
-									[[Downloaded]]
-								#elseif($publishstatus == "cancelled" ) 
-									[[Cancelled]]
-								#elseif($publishstatus == "new" ) 
-									[[Processing]]
+								#if($downloadordercompleted)
+									#if($publishstatus != "complete" )
+										[[Aborted]]
+									#else
+										[[Downloaded]]
+									#end
+								#else
+									#if($publishstatus == "readytopublish" )
+										[[Ready to Download]]
+									#elseif($publishstatus == "publishingexternal" )
+										[[Downloading]]
+									#elseif($publishstatus == "complete" )
+										[[Downloaded]]
+									#elseif($publishstatus == "cancelled" ) 
+										[[Cancelled]]
+									#elseif($publishstatus == "new" ) 
+										[[Processing]]
+									#end
 								#end
 							</span>
 							<i class="bi bi-dot mx-1"></i>
@@ -77,6 +86,12 @@
 				<div class="file-thumb #if($downloadorder.getItemCount() > 1) multiple #end">
 					#if($status == "error")
 						<i class="bi bi-x-circle-fill error"></i>
+					#elseif($downloadordercompleted)
+						#if($publishstatus != "complete")
+							<i class="bi bi-slash-circle-fill cancelled"></i>
+						#else
+							<i class="bi bi-check-circle-fill success"></i>
+						#end
 					#else
 						#if($publishstatus == "complete")
 							<i class="bi bi-check-circle-fill success"></i>
@@ -95,16 +110,16 @@
 					$pages.include("$componenthome/results/thumbnails/small.html",$context)
 					
 				</div>
-				<div class="actions">
+				<div class="actions"> 
 					#if($status != "error" && ($publishstatus == "complete" || $publishstatus == "readytopublish" || $publishstatus == "cancelled"))
-						<a href="#" class="redownloadorder" 
+						<!-- <a href="#" class="redownloadorder" 
 							data-orderitemid="$downloadorderitem" 
 							data-orderid='$downloadorderitem.get("orderid")'
 							data-itemexportname='$downloadorderitem.get("itemexportname")'
 							data-itemdownloadurl='$downloadorderitem.get("itemdownloadurl")'
 							title="[[Download Again]]">
 							<i class="bi bi-arrow-clockwise"></i>
-						</a>
+						</a> -->
 						
 						#if($desktop)
 						<a href="#" class="opendownloadedfile" 
@@ -126,7 +141,7 @@
 						<a href="#" class="abortdownloadprocessing" data-orderitemid="$downloadorderitem" data-orderid='$downloadorderitem.get("orderid")' title="[[Cancel Order Processing]]">
 							<i class="bi bi-x-circle"></i>
 						</a>
-					#end
+					#end 
 				</div>
 			</div>
 		</div>
