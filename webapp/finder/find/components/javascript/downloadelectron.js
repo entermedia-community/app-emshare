@@ -35,6 +35,8 @@ jQuery(document).ready(function () {
         "/services/module/order/downloadorderitems?hitsperpage=10",
 
       success: function (json) {
+        console.log(json);
+        if (json.ordestatus == "complete") return;
         var items = json.orderitems;
         if (items.length == 0) {
           return;
@@ -50,7 +52,11 @@ jQuery(document).ready(function () {
               itemdownloadurl: item.itemdownloadurl,
             };
             var itemEl = $("#d-" + item.id);
-            downloadMediaLocally(item.id, file, itemEl);
+            downloadMediaLocally(
+              { orderid: item.orderid, orderitemid: item.id },
+              file,
+              itemEl
+            );
           }
         }
       },
@@ -214,8 +220,7 @@ jQuery(document).ready(function () {
     downloadMediaLocally(orderitemid, file, itemEl);
   });
   lQuery(".abortdownloadorder").livequery("click", function (e) {
-    var confirmed = confirm("Are you sure you want to cancel the download?");
-    if (!confirmed) return;
+    var orderid = $(this).data("orderitemid");
     var orderitemid = $(this).data("orderitemid");
     if (downloadInProgress[orderitemid]) {
       ipcRenderer.send("cancel-download", { orderitemid });

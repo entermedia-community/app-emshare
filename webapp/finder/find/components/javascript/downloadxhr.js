@@ -1,10 +1,9 @@
 jQuery(document).ready(function () {
-
   var siteroot = $("#application").data("siteroot");
   var mediadb = $("#application").data("mediadbappid");
   var downloadInProgress = {};
-  
-    function humanFileSize(bytes) {
+
+  function humanFileSize(bytes) {
     var thresh = 1000;
     if (Math.abs(bytes) < thresh) {
       return bytes + " B";
@@ -14,19 +13,22 @@ jQuery(document).ready(function () {
     do {
       bytes /= thresh;
       ++u;
-    } while (
-      Math.round(Math.abs(bytes) * 10) / 10 >= thresh &&
-      u < units.length - 1
-    );
+    } while (Math.round(Math.abs(bytes) * 10) / 10 >= thresh && u < units.length - 1);
     return bytes.toFixed(1) + units[u];
   }
-  
+
   function checkForPendingDownloads() {
-	var url = siteroot + "/" +  mediadb +  "/services/module/order/downloadorderitems?hitsperpage=10"
+    var url =
+      siteroot +
+      "/" +
+      mediadb +
+      "/services/module/order/downloadorderitems?hitsperpage=10";
     jQuery.ajax({
       dataType: "json",
       url: url,
       success: function (json) {
+        if (json.order.status == "complete") return; //TODO This is not set in the response
+
         var items = json.orderitems;
         if (items.length == 0) {
           return;
@@ -41,7 +43,13 @@ jQuery(document).ready(function () {
               itemexportname: item.itemexportname,
               itemdownloadurl: item.itemdownloadurl,
             };
-            downloadMediaLocally(item.id, file);
+            downloadMediaLocally(
+              {
+                orderid: item.orderid.id,
+                orderitemid: item.id,
+              },
+              file
+            );
           }
         }
       },
@@ -75,15 +83,29 @@ jQuery(document).ready(function () {
   }
 
   window.onbeforeunload = function () {
-    for (var key in downloadInProgress) {
-      if (downloadInProgress[key] != null) {
-        return "Downloads are in progress. Are you sure you want to leave?";
+    var hasPendingDownloads = false;
+    for (var orderid in downloadInProgress) {
+      for (var orderitemid in downloadInProgress[orderid]) {
+        if (downloadInProgress[orderid][orderitemid] != null) {
+          hasPendingDownloads = true;
+          break;
+        }
       }
+    }
+    if (hasPendingDownloads) {
+      return "Downloads are in progress. Are you sure you want to leave?";
     }
   };
 
-  function downloadMediaLocally(orderitemid, file, retries = 0) {
-    if (downloadInProgress[orderitemid]) return;
+  function downloadMediaLocally({ orderid, orderitemid }, file, retries = 0) {
+    if (!downloadInProgress[orderid]) {
+      downloadInProgress[orderid] = {};
+    }
+    if (!orderitemid) {
+      return;
+    }
+
+    if (downloadInProgress[orderid][orderitemid]) return;
     if (retries > 3) {
       $.ajax({
         url:
@@ -100,8 +122,9 @@ jQuery(document).ready(function () {
       });
       return;
     }
-    downloadInProgress[orderitemid] = new XMLHttpRequest();
-    var request = downloadInProgress[orderitemid];
+    downloadInProgress[orderid][orderitemid] = new XMLHttpRequest();
+
+    var request = downloadInProgress[orderid][orderitemid];
     request.responseType = "blob";
     request.open("GET", file.itemdownloadurl);
     request.addEventListener("abort", function () {
@@ -109,8 +132,8 @@ jQuery(document).ready(function () {
     });
     request.addEventListener("error", function () {
       errorDownloadProgress(orderitemid);
-      downloadInProgress[orderitemid] = null;
-      downloadMediaLocally(orderitemid, file,  retries + 1);
+      downloadInProgress[orderid][orderitemid] = null;
+      downloadMediaLocally({ orderid, orderitemid }, file, retries + 1);
     });
     request.addEventListener("progress", function (e) {
       if (e.lengthComputable) {
@@ -186,7 +209,7 @@ jQuery(document).ready(function () {
           "&publisheddate=" +
           new Date().toISOString(),
         success: function () {
-          downloadInProgress[orderitemid] = null;
+          downloadInProgress[orderid][orderitemid] = null;
           showDownloadToast(orderitemid, "complete", file.itemexportname);
           autoreload($("#userdownloadlist"));
         },
@@ -196,43 +219,42 @@ jQuery(document).ready(function () {
   }
 
   lQuery(".redownloadorder").livequery("click", function (e) {
-	var orderid = $(this).data("orderid");
+    var orderid = $(this).data("orderid");
     var orderitemid = $(this).data("orderitemid");
     var itemexportname = $(this).data("itemexportname");
     var itemdownloadurl = $(this).data("itemdownloadurl");
     var file = {
       itemexportname: itemexportname,
       itemdownloadurl: itemdownloadurl,
-      orderid: orderid
+      orderid: orderid,
     };
-    downloadMediaLocally(orderitemid, file);
+    downloadMediaLocally({ orderid, orderitemid }, file);
   });
   lQuery(".abortdownloadorder").livequery("click", function (e) {
-    var confirmed = confirm("Are you sure you want to cancel the download?");
-    if (!confirmed) return;
-    var orderitemid = $(this).data("orderitemid");
-    if (downloadInProgress[orderitemid]) {
-      downloadInProgress[orderitemid].abort();
-      downloadInProgress[orderitemid] = null;
+    var orderid = $(this).data("orderid");
+    console.log(downloadInProgress[orderid]);
+    for (var orderitemid in downloadInProgress[orderid]) {
+      if (downloadInProgress[orderid][orderitemid]) {
+        downloadInProgress[orderid][orderitemid].abort();
+        downloadInProgress[orderid][orderitemid] = null;
+      }
+      $("#dt-" + orderitemid).toast("hide");
+      console.log("Aborted download for orderitemid: " + orderitemid);
     }
-
+    autoreload($("#userdownloadlist"));
     $.ajax({
       url:
         siteroot +
         "/" +
         mediadb +
-        "/services/module/order/updateorderitemstatus?orderitemid=" +
-        orderitemid +
-        "&publishstatus=cancelled",
+        "/services/module/order/cancelorder?orderid=" +
+        orderid,
       success: function () {
         autoreload($("#userdownloadlist"));
-        var toast = $("#dt-" + orderitemid);
-        toast.toast("hide");
       },
     });
   });
-  
-  
+
   var toastTypes = {
     downloading: {
       label: "Downloading",
@@ -291,7 +313,6 @@ jQuery(document).ready(function () {
     }
 
     var div = getToastTemplate(id, type, filename);
-    console.log(div.html());
     $("#toastList").append(div);
     var toast = $("#dt-" + id);
     toast.toast({ autohide: true, delay: 15000 });
@@ -301,8 +322,7 @@ jQuery(document).ready(function () {
     });
   }
 
-  
-/**
+  /**
 //Not Used?
   lQuery(".emdesktopdownload").livequery("click", function (e) {
     e.preventDefault();
@@ -355,5 +375,4 @@ jQuery(document).ready(function () {
     });
   });
 */
-
 });
