@@ -38,25 +38,17 @@
 						</div>
 						<div class="d-flex align-items-center">			
 							<span class="status">
-								#if($downloadordercompleted)
-									#if($publishstatus != "complete" )
-										[[Aborted]]
-									#else
-										[[Downloaded]]
-									#end
-								#else
-									#if($publishstatus == "readytopublish" )
-										[[Ready to Download]]
-									#elseif($publishstatus == "publishingexternal" )
-										[[Downloading]]
-									#elseif($publishstatus == "complete" )
-										[[Downloaded]]
-									#elseif($publishstatus == "cancelled" ) 
-										[[Cancelled]]
-									#elseif($publishstatus == "new" ) 
-										[[Processing]]
-									#end
-								#end
+								#if($publishstatus == "readytopublish" )
+									[[Ready to Download]]
+								#elseif($publishstatus == "publishingexternal" )
+									[[Downloading]]
+								#elseif($publishstatus == "complete" )
+									[[Downloaded]]
+								#elseif($publishstatus == "cancelled" ) 
+									[[Cancelled]]
+								#elseif($publishstatus == "new" ) 
+									[[Processing]]
+								#end 
 							</span>
 							<i class="bi bi-dot mx-1"></i>
 							<span class="file-size text-right">
@@ -86,12 +78,6 @@
 				<div class="file-thumb #if($downloadorder.getItemCount() > 1) multiple #end">
 					#if($status == "error")
 						<i class="bi bi-x-circle-fill error"></i>
-					#elseif($downloadordercompleted)
-						#if($publishstatus != "complete")
-							<i class="bi bi-slash-circle-fill cancelled"></i>
-						#else
-							<i class="bi bi-check-circle-fill success"></i>
-						#end
 					#else
 						#if($publishstatus == "complete")
 							<i class="bi bi-check-circle-fill success"></i>
@@ -103,8 +89,8 @@
 							<i class="bi bi-slash-circle-fill cancelled"></i>
 						#elseif($publishstatus == "new" ) 
 							<i class="bi bi-hourglass-split processing"></i>
-						#end
-					#end
+						#end 
+					#end 
 					$context.putPageValue("asset", $asset)
 					$context.putPageValue("thumbsize","carousel")
 					$pages.include("$componenthome/results/thumbnails/small.html",$context)
