@@ -41,7 +41,6 @@ public void init()
 				if(manager.extractFaces(asset)) {
 					count = count +1;
 				}
-				log.info(asset.getId());
 				tosave.add(asset);
 				if(tosave.size() == 100)
 				{
