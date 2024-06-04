@@ -30,7 +30,7 @@ public void init()
 
 	try
 	{	
-		HitTracker hits = archive.query("asset").exact("facescancomplete", "false").exact("importstatus","complete").sort("assetaddeddateDown").search();
+		HitTracker hits = archive.query("asset").not("editstatus","7").exact("facescancomplete", "false").exact("importstatus","complete").sort("assetaddeddateDown").search();
 		hits.enableBulkOperations();
 		List tosave = new ArrayList();
 		FaceProfileManager manager = archive.getBean("faceProfileManager");
@@ -45,13 +45,16 @@ public void init()
 				if(tosave.size() == 100)
 				{
 						archive.saveAssets(tosave);
+						log.info("Faceprofile scanned:  " + tosave.size() + " assets. Found " + count);
 						tosave.clear();
-						log.info("Faceprofile scanned:  " + tosave.size() + " records. Found " + count);
+						count = 0;
 				}
 			}
-			archive.saveAssets(tosave);
-			log.info("Faceprofile scanned:  " + tosave.size() + " records. Found " + count);
-			
+			if(tosave.size() > 0)
+			{
+				archive.saveAssets(tosave);
+				log.info("Faceprofile scanned:  " + tosave.size() + " assets. Found " + count);
+			}
 			//log.info("("+archive.getCatalogId()+") Facescan processed  " + hits.size() + " assets, " + count + " faces detected");
 		}
 	}
