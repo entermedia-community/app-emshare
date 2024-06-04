@@ -27,12 +27,13 @@ jQuery(document).ready(function () {
       dataType: "json",
       url: url,
       success: function (json) {
-        if (json.order.status == "complete") return; //TODO This is not set in the response
+        console.log(json);
 
         var items = json.orderitems;
-        if (items.length == 0) {
+        if (items.length == 0 || items[0].orderstatus == "complete") {
           return;
         }
+
         for (var i = 0; i < items.length; i++) {
           var item = items[i];
           if (
@@ -218,18 +219,18 @@ jQuery(document).ready(function () {
     request.send();
   }
 
-  lQuery(".redownloadorder").livequery("click", function (e) {
-    var orderid = $(this).data("orderid");
-    var orderitemid = $(this).data("orderitemid");
-    var itemexportname = $(this).data("itemexportname");
-    var itemdownloadurl = $(this).data("itemdownloadurl");
-    var file = {
-      itemexportname: itemexportname,
-      itemdownloadurl: itemdownloadurl,
-      orderid: orderid,
-    };
-    downloadMediaLocally({ orderid, orderitemid }, file);
-  });
+  // lQuery(".redownloadorder").livequery("click", function (e) {
+  //   var orderid = $(this).data("orderid");
+  //   var orderitemid = $(this).data("orderitemid");
+  //   var itemexportname = $(this).data("itemexportname");
+  //   var itemdownloadurl = $(this).data("itemdownloadurl");
+  //   var file = {
+  //     itemexportname: itemexportname,
+  //     itemdownloadurl: itemdownloadurl,
+  //     orderid: orderid,
+  //   };
+  //   downloadMediaLocally({ orderid, orderitemid }, file);
+  // });
   lQuery(".abortdownloadorder").livequery("click", function (e) {
     var orderid = $(this).data("orderid");
     console.log(downloadInProgress[orderid]);
