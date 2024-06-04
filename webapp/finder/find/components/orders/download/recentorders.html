@@ -38,16 +38,20 @@
 						</div>
 						<div class="d-flex align-items-center">			
 							<span class="status">
-								#if($publishstatus == "readytopublish" )
-									[[Ready to Download]]
-								#elseif($publishstatus == "publishingexternal" )
-									[[Downloading]]
-								#elseif($publishstatus == "complete" )
-									[[Downloaded]]
-								#elseif($publishstatus == "cancelled" ) 
+								#if($downloadordercompleted)
 									[[Cancelled]]
-								#elseif($publishstatus == "new" ) 
-									[[Processing]]
+								#else
+									#if($publishstatus == "readytopublish" )
+										[[Ready to Download]]
+									#elseif($publishstatus == "publishingexternal" )
+										[[Downloading]]
+									#elseif($publishstatus == "complete" )
+										[[Downloaded]]
+									#elseif($publishstatus == "cancelled" ) 
+										[[Cancelled]]
+									#elseif($publishstatus == "new" ) 
+										[[Processing]]
+									#end 
 								#end 
 							</span>
 							<i class="bi bi-dot mx-1"></i>
@@ -76,6 +80,7 @@
 					</div>
 				</div>
 				<div class="file-thumb #if($downloadorder.getItemCount() > 1) multiple #end">
+					
 					#if($status == "error")
 						<i class="bi bi-x-circle-fill error"></i>
 					#else
@@ -84,7 +89,11 @@
 						#elseif($publishstatus == "readytopublish" )
 							<i class="bi bi bi-cloud-arrow-down-fill ready"></i>
 						#elseif($publishstatus == "publishingexternal" ) 
-							<div class="spinner-border text-white"></div>
+							#if(!$downloadordercompleted)
+								<div class="spinner-border text-white"></div>
+							#else
+								<i class="bi bi-slash-circle-fill cancelled"></i>
+							#end
 						#elseif($publishstatus == "cancelled" ) 
 							<i class="bi bi-slash-circle-fill cancelled"></i>
 						#elseif($publishstatus == "new" ) 
@@ -93,40 +102,41 @@
 					#end 
 					$context.putPageValue("asset", $asset)
 					$context.putPageValue("thumbsize","carousel")
-					$pages.include("$componenthome/results/thumbnails/small.html",$context)
-					
+					$pages.include("$componenthome/results/thumbnails/small.html",$context) 
 				</div>
 				<div class="actions"> 
-					#if($status != "error" && ($publishstatus == "complete" || $publishstatus == "readytopublish" || $publishstatus == "cancelled"))
-						<!-- <a href="#" class="redownloadorder" 
-							data-orderitemid="$downloadorderitem" 
-							data-orderid='$downloadorderitem.get("orderid")'
-							data-itemexportname='$downloadorderitem.get("itemexportname")'
-							data-itemdownloadurl='$downloadorderitem.get("itemdownloadurl")'
-							title="[[Download Again]]">
-							<i class="bi bi-arrow-clockwise"></i>
-						</a> -->
-						
-						#if($desktop)
-						<a href="#" class="opendownloadedfile" 
-							data-orderitemid="$downloadorderitem" 
-							data-orderid='$downloadorderitem.get("orderid")'
-							data-itemexportname='$downloadorderitem.get("itemexportname")'
-							data-itemdownloadurl='$downloadorderitem.get("itemdownloadurl")'
-							title="[[Open File]]">
-							<i class="bi bi-box-arrow-up-right"></i>
-						</a>
+					#if(!$downloadordercompleted)
+						#if($status != "error" && ($publishstatus == "complete" || $publishstatus == "readytopublish" || $publishstatus == "cancelled"))
+							<!-- <a href="#" class="redownloadorder" 
+								data-orderitemid="$downloadorderitem" 
+								data-orderid='$downloadorderitem.get("orderid")'
+								data-itemexportname='$downloadorderitem.get("itemexportname")'
+								data-itemdownloadurl='$downloadorderitem.get("itemdownloadurl")'
+								title="[[Download Again]]">
+								<i class="bi bi-arrow-clockwise"></i>
+							</a> -->
+							
+							#if($desktop)
+							<a href="#" class="opendownloadedfile" 
+								data-orderitemid="$downloadorderitem" 
+								data-orderid='$downloadorderitem.get("orderid")'
+								data-itemexportname='$downloadorderitem.get("itemexportname")'
+								data-itemdownloadurl='$downloadorderitem.get("itemdownloadurl")'
+								title="[[Open File]]">
+								<i class="bi bi-box-arrow-up-right"></i>
+							</a>
+							#end
 						#end
-					#end
-					#if($publishstatus == "publishingexternal")
-						<a href="#" class="abortdownloadorder" data-orderitemid="$downloadorderitem" data-orderid='$downloadorderitem.get("orderid")' title="[[Cancel Download]]">
-							<i class="bi bi-x-circle"></i>
-						</a>
-					#end
-					#if($publishstatus == "new" )
-						<a href="#" class="abortdownloadprocessing" data-orderitemid="$downloadorderitem" data-orderid='$downloadorderitem.get("orderid")' title="[[Cancel Order Processing]]">
-							<i class="bi bi-x-circle"></i>
-						</a>
+						#if($publishstatus == "publishingexternal")
+							<a href="#" class="abortdownloadorder" data-orderitemid="$downloadorderitem" data-orderid='$downloadorderitem.get("orderid")' title="[[Cancel Download]]">
+								<i class="bi bi-x-circle"></i>
+							</a>
+						#end
+						#if($publishstatus == "new" )
+							<a href="#" class="abortdownloadprocessing" data-orderitemid="$downloadorderitem" data-orderid='$downloadorderitem.get("orderid")' title="[[Cancel Order Processing]]">
+								<i class="bi bi-x-circle"></i>
+							</a>
+						#end 
 					#end 
 				</div>
 			</div>
