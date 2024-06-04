@@ -67,11 +67,12 @@ $context.putPageValue("previewurl", $previewurl)
 		#if($primarymediafield)
 			#set( $primarymediatemp = $mediaarchive.getCachedAsset($entity.primarymedia))
 				#ifnotnull($primarymediatemp)
-					#if($primarymedia.previewstatus == '2')				
+					#if($primarymediatemp.previewstatus == '2')				
 						#set($primarymedia = $primarymediatemp)
 					#end
 			#end
 		#end
+		
 		#ifnull($primarymedia)
 			#set( $primarymediafield = $searcher.getDetailForView($view, "primaryimage", $user) )
 			#if($primarymediafield)
