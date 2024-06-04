@@ -22,7 +22,7 @@ public void init()
 	
 	if( lock == null)
 	{
-		log.info("Face scanning already in progress");
+		log.info("Faceprofile scanning already in progress");
 		return;
 	}
 	
@@ -32,7 +32,7 @@ public void init()
 	{	
 		HitTracker hits = archive.query("asset").exact("facescancomplete", "false").exact("importstatus","complete").sort("assetaddeddateDown").search();
 		hits.enableBulkOperations();
-			
+		List tosave = new ArrayList();
 		FaceProfileManager manager = archive.getBean("faceProfileManager");
 		if (hits.size() > 0) {
 			for(Data hit in hits)
@@ -41,9 +41,19 @@ public void init()
 				if(manager.extractFaces(asset)) {
 					count = count +1;
 				}
+				log.info(asset.getId());
+				tosave.add(asset);
+				if(tosave.size() == 100)
+				{
+						archive.saveAssets(tosave);
+						tosave.clear();
+						log.info("Faceprofile scanned:  " + tosave.size() + " records. Found " + count);
+				}
 			}
+			archive.saveAssets(tosave);
+			log.info("Faceprofile scanned:  " + tosave.size() + " records. Found " + count);
 			
-			log.info("("+archive.getCatalogId()+") Facescan processed  " + hits.size() + " assets, " + count + " faces detected");
+			//log.info("("+archive.getCatalogId()+") Facescan processed  " + hits.size() + " assets, " + count + " faces detected");
 		}
 	}
 	finally
