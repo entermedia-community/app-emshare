@@ -233,7 +233,6 @@ jQuery(document).ready(function () {
   // });
   lQuery(".abortdownloadorder").livequery("click", function (e) {
     var orderid = $(this).data("orderid");
-    console.log(downloadInProgress[orderid]);
     for (var orderitemid in downloadInProgress[orderid]) {
       if (downloadInProgress[orderid][orderitemid]) {
         downloadInProgress[orderid][orderitemid].abort();
