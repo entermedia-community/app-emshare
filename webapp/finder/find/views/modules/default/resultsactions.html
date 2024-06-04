@@ -49,13 +49,13 @@ $context.putPageValue("entityrendertype", $entityrendertype)
 					</a>
 				</li>
 			#end
-
+			#if($resultview != "grid")
 			<li class="dropdown">
 				<a class="resultsnavlink dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 					#if($!hits.getSelectionSize() > 0)
-						Selected ($!hits.getSelectionSize())
+						[[Selected]] ($!hits.getSelectionSize())
 					#else
-						Select
+						[[Select]]
 					#end
 				</a>
 				<div class="dropdown-menu">
@@ -64,7 +64,7 @@ $context.putPageValue("entityrendertype", $entityrendertype)
 					<a class="dropdown-item ajax  deselectpage" targetdiv="resultsheader" href="${searchhome}/components/results/togglepage.html?oemaxlevel=1&hitssessionid=$hits.getSessionId()&action=none">[[Deselect All]]</a>
 				</div>
 			</li>
-
+			#end
 				
 			#if($resultview == "grid")
 				#if($hits.getTotalPages() >  1  )
