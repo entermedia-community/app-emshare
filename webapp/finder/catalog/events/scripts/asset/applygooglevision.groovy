@@ -31,7 +31,7 @@ public void runit()
 	}
 	
 	//Search assets not tagged and importstatus complete
-	QueryBuilder query = mediaArchive.getAssetSearcher().query().exact("googletagged", "false").exact("importstatus", "complete");
+	QueryBuilder query = mediaArchive.getAssetSearcher().query().not("editstatus","7").exact("googletagged", "false").exact("importstatus", "complete");
 
 	//System Wide Enabled 
 	String systemwidetagging = mediaArchive.getCatalogSettingValue("systemwidetagging");
