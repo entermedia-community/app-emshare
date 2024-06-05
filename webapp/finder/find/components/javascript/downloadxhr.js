@@ -30,7 +30,16 @@ jQuery(document).ready(function () {
         var items = json.orderitems;
         for (var i = 0; i < items.length; i++) {
           var item = items[i];
+          var orderid = item.orderid.id;
+          var orderitemid = item.id;
           if (item.orderstatus == "complete") {
+            if (
+              downloadInProgress[orderid] &&
+              downloadInProgress[orderid][orderitemid]
+            ) {
+              downloadInProgress[orderid][orderitemid].abort();
+              downloadInProgress[orderid][orderitemid] = null;
+            }
             continue;
           }
           if (
@@ -48,8 +57,8 @@ jQuery(document).ready(function () {
             };
             downloadMediaLocally(
               {
-                orderid: item.orderid.id,
-                orderitemid: item.id,
+                orderid: orderid,
+                orderitemid: orderitemid,
               },
               file
             );
