@@ -50,11 +50,6 @@ jQuery(document).ready(function () {
             item.publishstatus.id == "readytopublish" ||
             item.publishstatus.id == "publishingexternal"
           ) {
-          }
-          if (
-            item.publishstatus.id == "readytopublish" ||
-            item.publishstatus.id == "publishingexternal"
-          ) {
             var file = {
               itemexportname: item.itemexportname,
               itemdownloadurl: item.itemdownloadurl,
@@ -177,7 +172,8 @@ jQuery(document).ready(function () {
               "&downloaditemdownloadedfilesize=" +
               e.loaded,
             success: function (item) {
-              if (item.order && item.order.orderstatus == "complete") {
+              console.log("progress", item);
+              if (item.order && item.order.orderstatus.id == "complete") {
                 abortDownload(orderitemid);
                 autoreload($("#userdownloadlist"));
                 return;
@@ -206,7 +202,8 @@ jQuery(document).ready(function () {
           "&downloadstartdate=" +
           (downloadStartDate ? downloadStartDate : new Date().toISOString()),
         success: function (item) {
-          if (item.order && item.order.orderstatus == "complete") {
+          console.log("loadstart", item);
+          if (item.order && item.order.orderstatus.id == "complete") {
             abortDownload(orderitemid);
             autoreload($("#userdownloadlist"));
             return;
