@@ -17,7 +17,7 @@ public void runit()
 
 	
 	
-	HitTracker hits = mediaArchive.getAssetSearcher().query().match("googletranscoded", "false").orgroup("assettype", "video audio").match("importstatus", "complete").search();
+	HitTracker hits = mediaArchive.getAssetSearcher().query().not("editstatus","7").match("googletranscoded", "false").orgroup("assettype", "video audio").match("importstatus", "complete").search();
 	CloudTranscodeManager manager = mediaArchive.getBean( "cloudTranscodeManager");
 	
 	hits.each{
