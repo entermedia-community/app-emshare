@@ -17,6 +17,16 @@ jQuery(document).ready(function () {
     return bytes.toFixed(1) + units[u];
   }
 
+  function abortDownload(orderitemid) {
+    for (var orderid in downloadInProgress) {
+      if (downloadInProgress[orderid][orderitemid]) {
+        downloadInProgress[orderid][orderitemid].abort();
+        downloadInProgress[orderid][orderitemid] = null;
+        $("#dt-" + orderitemid).toast("hide");
+      }
+    }
+  }
+
   function checkForPendingDownloads() {
     var url =
       siteroot +
@@ -33,14 +43,7 @@ jQuery(document).ready(function () {
           var orderid = item.orderid.id;
           var orderitemid = item.id;
           if (item.orderstatus == "complete") {
-            if (
-              downloadInProgress[orderid] &&
-              downloadInProgress[orderid][orderitemid]
-            ) {
-              downloadInProgress[orderid][orderitemid].abort();
-              downloadInProgress[orderid][orderitemid] = null;
-            }
-            $("#dt-" + orderitemid).toast("hide");
+            abortDownload(orderitemid);
             continue;
           }
           if (
@@ -175,14 +178,7 @@ jQuery(document).ready(function () {
               e.loaded,
             success: function (item) {
               if (item.order && item.order.orderstatus == "complete") {
-                if (
-                  downloadInProgress[orderid] &&
-                  downloadInProgress[orderid][orderitemid]
-                ) {
-                  downloadInProgress[orderid][orderitemid].abort();
-                  downloadInProgress[orderid][orderitemid] = null;
-                }
-                $("#dt-" + orderitemid).toast("hide");
+                abortDownload(orderitemid);
                 autoreload($("#userdownloadlist"));
                 return;
               }
@@ -211,14 +207,7 @@ jQuery(document).ready(function () {
           (downloadStartDate ? downloadStartDate : new Date().toISOString()),
         success: function (item) {
           if (item.order && item.order.orderstatus == "complete") {
-            if (
-              downloadInProgress[orderid] &&
-              downloadInProgress[orderid][orderitemid]
-            ) {
-              downloadInProgress[orderid][orderitemid].abort();
-              downloadInProgress[orderid][orderitemid] = null;
-            }
-            $("#dt-" + orderitemid).toast("hide");
+            abortDownload(orderitemid);
             autoreload($("#userdownloadlist"));
             return;
           }
