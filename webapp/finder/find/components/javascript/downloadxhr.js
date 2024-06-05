@@ -40,6 +40,7 @@ jQuery(document).ready(function () {
               downloadInProgress[orderid][orderitemid].abort();
               downloadInProgress[orderid][orderitemid] = null;
             }
+            $("#dt-" + orderitemid).toast("hide");
             continue;
           }
           if (
@@ -239,7 +240,6 @@ jQuery(document).ready(function () {
         downloadInProgress[orderid][orderitemid] = null;
       }
       $("#dt-" + orderitemid).toast("hide");
-      console.log("Aborted download for orderitemid: " + orderitemid);
     }
     autoreload($("#userdownloadlist"));
     $.ajax({
