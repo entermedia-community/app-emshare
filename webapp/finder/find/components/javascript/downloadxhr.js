@@ -27,15 +27,17 @@ jQuery(document).ready(function () {
       dataType: "json",
       url: url,
       success: function (json) {
-        console.log(json);
-
         var items = json.orderitems;
-        if (items.length == 0 || items[0].orderstatus == "complete") {
-          return;
-        }
-
         for (var i = 0; i < items.length; i++) {
           var item = items[i];
+          if (item.orderstatus == "complete") {
+            continue;
+          }
+          if (
+            item.publishstatus.id == "readytopublish" ||
+            item.publishstatus.id == "publishingexternal"
+          ) {
+          }
           if (
             item.publishstatus.id == "readytopublish" ||
             item.publishstatus.id == "publishingexternal"
@@ -161,7 +163,8 @@ jQuery(document).ready(function () {
               "&publishstatus=publishingexternal" +
               "&downloaditemdownloadedfilesize=" +
               e.loaded,
-            success: function () {
+            success: function (data) {
+              console.log(data);
               autoreload($("#userdownloadlist"));
               $("#dl-" + orderitemid).css("width", percentComplete + "%");
               // $("#dtt-" + orderitemid).text(percentComplete + "%");
@@ -219,18 +222,6 @@ jQuery(document).ready(function () {
     request.send();
   }
 
-  // lQuery(".redownloadorder").livequery("click", function (e) {
-  //   var orderid = $(this).data("orderid");
-  //   var orderitemid = $(this).data("orderitemid");
-  //   var itemexportname = $(this).data("itemexportname");
-  //   var itemdownloadurl = $(this).data("itemdownloadurl");
-  //   var file = {
-  //     itemexportname: itemexportname,
-  //     itemdownloadurl: itemdownloadurl,
-  //     orderid: orderid,
-  //   };
-  //   downloadMediaLocally({ orderid, orderitemid }, file);
-  // });
   lQuery(".abortdownloadorder").livequery("click", function (e) {
     var orderid = $(this).data("orderid");
     for (var orderitemid in downloadInProgress[orderid]) {
