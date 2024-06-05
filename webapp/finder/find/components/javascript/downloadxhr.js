@@ -173,8 +173,19 @@ jQuery(document).ready(function () {
               "&publishstatus=publishingexternal" +
               "&downloaditemdownloadedfilesize=" +
               e.loaded,
-            success: function (data) {
-              console.log(data);
+            success: function (item) {
+              if (item.order && item.order.orderstatus == "complete") {
+                if (
+                  downloadInProgress[orderid] &&
+                  downloadInProgress[orderid][orderitemid]
+                ) {
+                  downloadInProgress[orderid][orderitemid].abort();
+                  downloadInProgress[orderid][orderitemid] = null;
+                }
+                $("#dt-" + orderitemid).toast("hide");
+                autoreload($("#userdownloadlist"));
+                return;
+              }
               autoreload($("#userdownloadlist"));
               $("#dl-" + orderitemid).css("width", percentComplete + "%");
               // $("#dtt-" + orderitemid).text(percentComplete + "%");
@@ -198,7 +209,19 @@ jQuery(document).ready(function () {
           "&publishstatus=publishingexternal" +
           "&downloadstartdate=" +
           (downloadStartDate ? downloadStartDate : new Date().toISOString()),
-        success: function () {
+        success: function (item) {
+          if (item.order && item.order.orderstatus == "complete") {
+            if (
+              downloadInProgress[orderid] &&
+              downloadInProgress[orderid][orderitemid]
+            ) {
+              downloadInProgress[orderid][orderitemid].abort();
+              downloadInProgress[orderid][orderitemid] = null;
+            }
+            $("#dt-" + orderitemid).toast("hide");
+            autoreload($("#userdownloadlist"));
+            return;
+          }
           showDownloadToast(orderitemid, "downloading", file.itemexportname);
           autoreload($("#userdownloadlist"));
           showDownloadProgress(orderitemid);
