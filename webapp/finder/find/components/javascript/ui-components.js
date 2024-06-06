@@ -670,9 +670,11 @@ uiload = function () {
     var _this = $(this);
     _this.prepend('<span class="bi bi-check-circle-fill ns"></span>');
     _this.append('<button><span class="bi bi-x-circle ns"></span>');
-    _this.fadeOut(4000, function () {
-      _this.remove();
-    });
+    setTimeout(function () {
+      _this.fadeOut(500, function () {
+        _this.remove();
+      });
+    }, 4000);
     _this.find("button").click(function () {
       _this.fadeOut(500, function () {
         _this.remove();
