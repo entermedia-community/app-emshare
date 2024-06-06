@@ -667,7 +667,17 @@ uiload = function () {
   });
 
   lQuery(".fader").livequery(function () {
-    $(this).fadeOut(4000, "linear");
+    var _this = $(this);
+    _this.prepend('<span class="bi bi-check-circle-fill ns"></span>');
+    _this.append('<button><span class="bi bi-x-circle ns"></span>');
+    _this.fadeOut(4000, function () {
+      _this.remove();
+    });
+    _this.find("button").click(function () {
+      _this.fadeOut(500, function () {
+        _this.remove();
+      });
+    });
   });
 
   lQuery(".uipanel").livequery(function () {
@@ -801,9 +811,9 @@ uiload = function () {
         },
         success: function (result, status, xhr, $form) {
           checkautoreload(form);
-          if(showwaitingtarget !== undefined) {
-			  showwaitingtarget.hide();
-		  }
+          if (showwaitingtarget !== undefined) {
+            showwaitingtarget.hide();
+          }
           var targetdivinner = form.data("targetdivinner");
           if (targetdivinner) {
             $("#" + $.escapeSelector(targetdivinner)).html(result);
@@ -2096,24 +2106,24 @@ uiload = function () {
             url: clickurl,
             data: options,
             success: function (data) {
-			  if (!targetdiv.jquery) {
-                	targetdiv = $("#" + targetdiv);
+              if (!targetdiv.jquery) {
+                targetdiv = $("#" + targetdiv);
               }
               if (targettype == "message") {
-				  if (targetdiv !== undefined) {
-                		targetdiv.prepend(data);
-                		targetdiv.find(".fader").fadeOut(3000, "linear");
-                	}
+                if (targetdiv !== undefined) {
+                  targetdiv.prepend(data);
+                  targetdiv.find(".fader").fadeOut(3000, "linear");
+                }
               } else if (targettype == "entitypickersubmodule") {
-		        var pickertarget = pickerresults.data("pickertarget");
-		        pickertarget = $("#" + pickertarget);
-		        if (pickertarget.length > 0) {
-		          autoreload(pickertarget);
-		        }
-		      } else {
+                var pickertarget = pickerresults.data("pickertarget");
+                pickertarget = $("#" + pickertarget);
+                if (pickertarget.length > 0) {
+                  autoreload(pickertarget);
+                }
+              } else {
                 //regular targetdiv
-              	if (targetdiv !== undefined) {
-                	targetdiv.replaceWith(data);
+                if (targetdiv !== undefined) {
+                  targetdiv.replaceWith(data);
                 }
               }
 
@@ -2130,19 +2140,18 @@ uiload = function () {
     var link = $(this);
     var targettype = link.data("targettype");
     if (targettype == "entitypickerfield") {
-	    var pickertarget = link.data("pickertarget");
-	    pickertarget = $("#" + pickertarget);
-	    if (pickertarget.length > 0) {
-	      updateentitylist(pickertarget, link.data("id"), link.data("name"));
-	    }
+      var pickertarget = link.data("pickertarget");
+      pickertarget = $("#" + pickertarget);
+      if (pickertarget.length > 0) {
+        updateentitylist(pickertarget, link.data("id"), link.data("name"));
+      }
+    } else if (targettype == "entitypickersubmodule") {
+      var pickertarget = link.data("pickertarget");
+      pickertarget = $("#" + pickertarget);
+      if (pickertarget.length > 0) {
+        autoreload(pickertarget);
+      }
     }
-    else if (targettype == "entitypickersubmodule") {
-	    var pickertarget = link.data("pickertarget");
-	    pickertarget = $("#" + pickertarget);
-	    if (pickertarget.length > 0) {
-			autoreload(pickertarget);	      
-	    }
-    } 
     closeemdialog(link.closest(".modal"));
   });
 
@@ -2154,7 +2163,7 @@ uiload = function () {
     var newrow = pickertarget.find("li:first");
     newrow.attr("id", id);
     newrow.find("a:first").text(name);
-    
+
     newrow.show();
   };
 

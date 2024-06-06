@@ -385,6 +385,13 @@ $.fn.initUpload = function () {
       haderror = true;
     },
     onFinish: function (event, total) {
+      $("body").append(
+        '<div class="alert alert-success fader alert-save">Uploaded ' +
+          total +
+          " file" +
+          (total > 1 ? "s" : "") +
+          " successfully!</div>"
+      );
       //do a search
       if (!haderror) {
         var startb = uploadformarea.find(".startbutton");
