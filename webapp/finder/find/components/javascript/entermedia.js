@@ -572,7 +572,13 @@ onloadselectors = function () {
   });
   if (jQuery.fn.draggable) {
     lQuery(".assetdraggable").livequery(function () {
+      var scope = "default";
+      var modalCheck = $(this).closest(".modal");
+      if (modalCheck.length) {
+        scope = "modal";
+      }
       $(this).draggable({
+        scope: scope,
         helper: function () {
           var toclone = $(this);
           var draggclone = $(this).data("draggholderclone");
@@ -708,7 +714,14 @@ onloadselectors = function () {
   if (jQuery.fn.droppable) {
     // Category tree droppable
     lQuery(".assetdropcategory .categorydroparea").livequery(function () {
+      var scope = "default";
+      var modalCheck = $(this).closest(".modal");
+      if (modalCheck.length) {
+        scope = "modal";
+      }
+
       $(this).droppable({
+        scope: scope,
         drop: function (event, ui) {
           var node = $(this);
           if (
