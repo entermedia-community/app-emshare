@@ -16,9 +16,11 @@
 
 		<div class="sidebarorder d-block py-2 px-2 $publishstatus $status" id="d-$downloadorderitem">
 
+			#if($publishstatus == "publishingexternal" )
 			<div id="dl-$downloadorderitem" class="downloadProgress" style="display:none;width:0%">
 				<div class="shine" style="display:none;"></div>
 			</div>
+			#end
 
 			<div class="d-flex align-items-center">
 				#set ($mime = $mediaarchive.getMimeTypeIcon($asset.fileformat))
@@ -56,7 +58,9 @@
 							</span>
 							<i class="bi bi-dot mx-1"></i>
 							<span class="file-size text-right">
+								#if($publishstatus == "publishingexternal" )
 								<span id="dlp-$downloadorderitem"></span>
+								#end
 								$sizer.inEnglish( $downloadorder.totalBytes() )
 							</span>
 						</div>
@@ -68,7 +72,7 @@
 										$orderage [[ago]]
 									</span>
 								#end
-							#else
+							#elseif($publishstatus == "publishingexternal" )
 								#set( $orderage = $!context.getAge($downloadorder.getEstimatedEndDate()))
 								#ifnotnull($orderage )
 									<span class="date">

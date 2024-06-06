@@ -172,7 +172,6 @@ jQuery(document).ready(function () {
               "&downloaditemdownloadedfilesize=" +
               e.loaded,
             success: function (item) {
-              console.log("progress", item);
               if (item.order && item.order.orderstatus.id == "complete") {
                 abortDownload(orderitemid);
                 autoreload($("#userdownloadlist"));
@@ -202,7 +201,6 @@ jQuery(document).ready(function () {
           "&downloadstartdate=" +
           (downloadStartDate ? downloadStartDate : new Date().toISOString()),
         success: function (item) {
-          console.log("loadstart", item);
           if (item.order && item.order.orderstatus.id == "complete") {
             abortDownload(orderitemid);
             autoreload($("#userdownloadlist"));
