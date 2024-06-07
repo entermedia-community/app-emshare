@@ -2561,6 +2561,23 @@ uiload = function () {
     });
   });
 
+  lQuery(".fieldsPicker").livequery("click", function (e) {
+    if (e.target !== this) {
+      return;
+    }
+    $(this).fadeOut(function () {
+      $(this).replaceWith("<div id='fieldsPicker'></div>");
+      $(".fieldsParent").trigger("refreshFields");
+    });
+  });
+  lQuery(".close-fp").livequery("click", function () {
+    $(this)
+      .closest(".fieldsPicker")
+      .fadeOut(function () {
+        $(this).replaceWith("<div id='fieldsPicker'></div>");
+      });
+  });
+
   lQuery(".resetsearch").livequery("click", function () {
     saveProfileProperty("mainsearchmodule", "", function () {});
   });
@@ -4434,6 +4451,10 @@ autoreload = function (div, callback) {
     gridResize();
   }
 };
+
+lQuery(".fieldsParent").livequery("refreshFields", function () {
+  autoreload($(this));
+});
 
 showajaxstatus = function (uid) {
   //for each asset on the page reload it's status

@@ -47,8 +47,7 @@ $context.putPageValue("edit", $edit)
 #set($viewid = $context.getRequestParameter("viewid"))
 #end
 
-<div id="editentitymetadata" 
-class='entitymetadatamodal #if($edit=="true") entitymetadataediting #else entitymetadatapreview #end' data-id="$!id">
+<div id="editentitymetadata" data-url="$!siteroot$applink/views/modules/$!{moduleid}/components/gridsample/preview/metadata.html?edit=true&entityid=$!data.id&moduleid=$!moduleid&showmedia=$!showmedia&viewid=$!viewid" class='fieldsParent entitymetadatamodal #if($edit=="true") entitymetadataediting #else entitymetadatapreview #end' data-id="$!id">
 
 #if($id.startsWith("multiedit"))
 	#set($targetentitytabid = "entity-tab-multiedit")
@@ -133,22 +132,22 @@ class='entitymetadatamodal #if($edit=="true") entitymetadataediting #else entity
 		#end
 	
     #if($edit=="true")
-    <div class="btns">
-	    
-	    
-		#if($id) 
-			<a class="btn btn-sm btn-dark submitform" style="margin-right: 10px;"><i class="fas fa-save"></i>  [[Save]]</a>
-			#if($id.startsWith("multiedit"))
-				<button id="closebutton" style="margin-right: 10px;"  type="button" class="btn btn-sm btn-dark" data-dismiss="modal">[[Cancel]]</button>
+    <div class="d-flex align-items-center justify-content-between">
+			<div class="d-flex align-items-center">
+			#if($id) 
+				<a class="btn btn-sm btn-dark submitform" style="margin-right: 10px;"><i class="fas fa-save"></i>  [[Save]]</a>
+				#if($id.startsWith("multiedit"))
+					<button id="closebutton" style="margin-right: 10px;"  type="button" class="btn btn-sm btn-dark" data-dismiss="modal">[[Cancel]]</button>
+				#else
+					<a class="btn btn-sm btn-dark ajax" style="margin-right: 10px;" data-targetdiv="editentitymetadata" 
+						href="$!siteroot$applink/views/modules/$!{moduleid}/components/gridsample/preview/metadata.html?entityid=$!id&moduleid=$!moduleid&showmedia=$!showmedia&viewid=$!viewid">[[Cancel]]</a>
+				#end
 			#else
-				<a class="btn btn-sm btn-dark ajax" style="margin-right: 10px;" data-targetdiv="editentitymetadata" 
-					href="$!siteroot$applink/views/modules/$!{moduleid}/components/gridsample/preview/metadata.html?entityid=$!id&moduleid=$!moduleid&showmedia=$!showmedia&viewid=$!viewid">[[Cancel]]</a>
+				<a class="btn btn-sm btn-dark submitform" style="margin-right: 10px;">[[Save]]<i class="ml-1 bi bi-caret-right-fill"></i></a>
+				
+				<button id="closebutton" style="margin-right: 10px;"  type="button" class="btn btn-sm btn-dark" data-dismiss="modal">[[Cancel]]</button>
 			#end
-		#else
-			<a class="btn btn-sm btn-dark submitform" style="margin-right: 10px;">[[Save]]<i class="ml-1 bi bi-caret-right-fill"></i></a>
-			
-			<button id="closebutton" style="margin-right: 10px;"  type="button" class="btn btn-sm btn-dark" data-dismiss="modal">[[Cancel]]</button>
-		#end
+			</div>
 		
 		#if($detailviewercolumns==1)
 			#set($changedetailviewercolumns = 2)
@@ -158,21 +157,22 @@ class='entitymetadatamodal #if($edit=="true") entitymetadataediting #else entity
 			#set($icondetailviewercolumns = "horizontal")
 		#end
 		
-		#if($permissions.can($moduleid, "edit"))
-			<a class="ajax btn btn-sm btn-darkless float-right" data-targetdiv="applicationcontent" data-updateurl="true" data-closedialog="true" data-oemaxlayout="2" href="$siteroot$apphome/views/settings/modules/$!{searcher.searchType}/metadata/views/index.html?viewid=$viewid&viewpath=$!view&moduleid=$!moduleid"><i class="bi bi-gear-fill"></i> [[Fields]]</a>
-		#end
-		<a class="ajax btn btn-sm btn-darkless float-right" style="margin-right:5px;" data-targetdiv="editentitymetadata" 
-			href="$!siteroot$applink/views/modules/$!{moduleid}/components/gridsample/preview/metadata.html?edit=true&entityid=$!{data.id}&detailviewercolumns=${changedetailviewercolumns}&moduleid=$!{moduleid}&viewid=$!{viewid}">
-			<i class="bi bi-grip-$icondetailviewercolumns"></i>
-		</a>
-		
-	    <div class="clearfix"></div>
+			<div class="d-flex align-items-center">
+				#if($permissions.can($moduleid, "edit"))
+				<a class="ajax btn btn-sm btn-darkless px-2 mr-2" data-targetdiv="fieldsPicker" data-oemaxlayout="4" href="$siteroot$apphome/views/settings/modules/$!{searcher.searchType}/metadata/views/individualsettings.html?viewid=$viewid&viewpath=$!view&moduleid=$!moduleid"><i class="bi bi-gear-fill mr-1"></i> [[Fields]]</a>
+				<div id="fieldsPicker"></div> 
+				#end
+				<a class="ajax btn btn-sm btn-darkless" data-targetdiv="editentitymetadata" 
+					href="$!siteroot$applink/views/modules/$!{moduleid}/components/gridsample/preview/metadata.html?edit=true&entityid=$!{data.id}&detailviewercolumns=${changedetailviewercolumns}&moduleid=$!{moduleid}&viewid=$!{viewid}">
+					<i class="bi bi-grip-$icondetailviewercolumns"></i>
+				</a> 
+			</div>
     </div>
     #end
     </form>
 	
 	#if($edit!="true")
-		#if($permissions.can($moduleid, "edit"))
+		#if($permissions.can($moduleid, "edit")) 
 			<a href="$!siteroot$applink/views/modules/$!{moduleid}/components/gridsample/preview/metadata.html?edit=true&entityid=$!data.id&moduleid=$!moduleid&showmedia=$!showmedia&viewid=$!viewid" 
 				data-targetdiv="editentitymetadata" 
 				class="ajax btn btn-sm btn-dark" 
