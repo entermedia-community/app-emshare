@@ -310,9 +310,12 @@ uiload = function () {
   if (browserlanguage == undefined || browserlanguage == "") {
     browserlanguage = "en";
   }
-
-  if ($.datepicker) {
-    lQuery("input.datepicker").livequery(function () {
+  lQuery("input.datepicker").livequery("mousedown", function () {
+    var trigger = $(this).parent().find(".ui-datepicker-trigger");
+    trigger.trigger("click");
+  });
+  lQuery("input.datepicker").livequery(function () {
+    if ($.datepicker) {
       var dpicker = $(this);
       $.datepicker.setDefaults($.datepicker.regional[browserlanguage]);
       $.datepicker.setDefaults(
@@ -334,6 +337,7 @@ uiload = function () {
         yearRange: "1900:2050",
         beforeShow: function (input, inst) {
           setTimeout(function () {
+            $("#ui-datepicker-div").css("z-index", 100100);
             $("#application").append($("#ui-datepicker-div"));
             // var quickSelect = $("#operationentitydatefindercatalog");
             // quickSelect.css("display", "block");
@@ -380,8 +384,8 @@ uiload = function () {
           $("#" + targetid).val("");
         }
       });
-    });
-  } //datepicker
+    } //datepicker
+  });
 
   if ($.fn.minicolors) {
     lQuery(".color-picker").livequery(function () {
