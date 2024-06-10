@@ -27,25 +27,25 @@
 		
 		#if($canexportdata)
 			<a class="dropdown-item" href="$siteroot$apphome/views/modules/asset/export/download/export_asset.csv?hitssessionid=$hits.sessionId&searchtype=asset">[[Export results to CSV]]</a>
-			<a class="dropdown-item" href="$siteroot$apphome/views/modules/asset/export/download/export_asset.csv?hitssessionid=$hits.sessionId&friendly=true&searchtype=asset&view=asset/resultstable">[[Export to CSV (friendly)]]</a>
+			<a class="dropdown-item" href="$siteroot$apphome/views/modules/asset/export/download/export_asset.csv?hitssessionid=$hits.sessionId&friendly=true&searchtype=asset&view=asset/resultstable">[[Export to CSV (friendly)]]XX</a>
 		#end
 
-	#if($entityid && $topmoduleid)
-		#ifnull($entity)
-			#set($entity = $mediaarchive.getCachedData($topmoduleid, $entityid))
+		#if($entityid && $topmoduleid)
+			#ifnull($entity)
+				#set($entity = $mediaarchive.getCachedData($topmoduleid, $entityid))
+			#end
+			#set($removefrom = "$siteroot$applink/views/modules/$!{topmoduleid}/components/entities/removeassets.html")
+			#set($removefrom = "$removefrom?moduleid=$topmoduleid&entityid=$entityid&copyinghitssessionid=$hits.getSessionId()&reloadtargets=topmodulecontainer")
+			<a class="dropdown-item ajax"
+				data-targetdiv="tab_media" 
+					data-dialogid="addtoentity"
+					data-hidefooter="true"
+					data-pickedmoduleid="$topmoduleid"
+					data-pickedentityid="$entityid"
+					data-copyingsearchtype="assets"
+					data-copyinghitssessionid="$hits.getSessionId()"
+					href="$removefrom" >[[Remove Selected Assets From]] #text($entity)</a>
 		#end
-		#set($removefrom = "$siteroot$applink/views/modules/$!{topmoduleid}/components/entities/removeassets.html")
-		#set($removefrom = "$removefrom?moduleid=$topmoduleid&entityid=$entityid&copyinghitssessionid=$hits.getSessionId()&reloadtargets=topmodulecontainer")
-				<a class="dropdown-item ajax"
-					data-targetdiv="tab_media" 
-		    		data-dialogid="addtoentity"
-		    		data-hidefooter="true"
-		    		data-pickedmoduleid="$topmoduleid"
-		    		data-pickedentityid="$entityid"
-		    		data-copyingsearchtype="assets"
-		    		data-copyinghitssessionid="$hits.getSessionId()"
-		    		href="$removefrom" >[[Remove Selected Assets From]] #text($entity)</a>
-	#end
 		
 		#if($canmultidelete)
 			#set($deleteurl = "$siteroot$componenthome/mediaviewer/fullscreen/delete/index.html?hitssessionid=$hits.getSessionId()&nodeID=$!catid")
@@ -205,7 +205,7 @@
 ##		#if(!$canforcebasiccollections)
 ##			#if( $librarycol && ( $canaddnewcollection || $caneditcollection ) )
 ##				 #if( $caneditcollection)
-##					<a class="dropdown-item confirm" href="$siteroot$apphome/views/modules/librarycollection/removefromcollection.html?hitssessionid=$!hits.getSessionId()&collectionid=$!librarycol.getId()" title="[[Edit one or more selected records]]" confirm="[[Remove from collection?]]" >[[Remove from Collection]]</a>
+##					<a class="dropdown-item confirm" href="$siteroot$apphome/views/modules/librarycollection/removefromcollection.html?hitssessionid=$!hits.getSessionId()&collectionid=$!librarycol.getId()" title="[[Edit one or more selected records]]" data-confirm="[[Remove from collection?]]" >[[Remove from Collection]]</a>
 ##				#end
 ##				#if( $canaddnewcollection)
 ##					<a class="dropdown-item emdialog" href="$siteroot$apphome/views/modules/librarycollection/copycollection.html?collectionid=$!librarycol.getId()" title="[[Create a copy of this Album]]">[[Copy Album]]</a>
