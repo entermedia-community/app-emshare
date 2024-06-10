@@ -675,8 +675,10 @@ uiload = function () {
 
   lQuery(".fader").livequery(function () {
     var _this = $(this);
-    _this.prepend('<span class="bi bi-check-circle-fill ns"></span>');
-    _this.append('<button><span class="bi bi-x-circle ns"></span>');
+    if (_this.hasClass("alert-save")) {
+      _this.prepend('<span class="bi bi-check-circle-fill ns"></span>');
+      _this.append('<button><span class="bi bi-x-circle ns"></span>');
+    }
     setTimeout(function () {
       _this.fadeOut(500, function () {
         _this.remove();
@@ -2577,13 +2579,21 @@ uiload = function () {
     $(this).fadeOut(function () {
       $(this).replaceWith("<div id='fieldsPicker'></div>");
       $(".fieldsParent").trigger("refreshFields");
+      $(".fieldsPicker").each(function () {
+        $(this).remove();
+      });
     });
   });
-  lQuery(".close-fp").livequery("click", function () {
+  lQuery(".close-fp").livequery("click", function (e) {
+    e.stopPropagation();
     $(this)
       .closest(".fieldsPicker")
       .fadeOut(function () {
         $(this).replaceWith("<div id='fieldsPicker'></div>");
+        $(".fieldsParent").trigger("refreshFields");
+        $(".fieldsPicker").each(function () {
+          $(this).remove();
+        });
       });
   });
 
