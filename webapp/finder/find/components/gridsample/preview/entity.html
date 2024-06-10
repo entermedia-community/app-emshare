@@ -154,11 +154,23 @@ $context.putPageValue("topmoduleid", $moduleid)
 				</h2>
 				
 				
-				#if(!$ismulti)
+				#if(!$ismulti && $entityid)
 					<div class="entity-actions-bar">
 
 						$context.putPageValue("itemid", $entity.id)
 						$pages.include("$componenthome/gridsample/favorites.html?id=$entity.id&moduleid=$moduleid", $context)
+						
+						
+						<a href="$applink/views/modules/${moduleid}/components/gridsample/preview/tabexport.html?entityid=$!entity.getId()" 
+						class="entitytabactions"
+						data-tabaction="export"
+						data-viewid="export"
+						data-tabtype="tabexport" 
+						data-entityid="$!entity.getId()" 
+						data-topmoduleid="$!moduleid"
+						data-moduleid="$!moduleid"
+						data-tabsection="share"
+						data-targetdiv="" title="[[Share]]"><i class="bi bi-share"></i></a>
 						
 					</div>
 				#end

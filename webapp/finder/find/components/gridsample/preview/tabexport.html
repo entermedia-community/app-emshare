@@ -23,6 +23,7 @@ $context.putPageValue("parentsearchtype", $parentsearchtype)
 #end
 #set($tabid = "tab_$viewid")
 
+#set ( $tabsection = $context.getRequestParameter("tabsection") )
 
 #set($defaultcategory = $mediaarchive.getBean("entityManager").createDefaultFolder($entity, $context.getUser()))
 $context.putPageValue("defaultcategory", $defaultcategory)
@@ -86,7 +87,9 @@ $context.putPageValue("tabmode", $tabmode)
 		</div>
 		
 		<div id="tabexportcontent" class="tabimportexportcontent pt-2">
-			##$pages.include("$componenthome/share/entity.html?entityid=$!{entityid}&moduleid=$!{topmoduleid}", $context)
+			#if($tabsection=="share")
+			$pages.include("$componenthome/share/entity.html?entityid=$!{entityid}&moduleid=$!{topmoduleid}", $context)
+			#end
 		</div>
 		
 	</div>

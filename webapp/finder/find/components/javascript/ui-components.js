@@ -1588,9 +1588,11 @@ uiload = function () {
     var link = $(this);
     var tabaction = link.data("tabaction");
     var uploadmedia = link.data("uploadmedia");
+    var tabsection = link.data("tabsection");
     var entity = $(".entitydialog");
     entity.data("entitytabopen", tabaction);
     entity.data("uploadmedia", uploadmedia);
+    entity.data("tabsection", tabsection);
     autoreload(entity);
 
     /*    
