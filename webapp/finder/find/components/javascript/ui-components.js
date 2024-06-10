@@ -654,9 +654,12 @@ uiload = function () {
 
   // deprecated, use data-confirm
   lQuery(".confirm").livequery("click", function (e) {
-    var inText = $(this).attr("confirm");
+    if ($(this).hasClass("ajax")) {
+      return;
+    }
+    var inText = $(this).data("confirm");
     if (!inText) {
-      inText = $(this).data("confirm");
+      inText = "Are you sure?";
     }
     if (confirm(inText)) {
       return;
