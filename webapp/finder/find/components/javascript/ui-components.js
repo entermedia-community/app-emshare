@@ -2575,13 +2575,21 @@ uiload = function () {
     $(this).fadeOut(function () {
       $(this).replaceWith("<div id='fieldsPicker'></div>");
       $(".fieldsParent").trigger("refreshFields");
+      $(".fieldsPicker").each(function () {
+        $(this).remove();
+      });
     });
   });
-  lQuery(".close-fp").livequery("click", function () {
+  lQuery(".close-fp").livequery("click", function (e) {
+    e.stopPropagation();
     $(this)
       .closest(".fieldsPicker")
       .fadeOut(function () {
         $(this).replaceWith("<div id='fieldsPicker'></div>");
+        $(".fieldsParent").trigger("refreshFields");
+        $(".fieldsPicker").each(function () {
+          $(this).remove();
+        });
       });
   });
 
