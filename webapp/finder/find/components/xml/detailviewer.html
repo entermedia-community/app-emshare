@@ -28,6 +28,7 @@
 #end
 
 
+
 <div class="row no-gutters">
 #foreach( $detail in $details )
 	$!context.putPageValue("detail",$detail)
@@ -52,9 +53,9 @@
 		</li>
 	#end
 	#set($val = false)
-	#set( $val = $data.get($detail.getId()) )
-	
-	#if(  $val && $val.length() > 0 )
+	#set( $val = $data.getValue($detail.getId()) )
+
+	#if(  $val  )
 		<div class="$detailviewercolumnclass emdatafield-$!viewtype">
 			<div class="container-fluid">
 				<div class="row">
@@ -67,9 +68,7 @@
 					<div class="emdatafieldvalue">					
 						$!context.putPageValue("val",$val)
 						$context.putPageValue("showalllanguagevalues",true)
-						
 						$!context.putPageValue("detail",$detail)
-						
 						$pages.include("$apphome/components/xml/detailreadonly.html", $context) 
 					</div>
 					</div>

@@ -4,8 +4,9 @@
 #end
 
 #if( $val && !$val.isEmpty() )
+
 	##set( $val = $val.replace(","," | ") )
-	#set( $vals = $val.split("\s*\|\s*") )
+	##set( $vals = $val.split("\s*\,\s*") )
 
 	#set( $type = $detail.getListId() )
 	#set($link = $context.getPageValue("tagssearchlink"))
@@ -17,8 +18,8 @@
 
 	<span class="tageditor-viewer">
 		#set($count = 1)
-		#foreach( $val in $vals )
-			#set($fulllink = "$link?field=${type}&operation=contains&${type}.value=#paramencode($val)")
+		#foreach( $valtag in $val )
+			#set($fulllink = "$link?field=${type}&operation=contains&${type}.value=#paramencode($valtag)")
 			#if ($clearfilters)
 				#set($fulllink = "$fulllink&clearfilters=true")
 			#end
@@ -30,7 +31,7 @@
 			data-updateurl="true"
 			data-closemediaviewer="true"
 			data-closedialog="true" 
-			title="#esc($val)">#esc($val)</a> 
+			title="#esc($valtag)">#esc($valtag)</a> 
 			#set($count = $count + 1)
 		#end
 	</span>
