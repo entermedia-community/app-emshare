@@ -10,7 +10,7 @@
 
 	#set($copyingsearchtype = $context.getRequestParameter("copyingsearchtype"))
 	
-	#set($assetid = $context.getRequestParameter("assetid"))
+	#set($pickedassetid = $context.getRequestParameter("pickedassetid"))
 	
 	#set($copyingcategoryid = $context.getRequestParameter("copyingcategoryid"))
 	
@@ -18,12 +18,12 @@
 	#set($fieldexternalvalue = $context.getRequestParameter("fieldexternalvalue"))	
 	
 
-	#if( $copyinghits || $assetid)
+	#if( $copyinghits || $pickedassetid)
 	<div class="alert alert-info">
 		
 		#if( $copyinghitssessionid && $copyinghits.getSelectionSize() > 0)	
 		  		<strong>[[Adding]]</strong> $copyinghits.getSelectionSize() [[items]]
-		#elseif($assetid)	
+		#elseif($pickedassetid)	
 				<strong>[[Adding]]</strong> 1 [[asset]]
 		#end	
 	</div>
@@ -47,8 +47,8 @@
 	#else
 		#set($addnew = "$apphome/views/modules/${moduleid}/components/gridsample/preview/entity.html")
 		
-		#if($assetid)
-			#set($addnew = "${addnew}?edit=true&addnew=true&viewfiles=true&saveaction=addassets&assetid=$!assetid")
+		#if($pickedassetid)
+			#set($addnew = "${addnew}?edit=true&addnew=true&viewfiles=true&saveaction=addassets&pickedassetid=$!pickedassetid")
 		#elseif($copyingcategoryid)
 			#set($addnew = "${addnew}?edit=true&addnew=true&viewfiles=true&copyingsearchtype=$!copyingsearchtype&saveaction=additems&copyingcategoryid=$!copyingcategoryid&moduleid=$moduleid")
 		#elseif($copyinghits)
@@ -69,7 +69,7 @@
 	    action="$home$apphome/views/modules/$!{moduleid}/components/entities/search/results.html">
 
 		<input type="hidden" name="sortby" value="name" />
-		<input type="hidden" name="assetid" value="$!asset.id" />
+		<input type="hidden" name="pickedassetid" value="$!pickedassetid" />
 		#if( $fieldexternalid && $fieldexternalvalue )	
 		<input type="hidden" name="field" value="$!fieldexternalid" />
 		<input type="hidden" name="$!{fieldexternalid}.value" value="$!fieldexternalvalue" />
@@ -103,24 +103,26 @@
 		</tr>
 		</table>
 	</form>
-
+	#set($pickertarget = $context.getRequestParameter("pickertarget"))
+	
 	<div id="entitypickerresults"
 		class="pickerresults"
-		#set($pickertarget = $context.getRequestParameter("pickertarget"))
-		#if( $copyinghits || $assetid || $copyingcategoryid) 
-			#if($assetid)
-				data-assetid="$assetid"
+		
+		#if( $copyinghits || $pickedassetid || $copyingcategoryid) 
+			#if($pickedassetid)
+				data-pickedassetid="$pickedassetid"
 			#else
 				data-copyinghitssessionid="$!copyinghitssessionid"
 			#end
-			
-			#if($pickertarget=="addtocategory")
+			#if($pickedassetid)
+				data-clickurl="$applink/views/modules/${moduleid}/components/entities/addassettoentity.html"
+				data-clicktargetdiv="assetentityresultsmediaviewer"			
+			#elseif($pickertarget=="addtocategory")
    				data-copyinghitssessionid="$!copyinghitssessionid"
    				data-copyingsearchtype="$!copyingsearchtype"
 				data-clickurl="$applink/views/modules/searchcategory/savetoentities.html"
 				data-clicktargetdiv="applicationmaincontent"
 				data-targettype="message"
-				data-pickedmoduleid="$!{moduleid}"
 			#else
 				#if($copyingsearchtype == "category")
 					data-clickurl="$applink/views/modules/${moduleid}/components/entities/addcategorytoentity.html" 
@@ -135,7 +137,6 @@
 				data-copyingsearchtype="$!copyingsearchtype"
 				data-clicktargetdiv="applicationmaincontent"
 				data-targettype="message"
-				data-pickedmoduleid="$!{moduleid}"
 			#end
 		#elseif($pickertarget)
 			data-pickertarget="$!pickertarget"
@@ -152,7 +153,7 @@
 			data-saveaction="upload"
 			data-uploadmedia="true"
 		#end
-
+		data-pickedmoduleid="$!{moduleid}"
 		data-moduleid="${moduleid}">
 	
 	##Used? legacy?
