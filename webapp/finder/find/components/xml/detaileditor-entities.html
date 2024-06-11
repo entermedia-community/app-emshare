@@ -45,9 +45,9 @@
 	#end
 	
 	#if( !$val )
-	 	#set( $val = $data.getValue($detail.id))
-	 	#set( $val_text = $data.get($detail.id))
-	 	$!context.putPageValue("val_text",$val_text)
+	 	#set( $value = $data.getValue($detail.id))
+	 	#set( $val = $data.get($detail.id))
+	 	
 		#if(!$val && $detail.rendermask)
 			#set($val = $searcherManager.getValue($catalogid, $detail.rendermask, $data.getProperties()))
 		#end
@@ -63,13 +63,12 @@
 	#end
 	#set( $editrow = $detail.isEditable() && $readonly != "true") 
 		
-	#if( $editrow || $val )
+	#if( $editrow || $val || $value)
 	 	<div class="$detailviewercolumnclass detail-${detail.id}">
 			 
 		$!context.putPageValue("val",$val)
+		$!context.putPageValue("value",$value)
 		$!context.putPageValue("detail",$detail)
-		
-			
 		
 		#if ($detail.header)
 			#if ($detail.header != "blank")

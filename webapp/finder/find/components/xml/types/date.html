@@ -1,4 +1,4 @@
-#set($val = $val_text)
+
 #if($errors.get($detail.id) == "error-format")
 	#set($val = "")
 	<span style="color: red;">
@@ -11,7 +11,9 @@
 #end
 
 <input name="$!{detailprefix}${detail.getId()}.value" id="${detail.id}${idcount}value" value="#esc($!val)"  type="hidden" >
-<input type="text" class="datepicker form-control #if($detail.isRequired()  && !$multiedit) required #end " data-targetid="${detail.id}${idcount}value" /> 
+<input type="text" 
+	class="datepicker form-control #if($detail.isRequired()  && !$multiedit) required #end " 
+	data-targetid="${detail.id}${idcount}value" /> 
 
 #if ($detail.picker == "false" && $detail.format)
 	<span style="color:gray;font-style:italic;font-size:.9em;">$detail.format<span>

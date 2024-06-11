@@ -8,10 +8,10 @@ $pages.include("$apphome/components/xml/types/select2translations.html",$context
 #set($searchfield = $detail.getId() )
 #set( $detailid = $detail.getId().replace('.','-') )
 
-##TODO Use $values
-#ifnull($values)
-	##set( $values = $val.split("\s*\|\s*") )
-	#set( $values = $val )
+#if( $value && !$value.isEmpty() )
+	#set($vals = $value)
+#else
+	#set( $vals = $val.split("\s*\,\s*") )
 #end
 
 <select name="${detail.getId()}.value" 
@@ -26,7 +26,7 @@ $pages.include("$apphome/components/xml/types/select2translations.html",$context
 		data-placeholder=""
 		data-width="100%"
 		>
-	#foreach($vtag in $values)
+	#foreach($vtag in $vals)
 		#if($vtag && $vtag != "")
 			<option value="$!vtag" selected="selected">#esc($vtag)</option>
 		#end

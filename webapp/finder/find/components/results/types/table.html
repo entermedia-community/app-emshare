@@ -200,8 +200,9 @@ $pages.include("${searchhome}/resultsactions.html",$context)
 			#foreach( $detail in $resultdetail )
 				<td class="editfield highlightMe tablecell tablecell-$!detail.id tablecell-$!detail.rendertype"
 				>
-				#set($val = false)	
-				#set( $val =  $cell.getValue($detail.id) )
+				#set( $val = false)	
+				#set( $value =  $cell.getValue($detail.id) )
+				#set( $val =  $cell.get($detail.id) )
 				
 				#if( !$val && $detail.render )	
 					#set($val = $searcherManager.getValue($catalogid, $detail.render, $cell.properties) ) 
@@ -211,6 +212,7 @@ $pages.include("${searchhome}/resultsactions.html",$context)
 				#end		
 				
 				$context.putPageValue('val',  $val)
+				$context.putPageValue('value',  $value)
 				$context.putPageValue('detail',  $detail)
 				
 				#if($detail.viewType == "tageditor")

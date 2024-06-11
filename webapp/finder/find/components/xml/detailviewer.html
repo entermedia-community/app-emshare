@@ -52,8 +52,9 @@
 		#end
 		</li>
 	#end
-	#set($val = false)
-	#set( $val = $data.getValue($detail.getId()) )
+	#set( $val = false)
+	#set( $value = $data.getValue($detail.getId()) )
+	#set( $val = $data.get($detail.getId()) )
 
 	#if(  $val  )
 		<div class="$detailviewercolumnclass emdatafield-$!viewtype">
@@ -67,6 +68,7 @@
 					<div class="col-8">
 					<div class="emdatafieldvalue">					
 						$!context.putPageValue("val",$val)
+						$!context.putPageValue("value",$value)
 						$context.putPageValue("showalllanguagevalues",true)
 						$!context.putPageValue("detail",$detail)
 						$pages.include("$apphome/components/xml/detailreadonly.html", $context) 
