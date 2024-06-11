@@ -53,10 +53,15 @@
 		</li>
 	#end
 	#set( $val = false)
-	#set( $value = $data.getValue($detail.getId()) )
+	
+	
+	
+	#set( $value = $searcher.getSearcherManager().getValue($data, $detail) )
+	
 	#set( $val = $data.get($detail.getId()) )
-
-	#if(  $val  )
+	
+	
+	#if(  $val  || $value)
 		<div class="$detailviewercolumnclass emdatafield-$!viewtype">
 			<div class="container-fluid">
 				<div class="row">
@@ -66,7 +71,8 @@
 					</label>
 					</div>
 					<div class="col-8">
-					<div class="emdatafieldvalue">					
+					<div class="emdatafieldvalue">		
+									
 						$!context.putPageValue("val",$val)
 						$!context.putPageValue("value",$value)
 						$context.putPageValue("showalllanguagevalues",true)
