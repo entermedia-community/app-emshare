@@ -10,8 +10,20 @@
 	
 	#if( $viewpermission )
 		#set( $fieldname = $detail.getId() )
+		#if ($values.size() > 5)
+		<select id="${fieldname}select2" 
+				name="${fieldname}.value" 
+				class="listautocomplete choose-select detail-select form-control" 
+				listid="${fieldname}filter" 
+				data-listid="${fieldname}filter" 
+				data-searchtype= '$detail.getListId()'
+				data-searchfield="name"
+				data-allowclear="false">
+			<option value=""></option>
+		</select>
+		#end
 		#foreach($entry in $values)
-			#if($foreach.count<=10)
+			#if($foreach.count<=5)
 				<div class="d-flex align-items-start">
 					##<a class="addfilter #if ($first) filter-current #end" data-filtertype="$filternode.getId()" data-filtervalue="$entry.getId()" data-filterlabel="$entry.getText($context)" href="#" title="($entry.count)">
 					##<i class="fas  #if ($first) fa-check-square #else fa-square #end"></i>
@@ -21,17 +33,8 @@
 				</div>
 			#end
 		#end
-		#if ($values.size() > 10)
-		<select id="${fieldname}select2" 
-				name="${fieldname}.value" 
-				class="listautocomplete choose-select detail-select form-control #if($detail.isRequired() && !$multiedit) required #end" 
-				listid="${fieldname}filter" 
-				data-listid="${fieldname}filter" 
-				data-searchtype= '$detail.getListId()'
-				data-searchfield="name"
-				data-allowclear="false">
-			<option value=""></option>
-		</select>
+		#if ($values.size() > 5) 
+			<a href="#" class="text-brand px-2 pt-2">[[Show More]]</a> 
 		#end
 	#end  ##permission
 #end
