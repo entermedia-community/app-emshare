@@ -740,15 +740,18 @@ uiload = function () {
 
       var form = $(this);
 
-      if (form.validate && !form.hasClass("novalidate")) {
-        form.validate({
-          ignore: ".ignore",
-        });
-        var isvalidate = form.valid();
-        if (!isvalidate) {
-          e.preventDefault();
-          // show message
-          return;
+      if (!form.hasClass("novalidate")) {
+        if (form.validate) {
+          try {
+            form.validate({
+              ignore: ".ignore",
+            });
+            var isvalidate = form.valid();
+            if (!isvalidate) {
+              e.preventDefault();
+              return;
+            }
+          } catch (_) {}
         }
       }
       var targetdiv_ = form.data("targetdiv");
