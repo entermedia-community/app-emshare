@@ -2892,6 +2892,30 @@ uiload = function () {
     }
   });
 
+  lQuery("#filter-showall-group").livequery(function () {
+    var parent = $(this);
+    var input = parent.find("#filter-showall");
+    var hint = parent.find("small.hint");
+    function handleFilerShowAllChange(e) {
+      var checked = input.is(":checked");
+      if (!checked) {
+        parent.addClass("inclusive");
+        parent.removeClass("exclusive");
+        hint.html(
+          "Shows results that match <b><u>ANY</u></b> selected filter."
+        );
+      } else {
+        parent.removeClass("inclusive");
+        parent.addClass("exclusive");
+        hint.html(
+          "Shows results that match <b><u>ALL</u></b> selected filters."
+        );
+      }
+    }
+    handleFilerShowAllChange();
+    input.change(handleFilerShowAllChange);
+  });
+
   lQuery(".grabfocus").livequery(function () {
     var theinput = $(this);
     theinput.focus();
