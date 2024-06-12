@@ -871,6 +871,10 @@ jQuery(document).ready(function (url, params) {
   lQuery("a.stackedplayer").livequery("click", function (e) {
     e.preventDefault();
     var link = $(this);
+    var checkIfPickerRow = link.closest(".pickerselectrow");
+    if (checkIfPickerRow.length > 0) {
+      return;
+    }
     var assetid = link.data("assetid");
     showAsset(link, assetid);
     return false;
@@ -1694,12 +1698,11 @@ gridResize = function () {
         h = fixedheight;
       }
       var a = 1;
-      if(w>=h) {
-		  a = w / h;
-	  }
-	  else {
-		  a = h/w;
-	  }
+      if (w >= h) {
+        a = w / h;
+      } else {
+        a = h / w;
+      }
       cell.data("aspect", a);
       var neww = a * fixedheight;
       cell.data("targetw", Math.ceil(neww));
