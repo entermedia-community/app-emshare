@@ -751,7 +751,9 @@ uiload = function () {
               e.preventDefault();
               return;
             }
-          } catch (_) {}
+          } catch (_) {
+            console.log(e);
+          }
         }
       }
       var targetdiv_ = form.data("targetdiv");
