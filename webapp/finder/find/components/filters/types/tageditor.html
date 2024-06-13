@@ -1,4 +1,3 @@
-
 #set($searchfield = $detail.getId() )
 #if($filternode)
 	#set( $viewpermission = $context.getPageValue("canviewfilter${type.getId()}") )
@@ -10,31 +9,36 @@
 	
 	#if( $viewpermission )
 		#set( $fieldname = $detail.getId() )
-		#if ($values.size() > 5)
-		<select id="${fieldname}select2" 
-				name="${fieldname}.value" 
-				class="listautocomplete choose-select detail-select form-control" 
-				listid="${fieldname}filter" 
-				data-listid="${fieldname}filter" 
-				data-searchtype= '$detail.getListId()'
-				data-searchfield="name"
-				data-allowclear="false">
-			<option value=""></option>
-		</select>
-		#end
+		<div class="options">
 		#foreach($entry in $values)
-			#if($foreach.count<=5)
 				<div class="d-flex align-items-start">
 					##<a class="addfilter #if ($first) filter-current #end" data-filtertype="$filternode.getId()" data-filtervalue="$entry.getId()" data-filterlabel="$entry.getText($context)" href="#" title="($entry.count)">
 					##<i class="fas  #if ($first) fa-check-square #else fa-square #end"></i>
 					<input style="margin-top:4px" class="filtercheck filtercheck${fieldname}" data-fieldname="${fieldname}" type="checkbox" name="${fieldname}.value" id="$entry.getId()${fieldname}_val" value="$entry.getId()" #if( $hits.getSearchQuery().hasTermValue($filternode.id,$entry.getId()) ) checked #end />
 					<label for="$entry.getId()${fieldname}_val" class="ml-1">$entry.getText($context) ($entry.count)</label>
 					##</a>
+				</div>	
+			#if($foreach.count==5)
 				</div>
-			#end
+				#if ($values.size() > 5) 
+					<a href="#" class="text-brand px-2 pt-2">[[Show More]]</a> 
+				#end
+				<div class="options moreoptions" style="display:hidden">
+			#end	
+		#end	
+			#if ($values.size() > 10)
+			<select id="${searchfield}select2" 
+					name="${searchfield}.values"  ##This is set to values so it does not add an extra value
+					class="listtags choose-select detail-select form-control" 
+					listid="${searchfield}filter" 
+					data-listid="${searchfield}filter" 
+					data-searchtype= '$hits.getSearchType()'
+					data-searchfield="${searchfield}"
+					>
+				<option value=""></option>
+			</select>
 		#end
-		#if ($values.size() > 5) 
-			<a href="#" class="text-brand px-2 pt-2">[[Show More]]</a> 
-		#end
+		</div>
+
 	#end  ##permission
 #end
