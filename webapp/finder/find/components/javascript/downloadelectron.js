@@ -208,19 +208,8 @@ jQuery(document).ready(function () {
     });
   }
 
-  lQuery(".redownloadorder").livequery("click", function (e) {
-    var orderitemid = $(this).data("orderitemid");
-    var itemEl = $("#d-" + orderitemid);
-    var itemexportname = $(this).data("itemexportname");
-    var itemdownloadurl = $(this).data("itemdownloadurl");
-    var file = {
-      itemexportname: itemexportname,
-      itemdownloadurl: itemdownloadurl,
-    };
-    downloadMediaLocally(orderitemid, file, itemEl);
-  });
   lQuery(".abortdownloadorder").livequery("click", function (e) {
-    var orderid = $(this).data("orderitemid");
+    // var orderid = $(this).data("orderid");
     var orderitemid = $(this).data("orderitemid");
     if (downloadInProgress[orderitemid]) {
       ipcRenderer.send("cancel-download", { orderitemid });
