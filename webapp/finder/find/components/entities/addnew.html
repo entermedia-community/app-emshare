@@ -41,73 +41,72 @@ $context.putPageValue("edit", $edit)
 #set($pickertarget = $context.getRequestParameter("pickertarget"))
 #set($targettype = $context.getRequestParameter("targettype"))
 
-<form id="searchentitydataeditor" 
-		name="searchentitydataeditor" 
-		class="ajaxform checkCloseDialog" 
-		data-targetdiv="pickersearchentities"
-		method="post"  
-		action="$action"
-		enctype="multipart/form-data">
-    	<input name="save" type="hidden" value="true" />
-    	
-    	<input name="pickertarget" type="hidden" value="$!pickertarget" />
-    	<input name="targettype" type="hidden" value="$!targettype" />
-    	
-    	#set($viewfiles = $context.getRequestParameter("viewfiles"))
-    	#if($viewfiles)
-    		<input name="viewfiles" type="hidden" value="true" />
-    		#set($uploadmedia = $context.getRequestParameter("uploadmedia"))
-    		<input name="uploadmedia" type="hidden" value="$!uploadmedia" />
-    		#set($saveaction = $context.getRequestParameter("saveaction"))
-    		<input name="saveaction" type="hidden" value="$!saveaction" />
-    		#set($copyinghitssessionid = $context.getRequestParameter("copyinghitssessionid"))
-    		<input name="copyinghitssessionid" type="hidden" value="$!copyinghitssessionid" />
-    		#set($copyingsearchtype = $context.getRequestParameter("copyingsearchtype"))
-    		<input name="copyingsearchtype" type="hidden" value="$!copyingsearchtype" />
-    		
-    		#set($pickedassetid = $context.getRequestParameter("pickedassetid"))
-    		<input name="pickedassetid" type="hidden" value="$!pickedassetid" />
-    	#end
-    	<input name="id" type="hidden" value="$!id" />
-    	<input name="searchtype" type="hidden" value="$!searchtype" />
-    	<input name="moduleid" type="hidden" value="$!moduleid" />
-    	<input name="viewid" type="hidden" value="$!viewid" />
-    	<input name="view" type="hidden" value="$!view" />
-    	
-    	#set ($fieldexternalid = $context.getRequestParameter("fieldexternalid"))
-		#set ($fieldexternalvalue = $context.getRequestParameter("fieldexternalvalue"))
-		#if($fieldexternalid)
-			<input name="field" type="hidden" value="$!fieldexternalid" />
-			<input name="${fieldexternalid}.value" type="hidden" value="$!fieldexternalvalue" />
-		#end
-	
-		#ifnull($showmedia)
-			#set($showmedia = $context.getRequestParameter("showmedia"))
-		#end
-		#ifnotnull($showmedia)
-			<input name="showmedia" type="hidden" value="$showmedia" />
-		#end
-    	
-    	$context.putPageValue("view", $view)
-    	$context.putPageValue("viewid", $viewid)
-    	
+	<form id="searchentitydataeditor" 
+			name="searchentitydataeditor" 
+			class="ajaxform checkCloseDialog" 
+			data-targetdiv="pickersearchentities"
+			method="post"  
+			action="$action"
+			enctype="multipart/form-data">
+				<input name="save" type="hidden" value="true" />
+				
+				<input name="pickertarget" type="hidden" value="$!pickertarget" />
+				<input name="targettype" type="hidden" value="$!targettype" />
+				
+				#set($viewfiles = $context.getRequestParameter("viewfiles"))
+				#if($viewfiles)
+					<input name="viewfiles" type="hidden" value="true" />
+					#set($uploadmedia = $context.getRequestParameter("uploadmedia"))
+					<input name="uploadmedia" type="hidden" value="$!uploadmedia" />
+					#set($saveaction = $context.getRequestParameter("saveaction"))
+					<input name="saveaction" type="hidden" value="$!saveaction" />
+					#set($copyinghitssessionid = $context.getRequestParameter("copyinghitssessionid"))
+					<input name="copyinghitssessionid" type="hidden" value="$!copyinghitssessionid" />
+					#set($copyingsearchtype = $context.getRequestParameter("copyingsearchtype"))
+					<input name="copyingsearchtype" type="hidden" value="$!copyingsearchtype" />
+					
+					#set($pickedassetid = $context.getRequestParameter("pickedassetid"))
+					<input name="pickedassetid" type="hidden" value="$!pickedassetid" />
+				#end
+				<input name="id" type="hidden" value="$!id" />
+				<input name="searchtype" type="hidden" value="$!searchtype" />
+				<input name="moduleid" type="hidden" value="$!moduleid" />
+				<input name="viewid" type="hidden" value="$!viewid" />
+				<input name="view" type="hidden" value="$!view" />
+				
+				#set ($fieldexternalid = $context.getRequestParameter("fieldexternalid"))
+			#set ($fieldexternalvalue = $context.getRequestParameter("fieldexternalvalue"))
+			#if($fieldexternalid)
+				<input name="field" type="hidden" value="$!fieldexternalid" />
+				<input name="${fieldexternalid}.value" type="hidden" value="$!fieldexternalvalue" />
+			#end
 		
-		##1 or 2 colums feature
-		#set($detailviewercolumns = 1)
-	
-		$pages.include("/$applicationid/components/xml/detaileditor-entities.html?longform=true&detailviewercolumns=$detailviewercolumns", $context)
-	
-	
-    
-    <div class="btns">
-	    
-		<a class="btn btn-sm btn-dark submitform mr-4">[[Save]]<i class="ml-1 bi bi-caret-right-fill"></i></a>
+			#ifnull($showmedia)
+				#set($showmedia = $context.getRequestParameter("showmedia"))
+			#end
+			#ifnotnull($showmedia)
+				<input name="showmedia" type="hidden" value="$showmedia" />
+			#end
+				
+				$context.putPageValue("view", $view)
+				$context.putPageValue("viewid", $viewid)
+				
+			
+			##1 or 2 colums feature
+			#set($detailviewercolumns = 1)
 		
-		<button id="closebutton" type="button" class="btn btn-sm btn-dark mr-4" data-dismiss="modal">[[Cancel]]</button>
+			$pages.include("/$applicationid/components/xml/detaileditor-entities.html?longform=true&detailviewercolumns=$detailviewercolumns", $context)
 		
-	    <div class="clearfix"></div>
-    </div>
-    
-    </form>
+		
+			
+			<div class="btns">
+				
+			<a class="btn btn-sm btn-dark submitform mr-4">[[Save]]<i class="ml-1 bi bi-caret-right-fill"></i></a>
+			
+			<button id="closebutton" type="button" class="btn btn-sm btn-dark mr-4" data-dismiss="modal">[[Cancel]]</button>
+			
+				<div class="clearfix"></div>
+			</div>
+	</form>
 
 
