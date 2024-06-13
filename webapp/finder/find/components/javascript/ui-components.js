@@ -1751,6 +1751,13 @@ uiload = function () {
     moretags.show();
     $(this).hide();
 });  
+
+
+  lQuery("#filterautorefresh").livequery("change", function () {
+	toggleUserProperty("filterautorefresh", function () {
+		
+	});
+  });
   
 
   lQuery(".expandmediabox").livequery("click", function (e) {

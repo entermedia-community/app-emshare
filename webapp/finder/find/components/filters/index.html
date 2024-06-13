@@ -26,10 +26,28 @@
 #end
 
 <div id="moduleadvfilterpanel" class="advfilterpanel" >
-	
-
-##$pages.include("$componenthome/filters/filters-inline.html", $context)
-
+#set( $filterautorefresh = $userprofile.get("filterautorefresh"))
+#if($filterautorefresh != "false")
+	##defaults to true
+	#set($$filterautorefresh = "true")
+#end
+<div class="d-flex flex-column py-1 pl-2 mb-1 bg-light align-items-right">
+	<div class="d-flex align-items-center">
+		<div class="custom-control custom-switch">
+			
+		<input 
+			type="checkbox" 
+			class="custom-control-input false-switch"
+			id="filterautorefresh" 
+			name="filterautorefresh"
+			value="true" 
+			#if($filterautorefresh=="true")checked#end
+		><label class="custom-control-label" for="filterautorefresh"></label>
+		</div>
+		<label class="mb-0 pr-2 text-brand" for="filterautorefresh">[[Auto Refresh]]</label>
+		##<label class="mb-0">[[May Include]]</label>
+	</div>
+</div>
 
 
 <div class="advfilterpanelcontent" >
@@ -84,6 +102,10 @@
 	>
 	<input type="hidden" name="targetdivsearch" value="$targetdivsearch" />
 	<input type="hidden" name="searching" value="true" />
+	
+	
+	
+
 	
 	
 	#if($dialogresults)
