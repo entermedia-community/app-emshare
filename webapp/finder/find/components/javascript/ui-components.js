@@ -1743,6 +1743,15 @@ uiload = function () {
       $(this).html($(this).data("seemore"));
     }
   });
+  
+  lQuery(".filtersshowmoretags").livequery("click", function (e) {
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    var moretags = $(this).next(".moreoptions");
+    moretags.show();
+    $(this).hide();
+});  
+  
 
   lQuery(".expandmediabox").livequery("click", function (e) {
     expandmediabox($(this));
