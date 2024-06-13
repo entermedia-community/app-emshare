@@ -1754,7 +1754,7 @@ uiload = function () {
 
 
   lQuery("#filterautorefresh").livequery("change", function () {
-	toggleUserProperty("filterautorefresh", function () {
+	toggleUserProperty("filtershowall", function () {
 		
 	});
   });
