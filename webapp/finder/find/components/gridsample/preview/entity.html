@@ -162,7 +162,7 @@ $context.putPageValue("topmoduleid", $moduleid)
 						
 						
 						<a href="$applink/views/modules/${moduleid}/components/gridsample/preview/tabexport.html?entityid=$!entity.getId()" 
-						class="entitytabactions"
+						class="entitytabactions btn-accent"
 						data-tabaction="export"
 						data-viewid="export"
 						data-tabtype="tabexport" 
@@ -209,14 +209,19 @@ $context.putPageValue("topmoduleid", $moduleid)
 					#end
 					
 					<a href="$applink/views/modules/$moduleid/publishing/enablepublishing.html"
-						class=' btn btn-sm btn-accent entitytabactions tabactionpublishing #if($entitytabopen=="publishing" || $entity.getValue("enablepublishing"))enabledaction #end #if($enabledpublishing) statusenabled #end'
+						class='btn btn-sm btn-brand entitytabactions tabactionpublishing #if($entitytabopen=="publishing")enabledaction #end #if($enabledpublishing) statusenabled #end'
 						data-tabaction="publishing"
 						data-updateurl="false"
 						data-closedialog="true"
 						data-entityid="$!entityid"
 						data-moduleid="$moduleid"
 						title="#text($module) [[Web Gallery]]">
-						<i class="bi bi-columns-gap ns"></i> [[Web Gallery]]
+						#if($enabledpublishing)
+						<i class="bi bi-check-circle-fill ns"></i>
+						#else
+						<i class="bi bi-columns-gap ns"></i>
+						#end
+						[[Web Gallery]]
 					</a>
 						
 				#end
@@ -232,7 +237,7 @@ $context.putPageValue("topmoduleid", $moduleid)
 					#set( $next = $!entityhits.next($index))
 						<div class="d-flex align-items-center entity-navigator">
 							#if($previous)
-							<a class="text-white btn btn-sm btn-accent mr-1 emdialog" 
+							<a class="text-white btn btn-sm btn-brand mr-1 emdialog" 
 								href="$componenthome/gridsample/preview/entity.html?id=$previous.getId()"
 								data-hitssessionid="$entityhits.getSessionId()"
 								title="#text($previous)">
@@ -240,7 +245,7 @@ $context.putPageValue("topmoduleid", $moduleid)
 							</a>
 							#end
 							#if($next)
-							<a class="text-white btn btn-sm btn-accent ml-1 emdialog"  
+							<a class="text-white btn btn-sm btn-brand ml-1 emdialog"  
 								href="$componenthome/gridsample/preview/entity.html?id=$next.getId()"
 								data-hitssessionid="$entityhits.getSessionId()" 
 								title="#text($next)">
