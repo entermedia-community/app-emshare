@@ -208,27 +208,28 @@
 		#if( !$resultview )
 		<input type="hidden" name="resultstype" value="table" />
 		#end
-		
-		#set( $keeppreviousfilter = $userprofile.getBoolean("keeppreviousfilter"))
+		#set( $usefirstfilters = $userprofile.getBoolean("usefirstfilters"))
+		#if( $hits.hasFiltersChanged() || $usefirstfilters )
   	   <div class="d-flex flex-column py-1 pl-2 mb-1 bg-light align-items-right"  id="filter-showall-group">
 			##<span class="text-brand">Filter Behavior</span>
 			<div class="d-flex align-items-center">
-				<label  class="mb-0 pr-2 #if($keeppreviousfilter)filter-exclusive #else filter-inclusive #end" for="filterautorefresh">[[Active Filters Only]]</label>
+				<label  class="mb-0 pr-2 #if($usefirstfilters)filter-exclusive #else filter-inclusive #end" for="filterautorefresh">[[Active Filters Only]]</label>
 				<div class="custom-control custom-switch  boolean-switcher">
-				<input 	type="hidden"	name="keeppreviousfilter"	value="$keeppreviousfilter" />
+				<input 	type="hidden"	name="usefirstfilters"	value="$usefirstfilters" />
 				<input 	type="checkbox"
 					id="filterautorefresh" 
-				name="keeppreviousfiltervalue"
+				name="usefirstfiltersvalue"
 				class="custom-control-input "
 				value="true"
-				#if( $keeppreviousfilter) checked #end 
+				#if( $usefirstfilters) checked #end 
 				>
 				<label class="custom-control-label" for="filterautorefresh"></label>
 				</div>
-				<label class="mb-0 #if($keeppreviousfilter)filter-inclusive #else filter-exclusive  #end" for="filterautorefresh">[[Show All]]</label>
+				<label class="mb-0 #if($usefirstfilters)filter-inclusive #else filter-exclusive  #end" for="filterautorefresh">[[Show All]]</label>
 			</div>
 			##<small class="small text-muted hint">Shows results that match <b><u>ALL</u></b> selected filters.</small>
 		</div>
+		#end
 </form>
 
 </div>
