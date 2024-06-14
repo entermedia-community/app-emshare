@@ -22,6 +22,7 @@ $context.putPageValue("parentsearchtype", $parentsearchtype)
 #end
 #set($tabid = "tab_$viewid")
 
+#set ( $tabsection = $context.getRequestParameter("tabsection") )
 
 #set($defaultcategory = $mediaarchive.getBean("entityManager").createDefaultFolder($entity, $context.getUser()))
 $context.putPageValue("defaultcategory", $defaultcategory)
@@ -41,7 +42,7 @@ $context.putPageValue("tabmode", $tabmode)
 >
 	<div id="$!submodulepickerid" class="d-flex align-items-stretch pr-2 pb-2" style="height: 100%;">
 		<div class="entityimport auto-active-container">
-			<div class="auto-active-row">
+			<div class='auto-active-row  #if($tabsection=="upload") current #end'>
 			<a href="$apphome/views/modules/asset/add/tabentityaddmedia.html?categoryid=$!defaultcategory.getId()"
 				class="btn btn-lg btn-wide ajax auto-active-link "
 				data-targetdivinner="tabimportcontent"
