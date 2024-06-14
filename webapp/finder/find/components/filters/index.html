@@ -26,29 +26,6 @@
 #end
 
 <div id="moduleadvfilterpanel" class="advfilterpanel" >
-#set( $filterautorefresh = $userprofile.get("filterautorefresh"))
-#if($filterautorefresh != "false")
-	##defaults to true
-	#set($$filterautorefresh = "true")
-#end
-<div class="d-flex flex-column py-1 pl-2 mb-1 bg-light align-items-right">
-	<div class="d-flex align-items-center">
-		<div class="custom-control custom-switch">
-			
-		<input 
-			type="checkbox" 
-			class="custom-control-input false-switch"
-			id="filterautorefresh" 
-			name="filterautorefresh"
-			value="true" 
-			#if($filterautorefresh=="true")checked#end
-		><label class="custom-control-label" for="filterautorefresh"></label>
-		</div>
-		<label class="mb-0 pr-2 text-brand" for="filterautorefresh">[[Auto Refresh]]</label>
-		##<label class="mb-0">[[May Include]]</label>
-	</div>
-</div>
-
 
 <div class="advfilterpanelcontent" >
 	#set( $view = "$moduleid/$!{moduleid}advancedfilter")
@@ -232,8 +209,28 @@
 		<input type="hidden" name="resultstype" value="table" />
 		#end
 		
-		</form>
-		
+		#set( $keeppreviousfilter = $userprofile.getBoolean("keeppreviousfilter"))
+  	   <div class="d-flex flex-column py-1 pl-2 mb-1 bg-light align-items-right"  id="filter-showall-group">
+			##<span class="text-brand">Filter Behavior</span>
+			<div class="d-flex align-items-center">
+				<label  class="mb-0 pr-2 #if($keeppreviousfilter)filter-exclusive #else filter-inclusive #end" for="filterautorefresh">[[Active Filters Only]]</label>
+				<div class="custom-control custom-switch  boolean-switcher">
+				<input 	type="hidden"	name="keeppreviousfilter"	value="$keeppreviousfilter" />
+				<input 	type="checkbox"
+					id="filterautorefresh" 
+				name="keeppreviousfiltervalue"
+				class="custom-control-input "
+				value="true"
+				#if( $keeppreviousfilter) checked #end 
+				>
+				<label class="custom-control-label" for="filterautorefresh"></label>
+				</div>
+				<label class="mb-0 #if($keeppreviousfilter)filter-inclusive #else filter-exclusive  #end" for="filterautorefresh">[[Show All]]</label>
+			</div>
+			##<small class="small text-muted hint">Shows results that match <b><u>ALL</u></b> selected filters.</small>
+		</div>
+</form>
+
+</div>
 	
-	</div>
 </div>
