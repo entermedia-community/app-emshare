@@ -1743,22 +1743,18 @@ uiload = function () {
       $(this).html($(this).data("seemore"));
     }
   });
-  
+
   lQuery(".filtersshowmoretags").livequery("click", function (e) {
     e.preventDefault();
     e.stopImmediatePropagation();
     var moretags = $(this).next(".moreoptions");
     moretags.show();
     $(this).hide();
-});  
-
+  });
 
   lQuery("#filterautorefresh").livequery("change", function () {
-	toggleUserProperty("filtershowall", function () {
-		
-	});
+    toggleUserProperty("filtershowall", function () {});
   });
-  
 
   lQuery(".expandmediabox").livequery("click", function (e) {
     expandmediabox($(this));
@@ -2908,24 +2904,24 @@ uiload = function () {
     }
   });
 
-  lQuery("#filter-showall-group").livequery(function () {
+  lQuery(".filter-showall-group").livequery(function () {
     var parent = $(this);
     var input = parent.find("#filter-showall");
-    var hint = parent.find("small.hint");
+    // var hint = parent.find("small.hint");
     function handleFilerShowAllChange(e) {
       var checked = input.is(":checked");
       if (!checked) {
         parent.addClass("inclusive");
         parent.removeClass("exclusive");
-        hint.html(
-          "Shows results that match <b><u>ANY</u></b> selected filter."
-        );
+        //     hint.html(
+        //       "Shows results that match <b><u>ANY</u></b> selected filter."
+        //     );
       } else {
         parent.removeClass("inclusive");
         parent.addClass("exclusive");
-        hint.html(
-          "Shows results that match <b><u>ALL</u></b> selected filters."
-        );
+        //     hint.html(
+        //       "Shows results that match <b><u>ALL</u></b> selected filters."
+        //     );
       }
     }
     handleFilerShowAllChange();
