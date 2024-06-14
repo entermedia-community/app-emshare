@@ -43,42 +43,57 @@ $context.putPageValue("tabmode", $tabmode)
 	data-url="$componenthome/gridsample/preview/tabexport.html"
 >
 	<div id="$!submodulepickerid" class="d-flex align-items-stretch pr-2 pb-2" style="height: 100%;">
-		<div class="entityimport">
-			<a class="ajax btn btn-lg btn-wide"
+		<div class="entityimport auto-active-container">
+			<div class="auto-active-row">
+			<a class='ajax btn btn-lg btn-wide  auto-active-link #if($tabsection=="copy") activetabsection #end'
 				data-targetdivinner="tabexportcontent"
 				data-oemaxlevel="1"
 				data-targetcategoryid="$!defaultcategory.id"
+				data-tabsection="copy"
 				href="$componenthome/entities/copydialog.html?entityid=$!{entityid}&moduleid=$!{topmoduleid}&defaultcategoryid=$defaultcategory.getId()">
 				<i class="bi bi-folder-plus"></i> &nbsp;[[Copy]]</a>
-			<a class="ajax btn btn-lg btn-wide"
+			</div>
+			
+			<div class="auto-active-row">
+			<a class='ajax btn btn-lg btn-wide auto-active-link #if($tabsection=="move") activetabsection #end'
 				data-targetdivinner="tabexportcontent"
 				data-oemaxlevel="1"
+				data-tabsection="move"
 				data-targetcategoryid="$!defaultcategory.id"
 				href="$componenthome/entities/movedialog.html?entityid=$!{entityid}&moduleid=$!{topmoduleid}&defaultcategoryid=$defaultcategoryid">
 				<i class="bi bi-folder-plus"></i> &nbsp;[[Move]]</a>
+			</div>
 			
 			#if($desktop)
-			<h4 class="text-center">[[Sync Files Locally]]</h4>
-			<a  class="btn btn-lg btn-wide refresh-sync"
-				data-targetdivinner="tabexportcontent"
-				data-oemaxlevel="1"
-				href="$apphome/components/desktop/export/pull.html">
-				<i class="bi bi-folder-symlink"></i> [[Pull to Local Drive]]
-			</a>
+				<h4 class="text-center">[[Sync Files Locally]]</h4>
+				<div class="auto-active-row">
+				<a  class='btn btn-lg btn-wide refresh-sync auto-active-link #if($tabsection=="pulllocal") activetabsection #end'
+					data-targetdivinner="tabexportcontent"
+					data-oemaxlevel="1"
+					data-tabsection="pulllocal"
+					href="$apphome/components/desktop/export/pull.html">
+					<i class="bi bi-folder-symlink"></i> [[Pull to Local Drive]]
+				</a>
+				</div>
 			#else
 				<h4 class="text-center"></h4>			
 			#end
-			<a class="ajax btn btn-lg btn-wide "
+				<div class="auto-active-row">
+				<a class='ajax btn btn-lg btn-wide auto-active-link #if($tabsection=="download") activetabsection #end'
 				data-targetdivinner="tabexportcontent"
 				data-oemaxlevel="1"
+				data-tabsection="dwonload"
 				title="[[Download All Files]]"
 				href="$componenthome/entities/download.html?entityid=$!{entityid}&moduleid=$!{topmoduleid}&defaultcategoryid=$defaultcategory.getId()">
 				<i class="bi bi-folder"></i> &nbsp;[[Download]]</a>
-			<a href="$componenthome/share/entity.html?entityid=$!{entityid}&moduleid=$!{topmoduleid}&defaultcategoryid=$!defaultcategory.getId()"
-				class="btn btn-lg btn-wide ajax"
+				</div>
+				
+				<div class="auto-active-row #if($tabsection=="share") current #end">
+				<a href="$componenthome/share/entity.html?entityid=$!{entityid}&moduleid=$!{topmoduleid}&defaultcategoryid=$!defaultcategory.getId()"
+				class='btn btn-lg btn-wide ajax auto-active-link'
 				data-targetdivinner="tabexportcontent"
 				data-oemaxlevel="1"><i class="bi bi-share-fill"></i> [[Share]]</a>
-
+				</div>
 		</div>
 		
 		
