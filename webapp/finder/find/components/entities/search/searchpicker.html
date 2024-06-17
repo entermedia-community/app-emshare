@@ -17,7 +17,20 @@
 	#set($fieldexternalid = $context.getRequestParameter("fieldexternalid"))
 	#set($fieldexternalvalue = $context.getRequestParameter("fieldexternalvalue"))	
 	
-#*
+
+	#if(!$viewid)
+		#set( $viewid = "$!{searchtype}advancedfilter") 
+	#end
+	#if( !$viewpath )
+		#set( $viewpath = $context.getRequestParameter("viewpath"))
+	#end
+	#if( !$viewpath )
+		#set( $viewpath = $context.getRequestParameter("view"))
+	#end
+	#if( !$viewpath )
+		#set( $viewpath = "$!{searchtype}/$!{viewid}")
+	#end
+
 	#if( $copyinghits || $pickedassetid)
 	<div class="alert alert-info">
 		
@@ -28,31 +41,34 @@
 		#end	
 	</div>
 	#end
-*#
-	
-     
-	<form  id="colsearchform" 
-		class="ajaxform autosubmit"  
-		data-targetdivinner="entitypickerresults" 
-		action="$home$apphome/views/modules/$!{moduleid}/components/entities/search/results.html">
 
-		<input type="hidden" name="sortby" value="name" />
-		<input type="hidden" name="pickedassetid" value="$!pickedassetid" />
-		#if( $fieldexternalid && $fieldexternalvalue )	
-		<input type="hidden" name="field" value="$!fieldexternalid" />
-		<input type="hidden" name="$!{fieldexternalid}.value" value="$!fieldexternalvalue" />
-		<input type="hidden" name="operation" value="not" />
-		#end
-		$context.putPageValue("autocomplete","off")
-		<input type="hidden" name="operation" value="contains" />
-		<input type="hidden" name="field" value="description" />
-		<div class="d-flex align-items-center mb-2">
-			<div class="d-flex align-items-center mb-2" style="flex: 1;">
-				<input type="text" name="description.value" class="form-control px-2 py-1 flex-grow-1 mr-2" placeholder="[[Search for ]] #text($module) [[by Name]]" autocomplete="off" />
-				<input type="text" name="tags.value" class="form-control px-2 py-1 flex-grow-1 mr-2" placeholder="[[Search by Tags]]" autocomplete="off" />
+
+
+	#set ($details = $searcher.getDetailsForView($viewpath, $userprofile))
+		<form  id="colsearchform" 
+				class="autosubmit ajaxform"
+				style="margin-bottom:10px;"
+			 	data-targetdivinner="entitypickerresults" 
+				action="$home$apphome/views/modules/$!{moduleid}/components/entities/search/results.html">
+				<input type="hidden" name="sortby" value="name" />
+				<input type="hidden" name="pickedassetid" value="$!pickedassetid" />
+				#if( $fieldexternalid && $fieldexternalvalue )	
+				<input type="hidden" name="field" value="$!fieldexternalid" />
+				<input type="hidden" name="$!{fieldexternalid}.value" value="$!fieldexternalvalue" />
+				<input type="hidden" name="operation" value="not" />
+				#end
+				$context.putPageValue("autocomplete","off")
+			<div class="row inlinesearch">
+			#foreach( $detail in $details)
+				<div class="col">
+					$context.putPageValue("detail", $detail)
+					$pages.include("/${applicationid}/components/advancedsearch/detaileditinline.html", $context)
+				</div>
+			#end
 			</div>
-		</div>
-	</form>
+		</form>
+	
+
 
 	#set($pickertarget = $context.getRequestParameter("pickertarget"))
 	<div class="overflow-y">
@@ -120,7 +136,7 @@
 		#end		
 		</div>
 	</div>
-				#set($pickersearchaddnew = $context.getRequestParameter("pickersearchaddnew"))
+			#set($pickersearchaddnew = $context.getRequestParameter("pickersearchaddnew"))
 			#if($pickersearchaddnew)
 				#set($addnew = "$apphome/views/modules/${moduleid}/components/entities/addnew.html")
 				#set($pickertarget = $context.getRequestParameter("pickertarget"))
