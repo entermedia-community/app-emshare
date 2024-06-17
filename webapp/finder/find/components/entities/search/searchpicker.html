@@ -51,38 +51,6 @@
 				<input type="text" name="description.value" class="form-control px-2 py-1 flex-grow-1 mr-2" placeholder="[[Search for ]] #text($module) [[by Name]]" autocomplete="off" />
 				<input type="text" name="tags.value" class="form-control px-2 py-1 flex-grow-1 mr-2" placeholder="[[Search by Tags]]" autocomplete="off" />
 			</div>
-			#set($pickersearchaddnew = $context.getRequestParameter("pickersearchaddnew"))
-			#if($pickersearchaddnew)
-				#set($addnew = "$apphome/views/modules/${moduleid}/components/entities/addnew.html")
-				#set($pickertarget = $context.getRequestParameter("pickertarget"))
-				#set($targettype = $context.getRequestParameter("targettype"))
-				<a class="btn btn-lg btn-accent rounded mb-2 ajax" style="min-width: 150px;"
-				data-targetdivinner="pickersearchentities"
-				data-pickertarget="$!pickertarget"
-				data-targettype="$!targettype"
-	
-				data-fieldexternalid="$!fieldexternalid"
-				data-fieldexternalvalue="$!fieldexternalvalue"
-				data-oemaxlevel="1"
-				href="$addnew">
-				<i class="bi bi-plus-lg mr-1"></i> [[New]] #text($module)</a>
-			#else
-				#set($addnew = "$apphome/views/modules/${moduleid}/components/gridsample/preview/entity.html")
-				
-				#if($pickedassetid)
-					#set($addnew = "${addnew}?edit=true&addnew=true&viewfiles=true&saveaction=addassets&pickedassetid=$!pickedassetid&copyingsearchtype=asset")
-				#elseif($copyingcategoryid)
-					#set($addnew = "${addnew}?edit=true&addnew=true&viewfiles=true&copyingsearchtype=$!copyingsearchtype&saveaction=additems&copyingcategoryid=$!copyingcategoryid&moduleid=$moduleid")
-				#elseif($copyinghits)
-					#set($addnew = "${addnew}?edit=true&addnew=true&viewfiles=true&copyingsearchtype=$!copyingsearchtype&saveaction=additems&copyinghitssessionid=$!copyinghitssessionid&moduleid=$moduleid")
-				#else
-					#set($addnew = "${addnew}?edit=true&addnew=true&saveaction=upload")
-				#end
-				<a class="btn btn-lg btn-accent rounded mb-2 emdialog" style="min-width: 150px;"
-				data-dialogid="addnewentity"
-				href="$addnew">
-				<i class="bi bi-plus-lg mr-1"></i> [[New]] #text($module)</a>
-			#end 
 		</div>
 	</form>
 
@@ -152,5 +120,38 @@
 		#end		
 		</div>
 	</div>
+				#set($pickersearchaddnew = $context.getRequestParameter("pickersearchaddnew"))
+			#if($pickersearchaddnew)
+				#set($addnew = "$apphome/views/modules/${moduleid}/components/entities/addnew.html")
+				#set($pickertarget = $context.getRequestParameter("pickertarget"))
+				#set($targettype = $context.getRequestParameter("targettype"))
+				<a class="btn btn-lg btn-accent rounded mb-2 ajax" style="min-width: 150px;"
+				data-targetdivinner="pickersearchentities"
+				data-pickertarget="$!pickertarget"
+				data-targettype="$!targettype"
+	
+				data-fieldexternalid="$!fieldexternalid"
+				data-fieldexternalvalue="$!fieldexternalvalue"
+				data-oemaxlevel="1"
+				href="$addnew">
+				<i class="bi bi-plus-lg mr-1"></i> [[Create New]]</a>
+			#else
+				#set($addnew = "$apphome/views/modules/${moduleid}/components/gridsample/preview/entity.html")
+				
+				#if($pickedassetid)
+					#set($addnew = "${addnew}?edit=true&addnew=true&viewfiles=true&saveaction=addassets&pickedassetid=$!pickedassetid&copyingsearchtype=asset")
+				#elseif($copyingcategoryid)
+					#set($addnew = "${addnew}?edit=true&addnew=true&viewfiles=true&copyingsearchtype=$!copyingsearchtype&saveaction=additems&copyingcategoryid=$!copyingcategoryid&moduleid=$moduleid")
+				#elseif($copyinghits)
+					#set($addnew = "${addnew}?edit=true&addnew=true&viewfiles=true&copyingsearchtype=$!copyingsearchtype&saveaction=additems&copyinghitssessionid=$!copyinghitssessionid&moduleid=$moduleid")
+				#else
+					#set($addnew = "${addnew}?edit=true&addnew=true&saveaction=upload")
+				#end
+				<a class="btn btn-lg btn-accent rounded mb-2 emdialog" style="min-width: 150px;"
+				data-dialogid="addnewentity"
+				href="$addnew">
+				<i class="bi bi-plus-lg mr-1"></i> [[Create New]]</a>
+			#end 
+	
 
 </div>
