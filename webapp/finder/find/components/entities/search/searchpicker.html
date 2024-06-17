@@ -71,6 +71,9 @@
 
 
 	#set($pickertarget = $context.getRequestParameter("pickertarget"))
+	#set($targettype = $context.getRequestParameter("targettype"))
+			
+	 
 	<div class="overflow-y">
 		<div id="entitypickerresults"
 			class="pickerresults"
@@ -108,6 +111,7 @@
 			#elseif($pickertarget)
 				data-pickertarget="$!pickertarget"
 				data-targettype="$!targettype"
+				
 				#if($targettype == "entitypickersubmodule")
 					data-clickurl="$applink/views/modules/${moduleid}/components/entities/savesubmodule.html"
 					data-clicktargetdiv="entitydialog"
@@ -137,10 +141,10 @@
 		</div>
 	</div>
 			#set($pickersearchaddnew = $context.getRequestParameter("pickersearchaddnew"))
+			
 			#if($pickersearchaddnew)
 				#set($addnew = "$apphome/views/modules/${moduleid}/components/entities/addnew.html")
-				#set($pickertarget = $context.getRequestParameter("pickertarget"))
-				#set($targettype = $context.getRequestParameter("targettype"))
+				
 				<a class="btn btn-lg btn-accent rounded mb-2 ajax" style="min-width: 150px;"
 				data-targetdivinner="pickersearchentities"
 				data-pickertarget="$!pickertarget"
