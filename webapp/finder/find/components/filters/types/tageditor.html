@@ -12,15 +12,13 @@
 		<div class="options">
 		#foreach($entry in $values)
 				<div class="d-flex align-items-start">
-					##<a class="addfilter #if ($first) filter-current #end" data-filtertype="$filternode.getId()" data-filtervalue="$entry.getId()" data-filterlabel="$entry.getText($context)" href="#" title="($entry.count)">
-					##<i class="fas  #if ($first) fa-check-square #else fa-square #end"></i>
 					<input style="margin-top:4px" class="filtercheck filtercheck${fieldname}" data-fieldname="${fieldname}" type="checkbox" name="${fieldname}.value" id="$entry.getId()${fieldname}_val" value="$entry.getId()" #if( $hits.getSearchQuery().hasTermValue($filternode.id,$entry.getId()) ) checked #end />
 					<label for="$entry.getId()${fieldname}_val" class="ml-1">$entry.getText($context) ($entry.count)</label>
-					##</a>
 				</div>	
 			#if($foreach.count==5)
 				</div>
-				#if ($values.size() > 5) 
+				
+				#if ($values.size() >= 5) 
 					<a href="#" class="pt-2 filtersshowmoretags">[[Show More]]</a> 
 				#end
 				<div class="options moreoptions pb-2 mb-2" style="display:none;">
