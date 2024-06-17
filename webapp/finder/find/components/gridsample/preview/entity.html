@@ -106,6 +106,10 @@ $context.putPageValue("topmoduleid", $moduleid)
 	data-categorypath="$!defaultfolder.getCategoryPath()"
 	data-oemaxlevel="1"
 	data-url="$componenthome/gridsample/preview/entity.html"
+	#if($entityhits && $entityhits.size() > 1)
+		$context.putPageValue("hitssessionid", $entityhits.getSessionId())
+		data-hitssessionid="$entityhits.getSessionId()" 
+	#end
 	#if($entity)
 		data-setpagetitle="#text($entity)"
 	#else
@@ -181,7 +185,7 @@ $context.putPageValue("topmoduleid", $moduleid)
 			
 			<div class="d-flex entity-actions-bar align-items-center text-white">
 				#if(!$ismulti && $entity)
-				<a href="$applink/views/modules/${moduleid}/components/gridsample/preview/tabimport.html"
+				<a href="#"
 						class='btn btn-sm btn-accent entitytabactions tabactionimport #if($entitytabopen=="import")enabledaction #end '
 						data-tabaction="import"
 						data-viewid="import"
@@ -190,9 +194,10 @@ $context.putPageValue("topmoduleid", $moduleid)
 						data-topmoduleid="$!moduleid"
 						data-moduleid="$!moduleid"
 						data-tabsection="upload"
+						data-hitssessionid="$entityhits.getSessionId()"
 						title="[[Import]] #text($module) "><i class="bi bi-box-arrow-in-right mr-1"></i> [[Import]]</a>
 						
-				<a href="$applink/views/modules/${moduleid}/components/gridsample/preview/tabexport.html"
+				<a href="#"
 						class='btn btn-sm btn-accent entitytabactions tabactionexport #if($entitytabopen=="export")enabledaction #end '
 						data-tabaction="export"
 						data-viewid="export"
