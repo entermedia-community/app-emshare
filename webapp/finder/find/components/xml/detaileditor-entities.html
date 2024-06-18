@@ -34,7 +34,7 @@
  #foreach( $detail in $details )
  	#set($detailid = $detail.getId())
 	#set( $val = false )
-
+	#set( $value = false )
 	
 	#if($editrow)
 		#set( $target = "${detailid}.value" )
@@ -76,11 +76,11 @@
 			#end
 		#end
 		
-		#if( $editrow || $val  || !$detail.isEditable() || $detail.dataType == "searchjoin" )
+		#if( $editrow || $val || $value || !$detail.isEditable() || $detail.dataType == "searchjoin" )
 			
 			#if( $detail.hidelabel == true )
 			#else
-				<label class="emdatafield emdatafield-$!{detail.viewType}" >
+				<label class="emdatafield emdatafield-$!{detail.viewType} #ifnull($value) emdatafield-empty #end" >
 						$!detail.getText($context)
 				</label>
 			#end

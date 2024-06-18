@@ -36,21 +36,24 @@
 		    </li>	
 	</ul>
 	
-	#set($pickmoduleid = $detail.getListId())
-	
-	#set($pickerurl= "$applink/views/modules/$!{pickmoduleid}/components/entities/search/searchpicker.html")
-	<a href="$pickerurl" 
-		class="emdialog btn btn-sm btn-primary"
-		data-dialogid="entitypicker"
-		data-width="1200"
-		data-foreignkeyid = '$!{detail.get("foreignkeyid")}'
-		data-foreignkeyvalue = '$!{detail.get("foreignkeyvalue")}'
-		data-entitymodule="${entity_module}"
-		data-pickertarget="entitypicker${detail.id}"
-		data-targettype="entitypickerfield"
-		data-pickersearchaddnew="true"
-		data-hidefooter="true">[[Add]]</a>
+	#if( $caneditlists)
+		#set($pickmoduleid = $detail.getListId())
 		
+		#set($pickerurl= "$applink/views/modules/$!{pickmoduleid}/components/entities/search/searchpicker.html")
+		#set($module = $mediaarchive.getCachedData("module", $pickmoduleid ))
+		<a href="$pickerurl" 
+			class="emdialog btn btn-sm btn-primary"
+			data-dialogid="entitypicker"
+			data-width="1200"
+			data-foreignkeyid = '$!{detail.get("foreignkeyid")}'
+			data-foreignkeyvalue = '$!{detail.get("foreignkeyvalue")}'
+			data-entitymodule="${entity_module}"
+			data-pickertarget="entitypicker${detail.id}"
+			data-targettype="entitypickerfield"
+			data-pickersearchaddnew="true"
+			data-hidefooter="true"
+			title="[[Add]] #text($module)">[[Add]] #text($module)</a>
+	#end
 	
 	
 	

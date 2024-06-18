@@ -6,6 +6,7 @@
 	#end
 	
 	#set($copyinghitssessionid = $context.getRequestParameter("copyinghitssessionid"))
+	
 	#set($copyinghits = $context.getSessionValue($copyinghitssessionid))
 
 	#set($copyingsearchtype = $context.getRequestParameter("copyingsearchtype"))
@@ -15,8 +16,8 @@
 	#set($copyingcategoryid = $context.getRequestParameter("copyingcategoryid"))
 	
 	#set($fieldexternalid = $context.getRequestParameter("fieldexternalid"))
-	#set($fieldexternalvalue = $context.getRequestParameter("fieldexternalvalue"))	
 	
+	#set($fieldexternalvalue = $context.getRequestParameter("fieldexternalvalue"))	
 
 	#if(!$viewid)
 		#set( $viewid = "$!{searchtype}advancedfilter") 
@@ -43,8 +44,9 @@
 	#end
 
 
-
-	#set ($details = $searcher.getDetailsForView($viewpath, $userprofile))
+	#if(!$tablehits.isEmpty())
+		#set ($details = $searcher.getDetailsForView($viewpath, $userprofile))
+		
 		<form  id="colsearchform" 
 				class="autosubmit ajaxform"
 				style="margin-bottom:10px;"
@@ -58,16 +60,24 @@
 				<input type="hidden" name="operation" value="not" />
 				#end
 				$context.putPageValue("autocomplete","off")
+				
 			<div class="row inlinesearch">
-			#foreach( $detail in $details)
-				<div class="col">
-					$context.putPageValue("detail", $detail)
-					$pages.include("/${applicationid}/components/advancedsearch/detaileditinline.html", $context)
-				</div>
-			#end
+				
+				#foreach( $detail in $details)
+					<div class="col">
+						$context.putPageValue("detail", $detail)
+						$pages.include("/${applicationid}/components/advancedsearch/detaileditinline.html", $context)
+					</div>
+					
+					
+					#if($mathutil.getModulus($foreach.count,3) == 0)
+						</div>
+						<div class="row inlinesearch">
+					#end
+				#end
 			</div>
 		</form>
-	
+	#end
 
 
 	#set($pickertarget = $context.getRequestParameter("pickertarget"))
