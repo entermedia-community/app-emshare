@@ -10,32 +10,35 @@
 	#if( $viewpermission )
 		#set( $fieldname = $detail.getId() )
 		<div class="options">
+		
+		##TODO Show selected first
+		
 		#foreach($entry in $values)
+			#if($foreach.count < 11)
 				<div class="d-flex align-items-start">
 					<input style="margin-top:4px" class="filtercheck filtercheck${fieldname}" data-fieldname="${fieldname}" type="checkbox" name="${fieldname}.value" id="$entry.getId()${fieldname}_val" value="$entry.getId()" #if( $hits.getSearchQuery().hasTermValue($filternode.id,$entry.getId()) ) checked #end />
 					<label for="$entry.getId()${fieldname}_val" class="ml-1">$entry.getText($context) ($entry.count)</label>
 				</div>	
-			#if($foreach.count==5)
-				</div>
-				
-				#if ($values.size() >= 5) 
-					<a href="#" class="pt-2 filtersshowmoretags">[[Show More]]</a> 
-				#end
-				<div class="options moreoptions pb-2 mb-2" style="display:none;">
 			#end	
-		#end	
-			#if ($values.size() > 10)
-			<select id="${searchfield}select2" 
-					name="${searchfield}.values"  ##This is set to values so it does not add an extra value
-					class="listtags choose-select detail-select form-control  mb-4" 
-					listid="${searchfield}filter" 
-					data-listid="${searchfield}filter" 
-					data-searchtype= '$hits.getSearchType()'
-					data-searchfield="${searchfield}"
-					>
-				<option value=""></option>
-			</select>
+				#if ($foreach.count == 11)
+				<select id="${searchfield}select2" 
+						name="${searchfield}.values"  ##This is set to values so it does not add an extra value
+						class="listtags choose-select detail-select form-control  mb-4" 
+						listid="${searchfield}filter" 
+						data-listid="${searchfield}filter" 
+						data-searchtype= '$hits.getSearchType()'
+						data-searchfield="${searchfield}"
+						>
+					<option value=""></option>
+				#end	
+				#if ($foreach.count >= 11)	
+					<option value="$entry.getId()">$entry.getText($context) ($entry.count)</option>
+				#end
 		#end
+		#if ($values.count >= 11)
+				</select>
+		#end
+		
 		</div>
 
 	#end  ##permission
