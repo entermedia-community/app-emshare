@@ -131,28 +131,33 @@ $context.putPageValue("topmoduleid", $moduleid)
 						#set($moduleicon = "grid")
 					#end
 					<i class="bi bi-${moduleicon} module-icon"></i> 
-					#text($module) <i class="bi bi-chevron-right mx-1" style="transform: scale(0.8);"></i> 
+					 
 					#if($moduleid == "faceprofilegroup")
+						#text($module) <i class="bi bi-chevron-right mx-1 bi-small"></i>
 						#if($entity.entitypeople)
-							#set($name = $searcherManager.getValue($searcher, $entity, "name"))
-							#set($name = "[[Profile]] $name")
+							#set($label = $searcherManager.getValue($searcher, $entity, "name"))
+							#set($label = "[[Profile]] $name")
 						#else
-							#set($name = "$entity.samplecount")
+							#set($label = "$entity.samplecount")
 						#end
-						#text($name)
 					#else
 						#if($ismulti)
-							[[Multi Edit]] $!entity.getSelectedResults().size() [[Items]]		
+							#text($name) [[Multi Edit]] $!entity.getSelectedResults().size() [[Items]]		
 						#else	
-							#if($entity.getName($context))
-								#set($name = $!entity.getName($context))
-							#else 
-								#if($addnew=='true')
-									#set($name = "[[Add New]]")	
-									$context.putPageValue("addnew", $addnew)
-								#end
+							#if($addnew=='true')
+								#text($module) <i class="bi bi-chevron-right mx-1 bi-small"></i>
+								#set($label = "[[Add New]]")
+								#text($label)	
+								$context.putPageValue("addnew", $addnew)
+							#elseif($module.getValue("customname"))
+								#set($label = $searcherManager.getValue($catalogid, $module.getValue("customname"), $entity, $context.getLocale())) 
+								#text($label)
+							#else
+								#text($module) <i class="bi bi-chevron-right mx-1 bi-small"></i>
+								#set($label = $!entity.getName($context))
+								#text($label) 							
 							#end
-							#text($name)	
+							
 						#end
 					#end
 				</h2>
