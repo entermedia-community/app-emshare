@@ -17,7 +17,7 @@
 
 
 #if($moduleid && $entityid)
-	#set( $existingcategories =  $mediaarchive.getBean("entityManager").loadCategories($module, $entity, $context.getUser() ) )
+	#set( $existingcategories =  $mediaarchive.getBean("entityManager").loadCategories($module, $entity, $context ) )
 #end
 #set($existingids = [])
 #foreach ($c in $existingcategories)
@@ -31,7 +31,7 @@
 <div id="entitycategoryresults#eid($entityid)" class="entity-media-box #if(!$existingcategories) ZZZcollapsedmediabox #end" style="margin-bottom:20px;">
 <div  class="entitycategoryresults uploadformarea" data-onupload="reloadentity" data-entityid="$entityid" >
 		
-	#set($uploadsourcepath =  $mediaarchive.getBean("entityManager").loadUploadSourcepath($module, $entity, $context.getUser()))
+	#set($uploadsourcepath =  $mediaarchive.getBean("entityManager").loadUploadSourcepath($module, $entity, $context))
 	#ifnull($uploadsourcepath)
 		#set($uploadsourcepath = "Albums/Users/$user.getScreenName()/Desktops")
 	#end	
