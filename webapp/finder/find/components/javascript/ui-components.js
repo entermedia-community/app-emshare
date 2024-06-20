@@ -2388,20 +2388,26 @@ uiload = function () {
     }
 
     if ($.fn.select2) {
+      var options = theinput.children("option");
+      var preloadedData = [];
+      options.each(function () {
+        var option = $(this);
+        if (option.val() != "" && option.text() != "") {
+          preloadedData.push({
+            id: option.val(),
+            name: option.text(),
+          });
+        }
+      });
       theinput.select2({
+        data: preloadedData,
         tags: true,
         placeholder: defaulttext,
         allowClear: allowClear,
         dropdownParent: dropdownParent,
         selectOnBlur: true,
         delay: 150,
-        minimumInputLength: 1,
         ajax: {
-          // instead of writing
-          // the function to
-          // execute the request
-          // we use Select2's
-          // convenient helper
           url: url,
           xhrFields: {
             withCredentials: true,
@@ -2411,32 +2417,25 @@ uiload = function () {
           data: function (params) {
             var search = {
               page_limit: 15,
-              page: params.page,
+              page: params.page || 1,
             };
             search["field"] = searchfield;
             search["operation"] = "contains";
             search["searchtype"] = searchtype;
-            search[searchfield + ".value"] = params.term; // search
-            // term
-            search["sortby"] = sortby; // search
-            // term
+            search[searchfield + ".value"] = params.term || "";
+            search["sortby"] = sortby;
             return search;
           },
           processResults: function (data, params) {
-            // parse the
-            // results
-            // into the
-            // format
-            // expected
-            // by
-            // Select2.
             params.page = params.page || 1;
+            var results = data.rows;
+            if (results.length == 0) {
+              results = preloadedData;
+            }
             return {
-              results: data.rows,
+              results: results,
               pagination: {
                 more: false,
-                // (params.page * 30) <
-                // data.total_count
               },
             };
           },
@@ -2450,11 +2449,13 @@ uiload = function () {
         separator: "|",
       });
     }
+
     theinput.on("select2:select", function () {
       if ($(this).parents(".ignore").length == 0) {
         $(this).valid();
       }
     });
+
     theinput.on("select2:unselect", function () {
       if ($(this).parents(".ignore").length == 0) {
         $(this).valid();
