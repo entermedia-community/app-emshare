@@ -77,6 +77,7 @@ $context.putPageValue("entityrendertype", $entityrendertype)
 				#if(!$edit)
 				
 					#if($hits && $resultview == "table" && $hits.hasSelections())
+					
 						$pages.include("$searchhome/selectionactions.html", $context)
 					#end
 				#end
@@ -84,61 +85,7 @@ $context.putPageValue("entityrendertype", $entityrendertype)
 			
 			##<li> <div id="resultsmessages"></div> </li>
 			
-			#if($!hits.getSelectionSize() > 0)
-				<li class="resultsnavlink dropdown">
-					<a class="resultsnavlink dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="navbarAddto$!{moduleid}">[[Add to]]</a>
-					<div class="dropdown-menu" aria-labelledby="navbarAddto$!{moduleid}">
-						#foreach ( $amodule in $userprofile.getEntities() )
-							#set($amoduleid = $amodule.getId())
-							#if($amoduleid != $moduleid && $amodule.getBoolean("enableuploading"))
-								#if($permissions.can($amoduleid, "create") && $amoduleid!="faceprofilegroup" && $amoduleid!="asset" && $amoduleid!="modulesearch")
-									#set($entityrendertype = "entity")
-									#if ($amodule.modulerendertype)
-										#set($entityrendertype = $amodule.modulerendertype)
-									#end
-									#set($addtourl = "$siteroot$applink/views/modules/${moduleid}/components/entities/copyentities.html")
-									#ifnotnull($topentityid)
-										#set($addtourl = "$addurl&fieldexternalid=${topmodule.getId()}&fieldexternalvalue=${topentityid}&reloadtargets=topmodulecontainer")
-									#end
-									<a class="ajax dropdown-item"
-										data-targetdiv="applicationmaincontent"
-										data-oemaxlevel="2" 
-										data-pickedmoduleid="$amoduleid"
-										data-copyingsearchtype="$moduleid"
-										data-copyinghitssessionid="$hits.getSessionId()"	
-										href="$addtourl" >#text($amodule)</a>
-									#end
-								#end
-						#end
-						
-						#set($addurl = "$siteroot$applink/views/modules/searchcategory/components/entities/search/searchpicker.html")
-						<a 
-							class="dropdown-item emdialog" 
-									href="$addurl" 
-									data-viewfiles="true"
-									data-pickertarget="addtocategory"
-									data-copyingsearchtype="$moduleid"
-									data-copyinghitssessionid="$hits.getSessionId()"	
-									data-width="1200">[[Category]]</a>
-						#if ( $canviewbasket && $section != "basket"  )
-							<a class="dropdown-item updatebasket" 
-								targetdiv="basket-paint"  
-								data-action="addtocart"
-								href="$siteroot$componenthome/basket/addselection.html?hitssessionid=$hits.getSessionId()" >[[Cart]]</a>
-						#end
-					
-						#if($canaddtofavorites && $librarycol.id != "${user.id}-favorites" )
-							<a class="dropdown-item ajax"
-								data-targetdivinner="resultsmessages"
-								data-oemaxlevel="2" 
-							title="[[Add to Bookmarks]]"  
-							href="$siteroot$apphome/views/modules/asset/editor/favorite/favorite-add-multi.html?hitssessionid=$hits.getSessionId()"
-							>
-							[[Add To Bookmarks]]</a>
-						#end
-					</div>
-				</li>
-			#end
+			
 		</ul>
 			
 		#if($hits)
@@ -146,9 +93,9 @@ $context.putPageValue("entityrendertype", $entityrendertype)
 				#if($edit != "true")
 					#set($total = $hits.getTotalPages() )
 					#if( $total > 1)
-						<li class="resultpages">	 
+						
 							$pages.include("/${searchhome}/components/results/positions.html", $context)
-						</li>
+						
 					#end
 				#end
 

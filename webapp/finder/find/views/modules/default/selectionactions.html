@@ -1,18 +1,97 @@
-<li class="nav-item dropdown">
-	<a class="nav-link dropdown-toggle" data-toggle="dropdown" id="resultsSelectionDropdown">[[Actions]] </a>
-	<div class="dropdown-menu">
+<li class=" dropdown">
+	<a class="resultsnavlink dropdown-toggle"  data-toggle="dropdown" id="resultsSelectionDropdown">[[Edit]] </a>
+	<ul class="dropdown-menu">
 	#set( $type = $content.module )
 	#if($permissions.can($moduleid, "edit"))
 		#set($previewediturl = "$siteroot$apphome/views/modules/$!moduleid/components/gridsample/preview/$!{entityrendertype}.html?entityid=multiedit:$!hits.sessionId&hitssessionid=$!hits.sessionId&searchtype=$moduleid&edit=true")
-		<a class="dropdown-item emdialog" 
-			href="$previewediturl">[[Batch Edit]] $!hits.getSelectionSize() [[Items]]</a>
+		<li><a class="dropdown-item emdialog" 
+			href="$previewediturl">[[Multi Edit]] $!hits.getSelectionSize() [[Items]]</a></li>
 	#end
-	<a class="dropdown-item" href="$home${content.searchhome}/export/download/export_${type}.csv?hitssessionid=$hits.sessionId&searchtype=$type">[[Export results]]</a>
-	<a class="dropdown-item" href="$home${content.searchhome}/export/download/export_${type}.csv?hitssessionid=$hits.sessionId&friendly=true&searchtype=$type&view=$type/${type}resultstable">[[Export results (friendly)]]</a>
-	<a class="dropdown-item ajax" data-oemaxlevel="1" data-targetdiv="resultsarea" href="$home${content.searchhome}/export/custom.html?hitssessionid=$hits.sessionId">[[Custom Export]]</a>
-	##<a class="dropdown-item" href="$home${apphome}/views/modules/asset/activity/downloaddataassets.html?hitssessionid=$hits.sessionId">[[Download Assets]]</a>
+	
+
+				
+	<li class="dropdown-submenu">
+		<a class="dropdown-item  dropdown-toggle" href="#" data-bs-toggle="dropdown">[[Export]]</a>
+			<ul class="submenu dropdown-menu">
+				<li><a class="dropdown-item" href="$home${content.searchhome}/export/download/export_${type}.csv?hitssessionid=$hits.sessionId&searchtype=$type">[[Export results]]</a></li>
+				<li><a class="dropdown-item" href="$home${content.searchhome}/export/download/export_${type}.csv?hitssessionid=$hits.sessionId&friendly=true&searchtype=$type&view=$type/${type}resultstable">[[Export results (friendly)]]</a></li>
+				<li><a class="dropdown-item ajax" data-oemaxlevel="1" data-targetdiv="resultsarea" href="$home${content.searchhome}/export/custom.html?hitssessionid=$hits.sessionId">[[Custom Export]]</a></li>
+			</ul>
+	</li>
+	
 	#if($permissions.can($moduleid, "delete"))
-		 <a class="dropdown-item ajax" data-confirm="[[Delete items?]]" data-oemaxlevel="2" data-targetdiv="$!{moduleid}resultscontainer" href="$!home$!{content.searchhome}/actions/deleteselections.html?hitssessionid=$hits.sessionId&module=$!{module.id}">[[Delete Selected Items]]</a>
+		 <li><a class="dropdown-item ajax" data-confirm="[[Delete items?]]" data-oemaxlevel="2" data-targetdiv="$!{moduleid}resultscontainer" href="$!home$!{content.searchhome}/actions/deleteselections.html?hitssessionid=$hits.sessionId&module=$!{module.id}">[[Delete Selected Items]]</a></li>
 	#end
-	</div>
+	</ul>
 </li>
+
+
+
+<li class="resultsnavlink dropdown">
+		<a class="resultsnavlink dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="navbarCopyto$!{moduleid}">[[Copy]]</a>
+		<ul class="dropdown-menu" aria-labelledby="navbarCopyto$!{moduleid}">
+			#foreach ( $amodule in $userprofile.getEntities() )
+				#set($amoduleid = $amodule.getId())
+				#if($amoduleid != $moduleid && $amodule.getBoolean("enableuploading"))
+					#if($permissions.can($amoduleid, "create") && $amoduleid!="searchcategory" && $amoduleid!="faceprofilegroup" && $amoduleid!="asset" && $amoduleid!="modulesearch")
+						#set($entityrendertype = "entity")
+						#if ($amodule.modulerendertype)
+							#set($entityrendertype = $amodule.modulerendertype)
+						#end
+						#set($addtourl = "$siteroot$applink/views/modules/${moduleid}/components/entities/copyentities.html")
+						#ifnotnull($topentityid)
+							#set($addtourl = "$addurl&fieldexternalid=${topmodule.getId()}&fieldexternalvalue=${topentityid}&reloadtargets=topmodulecontainer")
+						#end
+						<li><a class="ajax dropdown-item"
+							data-targetdiv="applicationmaincontent"
+							data-oemaxlevel="2" 
+							data-pickedmoduleid="$amoduleid"
+							data-copyingsearchtype="$moduleid"
+							data-copyinghitssessionid="$hits.getSessionId()"	
+							title="[[Copies files and metadata to]] #text($amodule)"
+							href="$addtourl" >[[To new]] #text($amodule)</a></li>
+						#end
+					#end
+			#end	
+		</ul>
+</li>
+
+
+	<li class="resultsnavlink dropdown">
+		<a class="resultsnavlink dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="navbarAddto$!{moduleid}">[[Add To]]</a>
+		<ul class="dropdown-menu" aria-labelledby="navbarAddto$!{moduleid}">
+			
+		
+			#if($permissions.can("searchcategory", "create"))
+				#set($addurl = "$siteroot$applink/views/modules/searchcategory/components/entities/search/searchpicker.html") 
+				<li><a 
+				class="dropdown-item emdialog" 
+						href="$addurl" 
+						data-viewfiles="true"
+						data-pickertarget="addtocategory"
+						data-copyingsearchtype="$moduleid"
+						data-copyinghitssessionid="$hits.getSessionId()"	
+						title="[[Add To Category]]"
+						data-width="1200">[[Category]]</a></li>
+			#end		
+	
+			#if ( $canviewbasket && $section != "basket"  )
+				<li><a class="dropdown-item updatebasket" 
+					targetdiv="basket-paint"  
+					data-action="addtocart"
+					title="[[Add To Cart]]"  
+					href="$siteroot$componenthome/basket/addselection.html?hitssessionid=$hits.getSessionId()" >[[Cart]]</a></li>
+			#end
+		
+			#if($canaddtofavorites && $librarycol.id != "${user.id}-favorites" )
+				<li><a class="dropdown-item ajax"
+					data-targetdivinner="resultsmessages"
+					data-oemaxlevel="2" 
+				title="[[Add To User Bookmarks]]"  
+				href="$siteroot$apphome/views/modules/asset/editor/favorite/favorite-add-multi.html?hitssessionid=$hits.getSessionId()"
+				>[[User Bookmarks]]</a></li>
+			#end
+		</ul>
+	</li>
+
+
