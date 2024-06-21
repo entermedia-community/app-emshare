@@ -1,44 +1,37 @@
-#set($moduleid = $module.getId())
-
-
-<div class="category-breadcrumb #if($searchcategory) category-breadcrumb-tall #end">
+<div class="category-breadcrumb">
 	<div class="d-flex justify-content-between">
-	<div class="d-flex category-breadcrumb-name">
+	<div>
 		<a href="$!{siteroot}$apphome/views/modules/searchcategory/index.html" title="[[All Categories]]">[[All]] #text($module)</a>
-			#if($searchcategory)
-				<i class="bi bi-chevron-right mx-1 bi-small" style="font-size: 0.6em;;"></i>
+			#set($showmoduleid = $context.getRequestParameter("showmoduleid"))
 			
-				$context.putPageValue("thumbsize", "crop" )
-
-				#set( $primarymedia = $mediaarchive.getCachedAsset($searchcategory.primarymedia))
-
-				#ifnotnull($primarymedia)
-					
-					$context.putPageValue("hit", $primarymedia) 
-					$context.putPageValue("asset", $primarymedia)
-					#set( $assetrendertype = $mediaarchive.getMediaRenderType($primarymedia.fileformat))
-					<div class="pl-3" style="width: 100px;">
-					$pages.include("$componenthome/results/thumbnails/${assetrendertype}.html", $context)
-					</div>
+			#if($moduleid=="searchcategory" || $searchcategory)
+				#if($searchcategory)
+					&nbsp;/&nbsp;&nbsp;
+					#if($showmoduleid)
+						#set($urlparams = "field=searchcategory&operation=exact&searchcategory.value=$!searchcategory.getId()")
+						<a href="$apphome/views/modules/searchcategory/searchcategory.html?$urlparams">#text($searchcategory)</a>
+					#else
+					#text($searchcategory)
+					#end 
+					#if($hits.size())
+						##($!hits.size())
+					#end
 				#end
-
-				<div class="pl-3">
-				#text($searchcategory) ($!hits.size())
-				</div>
-			#end
-		
-	
-	</div>
+			
+				
+				#ifnotnull($showmoduleid)
+					#set($showmodule = $mediaarchive.getCachedData("module", $showmoduleid))			
+					&nbsp;/&nbsp;&nbsp;#text($showmodule) 
+					##($!hits.size())
+				#end
+		#end
+		</div>
 
 		<div class="category-header-right">
-			#if($permissions.can($moduleid, "create") && $moduleid!="faceprofilegroup" && $moduleid!="order")
-				#set($addurl = "$siteroot$applink/views/modules/${moduleid}/components/gridsample/preview/entity.html?edit=true&addnew=true&viewid=$!{moduleid}addnew")
-
-
-					<a class="emdialog resultsnavlink" href="$addurl" title="[[Add New Record]]">
+			#if($permissions.can($moduleid, "create")) 
+					<a class="emdialog" href="#" title="[[Add New]]">
 						<i class="bi bi-plus-lg mr-1"></i> [[Create New]]
-					</a>
-
+					</a> 
 			#end
 			
 			<a href="$applink/views/modules/${moduleid}/components/filters/dialogsort.html" 
