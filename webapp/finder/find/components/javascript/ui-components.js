@@ -2355,6 +2355,7 @@ uiload = function () {
 
   lQuery("select.listtags").livequery(function () {
     var theinput = $(this);
+    var isSelectMode = theinput.hasClass("choose-select");
     var dropdownParent = theinput.data("dropdownparent");
     if (dropdownParent && $("#" + dropdownParent).length) {
       dropdownParent = $("#" + dropdownParent);
@@ -2371,7 +2372,7 @@ uiload = function () {
     }
     var searchtype = theinput.data("searchtype");
     var searchfield = theinput.data("searchfield");
-    var catalogid = theinput.data("listcatalogid");
+    // var catalogid = theinput.data("listcatalogid");
     var sortby = theinput.data("sortby");
     var defaulttext = theinput.data("showdefault");
     if (!defaulttext) {
@@ -2392,7 +2393,7 @@ uiload = function () {
       var preloadedData = [];
       options.each(function () {
         var option = $(this);
-        if (option.val() != "" && option.text() != "") {
+        if (isSelectMode && option.val() != "" && option.text() != "") {
           preloadedData.push({
             id: option.val(),
             name: option.text(),
@@ -2429,7 +2430,7 @@ uiload = function () {
           processResults: function (data, params) {
             params.page = params.page || 1;
             var results = data.rows;
-            if (results.length == 0) {
+            if (results.length == 0 && isSelectMode) {
               results = preloadedData;
             }
             return {
@@ -2445,7 +2446,7 @@ uiload = function () {
         },
         templateResult: select2formatResult,
         templateSelection: select2Selected,
-        tokenSeparators: ["|"],
+        tokenSeparators: ["|", ","],
         separator: "|",
       });
     }
