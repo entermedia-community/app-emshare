@@ -1,69 +1,40 @@
+#if($organizedModules.size() > 0)
+<div class="summary-container searchcategorysidebar">
+<h3>[[View More]]:</h3>
 
+#foreach($module in $organizedModules)
+ 
+ 		#set($idhits = $organizedHits.get($module.id))
+		$context.putPageValue("hits", $idhits)
+		$context.putPageValue("module", $module)
+		$context.putPageValue("moduleid", $module.id)
+		$context.putPageValue("componenthome", "$apphome/views/modules/$module.id/components")
+ 
+ 	
+	   	#set( $favorites = $userprofile.get("favorites_"+$module.id))
+		$context.putPageValue("favorites", $favorites)
+		
+		
+		#set($moduleicon = "grid")
+     	#if ($module.moduleicon)
+     		#set($moduleicon = $module.moduleicon)
+     	#end
+     	
+ 		#set($entityurl = "$!siteroot$apphome/views/modules/$!{module.id}/index.html?$!{module.id}page=1&field=searchcategory&searchcategory.value=${searchcategory.id}&operation=exact")
+		#if( $module.id == "asset") ##this is safe
+				#set( $count = $hits.size()) 
+			#else
+				#set( $count = $filter.getCount($module.id) ) 
+			#end
+			#ifnull($count)
+				#set( $count = $hits.size()) 
+			#end
 
-
-
-<div id="modulesearchresultsdiv" class="h-100" data-moduleid="$!module.id" >
-	#set( $favorites = $userprofile.get("favorites_"+$module.id))
-	$context.putPageValue("favorites", $favorites)
-
-	#if (!$rendertype)
-		#set($rendertype = $module.modulerendertype)
-		#if (!$rendertype)
-			#set($rendertype = "entity")
-		#end
-	#end
-	$context.putPageValue("rendertype", $rendertype)
-	$context.putPageValue("rendermoduleid", $module.id)
-
-	#if($moduleid != "searchcategory")
-		$pages.include("$apphome/views/modules/${module.id}/resultsactions.html",$context)
-	#end
-
-	#set($currentpage = $context.getRequestParameter("currentpagenum"))
-
-	#set( $prhits = $hits.getPositionRender() )
-	#ifnotnull($currentpage)
-		$prhits.setPageOneBased($currentpage)
-	#end
-	#set($pos = $prhits.toPosition($prhits.getPage()))
-
-
-	#set($resultsPage = "$componenthome/results/index.html?hitssessionid=$!hits.sessionId&pageposition")
-	#set($targetdivinner = "${module.id}resultsarea")
-	#set($oemaxlevel = "2")
-
-
-	<div class="emgridflexcontainer" style="overflow-y: auto; height: calc(100% - 36px);">
-		<div class="emgridflex">
-			<div id="galleryimg-${rendertype}" 
-				class='emgrid entitiescontainer' 
-				data-fixedwidth="210" 
-				data-cellpadding="15"
-				data-entityrenderurl="$siteroot$apphome/views/modules/$module.id/components/gridsample/gridcell.html"
-				data-rendertype="$rendertype">
-				#foreach( $hit in $hits.getPageOfHits())
-						$context.putPageValue("rendermoduleid", $hit.entitysourcetype)
-						$context.putPageValue("entity", $hit)
-						$context.putPageValue("hit", $hit)								
-							<div class="emgridcell emgridcell-$rendertype activelistcontainer 
-						#if($selectedid == $hit.getId() || $topselectedid == $hit.getId()) active #end
-						">
-							$pages.include("$apphome/views/modules/${hit.entitysourcetype}/components/gridsample/types/entity.html", $context)
-							
-							#set($editurl = "$!{siteroot}$apphome/views/modules/${hit.entitysourcetype}/components/gridsample/preview/entity.html?id=$hit.getId()&hitssessionid=$!hits.sessionId")
-
-							#if($moduleid == "searchcategory")
-							<div class="emgridcell-edit">
-								<a href="$editurl" class="emdialog emgridcell-edit-link"  title="[[Edit]]" >
-									<i class="bi bi-pencil"></i>
-								</a>
-							</div>
-							#end
-						</div>
-				#end
-
-			
-			</div>  
+		<div>
+		<a href="$entityurl" class="ajax" data-targetdiv="applicationcontent" data-oemaxlevel="4">
+				<i class="bi bi-$!{moduleicon} module-icon" style="font-size:0.9em;line-height:1;"></i> #text($module) ($!{count})
+		</a>
 		</div>
-	</div>
+#end
 </div>
+#end

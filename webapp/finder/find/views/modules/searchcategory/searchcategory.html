@@ -7,10 +7,6 @@ $context.putPageValue("topcategoryid", $topcategoryid)
 
 #set($expandedmodule = $moduleid)
 
-#if(!$hits.isEmpty())
-	#set( $count = $hits.size())
-#end
-$context.putPageValue("count", $count)
 
 #set( $topmodule = $module)
 $context.putPageValue("topmodule", $topmodule)
@@ -22,40 +18,8 @@ $context.putPageValue("modulecount", $organizedModules.size())
 
 
 
-#foreach($module in $organizedModules)
- 
- 		#set($idhits = $organizedHits.get($module.id))
-		$context.putPageValue("hits", $idhits)
-		$context.putPageValue("module", $module)
-		$context.putPageValue("moduleid", $module.id)
-		$context.putPageValue("componenthome", "$apphome/views/modules/$module.id/components")
- 
-	#if($module.id != "asset")
-	  	
-	   	#set( $favorites = $userprofile.get("favorites_"+$module.id))
-		$context.putPageValue("favorites", $favorites)
-
-		
-		<div id="resultsdiv" 
-			class="searchcategoryresults my-4"
-			data-hitssessionid="$!idhits.getSessionId()"
-			data-componenthome="$apphome/views/modules/$!{module.id}/components" 
-			data-searchtype="$!module.id" 
-			data-moduleid="$!module.id" 
-			data-searchhome="$home$content.searchhome" 
-			data-category="$!category.getId()" 
-			data-pagenum="$!idhits.getPage()"  
-			data-totalpages="$!idhits.getTotalPages()">
-			$pages.include("$apphome/components/gridsample/modulegrid.html", $context)
-
-		</div>	
-	#else
-		$context.putPageValue("showheader", true)
-		$pages.include("$apphome/views/modules/asset/index.html", $context)
-		
-	#end 
-#end
-
+#set($url = "$apphome/views/modules/modulesearch/index.html")
+$pages.include($url,$context)
 
 
 
