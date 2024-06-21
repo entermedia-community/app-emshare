@@ -1,7 +1,7 @@
 <div class="category-breadcrumb">
 	<div class="d-flex justify-content-between">
 	<div>
-		<a href="$!{siteroot}$apphome/views/modules/searchcategory/index.html" title="[[All Categories]]">[[Home]]</a>
+		<a href="$!{siteroot}$apphome/views/modules/searchcategory/index.html" title="[[All Categories]]">[[All]] #text($module)</a>
 			#set($showmoduleid = $context.getRequestParameter("showmoduleid"))
 			
 			#if($moduleid=="searchcategory" || $searchcategory)
@@ -28,14 +28,12 @@
 		</div>
 
 		<div class="category-header-right">
-			#ifnotnull($topcategory)
-				#if($permissions.can($moduleid, "create")) 
+			#if($permissions.can($moduleid, "create")) 
 					<a class="emdialog" href="#" title="[[Add New]]">
-						<i class="bi bi-plus-lg mr-1"></i> [[New]]
+						<i class="bi bi-plus-lg mr-1"></i> [[Create New]]
 					</a> 
-				#end
 			#end
-	
+			
 			<a href="$applink/views/modules/${moduleid}/components/filters/dialogsort.html" 
 				class="emdialog emsort #if($selectedpreference == "true") closed #end"
 				data-dialogid="sortdialog"
