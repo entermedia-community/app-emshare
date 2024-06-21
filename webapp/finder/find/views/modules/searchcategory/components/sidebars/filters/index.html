@@ -21,15 +21,8 @@
      	#end
      	
  		#set($entityurl = "$!siteroot$apphome/views/modules/$!{module.id}/index.html?$!{module.id}page=1&field=searchcategory&searchcategory.value=${searchcategory.id}&operation=exact")
-		#if( $module.id == "asset") ##this is safe
-				#set( $count = $hits.size()) 
-			#else
-				#set( $count = $filter.getCount($module.id) ) 
-			#end
-			#ifnull($count)
-				#set( $count = $hits.size()) 
-			#end
-
+		#set( $entitysourcetype = $hits.getActiveFilterValues().get("entitysourcetype")) 
+		#set($count = $entitysourcetype.getCount($module.id))
 		<div>
 		<a href="$entityurl" class="ajax" data-targetdiv="applicationcontent" data-oemaxlevel="4">
 				<i class="bi bi-$!{moduleicon} module-icon" style="font-size:0.9em;line-height:1;"></i> #text($module) ($!{count})
