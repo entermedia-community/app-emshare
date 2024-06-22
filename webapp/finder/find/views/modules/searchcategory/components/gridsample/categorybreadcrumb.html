@@ -1,48 +1,43 @@
 #set($moduleid = $module.getId())
-
-
 <div class="category-breadcrumb #if($searchcategory) category-breadcrumb-tall #end">
 	<div class="d-flex justify-content-between">
-	<div class="d-flex category-breadcrumb-name">
-		<a href="$!{siteroot}$apphome/views/modules/searchcategory/index.html" title="[[All Categories]]">[[All]] #text($module)</a>
+		<div class="d-flex category-breadcrumb-name">
 			#if($searchcategory)
-				<i class="bi bi-chevron-right mx-1 bi-small" style="font-size: 0.6em;;"></i>
-			
+				<a href="$!{siteroot}$apphome/views/modules/searchcategory/index.html" title="[[All Categories]]">[[All]] #text($module)</a>
+				<i class="bi bi-chevron-double-right ns"></i>
 				$context.putPageValue("thumbsize", "crop" )
-
 				#set( $primarymedia = $mediaarchive.getCachedAsset($searchcategory.primarymedia))
 
 				#ifnotnull($primarymedia)
-					
 					$context.putPageValue("hit", $primarymedia) 
 					$context.putPageValue("asset", $primarymedia)
 					#set( $assetrendertype = $mediaarchive.getMediaRenderType($primarymedia.fileformat))
-					<div class="pl-3" style="width: 100px;">
-					$pages.include("$componenthome/results/thumbnails/${assetrendertype}.html", $context)
+					<div class="category-breadcrumb-img">
+						$pages.include("$componenthome/results/thumbnails/${assetrendertype}.html", $context)
 					</div>
 				#end
 
-				<div class="pl-3">
-				#text($searchcategory) ($!hits.size())
-				</div>
+				<p class="m-0">
+					#ifnull($primarymedia)
+						<i class="bi bi-$module.moduleicon mr-1"></i>
+					#end
+					#text($searchcategory) <span >($!hits.size())</span>
+				</p>
+			#else
+				<a href="#" class="text-white active" title="[[All Categories]]">[[All]] #text($module)</a>
 			#end
-		
-	
-	</div>
+		</div>
 
-		<div class="category-header-right">
+		<div class="d-flex">
 			#if($permissions.can($moduleid, "create") && $moduleid!="faceprofilegroup" && $moduleid!="order")
 				#set($addurl = "$siteroot$applink/views/modules/${moduleid}/components/gridsample/preview/entity.html?edit=true&addnew=true&viewid=$!{moduleid}addnew")
-
-
-					<a class="emdialog resultsnavlink" href="$addurl" title="[[Add New Record]]">
-						<i class="bi bi-plus-lg mr-1"></i> [[Create New]]
-					</a>
-
+				<a class="emdialog border-left-subtle" href="$addurl" title="[[Add New Record]]">
+					<i class="bi bi-plus-lg mr-1"></i> [[Create New]]
+				</a>
 			#end
 			
 			<a href="$applink/views/modules/${moduleid}/components/filters/dialogsort.html" 
-				class="emdialog emsort #if($selectedpreference == "true") closed #end"
+				class='emdialog emsort #if($selectedpreference == "true") closed #end border-left-subtle'
 				data-dialogid="sortdialog"
 				data-hidebackdrop="true"
 				data-hidefooter="true"
@@ -55,7 +50,6 @@
 				data-entityid="$!entityid"
 				data-dialogindextype="$!dialogindextype" 
 				data-targetdivsearch="$!{moduleid}resultscontainer"
-				style="padding:0 8px 0 10px;" 
 				title="[[Sort Results]]"><i class="bi bi-sort-down"></i> [[Sort]]</a>
 		</div>
 	</div>
