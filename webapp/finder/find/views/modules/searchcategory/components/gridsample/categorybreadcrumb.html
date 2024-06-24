@@ -2,9 +2,10 @@
 <div class="category-breadcrumb #if($searchcategory) category-breadcrumb-tall #end">
 	<div class="d-flex justify-content-between">
 		<div class="d-flex category-breadcrumb-name">
+			<a href="$!{siteroot}$apphome/views/modules/searchcategory/index.html" title="[[All Categories]]"><i class="bi bi-$module.moduleicon mr-1"></i> [[All]] #text($module)</a>
+
 			#if($searchcategory)
-				<a href="$!{siteroot}$apphome/views/modules/searchcategory/index.html" title="[[All Categories]]">[[All]] #text($module)</a>
-				<i class="bi bi-chevron-double-right ns"></i>
+				<i class="bi bi-chevron-double-right ns pr-2"></i>				
 				$context.putPageValue("thumbsize", "crop" )
 				#set( $primarymedia = $mediaarchive.getCachedAsset($searchcategory.primarymedia))
 
@@ -19,12 +20,10 @@
 
 				<p class="m-0">
 					#ifnull($primarymedia)
-						<i class="bi bi-$module.moduleicon mr-1"></i>
+						<i class="bi bi-$module.moduleicon mr-1"></i> 
 					#end
 					#text($searchcategory) <span >($!hits.size())</span>
 				</p>
-			#else
-				<a href="#" class="text-white active" title="[[All Categories]]">[[All]] #text($module)</a>
 			#end
 		</div>
 
