@@ -1,12 +1,19 @@
 ##FIND INDEX
 
-#if( $firstmenu.get("custompathfinal"))
+#if( $firstmenu.get("custompath"))
 
-	$context.putPageValue("moduleid", $defaultmodule)
+	#set($moduleid = $module.getId())
 	
-	$context.putPageValue("componenthome", "$apphome/views/modules/$defaultmodule/components") 
-
-	$pages.include($firstmenu.get("custompathfinal"),$context)
+	$context.putPageValue("componenthome", "$apphome/views/modules/$moduleid/components") 
+	
+	#set($custompathfinal = $content.replaceProperty($firstmenu.get("custompath")))
+	
+	##$pages.include($custompathfinal,$context)
+	
+	#set($targetpage = $pages.getPage($custompathfinal))
+	#set($x = $pages.getChildContentList().add($targetpage))
+	$pages.include($targetpage.getInnerLayout(), $context)
+	
 
 
 #elseif($defaultmodule)
