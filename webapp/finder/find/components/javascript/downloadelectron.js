@@ -35,7 +35,6 @@ jQuery(document).ready(function () {
         "/services/module/order/downloadorderitems?hitsperpage=10",
 
       success: function (json) {
-        console.log(json);
         if (json.ordestatus == "complete") return;
         var items = json.orderitems;
         if (items.length == 0) {
@@ -52,11 +51,7 @@ jQuery(document).ready(function () {
               itemdownloadurl: item.itemdownloadurl,
             };
             var itemEl = $("#d-" + item.id);
-            downloadMediaLocally(
-              { orderid: item.orderid, orderitemid: item.id },
-              file,
-              itemEl
-            );
+            downloadMediaLocally(item.id, file, itemEl);
           }
         }
       },
@@ -243,7 +238,6 @@ jQuery(document).ready(function () {
     };
     console.log("EM: opening " + file);
     ipcRenderer.send("onOpenFile", file);
-    //downloadMediaLocally(orderitemid, file, itemEl);
   });
 
   //Read Local
@@ -334,7 +328,6 @@ jQuery(document).ready(function () {
     }
 
     var div = getToastTemplate(id, type, filename);
-    console.log(div.html());
     $("#toastList").append(div);
     var toast = $("#dt-" + id);
     toast.toast({ autohide: true, delay: 15000 });
