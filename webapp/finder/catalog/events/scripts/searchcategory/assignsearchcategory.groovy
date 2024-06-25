@@ -47,20 +47,22 @@ public void init()
 		MultiValued newcopy  = manager.copyEntity(null,label, "librarycollection",folder); //This will add a field called mediacapture to each newcopy
 		fixed++;
 		
-		String curatedlabel = folder.get("curated");
-		if( curatedlabel != null)
+		Collection labels = folder.getValues("curated");
+		if( labels != null)
 		{
-			Data found = allcategories.get(curatedlabel);
-			if( found == null)
+			for(curatedlabel in labels)
 			{
-				found = categorysearcher.createNewData();
-				found.setName(curatedlabel);
-				categorysearcher.saveData(found);
-				allcategories.put(found.getName(), found);
+				Data found = allcategories.get(curatedlabel);
+				if( found == null)
+				{
+					found = categorysearcher.createNewData();
+					found.setName(curatedlabel);
+					categorysearcher.saveData(found);
+					allcategories.put(found.getName(), found);
+				}
+				newcopy.addValue("searchcategory", found.getId());
 			}
-			newcopy.addValue("searchcategory", found.getId());
-		}
-		
+		}		
 		tosave.add(newcopy);
 	}
 	collectionsearcher.saveAllData(tosave, null);
