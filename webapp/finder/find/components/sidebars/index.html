@@ -87,32 +87,28 @@
 			#end
 
 			#if($user.getId())
-				#if($desktop)
-					#if($candownload || $canconvert || $candownloadfpo)
-						<div class="sidebar-togglers #if($sidebarcomponent == " userdownloads") sidebar-selected #end">
-							<a href="#" class="sidebar-toggler sidebar-toggler-show light" data-action="show"
-								data-targetdiv="col-sidebars" data-sidebar="userdownloads"
-								data-modulesearchhitssessionid="$!modulehits.sessionId" title="[[Download Orders]]">
-								
-								<div id="downloadsStatus">
-									$pages.include("$home$apphome/components/orders/download/iconajaxorderstatus.html",$context)
-									<div id="triggerpendingdownloads"></div>
-								</div>
-								
-								## <div class="downloadsUpdateWrapper">
-									## <div class="downloadsUpdate">
-										## #if($user && $sidebarcomponent != "userdownloads")
-										## #set($recentdownloads =	$mediaarchive.query("userdownloads").named("udownloadshits").exact("user",$user.getId()).sort("dateDown").search($context))
-										## $!recentdownloads.size()
-										## #end
-										## </div>
+				#if($candownload || $canconvert || $candownloadfpo)
+					<div class="sidebar-togglers #if($sidebarcomponent == " userdownloads") sidebar-selected #end">
+						<a href="#" class="sidebar-toggler sidebar-toggler-show light" data-action="show"
+							data-targetdiv="col-sidebars" data-sidebar="userdownloads"
+							data-modulesearchhitssessionid="$!modulehits.sessionId" title="[[Download Orders]]">
+							
+							<div id="downloadsStatus">
+								$pages.include("$home$apphome/components/orders/download/iconajaxorderstatus.html",$context)
+								<div id="triggerpendingdownloads"></div>
+							</div>
+							
+							## <div class="downloadsUpdateWrapper">
+								## <div class="downloadsUpdate">
+									## #if($user && $sidebarcomponent != "userdownloads")
+									## #set($recentdownloads =	$mediaarchive.query("userdownloads").named("udownloadshits").exact("user",$user.getId()).sort("dateDown").search($context))
+									## $!recentdownloads.size()
+									## #end
 									## </div>
-								
-							</a>
-						</div>
-					#end
-				#else
-					<div id="downloadsStatus"></div>
+								## </div>
+							
+						</a>
+					</div>
 				#end
 			#end
 			

@@ -3,61 +3,76 @@ jQuery(document).ready(function () {
   var mediadb = $("#application").data("mediadbappid");
   var downloaded = {};
   function checkForPendingDownloads() {
-    var url =
-      siteroot +
-      "/" +
-      mediadb +
-      "/services/module/order/downloadorderitems?hitsperpage=10";
+    $("#triggerpendingdownloads").remove();
+    var url = siteroot + "/" + mediadb + "/services/module/order/downloadqueue";
     jQuery.ajax({
       dataType: "json",
       url: url,
       success: function (json) {
-        var items = json.orderitems;
-        for (var i = 0; i < items.length; i++) {
-          var item = items[i];
-          var orderitemid = item.id;
-          if (item.orderstatus == "complete") {
-            abortDownload(orderitemid);
-            continue;
-          }
-          if (
-            item.publishstatus.id == "readytopublish" ||
-            item.publishstatus.id == "publishingexternal"
-          ) {
-            downloadDirectly(
-              orderitemid,
-              item.itemdownloadurl,
-              item.itemexportname
-            );
+        var queue = json.downloadqueue;
+        for (var i = 0; i < queue.length; i++) {
+          var item = queue[i];
+          if (item.orderid) {
+            var filename =
+              new Date().toString().substring(0, 24).replace(/:/g, "-") +
+              ".zip";
+            var url =
+              siteroot +
+              "/" +
+              mediadb +
+              "/services/module/order/zip/" +
+              filename +
+              "?orderid=" +
+              item.orderid;
+            downloadDirectly(item.orderid, url, filename, true);
+          } else if (item.url) {
+            downloadDirectly(item.id, item.url, item.filename);
           }
         }
       },
     });
   }
+
   lQuery("#triggerpendingdownloads").livequery(checkForPendingDownloads);
 
-  function downloadDirectly(orderitemid, url, filename) {
-    if (downloaded[orderitemid]) return;
-    var a = document.createElement("a");
-    a.href = url;
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+  function downloadDirectly(id, url, filename, isZip = false) {
+    console.log({ id, url, filename, isZip });
+    if (downloaded[id]) return;
+    downloaded[id] = true;
 
-    downloaded[orderitemid] = true;
+    var completeUrl;
 
-    $.ajax({
-      url:
+    if (isZip) {
+      completeUrl =
+        siteroot +
+        "/" +
+        mediadb +
+        "/services/module/order/orderchangestatus?orderid=" +
+        id +
+        "&orderstatus=complete";
+
+      //TODO: orderchangestatus DOESN'T WORK
+    } else {
+      completeUrl =
         siteroot +
         "/" +
         mediadb +
         "/services/module/order/updateorderitemstatus?orderitemid=" +
-        orderitemid +
-        "&publishstatus=complete" +
-        "&publisheddate=" +
-        new Date().toISOString(),
+        id +
+        "&publishstatus=complete&publisheddate=" +
+        new Date().toISOString();
+    }
+
+    $.ajax({
+      url: encodeURI(completeUrl),
       success: function () {
+        var a = document.createElement("a");
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+
         var check = $("#toastList");
         if (!check.length) {
           var div = $('<div id="toastList"></div>');
@@ -66,22 +81,44 @@ jQuery(document).ready(function () {
 
         var div = $(
           '<div role="alert" id="dtDirect' +
-            orderitemid +
+            id +
             '" class="toast"><div class="toast-header"><i class="bi bi-check-circle-fill text-success"></i><strong class="downloadToastLabel text-success">Download Started</strong><button type="button" class="close" data-dismiss="toast">hide</button></div><div class="toast-body"><span class="toast-filename">' +
             filename +
             "</span></div></div>"
         );
 
         $("#toastList").append(div);
-        var toast = $("#dtDirect" + orderitemid);
+        var toast = $("#dtDirect" + id);
         toast.toast({ autohide: true, delay: 15000 });
         toast.toast("show");
         toast.on("hidden.bs.toast", function () {
           toast.remove();
         });
+        autoreload($("#userdownloadlist"));
+      },
+      error: function () {
+        downloaded[id] = false;
       },
     });
   }
+
+  lQuery(".abortdownloadorder").livequery("click", function (e) {
+    var orderid = $(this).data("orderid");
+    downloaded[orderid] = true;
+
+    $.ajax({
+      url:
+        siteroot +
+        "/" +
+        mediadb +
+        "/services/module/order/orderchangestatus?orderid=" +
+        orderid +
+        "&orderstatus=complete",
+      success: function () {
+        autoreload($("#userdownloadlist"));
+      },
+    });
+  });
 });
 //   var siteroot = $("#application").data("siteroot");
 //   var mediadb = $("#application").data("mediadbappid");
@@ -323,28 +360,29 @@ jQuery(document).ready(function () {
 //     request.send();
 //   }
 
-//   lQuery(".abortdownloadorder").livequery("click", function (e) {
-//     var orderid = $(this).data("orderid");
-//     for (var orderitemid in downloadInProgress[orderid]) {
-//       if (downloadInProgress[orderid][orderitemid]) {
-//         downloadInProgress[orderid][orderitemid].abort();
-//         downloadInProgress[orderid][orderitemid] = null;
-//       }
-//       $("#dt-" + orderitemid).toast("hide");
+// lQuery(".abortdownloadorder").livequery("click", function (e) {
+//   var orderid = $(this).data("orderid");
+//   for (var orderitemid in downloadInProgress[orderid]) {
+//     if (downloadInProgress[orderid][orderitemid]) {
+//       downloadInProgress[orderid][orderitemid].abort();
+//       downloadInProgress[orderid][orderitemid] = null;
 //     }
-//     autoreload($("#userdownloadlist"));
-//     $.ajax({
-//       url:
-//         siteroot +
-//         "/" +
-//         mediadb +
-//         "/services/module/order/cancelorder?orderid=" +
-//         orderid,
-//       success: function () {
-//         autoreload($("#userdownloadlist"));
-//       },
-//     });
+//     $("#dt-" + orderitemid).toast("hide");
+//   }
+
+//   $.ajax({
+//     url:
+//       siteroot +
+//       "/" +
+//       mediadb +
+//       "/services/module/order/orderchangestatus?orderid=" +
+//       orderid +
+//       "&orderstatus=complete",
+//     success: function () {
+//       autoreload($("#userdownloadlist"));
+//     },
 //   });
+// });
 
 //   var toastTypes = {
 //     downloading: {
