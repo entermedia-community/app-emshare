@@ -102,7 +102,7 @@ jQuery(document).ready(function () {
           mediadb +
           "/services/module/order/updateorderitemstatus?orderitemid=" +
           orderitemid +
-          "&publishstatus=cancelled",
+          "&publishstatus=canceled",
         success: function () {
           autoreload($("#userdownloadlist"));
           showDownloadToast(orderitemid, "error", file.itemexportname);
@@ -218,7 +218,7 @@ jQuery(document).ready(function () {
         mediadb +
         "/services/module/order/updateorderitemstatus?orderitemid=" +
         orderitemid +
-        "&publishstatus=cancelled",
+        "&publishstatus=canceled",
       success: function () {
         autoreload($("#userdownloadlist"));
         var toast = $("#dt-" + orderitemid);
