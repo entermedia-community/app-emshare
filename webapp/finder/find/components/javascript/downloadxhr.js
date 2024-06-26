@@ -47,11 +47,8 @@ jQuery(document).ready(function () {
         siteroot +
         "/" +
         mediadb +
-        "/services/module/order/orderchangestatus?orderid=" +
-        id +
-        "&orderstatus=complete";
-
-      //TODO: orderchangestatus DOESN'T WORK
+        "/services/module/order/orderchangestatus?orderstatus=complete&downloadstatus=complete&orderid=" +
+        id;
     } else {
       completeUrl =
         siteroot +
@@ -111,7 +108,7 @@ jQuery(document).ready(function () {
         siteroot +
         "/" +
         mediadb +
-        "/services/module/order/orderchangestatus?orderid=" +
+        "/services/module/order/orderchangestatus?orderstatus=complete&downloadstatus=complete&orderid=" +
         orderid +
         "&orderstatus=complete",
       success: function () {
