@@ -95,7 +95,10 @@ jQuery(document).ready(function () {
     toast.on("hidden.bs.toast", function () {
       toast.remove();
     });
-    autoreload($("#userdownloadlist"));
+
+    setTimeout(function () {
+      autoreload($("#userdownloadlist"));
+    }, 1000);
   }
 
   lQuery(".abortdownloadorder").livequery("click", function (e) {
@@ -107,9 +110,8 @@ jQuery(document).ready(function () {
         siteroot +
         "/" +
         mediadb +
-        "/services/module/order/orderchangestatus?orderstatus=complete&downloadstatus=complete&orderid=" +
-        orderid +
-        "&orderstatus=complete",
+        "/services/module/order/orderchangestatus?orderstatus=canceled&downloadstatus=canceled&orderid=" +
+        orderid,
       success: function () {
         autoreload($("#userdownloadlist"));
       },

@@ -90,7 +90,7 @@
 					#if($status == "error")
 						<i class="bi bi-x-circle-fill error"></i>
 					#else
-						#if($publishstatus == "complete")
+						#if($publishstatus == "complete" || $orderstatus == "complete")
 							<i class="bi bi-check-circle-fill success"></i>
 						#elseif($publishstatus == "readytopublish" )
 							<i class="bi bi bi-cloud-arrow-down-fill ready"></i>
@@ -123,6 +123,11 @@
 								<i class="bi bi-box-arrow-up-right"></i>
 							</a>
 							#end
+						#end
+						#if($publishstatus == "complete" || $orderstatus == "complete")
+							<a title="[[Download Again]]" download='$downloadorderitem.get("itemexportname")' href='$downloadorderitem.get("itemdownloadurl")'>
+								<i class="bi bi-arrow-repeat"></i>
+							</a>
 						#end
 						#if($publishstatus == "publishingexternal")
 							<a href="#" class="abortdownloadorder" data-orderitemid="$downloadorderitem" data-orderid='$downloadorderitem.get("orderid")' title="[[Cancel Download]]">
