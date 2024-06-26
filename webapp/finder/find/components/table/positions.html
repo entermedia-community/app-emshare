@@ -6,7 +6,9 @@
 #if($positionsmaxpages)
 	$hits.setMaxPageListing($positionsmaxpages)
 #end
+
 ##set($resultsLink = "$resultsLink?hitssessionid=$hits.sessionId&searchtype=$hits.getSearchType()&hitsperpage=$!hits.hitsPerPage&oemaxlevel=1&positionsmaxpages=$!positionsmaxpages")
+
 #set($resultsPage = "$resultsLink&pageposition")
 
 #set($targetdivinner = $targetdivtablepositions)
@@ -33,7 +35,7 @@
 #set( $oemaxlevel = "1" )
 #end
 
- <ul>
+<ul class="positionsexpanded">
 	#if(!$befores.isEmpty() && $befores.get(0)>1)
 		<li><a class="ajax firstposition" data-targetdivinner="$targetdivinner" data-updateurl="$!updateurl" data-oemaxlevel="$oemaxlevel" href="$resultsPage=$prhits.getStartingPosition()" >$prhits.getStartingPosition()</a></li>	
 	    <li class="ellipsis"><i class="bi bi-three-dots"></i></li>
