@@ -1,23 +1,24 @@
 ##Why is this here? Looks like a duplicate of types/table.html
 
-
 #set( $xmledithome = "$componenthome/xml")
 #set( $candelete = $context.getRequestParameter("candelete"))
 
-#if(!$viewid)
-	#set( $viewid = $context.getRequestParameter("viewid"))
-#end
-#if(!$viewid)
-	#set( $viewid = "$!{searchtype}resultstable") 
-#end
+#set($catalogid = $mediaarchive.getCatalogId())
+
+
 #if( !$viewpath )
 	#set( $viewpath = $context.getRequestParameter("viewpath"))
 #end
 #if( !$viewpath )
-	#set( $viewpath = $context.getRequestParameter("view"))
-#end
-#if( !$viewpath )
-	#set( $viewpath = "$!{searchtype}/$!{viewid}")
+	#if(!$viewid)
+		#set( $viewid = $context.getRequestParameter("viewid"))
+	#end
+	#if(!$viewid)
+		#set( $viewid = "$!{searchtype}resultstable") 
+	#end
+	#if( $viewid )
+		#set( $viewpath = "$!{searchtype}/$!{viewid}")
+	#end
 #end
 
 #set( $fieldexternalid = $context.getRequestParameter("fieldexternalid"))
@@ -26,11 +27,16 @@
 ##For module Editing tables
 #set ($id = $context.getRequestParameter("id"))
 
+#if(!$searcher)
+[[Missing Searcher]]
+#end
+
 #set( $details = $searcher.getDataProperties($viewpath, $user) )
 
 #if(!$details)
 [[No view defined for]]: $viewpath
 #end
+
 
 
 #set($sortable = "sortable")
@@ -66,7 +72,9 @@
 	#set( $targetdivtablepositions = "$tableid")
 	$context.putPageValue("targetdivtablepositions", $targetdivtablepositions)
 	
-	#set($resultsLink = "/$applicationid/views/modules/$!{searchtype}/components/table/pickertable.html")
+	#if(!$resultsLink)
+		#set($resultsLink = "/$applicationid/views/modules/$!{searchtype}/components/table/pickertable.html")
+	#end
 	#set( $args = "viewid=$!viewid&viewpath=$!viewpath&targetrendertype=$!targetrendertype")
 	#set($resultsLink = "${resultsLink}?${args}")
 	
@@ -74,7 +82,7 @@
 	
 	<div id="$!tableid"
 			class="domdatacontext" 
-			data-view="$!viewpath"
+			data-viewpath="$!viewpath"
 			data-viewid="$!viewid" 
 			#if($id) data-id="$!id" #end
 
