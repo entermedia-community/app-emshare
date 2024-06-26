@@ -2,6 +2,7 @@ jQuery(document).ready(function () {
   var siteroot = $("#application").data("siteroot");
   var mediadb = $("#application").data("mediadbappid");
   var downloaded = {};
+
   function checkForPendingDownloads() {
     $("#triggerpendingdownloads").remove();
     var url = siteroot + "/" + mediadb + "/services/module/order/downloadqueue";
@@ -40,17 +41,10 @@ jQuery(document).ready(function () {
     if (downloaded[id]) return;
     downloaded[id] = true;
 
-    var completeUrl;
-
     if (isZip) {
-      completeUrl =
-        siteroot +
-        "/" +
-        mediadb +
-        "/services/module/order/orderchangestatus?orderstatus=complete&downloadstatus=complete&orderid=" +
-        id;
+      triggerDownload(id, url, filename);
     } else {
-      completeUrl =
+      var completeUrl =
         siteroot +
         "/" +
         mediadb +
@@ -58,45 +52,50 @@ jQuery(document).ready(function () {
         id +
         "&publishstatus=complete&publisheddate=" +
         new Date().toISOString();
+
+      $.ajax({
+        url: encodeURI(completeUrl),
+        success: function () {
+          console.log(id, url, filename);
+          triggerDownload(id, url, filename);
+        },
+        error: function () {
+          downloaded[id] = false;
+        },
+      });
+    }
+  }
+
+  function triggerDownload(id, url, filename) {
+    var a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+
+    var check = $("#toastList");
+    if (!check.length) {
+      var div = $('<div id="toastList"></div>');
+      $("body").append(div);
     }
 
-    $.ajax({
-      url: encodeURI(completeUrl),
-      success: function () {
-        var a = document.createElement("a");
-        a.href = url;
-        a.download = filename;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
+    var div = $(
+      '<div role="alert" id="dtDirect' +
+        id +
+        '" class="toast"><div class="toast-header"><i class="bi bi-check-circle-fill text-success"></i><strong class="downloadToastLabel text-success">Download Started</strong><button type="button" class="close" data-dismiss="toast">hide</button></div><div class="toast-body"><span class="toast-filename">' +
+        filename +
+        "</span></div></div>"
+    );
 
-        var check = $("#toastList");
-        if (!check.length) {
-          var div = $('<div id="toastList"></div>');
-          $("body").append(div);
-        }
-
-        var div = $(
-          '<div role="alert" id="dtDirect' +
-            id +
-            '" class="toast"><div class="toast-header"><i class="bi bi-check-circle-fill text-success"></i><strong class="downloadToastLabel text-success">Download Started</strong><button type="button" class="close" data-dismiss="toast">hide</button></div><div class="toast-body"><span class="toast-filename">' +
-            filename +
-            "</span></div></div>"
-        );
-
-        $("#toastList").append(div);
-        var toast = $("#dtDirect" + id);
-        toast.toast({ autohide: true, delay: 15000 });
-        toast.toast("show");
-        toast.on("hidden.bs.toast", function () {
-          toast.remove();
-        });
-        autoreload($("#userdownloadlist"));
-      },
-      error: function () {
-        downloaded[id] = false;
-      },
+    $("#toastList").append(div);
+    var toast = $("#dtDirect" + id);
+    toast.toast({ autohide: true, delay: 15000 });
+    toast.toast("show");
+    toast.on("hidden.bs.toast", function () {
+      toast.remove();
     });
+    autoreload($("#userdownloadlist"));
   }
 
   lQuery(".abortdownloadorder").livequery("click", function (e) {
@@ -243,7 +242,7 @@ jQuery(document).ready(function () {
 //           mediadb +
 //           "/services/module/order/updateorderitemstatus?orderitemid=" +
 //           orderitemid +
-//           "&publishstatus=cancelled",
+//           "&publishstatus=canceled",
 //         success: function () {
 //           autoreload($("#userdownloadlist"));
 //           showDownloadToast(orderitemid, "error", file.itemexportname);

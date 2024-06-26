@@ -4,7 +4,7 @@
 <div class="sidebarorders overflow-y">
 	#foreach($downloadorder in $downloadorders)
 
-		#set($downloadordercompleted = $downloadorder.getOrder().get("orderstatus") == "complete")
+		#set($orderstatus = $downloadorder.getOrder().get("orderstatus"))
 		#set($downloadorderitem = $downloadorder.getCurrentItem())
 		#set($assetid = $downloadorderitem.get("assetid"))
 		#set($asset = $mediaarchive.getAsset($assetid))
@@ -14,7 +14,7 @@
 		##set($errordetails = $downloadorderitem.get("errordetails"))
 
 
-		<div class="sidebarorder d-block py-2 px-2 $publishstatus $status" id="d-$downloadorderitem">
+		<div class='sidebarorder d-block py-2 px-2 #if($orderstatus == "complete") complete #else $publishstatus $status #end' id="d-$downloadorderitem">
 
 			#if($publishstatus == "publishingexternal" )
 			<div id="dl-$downloadorderitem" class="downloadProgress" style="display:none;width:0%">
@@ -40,12 +40,10 @@
 						</div>
 						<div class="d-flex align-items-center">			
 							<span class="status">
-								#if($downloadordercompleted)
-									#if($publishstatus == "complete")
-										[[Downloaded]]
-									#else
-										[[Cancelled]]
-									#end
+								#if($orderstatus == "complete")
+									[[Downloaded]]
+								#elseif($orderstatus == "canceled")
+									[[Canceled]]
 								#else
 									#if($publishstatus == "readytopublish" )
 										[[Ready to Download]]
@@ -53,8 +51,8 @@
 										[[Downloading]]
 									#elseif($publishstatus == "complete" )
 										[[Downloaded]]
-									#elseif($publishstatus == "cancelled" ) 
-										[[Cancelled]]
+									#elseif($publishstatus == "canceled" ) 
+										[[Canceled]]
 									#elseif($publishstatus == "new" ) 
 										[[Processing]]
 									#end 
@@ -69,7 +67,7 @@
 							</span>
 						</div>
 						<div class="d-flex align-items-center">	
-							#if($publishstatus == "complete" || $downloadordercompleted)
+							#if($publishstatus == "complete" || $orderstatus)
 								#set( $orderage = $!context.getAge($downloadorder.getPublishedDate()))
 								#ifnotnull($orderage )
 									<span class="date">
@@ -97,13 +95,13 @@
 						#elseif($publishstatus == "readytopublish" )
 							<i class="bi bi bi-cloud-arrow-down-fill ready"></i>
 						#elseif($publishstatus == "publishingexternal" ) 
-							#if(!$downloadordercompleted)
+							#if(!$orderstatus)
 								<div class="spinner-border text-white"></div>
 							#else
-								<i class="bi bi-slash-circle-fill cancelled"></i>
+								<i class="bi bi-slash-circle-fill canceled"></i>
 							#end
-						#elseif($publishstatus == "cancelled" ) 
-							<i class="bi bi-slash-circle-fill cancelled"></i>
+						#elseif($publishstatus == "canceled" ) 
+							<i class="bi bi-slash-circle-fill canceled"></i>
 						#elseif($publishstatus == "new" ) 
 							<i class="bi bi-hourglass-split processing"></i>
 						#end 
@@ -113,8 +111,8 @@
 					$pages.include("$componenthome/results/thumbnails/small.html",$context) 
 				</div>
 				<div class="actions"> 
-					#if(!$downloadordercompleted)
-						#if($status != "error" && ($publishstatus == "complete" || $publishstatus == "readytopublish" || $publishstatus == "cancelled"))
+					#if(!$orderstatus)
+						#if($status != "error" && ($publishstatus == "complete" || $publishstatus == "readytopublish" || $publishstatus == "canceled"))
 							#if($desktop)
 							<a href="#" class="opendownloadedfile" 
 								data-orderitemid="$downloadorderitem" 
