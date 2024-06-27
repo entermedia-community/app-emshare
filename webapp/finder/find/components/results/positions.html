@@ -38,7 +38,10 @@
 				#set($updateurl = "false")
 				#set($targetdiv = "dialog$!{moduleid}resultscontainer")
 			#else
-				#if($categoryid || $collectionid)
+				#if($categoryid)
+					#if(!$category)
+						#set($category = $mediaarchive.getCachedData("category", $categoryid))
+					#end
 					#set($resultsPage = "$applink/views/modules/asset/viewfiles/${categoryid}/#dash($category).html?hitssessionid=$!hits.sessionId")
 					#set($oemaxlevel = "2")
 				#else

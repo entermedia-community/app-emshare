@@ -14,11 +14,6 @@
 $context.putPageValue("category", $category)
 $context.putPageValue("categoryid", $categoryid)
 
-#if( !$librarycol && $category )
-	#set($rootcategories = $category.getParentCategories())
-	#set( $librarycol = $mediaarchive.query("librarycollection").orgroup("rootcategory", $rootcategories).searchOne() )
-#end
-
 #set($resultview = $userprofile.get("assetresultview"))
 
 #set( $count = $hits.size())
@@ -30,7 +25,7 @@ $context.putPageValue("categoryid", $categoryid)
 $context.putPageValue("maintargetdiv", $maintargetdiv)
 
 <div id="assetresultscontainer" 
-	class="assetresults resultsdiv adjustHeightX" data-moduleid="asset" data-resultview="$!resultview"
+	class="assetresults resultsdiv" data-moduleid="asset" data-resultview="$!resultview"
 	data-hitssessionid="$!hits.getSessionId()" 
 	#if($category)
 	data-url="$apphome/views/modules/asset/viewfiles/$!categoryid/#dash($category).html" 
@@ -87,53 +82,48 @@ $context.putPageValue("maintargetdiv", $maintargetdiv)
 					 <span class="count">($count)</span>
 					</a>
 					
-					#if($topmoduleid == "favorites")
+						#if($topmoduleid == "favorites")
 						<a href="$apphome/views/modules/modulesearch/bookmarksremove.html?moduleid=${module.id}" 
 							class="ajax removemodulebookmarks rounded btn btn-brand clear-bookmarks ml-2"
 							data-targetdiv="modulesearchtopcontainer"
 							data-oemaxlevel="1"
 							data-confirm="[[Are you sure to remove items from Bookmarks?]]"
 							title="[[Remove from Bookmarks]]"><i class="bi bi-bookmark-x mr-1"></i>[[Remove All]]</a>
-					#end
-			</h3>
-			
-			<div style="float:right" >
-				
-			</div>
-		<div class="clearfix"></div>
-   		</div>
-	#end
+							#end
+					</h3>
+		   		</div>
+			#end
 	
 	
 
 			$context.putPageValue("moduleid", $moduleid)
 			#if(false)
-			#if( $hits.getSearchQuery().hasMainInput())
-				#if($moduleid=="asset")
-					#if($dialogresults)
-						#set($href = "$siteroot$apphome/views/modules/$moduleid/dialogindex.html?hitssessionid=$!hits.getSessionId()&topmoduleid=$!topmoduleid&rootcategory=$!rootcategory&categoryid=$!{categoryid}&removeterm=description")
+				#if( $hits.getSearchQuery().hasMainInput())
+					#if($moduleid=="asset")
+						#if($dialogresults)
+							#set($href = "$siteroot$apphome/views/modules/${moduleid}/dialogindex.html?hitssessionid=$!hits.getSessionId()&topmoduleid=$!topmoduleid&rootcategory=$!rootcategory&categoryid=$!{categoryid}&removeterm=description")
+						#else
+							#set($href = "$siteroot$apphome/views/modules/${moduleid}/index.html?hitssessionid=$!hits.getSessionId()&topmoduleid=$!topmoduleid&rootcategory=$!rootcategory&categoryid=$!{categoryid}&removeterm=description")		
+						#end
+						#set($oemaxlevel = "1")
 					#else
-						#set($href = "$siteroot$apphome/views/modules/$moduleid/index.html?hitssessionid=$!hits.getSessionId()&topmoduleid=$!topmoduleid&rootcategory=$!rootcategory&categoryid=$!{categoryid}&removeterm=description")		
+						#set($href = "$siteroot$apphome/views/modules/${moduleid}/index.html?hitssessionid=$!hits.getSessionId()&removeterm=$!term.getId()")
+						#set($oemaxlevel = "1")
 					#end
-					#set($oemaxlevel = "1")
-				#else
-					#set($href = "$siteroot$apphome/views/modules/$moduleid/index.html?hitssessionid=$!hits.getSessionId()&removeterm=$!term.getId()")
-					#set($oemaxlevel = "1")
+					<div class="emgrid-subtitle autostickywidth d-flex align-items-center">
+						<p class="mb-0 ml-2 search-term">
+							<span style="font-size: 1rem;">[[Found]] <strong>$count</strong> [[results for]] "<strong>$hits.getSearchQuery().getMainInput()</strong>"</span>
+							<a href="$href"
+								class="ajax"
+								title="[[Clear]]: #esc($hits.getSearchQuery().getMainInput())"
+								data-targetdiv="$!maintargetdiv" 
+								data-oemaxlevel="$oemaxlevel"
+								data-updateurl="false"> 
+								<i class="bi bi-x ml-1"></i>
+							</a>
+						</p>
+					</div>
 				#end
-				<div class="emgrid-subtitle autostickywidth d-flex align-items-center">
-					<p class="mb-0 ml-2 search-term">
-						<span style="font-size: 1rem;">[[Found]] <strong>$count</strong> [[results for]] "<strong>$hits.getSearchQuery().getMainInput()</strong>"</span>
-						<a href="$href"
-							class="ajax"
-							title="[[Clear]]: #esc($hits.getSearchQuery().getMainInput())"
-							data-targetdiv="$!maintargetdiv" 
-							data-oemaxlevel="$oemaxlevel"
-							data-updateurl="false"> 
-							<i class="bi bi-x ml-1"></i>
-						</a>
-					</p>
-				</div>
-			#end
 			#end
 		$pages.include("$componenthome/results/index.html", $context)
 	</div>
