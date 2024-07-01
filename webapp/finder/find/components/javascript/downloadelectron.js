@@ -403,7 +403,16 @@ jQuery(document).ready(function () {
     var path = $(this).data("path");
     ipcRenderer.send("openFolder", { path });
   });
-
+/*  
+   lQuery(".pick-folder").livequery("click", function (e) {
+    //var path = $(this).data("path");
+    ipcRenderer.send("pickFolder", {  });
+  });
+  
+  ipcRenderer.on("folder-fetched", (_, data) => { 
+	  $("#pushSaveFolder").val();
+  });
+*/
   lQuery(".refresh-sync").livequery("click", function (e) {
     e.preventDefault();
     var entitydialog = $(this).closest(".entitydialog");
@@ -436,6 +445,42 @@ jQuery(document).ready(function () {
       },
     });
   });
+  
+  
+   lQuery(".refresh-sync-push").livequery("click", function (e) {
+    e.preventDefault();
+    var entitydialog = $(this).closest(".entitydialog");
+    if (entitydialog.length == 0) {
+      return;
+    }
+    var categorypath = entitydialog.data("categorypath");
+    refreshSyncPush(categorypath);
+  });
+  
+  function refreshSyncPush(categorypath) {
+    ipcRenderer.send("fetchFilesPush", {
+      categorypath: categorypath,
+    });
+  }
+
+  
+  ipcRenderer.on("files-fetched-push", (_, data) => {
+    $.ajax({
+      type: "POST",
+      url: apphome + "/components/desktop/import/push.html",
+      data: JSON.stringify(data),
+      contentType: "application/json",
+      //dataType: "json",
+      success: function (res) {
+        $("#tabimportcontent").html(res);
+      },
+      //handle error
+      error: function (xhr, status, error) {
+        console.log("error", xhr, status, error);
+      },
+    });
+  });
+  
 
   ipcRenderer.on("refresh-sync", (_, { categorypath }) => {
     refreshSync(categorypath);
@@ -461,6 +506,36 @@ jQuery(document).ready(function () {
       ipcRenderer.send("fetchfilesdownload", { assetid, file, headers });
     });
   });
+  
+  var uploadcount = 0;
+  
+  lQuery(".upload-push").livequery("click", function (e) {
+    e.preventDefault();
+    //var headers = { "X-tokentype": "entermedia", "X-token": entermediakey };
+    var entitydialog = $(this).closest(".entitydialog");
+    if (entitydialog.length == 0) {
+      return;
+    }
+    var categorypath = entitydialog.data("categorypath");
+	
+    $("#pushfiles li").each(function () {
+      var item = $(this);
+      var abspath = item.data("abspath");
+      var options = {
+		 "itemid" : uploadcount,
+        "sourcepath": categorypath + "/" + item.data("path"),
+        "categorypath": categorypath,
+        "abspath" : abspath,
+        "headers": headers,
+        "mediadb": mediadb,
+      };
+      
+      ipcRenderer.send("start-upload", options);
+      uploadcount++;
+    });
+  });
+  
+  
   lQuery(".pull-individual").livequery("click", function (e) {
     e.preventDefault();
     var entitydialog = $(this).closest(".entitydialog");
