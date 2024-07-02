@@ -955,7 +955,7 @@ $(document).ready(function () {
       jqxhr.responseText +
       "\n URL: " +
       settings.url;
-    alert(errors);
+    console.error(errors);
     return;
   });
 
