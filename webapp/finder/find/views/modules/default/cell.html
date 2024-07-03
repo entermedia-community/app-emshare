@@ -1,18 +1,23 @@
 #set($id = $context.getRequestParameter('detailid'))
 #set($dataid = $context.getRequestParameter('dataid'))
 #set($view = $context.getRequestParameter('view'))
-#set($val = $context.getRequestParameter('val'))
 
 #set($searcher = $searcherManager.getSearcher($catalogid, $searchtype))
 #if(!$detail)
 	#set($detail = $searcher.getDetail($id))
 #end
-
 #if(!$data)
 	#set($data = $searcher.searchById($dataid))
-	#set($val = $data.get($id))
-	#set($value = $data.getValue($id))
 #end
+
+#set($val = $data.get($id))
+
+#if($detail.isMultiValue())
+	#set($value = $data.getValues($id))
+#else
+	#set($value = $data.getValue($id)) 
+#end
+
 $context.putPageValue('data', $data )
 $context.putPageValue('val', $val )
 $context.putPageValue('value', $value )

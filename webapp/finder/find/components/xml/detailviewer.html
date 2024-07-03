@@ -52,13 +52,13 @@
 		#end
 		</li>
 	#end
-	#set( $val = false)
-	
-	
-	
-	#set( $value = $searcher.getSearcherManager().getValue($data, $detail) )
 	
 	#set( $val = $data.get($detail.getId()) )
+	#if($detail.isMultiValue())
+		#set($value = $data.getValues($detail.id))
+	#else
+		#set($value = $data.getValue($detail.id)) 
+	#end
 	
 	
 	#if(  $val  || $value)

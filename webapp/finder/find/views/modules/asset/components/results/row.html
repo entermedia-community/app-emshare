@@ -54,8 +54,12 @@ $context.putPageValue("title",$title)
 	      	#end
 	      	#set($val = $value)
 	    #else	
-			#set( $value = $hit.getValue($detail.id))
 			#set( $val = $hit.get($detail.id))
+			#if($detail.isMultiValue())
+				#set($value = $hit.getValues($detail.id))
+			#else
+				#set($value = $hit.getValue($detail.id)) 
+			#end
 		#end
 		
 		#if( !$value && $detail.render )	

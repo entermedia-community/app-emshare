@@ -45,13 +45,13 @@
 	#end
 	
 	#if( !$val )
-	 	#set( $value = $data.getValue($detail.id))
 	 	#set( $val = $data.get($detail.id))
 	 	
-		#if(!$val && $detail.rendermask)
-			#set($val = $searcherManager.getValue($detail.getListCatalogId(), $detail.rendermask, $detail.getSearchType(), $data, null, $context.getLocale()))
+	 	#if($detail.isMultiValue())
+				#set($value = $data.getValues($detail.id))
+			#else
+				#set($value = $data.getValue($detail.id)) 
 		#end
-
 	#end
 	
 	#if(!$val && $detailid=="primarymedia")
