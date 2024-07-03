@@ -678,6 +678,9 @@ uiload = function () {
     if (_this.hasClass("alert-save")) {
       _this.prepend('<span class="bi bi-check-circle-fill ns"></span>');
       _this.append('<button><span class="bi bi-x-circle ns"></span>');
+    } else if (_this.hasClass("alert-error")) {
+      _this.prepend('<span class="bi bi-info-circle-fill ns"></span>');
+      _this.append('<button><span class="bi bi-x ns"></span>');
     }
     setTimeout(function () {
       _this.fadeOut(500, function () {
@@ -818,7 +821,6 @@ uiload = function () {
         },
         crossDomain: true,
         error: function (data) {
-          alert("error");
           if (targetdiv) {
             $("#" + $.escapeSelector(targetdiv)).html(data);
           }

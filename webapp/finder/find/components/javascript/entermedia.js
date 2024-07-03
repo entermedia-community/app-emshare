@@ -948,6 +948,11 @@ $(document).ready(function () {
       // "parsererror".
       return;
     }
+
+    $("#application").append(
+      '<div class="alert fader alert-error" role="alert">Error processing the request</div>'
+    );
+
     var errors =
       "Error: " +
       exception +
@@ -958,7 +963,6 @@ $(document).ready(function () {
     console.error(errors);
     return;
   });
-
   onloadselectors();
   emcomponents();
 });
