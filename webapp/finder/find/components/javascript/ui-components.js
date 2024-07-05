@@ -278,6 +278,14 @@ runajax = function (e) {
   return false;
 };
 
+lQuery(".reloadpage").livequery(function () {
+ 	window.location.reload();
+ });
+lQuery(".redirecttopage").livequery(function () {
+	var url = $(this).data("redirectok");
+ 	window.location.href = url;
+ }); 
+
 uiload = function () {
   var app = jQuery("#application");
   var apphome = app.data("siteroot") + app.data("apphome");
