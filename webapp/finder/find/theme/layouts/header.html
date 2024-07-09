@@ -173,6 +173,23 @@
 							#end
 						</div> 
 					</div> 
+          #if ( $canviewappsmenu && !$appsmenu.isEmpty())
+          <div class="dropdown dropleft site-switcher">
+            <a class="dropdown-item dropdown-toggle" href="#" data-toggle="dropdown"> 
+              <i class="bi bi-arrow-repeat mr-2"></i>[[Switch Site]]
+            </a>
+            <div class="dropdown-menu">
+              #foreach( $link in $appsmenu)
+                #set($linkurl = $link.get("url"))
+                #ifnotnull($linkurl) 
+                  <a href='$linkurl' class='dropdown-item' title='#if( $link.deploypath != $apphome)[[Go to]] #end #text($link)'>
+                    #if( $link.deploypath == $apphome)<i class="bi bi-check-circle-fill ns mr-2"></i>#end #text($link)
+                  </a>
+                #end
+              #end
+            </div>
+          </div>
+          #end
 					<a class="dropdown-item" href="$!siteroot$apphome/authentication/logout.html" title="[[Logout]]">
 						[[Logout]] ($user)
 					</a> 
