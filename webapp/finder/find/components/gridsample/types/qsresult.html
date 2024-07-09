@@ -52,21 +52,7 @@ $context.putPageValue("previewurl", $previewurl)
 		data-moduleid="$!moduleid" 
 		title="[[View]]: #text($!entity)">
   	 
-   	 	##check for view
-		#set($viewid = "${moduleid}gridfields")
-		#set($view = "$moduleid/$viewid")
-
-		#if( $context.getUserProfile() )
-			#set($searcher = $searcherManager.getSearcher($catalogid,$moduleid))
-			#set ($details = $searcher.getDetailsForView($view, $context.getUserProfile()))
-			
-		#else
-			#set ($details = $searcher.getDetailsForView($view))
-			
-		#end
-		
-		$context.putPageValue("details", $details)
-		
+	
 		##look for primaryimage
 	
 		#set( $primarymediafield = $searcher.getDetailForView($view, "primarymedia", $user) )
