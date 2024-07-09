@@ -35,7 +35,7 @@ $context.putPageValue("entityrendertype", $entityrendertype)
 	#end
 #end
 	
-<div id="resultsheader" class="resultsheader">
+<div id="resultsheader" class="resultsheader #if($!hits.getSelectionSize() > 0)hasselections#end">
 	<div id="sub-nav" class="search-views emsubnav sub-nav-$!moduleid">
 		<ul class="resultsnav">
 			#if($permissions.can($moduleid, "create") && $moduleid!="faceprofilegroup" && $moduleid!="order")
@@ -51,7 +51,7 @@ $context.putPageValue("entityrendertype", $entityrendertype)
 			#end
 			#if($resultview != "grid")
 			<li class="dropdown">
-				<a class="resultsnavlink dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+				<a class="resultsnavlink dropdown-toggle #if($!hits.getSelectionSize() > 0)btn-accent#end" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 					#if($!hits.getSelectionSize() > 0)
 						[[Selected]] ($!hits.getSelectionSize())
 					#else

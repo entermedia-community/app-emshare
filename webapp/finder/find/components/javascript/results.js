@@ -338,6 +338,14 @@ jQuery(document).ready(function (url, params) {
     $("#mainsearchvalue").val("");
   });
 
+  lQuery(".resultsheader").livequery(function () {
+    if ($(this).hasClass("hasselections")) {
+      $(this).parent().find("#unselectall").show();
+    } else {
+      $(this).parent().find("#unselectall").hide();
+    }
+  });
+
   lQuery("a.selectpage").livequery("click", function () {
     var resultsdiv = $(this).closest(".resultsdiv");
     if (!resultsdiv) {
