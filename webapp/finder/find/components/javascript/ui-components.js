@@ -279,12 +279,12 @@ runajax = function (e) {
 };
 
 lQuery(".reloadpage").livequery(function () {
- 	window.location.reload();
- });
+  window.location.reload();
+});
 lQuery(".redirecttopage").livequery(function () {
-	var url = $(this).data("redirectok");
- 	window.location.href = url;
- }); 
+  var url = $(this).data("redirectok");
+  window.location.href = url;
+});
 
 uiload = function () {
   var app = jQuery("#application");
@@ -2460,6 +2460,23 @@ uiload = function () {
         separator: "|",
       });
     }
+
+    theinput.on("select2:open", function (e) {
+      var selectId = $(this).attr("id");
+      if (selectId) {
+        $(
+          ".select2-search__field[aria-controls='select2-" +
+            selectId +
+            "-results']"
+        ).each(function (key, value) {
+          value.focus();
+        });
+      } else {
+        document
+          .querySelector(".select2-container--open .select2-search__field")
+          .focus();
+      }
+    });
 
     theinput.on("select2:select", function () {
       if ($(this).parents(".ignore").length == 0) {

@@ -38,6 +38,23 @@
 				<img src="$logourl" class="logoimg" alt="[[eMediaWorkspace]]" />
 			</a>
 		#end
+    #if ( $canviewappsmenu && !$appsmenu.isEmpty())
+    <div class="dropdown site-switcher">
+      <button class="dropdown-toggle btn py-1 px-2 rounded" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <i class="fas fa-chevron-down text-white" style="margin-top: 2px;"></i>
+      </button>
+      <div class="dropdown-menu">
+        #foreach( $link in $appsmenu)
+          #set($linkurl = $link.get("url"))
+          #ifnotnull($linkurl) 
+            <a href='$linkurl' class='dropdown-item d-flex align-items-center' title='#if( $link.deploypath != $apphome)[[Go to]] #end #text($link)'>
+              #text($link) #if( $link.deploypath == $apphome)<i class="bi bi-check-circle-fill ns ml-2"></i>#end
+            </a>
+          #end
+        #end
+      </div>
+    </div>
+    #end
 	</div>
 	
 	#if($canviewquicksearchheader)
@@ -55,7 +72,7 @@
 		#if( $uploadmodules > 0 && $canviewupload )
 			<div class="headeruploadarea">
 				##$pages.include("$apphome/components/upload/types/html5inlinetop.html", $context)
-				<div class="dropdown show">
+				<div class="dropdown">
 					<a class="btn-upload dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 						[[Upload to]]
 					</a>
