@@ -305,13 +305,6 @@ uiload = function () {
     });
   }
 
-  lQuery(".setpagetitleX").livequery(function () {
-    var setpagetitle = $(this).data("setpagetitle");
-    if (setpagetitle) {
-      document.title = setpagetitle;
-    }
-  });
-
   lQuery("a.ajax").livequery("click", runajax);
 
   var browserlanguage = app.data("browserlanguage");

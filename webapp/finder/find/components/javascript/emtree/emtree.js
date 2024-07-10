@@ -174,16 +174,23 @@ $(document).ready(function () {
         //data = $(data);
 
         var targetdiv = tree.data("targetdivinner");
+        var onpage;
         if (targetdiv) {
-          var cell = jQuery("#" + targetdiv);
-          cell.html(data);
+          	var cell = jQuery("#" + targetdiv);
+          	onpage = cell;
+          	cell.html(data);
         } else {
-          targetdiv = tree.data("targetdiv");
-          if (targetdiv) {
-            var cell = jQuery("#" + targetdiv);
-            cell.replaceWith(data);
-          }
+          	targetdiv = tree.data("targetdiv");
+          	if (targetdiv) {
+	            var cell = jQuery("#" + targetdiv);
+	            onpage = cell.parent();
+	            cell.replaceWith(data);
+	         }
         }
+        
+        cell = findclosest(onpage, "#" + targetdiv);
+        
+        setPageTitle(cell);
 
         if (
           typeof global_updateurl !== "undefined" &&
