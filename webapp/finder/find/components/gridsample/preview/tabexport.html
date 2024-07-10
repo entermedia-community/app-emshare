@@ -18,6 +18,9 @@ $context.putPageValue("parentsearchtype", $parentsearchtype)
 #ifnotnull($topmoduleid)
 		#set($topmodule = $mediaarchive.getCachedData("module", $topmoduleid))
 #end
+#if(!$moduleid)
+	#set($moduleid = $topmodule.getId())
+#end
 #ifnull($viewid)
 #set($viewid = $context.getRequestParameter("viewid"))
 #end
@@ -44,6 +47,7 @@ $context.putPageValue("tabmode", $tabmode)
 >
 	<div id="$!submodulepickerid" class="d-flex align-items-stretch pr-2 pb-2" style="height: 100%;">
 		<div class='entityimport auto-active-container '>
+			#if($permissions.can($moduleid, "copyentity"))
 			<div class='auto-active-row #if($tabsection=="copy") current #end'>
 			<a class='ajax btn btn-lg btn-wide  auto-active-link '
 				data-targetdivinner="tabexportcontent"
@@ -53,7 +57,8 @@ $context.putPageValue("tabmode", $tabmode)
 				href="$componenthome/entities/copydialog.html?entityid=$!{entityid}&moduleid=$!{topmoduleid}&defaultcategoryid=$defaultcategory.getId()">
 				<i class="bi bi-folder-plus"></i> &nbsp;[[Copy]]</a>
 			</div>
-			
+			#end
+			#if($permissions.can($moduleid, "moveentity"))
 			<div class='auto-active-row #if($tabsection=="move") current #end'>
 			<a class='ajax btn btn-lg btn-wide auto-active-link '
 				data-targetdivinner="tabexportcontent"
@@ -63,11 +68,11 @@ $context.putPageValue("tabmode", $tabmode)
 				href="$componenthome/entities/movedialog.html?entityid=$!{entityid}&moduleid=$!{topmoduleid}&defaultcategoryid=$defaultcategoryid">
 				<i class="bi bi-folder-plus"></i> &nbsp;[[Move]]</a>
 			</div>
-			
+			#end
 			
 			
 					
-			
+			#if($permissions.can($moduleid, "downloadall"))
 				<div class='auto-active-row  #if($tabsection=="download") current #end'>
 				<a class='ajax btn btn-lg btn-wide auto-active-link '
 				data-targetdivinner="tabexportcontent"
@@ -77,16 +82,17 @@ $context.putPageValue("tabmode", $tabmode)
 				href="$componenthome/entities/download.html?entityid=$!{entityid}&moduleid=$!{topmoduleid}&defaultcategoryid=$defaultcategory.getId()">
 				<i class="bi bi-folder"></i> &nbsp;[[Download]]</a>
 				</div>
-				
+			#end
+			#if($permissions.can($moduleid, "shareentity"))	
 				<div class="auto-active-row #if($tabsection=="share") current #end">
 				<a href="$componenthome/share/entity.html?entityid=$!{entityid}&moduleid=$!{topmoduleid}&defaultcategoryid=$!defaultcategory.getId()"
 				class='btn btn-lg btn-wide ajax auto-active-link'
 				data-targetdivinner="tabexportcontent"
 				data-oemaxlevel="1"><i class="bi bi-share-fill"></i> [[Share]]</a>
 				</div>
+			#end
 				
-				
-				#if($desktop)
+				#if($desktop && $permissions.can($moduleid, "exportpulltoserver"))
 				<div class='auto-active-row #if($tabsection=="pulllocal") current #end'>
 				<a  class='btn btn-lg btn-wide ajax refresh-sync auto-active-link '
 					data-targetdivinner="tabexportcontent"

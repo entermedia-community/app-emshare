@@ -169,7 +169,7 @@ $context.putPageValue("topmoduleid", $moduleid)
 						$context.putPageValue("itemid", $entity.id)
 						$pages.include("$componenthome/gridsample/favorites.html?id=$entity.id&moduleid=$moduleid", $context)
 						
-						
+						#if($permissions.can($moduleid, "shareentity"))
 						<a href="$applink/views/modules/${moduleid}/components/gridsample/preview/tabexport.html?entityid=$!entity.getId()" 
 						class="entitytabactions btn-accent"
 						data-tabaction="export"
@@ -180,7 +180,7 @@ $context.putPageValue("topmoduleid", $moduleid)
 						data-moduleid="$!moduleid"
 						data-tabsection="share"
 						data-targetdiv="" title="[[Share]]"><i class="bi bi-share"></i></a>
-						
+						#end
 					</div>
 				#end
 			</div>
@@ -190,6 +190,13 @@ $context.putPageValue("topmoduleid", $moduleid)
 			
 			<div class="d-flex entity-actions-bar align-items-center text-white">
 				#if(!$ismulti && $entity)
+				
+				#if($permissions.can($moduleid, "upload_files") ||
+					$permissions.can($moduleid, "upload_folders") ||
+					$permissions.can($moduleid, "importurl") ||
+					$permissions.can($moduleid, "importassets") ||
+					$permissions.can($moduleid, "importfolders") ||
+					($desktop && $permissions.can($moduleid, "importpushtoserver")))
 				<a href="#"
 						class='btn btn-sm btn-accent entitytabactions tabactionimport #if($entitytabopen=="import")enabledaction #end '
 						data-tabaction="import"
@@ -201,7 +208,13 @@ $context.putPageValue("topmoduleid", $moduleid)
 						data-tabsection="upload"
 						data-hitssessionid="$entityhits.getSessionId()"
 						title="[[Import]] #text($module) "><i class="bi bi-box-arrow-in-right mr-1"></i> [[Import]]</a>
-						
+				#end	
+				#if($permissions.can($moduleid, "copyentity") ||
+					$permissions.can($moduleid, "moveentity") ||
+					$permissions.can($moduleid, "downloadall") ||
+					$permissions.can($moduleid, "shareentity") ||
+					($desktop && $permissions.can($moduleid, "exportpulltoserver")))	
+					
 				<a href="#"
 						class='btn btn-sm btn-accent entitytabactions tabactionexport #if($entitytabopen=="export")enabledaction #end '
 						data-tabaction="export"
@@ -212,9 +225,9 @@ $context.putPageValue("topmoduleid", $moduleid)
 						data-moduleid="$!moduleid"
 						data-tabsection="copy"
 						title="[[Export]] #text($module) ">[[Export]]&nbsp;<i class="bi bi-box-arrow-right ml-1"></i></a>
+				#end
 						
-						##href="$applink/views/modules/$moduleid/edit/editdialog.html?id=${entityid}&viewid=entitypermissions"
-				
+			
 				#if($permissions.can($moduleid, "publishinggallery") && $entityid && $canpublishing)
 					#if($publishing || $entity.getValue("enablepublishing"))
 						#set($enabledpublishing = true)
@@ -318,6 +331,7 @@ $context.putPageValue("topmoduleid", $moduleid)
 							#else
 								####Other Tabs
 									##View Permission
+									
 									#if($permissions.can($moduleid, $viewid))
 										#set($tabtype= "entitytab")
 										#ifnotnull($targetview.rendertype)

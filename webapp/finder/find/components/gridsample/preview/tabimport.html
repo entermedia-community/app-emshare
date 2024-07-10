@@ -15,7 +15,10 @@ $context.putPageValue("parentsearchtype", $parentsearchtype)
 	$context.putPageValue("topmoduleid", $topmoduleid)
 #end
 #ifnotnull($topmoduleid)
-		#set($topmodule = $mediaarchive.getCachedData("module", $topmoduleid))
+	#set($topmodule = $mediaarchive.getCachedData("module", $topmoduleid))
+#end
+#if(!$moduleid)
+	#set($moduleid = $topmodule.getId())
 #end
 #ifnull($viewid)
 #set($viewid = $context.getRequestParameter("viewid"))
@@ -42,13 +45,15 @@ $context.putPageValue("tabmode", $tabmode)
 >
 	<div id="$!submodulepickerid" class="d-flex align-items-stretch pr-2 pb-2" style="height: 100%;">
 		<div class="entityimport auto-active-container">
+			#if($permissions.can($moduleid, "upload_files") || $permissions.can($moduleid, "upload_folfers") )
 			<div class='auto-active-row  #if($tabsection=="upload") current #end'>
 			<a href="$apphome/views/modules/asset/add/tabentityaddmedia.html?categoryid=$!defaultcategory.getId()"
 				class="btn btn-lg btn-wide ajax auto-active-link "
 				data-targetdivinner="tabimportcontent"
 				data-oemaxlevel="1"><i class="bi bi-file-earmark-arrow-up-fill"></i> [[Upload]]</a>
 			</div>
-			
+			#end
+			#if($permissions.can($moduleid, "importurl"))
 			<div class="auto-active-row">
 			<a href="$siteroot$apphome/components/createmedia/url/start.html?categoryid=$!defaultcategory.getId()"
 				class="btn btn-lg btn-wide ajax auto-active-link" 
@@ -56,9 +61,10 @@ $context.putPageValue("tabmode", $tabmode)
 				data-oemaxlevel="1">
 				<i class="bi bi-link-45deg"></i> [[Import from URL]]</a>
 			</div>
+			#end
 			
-			
-			<h4 class="text-center">[[Importing]]</h4>
+			##<h4 class="text-center">[[Importing]]</h4>
+			#if($permissions.can($moduleid, "importassets"))
 			<div class="auto-active-row">
 			<a class="ajax btn btn-lg btn-wide auto-active-link "
 				id="poptrigger"
@@ -71,7 +77,8 @@ $context.putPageValue("tabmode", $tabmode)
 				href="$apphome/components/entities/import/autopopulate.html?id=$!entityid"
 				><i class="bi bi-file-check-fill"></i> &nbsp;[[Search Files]]</a>
 			</div>
-			
+			#end
+			#if($permissions.can($moduleid, "importfolders"))
 			<div class="auto-active-row">
 			<a class="ajax btn btn-lg btn-wide auto-active-link "
 				data-targetdivinner="tabimportcontent"
@@ -79,8 +86,8 @@ $context.putPageValue("tabmode", $tabmode)
 				data-targetcategoryid="$!defaultcategory.id"
 				href="$apphome/components/entities/import/choosecategory.html?id=$!searchby"><i class="bi bi-folder-plus"></i> &nbsp;[[Choose Folders]]</a>
 			</div>
-			
-			#if($desktop)
+			#end
+			#if($desktop && $permissions.can($moduleid, "importpushtoserver"))
 				<div class="auto-active-row">
 				<a  class="btn btn-lg btn-wide ajax refresh-sync-push auto-active-link "
 				data-targetdivinner="tabimportcontent"

@@ -30,9 +30,21 @@
         #if ( !$permissionentitytype )
            #set ( $permissionentitytype = "*" )
         #end
-        
-	    #set( $hits = $permissionsearcher.query().match("permissionentitytype", $permissionentitytype).sort("ordering").search() )
+      
+	    #set( $hits = $permissionsearcher.query().match("permissionentitytype", $permissionentitytype).sort("permissionentitytype").sort("ordering").search() )
     	<table class="table table-striped emdata settings-table">	
+			<thead>
+			<tr class="">
+		    <td valign="middle" style="text-align: center; width: 35px;">
+    		<input id="checkbox-enableall" class="permission-radio" type="checkbox" name="noname" value="" disabled="disabled"
+    			#if( $permissionassigned.isEmpty() )
+    		  		 checked      		  		#end />
+    		
+    		</td>
+    		<td valign="middle"><label for="checkbox-enableall" style="padding:5px 0 1px 0;">[[Allow All Permissions]]</label></td>
+    		<td class="caption">[[If no permissions are checked then all enabled]]</td>		        			
+    		</tr>		
+    		</thead>
 		    #set( $section = "none")
 	    	#foreach($item in $hits )
 	        		
@@ -40,7 +52,7 @@
 	        		<thead>
 	        			<tr class="sectionlevel section${item.permissiontype} togglesection">
 	        			<td colspan="3" style="height: 35px; line-height: 35px;">
-	        				#set($permissiontype = $mediaarchive.getData("permissionentitytype", $!item.permissionentitytype))
+	        				#set($permissiontype = $mediaarchive.getCachedData("permissionentitytype", $!item.permissionentitytype))
 	        				#text($permissiontype)
 	        				
 	        			</td>
@@ -48,16 +60,7 @@
 	        		</thead>
 	        		#set( $section = $item.permissionentitytype)
 
-		        		<tr class="">
-		        		<td valign="middle" style="text-align: center; width: 35px;">
-		        		<input class="permission-radio" type="checkbox" name="noname" value="" disabled="disabled"
-		        			#if( $permissionassigned.isEmpty() )
-		        		  		 checked      		  		#end />
-		        		
-		        		</td>
-		        		<td valign="middle"><label for="checkbox-$!item.id" style="padding:5px 0 1px 0;">[[Allow All Permissions]]</label></td>
-		        		<td class="caption">[[If no permissions are checked then all enabled]]</td>		        			
-		        		</tr>					
+		        					
 	        		
 	        			
 	        		#end
@@ -81,19 +84,30 @@
 			$!query.addSortBy("ordering")
 			#set( $views = $viewsearcher.search($query))
 			
-			#foreach( $target in $views)
-				#set($val = $permissionassigned.get($target.id))
-				<tr class="viewpermission">
-	        		<td valign="middle" style="text-align: center; width: 35px;">
-					<input type="hidden" name="field" value="${target.id}" />
-	        		<input class="permission-radio" type="checkbox" name="${target.id}.value" value="true" data-permissionsentity="$target.id" id="checkbox-$target.id"
-	        		 #if($val) checked #end/>
+			#if($views)
+				    <thead>
+	        			<tr class="sectionlevel section${item.permissiontype} togglesection">
+	        			<td colspan="3" style="height: 35px; line-height: 35px;">
+							[[Views]]
+	        			</td>
+	        			</tr>
+	        		</thead>
 	        		
-	        		</td>
-	        		<td valign="middle"><label for="checkbox-$!target.id" style="padding:5px 0 1px 0;">#text($target) [[View]]</label></td>
-	        		<td class="caption">#text($target) [[View]]</td>
-	        			
-	        	</tr>
+					
+					#foreach( $target in $views)
+						#set($val = $permissionassigned.get($target.id))
+						<tr class="viewpermission">
+			        		<td valign="middle" style="text-align: center; width: 35px;">
+							<input type="hidden" name="field" value="${target.id}" />
+			        		<input class="permission-radio" type="checkbox" name="${target.id}.value" value="true" data-permissionsentity="$target.id" id="checkbox-$target.id"
+			        		 #if($val) checked #end/>
+			        		
+			        		</td>
+			        		<td valign="middle"><label for="checkbox-$!target.id" style="padding:5px 0 1px 0;">#text($target) [[View]]</label></td>
+			        		<td class="caption">#text($target) [[View]]</td>
+			        			
+			        	</tr>
+			    	#end
 	    	#end
 	    	
     	</table>
