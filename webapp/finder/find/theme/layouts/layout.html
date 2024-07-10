@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	##set( $section = $content.section)
+	#set( $section = $content.section)
 
 	#set( $title = $mediaarchive.getCatalogSettingValue("sitetitle"))
 	<title data-titlebase="$title">
@@ -14,10 +14,13 @@
 			#text($selectedentity) - $title
 		#end	
 		#ifnull($selectedentity)
-			#ifnotnull($module)
+			#if($section == "myaccount")
+				[[My Account]] - $title
+			#elseif($section == "dashboard")
+				[[Dashboard Reports]] - $title
+			#elseif($module)
 				#text($module) - $title
-			#end	
-			#ifnull($module)
+			#else($module)
 				$title
 			#end
 		#end		

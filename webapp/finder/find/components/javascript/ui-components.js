@@ -173,17 +173,19 @@ runajaxonthis = function (inlink, e) {
             cell = findclosest(inlink, "#" + targetDiv);
           }
           var onpage;
+          var newcell;
           if (replaceHtml) {
             //Call replacer to pull $scope variables
             onpage = cell.parent();
             cell.replaceWith(data); //Cant get a valid dom element
+            newcell = findclosest(onpage, "#" + targetDiv);
           } else {
             onpage = cell;
             cell.html(data);
+            newcell = onpage.children(":first");
           }
-          cell = findclosest(onpage, "#" + targetDiv);
 
-          setPageTitle(cell);
+          setPageTitle(newcell);
 
           //on success execute extra JS
           if (inlink.data("onsuccess")) {

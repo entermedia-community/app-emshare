@@ -1,7 +1,12 @@
 #set($section = $content.section)
 
-#set($setpagetitle = "#text($category) #text($module)")
-
+#if($section == "myaccount")
+	#set($setpagetitle = "[[My Account]]")
+#elseif($section == "dashboard")
+#set($setpagetitle = "[[Dashboard Reports]]")
+#else
+	#set($setpagetitle = "#text($category) #text($module)")
+#end
 #if($cansidebar)
 #set($forcedsidebarcomponent = $context.getRequestParameter("sidebarcomponent")) 
 #if($forcedsidebarcomponent)
@@ -30,7 +35,6 @@
 <div id="applicationcontent"  
 	class="cols-main #if ($module) cols-$module.id #end cols-${section}" 
 	data-moduleid="$!module.id" 
-   	data-titlepostfix='$!mediaarchive.getCatalogSettingValue("sitetitle")'
 	data-setpagetitle="$!setpagetitle"
 >
 
