@@ -185,12 +185,18 @@ $context.putPageValue("edit", $edit)
 				class="ajax btn btn-sm btn-dark" 
 				style="margin-right:10px;"><i class="bi bi-pencil-square mr-1"></i> [[Edit]]</a>
 		#end
-		#if(!$ismulti && $module.getBoolean("enableuploading") && $permissions.can($moduleid, "view_files"))
+		#if(!$ismulti && $permissions.can($moduleid, "view_files"))
 			<a href="$applink/views/modules/${moduleid}/components/gridsample/preview/entitytabmedia.html" 
 				class="btn btn-sm btn-dark entitytabactions"
 				data-tabaction="media"
 				data-uploadmedia="true" 
-				style="margin-right:10px;"><i class="bi bi-image mr-1"></i> [[View/Upload Files]]</a>
+				style="margin-right:10px;"><i class="bi bi-image mr-1"></i> 
+				#if($module.getBoolean("enableuploading"))
+				[[View/Upload Files]]
+				#else
+				[[View Files]]
+				#end
+				</a>
 		#end
 		#if(!$ismulti && $permissions.can($moduleid, "delete"))
 		<a href="$!siteroot$applink/views/modules/$!{moduleid}/components/entities/delete.html?id=$data.id" 
