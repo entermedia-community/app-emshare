@@ -1418,8 +1418,8 @@ uiload = function () {
   });
 
   function entitytabclick(link) {
-    if (link.data("ismultiedit")) {
-      //return;
+    if (link.data("isnewentity")) {
+      return;
     }
     var tabid = link.data("tabid");
     var currenttab = link.data("currenttab");
