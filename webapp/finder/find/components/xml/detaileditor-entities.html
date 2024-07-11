@@ -48,11 +48,12 @@
 	 	#set( $val = $data.get($detail.id))
 	 	
 	 	#if($detail.isMultiValue())
-				#set($value = $data.getValues($detail.id))
+				#set($value = $searcherManager.getValues($detail.getListCatalogId(), $detail.rendermask, $detail.getSearchType(), $data, null, $context.getLocale()))
 			#else
-				#set($value = $data.getValue($detail.id)) 
+
+				#set($value = $searcherManager.getValue($detail.getListCatalogId(), $detail.rendermask, $detail.getSearchType(), $data, null, $context.getLocale()))
 		#end
-	#end
+	#end 
 	
 	#if(!$val && $detailid=="primarymedia")
 		#set( $val = $!data.getValue("primaryimage") )
@@ -61,6 +62,7 @@
 	#if( !$val) 
 		#set( $val = "") 
 	#end
+	
 	#set( $editrow = $detail.isEditable() && $readonly != "true") 
 		
 	#if( $editrow || $val || $value)
