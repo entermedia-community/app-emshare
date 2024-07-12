@@ -4564,6 +4564,7 @@ showajaxstatus = function (uid) {
         data: data,
         success: function (data) {
           cell.replaceWith(data);
+          checkautoreload(cell);
         },
         xhrFields: {
           withCredentials: true,
