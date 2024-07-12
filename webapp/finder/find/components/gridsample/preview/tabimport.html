@@ -64,20 +64,24 @@ $context.putPageValue("tabmode", $tabmode)
 			#end
 			
 			##<h4 class="text-center">[[Importing]]</h4>
-			#if($permissions.can($moduleid, "importassets"))
-			<div class="auto-active-row">
-			<a class="ajax btn btn-lg btn-wide auto-active-link "
-				id="poptrigger"
-				data-targetdivinner="tabimportcontent"
-				data-hidefooter="true"
-				data-oemaxlevel="1"
-				data-targetcategoryid="$!defaultcategory.id"
-				onclick='$("#searcher").show();$("#picker").hide();'
-				title="ID: ($entityid)"
-				href="$apphome/components/entities/import/autopopulate.html?id=$!entityid"
-				><i class="bi bi-file-check-fill"></i> &nbsp;[[Search Files]]</a>
-			</div>
+			
+			#if($content.importsearchremotefiles)
+				#if($permissions.can($moduleid, "importassets"))
+				<div class="auto-active-row">
+				<a class="ajax btn btn-lg btn-wide auto-active-link "
+					id="poptrigger"
+					data-targetdivinner="tabimportcontent"
+					data-hidefooter="true"
+					data-oemaxlevel="1"
+					data-targetcategoryid="$!defaultcategory.id"
+					onclick='$("#searcher").show();$("#picker").hide();'
+					title="ID: ($entityid)"
+					href="$apphome/components/entities/import/autopopulate.html?id=$!entityid"
+					><i class="bi bi-file-check-fill"></i> &nbsp;[[Search Files]]</a>
+				</div>
+				#end
 			#end
+			
 			#if($permissions.can($moduleid, "importfolders"))
 			<div class="auto-active-row">
 			<a class="ajax btn btn-lg btn-wide auto-active-link "
