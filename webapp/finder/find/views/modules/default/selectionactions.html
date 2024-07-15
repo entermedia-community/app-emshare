@@ -37,7 +37,7 @@
 					data-oemaxlevel="2" 
 				title="[[Add To User Bookmarks]]"  
 				href="$siteroot$apphome/views/modules/asset/editor/favorite/favorite-add-multi.html?hitssessionid=$hits.getSessionId()"
-				>[[User Bookmarks]]</a></li>
+				><i class="bi bi-bookmark-fill mr-2"></i> [[User Bookmarks]]</a></li>
 			#end
 			#if($permissions.can("searchcategory", "create"))
 				#set($addurl = "$siteroot$applink/views/modules/searchcategory/components/entities/search/searchpicker.html") 
@@ -49,7 +49,7 @@
 						data-copyingsearchtype="$moduleid"
 						data-copyinghitssessionid="$hits.getSessionId()"	
 						title="[[Add To Category]]"
-						data-width="1200">[[Category]]</a></li>
+						data-width="1200"><i class="bi bi-category mr-2"></i> [[Category]]</a></li>
 			#end		
 	
 		
@@ -66,6 +66,10 @@
 						#ifnotnull($topentityid)
 							#set($addtourl = "$addurl&fieldexternalid=${topmodule.getId()}&fieldexternalvalue=${topentityid}&reloadtargets=topmodulecontainer")
 						#end
+						#set($moduleicon = "entity")
+						#ifnotnull($amodule.moduleicon)
+							#set($moduleicon = $amodule.moduleicon)
+						#end
 						<li><a class="ajax dropdown-item"
 							data-targetdiv="applicationmaincontent"
 							data-oemaxlevel="2" 
@@ -73,7 +77,7 @@
 							data-copyingsearchtype="$moduleid"
 							data-copyinghitssessionid="$hits.getSessionId()"	
 							title="[[Copies files and metadata to]] #text($amodule)"
-							href="$addtourl" >#text($amodule)</a></li>
+							href="$addtourl"><i class="bi bi-$moduleicon mr-2"></i>#text($amodule)</a></li>
 						#end
 					#end
 			#end	
