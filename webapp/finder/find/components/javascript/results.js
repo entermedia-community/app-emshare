@@ -1697,6 +1697,8 @@ gridResize = function () {
   var sofarusedh = 0;
 
   var row = new Array();
+  var rows = new Array();
+  rows.push(row);
   $(grid)
     .find(".masonry-grid-cell")
     .each(function () {
@@ -1722,9 +1724,10 @@ gridResize = function () {
       if (isover > totalavailablew) {
         // Just to make a row
         // Process previously added cell
-        var newheight = trimRowToFit(fixedheight, row, totalavailablew);
+        var newheight = trimRowToFit(row);
         totalheight = totalheight + newheight + 8;
         row = new Array();
+        rows.push(row);
         sofarusedw = 0;
         rownum = rownum + 1;
       }
@@ -1736,7 +1739,7 @@ gridResize = function () {
   var makebox = grid.data("makebox");
 
   if (row.length > 0) {
-    trimRowToFit(grid.data("maxheight"), row, totalavailablew);
+    trimRowToFit(row);
     //if( makebox && makebox == true && rownum >= 3)
     {
       grid.css("height", totalheight + "px");
@@ -1744,20 +1747,26 @@ gridResize = function () {
     }
   }
 
+	$.each(rows, function () { 
+		var row = $(this);
+		trimRowToFit(row);
+	});
   // checkScroll();
 };
 
 /**
  * A = W / H H = W / A W = A * H
  */
-trimRowToFit = function (targetheight, row, totalavailablewX) {
+trimRowToFit = function (row) {
   var totalwidthused = 0;
+  var grid = getCurrentGrid();
+  var targetheight = grid.data("maxheight");
   $.each(row, function () {
     var div = this;
     var usedw = div.data("targetw");
     totalwidthused = totalwidthused + usedw;
   });
-  var grid = getCurrentGrid();
+  
   var totalavailablew = grid.width();
   var existingaspect = targetheight / totalwidthused; // Existing aspec ratio
   var overwidth = Math.abs(totalwidthused - totalavailablew);
