@@ -194,7 +194,23 @@
 						$context.putPageValue("data",$hit)
 						$context.putPageValue("noassetlink",true)
 						
-						$pages.include("$xmledithome/detailreadonly.html", $context)
+						#set ($viewtype = $detail.viewType)
+						#if (!$viewtype)
+							#set ($viewtype = $detail.dataType)
+						#end
+						#if (!$viewtype || $viewtype== "text")
+							#set ($viewtype = "default")
+						#end 
+						
+						#if($viewtype =="primarymedia")
+							
+							<div class="emgridcell emgridcellresuls emgridcell-$rendertype activelistcontainer 	" 
+								style="visibility: visible; width: 160px; position: relative;">  
+								$pages.include("$componenthome/gridsample/types/qsresult.html", $context)
+							</div>
+						#else
+							$pages.include("$xmledithome/detailreadonly.html", $context)
+						#end
 					</td>
 				#end
 				
