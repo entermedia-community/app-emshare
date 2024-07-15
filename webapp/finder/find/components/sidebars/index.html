@@ -30,7 +30,7 @@
 				
 				#set( $link="$!apphome/index.html")
 				<a href="$link"
-					class="sidebar-toggler-show light resetsearch" 
+					class="sidebar-toggler-show resetsearch" 
 					data-action="home"
 					data-targetdiv="applicationcontent" 
 					data-oemaxlevel="4" 
@@ -43,20 +43,9 @@
 				</a>
 			</div>
 
-			#if($user)
-			<div class="sidebar-togglers #if($sidebarcomponent == " guide") sidebar-selected #end">
-				<a href="#" class="sidebar-toggler sidebar-toggler-show light" data-action="show"
-					data-targetdiv="col-sidebars" data-sidebar="guide"
-					data-modulesearchhitssessionid="$modulehits.sessionId" data-sitetitle="[[User Guide]]"
-					title="[[User Guide]]">
-					<i class="bi bi-question-octagon-fill"></i>
-				</a>
-			</div>
-			#end
-
 			#if( $canviewcategorynav || ( $librarycol && $canviewcategorynavcollections ) )
-			<div class="sidebar-togglers #if($sidebarcomponent == " categories") sidebar-selected #end">
-				<a href="#" class="sidebar-toggler sidebar-toggler-show light" data-action="show"
+			<div class="sidebar-togglers #if($sidebarcomponent == "categories") sidebar-selected #end">
+				<a href="#" class="sidebar-toggler sidebar-toggler-show" data-action="show"
 					data-targetdiv="col-sidebars" data-sidebar="categories" data-sitetitle="[[Files]]"
 					data-modulesearchhitssessionid="$!modulehits.sessionId" title="[[Files]]">
 					<i class="bi bi-folder-fill"></i>
@@ -65,8 +54,8 @@
 			#end
 
 			#if(false && $canviewopencollections )
-			<div class="sidebar-togglers #if($sidebarcomponent == " libraries") sidebar-selected #end">
-				<a href="#" class="sidebar-toggler sidebar-toggler-show light" data-action="show"
+			<div class="sidebar-togglers #if($sidebarcomponent == "libraries") sidebar-selected #end">
+				<a href="#" class="sidebar-toggler sidebar-toggler-show" data-action="show"
 					data-targetdiv="col-sidebars" data-sidebar="libraries"
 					data-modulesearchhitssessionid="$!modulehits.sessionId" data-sitetitle="[[Albums]]"
 					title="[[Recent Albums]]">
@@ -76,9 +65,9 @@
 			#end
 
 			#if($desktop)
-			<div class="sidebar-togglers #if($sidebarcomponent == " localdrives") sidebar-selected #end
+			<div class="sidebar-togglers #if($sidebarcomponent == "localdrives") sidebar-selected #end
 				sidebartogglerlocaldrives">
-				<a href="#" id="sidebarUserUploads" class="sidebar-toggler sidebar-toggler-show light"
+				<a href="#" id="sidebarUserUploads" class="sidebar-toggler sidebar-toggler-show"
 					data-action="show" data-targetdiv="col-sidebars" data-sidebar="localdrives"
 					data-modulesearchhitssessionid="$modulehits.sessionId" title="[[Desktop Uploads]]">
 					<i class="fas fa-cloud-upload-alt"></i>
@@ -88,8 +77,8 @@
 
 			#if($user.getId())
 				#if($candownload || $canconvert || $candownloadfpo)
-					<div class="sidebar-togglers #if($sidebarcomponent == " userdownloads") sidebar-selected #end">
-						<a href="#" class="sidebar-toggler sidebar-toggler-show light" data-action="show"
+					<div class="sidebar-togglers #if($sidebarcomponent == "userdownloads") sidebar-selected #end">
+						<a href="#" class="sidebar-toggler sidebar-toggler-show" data-action="show"
 							data-targetdiv="col-sidebars" data-sidebar="userdownloads"
 							data-modulesearchhitssessionid="$!modulehits.sessionId" title="[[Download Orders]]">
 							
@@ -118,8 +107,8 @@
 					#set( $urlbase = "$siteroot$applink/views/modules" )
 		
 		
-					<div class="sidebar-togglers #if($sidebarcomponent == " addentity") sidebar-selected #end">
-						<a href="#" class="ajax sidebar-toggler sidebar-toggler-show light"
+					<div class="d-none sidebar-togglers #if($sidebarcomponent == "addentity") sidebar-selected #end">
+						<a href="#" class="ajax sidebar-toggler sidebar-toggler-show"
 							data-modulesearchhitssessionid="$!modulehits.sessionId" data-action="show"
 							data-targetdiv="col-sidebars" data-sidebar="addentity" title="[[Database]]">
 							<i class="bi bi-database-fill"></i>
@@ -128,9 +117,24 @@
 				#end
 			#end
 
+			#if($canviewmodulelist)
+				#if( $userprofile.getModules().size() > 1 )
+					#set( $urlbase = "$siteroot$applink/views/modules" )
+		
+		
+					<div class="sidebar-togglers #if($sidebarcomponent == "addentity") sidebar-selected #end">
+						<a href="#" class="ajax sidebar-toggler sidebar-toggler-show"
+							data-modulesearchhitssessionid="$!modulehits.sessionId" data-action="show"
+							data-targetdiv="col-sidebars" data-sidebar="addentity" title="[[Database]]">
+							<i class="bi bi-magic" style="color: #ff91f6;"></i>
+						</a>
+					</div>
+				#end
+			#end
+
 			#if( $canviewsettings )
-			<div class="sidebar-togglers #if($sidebarcomponent == " settings") sidebar-selected #end">
-				<a href="#" class="sidebar-toggler sidebar-toggler-show light" data-action="show"
+			<div class="sidebar-togglers #if($sidebarcomponent == "settings") sidebar-selected #end">
+				<a href="#" class="sidebar-toggler sidebar-toggler-show" data-action="show"
 					data-targetdiv="col-sidebars" data-sidebar="settings"
 					data-modulesearchhitssessionid="$!modulehits.sessionId" data-sitetitle="[[Settings]]"
 					title="[[Settings]]">
@@ -139,6 +143,18 @@
 			</div>
 			#end
 
+		</div>
+		<div class="mt-auto">
+			#if($user)
+			<div class="sidebar-togglers #if($sidebarcomponent == "guide") sidebar-selected #end">
+				<a href="#" class="sidebar-toggler sidebar-toggler-show" data-action="show"
+					data-targetdiv="col-sidebars" data-sidebar="guide"
+					data-modulesearchhitssessionid="$modulehits.sessionId" data-sitetitle="[[User Guide]]"
+					title="[[User Guide]]">
+					<i class="bi bi-question-octagon-fill"></i>
+				</a>
+			</div>
+			#end
 		</div>
 	</div>
 

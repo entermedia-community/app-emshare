@@ -164,15 +164,22 @@ $context.putPageValue("entityid", $entityid)
 				<li class="dropdown">
 					<a class="resultsnavlink dropdown-toggle #if($!hits.getSelectionSize() > 0)btn-accent#end" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="navbarActionsDropdown">
 						#if($hits && $hits.getSelectionSize() > 0)
-							[[Selected]] ($!hits.getSelectionSize())
+							[[File]]#if($hits.getSelectionSize() > 1)s#end ($!hits.getSelectionSize())
 						#else
-							[[Select]]
+							[[File]]
 						#end
 					</a>
 					<ul class="dropdown-menu">
 						<li><a class="dropdown-item selectpage" data-action="page">[[Select This Page]]</a></li>
 						<li><a class="dropdown-item selectpage" data-action="all">[[Select All Results]]</a></li>
 						<li><a class="dropdown-item selectpage" data-action="none">[[Deselect All]]</a> </li>
+						#if( $user && ($candownload || $canconvert || $candownloadfpo ) )
+						<li><a class="dropdown-item emdialog" 
+							data-dialogid="downloadeasset"
+							data-hidefooter="true"
+							href="$siteroot$apphome/views/modules/asset/activity/downloadassets.html?hitssessionid=$!hits.getSessionId()&collectionid=$!{librarycol.getId()}"  
+							 >[[Download Selected]] ($!hits.getSelectionSize())</a></li>
+					#end
 					</ul>
 				</li>
 
