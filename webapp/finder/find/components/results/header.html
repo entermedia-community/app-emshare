@@ -141,11 +141,31 @@ $context.putPageValue("entityid", $entityid)
 				#if($topmoduleid)
 					#if(!$hideupload && $canviewupload && $topmoduleid != "favorites" && $permissions.can($topmoduleid, "upload_files"))
 					<li>
-						<a href="$siteroot$applink/views/modules/asset/add/entityaddmedia.html?categoryid=$!categoryid" 
-							class="ajax resultsnavlink px-3" 
-							data-targetdivinner="dialogmediaentity"
-							data-oemaxlevel="1"
-							title="[[Upload]]"><i class="bi bi-upload"></i></a>
+						<a href="#"
+						class='resultsnavlink px-3 entitytabactions tabactionimport #if($entitytabopen=="import")enabledaction #end '
+						data-tabaction="import"
+						data-viewid="import"
+						data-tabtype="tabimport" 
+						data-entityid="$!entity.getId()" 
+						data-topmoduleid="$!moduleid"
+						data-moduleid="$!moduleid"
+						data-tabsection="upload"
+						data-hitssessionid="$entityhits.getSessionId()"
+							title="[[Import]]"><i class="bi bi-upload"></i></a>
+					</li>
+					#end
+					#if($candownload)
+					<li>
+						<a href="#"
+						class='resultsnavlink px-3 entitytabactions tabactionexport #if($entitytabopen=="export")enabledaction #end '
+						data-tabaction="export"
+						data-viewid="export"
+						data-tabtype="tabexport" 
+						data-entityid="$!entity.getId()" 
+						data-topmoduleid="$!moduleid"
+						data-moduleid="$!moduleid"
+						data-tabsection="copy"
+							title="[[Export]]"><i class="bi bi-download"></i></a>
 					</li>
 					#end
 				#else
@@ -170,16 +190,16 @@ $context.putPageValue("entityid", $entityid)
 						#end
 					</a>
 					<ul class="dropdown-menu">
-						<li><a class="dropdown-item selectpage" data-action="page">[[Select This Page]]</a></li>
 						<li><a class="dropdown-item selectpage" data-action="all">[[Select All Results]]</a></li>
-						<li><a class="dropdown-item selectpage" data-action="none">[[Deselect All]]</a> </li>
+						<li><a class="dropdown-item selectpage" data-action="page">[[Select This Page]]</a></li>
 						#if( $user && ($candownload || $canconvert || $candownloadfpo ) )
 						<li><a class="dropdown-item emdialog" 
 							data-dialogid="downloadeasset"
 							data-hidefooter="true"
 							href="$siteroot$apphome/views/modules/asset/activity/downloadassets.html?hitssessionid=$!hits.getSessionId()&collectionid=$!{librarycol.getId()}"  
 							 >[[Download Selected]] ($!hits.getSelectionSize())</a></li>
-					#end
+						#end
+						<li><a class="dropdown-item selectpage" data-action="none">[[Deselect All]]</a> </li>
 					</ul>
 				</li>
 
