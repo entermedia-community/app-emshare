@@ -552,11 +552,15 @@ jQuery(document).ready(function (url, params) {
     }
     if (reloadonclose) {
       refreshresults();
+      
     } else {
       //$(document).trigger("domchanged");
       //$(window).trigger( "resize" );
       // gridResize();
     }
+    var assetdetaileditor = $("#asset-detail-editor");
+    checkautoreload(assetdetaileditor);
+    
     var lastscroll = getOverlay().data("lastscroll");
     // remove Asset #hash
     history.replaceState(null, null, " ");
@@ -1712,7 +1716,7 @@ gridResize = function () {
         a = h / w;
       }
       cell.data("aspect", a);
-      var neww = a * fixedheight;
+      var neww = Math.floor(a * fixedheight);
       cell.data("targetw", Math.ceil(neww));
       var isover = sofarusedw + neww;
       if (isover > totalavailablew) {
@@ -1746,20 +1750,24 @@ gridResize = function () {
 /**
  * A = W / H H = W / A W = A * H
  */
-trimRowToFit = function (targetheight, row, totalavailablew) {
+trimRowToFit = function (targetheight, row, totalavailablewX) {
   var totalwidthused = 0;
   $.each(row, function () {
     var div = this;
     var usedw = div.data("targetw");
     totalwidthused = totalwidthused + usedw;
   });
+  var grid = getCurrentGrid();
+  var totalavailablew = grid.width();
   var existingaspect = targetheight / totalwidthused; // Existing aspec ratio
   var overwidth = Math.abs(totalwidthused - totalavailablew);
   var changeheight = existingaspect * overwidth;
-  var fixedheight = targetheight + changeheight;
+  var fixedheight = Math.floor(targetheight + changeheight);
+  
   if (fixedheight > targetheight * 1.7) {
     fixedheight = targetheight;
   }
+  
   // The overwidth may not be able to be divided out evenly depending on
   // number of
   var totalwused = 0;
@@ -1774,8 +1782,9 @@ trimRowToFit = function (targetheight, row, totalavailablew) {
     var a = div.data("aspect");
     var neww = fixedheight * a;
 
-    neww = Math.round(neww); // make sure we dont round too high across lots
+    neww = Math.floor(neww); // make sure we dont round too high across lots
     // of widths
+    console.log(neww);
     div.css("width", neww + "px");
 
     image.width(neww);
@@ -1783,6 +1792,7 @@ trimRowToFit = function (targetheight, row, totalavailablew) {
     totalwused = totalwused + neww;
   });
 
+  totalavailablew = grid.width();
   if (totalwused != totalavailablew && fixedheight != targetheight) {
     // Deal
     // with
@@ -1796,8 +1806,11 @@ trimRowToFit = function (targetheight, row, totalavailablew) {
       var w = div.width();
       w = w + toadd;
       div.css("width", w + "px");
+      var image = $("img.imagethumb", div);
+      image.width(w);
     }
   }
+  
 
   return fixedheight;
 };
