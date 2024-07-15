@@ -216,8 +216,17 @@ $context.putPageValue("entityid", $entityid)
 							data-hidefooter="true"
 							targetdiv="basket-paint"  
 							href="$siteroot$apphome/views/modules/asset/activity/checkout/accept.html?orderid=$!{orderid}" 
-							title="[[Checkout your Cart]]">[[Checkout Cart]] <i class="bi bi-caret-right-fill"></i></a>
-					</li>				
+							title="[[Checkout your Cart]]">[[Checkout Cart]] <i class="bi bi-caret-right-fill ns"></i></a>
+					</li>		
+					#if($hits && $hits.getSelectionSize() > 0)
+					<li>
+					<a class="resultsnavlink updatebasket" 
+						data-action="remove" 
+						data-targetdiv="basket-paint"  
+						title="[[Remove From Cart]]"
+						href="$siteroot$componenthome/basket/removeselection.html?hitssessionid=$hits.getSessionId()" >[[Remove From Cart]]</a>
+					</li>	
+					#end	
 				#end
 			#end
 			
@@ -281,12 +290,14 @@ $context.putPageValue("entityid", $entityid)
 				
 				##-RESULTS TYPE
 				
-				<li class="resultsnavtitem">
+				<li class="resultsnavtitem" style="min-width: 75px;">
 					#set( $types = $mediaarchive.getList("resulttype"))
-					<select class="form-control" 
+					<select class="select2 form-control" 
 						name="resultview" 
 						id="selectresultview"
 						data-oemaxlevel="1"
+						data-minimum-results-for-search="Infinity"
+						data-allowclear="false"
 						data-hitsperpage="$!currenthitsperpage">
 						
 						#foreach($type in $types)
