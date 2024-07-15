@@ -182,7 +182,10 @@ updatebasket = function (e) {
   var action = $(this).data("action");
   if (action == "addtocart" || action == "remove") {
     var nextpage = $(this).attr("href");
-    var targetDiv = $(this).attr("targetdiv");
+    var targetDiv = $(this).data("targetdiv");
+    if (!targetDiv) {
+      targetDiv = $(this).attr("targetdiv");
+    }
     targetDiv = targetDiv.replace(/\//g, "\\/");
 
     $("#" + targetDiv).load(nextpage, function () {

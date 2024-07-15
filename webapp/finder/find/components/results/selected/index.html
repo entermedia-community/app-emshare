@@ -85,6 +85,27 @@
 	<li class="resultsnavlink dropdown">
 		<a class="resultsnavlink dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="navbarCopyto$!{moduleid}">[[Copy To]]</a>
 		<ul class="dropdown-menu" aria-labelledby="navbarCopyto$!{moduleid}">
+			#if ( $canviewbasket && $section != "basket"  )
+				<li>
+					<a class="dropdown-item updatebasket" 
+					dta-targetdiv="basket-paint"  
+					data-action="addtocart"
+					title="[[Add To Cart]]"
+					href="$siteroot$componenthome/basket/addselection.html?hitssessionid=$hits.getSessionId()">[[Cart]]</a>
+				</li>
+			#end
+			#if($canaddtofavorites && $librarycol.id != "${user.id}-favorites" )
+				<li>
+					<a class="dropdown-item ajax"
+					data-targetdivinner="resultsmessages"
+					data-oemaxlevel="2" 
+					title="[[Add To User Bookmarks]]"  
+					href="$siteroot$apphome/views/modules/asset/editor/favorite/favorite-add-multi.html?hitssessionid=$hits.getSessionId()"
+					>
+						[[User Bookmarks]]
+					</a>
+				</li>
+			#end
 			#foreach ( $amodule in $userprofile.getEntities() )
 		  		#set($amoduleid = $amodule.getId())
 		  		#if($amodule.getBoolean("enableuploading"))
@@ -113,44 +134,6 @@
 	</li>
 	
 	#set($section = $context.getRequestParameter("section"))
-	
-	<li class="resultsnavlink dropdown d-none">
-		<a class="resultsnavlink dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="navbarAddto$!{moduleid}">[[Add to]]</a>
-		<ul class="dropdown-menu" aria-labelledby="navbarAddto$!{moduleid}">
-			
-		    
-		    
-		    #if( $user && ($candownload || $canconvert || $candownloadfpo ) )
-
-				<li><a class="dropdown-item emdialog" 
-					data-dialogid="downloadeasset"
-					data-hidefooter="true"
-					href="$siteroot$apphome/views/modules/asset/activity/downloadassets.html?hitssessionid=$!hits.getSessionId()&collectionid=$!{librarycol.getId()}"  
-					 >[[Download Queue]]</a></li>
-
-			#end
-		    
-		    #if ( $canviewbasket && $section != "basket"  )
-				<li><a class="dropdown-item updatebasket" 
-					targetdiv="basket-paint"  
-					data-action="addtocart"
-					title="[[Add To Cart]]"
-					href="$siteroot$componenthome/basket/addselection.html?hitssessionid=$hits.getSessionId()" >[[Cart]]</a></li>
-			#end
-		
-		    #if($canaddtofavorites && $librarycol.id != "${user.id}-favorites" )
-				<li><a class="dropdown-item ajax"
-					data-targetdivinner="resultsmessages"
-					data-oemaxlevel="2" 
-				   title="[[Add To User Bookmarks]]"  
-				   href="$siteroot$apphome/views/modules/asset/editor/favorite/favorite-add-multi.html?hitssessionid=$hits.getSessionId()"
-				   >
-				   [[User Bookmarks]]</a></li>
-			#end
-		</ul>
-	</li>
-	
-
 	
 	#if($canviewbasket   && $section=="basket")
 		<li>
