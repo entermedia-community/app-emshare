@@ -1686,7 +1686,7 @@ gridResize = function () {
   var totalwidth = 0;
   var totalheight = fixedheight;
   var rownum = 0;
-  var totalavailablew = grid.width() - 5;
+  var totalavailablew = grid.width();
 
   // Two loops, one to make rows and one to render cells
   var sofarusedw = 0;
