@@ -202,7 +202,7 @@ runajaxonthis = function (inlink, e) {
           //actions after autoreload?
           var message = inlink.data("alertmessage");
           if (message) {
-            $("#resultsmessages").append(
+            $("body").append(
               '<div class="alert alert-success fader alert-save">' +
                 message +
                 "</div>"

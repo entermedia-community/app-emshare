@@ -205,7 +205,7 @@ updatebasket = function (e) {
               window.location.reload();
             }
           }
-          $("#resultsmessages").append(
+          $("body").append(
             '<div class="alert alert-success fader alert-save">Added to cart</div>'
           );
           hideLoader();
