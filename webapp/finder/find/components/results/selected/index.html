@@ -81,6 +81,7 @@
 	</li>
 	#end	
 	
+	#set($section = $context.getRequestParameter("section"))
 	
 	<li class="resultsnavlink dropdown">
 		<a class="resultsnavlink dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="navbarCopyto$!{moduleid}">[[Copy To]]</a>
@@ -107,6 +108,7 @@
 					title="[[Add To Cart]]"
 					href="$siteroot$componenthome/basket/addselection.html?hitssessionid=$hits.getSessionId()">[[Cart]]</a>
 				</li>
+
 			#end
 			#foreach ( $amodule in $userprofile.getEntities() )
 		  		#set($amoduleid = $amodule.getId())
@@ -135,17 +137,9 @@
 		</ul>
 	</li>
 	
-	#set($section = $context.getRequestParameter("section"))
 	
-	#if($canviewbasket   && $section=="basket")
-		<li>
-			<a class="resultsnavlink dropdown-item updatebasket" 
-				data-action="remove" 
-				targetdiv="basket-paint"  
-				title="[[Remove To Cart]]"
-				href="$siteroot$componenthome/basket/removeselection.html?hitssessionid=$hits.getSessionId()" >[[Remove From Cart]]</a>
-		</li>
-	#end
+	
+
 	
 	#if($canpublish || $canemaillink || $canquickgallery)
 	<li class=" dropdown">
