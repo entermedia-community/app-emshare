@@ -432,6 +432,8 @@ $(document).ready(function () {
 
     var saveBtn = $("#saveOrganizer");
 
+    saveBtn.click(syncJSON);
+
     function syncJSON() {
       saveBtn.addClass("saving");
       saveBtn.find("span").text("Saving...");
