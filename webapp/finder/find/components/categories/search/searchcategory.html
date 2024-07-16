@@ -62,8 +62,8 @@ $context.putPageValue("targetdiv",$targetdiv)
 $context.putPageValue("canupload", $!canupload)
 		
 		
-<div class="searchcategories-tree">
-    <div class="assetdropcategory assetdropcategorymove searchcategories-treecontainer categorytreescrolllable" >
+<div class="searchcategories-tree #if(!$canviewcategorysearch) h-100 #end">
+    <div class="assetdropcategory assetdropcategorymove searchcategories-treecontainer #if(!$canviewcategorysearch) h-100 #else searchcategories-treecontainer-max #end categorytreescrolllable" >
 
         	##General Category Tree
         	#set( $link = "$apphome/components/emtree/tree.html")
@@ -74,11 +74,12 @@ $context.putPageValue("canupload", $!canupload)
 			$pages.include($link, $context)  
 	</div>
 </div>
+#if($canviewcategorysearch)
 <div class="searchcategories-filter">
 	<div id="searchareacontent" class="searchcategories-results"> 
 	$pages.include("$apphome/components/categories/search/searchcategoryfilter.html?nodeID=$!initialcategory",$context)
 	</div>
 </div>
-
+#end
 <div class="clearfix"></div>
 	
