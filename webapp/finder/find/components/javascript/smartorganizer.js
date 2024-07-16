@@ -420,10 +420,11 @@ $(document).ready(function () {
 
     function loadJSON() {
     	var reader = new draw2d.io.json.Reader();
-   	    var url = siteroot + "/" + mediadb + "/services/module/smartorganizer/load/current";
+   	    var url = siteroot + "/" + mediadb + "/services/module/smartorganizer/data/current";
 	    jQuery.ajax({
 	      dataType: "json",
 	      url: url,
+	      method: "GET",
 	      success: function (data) {
 			var saveddata = data.json;
 			//clear
@@ -439,13 +440,14 @@ $(document).ready(function () {
         // TODO: Send JSON to server
 	      var data = {};
 	      data.id = "current";
-	      data.json = json;
-   	    var url = siteroot + "/" + mediadb + "/services/module/smartorganizer/save";
+	      data.json = JSON.stringify(json);
+   	    var url = siteroot + "/" + mediadb + "/services/module/smartorganizer/data/current";
 	    jQuery.ajax({
 	      dataType: "json",
-	      method: "POST",
+	      method: "PUT",
+	      contentType: "application/json; charset=utf-8",
 	      url: url,
-	      data: data,
+	      data: JSON.stringify(data),
 	      success: function (response) {
 			console.log("Saved");
 		  }
