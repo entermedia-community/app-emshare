@@ -20,7 +20,7 @@ $(document).ready(function () {
     angle: 0,
     userData: {},
     bgColor: "#60729e",
-    color: "#4e5e80",
+    color: "#4d5d80",
     stroke: 2,
     port: "draw2d.HybridPort",
     locator: "draw2d.layout.locator.XYAbsPortLocator",
@@ -167,7 +167,7 @@ $(document).ready(function () {
         createConnection: function () {
           var conn = new draw2d.Connection({
             stroke: 2,
-            color: "#4e5e80",
+            color: "#4d5d80",
             radius: 20,
             cssClass: "connection",
             resizable: false,
