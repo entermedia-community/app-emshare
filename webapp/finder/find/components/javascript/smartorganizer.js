@@ -20,7 +20,7 @@ $(document).ready(function () {
     angle: 0,
     userData: {},
     bgColor: "#60729e",
-    color: "#4e5e80",
+    color: "#4d5d80",
     stroke: 2,
     port: "draw2d.HybridPort",
     locator: "draw2d.layout.locator.XYAbsPortLocator",
@@ -167,7 +167,7 @@ $(document).ready(function () {
         createConnection: function () {
           var conn = new draw2d.Connection({
             stroke: 2,
-            color: "#4e5e80",
+            color: "#4d5d80",
             radius: 20,
             cssClass: "connection",
             resizable: false,
@@ -199,9 +199,9 @@ $(document).ready(function () {
     //     },
     //   })
     // );
+    var reader = new draw2d.io.json.Reader();
 
     function loadJSON() {
-      var reader = new draw2d.io.json.Reader();
       var url =
         siteroot +
         "/" +
@@ -238,6 +238,7 @@ $(document).ready(function () {
           y: canvasHeight / 2 + (Math.random() * 100 + 150) * dirY,
         })
       );
+      syncJSON();
     });
 
     canvas.on("unselect", function () {
@@ -378,24 +379,6 @@ $(document).ready(function () {
       };
     });
 
-    $("#zoomInBtn").click(function () {
-      var zoom = canvas.getZoom();
-      if (zoom < 0.5) return;
-      zoom -= 0.1;
-      canvas.setZoom(zoom);
-    });
-
-    $("#zoomOutBtn").click(function () {
-      var zoom = canvas.getZoom();
-      if (zoom > 2) return;
-      zoom += 0.1;
-      canvas.setZoom(zoom);
-    });
-
-    $("#zoomResetBtn").click(function () {
-      canvas.setZoom(1.0);
-    });
-
     lQuery("#iconsList").livequery(function () {
       if ($(this).children().length < 2050) {
         var icHtm = "";
@@ -448,13 +431,15 @@ $(document).ready(function () {
     });
 
     var saveBtn = $("#saveOrganizer");
+
+    saveBtn.click(syncJSON);
+
     function syncJSON() {
       saveBtn.addClass("saving");
       saveBtn.find("span").text("Saving...");
       var writer = new draw2d.io.json.Writer();
 
       writer.marshal(canvas, function (json) {
-        // TODO: Send JSON to server
         if (json.length === 0) return;
         var data = {};
         data.id = "current";
@@ -477,5 +462,71 @@ $(document).ready(function () {
         });
       });
     }
+
+    var canvasSVG = $("#organizer_canvas > svg");
+    $("#vToTop").click(function () {
+      var pos = parseInt(canvasSVG.css("top")) + 50;
+      if (pos >= 0) {
+        $(this).prop("disabled", true);
+        return;
+      }
+      if (pos <= 0) $(this).prop("disabled", true);
+      $("#vToBottom").prop("disabled", false);
+      canvasSVG.css("top", pos);
+    });
+    $("#vToBottom").click(function () {
+      var pos = parseInt(canvasSVG.css("top")) - 50;
+      console.log(pos);
+      if (pos < -canvasHeight) {
+        $(this).prop("disabled", true);
+        return;
+      }
+      if (pos <= -canvasHeight) $(this).prop("disabled", true);
+      $("#vToTop").prop("disabled", false);
+      canvasSVG.css("top", pos);
+    });
+    $("#vToLeft").click(function () {
+      var pos = parseInt(canvasSVG.css("left")) + 50;
+      if (pos > 0) {
+        $(this).prop("disabled", true);
+        return;
+      }
+      if (pos >= 0) $(this).prop("disabled", true);
+      $("#vToRight").prop("disabled", false);
+      canvasSVG.css("left", pos);
+    });
+    $("#vToRight").click(function () {
+      var pos = parseInt(canvasSVG.css("left")) - 50;
+      if (pos < -canvasWidth) {
+        $(this).prop("disabled", true);
+        return;
+      }
+      if (pos <= -canvasWidth) {
+        $(this).prop("disabled", true);
+      }
+      $("#vToLeft").prop("disabled", false);
+      canvasSVG.css("left", pos);
+    });
+    $("#zoomInBtn").click(function () {
+      var zoom = canvas.getZoom();
+      if (zoom < 0.5) return;
+      zoom -= 0.1;
+      canvas.setZoom(zoom);
+    });
+
+    $("#zoomOutBtn").click(function () {
+      var zoom = canvas.getZoom();
+      if (zoom > 2) return;
+      zoom += 0.1;
+      canvas.setZoom(zoom);
+    });
+
+    $("#zoomResetBtn").click(function () {
+      canvas.setZoom(1.0);
+      canvasSVG.css({
+        top: 0,
+        left: 0,
+      });
+    });
   });
 });
