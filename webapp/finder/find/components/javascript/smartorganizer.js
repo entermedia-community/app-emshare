@@ -415,11 +415,41 @@ $(document).ready(function () {
       handle: "#dragHandle",
     });
 
+  var siteroot = $("#application").data("siteroot");
+  var mediadb = $("#application").data("mediadbappid");
+
+    function loadJSON() {
+    	var reader = new draw2d.io.json.Reader();
+   	    var url = siteroot + "/" + mediadb + "/services/module/smartorganizer/load/current";
+	    jQuery.ajax({
+	      dataType: "json",
+	      url: url,
+	      success: function (data) {
+			var saveddata = data.json;
+			//clear
+		    reader.unmarshal(canvas, saveddata);
+		  }
+		});
+	}
+
     function syncJSON() {
       var writer = new draw2d.io.json.Writer();
+      
       writer.marshal(canvas, function (json) {
         // TODO: Send JSON to server
-        // console.log(json);
+	      var data = {};
+	      data.id = "current";
+	      data.json = json;
+   	    var url = siteroot + "/" + mediadb + "/services/module/smartorganizer/save";
+	    jQuery.ajax({
+	      dataType: "json",
+	      method: "POST",
+	      url: url,
+	      data: data,
+	      success: function (response) {
+			console.log("Saved");
+		  }
+		});
       });
     }
   });
