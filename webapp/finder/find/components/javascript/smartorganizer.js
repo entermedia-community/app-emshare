@@ -440,7 +440,6 @@ $(document).ready(function () {
       var writer = new draw2d.io.json.Writer();
 
       writer.marshal(canvas, function (json) {
-        // TODO: Send JSON to server
         if (json.length === 0) return;
         var data = {};
         data.id = "current";
