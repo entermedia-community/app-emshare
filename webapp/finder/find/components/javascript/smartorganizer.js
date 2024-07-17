@@ -174,14 +174,13 @@ $(document).ready(function () {
             router:
               new draw2d.layout.connection.InteractiveManhattanConnectionRouter(),
           });
-          conn.on(
-            "connect",
-            function () {
-              this.setVisible(true);
-            },
-            conn
-          );
-          // conn.toFront();
+          conn.on("connect", function () {
+            var sourcePort = conn.sourcePort?.name?.includes("mainInput");
+            var targetPort = conn.targetPort?.name?.includes("mainInput");
+            if (sourcePort || targetPort) {
+              conn.setColor("#43a343");
+            }
+          });
           return conn;
         },
       })
@@ -192,13 +191,6 @@ $(document).ready(function () {
     canvas.installEditPolicy(new draw2d.policy.canvas.CoronaDecorationPolicy());
     canvas.installEditPolicy(new draw2d.policy.canvas.WheelZoomPolicy());
 
-    // canvas.installEditPolicy(
-    //   new draw2d.policy.canvas.CanvasPolicy({
-    //     onClick: function (figure) {
-    //       if (figure && figure.cssClass !== "folderGroup") figure.toFront();
-    //     },
-    //   })
-    // );
     var reader = new draw2d.io.json.Reader();
 
     function loadJSON() {
@@ -463,49 +455,44 @@ $(document).ready(function () {
       });
     }
 
-    var canvasSVG = $("#organizer_canvas > svg");
+    var canvasContainer = $("#organizer_canvas");
+
     $("#vToTop").click(function () {
-      var pos = parseInt(canvasSVG.css("top")) + 50;
-      if (pos >= 0) {
-        $(this).prop("disabled", true);
-        return;
-      }
-      if (pos <= 0) $(this).prop("disabled", true);
-      $("#vToBottom").prop("disabled", false);
-      canvasSVG.css("top", pos);
-    });
-    $("#vToBottom").click(function () {
-      var pos = parseInt(canvasSVG.css("top")) - 50;
-      console.log(pos);
-      if (pos < -canvasHeight) {
-        $(this).prop("disabled", true);
-        return;
-      }
-      if (pos <= -canvasHeight) $(this).prop("disabled", true);
-      $("#vToTop").prop("disabled", false);
-      canvasSVG.css("top", pos);
-    });
-    $("#vToLeft").click(function () {
-      var pos = parseInt(canvasSVG.css("left")) + 50;
+      var pos = parseInt(canvasContainer.css("margin-top")) + 50;
       if (pos > 0) {
         $(this).prop("disabled", true);
         return;
       }
-      if (pos >= 0) $(this).prop("disabled", true);
-      $("#vToRight").prop("disabled", false);
-      canvasSVG.css("left", pos);
+      $("#vToBottom").prop("disabled", false);
+      canvasContainer.css("margin-top", pos);
     });
-    $("#vToRight").click(function () {
-      var pos = parseInt(canvasSVG.css("left")) - 50;
-      if (pos < -canvasWidth) {
+    $("#vToBottom").click(function () {
+      var pos = parseInt(canvasContainer.css("margin-top")) - 50;
+      if (Math.abs(pos) > canvasHeight - 80) {
         $(this).prop("disabled", true);
         return;
       }
-      if (pos <= -canvasWidth) {
+      $("#vToTop").prop("disabled", false);
+      canvasContainer.css("margin-top", pos);
+    });
+    $("#vToLeft").click(function () {
+      var pos = parseInt(canvasContainer.css("margin-left")) + 50;
+      if (pos > 0) {
         $(this).prop("disabled", true);
+        return;
+      }
+      $("#vToRight").prop("disabled", false);
+      canvasContainer.css("margin-left", pos);
+    });
+    $("#vToRight").click(function () {
+      var pos = parseInt(canvasContainer.css("margin-left")) - 50;
+      console.log(pos, canvasWidth);
+      if (Math.abs(pos) > canvasWidth / 2 + 100) {
+        $(this).prop("disabled", true);
+        return;
       }
       $("#vToLeft").prop("disabled", false);
-      canvasSVG.css("left", pos);
+      canvasContainer.css("margin-left", pos);
     });
     $("#zoomInBtn").click(function () {
       var zoom = canvas.getZoom();
