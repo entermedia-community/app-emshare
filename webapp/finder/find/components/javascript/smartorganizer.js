@@ -86,19 +86,22 @@ $(document).ready(function () {
   };
   var placeholderJSON = [
     ...folderJson({
-      x: canvasWidth / 2 - 300,
-      y: canvasHeight / 2 - 150,
+      x: (canvasWidth + 1000) / 2 - 300,
+      y: (canvasHeight + 1000) / 2 - 150,
     }),
-    ...folderJson({ x: canvasWidth / 2 - 75, y: canvasHeight / 2 + 150 }),
     ...folderJson({
-      x: canvasWidth / 2 + 150,
-      y: canvasHeight / 2 - 150,
+      x: (canvasWidth + 1000) / 2 - 75,
+      y: (canvasHeight + 1000) / 2 + 150,
+    }),
+    ...folderJson({
+      x: (canvasWidth + 1000) / 2 + 150,
+      y: (canvasHeight + 1000) / 2 - 150,
     }),
     {
       type: "draw2d.shape.node.End",
       id: "main",
-      x: canvasWidth / 2 - 75,
-      y: canvasHeight / 2 - 75,
+      x: (canvasWidth + 1000) / 2 - 75,
+      y: (canvasHeight + 1000) / 2 - 75,
       width: 150,
       height: 150,
       radius: 75,
@@ -158,6 +161,8 @@ $(document).ready(function () {
     $("#organizer_canvas").css({
       width: canvasWidth + 1000,
       height: canvasHeight + 1000,
+      marginTop: -(canvasHeight + 1000) / 2 + canvasHeight / 2,
+      marginLeft: -(canvasWidth + 1000) / 2 + canvasWidth / 2,
     });
 
     canvas = new draw2d.Canvas("organizer_canvas");
@@ -194,29 +199,29 @@ $(document).ready(function () {
     var reader = new draw2d.io.json.Reader();
 
     function loadJSON() {
-      var url =
-        siteroot +
-        "/" +
-        mediadb +
-        "/services/module/smartorganizer/data/current";
-      jQuery.ajax({
-        dataType: "json",
-        url: url,
-        method: "GET",
-        success: function (res) {
-          var saveddata = res.data.json;
-          try {
-            var parsed = JSON.parse(saveddata);
-            if (!parsed.length) {
-              throw new Error("Empty JSON");
-            }
-            reader.unmarshal(canvas, parsed);
-          } catch (e) {
-            console.log(e);
-            reader.unmarshal(canvas, placeholderJSON);
-          }
-        },
-      });
+      // var url =
+      //   siteroot +
+      //   "/" +
+      //   mediadb +
+      //   "/services/module/smartorganizer/data/current";
+      // jQuery.ajax({
+      //   dataType: "json",
+      //   url: url,
+      //   method: "GET",
+      //   success: function (res) {
+      //     var saveddata = res.data.json;
+      //     try {
+      //       var parsed = JSON.parse(saveddata);
+      //       if (!parsed.length) {
+      //         throw new Error("Empty JSON");
+      //       }
+      //       reader.unmarshal(canvas, parsed);
+      //     } catch (e) {
+      //       console.log(e);
+      reader.unmarshal(canvas, placeholderJSON);
+      //     }
+      //   },
+      // });
     }
     loadJSON();
 
@@ -226,8 +231,8 @@ $(document).ready(function () {
       reader.unmarshal(
         canvas,
         folderJson({
-          x: canvasWidth / 2 + (Math.random() * 100 + 150) * dirX,
-          y: canvasHeight / 2 + (Math.random() * 100 + 150) * dirY,
+          x: (canvasWidth + 1000) / 2 + (Math.random() * 100 + 150) * dirX,
+          y: (canvasWidth + 1000) / 2 + (Math.random() * 100 + 150) * dirY,
         })
       );
       syncJSON();
@@ -359,8 +364,8 @@ $(document).ready(function () {
             draggable: false,
             selectable: false,
           }),
-          canvasWidth / 2 - imgWidth / 2,
-          canvasHeight / 2 - imgHeight / 2
+          (canvasWidth + 1000) / 2 - imgWidth / 2,
+          (canvasHeight + 1000) / 2 - imgHeight / 2
         );
 
         var main = canvas.getFigure("main");
@@ -434,7 +439,7 @@ $(document).ready(function () {
       writer.marshal(canvas, function (json) {
         if (json.length === 0) return;
         var data = {};
-		
+
         data.id = "current";
         data.name = $("#organizerName").val();
         data.json = JSON.stringify(json);
@@ -458,6 +463,49 @@ $(document).ready(function () {
     }
 
     var canvasContainer = $("#organizer_canvas");
+    var maxLeft = Math.floor(canvasWidth / 2 + 100);
+    canvas.installEditPolicy(
+      new draw2d.policy.canvas.CanvasPolicy({
+        onMouseWheel: function (delta, _, _, _, ctrlKey) {
+          delta *= 0.5;
+          if (!ctrlKey) {
+            var pos = parseInt(canvasContainer.css("margin-top")) + delta;
+            if (pos > 0) {
+              $("#vToTop").prop("disabled", true);
+              $("#vToBottom").prop("disabled", false);
+              canvasContainer.css("margin-top", 0);
+              return;
+            }
+            if (Math.abs(pos) > canvasHeight - 80) {
+              $("#vToBottom").prop("disabled", true);
+              $("#vToTop").prop("disabled", false);
+              canvasContainer.css("margin-top", -canvasHeight + 120);
+              return;
+            }
+            $("#vToTop").prop("disabled", false);
+            $("#vToBottom").prop("disabled", false);
+            canvasContainer.css("margin-top", pos);
+          } else {
+            var pos = parseInt(canvasContainer.css("margin-left")) + delta;
+            if (pos > 0) {
+              $("#vToLeft").prop("disabled", true);
+              $("#vToRight").prop("disabled", false);
+              canvasContainer.css("margin-left", 0);
+              return;
+            }
+            if (Math.abs(pos) > maxLeft) {
+              $("#vToRight").prop("disabled", true);
+              $("#vToLeft").prop("disabled", false);
+              canvasContainer.css("margin-left", -maxLeft);
+              return;
+            }
+            $("#vToLeft").prop("disabled", false);
+            $("#vToRight").prop("disabled", false);
+            canvasContainer.css("margin-left", pos);
+          }
+        },
+      })
+    );
 
     $("#vToTop").click(function () {
       var pos = parseInt(canvasContainer.css("margin-top")) + 50;
@@ -488,8 +536,7 @@ $(document).ready(function () {
     });
     $("#vToRight").click(function () {
       var pos = parseInt(canvasContainer.css("margin-left")) - 50;
-      console.log(pos, canvasWidth);
-      if (Math.abs(pos) > canvasWidth / 2 + 100) {
+      if (Math.abs(pos) > maxLeft) {
         $(this).prop("disabled", true);
         return;
       }
