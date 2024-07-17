@@ -510,9 +510,9 @@ $(document).ready(function () {
 
     $("#zoomResetBtn").click(function () {
       canvas.setZoom(1.0);
-      canvasSVG.css({
-        top: 0,
-        left: 0,
+      canvasContainer.css({
+        marginTop: 0,
+        marginLeft: 0,
       });
     });
   });
