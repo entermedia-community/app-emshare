@@ -413,13 +413,12 @@ jQuery(document).ready(function () {
 	  $("#pushSaveFolder").val();
   });
 */
-  lQuery(".refresh-sync").livequery("click", function (e) {
+  lQuery(".pullfetchfolder").livequery("click", function (e) {
     e.preventDefault();
-    var entitydialog = $(this).closest(".entitydialog");
-    if (entitydialog.length == 0) {
-      return;
-    }
-    var categorypath = entitydialog.data("categorypath");
+    var folder = $(this);
+    folder.closest(".pullfoldertree").find(".pullfetchfolder").removeClass("current");
+    folder.addClass("current");
+    var categorypath = folder.data("categorypath");
     refreshSync(categorypath);
   });
 
@@ -429,15 +428,18 @@ jQuery(document).ready(function () {
     });
   }
 
+ 
+
+
   ipcRenderer.on("files-fetched", (_, data) => {
     $.ajax({
       type: "POST",
-      url: apphome + "/components/desktop/export/pull.html",
+      url: apphome + "/components/desktop/export/folder.html",
       data: JSON.stringify(data),
       contentType: "application/json",
       //dataType: "json",
       success: function (res) {
-        $("#tabexportcontent").html(res);
+        $("#fetchfolder").html(res);
       },
       //handle error
       error: function (xhr, status, error) {
@@ -458,7 +460,7 @@ jQuery(document).ready(function () {
   });
   
   function refreshSyncPush(categorypath) {
-    ipcRenderer.send("fetchFilesPush", {
+    ipcRenderer.send("fetchFoldersPush", {
       categorypath: categorypath,
     });
   }
@@ -489,11 +491,11 @@ jQuery(document).ready(function () {
   lQuery(".download-pull").livequery("click", function (e) {
     e.preventDefault();
     //var headers = { "X-tokentype": "entermedia", "X-token": entermediakey };
-    var entitydialog = $(this).closest(".entitydialog");
-    if (entitydialog.length == 0) {
-      return;
-    }
-    var categorypath = entitydialog.data("categorypath");
+	var currentfolderdiv = $(this).closest("#currentfolder");
+	if (!currentfolderdiv.length) {
+		return;
+	}
+    var categorypath = currentfolderdiv.data("categorypath");
 
     $("#pullfiles li").each(function () {
       var item = $(this);
@@ -553,4 +555,5 @@ jQuery(document).ready(function () {
     var assetid = item.data("id");
     ipcRenderer.send("fetchfilesdownload", { assetid, file, headers });
   });
+
 });

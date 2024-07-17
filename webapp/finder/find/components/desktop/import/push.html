@@ -12,82 +12,33 @@
       <i class="bi bi-arrow-repeat ns"></i>
     </button>
   </div>
-	
 
-  #set( $files = $assetmap.files )
-  
-  #if($files.size() > 0)
-  <div class="my-3 py-1 sync-stage new">
-    <div class="d-flex align-items-center justify-content-between px-1 py-2">
-      <a href="#pullfiles" data-toggle="collapse" role="button">
-        <i class="bi bi-file-plus ns mr-1"></i> $files.size() [[new files]]#if($files.size()>1)s#end [[found on your local drive]]
-      </a>
-      <button class="btn btn-success rounded ml-2 upload-push">
-        <i class="bi bi-cloud-arrow-up-fill mr-1"></i> [[Upload]]
-      </button>
-    </div>
-    <ul id="pushfiles" class="collapse list-unstyled overflow-y px-1">
-    #foreach( $file in $files)
-      <li class="d-flex" 
-      	data-categorypath="$!assetmap.categorypath" 
-      	data-path="$file.path"
-      	data-size="$file.size"  
-      	data-abspath="$file.abspath">
-        <a href="$file.url" class="mr-2"> ##should be file preview url
-          <i class="bi bi-eye-fill ns"></i>
-        </a>
-        <span>$file.path</span>
-        <button class="ml-auto mr-2 btn-unstyled pull-individual">
-          <i class="bi bi-download ns"></i>
-        </button>
-      </li>
-    #end
-    </ul>
-  </div>
-  #end
-  
-  
-  #set( $missingfiles = $missingassetmap.files )
-  
-  #if($missingfiles.size() > 0)
-  <div class="my-3 py-1 sync-stage new">
-    <div class="d-flex align-items-center justify-content-between px-1 py-2">
-      <a href="#pullfiles" data-toggle="collapse" role="button">
-        <i class="bi bi-file-plus ns mr-1"></i>  [[Your local drive is missing]] $missingfiles.size() [[file]]
-      </a>
-      <div>
-      <button class="btn btn-danger rounded ml-2 upload-push">
-        <i class="bi bi-cloud-arrow-up-fill mr-1"></i> [[Remove Files On Server]]
-      </button>
-      <div class="py-1">
-             		<a  class='ajax entitytabactions refresh-sync '
-					data-tabsection="pulllocal"
-					href="$applink/views/modules/${moduleid}/components/gridsample/preview/tabexport.html?entityid=$!entity.getId()">
-					[[Or pull from server]]
-				</a>
+
+<div class="px-2">
+#set($indent = 1)
+#foreach( $folder in $remotemap.folders)
+	<div><i class="bi bi-folder"></i> $folder.path</div>
+	#if($folder.subfolders)
+		#set($padding = 10*$indent)
+		<div style="padding-left:${padding}px">
+		#set($subfolders = $folder.subfolders)
+		#foreach( $subfolder in $subfolders.folders)
+			<div><i class="bi bi-folder"></i> $subfolder.path</div>
+		#end
+		#foreach( $file in $subfolders.files)
+			<div title="$!file.size"><i class="bi bi-file"></i> $file.path</div>
+		#end
+	
 		</div>
-      </div>
-    </div>
-    <ul id="pushfiles" class="collapse list-unstyled overflow-y px-1">
-    #foreach( $file in $missingfiles)
-      <li class="d-flex" 
-      	data-categorypath="$!assetmap.categorypath" 
-      	data-path="$file.path"
-      	data-size="$file.size"  
-      	data-abspath="$file.abspath">
-        <a href="$file.url" class="mr-2"> ##should be file preview url
-          <i class="bi bi-eye-fill ns"></i>
-        </a>
-        <span>$file.path</span>
-        <button class="ml-auto mr-2 btn-unstyled pull-individual">
-          <i class="bi bi-download ns"></i>
-        </button>
-      </li>
-    #end
-    </ul>
-  </div>
-  #end
-  
+	#end
+#end
+ 
+#foreach( $file in $remotemap.files)
+	<div title="$!file.size"><i class="bi bi-file"></i> $file.path</div>
+#end
+</div>
+
+
   
   
   #if($missingfiles.size() < 1 && $files.size() < 1)
