@@ -434,7 +434,9 @@ $(document).ready(function () {
       writer.marshal(canvas, function (json) {
         if (json.length === 0) return;
         var data = {};
+		
         data.id = "current";
+        data.name = $("#organizerName").val();
         data.json = JSON.stringify(json);
         var url =
           siteroot +
