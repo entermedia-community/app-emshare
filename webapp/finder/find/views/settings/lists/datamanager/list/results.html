@@ -62,14 +62,14 @@ $context.putPageValue("details",$details)
 			#foreach( $detail in $details )
 			<td>
 	
-			 	#set( $val = $hit.get($detail.id))
-				#if(!$val && $detail.rendermask)
-					#set($val = $searcherManager.getValue($catalogid, $detail.rendermask, $hit.getProperties()))
-				#end
+			 	#set($val = $hit.get($detail.id))
+				#set($value = $searcherManager.getValue($hit, $detail, $context.getLocale()))
 						
 				
-			 	$context.putPageValue('val',  $!val)
-             		$context.putPageValue('detail',  $detail)
+			 	$context.putPageValue('val',  $val)
+			 	$context.putPageValue('value',  $value)
+             	$context.putPageValue('detail',  $detail)
+             	
 				#set ($viewtype = $detail.viewType)
              		#if($viewtype && $viewtype.equals("html"))
              			#set ($viewtype = "htmlescaped")
