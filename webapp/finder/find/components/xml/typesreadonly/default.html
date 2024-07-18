@@ -4,10 +4,6 @@
 ## $val
 ## $searcherManager
 
-#if( $value && !$value.isEmpty() )
-	#set($vals = $value)
-#end
-
 #set( $highlights = $data.getHighlights($detail.id) )
 #if($highlights && $!highlights.isEmpty() )
 <ul class="highlightlist list-unstyled " >
@@ -16,11 +12,9 @@
 #end
 </ul>
 #else
+
 <div class="emdatafieldreadonly emdatafieldreadonly-default">
-#if(!$val && $detail.rendermask && $data)
-	#set($label = $searcherManager.getValue($detail.getListCatalogId(), $detail.rendermask, $detail.getSearchType(), $data, null, $context.getLocale()))
-	#esc( $label ) 
-#elseif($detail.isMultiLanguage()) 
+#if($detail.isMultiLanguage()) 
 		#set($map = $data.getValue($detail.getId()))
 		
 		#if( $showalllanguagevalues )
@@ -43,7 +37,6 @@
 		#if($lval) $keyid:$lval <br>#end 
 	#end		
 #else
-
 	#ifnotnull($val)
 		#set($dmax = 150)
 		#if($detail.id == "name")

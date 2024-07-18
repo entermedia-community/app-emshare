@@ -59,12 +59,16 @@ $context.putPageValue("longform",false)
 <table class="settings-table table table-striped">
  #foreach( $detail in $details )
 
- 	#set( $val = $data.get($detail.id))
-	#if(!$val && $detail.rendermask)
-		#set($val = $searcherManager.getValue($detail.getListCatalogId(), $detail.rendermask, $detail.getSearchType(), $data, null, $context.getLocale()))
+ 	#set($val =  $data.get($detail.id) )
+	#set($value = $searcherManager.getValue($data, $detail, $context.getLocale() ) ) 
+	
+	#ifnull($val)
+		#set($val = "")	
 	#end
 					
 	$!context.putPageValue("detail",$detail)
+	$!context.putPageValue("val",$val)
+	$!context.putPageValue("value",$value)
 	
 	
 	#if ($detail.header)
@@ -75,8 +79,6 @@ $context.putPageValue("longform",false)
 	#end
 	#set( $editrow = $detail.isEditable() && $readonly != "true" )
 	#if( $editrow || $val  || !$detail.isEditable() || $detail.dataType == "searchjoin" || $detail.render ) 
-		#if( !$val) #set( $val = "") #end		
-		$!context.putPageValue("val",$val)
 		<tr id="inputarea_${detail.id}">
 			<td   class="emdatafield" #if( $errors && $errors.get($detail.id) ) style="color: red; font-weight: bold;" #end >
 				#if( $detail.hidelabel == true )
@@ -88,7 +90,8 @@ $context.putPageValue("longform",false)
 			<td id="detail_$detail.id" class="emdatafieldvalue #if (!$multiedit && $detail.required == true) requiredfield #end emdatafieldtype" >
 			#if( $editrow )	
 				$pages.include("$xmledithome/detailedit.html", $context)
-			#else  ##NOT EDITABLE
+			#else  
+				##NOT EDITABLE
 				$pages.include("$xmledithome/detailreadonly.html", $context) 
 			#end
 				<span style="color:gray;font-style:italic;font-size:.9em;">$!detail.note<span>
@@ -98,8 +101,6 @@ $context.putPageValue("longform",false)
 	#else
 	
 		#if(!$editrow && $alwaysshow == "true")
-		#if( !$val) #set( $val = "") #end	
-			$!context.putPageValue("val",$val)
 			<tr id="inputarea_${detail.id}">
 				<td   class="emdatafield" >
 					#if( $detail.hidelabel == true )
@@ -129,7 +130,6 @@ $context.putPageValue("longform",false)
 	#if($detail.get('dependson'))
 	##TODO: Remove this ugly code, use jQuery in validateandedit.js
    <script type="text/javascript">			
-			##TODO: Put this in validateandedit.js
 			jQuery(document).ready(function(){
 				DetailEditor.find_field_from_row("$!detail.get('dependson')").bind_and_run('change',function(){
 					DetailEditor.toggle_dependency_row("$!detail.getId()",
