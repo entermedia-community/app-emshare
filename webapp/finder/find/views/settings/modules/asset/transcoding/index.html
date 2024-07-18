@@ -31,9 +31,10 @@ $query.addSortBy("ordering")
 				$!context.putPageValue("detail",$detail)
 				<td>		
 				#set( $value = false)
-				#set( $value = $row.get($detail.id) )
+				#set($value = $searcherManager.getValue($row, $detail, $context.getLocale())) 
 				#if( $value)
-					$!context.putPageValue("val",$value)		
+					$!context.putPageValue("val",$val)
+					$!context.putPageValue("value",$value)		
 					$!context.putPageValue("data",$row)		
 		
 					$pages.include("$apphome/components/xml/detailreadonly.html", $context)
