@@ -85,18 +85,18 @@ $(document).ready(function () {
     ];
   };
   var placeholderJSON = [
-    ...folderJson({
-      x: (canvasWidth + 1000) / 2 - 300,
-      y: (canvasHeight + 1000) / 2 - 150,
-    }),
-    ...folderJson({
-      x: (canvasWidth + 1000) / 2 - 75,
-      y: (canvasHeight + 1000) / 2 + 150,
-    }),
-    ...folderJson({
-      x: (canvasWidth + 1000) / 2 + 150,
-      y: (canvasHeight + 1000) / 2 - 150,
-    }),
+    // ...folderJson({
+    //   x: (canvasWidth + 1000) / 2 - 300,
+    //   y: (canvasHeight + 1000) / 2 - 150,
+    // }),
+    // ...folderJson({
+    //   x: (canvasWidth + 1000) / 2 - 75,
+    //   y: (canvasHeight + 1000) / 2 + 150,
+    // }),
+    // ...folderJson({
+    //   x: (canvasWidth + 1000) / 2 + 150,
+    //   y: (canvasHeight + 1000) / 2 - 150,
+    // }),
     {
       type: "draw2d.shape.node.End",
       id: "main",
@@ -193,35 +193,36 @@ $(document).ready(function () {
 
     canvas.installEditPolicy(new draw2d.policy.canvas.ShowGridEditPolicy());
     canvas.installEditPolicy(new draw2d.policy.canvas.SnapToGridEditPolicy());
+    canvas.installEditPolicy(new draw2d.policy.canvas.KeyboardPolicy());
     canvas.installEditPolicy(new draw2d.policy.canvas.CoronaDecorationPolicy());
     canvas.installEditPolicy(new draw2d.policy.canvas.WheelZoomPolicy());
 
     var reader = new draw2d.io.json.Reader();
 
     function loadJSON() {
-      // var url =
-      //   siteroot +
-      //   "/" +
-      //   mediadb +
-      //   "/services/module/smartorganizer/data/current";
-      // jQuery.ajax({
-      //   dataType: "json",
-      //   url: url,
-      //   method: "GET",
-      //   success: function (res) {
-      //     var saveddata = res.data.json;
-      //     try {
-      //       var parsed = JSON.parse(saveddata);
-      //       if (!parsed.length) {
-      //         throw new Error("Empty JSON");
-      //       }
-      //       reader.unmarshal(canvas, parsed);
-      //     } catch (e) {
-      //       console.log(e);
-      reader.unmarshal(canvas, placeholderJSON);
-      //     }
-      //   },
-      // });
+      var url =
+        siteroot +
+        "/" +
+        mediadb +
+        "/services/module/smartorganizer/data/current";
+      jQuery.ajax({
+        dataType: "json",
+        url: url,
+        method: "GET",
+        success: function (res) {
+          var saveddata = res.data.json;
+          try {
+            var parsed = JSON.parse(saveddata);
+            if (!parsed.length) {
+              throw new Error("Empty JSON");
+            }
+            reader.unmarshal(canvas, parsed);
+          } catch (e) {
+            console.log(e);
+            reader.unmarshal(canvas, placeholderJSON);
+          }
+        },
+      });
     }
     loadJSON();
 
@@ -328,7 +329,7 @@ $(document).ready(function () {
     });
 
     $("#logoPickerBtn").click(function () {
-      $("#logoPicker").click();
+      $("#logoPicker").trigger("click");
     });
 
     $("#logoPicker").change(function (e) {
@@ -563,6 +564,15 @@ $(document).ready(function () {
         marginTop: 0,
         marginLeft: 0,
       });
+    });
+
+    $(document).on("click", ".insert-btn", function () {
+      var data = $(this).siblings("textarea").val();
+      console.log(typeof data);
+      var parsed = JSON.parse(data);
+      reader.unmarshal(canvas, parsed);
+      closeemdialog($(this).closest(".modal"));
+      syncJSON();
     });
   });
 });
