@@ -149,14 +149,13 @@ $context.putPageValue("topmoduleid", $moduleid)
 								#set($label = "[[Add New]]")
 								#text($label)	
 								$context.putPageValue("addnew", $addnew)
-							#else
-								
-								#set($label = $searcherManager.getValue($entity, $searcher.getDetail("name") , $context.getLocale())) 
+							#elseif($module.getValue("customname"))
+								#set($label = $searcherManager.getValue($entity, $searcher.getDetail("name") ,$module.getValue("customname"), null, $context.getLocale())) 
 								#text($label)
-							
-								##text($module) <i class="bi bi-chevron-right mx-1 bi-small"></i>
-								##set($label = $!entity.getName($context))
-								##text($label) 							
+							#else
+								#text($module) <i class="bi bi-chevron-right mx-1 bi-small"></i>
+								#set($label = $!entity.getName($context))
+								#text($label) 							
 							#end
 							
 						#end
