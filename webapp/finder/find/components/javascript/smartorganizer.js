@@ -200,11 +200,13 @@ $(document).ready(function () {
     var reader = new draw2d.io.json.Reader();
 
     function loadJSON() {
+		
+	  var id = $("#organizerId").val();
       var url =
         siteroot +
         "/" +
         mediadb +
-        "/services/module/smartorganizer/data/current";
+        "/services/module/smartorganizer/data/" + id;
       jQuery.ajax({
         dataType: "json",
         url: url,
@@ -428,6 +430,20 @@ $(document).ready(function () {
       handle: "#dragHandle",
     });
 
+	$("#copyButton").on("click", function()
+	{
+		var header = $("#smartorganizermain");
+        var id = $("#organizerId").val();
+		header.load( header.data("copyurl") + "?id=" + id);				
+	});
+
+	$("#deleteButton").on("click", function()
+	{
+		var header = $("#smartorganizermain");
+        var id = $("#organizerId").val();
+		header.load( header.data("deleteurl") + "?id=" + id);				
+	});
+
     var saveBtn = $("#saveOrganizer");
 
     saveBtn.click(syncJSON);
@@ -441,7 +457,7 @@ $(document).ready(function () {
         if (json.length === 0) return;
         var data = {};
 
-        data.id = "current";
+        data.id = $("#organizerId").val();
         data.name = $("#organizerName").val();
         data.json = JSON.stringify(json);
         var url =
