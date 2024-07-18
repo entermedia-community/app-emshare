@@ -123,11 +123,11 @@ $context.putPageValue("resultsPage", $resultsPage)
 				#foreach( $detail in $details)
 					<td style="padding:4px;">
 						#set( $val = "$!hit.get($detail.id)" ) ##TODO: Get rid of this
-						#if($detail.render)
-							#set( $val = $searcherManager.getValue($catalogid, $detail.render, $hit.properties))
-						#end
+						#set( $value = $searcherManager.getValue($hit, $detail, $context.getLocale()))
+						
 						$context.putPageValue("detail",$detail)
 						$context.putPageValue("val",$val)
+						$context.putPageValue("value",$value)
 						$!context.putPageValue("data",$hit)
 						$pages.include("$xmledithome/detailreadonly.html", $context)
 					</td>

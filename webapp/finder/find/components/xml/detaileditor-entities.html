@@ -33,37 +33,34 @@
  <div class="row no-gutters">
  #foreach( $detail in $details )
  	#set($detailid = $detail.getId())
-	#set( $val = false )
-	#set( $value = false )
+	#set($value = "")
+	#set($val = "")
+	
+	#set( $editrow = $detail.isEditable() && $readonly != "true")
 	
 	#if($editrow)
 		#set( $target = "${detailid}.value" )
-		#set( $val = $context.getRequestParameter($target) )	
-		#if( !$val )
-			#set( $val = $context.getPageValue($target) )
-		#end	
+		#set( $contextval = $context.getRequestParameter($target) )	
+		#ifnull( $contextval )
+			#set( $contextval = $context.getPageValue($target) )
+		#end
+		#ifnotnull($contextval)
+			#set($val = $contextval)
+		#end
 	#end
 	
-	#if( !$val )
-	 	#set( $val = $data.get($detail.id))
-	 	
-	 	#if($detail.isMultiValue())
-				#set($value = $searcherManager.getValues($detail.getListCatalogId(), $detail.rendermask, $detail.getSearchType(), $data, null, $context.getLocale()))
-			#else
-
-				#set($value = $searcherManager.getValue($detail.getListCatalogId(), $detail.rendermask, $detail.getSearchType(), $data, null, $context.getLocale()))
-		#end
+	#if(!$val)
+		#set($val =  $data.get($detail.id) )
+		#set($value = $searcherManager.getValue($data, $detail, $context.getLocale() ) )
 	#end 
-	
+
 	#if(!$val && $detailid=="primarymedia")
 		#set( $val = $!data.getValue("primaryimage") )
 	#end
 	
-	#if( !$val) 
-		#set( $val = "") 
+	#ifnull($val)
+		#set($val = "")	
 	#end
-	
-	#set( $editrow = $detail.isEditable() && $readonly != "true") 
 		
 	#if( $editrow || $val || $value)
 	 	<div class="$detailviewercolumnclass detail-${detail.id}">
@@ -93,7 +90,7 @@
 					#if ( $detail.note )
 						<span class="detail-note">$context.getText($detail.note.toString())<span>
 					#elseif($detail.viewType == "tageditor")
-						<span class="text-muted d-inline-block mt-1" style="font-size: 13px;">Hit <kbd>enter</kbd> or <kbd>return</kbd> key after typing each tag<span>
+						<span class="text-muted d-inline-block mt-1" style="font-size: 13px;">[[Hit]] <kbd>[[enter]]</kbd> [[or]] <kbd>[[return]]</kbd> [[key after typing each tag]]<span>
 					#end
 				#else 
 					##NOT EDITABLE

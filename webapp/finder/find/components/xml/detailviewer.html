@@ -53,11 +53,11 @@
 		</li>
 	#end
 	
-	#set( $val = $data.get($detail.getId()) )
-	#if($detail.isMultiValue())
-		#set($value = $data.getValues($detail.id))
-	#else
-		#set($value = $data.getValue($detail.id)) 
+	#set($val =  $data.get($detail.id) )
+	#set($value = $searcherManager.getValue($data, $detail, $context.getLocale() ) ) 
+	
+	#ifnull($val)
+		#set($val = "")	
 	#end
 	
 	

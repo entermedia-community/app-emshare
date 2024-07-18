@@ -23,20 +23,17 @@
  #foreach( $detail in $details )
  
  	<div class="inputformrow">
-	#set( $val = false )
-	#set( $target = "${detail.id}.value" )
-	#set( $val = $context.getRequestParameter($target) )					
-	#if( $searcherManager )
-		#set( $val = $searcherManager.getValue($data,$detail) )	
-	#else
-		#set( $val = $!{data.getProperty($detail.getId())} )
+	#set( $val = "" )
+	#set($val =  $data.get($detail.id) )
+	#set($value = $searcherManager.getValue($data, $detail, $context.getLocale() ) ) 
+
+	#ifnull($val)
+		#set($val = "")	
 	#end
 	
-	#if( !$val )
-		#set( $val = $!{data.get($detail.getId())} )
-	#end
-	
-	$!context.putPageValue("detail",$detail)
+	$context.putPageValue("val", $val)
+	$context.putPageValue("value", $value)
+	$context.putPageValue("detail", $detail)
 	
 	#if ($detail.header)
 		#if ($detail.header != "blank")
@@ -46,24 +43,23 @@
 	
 	#set( $editrow = $detail.isEditable() && $readonly != "true") 
 	#if( $editrow || $val  || !$detail.isEditable() || $detail.dataType == "searchjoin" )
-		#if( !$val) #set( $val = "") #end	
-		
-			$!context.putPageValue("val",$val)
-			#if( $detail.hidelabel == true )
+
+		#if( $detail.hidelabel == true )
+		#else
+			
+			#if ($detail.dataType && $detail.dataType == "boolean" )
+				$!context.putPageValue("label", $!detail.getText($context))
 			#else
-				
-				#if ($detail.dataType && $detail.dataType == "boolean" )
-					$!context.putPageValue("label", $!detail.getText($context))
-				#else
-				<label class="emdatafield" >
-						$!detail.getText($context)
-				</label>
-				#end
+			<label class="emdatafield" >
+					$!detail.getText($context)
+			</label>
 			#end
+		#end
 		<div id="detail_$detail.id" class="emdatafieldvalue emdatafieldvalue-$!detail.dataType #if ($detail.isRequired()) requiredfield #end">
 		#if( $editrow )	
 			$pages.include("$xmledithome/detailedit.html", $context)
-		#else  ##NOT EDITABLE
+		#else  
+			##NOT EDITABLE
 			$pages.include("$xmledithome/detailreadonly.html", $context) 
 		#end
 		#if ( $detail.note )
