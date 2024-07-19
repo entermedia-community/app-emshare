@@ -15,76 +15,12 @@
 	#end
 #end	
 
+
 #if( !$details)
 		[[Not view defined on]]: $view
 #end
 
-#if(!$detailviewercolumns)
-	#set($detailviewercolumns = 2)
-#end
-#set($detailviewercolumnclass = "col-md-6")
-#if($detailviewercolumns == 1)
-	#set($detailviewercolumnclass = "col-md-12")
-#end
-
-
-
+$!context.putPageValue("details", $details)
 <div class="row no-gutters">
-#foreach( $detail in $details )
-	$!context.putPageValue("detail",$detail)
-	
-	#if($detail.dataType == "searchjoin" )
-		#set($viewtype = "searchjoin" )
-	#else
-		#set($viewtype = $detail.viewType)
-	#end
-	#if (!$viewtype)
-		#set($viewtype = $detail.dataType)
-	#end
-	#if (!$viewtype || $viewtype== "text")
-		#set ($viewtype = "default")
-	#end
-	
-	#if ($detail.header)
-		<li class="header">
-		#if ($detail.header != "blank")
-			<span><h4>$detail.header</h4></span>
-		#end
-		</li>
-	#end
-	
-	#set($val =  $data.get($detail.id) )
-	#set($value = $searcherManager.getValue($data, $detail, $context.getLocale() ) ) 
-	
-	#ifnull($val)
-		#set($val = "")	
-	#end
-	
-	
-	#if(  $val  || $value)
-		<div class="$detailviewercolumnclass emdatafield-$!viewtype">
-			<div class="container-fluid">
-				<div class="row">
-					<div class="col-4 col-emdatafield">
-					<label class="emdatafield" data-field="$detail.getId()">
-						$detail.getText($context)
-					</label>
-					</div>
-					<div class="col-8">
-					<div class="emdatafieldvalue">		
-									
-						$!context.putPageValue("val",$val)
-						$!context.putPageValue("value",$value)
-						$context.putPageValue("showalllanguagevalues",true)
-						$!context.putPageValue("detail",$detail)
-						$pages.include("$apphome/components/xml/detailreadonly.html", $context) 
-					</div>
-					</div>
-				</div>
-			</div>
-			
-		</div> 
-		
-	#end
-#end
+$pages.include("$apphome/components/xml/detailviewersection.html", $context)
 </div>
