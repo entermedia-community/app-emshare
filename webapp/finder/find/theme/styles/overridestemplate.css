@@ -1,3 +1,23 @@
+/*Color*/
+:root {
+  --primary-color-black: #202835;
+  --primary-color-dark: #333e55;
+  --primary-color-normal: #4d5d80;
+  --primary-color-light: #5f739e;
+  --accent-color-dark: #1174d4;
+  --accent-color-normal: #3884fd;
+  --action-color-dark: #0e2f50;
+  
+  #if($theme.navfontcolor)
+  	--navbar-tab-color: $theme.navfontcolor;
+  #else
+  	--navbar-tab-color: #333e55;
+  #end
+
+}
+
+
+
 #set( $apphome = $context.findValue("applicationid") )
 #set( $apphome = "/${apphome}" )
 #embody {
@@ -102,7 +122,7 @@ position: relative;
 }
 #end
 
-.emnav {
+.entityNavBarContainer {
 	#if( ${theme.navbackgroundpath})
 		background: url('$theme.navbackgroundpath');
 	#else
@@ -111,7 +131,7 @@ position: relative;
 		#if($color1)
 			background:none;
 			background-color: $color1;
-			##border-bottom: 1px solid $color1;
+			border-bottom: 1px solid $color1;
 		#end
 		#if($color1 && $color2)
 			background: -moz-linear-gradient(top, $color1 0%, $color2 100%); /* FF3.6+ */
@@ -121,6 +141,7 @@ position: relative;
 			background: -ms-linear-gradient(top, $color1 0%,$color2 100%); /* IE10+ */
 			background: linear-gradient(top, $color1 0%,$color2 100%); /* W3C */
 			filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='$color1', endColorstr='$color2',GradientType=0 ); /* IE6-9 */
+			border-bottom: 1px solid $color2;
 		#end
 	
 		#set($color1 = "")
