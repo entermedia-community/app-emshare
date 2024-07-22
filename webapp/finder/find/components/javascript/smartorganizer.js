@@ -557,35 +557,35 @@ $(document).ready(function () {
       saveBtn.find("span").text("Saving...");
       var writer = new draw2d.io.json.Writer();
 
-      // pseudo wait
-      setTimeout(() => {
-        writer.marshal(canvas, function (json) {
-          if (json.length === 0) return;
-          var data = {};
+      writer.marshal(canvas, function (json) {
+        if (json.length === 0) return;
+        var data = {};
 
-          data.id = "current";
-          data.name = $("#organizerName").val();
-          data.json = JSON.stringify(json);
-          var url =
-            siteroot +
-            "/" +
-            mediadb +
-            "/services/module/smartorganizer/data/current";
-          jQuery.ajax({
-            dataType: "json",
-            method: "PUT",
-            contentType: "application/json; charset=utf-8",
-            url: url,
-            data: JSON.stringify(data),
-            success: function () {
+        data.id = "current";
+        data.name = $("#organizerName").val();
+        data.json = JSON.stringify(json);
+        var url =
+          siteroot +
+          "/" +
+          mediadb +
+          "/services/module/smartorganizer/data/current";
+        jQuery.ajax({
+          dataType: "json",
+          method: "PUT",
+          contentType: "application/json; charset=utf-8",
+          url: url,
+          data: JSON.stringify(data),
+          success: function () {
+            // pseudo wait
+            setTimeout(() => {
               saveBtn.removeClass("saving");
               saveBtn.find("span").text("Save Changes");
-            },
-          });
+            }, 1000);
+            // pseudo wait
+          },
         });
-        autoSaver();
-      }, 2000);
-      // pseudo wait
+      });
+      autoSaver();
     }
 
     function autoSaver() {
