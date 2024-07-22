@@ -546,36 +546,56 @@ $(document).ready(function () {
 
     saveBtn.click(syncJSON);
 
+    var autoSaveTimeout;
+
     function syncJSON() {
+      if (autoSaveTimeout) {
+        clearTimeout(autoSaveTimeout);
+        autoSaveTimeout = null;
+      }
       saveBtn.addClass("saving");
       saveBtn.find("span").text("Saving...");
       var writer = new draw2d.io.json.Writer();
 
-      writer.marshal(canvas, function (json) {
-        if (json.length === 0) return;
-        var data = {};
+      // pseudo wait
+      setTimeout(() => {
+        writer.marshal(canvas, function (json) {
+          if (json.length === 0) return;
+          var data = {};
 
-        data.id = "current";
-        data.name = $("#organizerName").val();
-        data.json = JSON.stringify(json);
-        var url =
-          siteroot +
-          "/" +
-          mediadb +
-          "/services/module/smartorganizer/data/current";
-        jQuery.ajax({
-          dataType: "json",
-          method: "PUT",
-          contentType: "application/json; charset=utf-8",
-          url: url,
-          data: JSON.stringify(data),
-          success: function () {
-            saveBtn.removeClass("saving");
-            saveBtn.find("span").text("Save Changes");
-          },
+          data.id = "current";
+          data.name = $("#organizerName").val();
+          data.json = JSON.stringify(json);
+          var url =
+            siteroot +
+            "/" +
+            mediadb +
+            "/services/module/smartorganizer/data/current";
+          jQuery.ajax({
+            dataType: "json",
+            method: "PUT",
+            contentType: "application/json; charset=utf-8",
+            url: url,
+            data: JSON.stringify(data),
+            success: function () {
+              saveBtn.removeClass("saving");
+              saveBtn.find("span").text("Save Changes");
+            },
+          });
         });
-      });
+        autoSaver();
+      }, 2000);
+      // pseudo wait
     }
+
+    function autoSaver() {
+      if (!autoSaveTimeout) {
+        autoSaveTimeout = setTimeout(autoSaver, 30 * 1000);
+        return;
+      }
+      syncJSON();
+    }
+    autoSaveTimeout = setTimeout(autoSaver, 30 * 1000);
 
     var canvasContainer = $("#organizer_canvas");
     var maxLeft = Math.floor(canvasWidth / 2 + 100);
