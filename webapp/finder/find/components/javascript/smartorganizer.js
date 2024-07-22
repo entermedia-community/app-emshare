@@ -74,6 +74,7 @@ $(document).ready(function () {
         ],
       },
       {
+        type: "draw2d.shape.basic.Image",
         x: x,
         y: y,
         id: draw2d.util.UUID.create(),
@@ -85,6 +86,39 @@ $(document).ready(function () {
         selectable: true,
         resizable: false,
         composite: groupId,
+      },
+      {
+        type: "draw2d.shape.basic.Label",
+        id: groupId + "-label",
+        x: x + 72,
+        y: y + 88,
+        width: 150,
+        text: "New Folder",
+        textAnchor: "middle",
+        stroke: 0,
+        fontSize: 14,
+        fontWeight: "bold",
+        fontColor: "#ffffff",
+        bgColor: "none",
+        selectable: false,
+        draggable: false,
+        cssClass: "centeredLabel",
+        userData: {
+          description: "",
+        },
+        composite: groupId,
+      },
+      {
+        type: "draw2d.shape.basic.Image",
+        id: groupId + "-icon",
+        x: x + (150 - 60) / 2,
+        y: y + 30,
+        width: 60,
+        height: 60,
+        draggable: false,
+        selectable: false,
+        composite: groupId,
+        path: apphome + "/components/smartorganizer/icons/folder.svg",
       },
     ];
   };
@@ -185,9 +219,36 @@ $(document).ready(function () {
 
     canvas.installEditPolicy(new draw2d.policy.canvas.ShowGridEditPolicy());
     canvas.installEditPolicy(new draw2d.policy.canvas.SnapToGridEditPolicy());
-    canvas.installEditPolicy(new draw2d.policy.canvas.KeyboardPolicy());
     canvas.installEditPolicy(new draw2d.policy.canvas.CoronaDecorationPolicy());
     canvas.installEditPolicy(new draw2d.policy.canvas.WheelZoomPolicy());
+    // canvas.installEditPolicy(
+    //   new draw2d.policy.canvas.DefaultKeyboardPolicy({
+    //     onKeyDown: function (canvas, keyCode, figure, ctrlKey) {
+    //       if (46 === keyCode && null !== canvas.getPrimarySelection()) {
+    //         canvas
+    //           .getCommandStack()
+    //           .startTransaction(
+    //             draw2d.default.Configuration.i18n.command.deleteShape
+    //           );
+    //         var selections = canvas.getSelection();
+    //         selections.each(function (_, figure) {
+    //           // if (figure instanceof draw2d.default.Connection) {
+    //           //   if (selections.contains(figure.getSource(), true)) return;
+    //           //   if (selections.contains(figure.getTarget(), true)) return;
+    //           // }
+    //           console.log(figure);
+    //           var cmd = figure.createCommand(
+    //             new draw2d.default.command.CommandType(
+    //               draw2d.default.command.CommandType.DELETE
+    //             )
+    //           );
+    //           null !== cmd && canvas.getCommandStack().execute(cmd);
+    //         });
+    //         canvas.getCommandStack().commitTransaction();
+    //       }
+    //     },
+    //   })
+    // );
 
     var reader = new draw2d.io.json.Reader();
 
@@ -328,6 +389,12 @@ $(document).ready(function () {
         $("#folderLabel").val(selectedLabel.getText() || "");
         $("#folderDesc").val(selectedLabel.getUserData()?.description || "");
         $("#modifySelection").show();
+        // var connections = selectedFolder.getConnections();
+        // connections.each(function (_, n) {
+        //   n.select();
+        //   console.log(n.getSource());
+        // });
+        // console.log(canvas.getSelection());
       } else {
         $("#modifySelection").hide();
         selectedLabel = null;
@@ -444,18 +511,20 @@ $(document).ready(function () {
             draggable: false,
             selectable: false,
             composite: selectedFolderId,
+            width: 60,
+            height: 60,
+            path: iconPath,
           });
+          canvas.add(
+            folderImage,
+            selectedFolder.getX() + (150 - 60) / 2,
+            selectedFolder.getY() + 30
+          );
+          folderImage.toFront();
+          selectedFolder.assignFigure(folderImage);
+        } else {
+          prevIcon.setPath(iconPath);
         }
-        folderImage.setWidth(60);
-        folderImage.setHeight(60);
-        folderImage.setPath(iconPath);
-        canvas.add(
-          folderImage,
-          selectedFolder.getX() + (150 - 60) / 2,
-          selectedFolder.getY() + 30
-        );
-        folderImage.toFront();
-        selectedFolder.assignFigure(folderImage);
         $("#folderThumbPickerBtn").html(`<img src="${iconPath}" />`);
         closeemdialog($(this).closest(".modal"));
         hideLoader();
