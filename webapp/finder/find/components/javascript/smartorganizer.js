@@ -553,6 +553,9 @@ $(document).ready(function () {
         clearTimeout(autoSaveTimeout);
         autoSaveTimeout = null;
       }
+      if (!canvas) {
+        return;
+      }
       saveBtn.addClass("saving");
       saveBtn.find("span").text("Saving...");
       var writer = new draw2d.io.json.Writer();
@@ -589,6 +592,11 @@ $(document).ready(function () {
     }
 
     function autoSaver() {
+      if ($("#organizer_canvas").length == 0) {
+        clearTimeout(autoSaveTimeout);
+        autoSaveTimeout = null;
+        return;
+      }
       if (!autoSaveTimeout) {
         autoSaveTimeout = setTimeout(autoSaver, 30 * 1000);
         return;
