@@ -10,6 +10,10 @@ $(document).ready(function () {
   var selectedLabel = null;
   var canvasWidth = window.innerWidth - 132;
   var canvasHeight = window.innerHeight - 112;
+  var fullCanvasWidth = canvasWidth + 1000;
+  var fullCanvasHeight = canvasHeight + 1000;
+  var midX = fullCanvasWidth / 2;
+  var midY = fullCanvasHeight / 2;
   var folderPort = {
     type: "draw2d.HybridPort",
     width: 16,
@@ -85,23 +89,11 @@ $(document).ready(function () {
     ];
   };
   var placeholderJSON = [
-    // ...folderJson({
-    //   x: (canvasWidth + 1000) / 2 - 300,
-    //   y: (canvasHeight + 1000) / 2 - 150,
-    // }),
-    // ...folderJson({
-    //   x: (canvasWidth + 1000) / 2 - 75,
-    //   y: (canvasHeight + 1000) / 2 + 150,
-    // }),
-    // ...folderJson({
-    //   x: (canvasWidth + 1000) / 2 + 150,
-    //   y: (canvasHeight + 1000) / 2 - 150,
-    // }),
     {
       type: "draw2d.shape.node.End",
       id: "main",
-      x: (canvasWidth + 1000) / 2 - 75,
-      y: (canvasHeight + 1000) / 2 - 75,
+      x: midX - 75,
+      y: midY - 75,
       width: 150,
       height: 150,
       radius: 75,
@@ -159,10 +151,10 @@ $(document).ready(function () {
       canvas = null;
     }
     $("#organizer_canvas").css({
-      width: canvasWidth + 1000,
-      height: canvasHeight + 1000,
-      marginTop: -(canvasHeight + 1000) / 2 + canvasHeight / 2,
-      marginLeft: -(canvasWidth + 1000) / 2 + canvasWidth / 2,
+      width: fullCanvasWidth,
+      height: fullCanvasHeight,
+      marginTop: -midY + canvasHeight / 2,
+      marginLeft: -midX + canvasWidth / 2,
     });
 
     canvas = new draw2d.Canvas("organizer_canvas");
@@ -217,6 +209,7 @@ $(document).ready(function () {
               throw new Error("Empty JSON");
             }
             reader.unmarshal(canvas, parsed);
+            $("#zoomResetBtn").trigger("click");
           } catch (e) {
             console.log(e);
             reader.unmarshal(canvas, placeholderJSON);
@@ -226,17 +219,65 @@ $(document).ready(function () {
     }
     loadJSON();
 
-    $("#addFolderBtn").click(function () {
-      var dirX = Math.random() > 0.5 ? 1 : -1;
-      var dirY = Math.random() > 0.5 ? 1 : -1;
-      reader.unmarshal(
-        canvas,
-        folderJson({
-          x: (canvasWidth + 1000) / 2 + (Math.random() * 100 + 150) * dirX,
-          y: (canvasWidth + 1000) / 2 + (Math.random() * 100 + 150) * dirY,
-        })
-      );
+    var folderDragging = false;
+    $("#addFolderBtn").on("mouseup", function () {
+      if (folderDragging) {
+        folderDragging = false;
+        return;
+      }
+      var mainNode = canvas.getFigure("main");
+      var centerX = mainNode.getX() + 75;
+      var centerY = mainNode.getY() + 75;
+      var dirX = Math.random() > 0.5 ? 150 : -300;
+      var dirY = Math.random() > 0.5 ? 150 : -300;
+      var newFolder = folderJson({
+        x: centerX + dirX + Math.random() * 50,
+        y: centerY + dirY + Math.random() * 50,
+      });
+      reader.unmarshal(canvas, newFolder);
+      var folderGroup = canvas.getFigure(newFolder[0].id);
+      canvas.html.focusin();
+      folderGroup.select();
       syncJSON();
+    });
+
+    $("#addFolderBtn").draggable({
+      scope: "smartOrg",
+      helper: "clone",
+      revert: "invalid",
+      start: function () {
+        folderDragging = true;
+      },
+      end: function () {
+        folderDragging = false;
+      },
+    });
+    $(".org-canvas").droppable({
+      scope: "smartOrg",
+      tolerance: "pointer",
+      drop: function (_, ui) {
+        var zoom = canvas.getZoom();
+        var offsetTop = $("#organizer_canvas").css("margin-top");
+        var offsetLeft = $("#organizer_canvas").css("margin-left");
+        offsetTop = parseInt(offsetTop) * -1;
+        offsetLeft = parseInt(offsetLeft) * -1;
+        reader.unmarshal(
+          canvas,
+          folderJson({
+            x: (offsetLeft + ui.position.left) * zoom - 120 * zoom,
+            y: (offsetTop + ui.position.top) * zoom - 30 * zoom,
+          })
+        );
+        $(this).css("opacity", 1);
+        folderDragging = false;
+        syncJSON();
+      },
+      over: function () {
+        $(this).css("opacity", 0.2);
+      },
+      out: function () {
+        $(this).css("opacity", 1);
+      },
     });
 
     canvas.on("unselect", function () {
@@ -356,17 +397,21 @@ $(document).ready(function () {
           canvas.remove(prevLogo);
         }
 
+        var mainNode = canvas.getFigure("main");
+        var centerX = mainNode.getX() + 75;
+        var centerY = mainNode.getY() + 75;
+
         canvas.add(
           new draw2d.shape.basic.Image({
+            id: "logo",
             path: objURL,
             width: imgWidth,
             height: imgHeight,
-            id: "logo",
             draggable: false,
             selectable: false,
           }),
-          (canvasWidth + 1000) / 2 - imgWidth / 2,
-          (canvasHeight + 1000) / 2 - imgHeight / 2
+          centerX - imgWidth / 2,
+          centerY - imgHeight / 2
         );
 
         var main = canvas.getFigure("main");
@@ -560,15 +605,17 @@ $(document).ready(function () {
 
     $("#zoomResetBtn").click(function () {
       canvas.setZoom(1.0);
+      var mainNode = canvas.getFigure("main");
+      var centerX = mainNode.getX() + 75;
+      var centerY = mainNode.getY() + 75;
       canvasContainer.css({
-        marginTop: 0,
-        marginLeft: 0,
+        marginTop: -centerY + canvasHeight / 2,
+        marginLeft: -centerX + canvasWidth / 2,
       });
     });
 
     $(document).on("click", ".insert-btn", function () {
       var data = $(this).siblings("textarea").val();
-      console.log(typeof data);
       var parsed = JSON.parse(data);
       reader.unmarshal(canvas, parsed);
       closeemdialog($(this).closest(".modal"));
