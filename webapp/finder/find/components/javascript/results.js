@@ -1427,12 +1427,7 @@ jQuery(document).ready(function (url, params) {
 
   showEntity();
 
-  // jQuery(".masonry-grid img.imagethumb:eq(10)").on('load', function() {
-
-  // });
-
   lQuery(".scrollview").livequery("scroll", function () {
-    console.log("grid scroll");
     checkScroll();
   });
 }); // document ready
@@ -1751,7 +1746,7 @@ gridResize = function () {
 		var row = $(this);
 		trimRowToFit(row);
 	});
-  // checkScroll();
+   checkScroll();
 };
 
 /**
@@ -1793,11 +1788,8 @@ trimRowToFit = function (row) {
 
     neww = Math.floor(neww); // make sure we dont round too high across lots
     // of widths
-    console.log(neww);
     div.css("width", neww + "px");
-
     image.width(neww);
-
     totalwused = totalwused + neww;
   });
 
