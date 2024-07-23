@@ -297,6 +297,11 @@ $(document).ready(function () {
       });
       reader.unmarshal(canvas, newFolder);
       var folderGroup = canvas.getFigure(newFolder[0].id);
+      var prevSelections = canvas.getSelection();
+      if (prevSelections) {
+        var selections = prevSelections.getAll();
+        selections.each((_, selection) => selection.unselect());
+      }
       canvas.html.focusin();
       folderGroup.select();
       syncJSON();
@@ -420,13 +425,11 @@ $(document).ready(function () {
       $("body").append(span);
       var w = $(span).width();
       var h = $(span).height();
-      console.log("--", w, h);
       while (w > 134 || h > 36) {
         fs--;
         $(span).css("font-size", fs);
         w = $(span).width();
         h = $(span).height();
-        console.log(w, h, fs);
       }
       span.remove();
       return fs;
