@@ -96,7 +96,7 @@ $(document).ready(function () {
         text: "New Folder",
         textAnchor: "middle",
         stroke: 0,
-        fontSize: 14,
+        fontSize: 20,
         fontWeight: "bold",
         fontColor: "#ffffff",
         bgColor: "none",
@@ -403,30 +403,49 @@ $(document).ready(function () {
 
     function getLines(text) {
       text = text.trim();
-      if (text.length <= 16) return text;
+      if (text.length <= 16) return [text];
       var lines = text.match(/.{1,16}/g);
-      if (!lines) return "";
-      return lines.map((l) => l.trim()).join("\n");
+      if (!lines) return [];
+      return lines.map((l) => l.trim());
+    }
+
+    function getFontSize(txt, fs = 20) {
+      var SPAN = document.createElement("span");
+      SPAN.style.cssText =
+        "display:inine-block;line-height:1;font-family:Arial;font-size:" +
+        fs +
+        "px";
+      SPAN.innerHTML = txt;
+      var span = $(SPAN);
+      $("body").append(span);
+      var w = $(span).width();
+      var h = $(span).height();
+      console.log("--", w, h);
+      while (w > 134 || h > 36) {
+        fs--;
+        $(span).css("font-size", fs);
+        w = $(span).width();
+        h = $(span).height();
+        console.log(w, h, fs);
+      }
+      span.remove();
+      return fs;
     }
 
     $("#folderLabel").on("input", function () {
       var labelText = $(this).val();
       if (labelText.length > 32) {
-        labelText = labelText.substring(0, 24);
+        labelText = labelText.substring(0, 32);
         $(this).val(labelText);
         return;
       }
 
       if (selectedLabel) {
-        selectedLabel.setText(getLines(labelText));
+        var lines = getLines(labelText);
+        selectedLabel.setText(lines.join("\n"));
         if (labelText.length === 0) return;
-        if (labelText.length <= 8) {
-          selectedLabel.setFontSize(18);
-        } else if (labelText.length <= 12) {
-          selectedLabel.setFontSize(14);
-        } else {
-          selectedLabel.setFontSize(10);
-        }
+        var fs = getFontSize(lines.join("<br>"));
+        selectedLabel.setFontSize(fs);
       }
     });
 
@@ -493,7 +512,6 @@ $(document).ready(function () {
       if ($(this).children().length < 2050) {
         var icHtm = "";
         var bsIcons = JSON.parse(_bsIcons);
-        console.log(bsIcons.length);
         for (var i = 0; i < bsIcons.length; i++) {
           icHtm += `<button type="button" class="btn"><img src="${apphome}/components/smartorganizer/icons/${bsIcons[i]}.svg" loading="lazy"/></button>`;
         }
