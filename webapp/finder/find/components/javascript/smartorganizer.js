@@ -280,81 +280,17 @@ $(document).ready(function () {
     }
     loadJSON();
 
-    var folderDragging = false;
-    $("#addFolderBtn").on("mouseup", function () {
-      if (folderDragging) {
-        folderDragging = false;
-        return;
-      }
-      var mainNode = canvas.getFigure("main");
-      var centerX = mainNode.getX() + 75;
-      var centerY = mainNode.getY() + 75;
-      var dirX = Math.random() > 0.5 ? 150 : -300;
-      var dirY = Math.random() > 0.5 ? 150 : -300;
-      var newFolder = folderJson({
-        x: centerX + dirX + Math.random() * 50,
-        y: centerY + dirY + Math.random() * 50,
-      });
-      reader.unmarshal(canvas, newFolder);
-      var folderGroup = canvas.getFigure(newFolder[0].id);
-      var prevSelections = canvas.getSelection();
-      if (prevSelections) {
-        var selections = prevSelections.getAll();
-        selections.each((_, selection) => selection.unselect());
-      }
-      canvas.html.focusin();
-      folderGroup.select();
-      syncJSON();
-    });
-
-    $("#addFolderBtn").draggable({
-      scope: "smartOrg",
-      helper: "clone",
-      revert: "invalid",
-      start: function () {
-        folderDragging = true;
-      },
-      end: function () {
-        folderDragging = false;
-      },
-    });
-    $(".org-canvas").droppable({
-      scope: "smartOrg",
-      tolerance: "pointer",
-      drop: function (_, ui) {
-        var zoom = canvas.getZoom();
-        var offsetTop = $("#organizer_canvas").css("margin-top");
-        var offsetLeft = $("#organizer_canvas").css("margin-left");
-        offsetTop = parseInt(offsetTop) * -1;
-        offsetLeft = parseInt(offsetLeft) * -1;
-        reader.unmarshal(
-          canvas,
-          folderJson({
-            x: (offsetLeft + ui.position.left) * zoom - 120 * zoom,
-            y: (offsetTop + ui.position.top) * zoom - 30 * zoom,
-          })
-        );
-        $(this).css("opacity", 1);
-        folderDragging = false;
-        syncJSON();
-      },
-      over: function () {
-        $(this).css("opacity", 0.2);
-      },
-      out: function () {
-        $(this).css("opacity", 1);
-      },
-    });
-
     canvas.on("unselect", function () {
       $("#modifySelection").hide();
       $("#folderThumbPicker").val("");
       $("#folderThumbPickerBtn").html("");
     });
 
-    canvas.on("select", function () {
+    function handleSelect(selectedFolder = null) {
       $("#folderThumbPicker").val("");
-      var selectedFolder = canvas.getPrimarySelection();
+      if (!selectedFolder) {
+        selectedFolder = canvas.getPrimarySelection();
+      }
       if (selectedFolder && selectedFolder.cssClass === "folderGroup") {
         var selectedFolderId = selectedFolder.getId();
         var selectedIcon = canvas.getFigure(selectedFolderId + "-icon");
@@ -404,6 +340,79 @@ $(document).ready(function () {
         $("#modifySelection").hide();
         selectedLabel = null;
       }
+    }
+    canvas.on("select", function () {
+      handleSelect();
+    });
+
+    function addFolderAt(x, y) {
+      var newFolder = folderJson({
+        x: x,
+        y: y,
+      });
+      reader.unmarshal(canvas, newFolder);
+      var folderGroup = canvas.getFigure(newFolder[0].id);
+      var prevSelections = canvas.getSelection();
+      if (prevSelections) {
+        var selections = prevSelections.getAll();
+        selections.each((_, selection) => selection.unselect());
+      }
+      canvas.html.focusin();
+      folderGroup.select();
+      handleSelect(folderGroup);
+      syncJSON();
+    }
+
+    var folderDragging = false;
+    $("#addFolderBtn").on("mouseup", function () {
+      if (folderDragging) {
+        folderDragging = false;
+        return;
+      }
+      var mainNode = canvas.getFigure("main");
+      var centerX = mainNode.getX() + 75;
+      var centerY = mainNode.getY() + 75;
+      var dirX = Math.random() > 0.5 ? 150 : -300;
+      var dirY = Math.random() > 0.5 ? 150 : -300;
+      addFolderAt(
+        centerX + dirX + Math.random() * 50,
+        centerY + dirY + Math.random() * 50
+      );
+    });
+
+    $("#addFolderBtn").draggable({
+      scope: "smartOrg",
+      helper: "clone",
+      revert: "invalid",
+      start: function () {
+        folderDragging = true;
+      },
+      end: function () {
+        folderDragging = false;
+      },
+    });
+    $(".org-canvas").droppable({
+      scope: "smartOrg",
+      tolerance: "pointer",
+      drop: function (_, ui) {
+        var zoom = canvas.getZoom();
+        var offsetTop = $("#organizer_canvas").css("margin-top");
+        var offsetLeft = $("#organizer_canvas").css("margin-left");
+        offsetTop = parseInt(offsetTop) * -1;
+        offsetLeft = parseInt(offsetLeft) * -1;
+        $(this).css("opacity", 1);
+        folderDragging = false;
+        addFolderAt(
+          (offsetLeft + ui.position.left) * zoom - 120 * zoom,
+          (offsetTop + ui.position.top) * zoom - 30 * zoom
+        );
+      },
+      over: function () {
+        $(this).css("opacity", 0.2);
+      },
+      out: function () {
+        $(this).css("opacity", 1);
+      },
     });
 
     function getLines(text) {
