@@ -509,6 +509,15 @@ jQuery(document).ready(function () {
     });
   });
   
+  lQuery(".download-pull-all").livequery("click", function (e) {
+	    e.preventDefault();
+	    var headers = { "X-tokentype": "entermedia", "X-token": entermediakey, 'Accept': 'application/json', "Content-Type": "application/json"};
+		var categorypath = $(this).data("toplevelcategorypath");
+		ipcRenderer.send("downloadall", { categorypath: categorypath, headers: headers });
+  });
+  
+  
+  
   var uploadcount = 0;
   
   lQuery(".upload-push").livequery("click", function (e) {
