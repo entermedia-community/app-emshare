@@ -27,7 +27,18 @@ public void init()
 		
 	}
 	
-	HitTracker hits = mediacapturesearcher.query().exact("collection_name", "*").search();
+	HitTracker hits = null;
+	String filter = webevent.get("source_folder");
+	
+	log.info("Running " + filter);
+	if( filter == null)
+	{
+		hits = mediacapturesearcher.query().all().search();
+	}
+	else
+	{
+		hits = mediacapturesearcher.query().exact("source_folder",filter).search();
+	}
 	hits.enableBulkOperations();
 	
 	
