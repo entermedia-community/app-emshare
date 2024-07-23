@@ -760,7 +760,11 @@ onloadselectors = function () {
               //Could be an entity drop
               return;
             }
-            var hitssessionid = $("#resultsdiv").data("hitssessionid");
+            var resultsdiv = ui.draggable.closest("#resultsdiv");
+            if(!resultsdiv.length) {
+				resultsdiv = $("#resultsdiv");
+			}
+            var hitssessionid = resultsdiv.data("hitssessionid");
             if (!hitssessionid) {
               hitssessionid = $("#main-results-table").data("hitssessionid");
             }
