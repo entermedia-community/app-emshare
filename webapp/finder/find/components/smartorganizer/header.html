@@ -1,27 +1,42 @@
 <div id="smartheader" class="org-header">
 
-<div style="min-width:300px">  
-
-
+<div class="d-flex align-items-center" style="min-width:300px">
   #set( $id = $context.getRequestParameter("id"))
   #ifnull($id)
   	#set( $id = "current")
   #end
   #set( $current = $mediaarchive.getData("smartorganizer",$id) )
 
-
-    <h1>     <img src="$siteroot$apphome/theme/images/emedialogo.svg" alt="Logo" />
-    Smart Organizer
-     </h1>       <i class="bi bi-pencil"></i>
-    
-
-    #set( $list = $mediaarchive.getList("smartorganizer") )
-  
+  <img src="$siteroot$apphome/theme/images/emedialogo.svg" alt="Logo" />
+  <h1>Smart Organizer</h1>
 </div>    
 
+#set( $list = $mediaarchive.getList("smartorganizer") )  
 
-<div>
-<!-- Always auto save 
+<div class="d-flex align-items-center">
+    #if($list.size() > 1)
+    <div class="dropdown ml-2 template-dropdown"> 
+      <button class="dropdown-toggle btn py-2 px-2" title="Switch Template" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <i class="bi bi-list"></i>
+      </button>
+      <div class="dropdown-menu">
+        #foreach( $template in $list)
+          <a href='$applink/components/smartorganizer/editor.html?id=$template.id'
+            data-oemaxlevel="1" 
+            class='dropdown-item d-flex align-items-center ajax' 
+            data-targetdiv="smartorganizermain" 
+            title='#text($template)'>
+            #text($template) #if( $id == $template.id)<i class="bi bi-check-circle-fill ns ml-2"></i>#end
+          </a>
+        #end
+      </div>
+    </div>  
+    #end 
+    <input type="hidden" id="organizerId" name="id" value="$id"/>
+    <input type="text" class="form-control px-3" id="organizerName" name="name" value="$!current.getName()" placeholder="Template Name" />
+    <button class="btn btn-lg btn-accent rounded px-3 py-2 mx-2 copy" id="copyButton" title="Copy Template">
+      <i class="bi bi-copy" style="font-size: 1.1rem;"></i>
+    </button>
     <button class="btn btn-lg btn-brand px-3 py-2 rounded" id="saveOrganizer">
       <i class="fas fa-save"></i>
       <i class="fas fa-spinner fa-spin"></i>
@@ -29,51 +44,13 @@
         Save Changes
       </span>
     </button>
-    
-    -->
-      #if($list.size() > 1)
-      <div class="dropdown"> 
-      <button class="dropdown-toggle btn py-1 px-2 rounded" title="Switch Template" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-         <i class="bi bi-list"></i>
-      </button>
-      <div class="dropdown-menu" style="padding-left:30px;">
-        #foreach( $template in $list)
-          <a href='$applink/components/smartorganizer/editor.html?id=$template.id'
-          	data-oemaxlevel="1" 
-          class='dropdown-item d-flex align-items-center ajax' data-targetdiv="smartorganizermain" title='#text($template)'>
-             #if( $id == $template.id)<i class="bi bi-check-circle-fill ns ml-2"></i>#end #text($template)
-          </a>
-        #end
-      </div>
-    </div>  
-      #end
-	</div>    
-
-
-<div style="text-align:left; ">  
-  
-    <input type="hidden" id="organizerId" name="id" value="$id"/>
-    
-    <input type="text" class="form-controlX mx-2" id="organizerName" name="name" value="$!current.getName()" placeholder="Template Name" style="border:0px;"/>
-  
-  
-      <button class="btn btn-accent rounded px-3 py-1 ml-2 btn copy" id="copyButton" title="Copy Template">
-      <i class="bi bi-copy"></i>
-    </button>
     #if( $id != "current")
-    <button class="btn btn-danger soft rounded px-3 py-1 ml-2 btn delete" id="deleteButton" title="Delete Template">
-      <i class="bi bi-trash"></i>
-    </button>
-	#end
-</div>
-
-
-	
-	
-   <div class="ml-auto" >
+      <button class="btn btn-lg btn-danger soft rounded px-3 py-2 ml-2 delete" id="deleteButton" title="Delete Template">
+        <i class="bi bi-trash" style="font-size: 1.1rem;"></i>
+      </button>
+    #end
     <button class="ml-2 btn closemodal" title="Close Dialog">
       <i class="bi bi-x-lg"></i>
     </button>
-    </div>
-    
+	</div>
 </div>

@@ -264,18 +264,6 @@ $(document).ready(function () {
       });
     }
 
-    // $(window).resize(function () {
-    //   canvasWidth = window.innerWidth - 132;
-    //   canvasHeight = window.innerHeight - 112;
-    //   fullCanvasWidth = canvasWidth + 1000;
-    //   fullCanvasHeight = canvasHeight + 1000;
-    //   canvasContainer.css({
-    //     width: fullCanvasWidth,
-    //     height: fullCanvasHeight,
-    //   });
-    //   recenterCanvas();
-    // });
-
     var reader = new draw2d.io.json.Reader();
 
     function loadJSON() {
