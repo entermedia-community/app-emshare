@@ -21,7 +21,6 @@
 $context.putPageValue("entityid", $entityid)
 $context.putPageValue("moduleid", $moduleid)
 
-
 #set($module = $mediaarchive.getCachedData("module", $moduleid))
 
 #if(!$topmodule)
@@ -34,13 +33,13 @@ $context.putPageValue("topentityid", $topentityid)
 #set($previewurl = "$!{siteroot}$apphome/views/modules/$!{moduleid}/components/gridsample/preview/entity.html?id=$entityid&hitssessionid=$!hits.sessionId")
 $context.putPageValue("previewurl", $previewurl)
 
-<div 
-	class="emfolder-wrapper compact emgrid-type-$!moduleid entitycontainer entity$!moduleid$!entityid" 
+<div class="emfolder-wrapper compact emgrid-type-$!moduleid entitycontainer entity$!moduleid$!entityid" 
 	id="emgridentity$!moduleid$!entityid"
 	data-id="${entityid}"
   data-moduleid="$!moduleid"
   data-rendertype="entity">
 
+	#if(!$primarymediareadonly)
 	<a href="$!{previewurl}" 
 		id="clickid${entityid}"  
 		class="emdialog entity-dialog" 
@@ -51,7 +50,7 @@ $context.putPageValue("previewurl", $previewurl)
 		data-id="${entityid}"
 		data-moduleid="$!moduleid" 
 		title="[[View]]: #text($!entity)">
-  	 
+  	 #end
 	
 		##look for primaryimage
 	
@@ -114,7 +113,9 @@ $context.putPageValue("previewurl", $previewurl)
 				<span>#text($!entity)</span>
 			</div>
 		</div>
+	#if(!$primarymediareadonly)
 	</a>
+	#end
 </div>
 
 

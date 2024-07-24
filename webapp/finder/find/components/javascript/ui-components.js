@@ -2110,8 +2110,8 @@ uiload = function () {
   });
 
   //newpicker
-  lQuery(".pickerselectrow").livequery("click", function (event) {
-    var row = $(this).parent("tr");
+  lQuery(".pickerselectrow, .pickerselectrowdiv").livequery("click", function (event) {
+    var row = $(this).closest("tr");
     var rowid = row.data("id");
     var pickerresults = $(this).closest(".pickerresults");
 
