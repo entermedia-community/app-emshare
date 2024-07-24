@@ -185,7 +185,7 @@ $(document).ready(function () {
       canvas = null;
     }
     //Boostrap does not use liveajax
-    $(".dropdown").dropdown();
+    $(".dropdown-toggle").dropdown();
     var canvasContainer = $("#organizer_canvas");
 
     canvasContainer.css({
