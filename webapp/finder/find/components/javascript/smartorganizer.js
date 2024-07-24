@@ -254,6 +254,28 @@ $(document).ready(function () {
     //   })
     // );
 
+    function recenterCanvas() {
+      var mainNode = canvas.getFigure("main");
+      var centerX = mainNode.getX() + 75;
+      var centerY = mainNode.getY() + 75;
+      canvasContainer.css({
+        marginTop: -centerY + canvasHeight / 2,
+        marginLeft: -centerX + canvasWidth / 2,
+      });
+    }
+
+    // $(window).resize(function () {
+    //   canvasWidth = window.innerWidth - 132;
+    //   canvasHeight = window.innerHeight - 112;
+    //   fullCanvasWidth = canvasWidth + 1000;
+    //   fullCanvasHeight = canvasHeight + 1000;
+    //   canvasContainer.css({
+    //     width: fullCanvasWidth,
+    //     height: fullCanvasHeight,
+    //   });
+    //   recenterCanvas();
+    // });
+
     var reader = new draw2d.io.json.Reader();
 
     function loadJSON() {
@@ -277,13 +299,7 @@ $(document).ready(function () {
               console.log(e);
               reader.unmarshal(canvas, placeholderJSON);
             }
-            var mainNode = canvas.getFigure("main");
-            var centerX = mainNode.getX() + 75;
-            var centerY = mainNode.getY() + 75;
-            canvasContainer.css({
-              marginTop: -centerY + canvasHeight / 2,
-              marginLeft: -centerX + canvasWidth / 2,
-            });
+            recenterCanvas();
           }
         },
       });
@@ -757,13 +773,7 @@ $(document).ready(function () {
 
     $("#zoomResetBtn").click(function () {
       canvas.setZoom(1.0);
-      var mainNode = canvas.getFigure("main");
-      var centerX = mainNode.getX() + 75;
-      var centerY = mainNode.getY() + 75;
-      canvasContainer.css({
-        marginTop: -centerY + canvasHeight / 2,
-        marginLeft: -centerX + canvasWidth / 2,
-      });
+      recenterCanvas();
     });
 
     $(document).on("click", ".insert-btn", function () {
