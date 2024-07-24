@@ -3,7 +3,9 @@
 		<div id="editlayout">
 		#set( $origURL = $context.getRequestParameter("origURL" ) )
 		#set( $view = $context.findValue("editview") )
+		
 		$context.putPageValue("view", $view)
+		$context.putPageValue("detailviewercolumns",1)
 		
 		<form id="dataeditor" name="dataeditor" method="post" 
 				action="$siteroot$content.dataroot/edit/save.html?oemaxlevel=1" 
@@ -15,8 +17,9 @@
 			<input name="catalogid" type="hidden" value="$searcher.catalogId" />
 			<input name="searchtype" type="hidden" value="$searcher.searchType" />
 			<input name="origURL"  type="hidden" value="$!origURL" />
-		<div id="edit-data">
+		<div id="edit-data" class="datamanager-editor">
 		$context.putPageValue("editortype","datamanager")	
+		
 		$pages.include("/${applicationid}/components/xml/detaileditor.html", $context)
 		</div>
 		<div style="padding:10px">
