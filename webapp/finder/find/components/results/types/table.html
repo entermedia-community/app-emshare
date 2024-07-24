@@ -15,8 +15,6 @@
 	#end
 #end
 
-
-
 <div id="resultsdiv" 
 		class="tableresults" 
 		data-hitssessionid="$!hits.getSessionId()"
@@ -204,10 +202,16 @@ $pages.include("${searchhome}/resultsactions.html",$context)
 				
 				$context.putPageValue('detail',  $detail)
 				
-				#if($detail.viewType == "tageditor")
+				#set($viewtype = $detail.viewType)
+				
+				#if($viewtype  == "tageditor")
 					#set($tagssearchlink = "$siteroot$apphome/views/modules/${searchtype}/index.html")
 					$context.putPageValue("tagssearchlink",$tagssearchlink)
 				#end
+				#if($viewtype  == "primarymedia")
+					#set($viewtype = "primarymediafolder")
+				#end
+				$context.putPageValue('viewtype',  $viewtype)
 				   <div id="edit_${hit.id}_$detail.id" class="popupdetails" data-id="${hit.id}">
 				        $pages.include("$apphome/components/xml/detailreadonly.html", $context)
 				    </div>

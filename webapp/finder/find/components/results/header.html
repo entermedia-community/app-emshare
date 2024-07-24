@@ -101,7 +101,7 @@ $context.putPageValue("entityid", $entityid)
 	$context.putPageValue("maintargetdiv",$maintargetdiv)
 #end
 	
-<div id="resultsheader" class="resultsheader #if($!hits.getSelectionSize() > 0)hasselections#end #if(!$dialogresults) autostickywidth #end" >
+<div id="resultsheader" class="resultsheader #if($hits && $hits.getSelectionSize() > 0)hasselections#end #if(!$dialogresults) autostickywidth #end" >
 	<div id="sub-nav" class="emsubnav sub-nav-${module.id}">
 		<ul class="resultsnav">
 			#set ($enabled = false)
@@ -151,7 +151,7 @@ $context.putPageValue("entityid", $entityid)
 						data-moduleid="$!moduleid"
 						data-tabsection="upload"
 						data-hitssessionid="$entityhits.getSessionId()"
-							title="[[Import]]"><i class="bi bi-upload"></i></a>
+							title="[[Upload]]"><i class="bi bi-upload"></i></a>
 					</li>
 					#end
 					#if($candownload)
@@ -165,7 +165,7 @@ $context.putPageValue("entityid", $entityid)
 						data-topmoduleid="$!moduleid"
 						data-moduleid="$!moduleid"
 						data-tabsection="export"
-							title="[[Export]]"><i class="bi bi-download"></i></a>
+							title="[[Download]]"><i class="bi bi-download"></i></a>
 					</li>
 					#end
 				#else
@@ -182,9 +182,9 @@ $context.putPageValue("entityid", $entityid)
 				#end
 
 				<li class="dropdown">
-					<a class="resultsnavlink dropdown-toggle #if($!hits.getSelectionSize() > 0)btn-accent#end" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="navbarActionsDropdown">
+					<a class="resultsnavlink dropdown-toggle #if($hits && $hits.getSelectionSize() > 0)btn-accent#end" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="navbarActionsDropdown">
 						#if($hits && $hits.getSelectionSize() > 0)
-							[[File]]#if($hits.getSelectionSize() > 1)s#end ($!hits.getSelectionSize())
+							[[File]]#if($hits.getSelectionSize() > 1)s#end ($hits.getSelectionSize())
 						#else
 							[[File]]
 						#end

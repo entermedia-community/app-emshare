@@ -112,15 +112,12 @@
 			<td>
 			
 				#set( $val = "$!hit.get($detail.id)" )
-				#set( $values = false )
-				#set( $values = $hit.getValues($detail.id) )
-				#if($detail.rendermask)
-					#set( $val = $searcherManager.getValue($detail.getListCatalogId(), $detail.rendermask, $detail.getSearchType(), $hit, null, $context.getLocale()))
-					#set( $values = $searcherManager.getValues($catalogid, $detail.rendermask, $hit.properties))
-				#end
+				#set($value = false )
+				#set($value = $searcherManager.getValue($hit, $detail, $context.getLocale()))
+				
 				
 				$context.putPageValue("detail",$detail)
-				$context.putPageValue("values",$values)
+				$context.putPageValue("value",$value)
 				$context.putPageValue("val",$val)
 				$context.putPageValue("hit",$hit)
 				$context.putPageValue("data",$hit)

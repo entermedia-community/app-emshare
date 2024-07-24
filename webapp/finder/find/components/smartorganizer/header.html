@@ -1,18 +1,27 @@
-<div class="org-header">
-  <div class="d-flex align-items-center">
-    <img src="$siteroot$apphome/theme/images/emedialogo.svg" alt="Logo" />
-    <h1>Smart Organizer</h1>
+<div id="smartheader" class="org-header">
+
+<div style="min-width:300px">  
+
+
+  #set( $id = $context.getRequestParameter("id"))
+  #ifnull($id)
+  	#set( $id = "current")
+  #end
+  #set( $current = $mediaarchive.getData("smartorganizer",$id) )
+
+
+    <h1>     <img src="$siteroot$apphome/theme/images/emedialogo.svg" alt="Logo" />
+    Smart Organizer
+     </h1>       <i class="bi bi-pencil"></i>
+    
 
     #set( $list = $mediaarchive.getList("smartorganizer") )
   
-    
-  </div>
-  <div class="d-flex">
-  
-  #set( $current = $mediaarchive.getCachedData("smartorganizer","current") )
-  
-    <input type="hidden" id="organizerName" name="id" value="$!current.getId()"/>
-    <input type="text" class="form-control mx-2" id="organizerName" name="name" value="$!current.getName()" placeholder="Template Name" />
+</div>    
+
+
+<div>
+<!-- Always auto save 
     <button class="btn btn-lg btn-brand px-3 py-2 rounded" id="saveOrganizer">
       <i class="fas fa-save"></i>
       <i class="fas fa-spinner fa-spin"></i>
@@ -21,29 +30,50 @@
       </span>
     </button>
     
+    -->
       #if($list.size() > 1)
       <div class="dropdown"> 
       <button class="dropdown-toggle btn py-1 px-2 rounded" title="Switch Template" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
          <i class="bi bi-list"></i>
       </button>
       <div class="dropdown-menu" style="padding-left:30px;">
-        #foreach( $link in $list)
-          <a href='#' class='dropdown-item d-flex align-items-center' title='#if( $link.deploypath != $apphome)[[Go to]] #end #text($link)'>
-            #text($link) #if( $link.deploypath == $apphome)<i class="bi bi-check-circle-fill ns ml-2"></i>#end
+        #foreach( $template in $list)
+          <a href='$applink/components/smartorganizer/editor.html?id=$template.id'
+          	data-oemaxlevel="1" 
+          class='dropdown-item d-flex align-items-center ajax' data-targetdiv="smartorganizermain" title='#text($template)'>
+             #if( $id == $template.id)<i class="bi bi-check-circle-fill ns ml-2"></i>#end #text($template)
           </a>
         #end
       </div>
     </div>  
       #end
+	</div>    
+
+
+<div style="text-align:left; ">  
+  
+    <input type="hidden" id="organizerId" name="id" value="$id"/>
     
-    <button class="btn btn-accent rounded px-3 py-1 ml-2 btn copy" title="Copy Template">
+    <input type="text" class="form-controlX mx-2" id="organizerName" name="name" value="$!current.getName()" placeholder="Template Name" style="border:0px;"/>
+  
+  
+      <button class="btn btn-accent rounded px-3 py-1 ml-2 btn copy" id="copyButton" title="Copy Template">
       <i class="bi bi-copy"></i>
     </button>
-    <button class="btn btn-danger soft rounded px-3 py-1 ml-2 btn delete" title="Delete Template">
+    #if( $id != "current")
+    <button class="btn btn-danger soft rounded px-3 py-1 ml-2 btn delete" id="deleteButton" title="Delete Template">
       <i class="bi bi-trash"></i>
     </button>
+	#end
+</div>
+
+
+	
+	
+   <div class="ml-auto" >
     <button class="ml-2 btn closemodal" title="Close Dialog">
       <i class="bi bi-x-lg"></i>
     </button>
-  </div>
+    </div>
+    
 </div>

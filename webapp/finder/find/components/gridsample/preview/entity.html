@@ -150,16 +150,16 @@ $context.putPageValue("topmoduleid", $moduleid)
 								#text($label)	
 								$context.putPageValue("addnew", $addnew)
 							#elseif($module.getValue("customname"))
-								#set($label = $searcherManager.getValue($catalogid, $module.getValue("customname"), $module.id, $entity, $context.getLocale())) 
-								#text($label)
+								#set($label = $searcherManager.renderMask($entity, $searcher.getDetail("name") ,$module.getValue("customname"), null, $context.getLocale())) 
+								#text($label) 
 							#else
 								#text($module) <i class="bi bi-chevron-right mx-1 bi-small"></i>
 								#set($label = $!entity.getName($context))
-								#text($label) 							
+								#text($label) 				
 							#end
 							
 						#end
-					#end
+					#end 
 				</h2>
 				
 				
@@ -207,7 +207,7 @@ $context.putPageValue("topmoduleid", $moduleid)
 						data-moduleid="$!moduleid"
 						data-tabsection="upload"
 						data-hitssessionid="$entityhits.getSessionId()"
-						title="[[Import]] #text($module) "><i class="bi bi-box-arrow-in-right mr-1"></i> [[Import]]</a>
+						title="[[Upload to]] #text($module) "><i class="bi bi-box-arrow-in-right mr-1"></i> [[Upload]]</a>
 				#end	
 				#if($permissions.can($moduleid, "copyentity") ||
 					$permissions.can($moduleid, "moveentity") ||
@@ -224,7 +224,7 @@ $context.putPageValue("topmoduleid", $moduleid)
 						data-topmoduleid="$!moduleid"
 						data-moduleid="$!moduleid"
 						data-tabsection="copy"
-						title="[[Export]] #text($module) ">[[Export]]&nbsp;<i class="bi bi-box-arrow-right ml-1"></i></a>
+						title="[[Download]] #text($module) ">[[Download]]&nbsp;<i class="bi bi-box-arrow-right ml-1"></i></a>
 				#end
 						
 			

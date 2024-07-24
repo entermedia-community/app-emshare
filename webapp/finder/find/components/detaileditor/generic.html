@@ -97,8 +97,6 @@ $context.putPageValue("searchtype", $searchtype)
                 	<input type="hidden" name="collectionid" value="$!collectionid" />
 		#end
 		#if( $searchtype == "asset" )
-##			<input type="hidden" name="field" value="assetid" />
-##			<input type="hidden" name="assetid.value" value="$asset.getId()" />
 			<input type="hidden" name="assetid" value="$asset.getId()" />
 		#end
 		
@@ -126,126 +124,38 @@ $context.putPageValue("searchtype", $searchtype)
 		$context.putPageValue("view",$view)	
 		$context.putPageValue("origURL", "$apphome/assets/${asset.sourcePath}.html")
 		<div id="default-fields" class="fields-editor">
-			$pages.include("/$applicationid/components/xml/detaileditor-2.html?multiedit=$multiedit", $context)
+			$pages.include("/$applicationid/components/xml/detaileditor.html?multiedit=$multiedit", $context)
 		</div>
 		<div class="container-fluid">
- 		<div class="row">
- 		<div class="col">
-		<div class="btns">
-			<input class="btn btn-sm btn-dark submitform" type="button" value="[[Save values]]"/>
-			#if ($targetdiv == "tabsummarypanel")
-			<a class="ajax btn btn-sm btn-secondary" style="margin-right:10px;" data-targetdiv="$targetdiv" 
-				href="$siteroot/$applicationid/components/detaileditor/generalinformation/index.html?oemaxlevel=1&assetid=$asset.id&hitssessionid=$!hitssessionid">[[Cancel]]</a>
-			#else
-			##set( $args = "id=$id&candelete=$candelete&editpath=$editpath&parentid=$parentid&jumptomodule=$!jumptomodule&catalogid=$catalogid&searchtype=$searchtype&fieldexternalid=$fieldexternalid&fieldexternalvalue=$fieldexternalvalue&viewid=$viewid&viewpath=$view&permissionname=$!permissionname&hitssessionid=$!hitssessionid&selectlink=$!link")
-				#set( $args = "assetid=$!asset.getId()&candelete=$candelete&editpath=$editpath&catalogid=$catalogid&searchtype=$searchtype&viewid=$!viewid&viewpath=$!view&hitssessionid=$!hitssessionid")
-				<a class="ajax btn btn-sm btn-secondary" style="margin-right:10px;" data-targetdiv="$targetdiv" data-oemaxlevel="1" 
-					href="$siteroot$selfpath?save=false&${args}">[[Cancel]]</a>
-			#end
-			<a class="float-right btn btn-sm btn-secondary ajax"
-				data-targetdiv="fieldsPicker" data-oemaxlayout="4" href="$siteroot$apphome/views/settings/modules/$!{moduleid}/metadata/views/fieldspicker.html?viewid=${viewid}&viewpath=${view}&assettype=$!type" title="[[Configure View]]"><i class="bi bi-gear-fill mr-1"></i> [[Fields]]</a>
-			
-			#if( $caneditmetadatasetup  )
-				#if ( $view.contains("$asset.assettype") )
-					#set ( $type = $asset.assettype )
-				#end
-				<div class="clearfix"></div>
-			#end
-		</div>
-		</div>
-		</div>
+	 		<div class="row">
+		 		<div class="col">
+					<div class="btns">
+						<input class="btn btn-sm btn-dark submitform" type="button" value="[[Save values]]"/>
+						#if ($targetdiv == "tabsummarypanel")
+						<a class="ajax btn btn-sm btn-secondary" style="margin-right:10px;" data-targetdiv="$targetdiv" 
+							href="$siteroot/$applicationid/components/detaileditor/generalinformation/index.html?oemaxlevel=1&assetid=$asset.id&hitssessionid=$!hitssessionid">[[Cancel]]</a>
+						#else
+						##set( $args = "id=$id&candelete=$candelete&editpath=$editpath&parentid=$parentid&jumptomodule=$!jumptomodule&catalogid=$catalogid&searchtype=$searchtype&fieldexternalid=$fieldexternalid&fieldexternalvalue=$fieldexternalvalue&viewid=$viewid&viewpath=$view&permissionname=$!permissionname&hitssessionid=$!hitssessionid&selectlink=$!link")
+							#set( $args = "assetid=$!asset.getId()&candelete=$candelete&editpath=$editpath&catalogid=$catalogid&searchtype=$searchtype&viewid=$!viewid&viewpath=$!view&hitssessionid=$!hitssessionid")
+							<a class="ajax btn btn-sm btn-secondary" style="margin-right:10px;" data-targetdiv="$targetdiv" data-oemaxlevel="1" 
+								href="$siteroot$selfpath?save=false&${args}">[[Cancel]]</a>
+						#end
+						<a class="float-right btn btn-sm btn-secondary ajax"
+							data-targetdiv="fieldsPicker" data-oemaxlayout="4" href="$siteroot$apphome/views/settings/modules/$!{moduleid}/metadata/views/fieldspicker.html?viewid=${viewid}&viewpath=${view}&assettype=$!type" title="[[Configure View]]"><i class="bi bi-gear-fill mr-1"></i> [[Fields]]</a>
+						
+						#if( $caneditmetadatasetup  )
+							#if ( $view.contains("$asset.assettype") )
+								#set ( $type = $asset.assettype )
+							#end
+							<div class="clearfix"></div>
+						#end
+					</div>
+				</div>
+			</div>
 		</div>
 	</form>
 <div id="fieldsPicker"></div> 
 #else
-	#set ($showit = true)
-	#set ($print = $context.getRequestParameter("print"))
-	
-	#if ($print && $print == "true")
-		#set( $assetdetails = $searcher.getDetailsForView($view, $user) )
-		#set( $showit = false)
-		#foreach( $detail in $assetdetails )
-		 	#set( $value = false)
-		 	#set( $value = $data.get($detail.getId()))
-			#if( $value ) 
-				#set( $showit = true) 
-			#end
-		#end
-		
-		#set( $viewlabel = $searcher.getViewLabel($view) )
-			##set ($pluginpath = $context.getRequestParameter("pluginpath"))
-			##set( $plugin = $pages.getPage("$pluginpath"))
-			<h2>$context.getText($viewlabel)</h2>
-	#end
-	<div id="default-fields" class="previewonly">
-	#if ($showit)
-	
-		#set( $foundone = false)
-		#set( $assetdetails = $searcher.getDetailsForView($view, $context.getUserProfile()) )
-
-		 	
-		$context.putPageValue("details",$assetdetails)
-   		$context.putPageValue("searcher",$searcher)
-   		
-   		## TODO: USE THIS !$pages.include("/$applicationid/components/xml/detaileditorcss.html?detailsreadonly=true", $context)
-		
-		<div class="container-fluid">
-		<div class="row">
-		#foreach( $detail in $assetdetails )
-			#set( $value = false)
-			
-			#if( $searcherManager )
-				#set( $value = $searcherManager.getValue($data,$detail, $context.getLocale) )	
-			#else
-				#set( $value = $data.get($detail.getId()))
-			#end
-			
-			#if( $value && $value != "" || $detail.dataType == "searchjoin") 
-				#set( $foundone = true)
-				<div class="col-md-6">
-					<label class="emdatafield" >
-						$detail.getText($context)
-					</label>
-					<div class="emdatafieldvalue ">					
-						$!context.putPageValue("val",$value)
-						$context.putPageValue("showalllanguagevalues",false)
-						
-						$!context.putPageValue("detail",$detail)
-						$pages.include("$componenthome/xml/detailreadonly.html", $context) 
-					</div>
-				</div>
-			#end
-		#end ##foreach loop
-		</div>
-		</div>
-		#if( !$foundone )
-                    <div style="padding: 15px 0; text-align: center; color: #aaa;">
-    			        [[No data has yet been entered]]
-    			   </div>
-		#end
-		
-		#if(($caneditasset || $caneditallassets) && !$print.equals("true"))
-		
-		<div class="row">
-		<div class="col">
-			<div class="btns">
-			<a class="ajax btn btn-sm btn-primary" data-targetdiv="${view}editor" 
-			href="$siteroot$componenthome/detaileditor/generic.html?catalogid=$catalogid&id=$!data.id&view=$view&assetid=$!asset.id&edit=1&oemaxlevel=1" >[[Edit ]]</a>
-			#if( $caneditmetadatasetup  )
-				#if ( $view.contains("$asset.assettype") )
-					#set ( $type = $asset.assettype )
-				#end
-				<div class="clearfix"></div>
-			#end
-			</div>
-			</div>
-		</div>
-		
-		#end
-		</div>
-	#else ##showit
-         [[No data has yet been entered]]
-	#end
-
+	[[Missing Edit Permission]]
 #end ##edit
 </div>

@@ -4,10 +4,6 @@
 ## $val
 ## $searcherManager
 
-#if( $value && !$value.isEmpty() )
-	#set($vals = $value)
-#end
-
 #set( $highlights = $data.getHighlights($detail.id) )
 #if($highlights && $!highlights.isEmpty() )
 <ul class="highlightlist list-unstyled " >
@@ -16,11 +12,9 @@
 #end
 </ul>
 #else
+
 <div class="emdatafieldreadonly emdatafieldreadonly-default">
-#if(!$val && $detail.rendermask && $data)
-	#set($label = $searcherManager.getValue($detail.getListCatalogId(), $detail.rendermask, $detail.getSearchType(), $data, null, $context.getLocale()))
-	#esc( $label ) 
-#elseif($detail.isMultiLanguage()) 
+#if($detail.isMultiLanguage()) 
 		#set($map = $data.getValue($detail.getId()))
 		
 		#if( $showalllanguagevalues )
@@ -44,16 +38,16 @@
 	#end		
 #else
 
-	#ifnotnull($val)
+	#ifnotnull($value)
 		#set($dmax = 150)
 		#if($detail.id == "name")
 			#set($dmax = 80)
 		#end
-		#if( $val.length() > 80)
-			<span class="trim-text" data-max="$dmax">#escarea($val)</span>
+		#if( $value.length() > 80)
+			<span class="trim-text" data-max="$dmax">#escarea($value)</span>
 			<button class="see-more-btn see-more" data-seemore="(...[[see more]])" data-seeless="(...[[see less]])"></button>
 		#else
-			#escarea($!val)	
+			#escarea($!value)	
 		#end
 	#end
 #end	

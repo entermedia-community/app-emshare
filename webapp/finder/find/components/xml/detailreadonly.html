@@ -1,13 +1,15 @@
 #set($xmledithome = $context.getPageProperty("xmledithome"))
 $context.putPageValue("xmledithome",$xmledithome)
-#set($viewtype = $detail.viewType)
+#if (!$viewtype)
+	#set($viewtype = $detail.viewType)
+#end
 #if (!$viewtype)
 	#set($viewtype = $detail.dataType)
 #end
 #if (!$viewtype || $viewtype== "text")
 	#set ($viewtype = "default")
 #end
-#if($viewtype =="primarymedia")
+#if($viewtype =="primarymediafolder")
 	$context.putPageValue("thumbsize","crop")
 	$context.putPageValue("noassetlink",true)
 	$context.putPageValue("hit", $data)

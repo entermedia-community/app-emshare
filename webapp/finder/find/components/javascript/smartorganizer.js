@@ -184,6 +184,9 @@ $(document).ready(function () {
       canvas.clear();
       canvas = null;
     }
+    //Boostrap does not use liveajax
+    $(".dropdown").dropdown();
+
     $("#organizer_canvas").css({
       width: fullCanvasWidth,
       height: fullCanvasHeight,
@@ -253,27 +256,26 @@ $(document).ready(function () {
     var reader = new draw2d.io.json.Reader();
 
     function loadJSON() {
+      var id = $("#organizerId").val();
       var url =
-        siteroot +
-        "/" +
-        mediadb +
-        "/services/module/smartorganizer/data/current";
+        siteroot + "/" + mediadb + "/services/module/smartorganizer/data/" + id;
       jQuery.ajax({
         dataType: "json",
         url: url,
         method: "GET",
         success: function (res) {
-          var saveddata = res.data.json;
-          try {
-            var parsed = JSON.parse(saveddata);
-            if (!parsed.length) {
-              throw new Error("Empty JSON");
+          if (res.response.status == "ok") {
+            var saveddata = res.data.json;
+            try {
+              var parsed = JSON.parse(saveddata);
+              if (!parsed.length) {
+                throw new Error("Empty JSON");
+              }
+              reader.unmarshal(canvas, parsed);
+            } catch (e) {
+              console.log(e);
+              reader.unmarshal(canvas, placeholderJSON);
             }
-            reader.unmarshal(canvas, parsed);
-            $("#zoomResetBtn").trigger("click");
-          } catch (e) {
-            console.log(e);
-            reader.unmarshal(canvas, placeholderJSON);
           }
         },
       });
@@ -572,6 +574,18 @@ $(document).ready(function () {
       handle: "#dragHandle",
     });
 
+    $("#copyButton").on("click", function () {
+      var header = $("#smartorganizermain");
+      var id = $("#organizerId").val();
+      header.load(header.data("copyurl") + "?id=" + id);
+    });
+
+    $("#deleteButton").on("click", function () {
+      var header = $("#smartorganizermain");
+      var id = $("#organizerId").val();
+      header.load(header.data("deleteurl") + "?id=" + id);
+    });
+
     var saveBtn = $("#saveOrganizer");
 
     saveBtn.click(syncJSON);
@@ -594,14 +608,18 @@ $(document).ready(function () {
         if (json.length === 0) return;
         var data = {};
 
-        data.id = "current";
+        var id = $("#organizerId").val();
+
+        data.id = id;
         data.name = $("#organizerName").val();
         data.json = JSON.stringify(json);
+
         var url =
           siteroot +
           "/" +
           mediadb +
-          "/services/module/smartorganizer/data/current";
+          "/services/module/smartorganizer/data/" +
+          id;
         jQuery.ajax({
           dataType: "json",
           method: "PUT",
