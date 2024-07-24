@@ -1,6 +1,5 @@
 #if($hit)
-	#set($entity = $hit)
-	#set($entityid = $entity.id)
+	#set($entityid = $hit.id)
 	#if($rendermoduleid)
 		#set($moduleid = $rendermoduleid)
 	#else
@@ -21,8 +20,10 @@
 $context.putPageValue("entityid", $entityid)
 $context.putPageValue("moduleid", $moduleid)
 
-
-#set($module = $mediaarchive.getCachedData("module", $moduleid))
+#if($moduleid && $entityid)
+	#set($module = $mediaarchive.getCachedData("module", $moduleid))
+	#set($entity = $mediaarchive.getCachedData($moduleid, $entityid))
+#end
 
 #if(!$topmodule)
 	#set($topmodule = $module)
@@ -42,61 +43,39 @@ $context.putPageValue("topentityid", $topentityid)
 	#set($previewurl = "$!{siteroot}$apphome/views/modules/$!moduleid/components/gridsample/preview/entity.html?id=$entityid&hitssessionid=$!hits.sessionId")
 	#set($linktype = "emdialog entity-dialog")
 #end
+
 $context.putPageValue("previewurl", $previewurl)
-
-
   	 
-   	 	##check for view
-		#set($viewid = "${moduleid}gridfields")
-		#set($view = "$moduleid/$viewid")
-
-		#if( $context.getUserProfile() )
-			#set($searcher = $searcherManager.getSearcher($catalogid,$moduleid))
-			#set ($details = $searcher.getDetailsForView($view, $context.getUserProfile()))
-			
-		#else
-			#set ($details = $searcher.getDetailsForView($view))
-			
-		#end
-		
-		$context.putPageValue("details", $details)
-		
-		##look for primaryimage
-	
-		#set( $primarymediafield = $searcher.getDetailForView($view, "primarymedia", $user) )
-		#if($primarymediafield)
-			#set( $primarymediatemp = $mediaarchive.getCachedAsset($entity.primarymedia))
-				#ifnotnull($primarymediatemp)
-					#if($primarymediatemp.previewstatus == '2')				
-						#set($primarymedia = $primarymediatemp)
-					#end
+##look for primaryimage
+#if($entity.primarymedia)
+	#set( $primarymediatemp = $mediaarchive.getCachedAsset($entity.primarymedia))
+		#ifnotnull($primarymediatemp)
+			#if($primarymediatemp.previewstatus == '2')				
+				#set($primarymedia = $primarymediatemp)
 			#end
-		#end
-		
-		#ifnull($primarymedia)
-			#set( $primarymediafield = $searcher.getDetailForView($view, "primaryimage", $user) )
-			#if($primarymediafield)
-				#ifnotnull($entity.primaryimage)
-						#set( $primarymedia = $mediaarchive.getCachedAsset($entity.primaryimage))
-						#if($primarymedia.previewstatus == '2')
-							##break
-						#else
-							#set($primarymedia = '')
-						#end
+	#end
+#end
+#ifnull($primarymedia)
+	#set( $primarymediafield = $entity.primaryimage )
+	#if($primarymediafield)
+		#ifnotnull($entity.primaryimage)
+				#set( $primarymedia = $mediaarchive.getCachedAsset($entity.primaryimage))
+				#if($primarymedia.previewstatus == '2')
+					##break
+				#else
+					#set($primarymedia = '')
 				#end
-			#end
-		#end	
-				
-		$context.putPageValue("primarymedia", $primarymedia)
-	    $context.putPageValue("viewer", "e_m_g_${entity.id}")
-	    			   	
-	   	#set($link = "$!siteroot$applink/views/modules/$!topmodule.getId()/index.html")
-	   	
-		#if( $topmodule == $module)
-			#set($link = "$link?entityid=$!entity.getId()&entitytype=$!moduleid&topentityid=$!entity.getId()")
-		#else
-			#set($link = "$link?entityid=$!entity.getId()&entitytype=$!moduleid&topentityid=$!topentityid")
 		#end
+	#end
+#end	
+			   	
+#set($link = "$!siteroot$applink/views/modules/$!topmodule.getId()/index.html")
+
+#if( $topmodule == $module)
+	#set($link = "$link?entityid=$!entity.getId()&entitytype=$!moduleid&topentityid=$!entity.getId()")
+#else
+	#set($link = "$link?entityid=$!entity.getId()&entitytype=$!moduleid&topentityid=$!topentityid")
+#end
 
 #set($moduleicon = "grid")
 #if ($module.moduleicon)
@@ -118,7 +97,7 @@ $context.putPageValue("previewurl", $previewurl)
 		href="$!{previewurl}" 
 		id="clickid${entityid}"
 		data-id="${entityid}"
-   	data-moduleid="$!moduleid" 
+   		data-moduleid="$!moduleid" 
 		title="[[View]]: #text($!entity)"
 		class="$linktype"
 		#if($moduleid == "searchcategory")
@@ -138,7 +117,12 @@ $context.putPageValue("previewurl", $previewurl)
 			data-targetdiv="emgridentity$!moduleid$!entityid">
 			<div class="emfolder-icon">
 				#if($primarymedia)
-					$pages.include("$componenthome/gridsample/types/attachedmedia/entity2.html", $context)
+					$context.putPageValue("thumbsize", "thumbnail" )
+					#set($hit = $primarymedia)
+					$context.putPageValue("hit", $hit) 
+					$context.putPageValue("asset", $primarymedia)
+					#set( $assetrendertype = $mediaarchive.getMediaRenderType($hit.fileformat))
+					$pages.include("$componenthome/results/thumbnails/${assetrendertype}.html", $context)
 				#else
 					<i class="bi bi-${moduleicon} module-icon"></i>			
 				#end 

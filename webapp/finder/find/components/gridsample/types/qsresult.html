@@ -1,6 +1,5 @@
 #if($hit)
-	#set($entity = $hit)
-	#set($entityid = $entity.id)
+	#set($entityid = $hit.id)
 	#if($rendermoduleid)
 		#set($moduleid = $rendermoduleid)
 	#else
@@ -13,15 +12,15 @@
 	#if(!$entityid)
 		#set($entityid = $context.getRequestParameter("entityid"))
 	#end
-	#if($moduleid && $entityid)
-		#set($entity = $mediaarchive.getCachedData($moduleid, $entityid))
-	#end
 #end
 
 $context.putPageValue("entityid", $entityid)
 $context.putPageValue("moduleid", $moduleid)
 
-#set($module = $mediaarchive.getCachedData("module", $moduleid))
+#if($moduleid && $entityid)
+	#set($module = $mediaarchive.getCachedData("module", $moduleid))
+	#set($entity = $mediaarchive.getCachedData($moduleid, $entityid))
+#end
 
 #if(!$topmodule)
 	#set($topmodule = $module)
@@ -33,7 +32,7 @@ $context.putPageValue("topentityid", $topentityid)
 #set($previewurl = "$!{siteroot}$apphome/views/modules/$!{moduleid}/components/gridsample/preview/entity.html?id=$entityid&hitssessionid=$!hits.sessionId")
 $context.putPageValue("previewurl", $previewurl)
 
-<div class="emfolder-wrapper compact emgrid-type-$!moduleid entitycontainer entity$!moduleid$!entityid" 
+ <div class="emfolder-wrapper compact emgrid-type-$!moduleid entitycontainer entity$!moduleid$!entityid" 
 	id="emgridentity$!moduleid$!entityid"
 	data-id="${entityid}"
   data-moduleid="$!moduleid"
@@ -53,8 +52,8 @@ $context.putPageValue("previewurl", $previewurl)
   	 #end
 	
 		##look for primaryimage
-	
-		#set( $primarymediafield = $searcher.getDetailForView($view, "primarymedia", $user) )
+		#set( $primarymediafield = $entity.primarymedia )
+		
 		#if($primarymediafield)
 			#set( $primarymediatemp = $mediaarchive.getCachedAsset($entity.primarymedia))
 				#ifnotnull($primarymediatemp)
@@ -64,8 +63,9 @@ $context.putPageValue("previewurl", $previewurl)
 					#end
 			#end
 		#end
+		
 		#ifnull($primarymedia)
-			#set( $primarymediafield = $searcher.getDetailForView($view, "primaryimage", $user) )
+			#set( $primarymediafield = $entity.primaryimage )
 			#if($primarymediafield)
 				#ifnotnull($entity.primaryimage)
 						#set( $primarymediatemp = $mediaarchive.getCachedAsset($entity.primaryimage))
@@ -76,14 +76,10 @@ $context.putPageValue("previewurl", $previewurl)
 				#end
 			#end
 		#end	
+
 		
 		$context.putPageValue("type", $rendertype)
-				
-		$context.putPageValue("primarymedia", $primarymedia)
-	    $context.putPageValue("viewer", "e_m_g_${entity.id}")
-	    			   	
 	   	#set($link = "$!siteroot$applink/views/modules/$!topmodule.getId()/index.html")
-	   	
 		#if( $topmodule == $module)
 			#set($link = "$link?entityid=$!entity.getId()&entitytype=$!moduleid&topentityid=$!entity.getId()")
 		#else
@@ -103,7 +99,12 @@ $context.putPageValue("previewurl", $previewurl)
 			data-targetdiv="emgridentity$!moduleid$!entityid">
 			<div class="emfolder-icon">
 				#if($primarymedia)
-				    $pages.include("$componenthome/gridsample/types/attachedmedia/entity2.html", $context)
+					$context.putPageValue("thumbsize", "thumbnail" )
+					#set($hit = $primarymedia)
+					$context.putPageValue("hit", $hit) 
+					$context.putPageValue("asset", $primarymedia)
+					#set( $assetrendertype = $mediaarchive.getMediaRenderType($hit.fileformat))
+					$pages.include("$componenthome/results/thumbnails/${assetrendertype}.html", $context)
 			  #else
 					<i class="bi bi-$moduleicon module-icon"></i> 
 			  #end
