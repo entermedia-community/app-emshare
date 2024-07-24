@@ -186,8 +186,9 @@ $(document).ready(function () {
     }
     //Boostrap does not use liveajax
     $(".dropdown").dropdown();
+    var canvasContainer = $("#organizer_canvas");
 
-    $("#organizer_canvas").css({
+    canvasContainer.css({
       width: fullCanvasWidth,
       height: fullCanvasHeight,
       marginTop: -midY + canvasHeight / 2,
@@ -276,6 +277,13 @@ $(document).ready(function () {
               console.log(e);
               reader.unmarshal(canvas, placeholderJSON);
             }
+            var mainNode = canvas.getFigure("main");
+            var centerX = mainNode.getX() + 75;
+            var centerY = mainNode.getY() + 75;
+            canvasContainer.css({
+              marginTop: -centerY + canvasHeight / 2,
+              marginLeft: -centerX + canvasWidth / 2,
+            });
           }
         },
       });
@@ -653,7 +661,6 @@ $(document).ready(function () {
     }
     autoSaveTimeout = setTimeout(autoSaver, 30 * 1000);
 
-    var canvasContainer = $("#organizer_canvas");
     var maxLeft = Math.floor(canvasWidth / 2 + 100);
     canvas.installEditPolicy(
       new draw2d.policy.canvas.CanvasPolicy({
