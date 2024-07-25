@@ -11,7 +11,7 @@ jQuery(document).ready(function () {
   }
 
   var headers = { "X-tokentype": "entermedia", "X-token": entermediakey };
-
+  
   function humanFileSize(bytes) {
     var thresh = 1000;
     if (Math.abs(bytes) < thresh) {
@@ -513,7 +513,7 @@ jQuery(document).ready(function () {
 	    e.preventDefault();
 	    var headers = { "X-tokentype": "entermedia", "X-token": entermediakey, 'Accept': 'application/json', "Content-Type": "application/json"};
 		var categorypath = $(this).data("toplevelcategorypath");
-		ipcRenderer.send("downloadall", { categorypath: categorypath, headers: headers });
+		ipcRenderer.send("downloadall", { categorypath: categorypath, headers: headers, mediadb: mediadb });
   });
   
   
@@ -566,3 +566,10 @@ jQuery(document).ready(function () {
   });
 
 });
+
+
+  function getMediadb() {
+	var elem = document.getElementById('application');
+  	return elem.getAttribute('data-mediadbappid');
+  }
+
