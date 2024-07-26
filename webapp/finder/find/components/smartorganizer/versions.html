@@ -2,9 +2,7 @@
   class="d-flex flex-column bg-white m-4 rounded" 
   style="width: 800px; max-width: 100%;" 
   data-setpagetitle="Version Manager" 
-  id="templateVersionsInner" 
-  data-copyurl="$applink/components/smartorganizer/copy.html" 
-  data-deleteurl="$applink/components/smartorganizer/delete.html">
+  id="templateVersionsInner">
   <div class="d-flex justify-content-between border-bottom px-3 pt-3 pb-2">
     <h3 class="text-center m-0 text-dark">Version Manager</h3>
     <button class="btn text-muted closemodal">
@@ -33,13 +31,17 @@
           </button>
         </div>
         <div class="d-flex align-items-center">
+          #if($template.id != 'current')
           <button class="btn btn-sm btn-brand px-2 mr-2">Restore</button>
-          <button class="btn btn-sm btn-accent px-2 mr-2 copyButton" data-id="$template.id" title="Copy">
+          #end
+          <a class="btn btn-sm btn-accent px-2 mr-2 ajax" href="$applink/components/smartorganizer/copy.html" data-oemaxlevel="1" data-targetdiv="#templateVersionsInner" data-id="$template.id" title="Copy">
             <i class="bi bi-copy"></i>
-          </button>
-          <button class="btn btn-sm btn-danger px-2 deleteButton" data-id="$template.id" title="Delete">
+          </a>
+          #if($template.id != 'current')
+          <a class="btn btn-sm btn-danger px-2 ajax" data-id="$template.id" title="Delete" href="$applink/components/smartorganizer/delete.html" data-confirm="Are you sure you want to delete this version?" data-oemaxlevel="1" data-targetdiv="#templateVersionsInner" data-id="$template.id">
             <i class="bi bi-trash"></i>
-          </button>
+          </a>
+          #end
         </div>
       </div>
       <div class="d-flex">

@@ -606,6 +606,7 @@ $(document).ready(function () {
         data.json = JSON.stringify(json);
 
         saveBtn.addClass("saving");
+        saveBtn.find("span").text("Saving...");
 
         var url =
           siteroot +
@@ -623,11 +624,15 @@ $(document).ready(function () {
             // pseudo wait
             setTimeout(() => {
               saveBtn.removeClass("saving");
+              saveBtn.find("span").text("Saved");
             }, 1000);
             // pseudo wait
           },
           complete: function () {
             saveBtn.removeClass("saving");
+            setTimeout(() => {
+              saveBtn.find("span").text("Save");
+            }, 1000);
           },
         });
       });
@@ -781,18 +786,5 @@ $(document).ready(function () {
       hideInput();
     });
     cancelBtn.click(hideInput);
-  });
-
-  lQuery(".copyButton").livequery("click", function () {
-    var container = $("#templateVersionsInner");
-    var id = $(this).data("id");
-    container.load(container.data("copyurl") + "?id=" + id);
-  });
-  lQuery(".deleteButton").livequery("click", function () {
-    if (confirm("Are you sure you want to delete this version?")) {
-      var container = $("#smartorganizermain");
-      var id = $(this).data("id");
-      container.load(container.data("deleteurl") + "?id=" + id);
-    }
   });
 });
