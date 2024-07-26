@@ -578,12 +578,6 @@ $(document).ready(function () {
       handle: "#dragHandle",
     });
 
-    $("#deleteButton").on("click", function () {
-      var header = $("#smartorganizermain");
-      var id = $("#organizerId").val();
-      header.load(header.data("deleteurl") + "?id=" + id);
-    });
-
     var saveBtn = $("#saveOrganizer");
 
     saveBtn.click(syncJSON);
@@ -790,8 +784,15 @@ $(document).ready(function () {
   });
 
   lQuery(".copyButton").livequery("click", function () {
-    var header = $("#templateVersionsInner");
+    var container = $("#templateVersionsInner");
     var id = $(this).data("id");
-    header.load(header.data("copyurl") + "?id=" + id);
+    container.load(container.data("copyurl") + "?id=" + id);
+  });
+  lQuery(".deleteButton").livequery("click", function () {
+    if (confirm("Are you sure you want to delete this version?")) {
+      var container = $("#smartorganizermain");
+      var id = $(this).data("id");
+      container.load(container.data("deleteurl") + "?id=" + id);
+    }
   });
 });
