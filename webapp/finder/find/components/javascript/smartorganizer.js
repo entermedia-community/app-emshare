@@ -5,7 +5,8 @@ $(document).ready(function () {
   var apphome = app.data("siteroot") + app.data("apphome");
   var siteroot = $("#application").data("siteroot");
   var mediadb = $("#application").data("mediadbappid");
-
+  var userid = $("#application").data("user");
+  
   var canvas = null;
   var selectedLabel = null;
   var canvasWidth = window.innerWidth - 132;
@@ -224,7 +225,9 @@ $(document).ready(function () {
     canvas.installEditPolicy(new draw2d.policy.canvas.ShowGridEditPolicy());
     canvas.installEditPolicy(new draw2d.policy.canvas.SnapToGridEditPolicy());
     canvas.installEditPolicy(new draw2d.policy.canvas.CoronaDecorationPolicy());
-    canvas.installEditPolicy(new draw2d.policy.canvas.WheelZoomPolicy());
+    //canvas.installEditPolicy(new draw2d.policy.canvas.WheelZoomPolicy());
+    
+    
     // canvas.installEditPolicy(
     //   new draw2d.policy.canvas.DefaultKeyboardPolicy({
     //     onKeyDown: function (canvas, keyCode, figure, ctrlKey) {
@@ -267,6 +270,7 @@ $(document).ready(function () {
     var reader = new draw2d.io.json.Reader();
 
     function loadJSON() {
+		console.log("laoding json");
       var id = $("#organizerId").val();
       var url =
         siteroot + "/" + mediadb + "/services/module/smartorganizer/data/" + id;
@@ -605,6 +609,10 @@ $(document).ready(function () {
         data.name = $("#organizerName").val();
         data.json = JSON.stringify(json);
 
+		data.updatedby = userid;
+		const date2 = new Date();
+		data.updatedon = date2.toJSON();
+
         saveBtn.addClass("saving");
         saveBtn.find("span").text("Saving...");
 
@@ -768,7 +776,7 @@ $(document).ready(function () {
   lQuery(".version-input").livequery(function () {
     var _this = $(this);
     var nameInput = $(this).find(".name");
-    var saveBtn = $(this).find(".rename");
+    var vsaveBtn = $(this).find(".rename");
     var cancelBtn = $(this).find(".cancel");
 
     function hideInput() {
@@ -777,12 +785,31 @@ $(document).ready(function () {
       _this.siblings(".rename-version").show();
     }
 
-    saveBtn.click(function () {
+    vsaveBtn.click(function (e) 
+    {
+		e.stopPropagation();
+    
       //save
       var newName = nameInput.val();
       _this.siblings(".version-name").text(newName);
-      hideInput();
+      
+      //smartOrganizerRename
+        var url = $("#templateVersionsInner").data("renameurl");
+
+		var versionrow = vsaveBtn.closest(".version-row");
+      $("#templateVersionsInner").parent().load(url + "?oemaxlevel=1&id=" + versionrow.data("versionid") + "&newname=" + escape(newName));
+      
     });
     cancelBtn.click(hideInput);
   });
+  
+  
+  lQuery(".restoreversion").livequery("click",function (e) 
+  {
+	  e.stopPropagation();
+	  e.preventDefault();
+	  runajaxonthis($(this), e);
+	   closeemdialog($(this).closest(".modal"));
+  });
+  
 });

@@ -158,6 +158,12 @@ runajaxonthis = function (inlink, e) {
         fnc(inlink); //execute it
       }
     }
+    
+    if( !targetDiv.startsWith("#") && !targetDiv.startsWith("."))
+    {
+		targetDiv = "#" + targetDiv; 
+	}
+    
 
     showLoader();
 
@@ -170,7 +176,7 @@ runajaxonthis = function (inlink, e) {
           if (useparent && useparent == "true") {
             cell = $("#" + targetDiv, window.parent.document);
           } else {
-            cell = findclosest(inlink, "#" + targetDiv);
+            cell = findclosest(inlink, targetDiv);
           }
           var onpage;
           var newcell;
@@ -178,7 +184,7 @@ runajaxonthis = function (inlink, e) {
             //Call replacer to pull $scope variables
             onpage = cell.parent();
             cell.replaceWith(data); //Cant get a valid dom element
-            newcell = findclosest(onpage, "#" + targetDiv);
+            newcell = findclosest(onpage,targetDiv);
           } else {
             onpage = cell;
             cell.html(data);
