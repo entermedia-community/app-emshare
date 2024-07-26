@@ -621,17 +621,15 @@ $(document).ready(function () {
           url: url,
           data: JSON.stringify(data),
           success: function () {
-            // pseudo wait
-            setTimeout(() => {
-              saveBtn.removeClass("saving");
-              saveBtn.find("span").text("Saved");
-            }, 1000);
-            // pseudo wait
+            saveBtn.removeClass("saving");
+            saveBtn.addClass("saved");
+            saveBtn.find("span").text("Saved");
           },
           complete: function () {
-            saveBtn.removeClass("saving");
             setTimeout(() => {
-              saveBtn.find("span").text("Save");
+              saveBtn.find("span").text("");
+              saveBtn.removeClass("saved");
+              saveBtn.removeClass("saving");
             }, 1000);
           },
         });
