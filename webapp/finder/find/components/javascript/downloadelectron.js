@@ -483,6 +483,13 @@ jQuery(document).ready(function () {
     });
   });
   
+  
+  ipcRenderer.on("download-asset-complete", (_, { categorypath }) => {
+    //TODO: update asset list
+    
+	
+  });
+  
 
   ipcRenderer.on("refresh-sync", (_, { categorypath }) => {
     refreshSync(categorypath);

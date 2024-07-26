@@ -5,28 +5,23 @@
       <i class="bi bi-x-lg"></i>
     </button>
   </div> 
-  <div class="row justify-content-center pt-2 px-3"> 
-    <div class="col-md-6 p-0">
-      <div class="template-card">
-        <img src="$siteroot$apphome/theme/images/temp1.png" alt="temp1">
-        <h5>Example Template #1</h5>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
-        <textarea class="d-none">$pages.include("./testdata.html")</textarea>
-        <button class="insert-btn">
-          Insert
-        </button>
-      </div>
-    </div> 
-    <div class="col-md-6 p-0">
-      <div class="template-card">
-        <img src="$siteroot$apphome/theme/images/temp1.png" alt="temp1">
-        <h5>Example Template #1</h5>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
-        <textarea class="d-none">$pages.include("./testdata.html")</textarea>
-        <button class="insert-btn">
-          Insert
-        </button>
-      </div>
-    </div> 
+  <div class="row pt-2 px-3">
+	  #set( $templates = $mediaarchive.query("smartorganizertemplates").sort("ordering").search() )
+	  #foreach($template in $templates) 
+		    <div class="col-md-6 p-0">
+		      <div class="template-card">
+		        <img src="$siteroot$apphome/theme/images/temp1.png" alt="temp1">
+		        <h5>#text($template)</h5>
+		        <p>$template.caption</p>
+		        <textarea class="d-none">
+						$template.json					
+				</textarea>
+		        <button class="insert-btn">
+		          Insert
+		        </button>
+		      </div>
+		    </div>
+		#end 
+
   </div>
 </div> 
