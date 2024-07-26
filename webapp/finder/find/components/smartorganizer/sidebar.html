@@ -1,30 +1,43 @@
+#ifnotnull($category)
+  #set( $assetid = $category.findValue("headercategoryimage") )
+  #ifnotnull($assetid)
+    #set($logoasset = $mediaarchive.getCachedData("asset",$assetid))
+    #set($logourl = $mediaarchive.asLinkToOriginal($logoasset))
+    #set($logourl = "$siteroot/$mediadbappid/services/module/asset/downloads/originals/${logourl}")
+  #end
+#end
+#ifnull( $logourl)
+  #set( $logourl = "$!{siteroot}$themeprefix/images/logo.png")
+#end
+
 <div class="org-left-sidebar">
   <input
     id="logoPicker"
-    type="file"
-    accept="image/*"
+    type="hidden"
+    value="$logourl"
     style="display: none"
   />
-  <button id="logoPickerBtn" title="Set Company Logo"  class="round-btn">
-    <div style="color: #5f739e; line-height: 1; margin-bottom: 14px">
-      <div style="font-size: 3em">&plus;</div>
-      <div style="font-size: 1em; font-weight: bold">LOGO</div>
+  <div class="d-flex flex-column align-items-center mt-3 mb-2">
+    <div id="addFolderBtn" class="round-btn">
+      <img src="$siteroot$apphome/theme/images/fl.svg" alt="New Folder" title="Create New Folder" style="width: 40px" />
     </div>
-  </button>
-  <div id="addFolderBtn" class="round-btn">
-    <img src="$siteroot$apphome/theme/images/fl.svg" alt="New Folder" title="Create New Folder" style="width: 40px" />
+    <label class="text-brand mt-1 mb-0 fw-bold" for="logoPicker">
+      New Folder
+    </label>
   </div>
-  <a id="templatePickerBtn" 
-    class="round-btn emdialog"
-    href="$siteroot$apphome/components/smartorganizer/templatepicker.html" 
-    type="button" 
-    data-dialogid="templatePicker"
-    data-oemaxlevel="1">
-    <img src="$siteroot$apphome/theme/images/templates.svg" alt="Templates" title="Import Existing Templates" style="width: 50px" />
-  </a>
-  <button id="deployBtn" class="round-btn">
-    <img src="$siteroot$apphome/theme/images/deploysite.svg" alt="Deploy Changes" title="Deploy" style="width: 40px" />
-  </button>
+  <div class="d-flex flex-column align-items-center mt-2 mb-3">
+    <a id="templatePickerBtn" 
+      class="round-btn emdialog"
+      href="$siteroot$apphome/components/smartorganizer/templatepicker.html" 
+      type="button" 
+      data-dialogid="templatePicker"
+      data-oemaxlevel="1">
+      <img src="$siteroot$apphome/theme/images/templates.svg" alt="Templates" title="Import Existing Templates" style="width: 50px" />
+    </a>
+    <label class="text-brand mt-1 mb-0 fw-bold" for="templatePickerBtn">
+      Templates
+    </label>
+  </div>
   <div class="viewport-nav">
     <button id="vToTop" title="Scroll to Top">
       <i class="bi bi-chevron-up"></i>

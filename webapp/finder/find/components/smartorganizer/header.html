@@ -1,56 +1,59 @@
 <div id="smartheader" class="org-header">
-
-<div class="d-flex align-items-center" style="min-width:300px">
-  #set( $id = $context.getRequestParameter("id"))
-  #ifnull($id)
-  	#set( $id = "current")
-  #end
-  #set( $current = $mediaarchive.getData("smartorganizer",$id) )
-
-  <img src="$siteroot$apphome/theme/images/emedialogo.svg" alt="Logo" />
-  <h1>Smart Organizer</h1>
-</div>    
-
-#set( $list = $mediaarchive.getList("smartorganizer") )  
-
-<div class="d-flex align-items-center">
-    #if($list.size() > 1)
-    <div class="dropdown ml-2 template-dropdown"> 
-      <button class="dropdown-toggle btn py-2 px-2" title="Switch Template" data-toggle="dropdown" data-offset="0,8" type="button" aria-haspopup="true" aria-expanded="false">
-        <i class="bi bi-list"></i>
-      </button>
-      <div class="dropdown-menu">
-        #foreach( $template in $list)
-          <a href='$applink/components/smartorganizer/editor.html?id=$template.id'
-            data-oemaxlevel="1" 
-            class='dropdown-item d-flex align-items-center ajax' 
-            data-targetdiv="smartorganizermain" 
-            title='#text($template)'>
-            #text($template) #if( $id == $template.id)<i class="bi bi-check-circle-fill ns ml-auto"></i>#end
-          </a>
-        #end
-      </div>
-    </div>  
-    #end 
-    <input type="hidden" id="organizerId" name="id" value="$id"/>
-    <input type="text" class="form-control px-3" id="organizerName" name="name" value="$!current.getName()" placeholder="Template Name" />
-    <button class="btn btn-lg btn-accent rounded px-3 py-2 mx-2 copy" id="copyButton" title="Copy Template">
-      <i class="bi bi-copy" style="font-size: 1.1rem;"></i>
-    </button>
-    <button class="btn btn-lg btn-brand px-3 py-2 rounded" id="saveOrganizer">
-      <i class="fas fa-save"></i>
-      <i class="fas fa-spinner fa-spin"></i>
-      <span class="ml-1" style="font-size: 1.1rem;">
-        Save Changes
-      </span>
-    </button>
-    #if( $id != "current")
-      <button class="btn btn-lg btn-danger soft rounded px-3 py-2 ml-2 delete" id="deleteButton" title="Delete Template">
-        <i class="bi bi-trash" style="font-size: 1.1rem;"></i>
-      </button>
+  <div class="d-flex align-items-center mr-2" style="min-width:300px">
+    #set( $id = $context.getRequestParameter("id"))
+    #ifnull($id)
+      #set( $id = "current")
     #end
-    <button class="ml-2 btn closemodal" title="Close Dialog">
-      <i class="bi bi-x-lg"></i>
-    </button>
-	</div>
+    #set( $current = $mediaarchive.getData("smartorganizer",$id) )
+
+    <img src="$siteroot$apphome/theme/images/emedialogo.png" alt="eMedia Logo" />
+    <h1>Smart Organizer</h1>
+  </div>    
+
+  #set( $list = $mediaarchive.getList("smartorganizer") )  
+
+  <div class="d-flex align-items-center justify-content-between flex-grow-1">
+    <div class="d-flex align-items-center">
+      #if($list.size() > 1) 
+        <a 
+          class="btn template-versions py-2 px-3 emdialog saved-versions" 
+          title="Saved Template Versions"
+          href="$siteroot$apphome/components/smartorganizer/versions.html" 
+          role="button"
+          data-dialogid="templateVersions"
+          data-oemaxlevel="1"
+          aria-haspopup="true" 
+          aria-expanded="false">
+          <i class="bi bi-clock-history mr-2"></i> Saved Versions
+        </a>
+      #end
+      <input type="hidden" id="organizerId" name="id" value="$id"/>
+      <input type="hidden" class="form-control px-3" id="organizerName" name="name" value="$!current.getName()" placeholder="Template Name" />
+      <button class="btn btn-lg btn-brand px-3 py-2 rounded" id="saveOrganizer">
+        <i class="fas fa-save"></i>
+        <i class="fas fa-spinner fa-spin"></i>
+      </button>
+    </div>
+    <div class="d-flex align-items-center">
+      <a 
+      class="btn btn-lg btn-brand p-2 rounded emdialog deploy-organizer" 
+      title="Deploy Template"
+      href="$siteroot$apphome/components/smartorganizer/deploy.html" 
+      role="button" 
+      data-dialogid="deployOrganizer"
+      data-dialogwidth="500"
+      data-oemaxlevel="1"
+      style="min-width: 120px;"
+      >
+        <i class="bi bi-rocket-takeoff"></i>
+        <span class="ml-2" style="font-size: 1.1rem;">
+          Deploy
+        </span>
+      </a>
+
+      <button class="ml-2 btn closemodal" title="Close Dialog">
+        <i class="bi bi-x-lg"></i>
+      </button>
+    </div> 
+  </div>
 </div>

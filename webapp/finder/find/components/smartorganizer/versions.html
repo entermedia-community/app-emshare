@@ -1,0 +1,43 @@
+<div class="d-flex flex-column bg-white m-4 rounded" style="width: 800px; max-width: 100%;" data-setpagetitle="Version Manager" id="templateVersionsInner" data-copyurl="$applink/components/smartorganizer/copy.html">
+  <div class="d-flex justify-content-between border-bottom px-3 pt-3 pb-2">
+    <h3 class="text-center m-0 text-dark">Version Manager</h3>
+    <button class="btn text-muted closemodal">
+      <i class="bi bi-x-lg"></i>
+    </button>
+  </div>
+  #set( $list = $mediaarchive.getList("smartorganizer") )
+  <div class="version-list px-2 pb-2">
+    #foreach( $template in $list)
+    <div class="p-2 version-list-item">
+      <div class="d-flex align-items-center justify-content-between">
+        <div class="d-flex align-items-center">
+          <i class="bi bi-clock-history ns text-muted mr-2"></i>
+          <span class="version-name">#text($template)</span>
+          <div class="version-input" style="display: none;">
+            <input type="text" class="form-control name" value="#text($template)" />
+            <button class="btn btn-sm btn-brand rename ml-2">
+              <i class="fas fa-save"></i>
+            </button>
+            <button class="btn btn-sm cancel">
+              <i class="bi bi-x-lg"></i>
+            </button>
+          </div>
+          <button class="rename-version" title="Rename Version">
+            <i class="bi bi-pencil-fill text-muted"></i>
+          </button>
+        </div>
+        <div class="d-flex align-items-center">
+          <button class="btn btn-sm btn-brand px-2 mr-2">Restore</button>
+          <button class="btn btn-sm btn-accent px-2 mr-2 copyButton" data-id="$template.id" title="Copy">
+            <i class="bi bi-copy"></i>
+          </button>
+          <button class="btn btn-sm btn-danger px-2">
+            <i class="bi bi-trash"></i>
+          </button>
+        </div>
+      </div>
+      <small class="ml-4"><i class="bi bi-circle-fill ns text-success mr-1"></i> John Doe</small>
+    </div>
+    #end
+  </div>
+</div>

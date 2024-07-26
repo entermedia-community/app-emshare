@@ -126,11 +126,11 @@ $(document).ready(function () {
     {
       type: "draw2d.shape.node.End",
       id: "main",
-      x: midX - 75,
-      y: midY - 75,
-      width: 150,
-      height: 150,
-      radius: 75,
+      x: midX - 110,
+      y: midY - 50,
+      width: 220,
+      height: 100,
+      radius: 16,
       userData: {},
       bgColor: "#43a343",
       color: "#378637",
@@ -144,7 +144,7 @@ $(document).ready(function () {
           id: draw2d.util.UUID.create(),
           name: "mainInputTop",
           locatorAttr: {
-            x: 75,
+            x: 110,
             y: 0,
           },
         },
@@ -153,8 +153,8 @@ $(document).ready(function () {
           id: draw2d.util.UUID.create(),
           name: "mainInputBottom",
           locatorAttr: {
-            x: 75,
-            y: 150,
+            x: 110,
+            y: 100,
           },
         },
         {
@@ -163,7 +163,7 @@ $(document).ready(function () {
           name: "mainInputLeft",
           locatorAttr: {
             x: 0,
-            y: 75,
+            y: 50,
           },
         },
         {
@@ -171,8 +171,8 @@ $(document).ready(function () {
           id: draw2d.util.UUID.create(),
           name: "mainInputRight",
           locatorAttr: {
-            x: 150,
-            y: 75,
+            x: 220,
+            y: 50,
           },
         },
       ],
@@ -256,8 +256,8 @@ $(document).ready(function () {
 
     function recenterCanvas() {
       var mainNode = canvas.getFigure("main");
-      var centerX = mainNode.getX() + 75;
-      var centerY = mainNode.getY() + 75;
+      var centerX = mainNode.getX() + 110;
+      var centerY = mainNode.getY() + 50;
       canvasContainer.css({
         marginTop: -centerY + canvasHeight / 2,
         marginLeft: -centerX + canvasWidth / 2,
@@ -288,6 +288,51 @@ $(document).ready(function () {
               reader.unmarshal(canvas, placeholderJSON);
             }
             recenterCanvas();
+
+            var logo = $("#logoPicker").val();
+            var img = new Image();
+            img.src = logo;
+            img.onload = function () {
+              var imgWidth = img.naturalWidth;
+              var imgHeight = img.naturalHeight;
+              var aspectRatio = imgWidth / imgHeight;
+
+              if (aspectRatio > 1) {
+                imgWidth = 200;
+                imgHeight = imgWidth / aspectRatio;
+              } else {
+                imgHeight = 90;
+                imgWidth = imgHeight * aspectRatio;
+              }
+
+              var prevLogo = canvas.getFigure("logo");
+
+              if (prevLogo) {
+                canvas.remove(prevLogo);
+              }
+
+              var mainNode = canvas.getFigure("main");
+              var centerX = mainNode.getX() + 110;
+              var centerY = mainNode.getY() + 50;
+
+              canvas.add(
+                new draw2d.shape.basic.Image({
+                  id: "logo",
+                  path: logo,
+                  width: imgWidth,
+                  height: imgHeight,
+                  draggable: false,
+                  selectable: false,
+                  cssClass: "brandLogo",
+                }),
+                centerX - imgWidth / 2,
+                centerY - imgHeight / 2
+              );
+
+              var main = canvas.getFigure("main");
+              main.setColor("#eeeeee");
+              main.setBackgroundColor("#fefefe");
+            };
           }
         },
       });
@@ -384,8 +429,8 @@ $(document).ready(function () {
         return;
       }
       var mainNode = canvas.getFigure("main");
-      var centerX = mainNode.getX() + 75;
-      var centerY = mainNode.getY() + 75;
+      var centerX = mainNode.getX() + 110;
+      var centerY = mainNode.getY() + 50;
       var dirX = Math.random() > 0.5 ? 150 : -300;
       var dirY = Math.random() > 0.5 ? 150 : -300;
       addFolderAt(
@@ -481,59 +526,6 @@ $(document).ready(function () {
       });
     });
 
-    $("#logoPickerBtn").click(function () {
-      $("#logoPicker").trigger("click");
-    });
-
-    $("#logoPicker").change(function (e) {
-      var objURL = URL.createObjectURL(e.target.files[0]);
-      var img = new Image();
-      img.src = objURL;
-      img.onload = function () {
-        $("#logoPickerBtn").html(img);
-        var imgWidth = img.naturalWidth;
-        var imgHeight = img.naturalHeight;
-        var aspectRatio = imgWidth / imgHeight;
-
-        if (aspectRatio > 1) {
-          imgWidth = 100;
-          imgHeight = imgWidth / aspectRatio;
-        } else {
-          imgHeight = 100;
-          imgWidth = imgHeight * aspectRatio;
-        }
-
-        var prevLogo = canvas.getFigure("logo");
-
-        if (prevLogo) {
-          canvas.remove(prevLogo);
-        }
-
-        var mainNode = canvas.getFigure("main");
-        var centerX = mainNode.getX() + 75;
-        var centerY = mainNode.getY() + 75;
-
-        canvas.add(
-          new draw2d.shape.basic.Image({
-            id: "logo",
-            path: objURL,
-            width: imgWidth,
-            height: imgHeight,
-            draggable: false,
-            selectable: false,
-          }),
-          centerX - imgWidth / 2,
-          centerY - imgHeight / 2
-        );
-
-        var main = canvas.getFigure("main");
-        main.setColor("#eeeeee");
-        main.setBackgroundColor("#ffffff");
-
-        $(this).val("");
-      };
-    });
-
     lQuery("#iconsList").livequery(function () {
       if ($(this).children().length < 2050) {
         var icHtm = "";
@@ -586,12 +578,6 @@ $(document).ready(function () {
       handle: "#dragHandle",
     });
 
-    $("#copyButton").on("click", function () {
-      var header = $("#smartorganizermain");
-      var id = $("#organizerId").val();
-      header.load(header.data("copyurl") + "?id=" + id);
-    });
-
     $("#deleteButton").on("click", function () {
       var header = $("#smartorganizermain");
       var id = $("#organizerId").val();
@@ -612,8 +598,7 @@ $(document).ready(function () {
       if (!canvas) {
         return;
       }
-      saveBtn.addClass("saving");
-      saveBtn.find("span").text("Saving...");
+
       var writer = new draw2d.io.json.Writer();
 
       writer.marshal(canvas, function (json) {
@@ -625,6 +610,8 @@ $(document).ready(function () {
         data.id = id;
         data.name = $("#organizerName").val();
         data.json = JSON.stringify(json);
+
+        saveBtn.addClass("saving");
 
         var url =
           siteroot +
@@ -642,9 +629,11 @@ $(document).ready(function () {
             // pseudo wait
             setTimeout(() => {
               saveBtn.removeClass("saving");
-              saveBtn.find("span").text("Save Changes");
             }, 1000);
             // pseudo wait
+          },
+          complete: function () {
+            saveBtn.removeClass("saving");
           },
         });
       });
@@ -771,5 +760,38 @@ $(document).ready(function () {
       closeemdialog($(this).closest(".modal"));
       syncJSON();
     });
+  });
+
+  lQuery(".rename-version").livequery("click", function () {
+    $(this).siblings(".version-name").hide();
+    $(this).siblings(".version-input").show();
+    $(this).hide();
+  });
+
+  lQuery(".version-input").livequery(function () {
+    var _this = $(this);
+    var nameInput = $(this).find(".name");
+    var saveBtn = $(this).find(".rename");
+    var cancelBtn = $(this).find(".cancel");
+
+    function hideInput() {
+      _this.hide();
+      _this.siblings(".version-name").show();
+      _this.siblings(".rename-version").show();
+    }
+
+    saveBtn.click(function () {
+      //save
+      var newName = nameInput.val();
+      _this.siblings(".version-name").text(newName);
+      hideInput();
+    });
+    cancelBtn.click(hideInput);
+  });
+
+  lQuery(".copyButton").livequery("click", function () {
+    var header = $("#templateVersionsInner");
+    var id = $(this).data("id");
+    header.load(header.data("copyurl") + "?id=" + id);
   });
 });
