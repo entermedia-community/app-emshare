@@ -183,6 +183,9 @@ $(document).ready(function () {
   ];
 
   lQuery("#organizer_canvas").livequery(function () {
+    var logo = $("#logoPicker").val();
+    var bgColor = $("#logoPicker").data("bg");
+    var strokeColor = $("#logoPicker").data("stroke");
     if (canvas) {
       canvas.clear();
       canvas = null;
@@ -216,7 +219,7 @@ $(document).ready(function () {
             var sourcePort = conn.sourcePort?.name?.includes("mainInput");
             var targetPort = conn.targetPort?.name?.includes("mainInput");
             if (sourcePort || targetPort) {
-              conn.setColor("#43a343");
+              conn.setColor(strokeColor);
             }
           });
           return conn;
@@ -296,7 +299,6 @@ $(document).ready(function () {
             }
             recenterCanvas();
 
-            var logo = $("#logoPicker").val();
             var img = new Image();
             img.src = logo;
             img.onload = function () {
@@ -337,8 +339,8 @@ $(document).ready(function () {
               );
 
               var main = canvas.getFigure("main");
-              main.setColor("#eeeeee");
-              main.setBackgroundColor("#fefefe");
+              main.setColor(strokeColor);
+              main.setBackgroundColor(bgColor);
             };
           }
         },
@@ -362,7 +364,7 @@ $(document).ready(function () {
         }
         selectedLabel = canvas.getFigure(selectedFolderId + "-label");
         if (!selectedLabel) return;
-        $("#folderId").val(selectedFolder.getId());
+        $("#folderId").val("new-folder");
         $("#folderLabel").val(selectedLabel.getText() || "");
         $("#folderDesc").val(selectedLabel.getUserData()?.description || "");
 

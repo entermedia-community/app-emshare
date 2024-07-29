@@ -10,11 +10,27 @@
   #set( $logourl = "$!{siteroot}$themeprefix/images/logo.png")
 #end
 
+#set( $themeid = $context.getRequestParameter("themeid"))
+#if(!$themeid)
+	#set( $themeid = $content.get("themeid") )
+#end
+#set($data = $mediaarchive.getData("theme", $themeid))
+#set($bgcolor = $data.headercolor)
+#set($strokeColor = $data.headercolorgradient)
+#ifnull($bgcolor)
+  #set($bgcolor = "#333e55")
+#end
+#ifnull($strokeColor)
+  #set($strokeColor = "#202835")
+#end
+
 <div class="org-left-sidebar">
   <input
     id="logoPicker"
     type="hidden"
     value="$logourl"
+    data-bg="$bgcolor"
+    data-stroke="$strokeColor"
     style="display: none"
   />
   <div class="d-flex flex-column align-items-center mt-3 mb-2">
