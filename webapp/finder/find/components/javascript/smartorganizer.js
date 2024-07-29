@@ -227,7 +227,8 @@ $(document).ready(function () {
     canvas.installEditPolicy(new draw2d.policy.canvas.ShowGridEditPolicy());
     canvas.installEditPolicy(new draw2d.policy.canvas.SnapToGridEditPolicy());
     canvas.installEditPolicy(new draw2d.policy.canvas.CoronaDecorationPolicy());
-    canvas.installEditPolicy(new draw2d.policy.canvas.WheelZoomPolicy());
+    canvas.uninstallEditPolicy(new draw2d.policy.canvas.WheelZoomPolicy());
+    canvas.installEditPolicy(new draw2d.policy.canvas.ZoomPolicy());
 
     // canvas.installEditPolicy(
     //   new draw2d.policy.canvas.DefaultKeyboardPolicy({
@@ -735,9 +736,9 @@ $(document).ready(function () {
     var maxLeft = Math.floor(canvasWidth / 2 + 100);
     canvas.installEditPolicy(
       new draw2d.policy.canvas.CanvasPolicy({
-        onMouseWheel: function (delta, _, _, _, ctrlKey) {
+        onMouseWheel: function (delta, _, _, shiftKey, ctrlKey) {
           delta *= 0.5;
-          if (!ctrlKey) {
+          if (ctrlKey && !shiftKey) {
             var pos = parseInt(canvasContainer.css("margin-top")) + delta;
             if (pos > 0) {
               $("#vToTop").prop("disabled", true);
@@ -754,7 +755,7 @@ $(document).ready(function () {
             $("#vToTop").prop("disabled", false);
             $("#vToBottom").prop("disabled", false);
             canvasContainer.css("margin-top", pos);
-          } else {
+          } else if (ctrlKey && shiftKey) {
             var pos = parseInt(canvasContainer.css("margin-left")) + delta;
             if (pos > 0) {
               $("#vToLeft").prop("disabled", true);
