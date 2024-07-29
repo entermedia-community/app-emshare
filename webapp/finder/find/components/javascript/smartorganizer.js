@@ -364,7 +364,7 @@ $(document).ready(function () {
         }
         selectedLabel = canvas.getFigure(selectedFolderId + "-label");
         if (!selectedLabel) return;
-        $("#folderId").val("new-folder");
+        $("#folderId").val(selectedLabel.getUserData()?.moduleid || "");
         $("#folderLabel").val(selectedLabel.getText() || "");
         $("#folderDesc").val(selectedLabel.getUserData()?.description || "");
 
@@ -386,6 +386,20 @@ $(document).ready(function () {
         selectedLabel = null;
       }
     }
+    
+    lQuery(".deploy-organizer-finish").livequery("click", function (e) {
+    e.stopPropagation();
+    e.preventDefault();
+    //saveJSON(); //is blocking?
+    var url = $(this).data("url");
+    var id = $("#organizerId").val();
+    $("#deployOrganizer")
+        .load(
+          url +
+            "?oemaxlevel=1&id=" +  id
+        );
+   
+  	});
 
     function updateModPosition(selectedFolder) {
       var bb = {
@@ -511,7 +525,7 @@ $(document).ready(function () {
       canvas.html.focusin();
       folderGroup.select();
       handleSelect(folderGroup);
-      syncJSON();
+      saveJSON();
     }
 
     var folderDragging = false;
@@ -605,6 +619,13 @@ $(document).ready(function () {
         selectedLabel.setText(lines.join("\n"));
         var fs = getFontSize(lines.join("<br>"));
         selectedLabel.setFontSize(fs);
+        
+        var newid = newLabel.toLowerCase();
+        newid = newid.replace(' ','-');
+        $("#folderId").val(newid);
+        selectedLabel.setUserData({
+        	moduleid: newid,
+      	});
       }
     }
 
@@ -621,6 +642,12 @@ $(document).ready(function () {
     $("#folderDesc").on("input", function () {
       selectedLabel.setUserData({
         description: $(this).val(),
+      });
+    });
+    
+    $("#folderId").on("input", function () {
+      selectedLabel.setUserData({
+        moduleid: $(this).val(),
       });
     });
 
@@ -646,13 +673,13 @@ $(document).ready(function () {
         $("#folderThumbPickerBtn").html(`<img src="${iconPath}" />`);
         closeemdialog($(this).closest(".modal"));
         hideLoader();
-        syncJSON();
+        saveJSON();
       });
     });
 
     canvas.getCommandStack().addEventListener(function (e) {
       if (e.isPostChangeEvent()) {
-        syncJSON();
+        saveJSON();
       }
     });
 
@@ -662,11 +689,11 @@ $(document).ready(function () {
 
     var saveBtn = $("#saveOrganizer");
 
-    saveBtn.click(syncJSON);
+    saveBtn.click(saveJSON);
 
     var autoSaveTimeout;
 
-    function syncJSON() {
+    function saveJSON() {
       if (autoSaveTimeout) {
         clearTimeout(autoSaveTimeout);
         autoSaveTimeout = null;
@@ -733,7 +760,7 @@ $(document).ready(function () {
         autoSaveTimeout = setTimeout(autoSaver, 30 * 1000);
         return;
       }
-      syncJSON();
+      saveJSON();
     }
     autoSaveTimeout = setTimeout(autoSaver, 30 * 1000);
 
@@ -841,7 +868,7 @@ $(document).ready(function () {
       var parsed = JSON.parse(data);
       reader.unmarshal(canvas, parsed);
       closeemdialog($(this).closest(".modal"));
-      syncJSON();
+      saveJSON();
     });
   });
 
@@ -893,4 +920,8 @@ $(document).ready(function () {
     runajaxonthis($(this), e);
     closeemdialog($(this).closest(".modal"));
   });
+  
+  
+
+  
 });
