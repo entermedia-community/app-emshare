@@ -6,7 +6,7 @@ $(document).ready(function () {
   var siteroot = $("#application").data("siteroot");
   var mediadb = $("#application").data("mediadbappid");
   var userid = $("#application").data("user");
-  
+
   var canvas = null;
   var selectedLabel = null;
   var canvasWidth = window.innerWidth - 132;
@@ -86,6 +86,7 @@ $(document).ready(function () {
         draggable: true,
         selectable: true,
         resizable: false,
+        cssClass: "folderImage",
         composite: groupId,
       },
       {
@@ -103,7 +104,7 @@ $(document).ready(function () {
         bgColor: "none",
         selectable: false,
         draggable: false,
-        cssClass: "centeredLabel",
+        cssClass: "folderLabel",
         userData: {
           description: "",
         },
@@ -119,6 +120,7 @@ $(document).ready(function () {
         draggable: false,
         selectable: false,
         composite: groupId,
+        cssClass: "folderIcon",
         path: apphome + "/components/smartorganizer/icons/folder.svg",
       },
     ];
@@ -225,9 +227,8 @@ $(document).ready(function () {
     canvas.installEditPolicy(new draw2d.policy.canvas.ShowGridEditPolicy());
     canvas.installEditPolicy(new draw2d.policy.canvas.SnapToGridEditPolicy());
     canvas.installEditPolicy(new draw2d.policy.canvas.CoronaDecorationPolicy());
-    //canvas.installEditPolicy(new draw2d.policy.canvas.WheelZoomPolicy());
-    
-    
+    canvas.installEditPolicy(new draw2d.policy.canvas.WheelZoomPolicy());
+
     // canvas.installEditPolicy(
     //   new draw2d.policy.canvas.DefaultKeyboardPolicy({
     //     onKeyDown: function (canvas, keyCode, figure, ctrlKey) {
@@ -270,7 +271,6 @@ $(document).ready(function () {
     var reader = new draw2d.io.json.Reader();
 
     function loadJSON() {
-		console.log("laoding json");
       var id = $("#organizerId").val();
       var url =
         siteroot + "/" + mediadb + "/services/module/smartorganizer/data/" + id;
@@ -343,14 +343,7 @@ $(document).ready(function () {
     }
     loadJSON();
 
-    canvas.on("unselect", function () {
-      $("#modifySelection").hide();
-      $("#folderThumbPicker").val("");
-      $("#folderThumbPickerBtn").html("");
-    });
-
     function handleSelect(selectedFolder = null) {
-      $("#folderThumbPicker").val("");
       if (!selectedFolder) {
         selectedFolder = canvas.getPrimarySelection();
       }
@@ -365,34 +358,18 @@ $(document).ready(function () {
           $("#folderThumbPickerBtn").html("");
         }
         selectedLabel = canvas.getFigure(selectedFolderId + "-label");
-        if (!selectedLabel) {
-          selectedLabel = new draw2d.shape.basic.Label({
-            id: selectedFolderId + "-label",
-            maxWidth: 150,
-            textAnchor: "middle",
-            stroke: 0,
-            fontSize: 20,
-            fontWeight: "bold",
-            fontColor: "#ffffff",
-            bgColor: "none",
-            selectable: false,
-            draggable: false,
-            cssClass: "centeredLabel",
-            composite: selectedFolderId,
-            userData: {
-              description: "",
-            },
-          });
-          canvas.add(
-            selectedLabel,
-            selectedFolder.getX() + 72,
-            selectedFolder.getY() + 88
-          );
-          selectedFolder.assignFigure(selectedLabel);
-        }
+        if (!selectedLabel) return;
+        $("#folderId").val(selectedFolder.getId());
         $("#folderLabel").val(selectedLabel.getText() || "");
         $("#folderDesc").val(selectedLabel.getUserData()?.description || "");
-        $("#modifySelection").show();
+
+        updateModPosition(selectedFolder);
+        $("#modifySelection").fadeIn();
+
+        selectedFolder.on("drag", function () {
+          updateModPosition(selectedFolder);
+        });
+
         // var connections = selectedFolder.getConnections();
         // connections.each(function (_, n) {
         //   n.select();
@@ -404,8 +381,114 @@ $(document).ready(function () {
         selectedLabel = null;
       }
     }
+
+    function updateModPosition(selectedFolder) {
+      var bb = {
+        x:
+          selectedFolder.getX() +
+          parseInt(canvasContainer.css("margin-left")) +
+          116,
+        y:
+          selectedFolder.getY() +
+          parseInt(canvasContainer.css("margin-top")) +
+          70,
+      };
+
+      var modCss = {
+        position: "fixed",
+        left: bb.x + 160,
+        top: Math.max(bb.y, 80),
+        bottom: "auto",
+      };
+      if (bb.x + 566 > canvasWidth) {
+        modCss.left = bb.x - 424;
+      }
+      if (bb.y + 350 > canvasHeight) {
+        modCss.top = "auto";
+        modCss.bottom = 0;
+      }
+      $("#modifySelection").css(modCss);
+    }
+
     canvas.on("select", function () {
       handleSelect();
+    });
+
+    canvas.on("unselect", function () {
+      $("#modifySelection").hide();
+      $("#folderThumbPickerBtn").html("");
+      selectedLabel = null;
+    });
+
+    function triggerInplaceEdit(label) {
+      function commit() {
+        var newLabel = label.html.val();
+        selectedLabel = label;
+        handleLabelChange(newLabel);
+        cancel();
+      }
+
+      function cancel() {
+        canvasContainer.unbind("click", commit);
+        selectedLabel = null;
+        label.html.fadeOut(function () {
+          label.html.remove();
+          label.html = null;
+        });
+      }
+
+      canvasContainer.bind("click", commit);
+
+      label.html = $('<input id="inplaceeditor" autocomplete="off" />');
+      label.html.val(label.getText());
+      label.html.hide();
+
+      canvasContainer.parent().append(label.html);
+
+      label.html.bind("input", function (e) {
+        var labelText = label.html.val();
+        if (labelText.length > 32) {
+          labelText = labelText.substring(0, 32);
+          label.html.val(labelText);
+          return;
+        }
+        if (e.which == 13) {
+          commit();
+        }
+      });
+
+      label.html.bind("blur", commit);
+
+      label.html.bind("click", function (e) {
+        e.stopPropagation();
+        e.preventDefault();
+      });
+
+      label.html.css({
+        position: "absolute",
+        top: label.getY() + parseInt(canvasContainer.css("margin-top")),
+        left: label.getX() + parseInt(canvasContainer.css("margin-left")),
+        width: 146,
+        height: Math.max(32),
+        marginLeft: 2,
+      });
+      label.html.fadeIn(function () {
+        label.html.focus();
+      });
+    }
+
+    canvas.on("dblclick", function (_, node) {
+      var figure = node.figure;
+      var cssClass = figure.cssClass;
+      if (!cssClass || !cssClass.startsWith("folder")) return;
+      var composite = figure.getComposite();
+      var label = canvas.getFigure(composite.id + "-label");
+      // var icon = canvas.getFigure(composite.id + "-icon");
+      if (cssClass === "folderIcon") {
+        $("#folderThumbPickerBtn").trigger("click");
+      } else {
+        triggerInplaceEdit(label);
+      }
     });
 
     function addFolderAt(x, y) {
@@ -507,6 +590,19 @@ $(document).ready(function () {
       return fs;
     }
 
+    function handleLabelChange(newLabel) {
+      if (newLabel.length === 0) {
+        selectedLabel.setText("");
+        return;
+      }
+      if (selectedLabel) {
+        var lines = getLines(newLabel);
+        selectedLabel.setText(lines.join("\n"));
+        var fs = getFontSize(lines.join("<br>"));
+        selectedLabel.setFontSize(fs);
+      }
+    }
+
     $("#folderLabel").on("input", function () {
       var labelText = $(this).val();
       if (labelText.length > 32) {
@@ -514,14 +610,7 @@ $(document).ready(function () {
         $(this).val(labelText);
         return;
       }
-
-      if (selectedLabel) {
-        var lines = getLines(labelText);
-        selectedLabel.setText(lines.join("\n"));
-        if (labelText.length === 0) return;
-        var fs = getFontSize(lines.join("<br>"));
-        selectedLabel.setFontSize(fs);
-      }
+      handleLabelChange(labelText);
     });
 
     $("#folderDesc").on("input", function () {
@@ -546,25 +635,9 @@ $(document).ready(function () {
         var selectedFolderId = selectedFolder.getId();
         var prevIcon = canvas.getFigure(selectedFolderId + "-icon");
         if (!prevIcon) {
-          folderImage = new draw2d.shape.basic.Image({
-            id: selectedFolderId + "-icon",
-            draggable: false,
-            selectable: false,
-            composite: selectedFolderId,
-            width: 60,
-            height: 60,
-            path: iconPath,
-          });
-          canvas.add(
-            folderImage,
-            selectedFolder.getX() + (150 - 60) / 2,
-            selectedFolder.getY() + 30
-          );
-          folderImage.toFront();
-          selectedFolder.assignFigure(folderImage);
-        } else {
-          prevIcon.setPath(iconPath);
+          return;
         }
+        prevIcon.setPath(iconPath);
         $("#folderThumbPickerBtn").html(`<img src="${iconPath}" />`);
         closeemdialog($(this).closest(".modal"));
         hideLoader();
@@ -609,9 +682,9 @@ $(document).ready(function () {
         data.name = $("#organizerName").val();
         data.json = JSON.stringify(json);
 
-		data.updatedby = userid;
-		const date2 = new Date();
-		data.updatedon = date2.toJSON();
+        data.updatedby = userid;
+        const date2 = new Date();
+        data.updatedon = date2.toJSON();
 
         saveBtn.addClass("saving");
         saveBtn.find("span").text("Saving...");
@@ -785,31 +858,34 @@ $(document).ready(function () {
       _this.siblings(".rename-version").show();
     }
 
-    vsaveBtn.click(function (e) 
-    {
-		e.stopPropagation();
-    
+    vsaveBtn.click(function (e) {
+      e.stopPropagation();
+
       //save
       var newName = nameInput.val();
       _this.siblings(".version-name").text(newName);
-      
-      //smartOrganizerRename
-        var url = $("#templateVersionsInner").data("renameurl");
 
-		var versionrow = vsaveBtn.closest(".version-row");
-      $("#templateVersionsInner").parent().load(url + "?oemaxlevel=1&id=" + versionrow.data("versionid") + "&newname=" + escape(newName));
-      
+      //smartOrganizerRename
+      var url = $("#templateVersionsInner").data("renameurl");
+
+      var versionrow = vsaveBtn.closest(".version-row");
+      $("#templateVersionsInner")
+        .parent()
+        .load(
+          url +
+            "?oemaxlevel=1&id=" +
+            versionrow.data("versionid") +
+            "&newname=" +
+            encodeURI(newName)
+        );
     });
     cancelBtn.click(hideInput);
   });
-  
-  
-  lQuery(".restoreversion").livequery("click",function (e) 
-  {
-	  e.stopPropagation();
-	  e.preventDefault();
-	  runajaxonthis($(this), e);
-	   closeemdialog($(this).closest(".modal"));
+
+  lQuery(".restoreversion").livequery("click", function (e) {
+    e.stopPropagation();
+    e.preventDefault();
+    runajaxonthis($(this), e);
+    closeemdialog($(this).closest(".modal"));
   });
-  
 });
