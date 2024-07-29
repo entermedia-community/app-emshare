@@ -228,36 +228,38 @@ $(document).ready(function () {
     canvas.installEditPolicy(new draw2d.policy.canvas.SnapToGridEditPolicy());
     canvas.installEditPolicy(new draw2d.policy.canvas.CoronaDecorationPolicy());
     canvas.uninstallEditPolicy(new draw2d.policy.canvas.WheelZoomPolicy());
+    canvas.uninstallEditPolicy(
+      new draw2d.policy.canvas.DefaultKeyboardPolicy()
+    );
     canvas.installEditPolicy(new draw2d.policy.canvas.ZoomPolicy());
 
-    // canvas.installEditPolicy(
-    //   new draw2d.policy.canvas.DefaultKeyboardPolicy({
-    //     onKeyDown: function (canvas, keyCode, figure, ctrlKey) {
-    //       if (46 === keyCode && null !== canvas.getPrimarySelection()) {
-    //         canvas
-    //           .getCommandStack()
-    //           .startTransaction(
-    //             draw2d.default.Configuration.i18n.command.deleteShape
-    //           );
-    //         var selections = canvas.getSelection();
-    //         selections.each(function (_, figure) {
-    //           // if (figure instanceof draw2d.default.Connection) {
-    //           //   if (selections.contains(figure.getSource(), true)) return;
-    //           //   if (selections.contains(figure.getTarget(), true)) return;
-    //           // }
-    //           console.log(figure);
-    //           var cmd = figure.createCommand(
-    //             new draw2d.default.command.CommandType(
-    //               draw2d.default.command.CommandType.DELETE
-    //             )
-    //           );
-    //           null !== cmd && canvas.getCommandStack().execute(cmd);
-    //         });
-    //         canvas.getCommandStack().commitTransaction();
-    //       }
-    //     },
-    //   })
-    // );
+    canvas.installEditPolicy(
+      new draw2d.policy.canvas.KeyboardPolicy({
+        onKeyDown: function (canvas, keyCode, figure) {
+          var selections = canvas.getSelection();
+          if (selections.getSize() === 0) return;
+          if (46 === keyCode) {
+            canvas.getCommandStack().startTransaction(figure.id + " delete");
+            var selections = canvas.getSelection();
+            selections.each(function (_, figure) {
+              var cmd = null;
+              if (figure.cssClass === "folderGroup") {
+                cmd = new draw2d.command.CommandDeleteGroup(figure);
+                var connections = figure.getConnections();
+                connections.each(function (_, conn) {
+                  var c = new draw2d.command.CommandDelete(conn);
+                  c !== null && canvas.getCommandStack().execute(c);
+                });
+              } else {
+                cmd = new draw2d.command.CommandDelete(figure);
+              }
+              cmd !== null && canvas.getCommandStack().execute(cmd);
+            });
+            canvas.getCommandStack().commitTransaction();
+          }
+        },
+      })
+    );
 
     function recenterCanvas() {
       var mainNode = canvas.getFigure("main");
