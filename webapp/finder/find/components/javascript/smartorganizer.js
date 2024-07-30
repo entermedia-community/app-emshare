@@ -288,8 +288,9 @@ $(document).ready(function () {
           if (res.response.status == "ok") {
             var saveddata = res.data.json;
             try {
-              var parsed = JSON.parse(saveddata);
-              if (!parsed.length) {
+        	  var updateddata = saveddata.replaceAll('${apphome}', apphome);
+        	  var parsed = JSON.parse(updateddata);
+        	  if (!parsed.length) {
                 throw new Error("Empty JSON");
               }
               reader.unmarshal(canvas, parsed);
@@ -656,7 +657,7 @@ $(document).ready(function () {
         var icHtm = "";
         var bsIcons = JSON.parse(_bsIcons);
         for (var i = 0; i < bsIcons.length; i++) {
-          icHtm += `<button type="button" class="btn"><img src="${apphome}/components/smartorganizer/icons/${bsIcons[i]}.svg" loading="lazy"/></button>`;
+          icHtm += `<div><button type="button" class="btn"><img src="${apphome}/components/smartorganizer/icons/${bsIcons[i]}.svg" loading="lazy"/></button><span>${bsIcons[i]}</span></div>`;
         }
         $(this).html(icHtm);
       }
@@ -727,12 +728,16 @@ $(document).ready(function () {
           mediadb +
           "/services/module/smartorganizer/data/" +
           id;
+        
+        var datastring = JSON.stringify(data)
+        var updateddata = datastring.replaceAll(apphome, '${apphome}');
+       
         jQuery.ajax({
           dataType: "json",
           method: "PUT",
           contentType: "application/json; charset=utf-8",
           url: url,
-          data: JSON.stringify(data),
+          data: updateddata,
           success: function () {
             saveBtn.removeClass("saving");
             saveBtn.addClass("saved");
@@ -865,7 +870,9 @@ $(document).ready(function () {
 
     $(document).on("click", ".insert-btn", function () {
       var data = $(this).siblings("textarea").val();
-      var parsed = JSON.parse(data);
+      //var parsed = JSON.parse(data);
+      var updateparsed = data.replaceAll('${apphome}', apphome);
+      var parsed = JSON.parse(updateparsed);
       reader.unmarshal(canvas, parsed);
       closeemdialog($(this).closest(".modal"));
       saveJSON();
