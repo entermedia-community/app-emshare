@@ -107,16 +107,17 @@ $(document).ready(function () {
         cssClass: "folderLabel",
         userData: {
           description: "",
+          moduleid: ""
         },
         composite: groupId,
       },
       {
         type: "draw2d.shape.basic.Image",
         id: groupId + "-icon",
-        x: x + (150 - 60) / 2,
+        x: x + (150 - 50) / 2,
         y: y + 30,
-        width: 60,
-        height: 60,
+        width: 50,
+        height: 50,
         draggable: false,
         selectable: false,
         composite: groupId,
@@ -288,6 +289,9 @@ $(document).ready(function () {
           if (res.response.status == "ok") {
             var saveddata = res.data.json;
             try {
+			  if(saveddata == undefined) {
+				  throw new Error("Empty JSON");
+			  }
         	  var updateddata = saveddata.replaceAll('${apphome}', apphome);
         	  var parsed = JSON.parse(updateddata);
         	  if (!parsed.length) {
@@ -621,12 +625,7 @@ $(document).ready(function () {
         var fs = getFontSize(lines.join("<br>"));
         selectedLabel.setFontSize(fs);
         
-        var newid = newLabel.toLowerCase();
-        newid = newid.replace(' ','-');
-        $("#folderId").val(newid);
-        selectedLabel.setUserData({
-        	moduleid: newid,
-      	});
+        
       }
     }
 
@@ -638,6 +637,21 @@ $(document).ready(function () {
         return;
       }
       handleLabelChange(labelText);
+    });
+    
+    
+     $("#folderLabel").on("focusout", function () {
+ 		var currentdata = selectedLabel.getUserData();
+        if(currentdata !== undefined && currentdata.moduleid == "") 
+        {
+			var labelText = $(this).val();
+	        var newid = labelText.toLowerCase();
+	        newid = newid.replace(' ','-');
+	        $("#folderId").val(newid);
+	        selectedLabel.setUserData({
+	        	moduleid: newid,
+	      	});
+      	}
     });
 
     $("#folderDesc").on("input", function () {
@@ -868,15 +882,19 @@ $(document).ready(function () {
       recenterCanvas();
     });
 
-    $(document).on("click", ".insert-btn", function () {
-      var data = $(this).siblings("textarea").val();
-      //var parsed = JSON.parse(data);
-      var updateparsed = data.replaceAll('${apphome}', apphome);
-      var parsed = JSON.parse(updateparsed);
-      reader.unmarshal(canvas, parsed);
-      closeemdialog($(this).closest(".modal"));
-      saveJSON();
+	lQuery(".insert-btn").livequery("click", function (e) {
+		e.preventDefault();
+		e.stopPropagation();
+	    var data = $(this).siblings("textarea").val();
+	    //var parsed = JSON.parse(data);
+	    var updateparsed = data.replaceAll('${apphome}', apphome);
+	    var parsed = JSON.parse(updateparsed);
+	    reader.unmarshal(canvas, parsed);
+	    closeemdialog($(this).closest(".modal"));
+	    console.log("inserted template")
+	    saveJSON();
     });
+    
   });
 
   lQuery(".rename-version").livequery("click", function () {
