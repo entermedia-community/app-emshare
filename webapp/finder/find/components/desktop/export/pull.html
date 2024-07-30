@@ -19,44 +19,57 @@
 	#set($firstfolder ="")
  #end
 
-<div class="entityuploadheader" style="font-size:1rem; font-weight: 600;">[[Download To Local Drive]]</div>
-
-<div class="container-fluid">
-	#if($category.getCategoryPath())
-	<div class="segment mb-2">
-		<p>[[This will syncronize $category.getChildren().size() to your local emedia folder.]]<br>
-		25 (50Mb / 50,029,000 bytes) local files. <br>
-		26 (55Mb / 55,829,213 bytes) server files. </p>
-		<p>
-			<a href="#" 
-		    	class="btn btn-primary ml-2 open-folder" 
-		    	data-path="$category.getCategoryPath()"
-		    	title="[[Open Local Folder]]">
-		      [[Open]]
-		    </a>
-		  <button class="btn btn-success rounded ml-2 download-pull-all"
-		  	data-toplevelcategorypath="$category.getCategoryPath()">
-	        <i class="bi bi-cloud-arrow-down-fill mr-1"></i> [[Download All]]
-	      </button>
-	      </p>
-	      <div>
-          	<p>11 [[Extra or modified files found locally]]</p>
-          	<p>
-				<button class="btn btn-success download-pull ml-2">
-		        <i class="bi bi-cloud-check-fill mr-2"></i>[[Remove Extra Files]]
-		      </button>
-		      [[Or]] <a  class='ajax refresh-sync '
-							data-targetdivinner="tabexportcontent"
-							data-oemaxlevel="1"
-							data-tabsection="pushlocal"
-							href="$apphome/components/desktop/import/push.html">
-							[[Push to server]]
-						</a>
-						</p>
-	      </div>
-			
+<div class="entityuploadheader" style="font-size:1rem; font-weight: 600;">
+	<div class="d-flex align-items-center justify-content-between">
+		<span>[[Download To Local Drive]]</span>
+		<a href="#" 
+			class="btn btn-accent open-folder" 
+			data-path="$category.getCategoryPath()"
+			title="[[Open Local Folder]]">
+			<i class="bi bi-folder2-open mr-2"></i>
+			[[Open Local Folder]]
+		</a>
 	</div>
-	#end
+</div>
+
+#if($category.getCategoryPath())
+<div class="segment mb-2">
+	<p>[[This will syncronize $category.getChildren().size() to your local emedia folder.]]<br>
+	25 (50Mb / 50,029,000 bytes) local files. <br>
+	26 (55Mb / 55,829,213 bytes) server files. </p>
+	<p>
+		<a class="btn btn-primary rounded" 
+			href="$category.getCategoryPath()"
+			title="[[Open]]">
+			<i class="bi bi-folder2-open mr-2"></i>
+			[[Open]]
+		</a>
+		<button class="btn btn-success rounded download-pull-all"
+			data-toplevelcategorypath="$category.getCategoryPath()">
+			<i class="bi bi-cloud-arrow-down-fill mr-1"></i> [[Download All]]
+		</button>
+	</p>
+	<div>
+		<p>11 [[Extra or modified files found locally]]</p>
+		<p>
+			<button class="btn btn-danger rounded download-pull">
+				<i class="bi bi-trash-fill mr-2"></i>[[Remove Extra Files]]
+			</button>
+			<span class="mx-2">
+				[[Or]]
+			</span>
+			<a  class='btn btn-success rounded ajax refresh-sync'
+				data-targetdivinner="tabexportcontent"
+				data-oemaxlevel="1"
+				data-tabsection="pushlocal"
+				href="$apphome/components/desktop/import/push.html">
+				<i class="bi bi-cloud-arrow-up-fill mr-1"></i>
+				[[Push to server]]
+			</a>
+		</p>
+	</div>
+</div>
+#end
 	
 <div class="sync-container mt-2 row no-gutters" >
 	<div class="col-2 pullfoldertree">
@@ -67,5 +80,4 @@
 			##load content via pullfetchfolder click -> Electron
 		</div>
 	</div>
- </div>
 </div>
