@@ -11,7 +11,7 @@ jQuery(document).ready(function () {
   }
 
   var headers = { "X-tokentype": "entermedia", "X-token": entermediakey };
-  
+
   function humanFileSize(bytes) {
     var thresh = 1000;
     if (Math.abs(bytes) < thresh) {
@@ -403,7 +403,7 @@ jQuery(document).ready(function () {
     var path = $(this).data("path");
     ipcRenderer.send("openFolder", { path });
   });
-/*  
+  /*  
    lQuery(".pick-folder").livequery("click", function (e) {
     //var path = $(this).data("path");
     ipcRenderer.send("pickFolder", {  });
@@ -416,7 +416,10 @@ jQuery(document).ready(function () {
   lQuery(".pullfetchfolder").livequery("click", function (e) {
     e.preventDefault();
     var folder = $(this);
-    folder.closest(".pullfoldertree").find(".pullfetchfolder").removeClass("current");
+    folder
+      .closest(".pullfoldertree")
+      .find(".pullfetchfolder")
+      .removeClass("current");
     folder.addClass("current");
     var categorypath = folder.data("categorypath");
     refreshSync(categorypath);
@@ -427,9 +430,6 @@ jQuery(document).ready(function () {
       categorypath: categorypath,
     });
   }
-
- 
-
 
   ipcRenderer.on("files-fetched", (_, data) => {
     $.ajax({
@@ -447,9 +447,8 @@ jQuery(document).ready(function () {
       },
     });
   });
-  
-  
-   lQuery(".refresh-sync-push").livequery("click", function (e) {
+
+  lQuery(".refresh-sync-push").livequery("click", function (e) {
     e.preventDefault();
     var entitydialog = $(this).closest(".entitydialog");
     if (entitydialog.length == 0) {
@@ -458,14 +457,13 @@ jQuery(document).ready(function () {
     var categorypath = entitydialog.data("categorypath");
     refreshSyncPush(categorypath);
   });
-  
+
   function refreshSyncPush(categorypath) {
     ipcRenderer.send("fetchFoldersPush", {
       categorypath: categorypath,
     });
   }
 
-  
   ipcRenderer.on("files-fetched-push", (_, data) => {
     $.ajax({
       type: "POST",
@@ -482,14 +480,10 @@ jQuery(document).ready(function () {
       },
     });
   });
-  
-  
+
   ipcRenderer.on("download-asset-complete", (_, { categorypath }) => {
     //TODO: update asset list
-    
-	
   });
-  
 
   ipcRenderer.on("refresh-sync", (_, { categorypath }) => {
     refreshSync(categorypath);
@@ -498,10 +492,10 @@ jQuery(document).ready(function () {
   lQuery(".download-pull").livequery("click", function (e) {
     e.preventDefault();
     //var headers = { "X-tokentype": "entermedia", "X-token": entermediakey };
-	var currentfolderdiv = $(this).closest("#currentfolder");
-	if (!currentfolderdiv.length) {
-		return;
-	}
+    var currentfolderdiv = $(this).closest("#currentfolder");
+    if (!currentfolderdiv.length) {
+      return;
+    }
     var categorypath = currentfolderdiv.data("categorypath");
 
     $("#pullfiles li").each(function () {
@@ -515,18 +509,42 @@ jQuery(document).ready(function () {
       ipcRenderer.send("fetchfilesdownload", { assetid, file, headers });
     });
   });
-  
+
   lQuery(".download-pull-all").livequery("click", function (e) {
-	    e.preventDefault();
-	    var headers = { "X-tokentype": "entermedia", "X-token": entermediakey, 'Accept': 'application/json', "Content-Type": "application/json"};
-		var categorypath = $(this).data("toplevelcategorypath");
-		ipcRenderer.send("downloadall", { categorypath: categorypath, headers: headers, mediadb: mediadb });
+    e.preventDefault();
+    var headers = {
+      "X-tokentype": "entermedia",
+      "X-token": entermediakey,
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    };
+    var categorypath = $(this).data("toplevelcategorypath");
+    $(".pullfetchfolder").first().find(".fa-spinner").show();
+    ipcRenderer.send("downloadall", {
+      categorypath: categorypath,
+      headers: headers,
+      mediadb: mediadb,
+    });
   });
-  
-  
-  
+
+  ipcRenderer.on("download-all-next", (_, { categorypath }) => {
+    $(".pullfetchfolder").each(function () {
+      var folder = $(this);
+      if (folder.data("categorypath") == categorypath) {
+        folder.find(".fa-spinner").show();
+      } else {
+        folder.find(".fa-spinner").hide();
+      }
+    });
+  });
+  ipcRenderer.on("download-all-complete", () => {
+    $(".pullfetchfolder").each(function () {
+      $(this).find(".fa-spinner").hide();
+    });
+  });
+
   var uploadcount = 0;
-  
+
   lQuery(".upload-push").livequery("click", function (e) {
     e.preventDefault();
     //var headers = { "X-tokentype": "entermedia", "X-token": entermediakey };
@@ -535,25 +553,24 @@ jQuery(document).ready(function () {
       return;
     }
     var categorypath = entitydialog.data("categorypath");
-	
+
     $("#pushfiles li").each(function () {
       var item = $(this);
       var abspath = item.data("abspath");
       var options = {
-		 "itemid" : uploadcount,
-        "sourcepath": categorypath + "/" + item.data("path"),
-        "categorypath": categorypath,
-        "abspath" : abspath,
-        "headers": headers,
-        "mediadb": mediadb,
+        itemid: uploadcount,
+        sourcepath: categorypath + "/" + item.data("path"),
+        categorypath: categorypath,
+        abspath: abspath,
+        headers: headers,
+        mediadb: mediadb,
       };
-      
+
       ipcRenderer.send("start-upload", options);
       uploadcount++;
     });
   });
-  
-  
+
   lQuery(".pull-individual").livequery("click", function (e) {
     e.preventDefault();
     var entitydialog = $(this).closest(".entitydialog");
@@ -571,12 +588,9 @@ jQuery(document).ready(function () {
     var assetid = item.data("id");
     ipcRenderer.send("fetchfilesdownload", { assetid, file, headers });
   });
-
 });
 
-
-  function getMediadb() {
-	var elem = document.getElementById('application');
-  	return elem.getAttribute('data-mediadbappid');
-  }
-
+function getMediadb() {
+  var elem = document.getElementById("application");
+  return elem.getAttribute("data-mediadbappid");
+}

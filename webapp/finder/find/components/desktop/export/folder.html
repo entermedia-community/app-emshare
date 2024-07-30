@@ -5,23 +5,22 @@
   
   <div id="currentfolder"
   		data-categorypath="${categorypath}"
-  		class="px-4 pt-1 pb-4 sync-stage new">
+  		class="px-4 pt-1 pb-4 sync-stage new rounded">
 	  
 	    <div class="sync-folder mx-4 mb-4">
 	    <span>[[Folder]]:</span>
-	    <input id="pullSaveFolder" type="text" class="form-control" placeholder="[[Save Folder]]" readonly 
-	    		value="$!assetmap.filedownloadpath">
-	    #if($assetmap.filedownloadpath)
-		    <a href="#" 
-		    	class="btn btn-primary ml-2 open-folder" 
-		    	data-path="$!assetmap.filedownloadpath"
-		    	title="[[Open Local Folder]]">
-		      [[Open]]
-		    </a>
-		    <button class="btn-unstyled refresh-sync ml-2">
-		      <i class="bi bi-arrow-repeat ns"></i>
-		    </button>
-	    #end
+			<input id="pullSaveFolder" type="text" class="form-control" placeholder="[[Save Folder]]" readonly value="$!assetmap.filedownloadpath">
+			#if($assetmap.filedownloadpath)
+				<a href="#" 
+					class="btn btn-primary rounded ml-2 open-folder" 
+					data-path="$!assetmap.filedownloadpath"
+					title="[[Open Local Folder]]">
+					[[Open]]
+				</a>
+				<button class="btn-unstyled refresh-sync ml-2">
+					<i class="bi bi-arrow-repeat ns"></i>
+				</button>
+			#end
 	  </div>
 
 	  #if($files.size() > 0)
@@ -64,20 +63,23 @@
 		        	#end
 		         	$missingfiles.size() [[New file found locally]]
 		      </a>
-		      <div>
-		
-		            <div class="py-1 text-right">
-		             		<a  class='ajax refresh-sync '
+		      
+					<div class="d-flex align-items-center"> 
+						<a  class='btn btn-success rounded text-white ajax refresh-sync'
 							data-targetdivinner="tabexportcontent"
 							data-oemaxlevel="1"
 							data-tabsection="pushlocal"
 							href="$apphome/components/desktop/import/push.html">
+							<i class="bi bi-cloud-arrow-up-fill mr-1"></i>
 							[[Push to server]]
-						</a>
-				</div>
-				[[Or]] <button class="btn  btn-sm btn-danger rounded ml-2 download-pull">
-		        <i class="bi bi-cloud-arrow-down-fill mr-1"></i> [[Delete Local Files]]
-		      </button> 
+						</a> 
+						<span class="mx-2">
+							[[Or]]
+						</span>
+						<button class="btn btn-danger rounded download-pull">
+							<i class="bi bi-trash-fill mr-1"></i>
+							[[Delete Local Files]]
+						</button> 
 		      </div>
 		    </div>
 		    <ul id="pulllocalfiles" class="collapse list-unstyled overflow-y pl-4">
