@@ -1,22 +1,21 @@
-#set($firstfolder ="firstfolderid")
 #macro(pullcategories $parent)
  	<div>
 		 <a href="#"
-		 	id="$!firstfolder"
 		 	class="pullfetchfolder"
 		 	data-categorypath="$!parent.getCategoryPath()">
-			 <i class="bi bi-folder"></i> $parent.name
+			 <i class="bi bi-folder"></i>
+			 <span class="mx-1">$parent.name</span>
+			 <i class="fas fa-spinner fa-spin text-muted" style="display: none;"></i>
 		</a>
  	</div>
 	#if($parent.hasChildren())
-		<div style="padding-left:10px">
+		<div class="ml-3">
 		#set($subfolders = $parent.getChildren())
 		#foreach( $subfolder in $subfolders)
 			#pullcategories($subfolder)
 		#end
 		</div>
 	#end
-	#set($firstfolder ="")
  #end
 
 <div class="entityuploadheader" style="font-size:1rem; font-weight: 600;">
@@ -24,7 +23,7 @@
 		<span>[[Download To Local Drive]]</span>
 		<a href="#" 
 			class="btn btn-accent open-folder" 
-			data-path="$category.getCategoryPath()"
+			data-path="eMedia"
 			title="[[Open Local Folder]]">
 			<i class="bi bi-folder2-open mr-2"></i>
 			[[Open Local Folder]]
@@ -38,8 +37,9 @@
 	25 (50Mb / 50,029,000 bytes) local files. <br>
 	26 (55Mb / 55,829,213 bytes) server files. </p>
 	<p>
-		<a class="btn btn-primary rounded" 
-			href="$category.getCategoryPath()"
+		<a class="btn btn-primary rounded open-folder mr-2" 
+			href="#"
+			data-path="$category.getCategoryPath()"
 			title="[[Open]]">
 			<i class="bi bi-folder2-open mr-2"></i>
 			[[Open]]
@@ -51,13 +51,7 @@
 	</p>
 	<div>
 		<p>11 [[Extra or modified files found locally]]</p>
-		<p>
-			<button class="btn btn-danger rounded download-pull">
-				<i class="bi bi-trash-fill mr-2"></i>[[Remove Extra Files]]
-			</button>
-			<span class="mx-2">
-				[[Or]]
-			</span>
+		<div class="d-flex align-items-center">
 			<a  class='btn btn-success rounded ajax refresh-sync'
 				data-targetdivinner="tabexportcontent"
 				data-oemaxlevel="1"
@@ -66,12 +60,18 @@
 				<i class="bi bi-cloud-arrow-up-fill mr-1"></i>
 				[[Push to server]]
 			</a>
-		</p>
+			<span class="mx-2">
+				[[Or]]
+			</span>
+			<button class="btn btn-danger rounded download-pull">
+				<i class="bi bi-trash-fill mr-2"></i>[[Remove Extra Files]]
+			</button>
+		</div>
 	</div>
 </div>
 #end
 	
-<div class="sync-container mt-2 row no-gutters" >
+<div class="sync-container row no-gutters" >
 	<div class="col-2 pullfoldertree">
 	#pullcategories($category)
 	</div>
