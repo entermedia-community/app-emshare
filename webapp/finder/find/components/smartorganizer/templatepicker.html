@@ -10,14 +10,18 @@
 	  #foreach($template in $templates) 
 		    <div class="col-md-6 p-0">
 		      <div class="template-card">
-		        <img src="$siteroot$apphome/theme/images/temp1.png" alt="temp1">
+				  #set($thumb = "temp1.png")
+				  #ifnotnull($template.thumbnailpath)
+				  #set($thumb = $template.thumbnailpath)
+				  #end
+		        <img src="$siteroot$apphome/theme/icons/templates/${thumb}" alt="$template.caption">
 		        <h5>#text($template)</h5>
 		        <p>$template.caption</p>
 		        <textarea class="d-none">
 						$template.json					
 				</textarea>
 		        <button class="insert-btn">
-		          Insert
+		          [[Insert]]
 		        </button>
 		      </div>
 		    </div>
