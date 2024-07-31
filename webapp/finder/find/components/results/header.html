@@ -154,19 +154,15 @@ $context.putPageValue("entityid", $entityid)
 							title="[[Upload]]"><i class="bi bi-upload"></i></a>
 					</li>
 					#end
-					#if($candownload)
+					#if ($candownload && $hits && $hits.getSelectionSize() > 0)
 					<li>
-						<a href="#"
-						class='resultsnavlink px-3 entitytabactions tabactionexport #if($entitytabopen=="export")enabledaction #end '
-						data-tabaction="export"
-						data-viewid="export"
-						data-tabtype="tabexport" 
-						data-entityid="$!entity.getId()" 
-						data-topmoduleid="$!moduleid"
-						data-moduleid="$!moduleid"
-						data-tabsection="export"
-							title="[[Download]]"><i class="bi bi-download"></i></a>
-					</li>
+						<a  class='resultsnavlink emdialog px-3'
+						data-dialogid="downloadeasset"
+						data-hidefooter="true"
+						href="$siteroot$apphome/views/modules/asset/activity/downloadassets.html?hitssessionid=$!hits.getSessionId()&collectionid=$!{librarycol.getId()}"
+						title="[[Download]] $!hits.getSelectionSize() [[assets]]"  
+						 ><i class="bi bi-download"></i></a>
+						 </li>
 					#end
 				#else
 					#if($moduleid == "asset" && $canviewupload)
@@ -190,16 +186,35 @@ $context.putPageValue("entityid", $entityid)
 						#end
 					</a>
 					<ul class="dropdown-menu">
+						#if($hits && $hits.getSelectionSize() > 0)
+						<li><a class="dropdown-item selectpage" data-action="none">[[Deselect All]]</a> </li>
+						#end
 						<li><a class="dropdown-item selectpage" data-action="all">[[Select All Results]]</a></li>
 						<li><a class="dropdown-item selectpage" data-action="page">[[Select This Page]]</a></li>
+
+						
 						#if( $user && ($candownload || $canconvert || $candownloadfpo ) )
-						<li><a class="dropdown-item emdialog" 
-							data-dialogid="downloadeasset"
-							data-hidefooter="true"
-							href="$siteroot$apphome/views/modules/asset/activity/downloadassets.html?hitssessionid=$!hits.getSessionId()&collectionid=$!{librarycol.getId()}"  
-							 >[[Download Selected]] ($!hits.getSelectionSize())</a></li>
+							#if($hits && $hits.getSelectionSize() > 0)
+							<li><a class="dropdown-item emdialog"  
+								data-dialogid="downloadeasset" 
+								data-hidefooter="true" 
+								href="$siteroot$apphome/views/modules/asset/activity/downloadassets.html?hitssessionid=$!hits.getSessionId()&collectionid=$!{librarycol.getId()}"   
+								 >[[Download Selected]] ($!hits.getSelectionSize())</a></li>
+							<li>
+							#end
+							<a href="#"
+							class='dropdown-item  entitytabactions tabactionexport #if($entitytabopen=="export")enabledaction #end '
+							data-tabaction="export"
+							data-viewid="export"
+							data-tabtype="tabexport" 
+							data-entityid="$!entity.getId()" 
+							data-topmoduleid="$!moduleid"
+							data-moduleid="$!moduleid"
+							data-tabsection="export"
+								title="[[Download All]]">[[Download All in Zip]]</a>
+							 </li>
 						#end
-						<li><a class="dropdown-item selectpage" data-action="none">[[Deselect All]]</a> </li>
+						
 					</ul>
 				</li>
 
