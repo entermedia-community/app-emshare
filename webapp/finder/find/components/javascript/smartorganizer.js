@@ -374,6 +374,10 @@ $(document).ready(function () {
         $("#folderDesc").val(selectedLabel.getUserData()?.description || "");
 
         updateModPosition(selectedFolder);
+        $("#mod-toggler")
+          .find("i")
+          .removeClass("bi-gear-fill")
+          .addClass("bi-gear");
         $("#mod-toggler").fadeIn();
 
         selectedFolder.on("drag", function () {
@@ -446,6 +450,11 @@ $(document).ready(function () {
     });
 
     $("#mod-toggler").click(function () {
+      if ($("#modifySelection").is(":visible")) {
+        $(this).find("i").removeClass("bi-gear-fill").addClass("bi-gear");
+      } else {
+        $(this).find("i").removeClass("bi-gear").addClass("bi-gear-fill");
+      }
       $("#modifySelection").fadeToggle();
     });
 
