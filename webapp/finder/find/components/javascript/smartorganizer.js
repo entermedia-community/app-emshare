@@ -11,8 +11,8 @@ $(document).ready(function () {
   var selectedLabel = null;
   var canvasWidth = window.innerWidth - 132;
   var canvasHeight = window.innerHeight - 112;
-  var fullCanvasWidth = canvasWidth + 1000;
-  var fullCanvasHeight = canvasHeight + 1000;
+  var fullCanvasWidth = canvasWidth;
+  var fullCanvasHeight = canvasHeight;
   var midX = fullCanvasWidth / 2;
   var midY = fullCanvasHeight / 2;
   var folderPort = {
@@ -122,7 +122,7 @@ $(document).ready(function () {
         selectable: false,
         composite: groupId,
         cssClass: "folderIcon",
-        path: apphome + "/components/smartorganizer/icons/folder.svg",
+        path: apphome + "/theme/icons/bootstrap/folder.svg",
       },
     ];
   };
@@ -267,12 +267,22 @@ $(document).ready(function () {
 
     function recenterCanvas() {
       var mainNode = canvas.getFigure("main");
-      var centerX = mainNode.getX() + 110;
-      var centerY = mainNode.getY() + 50;
+      debugger;
+      var centerX = mainNode.getX() + (mainNode.getWidth() / 2);
+      var changex = midX - centerX;
+      mainNode.setX(mainNode.getX() + changex);
+      
+      var writer = new draw2d.io.json.Writer();
+	    writer.marshal(canvas, function (json) {
+			
+			
+      
+     /* var centerY = mainNode.getY() + 50;
       canvasContainer.css({
         marginTop: -centerY + canvasHeight / 2,
         marginLeft: -centerX + canvasWidth / 2,
       });
+      */
     }
 
     var reader = new draw2d.io.json.Reader();
@@ -299,7 +309,8 @@ $(document).ready(function () {
               }
               reader.unmarshal(canvas, parsed);
             } catch (e) {
-              console.log(e);
+              //console.log(e);
+              console.log("Empty JSON, loading defaults.")
               reader.unmarshal(canvas, placeholderJSON);
             }
             recenterCanvas();
@@ -351,6 +362,7 @@ $(document).ready(function () {
         },
       });
     }
+    
     loadJSON();
 
     function handleSelect(selectedFolder = null) {
@@ -681,7 +693,7 @@ $(document).ready(function () {
         var icHtm = "";
         var bsIcons = JSON.parse(_bsIcons);
         for (var i = 0; i < bsIcons.length; i++) {
-          icHtm += `<div><button type="button" class="btn"><img src="${apphome}/components/smartorganizer/icons/${bsIcons[i]}.svg" loading="lazy"/></button><span>${bsIcons[i]}</span></div>`;
+          icHtm += `<div><button type="button" class="btn"><img src="${apphome}/theme/icons/bootstrap/${bsIcons[i]}.svg" loading="lazy"/></button><span>${bsIcons[i]}</span></div>`;
         }
         $(this).html(icHtm);
       }
@@ -892,17 +904,52 @@ $(document).ready(function () {
       recenterCanvas();
     });
 
-    lQuery(".insert-btn").livequery("click", function (e) {
-      e.preventDefault();
-      e.stopPropagation();
-      var data = $(this).siblings("textarea").val();
-      //var parsed = JSON.parse(data);
-      var updateparsed = data.replaceAll("${apphome}", apphome);
-      var parsed = JSON.parse(updateparsed);
-      reader.unmarshal(canvas, parsed);
-      closeemdialog($(this).closest(".modal"));
-      console.log("inserted template");
-      saveJSON();
+	lQuery(".insert-btn").livequery("click", function (e) {
+		e.preventDefault();
+		e.stopImmediatePropagation();
+		
+	    var data = $(this).siblings("textarea").val();
+	    //var parsed = JSON.parse(data);
+	    var updateparsed = data.replaceAll('${apphome}', apphome);
+	    var parsed = JSON.parse(updateparsed);
+	    
+	    //remove main node + logo
+	    parsed = parsed.filter(val => val.cssClass !== "draw2d_shape_node_End");
+	    parsed = parsed.filter(val => val.cssClass !== "brandLogo"); //TODO: keep Logo of current Catalog
+	    
+	    //skip current nodes
+	    var final = {};
+	    var writer = new draw2d.io.json.Writer();
+	    writer.marshal(canvas, function (json) {
+			
+			$.each(json.filter((el) => (el.cssClass =="folderLabel")), function(key, folder) {
+				
+				if(folder.userData !== undefined) {
+					var moduleid = folder.userData.moduleid;
+					console.log(moduleid);
+					var found = parsed.filter((el) => (el.userData.moduleid == moduleid));
+					
+					if(found.length > 0) {
+						var composite = found[0].composite;
+						//Folder Group
+						parsed = parsed.filter(val => val.id !== composite);
+						//Label, icon, folder image
+						parsed = parsed.filter(val => val.composite !== composite);
+					}
+					
+				}
+			});
+
+			
+
+		});
+	    
+	    reader.unmarshal(canvas, parsed);
+	    saveJSON();
+	    
+	    console.log("Inserted template");
+	    closeemdialog($(this).closest(".modal"));
+	    
     });
   });
 
