@@ -288,9 +288,9 @@ $(document).ready(function () {
           if (res.response.status == "ok") {
             var saveddata = res.data.json;
             try {
-        	  var updateddata = saveddata.replaceAll('${apphome}', apphome);
-        	  var parsed = JSON.parse(updateddata);
-        	  if (!parsed.length) {
+              var updateddata = saveddata.replaceAll("${apphome}", apphome);
+              var parsed = JSON.parse(updateddata);
+              if (!parsed.length) {
                 throw new Error("Empty JSON");
               }
               reader.unmarshal(canvas, parsed);
@@ -370,7 +370,7 @@ $(document).ready(function () {
         $("#folderDesc").val(selectedLabel.getUserData()?.description || "");
 
         updateModPosition(selectedFolder);
-        $("#modifySelection").fadeIn();
+        $("#mod-toggler").fadeIn();
 
         selectedFolder.on("drag", function () {
           updateModPosition(selectedFolder);
@@ -384,23 +384,19 @@ $(document).ready(function () {
         // console.log(canvas.getSelection());
       } else {
         $("#modifySelection").hide();
+        $("#mod-toggler").fadeOut();
         selectedLabel = null;
       }
     }
-    
+
     lQuery(".deploy-organizer-finish").livequery("click", function (e) {
-    e.stopPropagation();
-    e.preventDefault();
-    //saveJSON(); //is blocking?
-    var url = $(this).data("url");
-    var id = $("#organizerId").val();
-    $("#deployOrganizer")
-        .load(
-          url +
-            "?oemaxlevel=1&id=" +  id
-        );
-   
-  	});
+      e.stopPropagation();
+      e.preventDefault();
+      //saveJSON(); //is blocking?
+      var url = $(this).data("url");
+      var id = $("#organizerId").val();
+      $("#deployOrganizer").load(url + "?oemaxlevel=1&id=" + id);
+    });
 
     function updateModPosition(selectedFolder) {
       var bb = {
@@ -414,14 +410,18 @@ $(document).ready(function () {
           70,
       };
 
+      $("#mod-toggler").css({
+        left: bb.x - 30,
+        top: bb.y + 10,
+      });
+
       var modCss = {
-        position: "fixed",
         left: bb.x + 160,
         top: Math.max(bb.y, 80),
         bottom: "auto",
       };
       if (bb.x + 566 > canvasWidth) {
-        modCss.left = bb.x - 424;
+        modCss.left = bb.x - 436;
       }
       if (bb.y + 350 > canvasHeight) {
         modCss.top = "auto";
@@ -436,8 +436,13 @@ $(document).ready(function () {
 
     canvas.on("unselect", function () {
       $("#modifySelection").hide();
+      $("#mod-toggler").fadeOut();
       $("#folderThumbPickerBtn").html("");
       selectedLabel = null;
+    });
+
+    $("#mod-toggler").click(function () {
+      $("#modifySelection").fadeToggle();
     });
 
     function triggerInplaceEdit(label) {
@@ -620,13 +625,13 @@ $(document).ready(function () {
         selectedLabel.setText(lines.join("\n"));
         var fs = getFontSize(lines.join("<br>"));
         selectedLabel.setFontSize(fs);
-        
+
         var newid = newLabel.toLowerCase();
-        newid = newid.replace(' ','-');
+        newid = newid.replace(" ", "-");
         $("#folderId").val(newid);
         selectedLabel.setUserData({
-        	moduleid: newid,
-      	});
+          moduleid: newid,
+        });
       }
     }
 
@@ -645,7 +650,7 @@ $(document).ready(function () {
         description: $(this).val(),
       });
     });
-    
+
     $("#folderId").on("input", function () {
       selectedLabel.setUserData({
         moduleid: $(this).val(),
@@ -728,10 +733,10 @@ $(document).ready(function () {
           mediadb +
           "/services/module/smartorganizer/data/" +
           id;
-        
-        var datastring = JSON.stringify(data)
-        var updateddata = datastring.replaceAll(apphome, '${apphome}');
-       
+
+        var datastring = JSON.stringify(data);
+        var updateddata = datastring.replaceAll(apphome, "${apphome}");
+
         jQuery.ajax({
           dataType: "json",
           method: "PUT",
@@ -871,7 +876,7 @@ $(document).ready(function () {
     $(document).on("click", ".insert-btn", function () {
       var data = $(this).siblings("textarea").val();
       //var parsed = JSON.parse(data);
-      var updateparsed = data.replaceAll('${apphome}', apphome);
+      var updateparsed = data.replaceAll("${apphome}", apphome);
       var parsed = JSON.parse(updateparsed);
       reader.unmarshal(canvas, parsed);
       closeemdialog($(this).closest(".modal"));
@@ -927,8 +932,4 @@ $(document).ready(function () {
     runajaxonthis($(this), e);
     closeemdialog($(this).closest(".modal"));
   });
-  
-  
-
-  
 });
