@@ -9,10 +9,10 @@ $(document).ready(function () {
 
   var canvas = null;
   var selectedLabel = null;
-  var canvasWidth = window.innerWidth - 132;
-  var canvasHeight = window.innerHeight - 112;
-  var fullCanvasWidth = canvasWidth;
-  var fullCanvasHeight = canvasHeight;
+  var canvasWidth = 1920;
+  var canvasHeight = 1080;
+  var fullCanvasWidth = canvasWidth + 1000;
+  var fullCanvasHeight = canvasHeight + 1000;
   var midX = fullCanvasWidth / 2;
   var midY = fullCanvasHeight / 2;
   var folderPort = {
@@ -267,22 +267,32 @@ $(document).ready(function () {
 
     function recenterCanvas() {
       var mainNode = canvas.getFigure("main");
-      debugger;
       var centerX = mainNode.getX() + (mainNode.getWidth() / 2);
-      var changex = midX - centerX;
-      mainNode.setX(mainNode.getX() + changex);
+      var centerY = mainNode.getY() + (mainNode.getHeight() / 2);
+      centerX = centerX + 132;
+      centerY = centerY + 100;
       
-      var writer = new draw2d.io.json.Writer();
-	    writer.marshal(canvas, function (json) {
-			
-			
-      
-     /* var centerY = mainNode.getY() + 50;
-      canvasContainer.css({
+	  canvasContainer.css({
         marginTop: -centerY + canvasHeight / 2,
         marginLeft: -centerX + canvasWidth / 2,
       });
-      */
+      
+           
+     /*
+     //var changex = midX - centerX;
+     //var changey = midY - centerY;
+     var figures = canvas.getFigures();
+     figures.data.forEach( function(element, index, array) {
+		 if(element.cssClass == "folderGroup" || element.cssClass == "draw2d_shape_node_End") 
+		 {
+			 console.log("centering: " + element.cssClass);
+		 	element.setX(element.getX() + changex);
+		 	element.setY(element.getY() + changey);
+		 }
+	 }); 		
+	*/	
+	
+     
     }
 
     var reader = new draw2d.io.json.Reader();
@@ -946,7 +956,7 @@ $(document).ready(function () {
 	    
 	    reader.unmarshal(canvas, parsed);
 	    saveJSON();
-	    
+	    recenterCanvas();
 	    console.log("Inserted template");
 	    closeemdialog($(this).closest(".modal"));
 	    
