@@ -296,11 +296,18 @@ lQuery(".redirecttopage").livequery(function () {
 
 uiload = function () {
   var app = jQuery("#application");
-  var apphome = app.data("siteroot") + app.data("apphome");
-  var themeprefix = app.data("siteroot") + app.data("themeprefix");
-
-  var siteroot = $("#application").data("siteroot");
+  var siteroot = app.data("siteroot");
+  var apphome = app.data("apphome");
+  var themeprefix =  app.data("themeprefix");
+  if (siteroot !== undefined) {
+	  //legacy siteroot
+	  apphome = siteroot + apphome;
+	  themeprefix = siteroot + themeprefix;
+  }
   var mediadb = $("#application").data("mediadbappid");
+
+  
+  
 
   if ($.fn.tablesorter) {
     $("#tablesorter").tablesorter();
