@@ -848,6 +848,12 @@ uiload = function () {
           if (showwaitingtarget !== undefined) {
             showwaitingtarget.hide();
           }
+          /*
+          var targettype = form.data("targettype");
+          if(targettype !== undefined && targettype == "entitypickersubmodule") {
+			  var pickertarget = form.data("pickertarget");
+			  autoreload($("#"+pickertarget));
+		  }*/
           var targetdivinner = form.data("targetdivinner");
           if (targetdivinner) {
             $("#" + $.escapeSelector(targetdivinner)).html(result);
