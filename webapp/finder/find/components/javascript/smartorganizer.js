@@ -17,11 +17,8 @@ $(document).ready(function () {
     type: "draw2d.HybridPort",
     width: 16,
     height: 16,
-    alpha: 1,
     selectable: true,
     draggable: true,
-    angle: 0,
-    userData: {},
     bgColor: "#60729e",
     color: "#4d5d80",
     stroke: 2,
@@ -124,6 +121,127 @@ $(document).ready(function () {
       },
     ];
   };
+  // function test(t, e) {
+  //   if(this.cssClass!=="labelGroup"){}
+  //   return new a.default.ResizeHandle({
+  //     owner: t,
+  //     type: e,
+  //     width: 10,
+  //     height: 10,
+  //   });
+  // }
+  var labelJson = function (attr, callback) {
+    console.log(attr);
+    var groupId = draw2d.util.UUID.create();
+    var w = attr.width;
+    var h = attr.titleHeight + attr.captionHeight + attr.image ? 110 : 0;
+    var data = [
+      {
+        type: "draw2d.shape.composite.Group",
+        id: groupId,
+        x: attr.x,
+        y: attr.y,
+        width: w,
+        height: h,
+        bgColor: attr.bgColor,
+        color: attr.color,
+        stroke: 1,
+        cssClass: "labelGroup",
+        radius: 4,
+        ports: [
+          {
+            id: draw2d.util.UUID.create(),
+            name: draw2d.util.UUID.create(),
+            type: "draw2d.HybridPort",
+            bgColor: "#60729e",
+            color: "#4d5d80",
+            port: "draw2d.HybridPort",
+            locator: "draw2d.layout.locator.XYRelPortLocator",
+            width: 16,
+            height: 16,
+            locatorAttr: {
+              x: 50,
+              y: 100,
+            },
+          },
+        ],
+      },
+    ];
+    if (attr.titleText && attr.titleFS > 0) {
+      data.push({
+        type: "draw2d.shape.basic.Label",
+        id: groupId + "-label",
+        x: attr.x + w / 2 - 5,
+        y: attr.y + 5,
+        text: attr.titleText,
+        textAnchor: "middle",
+        stroke: 0,
+        fontSize: attr.titleFS,
+        fontColor: "#60729e",
+        bgColor: "none",
+        selectable: false,
+        draggable: false,
+        cssClass: "labelLabel",
+        composite: groupId,
+      });
+    }
+    if (attr.captionText && attr.captionFS > 0) {
+      data.push({
+        type: "draw2d.shape.basic.Label",
+        id: groupId + "-label",
+        x: attr.x + w / 2 - 5,
+        y: attr.y + attr.image ? 110 : 5,
+        text: attr.captionText,
+        textAnchor: "middle",
+        stroke: 0,
+        fontSize: attr.captionFS,
+        fontColor: "#60729e",
+        bgColor: "none",
+        selectable: false,
+        draggable: false,
+        cssClass: "labelLabel",
+        composite: groupId,
+      });
+    }
+    if (attr.image) {
+      var img = new Image();
+      img.onload = function () {
+        var naturalWidth = img.naturalWidth;
+        var naturalHeight = img.naturalHeight;
+        var aspectRatio = naturalWidth / naturalHeight;
+
+        var width = 100;
+        var height = 100;
+        if (aspectRatio > 1) {
+          width = 100;
+          height = 100 / aspectRatio;
+        } else {
+          height = 100;
+          width = 100 * aspectRatio;
+        }
+        data.push({
+          type: "draw2d.shape.basic.Image",
+          id: groupId + "-image",
+          x: attr.x + w / 2 - width / 2,
+          y:
+            attr.y +
+            (h / 2 - height / 2) +
+            (attr.titleHeight ? attr.titleHeight + 5 : 0),
+          width: width,
+          height: height,
+          draggable: false,
+          selectable: false,
+          cssClass: "labelImage",
+          path: attr.image,
+          composite: groupId,
+        });
+        callback(data);
+      };
+      img.src = attr.image;
+    } else {
+      callback(data);
+    }
+  };
   var placeholderJSON = [
     {
       type: "draw2d.shape.node.End",
@@ -134,8 +252,8 @@ $(document).ready(function () {
       height: 100,
       radius: 16,
       userData: {},
-      bgColor: "#43a343",
-      color: "#378637",
+      bgColor: "#333e55",
+      color: "#202835",
       stroke: 4,
       alpha: 1,
       draggable: false,
@@ -245,7 +363,10 @@ $(document).ready(function () {
             var selections = canvas.getSelection();
             selections.each(function (_, figure) {
               var cmd = null;
-              if (figure.cssClass === "folderGroup") {
+              if (
+                figure.cssClass === "folderGroup" ||
+                figure.cssClass === "labelGroup"
+              ) {
                 cmd = new draw2d.command.CommandDeleteGroup(figure);
                 var connections = figure.getConnections();
                 connections.each(function (_, conn) {
@@ -311,8 +432,9 @@ $(document).ready(function () {
                 throw new Error("Empty JSON");
               }
               reader.unmarshal(canvas, parsed);
+              loadEvents();
             } catch (e) {
-              //console.log(e);
+              console.log(e);
               console.log("Empty JSON, loading defaults.");
               reader.unmarshal(canvas, placeholderJSON);
             }
@@ -367,6 +489,58 @@ $(document).ready(function () {
     }
 
     loadJSON();
+
+    function loadEvents(labelGroups = null) {
+      if (!labelGroups) {
+        labelGroups = canvas
+          .getFigures()
+          .data.filter((f) => f.cssClass === "labelGroup");
+      }
+      labelGroups.forEach(function (node) {
+        console.log(node);
+        node.on("resize", function (n) {
+          var width = n.getWidth();
+          var height = n.getHeight();
+
+          var figures = n.getAssignedFigures();
+          figures.each(function (_, f) {
+            if (f.cssClass === "labelImage") {
+              var aspectRatioX = f.getWidth() / f.getHeight();
+              var newWidthX = width - 10;
+              var newHeightX = height - 10;
+              if (aspectRatioX > 1) {
+                newHeightX = newWidthX / aspectRatioX;
+              }
+              if (aspectRatioX < 1) {
+                newWidthX = newHeightX * aspectRatioX;
+              }
+
+              var aspectRatioY = f.getHeight() / f.getWidth();
+              var newWidthY = width - 10;
+              var newHeightY = height - 10;
+              if (aspectRatioY < 1) {
+                newHeightY = newWidthX / aspectRatioY;
+              }
+              if (aspectRatioY > 1) {
+                newWidthY = newHeightY * aspectRatioY;
+              }
+
+              var newWidth = Math.min(newWidthX, newWidthY);
+              var newHeight = Math.min(newHeightX, newHeightY);
+
+              f.setWidth(newWidth);
+              f.setHeight(newHeight);
+              //set new position
+              var x = n.getX() + (width - newWidth) / 2;
+              var y = n.getY() + (height - newHeight) / 2;
+              f.setPosition(x, y);
+            } else {
+              f.setPosition(n.getX() + width / 2, n.getY() + 5);
+            }
+          });
+        });
+      });
+    }
 
     function handleSelect(selectedFolder = null) {
       if (!selectedFolder) {
@@ -533,14 +707,16 @@ $(document).ready(function () {
     canvas.on("dblclick", function (_, node) {
       var figure = node.figure;
       var cssClass = figure.cssClass;
-      if (!cssClass || !cssClass.startsWith("folder")) return;
       var composite = figure.getComposite();
-      var label = canvas.getFigure(composite.id + "-label");
-      // var icon = canvas.getFigure(composite.id + "-icon");
-      if (cssClass === "folderIcon") {
-        $("#folderThumbPickerBtn").trigger("click");
-      } else {
-        triggerInplaceEdit(label);
+      if (!cssClass || !composite) return;
+      if (cssClass.startsWith("folder")) {
+        var label = canvas.getFigure(composite.id + "-label");
+        // var icon = canvas.getFigure(composite.id + "-icon");
+        if (cssClass === "folderIcon") {
+          $("#folderThumbPickerBtn").trigger("click");
+        } else {
+          triggerInplaceEdit(label);
+        }
       }
     });
 
@@ -620,6 +796,22 @@ $(document).ready(function () {
       var lines = text.match(/.{1,16}/g);
       if (!lines) return [];
       return lines.map((l) => l.trim());
+    }
+
+    function measureText(text, fontSize) {
+      if (text.length === 0) return { width: 0, height: 0 };
+      var SPAN = document.createElement("span");
+      SPAN.style.cssText =
+        "display:inine-block;line-height:1;font-family:Arial;font-size:" +
+        fontSize +
+        "px";
+      SPAN.innerHTML = text;
+      var span = $(SPAN);
+      $("body").append(span);
+      var w = $(span).width();
+      var h = $(span).height();
+      span.remove();
+      return { width: w, height: h };
     }
 
     function getFontSize(txt, fs = 20) {
@@ -906,6 +1098,46 @@ $(document).ready(function () {
     $("#zoomResetBtn").click(function () {
       canvas.setZoom(1.0);
       recenterCanvas();
+    });
+
+    lQuery("#labelForm").livequery("submit", function (e) {
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      //name="labelText"
+      var titleText = $(this).find("input[name='title']").val();
+      var titleFS = $(this).find("input[name='fst']").val();
+      var captionText = $(this).find("input[name='caption']").val();
+      var captionFS = $(this).find("input[name='fsc']").val();
+      var image = $(this).find("input[name='image']").val();
+      var color = $(this).find("input[name='stroke']").val();
+      var bgColor = $(this).find("input[name='fill']").val();
+
+      var { width: tW, height: tH } = measureText(titleText, titleFS);
+      var { width: cW, height: cH } = measureText(captionText, captionFS);
+      var width = Math.max(tW, cW, 110);
+      labelJson(
+        {
+          x: midX,
+          y: midY + 200,
+          width: width,
+          title: titleText,
+          titleFS: parseInt(titleFS) || 20,
+          titleHeight: tH,
+          caption: captionText,
+          captionFS: parseInt(captionFS) || 16,
+          captionHeight: cH,
+          image: image,
+          bgColor: bgColor || "#60729e",
+          color: color || "#4d5d80",
+        },
+        function (json) {
+          var groupId = json[0].id;
+          reader.unmarshal(canvas, json);
+          var labelGroup = canvas.getFigure(groupId);
+          loadEvents([labelGroup]);
+          closeemdialog($("#labelPicker"));
+        }
+      );
     });
 
     lQuery(".insert-btn").livequery("click", function (e) {
