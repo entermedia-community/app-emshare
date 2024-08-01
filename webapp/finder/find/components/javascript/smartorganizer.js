@@ -502,35 +502,46 @@ $(document).ready(function () {
           var width = n.getWidth();
           var height = n.getHeight();
 
+          if (width < 50) {
+            n.setWidth(50);
+            width = 50;
+          }
+
+          if (height < 50) {
+            n.setHeight(50);
+            height = 50;
+          }
+
+          var containerRatio = width / height;
+
           var figures = n.getAssignedFigures();
           figures.each(function (_, f) {
             if (f.cssClass === "labelImage") {
-              var aspectRatioX = f.getWidth() / f.getHeight();
-              var newWidthX = width - 10;
-              var newHeightX = height - 10;
-              if (aspectRatioX > 1) {
-                newHeightX = newWidthX / aspectRatioX;
-              }
-              if (aspectRatioX < 1) {
-                newWidthX = newHeightX * aspectRatioX;
-              }
+              var aspectRatio = f.getWidth() / f.getHeight();
+              var newWidth;
+              var newHeight;
 
-              var aspectRatioY = f.getHeight() / f.getWidth();
-              var newWidthY = width - 10;
-              var newHeightY = height - 10;
-              if (aspectRatioY < 1) {
-                newHeightY = newWidthX / aspectRatioY;
+              if (containerRatio > 1) {
+                if (aspectRatio > 1) {
+                  newWidth = height - 10;
+                  newHeight = newWidth / aspectRatio;
+                } else {
+                  newHeight = height - 10;
+                  newWidth = newHeight * aspectRatio;
+                }
+              } else {
+                if (aspectRatio > 1) {
+                  newWidth = width - 10;
+                  newHeight = newWidth / aspectRatio;
+                } else {
+                  newWidth = width - 10;
+                  newHeight = newWidth * aspectRatio;
+                }
               }
-              if (aspectRatioY > 1) {
-                newWidthY = newHeightY * aspectRatioY;
-              }
-
-              var newWidth = Math.min(newWidthX, newWidthY);
-              var newHeight = Math.min(newHeightX, newHeightY);
 
               f.setWidth(newWidth);
               f.setHeight(newHeight);
-              //set new position
+
               var x = n.getX() + (width - newWidth) / 2;
               var y = n.getY() + (height - newHeight) / 2;
               f.setPosition(x, y);
