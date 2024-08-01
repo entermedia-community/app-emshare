@@ -83,8 +83,8 @@ $context.putPageValue("targetdivtablepositions", $targetdivtablepositions)
 <div id="$!submoduleresults" class="submodulepicker">
 #if($tabletype == "subentity")
 #set($entity = $mediaarchive.getCachedData("module", $searchtype))
-<div class="d-flex align-items-center justify-content-between mb-2">
-	<h3 class="m-0">
+<div class="d-flex mb-2">
+	<h3 class="m-0  flex-grow-1">
 		#set($moduleicon = "box")
 		#ifnotnull($entity.moduleicon)
 			#set($moduleicon = $entity.moduleicon)
@@ -94,9 +94,21 @@ $context.putPageValue("targetdivtablepositions", $targetdivtablepositions)
 	</h3>
 	#if($permissions.can($topmoduleid, "edit"))
 		#if($permissions.can($!submodule.getId() , "create"))
+			#set($addnew = "$apphome/views/modules/${moduleid}/components/entities/addnew.html")
+			<div class="pr-2">
+			<a class="btn btn-lg btn-accent light px-3 py-2 emdialog"
+			data-dialogid="entitypickeraddnew"
+			data-hidefooter="true"
+			data-targetdivinner="pickersearchentities"
+			data-ajaxreloadtargets="onetomanytab"
+			data-fieldexternalid="$!fieldexternalid"
+			data-fieldexternalvalue="$!fieldexternalvalue"
+			href="$addnew">
+			<i class="bi bi-plus-lg mr-1"></i> [[Create New]]</a>
+			</div>
 			#set($pickerurl= "$applink/views/modules/$!{subentitysearchtype}/components/entities/search/searchpicker.html")
 			<a href="$pickerurl" 
-				class="emdialog btn btn-lg btn-accent light px-5 py-2"
+				class="emdialog btn btn-lg btn-accent light px-3 py-2"
 				data-dialogid="entitypicker"
 				data-width="1200"
 				data-fieldexternalid = '$fieldexternalid'
@@ -106,7 +118,7 @@ $context.putPageValue("targetdivtablepositions", $targetdivtablepositions)
 				data-targettype="entitypickersubmodule"
 				data-pickersearchaddnew="true"
 				data-hidefooter="true"
-				title="[[Create or Choose Existing]]"><i class="fas fa-plus"></i> [[Add]]</a>
+				title="[[Create or Choose Existing]]"><i class="bi bi-search mr-2"></i> [[Search Existing]]</a>
 		#end
 	#end
 </div>
