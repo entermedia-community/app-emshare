@@ -37,7 +37,10 @@
 	
 	#set($val =  $data.get($detail.id) )
 	#set($value = $searcherManager.getValue($data, $detail, $context.getLocale() ) ) 
-	
+	#if($detail.isMultiValue())
+		#set($values = $value )
+		$!context.putPageValue("values",$values)
+	#end
 	#ifnull($val)
 		#set($val = "")	
 	#end
