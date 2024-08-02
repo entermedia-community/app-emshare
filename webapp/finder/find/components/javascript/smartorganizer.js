@@ -11,6 +11,12 @@ function hexToRgb(hex) {
       }
     : null;
 }
+function rgbToHex(r, g, b) {
+  return (
+    "#" +
+    ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1).toUpperCase()
+  );
+}
 function setContrast(hex) {
   var rgb = hexToRgb(hex);
   const brightness = Math.round(
@@ -143,7 +149,6 @@ $(document).ready(function () {
     ];
   };
   var labelPort = {
-    name: "labelPort",
     type: "draw2d.HybridPort",
     bgColor: "#60729e",
     color: "#4d5d80",
@@ -153,7 +158,6 @@ $(document).ready(function () {
     height: 16,
   };
   var labelJson = function (attr, callback) {
-    console.log(attr);
     var groupId = draw2d.util.UUID.create();
     var w = attr.width;
     var h = attr.titleHeight + attr.captionHeight + (attr.image ? 110 : 30);
@@ -173,6 +177,7 @@ $(document).ready(function () {
         ports: [
           {
             id: draw2d.util.UUID.create(),
+            name: "labelPortLeft",
             ...labelPort,
             locatorAttr: {
               x: 0,
@@ -181,6 +186,7 @@ $(document).ready(function () {
           },
           {
             id: draw2d.util.UUID.create(),
+            name: "labelPortTop",
             ...labelPort,
             locatorAttr: {
               x: 50,
@@ -189,6 +195,7 @@ $(document).ready(function () {
           },
           {
             id: draw2d.util.UUID.create(),
+            name: "labelPortRight",
             ...labelPort,
             locatorAttr: {
               x: 100,
@@ -197,6 +204,7 @@ $(document).ready(function () {
           },
           {
             id: draw2d.util.UUID.create(),
+            name: "labelPortBottom",
             ...labelPort,
             locatorAttr: {
               x: 50,
@@ -380,7 +388,11 @@ $(document).ready(function () {
             sourcePort = conn.sourcePort?.name?.includes("labelPort");
             targetPort = conn.targetPort?.name?.includes("labelPort");
             if (sourcePort || targetPort) {
-              conn.setColor("#f55555");
+              var parent = conn.getSource().getParent();
+              if (parent.cssClass !== "labelGroup") {
+                parent = conn.getTarget().getParent();
+              }
+              conn.setColor(parent.getColor());
             }
           });
           return conn;
@@ -637,14 +649,14 @@ $(document).ready(function () {
       });
     }
 
-    function handleSelect(selectedFolder = null) {
-      if (!selectedFolder) {
-        selectedFolder = canvas.getPrimarySelection();
+    function handleSelect(selectedGroup = null) {
+      if (!selectedGroup) {
+        selectedGroup = canvas.getPrimarySelection();
       }
-      if (selectedFolder) {
-        if (selectedFolder.cssClass === "folderGroup") {
-          var selectedFolderId = selectedFolder.getId();
-          var selectedIcon = canvas.getFigure(selectedFolderId + "-icon");
+      if (selectedGroup) {
+        if (selectedGroup.cssClass === "folderGroup") {
+          var selectedGroupId = selectedGroup.getId();
+          var selectedIcon = canvas.getFigure(selectedGroupId + "-icon");
           if (selectedIcon) {
             $("#folderThumbPickerBtn").html(
               `<img src="${selectedIcon.getPath()}" />`
@@ -652,13 +664,13 @@ $(document).ready(function () {
           } else {
             $("#folderThumbPickerBtn").html("");
           }
-          selectedLabel = canvas.getFigure(selectedFolderId + "-label");
+          selectedLabel = canvas.getFigure(selectedGroupId + "-label");
           if (!selectedLabel) return;
           $("#folderId").val(selectedLabel.getUserData()?.moduleid || "");
           $("#folderLabel").val(selectedLabel.getText() || "");
           $("#folderDesc").val(selectedLabel.getUserData()?.description || "");
 
-          updateModPosition(selectedFolder);
+          updateModPosition(selectedGroup);
 
           $("#mod-toggler")
             .find("i")
@@ -666,18 +678,82 @@ $(document).ready(function () {
             .addClass("bi-gear");
           $("#mod-toggler").fadeIn();
 
-          selectedFolder.on("drag", function () {
-            updateModPosition(selectedFolder);
+          selectedGroup.on("drag", function () {
+            updateModPosition(selectedGroup);
           });
-        } else if (selectedFolder.cssClass === "labelGroup") {
-          updateModPosition(selectedFolder);
-          loadEvents([selectedFolder]);
+        } else if (selectedGroup.cssClass === "labelGroup") {
+          var figures = selectedGroup.getAssignedFigures();
+          var titleNode = figures.find((f) => f.cssClass === "titleLabel");
+          var imageNode = figures.find((f) => f.cssClass === "labelImage");
+          var captionNode = figures.find((f) => f.cssClass === "captionLabel");
+          var A = document.createElement("a");
+          A.className = "label-mod-toggler emdialog";
+          A.setAttribute(
+            "href",
+            siteroot + apphome + "/components/smartorganizer/label.html"
+          );
+          A.setAttribute("role", "button");
+          A.dataset.dialogid = "labelPicker";
+          A.dataset.oemaxlevel = "1";
+          A.dataset.id = selectedGroup.getId();
+          A.dataset.title = titleNode ? titleNode.getText() : "";
+          A.dataset.titleFS = titleNode ? titleNode.getFontSize() : "";
+          A.dataset.caption = captionNode ? captionNode.getText() : "";
+          A.dataset.captionFS = captionNode ? captionNode.getFontSize() : "";
+          A.dataset.image = imageNode ? imageNode.getPath() : "";
+          var bgColor = selectedGroup.getBackgroundColor();
+          A.dataset.bgColor = rgbToHex(
+            bgColor.red,
+            bgColor.green,
+            bgColor.blue
+          );
+          var color = selectedGroup.getColor();
+          A.dataset.color = rgbToHex(color.red, color.green, color.blue);
+
+          A.innerHTML = "<i class='bi bi-gear-fill'></i>";
+          $(".org-row").append(A);
+          updateLabelConfigPosition(
+            A,
+            selectedGroup.getX(),
+            selectedGroup.getY(),
+            selectedGroup.getWidth()
+          );
+          selectedGroup.on("drag", function () {
+            updateLabelConfigPosition(
+              A,
+              selectedGroup.getX(),
+              selectedGroup.getY(),
+              selectedGroup.getWidth()
+            );
+          });
+          hideFolderConfig();
         }
       } else {
-        $("#modifySelection").hide();
-        $("#mod-toggler").fadeOut();
-        selectedLabel = null;
+        hideFolderConfig();
+        hideLabelConfig();
       }
+    }
+
+    function updateLabelConfigPosition(A, x, y, width) {
+      $(A).css({
+        color: "#60729e",
+        position: "fixed",
+        left: x + width + parseInt(canvasContainer.css("margin-left")) + 125,
+        top: y + parseInt(canvasContainer.css("margin-top")) + 55,
+        zIndex: 999,
+      });
+    }
+
+    function hideLabelConfig() {
+      $(".label-mod-toggler").each(function () {
+        $(this).remove();
+      });
+    }
+
+    function hideFolderConfig() {
+      $("#modifySelection").hide();
+      $("#mod-toggler").fadeOut();
+      selectedLabel = null;
     }
 
     lQuery(".deploy-organizer-finish").livequery("click", function (e) {
@@ -702,17 +778,17 @@ $(document).ready(function () {
       };
 
       $("#mod-toggler").css({
-        left: bb.x - 30,
+        left: bb.x + 150,
         top: bb.y + 10,
       });
 
       var modCss = {
-        left: bb.x + 160,
+        left: bb.x + 170,
         top: Math.max(bb.y, 80),
         bottom: "auto",
       };
       if (bb.x + 566 > canvasWidth) {
-        modCss.left = bb.x - 436;
+        modCss.left = bb.x - 426;
       }
       if (bb.y + 350 > canvasHeight) {
         modCss.top = "auto";
@@ -726,10 +802,9 @@ $(document).ready(function () {
     });
 
     canvas.on("unselect", function () {
-      $("#modifySelection").hide();
-      $("#mod-toggler").fadeOut();
+      hideFolderConfig();
+      hideLabelConfig();
       $("#folderThumbPickerBtn").html("");
-      selectedLabel = null;
     });
 
     $("#mod-toggler").click(function () {
@@ -746,6 +821,7 @@ $(document).ready(function () {
         var newLabel = label.html.val();
         selectedLabel = label;
         handleLabelChange(newLabel);
+        $("#folderLabel").val(newLabel);
         cancel();
       }
 
@@ -1197,7 +1273,9 @@ $(document).ready(function () {
     lQuery("#labelForm").livequery("submit", function (e) {
       e.preventDefault();
       e.stopImmediatePropagation();
-      //name="labelText"
+
+      var id = $(this).data("id");
+
       var titleText = $(this).find("input[name='title']").val();
       var titleFS = $(this).find("input[name='fst']").val();
       var captionText = $(this).find("input[name='caption']").val();
@@ -1209,13 +1287,14 @@ $(document).ready(function () {
       var { width: tW, height: tH } = measureText(titleText, titleFS);
       var { width: cW, height: cH } = measureText(captionText, captionFS);
       var width = Math.max(tW, cW, 110);
+
       labelJson(
         {
           x: midX,
           y: midY + 200,
           width: width,
           title: titleText,
-          titleFS: parseInt(titleFS) || 20,
+          titleFS: parseInt(titleFS) || 16,
           titleHeight: tH,
           caption: captionText,
           captionFS: parseInt(captionFS) || 16,
@@ -1229,6 +1308,27 @@ $(document).ready(function () {
           reader.unmarshal(canvas, json);
           var labelGroup = canvas.getFigure(groupId);
           loadEvents([labelGroup]);
+          if (id) {
+            var previousGroup = canvas.getFigure(id);
+            var figures = previousGroup.getAssignedFigures();
+            var ports = previousGroup.getPorts();
+            var prevX = previousGroup.getX();
+            var prevY = previousGroup.getY();
+            var prevWidth = previousGroup.getWidth();
+            var prevHeight = previousGroup.getHeight();
+            figures.each(function (_, figure) {
+              canvas.remove(figure);
+            });
+            canvas.remove(previousGroup);
+            labelGroup.setId(id);
+            ports.each(function (_, port) {
+              labelGroup.addPort(port);
+            });
+            labelGroup.setX(prevX);
+            labelGroup.setY(prevY);
+            labelGroup.setWidth(prevWidth);
+            labelGroup.setHeight(prevHeight);
+          }
           labelGroup.fireEvent("resize");
           closeemdialog($("#labelPicker"));
         }
