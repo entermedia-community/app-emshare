@@ -534,6 +534,98 @@ $(document).ready(function () {
 
     loadJSON();
 
+    function rearrangeLabel(groupNode) {
+      var groupWidth = groupNode.getWidth();
+      var groupHeight = groupNode.getHeight();
+      var groupX = groupNode.getX();
+      var groupY = groupNode.getY();
+
+      var figures = groupNode.getAssignedFigures();
+      var titleNode = figures.find((f) => f.cssClass === "titleLabel");
+      var imageNode = figures.find((f) => f.cssClass === "labelImage");
+      var captionNode = figures.find((f) => f.cssClass === "captionLabel");
+
+      var onlyTitle = titleNode && !captionNode && !imageNode;
+      var onlyCaption = captionNode && !titleNode && !imageNode;
+      var onlyImage = imageNode && !titleNode && !captionNode;
+      var titleAndCaption = titleNode && captionNode && !imageNode;
+      var titleAndImage = titleNode && imageNode && !captionNode;
+      var captionAndImage = captionNode && imageNode && !titleNode;
+      var allThree = titleNode && captionNode && imageNode;
+
+      var minHeight =
+        (imageNode ? imageNode.getHeight() : 0) +
+        (titleNode ? titleNode.getHeight() : 0) +
+        (captionNode ? captionNode.getHeight() : 0);
+
+      var minWidth =
+        Math.max(
+          titleNode ? titleNode.getWidth() : 0,
+          captionNode ? captionNode.getWidth() : 0,
+          imageNode ? imageNode.getWidth() : 0
+        ) + 10;
+
+      if (onlyTitle || onlyCaption || onlyImage) {
+        minHeight += 10;
+      }
+      if (titleAndCaption || titleAndImage || captionAndImage) {
+        minHeight += 15;
+      }
+      if (allThree) {
+        minHeight += 20;
+      }
+
+      if (groupWidth < minWidth) {
+        groupNode.setWidth(minWidth);
+        groupWidth = minWidth;
+      }
+
+      if (groupHeight < minHeight) {
+        groupNode.setHeight(minHeight);
+        groupHeight = minHeight;
+      }
+
+      if (titleNode) {
+        titleNode.setPosition(groupX + groupWidth / 2, groupY + 5);
+      }
+
+      if (imageNode) {
+        var aspectRatio = imageNode.getWidth() / imageNode.getHeight();
+        var newWidth;
+        var newHeight;
+
+        if (groupWidth / groupHeight > 1) {
+          if (aspectRatio > 1) {
+            newWidth = groupHeight - 10;
+            newHeight = newWidth / aspectRatio;
+          } else {
+            newHeight = groupHeight - 10;
+            newWidth = newHeight * aspectRatio;
+          }
+        } else {
+          if (aspectRatio > 1) {
+            newWidth = groupWidth - 10;
+            newHeight = newWidth / aspectRatio;
+          } else {
+            newWidth = groupWidth - 10;
+            newHeight = newWidth * aspectRatio;
+          }
+        }
+
+        imageNode.setWidth(newWidth);
+        imageNode.setHeight(newHeight);
+
+        var x = groupX + (groupWidth - newWidth) / 2;
+        var y = groupY + (groupHeight - newHeight) / 2;
+        imageNode.setPosition(x, y);
+      }
+
+      if (captionNode) {
+        captionNode.setX(groupX + groupWidth / 2);
+        captionNode.setY(groupY + groupHeight - captionNode.getHeight() - 5);
+      }
+    }
+
     function loadEvents(labelGroups = null) {
       if (!labelGroups) {
         labelGroups = canvas
@@ -541,99 +633,7 @@ $(document).ready(function () {
           .data.filter((f) => f.cssClass === "labelGroup");
       }
       labelGroups.forEach(function (node) {
-        node.on("resize", function (groupNode) {
-          var groupWidth = groupNode.getWidth();
-          var groupHeight = groupNode.getHeight();
-          var groupX = groupNode.getX();
-          var groupY = groupNode.getY();
-
-          var figures = groupNode.getAssignedFigures();
-          var titleNode = figures.find((f) => f.cssClass === "titleLabel");
-          var imageNode = figures.find((f) => f.cssClass === "labelImage");
-          var captionNode = figures.find((f) => f.cssClass === "captionLabel");
-
-          var onlyTitle = titleNode && !captionNode && !imageNode;
-          var onlyCaption = captionNode && !titleNode && !imageNode;
-          var onlyImage = imageNode && !titleNode && !captionNode;
-          var titleAndCaption = titleNode && captionNode && !imageNode;
-          var titleAndImage = titleNode && imageNode && !captionNode;
-          var captionAndImage = captionNode && imageNode && !titleNode;
-          var allThree = titleNode && captionNode && imageNode;
-
-          var minHeight =
-            (imageNode ? imageNode.getHeight() : 0) +
-            (titleNode ? titleNode.getHeight() : 0) +
-            (captionNode ? captionNode.getHeight() : 0);
-
-          var minWidth =
-            Math.max(
-              titleNode ? titleNode.getWidth() : 0,
-              captionNode ? captionNode.getWidth() : 0,
-              imageNode ? imageNode.getWidth() : 0
-            ) + 10;
-
-          if (onlyTitle || onlyCaption || onlyImage) {
-            minHeight += 10;
-          }
-          if (titleAndCaption || titleAndImage || captionAndImage) {
-            minHeight += 15;
-          }
-          if (allThree) {
-            minHeight += 20;
-          }
-
-          if (groupWidth < minWidth) {
-            groupNode.setWidth(minWidth);
-            groupWidth = minWidth;
-          }
-
-          if (groupHeight < minHeight) {
-            groupNode.setHeight(minHeight);
-            groupHeight = minHeight;
-          }
-
-          if (titleNode) {
-            titleNode.setPosition(groupX + groupWidth / 2, groupY + 5);
-          }
-
-          if (imageNode) {
-            var aspectRatio = imageNode.getWidth() / imageNode.getHeight();
-            var newWidth;
-            var newHeight;
-
-            if (groupWidth / groupHeight > 1) {
-              if (aspectRatio > 1) {
-                newWidth = groupHeight - 10;
-                newHeight = newWidth / aspectRatio;
-              } else {
-                newHeight = groupHeight - 10;
-                newWidth = newHeight * aspectRatio;
-              }
-            } else {
-              if (aspectRatio > 1) {
-                newWidth = groupWidth - 10;
-                newHeight = newWidth / aspectRatio;
-              } else {
-                newWidth = groupWidth - 10;
-                newHeight = newWidth * aspectRatio;
-              }
-            }
-
-            imageNode.setWidth(newWidth);
-            imageNode.setHeight(newHeight);
-
-            var x = groupX + (groupWidth - newWidth) / 2;
-            var y = groupY + (groupHeight - newHeight) / 2;
-            imageNode.setPosition(x, y);
-          }
-
-          if (captionNode) {
-            captionNode.setX(groupX + groupWidth / 2);
-            captionNode.setY(
-              groupY + groupHeight - captionNode.getHeight() - 5
-            );
-          }
-        });
+        node.on("resize", rearrangeLabel);
       });
     }
 
@@ -1229,6 +1229,7 @@ $(document).ready(function () {
           reader.unmarshal(canvas, json);
           var labelGroup = canvas.getFigure(groupId);
           loadEvents([labelGroup]);
+          labelGroup.fireEvent("resize");
           closeemdialog($("#labelPicker"));
         }
       );
