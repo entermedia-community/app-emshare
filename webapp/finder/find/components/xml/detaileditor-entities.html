@@ -52,6 +52,10 @@
 	#if(!$val)
 		#set($val =  $data.get($detail.id) )
 		#set($value = $searcherManager.getValue($data, $detail, $context.getLocale() ) )
+		#if($detail.isMultiValue())
+			#set($values = $value )
+			$!context.putPageValue("values",$values)
+		#end
 	#end 
 
 	#if(!$val && $detailid=="primarymedia")

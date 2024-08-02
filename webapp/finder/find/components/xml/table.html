@@ -114,7 +114,10 @@
 				#set( $val = "$!hit.get($detail.id)" )
 				#set($value = false )
 				#set($value = $searcherManager.getValue($hit, $detail, $context.getLocale()))
-				
+				#if($detail.isMultiValue())
+					#set($values = $value )
+					$!context.putPageValue("values",$values)
+				#end
 				
 				$context.putPageValue("detail",$detail)
 				$context.putPageValue("value",$value)
