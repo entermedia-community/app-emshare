@@ -1,3 +1,24 @@
+function hexToRgb(hex) {
+  if (hex.length == 4) {
+    hex = hex.replace(/^#(.)(.)(.)$/, "#$1$1$2$2$3$3");
+  }
+  var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  return result
+    ? {
+        r: parseInt(result[1], 16),
+        g: parseInt(result[2], 16),
+        b: parseInt(result[3], 16),
+      }
+    : null;
+}
+function setContrast(hex) {
+  var rgb = hexToRgb(hex);
+  const brightness = Math.round(
+    (parseInt(rgb.r) * 299 + parseInt(rgb.g) * 587 + parseInt(rgb.b) * 114) /
+      1000
+  );
+  return brightness > 125 ? "#000000" : "#ffffff";
+}
 $(document).ready(function () {
   var app = jQuery("#application");
   var apphome = app.data("siteroot") + app.data("apphome");
@@ -121,20 +142,21 @@ $(document).ready(function () {
       },
     ];
   };
-  // function test(t, e) {
-  //   if(this.cssClass!=="labelGroup"){}
-  //   return new a.default.ResizeHandle({
-  //     owner: t,
-  //     type: e,
-  //     width: 10,
-  //     height: 10,
-  //   });
-  // }
+  var labelPort = {
+    name: "labelPort",
+    type: "draw2d.HybridPort",
+    bgColor: "#60729e",
+    color: "#4d5d80",
+    port: "draw2d.HybridPort",
+    locator: "draw2d.layout.locator.XYRelPortLocator",
+    width: 16,
+    height: 16,
+  };
   var labelJson = function (attr, callback) {
     console.log(attr);
     var groupId = draw2d.util.UUID.create();
     var w = attr.width;
-    var h = attr.titleHeight + attr.captionHeight + attr.image ? 110 : 0;
+    var h = attr.titleHeight + attr.captionHeight + (attr.image ? 110 : 30);
     var data = [
       {
         type: "draw2d.shape.composite.Group",
@@ -151,55 +173,71 @@ $(document).ready(function () {
         ports: [
           {
             id: draw2d.util.UUID.create(),
-            name: draw2d.util.UUID.create(),
-            type: "draw2d.HybridPort",
-            bgColor: "#60729e",
-            color: "#4d5d80",
-            port: "draw2d.HybridPort",
-            locator: "draw2d.layout.locator.XYRelPortLocator",
-            width: 16,
-            height: 16,
+            ...labelPort,
+            locatorAttr: {
+              x: 0,
+              y: 50,
+            },
+          },
+          {
+            id: draw2d.util.UUID.create(),
+            ...labelPort,
             locatorAttr: {
               x: 50,
               y: 100,
             },
           },
+          {
+            id: draw2d.util.UUID.create(),
+            ...labelPort,
+            locatorAttr: {
+              x: 100,
+              y: 50,
+            },
+          },
+          {
+            id: draw2d.util.UUID.create(),
+            ...labelPort,
+            locatorAttr: {
+              x: 50,
+              y: 0,
+            },
+          },
         ],
       },
     ];
-    if (attr.titleText && attr.titleFS > 0) {
+    if (attr.title && attr.title.length > 0) {
       data.push({
         type: "draw2d.shape.basic.Label",
-        id: groupId + "-label",
+        id: groupId + "-title",
         x: attr.x + w / 2 - 5,
-        y: attr.y + 5,
-        text: attr.titleText,
+        y: attr.y + 10,
+        text: attr.title,
         textAnchor: "middle",
         stroke: 0,
         fontSize: attr.titleFS,
-        fontColor: "#60729e",
+        fontColor: setContrast(attr.bgColor),
         bgColor: "none",
         selectable: false,
         draggable: false,
-        cssClass: "labelLabel",
+        cssClass: "titleLabel",
         composite: groupId,
       });
     }
-    if (attr.captionText && attr.captionFS > 0) {
+    if (attr.caption && attr.caption.length > 0) {
       data.push({
         type: "draw2d.shape.basic.Label",
-        id: groupId + "-label",
+        id: groupId + "-caption",
         x: attr.x + w / 2 - 5,
-        y: attr.y + attr.image ? 110 : 5,
-        text: attr.captionText,
+        y: attr.y + attr.titleHeight + (attr.image ? 110 : 10),
+        text: attr.caption,
         textAnchor: "middle",
         stroke: 0,
         fontSize: attr.captionFS,
-        fontColor: "#60729e",
-        bgColor: "none",
+        fontColor: setContrast(attr.bgColor),
         selectable: false,
         draggable: false,
-        cssClass: "labelLabel",
+        cssClass: "captionLabel",
         composite: groupId,
       });
     }
@@ -337,6 +375,12 @@ $(document).ready(function () {
             var targetPort = conn.targetPort?.name?.includes("mainInput");
             if (sourcePort || targetPort) {
               conn.setColor(strokeColor);
+              return;
+            }
+            sourcePort = conn.sourcePort?.name?.includes("labelPort");
+            targetPort = conn.targetPort?.name?.includes("labelPort");
+            if (sourcePort || targetPort) {
+              conn.setColor("#f55555");
             }
           });
           return conn;
@@ -497,58 +541,98 @@ $(document).ready(function () {
           .data.filter((f) => f.cssClass === "labelGroup");
       }
       labelGroups.forEach(function (node) {
-        console.log(node);
-        node.on("resize", function (n) {
-          var width = n.getWidth();
-          var height = n.getHeight();
+        node.on("resize", function (groupNode) {
+          var groupWidth = groupNode.getWidth();
+          var groupHeight = groupNode.getHeight();
+          var groupX = groupNode.getX();
+          var groupY = groupNode.getY();
 
-          if (width < 50) {
-            n.setWidth(50);
-            width = 50;
+          var figures = groupNode.getAssignedFigures();
+          var titleNode = figures.find((f) => f.cssClass === "titleLabel");
+          var imageNode = figures.find((f) => f.cssClass === "labelImage");
+          var captionNode = figures.find((f) => f.cssClass === "captionLabel");
+
+          var onlyTitle = titleNode && !captionNode && !imageNode;
+          var onlyCaption = captionNode && !titleNode && !imageNode;
+          var onlyImage = imageNode && !titleNode && !captionNode;
+          var titleAndCaption = titleNode && captionNode && !imageNode;
+          var titleAndImage = titleNode && imageNode && !captionNode;
+          var captionAndImage = captionNode && imageNode && !titleNode;
+          var allThree = titleNode && captionNode && imageNode;
+
+          var minHeight =
+            (imageNode ? imageNode.getHeight() : 0) +
+            (titleNode ? titleNode.getHeight() : 0) +
+            (captionNode ? captionNode.getHeight() : 0);
+
+          var minWidth =
+            Math.max(
+              titleNode ? titleNode.getWidth() : 0,
+              captionNode ? captionNode.getWidth() : 0,
+              imageNode ? imageNode.getWidth() : 0
+            ) + 10;
+
+          if (onlyTitle || onlyCaption || onlyImage) {
+            minHeight += 10;
+          }
+          if (titleAndCaption || titleAndImage || captionAndImage) {
+            minHeight += 15;
+          }
+          if (allThree) {
+            minHeight += 20;
           }
 
-          if (height < 50) {
-            n.setHeight(50);
-            height = 50;
+          if (groupWidth < minWidth) {
+            groupNode.setWidth(minWidth);
+            groupWidth = minWidth;
           }
 
-          var containerRatio = width / height;
+          if (groupHeight < minHeight) {
+            groupNode.setHeight(minHeight);
+            groupHeight = minHeight;
+          }
 
-          var figures = n.getAssignedFigures();
-          figures.each(function (_, f) {
-            if (f.cssClass === "labelImage") {
-              var aspectRatio = f.getWidth() / f.getHeight();
-              var newWidth;
-              var newHeight;
+          if (titleNode) {
+            titleNode.setPosition(groupX + groupWidth / 2, groupY + 5);
+          }
 
-              if (containerRatio > 1) {
-                if (aspectRatio > 1) {
-                  newWidth = height - 10;
-                  newHeight = newWidth / aspectRatio;
-                } else {
-                  newHeight = height - 10;
-                  newWidth = newHeight * aspectRatio;
-                }
+          if (imageNode) {
+            var aspectRatio = imageNode.getWidth() / imageNode.getHeight();
+            var newWidth;
+            var newHeight;
+
+            if (groupWidth / groupHeight > 1) {
+              if (aspectRatio > 1) {
+                newWidth = groupHeight - 10;
+                newHeight = newWidth / aspectRatio;
               } else {
-                if (aspectRatio > 1) {
-                  newWidth = width - 10;
-                  newHeight = newWidth / aspectRatio;
-                } else {
-                  newWidth = width - 10;
-                  newHeight = newWidth * aspectRatio;
-                }
+                newHeight = groupHeight - 10;
+                newWidth = newHeight * aspectRatio;
               }
-
-              f.setWidth(newWidth);
-              f.setHeight(newHeight);
-
-              var x = n.getX() + (width - newWidth) / 2;
-              var y = n.getY() + (height - newHeight) / 2;
-              f.setPosition(x, y);
             } else {
-              f.setPosition(n.getX() + width / 2, n.getY() + 5);
+              if (aspectRatio > 1) {
+                newWidth = groupWidth - 10;
+                newHeight = newWidth / aspectRatio;
+              } else {
+                newWidth = groupWidth - 10;
+                newHeight = newWidth * aspectRatio;
+              }
             }
-          });
+
+            imageNode.setWidth(newWidth);
+            imageNode.setHeight(newHeight);
+
+            var x = groupX + (groupWidth - newWidth) / 2;
+            var y = groupY + (groupHeight - newHeight) / 2;
+            imageNode.setPosition(x, y);
+          }
+
+          if (captionNode) {
+            captionNode.setX(groupX + groupWidth / 2);
+            captionNode.setY(
+              groupY + groupHeight - captionNode.getHeight() - 5
+            );
+          }
         });
       });
     }
@@ -557,39 +641,38 @@ $(document).ready(function () {
       if (!selectedFolder) {
         selectedFolder = canvas.getPrimarySelection();
       }
-      if (selectedFolder && selectedFolder.cssClass === "folderGroup") {
-        var selectedFolderId = selectedFolder.getId();
-        var selectedIcon = canvas.getFigure(selectedFolderId + "-icon");
-        if (selectedIcon) {
-          $("#folderThumbPickerBtn").html(
-            `<img src="${selectedIcon.getPath()}" />`
-          );
-        } else {
-          $("#folderThumbPickerBtn").html("");
-        }
-        selectedLabel = canvas.getFigure(selectedFolderId + "-label");
-        if (!selectedLabel) return;
-        $("#folderId").val(selectedLabel.getUserData()?.moduleid || "");
-        $("#folderLabel").val(selectedLabel.getText() || "");
-        $("#folderDesc").val(selectedLabel.getUserData()?.description || "");
+      if (selectedFolder) {
+        if (selectedFolder.cssClass === "folderGroup") {
+          var selectedFolderId = selectedFolder.getId();
+          var selectedIcon = canvas.getFigure(selectedFolderId + "-icon");
+          if (selectedIcon) {
+            $("#folderThumbPickerBtn").html(
+              `<img src="${selectedIcon.getPath()}" />`
+            );
+          } else {
+            $("#folderThumbPickerBtn").html("");
+          }
+          selectedLabel = canvas.getFigure(selectedFolderId + "-label");
+          if (!selectedLabel) return;
+          $("#folderId").val(selectedLabel.getUserData()?.moduleid || "");
+          $("#folderLabel").val(selectedLabel.getText() || "");
+          $("#folderDesc").val(selectedLabel.getUserData()?.description || "");
 
-        updateModPosition(selectedFolder);
-        $("#mod-toggler")
-          .find("i")
-          .removeClass("bi-gear-fill")
-          .addClass("bi-gear");
-        $("#mod-toggler").fadeIn();
-
-        selectedFolder.on("drag", function () {
           updateModPosition(selectedFolder);
-        });
 
-        // var connections = selectedFolder.getConnections();
-        // connections.each(function (_, n) {
-        //   n.select();
-        //   console.log(n.getSource());
-        // });
-        // console.log(canvas.getSelection());
+          $("#mod-toggler")
+            .find("i")
+            .removeClass("bi-gear-fill")
+            .addClass("bi-gear");
+          $("#mod-toggler").fadeIn();
+
+          selectedFolder.on("drag", function () {
+            updateModPosition(selectedFolder);
+          });
+        } else if (selectedFolder.cssClass === "labelGroup") {
+          updateModPosition(selectedFolder);
+          loadEvents([selectedFolder]);
+        }
       } else {
         $("#modifySelection").hide();
         $("#mod-toggler").fadeOut();
@@ -822,7 +905,7 @@ $(document).ready(function () {
       var w = $(span).width();
       var h = $(span).height();
       span.remove();
-      return { width: w, height: h };
+      return { width: Math.ceil(w), height: Math.ceil(h) };
     }
 
     function getFontSize(txt, fs = 20) {
