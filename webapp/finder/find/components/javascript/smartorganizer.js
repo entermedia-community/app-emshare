@@ -1323,6 +1323,10 @@ $(document).ready(function () {
             labelGroup.setId(id);
             ports.each(function (_, port) {
               labelGroup.addPort(port);
+              var connections = port.getConnections();
+              connections.each(function (_, conn) {
+                conn.setColor(labelGroup.getColor());
+              });
             });
             labelGroup.setX(prevX);
             labelGroup.setY(prevY);
