@@ -12,6 +12,12 @@ jQuery(document).ready(function () {
 
   var headers = { "X-tokentype": "entermedia", "X-token": entermediakey };
 
+  ipcRenderer.send("setConnectionOptions", {
+    headers: headers,
+    key: entermediakey,
+    mediadb: mediadb,
+  });
+
   function humanFileSize(bytes) {
     var thresh = 1000;
     if (Math.abs(bytes) < thresh) {
@@ -485,8 +491,60 @@ jQuery(document).ready(function () {
     //TODO: update asset list
   });
 
-  ipcRenderer.on("refresh-sync", (_, { categorypath }) => {
-    refreshSync(categorypath);
+  // ipcRenderer.on("refresh-sync", (_, { categorypath }) => {
+  //   refreshSync(categorypath);
+  // });
+
+  ipcRenderer.on("scan-progress", (_, option) => {
+    console.log("scan-progress", option);
+    var pendingPulls = $(".pending-pulls");
+    pendingPulls.find(".no-download").hide();
+    var totalSize = pendingPulls.data("totalSize");
+    if (!totalSize) {
+      totalSize = 0;
+    }
+    totalSize += option.downloadSize;
+    pendingPulls.data("totalSize", totalSize);
+    var totalCount = pendingPulls.data("totalCount");
+    if (!totalCount) {
+      totalCount = 0;
+    }
+    totalCount += option.downloadCount;
+    pendingPulls.data("totalCount", totalCount);
+    pendingPulls.find(".count").text(totalCount);
+    pendingPulls.find(".size").text(humanFileSize(totalSize));
+    if (option.downloadCount > 0) {
+      $("#folder-" + option.index).css({ "font-weight": "bold" });
+    }
+    if (totalCount > 0) {
+      pendingPulls.fadeIn();
+    }
+  });
+  ipcRenderer.on("scan-complete", () => {
+    $(".scan-changes").text("Scan Changes").prop("disabled", false);
+    var pendingPulls = $(".pending-pulls");
+    if (pendingPulls.data("totalCount") > 0) {
+      pendingPulls.find(".no-download").hide();
+      pendingPulls.find(".pull-buttons").show();
+    } else {
+      pendingPulls.find(".pull-buttons").hide();
+      pendingPulls.find(".no-download").show();
+    }
+  });
+
+  lQuery(".scan-changes").livequery("click", function (e) {
+    e.preventDefault();
+    $("pull-folder").each(function () {
+      $(this).css({ "font-weight": "normal" });
+    });
+    $(".pending-pulls").data("totalSize", 0);
+    $(".pending-pulls").data("totalCount", 0);
+    $(this).text("Scanning...").prop("disabled", true);
+    var categorypath = $(this).data("toplevelcategorypath");
+    ipcRenderer.send("downloadall", {
+      categorypath: categorypath,
+      scanOnly: true,
+    });
   });
 
   lQuery(".download-pull").livequery("click", function (e) {
@@ -527,10 +585,10 @@ jQuery(document).ready(function () {
     });
   });
 
-  ipcRenderer.on("download-all-next", (_, { categorypath }) => {
-    $(".pullfetchfolder").each(function () {
+  ipcRenderer.on("download-next", (_, { index }) => {
+    $(".pull-folder").each(function () {
       var folder = $(this);
-      if (folder.data("categorypath") == categorypath) {
+      if (folder.id == "folder-" + index) {
         folder.find(".fa-spinner").show();
       } else {
         folder.find(".fa-spinner").hide();

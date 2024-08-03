@@ -1,79 +1,71 @@
-#macro(pullcategories $parent)
- 	<div>
-		 <a href="#"
-		 	class="pullfetchfolder"
-		 	data-categorypath="$!parent.getCategoryPath()">
-			 <i class="bi bi-folder"></i>
-			 <span class="mx-1">$parent.name</span>
-			 <i class="fas fa-spinner fa-spin text-muted" style="display: none;"></i>
-		</a>
- 	</div>
-	#if($parent.hasChildren())
-		<div class="ml-3">
-		#set($subfolders = $parent.getChildren())
-		#foreach( $subfolder in $subfolders)
-			#pullcategories($subfolder)
-		#end
-		</div>
-	#end
- #end
+#set( $allchildren = $mediaarchive.getCategorySearcher().listAllCategories($category) )
 
 <div class="entityuploadheader" style="font-size:1rem; font-weight: 600;">
 	<div class="d-flex align-items-center justify-content-between">
-		<span>[[Download To Local Drive]]</span>
-		<a href="#" 
-			class="btn btn-accent open-folder" 
-			data-path="eMedia"
-			title="[[Open Local Folder]]">
-			<i class="bi bi-folder2-open mr-2"></i>
-			[[Open Local Folder]]
-		</a>
+		<span>[[Download To Local Drive]]</span> 
 	</div>
 </div>
 
 #if($category.getCategoryPath())
 <div class="segment mb-2">
-	<p>[[This will syncronize $category.getChildren().size() to your local emedia folder.]]<br>
-	25 (50Mb / 50,029,000 bytes) local files. <br>
-	26 (55Mb / 55,829,213 bytes) server files. </p>
-	<p>
+	<p class="mb-0">
+		<button class="btn btn-success rounded scan-changes"
+			data-toplevelcategorypath="$category.getCategoryPath()">
+			<i class="bi bi-search mr-1"></i> [[Scan for Changes]]
+		</button>
 		<a class="btn btn-primary rounded open-folder mr-2" 
 			href="#"
 			data-path="$category.getCategoryPath()"
 			title="[[Open]]">
 			<i class="bi bi-folder2-open mr-2"></i>
-			[[Open]]
+			[[Open Local Folder]]
 		</a>
-		<button class="btn btn-success rounded download-pull-all"
-			data-toplevelcategorypath="$category.getCategoryPath()">
-			<i class="bi bi-cloud-arrow-down-fill mr-1"></i> [[Download All]]
-		</button>
 	</p>
-	<div>
-		<p>11 [[Extra or modified files found locally]]</p>
-		<div class="d-flex align-items-center">
-			<a  class='btn btn-success rounded ajax refresh-sync'
-				data-targetdivinner="tabexportcontent"
-				data-oemaxlevel="1"
-				data-tabsection="pushlocal"
-				href="$apphome/components/desktop/import/push.html">
-				<i class="bi bi-cloud-arrow-up-fill mr-1"></i>
-				[[Push to server]]
-			</a>
-			<span class="mx-2">
-				[[Or]]
-			</span>
-			<button class="btn btn-danger rounded download-pull">
-				<i class="bi bi-trash-fill mr-2"></i>[[Remove Extra Files]]
-			</button>
+	<div class="pending-pulls" style="display: none;">
+		<p class="alert alert-success no-download  my-2" style="display: none;">[[Nothing to download.]]</p>
+		<!-- <p>11 [[Extra or modified files found locally]]</p> -->
+		<div class="d-flex flex-column pull-buttons" style="display: none;">
+			<p class="alert alert-success my-2">[[This will download]] <strong class="count">X</strong> [[file(s)]] (<strong class="size">X</strong>) [[to your local eMedia folder.]]</p>
+			<div class="d-flex align-items-center">
+				<button class="btn btn-success rounded download-pull-all mr-2"
+					data-toplevelcategorypath="$category.getCategoryPath()">
+					<i class="bi bi-cloud-arrow-down-fill mr-1"></i> [[Download All]]
+				</button>
+				<a  class='btn btn-success rounded ajax refresh-sync'
+					data-targetdivinner="tabexportcontent"
+					data-oemaxlevel="1"
+					data-tabsection="pushlocal"
+					href="$apphome/components/desktop/import/push.html">
+					<i class="bi bi-cloud-arrow-up-fill mr-1"></i>
+					[[Push to server]]
+				</a>
+				<span class="mx-2">
+					[[Or]]
+				</span>
+				<button class="btn btn-danger rounded download-pull">
+					<i class="bi bi-trash-fill mr-2"></i>[[Remove Extra Files]]
+				</button>
+			</div>
 		</div>
 	</div>
 </div>
 #end
 
-<div class="sync-container row no-gutters" >
+<div class="sync-container row no-gutters">
 	<div class="col-2 pullfoldertree">
-	#pullcategories($category)
+	 #foreach($parent in $allchildren)
+	 	#set($padding = ($parent.getLevel() - 1) * 8)
+		#set($index = $foreach.count - 1)
+ 		<div style="padding-left: ${padding}px;" class="pull-folder" id="folder-$index">
+			<a href="#"
+				class="pullfetchfolder"
+				data-categorypath="$!parent.getCategoryPath()">
+				<i class="bi bi-folder"></i>
+				<span class="mx-1">$parent.name</span>
+				<i class="fas fa-spinner fa-spin text-muted" style="display: none;"></i>
+			</a>
+		</div>
+ 	#end
 	</div>
 	<div class="col">
 		<div id="fetchfolder">
