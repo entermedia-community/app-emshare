@@ -1,10 +1,12 @@
 <div id="smartheader" class="org-header">
   <div class="d-flex align-items-center mr-2" style="min-width:300px">
     #set( $id = $context.getRequestParameter("id"))
-    #ifnull($id)
-      #set( $id = "current")
+	#ifnotnull($id)
+    	#set( $current = $mediaarchive.getData("smartorganizer",$id) )
+    #end	
+    #ifnull($current)
+      #set( $current = $mediaarchive.query("smartorganizer").exact("iscurrent","true").searchOne($context)))
     #end
-    #set( $current = $mediaarchive.getData("smartorganizer",$id) )
 
     <img src="$siteroot$apphome/theme/images/emedialogo.png" alt="eMedia Logo" />
     <h1>Smart Organizer</h1>
@@ -23,7 +25,7 @@
         aria-expanded="false">
         <i class="bi bi-clock-history mr-2"></i> Saved Versions
       </a>
-      <input type="hidden" id="organizerId" name="id" value="$id"/>
+      <input type="hidden" id="organizerId" name="id" value="$!current.getId()"/>
       <input type="hidden" class="form-control px-3" id="organizerName" name="name" value="$!current.getName()" placeholder="Template Name" />
       <button class="btn btn-lg btn-brand px-3 py-2 rounded" id="saveOrganizer">
         <i class="fas fa-save"></i>

@@ -925,7 +925,7 @@ $(document).ready(function () {
       canvas.html.focusin();
       folderGroup.select();
       handleSelect(folderGroup);
-      saveJSON();
+      saveJSON(false);
     }
 
     var folderDragging = false;
@@ -1096,13 +1096,13 @@ $(document).ready(function () {
         $("#folderThumbPickerBtn").html(`<img src="${iconPath}" />`);
         closeemdialog($(this).closest(".modal"));
         hideLoader();
-        saveJSON();
+        saveJSON(false);
       });
     });
 
     canvas.getCommandStack().addEventListener(function (e) {
       if (e.isPostChangeEvent()) {
-        saveJSON();
+        saveJSON(false);
       }
     });
 
@@ -1112,15 +1112,21 @@ $(document).ready(function () {
 
     var saveBtn = $("#saveOrganizer");
 
-    saveBtn.click(saveJSON);
+    saveBtn.on("click" , function () {
+		saveJSON(true);
+		//save versioning
+		saveJSON(false);
+	});
 
-    var autoSaveTimeout;
+    //var autoSaveTimeout;
 
-    function saveJSON() {
+    function saveJSON(usersaved) {
+		/*
       if (autoSaveTimeout) {
         clearTimeout(autoSaveTimeout);
         autoSaveTimeout = null;
       }
+      */
       if (!canvas) {
         return;
       }
@@ -1141,47 +1147,65 @@ $(document).ready(function () {
         const date2 = new Date();
         data.updatedon = date2.toJSON();
         
+        data.iscurrent = "true";
         data.canvaszoom = canvas.getZoom();
         data.canvastop = canvasContainer.css("margin-top");
         data.canvasleft = canvasContainer.css("margin-left");
         data.canvasleft2 = canvasContainer.css("margin-left");
-
-        saveBtn.addClass("saving");
-        saveBtn.find("span").text("Saving...");
-
-        var url =
+		
+        var url = "";
+        var submitmethod = "";
+       if (usersaved) {
+			url =
           siteroot +
           "/" +
           mediadb +
           "/services/module/smartorganizer/data/" +
           id;
+          submitmethod = "PUT";
+              
+          saveBtn.addClass("saving");
+          saveBtn.find("span").text("Saving...");
+		} 
+		else {
+          url = siteroot +
+          "/" +
+          mediadb +
+          "/services/module/smartorganizerversions/create";
+          data.id = "";
+          submitmethod = "POST";		
+		}
 
         var datastring = JSON.stringify(data);
         var updateddata = datastring.replaceAll(apphome, "${apphome}");
 
         jQuery.ajax({
           dataType: "json",
-          method: "PUT",
+          method: submitmethod,
           contentType: "application/json; charset=utf-8",
           url: url,
           data: updateddata,
           success: function () {
-            saveBtn.removeClass("saving");
-            saveBtn.addClass("saved");
-            saveBtn.find("span").text("Saved");
+			if (usersaved) {
+	            saveBtn.removeClass("saving");
+	            saveBtn.addClass("saved");
+	            saveBtn.find("span").text("Saved");
+            }
           },
           complete: function () {
-            setTimeout(() => {
-              saveBtn.find("span").text("");
-              saveBtn.removeClass("saved");
-              saveBtn.removeClass("saving");
-            }, 1000);
+			  if (usersaved) {
+	            setTimeout(() => {
+	              saveBtn.find("span").text("");
+	              saveBtn.removeClass("saved");
+	              saveBtn.removeClass("saving");
+	            }, 1000);
+            }
           },
         });
       });
-      autoSaver();
+      //autoSaver();
     }
-
+/*
     function autoSaver() {
       if ($("#organizer_canvas").length == 0) {
         clearTimeout(autoSaveTimeout);
@@ -1192,9 +1216,10 @@ $(document).ready(function () {
         autoSaveTimeout = setTimeout(autoSaver, 30 * 1000);
         return;
       }
-      saveJSON();
+      saveJSON(false);
     }
-    autoSaveTimeout = setTimeout(autoSaver, 30 * 1000);
+  */  
+    //autoSaveTimeout = setTimeout(autoSaver, 30 * 1000);
 
     var maxLeft = Math.floor(canvasWidth / 2 + 100);
     canvas.installEditPolicy(
@@ -1422,11 +1447,18 @@ $(document).ready(function () {
       });
 
       reader.unmarshal(canvas, parsed);
-      saveJSON();
+      saveJSON(false);
       recenterCanvas();
       console.log("Inserted template");
       closeemdialog($(this).closest(".modal"));
     });
+  });//ends intitializer
+  
+  lQuery(".restoreversion").livequery("click", function (e) {
+    e.stopImmediatePropagation();
+    e.preventDefault();
+    runajaxonthis($(this), e);
+    closeemdialog($(this).closest(".modal"));
   });
 
   lQuery(".rename-version").livequery("click", function () {
@@ -1471,10 +1503,5 @@ $(document).ready(function () {
     cancelBtn.click(hideInput);
   });
 
-  lQuery(".restoreversion").livequery("click", function (e) {
-    e.stopPropagation();
-    e.preventDefault();
-    runajaxonthis($(this), e);
-    closeemdialog($(this).closest(".modal"));
-  });
+
 });

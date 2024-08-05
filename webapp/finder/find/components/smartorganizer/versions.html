@@ -15,7 +15,7 @@
   </div>
   <div class="version-list px-2 pb-2">
     #foreach( $template in $list)
-    <div class="p-2 version-list-item #if($template.id == 'current') version-list-current #end">
+    <div class="p-2 version-list-item #if($template.iscurrent == 'true') version-list-current #end">
       <div class="d-flex align-items-center justify-content-between">
         <div class="version-row d-flex align-items-center" data-versionid="$template.id">
           <i class="bi bi-clock-history ns text-muted mr-2"></i>
@@ -34,7 +34,8 @@
           </button>
         </div>
         <div class="d-flex align-items-center">
-          #if($template.id != 'current')
+			
+          #if($template.iscurrent != "true")
           <a class="btn btn-sm btn-accent px-2 mr-2 restoreversion" href="$applink/components/smartorganizer/restore.html" data-oemaxlevel="1" 
           	data-targetdiv="smartorganizermain" data-restoreid="$template.id" title="[[Restore]]">
 				[[Restore]]
@@ -43,11 +44,11 @@
           <a class="btn btn-sm btn-accent px-2 mr-2 ajax" href="$applink/components/smartorganizer/copy.html" data-oemaxlevel="1" data-targetdiv="#templateVersionsInner" data-id="$template.id" title="[[Copy]]">
             <i class="bi bi-copy"></i>
           </a>
-          #if($template.id != 'current')
+          
           <a class="btn btn-sm btn-danger px-2 ajax" data-id="$template.id" title="Delete" href="$applink/components/smartorganizer/delete.html" data-confirm="[[Are you sure you want to delete this version?]]" data-oemaxlevel="1" data-targetdiv="#templateVersionsInner" data-id="$template.id">
             <i class="bi bi-trash"></i>
           </a>
-          #end
+          
         </div>
       </div>
       <div class="d-flex">
