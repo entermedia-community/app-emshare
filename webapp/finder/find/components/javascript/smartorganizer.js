@@ -501,15 +501,6 @@ $(document).ready(function () {
             img.onload = function () {
               var imgWidth = img.naturalWidth;
               var imgHeight = img.naturalHeight;
-              var aspectRatio = imgWidth / imgHeight;
-
-              if (aspectRatio > 1) {
-                imgWidth = 200;
-                imgHeight = imgWidth / aspectRatio;
-              } else {
-                imgHeight = 90;
-                imgWidth = imgHeight * aspectRatio;
-              }
 
               var prevLogo = canvas.getFigure("logo");
 
@@ -518,8 +509,10 @@ $(document).ready(function () {
               }
 
               var mainNode = canvas.getFigure("main");
-              var centerX = mainNode.getX() + 110;
-              var centerY = mainNode.getY() + 50;
+              
+              mainNode.setWidth(imgWidth*1.2);
+              mainNode.setHeight(imgHeight*1.2);
+              
 
               canvas.add(
                 new draw2d.shape.basic.Image({
@@ -531,13 +524,26 @@ $(document).ready(function () {
                   selectable: false,
                   cssClass: "brandLogo",
                 }),
-                centerX - imgWidth / 2,
-                centerY - imgHeight / 2
+               mainNode.getX() +  (mainNode.getWidth() - imgWidth) / 2,
+               mainNode.getY() +  (mainNode.getHeight()  - imgHeight) / 2
               );
 
-              var main = canvas.getFigure("main");
-              main.setColor(strokeColor);
-              main.setBackgroundColor(bgColor);
+              mainNode.setColor(strokeColor);
+              mainNode.setBackgroundColor(bgColor);
+              
+              //TODOL: Fix ports
+              mainNode.getPort("mainInputTop").setX(mainNode.getWidth() /2);
+              mainNode.getPort("mainInputTop").setY(0);
+              
+              mainNode.getPort("mainInputLeft").setX( 0);
+              mainNode.getPort("mainInputLeft").setY(mainNode.getHeight() /2);
+              
+              mainNode.getPort("mainInputBottom").setX(mainNode.getWidth() /2);
+              mainNode.getPort("mainInputBottom").setY(mainNode.getHeight());
+              
+              mainNode.getPort("mainInputRight").setX( mainNode.getWidth());
+              mainNode.getPort("mainInputRight").setY(mainNode.getHeight() /2);
+              
             };
           }
         },
