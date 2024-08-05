@@ -445,9 +445,12 @@ $(document).ready(function () {
       var centerX = mainNode.getX() + mainNode.getWidth() / 2 + 84;
       var centerY = mainNode.getY() + mainNode.getHeight() / 2 + 96;
 
+	var containerTop = -centerY + window.innerHeight / 2;
+	var containerLeft = -centerX + window.innerWidth / 2;
+
       canvasContainer.css({
-        marginTop: -centerY + window.innerHeight / 2,
-        marginLeft: -centerX + window.innerWidth / 2,
+        marginTop: containerTop,
+        marginLeft: containerLeft,
       });
 
       /*
@@ -476,8 +479,9 @@ $(document).ready(function () {
         url: url,
         method: "GET",
         success: function (res) {
+		  var data = res.data;
           if (res.response.status == "ok") {
-            var saveddata = res.data.json;
+            var saveddata = data.json;
             try {
               if (saveddata == undefined) {
                 throw new Error("Empty JSON");
@@ -495,6 +499,16 @@ $(document).ready(function () {
               reader.unmarshal(canvas, placeholderJSON);
             }
             recenterCanvas();
+            
+            if(data.canvastop !== undefined) {
+				canvasContainer.css("margin-top", parseInt(data.canvastop));
+			}
+			if(data.canvasleft !== undefined) {
+				canvasContainer.css("margin-left", parseInt(data.canvasleft));
+			}
+			if(data.canvaszoomlevel !== undefined) {
+				canvas.setZoom(data.canvaszoomlevel);				
+			}
 
             var img = new Image();
             img.src = logo;
@@ -1126,6 +1140,10 @@ $(document).ready(function () {
         data.updatedby = userid;
         const date2 = new Date();
         data.updatedon = date2.toJSON();
+        
+        data.zoomlevel = canvas.getZoom();
+        data.canvastop = canvasContainer.css("margin-top");
+        data.canvasleft = canvasContainer.css("margin-left");
 
         saveBtn.addClass("saving");
         saveBtn.find("span").text("Saving...");
@@ -1262,6 +1280,15 @@ $(document).ready(function () {
       if (zoom < 0.5) return;
       zoom -= 0.1;
       canvas.setZoom(zoom);
+            
+      var change = -80;
+      
+      var newleft = parseInt(canvasContainer.css("margin-left")) + change;
+      canvasContainer.css("margin-left", newleft);
+      
+	  var newtop = parseInt(canvasContainer.css("margin-top")) + change;
+      canvasContainer.css("margin-top", newtop);
+
     });
 
     $("#zoomOutBtn").click(function () {
@@ -1269,6 +1296,15 @@ $(document).ready(function () {
       if (zoom > 2) return;
       zoom += 0.1;
       canvas.setZoom(zoom);
+
+      var change = 80;
+      
+      var newleft = parseInt(canvasContainer.css("margin-left")) + change;
+      canvasContainer.css("margin-left", newleft);
+      
+	  var newtop = parseInt(canvasContainer.css("margin-top")) + change;
+      canvasContainer.css("margin-top", newtop);
+
     });
 
     $("#zoomResetBtn").click(function () {
