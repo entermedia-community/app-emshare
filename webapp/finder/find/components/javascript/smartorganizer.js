@@ -506,8 +506,8 @@ $(document).ready(function () {
 			if(data.canvasleft !== undefined) {
 				canvasContainer.css("margin-left", parseInt(data.canvasleft));
 			}
-			if(data.canvaszoomlevel !== undefined) {
-				canvas.setZoom(data.canvaszoomlevel);				
+			if(data.canvaszoom !== undefined) {
+				canvas.setZoom(data.canvaszoom);				
 			}
 
             var img = new Image();
@@ -1141,9 +1141,10 @@ $(document).ready(function () {
         const date2 = new Date();
         data.updatedon = date2.toJSON();
         
-        data.zoomlevel = canvas.getZoom();
+        data.canvaszoom = canvas.getZoom();
         data.canvastop = canvasContainer.css("margin-top");
         data.canvasleft = canvasContainer.css("margin-left");
+        data.canvasleft2 = canvasContainer.css("margin-left");
 
         saveBtn.addClass("saving");
         saveBtn.find("span").text("Saving...");
