@@ -26,9 +26,13 @@ $context.putPageValue("parentsearchtype", $parentsearchtype)
 #set($tabid = "tab_$viewid")
 
 #set ( $tabsection = $context.getRequestParameter("tabsection") )
+#ifnull($tabsection)
+#set ( $tabsection = "upload")
+#end
 
 #set($defaultcategory = $mediaarchive.getBean("entityManager").createDefaultFolder($entity, $context.getUser()))
 $context.putPageValue("defaultcategory", $defaultcategory)
+$context.putPageValue("defaultcategoryid", $defaultcategory.getId())
 
 #set($tabmode = 1)
 $context.putPageValue("tabmode", $tabmode)
@@ -107,8 +111,8 @@ $context.putPageValue("tabmode", $tabmode)
 		</div>
 
 		<div id="tabimportcontent" class="tabimportexportcontent pt-2">
-			#if($tabsection=='pushlocal')
-				$pages.include("$componenthome/desktop/import/push.html", $context)
+			#if($tabsection=="pushlocal")
+				$pages.include("$componenthome/desktop/import/push.html?entityid=$!{entityid}&moduleid=$!{topmoduleid}&defaultcategoryid=$defaultcategory.getId()", $context)
 			#else
 				$pages.include("$apphome/views/modules/asset/add/tabentityaddmedia.html?categoryid=$!defaultcategory.getId()")
 			#end	
