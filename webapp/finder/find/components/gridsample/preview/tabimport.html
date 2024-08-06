@@ -87,23 +87,31 @@ $context.putPageValue("tabmode", $tabmode)
 			<a class="ajax btn btn-lg btn-wide auto-active-link "
 				data-targetdivinner="tabimportcontent"
 				data-oemaxlevel="1"
-				data-targetcategoryid="$!defaultcategory.id"
 				href="$apphome/components/entities/import/choosecategory.html?id=$!searchby">
 				<i class="bi bi-folder-plus"></i> &nbsp;[[Add Existing Folders]]</a>
 			</div>
 			#end
 			#if($desktop && $permissions.can($moduleid, "importpushtoserver"))
-				<div class="auto-active-row">
-				<a  class="btn btn-lg btn-wide ajax refresh-sync-push auto-active-link "
-				data-targetdivinner="tabimportcontent"
-				data-oemaxlevel="1"
-				href="$apphome/components/desktop/import/push.html"><i class="bi bi-folder-symlink-fill"></i> &nbsp;[[Upload from Desktop]]</a>
+				<div class='auto-active-row #if($tabsection=="pushlocal") current #end'>
+					<a  class="btn btn-lg btn-wide ajax refresh-sync-push auto-active-link "
+					data-targetdivinner="tabimportcontent"
+					data-oemaxlevel="1"
+					data-entityid="$!{entityid}"
+					data-moduleid="$!{topmoduleid}"
+					data-defaultcategoryid="$!defaultcategory.getId()"
+					data-tabsection="pushlocal"
+					href="$apphome/components/desktop/import/push.html">
+					<i class="bi bi-folder-symlink-fill"></i> [[Upload from Desktop]]</a>
 				</div>
 			#end
 		</div>
 
 		<div id="tabimportcontent" class="tabimportexportcontent pt-2">
-			$pages.include("$apphome/views/modules/asset/add/tabentityaddmedia.html?categoryid=$!defaultcategory.getId()")
+			#if($tabsection=='pushlocal')
+				$pages.include("$componenthome/desktop/import/push.html", $context)
+			#else
+				$pages.include("$apphome/views/modules/asset/add/tabentityaddmedia.html?categoryid=$!defaultcategory.getId()")
+			#end	
 		</div>
 	</div>
 </div>

@@ -405,7 +405,7 @@ jQuery(document).ready(function () {
   //   files: [{ path: filepath, size: 632532 }],
   //   folders: [{ path: "/home/user/eMedia/Activities/Sub1/Sub2" }],
   // }
-  lQuery(".open-folder").livequery("click", function (e) {
+  lQuery(".open-folder").livequery("click", function () {
     var path = $(this).data("path");
     ipcRenderer.send("openFolder", { path });
   });
@@ -496,52 +496,79 @@ jQuery(document).ready(function () {
   // });
 
   ipcRenderer.on("scan-progress", (_, option) => {
-    console.log("scan-progress", option);
     var pendingPulls = $(".pending-pulls");
     pendingPulls.find(".no-download").hide();
-    var totalSize = pendingPulls.data("totalSize");
-    if (!totalSize) {
-      totalSize = 0;
+    var totalDownloadSize = pendingPulls.data("totalDownloadSize");
+    if (!totalDownloadSize) {
+      totalDownloadSize = 0;
     }
-    totalSize += option.downloadSize;
-    pendingPulls.data("totalSize", totalSize);
-    var totalCount = pendingPulls.data("totalCount");
-    if (!totalCount) {
-      totalCount = 0;
-    }
-    totalCount += option.downloadCount;
-    pendingPulls.data("totalCount", totalCount);
-    pendingPulls.find(".count").text(totalCount);
-    pendingPulls.find(".size").text(humanFileSize(totalSize));
-    if (option.downloadCount > 0) {
-      $("#folder-" + option.index).css({ "font-weight": "bold" });
-    }
-    if (totalCount > 0) {
-      pendingPulls.fadeIn();
-    }
+    totalDownloadSize += option.downloadSize;
+    pendingPulls.data("totalDownloadSize", totalDownloadSize);
+    var totalDownloadCount = pendingPulls.data("totalDownloadCount");
+    if (!totalDownloadCount) totalDownloadCount = 0;
+
+    totalDownloadCount += option.downloadCount;
+    pendingPulls.data("totalDownloadCount", totalDownloadCount);
+    pendingPulls.find(".dl-count").text(totalDownloadCount);
+    pendingPulls.find(".dl-size").text(humanFileSize(totalDownloadSize));
+    if (option.downloadCount > 0)
+      $("#folder-" + option.index)
+        .find(".notif")
+        .addClass("dl");
+
+    if (totalDownloadCount > 0) pendingPulls.find(".pull-buttons").fadeIn();
+
+    var totalUploadSize = pendingPulls.data("totalUploadSize");
+    if (!totalUploadSize) totalUploadSize = 0;
+    totalUploadSize += option.uploadSize;
+    pendingPulls.data("totalUploadSize", totalUploadSize);
+    var totalUploadCount = pendingPulls.data("totalUploadCount");
+    if (!totalUploadCount) totalUploadCount = 0;
+
+    totalUploadCount += option.uploadCount;
+    pendingPulls.data("totalUploadCount", totalUploadCount);
+    pendingPulls.find(".up-count").text(totalUploadCount);
+    pendingPulls.find(".up-size").text(humanFileSize(totalUploadSize));
+
+    if (option.uploadCount > 0)
+      $("#folder-" + option.index)
+        .find(".notif")
+        .addClass("up");
+
+    if (totalUploadCount > 0) pendingPulls.find(".push-buttons").fadeIn();
   });
   ipcRenderer.on("scan-complete", () => {
-    $(".scan-changes").text("Scan Changes").prop("disabled", false);
+    $(".scan-changes")
+      .find("span")
+      .text("Scan for Changes")
+      .prop("disabled", false);
     var pendingPulls = $(".pending-pulls");
-    if (pendingPulls.data("totalCount") > 0) {
-      pendingPulls.find(".no-download").hide();
-      pendingPulls.find(".pull-buttons").show();
-    } else {
-      pendingPulls.find(".pull-buttons").hide();
+    if (pendingPulls.data("totalDownloadCount") == 0) {
       pendingPulls.find(".no-download").show();
+    } else {
+      pendingPulls.find(".no-download").hide();
+    }
+    if (pendingPulls.data("totalUploadCount") == 0) {
+      pendingPulls.find(".no-upload").show();
+    } else {
+      pendingPulls.find(".no-upload").hide();
     }
   });
 
   lQuery(".scan-changes").livequery("click", function (e) {
     e.preventDefault();
-    $("pull-folder").each(function () {
-      $(this).css({ "font-weight": "normal" });
+    $(".notif").each(function () {
+      $(this).removeClass("dl up");
     });
-    $(".pending-pulls").data("totalSize", 0);
-    $(".pending-pulls").data("totalCount", 0);
-    $(this).text("Scanning...").prop("disabled", true);
+    $(".pending-pulls").data("totalDownloadSize", 0);
+    $(".pending-pulls").data("totalDownloadCount", 0);
+    $(".pending-pulls").data("totalUploadSize", 0);
+    $(".pending-pulls").data("totalUploadCount", 0);
+    $(".pending-pulls").find(".pull-buttons").fadeOut();
+    $(".pending-pulls").find(".push-buttons").fadeOut();
+    $(this).find("span").text("Scanning...").prop("disabled", true);
     var categorypath = $(this).data("toplevelcategorypath");
-    ipcRenderer.send("downloadall", {
+    ipcRenderer.send("downloadAll", {
       categorypath: categorypath,
       scanOnly: true,
     });
@@ -570,28 +597,22 @@ jQuery(document).ready(function () {
 
   lQuery(".download-pull-all").livequery("click", function (e) {
     e.preventDefault();
-    var headers = {
-      "X-tokentype": "entermedia",
-      "X-token": entermediakey,
-      Accept: "application/json",
-      "Content-Type": "application/json",
-    };
     var categorypath = $(this).data("toplevelcategorypath");
     $(".pullfetchfolder").first().find(".fa-spinner").show();
-    ipcRenderer.send("downloadall", {
+    ipcRenderer.send("downloadAll", {
       categorypath: categorypath,
-      headers: headers,
-      mediadb: mediadb,
+      scanOnly: false,
     });
   });
 
   ipcRenderer.on("download-next", (_, { index }) => {
     $(".pull-folder").each(function () {
       var folder = $(this);
+      var spinner = folder.find(".fa-spinner");
       if (folder.id == "folder-" + index) {
-        folder.find(".fa-spinner").show();
+        spinner.show();
       } else {
-        folder.find(".fa-spinner").hide();
+        spinner.hide();
       }
     });
   });
@@ -599,9 +620,19 @@ jQuery(document).ready(function () {
     $(".pullfetchfolder").each(function () {
       $(this).find(".fa-spinner").hide();
     });
+    $(".scan-changes").trigger("click");
   });
 
   var uploadcount = 0;
+
+  lQuery(".upload-push-all").livequery("click", function (e) {
+    //?: TODO: handle upload
+    e.preventDefault();
+    var categorypath = $(this).data("toplevelcategorypath");
+    ipcRenderer.send("uploadAll", {
+      categorypath: categorypath,
+    });
+  });
 
   lQuery(".upload-push").livequery("click", function (e) {
     e.preventDefault();

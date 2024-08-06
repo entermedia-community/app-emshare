@@ -1,7 +1,7 @@
 
-  #set( $files = $assetmap.files )
-  #set( $folders = $assetmap.folders )
-  #set( $missingfiles = $missingassetmap.files )
+  #set( $filestodownload = $pendingpull.files )
+  #set( $folders = $pendingpull.folders )
+  #set( $filestoupload = $pendingpush.files )
   
   <div id="currentfolder"
   		data-categorypath="${categorypath}"
@@ -9,13 +9,13 @@
 	  
 	    <div class="sync-folder mx-4 mb-4">
 	    <span>[[Folder]]:</span>
-			<input id="pullSaveFolder" type="text" class="form-control" placeholder="[[Save Folder]]" readonly value="$!assetmap.filedownloadpath">
-			#if($assetmap.filedownloadpath)
+			<input id="pullSaveFolder" type="text" class="form-control" placeholder="[[Save Folder]]" readonly value="$!pendingpull.filedownloadpath">
+			#if($pendingpull.filedownloadpath)
 				<a href="#" 
 					class="btn btn-primary rounded ml-2 open-folder" 
-					data-path="$!assetmap.filedownloadpath"
+					data-path="$!pendingpull.filedownloadpath"
 					title="[[Open Local Folder]]">
-					[[Open]]
+					[[View]]
 				</a>
 				<button class="btn-unstyled refresh-sync ml-2">
 					<i class="bi bi-arrow-repeat ns"></i>
@@ -23,13 +23,13 @@
 			#end
 	  </div>
 
-	  #if($files.size() > 0)
+	  #if($filestodownload.size() > 0)
       	<div class="d-flex align-items-center justify-content-between px-1 py-2">
 	      <a href="#pullfiles" data-toggle="collapse" role="button">
 			
 	        <i class="bi bi-caret-right-fill ns"></i> 
 	        
-	        $files.size() [[new]] file#if($files.size()>1)s#end [[found on the server]]
+	        $filestodownload.size() [[new]] file#if($filestodownload.size()>1)s#end [[found on the server]]
 	      </a>
 	       
 	      <button class="btn btn-success rounded ml-2 download-pull">
@@ -39,8 +39,8 @@
 		
     	
 	    <ul id="pullfiles" class="collapse list-unstyled overflow-y pl-4">
-	    #foreach( $file in $files)
-	      <li class="d-flex" data-assetid="$file.id" data-categorypath="$!assetmap.categorypath" data-path="$file.path" data-url="$file.url">
+	    #foreach( $file in $filestodownload)
+	      <li class="d-flex" data-assetid="$file.id" data-categorypath="$!pendingpull.categorypath" data-path="$file.path" data-url="$file.url">
 			  #if($file.url)
 	        	<a href="$file.url" class="mr-2"> ##should be file preview url
 	          	<i class="bi bi-eye-fill ns"></i>
@@ -55,13 +55,13 @@
 	    </ul>
     	#end
     
-	     #if($missingfiles.size() > 0)
+	     #if($filestoupload.size() > 0)
 		    <div class="d-flex align-items-center justify-content-between px-1 py-2">
 		      <a href="#pulllocalfiles" data-toggle="collapse" role="button">
-					#if($missingfiles.size() > 0)
+					#if($filestoupload.size() > 0)
 		        	<i class="bi bi-caret-right-fill ns"></i>
 		        	#end
-		         	$missingfiles.size() [[New file found locally]]
+		         	$filestoupload.size() [[New file found locally]]
 		      </a>
 		      
 					<div class="d-flex align-items-center"> 
@@ -83,8 +83,8 @@
 		      </div>
 		    </div>
 		    <ul id="pulllocalfiles" class="collapse list-unstyled overflow-y pl-4">
-		    #foreach( $file in $missingfiles)
-		      <li class="d-flex" data-assetid="$file.id" data-categorypath="$!assetmap.categorypath" data-path="$file.path" data-url="$file.url">
+		    #foreach( $file in $filestoupload)
+		      <li class="d-flex" data-assetid="$file.id" data-categorypath="$!pendingpull.categorypath" data-path="$file.path" data-url="$file.url">
 		        #if($file.url)
 		        <a href="$file.url" class="mr-2"> ##should be file preview url
 		          <i class="bi bi-eye-fill ns"></i>
@@ -100,7 +100,7 @@
 		  #end
     
 
-  	#if($missingfiles.size() < 1 && $files.size() <1)
+  	#if($filestoupload.size() < 1 && $filestodownload.size() <1)
     <div class="d-flex align-items-center justify-content-center my-3 px-2 py-2synced">
     <strong>
       [[You are up to date!]]

@@ -1,51 +1,66 @@
-<div class="entityuploadheader" style="font-size:1rem; font-weight: 600;">[[Upload from Local Drive To Server]]</div>
-<div class="sync-container mt-2">  
-	
-	  <div class="sync-folder mx-4 my-4">
-    <span>[[Import from]]:</span>
-    <input id="pushSaveFolder" type="text" class="form-control" placeholder="[[Import From Folder]]" readonly 
-    		value="$!assetmap.filedownloadpath">
-    <button class="btn btn-brand ml-2 open-folder" data-path="$!assetmap.filedownloadpath">
-      [[Open]]
-    </button>
-    <button class="btn-unstyled refresh-sync-push ml-2">
-      <i class="bi bi-arrow-repeat ns"></i>
-    </button>
-  </div>
-
-
-<div class="px-2">
-#set($indent = 1)
-#foreach( $folder in $remotemap.folders)
-	<div><i class="bi bi-folder"></i> $folder.path</div>
-	#if($folder.subfolders)
-		#set($padding = 10*$indent)
-		<div style="padding-left:${padding}px">
-		#set($subfolders = $folder.subfolders)
-		#foreach( $subfolder in $subfolders.folders)
-			<div><i class="bi bi-folder"></i> $subfolder.path</div>
-		#end
-		#foreach( $file in $subfolders.files)
-			<div title="$!file.size"><i class="bi bi-file"></i> $file.path</div>
-		#end
-	
-		</div>
-	#end
-#end
- 
-#foreach( $file in $remotemap.files)
-	<div title="$!file.size"><i class="bi bi-file"></i> $file.path</div>
-#end
+<div class="entityuploadheader" style="font-size:1rem; font-weight: 600;">
+	[[Upload To Local Drive]]
 </div>
 
+#if($category.getCategoryPath())
+<div class="segment mb-2">
+	<div class="d-flex">
+		<button class="btn btn-success rounded scan-changes"
+			data-toplevelcategorypath="$category.getCategoryPath()">
+			<i class="bi bi-search mr-1"></i> <span>[[Scan for Changes]]</span>
+		</button>
+		<a class="btn btn-primary rounded open-folder ml-2" 
+			href="#"
+			data-path="$category.getCategoryPath()"
+			title="[[Open]]">
+			<i class="bi bi-folder2-open mr-2"></i>
+			[[Open Local Folder]]
+		</a>
+	</div>
+	<div class="pending-pulls">
+		<p class="alert alert-success no-upload mt-3 mb-0" style="display: none;">[[Nothing to upload.]]</p>
+		<div class="d-flex flex-column">
+			<div class="alert alert-success mt-3 mb-0 push-buttons" style="display: none;">
+				<p class="mb-2">[[You are uploading]] <strong class="up-count">0</strong> [[file(s)]] (<strong class="up-size">0</strong>) [[to the server.]]</p>
+				<button class='btn btn-success rounded ajax upload-push-all'
+				data-toplevelcategorypath="$category.getCategoryPath()">
+					<i class="bi bi-cloud-arrow-up-fill mr-1"></i>
+					[[Push to server]]
+				</button>
+			</div> 
+			<div class="alert alert-warning mt-3 mb-0 pull-buttons" style="display: none;">
+				<p class="mb-2">[[You have]] <strong class="dl-count">0</strong> [[file(s)]] (<strong class="dl-size">0</strong>) [[pending in downloads.]]</p>
+				<div class="d-flex align-items-center">
+					<a class="btn btn-success rounded" href="#">
+						<i class="bi bi-cloud-arrow-down-fill mr-1"></i> [[Download]]
+					</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+#end
 
-  
-  
-  #if($missingfiles.size() < 1 && $files.size() < 1)
-    <div class="d-flex align-items-center justify-content-center my-3 px-2 py-2 sync-stage synced">
-    <span>
-      [[You are up to date!]]
-    </span>
-  </div>
-  #end
+<div class="sync-container row no-gutters">
+	<div class="col-2 pullfoldertree">
+	#set($allchildren = $mediaarchive.getCategorySearcher().listAllCategories($category))
+	#foreach($parent in $allchildren)
+	 	#set($padding = ($parent.getLevel() - 1) * 8)
+		#set($index = $foreach.count - 1)
+ 		<div style="padding-left: ${padding}px;" class="pull-folder" id="folder-$index">
+			<a href="#"
+				class="pullfetchfolder"
+				data-categorypath="$!parent.getCategoryPath()">
+				<i class="bi bi-folder"></i>
+				<span class="mx-1 notif">$parent.name <i class="bi bi-circle-fill"></i></span>
+				<i class="fas fa-spinner fa-spin text-muted" style="display: none;"></i>
+			</a>
+		</div>
+ 	#end
+	</div>
+	<div class="col">
+		<div id="fetchfolder">
+			##load content via pullfetchfolder click -> Electron
+		</div>
+	</div>
 </div>
