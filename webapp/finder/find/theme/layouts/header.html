@@ -26,18 +26,24 @@
 				#set($logourl = $mediaarchive.asLinkToOriginal($logoasset))
 				#set($logourl = "$siteroot/$mediadbappid/services/module/asset/downloads/originals/${logourl}")
 			#end
-			#ifnotnull( $logourl)
-			<a class="emlogo-custom" href="$homeurl" title="[[eMedia Library]]" data-clearfilters="true">
-				<img src="$logourl" class="logoimg" alt="[[eMedia Library]]" />
-			</a>
-			#end
 		#end
-		#ifnull( $logourl)
+		
+		#ifnull($logourl)
 			#set( $logourl = "$!{siteroot}$themeprefix/images/logo.png")
-			<a class="emlogo" href="$homeurl" title="[[eMedia Library]]">
+			
+			#set($themeid = $content.get("themeid") )
+			#set($theme = $mediaarchive.getCachedData("theme", $themeid))
+	    	#set($logowidth = $theme.logowidth)
+	    	#set($logoheight = $theme.logoheight)
+		#end
+		
+		#ifnotnull($logourl)
+			<a class="emlogo" href="$homeurl" title="[[eMedia Library]]" style="width: $!{logowidth}px; height: $!{logoheight}px; ">
 				<img src="$logourl" class="logoimg" alt="[[eMedia Library]]" />
 			</a>
 		#end
+		
+		
     #if ( $canviewappsmenu && $appsmenu.size() > 1)
     <div class="dropdown site-switcher">
       <button class="dropdown-toggle btn py-1 px-2 rounded" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
