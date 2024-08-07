@@ -27,6 +27,9 @@ $context.putPageValue("parentsearchtype", $parentsearchtype)
 #set($tabid = "tab_$viewid")
 
 #set ( $tabsection = $context.getRequestParameter("tabsection") )
+#ifnull($tabsection)
+#set ( $tabsection = "copy")
+#end
 
 #set($defaultcategory = $mediaarchive.getBean("entityManager").createDefaultFolder($entity, $context.getUser()))
 $context.putPageValue("defaultcategory", $defaultcategory)
@@ -73,7 +76,7 @@ $context.putPageValue("tabmode", $tabmode)
 			
 					
 			#if($permissions.can($moduleid, "downloadall"))
-				<div class='auto-active-row  #if($tabsection=="export") current #end'>
+				<div class='auto-active-row  #if($tabsection=="downloadzip") current #end'>
 				<a class='ajax btn btn-lg btn-wide auto-active-link '
 				data-targetdivinner="tabexportcontent"
 				data-oemaxlevel="1"
@@ -84,7 +87,7 @@ $context.putPageValue("tabmode", $tabmode)
 				</div>
 			#end
 			#if($permissions.can($moduleid, "shareentity"))	
-				<div class="auto-active-row #if($tabsection=="share") current #end">
+				<div class='auto-active-row #if($tabsection=="share") current #end'>
 				<a href="$componenthome/share/entity.html?entityid=$!{entityid}&moduleid=$!{topmoduleid}&defaultcategoryid=$!defaultcategory.getId()"
 				class='btn btn-lg btn-wide ajax auto-active-link'
 				data-targetdivinner="tabexportcontent"
@@ -115,8 +118,10 @@ $context.putPageValue("tabmode", $tabmode)
 				$pages.include("$componenthome/share/entity.html?entityid=$!{entityid}&moduleid=$!{topmoduleid}", $context)
 			#elseif($tabsection=="copy")
 				$pages.include("$componenthome/entities/copydialog.html?entityid=$!{entityid}&moduleid=$!{topmoduleid}&defaultcategoryid=$defaultcategory.getId()", $context)
-			#elseif($tabsection=="export")
+			#elseif($tabsection=="downloadzip")
 				$pages.include("$componenthome/entities/download.html?entityid=$!{entityid}&moduleid=$!{topmoduleid}&defaultcategoryid=$defaultcategory.getId()", $context)
+			#elseif($tabsection=="pulllocal")
+				$pages.include("$componenthome/desktop/export/pull.html?entityid=$!{entityid}&moduleid=$!{topmoduleid}&defaultcategoryid=$defaultcategory.getId()", $context)
 			#end
 		</div>
 		
