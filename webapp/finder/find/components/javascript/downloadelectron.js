@@ -557,8 +557,12 @@ jQuery(document).ready(function () {
 
   lQuery(".scan-changes").livequery("click", function (e) {
     e.preventDefault();
+    scanChange();
+  });
+
+  function scanChange() {
     $(".notif").each(function () {
-      $(this).removeClass("dl up");
+      $(".scan-changes").removeClass("dl up");
     });
     $(".pending-pulls").data("totalDownloadSize", 0);
     $(".pending-pulls").data("totalDownloadCount", 0);
@@ -566,13 +570,13 @@ jQuery(document).ready(function () {
     $(".pending-pulls").data("totalUploadCount", 0);
     $(".pending-pulls").find(".pull-buttons").fadeOut();
     $(".pending-pulls").find(".push-buttons").fadeOut();
-    $(this).find("span").text("Scanning...").prop("disabled", true);
-    var categorypath = $(this).data("toplevelcategorypath");
+    $(".scan-changes").find("span").text("Scanning...").prop("disabled", true);
+    var categorypath = $(".scan-changes").data("toplevelcategorypath");
     ipcRenderer.send("downloadAll", {
       categorypath: categorypath,
       scanOnly: true,
     });
-  });
+  }
 
   lQuery(".download-pull").livequery("click", function (e) {
     e.preventDefault();
@@ -620,11 +624,20 @@ jQuery(document).ready(function () {
     $(".pullfetchfolder").each(function () {
       $(this).find(".fa-spinner").hide();
     });
-    $(".scan-changes").trigger("click");
+    scanChange();
   });
 
   lQuery(".remove-extra").livequery("click", function (e) {
-    ipcRenderer.send("deleteExtraFiles");
+    if (confirm("Are you sure you want to delete all extra files?")) {
+      var categorypath = $(this).data("toplevelcategorypath");
+      ipcRenderer.send("trashExtraFiles", {
+        categorypath: categorypath,
+      });
+    }
+  });
+
+  ipcRenderer.on("trash-complete", () => {
+    scanChange();
   });
 
   var uploadcount = 0;
