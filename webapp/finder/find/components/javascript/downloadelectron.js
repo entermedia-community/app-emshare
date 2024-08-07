@@ -616,7 +616,7 @@ jQuery(document).ready(function () {
     $(".pull-folder").each(function () {
       var folder = $(this);
       var spinner = folder.find(".fa-spinner");
-      if (folder.id == "folder-" + index) {
+      if (folder.attr("id") == "folder-" + index) {
         spinner.show();
       } else {
         spinner.hide();
@@ -650,41 +650,33 @@ jQuery(document).ready(function () {
     scanChange();
   });
 
-  var uploadcount = 0;
-
-  lQuery(".upload-push-all").livequery("click", function (e) {
-    //?: TODO: handle upload
+  lQuery(".upload-push").livequery("click", function (e) {
     e.preventDefault();
-    var categorypath = $(this).data("toplevelcategorypath");
+    var categorypath = $(this).data("categorypath");
     ipcRenderer.send("uploadAll", {
       categorypath: categorypath,
     });
   });
 
-  lQuery(".upload-push").livequery("click", function (e) {
-    e.preventDefault();
-    //var headers = { "X-tokentype": "entermedia", "X-token": entermediakey };
-    var entitydialog = $(this).closest(".entitydialog");
-    if (entitydialog.length == 0) {
-      return;
-    }
-    var categorypath = entitydialog.data("categorypath");
-
-    $("#pushfiles li").each(function () {
-      var item = $(this);
-      var abspath = item.data("abspath");
-      var options = {
-        itemid: uploadcount,
-        sourcepath: categorypath + "/" + item.data("path"),
-        categorypath: categorypath,
-        abspath: abspath,
-        headers: headers,
-        mediadb: mediadb,
-      };
-
-      ipcRenderer.send("start-upload", options);
-      uploadcount++;
+  ipcRenderer.on("upload-next", (_, { index }) => {
+    $(".pull-folder").each(function () {
+      var folder = $(this);
+      var spinner = folder.find(".fa-spinner");
+      if (folder.attr("id") == "folder-" + index) {
+        spinner.show();
+      } else {
+        spinner.hide();
+      }
     });
+  });
+
+  ipcRenderer.on("upload-all-complete", () => {
+    setTimeout(() => {
+      $(".pullfetchfolder").each(function () {
+        $(this).find(".fa-spinner").hide();
+      });
+      scanChange();
+    }, 3000);
   });
 
   lQuery(".pull-individual").livequery("click", function (e) {
