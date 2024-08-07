@@ -623,6 +623,10 @@ jQuery(document).ready(function () {
     $(".scan-changes").trigger("click");
   });
 
+  lQuery(".remove-extra").livequery("click", function (e) {
+    ipcRenderer.send("deleteExtraFiles");
+  });
+
   var uploadcount = 0;
 
   lQuery(".upload-push-all").livequery("click", function (e) {
