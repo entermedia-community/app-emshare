@@ -27,28 +27,28 @@
 		#end
 
 #foreach($asset in $assets)
-			<li id="auto-${asset.id}" class=" collectionBox">
+	<li id="auto-${asset.id}" class=" collectionBox">
 
-				#set ($mime = $mediaarchive.getMimeTypeIcon($asset.fileformat))
-				#set( $thumbpath =  "/${applicationid}/theme/images/mimetypes/${mime}.png" )
-					#if(false && $canquickdownload)
-						#set($dlink = $mediaarchive.asLinkToOriginal($asset))
-							<a  href="#urlencode("$home/$mediadbappid/services/module/asset/downloads/originals/$dlink?collectionid=${collectionid}&assetid=$asset.getId()")">
-							<i class="fas fa-download"></i>&nbsp;
-							<img class="mimethumb" style="height:17px; position:absolute; margin:auto;" src="$!cdn$home$thumbpath" border="0"/>
-							</a>
-					#else
-						##<img class="mimethumb" style="height:17px; position:absolute; margin:auto;" src="$!cdn$home$thumbpath" border="0"/>	
+		#set ($mime = $mediaarchive.getMimeTypeIcon($asset.fileformat))
+		#set( $thumbpath =  "/${applicationid}/theme/images/mimetypes/${mime}.png" )
+			#if(false && $canquickdownload)
+				#set($dlink = $mediaarchive.asLinkToOriginal($asset))
+					<a  href="#urlencode("$home/$mediadbappid/services/module/asset/downloads/originals/$dlink?collectionid=${collectionid}&assetid=$asset.getId()")">
+					<i class="fas fa-download"></i>&nbsp;
+					<img class="mimethumb" style="height:17px; position:absolute; margin:auto;" src="$!cdn$home$thumbpath" border="0"/>
+					</a>
+			#else
+				##<img class="mimethumb" style="height:17px; position:absolute; margin:auto;" src="$!cdn$home$thumbpath" border="0"/>	
+		
+			#end					
+				##<a class="stackedplayer" data-assetid="$asset.id" style="padding-left: 20px;" title="$asset.name" href="$home$apphome/views/modules/asset/editor/viewer/index.html?assetid=$asset.id" >
+					$asset.sourcepath $asset.name
+				##</a>
+					<div class="collectionIcons">
+						<input type="checkbox" id="assetvalues" class="collection-list" name="assetid" value="$asset.id" />
+					</div>
+
 				
-					#end					
-						##<a class="stackedplayer" data-assetid="$asset.id" style="padding-left: 20px;" title="$asset.name" href="$home$apphome/views/modules/asset/editor/viewer/index.html?assetid=$asset.id" >
-							$asset.sourcepath $asset.name
-						##</a>
-							<div class="collectionIcons">
-								<input type="checkbox" id="assetvalues" class="collection-list" name="assetid" value="$asset.id" />
-							</div>
-	
-						
 			</li>
 		#end	
 </ul>
