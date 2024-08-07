@@ -562,7 +562,7 @@ jQuery(document).ready(function () {
 
   function scanChange() {
     $(".notif").each(function () {
-      $(".scan-changes").removeClass("dl up");
+      $(this).removeClass("dl up");
     });
     $(".pending-pulls").data("totalDownloadSize", 0);
     $(".pending-pulls").data("totalDownloadCount", 0);
@@ -628,8 +628,15 @@ jQuery(document).ready(function () {
   });
 
   lQuery(".remove-extra").livequery("click", function (e) {
-    if (confirm("Are you sure you want to delete all extra files?")) {
-      var categorypath = $(this).data("toplevelcategorypath");
+    var count = $(this).data("count");
+    if (
+      confirm(
+        "Are you sure you want to delete " +
+          (count ? count : "all") +
+          " extra file(s)?"
+      )
+    ) {
+      var categorypath = $(this).data("categorypath");
       ipcRenderer.send("trashExtraFiles", {
         categorypath: categorypath,
       });
@@ -638,6 +645,10 @@ jQuery(document).ready(function () {
 
   ipcRenderer.on("trash-complete", () => {
     scanChange();
+    var openedFolder = $(".pullfetchfolder.current");
+    if (openedFolder.length) {
+      openedFolder.trigger("click");
+    }
   });
 
   var uploadcount = 0;
