@@ -23,8 +23,52 @@
 		#end
 	</div>
 
+	#if($filestoupload.size() > 0)
+		<div class="d-flex align-items-center justify-content-between px-1 py-2">
+			<a href="#pulllocalfiles" data-toggle="collapse" role="button">
+			#if($filestoupload.size() > 0)
+					<i class="bi bi-caret-right-fill ns"></i>
+					#end
+						$filestoupload.size() [[New file found locally]]
+			</a>
+			
+			<div class="d-flex align-items-center"> 
+				<a  class='btn btn-success rounded text-white ajax refresh-sync'
+					data-targetdivinner="tabexportcontent"
+					data-oemaxlevel="1"
+					data-tabsection="pushlocal"
+					href="$apphome/components/desktop/import/push.html">
+					<i class="bi bi-cloud-arrow-up-fill mr-1"></i>
+					[[Push to server]]
+				</a> 
+				<span class="mx-2">
+					[[Or]]
+				</span>
+				<button class="btn btn-danger rounded remove-extra" data-categorypath="$!pendingpull.categorypath" data-count="$filestoupload.size()">
+					<i class="bi bi-trash-fill mr-1"></i>
+					[[Remove Extra Files]]
+				</button> 
+			</div>
+		</div>
+		<ul id="pulllocalfiles" class="collapse list-unstyled overflow-y pl-4">
+		#foreach( $file in $filestoupload)
+			<li class="d-flex" data-assetid="$file.id" data-categorypath="$!pendingpull.categorypath" data-path="$file.path" data-url="$file.url">
+				#if($file.url)
+				<a href="$file.url" class="mr-2"> ##should be file preview url
+					<i class="bi bi-eye-fill ns"></i>
+				</a>
+				#end
+				<i class="bi bi-file ns"></i> <span class="pl-2">$file.path</span>
+				<button class="ml-auto mr-2 btn-unstyled pull-individual">
+					<i class="bi bi-download ns"></i>
+				</button>
+			</li>
+		#end
+		</ul>
+	#end
+
 	#if($filestodownload.size() > 0)
-			<div class="d-flex align-items-center justify-content-between px-1 py-2">
+		<div class="d-flex align-items-center justify-content-between px-1 py-2">
 			<a href="#pullfiles" data-toggle="collapse" role="button">
 		
 				<i class="bi bi-caret-right-fill ns"></i> 
@@ -32,11 +76,19 @@
 				$filestodownload.size() [[new]] file#if($filestodownload.size()>1)s#end [[found on the server]]
 			</a>
 			 
-			<button class="btn btn-success rounded ml-2 download-pull">
-				<i class="bi bi-cloud-arrow-down-fill mr-1"></i> [[Download]]
-			</button>
+			<a class="btn btn-accent rounded text-white entitytabactions tabactionexport" href="#"
+				data-tabaction="export"
+				data-tabsection="pulllocal"
+				data-viewid="export"
+				data-tabtype="tabexport" 
+				data-entityid="$!entity.getId()" 
+				data-topmoduleid="$!moduleid"
+				data-moduleid="$!moduleid"
+				data-defaultcategoryid="$!defaultcategory.getId()"
+				>
+				<i class="bi bi-arrow-right mr-1"></i> [[Go to Download]]
+			</a>
 		</div>
-	
 		
 		<ul id="pullfiles" class="collapse list-unstyled overflow-y pl-4">
 		#foreach( $file in $filestodownload)
@@ -53,51 +105,7 @@
 			</li>
 		#end
 		</ul>
-		#end
-	
-		 #if($filestoupload.size() > 0)
-			<div class="d-flex align-items-center justify-content-between px-1 py-2">
-				<a href="#pulllocalfiles" data-toggle="collapse" role="button">
-				#if($filestoupload.size() > 0)
-						<i class="bi bi-caret-right-fill ns"></i>
-						#end
-						 $filestoupload.size() [[New file found locally]]
-				</a>
-				
-				<div class="d-flex align-items-center"> 
-					<a  class='btn btn-success rounded text-white ajax refresh-sync'
-						data-targetdivinner="tabexportcontent"
-						data-oemaxlevel="1"
-						data-tabsection="pushlocal"
-						href="$apphome/components/desktop/import/push.html">
-						<i class="bi bi-cloud-arrow-up-fill mr-1"></i>
-						[[Push to server]]
-					</a> 
-					<span class="mx-2">
-						[[Or]]
-					</span>
-					<button class="btn btn-danger rounded remove-extra" data-categorypath="$!pendingpull.categorypath" data-count="$filestoupload.size()">
-						<i class="bi bi-trash-fill mr-1"></i>
-						[[Remove Extra Files]]
-					</button> 
-				</div>
-			</div>
-			<ul id="pulllocalfiles" class="collapse list-unstyled overflow-y pl-4">
-			#foreach( $file in $filestoupload)
-				<li class="d-flex" data-assetid="$file.id" data-categorypath="$!pendingpull.categorypath" data-path="$file.path" data-url="$file.url">
-					#if($file.url)
-					<a href="$file.url" class="mr-2"> ##should be file preview url
-						<i class="bi bi-eye-fill ns"></i>
-					</a>
-					#end
-					<i class="bi bi-file ns"></i> <span class="pl-2">$file.path</span>
-					<button class="ml-auto mr-2 btn-unstyled pull-individual">
-						<i class="bi bi-download ns"></i>
-					</button>
-				</li>
-			#end
-			</ul>
-		#end
+	#end
 	
 
 	#if($filestoupload.size() < 1 && $filestodownload.size() <1)

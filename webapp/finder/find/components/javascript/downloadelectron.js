@@ -428,19 +428,22 @@ jQuery(document).ready(function () {
       .removeClass("current");
     folder.addClass("current");
     var categorypath = folder.data("categorypath");
-    refreshSync(categorypath);
+    var tab = folder.data("tab");
+    refreshSync(categorypath, tab);
   });
 
-  function refreshSync(categorypath) {
+  function refreshSync(categorypath, tab) {
     ipcRenderer.send("fetchFiles", {
       categorypath: categorypath,
+      tab: tab,
     });
   }
 
   ipcRenderer.on("files-fetched", (_, data) => {
+    var tab = data["tab"] === "push" ? "import" : "export";
     $.ajax({
       type: "POST",
-      url: apphome + "/components/desktop/export/folder.html",
+      url: apphome + "/components/desktop/" + tab + "/folder.html",
       data: JSON.stringify(data),
       contentType: "application/json",
       //dataType: "json",
@@ -490,10 +493,6 @@ jQuery(document).ready(function () {
   ipcRenderer.on("download-asset-complete", (_, { categorypath }) => {
     //TODO: update asset list
   });
-
-  // ipcRenderer.on("refresh-sync", (_, { categorypath }) => {
-  //   refreshSync(categorypath);
-  // });
 
   ipcRenderer.on("scan-progress", (_, option) => {
     var pendingPulls = $(".pending-pulls");
@@ -576,6 +575,10 @@ jQuery(document).ready(function () {
       categorypath: categorypath,
       scanOnly: true,
     });
+    var openedFolder = $(".pullfetchfolder.current");
+    if (openedFolder.length) {
+      openedFolder.trigger("click");
+    }
   }
 
   lQuery(".download-pull").livequery("click", function (e) {
@@ -645,10 +648,6 @@ jQuery(document).ready(function () {
 
   ipcRenderer.on("trash-complete", () => {
     scanChange();
-    var openedFolder = $(".pullfetchfolder.current");
-    if (openedFolder.length) {
-      openedFolder.trigger("click");
-    }
   });
 
   var uploadcount = 0;
