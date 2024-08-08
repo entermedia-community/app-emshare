@@ -1154,7 +1154,6 @@ $(document).ready(function () {
         data.canvaszoom = canvas.getZoom();
         data.canvastop = canvasContainer.css("margin-top");
         data.canvasleft = canvasContainer.css("margin-left");
-        data.canvasleft2 = canvasContainer.css("margin-left");
 
         var url = "";
         var submitmethod = "";
