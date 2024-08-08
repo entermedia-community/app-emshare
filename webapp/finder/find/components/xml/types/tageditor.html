@@ -8,13 +8,20 @@ $pages.include("$apphome/components/xml/types/select2translations.html",$context
 #set($searchfield = $detail.getId() )
 #set( $detailid = $detail.getId().replace('.','-') )
 
-
-#if( $value && !$value.isEmpty() )
+#if( $values && !$values.isEmpty() )
+	#if($values.class == "class java.lang.String")
+		#set($values = $values.replace("[", "").replace("]", ""))
+		#set( $vals = $values.split("\s*\,\s*") )
+	#else
+		#set($vals = $values)
+	#end
+#end
+#ifnull($vals)
 	#set($vals = $value)
-#else
+#end
+#ifnull($vals)
 	#set( $vals = $val.split("\s*\,\s*") )
 #end
-
 <select name="${detail.getId()}.value" 
 		##id="list-${detailid}${idcount}" 
 		multiple="multiple" 
