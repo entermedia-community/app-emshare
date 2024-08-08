@@ -1,18 +1,42 @@
 #set($endpointurl = $mediaarchive.getCatalogSettingValue("remote-assetsearch-mediadb-endpoint"))
 
+<div id="autosearchresults">
+	
+#if( $assets.size() > 0 || $foundcategories.size() > 0)
+	<div class="d-flex align-items-center justify-content-end py-2">
+		<div class="px-2">
+			<input type="checkbox" id="select-all" class="select-all mr-2" />
+			<label for="select-all" class="m-0">[[Select All]]</label>
+		</div>
+		<div class="text-center">
+			<a class="submitform btn btn-sm btn-brand btn-primary upload-btn" type="submit" id="finishbutton">
+				<i class="bi bi-box-arrow-in-down rr mr-1" ></i>
+				[[Import]]
+			</a>
+		</div>
+		 
+	</div>
+#end
+
 <ul id="cat-list" class="list-group list-group-striped list-group-hover autopopulate-list">
 
 		#ifnull( $foundcategories )
 		<li>[[No folders found]]</li>
 		#end
 
-		#foreach($categoryid in $foundcategories)
-		#set($category  = $mediaarchive.getCategory($categoryid))
+		#foreach($categorydata in $foundcategories)
 
-		<li id="auto-${categoryid}" class="collectionBox" data-nodeid="$categoryid" data-categoryname="$category.getName()">
-			<a class="category" title="$category.getCategoryPath()" target="_blank" href="$applink/views/modules/asset/viewfiles/${category.getId()}/#esc($category).html" >$category.getCategoryPath() </a>
+		<li id='auto-${categorydata.get("id")}' 
+			class="collectionBox" 
+			data-nodeid='$categorydata.get("id")' 
+			data-categoryname='$categorydata.get("name")'>
+			<a class="category" title='$categorydata.get("categorypath")' 
+				target="_blank" 
+				##href="REMOTE$applink/views/modules/asset/viewfiles/${category.getId()}/#esc($category).html" 
+			>$categorydata.get("categorypath") </a>
 			<div class="collectionIcons">
-				<input type="checkbox" id="categoryvalues" class="collection-list" name="categoryid" value="$categoryid" />
+				<input type="checkbox" id="categoryvalues" class="collection-list" name="categoryid" value='$categorydata.get("id")' />
+				<input type="hidden"  name="categoryname" value='$categorydata.get("name")' />
 			</div>
 		</li>
 		#end
@@ -40,3 +64,16 @@
 			</li>
 		#end	
 	</ul> 
+	
+	
+	#if($assets.size() > 10)
+		<div class="text-right">
+			<a class="submitform btn btn-sm btn-brand btn-primary upload-btn" type="submit" id="finishbutton">
+				<i class="bi bi-box-arrow-in-down rr mr-1" ></i>
+				[[Import]]
+			</a>
+		</div>
+	#end
+</div>
+
+
