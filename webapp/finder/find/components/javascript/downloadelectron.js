@@ -18,8 +18,29 @@ jQuery(document).ready(function () {
     mediadb: mediadb,
   });
 
+  ipcRenderer.on("electron-log", (_, log) => {
+    console.log(
+      "%c --- Desktop Log Start --- ",
+      "background: #000000; color: #bada55; font-style: italic"
+    );
+    console.log(...log);
+    console.log(
+      "%c --- Desktop Log End --- ",
+      "background: #000000; color: #bada55; font-style: italic"
+    );
+  });
+
   ipcRenderer.on("electron-error", (_, error) => {
-    console.error("Desktop Error: ", error);
+    console.log(
+      "%c --- Desktop Error Start --- ",
+      "background: #000000; color: #ba5555; font-style: italic"
+    );
+    console.error(...error);
+    console.log(
+      "%c --- Desktop Error End --- ",
+      "background: #000000; color: #ba5555; font-style: italic"
+    );
+
     $("#application").append(
       '<div class="alert fader alert-error" role="alert">Desktop Error: Check log for details.</div>'
     );
