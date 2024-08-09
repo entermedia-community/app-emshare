@@ -474,42 +474,46 @@ $(document).ready(function () {
       var id = $("#organizerId").val();
       var url =
         siteroot + "/" + mediadb + "/services/module/smartorganizer/data/" + id;
+        
+        var insertjson = placeholderJSON;
+        var data;
       jQuery.ajax({
         dataType: "json",
         url: url,
         method: "GET",
         success: function (res) {
-          var data = res.data;
-          if (res.response.status == "ok") {
-            var saveddata = data.json;
-            try {
-              if (saveddata == undefined) {
-                throw new Error("Empty JSON");
+              if (res.response != undefined && res.response.status != "ok") 
+              {
+	              data = res.data;
+	              var saveddata = data.json;
+	              var updateddata = saveddata.replaceAll("${apphome}", apphome);
+	              var parsed = JSON.parse(updateddata);
+	              if (parsed.length) {
+		           	
+		           	insertjson = parsed;
+		           	//console.log("Empty JSON, loading defaults.");
+	              }
               }
-              var updateddata = saveddata.replaceAll("${apphome}", apphome);
-              var parsed = JSON.parse(updateddata);
-              if (!parsed.length) {
-                throw new Error("Empty JSON");
-              }
-              reader.unmarshal(canvas, parsed);
+		},
+		complete: function()
+		{
+              reader.unmarshal(canvas, insertjson);
               loadEvents();
-            } catch (e) {
-              console.log(e);
-              console.log("Empty JSON, loading defaults.");
-              reader.unmarshal(canvas, placeholderJSON);
-            }
+           
             recenterCanvas();
 
-            if (data.canvastop !== undefined) {
-              canvasContainer.css("margin-top", parseInt(data.canvastop));
-            }
-            if (data.canvasleft !== undefined) {
-              canvasContainer.css("margin-left", parseInt(data.canvasleft));
-            }
-            if (data.canvaszoom !== undefined) {
-              canvas.setZoom(data.canvaszoom);
-            }
-
+			if( data != null)
+			{
+	            if (data.canvastop !== undefined) {
+	              canvasContainer.css("margin-top", parseInt(data.canvastop));
+	            }
+	            if (data.canvasleft !== undefined) {
+	              canvasContainer.css("margin-left", parseInt(data.canvasleft));
+	            }
+	            if (data.canvaszoom !== undefined) {
+	              canvas.setZoom(data.canvaszoom);
+	            }
+	        }
             var img = new Image();
             img.src = logo;
             img.onload = function () {
@@ -557,7 +561,6 @@ $(document).ready(function () {
               mainNode.getPort("mainInputRight").setX(mainNode.getWidth());
               mainNode.getPort("mainInputRight").setY(mainNode.getHeight() / 2);
             };
-          }
         },
       });
     }
