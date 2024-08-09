@@ -26,6 +26,14 @@ function setContrast(hex) {
   return brightness > 125 ? "#000000" : "#ffffff";
 }
 $(document).ready(function () {
+	
+	//See if UI is already initialized
+	if( $("#organizer_canvas").data("uiloaded") == true)
+	{
+		console.log("Smart Javascript already initialized");
+		return;
+	}
+	
   var app = jQuery("#application");
   var apphome = app.data("siteroot") + app.data("apphome");
   var siteroot = $("#application").data("siteroot");
@@ -346,6 +354,9 @@ $(document).ready(function () {
   ];
 
   lQuery("#organizer_canvas").livequery(function () {
+	
+	$(this).data("uiloaded",true);
+	
     var logo = $("#logoPicker").val();
     var bgColor = $("#logoPicker").data("bg");
     var strokeColor = $("#logoPicker").data("stroke");
@@ -567,8 +578,6 @@ $(document).ready(function () {
         },
       });
     }
-
-    loadJSON();
 
     function rearrangeLabel(groupNode) {
       var groupWidth = groupNode.getWidth();
@@ -1465,6 +1474,10 @@ $(document).ready(function () {
       console.log("Inserted template");
       closeemdialog($(this).closest(".modal"));
     });
+    
+	loadJSON();
+
+    
   }); //ends intitializer
 
   lQuery(".restoreversion").livequery("click", function (e) {
