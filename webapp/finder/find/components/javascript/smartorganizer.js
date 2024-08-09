@@ -482,7 +482,7 @@ $(document).ready(function () {
         url: url,
         method: "GET",
         success: function (res) {
-              if (res.response != undefined && res.response.status != "ok") 
+              if (res.response != undefined && res.response.status == "ok") 
               {
 	              data = res.data;
 	              var saveddata = data.json;
@@ -494,6 +494,9 @@ $(document).ready(function () {
 		           	//console.log("Empty JSON, loading defaults.");
 	              }
               }
+              else{
+				console.log("Error",res);
+			  }
 		},
 		complete: function()
 		{
