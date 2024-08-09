@@ -26,6 +26,14 @@ function setContrast(hex) {
   return brightness > 125 ? "#000000" : "#ffffff";
 }
 $(document).ready(function () {
+	
+	//See if UI is already initialized
+	if( $("#organizer_canvas").data("uiloaded") == true)
+	{
+		console.log("Smart Javascript already initialized");
+		return;
+	}
+	
   var app = jQuery("#application");
   var apphome = app.data("siteroot") + app.data("apphome");
   var siteroot = $("#application").data("siteroot");
@@ -346,6 +354,9 @@ $(document).ready(function () {
   ];
 
   lQuery("#organizer_canvas").livequery(function () {
+	
+	$(this).data("uiloaded",true);
+	
     var logo = $("#logoPicker").val();
     var bgColor = $("#logoPicker").data("bg");
     var strokeColor = $("#logoPicker").data("stroke");
@@ -474,42 +485,52 @@ $(document).ready(function () {
       var id = $("#organizerId").val();
       var url =
         siteroot + "/" + mediadb + "/services/module/smartorganizer/data/" + id;
+        
+        var insertjson = placeholderJSON;
+        var data;
       jQuery.ajax({
         dataType: "json",
         url: url,
         method: "GET",
         success: function (res) {
-          var data = res.data;
-          if (res.response.status == "ok") {
-            var saveddata = data.json;
-            try {
-              if (saveddata == undefined) {
-                throw new Error("Empty JSON");
+              if (res.response != undefined && res.response.status == "ok") 
+              {
+	              data = res.data;
+	              var saveddata = data.json;
+	              if( saveddata !== undefined)
+	              {
+		              var updateddata = saveddata.replaceAll("${apphome}", apphome);
+		              var parsed = JSON.parse(updateddata);
+		              if (parsed.length) {
+			           	
+			           	insertjson = parsed;
+			           	//console.log("Empty JSON, loading defaults.");
+		              }
+		           }
               }
-              var updateddata = saveddata.replaceAll("${apphome}", apphome);
-              var parsed = JSON.parse(updateddata);
-              if (!parsed.length) {
-                throw new Error("Empty JSON");
-              }
-              reader.unmarshal(canvas, parsed);
+              else{
+				console.log("Error",res);
+			  }
+		},
+		complete: function()
+		{
+              reader.unmarshal(canvas, insertjson);
               loadEvents();
-            } catch (e) {
-              console.log(e);
-              console.log("Empty JSON, loading defaults.");
-              reader.unmarshal(canvas, placeholderJSON);
-            }
+           
             recenterCanvas();
 
-            if (data.canvastop !== undefined) {
-              canvasContainer.css("margin-top", parseInt(data.canvastop));
-            }
-            if (data.canvasleft !== undefined) {
-              canvasContainer.css("margin-left", parseInt(data.canvasleft));
-            }
-            if (data.canvaszoom !== undefined) {
-              canvas.setZoom(data.canvaszoom);
-            }
-
+			if( data != null)
+			{
+	            if (data.canvastop !== undefined) {
+	              canvasContainer.css("margin-top", parseInt(data.canvastop));
+	            }
+	            if (data.canvasleft !== undefined) {
+	              canvasContainer.css("margin-left", parseInt(data.canvasleft));
+	            }
+	            if (data.canvaszoom !== undefined) {
+	              canvas.setZoom(data.canvaszoom);
+	            }
+	        }
             var img = new Image();
             img.src = logo;
             img.onload = function () {
@@ -557,12 +578,9 @@ $(document).ready(function () {
               mainNode.getPort("mainInputRight").setX(mainNode.getWidth());
               mainNode.getPort("mainInputRight").setY(mainNode.getHeight() / 2);
             };
-          }
         },
       });
     }
-
-    loadJSON();
 
     function rearrangeLabel(groupNode) {
       var groupWidth = groupNode.getWidth();
@@ -1154,7 +1172,6 @@ $(document).ready(function () {
         data.canvaszoom = canvas.getZoom();
         data.canvastop = canvasContainer.css("margin-top");
         data.canvasleft = canvasContainer.css("margin-left");
-        data.canvasleft2 = canvasContainer.css("margin-left");
 
         var url = "";
         var submitmethod = "";
@@ -1460,6 +1477,10 @@ $(document).ready(function () {
       console.log("Inserted template");
       closeemdialog($(this).closest(".modal"));
     });
+    
+	loadJSON();
+
+    
   }); //ends intitializer
 
   lQuery(".restoreversion").livequery("click", function (e) {
