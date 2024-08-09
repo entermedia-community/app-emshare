@@ -18,6 +18,13 @@ jQuery(document).ready(function () {
     mediadb: mediadb,
   });
 
+  ipcRenderer.on("electron-error", (_, error) => {
+    console.error("Desktop Error: ", error);
+    $("#application").append(
+      '<div class="alert fader alert-error" role="alert">Desktop Error: Check log for details.</div>'
+    );
+  });
+
   function humanFileSize(bytes) {
     var thresh = 1000;
     if (Math.abs(bytes) < thresh) {
