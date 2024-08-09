@@ -1,19 +1,28 @@
 
 #set( $filestodownload = $pendingpull.files )
-#set( $folders = $pendingpull.folders )
 #set( $filestoupload = $pendingpush.files )
 
+#set($categorypath = $!pendingpull.categorypath)
+#ifnull($categorypath)
+	#set($categorypath = $!pendingpush.categorypath)
+#end
+
+#set($filedownloadpath = $!pendingpull.filedownloadpath)
+#ifnull($filedownloadpath)
+	#set($filedownloadpath = $!pendingpush.filedownloadpath)
+#end
+
 <div id="currentfolder"
-		data-categorypath="${categorypath}"
-		class="px-4 pt-1 pb-4 sync-stage new rounded">
+	data-categorypath="${categorypath}"
+	class="px-4 pt-1 pb-4 sync-stage new rounded">
 	
-		<div class="sync-folder mx-4 mb-4">
+	<div class="sync-folder mx-4 mb-4">
 		<span>[[Folder]]:</span>
-		<input id="pullSaveFolder" type="text" class="form-control" placeholder="[[Save Folder]]" readonly value="$!pendingpull.filedownloadpath">
-		#if($pendingpull.filedownloadpath)
+		<input id="pullSaveFolder" type="text" class="form-control" placeholder="[[Save Folder]]" readonly value="$!filedownloadpath">
+		#if($filedownloadpath)
 			<a href="#" 
 				class="btn btn-primary rounded ml-2 open-folder" 
-				data-path="$!pendingpull.filedownloadpath"
+				data-path="$!filedownloadpath"
 				title="[[Open Local Folder]]">
 				[[View]]
 			</a>
@@ -34,22 +43,23 @@
 			
 			<div class="d-flex align-items-center"> 
 				<button class='btn btn-success rounded ajax upload-push'
-					data-categorypath="$!pendingpull.categorypath">
+					data-categorypath="$!categorypath">
 					<i class="bi bi-cloud-arrow-up-fill mr-1"></i>
 					[[Push to server]]
 				</button>
 				<span class="mx-2">
 					[[Or]]
 				</span>
-				<button class="btn btn-danger rounded remove-extra" data-categorypath="$!pendingpull.categorypath" data-count="$filestoupload.size()">
+				<button class="btn btn-danger rounded remove-extra" data-categorypath="$!categorypath" data-count="$filestoupload.size()">
 					<i class="bi bi-trash-fill mr-1"></i>
 					[[Remove Extra Files]]
 				</button> 
 			</div>
 		</div>
+
 		<ul id="pulllocalfiles" class="collapse list-unstyled overflow-y pl-4">
 		#foreach( $file in $filestoupload)
-			<li class="d-flex" data-assetid="$file.id" data-categorypath="$!pendingpull.categorypath" data-path="$file.path" data-url="$file.url">
+			<li class="d-flex" data-assetid="$file.id" data-categorypath="$!categorypath" data-path="$file.path" data-url="$file.url">
 				#if($file.url)
 				<a href="$file.url" class="mr-2"> ##should be file preview url
 					<i class="bi bi-eye-fill ns"></i>
@@ -67,9 +77,7 @@
 	#if($filestodownload.size() > 0)
 		<div class="d-flex align-items-center justify-content-between px-1 py-2">
 			<a href="#pullfiles" data-toggle="collapse" role="button">
-		
 				<i class="bi bi-caret-right-fill ns"></i> 
-				
 				$filestodownload.size() [[new]] file#if($filestodownload.size()>1)s#end [[found on the server]]
 			</a>
 			 
@@ -89,12 +97,12 @@
 		
 		<ul id="pullfiles" class="collapse list-unstyled overflow-y pl-4">
 		#foreach( $file in $filestodownload)
-			<li class="d-flex" data-assetid="$file.id" data-categorypath="$!pendingpull.categorypath" data-path="$file.path" data-url="$file.url">
-			#if($file.url)
+			<li class="d-flex" data-assetid="$file.id" data-categorypath="$!categorypath" data-path="$file.path" data-url="$file.url">
+				#if($file.url)
 					<a href="$file.url" class="mr-2"> ##should be file preview url
 						<i class="bi bi-eye-fill ns"></i>
 					</a>
-					#end
+				#end
 				<span>$file.path</span>
 				<button class="ml-auto mr-2 btn-unstyled pull-individual">
 					<i class="bi bi-download ns"></i>
@@ -104,12 +112,11 @@
 		</ul>
 	#end
 	
-
-	#if($filestoupload.size() < 1 && $filestodownload.size() <1)
-	<div class="d-flex align-items-center justify-content-center my-3 px-2 py-2synced">
-	<strong>
-		[[You are up to date!]]
-	</strong>
-	</div>
-#end
+	#if($filestoupload.size() < 1 && $filestodownload.size() < 1)
+		<div class="d-flex align-items-center justify-content-center my-3 px-2 py-2synced">
+			<strong>
+				[[You are up to date!]]
+			</strong>
+		</div>
+	#end
 </div>
