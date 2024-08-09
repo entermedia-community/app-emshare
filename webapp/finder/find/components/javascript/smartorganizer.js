@@ -497,13 +497,16 @@ $(document).ready(function () {
               {
 	              data = res.data;
 	              var saveddata = data.json;
-	              var updateddata = saveddata.replaceAll("${apphome}", apphome);
-	              var parsed = JSON.parse(updateddata);
-	              if (parsed.length) {
-		           	
-		           	insertjson = parsed;
-		           	//console.log("Empty JSON, loading defaults.");
-	              }
+	              if( saveddata !== undefined)
+	              {
+		              var updateddata = saveddata.replaceAll("${apphome}", apphome);
+		              var parsed = JSON.parse(updateddata);
+		              if (parsed.length) {
+			           	
+			           	insertjson = parsed;
+			           	//console.log("Empty JSON, loading defaults.");
+		              }
+		           }
               }
               else{
 				console.log("Error",res);
