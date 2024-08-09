@@ -419,6 +419,36 @@ jQuery(document).ready(function () {
 	  $("#pushSaveFolder").val();
   });
 */
+  ipcRenderer.on("extra-folders-found", (_, data) => {
+    var tree = "";
+    var tab = "";
+    data.forEach(({ name, level, index, path, isExtra = false }) => {
+      var padding = (level - 1) * 8;
+      var isDl = false,
+        isUp = false;
+      var folder = $("#folder-" + index);
+      if (folder.length) {
+        isDl = folder.find(".notif").hasClass("dl");
+        isUp = folder.find(".notif").hasClass("up");
+        tab = folder.find(".pullfetchfolder").data("tab");
+      }
+      var notifClass = isDl ? "dl" : "";
+      notifClass += isUp || isExtra ? " up" : "";
+      tree += `<div style="padding-left: ${padding}px;" class="pull-folder" id="folder-${index}">
+        <a href="#"
+          class="pullfetchfolder"
+          data-tab="${tab}"
+          data-categorypath="${path}">
+          <i class="bi bi-folder"></i>
+          <span class="mx-1 notif ${notifClass}">${name} <i class="bi bi-circle-fill"></i></span>
+          <i class="fas fa-spinner fa-spin text-muted" style="display: none;"></i>
+        </a>
+      </div>`;
+    });
+    $("#fetchfolder").html("");
+    $(".pullfoldertree").html(tree);
+  });
+
   lQuery(".pullfetchfolder").livequery("click", function (e) {
     e.preventDefault();
     var folder = $(this);
