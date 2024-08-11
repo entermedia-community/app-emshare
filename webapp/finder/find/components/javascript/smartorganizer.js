@@ -26,14 +26,12 @@ function setContrast(hex) {
   return brightness > 125 ? "#000000" : "#ffffff";
 }
 $(document).ready(function () {
-	
-	//See if UI is already initialized
-	if( $("#organizer_canvas").data("uiloaded") == true)
-	{
-		console.log("Smart Javascript already initialized");
-		return;
-	}
-	
+  //See if UI is already initialized
+  if ($("#organizer_canvas").data("uiloaded") == true) {
+    console.log("Smart Javascript already initialized");
+    return;
+  }
+
   var app = jQuery("#application");
   var apphome = app.data("siteroot") + app.data("apphome");
   var siteroot = $("#application").data("siteroot");
@@ -354,12 +352,12 @@ $(document).ready(function () {
   ];
 
   lQuery("#organizer_canvas").livequery(function () {
-	
-	$(this).data("uiloaded",true);
-	
+    $(this).data("uiloaded", true);
+
     var logo = $("#logoPicker").val();
     var bgColor = $("#logoPicker").data("bg");
     var strokeColor = $("#logoPicker").data("stroke");
+    var changed = false;
     if (canvas) {
       canvas.clear();
       canvas = null;
@@ -482,102 +480,97 @@ $(document).ready(function () {
     var reader = new draw2d.io.json.Reader();
 
     function loadJSON() {
+      changed = false;
       var id = $("#organizerId").val();
       var url =
         siteroot + "/" + mediadb + "/services/module/smartorganizer/data/" + id;
-        
-        var insertjson = placeholderJSON;
-        var data;
+
+      var insertjson = placeholderJSON;
+      var data;
       jQuery.ajax({
         dataType: "json",
         url: url,
         method: "GET",
         success: function (res) {
-              if (res.response != undefined && res.response.status == "ok") 
-              {
-	              data = res.data;
-	              var saveddata = data.json;
-	              if( saveddata !== undefined)
-	              {
-		              var updateddata = saveddata.replaceAll("${apphome}", apphome);
-		              var parsed = JSON.parse(updateddata);
-		              if (parsed.length) {
-			           	
-			           	insertjson = parsed;
-			           	//console.log("Empty JSON, loading defaults.");
-		              }
-		           }
+          if (res.response != undefined && res.response.status == "ok") {
+            data = res.data;
+            var saveddata = data.json;
+            if (saveddata !== undefined) {
+              var updateddata = saveddata.replaceAll("${apphome}", apphome);
+              var parsed = JSON.parse(updateddata);
+              if (parsed.length) {
+                insertjson = parsed;
+                //console.log("Empty JSON, loading defaults.");
               }
-              else{
-				console.log("Error",res);
-			  }
-		},
-		complete: function()
-		{
-              reader.unmarshal(canvas, insertjson);
-              loadEvents();
-           
-            recenterCanvas();
+            }
+          } else {
+            console.log("Error", res);
+          }
+        },
+        complete: function () {
+          reader.unmarshal(canvas, insertjson);
+          loadEvents();
 
-			if( data != null)
-			{
-	            if (data.canvastop !== undefined) {
-	              canvasContainer.css("margin-top", parseInt(data.canvastop));
-	            }
-	            if (data.canvasleft !== undefined) {
-	              canvasContainer.css("margin-left", parseInt(data.canvasleft));
-	            }
-	            if (data.canvaszoom !== undefined) {
-	              canvas.setZoom(data.canvaszoom);
-	            }
-	        }
-            var img = new Image();
-            img.src = logo;
-            img.onload = function () {
-              var imgWidth = img.naturalWidth;
-              var imgHeight = img.naturalHeight;
+          recenterCanvas();
 
-              var prevLogo = canvas.getFigure("logo");
+          if (data != null) {
+            if (data.canvastop !== undefined) {
+              canvasContainer.css("margin-top", parseInt(data.canvastop));
+            }
+            if (data.canvasleft !== undefined) {
+              canvasContainer.css("margin-left", parseInt(data.canvasleft));
+            }
+            if (data.canvaszoom !== undefined) {
+              canvas.setZoom(data.canvaszoom);
+            }
+          }
+          var img = new Image();
+          img.src = logo;
+          img.onload = function () {
+            var imgWidth = img.naturalWidth;
+            var imgHeight = img.naturalHeight;
 
-              if (prevLogo) {
-                canvas.remove(prevLogo);
-              }
+            var prevLogo = canvas.getFigure("logo");
 
-              var mainNode = canvas.getFigure("main");
+            if (prevLogo) {
+              canvas.remove(prevLogo);
+            }
 
-              mainNode.setWidth(imgWidth * 1.2);
-              mainNode.setHeight(imgHeight * 1.2);
+            var mainNode = canvas.getFigure("main");
 
-              canvas.add(
-                new draw2d.shape.basic.Image({
-                  id: "logo",
-                  path: logo,
-                  width: imgWidth,
-                  height: imgHeight,
-                  draggable: false,
-                  selectable: false,
-                  cssClass: "brandLogo",
-                }),
-                mainNode.getX() + (mainNode.getWidth() - imgWidth) / 2,
-                mainNode.getY() + (mainNode.getHeight() - imgHeight) / 2
-              );
+            mainNode.setWidth(imgWidth * 1.2);
+            mainNode.setHeight(imgHeight * 1.2);
 
-              mainNode.setColor(strokeColor);
-              mainNode.setBackgroundColor(bgColor);
+            canvas.add(
+              new draw2d.shape.basic.Image({
+                id: "logo",
+                path: logo,
+                width: imgWidth,
+                height: imgHeight,
+                draggable: false,
+                selectable: false,
+                cssClass: "brandLogo",
+              }),
+              mainNode.getX() + (mainNode.getWidth() - imgWidth) / 2,
+              mainNode.getY() + (mainNode.getHeight() - imgHeight) / 2
+            );
 
-              //TODOL: Fix ports
-              mainNode.getPort("mainInputTop").setX(mainNode.getWidth() / 2);
-              mainNode.getPort("mainInputTop").setY(0);
+            mainNode.setColor(strokeColor);
+            mainNode.setBackgroundColor(bgColor);
 
-              mainNode.getPort("mainInputLeft").setX(0);
-              mainNode.getPort("mainInputLeft").setY(mainNode.getHeight() / 2);
+            //TODOL: Fix ports
+            mainNode.getPort("mainInputTop").setX(mainNode.getWidth() / 2);
+            mainNode.getPort("mainInputTop").setY(0);
 
-              mainNode.getPort("mainInputBottom").setX(mainNode.getWidth() / 2);
-              mainNode.getPort("mainInputBottom").setY(mainNode.getHeight());
+            mainNode.getPort("mainInputLeft").setX(0);
+            mainNode.getPort("mainInputLeft").setY(mainNode.getHeight() / 2);
 
-              mainNode.getPort("mainInputRight").setX(mainNode.getWidth());
-              mainNode.getPort("mainInputRight").setY(mainNode.getHeight() / 2);
-            };
+            mainNode.getPort("mainInputBottom").setX(mainNode.getWidth() / 2);
+            mainNode.getPort("mainInputBottom").setY(mainNode.getHeight());
+
+            mainNode.getPort("mainInputRight").setX(mainNode.getWidth());
+            mainNode.getPort("mainInputRight").setY(mainNode.getHeight() / 2);
+          };
         },
       });
     }
@@ -942,7 +935,8 @@ $(document).ready(function () {
       canvas.html.focusin();
       folderGroup.select();
       handleSelect(folderGroup);
-      saveJSON(false);
+      saveJSON();
+      changed = true;
     }
 
     var folderDragging = false;
@@ -1117,13 +1111,15 @@ $(document).ready(function () {
         $("#folderThumbPickerBtn").html(`<img src="${iconPath}" />`);
         closeemdialog($(this).closest(".modal"));
         hideLoader();
-        saveJSON(false);
+        saveJSON();
+        changed = true;
       });
     });
 
     canvas.getCommandStack().addEventListener(function (e) {
       if (e.isPostChangeEvent()) {
-        saveJSON(false);
+        saveJSON();
+        changed = true;
       }
     });
 
@@ -1134,14 +1130,14 @@ $(document).ready(function () {
     var saveBtn = $("#saveOrganizer");
 
     saveBtn.on("click", function () {
+      changed = false;
+      saveJSON();
       saveJSON(true);
-      //save versioning
-      saveJSON(false);
     });
 
     //var autoSaveTimeout;
 
-    function saveJSON(usersaved) {
+    function saveJSON(usersaved = false) {
       /*
       if (autoSaveTimeout) {
         clearTimeout(autoSaveTimeout);
@@ -1236,7 +1232,7 @@ $(document).ready(function () {
         autoSaveTimeout = setTimeout(autoSaver, 30 * 1000);
         return;
       }
-      saveJSON(false);
+      saveJSON();
     }
   */
     //autoSaveTimeout = setTimeout(autoSaver, 30 * 1000);
@@ -1472,15 +1468,27 @@ $(document).ready(function () {
       });
 
       reader.unmarshal(canvas, parsed);
-      saveJSON(false);
+      saveJSON();
+      changed = true;
       recenterCanvas();
       console.log("Inserted template");
       closeemdialog($(this).closest(".modal"));
     });
-    
-	loadJSON();
 
-    
+    lQuery(".closeorgnizer").livequery("click", function () {
+      if (!changed) {
+        closeemdialog($(this).closest(".modal"));
+        return;
+      }
+      if (
+        confirm("You have unsaved changes. Are you sure you want to close?")
+      ) {
+        closeemdialog($(this).closest(".modal"));
+      }
+      changed = false;
+    });
+
+    loadJSON();
   }); //ends intitializer
 
   lQuery(".restoreversion").livequery("click", function (e) {
