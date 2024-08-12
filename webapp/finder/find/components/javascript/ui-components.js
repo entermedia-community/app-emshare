@@ -158,12 +158,10 @@ runajaxonthis = function (inlink, e) {
         fnc(inlink); //execute it
       }
     }
-    
-    if( !targetDiv.startsWith("#") && !targetDiv.startsWith("."))
-    {
-		targetDiv = "#" + targetDiv; 
-	}
-    
+
+    if (!targetDiv.startsWith("#") && !targetDiv.startsWith(".")) {
+      targetDiv = "#" + targetDiv;
+    }
 
     showLoader();
 
@@ -184,7 +182,7 @@ runajaxonthis = function (inlink, e) {
             //Call replacer to pull $scope variables
             onpage = cell.parent();
             cell.replaceWith(data); //Cant get a valid dom element
-            newcell = findclosest(onpage,targetDiv);
+            newcell = findclosest(onpage, targetDiv);
           } else {
             onpage = cell;
             cell.html(data);
@@ -298,16 +296,13 @@ uiload = function () {
   var app = jQuery("#application");
   var siteroot = app.data("siteroot");
   var apphome = app.data("apphome");
-  var themeprefix =  app.data("themeprefix");
+  var themeprefix = app.data("themeprefix");
   if (siteroot !== undefined) {
-	  //legacy siteroot
-	  apphome = siteroot + apphome;
-	  themeprefix = siteroot + themeprefix;
+    //legacy siteroot
+    apphome = siteroot + apphome;
+    themeprefix = siteroot + themeprefix;
   }
   var mediadb = $("#application").data("mediadbappid");
-
-  
-  
 
   if ($.fn.tablesorter) {
     $("#tablesorter").tablesorter();
@@ -830,6 +825,12 @@ uiload = function () {
 
       var formmodal = form.closest(".modal");
 
+      var submitButton = form.find('button[type="submit"]');
+      if (submitButton.length == 0) {
+        submitButton = form.find('input[type="submit"]');
+      }
+      submitButton.attr("disabled", "disabled");
+      submitButton.append("<i class='fa fa-spinner fa-spin ml-2'></i>");
       form.ajaxSubmit({
         data: data,
         xhrFields: {
@@ -905,6 +906,10 @@ uiload = function () {
           if (form.data("onsuccessreload")) {
             document.location.reload(true);
           }
+        },
+        complete: function () {
+          submitButton.removeAttr("disabled");
+          submitButton.find(".fa-spinner").remove();
         },
       });
 
@@ -2129,66 +2134,69 @@ uiload = function () {
   });
 
   //newpicker
-  lQuery(".pickerselectrow, .pickerselectrowdiv").livequery("click", function (event) {
-    var row = $(this).closest("tr");
-    var rowid = row.data("id");
-    var pickerresults = $(this).closest(".pickerresults");
+  lQuery(".pickerselectrow, .pickerselectrowdiv").livequery(
+    "click",
+    function (event) {
+      var row = $(this).closest("tr");
+      var rowid = row.data("id");
+      var pickerresults = $(this).closest(".pickerresults");
 
-    if (pickerresults.length) {
-      var options = pickerresults.data();
-      //options.assetid = assetid;
+      if (pickerresults.length) {
+        var options = pickerresults.data();
+        //options.assetid = assetid;
 
-      options.id = rowid;
-      var clickurl = pickerresults.data("clickurl");
-      var targetdiv = pickerresults.data("clicktargetdiv");
-      var targettype = pickerresults.data("targettype");
+        options.id = rowid;
+        var clickurl = pickerresults.data("clickurl");
+        var targetdiv = pickerresults.data("clicktargetdiv");
+        var targettype = pickerresults.data("targettype");
 
-      if (targettype == "entitydialog") {
-        emdialog(pickerresults, event);
-        return;
-      } else if (targettype == "entitypickerfield") {
-        var pickertarget = pickerresults.data("pickertarget");
-        pickertarget = $("#" + pickertarget);
-        if (pickertarget.length > 0) {
-          updateentitylist(pickertarget, rowid, row.data("rowname"));
-          closeemdialog(pickerresults.closest(".modal"));
+        if (targettype == "entitydialog") {
+          emdialog(pickerresults, event);
+          return;
+        } else if (targettype == "entitypickerfield") {
+          var pickertarget = pickerresults.data("pickertarget");
+          pickertarget = $("#" + pickertarget);
+          if (pickertarget.length > 0) {
+            updateentitylist(pickertarget, rowid, row.data("rowname"));
+            closeemdialog(pickerresults.closest(".modal"));
+          }
+          return;
+        } else {
+          if (clickurl !== undefined && clickurl != "") {
+            jQuery.ajax({
+              url: clickurl,
+              data: options,
+              success: function (data) {
+                if (!targetdiv.jquery) {
+                  targetdiv = $("#" + targetdiv);
+                }
+                if (targettype == "message") {
+                  if (targetdiv !== undefined) {
+                    targetdiv.prepend(data);
+                    targetdiv.find(".fader").fadeOut(3000, "linear");
+                  }
+                } else if (targettype == "entitypickersubmodule") {
+                  var pickertarget = pickerresults.data("pickertarget");
+                  pickertarget = $("#" + pickertarget);
+                  if (pickertarget.length > 0) {
+                    autoreload(pickertarget);
+                  }
+                } else {
+                  //regular targetdiv
+                  if (targetdiv !== undefined) {
+                    targetdiv.replaceWith(data);
+                  }
+                }
+
+                closeemdialog(pickerresults.closest(".modal"));
+              },
+            });
+          }
+          return;
         }
-        return;
-      } else {
-        if (clickurl !== undefined && clickurl != "") {
-          jQuery.ajax({
-            url: clickurl,
-            data: options,
-            success: function (data) {
-              if (!targetdiv.jquery) {
-                targetdiv = $("#" + targetdiv);
-              }
-              if (targettype == "message") {
-                if (targetdiv !== undefined) {
-                  targetdiv.prepend(data);
-                  targetdiv.find(".fader").fadeOut(3000, "linear");
-                }
-              } else if (targettype == "entitypickersubmodule") {
-                var pickertarget = pickerresults.data("pickertarget");
-                pickertarget = $("#" + pickertarget);
-                if (pickertarget.length > 0) {
-                  autoreload(pickertarget);
-                }
-              } else {
-                //regular targetdiv
-                if (targetdiv !== undefined) {
-                  targetdiv.replaceWith(data);
-                }
-              }
-
-              closeemdialog(pickerresults.closest(".modal"));
-            },
-          });
-        }
-        return;
       }
     }
-  });
+  );
 
   lQuery(".pickerselectadded").livequery(function () {
     var link = $(this);
