@@ -25,7 +25,7 @@ function setContrast(hex) {
   );
   return brightness > 125 ? "#000000" : "#ffffff";
 }
-$(document).ready(function () {
+$(document).on("draw2d-custom", function () {
   //See if UI is already initialized
   if ($("#organizer_canvas").data("uiloaded") == true) {
     console.log("Smart Javascript already initialized");
