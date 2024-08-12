@@ -1,0 +1,80 @@
+[
+  {
+    "type": "draw2d.shape.composite.Group",
+    "id": "id_${node.id}",
+    "x": ${node.offetX(220,0)},
+    "y": ${node.offetY(60,10)},
+    "width": 50,
+    "height": 40,
+    "bgColor": "#ffffff",
+    "color": "#4d5d80",
+    "stroke": 1,
+    "cssClass": "labelGroup",
+    "radius": 4,
+    "ports": [
+      {
+        "id": "portleft_${node.id}",
+        "name": "portleft_${node.id}",
+		    "type": "draw2d.HybridPort",
+		    "bgColor": "#60729e",
+		    "color": "#4d5d80",
+		    "port": "draw2d.HybridPort",
+		    "locator": "draw2d.layout.locator.XYRelPortLocator",
+		    "width": 16,
+		    "height": 16,
+        "locatorAttr": {
+          "x": 0,
+          "y": 50
+        }
+      },
+      {
+        "id": "portright_${node.id}",
+        "name": "portright_${node.id}",
+        "type": "draw2d.HybridPort",
+		    "bgColor": "#60729e",
+		    "color": "#4d5d80",
+		    "port": "draw2d.HybridPort",
+		    "locator": "draw2d.layout.locator.XYRelPortLocator",
+		    "width": 16,
+		    "height": 16,
+        "locatorAttr": {
+          "x": 100,
+          "y": 50
+        }
+      }
+    ] 
+  },
+  {
+    "type": "draw2d.shape.basic.Label",
+    "id": "connectorlabel${node.id}",
+    "x": ${node.offetX(220,5)},
+    "y": ${node.offetY(60,5)},
+    "text": "$node.getName()",
+    "stroke": 0,
+    "fontSize": 20,
+    "fontColor": "#4d5d80",
+    "bgColor": "none",
+    "selectable": false,
+    "draggable": false,
+    "cssClass": "titleLabel",
+    "composite": "id_${node.id}"
+  },
+  {
+    "type": "draw2d.Connection", 
+    "userData": {},
+    "cssClass": "draw2d_Connection",
+    "stroke": 2,
+    "color": "#4caf50", 
+    "outlineColor": "#ffffff", 
+    "router": "draw2d.layout.connection.InteractiveManhattanConnectionRouter",
+    "radius": 40,
+    "source": {
+      "node": "id_${node.sourceId}",
+      "port": "portright_${node.sourceId}"
+    },
+    "target": {
+      "node": "id_${node.id}",
+      "port": "portleft_${node.id}"
+    }
+  }
+]
