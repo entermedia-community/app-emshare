@@ -43,7 +43,7 @@ $(document).on("draw2d", function () {
       var request = {
         componentdatasortby: "orderingUp",
         page: "1",
-        hitsperpage: "10",
+        hitsperpage: "20",
         query: {
           terms: [
             {
