@@ -5,7 +5,8 @@
 	#if($permissions.can($moduleid, "edit"))
 		#set($previewediturl = "$siteroot$apphome/views/modules/$!moduleid/components/gridsample/preview/$!{entityrendertype}.html?entityid=multiedit:$!hits.sessionId&hitssessionid=$!hits.sessionId&searchtype=$moduleid&edit=true")
 		<li><a class="dropdown-item emdialog" 
-			href="$previewediturl">[[Multi Edit]] $!hits.getSelectionSize() [[Items]]</a></li>
+			href="$previewediturl"
+			title="[[Multi edit selected items]]">[[Multi Edit]] $!hits.getSelectionSize() [[Items]]</a></li>
 	#end
 	
 
@@ -13,14 +14,30 @@
 	<li class="dropdown-submenu">
 		<a class="dropdown-item  dropdown-toggle" href="#" data-bs-toggle="dropdown">[[Export]]</a>
 			<ul class="submenu dropdown-menu">
-				<li><a class="dropdown-item" href="$home${content.searchhome}/export/download/export_${type}.csv?hitssessionid=$hits.sessionId&searchtype=$type">[[Export results]]</a></li>
-				<li><a class="dropdown-item" href="$home${content.searchhome}/export/download/export_${type}.csv?hitssessionid=$hits.sessionId&friendly=true&searchtype=$type&view=$type/${type}resultstable">[[Export results (friendly)]]</a></li>
-				<li><a class="dropdown-item ajax" data-oemaxlevel="1" data-targetdiv="resultsarea" href="$home${content.searchhome}/export/custom.html?hitssessionid=$hits.sessionId">[[Custom Export]]</a></li>
+				<li>
+					<a class="dropdown-item" 
+					href="$home${content.searchhome}/export/download/export_${type}.csv?hitssessionid=$hits.sessionId&searchtype=$type"
+					title="[[Export reults to CSV]]">[[Export results]]</a></li>
+				<li>
+					<a class="dropdown-item" 
+					href="$home${content.searchhome}/export/download/export_${type}.csv?hitssessionid=$hits.sessionId&friendly=true&searchtype=$type&view=$type/${type}resultstable"
+					title="[[Export results to CSV (Friendly)]]">[[Export results (friendly)]]</a></li>
+				<li>
+					<a class="dropdown-item ajax" 
+					data-oemaxlevel="1" 
+					data-targetdiv="resultsarea" 
+					href="$home${content.searchhome}/export/custom.html?hitssessionid=$hits.sessionId"
+					title="[[Custom export results]]">[[Custom Export]]</a></li>
 			</ul>
 	</li>
 	
 	#if($permissions.can($moduleid, "delete"))
-		 <li><a class="dropdown-item ajax" data-confirm="[[Delete items?]]" data-oemaxlevel="2" data-targetdiv="$!{moduleid}resultscontainer" href="$!home$!{content.searchhome}/actions/deleteselections.html?hitssessionid=$hits.sessionId&module=$!{module.id}">[[Delete Selected Items]]</a></li>
+		 <li><a class="dropdown-item ajax" 
+		 data-confirm="[[Delete items?]]" 
+		 data-oemaxlevel="2" 
+		 data-targetdiv="$!{moduleid}resultscontainer" 
+		 href="$!home$!{content.searchhome}/actions/deleteselections.html?hitssessionid=$hits.sessionId&module=$!{module.id}"
+		 title="[[Delete selected items]]">[[Delete Selected Items]]</a></li>
 	#end
 	</ul>
 </li>
