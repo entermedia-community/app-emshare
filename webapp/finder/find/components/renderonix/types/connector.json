@@ -1,10 +1,10 @@
 [
   {
     "type": "draw2d.shape.composite.Group",
-     "id": "connector${node.id}",
+     "id": "id_${node.id}",
 	"x": ${node.offetX(220,0)},
 	"y": ${node.offetY(60,10)},
-    "width": 200,
+    "width": 50,
     "height": 40,
     "bgColor": "#ffffff",
     "color": "#4d5d80",
@@ -12,9 +12,9 @@
     "cssClass": "labelGroup",
     "radius": 4,
     "ports": [
-        {
-            "id": "portleft${node.id}",
-            "name": "labelPortLeft",
+      {
+        "id": "portleft${node.id}",
+        "name": "labelPortLeft",
 		    "type": "draw2d.HybridPort",
 		    "bgColor": "#60729e",
 		    "color": "#4d5d80",
@@ -22,34 +22,34 @@
 		    "locator": "draw2d.layout.locator.XYRelPortLocator",
 		    "width": 16,
 		    "height": 16,
-            "locatorAttr": {
-              "x": 0,
-              "y": 50
-            }
-        },
-        {
-            "id": "portright${node.id}",
-            "name": "labelPortRight",
-            "type": "draw2d.HybridPort",
+        "locatorAttr": {
+          "x": 0,
+          "y": 50
+        }
+      },
+      {
+        "id": "portright${node.id}",
+        "name": "labelPortRight",
+        "type": "draw2d.HybridPort",
 		    "bgColor": "#60729e",
 		    "color": "#4d5d80",
 		    "port": "draw2d.HybridPort",
 		    "locator": "draw2d.layout.locator.XYRelPortLocator",
 		    "width": 16,
 		    "height": 16,
-            "locatorAttr": {
-              "x": 100,
-              "y": 50
-            }
-        }] 
+        "locatorAttr": {
+          "x": 100,
+          "y": 50
+        }
+      }
+    ] 
   },
   {
     "type": "draw2d.shape.basic.Label",
     "id": "connectorlabel${node.id}",
-	"x": ${node.offetX(220,5)},
-	"y": ${node.offetY(60,5)},
+    "x": ${node.offetX(220,5)},
+    "y": ${node.offetY(60,5)},
     "text": "$node.getName()",
-   ## "textAnchor": "middle",
     "stroke": 0,
     "fontSize": 20,
     "fontColor": "#4d5d80",
@@ -57,6 +57,24 @@
     "selectable": false,
     "draggable": false,
     "cssClass": "titleLabel",
-    "composite": "connector${node.id}"
-  }
+    "composite": "id_${node.id}"
+  },
+  {
+    "type": "draw2d.Connection", 
+    "userData": {},
+    "cssClass": "draw2d_Connection",
+    "stroke": 2,
+    "color": "#4caf50", 
+    "outlineColor": "#ffffff", 
+    "router": "draw2d.layout.connection.InteractiveManhattanConnectionRouter",
+    "radius": 2,
+    "source": {
+      "node": "id_${node.sourceId}",
+      "port": "portleft_${node.sourceId}"
+    },
+    "target": {
+      "node": "id_${node.id}",
+      "port": "portright${node.id}"
+    }
+  },
 ]
