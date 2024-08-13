@@ -124,18 +124,39 @@ $(document).ready(function()
 	});
 	
 	
+	jQuery.validator.addMethod("entityrequired", function(value, element) {
+	    var picker = $(element).data("entitypicker");
+	    
+		if($('#'+picker+' li').length > 1)
+			{
+				return true;
+			} 
+	    return false;
+	    }, "This field is required."
+	);
+	
+	$.validator.addClassRules("entityRequired", {
+	     entityrequired: true
+	});
+	
 	
 	$.validator.setDefaults({
 	    errorPlacement: function(error, element) {
 	    	var elementid = element.attr('id');
-	    	var elementparent = $("#" + $.escapeSelector(elementid)).closest("div");
+	    	var elementparent = elementparent = element.closest("div");
+	    	if(!elementparent.length) {
+				$("#" + $.escapeSelector(elementid)).closest("div");
+				}
 	    	if(elementparent.length != 0) {
 	    		//elementparent = $("#" + $.escapeSelector(elementid));
 	    		error.insertAfter(elementparent);
 	    	}
-	    	if(element.hasClass('listdropdown') && element.next('.select2-container').length) {
+	    	if(element.is('.listdropdown, .listtags') && element.next('.select2-container').length) {
 	    		element.next('.select2-container').find('.select2-selection').addClass('error');
 	        }
+	        else if(element.hasClass('entityRequired')) {
+				element.prev(".entity-value-list").addClass('error');
+			}
 	    	
 	    }
 	});

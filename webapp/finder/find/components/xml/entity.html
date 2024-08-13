@@ -2,12 +2,10 @@
 	#set($values = $data.getValues($detail.id) )
 #end
 
-
-
 #set( $searcher = $searcherManager.getSearcher($detail.getListCatalogId(), $detail.getListId() ))
 
 #set($entity_module = $detail.getListId())
-
+<div>
 	<ul class="entity-value-list" id="entitypicker${detail.id}">
 		#foreach( $type in $values )
 			#set( $row = false )
@@ -16,7 +14,6 @@
 			    #set($entityid = $row.id)
 			    #set($link = "$!{siteroot}$applink/views/modules/$!{entity_module}/components/gridsample/preview/entity.html?id=$entityid")
 			    <li>
-					
 			    <a href="$link" 
 			    	class="emdialog entity-dialog" 
 			    	data-noesc="true" 
@@ -36,6 +33,8 @@
 		    </li>	
 	</ul>
 	
+	<input type="hidden" name="${detail.id}.size" value="$!{values.size()}" data-entitypicker="entitypicker${detail.id}" class="#if($detail.isRequired()) entityRequired #end" />
+
 	
 	#set($pickmoduleid = $detail.getListId())
 	
@@ -53,7 +52,7 @@
 		data-pickersearchaddnew="true"
 		data-hidefooter="true"
 		title="[[Add]] #text($module)">[[Add]] #text($module)</a>
-
+</div>	
 	
 	
 	
