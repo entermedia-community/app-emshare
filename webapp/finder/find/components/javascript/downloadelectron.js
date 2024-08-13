@@ -809,19 +809,21 @@ jQuery(document).ready(function () {
     console.log(folderTree);
     var tree = "";
     for (const [root, level1] of Object.entries(folderTree)) {
-      tree += `<i class="fas fa-folder"></i> ${root}`;
+      tree += `<span class="work-folder open-folder" data-path="${rootPath}">
+          <i class="fas fa-folder"></i> ${root}
+        </span>`;
       if (Object.keys(level1).length > 0) {
         tree += "<ul>";
         for (const [f1, level2] of Object.entries(level1)) {
           tree += `<li>
-            <span class="work-folder" data-path="${rootPath}/${f1}">
+            <span class="work-folder open-folder" data-path="${rootPath}/${f1}">
               <i class="fas fa-folder"></i> ${f1}
             </span>`;
           if (Object.keys(level2).length > 0) {
             tree += "<ul>";
             for (const [f3] of Object.entries(level2)) {
               tree += `<li>
-                <span class="work-folder" data-path="${rootPath}/${f1}/${f3}">
+                <span class="work-folder open-folder" data-path="${rootPath}/${f1}/${f3}">
                   <i class="fas fa-folder"></i> ${f3}</li>
                 </span>`;
             }
