@@ -13,26 +13,26 @@ $(document).on("draw2d", function () {
 
     canvas = new draw2d.Canvas("componentViewer");
 
-    canvas.installEditPolicy(
-      new draw2d.policy.connection.DragConnectionCreatePolicy({
-        createConnection: function () {
-          var conn = new draw2d.Connection({
-            stroke: 2,
-            color: "#4d5d80",
-            radius: 40,
-            cssClass: "connection",
-            resizable: false,
-            router:
-              new draw2d.layout.connection.InteractiveManhattanConnectionRouter(),
-          });
-          return conn;
-        },
-      })
-    );
+    // canvas.installEditPolicy(
+    //   new draw2d.policy.connection.DragConnectionCreatePolicy({
+    //     createConnection: function () {
+    //       var conn = new draw2d.Connection({
+    //         stroke: 2,
+    //         color: "#4d5d80",
+    //         radius: 40,
+    //         cssClass: "connection",
+    //         resizable: false,
+    //         router:
+    //           new draw2d.layout.connection.InteractiveManhattanConnectionRouter(),
+    //       });
+    //       return conn;
+    //     },
+    //   })
+    // );
 
     // canvas.installEditPolicy(new draw2d.policy.canvas.ShowGridEditPolicy());
     canvas.installEditPolicy(new draw2d.policy.canvas.SnapToGridEditPolicy());
-    canvas.installEditPolicy(new draw2d.policy.canvas.CoronaDecorationPolicy());
+    // canvas.installEditPolicy(new draw2d.policy.canvas.CoronaDecorationPolicy());
 
     var reader = new draw2d.io.json.Reader();
 
@@ -43,7 +43,7 @@ $(document).on("draw2d", function () {
       var request = {
         componentdatasortby: "orderingUp",
         page: "1",
-        hitsperpage: "20",
+        hitsperpage: "15",
         query: {
           terms: [
             {
