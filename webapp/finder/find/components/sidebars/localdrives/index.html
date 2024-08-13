@@ -1,54 +1,35 @@
-	<div class="col-sidebar-header sidebar-header-desktops">
-		<h2 class="">[[Desktop Uploads]]
-		<a class="sidebar-header-action localfolderPicker" 
-				href="#" id="localfolderPickerSidebar" 
-				data-sourcepath="Albums/Users/$user.getScreenName()/Desktops"
-				style="margin-top: 0"
-				title="[[Upload Folders]]"><i class="fa fa-folder-plus"></i></a>
-			<a class="sidebar-header-action localfilePicker" 
-				href="#" id="localfilePickerSidebar" 
-				data-sourcepath="Albums/Users/$user.getScreenName()/Desktops"
-				style="margin-top: 0"
-				title="[[Upload Files]]"><i class="fa fa-file-upload"></i></a>			
-		</h2>
-
-	<input id="upload_folder" type="file" style="position:absolute; top:-2000px;" webkitdirectory multiple="multiple"  />
-		
-	<a href="#" title="[[Hide Desktops Sidebar]]"
-					class="sidebar-toggler sidebar-toggler-hide"
-					data-action="hide" 
-					data-targetdiv="col-sidebars"
-					>
-					<i class="bi bi-chevron-double-left closebar"></i>
-				</a>			
-	</div>
-	
-	<div style="padding:0px 0px 20px 0px;">
-
-		<div id="targetmodulecontainersearch" class="domdatacontext" data-clickurl="$applink/views/modules/asset/bycategory/index.html" data-targetdivinner="applicationmaincontent" data-oemaxlevel="3">
-			#set( $uploads = $mediaarchive.query("userupload").exact("owner", $user.id).sort("uploaddate").search($context) )
-			#if($uploads)
-				#foreach($upload in $uploads)
-				<div class="uploads-categorypath">
-					##$upload.uploadcategory
-					#set( $category = $mediaarchive.getCategory($upload.uploadcategory) )
-					#foreach( $parent in $category.getParentCategoriesFrom(5))
-						#if( ${foreach.count} > 1)\\#end
-						<a style="padding:0px 2px 4px 2px;" 
-						href="$siteroot$apphome/views/modules/asset/bycategory/${parent.id}.html"
-						class="ajax"
-						data-targetdivinner="applicationcontent"
-						data-oemaxlevel="4"
-						data-closemediaviewer="true"
-						data-updateurl="true"
-						data-sidebarcomponent="categories" title="[[Uploaded at]]: $!upload.uploaddate">$parent</a>
-							#end
-				</div>
-				#end
-			#end						
+<div class="col-sidebar-header sidebar-header-desktops"> 
+	<div class="d-flex flex-column align-items-center justify-content-between">
+		<strong class="d-block w-100 bg-dark text-center text-white py-1" style="text-transform: uppercase;font-size: 16px;">[[Work Folder]]</strong>
+		<div class="d-flex w-100 mt-2 px-2">
+			<input id="workFolderInput" type="text" class="flex-grow-1 form-control rounded" placeholder="Work Folder Path" readonly />
+			<button id="workFolderPicker" class="btn btn-brand light rounded ml-2 px-2" title="[[Change Work Folder]]">Change</button>
 		</div>
-
-
+		<div class="mt-2 px-2 w-100">
+			<select id="workDirEntity" class="form-control rounded">
+				<option value="0">[[Select Entity]]</option>
+				#foreach ( $amodule in $userprofile.getEntities() )
+					<option value="$amodule.getId()">#text($amodule)</option>
+				#end
+			</select>
+		</div>
+		<button id="scanHotFolders" 
+			class="btn btn-success small rounded my-2"
+			title="[[Scan for Changes]]"
+			>
+			<i class="fa fa-search"></i> <span>Scan for Changes</span>
+		</button> 
 	</div>
-	
-				
+	<a href="#" title="[[Hide Desktops Sidebar]]"
+		class="sidebar-toggler sidebar-toggler-hide"
+		data-action="hide" 
+		data-targetdiv="col-sidebars"
+	>
+		<i class="bi bi-chevron-double-left closebar"></i>
+	</a>			
+</div>
+<div class="border-top w-100"></div>
+
+<div class="work-dir-tree" id="workDirTree">
+
+</div>
