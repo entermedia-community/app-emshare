@@ -753,6 +753,16 @@ jQuery(document).ready(function () {
     ipcRenderer.send("fetchfilesdownload", { assetid, file, headers });
   });
 
+  function onHotScanDone(done = true) {
+    if (done) {
+      $("#scanHotFolders").prop("disabled", false);
+      $("#scanHotFolders").find("span").text("Scan Hot Folders");
+    } else {
+      $("#scanHotFolders").prop("disabled", true);
+      $("#scanHotFolders").find("span").text("Scanning...");
+    }
+  }
+
   lQuery("#workFolderInput").livequery(function () {
     if ($(this).val() == "") {
       $("#workFolderPicker").text("Add Work Folder");
@@ -788,8 +798,7 @@ jQuery(document).ready(function () {
       alert("Please select an entity first!");
       return;
     }
-    $(this).prop("disabled", true);
-    $(this).find("span").text("Scanning...");
+    onHotScanDone(false);
     ipcRenderer.send("scanHotFolders", { rootPath: workDir });
   });
 
@@ -835,8 +844,7 @@ jQuery(document).ready(function () {
       }
     }
     workDirTree.html(tree);
-    $("#scanHotFolders").prop("disabled", false);
-    $("#scanHotFolders").find("span").text("Scan Hot Folders");
+    onHotScanDone();
   });
 
   ipcRenderer.on("scan-hot-next", (_, { path }) => {
@@ -854,15 +862,13 @@ jQuery(document).ready(function () {
       });
     $("#scanHotFolders").find("span").text("Scan Completed!");
     setTimeout(() => {
-      $("#scanHotFolders").prop("disabled", false);
-      $("#scanHotFolders").find("span").text("Scan Hot Folders");
+      onHotScanDone();
     }, 3000);
   });
   ipcRenderer.on("scan-hot-complete", () => {
     $("#scanHotFolders").find("span").text("Scan Completed!");
     setTimeout(() => {
-      $("#scanHotFolders").prop("disabled", false);
-      $("#scanHotFolders").find("span").text("Scan Hot Folders");
+      onHotScanDone();
     }, 3000);
     $(".folder-icon").removeClass("loading");
   });
