@@ -15,15 +15,14 @@ public void init()
 		
 			Searcher searcher = archive.getAssetSearcher();
 			//HitTracker assets = searcher.getAllHits();
-			HitTracker assets = context.getPageValue("hits");
+			Collection assets = context.getPageValue("hits");
 			
 			if( assets == null)
 			{
-				assets = searcher.query().exact("importstatus","needsmetadata").sort("sourcepath").search();
-				assets.enableBulkOperations();
-				assets.setHitsPerPage(100);
-				log.error("Must pass in the assets");
-				return;
+				HitTracker tracker = searcher.query().exact("importstatus","needsmetadata").sort("sourcepath").search();
+				tracker.enableBulkOperations();
+				tracker.setHitsPerPage(100);
+				assets = tracker;
 			}
 			List assetsToSave = new ArrayList();
 			MetaDataReader reader = moduleManager.getBean("metaDataReader");
