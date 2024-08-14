@@ -810,37 +810,42 @@ jQuery(document).ready(function () {
     });
   });
 
+  function folderHtm(path, name) {
+    return `<div class='work-folder'>
+      <label>
+				<input type="checkbox" class="mr-2" data-path="${path}" checked />
+				<span><i class="fas fa-folder"></i> ${name}</span>
+      </label>
+			<button class="btn text-accent open-folder" data-path="${path}">
+				<i class="fas fa-eye"></i>
+			</button>
+    </div>`;
+  }
+
   ipcRenderer.on("selected-dirs", (_, { rootPath, folderTree }) => {
     $("#workFolderInput").val(rootPath);
     $("#workFolderPicker").text("Change");
     var workDirTree = $("#workDirTree");
     workDirTree.html("");
-    console.log(folderTree);
     var tree = "";
     for (const [root, level1] of Object.entries(folderTree)) {
-      tree += `<span class="work-folder open-folder" data-path="${rootPath}">
-          <i class="fas fa-folder"></i> ${root}
-        </span>`;
+      tree += folderHtm(rootPath, root);
       if (Object.keys(level1).length > 0) {
-        tree += "<ul>";
+        // tree += "<ul>";
         for (const [f1, level2] of Object.entries(level1)) {
-          tree += `<li>
-            <span class="work-folder open-folder" data-path="${rootPath}/${f1}">
-              <i class="fas fa-folder"></i> ${f1}
-            </span>`;
+          // tree += `<li>`;
+          tree += folderHtm(`${rootPath}/${f1}`, f1);
           if (Object.keys(level2).length > 0) {
-            tree += "<ul>";
+            // tree += "<ul>";
             for (const [f3] of Object.entries(level2)) {
-              tree += `<li>
-                <span class="work-folder open-folder" data-path="${rootPath}/${f1}/${f3}">
-                  <i class="fas fa-folder"></i> ${f3}</li>
-                </span>`;
+              // tree += `<li>`;
+              tree += folderHtm(`${rootPath}/${f1}/${f3}`, f3);
             }
-            tree += "</ul>";
+            // tree += "</ul>";
           }
-          tree += "</li>";
+          // tree += "</li>";
         }
-        tree += "</ul>";
+        // tree += "</ul>";
       }
     }
     workDirTree.html(tree);
