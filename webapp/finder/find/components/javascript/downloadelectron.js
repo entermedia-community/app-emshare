@@ -18,28 +18,32 @@ jQuery(document).ready(function () {
     mediadb: mediadb,
   });
 
-  ipcRenderer.on("electron-log", (_, log) => {
+  ipcRenderer.on("electron-log", (_, ...log) => {
     console.log(
       "%c --- Desktop Log Start --- ",
       "background: #000000; color: #bada55; font-style: italic"
     );
-    console.log(...log);
-    console.log(
-      "%c --- Desktop Log End --- ",
-      "background: #000000; color: #bada55; font-style: italic"
-    );
+    if (log.length === 1) {
+      console.log.apply(console, log[0]);
+    } else {
+      log.forEach((l) => {
+        console.log.apply(console, l);
+      });
+    }
   });
 
-  ipcRenderer.on("electron-error", (_, error) => {
+  ipcRenderer.on("electron-error", (_, ...error) => {
     console.log(
       "%c --- Desktop Error Start --- ",
       "background: #000000; color: #ba5555; font-style: italic"
     );
-    console.error(...error);
-    console.log(
-      "%c --- Desktop Error End --- ",
-      "background: #000000; color: #ba5555; font-style: italic"
-    );
+    if (error.length === 1) {
+      console.error.apply(console, error[0]);
+    } else {
+      error.forEach((l) => {
+        console.error.apply(console, l);
+      });
+    }
 
     $("#application").append(
       '<div class="alert fader alert-error" role="alert">Desktop Error: Check log for details.</div>'
@@ -767,18 +771,11 @@ jQuery(document).ready(function () {
     if ($(this).val() == "") {
       $("#workFolderPicker").text("Add Work Folder");
       $("#scanHotFolders").prop("disabled", true);
-      ipcRenderer.send("getWorkDir");
     } else {
       $("#workFolderPicker").text("Change");
       $("#scanHotFolders").prop("disabled", false);
     }
-  });
-
-  ipcRenderer.on("work-dir", (_, { workDir, workDirEntity }) => {
-    $("#workFolderInput").val(workDir);
-    $("#workDirEntity").val(workDirEntity);
-    $("#workFolderPicker").text("Change");
-    $("#scanHotFolders").prop("disabled", false);
+    ipcRenderer.send("getWorkDir");
   });
 
   lQuery("#workDirEntity").livequery("change", function () {
@@ -811,7 +808,7 @@ jQuery(document).ready(function () {
   });
 
   function folderHtm(path, name) {
-    return `<div class="work-folder">
+    return `<div class="work-folder" data-name="${name}">
       <label>
 				<input type="checkbox" class="mr-2" data-path="${path}" checked />
 				<span><i class="fas fa-folder"></i> ${name}</span>
@@ -822,27 +819,51 @@ jQuery(document).ready(function () {
     </div>`;
   }
 
-  ipcRenderer.on("selected-dirs", (_, { rootPath, folderTree }) => {
-    $("#workFolderInput").val(rootPath);
-    $("#workFolderPicker").text("Change");
-    var workDirTree = $("#workDirTree");
-    workDirTree.html("");
-    var tree = "";
-    for (const [root, level1] of Object.entries(folderTree)) {
-      tree += folderHtm(rootPath, root);
-      if (Object.keys(level1).length > 0) {
-        for (const [f1, level2] of Object.entries(level1)) {
-          tree += folderHtm(`${rootPath}/${f1}`, f1);
-          if (Object.keys(level2).length > 0) {
-            for (const [f3] of Object.entries(level2)) {
-              tree += folderHtm(`${rootPath}/${f1}/${f3}`, f3);
+  ipcRenderer.on(
+    "selected-dirs",
+    (_, { rootPath, folderTree, workDirEntity = null }) => {
+      $("#workFolderInput").val(rootPath);
+      $("#workFolderPicker").text("Change");
+      $("#scanHotFolders").prop("disabled", false);
+
+      if (workDirEntity) {
+        $("#workDirEntity").val(workDirEntity);
+      }
+
+      var workDirTree = $("#workDirTree");
+      workDirTree.html("");
+      var tree = "";
+      for (const [root, level1] of Object.entries(folderTree)) {
+        tree += folderHtm(rootPath, root);
+        if (Object.keys(level1).length > 0) {
+          for (const [f1, level2] of Object.entries(level1)) {
+            tree += folderHtm(`${rootPath}/${f1}`, f1);
+            if (Object.keys(level2).length > 0) {
+              for (const [f3] of Object.entries(level2)) {
+                tree += folderHtm(`${rootPath}/${f1}/${f3}`, f3);
+              }
             }
           }
         }
       }
+      workDirTree.html(tree);
+      onHotScanDone();
     }
-    workDirTree.html(tree);
-    onHotScanDone();
+  );
+
+  ipcRenderer.on("new-hot-folder", (_, name) => {
+    var workDirTree = $("#workDirTree");
+    workDirTree.append(folderHtm(path, name));
+  });
+
+  ipcRenderer.on("unlink-hot-folder", (_, name) => {
+    $("#workDirTree")
+      .children()
+      .each(function () {
+        if ($(this).data("name") == name) {
+          $(this).remove();
+        }
+      });
   });
 
   ipcRenderer.on("scan-hot-next", (_, { path }) => {
