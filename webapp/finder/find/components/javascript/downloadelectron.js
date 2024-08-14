@@ -779,8 +779,8 @@ jQuery(document).ready(function () {
   });
 
   lQuery("#workDirEntity").livequery("change", function () {
-    var entity = $(this).val();
-    ipcRenderer.send("setWorkDirEntity", { entity });
+    var entityId = $(this).val();
+    ipcRenderer.send("setWorkDirEntity", { entityId });
   });
 
   lQuery("#scanHotFolders").livequery("click", function (e) {
@@ -807,12 +807,30 @@ jQuery(document).ready(function () {
     });
   });
 
-  function folderHtm(path, name) {
+  function folderHtm(
+    path,
+    name,
+    stats = { totalFiles: 0, totalFolders: 0, totalSize: 0 }
+  ) {
+    var s = [];
+    if (stats.totalFolders > 0) {
+      s.push(
+        `${stats.totalFolders} folder${stats.totalFolders > 1 ? "s" : ""}`
+      );
+    }
+    if (stats.totalFiles > 0) {
+      s.push(`${stats.totalFiles} file${stats.totalFiles > 1 ? "s" : ""}`);
+    }
+    var st = s.join(", ");
+    if (!st) st = "No files";
+    st += ` &middot; <b>${humanFileSize(stats.totalSize)}</b>`;
+
     return `<div class="work-folder" data-name="${name}">
       <label>
-				<input type="checkbox" class="mr-2" data-path="${path}" checked />
-				<span><i class="fas fa-folder"></i> ${name}</span>
+				<input type="checkbox" data-path="${path}" checked />
+				<span class="mx-2"><i class="fas fa-folder"></i> ${name}</span>
       </label>
+      <small>${st}</small>
 			<button class="btn text-accent open-folder px-2" data-path="${path}">
 				<i class="fas fa-eye"></i>
 			</button>
@@ -833,27 +851,24 @@ jQuery(document).ready(function () {
       var workDirTree = $("#workDirTree");
       workDirTree.html("");
       var tree = "";
-      for (const [root, level1] of Object.entries(folderTree)) {
-        tree += folderHtm(rootPath, root);
-        if (Object.keys(level1).length > 0) {
-          for (const [f1, level2] of Object.entries(level1)) {
-            tree += folderHtm(`${rootPath}/${f1}`, f1);
-            if (Object.keys(level2).length > 0) {
-              for (const [f3] of Object.entries(level2)) {
-                tree += folderHtm(`${rootPath}/${f1}/${f3}`, f3);
-              }
-            }
-          }
-        }
+      var totalFiles = 0,
+        totalSize = 0;
+      for (const [dirName, stats] of Object.entries(folderTree)) {
+        totalFiles += stats.totalFiles;
+        totalSize += stats.totalSize;
+        tree += folderHtm(rootPath, dirName, stats);
       }
       workDirTree.html(tree);
+      $("#hotStats")
+        .find(".count")
+        .text(totalFiles + " files");
+      $("#hotStats").find(".size").text(humanFileSize(totalSize));
       onHotScanDone();
     }
   );
 
-  ipcRenderer.on("new-hot-folder", (_, name) => {
-    var workDirTree = $("#workDirTree");
-    workDirTree.append(folderHtm(path, name));
+  ipcRenderer.on("new-hot-folder", (_, { path, name }) => {
+    $("#workDirTree").append(folderHtm(path, name));
   });
 
   ipcRenderer.on("unlink-hot-folder", (_, name) => {
