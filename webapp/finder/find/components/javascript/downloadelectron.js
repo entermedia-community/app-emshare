@@ -780,6 +780,7 @@ jQuery(document).ready(function () {
 
   lQuery("#workDirEntity").livequery("change", function () {
     var entityId = $(this).val();
+    //TODO: reload actions conainer with all the entitiy data (required fields)
     ipcRenderer.send("setWorkDirEntity", { entityId });
   });
 
@@ -798,6 +799,28 @@ jQuery(document).ready(function () {
     onHotScanDone(false);
     ipcRenderer.send("scanHotFolders", { rootPath: workDir });
   });
+  
+  
+   lQuery("#importFolders").livequery("click", function (e) {
+    e.preventDefault();
+    var workDir = $("#workFolderInput").val();
+    var workDirEntity = $("#workDirEntity").val();
+    if (!workDir) {
+      alert("Please select a work folder first!");
+      return;
+    }
+    if (!workDirEntity) {
+      alert("Please select an entity first!");
+      return;
+    }
+    onHotScanDone(false);
+    
+    var selectedFolders = [];
+    $.each($("work-folder inputs:checked"), function() {
+		selectedFolders.push($(this).data("name"));
+	});
+    ipcRenderer.send("importHotFolders", { rootPath: workDir, selectedFolders: selectedFolders });
+  });
 
   lQuery("#workFolderPicker").livequery("click", function (e) {
     e.preventDefault();
@@ -810,7 +833,8 @@ jQuery(document).ready(function () {
   function folderHtm(
     path,
     name,
-    stats = { totalFiles: 0, totalFolders: 0, totalSize: 0 }
+    stats = { totalFiles: 0, totalFolders: 0, totalSize: 0 },
+    newFolders
   ) {
     var s = [];
     if (stats.totalFolders > 0) {
@@ -824,10 +848,15 @@ jQuery(document).ready(function () {
     var st = s.join(", ");
     if (!st) st = "No files";
     st += ` &middot; <b>${humanFileSize(stats.totalSize)}</b>`;
-
+	
+	var checkboxstatus = "";
+	if(newFolders.includes(name)) {
+		checkboxstatus = "checked";
+	}
+	
     return `<div class="work-folder" data-name="${name}">
       <label>
-				<input type="checkbox" data-path="${path}" checked />
+				<input type="checkbox" data-path="${path}" data-name="${name}" ${checkboxstatus} />
 				<span class="mx-2"><i class="fas fa-folder"></i> ${name}</span>
       </label>
       <small>${st}</small>
@@ -837,9 +866,7 @@ jQuery(document).ready(function () {
     </div>`;
   }
 
-  ipcRenderer.on(
-    "selected-dirs",
-    (_, { rootPath, folderTree, workDirEntity = null }) => {
+  ipcRenderer.on("selected-dirs", (_, { rootPath, folderTree, workDirEntity = null, newFolders, existingFolders }) => {
       $("#workFolderInput").val(rootPath);
       $("#workFolderPicker").text("Change");
       $("#scanHotFolders").prop("disabled", false);
@@ -856,9 +883,16 @@ jQuery(document).ready(function () {
       for (const [dirName, stats] of Object.entries(folderTree)) {
         totalFiles += stats.totalFiles;
         totalSize += stats.totalSize;
-        tree += folderHtm(rootPath, dirName, stats);
+        tree += folderHtm(rootPath, dirName, stats, newFolders);
       }
       workDirTree.html(tree);
+      
+      /*
+      $.each(".working-folder input", function() {
+		  var local = $(this);
+		  
+	  });*/
+     
       $("#hotStats")
         .find(".count")
         .text(totalFiles + " files");
