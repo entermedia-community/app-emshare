@@ -618,9 +618,7 @@ jQuery(document).ready(function () {
   });
 
   function scanChange() {
-    $(".notif").each(function () {
-      $(this).removeClass("dl up");
-    });
+    $(".notif").removeClass("dl up");
     $(".pending-pulls").data("totalDownloadSize", 0);
     $(".pending-pulls").data("totalDownloadCount", 0);
     $(".pending-pulls").data("totalUploadSize", 0);
@@ -753,6 +751,124 @@ jQuery(document).ready(function () {
     };
     var assetid = item.data("id");
     ipcRenderer.send("fetchfilesdownload", { assetid, file, headers });
+  });
+
+  function onHotScanDone(done = true) {
+    if (done) {
+      $("#scanHotFolders").prop("disabled", false);
+      $("#scanHotFolders").find("span").text("Scan Hot Folders");
+    } else {
+      $("#scanHotFolders").prop("disabled", true);
+      $("#scanHotFolders").find("span").text("Scanning...");
+    }
+  }
+
+  lQuery("#workFolderInput").livequery(function () {
+    if ($(this).val() == "") {
+      $("#workFolderPicker").text("Add Work Folder");
+      $("#scanHotFolders").prop("disabled", true);
+      ipcRenderer.send("getWorkDir");
+    } else {
+      $("#workFolderPicker").text("Change");
+      $("#scanHotFolders").prop("disabled", false);
+    }
+  });
+
+  ipcRenderer.on("work-dir", (_, { workDir, workDirEntity }) => {
+    $("#workFolderInput").val(workDir);
+    $("#workDirEntity").val(workDirEntity);
+    $("#workFolderPicker").text("Change");
+    $("#scanHotFolders").prop("disabled", false);
+  });
+
+  lQuery("#workDirEntity").livequery("change", function () {
+    var entity = $(this).val();
+    ipcRenderer.send("setWorkDirEntity", { entity });
+  });
+
+  lQuery("#scanHotFolders").livequery("click", function (e) {
+    e.preventDefault();
+    var workDir = $("#workFolderInput").val();
+    var workDirEntity = $("#workDirEntity").val();
+    if (!workDir) {
+      alert("Please select a work folder first!");
+      return;
+    }
+    if (!workDirEntity) {
+      alert("Please select an entity first!");
+      return;
+    }
+    onHotScanDone(false);
+    ipcRenderer.send("scanHotFolders", { rootPath: workDir });
+  });
+
+  lQuery("#workFolderPicker").livequery("click", function (e) {
+    e.preventDefault();
+    window.postMessage({
+      type: "select-dirs",
+      currentPath: $("#workFolderInput").val(),
+    });
+  });
+
+  function folderHtm(path, name) {
+    return `<div class="work-folder">
+      <label>
+				<input type="checkbox" class="mr-2" data-path="${path}" checked />
+				<span><i class="fas fa-folder"></i> ${name}</span>
+      </label>
+			<button class="btn text-accent open-folder px-2" data-path="${path}">
+				<i class="fas fa-eye"></i>
+			</button>
+    </div>`;
+  }
+
+  ipcRenderer.on("selected-dirs", (_, { rootPath, folderTree }) => {
+    $("#workFolderInput").val(rootPath);
+    $("#workFolderPicker").text("Change");
+    var workDirTree = $("#workDirTree");
+    workDirTree.html("");
+    var tree = "";
+    for (const [root, level1] of Object.entries(folderTree)) {
+      tree += folderHtm(rootPath, root);
+      if (Object.keys(level1).length > 0) {
+        for (const [f1, level2] of Object.entries(level1)) {
+          tree += folderHtm(`${rootPath}/${f1}`, f1);
+          if (Object.keys(level2).length > 0) {
+            for (const [f3] of Object.entries(level2)) {
+              tree += folderHtm(`${rootPath}/${f1}/${f3}`, f3);
+            }
+          }
+        }
+      }
+    }
+    workDirTree.html(tree);
+    onHotScanDone();
+  });
+
+  ipcRenderer.on("scan-hot-next", (_, { path }) => {
+    console.log(path);
+    $("#hotFolders")
+      .children()
+      .each(function () {
+        var folder = $(this);
+        var folderIcon = folder.find(".folder-icon");
+        if (folder.data("path") == path) {
+          folderIcon.addClass("loading");
+        } else {
+          folderIcon.removeClass("loading");
+        }
+      });
+    $("#scanHotFolders").find("span").text("Scan Completed!");
+    setTimeout(() => {
+      onHotScanDone();
+    }, 3000);
+  });
+  ipcRenderer.on("scan-hot-complete", () => {
+    $("#scanHotFolders").find("span").text("Scan Completed!");
+    setTimeout(() => {
+      onHotScanDone();
+    }, 3000);
+    $(".folder-icon").removeClass("loading");
   });
 });
 
