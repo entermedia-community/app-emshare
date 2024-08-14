@@ -868,11 +868,8 @@ uiload = function () {
               closeemdialog(formmodal);
             }
           }
-          //  var autoreloaddiv = form.data("autoreload");
-          //  if (autoreloaddiv) {
-          //    checkForPendingDownloads();
-          //  }
-          //tabbackbutton
+          
+		  //Entity Back Btn
           formsavebackbutton(form);
 
           //who uses this?
@@ -1119,12 +1116,12 @@ uiload = function () {
             if (tabid) {
               var container = dialog.closest(".entity-body");
               var tabs = container.find(".entity-tab-content");
-              if (tabs.length >= 8) {
+              if (tabs.length >= 10) {
                 alert("Max Tabs Limit");
                 return;
               }
 
-              //open new entity full
+              //open new entity
               var parent = container.closest(".entitydialog");
               container = dialog.closest(".entity-wraper");
               container.replaceWith(data);
@@ -1385,13 +1382,19 @@ uiload = function () {
   };
 
   lQuery(".entitydialogback").livequery("click", function (event) {
+	var link = $(this);
     event.preventDefault();
-    var parentcontainerid = $(this).data("parentcontainerid");
+    var parentcontainerid = link.data("parentcontainerid");
     var parent = $("#" + parentcontainerid);
     if (parent.length) {
       var grandparent = parent.parent().closest(".entitydialog");
+      var urlbar = parent.data("urlbar");
       autoreload(parent);
       tabbackbutton(grandparent);
+      if(urlbar !== undefined)
+      {
+		  history.pushState($("#application").html(), null, urlbar);
+	  }
     }
   });
 
@@ -1625,24 +1628,15 @@ uiload = function () {
     var tabaction = link.data("tabaction");
     var uploadmedia = link.data("uploadmedia");
     var tabsection = link.data("tabsection");
-    var entity = $(".entitydialog");
+    var entity = link.closest(".entitydialog");
     entity.data("entitytabopen", tabaction);
     entity.data("uploadmedia", uploadmedia);
     entity.data("tabsection", tabsection);
+    var parent = entity.parent(".entitydialog");
     autoreload(entity);
-
-    /*    
-    $.ajax({
-      xhrFields: {
-        withCredentials: true,
-      },
-      crossDomain: true,
-      url: url,
-      data: options,
-      success: function (data) {
-        
-      },
-    });*/
+    if (parent !== undefined) {
+    	tabbackbutton(parent);
+    }
   });
 
   lQuery(".btn-savepublishing").livequery("click", function (event) {
@@ -2020,13 +2014,23 @@ uiload = function () {
         var tabexists = false;
 
         if (!tabexists) {
-          var options1 = emselectable.data();
+          //var options1 = emselectable.data();
+          var options1 = row.data();
+          options1.id = rowid;
           var targetcomponenthome = emselectable.data("targetcomponenthome");
           var targetrendertype = emselectable.data("targetrendertype");
-          var clickurl =
-            targetcomponenthome + "/gridsample/preview/entity.html";
+          var clickurl = targetcomponenthome + "/gridsample/preview/entity.html";
+
+          options1.updateurl = true;
+          var urlbar =
+	          apphome +
+	          "/views/modules/" +
+	          emselectable.data("searchtype") +
+	          "/index.html?entityid=" +
+	          rowid;
+	      options1.urlbar = urlbar;
           options1.oemaxlevel = 1;
-          options1.id = rowid;
+          
           jQuery.ajax({
             url: clickurl,
             data: options1,
@@ -2034,6 +2038,10 @@ uiload = function () {
               var parent = container.closest(".entitydialog");
               container.replaceWith(data);
               tabbackbutton(parent);
+              if(urlbar !== undefined) {
+              	history.pushState($("#application").html(), null, urlbar);
+              	window.scrollTo(0, 0);
+              }
             },
           });
         }
@@ -4511,6 +4519,7 @@ function tabbackbutton(parent) {
     $(backbtn).show();
     $(backbtn).data("parentid", parentid);
     $(backbtn).data("parentcontainerid", parent.attr("id"));
+    $(backbtn).data("urlbar", parent.data("urlbar"));
   }
 }
 
