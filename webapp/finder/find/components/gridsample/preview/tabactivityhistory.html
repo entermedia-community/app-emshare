@@ -1,0 +1,47 @@
+#set($entityid = $context.getRequestParameter("entityid"))
+#if(!$parentsearchtype)
+	#set($parentsearchtype = $context.getRequestParameter("parentsearchtype"))
+#end
+$context.putPageValue("parentsearchtype", $parentsearchtype)
+
+#if( !$entity)
+	#set( $entity  = $mediaarchive.getData($parentsearchtype, $entityid) )
+#end
+#set($entityid = $entity.id)
+
+<div id="${tabid}"
+	class=" entity-tab-content"
+	data-tabid="$!{tabid}"
+	data-viewid="$!viewid"
+	data-entityid="$!entityid"
+	data-currenttab="$!viewid"
+	data-parentsearchtype="$!parentsearchtype"
+	data-topmoduleid="$!topmoduleid"
+	data-url="$componenthome/gridsample/preview/tabactivityhistory.html"
+>
+	<div id="entityactivityhistoryhistory" class="d-flex align-items-stretch p-4" style="height: 100%;">
+		
+		#set( $activityhistory = $mediaarchive.query("entityactivityhistory").exact("entityid", $entityid).sort("dateDown").search() )
+		
+		
+		<table class="emdata table table-striped table-hover ">
+			<thead>
+				<tr class="tableheader">
+						<th>[[Date]]</th>
+						<th>[[User]]</th>
+						<th>[[Activity]]</th>
+					</tr>
+			</thead>
+			<tbody>
+				#foreach($activity on $activityhistory)
+					<tr>
+						<td>$activity.get("date")</td>
+						<td>$activity.get("user")</td>
+						<td>$activity.get("note")</td>
+					</tr>
+				#end
+			</tbody>
+		</table>
+		
+	</div>
+</div>

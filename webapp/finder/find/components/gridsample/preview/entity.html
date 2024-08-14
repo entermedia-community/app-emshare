@@ -176,11 +176,12 @@ $context.putPageValue("topmoduleid", $moduleid)
 						#if($canviewsettings)
 						<a href="#"
 						class="entitytabactions btn-accent"
-						data-tabaction="activity"
-						data-viewid="activity"
-						data-tabtype="tabactivity" 
+						data-tabaction="activityhistory"
+						data-viewid="activityhistory"
+						data-tabtype="tabactivityhistory" 
 						data-entityid="$!entity.getId()" 
 						data-topmoduleid="$!moduleid"
+						title="[[History]]"
 						data-moduleid="$!moduleid"><i class="bi bi-clock-history"></i></a>
 						#end
 					</div>
@@ -394,11 +395,11 @@ $context.putPageValue("topmoduleid", $moduleid)
 							$pages.include("$componenthome/gridsample/preview/entitytabmenu.html", $context)
 						#end
 						
-						#if($entitytabopen == "activity")
+						#if($entitytabopen == "activityhistory")
 							##permissions here
-							#set($tabtype= "tabactivity")
+							#set($tabtype= "tabactivityhistory")
 							$context.putPageValue("tabtype", $tabtype)
-							#set($tabid = "activity")
+							#set($tabid = "activityhistory")
 							$context.putPageValue("tabid", $tabid)
 							$context.putPageValue("currenttab", $entitytabopen)
 									
@@ -437,7 +438,7 @@ $context.putPageValue("topmoduleid", $moduleid)
 					$entitytabopen  != "publishing"  && 
 					$entitytabopen  != "import" &&
 					$entitytabopen  != "export" &&
-					$entitytabopen  != "activity")
+					$entitytabopen  != "activityhistory")
 							
 						#set( $viewid = $entitytabopen)
 						#set( $targetview = $viewsearcher.searchById($viewid))
@@ -506,13 +507,13 @@ $context.putPageValue("topmoduleid", $moduleid)
 					#end
 				#end
 				
-				#if($entitytabopen == "activity")
+				#if($entitytabopen == "activityhistory")
 					#if(!$ismulti)
-						#set($tabtype= "tabactivity")
+						#set($tabtype= "tabactivityhistory")
 						$context.putPageValue("tabtype", $tabtype)
-						$context.putPageValue("currenttab", "activity")
-						$context.putPageValue("viewid", "activity")
-						$pages.include("$componenthome/gridsample/preview/tabactivity.html?entityid=$id", $context)
+						$context.putPageValue("currenttab", "activityhistory")
+						$context.putPageValue("viewid", "activityhistory")
+						$pages.include("$componenthome/gridsample/preview/tabactivityhistory.html?entityid=$id", $context)
 					#end
 				#end
 					
