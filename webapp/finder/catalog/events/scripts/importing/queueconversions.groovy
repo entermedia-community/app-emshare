@@ -40,6 +40,7 @@ public void createTasksForUpload() throws Exception
 	if( hits.size() == 0 )
 	{
 		log.error("Problem with import, no asset found");
+		return;
 	}
 	Searcher tasksearcher = mediaarchive.getSearcher("conversiontask");
 	hits.each
