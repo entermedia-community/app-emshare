@@ -181,6 +181,17 @@ $context.putPageValue("topmoduleid", $moduleid)
 						data-tabsection="share"
 						data-targetdiv="" title="[[Share]]"><i class="bi bi-share"></i></a>
 						#end
+						
+						#if($canviewsettings)
+						<a href="#"
+						class="entitytabactions btn-accent"
+						data-tabaction="activity"
+						data-viewid="activity"
+						data-tabtype="tabactivity" 
+						data-entityid="$!entity.getId()" 
+						data-topmoduleid="$!moduleid"
+						data-moduleid="$!moduleid"><i class="bi bi-clock-history"></i></a>
+						#end
 					</div>
 				#end
 			</div>
@@ -392,8 +403,19 @@ $context.putPageValue("topmoduleid", $moduleid)
 							$pages.include("$componenthome/gridsample/preview/entitytabmenu.html", $context)
 						#end
 						
-						##publishing tab
+						#if($entitytabopen == "activity")
+							##permissions here
+							#set($tabtype= "tabactivity")
+							$context.putPageValue("tabtype", $tabtype)
+							#set($tabid = "activity")
+							$context.putPageValue("tabid", $tabid)
+							$context.putPageValue("currenttab", $entitytabopen)
+									
+							$pages.include("$componenthome/gridsample/preview/entitytabmenu.html", $context)
+						#end
 						
+						
+						##publishing tab
 						#if($entitytabopen == "publishing" || $entity.getValue("enablepublishing") )
 							##permissions here
 							#set($tabtype= "tabpublishing")
@@ -423,7 +445,8 @@ $context.putPageValue("topmoduleid", $moduleid)
 					$entitytabopen  != "media"  && 
 					$entitytabopen  != "publishing"  && 
 					$entitytabopen  != "import" &&
-					$entitytabopen  != "export")
+					$entitytabopen  != "export" &&
+					$entitytabopen  != "activity")
 							
 						#set( $viewid = $entitytabopen)
 						#set( $targetview = $viewsearcher.searchById($viewid))
@@ -489,6 +512,16 @@ $context.putPageValue("topmoduleid", $moduleid)
 						$context.putPageValue("currenttab", "export")
 						$context.putPageValue("viewid", "export")
 						$pages.include("$componenthome/gridsample/preview/tabexport.html?entityid=$id", $context)
+					#end
+				#end
+				
+				#if($entitytabopen == "activity")
+					#if(!$ismulti)
+						#set($tabtype= "tabactivity")
+						$context.putPageValue("tabtype", $tabtype)
+						$context.putPageValue("currenttab", "activity")
+						$context.putPageValue("viewid", "activity")
+						$pages.include("$componenthome/gridsample/preview/tabactivity.html?entityid=$id", $context)
 					#end
 				#end
 					
