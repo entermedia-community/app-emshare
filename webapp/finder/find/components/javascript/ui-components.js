@@ -1379,7 +1379,7 @@ uiload = function () {
       title = setpagetitle;
     }
     if (titlepostfix) {
-      title = title + " - " + titlepostfix;
+      title = title ? title + " - " + titlepostfix : titlepostfix;
     }
     document.title = title;
   };
