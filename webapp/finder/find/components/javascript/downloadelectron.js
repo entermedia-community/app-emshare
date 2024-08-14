@@ -802,7 +802,7 @@ jQuery(document).ready(function () {
     ipcRenderer.send("scanHotFolders", { rootPath: workDir });
   });
 
-  lQuery("#workFolderPicker").livequery("click", async function (e) {
+  lQuery("#workFolderPicker").livequery("click", function (e) {
     e.preventDefault();
     window.postMessage({
       type: "select-dirs",
@@ -811,12 +811,12 @@ jQuery(document).ready(function () {
   });
 
   function folderHtm(path, name) {
-    return `<div class='work-folder'>
+    return `<div class="work-folder">
       <label>
 				<input type="checkbox" class="mr-2" data-path="${path}" checked />
 				<span><i class="fas fa-folder"></i> ${name}</span>
       </label>
-			<button class="btn text-accent open-folder" data-path="${path}">
+			<button class="btn text-accent open-folder px-2" data-path="${path}">
 				<i class="fas fa-eye"></i>
 			</button>
     </div>`;
@@ -831,21 +831,14 @@ jQuery(document).ready(function () {
     for (const [root, level1] of Object.entries(folderTree)) {
       tree += folderHtm(rootPath, root);
       if (Object.keys(level1).length > 0) {
-        // tree += "<ul>";
         for (const [f1, level2] of Object.entries(level1)) {
-          // tree += `<li>`;
           tree += folderHtm(`${rootPath}/${f1}`, f1);
           if (Object.keys(level2).length > 0) {
-            // tree += "<ul>";
             for (const [f3] of Object.entries(level2)) {
-              // tree += `<li>`;
               tree += folderHtm(`${rootPath}/${f1}/${f3}`, f3);
             }
-            // tree += "</ul>";
           }
-          // tree += "</li>";
         }
-        // tree += "</ul>";
       }
     }
     workDirTree.html(tree);
