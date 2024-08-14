@@ -19,9 +19,9 @@ public void init()
 			
 			if( assets == null)
 			{
-//				assets = searcher.query().exact("importstatus","needsmetadata").sort("sourcepath").search();
-//				assets.enableBulkOperations();
-//				assets.setHitsPerPage(100);
+				assets = searcher.query().exact("importstatus","needsmetadata").sort("sourcepath").search();
+				assets.enableBulkOperations();
+				assets.setHitsPerPage(100);
 				log.error("Must pass in the assets");
 				return;
 			}
@@ -29,7 +29,7 @@ public void init()
 			MetaDataReader reader = moduleManager.getBean("metaDataReader");
 			for (Data hit in assets)
 			{
-				Asset asset = (Asset)hit;//searcher.loadData(hit);
+				Asset asset = (Asset)searcher.loadData(hit);
 				//log.info("${asset.getSourcePath()}");
 				if( asset != null)
 				{
