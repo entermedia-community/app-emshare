@@ -43,7 +43,7 @@ $(document).on("draw2d", function () {
       var request = {
         componentdatasortby: "orderingUp",
         page: "1",
-        hitsperpage: "15",
+        hitsperpage: "1000",
         query: {
           terms: [
             {
@@ -75,13 +75,17 @@ $(document).on("draw2d", function () {
 
               //Check for errors
               try {
-                var parsed = JSON.parse(data.json);
-                json = json.concat(parsed);
+				if( data.json !== undefined)
+				{
+	                var parsed = JSON.parse(data.json);
+					console.log(parsed);
+
+	                json = json.concat(parsed);
+	            }
               } catch (e) {
                 console.log(data.json, e); // Logs the error
               }
             }
-            console.log(json);
             reader.unmarshal(canvas, json); //?parsed?
             //var updateddata = saveddata.replaceAll("${apphome}", apphome);
           } else {
