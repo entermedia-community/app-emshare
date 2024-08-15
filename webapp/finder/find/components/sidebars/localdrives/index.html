@@ -5,38 +5,37 @@
 			<input id="workFolderInput" type="text" class="flex-grow-1 form-control rounded" placeholder="Work Folder Path" readonly />
 			<button id="workFolderPicker" class="btn btn-brand light rounded ml-2 px-2" title="[[Change Work Folder]]">Change</button>
 		</div>
-		<div class="mt-2 px-2 w-100">
+		<div class="my-2 px-2 w-100 d-flex">
 			<select id="workDirEntity" class="form-control rounded">
-				<option value="0">[[Select Entity]]</option>
+				<option value="0">[[Select Folder Type]]</option>
 				#foreach ( $amodule in $userprofile.getEntities() )
 					<option value="$amodule.getId()">#text($amodule)</option>
 				#end
 			</select>
-		</div>
-		
-		##TODO: move this to external include to reload entity data (fields)
-		<div class="d-flex align-items-start justify-content-between w-100 px-2 my-2 hot-scanner">
-			<button id="scanHotFolders" 
-				class="btn btn-success small rounded"
+			<button id="scanHotFoldersBtn" 
+				class="btn btn-success small rounded ml-2"
 				title="[[Scan for Changes]]">
 				<i class="fa fa-search"></i> <span>Scan for Changes</span>
 			</button>
-			<div class="d-flex flex-column align-items-end">
-				<form id="uploadFoldersForm">
-					<button id="importFolders" 
-						class="btn btn-accent small rounded"
-						title="[[Import Changes]]"
-					>
-						<i class="fa fa-plus"></i> <span>Add</span>
-					</button>
-					##required data to create entities
-					<input type="hidden" name="" value="" />
-				</form> 
-				<strong class="text-right fs-small text-secondary mt-1" id="hotStats">
-					This will upload <span class="count">X</span> (<span class="size">X</span>)
-				</strong>
-			</div>
 		</div>
+		<div class="border-top w-100"></div>
+		##TODO: move this to external include to reload entity data (fields) 
+		<div class="w-100 d-flex flex-column align-items-center hot-scanner px-2 my-2">
+			<form id="uploadFoldersForm">
+				<button id="importFolders" 
+					class="btn btn-lg btn-accent small rounded"
+					title="[[Import Changes]]"
+					style="width: 136px;"
+				>
+					<i class="fa fa-plus"></i> <span>Add</span>
+				</button>
+				##required data to create entities
+				<input type="hidden" name="" value="" />
+			</form> 
+			<strong class="text-right fs-small text-secondary mt-1" id="hotStats">
+				This will upload <span class="count">X</span> (<span class="size">X</span>)
+			</strong>
+		</div> 
 	</div>
 	<a href="#" title="[[Hide Desktops Sidebar]]"
 		class="sidebar-toggler sidebar-toggler-hide"
