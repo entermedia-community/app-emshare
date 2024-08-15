@@ -53,8 +53,7 @@
 					<div class="toggle-filter sidetoggle" data-target="filterbox${detail.getId()}">
 					<i class="caret fas 
 							#set($minimized = $detail.getId())
-							#set($preference = '#set($selectedpreference = ' + '$userprofile.' + 'minimizefilterbox' + $minimized + ')')
-							#evaluate($preference)
+							#set($preference = "${userprofile}.${minimized}")
 							#ifnull($selectedpreference)
 								#set($selectedpreference = "true")
 							#end
@@ -65,10 +64,7 @@
 						  	#end"></i>
 					
 					$!detail.getText($context)
-					
 					</div> 
-					
-					
 					
 					#if ($edit == "true")
 						<a class="float-right" title="[[Delete Filter]]" href="#" onclick="javascript:deleteFilterField('${detail.getSearchType()}','${detail.id}'); return false;">
