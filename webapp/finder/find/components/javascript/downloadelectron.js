@@ -15,7 +15,8 @@ jQuery(document).ready(function () {
   ipcRenderer.send("setConnectionOptions", {
     headers: headers,
     key: entermediakey,
-    mediadb: mediadb,
+    mediadb:
+      window.location.protocol + "//" + window.location.host + "/" + mediadb,
   });
 
   ipcRenderer.on("electron-log", (_, ...log) => {
@@ -382,6 +383,7 @@ jQuery(document).ready(function () {
       ipcRenderer.send("openFolder", { path });
     });
 
+    var fetchingWorkDir = false;
     ipcRenderer.send("getWorkDir");
     ipcRenderer.on("set-workDir", (_, { workDir, workDirEntity }) => {
       if (workDir) {
@@ -395,9 +397,20 @@ jQuery(document).ready(function () {
       }
       if (workDir && workDirEntity) {
         $("#scanHotFoldersBtn").show();
-        triggerHitScan();
+        triggerHotScan();
       } else {
         $("#scanHotFoldersBtn").hide();
+      }
+      fetchingWorkDir = false;
+    });
+    lQuery("#workFolderInput").livequery(function () {
+      if (fetchingWorkDir) {
+        return;
+      }
+      var workDir = $(this).val();
+      if (!workDir) {
+        fetchingWorkDir = true;
+        ipcRenderer.send("getWorkDir");
       }
     });
 
@@ -726,19 +739,21 @@ jQuery(document).ready(function () {
       ipcRenderer.send("setWorkDirEntity", { entityId });
     });
 
-    lQuery("#scanHotFoldersBtn").livequery("click", triggerHitScan);
-    function triggerHitScan() {
+    lQuery("#scanHotFoldersBtn").livequery("click", triggerHotScan);
+
+    function triggerHotScan(userInterected = null) {
       var workDir = $("#workFolderInput").val();
       var workDirEntity = $("#workDirEntity").val();
       if (!workDir) {
-        alert("Please select a work folder first!");
+        if (userInterected) alert("Please select a work folder first!");
         return;
       }
       if (!workDirEntity) {
-        alert("Please select an entity first!");
+        if (userInterected) alert("Please select an entity first!");
         return;
       }
       onHotScanDone(false);
+      // console.log("Scanning on:", { workDir, workDirEntity });
       ipcRenderer.send("scanHotFolders", workDir);
     }
 
@@ -774,6 +789,35 @@ jQuery(document).ready(function () {
       });
     });
 
+    ipcRenderer.on("no-workDir", () => {
+      $("#workFolderInput").val("");
+      $("#workFolderPicker").text("Select");
+      $("#scanHotFoldersBtn").hide();
+    });
+
+    ipcRenderer.on("no-workDirEntity", () => {
+      $("#workDirEntity").val("");
+      $("#scanHotFoldersBtn").hide();
+    });
+
+    function checkActiveHotFolders() {
+      var showAddBtn = false;
+      $(".wf-check").each(function () {
+        if ($(this).is(":checked")) {
+          console.log($(this).data("name"));
+          showAddBtn = true;
+          return false;
+        }
+      });
+      if (showAddBtn) {
+        $(".hot-importer").addClass("d-flex").removeClass("d-none");
+      } else {
+        $(".hot-importer").addClass("d-none").removeClass("d-flex");
+      }
+    }
+
+    lQuery(".wf-check").livequery("change", checkActiveHotFolders);
+
     function folderHtm(
       path,
       name,
@@ -800,7 +844,7 @@ jQuery(document).ready(function () {
 
       return `<div class="work-folder" data-name="${name}">
       <label>
-				<input type="checkbox" data-path="${path}" data-name="${name}" ${checkboxstatus} />
+				<input class="wf-check" type="checkbox" data-path="${path}" data-name="${name}" ${checkboxstatus} />
 				<span class="mx-2"><i class="fas fa-folder"></i> ${name}</span>
       </label>
       <small>${st}</small>
@@ -814,21 +858,12 @@ jQuery(document).ready(function () {
       "selected-dirs",
       (
         _,
-        {
-          rootPath,
-          folderTree,
-          workDirEntity = null,
-          newFolders,
-          existingFolders,
-        }
+        { rootPath, folderTree, workDirEntity, newFolders, existingFolders }
       ) => {
         $("#workFolderInput").val(rootPath);
+        $("#workDirEntity").val(workDirEntity);
         $("#workFolderPicker").text("Change");
-        $("#scanHotFoldersBtn").prop("disabled", false);
-
-        if (workDirEntity) {
-          $("#workDirEntity").val(workDirEntity);
-        }
+        $("#scanHotFoldersBtn").show();
 
         var workDirTree = $("#workDirTree");
         workDirTree.html("");
@@ -842,11 +877,11 @@ jQuery(document).ready(function () {
         }
         workDirTree.html(tree);
 
-        /*
-      $.each(".working-folder input", function() {
-		  var local = $(this);
-		  
-	  });*/
+        if (newFolders.length > 0) {
+          $(".hot-importer").addClass("d-flex").removeClass("d-none");
+        } else {
+          $(".hot-importer").addClass("d-none").removeClass("d-flex");
+        }
 
         $("#hotStats")
           .find(".count")
