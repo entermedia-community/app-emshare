@@ -684,25 +684,61 @@ jQuery(document).ready(function () {
       });
     });
 
-    ipcRenderer.on("upload-next", (_, { index }) => {
-      $(".pull-folder").each(function () {
-        var folder = $(this);
-        var spinner = folder.find(".fa-spinner");
-        if (folder.attr("id") == "folder-" + index) {
-          spinner.show();
-        } else {
-          spinner.hide();
+    ipcRenderer.on(
+      "upload-next",
+      (_, { index, type = "folder", name = null }) => {
+        if (type === "folder") {
+          $(".pull-folder").each(function () {
+            var folder = $(this);
+            var spinner = folder.find(".fa-spinner");
+            if (folder.attr("id") == "folder-" + index) {
+              spinner.show();
+            } else {
+              spinner.hide();
+            }
+          });
+        } else if (type === "hotFolder") {
+          $(".work-folder").each(function () {
+            var folder = $(this);
+            if (folder.data("name") === name) {
+              console.log({ name });
+              folder
+                .find(".fl")
+                .addClass("fa-spin fa-spinner")
+                .removeClass("fa-folder");
+            } else {
+              folder
+                .find(".fl")
+                .addClass("fa-folder")
+                .removeClass("fa-spin fa-spinner");
+            }
+          });
+          $("#scanHotFoldersBtn").hide();
         }
-      });
-    });
+      }
+    );
 
-    ipcRenderer.on("upload-all-complete", () => {
-      setTimeout(() => {
-        $(".pullfetchfolder").each(function () {
-          $(this).find(".fa-spinner").hide();
+    ipcRenderer.on("upload-all-complete", (_, { type = "folder" }) => {
+      if (type === "folder") {
+        setTimeout(() => {
+          $(".pullfetchfolder").each(function () {
+            $(this).find(".fa-spinner").hide();
+          });
+          scanChange();
+        }, 3000);
+      } else if (type === "hotFolder") {
+        $(".work-folder").each(function () {
+          $(this).find(".wf-check").prop("checked", false);
+          $(this)
+            .find(".fl")
+            .addClass("fa-folder")
+            .removeClass("fa-spin fa-spinner");
         });
-        scanChange();
-      }, 3000);
+        $("#importFolders").prop("disabled", false);
+        $(".hot-importer").addClass("d-none").removeClass("d-flex");
+        onHotScanDone();
+        $("#scanHotFoldersBtn").show();
+      }
     });
 
     lQuery(".pull-individual").livequery("click", function (e) {
@@ -726,7 +762,7 @@ jQuery(document).ready(function () {
     function onHotScanDone(done = true) {
       if (done) {
         $("#scanHotFoldersBtn").prop("disabled", false);
-        $("#scanHotFoldersBtn").find("span").text("Scan Hot Folders");
+        $("#scanHotFoldersBtn").find("span").text("Re-scan");
       } else {
         $("#scanHotFoldersBtn").prop("disabled", true);
         $("#scanHotFoldersBtn").find("span").text("Scanning...");
@@ -759,6 +795,7 @@ jQuery(document).ready(function () {
 
     lQuery("#importFolders").livequery("click", function (e) {
       e.preventDefault();
+      $(this).prop("disabled", true);
       var workDir = $("#workFolderInput").val();
       var workDirEntity = $("#workDirEntity").val();
       if (!workDir) {
@@ -772,11 +809,12 @@ jQuery(document).ready(function () {
       onHotScanDone(false);
 
       var selectedFolders = [];
-      $.each($("work-folder inputs:checked"), function () {
+      $.each($(".wf-check:checked"), function () {
         selectedFolders.push($(this).data("name"));
       });
       ipcRenderer.send("importHotFolders", {
         rootPath: workDir,
+        workDirEntity: workDirEntity,
         selectedFolders: selectedFolders,
       });
     });
@@ -845,7 +883,7 @@ jQuery(document).ready(function () {
       return `<div class="work-folder" data-name="${name}">
       <label>
 				<input class="wf-check" type="checkbox" data-path="${path}" data-name="${name}" ${checkboxstatus} />
-				<span class="mx-2"><i class="fas fa-folder"></i> ${name}</span>
+				<span class="mx-2"><i class="fl fas fa-folder"></i> ${name}</span>
       </label>
       <small>${st}</small>
 			<button class="btn text-accent open-folder px-2" data-path="${path}">
