@@ -773,6 +773,13 @@ jQuery(document).ready(function () {
       var entityId = $(this).val();
       //TODO: reload actions conainer with all the entitiy data (required fields)
       ipcRenderer.send("setWorkDirEntity", { entityId });
+      
+      //Load a form
+      var url =  apphome + "/views/modules/" + entityId + "/components/sidebars/localdrives/requiredfields.html";
+	  var data = $(this).data(); 
+      $("#requiredinputform").load(url,data);
+
+      
     });
 
     lQuery("#scanHotFoldersBtn").livequery("click", triggerHotScan);
