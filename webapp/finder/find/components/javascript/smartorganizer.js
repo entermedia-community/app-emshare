@@ -25,13 +25,8 @@ function setContrast(hex) {
   );
   return brightness > 125 ? "#000000" : "#ffffff";
 }
-$(document).on("draw2d-custom", function () {
+$(document).ready(function () {
   //See if UI is already initialized
-  if ($("#organizer_canvas").data("uiloaded") == true) {
-    console.log("Smart Javascript already initialized");
-    return;
-  }
-
   var app = jQuery("#application");
   var apphome = app.data("siteroot") + app.data("apphome");
   var siteroot = $("#application").data("siteroot");
@@ -352,19 +347,20 @@ $(document).on("draw2d-custom", function () {
   ];
 
   lQuery("#organizer_canvas").livequery(function () {
-    $(this).data("uiloaded", true);
+	var canvasContainer = $(this);
+    canvasContainer.data("uiloaded", true);
+	canvasContainer.data("changed",false);
+	canvasContainer.data("initializing",true);
 
     var logo = $("#logoPicker").val();
     var bgColor = $("#logoPicker").data("bg");
     var strokeColor = $("#logoPicker").data("stroke");
-    var changed = false;
     if (canvas) {
       canvas.clear();
       canvas = null;
     }
     //Boostrap does not use liveajax
     $(".dropdown-toggle").dropdown();
-    var canvasContainer = $("#organizer_canvas");
 
     canvasContainer.css({
       width: fullCanvasWidth,
@@ -480,7 +476,6 @@ $(document).on("draw2d-custom", function () {
     var reader = new draw2d.io.json.Reader();
 
     function loadJSON() {
-      changed = false;
       var id = $("#organizerId").val();
       var url =
         siteroot + "/" + mediadb + "/services/module/smartorganizer/data/" + id;
@@ -512,7 +507,9 @@ $(document).on("draw2d-custom", function () {
           loadEvents();
 
           recenterCanvas();
-
+		  canvasContainer.data("changed",false);
+		  canvasContainer.data("initializing",false);
+		  
           if (data != null) {
             if (data.canvastop !== undefined) {
               canvasContainer.css("margin-top", parseInt(data.canvastop));
@@ -936,7 +933,6 @@ $(document).on("draw2d-custom", function () {
       folderGroup.select();
       handleSelect(folderGroup);
       saveJSON();
-      changed = true;
     }
 
     var folderDragging = false;
@@ -1112,14 +1108,15 @@ $(document).on("draw2d-custom", function () {
         closeemdialog($(this).closest(".modal"));
         hideLoader();
         saveJSON();
-        changed = true;
       });
     });
 
     canvas.getCommandStack().addEventListener(function (e) {
       if (e.isPostChangeEvent()) {
-        saveJSON();
-        changed = true;
+		if( !canvasContainer.data("initializing"))
+		{
+	        saveJSON();
+	    }
       }
     });
 
@@ -1130,7 +1127,6 @@ $(document).on("draw2d-custom", function () {
     var saveBtn = $("#saveOrganizer");
 
     saveBtn.on("click", function () {
-      changed = false;
       saveJSON();
       saveJSON(true);
     });
@@ -1147,7 +1143,14 @@ $(document).on("draw2d-custom", function () {
       if (!canvas) {
         return;
       }
-
+		if( usersaved)
+		{
+	        canvasContainer.data("changed",false); //User Save
+		}
+		else
+		{
+			canvasContainer.data("changed",true); //Version save
+		}
       var writer = new draw2d.io.json.Writer();
 
       writer.marshal(canvas, function (json) {
@@ -1469,13 +1472,13 @@ $(document).on("draw2d-custom", function () {
 
       reader.unmarshal(canvas, parsed);
       saveJSON();
-      changed = true;
       recenterCanvas();
       console.log("Inserted template");
       closeemdialog($(this).closest(".modal"));
     });
 
-    lQuery(".closeorgnizer").livequery("click", function () {
+    lQuery("#closeorgnizer").livequery("click", function () {
+		var changed = canvasContainer.data("changed");
       if (!changed) {
         closeemdialog($(this).closest(".modal"));
         return;
@@ -1483,12 +1486,13 @@ $(document).on("draw2d-custom", function () {
       if (
         confirm("You have unsaved changes. Are you sure you want to close?")
       ) {
+        canvasContainer.data("changed",false);
         closeemdialog($(this).closest(".modal"));
       }
-      changed = false;
     });
 
     loadJSON();
+    
   }); //ends intitializer
 
   lQuery(".restoreversion").livequery("click", function (e) {
