@@ -27,17 +27,35 @@ $context.putPageValue("parentsearchtype", $parentsearchtype)
 		<table class="emdata table table-striped table-hover ">
 			<thead>
 				<tr class="tableheader">
-						<th>[[Date]]</th>
+						<th style="width: 200px;">[[Date]]</th>
 						<th>[[User]]</th>
 						<th>[[Activity]]</th>
+						<th>[[Assets]]</th>
+						<th style="width: 200px;">[[Actions]]</th>
 					</tr>
 			</thead>
 			<tbody>
 				#foreach($activity on $activityhistory)
 					<tr>
-						<td>$activity.get("date")</td>
-						<td>$activity.get("user")</td>
-						<td>$activity.get("note")</td>
+						<td>$!context.getDateTime($activity.get("date"))</td>
+						<td>$activity.getValue("user")</td>
+						<td>
+							#set($operation = $activity.get("operation"))
+							$operation
+						</td>
+						<td>
+							#set($assetids = $activity.getValue("assetids"))
+							#foreach($asset in $assetids)
+								#set($asset = $mediaarchive.getAsset($asset))
+								#if($asset)
+									$asset.getName()
+									#if($foreach.hasNext), &nbsp;#end
+								#end
+							#end
+							</td>
+						<td>
+							<a href="#" class="btn btn-xs btn-dark"><i class="bi bi-arrow-left-right"></i></a>
+						</td>
 					</tr>
 				#end
 			</tbody>
