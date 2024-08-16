@@ -1,15 +1,13 @@
 #if( !$values && $data )
 	#set($values = $data.getValues($detail.id) )
 #end
-
-#set( $searcher = $searcherManager.getSearcher($detail.getListCatalogId(), $detail.getListId() ))
-
 #set($entity_module = $detail.getListId())
+#set($ismulti = $detail.isMultiValue())
 <div>
-	<ul class="entity-value-list" id="entitypicker${detail.id}">
+	<ul class="entity-value-list" id="entitypicker${detail.id}" data-ismulti="$!{ismulti}">
 		#foreach( $type in $values )
 			#set( $row = false )
-			#set( $row = $searcher.searchById($type) )
+			#set( $row = $searcherManager.getCachedData($detail.getListCatalogId(), $detail.getListId(), $type ))
 		    #if( $row )
 			    #set($entityid = $row.id)
 			    #set($link = "$!{siteroot}$applink/views/modules/$!{entity_module}/components/gridsample/preview/entity.html?id=$entityid")
@@ -40,6 +38,10 @@
 	
 	#set($pickerurl= "$applink/views/modules/$!{pickmoduleid}/components/entities/search/searchpicker.html")
 	#set($module = $mediaarchive.getCachedData("module", $pickmoduleid ))
+	#set($label = "[[Choose]]")
+	#if($ismulti)
+		#set($label = "[[Add]] #text($module)")
+	#end 
 	<a href="$pickerurl" 
 		class="emdialog btn btn-sm btn-primary"
 		data-dialogid="dialogpicker$!{entity_module}"
@@ -51,7 +53,7 @@
 		data-targettype="entitypickerfield"
 		data-pickersearchaddnew="true"
 		data-hidefooter="true"
-		title="[[Add]] #text($module)">[[Add]] #text($module)</a>
+		title="[[Add]] #text($module)">$label</a>
 </div>	
 	
 	

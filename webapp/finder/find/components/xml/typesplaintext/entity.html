@@ -2,14 +2,12 @@
 	#set($values = $data.getValues($detail.id) )
 #end
 
-#set( $searcher = $searcherManager.getSearcher($detail.getListCatalogId(), $detail.getListId() ))
-
 #set($entity_module = $detail.getListId())
 
 	<div class="entity-value-textlist">
 		#foreach( $type in $values )
 			#set( $row = false )
-			#set( $row = $searcher.searchById($type) )
+			#set( $row = $searcherManager.getCachedData($detail.getListCatalogId(), $detail.getListId(), $type ))
 		    #if( $row )
 			    #if( $searcher.getDetail("name").isMultiLanguage())
 			    	#set($name = $row.getName($context.getLocale()))
