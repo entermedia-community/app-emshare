@@ -394,6 +394,7 @@ jQuery(document).ready(function () {
       }
       if (workDirEntity) {
         $("#workDirEntity").val(workDirEntity);
+        $("#workDirEntity").trigger("change");
       }
       if (workDir && workDirEntity) {
         $("#scanHotFoldersBtn").show();
@@ -762,7 +763,7 @@ jQuery(document).ready(function () {
     function onHotScanDone(done = true) {
       if (done) {
         $("#scanHotFoldersBtn").prop("disabled", false);
-        $("#scanHotFoldersBtn").find("span").text("Re-scan");
+        $("#scanHotFoldersBtn").find("span").text("Re-Scan");
       } else {
         $("#scanHotFoldersBtn").prop("disabled", true);
         $("#scanHotFoldersBtn").find("span").text("Scanning...");
@@ -771,15 +772,20 @@ jQuery(document).ready(function () {
 
     lQuery("#workDirEntity").livequery("change", function () {
       var entityId = $(this).val();
-      //TODO: reload actions conainer with all the entitiy data (required fields)
       ipcRenderer.send("setWorkDirEntity", { entityId });
-      
-      //Load a form
-      var url =  apphome + "/views/modules/" + entityId + "/components/sidebars/localdrives/requiredfields.html";
-	  var data = $(this).data(); 
-      $("#requiredinputform").load(url,data);
 
-      
+      if (!entityId) {
+        $("#requiredinputform").html("");
+        return;
+      }
+
+      var url =
+        apphome +
+        "/views/modules/" +
+        entityId +
+        "/components/sidebars/localdrives/requiredfields.html";
+      var data = $(this).data();
+      $("#requiredinputform").load(url, data);
     });
 
     lQuery("#scanHotFoldersBtn").livequery("click", triggerHotScan);
@@ -819,10 +825,23 @@ jQuery(document).ready(function () {
       $.each($(".wf-check:checked"), function () {
         selectedFolders.push($(this).data("name"));
       });
+
+      var fieldsEl = $("form#uploadFoldersForm").find("input, select");
+      var fields = [];
+      fieldsEl.each(function () {
+        var name = $(this).attr("name");
+        var value = $(this).val();
+        fields.push({
+          name: name,
+          value: value,
+        });
+      });
+
       ipcRenderer.send("importHotFolders", {
         rootPath: workDir,
         workDirEntity: workDirEntity,
         selectedFolders: selectedFolders,
+        requiredFields: fields,
       });
     });
 
@@ -842,6 +861,7 @@ jQuery(document).ready(function () {
 
     ipcRenderer.on("no-workDirEntity", () => {
       $("#workDirEntity").val("");
+      $("#workDirEntity").trigger("change");
       $("#scanHotFoldersBtn").hide();
     });
 
@@ -905,8 +925,13 @@ jQuery(document).ready(function () {
         _,
         { rootPath, folderTree, workDirEntity, newFolders, existingFolders }
       ) => {
-        $("#workFolderInput").val(rootPath);
-        $("#workDirEntity").val(workDirEntity);
+        if ($("#workFolderInput").val() != rootPath) {
+          $("#workFolderInput").val(rootPath);
+        }
+        if ($("#workDirEntity").val() != workDirEntity) {
+          $("#workDirEntity").val(workDirEntity);
+          $("#workDirEntity").trigger("change");
+        }
         $("#workFolderPicker").text("Change");
         $("#scanHotFoldersBtn").show();
 

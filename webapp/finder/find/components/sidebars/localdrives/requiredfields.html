@@ -1,4 +1,4 @@
-#set( $moduleid = $context.findPathValue("moduleid"))
+#set( $moduleid = $context.findPathValue("module"))
 #set( $searcher = $mediaarchive.getSearcher($moduleid))
 #set($details = $searcher.getPropertyDetails().findRequiredProperties())
 
@@ -6,11 +6,14 @@
 $context.putPageValue("xmledithome",$xmledithome)
 
 #foreach( $detail in $details)
+	#if($detail.id != "name")
+	$context.putPageValue("detail", $detail)
 	<div id="detail_$detail.id" class="emdatafieldvalue emdatafieldvalue-$!{detail.viewType} #if ($detail.isRequired()) requiredfield #end">
-			$pages.include("$xmledithome/detailedit.html", $context)
-			#if ( $detail.note )
-				<span class="detail-note">$context.getText($detail.note.toString())<span>
-			#end
-
+		<label class="d-block w-100 m-0 fw-bold text-muted small">#text($detail)</label> 
+		$pages.include("$xmledithome/detailedit.html", $context)
+		#if ( $detail.note )
+			<span class="detail-note">$context.getText($detail.note.toString())<span>
+		#end 
 	</div>
-#end			
+	#end
+#end

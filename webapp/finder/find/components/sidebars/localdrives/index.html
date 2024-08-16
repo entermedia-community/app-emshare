@@ -1,42 +1,36 @@
 <div class="col-sidebar-header sidebar-header-desktops"> 
 	<div class="d-flex flex-column align-items-center justify-content-between">
 		<strong class="d-block w-100 bg-dark text-center text-white py-1" style="text-transform: uppercase;font-size: 16px;">[[Import Folders]]</strong>
-		<label for="workFolderInput" class="d-block w-100 px-2 mt-2 mb-0 fw-bold text-muted">[[Import Path]]:</label>
+		<label for="workFolderInput" class="d-block w-100 px-2 mt-2 mb-0 fw-bold text-muted small">[[Import Path]]:</label>
 		<div class="d-flex w-100 px-2">
 			<input id="workFolderInput" type="text" class="flex-grow-1 form-control rounded" placeholder="Work Folder Path" readonly />
 			<button id="workFolderPicker" class="btn btn-brand light rounded ml-2 px-2" title="[[Change Work Folder]]">Change</button>
 		</div>
-		<label for="workFolderInput" class="d-block w-100 px-2 mt-2 mb-0 fw-bold text-muted">[[Import Type]]:</label>
-		<div class="px-2 w-100 d-flex">
+		<label for="workFolderInput" class="d-block w-100 px-2 mt-2 mb-0 fw-bold text-muted small">[[Import Type]]:</label>
+		<div class="px-2 w-100 d-flex flex-column">
 			<select id="workDirEntity" class="form-control rounded">
 				<option value="">[[Select Folder Type]]</option>
 				#foreach ( $amodule in $userprofile.getEntities() )
 					<option value="$amodule.getId()">#text($amodule)</option>
 				#end
 			</select>
-			<div id="requiredinputform"></div>
-			<button id="scanHotFoldersBtn" 
-				class="btn btn-success small rounded ml-2"
-				title="[[Scan for Changes]]">
-				<i class="fa fa-search"></i> <span>Re-scan</span>
-			</button>
 		</div>
 		##TODO: move this to external include to reload entity data (fields) 
 		<div class="w-100 d-none flex-column align-items-center hot-importer px-2 mt-2">
-			<div class="border-top w-100 mb-2"></div>
-			<form id="uploadFoldersForm">
-				<button id="importFolders" 
-					class="btn btn-lg btn-accent small rounded"
-					title="[[Import Changes]]" 
-				>
-					<i class="fa fa-plus"></i> <span>[[Add Selected Folders]]</span>
-				</button>
-				##required data to create entities
-				<input type="hidden" name="" value="" />
+			<form id="uploadFoldersForm" class="w-100">
+				<div class="d-flex flex-column align-items-center mb-2">
+					<div id="requiredinputform" class="mb-2 w-100"></div>
+					<button id="importFolders" 
+						class="btn btn-lg btn-accent small rounded"
+						title="[[Import Changes]]" 
+					>
+						<i class="fa fa-plus"></i> <span>[[Add Selected Folders]]</span>
+					</button> 
+					<strong class="text-right fs-small text-secondary mt-1" id="hotStats">
+						This will upload <span class="count">X</span> (<span class="size">X</span>)
+					</strong>
+				</div>
 			</form> 
-			<strong class="text-right fs-small text-secondary mt-1" id="hotStats">
-				This will upload <span class="count">X</span> (<span class="size">X</span>)
-			</strong>
 		</div> 
 	</div>
 	<a href="#" title="[[Hide Desktops Sidebar]]"
@@ -47,8 +41,13 @@
 		<i class="bi bi-chevron-double-left closebar"></i>
 	</a>			
 </div>
-<div class="px-2">
-	<div class="border-top w-100 mt-2"></div>
+<div class="d-flex align-items-center px-2 my-2">
+	<div class="border-top flex-grow-1"></div>
+	<button id="scanHotFoldersBtn" 
+		class="btn btn-sm text-success small rounded border"
+		title="[[Scan for Changes]]">
+		<i class="fa fa-redo-alt"></i> <span>Re-Scan</span>
+	</button>
 </div>
 <div class="work-dir-tree" id="workDirTree">
 
