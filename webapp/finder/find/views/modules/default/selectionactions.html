@@ -66,7 +66,7 @@
 						data-copyingsearchtype="$moduleid"
 						data-copyinghitssessionid="$hits.getSessionId()"	
 						title="[[Add To Category]]"
-						data-width="1200"><i class="bi bi-category mr-2"></i> #text( $mediaarchive.getCachedData("module","searchcategory") )</a></li>
+						data-width="1200"><i class="bi bi-category mr-2"></i> [[With]] #text( $mediaarchive.getCachedData("module","searchcategory") )</a></li>
 			#end		
 	
 		
@@ -74,6 +74,8 @@
 			#foreach ( $amodule in $userprofile.getEntities() )
 				#set($amoduleid = $amodule.getId())
 				#if($amodule.getBoolean("enableuploading"))
+					
+					##TODO: Add new permissions "Copying To Enabled" "Copying From Enabled"
 					#if($permissions.can($amoduleid, "create") && $amoduleid!="searchcategory" && $amoduleid!="faceprofilegroup" && $amoduleid!="asset" && $amoduleid!="modulesearch")
 						#set($entityrendertype = "entity")
 						#if ($amodule.modulerendertype)
