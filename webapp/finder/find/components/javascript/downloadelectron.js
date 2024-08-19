@@ -679,67 +679,78 @@ jQuery(document).ready(function () {
 
     lQuery(".upload-push").livequery("click", function (e) {
       e.preventDefault();
+      var entityId = $(this).data("entityid");
       var categorypath = $(this).data("categorypath");
       ipcRenderer.send("uploadAll", {
         categorypath: categorypath,
+        entityId: entityId,
       });
     });
 
-    ipcRenderer.on(
-      "upload-next",
-      (_, { index, type = "folder", name = null }) => {
-        if (type === "folder") {
-          $(".pull-folder").each(function () {
-            var folder = $(this);
-            var spinner = folder.find(".fa-spinner");
-            if (folder.attr("id") == "folder-" + index) {
-              spinner.show();
-            } else {
-              spinner.hide();
-            }
-          });
-        } else if (type === "hotFolder") {
-          $(".work-folder").each(function () {
-            var folder = $(this);
-            if (folder.data("name") === name) {
-              console.log({ name });
-              folder
-                .find(".fl")
-                .addClass("fa-spin fa-spinner")
-                .removeClass("fa-folder");
-            } else {
-              folder
-                .find(".fl")
-                .addClass("fa-folder")
-                .removeClass("fa-spin fa-spinner");
-            }
-          });
-          $("#scanHotFoldersBtn").hide();
-        }
-      }
-    );
+    ipcRenderer.on("upload-start", (_, id) => {
+      var folder = $("#f-" + id);
+      if (folder.length === 0) return;
+      $("#sidebarUserUploads").append('<div class="status-circle"></div>');
+      folder.find(".up-progress").css("width", "0%");
+      folder.find(".fl").attr("class", "fl fas fa-spinner fa-spin text-muted");
+      $("#workFolderPicker").prop("disabled", true);
+      $("#workDirEntity").prop("disabled", true);
+      $("#scanHotFoldersBtn").hide();
+      $("#abortUpload").show();
+    });
 
-    ipcRenderer.on("upload-all-complete", (_, { type = "folder" }) => {
-      if (type === "folder") {
-        setTimeout(() => {
-          $(".pullfetchfolder").each(function () {
-            $(this).find(".fa-spinner").hide();
-          });
-          scanChange();
-        }, 3000);
-      } else if (type === "hotFolder") {
-        $(".work-folder").each(function () {
-          $(this).find(".wf-check").prop("checked", false);
-          $(this)
-            .find(".fl")
-            .addClass("fa-folder")
-            .removeClass("fa-spin fa-spinner");
+    ipcRenderer.on("upload-progress", (_, { id, progress, loaded, total }) => {
+      var folder = $("#f-" + id);
+      if (folder.length === 0) return;
+      folder.find(".up-progress").css("width", progress + "%");
+    });
+
+    ipcRenderer.on("upload-single-complete", (_, id) => {
+      var folder = $("#f-" + id);
+      if (folder.length === 0) return;
+      folder.find(".up-progress").css("width", "100%");
+      folder.find(".fl").attr("class", "fl fas fa-check-circle text-success");
+    });
+
+    ipcRenderer.on("upload-error", (_, { id, error }) => {
+      var folder = $("#f-" + id);
+      if (folder.length === 0) return;
+      folder.find(".up-progress").css("width", "0%");
+      folder
+        .find(".fl")
+        .attr("class", "fl fas fa-exclamation-circle text-danger");
+      console.error(error);
+    });
+
+    ipcRenderer.on("upload-all-complete", () => {
+      $("#sidebarUserUploads").find(".status-circle").remove();
+      $(".work-folder").each(function () {
+        $(this).find(".wf-check").prop("checked", false);
+        $(this).find(".fl").attr("class", "fl fas fa-folder");
+      });
+      $(".hot-importer").addClass("d-none").removeClass("d-flex");
+      $("#scanHotFoldersBtn").show();
+      onHotScanDone();
+      $("#abortUpload").hide();
+      $("#workFolderPicker").prop("disabled", false);
+      $("#workDirEntity").prop("disabled", false);
+      $("#importFolders").prop("disabled", false);
+      setTimeout(() => {
+        $(".pullfetchfolder").each(function () {
+          $(this).find(".fa-spinner").hide();
         });
-        $("#importFolders").prop("disabled", false);
-        $(".hot-importer").addClass("d-none").removeClass("d-flex");
-        onHotScanDone();
-        $("#scanHotFoldersBtn").show();
-      }
+        scanChange();
+      }, 3000);
+    });
+
+    lQuery("#abortUpload").livequery("click", function (e) {
+      e.preventDefault();
+      ipcRenderer.send("abortUpload");
+      $("#sidebarUserUploads").find(".status-circle").remove();
+      $(this).hide();
+      $("#scanHotFoldersBtn").show();
+      $("#workFolderPicker").prop("disabled", false);
+      $("#workDirEntity").prop("disabled", false);
     });
 
     lQuery(".pull-individual").livequery("click", function (e) {
@@ -828,20 +839,50 @@ jQuery(document).ready(function () {
 
       var fieldsEl = $("form#uploadFoldersForm").find("input, select");
       var fields = [];
+      var requiredFields = [];
       fieldsEl.each(function () {
         var name = $(this).attr("name");
         var value = $(this).val();
+        if (name === "field") {
+          requiredFields.push(value);
+        }
         fields.push({
           name: name,
           value: value,
         });
       });
 
+      if (requiredFields.length > 0) {
+        var missingFields = [];
+        requiredFields.forEach((field) => {
+          if (!fields.some((f) => f.name.startsWith(field) && f.value !== "")) {
+            missingFields.push(field);
+          }
+        });
+        if (missingFields.length > 0) {
+          alert(
+            "Please fill in the required fields: " + missingFields.join(", ")
+          );
+          return;
+        }
+      }
+
       ipcRenderer.send("importHotFolders", {
         rootPath: workDir,
         workDirEntity: workDirEntity,
         selectedFolders: selectedFolders,
         requiredFields: fields,
+      });
+    });
+
+    ipcRenderer.on("created-hot-folders", (_, existingFolders) => {
+      $(".work-folder").each(function () {
+        var folder = $(this);
+        var folderName = folder.data("name");
+        var f = existingFolders.find((f) => f.name === folderName);
+        if (f) {
+          folder.attr("id", "f-" + f.id);
+        }
       });
     });
 
@@ -886,7 +927,7 @@ jQuery(document).ready(function () {
     function folderHtm(
       path,
       name,
-      stats = { totalFiles: 0, totalFolders: 0, totalSize: 0 },
+      stats = { id: "", totalFiles: 0, totalFolders: 0, totalSize: 0 },
       newFolders
     ) {
       var s = [];
@@ -906,8 +947,13 @@ jQuery(document).ready(function () {
       if (newFolders.includes(name)) {
         checkboxstatus = "checked";
       }
+      var id = "";
+      if (stats.id) {
+        id = `id="f-${stats.id}"`;
+      }
 
-      return `<div class="work-folder" data-name="${name}">
+      return `<div class="work-folder" data-name="${name}" ${id}>
+        <div class="up-progress" style="width:0%"></div>
       <label>
 				<input class="wf-check" type="checkbox" data-path="${path}" data-name="${name}" ${checkboxstatus} />
 				<span class="mx-2"><i class="fl fas fa-folder"></i> ${name}</span>
