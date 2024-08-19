@@ -347,10 +347,10 @@ $(document).ready(function () {
   ];
 
   lQuery("#organizer_canvas").livequery(function () {
-	var canvasContainer = $(this);
+    var canvasContainer = $(this);
     canvasContainer.data("uiloaded", true);
-	canvasContainer.data("changed",false);
-	canvasContainer.data("initializing",true);
+    canvasContainer.data("changed", false);
+    canvasContainer.data("initializing", true);
 
     var logo = $("#logoPicker").val();
     var bgColor = $("#logoPicker").data("bg");
@@ -507,9 +507,9 @@ $(document).ready(function () {
           loadEvents();
 
           recenterCanvas();
-		  canvasContainer.data("changed",false);
-		  canvasContainer.data("initializing",false);
-		  
+          canvasContainer.data("changed", false);
+          canvasContainer.data("initializing", false);
+
           if (data != null) {
             if (data.canvastop !== undefined) {
               canvasContainer.css("margin-top", parseInt(data.canvastop));
@@ -1113,10 +1113,9 @@ $(document).ready(function () {
 
     canvas.getCommandStack().addEventListener(function (e) {
       if (e.isPostChangeEvent()) {
-		if( !canvasContainer.data("initializing"))
-		{
-	        saveJSON();
-	    }
+        if (!canvasContainer.data("initializing")) {
+          saveJSON();
+        }
       }
     });
 
@@ -1143,14 +1142,11 @@ $(document).ready(function () {
       if (!canvas) {
         return;
       }
-		if( usersaved)
-		{
-	        canvasContainer.data("changed",false); //User Save
-		}
-		else
-		{
-			canvasContainer.data("changed",true); //Version save
-		}
+      if (usersaved) {
+        canvasContainer.data("changed", false); //User Save
+      } else {
+        canvasContainer.data("changed", true); //Version save
+      }
       var writer = new draw2d.io.json.Writer();
 
       writer.marshal(canvas, function (json) {
@@ -1224,6 +1220,14 @@ $(document).ready(function () {
       });
       //autoSaver();
     }
+
+    $(document).on("keydown", function (e) {
+      if ((e.metaKey || e.ctrlKey) && e.keyCode == 83) {
+        e.preventDefault();
+        saveJSON();
+        saveJSON(true);
+      }
+    });
     /*
     function autoSaver() {
       if ($("#organizer_canvas").length == 0) {
@@ -1478,7 +1482,7 @@ $(document).ready(function () {
     });
 
     lQuery("#closeorgnizer").livequery("click", function () {
-		var changed = canvasContainer.data("changed");
+      var changed = canvasContainer.data("changed");
       if (!changed) {
         closeemdialog($(this).closest(".modal"));
         return;
@@ -1486,13 +1490,12 @@ $(document).ready(function () {
       if (
         confirm("You have unsaved changes. Are you sure you want to close?")
       ) {
-        canvasContainer.data("changed",false);
+        canvasContainer.data("changed", false);
         closeemdialog($(this).closest(".modal"));
       }
     });
 
     loadJSON();
-    
   }); //ends intitializer
 
   lQuery(".restoreversion").livequery("click", function (e) {
