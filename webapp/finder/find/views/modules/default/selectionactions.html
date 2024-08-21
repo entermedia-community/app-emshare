@@ -1,73 +1,9 @@
-<li class=" dropdown">
-	<a class="resultsnavlink dropdown-toggle"  data-toggle="dropdown" id="resultsSelectionDropdown">[[Edit]] </a>
-	<ul class="dropdown-menu">
-	#set( $type = $content.module )
-	#if($permissions.can($moduleid, "edit"))
-		#set($previewediturl = "$siteroot$apphome/views/modules/$!moduleid/components/gridsample/preview/$!{entityrendertype}.html?entityid=multiedit:$!hits.sessionId&hitssessionid=$!hits.sessionId&searchtype=$moduleid&edit=true")
-		<li><a class="dropdown-item emdialog" 
-			href="$previewediturl"
-			title="[[Multi edit selected items]]">[[Multi Edit]] $!hits.getSelectionSize() [[Items]]</a></li>
-	#end
-	
-
-				
-	<li class="dropdown-submenu">
-		<a class="dropdown-item  dropdown-toggle" href="#" data-bs-toggle="dropdown">[[Export]]</a>
-			<ul class="submenu dropdown-menu">
-				<li>
-					<a class="dropdown-item" 
-					href="$home${content.searchhome}/export/download/export_${type}.csv?hitssessionid=$hits.sessionId&searchtype=$type"
-					title="[[Export reults to CSV]]">[[Export results]]</a></li>
-				<li>
-					<a class="dropdown-item" 
-					href="$home${content.searchhome}/export/download/export_${type}.csv?hitssessionid=$hits.sessionId&friendly=true&searchtype=$type&view=$type/${type}resultstable"
-					title="[[Export results to CSV (Friendly)]]">[[Export results (friendly)]]</a></li>
-				<li>
-					<a class="dropdown-item ajax" 
-					data-oemaxlevel="1" 
-					data-targetdiv="resultsarea" 
-					href="$home${content.searchhome}/export/custom.html?hitssessionid=$hits.sessionId"
-					title="[[Custom export results]]">[[Custom Export]]</a></li>
-			</ul>
-	</li>
-	
-	#if($permissions.can($moduleid, "delete"))
-		 <li><a class="dropdown-item ajax" 
-		 data-confirm="[[Delete items?]]" 
-		 data-oemaxlevel="2" 
-		 data-targetdiv="$!{moduleid}resultscontainer" 
-		 href="$!home$!{content.searchhome}/actions/deleteselections.html?hitssessionid=$hits.sessionId&module=$!{module.id}"
-		 title="[[Delete selected items]]">[[Delete Selected Items]]</a></li>
-	#end
-	</ul>
-</li>
-
 
 
 <li class="resultsnavlink dropdown">
 		<a class="resultsnavlink dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="navbarCopyto$!{moduleid}">[[Copy To]]</a>
 		<ul class="dropdown-menu" aria-labelledby="navbarCopyto$!{moduleid}">
-			#if($canaddtofavorites && $librarycol.id != "${user.id}-favorites" )
-				<li><a class="dropdown-item ajax"
-					data-targetdivinner="empty"
-					data-alertmessage="[[Added to User Bookmarks]]"
-					data-oemaxlevel="2" 
-				title="[[Add To User Bookmarks]]"  
-				href="$siteroot$apphome/views/modules/asset/editor/favorite/favorite-add-multi.html?hitssessionid=$hits.getSessionId()"
-				><i class="bi bi-bookmark-fill mr-2"></i> [[User Bookmarks]]</a></li>
-			#end
-			#if($permissions.can("searchcategory", "create"))
-				#set($addurl = "$siteroot$applink/views/modules/searchcategory/components/entities/search/searchpicker.html") 
-				<li><a 
-				class="dropdown-item emdialog" 
-						href="$addurl" 
-						data-viewfiles="true"
-						data-pickertarget="addtocategory"
-						data-copyingsearchtype="$moduleid"
-						data-copyinghitssessionid="$hits.getSessionId()"	
-						title="[[Add To Category]]"
-						data-width="1200"><i class="bi bi-category mr-2"></i> [[With]] #text( $mediaarchive.getCachedData("module","searchcategory") )</a></li>
-			#end		
+			
 	
 		
 			
