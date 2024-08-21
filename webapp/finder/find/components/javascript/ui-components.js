@@ -3798,7 +3798,7 @@ uiload = function () {
     var parent = $(this).closest(".summary-container");
     parent.toggleClass("closed");
     var target = $(this).data("target");
-    saveProfileProperty("minimize" + target, "false", function () {
+    saveProfileProperty(target, "false", function () {
       $(".summary-opener").removeClass("closed");
       $(window).trigger("resize");
     });
@@ -3808,7 +3808,7 @@ uiload = function () {
     var opener = $(this);
 
     var target = $(this).data("target");
-    saveProfileProperty("minimize" + target, "true", function () {
+    saveProfileProperty(target, "true", function () {
       opener.addClass("closed");
       $(".summary-container").removeClass("closed");
       $(window).trigger("resize");
