@@ -167,13 +167,13 @@ $context.putPageValue("entityrendertype", $entityrendertype)
 						</select>
 					</li>		
 				#end
-				
-				#set($selectedpreference = $userprofile.get("minimize$!{moduleid}summary"))
+				#set($preference = "minimize$!{moduleid}summary")
+				#set($selectedpreference = $userprofile.get($preference))
 				#ifnull($selectedpreference)
 					#set($selectedpreference = "true")
 				#end
 				<li class="resultsnavtitem">
-					<button class='btn summary-opener #if($selectedpreference == "true") closed #end' data-target="$selectedpreference">
+					<button class='btn summary-opener #if($selectedpreference == "true") closed #end' data-target="$preference">
 						<i class="bi bi-chevron-double-left"></i> [[Summary]]
 					</button>
 				</li>

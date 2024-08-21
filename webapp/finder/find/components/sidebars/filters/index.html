@@ -1,16 +1,15 @@
 #ifnull($moduleid)
 	#set( $moduleid = $module.getId())
 #end
-
-#set($selectedpreference = $userprofile.get("minimize$!{moduleid}summary"))
-
+#set($preference = "minimize$!{moduleid}summary")
+#set($selectedpreference = $userprofile.get($preference))
 #ifnull($selectedpreference)
 	#set($selectedpreference = "true")
 #end
 
 <div class="summary-container #if($selectedpreference == "false") closed#end">
 	<div class="d-flex align-items-center justify-content-between border-bottom-brand">
-		<div class="summary-header summary-toggler" data-target="$selectedpreference"> 
+		<div class="summary-header summary-toggler" data-target="$preference"> 
 			<button class="btn">
 				<i class="bi bi-chevron-double-right"></i>
 			</button>
