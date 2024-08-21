@@ -868,8 +868,8 @@ uiload = function () {
               closeemdialog(formmodal);
             }
           }
-          
-		  //Entity Back Btn
+
+          //Entity Back Btn
           formsavebackbutton(form);
 
           //who uses this?
@@ -1382,7 +1382,7 @@ uiload = function () {
   };
 
   lQuery(".entitydialogback").livequery("click", function (event) {
-	var link = $(this);
+    var link = $(this);
     event.preventDefault();
     var parentcontainerid = link.data("parentcontainerid");
     var parent = $("#" + parentcontainerid);
@@ -1391,10 +1391,9 @@ uiload = function () {
       var urlbar = parent.data("urlbar");
       autoreload(parent);
       tabbackbutton(grandparent);
-      if(urlbar !== undefined)
-      {
-		  history.pushState($("#application").html(), null, urlbar);
-	  }
+      if (urlbar !== undefined) {
+        history.pushState($("#application").html(), null, urlbar);
+      }
     }
   });
 
@@ -1635,7 +1634,7 @@ uiload = function () {
     var parent = entity.parent(".entitydialog");
     autoreload(entity);
     if (parent !== undefined) {
-    	tabbackbutton(parent);
+      tabbackbutton(parent);
     }
   });
 
@@ -2019,18 +2018,19 @@ uiload = function () {
           options1.id = rowid;
           var targetcomponenthome = emselectable.data("targetcomponenthome");
           var targetrendertype = emselectable.data("targetrendertype");
-          var clickurl = targetcomponenthome + "/gridsample/preview/entity.html";
+          var clickurl =
+            targetcomponenthome + "/gridsample/preview/entity.html";
 
           options1.updateurl = true;
           var urlbar =
-	          apphome +
-	          "/views/modules/" +
-	          emselectable.data("searchtype") +
-	          "/index.html?entityid=" +
-	          rowid;
-	      options1.urlbar = urlbar;
+            apphome +
+            "/views/modules/" +
+            emselectable.data("searchtype") +
+            "/index.html?entityid=" +
+            rowid;
+          options1.urlbar = urlbar;
           options1.oemaxlevel = 1;
-          
+
           jQuery.ajax({
             url: clickurl,
             data: options1,
@@ -2038,9 +2038,9 @@ uiload = function () {
               var parent = container.closest(".entitydialog");
               container.replaceWith(data);
               tabbackbutton(parent);
-              if(urlbar !== undefined) {
-              	history.pushState($("#application").html(), null, urlbar);
-              	window.scrollTo(0, 0);
+              if (urlbar !== undefined) {
+                history.pushState($("#application").html(), null, urlbar);
+                window.scrollTo(0, 0);
               }
             },
           });
@@ -2226,19 +2226,19 @@ uiload = function () {
   });
 
   updateentitylist = function (pickertarget, id, name) {
-	  	var template = $("#pickedtemplateREPLACEID", pickertarget).html(); //clone().appendTo(pickertarget);
-	    var newcode = template.replaceAll("REPLACEID", id);
-	    newcode = newcode.replaceAll("REPLACEFIELDNAME", ""); 
-	    var ismulti = pickertarget.data("ismulti");
-		if(ismulti == undefined || !ismulti) {
-			//clear others
-			pickertarget.find("li:not(#pickedtemplateREPLACEID)").remove();				  
-		}
-	    pickertarget.prepend("<li>" + newcode + "</li>");
-	    var newrow = pickertarget.find("li:first");
-	    newrow.attr("id", id);
-	    newrow.find("a:first").text(name);
-	    newrow.show();
+    var template = $("#pickedtemplateREPLACEID", pickertarget).html(); //clone().appendTo(pickertarget);
+    var newcode = template.replaceAll("REPLACEID", id);
+    newcode = newcode.replaceAll("REPLACEFIELDNAME", "");
+    var ismulti = pickertarget.data("ismulti");
+    if (ismulti == undefined || !ismulti) {
+      //clear others
+      pickertarget.find("li:not(#pickedtemplateREPLACEID)").remove();
+    }
+    pickertarget.prepend("<li>" + newcode + "</li>");
+    var newrow = pickertarget.find("li:first");
+    newrow.attr("id", id);
+    newrow.find("a:first").text(name);
+    newrow.show();
   };
 
   showmodal = function (emselecttable, url) {
