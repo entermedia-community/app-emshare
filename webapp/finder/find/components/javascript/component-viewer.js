@@ -1,3 +1,4 @@
+var colors = ["#4d5d80", "#4d5d80", "#4caf50", "#ff5722", "#caf550", "#4d5ddf"];
 $(document).on("draw2d", function () {
   var canvas = null;
 
@@ -36,47 +37,47 @@ $(document).on("draw2d", function () {
 
     var reader = new draw2d.io.json.Reader();
 
-    function loadJSON(topnodeid) {
+    function loadJSON(topnodeid = "0_0") {
       var url = componentviewer.data("loadurl");
       console.log("Loading" + url);
 
-		//var  = "0_0";
+      //var  = "0_0";
 
       var request = {
         componentdatasortby: "orderingUp",
         page: "1",
         hitsperpage: "100",
-		orqueries: 
-		[{
+        orqueries: [
+          {
             terms: [
-            {
-              field: "entityid",
-              operator: "exact",
-              value: componentviewer.data("entityid"),
-            },
-             {
-              field: "toplevelparent",
-              operator: "exact",
-              value: topnodeid,
-            }
-            ]
-         },
-         {
-	        terms: [
-            {
-              field: "entityid",
-              operator: "exact",
-              value: componentviewer.data("entityid"),
-            },
-            {
-              field: "alwaysrender",
-              operator: "exact",
-              value: "true",
-            }
-            ]
-        }    
-       ]
-     };
+              {
+                field: "entityid",
+                operator: "exact",
+                value: componentviewer.data("entityid"),
+              },
+              {
+                field: "toplevelparent",
+                operator: "exact",
+                value: topnodeid,
+              },
+            ],
+          },
+          {
+            terms: [
+              {
+                field: "entityid",
+                operator: "exact",
+                value: componentviewer.data("entityid"),
+              },
+              {
+                field: "alwaysrender",
+                operator: "exact",
+                value: "true",
+              },
+            ],
+          },
+        ],
+      };
 
       var datastring = JSON.stringify(request);
 
@@ -94,29 +95,58 @@ $(document).on("draw2d", function () {
             var json = [];
             for (let i = 0; i < results.length; i++) {
               let data = results[i];
-              //Fix any more math?
-
-              //Check for errors
               try {
-				if( data.json !== undefined)
-				{
-	                var parsed = JSON.parse(data.json);
-					console.log(parsed);
-
-	                json = json.concat(parsed);
-	            }
+                if (data.json !== undefined) {
+                  var parsed = JSON.parse(data.json);
+                  if (data.toplevelparent) {
+                    for (var j = 0; j < parsed.length; j++) {
+                      var obj = parsed[j];
+                      if (
+                        topnodeid !== data.toplevelparent &&
+                        obj.cssClass == "labelGroup"
+                      ) {
+                        obj.ports = obj.ports.slice(0, 1);
+                      }
+                      if (obj.type === "draw2d.Connection") {
+                        obj.color =
+                          colors[parseInt(data.nodelevel) % colors.length];
+                      }
+                      obj.userData = {
+                        toplevelparent: data.toplevelparent,
+                      };
+                    }
+                  }
+                  json = json.concat(parsed);
+                }
               } catch (e) {
-                console.log(data.json, e); // Logs the error
+                console.log(data.json, e);
               }
             }
-            reader.unmarshal(canvas, json); //?parsed?
-            //var updateddata = saveddata.replaceAll("${apphome}", apphome);
+            canvas.clear();
+            $("#componentLoader").hide();
+            reader.unmarshal(canvas, json);
           } else {
             console.log("Error", res);
           }
         },
       });
     }
-    loadJSON("0_0"); //set timeout
+    loadJSON();
+    canvas.on("select", function (_, event) {
+      var toplevelparent = event.figure.getUserData().toplevelparent;
+      var id = event.figure.getId().replace("id_", "");
+      var x = event.figure.getX();
+      var y = event.figure.getY();
+      var w = event.figure.getWidth();
+      $("#componentLoader")
+        .css({
+          left: x + w + 8,
+          top: y + 4,
+        })
+        .show();
+      if (toplevelparent === id) {
+        loadJSON(id);
+      }
+    });
   });
 });
