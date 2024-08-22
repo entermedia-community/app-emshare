@@ -25,7 +25,8 @@ function setContrast(hex) {
   );
   return brightness > 125 ? "#000000" : "#ffffff";
 }
-$(document).ready(function () {
+
+function initializeSmartOrganizer() {
   //See if UI is already initialized
   var app = jQuery("#application");
   var apphome = app.data("siteroot") + app.data("apphome");
@@ -394,7 +395,7 @@ $(document).ready(function () {
             targetPort = conn.targetPort?.name?.includes("labelPort");
             if (sourcePort || targetPort) {
               var parent = conn.getSource().getParent();
-              if (parent.cssClass !== "labelGroup") {
+              if (parent && parent.cssClass !== "labelGroup") {
                 parent = conn.getTarget().getParent();
               }
               conn.setColor(parent.getColor());
@@ -1496,12 +1497,17 @@ $(document).ready(function () {
     });
 
     loadJSON();
-  }); //ends intitializer
+  });
+}
+
+$(document).ready(function () {
+  initializeSmartOrganizer();
 
   lQuery(".restoreversion").livequery("click", function (e) {
     e.stopImmediatePropagation();
     e.preventDefault();
     runajaxonthis($(this), e);
+    initializeSmartOrganizer();
     closeemdialog($(this).closest(".modal"));
   });
 
