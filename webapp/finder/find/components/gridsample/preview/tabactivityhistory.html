@@ -45,11 +45,15 @@ $context.putPageValue("parentsearchtype", $parentsearchtype)
 						</td>
 						<td>
 							#set($assetids = $activity.getValue("assetids"))
-							#foreach($asset in $assetids)
-								#set($asset = $mediaarchive.getAsset($asset))
+							
+							
+							#foreach($assetid in $assetids)
+								#set($asset = $mediaarchive.getAsset($assetid))
 								#if($asset)
 									$asset.getName()
 									#if($foreach.hasNext), &nbsp;#end
+								#else
+									$assetid
 								#end
 							#end
 							</td>
