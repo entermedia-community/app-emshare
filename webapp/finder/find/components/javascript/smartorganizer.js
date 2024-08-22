@@ -25,8 +25,12 @@ function setContrast(hex) {
   );
   return brightness > 125 ? "#000000" : "#ffffff";
 }
-$(document).ready(function () {
+
+function initializeSmartOrganizer() {
   //See if UI is already initialized
+}
+
+$(document).ready(function () {
   var app = jQuery("#application");
   var apphome = app.data("siteroot") + app.data("apphome");
   var siteroot = $("#application").data("siteroot");
@@ -394,7 +398,7 @@ $(document).ready(function () {
             targetPort = conn.targetPort?.name?.includes("labelPort");
             if (sourcePort || targetPort) {
               var parent = conn.getSource().getParent();
-              if (parent.cssClass !== "labelGroup") {
+              if (parent && parent.cssClass !== "labelGroup") {
                 parent = conn.getTarget().getParent();
               }
               conn.setColor(parent.getColor());
@@ -1496,7 +1500,7 @@ $(document).ready(function () {
     });
 
     loadJSON();
-  }); //ends intitializer
+  });
 
   lQuery(".restoreversion").livequery("click", function (e) {
     e.stopImmediatePropagation();
