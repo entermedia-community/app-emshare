@@ -40,20 +40,43 @@ $(document).on("draw2d", function () {
       var url = componentviewer.data("loadurl");
       console.log("Loading" + url);
 
+		var lastclicked = "0_0";
+
       var request = {
         componentdatasortby: "orderingUp",
         page: "1",
-        hitsperpage: "50",
-        query: {
-          terms: [
+        hitsperpage: "100",
+		orqueries: 
+		[{
+            terms: [
             {
               field: "entityid",
               operator: "exact",
               value: componentviewer.data("entityid"),
             },
-          ],
-        },
-      };
+             {
+              field: "toplevelparent",
+              operator: "exact",
+              value: lastclicked,
+            }
+            ]
+         },
+         {
+	        terms: [
+            {
+              field: "entityid",
+              operator: "exact",
+              value: componentviewer.data("entityid"),
+            },
+            {
+              field: "alwaysrender",
+              operator: "exact",
+              value: "true",
+            }
+            ]
+        }    
+       ]
+     };
 
       var datastring = JSON.stringify(request);
 
