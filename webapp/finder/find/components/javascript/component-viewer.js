@@ -36,11 +36,11 @@ $(document).on("draw2d", function () {
 
     var reader = new draw2d.io.json.Reader();
 
-    function loadJSON() {
+    function loadJSON(topnodeid) {
       var url = componentviewer.data("loadurl");
       console.log("Loading" + url);
 
-		var lastclicked = "0_0";
+		//var  = "0_0";
 
       var request = {
         componentdatasortby: "orderingUp",
@@ -57,7 +57,7 @@ $(document).on("draw2d", function () {
              {
               field: "toplevelparent",
               operator: "exact",
-              value: lastclicked,
+              value: topnodeid,
             }
             ]
          },
@@ -117,6 +117,6 @@ $(document).on("draw2d", function () {
         },
       });
     }
-    loadJSON();
+    loadJSON("0_0"); //set timeout
   });
 });
