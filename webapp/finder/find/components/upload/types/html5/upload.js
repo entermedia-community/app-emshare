@@ -1,3 +1,4 @@
+//Finder
 var uploadid = new Date().getTime();
 var home = null;
 var currentupload = 0;
@@ -8,7 +9,7 @@ var allfiles = new Array();
 
 // wait for the DOM to be loaded
 $(document).ready(function () {
-  if (!apphome) {
+  if (apphome === undefined) {
     if (!siteroot) {
       siteroot = $("#application").data("siteroot");
     }
