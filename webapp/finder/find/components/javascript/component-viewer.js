@@ -36,8 +36,9 @@ $(document).on("draw2d", function () {
     // canvas.installEditPolicy(new draw2d.policy.canvas.CoronaDecorationPolicy());
 
     var reader = new draw2d.io.json.Reader();
-
+    var currentRender = "";
     function loadJSON(topnodeid = "0_0") {
+      currentRender = topnodeid;
       var url = componentviewer.data("loadurl");
       console.log("Loading" + url);
 
@@ -110,6 +111,7 @@ $(document).on("draw2d", function () {
                       if (obj.type === "draw2d.Connection") {
                         obj.color =
                           colors[parseInt(data.nodelevel) % colors.length];
+                        obj.radius = 10;
                       }
                       obj.userData = {
                         toplevelparent: data.toplevelparent,
@@ -138,15 +140,35 @@ $(document).on("draw2d", function () {
       var x = event.figure.getX();
       var y = event.figure.getY();
       var w = event.figure.getWidth();
-      $("#componentLoader")
-        .css({
-          left: x + w + 8,
-          top: y + 4,
-        })
-        .show();
-      if (toplevelparent === id) {
+      if (toplevelparent === id && currentRender !== id) {
+        $("#componentLoader")
+          .css({
+            left: x + w + 8,
+            top: y + 4,
+          })
+          .show();
         loadJSON(id);
+      } else {
+        var nodes = event.figure.getAssignedFigures();
+        console.log(nodes);
+        var textNode = nodes.find((n) => n.cssClass === "titleLabel");
+        $("#componentDetails")
+          .css({
+            left: x + w + 8,
+            top: y + 4,
+          })
+          .show();
+        loadDetails(id, textNode.getText());
       }
     });
+    function loadDetails(id, text) {
+      setTimeout(() => {
+        $("#componentDetails").html(
+          "<b class='mb-2'>" +
+            text +
+            "</b><p class='m-0'>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, nunc nec.</p>"
+        );
+      }, 2000);
+    }
   });
 });
