@@ -6,9 +6,6 @@ $(document).on("draw2d", function () {
     if (canvas) {
       return;
     }
-    setTimeout(function () {
-      console.log(window.draw2d);
-    }, 2000);
 
     var componentviewer = $(this);
 
