@@ -38,11 +38,9 @@ $(document).on("draw2d", function () {
     var reader = new draw2d.io.json.Reader();
     var currentRender = "";
     function loadJSON(topnodeid = "0_0") {
+      hideDetails();
       currentRender = topnodeid;
       var url = componentviewer.data("loadurl");
-      console.log("Loading" + url);
-
-      //var  = "0_0";
 
       var request = {
         componentdatasortby: "orderingUp",
@@ -140,6 +138,7 @@ $(document).on("draw2d", function () {
       var x = event.figure.getX();
       var y = event.figure.getY();
       var w = event.figure.getWidth();
+
       if (toplevelparent === id && currentRender !== id) {
         $("#componentLoader")
           .css({
@@ -157,18 +156,28 @@ $(document).on("draw2d", function () {
             left: x + w + 8,
             top: y + 4,
           })
+          .html('<i class="fa fa-spinner fa-spin"></i>')
           .show();
         loadDetails(id, textNode.getText());
       }
     });
+
+    let temp;
     function loadDetails(id, text) {
-      setTimeout(() => {
-        $("#componentDetails").html(
+      console.log(id);
+      //pseudo data loading
+      $("#componentDetails")
+        .html(
           "<b class='mb-2'>" +
             text +
             "</b><p class='m-0'>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, nunc nec.</p>"
-        );
-      }, 2000);
+        )
+        .show();
+    }
+    function hideDetails() {
+      $("#componentDetails")
+        .html('<i class="fa fa-spinner fa-spin"></i>')
+        .hide();
     }
   });
 });
