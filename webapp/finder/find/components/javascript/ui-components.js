@@ -3,6 +3,8 @@ var lwt;
 var lwht;
 var trackKeydown = false;
 var exitWarning = false;
+var siteroot;
+var apphome;
 
 function showLoader() {
   clearTimeout(lwt);
@@ -294,8 +296,8 @@ lQuery(".redirecttopage").livequery(function () {
 
 uiload = function () {
   var app = jQuery("#application");
-  var siteroot = app.data("siteroot");
-  var apphome = app.data("apphome");
+  siteroot = app.data("siteroot");
+  apphome = app.data("apphome");
   var themeprefix = app.data("themeprefix");
   if (siteroot !== undefined) {
     //legacy siteroot
@@ -3820,12 +3822,11 @@ uiload = function () {
     e.stopImmediatePropagation();
     var toggler = $(this);
     var options = toggler.data();
-
     var targetdiv = toggler.data("targetdiv");
     var sidebar = toggler.data("sidebar");
     options["propertyfield"] = "sidebarcomponent";
     var url = toggler.attr("href");
-    //console.log(data.modulesearchhitssessionid);
+    
     if (toggler.data("action") == "home") {
       options["sidebarcomponent.value"] = "";
       options["sidebarcomponent"] = "home";
@@ -3857,8 +3858,6 @@ uiload = function () {
       //hide sidebar
       options["module"] = $("#applicationcontent").data("moduleid");
       options["sidebarcomponent.value"] = "";
-      var url = apphome + "/components/sidebars/index.html";
-
       jQuery.ajax({
         url: url,
         async: false,

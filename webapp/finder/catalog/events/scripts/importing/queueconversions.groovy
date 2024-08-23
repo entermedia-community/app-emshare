@@ -8,7 +8,7 @@ import org.openedit.hittracker.SearchQuery
 
 public void createTasksForUpload() throws Exception 
 {
-
+	
 	MediaArchive mediaarchive = (MediaArchive)context.getPageValue("mediaarchive");//Search for all files looking for videos
 	Searcher assetsearcher = mediaarchive.getAssetSearcher();
 

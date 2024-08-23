@@ -1,0 +1,67 @@
+<div id="asset-editor-container" class=" assetpanel-editor-box">
+<div class="assetpanel-editortitle">
+<h3>[[Versions]]</h3>
+</div>
+<div class="assetpanel-editorinner">
+	
+	editPath
+	<form method="post" name="wizard">
+<div class="oelist-box">
+	<table width="100%">
+	<tr>
+	<th class="white-on-grey">$context.getPageProperty('text.version')</th>
+                  <th class="white-on-grey">$context.getPageProperty('text.author')</th>
+                  <th class="white-on-grey">$context.getPageProperty('text.date')</th>
+                  <th class="white-on-grey">$context.getPageProperty('text.message')</th>
+	</tr>
+        #set ( $dateformat = $classtool.newInstance( "java.text.SimpleDateFormat", "EEE MMM dd, yyyy hh:mm a" ) )
+        #foreach ( $revision in $revisions.revisions )
+            <tr>
+			   <td>
+                #if ( ${foreach.count} == 1 )
+                    <b>$!revision.version (current)</b>
+                #else
+                    <a href="$home${content.revisioneditorhome}/showrevision.html?editPath=${url_util.encode( $revisions.editPath )}&version=$revision.version">$revision.version</a>
+                #end
+              </td>
+              <td>
+              	#if ( ${foreach.count} == 1 )
+                    <b>$!revision.author</b>
+                #else
+                    $!revision.author
+                #end
+              </td>
+              <td>
+                #set ( $dateString = $dateformat.format( $revision.lastModified() ) )
+              	#if ( ${foreach.count} == 1 )
+                    <b>$dateString.replaceAll( " ", "&nbsp;" )</b>
+                #else
+                    $dateString.replaceAll( " ", "&nbsp;" )
+                #end
+              </td>
+              <td>
+                #if ( ${foreach.count} == 1 )
+                    #if ( !$revision.version && !$revision.message )
+                    	$context.getPageProperty('text.nonversioning')
+                    #else
+                    <b>$!revision.message</b>
+                    #end
+                #else
+                    $!revision.message
+                #end
+              </td>                    
+			</tr>
+        #end
+     </table>
+        </div>
+#if( $candeleteall )
+<input onclick="deleteAll()" value="$context.getPageProperty('text.deleteAll')" name="Delete" type="button" class="oestandard-button">
+#end
+	
+    
+	
+	
+	
+	
+</div>
+</div>
