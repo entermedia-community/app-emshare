@@ -26,10 +26,6 @@ function setContrast(hex) {
   return brightness > 125 ? "#000000" : "#ffffff";
 }
 
-function initializeSmartOrganizer() {
-  //See if UI is already initialized
-}
-
 $(document).ready(function () {
   var app = jQuery("#application");
   var apphome = app.data("siteroot") + app.data("apphome");
@@ -1486,7 +1482,7 @@ $(document).ready(function () {
     });
 
     lQuery("#closeorgnizer").livequery("click", function () {
-      var changed = canvasContainer.data("changed");
+      var changed = $("#organizer_canvas").data("changed");
       if (!changed) {
         closeemdialog($(this).closest(".modal"));
         return;
@@ -1494,11 +1490,10 @@ $(document).ready(function () {
       if (
         confirm("You have unsaved changes. Are you sure you want to close?")
       ) {
-        canvasContainer.data("changed", false);
+        $("#organizer_canvas").data("changed", false);
         closeemdialog($(this).closest(".modal"));
       }
     });
-
     loadJSON();
   });
 
