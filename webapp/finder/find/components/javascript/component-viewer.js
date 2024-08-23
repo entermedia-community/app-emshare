@@ -5,6 +5,8 @@ $(document).on("draw2d", function () {
   lQuery("#componentViewer").livequery(function () {
     if (canvas) {
       return;
+    } else {
+      $(this).empty();
     }
 
     var componentviewer = $(this);
@@ -65,8 +67,6 @@ $(document).on("draw2d", function () {
         success: function (res) {
           if (res.response != undefined && res.response.status == "ok") {
             var results = res.results;
-            //TODO: Support pagination
-            // canvas.clear();
             var json = [];
             for (let i = 0; i < results.length; i++) {
               let data = results[i];
@@ -111,6 +111,7 @@ $(document).on("draw2d", function () {
       });
     }
     loadJSON();
+
     canvas.on("select", function (_, event) {
       var toplevelparent = event.figure.getUserData().toplevelparent;
       var id = event.figure.getId().replace("id_", "");
@@ -141,9 +142,14 @@ $(document).on("draw2d", function () {
       }
     });
 
-    let temp;
+    let closeBtn = $("<button>")
+      .addClass("btn btn-sm btn-outline-secondary")
+      .text("Close")
+      .click(function () {
+        hideDetails();
+      });
+
     function loadDetails(id, text) {
-      console.log(id);
       //pseudo data loading
       $("#componentDetails")
         .html(
@@ -151,6 +157,7 @@ $(document).on("draw2d", function () {
             text +
             "</b><p class='m-0'>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, nunc nec.</p>"
         )
+        .append(closeBtn)
         .show();
     }
     function hideDetails() {
