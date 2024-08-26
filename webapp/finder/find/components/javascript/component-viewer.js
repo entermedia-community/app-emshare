@@ -23,7 +23,7 @@ $(document).on("draw2d", function () {
       var request = {
         componentdatasortby: "orderingUp",
         page: "1",
-        hitsperpage: "100",
+        hitsperpage: "300",
         orqueries: [
           {
             terms: [
