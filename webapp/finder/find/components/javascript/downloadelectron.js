@@ -396,12 +396,6 @@ jQuery(document).ready(function () {
         $("#workDirEntity").val(workDirEntity);
         $("#workDirEntity").trigger("change");
       }
-      if (workDir && workDirEntity) {
-        $("#scanHotFoldersBtn").show();
-        triggerHotScan();
-      } else {
-        $("#scanHotFoldersBtn").hide();
-      }
       fetchingWorkDir = false;
     });
     lQuery("#workFolderInput").livequery(function () {
@@ -728,7 +722,6 @@ jQuery(document).ready(function () {
         $(this).find(".wf-check").prop("checked", false);
         $(this).find(".fl").attr("class", "fl fas fa-folder");
       });
-      $(".hot-importer").addClass("d-none").removeClass("d-flex");
       $("#scanHotFoldersBtn").show();
       onHotScanDone();
       $("#abortUpload").hide();
@@ -772,13 +765,7 @@ jQuery(document).ready(function () {
     });
 
     function onHotScanDone(done = true) {
-      if (done) {
-        $("#scanHotFoldersBtn").prop("disabled", false);
-        $("#scanHotFoldersBtn").find("span").text("Re-Scan");
-      } else {
-        $("#scanHotFoldersBtn").prop("disabled", true);
-        $("#scanHotFoldersBtn").find("span").text("Scanning...");
-      }
+      //
     }
 
     lQuery("#workDirEntity").livequery("change", function () {
@@ -886,24 +873,18 @@ jQuery(document).ready(function () {
       });
     });
 
-    lQuery("#workFolderPicker").livequery("click", function (e) {
+    lQuery("#folderAbsPath").livequery("click", function (e) {
+      console.log("anything");
       e.preventDefault();
       window.postMessage({
         type: "select-dirs",
-        currentPath: $("#workFolderInput").val(),
+        currentPath: $("#folderAbsPath").val(),
       });
     });
 
-    ipcRenderer.on("no-workDir", () => {
-      $("#workFolderInput").val("");
-      $("#workFolderPicker").text("Select");
-      $("#scanHotFoldersBtn").hide();
-    });
-
-    ipcRenderer.on("no-workDirEntity", () => {
-      $("#workDirEntity").val("");
-      $("#workDirEntity").trigger("change");
-      $("#scanHotFoldersBtn").hide();
+    ipcRenderer.on("selected-dirs", (_, { name, path }) => {
+      $("#folderAbsPath").val(path);
+      $("#folderAbsName").val(name);
     });
 
     function checkActiveHotFolders() {
@@ -915,11 +896,6 @@ jQuery(document).ready(function () {
           return false;
         }
       });
-      if (showAddBtn) {
-        $(".hot-importer").addClass("d-flex").removeClass("d-none");
-      } else {
-        $(".hot-importer").addClass("d-none").removeClass("d-flex");
-      }
     }
 
     lQuery(".wf-check").livequery("change", checkActiveHotFolders);
@@ -993,12 +969,6 @@ jQuery(document).ready(function () {
         }
         workDirTree.html(tree);
 
-        if (newFolders.length > 0) {
-          $(".hot-importer").addClass("d-flex").removeClass("d-none");
-        } else {
-          $(".hot-importer").addClass("d-none").removeClass("d-flex");
-        }
-
         $("#hotStats")
           .find(".count")
           .text(totalFiles + " files");
@@ -1032,6 +1002,33 @@ jQuery(document).ready(function () {
       }, 3000);
       $(".folder-icon").removeClass("loading");
     });
+  });
+
+  lQuery("#selectedModule").livequery("change", function () {
+    var selectedModule = {
+      moduleid: $(this).val(),
+      modulename: $(this).find("option:selected").text(),
+    };
+
+    var data = {
+      updateurl: "true",
+      oemaxlevel: "4",
+    };
+    $("#applicationcontent").load(
+      apphome + "/views/modules/" + selectedModule.moduleid + "/index.html",
+      data,
+      function (res) {
+        $(this).html(res);
+      }
+    );
+    var modules = [];
+    $(this)
+      .find("option")
+      .each(function () {
+        modules.push($(this).text());
+      });
+    var desktopId = $("#desktopId").val();
+    ipcRenderer.send("setModule", { selectedModule, modules, desktopId });
   });
 });
 

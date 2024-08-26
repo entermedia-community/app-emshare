@@ -1,0 +1,16 @@
+<div id="syncFolderList" class="work-folder-tree">
+  #set($syncfolders = $mediaarchive.query("desktopsyncfolder").exact("desktop", $desktop.id).exact("module", $module.id).search()) 
+  #foreach($syncfolder in $syncfolders) 
+  <div class="work-folder" data-name="${name}" ${id}>
+      <div class="up-progress" style="width:0%"></div>
+    <label>
+      <input class="wf-check" type="checkbox" data-path="${path}" data-name="${name}" ${checkboxstatus} />
+      <span class="mx-2"><i class="fl fas fa-folder"></i> $syncfolder.name</span>
+    </label>
+    <small>${st}</small>
+    <button class="btn text-accent open-folder px-2" data-path="$syncfolder.localpath">
+      <i class="fas fa-eye"></i>
+    </button>
+  </div>
+  #end
+</div>
