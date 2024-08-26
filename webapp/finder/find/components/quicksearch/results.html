@@ -61,13 +61,16 @@
     </div>
 #end
 
-
 #if(!$livesuggestions.isEmpty())
 <ul class="qsrecent">
 #foreach ($suggestion in $livesuggestions)
+	#set($highlighted = $highlighter.highlight($livesearchfor, $suggestion, 20, true))
+	#ifnotnull($highlighted)
 	<li class="lisuggestion">
-		<a href="#" class="qssuggestion" data-suggestion="#esc($suggestion)">$highlighter.highlight($livesearchfor,$suggestion, 20,true)</a>
+		<a href="#" class="qssuggestion" 
+			data-suggestion="#esc($suggestion)">$highlighted</a>
 	</li>	 
+	#end
 #end
 </ul>
 #end
