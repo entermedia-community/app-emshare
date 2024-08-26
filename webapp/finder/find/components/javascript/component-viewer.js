@@ -76,6 +76,8 @@ $(document).on("draw2d", function () {
                   if (data.toplevelparent) {
                     for (var j = 0; j < parsed.length; j++) {
                       var obj = parsed[j];
+                      var color =
+                        colors[parseInt(data.nodelevel) % colors.length];
                       if (
                         topnodeid !== data.toplevelparent &&
                         obj.cssClass == "labelGroup"
@@ -83,14 +85,14 @@ $(document).on("draw2d", function () {
                         obj.ports = obj.ports.slice(0, 1);
                       }
 
-                      if (obj.type === "draw2d.Connection") {
-                        obj.selectable = false;
-                        obj.draggable = false;
-                        obj.color =
-                          colors[parseInt(data.nodelevel) % colors.length];
-                        obj.radius = 10;
+                      if (
+                        obj.type === "draw2d.Connection" ||
+                        obj.type === "draw2d.HybridPort"
+                      ) {
+                        obj.color = color;
                       }
                       obj.userData = {
+                        databaseid: data.id,
                         toplevelparent: data.toplevelparent,
                       };
                     }
