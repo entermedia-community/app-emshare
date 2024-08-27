@@ -664,6 +664,29 @@ uiload = function () {
       target.hide();
     }
   });
+  function humanFileSize(bytes) {
+    var thresh = 1000;
+    if (Math.abs(bytes) < thresh) {
+      return bytes + " B";
+    }
+    var units = ["kB", "MB", "GB", "TB"];
+    var u = -1;
+    do {
+      bytes /= thresh;
+      ++u;
+    } while (
+      Math.round(Math.abs(bytes) * 10) / 10 >= thresh &&
+      u < units.length - 1
+    );
+    return bytes.toFixed(1) + units[u];
+  }
+  lQuery(".filesize").livequery(function () {
+    var size = $(this).text();
+    size = parseInt(size);
+    if (!isNaN(size)) {
+      $(this).text(humanFileSize(size));
+    }
+  });
 
   // deprecated, use data-confirm
   lQuery(".confirm").livequery("click", function (e) {
@@ -3834,7 +3857,7 @@ uiload = function () {
     var sidebar = toggler.data("sidebar");
     options["propertyfield"] = "sidebarcomponent";
     var url = toggler.attr("href");
-    
+
     if (toggler.data("action") == "home") {
       options["sidebarcomponent.value"] = "";
       options["sidebarcomponent"] = "home";

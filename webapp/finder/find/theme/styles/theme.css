@@ -143,6 +143,9 @@ kbd {
 .site-switcher a.dropdown-item:not(:last-child) {
   border-bottom: 1px solid #5f739e;
 }
+.alert-primary {
+  background-color: rgba(0, 123, 255, 0.1) !important;
+}
 .alert-error,
 .alert-save {
   display: flex;
@@ -8890,6 +8893,15 @@ a.bg-brand-dark:hover {
   background-color: var(--accent-color-dark);
   color: #fff;
 }
+.btn-outline-accent {
+  color: var(--accent-color-normal);
+  border-color: var(--accent-color-normal);
+  background-color: transparent;
+}
+.btn-outline-accent:hover {
+  color: white;
+  background-color: var(--accent-color-normal);
+}
 
 .text-accent {
   color: var(--accent-color-normal) !important;
@@ -10428,8 +10440,14 @@ rect.folderLabel {
 .folder-icon.loading .fa-spin {
   display: inline-block;
 }
+.open-folder {
+  cursor: pointer;
+}
 #folderAbsPath {
-  width: auto !important;
+  margin-bottom: 0;
+}
+#folderAbsPath[readonly] {
+  background-color: white;
 }
 .work-dir-tree {
   position: relative;
@@ -10442,7 +10460,7 @@ rect.folderLabel {
   line-height: 1.5;
   color: #444444;
   overflow: auto;
-  height: calc(100vh - 204px);
+  height: calc(100vh - 246px);
 }
 .work-dir-tree .fa-folder {
   color: var(--primary-color-light);
@@ -10451,14 +10469,42 @@ rect.folderLabel {
   display: flex;
   align-items: center;
   width: 100%;
+  height: 60px;
   border-radius: 4px;
-  padding-bottom: 16px;
   position: relative;
   overflow: hidden;
   margin-bottom: 4px;
+  overflow: hidden;
+  border: 1px solid rgba(40, 69, 167, 0.1);
+}
+.work-dir-tree .work-folder #deleteAutoFolder {
+  display: none;
+}
+.work-dir-tree .work-folder:hover #deleteAutoFolder {
+  display: block;
+}
+.work-dir-tree .work-folder a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-self: stretch;
+  height: 100%;
+  width: 30px;
+  font-size: 0.8rem;
+  text-decoration: none;
+  border-top-right-radius: 4px;
+  border-bottom-right-radius: 4px;
+  line-height: 1;
+  color: royalblue;
+  background-color: rgba(40, 69, 167, 0.1);
+}
+
+.work-dir-tree .work-folder a:hover {
+  color: white;
+  background-color: royalblue;
 }
 .work-dir-tree .work-folder:hover {
-  background-color: #f1f1f1;
+  background-color: #fafafa;
 }
 .work-dir-tree .work-folder label:hover {
   background-color: #efefef;
@@ -10494,9 +10540,6 @@ rect.folderLabel {
 }
 .work-folder small {
   display: inline-block;
-  position: absolute;
-  left: 30px;
-  bottom: 4px;
   color: #848484;
 }
 #scanHotFoldersBtn {
@@ -10559,4 +10602,7 @@ rect.folderLabel {
 #componentDetails button {
   margin-top: 8px;
   align-self: flex-end;
+}
+#refreshStats {
+  min-width: 76px;
 }
