@@ -3754,6 +3754,16 @@ uiload = function () {
       e.preventDefault();
     });
   });
+  
+  lQuery(".dropdown").livequery(function (e) {
+	  var dropdown = $(this);
+	  
+	  dropdown.hover(function(){
+		  dropdown.children(".dropdown-menu").addClass("show");
+	  });
+  });
+  
+
 
   lQuery(".dropdown-menu a.dropdown-toggle").livequery("click", function (e) {
     if (!$(this).next().hasClass("show")) {
@@ -3774,10 +3784,11 @@ uiload = function () {
 
     return false;
   });
+  
   lQuery(".dropdown-submenu .dropdown-menu a.dropdown-item").livequery(
     "click",
     function (e) {
-      $(this).closest(".dropdown-menu.show").removeClass("show");
+      $(this).parents(".dropdown-menu").removeClass("show");
     }
   );
 
