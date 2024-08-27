@@ -1,7 +1,7 @@
 <div class="col-sidebar-header sidebar-header-desktops"> 
 	<div class="d-flex flex-column align-items-center justify-content-between">
-		<strong class="d-block w-100 bg-dark text-center text-white py-1" style="text-transform: uppercase;font-size: 16px;">[[Remote Folder Sync]]</strong>
-		<div class="px-2 w-100 d-flex flex-column">
+		<strong class="d-block w-100 bg-dark text-center text-white py-2" style="text-transform: uppercase;font-size: 16px;">[[Auto Folder Importer]]</strong>
+		<div class="px-2 w-100 d-flex flex-column mb-2">
 			<label for="selectedModule" class="d-block w-100 mt-2 mb-1 fw-bold text-muted small">[[Import Type]]:</label>
 			<select id="selectedModule" class="form-control rounded"> 
 				#foreach ( $amodule in $userprofile.getEntities() )
@@ -10,24 +10,17 @@
 			</select>
 			<input type="hidden" id="desktopId" value="$desktop.id" />
 		</div>
-		##TODO: move this to external include to reload entity data (fields) 
-		<div class="w-100 d-flex flex-column align-items-center hot-importer px-2 mt-2">
-			<form id="importFoldersForm" class="w-100">
-				<div class="d-flex flex-column align-items-center mb-2">
-					<div id="requiredinputform" class="mb-2 w-100"></div>
-					<a class="emdialog btn btn-lg btn-accent small rounded"
-						data-oemaxlevel="1"
-						data-moduleid="$module.id"
-						href="$apphome/components/sidebars/localdrives/newimportdialog.html"
-						title="[[Import Folder]]" 
-					>
-						<i class="fa fa-plus"></i> <span>[[Import New]] #text($module)</span>
-				</a> 
-					<strong class="text-right fs-small text-secondary mt-1" id="hotStats">
-						This will upload <span class="count">X</span> (<span class="size">X</span>)
-					</strong>
-				</div>
-			</form> 
+		<div class="w-100 d-flex justify-content-end text-center px-2 mb-2">
+			<a class="emdialog btn btn-lg btn-accent small rounded"
+				data-oemaxlevel="1"
+				data-moduleid="$module.id"
+				data-modulename="#text($amodule)"
+				href="$apphome/components/sidebars/localdrives/newimportdialog.html"
+				title="[[Add New Folders]]" 
+				>
+					<i class="fa fa-plus"></i> <span>[[Add Folders]]</span>
+			</a>
+			<!-- <button id="refreshStats" class="ml-2 btn btn-lg btn-outline-accent rounded">[[Refresh]]</button> -->
 		</div> 
 	</div>
 	<a href="#" title="[[Hide Desktops Sidebar]]"
@@ -37,23 +30,5 @@
 	>
 		<i class="bi bi-chevron-double-left closebar"></i>
 	</a>			
-</div>
-<div class="d-flex align-items-center px-2 my-2">
-	<div class="border-top flex-grow-1"></div>
-	<button id="scanHotFoldersBtn" 
-		class="btn btn-sm text-success small rounded border"
-		title="[[Scan for Changes]]">
-		<i class="fa fa-redo-alt"></i> <span>[[Scan All]]</span>
-	</button>
-	<button id="abortUpload" 
-		class="btn btn-sm text-danger small rounded border"
-		title="[[Abort All Uploads]]" style="display: none;">
-		<i class="fa fa-times-circle"></i> <span>[[Abort All Uploads]]</span>
-	</button>
-	<div class="border-top flex-grow-1"></div>
-</div>
-
+</div> 
 $pages.include("$apphome/components/sidebars/localdrives/listsyncfolders.html")
-<div class="work-dir-tree" id="workDirTree">
-
-</div>

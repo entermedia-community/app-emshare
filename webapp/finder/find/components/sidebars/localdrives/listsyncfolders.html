@@ -1,16 +1,32 @@
-<div id="syncFolderList" class="work-folder-tree">
-  #set($syncfolders = $mediaarchive.query("desktopsyncfolder").exact("desktop", $desktop.id).exact("module", $module.id).search()) 
-  #foreach($syncfolder in $syncfolders) 
-  <div class="work-folder" data-name="${name}" ${id}>
-      <div class="up-progress" style="width:0%"></div>
-    <label>
-      <input class="wf-check" type="checkbox" data-path="${path}" data-name="${name}" ${checkboxstatus} />
-      <span class="mx-2"><i class="fl fas fa-folder"></i> $syncfolder.name</span>
-    </label>
-    <small>${st}</small>
-    <button class="btn text-accent open-folder px-2" data-path="$syncfolder.localpath">
-      <i class="fas fa-eye"></i>
-    </button>
+<div id="syncFolderList">
+  <p class="alert alert-success p-2 mx-2 mt-1 mb-2 text-center text-success">
+    <i class="bi bi-check-circle ns mr-1"></i> 
+    All folders are synced with the server.<br>
+    <button class="btn btn-sm btn-outline-success rounded mt-2" id="refreshStats">[[Verify]]</button>
+  </p> 
+  <div id="syncMessage" class="d-none flex-column align-items-center px-2 my-2 bg-accent-subtle">
+    <button id="syncAllFolders" class="btn btn-lg btn-success rounded">[[Sync All Folders]]</button>
   </div>
-  #end
+  <div class="#if($needsUpload) autoUpload #end"></div>
+  <div class="work-dir-tree">
+    #set($syncfolders = $mediaarchive.query("desktopsyncfolder").exact("desktop", $desktop.id).exact("module", $module.id).search()) 
+    #foreach($syncfolder in $syncfolders) 
+    <div class="work-folder" id="wf-$syncfolder.id" title="Open: $syncfolder.localpath" data-path="$syncfolder.localpath" data-categorypath="$syncfolder.categorypath">
+      <div class="d-flex flex-column flex-grow-1 p-2 position-relative open-folder">
+        <div class="up-progress" style="width:0%"></div>
+        <p class="my-0"><i class="fl fas fa-folder"></i> $syncfolder.name</p>
+        <small class="mt-1"><span class="localsubfoldercount">$!{syncfolder.localsubfoldercount}</span> folders, <span class="localitemcount">$!{syncfolder.localitemcount}</span> files &middot; <b class="filesize localtotalsize">$!{syncfolder.localtotalsize}</b></small>
+      </div>
+
+        #set($previewurl = "$!{siteroot}$apphome/views/modules/$!{module.id}/components/gridsample/preview/entity.html?id=$!{syncfolder.entityid}")
+
+      <button class="btn text-danger" id="deleteAutoFolder">
+        <i class="bi bi-trash"></i>
+      </button>
+      <a href="$!{previewurl}" class="emdialog entity-dialog" title="[[Show the folder in Server]]">
+        <i class="bi bi-box-arrow-up-right"></i>
+      </a>
+    </div>
+    #end
+  </div>
 </div>
