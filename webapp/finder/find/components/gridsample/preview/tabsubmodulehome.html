@@ -17,8 +17,7 @@
 
 #set( $targetviewpath = "${parentsearchtype}/"+$viewid)
 #set( $viewdata = $viewsearcher.searchById($viewid))
-#set( $subentitysearchtype = $viewdata.rendertable )
-#set( $submodule = $mediaarchive.getCachedData("module", $subentitysearchtype))
+#set( $submoduleid = $viewdata.rendertable )
 #set( $fieldexternalid = $viewdata.renderexternalid)
 #set( $fieldexternalvalue = $parentid)
  
@@ -42,13 +41,13 @@
 	#set($topmoduleid = $parentsearchtype)
 #end
 
-#if($subentitysearchtype)
+#if($submoduleid)
 	<div id="$tabid" 
 		class="editentitymetadata-submodule entity-tab-content tabtype$!tabtype onetomanytab" 
 		data-tabtype="tabsubmodulehome"
 		data-viewid="$!viewid"
 		data-currenttab="$currenttab"
-		data-submoduleid="$!submodule.getId()"
+		data-submoduleid="$!submoduleid"
 		data-viewid="$!viewid"
 		data-parentsearchtype="$!parentsearchtype"
 		data-parentid="$!parentid"
@@ -57,17 +56,17 @@
 		
 		#if($currenttab == $viewid)
 		
-			#set( $args = "${submodule.getId()}hitsname=$!{viewid}hits&${subentitysearchtype}clearfilters=true&parentid=$!parentid&searchtype=$!subentitysearchtype&$!{subentitysearchtype}clearresults=true")
+			#set( $args = "${submoduleid}hitsname=$!{viewid}hits&${submoduleid}clearfilters=true&parentid=$!parentid&searchtype=$!submoduleid&$!{submoduleid}clearresults=true")
 			#set( $args = "$args&fieldexternalid=$!fieldexternalid&fieldexternalvalue=$!fieldexternalvalue")
 			#set( $args = "$args&field=$!fieldexternalid&$!{fieldexternalid}.value=$!fieldexternalvalue&operation=exact")
 			#set( $args = "$args&viewid=$!viewid&viewpath=$!targetviewpath&hitsperpage=6&targetrendertype=$!targetrendertype")
 			#set( $args = "$args&parentsearchtype=$!parentsearchtype&targetdiv=submodulepicker&sortby=$!sortby")
 			
-			$context.putPageValue("moduleid", $!submodule.getId() )
+			$context.putPageValue("moduleid", $!submoduleid )
 			$context.putPageValue("submoduleresults", $!submoduleresults )	
 			
 					
-			$pages.include("/$applicationid/views/modules/$!subentitysearchtype/components/table/subentitytable.html?$!args",$context)
+			$pages.include("/$applicationid/views/modules/$!submoduleid/components/table/subentitytable.html?$!args",$context)
 		
 		#end
 	</div>

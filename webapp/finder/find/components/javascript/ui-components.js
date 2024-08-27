@@ -3777,8 +3777,7 @@ uiload = function () {
   lQuery(".dropdown-submenu .dropdown-menu a.dropdown-item").livequery(
     "click",
     function (e) {
-      $(this).parents(".dropdown-menu.show").removeClass("show");
-      return false;
+      $(this).closest(".dropdown-menu.show").removeClass("show");
     }
   );
 

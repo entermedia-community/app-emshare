@@ -20,6 +20,8 @@ $context.putPageValue("parentsearchtype", $parentsearchtype)
 #if(!$moduleid)
 	#set($moduleid = $topmodule.getId())
 #end
+
+
 #ifnull($viewid)
 #set($viewid = $context.getRequestParameter("viewid"))
 #end
@@ -49,7 +51,8 @@ $context.putPageValue("tabmode", $tabmode)
 >
 	<div id="$!submodulepickerid" class="d-flex align-items-stretch pr-2 pb-2" style="height: 100%;">
 		<div class="entityimport auto-active-container">
-			#if($permissions.can($moduleid, "upload_files") || $permissions.can($moduleid, "upload_folfers") )
+			
+			#if($topmodule.getBoolean("enableuploading") && ($permissions.can($moduleid, "upload_files") || $permissions.can($moduleid, "upload_folfers")) ) 
 			<div class='auto-active-row  #if($tabsection=="upload") current #end'>
 			<a href="$apphome/views/modules/asset/add/tabentityaddmedia.html?categoryid=$!defaultcategory.getId()"
 				class="btn btn-lg btn-wide ajax auto-active-link "
