@@ -13,25 +13,17 @@ $context.putPageValue("cdn",$cdnprefix)
 
 #set( $mediadbappid=$mediaarchive.getMediaDbId())
 
-#set( $index = $hits.indexOfId($asset.id))
-#set( $previous = false )
-#set( $previous = $hits.previous($index))
-#set( $next = false )
-#set( $next = $hits.next($index))  
-
 ##This is used to make a readonly version for mediadb
 #set( $previewonly = $context.getPageValue("previewonly"))
-
 #if( !$previewonly)
 	#set( $previewonly = false)
 #end
-
 $context.putPageValue("previewonly", $previewonly) 
 
 #set( $opentab = $userprofile.get("assetopentab"))
 #set( $opentabactions = "")
 
-#if(!$opentab)
+#ifnull($opentab)
 	#set( $opentab = "viewpreview")
 #end
 
@@ -63,80 +55,14 @@ $context.putPageValue("opentabactions",$opentabactions)
 
 #set( $hitssessionid = $hits.getSessionId())
 $context.putPageValue("hitssessionid",$hitssessionid)
-#set( $hitsname = $hits.getHitsName())
+
 
 
 
 <div id="main-media-container">
 
 $pages.include("$componenthome/mediaviewer/fullscreen/currentassettabs.html",$context)
+$pages.include("$componenthome/mediaviewer/fullscreen/mainmediaviewer.html",$context)
 
-<div id="main-media-viewer" 
-data-opentab="$opentab" 
-data-hitssessionid="$!hitssessionid"
-data-hitsname="$!hitsname" 
-data-searchtype="asset" 
-data-oemaxlevel="1" 
-data-editable="$caneditasset" 
-data-assetid="$asset.id"  
-data-previous="$!previous.getId()"
-data-previousname="$!previous.getName()"
-data-previouspage="$!hits.idOnPreviousPage()"
-data-next="$!next.getId()"
-data-nextname="$!next.getName()"
-data-nextpage="$!hits.idOnNextPage()"
-data-multieeditlink="$componenthome/mediaviewer/fullscreen/tabs/multiedit.html?assetid=multi:$!hitssessionid&hitssessionid=$!hitssessionid&multi=true"
- ><div id="mainmedianotifications"></div>
-
-	#if( !$mediadbappid)
-		<p style="color: white;">[[mediadbappid not defined in datamanager]]</p>
-	#end
-	
-	#if($opentab == "viewpreview")
-		$pages.include("$componenthome/mediaviewer/fullscreen/tabs/viewpreview.html",$context)
-		#if( $next )
-			#set( $preloadtype = $mediaarchive.getMediaPlayerType($next))
-			#if( $preloadtype == "image")
-				#set($tpath = $mediaarchive.asLinkToPreview($next,  $libarycol.id, "image3000x3000.jpg"))
-				<div style="display:none;"><img src="$tpath" /></div>  ##cache the next one
-			#end
-		#end
-	#elseif($opentab == "viewproperties")
-		$pages.include("$componenthome/mediaviewer/fullscreen/tabs/viewasset.html")
-	#elseif($opentab == "imageeditor")
-		$pages.include("$componenthome/mediaviewer/fullscreen/tabs/viewactions.html?action=imageeditor")
-	#elseif($opentab == "viewcollaborate")
-		$pages.include("$componenthome/mediaviewer/fullscreen/tabs/viewcollaborate.html")
-	#elseif($opentab == "viewtimeline")
-		$pages.include("$componenthome/mediaviewer/fullscreen/tabs/viewactions.html?action=timeline")
-	#elseif($opentab == "viewclosedcaptions")
-		$pages.include("$componenthome/mediaviewer/fullscreen/tabs/viewactions.html?action=closedcaptions")
-	#elseif($opentab == "viewdownloads")
-		$pages.include("$componenthome/mediaviewer/fullscreen/tabs/viewactions.html?action=conversions")
-	#elseif($opentab == "multiedit")
-		$pages.include("$componenthome/mediaviewer/fullscreen/tabs/multiedit.html")
-	#elseif($opentab == "viewactions")
-		#set( $opentabactions = $userprofile.get("assetopentabactions"))
-		#if ( $rendertype !='video')
-			#if(!$opentabactions || $opentabactions == 'timeline' || $opentabactions == 'closedcaptions')
-				##Back to Preview
-				#set( $opentab = "viewproperties")
-				#set( $opentabactions = "")
-				##userprofile.set("assetopentabactions", "")
-				$pages.include("$componenthome/mediaviewer/fullscreen/tabs/viewproperties.html")
-			#else
-				$pages.include("$componenthome/mediaviewer/fullscreen/tabs/viewactions.html?action=$opentabactions")
-			#end
-		#else
-			$pages.include("$componenthome/mediaviewer/fullscreen/tabs/viewactions.html?action=$opentabactions")
-		#end
-	#elseif($opentab=="viewtable")
-		#set( $opentabassettable = $userprofile.get("assetopentabassettable"))
-		#if($opentabassettable)
-			$pages.include("$siteroot$apphome/views/modules/asset/edit/moduletable.html?oemaxlevel=3&id=${asset.id}&assetid=$asset.id&viewid=$opentabassettable&viewpath=asset/$opentabassettable&hitssessionid=${hitssessionid}",$context)
-		#end
-	#end
-	
-</div>
 </div>
 
