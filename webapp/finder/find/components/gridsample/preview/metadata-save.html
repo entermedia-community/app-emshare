@@ -8,4 +8,11 @@
 
 #set($addnew = $context.getRequestParameter("addnew"))
 
+#ifnull($id)
+	#set( $id = $context.getRequestParameter("entityid"))
+#end
+#set( $ismulti = $id.startsWith("multiedit:") || $context.getRequestParameter("multi") == "true")
+#if($ismulti)
+	$context.putPageValue("ismultisaved", true)
+#end
 $pages.include("$apphome/components/gridsample/preview/entity.html", $context)

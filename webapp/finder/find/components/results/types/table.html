@@ -1,18 +1,24 @@
-#if(!$moduleid)
+#ifnull($moduleid)
 	#set($moduleid = $context.getRequestParameter("moduleid"))
 #end
-#if(!$searchhome)
+
+#ifnull($searchhome)
 	#set($searchhome = "$apphome/views/modules/$moduleid" )
 #end
-#if(!$viewid)
+$context.putPageValue("searchhome", $searchhome)
+
+#ifnull($viewid)
 	#set($viewid = "${moduleid}resultstable")
 #end
-#if(!$viewpath)
+#ifnull($viewpath)
 	#if($viewid)
 	#set($viewpath = "${moduleid}/${viewid}")
 	#else
 	#set($viewpath = "${moduleid}/${moduleid}resultstable")
 	#end
+#end
+#ifnull($resultdetails)
+	#set($resultdetails = $searcher.getDetailsForView($viewpath, $userprofile))
 #end
 
 <div id="resultsdiv" 
@@ -29,6 +35,7 @@
 		data-viewid="$!viewid"
 		data-viewpath="$!viewpath">
 
+ 
 
 <div id="emresultscontent">
 
@@ -38,7 +45,7 @@ $pages.include("${searchhome}/resultsactions.html",$context)
 	$pages.stream("/$!{searchhome}/empty.html", $context)	
 #else
 	##set ($canedit = $context.getPageValue("${moduleid}edit") )
-	#set($resultdetail = $searcher.getDetailsForView($viewpath, $userprofile))
+	
 	
 	#if( $caneditdata )
 		#set( $readonly = false)
@@ -106,7 +113,7 @@ $pages.include("${searchhome}/resultsactions.html",$context)
 				#set( $edit = false)
 			#end
 				#set( $sortby = $hits.getSearchQuery().getSortBy() )
-				#foreach( $detail in $resultdetail)
+				#foreach( $detail in $resultdetails)
 					<th id="th-$detail.id"
 						#if($detail.id != 'primarymedia')
 							class="sortable #if( $edit)editcolumnheader #end #if( $sortby.startsWith($detail.getId() ) ) currentsort #if( $sortby.endsWith("Up") ) up #else down #end #end tableheader-${detail.id}"
@@ -187,7 +194,7 @@ $pages.include("${searchhome}/resultsactions.html",$context)
 				</td>
 			###end
 			
-			#foreach( $detail in $resultdetail )
+			#foreach( $detail in $resultdetails )
 				<td class="editfield highlightMe tablecell tablecell-$!detail.id tablecell-$!detail.rendertype"
 				>
 				#set($val =  $hit.get($detail.id) )

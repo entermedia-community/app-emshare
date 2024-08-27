@@ -11,6 +11,8 @@
 	$context.putPageValue("id", $id)
 #end
 
+#set( $ismulti = $id.startsWith("multiedit:") || $context.getRequestParameter("multi") == "true")
+
 #if(!$data)
 	#set($data = $entity)
 #end
@@ -24,9 +26,8 @@
 	#end
 #end
 
-#if($data)
-	$context.putPageValue("data",$data)
-#end
+$context.putPageValue("data",$data)
+
 #set( $searcher = $mediaarchive.getSearcher($searchtype) )
 $context.putPageValue("searcher",$searcher)
 
@@ -47,9 +48,13 @@ $context.putPageValue("edit", $edit)
 #set($viewid = $context.getRequestParameter("viewid"))
 #end
 
+#if($ismulti)
+	$context.putPageValue("multiedit", $ismulti)
+#end
+
 <div id="editentitymetadata" data-url="$!siteroot$applink/views/modules/$!{moduleid}/components/gridsample/preview/metadata.html?edit=true&entityid=$!data.id&moduleid=$!moduleid&showmedia=$!showmedia&viewid=$!viewid" class='fieldsParent entitymetadatamodal #if($edit=="true") entitymetadataediting #else entitymetadatapreview #end' data-id="$!id">
 
-#if($id.startsWith("multiedit"))
+#if($ismulti)
 	#set($targetentitytabid = "entity-tab-multiedit")
 #else
 	#set($addnew = $context.getRequestParameter("addnew"))
@@ -178,12 +183,15 @@ $context.putPageValue("edit", $edit)
     #end
     </form>
 	<div id="fieldsPicker"></div> 
+
 	#if($edit!="true")
-		#if($permissions.can($moduleid, "edit")) 
-			<a href="$!siteroot$applink/views/modules/$!{moduleid}/components/gridsample/preview/metadata.html?edit=true&entityid=$!data.id&moduleid=$!moduleid&showmedia=$!showmedia&viewid=$!viewid&hitssessionid=$!hitssessionid" 
-				data-targetdiv="editentitymetadata" 
-				class="ajax btn btn-sm btn-dark" 
-				style="margin-right:10px;"><i class="bi bi-pencil-square mr-1"></i> [[Edit]]</a>
+		#if($permissions.can($moduleid, "edit"))
+			#if(!$ismultisaved) 
+				<a href="$!siteroot$applink/views/modules/$!{moduleid}/components/gridsample/preview/metadata.html?edit=true&entityid=$!data.id&moduleid=$!moduleid&showmedia=$!showmedia&viewid=$!viewid&hitssessionid=$!hitssessionid" 
+					data-targetdiv="editentitymetadata" 
+					class="ajax btn btn-sm btn-dark" 
+					style="margin-right:10px;"><i class="bi bi-pencil-square mr-1"></i> [[Edit]]</a>
+			#end
 		#end
 		#if(!$ismulti && $module.getBoolean("enableuploading") && $permissions.can($moduleid, "view_files"))
 			<a href="$applink/views/modules/${moduleid}/components/gridsample/preview/entitytabmedia.html" 
