@@ -68,6 +68,7 @@ $(document).on("draw2d", function () {
           if (res.response != undefined && res.response.status == "ok") {
             var results = res.results;
             var json = [];
+            console.log(results);
             for (let i = 0; i < results.length; i++) {
               let data = results[i];
               try {
@@ -112,7 +113,6 @@ $(document).on("draw2d", function () {
         },
       });
     }
-    loadJSON();
 
     canvas.on("select", function (_, event) {
       var toplevelparent = event.figure.getUserData().toplevelparent;
@@ -167,5 +167,9 @@ $(document).on("draw2d", function () {
         .html('<i class="fa fa-spinner fa-spin"></i>')
         .hide();
     }
+    
+    loadJSON();
+
+    
   });
 });
