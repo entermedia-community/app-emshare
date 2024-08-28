@@ -379,9 +379,10 @@ jQuery(document).ready(function () {
     }
 
     lQuery(".open-folder").livequery("click", function () {
-      var path = $(this).data("path");
+      var path = $(this).data("path") || $(this).data("localpath");
       if (!path) {
-        path = $(this).parent().data("path");
+        path =
+          $(this).parent().data("path") || $(this).parent().data("localpath");
       }
       if (path) {
         ipcRenderer.send("openFolder", { path });
@@ -728,7 +729,6 @@ jQuery(document).ready(function () {
         $(this).find(".fl").attr("class", "fl fas fa-folder");
       });
       $("#scanHotFoldersBtn").show();
-      onHotScanDone();
       $("#abortUpload").hide();
       $("#workFolderPicker").prop("disabled", false);
       $("#workDirEntity").prop("disabled", false);
@@ -807,18 +807,24 @@ jQuery(document).ready(function () {
       console.log(test);
     });
 
-    function checkActiveHotFolders() {
-      var showAddBtn = false;
-      $(".wf-check").each(function () {
-        if ($(this).is(":checked")) {
-          console.log($(this).data("name"));
-          showAddBtn = true;
-          return false;
-        }
-      });
-    }
-
-    lQuery(".wf-check").livequery("change", checkActiveHotFolders);
+    lQuery(".deleteAutoFolder").livequery("click", function () {
+      if (
+        confirm(
+          "Are you sure you want to remove this folder from auto importer?"
+        )
+      ) {
+        var delId = $(this).data("id");
+        jQuery
+          .ajax({
+            method: "DELETE",
+            url:
+              getMediadb() + "/services/module/desktopsyncfolder/data/" + delId,
+          })
+          .done(function () {
+            $("#wf-" + delId).remove();
+          });
+      }
+    });
 
     function folderHtm(
       path,
@@ -875,15 +881,9 @@ jQuery(document).ready(function () {
           }
         });
       $("#scanHotFoldersBtn").find("span").text("Scan Completed!");
-      setTimeout(() => {
-        onHotScanDone();
-      }, 3000);
     });
     ipcRenderer.on("scan-hot-complete", () => {
       $("#scanHotFoldersBtn").find("span").text("Scan Completed!");
-      setTimeout(() => {
-        onHotScanDone();
-      }, 3000);
       $(".folder-icon").removeClass("loading");
     });
   });
@@ -914,23 +914,16 @@ jQuery(document).ready(function () {
   });
 
   function getCurrentWorkFolders() {
-    var folders = {};
+    var folders = [];
     $(".work-folder").each(function () {
-      var id = $(this).attr("id");
-      var localPath = $(this).data("path");
+      var id = $(this).data("id");
+      var localPath = $(this).data("localpath");
       var categoryPath = $(this).data("categorypath");
-      folders[id] = { localPath, categoryPath };
+      var entityId = $(this).data("entityid");
+      folders.push({ id, localPath, categoryPath, entityId });
     });
     return folders;
   }
-
-  lQuery("#refreshStats").livequery("click", function () {
-    var scanDirectories = getCurrentWorkFolders();
-    ipcRenderer.send("refreshStats", scanDirectories);
-    $(this)
-      .html('<i class="fas fa-spinner fa-spin"></i>')
-      .prop("disabled", true);
-  });
 
   ipcRenderer.on("stats", (_, stats) => {
     $("#refreshStats").html("Refresh").prop("disabled", false);
@@ -946,14 +939,14 @@ jQuery(document).ready(function () {
     });
     //post `data` to server
   });
-
-  lQuery("#syncAllFolders").livequery("click", function () {
+  function veryfyAutoUploads() {
     var syncFolders = getCurrentWorkFolders();
     ipcRenderer.send("syncAllFolders", syncFolders);
-  });
+  }
+  lQuery("#syncAllFolders").livequery("click", veryfyAutoUploads);
 });
 
 function getMediadb() {
-  var elem = document.getElementById("application");
-  return elem.getAttribute("data-mediadbappid");
+  var elem = $("#application");
+  return elem.data("siteroot") + "/" + elem.data("mediadbappid");
 }

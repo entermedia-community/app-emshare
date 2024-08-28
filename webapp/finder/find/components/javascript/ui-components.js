@@ -680,7 +680,7 @@ uiload = function () {
     );
     return bytes.toFixed(1) + units[u];
   }
-  lQuery(".filesize").livequery(function () {
+  lQuery(".autoFileSize").livequery(function () {
     var size = $(this).text();
     size = parseInt(size);
     if (!isNaN(size)) {
@@ -1131,7 +1131,7 @@ uiload = function () {
           //--Entities
           if (
             (dialog.hasClass("entity-dialog") &&
-            dialog.closest(".modal").length !== 0) ||
+              dialog.closest(".modal").length !== 0) ||
             dialog.data("tabletype") == "subentity"
           ) {
             //find tab
@@ -2007,7 +2007,7 @@ uiload = function () {
   });
 
   //Entity SubModule Table ---Not used anymore TODO: Delete
- /* lQuery(".emselectableentity table td").livequery("click", function (event) {
+  /* lQuery(".emselectableentity table td").livequery("click", function (event) {
     var clicked = $(this);
     if (clicked.attr("noclick") == "true") {
       return true;
@@ -2120,7 +2120,6 @@ uiload = function () {
     }
   );
 */
-
 
   lQuery(".pickcategorylink").livequery("click", function () {});
 
@@ -3769,16 +3768,14 @@ uiload = function () {
       e.preventDefault();
     });
   });
-  
-  lQuery(".dropdown").livequery(function (e) {
-	  var dropdown = $(this);
-	  
-	  dropdown.hover(function(){
-		  dropdown.children(".dropdown-menu").addClass("show");
-	  });
-  });
-  
 
+  lQuery(".dropdown").livequery(function (e) {
+    var dropdown = $(this);
+
+    dropdown.hover(function () {
+      dropdown.children(".dropdown-menu").addClass("show");
+    });
+  });
 
   lQuery(".dropdown-menu a.dropdown-toggle").livequery("click", function (e) {
     if (!$(this).next().hasClass("show")) {
@@ -3799,11 +3796,10 @@ uiload = function () {
 
     return false;
   });
-  
-  lQuery(".dropdown-menu a.dropdown-item").livequery( "click",  function (e) {
-      $(this).parents(".dropdown-menu").removeClass("show");
-    }
-  );
+
+  lQuery(".dropdown-menu a.dropdown-item").livequery("click", function (e) {
+    $(this).parents(".dropdown-menu").removeClass("show");
+  });
 
   lQuery(".sidetoggle").livequery("click", function () {
     var div = $(this);
