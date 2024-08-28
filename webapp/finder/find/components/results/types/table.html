@@ -225,8 +225,20 @@ $pages.include("${searchhome}/resultsactions.html",$context)
 			
 			#if(!$hiderowactions)
 			<td class="rowactions" noclick="true">
-				#if($browser =="DESKTOP")
-				
+				#if($desktop)
+					#if($module.getBoolean("enableuploading") && 
+						($permissions.can($moduleid, "upload_files") ||
+						$permissions.can($moduleid, "upload_folders")) )
+							<a class="emdialog btn #if($enabled) btn-success #else text-accent #end px-1 rounded"
+								style="font-size: 16px;" 
+								data-dialogid="importexistingdialog"
+								data-moduleid="${moduleid}"
+								data-entityid="$!{hit.id}"
+								data-modulename="#text($module)"
+								href="$apphome/components/sidebars/localdrives/importexistingdialog.html"
+								title="[[Add to Auto Import]]" 
+								><i class="bi bi-cloud-arrow-up"></i></a>
+					#end
 				#else
 					#if($module.getBoolean("enableuploading") && 
 						($permissions.can($moduleid, "upload_files") ||
@@ -234,7 +246,7 @@ $pages.include("${searchhome}/resultsactions.html",$context)
 						<a href="$!searchhome/components/gridsample/preview/entity.html?entityid=$!{hit.id}&entitytabopen=import" 
 						style="font-size: 16px;" 
 						class="emdialog btn #if($enabled) btn-success #else text-accent #end px-1 rounded" 
-						title="[[Upload Folder]]" 
+						title="[[Add New Folders]]" 
 						data-moduleid="${moduleid}"
 						data-updateurl="true"
 						data-urlbar="$!searchhome/index.html?entityid=$!{hit.id}&entitytabopen=import"><i class="bi bi-cloud-arrow-up"></i></a>

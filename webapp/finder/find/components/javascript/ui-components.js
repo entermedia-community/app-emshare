@@ -3904,6 +3904,7 @@ uiload = function () {
       //hide sidebar 
       options["module"] = $("#applicationcontent").data("moduleid");
       options["sidebarcomponent.value"] = "";
+      var url = apphome + "/components/sidebars/index.html";
       jQuery.ajax({
         url: url,
         async: false,
