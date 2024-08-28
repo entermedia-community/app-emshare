@@ -1132,9 +1132,9 @@ uiload = function () {
         success: function (data) {
           //--Entities
           if (
-            (dialog.hasClass("entity-dialog") &&
-            dialog.closest(".modal").length !== 0) ||
-            dialog.data("tabletype") == "subentity"
+            dialog.hasClass("entity-dialog") &&
+            dialog.closest(".modal").length !== 0
+            
           ) {
             //find tab
             var tabid = dialog.data("tabid");
@@ -1157,7 +1157,14 @@ uiload = function () {
 
               
             }
-          } else {
+          } 
+          else if (dialog.data("tabletype") == "subentity") {
+			  var container = dialog.closest(".entity-wraper");
+			  var parent = dialog.closest(".entitydialog");
+              container.replaceWith(data);
+              tabbackbutton(parent);
+		  }
+          else {
 	            modaldialog.html(data);
 	            if (width !== undefined) {
 	              if (width > $(window).width()) {
@@ -1240,6 +1247,8 @@ uiload = function () {
 	            modalinstance.on("scroll", function () {
 	              checkScroll();
 	            });
+	            
+	            adjustzindex(modalinstance);
 
 			}
 			
@@ -1277,7 +1286,7 @@ uiload = function () {
               }
             }
 
-            adjustzindex(modalinstance);
+            
 
             $(window).trigger("resize");
             
@@ -1999,7 +2008,11 @@ uiload = function () {
         targetlink +=
           (targetlink.indexOf("?") >= 0 ? "&" : "?") + "id=" + rowid;
         row.data("targetlink", targetlink);
-        row.data("tabletype", emselectable.data("tabletype"));
+        row.data("oemaxlevel", "2");
+        if(emselectable.data("tabletype") == "subentity") {
+        	row.data("tabletype", emselectable.data("tabletype"));
+        	row.data("oemaxlevel", "1");
+        }
         row.data("id", rowid);
         row.data("hitssessionid", emselectable.data("hitssessionid"));
         row.data("updateurl", true);
@@ -2010,7 +2023,7 @@ uiload = function () {
           "/index.html?entityid=" +
           rowid;
         row.data("urlbar", urlbar);
-        row.data("oemaxlevel", "2");
+        
         emdialog(row, event);
       }
     }
