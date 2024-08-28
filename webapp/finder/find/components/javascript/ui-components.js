@@ -2000,7 +2000,7 @@ uiload = function () {
           "/index.html?entityid=" +
           rowid;
         row.data("urlbar", urlbar);
-        row.data("emaxlevel", "1");
+        row.data("oemaxlevel", "1");
         emdialog(row, event);
       }
     }
