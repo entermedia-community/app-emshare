@@ -1130,8 +1130,9 @@ uiload = function () {
         success: function (data) {
           //--Entities
           if (
-            dialog.hasClass("entity-dialog") &&
-            dialog.closest(".modal").length !== 0
+            (dialog.hasClass("entity-dialog") &&
+            dialog.closest(".modal").length !== 0) ||
+            dialog.data("tabletype") == "subentity"
           ) {
             //find tab
             var tabid = dialog.data("tabid");
@@ -1988,6 +1989,7 @@ uiload = function () {
         targetlink +=
           (targetlink.indexOf("?") >= 0 ? "&" : "?") + "id=" + rowid;
         row.data("targetlink", targetlink);
+        row.data("tabletype", emselectable.data("tabletype"));
         row.data("id", rowid);
         row.data("hitssessionid", emselectable.data("hitssessionid"));
         row.data("updateurl", true);
@@ -1998,13 +2000,14 @@ uiload = function () {
           "/index.html?entityid=" +
           rowid;
         row.data("urlbar", urlbar);
+        row.data("emaxlevel", "1");
         emdialog(row, event);
       }
     }
   });
 
-  //Entity SubModule Table
-  lQuery(".emselectableentity table td").livequery("click", function (event) {
+  //Entity SubModule Table ---Not used anymore TODO: Delete
+ /* lQuery(".emselectableentity table td").livequery("click", function (event) {
     var clicked = $(this);
     if (clicked.attr("noclick") == "true") {
       return true;
@@ -2100,19 +2103,6 @@ uiload = function () {
       var options = emselectable.data();
       options.id = row.attr("rowid");
 
-      /*
-		if (clickurl && clickurl != "") {
-			//Get everything from domadatacontext
-			options = findalldata(emselectable);
-			targetdiv = finddata(emselectable, "targetdiv");
-			if (!targetdiv) {
-				targetdiv = finddata(emselectable, "targetdivinner");
-			}
-			//options = row.data();
-			options.id = row.attr("rowid");
-			options.oemaxlevel =  finddata(emselectable, "oemaxlevel");
-		}
-		*/
       if (targetdiv !== undefined && targetdiv != "") {
         jQuery.ajax({
           url: clickurl,
@@ -2129,6 +2119,8 @@ uiload = function () {
       return;
     }
   );
+*/
+
 
   lQuery(".pickcategorylink").livequery("click", function () {});
 

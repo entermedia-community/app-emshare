@@ -12,9 +12,9 @@ $context.putPageValue("searchhome", $searchhome)
 #end
 #ifnull($viewpath)
 	#if($viewid)
-	#set($viewpath = "${moduleid}/${viewid}")
+		#set($viewpath = "${moduleid}/${viewid}")
 	#else
-	#set($viewpath = "${moduleid}/${moduleid}resultstable")
+		#set($viewpath = "${moduleid}/${moduleid}resultstable")
 	#end
 #end
 #ifnull($resultdetails)
@@ -67,7 +67,7 @@ $pages.include("${searchhome}/resultsactions.html",$context)
 		#end
 		
 		#set($targetdiv = "applicationmaincontent")
-		#set($targetlink = "$!searchhome/components/gridsample/preview/$!{rowrendertype}.html")
+		#set($targetlink = "$!searchhome/components/gridsample/preview/entity.html")
 		
 		#if($moduleid == "order")
 			#set($targetdiv = "orderresultsarea")
@@ -81,10 +81,9 @@ $pages.include("${searchhome}/resultsactions.html",$context)
 				data-id="$!id"
 				data-searchtype="$!searchtype" 
 				data-searchhome="$!searchhome"
-				
+				data-tabletype="$!{tabletype}"
 				data-targetlink="$!targetlink"
-				data-targetdiv="$!targetdiv"
-		>
+				data-targetdiv="$!targetdiv">
 		
 			<table class="table table-striped table-hover" 
 					id="$!searchtype-main-results-table" 
@@ -179,7 +178,6 @@ $pages.include("${searchhome}/resultsactions.html",$context)
 		    
 				#set( $clink = "$home${content.linkprefix}${cell.id}${content.linksuffix}" )
 			
-			    ##<tr  rowid="$home$!{searchhome}/edit/edit.html?id=${cell.id}&viewid=$!{defaultviewid}&viewpath=$moduleid/$!{defaultviewid}&hitssessionid=${hits.sessionId}&searchtype=$moduleid&detailsreadonly=$readonly">
 			    <tr  rowid="$!{hit.id}">
 			   
 			    
