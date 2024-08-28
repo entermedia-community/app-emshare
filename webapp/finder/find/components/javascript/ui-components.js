@@ -3901,7 +3901,7 @@ uiload = function () {
         crossDomain: true,
       });
     } else if (toggler.data("action") == "hide") {
-      //hide sidebar
+      //hide sidebar 
       options["module"] = $("#applicationcontent").data("moduleid");
       options["sidebarcomponent.value"] = "";
       jQuery.ajax({
