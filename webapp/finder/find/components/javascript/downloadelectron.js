@@ -779,12 +779,7 @@ jQuery(document).ready(function () {
     });
 
     ipcRenderer.on("selected-dirs", (_, folders) => {
-      // $("#folderAbsPath").val(path);
-      // $("#folderAbsName").val(name).show();
-      // // $("#folderAbsName").parent().removeClass("d-none").addClass("d-flex");
-      // $("#localsubfoldercount").val(stats.totalFolders);
-      // $("#localitemcount").val(stats.totalFiles);
-      // $("#localtotalsize").val(stats.totalSize);
+      if (folders.length === 0) return;
       var fileCount = folders.reduce((acc, f) => acc + f.stats.totalFiles, 0);
       var size = folders.reduce((acc, f) => acc + f.stats.totalSize, 0);
       $(".fl-stats").html(
@@ -796,14 +791,7 @@ jQuery(document).ready(function () {
           humanFileSize(size) +
           "</b>)"
       );
-      //   .html(
-      //     `${stats.totalFolders} subfolder${
-      //       stats.totalFolders > 1 ? "s" : ""
-      //     }, ${stats.totalFiles} file${
-      //       stats.totalFiles > 1 ? "s" : ""
-      //     } &middot; <b>${humanFileSize(stats.totalSize)}</b>`
-      //   )
-      //   .show();
+      $(".folder-picker").addClass("picked");
     });
 
     function checkActiveHotFolders() {
