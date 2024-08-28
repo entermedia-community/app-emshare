@@ -95,6 +95,15 @@ $(document).ready(function () {
               y: 64,
             },
           },
+          {
+            ...folderPort,
+            id: draw2d.util.UUID.create(),
+            name: draw2d.util.UUID.create(),
+            locatorAttr: {
+              x: 75,
+              y: 125,
+            },
+          },
         ],
       },
       {
@@ -1376,6 +1385,75 @@ $(document).ready(function () {
       var titleFS = $(this).find("input[name='fst']").val();
       var captionText = $(this).find("input[name='caption']").val();
       var captionFS = $(this).find("input[name='fsc']").val();
+      var image = $(this).find("input[name='image']").val();
+      var color = $(this).find("input[name='stroke']").val();
+      var bgColor = $(this).find("input[name='fill']").val();
+
+      var { width: tW, height: tH } = measureText(titleText, titleFS);
+      var { width: cW, height: cH } = measureText(captionText, captionFS);
+      var width = Math.max(tW, cW, 110);
+
+      labelJson(
+        {
+          x: midX,
+          y: midY + 200,
+          width: width,
+          title: titleText,
+          titleFS: parseInt(titleFS) || 16,
+          titleHeight: tH,
+          caption: captionText,
+          captionFS: parseInt(captionFS) || 16,
+          captionHeight: cH,
+          image: image,
+          bgColor: bgColor || "#60729e",
+          color: color || "#4d5d80",
+        },
+        function (json) {
+          var groupId = json[0].id;
+          reader.unmarshal(canvas, json);
+          var labelGroup = canvas.getFigure(groupId);
+          loadEvents([labelGroup]);
+          if (id) {
+            var previousGroup = canvas.getFigure(id);
+            var figures = previousGroup.getAssignedFigures();
+            var ports = previousGroup.getPorts();
+            var prevX = previousGroup.getX();
+            var prevY = previousGroup.getY();
+            var prevWidth = previousGroup.getWidth();
+            var prevHeight = previousGroup.getHeight();
+            figures.each(function (_, figure) {
+              canvas.remove(figure);
+            });
+            canvas.remove(previousGroup);
+            labelGroup.setId(id);
+            ports.each(function (_, port) {
+              labelGroup.addPort(port);
+              var connections = port.getConnections();
+              connections.each(function (_, conn) {
+                conn.setColor(labelGroup.getColor());
+              });
+            });
+            labelGroup.setX(prevX);
+            labelGroup.setY(prevY);
+            labelGroup.setWidth(prevWidth);
+            labelGroup.setHeight(prevHeight);
+          }
+          labelGroup.fireEvent("resize");
+          closeemdialog($("#labelPicker"));
+        }
+      );
+    });
+
+    lQuery("#actionForm").livequery("submit", function (e) {
+      e.preventDefault();
+      e.stopImmediatePropagation();
+
+      var id = $(this).data("id");
+
+      var titleText = $(this).find("input[name='title']").val();
+      var titleFS = 16; // $(this).find("input[name='fst']").val();
+      var captionText = $(this).find("input[name='caption']").val();
+      var captionFS = 16; // $(this).find("input[name='fsc']").val();
       var image = $(this).find("input[name='image']").val();
       var color = $(this).find("input[name='stroke']").val();
       var bgColor = $(this).find("input[name='fill']").val();

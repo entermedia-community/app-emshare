@@ -770,7 +770,6 @@ jQuery(document).ready(function () {
     });
 
     lQuery("#folderAbsPath").livequery("click", function (e) {
-      console.log("anything");
       e.preventDefault();
       window.postMessage({
         type: "select-dirs",
@@ -791,7 +790,21 @@ jQuery(document).ready(function () {
           humanFileSize(size) +
           "</b>)"
       );
-      $(".folder-picker").addClass("picked");
+      var fp = $(".folder-picker");
+      fp.find("input").remove();
+      folders.forEach((f) => {
+        fp.append(`
+          <input type="hidden" name="localpath" value="${f.path}">
+          <input type="hidden" name="name.value" value="${f.name}">
+          <input type="hidden" name="localsubfoldercount" value="${f.stats.totalFolders}">
+          <input type="hidden" name="localitemcount" value="${f.stats.totalFiles}">
+          <input type="hidden" name="localtotalsize" value="${f.stats.totalSize}">
+        `);
+      });
+      fp.addClass("picked");
+      //test
+      var test = fp.parent().serializeArray();
+      console.log(test);
     });
 
     function checkActiveHotFolders() {
