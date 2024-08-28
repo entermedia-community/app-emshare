@@ -3896,32 +3896,37 @@ uiload = function () {
           $(".pushcontent").removeClass("pushcontent-" + sidebar);
           $(".pushcontent").removeClass("pushcontent-open");
           $(".pushcontent").addClass("pushcontent-fullwidth");
-          //$(".pushcontent").css("margin-left","");
 
-          setPageTitle(cell);
+          //setPageTitle(cell);
 
           $(window).trigger("resize");
-
-          //history.pushState($("#application").html(), null, url);
         },
-        xhrFields: {
-          withCredentials: true,
-        },
-        crossDomain: true,
       });
     } else {
       //showsidebar
-      options["module"] = $("#applicationcontent").data("moduleid");
-      options["sidebarcomponent.value"] = sidebar;
-      var url = "";
-      if (options["contenturl"] != undefined) {
-        url = options["contenturl"];
-        targetdiv = $("#" + options["targetdiv"]);
-      } else {
-        url = apphome + "/components/sidebars/index.html";
-        targetdiv = findclosest(toggler, "#" + targetdiv);
-      }
-      jQuery.ajax({
+      showsidebar(toggler);
+      
+    }
+  });
+  
+  
+  showsidebar = function(toggler) {
+	var options = toggler.data();
+    var targetdiv = toggler.data("targetdiv");
+    var sidebar = toggler.data("sidebar");
+    options["propertyfield"] = "sidebarcomponent";
+    options["module"] = $("#applicationcontent").data("moduleid");
+	options["sidebarcomponent.value"] = sidebar;
+	var url;
+	if (options["contenturl"] != undefined) {
+	    url = options["contenturl"];
+	    targetdiv = $("#" + targetdiv);
+	} else {
+	    url = apphome + "/components/sidebars/index.html";
+	    targetdiv = findclosest(toggler, "#" + targetdiv);
+	}
+    
+	jQuery.ajax({
         url: url,
         async: false,
         data: options,
@@ -3929,7 +3934,6 @@ uiload = function () {
           targetdiv.replaceWith(data); //Cant get a valid dom element
           $(".pushcontent").removeClass("pushcontent-fullwidth");
           $(".pushcontent").addClass("pushcontent-open");
-          //$(".pushcontent").css("margin-left","");
           $(".pushcontent").addClass("pushcontent-" + sidebar);
           var mainsidebar = $(".col-mainsidebar");
           if (mainsidebar.data("sidebarwidth")) {
@@ -3943,13 +3947,14 @@ uiload = function () {
 
           $(window).trigger("resize");
         },
-        xhrFields: {
-          withCredentials: true,
-        },
-        crossDomain: true,
       });
-    }
-  });
+  };
+  
+  
+  showsidebaruploads = function() {
+	  $("#sidebarUserUploads").trigger("click");
+  };
+  
 
   lQuery(".toggledialogtree").livequery("click", function (e) {
     e.preventDefault();
