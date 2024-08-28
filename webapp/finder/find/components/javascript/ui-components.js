@@ -680,7 +680,7 @@ uiload = function () {
     );
     return bytes.toFixed(1) + units[u];
   }
-  lQuery(".filesize").livequery(function () {
+  lQuery(".autoFileSize").livequery(function () {
     var size = $(this).text();
     size = parseInt(size);
     if (!isNaN(size)) {
@@ -1117,7 +1117,7 @@ uiload = function () {
       options[name] = element.val();
     }
     var openfrom = window.location.href;
-    
+
     var searchpagetitle = "";
 
     showLoader();
@@ -1134,7 +1134,6 @@ uiload = function () {
           if (
             dialog.hasClass("entity-dialog") &&
             dialog.closest(".modal").length !== 0
-            
           ) {
             //find tab
             var tabid = dialog.data("tabid");
@@ -1154,146 +1153,132 @@ uiload = function () {
               container = dialog.closest(".entity-wraper");
               container.replaceWith(data);
               tabbackbutton(parent);
-
-              
             }
-          } 
-          else if (dialog.data("tabletype") == "subentity") {
-			  var container = dialog.closest(".entity-wraper");
-			  var parent = dialog.closest(".entitydialog");
-              container.replaceWith(data);
-              tabbackbutton(parent);
-		  }
-          else {
-	            modaldialog.html(data);
-	            if (width !== undefined) {
-	              if (width > $(window).width()) {
-	                width = $(window).width();
-	              }
-	
-	              $(".modal-dialog", modaldialog).css("min-width", width + "px");
-	            }
-	            if (maxwidth) {
-	              $(".modal-dialog", modaldialog).css("max-width", maxwidth + "px");
-	            }
-	
-	            var modalkeyboard = false;
-	            var modalbackdrop = true;
-	            if ($(".modal-backdrop").length) {
-	              modalbackdrop = false;
-	            }
-	
-	            var modalinstance;
-	            if (modalkeyboard) {
-	              modalinstance = modaldialog.modal({
-	                closeExisting: false,
-	                show: true,
-	                backdrop: modalbackdrop,
-	              });
-	            } else {
-	              modalinstance = modaldialog.modal({
-	                keyboard: false,
-	                closeExisting: false,
-	                show: true,
-	                backdrop: modalbackdrop,
-	              });
-	            }
-	
-	            var firstform = $("form", modaldialog);
-	            firstform.data("openedfrom", openfrom);
-	            // fix submit button
-	            var justok = dialog.data("cancelsubmit");
-	            if (justok != null) {
-	              $(".modal-footer #submitbutton", modaldialog).hide();
-	            } else {
-	              var id = $("form", modaldialog).attr("id");
-	              $("#submitbutton", modaldialog).attr("form", id);
-	            }
-	            var hidetitle = dialog.data("hideheader");
-	            if (hidetitle == null) {
-	              var title = dialog.attr("title");
-	              if (title == null) {
-	                title = dialog.text();
-	              }
-	              $(".modal-title", modaldialog).text(title);
-	            }
-	            var hidefooter = dialog.data("hidefooter");
-	            if (hidefooter != null) {
-	              $(".modal-footer", modaldialog).hide();
-	            }
-				
-				//backup url
-	            var currenturl = window.location.href;
-	            modalinstance.data("oldurlbar", currenturl);
-	            
-			 	searchpagetitle = modaldialog.find("[data-setpagetitle]");
-			 	
-			 	
-			    modalinstance.on("hidden.bs.modal", function () {
-	              //on close execute extra JS -- Todo: Move it to closedialog()
-	              if (dialog.data("onclose")) {
-	                var onclose = dialog.data("onclose");
-	                var fnc = window[onclose];
-	                if (fnc && typeof fnc === "function") {
-	                  //make sure it exists and it is a function
-	                  fnc(dialog); //execute it
-	                }
-	              }
-	
-	              closeemdialog($(this)); //Without this the asset Browse feature does not close all the way
-	              $(window).trigger("resize");
-	            });
-	
-	            modalinstance.on("scroll", function () {
-	              checkScroll();
-	            });
-	            
-	            adjustzindex(modalinstance);
+          } else if (dialog.data("tabletype") == "subentity") {
+            var container = dialog.closest(".entity-wraper");
+            var parent = dialog.closest(".entitydialog");
+            container.replaceWith(data);
+            tabbackbutton(parent);
+          } else {
+            modaldialog.html(data);
+            if (width !== undefined) {
+              if (width > $(window).width()) {
+                width = $(window).width();
+              }
 
-			}
-			
-            if (
-              typeof global_updateurl !== "undefined" &&
-              global_updateurl == false
-            ) {
-              //globaly disabled updateurl
+              $(".modal-dialog", modaldialog).css("min-width", width + "px");
+            }
+            if (maxwidth) {
+              $(".modal-dialog", modaldialog).css("max-width", maxwidth + "px");
+            }
+
+            var modalkeyboard = false;
+            var modalbackdrop = true;
+            if ($(".modal-backdrop").length) {
+              modalbackdrop = false;
+            }
+
+            var modalinstance;
+            if (modalkeyboard) {
+              modalinstance = modaldialog.modal({
+                closeExisting: false,
+                show: true,
+                backdrop: modalbackdrop,
+              });
             } else {
-             
-              //Update Address Bar
-              var updateurl = dialog.data("updateurl");
-              if (updateurl) {
-                var urlbar = dialog.data("urlbar");
-                if (!urlbar) {
-                  urlbar = link;
+              modalinstance = modaldialog.modal({
+                keyboard: false,
+                closeExisting: false,
+                show: true,
+                backdrop: modalbackdrop,
+              });
+            }
+
+            var firstform = $("form", modaldialog);
+            firstform.data("openedfrom", openfrom);
+            // fix submit button
+            var justok = dialog.data("cancelsubmit");
+            if (justok != null) {
+              $(".modal-footer #submitbutton", modaldialog).hide();
+            } else {
+              var id = $("form", modaldialog).attr("id");
+              $("#submitbutton", modaldialog).attr("form", id);
+            }
+            var hidetitle = dialog.data("hideheader");
+            if (hidetitle == null) {
+              var title = dialog.attr("title");
+              if (title == null) {
+                title = dialog.text();
+              }
+              $(".modal-title", modaldialog).text(title);
+            }
+            var hidefooter = dialog.data("hidefooter");
+            if (hidefooter != null) {
+              $(".modal-footer", modaldialog).hide();
+            }
+
+            //backup url
+            var currenturl = window.location.href;
+            modalinstance.data("oldurlbar", currenturl);
+
+            searchpagetitle = modaldialog.find("[data-setpagetitle]");
+
+            modalinstance.on("hidden.bs.modal", function () {
+              //on close execute extra JS -- Todo: Move it to closedialog()
+              if (dialog.data("onclose")) {
+                var onclose = dialog.data("onclose");
+                var fnc = window[onclose];
+                if (fnc && typeof fnc === "function") {
+                  //make sure it exists and it is a function
+                  fnc(dialog); //execute it
                 }
-
-                history.pushState($("#application").html(), null, urlbar);
-                window.scrollTo(0, 0);
               }
-            }
-            
-            if (searchpagetitle) {
-              setPageTitle(searchpagetitle);
-            }
 
-            //on success execute extra JS
-            if (dialog.data("onsuccess")) {
-              var onsuccess = dialog.data("onsuccess");
-              var fnc = window[onsuccess];
-              if (fnc && typeof fnc === "function") {
-                //make sure it exists and it is a function
-                fnc(dialog); //execute it
+              closeemdialog($(this)); //Without this the asset Browse feature does not close all the way
+              $(window).trigger("resize");
+            });
+
+            modalinstance.on("scroll", function () {
+              checkScroll();
+            });
+
+            adjustzindex(modalinstance);
+          }
+
+          if (
+            typeof global_updateurl !== "undefined" &&
+            global_updateurl == false
+          ) {
+            //globaly disabled updateurl
+          } else {
+            //Update Address Bar
+            var updateurl = dialog.data("updateurl");
+            if (updateurl) {
+              var urlbar = dialog.data("urlbar");
+              if (!urlbar) {
+                urlbar = link;
               }
+
+              history.pushState($("#application").html(), null, urlbar);
+              window.scrollTo(0, 0);
             }
+          }
 
-            
+          if (searchpagetitle) {
+            setPageTitle(searchpagetitle);
+          }
 
-            $(window).trigger("resize");
-            
-            
+          //on success execute extra JS
+          if (dialog.data("onsuccess")) {
+            var onsuccess = dialog.data("onsuccess");
+            var fnc = window[onsuccess];
+            if (fnc && typeof fnc === "function") {
+              //make sure it exists and it is a function
+              fnc(dialog); //execute it
+            }
+          }
 
-
-          
+          $(window).trigger("resize");
         },
       })
       .always(function () {
@@ -2009,9 +1994,9 @@ uiload = function () {
           (targetlink.indexOf("?") >= 0 ? "&" : "?") + "id=" + rowid;
         row.data("targetlink", targetlink);
         row.data("oemaxlevel", "2");
-        if(emselectable.data("tabletype") == "subentity") {
-        	row.data("tabletype", emselectable.data("tabletype"));
-        	row.data("oemaxlevel", "1");
+        if (emselectable.data("tabletype") == "subentity") {
+          row.data("tabletype", emselectable.data("tabletype"));
+          row.data("oemaxlevel", "1");
         }
         row.data("id", rowid);
         row.data("hitssessionid", emselectable.data("hitssessionid"));
@@ -2023,14 +2008,14 @@ uiload = function () {
           "/index.html?entityid=" +
           rowid;
         row.data("urlbar", urlbar);
-        
+
         emdialog(row, event);
       }
     }
   });
 
   //Entity SubModule Table ---Not used anymore TODO: Delete
- /* lQuery(".emselectableentity table td").livequery("click", function (event) {
+  /* lQuery(".emselectableentity table td").livequery("click", function (event) {
     var clicked = $(this);
     if (clicked.attr("noclick") == "true") {
       return true;
@@ -2143,7 +2128,6 @@ uiload = function () {
     }
   );
 */
-
 
   lQuery(".pickcategorylink").livequery("click", function () {});
 
@@ -3792,16 +3776,14 @@ uiload = function () {
       e.preventDefault();
     });
   });
-  
-  lQuery(".dropdown").livequery(function (e) {
-	  var dropdown = $(this);
-	  
-	  dropdown.hover(function(){
-		  dropdown.children(".dropdown-menu").addClass("show");
-	  });
-  });
-  
 
+  lQuery(".dropdown").livequery(function (e) {
+    var dropdown = $(this);
+
+    dropdown.hover(function () {
+      dropdown.children(".dropdown-menu").addClass("show");
+    });
+  });
 
   lQuery(".dropdown-menu a.dropdown-toggle").livequery("click", function (e) {
     if (!$(this).next().hasClass("show")) {
@@ -3822,11 +3804,10 @@ uiload = function () {
 
     return false;
   });
-  
-  lQuery(".dropdown-menu a.dropdown-item").livequery( "click",  function (e) {
-      $(this).parents(".dropdown-menu").removeClass("show");
-    }
-  );
+
+  lQuery(".dropdown-menu a.dropdown-item").livequery("click", function (e) {
+    $(this).parents(".dropdown-menu").removeClass("show");
+  });
 
   lQuery(".sidetoggle").livequery("click", function () {
     var div = $(this);
