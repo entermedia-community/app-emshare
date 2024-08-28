@@ -21,7 +21,6 @@ $context.putPageValue("parentsearchtype", $parentsearchtype)
 	#set($moduleid = $topmodule.getId())
 #end
 
-
 #ifnull($viewid)
 #set($viewid = $context.getRequestParameter("viewid"))
 #end
@@ -59,9 +58,12 @@ $context.putPageValue("tabmode", $tabmode)
 				data-targetdivinner="tabimportcontent"
 				data-oemaxlevel="1"><i class="bi bi-file-earmark-arrow-up-fill"></i> [[Upload Files]]</a>
 			</div>
+			#else
+				##activate next one down
+				#set($tabsection="uploadurl")
 			#end
 			#if($permissions.can($moduleid, "importurl"))
-			<div class="auto-active-row">
+			<div class='auto-active-row #if($tabsection=="uploadurl") current #end'>
 			<a href="$siteroot$apphome/components/createmedia/url/start.html?categoryid=$!defaultcategory.getId()"
 				class="btn btn-lg btn-wide ajax auto-active-link" 
 				data-targetdivinner="tabimportcontent"
@@ -157,7 +159,11 @@ $context.putPageValue("tabmode", $tabmode)
 			#if($tabsection=="pushlocal")
 				$pages.include("$componenthome/desktop/import/push.html?entityid=$!{entityid}&moduleid=$!{topmoduleid}&defaultcategoryid=$defaultcategory.getId()", $context)
 			#else
-				$pages.include("$apphome/views/modules/asset/add/tabentityaddmedia.html?categoryid=$!defaultcategory.getId()")
+				#if($topmodule.getBoolean("enableuploading") && ($permissions.can($moduleid, "upload_files") || $permissions.can($moduleid, "upload_folfers")) )
+					$pages.include("$apphome/views/modules/asset/add/tabentityaddmedia.html?categoryid=$!defaultcategory.getId()")
+				#else
+					$pages.include("$componenthome/createmedia/url/start.html?categoryid=$!defaultcategory.getId()")
+				#end
 			#end	
 		</div>
 	</div>

@@ -1117,6 +1117,8 @@ uiload = function () {
       options[name] = element.val();
     }
     var openfrom = window.location.href;
+    
+    var searchpagetitle = "";
 
     showLoader();
     jQuery
@@ -1153,82 +1155,101 @@ uiload = function () {
               container.replaceWith(data);
               tabbackbutton(parent);
 
-              return;
+              
             }
           } else {
-            modaldialog.html(data);
-            if (width) {
-              if (width > $(window).width()) {
-                width = $(window).width();
-              }
+	            modaldialog.html(data);
+	            if (width !== undefined) {
+	              if (width > $(window).width()) {
+	                width = $(window).width();
+	              }
+	
+	              $(".modal-dialog", modaldialog).css("min-width", width + "px");
+	            }
+	            if (maxwidth) {
+	              $(".modal-dialog", modaldialog).css("max-width", maxwidth + "px");
+	            }
+	
+	            var modalkeyboard = false;
+	            var modalbackdrop = true;
+	            if ($(".modal-backdrop").length) {
+	              modalbackdrop = false;
+	            }
+	
+	            var modalinstance;
+	            if (modalkeyboard) {
+	              modalinstance = modaldialog.modal({
+	                closeExisting: false,
+	                show: true,
+	                backdrop: modalbackdrop,
+	              });
+	            } else {
+	              modalinstance = modaldialog.modal({
+	                keyboard: false,
+	                closeExisting: false,
+	                show: true,
+	                backdrop: modalbackdrop,
+	              });
+	            }
+	
+	            var firstform = $("form", modaldialog);
+	            firstform.data("openedfrom", openfrom);
+	            // fix submit button
+	            var justok = dialog.data("cancelsubmit");
+	            if (justok != null) {
+	              $(".modal-footer #submitbutton", modaldialog).hide();
+	            } else {
+	              var id = $("form", modaldialog).attr("id");
+	              $("#submitbutton", modaldialog).attr("form", id);
+	            }
+	            var hidetitle = dialog.data("hideheader");
+	            if (hidetitle == null) {
+	              var title = dialog.attr("title");
+	              if (title == null) {
+	                title = dialog.text();
+	              }
+	              $(".modal-title", modaldialog).text(title);
+	            }
+	            var hidefooter = dialog.data("hidefooter");
+	            if (hidefooter != null) {
+	              $(".modal-footer", modaldialog).hide();
+	            }
+				
+				//backup url
+	            var currenturl = window.location.href;
+	            modalinstance.data("oldurlbar", currenturl);
+	            
+			 	searchpagetitle = modaldialog.find("[data-setpagetitle]");
+			 	
+			 	
+			    modalinstance.on("hidden.bs.modal", function () {
+	              //on close execute extra JS -- Todo: Move it to closedialog()
+	              if (dialog.data("onclose")) {
+	                var onclose = dialog.data("onclose");
+	                var fnc = window[onclose];
+	                if (fnc && typeof fnc === "function") {
+	                  //make sure it exists and it is a function
+	                  fnc(dialog); //execute it
+	                }
+	              }
+	
+	              closeemdialog($(this)); //Without this the asset Browse feature does not close all the way
+	              $(window).trigger("resize");
+	            });
+	
+	            modalinstance.on("scroll", function () {
+	              checkScroll();
+	            });
 
-              $(".modal-dialog", modaldialog).css("min-width", width + "px");
-            }
-            if (maxwidth) {
-              $(".modal-dialog", modaldialog).css("max-width", maxwidth + "px");
-            }
-
-            var modalkeyboard = false;
-            var modalbackdrop = true;
-            if ($(".modal-backdrop").length) {
-              modalbackdrop = false;
-            }
-
-            var modalinstance;
-            if (modalkeyboard) {
-              modalinstance = modaldialog.modal({
-                closeExisting: false,
-                show: true,
-                backdrop: modalbackdrop,
-              });
-            } else {
-              modalinstance = modaldialog.modal({
-                keyboard: false,
-                closeExisting: false,
-                show: true,
-                backdrop: modalbackdrop,
-              });
-            }
-
-            var searchpagetitle = modaldialog.find("[data-setpagetitle]");
-            if (searchpagetitle) {
-              setPageTitle(searchpagetitle);
-            }
-
-            //jQuery('.modal-backdrop').insertAfter(modalinstance);
-
-            var firstform = $("form", modaldialog);
-            firstform.data("openedfrom", openfrom);
-            // fix submit button
-            var justok = dialog.data("cancelsubmit");
-            if (justok != null) {
-              $(".modal-footer #submitbutton", modaldialog).hide();
-            } else {
-              var id = $("form", modaldialog).attr("id");
-              $("#submitbutton", modaldialog).attr("form", id);
-            }
-            var hidetitle = dialog.data("hideheader");
-            if (hidetitle == null) {
-              var title = dialog.attr("title");
-              if (title == null) {
-                title = dialog.text();
-              }
-              $(".modal-title", modaldialog).text(title);
-            }
-            var hidefooter = dialog.data("hidefooter");
-            if (hidefooter != null) {
-              $(".modal-footer", modaldialog).hide();
-            }
-
+			}
+			
             if (
               typeof global_updateurl !== "undefined" &&
               global_updateurl == false
             ) {
               //globaly disabled updateurl
             } else {
-              //backup url
-              var currenturl = window.location.href;
-              modalinstance.data("oldurlbar", currenturl);
+             
               //Update Address Bar
               var updateurl = dialog.data("updateurl");
               if (updateurl) {
@@ -1240,6 +1261,10 @@ uiload = function () {
                 history.pushState($("#application").html(), null, urlbar);
                 window.scrollTo(0, 0);
               }
+            }
+            
+            if (searchpagetitle) {
+              setPageTitle(searchpagetitle);
             }
 
             //on success execute extra JS
@@ -1255,26 +1280,11 @@ uiload = function () {
             adjustzindex(modalinstance);
 
             $(window).trigger("resize");
+            
+            
 
-            modalinstance.on("hidden.bs.modal", function () {
-              //on close execute extra JS -- Todo: Move it to closedialog()
-              if (dialog.data("onclose")) {
-                var onclose = dialog.data("onclose");
-                var fnc = window[onclose];
-                if (fnc && typeof fnc === "function") {
-                  //make sure it exists and it is a function
-                  fnc(dialog); //execute it
-                }
-              }
 
-              closeemdialog($(this)); //Without this the asset Browse feature does not close all the way
-              $(window).trigger("resize");
-            });
-
-            modalinstance.on("scroll", function () {
-              checkScroll();
-            });
-          }
+          
         },
       })
       .always(function () {
@@ -2000,7 +2010,7 @@ uiload = function () {
           "/index.html?entityid=" +
           rowid;
         row.data("urlbar", urlbar);
-        row.data("oemaxlevel", "1");
+        row.data("oemaxlevel", "2");
         emdialog(row, event);
       }
     }

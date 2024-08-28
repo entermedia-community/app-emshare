@@ -225,8 +225,30 @@ $pages.include("${searchhome}/resultsactions.html",$context)
 			
 			#if(!$hiderowactions)
 			<td class="rowactions" noclick="true">
-				<a href="#" style="font-size: 16px;" class="btn #if($enabled) btn-success #else text-accent #end px-1 rounded" title="Upload Folder" data-moduleid="entityactivity"><i class="bi bi-cloud-arrow-up"></i></a>
-				<a href="#" style="font-size: 14px;" class="btn #if($enabled) btn-success #else text-accent #end px-1 mb-2 rounded" title="Download Folder" data-moduleid="entityactivity"><i class="bi bi-download"></i></a>
+				#if($browser =="DESKTOP")
+				
+				#else
+					#if($module.getBoolean("enableuploading") && 
+						($permissions.can($moduleid, "upload_files") ||
+						$permissions.can($moduleid, "upload_folders")) )
+						<a href="$!searchhome/components/gridsample/preview/entity.html?entityid=$!{hit.id}&entitytabopen=import" 
+						style="font-size: 16px;" 
+						class="emdialog btn #if($enabled) btn-success #else text-accent #end px-1 rounded" 
+						title="[[Upload Folder]]" 
+						data-moduleid="${moduleid}"
+						data-updateurl="true"
+						data-urlbar="$!searchhome/index.html?entityid=$!{hit.id}&entitytabopen=import"><i class="bi bi-cloud-arrow-up"></i></a>
+					#end
+					#if($permissions.can($moduleid, "downloadall"))
+						<a href="$!searchhome/components/gridsample/preview/entity.html?entityid=$!{hit.id}&entitytabopen=export&tabsection=downloadzip" 
+						style="font-size: 14px;" 
+						class="emdialog btn #if($enabled) btn-success #else text-accent #end px-1 mb-2 rounded" 
+						title="[[Download Folder]]" 
+						data-moduleid="${moduleid}"
+						data-updateurl="true"
+						data-urlbar="$!searchhome/index.html?entityid=$!{hit.id}&entitytabopen=export&tabsection=downloadzip"><i class="bi bi-download"></i></a>
+					#end
+				#end
 				$pages.include("$componenthome/gridsample/favorites.html?id=$!{hit.id}&moduleid=$moduleid", $context)
 			</td>
 			#end
