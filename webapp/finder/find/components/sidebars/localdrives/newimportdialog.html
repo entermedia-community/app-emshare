@@ -7,17 +7,11 @@
       </button>
     </div>
     <div class="modal-body">
-      <form action="$apphome/components/sidebars/localdrives/newimportdialogsave.html" method="post" class="ajaxform validate autocloseform d-flex flex-column w-100 auto-importer-form" data-targetdiv="syncFolderList">
+      <form action="$apphome/components/sidebars/localdrives/newimportdialogsave.html" method="post" class="ajaxform validate autocloseform d-flex flex-column w-100 auto-importer-form" data-targetdiv="syncFolderList" id="newAutoImportForm">
         <input type="hidden" name="save" value="true">
         #set( $moduleid = $context.getRequestParameter("moduleid"))
         <input type="hidden" name="module" value="$moduleid">
         <input type="hidden" name="desktop" value="$desktop.id">
-        <input type="hidden" name="localsubfoldercount" id="localsubfoldercount" />        
-        <input type="hidden" name="localitemcount" id="localitemcount">
-        <input type="hidden" name="localtotalsize" id="localtotalsize">
-        
-        
-      
         
         <div class="folder-picker">
           <button type="button" id="folderAbsPath" class="btn btn-accent btn-lg rounded-pill">
@@ -25,16 +19,9 @@
           </button>
           <p class="text-success mb-0 mx-2 fl-stats"></p>
         </div>
-
-        <div class="d-none flex-column mb-1">
-          #set( $modulename = $context.getRequestParameter("modulename"))
-          <label for="folderAbsName" class="d-block w-100 mt-2 mb-1 text-muted">$modulename Name:</label>  
-          <input type="hidden" name="field" value="name">
-          <input type="text" name="name.value" id="folderAbsName" placeholder="$modulename [[name on the server-side]]" class="form-control rounded" required>
-        </div>
-    
         
-      
+        <input type="hidden" name="field" value="name">
+
         <div class="mt-3">
           #set( $searcher = $mediaarchive.getSearcher($moduleid))
           #set($details = $searcher.getPropertyDetails().findRequiredProperties())
@@ -59,8 +46,8 @@
       </form>
     </div>
     <div class="modal-footer d-flex justify-content-between">
-      <button type="submit" class="btn btn-lg btn-accent rounded">[[OK]]</button>
-      <button type="submit" type="button" data-dismiss="modal" class="btn btn-lg btn-secondary rounded">[[Cancel]]</button>
+      <button type="submit" form="newAutoImportForm" class="btn btn-lg btn-accent rounded">[[OK]]</button>
+      <button type="button" type="button" data-dismiss="modal" class="btn btn-lg btn-secondary rounded">[[Cancel]]</button>
     </div>
   </div>
 </div>

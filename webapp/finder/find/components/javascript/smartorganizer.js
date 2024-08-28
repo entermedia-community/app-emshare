@@ -95,6 +95,15 @@ $(document).ready(function () {
               y: 64,
             },
           },
+          {
+            ...folderPort,
+            id: draw2d.util.UUID.create(),
+            name: draw2d.util.UUID.create(),
+            locatorAttr: {
+              x: 75,
+              y: 125,
+            },
+          },
         ],
       },
       {
@@ -792,33 +801,37 @@ $(document).ready(function () {
     });
 
     function updateModPosition(selectedFolder) {
+      if (!selectedFolder) {
+        selectedFolder = canvas.getPrimarySelection();
+      }
+      if (
+        !selectedFolder ||
+        !selectedFolder.shape ||
+        !selectedFolder.shape[0]
+      ) {
+        return;
+      }
+      var shape = selectedFolder.shape[0].getBoundingClientRect();
       var bb = {
-        x:
-          selectedFolder.getX() +
-          parseInt(canvasContainer.css("margin-left")) +
-          116,
-        y:
-          selectedFolder.getY() +
-          parseInt(canvasContainer.css("margin-top")) +
-          70,
+        x: shape.x + shape.width + 8,
+        y: shape.y - 20,
       };
 
       $("#mod-toggler").css({
-        left: bb.x + 150,
-        top: bb.y + 10,
+        left: bb.x,
+        top: bb.y,
       });
 
       var modCss = {
-        left: bb.x + 170,
-        top: Math.max(bb.y, 80),
-        bottom: "auto",
+        left: bb.x + 24,
+        top: Math.max(bb.y, 100),
       };
-      if (bb.x + 566 > canvasWidth) {
-        modCss.left = bb.x - 426;
+      if (bb.x + 420 > window.innerWidth - 92) {
+        modCss.left = bb.x - 440 - shape.width;
       }
-      if (bb.y + 350 > canvasHeight) {
-        modCss.top = "auto";
-        modCss.bottom = 0;
+      var mH = $("#modifySelection").height() + 92;
+      if (bb.y + mH > window.innerHeight) {
+        modCss.top = window.innerHeight - mH;
       }
       $("#modifySelection").css(modCss);
     }
@@ -1098,6 +1111,9 @@ $(document).ready(function () {
         showLoader();
         var iconPath = $(this).find("img").attr("src");
         var selectedFolder = canvas.getPrimarySelection();
+        if (!selectedFolder) {
+          return;
+        }
         var selectedFolderId = selectedFolder.getId();
         var prevIcon = canvas.getFigure(selectedFolderId + "-icon");
         if (!prevIcon) {
@@ -1297,6 +1313,7 @@ $(document).ready(function () {
       }
       $("#vToBottom").prop("disabled", false);
       canvasContainer.css("margin-top", pos);
+      updateModPosition();
     });
     $("#vToBottom").click(function (e) {
       e.stopImmediatePropagation();
@@ -1307,6 +1324,7 @@ $(document).ready(function () {
       }
       $("#vToTop").prop("disabled", false);
       canvasContainer.css("margin-top", pos);
+      updateModPosition();
     });
     $("#vToLeft").click(function (e) {
       e.stopImmediatePropagation();
@@ -1317,6 +1335,7 @@ $(document).ready(function () {
       }
       $("#vToRight").prop("disabled", false);
       canvasContainer.css("margin-left", pos);
+      updateModPosition();
     });
     $("#vToRight").click(function (e) {
       e.stopImmediatePropagation();
@@ -1327,6 +1346,7 @@ $(document).ready(function () {
       }
       $("#vToLeft").prop("disabled", false);
       canvasContainer.css("margin-left", pos);
+      updateModPosition();
     });
     $("#zoomInBtn").click(function (e) {
       e.stopImmediatePropagation();
@@ -1342,6 +1362,7 @@ $(document).ready(function () {
 
       var newtop = parseInt(canvasContainer.css("margin-top")) + change;
       canvasContainer.css("margin-top", newtop);
+      updateModPosition();
     });
 
     $("#zoomOutBtn").click(function (e) {
@@ -1358,12 +1379,14 @@ $(document).ready(function () {
 
       var newtop = parseInt(canvasContainer.css("margin-top")) + change;
       canvasContainer.css("margin-top", newtop);
+      updateModPosition();
     });
 
     $("#zoomResetBtn").click(function (e) {
       e.stopImmediatePropagation();
       canvas.setZoom(1.0);
       recenterCanvas();
+      updateModPosition();
     });
 
     lQuery("#labelForm").livequery("submit", function (e) {
@@ -1433,6 +1456,11 @@ $(document).ready(function () {
           closeemdialog($("#labelPicker"));
         }
       );
+    });
+
+    lQuery("#actionForm").livequery("submit", function (e) {
+      e.preventDefault();
+      e.stopImmediatePropagation();
     });
 
     lQuery(".insert-btn").livequery("click", function (e) {
