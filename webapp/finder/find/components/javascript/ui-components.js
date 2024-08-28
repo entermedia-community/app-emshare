@@ -3808,9 +3808,7 @@ uiload = function () {
     return false;
   });
   
-  lQuery(".dropdown-submenu .dropdown-menu a.dropdown-item").livequery(
-    "click",
-    function (e) {
+  lQuery(".dropdown-menu a.dropdown-item").livequery( "click",  function (e) {
       $(this).parents(".dropdown-menu").removeClass("show");
     }
   );

@@ -3,8 +3,8 @@
 		<tr class="tableheader">
 			#foreach( $searchItem in $details)
 			#set( $inputed = "$!loghits.getInput($searchItem.getId())")
-			<th>
-			${searchItem.getText($context)}
+			<th #if($searchItem.viewType=="date" ||$searchItem.viewType=="datetime") class="logtabledate" #end>
+			${searchItem.getText($context)} 
 			</th>
 			#end
 		</tr>
@@ -15,6 +15,7 @@
 			#set( $value = false )
 			#set($value = $hit.get("$searchItem.id"))
 			<td>
+				
 			#if( $value )
 				$context.putPageValue("val",$value)
 				$context.putPageValue("detail",$searchItem)
