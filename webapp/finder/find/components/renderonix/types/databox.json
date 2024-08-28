@@ -2,12 +2,12 @@
 	{
     "type": "draw2d.shape.composite.Group",
     "id": "id_${node.id}",
-    "x": ${node.offetX(250,0)},
- #set( $topy = ${node.rowoffet(50,20))   
+
+    "x": ${node.x},
+	#set( $topy = $node.y)    
     "y": $topy,
-    "width": 200,
-    "height": ${node.getDataTotalHeight(60)},
-    "bgColor": "#60729e",
+    "height": ${node.getHeight()},
+    "bgColor": "#5fAA9e",
     "color": "#000000",
     "stroke": 1,
     "cssClass": "labelGroup",
@@ -25,7 +25,7 @@
         "height": 8,
         "selectable": false,
         "draggable": false,
-        "bgColor": "#60729e",
+        "bgColor": "#5fAA9e",
         "color": "#4d5d80",
         "stroke": 1,
         "locatorAttr": {
@@ -33,38 +33,22 @@
           "y": 50
         }
       }
-      #if( !$node.getChildren().isEmpty() )
-      ,
-      {
-        "id": "portright_${node.id}",
-        "name": "portright_${node.id}",
-        "type": "draw2d.HybridPort", 
-		    "port": "draw2d.HybridPort",
-		    "locator": "draw2d.layout.locator.XYRelPortLocator",
-        "width": 8,
-        "height": 8,
-        "selectable": false,
-        "draggable": false,
-        "bgColor": "#60729e",
-        "color": "#4d5d80",
-        "stroke": 1,
-        "locatorAttr": {
-          "x": 100,
-          "y": 50
-         }
-      }
-      #end
     ]
   }
-#foreach( $datanode in $node.getDataChilren() ) 
+#foreach( $datanode in $node.getChildren() ) 
   , {
     "type": "draw2d.shape.basic.Label",
   	"id": "idtext_${datanode.id}",
-    "x": ${datanode.offetX(250,5)},
-#set( $index = $foreach.count - 1 )
-#set( $topy = $topy + $index*60 )
+    "x": ${node.x},
     "y": $topy,
-    "text": "$datanode.getTextTrim()", 
+	#set( $topy = $topy + 30 )
+	#set( $data = $mediaarchive.getCachedData( $datanode.getName(),$datanode.getTextTrim() ) )
+	#ifnull($data)
+    	"text": "$datanode.getName() = $datanode.getTextTrim()",
+    #end
+    #ifnotnull($data)
+    	"text": "$data.getName()",
+    #end	 
     "stroke": 0,
     "fontSize": 20,
     "fontColor": "#ffffff",
