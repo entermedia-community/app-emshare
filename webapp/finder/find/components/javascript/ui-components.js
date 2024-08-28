@@ -1118,6 +1118,8 @@ uiload = function () {
     }
     var openfrom = window.location.href;
 
+    var searchpagetitle = "";
+
     showLoader();
     jQuery
       .ajax({
@@ -1130,9 +1132,8 @@ uiload = function () {
         success: function (data) {
           //--Entities
           if (
-            (dialog.hasClass("entity-dialog") &&
-              dialog.closest(".modal").length !== 0) ||
-            dialog.data("tabletype") == "subentity"
+            dialog.hasClass("entity-dialog") &&
+            dialog.closest(".modal").length !== 0
           ) {
             //find tab
             var tabid = dialog.data("tabid");
@@ -1152,12 +1153,15 @@ uiload = function () {
               container = dialog.closest(".entity-wraper");
               container.replaceWith(data);
               tabbackbutton(parent);
-
-              return;
             }
+          } else if (dialog.data("tabletype") == "subentity") {
+            var container = dialog.closest(".entity-wraper");
+            var parent = dialog.closest(".entitydialog");
+            container.replaceWith(data);
+            tabbackbutton(parent);
           } else {
             modaldialog.html(data);
-            if (width) {
+            if (width !== undefined) {
               if (width > $(window).width()) {
                 width = $(window).width();
               }
@@ -1190,13 +1194,6 @@ uiload = function () {
               });
             }
 
-            var searchpagetitle = modaldialog.find("[data-setpagetitle]");
-            if (searchpagetitle) {
-              setPageTitle(searchpagetitle);
-            }
-
-            //jQuery('.modal-backdrop').insertAfter(modalinstance);
-
             var firstform = $("form", modaldialog);
             firstform.data("openedfrom", openfrom);
             // fix submit button
@@ -1220,41 +1217,11 @@ uiload = function () {
               $(".modal-footer", modaldialog).hide();
             }
 
-            if (
-              typeof global_updateurl !== "undefined" &&
-              global_updateurl == false
-            ) {
-              //globaly disabled updateurl
-            } else {
-              //backup url
-              var currenturl = window.location.href;
-              modalinstance.data("oldurlbar", currenturl);
-              //Update Address Bar
-              var updateurl = dialog.data("updateurl");
-              if (updateurl) {
-                var urlbar = dialog.data("urlbar");
-                if (!urlbar) {
-                  urlbar = link;
-                }
+            //backup url
+            var currenturl = window.location.href;
+            modalinstance.data("oldurlbar", currenturl);
 
-                history.pushState($("#application").html(), null, urlbar);
-                window.scrollTo(0, 0);
-              }
-            }
-
-            //on success execute extra JS
-            if (dialog.data("onsuccess")) {
-              var onsuccess = dialog.data("onsuccess");
-              var fnc = window[onsuccess];
-              if (fnc && typeof fnc === "function") {
-                //make sure it exists and it is a function
-                fnc(dialog); //execute it
-              }
-            }
-
-            adjustzindex(modalinstance);
-
-            $(window).trigger("resize");
+            searchpagetitle = modaldialog.find("[data-setpagetitle]");
 
             modalinstance.on("hidden.bs.modal", function () {
               //on close execute extra JS -- Todo: Move it to closedialog()
@@ -1274,7 +1241,44 @@ uiload = function () {
             modalinstance.on("scroll", function () {
               checkScroll();
             });
+
+            adjustzindex(modalinstance);
           }
+
+          if (
+            typeof global_updateurl !== "undefined" &&
+            global_updateurl == false
+          ) {
+            //globaly disabled updateurl
+          } else {
+            //Update Address Bar
+            var updateurl = dialog.data("updateurl");
+            if (updateurl) {
+              var urlbar = dialog.data("urlbar");
+              if (!urlbar) {
+                urlbar = link;
+              }
+
+              history.pushState($("#application").html(), null, urlbar);
+              window.scrollTo(0, 0);
+            }
+          }
+
+          if (searchpagetitle) {
+            setPageTitle(searchpagetitle);
+          }
+
+          //on success execute extra JS
+          if (dialog.data("onsuccess")) {
+            var onsuccess = dialog.data("onsuccess");
+            var fnc = window[onsuccess];
+            if (fnc && typeof fnc === "function") {
+              //make sure it exists and it is a function
+              fnc(dialog); //execute it
+            }
+          }
+
+          $(window).trigger("resize");
         },
       })
       .always(function () {
@@ -1989,7 +1993,11 @@ uiload = function () {
         targetlink +=
           (targetlink.indexOf("?") >= 0 ? "&" : "?") + "id=" + rowid;
         row.data("targetlink", targetlink);
-        row.data("tabletype", emselectable.data("tabletype"));
+        row.data("oemaxlevel", "2");
+        if (emselectable.data("tabletype") == "subentity") {
+          row.data("tabletype", emselectable.data("tabletype"));
+          row.data("oemaxlevel", "1");
+        }
         row.data("id", rowid);
         row.data("hitssessionid", emselectable.data("hitssessionid"));
         row.data("updateurl", true);
@@ -2000,7 +2008,7 @@ uiload = function () {
           "/index.html?entityid=" +
           rowid;
         row.data("urlbar", urlbar);
-        row.data("oemaxlevel", "1");
+
         emdialog(row, event);
       }
     }
