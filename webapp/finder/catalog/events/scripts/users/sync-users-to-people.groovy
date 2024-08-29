@@ -17,6 +17,10 @@ public void init()
 	HitTracker hits = users.getAllHits();
 	List tosave = new ArrayList();
 	hits.each { 
+		if( it.getId() == "admin")
+		{
+			continue;
+		}
 		User user = archive.getUser(it.getId());
 		Data entity = archive.query("entityperson").match("email",user.getEmail()).searchOne();
 		if( entity == null)
