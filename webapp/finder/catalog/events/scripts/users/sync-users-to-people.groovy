@@ -36,7 +36,7 @@ public void init()
 			}
 			entity.setValue("firstName",user.getFirstName());
 			entity.setValue("lastName",user.getLastName());
-			entity.setValue("email",user.getEmail());
+			entity.setValue("contact_email",user.getEmail());
 			//entity.setValue("contact_type","producer");
 			tosave.add(entity);
 		}
