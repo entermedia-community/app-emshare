@@ -28,8 +28,9 @@ function setContrast(hex) {
 
 $(document).ready(function () {
   var app = jQuery("#application");
-  var apphome = app.data("siteroot") + app.data("apphome");
+  var apphome = app.data("apphome");
   var siteroot = $("#application").data("siteroot");
+  var applink = siteroot + apphome;
   var mediadb = $("#application").data("mediadbappid");
   var userid = $("#application").data("user");
 
@@ -114,7 +115,7 @@ $(document).ready(function () {
         type: "draw2d.shape.basic.Image",
         width: 150,
         height: 125,
-        path: apphome + "/theme/images/ft.svg",
+        path: applink + "/theme/images/ft.svg",
         draggable: true,
         selectable: true,
         resizable: false,
@@ -154,7 +155,7 @@ $(document).ready(function () {
         selectable: false,
         composite: groupId,
         cssClass: "folderIcon",
-        path: apphome + "/theme/icons/bootstrap/folder.svg",
+        path: applink + "/theme/icons/bootstrap/folder.svg",
       },
     ];
   };
@@ -725,7 +726,7 @@ $(document).ready(function () {
           A.className = "label-mod-toggler emdialog";
           A.setAttribute(
             "href",
-            siteroot + apphome + "/components/smartorganizer/label.html"
+            applink + "/components/smartorganizer/label.html"
           );
           A.setAttribute("role", "button");
           A.dataset.dialogid = "labelPicker";

@@ -678,7 +678,7 @@ uiload = function () {
       Math.round(Math.abs(bytes) * 10) / 10 >= thresh &&
       u < units.length - 1
     );
-    return bytes.toFixed(1) + units[u];
+    return bytes.toFixed(1) + " " + units[u];
   }
   lQuery(".autoFileSize").livequery(function () {
     var size = $(this).text();
@@ -3882,7 +3882,7 @@ uiload = function () {
         crossDomain: true,
       });
     } else if (toggler.data("action") == "hide") {
-      //hide sidebar 
+      //hide sidebar
       options["module"] = $("#applicationcontent").data("moduleid");
       options["sidebarcomponent.value"] = "";
       var url = apphome + "/components/sidebars/index.html";
@@ -3905,56 +3905,52 @@ uiload = function () {
     } else {
       //showsidebar
       showsidebar(toggler);
-      
     }
   });
-  
-  
-  showsidebar = function(toggler) {
-	var options = toggler.data();
+
+  showsidebar = function (toggler) {
+    var options = toggler.data();
     var targetdiv = toggler.data("targetdiv");
     var sidebar = toggler.data("sidebar");
     options["propertyfield"] = "sidebarcomponent";
     options["module"] = $("#applicationcontent").data("moduleid");
-	options["sidebarcomponent.value"] = sidebar;
-	var url;
-	if (options["contenturl"] != undefined) {
-	    url = options["contenturl"];
-	    targetdiv = $("#" + targetdiv);
-	} else {
-	    url = apphome + "/components/sidebars/index.html";
-	    targetdiv = findclosest(toggler, "#" + targetdiv);
-	}
-    
-	jQuery.ajax({
-        url: url,
-        async: false,
-        data: options,
-        success: function (data) {
-          targetdiv.replaceWith(data); //Cant get a valid dom element
-          $(".pushcontent").removeClass("pushcontent-fullwidth");
-          $(".pushcontent").addClass("pushcontent-open");
-          $(".pushcontent").addClass("pushcontent-" + sidebar);
-          var mainsidebar = $(".col-mainsidebar");
-          if (mainsidebar.data("sidebarwidth")) {
-            var width = mainsidebar.data("sidebarwidth");
-            if (typeof width == "number") {
-              $(".pushcontent").css("margin-left", width + "px");
-            }
+    options["sidebarcomponent.value"] = sidebar;
+    var url;
+    if (options["contenturl"] != undefined) {
+      url = options["contenturl"];
+      targetdiv = $("#" + targetdiv);
+    } else {
+      url = apphome + "/components/sidebars/index.html";
+      targetdiv = findclosest(toggler, "#" + targetdiv);
+    }
+
+    jQuery.ajax({
+      url: url,
+      async: false,
+      data: options,
+      success: function (data) {
+        targetdiv.replaceWith(data); //Cant get a valid dom element
+        $(".pushcontent").removeClass("pushcontent-fullwidth");
+        $(".pushcontent").addClass("pushcontent-open");
+        $(".pushcontent").addClass("pushcontent-" + sidebar);
+        var mainsidebar = $(".col-mainsidebar");
+        if (mainsidebar.data("sidebarwidth")) {
+          var width = mainsidebar.data("sidebarwidth");
+          if (typeof width == "number") {
+            $(".pushcontent").css("margin-left", width + "px");
           }
+        }
 
-          setPageTitle(targetdiv);
+        setPageTitle(targetdiv);
 
-          $(window).trigger("resize");
-        },
-      });
+        $(window).trigger("resize");
+      },
+    });
   };
-  
-  
-  showsidebaruploads = function() {
-	  $("#sidebarUserUploads").trigger("click");
+
+  showsidebaruploads = function () {
+    $("#sidebarUserUploads").trigger("click");
   };
-  
 
   lQuery(".toggledialogtree").livequery("click", function (e) {
     e.preventDefault();

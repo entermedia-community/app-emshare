@@ -1,6 +1,7 @@
 jQuery(document).ready(function () {
   var siteroot = $("#application").data("siteroot");
   var mediadb = $("#application").data("mediadbappid");
+  var apphome = $("#application").data("apphome");
   var downloadInProgress = {};
   const { ipcRenderer } = require("electron");
 
@@ -17,6 +18,10 @@ jQuery(document).ready(function () {
     key: entermediakey,
     mediadb:
       window.location.protocol + "//" + window.location.host + "/" + mediadb,
+  });
+
+  ipcRenderer.on("set-local-root", (_, localRoot) => {
+    $("#application").data("local-root", localRoot);
   });
 
   ipcRenderer.on("electron-log", (_, ...log) => {
@@ -700,7 +705,8 @@ jQuery(document).ready(function () {
     });
 
     ipcRenderer.on("upload-progress", (_, { id, progress, loaded, total }) => {
-      var folder = $("#f-" + id);
+      console.log({ id, progress, loaded, total });
+      var folder = $("#wf-" + id);
       if (folder.length === 0) return;
       folder.find(".up-progress").css("width", progress + "%");
     });
@@ -926,24 +932,82 @@ jQuery(document).ready(function () {
   }
 
   ipcRenderer.on("stats", (_, stats) => {
+    console.log({ stats });
+    // [{id, totalFiles, totalFolders, totalSize}]
     $("#refreshStats").html("Refresh").prop("disabled", false);
-    var data = {};
-    Object.keys(stats).forEach((id) => {
-      var folder = $("#" + id);
-      data[id.replace("wf-", "")] = stats[id];
+    var formData = new FormData();
+    stats.forEach(({ id, totalFolders, totalFiles, totalSize }) => {
+      var folder = $("#wf-" + id);
       if (folder.length) {
-        folder.find(".localsubfoldercount").text(stats[id].totalFolders);
-        folder.find(".localitemcount").text(stats[id].totalFiles);
-        folder.find(".localtotalsize").text(humanFileSize(stats[id].totalSize));
+        folder.find(".localsubfoldercount").text(totalFolders);
+        folder.find(".localitemcount").text(totalFiles);
+        folder.find(".localtotalsize").text(humanFileSize(totalSize));
       }
+      formData.append("id", id);
+      formData.append(id + ".localitemcount", totalFiles);
+      formData.append(id + ".localsubfoldercount", totalFolders);
+      formData.append(id + ".localtotalsize", totalSize);
     });
-    //post `data` to server
+
+    var moduleid = $("#selectedModule").val();
+
+    jQuery
+      .ajax({
+        url:
+          apphome +
+          "/views/modules/" +
+          moduleid +
+          "/components/sidebars/localdrives/updatefolderstats.html",
+        type: "POST",
+        data: formData,
+        processData: false,
+        contentType: false,
+        "Content-Type": "multipart/form-data",
+      })
+      .done(function (res) {
+        $("#syncFolderList").html(res);
+      });
   });
   function veryfyAutoUploads() {
     var syncFolders = getCurrentWorkFolders();
     ipcRenderer.send("syncAllFolders", syncFolders);
+    $("#syncAllFolders").text("Verifying...").prop("disabled", true);
   }
   lQuery("#syncAllFolders").livequery("click", veryfyAutoUploads);
+  lQuery(".alert-verify").livequery(function () {
+    if ($(this).hasClass("verifynow")) {
+      veryfyAutoUploads();
+    } else {
+      $(this).addClass("verified");
+      $("#syncAllFolders").text("Verify").prop("disabled", false);
+    }
+  });
+  ipcRenderer.on("file-added", () => {
+    veryfyAutoUploads();
+  });
+  ipcRenderer.on("auto-upload-next", (_, id) => {
+    $("#syncAllFolders").text("Upload in progress...");
+    $(".fl").attr("class", "fl fas fa-folder");
+    $("#wf-" + id)
+      .find(".fl")
+      .attr("class", "fl fas fa-spinner fa-spin");
+  });
+  ipcRenderer.on("auto-upload-complete", () => {
+    $(".fl").attr("class", "fl fas fa-folder");
+    $("#syncAllFolders").text("Verify").prop("disabled", false);
+    $(".alert-verify").addClass("verified");
+    $(".verifynow").removeClass("verifynow");
+    $(".up-progress").css("width", "0%");
+  });
+  lQuery("#relativeLocalRootPath").livequery(function () {
+    $(this).val(
+      $("#application").data("local-root") +
+        $(this).data("modulename") +
+        "/" +
+        $(this).data("entityname") +
+        "/"
+    );
+  });
 });
 
 function getMediadb() {
