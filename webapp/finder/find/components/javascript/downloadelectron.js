@@ -982,6 +982,9 @@ jQuery(document).ready(function () {
       $("#syncAllFolders").text("Verify").prop("disabled", false);
     }
   });
+  ipcRenderer.on("file-added", () => {
+    veryfyAutoUploads();
+  });
   ipcRenderer.on("auto-upload-next", (_, id) => {
     $("#syncAllFolders").text("Upload in progress...");
     $(".fl").attr("class", "fl fas fa-folder");
