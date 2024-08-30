@@ -21,49 +21,52 @@ $context.putPageValue("parentsearchtype", $parentsearchtype)
 >
 	<div id="entityactivityhistoryhistory" class="d-flex align-items-stretch p-4" style="min-height: 100%;">
 		
-		#set( $activityhistory = $mediaarchive.query("entityactivityhistory").exact("entityid", $entityid).sort("dateDown").search() )
+		#set( $assetActivityHistory =  $mediaarchive.getBean("entityManager").loadHistoryForEntity($applicationid, $context.getUser(), $module, $entity))
 		
-		<div class="w-100">
-		<table class="emdata table table-striped table-hover ">
-			<thead>
-				<tr class="tableheader">
-						<th style="width: 200px;">[[Date]]</th>
-						<th>[[User]]</th>
-						<th>[[Activity]]</th>
-						<th>[[Assets]]</th>
-						<th style="width: 200px;">[[Actions]]</th>
-					</tr>
-			</thead>
-			<tbody>
-				#foreach($activity on $activityhistory)
-					<tr>
-						<td>$!context.getDateTime($activity.get("date"))</td>
-						<td>$activity.getValue("user")</td>
-						<td>
-							#set($operation = $activity.get("operation"))
-							$operation
-						</td>
-						<td>
-							#set($assetids = $activity.getValue("assetids"))
-							
-							
-							#foreach($assetid in $assetids)
-								#set($asset = $mediaarchive.getAsset($assetid))
-								#if($asset)
-									$asset.getName()
-									#if($foreach.hasNext), &nbsp;#end
-								#else
-									$assetid
-								#end
-							#end
+		#if(!$assetActivityHistory.isEmpty())
+		
+			<div class="w-100">
+			<table class="emdata table table-striped table-hover ">
+				<thead>
+					<tr class="tableheader">
+							<th style="width: 200px;">[[Date]]</th>
+							<th>[[User]]</th>
+							<th>[[Activity]]</th>
+							<th>[[Assets]]</th>
+							<th style="width: 200px;">[[Actions]]</th>
+						</tr>
+				</thead>
+				<tbody>
+					#foreach($activity on $assetActivityHistory)
+						<tr>
+							<td>$!context.getDateTime($activity.get("date"))</td>
+							<td>$activity.getValue("user")</td>
+							<td>
+								#set($operation = $activity.get("operation"))
+								$operation
 							</td>
-						<td>
-							<a href="#" class="btn btn-xs btn-dark"><i class="bi bi-arrow-left-right"></i></a>
-						</td>
-					</tr>
-				#end
-			</tbody>
-		</table>
-		</div>
+							<td>
+								#set($assetids = $activity.getValue("assetids"))
+								
+								
+								#foreach($assetid in $assetids)
+									#set($asset = $mediaarchive.getAsset($assetid))
+									#if($asset)
+										$asset.getName()
+										#if($foreach.hasNext), &nbsp;#end
+									#else
+										$assetid
+									#end
+								#end
+								</td>
+							<td>
+								<a href="#" class="btn btn-xs btn-dark"><i class="bi bi-arrow-left-right"></i></a>
+							</td>
+						</tr>
+					#end
+				</tbody>
+			</table>
+			</div>
+		#end
 	</div>
 </div>
