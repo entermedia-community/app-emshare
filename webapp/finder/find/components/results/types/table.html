@@ -225,20 +225,29 @@ $pages.include("${searchhome}/resultsactions.html",$context)
 			
 			#if(!$hiderowactions)
 			<td class="rowactions" noclick="true">
+				$pages.include("$componenthome/gridsample/favorites.html?id=$!{hit.id}&moduleid=$moduleid", $context)
 				#if($desktop)
-					#if($module.getBoolean("enableuploading") && 
-						($permissions.can($moduleid, "upload_files") ||
-						$permissions.can($moduleid, "upload_folders")) )
-							<a class="emdialog btn #if($enabled) btn-success #else text-accent #end px-1 rounded"
-								style="font-size: 16px;" 
-								data-dialogid="importexistingdialog"
-								data-moduleid="${moduleid}"
-								data-modulename="#text($module)"
-								data-entityid="$!{hit.id}"
-								data-entityname="$!{hit.name}"
-								href="$apphome/components/sidebars/localdrives/importexistingdialog.html"
-								title="[[Add to Auto Import]]" 
-								><i class="bi bi-cloud-arrow-up"></i></a>
+					<a class="emdialog btn text-accent px-1 rounded"
+						style="font-size: 16px;margin-top: 4px;" 
+						title="[[Upload]]"
+						><i class="bi bi-cloud-arrow-down"></i></a>
+
+					<a class="emdialog btn text-accent px-1 rounded"
+						style="font-size: 16px;" 
+						title="[[Upload]]"
+						><i class="bi bi-cloud-arrow-up"></i></a>
+
+					#if($module.getBoolean("enableuploading") && ($permissions.can($moduleid, "upload_files") || $permissions.can($moduleid, "upload_folders")) )
+						<a class="emdialog btn #if($enabled) btn-success #else text-accent #end px-1 rounded"
+							style="font-size: 16px;" 
+							data-dialogid="importexistingdialog"
+							data-moduleid="${moduleid}"
+							data-modulename="#text($module)"
+							data-entityid="$!{hit.id}"
+							data-entityname="$!{hit.name}"
+							href="$apphome/components/sidebars/localdrives/importexistingdialog.html"
+							title="[[Add to Auto Import]]" 
+							><i class="bi bi-box-arrow-in-up-right"></i></a>
 					#end
 				#else
 					#if($module.getBoolean("enableuploading") && 
@@ -262,7 +271,6 @@ $pages.include("${searchhome}/resultsactions.html",$context)
 						data-urlbar="$!searchhome/index.html?entityid=$!{hit.id}&entitytabopen=export&tabsection=downloadzip"><i class="bi bi-download"></i></a>
 					#end
 				#end
-				$pages.include("$componenthome/gridsample/favorites.html?id=$!{hit.id}&moduleid=$moduleid", $context)
 			</td>
 			#end
 			

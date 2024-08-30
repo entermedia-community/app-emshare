@@ -895,28 +895,19 @@ jQuery(document).ready(function () {
   });
 
   lQuery("#selectedModule").livequery("change", function () {
-    var selectedModule = {
-      moduleid: $(this).val(),
-      modulename: $(this).find("option:selected").text(),
-    };
-
+    var moduleid = $(this).val();
     var data = {
       updateurl: "true",
       oemaxlevel: "4",
     };
     $("#applicationcontent").load(
-      apphome + "/views/modules/" + selectedModule.moduleid + "/index.html",
+      apphome + "/views/modules/" + moduleid + "/index.html",
       data,
       function (res) {
         $(this).html(res);
+        veryfyAutoUploads();
       }
     );
-    var modules = [];
-    $(this)
-      .find("option")
-      .each(function () {
-        modules.push($(this).text());
-      });
   });
 
   function getCurrentWorkFolders() {
@@ -930,34 +921,20 @@ jQuery(document).ready(function () {
     });
     return folders;
   }
-
-  ipcRenderer.on("stats", (_, stats) => {
-    console.log({ stats });
-    // [{id, totalFiles, totalFolders, totalSize}]
-    $("#refreshStats").html("Refresh").prop("disabled", false);
-    var formData = new FormData();
-    stats.forEach(({ id, totalFolders, totalFiles, totalSize }) => {
-      var folder = $("#wf-" + id);
-      if (folder.length) {
-        folder.find(".localsubfoldercount").text(totalFolders);
-        folder.find(".localitemcount").text(totalFiles);
-        folder.find(".localtotalsize").text(humanFileSize(totalSize));
-      }
-      formData.append("id", id);
-      formData.append(id + ".localitemcount", totalFiles);
-      formData.append(id + ".localsubfoldercount", totalFolders);
-      formData.append(id + ".localtotalsize", totalSize);
-    });
-
+  var uploadInProgress = false;
+  function desktopImportStatusUpdater(formData, callback = null) {
     var moduleid = $("#selectedModule").val();
-
+    if (!moduleid) {
+      console.error("No module selected");
+      return;
+    }
     jQuery
       .ajax({
         url:
           apphome +
           "/views/modules/" +
           moduleid +
-          "/components/sidebars/localdrives/updatefolderstats.html",
+          "/components/sidebars/localdrives/updatefolderstatus.html",
         type: "POST",
         data: formData,
         processData: false,
@@ -966,39 +943,71 @@ jQuery(document).ready(function () {
       })
       .done(function (res) {
         $("#syncFolderList").html(res);
+        if (callback) callback();
       });
+  }
+  ipcRenderer.on("scan-completed", (_, ids) => {
+    var formData = new FormData();
+    ids.forEach((id) => {
+      formData.append("id", id);
+      var folder = $("#wf-" + id);
+      folder.find();
+    });
+    formData.append("desktopimportstatus", "upload-started");
+    formData.append("timestamp", new Date().toISOString());
+    desktopImportStatusUpdater(formData);
   });
+
   function veryfyAutoUploads() {
     var syncFolders = getCurrentWorkFolders();
-    ipcRenderer.send("syncAllFolders", syncFolders);
-    $("#syncAllFolders").text("Verifying...").prop("disabled", true);
+    console.log({ syncFolders });
+    var formData = new FormData();
+    syncFolders.forEach((folder) => {
+      formData.append("id", folder.id);
+    });
+    formData.append("desktopimportstatus", "scan-started");
+    formData.append("timestamp", new Date().toISOString());
+
+    console.log("veryfyAutoUploads", syncFolders);
+    uploadInProgress = true;
+    desktopImportStatusUpdater(formData, () => {
+      ipcRenderer.send("syncAllFolders", syncFolders);
+    });
   }
+
   lQuery("#syncAllFolders").livequery("click", veryfyAutoUploads);
-  lQuery(".alert-verify").livequery(function () {
+
+  lQuery(".import-verify").livequery(function () {
     if ($(this).hasClass("verifynow")) {
       veryfyAutoUploads();
-    } else {
-      $(this).addClass("verified");
-      $("#syncAllFolders").text("Verify").prop("disabled", false);
+    } else if (!uploadInProgress && $(this).hasClass("scan-started")) {
+      veryfyAutoUploads();
     }
   });
-  ipcRenderer.on("file-added", () => {
-    veryfyAutoUploads();
-  });
+
   ipcRenderer.on("auto-upload-next", (_, id) => {
-    $("#syncAllFolders").text("Upload in progress...");
     $(".fl").attr("class", "fl fas fa-folder");
     $("#wf-" + id)
       .find(".fl")
       .attr("class", "fl fas fa-spinner fa-spin");
   });
+
   ipcRenderer.on("auto-upload-complete", () => {
-    $(".fl").attr("class", "fl fas fa-folder");
-    $("#syncAllFolders").text("Verify").prop("disabled", false);
-    $(".alert-verify").addClass("verified");
-    $(".verifynow").removeClass("verifynow");
-    $(".up-progress").css("width", "0%");
+    var syncFolders = getCurrentWorkFolders();
+    var formData = new FormData();
+    syncFolders.forEach((folder) => {
+      formData.append("id", folder.id);
+    });
+    formData.append("desktopimportstatus", "upload-completed");
+    formData.append("timestamp", new Date().toISOString());
+    uploadInProgress = false;
+    desktopImportStatusUpdater(formData);
   });
+
+  ipcRenderer.on("file-added", () => {
+    veryfyAutoUploads();
+  });
+
   lQuery("#relativeLocalRootPath").livequery(function () {
     $(this).val(
       $("#application").data("local-root") +
