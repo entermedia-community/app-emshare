@@ -994,6 +994,7 @@ jQuery(document).ready(function () {
     $("#syncAllFolders").text("Verify").prop("disabled", false);
     $(".alert-verify").addClass("verified");
     $(".verifynow").removeClass("verifynow");
+    $(".up-progress").css("width", "0%");
   });
   lQuery("#relativeLocalRootPath").livequery(function () {
     $(this).val(
