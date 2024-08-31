@@ -3,7 +3,7 @@
   #set($syncfolders = $mediaarchive.query("desktopsyncfolder").exact("desktop", $desktop.id).exact("module", $module.id).sort("name").search())
 #end
 #if($syncfolders.size() == 0)
-  <div class="alert alert-info mt-2">
+  <div class="alert alert-info mx-2">
     <i class="bi bi-info-circle ns mr-1"></i> 
     <span>[[No local folders are being monitored for changes in]] #text($module) [[module]].</span>
   </div>
@@ -17,23 +17,31 @@
   <div class="alert import-verify p-2 mx-2 mt-1 mb-2 text-center $scanstatus #if($verifynow) verifynow #end">
     #if($scanstatus == "scan-started")
       <p class="mb-1">
-        <i class="bi bi-exclamation-triangle ns mr-1"></i> 
+        <i class="fas fa-spin fa-apinner mr-1"></i>
         <span>[[Looking for new files in the local folders]]</span>
       </p>
       <button class="btn btn-sm rounded mt-2" id="syncAllFolders" disabled>[[Scanning...]]</button>
-    #elseif($scanstatus == "upload-started")
+      #elseif($scanstatus == "upload-started")
       <p class="m-0">
-        <i class="fas fa-spin fa-apinner mr-1"></i> 
+        <i class="fas fa-spin fa-apinner mr-1"></i>
         <span>[[Uploading new files from local folders to the server]]</span>
       </p>
-      <p class="upload-counter my-1" style="display: none;"></p>
-      <button class="btn btn-sm rounded mt-2" id="syncAllFolders" disabled>[[Uploading...]]</button>
+      <p class="upload-counter my-1">
+        <b>0</b> [[files]] (<b>2</b> mb) [[uploaded]].
+      </p>
+      <button class="btn btn-sm btn-danger rounded mt-2" id="abortUpload">[[Abort]]</button>
+    #elseif($scanstatus == "upload-aborted")
+      <p class="m-0">
+        <i class="bi bi-exclamation-triangle ns mr-1"></i>
+        <span>[[Upload aborted]]</span>
+      </p>
+      <button class="btn btn-sm btn-danger rounded mt-2" id="syncAllFolders">[[Try Again]]</button>
     #elseif($scanstatus == "upload-completed")
       <p class="m-0">
-        <i class="bi bi-check-circle ns mr-1"></i> 
+        <i class="bi bi-check-circle ns mr-1"></i>
         <span>[[All new files are uploaded to the server]].</span>
       </p>
-      <button class="btn btn-sm rounded mt-2" id="syncAllFolders">[[Scan For New]]</button>
+      <button class="btn btn-sm rounded mt-2" id="syncAllFolders">[[Scan Again]</button>
     #end
   </div>
 

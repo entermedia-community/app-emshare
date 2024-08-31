@@ -56,7 +56,7 @@ jQuery(document).ready(function () {
     );
   });
 
-  function humanFileSize(bytes) {
+  function humanFileSize(bytes, htm = false) {
     var thresh = 1000;
     if (Math.abs(bytes) < thresh) {
       return bytes + " B";
@@ -67,6 +67,7 @@ jQuery(document).ready(function () {
       bytes /= thresh;
       ++u;
     } while (Math.round(Math.abs(bytes) * 10) / 10 >= thresh && u < units.length - 1);
+    if (htm) return `<b>${bytes.toFixed(1)}</b> ${units[u]}`;
     return bytes.toFixed(1) + units[u];
   }
 
@@ -692,18 +693,6 @@ jQuery(document).ready(function () {
       });
     });
 
-    ipcRenderer.on("upload-start", (_, id) => {
-      var folder = $("#f-" + id);
-      if (folder.length === 0) return;
-      $("#sidebarUserUploads").append('<div class="status-circle"></div>');
-      folder.find(".up-progress").css("width", "0%");
-      folder.find(".fl").attr("class", "fl fas fa-spinner fa-spin text-muted");
-      $("#workFolderPicker").prop("disabled", true);
-      $("#workDirEntity").prop("disabled", true);
-      $("#scanHotFoldersBtn").hide();
-      $("#abortUpload").show();
-    });
-
     ipcRenderer.on("upload-progress", (_, { id, progress, loaded, total }) => {
       console.log({ id, progress, loaded, total });
       var folder = $("#wf-" + id);
@@ -735,7 +724,6 @@ jQuery(document).ready(function () {
         $(this).find(".fl").attr("class", "fl fas fa-folder");
       });
       $("#scanHotFoldersBtn").show();
-      $("#abortUpload").hide();
       $("#workFolderPicker").prop("disabled", false);
       $("#workDirEntity").prop("disabled", false);
       $("#importFolders").prop("disabled", false);
@@ -750,11 +738,13 @@ jQuery(document).ready(function () {
     lQuery("#abortUpload").livequery("click", function (e) {
       e.preventDefault();
       ipcRenderer.send("abortUpload");
-      $("#sidebarUserUploads").find(".status-circle").remove();
-      $(this).hide();
-      $("#scanHotFoldersBtn").show();
-      $("#workFolderPicker").prop("disabled", false);
-      $("#workDirEntity").prop("disabled", false);
+    });
+
+    ipcRenderer.on("upload-aborted", () => {
+      var formData = new FormData();
+      formData.append("desktopimportstatus", "upload-aborted");
+      formData.append("timestamp", new Date().toISOString());
+      desktopImportStatusUpdater(formData);
     });
 
     lQuery(".pull-individual").livequery("click", function (e) {
