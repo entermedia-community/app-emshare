@@ -702,9 +702,19 @@ $(document).ready(function () {
           }
           selectedLabel = canvas.getFigure(selectedGroupId + "-label");
           if (!selectedLabel) return;
-          $("#folderId").val(selectedLabel.getUserData()?.moduleid || "");
+          
+          var moduleid = selectedLabel.getUserData()?.moduleid;
+          if(moduleid === undefined ||  moduleid == "")
+          {
+			moduleid = selectedLabel.getText().toLowerCase();
+	        moduleid = "entity" + moduleid.replace(" ", "-");
+	        selectedLabel.getUserData().moduleid = moduleid;
+		  }
+          $("#folderId").val(moduleid);
           $("#folderLabel").val(selectedLabel.getText() || "");
           $("#folderDesc").val(selectedLabel.getUserData()?.description || "");
+          var ordering = selectedLabel.getUserData()?.ordering || "0";
+          $("#ordering").val(ordering).trigger('change');
 
           updateModPosition(selectedGroup);
 
@@ -1076,25 +1086,30 @@ $(document).ready(function () {
         var labelText = $(this).val();
         var newid = labelText.toLowerCase();
         newid = newid.replace(" ", "-");
-        $("#folderId").val(newid);
-        selectedLabel.setUserData({
-          moduleid: newid,
-        });
+
+        var moduleid = selectedLabel.getUserData()?.moduleid;
+        if(moduleid === undefined ||  moduleid == "")
+        {
+	        $("#folderId").val(newid);
+	        selectedLabel.getUserData().moduleid = newid;
+	    }    
       }
     });
 
     $("#folderDesc").on("input", function (e) {
       e.stopImmediatePropagation();
-      selectedLabel.setUserData({
-        description: $(this).val(),
-      });
+      selectedLabel.getUserData().description = $(this).val();
     });
 
     $("#folderId").on("input", function (e) {
       e.stopImmediatePropagation();
-      selectedLabel.setUserData({
-        moduleid: $(this).val(),
-      });
+      selectedLabel.getUserData().moduleid = $(this).val();
+    });
+
+    $("#ordering").on("input", function (e) {
+      e.stopImmediatePropagation();
+      var value = $(this).val();
+      selectedLabel.getUserData().ordering = value;
     });
 
     lQuery("#iconsList").livequery(function () {
@@ -1131,7 +1146,7 @@ $(document).ready(function () {
     canvas.getCommandStack().addEventListener(function (e) {
       if (e.isPostChangeEvent()) {
         if (!canvasContainer.data("initializing")) {
-          saveJSON();
+          saveJSON(); //While moving? Too much?
         }
       }
     });
@@ -1175,7 +1190,6 @@ $(document).ready(function () {
         data.id = id;
         data.name = $("#organizerName").val();
         data.json = JSON.stringify(json);
-
         data.updatedby = userid;
         const date2 = new Date();
         data.updatedon = date2.toJSON();
@@ -1486,7 +1500,7 @@ $(document).ready(function () {
           function (key, folder) {
             if (folder.userData !== undefined) {
               var moduleid = folder.userData.moduleid;
-              console.log(moduleid);
+              //console.log(moduleid);
               var found = parsed.filter(
                 (el) => el.userData.moduleid == moduleid
               );
