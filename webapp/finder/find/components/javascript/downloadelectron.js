@@ -975,23 +975,33 @@ jQuery(document).ready(function () {
     }
   });
 
-  ipcRenderer.on("auto-upload-next", (_, { id, size }) => {
-    $(".fl").attr("class", "fl fas fa-folder");
-    $("#wf-" + id)
-      .find(".fl")
-      .attr("class", "fl fas fa-spinner fa-spin");
+  function updateCounter(size, persist = false) {
     var counter = $(".upload-counter");
     var fileCount = parseInt(counter.data("fileCount"));
     if (isNaN(fileCount)) fileCount = 0;
     var uploadSize = parseInt(counter.data("uploadSize"));
     if (isNaN(uploadSize)) uploadSize = 0;
-    fileCount++;
     uploadSize += size;
-    counter.data("fileCount", fileCount);
-    counter.data("uploadSize", uploadSize);
+    if (persist) {
+      fileCount++;
+      counter.data("fileCount", fileCount);
+      counter.data("uploadSize", uploadSize);
+    }
     var readableSize = humanFileSize(uploadSize, true);
     counter.html(`<b>${fileCount}</b> files (${readableSize}) uploaded.`);
     counter.show();
+  }
+
+  ipcRenderer.on("auto-upload-progress", (_, loaded) => {
+    updateCounter(loaded);
+  });
+
+  ipcRenderer.on("auto-upload-next", (_, { id, size }) => {
+    $(".fl").attr("class", "fl fas fa-folder");
+    $("#wf-" + id)
+      .find(".fl")
+      .attr("class", "fl fas fa-spinner fa-spin");
+    updateCounter(size, true);
   });
 
   ipcRenderer.on("auto-upload-complete", () => {
