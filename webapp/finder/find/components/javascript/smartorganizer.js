@@ -706,9 +706,12 @@ $(document).ready(function () {
           var moduleid = selectedLabel.getUserData()?.moduleid;
           if(moduleid === undefined ||  moduleid == "")
           {
-			moduleid = selectedLabel.getText().toLowerCase();
-	        moduleid = "entity" + moduleid.replace(" ", "-");
-	        selectedLabel.getUserData().moduleid = moduleid;
+              if( selectedLabel.getText() != "New Folder")
+              {             
+    			moduleid = selectedLabel.getText().toLowerCase();
+    	        moduleid = "entity" + moduleid.replace(" ", "-");
+    	        selectedLabel.getUserData().moduleid = moduleid;
+              } 
 		  }
           $("#folderId").val(moduleid);
           $("#folderLabel").val(selectedLabel.getText() || "");
@@ -1084,12 +1087,12 @@ $(document).ready(function () {
       var currentdata = selectedLabel.getUserData();
       if (currentdata !== undefined && currentdata.moduleid == "") {
         var labelText = $(this).val();
-        var newid = labelText.toLowerCase();
-        newid = newid.replace(" ", "-");
 
         var moduleid = selectedLabel.getUserData()?.moduleid;
         if(moduleid === undefined ||  moduleid == "")
         {
+	        var newid = labelText.toLowerCase();
+	        newid = "entity" + newid.replace(" ", "-");
 	        $("#folderId").val(newid);
 	        selectedLabel.getUserData().moduleid = newid;
 	    }    
