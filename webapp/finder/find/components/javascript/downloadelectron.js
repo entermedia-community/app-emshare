@@ -989,14 +989,15 @@ jQuery(document).ready(function () {
     }
     var readableSize = humanFileSize(uploadSize, true);
     counter.html(`<b>${fileCount}</b> files (${readableSize}) uploaded.`);
-    counter.show();
   }
 
   ipcRenderer.on("auto-upload-progress", (_, loaded) => {
+    console.log("auto-upload-progress", loaded);
     updateCounter(loaded);
   });
 
   ipcRenderer.on("auto-upload-next", (_, { id, size }) => {
+    console.log("auto-upload-next", id, size);
     $(".fl").attr("class", "fl fas fa-folder");
     $("#wf-" + id)
       .find(".fl")
