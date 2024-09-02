@@ -635,6 +635,16 @@ jQuery(document).ready(function () {
       });
     });
 
+    lQuery("#immediate-download").livequery(function () {
+      var categorypath = $(this).data("toplevelcategorypath");
+      $(".pullfetchfolder").first().find(".fa-spinner").show();
+      ipcRenderer.send("downloadAll", {
+        categorypath: categorypath,
+        scanOnly: false,
+      });
+      $(this).remove();
+    });
+
     lQuery(".download-pull-all").livequery("click", function (e) {
       e.preventDefault();
       var categorypath = $(this).data("toplevelcategorypath");
@@ -680,6 +690,12 @@ jQuery(document).ready(function () {
     });
 
     ipcRenderer.on("trash-complete", () => {
+      scanChange();
+    });
+
+    lQuery("#immediate-scan").livequery(function () {
+      var categorypath = $(this).data("toplevelcategorypath");
+      ipcRenderer.send("openFolder", { path: categorypath });
       scanChange();
     });
 
@@ -895,7 +911,7 @@ jQuery(document).ready(function () {
       data,
       function (res) {
         $(this).html(res);
-        veryfyAutoUploads();
+        verifyAutoUploads();
       }
     );
   });
@@ -948,7 +964,7 @@ jQuery(document).ready(function () {
     desktopImportStatusUpdater(formData);
   });
 
-  function veryfyAutoUploads() {
+  function verifyAutoUploads() {
     var syncFolders = getCurrentWorkFolders();
     console.log({ syncFolders });
     var formData = new FormData();
@@ -958,20 +974,20 @@ jQuery(document).ready(function () {
     formData.append("desktopimportstatus", "scan-started");
     formData.append("timestamp", new Date().toISOString());
 
-    console.log("veryfyAutoUploads", syncFolders);
+    console.log("verifyAutoUploads", syncFolders);
     uploadInProgress = true;
     desktopImportStatusUpdater(formData, () => {
       ipcRenderer.send("syncAllFolders", syncFolders);
     });
   }
 
-  lQuery("#syncAllFolders").livequery("click", veryfyAutoUploads);
+  lQuery("#syncAllFolders").livequery("click", verifyAutoUploads);
 
   lQuery(".import-verify").livequery(function () {
     if ($(this).hasClass("verifynow")) {
-      veryfyAutoUploads();
+      verifyAutoUploads();
     } else if (!uploadInProgress && $(this).hasClass("scan-started")) {
-      veryfyAutoUploads();
+      verifyAutoUploads();
     }
   });
 
@@ -1018,7 +1034,7 @@ jQuery(document).ready(function () {
   });
 
   ipcRenderer.on("file-added", () => {
-    veryfyAutoUploads();
+    verifyAutoUploads();
   });
 
   lQuery("#relativeLocalRootPath").livequery(function () {
