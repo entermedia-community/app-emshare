@@ -227,15 +227,21 @@ $pages.include("${searchhome}/resultsactions.html",$context)
 			<td class="rowactions" noclick="true">
 				$pages.include("$componenthome/gridsample/favorites.html?id=$!{hit.id}&moduleid=$moduleid", $context)
 				#if($desktop)
-					<a class="emdialog btn text-accent px-1 rounded"
-						style="font-size: 16px;margin-top: 4px;" 
-						title="[[Upload]]"
-						><i class="bi bi-cloud-arrow-down"></i></a>
-
-					<a class="emdialog btn text-accent px-1 rounded"
+					<a href="$!searchhome/components/gridsample/preview/entity.html?entityid=$!{hit.id}&entitytabopen=export&tabsection=pulllocal" 
 						style="font-size: 16px;" 
-						title="[[Upload]]"
-						><i class="bi bi-cloud-arrow-up"></i></a>
+						class="emdialog btn #if($enabled) btn-success #else text-accent #end px-1 rounded" 
+						title="[[Add New Folders]]" 
+						data-moduleid="${moduleid}"
+						data-updateurl="true"
+						data-urlbar="$!searchhome/index.html?entityid=$!{hit.id}&entitytabopen=import"><i class="bi bi-cloud-arrow-down"></i></a>
+
+					<a href="$!searchhome/components/gridsample/preview/entity.html?entityid=$!{hit.id}&entitytabopen=import&tabsection=pushlocal" 
+						style="font-size: 16px;" 
+						class="emdialog btn #if($enabled) btn-success #else text-accent #end px-1 rounded" 
+						title="[[Add New Folders]]" 
+						data-moduleid="${moduleid}"
+						data-updateurl="true"
+						data-urlbar="$!searchhome/index.html?entityid=$!{hit.id}&entitytabopen=import"><i class="bi bi-cloud-arrow-up"></i></a>
 
 					#if($module.getBoolean("enableuploading") && ($permissions.can($moduleid, "upload_files") || $permissions.can($moduleid, "upload_folders")) )
 						<a class="emdialog btn #if($enabled) btn-success #else text-accent #end px-1 rounded"
