@@ -759,6 +759,7 @@ jQuery(document).ready(function () {
       var formData = new FormData();
       formData.append("desktopimportstatus", "upload-aborted");
       formData.append("timestamp", new Date().toISOString());
+      uploadInProgress = false;
       desktopImportStatusUpdater(formData);
     });
 
