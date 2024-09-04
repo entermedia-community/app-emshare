@@ -713,6 +713,7 @@ jQuery(document).ready(function () {
       e.preventDefault();
       var entityId = $(this).data("entityid");
       var categorypath = $(this).data("categorypath");
+      $(".scan-result").hide();
       ipcRenderer.send("uploadAll", {
         categorypath: categorypath,
         entityId: entityId,
@@ -723,7 +724,6 @@ jQuery(document).ready(function () {
       console.log({ id, loaded, index });
       var total = $(".up-count").text();
       $(".up-total").text(total);
-      $(".scan-result").hide();
       var sp = $(".upload-progress");
       var progress = parseInt(sp.data("progress"));
       if (!progress) progress = 0;
@@ -764,6 +764,11 @@ jQuery(document).ready(function () {
     lQuery("#abortUpload").livequery("click", function (e) {
       e.preventDefault();
       ipcRenderer.send("abortUpload");
+    });
+
+    lQuery("#abortAutoUpload").livequery("click", function (e) {
+      e.preventDefault();
+      ipcRenderer.send("abortAutoUpload");
     });
 
     ipcRenderer.on("upload-aborted", () => {
