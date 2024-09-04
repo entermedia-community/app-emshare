@@ -37,7 +37,7 @@ jQuery(document).ready(function () {
   lQuery("#triggerpendingdownloads").livequery(checkForPendingDownloads);
 
   function downloadDirectly(id, url, filename, isZip = false) {
-    console.log({ id, url, filename, isZip });
+    //console.log({ id, url, filename, isZip });
     if (downloaded[id]) return;
     downloaded[id] = true;
 
@@ -95,7 +95,7 @@ jQuery(document).ready(function () {
     toast.on("hidden.bs.toast", function () {
       toast.remove();
     });
-
+	
     setTimeout(function () {
       autoreload($("#userdownloadlist"));
     }, 1000);
