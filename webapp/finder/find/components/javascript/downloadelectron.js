@@ -72,6 +72,16 @@ jQuery(document).ready(function () {
   }
 
   ipcRenderer.on("desktopReady", () => {
+    lQuery("#relativeLocalRootPath").livequery(function () {
+      $(this).val(
+        $("#application").data("local-root") +
+          $(this).data("modulename") +
+          "/" +
+          $(this).data("entityname") +
+          "/"
+      );
+    });
+
     function checkForPendingDownloads() {
       jQuery.ajax({
         dataType: "json",
@@ -709,18 +719,29 @@ jQuery(document).ready(function () {
       });
     });
 
-    ipcRenderer.on("upload-progress", (_, { id, progress, loaded, total }) => {
-      console.log({ id, progress, loaded, total });
-      var folder = $("#wf-" + id);
-      if (folder.length === 0) return;
-      folder.find(".up-progress").css("width", progress + "%");
+    ipcRenderer.on("entity-upload-progress", (_, { id, index, loaded }) => {
+      console.log({ id, loaded, index });
+      var total = $(".up-count").text();
+      $(".up-total").text(total);
+      $(".scan-result").hide();
+      var sp = $(".upload-progress");
+      var progress = parseInt(sp.data("progress"));
+      if (!progress) progress = 0;
+      $(".up-progress").text(humanFileSize(progress + loaded));
+      sp.show();
     });
 
-    ipcRenderer.on("upload-single-complete", (_, id) => {
-      var folder = $("#f-" + id);
+    ipcRenderer.on("entity-upload-next", (_, { index, size }) => {
+      $(".pullfoldertree").find(".fa-spinner").hide();
+      var folder = $("#folder-" + index);
       if (folder.length === 0) return;
-      folder.find(".up-progress").css("width", "100%");
-      folder.find(".fl").attr("class", "fl fas fa-check-circle text-success");
+      var sp = $(".upload-progress");
+      var progress = parseInt(sp.data("progress"));
+      if (!progress) progress = 0;
+      progress += size;
+      sp.data("progress", progress);
+      $(".up-progress").text(humanFileSize(progress));
+      folder.find(".fa-spinner").show();
     });
 
     ipcRenderer.on("upload-error", (_, { id, error }) => {
@@ -733,21 +754,11 @@ jQuery(document).ready(function () {
       console.error(error);
     });
 
-    ipcRenderer.on("upload-all-complete", () => {
+    ipcRenderer.on("entity-upload-complete", () => {
       $("#sidebarUserUploads").find(".status-circle").remove();
-      $(".work-folder").each(function () {
-        $(this).find(".wf-check").prop("checked", false);
-        $(this).find(".fl").attr("class", "fl fas fa-folder");
-      });
-      $("#workFolderPicker").prop("disabled", false);
-      $("#workDirEntity").prop("disabled", false);
-      $("#importFolders").prop("disabled", false);
-      setTimeout(() => {
-        $(".pullfetchfolder").each(function () {
-          $(this).find(".fa-spinner").hide();
-        });
-        scanChange();
-      }, 3000);
+      $(".pullfoldertree").find(".fa-spinner").hide();
+      $(".push-buttons").fadeOut();
+      $(".notif").removeClass("up");
     });
 
     lQuery("#abortUpload").livequery("click", function (e) {
@@ -976,16 +987,6 @@ jQuery(document).ready(function () {
 
     ipcRenderer.on("file-added", () => {
       verifyAutoUploads();
-    });
-
-    lQuery("#relativeLocalRootPath").livequery(function () {
-      $(this).val(
-        $("#application").data("local-root") +
-          $(this).data("modulename") +
-          "/" +
-          $(this).data("entityname") +
-          "/"
-      );
     });
   });
 });
