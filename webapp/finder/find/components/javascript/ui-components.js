@@ -2672,7 +2672,9 @@ uiload = function () {
     var moduleid = link.data("moduleid");
     saveProfileProperty("mainsearchmodule", moduleid, function () {
       $("#mainsearchcontainer").data("moduleid", moduleid);
-      autoreload($("#mainsearchcontainer"));
+      $("#mainsearchvalue").data("mainsearchmodule", moduleid);
+      $("#searchEntityDropdown").text(link.text());
+      $(".quicksearchexpand").trigger("click");
     });
   });
 
@@ -2867,6 +2869,9 @@ uiload = function () {
       togglemodaldialog("hide");
     });
     $(document).on("click", function (event) {
+      if ($(event.target).closest(".search-entity-dropdown").length > 0) {
+        return;
+      }
       if ($(event.target).closest(searchmodaldialog).length === 0) {
         togglemodaldialog("hide");
       }
@@ -2883,9 +2888,14 @@ uiload = function () {
             "&description.value=" +
             encodeURI(q);
         }
+        q = mainsearcheinput.data("mainsearchmodule");
+        if (q) {
+          terms =
+            (terms.length > 0 ? terms + "&" : "") + "mainsearchmodule=" + q;
+        }
         var url = mainsearcheinput.data("typeaheadurl");
 
-        var content = $.ajax({
+        $.ajax({
           url: url,
           async: true,
           type: "GET",

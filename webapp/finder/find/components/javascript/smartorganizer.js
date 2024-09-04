@@ -702,19 +702,18 @@ $(document).ready(function () {
           }
           selectedLabel = canvas.getFigure(selectedGroupId + "-label");
           if (!selectedLabel) return;
-          
+
           var moduleid = selectedLabel.getUserData()?.moduleid;
-          if(moduleid === undefined ||  moduleid == "")
-          {
-			moduleid = selectedLabel.getText().toLowerCase();
-	        moduleid = "entity" + moduleid.replace(" ", "-");
-	        selectedLabel.getUserData().moduleid = moduleid;
-		  }
+          if (moduleid === undefined || moduleid == "") {
+            moduleid = selectedLabel.getText().toLowerCase();
+            moduleid = "entity" + moduleid.replace(" ", "-");
+            selectedLabel.getUserData().moduleid = moduleid;
+          }
           $("#folderId").val(moduleid);
           $("#folderLabel").val(selectedLabel.getText() || "");
           $("#folderDesc").val(selectedLabel.getUserData()?.description || "");
           var ordering = selectedLabel.getUserData()?.ordering || "0";
-          $("#ordering").val(ordering).trigger('change');
+          $("#ordering").val(ordering).trigger("change");
 
           updateModPosition(selectedGroup);
 
@@ -1088,26 +1087,22 @@ $(document).ready(function () {
         newid = newid.replace(" ", "-");
 
         var moduleid = selectedLabel.getUserData()?.moduleid;
-        if(moduleid === undefined ||  moduleid == "")
-        {
-	        $("#folderId").val(newid);
-	        selectedLabel.getUserData().moduleid = newid;
-	    }    
+        if (moduleid === undefined || moduleid == "") {
+          $("#folderId").val(newid);
+          selectedLabel.getUserData().moduleid = newid;
+        }
       }
     });
 
-    $("#folderDesc").on("input", function (e) {
-      e.stopImmediatePropagation();
+    $("#folderDesc").on("blur", function () {
       selectedLabel.getUserData().description = $(this).val();
     });
 
-    $("#folderId").on("input", function (e) {
-      e.stopImmediatePropagation();
+    $("#folderId").on("blur", function () {
       selectedLabel.getUserData().moduleid = $(this).val();
     });
 
-    $("#ordering").on("input", function (e) {
-      e.stopImmediatePropagation();
+    $("#ordering").on("blur", function () {
       var value = $(this).val();
       selectedLabel.getUserData().ordering = value;
     });

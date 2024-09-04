@@ -6,6 +6,7 @@ import org.openedit.hittracker.HitTracker
 
 public void init(){
 	MediaArchive archive = context.getPageValue("mediaarchive");
+	archive.clearAll();
 	WorkspaceManager manager= archive.getModuleManager().getBean(archive.getCatalogId(), "workspaceManager");
 	HitTracker modules = archive.getList("module");
 	String appid = context.findValue("applicationid");
