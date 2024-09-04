@@ -1,0 +1,25 @@
+<div id="editdetails" >
+
+<div class="form-group">
+<label>[[Hot Folder Type]]</label>
+<input type="hidden" name="field" value="hotfoldertype" />
+
+#set( $type = $context.getRequestParameter("type"))
+#if( !$type )
+ #set( $type = $data.get("hotfoldertype") )
+#end
+#if( !$type )
+ #set( $type = "mount")
+#end
+<select class="form-control form-control-sm " name="hotfoldertype.value" class="ajax" data-href="$home${page.path}?id=$!{data.id}&type=" data-targetdiv="editdetails">
+#set( $types = $mediaarchive.getList("hotfoldertypes"))
+#foreach( $hftype in $types)
+	<option value="$hftype.getId()" #if( $type == "$hftype.getId()") selected #end>$hftype.getName()</option>
+#end	
+</select>
+</div>
+
+
+
+$pages.include("./types/${type}.html")
+</div>
