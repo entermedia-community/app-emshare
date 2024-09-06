@@ -601,6 +601,16 @@ jQuery(document).ready(function () {
         pendingPulls.find(".no-upload").hide();
         pendingPulls.find(".no-up-warning").hide();
       }
+
+      var id = pendingPulls.data("entityid");
+      if (id) {
+        $("#pushlocal-" + id)
+          .removeClass("text-success")
+          .addClass("text-accent");
+        $("#pushlocal-" + id)
+          .find("i")
+          .attr("class", "bi bi-cloud-arrow-up");
+      }
     });
 
     lQuery(".scan-changes").livequery("click", function (e) {
@@ -1017,8 +1027,37 @@ jQuery(document).ready(function () {
       desktopImportStatusUpdater(formData);
     });
 
-    ipcRenderer.on("file-added", () => {
+    ipcRenderer.on("auto-file-added", () => {
       verifyAutoUploads();
+    });
+
+    lQuery("#applicationmaincontent").livequery(function () {
+      var watches = $(".auto-watch");
+      var watchList = [];
+      watches.each(function () {
+        var id = $(this).data("id");
+        var path = $(this).data("categorypath");
+        if (path) {
+          watchList.push({ id, path });
+        }
+      });
+      ipcRenderer.send("watchFolders", watchList);
+    });
+
+    ipcRenderer.on("file-added", (_, catPath) => {
+      var watches = $(".auto-watch");
+      watches.each(function () {
+        var path = $(this).data("categorypath");
+        if (path == catPath) {
+          var id = $(this).data("id");
+          $("#pushlocal-" + id)
+            .removeClass("text-accent")
+            .addClass("text-success");
+          $("#pushlocal-" + id)
+            .find("i")
+            .attr("class", "bi bi-cloud-arrow-up-fill");
+        }
+      });
     });
   });
 });

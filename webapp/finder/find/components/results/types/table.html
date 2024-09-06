@@ -229,7 +229,7 @@ $pages.include("${searchhome}/resultsactions.html",$context)
 				#if($desktop)
 					<a href="$!searchhome/components/gridsample/preview/entity.html?entityid=$!{hit.id}&entitytabopen=export&tabsection=pulllocal&immediate=true" 
 						style="font-size: 16px;" 
-						class="emdialog btn #if($enabled) btn-success #else text-accent #end px-1 rounded" 
+						class="emdialog btn text-accent px-1 rounded" 
 						title="[[Download Folder]]" 
 						data-moduleid="${moduleid}"
 						data-updateurl="true"
@@ -237,14 +237,15 @@ $pages.include("${searchhome}/resultsactions.html",$context)
 
 					<a href="$!searchhome/components/gridsample/preview/entity.html?entityid=$!{hit.id}&entitytabopen=import&tabsection=pushlocal&autoscan=true" 
 						style="font-size: 16px;" 
-						class="emdialog btn #if($enabled) btn-success #else text-accent #end px-1 rounded" 
-						title="[[Upload files to this folder]]" 
+						class="emdialog btn text-accent px-1 rounded" 
+						title="[[Upload files to this folder]]"
+						id="pushlocal-$!{hit.id}"
 						data-moduleid="${moduleid}"
 						data-updateurl="true"
 						data-urlbar="$!searchhome/index.html?entityid=$!{hit.id}&entitytabopen=import"><i class="bi bi-cloud-arrow-up"></i></a>
 
 					#if($module.getBoolean("enableuploading") && ($permissions.can($moduleid, "upload_files") || $permissions.can($moduleid, "upload_folders")) )
-						<a class="emdialog btn #if($enabled) btn-success #else text-accent #end px-1 rounded"
+						<a class="emdialog btn text-accent px-1 rounded"
 							style="font-size: 16px;"
 							data-oemaxlevel="1"
 							data-moduleid="${moduleid}"
@@ -261,7 +262,7 @@ $pages.include("${searchhome}/resultsactions.html",$context)
 						$permissions.can($moduleid, "upload_folders")) )
 						<a href="$!searchhome/components/gridsample/preview/entity.html?entityid=$!{hit.id}&entitytabopen=import" 
 						style="font-size: 16px;" 
-						class="emdialog btn #if($enabled) btn-success #else text-accent #end px-1 rounded" 
+						class="emdialog btn text-accent px-1 rounded" 
 						title="[[Add New Folders]]" 
 						data-moduleid="${moduleid}"
 						data-updateurl="true"
@@ -270,7 +271,7 @@ $pages.include("${searchhome}/resultsactions.html",$context)
 					#if($permissions.can($moduleid, "downloadall"))
 						<a href="$!searchhome/components/gridsample/preview/entity.html?entityid=$!{hit.id}&entitytabopen=export&tabsection=downloadzip" 
 						style="font-size: 14px;" 
-						class="emdialog btn #if($enabled) btn-success #else text-accent #end px-1 mb-2 rounded" 
+						class="emdialog btn text-accent px-1 mb-2 rounded" 
 						title="[[Download Folder]]" 
 						data-moduleid="${moduleid}"
 						data-updateurl="true"
