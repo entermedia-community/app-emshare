@@ -5,7 +5,10 @@
 			<label for="selectedModule" class="d-block w-100 mt-2 mb-1 fw-bold text-muted small">[[Import Type]]:</label>
 			<select id="selectedModule" class="form-control rounded"> 
 				#foreach ( $amodule in $userprofile.getEntities() )
-					<option value="$amodule.id" #if($module.id == $amodule.id) selected #end>#text($amodule)</option>
+					#set($amoduleid = $amodule.getId())
+					#if($amodule.getBoolean("enableuploading") && $permissions.can($amoduleid, "create") && $amoduleid!="faceprofilegroup" && $amoduleid!="asset" && $amoduleid!="modulesearch")
+						<option value="$amodule.id" #if($module.id == $amodule.id) selected #end>#text($amodule)</option>
+					#end
 				#end
 			</select>
 			<input type="hidden" id="desktopId" value="$desktop.id" />
