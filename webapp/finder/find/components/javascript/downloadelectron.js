@@ -897,14 +897,16 @@ jQuery(document).ready(function () {
         updateurl: "true",
         oemaxlevel: "4",
       };
-      $("#applicationcontent").load(
-        apphome + "/views/modules/" + moduleid + "/index.html",
-        data,
-        function (res) {
-          $(this).html(res);
-          verifyAutoUploads();
-        }
-      );
+      var nextpage = apphome + "/views/modules/" + moduleid + "/index.html";
+     jQuery
+      .ajax({
+        url: nextpage,
+        data: data,
+        success: function (res) {
+			$("#applicationcontent").replaceWith(res); 
+			$(window).trigger("resize");
+			}
+		});
     });
 
     function getCurrentWorkFolders() {
@@ -922,7 +924,7 @@ jQuery(document).ready(function () {
     function desktopImportStatusUpdater(formData, callback = null) {
       var moduleid = $("#selectedModule").val();
       if (!moduleid) {
-        console.error("No module selected");
+        console.log("No module selected");
         return;
       }
       jQuery
