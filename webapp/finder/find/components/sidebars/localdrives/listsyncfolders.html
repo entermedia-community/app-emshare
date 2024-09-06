@@ -50,7 +50,14 @@
         <p class="my-0"><i class="fl fas fa-folder"></i> $syncfolder.name</p>
         <small class="mt-1 last-scanned">
           #if($syncfolder.lastscandate)
-            Last uploaded on $syncfolder.lastscandate
+          Last uploaded
+          	#set($ago = $context.getAge($syncfolder.lastscandate))
+          	#ifnull($ago)
+            now
+            #end
+            #ifnotnull($ago)
+            $ago ago
+            #end
           #else
             Scanning for new files...
           #end
