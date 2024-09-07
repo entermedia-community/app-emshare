@@ -224,12 +224,13 @@
 							#set( $values = false )
 							#set( $values = $hit.getValues($detail.id) )
 							#if($detail.rendermask)
-								#set( $val = $searcherManager.getValue($catalogid, $detail.rendermask, $hit.properties))
-								#set( $values = $searcherManager.getValues($catalogid, $detail.rendermask, $hit.properties))
+								#set( $val = $searcherManager.getValue($catalogid, $detail.rendermask, $hit.properties,$context.getLocale()))
+								#set( $values = $val)
 							#end
 							
 							$context.putPageValue("detail",$detail)
 							$context.putPageValue("values",$values)
+							$context.putPageValue("value",$value)
 							$context.putPageValue("val",$val)
 							$context.putPageValue("hit",$hit)
 							$context.putPageValue("data",$hit)
