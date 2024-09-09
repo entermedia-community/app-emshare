@@ -448,14 +448,19 @@ jQuery(document).ready(function () {
           isUp = folder.find(".notif").hasClass("up");
           tab = folder.find(".pullfetchfolder").data("tab");
         }
-        var notifClass = isDl ? "dl" : "";
-        notifClass += isUp || isExtra ? " up" : "";
+        var notifClass = "";
+        if (tab === "pull") {
+          notifClass = isDl ? "dl" : "";
+        } else if (tab === "push") {
+          notifClass += isUp || isExtra ? " up" : "";
+        }
+        console.log({ tab, notifClass });
         tree += `<div style="padding-left: ${padding}px;" class="pull-folder" id="folder-${index}">
         <a href="#"
           class="pullfetchfolder"
           data-tab="${tab}"
           data-categorypath="${path}">
-          <i class="bi bi-folder"></i>
+          <i class="bi bi-folder mr-1"></i>
           <span class="mx-1 notif ${notifClass}">${name} <i class="bi bi-circle-fill"></i></span>
           <i class="fas fa-spinner fa-spin text-muted" style="display: none;"></i>
         </a>
@@ -465,9 +470,7 @@ jQuery(document).ready(function () {
       $(".pullfoldertree").html(tree);
     });
 
-    lQuery(".pullfetchfolder").livequery("click", function (e) {
-      e.preventDefault();
-      var folder = $(this);
+    function fetchFolderFilesList(folder) {
       folder
         .closest(".pullfoldertree")
         .find(".pullfetchfolder")
@@ -476,6 +479,11 @@ jQuery(document).ready(function () {
       var categorypath = folder.data("categorypath");
       var tab = folder.data("tab");
       refreshSync(categorypath, tab);
+    }
+
+    lQuery(".pullfetchfolder").livequery("click", function (e) {
+      e.preventDefault();
+      fetchFolderFilesList($(this));
     });
 
     function refreshSync(categorypath, tab) {
@@ -536,10 +544,6 @@ jQuery(document).ready(function () {
       });
     });
 
-    ipcRenderer.on("download-asset-complete", (_, { categorypath }) => {
-      //TODO: update asset list
-    });
-
     ipcRenderer.on("scan-progress", (_, option) => {
       var pendingPulls = $(".pending-pulls");
       pendingPulls.find(".no-download").hide();
@@ -556,12 +560,17 @@ jQuery(document).ready(function () {
       pendingPulls.data("totalDownloadCount", totalDownloadCount);
       pendingPulls.find(".dl-count").text(totalDownloadCount);
       pendingPulls.find(".dl-size").text(humanFileSize(totalDownloadSize));
-      if (option.downloadCount > 0)
+
+      var mode = pendingPulls.data("mode");
+      if (option.downloadCount > 0 && mode === "pull") {
         $("#folder-" + option.index)
           .find(".notif")
           .addClass("dl");
+      }
 
-      if (totalDownloadCount > 0) pendingPulls.find(".pull-buttons").fadeIn();
+      if (totalDownloadCount > 0 && mode === "pull") {
+        pendingPulls.find(".pull-buttons").fadeIn();
+      }
 
       var totalUploadSize = pendingPulls.data("totalUploadSize");
       if (!totalUploadSize) totalUploadSize = 0;
@@ -575,12 +584,14 @@ jQuery(document).ready(function () {
       pendingPulls.find(".up-count").text(totalUploadCount);
       pendingPulls.find(".up-size").text(humanFileSize(totalUploadSize));
 
-      if (option.uploadCount > 0)
+      if (option.uploadCount > 0 && mode === "push") {
         $("#folder-" + option.index)
           .find(".notif")
           .addClass("up");
+      }
 
-      if (totalUploadCount > 0) pendingPulls.find(".push-buttons").fadeIn();
+      if (totalUploadCount > 0 && mode === "push")
+        pendingPulls.find(".push-buttons").fadeIn();
     });
     ipcRenderer.on("scan-complete", () => {
       $(".scan-changes")
@@ -613,11 +624,6 @@ jQuery(document).ready(function () {
       }
     });
 
-    lQuery(".scan-changes").livequery("click", function (e) {
-      e.preventDefault();
-      scanChange();
-    });
-
     function scanChange() {
       $(".notif").removeClass("dl up");
       $(".pending-pulls").data("totalDownloadSize", 0);
@@ -635,11 +641,15 @@ jQuery(document).ready(function () {
         categorypath: categorypath,
         scanOnly: true,
       });
-      var openedFolder = $(".pullfetchfolder.current");
-      if (openedFolder.length) {
-        openedFolder.trigger("click");
-      }
+      var openedFolder = $(".pullfetchfolder").first();
+      fetchFolderFilesList(openedFolder);
+      $(".scan-changes").hide();
     }
+
+    lQuery(".scan-changes").livequery("click", function (e) {
+      e.preventDefault();
+      scanChange();
+    });
 
     lQuery(".download-pull").livequery("click", function (e) {
       e.preventDefault();
@@ -721,8 +731,8 @@ jQuery(document).ready(function () {
     });
 
     lQuery("#immediate-scan").livequery(function () {
-      var categorypath = $(this).data("toplevelcategorypath");
-      ipcRenderer.send("openFolder", { path: categorypath });
+      // var categorypath = $(this).data("toplevelcategorypath");
+      // ipcRenderer.send("openFolder", { path: categorypath });
       scanChange();
     });
 
@@ -774,8 +784,9 @@ jQuery(document).ready(function () {
     ipcRenderer.on("entity-upload-complete", () => {
       $("#sidebarUserUploads").find(".status-circle").remove();
       $(".pullfoldertree").find(".fa-spinner").hide();
-      $(".push-buttons").fadeOut();
+      // $(".push-buttons").fadeOut();
       $(".notif").removeClass("up");
+      scanChange();
     });
 
     lQuery("#abortUpload").livequery("click", function (e) {
@@ -898,15 +909,14 @@ jQuery(document).ready(function () {
         oemaxlevel: "4",
       };
       var nextpage = apphome + "/views/modules/" + moduleid + "/index.html";
-     jQuery
-      .ajax({
+      jQuery.ajax({
         url: nextpage,
         data: data,
         success: function (res) {
-			$("#applicationcontent").replaceWith(res); 
-			$(window).trigger("resize");
-			}
-		});
+          $("#applicationcontent").replaceWith(res);
+          $(window).trigger("resize");
+        },
+      });
     });
 
     function getCurrentWorkFolders() {
@@ -1046,7 +1056,25 @@ jQuery(document).ready(function () {
       ipcRenderer.send("watchFolders", watchList);
     });
 
+    lQuery(".pending-pulls", function () {
+      var toplevelcategorypath = $(this).data("toplevelcategorypath");
+      var entityid = $(this).data("entityid");
+      ipcRenderer.send("watchFolders", [
+        {
+          id: entityid,
+          path: toplevelcategorypath,
+        },
+      ]);
+    });
+
     ipcRenderer.on("file-added", (_, catPath) => {
+      var pendingPulls = $(".pending-pulls");
+      if (pendingPulls.length > 0) {
+        var path = pendingPulls.data("toplevelcategorypath");
+        if (catPath === path) {
+          scanChange();
+        }
+      }
       var watches = $(".auto-watch");
       watches.each(function () {
         var path = $(this).data("categorypath");
@@ -1060,6 +1088,15 @@ jQuery(document).ready(function () {
             .attr("class", "bi bi-cloud-arrow-up-fill");
         }
       });
+    });
+    ipcRenderer.on("file-removed", (_, catPath) => {
+      var pendingPulls = $(".pending-pulls");
+      if (pendingPulls.length > 0) {
+        var path = pendingPulls.data("toplevelcategorypath");
+        if (catPath === path) {
+          scanChange();
+        }
+      }
     });
   });
 });
