@@ -46,12 +46,20 @@
   <div class="work-dir-tree">
     #foreach($syncfolder in $syncfolders) 
     <div class="work-folder" id="wf-$syncfolder.id" title="Open: $syncfolder.localpath" data-id="$syncfolder.id" data-localpath="$syncfolder.localpath" data-categorypath="$syncfolder.categorypath" data-entityid="$syncfolder.entityid">
-      <div class="d-flex flex-column flex-grow-1 p-2 position-relative open-folder">
-        <p class="my-0"><i class="fl fas fa-folder"></i> $syncfolder.name</p>
+      #set($previewurl = "$!{siteroot}$apphome/views/modules/$!{module.id}/components/gridsample/preview/entity.html?id=$!{syncfolder.entityid}")
+      <a href="$!{previewurl}" class="d-flex flex-column flex-grow-1 p-2 position-relative emdialog entity-dialog">
+        <p class="my-0">
+          #set($moduleicon = $module.moduleicon)
+          #ifnull($moduleicon)
+            #set($moduleicon = "images")
+          #end
+          <i class="bi bi-$moduleicon mr-1"></i>
+          $syncfolder.name
+        </p>
         <small class="mt-1 last-scanned">
           #if($syncfolder.lastscandate)
           Last uploaded
-          	#set($ago = $context.getAge($syncfolder.lastscandate))
+          	#set($ago = $context.getAge($syncfolder.getDate("lastscandate")))
           	#ifnull($ago)
             now
             #end
@@ -62,20 +70,14 @@
             Scanning for new files...
           #end
         </small>
-      </div>
-
-      #set($previewurl = "$!{siteroot}$apphome/views/modules/$!{module.id}/components/gridsample/preview/entity.html?id=$!{syncfolder.entityid}")
+      </a>
 
       <button class="btn deleteAutoFolder" data-id="$syncfolder.id">
         <i class="bi bi-dash-square"></i>
       </button>
-      <a href="$!{previewurl}" class="emdialog entity-dialog" title="[[Show the folder in Server]]">
-        #set($moduleicon = $mediaarchive.getCachedData("module", "asset").moduleicon)
-				#ifnull($moduleicon)
-					#set($moduleicon = "images")
-				#end
-        <i class="bi bi-$moduleicon"></i>
-      </a>
+      <div class="open-folder"  data-localpath="$syncfolder.localpath" title="[[Show the folder in Server]]">
+        <i class="bi bi-display"></i>
+      </div>
     </div>
     #end
   </div>

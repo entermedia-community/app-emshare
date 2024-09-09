@@ -545,8 +545,12 @@ jQuery(document).ready(function () {
     });
 
     ipcRenderer.on("scan-progress", (_, option) => {
+      console.log("scan-progress", option);
       var pendingPulls = $(".pending-pulls");
+      var mode = pendingPulls.data("mode");
+
       pendingPulls.find(".no-download").hide();
+
       var totalDownloadSize = pendingPulls.data("totalDownloadSize");
       if (!totalDownloadSize) {
         totalDownloadSize = 0;
@@ -562,14 +566,10 @@ jQuery(document).ready(function () {
       pendingPulls.find(".dl-size").text(humanFileSize(totalDownloadSize));
 
       var mode = pendingPulls.data("mode");
-      if (option.downloadCount > 0 && mode === "pull") {
+      if (option.downloadCount > 0) {
         $("#folder-" + option.index)
           .find(".notif")
           .addClass("dl");
-      }
-
-      if (totalDownloadCount > 0 && mode === "pull") {
-        pendingPulls.find(".pull-buttons").fadeIn();
       }
 
       var totalUploadSize = pendingPulls.data("totalUploadSize");
@@ -584,15 +584,13 @@ jQuery(document).ready(function () {
       pendingPulls.find(".up-count").text(totalUploadCount);
       pendingPulls.find(".up-size").text(humanFileSize(totalUploadSize));
 
-      if (option.uploadCount > 0 && mode === "push") {
+      if (option.uploadCount > 0) {
         $("#folder-" + option.index)
           .find(".notif")
           .addClass("up");
       }
-
-      if (totalUploadCount > 0 && mode === "push")
-        pendingPulls.find(".push-buttons").fadeIn();
     });
+
     ipcRenderer.on("scan-complete", () => {
       $(".scan-changes")
         .find("span")
@@ -603,14 +601,13 @@ jQuery(document).ready(function () {
         pendingPulls.find(".no-download").show();
       } else {
         pendingPulls.find(".no-download").hide();
+        pendingPulls.find(".pull-buttons").fadeIn();
       }
       if (pendingPulls.data("totalUploadCount") == 0) {
-        var noUpWarning = pendingPulls.find(".no-up-warning");
-        if (noUpWarning.length) noUpWarning.show();
-        else pendingPulls.find(".no-upload").show();
+        pendingPulls.find(".no-upload").show();
       } else {
         pendingPulls.find(".no-upload").hide();
-        pendingPulls.find(".no-up-warning").hide();
+        pendingPulls.find(".push-buttons").fadeIn();
       }
 
       var id = pendingPulls.data("entityid");
