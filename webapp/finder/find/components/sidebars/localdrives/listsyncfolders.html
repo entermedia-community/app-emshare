@@ -13,7 +13,7 @@
     #set($scanstatus = "scan-started")
   #end
   
-  <p class="d-none">$scanstatus - $verifynow</p>
+  #if($scanstatus != "upload-completed")
   <div class="alert import-verify p-2 mx-2 mt-1 mb-2 text-center $scanstatus #if($verifynow) verifynow #end">
     #if($scanstatus == "scan-started")
       <p class="mb-1">
@@ -27,59 +27,61 @@
         <span>[[Uploading new files from local folders to the server]]</span>
       </p>
       <p class="upload-counter my-1"></p>
-      <button class="btn btn-sm btn-warning rounded mt-2" id="abortAutoUpload">[[Cancel]]</button>
-    #elseif($scanstatus == "upload-aborted")
-      <p class="m-0">
+      <button class="btn btn-sm btn-warning rounded mt-2" id="cancelAutoUpload">[[Cancel]]</button>
+    #elseif($scanstatus == "upload-canceled")
+      <p class="m-0 text-warning">
         <i class="bi bi-exclamation-triangle ns mr-1"></i>
-        <span>[[Upload aborted]]</span>
+        <span>[[Upload canceled]]</span>
       </p>
-      <button class="btn btn-sm btn-danger rounded mt-2" id="syncAllFolders">[[Restart]]</button>
-    #elseif($scanstatus == "upload-completed")
-      <p class="m-0">
-        <i class="bi bi-check-circle ns mr-1"></i>
-        <span>[[All new files are uploaded to the server]].</span>
-      </p>
-      <button class="btn btn-sm rounded mt-2" id="syncAllFolders">[[Scan Again]]</button>
+      <button class="btn btn-sm btn-warning rounded mt-2" id="syncAllFolders">[[Restart]]</button>
     #end
   </div>
+  #end
 
-  <div class="work-dir-tree">
+  <div class='work-dir-tree #if($scanstatus != "upload-completed") processing #end'>
     #foreach($syncfolder in $syncfolders) 
     <div class="work-folder" id="wf-$syncfolder.id" title="Open: $syncfolder.localpath" data-id="$syncfolder.id" data-localpath="$syncfolder.localpath" data-categorypath="$syncfolder.categorypath" data-entityid="$syncfolder.entityid">
-      #set($previewurl = "$!{siteroot}$apphome/views/modules/$!{module.id}/components/gridsample/preview/entity.html?id=$!{syncfolder.entityid}")
-      <a href="$!{previewurl}" class="d-flex flex-column flex-grow-1 p-2 position-relative emdialog entity-dialog">
+      <div class="d-flex flex-column flex-grow-1 p-2 position-relative">
         <p class="my-0">
           #set($moduleicon = $module.moduleicon)
           #ifnull($moduleicon)
             #set($moduleicon = "images")
           #end
-          <i class="bi bi-$moduleicon mr-1"></i>
+          <i class="bi bi-$moduleicon"></i>
           $syncfolder.name
         </p>
         <small class="mt-1 last-scanned">
-          #if($syncfolder.lastscandate)
-          Last uploaded
-          	#set($ago = $context.getAge($syncfolder.getDate("lastscandate")))
+          #ifnotnull($syncfolder.lastscandate)
+          	#set($ago = $context.getAge($syncfolder.getDate("lastscandate"))) 
           	#ifnull($ago)
-            now
+            &nbsp;
             #end
             #ifnotnull($ago)
-            $ago ago
+            Imported files $ago ago
             #end
-          #else
-            Scanning for new files...
-          #end
+          #end 
         </small>
-      </a>
-
+      </div>
+      
       <button class="btn deleteAutoFolder" data-id="$syncfolder.id">
-        <i class="bi bi-dash-square"></i>
+        <div></div>
       </button>
+      #set($previewurl = "$!{siteroot}$apphome/views/modules/$!{module.id}/components/gridsample/preview/entity.html?id=$!{syncfolder.entityid}")
+      <a href="$!{previewurl}" class="emdialog entity-dialog"  data-localpath="$syncfolder.localpath" title="[[Show the folder in Server]]">
+        <i class="bi bi-box-arrow-up-right"></i>
+      </a>
       <div class="open-folder"  data-localpath="$syncfolder.localpath" title="[[Show the folder in Server]]">
         <i class="bi bi-display"></i>
       </div>
     </div>
     #end
+    #if($scanstatus == "upload-completed")
+    <div class="w-100 text-right my-2">
+      <button class="btn text-success rounded mt-2 pr-0" style="font-family: Roboto;" id="syncAllFolders">[[Refresh]]</button>
+    </div>
+    #end
   </div>
+
+
 #end
 </div>

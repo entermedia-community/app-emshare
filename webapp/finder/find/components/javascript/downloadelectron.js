@@ -791,14 +791,18 @@ jQuery(document).ready(function () {
       ipcRenderer.send("abortUpload");
     });
 
-    lQuery("#abortAutoUpload").livequery("click", function (e) {
+    lQuery("#cancelAutoUpload").livequery("click", function (e) {
       e.preventDefault();
-      ipcRenderer.send("abortAutoUpload");
+      ipcRenderer.send("cancelAutoUpload");
     });
 
-    ipcRenderer.on("upload-aborted", () => {
+    ipcRenderer.on("upload-canceled", () => {
+      var syncFolders = getCurrentWorkFolders();
       var formData = new FormData();
-      formData.append("desktopimportstatus", "upload-aborted");
+      syncFolders.forEach((folder) => {
+        formData.append("id", folder.id);
+      });
+      formData.append("desktopimportstatus", "upload-canceled");
       formData.append("timestamp", new Date().toISOString());
       uploadInProgress = false;
       desktopImportStatusUpdater(formData);
@@ -923,7 +927,13 @@ jQuery(document).ready(function () {
         var localPath = $(this).data("localpath");
         var categoryPath = $(this).data("categorypath");
         var entityId = $(this).data("entityid");
-        folders.push({ id, localPath, categoryPath, entityId });
+        folders.push({
+          id,
+          syncFolderId: id,
+          localPath,
+          categoryPath,
+          entityId,
+        });
       });
       return folders;
     }
@@ -1007,7 +1017,12 @@ jQuery(document).ready(function () {
         counter.data("uploadSize", uploadSize);
       }
       var readableSize = humanFileSize(uploadSize, true);
-      counter.html(`<b>${fileCount}</b> files (${readableSize}) uploaded.`);
+      var htm = "";
+      if (fileCount > 0) {
+        htm += `<b>${fileCount}</b> files `;
+      }
+      htm += `(${readableSize}) uploaded.`;
+      counter.html(htm);
     }
 
     ipcRenderer.on("auto-upload-progress", (_, loaded) => {
@@ -1024,12 +1039,23 @@ jQuery(document).ready(function () {
       updateCounter(size, true);
     });
 
-    ipcRenderer.on("auto-upload-complete", () => {
+    ipcRenderer.on(
+      "auto-upload-entity-complete",
+      (_, completedSyncFolderId) => {
+        var folder = $("#wf-" + completedSyncFolderId);
+        console.log(folder);
+        folder.addClass("completed");
+      }
+    );
+
+    ipcRenderer.on("auto-upload-complete", (_, uploadCount) => {
+      console.log(uploadCount);
       var syncFolders = getCurrentWorkFolders();
       var formData = new FormData();
       syncFolders.forEach((folder) => {
         formData.append("id", folder.id);
       });
+      formData.append("updatelastscandate", uploadCount > 0 ? "true" : "false");
       formData.append("desktopimportstatus", "upload-completed");
       formData.append("timestamp", new Date().toISOString());
       uploadInProgress = false;
