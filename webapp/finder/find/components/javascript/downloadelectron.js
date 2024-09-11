@@ -409,32 +409,6 @@ jQuery(document).ready(function () {
       }
     });
 
-    var fetchingWorkDir = false;
-    ipcRenderer.send("getWorkDir");
-    ipcRenderer.on("set-workDir", (_, { workDir, workDirEntity }) => {
-      if (workDir) {
-        $("#workFolderInput").val(workDir);
-        $("#workFolderPicker").text("Change");
-      } else {
-        $("#workFolderPicker").text("Select");
-      }
-      if (workDirEntity) {
-        $("#workDirEntity").val(workDirEntity);
-        $("#workDirEntity").trigger("change");
-      }
-      fetchingWorkDir = false;
-    });
-    lQuery("#workFolderInput").livequery(function () {
-      if (fetchingWorkDir) {
-        return;
-      }
-      var workDir = $(this).val();
-      if (!workDir) {
-        fetchingWorkDir = true;
-        ipcRenderer.send("getWorkDir");
-      }
-    });
-
     ipcRenderer.on("extra-folders-found", (_, data) => {
       var tree = "";
       var tab = "";
@@ -507,39 +481,6 @@ jQuery(document).ready(function () {
         //dataType: "json",
         success: function (res) {
           $("#fetchfolder").html(res);
-        },
-        //handle error
-        error: function (xhr, status, error) {
-          console.log("error", xhr, status, error);
-        },
-      });
-    });
-
-    lQuery(".refresh-sync-push").livequery("click", function (e) {
-      e.preventDefault();
-      var entitydialog = $(this).closest(".entitydialog");
-      if (entitydialog.length == 0) {
-        return;
-      }
-      var categorypath = entitydialog.data("categorypath");
-      refreshSyncPush(categorypath);
-    });
-
-    function refreshSyncPush(categorypath) {
-      ipcRenderer.send("fetchFoldersPush", {
-        categorypath: categorypath,
-      });
-    }
-
-    ipcRenderer.on("files-fetched-push", (_, data) => {
-      $.ajax({
-        type: "POST",
-        url: apphome + "/components/desktop/import/push.html",
-        data: JSON.stringify(data),
-        contentType: "application/json",
-        //dataType: "json",
-        success: function (res) {
-          $("#tabimportcontent").html(res);
         },
         //handle error
         error: function (xhr, status, error) {
@@ -647,27 +588,6 @@ jQuery(document).ready(function () {
       scanChange();
     });
 
-    lQuery(".download-pull").livequery("click", function (e) {
-      e.preventDefault();
-      //var headers = { "X-tokentype": "entermedia", "X-token": entermediakey };
-      var currentfolderdiv = $(this).closest("#currentfolder");
-      if (!currentfolderdiv.length) {
-        return;
-      }
-      var categorypath = currentfolderdiv.data("categorypath");
-
-      $("#pullfiles li").each(function () {
-        var item = $(this);
-        var file = {
-          itemexportname: categorypath + "/" + item.data("path"),
-          itemdownloadurl: item.data("url"),
-          categorypath: categorypath,
-        };
-        var assetid = item.data("id");
-        ipcRenderer.send("fetchfilesdownload", { assetid, file, headers });
-      });
-    });
-
     lQuery("#immediate-download").livequery(function () {
       var categorypath = $(this).data("toplevelcategorypath");
       $(".pullfetchfolder").first().find(".fa-spinner").show();
@@ -744,12 +664,11 @@ jQuery(document).ready(function () {
     });
 
     lQuery("#immediate-scan").livequery(function () {
-      // var categorypath = $(this).data("toplevelcategorypath");
-      // ipcRenderer.send("openFolder", { path: categorypath });
       scanChange();
+      $(this).remove();
     });
 
-    lQuery(".upload-push").livequery("click", function (e) {
+    lQuery(".upload-push-all").livequery("click", function (e) {
       e.preventDefault();
       var entityId = $(this).data("entityid");
       var categorypath = $(this).data("categorypath");
@@ -1138,8 +1057,9 @@ jQuery(document).ready(function () {
       }
     });
   });
+
+  function getMediadb() {
+    var elem = $("#application");
+    return elem.data("siteroot") + "/" + elem.data("mediadbappid");
+  }
 });
-function getMediadb() {
-  var elem = $("#application");
-  return elem.data("siteroot") + "/" + elem.data("mediadbappid");
-}
