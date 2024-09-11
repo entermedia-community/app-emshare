@@ -492,7 +492,6 @@ jQuery(document).ready(function () {
     ipcRenderer.on("scan-progress", (_, option) => {
       console.log("scan-progress", option);
       var pendingFolders = $(".pending-folders");
-      var mode = pendingFolders.data("mode");
 
       pendingFolders.find(".no-download").hide();
 
@@ -507,10 +506,11 @@ jQuery(document).ready(function () {
 
       totalDownloadCount += option.downloadCount;
       pendingFolders.data("totalDownloadCount", totalDownloadCount);
-      pendingFolders.find(".dl-count").text(totalDownloadCount);
+      pendingFolders
+        .find(".dl-progress")
+        .data("serverTotal", totalDownloadSize);
       pendingFolders.find(".dl-size").text(humanFileSize(totalDownloadSize));
 
-      var mode = pendingFolders.data("mode");
       if (option.downloadCount > 0) {
         $("#folder-" + option.index)
           .find(".notif")
@@ -597,6 +597,7 @@ jQuery(document).ready(function () {
 
     lQuery(".download-pull-all").livequery("click", function (e) {
       e.preventDefault();
+      $(".dl-progress").data("transferTotal", 0);
       var categorypath = $(this).data("toplevelcategorypath");
       $(".pullfetchfolder").first().find(".fa-spinner").show();
       ipcRenderer.send("downloadAll", categorypath);
@@ -614,17 +615,18 @@ jQuery(document).ready(function () {
       });
     });
 
-    ipcRenderer.on(
-      "download-batch-progress",
-      (_, { transferredBytes, totalBytes }) => {
-        console.log("download-batch-progress", transferredBytes, totalBytes);
-        $(".dl-progress").html(
-          `Downloaded <b>${humanFileSize(
-            transferredBytes
-          )}</b> of <b>${humanFileSize(totalBytes)}</b>`
-        );
-      }
-    );
+    ipcRenderer.on("download-batch-progress", (_, { transferredBytes }) => {
+      var dlp = $(".dl-progress");
+      let serverTotal = dlp.data("serverTotal") || 0;
+      let transferTotal = dlp.data("transferTotal") || 0;
+      transferTotal += transferredBytes;
+      dlp.data("transferTotal", transferTotal);
+      dlp.html(
+        `Downloaded <b>${humanFileSize(
+          transferTotal
+        )}</b> of <b>${humanFileSize(serverTotal)}</b>`
+      );
+    });
 
     ipcRenderer.on("download-batch-next", (_, { categoryPath }) => {
       console.log("download-batch-next", categoryPath);
