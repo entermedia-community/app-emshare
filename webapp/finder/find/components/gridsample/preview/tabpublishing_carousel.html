@@ -8,8 +8,11 @@
 #end
 #if(!$topmoduleid)
 	#set ( $topmoduleid = $context.getRequestParameter("topmoduleid") )
-	$context.putPageValue("topmoduleid", $topmoduleid)
 #end
+#if(!$topmoduleid)
+	#set ( $topmoduleid = $context.getRequestParameter("moduleid") )
+#end
+$context.putPageValue("topmoduleid", $topmoduleid)
 #ifnotnull($topmoduleid)
 	#set($topmodule = $mediaarchive.getCachedData("module", $topmoduleid))
 #end

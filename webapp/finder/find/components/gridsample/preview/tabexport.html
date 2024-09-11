@@ -28,7 +28,7 @@ $context.putPageValue("parentsearchtype", $parentsearchtype)
 
 #set ( $tabsection = $context.getRequestParameter("tabsection") )
 #ifnull($tabsection)
-#set ( $tabsection = "copy")
+#set ( $tabsection = "share")
 #end
 
 #set($defaultcategory = $mediaarchive.getBean("entityManager").createDefaultFolder($entity, $context.getUser()))
@@ -50,6 +50,36 @@ $context.putPageValue("tabmode", $tabmode)
 >
 	<div id="$!submodulepickerid" class="d-flex align-items-stretch pr-2 pb-2" style="height: 100%;">
 		<div class='entityimport auto-active-container '>
+			#if($permissions.can($moduleid, "shareentity"))	
+				<div class='auto-active-row #if($tabsection=="share") current #end'>
+				<a href="$componenthome/share/entity.html?entityid=$!{entityid}&moduleid=$!{topmoduleid}&defaultcategoryid=$!defaultcategory.getId()"
+				class='btn btn-lg btn-wide ajax auto-active-link'
+				data-targetdivinner="tabexportcontent"
+				data-oemaxlevel="1"><i class="bi bi-share-fill"></i> [[Share Links]]</a>
+				</div>
+				
+				<div class='auto-active-row #if($tabsection=="sharegallery") current #end'>
+				<a href="$componenthome/gridsample/preview/tabpublishing_gallery.html?entityid=$!{entityid}&moduleid=$!{topmoduleid}&defaultcategoryid=$!defaultcategory.getId()"
+				class='btn btn-lg btn-wide ajax auto-active-link'
+				data-targetdivinner="tabexportcontent"
+				data-oemaxlevel="1"><i class="bi bi-columns-gap"></i> [[Publish Gallery]]</a>
+				</div>
+				
+				
+				<div class='auto-active-row #if($tabsection=="sharegallery") current #end'>
+				<a href="$componenthome/gridsample/preview/tabpublishing_carousel.html?entityid=$!{entityid}&moduleid=$!{topmoduleid}&defaultcategoryid=$!defaultcategory.getId()"
+				class='btn btn-lg btn-wide ajax auto-active-link'
+				data-targetdivinner="tabexportcontent"
+				data-oemaxlevel="1"><i class="bi bi-images"></i> [[Publish Carousel]]</a>
+				</div>
+				<div class='auto-active-row #if($tabsection=="sharegallery") current #end disabled'>
+				<a href="#"
+				class='btn btn-lg btn-wide ajaxX auto-active-link'
+				data-targetdivinner="tabexportcontent"
+				data-oemaxlevel="1"><i class="bi bi-columns"></i> [[Folder Viewer]]</a>
+				</div>
+				
+			#end
 			#if($permissions.can($moduleid, "copyentity"))
 			<div class='auto-active-row #if($tabsection=="copy") current #end'>
 			<a class='ajax btn btn-lg btn-wide  auto-active-link '
@@ -58,7 +88,7 @@ $context.putPageValue("tabmode", $tabmode)
 				data-targetcategoryid="$!defaultcategory.id"
 				data-tabsection="copy"
 				href="$componenthome/entities/copydialog.html?entityid=$!{entityid}&moduleid=$!{topmoduleid}&defaultcategoryid=$defaultcategory.getId()">
-				<i class="bi bi-folder-plus"></i> &nbsp;[[Copy]]</a>
+				<i class="bi bi-folder-plus"></i> &nbsp;[[Copy Record]]</a>
 			</div>
 			#end
 			#if($permissions.can($moduleid, "moveentity"))
@@ -69,7 +99,7 @@ $context.putPageValue("tabmode", $tabmode)
 				data-tabsection="move"
 				data-targetcategoryid="$!defaultcategory.id"
 				href="$componenthome/entities/movedialog.html?entityid=$!{entityid}&moduleid=$!{topmoduleid}&defaultcategoryid=$defaultcategoryid">
-				<i class="bi bi-folder-plus"></i> &nbsp;[[Move]]</a>
+				<i class="bi bi-folder-plus"></i> &nbsp;[[Move Record]]</a>
 			</div>
 			#end
 			
@@ -86,14 +116,7 @@ $context.putPageValue("tabmode", $tabmode)
 				<i class="bi bi-folder"></i> &nbsp;[[Download Zip]]</a>
 				</div>
 			#end
-			#if($permissions.can($moduleid, "shareentity"))	
-				<div class='auto-active-row #if($tabsection=="share") current #end'>
-				<a href="$componenthome/share/entity.html?entityid=$!{entityid}&moduleid=$!{topmoduleid}&defaultcategoryid=$!defaultcategory.getId()"
-				class='btn btn-lg btn-wide ajax auto-active-link'
-				data-targetdivinner="tabexportcontent"
-				data-oemaxlevel="1"><i class="bi bi-share-fill"></i> [[Share]]</a>
-				</div>
-			#end
+	
 				
 				#if($desktop && $permissions.can($moduleid, "exportpulltoserver"))
 				<div class='auto-active-row #if($tabsection=="pulllocal") current #end'>
