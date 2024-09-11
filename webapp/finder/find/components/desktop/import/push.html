@@ -5,55 +5,59 @@
 #end
 
 <div class="entityuploadheader" style="font-size:1rem; font-weight: 600;">
-	[[Upload From Local Drive]]
+	[[Bulk Upload From Local]] #text($!category) [[Folder]]
 </div>
 
 #if($category.getCategoryPath())
-<div class="segment my-2">
-	<div class="pending-pulls" data-entityid="$!entity.getId()" data-mode="push" data-toplevelcategorypath="$category.getCategoryPath()">
-		<p class="alert alert-success no-upload mb-0" style="display: none;">[[Nothing to upload.]]</p>
-		<div class="d-flex flex-column">
-			<div class="alert alert-success mb-0 push-buttons" style="display: none;">
-				<p class="mb-3 scan-result">[[You have ]] <strong class="up-count">0</strong> [[file(s)]] (<strong class="up-size">0</strong>) [[to pending upload to the server.]]</p>
-				<p class="mb-3 upload-progress" style="display: none;"><strong class="up-completed">0</strong> of <strong class="up-total"></strong> [[file(s)]] (<strong class="up-progress">0</strong>) uploaded to the server.</p>
-				<div class="d-flex align-items-center">
-					<button class='btn btn-success rounded upload-push'
-					data-entityid="$!entity.getId()"
-					data-categorypath="$category.getCategoryPath()">
-						<i class="bi bi-cloud-arrow-up-fill mr-1"></i>
-						[[Push to server]]
-					</button>
-				</div>
-			</div> 
+<div class="row no-gutters mt-2 mb-1">
+	<div class="col-4">
+		<div class="segment">
+			<button class="btn btn-success rounded scan-changes"
+				data-toplevelcategorypath="$category.getCategoryPath()">
+				<i class="bi bi-arrow-repeat mr-1"></i> <span>[[Refresh]]</span>
+			</button> 
+			<button class='btn btn-success rounded upload-push push-buttons' style="display: none;"
+				data-entityid="$!entity.getId()"
+				data-categorypath="$category.getCategoryPath()">
+				<i class="bi bi-cloud-arrow-up-fill mr-1"></i>
+				[[Push to server]]
+			</button>
 		</div>
 	</div>
-	<div class="d-flex">
-		<button class="btn btn-success rounded scan-changes"
-			data-toplevelcategorypath="$category.getCategoryPath()">
-			<i class="bi bi-search mr-1"></i> <span>[[Scan for Changes]]</span>
-		</button>
+	<div class="col segment">
+		<div class="pending-folders" data-entityid="$!entity.getId()" data-mode="push" data-toplevelcategorypath="$category.getCategoryPath()">
+			<p class="alert alert-success no-upload mb-0" style="display: none;">[[All files uploaded]]</p>
+			<div class="d-flex flex-column">
+				<div class="alert alert-success mb-0 push-buttons" style="display: none;">
+					<p class="mb-0 scan-result">[[You have ]] <strong class="up-count">0</strong> [[file(s)]] (<strong class="up-size">0</strong>) [[to pending upload to the server.]]</p>
+					<p class="mb-0 upload-progress" style="display: none;"><strong class="up-completed">0</strong> of <strong class="up-total"></strong> [[file(s)]] (<strong class="up-progress">0</strong>) uploaded to the server.</p>
+				</div> 
+			</div>
+		</div>
 	</div>
 </div>
 #end
 
 <div class="sync-container row no-gutters">
-	<div class="col-4 pullfoldertree">
-	#set($allchildren = $mediaarchive.getCategorySearcher().listAllCategories($category))
-	#foreach($parent in $allchildren)
-	 	#set($padding = ($parent.getLevel() - 1) * 8)
-		#set($index = $foreach.count - 1)
- 		<div style="padding-left: ${padding}px;" class="pull-folder" id="folder-$index">
-			<a href="#"
-				class="pullfetchfolder"
-				data-tab="push"
-				data-entityid="$!entity.getId()" 
-				data-categorypath="$!parent.getCategoryPath()">
-				<i class="bi bi-folder mr-1"></i>
-				<span class="mx-1 notif">$parent.name <i class="bi bi-circle-fill"></i></span>
-				<i class="fas fa-spinner fa-spin text-muted" style="display: none;"></i>
-			</a>
+	<div class="col-4">
+		<div class="syncfoldertree">
+		#set($allchildren = $mediaarchive.getCategorySearcher().listAllCategories($category))
+		#foreach($parent in $allchildren)
+			#set($padding = ($parent.getLevel() - 1) * 8)
+			#set($index = $foreach.count - 1)
+			<div style="padding-left: ${padding}px;" class="pull-folder" id="folder-$index">
+				<a href="#"
+					class="pullfetchfolder"
+					data-tab="push"
+					data-entityid="$!entity.getId()" 
+					data-categorypath="$!parent.getCategoryPath()">
+					<i class="bi bi-folder mr-1"></i>
+					<span class="mx-1 notif">$parent.name <i class="bi bi-circle-fill"></i></span>
+					<i class="fas fa-spinner fa-spin text-muted" style="display: none;"></i>
+				</a>
+			</div>
+		#end
 		</div>
- 	#end
 	</div>
 	<div class="col">
 		<div id="fetchfolder">
