@@ -9,9 +9,40 @@
 #end
 
 #set( $type = $mediaarchive.getMediaRenderType($asset.fileFormat))
-<div class="entityuploadheader mb-2" style="font-size:1rem; font-weight: 600;">[[Share]]</div>
+<div class="entityuploadheader mb-2" style="font-size:1rem; font-weight: 600;">[[Sharing Links]]</div>
 <div id="embed-wrapper" class="segment mb-2">
 	<div class="embedlink">
+		
+		
+		<h5 >[[Gallery]]</h5> 
+		<div class="hyphenate" style="margin:5px 0">
+			#set( $sharefilelink = "$!siteroot/$mediadbappid/services/publishingdestination/gallery/${publishing.id}")
+			<span class="sharelink">${sharefilelink}</span> 
+			<a href="#" 
+				class="copytoclipboard btn btn-xxs btn-secondary"
+				data-targetdiv="embedalertdialog"
+				data-copytext="previewfileslink" title="[[Copy to Clipboard]]"><i class="far fa-copy"></i> [[Copy]]</a>
+		
+		
+			<input class="sharelink" style="position:absolute; top:-1000px;" id="previewfileslink" value="$sharefilelink " />
+		
+		</div>
+		
+		<h5 class="pt-4">[[Folder Viewer]]</h5> 
+				<div class="hyphenate" style="margin:5px 0">
+			<span class="sharelink">${sharefilelink}</span> 
+			<a href="#" 
+				class="copytoclipboard btn btn-xxs btn-secondary"
+				data-targetdiv="embedalertdialog"
+				data-copytext="previewfileslink" title="[[Copy to Clipboard]]"><i class="far fa-copy"></i> [[Copy]]</a>
+		
+		
+			<input class="sharelink" style="position:absolute; top:-1000px;" id="previewfileslink" value="$sharefilelink " />
+		
+		</div>
+		
+		
+		
 		#set($entitytabopen = $context.getRequestParameter('entitytabopen'))
 		#if($moduleid)
 			#set( $sharelink = "$siteroot$apphome/views/modules/${moduleid}/userview/${entityid}/#dash($entity).html")
@@ -21,7 +52,7 @@
 		#ifnotnull($sharelink )
 			<div id="embedalertdialog" style="display:none; position: absolute;" class="alert alert-success fader">[[Copied to Clipboard]]</div>
 				<div style="margin-bottom:20px">
-				<h5>[[Data]]</h5> 
+				<h5 class="pt-4">[[Data]]</h5> 
 				<div class="hyphenate" style="margin:5px 0">
 					<span class="sharelink">${sharelink}</span> 
 					<a href="#" 

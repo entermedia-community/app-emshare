@@ -958,8 +958,7 @@ uiload = function () {
         }
       }
       return false;
-    }
-  );
+    });
 
   lQuery("form.autosubmit").livequery(function () {
     var form = $(this);
@@ -1014,7 +1013,12 @@ uiload = function () {
 
   lQuery(".submitform").livequery("click", function (e) {
     e.preventDefault();
+    e.stopPropagation();
+    e.stopImmediatePropagation();
+    console.log($(this).prop('disabled'));
+    $(this).prop('disabled', true);
     var theform = $(this).closest("form");
+    console.log($(this).prop('disabled'));
 
     var clicked = $(this);
     if (clicked.data("updateaction")) {
@@ -1023,8 +1027,13 @@ uiload = function () {
     }
     console.log("Submit Form " + theform);
     theform.trigger("submit");
+    
+    return false;
   });
-
+  lQuery(".submitform").livequery('dblclick', function (e) {
+  	e.preventDefault();
+  	console.log("DblClick!")
+  });
   lQuery(".submitform-oehtml, .dialogsubmitbtn").livequery(
     "click",
     function (e) {
