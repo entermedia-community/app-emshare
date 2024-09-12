@@ -238,35 +238,12 @@ $context.putPageValue("topmoduleid", $moduleid)
 						title="[[Download]] #text($module) ">[[Export]]&nbsp;<i class="bi bi-box-arrow-right ml-1"></i></a>
 				#end
 						
-			
-					#if($permissions.can($moduleid, "publishinggallery") && $entityid && $canpublishinggallery)
-						#if($publishinggallery || $entity.getValue("enablepublishinggallery"))
-							#set($enabledpublishinggallery = true)
-						#end
-						
-						<a href="$applink/views/modules/$moduleid/publishing/enablepublishing.html"
-							class='btn btn-sm btn-accent entitytabactions tabactionpublishing #if($entitytabopen=="publishinggallery")enabledaction #end #if($enabledpublishinggallery) statusenabled #end'
-							data-tabaction="publishinggallery"
-							data-updateurl="false"
-							data-closedialog="true"
-							data-entityid="$!entityid"
-							data-moduleid="$!moduleid"
-							title="#text($module) [[Web Gallery]]">
-							#if($enabledpublishinggallery)
-							<i class="bi bi-check-circle-fill ns"></i>
-							#else
-							<i class="bi bi-columns-gap ns"></i>
-							#end
-							[[Web Gallery]]
-						</a>
-							
-					#end
-					
+				
 					#if($permissions.can($moduleid, "publishingcarousel") && $entityid && $canpublishingcarousel)
 						#if($publishingcarousel || $entity.getValue("enablepublishingcarousel"))
 							#set($enabledpublishingcarousel = true)
 						#end
-						
+						#if($enabledpublishingcarousel)
 						<a href="$applink/views/modules/$moduleid/publishing/enablepublishing.html"
 							class='btn btn-sm btn-accent entitytabactions tabactionpublishing #if($entitytabopen=="publishingcarousel")enabledaction #end #if($enabledpublishingcarousel) statusenabled #end'
 							data-tabaction="publishingcarousel"
@@ -278,10 +255,11 @@ $context.putPageValue("topmoduleid", $moduleid)
 							#if($enabledpublishingcarousel)
 							<i class="bi bi-check-circle-fill ns"></i>
 							#else
-							<i class="bi bi-columns-gap ns"></i>
+							<i class="bi bi-images ns"></i>
 							#end
 							[[Web Carousel]]
 						</a>
+						#end
 							
 					#end
 					
@@ -434,31 +412,7 @@ $context.putPageValue("topmoduleid", $moduleid)
 							$context.putPageValue("currenttab", $entitytabopen)
 									
 							$pages.include("$componenthome/gridsample/preview/entitytabmenu.html", $context)
-						#end
-						
-						
-						##publishing tabs
-						#if($entitytabopen == "publishinggallery" || $entity.getValue("enablepublishinggallery") )
-							##permissions here
-							#set($tabtype= "tabpublishing_gallery")
-							$context.putPageValue("tabtype", $tabtype)
-							#set($tabid = "tab_publishinggallery")
-							$context.putPageValue("tabid", $tabid)
-							$context.putPageValue("currenttab", $entitytabopen)
-									
-							$pages.include("$componenthome/gridsample/preview/entitytabmenu.html", $context)
-						#end
-						#if($entitytabopen == "publishingcarousel" || $entity.getValue("enablepublishingcarousel") )
-							##permissions here
-							#set($tabtype= "tabpublishing_carousel")
-							$context.putPageValue("tabtype", $tabtype)
-							#set($tabid = "tab_publishingcarousel")
-							$context.putPageValue("tabid", $tabid)
-							$context.putPageValue("currenttab", $entitytabopen)
-									
-							$pages.include("$componenthome/gridsample/preview/entitytabmenu.html", $context)
-						#end	
-						
+						#end						
 					#end
 				#end	
 			</div>
@@ -565,26 +519,6 @@ $context.putPageValue("topmoduleid", $moduleid)
 						$context.putPageValue("tabtype", $tabtype)
 						$context.putPageValue("currenttab", "media")
 						$pages.include("$subcomponenthome/gridsample/preview/entitytabmedia.html?entityid=$id", $context)
-					#end
-				#end
-				
-				#if($entitytabopen == "publishinggallery" && $canpublishinggallery == "true")
-					#if(!$ismulti)
-						#set($tabtype= "tabpublishing_gallery")
-						$context.putPageValue("tabtype", $tabtype)
-						$context.putPageValue("currenttab", "publishinggallery")
-						$context.putPageValue("viewid", "publishinggallery")
-						$pages.include("$componenthome/gridsample/preview/tabpublishing_gallery.html?entityid=$id", $context)
-					#end
-				#end
-				
-				#if($entitytabopen == "publishingcarousel" && $canpublishingcarousel == "true")
-					#if(!$ismulti)
-						#set($tabtype= "tabpublishing_carousel")
-						$context.putPageValue("tabtype", $tabtype)
-						$context.putPageValue("currenttab", "publishingcarousel")
-						$context.putPageValue("viewid", "publishingcarousel")
-						$pages.include("$componenthome/gridsample/preview/tabpublishing_carousel.html?entityid=$id", $context)
 					#end
 				#end
 			#end

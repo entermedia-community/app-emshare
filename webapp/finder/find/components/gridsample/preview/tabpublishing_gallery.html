@@ -1,5 +1,5 @@
-#set($entityid = $context.getRequestParameter("entityid"))
 #if( !$entity)
+	#set($entityid = $context.getRequestParameter("entityid"))
 	#set( $entity  = $mediaarchive.getData($parentsearchtype, $entityid) )
 #end
 #set($entityid = $entity.id)
@@ -8,8 +8,11 @@
 #end
 #if(!$topmoduleid)
 	#set ( $topmoduleid = $context.getRequestParameter("topmoduleid") )
-	$context.putPageValue("topmoduleid", $topmoduleid)
 #end
+#if(!$topmoduleid)
+	#set ( $topmoduleid = $context.getRequestParameter("moduleid") )
+#end
+$context.putPageValue("topmoduleid", $topmoduleid)
 #ifnotnull($topmoduleid)
 	#set($topmodule = $mediaarchive.getCachedData("module", $topmoduleid))
 #end
@@ -21,6 +24,8 @@
 #end
 #set($tabid = "tab_$viewid")
 
+$publishing.getId()
+id="${tabid}"
 
 <div id="${tabid}" 
 class=" entity-tab-content entity-tab-media tabtypemedia" 
@@ -45,26 +50,7 @@ data-url="$componenthome/gridsample/preview/tabpublishing_gallery.html"
 		</div>
 
 		<div class="#if($publishing.enabled!="true")disabled-mask#end">
-			<div class="form-group">
-				<div class="form-check form-check-inline">
-					<input type="hidden" value="title_enabled" name="field" />
-					<input class="form-check-input wg-autosave" type="checkbox" id="wgTitleLabel" value="true" name="title_enabled.value" #if($publishing.title_enabled=="true")checked#end>
-					<label class="form-check-label" for="wgTitleLabel">[[Gallery Title]]</label>
-				</div>
-				<input type="hidden" value="title" name="field" />
-				<input  class="form-control wg-autosave"  placeholder="[[Enter Title here]]" name="title.value" value="$!publishing.title">
-			</div>
-			
-			<div class="form-group">
-			<div class="form-check form-check-inline">
-				<input type="hidden" value="caption_enabled" name="field" />
-				<input class="form-check-input wg-autosave" type="checkbox" id="wgCaptionLabel" value="true" name="caption_enabled.value" #if($publishing.caption_enabled=="true")checked#end>
-				<label class="form-check-label" for="wgCaptionLabel">[[Gallery Subtitle]]</label>
-			</div>
-			<input type="hidden" value="caption" name="field" />
-				<textarea  class="form-control wg-autosave" name="caption.value">$!publishing.caption</textarea>
-			</div>
- 
+
 			<div class="form-group">
 			<div class="form-check form-check-inline">
 				<input type="hidden" value="image_caption_enabled" name="field" />
@@ -73,16 +59,6 @@ data-url="$componenthome/gridsample/preview/tabpublishing_gallery.html"
 			</div>
 			</div>
 
-			
-			<div class="form-group">
-				<div class="form-check form-check-inline">
-					<input type="hidden" value="footer_enabled" name="field" />
-					<input class="form-check-input wg-autosave" type="checkbox" id="wgFooterLabel" value="true" name="footer_enabled.value"  #if($publishing.footer_enabled=="true")checked#end>
-					<label class="form-check-label" for="wgFooterLabel">[[Footer]]</label>
-				</div>
-				<input type="hidden" value="footer" name="field" />
-				<input  class="form-control wg-autosave"  placeholder="[[Enter Footer here]]" name="footer.value" value="$!publishing.footer">
-			</div>
 			
 			
 			<div class="form-group">
@@ -104,14 +80,6 @@ data-url="$componenthome/gridsample/preview/tabpublishing_gallery.html"
 				</select>
 			</div>
 	
-			<div class="form-group">
-				<div class="form-check form-check-inline">
-					<input type="hidden" value="autoplay_enabled" name="field" />
-					<input class="form-check-input wg-autosave" type="checkbox" id="wgAutoplayLabel" value="true" name="autoplay_enabled.value" #if($publishing.autoplay_enabled=="true")checked#end>
-					<label class="form-check-label" for="wgAutoplayLabel">[[Autoplay]]</label>
-				</div>
-			</div>
-
 			#set($containerwidth = 1000)
 			#if($publishing.containerwidth > 0)
 				#set($containerwidth = $publishing.containerwidth)
@@ -120,22 +88,6 @@ data-url="$componenthome/gridsample/preview/tabpublishing_gallery.html"
 			#if($publishing.containerheight > 0)
 				#set($containerheight = $publishing.containerheight)
 			#end
-
-			<div class="form-group">
-				<div class="form-check form-check-inline">
-					<input type="hidden" value="containerdimension_enabled" name="field" />
-					<input class="form-check-input wg-autosave" type="checkbox" id="wgCDLabel" value="true" name="containerdimension_enabled.value"  #if($publishing.containerdimension_enabled=="true")checked#end>
-					<label class="form-check-label" for="wgCDLabel">[[Use Fixed Dimension]]</label>
-				</div>
-				<input type="hidden" value="containerwidth" name="field" />
-				<input type="hidden" value="containerheight" name="field" />
-				<div class="d-flex align-items-center">
-					<input  class="form-control wg-autosave"  placeholder="[[Width]]" name="containerwidth.value" value="$containerwidth" type="number" #if($publishing.containerdimension_enabled!="true")disabled#end>
-					<span class="mx-2">&times;</span>
-					<input  class="form-control wg-autosave"  placeholder="[[Height]]" name="containerheight.value" value="$containerheight" type="number" #if($publishing.containerdimension_enabled!="true")disabled#end>
-				</div>
-				<small class="text-muted">[[Uses container width and height if disabled]]</small>
-			</div>
 
 			<input type="hidden" value="entityid" name="field" />
 			<input type="hidden" name="entityid.value" value="$!entityid" />
@@ -147,7 +99,6 @@ data-url="$componenthome/gridsample/preview/tabpublishing_gallery.html"
 			<input type="hidden" name="searchtype" value="distributiongallery" />
 			<input type="hidden" name="field" value="moduleid" />
 			<input type="hidden" name="moduleid.value" value="$!topmoduleid" />
-			<input type="hidden" name="topmoduleid" value="$!topmoduleid" />
 			<input type="hidden" name="parentviewid" value="$!viewid" />
 			<input type="hidden" name="entityid" value="$!entityid" />
 			<input name="save" type="hidden" value="true">
@@ -165,7 +116,7 @@ data-url="$componenthome/gridsample/preview/tabpublishing_gallery.html"
 		
 		#if($publishing.enabled=="true")
 			<div class="p-1 border my-3 rounded bg-light">
-				#set( $link = "$!siteroot/$mediadbappid/services/publishingdestination/view/${publishing.id}")
+				#set( $link = "$!siteroot/$mediadbappid/services/publishingdestination/gallery/${publishing.id}")
 				<div class="p-1 mb-2">
 					<strong>[[Link]]:</strong>
 					<textarea class="embedlinktextarea form-control" id="embedcode" onclick="this.select();" readonly="readonly" rows="3" cols="45">$link</textarea>
@@ -174,7 +125,7 @@ data-url="$componenthome/gridsample/preview/tabpublishing_gallery.html"
 				<hr>
 				<div class="p-1">
 					<strong>&lt;[[iframe]]&gt; code:</strong>
-					<textarea class="iframelinktextarea form-control" id="iframecode" onclick="this.select();" readonly="readonly" rows="4" cols="45"><iframe src="$!siteroot/$mediadbappid/services/publishingdestination/view/${publishing.id}" frameborder="0" style="width: 100%; height: 100%; border: 0;"></iframe></textarea>
+					<textarea class="iframelinktextarea form-control" id="iframecode" onclick="this.select();" readonly="readonly" rows="4" cols="45"><iframe src="$!siteroot/$mediadbappid/services/publishingdestination/gallery/${publishing.id}" frameborder="0" style="width: 100%; height: 100%; border: 0;"></iframe></textarea>
 					<a href="#" class="my-1 px-2 copytoclipboard btn btn-xs btn-outline-brand" data-targetdiv="embedalertdialog" data-copytext="iframecode" title="Copy to Clipboard"><i class="bi bi-copy ns mr-1"></i> [[Copy]]</a>
 				</div>
 				#if( $canviewsettings )
@@ -194,7 +145,7 @@ data-url="$componenthome/gridsample/preview/tabpublishing_gallery.html"
 <div class="tabpulications-col h-100">
 	<div class="p-1 overflow-hidden bg-light"  style="height: 100%">
 		#if($publishing.enabled == "true")
-			<iframe src="$!siteroot/$mediadbappid/services/publishingdestination/view/${publishing.id}" style="width: 100%; height: 100%; border: 0;"></iframe>
+			<iframe src="$!siteroot/$mediadbappid/services/publishingdestination/gallery/${publishing.id}" style="width: 100%; height: 100%; border: 0;"></iframe>
 		#else
 			<div class="d-flex justify-content-center align-items-center h-100">
 				<div class="text-center text-brand">
