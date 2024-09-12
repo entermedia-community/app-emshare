@@ -1,13 +1,13 @@
 jQuery(document).ready(function () {
-  var siteroot = $("#application").data("siteroot");
-  var mediadb = $("#application").data("mediadbappid");
-  var apphome = $("#application").data("apphome");
+  var app = $("#application");
+  var siteroot = app.data("siteroot");
+  var mediadb = app.data("mediadbappid");
+  var apphome = app.data("apphome");
   var downloadInProgress = {};
   const { ipcRenderer } = require("electron");
 
   var entermediakey = "";
   if (app && app.data("entermediakey") != null) {
-    // app variable is from dom
     entermediakey = app.data("entermediakey");
   }
 
@@ -21,7 +21,7 @@ jQuery(document).ready(function () {
   });
 
   ipcRenderer.on("set-local-root", (_, localRoot) => {
-    $("#application").data("local-root", localRoot);
+    app.data("local-root", localRoot);
   });
 
   ipcRenderer.on("electron-log", (_, ...log) => {
@@ -51,7 +51,7 @@ jQuery(document).ready(function () {
       console.error(error);
     }
 
-    $("#application").append(
+    app.append(
       '<div class="alert fader alert-error" role="alert">Desktop Error: Check log for details.</div>'
     );
   });
@@ -74,7 +74,7 @@ jQuery(document).ready(function () {
   ipcRenderer.on("desktopReady", () => {
     lQuery("#relativeLocalRootPath").livequery(function () {
       $(this).val(
-        $("#application").data("local-root") +
+        app.data("local-root") +
           $(this).data("modulename") +
           "/" +
           $(this).data("entityname") +
@@ -83,7 +83,7 @@ jQuery(document).ready(function () {
     });
 
     lQuery("#localRootPathInput").livequery(function () {
-      $(this).val($("#application").data("local-root"));
+      $(this).val(app.data("local-root"));
     });
 
     function checkForPendingDownloads() {
@@ -359,7 +359,7 @@ jQuery(document).ready(function () {
         '<button type="button" class="close" data-dismiss="toast">hide</button>';
       template += "</div>";
       template += '<div class="toast-body">';
-      var isdesktop = $("#application").data("desktop");
+      var isdesktop = app.data("desktop");
       if (type == "complete" && isdesktop) {
         template +=
           '<a href="#" class="opendownloadedfile" data-itemexportname="' +
@@ -509,6 +509,7 @@ jQuery(document).ready(function () {
       pendingFolders
         .find(".dl-progress")
         .data("serverTotal", totalDownloadSize);
+      pendingFolders.find(".dl-count").text(totalDownloadCount);
       pendingFolders.find(".dl-size").text(humanFileSize(totalDownloadSize));
 
       if (option.downloadCount > 0) {
@@ -1016,7 +1017,7 @@ jQuery(document).ready(function () {
       ipcRenderer.send("watchFolders", watchList);
     });
 
-    lQuery(".pending-folders", function () {
+    lQuery(".pending-folders").livequery(function () {
       var toplevelcategorypath = $(this).data("toplevelcategorypath");
       var entityid = $(this).data("entityid");
       ipcRenderer.send("watchFolders", [
@@ -1061,7 +1062,7 @@ jQuery(document).ready(function () {
   });
 
   function getMediadb() {
-    var elem = $("#application");
+    var elem = app;
     return elem.data("siteroot") + "/" + elem.data("mediadbappid");
   }
 });

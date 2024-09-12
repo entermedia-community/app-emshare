@@ -227,22 +227,28 @@ $pages.include("${searchhome}/resultsactions.html",$context)
 			<td class="rowactions" noclick="true">
 				$pages.include("$componenthome/gridsample/favorites.html?id=$!{hit.id}&moduleid=$moduleid", $context)
 				#if($desktop)
+
+					#set($perm = $module.getBoolean("enableuploading") && $moduleid!="faceprofilegroup" && $moduleid!="asset" && $moduleid!="modulesearch")
+					#if($perm && $permissions.can($moduleid, "view_files"))
 					<a href="$!searchhome/components/gridsample/preview/entity.html?entityid=$!{hit.id}&entitytabopen=export&tabsection=pulllocal&immediate=true" 
 						style="font-size: 16px;" 
 						class="emdialog btn text-accent px-1 rounded" 
-						title="[[Download Folder]]" 
+						title="[[Bulk Download]]" 
 						data-moduleid="${moduleid}"
 						data-updateurl="true"
 						data-urlbar="$!searchhome/index.html?entityid=$!{hit.id}&entitytabopen=import"><i class="bi bi-cloud-arrow-down"></i></a>
+					#end
 
+					#if($perm && $permissions.can($moduleid, "upload_folders"))
 					<a href="$!searchhome/components/gridsample/preview/entity.html?entityid=$!{hit.id}&entitytabopen=import&tabsection=pushlocal&autoscan=true" 
 						style="font-size: 16px;" 
 						class="emdialog btn text-accent px-1 rounded" 
-						title="[[Upload files to this folder]]"
+						title="[[Bulk Upload]]"
 						id="pushlocal-$!{hit.id}"
 						data-moduleid="${moduleid}"
 						data-updateurl="true"
 						data-urlbar="$!searchhome/index.html?entityid=$!{hit.id}&entitytabopen=import"><i class="bi bi-cloud-arrow-up"></i></a>
+					#end
 
 					#if($module.getBoolean("enableuploading") && ($permissions.can($moduleid, "upload_files") || $permissions.can($moduleid, "upload_folders")) )
 						<a class="emdialog btn text-accent px-1 rounded"
