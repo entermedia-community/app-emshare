@@ -455,10 +455,6 @@ jQuery(document).ready(function () {
       refreshSync(categorypath, tab);
     }
 
-    lQuery(".syncfoldertree").livequery(function () {
-      scanChange();
-    });
-
     lQuery(".pullfetchfolder").livequery("click", function (e) {
       e.preventDefault();
       fetchFolderFilesList($(this));
@@ -489,8 +485,7 @@ jQuery(document).ready(function () {
       });
     });
 
-    ipcRenderer.on("scan-progress", (_, option) => {
-      console.log("scan-progress", option);
+    ipcRenderer.on("scan-entity-progress", (_, option) => {
       var pendingFolders = $(".pending-folders");
 
       pendingFolders.find(".no-download").hide();
@@ -537,23 +532,26 @@ jQuery(document).ready(function () {
       }
     });
 
-    ipcRenderer.on("scan-complete", () => {
+    ipcRenderer.on("scan-entity-complete", () => {
+      alreadyScanning = false;
       setTimeout(() => {
         $(".scan-changes").find("span").text("Refresh");
         $(".scan-changes").prop("disabled", false);
-      }, 1000);
+      }, 100);
       var pendingFolders = $(".pending-folders");
       if (pendingFolders.data("totalDownloadCount") == 0) {
         pendingFolders.find(".no-download").show();
       } else {
         pendingFolders.find(".no-download").hide();
-        $(".pull-buttons").fadeIn();
+        $(".pull-msg").fadeIn();
+        $(".download-pull-all").show();
       }
       if (pendingFolders.data("totalUploadCount") == 0) {
         pendingFolders.find(".no-upload").show();
       } else {
         pendingFolders.find(".no-upload").hide();
-        $(".push-buttons").fadeIn();
+        $(".push-msg").fadeOut();
+        $(".upload-push-all").show();
       }
 
       var id = pendingFolders.data("entityid");
@@ -567,16 +565,23 @@ jQuery(document).ready(function () {
       }
     });
 
-    function scanChange() {
+    let alreadyScanning = false;
+    function scanEntityChange(verifying = false) {
+      if (alreadyScanning) return;
+      alreadyScanning = true;
       $(".notif").removeClass("dl up");
       var pendingFolders = $(".pending-folders");
       pendingFolders.data("totalDownloadSize", 0);
       pendingFolders.data("totalDownloadCount", 0);
       pendingFolders.data("totalUploadSize", 0);
       pendingFolders.data("totalUploadCount", 0);
-      $(".pull-buttons").fadeOut();
-      $(".push-buttons").fadeOut();
-      $(".scan-changes").find("span").text("Refreshing...");
+      $(".pull-msg").fadeOut();
+      $(".download-pull-all").hide();
+      $(".push-msg").fadeOut();
+      $(".upload-push-all").hide();
+      $(".scan-changes")
+        .find("span")
+        .text(verifying ? "Verifying..." : "Refreshing...");
       $(".scan-changes").prop("disabled", true);
       var categorypath = $(".scan-changes").data("toplevelcategorypath");
       ipcRenderer.send("scanAll", categorypath);
@@ -584,9 +589,13 @@ jQuery(document).ready(function () {
       fetchFolderFilesList(openedFolder);
     }
 
+    lQuery(".syncfoldertree").livequery(function () {
+      scanEntityChange();
+    });
+
     lQuery(".scan-changes").livequery("click", function (e) {
       e.preventDefault();
-      scanChange();
+      scanEntityChange();
     });
 
     lQuery("#immediate-download").livequery(function () {
@@ -601,6 +610,7 @@ jQuery(document).ready(function () {
       $(".dl-progress").data("transferTotal", 0);
       var categorypath = $(this).data("toplevelcategorypath");
       $(".pullfetchfolder").first().find(".fa-spinner").show();
+      $(this).hide();
       ipcRenderer.send("downloadAll", categorypath);
     });
 
@@ -619,18 +629,21 @@ jQuery(document).ready(function () {
     ipcRenderer.on("download-batch-progress", (_, { transferredBytes }) => {
       var dlp = $(".dl-progress");
       let serverTotal = dlp.data("serverTotal") || 0;
-      let transferTotal = dlp.data("transferTotal") || 0;
-      transferTotal += transferredBytes;
-      dlp.data("transferTotal", transferTotal);
-      dlp.html(
-        `Downloaded <b>${humanFileSize(
-          transferTotal
-        )}</b> of <b>${humanFileSize(serverTotal)}</b>`
-      );
+      if (serverTotal == 0 || transferredBytes == 0) {
+        dlp.html("Downloading...");
+      } else {
+        dlp.html(
+          `Downloaded <b>${humanFileSize(
+            transferredBytes
+          )}</b> of <b>${humanFileSize(serverTotal)}</b>`
+        );
+      }
+      if (transferredBytes >= serverTotal) {
+        $(".pullfetchfolder").find(".fa-spinner").hide();
+      }
     });
 
     ipcRenderer.on("download-batch-next", (_, { categoryPath }) => {
-      console.log("download-batch-next", categoryPath);
       $(".pullfetchfolder").each(function () {
         $(this).find(".fa-spinner").hide();
         if ($(this).data("categorypath") == categoryPath) {
@@ -640,10 +653,10 @@ jQuery(document).ready(function () {
     });
 
     ipcRenderer.on("download-batch-complete", () => {
-      $(".pullfetchfolder").each(function () {
-        $(this).find(".fa-spinner").hide();
-      });
-      scanChange();
+      setTimeout(() => {
+        $(".pullfetchfolder").find(".fa-spinner").hide();
+        scanEntityChange(true);
+      }, 100);
     });
 
     lQuery(".remove-extra").livequery("click", function (e) {
@@ -663,11 +676,11 @@ jQuery(document).ready(function () {
     });
 
     ipcRenderer.on("trash-complete", () => {
-      scanChange();
+      scanEntityChange();
     });
 
     lQuery("#immediate-scan").livequery(function () {
-      scanChange();
+      scanEntityChange();
       $(this).remove();
     });
 
@@ -676,14 +689,14 @@ jQuery(document).ready(function () {
       var entityId = $(this).data("entityid");
       var categorypath = $(this).data("categorypath");
       $(".scan-result").hide();
+      $(this).hide();
       ipcRenderer.send("uploadAll", {
         categorypath: categorypath,
         entityId: entityId,
       });
     });
 
-    ipcRenderer.on("entity-upload-progress", (_, { id, index, loaded }) => {
-      console.log({ id, loaded, index });
+    ipcRenderer.on("entity-upload-progress", (_, { loaded }) => {
       var total = $(".up-count").text();
       $(".up-total").text(total);
       var sp = $(".upload-progress");
@@ -696,14 +709,18 @@ jQuery(document).ready(function () {
     ipcRenderer.on("entity-upload-next", (_, { index, size }) => {
       $(".syncfoldertree").find(".fa-spinner").hide();
       var folder = $("#folder-" + index);
-      if (folder.length === 0) return;
+      folder.find(".fa-spinner").show();
       var sp = $(".upload-progress");
+      var fileCount = parseInt(sp.data("fileCount"));
+      if (!fileCount) fileCount = 0;
+      $(".up-completed").text(fileCount + 1);
+      sp.find("span").show();
+      sp.data("fileCount", fileCount + 1);
       var progress = parseInt(sp.data("progress"));
       if (!progress) progress = 0;
       progress += size;
       sp.data("progress", progress);
       $(".up-progress").text(humanFileSize(progress));
-      folder.find(".fa-spinner").show();
     });
 
     ipcRenderer.on("upload-error", (_, { id, error }) => {
@@ -719,9 +736,13 @@ jQuery(document).ready(function () {
     ipcRenderer.on("entity-upload-complete", () => {
       $("#sidebarUserUploads").find(".status-circle").remove();
       $(".syncfoldertree").find(".fa-spinner").hide();
-      $(".push-buttons").fadeOut();
+      $(".push-msg").fadeOut();
+      $(".upload-push-all").hide();
       $(".notif").removeClass("up");
-      scanChange();
+      $(".upload-progress").hide();
+      $(".upload-progress").data("fileCount", 0);
+      $(".upload-progress").data("progress", 0);
+      scanEntityChange();
     });
 
     lQuery("#abortUpload").livequery("click", function (e) {
@@ -741,7 +762,6 @@ jQuery(document).ready(function () {
         formData.append("id", folder.id);
       });
       formData.append("desktopimportstatus", "upload-canceled");
-      formData.append("timestamp", new Date().toISOString());
       uploadInProgress = false;
       desktopImportStatusUpdater(formData);
     });
@@ -900,7 +920,7 @@ jQuery(document).ready(function () {
           if (callback) callback();
         });
     }
-    ipcRenderer.on("scan-completed", (_, ids) => {
+    ipcRenderer.on("scan-auto-folder-completed", (_, ids) => {
       var formData = new FormData();
       ids.forEach((id) => {
         formData.append("id", id);
@@ -908,7 +928,6 @@ jQuery(document).ready(function () {
         folder.find();
       });
       formData.append("desktopimportstatus", "upload-started");
-      formData.append("timestamp", new Date().toISOString());
       desktopImportStatusUpdater(formData);
     });
 
@@ -920,16 +939,15 @@ jQuery(document).ready(function () {
         formData.append("id", folder.id);
       });
       formData.append("desktopimportstatus", "scan-started");
-      formData.append("timestamp", new Date().toISOString());
 
       console.log("verifyAutoUploads", syncFolders);
       uploadInProgress = true;
       desktopImportStatusUpdater(formData, () => {
-        ipcRenderer.send("syncAllFolders", syncFolders);
+        ipcRenderer.send("syncAutoFolders", syncFolders);
       });
     }
 
-    lQuery("#syncAllFolders").livequery("click", function () {
+    lQuery("#syncAutoFolders").livequery("click", function () {
       if (uploadInProgress) return;
       verifyAutoUploads();
     });
@@ -977,28 +995,55 @@ jQuery(document).ready(function () {
       updateCounter(size, true);
     });
 
+    function lastScandateUpdater(syncFolderId, callback = null) {
+      jQuery
+        .ajax({
+          method: "PUT",
+          url:
+            getMediadb() +
+            "/services/module/desktopsyncfolder/data/" +
+            syncFolderId,
+          data: JSON.stringify({ lastscandate: new Date().toISOString() }),
+          dataType: "json",
+          contentType: "application/json; charset=utf-8",
+        })
+        .done(function () {
+          if (callback) callback();
+        });
+    }
+
     ipcRenderer.on(
-      "auto-upload-entity-complete",
-      (_, completedSyncFolderId) => {
+      "auto-upload-each-complete",
+      (_, [completedSyncFolderId, count = 0]) => {
         var folder = $("#wf-" + completedSyncFolderId);
-        console.log(folder);
         folder.addClass("completed");
+        if (count > 0) {
+          folder.find(".last-scanned").text("Imported files 1 Second ago");
+          lastScandateUpdater(completedSyncFolderId);
+        }
       }
     );
 
-    ipcRenderer.on("auto-upload-complete", (_, uploadCount) => {
-      console.log(uploadCount);
-      var syncFolders = getCurrentWorkFolders();
-      var formData = new FormData();
-      syncFolders.forEach((folder) => {
-        formData.append("id", folder.id);
-      });
-      formData.append("updatelastscandate", uploadCount > 0 ? "true" : "false");
-      formData.append("desktopimportstatus", "upload-completed");
-      formData.append("timestamp", new Date().toISOString());
-      uploadInProgress = false;
-      desktopImportStatusUpdater(formData);
-    });
+    ipcRenderer.on(
+      "auto-upload-all-complete",
+      (_, [lasSyncFolderId, count = 0]) => {
+        var refreshList = function () {
+          var syncFolders = getCurrentWorkFolders();
+          var formData = new FormData();
+          syncFolders.forEach((folder) => {
+            formData.append("id", folder.id);
+          });
+          formData.append("desktopimportstatus", "upload-completed");
+          uploadInProgress = false;
+          desktopImportStatusUpdater(formData);
+        };
+        if (count > 0) {
+          lastScandateUpdater(lasSyncFolderId, refreshList);
+        } else {
+          refreshList();
+        }
+      }
+    );
 
     ipcRenderer.on("auto-file-added", () => {
       verifyAutoUploads();
@@ -1033,7 +1078,7 @@ jQuery(document).ready(function () {
       if (pendingFolders.length > 0) {
         var path = pendingFolders.data("toplevelcategorypath");
         if (catPath === path) {
-          scanChange();
+          scanEntityChange();
         }
       }
       var watches = $(".auto-watch");
@@ -1055,7 +1100,7 @@ jQuery(document).ready(function () {
       if (pendingFolders.length > 0) {
         var path = pendingFolders.data("toplevelcategorypath");
         if (catPath === path) {
-          scanChange();
+          scanEntityChange();
         }
       }
     });

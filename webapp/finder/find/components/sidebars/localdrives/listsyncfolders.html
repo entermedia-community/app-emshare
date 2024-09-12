@@ -20,7 +20,7 @@
         <i class="fas fa-spin fa-apinner mr-1"></i>
         <span>[[Looking for new files in the local folders]]</span>
       </p>
-      <button class="btn btn-sm rounded mt-2" id="syncAllFolders" disabled>[[Scanning...]]</button>
+      <button class="btn btn-sm rounded mt-2" id="syncAutoFolders" disabled>[[Scanning...]]</button>
       #elseif($scanstatus == "upload-started")
       <p class="m-0">
         <i class="fas fa-spin fa-apinner mr-1"></i>
@@ -33,7 +33,7 @@
         <i class="bi bi-exclamation-triangle ns mr-1"></i>
         <span>[[Upload canceled]]</span>
       </p>
-      <button class="btn btn-sm btn-warning rounded mt-2" id="syncAllFolders">[[Restart]]</button>
+      <button class="btn btn-sm btn-warning rounded mt-2" id="syncAutoFolders">[[Restart]]</button>
     #end
   </div>
   #end
@@ -54,7 +54,7 @@
           #ifnotnull($syncfolder.lastscandate)
           	#set($ago = $context.getAge($syncfolder.getDate("lastscandate"))) 
           	#ifnull($ago)
-            &nbsp;
+            Imported files 1 Second ago
             #end
             #ifnotnull($ago)
             Imported files $ago ago
@@ -77,7 +77,7 @@
     #end
     #if($scanstatus == "upload-completed")
     <div class="w-100 text-right my-2">
-      <button class="btn text-success rounded mt-2 pr-0" style="font-family: Roboto;" id="syncAllFolders">[[Refresh]]</button>
+      <button class="btn text-success rounded mt-2 pr-0" style="font-family: Roboto;" id="syncAutoFolders">[[Refresh]]</button>
     </div>
     #end
   </div>
