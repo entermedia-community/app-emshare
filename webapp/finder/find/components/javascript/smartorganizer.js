@@ -804,7 +804,8 @@ $(document).ready(function () {
     lQuery(".deploy-organizer-finish").livequery("click", function (e) {
       e.stopPropagation();
       e.preventDefault();
-      //saveJSON(); //is blocking?
+      saveJSON(true); //is blocking?
+      
       var url = $(this).data("url");
       var id = $("#organizerId").val();
       $("#deployOrganizer").load(url + "?oemaxlevel=1&id=" + id);
