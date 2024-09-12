@@ -1102,7 +1102,7 @@ $(document).ready(function () {
       selectedLabel.getUserData().moduleid = $(this).val();
     });
 
-    $("#ordering").on("blur", function () {
+    $("#ordering").on("change", function () {
       var value = $(this).val();
       selectedLabel.getUserData().ordering = value;
     });
@@ -1184,6 +1184,11 @@ $(document).ready(function () {
 
         data.id = id;
         data.name = $("#organizerName").val();
+        
+        if( data.name === undefined || data.name == "")
+        {
+			data.name = "New";	
+		}
         data.json = JSON.stringify(json);
         data.updatedby = userid;
         const date2 = new Date();
@@ -1226,7 +1231,11 @@ $(document).ready(function () {
           contentType: "application/json; charset=utf-8",
           url: url,
           data: updateddata,
-          success: function () {
+          success: function (json) {
+			if( json.response.status  == "ok")
+			{
+				$("#organizerId").val(json.response.id);
+			}
             if (usersaved) {
               saveBtn.removeClass("saving");
               saveBtn.addClass("saved");
