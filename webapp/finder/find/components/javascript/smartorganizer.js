@@ -1231,6 +1231,7 @@ $(document).ready(function () {
           method: submitmethod,
           contentType: "application/json; charset=utf-8",
           url: url,
+          async: false, //Dont go forward until done
           data: updateddata,
           success: function (json) {
 			if( json.response.status  == "ok")
