@@ -16,19 +16,13 @@ $context.putPageValue("topmoduleid", $topmoduleid)
 #ifnotnull($topmoduleid)
 	#set($topmodule = $mediaarchive.getCachedData("module", $topmoduleid))
 #end
-#ifnull($viewid)
-#set($viewid = $context.getRequestParameter("viewid"))
-#end
-#ifnull($viewid)
-	#set($viewid = $context.getRequestParameter("parentviewid"))
-#end
-#set($tabid = "tab_$viewid")
+#set($tabid = "tab_publishingcarousel")
 
 
 <div id="${tabid}" 
 class=" entity-tab-content entity-tab-media tabtypemedia" 
 data-tabid="${tabid}"
-data-viewid="$viewid"
+
 data-entityid="$!entityid"
 data-currenttab="$!viewid"
 data-topmoduleid="$!topmoduleid"
@@ -38,7 +32,9 @@ data-url="$componenthome/gridsample/preview/tabpublishing_carousel.html"
 <div id="publishingcontainer" class="tabpulications" style="height: 100%;">
 	<div class="tabpulications-col overflow-y" style="padding:10px 20px;  flex: 0 0 500px;">
 	
-	<form action="$componenthome/gridsample/preview/tabpublishing_carouselsave.html" class="ajaxform mt-1" data-targetdiv="${tabid}">
+	<form action="$componenthome/gridsample/preview/tabpublishing_carouselsave.html" 
+	class="ajaxform mt-1" 
+	data-targetdiv="${tabid}">
 		<div class="form-group">
 			<div class="form-check form-check-inline">
 				<input type="hidden" value="enabled" name="field" />
@@ -147,7 +143,7 @@ data-url="$componenthome/gridsample/preview/tabpublishing_carousel.html"
 				<input type="hidden" name="id.value" value="$!publishing.id" />
 			#end
 			
-			<input type="hidden" name="searchtype" value="distributionCarousel" />
+			<input type="hidden" name="searchtype" value="distribution" />
 			<input type="hidden" name="field" value="moduleid" />
 			<input type="hidden" name="moduleid.value" value="$!topmoduleid" />
 			<input type="hidden" name="topmoduleid" value="$!topmoduleid" />
