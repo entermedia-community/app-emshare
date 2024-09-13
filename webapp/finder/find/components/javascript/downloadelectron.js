@@ -544,14 +544,14 @@ jQuery(document).ready(function () {
       } else {
         pendingFolders.find(".no-download").hide();
         $(".pull-msg").fadeIn();
-        $(".download-pull-all").show();
+        $(".download-pull-all").prop("disabled", false).show();
       }
       if (pendingFolders.data("totalUploadCount") == 0) {
         pendingFolders.find(".no-upload").show();
       } else {
         pendingFolders.find(".no-upload").hide();
-        $(".push-msg").fadeOut();
-        $(".upload-push-all").show();
+        $(".push-msg").fadeIn();
+        $(".upload-push-all").prop("disabled", false).show();
       }
 
       var id = pendingFolders.data("entityid");
@@ -610,7 +610,7 @@ jQuery(document).ready(function () {
       $(".dl-progress").data("transferTotal", 0);
       var categorypath = $(this).data("toplevelcategorypath");
       $(".pullfetchfolder").first().find(".fa-spinner").show();
-      $(this).hide();
+      $(this).prop("disabled", true);
       ipcRenderer.send("downloadAll", categorypath);
     });
 
@@ -629,7 +629,7 @@ jQuery(document).ready(function () {
     ipcRenderer.on("download-batch-progress", (_, { transferredBytes }) => {
       var dlp = $(".dl-progress");
       let serverTotal = dlp.data("serverTotal") || 0;
-      if (serverTotal == 0 || transferredBytes == 0) {
+      if (transferredBytes == 0) {
         dlp.html("Downloading...");
       } else {
         dlp.html(
@@ -689,7 +689,8 @@ jQuery(document).ready(function () {
       var entityId = $(this).data("entityid");
       var categorypath = $(this).data("categorypath");
       $(".scan-result").hide();
-      $(this).hide();
+      $(this).prop("disabled", true);
+      $(".scan-changes").prop("disabled", true);
       ipcRenderer.send("uploadAll", {
         categorypath: categorypath,
         entityId: entityId,
@@ -844,14 +845,12 @@ jQuery(document).ready(function () {
 
     lQuery(".deleteAutoFolder").livequery("click", function () {
       if (
-        confirm(
-          "Are you sure you want to remove this folder from auto importer?"
-        )
+        confirm("Are you sure you want to remove this folder from importer?")
       ) {
         var delId = $(this).data("id");
         jQuery
           .ajax({
-            method: "DELETE",
+            type: "DELETE",
             url:
               getMediadb() + "/services/module/desktopsyncfolder/data/" + delId,
           })
@@ -998,7 +997,7 @@ jQuery(document).ready(function () {
     function lastScandateUpdater(syncFolderId, callback = null) {
       jQuery
         .ajax({
-          method: "PUT",
+          type: "PUT",
           url:
             getMediadb() +
             "/services/module/desktopsyncfolder/data/" +
@@ -1049,28 +1048,13 @@ jQuery(document).ready(function () {
       verifyAutoUploads();
     });
 
-    lQuery("#applicationmaincontent").livequery(function () {
-      var watches = $(".auto-watch");
-      var watchList = [];
-      watches.each(function () {
-        var id = $(this).data("id");
-        var path = $(this).data("categorypath");
-        if (path) {
-          watchList.push({ id, path });
-        }
-      });
-      ipcRenderer.send("watchFolders", watchList);
-    });
-
     lQuery(".pending-folders").livequery(function () {
       var toplevelcategorypath = $(this).data("toplevelcategorypath");
       var entityid = $(this).data("entityid");
-      ipcRenderer.send("watchFolders", [
-        {
-          id: entityid,
-          path: toplevelcategorypath,
-        },
-      ]);
+      ipcRenderer.send("watchFolders", {
+        id: entityid,
+        path: toplevelcategorypath,
+      });
     });
 
     ipcRenderer.on("file-added", (_, catPath) => {
@@ -1081,19 +1065,6 @@ jQuery(document).ready(function () {
           scanEntityChange();
         }
       }
-      var watches = $(".auto-watch");
-      watches.each(function () {
-        var path = $(this).data("categorypath");
-        if (path == catPath) {
-          var id = $(this).data("id");
-          $("#pushlocal-" + id)
-            .removeClass("text-accent")
-            .addClass("text-success");
-          $("#pushlocal-" + id)
-            .find("i")
-            .attr("class", "bi bi-cloud-arrow-up-fill");
-        }
-      });
     });
     ipcRenderer.on("file-removed", (_, catPath) => {
       var pendingFolders = $(".pending-folders");
