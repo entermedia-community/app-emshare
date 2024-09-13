@@ -533,36 +533,27 @@ jQuery(document).ready(function () {
     });
 
     ipcRenderer.on("scan-entity-complete", () => {
-      alreadyScanning = false;
-      setTimeout(() => {
-        $(".scan-changes").find("span").text("Refresh");
-        $(".scan-changes").prop("disabled", false);
-      }, 100);
       var pendingFolders = $(".pending-folders");
       if (pendingFolders.data("totalDownloadCount") == 0) {
         pendingFolders.find(".no-download").show();
       } else {
         pendingFolders.find(".no-download").hide();
-        $(".pull-msg").fadeIn();
+        $(".pull-msg").show();
         $(".download-pull-all").prop("disabled", false).show();
       }
+
       if (pendingFolders.data("totalUploadCount") == 0) {
         pendingFolders.find(".no-upload").show();
       } else {
         pendingFolders.find(".no-upload").hide();
-        $(".push-msg").fadeIn();
+        $(".push-msg").show();
         $(".upload-push-all").prop("disabled", false).show();
       }
-
-      var id = pendingFolders.data("entityid");
-      if (id) {
-        $("#pushlocal-" + id)
-          .removeClass("text-success")
-          .addClass("text-accent");
-        $("#pushlocal-" + id)
-          .find("i")
-          .attr("class", "bi bi-cloud-arrow-up");
-      }
+      setTimeout(() => {
+        $(".scan-changes").find("span").text("Refresh");
+        $(".scan-changes").prop("disabled", false);
+      }, 100);
+      alreadyScanning = false;
     });
 
     let alreadyScanning = false;
@@ -575,9 +566,9 @@ jQuery(document).ready(function () {
       pendingFolders.data("totalDownloadCount", 0);
       pendingFolders.data("totalUploadSize", 0);
       pendingFolders.data("totalUploadCount", 0);
-      $(".pull-msg").fadeOut();
+      $(".pull-msg").hide();
       $(".download-pull-all").hide();
-      $(".push-msg").fadeOut();
+      $(".push-msg").hide();
       $(".upload-push-all").hide();
       $(".scan-changes")
         .find("span")
@@ -737,7 +728,7 @@ jQuery(document).ready(function () {
     ipcRenderer.on("entity-upload-complete", () => {
       $("#sidebarUserUploads").find(".status-circle").remove();
       $(".syncfoldertree").find(".fa-spinner").hide();
-      $(".push-msg").fadeOut();
+      $(".push-msg").hide();
       $(".upload-push-all").hide();
       $(".notif").removeClass("up");
       $(".upload-progress").hide();
