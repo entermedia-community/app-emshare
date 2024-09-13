@@ -566,6 +566,7 @@ jQuery(document).ready(function () {
       pendingFolders.data("totalDownloadCount", 0);
       pendingFolders.data("totalUploadSize", 0);
       pendingFolders.data("totalUploadCount", 0);
+      $(".watch-entity").data("downloading", false);
       $(".pull-msg").hide();
       $(".download-pull-all").hide();
       $(".push-msg").hide();
@@ -592,6 +593,7 @@ jQuery(document).ready(function () {
     lQuery("#immediate-download").livequery(function () {
       var categorypath = $(this).data("toplevelcategorypath");
       $(".pullfetchfolder").first().find(".fa-spinner").show();
+      $(".watch-entity").data("downloading", true);
       ipcRenderer.send("downloadAll", categorypath);
       $(this).remove();
     });
@@ -602,6 +604,7 @@ jQuery(document).ready(function () {
       var categorypath = $(this).data("toplevelcategorypath");
       $(".pullfetchfolder").first().find(".fa-spinner").show();
       $(this).prop("disabled", true);
+      $(".watch-entity").data("downloading", true);
       ipcRenderer.send("downloadAll", categorypath);
     });
 
@@ -646,28 +649,9 @@ jQuery(document).ready(function () {
     ipcRenderer.on("download-batch-complete", () => {
       setTimeout(() => {
         $(".pullfetchfolder").find(".fa-spinner").hide();
+        $(".watch-entity").data("downloading", false);
         scanEntityChange(true);
       }, 100);
-    });
-
-    lQuery(".remove-extra").livequery("click", function (e) {
-      var count = $(this).data("count");
-      if (
-        confirm(
-          "Are you sure you want to delete " +
-            (count ? count : "all") +
-            " extra file(s)?"
-        )
-      ) {
-        var categorypath = $(this).data("categorypath");
-        ipcRenderer.send("trashExtraFiles", {
-          categorypath: categorypath,
-        });
-      }
-    });
-
-    ipcRenderer.on("trash-complete", () => {
-      scanEntityChange();
     });
 
     lQuery("#immediate-scan").livequery(function () {
@@ -1049,18 +1033,21 @@ jQuery(document).ready(function () {
     });
 
     ipcRenderer.on("file-added", (_, catPath) => {
-      var pendingFolders = $(".watch-entity");
-      if (pendingFolders.length > 0) {
-        var path = pendingFolders.data("toplevelcategorypath");
+      var watchEntity = $(".watch-entity");
+      var isDownloading = watchEntity.data("downloading");
+      console.log(isDownloading);
+      if (watchEntity.length > 0 && !isDownloading) {
+        var path = watchEntity.data("toplevelcategorypath");
         if (catPath === path) {
           scanEntityChange();
         }
       }
     });
     ipcRenderer.on("file-removed", (_, catPath) => {
-      var pendingFolders = $(".watch-entity");
-      if (pendingFolders.length > 0) {
-        var path = pendingFolders.data("toplevelcategorypath");
+      var watchEntity = $(".watch-entity");
+      var isDownloading = watchEntity.data("downloading");
+      if (watchEntity.length > 0 && !isDownloading) {
+        var path = watchEntity.data("toplevelcategorypath");
         if (catPath === path) {
           scanEntityChange();
         }
