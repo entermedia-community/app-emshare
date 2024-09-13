@@ -1048,17 +1048,17 @@ jQuery(document).ready(function () {
       verifyAutoUploads();
     });
 
-    lQuery(".pending-folders").livequery(function () {
+    lQuery(".watch-entity").livequery(function () {
       var toplevelcategorypath = $(this).data("toplevelcategorypath");
       var entityid = $(this).data("entityid");
-      ipcRenderer.send("watchFolders", {
+      ipcRenderer.send("watchFolder", {
         id: entityid,
         path: toplevelcategorypath,
       });
     });
 
     ipcRenderer.on("file-added", (_, catPath) => {
-      var pendingFolders = $(".pending-folders");
+      var pendingFolders = $(".watch-entity");
       if (pendingFolders.length > 0) {
         var path = pendingFolders.data("toplevelcategorypath");
         if (catPath === path) {
@@ -1067,7 +1067,7 @@ jQuery(document).ready(function () {
       }
     });
     ipcRenderer.on("file-removed", (_, catPath) => {
-      var pendingFolders = $(".pending-folders");
+      var pendingFolders = $(".watch-entity");
       if (pendingFolders.length > 0) {
         var path = pendingFolders.data("toplevelcategorypath");
         if (catPath === path) {
