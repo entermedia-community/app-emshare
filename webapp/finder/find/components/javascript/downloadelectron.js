@@ -970,6 +970,7 @@ jQuery(document).ready(function () {
     });
 
     function lastScandateUpdater(syncFolderId, callback = null) {
+      if (!syncFolderId) return;
       jQuery
         .ajax({
           type: "PUT",
