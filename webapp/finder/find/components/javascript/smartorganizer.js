@@ -697,6 +697,9 @@ $(document).ready(function () {
             $("#folderThumbPickerBtn").html(
               `<img src="${selectedIcon.getPath()}" />`
             );
+            selectedLabel.getUserData().moduleicon = selectedIcon.getPath();            
+            
+            
           } else {
             $("#folderThumbPickerBtn").html("");
           }
@@ -1133,6 +1136,7 @@ $(document).ready(function () {
         }
         prevIcon.setPath(iconPath);
         $("#folderThumbPickerBtn").html(`<img src="${iconPath}" />`);
+        selectedLabel.getUserData().moduleicon = iconPath;
         closeemdialog($(this).closest(".modal"));
         hideLoader();
         saveJSON();
