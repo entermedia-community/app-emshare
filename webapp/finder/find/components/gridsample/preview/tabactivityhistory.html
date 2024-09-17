@@ -33,7 +33,7 @@ $context.putPageValue("parentsearchtype", $parentsearchtype)
 							<th>[[User]]</th>
 							<th>[[Activity]]</th>
 							<th>[[Assets]]</th>
-							<th style="width: 200px;">[[Actions]]</th>
+							<th style="width: 200px;">[[Undo]]</th>
 						</tr>
 				</thead>
 				<tbody>
@@ -43,7 +43,9 @@ $context.putPageValue("parentsearchtype", $parentsearchtype)
 							<td>$activity.getValue("user")</td>
 							<td>
 								#set($operation = $activity.get("operation"))
-								$operation
+								#set($operaionName = $mediaarchive.getCachedData("historyactivitytype", $operation))
+								
+								#text($operaionName)
 							</td>
 							<td>
 								#set($assetids = $activity.getValue("assetids"))
@@ -60,7 +62,12 @@ $context.putPageValue("parentsearchtype", $parentsearchtype)
 								#end
 								</td>
 							<td>
-								<a href="#" class="btn btn-xs btn-dark"><i class="bi bi-arrow-left-right"></i></a>
+								
+									#if($operation == "assetsremoved")
+										<a href="#" class="btn btn-xs btn-dark">[[Restore]]</a>
+									#elseif($operation == "assetsadded")
+										<a href="#" class="btn btn-xs btn-dark">[[Remove]]</a>
+									#end
 							</td>
 						</tr>
 					#end
