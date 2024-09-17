@@ -697,14 +697,18 @@ $(document).ready(function () {
             $("#folderThumbPickerBtn").html(
               `<img src="${selectedIcon.getPath()}" />`
             );
-            selectedLabel.getUserData().moduleicon = selectedIcon.getPath();            
-            
-            
           } else {
             $("#folderThumbPickerBtn").html("");
           }
           selectedLabel = canvas.getFigure(selectedGroupId + "-label");
           if (!selectedLabel) return;
+
+
+			if( selectedIcon)
+			{
+          selectedLabel.getUserData().moduleicon = selectedIcon.getPath();            
+            }
+            
 
           var moduleid = selectedLabel.getUserData()?.moduleid;
           if (moduleid === undefined || moduleid == "") {
@@ -1099,16 +1103,22 @@ $(document).ready(function () {
     });
 
     $("#folderDesc").on("blur", function () {
-      selectedLabel.getUserData().description = $(this).val();
+      if (selectedLabel) {
+      	selectedLabel.getUserData().description = $(this).val();
+      }
     });
 
     $("#folderId").on("blur", function () {
-      selectedLabel.getUserData().moduleid = $(this).val();
+		if (selectedLabel) {
+      		selectedLabel.getUserData().moduleid = $(this).val();
+      	}
     });
 
     $("#ordering").on("change", function () {
       var value = $(this).val();
-      selectedLabel.getUserData().ordering = value;
+		if (selectedLabel) {
+	      selectedLabel.getUserData().ordering = value;
+	    }
     });
 
     lQuery("#iconsList").livequery(function () {
