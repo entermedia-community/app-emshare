@@ -81,7 +81,7 @@ $(document).ready(function () {
           {
             ...folderPort,
             id: draw2d.util.UUID.create(),
-            name: draw2d.util.UUID.create(),
+            name: "leftPort",
             locatorAttr: {
               x: 0,
               y: 62,
@@ -90,7 +90,7 @@ $(document).ready(function () {
           {
             ...folderPort,
             id: draw2d.util.UUID.create(),
-            name: draw2d.util.UUID.create(),
+            name: "rightPort",
             locatorAttr: {
               x: 150,
               y: 64,
@@ -99,7 +99,7 @@ $(document).ready(function () {
           {
             ...folderPort,
             id: draw2d.util.UUID.create(),
-            name: draw2d.util.UUID.create(),
+            name: "bottomPort",
             locatorAttr: {
               x: 75,
               y: 125,
@@ -805,7 +805,7 @@ $(document).ready(function () {
       e.stopPropagation();
       e.preventDefault();
       saveJSON(true); //is blocking?
-      
+
       var url = $(this).data("url");
       var id = $("#organizerId").val();
       $("#deployOrganizer").load(url + "?oemaxlevel=1&id=" + id);
@@ -1185,11 +1185,39 @@ $(document).ready(function () {
 
         data.id = id;
         data.name = $("#organizerName").val();
-        
-        if( data.name === undefined || data.name == "")
-        {
-			data.name = "New";	
-		}
+
+        if (data.name === undefined || data.name == "") {
+          data.name = "New";
+        }
+
+        function createChildParentRelation(parentId, childId) {
+          var parentNode = json.find(
+            (node) =>
+              node.composite === parentId && node.cssClass === "folderLabel"
+          );
+          if (parentNode && parentNode.userData.moduleid) {
+            var childNode = json.find((node) => node.id === childId);
+            childNode.userData.parent = parentNode.userData.moduleid;
+          }
+        }
+
+        if (usersaved) {
+          json.forEach((item) => {
+            if (item.type === "draw2d.Connection") {
+              if (item.source.port === "leftPort") {
+                var childId = item.source.node;
+                var parentId = item.target.node;
+                createChildParentRelation(parentId, childId);
+              }
+              if (item.target.port === "leftPort") {
+                var childId = item.target.node;
+                var parentId = item.source.node;
+                createChildParentRelation(parentId, childId);
+              }
+            }
+          });
+        }
+
         data.json = JSON.stringify(json);
         data.updatedby = userid;
         const date2 = new Date();
@@ -1234,10 +1262,9 @@ $(document).ready(function () {
           async: false, //Dont go forward until done
           data: updateddata,
           success: function (json) {
-			if( json.response.status  == "ok")
-			{
-				$("#organizerId").val(json.response.id);
-			}
+            if (json.response.status == "ok") {
+              $("#organizerId").val(json.response.id);
+            }
             if (usersaved) {
               saveBtn.removeClass("saving");
               saveBtn.addClass("saved");
