@@ -1210,8 +1210,18 @@ $(document).ready(function () {
               node.composite === parentId && node.cssClass === "folderLabel"
           );
           if (parentNode && parentNode.userData.moduleid) {
-            var childNode = json.find((node) => node.id === childId);
-            childNode.userData.parent = parentNode.userData.moduleid;
+			
+			var childNode = json.find(
+            (node) =>
+              node.composite === childId && node.cssClass === "folderLabel"
+          	);
+          	
+            //var childNode = json.find((node) => node.composite + "-label" === childId); //Hard to read
+            //groupId + "-label",
+            if( childNode)
+            {
+	            childNode.userData.parent = parentNode.userData.moduleid;
+	        }
           }
         }
 
