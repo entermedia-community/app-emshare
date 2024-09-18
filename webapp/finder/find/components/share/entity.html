@@ -9,27 +9,21 @@
 #end
 
 #set( $type = $mediaarchive.getMediaRenderType($asset.fileFormat))
-<div class="entityuploadheader mb-2" style="font-size:1rem; font-weight: 600;">[[Sharing Links]]</div>
-<div id="embed-wrapper" class="segment mb-2">
+<div class="tabheader">[[Sharing Links]]</div>
+<div id="embed-wrapper" class="m-2">
 	<div class="embedlink">
-		
-		
-	
-		
 		#set($entitytabopen = $context.getRequestParameter('entitytabopen'))
 		#if($moduleid)
 			#set( $sharelink = "$siteroot$apphome/views/modules/${moduleid}/userview/${entityid}/#dash($entity).html")
 		#end
-		
-		
 		#ifnotnull($sharelink )
 			<div id="embedalertdialog" style="display:none; position: absolute;" class="alert alert-success fader">[[Copied to Clipboard]]</div>
-				<div style="margin-bottom:20px">
-				<h5 class="pt-4">[[Data]]</h5> 
-				<div class="hyphenate" style="margin:5px 0">
+				
+				<h5>[[Data]]</h5> 
+				<div class="hyphenate hyphenate-bg" style="margin:5px 0">
 					<span class="sharelink">${sharelink}</span> 
 					<a href="#" 
-						class="copytoclipboard btn btn-xxs btn-secondary"
+						class="copytoclipboard btn btn-xs btn-primary"
 						data-targetdiv="embedalertdialog"
 						data-copytext="previewlink" title="[[Copy to Clipboard]]"><i class="far fa-copy"></i> [[Copy]]</a>
 				
@@ -42,10 +36,10 @@
 				#set( $sharefilelink = "$!{sharelink}?entitytabopen=media") 
 				
 				<h5 class="pt-4">[[Files]]</h5> 
-				<div class="hyphenate" style="margin:5px 0">
+				<div class="hyphenate hyphenate-bg" style="margin:5px 0">
 					<span class="sharelink">${sharefilelink}</span> 
 					<a href="#" 
-						class="copytoclipboard btn btn-xxs btn-secondary"
+						class="copytoclipboard btn btn-xs btn-primary"
 						data-targetdiv="embedalertdialog"
 						data-copytext="previewfileslink" title="[[Copy to Clipboard]]"><i class="far fa-copy"></i> [[Copy]]</a>
 				
@@ -53,19 +47,21 @@
 					<input class="sharelink" style="position:absolute; top:-1000px;" id="previewfileslink" value="$sharefilelink " />
 				
 				</div>
-				
-				
-				</div>
+
 		#end
 		
 	</div>
 </div>
 
 
-<div id="embed-wrapper" class=" segment">
+<div id="embed-wrapper" class="mt-4 mx-2 ">
 	<h5 class="mb-2">[[Share With]]</h5>
-	<div class="pb-3" style="font-size: 0.9em;">[[Add users who needs access to this record.]]</div>
+	<div class="pb-3">[[Add users who needs access to this record.]]</div>
+	<div class="row no-gutters">
+	<div class="col-5">
 	$pages.include("$apphome/views/modules/${moduleid}/edit/editdialog.html?entityid=$!{entityid}&moduleid=$!{topmoduleid}&viewid=entitypermissions", $context)
+	</div>
+	</div>
 </div>
 
 
