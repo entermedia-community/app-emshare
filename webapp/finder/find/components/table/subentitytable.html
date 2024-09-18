@@ -156,6 +156,19 @@ $context.putPageValue("details", $!details)
 		#end
 	
 	#else
+	
+		#set($addnew = "$!{siteroot}${apphome}/views/modules/${moduleid}/components/entities/addnew.html")
+		<a class="resultsnavlinkaddnew emdialog"
+		data-dialogid="entitypickeraddnew"
+		data-hidefooter="true"
+		data-targetdivinner="pickersearchentities"
+		data-ajaxreloadtargets="onetomanytab"
+		data-fieldexternalid="$!fieldexternalid"
+		data-fieldexternalvalue="$!fieldexternalvalue"
+		href="$addnew"
+		title="[[Create New]] #text($entity)">
+		<i class="bi bi-plus-lg mr-1"></i> [[Create New]]</a>
+	
 		#if($tabletype == "subentity")
 			#set($entity = $mediaarchive.getCachedData("module", $searchtype))	
 			<div id="resultsdiv$!{entity.getId()}"></div>
