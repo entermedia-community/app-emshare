@@ -110,19 +110,21 @@
 				</li>
 			#end
 			
-			##if($canaddtofavorites && $librarycol.id != "${user.id}-favorites" )
-				<li class="ent">
-					<a class="dropdown-item ajax"
-					data-targetdivinner="empty"
-					data-alertmessage="[[Added to Workflow]]"
-					data-oemaxlevel="2" 
-					title="[[Add To Workflow]]"  
-					href="$siteroot$apphome/views/modules/asset/editor/workflow/add.html?hitssessionid=$hits.getSessionId()"
-					>
-					<i class="bi bi-funnel-fill mr-2"></i> [[Workflow]]
-					</a>
-				</li>
-			##end
+			#ifnotnull($topmoduleid)
+				#if($permissions.can($topmoduleid, "view_assetworkflow"))
+					<li class="ent">
+						<a class="dropdown-item ajax"
+						data-targetdivinner="empty"
+						data-alertmessage="[[Added to Workflow]]"
+						data-oemaxlevel="2" 
+						title="[[Add To Workflow]]"  
+						href="$siteroot$apphome/views/modules/asset/editor/workflow/add.html?hitssessionid=$hits.getSessionId()"
+						>
+						<i class="bi bi-funnel-fill mr-2"></i> [[Workflow]]
+						</a>
+					</li>
+				#end
+			#end
 			
 			
 			#foreach ( $amodule in $userprofile.getEntities() )
