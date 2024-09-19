@@ -41,6 +41,7 @@ $context.putPageValue("topentityid", $topentityid)
 	#end
 #else
 	#set($previewurl = "$!{siteroot}$apphome/views/modules/$!moduleid/components/gridsample/preview/entity.html?id=$entityid&hitssessionid=$!hits.sessionId")
+	#set($urladdressbar = "$!{siteroot}$apphome/views/modules/$!moduleid/index.html?entityid=$entityid&hitssessionid=$!hits.sessionId")
 	#set($linktype = "emdialog entity-dialog")
 #end
 
@@ -103,10 +104,11 @@ $context.putPageValue("previewurl", $previewurl)
 		#if($moduleid == "searchcategory")
 			data-targetdiv="searchcategorytopcontainer"
 			data-oemaxlevel="2"
-	   	 	data-updateurl="true"
    	 	#else
    	 		data-hideheader="true" 
-		#end>
+		#end
+		data-updateurl="true"
+		data-urlbar="$!urladdressbar">
 		<div 
 			class="emfolder-inner assetdropentity drop-over" 
 			id="attachedmedia$entityid" 
