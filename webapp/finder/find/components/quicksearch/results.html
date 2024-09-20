@@ -67,8 +67,7 @@
 	#set($highlighted = $highlighter.highlight($livesearchfor, $suggestion, 20, true))
 	#ifnotnull($highlighted)
 	<li class="lisuggestion">
-		<a href="#" class="qssuggestion" 
-			data-suggestion="#esc($suggestion)">$highlighted</a>
+		<a href="#" class="qssuggestion" data-suggestion="#esc($suggestion)">$highlighted</a>
 	</li>	 
 	#end
 #end
@@ -153,13 +152,13 @@ $context.putPageValue("filter", $filter)
 		   $context.putPageValue("searchresults", true)
 			
 			<div class="emgridflex">  	
-				<div id="galleryimg-${rendertype}" 
-						class='emgrid #if($section != "favorites")emgridlimited#end entitiescontainer' 
+				<div id="galleryimg-entitiy" 
+						class='emgrid #if($section != "favorites")emgridlimited#end entitiescontainer emgridquickresults' 
 						style="width:100%"
 						data-fixedwidth="180" 
 						data-cellpadding="10"
 						data-entityrenderurl="$!{siteroot}$apphome/views/modules/${module.id}/components/gridsample/gridcell.html"
-						data-rendertype="$rendertype">
+						data-rendertype="$!rendertype">
 						#foreach( $hit in $hits.getPageOfHits() )
 							$context.putPageValue("hit", $hit)
 							#set($rendertype = $module.modulerendertype)

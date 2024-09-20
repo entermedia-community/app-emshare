@@ -1855,8 +1855,6 @@ lQuery(".entitycontainer").livequery(function (e) {
         url: entityreloadurl,
         data: options,
         success: function (data) {
-          // debugger;
-          console.log("reloading" + entity);
           targetdiv.replaceWith(data);
           $(window).trigger("resize");
         },
