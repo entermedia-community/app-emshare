@@ -70,21 +70,20 @@ $context.putPageValue("title",$title)
 	#end
 	
 		<td class="rowactions" noclick="true">
-			
-			$context.putPageValue("assetid",$hit.id)
-		    <div id="mvassetfavorite-$hit.id" class="media-info-icons mb-2">
-	        	$pages.include("$apphome/views/modules/asset/editor/favorite/index.html?targetdiv=mvassetfavorite", $context)
-	   		</div>
-			
-		#if(($candownload || $canconvert || $candownloadfpo) && $canquickdownload)
-		
-			#set($dlink =  "$applink/views/modules/asset/activity/downloadassets.html")
-		   	<a href="$dlink" 
-		   		class="emdialog" data-assetid="$hit.id" data-hidefooter="true" title="[[Download]] $!title">
-		       	<img src="$apphome/theme/images/download.svg" alt="[[Download]] $!title" />
-		    </a>
-		    
-		    
-	    #end
+			<div class="actionicons">
+				$context.putPageValue("assetid",$hit.id)
+			    <div id="mvassetfavorite-$hit.id" class=" mb-2">
+		        	$pages.include("$apphome/views/modules/asset/editor/favorite/index.html?targetdiv=mvassetfavorite", $context)
+		   		</div>
+				
+				#if(($candownload || $canconvert || $candownloadfpo) && $canquickdownload)
+				
+					#set($dlink =  "$applink/views/modules/asset/activity/downloadassets.html")
+				   	<a href="$dlink" class="emdialog  text-accent "  data-assetid="$hit.id" data-hidefooter="true" title="[[Download]] $!title">
+				       	<i class="bi bi-cloud-arrow-down bi2"></i></a>
+				    
+				    
+			    #end
+		    </div>
 			</td>	
  </tr>
