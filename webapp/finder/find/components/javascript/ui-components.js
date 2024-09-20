@@ -1321,6 +1321,7 @@ uiload = function () {
       trackKeydown = false;
       if (!$(this).hasClass("onfront")) {
         e.stopPropagation();
+        e.stopImmediatePropagation();
         return;
       } else {
         if ($(".modal:visible").length > 0) {
@@ -2861,7 +2862,7 @@ uiload = function () {
           },
         });
       } else {
-        console.log(e.keyCode);
+        //console.log(e.keyCode);
       }
     });
 
@@ -3002,7 +3003,7 @@ uiload = function () {
 
         form.trigger("submit");
       } else {
-        console.log(e.keyCode);
+        //console.log(e.keyCode);
       }
     });
     function filtertypeaheadsuccess() {
