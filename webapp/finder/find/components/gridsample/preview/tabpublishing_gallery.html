@@ -44,32 +44,28 @@ data-url="$componenthome/gridsample/preview/tabpublishing_gallery.html"
 
 		<div class="#if($publishing.enabled!="true")disabled-mask#end">
 
-			<div class="form-group">
-			<div class="form-check form-check-inline">
-				<input type="hidden" value="image_caption_enabled" name="field" />
-				<input class="form-check-input wg-autosave" type="checkbox" id="wgImageCaptionLabel" value="true" name="image_caption_enabled.value" #if($publishing.image_caption_enabled=="true")checked#end>
-				<label class="form-check-label" for="wgImageCaptionLabel">[[Image Captions Enabled]]</label>
-			</div>
-			</div>
-
 			
-			
-			<div class="form-group">
-				<div class="form-check form-check-inline">
-					<input type="hidden" value="externalcss_enabled" name="field" />
-					<input class="form-check-input wg-autosave" type="checkbox" id="wgExternalCSSLabel" value="true" name="externalcss_enabled.value"  #if($publishing.externalcss_enabled=="true")checked#end>
-					<label class="form-check-label" for="wgExternalCSSLabel">[[External CSS]]</label>
-				</div>
-				<input type="hidden" value="externalcss" name="field" />
-				<input  class="form-control wg-autosave"  placeholder="[[External CSS Link]]" name="externalcss.value" value="$!publishing.externalcss">
-			</div>
-			
-			<div class="form-group mb-1">
-				<input type="hidden" value="publishingfeedlayout" name="field" />
-				<label class="form-select-label mr-1" for="wgThemeLabel">[[Theme]]</label>
-				<select class="form-select form-select-sm wg-autosave" id="wgThemeLabel" name="publishingfeedlayout.value">
-					<option value="light" #if($publishing.publishingfeedlayout!="dark") selected #end>Light</option>
-					<option value="dark" #if($publishing.publishingfeedlayout=="dark") selected #end>Dark</option>
+			<div class="form-group mb-1"  style="display: none;">
+				<input type="hidden" value="sortby" name="field" />
+				<label class="form-select-label mr-1" for="wgSortLabel">[[Sort by]]</label>
+				#set ($alldetails = $mediaarchive.getAssetSearcher().getUserPropertyDetails() )
+				<select class="form-control form-control-sm form-select form-select-sm wg-autosave" id="wgSortLabel" name="sortby.value">
+					#foreach( $detail in $alldetails)
+							
+							#if($hits.searchQuery.isSortUp())
+								#set($value = "${detail.id}Up")
+								#set($currentSortOrder = "up")
+							#else
+								#set($value = "${detail.id}Down")
+								#set($currentSortOrder = "down")
+							#end
+							<option data-detailid="${detail.id}" 
+									value="$value" 
+									#if($publishing.sortby == $detail.id)) 
+										selected="selected" 
+										#set($currentSort = $detail.getText($context))
+									#end>$detail.getText($context)</option>
+						#end
 				</select>
 			</div>
 	
