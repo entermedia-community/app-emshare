@@ -1,12 +1,23 @@
-#set($targetcategoryid = $context.getRequestParameter("targetcategoryid"))
 
+#set($targetcategoryid = $context.getRequestParameter("targetcategoryid"))
+#ifnotnull($targetcategoryid)
 <div id="choosecategorycontainer">
 	<div class="tabheader">[[Choose Folder]]</div>
 
-	<div class="segment mx-auto">
-		<div class="w-100 text-center mb-3">
+	<div id="categoryimporer">
+	<div class="m-4">
+		
+		<div class="w-100 text-left mb-3">
+			<h6>
+				[[Copies files and subfoldres from specific folder]]
+			</h6>
+			<hr>
+		</div>
+		
+		
+		<div class="w-100 mb-3">
 			<a class="emdialog btn btn-brand light rounded" 
-				style="height: 46px;line-height: 36px;font-size: 0.9rem;width:250px"
+				style="height: 46px;line-height: 36px;font-size: 0.9rem;width:150px"
 				data-dialogid="catpicker" 
 				href="$home$apphome/components/entities/import/search/searchcategory.html?targetdiv=autocategoriespicked&clearselection=$!clear&action=${page.directory}/picked.html"
 					data-hidefooter="true" data-parameterdata="categoryvalues">
@@ -20,7 +31,7 @@
 		<form  style="display: block;" id="picker" name="wizard2" method="post"  
 		class="ajaxform" 
 		data-oemaxlevel="1" 
-		data-targetdivinner="choosecategorycontainer"
+		data-targetdivinner="categoryimporer"
 		action="$home$apphome/components/entities/import/import.html">
 	    <input type="hidden" name="targetcategoryid" value="$!targetcategoryid"/>
 
@@ -30,14 +41,16 @@
 			</ul>
 		</div>
 		
-		<div class="w-100 text-center">
+		<div class="w-100">
 			<button class="btn btn-brand btn-primary upload-btn" type="submit" id="finishbutton" >
 				<i class="bi bi-box-arrow-in-down rr mr-1" ></i>
 				[[Import]]
 			</button>
 		</div>
 	</form>
-		
+	</div>	
 	</div>
 </div>
 </div>
+
+#end
