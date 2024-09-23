@@ -1,0 +1,49 @@
+
+<div class="tabpulications-col overflow-y" style="padding:10px 20px;  flex: 0 0 500px;">
+		
+##//List available lightboxes that are enabled for this entity and person? Use person search? Use one to many? and boolean all?
+	#set($boxes =  $mediaarchive.getBean("entityManager").loadLightBoxesForModule($topmodule, $entity, $context.getUser()))
+	#set($assets =  $mediaarchive.getBean("entityManager").loadLightBoxeAssetsForModule($boxes,$topmodule, $entity, $context.getUser()))
+#foreach( $box in $boxes )
+
+	#set( $filtervalue = $$assets.findFilterValue($box.getId()))
+
+<div style="background-color: #eee; margin: 12px; padding:4px;">
+<a class="ajax" data-targetdiv="$!submodulepickerid" 
+	href="$apphome/views/modules/asset/dialogindex-searchlightbox.html?lightboxid=$box.id&entityid=$entity.id&moduleid=$module.id">
+
+#set( $moduleicon = $box.moduleicon)
+#ifnull($moduleicon)
+#set( $moduleicon = "check-circle-fill")
+#end
+<i class="bi bi-${moduleicon}" style="font-size:2em;"></i> <br>
+
+	$box 
+#ifnotnull( $filtervalue )
+#ifnull( $selectedfirst )
+	#set( $selectedfirst = $box)
+#end
+	($filtervalue.getCount())
+#end
+	
+</a>
+</div>
+
+#end
+
+<div id="entitypicker" style="background-color: #eee; margin: 12px; padding:4px;" data-entityid="$entity.id" data-moduleid="$topmodule.id"
+  class="assetdroplightbox #ifnull($selectedfirst) active #end side-select-menu">
+<a class="ajax" data-targetdiv="$!submodulepickerid" 
+	href="$apphome/views/modules/asset/dialogindex-searchlightbox.html?&entityid=$entity.id&moduleid=$module.id">
+
+#set( $moduleicon = $mediaarchive.getCachedData("module","asset").moduleicon)
+<i class="bi bi-${moduleicon}" style="font-size:2em;"></i> <br>
+
+	Unsorted Files
+	#set($defaultfolder =  $mediaarchive.getBean("entityManager").loadDefaultFolder($topmodule, $entity, $context.getUser(),true))
+	#set( $allassets = $mediaarchive.query("asset").exact("category",$defaultfolder).search($context) )
+	($allassets.size())
+</a>
+</div>
+
+</div>
