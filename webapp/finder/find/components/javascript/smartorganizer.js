@@ -1138,7 +1138,7 @@ $(document).ready(function () {
             selectedFolder = allSelected[0];
           }
         }
-        console.log(selectedFolder);
+
         var selectedFolderId = selectedFolder.getId();
         var prevIcon = canvas.getFigure(selectedFolderId + "-icon");
         if (!prevIcon) {
