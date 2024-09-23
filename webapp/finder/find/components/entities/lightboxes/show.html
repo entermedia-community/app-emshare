@@ -37,9 +37,15 @@ data-url="$componenthome/gridsample/preview/tabpublishing_gallery.html"
 	
 	$context.putPageValue("topmodule",$topmodule)
 	
+	#set($boxes =  $mediaarchive.getBean("entityManager").loadLightBoxesForModule($topmodule, $entity, $context.getUser()))
+	#set($assets =  $mediaarchive.getBean("entityManager").loadLightBoxeAssetsForModule($boxes,$topmodule, $entity, $context.getUser()))
+	#set($selectedfirst =  $mediaarchive.getBean("entityManager").findFirstSelectedLightBox($boxes,$assets))
+	$context.putPageValue("boxes",$boxes)
+	$context.putPageValue("assets",$assets)
+	$context.putPageValue("selectedbox",$selectedfirst)
 	
 	$pages.include("$componenthome/entities/lightboxes/sidemenu.html",$context)
 
-	$pages.include("$componenthome/entities/lightboxes/results.html",$context)
+	$pages.include("$componenthome/entities/lightboxes/search.html",$context)
 
 </div>

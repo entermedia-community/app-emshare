@@ -865,35 +865,31 @@ onloadselectors = function () {
 		  scope:scope,
         drop: function (event, ui) {
           var element = $(this);
-
-          var entityid = element.data("entityid");
-          var moduleid = element.data("moduleid");
-
           var assetid = ui.draggable.data("assetid");
-          var categoryid = ui.draggable.data("nodeid");
 
-          var hitssessionid = $("#resultsdiv").data("hitssessionid");
+		  var dragged = $(ui.draggable); 
+          var hitssessionid = dragged.closest("#resultsdiv").data("hitssessionid");
           if (!hitssessionid) {
             hitssessionid = $("#main-results-table").data("hitssessionid");
           }
 
-          var options = {};
-          if (assetid) {
-            options.assetid = assetid;
-          }
-          if (categoryid) {
-            options.categoryid = categoryid;
-          }
-          options.entityid = entityid;
-          options.moduleid = moduleid;
+          var options = element.cleandata();
+          if( assetid)
+          {
+	          options.assetid = assetid;
+	      }
           options.hitssessionid = hitssessionid;
 
           var targetdiv = node.data("targetdiv");
 
           $.ajax({
-            url: apphome + "/components/entities/lightboxes/assassetstobox.html",
+            url: apphome + "/components/entities/lightboxes/addassetstobox.html",
             data: options,
-            async: false,
+	        xhrFields: {
+	          withCredentials: true,
+	        },
+	        crossDomain: true,
+			type: "POST",
             success: function (data) {
               targetdiv = $("#" + targetdiv);
               if (targetdiv.length) {
