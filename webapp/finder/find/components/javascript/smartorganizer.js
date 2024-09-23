@@ -1129,10 +1129,16 @@ $(document).ready(function () {
           ".svg";
         var selectedFolder = canvas.getPrimarySelection();
         if (!selectedFolder) {
-          closeemdialog($(this).closest(".modal"));
-          hideLoader();
-          return;
+          var allSelected = canvas.getSelection().getAll().data;
+          if (allSelected.length == 0) {
+            closeemdialog($(this).closest(".modal"));
+            hideLoader();
+            return;
+          } else {
+            selectedFolder = allSelected[0];
+          }
         }
+        console.log(selectedFolder);
         var selectedFolderId = selectedFolder.getId();
         var prevIcon = canvas.getFigure(selectedFolderId + "-icon");
         if (!prevIcon) {
