@@ -202,6 +202,21 @@ $context.putPageValue("topmoduleid", $moduleid)
 			<div class="d-flex entity-actions-bar align-items-center text-white">
 				#if(!$ismulti && $entity)
 				
+				
+					#if($permissions.can($moduleid, "upload_files"))
+					
+				<a href="#"
+						class='btn btn-sm btn-accent entitytabactions tabactionlightboxes #if($entitytabopen=="tablightboxes")enabledaction #end '
+						data-tabaction="tablightboxes"
+						data-viewid="tablightboxes"
+						data-tabtype="tablightboxes" 
+						data-entityid="$!entity.getId()" 
+						data-topmoduleid="$!moduleid"
+						data-moduleid="$!moduleid"
+						data-hitssessionid="$entityhits.getSessionId()"
+						title="[[Upload to]] #text($module) "><i class="bi bi-check-circle mr-1"></i> [[Lightboxes]]</a>
+				#end	
+				
 				#if($permissions.can($moduleid, "upload_files") ||
 					$permissions.can($moduleid, "upload_folders") ||
 					$permissions.can($moduleid, "importurl") ||
@@ -407,6 +422,7 @@ $context.putPageValue("topmoduleid", $moduleid)
 					$entitytabopen  != "publishinggallery"  &&
 					$entitytabopen  != "publishingcarousel"  &&  
 					$entitytabopen  != "import" &&
+					$entitytabopen  != "tablightboxes" &&
 					$entitytabopen  != "export" &&
 					$entitytabopen  != "activityhistory")
 							
@@ -456,8 +472,16 @@ $context.putPageValue("topmoduleid", $moduleid)
 				#end
 				
 
-				
-				#if($entitytabopen == "import")
+				#if($entitytabopen == "tablightboxes")
+					
+					#if(!$ismulti)
+						#set($tabtype= "tablightboxes")
+						$context.putPageValue("tabtype", $tabtype)
+						$context.putPageValue("currenttab", $tabtype)
+						$context.putPageValue("viewid", $tabtype)
+						$pages.include("$componenthome/gridsample/preview/${tabtype}.html?entityid=$id", $context)
+					#end				
+				#elseif($entitytabopen == "import")
 					#if(!$ismulti)
 						#set($tabtype= "tabimport")
 						$context.putPageValue("tabtype", $tabtype)
@@ -465,9 +489,7 @@ $context.putPageValue("topmoduleid", $moduleid)
 						$context.putPageValue("viewid", "import")
 						$pages.include("$componenthome/gridsample/preview/tabimport.html?entityid=$id", $context)
 					#end
-				#end
-				
-				#if($entitytabopen == "export")
+				#elseif($entitytabopen == "export")
 					#if(!$ismulti)
 						#set($tabtype= "tabexport")
 						$context.putPageValue("tabtype", $tabtype)
