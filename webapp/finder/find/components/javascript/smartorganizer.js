@@ -1286,7 +1286,7 @@ $(document).ready(function () {
           async: false, //Dont go forward until done
           data: updateddata,
           success: function (json) {
-            if (json.response.status == "ok") {
+            if (json.response.status == "ok" && !id) {
               $("#organizerId").val(json.response.id);
             }
             if (usersaved) {
@@ -1596,6 +1596,13 @@ $(document).ready(function () {
     });
     loadJSON();
   });
+
+  window.onbeforeunload = function () {
+    var changed = $("#organizer_canvas").data("changed");
+    if (changed) {
+      return "You have unsaved changes. Are you sure you want to leave?";
+    }
+  };
 
   lQuery(".restoreversion").livequery("click", function (e) {
     e.stopImmediatePropagation();
