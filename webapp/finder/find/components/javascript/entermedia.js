@@ -900,7 +900,7 @@ onloadselectors = function () {
         over: outlineSelectionCol,
         out: unoutlineSelectionCol,
       });
-    });  //assetdropentity
+    });  //lightboxdropasset
 
   } //all droppable items
 
