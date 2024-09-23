@@ -703,12 +703,9 @@ $(document).ready(function () {
           selectedLabel = canvas.getFigure(selectedGroupId + "-label");
           if (!selectedLabel) return;
 
-
-			if( selectedIcon)
-			{
-          selectedLabel.getUserData().moduleicon = selectedIcon.getPath();            
-            }
-            
+          if (selectedIcon) {
+            selectedLabel.getUserData().moduleicon = selectedIcon.getPath();
+          }
 
           var moduleid = selectedLabel.getUserData()?.moduleid;
           if (moduleid === undefined || moduleid == "") {
@@ -1104,44 +1101,43 @@ $(document).ready(function () {
 
     $("#folderDesc").on("blur", function () {
       if (selectedLabel) {
-      	selectedLabel.getUserData().description = $(this).val();
+        selectedLabel.getUserData().description = $(this).val();
       }
     });
 
     $("#folderId").on("blur", function () {
-		if (selectedLabel) {
-      		selectedLabel.getUserData().moduleid = $(this).val();
-      	}
+      if (selectedLabel) {
+        selectedLabel.getUserData().moduleid = $(this).val();
+      }
     });
 
     $("#ordering").on("change", function () {
       var value = $(this).val();
-		if (selectedLabel) {
-	      selectedLabel.getUserData().ordering = value;
-	    }
+      if (selectedLabel) {
+        selectedLabel.getUserData().ordering = value;
+      }
     });
 
-    lQuery("#iconsList").livequery(function () {
-      if ($(this).children().length < 2050) {
-        var icHtm = "";
-        _bsIcons = $(this).text();
-        var bsIcons = JSON.parse(_bsIcons);
-        for (var i = 0; i < bsIcons.length; i++) {
-          icHtm += `<div><button type="button" class="btn"><img src="${apphome}/theme/icons/bootstrap/${bsIcons[i]}.svg" loading="lazy"/></button><span>${bsIcons[i]}</span></div>`;
-        }
-        $(this).html(icHtm);
-      }
+    lQuery("#icons-list").livequery(function () {
       $(this).on("click", "button", function (e) {
         e.stopImmediatePropagation();
         showLoader();
-        var iconPath = $(this).find("img").attr("src");
+        var iconPath =
+          apphome +
+          "/theme/icons/bootstrap/" +
+          $(this).parent().attr("title") +
+          ".svg";
         var selectedFolder = canvas.getPrimarySelection();
         if (!selectedFolder) {
+          closeemdialog($(this).closest(".modal"));
+          hideLoader();
           return;
         }
         var selectedFolderId = selectedFolder.getId();
         var prevIcon = canvas.getFigure(selectedFolderId + "-icon");
         if (!prevIcon) {
+          closeemdialog($(this).closest(".modal"));
+          hideLoader();
           return;
         }
         prevIcon.setPath(iconPath);
@@ -1210,18 +1206,16 @@ $(document).ready(function () {
               node.composite === parentId && node.cssClass === "folderLabel"
           );
           if (parentNode && parentNode.userData.moduleid) {
-			
-			var childNode = json.find(
-            (node) =>
-              node.composite === childId && node.cssClass === "folderLabel"
-          	);
-          	
+            var childNode = json.find(
+              (node) =>
+                node.composite === childId && node.cssClass === "folderLabel"
+            );
+
             //var childNode = json.find((node) => node.composite + "-label" === childId); //Hard to read
             //groupId + "-label",
-            if( childNode)
-            {
-	            childNode.userData.parent = parentNode.userData.moduleid;
-	        }
+            if (childNode) {
+              childNode.userData.parent = parentNode.userData.moduleid;
+            }
           }
         }
 
