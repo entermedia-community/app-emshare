@@ -573,7 +573,10 @@ onloadselectors = function () {
       revert: "invalid",
     });
   });
+  
+  //Check on jquery.draggable
   if (jQuery.fn.draggable) {
+	
     lQuery(".assetdraggable").livequery(function () {
       var scope = "default";
       var modalCheck = $(this).closest(".modal");
@@ -615,50 +618,10 @@ onloadselectors = function () {
         appendTo: "body",
         containment: "document",
         zIndex: 300000,
-      });
-      /*
-       * $(this).bind("drag", function(event, ui) {
-       * ui.helper.css("background-color", "red");
-       * ui.helper.css("border", "2px solid red");
-       * ui.helper.append("3"); });
-       */
-    });
-    lQuery(".categorydraggable").livequery(function () {
-      $(this).draggable({
-        delay: 300,
-        helper: function () {
-          var cloned = $(this).clone();
-
-          $(cloned).css({
-            border: "1px solid blue",
-            background: "#c9e8f2",
-            "min-width": "250px",
-          });
-
-          // var status =
-          // $('input[name=pagetoggle]').is(':checked');
-          var n = $("input.selectionbox:checked").length;
-          if (n > 1) {
-            cloned.append('<div class="dragcount emnotify">+' + n + "</div>");
-          }
-
-          return cloned;
-        },
-        revert: "invalid",
-      });
-      /*
-       * $(this).bind("drag", function(event, ui) {
-       * ui.helper.css("background-color", "red");
-       * ui.helper.css("border", "2px solid red");
-       * ui.helper.append("3"); });
-       */
-    });
-  }
-  lQuery(".headerdroppable").livequery(function () {
-    if (!$(this).droppable) {
-      return;
-    }
-
+      }); 
+    }); //assetdraggable
+      
+   lQuery(".headerdroppable").livequery(function () {
     $(this).droppable({
       drop: function (event, ui) {
         var source = ui.draggable.attr("id");
@@ -712,10 +675,33 @@ onloadselectors = function () {
       over: outlineSelectionCol,
       out: unoutlineSelectionCol,
     });
-  });
+  }); //headerdroppable
 
-  if (jQuery.fn.droppable) {
-    // Category tree droppable
+   lQuery(".categorydraggable").livequery(function () {
+      $(this).draggable({
+        delay: 300,
+        helper: function () {
+          var cloned = $(this).clone();
+
+          $(cloned).css({
+            border: "1px solid blue",
+            background: "#c9e8f2",
+            "min-width": "250px",
+          });
+
+          // var status =
+          // $('input[name=pagetoggle]').is(':checked');
+          var n = $("input.selectionbox:checked").length;
+          if (n > 1) {
+            cloned.append('<div class="dragcount emnotify">+' + n + "</div>");
+          }
+
+          return cloned;
+        },
+        revert: "invalid",
+      });
+    }); //categorydraggable
+	
     lQuery(".assetdropcategory .categorydroparea").livequery(function () {
       var scope = "default";
       var modalCheck = $(this).closest(".modal");
@@ -799,7 +785,7 @@ onloadselectors = function () {
         over: outlineSelectionCol,
         out: unoutlineSelectionCol,
       });
-    });
+    });  //assetdropcategory
 
     // Entities tree droppable
     lQuery(".assetdropentity").livequery(function () {
@@ -863,12 +849,62 @@ onloadselectors = function () {
         over: outlineSelectionCol,
         out: unoutlineSelectionCol,
       });
-    });
+    });  //assetdropentity
 
-    function reloadentityattachedmedia(node) {}
-  } // droppable
 
-  $(this)
+ // Entities tree droppable
+    lQuery(".lightboxdropasset").livequery(function () {
+      var node = $(this);
+      node.droppable({
+        drop: function (event, ui) {
+          var element = $(this);
+
+          var entityid = element.data("entityid");
+          var moduleid = element.data("moduleid");
+
+          var assetid = ui.draggable.data("assetid");
+          var categoryid = ui.draggable.data("nodeid");
+
+          var hitssessionid = $("#resultsdiv").data("hitssessionid");
+          if (!hitssessionid) {
+            hitssessionid = $("#main-results-table").data("hitssessionid");
+          }
+
+          var options = {};
+          if (assetid) {
+            options.assetid = assetid;
+          }
+          if (categoryid) {
+            options.categoryid = categoryid;
+          }
+          options.entityid = entityid;
+          options.moduleid = moduleid;
+          options.hitssessionid = hitssessionid;
+
+          var targetdiv = node.data("targetdiv");
+
+          $.ajax({
+            url: apphome + "/components/entities/lighbox/assassetstobox.html",
+            data: options,
+            async: false,
+            success: function (data) {
+              targetdiv = $("#" + targetdiv);
+              if (targetdiv.length) {
+					targetdiv.html(data);
+                  targetdiv.removeClass("dragoverselected");
+              }
+            },
+          });
+        },
+        tolerance: "pointer",
+        over: outlineSelectionCol,
+        out: unoutlineSelectionCol,
+      });
+    });  //assetdropentity
+
+  } //all droppable items
+
+  $(this)  //Is this used?
     .find(".autosubmited")
     .change(function () {
       $(this).parents("form").submit();
