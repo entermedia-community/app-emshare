@@ -13,6 +13,8 @@
 #if(!$tabtype)
 	#set($tabtype = $context.getRequestParamenter("tabtype"))
 #end
+
+#set($tablink = "$componenthome/gridsample/preview/${tabtype}.html")
 	
 #if($tabtype == "tabsubmodulehome")
 	#set($tabid = "tab_${viewid}")
@@ -24,6 +26,7 @@
 	#set($tabname = "[[Lightboxes]]")
 	#set($viewid = "tablightboxes")
 	#set($moduleicon = "check-circle")
+	#set($tablink = "$componenthome/entities/lightboxes/show.html")
 	
 #elseif($tabtype=="tabimport")
 	#set($tabid = "tab_import")
@@ -62,8 +65,7 @@
 			href="#"
 			data-isnewentity="true"
 		#else
-			href="$componenthome/gridsample/preview/${tabtype}.html"
-			
+			href="$!{tablink}"
 		#end 
 		class="entity-tab-label"
 		id="tab_$!tabid"

@@ -1,8 +1,13 @@
+#set( $searchtype = $context.findValue("searchtype"))
+#set( $parentsearchtype = $searchtype)
 #if( !$entity)
 	#set($entityid = $context.getRequestParameter("entityid"))
-	#set( $entity  = $mediaarchive.getData($parentsearchtype, $entityid) )
+	#set( $entity  = $mediaarchive.getData($searchtype, $entityid) )
 #end
 #set($entityid = $entity.id)
+$context.putPageValue("entity", $entity)
+$context.putPageValue("entityid", $entityid)
+
 #if(!$currenttab)
 	#set($currenttab = $context.getRequestParameter("currenttab"))
 #end
@@ -30,13 +35,11 @@ data-url="$componenthome/gridsample/preview/tabpublishing_gallery.html"
 
 <div id="publishingcontainer" class="tabpulications" style="height: 100%;">
 	
-$context.putPageValue("topmodule",$topmodule)
-$context.putPageValue("entity",$entity)
+	$context.putPageValue("topmodule",$topmodule)
+	
+	
+	$pages.include("$componenthome/entities/lightboxes/sidemenu.html",$context)
 
-$pages.include("$componenthome/entities/lightboxes/sidemenu.html",$context)
-
+	$pages.include("$componenthome/entities/lightboxes/results.html",$context)
 
 </div>
-
-$pages.include("$componenthome/entities/lightboxes/results.html",$context)
-
