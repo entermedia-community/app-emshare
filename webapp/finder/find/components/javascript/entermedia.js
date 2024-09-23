@@ -854,8 +854,15 @@ onloadselectors = function () {
 
  // Entities tree droppable
     lQuery(".lightboxdropasset").livequery(function () {
+	  var scope = "default";
+      var modalCheck = $(this).closest(".modal");
+      if (modalCheck.length) {
+        scope = "modal";
+      }
+
       var node = $(this);
       node.droppable({
+		  scope:scope,
         drop: function (event, ui) {
           var element = $(this);
 
@@ -884,7 +891,7 @@ onloadselectors = function () {
           var targetdiv = node.data("targetdiv");
 
           $.ajax({
-            url: apphome + "/components/entities/lighbox/assassetstobox.html",
+            url: apphome + "/components/entities/lightboxes/assassetstobox.html",
             data: options,
             async: false,
             success: function (data) {
