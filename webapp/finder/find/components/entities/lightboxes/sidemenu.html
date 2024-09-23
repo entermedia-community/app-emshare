@@ -1,5 +1,4 @@
-
-<div class="tabpulications-col overflow-y" style="padding:10px 20px;">
+<div class="overflow-y" style="padding:10px 20px; width: 220px;">
 		
 ##//List available lightboxes that are enabled for this entity and person? Use person search? Use one to many? and boolean all?
 	#set($boxes =  $mediaarchive.getBean("entityManager").loadLightBoxesForModule($topmodule, $entity, $context.getUser()))
@@ -8,31 +7,33 @@
 
 	#set( $filtervalue = $$assets.findFilterValue($box.getId()))
 
-<div style="background-color: #eee; margin: 12px; padding:4px;">
-<a class="ajax" data-targetdiv="$!submodulepickerid" 
-	href="$apphome/views/modules/asset/dialogindex-searchlightbox.html?lightboxid=$box.id&entityid=$entity.id&moduleid=$module.id">
-
-#set( $moduleicon = $box.moduleicon)
-#ifnull($moduleicon)
-#set( $moduleicon = "check-circle-fill")
-#end
-<i class="bi bi-${moduleicon}" style="font-size:2em;"></i> <br>
-
-	$box 
-#ifnotnull( $filtervalue )
-#ifnull( $selectedfirst )
-	#set( $selectedfirst = $box)
-#end
-	($filtervalue.getCount())
-#end
+	<div class="entitytabmenubtn m-2 rounded">
+	<a class="ajax text-center"
+		data-targetdiv="$!submodulepickerid" 
+		href="$apphome/views/modules/asset/dialogindex-searchlightbox.html?lightboxid=$box.id&entityid=$entity.id&moduleid=$module.id">
 	
-</a>
-</div>
+	#set( $moduleicon = $box.moduleicon)
+	#ifnull($moduleicon)
+	#set( $moduleicon = "check-circle-fill")
+	#end
+	<i class="bi bi-${moduleicon}" style="font-size:2em;"></i> <br>
+	
+		$box 
+	#ifnotnull( $filtervalue )
+	#ifnull( $selectedfirst )
+		#set( $selectedfirst = $box)
+	#end
+		($filtervalue.getCount())
+	#end
+		
+	</a>
+	</div>
 
 #end
 
-<div id="entitypicker" style="background-color: #eee; margin: 12px; padding:4px;" data-entityid="$entity.id" data-moduleid="$topmodule.id"
-  class="assetdroplightbox #ifnull($selectedfirst) active #end side-select-menu">
+<div id="entitypicker" 
+	data-entityid="$entity.id" data-moduleid="$topmodule.id"
+	class="entitytabmenubtn m-2 rounded assetdroplightbox #ifnull($selectedfirst) active #end side-select-menu">
 <a class="ajax" data-targetdiv="$!submodulepickerid" 
 	href="$apphome/views/modules/asset/dialogindex-searchlightbox.html?&entityid=$entity.id&moduleid=$module.id">
 

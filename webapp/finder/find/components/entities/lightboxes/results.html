@@ -1,3 +1,9 @@
+#if($module && $entityid)
+	#set($defaultfolder =  $mediaarchive.getBean("entityManager").loadDefaultFolder($module, $entity, $context.getUser()))
+	$context.putPageValue("defaultfolder", $defaultfolder)
+#end
+
+
 <div  id="$!submodulepickerid"  class="tabpulications-col h-100 submodulepicker entity-tab-content" >
 #ifnotnull( $selectedfirst)
 		$pages.include("$apphome/views/modules/asset/dialogindex-searchlightbox.html?lightboxid=$selectedfirst.getId()", $context)
