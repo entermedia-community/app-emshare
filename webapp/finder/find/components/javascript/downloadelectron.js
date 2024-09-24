@@ -1036,10 +1036,10 @@ jQuery(document).ready(function () {
     ipcRenderer.on("file-added", (_, catPath) => {
       var watchEntity = $(".watch-entity");
       var isDownloading = watchEntity.data("downloading");
-      console.log(isDownloading);
       if (watchEntity.length > 0 && !isDownloading) {
         var path = watchEntity.data("toplevelcategorypath");
-        if (catPath === path) {
+        console.log(catPath, path);
+        if (catPath === path || catPath === "/" + path) {
           scanEntityChange();
         }
       }
