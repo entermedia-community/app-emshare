@@ -11,22 +11,27 @@
 
 			##force specific sidebar from URL only if sidebars open
 			#set($forcedsidebarcomponent = $context.getRequestParameter("sidebarcomponent"))
-
-			#ifnull($forcedsidebarcomponent)
-				#set($forcedsidebarcomponent = $content.sidebarcomponent)
-			#end
-
-			#ifnotnull($forcedsidebarcomponent)
+			
+			#if($forcedsidebarcomponent == "none")
 				#set( $sidebarcomponent = $forcedsidebarcomponent )
-			#end
+			#else
 
-			#ifnull($sidebarcomponent)
-				#set( $sidebarcomponent = $userprofile.get("sidebarcomponent"))
-			#end
-
-			##very first time
-			#if( !$sidebarcomponent && $modulehits.isEmpty() )
-			#set( $sidebarcomponent = "guide" )
+				#ifnull($forcedsidebarcomponent)
+					#set($forcedsidebarcomponent = $content.sidebarcomponent)
+				#end
+	
+				#ifnotnull($forcedsidebarcomponent)
+					#set( $sidebarcomponent = $forcedsidebarcomponent )
+				#end
+	
+				#ifnull($sidebarcomponent)
+					#set( $sidebarcomponent = $userprofile.get("sidebarcomponent"))
+				#end
+	
+				##very first time
+				#if( !$sidebarcomponent && $modulehits.isEmpty() )
+				#set( $sidebarcomponent = "guide" )
+				#end
 			#end
 
 			<div class="sidebar-togglers ">
@@ -37,7 +42,7 @@
 					data-action="home"
 					data-targetdiv="applicationcontent" 
 					data-oemaxlevel="4" 
-					data-sidebarcomponent="home"
+					data-sidebarcomponent="none"
 					data-resetsearch="true"
 					data-updateurl="true" 
 					data-clearfilters="true"

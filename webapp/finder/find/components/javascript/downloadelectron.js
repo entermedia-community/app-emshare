@@ -1060,4 +1060,11 @@ jQuery(document).ready(function () {
     var elem = app;
     return elem.data("siteroot") + "/" + elem.data("mediadbappid");
   }
+  
+
+  lQuery(".desktopdirectdownload").livequery("click", function (e) {
+      e.preventDefault();
+      ipcRenderer.send("directDownload", $(this).attr("href") );
+  });  
+  
 });
