@@ -863,40 +863,43 @@ onloadselectors = function () {
       var node = $(this);
       node.droppable({
 		  scope:scope,
-        drop: function (event, ui) {
-          var element = $(this);
-          var assetid = ui.draggable.data("assetid");
-
-		  var dragged = $(ui.draggable); 
-          var hitssessionid = dragged.closest("#resultsdiv").data("hitssessionid");
-          if (!hitssessionid) {
-            hitssessionid = $("#main-results-table").data("hitssessionid");
-          }
-
-          var options = element.cleandata();
-          if( assetid)
-          {
-	          options.assetid = assetid;
-	      }
-          options.hitssessionid = hitssessionid;
-
-          var targetdiv = node.data("targetdiv");
-
-          $.ajax({
-            url: apphome + "/components/entities/lightboxes/addassetstobox.html",
-            data: options,
-	        xhrFields: {
-	          withCredentials: true,
-	        },
-	        crossDomain: true,
-			type: "POST",
-            success: function (data) {
-              targetdiv = $("#" + targetdiv);
-              if (targetdiv.length) {
-					targetdiv.html(data);
-                  targetdiv.removeClass("dragoverselected");
-              }
-            },
+          drop: function (event, ui) {
+	          var element = $(this);
+	          var assetid = ui.draggable.data("assetid");
+	
+			  var dragged = $(ui.draggable); 
+	          var hitssessionid = dragged.closest("#resultsdiv").data("hitssessionid");
+	          if (!hitssessionid) {
+	            hitssessionid = $("#main-results-table").data("hitssessionid");
+	          }
+	
+	          var options = element.cleandata();
+	          if( assetid)
+	          {
+		          options.assetid = assetid;
+		      }
+	          options.hitssessionid = hitssessionid;
+	
+	          var targetdiv = node.data("targetdiv");
+	          
+	          var moduleid = node.data("moduleid");
+	
+	          $.ajax({
+	            url: apphome + "/views/modules/"+moduleid+ "/components/entities/lightboxes/addassetstobox.html",
+	            data: options,
+		        xhrFields: {
+		          withCredentials: true,
+		        },
+		        crossDomain: true,
+				type: "POST",
+	            success: function (data) {
+	              targetdiv = node.closest("#lightboxessidemenu");
+	              if (targetdiv.length) {
+						targetdiv.replaceWith(data);
+	              }
+		            node.removeClass("dragoverselected");
+	              
+	            },
           });
         },
         tolerance: "pointer",

@@ -365,9 +365,10 @@ $context.putPageValue("topmoduleid", $moduleid)
 							#if($entitytabopen == "media")
 								$context.putPageValue("currenttab", $entitytabopen)
 							#end
-							#set($subcomponenthome = "$apphome/views/modules/asset/components")
-							$pages.include("$subcomponenthome/gridsample/preview/entitytabmenu.html", $context)
+							$pages.include("$apphome/views/modules/asset/components/gridsample/preview/entitytabmenu.html", $context)
 						#end
+						
+						$context.putPageValue("tabmodule", "")
 						
 						##import tab
 						#if($entitytabopen == "import")
@@ -487,10 +488,7 @@ $context.putPageValue("topmoduleid", $moduleid)
 				#if($entitytabopen == "tablightboxes")
 					
 					#if(!$ismulti)
-						#set($tabtype= "tablightboxes")
-						$context.putPageValue("tabtype", $tabtype)
 						$context.putPageValue("currenttab", $tabtype)
-						$context.putPageValue("viewid", $tabtype)
 						$pages.include("$componenthome/entities/lightboxes/show.html?entityid=$id", $context)
 					#end				
 				#elseif($entitytabopen == "import")

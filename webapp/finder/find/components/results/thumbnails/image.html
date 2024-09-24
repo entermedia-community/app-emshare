@@ -1,19 +1,8 @@
-#if ($asset)
-	#set ($hit = $asset)
-#end
-#if (!$hit)
-	#set ($hit = $asset)
-#end
-$context.putPageValue("hit", $hit)
-
 #if(!$title)
-	#if(!$asset)
-		#set( $asset = $mediaarchive.getAsset($hit.getId()) )
-	#end		         	
-	#if( $asset.assettitle )
-		#set($title =  $asset.getText("assettitle",$context)) 
+	#if( $hit.assettitle )
+		#set($title =  $hit.getText("assettitle",$context)) 
 	#else 
-		#set($title = $asset.getText("name",$context) )
+		#set($title = $hit.getText("name",$context) )
 	#end
 #end
 
@@ -67,7 +56,7 @@ $context.putPageValue("thumbsize", $thumbsize)
 			#set($imagepath = "${imagepath}?_=$tstamp")
 		#end
 		$context.putPageValue("imagepath", $imagepath)
-		$context.putPageValue("asset", $asset)
+		$context.putPageValue("asset", $hit)
 		$context.putPageValue("imagesize", $imagesize)
 		
 		#if($moduleid == "faceprofilegroup")

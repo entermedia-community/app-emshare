@@ -1,10 +1,11 @@
-<div class="overflow-y " style="padding:10px 20px; width: 220px;">
+<div id="lightboxessidemenu" class="overflow-y " style="padding:10px 20px; width: 220px;">
 		
-	
-#foreach( $box in $boxes )
+#set($assetsadded = $context.getPageValue("assetsadded"))
+#set($assetsaddedto = $context.getRequestParameter("lightboxid"))
 
+#foreach( $box in $boxes )
 	#set( $filtervalue = $assets.findFilterChildValue("lightboxid",$box.getId()))
-	<div class="entitytabmenubtn m-2 rounded lightboxdropasset #if( $box == $selectedbox ) active #end"
+	<div class="entitytabmenubtn m-2 rounded lightboxdropasset #if( $box.id == $selectedbox.id ) active #end"
 		data-entityid="$entity.id" data-moduleid="$topmodule.id" data-lightboxid="$box.id"
 	>
 	<a class="ajax text-center"
@@ -21,7 +22,11 @@
 	#ifnotnull( $filtervalue )
 		($filtervalue.getCount())
 	#end
-		
+	#ifnotnull( $assetsadded )
+		#if($box.id == $assetsaddedto )
+			<span class='fader emnotify'>+$!{assetsadded}</span>
+		#end
+	#end
 	</a>
 	</div>
 

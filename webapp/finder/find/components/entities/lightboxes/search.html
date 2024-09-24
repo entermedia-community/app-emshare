@@ -6,18 +6,18 @@
 #end
 #ifnull( $selectedbox)
 
-
-#if($module && $entity)
-	#set($defaultfolder =  $mediaarchive.getBean("entityManager").loadDefaultFolder($module, $entity, $context.getUser()))
-	$context.putPageValue("defaultfolder", $defaultfolder)
-#end
-
+	
+	#if($module && $entity)
+		#set($defaultfolder =  $mediaarchive.getBean("entityManager").loadDefaultFolder($module, $entity, $context.getUser()))
 		$context.putPageValue("defaultfolder", $defaultfolder)
-		$context.putPageValue("categoryid", $defaultfolder.getId())
-		$context.putPageValue("entitydialogid", "entity")
-		$context.putPageValue("hidedialogtree", true)
-		
-		$pages.include("$apphome/views/modules/asset/dialogindex.html", $context)
+	#end
+
+	$context.putPageValue("defaultfolder", $defaultfolder)
+	$context.putPageValue("categoryid", $defaultfolder.getId())
+	$context.putPageValue("entitydialogid", "entity")
+	$context.putPageValue("hidedialogtree", true)
+	
+	$pages.include("$apphome/views/modules/asset/dialogindex.html", $context)
 #end	
 	<div class="clearfix"></div>
 </div>
