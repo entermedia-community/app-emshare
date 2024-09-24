@@ -2870,7 +2870,7 @@ uiload = function () {
             if (data) {
               searchmodaldialog.html(data);
               togglemodaldialog("show");
-              gridResize();
+              jQuery(window).trigger("resize");
             }
           },
           complete: function () {
@@ -2935,7 +2935,7 @@ uiload = function () {
               searchmodaldialog.html(data);
               togglemodaldialog("show");
               $("#mainsearchvalue").focus();
-              gridResize();
+			  jQuery(window).trigger("resize");
             }
           },
           complete: function () {
@@ -4635,8 +4635,8 @@ autoreload = function (div, callback) {
   if (url != undefined) {
     var options = div.data();
     replaceelement(url, div, options, callback);
+  jQuery(window).trigger("resize");
 
-    gridResize();
   }
 };
 
@@ -4789,7 +4789,6 @@ jQuery(window).on("resize", function () {
   adjustdatamanagertable();
   resizesearchcategories();
   resizecolumns();
-  gridResize();
 });
 
 jQuery(document).on("domchanged", function () {
