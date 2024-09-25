@@ -5,6 +5,57 @@
 #end
 $context.putPageValue("detail",$detail)
 
-$pages.include("$apphome/components/xml/entity.html?$args", $context)
-##debug($detail.listId)
+#set($entity_module = $detail.getListId())
 
+<div>
+	<ul class="entity-value-list" id="entitypicker${detail.id}">
+		
+			#set( $row = false )
+			#set( $row = $searcherManager.getCachedData($detail.getListCatalogId(), $detail.getListId(), $value ))
+		    #if( $row )
+			    #set($entityid = $row.id)
+			    #set($link = "$!{siteroot}$applink/views/modules/$!{entity_module}/components/gridsample/preview/entity.html?id=$entityid")
+			    <li>
+			    <a href="$link" 
+			    	class="emdialog entity-dialog" 
+			    	data-noesc="true" 
+			    	data-entityid="$!row.getId()">#text($row)</a>  
+			    	<a class="removeentity"  href="#" title="[[Remove]]" onclick='$(this).closest("li").remove(); return false;'><i class="bi bi-x"></i></a>
+			    	<input type="hidden" name="${detail.id}.value" value="$!row.getId()" />
+			    </li>
+		    #end 
+		
+		 <li style="display: none;" id="pickedtemplateREPLACEID">
+		    <a href="$!{siteroot}$applink/views/modules/$!{entity_module}/components/gridsample/preview/entity.html?id=REPLACEID" 
+		    	class="emdialog entity-dialog" 
+		    	data-noesc="true"
+		    	onclick='  return false;'></a>  
+		    	<a class="removeentity" href="#" title="[[Remove]]" onclick='$(this).closest("li").remove();  return false;'><i class="bi bi-x"></i></a>
+		    	<input type="hidden" name="REPLACEFIELDNAME${detail.id}.value" value="REPLACEID" />
+		    </li>	
+	</ul>
+	
+	<input type="hidden" name="${detail.id}.size" value="$!{values.size()}" data-entitypicker="entitypicker${detail.id}" class="#if($detail.isRequired()) entityRequired #end" />
+
+	
+	#set($pickmoduleid = $detail.getListId())
+	
+	#set($pickerurl= "$applink/views/modules/$!{pickmoduleid}/components/entities/search/searchpicker.html")
+	#set($module = $mediaarchive.getCachedData("module", $pickmoduleid ))
+	#set($label = "[[Choose]]")
+	<a href="$pickerurl" 
+		class="emdialog btn btn-sm btn-primary"
+		data-dialogid="dialogpicker$!{entity_module}"
+		data-width="1200"
+		data-foreignkeyid = '$!{detail.get("foreignkeyid")}'
+		data-foreignkeyvalue = '$!{detail.get("foreignkeyvalue")}'
+		data-entitymodule="$!{entity_module}"
+		data-pickertarget="entitypicker${detail.id}"
+		data-targettype="entitypickerfield"
+		data-pickersearchaddnew="true"
+		data-hidefooter="true"
+		title="[[Add]] #text($module)">$label</a>
+</div>	
+	
+	
+	

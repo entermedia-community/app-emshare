@@ -438,10 +438,10 @@ $(document).ready(function () {
     $.get(link, function (data) {
 	      node.append(data);
 	      var theinput = $("#treeaddnodeinput");
-	      if(theinput.length) {
+	      if(theinput.length > 0) {
 		      theinput.focus({ preventScroll: false });
 		      //theinput.select();
-		      theinput.focus();
+		      //theinput.focus();
 	      }
 	      $(document).trigger("domchanged");
     });

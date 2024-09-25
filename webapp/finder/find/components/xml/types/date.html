@@ -10,7 +10,9 @@
 	#set($idcount = "")
 #end
 
-<input name="$!{detailprefix}${detail.getId()}.value" id="${detail.id}${idcount}value" value="#esc($!value)"  type="hidden" >
+#set($formateddate = $context.getSearchDate($value))
+
+<input name="$!{detailprefix}${detail.getId()}.value" id="${detail.id}${idcount}value" value="#esc($!formateddate)"  type="hidden" >
 <input type="text" 
 	class="datepicker form-control #if($detail.isRequired()  && !$multiedit) required #end " 
 	data-targetid="${detail.id}${idcount}value" /> 

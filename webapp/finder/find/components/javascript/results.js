@@ -1443,7 +1443,7 @@ jQuery(document).ready(function (url, params) {
   });
   
   */
-}); // document ready
+
 
 // TODO: remove this. using ajax Used for modules
 togglehits = function (action) {
@@ -1591,7 +1591,8 @@ lQuery("a.assettab").livequery("click", function (e) {
       // saveProfileProperty("assetopentabassettable",assettabtable,function(){});
     }
   }
-
+});
+  
   //FUSE Library
   var Fuse;
   eval(
@@ -1645,5 +1646,9 @@ lQuery("a.assettab").livequery("click", function (e) {
         search(searchInput.val());
       }, 250);
     });
-  });
+  
 });
+
+}); // document ready
+
+
