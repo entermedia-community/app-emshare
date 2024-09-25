@@ -1140,6 +1140,7 @@ jQuery(document).ready(function (url, params) {
       .parent()
       .siblings("input.resultsselection.selectionbox");
     checkbox.prop("checked", !checkbox.prop("checked"));
+    handleAsssetSelect(checkbox);
   });
   lQuery("input.resultsselection.selectionbox").livequery(
     "change",
