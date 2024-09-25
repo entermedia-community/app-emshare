@@ -5,7 +5,9 @@
 	#set ( $ismodulesearch = $context.getRequestParameter("ismodulesearch") )
 #end
 
-<div id="resultsdiv" class="scroll-resultsdiv lightboxselect"
+#set($componenthome = "$apphome/views/modules/asset/components")
+
+<div id="resultsdiv" class="scroll-resultsdiv resultsdiv lightboxselect"
 	data-hitssessionid="$!hits.getSessionId()" ##it breaks drag&drop
 	data-hitsname="$!hits.getHitsName()"
 	data-componenthome="$!componenthome"
@@ -72,7 +74,7 @@
 	#set($click = "$siteroot$viewerlink?hitssessionid=${hits.getSessionId()}&assetid=${hit.id}")
 	$context.putPageValue("click", "click" )
 		       
-			<div class="masonry-grid-cell" 
+			<div class="masonry-grid-cell assetdraggable" 
 				id="gallerycell_$!{hit.id}"
 				data-assetid="$!{hit.id}"
 				#if($rendertype == "audio")
