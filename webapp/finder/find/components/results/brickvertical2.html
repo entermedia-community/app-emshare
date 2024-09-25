@@ -8,7 +8,7 @@
 #set($componenthome = "$apphome/views/modules/asset/components")
 
 <div id="resultsdiv" 
-	class="h-100 scroll-resultsdivX lightboxselect"
+	class="scroll-resultsdivX lightboxselect"
 	data-hitssessionid="$!hits.getSessionId()" ##it breaks drag&drop
 	data-hitsname="$!hits.getHitsName()"
 	data-componenthome="$!componenthome"
@@ -27,10 +27,38 @@
 	data-inputid="$!inputid"
 	data-ismaingrid="true"
 	data-stackedviewpath="">
+	
+#set($maintargetdiv = "lightboxresultsdiv")
+$context.putPageValue("maintargetdiv", $maintargetdiv)
 
-	#if( $hideheader &&  $hideheader != "true")
-		$pages.include("$apphome/views/modules/asset/components/results/header.html",$context) 
-	#end
+$context.putPageValue("dialogresults", true)
+
+#set( $targetdivmedia = "dialogmediaentity")
+$context.putPageValue("targetdivmedia", $targetdivmedia)
+
+
+<div id="$maintargetdiv"
+	class="dialogassetresults assetresults h-100 lightboxselect" 
+	data-moduleid="asset"
+	data-resultview="$!resultview"
+	##data-url="$apphome/views/modules/asset/dialogindex.html"
+	data-categoryid="$!categoryid"
+	data-nodeID="$!categoryid"
+	
+	data-dialogresults="true"
+	data-hitssessionid="$!hits.getSessionId()"
+	data-componenthome = "$!componenthome"
+	data-searchhome="$!home$!componenthome/results"
+	data-targetdiv="$maintargetdiv"
+	data-topmoduleid="$!topmoduleid"
+	data-entityid="$!entityid"
+	data-rootcategory="$!rootcategory"
+	data-oemaxlevel="1"
+	>
+
+#if( $hideheader &&  $hideheader != "true")
+	$pages.include("$apphome/views/modules/asset/components/results/header.html",$context) 
+#end
 	<div class="scrollview">
 		<div class="brickvertical" 
 			data-maxheight="180" 
@@ -53,30 +81,30 @@
 			$context.putPageValue("hit", $hit)
 			$context.putPageValue("asset", $hit)
 
-		
-			#set($type = $hit.getSearchHit().getType())
-			$context.putPageValue("type", $type)
-		
-			#set($rendertype = $mediaarchive.getMediaRenderType($hit.fileformat))
-			$context.putPageValue("rendertype", $rendertype)
-		
-			#set($sourcepath = $hit.sourcepath)
-			$context.putPageValue("sourcepath", $hit.sourcepath )
-			
-			$context.putPageValue("assetid", $hit.id)
-			$context.putPageValue("count", $count )
-		
-			$context.putPageValue("thumbsize", "mediumplus" )
-			
-			#set($assetwidth = $mediaarchive.getRealImageWidth($hit))
-			$context.putPageValue("assetwidth", "assetwidth" )
-			
-			#set($assetheight = $mediaarchive.getRealImageHeight($hit))
-			$context.putPageValue("assetheight", "assetheight" )
-			
-			#set($click = "$siteroot$viewerlink?hitssessionid=${hits.getSessionId()}&assetid=${hit.id}")
-			$context.putPageValue("click", "click" )
-			       
+	
+	#set($type = $hit.getSearchHit().getType())
+	$context.putPageValue("type", $type)
+
+	#set($rendertype = $mediaarchive.getMediaRenderType($hit.fileformat))
+	$context.putPageValue("rendertype", $rendertype)
+
+	#set($sourcepath = $hit.sourcepath)
+	$context.putPageValue("sourcepath", $hit.sourcepath )
+	
+	$context.putPageValue("assetid", $hit.id)
+	$context.putPageValue("count", $count )
+
+	$context.putPageValue("thumbsize", "mediumplus" )
+	
+	#set($assetwidth = $mediaarchive.getRealImageWidth($hit))
+	$context.putPageValue("assetwidth", "assetwidth" )
+	
+	#set($assetheight = $mediaarchive.getRealImageHeight($hit))
+	$context.putPageValue("assetheight", "assetheight" )
+	
+	#set($click = "$siteroot$viewerlink?hitssessionid=${hits.getSessionId()}&assetid=${hit.id}")
+	$context.putPageValue("click", "click" )
+		       
 			<div class="masonry-grid-cell assetdraggable" 
 				id="gallerycell_$!{hit.id}"
 				data-assetid="$!{hit.id}"
@@ -89,7 +117,7 @@
 					$context.putPageValue("thumbheight", "180" ) 
 				#end
 				>
-				$pages.include("$componenthome/results/thumbnails/brick.html", $context)
+			$pages.include("$componenthome/results/thumbnails/brick.html", $context)
 			</div>
 		    #set ( $count = $count + 1) 
 		#end

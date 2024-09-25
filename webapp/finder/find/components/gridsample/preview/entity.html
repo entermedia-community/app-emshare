@@ -203,7 +203,7 @@ $context.putPageValue("topmoduleid", $moduleid)
 				#if(!$ismulti && $entity)
 				
 				
-					#if($permissions.can($moduleid, "upload_files"))
+				#if($module.getBoolean("enableuploading") && $permissions.can($moduleid, "upload_files"))
 					
 				<a href="#"
 						class='btn btn-sm btn-accent entitytabactions tabactionlightboxes #if($entitytabopen=="tablightboxes")enabledaction #end '
@@ -217,6 +217,7 @@ $context.putPageValue("topmoduleid", $moduleid)
 						title="[[Upload to]] #text($module) "><i class="bi bi-check-circle mr-1"></i> [[Lightboxes]]</a>
 				#end	
 				
+				#if($module.getBoolean("enableuploading"))
 				#if($permissions.can($moduleid, "upload_files") ||
 					$permissions.can($moduleid, "upload_folders") ||
 					$permissions.can($moduleid, "importurl") ||
@@ -235,6 +236,7 @@ $context.putPageValue("topmoduleid", $moduleid)
 						data-hitssessionid="$entityhits.getSessionId()"
 						title="[[Upload to]] #text($module) "><i class="bi bi-box-arrow-in-right mr-1"></i> [[Import]]</a>
 				#end	
+				#end
 				#if($permissions.can($moduleid, "copyentity") ||
 					$permissions.can($moduleid, "moveentity") ||
 					$permissions.can($moduleid, "downloadall") ||
