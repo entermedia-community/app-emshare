@@ -1,5 +1,39 @@
 $pages.include("$componenthome/entities/lightboxes/header.html", $context)
 
 $context.putPageValue("hideheader","false")
+#set($hits = $lightboxassets)
 $context.putPageValue("hits",$lightboxassets)
+
+##set($resultview = $userprofile.get("assetresultview"))
+
+#set($maintargetdiv = "dialogassetresultscontainer")
+$context.putPageValue("maintargetdiv", $maintargetdiv)
+
+$context.putPageValue("dialogresults", true)
+$context.putPageValue("lightboxassetsresults", true)
+
+#set( $targetdivmedia = "dialogmediaentity")
+$context.putPageValue("targetdivmedia", $targetdivmedia)
+
+#set($componenthome = "$apphome/views/modules/asset/components")
+
+<div id="$maintargetdiv"
+	class="dialogassetresults assetresults h-100 resultsdiv" 
+	data-moduleid="asset"
+	data-resultview="$!resultview"
+	data-url="$apphome/views/modules/asset/dialogindex.html"
+	data-categoryid="$!categoryid"
+	data-nodeID="$!categoryid"
+	
+	data-dialogresults="true"
+	data-hitssessionid="$!hits.getSessionId()"
+	data-componenthome = "$!componenthome"
+	data-searchhome="$!home$!componenthome/results"
+	data-targetdiv="$maintargetdiv"
+	data-topmoduleid="$!topmoduleid"
+	data-entityid="$!entityid"
+	data-rootcategory="$!rootcategory"
+	data-oemaxlevel="1"
+	>
 $pages.include("$componenthome/results/brickvertical.html",$context)
+</div>

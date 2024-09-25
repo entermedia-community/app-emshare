@@ -139,20 +139,22 @@ $context.putPageValue("entityid", $entityid)
 			#if ($resultview != "map")
 				
 				#if($topmoduleid)
-					#if(!$hideupload && $canviewupload && $topmoduleid != "favorites" && $permissions.can($topmoduleid, "upload_files"))
-					<li>
-						<a href="#"
-						class='resultsnavlink px-3 entitytabactions tabactionimport #if($entitytabopen=="import")enabledaction #end '
-						data-tabaction="import"
-						data-viewid="import"
-						data-tabtype="tabimport" 
-						data-entityid="$!entity.getId()" 
-						data-topmoduleid="$!moduleid"
-						data-moduleid="$!moduleid"
-						data-tabsection="upload"
-						data-hitssessionid="$!hits.getSessionId()"
-							title="[[Upload]]"><i class="bi bi-upload"></i></a>
-					</li>
+					#ifnull($lightboxassetsresults)
+						#if(!$hideupload && $canviewupload && $topmoduleid != "favorites" && $permissions.can($topmoduleid, "upload_files"))
+						<li>
+							<a href="#"
+							class='resultsnavlink px-3 entitytabactions tabactionimport #if($entitytabopen=="import")enabledaction #end '
+							data-tabaction="import"
+							data-viewid="import"
+							data-tabtype="tabimport" 
+							data-entityid="$!entity.getId()" 
+							data-topmoduleid="$!moduleid"
+							data-moduleid="$!moduleid"
+							data-tabsection="upload"
+							data-hitssessionid="$!hits.getSessionId()"
+								title="[[Upload]]"><i class="bi bi-upload"></i></a>
+						</li>
+						#end
 					#end
 					#if ($candownload && $hits && $hits.getSelectionSize() > 0)
 					<li>
@@ -306,7 +308,7 @@ $context.putPageValue("entityid", $entityid)
 				
 				
 				##-RESULTS TYPE
-				
+				#ifnull($lightboxassetsresults)
 				<li class="resultsnavtitem" style="min-width: 75px;">
 					#set( $types = $mediaarchive.getList("resulttype"))
 					<select class="select2 form-control" 
@@ -323,6 +325,7 @@ $context.putPageValue("entityid", $entityid)
 					</select>
 					
 				</li>
+				#end
 				
 			#end
 				
