@@ -1264,7 +1264,7 @@ uiload = function () {
             });
 
             modalinstance.on("scroll", function () {
-              checkScroll();
+              //checkScroll();
             });
 
             adjustzindex(modalinstance);
