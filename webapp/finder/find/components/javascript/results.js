@@ -10,18 +10,13 @@ jQuery(document).ready(function (url, params) {
     headerHeight = 0;
   }
 
-  lQuery("div.masonry-grid").livequery( function()
-  {
-	$(this).brick();	
+  lQuery("div.masonry-grid").livequery(function () {
+    $(this).brick();
   });
 
-
-  lQuery("div.brickvertical").livequery( function()
-  {
-	$(this).brickvertical();	
+  lQuery("div.brickvertical").livequery(function () {
+    $(this).brickvertical();
   });
-
-
 
   lQuery("#entityNavBarContainer").livequery(function () {
     var _top = headerHeight;
@@ -567,7 +562,7 @@ jQuery(document).ready(function (url, params) {
       refreshresults();
     } else {
       //$(document).trigger("domchanged");
-      $(window).trigger( "resize" );
+      $(window).trigger("resize");
       // gridResize();
     }
     var assetdetaileditor = $("#asset-detail-editor");
@@ -1113,40 +1108,43 @@ jQuery(document).ready(function (url, params) {
   };
 
   // Selections
+  function handleAsssetSelect(clicked) {
+    var dataid = clicked.data("dataid");
+    var resultsdiv = clicked.closest(".resultsdiv");
+    if (!resultsdiv.length) {
+      resultsdiv = $("#resultsdiv");
+    }
+    if (resultsdiv.length) {
+      var options = resultsdiv.data();
+      var componenthome = resultsdiv.data("componenthome");
+      options["dataid"] = dataid;
+      var targetdiv = resultsdiv.find("#resultsheader");
 
+      refreshdiv(targetdiv, componenthome + "/results/toggle.html", options);
+
+      if (typeof refreshSelections != "undefined") {
+        refreshSelections();
+      }
+      var ischecked = clicked.prop("checked");
+      if (ischecked == true) {
+        clicked.closest(".resultsassetcontainer").addClass("emrowselected");
+      } else {
+        clicked.closest(".resultsassetcontainer").removeClass("emrowselected");
+      }
+
+      $(".assetproperties").trigger("click");
+    }
+  }
+  lQuery("div.toggle-selection").livequery("click", function () {
+    var checkbox = $(this)
+      .parent()
+      .siblings("input.resultsselection.selectionbox");
+    checkbox.prop("checked", !checkbox.prop("checked"));
+  });
   lQuery("input.resultsselection.selectionbox").livequery(
     "change",
-    function (e) {
-      var clicked = $(this);
-      var dataid = $(clicked).data("dataid");
-      var resultsdiv = $(this).closest(".resultsdiv");
-      if (!resultsdiv.length) {
-        resultsdiv = $("#resultsdiv");
-      }
-      if (resultsdiv.length) {
-        var options = resultsdiv.data();
-        var componenthome = resultsdiv.data("componenthome");
-        options["dataid"] = dataid;
-        var targetdiv = resultsdiv.find("#resultsheader");
-
-        refreshdiv(targetdiv, componenthome + "/results/toggle.html", options);
-
-        if (typeof refreshSelections != "undefined") {
-          refreshSelections();
-        }
-        var ischecked = $(clicked).prop("checked");
-        if (ischecked == true) {
-          $(clicked)
-            .closest(".resultsassetcontainer")
-            .addClass("emrowselected");
-        } else {
-          $(clicked)
-            .closest(".resultsassetcontainer")
-            .removeClass("emrowselected");
-        }
-
-        $(".assetproperties").trigger("click");
-      }
+    function () {
+      handleAsssetSelect($(this));
     }
   );
 
@@ -1439,13 +1437,12 @@ jQuery(document).ready(function (url, params) {
 
   showEntity();
 
- /* lQuery(".scrollview").livequery("scroll", function () {
+  /* lQuery(".scrollview").livequery("scroll", function () {
     checkScroll();
   });
   
   */
 }); // document ready
-
 
 // TODO: remove this. using ajax Used for modules
 togglehits = function (action) {
@@ -1461,7 +1458,6 @@ togglehits = function (action) {
   }
   return false;
 };
-
 
 function updateentities(element) {
   // get form fields as data
