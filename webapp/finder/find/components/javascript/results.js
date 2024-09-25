@@ -10,6 +10,14 @@ jQuery(document).ready(function (url, params) {
     headerHeight = 0;
   }
 
+  lQuery("div.masonry-grid").livequery(function () {
+    $(this).brick();
+  });
+
+  lQuery("div.brickvertical").livequery(function () {
+    $(this).brickvertical();
+  });
+
   lQuery("#entityNavBarContainer").livequery(function () {
     var _top = headerHeight;
     $(this).css("top", _top + "px");
@@ -554,7 +562,7 @@ jQuery(document).ready(function (url, params) {
       refreshresults();
     } else {
       //$(document).trigger("domchanged");
-      //$(window).trigger( "resize" );
+      $(window).trigger("resize");
       // gridResize();
     }
     var assetdetaileditor = $("#asset-detail-editor");
@@ -1100,40 +1108,44 @@ jQuery(document).ready(function (url, params) {
   };
 
   // Selections
+  function handleAsssetSelect(clicked) {
+    var dataid = clicked.data("dataid");
+    var resultsdiv = clicked.closest(".resultsdiv");
+    if (!resultsdiv.length) {
+      resultsdiv = $("#resultsdiv");
+    }
+    if (resultsdiv.length) {
+      var options = resultsdiv.data();
+      var componenthome = resultsdiv.data("componenthome");
+      options["dataid"] = dataid;
+      var targetdiv = resultsdiv.find("#resultsheader");
 
+      refreshdiv(targetdiv, componenthome + "/results/toggle.html", options);
+
+      if (typeof refreshSelections != "undefined") {
+        refreshSelections();
+      }
+      var ischecked = clicked.prop("checked");
+      if (ischecked == true) {
+        clicked.closest(".resultsassetcontainer").addClass("emrowselected");
+      } else {
+        clicked.closest(".resultsassetcontainer").removeClass("emrowselected");
+      }
+
+      $(".assetproperties").trigger("click");
+    }
+  }
+  lQuery("div.toggle-selection").livequery("click", function () {
+    var checkbox = $(this)
+      .parent()
+      .siblings("input.resultsselection.selectionbox");
+    checkbox.prop("checked", !checkbox.prop("checked"));
+    handleAsssetSelect(checkbox);
+  });
   lQuery("input.resultsselection.selectionbox").livequery(
     "change",
-    function (e) {
-      var clicked = $(this);
-      var dataid = $(clicked).data("dataid");
-      var resultsdiv = $(this).closest(".resultsdiv");
-      if (!resultsdiv.length) {
-        resultsdiv = $("#resultsdiv");
-      }
-      if (resultsdiv.length) {
-        var options = resultsdiv.data();
-        var componenthome = resultsdiv.data("componenthome");
-        options["dataid"] = dataid;
-        var targetdiv = resultsdiv.find("#resultsheader");
-
-        refreshdiv(targetdiv, componenthome + "/results/toggle.html", options);
-
-        if (typeof refreshSelections != "undefined") {
-          refreshSelections();
-        }
-        var ischecked = $(clicked).prop("checked");
-        if (ischecked == true) {
-          $(clicked)
-            .closest(".resultsassetcontainer")
-            .addClass("emrowselected");
-        } else {
-          $(clicked)
-            .closest(".resultsassetcontainer")
-            .removeClass("emrowselected");
-        }
-
-        $(".assetproperties").trigger("click");
-      }
+    function () {
+      handleAsssetSelect($(this));
     }
   );
 
@@ -1426,14 +1438,12 @@ jQuery(document).ready(function (url, params) {
 
   showEntity();
 
-  lQuery(".scrollview").livequery("scroll", function () {
+  /* lQuery(".scrollview").livequery("scroll", function () {
     checkScroll();
   });
+  
+  */
 }); // document ready
-
-document.addEventListener("touchmove", function (e) {
-  checkScroll();
-});
 
 // TODO: remove this. using ajax Used for modules
 togglehits = function (action) {
@@ -1448,370 +1458,6 @@ togglehits = function (action) {
     $(".moduleselectionbox").removeAttr("checked");
   }
   return false;
-};
-var stopautoscroll = false;
-var gridcurrentpageviewport = 1;
-var gridlastscroll = 0;
-var gridscrolldirection = "down";
-
-checkScroll = function () {
-  var appdiv = $("#application");
-  var siteroot = appdiv.data("siteroot") + appdiv.data("apphome");
-  var componenthome = appdiv.data("siteroot") + appdiv.data("componenthome");
-
-  var grid = getCurrentGrid();
-  if (!grid) {
-    return;
-  }
-  if (grid.data("singlepage") == true) {
-    return;
-  }
-
-  var resultsdiv = $(grid).closest("#resultsdiv");
-  var lastcheck = $(resultsdiv).data("lastscrollcheck");
-  var currentscroll = 0;
-
-  //currentscroll = $(window).scrollTop();
-  currentscroll = $(".scrollview").scrollTop();
-
-  if (lastcheck == currentscroll) {
-    //Dom events cause it to fire recursively
-    return false;
-  }
-  $(resultsdiv).data("lastscrollcheck", currentscroll);
-  if (stopautoscroll) {
-    // ignore scrolls
-    if (typeof getOverlay === "function" && getOverlay().is(":visible")) {
-      var lastscroll = getOverlay().data("lastscroll");
-
-      if (Math.abs(lastscroll - currentscroll) > 50) {
-        $(window).scrollTop(lastscroll);
-      }
-    }
-    return;
-  }
-
-  // No results?
-
-  var gridcells = $(".masonry-grid-cell", resultsdiv);
-  if (gridcells.length == 0) {
-    //console.log("No grid found")
-
-    return; //No results?
-  }
-
-  // are we near the end? Are there more pages?
-
-  //  var page = parseInt(resultsdiv.data("pagenum"));
-  /*   
-    var nextpage = gridcurrentpageviewport;
-    if(currentscroll>=gridlastscroll) {
-    	scrolldirection = "down";
-    	nextpage = nextpage+1
-    }
-    else
-    {
-    	scrolldirection = "up";
-    	nextpage = nextpage-1;
-    }
-    
-    gridlastscroll = currentscroll;
-    
-    
-	var firstelementonpage = $(".masonry-grid-cell[data-positionnum='"+ (nextpage) +"']:first");
-	if(firstelementonpage.length > 0) 
-	{
-		var elementviewport = elementvisibility(firstelementonpage);
-		if(elementviewport[1]>'0.35') {
-			gridcurrentpageviewport = nextpage;
-			console.log(gridcurrentpageviewport + "-> " + elementviewport[1]);
-			gridupdatepositions(grid, gridcurrentpageviewport);
-		}
-	}
-	*/
-
-  gridupdatepositions(grid);
-
-  var page = parseInt(resultsdiv.data("pagenum"));
-  if (isNaN(page)) {
-    page = 1;
-  }
-
-  var total = parseInt(resultsdiv.data("totalpages"));
-  if (isNaN(total)) {
-    total = 1;
-  }
-  // console.log("checking scroll " + stopautoscroll + " page " + page + " of
-  // " + total);
-  if (page == total) {
-    //Last page. dont load more
-    //console.log("Last page, dont load more")
-    return;
-  }
-
-  // console.log($(window).scrollTop() + " + " + (visibleHeight*2 + 500) +
-  // ">=" + totalHeight);
-  //	var visibleHeight = $(window).height();
-  //	var totalHeight = $(document).height();
-  //	var atbottom = ($(window).scrollTop() + (visibleHeight*2 + 500)) >= totalHeight ; // is the scrolltop plus the visible
-  // equal to the total height?
-
-  var lastcell = gridcells.last().get(0);
-  if (!isInViewport(lastcell)) {
-    //console.log("up top, dont load more yet")
-    return; //not yet at bottom (-500px)
-  }
-
-  stopautoscroll = true;
-  var session = resultsdiv.data("hitssessionid");
-  page = page + 1;
-  resultsdiv.data("pagenum", page);
-
-  var stackedviewpath = resultsdiv.data("stackedviewpath");
-  if (!stackedviewpath) {
-    stackedviewpath = "stackedgallery.html";
-  }
-  var link = componenthome + "/results/" + stackedviewpath;
-  var collectionid = $(resultsdiv).data("collectionid");
-  var params = {
-    hitssessionid: session,
-    page: page,
-    oemaxlevel: "1",
-  };
-  if (collectionid) {
-    params.collectionid = collectionid;
-  }
-
-  console.log("Loading page: #" + page + " - " + link);
-
-  $.ajax({
-    url: link,
-    xhrFields: {
-      withCredentials: true,
-    },
-    cache: false,
-    data: params,
-    success: function (data) {
-      var jdata = $(data);
-      var code = $(".masonry-grid", jdata).html();
-      //$(".masonry-grid",resultsdiv).append(code);
-      $(grid).append(code);
-      // $(resultsdiv).append(code);
-      //gridResize();
-      $(window).trigger("resize");
-
-      stopautoscroll = false;
-
-      if (getOverlay().is(":hidden")) {
-        checkScroll();
-      }
-    },
-  });
-};
-
-function gridupdatepositions(grid) {
-  //console.log("Checking Old Position: " + oldposition);
-  var resultsdiv = grid.closest(".resultsdiv");
-  if (!resultsdiv) {
-    resultsdiv = grid.closest(".resultsdiv");
-  }
-
-  var positionsDiv = resultsdiv.find(".resultspositions");
-  //console.log("positionsDiv:", positionsDiv);
-
-  if (positionsDiv.length > 0) {
-    var oldpage = grid.data("currentpagenum");
-
-    $(".masonry-grid-cell", grid).each(function (index, cell) {
-      var elementviewport = isInViewport(cell);
-      if (elementviewport) {
-        var pagenum = $(cell).data("pagenum");
-        if (pagenum != oldpage) {
-          grid.data("currentpagenum", pagenum);
-          positionsDiv.data("currentpagenum", pagenum);
-          //var currentscroll = $(window).scrollTop();
-
-          //console.log("Firing dom event: ",oldpage, pagenum, $(window).scrollTop());
-          var url = positionsDiv.data("url");
-          //positionsDiv.data("currentpage",pagenum); //Where we are at
-          var options = positionsDiv.data();
-          replaceelement(url, positionsDiv, options);
-        }
-        return false;
-      }
-    });
-  }
-}
-
-function isInViewport(cell) {
-  const rect = cell.getBoundingClientRect();
-  var isin =
-    rect.top >= 0 &&
-    rect.left >= 0 &&
-    rect.bottom <=
-      (window.innerHeight || document.documentElement.clientHeight) &&
-    rect.right <= (window.innerWidth || document.documentElement.clientWidth);
-  return isin;
-}
-
-function getCurrentGrid() {
-  var grid = $(".entitydialog").find(".masonry-grid");
-  if (grid.length == 0) {
-    grid = $(".masonry-grid"); //Mainscreen Grid
-  }
-  if (grid.length == 0) {
-    return null;
-  }
-
-  return grid;
-}
-gridResize = function () {
-  var grid = getCurrentGrid();
-  if (!grid) {
-    return;
-  }
-
-  if (!grid.is(":visible")) {
-    return;
-  }
-  //console.log("gridResize resizing "	);
-  var fixedheight = grid.data("maxheight");
-  if (fixedheight == null || fixedheight.length == 0) {
-    fixedheight = 200;
-  }
-  fixedheight = parseInt(fixedheight);
-
-  var totalwidth = 0;
-  var totalheight = fixedheight;
-  var rownum = 0;
-  var totalavailablew = grid.width();
-
-  // Two loops, one to make rows and one to render cells
-  var sofarusedw = 0;
-  var sofarusedh = 0;
-
-  var row = new Array();
-  var rows = new Array();
-  rows.push(row);
-  $(grid)
-    .find(".masonry-grid-cell")
-    .each(function () {
-      var cell = $(this);
-      var w = cell.data("width");
-      var h = cell.data("height");
-      w = parseInt(w);
-      h = parseInt(h);
-      if (w == 0) {
-        w = fixedheight;
-        h = fixedheight;
-      }
-      var a = 1;
-      if (w >= h) {
-        a = w / h;
-      } else {
-        a = h / w;
-      }
-      cell.data("aspect", a);
-      var neww = Math.floor(a * fixedheight);
-      cell.data("targetw", Math.ceil(neww));
-      var isover = sofarusedw + neww;
-      if (isover > totalavailablew) {
-        // Just to make a row
-        // Process previously added cell
-        var newheight = trimRowToFit(row);
-        totalheight = totalheight + newheight + 8;
-        row = new Array();
-        rows.push(row);
-        sofarusedw = 0;
-        rownum = rownum + 1;
-      }
-      sofarusedw = sofarusedw + neww;
-      row.push(cell);
-      cell.data("rownum", rownum);
-    });
-
-  var makebox = grid.data("makebox");
-
-  if (row.length > 0) {
-    trimRowToFit(row);
-    //if( makebox && makebox == true && rownum >= 3)
-    {
-      grid.css("height", totalheight + "px");
-      //grid.css("overflow","hidden");
-    }
-  }
-
-  $.each(rows, function () {
-    var row = $(this);
-    trimRowToFit(row);
-  });
-  checkScroll();
-};
-
-/**
- * A = W / H H = W / A W = A * H
- */
-trimRowToFit = function (row) {
-  var totalwidthused = 0;
-  var grid = getCurrentGrid();
-  var targetheight = grid.data("maxheight");
-  $.each(row, function () {
-    var div = this;
-    var usedw = div.data("targetw");
-    totalwidthused = totalwidthused + usedw;
-  });
-
-  var totalavailablew = grid.width();
-  var existingaspect = targetheight / totalwidthused; // Existing aspec ratio
-  var overwidth = Math.abs(totalwidthused - totalavailablew);
-  var changeheight = existingaspect * overwidth;
-  var fixedheight = Math.floor(targetheight + changeheight);
-
-  if (fixedheight > targetheight * 1.7) {
-    fixedheight = targetheight;
-  }
-
-  // The overwidth may not be able to be divided out evenly depending on
-  // number of
-  var totalwused = 0;
-  $.each(row, function () {
-    var div = this;
-    var image = $("img.imagethumb", div);
-    // div.css("line-height",fixedheight + "px");
-    div.css("height", fixedheight + "px");
-    image.height(fixedheight);
-    image.data("fixedheight", fixedheight);
-
-    var a = div.data("aspect");
-    var neww = fixedheight * a;
-
-    neww = Math.floor(neww); // make sure we dont round too high across lots
-    // of widths
-    div.css("width", neww + "px");
-    image.width(neww);
-    totalwused = totalwused + neww;
-  });
-
-  totalavailablew = grid.width();
-  if (totalwused != totalavailablew && fixedheight != targetheight) {
-    // Deal
-    // with
-    // fraction
-    // of a
-    // pixel
-    // We have a fraction of a pixel to add to last item
-    var toadd = totalavailablew - totalwused;
-    var div = row[row.length - 1];
-    if (div) {
-      var w = div.width();
-      w = w + toadd;
-      div.css("width", w + "px");
-      var image = $("img.imagethumb", div);
-      image.width(w);
-    }
-  }
-
-  return fixedheight;
 };
 
 function updateentities(element) {
@@ -1945,9 +1591,7 @@ lQuery("a.assettab").livequery("click", function (e) {
       // saveProfileProperty("assetopentabassettable",assettabtable,function(){});
     }
   }
-});
 
-jQuery(document).ready(function () {
   //FUSE Library
   var Fuse;
   eval(

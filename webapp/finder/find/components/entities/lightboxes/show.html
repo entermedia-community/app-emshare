@@ -32,16 +32,27 @@ data-topmoduleid="$!topmoduleid"
 data-url="$componenthome/gridsample/preview/tabpublishing_gallery.html"
 >
 
-<div id="publishingcontainer" class="tabpulications" style="height: 100%;">
+<div  class="tabpulications" style="height: 100%;">
 	
 	$context.putPageValue("topmodule",$topmodule)
 	
 	#set($boxes =  $mediaarchive.getBean("entityManager").loadLightBoxesForModule($topmodule, $entity, $context.getUser()))
 	#set($assets =  $mediaarchive.getBean("entityManager").loadLightBoxeAssetsForModule($boxes,$topmodule, $entity, $context.getUser()))
-	#set($selectedfirst =  $mediaarchive.getBean("entityManager").findFirstSelectedLightBox($boxes,$assets))
+
+#set( $lightboxid = $context.getRequestParameter("lightboxid"))
+
+#ifnotnull($lightboxid)
+	#if( $lightboxid != "files")
+		#set($selectedbox =  $mediaarchive.getCachedData("emedialightbox",$lightboxid) )
+	#end	
+#end
+#ifnull($lightboxid)
+	#set($selectedbox =  $mediaarchive.getBean("entityManager").findFirstSelectedLightBox($boxes,$assets))
+#end	
 	$context.putPageValue("boxes",$boxes)
 	$context.putPageValue("assets",$assets)
-	$context.putPageValue("selectedbox",$selectedfirst)
+	$context.putPageValue("selectedbox",$selectedbox)
+	
 	
 	$pages.include("$componenthome/entities/lightboxes/sidemenu.html",$context)
 

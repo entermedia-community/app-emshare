@@ -1,0 +1,66 @@
+#set($isselected = $hits.isSelectedOnPage(${hit.id}) )
+$context.putPageValue("isselected", "isselected" )
+
+<div class="grid-cell-hover"></div>
+<input type="checkbox" class="resultsselection selectionbox" name="count" id="sl-${hit.id}" value="${hit.id}" #if($isselected) checked #end data-dataid="${hit.id}" />
+<label class="selectionbox-label" for="sl-${hit.id}">
+	<i class="bi bi-check-lg"></i>
+</label>
+##<div class="grid-gallery-checked"></div>
+#if(!$rendertype || $type =="rendertype")
+	#set( $rendertype = "mime" )
+#elseif( $rendertype =="video")
+	#set( $rendertype = "image" )
+#end
+<div class="grid-thumbimage" data-assetid="$!hit.id" data-rendertype="$!rendertype">
+	$pages.include("$componenthome/results/thumbnails/${rendertype}.html", $context)
+</div>
+	    
+##Caption
+<div class="draggholder grid-caption grid-caption-${rendertype} #if($rendertype=="default") grid-caption-show #end">
+	#if($stackedfield)
+		#set($title = $hit.get($stackedfield))
+	#end
+	#if(!$title)		         	
+		#if( $hit.assettitle )
+			#set($title =  $hit.assettitle) 
+		#else 
+			#set($title = $hit.name) 
+		#end
+	#end
+	<div class="toggle-selection grid-caption-link" id="clickid${hit.id}" title="[[Select the files by clicking them. Drag and drop selected files to add them into multiple status]]">
+		$context.putPageValue("data",$hit)	
+		$context.putPageValue("searcher",$mediaarchive.getAssetSearcher() )	
+		$context.putPageValue("view", "asset/stackedgallery")
+		$pages.include("/$applicationid/components/xml/detailviewer-stackedgallery.html", $context)
+	</div>
+
+	$pages.include("$componenthome/results/badges.html", $context)
+
+	<div class="grid-gallery-footer d-flex align-items-center justify-content-between"> 
+		<div class="d-flex align-items-center"> 
+			<span>
+				#if ($hit.assetaddeddate)
+					$!context.getDate($hit.assetaddeddate)
+				#end
+			</span>
+			<div class="d-flex align-items-center ml-2">
+				#if($canaddtofavorites)
+					<div id="gsassetfavorite-${hit.id}" class="media-info-icons mr-1">
+						$pages.include("$apphome/views/modules/asset/editor/favorite/index.html?targetdiv=gsassetfavorite", $context)
+					</div>
+				#end
+				#if(($candownload || $canconvert || $candownloadfpo) && $canquickdownload)
+					#set($dlink =  "$applink/views/modules/asset/activity/downloadassets.html")
+						<a href="$dlink" 
+							class="emdialog" data-assetid="$hit.id" data-hidefooter="true" title="[[Download]] $!title">
+								<img src="$apphome/theme/images/download.svg" alt="[[Download]] $!title" />
+						</a>
+				#end 
+			</div>
+		</div>
+		<a href="#" class="stackedplayer asset-maximize" data-assetid="$hit.id" title="$!title">
+			<i class="fas fa-expand-arrows-alt"></i>
+		</a>
+	</div>
+</div>

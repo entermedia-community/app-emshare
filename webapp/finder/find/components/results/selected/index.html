@@ -189,24 +189,25 @@
 
 	
 		
-		#if($canquickpublish )
-			#set($quickpublishlist = $mediaarchive.getList("quickpublish"))
-			<li class="">
-				<a class="resultsnavlink" href="#" id="navbarPublishDropdown" role="button" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">[[Publish]]</a>
-					<ul class="dropdown-menu" aria-labelledby="navbarPublishDropdown">
-						#foreach($item in $quickpublishlist)
-							<li><a class="dropdown-item emadialog"  
-								href="$siteroot$apphome/views/modules/asset/activity/publish/quickpublish.html?hitssessionid=$!hits.getSessionId()&quickid=$item.id"   
-								dialogid="quickpublishing">$item.name</a></li>
-						#end
-					</ul>
-				</li>
-		#end
-		
-		   
+	#if($canquickpublish )
+		#set($quickpublishlist = $mediaarchive.getList("quickpublish"))
+		<li>
+			<a class="resultsnavlink" href="#" id="navbarPublishDropdown" role="button" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">[[Publish]]</a>
+				<ul class="dropdown-menu" aria-labelledby="navbarPublishDropdown">
+					#foreach($item in $quickpublishlist)
+						<li><a class="dropdown-item emadialog"  
+							href="$siteroot$apphome/views/modules/asset/activity/publish/quickpublish.html?hitssessionid=$!hits.getSessionId()&quickid=$item.id"   
+							dialogid="quickpublishing">$item.name</a></li>
+					#end
+				</ul>
+			</li>
+	#end
 
-		
 	
+	#set($quickpublishlist = $mediaarchive.getList("quickpublish"))
+	<li>
+		<a class="resultsnavlink" href="#" id="navbarRemove" role="button" title="[[Remove record from Lightbox]]">[[Remove]]</a>
+	</li>
 
 
 #end

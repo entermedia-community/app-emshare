@@ -1,16 +1,16 @@
-<div id="lightboxessidemenu" class="overflow-y " style="padding:10px 20px; width: 220px;">
+<div id="lightboxessidemenu" class="overflow-y">
 		
 #set($assetsadded = $context.getPageValue("assetsadded"))
 #set($assetsaddedto = $context.getRequestParameter("lightboxid"))
 
 #foreach( $box in $boxes )
 	#set( $filtervalue = $assets.findFilterChildValue("lightboxid",$box.getId()))
-	<div class="entitytabmenubtn m-2 rounded lightboxdropasset #if( $box.id == $selectedbox.id ) active #end"
+	<div class="entitytabmenubtn rounded lightboxdropasset #if( $box.id == $selectedbox.id ) active #end"
 		data-entityid="$entity.id" data-moduleid="$topmodule.id" data-lightboxid="$box.id"
 	>
 	<a class="ajax text-center"
-		data-targetdiv="lightboxresults"  data-oemaxlevel="1"
-		href="$componenthome/entities/lightboxes/search.html?lightboxid=$box.id&entityid=$entity.id&moduleid=$module.id">
+		data-targetdiv="tablightboxes"  data-oemaxlevel="1"
+		href="$componenthome/entities/lightboxes/show.html?lightboxid=$box.id&entityid=$entity.id&moduleid=$module.id">
 	
 	#set( $moduleicon = $box.moduleicon)
 	#ifnull($moduleicon)
@@ -34,10 +34,10 @@
 
 <div id="entitypicker" 
 	data-entityid="$entity.id" data-moduleid="$topmodule.id"
-	class="entitytabmenubtn m-2 rounded assetdroplightbox #ifnull($selectedbox) active #end side-select-menu">
+	class="entitytabmenubtn rounded assetdroplightbox #ifnull($selectedbox) active #end side-select-menu">
 <a class="ajax" 
-		data-targetdiv="lightboxresults" data-oemaxlevel="1"
-	href="$componenthome/entities/lightboxes/search.html?entityid=$entity.id&moduleid=$module.id">
+		data-targetdiv="tablightboxes" data-oemaxlevel="1"
+	href="$componenthome/entities/lightboxes/show.html?lightboxid=files&entityid=$entity.id&moduleid=$module.id">
 
 #set( $moduleicon = $mediaarchive.getCachedData("module","asset").moduleicon)
 <i class="bi bi-${moduleicon}" style="font-size:2em;"></i> <br>

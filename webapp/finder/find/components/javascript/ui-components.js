@@ -20,24 +20,20 @@ function showLoader() {
   }, 4000);
 }
 
- $.fn.cleandata = function () {
-    var element = $(this);
-    var params = element.data();
+$.fn.cleandata = function () {
+  var element = $(this);
+  var params = element.data();
 
-    var cleaned = {};
-    Object.keys(params).forEach(function (key) {
-      var param = params[key];
-      var thetype = typeof param;
-      if (
-        thetype === "string" ||
-        thetype === "number" ||
-        thetype === "boolean"
-      ) {
-        cleaned[key] = param;
-      }
-    });
-    return cleaned;
-  };
+  var cleaned = {};
+  Object.keys(params).forEach(function (key) {
+    var param = params[key];
+    var thetype = typeof param;
+    if (thetype === "string" || thetype === "number" || thetype === "boolean") {
+      cleaned[key] = param;
+    }
+  });
+  return cleaned;
+};
 
 function hideLoader() {
   clearTimeout(lwt);
@@ -977,7 +973,8 @@ uiload = function () {
         }
       }
       return false;
-    });
+    }
+  );
 
   lQuery("form.autosubmit").livequery(function () {
     var form = $(this);
@@ -1034,10 +1031,10 @@ uiload = function () {
     e.preventDefault();
     e.stopPropagation();
     e.stopImmediatePropagation();
-    console.log($(this).prop('disabled'));
-    $(this).prop('disabled', true);
+    console.log($(this).prop("disabled"));
+    $(this).prop("disabled", true);
     var theform = $(this).closest("form");
-    console.log($(this).prop('disabled'));
+    console.log($(this).prop("disabled"));
 
     var clicked = $(this);
     if (clicked.data("updateaction")) {
@@ -1046,12 +1043,12 @@ uiload = function () {
     }
     console.log("Submit Form " + theform);
     theform.trigger("submit");
-    
+
     return false;
   });
-  lQuery(".submitform").livequery('dblclick', function (e) {
-  	e.preventDefault();
-  	console.log("DblClick!")
+  lQuery(".submitform").livequery("dblclick", function (e) {
+    e.preventDefault();
+    console.log("DblClick!");
   });
   lQuery(".submitform-oehtml, .dialogsubmitbtn").livequery(
     "click",
@@ -2873,7 +2870,7 @@ uiload = function () {
             if (data) {
               searchmodaldialog.html(data);
               togglemodaldialog("show");
-              gridResize();
+              jQuery(window).trigger("resize");
             }
           },
           complete: function () {
@@ -2938,7 +2935,7 @@ uiload = function () {
               searchmodaldialog.html(data);
               togglemodaldialog("show");
               $("#mainsearchvalue").focus();
-              gridResize();
+			  jQuery(window).trigger("resize");
             }
           },
           complete: function () {
@@ -4638,8 +4635,8 @@ autoreload = function (div, callback) {
   if (url != undefined) {
     var options = div.data();
     replaceelement(url, div, options, callback);
+  jQuery(window).trigger("resize");
 
-    gridResize();
   }
 };
 
@@ -4689,7 +4686,7 @@ var resizecolumns = function () {
   var coltogglers = $(".col-sidebar-togglers");
   coltogglers.css("height", windowh - 1);
   var colsidebar = $(".col-mainsidebar");
-  colsidebar.css("height", windowh - 1);
+  colsidebar.css("height", windowh - 32);
 
   //reset some heights
   $(".settingslayout").css("height", "auto");
@@ -4792,7 +4789,6 @@ jQuery(window).on("resize", function () {
   adjustdatamanagertable();
   resizesearchcategories();
   resizecolumns();
-  gridResize();
 });
 
 jQuery(document).on("domchanged", function () {
