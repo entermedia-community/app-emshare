@@ -907,6 +907,68 @@ onloadselectors = function () {
         out: unoutlineSelectionCol,
       });
     });  //lightboxdropasset
+    
+    
+    
+    lQuery(".tablightbox .assetdroppable").livequery(function () {
+	  var scope = "default";
+      var modalCheck = $(this).closest(".modal");
+      if (modalCheck.length) {
+        scope = "modal";
+      }
+
+      var targetnode = $(this);
+      targetnode.droppable({
+		  scope:scope,
+          drop: function (event, ui) {
+	          
+	          var targetid = targetnode.data("assetlightboxid");
+	          var sourcenode = $(ui.draggable);
+	          var sourceid = sourcenode.data("assetlightboxid")
+	          
+	          
+	          debugger;
+	
+	          var hitssessionid = targetnode.closest("#resultsdiv").data("hitssessionid");
+	          if (!hitssessionid) {
+	            hitssessionid = $("#main-results-table").data("hitssessionid");
+	          }
+	
+	          var options = targetnode.cleandata();
+	          options.sourceid = sourceid;
+
+	          options.hitssessionid = hitssessionid;
+	
+	          var targetdiv = targetnode.closest("#dialogmediaentity");
+	          var moduleid = targetnode.closest("#resultsdiv").data("moduleid");
+				
+				//debugger;
+			
+	          $.ajax({
+	            url: apphome + "/views/modules/"+moduleid+ "/components/entities/lightboxes/gallerysaveorder.html",
+	            data: options,
+		        xhrFields: {
+		          withCredentials: true,
+		        },
+		        crossDomain: true,
+				type: "POST",
+	            success: function (data) {
+	              if (targetdiv.length) {
+						targetdiv.replaceWith(data);
+	              }
+		            //node.removeClass("dragoverselected");
+	              
+	            },
+         		 });
+          
+        },
+        tolerance: "pointer",
+        over: outlineSelectionCol,
+        out: unoutlineSelectionCol,
+      });
+    });  //lightboxdropasset
+    
+  	  
 
   } //all droppable items
 

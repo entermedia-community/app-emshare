@@ -4305,10 +4305,6 @@ uiload = function () {
           });
         },
         stop: function (event, ui) {
-          //db id of the item sorted
-          //alert(ui.item.attr('plid'));
-          //db id of the item next to which the dragged item was dropped
-          //alert(ui.item.prev().attr('plid'));
         },
       });
     }
