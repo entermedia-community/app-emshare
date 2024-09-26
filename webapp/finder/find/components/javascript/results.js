@@ -1115,21 +1115,21 @@ jQuery(document).ready(function (url, params) {
       resultsdiv = $("#resultsdiv");
     }
     if (resultsdiv.length) {
-      var options = resultsdiv.data();
-      var componenthome = resultsdiv.data("componenthome");
-      options["dataid"] = dataid;
-      var targetdiv = resultsdiv.find("#resultsheader");
-
-      refreshdiv(targetdiv, componenthome + "/results/toggle.html", options);
-
-      if (typeof refreshSelections != "undefined") {
-        refreshSelections();
-      }
       var ischecked = clicked.prop("checked");
       if (ischecked == true) {
         clicked.closest(".resultsassetcontainer").addClass("emrowselected");
       } else {
         clicked.closest(".resultsassetcontainer").removeClass("emrowselected");
+      }
+
+      var options = resultsdiv.data();
+      var componenthome = resultsdiv.data("componenthome");
+      options["dataid"] = dataid;
+      var targetdiv = resultsdiv.find("#resultsheader");
+      refreshdiv(targetdiv, componenthome + "/results/toggle.html", options);
+
+      if (typeof refreshSelections != "undefined") {
+        refreshSelections();
       }
 
       $(".assetproperties").trigger("click");
@@ -1444,155 +1444,154 @@ jQuery(document).ready(function (url, params) {
   
   */
 
+  // TODO: remove this. using ajax Used for modules
+  togglehits = function (action) {
+    var data = $("#resultsdiv").data();
+    data.oemaxlevel = 1;
+    data.action = action;
 
-// TODO: remove this. using ajax Used for modules
-togglehits = function (action) {
-  var data = $("#resultsdiv").data();
-  data.oemaxlevel = 1;
-  data.action = action;
+    $.get(componenthome + "/moduleresults/selections/togglepage.html", data);
+    if (action == "all" || action == "page") {
+      $(".moduleselectionbox").attr("checked", "checked");
+    } else {
+      $(".moduleselectionbox").removeAttr("checked");
+    }
+    return false;
+  };
 
-  $.get(componenthome + "/moduleresults/selections/togglepage.html", data);
-  if (action == "all" || action == "page") {
-    $(".moduleselectionbox").attr("checked", "checked");
-  } else {
-    $(".moduleselectionbox").removeAttr("checked");
-  }
-  return false;
-};
-
-function updateentities(element) {
-  // get form fields as data
-  var data = $(element)
-    .serializeArray()
-    .reduce(function (obj, item) {
-      obj[item.name] = item.value;
-      return obj;
-    }, {});
-  //or get data from element (<a>)
-  if (data.constructor === Object && Object.keys(data).length === 0) {
-    data = element.data();
-  }
-  if (data.id && data.searchtype) {
-    var entitycontainerclass = "entity" + data.searchtype + data.id;
-    $("." + entitycontainerclass).each(function () {
-      $(this).trigger("reload");
-    });
-  }
-
-  $(window).trigger("ajaxautoreload", {
-    eventtype: "entitysave",
-    moduleid: data.searchtype,
-  });
-}
-
-lQuery(".entitycontainer").livequery(function (e) {
-  // debugger;
-  var entity = $(this);
-  entity.on("reload", function (e) {
-    var entityparent = entity.closest(".entitiescontainer");
-    var entityreloadurl = entityparent.data("entityrenderurl");
-    if (entityreloadurl != null) {
-      var options = {};
-      var targetdiv = entity.closest(".emgridcell");
-      options = entity.data();
-      $.ajax({
-        url: entityreloadurl,
-        data: options,
-        success: function (data) {
-          targetdiv.replaceWith(data);
-          $(window).trigger("resize");
-        },
+  function updateentities(element) {
+    // get form fields as data
+    var data = $(element)
+      .serializeArray()
+      .reduce(function (obj, item) {
+        obj[item.name] = item.value;
+        return obj;
+      }, {});
+    //or get data from element (<a>)
+    if (data.constructor === Object && Object.keys(data).length === 0) {
+      data = element.data();
+    }
+    if (data.id && data.searchtype) {
+      var entitycontainerclass = "entity" + data.searchtype + data.id;
+      $("." + entitycontainerclass).each(function () {
+        $(this).trigger("reload");
       });
     }
+
+    $(window).trigger("ajaxautoreload", {
+      eventtype: "entitysave",
+      moduleid: data.searchtype,
+    });
+  }
+
+  lQuery(".entitycontainer").livequery(function (e) {
+    // debugger;
+    var entity = $(this);
+    entity.on("reload", function (e) {
+      var entityparent = entity.closest(".entitiescontainer");
+      var entityreloadurl = entityparent.data("entityrenderurl");
+      if (entityreloadurl != null) {
+        var options = {};
+        var targetdiv = entity.closest(".emgridcell");
+        options = entity.data();
+        $.ajax({
+          url: entityreloadurl,
+          data: options,
+          success: function (data) {
+            targetdiv.replaceWith(data);
+            $(window).trigger("resize");
+          },
+        });
+      }
+    });
   });
-});
 
-lQuery("div.assetpreview").livequery("click", function (e) {
-  e.preventDefault();
-  $(".bottomtab").removeClass("tabselected");
-  $(this).closest(".bottomtab").addClass("tabselected");
-  var div = $("#main-media-viewer");
-  var assetid = div.data("assetid");
-  showAsset($(this), assetid);
-  saveProfileProperty("assetopentab", "viewpreview", function () {});
-});
-
-lQuery(".auto-remove").livequery("click", function () {
-  var catid = $(this).data("categoryid");
-  if (catid) {
-    $("#auto-" + catid)
-      .parent()
-      .remove();
-  }
-});
-
-lQuery("a.assettab").livequery("click", function (e) {
-  e.preventDefault();
-  $(".bottomtab").removeClass("tabselected");
-  $(".bottomtabactions a").removeClass("dropdown-current");
-  $(this).closest(".bottomtab").addClass("tabselected");
-  var div = $("#main-media-viewer");
-  var options = div.data();
-
-  options.pageheight = $(window).height() - 100;
-
-  var assettab = $(this).data("assettab");
-
-  var collectionid = $("#resultsdiv").data("collectionid");
-  if (collectionid) {
-    options.collectionid = collectionid;
-  }
-
-  if (assettab == "viewpreview") {
+  lQuery("div.assetpreview").livequery("click", function (e) {
+    e.preventDefault();
+    $(".bottomtab").removeClass("tabselected");
+    $(this).closest(".bottomtab").addClass("tabselected");
+    var div = $("#main-media-viewer");
     var assetid = div.data("assetid");
-    saveProfileProperty("assetopentab", assettab, function () {});
     showAsset($(this), assetid);
-  } else if (assettab == "multiedit") {
-    var link = $(this).data("link");
-    div.load(link, options, function () {
-      // Update AssetID
-      var assetid = $("#multieditpanel").data("assetid");
-      $("#main-media-viewer").data("assetid", assetid);
-      $(window).trigger("tabready");
-    });
-  } else {
-    disposevideos();
-    var link = $(this).data("link");
-    div.load(link, options, function () {
-      // console.log("triggered");
-      $(window).trigger("tabready");
-    });
-    // save to profile only pewview, properties and media
-    if (
-      assettab == "viewproperties" ||
-      assettab == "imageeditor" ||
-      assettab == "viewdownloads" ||
-      assettab == "viewtimeline" ||
-      assettab == "viewclosedcaptions"
-    ) {
+    saveProfileProperty("assetopentab", "viewpreview", function () {});
+  });
+
+  lQuery(".auto-remove").livequery("click", function () {
+    var catid = $(this).data("categoryid");
+    if (catid) {
+      $("#auto-" + catid)
+        .parent()
+        .remove();
+    }
+  });
+
+  lQuery("a.assettab").livequery("click", function (e) {
+    e.preventDefault();
+    $(".bottomtab").removeClass("tabselected");
+    $(".bottomtabactions a").removeClass("dropdown-current");
+    $(this).closest(".bottomtab").addClass("tabselected");
+    var div = $("#main-media-viewer");
+    var options = div.data();
+
+    options.pageheight = $(window).height() - 100;
+
+    var assettab = $(this).data("assettab");
+
+    var collectionid = $("#resultsdiv").data("collectionid");
+    if (collectionid) {
+      options.collectionid = collectionid;
+    }
+
+    if (assettab == "viewpreview") {
+      var assetid = div.data("assetid");
       saveProfileProperty("assetopentab", assettab, function () {});
-    }
-    var assettabactions = $(this).data("assettabactions");
-    if (assettabactions) {
-      $(this).addClass("dropdown-current");
-      var label = $(this).data("assettabname");
-      if (label) {
-        $(".bottomtabactionstext").text(label);
+      showAsset($(this), assetid);
+    } else if (assettab == "multiedit") {
+      var link = $(this).data("link");
+      div.load(link, options, function () {
+        // Update AssetID
+        var assetid = $("#multieditpanel").data("assetid");
+        $("#main-media-viewer").data("assetid", assetid);
+        $(window).trigger("tabready");
+      });
+    } else {
+      disposevideos();
+      var link = $(this).data("link");
+      div.load(link, options, function () {
+        // console.log("triggered");
+        $(window).trigger("tabready");
+      });
+      // save to profile only pewview, properties and media
+      if (
+        assettab == "viewproperties" ||
+        assettab == "imageeditor" ||
+        assettab == "viewdownloads" ||
+        assettab == "viewtimeline" ||
+        assettab == "viewclosedcaptions"
+      ) {
+        saveProfileProperty("assetopentab", assettab, function () {});
       }
-      // saveProfileProperty("assetopentabactions",assettabactions,function(){});
-    }
-    var assettabtable = $(this).data("assettabtable");
-    if (assettabtable) {
-      $(this).addClass("dropdown-current");
-      var label = $(this).data("assettabname");
-      if (label) {
-        $(".bottomtabactionstext").text(label);
+      var assettabactions = $(this).data("assettabactions");
+      if (assettabactions) {
+        $(this).addClass("dropdown-current");
+        var label = $(this).data("assettabname");
+        if (label) {
+          $(".bottomtabactionstext").text(label);
+        }
+        // saveProfileProperty("assetopentabactions",assettabactions,function(){});
       }
-      // saveProfileProperty("assetopentabassettable",assettabtable,function(){});
+      var assettabtable = $(this).data("assettabtable");
+      if (assettabtable) {
+        $(this).addClass("dropdown-current");
+        var label = $(this).data("assettabname");
+        if (label) {
+          $(".bottomtabactionstext").text(label);
+        }
+        // saveProfileProperty("assetopentabassettable",assettabtable,function(){});
+      }
     }
-  }
-});
-  
+  });
+
   //FUSE Library
   var Fuse;
   eval(
@@ -1646,9 +1645,5 @@ lQuery("a.assettab").livequery("click", function (e) {
         search(searchInput.val());
       }, 250);
     });
-  
-});
-
+  });
 }); // document ready
-
-
