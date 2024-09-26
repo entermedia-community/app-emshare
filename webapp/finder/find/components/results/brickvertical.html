@@ -41,15 +41,18 @@
 		#set($count = 0)
 		#set($viewerlink = $content.get("assetviewerlink") )
 		#set($stackedfield = $mediaarchive.getCatalogSettingValue("stackedgalleryfield"))
+		#set($lastordering = 0)
 		
 		#foreach( $brick in $hits.getPageOfHits())
 		 
 		 	#ifnotnull( $hitassetlookup )
 			 	#set( $hit = $hitassetlookup.get($brick.getId()) )
+			 	$context.putPageValue("lastordering",$lastordering)
 		 	#end
 		 	#ifnull( $hitassetlookup )
 				#set( $hit = $brick)
 		 	#end
+			$context.putPageValue("brick", $brick)
 			$context.putPageValue("hit", $hit)
 			$context.putPageValue("asset", $hit)
 
@@ -82,6 +85,8 @@
 				id="gallerycell_$!{hit.id}"
 				data-assetid="$!{hit.id}"
 				data-assetlightboxid="${brick.id}"
+				data-ordering="${brick.ordering}"
+				
 				#if($rendertype == "audio")
 					data-width="250"
 					data-height="110"
@@ -96,6 +101,8 @@
 				</div>
 			</div>
 		    #set ( $count = $count + 1) 
+		    #set( $lastordering = $brick.ordering )
+		    
 		#end
 		
 	</div>

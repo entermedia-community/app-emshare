@@ -921,41 +921,81 @@ onloadselectors = function () {
       targetnode.droppable({
 		  scope:scope,
           drop: function (event, ui) {
-	          
-	          var targetid = targetnode.data("assetlightboxid");
-	          var sourcenode = $(ui.draggable);
-	          var sourceid = sourcenode.data("assetlightboxid")
-	          
-	          
-	          debugger;
-	
-	          var hitssessionid = targetnode.closest("#resultsdiv").data("hitssessionid");
+			var sourcenode = $(ui.draggable);
+			var sourceid = sourcenode.data("assetlightboxid")
+			
+			var existingorder = targetnode.data("ordering");
+			sourcenode.data("ordering", existingorder);
+			var incorder = parseInt(existingorder);
+			incorder++;
+			targetnode.data("ordering", incorder);
+			
+			var resultsdiv = targetnode.closest(".dialogassetresults");
+			
+			var boxassetid = [];
+			var neworderings = [];
+			
+			boxassetid.push(sourcenode.data("assetlightboxid"));
+			neworderings.push(sourcenode.data("ordering"));
+			boxassetid.push(targetnode.data("assetlightboxid"));
+			neworderings.push(targetnode.data("ordering"));
+			
+			var previousordering = 0;
+			resultsdiv.find(".masonry-grid-cell").each(function () {
+		      		var cell = $(this);
+		      		var lid = cell.data("assetlightboxid");
+			      	var curordering  = parseInt(cell.data("ordering"));
+		      		if(previousordering > 0 && !boxassetid.includes(lid))	
+		      		{
+			      		if( neworderings.includes(curordering) || curordering == previousordering || curordering < previousordering)
+			      		{
+							curordering++; //Push over by one
+							cell.data("ordering",curordering);
+							boxassetid.push(lid);
+							neworderings.push(curordering);
+						}
+					}
+					previousordering = curordering;
+			});	
+	     	
+	          var lightboxid = resultsdiv.data("lightboxid");
+	          var hitssessionid = resultsdiv.data("hitssessionid");
 	          if (!hitssessionid) {
 	            hitssessionid = $("#main-results-table").data("hitssessionid");
 	          }
-	
-	          var options = targetnode.cleandata();
-	          options.sourceid = sourceid;
+	          
+	          var targetdiv = targetnode.closest("#lightboxeditor"); //not dialogmediaentity
+	          targetdiv = $(targetdiv);
+	          var moduleid = resultsdiv.data("topmoduleid");
+			var entityid = resultsdiv.data("entityid");
 
-	          options.hitssessionid = hitssessionid;
-	
-	          var targetdiv = targetnode.closest("#dialogmediaentity");
-	          var moduleid = targetnode.closest("#resultsdiv").data("moduleid");
-				
-				//debugger;
+			  var formData = new FormData();
+			  formData.append("hitssessionid", hitssessionid);
+			  formData.append("lightboxid", lightboxid);
+			  formData.append("entityid", entityid);
+			  formData.append("sourceid", sourceid);
+			     
+		      boxassetid.forEach((value) => {
+		        formData.append("boxassetid", value);
+		      });
+		      neworderings.forEach((value) => {
+		        formData.append("neworderings", value);
+		      });
+
 			
 	          $.ajax({
 	            url: apphome + "/views/modules/"+moduleid+ "/components/entities/lightboxes/gallerysaveorder.html",
-	            data: options,
 		        xhrFields: {
 		          withCredentials: true,
 		        },
 		        crossDomain: true,
-				type: "POST",
-	            success: function (data) {
-	              if (targetdiv.length) {
-						targetdiv.replaceWith(data);
-	              }
+				 type: "POST",
+	          data: formData,
+	          processData: false,
+	          contentType: false,
+	          "Content-Type": "multipart/form-data",
+		            success: function (data) {
+					targetdiv.replaceWith(data);
 		            //node.removeClass("dragoverselected");
 	              
 	            },
