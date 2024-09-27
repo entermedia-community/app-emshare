@@ -92,7 +92,9 @@ jQuery(document).ready(function (url, params) {
     e.preventDefault();
     var theform = $(this);
 
-    ["th", "td", "nav-btn", "btn"].forEach(function (inp) {
+    ["th", "td", "nav-btn", "btn", "btn-sec", "btn-acc"].forEach(function (
+      inp
+    ) {
       var bg = $("input." + inp).val();
       if (bg && bg.length === 7) {
         $("input." + inp + "-hover").val(lightenHex(bg, 10));
