@@ -7,21 +7,30 @@
 
 #set($componenthome = "$apphome/views/modules/asset/components")
 
+#set($loop = $hits)
+#ifnotnull($lightboxassets)
+	#set($loop = $lightboxassets)
+	#set( $hits = $assethits )
+	$context.putPageValue("hits",$hits)
+#end
+
 <div id="resultsdiv" 
-	class="h-100 scroll-resultsdivX lightboxselect"
+	class="h-100 scroll-resultsdivX lightboxselect resultsdiv"
 	data-hitssessionid="$!hits.getSessionId()" ##it breaks drag&drop
 	data-hitsname="$!hits.getHitsName()"
 	data-componenthome="$!componenthome"
 	data-searchhome="$!home$!{componenthome}/results"
-	data-targetdiv="lightboxresultsdiv"
+	data-targetdiv="$maintargetdiv"
 	data-category="$!category.getId()"
 	data-collectionid="$!librarycol.getId()" 
 	data-rendertype="$!rendertype"
-	data-searchtype="asset" 
+	data-lightboxassetsresults="$!{lightboxassetsresults}"
+	data-lightboxid="$!selectedbox.getId()"
 	data-pagenum="$!hits.getPage()" 
 	data-totalpages="$!hits.getTotalPages()"
-	##data-module="$!module"
 	data-moduleid="asset"
+	data-topmoduleid="$!module.id"
+	data-entityid="$!entity.id"
 	data-section="$!content.section"
 	#set( $inputid = $context.getRequestParameter("inputid"))
 	data-inputid="$!inputid"
@@ -42,7 +51,7 @@
 		#set($viewerlink = $content.get("assetviewerlink") )
 		#set($stackedfield = $mediaarchive.getCatalogSettingValue("stackedgalleryfield"))
 		
-		#foreach( $brick in $hits.getPageOfHits())
+		#foreach( $brick in $loop.getPageOfHits())
 		 
 		 	#ifnotnull( $hitassetlookup )
 			 	#set( $hit = $hitassetlookup.get($brick.getId()) )
@@ -54,7 +63,6 @@
 			$context.putPageValue("hit", $hit)
 			$context.putPageValue("asset", $hit)
 
-		
 			#set($type = $hit.getSearchHit().getType())
 			$context.putPageValue("type", $type)
 		
