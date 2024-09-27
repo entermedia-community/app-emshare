@@ -1682,11 +1682,13 @@ uiload = function () {
     var link = $(this);
     var tabaction = link.data("tabaction");
     var uploadmedia = link.data("uploadmedia");
+    var lightboxid = link.data("lightboxid");
     var tabsection = link.data("tabsection");
     var entity = link.closest(".entitydialog");
     entity.data("entitytabopen", tabaction);
     entity.data("uploadmedia", uploadmedia);
     entity.data("tabsection", tabsection);
+    entity.data("lightboxid", lightboxid);
     var parent = entity.parent(".entitydialog");
     autoreload(entity);
     if (parent !== undefined) {
@@ -4305,10 +4307,6 @@ uiload = function () {
           });
         },
         stop: function (event, ui) {
-          //db id of the item sorted
-          //alert(ui.item.attr('plid'));
-          //db id of the item next to which the dragged item was dropped
-          //alert(ui.item.prev().attr('plid'));
         },
       });
     }

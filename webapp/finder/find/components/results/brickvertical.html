@@ -32,7 +32,7 @@
 		$pages.include("$apphome/views/modules/asset/components/results/header.html",$context) 
 	#end
 	<div class="scrollview">
-		<div class="brickvertical" 
+		<div class="brickvertical brickverticalsortable" 
 			data-maxheight="180" 
 			data-maxwidth="180"
 			data-targeth="180"
@@ -50,6 +50,7 @@
 		 	#ifnull( $hitassetlookup )
 				#set( $hit = $brick)
 		 	#end
+			$context.putPageValue("brick", $brick)
 			$context.putPageValue("hit", $hit)
 			$context.putPageValue("asset", $hit)
 
@@ -77,9 +78,13 @@
 			#set($click = "$siteroot$viewerlink?hitssessionid=${hits.getSessionId()}&assetid=${hit.id}")
 			$context.putPageValue("click", "click" )
 			       
-			<div class="masonry-grid-cell assetdraggable" 
+			<div class="masonry-grid-cell assetdraggable"
+				 
 				id="gallerycell_$!{hit.id}"
 				data-assetid="$!{hit.id}"
+				data-assetlightboxid="${brick.id}"
+				data-ordering="${brick.ordering}"
+				
 				#if($rendertype == "audio")
 					data-width="250"
 					data-height="110"
@@ -89,9 +94,12 @@
 					$context.putPageValue("thumbheight", "180" ) 
 				#end
 				>
+				<div class="assetdroppable" data-ordering="${brick.ordering}" data-assetlightboxid="${brick.id}">
 				$pages.include("$componenthome/results/thumbnails/brick.html", $context)
+				</div>
 			</div>
 		    #set ( $count = $count + 1) 
+		    
 		#end
 		
 	</div>
