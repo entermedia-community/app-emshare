@@ -930,7 +930,7 @@ onloadselectors = function () {
 			incorder++;
 			targetnode.data("ordering", incorder);
 			
-			var resultsdiv = targetnode.closest(".dialogassetresults");
+			var resultsdiv = targetnode.closest(".resultsdiv");
 			
 			var boxassetid = [];
 			var neworderings = [];
@@ -959,18 +959,16 @@ onloadselectors = function () {
 			});	
 	     	
 	          var lightboxid = resultsdiv.data("lightboxid");
-	          var hitssessionid = resultsdiv.data("hitssessionid");
-	          if (!hitssessionid) {
-	            hitssessionid = $("#main-results-table").data("hitssessionid");
-	          }
 	          
-	          var targetdiv = targetnode.closest("#lightboxeditor"); //not dialogmediaentity
-	          targetdiv = $(targetdiv);
+	          var lightboxeditor = targetnode.closest("#lightboxeditor");
+	          var targetdiv = lightboxeditor; //not dialogmediaentity
+	          
+	          var hitssessionid = lightboxeditor.data("lightboxhitssessionid");
+	          
 	          var moduleid = resultsdiv.data("topmoduleid");
-			var entityid = resultsdiv.data("entityid");
+			  var entityid = resultsdiv.data("entityid");
 
 			  var formData = new FormData();
-			  formData.append("hitssessionid", hitssessionid);
 			  formData.append("lightboxid", lightboxid);
 			  formData.append("entityid", entityid);
 			  formData.append("sourceid", sourceid);
