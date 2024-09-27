@@ -41,13 +41,11 @@
 		#set($count = 0)
 		#set($viewerlink = $content.get("assetviewerlink") )
 		#set($stackedfield = $mediaarchive.getCatalogSettingValue("stackedgalleryfield"))
-		#set($lastordering = 0)
 		
 		#foreach( $brick in $hits.getPageOfHits())
 		 
 		 	#ifnotnull( $hitassetlookup )
 			 	#set( $hit = $hitassetlookup.get($brick.getId()) )
-			 	$context.putPageValue("lastordering",$lastordering)
 		 	#end
 		 	#ifnull( $hitassetlookup )
 				#set( $hit = $brick)
@@ -101,7 +99,6 @@
 				</div>
 			</div>
 		    #set ( $count = $count + 1) 
-		    #set( $lastordering = $brick.ordering )
 		    
 		#end
 		

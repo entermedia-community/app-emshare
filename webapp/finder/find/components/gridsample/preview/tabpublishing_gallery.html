@@ -18,6 +18,8 @@ $context.putPageValue("topmoduleid", $topmoduleid)
 #end
 #set($tabid = "tab_publishinggallery")
 
+#set($lightboxid = $context.getRequestParameter("lightboxid"))
+
 
 <div id="${tabid}" 
 class=" entity-tab-content entity-tab-media tabtypemedia" 
@@ -45,26 +47,22 @@ data-url="$componenthome/gridsample/preview/tabpublishing_gallery.html"
 		<div class="#if($publishing.enabled!="true")disabled-mask#end">
 
 			
-			<div class="form-group mb-1"  style="display: none;">
-				<input type="hidden" value="sortby" name="field" />
-				<label class="form-select-label mr-1" for="wgSortLabel">[[Sort by]]</label>
-				#set ($alldetails = $mediaarchive.getAssetSearcher().getUserPropertyDetails() )
-				<select class="form-control form-control-sm form-select form-select-sm wg-autosave" id="wgSortLabel" name="sortby.value">
-					#foreach( $detail in $alldetails)
-							
-							#if($hits.searchQuery.isSortUp())
-								#set($value = "${detail.id}Up")
-								#set($currentSortOrder = "up")
-							#else
-								#set($value = "${detail.id}Down")
-								#set($currentSortOrder = "down")
-							#end
-							<option data-detailid="${detail.id}" 
-									value="$value" 
-									#if($publishing.sortby == $detail.id)) 
+			<div class="form-group mb-1">
+				<input type="hidden" value="lightboxid" name="field" />
+				<label class="form-select-label mr-1" for="wgSortLabel">[[File Source]]</label>
+				
+				#ifnull($lightboxid)
+					#set($lightboxid = $publishing.lightboxid)
+				#end
+				#set($boxes =  $mediaarchive.getBean("entityManager").loadLightBoxesForModule($module, $entity, $context.getUser()))
+				<select class="form-control form-control-sm form-select form-select-sm wg-autosave" id="wgSortLabel" name="lightboxid.value">
+					<option value="">[[Unsorted]]</option>
+					#foreach( $box in $boxes)
+						
+							<option value="${box.id}" 
+									#if($lightboxid == $box.id)) 
 										selected="selected" 
-										#set($currentSort = $detail.getText($context))
-									#end>$detail.getText($context)</option>
+									#end>#text($box)</option>
 						#end
 				</select>
 			</div>
@@ -94,6 +92,13 @@ data-url="$componenthome/gridsample/preview/tabpublishing_gallery.html"
 			<input type="hidden" name="topmoduleid" value="$!topmoduleid" />
 			<input type="hidden" name="entityid" value="$!entityid" />
 			<input name="save" type="hidden" value="true">
+			
+			#set($overrideligthboxid = $context.getRequestParameter("lightboxid"))
+			#ifnotnull($overrideligthboxid)
+				#if($overrideligthboxid != $publishing.ligthboxid)
+					<div class="my-2">[[Press Update to update the file source]]</div>
+				#end
+			#end
 			
 			<div class="d-flex align-items-center">
 				<button type="submit" class="btn btn-brand btn-savepublishing rounded" style="padding-top: 6px;">
