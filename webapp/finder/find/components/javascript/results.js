@@ -92,12 +92,19 @@ jQuery(document).ready(function (url, params) {
     e.preventDefault();
     var theform = $(this);
 
-    ["th", "td", "nav-btn", "btn", "btn-sec", "btn-acc"].forEach(function (
-      inp
-    ) {
-      var bg = $("input." + inp).val();
+    [
+      "th",
+      "td",
+      "nav-btn",
+      "btn",
+      "btn-sec",
+      "btn-acc",
+      "nav-btn-active",
+    ].forEach(function (inp) {
+      var bg = $("input.color-picker." + inp).val();
+      console.log(bg, inp);
       if (bg && bg.length === 7) {
-        $("input." + inp + "-hover").val(lightenHex(bg, 10));
+        $("input.color-picker." + inp + "-hover").val(lightenHex(bg, 10));
       }
     });
 
