@@ -1,1 +1,52 @@
-$pages.include("./selectfile.html")
+#set( $searchtype = $context.findValue("searchtype"))
+#set( $parentsearchtype = $searchtype)
+#if( !$entity)
+	#set($entityid = $context.getRequestParameter("entityid"))
+	#set( $entity  = $mediaarchive.getData($searchtype, $entityid) )
+#end
+#set($entityid = $entity.id)
+$context.putPageValue("entity", $entity)
+$context.putPageValue("entityid", $entityid)
+
+#if(!$currenttab)
+	#set($currenttab = $context.getRequestParameter("currenttab"))
+#end
+
+
+#set($tabid = "tablightboxes")
+<div id="${tabid}" 
+class=" entity-tab-content entity-tab-media tabtypemedia" 
+data-tabid="${tabid}"
+data-entityid="$!entityid"
+data-currenttab="$!viewid"
+data-topmoduleid="$!moduleid"
+data-url="$componenthome/gridsample/preview/tabpublishing_gallery.html"
+>
+
+
+<div  class="tablightbox d-flex h-100" style="height: 100%;">
+	
+	$context.putPageValue("topmodule",$module)
+	
+	#set($boxes =  $mediaarchive.getBean("entityManager").loadLightBoxesForModule($module, $entity, $context.getUser()))
+	#set($assets =  $mediaarchive.getBean("entityManager").loadLightBoxeAssetsForModule($boxes,$module, $entity, $context.getUser()))
+
+#set( $lightboxid = $context.getRequestParameter("lightboxid"))
+
+#ifnotnull($lightboxid)
+	#if( $lightboxid != "files")
+		#set($selectedbox =  $mediaarchive.getCachedData("emedialightbox",$lightboxid) )
+	#end	
+#end
+#ifnull($lightboxid)
+	#set($selectedbox =  $mediaarchive.getBean("entityManager").findFirstSelectedLightBox($boxes,$assets))
+#end	
+	$context.putPageValue("boxes",$boxes)
+	$context.putPageValue("assets",$assets)
+	$context.putPageValue("selectedbox",$selectedbox)
+	
+	
+	$pages.include("$componenthome/publish/dita/sidemenu.html",$context)
+
+
+</div>
