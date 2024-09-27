@@ -4,15 +4,13 @@
 #set($searcher = $mediaarchive.getSearcher("theme"))
 
 #set( $themeid = $context.getRequestParameter("themeid"))
-#if(!$themeid)
-
+#ifnull($themeid)
 	#set( $themeid = $content.get("themeid") )
 #end
 	<div class="eml-content-title">
 		<div class="float-left"><h2>[[Theme Editor]]</h2></div>
 		<div class="float-right">
 			<form name="picker" action="index.html">
-				<input name="reload" type="hidden" value="true" />
 				<select name="themeid" class="form-control" onchange="this.form.submit()" style="float:left; width:180px; margin-right:10px;">
 				#set( $themes = $mediaarchive.getList("theme") )
 				#foreach( $theme in $themes)
