@@ -49,8 +49,12 @@
 #end
 #if(!$topmoduleid)
 	#set($topmoduleid = $context.getRequestParameter("topmoduleid"))
-	$context.putPageValue("topmoduleid",$topmoduleid)
 #end
+#if(!$topmoduleid)
+	#set($topmoduleid = $moduleid)
+#end
+
+$context.putPageValue("topmoduleid",$topmoduleid)
 #if(!$entityid)
 	#set($entityid = $context.getRequestParameter("entityid"))
 #end
@@ -62,6 +66,10 @@ $context.putPageValue("entityid", $entityid)
 #ifnull($lightboxassetsresults)
 	#set($lightboxassetsresults = $context.getRequestParameter("lightboxassetsresults"))
 #end
+#ifnull($lightboxid)
+#set($lightboxid = $context.getRequestParameter("lightboxid"))
+#end
+
 #if(!$dialogindextype)
 	#set ( $dialogindextype = $context.getRequestParameter("dialogindextype") )
 #end
@@ -142,23 +150,23 @@ $context.putPageValue("entityid", $entityid)
 			#if ($resultview != "map")
 				
 				#if($topmoduleid)
-					#ifnull($lightboxassetsresults)
-						#if(!$hideupload && $canviewupload && $topmoduleid != "favorites" && $permissions.can($topmoduleid, "upload_files"))
-						<li>
-							<a href="#"
-							class='resultsnavlink px-3 entitytabactions tabactionimport #if($entitytabopen=="import")enabledaction #end '
-							data-tabaction="import"
-							data-viewid="import"
-							data-tabtype="tabimport" 
-							data-entityid="$!entity.getId()" 
-							data-topmoduleid="$!moduleid"
-							data-moduleid="$!moduleid"
-							data-tabsection="upload"
-							data-hitssessionid="$!hits.getSessionId()"
-								title="[[Upload]]"><i class="bi bi-upload"></i></a>
-						</li>
-						#end
+					#if($lightboxid == "files" && !$hideupload && $canviewupload && $topmoduleid != "favorites" && $permissions.can($topmoduleid, "upload_files"))
+					
+					<li>
+						<a href="#"
+						class='resultsnavlink px-3 entitytabactions tabactionimport #if($entitytabopen=="import")enabledaction #end '
+						data-tabaction="import"
+						data-viewid="import"
+						data-tabtype="tabimport" 
+						data-entityid="$!entity.getId()" 
+						data-topmoduleid="$!moduleid"
+						data-moduleid="$!moduleid"
+						data-tabsection="upload"
+						data-hitssessionid="$!hits.getSessionId()"
+							title="[[Upload]]"><i class="bi bi-upload"></i></a>
+					</li>
 					#end
+					
 					#if ($candownload && $hits && $hits.getSelectionSize() > 0)
 					<li>
 						<a  class='resultsnavlink emdialog px-3'

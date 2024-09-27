@@ -39,6 +39,7 @@ $context.putPageValue("ismulti", $ismulti)
 #set($moduleid = $module.getId())
 $context.putPageValue("moduleid", $moduleid)
 $context.putPageValue("topmoduleid", $moduleid)
+
 #set($viewsearcher = $searcherManager.getSearcher($catalogid, "view"))
 #set($enttiyviews = $viewsearcher.query().exact("moduleid", $moduleid).exact("systemdefined","false").sort("orderingUp").search($context) )
 #set($firstviewid = $enttiyviews.first().getId())
@@ -201,21 +202,7 @@ $context.putPageValue("topmoduleid", $moduleid)
 			
 			<div class="d-flex entity-actions-bar align-items-center text-white">
 				#if(!$ismulti && $entity)
-				
-				
-				#if($module.getBoolean("enableuploading") && $permissions.can($moduleid, "upload_files"))
 					
-				<a href="#"
-						class='btn btn-sm btn-accent entitytabactions tabactionlightboxes #if($entitytabopen=="tablightboxes")enabledaction #end '
-						data-tabaction="tablightboxes"
-						data-viewid="tablightboxes"
-						data-tabtype="tablightboxes" 
-						data-entityid="$!entity.getId()" 
-						data-topmoduleid="$!moduleid"
-						data-moduleid="$!moduleid"
-						data-hitssessionid="$entityhits.getSessionId()"
-						title="[[Upload to]] #text($module) "><i class="bi bi-check-circle mr-1"></i> [[Lightboxes]]</a>
-				#end	
 				
 				#if($module.getBoolean("enableuploading"))
 				#if($permissions.can($moduleid, "upload_files") ||
@@ -333,44 +320,53 @@ $context.putPageValue("topmoduleid", $moduleid)
 								#end
 							#else
 								####Other Tabs
-									##View Permission
-									
-									#if($permissions.can($moduleid, $viewid))
-										#set($tabtype= "entitytab")
-										#ifnotnull($targetview.rendertype)
-											#set($tabtype= $targetview.rendertype)
-										#end
-										
-										#if($tabtype=="default")
-											#set($tabtype= "entitytab")
-										#end
-										
-										$context.putPageValue("tabmodule", $module)
-										$context.putPageValue("tabtype", $tabtype)
-										
-										$pages.include("$componenthome/gridsample/preview/entitytabmenu.html", $context)
+							
+								#if($permissions.can($moduleid, $viewid))
+									#set($tabtype= "entitytab")
+									#ifnotnull($targetview.rendertype)
+										#set($tabtype= $targetview.rendertype)
 									#end
+									
+									#if($tabtype=="default")
+										#set($tabtype= "entitytab")
+									#end
+									
+									$context.putPageValue("tabmodule", $module)
+									$context.putPageValue("tabtype", $tabtype)
+									
+									
+									##hide files Tab if Lightbox tab is enabled
+									#if($tabtype == "tablightboxes")
+										#set($hidefilestab = true)
+									#end
+									
+									$pages.include("$componenthome/gridsample/preview/entitytabmenu.html", $context)
+								#end
 							#end
 						#end
 					#end	
 				#end
 				
+				
 				#ifnotnull($id)
 					#if(!$ismulti)
+					
 						##media tab
-						#if($module.getBoolean("enableuploading") && $permissions.can($moduleid, "view_files"))
-							#set($submodule = $mediaarchive.getCachedData("module", "asset"))
-							$context.putPageValue("tabmodule", $submodule)
-							$context.putPageValue("tabtype", "entitytabmedia")
-							#set($tabid = "tab_media")
-							$context.putPageValue("tabid", $tabid)
-							#if($entitytabopen == "media")
-								$context.putPageValue("currenttab", $entitytabopen)
+						#ifnull($hidefilestab)
+							#if($module.getBoolean("enableuploading") && $permissions.can($moduleid, "view_files"))
+								#set($submodule = $mediaarchive.getCachedData("module", "asset"))
+								$context.putPageValue("tabmodule", $submodule)
+								$context.putPageValue("tabtype", "entitytabmedia")
+								#set($tabid = "tab_media")
+								$context.putPageValue("tabid", $tabid)
+								#if($entitytabopen == "media")
+									$context.putPageValue("currenttab", $entitytabopen)
+								#end
+								$pages.include("$apphome/views/modules/asset/components/gridsample/preview/entitytabmenu.html", $context)
 							#end
-							$pages.include("$apphome/views/modules/asset/components/gridsample/preview/entitytabmenu.html", $context)
+							
+							$context.putPageValue("tabmodule", "")
 						#end
-						
-						$context.putPageValue("tabmodule", "")
 						
 						##import tab
 						#if($entitytabopen == "import")
@@ -396,17 +392,6 @@ $context.putPageValue("topmoduleid", $moduleid)
 							$pages.include("$componenthome/gridsample/preview/entitytabmenu.html", $context)
 						#end
 						
-						##export tab
-						#if($entitytabopen == "tablightboxes")
-							##permissions here
-							#set($tabtype= "tablightboxes")
-							$context.putPageValue("tabtype", $tabtype)
-							#set($tabid = "tablightboxes")
-							$context.putPageValue("tabid", $tabid)
-							$context.putPageValue("currenttab", $entitytabopen)
-									
-							$pages.include("$componenthome/gridsample/preview/entitytabmenu.html", $context)
-						#end
 						
 						#if($entitytabopen == "activityhistory")
 							##permissions here
@@ -488,11 +473,11 @@ $context.putPageValue("topmoduleid", $moduleid)
 				
 
 				#if($entitytabopen == "tablightboxes")
-					
 					#if(!$ismulti)
 						$context.putPageValue("currenttab", $tabtype)
 						$pages.include("$componenthome/entities/lightboxes/show.html?entityid=$id", $context)
-					#end				
+					#end
+								
 				#elseif($entitytabopen == "import")
 					#if(!$ismulti)
 						#set($tabtype= "tabimport")
@@ -501,6 +486,7 @@ $context.putPageValue("topmoduleid", $moduleid)
 						$context.putPageValue("viewid", "import")
 						$pages.include("$componenthome/gridsample/preview/tabimport.html?entityid=$id", $context)
 					#end
+					
 				#elseif($entitytabopen == "export")
 					#if(!$ismulti)
 						#set($tabtype= "tabexport")
