@@ -10,6 +10,111 @@ jQuery(document).ready(function (url, params) {
     headerHeight = 0;
   }
 
+  function lightenHex(hex, lighten = 0) {
+    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+
+    var r = parseInt(result[1], 16);
+    var g = parseInt(result[2], 16);
+    var b = parseInt(result[3], 16);
+
+    (r /= 255), (g /= 255), (b /= 255);
+    var max = Math.max(r, g, b),
+      min = Math.min(r, g, b);
+    var h,
+      s,
+      l = (max + min) / 2;
+
+    if (max == min) {
+      h = s = 0; // achromatic
+    } else {
+      var d = max - min;
+      s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+      switch (max) {
+        case r:
+          h = (g - b) / d + (g < b ? 6 : 0);
+          break;
+        case g:
+          h = (b - r) / d + 2;
+          break;
+        case b:
+          h = (r - g) / d + 4;
+          break;
+      }
+      h /= 6;
+    }
+
+    s *= 100;
+    s = Math.round(s);
+    l *= 100;
+    if (l + lighten > 100 || l + lighten < 0) {
+      l -= lighten;
+    } else {
+      l += lighten;
+    }
+    l = Math.round(l);
+    h = Math.round(360 * h);
+
+    l /= 100;
+    const a = (s * Math.min(l, 1 - l)) / 100;
+    const f = (n) => {
+      const k = (n + h / 30) % 12;
+      const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
+      return Math.round(255 * color)
+        .toString(16)
+        .padStart(2, "0");
+    };
+    return `#${f(0)}${f(8)}${f(4)}`;
+  }
+
+  function invertColor(hex) {
+    if (hex.indexOf("#") === 0) {
+      hex = hex.slice(1);
+    }
+
+    if (hex.length === 3) {
+      hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];
+    }
+    if (hex.length !== 6) {
+      throw new Error("Invalid HEX color.");
+    }
+    var r = parseInt(hex.slice(0, 2), 16),
+      g = parseInt(hex.slice(2, 4), 16),
+      b = parseInt(hex.slice(4, 6), 16);
+
+    // r = (255 - r).toString(16);
+    // g = (255 - g).toString(16);
+    // b = (255 - b).toString(16);
+    // return "#" + padZero(r) + padZero(g) + padZero(b);
+    return r * 0.299 + g * 0.587 + b * 0.114 > 186 ? "#000000" : "#FFFFFF";
+  }
+
+  lQuery("form#themeeditor").livequery("submit", function (e) {
+    e.preventDefault();
+    var theform = $(this);
+
+    ["th", "td", "nav-btn", "btn"].forEach(function (inp) {
+      var bg = $("input." + inp).val();
+      if (bg && bg.length === 7) {
+        $("input." + inp + "-hover").val(lightenHex(bg, 10));
+      }
+    });
+
+    var td = $("input.td").val();
+    if (td && td.length === 7) {
+      $("input.td-stripe").val(lightenHex(td, -5));
+    }
+
+    ["sidebar-bg"].forEach(function (inp) {
+      var bg = $("input." + inp).val();
+      inp = inp.replace("-bg", "");
+      if (bg && bg.length === 7) {
+        $("input." + inp + "-text").val(invertColor(bg));
+      }
+    });
+
+    theform.get(0).submit();
+  });
+
   lQuery("div.masonry-grid").livequery(function () {
     $(this).brick();
   });

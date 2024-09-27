@@ -2935,7 +2935,7 @@ uiload = function () {
               searchmodaldialog.html(data);
               togglemodaldialog("show");
               $("#mainsearchvalue").focus();
-			  jQuery(window).trigger("resize");
+              jQuery(window).trigger("resize");
             }
           },
           complete: function () {
@@ -4635,8 +4635,7 @@ autoreload = function (div, callback) {
   if (url != undefined) {
     var options = div.data();
     replaceelement(url, div, options, callback);
-  jQuery(window).trigger("resize");
-
+    jQuery(window).trigger("resize");
   }
 };
 
