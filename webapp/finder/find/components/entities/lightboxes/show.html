@@ -11,16 +11,7 @@ $context.putPageValue("entityid", $entityid)
 #if(!$currenttab)
 	#set($currenttab = $context.getRequestParameter("currenttab"))
 #end
-#if(!$topmoduleid)
-	#set ( $topmoduleid = $context.getRequestParameter("topmoduleid") )
-#end
-#if(!$topmoduleid)
-	#set ( $topmoduleid = $context.getRequestParameter("moduleid") )
-#end
-$context.putPageValue("topmoduleid", $topmoduleid)
-#ifnotnull($topmoduleid)
-	#set($topmodule = $mediaarchive.getCachedData("module", $topmoduleid))
-#end
+
 
 #set($tabid = "tablightboxes")
 <div id="${tabid}" 
@@ -28,16 +19,16 @@ class=" entity-tab-content entity-tab-media tabtypemedia"
 data-tabid="${tabid}"
 data-entityid="$!entityid"
 data-currenttab="$!viewid"
-data-topmoduleid="$!topmoduleid"
+data-topmoduleid="$!moduleid"
 data-url="$componenthome/gridsample/preview/tabpublishing_gallery.html"
 >
 
 <div  class="tablightbox d-flex h-100" style="height: 100%;">
 	
-	$context.putPageValue("topmodule",$topmodule)
+	$context.putPageValue("topmodule",$module)
 	
-	#set($boxes =  $mediaarchive.getBean("entityManager").loadLightBoxesForModule($topmodule, $entity, $context.getUser()))
-	#set($assets =  $mediaarchive.getBean("entityManager").loadLightBoxeAssetsForModule($boxes,$topmodule, $entity, $context.getUser()))
+	#set($boxes =  $mediaarchive.getBean("entityManager").loadLightBoxesForModule($module, $entity, $context.getUser()))
+	#set($assets =  $mediaarchive.getBean("entityManager").loadLightBoxeAssetsForModule($boxes,$module, $entity, $context.getUser()))
 
 #set( $lightboxid = $context.getRequestParameter("lightboxid"))
 
