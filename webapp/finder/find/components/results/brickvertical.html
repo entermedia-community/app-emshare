@@ -8,7 +8,7 @@
 #set($componenthome = "$apphome/views/modules/asset/components")
 
 #set($loop = $hits)
-#ifnotnull($lightboxassets)
+#if($lightboxassets && !$lightboxassets.isEmpty())
 	#set($loop = $lightboxassets)
 	#set( $hits = $assethits )
 	$context.putPageValue("hits",$hits)
@@ -25,11 +25,11 @@
 	data-collectionid="$!librarycol.getId()" 
 	data-rendertype="$!rendertype"
 	data-lightboxassetsresults="$!{lightboxassetsresults}"
-	data-lightboxid="$!selectedbox.getId()"
+	data-lightboxid="$!lightboxid"
 	data-pagenum="$!hits.getPage()" 
 	data-totalpages="$!hits.getTotalPages()"
 	data-moduleid="asset"
-	data-topmoduleid="$!module.id"
+	data-topmoduleid="$!topmoduleid"
 	data-entityid="$!entity.id"
 	data-section="$!content.section"
 	#set( $inputid = $context.getRequestParameter("inputid"))
