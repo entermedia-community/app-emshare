@@ -12,14 +12,20 @@ $context.putPageValue("dialogresults", true)
 #set($lightboxassetsresults = true)
 $context.putPageValue("lightboxassetsresults", $lightboxassetsresults)
 
+#set($topmoduleid = $module.id)
+$context.putPageValue("topmoduleid",$topmoduleid)
+
+#ifnull($lightboxid)
+	#set($lightboxid = $selectedbox.getId())
+#end
+$context.putPageValue("lightboxid",$lightboxid)
+
 #set( $targetdivmedia = "dialogmediaentity")
 $context.putPageValue("targetdivmedia", $targetdivmedia)
 
 #set($componenthome = "$apphome/views/modules/asset/components")
 
 $pages.include("$componenthome/entities/lightboxes/header.html", $context)
-
-
 
 $pages.include("$componenthome/results/brickvertical.html",$context)
 

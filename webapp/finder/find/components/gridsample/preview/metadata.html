@@ -17,11 +17,12 @@
 	#set($data = $entity)
 #end
 
-#if(!$data)
+#ifnull($data)
+	#set($data = $mediaarchive.getSearcher($searchtype).createNewData())
+	
 	#set ($fieldexternalid = $context.getRequestParameter("fieldexternalid"))
 	#set ($fieldexternalvalue = $context.getRequestParameter("fieldexternalvalue"))
 	#ifnotnull($fieldexternalid)
-		#set($data = $mediaarchive.getSearcher($searchtype).createNewData())
 		$data.setValue($fieldexternalid, $fieldexternalvalue)
 	#end
 #end

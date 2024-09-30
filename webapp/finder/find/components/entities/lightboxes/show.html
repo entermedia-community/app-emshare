@@ -12,6 +12,9 @@ $context.putPageValue("entityid", $entityid)
 	#set($currenttab = $context.getRequestParameter("currenttab"))
 #end
 
+$context.putPageValue("topmodule",$module)
+#set($topmoduleid = $module.id)
+$context.putPageValue("topmoduleid",$topmoduleid)
 
 #set($tabid = "tablightboxes")
 <div id="${tabid}" 
@@ -19,29 +22,29 @@ class=" entity-tab-content entity-tab-media tabtypemedia"
 data-tabid="${tabid}"
 data-entityid="$!entityid"
 data-currenttab="$!viewid"
-data-topmoduleid="$!moduleid"
+data-topmoduleid="$!topmoduleid"
 data-url="$componenthome/gridsample/preview/tabpublishing_gallery.html"
 >
 
 <div  class="tablightbox d-flex h-100" style="height: 100%;">
 	
-	$context.putPageValue("topmodule",$module)
-	
 	#set($boxes =  $mediaarchive.getBean("entityManager").loadLightBoxesForModule($module, $entity, $context.getUser()))
 	#set($assets =  $mediaarchive.getBean("entityManager").loadLightBoxeAssetsForModule($boxes,$module, $entity, $context.getUser()))
 
-#set( $lightboxid = $context.getRequestParameter("lightboxid"))
+	#set( $lightboxid = $context.getRequestParameter("lightboxid"))
 
-#ifnotnull($lightboxid)
-	#if( $lightboxid != "files")
-		#set($selectedbox =  $mediaarchive.getCachedData("emedialightbox",$lightboxid) )
+	#ifnotnull($lightboxid)
+		#if( $lightboxid != "files")
+			#set($selectedbox =  $mediaarchive.getCachedData("emedialightbox",$lightboxid) )
+		#end	
+	#end
+	#ifnull($lightboxid)
+		#set($selectedbox =  $mediaarchive.getBean("entityManager").findFirstSelectedLightBox($boxes,$assets))
+		#set($lightboxid = $selectedbox.getId())
 	#end	
-#end
-#ifnull($lightboxid)
-	#set($selectedbox =  $mediaarchive.getBean("entityManager").findFirstSelectedLightBox($boxes,$assets))
-#end	
 	$context.putPageValue("boxes",$boxes)
 	$context.putPageValue("assets",$assets)
+	$context.putPageValue("lightboxid",$lightboxid)
 	$context.putPageValue("selectedbox",$selectedbox)
 	
 	
