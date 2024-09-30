@@ -1,4 +1,11 @@
 #set( $searchtype = $context.findValue("searchtype"))
+#set( $currentsubab = $context.findValue("subtab"))
+
+#ifnull($currentsubab)
+	#set($currentsubab = "visualviewer")
+#end
+
+$context.putPageValue("subtab", $currentsubab);
 #set( $parentsearchtype = $searchtype)
 #if( !$entity)
 	#set($entityid = $context.getRequestParameter("entityid"))
@@ -8,12 +15,11 @@
 $context.putPageValue("entity", $entity)
 $context.putPageValue("entityid", $entityid)
 
-#if(!$currenttab)
+#ifnull($currenttab)
 	#set($currenttab = $context.getRequestParameter("currenttab"))
 #end
 
-
-#set($tabid = "tablightboxes")
+#set($tabid = "ditavizeditor")
 <div id="${tabid}" 
 class=" entity-tab-content entity-tab-media tabtypemedia" 
 data-tabid="${tabid}"
@@ -30,9 +36,8 @@ data-url="$componenthome/gridsample/preview/tabpublishing_gallery.html"
 
 #set( $lightboxid = $context.getRequestParameter("lightboxid"))
 
-	$pages.include("$componenthome/publish/ditaeditcontent/sidemenu.html",$context)
-	$pages.include("$componenthome/publish/ditaeditcontent/visualedit.html",$context)
+	$pages.include("$componenthome/publish/ditaeditcontent/sidemenu.html",$context) 
 
-
+	$pages.include("$componenthome/publish/ditaeditcontent/${currentsubab}.html",$context)
 
 </div>
