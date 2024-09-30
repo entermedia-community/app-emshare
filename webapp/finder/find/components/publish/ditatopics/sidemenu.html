@@ -1,0 +1,35 @@
+<div id="lightboxessidemenu" class="overflow-y">
+	#set($section = $context.getRequestParameter("tabsection"))
+#ifnull($section)
+	#set( $section = "select")
+#end
+		<div class="rounded lightboxdropasset" data-entityid="$entity.id" data-moduleid="$topmodule.id" data-lightboxid="$section">
+			<a class="ajax btn-wide #if( $section == "select" ) active #end"
+				data-targetdiv="tablightboxes"
+				data-oemaxlevel="1"
+				href="$componenthome/publish/ditatopics/ai.html?lightboxid=$section&entityid=$entity.id&moduleid=$module.id">
+			
+			#set( $moduleicon = "robot")
+			<i class="bi bi-${moduleicon}"></i>
+			<span>[[AI Creation]]			</span>
+			</a>
+		</div>
+
+
+		<div class="rounded lightboxdropasset" data-entityid="$entity.id" data-moduleid="$topmodule.id" data-lightboxid="$section">
+			<a class="ajax btn-wide #if( $section == $selectedbox.id ) active #end"
+				data-targetdiv="tablightboxes"
+				data-oemaxlevel="1"
+				href="$componenthome/publish/dita/show.html?lightboxid=$section&entityid=$entity.id&moduleid=$module.id">
+			
+			#set( $moduleicon = $box.moduleicon)
+			#ifnull($moduleicon)
+				#set( $moduleicon = "cloud-arrow-up")
+			#end
+			<i class="bi bi-${moduleicon}"></i>
+			<span>[[Upload]]			</span>
+			</a>
+		</div>
+
+		
+</div>

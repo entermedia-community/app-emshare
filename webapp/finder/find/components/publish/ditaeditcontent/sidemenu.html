@@ -1,0 +1,51 @@
+<div id="lightboxessidemenu" class="overflow-y">
+	#set($section = $context.getRequestParameter("tabsection"))
+#ifnull($section)
+	#set( $section = "select")
+#end
+		<div class="rounded lightboxdropasset" data-entityid="$entity.id" data-moduleid="$topmodule.id" data-lightboxid="$section">
+			<a class="ajax btn-wide #if( $section == "select" ) active #end"
+				data-targetdiv="tablightboxes"
+				data-oemaxlevel="1"
+				href="$componenthome/publish/dita/show.html?lightboxid=$section&entityid=$entity.id&moduleid=$module.id">
+			
+			#set( $moduleicon = "pencil-square")
+			<i class="bi bi-${moduleicon}"></i>
+			<span>[[VIsual Editor]]			</span>
+			</a>
+		</div>
+
+
+		<div class="rounded lightboxdropasset" data-entityid="$entity.id" data-moduleid="$topmodule.id" data-lightboxid="$section">
+			<a class="ajax btn-wide #if( $section == $selectedbox.id ) active #end"
+				data-targetdiv="tablightboxes"
+				data-oemaxlevel="1"
+				href="$componenthome/publish/dita/show.html?lightboxid=$section&entityid=$entity.id&moduleid=$module.id">
+			
+			#set( $moduleicon = $box.moduleicon)
+			#ifnull($moduleicon)
+				#set( $moduleicon = "diagram-3-fill")
+			#end
+			<i class="bi bi-${moduleicon}"></i>
+			<span>[[Structure View]]			</span>
+			</a>
+		</div>
+		
+		<div class="rounded lightboxdropasset" data-entityid="$entity.id" data-moduleid="$topmodule.id" data-lightboxid="$section">
+			<a class="ajax btn-wide #if( $section == $selectedbox.id ) active #end"
+				data-targetdiv="tablightboxes"
+				data-oemaxlevel="1"
+				href="$componenthome/publish/dita/show.html?lightboxid=$section&entityid=$entity.id&moduleid=$module.id">
+			
+			#set( $moduleicon = $box.moduleicon)
+			#ifnull($moduleicon)
+				#set( $moduleicon = "check-circle-fill")
+			#end
+			<i class="bi bi-${moduleicon}"></i>
+			<span>[[Publish]]			</span>
+			</a>
+		</div>
+		
+
+
+</div>
