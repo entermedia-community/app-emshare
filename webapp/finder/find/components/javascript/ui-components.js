@@ -4682,7 +4682,7 @@ var resizecolumns = function () {
   var coltogglers = $(".col-sidebar-togglers");
   coltogglers.css("height", windowh - 1);
   var colsidebar = $(".col-mainsidebar");
-  colsidebar.css("height", windowh - 32);
+  colsidebar.css("height", windowh);
 
   //reset some heights
   $(".settingslayout").css("height", "auto");
