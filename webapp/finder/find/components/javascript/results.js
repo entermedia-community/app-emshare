@@ -66,7 +66,7 @@ jQuery(document).ready(function (url, params) {
     return `#${f(0)}${f(8)}${f(4)}`;
   }
 
-  function invertColor(hex) {
+  function contrastColor(hex) {
     if (hex.indexOf("#") === 0) {
       hex = hex.slice(1);
     }
@@ -96,10 +96,12 @@ jQuery(document).ready(function (url, params) {
       "th",
       "td",
       "nav-btn",
+      "nav-btn-active",
+      "tab-btn",
+      "tab-btn-active",
       "btn",
       "btn-sec",
       "btn-acc",
-      "nav-btn-active",
     ].forEach(function (inp) {
       var bg = $("input.color-picker." + inp).val();
       console.log(bg, inp);
@@ -113,11 +115,10 @@ jQuery(document).ready(function (url, params) {
       $("input.td-stripe").val(lightenHex(td, -5));
     }
 
-    ["sidebar-bg"].forEach(function (inp) {
+    ["sidebar", "navbar-primary", "navbar-secondary"].forEach(function (inp) {
       var bg = $("input." + inp).val();
-      inp = inp.replace("-bg", "");
       if (bg && bg.length === 7) {
-        $("input." + inp + "-text").val(invertColor(bg));
+        $("input." + inp + "-text").val(contrastColor(bg));
       }
     });
 
