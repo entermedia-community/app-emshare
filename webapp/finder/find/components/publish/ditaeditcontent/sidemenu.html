@@ -1,29 +1,24 @@
 <div id="lightboxessidemenu" class="overflow-y dita-list" style="width:300px">
+
+
 	#set($section = $context.getRequestParameter("tabsection"))
 #ifnull($section)
 	#set( $section = "select")
 #end
-		<div class="rounded lightboxdropasset" data-entityid="$entity.id" data-moduleid="$topmodule.id" data-lightboxid="$section">
-			<a class="ajax btn-wide #if( $section == "select" ) active #end"
-				data-targetdiv="tablightboxes"
-				data-oemaxlevel="1"
-				href="$componenthome/publish/dita/show.html?lightboxid=$section&entityid=$entity.id&moduleid=$module.id">
-			
-			90130_SPC_C-EFM.ditamap
-			</a>
-			
-		</div>
+<br><br>
+#set($section = $context.getRequestParameter("tabsection"))
 
-
-		<div class="rounded lightboxdropasset" data-entityid="$entity.id" data-moduleid="$topmodule.id" data-lightboxid="$section">
-			<a class="ajax btn-wide #if( $section == $selectedbox.id ) active #end"
-				data-targetdiv="tablightboxes"
-				data-oemaxlevel="1"
-				href="$componenthome/publish/dita/show.html?lightboxid=$section&entityid=$entity.id&moduleid=$module.id">
-			
-			learning/lac_90130_SPC_C-EFM.dita
-			
+#set( $found =  $mediaarchive.getBean("contentManager").findDitaAssets($entity) )
+#foreach($hit in $found)
+		<div class="rounded lightboxdropasset" >
+			<a class="ajax btn-wide #if( $asset == $hit.id ) active #end"
+				data-targetdiv="ditavizeditor" 
+				data-oemaxlevel="2"
+				data-entityid="$entity.id" data-moduleid="$topmodule.id"  
+				href="$componenthome/publish/ditaeditcontent/visualviewer.html?assetid=$hit.id&entityid=$entity.id&moduleid=$module.id">
+			#text( $hit )
 			</a>
 		</div>
+#end
 		
 </div>
