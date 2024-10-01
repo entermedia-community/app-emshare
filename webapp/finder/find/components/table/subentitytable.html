@@ -84,8 +84,8 @@ $context.putPageValue("details", $!details)
 	#set($module = $mediaarchive.getCachedData("module", $searchtype))
 	$context.putPageValue("module", $module)
 	#set($topmodule = $mediaarchive.getCachedData("module", $topmoduleid))
-	<div class="d-flex mb-2">
-		<h3 class="m-0  flex-grow-1">
+	<div class="entity-ction-header">
+		<h3 class="m-0 mr-auto align-items-center">
 			#set($moduleicon = "box")
 			#ifnotnull($module.moduleicon)
 				#set($moduleicon = $module.moduleicon)
@@ -112,7 +112,7 @@ $context.putPageValue("details", $!details)
 					data-targettype="entitypickersubmodule"
 					data-pickersearchaddnew="true"
 					data-hidefooter="true"
-					title="[[Create or Choose Existing]] #text($entity)"><i class="bi bi-search mr-2"></i> [[Add Existing]]</a>
+					title="[[Create or Choose Existing]] #text($entity)"><i class="bi bi-plus-lg mr-2"></i> [[Add Existing]]</a>
 					
 					#set($pickerurl = "$apphome/views/modules/$!{subentitysearchtype}/components/entities/csvupload/picker.html")
 					<a href="$pickerurl" 
@@ -128,7 +128,7 @@ $context.putPageValue("details", $!details)
 					data-targettype="entitypickersubmodule"
 					data-pickersearchaddnew="true"
 					data-hidefooter="true"
-					title="[[Upload]]"><i class="bi bi-search mr-2"></i> [[Upload Spreadsheet]]</a>	
+					title="[[Upload]]"><i class="bi bi-upload mr-2"></i> [[Upload Spreadsheet]]</a>	
 
 					#set($pickerurl = "$apphome/views/modules/$!{subentitysearchtype}/components/entities/ai/input.html")
 					<a href="$pickerurl" 
@@ -144,7 +144,7 @@ $context.putPageValue("details", $!details)
 					data-targettype="entitypickersubmodule"
 					data-pickersearchaddnew="true"
 					data-hidefooter="true"
-					title="[[Create New]] #text($submodule) [[With AI]]"><i class="bi bi-search mr-2"></i> [[Create With AI]]</a>	
+					title="[[Create New]] #text($submodule) [[With AI]]"><i class="bi bi-brush mr-2"></i> [[Create With AI]]</a>	
 					
 					#set($pickerurl = "$apphome/views/modules/$!{subentitysearchtype}/components/entities/renderdita/input.html")
 					<a href="$pickerurl" 
@@ -160,8 +160,7 @@ $context.putPageValue("details", $!details)
 					data-targettype="entitypickersubmodule"
 					data-pickersearchaddnew="true"
 					data-hidefooter="true"
-					title="[[Create New Dita Rendering]]"><i class="bi bi-search mr-2"></i> [[Render]] $topmodule</a>	
-					
+					title="[[Create New Dita Rendering]]"><i class="bi bi-file-break mr-2"></i> [[Render]]</a>	
 			#end
 		#end
 	</div>
@@ -199,31 +198,27 @@ $context.putPageValue("details", $!details)
 				$context.putPageValue("resultslink", $resultsLink)
 				$context.putPageValue("idprefix","entitysearch")
 				$pages.include("$apphome/components/sidebars/filters/index.html", $context)
-		</div>
-	
-	
-		
-		#if( !$hits || $hits.size() == 0 )
-			<p class="info">[[No records found]]</p>
-		#end
-	
+			</div>
+
 	#else
-	
 		#set($addnew = "$!{siteroot}${apphome}/views/modules/${moduleid}/components/entities/addnew.html")
-		<a class="resultsnavlinkaddnew emdialog"
-		data-dialogid="entitypickeraddnew"
-		data-hidefooter="true"
-		data-targetdivinner="pickersearchentities"
-		data-ajaxreloadtargets="onetomanytab"
-		data-fieldexternalid="$!fieldexternalid"
-		data-fieldexternalvalue="$!fieldexternalvalue"
-		href="$addnew"
-		title="[[Create New]] #text($entity)">
-		<i class="bi bi-plus-lg mr-1"></i> [[Create New]]</a>
-	
-		#if($tabletype == "subentity")
-			#set($entity = $mediaarchive.getCachedData("module", $searchtype))	
-			<div id="resultsdiv$!{entity.getId()}"></div>
-		#end
+		<div class="w-100 text-center mt-5">
+			<p class="text-muted">[[No]] #text($module) [[created yet]]</p>
+			<a class="resultsnavlinkaddnew emdialog rounded"
+			data-dialogid="entitypickeraddnew"
+			data-hidefooter="true"
+			data-targetdivinner="pickersearchentities"
+			data-ajaxreloadtargets="onetomanytab"
+			data-fieldexternalid="$!fieldexternalid"
+			data-fieldexternalvalue="$!fieldexternalvalue"
+			href="$addnew"
+			title="[[Create New]] #text($entity)">
+			<i class="bi bi-plus-lg mr-1"></i> [[Create New]]</a>
+		
+			#if($tabletype == "subentity")
+				#set($entity = $mediaarchive.getCachedData("module", $searchtype))	
+				<div id="resultsdiv$!{entity.getId()}"></div>
+			#end
+		</div>
 	#end
 </div>
