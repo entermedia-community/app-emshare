@@ -8,9 +8,12 @@
 
 #set($xml = $mediaarchive.getOriginalDocument($hit))
 #if( $xml.exists() )
+	#ifnotnull( $asset)
 	<textarea id="xml-code" style="display: none;">$xml.getContent()</textarea>
 	<code class="language-xml xml hljs"></code>
 	<script src="/${applicationid}/components/javascript/highlight.min.js"></script>
+	#end
+	
 #else
 
 404: Asset does not exist
