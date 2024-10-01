@@ -1,4 +1,16 @@
 <div class="alert alert-success fader alert-save">
 [[Deleted Successfully]]
 </div>
+
+#ifnull($tabletype)
+#set($tabletype = $context.getRequestParameter("tabletype"))
+#end
+
+#ifnull($tabletype)
+
 $pages.include("$apphome/views/modules/${module.id}/index.html",$context)
+#end
+#ifnotnull($tabletype)
+
+$pages.include("$apphome/views/modules/${module.id}/components/gridsample/preview/tabsubmodulehome.html",$context)
+#end

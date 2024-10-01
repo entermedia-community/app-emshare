@@ -32,7 +32,14 @@ $context.putPageValue("entityrendertype", $entityrendertype)
 		#set($resultview = "table")
 	#end
 #end
-		
+
+#ifnull($tabletype)
+#set($tabletype = $context.getRequestParameter("tabletype"))
+#end
+#ifnull($tabid)
+#set($tabid = $context.getRequestParameter("tabid"))
+#end
+
 <div id="resultsheader" class="resultsheader #if($!hits.getSelectionSize() > 0)hasselections#end">
 	<div id="sub-nav" class="search-views emsubnav sub-nav-$!moduleid">
 		<ul class="resultsnav">
@@ -109,9 +116,16 @@ $context.putPageValue("entityrendertype", $entityrendertype)
 					#if($permissions.can($moduleid, "delete"))
 						 <li><a class="dropdown-item ajax" 
 						 data-confirm="[[Delete items?]]" 
-						 data-oemaxlevel="2" 
-						 data-targetdiv="$!{moduleid}resultscontainer" 
-						 href="$!{siteroot}${apphome}/views/modules/${moduleid}/actions/deleteselections.html?hitssessionid=$hits.sessionId&module=$!{module.id}"
+						 #if($tabletype=="subentity")
+							 data-oemaxlevel="2" 
+							 data-targetdiv="$tabid" 
+							 data-tabletype="$tabletype"
+							 href="$!{siteroot}${apphome}/views/modules/${moduleid}/actions/deleteselections.html?hitssessionid=$hits.sessionId&module=$!{module.id}"
+						 #else
+							 data-oemaxlevel="2" 
+							 data-targetdiv="$!{moduleid}resultscontainer" 
+							 href ="$!{siteroot}${apphome}/views/modules/${moduleid}/actions/deleteselections.html?hitssessionid=$hits.sessionId&module=$!{module.id}"
+						 #end
 						 title="[[Delete selected items]]">[[Delete]] $!hits.getSelectionSize() [[Records]]</a></li>
 					#end
 					

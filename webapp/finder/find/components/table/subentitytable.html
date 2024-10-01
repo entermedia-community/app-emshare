@@ -22,7 +22,7 @@ $context.putPageValue("topmoduleid", $topmoduleid)
 		
 #end
 
-#set($viewsearcher = $searcherManager.getSearcher($catalogid, "view"))
+#set( $viewsearcher = $searcherManager.getSearcher($catalogid, "view"))
 #set( $viewdata = $viewsearcher.searchById($viewid))
 #set( $subentitysearchtype = $viewdata.rendertable )
 #set( $submodule = $mediaarchive.getCachedData("module", $subentitysearchtype))
@@ -70,6 +70,9 @@ $context.putPageValue("details", $!details)
 	#stop
 #end
 
+#set($componenthome = "$applink/views/modules/$!{subentitysearchtype}/components")
+$context.putPageValue("componenthome", $!componenthome)
+
 #set( $xmledithome = "$componenthome/xml")
 #set( $candelete = $context.getRequestParameter("candelete"))
 #ifnull($candelete)
@@ -77,7 +80,6 @@ $context.putPageValue("details", $!details)
 		#set($candelete = true)
 	#end
 #end
-
 
 #set($submoduleresults = "results$!{viewid}")
 <div id="$!submoduleresults" class="submodulepicker">
@@ -185,6 +187,7 @@ $context.putPageValue("details", $!details)
 						data-searchhome="$!home$!componenthome/results"
 						data-targetdiv="$maintargetdiv"
 						data-tabletype="$!{tabletype}"
+						data-tabid="$!{tabid}"
 						#if($topentityid) data-topentityid="$topentityid" #end
 						data-oemaxlevel="1"	>	
 								
