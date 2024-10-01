@@ -9,6 +9,7 @@ import org.openedit.WebPageRequest
 import org.openedit.data.Searcher
 import org.openedit.hittracker.HitTracker
 import org.openedit.page.Page
+import org.openedit.repository.ContentItem
 import org.openedit.util.DateStorageUtil
 import org.openedit.util.PathUtilities
 
@@ -79,7 +80,11 @@ public moveAssets(MediaArchive archive, String inCategoryId, String inNewcategor
 		if(fullpath.exists()){
 			String newsourcepath = assetsourcepath.replace("Activities/null", inNewcategorypath);
 			Page newpage = pageManager.getPage("/WEB-INF/data/" + archive.getCatalogId() + "/originals/" + newsourcepath);
-			pageManager.movePage(fullpath,newpage);
+			ContentItem sourceItem = fullpath.getContentItem();
+			sourceItem.setMakeVersion(false);
+			ContentItem destItem = newpage.getContentItem();
+			destItem.setMakeVersion(false);
+			pageManager.getRepository().move(sourceItem, destItem);
 			log.info("Moving asset to: ${newpage.getContentItem().getAbsolutePath()}");
 			asset.setValue("sourcepath",newsourcepath);
 			asset.setValue("importstatus", "created");
