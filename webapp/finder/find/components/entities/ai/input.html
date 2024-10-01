@@ -1,12 +1,15 @@
 
 #set( $pickertaget = $context.getRequestParameter("pickertarget") )
+#set( $entityid = $context.getRequestParameter("entityid") ) 
+#set( $topmoduleid = $context.getRequestParameter("fieldexternalid"))
+#set($entity = $mediaarchive.getCachedData( $topmoduleid,$entityid) )
 
 <div class="bg-white shadow-sm dita-ai-tabcontent">
 
   <div class="w-100 my-2">
-    <form name="save" class="ajaxform d-flex flex-column align-items-center" data-targetdiv="importdone" action="$componenthome/publish/ditatopics/create.html">
+    <form name="save" class="ajaxform d-flex flex-column align-items-center" data-targetdiv="importdone" action="$componenthome/entities/ai/finish.html">
       <input type="hidden" name="importtype" value="dita" />
-      <input type="hidden" name="moduleid" value="${module.id}" />
+      <input type="hidden" name="moduleid" value="${topmoduleid}" />
       <input type="hidden" name="entityid" value="${entity.id}" />
 
 	<input type="hidden" name="entityid" value="$entity.getId()"/>
@@ -17,9 +20,9 @@
 	<input type="hidden" name="onetomanytab" value='$context.getRequestParameter("onetomanytab")'/>
 
        <div class="d-flex flex-column align-items-center mb-3">
-        <label for="aiInstruction" class="mb-1">Extra Instructions: </label>
-        <div style="width: 400px;">
-          <textarea name="ai-extrainstructions" id="aiInstruction" class="form-control rounded" rows="8">$!entity.extrainstructions</textarea>
+        <label for="aiInstruction" class="mb-1">AI Prompt: </label>
+        <div style="width: 700px;margin-left:200px;">
+          <textarea name="lastprompt.value" id="aiInstruction" class="form-control rounded" rows="8">$!entity.lastprompt</textarea>
         </div>
        </div> 
 
