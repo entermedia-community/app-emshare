@@ -1,11 +1,21 @@
 <div style="margin: 0 20px;">
-	<form name="excelimport" method="post" enctype="multipart/form-data" action="$siteroot$dataroot/import/importfinish.html">
 
-	<h3>[[Choose Input File]]</h3>
+#set( $pickertaget = $context.getRequestParameter("pickertarget") )
+
+	<form name="excelimport" method="post" class="ajaxform" data-targetdiv="$pickertaget" enctype="multipart/form-data" action="$componenthome/entities/csvupload/finish.html">
+
+	<h3>[[Choose Input File: Excel or CSV]]</h3>
+	
+	<p>Rows will be imported</p>
 	
 	<input type="file" size="25" name="file" onchange='$("#submit").show()'>
-	<input type="hidden" name="searchtype" value="$module.getId()"/>
-
+	
+	<input type="hidden" name="entityid" value="$entity.getId()"/>
+	<input type="hidden" name="pickertarget" value='$context.getRequestParameter("pickertarget")'/>
+	<input type="hidden" name="fieldexternalid" value='$context.getRequestParameter("fieldexternalid")'/>
+	<input type="hidden" name="fieldexternalvalue" value='$context.getRequestParameter("fieldexternalvalue")'/>
+	<input type="hidden" name="targettype" value='$context.getRequestParameter("targettype")'/>
+	<input type="hidden" name="onetomanytab" value='$context.getRequestParameter("onetomanytab")'/>
 
 	<div id="submit" style="display: none; padding-bottom: 20px;">
 			<input class="btn btn-primary" type="submit" value="[[Import]]" />

@@ -79,29 +79,32 @@ $context.putPageValue("details", $!details)
 #end
 
 
-
 #set($submoduleresults = "results$!{viewid}")
 <div id="$!submoduleresults" class="submodulepicker">
-	#set($entity = $mediaarchive.getCachedData("module", $searchtype))
-	$context.putPageValue("entity", $entity)
+	#set($module = $mediaarchive.getCachedData("module", $searchtype))
+	$context.putPageValue("module", $module)
 	#set($topmodule = $mediaarchive.getCachedData("module", $topmoduleid))
 	<div class="d-flex mb-2">
 		<h3 class="m-0  flex-grow-1">
 			#set($moduleicon = "box")
-			#ifnotnull($entity.moduleicon)
-				#set($moduleicon = $entity.moduleicon)
+			#ifnotnull($module.moduleicon)
+				#set($moduleicon = $module.moduleicon)
 			#end	
 			<i class="bi bi-$moduleicon module-icon" style="font-size: 0.8em;;"></i> 
-			#text($entity) <small>($hits.size())</small>
+			#text($module) <small>($hits.size())</small>
 		</h3>
 		#if($permissions.can($topmoduleid, "edit"))
 			#if($permissions.can($!submodule.getId() , "create"))
+				
+				#set( $submodule = $mediaarchive.getCachedData("module",$subentitysearchtype) )
 				
 				#set($pickerurl= "$applink/views/modules/$!{subentitysearchtype}/components/entities/search/searchpicker.html")
 				<a href="$pickerurl" 
 					class="emdialog btn btn-lg btn-accent light px-3 py-2"
 					data-dialogid="entitypicker"
 					data-width="1200"
+					data-entityid="$entity.id"
+					data-topmodule="$topmodule.id"
 					data-fieldexternalid = '$fieldexternalid'
 					data-fieldexternalvalue = '$fieldexternalvalue'
 					data-entitymodule="$!{subentitysearchtype}"
@@ -111,41 +114,54 @@ $context.putPageValue("details", $!details)
 					data-hidefooter="true"
 					title="[[Create or Choose Existing]] #text($entity)"><i class="bi bi-search mr-2"></i> [[Add Existing]]</a>
 					
-				#set($addnew = "$apphome/views/modules/${moduleid}/components/entities/csvupload/picker.html")
-					<a class="btn btn-lg btn-accent rounded mb-3 ajax float-right" style="min-width: 150px;"
-					data-targetdivinner="pickersearchentities"
-					data-pickertarget="$!pickertarget"
-					data-targettype="$!targettype"
-					data-ajaxreloadtargets="onetomanytab"
-					data-fieldexternalid="$!fieldexternalid"
-					data-fieldexternalvalue="$!fieldexternalvalue"
-					data-oemaxlevel="1"
-					href="$addnew">
-					<i class="bi bi-plus-lg mr-1"></i> [[Upload CSV/XLS]]</a>					
-								
-									#set($addnew = "$apphome/views/modules/${moduleid}/components/entities/csvupload/picker.html")
-					<a class="btn btn-lg btn-accent rounded mb-3 ajax float-right" style="min-width: 150px;"
-					data-targetdivinner="pickersearchentities"
-					data-pickertarget="$!pickertarget"
-					data-targettype="$!targettype"
-					data-ajaxreloadtargets="onetomanytab"
-					data-fieldexternalid="$!fieldexternalid"
-					data-fieldexternalvalue="$!fieldexternalvalue"
-					data-oemaxlevel="1"
-					href="$addnew">
-					<i class="bi bi-plus-lg mr-1"></i> [[Create Question With AI]]</a>					
-	
-									#set($addnew = "$apphome/views/modules/${moduleid}/components/entities/csvupload/picker.html")
-					<a class="btn btn-lg btn-accent rounded mb-3 ajax float-right" style="min-width: 150px;"
-					data-targetdivinner="pickersearchentities"
-					data-pickertarget="$!pickertarget"
-					data-targettype="$!targettype"
-					data-ajaxreloadtargets="onetomanytab"
-					data-fieldexternalid="$!fieldexternalid"
-					data-fieldexternalvalue="$!fieldexternalvalue"
-					data-oemaxlevel="1"
-					href="$addnew">
-					<i class="bi bi-plus-lg mr-1"></i> [[Render DITA MAP]]</a>							
+					#set($pickerurl = "$apphome/views/modules/$!{subentitysearchtype}/components/entities/csvupload/picker.html")
+					<a href="$pickerurl" 
+					class="emdialog btn btn-lg btn-accent light px-3 py-2"
+					data-dialogid="entitypicker"
+					data-width="1200"
+					data-entityid="$entity.id"
+					data-topmodule="$topmodule.id"
+					data-fieldexternalid = '$fieldexternalid'
+					data-fieldexternalvalue = '$fieldexternalvalue'
+					data-entitymodule="$!{subentitysearchtype}"
+					data-pickertarget="$tabid"
+					data-targettype="entitypickersubmodule"
+					data-pickersearchaddnew="true"
+					data-hidefooter="true"
+					title="[[Upload]]"><i class="bi bi-search mr-2"></i> [[Upload Spreadsheet]]</a>	
+
+					#set($pickerurl = "$apphome/views/modules/$!{subentitysearchtype}/components/entities/ai/input.html")
+					<a href="$pickerurl" 
+					class="emdialog btn btn-lg btn-accent light px-3 py-2"
+					data-dialogid="entitypicker"
+					data-width="1200"
+					data-entityid="$entity.id"
+					data-topmodule="$topmodule.id"
+					data-fieldexternalid = '$fieldexternalid'
+					data-fieldexternalvalue = '$fieldexternalvalue'
+					data-entitymodule="$!{subentitysearchtype}"
+					data-pickertarget="$tabid"
+					data-targettype="entitypickersubmodule"
+					data-pickersearchaddnew="true"
+					data-hidefooter="true"
+					title="[[Create New]] #text($submodule) [[With AI]]"><i class="bi bi-search mr-2"></i> [[Create With AI]]</a>	
+					
+					#set($pickerurl = "$apphome/views/modules/$!{subentitysearchtype}/components/entities/renderdita/input.html")
+					<a href="$pickerurl" 
+					class="emdialog btn btn-lg btn-accent light px-3 py-2"
+					data-dialogid="entitypicker"
+					data-width="1200"
+					data-entityid="$entity.id"
+					data-topmodule="$topmodule.id"
+					data-fieldexternalid = '$fieldexternalid'
+					data-fieldexternalvalue = '$fieldexternalvalue'
+					data-entitymodule="$!{subentitysearchtype}"
+					data-pickertarget="$tabid"
+					data-targettype="entitypickersubmodule"
+					data-pickersearchaddnew="true"
+					data-hidefooter="true"
+					title="[[Create New Dita Rendering]]"><i class="bi bi-search mr-2"></i> [[Render]] $topmodule</a>	
+					
 			#end
 		#end
 	</div>
