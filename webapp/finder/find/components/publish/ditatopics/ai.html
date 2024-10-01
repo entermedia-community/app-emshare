@@ -1,34 +1,35 @@
-<div class="bg-white py-2 px-3 shadow-sm mt-2 rounded">
-  <p>
-   AI Topic Creation
-  </p>
-  <div class="border-top mb-3"></div>
-  <div class=" mb-2 w-100">
-    <form name="save" class="ajaxform text-center mx-auto" data-targetdiv="importdone" action="$componenthome/publish/ditatopics/create.html">
+<div class="bg-white shadow-sm dita-ai-tabcontent">
+  <div class="dita-tab-header">
+    AI Topic Creation
+  </div>
+  <div class="w-100 my-2">
+    <form name="save" class="ajaxform d-flex flex-column align-items-center" data-targetdiv="importdone" action="$componenthome/publish/ditatopics/create.html">
       <input type="hidden" name="importtype" value="dita" />
       <input type="hidden" name="moduleid" value="${module.id}" />
       <input type="hidden" name="entityid" value="${entity.id}" />
 
-       <p>
-     Create:
-      <select class="list2" name="ai-lastcreationtype">
-		<option>Select</option>
-      	#foreach($row in $userprofile.getEntities())
-      	<option value="$row.id" #if( $row.id == $entity.get("ai-lastcreationtype") ) selected #end>#text($row)</option>
-      	#end
-      </select>
-     </p>
-      
-      <p>
-      Extra Instructions:
-      <textarea name="ai-extrainstructions">$!entity.extrainstructions</textarea>
-      </p>
-      
-      <div class="d-flex">
-        <button class="input-group-text btn-accent ml-2" type="submit" for="inputGroupDITA">Create</button>
-      </div>
+       <div class="d-flex flex-column align-items-center mb-3">
+        <label for="entityType" class="mb-1">Create: </label>
+        <div style="width: 200px;">
+          <select class="select2" id="entityType" name="ai-lastcreationtype">
+            <option>Select</option>
+            #foreach($row in $userprofile.getEntities())
+            <option value="$row.id" #if( $row.id == $entity.get("ai-lastcreationtype") ) selected #end>#text($row)</option>
+            #end
+          </select>
+        </div>
+       </div> 
+
+       <div class="d-flex flex-column align-items-center mb-3">
+        <label for="aiInstruction" class="mb-1">Extra Instructions: </label>
+        <div style="width: 400px;">
+          <textarea name="ai-extrainstructions" id="aiInstruction" class="form-control rounded" rows="8">$!entity.extrainstructions</textarea>
+        </div>
+       </div> 
+
+      <button class="input-group-text btn-accent px-3 ml-2" type="submit" for="inputGroupDITA">Create</button>
+
     </form>
-    <div id="importdone">
-    </div>
+    <div id="importdone"></div>
   </div>
 </div>
