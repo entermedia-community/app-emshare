@@ -584,6 +584,7 @@ onloadselectors = function () {
         scope = "modal";
       }
       $(this).draggable({
+		distance: 10,
         scope: scope,
         helper: function () {
           var toclone = $(this);
