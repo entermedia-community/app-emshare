@@ -963,9 +963,7 @@ onloadselectors = function () {
 	          
 	          var lightboxeditor = targetnode.closest("#lightboxeditor");
 	          var targetdiv = lightboxeditor; //not dialogmediaentity
-	          
-	          var hitssessionid = lightboxeditor.data("lightboxhitssessionid");
-	          
+          
 	          var moduleid = resultsdiv.data("topmoduleid");
 			  var entityid = resultsdiv.data("entityid");
 
@@ -1006,10 +1004,33 @@ onloadselectors = function () {
         out: unoutlineSelectionCol,
       });
     });  //lightboxdropasset
-    
-  	  
+ 	  
 
   } //all droppable items
+  
+  lQuery(".brickmovetotop").livequery("click",  function() {
+	  var cell = $(this).closest(".masonry-grid-cell");
+	  var brickvertical = $(this).closest(".brickvertical");
+	  cell.prependTo(brickvertical);
+	  $(".brickvertical").brickvertical("resize");
+	  
+	  var options = 
+	$.ajax({
+        url: apphome + "/views/modules/"+moduleid+ "/components/entities/lightboxes/gallerysaveordertotop.html",
+	    data: options,
+      	processData: false,
+      	contentType: false,
+      	"Content-Type": "multipart/form-data",
+            success: function (data) {
+			targetdiv.replaceWith(data);
+            //node.removeClass("dragoverselected");
+          
+        },
+ 		 });
+			
+ });
+  
+  
 
   $(this)  //Is this used?
     .find(".autosubmited")
