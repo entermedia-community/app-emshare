@@ -72,9 +72,6 @@ $context.putPageValue("entityid", $entityid)
 #if(!$hidedialogtree)
 	#set($hidedialogtree = $context.getRequestParameter("hidedialogtree"))
 #end
-#if(!$hideupload)
-	#set($hideupload = $context.getRequestParameter("hideupload"))
-#end
 
 #if(!$maintargetdiv)
 	#set($maintargetdiv = $context.getRequestParameter("maintargetdiv"))
@@ -146,8 +143,22 @@ $context.putPageValue("entityid", $entityid)
 			
 			#if ($resultview != "map")
 				
+				
+				#set($hideupload = false)
+				#ifnotnull($context.getRequestParameter("hideupload"))
+					#set($hideupload = $context.getRequestParameter("hideupload"))
+				#end
+				
 				#if($topmoduleid)
-					#if($lightboxid == "files" && !$hideupload && $canviewupload && $topmoduleid != "favorites" && $permissions.can($topmoduleid, "upload_files"))				
+				
+					#ifnotnull($lightboxid)
+						#if ($lightboxid != "files")
+							#set($hideupload = true)	
+						#end
+					#end
+				
+				
+					#if(!$hideupload && $canviewupload && $topmoduleid != "favorites" && $permissions.can($topmoduleid, "upload_files"))				
 					<li>
 						<a href="#"
 						class='resultsnavlink px-3 entitytabactions tabactionimport #if($entitytabopen=="import")enabledaction #end '
