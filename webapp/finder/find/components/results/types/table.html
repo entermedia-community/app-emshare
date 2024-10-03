@@ -8,13 +8,19 @@
 $context.putPageValue("searchhome", $searchhome)
 
 #ifnull($viewid)
-	#set($viewid = "${moduleid}resultstable")
+	#set( $viewid = $context.getRequestParameter("viewid"))
+	#ifnull($viewid)
+		#set($viewid = "${moduleid}resultstable")
+	#end
 #end
 #ifnull($viewpath)
-	#if($viewid)
-		#set($viewpath = "${moduleid}/${viewid}")
-	#else
-		#set($viewpath = "${moduleid}/${moduleid}resultstable")
+	#set( $viewpath = $context.getRequestParameter("viewpath"))
+	#ifnull($viewpath)
+		#if($viewid)
+			#set($viewpath = "${moduleid}/${viewid}")
+		#else
+			#set($viewpath = "${moduleid}/${moduleid}resultstable")
+		#end
 	#end
 #end
 #ifnull($resultdetails)

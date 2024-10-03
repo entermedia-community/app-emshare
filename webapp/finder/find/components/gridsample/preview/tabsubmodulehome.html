@@ -14,9 +14,9 @@
 	#set($parentid = $context.getRequestParameter("entityid"))
 #end
 
-
 #set( $targetviewpath = "${parentsearchtype}/"+$viewid)
 #set( $viewdata = $viewsearcher.searchById($viewid))
+
 #set( $submoduleid = $viewdata.rendertable )
 #set( $fieldexternalid = $viewdata.renderexternalid)
 #set( $fieldexternalvalue = $parentid)
@@ -26,13 +26,6 @@
 	#set( $sortby = "name")
 #end
 
-#set($targetrendertype = $submodule.modulerendertype)
-#if(!$targetrendertype)
-	#set($targetrendertype = "entity")
-#end
-
-#set($tabid = "tab_${viewid}")
-
 #if(!$currenttab)
 	#set($currenttab = $context.getRequestParameter("currenttab"))
 #end
@@ -40,10 +33,10 @@
 #ifnull($topmoduleid)
 	#set($topmoduleid = $parentsearchtype)
 #end
-
+ 
 #if($submoduleid)
-	<div id="$tabid" 
-		class="editentitymetadata-submodule entity-tab-content tabtype$!tabtype onetomanytab" 
+	<div id="tab_${viewid}" 
+		class="editentitymetadata-submodule entity-tab-content tabtypetabsubmodulehome onetomanytab" 
 		data-tabtype="tabsubmodulehome"
 		data-viewid="$!viewid"
 		data-currenttab="$currenttab"
@@ -54,13 +47,13 @@
 		data-url="$componenthome/gridsample/preview/tabsubmodulehome.html"
 		#if($hidesubmodule) style="display: none; #end">
 		
-		#if($currenttab == $viewid)
+		##if($currenttab == $viewid)
 		
-			#set( $args = "${submoduleid}hitsname=$!{viewid}hits&${submoduleid}clearfilters=true&parentid=$!parentid&searchtype=$!submoduleid&$!{submoduleid}clearresults=true")
-			#set( $args = "$args&fieldexternalid=$!fieldexternalid&fieldexternalvalue=$!fieldexternalvalue")
-			#set( $args = "$args&field=$!fieldexternalid&$!{fieldexternalid}.value=$!fieldexternalvalue&operation=exact")
-			#set( $args = "$args&viewid=$!viewid&viewpath=$!targetviewpath&hitsperpage=6&targetrendertype=$!targetrendertype")
-			#set( $args = "$args&parentsearchtype=$!parentsearchtype&targetdiv=submodulepicker&sortby=$!sortby")
+			#set( $args = "${submoduleid}hitsname=$!{viewid}hits&${submoduleid}clearfilters=true&$!{submoduleid}clearresults=true")
+			#set( $args = "$args&searchtype=$!submoduleid&parentid=$!parentid&parentsearchtype=$!parentsearchtype")
+			#set( $args = "$args&fieldexternalid=$!fieldexternalid&fieldexternalvalue=$!fieldexternalvalue&field=$!fieldexternalid&$!{fieldexternalid}.value=$!fieldexternalvalue&operation=exact")
+			#set( $args = "$args&viewid=$!viewid&viewpath=$!targetviewpath&hitsperpage=6")
+			#set( $args = "$args&targetdiv=submodulepicker&sortby=$!sortby")
 			
 			$context.putPageValue("moduleid", $!submoduleid )
 			$context.putPageValue("submoduleresults", $!submoduleresults )	
@@ -68,7 +61,7 @@
 			
 			$pages.include("/$applicationid/views/modules/$!submoduleid/components/table/subentitytable.html?$!args",$context)
 		
-		#end
+		##end
 	</div>
 	
 	
