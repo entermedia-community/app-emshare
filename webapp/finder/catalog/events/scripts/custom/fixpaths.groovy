@@ -76,20 +76,22 @@ public moveAssets(MediaArchive archive, String inCategoryId, String inNewcategor
 	{
 		Asset asset = archive.getAssetSearcher().loadData(data);
 		String assetsourcepath =  asset.getSourcePath();
-		Page fullpath = pageManager.getPage("/WEB-INF/data/" + archive.getCatalogId() + "/originals/" + assetsourcepath );
-		if(fullpath.exists()){
-			String newsourcepath = assetsourcepath.replace("Activities/null", inNewcategorypath);
-			Page newpage = pageManager.getPage("/WEB-INF/data/" + archive.getCatalogId() + "/originals/" + newsourcepath);
-			ContentItem sourceItem = fullpath.getContentItem();
-			sourceItem.setMakeVersion(false);
-			ContentItem destItem = newpage.getContentItem();
-			destItem.setMakeVersion(false);
-			pageManager.getRepository().move(sourceItem, destItem);
-			log.info("Moving asset to: ${newpage.getContentItem().getAbsolutePath()}");
-			asset.setValue("sourcepath",newsourcepath);
-			asset.setValue("importstatus", "created");
-			tosave.add(asset);
-		}
+		if (assetsourcepath.startsWith("Activities/null"))
+			Page fullpath = pageManager.getPage("/WEB-INF/data/" + archive.getCatalogId() + "/originals/" + assetsourcepath );
+			if(fullpath.exists()){
+				String newsourcepath = assetsourcepath.replace("Activities/null", inNewcategorypath);
+				Page newpage = pageManager.getPage("/WEB-INF/data/" + archive.getCatalogId() + "/originals/" + newsourcepath);
+				ContentItem sourceItem = fullpath.getContentItem();
+				sourceItem.setMakeVersion(false);
+				ContentItem destItem = newpage.getContentItem();
+				destItem.setMakeVersion(false);
+				pageManager.getRepository().move(sourceItem, destItem);
+				log.info("Moving asset to: ${newpage.getContentItem().getAbsolutePath()}");
+				asset.setValue("sourcepath",newsourcepath);
+				asset.setValue("importstatus", "created");
+				tosave.add(asset);
+			}
+		}	
 	}
 	assetsearcher.saveAllData(tosave, null);
 }
