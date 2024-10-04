@@ -85,7 +85,7 @@ jQuery(document).ready(function (url, params) {
     // g = (255 - g).toString(16);
     // b = (255 - b).toString(16);
     // return "#" + padZero(r) + padZero(g) + padZero(b);
-    return r * 0.299 + g * 0.587 + b * 0.114 > 186 ? "#000000" : "#FFFFFF";
+    return r * 0.299 + g * 0.587 + b * 0.114 > 186 ? "#444444" : "#FFFFFF";
   }
 
   lQuery("form#themeeditor").livequery("submit", function (e) {

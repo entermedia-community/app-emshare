@@ -1,6 +1,6 @@
-
+#set($themeid = $content.get("themeid") )
 <div id="application" 
-	class="emfinderapp setpagetitle"
+	class="emfinderapp setpagetitle $themeid"
 	data-user="$!user.getId()" 
 	data-siteroot="$siteroot"
 	data-home="$!siteroot"
@@ -9,22 +9,19 @@
 	data-themeprefix="${themeprefix}" 
 	data-browserlanguage="$!{browserlanguage}" 
 	data-componenthome="$!componenthome"
-	data-moduleid="$!module.getId()" 
-	
+	data-moduleid="$!module.getId()"
 	data-titlepostfix='$!mediaarchive.getCatalogSettingValue("sitetitle")'
-
 	data-mediadbappid="$!mediaarchive.getMediaDbId()"
 	data-entermediakey="$!mediaarchive.getUserManager().getEnterMediaKey($user)"
 	data-editmode='$!user.get("oe_edit_mode")'
-	
 	#if($desktop)
 		data-desktop="true"
 	#end
-	>
-    
+>
 	#if ( $canviewerrors )
 		<div id="errordiv"></div>
 	#end
+
 	<div id="loading-window">
 		<div class="d-flex flex-column align-items-center">
 			<div class="lds-dual-ring"></div>
