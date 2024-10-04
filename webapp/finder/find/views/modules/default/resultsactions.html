@@ -33,13 +33,6 @@ $context.putPageValue("entityrendertype", $entityrendertype)
 	#end
 #end
 
-#ifnull($tabletype)
-#set($tabletype = $context.getRequestParameter("tabletype"))
-#end
-#ifnull($tabid)
-#set($tabid = $context.getRequestParameter("tabid"))
-#end
-
 <div id="resultsheader" class="resultsheader #if($!hits.getSelectionSize() > 0)hasselections#end">
 	<div id="sub-nav" class="search-views emsubnav sub-nav-$!moduleid">
 		<ul class="resultsnav">
@@ -113,6 +106,21 @@ $context.putPageValue("entityrendertype", $entityrendertype)
 					</li>
 					#end
 					
+					#ifnull($tabletype)
+					#set($tabletype = $context.getRequestParameter("tabletype"))
+					#end
+					#ifnull($tabid)
+					#set($tabid = $context.getRequestParameter("tabid"))
+					#end
+					#ifnull($parentsearchtype)
+					#set($parentsearchtype = $context.getRequestParameter("parentsearchtype"))
+					#end
+					#ifnull($viewid)
+					#set($viewid = $context.getRequestParameter("viewid"))
+					#end
+					#ifnull($entityid)
+					#set($entityid = $context.getRequestParameter("entityid"))
+					#end
 					#if($permissions.can($moduleid, "delete"))
 						 <li><a class="dropdown-item ajax" 
 						 data-confirm="[[Delete items?]]" 
@@ -120,6 +128,9 @@ $context.putPageValue("entityrendertype", $entityrendertype)
 							 data-oemaxlevel="2" 
 							 data-targetdiv="$tabid" 
 							 data-tabletype="$tabletype"
+							 data-viewid="$viewid"
+							 data-entityid="$entityid"
+							 data-parentsearchtype="$parentsearchtype"
 							 href="$!{siteroot}${apphome}/views/modules/${moduleid}/actions/deleteselections.html?hitssessionid=$hits.sessionId&module=$!{module.id}"
 						 #else
 							 data-oemaxlevel="2" 

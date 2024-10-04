@@ -2,4 +2,11 @@
 #set( $moduleid = $context.findValue("module") )
 ##$pages.include("$componenthome/results/index.html", $context)
 
-$pages.include("$searchhome/index.html", $context)
+#set($componenthome = $context.getRequestParameter("componenthome"))
+
+#set($tabletype = $context.getRequestParameter("tabletype"))
+#if($tabletype == "subentity")
+	$pages.include("$componenthome/results/types/table.html", $context)
+#else
+	$pages.include("$searchhome/index.html", $context)
+#end
