@@ -3,6 +3,19 @@
 #set($moduleid = $module.id)
 $context.putPageValue("moduleid", $moduleid)
 
+#if(!$topmoduleid)
+	#set($topmoduleid = $context.getRequestParameter("topmoduleid"))
+#end
+#set( $fieldexternalid = $context.getRequestParameter("fieldexternalid"))
+#set( $fieldexternalvalue = $context.getRequestParameter("fieldexternalvalue"))
+#ifnull($entityid)
+	#set($entityid = $context.getRequestParameter("entityid"))
+#end
+
+#if(!$tabletype)
+	#set($tabletype = $context.getRequestParameter("tabletype"))
+#end
+
 #set($resulttype = $userprofile.get("${moduleid}-display"))
 #if(!$resulttype)
 	#set($resulttype = "table")
@@ -106,9 +119,6 @@ $context.putPageValue("entityrendertype", $entityrendertype)
 					</li>
 					#end
 					
-					#ifnull($tabletype)
-					#set($tabletype = $context.getRequestParameter("tabletype"))
-					#end
 					#ifnull($tabid)
 					#set($tabid = $context.getRequestParameter("tabid"))
 					#end
@@ -118,9 +128,7 @@ $context.putPageValue("entityrendertype", $entityrendertype)
 					#ifnull($viewid)
 					#set($viewid = $context.getRequestParameter("viewid"))
 					#end
-					#ifnull($entityid)
-					#set($entityid = $context.getRequestParameter("entityid"))
-					#end
+					
 					#if($permissions.can($moduleid, "delete"))
 						 <li><a class="dropdown-item ajax" 
 						 data-confirm="[[Delete items?]]" 
@@ -243,6 +251,7 @@ $context.putPageValue("entityrendertype", $entityrendertype)
 				#end
 				
 				<li>
+
 					<a href="$!{siteroot}${apphome}/views/modules/${moduleid}/components/filters/dialogsort.html" 
 						class="emdialog emsort #if($selectedpreference == "true") closed #end"
 						data-dialogid="sortdialog"
@@ -253,7 +262,18 @@ $context.putPageValue("entityrendertype", $entityrendertype)
 						data-hitssessionid="$hits.getSessionId()"
 						data-categoryid="$!categoryid"
 						data-rootcategory="$!rootcategory"
-						data-targetdivsearch="$!{moduleid}resultscontainer"
+						
+						data-topmoduleid="$!{topmoduleid}"
+						data-entityid="$!{entityid}"
+						#if($tabletype =="subentity")
+							data-fieldexternalid="$!fieldexternalid"
+							data-fieldexternalvalue="$!fieldexternalvalue"
+							data-tabletype="$!tabletype"
+							data-targetdivsearch="tab_$!{viewid}"
+							data-viewid="$!{viewid}"
+						#else 
+							data-targetdivsearch="$!{moduleid}resultscontainer"
+						#end						
 						style="padding:0 8px 0 10px;" 
 						title="[[Sort Results]]"><i class="bi bi-sort-down"></i> [[Sort]]</a>
 				</li>

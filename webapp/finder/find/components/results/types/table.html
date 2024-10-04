@@ -1,7 +1,9 @@
 #ifnull($moduleid)
 	#set($moduleid = $context.getRequestParameter("moduleid"))
 #end
-
+#ifnull($moduleid)
+	#set($moduleid = $module.getId())
+#end
 #ifnull($searchhome)
 	#set($searchhome = "$apphome/views/modules/$moduleid" )
 #end
@@ -84,7 +86,7 @@ $pages.include("${searchhome}/resultsactions.html",$context)
 		<div id="emselectable" 
 				class="emselectablemodule emselectablemodule_${moduleid} adjustHeight" 
 				data-viewid="$!defaultviewid"
-				data-hitssessionid="$hits.getSessionId()" 
+				data-hitssessionid="$!hits.getSessionId()" 
 				data-id="$!id"
 				data-searchtype="$!searchtype" 
 				data-searchhome="$!searchhome"

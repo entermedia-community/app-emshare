@@ -3,16 +3,15 @@
 #if(!$categoryid)
 	#set($categoryid = $context.getRequestParameter("categoryid"))
 #end
-
+#if(!$topmoduleid)
+	#set ( $topmoduleid = $context.getRequestParameter("topmoduleid") )
+#end
 
 #set($targetdivsearch = $context.getRequestParameter("targetdivsearch"))
 #ifnull($targetdivsearch)
 	#set($targetdivsearch = "$!{moduleid}resultscontainer")
 #end
-#if(!$topmoduleid)
-	#set ( $topmoduleid = $context.getRequestParameter("topmoduleid") )
-#end
-#if($topmoduleid)
+#if(!$targetdivsearch && $topmoduleid)
 	#set($targetdivsearch = "dialog$!{moduleid}resultscontainer")
 #end
 #if(!$entityid)
@@ -30,7 +29,7 @@
 			id="filtersortformdialog" 
 			class="filterform ajaxform autosubmitform"
 			method="POST"   
-			data-targetdivinner="$targetdivsearch" 
+			data-targetdivinner="$!targetdivsearch" 
 			data-oemaxlevel="2" 
 			action="$siteroot$apphome/views/modules/${moduleid}/components/results/columnsort.html" 
 		>
@@ -40,6 +39,18 @@
 		<input name="entityid" type="hidden" value="$!entityid" />
 		<input name="dialogresults" type="hidden" value="true" />
 		<input name="dialogindextype" type="hidden" value="$!dialogindextype" />
+	
+			#set($tabletype = $context.getRequestParameter("tabletype"))
+			#if($tabletype == "subentity")	
+				#set( $fieldexternalid = $context.getRequestParameter("fieldexternalid"))
+				#set( $fieldexternalvalue = $context.getRequestParameter("fieldexternalvalue"))
+				#set( $viewid = $context.getRequestParameter("viewid"))
+		
+				<input name="tabletype" type="hidden" value="subentity" />
+				<input name="viewid" type="hidden" value="$!{viewid}" />
+				<input name="fieldexternalid" type="hidden" value="$!fieldexternalid" />
+				<input name="fieldexternalvalue" type="hidden" value="$!fieldexternalvalue" />
+			#end
 		#end
 		
 		<input name="searchtype" type="hidden" value="$!moduleid" />

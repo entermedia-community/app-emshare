@@ -1179,7 +1179,7 @@ uiload = function () {
               container.replaceWith(data);
               tabbackbutton(parent);
             }
-          } else if (dialog.data("tabletype") == "subentity") {
+          } else if (dialog.data("targetrendertype") == "entity") {
             var container = dialog.closest(".entity-wraper");
             var parent = dialog.closest(".entitydialog");
             container.replaceWith(data);
@@ -2023,7 +2023,7 @@ uiload = function () {
         row.data("targetlink", targetlink);
         row.data("oemaxlevel", "2");
         if (emselectable.data("tabletype") == "subentity") {
-          row.data("tabletype", emselectable.data("tabletype"));
+          row.data("targetrendertype", "entity");
           row.data("oemaxlevel", "1");
         }
         row.data("id", rowid);

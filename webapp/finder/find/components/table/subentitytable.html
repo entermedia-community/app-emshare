@@ -1,14 +1,28 @@
 #set( $subentitysearchtype = $context.getRequestParameter("searchtype"))
+#ifnull($subentitysearchtype)
+	#set( $subentitysearchtype = $module.getId())
+#end
 #set( $submodule = $mediaarchive.getCachedData("module", $subentitysearchtype))
 $context.putPageValue("module", $submodule)
-
 
 #set($componenthome = "$applink/views/modules/$!{subentitysearchtype}/components")
 $context.putPageValue("componenthome", $componenthome)
 
+#set($topmoduleid =  $context.getRequestParameter("topmoduleid"))
+
 #set( $parentsearchtype = $context.getRequestParameter("parentsearchtype"))
-#set($topmoduleid = $parentsearchtype)
+#ifnull($parentsearchtype)
+	#set( $parentsearchtype = $topmoduleid)
+#end
 $context.putPageValue("topmoduleid", $topmoduleid)
+
+#ifnull($entityid)
+#set( $entityid = $context.getRequestParameter("entityid"))
+#end
+#ifnull($entityid)
+#set( $entityid = $context.getRequestParameter("parentid"))
+#end
+
 
 #set( $fieldexternalid = $context.getRequestParameter("fieldexternalid"))
 #set( $fieldexternalvalue = $context.getRequestParameter("fieldexternalvalue"))
@@ -22,6 +36,7 @@ $context.putPageValue("viewpath", $!viewpath)
 
 #set($tabid = "tab_${viewid}")
 #set($submoduleresults = "results$!{viewid}")
+$context.putPageValue("submoduleresults", $submoduleresults)
 
 #set($hitsname = $context.getRequestParameter("${searchtype}hitsname"))
 #if($hitsname)
@@ -31,6 +46,9 @@ $context.putPageValue("viewpath", $!viewpath)
 #end
 $context.putPageValue("hits", $hits)
 $context.putPageValue("tablehits", $hits)
+
+#set($tabletype = "subentity")
+$context.putPageValue("tabletype", $tabletype)
 
 <div id="$!submoduleresults" class="submodulepicker">
 	<div class="entity-ction-header">
@@ -122,20 +140,24 @@ $context.putPageValue("tablehits", $hits)
 			<div class="d-flex">
 				<div class="emresultstable flex-grow-1">
 					
-					<div id="$maintargetdiv"
+					<div id="$!maintargetdiv"
 						class="resultsdiv moduleajaxreloadtarget adjustHeight"
-						data-moduleid="$topmodule.getId()"
+						data-searchtype="$!searchtype"
+						data-parentsearchtype="$!topmoduleid"
+						data-topmoduleid="$!topmoduleid"
+						data-fieldexternalid = '$fieldexternalid'
+						data-fieldexternalvalue = '$fieldexternalvalue'
 						data-hitssessionid="$!hits.getSessionId()"
-						data-url="$apphome/views/modules/$!{module.id}/index.html"
+						data-url="$apphome/views/modules/$!{topmoduleid}/index.html"
 						data-componenthome = "$!componenthome"
 						data-searchhome="$!home$!componenthome/results"
-						data-targetdiv="$maintargetdiv"
-						data-tabletype="subentity"
+						data-targetdiv="$!submoduleresults"
+						data-tabletype="$!tabletype"
 						data-tabid="$!{tabid}"
 						data-viewid="$!{viewid}"
 						data-viewpath="$!{viewpath}"
-						data-parentsearchtype="$!parentsearchtype"
-						data-entityid="$!{parentid}"
+						data-entityid="$!{entityid}"
+						
 						#if($topentityid) data-topentityid="$topentityid" #end
 						data-oemaxlevel="1"	>	
 								
