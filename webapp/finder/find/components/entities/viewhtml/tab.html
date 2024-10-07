@@ -2,7 +2,7 @@
 #set( $currentsubab = $context.findValue("subtab"))
 
 #ifnull($currentsubab)
-	#set($currentsubab = "visualviewer")
+	#set($currentsubab = "html")
 #end
 
 $context.putPageValue("subtab", $currentsubab)
@@ -21,25 +21,20 @@ $context.putPageValue("entityid", $entityid)
 #end
 
 #set($tabid = "ditavizeditor")
-<div id="${tabid}" 
-class=" entity-tab-content entity-tab-media tabtypemedia" 
-data-tabid="${tabid}"
-data-entityid="$!entityid"
-data-currenttab="$!viewid"
-data-topmoduleid="$!moduleid"
-data-url="$componenthome/gridsample/preview/tabpublishing_gallery.html"
+<div id="${tabid}"
+	class="entity-tab-content entity-tab-media tabtypemedia" 
+	data-tabid="${tabid}"
+	data-entityid="$!entityid"
+	data-currenttab="$!viewid"
+	data-topmoduleid="$!moduleid"
+	data-url="$componenthome/gridsample/preview/tabpublishing_gallery.html"
 >
-
 
 <div  class="tablightbox d-flex h-100" style="height: 100%;">
 	
 	$context.putPageValue("topmodule",$module)
-
-#set( $lightboxid = $context.getRequestParameter("lightboxid"))
-
+	#set( $lightboxid = $context.getRequestParameter("lightboxid"))
 	$pages.include("$componenthome/entities/viewhtml/sidemenu.html",$context) 
-
 	#set( $path = "$componenthome/entities/viewhtml/${currentsubab}.html")
-	$pages.include($path,$context)
-
+	$pages.include($path, $context)
 </div>
