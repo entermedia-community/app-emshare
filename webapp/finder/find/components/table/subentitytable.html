@@ -10,13 +10,6 @@ $context.putPageValue("componenthome", $componenthome)
 
 #set($topmoduleid =  $context.getRequestParameter("topmoduleid"))
 
-#set( $parentsearchtype = $context.getRequestParameter("parentsearchtype"))
-#ifnull($parentsearchtype)
-	#set( $parentsearchtype = $topmoduleid)
-#end
-
-$context.putPageValue("topmoduleid", $parentsearchtype)
-
 #ifnull($entityid)
 #set( $entityid = $context.getRequestParameter("entityid"))
 #end
@@ -24,14 +17,13 @@ $context.putPageValue("topmoduleid", $parentsearchtype)
 #set( $entityid = $context.getRequestParameter("parentid"))
 #end
 
-
 #set( $fieldexternalid = $context.getRequestParameter("fieldexternalid"))
 #set( $fieldexternalvalue = $context.getRequestParameter("fieldexternalvalue"))
 $context.putPageValue("fieldexternalid", $fieldexternalid)
 $context.putPageValue("fieldexternalvalue", $fieldexternalvalue)
 
 #set( $viewid = $context.getRequestParameter("viewid"))
-#set( $viewpath = "${parentsearchtype}/${viewid}")
+#set( $viewpath = "${topmoduleid}/${viewid}")
 $context.putPageValue("viewid", $!viewid )
 $context.putPageValue("viewpath", $!viewpath)
 
@@ -39,7 +31,7 @@ $context.putPageValue("viewpath", $!viewpath)
 #set($submoduleresults = "results$!{viewid}")
 $context.putPageValue("submoduleresults", $submoduleresults)
 
-#set($hitsname = $context.getRequestParameter("${searchtype}hitsname"))
+#set($hitsname = $context.getRequestParameter("${subentitysearchtype}hitsname"))
 #if($hitsname)
 	#set($hits = $context.getPageValue($hitsname))
 #else
@@ -130,7 +122,6 @@ $context.putPageValue("tabletype", $tabletype)
 						class="resultsdiv moduleajaxreloadtarget adjustHeight"
 						data-searchtype="$!searchtype"
 						data-moduleid="$!moduleid"
-						data-parentsearchtype="$!parentsearchtype"
 						data-topmoduleid="$!topmoduleid"
 						data-fieldexternalid = '$fieldexternalid'
 						data-fieldexternalvalue = '$fieldexternalvalue'
@@ -162,6 +153,7 @@ $context.putPageValue("tabletype", $tabletype)
 			</div>
 
 	#else
+	
 		#set($addnew = "$!{componenthome}/entities/addnew.html")
 		<div class="w-100 text-center mt-5">
 			<p class="text-muted">[[No]] #text($module) [[created yet]]</p>

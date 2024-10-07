@@ -4,8 +4,8 @@
 	#set($viewid = $context.getRequestParameter("viewid"))
 #end
 
-#ifnull($parentsearchtype)
-	#set($parentsearchtype = $context.getRequestParameter("parentsearchtype"))
+#ifnull($topmoduleid)
+	#set($topmoduleid = $context.getRequestParameter("topmoduleid"))
 #end
 #ifnull($parentid)
 	#set($parentid = $context.getRequestParameter("parentid"))
@@ -14,7 +14,7 @@
 	#set($parentid = $context.getRequestParameter("entityid"))
 #end
 
-#set( $targetviewpath = "${parentsearchtype}/"+$viewid)
+#set( $targetviewpath = "${topmoduleid}/"+$viewid)
 #set( $viewdata = $viewsearcher.searchById($viewid))
 
 #set( $submoduleid = $viewdata.rendertable )
@@ -30,9 +30,7 @@
 	#set($currenttab = $context.getRequestParameter("currenttab"))
 #end
 
-#ifnull($topmoduleid)
-	#set($topmoduleid = $parentsearchtype)
-#end
+
  
 #if($submoduleid)
 	<div id="tab_${viewid}" 
@@ -42,7 +40,7 @@
 		data-currenttab="$currenttab"
 		data-submoduleid="$!submoduleid"
 		data-viewid="$!viewid"
-		data-parentsearchtype="$!parentsearchtype"
+		data-topmoduleid="$!topmoduleid"
 		data-parentid="$!parentid"
 		data-url="$componenthome/gridsample/preview/tabsubmodulehome.html"
 		#if($hidesubmodule) style="display: none; #end">
@@ -50,7 +48,7 @@
 		##if($currenttab == $viewid)
 		
 			#set( $args = "${submoduleid}hitsname=$!{viewid}hits&${submoduleid}clearfilters=true&$!{submoduleid}clearresults=true")
-			#set( $args = "$args&searchtype=$!submoduleid&parentid=$!parentid&parentsearchtype=$!parentsearchtype")
+			#set( $args = "$args&searchtype=$!submoduleid&parentid=$!parentid&topmoduleid=$!topmoduleid")
 			#set( $args = "$args&fieldexternalid=$!fieldexternalid&fieldexternalvalue=$!fieldexternalvalue&field=$!fieldexternalid&$!{fieldexternalid}.value=$!fieldexternalvalue&operation=exact")
 			#set( $args = "$args&viewid=$!viewid&viewpath=$!targetviewpath&hitsperpage=6")
 			#set( $args = "$args&targetdiv=submodulepicker&sortby=$!sortby")
