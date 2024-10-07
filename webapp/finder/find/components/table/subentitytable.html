@@ -14,7 +14,8 @@ $context.putPageValue("componenthome", $componenthome)
 #ifnull($parentsearchtype)
 	#set( $parentsearchtype = $topmoduleid)
 #end
-$context.putPageValue("topmoduleid", $topmoduleid)
+
+$context.putPageValue("topmoduleid", $parentsearchtype)
 
 #ifnull($entityid)
 #set( $entityid = $context.getRequestParameter("entityid"))
@@ -143,7 +144,8 @@ $context.putPageValue("tabletype", $tabletype)
 					<div id="$!maintargetdiv"
 						class="resultsdiv moduleajaxreloadtarget adjustHeight"
 						data-searchtype="$!searchtype"
-						data-parentsearchtype="$!topmoduleid"
+						data-moduleid="$!moduleid"
+						data-parentsearchtype="$!parentsearchtype"
 						data-topmoduleid="$!topmoduleid"
 						data-fieldexternalid = '$fieldexternalid'
 						data-fieldexternalvalue = '$fieldexternalvalue'
@@ -151,7 +153,7 @@ $context.putPageValue("tabletype", $tabletype)
 						data-url="$apphome/views/modules/$!{topmoduleid}/index.html"
 						data-componenthome = "$!componenthome"
 						data-searchhome="$!home$!componenthome/results"
-						data-targetdiv="$!submoduleresults"
+						data-targetdiv="tab_$!{viewid}"
 						data-tabletype="$!tabletype"
 						data-tabid="$!{tabid}"
 						data-viewid="$!{viewid}"
