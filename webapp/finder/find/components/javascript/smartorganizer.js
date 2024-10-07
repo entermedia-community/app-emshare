@@ -871,77 +871,10 @@ $(document).ready(function () {
       $("#modifySelection").fadeToggle();
     });
 
-    function triggerInplaceEdit(label) {
-      function commit() {
-        var newLabel = label.html.val();
-        selectedLabel = label;
-        handleLabelChange(newLabel);
-        $("#folderLabel").val(newLabel);
-        cancel();
-      }
-
-      function cancel() {
-        canvasContainer.unbind("click", commit);
-        selectedLabel = null;
-        label.html.fadeOut(function () {
-          label.html.remove();
-          label.html = null;
-        });
-      }
-
-      canvasContainer.bind("click", commit);
-
-      label.html = $('<input id="inplaceeditor" autocomplete="off" />');
-      label.html.val(label.getText());
-      label.html.hide();
-
-      canvasContainer.parent().append(label.html);
-
-      label.html.bind("input", function (e) {
-        var labelText = label.html.val();
-        if (labelText.length > 32) {
-          labelText = labelText.substring(0, 32);
-          label.html.val(labelText);
-          return;
-        }
-        if (e.which == 13) {
-          commit();
-        }
-      });
-
-      label.html.bind("blur", commit);
-
-      label.html.bind("click", function (e) {
-        e.stopPropagation();
-        e.preventDefault();
-      });
-
-      label.html.css({
-        position: "absolute",
-        top: label.getY() + parseInt(canvasContainer.css("margin-top")),
-        left: label.getX() + parseInt(canvasContainer.css("margin-left")),
-        width: 146,
-        height: Math.max(32),
-        marginLeft: 2,
-      });
-      label.html.fadeIn(function () {
-        label.html.focus();
-      });
-    }
-
     canvas.on("dblclick", function (_, node) {
       var figure = node.figure;
-      var cssClass = figure.cssClass;
-      var composite = figure.getComposite();
-      if (!cssClass || !composite) return;
-      if (cssClass.startsWith("folder")) {
-        var label = canvas.getFigure(composite.id + "-label");
-        // var icon = canvas.getFigure(composite.id + "-icon");
-        if (cssClass === "folderIcon") {
-          $("#folderThumbPickerBtn").trigger("click");
-        } else {
-          triggerInplaceEdit(label);
-        }
+      if (figure && figure.cssClass === "folderIcon") {
+        $("#folderThumbPickerBtn").trigger("click");
       }
     });
 
