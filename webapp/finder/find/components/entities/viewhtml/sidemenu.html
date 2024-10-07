@@ -1,11 +1,26 @@
 <div id="lightboxessidemenu" class="overflow-y dita-list" style="width:300px">
 
-
-	#set($section = $context.getRequestParameter("tabsection"))
+#set($section = $context.getRequestParameter("tabsection"))
 #ifnull($section)
 	#set( $section = "select")
 #end
-<br><br>
+	#set($pickerurl = "$!{componenthome}/entities/renderdita/input.html")
+	<a href="$pickerurl" 
+	class="emdialog btn btn-lg btn-accent light px-3 py-2 m-3 float-right"
+	data-dialogid="entitypicker"
+	data-width="800"
+	data-entityid="$entity.id"
+	data-topmodule="${module.id}"
+	data-submodule="entityquestions"
+	data-fieldexternalvalue = '$module.id'
+	data-pickertarget="$tabid"
+	data-targettype="entitypickersubmodule"
+	data-pickersearchaddnew="true"
+	data-hidefooter="true"
+	title="[[Create New Dita Rendering]]"><i class="bi bi-plus-circle-fill"></i> [[Create DITA]]</a>	
+
+
+<div class="clearfix"></div>
 #set($section = $context.getRequestParameter("tabsection"))
 
 #set( $found =  $mediaarchive.getBean("contentManager").findDitaAssets($entity) )
@@ -20,6 +35,7 @@
 			</a>
 		</div>
 #end
+
 
 		
 </div>
