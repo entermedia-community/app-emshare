@@ -26,6 +26,9 @@
 #if(!$entityid)
 #set($entityid = $context.getRequestParameter("entityid"))
 #end
+
+
+
 #if($moduleid=="asset")
 		
 			#if($dialogresults)
@@ -56,23 +59,37 @@
 			#set($resultsPage = "$resultsPage&$!{hits.getSearchType()}pageposition")
 		
 #else
-	#if(!$resultsPage)
-		#set($resultsPage = "$applink/views/modules/${moduleid}/showpage.html")
-		##set($resultsPage = "$componenthome/results/index.html")
+	#if(!$tabletype)
+	#set($tabletype = $context.getRequestParameter("tabletype"))
 	#end
-	#set($resultsPage = "$resultsPage?hitssessionid=$!hits.sessionId")
-	##set($resultsPage = "$resultsPage&searchtype=$!hits.getSearchType()")
-	#if($resultstype)
-		#set($resultsPage = "$resultsPage&resultstype=$!resultstype")
+	#if(!$viewid)
+	#set($viewid = $context.getRequestParameter("viewid"))
 	#end
-	#if($moduleX)
-		#set($resultsPage = "$resultsPage&module=$module.id")
+	#if($tabletype == "subentity")
+		#set($resultsPage = "$applink/views/modules/${moduleid}/components/gridsample/preview/tabsubmodulehome.html")
+		#set($resultsPage = "$resultsPage?hitssessionid=$!hits.sessionId")
+		#set($resultsPage = "$resultsPage&topmoduleid=$!topmoduleid")
+		#set($resultsPage = "$resultsPage&entityid=$!entityid")
+		#set($resultsPage = "$resultsPage&viewid=$!viewid")
+		#set($resultsPage = "$resultsPage&$!{hits.getSearchType()}pageposition")
+		
+		#set($targetdiv = "tab_$!{viewid}")
+	#else
+		#if(!$resultsPage)
+			#set($resultsPage = "$applink/views/modules/${moduleid}/showpage.html")
+		#end
+		#set($resultsPage = "$resultsPage?hitssessionid=$!hits.sessionId")
+		#if($resultstype)
+			#set($resultsPage = "$resultsPage&resultstype=$!resultstype")
+		#end
+		#if($moduleX)
+			#set($resultsPage = "$resultsPage&module=$module.id")
+		#end
+		#set($resultsPage = "$resultsPage&$!{hits.getSearchType()}pageposition")
+		#set($oemaxlevel = "1")
+		
+		#set($targetdiv = "${moduleid}resultscontainer")
 	#end
-	#set($resultsPage = "$resultsPage&$!{hits.getSearchType()}pageposition")
-	#set($oemaxlevel = "1")
-	
-	#set($targetdiv = "${moduleid}resultscontainer")
-	
 #end
 
 

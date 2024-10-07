@@ -158,19 +158,21 @@ $pages.include("${searchhome}/resultsactions.html",$context)
 				
 				#if(!$hiderowactions)
 				<th class="lastheader">
-					#if(!$edit || $edit == "false")  
-						<a class="ajax nav-hover text-center" 
-							id="table-editor-close" 
-							data-targetdiv="$!module.getId()resultsarea"
-							data-oemaxlevel="2" 
-							title="[[Edit Table Header]]"
-							href="$siteroot$componenthome/results/index.html?searchtype=asset&hitssessionid=$hits.getSessionId()&editheader=true"><i class="bi bi-pencil-square"></i></a>
-					#else
-						<a class="ajax table-edit-close" 
-							data-targetdiv="$!{moduleid}topcontainer"
-							data-oemaxlevel="2"
-							title="[[Cancel Edit Table Header]]"
-							href="${searchhome}/index.html?searchtype=$!moduleid&hitssessionid=$!hits.getSessionId()&editheader=false&moduleid=$!moduleid"><i class="bi bi-x-lg"></i></a>
+					#if(!$tabletype)
+						#if(!$edit || $edit == "false")  
+							<a class="ajax nav-hover text-center" 
+								id="table-editor-close" 
+								data-targetdiv="$!module.getId()resultsarea"
+								data-oemaxlevel="2" 
+								title="[[Edit Table Header]]"
+								href="$siteroot$componenthome/results/index.html?searchtype=asset&hitssessionid=$hits.getSessionId()&editheader=true"><i class="bi bi-pencil-square"></i></a>
+						#else
+							<a class="ajax table-edit-close" 
+								data-targetdiv="$!{moduleid}topcontainer"
+								data-oemaxlevel="2"
+								title="[[Cancel Edit Table Header]]"
+								href="${searchhome}/index.html?searchtype=$!moduleid&hitssessionid=$!hits.getSessionId()&editheader=false&moduleid=$!moduleid"><i class="bi bi-x-lg"></i></a>
+						#end
 					#end
 				</th>
 				#end
@@ -307,8 +309,7 @@ $pages.include("${searchhome}/resultsactions.html",$context)
 		</div>
 	</form>
 		
-		## $pages.include("/${searchhome}/navigate.html", $context)
-		<div class="clearfix"></div>
+	<div class="clearfix"></div>
 
 #end
 		</div>
