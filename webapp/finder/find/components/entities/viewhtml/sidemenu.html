@@ -1,45 +1,47 @@
-<div id="lightboxessidemenu" class="overflow-y dita-list" style="width:300px">
-
-#set($section = $context.getRequestParameter("tabsection"))
-#ifnull($section)
-	#set( $section = "select")
-#end
-
-#set($section = $context.getRequestParameter("tabsection"))
-
-<div class="d-flex flex-column align-items-center">
-	<p class="text-muted fw-bold mt-2 mb-1">Generated DITA</p>
-	#set( $found =  $mediaarchive.getBean("contentManager").findDitaAssets($entity) ) 
-	#foreach($hit in $found)
-		<div class="rounded lightboxdropasset w-100">
-			<a class="ajax btn-wide #if( $asset.id == $hit.id ) active #end"
-				data-targetdiv="ditavizeditor" 
-				data-oemaxlevel="2"
-				data-entityid="$entity.id" data-moduleid="$topmodule.id"  
-				href="$componenthome/entities/viewhtml/html.html?assetid=$hit.id&entityid=$entity.id&moduleid=$module.id">
-				#text( $hit )
-			</a>
-		</div>
+<div class="d-flex flex-column">
+	<p class="dita-render-header">Generated DITA</p>
+	<div id="lightboxessidemenu" class="overflow-y dita-list" style="width:300px;flex:1;">
+	
+	#set($section = $context.getRequestParameter("tabsection"))
+	#ifnull($section)
+		#set( $section = "select")
 	#end
-</div>
-
-<hr />
-<div class="d-flex mb-3">
-	#set($pickerurl = "$!{componenthome}/entities/renderdita/input.html")
-	<a href="$pickerurl"  
-		class="emdialog btn btn-lg btn-accent light px-3 py-2 mx-auto rounded"
-		data-dialogid="entitypicker"
-		data-width="800"
-		data-entityid="$entity.id"
-		data-topmodule="${module.id}"
-		data-submodule="entityquestions"
-		data-fieldexternalvalue = '$module.id'
-		data-pickertarget="$tabid"
-		data-targettype="entitypickersubmodule"
-		data-pickersearchaddnew="true"
-		data-hidefooter="true"
-		title="[[Generate DITA]]">
-		<i class="bi bi-plus-circle-fill mr-1"></i> [[Generate New DITA]]
-	</a>	
-</div>
+	
+	#set($section = $context.getRequestParameter("tabsection"))
+	
+	<div class="d-flex flex-column">
+		#set( $found =  $mediaarchive.getBean("contentManager").findDitaAssets($entity) ) 
+		#foreach($hit in $found)
+			<div class="rounded lightboxdropasset">
+				<a class="ajax btn-wide #if( $asset.id == $hit.id ) active #end"
+					data-targetdiv="ditavizeditor" 
+					data-oemaxlevel="2"
+					data-entityid="$entity.id" data-moduleid="$topmodule.id"  
+					href="$componenthome/entities/viewhtml/html.html?assetid=$hit.id&entityid=$entity.id&moduleid=$module.id">
+					#text( $hit )
+				</a>
+			</div>
+		#end
+	</div>
+	
+	<hr />
+	<div class="d-flex mb-3">
+		#set($pickerurl = "$!{componenthome}/entities/renderdita/input.html")
+		<a href="$pickerurl"  
+			class="emdialog btn btn-lg btn-accent light px-3 py-2 mx-auto rounded"
+			data-dialogid="entitypicker"
+			data-width="800"
+			data-entityid="$entity.id"
+			data-topmodule="${module.id}"
+			data-submodule="entityquestions"
+			data-fieldexternalvalue = '$module.id'
+			data-pickertarget="$tabid"
+			data-targettype="entitypickersubmodule"
+			data-pickersearchaddnew="true"
+			data-hidefooter="true"
+			title="[[Generate DITA]]">
+			<i class="bi bi-plus-circle-fill mr-1"></i> [[Generate New DITA]]
+		</a>	
+	</div>
+	</div>
 </div>
