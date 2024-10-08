@@ -50,7 +50,7 @@ $context.putPageValue("parentsearchtype", $parentsearchtype)
 							<td>
 								#set($assetids = $activity.getValue("assetids"))
 								
-								
+								<span class="trim-text" data-max="100">
 								#foreach($assetid in $assetids)
 									#set($asset = $mediaarchive.getAsset($assetid))
 									#if($asset)
@@ -59,15 +59,16 @@ $context.putPageValue("parentsearchtype", $parentsearchtype)
 									#else
 										$assetid
 									#end
-								#end
+								#end</span>
+								<button class="see-more-btn see-more" data-seemore="(...[[see more]])" data-seeless="(...[[see less]])">(..[[.see more]])</button>
 								</td>
 							<td>
 								
-									#if($operation == "assetsremoved")
-										<a href="#" class="btn btn-xs btn-dark">[[Restore]]</a>
-									#elseif($operation == "assetsadded")
-										<a href="#" class="btn btn-xs btn-dark">[[Remove]]</a>
-									#end
+								#if($operation == "assetsremoved")
+									<a href="#" class="btn btn-xs btn-dark">[[Restore]]</a>
+								#elseif($operation == "assetsadded")
+									<a href="#" class="btn btn-xs btn-dark">[[Remove]]</a>
+								#end
 							</td>
 						</tr>
 					#end
