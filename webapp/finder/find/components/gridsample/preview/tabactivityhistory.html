@@ -49,8 +49,9 @@ $context.putPageValue("parentsearchtype", $parentsearchtype)
 							</td>
 							<td>
 								#set($assetids = $activity.getValue("assetids"))
-								
+								#if($assetids.size()>3)
 								<span class="trim-text" data-max="100">
+								#end
 								#foreach($assetid in $assetids)
 									#set($asset = $mediaarchive.getAsset($assetid))
 									#if($asset)
@@ -59,8 +60,10 @@ $context.putPageValue("parentsearchtype", $parentsearchtype)
 									#else
 										$assetid
 									#end
-								#end</span>
+								#end
+								#if($assetids.size()>3)</span>
 								<button class="see-more-btn see-more" data-seemore="(...[[see more]])" data-seeless="(...[[see less]])">(..[[.see more]])</button>
+								#end
 								</td>
 							<td>
 								
