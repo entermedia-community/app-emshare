@@ -1,5 +1,5 @@
-#set( $searchtype = $context.findValue("searchtype"))
-#set( $currentsubab = $context.findValue("subtab"))
+#set( $searchtype = $context.findPathValue("searchtype"))
+#set( $currentsubab = $content.findPathValue("subtab"))
 
 #ifnull($currentsubab)
 	#set($currentsubab = "html")
@@ -16,12 +16,9 @@ $context.putPageValue("subtab", $currentsubab)
 $context.putPageValue("entity", $entity)
 $context.putPageValue("entityid", $entityid)
 
-#ifnull($currenttab)
-	#set($currenttab = $context.getRequestParameter("currenttab"))
-#end
+#set($subtab = $context.findValue("subtab") )
 
-#set($tabid = "ditavizeditor")
-<div id="${tabid}"
+<div id="ditavizeditor"
 	class="entity-tab-content entity-tab-media tabtypemedia" 
 	data-tabid="${tabid}"
 	data-entityid="$!entityid"
@@ -33,8 +30,10 @@ $context.putPageValue("entityid", $entityid)
 <div  class="tablightbox d-flex h-100" style="height: 100%;">
 	
 	$context.putPageValue("topmodule",$module)
-	#set( $lightboxid = $context.getRequestParameter("lightboxid"))
+
+$subtab
+
 	$pages.include("$componenthome/entities/viewhtml/sidemenu.html",$context) 
-	#set( $path = "$componenthome/entities/viewhtml/${currentsubab}.html")
+	#set( $path = "$componenthome/entities/viewhtml/${subtab}.html")
 	$pages.include($path, $context)
 </div>

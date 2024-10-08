@@ -1,7 +1,29 @@
 
-<div class="bg-white 2mt-1 dita-viz-tabcontent">
-  $pages.include("$componenthome/entities/viewhtml/header.html",$context) 
-  <div class="p-2 w-100">
-    <h1>XML</h1>
-  </div>
+<div class="bg-white dita-viz-tabcontent">
+	  $pages.include("$componenthome/entities/viewhtml/header.html",$context) 
+
+  #ifnull($rootelement)
+    <p class="m-3 text-muted text-center">
+      Generate a New DITA view or select any of the previously generate dita/ditamap from the sidebar.
+    </p>
+  #end
+  
+  #ifnotnull($rootelement)
+	  #set( $mediadbappid=$mediaarchive.getMediaDbId())
+
+$chapters.size() chapters	    
+	
+	  <div class="pt-2 w-100 viz-iframe">
+	    <a class="download-html btn btn-accent rounded">
+	      <i class="bi bi-download mr-1"></i> Download HTML
+	    </a>
+	 <textarea style="width:100%;height: 600px">   $rootelement.asXML()</textarea>
+<textarea id="xml-code" style="display: none;">$rootelement.asXML()</textarea>
+	<code class="language-xml xml hljs"></code>
+	<script src="/${applicationid}/components/javascript/highlight.min.js"></script>
+	
+		    
+	   ## <iframe src="/${mediadbappid}/services/module/asset/downloads/vieworiginal/$renderedpath"></iframe>
+	  </div>
+  #end
 </div>
