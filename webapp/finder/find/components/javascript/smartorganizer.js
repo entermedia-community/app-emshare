@@ -706,6 +706,28 @@ $(document).ready(function () {
       });
     }
 
+    function updateLabelConfigPosition(A) {
+      if (!A) {
+        A = $(".label-mod-toggler");
+      }
+      var selectedLabel = canvas.getPrimarySelection();
+      if (!selectedLabel || !selectedLabel.shape || !selectedLabel.shape[0]) {
+        return;
+      }
+      var shape = selectedLabel.shape[0].getBoundingClientRect();
+      var bb = {
+        x: shape.x + shape.width + 8,
+        y: shape.y - 20,
+      };
+      $(A).css({
+        color: "#60729e",
+        position: "fixed",
+        left: bb.x,
+        top: bb.y,
+        zIndex: 999,
+      });
+    }
+
     function handleSelect(selectedGroup = null) {
       if (!selectedGroup) {
         selectedGroup = canvas.getPrimarySelection();
@@ -782,19 +804,9 @@ $(document).ready(function () {
 
           A.innerHTML = "<i class='bi bi-gear-fill'></i>";
           $(".org-row").append(A);
-          updateLabelConfigPosition(
-            A,
-            selectedGroup.getX(),
-            selectedGroup.getY(),
-            selectedGroup.getWidth()
-          );
+          updateLabelConfigPosition(A);
           selectedGroup.on("drag", function () {
-            updateLabelConfigPosition(
-              A,
-              selectedGroup.getX(),
-              selectedGroup.getY(),
-              selectedGroup.getWidth()
-            );
+            updateLabelConfigPosition(A);
           });
           hideFolderConfig();
         }
@@ -802,16 +814,6 @@ $(document).ready(function () {
         hideFolderConfig();
         hideLabelConfig();
       }
-    }
-
-    function updateLabelConfigPosition(A, x, y, width) {
-      $(A).css({
-        color: "#60729e",
-        position: "fixed",
-        left: x + width + parseInt(canvasContainer.css("margin-left")) + 125,
-        top: y + parseInt(canvasContainer.css("margin-top")) + 55,
-        zIndex: 999,
-      });
     }
 
     function hideLabelConfig() {
@@ -1378,6 +1380,7 @@ $(document).ready(function () {
       $("#vToBottom").prop("disabled", false);
       canvasContainer.css("margin-top", pos);
       updateModPosition();
+      updateLabelConfigPosition();
     });
     $("#vToBottom").click(function (e) {
       e.stopImmediatePropagation();
@@ -1389,6 +1392,7 @@ $(document).ready(function () {
       $("#vToTop").prop("disabled", false);
       canvasContainer.css("margin-top", pos);
       updateModPosition();
+      updateLabelConfigPosition();
     });
     $("#vToLeft").click(function (e) {
       e.stopImmediatePropagation();
@@ -1400,6 +1404,7 @@ $(document).ready(function () {
       $("#vToRight").prop("disabled", false);
       canvasContainer.css("margin-left", pos);
       updateModPosition();
+      updateLabelConfigPosition();
     });
     $("#vToRight").click(function (e) {
       e.stopImmediatePropagation();
@@ -1411,6 +1416,7 @@ $(document).ready(function () {
       $("#vToLeft").prop("disabled", false);
       canvasContainer.css("margin-left", pos);
       updateModPosition();
+      updateLabelConfigPosition();
     });
     $("#zoomInBtn").click(function (e) {
       e.stopImmediatePropagation();
@@ -1427,6 +1433,7 @@ $(document).ready(function () {
       var newtop = parseInt(canvasContainer.css("margin-top")) + change;
       canvasContainer.css("margin-top", newtop);
       updateModPosition();
+      updateLabelConfigPosition();
     });
 
     $("#zoomOutBtn").click(function (e) {
@@ -1444,6 +1451,7 @@ $(document).ready(function () {
       var newtop = parseInt(canvasContainer.css("margin-top")) + change;
       canvasContainer.css("margin-top", newtop);
       updateModPosition();
+      updateLabelConfigPosition();
     });
 
     $("#zoomResetBtn").click(function (e) {
@@ -1451,6 +1459,7 @@ $(document).ready(function () {
       canvas.setZoom(1.0);
       recenterCanvas();
       updateModPosition();
+      updateLabelConfigPosition();
     });
 
     lQuery("#labelForm").livequery("submit", function (e) {
