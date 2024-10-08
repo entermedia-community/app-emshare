@@ -1,31 +1,43 @@
-<div class="d-flex flex-column bg-white m-4 rounded" style="width: 800px; max-width: 100%;" data-setpagetitle="Pick a Template">
+<div class="d-flex flex-column bg-white m-4 rounded" style="width: 800px; max-width: 100%;" data-setpagetitle="Import / Export Template">
   <div class="d-flex justify-content-between border-bottom px-3 pt-3 pb-2">
-    <h3 class="text-center m-0 text-dark">Add from Template</h3>
+    <h3 class="text-center m-0 text-dark">Import / Export This Template</h3>
     <button class="btn text-muted closemodal">
       <i class="bi bi-x-lg"></i>
     </button>
   </div> 
   <div class="row pt-2 px-3">
-	  #set( $templates = $mediaarchive.query("smartorganizertemplates").sort("ordering").search() )
-	  #foreach($template in $templates) 
-		    <div class="col-md-6 p-0">
-		      <div class="template-card">
-				  #set($thumb = "temp1.png")
-				  #ifnotnull($template.thumbnailpath)
-				  #set($thumb = $template.thumbnailpath)
-				  #end
-		        <img src="$siteroot$apphome/theme/icons/templates/${thumb}" alt="$template.caption">
-		        <h5>#text($template)</h5>
-		        <p>$template.caption</p>
-		        <textarea class="d-none">
-						$template.json					
-				</textarea>
-		        <button class="insert-btn">
-		          [[Insert]]
-		        </button>
-		      </div>
-		    </div>
-		#end 
-
+		<div class="col-md-6 p-0">
+			<div class="card mr-2 mb-2 ml-1">
+        <div class="card-header">
+          Export
+        </div>
+        <div class="card-body">
+          <form id="exportForm" class="d-flex flex-column" method="post">
+            <div class="form-group">
+              <select class="form-control" id="exportType" name="exportType">
+                <option value="selected">Only Selected Items</option>
+                <option value="all">Everything</option>
+              </select>
+            </div>
+            <button type="submit" class="btn btn-success">Export</button>
+          </form>
+        </div>
+      </div>
+		</div>
+		<div class="col-md-6 p-0">
+			<div class="card ml-2 mb-2 mr-1">
+        <div class="card-header">
+          Import
+        </div>
+        <div class="card-body">
+          <form id="importForm" class="d-flex flex-column" enctype="multipart/form-data">
+            <div class="form-group">
+              <input type="file" class="form-control border-0" id="importFile" name="importFile" accept="application/json">
+            </div>
+            <button type="submit" class="btn btn-accent">Import</button>
+          </form>
+        </div>
+      </div>
+		</div>
   </div>
 </div> 

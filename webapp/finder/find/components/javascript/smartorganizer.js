@@ -1,3 +1,37 @@
+var colorSwatch = [
+  "#0000ff",
+  "#a52a2a",
+  "#00008b",
+  "#006400",
+  "#8b008b",
+  "#556b2f",
+  "#ff8c00",
+  "#9932cc",
+  "#8b0000",
+  "#e9967a",
+  "#9400d3",
+  "#ff00ff",
+  "#ffd700",
+  "#008000",
+  "#4b0082",
+  "#f0e68c",
+  "#00ff00",
+  "#800000",
+  "#000080",
+  "#808000",
+  "#800080",
+  "#ff0000",
+];
+var lastRandomColor = null;
+function getRandomColor() {
+  var randomColor = colorSwatch[Math.floor(Math.random() * colorSwatch.length)];
+  if (lastRandomColor === randomColor) {
+    return "#4d5d80";
+  }
+  lastRandomColor = randomColor;
+  return randomColor;
+}
+
 function hexToRgb(hex) {
   if (hex.length == 4) {
     hex = hex.replace(/^#(.)(.)(.)$/, "#$1$1$2$2$3$3");
@@ -171,7 +205,7 @@ $(document).ready(function () {
   var labelJson = function (attr, callback) {
     var groupId = draw2d.util.UUID.create();
     var w = attr.width;
-    var h = attr.titleHeight + attr.captionHeight + (attr.image ? 110 : 30);
+    var h = attr.titleHeight + attr.captionHeight + (attr.image ? 110 : 0);
     var data = [
       {
         type: "draw2d.shape.composite.Group",
@@ -742,7 +776,7 @@ $(document).ready(function () {
             applink + "/components/smartorganizer/label.html"
           );
           A.setAttribute("role", "button");
-          A.dataset.dialogid = "labelPicker";
+          A.dataset.dialogid = "addLabel";
           A.dataset.oemaxlevel = "1";
           A.dataset.id = selectedGroup.getId();
           A.dataset.title = titleNode ? titleNode.getText() : "";
@@ -924,6 +958,35 @@ $(document).ready(function () {
         folderDragging = false;
       },
     });
+
+    var labelDragging = false;
+    $("#addLabelBtn").on("mouseup", function () {
+      if (labelDragging) {
+        labelDragging = false;
+        return;
+      }
+      var mainNode = canvas.getFigure("main");
+      var centerX = mainNode.getX() + 110;
+      var centerY = mainNode.getY() + 50;
+      var dirX = Math.random() > 0.5 ? 150 : -300;
+      var dirY = Math.random() > 0.5 ? 150 : -300;
+      addLabelAt({
+        x: centerX + dirX + Math.random() * 50,
+        y: centerY + dirY + Math.random() * 50,
+      });
+    });
+    $("#addLabelBtn").draggable({
+      scope: "smartOrg",
+      helper: "clone",
+      revert: "invalid",
+      start: function () {
+        labelDragging = true;
+      },
+      end: function () {
+        labelDragging = false;
+      },
+    });
+
     $(".org-canvas").droppable({
       scope: "smartOrg",
       tolerance: "pointer",
@@ -935,10 +998,20 @@ $(document).ready(function () {
         offsetLeft = parseInt(offsetLeft) * -1;
         $(this).css("opacity", 1);
         folderDragging = false;
-        addFolderAt(
-          (offsetLeft + ui.position.left) * zoom - 120 * zoom,
-          (offsetTop + ui.position.top) * zoom - 30 * zoom
-        );
+        labelDragging = false;
+        if ($(ui.draggable).attr("id") === "addFolderBtn") {
+          addFolderAt(
+            (offsetLeft + ui.position.left) * zoom - 120 * zoom,
+            (offsetTop + ui.position.top) * zoom - 30 * zoom
+          );
+          return;
+        }
+        if ($(ui.draggable).attr("id") === "addLabelBtn") {
+          addLabelAt({
+            x: (offsetLeft + ui.position.left) * zoom - 120 * zoom,
+            y: (offsetTop + ui.position.top) * zoom - 30 * zoom,
+          });
+        }
       },
       over: function () {
         $(this).css("opacity", 0.2);
@@ -1412,17 +1485,51 @@ $(document).ready(function () {
       var { width: cW, height: cH } = measureText(captionText, captionFS);
       var width = Math.max(tW, cW, 110);
 
+      addLabelAt({
+        id,
+        titleText,
+        titleFS,
+        captionText,
+        captionFS,
+        image,
+        color,
+        bgColor,
+        width,
+        titleHeight: tH,
+        captionHeight: cH,
+      });
+    });
+
+    function addLabelAt({
+      x = midX,
+      y = midY + 200,
+      id = null,
+      titleText = "Label",
+      titleFS = 16,
+      captionText = "",
+      captionFS = 16,
+      image = "",
+      color = "#ffffff",
+      bgColor = null,
+      width = 100,
+      titleHeight = 22,
+      captionHeight = 0,
+    }) {
+      if (!bgColor) {
+        bgColor = getRandomColor();
+        color = lightenHex(bgColor, -5);
+      }
       labelJson(
         {
-          x: midX,
-          y: midY + 200,
+          x,
+          y,
           width: width,
           title: titleText,
           titleFS: parseInt(titleFS) || 16,
-          titleHeight: tH,
+          titleHeight: titleHeight,
           caption: captionText,
           captionFS: parseInt(captionFS) || 16,
-          captionHeight: cH,
+          captionHeight: captionHeight,
           image: image,
           bgColor: bgColor || "#60729e",
           color: color || "#4d5d80",
@@ -1458,62 +1565,10 @@ $(document).ready(function () {
             labelGroup.setHeight(prevHeight);
           }
           labelGroup.fireEvent("resize");
-          closeemdialog($("#labelPicker"));
+          closeemdialog($("#addLabel"));
         }
       );
-    });
-
-    lQuery("#actionForm").livequery("submit", function (e) {
-      e.preventDefault();
-      e.stopImmediatePropagation();
-    });
-
-    lQuery(".insert-btn").livequery("click", function (e) {
-      e.preventDefault();
-      e.stopImmediatePropagation();
-
-      var data = $(this).siblings("textarea").val();
-      //var parsed = JSON.parse(data);
-      var updateparsed = data.replaceAll("${apphome}", apphome);
-      var parsed = JSON.parse(updateparsed);
-
-      //remove main node + logo
-      parsed = parsed.filter((val) => val.cssClass !== "draw2d_shape_node_End");
-      parsed = parsed.filter((val) => val.cssClass !== "brandLogo"); //TODO: keep Logo of current Catalog
-
-      //skip current nodes
-      var final = {};
-      var writer = new draw2d.io.json.Writer();
-      writer.marshal(canvas, function (json) {
-        $.each(
-          json.filter((el) => el.cssClass == "folderLabel"),
-          function (key, folder) {
-            if (folder.userData !== undefined) {
-              var moduleid = folder.userData.moduleid;
-              //console.log(moduleid);
-              var found = parsed.filter(
-                (el) => el.userData.moduleid == moduleid
-              );
-
-              if (found.length > 0) {
-                var composite = found[0].composite;
-                //Folder Group
-                parsed = parsed.filter((val) => val.id !== composite);
-                //Label, icon, folder image
-                parsed = parsed.filter((val) => val.composite !== composite);
-              }
-            }
-          }
-        );
-      });
-
-      reader.unmarshal(canvas, parsed);
-      saveJSON();
-      recenterCanvas();
-      console.log("Inserted template");
-      closeemdialog($(this).closest(".modal"));
-    });
-
+    }
     lQuery("#closeorgnizer").livequery("click", function () {
       var changed = $("#organizer_canvas").data("changed");
       if (!changed) {
@@ -1527,6 +1582,20 @@ $(document).ready(function () {
         closeemdialog($(this).closest(".modal"));
       }
     });
+
+    lQuery("#exportForm").livequery("submit", function (e) {
+      e.preventDefault();
+      e.stopImmediatePropagation();
+
+      var exportType = $(this).find("select[name='exportType']").val();
+      var exportJson;
+      if (exportType === "all") {
+        writer.marshal(canvas, function (json) {
+          exportJson = json;
+        });
+      }
+    });
+
     loadJSON();
   });
 
