@@ -85,7 +85,14 @@
 							#end
 							#set($oemaxlevel = "1")
 						#else
-							#set($href = "$siteroot$apphome/views/modules/$moduleid/index.html?hitssessionid=$!hits.getSessionId()&removeterm=$!term.getId()")
+							#if($tabletype == "subentity")
+								#set($href = "$siteroot$apphome/views/modules/$moduleid/components/table/subentitytable.html?hitssessionid=$!hits.getSessionId()&${moduleid}clearfilters=true")
+								#set($href = "$href&topmoduleid=$!{topmoduleid}&entityid=$!{entityid}&viewid=$!{viewid}")
+								#set($href = "$href&fieldexternalid=$!fieldexternalid&fieldexternalvalue=$!fieldexternalvalue&field=$!fieldexternalid&$!{fieldexternalid}.value=$!fieldexternalvalue&operation=exact")
+								#set( $targetdiv = "results$!{viewid}")
+							#else
+								#set($href = "$siteroot$apphome/views/modules/$moduleid/index.html?hitssessionid=$!hits.getSessionId()&removeterm=$!term.getId()")
+							#end
 							#set($oemaxlevel = "1")
 						#end
 					
@@ -155,7 +162,15 @@
 			#set($href = "$siteroot$apphome/views/modules/$moduleid/dialogindex.html?hitssessionid=$!hits.getSessionId()&topmoduleid=$!topmoduleid&entityid=$!entityid&dialogindextype=$!dialogindextype&rootcategory=$!rootcategory&categoryid=$!{categoryid}&${moduleid}clearfilters=true")
 			#set($targetdiv = "dialogassetresultscontainer")
 		#else	
-			#set($href = "$siteroot$apphome/views/modules/$moduleid/index.html?hitssessionid=$!hits.getSessionId()&${moduleid}clearfilters=true")
+			#if($tabletype == "subentity")
+				#set($href = "$siteroot$apphome/views/modules/$moduleid/components/table/subentitytable.html?hitssessionid=$!hits.getSessionId()&${moduleid}clearfilters=true")
+				#set($href = "$href&topmoduleid=$!{topmoduleid}&entityid=$!{entityid}&viewid=$!{viewid}")
+				#set($href = "$href&fieldexternalid=$!fieldexternalid&fieldexternalvalue=$!fieldexternalvalue&field=$!fieldexternalid&$!{fieldexternalid}.value=$!fieldexternalvalue&operation=exact")
+				#set( $targetdiv = "results$!{viewid}")
+			
+			#else
+				#set($href = "$siteroot$apphome/views/modules/$moduleid/index.html?hitssessionid=$!hits.getSessionId()&${moduleid}clearfilters=true")
+			#end
 		#end
 		<a href="$href" title="[[Clear All Filters]]" class="clear-all ajax clearsearchbar" data-oemaxlevel="1" data-targetdiv="$targetdiv"><i class="bi bi-x"></i> [[Clear All]]</a>
 	</div>
