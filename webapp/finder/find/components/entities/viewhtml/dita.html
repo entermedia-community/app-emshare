@@ -1,5 +1,5 @@
 
-<div class="bg-white dita-viz-tabcontent">
+<div class="bg-dark dita-viz-tabcontent">
 	  $pages.include("$componenthome/entities/viewhtml/header.html",$context) 
 
   #ifnull($rootelement)
@@ -11,17 +11,18 @@
   #ifnotnull($rootelement)
 	  #set( $mediadbappid=$mediaarchive.getMediaDbId())
 
-$chapters.size() chapters	    
 	
 	  <div class="pt-2 w-100 viz-iframe">
 	    <a class="download-html btn btn-accent rounded">
-	      <i class="bi bi-download mr-1"></i> Download HTML
+	      <i class="bi bi-download mr-1"></i> Download Folder
 	    </a>
-	 <textarea style="width:100%;height: 600px">   $rootelement.asXML()</textarea>
-<textarea id="xml-code" style="display: none;">$rootelement.asXML()</textarea>
-	<code class="language-xml xml hljs"></code>
-	<script src="/${applicationid}/components/javascript/highlight.min.js"></script>
-	
+	    
+	    	<script src="/${applicationid}/components/javascript/highlight.min.js"></script>
+			<div class="xml-code overflow-y">
+##$chapters.size() chapters	    
+					<textarea style="display: none;">$rootelement.asXML()</textarea>		
+				<code class="language-xml xml hljs"></code>
+			</div>
 		    
 	   ## <iframe src="/${mediadbappid}/services/module/asset/downloads/vieworiginal/$renderedpath"></iframe>
 	  </div>
