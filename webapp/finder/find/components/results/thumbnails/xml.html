@@ -6,6 +6,7 @@
 	#set ($hit = $data)
 #end
 
+#*
 #set($xml = $mediaarchive.getOriginalDocument($hit))
 #if( $xml.exists() )
 	#ifnotnull( $asset)
@@ -19,7 +20,21 @@
 404: Asset does not exist
 	
 #end
-	#set ($mime = $mediaarchive.getMimeTypeIcon($hit.fileformat))
+*#
+
+#set ($mime = $mediaarchive.getMimeTypeIcon($hit.fileformat))
+<div class="text-file-thumb">
 	<div class="format-thumb">
-		<i class="bi bi-$mime"></i> $asset.getName()
+		<i class="bi bi-$mime"></i>
 	</div>
+	<div style="display: table;height: 76px;">
+		<div class="file-name">
+			<p class="m-0">
+				<span>&lt;</span>$hit.getName()<span>&nbsp;/&gt;</span>
+			</p>
+		</div>
+	</div>
+	<div class="format-name text-muted">
+		$hit.fileformat
+	</div>
+</div>
