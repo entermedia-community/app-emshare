@@ -501,23 +501,10 @@ $(document).ready(function () {
         marginTop: containerTop,
         marginLeft: containerLeft,
       });
-
-      /*
-     //var changex = midX - centerX;
-     //var changey = midY - centerY;
-     var figures = canvas.getFigures();
-     figures.data.forEach( function(element, index, array) {
-		 if(element.cssClass == "folderGroup" || element.cssClass == "draw2d_shape_node_End") 
-		 {
-			 console.log("centering: " + element.cssClass);
-		 	element.setX(element.getX() + changex);
-		 	element.setY(element.getY() + changey);
-		 }
-	 }); 		
-	*/
     }
 
     var reader = new draw2d.io.json.Reader();
+    var writer = new draw2d.io.json.Writer();
 
     function loadJSON() {
       var id = $("#organizerId").val();
@@ -1197,7 +1184,6 @@ $(document).ready(function () {
       } else {
         canvasContainer.data("changed", true); //Version save
       }
-      var writer = new draw2d.io.json.Writer();
 
       writer.marshal(canvas, function (json) {
         if (json.length === 0) return;
@@ -1588,13 +1574,120 @@ $(document).ready(function () {
       e.stopImmediatePropagation();
 
       var exportType = $(this).find("select[name='exportType']").val();
-      var exportJson;
+      var exportJson = [];
       if (exportType === "all") {
         writer.marshal(canvas, function (json) {
           exportJson = json;
+          downloadJson(exportJson);
+        });
+        return;
+      }
+      if (exportType === "selected") {
+        var figures = canvas.getSelection().getAll();
+        var ids = [];
+        function fetchIds({ data }) {
+          data.forEach(function (d) {
+            if (d.assignedFigures) {
+              fetchIds(d.getAssignedFigures());
+            }
+            ids.push(d.getId());
+          });
+        }
+        fetchIds(figures);
+        var idReplacement = {};
+        ids.forEach((id) => {
+          if (
+            id !== "main" &&
+            !id.endsWith("-label") &&
+            !id.endsWith("-image") &&
+            !id.endsWith("-icon") &&
+            !id.endsWith("-title") &&
+            !id.endsWith("-caption")
+          ) {
+            idReplacement[id] = draw2d.util.UUID.create();
+          }
+        });
+        const parentIds = Object.keys(idReplacement);
+        ids.forEach((id) => {
+          if (id !== "main" && !idReplacement[id]) {
+            var parentId = id
+              .replace("-label", "")
+              .replace("-image", "")
+              .replace("-icon", "")
+              .replace("-title", "")
+              .replace("-caption", "");
+            if (parentIds.includes(parentId)) {
+              idReplacement[id] = id.replace(parentId, idReplacement[parentId]);
+            }
+          }
+        });
+        writer.marshal(canvas, function (json) {
+          json.forEach(function (jso) {
+            if (ids.includes(jso.id)) {
+              if (jso.id && idReplacement[jso.id]) {
+                jso.id = idReplacement[jso.id];
+              }
+              if (jso.composite && idReplacement[jso.composite]) {
+                jso.composite = idReplacement[jso.composite];
+              }
+              if (jso.type === "draw2d.Connection") {
+                if (jso.source && idReplacement[jso.source.node]) {
+                  jso.source.node = idReplacement[jso.source.node];
+                }
+                if (jso.target && idReplacement[jso.target.node]) {
+                  jso.target.node = idReplacement[jso.target.node];
+                }
+              }
+              exportJson.push(jso);
+            }
+          });
+          downloadJson(exportJson);
         });
       }
     });
+
+    lQuery("#importForm").livequery("submit", function (e) {
+      e.preventDefault();
+      e.stopImmediatePropagation();
+
+      var file = $("#importFile")[0].files[0];
+      if (!file) {
+        alert("No file selected.");
+        return;
+      }
+
+      var thisModal = $(this).closest(".modal");
+
+      var fileReader = new FileReader();
+      fileReader.onload = function () {
+        try {
+          var json = JSON.parse(fileReader.result);
+          if (Array.isArray(json) && json.length > 0) {
+            reader.unmarshal(canvas, json);
+            loadEvents();
+            closeemdialog(thisModal);
+          } else {
+            alert("Invalid JSON structure.");
+          }
+        } catch (error) {
+          alert("Error parsing JSON: " + error.message);
+        }
+      };
+      fileReader.readAsText(file);
+    });
+
+    function downloadJson(json) {
+      var exportName = $("#organizerName").val() + "-" + Date.now();
+      var dataStr =
+        "data:text/json;charset=utf-8," +
+        encodeURIComponent(JSON.stringify(json));
+      var dlAnchor = document.createElement("a");
+      dlAnchor.setAttribute("href", dataStr);
+      dlAnchor.setAttribute("download", exportName + ".json");
+      document.body.appendChild(dlAnchor);
+      dlAnchor.click();
+      dlAnchor.remove();
+    }
 
     loadJSON();
   });
