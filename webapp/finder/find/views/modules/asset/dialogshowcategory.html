@@ -8,12 +8,15 @@ $context.putPageValue("hits", $entityassethits)
 	#set ( $rootcategory = $context.getRequestParameter("rootcategory") )
 	$context.putPageValue("rootcategory", $rootcategory)
 #end
-
+#if(!$category)
+	#set ( $category = $context.getRequestParameter("category") )
+	$context.putPageValue("category", $category)
+#end
 $context.putPageValue("dialogresults", true)
 
 #set( $searchhome = $context.findValue("searchhome") )
 
 
-<div id="dialogmediaentity" data-setpagetitle="#text($entity) #text($category)">
+<div id="dialogmediaentity" data-setpagetitle="#text($entity) #text($category)" data-categoryid="$!{category.id}">
 $pages.include("$componenthome/results/index.html", $context)
 </div>

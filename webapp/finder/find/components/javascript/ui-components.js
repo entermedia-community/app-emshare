@@ -3994,10 +3994,16 @@ uiload = function () {
     e.preventDefault();
     e.stopImmediatePropagation();
     var toggler = $(this);
-    var options = toggler.data();
+    var options = toggler.data();	
     var url = toggler.data("url");
     var targetdiv = toggler.data("targetdiv");
     var treestatus = toggler.data("treestatus");
+    
+    var dialogresults = $("#" + targetdiv).find("#dialogmediaentity");
+    var currentcategoryid = dialogresults.data("categoryid");
+    if (currentcategoryid !== undefined) {
+    	options.categoryid = currentcategoryid;
+    }
     saveProfileProperty("dialogtreestatus", treestatus, function () {});
     jQuery.ajax({
       url: url,

@@ -44,27 +44,17 @@ $(document).ready(function () {
       event.stopPropagation();
 
       var tree = $(this).closest(".emtree");
-      var treename = tree.data("treename");
       var node = $(this).closest(".noderow");
-      //$('.emtree ul li div').removeClass('selected cat-current');
       $("ul li div", tree).removeClass("selected cat-current");
       $("div:first", node).addClass("cat-current");
       var nodeid = node.data("nodeid");
 	  tree.data("currentnodeid", nodeid);
       var prefix = tree.data("urlprefix");
-      var postfix = tree.data("urlpostfix");
-      var targetdiv = tree.data("targetdiv");
       var maxlevel = tree.data("maxlevelclick");
       if (maxlevel == undefined || maxlevel == "") {
         maxlevel = 2;
       }
 
-      if (treename != undefined && treename.startsWith("dialog")) {
-        //Dialog Tree
-        var home = tree.data("home");
-        tree.find(nodeid + "_add").remove();
-        var depth = node.data("depth");
-      } else {
         //Regular Tree
         var options = [];
         var resultsdiv = tree.closest(".resultsdiv");
@@ -72,9 +62,7 @@ $(document).ready(function () {
           resultsdiv.data("categoryid", nodeid);
           resultsdiv.data("nodeID", nodeid);
         }
-        gotopage(tree, node, maxlevel, prefix, options);
-      }
-      
+      gotopage(tree, node, maxlevel, prefix, options);
       
       var event = $.Event("emtreeselect");
       event.tree = tree;

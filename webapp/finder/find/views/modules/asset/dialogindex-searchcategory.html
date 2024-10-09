@@ -67,7 +67,7 @@ $context.putPageValue("targetdivmedia", $targetdivmedia)
 	data-url="$apphome/views/modules/asset/dialogindex.html"
 	data-categoryid="$!categoryid"
 	data-nodeID="$!categoryid"
-	
+	exact-search="true"
 	data-dialogresults="true"
 	data-hitssessionid="$!hits.getSessionId()"
 	data-componenthome = "$!componenthome"
@@ -114,12 +114,12 @@ $context.putPageValue("targetdivmedia", $targetdivmedia)
 			#if($dialogtreestatus == "open")
 				<div class="embedmediacol embedmediacol-tree embedtreestatus$dialogtreestatus">
 					<div class="embedmediacolactions d-flex align-items-center">
-						<a href="" class="d-flex align-items-center toggledialogtree toggledialogclose"
 						
+						<a href="#" 
+						class="d-flex align-items-center toggledialogtree toggledialogclose"
 						data-targetdiv="dialogassetresultscontainer"
 						data-oemaxlevel="1"
 						data-url="$applink/views/modules/asset/dialogindex.html"
-						data-categoryid="$categoryid"
 						data-topmoduleid="$!topmoduleid"
 						data-rootcategory="$!rootcategory"
 						data-treestatus="close"
@@ -131,7 +131,7 @@ $context.putPageValue("targetdivmedia", $targetdivmedia)
 						#if($canviewupload && $topmodule.getBoolean("enableuploading") && $permissions.can($topmoduleid, "upload_files"))
 						<a href="" 
 							class="createfoldertree"
-							data-tree="entitymediatreetree" 
+							data-tree="dialogentitymediatreetree" 
 							style="width:32px;" 
 							title="[[Add Sub-Folder]]"><i class="bi bi-folder-plus"></i></a>
 							
@@ -143,10 +143,10 @@ $context.putPageValue("targetdivmedia", $targetdivmedia)
 						<div class="embedmediatree">
 						
 						#set( $link = "$componenthome/emtree/tree.html")
-							#set( $link = "${link}?entitymediatreeroot=$rootcategory&treename=entitymediatree&editabletree=true&targetdivsearch=$!targetdivmedia" )
-							#set( $link = "${link}&maintargetdiv=$!maintargetdiv&targetdiv=$!targetdivmedia&maxlevelclick=1&updateAddressBar=false&uploadmaxlevel=1" )
+						#set( $link = "${link}?dialogentitymediatreeroot=$rootcategory&treename=dialogentitymediatree&editabletree=true&targetdivsearch=$!targetdivmedia" )
+						#set( $link = "${link}&maintargetdiv=$!maintargetdiv&targetdiv=$!targetdivmedia&maxlevelclick=1&updateAddressBar=false&uploadmaxlevel=1" )
 						#set( $link = "${link}&customurladdmedia=$apphome/views/modules/asset/add/entityaddmedia.html" )
-							#set( $link = "${link}&oemaxlevel=1&urlprefix=$apphome/views/modules/asset/dialogshowcategory.html" )
+						#set( $link = "${link}&oemaxlevel=1&urlprefix=$apphome/views/modules/asset/dialogshowcategory.html" )
 							
 						$pages.include($link, $context)
 						</div>
