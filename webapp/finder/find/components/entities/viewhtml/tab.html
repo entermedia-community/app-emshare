@@ -1,11 +1,4 @@
 #set( $searchtype = $context.findPathValue("searchtype"))
-#set( $currentsubab = $content.findPathValue("subtab"))
-
-#ifnull($currentsubab)
-	#set($currentsubab = "html")
-#end
-
-$context.putPageValue("subtab", $currentsubab)
 
 #set( $parentsearchtype = $searchtype)
 #if( !$entity)
@@ -17,6 +10,9 @@ $context.putPageValue("entity", $entity)
 $context.putPageValue("entityid", $entityid)
 
 #set($subtab = $content.subtab )
+#ifnull($subtab)
+	#set($subtab = "html")
+#end
 
 <div id="ditavizeditor"
 	class="entity-tab-content entity-tab-media tabtypemedia" 

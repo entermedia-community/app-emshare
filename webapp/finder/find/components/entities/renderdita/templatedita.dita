@@ -13,8 +13,8 @@
 	<data datatype="question-type">$subdata.get("useritem_type")</data>
 	
 	#ifnotnull($subdata.getValue("contentimagepre") )
-		#set( $asset = $mediaarchive.getAsset( $subdata.get("contentimagepre") ) )
-		<image scope="peer" href="/${mediaarchive.getMediaDbId()}/services/module/asset/downloads/vieworiginal/${asset.getSourcePath()}"></image>
+		#set( $relpath = $contentmanager.saveImage($inputdirectory, $subdata.get("contentimagepre"),"image3000x3000") )
+		<image href="$relpath"></image>
 	#end
 	
 	<text>
@@ -22,8 +22,8 @@
 	</text>
 	
 	#ifnotnull($subdata.getValue("contentimagepost") )
-		#set( $asset = $mediaarchive.getAsset( $subdata.get("contentimagepost") ) )
-		<image scope="peer" href="/${mediaarchive.getMediaDbId()}/services/module/asset/downloads/vieworiginal/${asset.getSourcePath()}"></image>
+		#set( $relpath = $contentmanager.saveImage($inputdirectory, $subdata.get("contentimagepost"),"image3000x3000") )
+		<image href="$relpath"></image>
 	#end
 	
 	#ifnotnull($subdata.getValue("usersource") )
