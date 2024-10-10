@@ -2,8 +2,6 @@
 ##<strong>$!assets [[Assets Added]]</strong>
 ##</div>
 
-
-
 #set($entityid = $entity.id)
 $context.putPageValue("entity", $entity)
 $context.putPageValue("entityid", $entityid)
@@ -24,19 +22,20 @@ $context.putPageValue("topmoduleid", $topmoduleid)
 $context.putPageValue("topmodule",$topmodule)
 
 #set($boxes =  $mediaarchive.getBean("entityManager").loadLightBoxesForModule($topmodule, $entity, $context.getUser()))
-#set($assets =  $mediaarchive.getBean("entityManager").loadLightBoxeAssetsForModule($boxes,$topmodule, $entity, $context.getUser()))
+
+###set($assets =  $mediaarchive.getBean("entityManager").loadLightBoxeAssetsForModule($boxes,$topmodule, $entity, $context.getUser()))
 
 
-#set( $lightboxid = $context.getRequestParameter("lightboxid"))
+#set( $lightboxtypeid = $context.getRequestParameter("lightboxtypeid"))
 
-#ifnotnull($lightboxid)
-	#if( $lightboxid != "files")
-		#set($selectedbox =  $mediaarchive.getCachedData("emedialightbox",$lightboxid) )
+#ifnotnull($lightboxtypeid)
+	#if( $lightboxtypeid != "files")
+		#set($selectedbox =  $mediaarchive.getBean("entityManager").loadLightBoxForEntity($lightboxtypeid, $module, $entity))
 	#end	
 #end
 
-#ifnull($lightboxid)
-	#set($selectedbox =  $mediaarchive.getBean("entityManager").findFirstSelectedLightBox($boxes,$assets))
+#ifnull($lightboxtypeid)
+	##set($selectedbox =  $mediaarchive.getBean("entityManager").findFirstSelectedLightBox($boxes,$assets))
 #end	
 
 

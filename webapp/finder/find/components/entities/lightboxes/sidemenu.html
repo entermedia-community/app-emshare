@@ -3,9 +3,10 @@
 	#set($assetsaddedto = $context.getRequestParameter("lightboxid"))
 
 	#foreach( $box in $boxes )
+	
 		#set( $filtervalue = $assets.findFilterChildValue("lightboxid",$box.getId()))
 		<div class="rounded lightboxdropasset" data-entityid="$entity.id" data-moduleid="$topmodule.id" data-lightboxid="$box.id">
-			<a class="ajax btn-wide #if( $box.id == $selectedbox.id ) active #end"
+			<a class="ajax btn-wide #if( $box.id == $selectedbox.getId() ) active #end"
 				data-targetdiv="tablightboxes"
 				data-oemaxlevel="1"
 				href="$componenthome/entities/lightboxes/show.html?lightboxid=$box.id&entityid=$entity.id&moduleid=$module.id">

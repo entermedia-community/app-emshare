@@ -911,6 +911,7 @@ onloadselectors = function () {
     
     
     
+  
     lQuery(".tablightbox .assetdroppable").livequery(function () {
 	  var scope = "default";
       var modalCheck = $(this).closest(".modal");
@@ -923,82 +924,30 @@ onloadselectors = function () {
 		  scope:scope,
           drop: function (event, ui) {
 			var sourcenode = $(ui.draggable);
-			var sourceid = sourcenode.data("assetlightboxid")
+			var sourceid = sourcenode.data("dataid")
 			
-			var existingorder = targetnode.data("ordering");
-			sourcenode.data("ordering", existingorder);
-			var incorder = parseInt(existingorder);
-			incorder++;
-			targetnode.data("ordering", incorder);
-			
-			var resultsdiv = targetnode.closest(".resultsdiv");
-			
-			var boxassetid = [];
-			var neworderings = [];
-			
-			boxassetid.push(sourcenode.data("assetlightboxid"));
-			neworderings.push(sourcenode.data("ordering"));
-			boxassetid.push(targetnode.data("assetlightboxid"));
-			neworderings.push(targetnode.data("ordering"));
-			
-			var previousordering = 0;
-			resultsdiv.find(".masonry-grid-cell").each(function () {
-		      		var cell = $(this);
-		      		var lid = cell.data("assetlightboxid");
-			      	var curordering  = parseInt(cell.data("ordering"));
-		      		if(previousordering > 0 && !boxassetid.includes(lid))	
-		      		{
-			      		if( neworderings.includes(curordering) || curordering == previousordering || curordering < previousordering)
-			      		{
-							curordering++; //Push over by one
-							cell.data("ordering",curordering);
-							boxassetid.push(lid);
-							neworderings.push(curordering);
-						}
-					}
-					previousordering = curordering;
-			});	
-	     	
-	     		var resultsdiv = targetnode.closest(".resultsdiv");
+		var resultsdiv = $(targetnode).closest(".resultsdiv");
 
-	          var lightboxid = resultsdiv.data("lightboxid");
-	          
-	          var lightboxeditor = targetnode.closest("#lightboxeditor");
-	          var targetdiv = lightboxeditor; //not dialogmediaentity
+	  	var options = resultsdiv.cleandata();
+		options.dataid = sourceid;
+    	options.targetid = targetnode.data("dataid");
           
-	          var moduleid = resultsdiv.data("topmoduleid");
-			  var entityid = resultsdiv.data("entityid");
+		//Save scroll location?
+        var moduleid = resultsdiv.data("topmoduleid");
+		$.ajax({
+	        url: apphome + "/views/modules/"+moduleid+ "/components/results/orderInsertData.html",
+		    data: options,
+	        xhrFields: {
+	          withCredentials: true,
+	        },
+	        crossDomain: true,
+			type: "POST",
+	        success: function (data) {
+				//load
+				 checkautoreload(resultsdiv);
+	        },
+		 });
 
-			  var formData = new FormData();
-			  formData.append("lightboxid", lightboxid);
-			  formData.append("entityid", entityid);
-			  formData.append("sourceid", sourceid);
-			     
-		      boxassetid.forEach((value) => {
-		        formData.append("boxassetid", value);
-		      });
-		      neworderings.forEach((value) => {
-		        formData.append("neworderings", value);
-		      });
-
-			
-	          $.ajax({
-	            url: apphome + "/views/modules/"+moduleid+ "/components/entities/lightboxes/gallerysaveorder.html",
-		        xhrFields: {
-		          withCredentials: true,
-		        },
-		        crossDomain: true,
-				 type: "POST",
-	          data: formData,
-	          processData: false,
-	          contentType: false,
-	          "Content-Type": "multipart/form-data",
-		            success: function (data) {
-					targetdiv.replaceWith(data);
-		            //node.removeClass("dragoverselected");
-	              
-	            },
-         		 });
           
         },
         tolerance: "pointer",
@@ -1007,28 +956,18 @@ onloadselectors = function () {
       });
     });  //lightboxdropasset
  	  
-
-  } //all droppable items
-  
-  lQuery(".brickmovetotop").livequery("click",  function() {
+  lQuery(".hitmovetotop").livequery("click",  function() {
 	  var cell = $(this).closest(".masonry-grid-cell");
-	  var brickvertical = $(this).closest(".brickvertical");
-	  
-		var resultsdiv = brickvertical.closest(".resultsdiv");
-
-        var lightboxeditor = resultsdiv.closest("#lightboxeditor");
+		var resultsdiv = cell.closest(".resultsdiv");
 
 	  	var options = resultsdiv.cleandata();
-		options.assetlightboxid = cell.data("assetlightboxid");
-		var firstbrick = brickvertical.find(".masonry-grid-cell:first-child");
-		options.topordering = firstbrick.data("ordering");
-        var targetdiv = lightboxeditor; //not dialogmediaentity
+		options.dataid = cell.data("dataid");
+		
           
 		//Save scroll location?
-        var moduleid = resultsdiv.data("topmoduleid");
-
+        var moduleid = resultsdiv.data("moduleid");
 		$.ajax({
-	        url: apphome + "/views/modules/"+moduleid+ "/components/entities/lightboxes/gallerysaveordertotop.html",
+	        url: apphome + "/views/modules/"+moduleid+ "/components/results/orderMoveToTop.html",
 		    data: options,
 	        xhrFields: {
 	          withCredentials: true,
@@ -1036,12 +975,16 @@ onloadselectors = function () {
 	        crossDomain: true,
 			type: "POST",
 	        success: function (data) {
-				targetdiv.replaceWith(data);
-				//resize?
+				//load
+				 checkautoreload(resultsdiv);
 	        },
 		 });
-			
- });
+	 });
+ 
+
+  } //all droppable items
+  
+  
   
   
 
