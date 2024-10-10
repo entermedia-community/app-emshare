@@ -33,6 +33,10 @@ data-url="$componenthome/gridsample/preview/tabpublishing_gallery.html"
 <div  class="tablightbox d-flex h-100" style="height: 100%;">
 	
 	#set($boxes =  $mediaarchive.getBean("entityManager").loadLightBoxesForModule($module, $entity, $context.getUser()))
+	$context.putPageValue("boxes",$boxes)
+	
+	#set($hitcounts = $mediaarchive.getBean("entityManager").loadLightBoxCounts($boxes, $module, $entity) )
+	$context.putPageValue("hitcounts",$hitcounts)
 	
 	###set($entityboxes = $mediaarchive.getBean("entityManager").loadLightBoxesForEntity($module, $entity, $context.getUser()))
 	
@@ -45,12 +49,11 @@ data-url="$componenthome/gridsample/preview/tabpublishing_gallery.html"
 		#end	
 	#end
 	
-	##ifnull($lightboxid)
-	##	#set($selectedbox =  $mediaarchive.getBean("entityManager").findFirstSelectedLightBox($boxes,$assets))
-	##	#set($lightboxid = $selectedbox.getId())
-	##end	
+	#ifnull($lightboxid)
+		#set($selectedbox =  $mediaarchive.getBean("entityManager").findFirstSelectedLightBox($boxes,$hitcounts))
+		#set($lightboxid = $selectedbox.getId())
+	#end	
 	
-	$context.putPageValue("boxes",$boxes)
 	$context.putPageValue("assets",$assets)
 	$context.putPageValue("lightboxid",$lightboxid)
 	$context.putPageValue("selectedbox",$selectedbox)

@@ -4,7 +4,6 @@
 
 	#foreach( $box in $boxes )
 	
-		#set( $filtervalue = $assets.findFilterChildValue("lightboxid",$box.getId()))
 		<div class="rounded lightboxdropasset" data-entityid="$entity.id" data-moduleid="$topmodule.id" data-lightboxid="$box.id">
 			<a class="ajax btn-wide #if( $box.id == $selectedbox.getId() ) active #end"
 				data-targetdiv="tablightboxes"
@@ -17,9 +16,10 @@
 			#end
 			<i class="bi bi-${moduleicon}"></i>
 			<span>
-				$box 
-				#ifnotnull( $filtervalue )
-					($filtervalue.getCount())
+				#text($box) 
+				#set( $val = $hitcounts.get( $box.getName() ) )
+				#ifnotnull( $val )
+					(${val})
 				#end
 			</span>
 			#ifnotnull( $assetsadded )
