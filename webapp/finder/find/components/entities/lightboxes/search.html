@@ -1,24 +1,18 @@
 
 <div  id="lightboxresults"  class="tabpulications-col submodulepicker entity-tab-content" >
 	
-	
-	#ifnull( $selectedbox)
-		##Files Unsorted
-		#if($module && $entity)
-			#set($defaultfolder =  $mediaarchive.getBean("entityManager").loadDefaultFolder($module, $entity, $context.getUser()))
-		#end
-	#end
-	#ifnotnull( $selectedbox)
-		#set($defaultfolder = $mediaarchive.getBean("entityManager").loadLightboxCategory($selectedbox, $module, $entity, $context.getUser()))
-	#end
-	
-	$context.putPageValue("defaultfolder", $defaultfolder)
-	$context.putPageValue("categoryid", $defaultfolder.getId())
 	$context.putPageValue("entitydialogid", "entity")
 	
 	$pages.include("$componenthome/entities/lightboxes/header.html", $context)
 	
-	$pages.include("$apphome/views/modules/asset/dialogindex.html", $context)
+	#set($assethits = $mediaarchive.getBean("entityManager").searchForAssetsInCategory($module, $entity, $selectedbox,$user) )
+
+	$assethits.size()
+
+	$context.putSessionValue($assethits.getSessionId(),$assethits)
+	$context.putPageValue("assethits",$assethits)
+	
+	$pages.include("$apphome/views/modules/asset/index.html", $context)
 		
 	<div class="clearfix"></div>
 </div>
