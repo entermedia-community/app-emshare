@@ -908,8 +908,7 @@ onloadselectors = function () {
         out: unoutlineSelectionCol,
       });
     });  //lightboxdropasset
-    
-    
+  
     
   
     lQuery(".tablightbox .assetdroppable").livequery(function () {
@@ -933,7 +932,7 @@ onloadselectors = function () {
     	options.targetid = targetnode.data("dataid");
           
 		//Save scroll location?
-        var moduleid = resultsdiv.data("topmoduleid");
+        var moduleid = resultsdiv.data("moduleid");
 		$.ajax({
 	        url: apphome + "/views/modules/"+moduleid+ "/components/results/orderInsertData.html",
 		    data: options,
