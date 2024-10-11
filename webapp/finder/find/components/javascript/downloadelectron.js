@@ -1054,17 +1054,20 @@ jQuery(document).ready(function () {
         }
       }
     });
+
+    lQuery(".open-lightbox").livequery("click", function () {
+      console.log($(this).data());
+      // ipcRenderer
+    });
   });
 
   function getMediadb() {
     var elem = app;
     return elem.data("siteroot") + "/" + elem.data("mediadbappid");
   }
-  
 
   lQuery(".desktopdirectdownload").livequery("click", function (e) {
-      e.preventDefault();
-      ipcRenderer.send("directDownload", $(this).attr("href") );
-  });  
-  
+    e.preventDefault();
+    ipcRenderer.send("directDownload", $(this).attr("href"));
+  });
 });
