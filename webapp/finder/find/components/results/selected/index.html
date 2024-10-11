@@ -206,17 +206,19 @@
 	#ifnull($lightboxassetsresults)
 		#set($lightboxassetsresults = $context.getRequestParameter("lightboxassetsresults"))
 	#end
-	#set($lightboxid = $context.getRequestParameter("lightboxid"))
+	
 	#ifnotnull($lightboxassetsresults)
-	<li>
-		<a class="resultsnavlink ajax" 
-			href="$siteroot$applink/views/modules/$!{topmoduleid}/components/entities/lightboxes/galleryremoveasset.html" 
-			data-targetdiv="tablightboxes"
-			data-entityid="$entityid"
-			data-lightboxid="$!{lightboxid}"
-			data-hitssessionid="$hits.getSessionId()"
-			id="navbarRemove" role="button" title="[[Remove record from Lightbox]]">[[Remove]]</a>
-	</li>
+		#set($lightboxid = $context.getRequestParameter("lightboxid"))
+		<li>
+			<a class="resultsnavlink ajax" 
+				href="$siteroot$applink/views/modules/$!{topmoduleid}/components/entities/lightboxes/galleryremoveasset.html" 
+				data-targetdiv="tablightboxes"
+				data-entityid="$entityid"
+				data-lightboxid="$!{lightboxid}"
+				data-categoryid="$!categoryid"
+				data-hitssessionid="$hits.getSessionId()"
+				id="navbarRemove" role="button" title="[[Remove record from Lightbox]]">[[Remove]]</a>
+		</li>
 	#end
 
 #end

@@ -1,26 +1,25 @@
 
 <div  id="lightboxresults"  class="tabpulications-col submodulepicker entity-tab-content" >
 	
-	#ifnotnull( $selectedbox)
+	$context.putPageValue("entitydialogid", "entity")
 	
-			$pages.include("$componenthome/entities/lightboxes/gallery.html?lightboxid=$selectedbox.getId()", $context)
-	#end
-	#ifnull( $selectedbox)
+	$pages.include("$componenthome/entities/lightboxes/header.html", $context)
+	#set($lightboxcategory = $mediaarchive.getBean("entityManager").loadLightboxCategory($module, $entity, $selectedbox, $context.getUser()))
+	$context.putPageValue("category", $lightboxcategory)
+	$context.putPageValue("categoryid", $lightboxcategory.getId())
 		
-		##Files Unsorted
-		
-		$pages.include("$componenthome/entities/lightboxes/header.html", $context)
+	###set($hits = $mediaarchive.getBean("entityManager").searchForAssetsInCategory($module, $entity, $selectedbox, $user) )
+	##$context.putSessionValue($hits.getSessionId(),$hits)
+	##$context.putPageValue("entityassethits",$hits)
 	
-		#if($module && $entity)
-			#set($defaultfolder =  $mediaarchive.getBean("entityManager").loadDefaultFolder($module, $entity, $context.getUser()))
-			$context.putPageValue("defaultfolder", $defaultfolder)
-		#end
+	#set($module = $mediaarchive.getCachedData("module", "asset"))
+	#set($moduleid = $module.getId())
+	$context.putPageValue("module", $module)
+	$context.putPageValue("moduleid", $moduleid)
 	
-		$context.putPageValue("defaultfolder", $defaultfolder)
-		$context.putPageValue("categoryid", $defaultfolder.getId())
-		$context.putPageValue("entitydialogid", "entity")
+	$context.putPageValue("componenthome","$apphome/views/modules/asset/components")
+	
+	$pages.include("$apphome/views/modules/asset/dialogindex.html?assetsortby=ordering", $context)
 		
-		$pages.include("$apphome/views/modules/asset/dialogindex.html", $context)
-	#end	
 	<div class="clearfix"></div>
 </div>
