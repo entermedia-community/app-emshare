@@ -4,15 +4,22 @@
 	$context.putPageValue("entitydialogid", "entity")
 	
 	$pages.include("$componenthome/entities/lightboxes/header.html", $context)
+	#set($lightboxcategory = $mediaarchive.getBean("entityManager").loadLightboxCategory($module, $entity, $selectedbox, $context.getUser()))
+	$context.putPageValue("category", $lightboxcategory)
+	$context.putPageValue("categoryid", $lightboxcategory.getId())
+		
+	###set($hits = $mediaarchive.getBean("entityManager").searchForAssetsInCategory($module, $entity, $selectedbox, $user) )
+	##$context.putSessionValue($hits.getSessionId(),$hits)
+	##$context.putPageValue("entityassethits",$hits)
 	
-	#set($assethits = $mediaarchive.getBean("entityManager").searchForAssetsInCategory($module, $entity, $selectedbox,$user) )
-
-	$assethits.size()
-
-	$context.putSessionValue($assethits.getSessionId(),$assethits)
-	$context.putPageValue("assethits",$assethits)
+	#set($module = $mediaarchive.getCachedData("module", "asset"))
+	#set($moduleid = $module.getId())
+	$context.putPageValue("module", $module)
+	$context.putPageValue("moduleid", $moduleid)
 	
-	$pages.include("$apphome/views/modules/asset/index.html", $context)
+	$context.putPageValue("componenthome","$apphome/views/modules/asset/components")
+	
+	$pages.include("$apphome/views/modules/asset/dialogindex.html?assetsortby=ordering", $context)
 		
 	<div class="clearfix"></div>
 </div>

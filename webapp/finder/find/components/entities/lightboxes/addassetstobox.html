@@ -22,9 +22,10 @@ $context.putPageValue("topmoduleid", $topmoduleid)
 $context.putPageValue("topmodule",$topmodule)
 
 #set($boxes =  $mediaarchive.getBean("entityManager").loadLightBoxesForModule($topmodule, $entity, $context.getUser()))
+$context.putPageValue("boxes",$boxes)
 
-###set($assets =  $mediaarchive.getBean("entityManager").loadLightBoxeAssetsForModule($boxes,$topmodule, $entity, $context.getUser()))
-
+#set($hitcounts = $mediaarchive.getBean("entityManager").loadLightBoxCounts($boxes, $module, $entity) )
+$context.putPageValue("hitcounts",$hitcounts)
 
 #set( $lightboxtypeid = $context.getRequestParameter("lightboxtypeid"))
 
