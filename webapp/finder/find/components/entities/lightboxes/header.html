@@ -23,19 +23,23 @@
 		#end
 	#end 
 	
+	<div class="d-flex align-items-center ml-auto">
 	#if ($desktop) 
-		<a href="#" class="pub-gallery entitytabactions"
-			data-tabaction="export"
-			data-viewid="export"
-			data-tabtype="tabexport" 
+		<button class="pub-gallery open-lightbox"
 			data-entityid="$!entity.getId()" 
 			#set($topmoduleid = $module.id)
 			data-topmoduleid="$!topmoduleid"
 			data-moduleid="$!module.getId()"
-			data-tabsection="sharegallery"
+			data-path="$categorypath"
+			#ifnull($selectedbox)
+				data-lightbox="Working Files"
+			#end
+			#ifnotnull($selectedbox)
+				data-lightbox="#text($selectedbox)"
+			#end
 			data-lightboxid="$!{selectedbox.id}">
-			<i class="bi bi-send-fill mr-1 ns"></i> [[Open Locally]]
-		</a> 
+			<i class="bi bi-eye-fill mr-1 ns"></i> [[Open Locally]]
+		</button> 
 	#end
 	#if ($showpublishbtn) 
 		<a href="#" class="pub-gallery entitytabactions"
@@ -50,9 +54,6 @@
 			data-lightboxid="$!{selectedbox.id}">
 			<i class="bi bi-send-fill mr-1 ns"></i> [[Publish as Gallery]]
 		</a> 
-	#end
-	
-	
-	
-	
+	#end 
+	</div>
 </div>
