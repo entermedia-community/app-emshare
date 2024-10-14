@@ -1,4 +1,4 @@
-<div id="modulesearchresultsdiv" class="h-100 overflow-y" data-moduleid="$!module.id">
+<div id="modulesearchresultsdiv" class="h-100"  data-moduleid="$!module.id">
   #set( $favorites = $userprofile.get("favorites_"+$module.id))
   $context.putPageValue("favorites", $favorites) 
   #if (!$rendertype)
@@ -17,32 +17,28 @@
     $prhits.setPageOneBased($currentpage) 
   #end
   #set($pos = $prhits.toPosition($prhits.getPage())) 
-  #set($resultsPage = "$componenthome/results/index.html?hitssessionid=$!hits.sessionId&pageposition")
+  #set($resultsPage = "$componenthome/results/index.html?hitssessionid=$!{hits.sessionId}&pageposition")
   #set($targetdivinner = "${module.id}resultsarea") 
   #set($oemaxlevel = "2")
 
-  <div class="emgridflexcontainer h-100" >
+  <div class="emgridflexcontainer h-100 overflow-y" >
     <div class="emgridflex">
-      <div
-        id="galleryimg-${rendertype}"
+      <div id="galleryimg-${rendertype}"
         class="emgrid entitiescontainer"
         data-fixedwidth="210"
         data-cellpadding="15"
-        data-entityrenderurl="$siteroot$apphome/views/modules/$module.id/components/gridsample/gridcell.html"
-        data-rendertype="$rendertype"
-      >
+        data-entityrenderurl="$siteroot$apphome/views/modules/${module.id}/components/gridsample/gridcell.html"
+        data-rendertype="$rendertype">
         #foreach( $hit in $hits.getPageOfHits())
           $context.putPageValue("rendermoduleid", $hit.entitysourcetype)
           $context.putPageValue("entity", $hit) $context.putPageValue("hit", $hit)
-          <div
-            class="emgridcell emgridcell-$rendertype activelistcontainer #if($selectedid == $hit.getId() || $topselectedid == $hit.getId()) active #end"
-          >
-            $pages.include("$apphome/views/modules/${hit.entitysourcetype}/components/gridsample/types/entity.html", $context) 
-            #set($editurl = "$!{siteroot}$apphome/views/modules/${hit.entitysourcetype}/components/gridsample/preview/entity.html?id=$hit.getId()&hitssessionid=$!hits.sessionId")
+          <div class="emgridcell emgridcell-$rendertype activelistcontainer #if($selectedid == $hit.getId() || $topselectedid == $hit.getId()) active #end">
+            $pages.include("$apphome/views/modules/${module.id}/components/gridsample/types/entity.html", $context) 
+            #set($editurl = "$!{siteroot}$apphome/views/modules/${module.id}/components/gridsample/preview/entity.html?id=${hit.getId()}&hitssessionid=$!{hits.sessionId}")
             #if($moduleid == "searchcategory")
               <div class="emgridcell-edit">
-                <a href="$editurl" class="emdialog emgridcell-edit-link" title="[[Edit]]">
-                  <i class="bi bi-pencil"></i>
+                <a href="${editurl}" class="emdialog emgridcell-edit-link" title="[[Edit]] #text($hit)">
+                  <i class="bi bi-pencil"></i> 
                 </a>
               </div>
             #end
