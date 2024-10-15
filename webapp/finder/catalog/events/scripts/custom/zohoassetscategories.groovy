@@ -25,7 +25,7 @@ public init() {
 	 * 
 	 * */
 	
-	String zohoRootCategoryId = "AZG-XycXOM9II3lrevdJ";
+	String zohoRootCategoryId = "zoho";
 	
 	Category zohoRootCategory = archive.getCategory(zohoRootCategoryId)
 	for (Iterator iterator = zohoRootCategory.getChildren().iterator(); iterator.hasNext();)
