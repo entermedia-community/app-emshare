@@ -25,10 +25,7 @@ jQuery(document).ready(function () {
   });
 
   ipcRenderer.on("electron-log", (_, ...log) => {
-    console.log(
-      "%c --- Desktop Log --- ",
-      "background: #000000; color: #bada55; font-style: italic"
-    );
+    console.log("Desktop ▼");
     if (Array.isArray(log)) {
       log.forEach((l) => {
         console.log(l);
@@ -39,10 +36,7 @@ jQuery(document).ready(function () {
   });
 
   ipcRenderer.on("electron-error", (_, ...error) => {
-    console.log(
-      "%c --- Desktop Error --- ",
-      "background: #000000; color: #ba5555; font-style: italic"
-    );
+    console.log("Desktop ▼");
     if (Array.isArray(error)) {
       error.forEach((l) => {
         console.error(l);
@@ -646,12 +640,24 @@ jQuery(document).ready(function () {
       });
     });
 
-    ipcRenderer.on("download-batch-complete", () => {
-      setTimeout(() => {
-        $(".pullfetchfolder").find(".fa-spinner").hide();
-        $(".watch-entity").data("downloading", false);
-        scanEntityChange(true);
-      }, 100);
+    ipcRenderer.on("download-batch-complete", (_, { flag = null }) => {
+      if (flag === "lightbox") {
+        var syncLightbox = $(".sync-lightbox");
+        var uploadsourcepath = syncLightbox.data("path");
+        var lightbox = syncLightbox.data("lightbox");
+        var entityId = syncLightbox.data("entityid");
+        ipcRenderer.send("syncLightboxUp", {
+          uploadsourcepath,
+          lightbox,
+          entityId,
+        });
+      } else {
+        setTimeout(() => {
+          $(".pullfetchfolder").find(".fa-spinner").hide();
+          $(".watch-entity").data("downloading", false);
+          scanEntityChange(true);
+        }, 100);
+      }
     });
 
     lQuery("#immediate-scan").livequery(function () {
@@ -709,16 +715,27 @@ jQuery(document).ready(function () {
       console.error(error);
     });
 
-    ipcRenderer.on("entity-upload-complete", () => {
-      $("#sidebarUserUploads").find(".status-circle").remove();
-      $(".syncfoldertree").find(".fa-spinner").hide();
-      $(".push-msg").hide();
-      $(".upload-push-all").hide();
-      $(".notif").removeClass("up");
-      $(".upload-progress").hide();
-      $(".upload-progress").data("fileCount", 0);
-      $(".upload-progress").data("progress", 0);
-      scanEntityChange();
+    ipcRenderer.on("entity-upload-complete", (_, { lightbox = false }) => {
+      if (lightbox) {
+        var syncLightbox = $(".sync-lightbox");
+        syncLightbox.prop("disabled", true);
+        syncLightbox.find("span").text("Syncing...");
+        syncLightbox.find("span").text("Synced");
+        setTimeout(() => {
+          syncLightbox.prop("disabled", false);
+          syncLightbox.find("span").text("Sync");
+        }, 2000);
+      } else {
+        $("#sidebarUserUploads").find(".status-circle").remove();
+        $(".syncfoldertree").find(".fa-spinner").hide();
+        $(".push-msg").hide();
+        $(".upload-push-all").hide();
+        $(".notif").removeClass("up");
+        $(".upload-progress").hide();
+        $(".upload-progress").data("fileCount", 0);
+        $(".upload-progress").data("progress", 0);
+        scanEntityChange();
+      }
     });
 
     lQuery("#abortUpload").livequery("click", function (e) {
@@ -1056,8 +1073,23 @@ jQuery(document).ready(function () {
     });
 
     lQuery(".open-lightbox").livequery("click", function () {
-      console.log($(this).data());
-      // ipcRenderer
+      var uploadsourcepath = $(this).data("path");
+      var lightbox = $(this).data("lightbox");
+      ipcRenderer.send("openLightbox", {
+        uploadsourcepath,
+        lightbox,
+      });
+    });
+    lQuery(".sync-lightbox").livequery("click", function () {
+      var uploadsourcepath = $(this).data("path");
+      var lightbox = $(this).data("lightbox");
+      $(this).prop("disabled", true);
+      $(this).find("span").text("Syncing...");
+      console.log(uploadsourcepath);
+      ipcRenderer.send("syncLightboxUp", {
+        uploadsourcepath,
+        lightbox,
+      });
     });
   });
 

@@ -13,7 +13,7 @@
     #end
   </div>
 
-  <small><span class="mx-2">&middot;</span>[[Select the files by clicking them. Drag and drop selected files to add them into multiple status]]</small>
+  <small><span class="mx-2">&middot;</span>[[Drag and drop selected files to the sidebar to move them into another status]]</small>
   
 	#set($showpublishbtn = true)
 
@@ -24,25 +24,23 @@
 	#end 
 	
 	<div class="d-flex align-items-center ml-auto">
-	#if ($desktop) 
-		<button class="pub-gallery open-lightbox"
-			data-entityid="$!entity.getId()" 
-			#set($topmoduleid = $module.id)
-			data-topmoduleid="$!topmoduleid"
-			data-moduleid="$!module.getId()"
-			data-path="$categorypath"
-			#ifnull($selectedbox)
-				data-lightbox="Working Files"
-			#end
-			#ifnotnull($selectedbox)
-				data-lightbox="#text($selectedbox)"
-			#end
-			data-lightboxid="$!{selectedbox.id}">
-			<i class="bi bi-eye-fill mr-1 ns"></i> [[Open Locally]]
-		</button> 
+	#if ($desktop)
+		#ifnotnull($selectedbox)
+			<button class="sync-lightbox lightbox-header-btn positive"
+				data-entityid="$!entity.getId()" 
+				data-path='$!entity.get("uploadsourcepath")'
+				data-lightbox="#text($selectedbox)">
+				<i class="bi bi-arrow-repeat mr-1 ns"></i> <span>[[Sync]]</span>
+			</button>
+			<button class="lightbox-header-btn open-lightbox"
+				data-path='$!entity.get("uploadsourcepath")'
+				data-lightbox="#text($selectedbox)">
+				<i class="bi bi-display mr-1 ns"></i> [[Open Locally]]
+			</button> 
+		#end
 	#end
 	#if ($showpublishbtn) 
-		<a href="#" class="pub-gallery entitytabactions"
+		<a href="#" class="lightbox-header-btn entitytabactions"
 			data-tabaction="export"
 			data-viewid="export"
 			data-tabtype="tabexport" 
