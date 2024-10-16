@@ -489,8 +489,10 @@ function filesPicked(_, files, uploadformarea = null) {
 
   if (allfiles.length === 0) {
     uploadformarea.find(".clear-upload-list").hide();
+    uploadformarea.find(".dropicon").show();
   } else {
     uploadformarea.find(".clear-upload-list").show();
+    uploadformarea.find(".dropicon").hide();
   }
 
   files = allfiles;
