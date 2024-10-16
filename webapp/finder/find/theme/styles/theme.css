@@ -860,12 +860,12 @@ a.categorypathlink:hover,
 }
 #footer {
   height: 32px;
-  width: calc(100% - 32px);
+  width: calc(100%);
   margin: 0;
   padding: 0;
   position: absolute;
   bottom: 0;
-  left: 32px;
+  /* left: 32px; */
   z-index: 9999;
 }
 .lighttheme #footer {
@@ -1393,11 +1393,11 @@ select.form-control-sm + .select2-container {
 .border {
   border: 1px solid #dee2e6 !important;
 }
-.resultsnavtitem {
+.resultsnavitem {
   display: flex;
   align-items: center;
 }
-.resultsnavtitem select {
+.resultsnavitem select {
   font-size: 0.9rem;
 }
 a.reset-columns {
@@ -1413,11 +1413,20 @@ a.reset-columns {
 a.reset-columns:hover {
   background-color: #8090b3;
 }
-.resultsnavtitem .select2-container--default .select2-selection--single,
+.resultsnavitem .select2 {
+  height: 36px;
+}
+.resultsnavitem .select2 .selection {
+  height: 100%;
+  display: inline-block;
+}
+.resultsnavitem .select2-container--default .select2-selection--single {
+  height: 36px;
+}
 .resultpages .select2-container--default .select2-selection--single {
   height: calc(1.35rem + 2px) !important;
 }
-.resultsnavtitem
+.resultsnavitem
   .select2-container--default
   .select2-selection--single
   .select2-selection__rendered,
@@ -1425,9 +1434,9 @@ a.reset-columns:hover {
   .select2-container--default
   .select2-selection--single
   .select2-selection__rendered {
-  line-height: 1.3;
+  line-height: 33px;
 }
-.resultsnavtitem
+.resultsnavitem
   .select2-container--default
   .select2-selection--single
   .select2-selection__arrow,
@@ -1436,6 +1445,7 @@ a.reset-columns:hover {
   .select2-selection--single
   .select2-selection__arrow {
   height: 22px;
+  top: 8px;
 }
 .form-control-sm,
 .form-control-sm2 {
@@ -1879,7 +1889,7 @@ body,
   right: -5px;
   width: 5px;
   opacity: 0;
-  z-index: 101;
+  z-index: 1010;
 }
 .colslidercontainer a.col-resize:hover {
   opacity: 1;
@@ -2966,6 +2976,7 @@ li.filtersselected .selected-filters a:hover {
   padding: 0;
   margin: 0;
   list-style: none;
+  height: 100%;
 }
 .search-list li,
 .sidebar-list li {
@@ -4375,7 +4386,6 @@ a#searchEntityDropdown {
 }
 .uploadinstructions {
   text-align: center;
-
 }
 .col-upload-right,
 .col-upload-left {
@@ -4851,7 +4861,7 @@ label.error {
   position: sticky;
   top: 141px;
   background: var(--themed-tab-bar);
-  z-index: 1000;
+  z-index: 900;
 }
 .lighttheme .settingssubtabnav {
   background-color: var(--themed-light-bg);
@@ -4916,6 +4926,8 @@ table.greytxt {
   background-color: var(--themed-light-bg);
   color: var(--themed-default-text);
   min-height: 400px;
+}
+.settingslayout #eml-tab-subnav {
   border-top: 1px solid var(--themed-tab-btn-hover);
 }
 .settingslayout .inputformrow .emdatafield {
@@ -5119,7 +5131,7 @@ span.drag-and-drop {
 }
 #table-container li.header {
   font-weight: bold;
-  font-size: 1.1em;;
+  font-size: 1.1em;
   padding: 10px 8px 10px 16px;
   background: var(--themed-navbar-secondary);
   color: var(--themed-navbar-secondary-text);
@@ -6252,7 +6264,7 @@ a.collectionbox.favorite {
   color: #bbb;
 }
 .loginformquestions a:hover {
-  color: #fff;
+  color: var(--themed-btn-acc-hover);
 }
 .btns {
   padding: 15px 0;
@@ -6272,7 +6284,7 @@ a.collectionbox.favorite {
   padding-left: 10px;
 }
 .lightboxselect {
-  height: calc(100% - 42px);
+  height: 100%;
 }
 .lightboxselect .scrollview {
   height: calc(100% - 36px);
@@ -8115,20 +8127,20 @@ h2 .module-icon {
   object-fit: contain;
 }
 .login-area .btn.btn-primary {
-  background-color: var(--primary-color-light);
-  outline-color: var(--primary-color-light);
-  border-color: var(--primary-color-light);
+  background-color: var(--themed-btn);
+  outline-color: var(--themed-btn);
+  border-color: var(--themed-btn);
 }
 .login-area .btn.btn-primary:hover {
-  background-color: #8090b3;
-  outline-color: #8090b3;
-  border-color: #8090b3;
+  background-color: var(--themed-btn-hover);
+  outline-color: var(--themed-btn-hover);
+  border-color: var(--themed-btn-hover);
 }
 .login-area .btn.btn-outline-transparent,
 .login-area .btn.btn-transparent {
   background-color: transparent;
-  border-color: #8090b3;
-  color: #8090b3;
+  /* border-color: #8090b3; */
+  color: var(--themed-btn);
 }
 .login-area .btn.btn-transparent {
   background-color: transparent;
@@ -8137,12 +8149,12 @@ h2 .module-icon {
   border: none;
 }
 .login-area .btn.btn-outline-transparent {
-  border: 1px solid var(--primary-color-light);
+  border: 1px solid var(--themed-btn);
   border-radius: 50px;
 }
 .login-area .btn.btn-outline-transparent:hover {
-  background-color: #8090b3;
-  color: #ffffff;
+  background-color: var(--themed-btn-hover);
+  color: var(--themed-btn-text);
 }
 .login-area {
   display: flex;
@@ -8166,14 +8178,16 @@ h2 .module-icon {
   justify-content: center;
 }
 .login-area a {
-  color: #8090b3;
+  color: var(--themed-btn-acc);
   font-size: inherit;
 }
 .loginformquestions {
   font-size: 14px;
   font-weight: 400;
+  color: var(--themed-default-text);
 }
 .login-area .page-title {
+  color: var(--themed-default-text);
   font-size: 24px;
   font-weight: 700;
 }
@@ -8183,6 +8197,7 @@ h2 .module-icon {
   margin: 0 auto;
 }
 .login-area form label {
+  color: var(--themed-default-text);
   font-size: 14px;
   font-weight: 500;
 }
@@ -9265,7 +9280,7 @@ button#folderAbsPath:focus {
 .lightbox-header i {
   margin-right: 10px;
 }
-.pub-gallery {
+.lightbox-header-btn {
   font-size: 0.9rem;
   margin-right: 6px;
   height: 30px;
@@ -9276,14 +9291,30 @@ button#folderAbsPath:focus {
   background: var(--themed-btn-acc);
   border: none;
 }
-.pub-gallery:focus,
-.pub-gallery:active {
+.lightbox-header-btn:focus,
+.lightbox-header-btn:active {
   border: none;
   outline: none;
 }
-.pub-gallery:hover {
+.lightbox-header-btn:hover {
   color: var(--themed-btn-acc-text);
   background: var(--themed-btn-acc-hover);
+}
+.lightbox-header-btn.positive {
+  background-color: var(--action-color-enabled);
+}
+.lightbox-header-btn.positive:hover {
+  opacity: 0.9;
+}
+.lightbox-header-btn:active {
+  transform: scale(0.95);
+}
+.lightbox-header-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.lightbox-header-btn:disabled:hover {
+  opacity: 0.5;
 }
 .assetdroplightbox a,
 .lightboxdropasset a {
