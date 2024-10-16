@@ -98,7 +98,7 @@ findalldata = function (inlink) {
       }
     });
   } while (parent.length > 0);
-	
+
   return options;
 };
 
@@ -125,7 +125,6 @@ runajaxonthis = function (inlink, e) {
     }
   }
 
-
   var nextpage = inlink.attr("href");
   if (!nextpage) {
     nextpage = inlink.data("nextpage");
@@ -143,13 +142,15 @@ runajaxonthis = function (inlink, e) {
   var useparent = inlink.data("useparent");
   var activemenu;
   if (inlink.hasClass("auto-active-link")) {
-	  activemenu = inlink;
+    activemenu = inlink;
+  } else if (inlink.data("autoactivecontainer")) {
+    activemenu = $("." + inlink.data("autoactivecontainer"));
   }
-  else if(inlink.data("autoactivecontainer")) {
-	  activemenu = $("." + inlink.data("autoactivecontainer"));
-  }
-  if(activemenu !== undefined && activemenu.length > 0) {
+  if (activemenu !== undefined && activemenu.length > 0) {
     var container = activemenu.closest(".auto-active-container");
+    if (container.length == 0) {
+      container = activemenu.parent().parent();
+    }
 
     jQuery(".auto-active-row", container).removeClass("current");
     var row = activemenu.closest(".auto-active-row");
@@ -159,7 +160,6 @@ runajaxonthis = function (inlink, e) {
     var row = activemenu.closest("li");
     row.addClass("current");
   }
-
 
   var options = $(inlink).data();
   if (options.isEmptyObject || $(inlink).data("findalldata")) {
@@ -4002,15 +4002,15 @@ uiload = function () {
     e.preventDefault();
     e.stopImmediatePropagation();
     var toggler = $(this);
-    var options = toggler.data();	
+    var options = toggler.data();
     var url = toggler.data("url");
     var targetdiv = toggler.data("targetdiv");
     var treestatus = toggler.data("treestatus");
-    
+
     var dialogresults = $("#" + targetdiv).find("#dialogmediaentity");
     var currentcategoryid = dialogresults.data("categoryid");
     if (currentcategoryid !== undefined) {
-    	options.categoryid = currentcategoryid;
+      options.categoryid = currentcategoryid;
     }
     saveProfileProperty("dialogtreestatus", treestatus, function () {});
     jQuery.ajax({
