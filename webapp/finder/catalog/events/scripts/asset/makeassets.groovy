@@ -12,11 +12,11 @@ public init()
 	PageManager pageManager = mediaarchive.getPageManager();
 	
 	List assets = new ArrayList();
-	for(int i=0;i<2000;i++)
+	for(int i=0;i<5000;i++)
 	{
 		Asset newone = mediaarchive.getAssetSearcher().createNewData();
 		newone.setSourcePath("newjunk/" + i);
-		newone.setName("test" + i);
+		newone.setName("test asset " + i);
 		assets.add(newone);
 		if( assets.size() < 200)
 		{
