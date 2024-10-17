@@ -262,9 +262,9 @@ jQuery(document).ready(function (url, params) {
 
       var resultviewselected = select.val();
       options.resultview = resultviewselected;
-      if (resultviewselected == "stackedgallery") {
+      if (resultviewselected == "stackedgallery" || resultviewselected == "brickvertical" ) {
         options.page = "1";
-        options.hitsperpage = 20;
+        
       }
 
       $.get(href, options, function (data) {
