@@ -186,10 +186,19 @@ $(document).ready(function () {
       var tab_media = $("#tab_tab_media");
       var selector = tab_media.data("tabid");
       var container = $(selector);
-      container.data("sortby", "assetaddeddateDown");
-      tab_media.trigger("click");
-      return;
+      if(container.length > 0) {
+	      container.data("sortby", "assetaddeddateDown");
+	      tab_media.trigger("click");
+	      return;
+      }
     }
+    
+    var dialogassets = btn.closest("#dialogassetresultscontainer");
+    if (dialogassets.length > 0)
+    {
+		autoreload(dialogassets);
+		return;
+	}
 
     if (href == null && collectionid) {
       href =
