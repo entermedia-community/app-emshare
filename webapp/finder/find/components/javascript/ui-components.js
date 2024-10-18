@@ -4680,6 +4680,15 @@ lQuery(".fieldsParent").livequery("refreshFields", function () {
 	autoreload($(this));
 });
 
+function isInViewport( cell ) { 
+  const rect = cell.getBoundingClientRect();
+  var isin =
+    rect.top >= 0 &&
+    rect.top <=
+      (window.innerHeight || document.documentElement.clientHeight);
+  return isin;
+};
+
 var ranajaxon = {};
 var ranajaxonrunning = false;
 
@@ -4697,6 +4706,9 @@ runajaxstatus = function () {
 		if (cell.length == 0) {
 			continue;	
 		}	
+		if(!isInViewport(cell[0])) {
+			continue;
+		}
 		var path = cell.attr("ajaxpath");
 		if (!path || path == "") {
 			path = cell.data("ajaxpath");
