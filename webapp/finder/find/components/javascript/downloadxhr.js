@@ -1,122 +1,122 @@
 jQuery(document).ready(function () {
-  var siteroot = $("#application").data("siteroot");
-  var mediadb = $("#application").data("mediadbappid");
-  var downloaded = {};
+	var siteroot = $("#application").data("siteroot");
+	var mediadb = $("#application").data("mediadbappid");
+	var downloaded = {};
 
-  function checkForPendingDownloads() {
-    $("#triggerpendingdownloads").remove();
-    var url = siteroot + "/" + mediadb + "/services/module/order/downloadqueue";
-    jQuery.ajax({
-      dataType: "json",
-      url: url,
-      success: function (json) {
-        var queue = json.downloadqueue;
-        for (var i = 0; i < queue.length; i++) {
-          var item = queue[i];
-          if (item.orderid) {
-            var filename =
-              new Date().toString().substring(0, 24).replace(/:/g, "-") +
-              ".zip";
-            var url =
-              siteroot +
-              "/" +
-              mediadb +
-              "/services/module/order/zip/" +
-              filename +
-              "?orderid=" +
-              item.orderid;
-            downloadDirectly(item.orderid, url, filename, true);
-          } else if (item.url) {
-            downloadDirectly(item.id, item.url, item.filename);
-          }
-        }
-      },
-    });
-  }
+	function checkForPendingDownloads() {
+		$("#triggerpendingdownloads").remove();
+		var url = siteroot + "/" + mediadb + "/services/module/order/downloadqueue";
+		jQuery.ajax({
+			dataType: "json",
+			url: url,
+			success: function (json) {
+				var queue = json.downloadqueue;
+				for (var i = 0; i < queue.length; i++) {
+					var item = queue[i];
+					if (item.orderid) {
+						var filename =
+							new Date().toString().substring(0, 24).replace(/:/g, "-") +
+							".zip";
+						var url =
+							siteroot +
+							"/" +
+							mediadb +
+							"/services/module/order/zip/" +
+							filename +
+							"?orderid=" +
+							item.orderid;
+						downloadDirectly(item.orderid, url, filename, true);
+					} else if (item.url) {
+						downloadDirectly(item.id, item.url, item.filename);
+					}
+				}
+			},
+		});
+	}
 
-  lQuery("#triggerpendingdownloads").livequery(checkForPendingDownloads);
+	lQuery("#triggerpendingdownloads").livequery(checkForPendingDownloads);
 
-  function downloadDirectly(id, url, filename, isZip = false) {
-    //console.log({ id, url, filename, isZip });
-    if (downloaded[id]) return;
-    downloaded[id] = true;
+	function downloadDirectly(id, url, filename, isZip = false) {
+		//console.log({ id, url, filename, isZip });
+		if (downloaded[id]) return;
+		downloaded[id] = true;
 
-    if (isZip) {
-      triggerDownload(id, url, filename);
-    } else {
-      var completeUrl =
-        siteroot +
-        "/" +
-        mediadb +
-        "/services/module/order/updateorderitemstatus?orderitemid=" +
-        id +
-        "&publishstatus=complete&publisheddate=" +
-        new Date().toISOString();
+		if (isZip) {
+			triggerDownload(id, url, filename);
+		} else {
+			var completeUrl =
+				siteroot +
+				"/" +
+				mediadb +
+				"/services/module/order/updateorderitemstatus?orderitemid=" +
+				id +
+				"&publishstatus=complete&publisheddate=" +
+				new Date().toISOString();
 
-      $.ajax({
-        url: encodeURI(completeUrl),
-        success: function () {
-          console.log(id, url, filename);
-          triggerDownload(id, url, filename);
-        },
-        error: function () {
-          downloaded[id] = false;
-        },
-      });
-    }
-  }
+			$.ajax({
+				url: encodeURI(completeUrl),
+				success: function () {
+					console.log(id, url, filename);
+					triggerDownload(id, url, filename);
+				},
+				error: function () {
+					downloaded[id] = false;
+				},
+			});
+		}
+	}
 
-  function triggerDownload(id, url, filename) {
-    var a = document.createElement("a");
-    a.href = url;
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+	function triggerDownload(id, url, filename) {
+		var a = document.createElement("a");
+		a.href = url;
+		a.download = filename;
+		document.body.appendChild(a);
+		a.click();
+		document.body.removeChild(a);
 
-    var check = $("#toastList");
-    if (!check.length) {
-      var div = $('<div id="toastList"></div>');
-      $("body").append(div);
-    }
+		var check = $("#toastList");
+		if (!check.length) {
+			var div = $('<div id="toastList"></div>');
+			$("body").append(div);
+		}
 
-    var div = $(
-      '<div role="alert" id="dtDirect' +
-        id +
-        '" class="toast"><div class="toast-header"><i class="bi bi-check-circle-fill text-success"></i><strong class="downloadToastLabel text-success">Download Started</strong><button type="button" class="close" data-dismiss="toast">hide</button></div><div class="toast-body"><span class="toast-filename">' +
-        filename +
-        "</span></div></div>"
-    );
+		var div = $(
+			'<div role="alert" id="dtDirect' +
+				id +
+				'" class="toast"><div class="toast-header"><i class="bi bi-check-circle-fill text-success"></i><strong class="downloadToastLabel text-success">Download Started</strong><button type="button" class="close" data-dismiss="toast">hide</button></div><div class="toast-body"><span class="toast-filename">' +
+				filename +
+				"</span></div></div>"
+		);
 
-    $("#toastList").append(div);
-    var toast = $("#dtDirect" + id);
-    toast.toast({ autohide: true, delay: 15000 });
-    toast.toast("show");
-    toast.on("hidden.bs.toast", function () {
-      toast.remove();
-    });
-	
-    setTimeout(function () {
-      autoreload($("#userdownloadlist"));
-    }, 1000);
-  }
+		$("#toastList").append(div);
+		var toast = $("#dtDirect" + id);
+		toast.toast({ autohide: true, delay: 15000 });
+		toast.toast("show");
+		toast.on("hidden.bs.toast", function () {
+			toast.remove();
+		});
 
-  lQuery(".abortdownloadorder").livequery("click", function (e) {
-    var orderid = $(this).data("orderid");
-    downloaded[orderid] = true;
+		setTimeout(function () {
+			autoreload($("#userdownloadlist"));
+		}, 1000);
+	}
 
-    $.ajax({
-      url:
-        siteroot +
-        "/" +
-        mediadb +
-        "/services/module/order/orderchangestatus?orderstatus=canceled&downloadstatus=canceled&orderid=" +
-        orderid,
-      success: function () {
-        autoreload($("#userdownloadlist"));
-      },
-    });
-  });
+	lQuery(".abortdownloadorder").livequery("click", function (e) {
+		var orderid = $(this).data("orderid");
+		downloaded[orderid] = true;
+
+		$.ajax({
+			url:
+				siteroot +
+				"/" +
+				mediadb +
+				"/services/module/order/orderchangestatus?orderstatus=canceled&downloadstatus=canceled&orderid=" +
+				orderid,
+			success: function () {
+				autoreload($("#userdownloadlist"));
+			},
+		});
+	});
 });
 //   var siteroot = $("#application").data("siteroot");
 //   var mediadb = $("#application").data("mediadbappid");
@@ -451,55 +451,55 @@ jQuery(document).ready(function () {
 
 /**
 //Not Used?
-  lQuery(".emdesktopdownload").livequery("click", function (e) {
-    e.preventDefault();
-    var item = $(this);
-    var reload = item.data("reloadsidebar");
-    if (reload == undefined) {
-      reload = true;
-    }
-    var options = item.data();
-    jQuery.ajax({
-      url: apphome + "/components/sidebars/userdownloads/start.html",
-      data: options,
-      success: function () {
-        //Refresh side panel
-        if (reload) {
-          var nextpage = apphome + "/components/sidebars/index.html";
-          jQuery.ajax({
-            url: nextpage,
-            data: options,
-            success: function (data) {
-              $("#col-sidebars").replaceWith(data); //Cant get a valid dom element
-              $(window).trigger("resize");
-            },
-          });
-        }
-      },
-    });
+	lQuery(".emdesktopdownload").livequery("click", function (e) {
+		e.preventDefault();
+		var item = $(this);
+		var reload = item.data("reloadsidebar");
+		if (reload == undefined) {
+			reload = true;
+		}
+		var options = item.data();
+		jQuery.ajax({
+			url: apphome + "/components/sidebars/userdownloads/start.html",
+			data: options,
+			success: function () {
+				//Refresh side panel
+				if (reload) {
+					var nextpage = apphome + "/components/sidebars/index.html";
+					jQuery.ajax({
+						url: nextpage,
+						data: options,
+						success: function (data) {
+							$("#col-sidebars").replaceWith(data); //Cant get a valid dom element
+							$(window).trigger("resize");
+						},
+					});
+				}
+			},
+		});
 //   });
 
 //Not Used?
-  lQuery(".emdesktopopen").livequery("click", function (e) {
-    e.preventDefault();
-    var item = $(this);
-    var options = item.data();
-    jQuery.ajax({
-      url: apphome + "/components/sidebars/userdownloads/open.html",
-      data: options,
-      success: function () {
-        //Refresh side panel
-        var nextpage = apphome + "/components/sidebars/index.html";
-        jQuery.ajax({
-          url: nextpage,
-          data: options,
-          success: function (data) {
-            $("#col-sidebars").replaceWith(data); //Cant get a valid dom element
-            $(window).trigger("resize");
-          },
-        });
-      },
-    });
-  });
+	lQuery(".emdesktopopen").livequery("click", function (e) {
+		e.preventDefault();
+		var item = $(this);
+		var options = item.data();
+		jQuery.ajax({
+			url: apphome + "/components/sidebars/userdownloads/open.html",
+			data: options,
+			success: function () {
+				//Refresh side panel
+				var nextpage = apphome + "/components/sidebars/index.html";
+				jQuery.ajax({
+					url: nextpage,
+					data: options,
+					success: function (data) {
+						$("#col-sidebars").replaceWith(data); //Cant get a valid dom element
+						$(window).trigger("resize");
+					},
+				});
+			},
+		});
+	});
 */
 // });
