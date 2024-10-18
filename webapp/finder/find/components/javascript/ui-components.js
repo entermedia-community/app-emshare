@@ -4025,6 +4025,32 @@ uiload = function () {
     });
   });
 
+  lQuery(".assetpicker .assetInput").livequery("change", function () {
+    var detailId = $(this).data("detailid");
+    var assetName = $(this).val();
+    var assets = $(this).prop("files");
+    if (assets.length == 0) return;
+    var asset = assets[0];
+    if (asset.name) assetName = asset.name;
+    var fileReader = new FileReader();
+    fileReader.onload = function (e) {
+      if (!assetName && e.target.fileName) {
+        assetName = e.target.fileName;
+      }
+      var preview = $(".render-type-thumbnail");
+      preview.html("");
+      var img = $("<img>");
+      img.attr("src", e.target.result);
+      img.attr("height", "140px");
+      img.attr("width", "auto");
+      preview.append(img);
+      preview.append(
+        `<div class="p-1"><span class="mr-2">${assetName}</span><a href="#" class="removefieldassetvalue" title="Remove Selected Asset" data-detailid="${detailId}"><i class="bi bi-x"></i> Remove</a></div>`
+      );
+    };
+    fileReader.readAsDataURL(asset);
+  });
+
   lQuery(".assetpicker .removefieldassetvalue").livequery(
     "click",
     function (e) {
