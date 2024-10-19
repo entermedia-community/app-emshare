@@ -27,157 +27,143 @@
 
 
 <div class="uploadformarea" data-ajaxreloadtargets="assetresults">
-<input class="upload_field" type="file" style="position:absolute; top:-2000px;" multiple="multiple" data-autostartupload="false" />
-<input class="upload_folder" type="file" style="position:absolute; top:-2000px;" webkitdirectory multiple="multiple"  />
+	<input class="upload_field" type="file" style="position:absolute; top:-2000px;" multiple="multiple" data-autostartupload="false" />
+	<input class="upload_folder" type="file" style="position:absolute; top:-2000px;" webkitdirectory multiple="multiple"  />
 
 
-<form id="uploaddata" name="wizard" onSubmit="return false;" 
+	<form id="uploaddata" name="wizard" onSubmit="return false;" 
 		data-finishaction="" 
 		action="$root/finish.html" 
-		class="force-validate-inputs"  >
+		class="force-validate-inputs">
 
 
-#if($nodeID)
-	<div class="entityuploadheader">
-		<div class="uploadto-breadcrumb">
-			<span style="font-size:1rem; font-weight: 600;; ">[[Uploading to]]:</span> 
+		#if($nodeID)
+		<div class="entityuploadheader">
+			<div class="uploadto-breadcrumb">
+				<span style="font-size:1rem; font-weight: 600;; ">[[Uploading to]]:</span> 
 
-			#set($parentcategories = $category.getParentCategories())
+				#set($parentcategories = $category.getParentCategories())
 
-			#if(!$parentcategories.isEmpty())
-				#foreach( $parent in $parentcategories)
-					#if( ${foreach.count} > 1) / #end
-					
-					<a style="padding:0px 4px 0;" 
-						href="$siteroot$apphome/views/modules/asset/viewfiles/$!{parent.id}/#dash($parent).html?hitssessionid=$!hits.getSessionId()"
-						title="[[View Files]]: $parent"
-						class="ajax #if($nodeID == $parent.id) currentcategory #end"
-						data-targetdiv="applicationcontent"
-						data-oemaxlevel="5"
-						data-scrolltocat="true"
-						data-updateurl="true"
-						data-closedialog="true"
-						data-sidebarcomponent="categories">#text($parent)</a>
+				#if(!$parentcategories.isEmpty())
+					#foreach( $parent in $parentcategories)
+						#if( ${foreach.count} > 1) / #end
+						<a style="padding:0px 4px 0;" 
+							href="$siteroot$apphome/views/modules/asset/viewfiles/$!{parent.id}/#dash($parent).html?hitssessionid=$!hits.getSessionId()"
+							title="[[View Files]]: $parent"
+							class="ajax #if($nodeID == $parent.id) currentcategory #end"
+							data-targetdiv="applicationcontent"
+							data-oemaxlevel="5"
+							data-scrolltocat="true"
+							data-updateurl="true"
+							data-closedialog="true"
+							data-sidebarcomponent="categories">#text($parent)</a>
+					#end
 				#end
-						
-			#end
-	
-		</div>		
-	</div>
+			</div>		
+		</div>
 		<input id="nodeid" type="hidden" name="parentcategoryid" value="$nodeID"/>
-#end
+		#end
 
-<div class="py-2">
-
-<div class="row">
-  <div class="col-md-6 col-upload-left overflow-y pr-md-1">
-		<div class="uploadinstructions d-none d-lg-block">
-			<div id="drop-area" class="position-relative">
-				<div class="drop-over rounded">
-					<div class="uploadinstructions">
-						<div class="pickerHolder">
-							<a class="btn btn-accent btn-lg picker filePicker my-2 ml-2 mr-1" href="#">
-							<i class="fas fa-file-upload"></i> [[Choose Files]]</a>
-							<a class="btn btn-accent btn-lg picker folderPicker my-2 mr-2 ml-1" href="#">
-							<i class="bi bi-folder-plus"></i> [[Choose Folder]]</a>
+		<div class="p-2">
+			<div class="row">
+				<div class="col-md-6 col-upload-left overflow-y pr-md-1">
+					<div class="uploadinstructions d-none d-lg-block">
+						<div id="drop-area" class="position-relative">
+							<div class="drop-over rounded">
+								<div class="uploadinstructions">
+									<div class="pickerHolder">
+										<a class="btn btn-accent btn-lg picker filePicker my-2 ml-2 mr-1" href="#">
+										<i class="fas fa-file-upload"></i> [[Choose Files]]</a>
+										<a class="btn btn-accent btn-lg picker folderPicker my-2 mr-2 ml-1" href="#">
+										<i class="bi bi-folder-plus"></i> [[Choose Folder]]</a>
+									</div>
+								</div>	
+								<div class="upload-previews">
+									<div id="completed-uploads" style="display:none;" >
+										<ul id="up-files-list-completed" class="up-files-list"></ul>
+									</div>
+									<ul class="up-files-list up-files-list-pending"></ul>		
+								</div>
+								<div class="dropicon">
+									<i class="fas fa-cloud-upload-alt"></i>
+									<div class="hints" >[[Drop files here]]</div>
+								</div>
+							</div>
 						</div>
-					</div>	
-					<div class="upload-previews">
-						<div id="completed-uploads" style="display:none;" >
-							<ul id="up-files-list-completed" class="up-files-list"></ul>
-						</div>
-						<ul class="up-files-list up-files-list-pending"></ul>		
 					</div>
-					<div class="dropicon">
-						<i class="fas fa-cloud-upload-alt"></i>
-						<div class="hints" >[[Drop files here]]</div>
+					<div class="progress_report_template" style="display:none;">
+						<li class="uploadprogressrow" data-fileindex="currentupload">
+							<span  style="width: 0px;" class="uploadprogress progress_report_barcurrentupload"></span>
+							<a href="#" class="fileinfo">
+								<span class="progress_report_namecurrentupload name"></span>
+								<span class="progress_report_sizecurrentupload size"></span>
+								<span class="progress_report_statuscurrentupload uploadstatus"></span>
+							</a>	
+							<a href="#" class="removefile" title="[[Remove from Queue]]"><i class="fas fa-times"></i></a>
+						</li>
+					</div>
+				</div>
+				<div class="col-md-6 col-upload-right overflow-y pl-md-1">
+					#if( $collectionid )
+						$!context.setRequestParameter("libraries.value",$!librarycol.library)
+						<input type="hidden" name="collectionid" id="currentcollection" value="$!collectionid" />
+						<input type="hidden" name="currentcollection" id="currentcollection" value="$!collectionid" />
+					#else
+						#ifnull($categoryid)		 
+							#if($collectionid || $mediaarchive.isCatalogSettingTrue("show_add_media_collection"))
+								<div class="upload-detail-box">
+									$pages.include("$apphome/components/upload/types/html5/collectionpicker.html", $context)
+								</div>
+							#end
+						#end	
+					#end
+					<div id="uploadmetadata" class="d-flex flex-column w-100 h-100">
+						#set($viewid = "multipleupload")  ##Default finder
+						#set($viewpath = "asset/$viewid") 
+						$context.putPageValue("view",$viewpath)
+					
+						<div class="upload-detail-box flex-grow-1 rounded">
+							<div class="details-header">
+								[[Add File Details]]
+								#if( $caneditmetadatasetup )
+									<span class="widget-header-edit">
+										<a class="ajax" 
+											data-targetdivinner="applicationmaincontent"
+											data-closedialog="true" 
+											data-oemaxlayout="3"  
+											href="$siteroot$apphome/views/settings/modules/asset/metadata/views/index.html?viewid=$viewid&viewpath=$viewpath" title="[[Edit Fields]]">
+											<i class="bi bi-gear-fill text-white"></i>
+										</a>
+									</span>
+								#end
+							</div>
+							
+							<div class="toggle-content"> 
+								$context.putPageValue("searcher",$mediaarchive.getAssetSearcher() )	
+								$pages.include("/$applicationid/components/xml/detaileditorcss.html", $context)
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>
-		</div>	
-	
-		<!-- This is not shown -->
-		<div class="progress_report_template" style="display:none;">
-			<li class="uploadprogressrow" data-fileindex="currentupload">
-				<span  style="width: 0px;" class="uploadprogress progress_report_barcurrentupload"></span>
-				<a href="#" class="fileinfo">
-					<span class="progress_report_namecurrentupload name"></span>
-					<span class="progress_report_sizecurrentupload size"></span>
-					<span class="progress_report_statuscurrentupload uploadstatus"></span>
-				</a>	
-				<a href="#" class="removefile" title="[[Remove from Queue]]"><i class="fas fa-times"></i></a>
-			</li>
-		</div>			
-		<!-- end  -->
-	</div>
-    
-	
-	<div  class="col-md-6 col-upload-right overflow-y pl-md-1">
-    #if( $collectionid )
-			$!context.setRequestParameter("libraries.value",$!librarycol.library)
-			<input type="hidden" name="collectionid" id="currentcollection" value="$!collectionid" />
-			<input type="hidden" name="currentcollection" id="currentcollection" value="$!collectionid" />
-		#else
-			#ifnull($categoryid)		 
-				#if($collectionid || $mediaarchive.isCatalogSettingTrue("show_add_media_collection"))
-					<div class="upload-detail-box">
-						$pages.include("$apphome/components/upload/types/html5/collectionpicker.html", $context)
-					</div>
-				#end
-			#end	
-		#end	
-		
-		
-		<div id="uploadmetadata" class="d-flex flex-column w-100 h-100">
-			#set($viewid = "multipleupload")  ##Default finder
-			#set($viewpath = "asset/$viewid") 
-			$context.putPageValue("view",$viewpath)
-		
-			<div class="upload-detail-box flex-grow-1 rounded">
-		    <div class="details-header">
-					[[Add File Details]]
-		    	#if( $caneditmetadatasetup )
-		    		<span class="widget-header-edit">
-							<a class="ajax" 
-								data-targetdivinner="applicationmaincontent"
-								data-closedialog="true" 
-								data-oemaxlayout="3"  
-								href="$siteroot$apphome/views/settings/modules/asset/metadata/views/index.html?viewid=$viewid&viewpath=$viewpath" title="[[Edit Fields]]">
-								<i class="bi bi-gear-fill text-white"></i>
-							</a>
-						</span>
-					#end
-		    </div>
-		     
-		    <div class="toggle-content"> 
-					$context.putPageValue("searcher",$mediaarchive.getAssetSearcher() )	
-					$pages.include("/$applicationid/components/xml/detaileditorcss.html", $context)
-				</div>
+			<div class="uploadinstructionsafter w-100 text-center">
+				<a class="btn btn-accent btn-lg upload-btn startbutton mt-2" data-uploadreadytext="[[Upload]]" data-complete="[[Upload Complete]]" href="#">
+					<i class="fas fa-cloud-upload-alt mr-1"></i>
+					[[Start Uploading]]
+				</a>
+				<a  
+					style="display: none;" 
+					class="viewassetsbtn autoclick btn btn-primary btn-lg btn-brand upload-btn light" 
+					disabled 
+					href ="#" 
+					data-entityupload="true"
+					data-targetdivinner="dialogmediaentity" 
+					data-oemaxlevel="1" 
+					data-updateurl="true">
+					<i class="fas fa-eye mr-1"></i>
+					[[View Uploads]]
+				</a>
 			</div>
 		</div>
-	</div>
-</div>
-
-##have the cancel delete these assets?
-<div class="uploadinstructionsafter w-100 text-center">
-	<a class="btn btn-accent btn-lg upload-btn startbutton" data-uploadreadytext="[[Upload]]" data-complete="[[Upload Complete]]" href="#">
-		<i class="fas fa-cloud-upload-alt mr-1"></i>
-		[[Start Uploading]]
-	</a>
-	<a  
-		style="display: none;" 
-		class="viewassetsbtn autoclick btn btn-primary btn-lg btn-brand upload-btn light" 
-		disabled 
-		href ="#" 
-		data-entityupload="true"
-		data-targetdivinner="dialogmediaentity" 
-		data-oemaxlevel="1" 
-		data-updateurl="true">
-		<i class="fas fa-eye mr-1"></i>
-		[[View Uploads]]
-	</a>
-</div>
-
-</div>
-</form>
+	</form>
 </div>
