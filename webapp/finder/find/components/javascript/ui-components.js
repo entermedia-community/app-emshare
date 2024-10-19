@@ -4680,11 +4680,35 @@ lQuery(".fieldsParent").livequery("refreshFields", function () {
 	autoreload($(this));
 });
 
-showajaxstatus = function (uid) {
-	//for each asset on the page reload it's status
-	//console.log(uid);
-	var cell = $("#" + uid);
-	if (cell) {
+function isInViewport( cell ) { 
+  const rect = cell.getBoundingClientRect();
+  var isin =
+    rect.top >= 0 &&
+    rect.top <=
+      (window.innerHeight || document.documentElement.clientHeight);
+  return isin;
+};
+
+var ranajaxon = {};
+var ranajaxonrunning = false;
+
+runajaxstatus = function () {
+  //for each asset on the page reload it's status
+  //console.log(uid);
+  
+  for (const [uid, enabled] of Object.entries(ranajaxon)) 
+  {
+		if( !enabled || enabled === undefined)
+		{
+			continue;
+		}
+		var cell = $("#" + uid);
+		if (cell.length == 0) {
+			continue;	
+		}	
+		if(!isInViewport(cell[0])) {
+			continue;
+		}
 		var path = cell.attr("ajaxpath");
 		if (!path || path == "") {
 			path = cell.data("ajaxpath");
@@ -4695,14 +4719,12 @@ showajaxstatus = function (uid) {
 			if (app && app.data("entermediakey") != null) {
 				entermediakey = app.data("entermediakey");
 			}
-			var data = cell.data();
-
-			//TODO: entermedia key or serialize
+			var data = cell.cleandata();
 			jQuery.ajax({
 				url: path,
 				async: false,
 				data: data,
-				success: function (data) {
+				success: function(data) {
 					cell.replaceWith(data);
 					checkautoreload(cell);
 				},
@@ -4713,6 +4735,9 @@ showajaxstatus = function (uid) {
 			});
 		}
 	}
+	
+	setTimeout('runajaxstatus();', 1000); //Start checking
+	
 };
 
 var resizecolumns = function () {
@@ -4776,22 +4801,28 @@ function setMaxHeight(elm, child, offset = 32) {
 	target.css("height", top + "px");
 }
 
-var ranajaxon = new Array();
 
 lQuery(".ajaxstatus").livequery(function () {
-	var uid = $(this).attr("id");
-	var isrunning = $(this).data("ajaxrunning");
-	var timeout = $(this).data("reloadspeed");
-	if (timeout == undefined) {
-		timeout = 2000;
-	}
-	var ranonce = ranajaxon[uid];
-	if (ranonce == undefined) {
-		timeout = 500; //Make the first run a quick one
-		ranajaxon[uid] = true;
-	}
-
-	setTimeout('showajaxstatus("' + uid + '");', timeout); //First one is always faster
+  var uid = $(this).attr("id");
+  
+  var iscomplete = $(this).data("ajaxstatuscomplete");
+  
+  if( iscomplete)
+  {
+    ranajaxon[uid] = false;
+  }
+  else
+  {
+	  var inqueue = ranajaxon[uid];
+	  if (inqueue == undefined) {
+	    ranajaxon[uid] = true;
+	  }
+  }
+  if( ranajaxonrunning == false)
+  {
+	  setTimeout('runajaxstatus();', 500); //Start checking
+	  ranajaxonrunning = true;
+  }
 });
 
 var resizegallery = function () {
