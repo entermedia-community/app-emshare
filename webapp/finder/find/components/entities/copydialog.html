@@ -7,51 +7,41 @@
 #set($addtourl = "$siteroot$applink/views/modules/$!{moduleid}/components/entities/copyentity.html")
 
 <div class="tabheader">[[Copy]] $module</div>
-
+<h6 class="px-2 mt-2 mb-0">
+	[[Copies files and metadata to a specific location (Does not effect the original file)]]
+</h6>
 <div id="embed-wrapper" class="mx-3 my-4" >
 	<form action="$addtourl" class="ajaxform" data-targetdivinner="tabexportcontent" data-oemaxlevel="1" method="post" data-ajaxreloadtargets="topmodulecontainer">
-		
 		<input type="hidden" name="copyingsearchtype" value="$!moduleid" />
 		<input type="hidden" name="copyingentityid" value="$!entityid" />
 		<input type="hidden" name="entityid" value="$!entityid" />
 		<input type="hidden" name="moduleid" value="$!moduleid" />
 		
-		<div class="w-100 text-left mb-3">
-			<h6>
-				[[Copies files and metadata to a specific location (Does not effect the original file)]]
-			</h6>
-			<hr>
-		</div>
 		<div class="w-75 text-left mb-3">
-		
 			<div class="emfield-textarea">
 				<label>[[New Name]]:</label>
 				<input name="nameoverwrite" id="" class="form-control"type="text" value="#text($entity.name)" />
 			</div>
-		
 		</div>
 		<div class="w-75 text-left mb-3">
 			<label>[[Copy To]]:</label>
-		<select class="form-control" name="pickedmoduleid">
-		#foreach ( $amodule in $userprofile.getEntities() )
-			#set($amoduleid = $amodule.getId())
-			#if($amodule.getBoolean("enableuploading"))
-				#if($permissions.can($amoduleid, "create") && $amoduleid!="faceprofilegroup" && $amoduleid!="asset" && $amoduleid!="modulesearch")
-				
-					<option value="$amodule.getId()"> #text($amodule)</option>
-						
+			<select class="form-control" name="pickedmoduleid">
+			#foreach ( $amodule in $userprofile.getEntities() )
+				#set($amoduleid = $amodule.getId())
+				#if($amodule.getBoolean("enableuploading"))
+					#if($permissions.can($amoduleid, "create") && $amoduleid!="faceprofilegroup" && $amoduleid!="asset" && $amoduleid!="modulesearch")
+						<option value="$amodule.getId()"> #text($amodule)</option>
 					#end
 				#end
 			#end
 			</select>
-			</div>
-			<div class="w-75 text-left mb-3" style="display: none;">
-					<input type="checkbox" id="deleteoriginal" class="mr-2">
-					<label for="deleteoriginal" class="m-0">[[Move]] #text($module) / #text($entity)</label> 
-			</div>
-			<div class="w-100 text-left mb-3">
-				
-				<input type="submit" value="[[Ok]]" class="btn btn-brand">
-				</div>
-		</form>	
+		</div>
+		<div class="w-75 text-left mb-3" style="display: none;">
+			<input type="checkbox" id="deleteoriginal" class="mr-2">
+			<label for="deleteoriginal" class="m-0">[[Move]] #text($module) / #text($entity)</label> 
+		</div>
+		<div class="w-100 text-left mb-3">
+			<input type="submit" value="[[Ok]]" class="btn btn-brand">
+		</div>
+	</form>	
 </div>

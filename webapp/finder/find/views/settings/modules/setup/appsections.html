@@ -1,52 +1,42 @@
-
-<h3 class="settings-title">[[App Menu]]</h3>
-<div class="float-right">
-	<a class="btn btn-sm btn-primary" href="/finder/find/views/settings/modules/setup/add-new-module.html" title="Create New">Create</a>
+<div class="d-flex align-items-center justify-content-between" style="max-width: 1200px;margin:0 20px 20px;">
+	<h3 class="settings-title">[[App Menu]]</h3>
+	<a class="btn btn-primary" href="/finder/find/views/settings/modules/setup/add-new-module.html" title="[[Create New]]">
+		<i class="bi bi-pencil-square mr-1"></i> [[Create]]
+	</a>
 </div>	
-<div class="clearfix"></div>
-<div style="margin:15px 0 20px 20px; max-width:1200px; border:1px solid #aaa;">
-#set($current = $context.getRequestParameter("appsection")) 
-#set($searcher = $searcherManager.getSearcher($catalogid, "appsection"))
-#if( $current)
-	#set( $data = $searcherManager.getData($catalogid, "appsection",$current))
-#end
 
-	
-<table class="table table-striped table-hover emdata">
-<thead>
-<tr class="tableheader">
-	<th>Label</th>
-	<th>Entity</th>
-	<th></th>
-	<th></th>
-	<th></th>
-</tr>
-</thead>
-<tbody class="tablesort ui-sortable" data-path="/finder/find/views/settings/modules/setup/sort.html" data-field="ordering" data-searchtype="module">
-        
-    
-#foreach($item in $searcher.query().all().sort("ordering").search($context))
-   
-    <tr class="ui-sortable-handle" data-ordering="1" id="edufaculty">
-    	<td style="padding:8px 0 8px 8px;">
-    	
-		
-        <a href="/finder/find/views/settings/modules/edufaculty/info/module-setup.html" class="ajax" data-targetdiv="applicationcontent" data-oemaxlevel="5" title="(edufaculty)  Faculty Properties">
-#text($item)
-        </a>
-		</td>
-		<td>
-			#set( $entity = $mediaarchive.getCachedData("module",$item.toplevelentity) )
-			#text($entity)
-		</td>
-		<td>
-		</td>
-    	<td>
-    	</td>
-    	<td style="text-align: right;"><span class="drag-and-drop-fixed"></span></td>
-    </tr>
-#end
- 
-    </tbody>
-</table>
-</div>			
+<div class="settings-table-container">
+	#set($current = $context.getRequestParameter("appsection")) 
+	#set($searcher = $searcherManager.getSearcher($catalogid, "appsection"))
+	#if( $current)
+		#set( $data = $searcherManager.getData($catalogid, "appsection",$current))
+	#end
+
+	<table class="table table-hover emdata">
+		<thead>
+		<tr class="tableheader">
+			<th>Label</th>
+			<th>Entity</th>
+			<th></th>
+			<th></th>
+			<th></th>
+		</tr>
+		</thead>
+		<tbody class="tablesort ui-sortable" data-path="/finder/find/views/settings/modules/setup/sort.html" data-field="ordering" data-searchtype="module">
+		#foreach($item in $searcher.query().all().sort("ordering").search($context))
+			<tr class="ui-sortable-handle" data-ordering="1" id="edufaculty">
+				<td style="padding:8px 0 8px 8px;">
+					<a href="/finder/find/views/settings/modules/edufaculty/info/module-setup.html" class="ajax" data-targetdiv="applicationcontent" data-oemaxlevel="5" title="(edufaculty)  Faculty Properties">#text($item)</a>
+				</td>
+				<td>
+					#set( $entity = $mediaarchive.getCachedData("module",$item.toplevelentity) )
+					#text($entity)
+				</td>
+				<td></td>
+				<td></td>
+				<td style="text-align: right;"><span class="drag-and-drop-fixed"></span></td>
+			</tr>
+		#end 
+		</tbody>
+	</table>
+</div>

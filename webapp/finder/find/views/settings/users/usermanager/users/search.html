@@ -1,37 +1,30 @@
 <div class="tab-actions ">
 	<div id="user-search"> 
 	#set( $searcher = $searcherManager.getSearcher($catalogid,"user"))
-	
 	$context.putPageValue("details",$searcher.getDetailsForView("usernormalsearch", $user))	
-		
 		<form class="ajaxform" id="usersearchform" name="search" data-targetdiv="usersearchresultspanel" action="$siteroot$usermanagerhome/users/fieldsearch.html">
 			<input type="hidden" name="hitsperpage" value="12"/>
 			<input type="hidden" name="sortby" value="enabledDown,lastNameUp"/>
-			<div class="float-left">
-		<a class="btn btn-sm btn-primary ajax" 
-			href='$siteroot$usermanagerhome/users/reindex.html'
-			data-targetdivinner="settingssubtab"
-			data-oemaxlevel="1">[[Reindex]]</a>
-		<a class="btn btn-sm btn-primary ajax"
-			data-targetdivinner="settingssubtab"
-			data-oemaxlevel="1"
-			data-updateurl="true"
-			 href='$siteroot$usermanagerhome/users/adduser.html'>[[Create User]]</a>
-		<a class="btn btn-sm btn-primary ajax"
-			data-targetdivinner="applicationmaincontent"
-			data-oemaxlevel="5"
-			data-updateurl="true"
-			data-autoactivecontainer="datamanager-system-menu"
-			 href='$applink/views/settings/lists/datamanager/list/index.html?searchtype=user'>[[Import/ Export]]</a>	 
-			 
-		</div>
-		<div class="float-right">
-		$pages.include("/${applicationid}/components/xml/searchfields.html",$context)
-		</div>
-	<div class="clearfix"></div>
-	
-	
-	
+			<div class="d-flex align-items-center justify-content-between mb-3">
+				<div class="float-left">
+					<a class="btn btn-primary ajax" 
+						href='$siteroot$usermanagerhome/users/reindex.html'
+						data-targetdivinner="settingssubtab"
+						data-oemaxlevel="1">[[Reindex]]</a>
+					<a class="btn btn-primary ajax"
+						data-targetdivinner="settingssubtab"
+						data-oemaxlevel="1"
+						data-updateurl="true"
+						href='$siteroot$usermanagerhome/users/adduser.html'>[[Create User]]</a>
+					<a class="btn btn-primary ajax"
+						data-targetdivinner="applicationmaincontent"
+						data-oemaxlevel="5"
+						data-updateurl="true"
+						data-autoactivecontainer="datamanager-system-menu"
+						href='$applink/views/settings/lists/datamanager/list/index.html?searchtype=user'>[[Import/ Export]]</a>	 
+				</div>
+				$pages.include("/${applicationid}/components/xml/searchfields.html",$context)
+			</div>
 		</form>
 	</div>
 </div>
