@@ -4825,6 +4825,39 @@ lQuery(".ajaxstatus").livequery(function () {
   }
 });
 
+lQuery(".changeimportmodule").livequery("change",function () 
+{
+	var select = $(this);
+	var moduleid = select.val();
+	
+	app = $("#application");
+	siteroot = app.data("siteroot");
+	apphome = siteroot + app.data("apphome");
+	var property = "desktop_lastselected_module";
+
+	var targetdiv = select.data("targetdiv");
+	
+	jQuery.ajax({
+		url:
+			apphome +
+			"/views/modules/" + moduleid + "/components/sidebars/localdrives/index.html?profilepreference=" +
+			property +
+			"&profilepreference.value=" +
+			moduleid,
+		success: function(data)
+		{
+			var cell = $("#" + targetDiv);
+			cell.replaceWith(data);
+				
+		},
+		xhrFields: {
+			withCredentials: true,
+		},
+		crossDomain: true,
+	});
+});
+
+//TODO: Move these to a jquery plugin
 var resizegallery = function () {
 	var container = $("#emslidesheet");
 	if (container.length) {

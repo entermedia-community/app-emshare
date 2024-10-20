@@ -202,8 +202,13 @@
 		#end
 	
 		#if($sidebarcomponent == "localdrives" )
-		#if( $canviewcategorynav)
-		#set($sidebarurl = "$apphome/components/sidebars/localdrives/index.html")
+		#if($canviewcategorynav && $desktop)
+			#set( $selectedModuleId = $userprofile.get("desktop_lastselected_module") )
+			
+			#ifnull($selectedModuleId )
+				#set( $selectedModuleId = $module.id )
+			#end
+			#set($sidebarurl = "$apphome/views/modules/${selectedModuleId}/components/sidebars/localdrives/index.html")
 		#end
 		#end
 	
@@ -231,12 +236,11 @@
 		#set($sidebarwidth = 280)
 		#end
 	
-		#if($sidebarurl)
+		#ifnotnull($sidebarurl)
 		<div class="col-main col-mainsidebar #if($sidebarwidth && $sidebarwidth>320)sidebarwide #end"
 			style="#if($sidebarwidth) width:${sidebarwidth}px;#end" data-sidebarwidth="$!sidebarwidth">
 			<div id="col-$sidebarcomponent" class="col-left col-$sidebarcomponent">
 				<div class="col-main-inner">
-	
 					$pages.include($sidebarurl, $context)
 					<div class="colslidercontainer">
 						<a href="#" class="col-resize" title="[[Resize Sidebar]]"><i class="bi bi-arrows-expand-vertical"></i></a>

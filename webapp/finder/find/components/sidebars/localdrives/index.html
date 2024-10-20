@@ -1,9 +1,22 @@
 <div id="sidebarfolderimport" class="col-sidebar-header sidebar-header-desktops"> 
 	<div class="d-flex flex-column align-items-center justify-content-between">
 		<h2 class="w-100">[[Folder Importer]]</h2>
+		
+#set( $selectedModuleId = $userprofile.get("desktop_lastselected_module") )
+#ifnotnull( $selectedModuleId)
+
+	#set( $module =	$mediaarchive.getCachedData("module",$selectedModuleId) )
+	$context.putPageValue("module",$module)
+	#set( $componenthome = "$apphome/views/${module.getId()}/components")
+	$context.putPageValue("componenthome",$componenthome)
+		
+#end
+		
+		
 		<div class="px-2 w-100 d-flex flex-column mb-2">
 			<label for="selectedModule" class="d-block w-100 mt-2 mb-1 fw-bold text-muted">[[Importing Into]]:</label>
-			<select id="selectedModule" class="form-control rounded"> 
+						
+			<select id="selectedModule" name="selectedModule" data-targetdiv="sidebarfolderimport" class="form-control rounded changeimportmodule"> ##this auto saves and reloads div
 				#foreach ( $amodule in $userprofile.getEntities() )
 					#set($amoduleid = $amodule.getId())
 					#if($amodule.getBoolean("enableuploading") && $permissions.can($amoduleid, "create") && $amoduleid!="faceprofilegroup" && $amoduleid!="asset" && $amoduleid!="modulesearch")
