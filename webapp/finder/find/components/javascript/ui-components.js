@@ -3858,7 +3858,11 @@ uiload = function () {
 	lQuery(".sidetoggle").livequery("click", function () {
 		var div = $(this);
 		var target = $(this).data("target");
-		toggleUserProperty("minimize" + target, function () {
+		var toggle = $(this).data("toggle");
+		if (!toggle) {
+			toggle = target;
+		}
+		toggleUserProperty("minimize" + toggle, function () {
 			$("#" + target).slideToggle("fast", function () {
 				$(window).trigger("resize");
 			});
@@ -3871,23 +3875,23 @@ uiload = function () {
 
 	lQuery(".summary-toggler").livequery("click", function (e) {
 		var parent = $(this).closest(".summary-container");
-		parent.toggleClass("closed");
-		var target = $(this).data("target");
-		saveProfileProperty(target, "false", function () {
+		if (parent.hasClass("closed")) {
+			parent.removeClass("closed");
+			$(".summary-opener").addClass("closed");
+		} else {
+			parent.addClass("closed");
 			$(".summary-opener").removeClass("closed");
-			$(window).trigger("resize");
-		});
+		}
+		$(window).trigger("resize");
+		saveProfileProperty($(this).data("target"), "false");
 	});
 
 	lQuery(".summary-opener").livequery("click", function (e) {
 		var opener = $(this);
-
-		var target = $(this).data("target");
-		saveProfileProperty(target, "true", function () {
-			opener.addClass("closed");
-			$(".summary-container").removeClass("closed");
-			$(window).trigger("resize");
-		});
+		opener.addClass("closed");
+		$(".summary-container").removeClass("closed");
+		$(window).trigger("resize");
+		saveProfileProperty($(this).data("target"), "true");
 	});
 
 	lQuery(".sidebar-toggler").livequery("click", function (e) {
@@ -4680,33 +4684,30 @@ lQuery(".fieldsParent").livequery("refreshFields", function () {
 	autoreload($(this));
 });
 
-function isInViewport( cell ) { 
-  const rect = cell.getBoundingClientRect();
-  var isin =
-    rect.top >= 0 &&
-    rect.top <=
-      (window.innerHeight || document.documentElement.clientHeight);
-  return isin;
-};
+function isInViewport(cell) {
+	const rect = cell.getBoundingClientRect();
+	var isin =
+		rect.top >= 0 &&
+		rect.top <= (window.innerHeight || document.documentElement.clientHeight);
+	return isin;
+}
 
 var ranajaxon = {};
 var ranajaxonrunning = false;
 
 runajaxstatus = function () {
-  //for each asset on the page reload it's status
-  //console.log(uid);
-  
-  for (const [uid, enabled] of Object.entries(ranajaxon)) 
-  {
-		if( !enabled || enabled === undefined)
-		{
+	//for each asset on the page reload it's status
+	//console.log(uid);
+
+	for (const [uid, enabled] of Object.entries(ranajaxon)) {
+		if (!enabled || enabled === undefined) {
 			continue;
 		}
 		var cell = $("#" + uid);
 		if (cell.length == 0) {
-			continue;	
-		}	
-		if(!isInViewport(cell[0])) {
+			continue;
+		}
+		if (!isInViewport(cell[0])) {
 			continue;
 		}
 		var path = cell.attr("ajaxpath");
@@ -4724,7 +4725,7 @@ runajaxstatus = function () {
 				url: path,
 				async: false,
 				data: data,
-				success: function(data) {
+				success: function (data) {
 					cell.replaceWith(data);
 					checkautoreload(cell);
 				},
@@ -4735,9 +4736,8 @@ runajaxstatus = function () {
 			});
 		}
 	}
-	
-	setTimeout('runajaxstatus();', 1000); //Start checking
-	
+
+	setTimeout("runajaxstatus();", 1000); //Start checking
 };
 
 var resizecolumns = function () {
@@ -4801,28 +4801,23 @@ function setMaxHeight(elm, child, offset = 32) {
 	target.css("height", top + "px");
 }
 
-
 lQuery(".ajaxstatus").livequery(function () {
-  var uid = $(this).attr("id");
-  
-  var iscomplete = $(this).data("ajaxstatuscomplete");
-  
-  if( iscomplete)
-  {
-    ranajaxon[uid] = false;
-  }
-  else
-  {
-	  var inqueue = ranajaxon[uid];
-	  if (inqueue == undefined) {
-	    ranajaxon[uid] = true;
-	  }
-  }
-  if( ranajaxonrunning == false)
-  {
-	  setTimeout('runajaxstatus();', 500); //Start checking
-	  ranajaxonrunning = true;
-  }
+	var uid = $(this).attr("id");
+
+	var iscomplete = $(this).data("ajaxstatuscomplete");
+
+	if (iscomplete) {
+		ranajaxon[uid] = false;
+	} else {
+		var inqueue = ranajaxon[uid];
+		if (inqueue == undefined) {
+			ranajaxon[uid] = true;
+		}
+	}
+	if (ranajaxonrunning == false) {
+		setTimeout("runajaxstatus();", 500); //Start checking
+		ranajaxonrunning = true;
+	}
 });
 
 var resizegallery = function () {

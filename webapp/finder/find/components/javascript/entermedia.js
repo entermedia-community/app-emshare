@@ -15,7 +15,7 @@ repaint = function (divid) {
 		div.replaceWith(data);
 	});
 };
-toggleUserProperty = function (property, onsuccess) {
+toggleUserProperty = function (property, onsuccess = null) {
 	app = $("#application");
 	siteroot = app.data("siteroot");
 	apphome = siteroot + app.data("apphome");
@@ -25,11 +25,13 @@ toggleUserProperty = function (property, onsuccess) {
 			apphome +
 			"/components/userprofile/toggleprofileproperty.html?field=" +
 			property,
-		success: onsuccess,
+		success: function () {
+			if (onsuccess) onsuccess();
+		},
 	});
 };
 
-saveProfileProperty = function (property, value, onsuccess) {
+saveProfileProperty = function (property, value, onsuccess = null) {
 	app = $("#application");
 	siteroot = app.data("siteroot");
 	apphome = siteroot + app.data("apphome");
@@ -43,7 +45,9 @@ saveProfileProperty = function (property, value, onsuccess) {
 			property +
 			".value=" +
 			value,
-		success: onsuccess,
+		success: function () {
+			if (onsuccess) onsuccess();
+		},
 		xhrFields: {
 			withCredentials: true,
 		},

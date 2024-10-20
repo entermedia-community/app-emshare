@@ -40,7 +40,7 @@
 				#ifnull($selectedpreference)
 					#set($selectedpreference = "false")
 				#end
-				<div class="d-flex align-items-center toggle-filter sidetoggle flex-grow-1" data-target="$filterboxid">
+				<div class="d-flex align-items-center toggle-filter sidetoggle flex-grow-1" data-target="$!module$filterboxid" data-toggle="$filterboxid">
 					<span class="mr-2" >
 					<i class="caret bi bi-caret-right-fill#if($selectedpreference == "false") exp#end"></i>
 					</span> 
@@ -50,7 +50,7 @@
 					##if ($edit == "true" && $detail.searchType)   (${detail.searchType} ) #end
 			</div>
 			<div class="filter-box-options soft-scrollbar p-2" 
-				id="$filterboxid" 
+				id="$!module$filterboxid" 
 				#if($selectedpreference == "true") style="display: none;" #end
 				data-viewtype="${viewtype}">
 				$pages.include("/${applicationid}/components/filters/types/${viewtype}.html?search=true", $context)
