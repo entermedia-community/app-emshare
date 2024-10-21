@@ -34,6 +34,7 @@
 	padding: 0 4px;
 	line-height: 24px;
 	margin-right: auto;
+	word-break: break-all;
 }
 .emtree .cat-name::before,
 .emtree .cat-name.cat-collection::after {
@@ -49,9 +50,6 @@
 	text-rendering: auto;
 	line-height: 1;
 }
-.emtree .expanded .cat-name {
-	font-weight: bold;
-}
 .emtree .expanded .cat-name::before {
 	content: "\f07c";
 }
@@ -64,15 +62,17 @@
 	color: #444;
 }
 .emtree .cat-options {
-	float: right;
 	margin-right: 4px;
 	padding: 0 2px;
 	color: #666;
 	display: none;
 }
-.emtree .cat-menu.cat-options {
+.emtree .cat-options a {
+	padding: 0 4px;
+	margin-left: 2px;
+}
+.emtree .cat-menu {
 	padding: 0 6px;
-	margin-right: 6px;
 }
 .emtree .emnotify {
 	top: 6px;
@@ -81,7 +81,14 @@
 
 .treerow:hover .cat-options,
 .treerow.selected .cat-options {
-	display: inline-block;
+	display: flex;
+	align-items: center;
+	position: absolute;
+	right: 0;
+}
+.treerow.cat-current {
+	background-color: rgb(0, 0, 0, 0.1) !important;
+	font-weight: bold;
 }
 .emtree .cat-options:hover {
 	color: var(--themed-default-text);
@@ -3262,7 +3269,7 @@ ul.inlinelist li {
 	z-index: 210;
 	padding: 8px;
 	font-size: 0.9rem;
-	border-bottom: 1px solid var(--themed-navbar-secondary);
+	border-bottom: 1px solid var(--themed-nav-btn-hover);
 	background: var(--themed-navbar-secondary);
 }
 .info {

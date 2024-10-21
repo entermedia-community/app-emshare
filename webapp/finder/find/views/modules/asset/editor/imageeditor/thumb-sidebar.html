@@ -19,27 +19,21 @@ $context.putPageValue("thumbsize", "small" )
     </div>
     <div class="w-100 selection-images">
       #foreach ($child in $children)
-      	#set($url = $mediaarchive.asLinkToOriginal($child) )
+      	#set($ending = $mediaarchive.asLinkToOriginal($child) )
+		#set($url = "$siteroot/$mediadbappid/services/module/asset/downloads/originals/$ending")
+      	
 		<div class='thumb'> 
 
 			#set( $rendertype = $mediaarchive.getMediaRenderType($child.fileformat))
 			$context.putPageValue("type", $rendertype)
 			$context.putPageValue("hit", $child)
 
-			<a class="stackedplayer" data-assetid="$foundrow.id" href="#" >
-		     	<div class="emthumbimage assetdraggable" data-assetid="${foundrow.id}" >
-					$pages.include("$componenthome/results/thumbnails/${rendertype}.html", $context)
-				</div>       
-			</a>
+			$pages.include("$componenthome/results/thumbnails/${rendertype}.html", $context)
 
-		  <div class="d-flex align-items-end justify-content-between"> 
-		    <small>$child.name</small> 
-		  </div>
-		  
-		  <strong class="img-size">$child.name</strong>
+			<p class="text-center m-0">$child.name</p> 
 		
 		  #if(($candownload || $canconvert || $candownloadfpo) && $canquickdownload)
-		  <a href="#urlescape($url)" class="btn btn-sm btn-secondary dl" title="[[Download]]"><i class="bi bi-download"></i></a>
+		  <a href="$url" class="btn btn-sm btn-secondary dl" title="[[Download]]"><i class="bi bi-download"></i></a>
 		  #end
 		  
 		    <a class="btn btn-sm btn-secondary emdialog" 
