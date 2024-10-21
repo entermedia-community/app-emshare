@@ -29,7 +29,7 @@
                 #set($type =$mediaarchive.getMediaRenderType($asset.fileformat))
                 #set($results = $conversionUtil.getActivePresetList($mediaarchive, $asset) )
                 <input type="hidden" name="assetid" value="$asset.id" />
-                <div class="d-flex align-items-center">
+                <div class="d-flex align-items-center w-100">
                   <label class="mb-0 mr-2 d-flex flex-grow-1">
                     <input type="text" name="filename" class="form-control" value="test.png" required />
                   </label> 
@@ -58,25 +58,21 @@
 
           <div class="export-menu">
             <form class="d-flex flex-column">
-              <h4 class="text-center">export As</h4>
-              <div class="d-flex align-items-center mb-2">
-                <label class="mb-0 mr-1" style="width: 60px;">[[Format]]:</label>
-                <label class="mb-0 mr-3 d-flex align-items-center">
-                  <input type="radio" name="exportAsType" value="png" class="mr-1" checked /> PNG
-                </label>
-                <label class="mb-0 d-flex align-items-center">
-                  <input type="radio" name="exportAsType" value="jpeg" class="mr-1" /> JPG
-                </label>
-              </div>
-              <div class="d-flex justify-content-end mt-3">
-                <div class="d-flex align-items-center">
-                  <a href="#" id="downloadImg" data-filename="$filename"> 
-                    <i class="bi bi-download"></i>
-                  </a>
-                </div>
+              <div class="d-flex align-items-center justify-content-center">
+                <label class="mb-0 mr-2" >[[Export As]]:</label>
+                <select class="mr-2">
+                  <option selected value="png">PNG</option>
+                  <option value="jpeg">JPEG</option>
+                  <option value="webp">WEBP</option>
+                  <option value="gif">GIF</option>
+                  <option value="pdf">PDF</option> 
+                </select>
+                <a href="#" id="downloadImg" data-filename="$filename" class="mr-2"> 
+                  <i class="bi bi-download"></i>
+                </a>
                 <a id="exportAsCancel" type="reset" class="rounded">
                   <i class="bi bi-x mr-0"></i>
-                </a>
+                </a> 
               </div>
             </form>
           </div>
