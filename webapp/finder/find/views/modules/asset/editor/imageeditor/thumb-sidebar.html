@@ -19,7 +19,9 @@ $context.putPageValue("thumbsize", "small" )
     </div>
     <div class="w-100 selection-images">
       #foreach ($child in $children)
-      	#set($url = $mediaarchive.asLinkToOriginal($child) )
+      	#set($ending = $mediaarchive.asLinkToOriginal($child) )
+		#set($url = "$siteroot/$mediadbappid/services/module/asset/downloads/originals/$ending")
+      	
 		<div class='thumb'> 
 
 			#set( $rendertype = $mediaarchive.getMediaRenderType($child.fileformat))
@@ -31,7 +33,7 @@ $context.putPageValue("thumbsize", "small" )
 			<p class="text-center m-0">$child.name</p> 
 		
 		  #if(($candownload || $canconvert || $candownloadfpo) && $canquickdownload)
-		  <a href="#urlescape($url)" class="btn btn-sm btn-secondary dl" title="[[Download]]"><i class="bi bi-download"></i></a>
+		  <a href="$url" class="btn btn-sm btn-secondary dl" title="[[Download]]"><i class="bi bi-download"></i></a>
 		  #end
 		  
 		    <a class="btn btn-sm btn-secondary emdialog" 
