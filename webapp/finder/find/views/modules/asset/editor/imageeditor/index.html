@@ -1,8 +1,14 @@
 #if($asset.previewstatus == 2)
   <div class="photo-editor-container" id="photo-editor-container" >
-    $pages.include("/$apphome/views/modules/asset/editor/imageeditor/thumb-sidebar.html") 
+  
+  #set( $children = $mediaarchive.query("asset").exact("parentid",$asset.getId()).sort("name").search() )
+  
+  #if( !$children.isEmpty() )
+  	$context.putPageValue("children",$children)
+    $pages.include("/$apphome/views/modules/asset/editor/imageeditor/thumb-sidebar.html",$context)
+  #end   
     <div id="photoEditorColumn"> 
-      $pages.include("/$apphome/views/modules/asset/editor/imageeditor/editorarea.html") 
+      $pages.include("/$apphome/views/modules/asset/editor/imageeditor/editorarea.html",$context)
     </div>
   </div>
 #else

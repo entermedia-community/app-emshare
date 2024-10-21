@@ -1,16 +1,6 @@
-
-#set($cdnprefix = $context.siteRoot )
-
-#set( $type = $mediaarchive.getMediaRenderType($asset.fileformat))
-
-#set($mediadbappid=$mediaarchive.getMediaDbId())
-#set($type =$mediaarchive.getMediaRenderType($asset.fileformat))
-#set($presets = $conversionUtil.getActivePresetList($mediaarchive,$asset) )
-#set($isconverting = $conversionUtil.isConverting($mediaarchive,$asset) )
-
 $context.putPageValue("viewer", "media_download_")
-#set($rendertype = $mediaarchive.getMediaRenderType($asset.fileformat))
 
+#set($rendertype = $mediaarchive.getMediaRenderType($asset.fileformat))
 #if(!$rendertype || $type =="rendertype")
     #set( $rendertype = "mime" )
 #elseif( $rendertype =="video")
@@ -18,7 +8,7 @@ $context.putPageValue("viewer", "media_download_")
 #end
 
 $context.putPageValue("thumbsize", "small" )
-##$context.putPageValue("urlparams", "?cache=false&_=$mathutil.getRandomValue(99999)" )
+
 
 <div id="imageeditorsidebar" class="photo-selection-column #if($isconverting) ajaxstatus #end" 
 	data-assetid="$asset.id"
@@ -26,42 +16,38 @@ $context.putPageValue("thumbsize", "small" )
 	data-ajaxpath="$applink/views/modules/asset/editor/imageeditor/thumb-sidebar.html">
     <div class="d-flex flex-column align-items-center justify-content-center header">
       <h2>[[Saved Copies]]</h2>
-      #if( $isconverting) 
-        <span class="text-secondary"><i class="fas fa-spinner fa-spin"></i> [[rendering]]</span>
-      #end
     </div>
     <div class="w-100 selection-images">
-      #foreach ($result in $presets)
-        #set($expfilename = $mediaarchive.asExportFileName($asset, $result))
-        #set($url = "$siteroot/$mediadbappid/services/module/asset/downloads/generated/$asset.sourcepath/$result.generatedoutputfile/$expfilename")
-        #set( $contentitem = $conversionUtil.outPutForPreset($mediaarchive, $asset,$result))
-        #if($contentitem.exists())
-          #set($dimension = $conversionUtil.getConvertPresetDimension($catalogid,$result.id))
-          #set($height = $mathtool.toInteger($dimension.getHeight()))
-          #set($width = $mathtool.toInteger($dimension.getWidth())) 
+      #foreach ($child in $children)
+      	#set($url = $mediaarchive.asLinkToOriginal($child) )
+		<div class='thumb'> 
 
-          <div class='thumb'> 
-            <img src="#urlescape($url)?_=$contentitem.getLastModified()" />
-            <div class="d-flex align-items-end justify-content-between"> 
-              <small>$result.name</small> 
-            </div>
-            
-            <strong class="img-size">$result.name</strong>
-          
-            #if(($candownload || $canconvert || $candownloadfpo) && $canquickdownload)
-            <a href="#urlescape($url)" class="btn btn-sm btn-secondary dl" title="[[Download]]"><i class="bi bi-download"></i></a>
-            #end
-            #if($canembedasset)
-              <a class="btn btn-sm btn-secondary emdialog" 
-                href="$siteroot$apphome/views/modules/asset/editor/imageeditor/share.html?assetid=${asset.id}&presetid=${result.id}"
-                data-noesc="true"
-                data-hidefooter="true"
-                title="[[Share]] $!result.name"><i class="fas fa-share-alt"></i></a>
-            #end
-          </div>
-        #else
-        	  ##$result
-        #end
+			#set( $rendertype = $mediaarchive.getMediaRenderType($child.fileformat))
+			$context.putPageValue("type", $rendertype)
+			$context.putPageValue("hit", $child)
+
+			<a class="stackedplayer" data-assetid="$foundrow.id" href="#" >
+		     	<div class="emthumbimage assetdraggable" data-assetid="${foundrow.id}" >
+					$pages.include("$componenthome/results/thumbnails/${rendertype}.html", $context)
+				</div>       
+			</a>
+
+		  <div class="d-flex align-items-end justify-content-between"> 
+		    <small>$child.name</small> 
+		  </div>
+		  
+		  <strong class="img-size">$child.name</strong>
+		
+		  #if(($candownload || $canconvert || $candownloadfpo) && $canquickdownload)
+		  <a href="#urlescape($url)" class="btn btn-sm btn-secondary dl" title="[[Download]]"><i class="bi bi-download"></i></a>
+		  #end
+		  
+		    <a class="btn btn-sm btn-secondary emdialog" 
+		      href="$siteroot$apphome/views/modules/asset/editor/imageeditor/share.html?assetid=${asset.id}&presetid=${child.id}"
+		      data-noesc="true"
+		      data-hidefooter="true"
+		      title="[[Share]] $!child.name"><i class="fas fa-share-alt"></i></a>
+		</div>
       #end    
     </div>
   </div>
