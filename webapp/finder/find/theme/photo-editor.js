@@ -631,8 +631,7 @@ $("document").ready(function () {
 
 			var formdata = new FormData(form[0]);
 
-			var format = "jpeg";
-			if ($("input[name=presetid]:checked").val() == "png") format = "png";
+			var format = "png";
 			canvas.setViewportTransform([1, 0, 0, 1, 0, 0]);
 			formdata.append(
 				"image",
