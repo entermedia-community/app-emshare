@@ -32,8 +32,6 @@
 	#set($dialogindextype = $context.getRequestParameter("dialogindextype"))
 #end
 
-
-
 #set($targetdiv = $maintargetdiv) 
 
 #set($filtercount = 0)
@@ -50,22 +48,32 @@
 			#if($hits.getSearchQuery().hasMainInput())
 				#if($moduleid=="asset")
 					#if($dialogresults)
-						#set($href = "$siteroot$apphome/views/modules/$moduleid/dialogindex.html?hitssessionid=$!hits.getSessionId()&topmoduleid=$!topmoduleid&entityid=$!entityid&dialogindextype=$!dialogindextype&rootcategory=$!rootcategory&categoryid=$!{categoryid}&removeterm=description")
+						#set($href = "$siteroot$apphome/views/modules/${moduleid}/dialogindex.html?hitssessionid=$!hits.getSessionId()&topmoduleid=$!topmoduleid&entityid=$!entityid&dialogindextype=$!dialogindextype&rootcategory=$!rootcategory&categoryid=$!{categoryid}&removeterm=description")
 						#set($targetdiv = "dialogassetresultscontainer")
+						#set($oemaxlevel = "1")
 					#else
-						#set($href = "$siteroot$apphome/views/modules/$moduleid/index.html?hitssessionid=$!hits.getSessionId()&topmoduleid=$!topmoduleid&rootcategory=$!rootcategory&categoryid=$!{categoryid}&removeterm=description")		
+						#if($categoryid)
+							#ifnull($category)
+								#set($category = $mediaarchive.getCachedData("category", $categoryid))
+							#end
+							#set($href = "$applink/views/modules/asset/viewfiles/${categoryid}/#dash($category).html?hitssessionid=$!hits.sessionId&removeterm=description")
+							#set($oemaxlevel = "2")
+						#else
+							#set($href = "$siteroot$apphome/views/modules/${moduleid}/index.html?hitssessionid=$!hits.getSessionId()&removeterm=description")
+							#set($oemaxlevel = "1")
+						#end		
 					#end
-					#set($oemaxlevel = "1")
+					
 				#else
-					#set($href = "$siteroot$apphome/views/modules/$moduleid/index.html?hitssessionid=$!hits.getSessionId()&removeterm=description")
+					#set($href = "$siteroot$apphome/views/modules/${moduleid}/index.html?hitssessionid=$!hits.getSessionId()&removeterm=description")
 					#set($oemaxlevel = "1")
 				#end
 				<div class="d-flex align-items-center selected-filters">
 					<a href="$href"
 						class="ajax clearsearchbar"
 						title="[[Clear Search]]"
-						data-targetdiv="$targetdiv" 
-						data-oemaxlevel="$oemaxlevel"
+						data-targetdiv="$!targetdiv" 
+						data-oemaxlevel="$!oemaxlevel"
 						data-updateurl="false"> 
 						[[Searching for]] <strong>"$hits.getSearchQuery().getMainInput()"</strong> 
 						<i class="bi bi-x ml-1"></i>
@@ -77,37 +85,48 @@
 				#foreach( $term in $terms)
 					#if($term.getId() != "description")
 						#if($moduleid=="asset")
-							#if($dialogresults)
-								#set($href = "$siteroot$apphome/views/modules/$moduleid/dialogindex.html?hitssessionid=$!hits.getSessionId()&topmoduleid=$!topmoduleid&entityid=$!entityid&dialogindextype=$!dialogindextype&rootcategory=$!rootcategory&categoryid=$!{categoryid}&removeterm=$!term.getId()")
+							#ifnotnull($dialogresults)
+								#set($href = "$siteroot$apphome/views/modules/${moduleid}/dialogindex.html?hitssessionid=$!hits.getSessionId()&topmoduleid=$!topmoduleid&entityid=$!entityid&dialogindextype=$!dialogindextype&rootcategory=$!rootcategory&categoryid=$!{categoryid}&removeterm=$!term.getId()")
 								#set($targetdiv = "dialogassetresultscontainer")
-							#else
-								#set($href = "$siteroot$apphome/views/modules/$moduleid/index.html?hitssessionid=$!hits.getSessionId()&topmoduleid=$!topmoduleid&rootcategory=$!rootcategory&categoryid=$!{categoryid}&removeterm=$!term.getId()")		
+								#set($oemaxlevel = "1")
 							#end
-							#set($oemaxlevel = "1")
+							#ifnull($dialogresults)
+								#if($categoryid)
+									#ifnull($category)
+										#set($category = $mediaarchive.getCachedData("category", $categoryid))
+									#end
+									#set($href = "$applink/views/modules/asset/viewfiles/${categoryid}/#dash($category).html?hitssessionid=$!hits.sessionId&removeterm=$!term.getId()")
+									#set($oemaxlevel = "2")
+								#else
+									#set($href = "$siteroot$apphome/views/modules/${moduleid}/index.html?hitssessionid=$!hits.getSessionId()&categoryid=$!{categoryid}&removeterm=$!term.getId()")
+									#set($oemaxlevel = "1")
+								#end		
+							#end
+							
 						#else
 							#if($tabletype == "subentity")
-								#set($href = "$siteroot$apphome/views/modules/$moduleid/components/table/subentitytable.html?hitssessionid=$!hits.getSessionId()&${moduleid}clearfilters=true")
+								#set($href = "$siteroot$apphome/views/modules/${moduleid}/components/table/subentitytable.html?hitssessionid=$!hits.getSessionId()&${moduleid}clearfilters=true")
 								#set($href = "$href&topmoduleid=$!{topmoduleid}&entityid=$!{entityid}&viewid=$!{viewid}")
 								#set($href = "$href&fieldexternalid=$!fieldexternalid&fieldexternalvalue=$!fieldexternalvalue&field=$!fieldexternalid&$!{fieldexternalid}.value=$!fieldexternalvalue&operation=exact")
 								#set( $targetdiv = "results$!{viewid}")
 							#else
-								#set($href = "$siteroot$apphome/views/modules/$moduleid/index.html?hitssessionid=$!hits.getSessionId()&removeterm=$!term.getId()")
+								#set($href = "$siteroot$apphome/views/modules/${moduleid}/index.html?hitssessionid=$!hits.getSessionId()&removeterm=$!term.getId()")
 							#end
 							#set($oemaxlevel = "1")
 						#end
 					
-						#if ($nodeID)
+						#ifnotnull($nodeID)
 							#set($href = $href + "&nodeID=${nodeID}")
 						#end
-						#if($currentSort)
+						#ifnotnull($currentSort)
 							#set($href = $href + "&sortby=${currentSort}")
 						#end
 					
 						<a href="$href"
 							class="ajax"
-							title="[[Clear]] $term.getDetail()"
+							title="[[Clear]] ${term.getDetail()}"
 							data-targetdiv="$!targetdiv" 
-							data-oemaxlevel="$oemaxlevel"
+							data-oemaxlevel="$!{oemaxlevel}"
 							data-updateurl="false">
 							$term.getDetail():
 							<span> 
@@ -158,21 +177,38 @@
 			</div>
 			#end
 		</div>
-		#if($moduleid=="asset" && $dialogresults)
-			#set($href = "$siteroot$apphome/views/modules/$moduleid/dialogindex.html?hitssessionid=$!hits.getSessionId()&topmoduleid=$!topmoduleid&entityid=$!entityid&dialogindextype=$!dialogindextype&rootcategory=$!rootcategory&categoryid=$!{categoryid}&${moduleid}clearfilters=true")
-			#set($targetdiv = "dialogassetresultscontainer")
+		#if($moduleid=="asset")
+			#if($dialogresults)
+				#set($href = "$siteroot$apphome/views/modules/${moduleid}/dialogindex.html?hitssessionid=$!hits.getSessionId()&topmoduleid=$!topmoduleid&entityid=$!entityid&dialogindextype=$!dialogindextype&rootcategory=$!rootcategory&categoryid=$!{categoryid}&${moduleid}clearfilters=true")
+				#set($targetdiv = "dialogassetresultscontainer")
+			#else
+				#if($categoryid)
+					#ifnull($category)
+						#set($category = $mediaarchive.getCachedData("category", $categoryid))
+					#end
+					#set($href = "$applink/views/modules/asset/viewfiles/${categoryid}/#dash($category).html?hitssessionid=$!hits.sessionId&${moduleid}clearfilters=true")
+					#set($oemaxlevel = "2")
+				#else
+					#set($href = "$siteroot$apphome/views/modules/${moduleid}/index.html?hitssessionid=$!hits.getSessionId()&${moduleid}clearfilters=true")
+					#set($oemaxlevel = "2")
+				#end
+				
+			#end
 		#else	
 			#if($tabletype == "subentity")
-				#set($href = "$siteroot$apphome/views/modules/$moduleid/components/table/subentitytable.html?hitssessionid=$!hits.getSessionId()&${moduleid}clearfilters=true")
+				#set($href = "$siteroot$apphome/views/modules/${moduleid}/components/table/subentitytable.html?hitssessionid=$!hits.getSessionId()&${moduleid}clearfilters=true")
 				#set($href = "$href&topmoduleid=$!{topmoduleid}&entityid=$!{entityid}&viewid=$!{viewid}")
 				#set($href = "$href&fieldexternalid=$!fieldexternalid&fieldexternalvalue=$!fieldexternalvalue&field=$!fieldexternalid&$!{fieldexternalid}.value=$!fieldexternalvalue&operation=exact")
 				#set( $targetdiv = "results$!{viewid}")
 			
 			#else
-				#set($href = "$siteroot$apphome/views/modules/$moduleid/index.html?hitssessionid=$!hits.getSessionId()&${moduleid}clearfilters=true")
+				#set($href = "$siteroot$apphome/views/modules/${moduleid}/index.html?hitssessionid=$!hits.getSessionId()&${moduleid}clearfilters=true")
 			#end
 		#end
-		<a href="$href" title="[[Clear All Filters]]" class="clear-all ajax clearsearchbar" data-oemaxlevel="1" data-targetdiv="$targetdiv"><i class="bi bi-x"></i> [[Clear All]]</a>
+		<a href="${href}" title="[[Clear All Filters]]" 
+			class="clear-all ajax clearsearchbar" 
+			data-oemaxlevel="${oemaxlevel}" 
+			data-targetdiv="$!{targetdiv}"><i class="bi bi-x"></i> [[Clear All]]</a>
 	</div>
 #end
 
