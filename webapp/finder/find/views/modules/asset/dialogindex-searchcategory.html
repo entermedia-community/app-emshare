@@ -1,11 +1,10 @@
 #set($hits = $entityassethits)
-
 $context.putPageValue("hits", $hits)
 
 #set($module = $mediaarchive.getCachedData("module", "asset"))
+$context.putPageValue("module", $module)
 #set($moduleid = $module.getId())
 
-$context.putPageValue("module", $module)
 #set($componenthome = "$apphome/views/modules/asset/components")
 $context.putPageValue("componenthome", $componenthome)
 
@@ -24,10 +23,8 @@ $context.putPageValue("componenthome", $componenthome)
 #end
 $context.putPageValue("category", $category)
 $context.putPageValue("categoryid", $categoryid)
-#if( !$librarycol && $category )
-	#set($rootcategories = $category.getParentCategories()) 
-	###set( $librarycol = $mediaarchive.query("librarycollection").orgroup("rootcategory", $rootcategories).searchOne() )
-#end
+#set($rootcategories = $category.getParentCategories()) 
+
 #set($rootcategory = $context.getRequestParameter("rootcategory"))
 #if(!$rootcategory)
 	#set( $rootcategory = $categoryid)

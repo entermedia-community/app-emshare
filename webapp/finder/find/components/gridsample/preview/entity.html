@@ -72,6 +72,7 @@ $context.putPageValue("topmoduleid", $moduleid)
 	#if(!$module.getBoolean("enableuploading") || !$permissions.can($moduleid, "view_files"))
 		#set($entitytabopen = "")
 	#end
+	
 	#set( $uploadmedia = $context.getRequestParameter("uploadmedia"))
 #end
 #if($entitytabopen == "publishinggallery" && $canpublishinggallery!="true")
@@ -505,7 +506,7 @@ $context.putPageValue("topmoduleid", $moduleid)
 					#end
 				#end
 					
-				#if( $entitytabopen == "media" && $module.getBoolean("enableuploading") && $permissions.can($moduleid, "view_files"))
+				#if(!$hidefilestab && $entitytabopen == "media" && $module.getBoolean("enableuploading") && $permissions.can($moduleid, "view_files"))
 					#if(!$ismulti)
 						$context.putPageValue("parentsearchtype", $parentsearchtype)
 						#set($tabtype= "media")

@@ -4,19 +4,16 @@
 	$context.putPageValue("entitydialogid", "entity")
 	
 	$pages.include("$componenthome/entities/lightboxes/header.html", $context)
+	
 	#set($lightboxcategory = $mediaarchive.getBean("entityManager").loadLightboxCategory($module, $entity, $selectedbox, $context.getUser()))
 	$context.putPageValue("category", $lightboxcategory)
 	$context.putPageValue("categoryid", $lightboxcategory.getId())
 		
-	###set($hits = $mediaarchive.getBean("entityManager").searchForAssetsInCategory($module, $entity, $selectedbox, $user) )
-	##$context.putSessionValue($hits.getSessionId(),$hits)
-	##$context.putPageValue("entityassethits",$hits)
-	
 	#set($module = $mediaarchive.getCachedData("module", "asset"))
 	#set($moduleid = $module.getId())
 	$context.putPageValue("module", $module)
 	$context.putPageValue("moduleid", $moduleid)
-	$context.putPageValue("hitsperpage", "1000")
+	
 	
 	$context.putPageValue("componenthome","$apphome/views/modules/asset/components")
 	

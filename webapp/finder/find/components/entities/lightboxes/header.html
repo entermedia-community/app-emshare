@@ -15,13 +15,7 @@
 
   <small><span class="mx-2">&middot;</span>[[Drag and drop selected files to the sidebar to move them into another status]]</small>
   
-	#set($showpublishbtn = true)
 
-	#ifnotnull($lightboxassets)
-		#if ($lightboxassets.isEmpty())
-			#set($showpublishbtn = false) 
-		#end
-	#end 
 	
 	<div class="d-flex align-items-center ml-auto">
 	#if ($desktop)
@@ -39,6 +33,16 @@
 			</button> 
 		#end
 	#end
+	
+	#set($showpublishbtn = false)
+	#set( $val = $hitcounts.get( $selectedbox.getName() ) )
+	#if(!$val && !$selectedbox)
+		#set($val = $allassets)
+	#end
+	#if($val && $permissions.can($module.getId(), "publishinggallery"))
+			#set($showpublishbtn = true) 
+	#end
+	
 	#if ($showpublishbtn) 
 		<a href="#" class="lightbox-header-btn entitytabactions"
 			data-tabaction="export"
