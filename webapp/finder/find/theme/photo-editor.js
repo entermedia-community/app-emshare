@@ -631,6 +631,28 @@ $("document").ready(function () {
 
 			var formdata = new FormData(form[0]);
 
+			var filenameInp = form.find("input.newfilename");
+			var oldFilename = filenameInp.data("originalname");
+			var newFilename = filenameInp.val();
+			var fileExtInp = form.find("select.newfileext");
+			var oldFileExt = fileExtInp.data("originalext");
+			var newFileExt = fileExtInp.val();
+			var fullNewName = newFilename + "." + newFileExt;
+			var fullOldName = oldFilename + "." + oldFileExt;
+			var existingNames = [fullOldName];
+			var fNames = $("p.filename");
+			fNames.each(function () {
+				existingNames.push($(this).text());
+			});
+			if (existingNames.includes(fullNewName)) {
+				var conf = confirm(
+					"The file name is the same as an existing file. Do you want to overwrite?"
+				);
+				if (!conf) {
+					return;
+				}
+			}
+
 			var format = "png";
 			canvas.setViewportTransform([1, 0, 0, 1, 0, 0]);
 			formdata.append(
@@ -664,6 +686,11 @@ $("document").ready(function () {
 			var saveAs = $(this).siblings(".save-as-menu");
 			mask.addClass("active");
 			saveAs.addClass("active");
+			var filenameInp = $("#saveasform input.newfilename");
+			filenameInp.focus();
+			var val = filenameInp.val();
+			filenameInp.val("");
+			filenameInp.val(val);
 		});
 		$("#exportAs").click(function () {
 			var mask = $(this).siblings(".mask");
@@ -822,11 +849,4 @@ $("document").ready(function () {
 		});
 	}
 	lQuery("#editingCandidate").livequery(initializeEditor);
-
-	$("form#clearAllPreset").submit(function (e) {
-		e.preventDefault();
-		if (confirm("Are you sure you want to clear all?")) {
-			this.submit();
-		}
-	});
 });

@@ -17,14 +17,16 @@ $context.putPageValue("thumbsize", "small" )
       <h2>[[Saved Copies]]</h2>
     </div>
     <div class="w-100 selection-images">
-	#foreach ($child in $children)
-	    $context.putPageValue("child",$child)
-    	$pages.include("/$apphome/views/modules/asset/editor/imageeditor/thumb-sideitem.html",$context)
-	#end	
-	#set( $child = $mediaarchive.getAsset($asset.parentid ))
-	#ifnotnull($child)      
-	    $context.putPageValue("child",$child)
-    	$pages.include("/$apphome/views/modules/asset/editor/imageeditor/thumb-sideitem.html",$context)
-    #end 
+			#foreach ($child in $children)
+				$context.putPageValue("child",$child)
+				$pages.include("/$apphome/views/modules/asset/editor/imageeditor/thumb-sideitem.html",$context)
+			#end	
+			<div style="border-top:1px dashed #666"></div>
+			#set( $parent = $mediaarchive.getAsset($asset.parentid ))
+			#ifnotnull($parent)      
+				$context.putPageValue("child",$parent)
+				$context.putPageValue("isoriginal","true")
+				$pages.include("/$apphome/views/modules/asset/editor/imageeditor/thumb-sideitem.html",$context)
+			#end 
+		</div>
 </div>
-  </div>

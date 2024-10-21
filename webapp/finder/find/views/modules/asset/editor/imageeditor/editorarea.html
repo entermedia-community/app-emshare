@@ -5,12 +5,9 @@
   #set($filename = "$asset.name")
   <div class="d-flex flex-column h-100" id="photo-editor" >
     <div class="editorarea">
-      <div class="d-flex align-items-center justify-content-end top-toolbar"> 
+      <div class="d-flex align-items-center top-toolbar px-2">
+        <p class="my-0 text-center flex-grow-1 fw-bold monospace" style="margin-left:260px">$filename</p>
         <div class="d-flex align-items-center justify-content-end position-relative">
-          <form id="clearAllPreset" class="ajaxform" data-targetdiv="photo-editor-container" data-warning="[[Are you sure you want to reset all the image back to original?]]" action="$applink/views/modules/asset/editor/imageeditor/reloadthumbs.html">
-            <input type="hidden" name="assetid" value="$asset.id" />
-            <input type="hidden" name="oemaxlevel" value="1" />
-          </form>
           <a href="#" id="copyImg" title="[[Copy image to clipboard]]">
             <i class="bi bi-clipboard"></i>
           </a>
@@ -32,10 +29,10 @@
                 <div class="d-flex align-items-center w-100">
                   <label class="mb-0 mr-2 d-flex flex-grow-1">
                   	#set($newname = $url_util.getPathUtilities().extractPageName($asset.getName()) )
-                    <input type="text" name="newfilename" class="form-control" value="${newname}-copy" required />
+                    <input type="text" name="newfilename" class="form-control newfilename" value="${newname}-copy" data-originalname="$newname" required />
                   </label> 
                   #set( $types = $mediaarchive.query("fileformat").exact("creator","imagemagick").sort("name").search() )
-                  <select name="newfiletype">
+                  <select name="newfiletype" class="newfileext" data-originalext="$asset.fileformat">
                   #foreach( $type in $types)
                     <option value="$type.id" #if( $asset.fileformat == $type.id) selected #end>#text( $type )</option>
                   #end  
