@@ -1384,6 +1384,10 @@ uiload = function () {
 		closeemdialog($(this).closest(".modal"));
 	});
 
+	lQuery("#closebutton").livequery("click", function (event) {
+		closeemdialog($(this).closest(".modal"));
+	});
+
 	closeemdialog = function (modaldialog) {
 		var oldurlbar = modaldialog.data("oldurlbar");
 
@@ -4820,30 +4824,29 @@ lQuery(".ajaxstatus").livequery(function () {
 	}
 });
 
-lQuery(".changeimportmodule").livequery("change",function () 
-{
+lQuery(".changeimportmodule").livequery("change", function () {
 	var select = $(this);
 	var moduleid = select.val();
-	
+
 	app = $("#application");
 	siteroot = app.data("siteroot");
 	apphome = siteroot + app.data("apphome");
 	var property = "desktop_lastselected_module";
 
 	var targetdiv = select.data("targetdiv");
-	
+
 	jQuery.ajax({
 		url:
 			apphome +
-			"/views/modules/" + moduleid + "/components/sidebars/localdrives/index.html?profilepreference=" +
+			"/views/modules/" +
+			moduleid +
+			"/components/sidebars/localdrives/index.html?profilepreference=" +
 			property +
 			"&profilepreference.value=" +
 			moduleid,
-		success: function(data)
-		{
+		success: function (data) {
 			var cell = $("#" + targetDiv);
 			cell.replaceWith(data);
-				
 		},
 		xhrFields: {
 			withCredentials: true,
