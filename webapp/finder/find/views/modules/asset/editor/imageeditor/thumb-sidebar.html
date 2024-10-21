@@ -9,7 +9,6 @@ $context.putPageValue("viewer", "media_download_")
 
 $context.putPageValue("thumbsize", "small" )
 
-
 <div id="imageeditorsidebar" class="photo-selection-column #if($isconverting) ajaxstatus #end" 
 	data-assetid="$asset.id"
 	data-oemaxlevel="1"
@@ -18,32 +17,14 @@ $context.putPageValue("thumbsize", "small" )
       <h2>[[Saved Copies]]</h2>
     </div>
     <div class="w-100 selection-images">
-      #foreach ($child in $children)
-      	#set($ending = $mediaarchive.asLinkToOriginal($child) )
-		#set($url = "$siteroot/$mediadbappid/services/module/asset/downloads/originals/$ending")
-      	
-		<div class='thumb'> 
-
-			#set( $rendertype = $mediaarchive.getMediaRenderType($child.fileformat))
-			$context.putPageValue("type", $rendertype)
-			$context.putPageValue("hit", $child)
-
-			<a href="#" class="stackedplayer" data-assetid="$child.id">
-				$pages.include("$componenthome/results/thumbnails/${rendertype}.html", $context)
-			</a>
-
-			<p class="text-center m-0">$child.name</p> 
-		
-		  #if(($candownload || $canconvert || $candownloadfpo) && $canquickdownload)
-		  <a href="$url" class="btn btn-sm btn-secondary dl" title="[[Download]]"><i class="bi bi-download"></i></a>
-		  #end
-		  
-		    <a class="btn btn-sm btn-secondary emdialog" 
-		      href="$siteroot$apphome/views/modules/asset/editor/imageeditor/share.html?assetid=${asset.id}&presetid=${child.id}"
-		      data-noesc="true"
-		      data-hidefooter="true"
-		      title="[[Share]] $!child.name"><i class="fas fa-share-alt"></i></a>
-		</div>
-      #end    
-    </div>
+	#foreach ($child in $children)
+	    $context.putPageValue("child",$child)
+    	$pages.include("/$apphome/views/modules/asset/editor/imageeditor/thumb-sideitem.html",$context)
+	#end	
+	#set( $child = $mediaarchive.getAsset($asset.parentid ))
+	#ifnotnull($child)      
+	    $context.putPageValue("child",$child)
+    	$pages.include("/$apphome/views/modules/asset/editor/imageeditor/thumb-sideitem.html",$context)
+    #end 
+</div>
   </div>
