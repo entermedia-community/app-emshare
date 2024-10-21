@@ -34,12 +34,11 @@
                   	#set($newname = $url_util.getPathUtilities().extractPageName($asset.getName()) )
                     <input type="text" name="newfilename" class="form-control" value="$newname" required />
                   </label> 
+                  #set( $types = $mediaarchive.query("fileformat").exact("creator","imagemagick").sort("name").search() )
                   <select name="newfiletype">
-                    <option selected value="png">PNG</option>
-                    <option value="jpeg">JPEG</option>
-                    <option value="webp">WEBP</option>
-                    <option value="gif">GIF</option>
-                    <option value="pdf">PDF</option> 
+                  #foreach( $type in $types)
+                    <option value="$type.id" #if( $asset.fileformat == $type.id) selected #end>#text( $type )</option>
+                  #end  
                   </select>
                 </div>
               </div>
