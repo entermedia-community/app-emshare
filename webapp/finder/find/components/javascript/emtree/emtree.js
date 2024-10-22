@@ -6,6 +6,7 @@ $(document).ready(function () {
 			event.stopPropagation();
 			var tree = $(this).closest(".emtree");
 			var node = $(this).closest(".noderow");
+			var iscurrent = $(this).hasClass("cat-current");
 			var nodeid = node.data("nodeid");
 			var depth = node.data("depth");
 			tree.find("ul li div").removeClass("selected");
@@ -29,7 +30,8 @@ $(document).ready(function () {
 					"&depth=" +
 					depth +
 					"&canupload=" +
-					tree.data("canupload"),
+					tree.data("canupload") +
+					(iscurrent ? "&currentnodeid=" + nodeid : ""),
 				function () {
 					$(window).trigger("resize");
 				}

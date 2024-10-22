@@ -2791,7 +2791,7 @@ uiload = function () {
 			topposition /= 2;
 			topposition += 56;
 			searchmodaldialog.css("top", topposition + "px");
-			searchmodaldialog.css("left", "45%");
+			searchmodaldialog.css("left", "50%");
 			searchmodaldialog.css("transform", "translateX(-50%)");
 
 			var wh = window.innerHeight;
