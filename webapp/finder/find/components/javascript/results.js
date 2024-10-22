@@ -1501,6 +1501,7 @@ jQuery(document).ready(function (url, params) {
 		}
 		searchhome = resultsdiv.data("searchhome");
 		targetdiv = resultsdiv.data("targetdiv");
+		var moduleid = resultsdiv.data("moduleid");
 		options = resultsdiv.data();
 		targetdiv = $("#" + targetdiv);
 
@@ -1518,7 +1519,12 @@ jQuery(document).ready(function (url, params) {
 			} else {
 				// $(resultsdiv).load( columnsort + '&sortby=' + id + 'Up',
 				// options);
-				options["sortby"] = id + "Up";
+				if(moduleid !== undefined) {
+					options[moduleid+"sortby"] = id + "Up";
+				}
+				else {
+					options["sortby"] = id + "Up";
+				}
 				$.get(link, options, function (data) {
 					$(targetdiv).replaceWith(data);
 				});
@@ -1528,7 +1534,12 @@ jQuery(document).ready(function (url, params) {
 			$(this).addClass("currentsort");
 			// $(resultsdiv).load( columnsort + '&sortby=' + id + 'Down',
 			// options);
-			options["sortby"] = id + "Down";
+			if(moduleid !== undefined) {
+					options[moduleid+"sortby"] = id + "Down";
+				}
+				else {
+					options["sortby"] = id + "Down";
+				}
 			$.get(link, options, function (data) {
 				//$(targetdiv).replaceWith(data);
 				$(targetdiv).replaceWith(data);
