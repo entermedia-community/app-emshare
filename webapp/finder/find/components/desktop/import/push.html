@@ -11,7 +11,7 @@
 #if($category.getCategoryPath())
 <div class="row no-gutters mt-2 mb-1 watch-entity" data-entityid="$!entity.getId()" data-toplevelcategorypath="$category.getCategoryPath()">
 	<div class="col-4">
-		<div class="segment">
+		<div class="d-flex align-items-center p-2 h-100">
 			<button class="btn btn-success rounded scan-changes"
 				data-toplevelcategorypath="$category.getCategoryPath()">
 				<i class="bi bi-arrow-repeat mr-1"></i> <span>[[Refresh]]</span>
@@ -24,16 +24,18 @@
 			</button>
 		</div>
 	</div>
-	<div class="col segment">
-		<div class="pending-folders">
-			<p class="alert alert-success no-upload mb-0" style="display: none;">[[All files uploaded]]</p>
-			<div class="d-flex flex-column">
-				<div class="alert alert-success mb-0 push-msg" style="display: none;">
-					<p class="mb-0 scan-result">[[You have ]] <strong class="up-count">0</strong> [[file(s)]] (<strong class="up-size">0</strong>) [[pending upload to the server.]]</p>
-					<p class="mb-0 upload-progress" style="display: none;">
-						<span style="display: none;"><strong class="up-completed">0</strong> of <strong class="up-total"></strong> [[file(s)]]</span> (<strong class="up-progress">0</strong>) uploaded to the server.
-					</p>
-				</div> 
+	<div class="col">
+		<div class="d-flex align-items-center p-2">
+			<div class="pending-folders">
+				<p class="alert alert-success no-upload mb-0" style="display: none;">[[All files uploaded]]</p>
+				<div class="d-flex flex-column">
+					<div class="alert alert-success mb-0 push-msg" style="display: none;">
+						<p class="mb-0 scan-result">[[You have ]] <strong class="up-count">0</strong> [[file(s)]] (<strong class="up-size">0</strong>) [[pending upload to the server.]]</p>
+						<p class="mb-0 upload-progress" style="display: none;">
+							<span style="display: none;"><strong class="up-completed">0</strong> of <strong class="up-total"></strong> [[file(s)]]</span> (<strong class="up-progress">0</strong>) uploaded to the server.
+						</p>
+					</div> 
+				</div>
 			</div>
 		</div>
 	</div>
@@ -42,7 +44,7 @@
 
 <div class="sync-container row no-gutters">
 	<div class="col-4">
-		<div class="syncfoldertree">
+		<div class="syncfoldertree mr-2">
 		#set($allchildren = $mediaarchive.getCategorySearcher().listAllCategories($category))
 		#foreach($parent in $allchildren)
 			#set($padding = ($parent.getLevel() - 1) * 8)

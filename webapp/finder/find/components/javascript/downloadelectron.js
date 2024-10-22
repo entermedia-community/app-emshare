@@ -893,23 +893,22 @@ jQuery(document).ready(function () {
 				console.log("No module selected");
 				return;
 			}
-			jQuery
-				.ajax({
-					url:
-						apphome +
-						"/views/modules/" +
-						moduleid +
-						"/components/sidebars/localdrives/updatefolderstatus.html",
-					type: "POST",
-					data: formData,
-					processData: false,
-					contentType: false,
-					"Content-Type": "multipart/form-data",
-				})
-				.done(function (res) {
+			jQuery.ajax({
+				url:
+					apphome +
+					"/views/modules/" +
+					moduleid +
+					"/components/sidebars/localdrives/updatefolderstatus.html",
+				type: "POST",
+				data: formData,
+				processData: false,
+				contentType: false,
+				"Content-Type": "multipart/form-data",
+				success: function (res) {
 					$("#syncFolderList").html(res);
 					if (callback) callback();
-				});
+				},
+			});
 		}
 		ipcRenderer.on("scan-auto-folder-completed", (_, ids) => {
 			var formData = new FormData();
@@ -919,20 +918,21 @@ jQuery(document).ready(function () {
 				folder.find();
 			});
 			formData.append("desktopimportstatus", "upload-started");
-			desktopImportStatusUpdater(formData);
+			desktopImportStatusUpdater(formData, function () {
+				ipcRenderer.send("startAutoFoldersUpload");
+			});
 		});
 
 		function verifyAutoUploads() {
+			uploadInProgress = true;
+
 			var syncFolders = getCurrentWorkFolders();
-			console.log({ syncFolders });
 			var formData = new FormData();
 			syncFolders.forEach((folder) => {
 				formData.append("id", folder.id);
 			});
 			formData.append("desktopimportstatus", "scan-started");
 
-			console.log("verifyAutoUploads", syncFolders);
-			uploadInProgress = true;
 			desktopImportStatusUpdater(formData, () => {
 				ipcRenderer.send("syncAutoFolders", syncFolders);
 			});
@@ -943,12 +943,14 @@ jQuery(document).ready(function () {
 			verifyAutoUploads();
 		});
 
-		lQuery(".import-verify").livequery(function () {
-			if ($(this).hasClass("verifynow")) {
-				verifyAutoUploads();
-			} else if (!uploadInProgress && $(this).hasClass("scan-started")) {
-				verifyAutoUploads();
-			}
+		lQuery("#sidebarfolderimport").livequery(function () {
+			if (uploadInProgress) return;
+			verifyAutoUploads();
+		});
+
+		lQuery(".verifynow").livequery(function () {
+			if (uploadInProgress) return;
+			verifyAutoUploads();
 		});
 
 		function updateCounter(size, persist = false) {
