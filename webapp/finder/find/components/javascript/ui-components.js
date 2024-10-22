@@ -4498,12 +4498,6 @@ uiload = function () {
 		}
 	});
 
-	lQuery("a.clear-bookmarks").livequery("click", function (e) {
-		e.preventDefault();
-		if (confirm("Are you sure you want to clear all bookmarks?")) {
-			//TODO: Implement
-		}
-	});
 
 	lQuery("#assetcollectionresultsdialog .rowclick").livequery(
 		"click",
