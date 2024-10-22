@@ -24,6 +24,10 @@ $context.putPageValue("categoryid", $categoryid)
 
 $context.putPageValue("maintargetdiv", $maintargetdiv)
 
+#ifnull($topmoduleid)
+	#set($topmoduleid= $context.getRequestParameter("topmoduleid"))
+#end
+
 <div id="assetresultscontainer" 
 	class="assetresults resultsdiv" 
 	data-moduleid="asset" 
@@ -41,6 +45,7 @@ $context.putPageValue("maintargetdiv", $maintargetdiv)
 	data-searchhome="$!home$!componenthome/results" 
 	data-targetdiv="assetresultscontainer" 
 	data-categoryid="$!categoryid"
+	data-topmoduleid="$!topmoduleid"
 	data-assetsortby="$!hits.getSearchQuery().getSortBy()">
 
 	
@@ -52,8 +57,7 @@ $context.putPageValue("maintargetdiv", $maintargetdiv)
 	<div class="emgrid-box expandedmodule emgrid-module-asset"  >
 		#set( $count = $hits.size())
 		
-		
-		#if($showheader)
+		#if($showheader || $topmoduleid == "favorites")
 		<div class="emgrid-subtitle">
 	   		<h3>
 		     	#set($moduleicon = "grid")
