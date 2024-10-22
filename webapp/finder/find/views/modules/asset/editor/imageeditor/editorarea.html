@@ -2,11 +2,11 @@
  
 <div id="imageeditorarea" class="w-100 h-100 #if(!$contentitem.exists()) ajaxstatus #end" data-assetid="$asset.id" data-oemaxlevel="1" data-ajaxpath="$applink/views/modules/asset/editor/imageeditor/editorarea.html">
   #set($url = $mediaarchive.asLinkToPreview($asset, "image3000x3000.jpg"))
-  #set($filename = "$asset.name")
+  #set($filename = $url_util.getPathUtilities().extractPageName($asset.getName()) )
   <div class="d-flex flex-column h-100" id="photo-editor" >
     <div class="editorarea">
       <div class="d-flex align-items-center top-toolbar px-2">
-        <p class="my-0 text-center flex-grow-1 fw-bold monospace" style="margin-left:260px">$filename</p>
+        <p class="my-0 text-center flex-grow-1 fw-bold monospace" style="margin-left:260px">$asset.name</p>
         <div class="d-flex align-items-center justify-content-end position-relative">
           <a href="#" id="copyImg" title="[[Copy image to clipboard]]">
             <i class="bi bi-clipboard"></i>
@@ -28,8 +28,7 @@
                 <input type="hidden" name="assetid" value="$asset.id" />
                 <div class="d-flex align-items-center w-100">
                   <label class="mb-0 mr-2 d-flex flex-grow-1">
-                  	#set($newname = $url_util.getPathUtilities().extractPageName($asset.getName()) )
-                    <input type="text" name="newfilename" class="form-control newfilename" value="${newname}-copy" data-originalname="$newname" required />
+                    <input type="text" name="newfilename" class="form-control newfilename" value="${filename}-copy" data-originalname="$filename" required />
                   </label> 
                   #set( $types = $mediaarchive.query("fileformat").exact("creator","imagemagick").sort("name").search() )
                   <select name="newfiletype" class="newfileext" data-originalext="$asset.fileformat">
@@ -41,7 +40,7 @@
               </div>
               <div class="d-flex justify-content-center mt-3 mb-2">
                 <div class="d-flex align-items-center">
-                  <a href="#" id="saveAsImg" data-filename="$filename">
+                  <a href="#" id="saveAsImg">
                     <i class="bi bi-floppy"></i>
                     <label>[[Save]]</label>
                   </a>
@@ -57,12 +56,9 @@
             <form class="d-flex flex-column">
               <div class="d-flex align-items-center justify-content-center">
                 <label class="mb-0 mr-2" >[[Export As]]:</label>
-                <select class="mr-2">
+                <select id="exportAsType" class="mr-2">
                   <option selected value="png">PNG</option>
                   <option value="jpeg">JPEG</option>
-                  <option value="webp">WEBP</option>
-                  <option value="gif">GIF</option>
-                  <option value="pdf">PDF</option> 
                 </select>
                 <a href="#" id="downloadImg" data-filename="$filename" class="mr-2"> 
                   <i class="bi bi-download"></i>

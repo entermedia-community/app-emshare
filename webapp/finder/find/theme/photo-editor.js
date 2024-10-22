@@ -713,9 +713,8 @@ $("document").ready(function () {
 			var a = document.createElement("a");
 			var filename = $(this).data("filename");
 			if (!filename) filename = "image";
-			filename = filename.split(".")[0];
 
-			var ext = $("input[name=exportAsType]:checked").val();
+			var ext = $("select#exportAsType").val();
 			if (!ext) ext = "png";
 			canvas.setViewportTransform([1, 0, 0, 1, 0, 0]);
 			a.href = canvas.toDataURL({
