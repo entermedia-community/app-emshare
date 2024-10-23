@@ -1089,17 +1089,37 @@ jQuery(document).ready(function () {
 				uploadsourcepath,
 				lightbox,
 			});
+			var lightboxid = $(this).data("lightboxid");
+			var stat = $("#lightbox-stat-" + lightboxid);
+			if (stat.length > 0) {
+				var filecount = parseInt(stat.data("filecount"));
+				if (!isNaN(filecount)) {
+					$(".sync-lightbox").show();
+				}
+			}
 		});
-		lQuery(".sync-lightbox").livequery("click", function () {
+
+		lQuery(".sync-lightbox").livequery(function () {
 			var uploadsourcepath = $(this).data("path");
 			var lightbox = $(this).data("lightbox");
+			ipcRenderer.send("shouldSyncShow", { uploadsourcepath, lightbox });
 			var entityid = $(this).data("entityid");
-			$(this).prop("disabled", true);
-			$(this).find("span").text("Syncing...");
-			ipcRenderer.send("syncLightboxUp", {
-				uploadsourcepath,
-				lightbox,
-				entityid,
+			$(this).click(function () {
+				$(this).prop("disabled", true);
+				$(this).find("span").text("Syncing...");
+				ipcRenderer.send("syncLightboxUp", {
+					uploadsourcepath,
+					lightbox,
+					entityid,
+				});
+			});
+		});
+
+		ipcRenderer.on("show-sync-lightbox", (_, { lightbox }) => {
+			$(".sync-lightbox").each(function () {
+				if ($(this).data("lightbox") === lightbox) {
+					$(this).show();
+				}
 			});
 		});
 	});
