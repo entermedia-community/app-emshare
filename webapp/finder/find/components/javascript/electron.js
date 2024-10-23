@@ -727,6 +727,7 @@ jQuery(document).ready(function () {
 			if (lightbox) {
 				var syncLightbox = $(".sync-lightbox");
 				syncLightbox.find("span").text("Synced");
+				autoreload($(".assetresults"));
 				setTimeout(() => {
 					syncLightbox.prop("disabled", false);
 					syncLightbox.find("span").text("Sync");
@@ -1089,14 +1090,7 @@ jQuery(document).ready(function () {
 				uploadsourcepath,
 				lightbox,
 			});
-			var lightboxid = $(this).data("lightboxid");
-			var stat = $("#lightbox-stat-" + lightboxid);
-			if (stat.length > 0) {
-				var filecount = parseInt(stat.data("filecount"));
-				if (!isNaN(filecount)) {
-					$(".sync-lightbox").show();
-				}
-			}
+			ipcRenderer.send("shouldSyncShow", { uploadsourcepath, lightbox });
 		});
 
 		lQuery(".sync-lightbox").livequery(function () {
