@@ -1090,13 +1090,19 @@ jQuery(document).ready(function () {
 				uploadsourcepath,
 				lightbox,
 			});
-			ipcRenderer.send("shouldSyncShow", { uploadsourcepath, lightbox });
+			ipcRenderer.send("shouldSyncLightboxShow", {
+				uploadsourcepath,
+				lightbox,
+			});
 		});
 
 		lQuery(".sync-lightbox").livequery(function () {
 			var uploadsourcepath = $(this).data("path");
 			var lightbox = $(this).data("lightbox");
-			ipcRenderer.send("shouldSyncShow", { uploadsourcepath, lightbox });
+			ipcRenderer.send("shouldSyncLightboxShow", {
+				uploadsourcepath,
+				lightbox,
+			});
 			var entityid = $(this).data("entityid");
 			$(this).click(function () {
 				$(this).prop("disabled", true);
