@@ -2,16 +2,16 @@
 
 <div class="asset-data-detail assetpanel-editor-box">
 	<h4>[[Entities]]</h4>
-	#set( $entities = $userprofile.getEntitiesForCategories($asset.categories) )
+	#set( $entities = $mediaarchive.getEntityManager().getEntitiesForCategories($asset.categories, $userprofile) )
 	#if($entities && $entities.size() > 0)
 	
 			<div class="px-3">
 			#foreach ( $data in $entities)
-				#set($entity = $data.getData())
+				#set($entity = $data)
 				#set($entityid = $data.getId())
-				#set($emoduleid = $data.getModuleId()) 
+				#set($emoduleid = $data.get("entitysourcetype")) 
 				
-				#set($emodule = $mediaarchive.getData("module", $emoduleid))
+				#set($emodule = $mediaarchive.getCachedData("module", $emoduleid))
 				
 				#set($rendertype = $emodule.modulerendertype)
 				#if (!$rendertype)
