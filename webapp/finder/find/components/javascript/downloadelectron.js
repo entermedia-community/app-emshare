@@ -392,6 +392,17 @@ jQuery(document).ready(function () {
 			});
 		}
 
+		lQuery(".open-file-default").livequery("click", function () {
+			var categorypath = $(this).data("categorypath");
+			var filename = $(this).data("filename");
+			var dlink = $(this).data("dlink");
+			ipcRenderer.send("openFileWithDefault", {
+				categorypath,
+				filename,
+				dlink,
+			});
+		});
+
 		lQuery(".open-folder").livequery("click", function () {
 			var path = $(this).data("path") || $(this).data("localpath");
 			if (!path) {
@@ -640,17 +651,14 @@ jQuery(document).ready(function () {
 			});
 		});
 
-		ipcRenderer.on("download-batch-complete", (_, { flag = null }) => {
-			if (flag === "lightbox") {
-				var syncLightbox = $(".sync-lightbox");
-				var uploadsourcepath = syncLightbox.data("path");
-				var lightbox = syncLightbox.data("lightbox");
-				var entityId = syncLightbox.data("entityid");
-				ipcRenderer.send("syncLightboxUp", {
-					uploadsourcepath,
-					lightbox,
-					entityId,
-				});
+		ipcRenderer.on("download-batch-complete", (_, { lightbox = false }) => {
+			if (lightbox) {
+				var openLightbox = $(".open-lightbox");
+				openLightbox.find("span").text("Downloaded");
+				setTimeout(() => {
+					openLightbox.prop("disabled", false);
+					openLightbox.find("span").text("Open Locally");
+				}, 2000);
 			} else {
 				setTimeout(() => {
 					$(".pullfetchfolder").find(".fa-spinner").hide();
@@ -718,8 +726,6 @@ jQuery(document).ready(function () {
 		ipcRenderer.on("entity-upload-complete", (_, { lightbox = false }) => {
 			if (lightbox) {
 				var syncLightbox = $(".sync-lightbox");
-				syncLightbox.prop("disabled", true);
-				syncLightbox.find("span").text("Syncing...");
 				syncLightbox.find("span").text("Synced");
 				setTimeout(() => {
 					syncLightbox.prop("disabled", false);
@@ -1077,7 +1083,9 @@ jQuery(document).ready(function () {
 		lQuery(".open-lightbox").livequery("click", function () {
 			var uploadsourcepath = $(this).data("path");
 			var lightbox = $(this).data("lightbox");
-			ipcRenderer.send("openLightbox", {
+			$(this).prop("disabled", true);
+			$(this).find("span").text("Downloading...");
+			ipcRenderer.send("syncLightboxDown", {
 				uploadsourcepath,
 				lightbox,
 			});
@@ -1085,12 +1093,13 @@ jQuery(document).ready(function () {
 		lQuery(".sync-lightbox").livequery("click", function () {
 			var uploadsourcepath = $(this).data("path");
 			var lightbox = $(this).data("lightbox");
+			var entityid = $(this).data("entityid");
 			$(this).prop("disabled", true);
 			$(this).find("span").text("Syncing...");
-			console.log(uploadsourcepath);
 			ipcRenderer.send("syncLightboxUp", {
 				uploadsourcepath,
 				lightbox,
+				entityid,
 			});
 		});
 	});
