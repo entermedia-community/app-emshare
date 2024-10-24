@@ -86,8 +86,13 @@
 			
 			#set($click = "$siteroot$viewerlink?hitssessionid=${hits.getSessionId()}&assetid=${hit.id}")
 			$context.putPageValue("click", "click" )
+			
+			#set($isdraggable = false)
+			#if($permissions.can($topmoduleid, "assign_files"))
+				#set($isdraggable = true)
+			#end
 			       
-			<div class="masonry-grid-cell assetdraggable"
+			<div class="masonry-grid-cell #if($isdraggable)assetdraggable#end"
 				 
 				id="gallerycell_$!{hit.id}"
 				data-assetid="$!{hit.id}"
@@ -104,7 +109,7 @@
 					$context.putPageValue("thumbheight", "180" ) 
 				#end
 				>
-				<div class="assetdroppable" data-dataid="$hit.id">
+				<div class="#if($isdraggable)assetdroppable#end" data-dataid="$hit.id">
 				$pages.include("$componenthome/results/thumbnails/brick.html", $context)
 				</div>
 			</div>

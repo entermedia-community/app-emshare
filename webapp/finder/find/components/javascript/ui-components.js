@@ -6,7 +6,7 @@ var exitWarning = false;
 var siteroot;
 var apphome;
 
-function showLoader() {
+$(window).on("showLoader", function() {
 	clearTimeout(lwt);
 	clearTimeout(lwht);
 	lwt = setTimeout(function () {
@@ -18,7 +18,14 @@ function showLoader() {
 			$("#loading-window").removeClass("d-flex");
 		}
 	}, 4000);
-}
+});
+
+$(window).on("hideLoader", function() {
+	clearTimeout(lwt);
+	clearTimeout(lwht);
+	$("#loading-window").removeClass("d-flex");
+});
+
 
 $.fn.cleandata = function () {
 	var element = $(this);
@@ -34,12 +41,6 @@ $.fn.cleandata = function () {
 	});
 	return cleaned;
 };
-
-function hideLoader() {
-	clearTimeout(lwt);
-	clearTimeout(lwht);
-	$("#loading-window").removeClass("d-flex");
-}
 
 formatHitCountResult = function (inRow) {
 	return inRow[1];
@@ -188,7 +189,7 @@ runajaxonthis = function (inlink, e) {
 			targetDiv = "#" + targetDiv;
 		}
 
-		showLoader();
+		$(window).trigger("showLoader");
 
 		jQuery
 			.ajax({
@@ -213,8 +214,7 @@ runajaxonthis = function (inlink, e) {
 						cell.html(data);
 						newcell = onpage.children(":first");
 					}
-
-					setPageTitle(newcell);
+					$(window).trigger("setPageTitle",[newcell]);
 
 					//on success execute extra JS
 					if (inlink.data("onsuccess")) {
@@ -282,7 +282,7 @@ runajaxonthis = function (inlink, e) {
 
 				$(window).trigger("resize");
 
-				hideLoader();
+				$(window).trigger("hideLoader");
 
 				if (
 					typeof global_updateurl !== "undefined" &&
@@ -1153,7 +1153,7 @@ uiload = function () {
 
 		var searchpagetitle = "";
 
-		showLoader();
+		$(window).trigger("showLoader");
 		jQuery
 			.ajax({
 				xhrFields: {
@@ -1298,7 +1298,7 @@ uiload = function () {
 					}
 
 					if (searchpagetitle) {
-						setPageTitle(searchpagetitle);
+						$(window).trigger("setPageTitle",[searchpagetitle]);
 					}
 
 					//on success execute extra JS
@@ -1315,7 +1315,7 @@ uiload = function () {
 				},
 			})
 			.always(function () {
-				hideLoader();
+				$(window).trigger("hideLoader");
 			});
 
 		$(modaldialog).on("shown.bs.modal", function () {
@@ -1401,9 +1401,8 @@ uiload = function () {
 			adjustzindex(othermodal);
 		}
 
-		hideLoader();
-
-		setPageTitle();
+		$(window).trigger("hideLoader");
+		$(window).trigger("setPageTitle",[othermodal]);
 
 		if (oldurlbar !== undefined) {
 			history.pushState($("#application").html(), null, oldurlbar);
@@ -1422,21 +1421,14 @@ uiload = function () {
 		}
 	};
 
-	setPageTitle = function (element) {
+	$(window).on("setPageTitle", function(event,element)
+	{
 		if (element === undefined) {
 			element = $("#applicationcontent");
 		}
 		if (element === undefined || $(element).data("setpagetitle") == null) {
 			element = $("#application");
 		}
-		/*
-		var elements =  $(element).find('[data-setpagetitle]');
-		var setpagetitle = elements.last().data("setpagetitle");
-		if (!setpagetitle)
-		{
-		setpagetitle = $(element).data("setpagetitle");	
-	}
-		*/
 		var setpagetitle = $(element).data("setpagetitle");
 		var titlepostfix = $("#application").data("titlepostfix");
 		var title = "";
@@ -1447,7 +1439,7 @@ uiload = function () {
 			title = title ? title + " - " + titlepostfix : titlepostfix;
 		}
 		document.title = title;
-	};
+	});
 
 	lQuery(".entitydialogback").livequery("click", function (event) {
 		var link = $(this);
@@ -1686,7 +1678,7 @@ uiload = function () {
 		event.preventDefault();
 		var targetModal = $(this).closest(".modal");
 		confirmModalClose(targetModal);
-		hideLoader();
+		$(window).trigger("hideLoader");
 	});
 
 	lQuery(".entitytabactions").livequery("click", function (event) {
@@ -3924,7 +3916,7 @@ uiload = function () {
 					$(".pushcontent").removeClass("pushcontent-open");
 					$(".pushcontent").addClass("pushcontent-fullwidth");
 
-					setPageTitle(cell);
+					$(window).trigger("setPageTitle",[cell]);
 
 					$(window).trigger("resize");
 
@@ -3950,8 +3942,6 @@ uiload = function () {
 					$(".pushcontent").removeClass("pushcontent-" + sidebar);
 					$(".pushcontent").removeClass("pushcontent-open");
 					$(".pushcontent").addClass("pushcontent-fullwidth");
-
-					//setPageTitle(cell);
 
 					$(window).trigger("resize");
 				},
@@ -3994,9 +3984,7 @@ uiload = function () {
 						$(".pushcontent").css("margin-left", width + "px");
 					}
 				}
-
-				setPageTitle(targetdiv);
-
+				$(window).trigger("setPageTitle",[targetdiv]);
 				$(window).trigger("resize");
 			},
 		});
