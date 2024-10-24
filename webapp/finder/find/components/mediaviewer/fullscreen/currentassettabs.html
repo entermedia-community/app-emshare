@@ -11,37 +11,15 @@
 	#end
 #end
 
-	<div id="footermenu">
-		<ul class="footermenu">
-			#if($rendertype=="document")
-				#set($totalpages = $numberutils.toInt($asset.pages))
-				#if($totalpages>1)
-					<li class="footermenu bottomtab mvshowpagestab">
-						<a class="expandmenu  mvshowpages" 
-							title="$totalpages [[Pages]]" >
-						<i class="bi bi-list mr-1"></i> $totalpages [[Pages]]
-						</a>
-					</li>
-				#end
-			#end
-			#if (!$ismulti )
-			<li  class="footermenu bottomtab #if($opentab == "viewpreview")tabselected#end">	
-				<a class="expandmenu assetpreview assettab" 
-					data-link="$siteroot$componenthome/mediaviewer/fullscreen/tabs/viewpreview.html"
-					data-assettab="viewpreview"
-					title="[[View]] #esc($!title)" >
-				<i class="bi bi-fullscreen mr-1"></i> [[Viewer]] 
-				</a>
-			 </il>
-			 #end
-			 
-			 #if( !$previewonly && $canviewmetadatageneral )
-			 <li class="footermenu bottomtab #if($opentab == "viewproperties")tabselected#end">
-				<a class="expandmenu assettab" 
-					data-link="$siteroot$componenthome/mediaviewer/fullscreen/tabs/viewasset.html" 
-					title="[[Metadata]]"
-					data-assettab="viewproperties" >
-				<i class="bi bi-info-circle mr-1"></i> [[Properties]]  
+<div id="assettabnavs">
+	<ul>
+		#if($rendertype=="document")
+			#set($totalpages = $numberutils.toInt($asset.pages))
+			#if($totalpages>1)
+			<li class="assettabnav mvshowpagestab">
+				<a class="expandmenu mvshowpages" 
+					title="$totalpages [[Pages]]">
+					<i class="bi bi-list mr-1"></i> $totalpages [[Pages]]
 				</a>
 			</li>
 			#end
@@ -302,84 +280,9 @@
 							<a id="multiedit-menu" class="" href="#" title="[[Edit selected records]]">$text</a>
 						</li>
 						#end
-            	 	</ul>
-             </li>
-            #end
-            #end
-			 
-						
-			#if($user && ( !$previewonly 	&& !$ismulti))
-			#if($canviewconversions || 
-				$canviewclosedcaptions ||
-				$canviewattachments ||
-				$canconverthistory ||
-				$cancheckout ||
-				$candeleteasset  ||
-				$canmultiedit)
-			
-			
-			<li class="footermenu bottomtab bottomtabactions hidemulti #if($opentab == "viewactions") tabselected #end dropdown">
-			   <a href="#" class="expandmenu dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" title="[[More Menu]]"> 
-			   <i class="bi bi-pencil-square mr-1"></i>  
-			   <span class="bottomtabactionstext">
-			   ##TODO Create a table for actions
-			   #if ($opentabactions=='categorize')
-			   		[[Categories]]
-			   #elseif ($opentabactions=='map')
-			   		[[Map]]
-			   #elseif ($opentabactions=='attachments')
-			   		[[Attachments]]
-			   #elseif ($opentabactions=='assethistory')
-			   		[[History]]
-			   #else
-			   	[[More]]
-			   #end
-			   </span>
-			   </a>
-			   <ul class="dropdown-menu">
-
-		    	#if(false && !$ismulti && $canviewmap)
-			   	<li>
-			   	<a class="dropdown-item assettab #if($opentabactions=='map') dropdown-current #end" 
-						data-link="$siteroot$componenthome/mediaviewer/fullscreen/tabs/viewactions.html?action=map" title="[[Map]]"
-						data-assettab="viewactions"
-						data-assettabactions="map"
-						data-assettabname="[[Map]]" >
-					[[Map]] 
-					</a>
-			   	</li>
-			   	#end
-			   	
-		    	#if( !$ismulti && $canviewattachments )
-			   	<li>
-			   	<a class="dropdown-item assettab #if($opentabactions=='attachments') dropdown-current #end" 
-						data-link="$siteroot$componenthome/mediaviewer/fullscreen/tabs/viewactions.html?action=attachments" title="[[Attachments]]"
-						data-assettab="viewactions"
-						data-assettabactions="attachments"
-						data-assettabname="[[Attachments]]" >
-					[[Attachments]] 
-					</a>
-			   	</li>
-			   	#end
-		    	#if( !$ismulti && $canconverthistory )
-			   	<li>
-			   		<a class="dropdown-item assettab #if($opentabactions=='assethistory') dropdown-current #end" 
-						data-link="$siteroot$componenthome/mediaviewer/fullscreen/tabs/viewactions.html?action=assethistory" title="[[History]]"
-						data-assettab="viewactions"
-						data-assettabactions="assethistory"
-						data-assettabname="[[History]]" >
-					[[History]] 
-					</a>
-			   	</li>
-			   	#end
-		    #if ( $cancheckout  )
-				<li id="mediaviewerbasket">
-				#if($orderManager.isAssetInOrder($catalogid, $order, $asset.id) )
-					<a class="dropdown-item updatebasketmediaviewer" data-action="remove" data-alerttxt="[[Removed From Basket]]" targetdiv="mediaviewerbasket"  href="$siteroot$componenthome/basket/mediaviewertoggleitem.html?assetid=$asset.id">[[Remove From Cart]]</a>
-				#else
-					<a class="dropdown-item updatebasketmediaviewer" targetdiv="mediaviewerbasket" data-alerttxt="[[Added To Basket]]"  href="$siteroot$componenthome/basket/mediaviewertoggleitem.html?assetid=$asset.id">[[Add To Cart]]</a>
-				#end
-				</li>
+					#end
+				</ul>
+			</li>
 			#end
 		#end
 
