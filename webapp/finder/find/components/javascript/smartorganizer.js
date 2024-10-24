@@ -1116,7 +1116,7 @@ $(document).ready(function () {
 		lQuery("#icons-list").livequery(function () {
 			$(this).on("click", "button", function (e) {
 				e.stopImmediatePropagation();
-				showLoader();
+				$(window).trigger("showLoader");
 				var iconPath =
 					apphome +
 					"/theme/icons/bootstrap/" +
@@ -1127,7 +1127,7 @@ $(document).ready(function () {
 					var allSelected = canvas.getSelection().getAll().data;
 					if (allSelected.length == 0) {
 						closeemdialog($(this).closest(".modal"));
-						hideLoader();
+						$(window).trigger("hideLoader");
 						return;
 					} else {
 						selectedFolder = allSelected[0];

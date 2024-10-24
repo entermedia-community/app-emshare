@@ -193,7 +193,7 @@ updatebasket = function (e) {
 		targetDiv = targetDiv.replace(/\//g, "\\/");
 
 		$("#" + targetDiv).load(nextpage, function () {
-			showLoader();
+			$(window).trigger("showLoader");
 			var url = apphome + "/components/basket/menuitem.html";
 			$.ajax({
 				xhrFields: {
@@ -212,7 +212,8 @@ updatebasket = function (e) {
 					$("body").append(
 						'<div class="alert alert-success fader alert-save">Added to cart</div>'
 					);
-					hideLoader();
+					$(window).trigger("hideLoader");
+
 				},
 				complete: function () {
 					hideLoader();
