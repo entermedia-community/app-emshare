@@ -115,7 +115,7 @@
 			<label class="d-inline search-term text-brand" style="font-size: 0.8rem;" for="editSearch">
 				
 				<input type="hidden" name="field" value="description" />
-				<input type="hidden" name="operation" value="contains" />
+				<input type="hidden" name="operation" value="freeform" />
 				<input type="text" value="$!inputsearch" class="filter-search " name="description.value" autocomplete="off" />
 				<a href="$href"
 					class="submitform text-brand"
@@ -163,17 +163,19 @@
 			#end
 			$context.putPageValue("viewtype", $viewtype)
 			
-			#if ($detail.isLeaf())
-				#set($filternode = $hits.findFilterValue($detail.id))
-				$context.putPageValue("filternode",$filternode)
-				#if(!$filternode && ($viewtype == "list" || $viewtype == "entity" ))
-					##skip
-					#set ($viewtype = "")
+			#if ($detail.isLeaf() )
+				#set($filternode = $hits.findFilterValue($detail))
+				#ifnull($filternode)
+					#if( $viewtype != "list" && $viewtype != "entity" )  ##always show dates and text boxes
+						$pages.include("/${applicationid}/components/filters/detailedit.html", $context)
+					#else
+						##dont show this on the form	
+					#end	
 				#end
-				#if($viewtype)
+				#ifnotnull($filternode)
+					$context.putPageValue("filternode",$filternode)
 					$pages.include("/${applicationid}/components/filters/detailedit.html", $context)
 				#end
-				
 			#else
 				#if($detail.hasChildren())
 					$pages.include("/${applicationid}/components/filters/section.html", $context)
