@@ -1429,14 +1429,6 @@ uiload = function () {
 		if (element === undefined || $(element).data("setpagetitle") == null) {
 			element = $("#application");
 		}
-		/*
-		var elements =  $(element).find('[data-setpagetitle]');
-		var setpagetitle = elements.last().data("setpagetitle");
-		if (!setpagetitle)
-		{
-		setpagetitle = $(element).data("setpagetitle");	
-	}
-		*/
 		var setpagetitle = $(element).data("setpagetitle");
 		var titlepostfix = $("#application").data("titlepostfix");
 		var title = "";
