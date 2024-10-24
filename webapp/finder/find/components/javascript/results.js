@@ -1519,10 +1519,9 @@ jQuery(document).ready(function (url, params) {
 			} else {
 				// $(resultsdiv).load( columnsort + '&sortby=' + id + 'Up',
 				// options);
-				if(moduleid !== undefined) {
-					options[moduleid+"sortby"] = id + "Up";
-				}
-				else {
+				if (moduleid !== undefined) {
+					options[moduleid + "sortby"] = id + "Up";
+				} else {
 					options["sortby"] = id + "Up";
 				}
 				$.get(link, options, function (data) {
@@ -1534,12 +1533,11 @@ jQuery(document).ready(function (url, params) {
 			$(this).addClass("currentsort");
 			// $(resultsdiv).load( columnsort + '&sortby=' + id + 'Down',
 			// options);
-			if(moduleid !== undefined) {
-					options[moduleid+"sortby"] = id + "Down";
-				}
-				else {
-					options["sortby"] = id + "Down";
-				}
+			if (moduleid !== undefined) {
+				options[moduleid + "sortby"] = id + "Down";
+			} else {
+				options["sortby"] = id + "Down";
+			}
 			$.get(link, options, function (data) {
 				//$(targetdiv).replaceWith(data);
 				$(targetdiv).replaceWith(data);
@@ -1634,8 +1632,8 @@ jQuery(document).ready(function (url, params) {
 
 	lQuery("div.assetpreview").livequery("click", function (e) {
 		e.preventDefault();
-		$(".bottomtab").removeClass("tabselected");
-		$(this).closest(".bottomtab").addClass("tabselected");
+		$(".assettabnav").removeClass("tabselected");
+		$(this).closest(".assettabnav").addClass("tabselected");
 		var div = $("#main-media-viewer");
 		var assetid = div.data("assetid");
 		showAsset($(this), assetid);
@@ -1653,9 +1651,9 @@ jQuery(document).ready(function (url, params) {
 
 	lQuery("a.assettab").livequery("click", function (e) {
 		e.preventDefault();
-		$(".bottomtab").removeClass("tabselected");
-		$(".bottomtabactions a").removeClass("dropdown-current");
-		$(this).closest(".bottomtab").addClass("tabselected");
+		$(".assettabnav").removeClass("tabselected");
+		$(".assettabactions a").removeClass("dropdown-current");
+		$(this).closest(".assettabnav").addClass("tabselected");
 		var div = $("#main-media-viewer");
 		var options = div.data();
 
@@ -1702,7 +1700,7 @@ jQuery(document).ready(function (url, params) {
 				$(this).addClass("dropdown-current");
 				var label = $(this).data("assettabname");
 				if (label) {
-					$(".bottomtabactionstext").text(label);
+					$(".assettabactionstext").text(label);
 				}
 				// saveProfileProperty("assetopentabactions",assettabactions,function(){});
 			}
@@ -1711,7 +1709,7 @@ jQuery(document).ready(function (url, params) {
 				$(this).addClass("dropdown-current");
 				var label = $(this).data("assettabname");
 				if (label) {
-					$(".bottomtabactionstext").text(label);
+					$(".assettabactionstext").text(label);
 				}
 				// saveProfileProperty("assetopentabassettable",assettabtable,function(){});
 			}
