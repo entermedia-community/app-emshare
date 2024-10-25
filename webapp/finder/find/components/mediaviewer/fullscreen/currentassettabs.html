@@ -12,7 +12,7 @@
 #end
 
 <div id="assettabnavs">
-	<ul>
+	<ul class="flex-grow-1">
 		#if($rendertype=="document")
 			#set($totalpages = $numberutils.toInt($asset.pages))
 			#if($totalpages>1)
@@ -33,7 +33,7 @@
 				title="[[View]] #esc($!title)">
 				<i class="bi bi-fullscreen mr-1"></i> [[Viewer]] 
 			</a>
-		</il>
+		</li>
 		#end
 
 		#if( !$previewonly && $canviewmetadatageneral )
@@ -74,9 +74,9 @@
 		#end
 
 		#if (!$ismulti)
-			<div class="hidemulti">
+			<li class="hidemulti">
 				$pages.include("$componenthome/detaileditor/assetdatatables.html",$context)
-			</div>
+			</li>
 		#end
 
 		#set( $originalpath = $mediaarchive.asLinkToOriginal($asset) )
@@ -191,9 +191,36 @@
 			#end
 		#end
 
+		#if(!$ismulti && ($candownload || $canconvert || $candownloadfpo) && $asset.getFileFormat() != "pdf")
+		<li class="assettabnav">
+			#set($dlink = "$applink/views/modules/asset/activity/downloadassets.html") 
+			<a href="$dlink"
+				class="emdialog expandmenu" 
+				data-hidefooter="true" 
+				data-dialogid="donwloadasset" 
+				data-assetid="${asset.id}"
+				data-hitssessionid="$!hitssessionid">
+				<i class="bi bi-cloud-arrow-down mr-1"></i> [[Download]]
+			</a>
+		</li>
+		#end
+
 		#if($user && ( !$previewonly 	&& !$ismulti))
 			#if($canviewconversions || $canviewclosedcaptions || $canviewattachments || $canconverthistory || $cancheckout || $candeleteasset || $canmultiedit)
-			<li class="assettabnav assettabactions hidemulti #if($opentab == "viewactions") tabselected #end dropdown">
+
+			#if( !$ismulti && $canconverthistory )
+				<li class="assettabnav #if($opentab == 'imageeditor')tabselected #end">
+					<a class="expandmenu assettab" 
+						data-link="$siteroot$componenthome/mediaviewer/fullscreen/tabs/viewactions.html?action=assethistory" title="[[History]]"
+						data-title="[[History]]"
+						data-assettab="assethistory"
+						data-assettabname="[[History]]">
+						<i class="bi bi-clock-history ns mr-1"></i> [[History]] 
+					</a>
+				</li>
+			#end
+
+			<li class='assettabnav assettabactions hidemulti #if($opentab == "viewactions") tabselected #end dropdown'>
 				<a href="#" class="expandmenu dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" title="[[More Menu]]"> 
 					<i class="bi bi-pencil-square mr-1"></i> 
 					<span class="assettabactionstext">
@@ -203,8 +230,6 @@
 						[[Map]]
 					#elseif ($opentabactions=='attachments')
 						[[Attachments]]
-					#elseif ($opentabactions=='assethistory')
-						[[History]]
 					#else
 						[[More]]
 					#end
@@ -229,18 +254,6 @@
 							data-assettabactions="attachments"
 							data-assettabname="[[Attachments]]">
 							[[Attachments]] 
-						</a>
-					</li>
-					#end
-
-					#if( !$ismulti && $canconverthistory )
-					<li>
-						<a class="dropdown-item assettab #if($opentabactions=='assethistory') dropdown-current #end" 
-							data-link="$siteroot$componenthome/mediaviewer/fullscreen/tabs/viewactions.html?action=assethistory" title="[[History]]"
-							data-assettab="viewactions"
-							data-assettabactions="assethistory"
-							data-assettabname="[[History]]">
-							[[History]] 
 						</a>
 					</li>
 					#end
@@ -284,20 +297,6 @@
 				</ul>
 			</li>
 			#end
-		#end
-
-		#if(!$ismulti && ($candownload || $canconvert || $candownloadfpo) && $asset.getFileFormat() != "pdf")
-		<li class="assettabnav">
-			#set($dlink = "$applink/views/modules/asset/activity/downloadassets.html") 
-			<a href="$dlink"
-				class="emdialog expandmenu" 
-				data-hidefooter="true" 
-				data-dialogid="donwloadasset" 
-				data-assetid="${asset.id}"
-				data-hitssessionid="$!hitssessionid">
-				<i class="bi bi-cloud-arrow-down mr-1"></i> [[Download]]
-			</a>
-		</li>
 		#end
 	</ul>
 

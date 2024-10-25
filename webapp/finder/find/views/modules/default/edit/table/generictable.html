@@ -13,7 +13,7 @@ $context.putPageValue("searchhome", $searchhome)
 
 #set($viewid = $context.getRequestParameter("viewid"))
 #if( !$viewid )
-    #set( $viewid = $context.getRequestParameter("view"))
+  #set( $viewid = $context.getRequestParameter("view"))
 #end
 
 #set($viewpath = $context.getRequestParameter("viewpath"))
@@ -55,54 +55,37 @@ $context.putPageValue("searchhome", $searchhome)
 
 #if( $showit && $viewid)
 <div id="${viewid}editor" >
-
-		#set ($searcher = $searcherManager.getSearcher($catalogid, $searchtype))
-		#set( $viewdata = $searcher.getViewData($viewid) )
-		
-		<h4 style="float:left;">$!context.getText($viewdata)</h4>
-		
-		<div class="addnew-generic">
-			<a class="btn btn-sm btn-primary emdialog"  
-			
+	#set ($searcher = $searcherManager.getSearcher($catalogid, $searchtype))
+	#set( $viewdata = $searcher.getViewData($viewid) )
+	
+	<h4 style="float:left;">$!context.getText($viewdata)</h4>
+	
+	<div class="addnew-generic">
+		<a class="btn btn-primary emdialog"  
 			href="$home${page.directory}/generictablesearch.html?submodulesearchtype=$searchtype&fieldexternalid=$fieldexternalid&fieldexternalvalue=$!fieldexternalvalue&parentviewid=$!viewid&parentviewpath=$!viewpath&parentid=$!id&parentsearchtype=$!parentsearchtype" 
 			data-targetdiv="${viewid}editor"
 			data-parentviewid="$!viewid"
 			data-parentviewpath="$!viewpath"
 			data-parentid="$!id"
-			
-			data-hidefooter="true">[[Add]] $!context.getText($viewdata)</a>
-			
-##			<a class="btn btn-sm btn-primary ajax"  
-##			href="$home$editpath?$argsnoid&oemaxlevel=1" 
-##			data-targetdiv="${viewid}editor"
-##			data-hidefooter="true">[[Add New]]</a>
+			data-hidefooter="true">
+			[[Add]] $!context.getText($viewdata)
+		</a>
+	</div>
+	<div class="clearfix"></div>
+	#set($targetmodule = $mediaarchive.getCachedData("module", $viewdata.rendertable))
+	#set($targetmodulerendertype = $targetmodule.rendertype)
+	#if(!$targetmodulerendertype)
+		#set($targetmodulerendertype = "entity")
+	#end
+	#set($args ="$args&tabletype=subentitydialog&targetrendertype=$!{targetmodulerendertype}")
+	
+	$pages.include("/$applicationid/components/xml/table.html?$args&passalong=$passalong",$context)
+	
+	#if( !$parser.parseBoolean($edit) && ($caneditdata || $caneditasset) && !$print.equals("true"))
 
-
-		</div>
-		<div class="clearfix"></div>
-		#set($targetmodule = $mediaarchive.getCachedData("module", $viewdata.rendertable))
-		#set($targetmodulerendertype = $targetmodule.rendertype)
-		#if(!$targetmodulerendertype)
-			#set($targetmodulerendertype = "entity")
-		#end
-		#set($args ="$args&tabletype=subentitydialog&targetrendertype=$!{targetmodulerendertype}")
-		
-		$pages.include("/$applicationid/components/xml/table.html?$args&passalong=$passalong",$context)
-		
-		#if( !$parser.parseBoolean($edit) && ($caneditdata || $caneditasset) && !$print.equals("true"))
-	
-		
-	
-		
-		
-		
-		
-		
-
-		#end
-	
-	
+	#end
 </div>
+
 <div class="clearfix"></div>
 #else ##showit
 	<p class="info">[[No data has been entered]].</p>
