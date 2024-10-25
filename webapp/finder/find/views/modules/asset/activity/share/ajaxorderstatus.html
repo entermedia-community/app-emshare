@@ -3,7 +3,7 @@
 
 	#if( $order.ordertype == "email")
 	
-	Order Complete $!order.orderstatusdetails
+	[[Order Complete]] $!order.orderstatusdetails
 	
 	#elseif( $order.ordertype == "gallery")
 	
@@ -11,12 +11,13 @@
 		
 	#else
 	
-	#set( $history = $order.getRecentOrderHistory() )
+	[[Published]] $!{order.getValue("itemsuccesscount")} 
 	
-	[[Published]] $history.getItemSuccessCount() [[with]] $history.getItemErrorCount() [[errors]]
+	#if( $order.getValue("itemerrorcount") > 0)
+		
+		[[with]] $!order.getValue("itemerrorcount") [[errors]]
 	
-	#if( $history.getItemErrorCount() > 0)
-		#set( $errors = $mediaarchive.query("orderitem").exact("status","error").exact("orderid",$order.getId()).search() )
+		#set( $errors = $mediaarchive.query("orderitem").exact("publishstatus","error").exact("orderid",$order.getId()).search() )
 		$errors.size()
 		<table>
 		#foreach( $error in $errors)
@@ -39,7 +40,8 @@
 	#end
 #elseif( $order.orderstatus == "error" )
 
-Error
+[[Error]]
+
 <pre>
 $!order.orderstatusdetails
 </pre>
@@ -48,7 +50,7 @@ $!order.orderstatusdetails
 
 <div id="status$order.id" class="ajaxstatus" ajaxpath="$home$apphome/views/modules/asset/activity/share/ajaxorderstatus.html?orderid=$order.id" period="1500">
 
-Your Order is processing
+[[Your Order is processing]]
 
 
 <img src="$home$themeprefix/images/ajax-loader.gif" />
