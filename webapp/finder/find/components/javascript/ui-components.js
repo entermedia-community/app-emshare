@@ -4657,7 +4657,7 @@ autoreload = function (div, callback) {
 };
 
 
-$(window).on("checkautoreload", function(event,inDiv)
+$(window).on("checkautoreload", function(event,indiv)
 {
 	var classes = indiv.data("ajaxreloadtargets"); //assetresults, projectpage, sidebaralbums
 	if (classes) {
