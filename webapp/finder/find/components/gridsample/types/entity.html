@@ -83,17 +83,21 @@ $context.putPageValue("previewurl", $previewurl)
 	#set($moduleicon = $module.moduleicon)
 #end 
 
-<div class="emfolder-wrapper emgrid-type-$!moduleid entitycontainer entity$!moduleid$!entityid" 
+<div class="resultsdivdata emfolder-wrapper emgrid-type-$!moduleid entitycontainer entity$!moduleid$!entityid" 
 	id="emgridentity$!moduleid$!entityid"
-	data-id="${entityid}"
-  data-moduleid="$!{moduleid}"
-  data-rendertype="entity">
+	data-rowname="#text($hit)"
+	data-dataid="${entityid}"
+  	data-moduleid="$!{moduleid}"
+  	data-rendertype="entity">
 	#ifnotnull($entity.longcaption)
 		<div class="emfolder-hover">
 			<strong>[[Description]]:</strong> $entity.longcaption
 		</div>
 	#end
-	<a 	href="$!{previewurl}" 
+	#set($pickertarget = $context.getRequestParameter("pickertarget"))
+	
+	<a #ifnull($pickertarget)
+		href="$!{previewurl}" 
 		id="clickid${entityid}"
 		data-id="${entityid}"
    		data-moduleid="$!moduleid" 
@@ -106,7 +110,9 @@ $context.putPageValue("previewurl", $previewurl)
    	 		data-hideheader="true" 
 		#end
 		data-updateurl="true"
-		data-urlbar="$!urladdressbar">
+		data-urlbar="$!urladdressbar"
+	#end>
+	
 		<div class="emfolder-inner assetdropentity drop-over" 
 			id="attachedmedia$entityid" 
 			data-moduleid="$!moduleid" 

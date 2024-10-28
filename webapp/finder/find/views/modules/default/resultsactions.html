@@ -49,30 +49,33 @@ $context.putPageValue("entityrendertype", $entityrendertype)
 <div id="resultsheader" class="resultsheader #if($!hits.getSelectionSize() > 0)hasselections#end">
 	<div id="sub-nav" class="search-views emsubnav sub-nav-$!moduleid">
 		<ul class="resultsnav">
-			#if($permissions.can($moduleid, "create") && $moduleid!="faceprofilegroup" && $moduleid!="order")
-				<li>
-					#if($topmoduleid)
-						#set($addnew = "$!{siteroot}${apphome}/views/modules/${moduleid}/components/entities/addnew.html")
-						<a class="resultsnavlink emdialog"
-						data-dialogid="entitypickeraddnew"
-						data-hidefooter="true"
-						data-targetdivinner="pickersearchentities"
-						data-ajaxreloadtargets="onetomanytab"
-						data-fieldexternalid="$!fieldexternalid"
-						data-fieldexternalvalue="$!fieldexternalvalue"
-						href="$addnew"
-						title="[[Create New]] #text($entity)">
-						<i class="bi bi-plus-lg mr-1"></i> [[Create New]]</a>
-					#else
-						#set($addurl = "$!{siteroot}${apphome}/views/modules/${moduleid}/components/gridsample/preview/$!{entityrendertype}.html?edit=true&addnew=true&viewid=$!{moduleid}addnew")
-						#ifnotnull($topentityid)
-							#set($addurl = "$addurl&fieldexternalid=${topmodule.getId()}&fieldexternalvalue=${topentityid}&reloadtargets=topmodulecontainer")
+			#set($pickertarget = $context.getRequestParameter("pickertarget"))
+			#ifnull($pickertarget)
+				#if($permissions.can($moduleid, "create") && $moduleid!="faceprofilegroup" && $moduleid!="order")
+					<li>
+						#if($topmoduleid)
+							#set($addnew = "$!{siteroot}${apphome}/views/modules/${moduleid}/components/entities/addnew.html")
+							<a class="resultsnavlink emdialog"
+							data-dialogid="entitypickeraddnew"
+							data-hidefooter="true"
+							data-targetdivinner="pickersearchentities"
+							data-ajaxreloadtargets="onetomanytab"
+							data-fieldexternalid="$!fieldexternalid"
+							data-fieldexternalvalue="$!fieldexternalvalue"
+							href="$addnew"
+							title="[[Create New]] #text($entity)">
+							<i class="bi bi-plus-lg mr-1"></i> [[Create New]]</a>
+						#else
+							#set($addurl = "$!{siteroot}${apphome}/views/modules/${moduleid}/components/gridsample/preview/$!{entityrendertype}.html?edit=true&addnew=true&viewid=$!{moduleid}addnew")
+							#ifnotnull($topentityid)
+								#set($addurl = "$addurl&fieldexternalid=${topmodule.getId()}&fieldexternalvalue=${topentityid}&reloadtargets=topmodulecontainer")
+							#end
+							<a class="emdialog resultsnavlink" href="$addurl" title="[[Add New Record]]">
+								<i class="bi bi-plus-lg mr-1"></i> [[Create New]]
+							</a>
 						#end
-						<a class="emdialog resultsnavlink" href="$addurl" title="[[Add New Record]]">
-							<i class="bi bi-plus-lg mr-1"></i> [[Create New]]
-						</a>
-					#end
-				</li>
+					</li>
+				#end
 			#end
 			#if($resultview != "grid")
 			<li class="dropdown">

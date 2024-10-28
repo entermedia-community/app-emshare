@@ -4,6 +4,7 @@
 	#if(!$moduleid)
 		#set($moduleid = $module.getId())	
 	#end
+	$context.putPageValue("moduleid", $moduleid)
 	
 	#set($copyinghitssessionid = $context.getRequestParameter("copyinghitssessionid"))
 	
@@ -85,42 +86,7 @@
 		<i class="bi bi-plus-lg mr-1"></i> [[Create New]]</a>
 	#end 
 	<div class="clearfix"></div>
-
-	#if(!$tablehits.isEmpty())
-		#set ($details = $searcher.getDetailsForView($viewpath, $userprofile))
 		
-		<form  id="colsearchform" 
-				class="autosubmit ajaxform"
-				style="margin-bottom:10px;"
-			 	data-targetdivinner="entitypickerresults" 
-				action="$home$apphome/views/modules/$!{moduleid}/components/entities/search/results.html">
-				<input type="hidden" name="sortby" value="name" />
-				<input type="hidden" name="pickedassetid" value="$!pickedassetid" />
-				#if( $fieldexternalid && $fieldexternalvalue )	
-				<input type="hidden" name="field" value="$!fieldexternalid" />
-				<input type="hidden" name="$!{fieldexternalid}.value" value="$!fieldexternalvalue" />
-				<input type="hidden" name="operation" value="not" />
-				#end
-				$context.putPageValue("autocomplete","off")
-				
-			<div class="row inlinesearch">
-				
-				#foreach( $detail in $details)
-					<div class="col">
-						$context.putPageValue("detail", $detail)
-						$pages.include("/${applicationid}/components/advancedsearch/detaileditinline.html", $context)
-					</div>
-					
-					#if($mathutil.getModulus($foreach.count,3) == 0)
-						</div>
-						<div class="row inlinesearch">
-					#end
-				#end
-			</div>
-		</form>
-	#end
-
-			
 	 
 	<div class="overflow-y">
 		<div id="entitypickerresults"
@@ -178,6 +144,8 @@
 		##Used? legacy?
 		#set( $foreignkeyid = $context.getRequestParameter("foreignkeyid") )
 		#set( $foreignkeyvalue = $context.getRequestParameter("foreignkeyvalue") )
+		
+		
 
 		#if( $fieldexternalid && $fieldexternalvalue )
 				$pages.include("$apphome/views/modules/$!{moduleid}/components/entities/search/results.html?field=${fieldexternalid}&${fieldexternalid}.value=${fieldexternalvalue}&operation=not",$context)

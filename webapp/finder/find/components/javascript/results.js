@@ -1251,12 +1251,17 @@ jQuery(document).ready(function (url, params) {
 		}
 	}
 	lQuery("div.toggle-selection").livequery("click", function () {
+		var pickerresults = $(this).closest(".pickerresults");
+		if (pickerresults.length) {
+			return;	
+		}
 		var checkbox = $(this)
 			.parent()
 			.siblings("input.resultsselection.selectionbox");
 		checkbox.prop("checked", !checkbox.prop("checked"));
 		handleAsssetSelect(checkbox);
 	});
+	
 	lQuery("input.resultsselection.selectionbox").livequery(
 		"change",
 		function () {

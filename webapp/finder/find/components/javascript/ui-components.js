@@ -1980,26 +1980,53 @@ uiload = function () {
 		}
 	});
 
-	//Entity Dialog Table
-	lQuery(".emselectablemodule table td").livequery("click", function (event) {
-		var clicked = $(this);
-		if (clicked.attr("noclick") == "true") {
-			return true;
-		}
-		if ($(event.target).is("input")) {
-			return true;
-		}
-		if ($(event.target).is("a")) {
-			return true;
-		}
-		if ($(event.target).closest(".jp-audio").length) {
-			return true;
-		}
 
+	lQuery(".assetpickerselectrow").livequery("click", function () {
+		var assetid = $(this).data("assetid");
+		jQuery("#" + targetdiv).attr("value", assetid);
+
+		//Todo: Integrte with emselectable
+		var emselectable = $(this).closest(".emselectable");
+
+		var launcher = emselectable.data("launcher");
+		launcher = $("#" + launcher);
+		if (launcher.length) {
+			var options = launcher.data();
+			options.assetid = assetid;
+
+			var clickurl = launcher.data("clickurl");
+			if (clickurl && clickurl != "") {
+				var targetdiv = launcher.data("targetdiv");
+				if (targetdiv !== undefined) {
+					jQuery.ajax({
+						url: clickurl,
+						data: options,
+						success: function (data) {
+							if (!targetdiv.jquery) {
+								targetdiv = $("#" + targetdiv);
+							}
+							targetdiv.replaceWith(data);
+							closeemdialog(emselectable.closest(".modal"));
+						},
+					});
+				}
+				return;
+			}
+		}
+	});
+
+	
+	//Main Module results
+	lQuery(".topmodulecontainer .resultsdiv .resultsdivdata").livequery("click", function (event) {
+		var clicked = $(this);
+		if(!handleclick(clicked)) {
+			return true;
+		}
+		
 		var emselectable = clicked.closest(".emselectablemodule");
 
-		var row = $(clicked.closest("tr"));
-		var rowid = row.attr("rowid");
+		var row = $(clicked.closest(".resultsdivdata"));
+		var rowid = row.data("dataid");
 
 		var targetlink = emselectable.data("targetlink");
 
@@ -2044,223 +2071,92 @@ uiload = function () {
 				emdialog(row, event);
 			}
 		}
-	});
-
-	//Entity SubModule Table ---Not used anymore TODO: Delete
-	/* lQuery(".emselectableentity table td").livequery("click", function (event) {
+				
+	 });
+	
+	//Submodule picker reuslts
+	lQuery(".submodulepicker .resultsdiv .resultsdivdata").livequery("click", function (event) {
 		var clicked = $(this);
-		if (clicked.attr("noclick") == "true") {
+		if(!handleclick(clicked)) {
 			return true;
 		}
-		if ($(event.target).is("input")) {
-			return true;
-		}
-		if ($(event.target).is("a")) {
-			return true;
-		}
-		if ($(event.target).closest(".jp-audio").length) {
-			return true;
-		}
-		var emselectable = clicked.closest(".emselectableentity");
 
-		var row = $(clicked.closest("tr"));
-		var rowid = row.attr("rowid");
+		var emselectable = clicked.closest(".emselectablemodule");
 
-		var tabletype = emselectable.data("tabletype"); //make this earlier?
-		if (tabletype == "subentity") {
-			var targetdiv = "";
-			var options = null;
-			var entityid = rowid;
-			if (entityid) {
-				var container = emselectable.closest(".entity-wraper");
-				var tabs = container.find(".entity-tab-content");
-				if (tabs.length >= 20) {
-					alert("Max Tabs Limit");
-					return;
-				}
-				var tabexists = false;
+		var row = $(clicked.closest(".resultsdivdata"));
+		var rowid = row.data("dataid");
 
-				if (!tabexists) {
-					//var options1 = emselectable.data();
-					var options1 = row.data();
-					options1.id = rowid;
-					var targetcomponenthome = emselectable.data("targetcomponenthome");
-					var targetrendertype = emselectable.data("targetrendertype");
-					var clickurl =
-						targetcomponenthome + "/gridsample/preview/entity.html";
+		var targetlink = emselectable.data("targetlink");
 
-					options1.updateurl = true;
-					var urlbar =
-						apphome +
-						"/views/modules/" +
-						emselectable.data("searchtype") +
-						"/index.html?entityid=" +
-						rowid;
-					options1.urlbar = urlbar;
-					options1.oemaxlevel = 1;
-
-					jQuery.ajax({
-						url: clickurl,
-						data: options1,
-						success: function (data) {
-							var parent = container.closest(".entitydialog");
-							container.replaceWith(data);
-							tabbackbutton(parent);
-							if (urlbar !== undefined) {
-								history.pushState($("#application").html(), null, urlbar);
-								window.scrollTo(0, 0);
-							}
-						},
-					});
-				}
-
-				return;
+		if (targetlink && targetlink != "") {
+			targetlink +=
+				(targetlink.indexOf("?") >= 0 ? "&" : "?") + "id=" + rowid;
+			row.data("targetlink", targetlink);
+			row.data("oemaxlevel", "2");
+			if (emselectable.data("tabletype") == "subentity") {
+				row.data("targetrendertype", "entity");
+				row.data("oemaxlevel", "1");
 			}
+			row.data("id", rowid);
+			row.data("hitssessionid", emselectable.data("hitssessionid"));
+			row.data("updateurl", true);
+			var urlbar =
+				apphome +
+				"/views/modules/" +
+				emselectable.data("searchtype") +
+				"/index.html?entityid=" +
+				rowid;
+			row.data("urlbar", urlbar);
+
+			emdialog(row, event);
 		}
 	});
+	
+	//Entity picker
+	lQuery(".pickerresults .resultsdiv .resultsdivdata").livequery("click",	function (event) {
+		var clicked = $(this);
+		if(!handleclick(clicked)) {
+			return true;
+		}
+		var row = $(clicked.closest(".resultsdivdata"));
+		var rowid = row.data("dataid");
+		var pickerresults = clicked.closest(".pickerresults");
 
-	//Entity Add Sub Module
-	lQuery(".emselectableentityadd table td").livequery(
-		"click",
-		function (event) {
-			var clicked = $(this);
-			if (clicked.attr("noclick") == "true") {
-				return true;
-			}
-			if ($(event.target).is("input")) {
-				return true;
-			}
-			if ($(event.target).is("a")) {
-				return true;
-			}
-			var emselectable = clicked.closest(".emselectableentityadd");
-			targetdiv = emselectable.data("targetdiv");
-
-			var row = $(clicked.closest("tr"));
-			var rowid = row.attr("rowid");
-			clickurl = finddata(emselectable, "clickurl");
-			var targetdiv = finddata(emselectable, "targetdiv");
-			var options = emselectable.data();
-			options.id = row.attr("rowid");
-
-			if (targetdiv !== undefined && targetdiv != "") {
-				jQuery.ajax({
-					url: clickurl,
-					data: options,
-					success: function (data) {
-						if (!targetdiv.jquery) {
-							targetdiv = $("#" + targetdiv);
-						}
-						//					targetdiv.replaceWith(data);
-						autoreload(targetdiv);
-					},
-				});
+		if (pickerresults.length) {
+			var pickertarget = pickerresults.data("pickertarget");
+			pickertarget = $("#" + pickertarget);
+			if (pickertarget.length > 0) {
+				updateentityfield(pickertarget, rowid, row.data("rowname"));
+				closeemdialog(pickerresults.closest(".modal"));
 			}
 			return;
 		}
-	);
-*/
-
-	lQuery(".pickcategorylink").livequery("click", function () {});
-
-	lQuery(".assetpickerselectrow").livequery("click", function () {
-		var assetid = $(this).data("assetid");
-		jQuery("#" + targetdiv).attr("value", assetid);
-
-		//Todo: Integrte with emselectable
-		var emselectable = $(this).closest(".emselectable");
-
-		var launcher = emselectable.data("launcher");
-		launcher = $("#" + launcher);
-		if (launcher.length) {
-			var options = launcher.data();
-			options.assetid = assetid;
-
-			var clickurl = launcher.data("clickurl");
-			if (clickurl && clickurl != "") {
-				var targetdiv = launcher.data("targetdiv");
-				if (targetdiv !== undefined) {
-					jQuery.ajax({
-						url: clickurl,
-						data: options,
-						success: function (data) {
-							if (!targetdiv.jquery) {
-								targetdiv = $("#" + targetdiv);
-							}
-							targetdiv.replaceWith(data);
-							closeemdialog(emselectable.closest(".modal"));
-						},
-					});
-				}
-				return;
-			}
-		}
-	});
-
-	//newpicker
-	lQuery(".pickerselectrow, .pickerselectrowdiv").livequery(
-		"click",
-		function (event) {
-			var row = $(this).closest("tr");
-			var rowid = row.data("id");
-			var pickerresults = $(this).closest(".pickerresults");
-
-			if (pickerresults.length) {
-				var options = pickerresults.data();
-				//options.assetid = assetid;
-
-				options.id = rowid;
-				var clickurl = pickerresults.data("clickurl");
-				var targetdiv = pickerresults.data("clicktargetdiv");
-				var targettype = pickerresults.data("targettype");
-
-				if (targettype == "entitydialog") {
-					emdialog(pickerresults, event);
-					return;
-				} else if (targettype == "entitypickerfield") {
-					var pickertarget = pickerresults.data("pickertarget");
-					pickertarget = $("#" + pickertarget);
-					if (pickertarget.length > 0) {
-						updateentitylist(pickertarget, rowid, row.data("rowname"));
-						closeemdialog(pickerresults.closest(".modal"));
-					}
-					return;
-				} else {
-					if (clickurl !== undefined && clickurl != "") {
-						jQuery.ajax({
-							url: clickurl,
-							data: options,
-							success: function (data) {
-								if (!targetdiv.jquery) {
-									targetdiv = $("#" + targetdiv);
-								}
-								if (targettype == "message") {
-									if (targetdiv !== undefined) {
-										targetdiv.prepend(data);
-										targetdiv.find(".fader").fadeOut(3000, "linear");
-									}
-								} else if (targettype == "entitypickersubmodule") {
-									var pickertarget = pickerresults.data("pickertarget");
-									pickertarget = $("#" + pickertarget);
-									if (pickertarget.length > 0) {
-										autoreload(pickertarget);
-									}
-								} else {
-									//regular targetdiv
-									if (targetdiv !== undefined) {
-										targetdiv.replaceWith(data);
-									}
-								}
-
-								closeemdialog(pickerresults.closest(".modal"));
-							},
-						});
-					}
-					return;
-				}
-			}
 		}
 	);
+	
+	function handleclick(clicked) {
+		if (clicked.attr("noclick") == "true") {
+			return false;
+		}
+		if ($(event.target).is("input")) {
+			return false;
+		}
+		if ($(event.target).is("a")) {
+			return false;
+		}
+		if ($(event.target).closest(".jp-audio").length) {
+			return false;
+		}
+		return true;
+	}
+	
+
+/*
+
+if (targettype == "entitydialog") {
+	emdialog(pickerresults, event);
+	return;
+	*/
 
 	lQuery(".pickerselectadded").livequery(function () {
 		var link = $(this);
@@ -2269,7 +2165,7 @@ uiload = function () {
 			var pickertarget = link.data("pickertarget");
 			pickertarget = $("#" + pickertarget);
 			if (pickertarget.length > 0) {
-				updateentitylist(pickertarget, link.data("id"), link.data("name"));
+				updateentityfield(pickertarget, link.data("id"), link.data("name"));
 			}
 		} else if (targettype == "entitypickersubmodule") {
 			var pickertarget = link.data("pickertarget");
@@ -2281,20 +2177,31 @@ uiload = function () {
 		closeemdialog(link.closest(".modal"));
 	});
 
-	updateentitylist = function (pickertarget, id, name) {
-		var template = $("#pickedtemplateREPLACEID", pickertarget).html(); //clone().appendTo(pickertarget);
-		var newcode = template.replaceAll("REPLACEID", id);
-		newcode = newcode.replaceAll("REPLACEFIELDNAME", "");
-		var ismulti = pickertarget.data("ismulti");
-		if (ismulti == undefined || !ismulti) {
-			//clear others
-			pickertarget.find("li:not(#pickedtemplateREPLACEID)").remove();
+	updateentityfield = function (pickertarget, id, name) {
+		
+		if(pickertarget.hasClass("assetpicker")) {
+			//Asset  Picker
+			var detailid = pickertarget.data("detailid");
+			$("#"+detailid + "-value").attr("value", id);
+			$("#" + detailid + "-preview").load(apphome+"/components/xml/types/assetpicker/preview.html?oemaxlevel=1&assetid=" + id, function(){
+			});
+
 		}
-		pickertarget.prepend("<li>" + newcode + "</li>");
-		var newrow = pickertarget.find("li:first");
-		newrow.attr("id", id);
-		newrow.find("a:first").text(name);
-		newrow.show();
+		else {
+			var template = $("#pickedtemplateREPLACEID", pickertarget).html(); //clone().appendTo(pickertarget);
+			var newcode = template.replaceAll("REPLACEID", id);
+			newcode = newcode.replaceAll("REPLACEFIELDNAME", "");
+			var ismulti = pickertarget.data("ismulti");
+			if (ismulti == undefined || !ismulti) {
+				//clear others
+				pickertarget.find("li:not(#pickedtemplateREPLACEID)").remove();
+			}
+			pickertarget.prepend("<li>" + newcode + "</li>");
+			var newrow = pickertarget.find("li:first");
+			newrow.attr("id", id);
+			newrow.find("a:first").text(name);
+			newrow.show();
+		}
 	};
 
 	showmodal = function (emselecttable, url) {

@@ -3,7 +3,7 @@
 	#set($idcount = "")
 #end
 
-<div class="assetpicker">
+<div class="assetpicker"  id="entitypicker${detail.id}" data-detailid="${detail.id}">
 	<div class="render-type-thumbnail p-1" id="${detail.id}-preview">
 		#if($val && $val != "")
 			#set( $foundrow = $mediaarchive.getAsset($val)  )
@@ -32,9 +32,20 @@
 		<span class="d-inline-block mx-2">
 			[[or]]
 		</span>
-		<a href="$siteroot$apphome/components/assetpicker/search/searchassets.html?targetdiv=${detail.id}-value&detailid=${detail.id}&categoryid=$!{defaultfolder.getId()}" 
-			data-target="$siteroot$apphome/components/assetpicker/search/searchassets.html?targetdiv=${detail.id}-value&detailid=${detail.id}"
-			data-dialogid="assetsearchdialog" 
-			class="emdialog btn btn-primary">[[Browse]] </a>
+		
+		##?targetdiv=${detail.id}-value&detailid=${detail.id}&categoryid=$!{defaultfolder.getId()}
+		
+		<a href="$siteroot$apphome/views/modules/asset/components/entities/search/searchpicker.html" 
+			class="emdialog btn btn-primary"
+			data-dialogid="dialogpickerassetpicker"
+			data-assetclearresults="true"
+			data-assetclearselections="true"
+			data-width="1200"
+			data-detailid = '${detail.id}'
+			data-entitymodule="asset"
+			data-pickertarget="entitypicker${detail.id}"
+			data-pickersearchaddnew="true"
+			data-hidefooter="true"
+			>[[Browse]] </a>
 	</div>
 </div>
