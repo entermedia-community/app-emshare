@@ -897,12 +897,16 @@ uiload = function () {
 					if (showwaitingtarget !== undefined) {
 						showwaitingtarget.hide();
 					}
-					/*
-					var targettype = form.data("targettype");
-					if(targettype !== undefined && targettype == "entitypickersubmodule") {
-				var pickertarget = form.data("pickertarget");
-				autoreload($("#"+pickertarget));
-			}*/
+					
+					var pickertarget = form.data("pickertarget");
+					if(pickertarget !== undefined) {
+						var parsed = $(result);
+						var dataid = parsed.data("dataid");
+						var dataname = parsed.data("dataname");
+						
+						$(window).trigger("updatepickertarget", [pickertarget,dataid,dataname]);
+					}
+					
 					var targetdivinner = form.data("targetdivinner");
 					if (targetdivinner) {
 						$("#" + $.escapeSelector(targetdivinner)).html(result);
@@ -951,6 +955,8 @@ uiload = function () {
 					if (form.data("onsuccessreload")) {
 						document.location.reload(true);
 					}
+					
+					
 				},
 				complete: function () {
 					submitButton.removeAttr("disabled");
@@ -2133,6 +2139,7 @@ uiload = function () {
 		}
 		}
 	);
+
 	
 	function handleclick(clicked) {
 		if (clicked.attr("noclick") == "true") {
@@ -2158,24 +2165,14 @@ if (targettype == "entitydialog") {
 	return;
 	*/
 
-	lQuery(".pickerselectadded").livequery(function () {
-		var link = $(this);
-		var targettype = link.data("targettype");
-		if (targettype == "entitypickerfield") {
-			var pickertarget = link.data("pickertarget");
-			pickertarget = $("#" + pickertarget);
-			if (pickertarget.length > 0) {
-				updateentityfield(pickertarget, link.data("id"), link.data("name"));
-			}
-		} else if (targettype == "entitypickersubmodule") {
-			var pickertarget = link.data("pickertarget");
-			pickertarget = $("#" + pickertarget);
-			if (pickertarget.length > 0) {
-				autoreload(pickertarget);
-			}
+	$(window).on("updatepickertarget",function (event, pickertargetid, dataid, dataname ) {
+		var pickertarget = $("#" + pickertargetid);
+		if (pickertarget.length > 0) {
+			updateentityfield(pickertarget, dataid, dataname);
 		}
-		closeemdialog(link.closest(".modal"));
 	});
+
+
 
 	updateentityfield = function (pickertarget, id, name) {
 		
