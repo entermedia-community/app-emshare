@@ -18,23 +18,25 @@
 
 	
 	<div class="d-flex align-items-center ml-auto">
-	#if ($desktop)
-		#ifnotnull($selectedbox)
-			<button class="sync-lightbox lightbox-header-btn positive"
-				style="display: none"
-				data-entityid="$!entity.getId()" 
-				data-path='$!entity.get("uploadsourcepath")'
-				data-lightbox="#text($selectedbox)">
-				<i class="bi bi-upload mr-1 ns"></i> <span>[[Sync]]</span>
-			</button>
-			<button class="lightbox-header-btn open-lightbox"
-			  data-entityid="$!entity.getId()"
-				data-path='$!entity.get("uploadsourcepath")'
+	#if ($desktop) 
+		<button class="sync-lightbox lightbox-header-btn positive"
+			style="display: none"
+			data-entityid="$!entity.getId()"
+			#ifnotnull($selectedbox)
+				data-lightbox="#text($selectedbox)"
+			#end
+			data-path='$!entity.get("uploadsourcepath")'>
+			<i class="bi bi-upload mr-1 ns"></i> <span>[[Sync]]</span>
+		</button>
+		<button class="lightbox-header-btn open-lightbox"
+			#ifnotnull($selectedbox)
 				data-lightboxid="$selectedbox.id"
-				data-lightbox="#text($selectedbox)">
-				<i class="bi bi-download mr-1 ns"></i> <span>[[Open Locally]]</span>
-			</button> 
-		#end
+				data-lightbox="#text($selectedbox)"
+			#end
+			data-entityid="$!entity.getId()"
+			data-path='$!entity.get("uploadsourcepath")'>
+			<i class="bi bi-download mr-1 ns"></i> <span>[[Open Locally]]</span>
+		</button>  
 	#end
 	
 	#set($showpublishbtn = false)
