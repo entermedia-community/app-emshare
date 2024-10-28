@@ -1,5 +1,6 @@
 #set( $action = $context.getRequestParameter("action") ) 
 #set( $targetdiv = $context.getRequestParameter("targetdiv") )
+#set( $categoryid = $context.getRequestParameter("categoryid") )
 #set($hits = $pickerhits)
 $context.putPageValue("hits",$hits)
 <div id="search-categories" >
@@ -39,7 +40,11 @@ $context.putPageValue("hits",$hits)
 	 		data-targetdiv="assetsearchresults"
 	 		data-searchhome="$siteroot$apphome/components/assetpicker/search"
 	 		data-searchtype="asset" >
-			$pages.include("$apphome/components/assetpicker/search/searchassetresults.html",$context)
+	 		#set( $link = "$apphome/components/assetpicker/search/searchassetresults.html?assetclearresults=true")
+	 		#ifnotnull($categoryid)
+				#set( $link = "${link}field=category&category.value=${$categoryid}&operation=exact")
+	 		#end
+			$pages.include($link,$context)
 		</div>
 		
 	</div>
