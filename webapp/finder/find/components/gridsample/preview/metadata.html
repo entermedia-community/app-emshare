@@ -67,6 +67,13 @@ $context.putPageValue("edit", $edit)
 	#set($targetentitytabid = "entity-tab-#eid($id)")
 #end
 
+#ifnotnull($data)
+#if( $module.getBoolean("enableuploading"))
+	#set($defaultfolder =  $mediaarchive.getBean("entityManager").loadDefaultFolder($module, $data, $context.getUser()))
+	$context.putPageValue("defaultfolder", $defaultfolder)
+#end
+#end
+
 #set($view = "$searchtype/$viewid")
 #set($action = "$siteroot$applink/views/modules/${moduleid}/components/gridsample/preview/metadata-save.html")
 

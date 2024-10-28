@@ -31,8 +31,6 @@
 
 $context.putPageValue("thumbsize", $thumbsize)
 
-#set($urlparams = $context.getPageValue("urlparams"))
-
 <div class="emthumbholder draggholder">
 	#if( $hit.importstatus && $hit.importstatus == "uploading" )
 		$pages.include("$componenthome/uploadqueue/uploadstatus.html?assetid=${hit.id}",$context)	
@@ -67,7 +65,11 @@ $context.putPageValue("thumbsize", $thumbsize)
 				$context.putPageValue("faceprofilegroups", $hits.getSearchQuery().getValue("faceprofilegroups"))
 				$pages.include("$componenthome/results/thumbnails/faceprofilebox.html", $context)
 		#else
-		
+			#set($clearcache = $context.getRequestParameter("clearcache"))
+			#ifnotnull($clearcache)
+				#set( $time = $context.getLocaleManager().getDateStorageUtil().getTime( $hit.get("assetmodificationdate") ) )
+				#set( $urlparams= "?_=$time")
+			#end
 			<img class="imagethumb img-fluid  img$!thumbsize "
 					catalogid="$catalogid" 
 					assetid="$hit.id" 

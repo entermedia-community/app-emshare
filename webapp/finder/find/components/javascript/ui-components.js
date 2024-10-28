@@ -226,7 +226,7 @@ runajaxonthis = function (inlink, e) {
 						}
 					}
 
-					checkautoreload(inlink);
+					$(window).trigger("checkautoreload",[inlink]);
 
 					//actions after autoreload?
 					var message = inlink.data("alertmessage");
@@ -893,7 +893,7 @@ uiload = function () {
 					// $("#" + targetdiv).replaceWith(data);
 				},
 				success: function (result, status, xhr, $form) {
-					checkautoreload(form);
+					$(window).trigger("checkautoreload",[form]);
 					if (showwaitingtarget !== undefined) {
 						showwaitingtarget.hide();
 					}
@@ -4632,6 +4632,7 @@ replaceelement = function (url, div, options, callback) {
 		async: false,
 		data: options,
 		success: function (data) {
+			//Look for img and add ?cache=false
 			div.replaceWith(data);
 
 			if (callback && typeof callback === "function") {
@@ -4646,7 +4647,18 @@ replaceelement = function (url, div, options, callback) {
 	});
 };
 
-checkautoreload = function (indiv) {
+autoreload = function (div, callback) {
+	var url = div.data("url");
+	if (url != undefined) {
+		var options = div.data();
+		replaceelement(url, div, options, callback);
+		jQuery(window).trigger("resize");
+	}
+};
+
+
+$(window).on("checkautoreload", function(event,inDiv)
+{
 	var classes = indiv.data("ajaxreloadtargets"); //assetresults, projectpage, sidebaralbums
 	if (classes) {
 		var splitnames = classes.split(",");
@@ -4656,15 +4668,9 @@ checkautoreload = function (indiv) {
 			});
 		});
 	}
-};
-autoreload = function (div, callback) {
-	var url = div.data("url");
-	if (url != undefined) {
-		var options = div.data();
-		replaceelement(url, div, options, callback);
-		jQuery(window).trigger("resize");
-	}
-};
+});
+
+
 
 lQuery(".fieldsParent").livequery("refreshFields", function () {
 	autoreload($(this));
@@ -4713,7 +4719,7 @@ runajaxstatus = function () {
 				data: data,
 				success: function (data) {
 					cell.replaceWith(data);
-					checkautoreload(cell);
+					$(window).trigger("checkautoreload",[cell]);
 				},
 				xhrFields: {
 					withCredentials: true,
