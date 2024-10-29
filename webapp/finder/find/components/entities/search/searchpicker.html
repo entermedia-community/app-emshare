@@ -86,21 +86,19 @@
 		
 	 
 	<div class="overflow-y">
-		<div id="entitypickerresults"
-			class="pickerresults"
+		<div id="entitypickerresults" class="pickerresults #if( $copyinghits || $pickedassetid || $copyingcategoryid) pickerresultscopy #end"
 			
 			#if( $copyinghits || $pickedassetid || $copyingcategoryid) 
 				#if($pickedassetid)
 					data-pickedassetid="$pickedassetid"
+					data-clickurl="$applink/views/modules/${moduleid}/components/entities/addassettoentity.html"
+					data-clicktargetdiv="assetentityresultsmediaviewer"
 				#else
 					data-copyinghitssessionid="$!copyinghitssessionid"
 				#end
-				#if($pickedassetid)
-					data-clickurl="$applink/views/modules/${moduleid}/components/entities/addassettoentity.html"
-					data-clicktargetdiv="assetentityresultsmediaviewer"			
-				#elseif($pickertarget=="addtocategory")
-						data-copyinghitssessionid="$!copyinghitssessionid"
-						data-copyingsearchtype="$!copyingsearchtype"
+				#if($pickertarget=="addtocategory")
+					data-copyinghitssessionid="$!copyinghitssessionid"
+					data-copyingsearchtype="$!copyingsearchtype"
 					data-clickurl="$applink/views/modules/searchcategory/savetoentities.html"
 					data-clicktargetdiv="applicationmaincontent"
 					data-targettype="message"
