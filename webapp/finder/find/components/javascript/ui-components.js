@@ -3785,24 +3785,26 @@ if (targettype == "entitydialog") {
 	lQuery(".summary-toggler").livequery("click", function (e) {
 		var toggler = $(this);
 		var results = toggler.closest(".resultsarea");
-		var container = $(".summary-container ",results);
+		var container = $(".summary-container", results);
 		var nowopen = false;
 
 		if (container.hasClass("closed")) {
 			nowopen = true;
 			container.removeClass("closed");
-			$(".summary-opener",results).addClass("closed");
-			$(".summary-container",results).removeClass("closed");
+			$(".summary-opener", results).addClass("closed");
+			$(".summary-container", results).removeClass("closed");
 		} else {
 			nowopen = false;
 			container.addClass("closed");
-			$(".summary-opener",results).removeClass("closed");
+			$(".summary-opener", results).removeClass("closed");
 		}
-		$(window).trigger("resize");
+		setTimeout(() => {
+			$(window).trigger("resize");
+		}, 210); //match the transition speed of summary sidebar 200ms
 		saveProfileProperty($(this).data("target"), nowopen);
 	});
 
-/*
+	/*
 	lQuery(".summary-opener").livequery("click", function (e) {
 		var opener = $(this);
 		opener.addClass("closed");
