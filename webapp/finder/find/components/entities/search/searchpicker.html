@@ -4,6 +4,7 @@
 	#if(!$moduleid)
 		#set($moduleid = $module.getId())	
 	#end
+	$context.putPageValue("moduleid", $moduleid)
 	
 	#set($copyinghitssessionid = $context.getRequestParameter("copyinghitssessionid"))
 	
@@ -50,77 +51,39 @@
 	
 	#set($pickersearchaddnew = $context.getRequestParameter("pickersearchaddnew"))
 	
-	#if($pickersearchaddnew)
-	
-
-		#set($addnew = "$apphome/views/modules/${moduleid}/components/entities/addnew.html")
-		<a class="btn btn-lg btn-accent rounded mb-3 ajax float-left" style="min-width: 150px;"
-		data-targetdivinner="pickersearchentities"
-		data-pickertarget="$!pickertarget"
-		data-targettype="$!targettype"
-		data-ajaxreloadtargets="onetomanytab"
-		data-fieldexternalid="$!fieldexternalid"
-		data-fieldexternalvalue="$!fieldexternalvalue"
-		data-oemaxlevel="1"
-		href="$addnew">
-		<i class="bi bi-plus-lg mr-1"></i> [[Create New]]</a>
-	
-	
-	
-	#else
-		#set($addnew = "$apphome/views/modules/${moduleid}/components/gridsample/preview/entity.html")
-		
-		#if($pickedassetid)
-			#set($addnew = "${addnew}?edit=true&addnew=true&viewfiles=true&saveaction=addassets&pickedassetid=$!pickedassetid&copyingsearchtype=asset")
-		#elseif($copyingcategoryid)
-			#set($addnew = "${addnew}?edit=true&addnew=true&viewfiles=true&copyingsearchtype=$!copyingsearchtype&saveaction=additems&copyingcategoryid=$!copyingcategoryid&moduleid=$moduleid")
-		#elseif($copyinghits)
-			#set($addnew = "${addnew}?edit=true&addnew=true&viewfiles=true&copyingsearchtype=$!copyingsearchtype&saveaction=additems&copyinghitssessionid=$!copyinghitssessionid&moduleid=$moduleid")
+	#if($moduleid != "asset")
+		#if($pickersearchaddnew)
+			#set($addnew = "$apphome/views/modules/${moduleid}/components/entities/addnew.html")
+			<a class="btn btn-lg btn-accent rounded mb-3 ajax float-left" style="min-width: 150px;"
+			data-targetdivinner="pickersearchentities"
+			data-pickertarget="$!pickertarget"
+			data-targettype="$!targettype"
+			data-ajaxreloadtargets="onetomanytab"
+			data-fieldexternalid="$!fieldexternalid"
+			data-fieldexternalvalue="$!fieldexternalvalue"
+			data-oemaxlevel="1"
+			href="$addnew">
+			<i class="bi bi-plus-lg mr-1"></i> [[Create New]]</a>
 		#else
-			#set($addnew = "${addnew}?edit=true&addnew=true&saveaction=upload")
-		#end
-		<a class="btn btn-lg btn-accent rounded mb-3 emdialog float-righ" style="min-width: 150px;"
-		data-dialogid="addnewentity"
-		href="$addnew">
-		<i class="bi bi-plus-lg mr-1"></i> [[Create New]]</a>
-	#end 
-	<div class="clearfix"></div>
-
-	#if(!$tablehits.isEmpty())
-		#set ($details = $searcher.getDetailsForView($viewpath, $userprofile))
-		
-		<form  id="colsearchform" 
-				class="autosubmit ajaxform"
-				style="margin-bottom:10px;"
-			 	data-targetdivinner="entitypickerresults" 
-				action="$home$apphome/views/modules/$!{moduleid}/components/entities/search/results.html">
-				<input type="hidden" name="sortby" value="name" />
-				<input type="hidden" name="pickedassetid" value="$!pickedassetid" />
-				#if( $fieldexternalid && $fieldexternalvalue )	
-				<input type="hidden" name="field" value="$!fieldexternalid" />
-				<input type="hidden" name="$!{fieldexternalid}.value" value="$!fieldexternalvalue" />
-				<input type="hidden" name="operation" value="not" />
-				#end
-				$context.putPageValue("autocomplete","off")
-				
-			<div class="row inlinesearch">
-				
-				#foreach( $detail in $details)
-					<div class="col">
-						$context.putPageValue("detail", $detail)
-						$pages.include("/${applicationid}/components/advancedsearch/detaileditinline.html", $context)
-					</div>
-					
-					#if($mathutil.getModulus($foreach.count,3) == 0)
-						</div>
-						<div class="row inlinesearch">
-					#end
-				#end
-			</div>
-		</form>
-	#end
-
+			#set($addnew = "$apphome/views/modules/${moduleid}/components/gridsample/preview/entity.html")
 			
+			#if($pickedassetid)
+				#set($addnew = "${addnew}?edit=true&addnew=true&viewfiles=true&saveaction=addassets&pickedassetid=$!pickedassetid&copyingsearchtype=asset")
+			#elseif($copyingcategoryid)
+				#set($addnew = "${addnew}?edit=true&addnew=true&viewfiles=true&copyingsearchtype=$!copyingsearchtype&saveaction=additems&copyingcategoryid=$!copyingcategoryid&moduleid=$moduleid")
+			#elseif($copyinghits)
+				#set($addnew = "${addnew}?edit=true&addnew=true&viewfiles=true&copyingsearchtype=$!copyingsearchtype&saveaction=additems&copyinghitssessionid=$!copyinghitssessionid&moduleid=$moduleid")
+			#else
+				#set($addnew = "${addnew}?edit=true&addnew=true&saveaction=upload")
+			#end
+			<a class="btn btn-lg btn-accent rounded mb-3 emdialog float-righ" style="min-width: 150px;"
+			data-dialogid="addnewentity"
+			href="$addnew">
+			<i class="bi bi-plus-lg mr-1"></i> [[Create New]]</a>
+		#end 
+	#end
+	<div class="clearfix"></div>
+		
 	 
 	<div class="overflow-y">
 		<div id="entitypickerresults"
@@ -178,6 +141,8 @@
 		##Used? legacy?
 		#set( $foreignkeyid = $context.getRequestParameter("foreignkeyid") )
 		#set( $foreignkeyvalue = $context.getRequestParameter("foreignkeyvalue") )
+		
+		
 
 		#if( $fieldexternalid && $fieldexternalvalue )
 				$pages.include("$apphome/views/modules/$!{moduleid}/components/entities/search/results.html?field=${fieldexternalid}&${fieldexternalid}.value=${fieldexternalvalue}&operation=not",$context)
