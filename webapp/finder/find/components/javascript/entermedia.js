@@ -213,7 +213,6 @@ updatebasket = function (e) {
 						'<div class="alert alert-success fader alert-save">Added to cart</div>'
 					);
 					$(window).trigger("hideLoader");
-
 				},
 				complete: function () {
 					hideLoader();
@@ -867,6 +866,14 @@ onloadselectors = function () {
 			var node = $(this);
 			node.droppable({
 				scope: scope,
+				// activate: function (event, ui) {
+				// 	var nodelightboxid = node.data("lightboxid");
+				// 	var lightboxid = ui.draggable.data("lightboxid");
+				// 	if (nodelightboxid == lightboxid) {
+				// 		node.droppable("option", "disabled", true);
+				// 		node.removeClass("ui-droppable-active");
+				// 	}
+				// },
 				drop: function (event, ui) {
 					var element = $(this);
 					var assetid = ui.draggable.data("assetid");
