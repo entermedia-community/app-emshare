@@ -3794,7 +3794,7 @@ if (targettype == "entitydialog") {
 			$(".summary-opener",results).addClass("closed");
 			$(".summary-container",results).removeClass("closed");
 		} else {
-			nowopen = true;
+			nowopen = false;
 			container.addClass("closed");
 			$(".summary-opener",results).removeClass("closed");
 		}
