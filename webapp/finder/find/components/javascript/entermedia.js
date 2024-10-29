@@ -687,11 +687,7 @@ onloadselectors = function () {
 				helper: function () {
 					var cloned = $(this).clone();
 
-					$(cloned).css({
-						border: "1px solid blue",
-						background: "#c9e8f2",
-						"min-width": "250px",
-					});
+					$(cloned).addClass("categorydragging");
 
 					// var status =
 					// $('input[name=pagetoggle]').is(':checked');
@@ -777,7 +773,7 @@ onloadselectors = function () {
 							},
 							function (data) {
 								node.append(
-									"<span class='fader emnotify'>&nbsp;+" + data + "</span>"
+									"<span class='fader emnotify'>+" + data + "</span>"
 								);
 								node.find(".fader").fadeOut(3000);
 								node.removeClass("dragoverselected");
@@ -839,7 +835,7 @@ onloadselectors = function () {
 									targetdiv.replaceWith(data2);
 									if (data.trim() != "") {
 										targetdiv.append(
-											"<span class='fader emnotify'>&nbsp;+" + data + "</span>"
+											"<span class='fader emnotify'>+" + data + "</span>"
 										);
 										targetdiv.find(".fader").fadeOut(3000);
 									}

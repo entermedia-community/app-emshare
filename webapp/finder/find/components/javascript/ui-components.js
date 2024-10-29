@@ -6,7 +6,7 @@ var exitWarning = false;
 var siteroot;
 var apphome;
 
-$(window).on("showLoader", function() {
+$(window).on("showLoader", function () {
 	clearTimeout(lwt);
 	clearTimeout(lwht);
 	lwt = setTimeout(function () {
@@ -20,12 +20,11 @@ $(window).on("showLoader", function() {
 	}, 4000);
 });
 
-$(window).on("hideLoader", function() {
+$(window).on("hideLoader", function () {
 	clearTimeout(lwt);
 	clearTimeout(lwht);
 	$("#loading-window").removeClass("d-flex");
 });
-
 
 $.fn.cleandata = function () {
 	var element = $(this);
@@ -214,7 +213,7 @@ runajaxonthis = function (inlink, e) {
 						cell.html(data);
 						newcell = onpage.children(":first");
 					}
-					$(window).trigger("setPageTitle",[newcell]);
+					$(window).trigger("setPageTitle", [newcell]);
 
 					//on success execute extra JS
 					if (inlink.data("onsuccess")) {
@@ -226,7 +225,7 @@ runajaxonthis = function (inlink, e) {
 						}
 					}
 
-					$(window).trigger("checkautoreload",[inlink]);
+					$(window).trigger("checkautoreload", [inlink]);
 
 					//actions after autoreload?
 					var message = inlink.data("alertmessage");
@@ -741,11 +740,15 @@ uiload = function () {
 			_this.prepend('<span class="bi bi-info-circle-fill ns"></span>');
 			_this.append('<button><span class="bi bi-x ns"></span>');
 		}
+		var timeout = 4000;
+		if (_this.hasClass("fade-quick")) {
+			timeout = 2000;
+		}
 		setTimeout(function () {
 			_this.fadeOut(500, function () {
 				_this.remove();
 			});
-		}, 4000);
+		}, timeout);
 		_this.find("button").click(function () {
 			_this.fadeOut(500, function () {
 				_this.remove();
@@ -893,20 +896,24 @@ uiload = function () {
 					// $("#" + targetdiv).replaceWith(data);
 				},
 				success: function (result, status, xhr, $form) {
-					$(window).trigger("checkautoreload",[form]);
+					$(window).trigger("checkautoreload", [form]);
 					if (showwaitingtarget !== undefined) {
 						showwaitingtarget.hide();
 					}
-					
+
 					var pickertarget = form.data("pickertarget");
-					if(pickertarget !== undefined) {
+					if (pickertarget !== undefined) {
 						var parsed = $(result);
 						var dataid = parsed.data("dataid");
 						var dataname = parsed.data("dataname");
-						
-						$(window).trigger("updatepickertarget", [pickertarget,dataid,dataname]);
+
+						$(window).trigger("updatepickertarget", [
+							pickertarget,
+							dataid,
+							dataname,
+						]);
 					}
-					
+
 					var targetdivinner = form.data("targetdivinner");
 					if (targetdivinner) {
 						$("#" + $.escapeSelector(targetdivinner)).html(result);
@@ -955,8 +962,6 @@ uiload = function () {
 					if (form.data("onsuccessreload")) {
 						document.location.reload(true);
 					}
-					
-					
 				},
 				complete: function () {
 					submitButton.removeAttr("disabled");
@@ -1304,7 +1309,7 @@ uiload = function () {
 					}
 
 					if (searchpagetitle) {
-						$(window).trigger("setPageTitle",[searchpagetitle]);
+						$(window).trigger("setPageTitle", [searchpagetitle]);
 					}
 
 					//on success execute extra JS
@@ -1408,7 +1413,7 @@ uiload = function () {
 		}
 
 		$(window).trigger("hideLoader");
-		$(window).trigger("setPageTitle",[othermodal]);
+		$(window).trigger("setPageTitle", [othermodal]);
 
 		if (oldurlbar !== undefined) {
 			history.pushState($("#application").html(), null, oldurlbar);
@@ -1427,8 +1432,7 @@ uiload = function () {
 		}
 	};
 
-	$(window).on("setPageTitle", function(event,element)
-	{
+	$(window).on("setPageTitle", function (event, element) {
 		if (element === undefined) {
 			element = $("#applicationcontent");
 		}
@@ -1986,7 +1990,6 @@ uiload = function () {
 		}
 	});
 
-
 	lQuery(".assetpickerselectrow").livequery("click", function () {
 		var assetid = $(this).data("assetid");
 		jQuery("#" + targetdiv).attr("value", assetid);
@@ -2021,39 +2024,82 @@ uiload = function () {
 		}
 	});
 
-	
 	//Main Module results
-	lQuery(".topmodulecontainer .resultsdiv .resultsdivdata").livequery("click", function (event) {
-		var clicked = $(this);
-		if(!handleclick(clicked)) {
-			return true;
-		}
-		
-		var emselectable = clicked.closest(".emselectablemodule");
-
-		var row = $(clicked.closest(".resultsdivdata"));
-		var rowid = row.data("dataid");
-
-		var targetlink = emselectable.data("targetlink");
-
-		if (emselectable.hasClass("emselectablemodule_order")) {
-			//Order Module
-			var targetdiv = emselectable.data("targetdiv");
-			if (targetlink && targetlink != "") {
-				targetlink +=
-					(targetlink.indexOf("?") >= 0 ? "&" : "?") + "id=" + rowid;
-
-				$.ajax({
-					url: targetlink,
-					data: { oemaxlevel: "2" },
-					success: function (data) {
-						$("#" + targetdiv).replaceWith(data);
-						jQuery(window).trigger("resize");
-					},
-				});
+	lQuery(".topmodulecontainer .resultsdiv .resultsdivdata").livequery(
+		"click",
+		function (event) {
+			var clicked = $(this);
+			if (!handleclick(clicked)) {
+				return true;
 			}
-		} else {
-			//All entities
+
+			var emselectable = clicked.closest(".emselectablemodule");
+
+			var row = $(clicked.closest(".resultsdivdata"));
+			var rowid = row.data("dataid");
+
+			var targetlink = emselectable.data("targetlink");
+
+			if (emselectable.hasClass("emselectablemodule_order")) {
+				//Order Module
+				var targetdiv = emselectable.data("targetdiv");
+				if (targetlink && targetlink != "") {
+					targetlink +=
+						(targetlink.indexOf("?") >= 0 ? "&" : "?") + "id=" + rowid;
+
+					$.ajax({
+						url: targetlink,
+						data: { oemaxlevel: "2" },
+						success: function (data) {
+							$("#" + targetdiv).replaceWith(data);
+							jQuery(window).trigger("resize");
+						},
+					});
+				}
+			} else {
+				//All entities
+				if (targetlink && targetlink != "") {
+					targetlink +=
+						(targetlink.indexOf("?") >= 0 ? "&" : "?") + "id=" + rowid;
+					row.data("targetlink", targetlink);
+					row.data("oemaxlevel", "2");
+					if (emselectable.data("tabletype") == "subentity") {
+						row.data("targetrendertype", "entity");
+						row.data("oemaxlevel", "1");
+					}
+					row.data("id", rowid);
+					row.data("hitssessionid", emselectable.data("hitssessionid"));
+					row.data("updateurl", true);
+					var urlbar =
+						apphome +
+						"/views/modules/" +
+						emselectable.data("searchtype") +
+						"/index.html?entityid=" +
+						rowid;
+					row.data("urlbar", urlbar);
+
+					emdialog(row, event);
+				}
+			}
+		}
+	);
+
+	//Submodule picker reuslts
+	lQuery(".submodulepicker .resultsdiv .resultsdivdata").livequery(
+		"click",
+		function (event) {
+			var clicked = $(this);
+			if (!handleclick(clicked)) {
+				return true;
+			}
+
+			var emselectable = clicked.closest(".emselectablemodule");
+
+			var row = $(clicked.closest(".resultsdivdata"));
+			var rowid = row.data("dataid");
+
+			var targetlink = emselectable.data("targetlink");
+
 			if (targetlink && targetlink != "") {
 				targetlink +=
 					(targetlink.indexOf("?") >= 0 ? "&" : "?") + "id=" + rowid;
@@ -2077,70 +2123,32 @@ uiload = function () {
 				emdialog(row, event);
 			}
 		}
-				
-	 });
-	
-	//Submodule picker reuslts
-	lQuery(".submodulepicker .resultsdiv .resultsdivdata").livequery("click", function (event) {
-		var clicked = $(this);
-		if(!handleclick(clicked)) {
-			return true;
-		}
+	);
 
-		var emselectable = clicked.closest(".emselectablemodule");
-
-		var row = $(clicked.closest(".resultsdivdata"));
-		var rowid = row.data("dataid");
-
-		var targetlink = emselectable.data("targetlink");
-
-		if (targetlink && targetlink != "") {
-			targetlink +=
-				(targetlink.indexOf("?") >= 0 ? "&" : "?") + "id=" + rowid;
-			row.data("targetlink", targetlink);
-			row.data("oemaxlevel", "2");
-			if (emselectable.data("tabletype") == "subentity") {
-				row.data("targetrendertype", "entity");
-				row.data("oemaxlevel", "1");
-			}
-			row.data("id", rowid);
-			row.data("hitssessionid", emselectable.data("hitssessionid"));
-			row.data("updateurl", true);
-			var urlbar =
-				apphome +
-				"/views/modules/" +
-				emselectable.data("searchtype") +
-				"/index.html?entityid=" +
-				rowid;
-			row.data("urlbar", urlbar);
-
-			emdialog(row, event);
-		}
-	});
-	
 	//Entity picker
-	lQuery(".pickerresults .resultsdiv .resultsdivdata").livequery("click",	function (event) {
-		var clicked = $(this);
-		if(!handleclick(clicked)) {
-			return true;
-		}
-		var row = $(clicked.closest(".resultsdivdata"));
-		var rowid = row.data("dataid");
-		var pickerresults = clicked.closest(".pickerresults");
-
-		if (pickerresults.length) {
-			var pickertarget = pickerresults.data("pickertarget");
-			pickertarget = $("#" + pickertarget);
-			if (pickertarget.length > 0) {
-				updateentityfield(pickertarget, rowid, row.data("rowname"));
-				closeemdialog(pickerresults.closest(".modal"));
+	lQuery(".pickerresults .resultsdiv .resultsdivdata").livequery(
+		"click",
+		function (event) {
+			var clicked = $(this);
+			if (!handleclick(clicked)) {
+				return true;
 			}
-			return;
-		}
+			var row = $(clicked.closest(".resultsdivdata"));
+			var rowid = row.data("dataid");
+			var pickerresults = clicked.closest(".pickerresults");
+
+			if (pickerresults.length) {
+				var pickertarget = pickerresults.data("pickertarget");
+				pickertarget = $("#" + pickertarget);
+				if (pickertarget.length > 0) {
+					updateentityfield(pickertarget, rowid, row.data("rowname"));
+					closeemdialog(pickerresults.closest(".modal"));
+				}
+				return;
+			}
 		}
 	);
 
-	
 	function handleclick(clicked) {
 		if (clicked.attr("noclick") == "true") {
 			return false;
@@ -2156,35 +2164,36 @@ uiload = function () {
 		}
 		return true;
 	}
-	
 
-/*
+	/*
 
 if (targettype == "entitydialog") {
 	emdialog(pickerresults, event);
 	return;
 	*/
 
-	$(window).on("updatepickertarget",function (event, pickertargetid, dataid, dataname ) {
-		var pickertarget = $("#" + pickertargetid);
-		if (pickertarget.length > 0) {
-			updateentityfield(pickertarget, dataid, dataname);
+	$(window).on(
+		"updatepickertarget",
+		function (event, pickertargetid, dataid, dataname) {
+			var pickertarget = $("#" + pickertargetid);
+			if (pickertarget.length > 0) {
+				updateentityfield(pickertarget, dataid, dataname);
+			}
 		}
-	});
-
-
+	);
 
 	updateentityfield = function (pickertarget, id, name) {
-		
-		if(pickertarget.hasClass("assetpicker")) {
+		if (pickertarget.hasClass("assetpicker")) {
 			//Asset  Picker
 			var detailid = pickertarget.data("detailid");
-			$("#"+detailid + "-value").attr("value", id);
-			$("#" + detailid + "-preview").load(apphome+"/components/xml/types/assetpicker/preview.html?oemaxlevel=1&assetid=" + id, function(){
-			});
-
-		}
-		else {
+			$("#" + detailid + "-value").attr("value", id);
+			$("#" + detailid + "-preview").load(
+				apphome +
+					"/components/xml/types/assetpicker/preview.html?oemaxlevel=1&assetid=" +
+					id,
+				function () {}
+			);
+		} else {
 			var template = $("#pickedtemplateREPLACEID", pickertarget).html(); //clone().appendTo(pickertarget);
 			var newcode = template.replaceAll("REPLACEID", id);
 			newcode = newcode.replaceAll("REPLACEFIELDNAME", "");
@@ -3820,7 +3829,7 @@ if (targettype == "entitydialog") {
 					$(".pushcontent").removeClass("pushcontent-open");
 					$(".pushcontent").addClass("pushcontent-fullwidth");
 
-					$(window).trigger("setPageTitle",[cell]);
+					$(window).trigger("setPageTitle", [cell]);
 
 					$(window).trigger("resize");
 
@@ -3888,7 +3897,7 @@ if (targettype == "entitydialog") {
 						$(".pushcontent").css("margin-left", width + "px");
 					}
 				}
-				$(window).trigger("setPageTitle",[targetdiv]);
+				$(window).trigger("setPageTitle", [targetdiv]);
 				$(window).trigger("resize");
 			},
 		});
@@ -4390,7 +4399,6 @@ if (targettype == "entitydialog") {
 		}
 	});
 
-
 	lQuery("#assetcollectionresultsdialog .rowclick").livequery(
 		"click",
 		function (e) {
@@ -4560,9 +4568,7 @@ autoreload = function (div, callback) {
 	}
 };
 
-
-$(window).on("checkautoreload", function(event,indiv)
-{
+$(window).on("checkautoreload", function (event, indiv) {
 	var classes = indiv.data("ajaxreloadtargets"); //assetresults, projectpage, sidebaralbums
 	if (classes) {
 		var splitnames = classes.split(",");
@@ -4573,8 +4579,6 @@ $(window).on("checkautoreload", function(event,indiv)
 		});
 	}
 });
-
-
 
 lQuery(".fieldsParent").livequery("refreshFields", function () {
 	autoreload($(this));
@@ -4623,7 +4627,7 @@ runajaxstatus = function () {
 				data: data,
 				success: function (data) {
 					cell.replaceWith(data);
-					$(window).trigger("checkautoreload",[cell]);
+					$(window).trigger("checkautoreload", [cell]);
 				},
 				xhrFields: {
 					withCredentials: true,
