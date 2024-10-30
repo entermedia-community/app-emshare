@@ -938,6 +938,7 @@ onloadselectors = function () {
 					var options = resultsdiv.cleandata();
 					options.dataid = sourceid;
 					options.targetid = targetnode.data("dataid");
+					options.hitssessionid = resultsdiv.data("hitssessionid");
 
 					//Save scroll location?
 					var moduleid = resultsdiv.data("moduleid");

@@ -210,17 +210,30 @@
 	#ifnotnull($lightboxassetsresults)
 			#if($permissions.can($topmoduleid, "assign_files"))
 			#set($lightboxid = $context.getRequestParameter("lightboxid"))
-			<li>
-				<a class="resultsnavlink ajax" 
-					href="$siteroot$applink/views/modules/$!{topmoduleid}/components/entities/lightboxes/galleryremoveasset.html" 
-					data-targetdiv="tablightboxes"
-					data-entityid="$entityid"
-					data-lightboxid="$!{lightboxid}"
-					data-categoryid="$!categoryid"
-					data-hitssessionid="$hits.getSessionId()"
-					id="navbarRemove" role="button" title="[[Remove record from Lightbox]]">[[Remove]]</a>
-			</li>
-		#end
+				<li>
+					<a class="resultsnavlink ajax" 
+						href="$siteroot$applink/views/modules/$!{topmoduleid}/components/entities/lightboxes/galleryremoveasset.html" 
+						data-targetdiv="tablightboxes"
+						data-entityid="$entityid"
+						data-lightboxid="$!{lightboxid}"
+						data-categoryid="$!categoryid"
+						data-hitssessionid="$hits.getSessionId()"
+						id="navbarRemove" role="button" title="[[Remove record from Lightbox]]">[[Remove]]</a>
+				</li>
+				<li>
+					<a class="resultsnavlink ajax" 
+						href="$siteroot$applink/views/modules/asset/components/results/orderMoveToTop.html"
+						data-oemaxlevel="1"
+						data-dialogresults="true"
+						data-lightboxassetsresults="true"
+						data-targetdiv="dialogassetresultscontainer"
+						data-entityid="$!entityid"
+						data-lightboxid="$!{lightboxid}"
+						data-categoryid="$!categoryid"
+						data-hitssessionid="$hits.getSessionId()"
+						id="navbarMoveTo" role="button" title="[[Move to the First Position of the Lightbox]]">[[Move to First]]</a>
+				</li>
+			#end
 	#end
 
 #end
