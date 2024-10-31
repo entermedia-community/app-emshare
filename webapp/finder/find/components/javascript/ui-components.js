@@ -2149,6 +2149,44 @@ uiload = function () {
 		}
 	);
 	
+	
+	
+	
+	//Entity picker Submodule Table
+	lQuery(".pickerresults.entitypickersubmodule .resultsdiv .resultsdivdata").livequery("click",
+		function (event) {
+			var clicked = $(this);
+			if (!handleclick(clicked)) {
+				return true;
+			}
+			var row = $(clicked.closest(".resultsdivdata"));
+			var rowid = row.data("dataid");
+			var pickerresults = clicked.closest(".pickerresults");
+
+			if (pickerresults.length) {
+				var clickurl = pickerresults.data("clickurl");
+				var options = pickerresults.data();
+				options.id = rowid;
+				var pickertarget = pickerresults.data("pickertarget");
+				pickertarget = $("#" + pickertarget);
+				if (clickurl !== undefined && clickurl != "") {
+					jQuery.ajax({
+						url: clickurl,
+						data: options,
+						success: function (data) {
+							autoreload(pickertarget);
+						}
+					});
+				}
+				closeemdialog(pickerresults.closest(".modal"));
+			}
+		}
+	);
+	
+	
+	
+	
+	
 	lQuery(".pickerresultscopy .resultsdivdata").livequery("click",
 		function (event) {
 			var clicked = $(this);
