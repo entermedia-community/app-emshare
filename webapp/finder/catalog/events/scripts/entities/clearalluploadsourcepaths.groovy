@@ -29,6 +29,7 @@ public void init()
 			if( hit.getValue("uploadsourcepath") != null )
 			{
 				hit.setValue("uploadsourcepath",null);
+				hit.setValue("rootcategory",null);
 				mediaArchive.saveData(module.getId(),hit);
 				count++;
 			}
