@@ -415,6 +415,9 @@ $(document).ready(function () {
 
 		canvas = new draw2d.Canvas("organizer_canvas");
 
+		var reader = new draw2d.io.json.Reader();
+		var writer = new draw2d.io.json.Writer();
+
 		canvas.installEditPolicy(
 			new draw2d.policy.connection.DragConnectionCreatePolicy({
 				createConnection: function () {
@@ -483,33 +486,78 @@ $(document).ready(function () {
 							cmd !== null && canvas.getCommandStack().execute(cmd);
 						});
 						canvas.getCommandStack().commitTransaction();
+						hideLabelConfig();
 					}
-					// if (ctrlOrMeta && 68 === keyCode) {
-					// 	canvas.getCommandStack().startTransaction("batch_delete");
-					// 	selections.each(function (_, figure) {
-					// 		figure = figure.clone();
-					// 		var cmd = null;
-					// 		if (
-					// 			figure.cssClass === "folderGroup" ||
-					// 			figure.cssClass === "labelGroup"
-					// 		) {
-					// 			cmd = new draw2d.command.CommandAdd(
-					// 				canvas,
-					// 				figure,
-					// 				figure.getX() + 10,
-					// 				figure.getY() + 10
-					// 			);
-					// 			// var connections = figure.getConnections();
-					// 			// connections.each(function (_, conn) {
-					// 			// 	var c = new draw2d.command.CommandDelete(conn);
-					// 			// 	c !== null && canvas.getCommandStack().execute(c);
-					// 			// });
-					// 		}
-					// 		console.log(cmd);
-					// 		cmd !== null && canvas.getCommandStack().execute(cmd);
-					// 	});
-					// 	canvas.getCommandStack().commitTransaction();
-					// }
+					if (ctrlOrMeta && 68 === keyCode) {
+						selections.each(function (_, figure) {
+							var assignedFigures = figure.getAssignedFigures();
+							if (figure.cssClass === "folderGroup") {
+								var label = assignedFigures.find(
+									(f) => f.cssClass === "folderLabel"
+								);
+								var icon = assignedFigures.find(
+									(f) => f.cssClass === "folderIcon"
+								);
+								var dupFolder = folderJson({
+									x: figure.getX() + 20,
+									y: figure.getY() + 20,
+								});
+								dupFolder[2].text = label.getText();
+								dupFolder[2].fontSize = label.getFontSize();
+								dupFolder[2].userData.moduleid =
+									label.getUserData().moduleid + "-copy";
+								dupFolder[2].userData.description =
+									label.getUserData().description;
+								dupFolder[3].path = icon.getPath();
+								reader.unmarshal(canvas, dupFolder);
+							} else if (figure.cssClass === "labelGroup") {
+								var title = assignedFigures.find(
+									(f) => f.cssClass === "titleLabel"
+								);
+								var caption = assignedFigures.find(
+									(f) => f.cssClass === "captionLabel"
+								);
+								var image = assignedFigures.find(
+									(f) => f.cssClass === "labelImage"
+								);
+								var titleText = title ? title.getText() : "";
+								var titleFS = title ? title.getFontSize() : 16;
+								var captionText = caption ? caption.getText() : "";
+								var captionFS = caption ? caption.getFontSize() : 16;
+								var image = image ? image.getPath() : "";
+								var bgColor = figure.getBackgroundColor();
+								bgColor = bgColor
+									? rgbToHex(bgColor.red, bgColor.green, bgColor.blue)
+									: getRandomColor();
+								var color = figure.getColor();
+								color = color
+									? rgbToHex(color.red, color.green, color.blue)
+									: lightenHex(bgColor, -5);
+
+								var { width: tW, height: tH } = measureText(titleText, titleFS);
+								var { width: cW, height: cH } = measureText(
+									captionText,
+									captionFS
+								);
+								var width = Math.max(tW, cW, 110);
+
+								addLabelAt({
+									x: figure.getX() + 20,
+									y: figure.getY() + 20,
+									titleText,
+									titleFS,
+									captionText,
+									captionFS,
+									image,
+									color,
+									bgColor,
+									width,
+									titleHeight: tH,
+									captionHeight: cH,
+								});
+							}
+						});
+					}
 				},
 			})
 		);
@@ -527,9 +575,6 @@ $(document).ready(function () {
 				marginLeft: containerLeft,
 			});
 		}
-
-		var reader = new draw2d.io.json.Reader();
-		var writer = new draw2d.io.json.Writer();
 
 		function loadJSON() {
 			var id = $("#organizerId").val();
@@ -551,11 +596,10 @@ $(document).ready(function () {
 							var parsed = JSON.parse(updateddata);
 							if (parsed.length) {
 								insertjson = parsed;
-								//console.log("Empty JSON, loading defaults.");
 							}
 						}
 					} else {
-						console.log("Error", res);
+						console.error("Error", res);
 					}
 				},
 				complete: function () {
@@ -1116,6 +1160,7 @@ $(document).ready(function () {
 		});
 
 		$("#folderLabel").on("blur", function () {
+			if (!selectedLabel) return;
 			var currentdata = selectedLabel.getUserData();
 			if (currentdata !== undefined && currentdata.moduleid == "") {
 				var labelText = $(this).val();
