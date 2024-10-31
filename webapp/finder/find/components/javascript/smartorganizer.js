@@ -460,12 +460,11 @@ $(document).ready(function () {
 
 		canvas.installEditPolicy(
 			new draw2d.policy.canvas.KeyboardPolicy({
-				onKeyDown: function (canvas, keyCode, figure) {
+				onKeyDown: function (canvas, keyCode, _, ctrlOrMeta) {
 					var selections = canvas.getSelection();
 					if (selections.getSize() === 0) return;
 					if (46 === keyCode || 8 == keyCode) {
-						canvas.getCommandStack().startTransaction(figure.id + " delete");
-						var selections = canvas.getSelection();
+						canvas.getCommandStack().startTransaction("batch_delete");
 						selections.each(function (_, figure) {
 							var cmd = null;
 							if (
@@ -485,6 +484,32 @@ $(document).ready(function () {
 						});
 						canvas.getCommandStack().commitTransaction();
 					}
+					// if (ctrlOrMeta && 68 === keyCode) {
+					// 	canvas.getCommandStack().startTransaction("batch_delete");
+					// 	selections.each(function (_, figure) {
+					// 		figure = figure.clone();
+					// 		var cmd = null;
+					// 		if (
+					// 			figure.cssClass === "folderGroup" ||
+					// 			figure.cssClass === "labelGroup"
+					// 		) {
+					// 			cmd = new draw2d.command.CommandAdd(
+					// 				canvas,
+					// 				figure,
+					// 				figure.getX() + 10,
+					// 				figure.getY() + 10
+					// 			);
+					// 			// var connections = figure.getConnections();
+					// 			// connections.each(function (_, conn) {
+					// 			// 	var c = new draw2d.command.CommandDelete(conn);
+					// 			// 	c !== null && canvas.getCommandStack().execute(c);
+					// 			// });
+					// 		}
+					// 		console.log(cmd);
+					// 		cmd !== null && canvas.getCommandStack().execute(cmd);
+					// 	});
+					// 	canvas.getCommandStack().commitTransaction();
+					// }
 				},
 			})
 		);
@@ -825,12 +850,15 @@ $(document).ready(function () {
 		}
 
 		function hideLabelConfig() {
+			$("#folderLabel").trigger("blur");
 			$(".label-mod-toggler").each(function () {
 				$(this).remove();
 			});
 		}
 
 		function hideFolderConfig() {
+			$("#folderId").trigger("blur");
+			$("#folderDesc").trigger("blur");
 			$("#modifySelection").hide();
 			$("#mod-toggler").fadeOut();
 			selectedLabel = null;
@@ -904,8 +932,8 @@ $(document).ready(function () {
 
 		canvas.on("dblclick", function (_, node) {
 			var figure = node.figure;
-			if (figure && figure.cssClass === "folderIcon") {
-				$("#folderThumbPickerBtn").trigger("click");
+			if (figure && figure.cssClass.startsWith("folder")) {
+				$("#mod-toggler").trigger("click");
 			}
 		});
 
@@ -1087,7 +1115,7 @@ $(document).ready(function () {
 			handleLabelChange(labelText);
 		});
 
-		$("#folderLabel").on("focusout", function () {
+		$("#folderLabel").on("blur", function () {
 			var currentdata = selectedLabel.getUserData();
 			if (currentdata !== undefined && currentdata.moduleid == "") {
 				var labelText = $(this).val();
