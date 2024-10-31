@@ -902,7 +902,8 @@ uiload = function () {
 					}
 
 					var pickertarget = form.data("pickertarget");
-					if (pickertarget !== undefined) {
+					var targettype = form.data("targettype");
+					if (pickertarget !== undefined && targettype =="entitypickerfield") {
 						var parsed = $(result);
 						var dataid = parsed.data("dataid");
 						var dataname = parsed.data("dataname");
@@ -2125,9 +2126,8 @@ uiload = function () {
 		}
 	);
 
-	//Entity picker
-	lQuery(".pickerresults .resultsdiv .resultsdivdata").livequery(
-		"click",
+	//Entity picker field
+	lQuery(".pickerresults.entitypickerfield .resultsdiv .resultsdivdata").livequery("click",
 		function (event) {
 			var clicked = $(this);
 			if (!handleclick(clicked)) {
@@ -2138,19 +2138,56 @@ uiload = function () {
 			var pickerresults = clicked.closest(".pickerresults");
 
 			if (pickerresults.length) {
+				//Entity Picker Field
 				var pickertarget = pickerresults.data("pickertarget");
 				pickertarget = $("#" + pickertarget);
 				if (pickertarget.length > 0) {
 					updateentityfield(pickertarget, rowid, row.data("rowname"));
-					closeemdialog(pickerresults.closest(".modal"));
 				}
-				return;
+				closeemdialog(pickerresults.closest(".modal"));
 			}
 		}
 	);
+	
+	
+	
+	
+	//Entity picker Submodule Table
+	lQuery(".pickerresults.entitypickersubmodule .resultsdiv .resultsdivdata").livequery("click",
+		function (event) {
+			var clicked = $(this);
+			if (!handleclick(clicked)) {
+				return true;
+			}
+			var row = $(clicked.closest(".resultsdivdata"));
+			var rowid = row.data("dataid");
+			var pickerresults = clicked.closest(".pickerresults");
 
-	lQuery(".pickerresultscopy .resultsdivdata").livequery(
-		"click",
+			if (pickerresults.length) {
+				var clickurl = pickerresults.data("clickurl");
+				var options = pickerresults.data();
+				options.id = rowid;
+				var pickertarget = pickerresults.data("pickertarget");
+				pickertarget = $("#" + pickertarget);
+				if (clickurl !== undefined && clickurl != "") {
+					jQuery.ajax({
+						url: clickurl,
+						data: options,
+						success: function (data) {
+							autoreload(pickertarget);
+						}
+					});
+				}
+				closeemdialog(pickerresults.closest(".modal"));
+			}
+		}
+	);
+	
+	
+	
+	
+	
+	lQuery(".pickerresultscopy .resultsdivdata").livequery("click",
 		function (event) {
 			var clicked = $(this);
 			if (!handleclick(clicked)) {
@@ -2178,12 +2215,6 @@ uiload = function () {
 							if (targetdiv !== undefined) {
 								targetdiv.prepend(data);
 								targetdiv.find(".fader").fadeOut(3000, "linear");
-							}
-						} else if (targettype == "entitypickersubmodule") {
-							var pickertarget = pickerresults.data("pickertarget");
-							pickertarget = $("#" + pickertarget);
-							if (pickertarget.length > 0) {
-								autoreload(pickertarget);
 							}
 						} else {
 							//regular targetdiv

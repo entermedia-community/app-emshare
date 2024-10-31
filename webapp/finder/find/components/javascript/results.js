@@ -1005,35 +1005,13 @@ jQuery(document).ready(function (url, params) {
 	lQuery("a.stackedplayer").livequery("click", function (e) {
 		e.preventDefault();
 		var link = $(this);
-		var checkIfPickerRow = link.closest(".pickerselectrow");
-		if (checkIfPickerRow.length > 0) {
+		var pickerresults = link.closest(".pickerresults");
+		if (link.hasClass("resultsdivdata") && pickerresults.length > 0) {
 			return;
 		}
 		var assetid = link.data("assetid");
 		showAsset(link, assetid);
 		return false;
-	});
-
-	lQuery("a.stackedplayer", ".entity-media").livequery("click", function (e) {
-		var modal = $(this).closest(".modal");
-		if (modal.length) {
-			//modal.modal("hide");
-		}
-	});
-	lQuery(".stackedplayertableX tr td").livequery(function () {
-		$(this).hover(
-			function () {
-				var row = $($(this).closest("tr"));
-				var id = $(row).data("rowid");
-				if (id != null) {
-					row.addClass("emborderhover");
-				}
-			},
-			function () {
-				var row = $($(this).closest("tr"));
-				row.removeClass("emborderhover");
-			}
-		);
 	});
 
 	// Select multiple assets with Shift+Mouse
@@ -1070,9 +1048,6 @@ jQuery(document).ready(function (url, params) {
 		}
 	});
 
-	// .bind("selectstart", function () {
-	// return false;
-	// })
 
 	$(window).mouseup(function () {
 		isMouseDown = false;
@@ -1081,17 +1056,21 @@ jQuery(document).ready(function (url, params) {
 	// Click on asset
 	var selectStart = null;
 	// Table clicking
-	lQuery(".stackedplayertable td").livequery("click", function (e) {
+	lQuery(".stackedplayertable tr").livequery("click", function (e) {
 		var clicked = $(this);
 		if (clicked.attr("noclick") == "true") {
 			return true;
+		}
+		var pickerresults = clicked.closest(".pickerresults");
+		if (clicked.hasClass("resultsdivdata") && pickerresults.length > 0) {
+			return;
 		}
 		if ($(e.target).is("input") || $(e.target).is("a")) {
 			return true;
 		}
 		// click+ctrl
 		if (e.ctrlKey) {
-			var chkbox = clicked.closest("tr").find(".selectionbox");
+			var chkbox = clicked.find(".selectionbox");
 			if (chkbox) {
 				var ischecked = $(chkbox).prop("checked");
 				if (!ischecked || ischecked == "true") {
@@ -1106,9 +1085,9 @@ jQuery(document).ready(function (url, params) {
 		// click+shift
 		if (e.shiftKey) {
 			if (selectStart == null) {
-				selectStart = $(clicked).closest("tr");
+				selectStart = clicked;
 			} else {
-				var selectEnd = $(clicked).closest("tr");
+				var selectEnd = clicked;
 				if (selectStart) {
 					$(selectStart)
 						.nextUntil($(selectEnd))
@@ -1133,10 +1112,9 @@ jQuery(document).ready(function (url, params) {
 		e.preventDefault();
 		e.stopPropagation();
 
-		var row = $(clicked.closest("tr"));
-		var assetid = row.data("rowid");
+		var assetid = clicked.data("dataid");
 
-		showAsset(row, assetid);
+		showAsset(clicked, assetid);
 	});
 	// Gallery clicking
 	lQuery(".emgallery .emthumbimage").livequery("click", function (e) {
