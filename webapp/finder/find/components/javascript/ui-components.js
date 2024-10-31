@@ -4619,17 +4619,7 @@ replaceelement = function (url, div, options, callback) {
 		crossDomain: true,
 	});
 };
-checkautoreload = function (indiv) {
-	var classes = indiv.data("ajaxreloadtargets"); //assetresults, projectpage, sidebaralbums
-	if (classes) {
-		var splitnames = classes.split(",");
-		$.each(splitnames, function (index, classname) {
-			$("." + classname).each(function (index, div) {
-				autoreload($(div));
-			});
-		});
-	}
-};
+
 autoreload = function (div, callback) {
 	var url = div.data("url");
 	if (url != undefined) {

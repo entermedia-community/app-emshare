@@ -956,7 +956,7 @@ onloadselectors = function () {
 						type: "POST",
 						success: function (data) {
 							//load
-							checkautoreload(resultsdiv);
+							$(window).trigger("checkautoreload", [resultsdiv]);
 						},
 					});
 				},
@@ -989,7 +989,7 @@ onloadselectors = function () {
 				type: "POST",
 				success: function (data) {
 					//load
-					checkautoreload(resultsdiv);
+					$(window).trigger("checkautoreload", [resultsdiv]);
 				},
 			});
 		});
