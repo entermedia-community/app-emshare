@@ -463,7 +463,7 @@ $(document).ready(function () {
 				onKeyDown: function (canvas, keyCode, figure) {
 					var selections = canvas.getSelection();
 					if (selections.getSize() === 0) return;
-					if (46 === keyCode) {
+					if (46 === keyCode || 8 == keyCode) {
 						canvas.getCommandStack().startTransaction(figure.id + " delete");
 						var selections = canvas.getSelection();
 						selections.each(function (_, figure) {
