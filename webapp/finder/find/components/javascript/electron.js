@@ -396,10 +396,12 @@ jQuery(document).ready(function () {
 			var categorypath = $(this).data("categorypath");
 			var filename = $(this).data("filename");
 			var dlink = $(this).data("dlink");
+			var lightbox = $(".sync-lightbox").data("lightbox");
 			ipcRenderer.send("openFileWithDefault", {
 				categorypath,
 				filename,
 				dlink,
+				lightbox,
 			});
 		});
 

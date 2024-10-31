@@ -17,7 +17,7 @@ $(window).on("showLoader", function () {
 		if ($("#loading-window").hasClass("d-flex")) {
 			$("#loading-window").removeClass("d-flex");
 		}
-	}, 4000);
+	}, 10 * 1000);
 });
 
 $(window).on("hideLoader", function () {
@@ -2025,7 +2025,8 @@ uiload = function () {
 	});
 
 	//Main Module results
-	lQuery(".topmodulecontainer .resultsdiv .resultsdivdata").livequery("click",
+	lQuery(".topmodulecontainer .resultsdiv .resultsdivdata").livequery(
+		"click",
 		function (event) {
 			var clicked = $(this);
 			if (!handleclick(clicked)) {
@@ -2084,7 +2085,8 @@ uiload = function () {
 	);
 
 	//Submodule picker reuslts
-	lQuery(".submodulepicker .resultsdiv .resultsdivdata").livequery("click",
+	lQuery(".submodulepicker .resultsdiv .resultsdivdata").livequery(
+		"click",
 		function (event) {
 			var clicked = $(this);
 			if (!handleclick(clicked)) {
@@ -2123,8 +2125,9 @@ uiload = function () {
 		}
 	);
 
-	//Entity picker 
-	lQuery(".pickerresults .resultsdiv .resultsdivdata").livequery("click",
+	//Entity picker
+	lQuery(".pickerresults .resultsdiv .resultsdivdata").livequery(
+		"click",
 		function (event) {
 			var clicked = $(this);
 			if (!handleclick(clicked)) {
@@ -2145,8 +2148,9 @@ uiload = function () {
 			}
 		}
 	);
-	
-	lQuery(".pickerresultscopy .resultsdivdata").livequery("click",
+
+	lQuery(".pickerresultscopy .resultsdivdata").livequery(
+		"click",
 		function (event) {
 			var clicked = $(this);
 			if (!handleclick(clicked)) {
@@ -2192,14 +2196,8 @@ uiload = function () {
 					},
 				});
 			}
-	});
-	
-	
-	
-	
-	
-	
-	
+		}
+	);
 
 	function handleclick(clicked) {
 		if (clicked.attr("noclick") == "true") {
@@ -2224,7 +2222,8 @@ if (targettype == "entitydialog") {
 	return;
 	*/
 
-	$(window).on("updatepickertarget",
+	$(window).on(
+		"updatepickertarget",
 		function (event, pickertargetid, dataid, dataname) {
 			var pickertarget = $("#" + pickertargetid);
 			if (pickertarget.length > 0) {
