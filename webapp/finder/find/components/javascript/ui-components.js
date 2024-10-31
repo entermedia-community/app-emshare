@@ -4699,6 +4699,7 @@ runajaxstatus = function () {
 				success: function (data) {
 					cell.replaceWith(data);
 					$(window).trigger("checkautoreload", [cell]);
+					$(window).trigger("resize");
 				},
 				xhrFields: {
 					withCredentials: true,
