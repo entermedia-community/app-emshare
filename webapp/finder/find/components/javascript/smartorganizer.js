@@ -463,7 +463,7 @@ $(document).ready(function () {
 				onKeyDown: function (canvas, keyCode, figure) {
 					var selections = canvas.getSelection();
 					if (selections.getSize() === 0) return;
-					if (46 === keyCode) {
+					if (46 === keyCode || 8 == keyCode) {
 						canvas.getCommandStack().startTransaction(figure.id + " delete");
 						var selections = canvas.getSelection();
 						selections.each(function (_, figure) {
@@ -557,6 +557,15 @@ $(document).ready(function () {
 					img.onload = function () {
 						var imgWidth = img.naturalWidth;
 						var imgHeight = img.naturalHeight;
+						var aspectRatio = imgWidth / imgHeight;
+
+						if (aspectRatio > 1) {
+							imgWidth = 220;
+							imgHeight = 220 / aspectRatio;
+						} else {
+							imgHeight = 200;
+							imgWidth = 200 * aspectRatio;
+						}
 
 						var prevLogo = canvas.getFigure("logo");
 
@@ -566,8 +575,8 @@ $(document).ready(function () {
 
 						var mainNode = canvas.getFigure("main");
 
-						mainNode.setWidth(imgWidth * 1.2);
-						mainNode.setHeight(imgHeight * 1.2);
+						mainNode.setWidth(imgWidth + 16);
+						mainNode.setHeight(imgHeight + 16);
 
 						canvas.add(
 							new draw2d.shape.basic.Image({
@@ -586,7 +595,6 @@ $(document).ready(function () {
 						mainNode.setColor(strokeColor);
 						mainNode.setBackgroundColor(bgColor);
 
-						//TODOL: Fix ports
 						mainNode.getPort("mainInputTop").setX(mainNode.getWidth() / 2);
 						mainNode.getPort("mainInputTop").setY(0);
 
@@ -1632,6 +1640,9 @@ $(document).ready(function () {
 				});
 				writer.marshal(canvas, function (json) {
 					json.forEach(function (jso) {
+						if (jso.id == "main" || jso.id == "logo") {
+							return;
+						}
 						if (ids.includes(jso.id)) {
 							if (jso.id && idReplacement[jso.id]) {
 								jso.id = idReplacement[jso.id];

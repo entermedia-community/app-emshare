@@ -681,7 +681,7 @@ jQuery(document).ready(function (url, params) {
 			// gridResize();
 		}
 		var assetdetaileditor = $("#asset-detail-editor");
-		checkautoreload(assetdetaileditor);
+		$(window).trigger("checkautoreload", [assetdetaileditor]);
 
 		var lastscroll = getOverlay().data("lastscroll");
 		// remove Asset #hash

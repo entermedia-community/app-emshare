@@ -24,17 +24,14 @@
 	#set($null = $existingids.add($c.getId()))
 #end
 
-#if(!$defaultfolder)
-	#set($defaultfolder =  $mediaarchive.getBean("entityManager").loadDefaultFolder($module, $entity, $context.getUser()))
+#ifnull($defaultfolder)
+	#set($defaultfolder =  $mediaarchive.getEntityManager().loadDefaultFolder($module, $entity, $context.getUser(),false))
 #end
 
 <div id="entitycategoryresults#eid($entityid)" class="entity-media-box #if(!$existingcategories) ZZZcollapsedmediabox #end" style="margin-bottom:20px;">
 <div  class="entitycategoryresults uploadformarea" data-onupload="reloadentity" data-entityid="$entityid" >
 		
-	#set($uploadsourcepath =  $mediaarchive.getBean("entityManager").loadUploadSourcepath($module, $entity, $context))
-	#ifnull($uploadsourcepath)
-		#set($uploadsourcepath = "Albums/Users/$user.getScreenName()/Desktops")
-	#end	
+	#set($uploadsourcepath = $defaultfolder.getCategoryPath() )
 	
 	<div class="entity-media-header">
 		<h4 class="mediaboxheader">

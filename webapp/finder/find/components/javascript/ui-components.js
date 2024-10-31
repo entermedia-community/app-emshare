@@ -17,7 +17,7 @@ $(window).on("showLoader", function () {
 		if ($("#loading-window").hasClass("d-flex")) {
 			$("#loading-window").removeClass("d-flex");
 		}
-	}, 4000);
+	}, 10 * 1000);
 });
 
 $(window).on("hideLoader", function () {
@@ -2026,7 +2026,8 @@ uiload = function () {
 	});
 
 	//Main Module results
-	lQuery(".topmodulecontainer .resultsdiv .resultsdivdata").livequery("click",
+	lQuery(".topmodulecontainer .resultsdiv .resultsdivdata").livequery(
+		"click",
 		function (event) {
 			var clicked = $(this);
 			if (!handleclick(clicked)) {
@@ -2085,7 +2086,8 @@ uiload = function () {
 	);
 
 	//Submodule picker reuslts
-	lQuery(".submodulepicker .resultsdiv .resultsdivdata").livequery("click",
+	lQuery(".submodulepicker .resultsdiv .resultsdivdata").livequery(
+		"click",
 		function (event) {
 			var clicked = $(this);
 			if (!handleclick(clicked)) {
@@ -2147,41 +2149,6 @@ uiload = function () {
 		}
 	);
 	
-	//Entity picker Submodule Table
-	lQuery(".pickerresults.entitypickersubmodule .resultsdiv .resultsdivdata").livequery("click",
-		function (event) {
-			var clicked = $(this);
-			if (!handleclick(clicked)) {
-				return true;
-			}
-			var row = $(clicked.closest(".resultsdivdata"));
-			var rowid = row.data("dataid");
-			var pickerresults = clicked.closest(".pickerresults");
-
-			if (pickerresults.length) {
-				var clickurl = pickerresults.data("clickurl");
-				var options = pickerresults.data();
-				options.id = rowid;
-				var pickertarget = pickerresults.data("pickertarget");
-				pickertarget = $("#" + pickertarget);
-				if (clickurl !== undefined && clickurl != "") {
-					jQuery.ajax({
-						url: clickurl,
-						data: options,
-						success: function (data) {
-							autoreload(pickertarget);
-						}
-					});
-				}
-				closeemdialog(pickerresults.closest(".modal"));
-			}
-		}
-	);
-	
-	
-	
-	
-	
 	lQuery(".pickerresultscopy .resultsdivdata").livequery("click",
 		function (event) {
 			var clicked = $(this);
@@ -2222,14 +2189,8 @@ uiload = function () {
 					},
 				});
 			}
-	});
-	
-	
-	
-	
-	
-	
-	
+		}
+	);
 
 	function handleclick(clicked) {
 		if (clicked.attr("noclick") == "true") {
@@ -2254,7 +2215,8 @@ if (targettype == "entitydialog") {
 	return;
 	*/
 
-	$(window).on("updatepickertarget",
+	$(window).on(
+		"updatepickertarget",
 		function (event, pickertargetid, dataid, dataname) {
 			var pickertarget = $("#" + pickertargetid);
 			if (pickertarget.length > 0) {
@@ -4649,17 +4611,7 @@ replaceelement = function (url, div, options, callback) {
 		crossDomain: true,
 	});
 };
-checkautoreload = function (indiv) {
-	var classes = indiv.data("ajaxreloadtargets"); //assetresults, projectpage, sidebaralbums
-	if (classes) {
-		var splitnames = classes.split(",");
-		$.each(splitnames, function (index, classname) {
-			$("." + classname).each(function (index, div) {
-				autoreload($(div));
-			});
-		});
-	}
-};
+
 autoreload = function (div, callback) {
 	var url = div.data("url");
 	if (url != undefined) {
@@ -4729,6 +4681,7 @@ runajaxstatus = function () {
 				success: function (data) {
 					cell.replaceWith(data);
 					$(window).trigger("checkautoreload", [cell]);
+					$(window).trigger("resize");
 				},
 				xhrFields: {
 					withCredentials: true,
