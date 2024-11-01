@@ -6,7 +6,23 @@
 	#ifnotnull( $section ) data-setpagetitle="#text($section) - $title" #end 
 	#ifnull( $section ) data-setpagetitle="$title" #end 
 	data-url="$applink/components/sidebars/index.html">
+
+
+
 	<div class="col-main col-sidebar-togglers sidebar-togglers-bar">
+
+
+			#if($user && $canviewsidebarhelp)	
+			<div class="sidebar-togglers #if($sidebarcomponent == "guide") sidebar-selected #end"  style="width: 32px; height: 32px;  position: absolute;   top: 4px;">
+				<a href="#" class="sidebar-toggler sidebar-toggler-show" data-action="show"
+					data-targetdiv="col-sidebars" data-sidebar="guide"
+					data-modulesearchhitssessionid="$modulehits.sessionId" data-sitetitle="[[User Guide]]"
+					title="[[User Guide]]">
+					<i class="bi bi-question-octagon-fill"></i>
+				</a>
+			</div>
+			#end	
+
 		<div class="col-main-inner">
 
 			##force specific sidebar from URL only if sidebars open
@@ -40,6 +56,7 @@
 				#set( $sidebarcomponent = "")
 				#end
 			#end
+
 
 			<div class="sidebar-togglers ">
 				
@@ -159,16 +176,6 @@
 		</div>
 		
 		<div class="mt-auto">
-			#if($user && $canviewsidebarhelp)	
-			<div class="sidebar-togglers #if($sidebarcomponent == "guide") sidebar-selected #end">
-				<a href="#" class="sidebar-toggler sidebar-toggler-show" data-action="show"
-					data-targetdiv="col-sidebars" data-sidebar="guide"
-					data-modulesearchhitssessionid="$modulehits.sessionId" data-sitetitle="[[User Guide]]"
-					title="[[User Guide]]">
-					<i class="bi bi-question-octagon-fill"></i>
-				</a>
-			</div>
-			#end	
 		</div>
 		
 	</div>
