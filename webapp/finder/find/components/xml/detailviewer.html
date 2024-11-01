@@ -1,26 +1,8 @@
 #set( $xmledithome = $context.getPageProperty("xmledithome"))
 #set( $readonly = "true" )
 
-##We need 3 things passed in: $searcher, $view, $data
-#if ($view)
-	#if( $context.getUserProfile() )
-		#set ($details = $searcher.getDetailsForView($view, $context.getUserProfile()))
-	#else
-		#set ($details = $searcher.getDetailsForView($view))
-	#end
-#else
-	##leagacy check. We used to pass in the $details
-	#if( !$details)
-		#set ($details = $searcher.getPropertyDetails())
-	#end
-#end	
-
-
-#if( !$details)
-		[[Not view defined on]]: $view
-#end
-
-$!context.putPageValue("details", $details)
+#ifnotnull($details)
 <div class="row no-gutters">
 $pages.include("$apphome/components/xml/detailviewersection.html", $context)
 </div>
+#end
