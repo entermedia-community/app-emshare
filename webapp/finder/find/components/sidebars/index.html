@@ -23,7 +23,21 @@
 			</div>
 			#end	
 
-		<div class="col-main-inner">
+			#if($canviewsettings)
+				#if( $userprofile.getModules().size() > 1 )
+					#set( $urlbase = "$siteroot$applink/views/modules" )
+					<div class="sidebar-togglers #if($sidebarcomponent == "smartorganaizer") sidebar-selected #end" style="width: 32px; height: 32px;  position: absolute;   top: 40px;">
+						<a href="$applink/components/smartorganizer/index.html" class="emdialog sidebar-toggler-show" data-oemaxlevel="1"
+							data-modulesearchhitssessionid="$!modulehits.sessionId" data-action="show" data-sidebar="addentity" title="[[Smart Organizer]]">
+							<i class="bi bi-magic" style="color: #ff91f6;"></i>
+						</a>
+					</div>
+				#end
+			#end
+
+
+
+		<div class="col-main-inner" style="margin-top: 20px;">
 
 			##force specific sidebar from URL only if sidebars open
 			#set($forcedsidebarcomponent = $context.getRequestParameter("sidebarcomponent"))
@@ -161,18 +175,6 @@
 			</div>
 			#end
 			
-			#if($canviewsettings)
-				#if( $userprofile.getModules().size() > 1 )
-					#set( $urlbase = "$siteroot$applink/views/modules" )
-					<div class="sidebar-togglers #if($sidebarcomponent == "smartorganaizer") sidebar-selected #end">
-						<a href="$applink/components/smartorganizer/index.html" class="emdialog sidebar-toggler-show" data-oemaxlevel="1"
-							data-modulesearchhitssessionid="$!modulehits.sessionId" data-action="show" data-sidebar="addentity" title="[[Smart Organizer]]">
-							<i class="bi bi-magic" style="color: #ff91f6;"></i>
-						</a>
-					</div>
-				#end
-			#end
-
 		</div>
 		
 		<div class="mt-auto">
