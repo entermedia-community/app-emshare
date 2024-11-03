@@ -1,33 +1,52 @@
+#set($searcher = $mediaarchive.getAssetSearcher())
+$context.putPageValue("searcher", $searcher )
+#set($collectionid = $context.getRequestParameter("collectionid"))
 <div id="asset-detail-editor" 
 	class="asset-details-editor" 
 	data-assetid="$!asset.getId()"
 	data-ajaxreloadtargets="resultsdiv">
 #foreach( $viewpath in $views.keySet() )
-	#set( $target = $views.get($viewpath) )
+	#set($target = $views.get($viewpath) )
+	#set($details = "" )
 	#set($permissionvalue = $context.getPageValue("canview-${target.getId()}"))
     #if("$!permissionvalue" == "" || $permissionvalue == true)
 		#if( !$target.rendertable )
 			$context.putPageValue("origURL", "$apphome/assets/${asset.sourcePath}.html")
 			$context.putPageValue("data",$asset)	
-			$context.putPageValue("searcher",$mediaarchive.getAssetSearcher() )	
 			$context.putPageValue("view",$viewpath)
 	
 			<div id="edit-${target.getId()}" 
 				 class="asset-data-detail asset-data-preview assetpanel-editor-box edit-panel-generic">
-				#set($collectionid = $context.getRequestParameter("collectionid"))
+				
 				<h4>$context.getText($target.toString())</h4>
-				$context.putPageValue("clearfilters","true")	 
-				$pages.include("/$applicationid/components/xml/detailviewer.html", $context)
-				#if($caneditasset)
-					<div class="assetpanel-editor-actions">
-						#set( $url = "$componenthome/detaileditor/generalinformation/editform.html")
-						#set( $url = "$url?viewpath=$viewpath&oemaxlevel=1&edit=$!caneditasset&assetid=${asset.id}&collectionid=$!{collectionid}&hitssessionid=$!hitssessionid" )
-						#set( $url = "$url&targetdiv=asset-detail-editor&editpath=$componenthome/detaileditor/generalinformation/save.html" )
-						<a href="#urlescape($url)" 
-						   class="ajax btn btn-primary"
-						   data-targetdiv="edit-${target.getId()}"
-						   title="[[Edit]] $context.getText($target.toString())"><i class="bi bi-edit"></i> [[Edit]]</a>
+				$context.putPageValue("clearfilters","true")	
+				
+				#if( $context.getUserProfile() )
+					#set ($details = $searcher.getDetailsForView($viewpath, $context.getUserProfile()))
+				#else
+					#set ($details = $searcher.getDetailsForView($viewpath))
+				#end
+
+				#ifnull($details)
+					<div class="p-3">
+							[[Not view details defined on]]: $viewpath
 					</div>
+				#end
+
+				#ifnotnull($details)
+					$context.putPageValue("details", $details)
+					$pages.include("/$applicationid/components/xml/detailviewer.html", $context)
+					#if($caneditasset)
+						<div class="assetpanel-editor-actions">
+							#set( $url = "$componenthome/detaileditor/generalinformation/editform.html")
+							#set( $url = "$url?viewpath=$viewpath&oemaxlevel=1&edit=$!caneditasset&assetid=${asset.id}&collectionid=$!{collectionid}&hitssessionid=$!hitssessionid" )
+							#set( $url = "$url&targetdiv=asset-detail-editor&editpath=$componenthome/detaileditor/generalinformation/save.html" )
+							<a href="#urlescape($url)" 
+							   class="ajax btn btn-primary"
+							   data-targetdiv="edit-${target.getId()}"
+							   title="[[Edit]] $context.getText($target.toString())"><i class="bi bi-edit"></i> [[Edit]]</a>
+						</div>
+					#end
 				#end
 				</div>
 			#end
