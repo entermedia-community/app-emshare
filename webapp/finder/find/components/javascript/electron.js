@@ -1135,4 +1135,33 @@ jQuery(document).ready(function () {
 		e.preventDefault();
 		ipcRenderer.send("directDownload", $(this).attr("href"));
 	});
+
+	var hostUrl = location.protocol + "//" + location.host;
+	var hoverATO;
+	var anchorHovering = false;
+	lQuery("a").livequery("mouseover", function () {
+		if (hoverATO) clearTimeout(hoverATO);
+		anchorHovering = true;
+		var hoverpreview = $(".hoverpreview");
+		if (!hoverpreview.length) {
+			$("body").append('<div class="hoverpreview"></div>');
+			hoverpreview = $(".hoverpreview");
+		}
+		var href = $(this).attr("href");
+		if (!href || href === "#") {
+			hoverpreview.hide();
+			return;
+		}
+		if (href.startsWith("/")) {
+			href = hostUrl + href;
+		}
+		hoverATO = setTimeout(function () {
+			if (!anchorHovering) return;
+			hoverpreview.text(href).fadeIn(200);
+		}, 1500);
+	});
+	lQuery("a").livequery("mouseout", function () {
+		anchorHovering = false;
+		$(".hoverpreview").fadeOut(200);
+	});
 });

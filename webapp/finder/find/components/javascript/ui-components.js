@@ -357,7 +357,7 @@ uiload = function () {
 				$.extend({
 					showOn: "button",
 					buttonImage:
-						"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' fill='%234d5d80' class='bi bi-calendar-plus' viewBox='0 0 16 16'%3E%3Cpath d='M8 7a.5.5 0 0 1 .5.5V9H10a.5.5 0 0 1 0 1H8.5v1.5a.5.5 0 0 1-1 0V10H6a.5.5 0 0 1 0-1h1.5V7.5A.5.5 0 0 1 8 7'/%3E%3Cpath d='M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5M1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4z'/%3E%3C/svg%3E",
+						"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' fill='%23444444' class='bi bi-calendar-plus' viewBox='0 0 16 16'%3E%3Cpath d='M8 7a.5.5 0 0 1 .5.5V9H10a.5.5 0 0 1 0 1H8.5v1.5a.5.5 0 0 1-1 0V10H6a.5.5 0 0 1 0-1h1.5V7.5A.5.5 0 0 1 8 7'/%3E%3Cpath d='M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5M1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4z'/%3E%3C/svg%3E",
 					buttonImageOnly: true,
 					changeMonth: true,
 					changeYear: true,
@@ -903,7 +903,7 @@ uiload = function () {
 
 					var pickertarget = form.data("pickertarget");
 					var targettype = form.data("targettype");
-					if (pickertarget !== undefined && targettype =="entitypickerfield") {
+					if (pickertarget !== undefined && targettype == "entitypickerfield") {
 						var parsed = $(result);
 						var dataid = parsed.data("dataid");
 						var dataname = parsed.data("dataname");
@@ -2127,67 +2127,61 @@ uiload = function () {
 	);
 
 	//Entity picker field
-	lQuery(".pickerresults.entitypickerfield .resultsdiv .resultsdivdata").livequery("click",
-		function (event) {
-			var clicked = $(this);
-			if (!handleclick(clicked)) {
-				return true;
-			}
-			var row = $(clicked.closest(".resultsdivdata"));
-			var rowid = row.data("dataid");
-			var pickerresults = clicked.closest(".pickerresults");
-
-			if (pickerresults.length) {
-				//Entity Picker Field
-				var pickertarget = pickerresults.data("pickertarget");
-				pickertarget = $("#" + pickertarget);
-				if (pickertarget.length > 0) {
-					updateentityfield(pickertarget, rowid, row.data("rowname"));
-				}
-				closeemdialog(pickerresults.closest(".modal"));
-			}
+	lQuery(
+		".pickerresults.entitypickerfield .resultsdiv .resultsdivdata"
+	).livequery("click", function (event) {
+		var clicked = $(this);
+		if (!handleclick(clicked)) {
+			return true;
 		}
-	);
-	
-	
-	
-	
+		var row = $(clicked.closest(".resultsdivdata"));
+		var rowid = row.data("dataid");
+		var pickerresults = clicked.closest(".pickerresults");
+
+		if (pickerresults.length) {
+			//Entity Picker Field
+			var pickertarget = pickerresults.data("pickertarget");
+			pickertarget = $("#" + pickertarget);
+			if (pickertarget.length > 0) {
+				updateentityfield(pickertarget, rowid, row.data("rowname"));
+			}
+			closeemdialog(pickerresults.closest(".modal"));
+		}
+	});
+
 	//Entity picker Submodule Table
-	lQuery(".pickerresults.entitypickersubmodule .resultsdiv .resultsdivdata").livequery("click",
-		function (event) {
-			var clicked = $(this);
-			if (!handleclick(clicked)) {
-				return true;
-			}
-			var row = $(clicked.closest(".resultsdivdata"));
-			var rowid = row.data("dataid");
-			var pickerresults = clicked.closest(".pickerresults");
-
-			if (pickerresults.length) {
-				var clickurl = pickerresults.data("clickurl");
-				var options = pickerresults.data();
-				options.id = rowid;
-				var pickertarget = pickerresults.data("pickertarget");
-				pickertarget = $("#" + pickertarget);
-				if (clickurl !== undefined && clickurl != "") {
-					jQuery.ajax({
-						url: clickurl,
-						data: options,
-						success: function (data) {
-							autoreload(pickertarget);
-						}
-					});
-				}
-				closeemdialog(pickerresults.closest(".modal"));
-			}
+	lQuery(
+		".pickerresults.entitypickersubmodule .resultsdiv .resultsdivdata"
+	).livequery("click", function (event) {
+		var clicked = $(this);
+		if (!handleclick(clicked)) {
+			return true;
 		}
-	);
-	
-	
-	
-	
-	
-	lQuery(".pickerresultscopy .resultsdivdata").livequery("click",
+		var row = $(clicked.closest(".resultsdivdata"));
+		var rowid = row.data("dataid");
+		var pickerresults = clicked.closest(".pickerresults");
+
+		if (pickerresults.length) {
+			var clickurl = pickerresults.data("clickurl");
+			var options = pickerresults.data();
+			options.id = rowid;
+			var pickertarget = pickerresults.data("pickertarget");
+			pickertarget = $("#" + pickertarget);
+			if (clickurl !== undefined && clickurl != "") {
+				jQuery.ajax({
+					url: clickurl,
+					data: options,
+					success: function (data) {
+						autoreload(pickertarget);
+					},
+				});
+			}
+			closeemdialog(pickerresults.closest(".modal"));
+		}
+	});
+
+	lQuery(".pickerresultscopy .resultsdivdata").livequery(
+		"click",
 		function (event) {
 			var clicked = $(this);
 			if (!handleclick(clicked)) {
