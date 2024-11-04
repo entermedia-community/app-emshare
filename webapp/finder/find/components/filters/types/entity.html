@@ -1,4 +1,5 @@
 #set( $fieldname = $detail.getId() )
+#set( $values = false)
 #set( $values = $filternode.children)
 #if( !$values && $data )
 	#set($values = $data.getValues($detail.id) )
@@ -20,8 +21,8 @@
 	#set( $count = 0 )
 	#foreach($entry in $values)
 		#if($count<=10)
-			<div>
-			<input class="filtercheck filtercheck${fieldname}" 
+		<div class="d-flex align-items-start">
+			<input class="filtercheck mr-1 mt-1 filtercheck${fieldname}" 
 				data-fieldname="${fieldname}" type="checkbox" name="${fieldname}.value" 
 				id="$!{idprefix}$entry.getId()${fieldname}_val" value="$entry.getId()" #if( $hits.getSearchQuery().hasTermValue($filternode.id,$entry.getId()) ) checked #end />
 				
@@ -29,7 +30,7 @@
 				
 			<label for="$!{idprefix}$entry.getId()${fieldname}_val">#esc($label) #if( $entry.count > 0)($entry.count)#end</label>
 			#set($count = $count +1)
-			</div>
+		</div>	
 		#end
 	#end
 	#if ($values.size() > 10)

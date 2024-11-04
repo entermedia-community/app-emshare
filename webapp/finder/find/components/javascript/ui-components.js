@@ -4370,6 +4370,9 @@ if (targettype == "entitydialog") {
 						data: data,
 						type: "POST",
 						url: path,
+						success: function (data) {
+							$(window).trigger("checkautoreload", [listtosort]);
+						},
 					});
 				},
 			});
