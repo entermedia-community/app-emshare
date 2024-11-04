@@ -87,14 +87,15 @@
 					data-targetdiv="$targetdivsearch"
 				#end
 			#end  
-			
-			
 	>
 	<input type="hidden" name="targetdivsearch" value="$targetdivsearch" />
 	<input type="hidden" name="searching" value="true" />
 	
 	#set($pickertarget = $context.getRequestParameter("pickertarget"))
 	<input type="hidden" name="pickertarget" value="$!pickertarget" />
+	
+	#set($lightboxid = $context.getRequestParameter("lightboxid"))
+	<input type="hidden" name="lightboxid" value="$!lightboxid" />
 	
 	
 	#if($dialogresults)
@@ -168,20 +169,21 @@
 			
 			#if ($detail.isLeaf() )
 				#set($filternode = $hits.findFilterValue($detail))
+				$context.putPageValue("filternode",$filternode)
 				#ifnull($filternode)
 					#if( $viewtype != "list" && $viewtype != "entity" )  ##always show dates and text boxes
-						$pages.include("/${applicationid}/components/filters/detailedit.html", $context)
+						$pages.include("/${applicationid}/components/filters/detailedit.html", $context) 
 					#else
 						##dont show this on the form	
 					#end	
 				#end
+				
 				#ifnotnull($filternode)
-					$context.putPageValue("filternode",$filternode)
-					$pages.include("/${applicationid}/components/filters/detailedit.html", $context)
+					$pages.include("/${applicationid}/components/filters/detailedit.html", $context) 
 				#end
 			#else
 				#if($detail.hasChildren())
-					$pages.include("/${applicationid}/components/filters/section.html", $context)
+					$pages.include("/${applicationid}/components/filters/section.html", $context) 
 				#end
 			#end
 		#end
@@ -230,11 +232,11 @@
 		<input type="hidden" name="userinputsearch.value" value="true"/>
 		<input type="hidden" name="removeterm" id="filtersremoveterm" value=""/>
 			
-		#set ($resultview = $userprofile.get('resultview'))
+##		#set ($resultview = $userprofile.get('resultview'))
+##		#if( !$resultview )
+##		<input type="hidden" name="resultstype" value="table" />
+##		#end
 		
-		#if( !$resultview )
-		<input type="hidden" name="resultstype" value="table" />
-		#end
 		#set( $usefirstfilters = $userprofile.getBoolean("usefirstfilters"))
 		#if( $hits.hasFiltersChanged() || $usefirstfilters )
 			<div class="clearfix"></div>
@@ -255,7 +257,6 @@
 					</div>
 					<label class="mb-0 #if($usefirstfilters)filter-inclusive #else filter-exclusive  #end" for="filterautorefresh">[[Show All]]</label>
 				</div>
-				##<small class="small text-muted hint">Shows results that match <b><u>ALL</u></b> selected filters.</small>
 			</div>
 		#end
 </form>

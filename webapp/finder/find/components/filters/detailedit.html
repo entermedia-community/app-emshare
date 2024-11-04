@@ -23,7 +23,7 @@
 
 		#if( $hits.getSearchQuery() )
 			#set( $value = "$!hits.getSearchQuery().getInput($detail.id)" )
-			#set( $values = $hits.getSearchQuery().getInputs($detail.id) )
+			#set( $values = $!hits.getSearchQuery().getInputs($detail.id) )
 			
 			#set( $term = $hits.getSearchQuery().getTermByDetailId($detail.id) )
 			$context.putPageValue("term",$!term)			
@@ -49,6 +49,7 @@
 					 
 					##if ($edit == "true" && $detail.searchType)   (${detail.searchType} ) #end
 			</div>
+			
 			<div class="filter-box-options soft-scrollbar p-2" 
 				id="$!module$filterboxid" 
 				#if($selectedpreference == "true") style="display: none;" #end

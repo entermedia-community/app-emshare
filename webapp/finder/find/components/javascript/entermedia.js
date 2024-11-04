@@ -876,7 +876,7 @@ onloadselectors = function () {
 
 					var dragged = $(ui.draggable);
 					var hitssessionid = dragged
-						.closest("#resultsdiv")
+						.closest(".lightboxresults")
 						.data("hitssessionid");
 					if (!hitssessionid) {
 						hitssessionid = $("#main-results-table").data("hitssessionid");
@@ -933,7 +933,7 @@ onloadselectors = function () {
 					var sourcenode = $(ui.draggable);
 					var sourceid = sourcenode.data("dataid");
 
-					var resultsdiv = $(targetnode).closest(".resultsdiv");
+					var resultsdiv = $(targetnode).closest(".lightboxresults");
 
 					var options = resultsdiv.cleandata();
 					options.dataid = sourceid;
@@ -968,7 +968,7 @@ onloadselectors = function () {
 
 		lQuery(".hitmovetotop").livequery("click", function () {
 			var cell = $(this).closest(".masonry-grid-cell");
-			var resultsdiv = cell.closest(".resultsdiv");
+			var resultsdiv = cell.closest(".lightboxresults");
 
 			var options = resultsdiv.cleandata();
 			options.dataid = cell.data("dataid");

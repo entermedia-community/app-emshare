@@ -14,7 +14,9 @@
 #ifnull($lightboxid)
 	#set($lightboxid = $context.getRequestParameter("lightboxid"))
 #end
-
+#ifnull($dialogresults)
+	#set($dialogresults = $context.getRequestParameter("dialogresults"))
+#end
 
 #set($loop = $hits)
 #if($lightboxassets && !$lightboxassets.isEmpty())
@@ -24,8 +26,8 @@
 #end
 
 <div id="resultsdiv" 
-	class="lightboxselect resultsdiv"
-	data-hitssessionid="$!hits.getSessionId()" ##it breaks drag&drop
+	class="lightboxselect lightboxresults"
+	data-hitssessionid="$!hits.getSessionId()" 
 	data-hitsname="$!hits.getHitsName()"
 	data-componenthome="$!componenthome"
 	data-searchhome="$!home$!{componenthome}/results"
@@ -33,6 +35,7 @@
 	data-category="$!category.getId()"
 	data-collectionid="$!librarycol.getId()" 
 	data-rendertype="$!rendertype"
+	data-dialogresults="$!dialogresults"
 	data-lightboxassetsresults="$!{lightboxassetsresults}"
 	data-lightboxid="$!lightboxid"
 	data-pagenum="$!hits.getPage()" 
@@ -43,8 +46,6 @@
 	data-section="$!content.section"
 	#set( $inputid = $context.getRequestParameter("inputid") )
 	data-inputid="$!inputid"
-	data-ismaingrid="true"
-	data-stackedviewpath=""
 	data-ajaxreloadtargets="dialogassetresults"
 	data-stackedviewpath="brickvertical.html">
 
