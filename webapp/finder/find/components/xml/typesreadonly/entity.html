@@ -7,13 +7,10 @@
 <ul class="entity-value-list">
 	#foreach( $type in $values )
 		#set( $row = false )
-		#set( $row = $searcherManager.getCachedData($detail.getListCatalogId(), $detail.getListId(), $type ))
+		#set( $row = $mediaarchive.getCachedData($entity_module, $type ))
 	    #if( $row )
-		    #if( $searcher.getDetail("name").isMultiLanguage())
-		    	#set($name = $row.getName($context.getLocale()))
-		    #else
-		    	#set($name = $row)
-		    #end
+		   #set($namefield = $mediaarchive.getSearcher($entity_module).getDetail("name"))
+		   #set($name = $searcherManager.getValue($row, $namefield, $context.getLocale()))
 		    #set($entityid = $row.id)
 		    #set($rendertype = $row.modulerendertype)
 			#if(!$rendertype)
@@ -27,7 +24,8 @@
 		    	data-entityid="$!row.getId()"
 		    	data-targetrendertype="$!{rendertype}"
 		    	data-targetcomponenthome="$!{siteroot}$applink/views/modules/$!{entity_module}/components"
-		    	data-searchtype="$!entity_module">$name</a>
+		    	data-searchtype="$!entity_module"
+		    	title="$!name">$name</a>
 		    </li>
 	    #end 
 	#end	
