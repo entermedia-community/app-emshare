@@ -205,7 +205,7 @@ runajaxonthis = function (inlink, e) {
 	var progressMessage = inlink.data("toastmessage");
 	var toast = null;
 	if (progressMessage) {
-		toast = createToast(progressMessage);
+		toast = createToast(inlink);
 	}
 
 	$(".ajaxprogress").show();

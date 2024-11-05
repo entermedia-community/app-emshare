@@ -37,8 +37,8 @@
 		<li class="dropdown-submenu">
 			<a class="dropdown-item  dropdown-toggle" href="#" data-bs-toggle="dropdown">[[Export]]</a>
 			<ul class="submenu dropdown-menu">
-				<li><a class="dropdown-item" href="$siteroot$apphome/views/modules/asset/export/download/export_asset.csv?hitssessionid=$hits.sessionId&searchtype=asset">[[Export results to CSV]]</a></li>
-				<li><a class="dropdown-item" href="$siteroot$apphome/views/modules/asset/export/download/export_asset.csv?hitssessionid=$hits.sessionId&friendly=true&searchtype=asset&view=asset/resultstable">[[Export to CSV (friendly)]]</a></li>
+				<li><a class="dropdown-item lazyajax" href="$siteroot$apphome/views/modules/asset/export/download/export_asset.csv?hitssessionid=$hits.sessionId&searchtype=asset">[[Export results to CSV]]</a></li>
+				<li><a class="dropdown-item lazyajax" href="$siteroot$apphome/views/modules/asset/export/download/export_asset.csv?hitssessionid=$hits.sessionId&friendly=true&searchtype=asset&view=asset/resultstable">[[Export to CSV (friendly)]]</a></li>
 			</ul>
 		</li>
 		#end
@@ -101,6 +101,7 @@
 					<a class="dropdown-item ajax"
 					data-targetdivinner="empty"
 					data-alertmessage="[[Added to User Bookmarks]]"
+					data-toastmessage="[[Adding to User Bookmarks]]"
 					data-oemaxlevel="2" 
 					title="[[Add To User Bookmarks]]"  
 					href="$siteroot$apphome/views/modules/asset/editor/favorite/favorite-add-multi.html?hitssessionid=$hits.getSessionId()"
@@ -143,13 +144,14 @@
 						#ifnotnull($amodule.moduleicon)
 							#set($moduleicon = $amodule.moduleicon)
 						#end
-				    	<li><a class="dropdown-item emdialog" 
+				    	<li><a class="dropdown-item ajax" 
 				    		data-dialogid="addtoentity"
 								data-maxwidth="1400"
 				    		data-hidefooter="true"
 				    		data-pickedmoduleid="$amoduleid"
 				    		data-copyingsearchtype="assets"
 				    		data-copyinghitssessionid="$hits.getSessionId()"
+				    		data-toastmessage="[[Copying selected files and metadata to]] #text($amodule)"
 				    		title="[[Copies files and metadata to]] #text($amodule)"
 				    		href="$addtourl">
 								<i class="bi bi-$moduleicon mr-2"></i>#text($amodule)</a>
