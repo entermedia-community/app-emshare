@@ -456,6 +456,7 @@ uiload = function () {
 	if (browserlanguage == undefined || browserlanguage == "") {
 		browserlanguage = "en";
 	}
+
 	lQuery("input.datepicker").livequery("mousedown", function () {
 		var trigger = $(this).parent().find(".ui-datepicker-trigger");
 		trigger.trigger("click");
@@ -4985,10 +4986,28 @@ jQuery(document).ready(function () {
 	};
 });
 
+function posiitionSubmitButtons() {
+	var offsetTop = $(".form-submit-btns").offset().top;
+	if (offsetTop > $(window).height()) {
+		$(".form-submit-btns").css({
+			position: "sticky",
+			bottom: 0,
+			left: 0,
+			zIndex: "1000",
+			margin: 0,
+			padding: 8,
+			background: "var(--themed-light-bg)",
+			borderTop: "var(--1px-light)",
+		});
+	}
+}
+lQuery(".form-submit-btns").livequery(posiitionSubmitButtons);
+
 jQuery(window).on("resize", function () {
 	adjustdatamanagertable();
 	resizesearchcategories();
 	resizecolumns();
+	posiitionSubmitButtons();
 });
 
 jQuery(document).on("domchanged", function () {
