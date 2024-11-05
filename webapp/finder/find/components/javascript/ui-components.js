@@ -5007,7 +5007,7 @@ jQuery(window).on("resize", function () {
 	adjustdatamanagertable();
 	resizesearchcategories();
 	resizecolumns();
-	posiitionSubmitButtons();
+	//posiitionSubmitButtons();
 });
 
 jQuery(document).on("domchanged", function () {
