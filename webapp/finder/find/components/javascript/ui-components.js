@@ -102,7 +102,112 @@ findalldata = function (inlink) {
 	return options;
 };
 
+var toastTO;
+function createToast(anchor) {
+	if (!anchor) return;
+	var uid = Date.now();
+	anchor.data("uid", uid);
+	var toastMessage = anchor.data("toastmessage");
+	if (!toastMessage) {
+		toastMessage = "Processing request...";
+	}
+	var toastSuccess = anchor.data("toastsuccess");
+	if (!toastSuccess) {
+		toastSuccess = "Request processed successfully";
+	}
+	var toastError = anchor.data("toasterror");
+	if (!toastError) {
+		toastError = "Error processing the request";
+	}
+	var toast = $(
+		'<div class="toastContainer" role="alert" data-uid="' +
+			uid +
+			'"><div class="toastLoader"></div><div class="toastMessage" data-success="' +
+			toastSuccess +
+			'"  data-error="' +
+			toastError +
+			'">' +
+			toastMessage +
+			"</div></div>"
+	);
+	// toastTO = setTimeout(function () {
+	$(".toastList").append(toast);
+	// }, 500);
+	return toast;
+}
+
+function destroyToast(toast, success = true) {
+	clearTimeout(toastTO);
+	if (!toast) return;
+	var msg = toast.find(".toastMessage").data(success ? "success" : "error");
+	toast
+		.find(".toastLoader")
+		.replaceWith(
+			success
+				? '<div class="toastSuccess"></div>'
+				: '<div class="toastError"></div>'
+		);
+	toast.find(".toastMessage").text(msg);
+	setTimeout(function () {
+		toast.addClass("hide");
+	}, 2000);
+}
+
+lQuery(".toastContainer.hide").livequery(function () {
+	setTimeout(function () {
+		$(this).remove();
+	}, 500);
+});
+
+$(window).on("showToast", function (_, anchor) {
+	createToast(anchor);
+});
+$(window).on("successToast", function (_, anchor) {
+	console.log(anchor.data("uid"));
+	var uid = anchor.data("uid");
+	var toast = $(".toastContainer[data-uid='" + uid + "']");
+	destroyToast(toast);
+});
+$(window).on("errorToast", function (_, anchor) {
+	console.log(anchor.data("uid"));
+	var uid = anchor.data("uid");
+	var toast = $(".toastContainer[data-uid='" + uid + "']");
+	destroyToast(toast, false);
+});
+
+lazyajax = function (inlink) {
+	var toast = createToast(inlink);
+
+	inlink.attr("disabled", "disabled");
+
+	var data = findalldata(inlink);
+	var url = inlink.attr("href");
+	$.ajax({
+		url: url,
+		data: data,
+		success: function () {
+			destroyToast(toast);
+		},
+		error: function () {
+			destroyToast(toast, false);
+		},
+	});
+};
+
+lQuery("a.lazyajax").livequery("click", function (e) {
+	e.stopPropagation();
+	e.preventDefault();
+	lazyajax($(this));
+	return false;
+});
+
 runajaxonthis = function (inlink, e) {
+	var progressMessage = inlink.data("toastmessage");
+	var toast = null;
+	if (progressMessage) {
+		toast = createToast(progressMessage);
+	}
+
 	$(".ajaxprogress").show();
 	var inText = $(inlink).data("confirm");
 	if (e && inText && !confirm(inText)) {
@@ -188,13 +293,16 @@ runajaxonthis = function (inlink, e) {
 			targetDiv = "#" + targetDiv;
 		}
 
-		$(window).trigger("showLoader");
+		if (!toast) {
+			$(window).trigger("showLoader");
+		}
 
 		jQuery
 			.ajax({
 				url: nextpage,
 				data: options,
 				success: function (data) {
+					destroyToast(toast);
 					var cell;
 					if (useparent && useparent == "true") {
 						cell = $("#" + targetDiv, window.parent.document);
@@ -236,6 +344,9 @@ runajaxonthis = function (inlink, e) {
 								"</div>"
 						);
 					}
+				},
+				error: function () {
+					destroyToast(toast, false);
 				},
 				type: "POST",
 				dataType: "text",
@@ -882,6 +993,9 @@ uiload = function () {
 			}
 			submitButton.attr("disabled", "disabled");
 			submitButton.append("<i class='fa fa-spinner fa-spin ml-2'></i>");
+
+			$(window).trigger("showToast", [form]);
+
 			form.ajaxSubmit({
 				data: data,
 				xhrFields: {
@@ -894,8 +1008,10 @@ uiload = function () {
 					}
 					form.append(data);
 					// $("#" + targetdiv).replaceWith(data);
+					$(window).trigger("errorToast", [form]);
 				},
 				success: function (result, status, xhr, $form) {
+					$(window).trigger("successToast", [form]);
 					$(window).trigger("checkautoreload", [form]);
 					if (showwaitingtarget !== undefined) {
 						showwaitingtarget.hide();
@@ -964,6 +1080,7 @@ uiload = function () {
 						document.location.reload(true);
 					}
 				},
+
 				complete: function () {
 					submitButton.removeAttr("disabled");
 					submitButton.find(".fa-spinner").remove();

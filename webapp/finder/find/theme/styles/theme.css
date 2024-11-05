@@ -202,6 +202,7 @@ button[type="submit"] {
 }
 .dropdown-menu {
 	border-radius: 0.25rem;
+	z-index: 100000;
 }
 .dropdown-menu > :first-child {
 	border-top-left-radius: 0.25rem;
@@ -521,9 +522,6 @@ ul.resultsnav > li {
 .dropdown-menu > .dropdown-item:last-child,
 .resultsnav .dropdown li:last-child {
 	border-bottom: none !important;
-}
-.resultsnav .dropdown .copy-to li.ent {
-	border-bottom: 2px solid #a5baeb !important;
 }
 ul.resultsnavright li > a,
 ul.resultsnav li > a {
@@ -3084,27 +3082,32 @@ li.dropdown {
 .inlinefilteropen i {
 	font-size: 0.9em;
 }
+.selectedfilters {
+	color: #ffffff;
+	background-color: var(--themed-navbar-primary);
+}
+.lighttheme .selectedfilters {
+	color: var(--themed-default-text);
+	background-color: var(--themed-light-bg);
+	border-bottom: var(--1px-light);
+}
 ul.resultsnav li.filtersselected,
 .emsubnav ul.resultsnav li.filtersselected a {
 	background: transparent;
 }
 li.filtersselected .selected-filters a {
-	color: #eee;
+	color: inherit;
 	padding: 0 10px !important;
-	border-right: 1px solid var(--accent-color-normal);
 	font-size: 0.9rem;
 }
 li.filtersselected .selected-filters a strong {
-	background: var(--accent-color-normal);
+	color: var(--themed-btn-acc-text);
+	background: var(--themed-btn-acc);
 	padding: 2px 5px;
 	border-radius: 5px;
 }
-li.filtersselected .selected-filters a:hover {
-	color: #fff;
-}
 .filtersselected {
 	width: 100%;
-	background: #252525;
 	display: flex;
 	align-items: center;
 	overflow-y: hidden;
@@ -3117,34 +3120,39 @@ li.filtersselected .selected-filters a:hover {
 	min-width: fit-content;
 }
 .filtersselected .selected-filters a {
-	color: #fff;
+	color: inherit;
 	padding: 0 10px !important;
-	border-right: 1px solid var(--primary-color-normal);
+	border-right: var(--1px-dark);
 	font-size: 0.9rem;
 	line-height: 35px;
 	min-width: fit-content;
 }
+.lighttheme .filtersselected .selected-filters a {
+	border-right: var(--1px-light);
+}
 .filtersselected .selected-filters a strong {
-	background: var(--accent-color-normal);
+	color: var(--themed-btn-acc-text);
+	border: 1px solid var(--themed-btn-acc);
+	background: var(--themed-btn-acc);
 	padding: 2px 5px;
 	border-radius: 5px;
 }
-.filtersselected .selected-filters a:hover {
-	color: #fff;
+.filtersselected .selected-filters a:hover strong {
+	background: var(--themed-btn-acc-hover);
 }
 .clear-all {
-	background: var(--accent-color-normal);
-	color: #fff;
+	color: var(--themed-btn-acc-text);
+	border: 1px solid var(--themed-btn-acc);
+	background: var(--themed-btn-acc);
 	text-align: center;
 	height: auto;
-	margin: 0 8px;
+	margin: 0 4px;
 	padding: 2px 8px;
 	border-radius: var(--btn-radius);
 	min-width: 96px;
 }
 .clear-all:hover {
-	background: var(--accent-color-dark);
-	color: #fff;
+	background: var(--themed-btn-acc-hover);
 }
 .selected-filters a:hover {
 	color: var(--themed-default-text);
@@ -9824,4 +9832,196 @@ code.xml,
 }
 .hljs-link {
 	text-decoration: underline;
+}
+@keyframes checkCircle {
+	from {
+		transform: scale(0) rotate(45deg);
+		opacity: 0;
+	}
+	to {
+		transform: scale(1) rotate(45deg);
+		opacity: 1;
+	}
+}
+
+@keyframes checkmark {
+	0% {
+		height: 0;
+		width: 0;
+		opacity: 0;
+	}
+	40% {
+		height: 0;
+		width: 6px;
+		opacity: 1;
+	}
+	100% {
+		opacity: 1;
+		height: 10px;
+	}
+}
+
+.toastSuccess {
+	width: 20px;
+	opacity: 0;
+	height: 20px;
+	border-radius: 10px;
+	background: #61d345;
+	position: relative;
+	transform: rotate(45deg);
+	animation: checkCircle 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+	animation-delay: 100ms;
+}
+.toastSuccess::after {
+	content: "";
+	box-sizing: border-box;
+	animation: checkmark 0.2s ease-out forwards;
+	opacity: 0;
+	animation-delay: 200ms;
+	position: absolute;
+	border-right: 2px solid;
+	border-bottom: 2px solid;
+	border-color: #fff;
+	bottom: 6px;
+	left: 6px;
+	height: 10px;
+	width: 6px;
+}
+
+@keyframes firstLineAnimation {
+	from {
+		transform: scale(0);
+		opacity: 0;
+	}
+	to {
+		transform: scale(1);
+		opacity: 1;
+	}
+}
+
+@keyframes secondLineAnimation {
+	from {
+		transform: scale(0) rotate(90deg);
+		opacity: 0;
+	}
+	to {
+		transform: scale(1) rotate(90deg);
+		opacity: 1;
+	}
+}
+
+.toastError {
+	width: 20px;
+	opacity: 0;
+	height: 20px;
+	border-radius: 10px;
+	background: #ff4b4b;
+	position: relative;
+	transform: rotate(45deg);
+
+	animation: checkCircle 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+	animation-delay: 100ms;
+}
+
+.toastError::after,
+.toastError::before {
+	content: "";
+	animation: firstLineAnimation 0.15s ease-out forwards;
+	animation-delay: 150ms;
+	position: absolute;
+	border-radius: 3px;
+	opacity: 0;
+	background: #fff;
+	bottom: 9px;
+	left: 4px;
+	height: 2px;
+	width: 12px;
+}
+
+.toastError::before {
+	animation: secondLineAnimation 0.15s ease-out forwards;
+	animation-delay: 180ms;
+	transform: rotate(90deg);
+}
+
+@keyframes rotate {
+	from {
+		transform: rotate(0deg);
+	}
+	to {
+		transform: rotate(360deg);
+	}
+}
+.toastLoader {
+	width: 18px;
+	height: 18px;
+	box-sizing: border-box;
+	border: 2px solid;
+	border-radius: 100%;
+	border-color: #e0e0e0;
+	border-right-color: #616161;
+	animation: rotate 1s linear infinite;
+}
+
+@keyframes enterAnimation {
+	0% {
+		transform: translate3d(0, 200%, 0) scale(0.6);
+		opacity: 0.5;
+	}
+	100% {
+		transform: translate3d(0, 0, 0) scale(1);
+		opacity: 1;
+	}
+}
+
+@keyframes exitAnimation {
+	0% {
+		transform: translate3d(0, 0, -1px) scale(1);
+		opacity: 1;
+	}
+	100% {
+		transform: translate3d(0, 150%, -1px) scale(0.6);
+		opacity: 0;
+	}
+}
+
+.toastContainer {
+	display: flex;
+	align-items: center;
+	background: #fff;
+	color: #363636;
+	line-height: 1.3;
+	will-change: transform;
+	box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1), 0 3px 3px rgba(0, 0, 0, 0.05);
+	max-width: 500px;
+	pointer-events: auto;
+	padding: 8px 10px;
+	border-radius: 8.1px;
+	margin-top: 8px;
+	opacity: 0.5;
+	animation: enterAnimation 0.35s cubic-bezier(0.21, 1.02, 0.73, 1) forwards;
+}
+.toastContainer.hide {
+	animation: exitAnimation 0.4s forwards cubic-bezier(0.06, 0.71, 0.55, 1);
+}
+.toastMessage {
+	display: flex;
+	justify-content: flex-start;
+	margin: 4px 10px;
+	color: inherit;
+	flex: 1 1 auto;
+	white-space: pre-line;
+}
+.toastList {
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	height: 194px;
+	padding: 8px;
+	overflow: hidden;
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-end;
+	z-index: 1000000;
+	/* background: red; */
 }
