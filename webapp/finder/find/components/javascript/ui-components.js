@@ -396,6 +396,9 @@ runajaxonthis = function (inlink, e) {
 
 				$(window).trigger("hideLoader");
 
+				inlink.css("cursor", "");
+				$("body").css("cursor", "");
+
 				if (
 					typeof global_updateurl !== "undefined" &&
 					global_updateurl == false
@@ -411,8 +414,6 @@ runajaxonthis = function (inlink, e) {
 			});
 	}
 
-	inlink.css("cursor", "");
-	$("body").css("cursor", "");
 };
 runajax = function (e) {
 	e.stopPropagation();
