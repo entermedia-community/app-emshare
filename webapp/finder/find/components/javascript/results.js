@@ -100,6 +100,7 @@ jQuery(document).ready(function (url, params) {
 			"btn",
 			"btn-sec",
 			"btn-acc",
+			"btn-cta",
 		].forEach(function (inp) {
 			var bg = $("input.color-picker." + inp).val();
 			console.log(bg, inp);
@@ -1048,7 +1049,6 @@ jQuery(document).ready(function (url, params) {
 		}
 	});
 
-
 	$(window).mouseup(function () {
 		isMouseDown = false;
 	});
@@ -1231,7 +1231,7 @@ jQuery(document).ready(function (url, params) {
 	lQuery("div.toggle-selection").livequery("click", function () {
 		var pickerresults = $(this).closest(".pickerresults");
 		if (pickerresults.length) {
-			return;	
+			return;
 		}
 		var checkbox = $(this)
 			.parent()
@@ -1239,7 +1239,7 @@ jQuery(document).ready(function (url, params) {
 		checkbox.prop("checked", !checkbox.prop("checked"));
 		handleAsssetSelect(checkbox);
 	});
-	
+
 	lQuery("input.resultsselection.selectionbox").livequery(
 		"change",
 		function () {
