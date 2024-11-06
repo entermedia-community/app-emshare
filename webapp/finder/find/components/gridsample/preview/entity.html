@@ -46,15 +46,15 @@ $context.putPageValue("topmoduleid", $moduleid)
 #set($userentities = $userprofile.getEntitiesIds())
 #set($dialogtabid = "${moduleid}$!{entityid}")
 #set($entitytabopen = "")
-#set( $saveaction = $context.getRequestParameter("saveaction"))
-#set( $addnew = $context.getRequestParameter("addnew"))
+#set($saveaction = $context.getRequestParameter("saveaction"))
+#set($addnew = $context.getRequestParameter("addnew"))
 #if ($addnew)
 	#set($entitytabopen = $firstviewid)
 	#set($dialogtabid = "addnew${moduleid}")
 #else
 	##check if saveaction
 	#if($saveaction == "upload")
-		#set($entitytabopen = "media")
+		#set($entitytabopen = "import")
 	#end
 #end
 #if(!$entitytabopen)
@@ -277,6 +277,7 @@ $context.putPageValue("topmoduleid", $moduleid)
 			</div>
 			
 		</div>
+		
 		<nav>
 			<div class="nav nav-tabs entity-navigation" id="entity-nav-tab" role="tablist" 
 				data-tabmenuurl="gridsample/preview/entitytabmenu.html">

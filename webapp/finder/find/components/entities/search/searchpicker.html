@@ -23,6 +23,9 @@
 	#set($pickertarget = $context.getRequestParameter("pickertarget"))
 	
 	#set($targettype = $context.getRequestParameter("targettype"))
+	#ifnull($targettype)
+	 	#set($targettype = "entitydialog")
+	#end
 
 	#if(!$viewid)
 		#set( $viewid = "$!{searchtype}advancedfilter") 
@@ -84,7 +87,8 @@
 	#end
 	<div class="clearfix"></div>
 		
-	 
+		
+
 	<div class="overflow-y">
 		<div id="entitypickerresults" class="pickerresults #if( $copyinghits || $pickedassetid || $copyingcategoryid) pickerresultscopy #end $!targettype"
 			
