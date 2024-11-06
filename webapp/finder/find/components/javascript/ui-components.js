@@ -2205,8 +2205,7 @@ uiload = function () {
 	});
 
 	//Entity picker Submodule Table
-	lQuery(
-		".pickerresults.entitypickersubmodule .resultsdiv .resultsdivdata"
+	lQuery(	".pickerresults.entitypickersubmodule .resultsdiv .resultsdivdata"
 	).livequery("click", function (event) {
 		var clicked = $(this);
 		if (!handleclick(clicked)) {
@@ -2234,7 +2233,25 @@ uiload = function () {
 			closeemdialog(pickerresults.closest(".modal"));
 		}
 	});
-
+	
+	//Upload to Entity
+	lQuery(	".pickerresults.entitydialog .resultsdiv .resultsdivdata"
+	).livequery("click", function (event) {
+		var clicked = $(this);
+		if (!handleclick(clicked)) {
+			return true;
+		}
+		var row = $(clicked.closest(".resultsdivdata"));
+		var rowid = row.data("dataid");
+		var pickerresults = clicked.closest(".pickerresults");
+		var options = pickerresults.data();
+		options.id = rowid;
+		if (pickerresults.length) {
+			emdialog(pickerresults, event);
+		}
+	});
+	
+	//Copy Entities
 	lQuery(".pickerresultscopy .resultsdivdata").livequery(
 		"click",
 		function (event) {
@@ -2294,13 +2311,6 @@ uiload = function () {
 		}
 		return true;
 	}
-
-	/*
-
-if (targettype == "entitydialog") {
-	emdialog(pickerresults, event);
-	return;
-	*/
 
 	$(window).on(
 		"updatepickertarget",
