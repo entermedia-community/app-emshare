@@ -88,17 +88,19 @@ $(window).on("showToast", function (_, anchor) {
 	if (!anchor || typeof anchor.data != "function") return;
 	var uid = Date.now();
 	anchor.data("uid", uid);
+	console.log(anchor);
+	console.log("created uid:" + uid);
 	var toastMessage = anchor.data("toastmessage");
+	var toastSuccess = anchor.data("toastsuccess");
+	var toastError = anchor.data("toasterror");
+	if (!toastSuccess) {
+		toastSuccess = toastMessage ? "Done!" : "Loaded!";
+	}
+	if (!toastError) {
+		toastError = toastMessage ? "Failed!" : "Error processing the request";
+	}
 	if (!toastMessage) {
 		toastMessage = "Loading...";
-	}
-	var toastSuccess = anchor.data("toastsuccess");
-	if (!toastSuccess) {
-		toastSuccess = "Loaded!";
-	}
-	var toastError = anchor.data("toasterror");
-	if (!toastError) {
-		toastError = "Error processing the request";
 	}
 	var toast = $(
 		'<div class="toastContainer" role="alert" data-uid="' +
@@ -146,41 +148,17 @@ lQuery(".toastContainer.hide").livequery(function () {
 
 $(window).on("successToast", function (_, anchor) {
 	var uid = anchor.data("uid");
+	console.log(anchor);
+	console.log("successfully removing uid:" + uid);
 	var toast = $(".toastContainer[data-uid='" + uid + "']");
 	destroyToast(toast);
 });
 $(window).on("errorToast", function (_, anchor) {
 	var uid = anchor.data("uid");
+	console.log(anchor);
+	console.error("unsuccessfully removing uid:" + uid);
 	var toast = $(".toastContainer[data-uid='" + uid + "']");
 	destroyToast(toast, false);
-});
-
-lazyajax = function (inlink) {
-	inlink.attr("disabled", "disabled");
-	var data = findalldata(inlink);
-	var url = inlink.attr("href");
-
-	$(window).trigger("showToast", [inlink]);
-	$.ajax({
-		url: url,
-		data: data,
-		success: function () {
-			$(window).trigger("successToast", [inlink]);
-		},
-		error: function () {
-			$(window).trigger("errorToast", [inlink]);
-		},
-		complete: function () {
-			inlink.removeAttr("disabled");
-		},
-	});
-};
-
-lQuery("a.lazyajax").livequery("click", function (e) {
-	e.stopPropagation();
-	e.preventDefault();
-	lazyajax($(this));
-	return false;
 });
 
 runajaxonthis = function (inlink, e) {
@@ -270,11 +248,13 @@ runajaxonthis = function (inlink, e) {
 		}
 
 		$(window).trigger("showToast", [inlink]);
+		var toastUid = $(inlink).data("uid");
 		jQuery
 			.ajax({
 				url: nextpage,
 				data: options,
 				success: function (data) {
+					inlink.data("uid", toastUid);
 					$(window).trigger("successToast", [inlink]);
 					var cell;
 					if (useparent && useparent == "true") {
@@ -319,6 +299,7 @@ runajaxonthis = function (inlink, e) {
 					}
 				},
 				error: function () {
+					inlink.data("uid", toastUid);
 					$(window).trigger("errorToast", [inlink]);
 				},
 				type: "POST",
@@ -967,13 +948,15 @@ uiload = function () {
 			submitButton.append("<i class='fa fa-spinner fa-spin ml-2'></i>");
 
 			$(window).trigger("showToast", [form]);
+			var toastUid = $(form).data("uid");
 			form.ajaxSubmit({
 				data: data,
 				xhrFields: {
 					withCredentials: true,
 				},
 				crossDomain: true,
-				success: function (result, status, xhr, $form) {
+				success: function (result) {
+					form.data("uid", toastUid);
 					$(window).trigger("successToast", [form]);
 					$(window).trigger("checkautoreload", [form]);
 					if (showwaitingtarget !== undefined) {
@@ -1044,6 +1027,7 @@ uiload = function () {
 					}
 				},
 				error: function (data) {
+					form.data("uid", toastUid);
 					$(window).trigger("errorToast", [form]);
 					if (targetdiv) {
 						$("#" + $.escapeSelector(targetdiv)).html(data);
@@ -1252,6 +1236,7 @@ uiload = function () {
 		var searchpagetitle = "";
 
 		$(window).trigger("showToast", [dialog]);
+		var toastUid = dialog.data("uid");
 		jQuery.ajax({
 			xhrFields: {
 				withCredentials: true,
@@ -1260,6 +1245,7 @@ uiload = function () {
 			url: link,
 			data: options,
 			success: function (data) {
+				dialog.data("uiid", toastUid);
 				$(window).trigger("successToast", [dialog]);
 				//--Entities
 				if (
@@ -1412,6 +1398,7 @@ uiload = function () {
 				$(window).trigger("resize");
 			},
 			error: function () {
+				dialog.data("uiid", toastUid);
 				$(window).trigger("errorToast", [dialog]);
 			},
 		});
