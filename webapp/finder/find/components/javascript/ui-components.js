@@ -6,28 +6,6 @@ var exitWarning = false;
 var siteroot;
 var apphome;
 
-/** 
-$(window).on("showLoader", function () {
-	clearTimeout(lwt);
-	clearTimeout(lwht);
-	lwt = setTimeout(function () {
-		$("#loading-window").addClass("d-flex");
-	}, 500); //don't show loader if the page loads within 500ms
-
-	lwht = setTimeout(function () {
-		if ($("#loading-window").hasClass("d-flex")) {
-			$("#loading-window").removeClass("d-flex");
-		}
-	}, 10 * 1000);
-});
-
-$(window).on("hideLoader", function () {
-	clearTimeout(lwt);
-	clearTimeout(lwht);
-	$("#loading-window").removeClass("d-flex");
-});
-*/
-
 $.fn.cleandata = function () {
 	var element = $(this);
 	var params = element.data();
@@ -105,17 +83,18 @@ findalldata = function (inlink) {
 };
 
 var toastTO;
-function createToast(anchor) {
-	if (!anchor) return;
+
+$(window).on("showToast", function (_, anchor) {
+	if (!anchor || typeof anchor.data != "function") return;
 	var uid = Date.now();
 	anchor.data("uid", uid);
 	var toastMessage = anchor.data("toastmessage");
 	if (!toastMessage) {
-		toastMessage = "Processing request...";
+		toastMessage = "Loading...";
 	}
 	var toastSuccess = anchor.data("toastsuccess");
 	if (!toastSuccess) {
-		toastSuccess = "Request processed successfully";
+		toastSuccess = "Loaded!";
 	}
 	var toastError = anchor.data("toasterror");
 	if (!toastError) {
@@ -130,13 +109,17 @@ function createToast(anchor) {
 			toastError +
 			'">' +
 			toastMessage +
-			"</div></div>"
+			"</div><div class='toastClose'>&times;</div></div>"
 	);
-	// toastTO = setTimeout(function () {
-	$(".toastList").append(toast);
-	// }, 500);
-	return toast;
-}
+	toastTO = setTimeout(function () {
+		$(".toastList").append(toast);
+	}, 500);
+});
+
+lQuery(".toastClose").livequery("click", function () {
+	var toast = $(this).closest(".toastContainer");
+	toast.addClass("hide");
+});
 
 function destroyToast(toast, success = true) {
 	clearTimeout(toastTO);
@@ -161,37 +144,34 @@ lQuery(".toastContainer.hide").livequery(function () {
 	}, 500);
 });
 
-$(window).on("showToast", function (_, anchor) {
-	createToast(anchor);
-});
 $(window).on("successToast", function (_, anchor) {
-	console.log(anchor.data("uid"));
 	var uid = anchor.data("uid");
 	var toast = $(".toastContainer[data-uid='" + uid + "']");
 	destroyToast(toast);
 });
 $(window).on("errorToast", function (_, anchor) {
-	console.log(anchor.data("uid"));
 	var uid = anchor.data("uid");
 	var toast = $(".toastContainer[data-uid='" + uid + "']");
 	destroyToast(toast, false);
 });
 
 lazyajax = function (inlink) {
-	var toast = createToast(inlink);
-
 	inlink.attr("disabled", "disabled");
-
 	var data = findalldata(inlink);
 	var url = inlink.attr("href");
+
+	$(window).trigger("showToast", [inlink]);
 	$.ajax({
 		url: url,
 		data: data,
 		success: function () {
-			destroyToast(toast);
+			$(window).trigger("successToast", [inlink]);
 		},
 		error: function () {
-			destroyToast(toast, false);
+			$(window).trigger("errorToast", [inlink]);
+		},
+		complete: function () {
+			inlink.removeAttr("disabled");
 		},
 	});
 };
@@ -204,12 +184,6 @@ lQuery("a.lazyajax").livequery("click", function (e) {
 });
 
 runajaxonthis = function (inlink, e) {
-	var progressMessage = inlink.data("toastmessage");
-	var toast = null;
-	if (progressMessage) {
-		toast = createToast(inlink);
-	}
-
 	$(".ajaxprogress").show();
 	var inText = $(inlink).data("confirm");
 	if (e && inText && !confirm(inText)) {
@@ -295,16 +269,13 @@ runajaxonthis = function (inlink, e) {
 			targetDiv = "#" + targetDiv;
 		}
 
-		if (!toast) {
-			$(window).trigger("showLoader");
-		}
-
+		$(window).trigger("showToast", [inlink]);
 		jQuery
 			.ajax({
 				url: nextpage,
 				data: options,
 				success: function (data) {
-					destroyToast(toast);
+					$(window).trigger("successToast", [inlink]);
 					var cell;
 					if (useparent && useparent == "true") {
 						cell = $("#" + targetDiv, window.parent.document);
@@ -348,7 +319,7 @@ runajaxonthis = function (inlink, e) {
 					}
 				},
 				error: function () {
-					destroyToast(toast, false);
+					$(window).trigger("errorToast", [inlink]);
 				},
 				type: "POST",
 				dataType: "text",
@@ -394,8 +365,6 @@ runajaxonthis = function (inlink, e) {
 
 				$(window).trigger("resize");
 
-				$(window).trigger("hideLoader");
-
 				inlink.css("cursor", "");
 				$("body").css("cursor", "");
 
@@ -413,7 +382,6 @@ runajaxonthis = function (inlink, e) {
 				}
 			});
 	}
-
 };
 runajax = function (e) {
 	e.stopPropagation();
@@ -999,21 +967,12 @@ uiload = function () {
 			submitButton.append("<i class='fa fa-spinner fa-spin ml-2'></i>");
 
 			$(window).trigger("showToast", [form]);
-
 			form.ajaxSubmit({
 				data: data,
 				xhrFields: {
 					withCredentials: true,
 				},
 				crossDomain: true,
-				error: function (data) {
-					if (targetdiv) {
-						$("#" + $.escapeSelector(targetdiv)).html(data);
-					}
-					form.append(data);
-					// $("#" + targetdiv).replaceWith(data);
-					$(window).trigger("errorToast", [form]);
-				},
 				success: function (result, status, xhr, $form) {
 					$(window).trigger("successToast", [form]);
 					$(window).trigger("checkautoreload", [form]);
@@ -1084,7 +1043,13 @@ uiload = function () {
 						document.location.reload(true);
 					}
 				},
-
+				error: function (data) {
+					$(window).trigger("errorToast", [form]);
+					if (targetdiv) {
+						$("#" + $.escapeSelector(targetdiv)).html(data);
+					}
+					form.append(data);
+				},
 				complete: function () {
 					submitButton.removeAttr("disabled");
 					submitButton.find(".fa-spinner").remove();
@@ -1286,170 +1251,170 @@ uiload = function () {
 
 		var searchpagetitle = "";
 
-		$(window).trigger("showLoader");
-		jQuery
-			.ajax({
-				xhrFields: {
-					withCredentials: true,
-				},
-				crossDomain: true,
-				url: link,
-				data: options,
-				success: function (data) {
-					//--Entities
-					if (
-						dialog.hasClass("entity-dialog") &&
-						dialog.closest(".modal").length !== 0
-					) {
-						//find tab
-						var tabid = dialog.data("tabid");
-						if (!tabid) {
-							tabid = "tab_metadata";
+		$(window).trigger("showToast", [dialog]);
+		jQuery.ajax({
+			xhrFields: {
+				withCredentials: true,
+			},
+			crossDomain: true,
+			url: link,
+			data: options,
+			success: function (data) {
+				$(window).trigger("successToast", [dialog]);
+				//--Entities
+				if (
+					dialog.hasClass("entity-dialog") &&
+					dialog.closest(".modal").length !== 0
+				) {
+					//find tab
+					var tabid = dialog.data("tabid");
+					if (!tabid) {
+						tabid = "tab_metadata";
+					}
+					if (tabid) {
+						var container = dialog.closest(".entity-body");
+						var tabs = container.find(".entity-tab-content");
+						if (tabs.length >= 10) {
+							alert("Max Tabs Limit");
+							return;
 						}
-						if (tabid) {
-							var container = dialog.closest(".entity-body");
-							var tabs = container.find(".entity-tab-content");
-							if (tabs.length >= 10) {
-								alert("Max Tabs Limit");
-								return;
-							}
 
-							//open new entity
-							var parent = container.closest(".entitydialog");
-							container = dialog.closest(".entity-wraper");
-							container.replaceWith(data);
-							tabbackbutton(parent);
-						}
-					} else if (dialog.data("targetrendertype") == "entity") {
-						var container = dialog.closest(".entity-wraper");
-						var parent = dialog.closest(".entitydialog");
+						//open new entity
+						var parent = container.closest(".entitydialog");
+						container = dialog.closest(".entity-wraper");
 						container.replaceWith(data);
 						tabbackbutton(parent);
-					} else {
-						modaldialog.html(data);
-						if (width !== undefined) {
-							if (width > $(window).width()) {
-								width = $(window).width();
-							}
-
-							$(".modal-dialog", modaldialog).css("min-width", width + "px");
-						}
-						if (maxwidth) {
-							$(".modal-dialog", modaldialog).css("max-width", maxwidth + "px");
-						}
-
-						var modalkeyboard = false;
-						var modalbackdrop = true;
-						if ($(".modal-backdrop").length) {
-							modalbackdrop = false;
+					}
+				} else if (dialog.data("targetrendertype") == "entity") {
+					var container = dialog.closest(".entity-wraper");
+					var parent = dialog.closest(".entitydialog");
+					container.replaceWith(data);
+					tabbackbutton(parent);
+				} else {
+					modaldialog.html(data);
+					if (width !== undefined) {
+						if (width > $(window).width()) {
+							width = $(window).width();
 						}
 
-						var modalinstance;
-						if (modalkeyboard) {
-							modalinstance = modaldialog.modal({
-								closeExisting: false,
-								show: true,
-								backdrop: modalbackdrop,
-							});
-						} else {
-							modalinstance = modaldialog.modal({
-								keyboard: false,
-								closeExisting: false,
-								show: true,
-								backdrop: modalbackdrop,
-							});
-						}
+						$(".modal-dialog", modaldialog).css("min-width", width + "px");
+					}
+					if (maxwidth) {
+						$(".modal-dialog", modaldialog).css("max-width", maxwidth + "px");
+					}
 
-						var firstform = $("form", modaldialog);
-						firstform.data("openedfrom", openfrom);
-						// fix submit button
-						var justok = dialog.data("cancelsubmit");
-						if (justok != null) {
-							$(".modal-footer #submitbutton", modaldialog).hide();
-						} else {
-							var id = $("form", modaldialog).attr("id");
-							$("#submitbutton", modaldialog).attr("form", id);
-						}
-						var hidetitle = dialog.data("hideheader");
-						if (hidetitle == null) {
-							var title = dialog.attr("title");
-							if (title == null) {
-								title = dialog.text();
-							}
-							$(".modal-title", modaldialog).text(title);
-						}
-						var hidefooter = dialog.data("hidefooter");
-						if (hidefooter != null) {
-							$(".modal-footer", modaldialog).hide();
-						}
+					var modalkeyboard = false;
+					var modalbackdrop = true;
+					if ($(".modal-backdrop").length) {
+						modalbackdrop = false;
+					}
 
-						//backup url
-						var currenturl = window.location.href;
-						modalinstance.data("oldurlbar", currenturl);
-
-						searchpagetitle = modaldialog.find("[data-setpagetitle]");
-
-						modalinstance.on("hidden.bs.modal", function () {
-							//on close execute extra JS -- Todo: Move it to closedialog()
-							if (dialog.data("onclose")) {
-								var onclose = dialog.data("onclose");
-								var fnc = window[onclose];
-								if (fnc && typeof fnc === "function") {
-									//make sure it exists and it is a function
-									fnc(dialog); //execute it
-								}
-							}
-
-							closeemdialog($(this)); //Without this the asset Browse feature does not close all the way
-							$(window).trigger("resize");
+					var modalinstance;
+					if (modalkeyboard) {
+						modalinstance = modaldialog.modal({
+							closeExisting: false,
+							show: true,
+							backdrop: modalbackdrop,
 						});
-
-						modalinstance.on("scroll", function () {
-							//checkScroll();
-						});
-
-						adjustzindex(modalinstance);
-					}
-
-					if (
-						typeof global_updateurl !== "undefined" &&
-						global_updateurl == false
-					) {
-						//globaly disabled updateurl
 					} else {
-						//Update Address Bar
-						var updateurl = dialog.data("updateurl");
-						if (updateurl) {
-							var urlbar = dialog.data("urlbar");
-							if (!urlbar) {
-								urlbar = link;
+						modalinstance = modaldialog.modal({
+							keyboard: false,
+							closeExisting: false,
+							show: true,
+							backdrop: modalbackdrop,
+						});
+					}
+
+					var firstform = $("form", modaldialog);
+					firstform.data("openedfrom", openfrom);
+					// fix submit button
+					var justok = dialog.data("cancelsubmit");
+					if (justok != null) {
+						$(".modal-footer #submitbutton", modaldialog).hide();
+					} else {
+						var id = $("form", modaldialog).attr("id");
+						$("#submitbutton", modaldialog).attr("form", id);
+					}
+					var hidetitle = dialog.data("hideheader");
+					if (hidetitle == null) {
+						var title = dialog.attr("title");
+						if (title == null) {
+							title = dialog.text();
+						}
+						$(".modal-title", modaldialog).text(title);
+					}
+					var hidefooter = dialog.data("hidefooter");
+					if (hidefooter != null) {
+						$(".modal-footer", modaldialog).hide();
+					}
+
+					//backup url
+					var currenturl = window.location.href;
+					modalinstance.data("oldurlbar", currenturl);
+
+					searchpagetitle = modaldialog.find("[data-setpagetitle]");
+
+					modalinstance.on("hidden.bs.modal", function () {
+						//on close execute extra JS -- Todo: Move it to closedialog()
+						if (dialog.data("onclose")) {
+							var onclose = dialog.data("onclose");
+							var fnc = window[onclose];
+							if (fnc && typeof fnc === "function") {
+								//make sure it exists and it is a function
+								fnc(dialog); //execute it
 							}
-
-							history.pushState($("#application").html(), null, urlbar);
-							window.scrollTo(0, 0);
 						}
-					}
 
-					if (searchpagetitle) {
-						$(window).trigger("setPageTitle", [searchpagetitle]);
-					}
+						closeemdialog($(this)); //Without this the asset Browse feature does not close all the way
+						$(window).trigger("resize");
+					});
 
-					//on success execute extra JS
-					if (dialog.data("onsuccess")) {
-						var onsuccess = dialog.data("onsuccess");
-						var fnc = window[onsuccess];
-						if (fnc && typeof fnc === "function") {
-							//make sure it exists and it is a function
-							fnc(dialog); //execute it
+					modalinstance.on("scroll", function () {
+						//checkScroll();
+					});
+
+					adjustzindex(modalinstance);
+				}
+
+				if (
+					typeof global_updateurl !== "undefined" &&
+					global_updateurl == false
+				) {
+					//globaly disabled updateurl
+				} else {
+					//Update Address Bar
+					var updateurl = dialog.data("updateurl");
+					if (updateurl) {
+						var urlbar = dialog.data("urlbar");
+						if (!urlbar) {
+							urlbar = link;
 						}
-					}
 
-					$(window).trigger("resize");
-				},
-			})
-			.always(function () {
-				$(window).trigger("hideLoader");
-			});
+						history.pushState($("#application").html(), null, urlbar);
+						window.scrollTo(0, 0);
+					}
+				}
+
+				if (searchpagetitle) {
+					$(window).trigger("setPageTitle", [searchpagetitle]);
+				}
+
+				//on success execute extra JS
+				if (dialog.data("onsuccess")) {
+					var onsuccess = dialog.data("onsuccess");
+					var fnc = window[onsuccess];
+					if (fnc && typeof fnc === "function") {
+						//make sure it exists and it is a function
+						fnc(dialog); //execute it
+					}
+				}
+
+				$(window).trigger("resize");
+			},
+			error: function () {
+				$(window).trigger("errorToast", [dialog]);
+			},
+		});
 
 		$(modaldialog).on("shown.bs.modal", function () {
 			trackKeydown = true;
