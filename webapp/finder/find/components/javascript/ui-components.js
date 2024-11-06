@@ -4657,6 +4657,24 @@ uiload = function () {
 		image.attr("alt", link.attr("title"));
 		image.data("assetid", link.data("assetid"));
 	});
+	
+	lQuery(".actions-enable-checkbox").livequery("change", function (e) { 
+		var parent = $(this).closest(".actions-row");
+		var actions = parent.find(".actions-elements");
+		var status = true;		
+		if(actions.hasClass("actions-disabled")) {
+			status= false;
+		}
+		
+		actions.find(".action-control").each(function(){
+				var control = $(this);
+				control.prop("disabled", status);
+		});
+		
+		actions.toggleClass("actions-disabled");
+	});
+	
+	
 }; // uiload
 
 function formsavebackbutton(form) {
