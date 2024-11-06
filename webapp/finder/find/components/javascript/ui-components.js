@@ -47,24 +47,6 @@ function getScriptIfNotLoaded(scriptLocationAndName) {
 	head.appendChild(script);
 }
 
-finddata = function (inlink, inname) {
-	var item = $(inlink);
-	var value = item.data(inname);
-	if (!value) {
-		value = inlink.attr(inname);
-	}
-	var parent = inlink;
-	//debugger;
-	while (!value) {
-		parent = parent.parent().closest(".domdatacontext");
-		if (parent.length == 0) {
-			break;
-		}
-		value = parent.data(inname);
-	}
-	return value;
-};
-
 findalldata = function (inlink) {
 	var item = $(inlink);
 	var options = item.data();
@@ -189,10 +171,15 @@ runajaxonthis = function (inlink, e) {
 		nextpage = inlink.data("nextpage");
 	}
 
-	var targetDiv = finddata(inlink, "targetdiv");
+	var options = $(inlink).data();
+	if (options.isEmptyObject || $(inlink).data("findalldata")) {
+		options = findalldata(inlink);
+	}
+
+	var targetDiv = inlink.data("targetdiv");
 	var replaceHtml = true;
 
-	var targetDivInner = finddata(inlink, "targetdivinner");
+	var targetDivInner = inlink.data("targetdivinner");
 	if (targetDivInner) {
 		targetDiv = targetDivInner;
 		replaceHtml = false;
@@ -218,11 +205,6 @@ runajaxonthis = function (inlink, e) {
 		jQuery("li", container).removeClass("current");
 		var row = activemenu.closest("li");
 		row.addClass("current");
-	}
-
-	var options = $(inlink).data();
-	if (options.isEmptyObject || $(inlink).data("findalldata")) {
-		options = findalldata(inlink);
 	}
 
 	var inlinkmodal = inlink.closest(".modal");
