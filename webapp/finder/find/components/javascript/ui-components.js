@@ -6,6 +6,7 @@ var exitWarning = false;
 var siteroot;
 var apphome;
 
+/** 
 $(window).on("showLoader", function () {
 	clearTimeout(lwt);
 	clearTimeout(lwht);
@@ -25,6 +26,7 @@ $(window).on("hideLoader", function () {
 	clearTimeout(lwht);
 	$("#loading-window").removeClass("d-flex");
 });
+*/
 
 $.fn.cleandata = function () {
 	var element = $(this);
