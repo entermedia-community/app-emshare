@@ -120,11 +120,11 @@ public void runit()
 			{
 				mediaArchive.saveAssets(tosave);
 				tosave.clear();
-				log.info(assetcount+" assets tagged by Google.");
+				log.info(assetcount+" assets tagged by Google AI.");
 			}
 		}
 		mediaArchive.saveAssets(tosave);
-		log.info(assetcount+" assets tagged by Google.")
+		log.info(assetcount+" assets tagged by Google AI.")
 	}
 }
 
