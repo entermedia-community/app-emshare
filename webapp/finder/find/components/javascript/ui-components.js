@@ -1750,7 +1750,7 @@ uiload = function () {
 	lQuery(".entitytabactions").livequery("click", function (event) {
 		event.preventDefault();
 		var link = $(this);
-		var tabaction = link.data("tabaction");
+		var tabaction = link.data("tabtype");
 		var uploadmedia = link.data("uploadmedia");
 		var lightboxid = link.data("lightboxid");
 		var tabsection = link.data("tabsection");
