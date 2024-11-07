@@ -1,69 +1,32 @@
-<div id="asset-editor-container" class=" assetpanel-editor-box">
-<div class="assetpanel-editorinner">
-<form method="post" name="wizard">
-<div class="oelist-box">
-	<table width="100%" class="emdata table table-striped table-hover">
-		<thead>
-			<tr class="tableheader">
-			<th style="width: 160px;">[[Version]]</th>
-		                  <th>[[Author]]</th>
-		                  <th>[[Date]]</th>
-		                  <th>[[Message]]</th>
-		                  <th style="width: 200px;"></th>
-			</tr>
-	</thead>
-	<tbody>
-		<tr class="currentversion">
-			   <td><b>[[Current]]</b></td>
-              <td>$asset.get("owner")</td>
-              <td>
-				  
-                #set ( $dateString = $context.getDateTime( $asset.get("assetmodificationdate")) )
-                    $dateString
-              </td>
-              <td></td>        
-              <td></td>            
-			</tr>
-        #foreach ( $revision in $revisions.revisions )
-            <tr class="">
-			   <td>                
-                   <a href="$home${content.revisioneditorhome}/showrevision.html?editPath=${url_util.encode( $revisions.editPath )}&version=$revision.version">$revision.version</a>
-                </td>
-              <td>
-                    $!revision.author
-              </td>
-              <td>
-                #set ( $dateString = $context.getDateTime( $revision.lastModified() ) )
-                    $dateString
-              </td>
-              <td>
-                    #if ( !$revision.version && !$revision.message )
-                    	[[No Version]]
-                    #else
-                    $!revision.message
-                    #end
-              </td>        
-              <td>
-				  #set($originalpath = $mediaarchive.asLinkToOriginal($asset))
-				  #set ($downloadlink = "$!{siteroot}${apphome}/views/modules/asset/downloads/originals/${originalpath}")
-				  <a href="${downloadlink}?version=${revision.version}" 
-				  	class="btn btn-xs btn-primary #if($desktop) desktopdirectdownload #end"
-				  	title="[[Download Version]]">
-					  	<i class="bi bi-clock-history mr-1"></i> [[Download]]</a>
-					  	
-				  <a href="$apphome/views/modules/asset/editor/versioncontrol/replace.html?version=${revision.version}&assetid=$asset.getId()" 
-				  	class="btn btn-xs btn-primary ajax"
-				  	data-targetdiv="asset-editor-container" 
-				  	title="[[Restore this Version]]">
-					  	<i class="bi bi-clock-history mr-1"></i> [[Restore]]</a>
-			  </td>            
-			</tr>
-        #end
-        </tbody>
-     </table>
-        </div>
-#if( $candeleteall )
-<input onclick="deleteAll()" value="$context.getPageProperty('text.deleteAll')" name="Delete" type="button" class="oestandard-button">
-#end
-</div>
+<div class="versionscontainer">
+	<div class="versionlist overflow-y"> 
+
+		#foreach( $i in [100..0])
+		<a class="versionlistitem d-flex align-items-center #if($i == 100) selected #end" role="button" href="#" data-targetdiv="versionpreview">
+			<i class="bi bi-clock-history"></i>
+			<div class="d-flex flex-column">
+				<div class="versionname">
+					#if($i == 100)
+						Current
+					#else
+						Version $i
+					#end
+				</div>
+				#ifnotnull($revision.author)
+				<div class="versionauthor">
+					$revision.author
+				</div>
+				#end
+				<div class="versiondate">
+					#set ( $dateString = $context.getDateTime( $asset.get("assetmodificationdate")) )
+					$dateString
+				</div>
+			</div>
+		</a>
+		#end
+
+	</div>
+
+	$pages.include("$apphome/views/modules/asset/editor/versioncontrol/revisionpreview.html")
+
 </div>
