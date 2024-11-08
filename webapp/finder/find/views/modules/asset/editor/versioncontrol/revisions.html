@@ -1,6 +1,5 @@
 <div class="versionscontainer">
 	<div class="versionlist overflow-y"> 
-
 		<a class="versionlistitem d-flex align-items-center selected" role="button" href="#" data-targetdiv="versionpreview">
 			<i class="bi bi-clock-history"></i>
 			<div class="d-flex flex-column">
@@ -18,8 +17,10 @@
 		</a>
        #foreach( $revision in $revisions.revisions )
 
-		#set( $link = "$apphome/views/modules/asset/editor/versioncontrol/revisionpreview.html?editPath=${url_util.encode( $revisions.editPath )}&version=$revision.version")
-		<a class="versionlistitem d-flex align-items-center #if($i == 100) selected #end" role="button" href="$link" data-targetdiv="versionpreview">
+		#set( $link = "$apphome/views/modules/asset/editor/versioncontrol/revisionpreview.html?editPath=$revisions.editPath&version=$revision.version&assetid=$asset.getId()")
+		<a class="versionlistitem ajax d-flex align-items-center #if($i == 100) selected #end" role="button"
+		
+			 href="#urlescape($link)" data-oemaxlevel="1" data-targetdiv="versionpreview">
 			<i class="bi bi-clock-history"></i>
 			<div class="d-flex flex-column">
 				<div class="versionname">
@@ -40,6 +41,6 @@
 
 	</div>
 
-	$pages.include("$apphome/views/modules/asset/editor/versioncontrol/revisionpreview.html")
+	$pages.include("$apphome/views/modules/asset/editor/versioncontrol/revisionpreview.html",$context)
 
 </div>

@@ -13,16 +13,18 @@
 			title="[[Make a Copy]]">
 			<i class="bi bi-copy mr-1"></i> [[Make a Copy]]
 		</a>
-		<a href="#" 
-			class="btn btn-secondary ajax ml-1"
-			data-targetdiv="asset-editor-container" 
-			title="[[Metadata]]">
-			<i class="bi bi-info-circle mr-1"></i> Download
-		</a>
+
+		  #set($originalpath = $mediaarchive.asLinkToOriginal($asset))
+		  #set ($downloadlink = "$!{siteroot}${apphome}/views/modules/asset/downloads/originals/${originalpath}?version=${revision.version}")
+		  <a href="${downloadlink}" 
+			class="btn btn-secondary ajax ml-1 #if($desktop) desktopdirectdownload #end"
+		  	title="[[Download Version]]">
+			  	<i class="bi bi-clock-history mr-1"></i> [[Download]]</a>
+
 	</div>
 
 	<div class="versionpreviewcontent">
-		<img src="http://localhost:8080/finder/mediadb/services/module/asset/downloads/preset/Activity/Gemini/azinumoto-aNZ-f8n7_3w-unsplash_2.jpg/image3000x3000.jpg?_=8751">
+		<img src="$downloadlink">
 	</div>
 
 	#ifnotnull($revision.message)
