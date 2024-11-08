@@ -2,14 +2,17 @@
 	<div class="versionlist overflow-y"> 
 		#set( $link = "$apphome/views/modules/asset/editor/versioncontrol/revisionpreview.html?assetid=$asset.getId()")
 		<a class="versionlistitem  ajax d-flex align-items-center selected activelistener" role="button" 
-		href="#urlescape($link)"  data-targetdiv="versionpreview">
+		href="#urlescape($link)"  data-oemaxlevel="1"  data-targetdiv="versionpreview">
 			<i class="bi bi-clock-history"></i>
 			<div class="d-flex flex-column">
 				<div class="versionname">
 					[[Current]]
 				</div>
 				<div class="versionauthor">
-					$mediaarchive.getUser( $asset.get("owner") )
+					#set( $owner = $mediaarchive.getUser( $asset.get("owner") ) )
+					#ifnotnull( $owner)
+						$owner
+					#end
 				</div>
 				<div class="versiondate">
 					[[Modified]]: #set ( $dateString = $context.getDateTime( $asset.get("assetmodificationdate")) )

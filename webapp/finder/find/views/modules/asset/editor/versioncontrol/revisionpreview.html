@@ -24,26 +24,29 @@
 		  #end
 		  
 		  <a href="${downloadlink}" 
-			class="btn btn-secondary ajax ml-1 #if($desktop) desktopdirectdownload #end"
+			class="btn btn-secondary ml-1 #if($desktop) desktopdirectdownload #end"
 			title="[[Download Version]]">
 			<i class="bi bi-download mr-1"></i> [[Download]]
 		</a>
 	</div>
 
-		#if($selectedrevision && $selectedrevision.getPreviewImage() )
+	#if( $selectedrevision)
+		#if($selectedrevision.getPreviewImage() )
 		  #set ($previewlink ="/${mediaarchive.getMediaDbId()}/services/module/asset/downloads/revisionpreviews/$selectedrevision.getPreviewImage()?assetid=$asset.id&version=${selectedrevision.version}")
 		#else		
-  			#set ($previewlink = $downloadlink)
+  			#set ($previewlink = false)
 		#end
-
-	#ifnotnull($selectedrevision.message)
-	<div class="versionfooter">
-		$!selectedrevision.message
-	</div>
-	#end
-
+	#else
+		##must just be asset
+		#set ($previewlink = $mediaarchive.asLinkToPreview($asset,"image3000x3000") )
+	#end	
+	
 	<div class="versionpreviewcontent">
+		#if( $previewlink )
 		<img src="$previewlink">
+		#else
+			<p>[[No preview available]]</p
+		#end
 	</div>
 	
 </div>
