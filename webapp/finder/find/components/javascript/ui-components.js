@@ -70,9 +70,9 @@ $(window).on("showToast", function (_, anchor) {
 	if (!anchor || typeof anchor.data != "function") return;
 	var uid = Date.now();
 	anchor.data("uid", uid);
-	console.log(anchor);
-	console.log("created uid:" + uid);
+	var delay = 10;
 	var toastMessage = anchor.data("toastmessage");
+	if (!toastMessage) delay = 1250;
 	var toastSuccess = anchor.data("toastsuccess");
 	var toastError = anchor.data("toasterror");
 	if (!toastSuccess) {
@@ -93,11 +93,11 @@ $(window).on("showToast", function (_, anchor) {
 			toastError +
 			'">' +
 			toastMessage +
-			"</div><div class='toastClose'>&times;</div></div>"
+			'</div><div class="toastClose">&times;</div></div>'
 	);
 	toastTO = setTimeout(function () {
 		$(".toastList").append(toast);
-	}, 500);
+	}, delay);
 });
 
 lQuery(".toastClose").livequery("click", function () {
@@ -824,229 +824,232 @@ uiload = function () {
 		});
 	});
 
-	lQuery("form.ajaxform").livequery(
-		"submit", // Make sure you use
-		// $(this).closest("form").trigger("submit")
-		function (e) {
-			e.preventDefault();
-			e.stopImmediatePropagation();
-			e.stopPropagation();
+	lQuery("form.ajaxform").livequery("submit", function (e) {
+		// Make sure you use $(this).closest("form").trigger("submit")
+		e.preventDefault();
+		e.stopImmediatePropagation();
+		e.stopPropagation();
 
-			var warning = $(this).data("warning");
-			if (warning && !confirm(warning)) {
-				return;
-			}
-
-			if (typeof CKEDITOR !== "undefined") {
-				for (instance in CKEDITOR.instances) {
-					var editor = CKEDITOR.instances[instance];
-					var div = $(editor.element.$);
-					var id = div.data("saveto");
-					var tosave = $("#" + id);
-					//editor.updateElement() //does not work
-					var data = editor.getData();
-					tosave.val(data);
-				}
-			}
-
-			var form = $(this);
-
-			if (!form.hasClass("novalidate")) {
-				if (form.validate) {
-					try {
-						form.validate({
-							ignore: ".ignore",
-						});
-						var isvalidate = form.valid();
-						if (!isvalidate) {
-							e.preventDefault();
-							return;
-						}
-					} catch (_) {
-						console.log(e);
-					}
-				}
-			}
-			var targetdiv_ = form.data("targetdiv");
-			if (targetdiv_ === undefined) {
-				targetdiv_ = form.attr("targetdiv");
-			}
-			if (targetdiv_ === undefined) {
-				targetdiv_ = form.data("targetdivinner");
-			}
-			var targetdiv = $("#" + $.escapeSelector(targetdiv_));
-			if (!targetdiv.length) {
-				targetdiv = $("." + $.escapeSelector(targetdiv_));
-			}
-			if (form.attr("action") == undefined) {
-				var action = targetdiv.data("saveaction");
-				if (action == undefined) {
-					action = form.data("defaultaction");
-				}
-				form.attr("action", action);
-			}
-
-			if (form.hasClass("showwaiting")) {
-				var apphome = app.data("siteroot") + app.data("apphome");
-				var showwaitingtarget = targetdiv;
-				if (form.data("showwaitingtarget")) {
-					showwaitingtarget = form.data("showwaitingtarget");
-					showwaitingtarget = $("#" + $.escapeSelector(showwaitingtarget));
-				}
-				showwaitingtarget.html(
-					'<img src="' + apphome + '/theme/images/ajax-loader.gif">'
-				);
-				showwaitingtarget.show();
-			}
-
-			var oemaxlevel = targetdiv.data("oemaxlevel");
-			if (oemaxlevel == undefined) {
-				oemaxlevel = form.data("oemaxlevel");
-			}
-			if (oemaxlevel == undefined) {
-				oemaxlevel = 1;
-			}
-			//targetdiv.data("oemaxlevel", oemaxlevel);
-
-			var data = {};
-			if (form.data("includesearchcontext") == true) {
-				data = jQuery("#resultsdiv").data();
-				data.oemaxlevel = oemaxlevel;
-			} else {
-				if (targetdiv.data() !== undefined) {
-					//data = targetdiv.data();
-				}
-			}
-
-			data.oemaxlevel = oemaxlevel;
-
-			var formmodal = form.closest(".modal");
-
-			var submitButton = form.find('button[type="submit"]');
-			if (submitButton.length == 0) {
-				submitButton = form.find('input[type="submit"]');
-			}
-			submitButton.attr("disabled", "disabled");
-			submitButton.append("<i class='fa fa-spinner fa-spin ml-2'></i>");
-
-			$(window).trigger("showToast", [form]);
-			var toastUid = $(form).data("uid");
-			form.ajaxSubmit({
-				data: data,
-				xhrFields: {
-					withCredentials: true,
-				},
-				crossDomain: true,
-				success: function (result) {
-					form.data("uid", toastUid);
-					$(window).trigger("successToast", [form]);
-					$(window).trigger("checkautoreload", [form]);
-					if (showwaitingtarget !== undefined) {
-						showwaitingtarget.hide();
-					}
-
-					var pickertarget = form.data("pickertarget");
-					var targettype = form.data("targettype");
-					if (pickertarget !== undefined && targettype == "entitypickerfield") {
-						var parsed = $(result);
-						var dataid = parsed.data("dataid");
-						var dataname = parsed.data("dataname");
-
-						$(window).trigger("updatepickertarget", [
-							pickertarget,
-							dataid,
-							dataname,
-						]);
-					}
-
-					var targetdivinner = form.data("targetdivinner");
-					if (targetdivinner) {
-						$("#" + $.escapeSelector(targetdivinner)).html(result);
-					} else {
-						if (targetdiv) {
-							targetdiv.replaceWith(result);
-						}
-					}
-					if (formmodal.length > 0 && form.hasClass("autocloseform")) {
-						if (formmodal.modal) {
-							closeemdialog(formmodal);
-						}
-					}
-
-					//Entity Back Btn
-					formsavebackbutton(form);
-
-					//who uses this?
-					$("#resultsdiv").data("reloadresults", true);
-
-					//TODO: Move this to results.js
-					if (form.hasClass("autohideOverlay")) {
-						hideOverlayDiv(getOverlay());
-					}
-
-					if (form.hasClass("autoreloadsource")) {
-						//TODO: Use ajaxreloadtargets
-						var link = form.data("openedfrom");
-						if (link) {
-							window.location.replace(link);
-						}
-					}
-					$(window).trigger("resize");
-
-					//on success execute extra JS
-					if (form.data("onsuccess")) {
-						var onsuccess = form.data("onsuccess");
-						var fnc = window[onsuccess];
-						if (fnc && typeof fnc === "function") {
-							//make sure it exists and it is a function
-							fnc(form); //execute it
-						}
-					}
-
-					//experimental
-					if (form.data("onsuccessreload")) {
-						document.location.reload(true);
-					}
-				},
-				error: function (data) {
-					form.data("uid", toastUid);
-					$(window).trigger("errorToast", [form]);
-					if (targetdiv) {
-						$("#" + $.escapeSelector(targetdiv)).html(data);
-					}
-					form.append(data);
-				},
-				complete: function () {
-					submitButton.removeAttr("disabled");
-					submitButton.find(".fa-spinner").remove();
-				},
-			});
-
-			var reset = form.data("reset");
-			if (reset == true) {
-				form.get(0).reset();
-			}
-
-			if (
-				typeof global_updateurl !== "undefined" &&
-				global_updateurl == false
-			) {
-				//globaly disabled updateurl
-			} else {
-				//Update Address Bar
-				var updateurl = form.data("updateurl");
-				if (updateurl) {
-					//serialize and attach
-					var params = form.serialize();
-					var url = form.attr("action");
-					url += (url.indexOf("?") >= 0 ? "&" : "?") + params;
-					history.pushState($("#application").html(), null, url);
-					window.scrollTo(0, 0);
-				}
-			}
-			return false;
+		if ($(this).data("submitting")) {
+			console.warn("Already submitting this form, skipping");
+			return;
 		}
-	);
+
+		var warning = $(this).data("warning");
+		if (warning && !confirm(warning)) {
+			return;
+		}
+
+		if (typeof CKEDITOR !== "undefined") {
+			for (instance in CKEDITOR.instances) {
+				var editor = CKEDITOR.instances[instance];
+				var div = $(editor.element.$);
+				var id = div.data("saveto");
+				var tosave = $("#" + id);
+				//editor.updateElement() //does not work
+				var data = editor.getData();
+				tosave.val(data);
+			}
+		}
+
+		var form = $(this);
+
+		if (!form.hasClass("novalidate")) {
+			if (form.validate) {
+				try {
+					form.validate({
+						ignore: ".ignore",
+					});
+					var isvalidate = form.valid();
+					if (!isvalidate) {
+						e.preventDefault();
+						return;
+					}
+				} catch (_) {
+					console.log(e);
+				}
+			}
+		}
+		var targetdiv_ = form.data("targetdiv");
+		if (targetdiv_ === undefined) {
+			targetdiv_ = form.attr("targetdiv");
+		}
+		if (targetdiv_ === undefined) {
+			targetdiv_ = form.data("targetdivinner");
+		}
+		var targetdiv = $("#" + $.escapeSelector(targetdiv_));
+		if (!targetdiv.length) {
+			targetdiv = $("." + $.escapeSelector(targetdiv_));
+		}
+		if (form.attr("action") == undefined) {
+			var action = targetdiv.data("saveaction");
+			if (action == undefined) {
+				action = form.data("defaultaction");
+			}
+			form.attr("action", action);
+		}
+
+		if (form.hasClass("showwaiting")) {
+			var apphome = app.data("siteroot") + app.data("apphome");
+			var showwaitingtarget = targetdiv;
+			if (form.data("showwaitingtarget")) {
+				showwaitingtarget = form.data("showwaitingtarget");
+				showwaitingtarget = $("#" + $.escapeSelector(showwaitingtarget));
+			}
+			showwaitingtarget.html(
+				'<img src="' + apphome + '/theme/images/ajax-loader.gif">'
+			);
+			showwaitingtarget.show();
+		}
+
+		var oemaxlevel = targetdiv.data("oemaxlevel");
+		if (oemaxlevel == undefined) {
+			oemaxlevel = form.data("oemaxlevel");
+		}
+		if (oemaxlevel == undefined) {
+			oemaxlevel = 1;
+		}
+		//targetdiv.data("oemaxlevel", oemaxlevel);
+
+		var data = {};
+		if (form.data("includesearchcontext") == true) {
+			data = jQuery("#resultsdiv").data();
+			data.oemaxlevel = oemaxlevel;
+		} else {
+			if (targetdiv.data() !== undefined) {
+				//data = targetdiv.data();
+			}
+		}
+
+		data.oemaxlevel = oemaxlevel;
+
+		var formmodal = form.closest(".modal");
+
+		var submitButton = form.find('button[type="submit"]');
+		if (submitButton.length == 0) {
+			submitButton = form.find('input[type="submit"]');
+		}
+		submitButton.attr("disabled", "disabled");
+		submitButton.append("<i class='fa fa-spinner fa-spin ml-2'></i>");
+
+		$(window).trigger("showToast", [form]);
+		var toastUid = $(form).data("uid");
+
+		$(this).data("submitting", true);
+
+		form.ajaxSubmit({
+			data: data,
+			xhrFields: {
+				withCredentials: true,
+			},
+			crossDomain: true,
+			success: function (result) {
+				form.data("uid", toastUid);
+				$(window).trigger("successToast", [form]);
+				$(window).trigger("checkautoreload", [form]);
+				if (showwaitingtarget !== undefined) {
+					showwaitingtarget.hide();
+				}
+
+				var pickertarget = form.data("pickertarget");
+				var targettype = form.data("targettype");
+				if (pickertarget !== undefined && targettype == "entitypickerfield") {
+					var parsed = $(result);
+					var dataid = parsed.data("dataid");
+					var dataname = parsed.data("dataname");
+
+					$(window).trigger("updatepickertarget", [
+						pickertarget,
+						dataid,
+						dataname,
+					]);
+				}
+
+				var targetdivinner = form.data("targetdivinner");
+				if (targetdivinner) {
+					$("#" + $.escapeSelector(targetdivinner)).html(result);
+				} else {
+					if (targetdiv) {
+						targetdiv.replaceWith(result);
+					}
+				}
+				if (formmodal.length > 0 && form.hasClass("autocloseform")) {
+					if (formmodal.modal) {
+						closeemdialog(formmodal);
+					}
+				}
+
+				//Entity Back Btn
+				formsavebackbutton(form);
+
+				//who uses this?
+				$("#resultsdiv").data("reloadresults", true);
+
+				//TODO: Move this to results.js
+				if (form.hasClass("autohideOverlay")) {
+					hideOverlayDiv(getOverlay());
+				}
+
+				if (form.hasClass("autoreloadsource")) {
+					//TODO: Use ajaxreloadtargets
+					var link = form.data("openedfrom");
+					if (link) {
+						window.location.replace(link);
+					}
+				}
+				$(window).trigger("resize");
+
+				//on success execute extra JS
+				if (form.data("onsuccess")) {
+					var onsuccess = form.data("onsuccess");
+					var fnc = window[onsuccess];
+					if (fnc && typeof fnc === "function") {
+						//make sure it exists and it is a function
+						fnc(form); //execute it
+					}
+				}
+
+				//experimental
+				if (form.data("onsuccessreload")) {
+					document.location.reload(true);
+				}
+			},
+			error: function (data) {
+				form.data("uid", toastUid);
+				$(window).trigger("errorToast", [form]);
+				if (targetdiv) {
+					$("#" + $.escapeSelector(targetdiv)).html(data);
+				}
+				form.append(data);
+			},
+			complete: function () {
+				submitButton.removeAttr("disabled");
+				submitButton.find(".fa-spinner").remove();
+				$(this).data("submitting", false);
+			},
+		});
+
+		var reset = form.data("reset");
+		if (reset == true) {
+			form.get(0).reset();
+		}
+
+		if (typeof global_updateurl !== "undefined" && global_updateurl == false) {
+			//globaly disabled updateurl
+		} else {
+			//Update Address Bar
+			var updateurl = form.data("updateurl");
+			if (updateurl) {
+				//serialize and attach
+				var params = form.serialize();
+				var url = form.attr("action");
+				url += (url.indexOf("?") >= 0 ? "&" : "?") + params;
+				history.pushState($("#application").html(), null, url);
+				window.scrollTo(0, 0);
+			}
+		}
+		return false;
+	});
 
 	lQuery("form.autosubmit").livequery(function () {
 		var form = $(this);
@@ -4660,77 +4663,75 @@ uiload = function () {
 		image.attr("alt", link.attr("title"));
 		image.data("assetid", link.data("assetid"));
 	});
-	
-	lQuery(".actions-enable-checkbox").livequery("change", function (e) { 
+
+	lQuery(".actions-enable-checkbox").livequery("change", function (e) {
 		var parent = $(this).closest(".actions-row");
 		var actions = parent.find(".actions-elements");
-		var status = true;		
-		if(actions.hasClass("actions-disabled")) {
-			status= false;
+		var status = true;
+		if (actions.hasClass("actions-disabled")) {
+			status = false;
 		}
-		
-		actions.find(".action-control").each(function(){
-				var control = $(this);
-				control.prop("disabled", status);
+
+		actions.find(".action-control").each(function () {
+			var control = $(this);
+			control.prop("disabled", status);
 		});
-		
+
 		actions.toggleClass("actions-disabled");
 	});
-	
+
 	lQuery(".pickemoticon").livequery(function () {
-    //Load div
-    var input = $(this);
-    input.click(function () {
-      $(".emoticonmenu").hide(); //Hide old ones
-    });
+		//Load div
+		var input = $(this);
+		input.click(function () {
+			$(".emoticonmenu").hide(); //Hide old ones
+		});
 
-    input.hover(function () {
-      var isattached = input.data("isattached");
-      if (isattached) {
-        $(".emoticonmenu").hide(); //Hide old ones
-        input.parent().find(".emoticonmenu").show();
-      } else {
-        var options = input.data();
-        $.ajax({
-          url: options.showurl,
-          async: true,
-          data: options,
-          success: function (data) {
-            $(".emoticonmenu").hide(); //Hide old ones
-            input.data("isattached", true);
-            input.append(data);
-          },
-        });
-      }
-    });
+		input.hover(function () {
+			var isattached = input.data("isattached");
+			if (isattached) {
+				$(".emoticonmenu").hide(); //Hide old ones
+				input.parent().find(".emoticonmenu").show();
+			} else {
+				var options = input.data();
+				$.ajax({
+					url: options.showurl,
+					async: true,
+					data: options,
+					success: function (data) {
+						$(".emoticonmenu").hide(); //Hide old ones
+						input.data("isattached", true);
+						input.append(data);
+					},
+				});
+			}
+		});
 
-    //On any click hide this:
-    //$(".emoticonmenu").hide();
-  });
+		//On any click hide this:
+		//$(".emoticonmenu").hide();
+	});
 
-  lQuery(".pickemoticon .emoticonmenu span").livequery("click", function () {
-    var menuitem = $(this);
+	lQuery(".pickemoticon .emoticonmenu span").livequery("click", function () {
+		var menuitem = $(this);
 
-    var aparent = $(menuitem.parents(".pickemoticon"));
-    //console.log(aparent.data());
+		var aparent = $(menuitem.parents(".pickemoticon"));
+		//console.log(aparent.data());
 
-    var saveurl = aparent.data("toggleurl");
-    //Save
-    var options = aparent.data();
-    options.reactioncharacter = menuitem.data("hex");
-    $.ajax({
-      url: saveurl,
-      async: true,
-      data: options,
-      success: function (data) {
-        $(".emoticonmenu").hide();
-        $("#chatter-message-" + aparent.data("messageid")).html(data);
-        //reload message
-      },
-    });
-  });
-	
-	
+		var saveurl = aparent.data("toggleurl");
+		//Save
+		var options = aparent.data();
+		options.reactioncharacter = menuitem.data("hex");
+		$.ajax({
+			url: saveurl,
+			async: true,
+			data: options,
+			success: function (data) {
+				$(".emoticonmenu").hide();
+				$("#chatter-message-" + aparent.data("messageid")).html(data);
+				//reload message
+			},
+		});
+	});
 }; // uiload
 
 function formsavebackbutton(form) {
