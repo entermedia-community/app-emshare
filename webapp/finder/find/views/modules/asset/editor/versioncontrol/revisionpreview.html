@@ -1,12 +1,14 @@
 <div id="versionpreview">
 
 	<div class="versiontoolbar">
+#ifnotnull( $selectedrevision)
 		<a href="$apphome/views/modules/asset/editor/versioncontrol/replace.html?version=${selectedrevision.version}&assetid=$asset.getId()" 
 			class="btn focused-btn ajax"
 			data-targetdiv="asset-editor-container" 
 			title="[[Restore this Version]]">
 			<i class="bi bi-arrow-clockwise mr-1"></i> [[Restore this Version]]
 		</a>
+#end		
 		<a href="#" 
 			class="btn btn-accent ajax ml-1"
 			data-targetdiv="asset-editor-container" 
@@ -15,7 +17,12 @@
 		</a>
 
 		  #set($originalpath = $mediaarchive.asLinkToOriginal($asset))
-		  #set ($downloadlink = "$!{siteroot}${apphome}/views/modules/asset/downloads/originals/${originalpath}?version=${selectedrevision.version}")
+		  #if( $selectedrevision )
+			  #set ($downloadlink = "/${mediaarchive.getMediaDbId()}/services/module/asset/downloads/originals/${originalpath}?version=${selectedrevision.version}")
+		  #else
+			  #set ($downloadlink = "/${mediaarchive.getMediaDbId()}/services/module/asset/downloads/originals/${originalpath}")
+		  #end
+		  
 		  <a href="${downloadlink}" 
 			class="btn btn-secondary ajax ml-1 #if($desktop) desktopdirectdownload #end"
 			title="[[Download Version]]">
@@ -23,14 +30,20 @@
 		</a>
 	</div>
 
-	<div class="versionpreviewcontent">
-		<img src="$downloadlink">
-	</div>
+		#if($selectedrevision && $selectedrevision.getPreviewImage() )
+		  #set ($previewlink ="/${mediaarchive.getMediaDbId()}/services/module/asset/downloads/revisionpreviews/$selectedrevision.getPreviewImage()?assetid=$asset.id&version=${selectedrevision.version}")
+		#else		
+  			#set ($previewlink = $downloadlink)
+		#end
 
 	#ifnotnull($selectedrevision.message)
 	<div class="versionfooter">
 		$!selectedrevision.message
 	</div>
 	#end
+
+	<div class="versionpreviewcontent">
+		<img src="$previewlink">
+	</div>
 	
 </div>
