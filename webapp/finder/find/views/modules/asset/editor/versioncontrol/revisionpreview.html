@@ -1,13 +1,12 @@
 <div id="versionpreview">
 
 	<div class="versiontoolbar">
-		<a href="$apphome/views/modules/asset/editor/versioncontrol/replace.html?version=${revision.version}&assetid=$asset.getId()" 
+		<a href="$apphome/views/modules/asset/editor/versioncontrol/replace.html?version=${selectedrevision.version}&assetid=$asset.getId()" 
 			class="btn focused-btn ajax"
 			data-targetdiv="asset-editor-container" 
 			title="[[Restore this Version]]">
 			<i class="bi bi-arrow-clockwise mr-1"></i> [[Restore this Version]]
 		</a>
-		
 		<a href="#" 
 			class="btn btn-accent ajax ml-1"
 			data-targetdiv="asset-editor-container" 
@@ -15,9 +14,9 @@
 			<i class="bi bi-copy mr-1"></i> [[Make a Copy]]
 		</a>
 
-		#set($originalpath = $mediaarchive.asLinkToOriginal($asset))
-		#set ($downloadlink = "$!{siteroot}${apphome}/views/modules/asset/downloads/originals/${originalpath}?version=${revision.version}")
-		<a href="${downloadlink}" 
+		  #set($originalpath = $mediaarchive.asLinkToOriginal($asset))
+		  #set ($downloadlink = "$!{siteroot}${apphome}/views/modules/asset/downloads/originals/${originalpath}?version=${selectedrevision.version}")
+		  <a href="${downloadlink}" 
 			class="btn btn-secondary ajax ml-1 #if($desktop) desktopdirectdownload #end"
 			title="[[Download Version]]">
 			<i class="bi bi-download mr-1"></i> [[Download]]
@@ -28,9 +27,9 @@
 		<img src="$downloadlink">
 	</div>
 
-	#ifnotnull($revision.message)
+	#ifnotnull($selectedrevision.message)
 	<div class="versionfooter">
-		$!revision.message
+		$!selectedrevision.message
 	</div>
 	#end
 	
