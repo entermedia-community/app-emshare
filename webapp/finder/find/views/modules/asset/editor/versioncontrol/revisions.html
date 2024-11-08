@@ -1,25 +1,39 @@
 <div class="versionscontainer">
 	<div class="versionlist overflow-y"> 
-
-		#foreach( $i in [100..0])
-		<a class="versionlistitem d-flex align-items-center #if($i == 100) selected #end" role="button" href="#" data-targetdiv="versionpreview">
+		<a class="versionlistitem d-flex align-items-center selected" role="button" href="#" data-targetdiv="versionpreview">
 			<i class="bi bi-clock-history"></i>
 			<div class="d-flex flex-column">
 				<div class="versionname">
-					#if($i == 100)
-						Current
-					#else
-						Version $i
-					#end
+					Current
 				</div>
-				#ifnotnull($revision.author)
 				<div class="versionauthor">
-					$revision.author
+					$asset.get("owner")
 				</div>
-				#end
 				<div class="versiondate">
 					#set ( $dateString = $context.getDateTime( $asset.get("assetmodificationdate")) )
 					$dateString
+				</div>
+			</div>
+		</a>
+       #foreach( $revision in $revisions.revisions )
+
+		#set( $link = "$apphome/views/modules/asset/editor/versioncontrol/revisionpreview.html?editPath=$revisions.editPath&version=$revision.version&assetid=$asset.getId()")
+		<a class="versionlistitem ajax d-flex align-items-center #if($i == 100) selected #end" role="button"
+		
+			 href="#urlescape($link)" data-oemaxlevel="1" data-targetdiv="versionpreview">
+			<i class="bi bi-clock-history"></i>
+			<div class="d-flex flex-column">
+				<div class="versionname">
+						Version $!revision.version $!revision.getMessage()
+				</div>
+				#ifnotnull($revision.author)
+				<div class="versionauthor">
+					$revision.author  
+				</div>
+				#end
+				<div class="versiondate">
+					#set ( $dateString = $context.getDateTime( $revision.lastModified() ) )
+					$dateString  $revision.getPreviewImage()
 				</div>
 			</div>
 		</a>
@@ -27,6 +41,6 @@
 
 	</div>
 
-	$pages.include("$apphome/views/modules/asset/editor/versioncontrol/revisionpreview.html")
+	$pages.include("$apphome/views/modules/asset/editor/versioncontrol/revisionpreview.html",$context)
 
 </div>

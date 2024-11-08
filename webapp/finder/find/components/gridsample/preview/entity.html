@@ -54,7 +54,7 @@ $context.putPageValue("topmoduleid", $moduleid)
 #else
 	##check if saveaction
 	#if($saveaction == "upload")
-		#set($entitytabopen = "import")
+		#set($entitytabopen = "tabimport")
 	#end
 #end
 #if(!$entitytabopen)
@@ -174,7 +174,6 @@ $context.putPageValue("topmoduleid", $moduleid)
 						#if($permissions.can($moduleid, "shareentity"))
 						<a href="$applink/views/modules/${moduleid}/components/gridsample/preview/tabexport.html?entityid=$!entity.getId()" 
 						class="entitytabactions btn-accent"
-						data-tabaction="export"
 						data-viewid="export"
 						data-tabtype="tabexport" 
 						data-entityid="$!entity.getId()" 
@@ -187,7 +186,6 @@ $context.putPageValue("topmoduleid", $moduleid)
 						#if($canviewsettings)
 						<a href="#"
 						class="entitytabactions btn-accent"
-						data-tabaction="activityhistory"
 						data-viewid="activityhistory"
 						data-tabtype="tabactivityhistory" 
 						data-entityid="$!entity.getId()" 
@@ -214,8 +212,7 @@ $context.putPageValue("topmoduleid", $moduleid)
 					$permissions.can($moduleid, "importfolders") ||
 					($desktop && $permissions.can($moduleid, "importpushtoserver")))
 				<a href="#"
-						class='btn btn-sm btn-accent entitytabactions tabactionimport #if($entitytabopen=="import")enabledaction #end '
-						data-tabaction="import"
+						class='btn btn-sm btn-accent entitytabactions tabactionimport #if($entitytabopen=="tabimport")enabledaction #end '
 						data-viewid="import"
 						data-tabtype="tabimport" 
 						data-entityid="$!entity.getId()" 
@@ -233,8 +230,7 @@ $context.putPageValue("topmoduleid", $moduleid)
 					($desktop && $permissions.can($moduleid, "exportpulltoserver")))	
 					
 				<a href="#"
-						class='btn btn-sm btn-accent entitytabactions tabactionexport #if($entitytabopen=="export")enabledaction #end '
-						data-tabaction="export"
+						class='btn btn-sm btn-accent entitytabactions tabactionexport #if($entitytabopen=="tabexport")enabledaction #end '
 						data-viewid="export"
 						data-tabtype="tabexport" 
 						data-entityid="$!entity.getId()" 
@@ -371,7 +367,7 @@ $context.putPageValue("topmoduleid", $moduleid)
 						#end
 						
 						##import tab
-						#if($entitytabopen == "import")
+						#if($entitytabopen == "tabimport")
 							##permissions here
 							#set($tabtype= "tabimport")
 							$context.putPageValue("tabtype", $tabtype)
@@ -383,11 +379,11 @@ $context.putPageValue("topmoduleid", $moduleid)
 						#end
 						
 						##export tab
-						#if($entitytabopen == "export")
+						#if($entitytabopen == "tabexport")
 							##permissions here
 							#set($tabtype= "tabexport")
 							$context.putPageValue("tabtype", $tabtype)
-							#set($tabid = "export")
+							#set($tabid = "tabexport")
 							$context.putPageValue("tabid", $tabid)
 							$context.putPageValue("currenttab", $entitytabopen)
 									
@@ -395,11 +391,11 @@ $context.putPageValue("topmoduleid", $moduleid)
 						#end
 						
 						
-						#if($entitytabopen == "activityhistory")
+						#if($entitytabopen == "tabactivityhistory")
 							##permissions here
 							#set($tabtype= "tabactivityhistory")
 							$context.putPageValue("tabtype", $tabtype)
-							#set($tabid = "activityhistory")
+							#set($tabid = "tabactivityhistory")
 							$context.putPageValue("tabid", $tabid)
 							$context.putPageValue("currenttab", $entitytabopen)
 									
@@ -412,108 +408,78 @@ $context.putPageValue("topmoduleid", $moduleid)
 		
 		<div class="tab-content entity-body" id="entity-nav-tabContent">
 			#ifnull($id)
+				##New Entity
 				$context.putPageValue("viewid", $firstview)
 				#set($entitytabopen = $firstviewid)
 				$context.putPageValue("currenttab", $entitytabopen)
-				
 				$pages.include("$componenthome/gridsample/preview/entitytab.html", $context)
 			#end
 			#ifnotnull($id)
-				#if($enttiyviews && 
-					$entitytabopen  != "media"  && 
-					$entitytabopen  != "publishinggallery"  &&
-					$entitytabopen  != "publishingcarousel"  &&  
-					$entitytabopen  != "import" &&
-					$entitytabopen  != "tablightboxes" &&
-					$entitytabopen  != "export" &&
-					$entitytabopen  != "activityhistory")
-							
-						#set( $viewid = $entitytabopen)
-						#set( $targetview = $viewsearcher.searchById($viewid))
-						
-						$context.putPageValue("viewid", $viewid)
-						
-						#set($tabid = "tab_${viewid}")
-						#if($entitytabopen.equals($viewid))
-							$context.putPageValue("currenttab", $viewid)
-							$context.putPageValue("hidesubmodule", false)
-						#end
-						
-						#set($tabtype= $targetview.rendertype)
-						
-						#if($tabtype == "table")
-							#if(!$ismulti)
-								##View Permission
-								#if($permissions.can($moduleid, $viewid))
-									#set( $viewdata = $viewsearcher.searchById($viewid))
-									#set( $subentitysearchtype = $viewdata.rendertable )
-									##Permission check
-									#if($userentities.contains($subentitysearchtype))
-										#set($subcomponenthome = "$apphome/views/modules/${subentitysearchtype}/components")
-										$pages.include("$subcomponenthome/gridsample/preview/tabsubmodulehome.html", $context)
-									#end
-								#end
-							#end
-						#else
-							##View Permission
-							#if($permissions.can($moduleid, $viewid))
-								#ifnotnull($targetview.rendertype)
-									#set($tabtype= $targetview.rendertype)
-								#end
-								#if(!$tabtype || $tabtype=="default")
-									#set($tabtype= "entitytab")
-								#end
-								
-								$context.putPageValue("tabtype", $tabtype)
-	
-								$pages.include("$componenthome/gridsample/preview/${tabtype}.html", $context)
-							#end
-						#end
-				#end
+				$context.putPageValue("currenttab", $entitytabopen)
 				
-
-				#if($entitytabopen == "tablightboxes")
-					#if(!$ismulti)
-						$context.putPageValue("currenttab", $tabtype)
+				#if($entitytabopen == "tablightboxes" && !$ismulti)
 						$pages.include("$componenthome/entities/lightboxes/show.html?entityid=$id", $context)
-					#end
-								
-				#elseif($entitytabopen == "import")
-					#if(!$ismulti)
-						#set($tabtype= "tabimport")
-						$context.putPageValue("tabtype", $tabtype)
-						$context.putPageValue("currenttab", "import")
+				#elseif($entitytabopen == "tabimport" && !$ismulti)
 						$context.putPageValue("viewid", "import")
 						$pages.include("$componenthome/gridsample/preview/tabimport.html?entityid=$id", $context)
-					#end
 					
-				#elseif($entitytabopen == "export")
-					#if(!$ismulti)
-						#set($tabtype= "tabexport")
-						$context.putPageValue("tabtype", $tabtype)
-						$context.putPageValue("currenttab", "export")
+				#elseif($entitytabopen == "tabexport" && !$ismulti)
 						$context.putPageValue("viewid", "export")
 						$pages.include("$componenthome/gridsample/preview/tabexport.html?entityid=$id", $context)
-					#end
-				#end
-				
-				#if($entitytabopen == "activityhistory")
-					#if(!$ismulti)
-						#set($tabtype= "tabactivityhistory")
-						$context.putPageValue("tabtype", $tabtype)
-						$context.putPageValue("currenttab", "activityhistory")
+					
+				#elseif($entitytabopen == "tabactivityhistory" && !$ismulti)
 						$context.putPageValue("viewid", "activityhistory")
 						$pages.include("$componenthome/gridsample/preview/tabactivityhistory.html?entityid=$id", $context)
-					#end
-				#end
-					
-				#if(!$hidefilestab && $entitytabopen == "media" && $module.getBoolean("enableuploading") && $permissions.can($moduleid, "view_files"))
+						
+				#elseif($entitytabopen == "tabworkflowchat" && !$ismulti)
+						$context.putPageValue("viewid", "tabworkflowchat")
+						$pages.include("$componenthome/entities/chatterbox/index.html?entityid=$id", $context)
+						
+				#elseif(!$hidefilestab && $entitytabopen == "media" && $module.getBoolean("enableuploading") && $permissions.can($moduleid, "view_files"))
 					#if(!$ismulti)
 						$context.putPageValue("parentsearchtype", $parentsearchtype)
-						#set($tabtype= "media")
-						$context.putPageValue("tabtype", $tabtype)
-						$context.putPageValue("currenttab", "media")
 						$pages.include("$apphome/views/modules/asset/components/gridsample/preview/entitytabmedia.html?entityid=$id", $context)
+					#end
+					
+				#else
+					#set( $viewid = $entitytabopen)
+					$context.putPageValue("viewid", $viewid)
+				
+					#set($tabid = "tab_${viewid}")
+					#if($entitytabopen.equals($viewid))
+						$context.putPageValue("currenttab", $viewid)
+						$context.putPageValue("hidesubmodule", false)
+					#end
+					
+					#set($targetview = $viewsearcher.searchById($viewid))
+					#set($tabtype= $targetview.rendertype)
+					
+					#if($tabtype == "table")
+						#if(!$ismulti)
+							##View Permission
+							#if($permissions.can($moduleid, $viewid))
+								#set( $viewdata = $viewsearcher.searchById($viewid))
+								#set( $subentitysearchtype = $viewdata.rendertable )
+								##Permission check
+								#if($userentities.contains($subentitysearchtype))
+									$pages.include("$apphome/views/modules/${subentitysearchtype}/components/gridsample/preview/tabsubmodulehome.html", $context)
+								#end
+							#end
+						#end
+					#else
+						##View Permission
+						#if($permissions.can($moduleid, $viewid))
+							#ifnotnull($targetview.rendertype)
+								#set($tabtype= $targetview.rendertype)
+							#end
+							#if(!$tabtype || $tabtype=="default")
+								#set($tabtype= "entitytab")
+							#end
+							
+							$context.putPageValue("tabtype", $tabtype)
+
+							$pages.include("$componenthome/gridsample/preview/${tabtype}.html", $context)
+						#end
 					#end
 				#end
 			#end
