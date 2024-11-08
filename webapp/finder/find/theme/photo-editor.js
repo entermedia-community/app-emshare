@@ -644,7 +644,57 @@ $("document").ready(function () {
 			$(this).parent().parent().removeClass("active");
 		});
 
-		$("#saveAsImg").click(function () {
+	
+		$("#imagesave").click(function (e) 
+		{
+			e.preventDefault();
+			var form = $("#saveform");
+			var formdata = new FormData(form[0]);
+			formdata.append("oemaxlevel", 1);
+			
+			var assetfileformat = $(form).data("assetfileformat");   //image/jpeg or image/webp image/png
+			canvas.setViewportTransform([1, 0, 0, 1, 0, 0]);
+			formdata.append(
+				"image",
+				canvas.toDataURL("image/" + assetfileformat, {
+					left: window.imageRenderLeft,
+					top: window.imageRenderTop,
+					width: window.imageRenderWidth,
+					height: window.imageRenderHeight,
+				})
+			);
+			centerViewPort();
+
+			$.ajax({
+				url: form.attr("action"),
+				data: formdata,
+				type: "POST",
+				contentType: false, // NEEDED, DON'T OMIT THIS (requires jQuery 1.6+)
+				processData: false, // NEEDED, DON'T OMIT THIS
+				//Refresh imageeditor
+				success: function (data) {
+					$("#photo-editor-container").html(data);
+					//trigger toast
+					
+				},
+			});
+
+		});
+
+		$("#saveAs").click(function () {
+			var mask = $(this).siblings(".mask");
+			var saveAs = $(this).siblings(".save-as-menu");
+			mask.addClass("active");
+			saveAs.addClass("active");
+			var filenameInp = $("#saveasform input.newfilename");
+			filenameInp.focus();
+			var val = filenameInp.val();
+			filenameInp.val("");
+			filenameInp.val(val);
+		});
+		
+		
+			$("#saveAsImg").click(function () {
 			var form = $("#saveasform");
 
 			var formdata = new FormData(form[0]);
@@ -670,13 +720,18 @@ $("document").ready(function () {
 					return;
 				}
 			}
+			var assetfileformat = $(form).data("assetfileformat");  
 
-			var format = "png";
+			if( assetfileformat != "jpg" || assetfileformat != "png")
+			{
+				assetfileformat = "png"; 
+			}
+
 			canvas.setViewportTransform([1, 0, 0, 1, 0, 0]);
 			formdata.append(
 				"image",
 				canvas.toDataURL({
-					format: format,
+					format: assetfileformat,
 					left: window.imageRenderLeft,
 					top: window.imageRenderTop,
 					width: window.imageRenderWidth,
@@ -699,17 +754,7 @@ $("document").ready(function () {
 			});
 		});
 
-		$("#saveAs").click(function () {
-			var mask = $(this).siblings(".mask");
-			var saveAs = $(this).siblings(".save-as-menu");
-			mask.addClass("active");
-			saveAs.addClass("active");
-			var filenameInp = $("#saveasform input.newfilename");
-			filenameInp.focus();
-			var val = filenameInp.val();
-			filenameInp.val("");
-			filenameInp.val(val);
-		});
+		
 		$("#exportAs").click(function () {
 			var mask = $(this).siblings(".mask");
 			var exportAs = $(this).siblings(".export-menu");
