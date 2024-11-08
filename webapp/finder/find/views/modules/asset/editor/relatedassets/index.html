@@ -1,0 +1,22 @@
+<div id="asset-editor-container" class="h-100 assetpanel-editor-box">
+#set( $children = $mediaarchive.query("asset").exact("parentid",$asset.getId()).sort("name").search() )
+#if( !$children.isEmpty() || $asset.get("parentid") )
+  $context.putPageValue("children",$children)
+  
+  
+      <div class="w-100 selection-images">
+			#foreach ($child in $children)
+				$context.putPageValue("child",$child)
+				$pages.include("/$apphome/views/modules/asset/editor/relatedassets/relatedasset.html",$context)
+			#end	
+			<div style="border-top:1px dashed #666"></div>
+			#set( $parent = $mediaarchive.getAsset($asset.parentid ))
+			#ifnotnull($parent)      
+				$context.putPageValue("child",$parent)
+				$context.putPageValue("isoriginal","true")
+				$pages.include("/$apphome/views/modules/asset/editor/relatedassets/relatedasset.html",$context)
+			#end 
+		</div>
+  
+#end 
+ </div>

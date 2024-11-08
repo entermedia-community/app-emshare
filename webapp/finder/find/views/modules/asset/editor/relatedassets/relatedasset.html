@@ -1,0 +1,30 @@
+#set($ending = $mediaarchive.asLinkToOriginal($child) )
+#set($url = "$siteroot/$mediadbappid/services/module/asset/downloads/originals/$ending")
+     	
+<div class='thumb#if($isoriginal=="true") original#end'> 
+	#if($isoriginal=="true") 
+	<p class="my-1 text-center">Source File</p>
+	#end
+	#set( $rendertype = $mediaarchive.getMediaRenderType($child.fileformat))
+	$context.putPageValue("type", $rendertype)
+	$context.putPageValue("hit", $child)
+	<a href="#" class="stackedplayer" data-assetid="$child.id">
+		$pages.include("$componenthome/results/thumbnails/${rendertype}.html", $context)
+	</a>
+	<p class="text-center m-0 filename">$child.name</p> 
+	#if(($candownload || $canconvert || $candownloadfpo) && $canquickdownload)
+	#set($dlink =  "$applink/views/modules/asset/activity/downloadassets.html") 
+	<a href="$dlink"
+		class="emdialog expandmenu btn btn-sm btn-secondary dl" 
+		data-hidefooter="true" 
+		data-dialogid="donwloadasset" 
+		data-assetid="${child.id}" title="[[Download]]">
+		<i class="bi bi-download"></i>
+	</a>
+	#end
+	<a class="btn btn-sm btn-secondary emdialog" 
+		href="$siteroot$apphome/views/modules/asset/editor/imageeditor/share.html?assetid=${asset.id}&presetid=${child.id}"
+		data-noesc="true"
+		data-hidefooter="true"
+		title="[[Share]] $!child.name"><i class="fas fa-share-alt"></i></a>
+</div>
