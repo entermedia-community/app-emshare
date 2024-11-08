@@ -156,6 +156,8 @@ runajaxonthis = function (inlink, e) {
 	if (inlink.hasClass("activelistener")) {
 		$(".activelistener").removeClass("active");
 		inlink.addClass("active");
+		$(".activelistener").removeClass("selected");
+		inlink.addClass("selected");
 	}
 	//for listeners in a container
 	if (inlink.hasClass("activelistenerparent")) {
