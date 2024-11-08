@@ -27,7 +27,7 @@
 
 		#if (!$ismulti && $canviewmetadatageneral)
 		<li class="assettabnav #if($opentab == "viewpreview")tabselected#end">	
-			<a class="expandmenu assetpreview assettab" 
+			<a class="expandmenu assetpreview assettab rememberassettab" 
 				data-link="$siteroot$componenthome/mediaviewer/fullscreen/tabs/viewpreview.html"
 				data-assettab="viewpreview"
 				title="[[View]] #esc($!title)">
@@ -38,7 +38,7 @@
 
 		#if( !$previewonly && $canviewmetadatageneral )
 		<li class="assettabnav #if($opentab == "viewproperties")tabselected#end">
-			<a class="expandmenu assettab" 
+			<a class="expandmenu assettab rememberassettab" 
 				data-link="$siteroot$componenthome/mediaviewer/fullscreen/tabs/viewasset.html" 
 				title="[[Metadata]]"
 				data-assettab="viewproperties">
@@ -50,7 +50,7 @@
 		#if(!$ismulti && ($rendertype == "video"))
 			#if($canviewtimeline)
 			<li class='assettabnav #if($opentab == "viewtimeline")tabselected#end'>
-				<a class="expandmenu assettab" 
+				<a class="expandmenu assettab rememberassettab" 
 					data-link="$siteroot$componenthome/mediaviewer/fullscreen/tabs/viewactions.html?action=timeline" title="[[Timeline]]"
 					data-assettab="viewtimeline"
 					data-assettabname="[[Timeline]]">
@@ -63,7 +63,7 @@
 		#if(!$ismulti && ($rendertype == "video" || $rendertype == "audio"))
 			#if($canviewclosedcaptions)
 			<li class='assettabnav #if($opentab == "viewclosedcaptions")tabselected#end'>
-				<a class="expandmenu assettab" 
+				<a class="expandmenu assettab rememberassettab" 
 					data-link="$siteroot$componenthome/mediaviewer/fullscreen/tabs/viewactions.html?action=closedcaptions" title="[[Closed Captions]]"
 					data-assettab="viewclosedcaptions"
 					data-assettabname="[[Closed Captions]]">
@@ -83,7 +83,7 @@
 
 		#if(!$previewonly && !$ismulti && $canviewmediaedit && $canviewconversions && ($rendertype == "image" ))
 		<li class="hidemulti assettabnav #if($opentab == 'imageeditor')tabselected #end">
-			<a class="expandmenu assettab " 
+			<a class="expandmenu assettab rememberassettab" 
 				data-link="$siteroot$componenthome/mediaviewer/fullscreen/tabs/viewactions.html?action=imageeditor" 
 				title="[[Image Editor]]"
 				data-assettab="imageeditor"
@@ -116,7 +116,7 @@
 				#end	
 				#if($candownload)	
 				<li>
-					<a href='#urlencode("$cdnprefix$siteroot/$mediadbappid/services/module/asset/downloads/originals/$originalpath?collectionid=${collectionid}&assetid=$asset.getId()")''>
+					<a href='#urlencode("$cdnprefix$siteroot/$mediadbappid/services/module/asset/downloads/originals/$originalpath?collectionid=${collectionid}&assetid=$asset.getId()")'>
 						[[Original File]]
 					</a>
 				</li>
@@ -206,11 +206,11 @@
 		#end
 
 		#if($user && ( !$previewonly 	&& !$ismulti))
-			#if($canviewconversions || $canviewclosedcaptions || $canviewattachments || $canconverthistory || $cancheckout || $candeleteasset || $canmultiedit)
-
-			#if( !$ismulti && $canconverthistory )
+			
+			#if( !$ismulti)
+			#if ($canviewconversions || $canconverthistory || $canconverthistory )
 				<li class="assettabnav #if($opentab == 'assethistory')tabselected #end">
-					<a class="expandmenu assettab" 
+					<a class="expandmenu assettab rememberassettab" 
 						data-link="$siteroot$componenthome/mediaviewer/fullscreen/tabs/viewactions.html?action=assethistory" title="[[History]]"
 						data-title="[[History]]"
 						data-assettab="assethistory"
@@ -219,6 +219,12 @@
 					</a>
 				</li>
 			#end
+			#end
+		
+		
+			#if($canviewclosedcaptions || $canviewattachments || $cancheckout || $candeleteasset || $canmultiedit)
+
+
 
 			<li class='assettabnav assettabactions hidemulti #if($opentab == "viewactions") tabselected #end dropdown'>
 				<a href="#" class="expandmenu dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" title="[[More Menu]]"> 
