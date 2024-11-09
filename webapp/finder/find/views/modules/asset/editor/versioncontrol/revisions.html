@@ -1,13 +1,20 @@
 <div class="versionscontainer">
 	<div class="versionlist overflow-y"> 
+	
+	#set( $nextmessage = "[[Original File]]")
+	
 		#set( $link = "$apphome/views/modules/asset/editor/versioncontrol/revisionpreview.html?assetid=$asset.getId()")
 		<a class="versionlistitem  ajax d-flex align-items-center selected activelistener" role="button" 
 		href="#urlescape($link)"  data-oemaxlevel="1"  data-targetdiv="versionpreview">
 			<i class="bi bi-listitem bi-clock-history"></i>
 			<div class="d-flex flex-column">
 				<div class="versionname">
-					[[Current]]
+						#set( $nextversion = $revisions.revisions.size() + 1)
+						[[Version]] $nextversion 
 				</div>
+				<div class="versiondate">
+					#set( $reason = $revisions.getActualChangeReason(0) )
+					  $reason				</div>
 				<div class="versionauthor">
 					#set( $owner = $mediaarchive.getUser( $asset.get("owner") ) )
 					#ifnotnull( $owner)
@@ -37,7 +44,8 @@
 				</div>
 				#ifnotnull( $!revision.getMessage() )
 				<div class="versiondate">
-					$revision.getMessage() 
+					#set( $reason = $revisions.getActualChangeReason($foreach.count) ) ##starting at 1
+					  $reason
 				</div>
 				#end
 				#ifnotnull($revision.author)
