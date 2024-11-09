@@ -18,11 +18,11 @@ public void tagAssets(){
 	WebPageRequest inReq = context;
 	MediaArchive archive = inReq.getPageValue("mediaarchive");
 	Searcher searcher = archive.getAssetSearcher();
-	//TODO:  get the bean to use programatically from catalog settings or something	
+	//TODO:  get the bean to use programatically from catalog settings or something
 	GptManager manager = archive.getBean("gptManager");
 	def cat = archive.getCategorySearcher().getRootCategory();
 	inReq.putPageValue("category", cat);
-	
+
 	//Refine this to use a hit tracker?
 	HitTracker assets = searcher.getAllHits();
 	String model = inReq.findValue("model.value");
@@ -38,7 +38,7 @@ public void tagAssets(){
 	for (hit in assets) {
 		Asset asset = archive.getAsset(hit.id);
 		inReq.putPageValue("asset", asset);
-		
+
 		ContentItem item = archive.getGeneratedContent(asset, "image3000x3000.jpg");
 		if(item.exists()) {
 
@@ -62,7 +62,9 @@ public void tagAssets(){
 				def jsonSlurper = new JsonSlurper()
 				def result = jsonSlurper.parseText(results.toString());
 				result.metadata.each { key, value ->
-					asset.setValue(key, value);
+					if(!asset.getValue(key)){
+						asset.setValue(key, value);
+					}
 				}
 				archive.saveAsset(asset);
 			}
