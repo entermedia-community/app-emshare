@@ -15,10 +15,25 @@
             <i class="bi bi-download"></i>
           </a>
           #if($canmediaeditsave)
-          <a href="#" id="saveImg" title="[[Save as preset file]]">
+          
+          #if( $asset.fileformat == "jpeg" || $asset.fileformat == "jpg" || $asset.fileformat == "png" ) 
+          <a id="imagesave" href="$applink/views/modules/asset/editor/imageeditor/savepresetfile.html?assetid=$asset.id&overwrite=true"  
+          		title="[[Save / Replace]]"
+          		
+          		>
             <i class="bi bi-floppy-fill"></i>
             <label>[[Save]]</label>
           </a>
+          
+           <form id="saveform" name="saveform" style="display:none;" action="$applink/views/modules/asset/editor/imageeditor/saveoverwrite.html"
+            	data-assetfileformat = "$asset.fileformat">
+                <input type="hidden" name="assetid" value="$asset.id" />
+            </form>
+          
+          #else
+          	 <span class="my-0 monospace" >$asset.fileformat not editable</span>
+          #end
+          
           #end
           #if($canmediaeditsaveas)
           <a href="#" id="saveAs" title="[[Save as preset file]]">
@@ -28,7 +43,9 @@
           #end
           <div class="mask" role="button"></div>
           <div class="save-as-menu">
-            <form class="d-flex flex-column" id="saveasform" action="$applink/views/modules/asset/editor/imageeditor/savepresetfile.html">
+            <form class="d-flex flex-column" id="saveasform" action="$applink/views/modules/asset/editor/imageeditor/savepresetfile.html"
+            	data-assetfileformat = "$asset.fileformat"
+            >
               <h4 class="text-center">[[Save As]]</h4>
               <div class="d-flex mb-2">
                 #set($type =$mediaarchive.getMediaRenderType($asset.fileformat))

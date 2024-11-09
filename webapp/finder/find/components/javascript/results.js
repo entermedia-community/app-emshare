@@ -1634,6 +1634,8 @@ jQuery(document).ready(function (url, params) {
 
 	lQuery("a.assettab").livequery("click", function (e) {
 		e.preventDefault();
+		var tab = $(this);
+		
 		$(".assettabnav").removeClass("tabselected");
 		$(".assettabactions a").removeClass("dropdown-current");
 		$(this).closest(".assettabnav").addClass("tabselected");
@@ -1642,16 +1644,20 @@ jQuery(document).ready(function (url, params) {
 
 		options.pageheight = $(window).height() - 100;
 
-		var assettab = $(this).data("assettab");
+		var assettab = tab.data("assettab");
 
 		var collectionid = $("#resultsdiv").data("collectionid");
 		if (collectionid) {
 			options.collectionid = collectionid;
 		}
+		
+		// save to profile (Remember Tab)
+		if(tab.hasClass("rememberassettab")) {
+			saveProfileProperty("assetopentab", assettab, function () {});
+		}
 
 		if (assettab == "viewpreview") {
 			var assetid = div.data("assetid");
-			saveProfileProperty("assetopentab", assettab, function () {});
 			showAsset($(this), assetid);
 		} else if (assettab == "multiedit") {
 			var link = $(this).data("link");
@@ -1663,21 +1669,12 @@ jQuery(document).ready(function (url, params) {
 			});
 		} else {
 			disposevideos();
-			var link = $(this).data("link");
+			var link = tab.data("link");
 			div.load(link, options, function () {
 				// console.log("triggered");
 				$(window).trigger("tabready");
 			});
-			// save to profile only pewview, properties and media
-			if (
-				assettab == "viewproperties" ||
-				assettab == "imageeditor" ||
-				assettab == "viewdownloads" ||
-				assettab == "viewtimeline" ||
-				assettab == "viewclosedcaptions"
-			) {
-				saveProfileProperty("assetopentab", assettab, function () {});
-			}
+			
 			var assettabactions = $(this).data("assettabactions");
 			if (assettabactions) {
 				$(this).addClass("dropdown-current");
