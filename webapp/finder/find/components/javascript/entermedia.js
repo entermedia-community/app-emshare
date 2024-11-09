@@ -862,14 +862,6 @@ onloadselectors = function () {
 			var node = $(this);
 			node.droppable({
 				scope: scope,
-				// activate: function (event, ui) {
-				// 	var nodelightboxid = node.data("lightboxid");
-				// 	var lightboxid = ui.draggable.data("lightboxid");
-				// 	if (nodelightboxid == lightboxid) {
-				// 		node.droppable("option", "disabled", true);
-				// 		node.removeClass("ui-droppable-active");
-				// 	}
-				// },
 				drop: function (event, ui) {
 					var element = $(this);
 					var assetid = ui.draggable.data("assetid");
@@ -878,7 +870,12 @@ onloadselectors = function () {
 					var hitssessionid = dragged
 						.closest(".lightboxresults")
 						.data("hitssessionid");
-					if (!hitssessionid) {
+					if (hitssessionid == undefined) {
+						hitssessionid = dragged
+						.closest(".resultsdiv")
+						.data("hitssessionid");
+					}
+					if (hitssessionid == undefined) {
 						hitssessionid = $("#main-results-table").data("hitssessionid");
 					}
 

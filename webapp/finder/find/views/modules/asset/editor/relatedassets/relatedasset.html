@@ -1,0 +1,62 @@
+#set($assetid = $context.getRequestParameter("childassetid"))
+#set($asset = $mediaarchive.getAsset($assetid))
+#set($ending = $mediaarchive.asLinkToOriginal($asset) )
+#set($url = "$siteroot/$mediadbappid/services/module/asset/downloads/originals/$ending")
+
+
+<div id="versionpreview">
+
+	<div class="versiontoolbar">
+		<div class="mr-auto "><div class="pl-2">$asset.sourcepath</div></div>
+		<a href="#" 
+			class="btn btn-accent ajax ml-1 stackedplayer"
+			data-assetid="$asset.id"
+			title="[[Open Asset]]">
+			<i class="bi bi-image"></i> [[Open Asset]]
+		</a>
+
+		  #set($originalpath = $mediaarchive.asLinkToOriginal($asset))
+		  #if( $selectedrevision )
+			  #set ($downloadlink = "/${mediaarchive.getMediaDbId()}/services/module/asset/downloads/originals/${originalpath}?version=${selectedrevision.version}")
+		  #else
+			  #set ($downloadlink = "/${mediaarchive.getMediaDbId()}/services/module/asset/downloads/originals/${originalpath}")
+		  #end
+		  #if(($candownload || $canconvert || $candownloadfpo) && $canquickdownload)
+			#set($dlink =  "$applink/views/modules/asset/activity/downloadassets.html")
+			  <a href="${dlink}" 
+				class="btn btn-secondary ml-1 #if($desktop) desktopdirectdownload #end"
+				title="[[Download Version]]">
+				<i class="bi bi-download mr-1"></i> [[Download]]
+			</a>
+			#end
+			<a class="btn btn-secondary ml-1  emdialog" 
+			href="$siteroot$apphome/views/modules/asset/editor/imageeditor/share.html?assetid=${asset.id}&presetid=${child.id}"
+			data-noesc="true"
+			data-hidefooter="true"
+			title="[[Share]] $!asset.name"><i class="fas fa-share-alt"></i></a>
+	</div>
+     	
+		 
+		
+		#set( $rendertype = $mediaarchive.getMediaRenderType($asset.fileformat))
+		$context.putPageValue("type", $rendertype)
+		$context.putPageValue("hit", $asset)
+		#set ($previewlink = $mediaarchive.asLinkToPreview($asset,"image3000x3000") )
+		<div class="versionpreviewcontent">
+			<a href="#" class="stackedplayer" data-assetid="$asset.id">
+			#if( $previewlink )
+			<img src="$previewlink">
+			#else
+				<p>[[No preview available]]</p>
+			#end
+			</a>
+		</div>
+		
+		
+		##$pages.include("$componenthome/results/thumbnails/${rendertype}.html", $context)
+		
+
+		
+</div>
+
+

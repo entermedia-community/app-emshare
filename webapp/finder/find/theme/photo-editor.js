@@ -43,14 +43,13 @@ $("document").ready(function () {
 		$(".photo-editor-container").css("width", window.innerWidth);
 		var imgSrc = $(this).attr("src");
 		if (!imgSrc) return;
-		var editorWidth = window.innerWidth - 350;
+		var editorWidth = window.innerWidth - 72;
 		var editorHeight = window.innerHeight - 100;
 
 		fabric.Object.prototype.transparentCorners = false;
 
 		fabric.textureSize = 4096;
 		var canvas = new fabric.Canvas("canvas");
-		console.log(canvas);
 		canvas.setWidth(editorWidth);
 		canvas.setHeight(editorHeight);
 		canvas.preserveObjectStacking = true;
@@ -229,6 +228,7 @@ $("document").ready(function () {
 			window.__imageRenderLeft = primaryOffsetLeft;
 			window.imageRenderTop = primaryOffsetTop;
 			window.__imageRenderTop = primaryOffsetTop;
+			window.imageRenderAngle = 0;
 
 			selectionRect = new fabric.Rect({
 				left: primaryOffsetLeft,
@@ -333,6 +333,7 @@ $("document").ready(function () {
 			window.imageRenderHeight = window.__imageRenderHeight;
 			window.imageRenderLeft = window.__imageRenderLeft;
 			window.imageRenderTop = window.__imageRenderTop;
+			window.imageRenderAngle = 0;
 			imgInstance.clipPath = null;
 			selectionRect.visible = false;
 			canvas.setZoom(1);
@@ -341,19 +342,24 @@ $("document").ready(function () {
 			canvas.renderAll();
 			$(".crop-editor").removeClass("active");
 		});
-		$("#cropBtn").click(function () {
+		function handleCrop(rotate = 0) {
 			canvas.renderAll();
-			window.imageRenderWidth = selectionRect.getScaledWidth();
-			window.imageRenderHeight = selectionRect.getScaledHeight();
-			window.imageRenderLeft = selectionRect.left;
-			window.imageRenderTop = selectionRect.top;
+			if (rotate === 0) {
+				window.imageRenderWidth = selectionRect.getScaledWidth();
+				window.imageRenderHeight = selectionRect.getScaledHeight();
+				window.imageRenderLeft = selectionRect.left;
+				window.imageRenderTop = selectionRect.top;
+			}
+			window.imageRenderAngle = rotate;
 			cropRect = new fabric.Rect({
 				left: imageRenderLeft,
 				top: imageRenderTop,
 				width: imageRenderWidth,
 				height: imageRenderHeight,
 				absolutePositioned: true,
+				fill: "rgba(0,0,0,0.5)",
 			});
+			cropRect.rotate(imageRenderAngle);
 
 			imgInstance.clipPath = cropRect;
 
@@ -370,13 +376,14 @@ $("document").ready(function () {
 			canvas.discardActiveObject();
 			canvas.renderAll();
 			$(".crop-editor").removeClass("active");
-		});
+		}
+		$("#cropBtn").click(handleCrop);
 
 		$(".rotate-editor button").click(function () {
 			var action = $(this).data("action");
 			var activeObject = canvas.getActiveObject();
-			if (!activeObject || activeObject.get("type") !== "text") {
-				return;
+			if (!activeObject) {
+				activeObject = imgInstance;
 			}
 			if (action === "flipX") {
 				activeObject.flipX = !activeObject.flipX;
@@ -384,11 +391,22 @@ $("document").ready(function () {
 			if (action === "flipY") {
 				activeObject.flipY = !activeObject.flipY;
 			}
+			var angle = activeObject.angle % 360;
 			if (action === "rotateLeft") {
-				activeObject.angle = activeObject.angle - 90;
+				activeObject.rotate(angle - 90);
+				if (activeObject.get("type") === "image") {
+					selectionRect.visible = true;
+					selectionRect.rotate(angle - 90);
+					handleCrop(angle - 90);
+				}
 			}
 			if (action === "rotateRight") {
-				activeObject.angle = activeObject.angle + 90;
+				activeObject.rotate(angle + 90);
+				if (activeObject.get("type") === "image") {
+					selectionRect.visible = true;
+					selectionRect.rotate(angle + 90);
+					handleCrop(angle + 90);
+				}
 			}
 			canvas.requestRenderAll();
 		});
@@ -626,7 +644,57 @@ $("document").ready(function () {
 			$(this).parent().parent().removeClass("active");
 		});
 
-		$("#saveAsImg").click(function () {
+	
+		$("#imagesave").click(function (e) 
+		{
+			e.preventDefault();
+			var form = $("#saveform");
+			var formdata = new FormData(form[0]);
+			formdata.append("oemaxlevel", 1);
+			
+			var assetfileformat = $(form).data("assetfileformat");   //image/jpeg or image/webp image/png
+			canvas.setViewportTransform([1, 0, 0, 1, 0, 0]);
+			formdata.append(
+				"image",
+				canvas.toDataURL("image/" + assetfileformat, {
+					left: window.imageRenderLeft,
+					top: window.imageRenderTop,
+					width: window.imageRenderWidth,
+					height: window.imageRenderHeight,
+				})
+			);
+			centerViewPort();
+
+			$.ajax({
+				url: form.attr("action"),
+				data: formdata,
+				type: "POST",
+				contentType: false, // NEEDED, DON'T OMIT THIS (requires jQuery 1.6+)
+				processData: false, // NEEDED, DON'T OMIT THIS
+				//Refresh imageeditor
+				success: function (data) {
+					$("#photo-editor-container").html(data);
+					//trigger toast
+					
+				},
+			});
+
+		});
+
+		$("#saveAs").click(function () {
+			var mask = $(this).siblings(".mask");
+			var saveAs = $(this).siblings(".save-as-menu");
+			mask.addClass("active");
+			saveAs.addClass("active");
+			var filenameInp = $("#saveasform input.newfilename");
+			filenameInp.focus();
+			var val = filenameInp.val();
+			filenameInp.val("");
+			filenameInp.val(val);
+		});
+		
+		
+			$("#saveAsImg").click(function () {
 			var form = $("#saveasform");
 
 			var formdata = new FormData(form[0]);
@@ -652,13 +720,18 @@ $("document").ready(function () {
 					return;
 				}
 			}
+			var assetfileformat = $(form).data("assetfileformat");  
 
-			var format = "png";
+			if( assetfileformat != "jpg" || assetfileformat != "png")
+			{
+				assetfileformat = "png"; 
+			}
+
 			canvas.setViewportTransform([1, 0, 0, 1, 0, 0]);
 			formdata.append(
 				"image",
 				canvas.toDataURL({
-					format: format,
+					format: assetfileformat,
 					left: window.imageRenderLeft,
 					top: window.imageRenderTop,
 					width: window.imageRenderWidth,
@@ -681,17 +754,7 @@ $("document").ready(function () {
 			});
 		});
 
-		$("#saveAs").click(function () {
-			var mask = $(this).siblings(".mask");
-			var saveAs = $(this).siblings(".save-as-menu");
-			mask.addClass("active");
-			saveAs.addClass("active");
-			var filenameInp = $("#saveasform input.newfilename");
-			filenameInp.focus();
-			var val = filenameInp.val();
-			filenameInp.val("");
-			filenameInp.val(val);
-		});
+		
 		$("#exportAs").click(function () {
 			var mask = $(this).siblings(".mask");
 			var exportAs = $(this).siblings(".export-menu");
@@ -717,12 +780,24 @@ $("document").ready(function () {
 			var ext = $("select#exportAsType").val();
 			if (!ext) ext = "png";
 			canvas.setViewportTransform([1, 0, 0, 1, 0, 0]);
-			a.href = canvas.toDataURL({
-				format: ext,
+			var dlArea = {
 				left: window.imageRenderLeft,
 				top: window.imageRenderTop,
 				width: window.imageRenderWidth,
 				height: window.imageRenderHeight,
+			};
+			if (window.imageRenderAngle != 0) {
+				console.log(dlArea);
+				console.log({
+					w: imgInstance.width,
+					h: imgInstance.height,
+					h: imgInstance.left,
+					h: imgInstance.top,
+				});
+			}
+			a.href = canvas.toDataURL({
+				format: ext,
+				...dlArea,
 			});
 			centerViewPort();
 			a.download = filename + "." + ext;

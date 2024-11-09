@@ -1,31 +1,53 @@
 <div class="versionscontainer">
 	<div class="versionlist overflow-y"> 
-		<a class="versionlistitem d-flex align-items-center selected" role="button" href="#" data-targetdiv="versionpreview">
-			<i class="bi bi-clock-history"></i>
+	
+	#set( $nextmessage = "[[Original File]]")
+	
+		#set( $link = "$apphome/views/modules/asset/editor/versioncontrol/revisionpreview.html?assetid=$asset.getId()")
+		<a class="versionlistitem  ajax d-flex align-items-center selected activelistener" role="button" 
+		href="#urlescape($link)"  data-oemaxlevel="1"  data-targetdiv="versionpreview">
+			<i class="bi bi-listitem bi-clock-history"></i>
 			<div class="d-flex flex-column">
 				<div class="versionname">
-					Current
-				</div>
-				<div class="versionauthor">
-					$asset.get("owner")
+						#set( $nextversion = $revisions.revisions.size() + 1)
+						[[Version]] $nextversion 
 				</div>
 				<div class="versiondate">
-					#set ( $dateString = $context.getDateTime( $asset.get("assetmodificationdate")) )
+					#set( $reason = $revisions.getActualChangeReason(0) )
+					  $reason				</div>
+				<div class="versionauthor">
+					#set( $owner = $mediaarchive.getUser( $asset.get("owner") ) )
+					#ifnotnull( $owner)
+						$owner
+					#end
+				</div>
+				<div class="versiondate">
+					[[Modified]]: #set ( $dateString = $context.getDateTime( $asset.get("assetmodificationdate")) )
 					$dateString
 				</div>
 			</div>
 		</a>
+		
+		#if( $revisions.revisions.isEmpty() )
+			<p class="p-2">[[No additional versions created]]</p>
+		#end
        #foreach( $revision in $revisions.revisions )
 
 		#set( $link = "$apphome/views/modules/asset/editor/versioncontrol/revisionpreview.html?editPath=$revisions.editPath&version=$revision.version&assetid=$asset.getId()")
-		<a class="versionlistitem ajax d-flex align-items-center #if($i == 100) selected #end" role="button"
+		<a class="versionlistitem ajax d-flex align-items-center activelistener" role="button"
 		
 			 href="#urlescape($link)" data-oemaxlevel="1" data-targetdiv="versionpreview">
-			<i class="bi bi-clock-history"></i>
+			<i class="bi bi-listitem bi-clock-history"></i>
 			<div class="d-flex flex-column">
 				<div class="versionname">
-						Version $!revision.version $!revision.getMessage()
+						[[Version]] $!revision.version 
 				</div>
+				#ifnotnull( $!revision.getMessage() )
+				<div class="versiondate">
+					#set( $reason = $revisions.getActualChangeReason($foreach.count) ) ##starting at 1
+					  $reason
+				</div>
+				#end
 				#ifnotnull($revision.author)
 				<div class="versionauthor">
 					$revision.author  
@@ -33,7 +55,7 @@
 				#end
 				<div class="versiondate">
 					#set ( $dateString = $context.getDateTime( $revision.lastModified() ) )
-					$dateString  $revision.getPreviewImage()
+					[[Modified]]: $dateString  
 				</div>
 			</div>
 		</a>
