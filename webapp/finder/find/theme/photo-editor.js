@@ -342,15 +342,20 @@ $("document").ready(function () {
 			canvas.renderAll();
 			$(".crop-editor").removeClass("active");
 		});
-		function handleCrop(rotate = 0) {
-			canvas.renderAll();
-			if (rotate === 0) {
-				window.imageRenderWidth = selectionRect.getScaledWidth();
-				window.imageRenderHeight = selectionRect.getScaledHeight();
-				window.imageRenderLeft = selectionRect.left;
-				window.imageRenderTop = selectionRect.top;
+		function handleCrop(rotate = null) {
+			var newBounds = selectionRect.getBoundingRect();
+			console.log(newBounds);
+			if (rotate) {
+				var w = newBounds.width;
+				newBounds.width = newBounds.height;
+				newBounds.height = w;
 			}
+			window.imageRenderWidth = newBounds.width;
+			window.imageRenderHeight = newBounds.height;
+			window.imageRenderLeft = newBounds.left;
+			window.imageRenderTop = newBounds.top;
 			window.imageRenderAngle = rotate;
+
 			cropRect = new fabric.Rect({
 				left: imageRenderLeft,
 				top: imageRenderTop,
@@ -359,8 +364,14 @@ $("document").ready(function () {
 				absolutePositioned: true,
 				fill: "rgba(0,0,0,0.5)",
 			});
-			cropRect.rotate(imageRenderAngle);
 
+			// cropRect.rotate(rotate ? rotate : 0).setCoords();
+
+			canvas.add(cropRect);
+			canvas.renderAll();
+			var imgBounds = imgInstance.getBoundingRect();
+			console.log(imgBounds);
+			return;
 			imgInstance.clipPath = cropRect;
 
 			selectionRect.visible = false;
@@ -377,7 +388,10 @@ $("document").ready(function () {
 			canvas.renderAll();
 			$(".crop-editor").removeClass("active");
 		}
-		$("#cropBtn").click(handleCrop);
+
+		$("#cropBtn").click(function () {
+			handleCrop();
+		});
 
 		$(".rotate-editor button").click(function () {
 			var action = $(this).data("action");
@@ -392,22 +406,20 @@ $("document").ready(function () {
 				activeObject.flipY = !activeObject.flipY;
 			}
 			var angle = activeObject.angle % 360;
-			if (action === "rotateLeft") {
-				activeObject.rotate(angle - 90);
+			if (action.startsWith("rotate")) {
+				if (action === "rotateLeft") {
+					angle -= 90;
+				} else {
+					angle += 90;
+				}
+				activeObject.rotate(angle).setCoords();
 				if (activeObject.get("type") === "image") {
 					selectionRect.visible = true;
-					selectionRect.rotate(angle - 90);
-					handleCrop(angle - 90);
+					selectionRect.rotate(angle).setCoords();
+					handleCrop(angle);
 				}
 			}
-			if (action === "rotateRight") {
-				activeObject.rotate(angle + 90);
-				if (activeObject.get("type") === "image") {
-					selectionRect.visible = true;
-					selectionRect.rotate(angle + 90);
-					handleCrop(angle + 90);
-				}
-			}
+
 			canvas.requestRenderAll();
 		});
 
@@ -520,7 +532,6 @@ $("document").ready(function () {
 		var fontWeight = $("#font-weight");
 
 		fontFamily.change(function () {
-			console.log($(this).val(), JSON.parse(fontWeight.val()));
 			loadFontAndUse($(this).val(), JSON.parse(fontWeight.val()));
 		});
 		fontWeight.change(function () {
@@ -735,28 +746,17 @@ $("document").ready(function () {
 			var ext = $("select#exportAsType").val();
 			if (!ext) ext = "png";
 			canvas.setViewportTransform([1, 0, 0, 1, 0, 0]);
-			var dlArea = {
+			a.href = canvas.toDataURL({
+				format: ext,
 				left: window.imageRenderLeft,
 				top: window.imageRenderTop,
 				width: window.imageRenderWidth,
 				height: window.imageRenderHeight,
-			};
-			if (window.imageRenderAngle != 0) {
-				console.log(dlArea);
-				console.log({
-					w: imgInstance.width,
-					h: imgInstance.height,
-					h: imgInstance.left,
-					h: imgInstance.top,
-				});
-			}
-			a.href = canvas.toDataURL({
-				format: ext,
-				...dlArea,
 			});
 			centerViewPort();
 			a.download = filename + "." + ext;
 			a.click();
+			a.remove();
 		});
 
 		$("#aspectRatio").change(function () {
