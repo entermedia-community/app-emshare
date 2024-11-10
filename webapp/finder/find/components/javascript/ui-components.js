@@ -4837,9 +4837,16 @@ runajaxstatus = function () {
 		if (cell.length == 0) {
 			continue;
 		}
+		
+		if( !cell.hasClass("ajaxstatus") )
+		{
+			continue; //Must be done
+		}
+		
 		if (!isInViewport(cell[0])) {
 			continue;
 		}
+		
 		var path = cell.attr("ajaxpath");
 		if (!path || path == "") {
 			path = cell.data("ajaxpath");
@@ -4857,7 +4864,7 @@ runajaxstatus = function () {
 				data: data,
 				success: function (data) {
 					cell.replaceWith(data);
-					$(window).trigger("checkautoreload", [cell]);
+					//$(window).trigger("checkautoreload", [cell]);
 					$(window).trigger("resize");
 				},
 				xhrFields: {
@@ -4867,8 +4874,7 @@ runajaxstatus = function () {
 			});
 		}
 	}
-
-	setTimeout("runajaxstatus();", 1000); //Start checking
+	setTimeout("runajaxstatus();", 1000); //Start checking any and all fields on the screeen that are saved in ranajaxon
 };
 
 var resizecolumns = function () {
@@ -4942,11 +4948,11 @@ lQuery(".ajaxstatus").livequery(function () {
 	} else {
 		var inqueue = ranajaxon[uid];
 		if (inqueue == undefined) {
-			ranajaxon[uid] = true;
+			ranajaxon[uid] = true; //Only load once per id
 		}
 	}
 	if (ranajaxonrunning == false) {
-		setTimeout("runajaxstatus();", 500); //Start checking
+		setTimeout("runajaxstatus();", 500); //Start checking then runs every second on all status
 		ranajaxonrunning = true;
 	}
 });

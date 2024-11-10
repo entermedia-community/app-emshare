@@ -1,0 +1,38 @@
+#macro(showcats $categories) 
+#foreach($cat in $categories)
+	#set($depth = $cat.getCategoryPath().split("/").size() - 1)
+	#set($indent = "")
+	#foreach($i in [1..$depth])
+		#set($indent = "${indent}  ")
+	#end
+	#if($cat.hasChildren())
+		${indent}  $cat.getName()
+		#showcats($cat.children)
+	#else
+		${indent}  $cat.getName() [$cat.id]
+	#end
+#end
+#end
+
+
+Main Task:
+
+Analyze the image provided and provide assosicated metadata
+
+Background info:
+
+The DAM consists of multiple categories in a heirarchical structure.  These are represented below
+using / as a seperator with the highest level categories on the left and the lowest on the right.
+
+I've wrapped the ID you should provide in square brackets [ID] before the category path.  Please provide just the ID and remove the brackets.  
+Do not guess, just return null if you are unsure.
+
+These are the categories for this test:
+
+#showcats($category.children, 0)
+
+Extra Asset Details: 
+
+
+
+
