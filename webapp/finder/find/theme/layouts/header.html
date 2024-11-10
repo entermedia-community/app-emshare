@@ -29,9 +29,10 @@
 		#end
 		
 		#ifnull($logourl)
-			#set( $logourl = "$!{siteroot}$themeprefix/images/logo.png")
-			
 			#set($themeid = $content.get("themeid") )
+			
+			#set( $logourl = "$!{siteroot}$themeprefix/$themeid/logo.png")
+			
 			#set($theme = $mediaarchive.getCachedData("theme", $themeid))
 	    	#set($logowidth = $theme.logowidth)
 	    	#set($logoheight = $theme.logoheight)
@@ -152,7 +153,7 @@
 			#end
 			<button class="dropdown-toggle dropdown-toggle-btn" type="button" data-toggle="dropdown">
 				<span class="navbar-toggler-icon">
-					<i class="bi bi-list"></i>
+					<i class="bi bi-person-circle"></i>
 				</span>
 			</button> 
 			
@@ -168,10 +169,9 @@
 							$orders.size() [[Pending Orders]]
 						</a>
 					#end
-					<a href="$!{siteroot}$apphome/views/dashboard/index.html" class="dropdown-item ajax" 
-						data-targetdivinner="application" data-updateurl="true" data-oemaxlevel="4" title="[[Dashboard]]">
-						[[Dashboard]]
-					</a>
+					## <a href="$!{siteroot}$apphome/views/dashboard/index.html" class="dropdown-item ajax" data-targetdivinner="application" data-updateurl="true" data-oemaxlevel="4" title="[[Dashboard]]">
+					## 	[[Dashboard]]
+					## </a>
 				#end
 				#if( $user )
 					#if( $canviewmyaccount ) 
