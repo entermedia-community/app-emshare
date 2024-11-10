@@ -29,16 +29,21 @@
 		#end
 		
 		#ifnull($logourl)
-			#set( $logourl = "$!{siteroot}$themeprefix/images/logo.png")
 			
-			#set($themeid = $content.get("themeid") )
+			#set($themeid = $userprofile.getValue("themeid") )
+			#ifnull($themeid)
+				#set($themeid = $content.get("themeid") )
+			#end	
+			
+			#set( $logourl = "$!{siteroot}$themeprefix/$themeid/logo.png")
+			
 			#set($theme = $mediaarchive.getCachedData("theme", $themeid))
 	    	#set($logowidth = $theme.logowidth)
 	    	#set($logoheight = $theme.logoheight)
 		#end
 		
 		#ifnotnull($logourl)
-			<a class="emlogo" href="$homeurl" title="[[eMedia Library]]" style="width: $!{logowidth}px; height: $!{logoheight}px; ">
+			<a class="emlogo" href="$homeurl" title="[[eMedia Library]]" style="width: var(--themed-logo-width); height: var(--themed-logo-height);">
 				<img src="$logourl" class="logoimg" alt="[[eMedia Library]]" />
 			</a>
 		#end
@@ -152,7 +157,7 @@
 			#end
 			<button class="dropdown-toggle dropdown-toggle-btn" type="button" data-toggle="dropdown">
 				<span class="navbar-toggler-icon">
-					<i class="bi bi-list"></i>
+					<i class="bi bi-person-circle"></i>
 				</span>
 			</button> 
 			
@@ -168,10 +173,9 @@
 							$orders.size() [[Pending Orders]]
 						</a>
 					#end
-					<a href="$!{siteroot}$apphome/views/dashboard/index.html" class="dropdown-item ajax" 
-						data-targetdivinner="application" data-updateurl="true" data-oemaxlevel="4" title="[[Dashboard]]">
-						[[Dashboard]]
-					</a>
+					## <a href="$!{siteroot}$apphome/views/dashboard/index.html" class="dropdown-item ajax" data-targetdivinner="application" data-updateurl="true" data-oemaxlevel="4" title="[[Dashboard]]">
+					## 	[[Dashboard]]
+					## </a>
 				#end
 				#if( $user )
 					#if( $canviewmyaccount ) 
@@ -182,6 +186,17 @@
 							[[My Orders]]
 						</a>
 					#end
+					<div class="dropdown dropleft">
+						<a class="dropdown-item dropdown-toggle" href="#" data-toggle="dropdown">
+							Theme: <strong>#text($theme)</strong>
+						</a>
+						<div class="dropdown-menu">
+							#set( $themes = $mediaarchive.getList("theme") )
+							#foreach( $th in $themes)
+							<a class="dropdown-item" href="$home$apphome/views/settings/applicationsetup/theme/change.html?themeid=$th.id">#text($th)</a>
+							#end
+						</div>
+					</div> 
 					#if($desktop)
 						<a class="dropdown-item emdialog" href="$apphome/components/sidebars/localdrives/workspacedialog.html"  title="[[Local Workspace]]">
 							[[Local Workspace]]

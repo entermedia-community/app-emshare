@@ -124,7 +124,7 @@ $("document").ready(function () {
 				var vpt = this.viewportTransform;
 				vpt[4] += e.clientX - this.lastPosX;
 				vpt[5] += e.clientY - this.lastPosY;
-				this.requestRenderAll();
+				this.renderAll();
 				this.lastPosX = e.clientX;
 				this.lastPosY = e.clientY;
 			}
@@ -181,10 +181,16 @@ $("document").ready(function () {
 				cornerSize: 24,
 			});
 		}
-		fabric.Object.prototype.controls.deleteControl = getDeleteControl();
-		fabric.Object.prototype.controls.clone = getCloneControl();
-		fabric.Textbox.prototype.controls.deleteControl = getDeleteControl();
-		fabric.Textbox.prototype.controls.clone = getCloneControl();
+		const controls = fabric.controlsUtils.createObjectDefaultControls();
+		console.log({ controls });
+		delete controls.md;
+		fabric.InteractiveFabricObject.ownDefaults.controls = {
+			...controls,
+			deleteControl: getDeleteControl(),
+			clone: getCloneControl(),
+		};
+		// fabric.Textbox.prototype.controls.deleteControl = getDeleteControl();
+		// fabric.Textbox.prototype.controls.clone = getCloneControl();
 		fabric.Object.prototype.cornerStyle = "circle";
 		fabric.Text.prototype.cornerStyle = "circle";
 
@@ -192,7 +198,7 @@ $("document").ready(function () {
 			var target = transform.target;
 			var canvas = target.canvas;
 			canvas.remove(target);
-			canvas.requestRenderAll();
+			canvas.renderAll();
 		}
 
 		function cloneObject(_, transform) {
@@ -250,13 +256,13 @@ $("document").ready(function () {
 			selectionRect.scaleToWidth(renderWidth);
 			selectionRect.scaleToHeight(renderHeight);
 
-			selectionRect.setControlVisible("mtr", false);
-			selectionRect.setControlVisible("mt", false);
-			selectionRect.setControlVisible("mb", false);
-			selectionRect.setControlVisible("ml", false);
-			selectionRect.setControlVisible("mr", false);
-			selectionRect.setControlVisible("deleteControl", false);
-			selectionRect.setControlVisible("clone", false);
+			// selectionRect.setControlVisible("mtr", false);
+			// selectionRect.setControlVisible("mt", false);
+			// selectionRect.setControlVisible("mb", false);
+			// selectionRect.setControlVisible("ml", false);
+			// selectionRect.setControlVisible("mr", false);
+			// selectionRect.setControlVisible("deleteControl", false);
+			// selectionRect.setControlVisible("clone", false);
 
 			imgInstance = new fabric.Image(img, {
 				left: primaryOffsetLeft,
@@ -268,7 +274,7 @@ $("document").ready(function () {
 			imgInstance.scaleToHeight(renderHeight);
 
 			canvas.add(imgInstance);
-			canvas.sendToBack(imgInstance);
+			// canvas.sendToBack(imgInstance);
 			canvas.add(selectionRect);
 			canvas.setViewportTransform([1, 0, 0, 1, 8, 8]);
 			window.imageRenderWidth = imgInstance.getScaledWidth();
@@ -278,8 +284,9 @@ $("document").ready(function () {
 
 			centerViewPort();
 
+			imgInstance.filters = [];
 			fabricFilters.forEach(function (_, i) {
-				imgInstance.filters[i] = false;
+				imgInstance.filters.push(false);
 			});
 
 			$("#preDefFilters a").each(function () {
@@ -287,7 +294,8 @@ $("document").ready(function () {
 				var fpCanvas = new fabric.StaticCanvas("fpCanvas");
 				fpCanvas.width = 100;
 				fpCanvas.height = 100;
-				var fpFilter = new fabric.Image.filters[filter]();
+				console.log(fabric.filters);
+				var fpFilter = new fabric.filters[filter]();
 				var fpImgInstance = new fabric.Image(img, { left: 0, top: 0 });
 				var fpRatio = img.width / img.height;
 				var fpW, fpH;
@@ -303,7 +311,7 @@ $("document").ready(function () {
 				fpImgInstance.filters.push(fpFilter);
 				fpImgInstance.applyFilters();
 				fpCanvas.add(fpImgInstance);
-				fpCanvas.requestRenderAll();
+				fpCanvas.renderAll();
 				$(this).find("img").attr("src", fpCanvas.toDataURL());
 				fpCanvas.dispose();
 				$(this).show();
@@ -320,13 +328,14 @@ $("document").ready(function () {
 			var isActive = $(this).hasClass("active");
 			$(this).toggleClass("active");
 			if (!isActive) {
-				var filterInstance = new fabric.Image.filters[filter]();
+				console.log("applying ", filter);
+				var filterInstance = new fabric.filters[filter]();
 				imgInstance.filters[filterIdx] = filterInstance;
 			} else {
 				imgInstance.filters[filterIdx] = false;
 			}
 			imgInstance.applyFilters();
-			canvas.requestRenderAll();
+			canvas.renderAll();
 		});
 		$("#resetCrop").click(function () {
 			window.imageRenderWidth = window.__imageRenderWidth;
@@ -342,15 +351,20 @@ $("document").ready(function () {
 			canvas.renderAll();
 			$(".crop-editor").removeClass("active");
 		});
-		function handleCrop(rotate = 0) {
-			canvas.renderAll();
-			if (rotate === 0) {
-				window.imageRenderWidth = selectionRect.getScaledWidth();
-				window.imageRenderHeight = selectionRect.getScaledHeight();
-				window.imageRenderLeft = selectionRect.left;
-				window.imageRenderTop = selectionRect.top;
+		function handleCrop(rotate = null) {
+			var newBounds = selectionRect.getBoundingRect();
+			console.log(newBounds);
+			if (rotate) {
+				var w = newBounds.width;
+				newBounds.width = newBounds.height;
+				newBounds.height = w;
 			}
+			window.imageRenderWidth = newBounds.width;
+			window.imageRenderHeight = newBounds.height;
+			window.imageRenderLeft = newBounds.left;
+			window.imageRenderTop = newBounds.top;
 			window.imageRenderAngle = rotate;
+
 			cropRect = new fabric.Rect({
 				left: imageRenderLeft,
 				top: imageRenderTop,
@@ -359,8 +373,15 @@ $("document").ready(function () {
 				absolutePositioned: true,
 				fill: "rgba(0,0,0,0.5)",
 			});
-			cropRect.rotate(imageRenderAngle);
 
+			// cropRect.rotate(rotate ? rotate : 0);
+			// cropRect.setCoords();
+
+			canvas.add(cropRect);
+			canvas.renderAll();
+			var imgBounds = imgInstance.getBoundingRect();
+			console.log(imgBounds);
+			return;
 			imgInstance.clipPath = cropRect;
 
 			selectionRect.visible = false;
@@ -377,7 +398,10 @@ $("document").ready(function () {
 			canvas.renderAll();
 			$(".crop-editor").removeClass("active");
 		}
-		$("#cropBtn").click(handleCrop);
+
+		$("#cropBtn").click(function () {
+			handleCrop();
+		});
 
 		$(".rotate-editor button").click(function () {
 			var action = $(this).data("action");
@@ -392,23 +416,23 @@ $("document").ready(function () {
 				activeObject.flipY = !activeObject.flipY;
 			}
 			var angle = activeObject.angle % 360;
-			if (action === "rotateLeft") {
-				activeObject.rotate(angle - 90);
+			if (action.startsWith("rotate")) {
+				if (action === "rotateLeft") {
+					angle -= 90;
+				} else {
+					angle += 90;
+				}
+				activeObject.rotate(angle);
+				activeObject.setCoords();
 				if (activeObject.get("type") === "image") {
 					selectionRect.visible = true;
-					selectionRect.rotate(angle - 90);
-					handleCrop(angle - 90);
+					selectionRect.rotate(angle);
+					selectionRect.setCoords();
+					handleCrop(angle);
 				}
 			}
-			if (action === "rotateRight") {
-				activeObject.rotate(angle + 90);
-				if (activeObject.get("type") === "image") {
-					selectionRect.visible = true;
-					selectionRect.rotate(angle + 90);
-					handleCrop(angle + 90);
-				}
-			}
-			canvas.requestRenderAll();
+
+			canvas.renderAll();
 		});
 
 		$(".editorarea a").click(function (e) {
@@ -423,7 +447,7 @@ $("document").ready(function () {
 			if (action === "crop") {
 				selectionRect.visible = true;
 				canvas.setActiveObject(selectionRect);
-				canvas.requestRenderAll();
+				canvas.renderAll();
 			} else if (
 				["flipX", "flipY", "rotateLeft", "rotateRight"].includes(action)
 			) {
@@ -431,7 +455,7 @@ $("document").ready(function () {
 			} else {
 				selectionRect.visible = false;
 				canvas.discardActiveObject();
-				canvas.requestRenderAll();
+				canvas.renderAll();
 			}
 		});
 
@@ -439,7 +463,7 @@ $("document").ready(function () {
 			$(this).parent().removeClass("active");
 			selectionRect.visible = false;
 			canvas.discardActiveObject();
-			canvas.requestRenderAll();
+			canvas.renderAll();
 		});
 
 		canvas.on("selection:created", onObjectSelected);
@@ -474,11 +498,11 @@ $("document").ready(function () {
 			$("button.text-align-btn").first().addClass("active");
 		}
 
-		$("#textField").keyup(function () {
+		$("#textField").keydown(function () {
 			var activeObject = canvas.getActiveObject();
 			if (activeObject && typeof activeObject.text !== "undefined") {
 				activeObject.text = $(this).val();
-				canvas.requestRenderAll();
+				canvas.renderAll();
 			} else {
 				canvas.discardActiveObject();
 				var text = new fabric.Textbox($(this).val(), {
@@ -501,7 +525,7 @@ $("document").ready(function () {
 				var activeObject = canvas.getActiveObject();
 				if (activeObject && typeof activeObject.text !== "undefined") {
 					activeObject.set("fill", hex);
-					canvas.requestRenderAll();
+					canvas.renderAll();
 				}
 			},
 		});
@@ -510,7 +534,7 @@ $("document").ready(function () {
 			var activeObject = canvas.getActiveObject();
 			if (activeObject && typeof activeObject.text !== "undefined") {
 				activeObject.set("textAlign", $(this).data("action"));
-				canvas.requestRenderAll();
+				canvas.renderAll();
 			}
 			$(this).siblings().removeClass("active");
 			$(this).addClass("active");
@@ -520,7 +544,6 @@ $("document").ready(function () {
 		var fontWeight = $("#font-weight");
 
 		fontFamily.change(function () {
-			console.log($(this).val(), JSON.parse(fontWeight.val()));
 			loadFontAndUse($(this).val(), JSON.parse(fontWeight.val()));
 		});
 		fontWeight.change(function () {
@@ -546,7 +569,7 @@ $("document").ready(function () {
 						activeObject.set("fontFamily", font);
 						activeObject.set("fontWeight", option.weight);
 						activeObject.set("fontStyle", option.style || "normal");
-						canvas.requestRenderAll();
+						canvas.renderAll();
 					}
 					ef.removeClass("show").addClass("hide");
 				})
@@ -575,12 +598,12 @@ $("document").ready(function () {
 			if (!prop) prop = id.toLowerCase();
 			var filterInstance = imgInstance.filters.find((f) => f.type === id);
 			if (!filterInstance) {
-				filterInstance = new fabric.Image.filters[id]();
+				filterInstance = new fabric.filters[id]();
 				imgInstance.filters[filterIdx] = filterInstance;
 			}
 			filterInstance[prop] = filterValue;
 			imgInstance.applyFilters();
-			canvas.requestRenderAll();
+			canvas.renderAll();
 		});
 
 		$(".matrixFilter input[type=checkbox]").click(function () {
@@ -589,7 +612,7 @@ $("document").ready(function () {
 			var checked = $(this).prop("checked");
 			var matrix = convolutionMatrices[action];
 			if (checked) {
-				var filterInstance = new fabric.Image.filters["Convolute"]({
+				var filterInstance = new fabric.filters["Convolute"]({
 					matrix: matrix,
 				});
 				imgInstance.filters[filterIdx] = filterInstance;
@@ -597,7 +620,7 @@ $("document").ready(function () {
 				imgInstance.filters[filterIdx] = false;
 			}
 			imgInstance.applyFilters();
-			canvas.requestRenderAll();
+			canvas.renderAll();
 		});
 
 		$(".fltr a").click(function () {
@@ -605,7 +628,13 @@ $("document").ready(function () {
 			var filterIdx = fabricFilters.indexOf(id);
 			imgInstance.filters[filterIdx] = false;
 			imgInstance.applyFilters();
-			canvas.requestRenderAll();
+			canvas.renderAll();
+			var rangeInp = $("#" + id).find("input[type=range]");
+			var defaultVal = rangeInp.attr("defaultValue");
+			rangeInp.val(defaultVal);
+			$("#" + id)
+				.find("input[type=text]")
+				.val(0);
 		});
 
 		$("#imageField").change(function () {
@@ -637,26 +666,26 @@ $("document").ready(function () {
 			});
 			canvas.add(newImg);
 			canvas.setActiveObject(newImg);
-			canvas.requestRenderAll();
+			canvas.renderAll();
 			$("#imageField").val("");
 			$("#imagePreview").hide();
 			$(this).parent().removeClass("d-flex").hide();
 			$(this).parent().parent().removeClass("active");
 		});
 
-	
-		$("#imagesave").click(function (e) 
-		{
+		$("#imagesave").click(function (e) {
 			e.preventDefault();
 			var form = $("#saveform");
 			var formdata = new FormData(form[0]);
 			formdata.append("oemaxlevel", 1);
-			
-			var assetfileformat = $(form).data("assetfileformat");   //image/jpeg or image/webp image/png
+
+			var assetfileformat = $(form).data("assetfileformat").toLowerCase();
+			if (assetfileformat === "jpg") assetfileformat = "jpeg";
 			canvas.setViewportTransform([1, 0, 0, 1, 0, 0]);
 			formdata.append(
 				"image",
-				canvas.toDataURL("image/" + assetfileformat, {
+				canvas.toDataURL({
+					format: "assetfileformat",
 					left: window.imageRenderLeft,
 					top: window.imageRenderTop,
 					width: window.imageRenderWidth,
@@ -675,10 +704,8 @@ $("document").ready(function () {
 				success: function (data) {
 					$("#photo-editor-container").html(data);
 					//trigger toast
-					
 				},
 			});
-
 		});
 
 		$("#saveAs").click(function () {
@@ -692,9 +719,8 @@ $("document").ready(function () {
 			filenameInp.val("");
 			filenameInp.val(val);
 		});
-		
-		
-			$("#saveAsImg").click(function () {
+
+		$("#saveAsImg").click(function () {
 			var form = $("#saveasform");
 
 			var formdata = new FormData(form[0]);
@@ -720,11 +746,10 @@ $("document").ready(function () {
 					return;
 				}
 			}
-			var assetfileformat = $(form).data("assetfileformat");  
+			var assetfileformat = $(form).data("assetfileformat");
 
-			if( assetfileformat != "jpg" || assetfileformat != "png")
-			{
-				assetfileformat = "png"; 
+			if (assetfileformat != "jpg" || assetfileformat != "png") {
+				assetfileformat = "png";
 			}
 
 			canvas.setViewportTransform([1, 0, 0, 1, 0, 0]);
@@ -754,7 +779,6 @@ $("document").ready(function () {
 			});
 		});
 
-		
 		$("#exportAs").click(function () {
 			var mask = $(this).siblings(".mask");
 			var exportAs = $(this).siblings(".export-menu");
@@ -780,28 +804,17 @@ $("document").ready(function () {
 			var ext = $("select#exportAsType").val();
 			if (!ext) ext = "png";
 			canvas.setViewportTransform([1, 0, 0, 1, 0, 0]);
-			var dlArea = {
+			a.href = canvas.toDataURL({
+				format: ext,
 				left: window.imageRenderLeft,
 				top: window.imageRenderTop,
 				width: window.imageRenderWidth,
 				height: window.imageRenderHeight,
-			};
-			if (window.imageRenderAngle != 0) {
-				console.log(dlArea);
-				console.log({
-					w: imgInstance.width,
-					h: imgInstance.height,
-					h: imgInstance.left,
-					h: imgInstance.top,
-				});
-			}
-			a.href = canvas.toDataURL({
-				format: ext,
-				...dlArea,
 			});
 			centerViewPort();
 			a.download = filename + "." + ext;
 			a.click();
+			a.remove();
 		});
 
 		$("#aspectRatio").change(function () {
@@ -850,7 +863,7 @@ $("document").ready(function () {
 			selectionRect.set("top", imgInstance.top);
 			selectionRect.set("scaleX", 1);
 			selectionRect.set("scaleY", 1);
-			canvas.requestRenderAll();
+			canvas.renderAll();
 		});
 		$("input[name=replaceall]").click(function () {
 			if ($(this).prop("checked")) {
