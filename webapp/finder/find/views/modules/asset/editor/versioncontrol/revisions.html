@@ -4,11 +4,11 @@
 #set( $revisions = $mediaarchive.getAssetEditor().getVersions($asset))	
 
 #set( $changetype = {"original":"[[Imported]]","edited" : "[[Edited]]", "restore" : "Restored","replace":"[[Replace]]"} ) 
-	
+
        #foreach( $revision in $revisions )
 
 		#set( $link = "$apphome/views/modules/asset/editor/versioncontrol/revisionpreview.html?version=$revision.version&assetid=$asset.getId()")
-		<a class="versionlistitem ajax d-flex align-items-center activelistener" role="button"
+		<a class="versionlistitem ajax d-flex align-items-center activelistener #if($foreach.count == 1) selected #end" role="button"
 		
 			 href="#urlescape($link)" data-oemaxlevel="1" data-targetdiv="versionpreview">
 			<i class="bi bi-listitem bi-clock-history"></i>
@@ -47,7 +47,7 @@
 		#end
 
 	</div>
-
+	$context.putPageValue("selectedrevision",$revisions.getFirst())
 	$pages.include("$apphome/views/modules/asset/editor/versioncontrol/revisionpreview.html",$context)
 
 </div>
