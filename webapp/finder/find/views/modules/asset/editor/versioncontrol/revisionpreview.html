@@ -1,6 +1,10 @@
 <div id="versionpreview">
 
-#ifnull( $selectedrevision)
+
+
+#if( $selectedrevision)
+	#set($version = $selectedrevision.getVersion())
+#else
 	#set($version = $context.getRequestParameter("version"))
 	#set( $selectedrevision = $mediaarchive.getAssetEditor().getVersion($asset,$version))	
 #end

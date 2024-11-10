@@ -25,6 +25,17 @@
 			#end
 		#end
 
+		#if( !$previewonly && $canviewmetadatageneral )
+		<li class="assettabnav #if($opentab == "viewproperties")tabselected#end">
+			<a class="expandmenu assettab rememberassettab" 
+				data-link="$siteroot$componenthome/mediaviewer/fullscreen/tabs/viewasset.html" 
+				title="[[Metadata]]"
+				data-assettab="viewproperties">
+				<i class="bi bi-info-circle mr-1"></i> [[Data]] 
+			</a>
+		</li>
+		#end
+
 		#if (!$ismulti && $canviewmetadatageneral)
 		<li class="assettabnav #if($opentab == "viewpreview")tabselected#end">	
 			<a class="expandmenu assetpreview assettab rememberassettab" 
@@ -36,16 +47,21 @@
 		</li>
 		#end
 
-		#if( !$previewonly && $canviewmetadatageneral )
-		<li class="assettabnav #if($opentab == "viewproperties")tabselected#end">
+
+		#set( $originalpath = $mediaarchive.asLinkToOriginal($asset) )
+
+		#if(!$previewonly && !$ismulti && $canviewmediaedit && $canviewconversions && ($rendertype == "image" ))
+		<li class="hidemulti assettabnav #if($opentab == 'imageeditor')tabselected #end">
 			<a class="expandmenu assettab rememberassettab" 
-				data-link="$siteroot$componenthome/mediaviewer/fullscreen/tabs/viewasset.html" 
-				title="[[Metadata]]"
-				data-assettab="viewproperties">
-				<i class="bi bi-info-circle mr-1"></i> [[Properties]] 
+				data-link="$siteroot$componenthome/mediaviewer/fullscreen/tabs/viewactions.html?action=imageeditor" 
+				title="[[Image Editor]]"
+				data-assettab="imageeditor"
+				data-assettabname="[[Image Editor]]">
+				<i class="bi bi-image mr-1"></i> [[Image Editor]] 
 			</a>
 		</li>
 		#end
+
 
 		#if(!$ismulti && ($rendertype == "video"))
 			#if($canviewtimeline)
@@ -81,20 +97,6 @@
 
 		#set( $originalpath = $mediaarchive.asLinkToOriginal($asset) )
 
-		#if(!$previewonly && !$ismulti && $canviewmediaedit && $canviewconversions && ($rendertype == "image" ))
-		<li class="hidemulti assettabnav #if($opentab == 'imageeditor')tabselected #end">
-			<a class="expandmenu assettab rememberassettab" 
-				data-link="$siteroot$componenthome/mediaviewer/fullscreen/tabs/viewactions.html?action=imageeditor" 
-				title="[[Image Editor]]"
-				data-assettab="imageeditor"
-				data-assettabname="[[Image Editor]]">
-				<i class="bi bi-image mr-1"></i> [[Image Editor]] 
-			</a>
-		</li>
-		#end
-
-		#set( $originalpath = $mediaarchive.asLinkToOriginal($asset) )
-
 		#if($candownload && $asset.getFileFormat() == "pdf")
 		<li class="assettabnav">
 			<a class="expandmenu" data-assetid="${asset.id}" target="_new" href="$siteroot/$mediadbappid/services/module/asset/downloads/vieworiginal/$originalpath">
@@ -103,60 +105,18 @@
 		</li> 
 		#end
 
-		#if(1==2 && !$ismulti && ($candownload || $canconvert || $candownloadfpo))
-		<li class="assettabnav hidemulti dropdown">		
-			<a href="#" class="expandmenu dropdown-toggle" 
-				data-toggle="dropdown" 
-				data-bs-toggle="dropdown" expanded="true">
-				<i class="bi bi-cloud-arrow-down mr-1"></i> [[Download]]
-			</a>
-			<ul class="dropdown-menu">
-				#if( !$cdnprefix )
-					#set( $cdnprefix = $context.siteRoot )
-				#end	
-				#if($candownload)	
-				<li>
-					<a href='#urlencode("$cdnprefix$siteroot/$mediadbappid/services/module/asset/downloads/originals/$originalpath?collectionid=${collectionid}&assetid=$asset.getId()")'>
-						[[Original File]]
-					</a>
-				</li>
-				#end
-				#if($canconvert || $candownloadfpo)
-					#if( $rendertype )
-						#set($results = $conversionUtil.getActivePresetList($catalogid,$rendertype) )
-					#end
-					#foreach($result in $results )						
-						#set($ok = false)
-						#if($canconvert && $candownloadfpo)
-							#set($ok = true) 
-						#elseif ($canconvert && $result.watermark != "true")
-							#set($ok = true) 
-						#elseif($candownloadfpo && $result.watermark == "true")
-							#set($ok = true) 
-						#end
-						#if($result.id == "0" && $candownload)
-							#set($ok = true) 
-						#end
-						#if($result.id == "0" && !$candownload)
-							#set($ok = false) 
-						#end
-						#if($ok)
-							#set($url = $mediaarchive.asLinkToDownload($asset,$librarycol.id, $result))
-							<li><a href="$url">$result.name</a></li>
-						#end
-					#end
-				#end
-			</ul>
-		</li>
+		#if( !$ismulti)
+		#if ($canviewconversions || $canconverthistory || $canconverthistory )
+			<li class="assettabnav #if($opentab == 'assethistory')tabselected #end">
+				<a class="expandmenu assettab rememberassettab" 
+					data-link="$siteroot$componenthome/mediaviewer/fullscreen/tabs/viewactions.html?action=assethistory" title="[[History]]"
+					data-title="[[History]]"
+					data-assettab="assethistory"
+					data-assettabname="[[History]]">
+					<i class="bi bi-clock-history ns mr-1"></i> [[History]] 
+				</a>
+			</li>
 		#end
-
-		#if( $canaddtofavorites)
-		$context.putPageValue("assetid", $asset.id)
-		<li class="assettabnav">
-			<div id="tabassetfavorite-${asset.id}" class="media-info-icons">
-				$pages.include("$apphome/views/modules/asset/editor/favorite/index.html?targetdiv=tabassetfavorite", $context)
-			</div>
-		</li>
 		#end
 
 		#if ( $canshareasset && !$ismulti )
@@ -205,105 +165,35 @@
 		</li>
 		#end
 
-		#if($user && ( !$previewonly 	&& !$ismulti))
-			
-			#if( !$ismulti)
-			#if ($canviewconversions || $canconverthistory || $canconverthistory )
-				<li class="assettabnav #if($opentab == 'assethistory')tabselected #end">
-					<a class="expandmenu assettab rememberassettab" 
-						data-link="$siteroot$componenthome/mediaviewer/fullscreen/tabs/viewactions.html?action=assethistory" title="[[History]]"
-						data-title="[[History]]"
-						data-assettab="assethistory"
-						data-assettabname="[[History]]">
-						<i class="bi bi-clock-history ns mr-1"></i> [[History]] 
+		#if ( $cancheckout )
+				<li class="assettabnav" id="mediaviewerbasket">
+					#if($orderManager.isAssetInOrder($catalogid, $order, $asset.id) )
+					<a class="dropdown-item updatebasketmediaviewer expandmenu" data-action="remove" data-alerttxt="[[Removed From Basket]]" targetdiv="mediaviewerbasket" 
+						href="$siteroot$componenthome/basket/mediaviewertoggleitem.html?assetid=$asset.id">
+						<span class="bi bi-cart-fill"> </span> [[Remove From Order]]
 					</a>
-				</li>
-			#end
-			#end
-		
-		
-			#if($canviewclosedcaptions || $canviewattachments || $cancheckout || $candeleteasset || $canmultiedit)
-
-
-
-			<li class='assettabnav assettabactions hidemulti #if($opentab == "viewactions") tabselected #end dropdown'>
-				<a href="#" class="expandmenu dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" title="[[More Menu]]"> 
-					<i class="bi bi-pencil-square mr-1"></i> 
-					<span class="assettabactionstext">
-					#if ($opentabactions=='categorize')
-						[[Categories]]
-					#elseif ($opentabactions=='map')
-						[[Map]]
-					#elseif ($opentabactions=='attachments')
-						[[Attachments]]
 					#else
-						[[More]]
+					<a class="dropdown-item updatebasketmediaviewer expandmenu"  targetdiv="mediaviewerbasket" data-alerttxt="[[Added To Basket]]" 
+						href="$siteroot$componenthome/basket/mediaviewertoggleitem.html?assetid=$asset.id">
+						<span class="bi bi-cart-fill"> </span> [[Add To Order]]
+					</a>
 					#end
-					</span>
-				</a>
-				<ul class="dropdown-menu">
-					#if(!$ismulti && $canviewmap)
-					<li>
-						<a class="dropdown-item assettab #if($opentabactions=='map') dropdown-current #end" 
-							data-link="$siteroot$componenthome/mediaviewer/fullscreen/tabs/viewactions.html?action=map" title="[[Map]]"
-							data-assettab="viewactions"
-							data-assettabactions="map"
-							data-assettabname="[[Map]]">[[Map]]</a>
-					</li>
-					#end
-
-					#if( !$ismulti && $canviewattachments )
-					<li>
-						<a class="dropdown-item assettab #if($opentabactions=='attachments') dropdown-current #end" 
-							data-link="$siteroot$componenthome/mediaviewer/fullscreen/tabs/viewactions.html?action=attachments" title="[[Attachments]]"
-							data-assettab="viewactions"
-							data-assettabactions="attachments"
-							data-assettabname="[[Attachments]]">
-							[[Attachments]] 
-						</a>
-					</li>
-					#end
-
-					#if ( $cancheckout )
-					<li id="mediaviewerbasket">
-						#if($orderManager.isAssetInOrder($catalogid, $order, $asset.id) )
-							<a class="dropdown-item updatebasketmediaviewer" data-action="remove" data-alerttxt="[[Removed From Basket]]" targetdiv="mediaviewerbasket" href="$siteroot$componenthome/basket/mediaviewertoggleitem.html?assetid=$asset.id">[[Remove From Cart]]</a>
-						#else
-							<a class="dropdown-item updatebasketmediaviewer" targetdiv="mediaviewerbasket" data-alerttxt="[[Added To Basket]]" href="$siteroot$componenthome/basket/mediaviewertoggleitem.html?assetid=$asset.id">[[Add To Cart]]</a>
-						#end
-					</li>
-					#end
-
-					#if( $candeleteasset )
-					<li>
-						#if ( $ismulti )
-							#if($canmultidelete)  
-							<a class="dropdown-item emdialog" href="$siteroot$componenthome/mediaviewer/fullscreen/delete/index.html?collectionid=$!collectionid&hitssessionid=$!hitssessionid">
-								[[Delete Selected Assets]]
-							</a>
-							#end 
-						#else
-							<a class="dropdown-item emdialog" 
-								data-maxwidth="600"
-								href="$siteroot$componenthome/mediaviewer/fullscreen/delete/index.html?assetid=$asset.id&collectionid=$!collectionid&hitssessionid=$!hitssessionidOriginal&hideOverlay=true">
-								[[Delete Asset]]
-							</a>
-						#end
-					</li>
-					#end
-
-					#if( $canmultiedit )
-						#if($hits.getSelectedHits() && $hits.getSelectedHits().size() > 1)
-						<li>
-							#set($text = "[[Multi Edit]] ($hits.getSelectionSize())")
-							<a id="multiedit-menu" class="" href="#" title="[[Edit selected records]]">$text</a>
-						</li>
-						#end
-					#end
-				</ul>
-			</li>
-			#end
+				</li>
 		#end
+
+		#if( $canaddtofavorites)
+		$context.putPageValue("assetid", $asset.id)
+		<li class="assettabnav">
+			<div id="tabassetfavorite-${asset.id}" class="media-info-icons">
+				$pages.include("$apphome/views/modules/asset/editor/favorite/index.html?targetdiv=tabassetfavorite", $context)
+			</div>
+		</li>
+		#end
+
+
+
+		<li class="assettabnav" style="border-right:none;padding:3px 0 0 20px;font-size:1.4em">#text($asset.sourcePath)</li>
+		
 	</ul>
 
 	<div class="assetcaretnav">
