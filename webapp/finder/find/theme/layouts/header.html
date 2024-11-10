@@ -29,7 +29,11 @@
 		#end
 		
 		#ifnull($logourl)
-			#set($themeid = $content.get("themeid") )
+			
+			#set($themeid = $userprofile.getValue("themeid") )
+			#ifnull($themeid)
+				#set($themeid = $content.get("themeid") )
+			#end	
 			
 			#set( $logourl = "$!{siteroot}$themeprefix/$themeid/logo.png")
 			
