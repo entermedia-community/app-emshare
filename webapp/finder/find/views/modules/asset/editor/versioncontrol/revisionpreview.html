@@ -5,7 +5,7 @@
 	#set( $selectedrevision = $mediaarchive.getAssetEditor().getVersion($asset,$version))	
 #end
 	<div class="versiontoolbar">
-		#ifnotnull( $selectedrevision.getBackUpPath())
+		#ifnotnull( $selectedrevision.getPreviewFileName() )		  
 		<a href="$apphome/views/modules/asset/editor/versioncontrol/replace.html?version=${selectedrevision.version}&assetid=$asset.getId()" 
 			class="btn focused-btn ajax"
 			data-targetdiv="asset-editor-container" 
@@ -13,20 +13,20 @@
 			<i class="bi bi-arrow-clockwise mr-1"></i> [[Restore this Version]]
 		</a>
 		#end			
-		<a href="#" 
-			class="btn btn-accent ajax ml-1"
-			data-targetdiv="asset-editor-container" 
-			title="[[Make a Copy]]">
-			<i class="bi bi-copy mr-1"></i> [[Make a Copy]]
-		</a>
+	##	<a href="#" 
+	##			class="btn btn-accent ajax ml-1"
+		##		data-targetdiv="asset-editor-container" 
+	##			title="[[Make a Copy]]">
+	##			<i class="bi bi-copy mr-1"></i> [[Make a Copy]]
+	##		</a>
 
 		  #set($originalpath = $mediaarchive.asLinkToOriginal($asset))
 		  #if( $selectedrevision.getBackUpPath() )
 			  #set ($downloadlink = "/${mediaarchive.getMediaDbId()}/services/module/asset/downloads/originals/${originalpath}?version=${selectedrevision.version}")
 		  #else
-			  #set ($downloadlink = "/${mediaarchive.getMediaDbId()}/services/module/asset/downloads/originals/${originalpath}")
+			  #set ($downloadlink = "/${mediaarchive.getMediaDbId()}/services/module/asset/downloads/originals/${originalpath}?_=$version")
 		  #end
-		  
+
 		  <a href="${downloadlink}" 
 			class="btn btn-secondary ml-1 #if($desktop) desktopdirectdownload #end"
 			title="[[Download Version]]">
@@ -38,6 +38,7 @@
 	  	#set ($previewlink ="/${mediaarchive.getMediaDbId()}/services/module/asset/downloads/revisionpreviews/$selectedrevision.getPreviewFileName()?assetid=$asset.id&version=${selectedrevision.version}")
 	#else
 		#set ($previewlink = $mediaarchive.asLinkToPreview($asset,"image3000x3000") )
+		#set ($previewlink = "$previewlink?_=$version") 
 	#end	
 	
 	<div class="versionpreviewcontent">
