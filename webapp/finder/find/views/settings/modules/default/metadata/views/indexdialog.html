@@ -12,9 +12,80 @@ $!query.addSortBy("ordering")
 
 #set( $viewsroot = $content.viewsroot )
 
+#set( $viewid = $context.getRequestParameter("viewid") )
+#set( $assettype = $context.getRequestParameter("assettype") )
 
-	<div id="table-container">
-		<div id="workarea">
-		$pages.include("./index.html")
+#if( !$assettype )
+	#set( $assettype = "default" )
+#end
+#set( $moduleid = $context.findValue("module") )
+#set( $viewpath = $context.getRequestParameter("viewpath") )
+
+#set( $viewsroot = $content.viewsroot )
+
+<div class="emsettingslist listsort pb-3" data-ajaxreloadtargets="resultsdiv" data-path="$siteroot$viewsroot/saveview.html?viewpath=$viewpath&searchtype=$moduleid&assettype=$assettype&viewid=$viewid">
+	#set($details = false)
+	#set($details = $searcher.getDetailsForView($viewpath, $user))
+	#foreach( $element in $details)
+		#set( $pid = "${element.searchType}.${element.id}")
+		<div id="$pid"> 
+			#if( $canviewsettings )
+			<a class="sortableitem ajax" 
+				data-targetdivinner="applicationmaincontent" 
+				data-oemaxlevel="5" 
+				href="$siteroot$apphome/views/settings/lists/datamanager/properties/edit.html?id=$pid&searchtype=$searchtype">
+				<span class="drag-and-drop"></span>
+				${element.searchType} / $element.getText($context)
+				<span class="type-of-field">#if( $element.getDataType() ) $element.getDataType() #else textbox #end</span>
+			</a>
+			#else	
+			<a href="#">
+				$element.getText($context)
+				<span class="type-of-field">#if( $element.getDataType() ) $element.getDataType() #else textbox #end</span>
+			</a>
+			#end	
+			<a class="ajax delete-row" data-targetdivinner="vieweditorarea" href="$siteroot$viewsroot/removefromview.html?searchtype=$moduleid&toremove=$pid&assettype=$assettype&viewid=$viewid&viewpath=$viewpath&oemaxlevel=1" data-ajaxreloadtargets="resultsdiv">
+				<i class="fas fa-times"></i>
+			</a>
 		</div>
-	</div>
+	#end	
+</div>
+
+<div class="emsettingslistd border-top pt-3" viewid="$viewid" catalogid="$catalogid" searchtype="$moduleid" assettype="$assettype" viewpath="$viewpath" path="$siteroot$viewsroot/movefields.html">
+	#if( $viewid )
+		#set( $view = $searcherManager.getData("$catalogid", "view", $viewid) )
+		#if( $view.rendertable)
+			#set($searchtype = $view.rendertable)
+		#else
+			#set($searchtype = $moduleid)
+		#end
+		<form name="addtoview" class="ajaxform d-flex flex-grow-1 flex-column mr-2" data-targetdiv="vieweditorarea" id="addtoview" action="$siteroot$viewsroot/addtoview.html" data-ajaxreloadtargets="resultsdiv">
+			<input type="hidden" name="catalogid" value="$!catalogid"/>
+			<input type="hidden" name="searchtype" value="$moduleid"/>
+			<input type="hidden" name="assettype" value="$assettype"/>
+			<input type="hidden" name="oemaxlevel" value="1"/>
+			<input type="hidden" name="viewid" value="$viewid"/>
+			<input type="hidden" name="viewpath" value="$viewpath"/>
+			#if( $view.rendertable)
+				#set($searcher = $searcherManager.getSearcher($catalogid, $view.rendertable))
+			#else
+				#set($searcher = $searcherManager.getSearcher($catalogid, $moduleid))
+			#end	
+			<input id="tableid" name="tableid" type="hidden" value="$moduleid">
+			<div class="d-flex justify-content-between align-items-center mb-2">
+				<label class="fw-bold text-muted m-0">[[Add new column to ]] #text($module) [[table]]</label>
+				##if(admin)
+				<a href="#" class="text-primary">
+					<div class="bi bi-gear mr-1 ns"></div>
+					Admin settings
+				</a>
+				##end
+			</div>
+			<select id="fieldnames" name="newone" class="form-control selectsubmitform">
+				#foreach( $detail in $searcher.getUserPropertyDetails() )
+					<option value="$detail.id">$detail.getText($context)</option>
+				#end
+			</select>
+		</form> 
+	#end
+</div>
