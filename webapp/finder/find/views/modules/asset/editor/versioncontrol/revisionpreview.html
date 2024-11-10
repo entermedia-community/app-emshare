@@ -1,7 +1,10 @@
 <div id="versionpreview">
 
+#set($version = $context.getRequestParameter("version"))
+#set( $selectedrevision = $mediaarchive.getAssetEditor().getVersion($asset,$version))	
+
 	<div class="versiontoolbar">
-		#ifnotnull( $selectedrevision)
+		#ifnotnull( $selectedrevision.getBackUpPath())
 		<a href="$apphome/views/modules/asset/editor/versioncontrol/replace.html?version=${selectedrevision.version}&assetid=$asset.getId()" 
 			class="btn focused-btn ajax"
 			data-targetdiv="asset-editor-container" 
@@ -17,7 +20,7 @@
 		</a>
 
 		  #set($originalpath = $mediaarchive.asLinkToOriginal($asset))
-		  #if( $selectedrevision )
+		  #if( $selectedrevision.getBackUpPath() )
 			  #set ($downloadlink = "/${mediaarchive.getMediaDbId()}/services/module/asset/downloads/originals/${originalpath}?version=${selectedrevision.version}")
 		  #else
 			  #set ($downloadlink = "/${mediaarchive.getMediaDbId()}/services/module/asset/downloads/originals/${originalpath}")
@@ -31,8 +34,8 @@
 	</div>
 
 	#if( $selectedrevision)
-		#if($selectedrevision.getPreviewImage() )
-		  #set ($previewlink ="/${mediaarchive.getMediaDbId()}/services/module/asset/downloads/revisionpreviews/$selectedrevision.getPreviewImage()?assetid=$asset.id&version=${selectedrevision.version}")
+		#if($selectedrevision.getPreviewFileName() )
+		  #set ($previewlink ="/${mediaarchive.getMediaDbId()}/services/module/asset/downloads/revisionpreviews/$selectedrevision.getPreviewFileName()?assetid=$asset.id&version=${selectedrevision.version}")
 		#else		
   			#set ($previewlink = false)
 		#end
