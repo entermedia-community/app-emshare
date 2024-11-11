@@ -213,16 +213,17 @@ $("document").ready(function () {
 
 		var imgInstance, selectionRect, cropRect;
 
-		var img = new Image();
-		img.onload = function () {
-			console.log(img.width, img.height);
-			var hRatio = (editorWidth - 16) / img.width;
-			var vRatio = (editorHeight - 16) / img.height;
+		var imgLoading = true;
+		var primaryImg = new Image();
+		primaryImg.onload = function () {
+			imgLoading = false;
+			var hRatio = (editorWidth - 16) / primaryImg.width;
+			var vRatio = (editorHeight - 16) / primaryImg.height;
 			var ratio = Math.min(hRatio, vRatio);
 			if (ratio > 1) ratio = 1;
 
-			var renderWidth = Math.floor(img.width * ratio);
-			var renderHeight = Math.round(img.height * ratio);
+			var renderWidth = Math.floor(primaryImg.width * ratio);
+			var renderHeight = Math.round(primaryImg.height * ratio);
 			var primaryOffsetLeft = 0; // Math.round((editorWidth - renderWidth) / 2);
 			var primaryOffsetTop = 0; // Math.round((editorHeight - renderHeight) / 2);
 
@@ -239,8 +240,8 @@ $("document").ready(function () {
 			selectionRect = new fabric.Rect({
 				left: primaryOffsetLeft,
 				top: primaryOffsetTop,
-				width: img.naturalWidth,
-				height: img.naturalHeight,
+				width: primaryImg.naturalWidth,
+				height: primaryImg.naturalHeight,
 				fill: "rgba(255,255,255,0.35)",
 				transparentCorners: false,
 				stroke: "black",
@@ -264,7 +265,7 @@ $("document").ready(function () {
 			// selectionRect.setControlVisible("deleteControl", false);
 			// selectionRect.setControlVisible("clone", false);
 
-			imgInstance = new fabric.Image(img, {
+			imgInstance = new fabric.Image(primaryImg, {
 				left: primaryOffsetLeft,
 				top: primaryOffsetTop,
 				selectable: false,
@@ -288,16 +289,20 @@ $("document").ready(function () {
 			fabricFilters.forEach(function (_, i) {
 				imgInstance.filters.push(false);
 			});
+		};
 
+		primaryImg.src = imgSrc;
+
+		function generateFilterPreview() {
 			$("#preDefFilters a").each(function () {
+				if ($(this).is(":visible")) return;
 				var filter = $(this).data("action");
 				var fpCanvas = new fabric.StaticCanvas("fpCanvas");
 				fpCanvas.width = 100;
 				fpCanvas.height = 100;
-				console.log(fabric.filters);
 				var fpFilter = new fabric.filters[filter]();
-				var fpImgInstance = new fabric.Image(img, { left: 0, top: 0 });
-				var fpRatio = img.width / img.height;
+				var fpImgInstance = new fabric.Image(primaryImg, { left: 0, top: 0 });
+				var fpRatio = primaryImg.width / primaryImg.height;
 				var fpW, fpH;
 				if (fpRatio > 1) {
 					fpH = 100;
@@ -314,12 +319,46 @@ $("document").ready(function () {
 				fpCanvas.renderAll();
 				$(this).find("img").attr("src", fpCanvas.toDataURL());
 				fpCanvas.dispose();
-				$(this).show();
+				$(this).addClass("show");
 			});
-		};
-		img.src = imgSrc;
+		}
 
-		// var imgElement = document.getElementById("editingCandidate");
+		$(".editorarea a").click(function (e) {
+			e.preventDefault();
+			if (imgLoading) return;
+			$(".panel").each(function () {
+				$(this).removeClass("active");
+			});
+			var action = $(this).data("action");
+			var panel = "." + action + "-editor";
+			$(panel).css("top", $(this).offset().top);
+			$(panel).toggleClass("active");
+			if (action === "crop") {
+				selectionRect.visible = true;
+				canvas.setActiveObject(selectionRect);
+				canvas.renderAll();
+			} else if (
+				["flipX", "flipY", "rotateLeft", "rotateRight"].includes(action)
+			) {
+				selectionRect.visible = false;
+			} else {
+				selectionRect.visible = false;
+				canvas.discardActiveObject();
+				canvas.renderAll();
+			}
+			if (action === "filter") {
+				setTimeout(function () {
+					generateFilterPreview();
+				}, 250);
+			}
+		});
+
+		$(".x-close").click(function () {
+			$(this).parent().removeClass("active");
+			selectionRect.visible = false;
+			canvas.discardActiveObject();
+			canvas.renderAll();
+		});
 
 		$("#preDefFilters a").click(function (e) {
 			e.preventDefault();
@@ -432,37 +471,6 @@ $("document").ready(function () {
 				}
 			}
 
-			canvas.renderAll();
-		});
-
-		$(".editorarea a").click(function (e) {
-			e.preventDefault();
-			$(".panel").each(function () {
-				$(this).removeClass("active");
-			});
-			var action = $(this).data("action");
-			var panel = "." + action + "-editor";
-			$(panel).css("top", $(this).offset().top);
-			$(panel).toggleClass("active");
-			if (action === "crop") {
-				selectionRect.visible = true;
-				canvas.setActiveObject(selectionRect);
-				canvas.renderAll();
-			} else if (
-				["flipX", "flipY", "rotateLeft", "rotateRight"].includes(action)
-			) {
-				selectionRect.visible = false;
-			} else {
-				selectionRect.visible = false;
-				canvas.discardActiveObject();
-				canvas.renderAll();
-			}
-		});
-
-		$(".x-close").click(function () {
-			$(this).parent().removeClass("active");
-			selectionRect.visible = false;
-			canvas.discardActiveObject();
 			canvas.renderAll();
 		});
 
@@ -856,7 +864,6 @@ $("document").ready(function () {
 					}
 				}
 			}
-			console.log(newWidth, newHeight, imgInstance.scaleX);
 			selectionRect.set("width", newWidth);
 			selectionRect.set("height", newHeight);
 			selectionRect.set("left", imgInstance.left);
