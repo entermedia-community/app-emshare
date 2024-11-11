@@ -46,27 +46,58 @@ data-url="$componenthome/gridsample/preview/tabpublishing_gallery.html"
 
 		<div class="#if($publishing.enabled!="true")disabled-mask#end">
 
-			
-			<div class="form-group mb-1">
-				<input type="hidden" value="lightboxid" name="field" />
-				<label class="form-select-label mr-1" for="wgSortLabel">[[File Source]]</label>
-				
-				#ifnull($lightboxid)
-					#set($lightboxid = $publishing.lightboxid)
-				#end
-				#set($boxes =  $mediaarchive.getBean("entityManager").loadLightBoxesForModule($module, $entity, $context.getUser()))
-				<select class="form-control form-control-sm form-select form-select-sm wg-autosave" id="wgSortLabel" name="lightboxid.value">
-					<option value="">[[Unsorted]]</option>
-					#foreach( $box in $boxes)
-						
+			<div class="d-flex">
+				<div class="form-group mb-1">
+					<input type="hidden" value="lightboxid" name="field" />
+					<label class="form-select-label	" for="wgSortLabel">[[File Source]]</label><br>
+					
+					#ifnull($lightboxid)
+						#set($lightboxid = $publishing.lightboxid)
+					#end
+					#set($boxes =  $mediaarchive.getBean("entityManager").loadLightBoxesForModule($module, $entity, $context.getUser()))
+					<select class="form-control form-control-sm form-select form-select-sm wg-autosave" id="wgSortLabel" name="lightboxid.value">
+						<option value="">[[Unsorted]]</option>
+						#foreach( $box in $boxes)
 							<option value="${box.id}" 
 									#if($lightboxid == $box.id)) 
 										selected="selected" 
 									#end>#text($box)</option>
+							#end
+					</select>
+				</div>
+				
+				<div class="form-group mb-1">
+					<input type="hidden" value="sortby" name="field" />
+					<label class="form-select-label	" for="wgSortLabel">[[Sort By]]</label><br>
+					#set($publishingSortby = $publishing.sortby)
+					#ifnull($publishingSortby)
+						#set($publishingSortby = "ordering")
+					#end
+					
+					#set ($alldetails = $mediaarchive.getAssetSearcher().getUserPropertyDetails() )
+					<select data-sortup="$hits.searchQuery.isSortUp()" 
+							class="form-control form-control-sm form-select form-select-sm select2  wg-autosave" 
+							name="sortby.value" 
+							id="$!{moduleid}dialogsortby" 
+							data-allowclear="false">
+						#foreach( $detail in $alldetails)
+							#set($value = "${detail.id}")
+							
+							<option data-detailid="${detail.id}" 
+									value="$value" 
+									#if($publishingSortby== "${detail.id}") 
+										selected="selected" 
+									#end>$detail.getText($context)</option>
+							<option data-detailid="${detail.id}" 
+									value="${value}Down" 
+									#if($publishingSortby== "${detail.id}Down")
+										selected="selected" 
+									#end>$detail.getText($context) ([[Desc]])</option>
 						#end
-				</select>
+					</select>
+				</div>
 			</div>
-	
+	 
 			#set($containerwidth = 1000)
 			#if($publishing.containerwidth > 0)
 				#set($containerwidth = $publishing.containerwidth)
@@ -100,7 +131,7 @@ data-url="$componenthome/gridsample/preview/tabpublishing_gallery.html"
 				#end
 			#end
 			
-			<div class="d-flex align-items-center">
+			<div class="d-flex align-items-center pt-2">
 				<button type="submit" class="btn btn-brand btn-savepublishing rounded" style="padding-top: 6px;">
 					<i class="bi bi-save ns mr-1"></i> [[Update]]
 				</button>
