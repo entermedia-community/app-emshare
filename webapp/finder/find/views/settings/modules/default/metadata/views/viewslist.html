@@ -26,7 +26,7 @@ $!query.addSortBy("ordering")
       
     #foreach( $target in $views)
 	    #set($sortid = $target.id) ##.replaceAll("_", "||"))
-        <li id="$sortid" data-stuff="hey" data-ordering="${target.ordering}" class="#if($viewid == $target.id) current #end" byassettype="$!target.byassettype">
+        <li id="$sortid" data-ordering="${target.ordering}" class="#if($viewid == $target.id) current #end" byassettype="$!target.byassettype">
         	#if( ($target.byassettype && $target.byassettype == "true") )
             	#set( $viewpath = "${moduleid}/assettype/${assettype}/$target.id")
             #else
@@ -35,10 +35,13 @@ $!query.addSortBy("ordering")
             <a class="sortableitem ajax" 
             	data-targetdiv="settingsmaincontent"
             	data-oemaxlevel="2"
+            	style="max-width: 160px;"
             	href="$siteroot$viewsroot/index.html?viewid=$target.id&viewpath=$viewpath&assettype=$!assettype"
             	title="Id: $target.id">
-            <span class="drag-and-drop"></span>$context.getText($target.toString())</a>
-            <a class="ajax delete-row" targetdiv="viewlist" href="./deleteview.html?searchtype=${moduleid}&id=${target.id}&viewpath=$viewpath&assettype=$!assettype">
+            <span class="drag-and-drop"></span>$context.getText($target.toString())
+            </a>
+            
+            <a class="ajax delete-row" data-targetdiv="viewlist" href="$siteroot$viewsroot/deleteview.html?searchtype=${moduleid}&id=${target.id}&viewpath=$viewpath&assettype=$!assettype">
 			<i class="fas fa-times"></i></a>
         </li>
     
