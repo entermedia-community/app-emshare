@@ -20,7 +20,7 @@
 <div id="viewpicker">
 <div class="emsettingslist  pb-3" >
 	#set($details = false)
-	#set($details = $searcher.getDetailsForView($viewpath, $user))
+	#set($details = $searcher.getDetailsForView($viewpath, $userprofile))
 
 <ul class="emsettingslist listsort" data-ajaxreloadtargets="resultsdiv"   data-path="$siteroot$viewsroot/dialog/saveview.html?viewpath=$viewpath&searchtype=$moduleid&assettype=$assettype&viewid=$viewid">
 
@@ -33,7 +33,8 @@
 				$detail.getText($context) 
 				<span class="type-of-field">#if( $detail.getViewType() ) $mediaarchive.getCachedData("datarendertype" , $detail.getViewType() ) #else Text #end</span>
 			</div>
-			<a class="ajax delete-row" data-targetdivinner="viewpicker" href="$siteroot$viewsroot/dialog/removefromview.html?searchtype=$moduleid&toremove=$pid&assettype=$assettype&viewid=$viewid&viewpath=$viewpath&oemaxlevel=1" data-ajaxreloadtargets="resultsdiv">
+			<a class="ajax delete-row" data-targetdivinner="viewpicker"
+			 href="$siteroot$viewsroot/dialog/removefromview.html?searchtype=$moduleid&toremove=$pid&assettype=$assettype&viewid=$viewid&viewpath=$viewpath&oemaxlevel=1" data-ajaxreloadtargets="resultsdiv">
 				<i class="fas fa-times"></i>
 			</a>
 		</li>
@@ -41,7 +42,7 @@
 	</ul>	
 </div>
 
-<div class="emsettingslistd border-top pt-3" viewid="$viewid" catalogid="$catalogid" searchtype="$moduleid" assettype="$assettype" viewpath="$viewpath" path="$siteroot$viewsroot/movefields.html">
+<div class="emsettingslistd border-top pt-3" >
 	#if( $viewid )
 		#set( $view = $searcherManager.getData("$catalogid", "view", $viewid) )
 		#if( $view.rendertable)
@@ -62,24 +63,27 @@
 				#set($searcher = $searcherManager.getSearcher($catalogid, $moduleid))
 			#end	
 			<input id="tableid" name="tableid" type="hidden" value="$moduleid">
+
 			<div class="d-flex justify-content-between align-items-center mb-2">
-				<label class="fw-bold text-muted m-0">[[Add new column to ]] #text($module) [[table]]</label>
-				##if(admin)
-				<a href="#" class="text-primary">
-					<div class="bi bi-gear mr-1 ns"></div>
-					Admin settings
-				</a>
-				##end
-			</div>
-			
+
+				#if($canviewsettings)
+					<div>
+					<input name="saveforall" type="checkbox" value="true" checked /> Apply to all users
+					</div>
+				#else
+					<input name="saveforall" value="false" type="hidden" />
+				#end
+
 			<select id="fieldnames" name="newone" class="form-control selectsubmitform">
-				<option value=""></option>
+				 	<option value="">[[Add another field]]</option>
 				#foreach( $detail in $searcher.getUserPropertyDetails() )
 					#if( !$ids.contains($detail.getId()))
 					<option value="$detail.id">$detail.getText($context)</option>
 					#end
 				#end
 			</select>
+			</div>
+			
 		</form> 
 	#end
 </div>
