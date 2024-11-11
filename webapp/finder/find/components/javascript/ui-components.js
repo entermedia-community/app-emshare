@@ -2760,12 +2760,22 @@ uiload = function () {
 		});
 	});
 	
-	lQuery(".switchtheme").livequery("click", function () {
+	lQuery("a.changeuserprofile").livequery("click", function () {
 		var link = $(this);
-		var themeid = link.data("themeid");
-		saveProfileProperty("themeid", themeid, function () {
-			
-		});
+		var propertyname = link.data("propertyname");
+		var newvalue = link.data(propertyname);
+		saveProfileProperty(propertyname, newvalue, function () {});
+	});
+	
+	lQuery("input.changeuserprofile").livequery("change", function () {
+		var input = $(this);
+		var propertyname = input.data("propertyname");
+		var checked = input.is(":checked");
+		var newvalue = null;
+		if (checked) {
+			newvalue = input.val();
+		}
+		saveProfileProperty(propertyname, newvalue, function () {});
 	});
 
 	lQuery(".switchmainsearch").livequery("click", function () {
