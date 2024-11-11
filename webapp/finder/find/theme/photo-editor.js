@@ -183,7 +183,10 @@ $("document").ready(function () {
 		}
 		const controls = fabric.controlsUtils.createObjectDefaultControls();
 		console.log({ controls });
-		delete controls.md;
+		delete controls.mt;
+		delete controls.ml;
+		delete controls.mr;
+		delete controls.mb;
 		fabric.InteractiveFabricObject.ownDefaults.controls = {
 			...controls,
 			deleteControl: getDeleteControl(),
@@ -257,7 +260,7 @@ $("document").ready(function () {
 			selectionRect.scaleToWidth(renderWidth);
 			selectionRect.scaleToHeight(renderHeight);
 
-			// selectionRect.setControlVisible("mtr", false);
+			selectionRect.setControlVisible("mtr", false);
 			// selectionRect.setControlVisible("mt", false);
 			// selectionRect.setControlVisible("mb", false);
 			// selectionRect.setControlVisible("ml", false);
@@ -449,10 +452,10 @@ $("document").ready(function () {
 				activeObject = imgInstance;
 			}
 			if (action === "flipX") {
-				activeObject.flipX = !activeObject.flipX;
+				activeObject.set("flipX", !activeObject.flipX);
 			}
 			if (action === "flipY") {
-				activeObject.flipY = !activeObject.flipY;
+				activeObject.set("flipY", !activeObject.flipY);
 			}
 			var angle = activeObject.angle % 360;
 			if (action.startsWith("rotate")) {
@@ -506,11 +509,10 @@ $("document").ready(function () {
 			$("button.text-align-btn").first().addClass("active");
 		}
 
-		$("#textField").keydown(function () {
+		$("#textField").keyup(function () {
 			var activeObject = canvas.getActiveObject();
-			if (activeObject && typeof activeObject.text !== "undefined") {
-				activeObject.text = $(this).val();
-				canvas.renderAll();
+			if (activeObject && activeObject.get("type") == "textbox") {
+				activeObject.set("text", $(this).val());
 			} else {
 				canvas.discardActiveObject();
 				var text = new fabric.Textbox($(this).val(), {
@@ -527,11 +529,12 @@ $("document").ready(function () {
 				$("#font-weight").val(`{"weight":400,"style":"normal"}`);
 				loadFontAndUse("Charmonman", { weight: 400, style: "normal" });
 			}
+			canvas.renderAll();
 		});
 		$("#font-color").minicolors({
 			change: function (hex) {
 				var activeObject = canvas.getActiveObject();
-				if (activeObject && typeof activeObject.text !== "undefined") {
+				if (activeObject && activeObject.get("type") == "textbox") {
 					activeObject.set("fill", hex);
 					canvas.renderAll();
 				}
@@ -540,7 +543,7 @@ $("document").ready(function () {
 
 		$("button.text-align-btn").click(function () {
 			var activeObject = canvas.getActiveObject();
-			if (activeObject && typeof activeObject.text !== "undefined") {
+			if (activeObject && activeObject.get("type") == "textbox") {
 				activeObject.set("textAlign", $(this).data("action"));
 				canvas.renderAll();
 			}
@@ -919,28 +922,82 @@ $("document").ready(function () {
 				return;
 			}
 		});
-		fontFamily.select2({
-			minimumResultsForSearch: Infinity,
-			templateResult: function (state) {
-				if (!state.id) {
-					return state.text;
-				}
-				var $state = $(
-					`<span style="font-family:${state.id};font-size:1.25em">${state.text}</span>`
-				);
-				return $state;
-			},
-			templateSelection: function (state) {
-				if (!state.id) {
-					return state.text;
-				}
-				var $state = $(
-					`<span style="font-family:${state.id};font-size:1.25em">${state.text}</span>`
-				);
-				return $state;
-			},
-			dropdownParent: fontFamily.parent(),
-		});
 	}
 	lQuery("#editingCandidate").livequery(initializeEditor);
+});
+
+var fonts = {
+	Lato: ["Bold", "Italic", "Regular"],
+	Arvo: ["Bold", "Italic", "Regular"],
+	Caveat: ["Bold", "Regular"],
+	Corinthia: ["Bold", "Regular"],
+	DancingScript: ["Bold", "Regular"],
+	KodeMono: ["Bold", "Regular"],
+	MadimiOne: ["Regular"],
+	MajorMonoDisplay: ["Regular"],
+	Montserrat: ["Bold", "Italic", "Regular"],
+	OpenSans: ["Bold", "Italic", "Regular"],
+	Oswald: ["Bold", "Regular"],
+	PixelifySans: ["Bold", "Regular"],
+	Poppins: ["Bold", "Italic", "Regular"],
+	PTSans: ["Bold", "Italic", "Regular"],
+	PTSerif: ["Bold", "Italic", "Regular"],
+	Roboto: ["Bold", "Italic", "Regular"],
+	Wallpoet: ["Regular"],
+};
+
+lQuery("select#font-family").livequery(function () {
+	var _this = $(this);
+	var options = _this.find("option");
+	if (options.length !== 0) return;
+
+	var themeprefix = siteroot + $("#application").data("themeprefix");
+
+	var promises = [];
+	var fontInstances = [];
+	Object.keys(fonts).forEach((font) => {
+		_this.append('<option value="' + font + '">' + font + "</option>");
+		var styles = fonts[font];
+		styles.forEach((style) => {
+			var url = "url(" + themeprefix + "/fonts/" + font + "-" + style + ".ttf)";
+			console.log(url);
+			var f = new FontFace(font, url, {
+				style: style === "Italic" ? "italic" : "normal",
+				weight: style === "Bold" ? "bold" : "normal",
+			});
+			fontInstances.push(f);
+			promises.push(function () {
+				return f.load();
+			});
+		});
+	});
+	Promise.all(promises).then(() => {
+		fontInstances.forEach((ins) => {
+			document.fonts.add(ins);
+		});
+		console.log("hello");
+	});
+
+	_this.select2({
+		minimumResultsForSearch: 10,
+		templateResult: function (state) {
+			if (!state.id) {
+				return state.text;
+			}
+			var $state = $(
+				`<span style="font-family:${state.id};font-size:1.25em">${state.text}</span>`
+			);
+			return $state;
+		},
+		templateSelection: function (state) {
+			if (!state.id) {
+				return state.text;
+			}
+			var $state = $(
+				`<span style="font-family:${state.id};font-size:1.25em">${state.text}</span>`
+			);
+			return $state;
+		},
+		dropdownParent: _this.parent(),
+	});
 });
