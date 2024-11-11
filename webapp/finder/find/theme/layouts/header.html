@@ -189,12 +189,15 @@
 					#end
 					<div class="dropdown dropleft">
 						<a class="dropdown-item dropdown-toggle" href="#" data-toggle="dropdown">
-							Theme: <strong>#text($theme)</strong>
+							[[Theme]]: <strong>#text($theme)</strong>
 						</a>
 						<div class="dropdown-menu">
-							#set( $themes = $mediaarchive.getList("theme") )
+							#set($themes = $mediaarchive.getList("theme") )
+							#set($currentthemeid = $userprofile.getValue("themeid") )
 							#foreach( $th in $themes)
-							<a class="dropdown-item" href="$home$apphome/views/settings/applicationsetup/theme/change.html?themeid=$th.id">#text($th)</a>
+							<a class="dropdown-item switchtheme" 
+								href="$home$apphome"
+								data-themeid="$th.id">#if($currentthemeid==$th.id)<i class="bi bi-check-circle-fill ns mr-1"></i>#end#text($th)</a>
 							#end
 						</div>
 					</div> 

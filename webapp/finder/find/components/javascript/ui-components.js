@@ -2759,6 +2759,14 @@ uiload = function () {
 			}
 		});
 	});
+	
+	lQuery(".switchtheme").livequery("click", function () {
+		var link = $(this);
+		var themeid = link.data("themeid");
+		saveProfileProperty("themeid", themeid, function () {
+			
+		});
+	});
 
 	lQuery(".switchmainsearch").livequery("click", function () {
 		var link = $(this);
