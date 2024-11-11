@@ -20,12 +20,34 @@
 <div id="viewpicker">
 <div class="emsettingslist  pb-3" >
 	#set($details = false)
-	#set($details = $searcher.getDetailsForView($viewpath, $userprofile))
+	#if($userprofile.isEnabled("view_saveforallenabled")) 
+		#set($details = $searcher.getDetailsForView($viewpath, $user))
+	#else
+		#set($details = $searcher.getDetailsForView($viewpath, $userprofile))
+	#end
+#if($canviewsettings)
+	<div class="pb-1">
+	<input class="changeuserprofile" 
+			name="saveforall"
+			id="saveforall"
+			data-propertyname="view_saveforallenabled" 
+			type="checkbox" 
+			value="true" #if($userprofile.isEnabled("view_saveforallenabled"))checked#end /> 
+	<label for="saveforall">[[Apply to all users]]</label>
+	</div>
+
+#end
 
 <ul class="emsettingslist listsort" data-ajaxreloadtargets="resultsdiv"   data-path="$siteroot$viewsroot/dialog/saveview.html?viewpath=$viewpath&searchtype=$moduleid&assettype=$assettype&viewid=$viewid">
 
 	#foreach( $detail in $details)
-		#set( $pid = "${detail.searchType}.${detail.id}")
+		#set( $pid = $detail.id)
+		#ifnotnull($detail.getSearchType())
+			#if($moduleid != $detail.getSearchType())
+				#set( $pid = "${detail.searchType}.${detail.id}")	
+			#end
+		#end
+		
 		#set( $null = $!ids.add($detail.id) )
 		<li id="$pid">  
 			<div class="sortableitem" style="cursor: hand;" >
@@ -34,7 +56,7 @@
 				<span class="type-of-field">#if( $detail.getViewType() ) $mediaarchive.getCachedData("datarendertype" , $detail.getViewType() ) #else Text #end</span>
 			</div>
 			<a class="ajax delete-row" data-targetdivinner="viewpicker"
-			 href="$siteroot$viewsroot/dialog/removefromview.html?searchtype=$moduleid&toremove=$pid&assettype=$assettype&viewid=$viewid&viewpath=$viewpath&oemaxlevel=1" data-ajaxreloadtargets="resultsdiv">
+			 href="$siteroot$viewsroot/dialog/removefromview.html?searchtype=$moduleid&detailid=$pid&assettype=$assettype&viewid=$viewid&viewpath=$viewpath&oemaxlevel=1" data-ajaxreloadtargets="resultsdiv">
 				<i class="fas fa-times"></i>
 			</a>
 		</li>
@@ -65,15 +87,6 @@
 			<input id="tableid" name="tableid" type="hidden" value="$moduleid">
 
 			<div class="d-flex justify-content-between align-items-center mb-2">
-
-				#if($canviewsettings)
-					<div>
-					<input name="saveforall" type="checkbox" value="true" checked /> Apply to all users
-					</div>
-				#else
-					<input name="saveforall" value="false" type="hidden" />
-				#end
-
 			<select id="fieldnames" name="newone" class="form-control selectsubmitform">
 				 	<option value="">[[Add another field]]</option>
 				#foreach( $detail in $searcher.getUserPropertyDetails() )
