@@ -5,9 +5,8 @@
 		
 		#set( $parent = $mediaarchive.getAsset($asset.parentid ))
 		#ifnotnull($parent)      
-			#set( $link = "$apphome/views/modules/asset/editor/relatedassets/relatedasset.html?childassetid=$parent.getId()&isoriginal=true")
-			
-			<a class="versionlistitem  ajax d-flex align-items-center selected activelistener" role="button" 
+			#set( $link = "$apphome/views/modules/asset/editor/relatedassets/relatedasset.html?childassetid=$parent.getId()")
+			<a class="versionlistitem  ajax d-flex align-items-center selectedX activelistener" role="button" 
 				href="#urlescape($link)"  data-oemaxlevel="1"  data-targetdiv="versionpreview">
 				<i class="bi bi-listitem bi-image mr-2"></i>
 				<div class="d-flex flex-column">
@@ -23,18 +22,33 @@
 						</div>
 				</div>
 			</a>	
-			
-			##$pages.include("/$apphome/views/modules/asset/editor/relatedassets/relatedasset.html",$context)
-		#end  
+		#end
+		
+		#ifnotnull($asset)
+			#set( $link = "$apphome/views/modules/asset/editor/relatedassets/relatedasset.html?childassetid=$asset.getId()&iscurrent=true")
+			<a class="versionlistitem  ajax d-flex align-items-center selected activelistener" role="button" 
+				href="#urlescape($link)"  data-oemaxlevel="1"  data-targetdiv="versionpreview">
+				<i class="bi bi-listitem bi-image mr-2"></i>
+				<div class="d-flex flex-column">
+					<div class="versionname">
+						[[Current]]
+					</div>
+					<div class="versionname">
+							$asset.name ##<a href="#" class="stackedplayer" data-assetid="$parent.getId()"><i class="bi bi-box-arrow-up-right"></i></a>
+					</div>
+					<div class="versiondate">
+							#set ( $dateString = $context.getDateTime( $asset.assetmodificationdate ) )
+							[[Modified]]: $dateString  
+						</div>
+				</div>
+			</a>	
+  		#end
 	
 		#set( $children = $mediaarchive.query("asset").exact("parentid",$asset.getId()).sort("name").search() )
 		$context.putPageValue("children",$children)
-		#ifnull($parent)
-			#set($selectfirst = true) 
-		#end
 		#foreach ($child in $children)
 				#set( $link = "$apphome/views/modules/asset/editor/relatedassets/relatedasset.html?childassetid=$child.getId()")
-				<a class="versionlistitem ajax d-flex align-items-center #if($selectfirst)selected#end activelistener" role="button"
+				<a class="versionlistitem ajax d-flex align-items-center activelistener" role="button"
 					 href="#urlescape($link)" data-oemaxlevel="1" data-targetdiv="versionpreview">
 					<i class="bi  bi-listitem  bi-image"></i>
 					<div class="d-flex flex-column">
@@ -46,21 +60,17 @@
 							[[Modified]]: $dateString  
 						</div>
 					</div>
-				</a>
-			#if($selectfirst)
-				#set($selectedid = $child.getId())
-				#set($selectfirst = false)
-			#end
-				
+				</a>			
 		#end	
 	</div>
 	<div id="versionpreview">
-	#ifnotnull($parent)      
-		$pages.include("$apphome/views/modules/asset/editor/relatedassets/relatedasset.html?childassetid=$parent.getId()",$context)
-	#end
-	#ifnull($parent)      
-		$pages.include("$apphome/views/modules/asset/editor/relatedassets/relatedasset.html?childassetid=$selectedid",$context)
-	#end
+	###ifnotnull($parent)      
+	##	$pages.include("$apphome/views/modules/asset/editor/relatedassets/relatedasset.html?childassetid=$parent.getId()",$context)
+	###end
+	      
+	##current
+	$pages.include("$apphome/views/modules/asset/editor/relatedassets/relatedasset.html?childassetid=$asset.getId()",$context)
+	
 	</div>
 </div>
 
