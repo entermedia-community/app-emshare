@@ -2241,7 +2241,7 @@ uiload = function () {
 	});
 
 	//Upload to Entity
-	lQuery(".pickerresults.entitydialog .resultsdiv .resultsdivdata").livequery(
+	lQuery(".pickerresults.pickandupload .resultsdiv .resultsdivdata").livequery(
 		"click",
 		function (event) {
 			var clicked = $(this);
