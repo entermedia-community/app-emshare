@@ -99,6 +99,9 @@
 	
 	
 	#if($dialogresults)
+	
+		#set($idprefix = "dialogsearch")
+		
 		###if( $hits.getSearchQuery().hasMainInput())
 		#if($moduleid=="asset")
 			#if($dialogresults)
@@ -132,8 +135,6 @@
 		###end
 	#end
 	
-	
-	
 		#if( $librarycol)
 			<input name="collectionid" type="hidden" value="$!librarycol.getId()">
 		#end
@@ -143,8 +144,9 @@
 
 		
 		#ifnull($idprefix)
-		$context.putPageValue("idprefix","search")
+			#set($idprefix = "search")
 		#end
+		$context.putPageValue("idprefix",$idprefix)
 		
 		##FILTERS
 		#foreach( $detail in $details)   
