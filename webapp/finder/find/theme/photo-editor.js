@@ -92,7 +92,7 @@ $("document").ready(function () {
 		});
 
 		document.addEventListener("keydown", function (e) {
-			if (e.code === "Numpad0" && e.ctrlKey) {
+			if (e.code === "Numpad0" && (e.ctrlKey || e.metaKey)) {
 				centerViewPort();
 			}
 		});
@@ -181,8 +181,7 @@ $("document").ready(function () {
 				cornerSize: 24,
 			});
 		}
-		const controls = fabric.controlsUtils.createObjectDefaultControls();
-		console.log({ controls });
+		var controls = fabric.controlsUtils.createObjectDefaultControls();
 		delete controls.mt;
 		delete controls.ml;
 		delete controls.mr;
@@ -214,87 +213,63 @@ $("document").ready(function () {
 			});
 		}
 
-		var imgInstance, selectionRect, cropRect;
-
+		var primaryImg, imgInstance, selectionRect, debugRect;
 		var imgLoading = true;
-		var primaryImg = new Image();
-		primaryImg.onload = function () {
-			imgLoading = false;
-			var hRatio = (editorWidth - 16) / primaryImg.width;
-			var vRatio = (editorHeight - 16) / primaryImg.height;
-			var ratio = Math.min(hRatio, vRatio);
-			if (ratio > 1) ratio = 1;
 
-			var renderWidth = Math.floor(primaryImg.width * ratio);
-			var renderHeight = Math.round(primaryImg.height * ratio);
-			var primaryOffsetLeft = 0; // Math.round((editorWidth - renderWidth) / 2);
-			var primaryOffsetTop = 0; // Math.round((editorHeight - renderHeight) / 2);
+		function loadPrimaryImage(src) {
+			imgLoading = true;
+			$("#preDefFilters a").removeClass("show");
+			primaryImg = new Image();
+			primaryImg.onload = function () {
+				imgLoading = false;
+				var hRatio = (editorWidth - 16) / primaryImg.width;
+				var vRatio = (editorHeight - 16) / primaryImg.height;
+				var ratio = Math.min(hRatio, vRatio);
+				if (ratio > 1) ratio = 1;
 
-			window.imageRenderWidth = renderWidth;
-			window.__imageRenderWidth = renderWidth;
-			window.imageRenderHeight = renderHeight;
-			window.__imageRenderHeight = renderHeight;
-			window.imageRenderLeft = primaryOffsetLeft;
-			window.__imageRenderLeft = primaryOffsetLeft;
-			window.imageRenderTop = primaryOffsetTop;
-			window.__imageRenderTop = primaryOffsetTop;
-			window.imageRenderAngle = 0;
+				var renderWidth = Math.floor(primaryImg.width * ratio);
+				var renderHeight = Math.round(primaryImg.height * ratio);
 
-			selectionRect = new fabric.Rect({
-				left: primaryOffsetLeft,
-				top: primaryOffsetTop,
-				width: primaryImg.naturalWidth,
-				height: primaryImg.naturalHeight,
-				fill: "rgba(255,255,255,0.35)",
-				transparentCorners: false,
-				stroke: "black",
-				strokeDashArray: [2, 5],
-				cornerColor: "white",
-				cornerSize: 10,
-				cornerStrokeColor: "black",
-				cornerStyle: "circle",
-				borderColor: "transparent",
-				visible: false,
-			});
+				window.imageRenderWidth = renderWidth;
+				window.__imageRenderWidth = renderWidth;
+				window.imageRenderHeight = renderHeight;
+				window.__imageRenderHeight = renderHeight;
+				window.imageRenderLeft = 0;
+				window.__imageRenderLeft = 0;
+				window.imageRenderTop = 0;
+				window.__imageRenderTop = 0;
+				window.imageRenderAngle = 0;
 
-			selectionRect.scaleToWidth(renderWidth);
-			selectionRect.scaleToHeight(renderHeight);
+				imgInstance = new fabric.Image(primaryImg, {
+					left: 0,
+					top: 0,
+					selectable: false,
+					evented: false,
+				});
+				imgInstance.scaleToWidth(renderWidth);
+				imgInstance.scaleToHeight(renderHeight);
 
-			selectionRect.setControlVisible("mtr", false);
-			// selectionRect.setControlVisible("mt", false);
-			// selectionRect.setControlVisible("mb", false);
-			// selectionRect.setControlVisible("ml", false);
-			// selectionRect.setControlVisible("mr", false);
-			// selectionRect.setControlVisible("deleteControl", false);
-			// selectionRect.setControlVisible("clone", false);
+				canvas.add(imgInstance);
+				canvas.setViewportTransform([1, 0, 0, 1, 8, 8]);
+				window.imageRenderWidth = imgInstance.getScaledWidth();
+				window.imageRenderHeight = imgInstance.getScaledHeight();
 
-			imgInstance = new fabric.Image(primaryImg, {
-				left: primaryOffsetLeft,
-				top: primaryOffsetTop,
-				selectable: false,
-				evented: false,
-			});
-			imgInstance.scaleToWidth(renderWidth);
-			imgInstance.scaleToHeight(renderHeight);
+				$("#editCandidateLoader").hide();
 
-			canvas.add(imgInstance);
-			// canvas.sendToBack(imgInstance);
-			canvas.add(selectionRect);
-			canvas.setViewportTransform([1, 0, 0, 1, 8, 8]);
-			window.imageRenderWidth = imgInstance.getScaledWidth();
-			window.imageRenderHeight = imgInstance.getScaledHeight();
+				centerViewPort();
 
-			$("#editCandidateLoader").hide();
+				imgInstance.filters = [];
+				fabricFilters.forEach(function (_, i) {
+					imgInstance.filters.push(false);
+				});
 
-			centerViewPort();
+				canvas.renderAll();
+			};
 
-			imgInstance.filters = [];
-			fabricFilters.forEach(function (_, i) {
-				imgInstance.filters.push(false);
-			});
-		};
+			primaryImg.src = src;
+		}
 
-		primaryImg.src = imgSrc;
+		loadPrimaryImage(imgSrc);
 
 		function generateFilterPreview() {
 			$("#preDefFilters a").each(function () {
@@ -337,15 +312,13 @@ $("document").ready(function () {
 			$(panel).css("top", $(this).offset().top);
 			$(panel).toggleClass("active");
 			if (action === "crop") {
-				selectionRect.visible = true;
-				canvas.setActiveObject(selectionRect);
-				canvas.renderAll();
+				createCropSelectionRect();
 			} else if (
 				["flipX", "flipY", "rotateLeft", "rotateRight"].includes(action)
 			) {
-				selectionRect.visible = false;
+				destroySelectionRect();
 			} else {
-				selectionRect.visible = false;
+				destroySelectionRect();
 				canvas.discardActiveObject();
 				canvas.renderAll();
 			}
@@ -358,7 +331,7 @@ $("document").ready(function () {
 
 		$(".x-close").click(function () {
 			$(this).parent().removeClass("active");
-			selectionRect.visible = false;
+			destroySelectionRect();
 			canvas.discardActiveObject();
 			canvas.renderAll();
 		});
@@ -370,7 +343,6 @@ $("document").ready(function () {
 			var isActive = $(this).hasClass("active");
 			$(this).toggleClass("active");
 			if (!isActive) {
-				console.log("applying ", filter);
 				var filterInstance = new fabric.filters[filter]();
 				imgInstance.filters[filterIdx] = filterInstance;
 			} else {
@@ -379,6 +351,51 @@ $("document").ready(function () {
 			imgInstance.applyFilters();
 			canvas.renderAll();
 		});
+
+		function createCropSelectionRect(freeTransform = false) {
+			if (selectionRect) {
+				destroySelectionRect();
+			}
+			selectionRect = new fabric.Rect({
+				left: window.imageRenderLeft,
+				top: window.imageRenderTop,
+				width: window.imageRenderWidth,
+				height: window.imageRenderHeight,
+				fill: "rgba(255,255,255,0.35)",
+				transparentCorners: false,
+				stroke: "black",
+				strokeDashArray: [2, 5],
+				cornerColor: "white",
+				cornerSize: 10,
+				cornerStrokeColor: "black",
+				cornerStyle: "circle",
+				borderColor: "transparent",
+			});
+			selectionRect.setControlVisible("mtr", false);
+			selectionRect.setControlVisible("deleteControl", false);
+			selectionRect.setControlVisible("clone", false);
+			if (freeTransform) {
+				var controls = fabric.controlsUtils.createObjectDefaultControls();
+				delete controls.mtr;
+				selectionRect.controls = controls;
+			}
+			canvas.add(selectionRect);
+			setTimeout(function () {
+				canvas.setActiveObject(selectionRect);
+				canvas.renderAll();
+			});
+
+			// selectionRect.scaleToWidth(renderWidth);
+			// selectionRect.scaleToHeight(renderHeight);
+		}
+
+		function destroySelectionRect() {
+			canvas.remove(selectionRect);
+			canvas.discardActiveObject();
+			canvas.renderAll();
+			selectionRect = null;
+		}
+
 		$("#resetCrop").click(function () {
 			window.imageRenderWidth = window.__imageRenderWidth;
 			window.imageRenderHeight = window.__imageRenderHeight;
@@ -386,70 +403,81 @@ $("document").ready(function () {
 			window.imageRenderTop = window.__imageRenderTop;
 			window.imageRenderAngle = 0;
 			imgInstance.clipPath = null;
-			selectionRect.visible = false;
+			destroySelectionRect();
 			canvas.setZoom(1);
 			centerViewPort();
 			canvas.discardActiveObject();
 			canvas.renderAll();
 			$(".crop-editor").removeClass("active");
 		});
-		function handleCrop(rotate = null) {
+
+		function handleCrop() {
+			if (!selectionRect) return;
+			// cdr(selectionRect);
 			var newBounds = selectionRect.getBoundingRect();
-			console.log(newBounds);
-			if (rotate) {
-				var w = newBounds.width;
-				newBounds.width = newBounds.height;
-				newBounds.height = w;
-			}
 			window.imageRenderWidth = newBounds.width;
 			window.imageRenderHeight = newBounds.height;
 			window.imageRenderLeft = newBounds.left;
 			window.imageRenderTop = newBounds.top;
-			window.imageRenderAngle = rotate;
 
-			cropRect = new fabric.Rect({
+			var clipPath = new fabric.Rect({
 				left: imageRenderLeft,
 				top: imageRenderTop,
 				width: imageRenderWidth,
 				height: imageRenderHeight,
 				absolutePositioned: true,
-				fill: "rgba(0,0,0,0.5)",
+				evented: false,
 			});
 
-			// cropRect.rotate(rotate ? rotate : 0);
-			// cropRect.setCoords();
-
-			canvas.add(cropRect);
-			canvas.renderAll();
-			var imgBounds = imgInstance.getBoundingRect();
-			console.log(imgBounds);
-			return;
-			imgInstance.clipPath = cropRect;
+			imgInstance.clipPath = clipPath;
 
 			selectionRect.visible = false;
 			canvas.setZoom(1);
+			getFinalImage("png", selectionRect);
 			canvas.setViewportTransform([
 				1,
 				0,
 				0,
 				1,
-				-imageRenderLeft + canvas.width / 2 - imageRenderWidth / 2,
-				-imageRenderTop + canvas.height / 2 - imageRenderHeight / 2,
+				-newBounds.left + canvas.width / 2 - newBounds.width / 2,
+				-newBounds.top + canvas.height / 2 - newBounds.height / 2,
 			]);
 			canvas.discardActiveObject();
 			canvas.renderAll();
 			$(".crop-editor").removeClass("active");
+			// loadPrimaryImage(getFinalImage("png", selectionRect));
+			// $("#editingCandidate").attr("src", getFinalImage());
 		}
 
 		$("#cropBtn").click(function () {
 			handleCrop();
 		});
 
+		function cdr(object) {
+			if (debugRect) {
+				canvas.remove(debugRect);
+			}
+			var bounds = object.getBoundingRect();
+			debugRect = new fabric.Rect({
+				...bounds,
+				stroke: "blue",
+				strokeWidth: 1,
+				fill: "rgba(0,0,255,0.1)",
+			});
+			canvas.add(debugRect);
+			canvas.renderAll();
+		}
+
 		$(".rotate-editor button").click(function () {
 			var action = $(this).data("action");
 			var activeObject = canvas.getActiveObject();
 			if (!activeObject) {
-				activeObject = imgInstance;
+				if (action.startsWith("rotate")) {
+					alert("Please select an object to rotate");
+					return;
+				} else {
+					activeObject = imgInstance;
+				}
 			}
 			if (action === "flipX") {
 				activeObject.set("flipX", !activeObject.flipX);
@@ -465,13 +493,8 @@ $("document").ready(function () {
 					angle += 90;
 				}
 				activeObject.rotate(angle);
-				activeObject.setCoords();
-				if (activeObject.get("type") === "image") {
-					selectionRect.visible = true;
-					selectionRect.rotate(angle);
-					selectionRect.setCoords();
-					handleCrop(angle);
-				}
+				// activeObject.setCoords();
+				// cdr(activeObject);
 			}
 
 			canvas.renderAll();
@@ -480,10 +503,13 @@ $("document").ready(function () {
 		canvas.on("selection:created", onObjectSelected);
 		canvas.on("selection:updated", onObjectSelected);
 		function onObjectSelected(obj) {
-			if (typeof obj.selected[0].text !== "undefined") {
+			if (
+				obj.selected.length > 0 &&
+				obj.selected[0].get("type") === "textbox"
+			) {
 				$("#textField").val(obj.selected[0].text);
 				$("#font-color").minicolors("value", obj.selected[0].fill);
-				fontFamily.val(obj.selected[0].fontFamily);
+				$("#font-family").val(obj.selected[0].fontFamily);
 				$("#font-weight").val(
 					JSON.stringify({
 						weight: obj.selected[0].fontWeight,
@@ -502,11 +528,6 @@ $("document").ready(function () {
 
 		function resetTextPanel() {
 			$("#textField").val("");
-			$("#font-color").minicolors("value", "#ffffff");
-			fontFamily.val("Roboto");
-			$("#font-weight").val("{weight:400,style:normal}");
-			$("button.text-align-btn").removeClass("active");
-			$("button.text-align-btn").first().addClass("active");
 		}
 
 		$("#textField").keyup(function () {
@@ -515,19 +536,20 @@ $("document").ready(function () {
 				activeObject.set("text", $(this).val());
 			} else {
 				canvas.discardActiveObject();
+				var styles = JSON.parse($("#font-weight").val());
 				var text = new fabric.Textbox($(this).val(), {
-					left: editorWidth / 2 - 100,
-					top: editorHeight / 2 - 100,
+					left: window.imageRenderWidth / 2 - 100,
+					top: window.imageRenderHeight / 2 - 100,
 					width: 250,
 					fontSize: 54,
 					fill: $("#font-color").minicolors("value"),
 					textAlign: "center",
+					fontFamily: $("#font-family").val(),
+					fontWeight: styles.weight,
+					fontStyle: styles.style,
 				});
 				canvas.add(text);
 				canvas.setActiveObject(text);
-				fontFamily.val("Roboto");
-				$("#font-weight").val(`{"weight":400,"style":"normal"}`);
-				loadFontAndUse("Charmonman", { weight: 400, style: "normal" });
 			}
 			canvas.renderAll();
 		});
@@ -551,42 +573,23 @@ $("document").ready(function () {
 			$(this).addClass("active");
 		});
 
-		var fontFamily = $("#font-family");
-		var fontWeight = $("#font-weight");
-
-		fontFamily.change(function () {
-			loadFontAndUse($(this).val(), JSON.parse(fontWeight.val()));
+		$("#font-family").change(function () {
+			updateFont();
 		});
-		fontWeight.change(function () {
-			var val = $(this).val();
-			loadFontAndUse(fontFamily.val(), JSON.parse(val));
+		$("#font-weight").change(function () {
+			updateFont();
 		});
 
-		function loadFontAndUse(font = "Roboto", option = null) {
-			if (!font) font = "Roboto";
-			if (!option) {
-				option = { weight: 400, style: "normal" };
+		function updateFont() {
+			var activeObject = canvas.getActiveObject();
+			if (activeObject && activeObject.get("type") === "textbox") {
+				var font = $("#font-family").val();
+				var style = JSON.parse($("#font-weight").val());
+				activeObject.set("fontFamily", font);
+				activeObject.set("fontWeight", style.weight);
+				activeObject.set("fontStyle", style.style);
+				canvas.renderAll();
 			}
-			var fob = new FontFaceObserver(font, option);
-
-			var ef = $("#toast");
-			ef.find("span").text("Loading font " + font);
-			ef.removeClass("hide").addClass("show");
-			fob
-				.load()
-				.then(function () {
-					var activeObject = canvas.getActiveObject();
-					if (activeObject && typeof activeObject.text !== "undefined") {
-						activeObject.set("fontFamily", font);
-						activeObject.set("fontWeight", option.weight);
-						activeObject.set("fontStyle", option.style || "normal");
-						canvas.renderAll();
-					}
-					ef.removeClass("show").addClass("hide");
-				})
-				.catch(function (e) {
-					ef.removeClass("show").addClass("hide");
-				});
 		}
 
 		$(".fltr input[type=range]").on("input", function () {
@@ -684,6 +687,30 @@ $("document").ready(function () {
 			$(this).parent().parent().removeClass("active");
 		});
 
+		function getFinalImage(format = "png", obj = null) {
+			var imgDim = obj
+				? obj.getBoundingRect()
+				: {
+						left: window.imageRenderLeft,
+						top: window.imageRenderTop,
+						width: window.imageRenderWidth,
+						height: window.imageRenderHeight,
+				  };
+			// if (imgInstance.clipPath) {
+			// 	imgDim = imgInstance.clipPath.getBoundingRect();
+			// }
+			var data = canvas.toDataURL({
+				format: format,
+				...imgDim,
+			});
+			var a = document.createElement("a");
+			a.href = data;
+			a.download = "download." + format;
+			a.click();
+			a.remove();
+			return data;
+		}
+
 		$("#imagesave").click(function (e) {
 			e.preventDefault();
 			var form = $("#saveform");
@@ -693,16 +720,7 @@ $("document").ready(function () {
 			var assetfileformat = $(form).data("assetfileformat").toLowerCase();
 			if (assetfileformat === "jpg") assetfileformat = "jpeg";
 			canvas.setViewportTransform([1, 0, 0, 1, 0, 0]);
-			formdata.append(
-				"image",
-				canvas.toDataURL({
-					format: "assetfileformat",
-					left: window.imageRenderLeft,
-					top: window.imageRenderTop,
-					width: window.imageRenderWidth,
-					height: window.imageRenderHeight,
-				})
-			);
+			formdata.append("image", getFinalImage(assetfileformat));
 			centerViewPort();
 
 			$.ajax({
@@ -714,7 +732,6 @@ $("document").ready(function () {
 				//Refresh imageeditor
 				success: function (data) {
 					$("#photo-editor-container").html(data);
-					//trigger toast
 				},
 			});
 		});
@@ -826,6 +843,7 @@ $("document").ready(function () {
 			a.download = filename + "." + ext;
 			a.click();
 			a.remove();
+			closeSaveAs();
 		});
 
 		$("#aspectRatio").change(function () {
@@ -833,16 +851,9 @@ $("document").ready(function () {
 			var newWidth = window.imageRenderWidth;
 			var newHeight = window.imageRenderHeight;
 			if (ratio == -1) {
-				selectionRect.setControlVisible("mt", true);
-				selectionRect.setControlVisible("mb", true);
-				selectionRect.setControlVisible("ml", true);
-				selectionRect.setControlVisible("mr", true);
+				createCropSelectionRect(true);
 			} else {
-				selectionRect.setControlVisible("mt", false);
-				selectionRect.setControlVisible("mb", false);
-				selectionRect.setControlVisible("ml", false);
-				selectionRect.setControlVisible("mr", false);
-
+				createCropSelectionRect();
 				var minDim = Math.min(imageRenderWidth, imageRenderHeight);
 				if (ratio != 0) {
 					if (ratio == 1) {
@@ -960,7 +971,6 @@ lQuery("select#font-family").livequery(function () {
 		var styles = fonts[font];
 		styles.forEach((style) => {
 			var url = "url(" + themeprefix + "/fonts/" + font + "-" + style + ".ttf)";
-			console.log(url);
 			var f = new FontFace(font, url, {
 				style: style === "Italic" ? "italic" : "normal",
 				weight: style === "Bold" ? "bold" : "normal",
@@ -975,9 +985,8 @@ lQuery("select#font-family").livequery(function () {
 		fontInstances.forEach((ins) => {
 			document.fonts.add(ins);
 		});
-		console.log("hello");
 	});
-
+	_this.val("Roboto").change();
 	_this.select2({
 		minimumResultsForSearch: 10,
 		templateResult: function (state) {
