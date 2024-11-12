@@ -2241,7 +2241,7 @@ uiload = function () {
 	});
 
 	//Upload to Entity
-	lQuery(".pickerresults.entitydialog .resultsdiv .resultsdivdata").livequery(
+	lQuery(".pickerresults.pickandupload .resultsdiv .resultsdivdata").livequery(
 		"click",
 		function (event) {
 			var clicked = $(this);
@@ -2757,6 +2757,26 @@ uiload = function () {
 				$("#descriptionvalue", form).val(terms);
 				form.trigger("submit");
 			}
+		});
+	});
+	
+	lQuery("a.changeuserprofile").livequery("click", function () {
+		var link = $(this);
+		var propertyname = link.data("propertyname");
+		var newvalue = link.data(propertyname);
+		saveProfileProperty(propertyname, newvalue, function () {});
+	});
+	
+	lQuery("input.changeuserprofile").livequery("change", function () {
+		var input = $(this);
+		var propertyname = input.data("propertyname");
+		var checked = input.is(":checked");
+		var newvalue = null;
+		if (checked) {
+			newvalue = input.val();
+		}
+		saveProfileProperty(propertyname, newvalue, function () {
+				$(window).trigger("checkautoreload", [input]);
 		});
 	});
 

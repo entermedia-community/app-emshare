@@ -12,7 +12,7 @@
 #set( $viewsroot = $content.viewsroot )
 
 
-<ul class="emsettingslist"  viewid="$viewid" catalogid="$catalogid" searchtype="$moduleid" assettype="$assettype" viewpath="$viewpath" path="$siteroot$viewsroot/movefields.html">
+<ul class="emsettingslist"  viewid="$viewid" catalogid="$catalogid" searchtype="$moduleid" assettype="$!assettype" viewpath="$viewpath" path="$siteroot$viewsroot/movefields.html">
 
 #if( $viewid )
 	#set( $view = $searcherManager.getData("$catalogid", "view", $viewid) )
@@ -198,6 +198,7 @@
             #set($searchtype = $moduleid)
         #end
         #if( $canviewsettings )
+        
         <div class="subheader-title">
 		<a class="btn btn-xs btn-primary ajax" data-targetdiv="applicationcontent" data-oemaxlevel="6" href="$siteroot$apphome/views/settings/lists/datamanager/properties/index.html?&searchtype=$searchtype" id="addnewfield">[[Edit Fields]]</a>	    
 		</div>
@@ -215,7 +216,7 @@
 				#set($searcher = $searcherManager.getSearcher($catalogid, $moduleid))
 			#end	
             <select id="fieldnames" 
-					name="newone"
+					name="detailid"
 					class="form-control form-control-sm2 float-right selectsubmitform" 
 					style="#if( $canviewsettings ) ; #else display:none;  #end" 
 					 >
@@ -256,11 +257,12 @@
 					#else	
 						<a href="#">$element.getText($context)<span class="type-of-field">#if( $element.getDataType() ) $element.getDataType() #else textbox #end<span></a>
 					#end	
-					<a class="ajax delete-row" data-targetdivinner="vieweditorarea" href="$siteroot$viewsroot/removefromview.html?searchtype=$moduleid&toremove=$pid&assettype=$assettype&viewid=$viewid&viewpath=$viewpath&oemaxlevel=1" data-ajaxreloadtargets="resultsdiv">
+					<a class="ajax delete-row" data-targetdivinner="vieweditorarea" href="$siteroot$viewsroot/removefromview.html?searchtype=$moduleid&detailid=$pid&assettype=$assettype&viewid=$viewid&viewpath=$viewpath&oemaxlevel=1" data-ajaxreloadtargets="resultsdiv">
 					<i class="fas fa-times"></i></a>
 				</li>
 			#end		
 		
 </ul>
 <div class="clearfix"></div>
+
 </div>

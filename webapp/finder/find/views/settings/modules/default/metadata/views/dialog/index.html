@@ -17,15 +17,38 @@
 #set( $viewpath = $context.getRequestParameter("viewpath") )
 #set( $ids = [])
 #set( $viewsroot = $content.viewsroot )
-<div id="viewpicker">
+<div id="viewpicker" class="viewpickereditor" data-viewpath="$viewpath" data-viewid="$viewid" data-oemaxlevel="1" data-url="$siteroot$viewsroot/dialog/index.html" >
 <div class="emsettingslist  pb-3" >
 	#set($details = false)
-	#set($details = $searcher.getDetailsForView($viewpath, $user))
+	#if($userprofile.isEnabled("view_saveforallenabled")) 
+		#set($details = $searcher.getDetailsForView($viewpath, $user))
+	#else
+		#set($details = $searcher.getDetailsForView($viewpath, $userprofile))
+	#end
+#if($canviewsettings)
+	<div class="pb-1" style="text-align:right;">
+	<input class="changeuserprofile" 
+			name="saveforall"
+			id="saveforall"
+			data-propertyname="view_saveforallenabled" 
+			type="checkbox" 
+			data-ajaxreloadtargets = "viewpickereditor" 
+			value="true" #if($userprofile.isEnabled("view_saveforallenabled"))checked#end /> 
+	<label for="saveforall">[[Edit For All Users]]</label>
+	</div>
 
-<ul class="emsettingslist listsort" data-ajaxreloadtargets="resultsdiv"   data-path="$siteroot$viewsroot/dialog/saveview.html?viewpath=$viewpath&searchtype=$moduleid&assettype=$assettype&viewid=$viewid">
+#end
+
+<ul class="emsettingslist listsort" data-ajaxreloadtargets="resultsdiv,fieldsParent"   data-path="$siteroot$viewsroot/dialog/saveview.html?viewpath=$viewpath&searchtype=$moduleid&assettype=$assettype&viewid=$viewid">
 
 	#foreach( $detail in $details)
-		#set( $pid = "${detail.searchType}.${detail.id}")
+		#set( $pid = $detail.id)
+		#ifnotnull($detail.getSearchType())
+			#if($moduleid != $detail.getSearchType())
+				#set( $pid = "${detail.searchType}.${detail.id}")	
+			#end
+		#end
+		
 		#set( $null = $!ids.add($detail.id) )
 		<li id="$pid">  
 			<div class="sortableitem" style="cursor: hand;" >
@@ -33,7 +56,8 @@
 				$detail.getText($context) 
 				<span class="type-of-field">#if( $detail.getViewType() ) $mediaarchive.getCachedData("datarendertype" , $detail.getViewType() ) #else Text #end</span>
 			</div>
-			<a class="ajax delete-row" data-targetdivinner="viewpicker" href="$siteroot$viewsroot/dialog/removefromview.html?searchtype=$moduleid&toremove=$pid&assettype=$assettype&viewid=$viewid&viewpath=$viewpath&oemaxlevel=1" data-ajaxreloadtargets="resultsdiv">
+			<a class="ajax delete-row" data-targetdivinner="viewpicker"
+			 href="$siteroot$viewsroot/dialog/removefromview.html?searchtype=$moduleid&detailid=$pid&assettype=$assettype&viewid=$viewid&viewpath=$viewpath&oemaxlevel=1" data-ajaxreloadtargets="resultsdiv,fieldsParent">
 				<i class="fas fa-times"></i>
 			</a>
 		</li>
@@ -41,7 +65,7 @@
 	</ul>	
 </div>
 
-<div class="emsettingslistd border-top pt-3" viewid="$viewid" catalogid="$catalogid" searchtype="$moduleid" assettype="$assettype" viewpath="$viewpath" path="$siteroot$viewsroot/movefields.html">
+<div class="emsettingslistd border-top pt-3" >
 	#if( $viewid )
 		#set( $view = $searcherManager.getData("$catalogid", "view", $viewid) )
 		#if( $view.rendertable)
@@ -49,10 +73,9 @@
 		#else
 			#set($searchtype = $moduleid)
 		#end
-		<form name="addtoview" class="ajaxform d-flex flex-grow-1 flex-column mr-2" data-targetdiv="viewpicker" id="addtoview" action="$siteroot$viewsroot/dialog/addtoview.html" data-ajaxreloadtargets="resultsdiv">
+		<form name="addtoview" class="ajaxform d-flex flex-grow-1 flex-column mr-2" data-targetdiv="viewpicker" id="addtoview" action="$siteroot$viewsroot/dialog/addtoview.html" data-ajaxreloadtargets="resultsdiv,fieldsParent">
 			<input type="hidden" name="catalogid" value="$!catalogid"/>
 			<input type="hidden" name="searchtype" value="$moduleid"/>
-			<input type="hidden" name="assettype" value="$assettype"/>
 			<input type="hidden" name="oemaxlevel" value="1"/>
 			<input type="hidden" name="viewid" value="$viewid"/>
 			<input type="hidden" name="viewpath" value="$viewpath"/>
@@ -62,24 +85,18 @@
 				#set($searcher = $searcherManager.getSearcher($catalogid, $moduleid))
 			#end	
 			<input id="tableid" name="tableid" type="hidden" value="$moduleid">
+
 			<div class="d-flex justify-content-between align-items-center mb-2">
-				<label class="fw-bold text-muted m-0">[[Add new column to ]] #text($module) [[table]]</label>
-				##if(admin)
-				<a href="#" class="text-primary">
-					<div class="bi bi-gear mr-1 ns"></div>
-					Admin settings
-				</a>
-				##end
-			</div>
-			
-			<select id="fieldnames" name="newone" class="form-control selectsubmitform">
-				<option value=""></option>
+			<select id="fieldnames" name="detailid" class="form-control selectsubmitform">
+				 	<option value="">[[Add another field]]</option>
 				#foreach( $detail in $searcher.getUserPropertyDetails() )
 					#if( !$ids.contains($detail.getId()))
 					<option value="$detail.id">$detail.getText($context)</option>
 					#end
 				#end
 			</select>
+			</div>
+			
 		</form> 
 	#end
 </div>
