@@ -17,7 +17,7 @@
 #set( $viewpath = $context.getRequestParameter("viewpath") )
 #set( $ids = [])
 #set( $viewsroot = $content.viewsroot )
-<div id="viewpicker">
+<div id="viewpicker" class="viewpickereditor" data-viewpath="$viewpath" data-viewid="$viewid" data-oemaxlevel="1" data-url="$siteroot$viewsroot/dialog/index.html" >
 <div class="emsettingslist  pb-3" >
 	#set($details = false)
 	#if($userprofile.isEnabled("view_saveforallenabled")) 
@@ -26,19 +26,20 @@
 		#set($details = $searcher.getDetailsForView($viewpath, $userprofile))
 	#end
 #if($canviewsettings)
-	<div class="pb-1">
+	<div class="pb-1" style="text-align:right;">
 	<input class="changeuserprofile" 
 			name="saveforall"
 			id="saveforall"
 			data-propertyname="view_saveforallenabled" 
 			type="checkbox" 
+			data-ajaxreloadtargets = "viewpickereditor" 
 			value="true" #if($userprofile.isEnabled("view_saveforallenabled"))checked#end /> 
-	<label for="saveforall">[[Apply to all users]]</label>
+	<label for="saveforall">[[Edit For All Users]]</label>
 	</div>
 
 #end
 
-<ul class="emsettingslist listsort" data-ajaxreloadtargets="resultsdiv"   data-path="$siteroot$viewsroot/dialog/saveview.html?viewpath=$viewpath&searchtype=$moduleid&assettype=$assettype&viewid=$viewid">
+<ul class="emsettingslist listsort" data-ajaxreloadtargets="resultsdiv,fieldsParent"   data-path="$siteroot$viewsroot/dialog/saveview.html?viewpath=$viewpath&searchtype=$moduleid&assettype=$assettype&viewid=$viewid">
 
 	#foreach( $detail in $details)
 		#set( $pid = $detail.id)
@@ -56,7 +57,7 @@
 				<span class="type-of-field">#if( $detail.getViewType() ) $mediaarchive.getCachedData("datarendertype" , $detail.getViewType() ) #else Text #end</span>
 			</div>
 			<a class="ajax delete-row" data-targetdivinner="viewpicker"
-			 href="$siteroot$viewsroot/dialog/removefromview.html?searchtype=$moduleid&detailid=$pid&assettype=$assettype&viewid=$viewid&viewpath=$viewpath&oemaxlevel=1" data-ajaxreloadtargets="resultsdiv">
+			 href="$siteroot$viewsroot/dialog/removefromview.html?searchtype=$moduleid&detailid=$pid&assettype=$assettype&viewid=$viewid&viewpath=$viewpath&oemaxlevel=1" data-ajaxreloadtargets="resultsdiv,fieldsParent">
 				<i class="fas fa-times"></i>
 			</a>
 		</li>
@@ -72,10 +73,9 @@
 		#else
 			#set($searchtype = $moduleid)
 		#end
-		<form name="addtoview" class="ajaxform d-flex flex-grow-1 flex-column mr-2" data-targetdiv="viewpicker" id="addtoview" action="$siteroot$viewsroot/dialog/addtoview.html" data-ajaxreloadtargets="resultsdiv">
+		<form name="addtoview" class="ajaxform d-flex flex-grow-1 flex-column mr-2" data-targetdiv="viewpicker" id="addtoview" action="$siteroot$viewsroot/dialog/addtoview.html" data-ajaxreloadtargets="resultsdiv,fieldsParent">
 			<input type="hidden" name="catalogid" value="$!catalogid"/>
 			<input type="hidden" name="searchtype" value="$moduleid"/>
-			<input type="hidden" name="assettype" value="$assettype"/>
 			<input type="hidden" name="oemaxlevel" value="1"/>
 			<input type="hidden" name="viewid" value="$viewid"/>
 			<input type="hidden" name="viewpath" value="$viewpath"/>
@@ -87,7 +87,7 @@
 			<input id="tableid" name="tableid" type="hidden" value="$moduleid">
 
 			<div class="d-flex justify-content-between align-items-center mb-2">
-			<select id="fieldnames" name="newone" class="form-control selectsubmitform">
+			<select id="fieldnames" name="detailid" class="form-control selectsubmitform">
 				 	<option value="">[[Add another field]]</option>
 				#foreach( $detail in $searcher.getUserPropertyDetails() )
 					#if( !$ids.contains($detail.getId()))

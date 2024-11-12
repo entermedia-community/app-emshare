@@ -2775,7 +2775,9 @@ uiload = function () {
 		if (checked) {
 			newvalue = input.val();
 		}
-		saveProfileProperty(propertyname, newvalue, function () {});
+		saveProfileProperty(propertyname, newvalue, function () {
+				$(window).trigger("checkautoreload", [input]);
+		});
 	});
 
 	lQuery(".switchmainsearch").livequery("click", function () {
