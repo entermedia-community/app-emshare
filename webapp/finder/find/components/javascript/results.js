@@ -658,6 +658,8 @@ jQuery(document).ready(function (url, params) {
 				videojs(this.id).dispose();
 			}
 		});
+		//Stop Audios
+		$.jPlayer.pause();
 	};
 	hideOverlayDiv = function (inOverlay) {
 		// debugger;
