@@ -1053,14 +1053,23 @@ jQuery(document).ready(function (url, params) {
 		isMouseDown = false;
 	});
 
+
+	lQuery(".stackedplayertable tr td").livequery("click", function (e) {
+		var clicked = $(this);
+		if (clicked.attr("noclick") == "true") {
+			e.stopPropagation();
+			return true;
+		}
+	});
+
 	// Click on asset
 	var selectStart = null;
 	// Table clicking
 	lQuery(".stackedplayertable tr").livequery("click", function (e) {
 		var clicked = $(this);
-		if (clicked.attr("noclick") == "true") {
+	/*	if (clicked.find("td:first").attr("noclick") == "true") {
 			return true;
-		}
+		}*/
 		var pickerresults = clicked.closest(".pickerresults");
 		if (clicked.hasClass("resultsdivdata") && pickerresults.length > 0) {
 			return;
@@ -1183,21 +1192,6 @@ jQuery(document).ready(function (url, params) {
 				emdialog(entity);
 			}
 		}
-		/*
-		if(entityid) {
-			var resultsdiv = $(".resultsdiv");
-			var moduleid = resultsdiv.data("moduleid");
-			var componenthome = resultsdiv.data("componenthome");
-			if(moduleid && componenthome) {
-				var url = componenthome + '/gridsample/preview/entity.html';
-				var entityc = $().add('<span class="showentity" />');
-				var entity = $(entityc[0]);
-				entity.data("emdialoglink", url);
-				entity.data("id", entityid);
-				emdialog(entity)
-			}
-		}
-		*/
 	};
 
 	// Selections
