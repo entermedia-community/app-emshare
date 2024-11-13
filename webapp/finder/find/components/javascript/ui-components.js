@@ -101,6 +101,9 @@ $(window).on("showToast", function (_, anchor) {
 lQuery(".toastClose").livequery("click", function () {
 	var toast = $(this).closest(".toastContainer");
 	toast.addClass("hide");
+	setTimeout(function () {
+		toast.remove();
+	}, 500);
 });
 
 function customToast(message, options = {}) {
@@ -121,6 +124,9 @@ function customToast(message, options = {}) {
 	if (autohide) {
 		setTimeout(function () {
 			toast.addClass("hide");
+			setTimeout(function () {
+				toast.remove();
+			}, 500);
 		}, autohideDelay);
 	}
 }
@@ -139,14 +145,11 @@ function destroyToast(toast, success = true) {
 	toast.find(".toastMessage").text(msg);
 	setTimeout(function () {
 		toast.addClass("hide");
+		setTimeout(function () {
+			toast.remove();
+		}, 500);
 	}, 2000);
 }
-
-lQuery(".toastContainer.hide").livequery(function () {
-	setTimeout(function () {
-		$(this).remove();
-	}, 500);
-});
 
 $(window).on("successToast", function (_, anchor) {
 	var uid = anchor.data("uid");
@@ -857,6 +860,7 @@ uiload = function () {
 		e.stopPropagation();
 
 		if ($(this).data("submitting")) {
+			console.log($(this).data("submitting"));
 			console.warn("Already submitting this form, skipping");
 			return;
 		}
@@ -961,7 +965,7 @@ uiload = function () {
 		$(window).trigger("showToast", [form]);
 		var toastUid = $(form).data("uid");
 
-		$(this).data("submitting", true);
+		form.data("submitting", true);
 
 		form.ajaxSubmit({
 			data: data,
@@ -1051,7 +1055,7 @@ uiload = function () {
 			complete: function () {
 				submitButton.removeAttr("disabled");
 				submitButton.find(".fa-spinner").remove();
-				$(this).data("submitting", false);
+				form.data("submitting", false);
 			},
 		});
 

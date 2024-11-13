@@ -219,7 +219,7 @@ $(document).ready(function () {
 						ipcRenderer.send("filesDropped", { data: data, files: filePaths });
 						customToast(
 							filePaths.length +
-								"file" +
+								" file" +
 								(filePaths.length > 1 ? "s" : "") +
 								" added to upload process!",
 							{
