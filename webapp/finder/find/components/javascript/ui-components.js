@@ -143,7 +143,7 @@ $(window).on("errorToast", function (_, anchor) {
 	destroyToast(toast, false);
 });
 
-runajaxonthis = function (inlink, e) {
+runajaxonthis = function (inlink, e, callback = null) {
 	$(".ajaxprogress").show();
 	var inText = $(inlink).data("confirm");
 	if (e && inText && !confirm(inText)) {
@@ -271,6 +271,10 @@ runajaxonthis = function (inlink, e) {
 					}
 
 					$(window).trigger("checkautoreload", [inlink]);
+
+					if (callback) {
+						callback();
+					}
 
 					//actions after autoreload?
 					var message = inlink.data("alertmessage");
@@ -2759,14 +2763,14 @@ uiload = function () {
 			}
 		});
 	});
-	
+
 	lQuery("a.changeuserprofile").livequery("click", function () {
 		var link = $(this);
 		var propertyname = link.data("propertyname");
 		var newvalue = link.data(propertyname);
 		saveProfileProperty(propertyname, newvalue, function () {});
 	});
-	
+
 	lQuery("input.changeuserprofile").livequery("change", function () {
 		var input = $(this);
 		var propertyname = input.data("propertyname");
@@ -2776,7 +2780,7 @@ uiload = function () {
 			newvalue = input.val();
 		}
 		saveProfileProperty(propertyname, newvalue, function () {
-				$(window).trigger("checkautoreload", [input]);
+			$(window).trigger("checkautoreload", [input]);
 		});
 	});
 
@@ -4857,16 +4861,15 @@ runajaxstatus = function () {
 		if (cell.length == 0) {
 			continue;
 		}
-		
-		if( !cell.hasClass("ajaxstatus") )
-		{
+
+		if (!cell.hasClass("ajaxstatus")) {
 			continue; //Must be done
 		}
-		
+
 		if (!isInViewport(cell[0])) {
 			continue;
 		}
-		
+
 		var path = cell.attr("ajaxpath");
 		if (!path || path == "") {
 			path = cell.data("ajaxpath");
