@@ -353,15 +353,15 @@ jQuery(document).ready(function () {
 				'<button type="button" class="close" data-dismiss="toast">hide</button>';
 			template += "</div>";
 			template += '<div class="toast-body">';
-			var isdesktop = app.data("desktop");
-			if (type == "complete" && isdesktop) {
+			var isDesktop = app.data("desktop");
+			if (type == "complete" && isDesktop) {
 				template +=
 					'<a href="#" class="opendownloadedfile" data-itemexportname="' +
 					filename +
 					'" title="Open File"><i class="bi bi-box-arrow-up-right"></i>&nbsp; ';
 			}
 			template += '<span class="toast-filename">' + filename + "</span>";
-			if (type == "complete" && isdesktop) {
+			if (type == "complete" && isDesktop) {
 				template += "</a>";
 			}
 			if (type == "downloading")

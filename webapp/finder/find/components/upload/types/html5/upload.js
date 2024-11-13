@@ -9,6 +9,12 @@ var allfiles = new Array();
 
 // wait for the DOM to be loaded
 $(document).ready(function () {
+	var isDesktop = $("#application").data("desktop");
+	var ipcRenderer;
+	if (isDesktop) {
+		const { ipcRenderer: ipc } = require("electron");
+		ipcRenderer = ipc;
+	}
 	if (apphome === undefined) {
 		if (!siteroot) {
 			siteroot = $("#application").data("siteroot");
@@ -186,10 +192,6 @@ $(document).ready(function () {
 		div.on("dragover", function (e) {
 			e.preventDefault();
 			e.stopPropagation();
-			if (div.find(".drop-over").length) {
-				console.log("Has nested file drop over!");
-				return;
-			}
 			div.addClass("filehover");
 		});
 		div.on("dragenter", function (e) {
@@ -200,16 +202,37 @@ $(document).ready(function () {
 			div.removeClass("filehover");
 		});
 		div.on("drop", function (e) {
-			if (div.find(".drop-over").length) {
-				console.log("Has nested file drop over!");
-				return;
-			}
 			if (e.originalEvent.dataTransfer) {
 				var files = e.originalEvent.dataTransfer.files;
 				if (files.length) {
 					e.preventDefault();
 					e.stopPropagation();
-					function attachFiles() {
+					var uploadTarget = $(".webUploadButton");
+					if (ipcRenderer) {
+						const { webUtils } = require("electron");
+						var filePaths = [];
+						for (const f of e.originalEvent.dataTransfer.files) {
+							filePaths.push(webUtils.getPathForFile(f));
+						}
+						var data = uploadTarget.data();
+						div.removeClass("filehover");
+						ipcRenderer.send("filesDropped", { data: data, files: filePaths });
+						customToast(
+							filePaths.length +
+								"file" +
+								(filePaths.length > 1 ? "s" : "") +
+								" added to upload process!",
+							{
+								autohide: false,
+								btnText: "Show",
+								btnClass: "btn btn-sm px-2 mx-2 btn-outline-primary",
+							}
+						);
+						return;
+					}
+					uploadTarget.data("toastmessage", "Processing files...");
+					uploadTarget.data("toastsuccess", "Ready to upload!");
+					runajaxonthis(uploadTarget, null, function () {
 						var dropDiv = $("#drop-area > .drop-over");
 						var categoryid = dropDiv.data("categoryid");
 						if (categoryid) {
@@ -223,26 +246,12 @@ $(document).ready(function () {
 							"html5_upload.filesPicked",
 							[files]
 						);
-					}
-					var uploadTarget = $(".webUploadButton");
-					uploadTarget.data("toastmessage", "Processing files...");
-					uploadTarget.data("toastsuccess", "Processed. Ready to upload!");
-					runajaxonthis(uploadTarget, null, attachFiles);
+					});
 				}
 			}
 			div.removeClass("filehover");
 		});
 	});
-	// livequery: true
-	// hitssessionid: entityassethitsassetfinder/catalog
-	// tabsection: upload
-	// moduleid: asset
-	// topmoduleid: asset
-	// entityid: AZL4_6JJzO0aA1bnQxKV
-	// categoryid: AYxe8I2gwO61iHT4pQ7D
-	// oemaxlevel: 1
-	// targetdiv: dialogmediaentity
-	// uid: 1731432388503
 	lQuery(".viewassetsbtn").livequery("click", function (e) {
 		e.preventDefault();
 

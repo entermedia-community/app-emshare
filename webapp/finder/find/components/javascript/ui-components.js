@@ -85,15 +85,13 @@ $(window).on("showToast", function (_, anchor) {
 		toastMessage = "Loading...";
 	}
 	var toast = $(
-		'<div class="toastContainer" role="alert" data-uid="' +
-			uid +
-			'"><div class="toastLoader"></div><div class="toastMessage" data-success="' +
-			toastSuccess +
-			'"  data-error="' +
-			toastError +
-			'">' +
-			toastMessage +
-			'</div><div class="toastClose">&times;</div></div>'
+		`<div class="toastContainer" role="alert" data-uid="${uid}">
+			<div class="toastLoader"></div>
+			<div class="toastMessage" data-success="${toastSuccess}"  data-error="${toastError}">
+				${toastMessage}
+			</div>
+			<div class="toastClose">&times;</div>
+		</div>`
 	);
 	toastTO = setTimeout(function () {
 		$(".toastList").append(toast);
@@ -104,6 +102,28 @@ lQuery(".toastClose").livequery("click", function () {
 	var toast = $(this).closest(".toastContainer");
 	toast.addClass("hide");
 });
+
+function customToast(message, options = {}) {
+	var autohide = options.autohide === undefined ? true : options.autohide;
+	var autohideDelay = options.autohideDelay || 3000;
+	var positive = options.positive === undefined ? true : options.positive;
+	var btnText = options.btnText;
+	var btnClass = options.btnClass || "";
+	var toast = $(
+		`<div class="toastContainer" role="alert">
+			<div class="toast${positive ? "Success" : "Error"}"></div>
+			<div class="toastMessage">${message}</div>
+			${btnText ? `<button class="${btnClass}">${btnText}</button>` : ""}
+			<div class="toastClose">&times;</div>
+		</div>`
+	);
+	$(".toastList").append(toast);
+	if (autohide) {
+		setTimeout(function () {
+			toast.addClass("hide");
+		}, autohideDelay);
+	}
+}
 
 function destroyToast(toast, success = true) {
 	clearTimeout(toastTO);
