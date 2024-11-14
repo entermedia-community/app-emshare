@@ -1,0 +1,137 @@
+#if(!$module)
+	#set($module = $context.getRequestParameter("module"))
+#end
+#if(!$module)
+	#set($module = $context.getRequestParameter("moduleid"))
+#end
+#if(!$module)
+	#set( $module = $content.module)
+#end
+
+	##fix module vs moduleid
+	#if($module)
+		#if($module.id)
+			#set($moduleid = $module.id)
+		#else
+			#set($moduleid = $module)
+		#end
+	#end
+	$context.putPageValue("moduleid", $module.id)
+	
+	
+#set($searcher = $searcherManager.getSearcher($catalogid, $module.id))
+$context.putPageValue("searcher", $searcher)
+
+#set($isentity = $module.get("isentity"))
+$context.putPageValue("isentity", $isentity )
+
+
+#if (!$nodeID)
+	#set($nodeID = $context.getRequestParameter("nodeID"))
+	$context.putPageValue("nodeID",$nodeID)
+#end
+
+#if( !$librarycol && $category ) 
+	#set( $librarycol = $mediaarchive.query("librarycollection").orgroup("rootcategory",$category.getParentCategories()).searchOne() )
+#end
+
+#ifnull($librarycol )
+	#set($collectionid = $context.getRequestParameter("collectionid"))
+	#if($module =="librarycollection" && $collectionid)
+		#set( $librarycol = $mediaarchive.query("librarycollection").exact("id",$collectionid).searchOne() )
+	#end
+#end
+
+#if( $librarycol )	
+	$context.putPageValue("librarycol", $librarycol)
+#end
+
+#if($moduleid=="asset")
+	##ToDo: get it from the hittracker (add another field)
+	
+	#set($resultview = $userprofile.get("assetresultview"))
+	#ifnull($resultview)
+		#set($resultview = "brickvertical")
+	#end
+	
+#elseif($moduleid=="librarycollection")
+		
+		#if( $librarycol )	
+			#set($resultview = $userprofile.get("assetresultview"))
+			#ifnull($resultview)
+				#set($resultview = $module.get("moduleresultsview"))
+			#end
+			#ifnull($resultview)
+				#set($resultview = "brickvertical")
+			#end
+			
+			#set($searcher = $searcherManager.getSearcher($catalogid, "asset"))
+			$context.putPageValue("searcher", $searcher)
+			
+			#set($searchhome = "$apphome/views/modules/asset" )
+			$context.putPageValue("searchhome", $searchhome )
+			
+			#set($componenthome = "$apphome/views/modules/asset/components")
+			$context.putPageValue("componenthome", $componenthome)
+			
+			##SET INTERNAL VIEWS same as ASSET
+			$context.putPageValue("viewid", "assetresultstable")
+			$context.putPageValue("viewpath", "asset/assetresultstable")
+			
+			
+		#else
+			##MAIN ALBUMS VIEW
+			#ifnull($resultview)
+				#set($resultview = $userprofile.get("${moduleid}resultview"))
+			#end
+			
+			##$module.moduleresultsview
+			
+			#ifnull($resultview)
+				#set($resultview = "$module.moduleresultsview")
+			#end
+			#ifnull($resultview)
+				#set($resultview = "grid")
+			#end
+		#end
+#elseif($moduleid=="faceprofilegroup")
+	#set($resultview = "table")
+#else
+	##All Other Entities
+	
+	#set($resultview = $userprofile.get("${moduleid}resultview"))
+
+	#if(!$resultview)
+		#set($resultview = $content.get("${moduleid}resultview"))
+	#end
+	#if(!$resultview)
+		#set($resultview = $context.getRequestParameter("resultview"))
+	#end
+	#if(!$resultview)
+		#set($resultview = $content.resultview)
+	#end
+	#if(!$resultview)
+		#set($resultview = $module.get("moduleresultsview"))
+	#end
+	#if(!$resultview)
+		#set($resultview = "table")
+	#end
+
+#end
+	
+	$context.putPageValue("searchtype", $module.id)
+	
+	$context.putPageValue("resultview",$resultview)
+	
+	#if($module.modulerendertype)
+		$context.putPageValue("modulerendertype",$module.modulerendertype)
+	#else
+		$context.putPageValue("modulerendertype","entity")
+	#end
+	
+	$context.putPageValue("moduletotalhits",$moduletotalhits)
+
+
+	$pages.include("${searchhome}/resultviews.html", $context)
+
+
