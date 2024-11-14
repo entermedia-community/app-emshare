@@ -1,0 +1,187 @@
+#set($hitssessionid = $hits.getSessionId())
+#set( $module = $content.module)
+#if (!$nodeID)
+	#set($nodeID = $context.getRequestParameter("nodeID"))
+	$context.putPageValue("nodeID",$nodeID)
+#end
+
+#if( !$librarycol && $category ) 
+	#set( $librarycol = $mediaarchive.query("librarycollection").orgroup("rootcategory",$category.getParentCategories()).searchOne() )
+#end
+
+#if( $librarycol )	
+	$context.putPageValue("librarycol",$librarycol)
+#end
+
+#if($librarycol )	
+<div class="collection-header">
+
+	<div class="collection-header-back">
+		<a href="$home$apphome" title="[[Collections]]"><i class="fas fa-chevron-left"></i></a>
+	</div>
+	
+	#if($librarycol.collectionimage)
+		#set($asset = $mediaarchive.getAsset($librarycol.collectionimage))
+	#else
+		#set($asset = $mediaarchive.query("asset").match("category",$librarycol.rootcategory).exact("previewstatus","2").sort("assetaddeddateDown").searchOne() )
+	#end
+
+	#set( $link = $mediaarchive.asLinkToPreview($asset,"image200x200.jpg"))
+	
+	<div class="card card-mini card-collections">
+		
+		<a href="$home$apphome/views/modules/librarycollection/media/${librarycol.getId()}/index.html?clearselection=true" title="${librarycol}">
+	 	<div class="card-collections-thumb" style='background-image: url("${link}")'></div>
+	 	</a>
+	</div>
+	
+	<div class="collection-header-name">
+	<h1><a href="$home$apphome/views/modules/librarycollection/media/${librarycol.getId()}/index.html?clearselection=true" title="${librarycol}">${librarycol}</a></h1>
+	</div>
+	
+	#if( $canviewsavedcollections )
+		<div class="collection-header-actions">
+		$pages.include("$apphome/components/librarycollection/togglelike.html",$context)
+		</div>
+	#end
+
+	<div class="collection-header-actions">
+	<a href="#" class="dropdown-toggle dropdown-noarrow" data-toggle="dropdown" data-bs-toggle="dropdown" title="[[Collection Actions]]">
+	<i class="fas fa-bars"></i></a>
+		<div class="dropdown-menu">
+		 	#if(!$canforcebasiccollections)
+			 	#if($cansharecollection )
+				 	#set( $editlink = "$home$apphome/views/modules/librarycollection/sharecollection.html?collectionid=${librarycol.getId()}")
+				 	<a class="dropdown-item emdialog" data-allwaysloadpage="true" data-hidefooter="true"   href="$editlink" title="[[Sharing Collection]]"><i class="dropdown-item-icon fas fa-share-alt"></i> [[Sharing]]</a>
+			 	#end
+		 	#end
+		 	#if( $canaddnewcollection || $cancopycollection)
+					<a class="dropdown-item emdialog" href="$home$apphome/views/modules/librarycollection/copycollection.html?collectionid=$!librarycol.getId()" title="[[Create a copy of this collection]]"><i class="dropdown-item-icon fas fa-copy"></i> [[Copy Collection]]</a>
+			#end
+			#if($caneditcollection)
+			  #set( $link = "$home$apphome/views/modules/librarycollection/share.html?collectionid=${librarycol.getId()}")
+			  <a class="dropdown-item emdialog" id="sharetab" href="$link" data-hidefooter="true" title="[[Notifications]]"><i class="dropdown-item-icon fas fa-flag"></i> [[Notifications]]</a>
+			  #set( $link = "$home$apphome/views/modules/librarycollection/users.html?collectionid=${librarycol.getId()}")
+			  <a class="dropdown-item emdialog"  id="editingtab"  href="$link" data-hidefooter="true" title="[[Editing Users]]"><i class="dropdown-item-icon fas fa-user-friends"></i> [[Editing Users]]</a>
+			   #set( $link = "$home$apphome/views/modules/librarycollection/permissions.html?collectionid=${librarycol.getId()}")
+			  <a class="dropdown-item emdialog" id="permissionstab" href="$link" data-hidefooter="true" title="[[Viewing Users]]"><i class="dropdown-item-icon fas fa-user-check"></i> [[Viewing Users]]</a>
+			  #set( $link = "$home$apphome/views/modules/librarycollection/datapermissions/index.html?collectionid=${librarycol.getId()}&id=${librarycol.getId()}")
+			  <a class="dropdown-item emdialog" id="colpermissionstab" href="$link" data-hidefooter="true" title="[[Collection Permissions]] (${librarycol})"><i class="dropdown-item-icon fas fa-user-lock"></i> [[Collection Permissions]]</a>
+              #if($librarycol.get('library'))
+				  #set( $link = "$home$apphome/views/modules/library/datapermissions/index.html?id=${librarycol.get('library')}")
+				  <a class="dropdown-item emdialog" id="libpermissionstab" href="$link" data-hidefooter="true" title="$librarycol.library [[Library Permissions]]"><i class="dropdown-item-icon fas fa-user-lock"></i>  [[Library Permissions]]</a>
+			  #end
+			  #set( $editlink = "$home$apphome/views/modules/librarycollection/edit/settings.html?collectionid=${librarycol.getId()}")
+		 	  <a class="dropdown-item emdialog"  data-allwaysloadpage="true" data-hidefooter="true"   href="$editlink" title="[[Collection Properties]]"><i class="dropdown-item-icon fas fa-cogs"></i> [[Properties]]</a>
+		   	#else
+			   	#set( $editlink = "$home$apphome/views/modules/librarycollection/edit/settings.html?collectionid=${librarycol.getId()}")
+			 	<a class="dropdown-item emdialog"  data-allwaysloadpage="true" data-hidefooter="true"   href="$editlink" title="[[Collection Properties]]"><i class="dropdown-item-icon fas fa-cogs"></i> [[Properties]]</a>
+			#end
+		</div>
+	</div>
+	
+</div>
+#end
+
+<div class="filtered #if( $librarycol ) filteredinresults #end">
+#if( $hits.getSearchQuery().hasMainInput())
+	#if($librarycol)
+		[[Searching within]]: <strong><em>$librarycol</em> </strong> [[for]]:  <strong><em>$hits.getSearchQuery().getMainInput()</em></strong>
+	#else
+		[[Searching for]]:  <strong><em>$hits.getSearchQuery().getMainInput()</em></strong>
+	#end
+#end
+
+#set($currentSort = $hits.getSearchQuery().getSortBy())
+
+##TODO Loop over the view and show them here if they match
+#if( $category )
+	#if( $mediaarchive.getCategorySearcher().getRootCategory() != $category)
+		#if( $librarycol )
+			#set($href = "$home$apphome/views/modules/librarycollection/media/index.html?hitssessionid=$hits.getSessionId()&collectionid=$librarycol.getId()&clearselection=true")
+		#else
+			#set($href = "$home$apphome/views/modules/asset/index.html?clearselection=true")
+		#end
+		
+	<a
+	href="$href"
+	class="badge badge-light"
+	title="[[Clear Category]]">$category <i class="fas fa-times"></i></a>
+	#end
+#end
+
+
+##set( $terms = $userfilters.getFilteredTerms($hits) )
+
+#set( $terms = $hits.getFilteredTerms($context, "advancedfilter") )
+
+
+#foreach( $term in $terms)
+	#if( $librarycol )
+		#set($href = "$home$apphome/views/modules/librarycollection/search.html?hitssessionid=$hits.getSessionId()&collectionid=$librarycol.getId()&removeterm=$term.getId()")
+		
+	#else
+		#set($href = "$home$apphome/views/modules/asset/index.html?hitssessionid=$hits.getSessionId()&removeterm=$term.getId()")
+	#end
+	#if ($nodeID)
+	 	#set($href = $href + "&nodeID=${nodeID}")
+	#end
+	#if($currentSort)
+		#set($href = $href + "&sortby=${currentSort}")
+	#end
+
+	<a href="$href"
+		class="badge badge-light"
+		title="[[Clear]] $term.getDetail()">$term.getDetail(): 
+		#foreach( $val in $term.getValueCollection() )
+			
+		 	#if ($term.getDetail().getId() == "keywords")
+				#if( $foreach.count > 1) [[and]] #end
+			#else
+				#if( $foreach.count > 1) [[or]] #end
+			#end
+			
+			#if($term.getDetail().isList())
+				$context.getText( $mediaarchive.getData($term.getDetail().getListId(),$val) )
+			#elseif($term.getDetail().isBoolean())
+				#if($term.getValue() == "true")
+					[[True]]
+				#else
+					[[False]]
+				#end
+			#elseif($term.getDetail().isDate())
+				#set($op = $term.operation)
+				#if($op == "afterdate")
+					[[After]]:
+				#elseif($op == "beforedate")
+					[[Before]]:
+				#elseif($op == "betweendates")
+					[[Between]]:
+				#end
+				
+	            $term.getValue()
+			#else
+	            #if($term.getValue())
+	                $term.getValue()
+	            #elseif($val)
+	                $val
+	            #end
+			#end
+			
+			 
+		#end <i class="fas fa-times"></i></a>
+#end
+
+
+#if( $hits.getSearchQuery().hasMainInput() || ($terms && !$terms.isEmpty()) )
+	#if( $librarycol )
+		#set($href = "$home$apphome/views/modules/librarycollection/media/index.html?hitssessionid=$hits.getSessionId()&collectionid=$librarycol.getId()&assetclearresults=true&clearfilters=true")
+	#else
+		#set($href = "$home$apphome/views/modules/asset/index.html?hitssessionid=$hits.getSessionId()&assetclearresults=true&assetclearselection=true&clearselection=true&clearfilters=true")
+	#end
+	#if ($nodeID)
+ 		#set($href = $href + "&nodeID=$!{nodeID}")
+	#end
+	<a class="clearfilters" href="$href" title="[[Cear Filters]]">[[Clear]]</a>
+#end
+</div>
