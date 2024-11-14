@@ -104,37 +104,8 @@ $context.putPageValue("maintargetdiv", $maintargetdiv)
 		   		</div>
 			#end
 	
-	
-
 			$context.putPageValue("moduleid", $moduleid)
-			#if(false)
-				#if( $hits.getSearchQuery().hasMainInput())
-					#if($moduleid=="asset")
-						#if($dialogresults)
-							#set($href = "$siteroot$apphome/views/modules/${moduleid}/dialogindex.html?hitssessionid=$!hits.getSessionId()&topmoduleid=$!topmoduleid&rootcategory=$!rootcategory&categoryid=$!{categoryid}&removeterm=description")
-						#else
-							#set($href = "$siteroot$apphome/views/modules/${moduleid}/index.html?hitssessionid=$!hits.getSessionId()&topmoduleid=$!topmoduleid&rootcategory=$!rootcategory&categoryid=$!{categoryid}&removeterm=description")		
-						#end
-						#set($oemaxlevel = "1")
-					#else
-						#set($href = "$siteroot$apphome/views/modules/${moduleid}/index.html?hitssessionid=$!hits.getSessionId()&removeterm=$!term.getId()")
-						#set($oemaxlevel = "1")
-					#end
-					<div class="emgrid-subtitle autostickywidth d-flex align-items-center">
-						<p class="mb-0 ml-2 search-term">
-							<span style="font-size: 1rem;">[[Found]] <strong>$count</strong> [[results for]] "<strong>$hits.getSearchQuery().getMainInput()</strong>"</span>
-							<a href="$href"
-								class="ajax"
-								title="[[Clear]]: #esc($hits.getSearchQuery().getMainInput())"
-								data-targetdiv="$!maintargetdiv" 
-								data-oemaxlevel="$oemaxlevel"
-								data-updateurl="false"> 
-								<i class="bi bi-x ml-1"></i>
-							</a>
-						</p>
-					</div>
-				#end
-			#end
-		$pages.include("$componenthome/results/index.html", $context)
+			
+		$pages.include("$apphome/views/modules/asset/results/default/index.html", $context)
 	</div>
 </div>

@@ -1,0 +1,76 @@
+
+<div id="$!{moduleid}resultsarea" 
+	class="resultsarea d-flex w-100 overflow-x adjustHeight">
+	<div class="emresultscontainer emresults$!resultview flex-grow-1"   id="resultsviewcontainer$!module.id"
+		data-resultview="$!resultview" data-moduleid="$!{module.id}">
+		#if (!$resultview || $resultview == 'table')
+			$context.putPageValue("showhover", "false")
+			$context.putPageValue("thumbsize", "crop")
+			$context.putPageValue("showcaption", "true")
+			$context.putPageValue("hideheader", "false")
+			$context.putPageValue("pickable", false )
+			$context.putPageValue("resultstype", "table" )
+			$context.putPageValue("rowrendertype", $modulerendertype)
+
+			$pages.include("${searchhome}/types/table.html", $context)
+
+		#elseif ($resultview == "stackedgallery")
+			$context.putPageValue("showcaption", false)
+			$context.putPageValue("showhover", "false")
+			$context.putPageValue("thumbsize", "medium")
+			$context.putPageValue("showcaption", "false")
+			$context.putPageValue("hideheader", "false")
+			$context.putPageValue("pickable", false )
+
+			$pages.include("${searchhome}/stackedmedia.html", $context)
+	
+		#elseif ($resultview == "brickvertical")
+			$context.putPageValue("showcaption", false)
+			$context.putPageValue("showhover", "false")
+			$context.putPageValue("thumbsize", "medium")
+			$context.putPageValue("showcaption", "false")
+			$context.putPageValue("hideheader", "false")
+			$context.putPageValue("pickable", false )
+
+			$pages.include("${searchhome}/brickvertical.html", $context)
+
+		#elseif ($resultview == "map")
+			$context.putPageValue("showcaption", false)
+			$context.putPageValue("showhover", "false")
+			$context.putPageValue("thumbsize", "medium")
+			$context.putPageValue("showcaption", "false")
+			$context.putPageValue("hideheader", "false")
+			$context.putPageValue("pickable", false )
+
+			$pages.include("${searchhome}/types/map.html", $context)
+
+		#elseif ($resultview == "grid")
+			##$context.putPageValue("resultstype", "grid" )
+
+			$pages.include("${componenthome}/gridsample/index.html",$context)
+
+		#elseif ($resultview == "hierarchy")
+			$context.putPageValue("showcaption", true)
+			$context.putPageValue("showhover", "false")
+			$context.putPageValue("thumbsize", "thumb")
+			$context.putPageValue("showcaption", "true")
+			$context.putPageValue("hideheader", "false")
+			$context.putPageValue("pickable", false )
+
+			$pages.include("${searchhome}/types/hierarchy.html", $context)
+
+		#else
+			$context.putPageValue("showcaption", true)
+			$context.putPageValue("showhover", "false")
+			$context.putPageValue("thumbsize", "thumb")
+			$context.putPageValue("showcaption", "true")
+			$context.putPageValue("hideheader", "false")
+			$context.putPageValue("pickable", "false" )
+
+			$pages.include("${searchhome}/types/gallery.html", $context)
+
+		#end
+	</div>
+
+	$pages.include("${searchhome}/filters/sidebar.html", $context)
+</div>
