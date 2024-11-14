@@ -1,0 +1,395 @@
+#set($url = $mediaarchive.asLinkToPreview($asset, "image3000x3000.jpg"))
+#set($filename = "$asset.name")
+
+<div class="d-flex flex-column h-100" id="photo-editor">
+    <div class="editorarea">
+        <div class="d-flex align-items-center justify-content-end top-toolbar">
+            <div class="d-flex align-items-center justify-content-end position-relative">
+                <form id="clearAllPreset" action="$applink/views/modules/asset/editor/media/resetpresetfile.html">
+                    <input type="hidden" name="assetid" value="$asset.id" />
+                    <button type="submit" title="[[Clear all]]">
+                        [[CLEAR ALL]]
+                    </button>
+                </form>
+                <a href="#" id="copyImg" title="[[Copy image to clipboard]]">
+                    <i class="bi bi-clipboard"></i>
+                </a>
+                <a href="#" id="exportAs" title="[[Download to your device]]">
+                    <i class="bi bi-download"></i>
+                </a>
+                <a href="#" id="saveAs" title="[[Save as preset file]]">
+                    <i class="bi bi-floppy-fill"></i>
+                    <label>[[Save as]]</label>
+                </a>
+                <div class="mask" role="button"></div>
+                <div class="save-as-menu">
+	                <form class="d-flex flex-column" id="saveasform" action="$applink/views/modules/asset/editor/media/savepresetfile.html">
+                        <h4 class="text-center">[[Save As]]</h4>
+
+                        <div class="d-flex mb-2">
+                            #set($type =$mediaarchive.getMediaRenderType($asset.fileformat))
+							#set($results = $conversionUtil.getActivePresetList($mediaarchive.getCatalogId(), $type) )
+							<div class="d-flex flex-column">
+                                <input type="hidden" name="assetid" value="$asset.id" />
+                                <label class="mb-2 mr-3 d-flex align-items-center">
+                                    <input type="checkbox" name="replaceall" class="mr-1" value="true" checked /> [[Replace all]]
+                                </label>
+                                <div id="customSizeOptions" style="display: none;">
+                                    #foreach ($presetdata in $results)
+                                        #set($dimension = $conversionUtil.getConvertPresetDimension($mediaarchive.getCatalogId(),$presetdata.id))
+                                        #set($height = $mathtool.toInteger($dimension.getHeight()))
+                                        #set($width = $mathtool.toInteger($dimension.getWidth()))
+                                        #set($aspectratio = $conversionUtil.getConvertPresetAspectRatio($dimension))
+                                        <label class="mb-0 mr-3 d-flex align-items-center">
+                                            <input type="radio" name="presetid" class="mr-1" value="$presetdata.id" data-ext="$presetdata.extension" /> $width &times; $height #text($presetdata)
+                                        </label>
+                                    #end
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-center mt-3 mb-2">
+                            <div class="d-flex align-items-center">
+                                <a href="#" id="saveAsImg" data-filename="$filename">
+                                    <i class="bi bi-floppy"></i>
+                                    <label>[[Save]]</label>
+                                </a>
+                            </div>
+                            <a id="saveAsCancel" type="reset" class="rounded">
+                                <i class="bi bi-x mr-0"></i>
+                            </a>
+                        </div>
+                    </form>
+                </div>
+                
+                <div class="export-menu">
+                    <form class="d-flex flex-column">
+                        <h4 class="text-center">export As</h4>
+                        <div class="d-flex align-items-center mb-2">
+                            <label class="mb-0 mr-1" style="width: 60px;">[[Format]]:</label>
+                            <label class="mb-0 mr-3 d-flex align-items-center">
+                                <input type="radio" name="exportAsType" value="png" class="mr-1" checked /> PNG
+                            </label>
+                            <label class="mb-0 d-flex align-items-center">
+                                <input type="radio" name="exportAsType" value="jpeg" class="mr-1" /> JPG
+                            </label>
+                        </div>
+                        <div class="d-flex justify-content-end mt-3">
+                            <div class="d-flex align-items-center">
+                                <a href="#" id="downloadImg" data-filename="$filename"> 
+                                    <i class="bi bi-download"></i>
+                                </a>
+                            </div>
+                            <a id="exportAsCancel" type="reset" class="rounded">
+                                <i class="bi bi-x mr-0"></i>
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="d-flex editor">
+            <div id="canvasContainer">
+                <div id="editCandidateLoader" class="lds-dual-ring light"></div>
+                <canvas id="canvas"></canvas>
+            </div>
+            <div class="d-flex flex-column side-toolbar">
+                <a href="#" data-action="filter">
+                    <i class="bi bi-transparency"></i>
+                    <label>filters</label>
+                </a>
+                <a href="#" data-action="crop">
+                    <i class="bi bi-crop"></i>
+                    <label>crop</label>
+                </a>
+                <a href="#" data-action="rotate">
+                    <i class="bi bi-arrow-repeat"></i>
+                    <label>rotate</label>
+                </a>
+                <a href="#" data-action="text">
+                    <i class="bi bi-fonts"></i>
+                    <label>text</label>
+                </a>
+                <a href="#" data-action="image">
+                    <i class="bi bi-images"></i>
+                    <label>image</label>
+                </a>
+                <!-- <a href="#">
+                <i class="bi bi-person-x"></i>
+                <label>remove</label>
+            </a> -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="text-editor panel"> 
+    <div class="x-close text-white ml-auto pt-1">
+        <i class="bi bi-x"></i>
+    </div>
+    <div class="w-100">
+        <label for="textField">Text</label>
+        <textarea rows="3" type="text" id="textField" placeholder="Start typing..." ></textarea>
+    </div>
+
+    <label for="font-family" class="mt-1">Font Family</label>
+    <select id="font-family">
+        <option value="Roboto">Roboto</option>
+        <option value="Ubuntu">Ubuntu</option>
+        <option value="Mali">Mali</option>
+        <option value="Charmonman">Charmonman</option>
+    </select>
+
+    <label for="font-weight" class="mt-1">Font Weight</label>
+    <select id="font-weight">
+        <option value='{"weight":300,"style":"normal"}'>Lite</option>
+        <option value='{"weight":300,"style":"italic"}'>Lite Italic</option>
+        <option value='{"weight":400,"style":"normal"}' selected>Regular</option>
+        <option value='{"weight":400,"style":"italic"}'>Regular Italic</option>
+        <option value='{"weight":700,"style":"normal"}'>Bold</option>
+        <option value='{"weight":700,"style":"italic"}'>Bold Italic</option>
+    </select>
+
+    <div class="d-flex align-items-center mt-2 mb-1">
+        <label for="font-color" class="mb-0 mr-2">Color</label>
+        <input type="text" id="font-color" value="#ffffff">
+    </div>
+    <div class="d-flex align-items-center">
+        <label for="font-color" class="mb-0 mr-2">Align</label>
+        <button data-action="left" class="text-align-btn"><i class="bi bi-text-left"></i></button>
+        <button data-action="center" class="text-align-btn"><i class="bi bi-text-center"></i></button>
+        <button data-action="right" class="text-align-btn"><i class="bi bi-text-right"></i></button>
+        <button data-action="justify" class="text-align-btn"><i class="bi bi-justify"></i></button>
+    </div>
+</div>
+<div class="image-editor panel">
+    <div class="x-close text-white ml-auto pt-1">
+        <i class="bi bi-x"></i>
+    </div>
+    <label for="imageField" class="mt-1">
+        <input type="file" id="imageField" accept="image/*" />
+        <img src="#" id="imagePreview" style="display: none;" />
+    </label>
+    <div class="align-items-center justify-content-between" style="display: none;">
+        <button id="insertImg">Insert</button>
+        <button id="removeImg">
+            <i class="bi bi-trash"></i>
+        </button>
+    </div>
+</div>
+<div class="filter-editor panel overflow-y">
+    <div class="x-close text-white ml-auto pt-1">
+        <i class="bi bi-x"></i>
+    </div>
+    <canvas id="fpCanvas" style="display: none;"></canvas>
+    <div class="d-flex flex-column justify-content-center">
+        <div class="filter-controls"> 
+            <div class="fltr" id="Brightness">
+                <div class="row-1">
+                    <label>Brightness:</label>
+                    <a href="#" data-id="Brightness" title="[[Reset]]"><i class="bi bi-arrow-repeat"></i></a>
+                </div>
+                <div class="row-2">
+                    <input type="range" defaultValue="0" value="0" min="-1" max="1" step="0.01">
+                    <input type="text" value="0" data-type="percentage" />
+                    <span>%</span>
+                </div>
+            </div>
+            <div class="fltr" id="Contrast">
+                <div class="row-1">
+                    <label>Contrast:</label>
+                    <a href="#" data-id="Contrast" title="[[Reset]]"><i class="bi bi-arrow-repeat"></i></a>
+                </div>
+                <div class="row-2">
+                    <input type="range" defaultValue="0" value="0" min="-1" max="1" step="0.01">
+                    <input type="text" value="0" data-type="percentage" />
+                    <span>%</span>
+                </div>
+            </div>
+            <div class="fltr" id="Saturation">
+                <div class="row-1">
+                    <label>Saturation:</label>
+                    <a href="#" data-id="Saturation" title="[[Reset]]"><i class="bi bi-arrow-repeat"></i></a>
+                </div>
+                <div class="row-2">
+                    <input type="range" defaultValue="0" value="0" min="-1" max="1" step="0.01">
+                    <input type="text" value="0" data-type="percentage" />
+                    <span>%</span>
+                </div>
+            </div>
+            <div class="fltr" id="HueRotation" data-prop="rotation">
+                <div class="row-1">
+                    <label>Hue Rotation:</label>
+                    <a href="#" data-id="HueRotation" title="[[Reset]]"><i class="bi bi-arrow-repeat"></i></a>
+                </div>
+                <div class="row-2">
+                    <input type="range" defaultValue="0" value="0" min="-2" max="2" step="0.01">
+                    <input type="text" value="0" data-type="degree" />
+                    <span><sup>&deg;</sup></span>
+                </div>
+            </div>
+            <div class="fltr" id="Vibrance">
+                <div class="row-1">
+                    <label>Vibrance:</label>
+                    <a href="#" data-id="Vibrance" title="[[Reset]]"><i class="bi bi-arrow-repeat"></i></a>
+                </div>
+                <div class="row-2">
+                    <input type="range" defaultValue="0" value="0" min="-1" max="1" step="0.01">
+                    <input type="text" value="0" data-type="percentage" />
+                    <span>%</span>
+                </div>
+            </div>
+            <div class="fltr" id="Blur">
+                <div class="row-1">
+                    <label>Blur:</label>
+                    <a href="#" data-id="Blur" title="[[Reset]]"><i class="bi bi-arrow-repeat"></i></a>
+                </div>
+                <div class="row-2">
+                    <input type="range" defaultValue="0" value="0" min="0" max="1" step="0.01">
+                    <input type="text" value="0" data-type="percentage" />
+                    <span>%</span>
+                </div>
+            </div>
+            <div class="fltr" id="Noise">
+                <div class="row-1">
+                    <label>Noise:</label>
+                    <a href="#" data-id="Noise" title="[[Reset]]"><i class="bi bi-arrow-repeat"></i></a>
+                </div>
+                <div class="row-2">
+                    <input type="range" defaultValue="0" value="0" min="0" max="1000" step="1">
+                    <input type="text" value="0" />
+                </div>
+            </div>
+            <div class="fltr" id="Pixelate">
+                <div class="row-1">
+                    <label>Pixelate:</label>
+                    <a href="#" data-id="Pixelate" title="[[Reset]]"><i class="bi bi-arrow-repeat"></i></a>
+                </div>
+                <div class="row-2">
+                    <input type="range" defaultValue="0" value="0" min="0" max="20">
+                    <input type="text" value="0" />
+                </div>
+            </div>
+            <div class="d-flex align-items-center flex-wrap matrixFilter">
+                <div class="d-flex align-items-center">
+                    <input type="checkbox" data-action="Sharpen" id="sharpen" />
+                    <label for="sharpen" class="pl-1 pr-0 mb-0">Sharpen</label>
+                </div>
+                <div class="d-flex align-items-center">
+                    <input type="checkbox" data-action="Emboss" id="emboss" />
+                    <label for="emboss" class="pl-1 pr-0 mb-0">Emboss</label>
+                </div>
+                <div class="d-flex align-items-center">
+                    <input type="checkbox" data-action="Edge" id="edge" />
+                    <label for="edge" class="pl-1 pr-0 mb-0">Edge</label>
+                </div>
+            </div>
+        </div>
+        <h5 class="text-white mb-0 mt-2 text-center">Built-In Filters</h5>
+        <div class="d-flex flex-wrap align-items-center justify-content-center overflow-y" id="preDefFilters">
+            <a href="#" data-action="Grayscale" style="display: none;"> 
+                <img src="#urlescape($url)" />
+                <span>Grayscale</span>
+            </a>
+            <a href="#" data-action="BlackWhite" style="display: none;"> 
+                <img src="#urlescape($url)" />
+                <span>BlackWhite</span>
+            </a>
+            <a href="#" data-action="Sepia" style="display: none;"> 
+                <img src="#urlescape($url)" />
+                <span>Sepia</span>
+            </a> 
+            <a href="#" data-action="Invert" style="display: none;"> 
+                <img src="#urlescape($url)" />
+                <span>Invert</span>
+            </a>
+            <a href="#" data-action="Vintage" style="display: none;"> 
+                <img src="#urlescape($url)" />
+                <span>Vintage</span>
+            </a> 
+            <a href="#" data-action="Technicolor" style="display: none;"> 
+                <img src="#urlescape($url)" />
+                <span>Technicolor</span>
+            </a>
+            <a href="#" data-action="Polaroid" style="display: none;"> 
+                <img src="#urlescape($url)" />
+                <span>Polaroid</span>
+            </a> 
+            <a href="#" data-action="Kodachrome" style="display: none;"> 
+                <img src="#urlescape($url)" />
+                <span>Kodachrome</span>
+            </a>
+        </div>
+    </div>
+</div>
+<div class="rotate-editor panel">
+    <div class="x-close text-white ml-auto pt-1">
+        <i class="bi bi-x"></i>
+    </div>
+    <div class="d-flex align-items-center justify-content-between">
+        <button class="icon-button" data-action="rotateLeft">
+            <i class="bi bi-arrow-counterclockwise"></i>
+            <span>-90&deg;</span>
+        </button>
+        <button class="icon-button" data-action="rotateRight">
+            <i class="bi bi-arrow-clockwise"></i>
+            <span>+90&deg;</span>
+        </button>
+    </div>
+    <div class="d-flex align-items-center justify-content-between">
+        <button class="icon-button" data-action="flipX">
+            <i class="bi bi-vr"></i>
+            <span>Flip X</span>
+        </button>
+        <button class="icon-button" data-action="flipY">
+            <i class="bi bi-hr"></i>
+            <span>Flip Y</span>
+        </button>
+    </div>
+</div>
+<div class="crop-editor panel">
+    <div class="x-close text-white ml-auto pt-1">
+        <i class="bi bi-x"></i>
+    </div> 
+    <label for="aspectRatio" class="mt-1">Aspect Ratio</label>
+    <select id="aspectRatio">
+        <option value="0">Original</option>
+        <option value="1">1:1 (square)</option>
+        <option value="1.78">16:9</option>
+        <option value="0.5625">9:16</option>
+        <option value="1.33">4:3</option>
+        <option value="0.75">3:4</option> 
+        <option value="2">2:1</option>
+        <option value="0.5">1:2</option>
+        <option value="-1">Free Transform</option>
+    </select>
+    <div class="d-flex justify-content-between">
+        <button id="cropBtn">Crop</button>
+        <button id="resetBtn">reset</button>
+    </div>
+</div>
+<div id="toast" class="alert alert-secondary alert-dismissible fade hide" role="alert">
+  <span></span>
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <i class="bi bi-x"></i>
+  </button>
+</div>
+<div class="zoom-pan">
+    <div class="d-flex flex-column align-items-center">
+        <button class="icon-button my-2" data-action="zoomIn" title="Zoom In">
+            <i class="bi bi-zoom-in"></i>
+        </button>
+        <button class="icon-button mb-2" data-action="zoomOut" title="Zoom Out">
+            <i class="bi bi-zoom-out"></i>
+        </button>
+        <button class="icon-button mb-2" data-action="reset" title="Recenter">
+            <svg fill="currentColor" viewBox="0 0 24 24">
+                <path d="M9 9V3H7v2.59L3.91 2.5 2.5 3.91 5.59 7H3v2zm12 0V7h-2.59l3.09-3.09-1.41-1.41L17 5.59V3h-2v6zM3 15v2h2.59L2.5 20.09l1.41 1.41L7 18.41V21h2v-6zm12 0v6h2v-2.59l3.09 3.09 1.41-1.41L18.41 17H21v-2z"></path>
+            </svg>
+        </button>
+        <button class="icon-button" data-action="tips" data-toggle="popover" data-html="true" title="Controls" data-content="Press <b>Ctrl</b>+<b>0</b> to recenter<br><br>Press and hold <b>Ctrl</b>, then scroll up or down to <b>zoom in/out</b>">
+            <i class="bi bi-question-circle"></i>
+        </button>
+    </div>
+</div>
+
+<img style="display: none;" src="$url" id="editingCandidate" />

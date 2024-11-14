@@ -1,0 +1,183 @@
+#if(!$moduleid)
+#set( $moduleid = $context.getRequestParameter("moduleid"))
+#end
+#set($module = $mediaarchive.getCachedData("module", $moduleid))
+#if(!$entityid)
+#set( $entityid = $context.getRequestParameter("entityid"))
+#end
+#ifnull($entity)
+#set( $entity = $data)
+#end
+#ifnull($entity)
+	#set($entity = $mediaarchive.getCachedData($moduleid, $entityid))
+#end
+
+
+##set( $existingcategories = $mediaarchive.query("category").hitsPerPage(6).match($moduleid, $entityid).sort("name").search($context) )
+
+
+#if($moduleid && $entityid)
+	#set( $existingcategories =  $mediaarchive.getBean("entityManager").loadCategories($module, $entity, $context ) )
+#end
+#set($existingids = [])
+#foreach ($c in $existingcategories)
+	#set($null = $existingids.add($c.getId()))
+#end
+
+#ifnull($defaultfolder)
+	#set($defaultfolder =  $mediaarchive.getEntityManager().loadDefaultFolder($module, $entity, $context.getUser(),false))
+#end
+
+<div id="entitycategoryresults#eid($entityid)" class="entity-media-box #if(!$existingcategories) ZZZcollapsedmediabox #end" style="margin-bottom:20px;">
+<div  class="entitycategoryresults uploadformarea" data-onupload="reloadentity" data-entityid="$entityid" >
+		
+	#set($uploadsourcepath = $defaultfolder.getCategoryPath() )
+	
+	<div class="entity-media-header">
+		<h4 class="mediaboxheader">
+		#if(!$existingcategories)
+			<i class="expandmediaboxicon"></i>
+		#else
+			<i class="expandmediaboxicon"></i>
+		#end 
+		[[Media Folder]]</h4>
+		
+		
+		#if($moduleid && $entityid)
+			#if($permissions.can($moduleid, "upload_folders"))
+				#if($desktopX)
+					<a  
+					href="#" 
+					class="localfolderPicker" 
+					data-sourcepath="$uploadsourcepath"
+					data-moduleid="$moduleid"
+			   		data-entityid="$entityid"
+					class="entity-add-media"
+					title="[[Upload Folder]]">
+					<i class="fas fa-upload"></i></a>
+				#else
+					<a class="entity-add-media folderPicker entityuploadPicker" href="#" 
+					id="" 
+					title="[[Upload Folder]]" style="margin-top: 0">
+					<i class="fas fa-plus"></i></a>
+					<div class="loadericon float-right"><i class="fas fa-spinner fa-spin"></i></div>
+					
+						<input class="upload_field" data-autostartupload="true" type="file" style="position:absolute; top:-2000px;" multiple="multiple"  />
+						<input class="upload_folder" type="file" style="position:absolute; top:-2000px;" webkitdirectory multiple="multiple"  />
+						  
+					  #set( $root = "$siteroot$componenthome/upload/types/html5")
+					  <form id="uploaddata" 
+					  		name="wizard" 
+					  		onSubmit="return false;" 
+							data-finishaction="" action="$root/finish.html" class="force-validate-inputs" >
+					  	<input name="createentityfolder" value="true" type="hidden"/>
+					  	<input name="entitytype" value="$moduleid" type="hidden"/>
+					  	<input name="selected$moduleid" value="$entityid" type="hidden"/>
+					    ##<input name="field" value="$moduleid" />
+					  	##<input name="${moduleid}.value" value="$entityid" />
+					  	<input name="sourcepath" value="$uploadsourcepath" type="hidden"/>
+					  	</form>
+				#end
+			#end
+			
+			#if($permissions.can($moduleid, "assign_folders"))
+				#set($searchlink = "$apphome/components/categories/search/searchcategory.html")
+				<a href="$searchlink" 
+				   class="detail-edit-icon btn emdialog"
+				   data-dialogid="categorypickermodule"
+				   data-cancelsubmit="true" 
+				   data-multivalue="false"
+				   data-pickone="true"
+				   data-moduleid="$moduleid"
+				   data-entityid="$entityid"
+				   data-existingcategories="$!{existingids}"
+				   data-pickedcategoryaction="$apphome/components/categories/entities/listcategories.html"
+				   data-targetdiv="entitycategoryresults#eid($entityid)"
+				   data-parameterdata="id"
+				   data-noesc="true"
+				   title="[[Choose Folder]]"><i class="fas fa-search"></i></a>
+			#end
+	   #end	
+	</div>
+	
+	<div class="mediaboxbody">
+		<div  id="cat-list" class="emlist">
+		
+		##ifnull($desktop)
+			#if($permissions.can($moduleid, "upload_folders"))
+			<div>
+				<!-- This is not shown -->
+		       <div class="progress_report_template" style="display:none;">
+		        <li class="uploadprogressrow" >
+					<span style="width: 0px;" class="uploadprogress progress_report_barcurrentupload"></span>
+					<a href="#">
+						<span   class="progress_report_namecurrentupload name"></span>
+						<span   class="progress_report_sizecurrentupload size"></span>
+						<span   class="progress_report_statuscurrentupload uploadstatus"></span>
+					</a>	
+				</li>
+			 	</div>
+			 	
+			 	<ul class="up-files-list">
+				</ul>	
+			 	
+			 	<div class="completed-uploads" style="display:none;padding-top:3px;" >
+				<div class="ui-widget uipanel">
+				    <div  class="ui-widget-header">[[Upload Queue]]</div>
+				    <div>
+							<ul class="up-files-list up-files-list-completed" >
+							</ul>	
+					</div>
+				</div>	
+				</div>		
+			</div>
+			#end
+		##end
+		
+		#set($link = "$applink/views/modules/${moduleid}/components/categories/entities/listcategorydetails.html")
+		<form name="jumptocat" action="$link" class="ajaxform" data-targetdiv="entityassetresults#eid($entityid)" data-oemaxlevel="3">
+				<input type="hidden" name="entityid" value="$entityid" />
+				<input type="hidden" name="moduleid" value="$moduleid" />
+				<input type="hidden" class="emselectedrow" name="categoryid" value="" />
+		
+		<div class="emrowpicker">
+			
+			<table style="width:100%;">
+			#foreach ($c in $existingcategories)
+			
+				##better way to do this?
+				#set ($category = $mediaarchive.getCategory($c.getId()))
+				
+				 
+				#set( $iscollection = $categoryCollectionCache.isPartOfCollection($category))
+				
+				
+				<tr class=" #if($category.getId() == $defaultfolder.getId()) emrowselected #end" data-id="$category.getId()">
+				<td>
+					<div  class="list-row">
+					<div  class="category #if($iscollection) cat-collection #else cat-category #end">
+					#foreach( $parent in $category.getParentCategoriesFrom(1))
+						#if( ${foreach.count} > 1)\
+						#end
+							$parent
+					#end
+					
+					</div>
+					</div>
+				</td>
+				<td style="width:38px; text-align: right; vertical-align:middle; padding:6px 2px 0 0;" noclick="true">
+	
+				</td>
+				</tr>
+				
+				
+				
+				
+			#end
+			</table>
+		</div>
+			</form>
+		</div>
+		</div>
+	</div>
+</div>

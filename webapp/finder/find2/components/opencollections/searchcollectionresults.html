@@ -1,0 +1,15 @@
+<div id="emresultscontent">
+#set($assetid = $context.getRequestParameter("assetid"))
+$context.putPageValue("searchtype","librarycollection")
+#set( $searcher = $mediaarchive.getSearcher("librarycollection") )
+$context.putPageValue("searcher",$searcher)
+#set($viewid = "librarycollectiondialogresultstable")
+$context.putPageValue("viewid", $viewid)
+#set($viewpath = "librarycollection/librarycollectiondialogresultstable")
+$context.putPageValue("viewpath", $viewpath)
+#set ($details = $searcher.getDetailsForView($viewid, $userprofile))
+$context.putPageValue("details",$details)
+$context.putPageValue("tablehits",$collhits)
+#set($args = "emselectableform=collectionselectform&rowidname=collectionid")
+$pages.include("${componenthome}/table/table.html?$!args", $context)
+</div>

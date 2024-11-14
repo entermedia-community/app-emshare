@@ -1,0 +1,140 @@
+#set($moduleid = $module.getId())
+
+#if( !$category)
+	#set($categoryid = $context.getRequestParameter("categoryid"))
+	#if($categoryid)
+		#set($category = $mediaarchive.getCachedData("category", $categoryid))
+	#end
+#end
+
+#if( !$categoryid && $category)
+	#set( $categoryid= $category.getId())
+#end
+
+$context.putPageValue("category", $category)
+$context.putPageValue("categoryid", $categoryid)
+
+#set($resultview = $userprofile.get("assetresultview"))
+
+#set( $count = $hits.size())
+
+#set( $entities = $userprofile.getEntitiesInParent($category) )
+
+#set($maintargetdiv = "assetresultscontainer")
+
+$context.putPageValue("maintargetdiv", $maintargetdiv)
+
+#ifnull($topmoduleid)
+	#set($topmoduleid= $context.getRequestParameter("topmoduleid"))
+#end
+
+<div id="assetresultscontainer" 
+	class="assetresults resultsdiv" 
+	data-moduleid="asset" 
+	data-resultview="$!resultview"
+	data-hitssessionid="$!hits.getSessionId()" 
+	#if($category)
+		data-url="$apphome/views/modules/asset/viewfiles/$!categoryid/#dash($category).html"
+		data-oemaxlevel="2" 
+	#else
+		data-url="$apphome/views/modules/asset/index.html" 
+		data-oemaxlevel="1"	 
+	#end
+	 
+	data-componenthome="$!componenthome"
+	data-searchhome="$!home$!componenthome/results" 
+	data-targetdiv="assetresultscontainer" 
+	data-categoryid="$!categoryid"
+	data-topmoduleid="$!topmoduleid"
+	data-assetsortby="$!hits.getSearchQuery().getSortBy()">
+
+	
+
+	#if($showcategoriesheader && $category)
+		$pages.include("$apphome/views/modules/category/showchildren.html", $context)
+	#end
+
+	<div class="emgrid-box expandedmodule emgrid-module-asset"  >
+		#set( $count = $hits.size())
+		
+		#if($showheader || $topmoduleid == "favorites")
+		<div class="emgrid-subtitle">
+	   		<h3>
+		     	#set($moduleicon = "grid")
+		     	#if ($module.moduleicon)
+		     		#set($moduleicon = $module.moduleicon)
+		     	#end
+		     	
+		     	#set($rendertype = $module.modulerendertype)
+				
+				#if (!$rendertype)
+				   	#set($rendertype = "entity")
+				#end
+				$context.putPageValue("entityrendertype", $rendertype)
+		     	
+	     		#set($entityurl = "$!siteroot$apphome/views/modules/$!{module.id}/index.html?$!{module.id}page=1&hitssessionid=$!hits.getSessionId()")
+	
+				<a href="$entityurl" 
+					class="ajax minimizeexpandedmoduleX" 
+					data-targetdiv="applicationcontent" 
+					data-oemaxlevel="4" 
+					data-updateurl="true" 
+					data-profilepreference="defaultmodule"
+					data-profilepreference.value="$!module.getId()"
+					title="#text($module)" >
+				
+					<i class="bi bi-$!{moduleicon} module-icon" style="font-size:0.9em;line-height:1;"></i> 
+				
+					#ifnull($count)
+						#set( $count = $hits.size()) 
+					#end
+					#text($module)
+					 <span class="count">($count)</span>
+					</a>
+					
+						#if($topmoduleid == "favorites")
+						<a href="$apphome/views/modules/modulesearch/bookmarksremove.html?moduleid=${module.id}" 
+							class="ajax removemodulebookmarks rounded btn btn-brand clear-bookmarks ml-2"
+							data-targetdiv="modulesearchtopcontainer"
+							data-oemaxlevel="1"
+							data-confirm="[[Are you sure to remove items from Bookmarks?]]"
+							title="[[Remove from Bookmarks]]"><i class="bi bi-bookmark-x mr-1"></i>[[Remove All]]</a>
+							#end
+					</h3>
+		   		</div>
+			#end
+	
+	
+
+			$context.putPageValue("moduleid", $moduleid)
+			#if(false)
+				#if( $hits.getSearchQuery().hasMainInput())
+					#if($moduleid=="asset")
+						#if($dialogresults)
+							#set($href = "$siteroot$apphome/views/modules/${moduleid}/dialogindex.html?hitssessionid=$!hits.getSessionId()&topmoduleid=$!topmoduleid&rootcategory=$!rootcategory&categoryid=$!{categoryid}&removeterm=description")
+						#else
+							#set($href = "$siteroot$apphome/views/modules/${moduleid}/index.html?hitssessionid=$!hits.getSessionId()&topmoduleid=$!topmoduleid&rootcategory=$!rootcategory&categoryid=$!{categoryid}&removeterm=description")		
+						#end
+						#set($oemaxlevel = "1")
+					#else
+						#set($href = "$siteroot$apphome/views/modules/${moduleid}/index.html?hitssessionid=$!hits.getSessionId()&removeterm=$!term.getId()")
+						#set($oemaxlevel = "1")
+					#end
+					<div class="emgrid-subtitle autostickywidth d-flex align-items-center">
+						<p class="mb-0 ml-2 search-term">
+							<span style="font-size: 1rem;">[[Found]] <strong>$count</strong> [[results for]] "<strong>$hits.getSearchQuery().getMainInput()</strong>"</span>
+							<a href="$href"
+								class="ajax"
+								title="[[Clear]]: #esc($hits.getSearchQuery().getMainInput())"
+								data-targetdiv="$!maintargetdiv" 
+								data-oemaxlevel="$oemaxlevel"
+								data-updateurl="false"> 
+								<i class="bi bi-x ml-1"></i>
+							</a>
+						</p>
+					</div>
+				#end
+			#end
+		$pages.include("$componenthome/results/index.html", $context)
+	</div>
+</div>

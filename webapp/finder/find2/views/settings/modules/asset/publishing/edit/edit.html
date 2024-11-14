@@ -1,0 +1,46 @@
+
+<div>
+<h3>[[PublishingSettings]]</h3>
+ 
+
+<div id="editlayout">
+#set( $origURL = $context.getRequestParameter("origURL" ) )
+#set( $categoryid = $context.getRequestParameter("categoryid" ) )
+
+#if( !$view )				
+	#set( $view = "${searcher.searchType}/edit" )
+#end
+$context.putPageValue("view", $view)
+<form id="dataeditor" name="dataeditor" method="post" 
+	action="$siteroot$content.searchhome/edit/save.html"
+	class="ajaxform"
+			data-targetdiv="publishing"
+			data-oemaxlevel="3">
+	<input name="save" type="hidden" value="true" />
+	<input name="id" type="hidden" value="$!data.id" />
+	<input name="categoryid" type="hidden" value="$!categoryid" />
+	<input name="catalogid" type="hidden" value="$searcher.catalogId" />
+	<input name="searchtype" type="hidden" value="$searcher.searchType" />
+	<input name="origURL"  type="hidden" value="$!origURL" />
+	$pages.include("$apphome/components/xml/detaileditor.html", $context)
+
+
+<a href="#" class="btn btn-sm btn-primary submitform">[[Save]]</a>
+<a class="btn btn-sm btn-secondary ajax" 
+	href='$siteroot$content.searchhome/index.html'
+	data-targetdivinner="applicationmaincontent"
+			data-oemaxlayout="3">[[Cancel]]</a>
+<a class="btn btn-sm btn-danger ajax" 
+	href='$siteroot$content.searchhome/edit/delete.html?searchtype=$searcher.searchType&catalogid=$searcher.catalogId&id=$!data.id'
+	data-targetdivinner="applicationmaincontent"
+			data-oemaxlayout="4">[[Delete]]</a>
+
+<div id="messagearea">$!message
+</div>
+</form>
+#if( $savedok && $origURL )
+	<a href="$origURL">[[Go Back]]</a>	
+#end
+</div>
+
+</div>

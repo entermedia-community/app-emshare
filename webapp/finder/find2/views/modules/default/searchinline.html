@@ -1,0 +1,48 @@
+
+#set($moduleid = $module.getId())
+#if (!$rendertype && $moduleid)
+	#if(!$module)
+		#set($module = $mediaarchive.getCachedData("module", $moduleid))
+	#end
+   	#set($rendertype = $module.modulerendertype)
+#end
+
+#set( $topmodule = $module)
+$context.putPageValue("topmodule", $topmodule)
+
+#set($topentityid = $context.getRequestParameter("topentityid"))
+
+#if( !$entity)
+	#set( $entity  = $mediaarchive.getData($topmodule.getId(), $entityid) )
+#end
+
+#set($uploadsourcepath =  $topmodule.getValue("uploadsourcepath"))
+$context.putPageValue("uploadsourcepath", $uploadsourcepath)
+
+#set($maintargetdiv = "$!{moduleid}resultscontainer")
+$context.putPageValue("maintargetdiv", $maintargetdiv)
+
+<div id="$maintargetdiv"
+	class="resultsdiv moduleajaxreloadtarget adjustHeight"
+	data-moduleid="$topmodule.getId()"
+	data-hitssessionid="$!hits.getSessionId()"
+	data-url="$apphome/views/modules/$!{module.id}/index.html"
+	data-componenthome = "$apphome/views/modules/$!{module.id}/components"
+	data-searchhome="$apphome/views/modules/$!{module.id}/components/results"
+	data-targetdiv="$maintargetdiv"
+	#if($topentityid) data-topentityid="$topentityid" #end
+	data-oemaxlevel="1"
+>	
+	#set($entityurl = "$siteroot$apphome/views/modules/$module.id/index.html")
+ 	<div class="emgrid-box expandedmodule">
+		
+		$pages.include("$componenthome/results/index.html", $context)
+	</div>
+</div>
+#set($entityid = $context.getRequestParameter('entity'))
+#set($entitytabopen = $context.getRequestParameter('entitytabopen'))
+#if($entityid)
+<span class="showentity" data-id="$entityid" data-entitytabopen="$!{entitytabopen}"></span>
+#end
+
+

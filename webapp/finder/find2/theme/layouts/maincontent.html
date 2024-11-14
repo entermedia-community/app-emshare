@@ -1,0 +1,145 @@
+#set($section = $content.section)
+
+#if($section == "files")
+	#set($setpagetitle = $category.getName())
+#elseif($section == "uploadmedia")
+	#set($setpagetitle = "[[Upload Media]]")
+#elseif($section == "favorites")
+	#set($setpagetitle = "[[Bookmarks]]")
+#elseif($section == "basket")
+	#set($setpagetitle = "[[Cart]]")
+#elseif($section == "settings")
+	#set($setpagetitle = "[[Settings]]")
+#end
+#if(!$moduleid)
+	##set($module = $context.findValue("module") )
+	#set($moduleid = $module.getId())
+#end
+
+##loop to know if there are submenus
+#foreach( $link in $topmenu)
+	#if($topmenuselected == $link.toplevelentity && $link.get("submenu"))
+		#set($hassubmenu = true) 
+	#end
+#end
+
+<div id="applicationmaincontent" 
+class="applicationmaincontent  applicationmaincontent$section #if($hassubmenu) entitynavsubmenu #end"
+data-setpagetitle="$!setpagetitle"
+data-section="$!section ">
+	$pages.include("${themeprefix}/layouts/header.html", $context)
+	
+	#set($tab = $content.tab)
+	
+	#if($canviewentitiestopmenu)
+		
+		<div class="entityNavBarContainer autostickywidth" id="entityNavBarContainer">
+			<ul class="entity-navbar">
+				
+				#if($topmenu.isEmpty())
+				<li>
+					<a href="$applink/index.html" class="ajax #ifnull($topmenuselected) active #end" 
+						data-targetdiv="applicationcontent" 
+						data-oemaxlevel="3" 
+						data-updateurl="true"
+						data-sidebarcomponent="categories"
+						data-profilepreference="defaultmodule" 
+						data-profilepreference.value="" 
+						data-scrolltotop="true"
+					 	title="[[View All]]">
+							  [[Folders]]
+					</a>
+				</li>
+				#else
+				
+					#set($sectionid = $context.getRequestParameter("section"))
+					#set($topmenuselected = $sectionid)
+							
+					#foreach( $link in $topmenu)
+						#set( $topmenuentity = $mediaarchive.getCachedData("module",$link.toplevelentity) )
+						#set($url = "$applink/views/modules/$topmenuentity.getId()/index.html")
+	
+						#if($link.getValue("custompath"))
+								##sample: ${apphome}/views/modules/searchcategory/index.html?categoryid=AY82YpA9RucN_HGNkhB-
+								#set($url = $content.replaceProperty($link.getValue("custompath")))
+						#end
+						
+						#if($link.toplevelentity == $moduleid )
+							#set($topmenuselected = $link.getId() )
+						#end						
+						
+						#if($link.get("submenu"))
+							#foreach($s in $submenu)
+							$s.entity == $moduleid
+								#if($s.entity == $moduleid)
+									#set($topmenuselected = $s.parentsection)
+									#set($submenuselected = $s.entity )
+									#set($submenu = $link.getValue("submenu"))
+								#end
+							#end
+							
+						#end
+						
+	
+						<li > 
+							<a href="$url" 
+								class="ajax activelistener #if( $topmenuselected == $link.getId()) active#end" 
+								data-targetdiv="applicationcontent" 
+								data-oemaxlevel="4" 
+								data-updateurl="true"
+								####data-$!{topmenuentity.getId()}page="1"
+								data-$!{topmenuentity.getId()}clearselection="true"
+								#ifnotnull($topmenuentity.getId())
+									data-profilepreference="defaultmodule" 
+									data-profilepreference.value="${topmenuentity.getId()}"
+								#end 
+								data-scrolltotop="true"
+								#if($topmenuentity.getId() =="asset") data-sidebarcomponent="categories" #end
+								title="[[View]] #text($link)">
+								#set($moduleicon = "grid")
+						     	#if ($topmenuentity.moduleicon)
+						     		#set($moduleicon = $topmenuentity.moduleicon)
+						     	#end
+								<i class="bi bi-${moduleicon} module-icon"></i> #text($link)
+							</a>
+						</li>
+					#end
+						
+				#end
+			</ul>
+		</div>
+		
+		#if($topmenuselected && $submenu)
+			<div class="entity-navbar-sub-container">
+			<ul class="entity-navbar-sub">
+			#foreach( $link in $submenu)
+					#set( $submenuentity = $mediaarchive.getCachedData("module",$link.entity) )
+					
+					#set($menuicon = "grid")
+					#if($submenuentity.moduleicon)
+						#set($menuicon = $submenuentity.moduleicon)
+					#end
+					<li >
+						<a href="$applink/views/modules/$submenuentity.getId()/index.html?$!{submenuentity.getId()}page=1" 
+							class="ajax activelistener #ifnotnull($submenuselected) #if( $submenuselected == $submenuentity.getId()) active#end #end" 
+							data-targetdiv="applicationcontent" 
+							data-oemaxlevel="4" 
+							data-updateurl="true"
+							data-profilepreference="defaultmodule" 
+							data-profilepreference.value="${submenuentity.getId()}" 
+							data-scrolltotop="true"
+							#if($submenuentity.getId() =="asset") data-sidebarcomponent="categories" #end
+							title="[[View]] #text($link)">
+								<i class="bi bi-$!{menuicon} module-icon"></i> #text($link)
+						</a>
+					</li>
+				#end
+				</ul>
+				</div>
+		#end
+		
+	#end
+
+	$pages.streamContent()
+	
+</div>

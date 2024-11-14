@@ -1,0 +1,758 @@
+#set( $apphome = $context.findValue("applicationid") )
+#set( $apphome = "/${apphome}" )
+#embody {
+
+#set($color1 = "")
+#set($color2 = "")
+
+#if($theme.bodybackgroundcolor)
+	background: $theme.bodybackgroundcolor;
+#else
+	#if( ${theme.tileupload})
+		#set($asset = $mediaarchive.getAsset(${theme.tileupload}))
+		#set( $originalpath = $mediaarchive.asLinkToOriginal($asset) )
+    #set ($backgroundpath = "$siteroot$apphome/views/modules/asset/downloads/originals/$originalpath")
+	#else
+		#set($backgroundpath = $theme.backgroundpath)
+	#end
+	#if(!$backgroundpath && $theme.backgroundstyle)
+		#set($backgroundpath = "/${content.applicationid}/theme/images/backgrounds/${theme.backgroundstyle}" )
+	#end
+	#if($backgroundpath)
+		background-image: url('$backgroundpath');
+		#if($theme.backgroundtile == "true")
+			background-repeat:repeat;
+		#else
+		background-position:center top;
+		background-repeat: no-repeat;
+		background-size: 100%;		
+		#end
+	#end
+
+#end
+
+}
+
+#header {
+	#if($theme.disableshadows == "true")
+		box-shadow: none;
+	#end
+
+	#set($color1 = $theme.headercolor)
+	#set($color2 = $theme.headercolorgradient)
+	#if ($color1)
+		background: $color1; /* Old browsers */ 
+	#end
+	#if($color1 && $color2)
+		background: -moz-linear-gradient(top, $color1 0%, $color2 100%); /* FF3.6+ */
+		background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,$color1), color-stop(100%,$color2)); /* Chrome,Safari4+ */
+		background: -webkit-linear-gradient(top, $color1 0%,$color2 100%); /* Chrome10+,Safari5.1+ */
+		background: -o-linear-gradient(top, $color1 0%,$color2 100%); /* Opera 11.10+ */
+		background: -ms-linear-gradient(top, $color1 0%,$color2 100%); /* IE10+ */
+		background: linear-gradient(top, $color1 0%,$color2 100%); /* W3C */
+		filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='$color1', endColorstr='$color2',GradientType=0 ); /* IE6-9 */
+	#end
+	#set($color1 = "")
+	#set($color2 = "")
+}
+
+
+#header .header-text{
+position: relative;
+#if ($theme.headerfont)
+	font-family: $theme.headerfont;
+#end
+#if ($theme.headerfontcolor)
+	color: ${theme.headerfontcolor};
+#end
+#if($theme.headerfontsize)
+	font-size: ${theme.headerfontsize}px;
+#end
+#if($theme.headerfontopacity)
+	opacity: ${theme.headerfontopacity};
+#end
+
+}
+
+#if( ${theme.logoasset})
+	#set($logo = $mediaarchive.getAsset(${theme.logoasset}))
+	#set($originalpath = $mediaarchive.asLinkToOriginal($logo) )
+    #set($logopath = "$!{siteroot}$apphome/views/modules/asset/downloads/originals/$originalpath")
+#else
+	#set($logopath = $theme.logopath)
+#end
+
+#if($logopath)
+.emlogo
+{
+	display: block;
+	width: ${theme.logowidth}px;
+	height: ${theme.logoheight}px;
+	background-image: url('$logopath');
+	background-repeat: no-repeat;
+	background-size: 100%;
+}
+.logocontainer img
+{
+	display: none;	
+}
+#end
+
+##background-color: #565656;
+.emnav {
+	#if( ${theme.navbackgroundpath})
+		background: url('$theme.navbackgroundpath');
+	#else
+		#set($color1 = $theme.navcolor)
+		#set($color2 = $theme.navcolorgradient)
+		#if($color1)
+			background:none;
+			background-color: $color1;
+			border-bottom: 1px solid $color1;
+		#end
+		#if($color1 && $color2)
+			background: -moz-linear-gradient(top, $color1 0%, $color2 100%); /* FF3.6+ */
+			background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,$color1), color-stop(100%,$color2)); /* Chrome,Safari4+ */
+			background: -webkit-linear-gradient(top, $color1 0%,$color2 100%); /* Chrome10+,Safari5.1+ */
+			background: -o-linear-gradient(top, $color1 0%,$color2 100%); /* Opera 11.10+ */
+			background: -ms-linear-gradient(top, $color1 0%,$color2 100%); /* IE10+ */
+			background: linear-gradient(top, $color1 0%,$color2 100%); /* W3C */
+			filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='$color1', endColorstr='$color2',GradientType=0 ); /* IE6-9 */
+		#end
+	
+		#set($color1 = "")
+		#set($color2 = "")
+		
+	#end;
+}
+
+@media (max-width: 768px) {
+	.navbar-quicksearch {
+		#if( ${theme.navbackgroundpath})
+			background: url('$theme.navbackgroundpath');
+		#else
+			
+			#set($color1 = $theme.navcolor)
+			#set($color2 = $theme.navcolorgradient)
+			
+			#if ($color1 && $color2=="")
+				background: $color1; /* Old browsers */ 
+			#end
+		
+			#if($color1 && $color2)
+				background: -moz-linear-gradient(top, $color1 0%, $color2 100%); /* FF3.6+ */
+				background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,$color1), color-stop(100%,$color2)); /* Chrome,Safari4+ */
+				background: -webkit-linear-gradient(top, $color1 0%,$color2 100%); /* Chrome10+,Safari5.1+ */
+				background: -o-linear-gradient(top, $color1 0%,$color2 100%); /* Opera 11.10+ */
+				background: -ms-linear-gradient(top, $color1 0%,$color2 100%); /* IE10+ */
+				background: linear-gradient(top, $color1 0%,$color2 100%); /* W3C */
+				filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='$color1', endColorstr='$color2',GradientType=0 ); /* IE6-9 */
+			#end
+		
+			#set($color1 = "")
+			#set($color2 = "")
+	  #end										
+	}
+	
+}
+
+/*EMNav Tabs*/
+.emnav .navtabs .navtabitem,
+#header .navbar-toggler  {
+	#set($color1 = $theme.navbuttoncolor)
+	#set($color2 = $theme.navbuttoncolorgradient)
+	#if ($color1)
+		background-color: $color1; /* Old browsers */
+	#end
+	#if($color1 && $color2)
+		background: -moz-linear-gradient(top, $color1 0%, $color2 100%); /* FF3.6+ */
+		background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,$color1), color-stop(100%,$color2)); /* Chrome,Safari4+ */
+		background: -webkit-linear-gradient(top, $color1 0%,$color2 100%); /* Chrome10+,Safari5.1+ */
+		background: -o-linear-gradient(top, $color1 0%,$color2 100%); /* Opera 11.10+ */
+		background: -ms-linear-gradient(top, $color1 0%,$color2 100%); /* IE1ta0+ */
+		background: linear-gradient(top, $color1 0%,$color2 100%); /* W3C */
+		filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='$color1', endColorstr='$color2',GradientType=0 ); /* IE6-9 */
+	#end
+	#if ( $theme.navfont )
+		font-family: $theme.navfont;
+	#end
+	#if( $theme.navfontsize )
+		font-size: ${theme.navfontsize}px;
+	#end
+	#if( $theme.navbuttontext )
+		color: ${theme.navbuttontext};
+	#end
+	#if($theme.navfontopacity)
+		opacity: ${theme.navfontopacity};
+	#end
+	#if($theme.disableshadows == "true")
+		box-shadow: none;
+	#else
+		box-shadow: 2px 2px 4px 0px rgba(0, 0, 0, .1);
+	#end
+	#if( $theme.navbuttonbordercolor )
+		border:1px solid $theme.navbuttonbordercolor;
+		border-bottom:0 none;
+	#end
+	#if($theme.disableshadows == "false")
+		box-shadow: inset 0 10px 10px -10px rgba(0,0,0,0.5);
+	#end
+	
+	#set($color1 = "")
+	#set($color2 = "")
+}
+
+
+/*EMNav Tabs Hover*/
+.Xemnav .navtabs li.navactive a.navtabitem {
+	#if($theme.disableshadows == "false")
+		box-shadow: inset 0 10px 10px -10px rgba(255,255,255,0.5);
+	#end
+	#if( $theme.navbuttontexthover )
+		color: ${theme.navbuttontexthover};
+	#end
+}
+.Xemnav .navtabs li a:hover {
+	#if($theme.disableshadows == "false")
+		box-shadow: inset 0 10px 10px -10px rgba(255,255,255,0.5);
+	#end
+	##if( $theme.navbuttontexthover )
+	##	color: ${theme.navbuttontexthover};
+	##end
+}
+.Xemnav .navtabs li.navactive a.navtabitem,
+#Xside-nav-inner ul li.current a {
+	#set($color1 = $theme.navbuttonhovercolor)
+	#set($color2 = $theme.navbuttonhovercolorgradient)
+	
+	#if ($color1)
+		background:none;
+		background-color: $color1; /* Old browsers */ 
+	#end
+	#if($color1 && $color2)
+		background: -moz-linear-gradient(top, $color1 0%, $color2 100%); /* FF3.6+ */
+		background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,$color1), color-stop(100%,$color2)); /* Chrome,Safari4+ */
+		background: -webkit-linear-gradient(top, $color1 0%,$color2 100%); /* Chrome10+,Safari5.1+ */
+		background: -o-linear-gradient(top, $color1 0%,$color2 100%); /* Opera 11.10+ */
+		background: -ms-linear-gradient(top, $color1 0%,$color2 100%); /* IE10+ */
+		background: linear-gradient(top, $color1 0%,$color2 100%); /* W3C */
+		filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='$color1', endColorstr='$color2',GradientType=0 ); /* IE6-9 */
+	#end
+	#if( $theme.navbuttonhoverbordercolor )
+		border-color: $theme.navbuttonhoverbordercolor;
+	#end
+	#if ( $theme.navhoverfont )
+		font-family: $theme.navhoverfont;
+	#end
+	#if( $theme.navhoverfontsize )
+		font-size: ${theme.navhoverfontsize}px;
+	#end
+	#if( $theme.navbuttontexthover )
+		color: ${theme.navbuttontexthover};
+	#end
+	#if($theme.navhoverfontopacity)
+		opacity: ${theme.navhoverfontopacity};
+	#end
+	
+	#set($color1 = "")
+	#set($color2 = "")
+}
+#if($theme.navfontcolor)
+.Xemnav .navtabsright li a,
+.nav-collectionsearch {
+	color:$theme.navfontcolor;
+}
+.emnav .navtabsright a:hover,
+.nav-collectionsearch:hover {
+	color:$theme.navfontcolor;
+}
+
+#end
+
+#if( $theme.navbuttonbordercolor )
+	.emnav .librarycollectionpicker,
+	.emnav .nav-quicksearch {
+		/*border-left: 1px solid $theme.navbuttonbordercolor;*/
+	}
+#end
+#if ($theme.navlinksbackgroundcolor)
+	#header .navlinks,
+	#header .dropdown-menu {
+		background-color: $theme.navlinksbackgroundcolor;
+	}
+#end
+#if ($theme.navlinkfontcolor)
+	#header .navlinks li>a,
+	#header .navlinks .dropdown-item {
+    	color:$theme.navlinkfontcolor;
+    	background-color: $theme.navlinksbackgroundcolor;
+	}
+#end
+#if ($theme.navlinkfontcolorhover)
+	#header .navlinks li a:hover {
+    	color:$theme.navlinkfontcolorhover;
+	}
+#end
+
+h1 {
+#if ( $theme.h1font )
+	font-family: $theme.h1font;
+#end
+#if( $theme.h1fontsize )
+	font-size: ${theme.h1fontsize}px;
+#end
+#if( $theme.h1fontcolor )
+	color: ${theme.h1fontcolor};
+#end
+#if($theme.h1fontopacity)
+	opacity: ${theme.h1fontopacity};
+#end
+}
+
+h2 {
+#if ( $theme.h2font )
+	font-family: $theme.h2font;
+#end
+#if( $theme.h2fontsize )
+	font-size: ${theme.h2fontsize}px;
+#end
+#if( $theme.h2fontcolor )
+	color: ${theme.h2fontcolor};
+#end
+#if($theme.h2fontopacity)
+	opacity: ${theme.h2fontopacity};
+#end
+}
+
+h3 {
+#if ( $theme.h3font )
+	font-family: $theme.h3font;
+#end
+#if( $theme.h3fontsize )
+	font-size: ${theme.h3fontsize}px;
+#end
+#if( $theme.h3fontcolor )
+	color: ${theme.h3fontcolor};
+#end
+#if($theme.h3fontopacity)
+	opacity: ${theme.h3fontopacity};
+#end
+}
+
+h4 {
+#if ( $theme.h4font )
+font-family: $theme.h4font;
+#end
+#if( $theme.h4fontsize )
+font-size: ${theme.h4fontsize}px;
+#end
+#if( $theme.h4fontcolor )
+color: ${theme.h4fontcolor};
+#end
+#if($theme.h4fontopacity)
+opacity: ${theme.h4fontopacity};
+#end
+}
+
+p {
+#if ( $theme.pfont )
+	font-family: $theme.pfont;
+#end
+#if( $theme.pfontsize )
+	font-size: ${theme.pfontsize}px;
+#end
+#if( $theme.pfontcolor )
+	color: ${theme.pfontcolor};
+#end
+#if($theme.pfontopacity)
+	opacity: ${theme.pfontopacity};
+#end
+}
+
+#if ($theme.navbuttonhovercolorgradient) 
+	.Xcollectionshomecontent,
+	.Xcreatemediapanel {
+		background-color: $theme.navbuttonhovercolorgradient;
+	}
+#elseif ($theme.navbuttonhovercolor) 
+	.Xcollectionshomecontent,
+	.Xcreatemediapanel {
+		background-color: $theme.navbuttonhovercolor;
+	}
+#end
+
+#if($theme.backgroundoppacity)
+	#emcontent {
+		opacity: $theme.backgroundoppacity;
+	}
+#end
+
+.col-sidebar {
+	#set($color1 = $theme.leftcolumnbackgroundcolor)
+	#set($color2 = $theme.leftcolumnbackgroundgradient)
+	#if ($color1)
+	background:none;
+    background-color: $color1; /* Old browsers */
+    #end
+    #if ($color1 && $color2)
+		background: -moz-linear-gradient(left, $color1 -10%, $color2 10%); /* FF3.6-15 */
+		background: -webkit-linear-gradient(left, $color1 -10%,$color2 10%); /* Chrome10-25,Safari5.1-6 */
+		background: linear-gradient(to right, $color1 -10%,$color2 10%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+		filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='$color1', endColorstr='$color2',GradientType=1 ); /* IE6-9 */
+	#end
+	#set($color1 = "")
+	#set($color2 = "")
+}
+.ui-widget-header {
+	#if($theme.widgetbordercolor)
+		border-color: $theme.widgetbordercolor;
+	#end
+}
+.ui-widget-header,
+.ui-widget-header a,
+.ui-widget-header a:hover,
+.ui-widget-header a:visited  {
+#set($color1 = $theme.navcolor)
+#set($color2 = $theme.navcolorgradient)
+
+#if ($color1 && $color2=="")
+	background-color: $color1; /* Old browsers */ 
+#end
+#if($color1 && $color2)
+	background: -moz-linear-gradient(top, $color1 0%, $color2 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,$color1), color-stop(100%,$color2)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top, $color1 0%,$color2 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top, $color1 0%,$color2 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top, $color1 0%,$color2 100%); /* IE10+ */
+	background: linear-gradient(top, $color1 0%,$color2 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='$color1', endColorstr='$color2',GradientType=0 ); /* IE6-9 */
+#end
+#if( $theme.navfontcolor )
+		color: ${theme.navfontcolor};
+#end
+
+#set($color1 = "")
+#set($color2 = "")
+
+}
+.ui-widget-header .dropdown-menu a,
+.ui-widget-header .dropdown-item {
+	#set($color1 = $theme.navcolor)
+	#set($color2 = $theme.navcolorgradient)
+	#if($color2)
+		background: none;
+		background-color:$color2;
+	#else
+		background: none;
+		background-color:$color1;
+	#end
+	#if( $theme.navfontcolor )
+		color: ${theme.navfontcolor};
+	#end
+
+	
+}
+
+.col-sidebar .ui-widget-content {
+#if($theme.disableshadows == "true")
+	box-shadow: none;
+#else
+	box-shadow: 2px 2px 4px 0px rgba(0, 0, 0, .1);
+#end
+
+##if($theme.widgetbordercolor)
+##border-color: $theme.widgetbordercolor;
+##end
+	
+}
+
+
+#help-content .ui-widget-header {
+
+#set($color1 = $theme.navcolor)
+#set($color2 = $theme.navcolorgradient)
+
+#if ($color1 && $color2=="")
+background: $color1; /* Old browsers */ 
+#end
+#if($color1 && $color2)
+background: -moz-linear-gradient(top, $color1 0%, $color2 100%); /* FF3.6+ */
+background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,$color1), color-stop(100%,$color2)); /* Chrome,Safari4+ */
+background: -webkit-linear-gradient(top, $color1 0%,$color2 100%); /* Chrome10+,Safari5.1+ */
+background: -o-linear-gradient(top, $color1 0%,$color2 100%); /* Opera 11.10+ */
+background: -ms-linear-gradient(top, $color1 0%,$color2 100%); /* IE10+ */
+background: linear-gradient(top, $color1 0%,$color2 100%); /* W3C */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='$color1', endColorstr='$color2',GradientType=0 ); /* IE6-9 */
+#end
+
+#if($theme.navfontcolor)
+color: $theme.navfontcolor;
+#end
+
+#set($color1 = "")
+#set($color2 = "")
+
+}
+
+.table #tableheader,
+.emdata .tableheader,
+#emcontainer #emselectable #tableheader,
+.settings-table .tableheader th,
+.settings-table #tableheader th,
+#table-container li.header {
+	#set($color1 = $theme.tableheadercolor)
+	#set($color2 = $theme.tableheadercolorgradient)
+	#if ($color1)
+		background:none;
+		background-color: $color1; /* Old browsers */ 
+	#end
+	#if($color1 && $color2)
+		background: -moz-linear-gradient(top,  $color1 0%, $color2 100%); /* FF3.6+ */
+		background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,$color1), color-stop(100%,$color2)); /* Chrome,Safari4+ */
+		background: -webkit-linear-gradient(top,  $color1 0%,$color2 100%); /* Chrome10+,Safari5.1+ */
+		background: -o-linear-gradient(top,  $color1 0%,$color2 100%); /* Opera 11.10+ */
+		background: -ms-linear-gradient(top,  $color1 0%,$color2 100%); /* IE10+ */
+		background: linear-gradient(to bottom,  $color1 0%,$color2 100%); /* W3C */
+		filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='$color1', endColorstr='$color2',GradientType=0 ); /* IE6-9 */
+	#end
+	
+	#set($color1 = "")
+	#set($color2 = "")
+
+}
+
+/* Table Colors */
+#if($theme.tableheaderfont)
+.table #tableheader,
+.emdata .tableheader,
+#emcontainer #emselectable #tableheader,
+.settings-table .tableheader th,
+.settings-table #tableheader th,
+#table-container li.header,
+#tableheader th,
+#tableheader th a,
+.tableheader th,
+.tableheader th a
+ {
+	color: $theme.tableheaderfont;
+}
+#end
+#if($theme.tableheaderfonthover)
+	#tableheader th a:hover,
+	.tableheader th a:hover {
+		color: $theme.tableheaderfonthover;
+	}
+#end
+
+#eml-tab-subnav ul, 
+#sub-nav {
+	#if($theme.tablebordercolor)
+		border-bottom: $theme.tablebordercolor;
+	#end
+	
+	#set($color1 = $theme.tablemenubackgroundcolor)
+	#set($color2 = $theme.tablemenubackgroundcolorgradient)
+	
+	#if ($color1)
+		background:none;
+		background-color: $color1; /* Old browsers */ 
+	#end
+	#if($color1 && $color2)
+		background: -moz-linear-gradient(top, $color1 0%, $color2 100%); /* FF3.6+ */
+		background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,$color1), color-stop(100%,$color2)); /* Chrome,Safari4+ */
+		background: -webkit-linear-gradient(top, $color1 0%,$color2 100%); /* Chrome10+,Safari5.1+ */
+		background: -o-linear-gradient(top, $color1 0%,$color2 100%); /* Opera 11.10+ */
+		background: -ms-linear-gradient(top, $color1 0%,$color2 100%); /* IE10+ */
+		background: linear-gradient(top, $color1 0%,$color2 100%); /* W3C */
+		filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='$color1', endColorstr='$color2',GradientType=0 ); /* IE6-9 */
+	#end
+	
+	#set($color1 = "")
+	#set($color2 = "")
+}
+
+#if($theme.settingsmenuselectioncolor)
+/*TR Hovers*/
+/*TR Hovers*/
+tr.emborderhover td,
+.table-hover tbody tr:hover,
+#side-nav-inner ul li a:hover,
+#workarea ul li:hover,
+.search-list li.current a.search-href, 
+.sidebar-list li.current a,
+.search-list li:hover a.search-href, 
+.sidebar-list a:hover,
+.emtree .checkbox .field, 
+.emtree .treerow:hover, 
+.emtree .treerow.selected, 
+.emtree .cat-current,
+.emtree .treerow.selected:hover,
+.filters-sidebar li:hover,
+.filters-sidebar-selected li:hover {
+	background: $theme.settingsmenuselectioncolor;
+}
+#end
+
+
+
+.emsubnav,
+.emsubnav .nav-link,
+.emtabs li.emtabselected a,
+.emtabs li a:hover,
+.emtabs li a, #eml-tab-subnav ul li a {
+	#set($color1 = $theme.tablemenubackgroundcolor)
+	#set($color2 = $theme.tablemenubackgroundcolorgradient)
+	
+	#if ($color1)
+		background:none;
+		background-color: $color1; /* Old browsers */ 
+	#end
+	
+	#if($color1 && $color2)
+	
+	background: -moz-linear-gradient(top, $color1 0%, $color2 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,$color1), color-stop(100%,$color2)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top, $color1 0%,$color2 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top, $color1 0%,$color2 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top, $color1 0%,$color2 100%); /* IE10+ */
+	background: linear-gradient(top, $color1 0%,$color2 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='$color1', endColorstr='$color2',GradientType=0 ); /* IE6-9 */
+	
+	#end
+	#if($theme.tablemenufontcolor)
+		color:$theme.tablemenufontcolor;
+	#end
+	
+	#set($color1 = "")
+	#set($color2 = "")
+
+}
+
+.emsubnav .nav-link:hover,
+#sub-nav a:hover,
+.emsubnav .nav-item:hover .nav-link,
+.emsubnav .nav-item:hover .nav-link:hover, 
+.emsubnav .dropdown-menu,
+#sub-nav .dropdown-item,
+#eml-tab-subnav ul li a:hover {
+	#if($theme.tablemenuhovercolor)
+		background-color: $theme.tablemenuhovercolor!important;
+	#end
+	#if($theme.tablemenufontcolorhover)
+		color:$theme.tablemenufontcolorhover!important;
+	#end
+}
+.emtabs li a {
+	#if($theme.tablemenuhovercolor)
+		background-color: $theme.tablemenuhovercolor;
+	#end
+}
+
+#sub-nav li:hover ul li a:hover {
+#if($theme.tablemenuhovercolor)
+	background-color: $theme.tablemenuhovercolor;
+#end
+}
+
+#if($theme.tablemenufontcolor)
+#sub-nav a { 
+	color:$theme.tablemenufontcolor;
+}
+#end
+
+
+
+
+#right-col {
+#if($theme.tablebordercolor)
+border-left: 1px solid $theme.tablebordercolor;
+#end
+}
+
+/* Table Hover Color */
+#emcontainer #main-results-table tr.emborderhover, #main-results-table tr:hover {
+#if($theme.tablehovercolor)
+background: $theme.tablehovercolor;
+#end
+}
+
+.sidebar-media li.currentsubtle {
+#if($theme.detailsrightcolumnselectedcolor)
+background: $theme.detailsrightcolumnselectedcolor;
+#end
+}
+
+#de-side-nav li.current a, #de-side-nav li.current a:hover {
+
+#set($color1 = $theme.assetdetailsselectedtabcolor)
+#set($color2 = $theme.assetdetailsselectedtabcolorgradient)
+#if ($color1 && $color2=="")
+background: $color1; /* Old browsers */
+border-bottom: 1px solid $color1;
+border-top: 1px solid $color1;
+#end
+#if($color1 && $color2)
+background: -moz-linear-gradient(left,  $color1 0%, $color2 100%); /* FF3.6+ */
+background: -webkit-gradient(linear, left top, right top, color-stop(0%,$color1), color-stop(100%,$color2)); /* Chrome,Safari4+ */
+background: -webkit-linear-gradient(left,  $color1 0%,$color2 100%); /* Chrome10+,Safari5.1+ */
+background: -o-linear-gradient(left,  $color1 0%,$color2 100%); /* Opera 11.10+ */
+background: -ms-linear-gradient(left,  $color1 0%,$color2 100%); /* IE10+ */
+background: linear-gradient(to right,  $color1 0%,$color2 100%); /* W3C */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='$color1', endColorstr='$color2',GradientType=1 ); /* IE6-9 */
+
+border-bottom: 1px solid $color1;
+border-top: 1px solid $color1;
+
+#end
+
+#set($color1 = "")
+#set($color2 = "")
+}
+
+#de-side-nav ul li.current::after, 
+#pdf-thumbnail-sidebarX ul li.current::after {
+
+#set($color1 = $theme.assetdetailsselectedtabcolor)
+#set($color2 = $theme.assetdetailsselectedtabcolorgradient)
+#if ($color1 && $color2=="")
+border-left-color: $color1;
+#elseif ($color1 && $color2)
+border-left-color: $color2;
+#end
+
+#set($color1 = "")
+#set($color2 = "")
+}
+
+.title-bar {
+	
+#set($color1 = $theme.assetdetailsselectedtabcolor)
+#set($color2 = $theme.assetdetailsselectedtabcolorgradient)
+#if ($color1 && $color2=="")
+background: $color1; /* Old browsers */
+border-left: $color1;
+border-right: $color1;
+border-bottom: $color1;
+#end
+#if($color1 && $color2)
+background: -moz-linear-gradient(top, $color1 0%, $color2 100%); /* FF3.6+ */
+background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,$color1), color-stop(100%,$color2)); /* Chrome,Safari4+ */
+background: -webkit-linear-gradient(top, $color1 0%,$color2 100%); /* Chrome10+,Safari5.1+ */
+background: -o-linear-gradient(top, $color1 0%,$color2 100%); /* Opera 11.10+ */
+background: -ms-linear-gradient(top, $color1 0%,$color2 100%); /* IE10+ */
+background: linear-gradient(top, $color1 0%,$color2 100%); /* W3C */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='$color1', endColorstr='$color2',GradientType=0 ); /* IE6-9 */
+border-left: $color2;
+border-right: $color2;
+border-bottom: $color2;
+#end
+
+#set($color1 = "")
+#set($color2 = "")
+}
+
+.search-list li.current a.search-href, .sidebar-list li.current a {
+#if ($theme.settingsmenuselectioncolor)
+background: $theme.settingsmenuselectioncolor;
+#end
+}

@@ -1,0 +1,70 @@
+<div id="eventlist" class="settigs-eventlist">
+#set( $seltype = $context.getRequestParameter("type"))
+#if( !$seltype)
+	#set( $seltype  ="events")
+#end
+<div class="tab-actions clearfix">
+	<select class="eventsjump form-control form-control-sm" 
+			data-eventurl="$siteroot$apphome/views/settings/events/triggers/list.html"
+			data-targetdiv="eventlist">
+			<option value=""></option>
+		#foreach( $event in $pathevents )
+				#if( $type != $event.getPage().getDirectoryName() )
+					#set( $type = $event.getPage().getDirectoryName())
+					<option #if( $seltype == $type) selected #end value="$type">$type</option>
+				#end
+			#end
+	</select>
+	<strong style="margin-left: 5px;">[[Select a group of triggers to display]]</strong>
+	 <a class="btn btn-sm btn-primary float-right ajax" style="margin-left: 5px;" 
+	 	href="$siteroot$apphome/views/settings/events/triggers/edit/edit.html?new=true"
+	 	data-targetdivinner="applicationmaincontent" data-oemaxlevel="3">[[New Event]]</a>
+	  <a class="btn btn-sm btn-secondary float-right ajax" style="margin-left: 5px;" 
+	  	href="$siteroot$apphome/views/settings/events/triggers/reload.html"
+	  	data-targetdivinner="applicationmaincontent" data-oemaxlevel="3">[[Stop Events]]</a>
+	 
+</div>
+
+#if ($pathevents.size()>0)
+<div class="emselectable">
+	<table class="table table-striped table-hover emdata">
+		<thead>
+			<tr class="tableheader">
+				<th>[[Name]]</th>
+				<th>[[URL]]</th>
+				<th colspan="3">[[Last Ran]]</th>
+			</tr>
+		</thead>
+		#foreach( $event in $pathevents )
+		#if( $seltype == $event.getPage().getDirectoryName() )
+		<tr rowid="$event.getPage().getPath()">
+			<td><b>$context.getText($event.getName())</b></td>
+			<td> $event
+			<div class="emselectabledetails">
+				$!event.getPage().getProperty("eventdescription")
+			</div></td>
+			<td> #if( $event.isRunning() )[[event is running]]#end
+			<br>
+			$!event.getFormattedLastRun() </td>
+			<td> #if( $event.getPeriod() > 0 )
+			<br>
+			[[repeating]]
+			#end </td>
+			<td> #if(!$event.isEnabled())
+			<br>
+			[[Disabled]]
+			#end </td>
+		</tr>
+		#end
+		#end
+	</table>
+	<form name="showevent" method="post" 
+			action="$siteroot$apphome/views/settings/events/triggers/edit/edit.html" 
+			class="ajaxform" 
+			data-targetdivinner="applicationmaincontent"
+			data-oemaxlevel="3">
+		<input name="eventpath" type="hidden" id="emselectedrow" />
+	</form>
+</div>
+#end
+</div>

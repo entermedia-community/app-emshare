@@ -1,0 +1,45 @@
+<div id="eventeditpage">
+<h3>[[Event Properties]]</h3> 
+<form action="$siteroot$apphome/views/settings/events/triggers/edit/save.html"
+		class="ajaxform"
+		data-targetdiv="applicationmaincontent"
+		data-oemaxlevel="4">
+<table class="table table-striped settings-table" cellpadding="5">
+<tr><td style="width:180px;">[[Name]]:</td><td><input type="text" class="form-control" size="15" name="eventname" value='$!pathevent.getPage().getProperty("eventname")'/></td></tr>
+<tr><td>[[Period]]:</td><td><input type="text" class="form-control form-control-sm" size="4" name="period" value="$!pathevent.getFormattedPeriod()"/> [[in milliseconds (can use s, h, d or m)]]</td></tr>
+<tr><td>[[Starting]]:</td><td><input type="text" class="form-control  form-control-sm" size="4" name="startingfrommidnight" value="$!pathevent.getStartingFromMidnight()"/> [[time from midnight (can use s, h, d or m)]]</td></tr>
+<tr>
+	<td>[[Enabled]]:</td>
+	<td>
+		<div class="form-check">
+			<input name="enabled" class="form-check-input"  value="true" type="checkbox" #if($pathevent.isEnabled()) checked #end/>
+		</div>
+	</td>
+</tr>
+#if( $pathevent)
+<tr><td>[[Event URL]]:</td><td>$!pathevent.getPage().getPath()</td></tr>
+<input type="hidden" name="eventpath" value="$pathevent.getPage().getPath()"/>
+#else
+<tr><td>[[Event URL]]:</td><td><input name="eventpath"  class="form-control" size="50" value="/${catalogid}/events/FOLDER/NAME.html"/></td></tr>
+#end
+#if ( $pathevent.getFormattedLastRun()  )
+<tr><td>[[Last ran on]]: </td><td> $!pathevent.getFormattedLastRun()</td></tr>
+#end 
+</table>
+
+<input class="btn focused-btn" type="submit" value="[[Save]]" style="margin-right:10px;"/>
+
+ <a class="btn btn-primary ajax" data-targetdivinner="eventstatus" href="$siteroot$apphome/views/settings/events/triggers/run.html?forcerun=true&runpath=$pathevent.getPage().getPath()&oemaxlevel=1">[[Run Now]]</a> 
+ <a class="btn btn-secondary emdialog" href="$siteroot$apphome/views/settings/events/triggers/edit/scripts/scripteditor.html?eventpath=$pathevent.getPage().getPath()">[[Edit Script]]</a> &nbsp;&nbsp; 
+ <a class="btn btn-secondary ajax" data-targetdivinner="eventeditpage"  href="$siteroot$apphome/views/settings/events/triggers/edit/clear.html?eventpath=$pathevent.getPage().getPath()">[[Clear Log]]</a>
+</form>
+
+
+<div class="edit-permissions" style="padding:10px; margin-top:20px; background-color: #f1f1f1;">
+$pages.include("$apphome/views/settings/events/triggers/edit/log.html")
+</div>
+<hr>
+<p>
+<a class="btn btn-secondary ajax" data-targetdivinner="eventeditpage"  href="$home$apphome/views/settings/events/triggers/edit/clear.html?eventpath=$pathevent.getPage().getPath()">[[Clear Log]]</a>
+</p>
+</div>

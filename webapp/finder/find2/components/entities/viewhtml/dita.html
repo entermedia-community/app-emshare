@@ -1,0 +1,31 @@
+
+<div class="bg-dark dita-viz-tabcontent">
+	  $pages.include("$componenthome/entities/viewhtml/header.html",$context) 
+
+  #ifnull($rootelement)
+    <p class="m-3 text-muted text-center">
+      Generate a New DITA view or select any of the previously generate dita/ditamap from the sidebar.
+    </p>
+  #end
+  
+  #ifnotnull($rootelement)
+	  #set( $mediadbappid=$mediaarchive.getMediaDbId())
+
+	
+	  <div class="pt-2 w-100 viz-iframe">
+	  #set( $catpath = "$apphome/views/modules/asset/downloads/bycategory/${renderedcategory.getId()}/${renderedcategory.getName()}.zip" )
+     	<a href="$catpath" class="download-html btn btn-accent rounded">
+	      <i class="bi bi-download mr-1"></i> Download Folder
+	    </a>
+	    
+	    	<script src="/${applicationid}/components/javascript/highlight.min.js"></script>
+			<div class="xml-code overflow-y">
+##$chapters.size() chapters	    
+					<textarea style="display: none;">$rootelement.asXML()</textarea>		
+				<code class="language-xml xml hljs"></code>
+			</div>
+		    
+	   ## <iframe src="/${mediadbappid}/services/module/asset/downloads/vieworiginal/$renderedpath"></iframe>
+	  </div>
+  #end
+</div>

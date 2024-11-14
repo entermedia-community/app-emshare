@@ -1,0 +1,29 @@
+
+<table style="width: 100%" class="emdata table table-striped table-hover">
+	<thead>
+		<tr class="tableheader">
+			#foreach( $searchItem in $details)
+			#set( $inputed = "$!loghits.getInput($searchItem.getId())")
+			<th #if($searchItem.viewType=="date" ||$searchItem.viewType=="datetime") class="logtabledate" #end>
+			${searchItem.getText($context)} 
+			</th>
+			#end
+		</tr>
+	</thead>
+	#foreach ($hit in $loghits.getPageOfHits())
+		<tr>
+		#foreach( $searchItem in $details)
+			#set($value = $searcherManager.getValue($hit, $searchItem, $context.getLocale() ) ) 
+			<td>
+				
+			#if( $value )
+				$context.putPageValue("val",$value)
+				$context.putPageValue("value",$value)
+				$context.putPageValue("detail",$searchItem)
+				$pages.include("/$applicationid/components/xml/detailreadonly.html", $context)
+			#end
+			</td>
+		#end
+		</tr>
+	#end
+</table>

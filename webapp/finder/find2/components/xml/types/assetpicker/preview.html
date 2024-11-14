@@ -1,0 +1,62 @@
+#set($detailid = $detail.id )
+#if( !$detailid)
+	#set( $detailid = $context.getRequestParameter("detailid"))
+#end	
+#set($idcount = $context.getRequestParameter("idcount"))
+#if(!$idcount)
+	#set($idcount = "")
+#end
+####if(!$val)
+	#set($val = $context.getRequestParameter('assetid'))
+####end
+#if($val && $val != "")
+	#set( $foundrow = $mediaarchive.getAsset($val)  )
+#end
+
+#if( $foundrow )
+	#set( $rootid = $hits.sessionId )
+	#set( $hit = $foundrow)
+	$context.putPageValue("hit", $hit)
+	#set( $rendertype = $mediaarchive.getMediaRenderType($hit.fileformat))
+	#if(!$rendertype || $rendertype =="rendertype")
+		#set( $rendertype = "mime" )
+	#elseif( $rendertype == "video")
+		#set( $rendertype = "videothumbnail" )
+	#end
+	$context.putPageValue("type", $rendertype)
+	#if(!$thumbsize)
+		$context.putPageValue("thumbsize", "small" )
+	#end
+		###set( $click = "$home$apphome/views/modules/asset/editor/generalinformation/index.html?assetid=$!val&hitssessionid=$!rootid" )
+		###set( $link = "/${applicationid}/components/mediaviewer/player/zoom/index.html?assetid=$foundrow.id&name=preview.jpg")
+	##<div  id="${detailid}-previewlink" style="display: block; text-align:center;">
+		
+		#if($rendertype == "audio")
+			#if($hit.getValue("length"))
+				#set($length = $!mediaarchive.formatMinutesAndSeconds($hit.getValue("length")))
+			#end
+			$context.putPageValue("length", $length )
+	     	<div class="emthumbimage emthumbaudio emcrop assetdraggable" data-assetid="${foundrow.id}" >
+				$pages.include("$componenthome/results/thumbnails/${rendertype}.html", $context)
+			</div>       
+			<div class="previewassetname">
+			<a class="stackedplayer " data-assetid="$foundrow.id" href="#" title="[[Open]]: #esc($!{foundrow.name})#if($length) ($length) #end" >
+				<i class="bi bi-box-arrow-up-right ns mr-1"></i> $!foundrow.name
+			</a>
+			</div>
+		#else
+			#if($noassetlink)
+				 <div class="emthumbimage emcrop" data-assetid="${foundrow.id}" >
+					$pages.include("$componenthome/results/thumbnails/${rendertype}.html", $context)
+				</div>
+				 
+			#else
+			<a class="stackedplayer" data-assetid="$foundrow.id" href="#" >
+		     	<div class="emthumbimage emcrop assetdraggable" data-assetid="${foundrow.id}" >
+					$pages.include("$componenthome/results/thumbnails/${rendertype}.html", $context)
+				</div>       
+			</a>
+			#end
+		#end
+	##</div>
+#end			

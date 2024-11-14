@@ -1,0 +1,113 @@
+#set($searchtype = $context.getRequestParameter("submodulesearchtype"))
+#set($parentsearchtype = $context.getRequestParameter("parentsearchtype"))
+#set($parentviewid = $context.getRequestParameter("parentviewid"))
+#set($parentviewpath = $context.getRequestParameter("parentviewpath"))
+#set($parentid = $context.getRequestParameter("parentid"))
+
+#set ($fieldexternalid = $context.getRequestParameter("fieldexternalid"))
+#set ($fieldexternalvalue = $context.getRequestParameter("fieldexternalvalue"))
+
+#set($targetdiv = $context.getRequestParameter("parenttargetdiv"))
+
+<div id="search-entities-modal" class="searchonetomany" >
+
+	
+	#set($predata = $mediaarchive.getSearcher($searchtype).createNewData())
+	$predata.setValue($fieldexternalid, $fieldexternalvalue)
+	$context.putPageValue("data", $predata)
+	
+	$context.putPageValue("entitydialogeditor", "true")
+	
+	#set($editor = "$apphome/views/modules/${searchtype}/edit/addnewentity.html?viewid=${searchtype}addnew&searchtype=${searchtype}&targetdiv=$!targetdiv")
+	
+	$pages.include($editor)
+	
+	<div class="clearfix"></div>
+	
+<hr>
+<h5 style="margin-bottom:10px;">[[Or]] 
+<a href="#" onclick='$("#dialogsearchform$!parentid").toggle()'
+class="btn btn-sm btn-blue" >[[Choose From Existing]]</a></h5>
+
+	<form id="dialogsearchform$!parentid" 
+		style="margin-bottom:10px;display:none;" 
+		class="autosubmit ajaxform" 
+		data-targetdivinner="submodulepicker$!parentid"
+		data-oemaxlevel="1" 
+		action="${page.directory}/generictablesearchresults.html"
+		
+		>
+		
+		<input type="hidden" name="viewid" value="$!{searchtype}resultstable" />
+		
+		<input type="hidden" name="searchtype" value="${searchtype}" />
+		<input type="hidden" name="moduleid" value="${searchtype}" />
+		<input type="hidden" name="sortby" value="name" />
+		
+		#if($fieldexternalid)
+			<input name="operation" value="not" type="hidden">
+			<input name="field" value="$fieldexternalid" type="hidden">
+			<input name="${fieldexternalid}.value" value="$fieldexternalvalue" type="hidden">
+			
+			<input name="fieldexternalid" value="$fieldexternalid" type="hidden">
+			<input name="fieldexternalvalue" value="$fieldexternalvalue" type="hidden">
+			
+		#end
+		
+		<input name="tabletype" value="subentityadd" type="hidden">
+		
+		#if($parentsearchtype)
+			<input name="parentsearchtype" value="$parentsearchtype" type="hidden">
+		#end
+		#if($parentsearchtype)
+			<input name="parentviewid" value="$parentviewid" type="hidden">
+		#end
+		
+		<table style="width:100%;">
+		<tr>
+		<td>
+
+		<div  class="row inlinesearch" >
+		<div class="col">
+			<input name="operation" value="contains" type="hidden">
+			<input name="field" value="description" type="hidden">
+			<input type="text" class="form-control detail_name   " 
+					autocomplete="off" 
+					value="" 
+					id="name.value" 
+					name="description.value"
+					placeholder="[[Search]]">
+		</div>	
+		</div>
+		</td>
+		</tr>
+		</table>
+	</form>
+
+	
+	<div id="submodulepicker$!parentid" 
+		class="domdatacontext"
+		data-targetdiv="$!targetdiv" 
+		data-oemaxlevel="1" 
+		data-submodulesearchtype="$!{searchtype}" 
+		data-hitssessionid="$!hits.sessionId"
+		data-fieldexternalid="$fieldexternalid"
+		data-fieldexternalvalue="$fieldexternalvalue"
+		data-clickurl="${page.directory}/generictablesavesubmodule.html"
+		data-submodulesearchtype="$searchtype"
+		data-parentsearchtype="$!{parentsearchtype}"
+		data-viewid="$!parentviewid"
+		data-viewpath="$!parentviewpath"
+		data-parentid="$!parentid"
+		style="display: none;"
+		>
+		
+		$context.putPageValue("tabletype", "subentityadd")
+		
+		$pages.include("${page.directory}/generictablesearchresults.html?searchtype=${searchtype}&sortby=name&field=${fieldexternalid}&${fieldexternalid}.value=${fieldexternalvalue}&operation=not&tabletype=subentityadd")
+		
+		<div class="clearfix"></div>
+	</div>
+	
+
+</div>	

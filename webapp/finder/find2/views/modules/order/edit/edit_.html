@@ -1,0 +1,131 @@
+
+
+<div class="maincontentlayout" id="myaccountcontent" style="margin:0; height: 100%; overflow-y: auto;">
+<div id="order-details">
+    #set($order = $data)
+    #set($orderitemsearcher = $searcherManager.getSearcher($catalogid, "orderitem"))
+    #set($ordersearcher = $searcherManager.getSearcher($catalogid, "order"))
+    #set($owner = $userManager.getUser($order.userid))
+    <h3>[[Customer]]: <a href="$home/$applicationid/views/settings/users/usermanager/user/index.html?username=$owner.id">$owner</a></h3>
+    #set($usersearcher = $searcherManager.getSearcher("system", "user"))
+    $context.putPageValue("searcher", $usersearcher)	 
+    $context.putPageValue("view", "user/useredit")	
+    $context.putPageValue("data", $owner)
+    
+    
+    <div id="default-fields">
+    $pages.include("/$applicationid/components/xml/detaileditor.html?detailsreadonly=true", $context)
+   
+   
+    <form class="ajaxform" data-targetdiv="itemsaved" id="itemsave" name="itemform" method="POST" action="$home$apphome/views/modules/order/edit/saveitems.html" >
+    <h3>[[Order Details]]</h3>
+    <table class="settings-table" id="order-details">
+       <input type="hidden" name="id" value="$order.id"/>
+       <input type="hidden" name="orderid" value="$order.id"/>
+       <input type="hidden" name="sourcepath" value="$order.sourcepath"/>      
+     </tr>
+   </table> 
+
+	
+    #set($details = $mediaarchive.getAssetSearcher().getDetailsForView("asset/orderitems",$user) )
+    #foreach( $detail in $details )
+     #if($detail.isEditable())
+    	<input type="hidden" name="field" value="$detail.id" />
+      #end
+    #end
+   
+    $context.putPageValue("searcher", $ordersearcher)	 
+    $context.putPageValue("view", "order/vieworder")	
+    $context.putPageValue("data", $order)
+    
+    $pages.include("/$applicationid/components/xml/detaileditor.html?detailsreadonly=false", $context)
+    
+    
+   
+
+    
+    
+    	<div style="float: right; padding:10px 0 20px;">
+            <input class="btn btn-sm btn-secondary" type="button" id="approveall" value="[[Approve All]]"/>
+            <input class="btn btn-sm btn-secondary" type="button" value="[[Reject All]]" id="rejectall">
+            <input class="btn btn-sm btn-primary" type="submit" id="save" name="Save" value="[[Save]]"/>
+      ##      <input class="btn" type="button" name="Send" id="sendnotification" value="[[Send Notification]]"/>
+  
+        </div>
+        <div id="itemsaved"></div>
+        <span id="itemsent"></span>
+    #if($orderitems)
+    <h3>[[Assets]]</h3>
+    <table class="emdata table table-striped table-hover">
+        <tr class="tableheader">
+            <th>[[Asset]]</th>
+            <th>[[Status]]</th>
+        </tr>
+    
+    ##TODO: Use another form or ajax to deal with items
+    
+        #foreach( $item in $orderitems )
+        	#set($asset = false)
+			#set( $asset = $mediaarchive.getAsset($item.assetid))
+        	
+        	#if( $asset )
+				$context.putPageValue("asset", $asset)
+				$context.putPageValue("item", $item)
+				$context.putPageValue("order", $order)
+				$context.setRequestParameter("sourcepath", $asset.sourcepath)
+				$pages.include("$apphome/components/orders/row.html", $context)
+            #else
+                <tr><td>[[Asset missing]]</td></tr>
+            #end
+		
+        #end
+    
+    </table>
+    #end
+    </form>
+    </div>
+    
+   
+     </div>
+
+<div style="display: none;">
+  <form id="emailform" class="ajaxform" data-targetdiv="itemsent" name="emailform" action="$home$apphome/views/modules/order/edit/sendnotification.html">
+    <input type="hidden" name="to" value="$owner.email"/>
+    <input type="submit" name="Notification" value="[[Send Notification]]"/>
+    <input type="hidden" name="id" value="$order.id"/>
+    
+    
+    
+    </form>
+</div>
+</div>
+
+
+    
+
+<script type="text/javascript">
+
+lQuery("#approveall").livequery("click", function (e) {
+	jQuery("#itemsave .statusfield").val("approved");
+	$("#itemsave #checkoutstatusvalue").val("approved").trigger("change", true);
+		e.preventDefault();
+	jQuery("#itemsave").trigger("submit");
+	return false;
+} );
+lQuery("#sendnotification").livequery("click", function (e) {
+	jQuery("#emailform").submit();
+	return false;
+} );
+
+lQuery("#rejectall").livequery("click", function () {
+	jQuery("#itemsave .statusfield").val("rejected");
+	jQuery("#itemsave #list-checkoutstatus").val("rejected").trigger("change", true);
+	jQuery("#itemsave").submit();
+
+	return false;
+} ); 
+
+</script>
+
+
+

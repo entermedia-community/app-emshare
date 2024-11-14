@@ -1,0 +1,19 @@
+	
+	#set ($existing = $context.getRequestParameter("categoryid") )
+	#if( $existing)
+		<li>
+			<input type="hidden" id="categoryvalues" name="category.value" value="$existing" />
+			#set($category  = $mediaarchive.getCategory($existing))
+			#if( $category )
+			<div id="auto-${category.id}" class="categorydraggable ui-draggable ui-draggable-handle collectionBox" data-nodeid="$category.id" data-categoryname="$category.getName()">
+				<input type="hidden" id="categoryvalues" name="categoryid" value="$category.id" />
+					##<a class="category" title="$category.getCategoryPath()" target="_blank" href="$home$apphome/views/categories/${category.id}.html" ></a>	
+				$category.getCategoryPath()
+				<a href="#" title="[[Remove]]" style="float: right;">
+					<span class="auto-remove" data-categoryid="$category.id"><i class="bi bi-x"></i></span>
+				</a>
+			</div>
+			#end
+		</li>
+	#end
+<div id="addpickedcategory"></div>

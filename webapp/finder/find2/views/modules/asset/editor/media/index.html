@@ -1,0 +1,168 @@
+#set($cdnprefix = $!{mediaarchive.getCatalogSettingValue("cdn_prefix")})
+#if(!$cdnprefix )
+	#set($cdnprefix = $context.siteRoot )
+#end
+#set( $originalpath = $mediaarchive.asLinkToOriginal($asset, true) )
+<div id="asset-editor-container" class="h-100">
+<h2>[[Media Files]]</h2>
+	#set($title = $asset.name)
+	#if($candownload)	
+	<div style="padding:10px 0">
+		#if( $desktop )
+        	<a href="#" class="emdesktopdownload btn btn-sm btn-dark" data-assetid="$asset.id" title="[[Download]] $!title">
+        	<i class="fas fa-download"> </i> [[Download Original]]
+        	</a>
+       	#else
+			#set($dlink = $mediaarchive.asLinkToOriginal($asset))
+			#set($dlink = "$siteroot/$mediadbappid/services/module/asset/downloads/originals/$dlink?assetid=$!asset.getId()")
+			#if($collectionid)
+				#set($dlink = "$dlink&collectionid=$!{collectionid}")
+			#end
+        	<a href="$!dlink" class="btn btn-sm btn-dark" data-assetid="$asset.id" title="[[Download]] $!title">
+        	<i class="fas fa-download"></i> [[Download Original]]
+        	</a>
+       	#end
+       	
+		#if($canshowadmintoolbar)
+			<a class="btn btn-sm btn-secondary previewcrop-btn" 
+				data-oemaxlevel="1"  
+				target="_new"
+				href="$siteroot/openedit/views/filemanager/tab.html?path=/WEB-INF/data/$catalogid/generated/$asset.getSourcePath()"
+				title="[[File Manager]]"><i class="fas fa-upload"></i></a> 
+		#end
+		</div>
+	#end
+<div class="">
+#set($mediadbappid=$mediaarchive.getMediaDbId())
+#set($type = $mediaarchive.getMediaRenderType($asset.fileformat))
+#set($newpreset = $context.findValue("newpreset"))
+#set($type =$mediaarchive.getMediaRenderType($asset.fileformat))
+#set($results = $conversionUtil.getActivePresetList($catalogid,$type) )
+$context.putPageValue("results", $results)
+
+#set($currentpreset = $context.getRequestParameter("currentpreset"))
+	
+	
+	
+##	#if($caneditasset)
+##	<a class="btn btn-sm btn-secondary ajax" targetdivinner="asset-editor-container" data-oemaxlevel="1" 
+##	   href="$siteroot$apphome/views/modules/asset/editor/media/croppreview.html?assetid=$asset.id&presetid=largeimage&noaspect=true&savetoall=true">[[New Crop]]</a>
+##
+##	#end
+
+		<div class="media-presets">
+		#foreach ($result in $results)
+			
+			$context.putPageValue("presetdata", $result)
+			#set($presetdata = $result)
+			
+			##Exists?
+			#set($exists = $conversionUtil.doesExist($catalogid, $asset.id,$asset.sourcePath, $presetdata.id))
+
+			##Can be shown?
+			#set($show = false)			
+			#if($presetdata.outputextension == "jpg" || $presetdata.outputextension == "png")
+				#set($show = true)
+			#end
+				
+			#if($exists && $show)
+			
+				#if($currentpreset == $presetdata.id)
+					#set($current = $presetdata)
+				#end
+				
+				##CanCrop
+				#set($cancrop = $conversionUtil.canCrop($mediaarchive, $catalogid, $presetdata.id, $asset.id))
+				
+				## #if(!$cancrop)
+				##	#if( $mediaarchive.isCatalogSettingTrue("preventupscaling"))
+				##		#set($show = false)
+				##	#else
+				##		#set($show = true)
+				##	#end
+				## #end
+		
+				#set($dimension = $conversionUtil.getConvertPresetDimension($catalogid,$presetdata.id))
+				#set($height = $mathtool.toInteger($dimension.getHeight()))
+				#set($width = $mathtool.toInteger($dimension.getWidth()))
+				
+				#set($aspectratio = $conversionUtil.getConvertPresetAspectRatio($dimension))
+				#set($description = $conversionUtil.getConvertPresetParameter($catalogid,$presetdata.id, "imagelocation"))
+				
+				#set($mediaurl = "$siteroot/$mediadbappid/services/module/asset/downloads/preset/$asset.sourcepath/$presetdata.generatedoutputfile")
+				
+				<div class="mediapreset #if($presetdata.id==$presetdata.id) mediapresetselected #end">
+					
+					<div class="mediapreset-name" title="$!presetdata.name" >$!presetdata.name</div>
+					<div class="mediapreset-image">
+						#set($previewurl="$siteroot$apphome/components/asseteditor/preview.html?previewimg=$mediaurl")
+						<a href="#urlescape($previewurl)"
+							class="emdialog" data-cancelsubmit="true" data-hidefooter="true" data-noesc="true"
+							title="$!presetdata.name">
+							
+							##why not cache=false?
+							#set($imgurl="$mediaurl?_=$mathutil.getRandomValue(9999)")
+							
+							<img src="#urlescape($imgurl)" alt="$!presetdata.name" />
+						</a>
+					</div>
+					<div class="mediapreset-actions">
+					##Download
+					#set($downloadurl="$siteroot/$mediadbappid/services/module/asset/downloads/generated/$asset.sourcepath/$presetdata.generatedoutputfile/$mediaarchive.asExportFileName($asset, $presetdata)?includemetadata=true")
+					<a class="btn btn-xs btn-dark"
+					    href="#urlescape($downloadurl)"
+					    title="[[Download]] $!presetdata.name"><i class="fas fa-download"></i></a>
+					    
+					 ##Crop
+					 #if($caneditasset && $cancrop) 
+						<a class="btn btn-xs btn-dark previewcrop-btn ajax" 
+							targetdivinner="asset-editor-container"  
+							data-oemaxlevel="1"  
+							href="$siteroot$apphome/views/modules/asset/editor/media/croppreview.html?assetid=${asset.id}&presetid=${presetdata.id}"
+							title="[[Crop]] $!presetdata.name"><i class="fas fa-crop"></i></a> 
+					 #end
+					 ##Share
+					 #if($canembedasset)
+						<a class="btn btn-xs btn-dark emdialog" 
+					    	href="$siteroot$apphome/views/modules/asset/editor/media/share.html?assetid=${asset.id}&presetid=${presetdata.id}"
+					    	data-noesc="true"
+					    	data-hidefooter="true"
+					    	title="[[Share]] $!presetdata.name"><i class="fas fa-share-alt"></i></a>
+					 #end
+					</div>
+				</div>
+			#end
+		#end  
+
+
+
+		<div class="clearfix"></div>
+		
+
+		</div>
+
+	
+			##make it submit for on file selected
+			<form id="uploadform" 
+						class="ajaxform inline-form" data-targetdiv="asset-editor-container" name="wizard" method="post" enctype="multipart/form-data" 
+						action="$siteroot${apphome}/views/modules/asset/editor/media/customthumb.html">
+			##	<span class="btn btn-sm btn-secondary btn-default btn-file">
+			##	[[Upload]] 
+			##	<input type="file" name="file.0" id="file0-file" onchange='$("#uploadform").submit();'>
+			##	</span>
+			##	<span id="file0-file-info" style="font-size:90%"></span>
+				##[[Replace Image]]:<input type="file" size="50" name="file.0">
+				<input type="hidden" name="unzip" value="false" />
+				<input type="hidden" name="sourcepath" value="$!context.getRequestParameter('assetid')" />
+				<input type="hidden" name="assetid" value="$!context.getRequestParameter('assetid')" />
+				<input type="hidden" name="presetid" value="$!context.getRequestParameter('presetid')" />
+		</form>
+
+
+
+
+</div>
+</div>
+
+
+

@@ -1,0 +1,74 @@
+#if ( $asset )
+     #set ( $hit = $asset )
+#end
+
+#if($hit)
+
+## Required: path, id
+## Optional: width, autostart, hit or asset (for the file name)
+#set ( $urlutils = $context.getPageValue("url_util"))
+#if (!$urlutils)
+	#set ($urlenc = $hit.sourcepath)
+#else
+	#set ( $urlenc = $urlutils.encode($hit.sourcepath))
+	#set ( $urlenc = $urlenc.replace("%2F", "/") )
+#end
+
+#if ($viewer)
+	#set ($viewer = "${viewer}_")
+#end
+
+#if($hit.getValue("length"))
+	#set($length = $!mediaarchive.formatMinutesAndSeconds($hit.getValue("length")))
+#end
+$context.putPageValue("length", $length )
+
+#set ($path = "$!siteroot$home/${mediadbappid}/services/module/asset/downloads/preset/$!urlenc/audio.mp3")   
+
+<div class="audio-thumb-container" >    
+	<div id="jp_container_$!viewer$hit.id" class="jp-audio #if($thumbsize != "largepreview") mini #end">
+	    <div class="jp-type-single">
+	        <div id="jquery_jplayer_$!viewer$hit.id" data-container="jp_container_$!viewer$hit.id"  class="jp-jplayer" data-url="$path"></div>
+	        	
+	        	<div class="jp-gui jp-interface #if($thumbsize == "largepreview") jp-volume-control #end">
+	            
+	            <div class="jp-controls" >
+	              <div class="jp-control jp-play" data-target="jquery_jplayer_$!viewer$hit.id" data-pause="jquery_jplayer_pause_$!viewer$hit.id" id="jquery_jplayer_play_$!viewer$hit.id" tabindex="1" title="[[Play]]#if($length): ($length)#end">[[play]]</div>
+	              <div class="jp-control jp-pause" data-target="jquery_jplayer_$!viewer$hit.id" data-play="jquery_jplayer_play_$!viewer$hit.id" id="jquery_jplayer_pause_$!viewer$hit.id" tabindex="1" title="[[Pause]]">[[pause]]</div>
+	            </div>
+	            <div class="jp-time-rail">
+	           		<div class="jp-progress">
+	                	<div class="jp-seek-bar">
+	                          <div class="jp-play-bar" > </div>
+	                	</div>
+	            	</div>
+	            </div>
+	            #if($thumbsize == "largepreview")
+	            <div class="jp-controls" >
+					<div class="jp-control jp-mute" data-target="jquery_jplayer_$!viewer$hit.id" tabindex="0">[[max volume]]</div>
+					<div class="jp-control jp-unmute" data-target="jquery_jplayer_$!viewer$hit.id" tabindex="0">[[min volume]]</div>
+				</div>
+				<div class="jp-controls" >
+				<div class="jp-volume-bar">
+					<div class="jp-volume-bar-value" style="width: 80%;"></div>
+				</div>
+				</div>
+				
+				
+		        
+				#end
+	        </div>
+	        <div class="clearfix"></div>
+	        ##if($thumbsize == "largepreview")
+	        	<div class="jp-time-holder">
+					<div class="jp-current-time">00:00</div>
+			        <div class="jp-duration">#if($length)$length#end</div>
+		        </div>
+		    ##end
+	    </div>
+	</div>
+	##<div class="audio-thumb-name">$hit.getName()</div>
+	
+	<div class="clearfix"></div>
+</div>
+#end

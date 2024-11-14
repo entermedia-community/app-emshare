@@ -1,0 +1,34 @@
+<a href="" class="entitydropdownmenu dropdown-toggle dropdown-noarrow" data-toggle="dropdown" data-bs-toggle="dropdown"><i class="fas fa-ellipsis-v"></i></a>
+	 <div class="dropdown-menu">
+	 	#if($permissions.can($moduleid, "upload_files"))
+	 		<a class="dropdown-item globalfilePicker" 
+	 			data-categoryid="$!{categoryid}"   
+	 			href="#" 
+	 			title="[[Add Files]]"><i class="fas fa-photo-video"></i> [[Add Files]]</a>
+	 	#end
+	 	#if($permissions.can($moduleid, "upload_folders"))
+	 		<a class="dropdown-item globalfolderPicker"    
+	 			href="#"
+	 			data-categoryid="$!{categoryid}" 
+	 			title="[[Add Folder]]"><i class="bi bi-folder-plus"></i> [[Add Folder]]</a>
+	 	#end
+	 		#if($candownloadcategoryzip)
+		   		#if($category)
+				<a	class="dropdown-item emdialog"
+		  			title="[[Download]]: $category.getName()"
+		  			href="$applink/views/modules/asset/downloads/bycategory/${category.id}/#eid($category.name).zip">
+		  			<i class="fa fa-download"></i> [[Download]]</a>
+				#end
+			#end
+	 		#if($canviewsettings)
+		 		<a class="dropdown-item ajax" 
+		 		  href="$apphome/views/settings/modules/${module.getId()}/info/module-setup.html"
+		 		  data-targetdiv="applicationcontent" 
+		 		  data-oemaxlevel="5"
+		 		  data-sidebarcomponent="settings"
+		 		  title="[[Properties]]"><i class="bi bi-gear-fill"></i> [[Properties]]</a>
+		 	#end
+ 	</div>
+ 	
+			
+			

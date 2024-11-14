@@ -1,0 +1,73 @@
+#set($section = $content.section)
+
+#if($section == "myaccount")
+	#set($setpagetitle = "[[My Account]]")
+#elseif($section == "dashboard")
+#set($setpagetitle = "[[Dashboard Reports]]")
+#else
+	#set($setpagetitle = "#text($category) #text($module)")
+#end
+#if($cansidebar)
+#set($forcedsidebarcomponent = $context.getRequestParameter("sidebarcomponent")) 
+#if($forcedsidebarcomponent)
+	#set( $sidebarcomponent = $forcedsidebarcomponent )
+#end
+
+
+#if( !$sidebarcomponent && $modulehits.isEmpty() )
+	#set( $sidebarcomponent = "guide" )
+#end
+
+#if($sidebarcomponent == "categories" && !$canviewcategorynav)
+	#set( $sidebarcomponent = "" )
+#end
+
+#if($sidebarcomponent == "localdrives")
+	#ifnull($desktop)
+	#set( $sidebarcomponent = "")
+	#end
+#end
+
+#if($sidebarcomponent)
+	#set( $sidebarwidth = $userprofile.get("sidebarwidth"))
+	#if($sidebarwidth=='' || $sidebarwidth=='undefined')
+		#set($sidebarwidth = 280)
+	#end
+	#end
+#end
+
+
+
+<div id="applicationcontent"  
+	class="cols-main #if ($module) cols-$module.id #end cols-${section}" 
+	data-moduleid="$!module.id" 
+	data-setpagetitle="$!setpagetitle"
+>
+
+	#if($user )
+		 $pages.include("$componenthome/sidebars/index.html",$context)
+	#end
+	
+	<div class="col-main col-content-main">
+		<div class="pushcontent finderlayout col-main-inner #if($cansidebar && $cantogglesidebar && $sidebarcomponent) pushcontent-open pushcontent-$sidebarcomponent #else pushcontent-fullwidth #end" 
+			  style="#if($cansidebar && $sidebarcomponent && $sidebarwidth) margin-left:$!{sidebarwidth}px;#end">
+ 				
+				$pages.includeContent()
+				
+		</div>
+	</div>
+
+	<div id="exitConfirmationModal" tabindex="-1" role="dialog" aria-hidden="true">
+		<div class="exit-modal-body" role="document">
+			<div class="d-flex flex-column bg-white rounded">
+				<div class="p-2 text-dark">
+					[[Looks like you have unsaved changes. Are you sure you want to discard them?]]
+				</div>
+				<div class="d-flex align-items-center justify-content-between p-2">
+					<button type="button" class="btn rounded btn-accent mr-1" id="closeExit">[[Continue Editing]]</button>
+					<button type="button" class="btn rounded btn-danger ml-1" id="confirmExit">[[Discard]]</button>
+				</div>
+			</div>
+		</div>
+	</div>	
+</div>

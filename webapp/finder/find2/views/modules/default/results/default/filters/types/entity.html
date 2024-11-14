@@ -1,0 +1,52 @@
+#set( $fieldname = $detail.getId() )
+#set( $values = false)
+#set( $values = $filternode.children)
+#if( !$values && $data )
+	#set($values = $data.getValues($detail.id) )
+#end
+
+<div id="$!{idprefix}listdetail_$fieldname" class="listdetailpicker" data-rendertype="multiselect">
+#set($searcher = $searcherManager.getSearcher($detail.getListCatalogId(), $detail.getListId() ))
+#set($entity_module = $detail.getListId())
+
+#set ($foreignkeyid = $detail.getListId() )
+
+#set($searchfield = "name")
+#set($detailid = $detail.getId().replace('.','-') )
+#set($idcount = $context.getRequestParameter("idcount"))
+#if(!$idcount)
+	#set($idcount = "")
+#end
+#set( $valueid = "list-${detailid}${idcount}value")
+	#set( $count = 0 )
+	#foreach($entry in $values)
+		#if($count<=10)
+		<div class="d-flex align-items-start">
+			<input class="filtercheck mr-1 mt-1 filtercheck${fieldname}" 
+				data-fieldname="${fieldname}" type="checkbox" name="${fieldname}.value" 
+				id="$!{idprefix}$entry.getId()${fieldname}_val" value="$entry.getId()" #if( $hits.getSearchQuery().hasTermValue($filternode.id,$entry.getId()) ) checked #end />
+				
+				#set($label = $searcherManager.getCachedData($catalogid, $detail.getListId(), $entry.getId()))
+				
+			<label for="$!{idprefix}$entry.getId()${fieldname}_val">#esc($label) #if( $entry.count > 0)($entry.count)#end</label>
+			#set($count = $count +1)
+		</div>	
+		#end
+	#end
+	#if ($values.size() > 10)
+		<select id="${fieldname}select2" 
+				name="${fieldname}.value" 
+				class="listautocomplete choose-select detail-select form-control" 
+				listid="${fieldname}filter" 
+				data-listid="${fieldname}filter" 
+				data-searchtype= '$detail.getListId()'
+				data-searchfield="$searchfield"
+				data-sortby="$!detail.sort"
+				data-allowclear="false">
+			<option value=""></option>
+		</select>
+	#end
+
+
+</div>
+

@@ -1,0 +1,98 @@
+#ifnull($resultsLink)
+	#set($searchhome = "$home$apphome/components/table")
+#end
+##Set max position pages
+#set($positionsmaxpages = $context.getRequestParameter("positionsmaxpages"))
+#if($positionsmaxpages)
+	$hits.setMaxPageListing($positionsmaxpages)
+#end
+
+##set($resultsLink = "$resultsLink?hitssessionid=$hits.sessionId&searchtype=$hits.getSearchType()&hitsperpage=$!hits.hitsPerPage&oemaxlevel=1&positionsmaxpages=$!positionsmaxpages")
+
+#set($resultsPage = "$resultsLink&pageposition")
+
+#set($targetdivinner = $targetdivtablepositions)
+#ifnull($targetdivinner)
+	#set($targetdivinner = "resultsdiv")
+#end
+
+#set($total = $hits.getTotalPages() )
+
+
+#set($updateurl = "false")
+
+#set($currentpage = $context.getRequestParameter("currentpagenum"))
+
+#set( $prhits = $hits.getPositionRender() )
+#ifnotnull($currentpage)
+	$prhits.setPageOneBased($currentpage)
+#end
+#set($pos = $prhits.toPosition($prhits.getPage()))
+#set( $befores = $prhits.linksBefore() )
+#set( $afters = $prhits.linksAfter() )
+
+#if(!$oemaxlevel)
+#set( $oemaxlevel = "1" )
+#end
+
+<ul class="positionsexpanded">
+	#if(!$befores.isEmpty() && $befores.get(0)>1)
+		<li><a class="ajax firstposition" data-targetdivinner="$targetdivinner" data-updateurl="$!updateurl" data-oemaxlevel="$oemaxlevel" href="$resultsPage=$prhits.getStartingPosition()" >$prhits.getStartingPosition()</a></li>	
+	    <li class="ellipsis"><i class="bi bi-three-dots"></i></li>
+	#end
+	#foreach( $before in $befores )
+		#set( $pos = $prhits.toPosition($before) )
+		<li class="currentposition${pos}">
+			<a class="ajax" 
+				data-targetdivinner="$targetdivinner" 
+				data-updateurl="$!updateurl" 
+				data-oemaxlevel="$oemaxlevel"
+				data-position="$pos" 
+				href="$resultsPage=$pos" >$pos</a>
+		</li>		
+	#end
+
+	#set( $pos = $prhits.toPosition($prhits.getPage()))
+	
+	<li class="current currentposition${pos}">
+		<a  class="ajax" 
+			data-targetdivinner="$targetdivinner" 
+			data-updateurl="$!updateurl"  
+			data-oemaxlevel="$oemaxlevel" 
+			data-position="$pos"  
+			href="$resultsPage=$pos" >$pos</a>
+	</li>
+	
+	
+	
+	
+	#foreach( $after in $afters )
+		#set( $pos = $prhits.toPosition($after) )
+		<li class="currentposition${pos}">
+			<a  class="ajax" 
+				data-targetdivinner="$targetdivinner" 
+				data-updateurl="$!updateurl" 
+				data-oemaxlevel="$oemaxlevel" 
+				data-position="$pos"  
+				href="$resultsPage=$pos">$pos</a>
+		</li>		
+	#end
+	
+	#set($size=${afters.size()})
+	#set( $size = $size - 1 )
+	#if($size>0  )
+		#if ($afters.get($size)< $prhits.getTotalPages() )
+			<li class="ellipsis"><i class="bi bi-three-dots"></i></li>
+			##if($hits.size() < 9999)
+				<li><a  class="ajax lastposition" data-targetdivinner="$targetdivinner" data-updateurl="$!updateurl" data-oemaxlevel="$oemaxlevel" href="$resultsPage=$hits.getEndingPosition()" >$hits.getEndingPosition()</a></li>	
+            ##end
+		#end
+	#end
+	#if( $prhits.prevPage() )
+		<li class="pagenav"><a class="ajax" data-targetdivinner="$targetdivinner"  data-updateurl="$!updateurl"  data-oemaxlevel="$oemaxlevel" href="$resultsPage=$prhits.toPosition($prhits.prevPage())" title="Previous ( alt p enter)" accesskey="p" ><span class="bi bi-caret-left-fill overlay-nav gocaret"></span></a></li>
+	#end
+	#if ( $prhits.nextPage() )
+		<li class="pagenav"><a id="next" class="ajax" data-updateurl="$!updateurl" data-oemaxlevel="$oemaxlevel" data-targetdivinner="$targetdivinner"  href="$resultsPage=$prhits.toPosition($prhits.nextPage())" title="Next (alt n enter)" accesskey="n"><span class="bi bi-caret-right-fill overlay-nav gocaret"></span></a></li>
+	#end
+	
+</ul>

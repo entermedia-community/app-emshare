@@ -1,0 +1,90 @@
+#if($hits.isSelected(${hit.id}))
+	#set($selectedrow = true)
+#end
+
+#if(!$title)		         	
+	#if( $asset.assettitle )
+		#set($title =  $asset.getText("assettitle",$context)) 
+	#else 
+		#set($title = $asset.getText("name",$context) )
+	#end
+#end
+
+$context.putPageValue("title",$title)
+     
+     
+<tr class="resultsdivdata resultsassetcontainer #if($selectedrow) emrowselected #end"  
+	data-rowid="$hit.id"  
+	data-dataid="$hit.id"  
+	title="$sourcepath">
+#if( $showtoolbar )
+	<td class="borderedcell checkbox" noclick="true"> 
+		<input type="checkbox" 
+		class="selectionbox resultsselection" 
+		name="count" 
+		value="" 
+		#if($selectedrow) checked #end 
+		data-dataid="${hit.id}"	/>
+		
+	</td>
+#end	
+
+	#set( $type = $mediaarchive.getMediaRenderType($hit.fileformat))
+	<td class="resultstablecell thumbnail assetdraggable" data-dataid="${hit.id}" data-assetid="${hit.id}" #if($type=="audio") noclick="true" #end>
+		#if($topmoduleid=="faceprofilegroup")
+			$context.putPageValue("resulttype", "faceprofilegroupassets")
+			$context.putPageValue("asset", $asset)
+			$context.putPageValue("faceprofilegroupid", $entity.id)
+			$pages.include("$componenthome/results/thumbnails/small.html",$context)
+		#else
+			$pages.include("$componenthome/results/thumbnails/small.html",$context)	
+			$pages.include("$componenthome/results/badges.html", $context)
+		#end
+	</td>
+
+	#foreach( $detail in $details)
+		#if( $detail.id == "name")
+			#if( $hit.name )
+	      		#set($value =  $asset.getText("name",$context))
+	      	#elseif ( $asset.assettitle )
+	      		#set($value =  $asset.getText("assettitle",$context))
+	      	#else
+	      		#set( $value = "" )
+	      	#end
+	      	#set($val = $value)
+	    #else	
+			#set($val =  $hit.get($detail.id) )
+			#set($value = $searcherManager.getValue($hit, $detail, $context.getLocale() ) ) 
+			
+			#ifnull($val)
+				#set($val = "")	
+			#end		
+		#end
+		
+		$!context.putPageValue("detail",$detail)
+		$!context.putPageValue("val", $val)	
+		$!context.putPageValue("value",$value)
+		$!context.putPageValue("data", $hit)
+		<td  class="resultstablecell $detail.id">
+      $pages.include("$componenthome/xml/detailreadonly.html", $context)	        
+		</td>	
+	#end
+	
+		<td class="rowactions" noclick="true">
+			<div class="actionicons">
+				$context.putPageValue("assetid",$hit.id)
+			    <div id="mvassetfavorite-$hit.id" class=" mb-2">
+		        	$pages.include("$apphome/views/modules/asset/editor/favorite/index.html?targetdiv=mvassetfavorite", $context)
+		   		</div>
+				
+				#if(($candownload || $canconvert || $candownloadfpo) && $canquickdownload)
+				
+					#set($dlink =  "$applink/views/modules/asset/activity/downloadassets.html")
+				   	<a href="$dlink" class="emdialog"  data-assetid="$hit.id" data-hidefooter="true" title="[[Download]] $!title">
+						   <i class="bi bi-cloud-arrow-down bi2"></i></a>
+				    
+				    
+			    #end
+		    </div>
+			</td>	
+ </tr>

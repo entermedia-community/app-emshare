@@ -1,0 +1,23 @@
+
+<div  id="lightboxresults"  class="tabpulications-col submodulepicker entity-tab-content" >
+	
+	$context.putPageValue("entitydialogid", "entity")
+	
+	$pages.include("$searchhome/header.html", $context)
+	
+	#set($lightboxcategory = $mediaarchive.getBean("entityManager").loadLightboxCategory($module, $entity, $selectedbox, $context.getUser()))
+	$context.putPageValue("category", $lightboxcategory)
+	$context.putPageValue("categoryid", $lightboxcategory.getId())
+		
+	#set($module = $mediaarchive.getCachedData("module", "asset"))
+	#set($moduleid = $module.getId())
+	$context.putPageValue("module", $module)
+	$context.putPageValue("moduleid", $moduleid)
+	
+	
+	$context.putPageValue("componenthome","$apphome/views/modules/asset/components")
+	
+	$pages.include("$apphome/views/modules/asset/results/lightboxes/dialogindex.html", $context)
+		
+	<div class="clearfix"></div>
+</div>

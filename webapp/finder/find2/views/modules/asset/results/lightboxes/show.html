@@ -1,0 +1,70 @@
+#set( $searchhome = $page.get("searchhome"))
+$context.putPageValue("searchhome",$searchhome)
+
+
+#set( $searchtype = $context.findValue("searchtype"))
+#set( $parentsearchtype = $searchtype)
+#if( !$entity)
+	#set($entityid = $context.getRequestParameter("entityid"))
+	#set( $entity  = $mediaarchive.getData($searchtype, $entityid) )
+#end
+#set($entityid = $entity.id)
+$context.putPageValue("entity", $entity)
+$context.putPageValue("entityid", $entityid)
+
+#if(!$currenttab)
+	#set($currenttab = $context.getRequestParameter("currenttab"))
+#end
+
+$context.putPageValue("topmodule",$module)
+#set($topmoduleid = $module.id)
+$context.putPageValue("topmoduleid",$topmoduleid)
+ 
+$context.putPageValue("dialogresults", true)
+#set($lightboxassetsresults = true)
+$context.putPageValue("lightboxassetsresults", $lightboxassetsresults)
+
+#set($tabid = "tablightboxes")
+<div id="${tabid}" 
+class=" entity-tab-content entity-tab-media tabtypemedia" 
+data-tabid="$!{tabid}"
+data-entityid="$!entityid"
+data-currenttab="$!viewid"
+data-topmoduleid="$!topmoduleid"
+data-url="$componenthome/gridsample/preview/tabpublishing_gallery.html"
+>
+
+<div  class="tablightbox d-flex h-100" style="height: 100%;">
+	
+	#set($boxes =  $mediaarchive.getBean("entityManager").loadLightBoxesForModule($module, $entity, $context.getUser()))
+	$context.putPageValue("boxes",$boxes)
+	
+	#set($hitcounts = $mediaarchive.getBean("entityManager").loadLightBoxCounts($boxes, $module, $entity) )
+	$context.putPageValue("hitcounts",$hitcounts)
+	
+
+	#set( $lightboxid = $context.getRequestParameter("lightboxid"))
+	
+	#ifnotnull($lightboxid)
+		#if( $lightboxid != "files")
+			#set($selectedbox =  $mediaarchive.getCachedData("emedialightbox",$lightboxid) )
+		#end	
+	#end
+	
+	#ifnull($lightboxid)
+		#set($selectedbox =  $mediaarchive.getBean("entityManager").findFirstSelectedLightBox($boxes,$hitcounts))
+		#set($lightboxid = $selectedbox.getId())
+	#end	
+	
+	$context.putPageValue("lightboxid",$lightboxid)
+	$context.putPageValue("selectedbox",$selectedbox)
+	
+	#set($defaultfolder =  $mediaarchive.getBean("entityManager").loadDefaultFolder($module, $entity, $context.getUser(),true))
+	#set($allassets = $mediaarchive.query("asset").exact("category",$defaultfolder).search($context) )
+	$context.putPageValue("allassets",$allassets)
+	
+	$pages.include("$searchhome/sidemenu.html",$context)
+
+	$pages.include("$searchhome/search.html",$context)
+
+</div>

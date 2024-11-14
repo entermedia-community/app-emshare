@@ -1,0 +1,141 @@
+#if($hit)
+	#set($entityid = $hit.id)
+	#if($rendermoduleid)
+		#set($moduleid = $rendermoduleid)
+	#else
+		#set($moduleid = $module.id)
+	#end
+#else
+	#if(!$moduleid)
+		#set($moduleid = $context.getRequestParameter("moduleid"))
+	#end
+	#if(!$entityid)
+		#set($entityid = $context.getRequestParameter("entityid"))
+	#end
+	#if($moduleid && $entityid)
+		#set($entity = $mediaarchive.getCachedData($moduleid, $entityid))
+	#end
+#end
+
+$context.putPageValue("entityid", $entityid)
+$context.putPageValue("moduleid", $moduleid)
+
+#if($moduleid && $entityid)
+	#set($module = $mediaarchive.getCachedData("module", $moduleid))
+	#set($entity = $mediaarchive.getCachedData($moduleid, $entityid))
+#end
+
+#if(!$topmodule)
+	#set($topmodule = $module)
+#end
+
+#set($topentityid = $context.getRequestParameter("topentityid"))
+$context.putPageValue("topentityid", $topentityid)
+
+#if($moduleid == "searchcategory")
+	#set($previewurl = "$!{siteroot}$apphome/views/modules/searchcategory/searchcategory.html?field=searchcategory&operation=exact&searchcategory.value=$entityid")
+	#if($searchresults)
+		#set($linktype = "searchcategory")
+	#else
+		#set($linktype = "ajax searchcategory")
+	#end
+#else
+	#set($previewurl = "$!{siteroot}$apphome/views/modules/$!moduleid/components/gridsample/preview/entity.html?id=$entityid&hitssessionid=$!hits.sessionId")
+	#set($urladdressbar = "$!{siteroot}$apphome/views/modules/$!moduleid/index.html?entityid=$entityid&hitssessionid=$!hits.sessionId")
+	#set($linktype = "emdialog entity-dialog")
+#end
+
+$context.putPageValue("previewurl", $previewurl)
+  	 
+##look for primaryimage
+#if($entity.primarymedia)
+	#set( $primarymediatemp = $mediaarchive.getCachedAsset($entity.primarymedia))
+		#ifnotnull($primarymediatemp)
+			#if($primarymediatemp.previewstatus == '2')				
+				#set($primarymedia = $primarymediatemp)
+			#end
+	#end
+#end
+#ifnull($primarymedia)
+	#set( $primarymediafield = $entity.primaryimage )
+	#if($primarymediafield)
+		#ifnotnull($entity.primaryimage)
+				#set( $primarymedia = $mediaarchive.getCachedAsset($entity.primaryimage))
+				#if($primarymedia.previewstatus == '2')
+					##break
+				#else
+					#set($primarymedia = '')
+				#end
+		#end
+	#end
+#end	
+			   	
+#set($link = "$!siteroot$applink/views/modules/$!topmodule.getId()/index.html")
+
+#if( $topmodule == $module)
+	#set($link = "$link?entityid=$!entity.getId()&entitytype=$!moduleid&topentityid=$!entity.getId()")
+#else
+	#set($link = "$link?entityid=$!entity.getId()&entitytype=$!moduleid&topentityid=$!topentityid")
+#end
+
+#set($moduleicon = "grid")
+#if ($module.moduleicon)
+	#set($moduleicon = $module.moduleicon)
+#end 
+
+<div class="resultsdivdata emfolder-wrapper emgrid-type-$!moduleid entitycontainer entity$!moduleid$!entityid" 
+	id="emgridentity$!moduleid$!entityid"
+	data-rowname="#text($hit)"
+	data-dataid="${entityid}"
+  	data-moduleid="$!{moduleid}"
+  	data-rendertype="entity">
+	#ifnotnull($entity.longcaption)
+		<div class="emfolder-hover">
+			<strong>[[Description]]:</strong> $entity.longcaption
+		</div>
+	#end
+	#set($pickertarget = $context.getRequestParameter("pickertarget"))
+	
+	<a #ifnull($pickertarget)
+		href="$!{previewurl}" 
+		id="clickid${entityid}"
+		data-id="${entityid}"
+   		data-moduleid="$!moduleid" 
+		title="[[View]]: #text($!entity)"
+		class="$linktype"
+		#if($moduleid == "searchcategory")
+			data-targetdiv="searchcategorytopcontainer"
+			data-oemaxlevel="2"
+   	 	#else
+   	 		data-hideheader="true" 
+		#end
+		data-updateurl="true"
+		data-urlbar="$!urladdressbar"
+	#end>
+	
+		<div class="emfolder-inner assetdropentity drop-over" 
+			id="attachedmedia$entityid" 
+			data-moduleid="$!moduleid" 
+			data-entityid="$!entityid" 
+			data-assetsshown="$!assetsshown"
+			data-attachedmediaurl="$!siteroot$componenthome/gridsample/types/entity.html"
+			data-targetdiv="emgridentity$!moduleid$!entityid">
+			<div class="emfolder-icon">
+				#if($primarymedia)
+					$context.putPageValue("thumbsize", "thumbnail" )
+					#set($hit = $primarymedia)
+					$context.putPageValue("hit", $hit) 
+					$context.putPageValue("asset", $primarymedia)
+					#set( $assetrendertype = $mediaarchive.getMediaRenderType($hit.fileformat))
+					$pages.include("$componenthome/results/thumbnails/${assetrendertype}.html", $context)
+				#else
+					<i class="bi bi-${moduleicon} module-icon"></i>			
+				#end 
+			</div>
+			<div class="emfolder-text">
+				<i class="bi bi-${moduleicon} module-icon"></i>			
+				<span>#text($!entity)</span>
+			</div>
+		</div>
+	</a>
+</div>

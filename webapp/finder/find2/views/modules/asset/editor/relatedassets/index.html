@@ -1,0 +1,76 @@
+<div id="asset-editor-container" class="h-100 assetpanel-editor-box">
+
+<div class="versionscontainer">
+	<div class="versionlist overflow-y">
+		
+		#set( $parent = $mediaarchive.getAsset($asset.parentid ))
+		#ifnotnull($parent)      
+			#set( $link = "$apphome/views/modules/asset/editor/relatedassets/relatedasset.html?childassetid=$parent.getId()")
+			<a class="versionlistitem  ajax d-flex align-items-center selectedX activelistener" role="button" 
+				href="#urlescape($link)"  data-oemaxlevel="1"  data-targetdiv="versionpreview">
+				<i class="bi bi-listitem bi-image mr-2"></i>
+				<div class="d-flex flex-column">
+					<div class="versionname">
+						[[Parent Asset]]
+					</div>
+					<div class="versionname">
+							$parent.name ##<a href="#" class="stackedplayer" data-assetid="$parent.getId()"><i class="bi bi-box-arrow-up-right"></i></a>
+					</div>
+					<div class="versiondate">
+							#set ( $dateString = $context.getDateTime( $parent.assetmodificationdate ) )
+							[[Modified]]: $dateString  
+						</div>
+				</div>
+			</a>	
+		#end
+		
+		#ifnotnull($asset)
+			#set( $link = "$apphome/views/modules/asset/editor/relatedassets/relatedasset.html?childassetid=$asset.getId()&iscurrent=true")
+			<a class="versionlistitem  ajax d-flex align-items-center selected activelistener" role="button" 
+				href="#urlescape($link)"  data-oemaxlevel="1"  data-targetdiv="versionpreview">
+				<i class="bi bi-listitem bi-image mr-2"></i>
+				<div class="d-flex flex-column">
+					<div class="versionname">
+						[[Current]]
+					</div>
+					<div class="versionname">
+							$asset.name ##<a href="#" class="stackedplayer" data-assetid="$parent.getId()"><i class="bi bi-box-arrow-up-right"></i></a>
+					</div>
+					<div class="versiondate">
+							#set ( $dateString = $context.getDateTime( $asset.assetmodificationdate ) )
+							[[Modified]]: $dateString  
+						</div>
+				</div>
+			</a>	
+  		#end
+	
+		#set( $children = $mediaarchive.query("asset").exact("parentid",$asset.getId()).sort("name").search() )
+		$context.putPageValue("children",$children)
+		#foreach ($child in $children)
+				#set( $link = "$apphome/views/modules/asset/editor/relatedassets/relatedasset.html?childassetid=$child.getId()")
+				<a class="versionlistitem ajax d-flex align-items-center activelistener" role="button"
+					 href="#urlescape($link)" data-oemaxlevel="1" data-targetdiv="versionpreview">
+					<i class="bi  bi-listitem  bi-image"></i>
+					<div class="d-flex flex-column">
+						<div class="versionname">
+								$child 
+						</div>
+						<div class="versiondate">
+							#set ( $dateString = $context.getDateTime( $child.assetmodificationdate ) )
+							[[Modified]]: $dateString  
+						</div>
+					</div>
+				</a>			
+		#end	
+	</div>
+	<div id="versionpreview">
+	###ifnotnull($parent)      
+	##	$pages.include("$apphome/views/modules/asset/editor/relatedassets/relatedasset.html?childassetid=$parent.getId()",$context)
+	###end
+	      
+	##current
+	$pages.include("$apphome/views/modules/asset/editor/relatedassets/relatedasset.html?childassetid=$asset.getId()",$context)
+	
+	</div>
+</div>
+

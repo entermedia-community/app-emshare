@@ -1,0 +1,35 @@
+#set($hitssessionid = $modulehits.getSessionId())
+##fix module vs moduleid
+#if($module)
+	#if($module.id)
+		#set($moduleid = $module.id)
+	#else
+		#set($moduleid = $module)
+	#end
+#end
+
+#if (!$nodeID)
+	#set($nodeID = $context.getRequestParameter("nodeID"))
+	$context.putPageValue("nodeID",$nodeID)
+#end
+
+#if( !$librarycol && $category ) 
+	#set( $librarycol = $mediaarchive.query("librarycollection").orgroup("rootcategory",$category.getParentCategories()).searchOne() )
+#end
+
+#if( $librarycol )	
+	$context.putPageValue("librarycol",$librarycol)
+#end
+
+
+
+<div class="filters-container d-flex align-items-center justify-content-end #if ($canquicksearch) mainheadertable #else mainheadertablesmall #end"> 
+	#if ($canquicksearch)
+		<div class="headersearchbar">
+			<div id="quicksearch-mask" style="display: none;"></div>
+			<div class="navbar-quicksearch" id="nav-quicksearch" style="margin: 0 auto;">
+					$pages.include("$apphome/components/quicksearch/navbar.html", $context)
+			</div>
+		</div>
+	#end
+</div>

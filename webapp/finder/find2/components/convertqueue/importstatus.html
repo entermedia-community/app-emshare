@@ -1,0 +1,83 @@
+#if ( !$hit )
+    #set( $hit = $asset )
+#end
+
+#if (!$thumbsize )
+    #set($thumbsize = $context.getRequestParameter("thumbsize") )
+	$!context.putPageValue("thumbsize",$thumbsize)
+#end
+
+#if($conversionerrors && $conversionerrors.size() >0)
+	#set ($mime = $mediaarchive.getMimeTypeIcon($hit.fileformat))
+	<div class="mimethumbcontainer">
+		<i class="bi bi-$!mime mimeicon" title="[[Conversion Error]]" ></i>
+    	<div class="mimeconversionerror">[[Conversion Error]]</div>
+    </div>
+#elseif($publisherrors && $publisherrors.size() >0)
+	#set ($mime = $mediaarchive.getMimeTypeIcon($hit.fileformat))
+	<div class="mimethumbcontainer">
+		<i class="bi bi-$!mime mimeicon" title="[[Publish Error]]" ></i>
+    	<div class="mimeconversionerror">[[Publish Error]]</div>
+    </div>
+#elseif( $hit.importstatus && $hit.importstatus == "complete")
+    $context.putPageValue("hit", $hit)
+    #set( $rendertype = $mediaarchive.getMediaRenderType($hit.fileformat))
+    
+    #if(!$rendertype || $type =="rendertype")
+   		#set( $rendertype = "mime" )
+   	#elseif( $rendertype =="video")
+   		#set( $rendertype = "videothumbnail" )
+   	#end   
+   	
+   	$pages.include("$componenthome/results/thumbnails/${rendertype}.html?clearcache=true", $context)     
+
+#elseif($publish && $publish.size() >0 )
+    <div id="status$!hit.id"  class="ajaxstatus"  #if( $content == $page)data-ajaxrunning="true"#end  ajaxpath="$siteroot$apphome/components/convertqueue/importstatus.html?assetid=$hit.id&thumbsize=$thumbsize" >
+    	<div class="uiinfo	 proxythumb" title="[[Publishing Proxy]] $publish.size()" >
+    		<div class="loadingbar" style="width:30px;"></div>
+    	</div> 
+     </div>
+#elseif($conversions && $conversions.size() == 0)
+    <div id="status$!hit.id" class="ajaxstatus" 
+    	#if( $content == $page)data-ajaxrunning="true"#end  
+    	data-reloadspeed="3500"
+    	ajaxpath="$siteroot$apphome/components/convertqueue/importstatus.html?assetid=$hit.id&thumbsize=$thumbsize" >
+        <div class="uiinfo	 proxythumb" title="[[Queing Conversions]]" >
+        	<div class="loadingbarout" style="width:20px;">
+        	<div class="loadingbar" style="width:20px;"></div>
+        	</div>
+        </div> 
+    </div>
+#else
+    <div id="status$!hit.id" class="ajaxstatus importstatusreport" 
+    	#if( $content == $page)data-ajaxrunning="true"#end 
+    	data-reloadspeed="2000"
+    	ajaxpath="$siteroot$apphome/components/convertqueue/importstatus.html?assetid=$hit.id&thumbsize=$thumbsize" >
+        #set( $totalcount = $conversions.size() )
+
+        #if( $conversionsremaining )
+        	#set( $remaining = $conversions.size() )
+        #else
+        	#set( $remaining = $totalcount )
+        #end
+
+        #set ($mime = $mediaarchive.getMimeTypeIcon($hit.fileformat))
+
+		<div class="mimethumbcontainer">
+			##<img class="mimethumb" src="$!siteroot$thumbpath" border="0"/>
+			<i class="bi bi-$!mime mimeicon" title="[[Conversions in process]]" ></i>
+			#set( $completed = $totalcount - $remaining )
+	        #set( $total = 80 * $mathutil.getPercentage($completed, $totalcount) )
+	        #set( $total = $total + 20 )
+	        <div class="uiinfo" title="[[Conversions Completed]] $completed / $totalcount">${total}% [[complete]]</div>
+		</div>
+        
+        
+
+
+    </div>
+
+#end
+
+
+
