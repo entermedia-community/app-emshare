@@ -1206,9 +1206,6 @@ uiload = function () {
 	}
 
 	emdialog = function (dialog, event) {
-		if (event) {
-			event.stopPropagation();
-		}
 		var dialog = dialog;
 		var hidescrolling = dialog.data("hidescrolling");
 
@@ -1477,6 +1474,9 @@ uiload = function () {
 	});
 
 	lQuery("a.emdialog").livequery("click", function (event) {
+		event.preventDefault();
+		// event.stopPropagation();
+		event.stopImmediatePropagation();
 		emdialog($(this), event);
 	});
 
