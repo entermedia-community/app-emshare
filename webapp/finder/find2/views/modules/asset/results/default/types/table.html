@@ -21,14 +21,13 @@
 		data-module="$!moduleid"
 		data-section="$!content.section">
 
-#set( $showtoolbar = $page.isPropertyTrue("showtoolbar"))
+##set( $showtoolbar = $page.isPropertyTrue("showtoolbar"))
+#set( $showtoolbar = true)
 $context.putPageValue("showtoolbar",  $showtoolbar)
 $context.putPageValue("showcaption", $page.isPropertyTrue("showcaption"))
 $context.putPageValue("resultstype", $context.getRequestParameter("resultstype"))
 
-##if( $showtoolbar )
 $pages.include("${searchhome}/header.html",$context)
-##end
 
 $context.putPageValue("assetrootfolder", "/$catalogid/assets")
 
@@ -49,7 +48,7 @@ $context.putPageValue("assetrootfolder", "/$catalogid/assets")
 		#set( $viewerlink = $content.get("assetviewerlink") )
 		
 			<table id="main-results-table" class="table table-striped table-hover emresultstable stackedplayertable" >
-					$pages.include("${searchhome}/tableheader.html",$context)
+					$pages.include("${searchhome}/types/tableheader.html",$context)
 					#set($count = 0)
 					#foreach( $hit in $hits.getPageOfHits() )
 						$context.putPageValue("hit", $hit)
@@ -58,7 +57,7 @@ $context.putPageValue("assetrootfolder", "/$catalogid/assets")
 						$context.putPageValue("assetid", $hit.id)
 						$context.putPageValue("count", $count)
 						$context.putPageValue("sourcepath", $hit.sourcepath)
-						$pages.include("${searchhome}/row.html", $context)
+						$pages.include("${searchhome}/types/row.html", $context)
 						#set($count = $count + 1)
 					#end
 			</table>
