@@ -1,0 +1,28 @@
+#if (!$treename)
+	#set( $treename = "MainTree" )
+#end
+
+$context.putPageValue("canupload", false)
+
+<div class="pickcategoriesdialog">
+		
+<div class="searchcategories-tree">
+    <div class="assetdropcategory assetdropcategorymove searchcategories-treecontainer categorytreescrolllable" >
+
+        	##General Category Tree
+        	#set( $link = "$apphome/components/emtree/tree.html")
+        	#set( $link = "${link}?treename=$treename&editabletree=false&hidecontextmenu=true&updateAddressBar=false&clearselection=$!clearselection" )
+        	#set( $link = "${link}&oemaxlevel=4&uploadmaxlevel=2&maxlevelclick=$!maxlevelclick" )
+  			#set($link = "$link&targetdiv=autosubmitfilter&urlprefix=$apphome/components/entities/import/search/searchcategoryfilter.html")
+	              
+			$pages.include($link, $context)  
+	</div>
+</div>
+<div class="searchcategories-filter flex-grow-1">
+	<div id="pickcategorycontent" class="searchcategories-results"> 
+	$pages.include("$apphome/components/entities/import/search/searchcategoryfilter.html",$context)
+	</div>
+</div>
+
+<div class="clearfix"></div>
+</div>	

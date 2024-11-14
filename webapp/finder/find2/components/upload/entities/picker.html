@@ -1,0 +1,159 @@
+<div class="ui-widget uipanel" id="entitypicker" data-saveaction="$siteroot$applink/components/upload/entities/addnewentitysave.html">
+   <div class="ui-widget-header toggle-upload-details" data-status="open">
+		<i class="bi bi-caret-down-fill"></i> [[Entity Creation]]
+    </div>
+    
+	#set( $others = [])
+	#set( $type = $context.getRequestParameter("entitytype") )		##TODO remember the last selected	 
+	#set( $clearotherentities = $context.getRequestParameter("clearotherentities") )
+	#set( $addselection = $context.getRequestParameter("addselection") )
+			
+			
+	#foreach ( $amodule in $userprofile.getEntities() )
+		#set( $hits = false )
+		#if( $amodule.id != "asset" && $amodule.id != "faceprofilegroup" )
+			#set( $key = "picked$amodule.getId()" )
+			#set( $hits = $userprofile.getValues($key))
+			#if( ($type && $amodule.id == $type  ) || ( $hits) )
+			
+			#else
+				#set( $true = $others.add($amodule) )
+			#end	
+		#end
+	#end
+	
+	<div class="toggle-content ">
+    <div id="entitypickerentities" data-selectedentity="$!type" data-selectedentityid="$!addselection" style="padding-left:10px;"> 
+			#if( !$others.isEmpty() )
+				<div style="padding:10px 0; ">
+					<select name="addentity" 
+							class="ajaxautosubmitselect form-control form-control-sm" 
+							data-url="$siteroot$applink/components/upload/entities/picker.html" 
+							data-parametername="entitytype" 
+							data-targetdiv="entitypicker" 
+							data-oemaxlevel="1" >
+							<option >[[Add Entities]]</option>
+						#foreach ( $amodule in $others )
+							<option value="$amodule.id">$amodule.getName($context)</option>
+						#end
+					</select>
+					</div>
+			#end
+
+			#set( $foundone = false)
+			#foreach ( $amodule in $userprofile.getEntities() )
+				
+				#set( $hits = false )
+				#set( $key = "picked$amodule.getId()" )
+				#set( $hits = $userprofile.getValues($key))
+				#if( ($type && $amodule.id == $type  ) || ( $clearotherentities !="true" && $hits && $amodule.id != "asset" && $amodule.id != "faceprofilegroup") )
+					<div  class="row no-gutters" style="margin-bottom: 20px;">
+						<div class=" col-md-5">
+						<div class="side-select-menu #if( $type == $amodule.id) active #end"> 
+						
+						#set( $foundone = true)
+						<div class="addMediaRow">
+						<a class="ajax" 
+							data-targetdiv="entitypicker" 
+							data-oemaxlevel="1"  
+							href="$siteroot$applink/components/upload/entities/picker.html?entitytype=${amodule.id}&clearotherentities=$!clearotherentities">
+							#if( $type != $amodule.id)
+							 <span style="display:block;float:right;padding:7px;"><i class="bi bi-chevron-double-right"></i></span>
+							 #end 
+							<span class="selectedEntity" style="padding: 10px 0px 10px 10px;font-size:1.3em;">$amodule.getName($context)</span>  
+						</a>
+						</div>
+
+							<div style="padding: 10px 0 10px 20px;">
+			 				#if( $hits.contains("_auto") )
+									<a class=" ajax" style="margin:4px 0 30px 0;" data-targetdiv="entitypicker" data-oemaxlevel="1" 
+										href="$siteroot$applink/components/upload/entities/picker.html?entitytype=$amodule.id&selected=$!selectedtext&removeselection=_auto&&clearotherentities=$!clearotherentities">
+									<span style="color: greenxx;"><i class="bi bi-check2-square"></i> [[Create for each file uploaded]] </a><br></span>
+									<input type="hidden" name="${amodule.id}.value" value="_auto" />
+							#else
+									<a class="ajax" style="margin:4px 0 30px 0;" data-targetdiv="entitypicker" data-oemaxlevel="1" 
+										href="$siteroot$applink/components/upload/entities/picker.html?entitytype=$amodule.id&selected=$!selectedtext&addselection=_auto&&clearotherentities=$!clearotherentities">
+									<i class="fas fa-square"></i> [[Create for each file uploaded]] </a><br>
+							#end							
+							</div>			
+						
+						<input type="hidden" name="field" value="$amodule.id" />
+						#if( $hits && !$hits.isEmpty() )
+							<div class="addEntityButtonContainer" style="padding:  0 0 10px 10px">
+							#foreach( $id in $hits )
+							
+								#if( $id == "_auto")
+								
+									
+									
+									
+								
+								#elseif($id == $addselection || $clearotherentities != "true")
+									#set( $data = $mediaarchive.getCachedData($amodule.getId(),$id))
+									<a class="badge badge-secondary ajax" style="margin:4px;" 
+										data-targetdiv="entitypicker" 
+										data-oemaxlevel="1" 
+										href="$siteroot$applink/components/upload/entities/picker.html?entitytype=$amodule.getId()&removeselection=$id&clearotherentities=$!clearotherentities">
+									<input type="hidden" name="${amodule.id}.value" value="$id" />
+									#text($data) <i class="fas fa-times"></i>
+							 		</a>
+							 	#end
+					 		#end
+				 			</div>
+			 			#end
+			 			
+			 			
+			 			
+						</div>
+						</div>
+						#set( $entityupload = $context.getRequestParameter("entityupload") )
+						#if( $type == $amodule.id && $entityupload != "true")
+							<div class="col-md-7">
+							<div class="addEntity">
+								
+									<a class="ajax addEntityClose" 
+										data-targetdiv="entitypicker" 
+										data-oemaxlevel="1"
+										href="$siteroot$applink/components/upload/entities/picker.html?&clearotherentities=$!clearotherentities"> <i class="fas fa-times"></i></a>
+									
+							#set($entries = false)
+							#set($entries = $mediaarchive.getList($type))
+							#set( $hits = false)
+							#set( $key = "picked$type" )
+							#set( $hits = $userprofile.getValues($key))
+
+							<a class="btn btn-xs btn-dark  emdialog TODOautocloseside addEntityButton" 
+								  
+								title="[[Add New]]: $amodule.getName($context)"
+								data-hidefooter="true" 
+								href="$siteroot$applink/views/modules/$type/components/upload/entities/addnewentity.html?viewid=${type}addnew&clearotherentities=$!clearotherentities&targetdiv=entitypicker">
+								<i class="fas fa-plus"></i> [[Add New]] </a>
+
+							<div class="addEntityButtonList" style="padding-top: 30px">
+							
+							#foreach($item in $entries)
+									#if( !$hits.contains($item.getId()) || ($clearotherentities == "true" && $item.getId()!=$addselection))
+									<a class="badge badge-secondary ajax" style="margin:4px;" data-targetdiv="entitypicker" data-oemaxlevel="1" 
+										href="$siteroot$applink/components/upload/entities/picker.html?entitytype=$type&selected=$!selectedtext&addselection=$item.getId()&&clearotherentities=$!clearotherentities">
+										<i class="bi bi-chevron-double-left"></i> $item </a>
+									#end
+									
+							#end
+							</div>
+							
+							</div>
+							</div>
+						#end
+					</div>	
+				#end
+			#end
+			##done with loop
+				#if( $foundone)
+									<a class="btn btn-sm btn-light ajax" 
+										data-targetdiv="entitypicker" 
+										data-oemaxlevel="1"   href="$siteroot$applink/components/upload/entities/picker.html?removeallselection=true">[[Clear All Entities]]</a>
+				#end
+			
+	 		</div>  ##dialog
+		 </div>
+</div>  ##panel

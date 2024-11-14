@@ -1,0 +1,83 @@
+#set($isselected = $hits.isSelectedOnPage(${hit.id}) )
+$context.putPageValue("isselected", "isselected" )
+
+<div class="grid-cell-hover"></div>
+<input type="checkbox" class="resultsselection selectionbox" name="count" id="sl-${hit.id}" value="${hit.id}" #if($isselected) checked #end data-dataid="${hit.id}" />
+<label class="selectionbox-label" for="sl-${hit.id}">
+	<i class="bi bi-check-lg"></i>
+</label>
+##<div class="grid-gallery-checked"></div>
+
+#if(!$rendertype || $type =="rendertype")
+	#set( $rendertype = "mime" )
+#elseif( $rendertype =="video")
+	#set( $rendertype = "image" )
+#end
+
+<div class="grid-thumbimage" data-assetid="$!hit.id" data-rendertype="$!rendertype">
+	$pages.include("$componenthome/results/thumbnails/${rendertype}.html", $context)
+</div>
+
+##Caption
+<div class="draggholder grid-caption grid-caption-${rendertype} #if($rendertype=="default") grid-caption-show #end">
+	#if($stackedfield)
+		#set($title = $hit.get($stackedfield))
+	#end
+
+	#if(!$title)		         	
+		#if( $hit.assettitle )
+			#set($title =  $hit.assettitle) 
+		#else 
+			#set($title = $hit.name) 
+		#end
+	#end
+
+	<div class="toggle-selection grid-caption-link" id="clickid${hit.id}" title="[[Click to select]]">
+		$context.putPageValue("data",$hit)	
+		$context.putPageValue("searcher",$mediaarchive.getAssetSearcher() )	
+		$context.putPageValue("view", "asset/stackedgallery")
+		$pages.include("/$applicationid/components/xml/detailviewer-stackedgallery.html", $context)
+	</div>
+
+	#if ($hit.assetaddeddate)
+	<span class="date-preview">
+			$!context.getDate($hit.assetaddeddate)
+	</span>
+	#end
+
+	$pages.include("$componenthome/results/badges.html", $context)
+	<div class="grid-gallery-footer d-flex align-items-center justify-content-between"> 
+		<div class="d-flex align-items-center"> 
+			<div class="d-flex align-items-center ml-1">
+				#if($canaddtofavorites)
+					<div id="gsassetfavorite-${hit.id}" class="media-info-icons mr-1">
+						$pages.include("$apphome/views/modules/asset/editor/favorite/index.html?targetdiv=gsassetfavorite", $context)
+					</div>
+				#end
+				#if(($candownload || $canconvert || $candownloadfpo) && $canquickdownload)
+					#set($dlink =  "$applink/views/modules/asset/activity/downloadassets.html")
+					<a href="$dlink" data-dialogid="downloadfromassethover" class="emdialog mr-1" data-assetid="$hit.id" data-hidefooter="true" title="[[Download]] $!title">
+						<i class="bi bi-download ns" style="font-size:22px"></i>
+					</a>
+				#end
+				#if($desktop)
+					#ifnotnull($category)
+						#set($dlink = $mediaarchive.asLinkToOriginal($hit))
+						#set($dlink = "$siteroot/$mediadbappid/services/module/asset/downloads/originals/$dlink")
+						<div class="open-file-default ml-1 mr-2" style="font-size:1.3rem" data-categorypath="$category.getCategoryPath()" data-filename="$hit.name" data-dlink='$dlink' title="[[Open this file locally with your default application]]">
+							<i class="bi bi-eye"></i>
+						</div>
+					#end
+				#end
+				#if($hits.getSortBy().contains("ordering"))
+				<a href="#" class="hitmovetotop mr-1" data-assetid="$hit.id" title="[[Move to top]]">
+					<i class="bi bi-arrow-up-circle ns" style="font-size:22px"></i>
+				</a>
+				#end
+			</div>
+		</div>
+		<a href="#" class="stackedplayer asset-maximize" data-assetid="$hit.id" title="$!title">
+			<i class="fas fa-expand-arrows-alt"></i>
+		</a>
+	</div>
+</div>

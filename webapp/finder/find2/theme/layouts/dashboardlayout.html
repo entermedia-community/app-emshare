@@ -1,0 +1,40 @@
+#set( $tab = $context.findValue("tab") )
+#set( $reportid = $context.findValue("reportid") )
+<div class="dashboardlayout">
+	<div style="position:absolute; top:2px; right:4px; color:#333; font-size: 1rem;">
+	<a href="$applink"><span title="[[Close]]" class="fas fa-window-close"></span></a>
+	</div>
+	
+	
+<h2>[[Reports]]</h2>
+<div class="row">
+<div class="col-md-3">
+<div class="ui-widget" >
+<div  class="ui-widget-content categories-widget no-padding-for-real">
+		<ul id="dashboardsettings-menu" class="sidebar-list auto-active-container overflow-y">
+			<li id="DashboardHome"  #if( !$reportid ) class="current" #end>
+				<a class="ajax auto-active-link" data-targetdivinner="dashboardcontainer" data-oemaxlevel="1" href="$siteroot$apphome/views/dashboard/index.html">[[Dashboard]]</a>
+				</li>
+			#set ($reports = $searcherManager.getList("system", "reports") )
+			#foreach($screen in $reports )
+				<li id="$screen.id" #if( $report.id == "$screen.id" ) class="current" #end>
+					<a class="ajax auto-active-link" data-targetdivinner="dashboardcontainer" data-oemaxlevel="1" href="$siteroot$apphome/views/dashboard/executefinish.html?reportid=$screen.id&cache=false">$context.getText($screen.toString())</a>
+				</li>
+			#end
+				<li id="desktops" #if( $reportid == "desktops" ) class="current" #end>
+					<a class="ajax auto-active-link" data-targetdivinner="dashboardcontainer" data-oemaxlevel="1" href="$siteroot$apphome/views/dashboard/desktops.html">[[Desktops]]</a>
+				</li>
+			</ul>
+	</div>
+</div>
+</div>
+<div class="col-md-9">
+
+<div class="dashboardcontainer" id="dashboardcontainer">
+	$pages.includeContent()
+</div>
+
+</div>
+</div>
+</div>
+		

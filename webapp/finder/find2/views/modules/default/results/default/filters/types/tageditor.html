@@ -1,0 +1,44 @@
+#set($searchfield = $detail.getId() )
+#if($filternode)
+	#set( $viewpermission = $context.getPageValue("canviewfilter${type.getId()}") )
+	#ifnull($viewpermission)
+		#set( $viewpermission = true)
+	#end
+
+	#set($values = $filternode.children)
+	
+	#if( $viewpermission )
+		#set( $fieldname = $detail.getId() )
+		<div class="options">
+		
+		##TODO Show selected first
+		
+		#foreach($entry in $values)
+			#if($foreach.count < 11)
+				<div class="d-flex align-items-start">
+					<input style="margin-top:4px" class="filtercheck filtercheck${fieldname}" data-fieldname="${fieldname}" type="checkbox" name="${fieldname}.value" id="$entry.getId()${fieldname}_val" value="$entry.getId()" #if( $hits.getSearchQuery().hasTermValue($filternode.id,$entry.getId()) ) checked #end />
+					<label for="$entry.getId()${fieldname}_val" class="ml-1">$entry.getText($context) #if( $entry.count > 0)($entry.count)#end</label>
+				</div>	
+			#end	
+				#if ($foreach.count == 11)
+				<select id="${searchfield}select2" 
+					name="${searchfield}.values"
+					class="listtags choose-select detail-select form-control mb-4" 
+					data-listid="${searchfield}filter" 
+					data-searchtype= '$hits.getSearchType()'
+					data-searchfield="${searchfield}"
+				>
+					<option value=""></option>
+				#end	
+				#if ($foreach.count >= 11)	
+					<option value="$entry.getId()">$entry.getText($context) #if( $entry.count > 0)($entry.count)#end</option>
+				#end
+		#end
+		#if ($values.size() >= 11)
+			</select>
+		#end
+		
+		</div>
+
+	#end
+#end

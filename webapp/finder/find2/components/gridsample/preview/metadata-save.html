@@ -1,0 +1,18 @@
+<div class="alert alert-save  fader" role="alert">
+	#if($assets)
+		<strong>$!assets.size() [[Assets Added]]</strong>
+	#else
+		<strong>[[Saved]]</strong>
+	#end
+</div>
+
+#set($addnew = $context.getRequestParameter("addnew"))
+
+#ifnull($id)
+	#set( $id = $context.getRequestParameter("entityid"))
+#end
+#set( $ismulti = $id.startsWith("multiedit:") || $context.getRequestParameter("multi") == "true")
+#if($ismulti)
+	$context.putPageValue("ismultisaved", true)
+#end
+$pages.include("$apphome/components/gridsample/preview/entity.html", $context)

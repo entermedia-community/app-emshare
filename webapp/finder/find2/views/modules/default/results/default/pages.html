@@ -1,0 +1,57 @@
+#if( $hits.getTotalPages() >  1  )
+	#if ($category)
+		#set($categoryid = $category.getId())
+	#end
+	#if(!$resultsPage)
+		#set($resultsPage = "$componenthome/results/index.html")
+	#end
+	#set($resultsPage = "$resultsPage?hitssessionid=$!hits.sessionId&searchtype=$hits.getSearchType()")
+	#set($resultsPage = "$resultsPage&categoryid=$!categoryid&collectionid=$!collectionid&oemaxlevel=1&resultstype=$!resultstype")
+	#if($module)
+		#set($resultsPage = "$resultsPage&module=$module.id")
+	#end
+	#set($resultsPage = "$resultsPage&page")
+	#set($thispage = $hits.getPage())
+	
+	#set($targetdiv = "applicationmaincontent")
+	
+	 
+	
+	<div class="pages">
+		
+		<ul>
+			#if( $hits.prevPage() )
+				<li class="pagenav"><a class="ajax" data-targetdivinner="$targetdiv" data-setparam="page" data-setvalue="$hits.prevPage()" href="$resultsPage=$hits.prevPage()" title="Previous ( alt p enter)" accesskey="p" ><span class="bi bi-caret-left-fill overlay-nav gocaret"></span></a></li>
+			#end
+			#set( $befores = $hits.linksBefore() )					
+			#if($befores.size()!=0)
+			  #if($befores.get(0)>1)
+				<li><a class="ajax" data-targetdivinner="$targetdiv" data-setparam="page" data-setvalue="1" href="$resultsPage=1" >1</a></li>	
+			    <li class="ellipsis"><i class="bi bi-three-dots"></i></li>
+			   #end
+			#end
+			#set( $afters = $hits.linksAfter() )
+			#foreach( $before in $befores )
+				<li><a class="ajax" data-targetdivinner="$targetdiv" data-setparam="page" data-setvalue="${before}" href="$resultsPage=$before" >$before</a></li>		
+			#end
+			<li class="current"><a  class="ajax" data-targetdivinner="$targetdiv" href="$resultsPage=$thispage" >$!thispage</a></li>
+			#foreach( $after in $afters )
+				<li><a  class="ajax" data-targetdivinner="$targetdiv"  data-setparam="page" data-setvalue="${after}" href="$resultsPage=$after">$after</a></li>		
+			#end
+			#set($size=${afters.size()})
+			#set( $size = $size - 1 )
+			#if($size>0  )
+				#if ($afters.get($size)< $hits.getTotalPages() )
+					<li class="ellipsis"><i class="bi bi-three-dots"></i></li>
+					#if($hits.size() < 9999)
+                      <li><a  class="ajax" data-targetdivinner="$targetdiv"  data-setparam="page" data-setvalue="$hits.getTotalPages()" href="$resultsPage=$hits.getTotalPages()" >$hits.getTotalPages()</a></li>	
+                     #end
+				#end
+			#end
+			#if ( $hits.nextPage() )
+				<li class="pagenav"><a id="next" class="ajax" data-targetdivinner="$targetdiv"  data-setparam="page" data-setvalue="$hits.nextPage()" href="$resultsPage=$hits.nextPage()" title="Next (alt n enter)" accesskey="n"><span class="bi bi-caret-right-fill overlay-nav gocaret"></span></a></li>
+			#end
+		</ul>
+		<div class="resultsnumber">$!hits.getPageStart() - $!hits.getPageEnd()  [[of]] $!hits.total</div>
+	</div>
+#end

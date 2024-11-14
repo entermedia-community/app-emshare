@@ -1,0 +1,34 @@
+#set( $xmledithome = $context.getPageProperty("xmledithome"))
+#set( $readonly = "false" )
+#set( $readonly = $context.getRequestParameter("detailsreadonly"))
+
+##We need 3 things passed in: $searcher, $view, $data
+#if (!$details && $view)
+	#if( $context.getUserProfile() )
+		#set ($details = $searcher.getDetailsForView($view, $context.getUserProfile()))
+	#else
+		#set ($details = $searcher.getDetailsForView($view))
+	#end
+#end	
+#if( !$details)
+	##[[404 on view]]:  $searcher.getCatalogId() $searcher.getSearchType() $view
+#end
+##leagacy check. We used to pass in the $details
+#if( !$details)
+	#set ( $details = $searcher.getPropertyDetails() )
+#end
+<div class="oeinputform validate-inputs">
+	<div id="allerrors">
+	</div>
+	
+	$!context.putPageValue("details", $details)
+	<div class="row no-gutters">
+		 $pages.include("$apphome/components/xml/detaileditorsection.html", $context)
+	</div>
+</div>
+
+##needed for fast loading HTML edit boxes
+#if( $usedhtml && $readonly !=  "true") 
+	$pages.include("/system/tools/html/textarea.html?$usedhtml")	
+#end
+ 

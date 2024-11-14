@@ -1,0 +1,18 @@
+<div id="scripteditor" 
+	style="margin-bottom: 20px;">
+	<form id="okform" 
+		name="save" 
+		targetdiv="scriptlist" 
+		method="post" 
+		action="$home$apphome/views/settings/events/triggers/edit/savescript.html">
+		<input name="eventpath" type="hidden" value="$pathevent.getPage().getPath()" />
+		
+		<textarea spellcheck="false" style="width: 99.5%; height: 360px; margin-bottom:10px; overflow: scroll; white-space: pre; border:1px solid #ddd; padding:10px" name="scriptcode">$script.getContent()</textarea>
+		#if( $script.getContentItem().getPath().startsWith("/WEB-INF/base") )
+		<strong>[[Base Script]]</strong>
+		#else
+		<a class="btn btn-sm btn-secondary ajax" data-confirm="[[Are you sure to delete?]]" data-targetdiv="scripteditor" href="$home$apphome/views/settings/events/triggers/edit/scripts/delete.html?eventpath=$pathevent.getPage().getPath()&oemaxlevel=1" >[[Delete Custom Script]]</a>
+		#end
+	</form>	
+</div>
+

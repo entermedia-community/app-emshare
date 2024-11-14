@@ -1,0 +1,95 @@
+#set( $searchtype = $context.findValue("module")) 
+
+#if(!$searchtype)
+	#set( $searchtype = $context.findValue("searchtype")) 
+#end
+#if(!$searchtype)
+	#set($searchtype = $context.getRequestParameter("searchtype")) 
+#end
+
+#set($edit = $context.getRequestParameter("edit"))
+#if($edit!="true")
+	#set($edit="false")
+#end
+
+
+#set( $id = $context.getRequestParameter("entityid"))
+
+##ifnotnull($id)
+
+#if($id.startsWith("multiedit"))
+	#set($entityid = $entity.id)
+	#set($entitytabid = "entity-tab-multiedit")
+	#set($edit="true")
+#else
+	#if(!$entity && $id)
+		#set( $entity  = $mediaarchive.getData($searchtype, $id) )
+	#end
+	#ifnotnull($entity)
+		#set($entityid = $entity.id)
+		$context.putPageValue("entity", $entity)
+	#end
+#end
+#set($module = $mediaarchive.getData("module", $searchtype))
+#set($moduleid = $module.getId())
+
+$context.putPageValue("entityid", $!entityid)
+$context.putPageValue("moduleid", $!moduleid)
+
+#if(!$entitytabid)
+	#set($entitytabid = "${module.getId()}$!{entityid}")
+	#set($entitytabid = "#eid($entitytabid)")
+#end
+
+$context.putPageValue("edit", $edit)
+
+#ifnull($entityid)
+	#set($entityid = "")
+#end
+
+#ifnull($showmedia)
+	#set($showmedia = $context.getRequestParameter("showmedia"))
+#end
+$context.putPageValue("showmedia", $showmedia)
+#if(!$currenttab)
+	#set($currenttab = $context.getRequestParameter("currenttab"))
+#end
+
+#ifnull($viewid)
+#set($viewid = $context.getRequestParameter("viewid"))
+#end
+
+#set($tabid = $context.getRequestParameter("tabid"))
+#ifnull($tabid)
+	#set($tabid = "tab_$viewid")
+#end
+
+<div id="$tabid"
+	class=" reloadonupload entity-tab-content tabtype$!tabtype edittab"
+	##style=" #if($currenttab != $viewid) display:none; #end" 
+	data-entityid="$!entity.id" 
+	data-tabtype="metadata"
+	data-tabid="$tabid"
+	data-viewid="$!viewid"
+	data-currenttab="$!currenttab"
+	data-searchtype="$searchtype"
+	data-edit="$!edit"
+	data-autoreloadevents="uploadend"
+	data-url="$componenthome/gridsample/preview/entitytab.html">
+	
+	
+	
+	<div class="entity-metadata" 
+		id="entitymetadata" data-id="$!entity.getId()" data-searchtype="$!searchtype">
+		$context.putPageValue("id", $entityid)
+		$context.putPageValue("data", $entity)
+		$context.putPageValue("searchtype", $searchtype)
+
+		$pages.include("$componenthome/gridsample/preview/metadata.html", $context)
+	</div>
+	<div class="clearfix"></div>
+
+
+</div>
+
+##end

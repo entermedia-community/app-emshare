@@ -1,0 +1,110 @@
+#if( $category )
+	#set( $categoryid = $category.id )
+#else
+	##set( $categoryid = "index" )
+#end
+#if($librarycol)
+	#set( $collectionid = $librarycol.getId() )
+#end
+
+##$hits
+ 
+<div id="resultsdiv" class="tableresults" 
+		data-hitssessionid="$!hits.getSessionId()" 
+		data-componenthome="$!home$!componenthome"
+		data-searchhome="$!home$!componenthome/results"
+		data-category="$!categoryid"
+		data-collectionid="$!collectionid" 
+		data-searchtype="asset" 
+		data-pagenum="$!hits.getPage()" 
+		data-totalpages="$!hits.getTotalPages()"
+		data-module="$!moduleid"
+		data-section="$!content.section">
+
+#set( $showtoolbar = $page.isPropertyTrue("showtoolbar"))
+$context.putPageValue("showtoolbar",  $showtoolbar)
+$context.putPageValue("showcaption", $page.isPropertyTrue("showcaption"))
+$context.putPageValue("resultstype", $context.getRequestParameter("resultstype"))
+
+##if( $showtoolbar )
+$pages.include("$componenthome/results/header.html",$context)
+##end
+
+$context.putPageValue("assetrootfolder", "/$catalogid/assets")
+
+#if ( $hits && $hits.size() > 0 )
+	
+	$context.putPageValue("details",$details)
+	
+	   #if($userprofile) 
+           #set( $details = $mediaarchive.getAssetSearcher().getDetailsForView("asset/resultstable",$userprofile) )
+       #else
+           #set( $details = $mediaarchive.getAssetSearcher().getDetailsForView("asset/resultstable") ) 
+       #end    
+	$context.putPageValue("details",$details)
+	
+	##<div class="emselectable">	
+		<div class="table-autoresize-inner">	
+		
+		#set( $viewerlink = $content.get("assetviewerlink") )
+		
+			<table id="main-results-table" class="table table-striped table-hover emresultstable stackedplayertable" >
+					$pages.include("$componenthome/results/tableheader.html",$context)
+					#set($count = 0)
+					#foreach( $hit in $hits.getPageOfHits() )
+						$context.putPageValue("hit", $hit)
+						#set($asset = $mediaarchive.getAsset($hit.id))
+						$context.putPageValue("asset", $asset)
+						$context.putPageValue("assetid", $hit.id)
+						$context.putPageValue("count", $count)
+						$context.putPageValue("sourcepath", $hit.sourcepath)
+						$pages.include("$componenthome/results/row.html", $context)
+						#set($count = $count + 1)
+					#end
+			</table>
+		
+		</div>
+	##</div>
+	
+	#if ($resultview != "map" && $resultview != "stackedgallery")
+		<div class="table-pagination">
+			<p class="m-0">
+				<span>$!hits.getPageStart()</span> &mdash; <span>$!hits.getPageEnd()</span>  [[of]] <span>$!hits.total</span>
+			</p>
+		</div>
+		
+		#if($module.getId()=="asset")
+			#if($categoryid || $collectionid)
+				#set($resultsPage = "$applink/views/modules/asset/showcategory.html")
+				#set($resultsPage = "$resultsPage?hitssessionid=$!hits.sessionId&searchtype=$!hits.getSearchType()")
+				#set($resultsPage = "$resultsPage&nodeID=$!categoryid&collectionid=$!collectionid")
+				#set($resultsPage = "$resultsPage&pageposition")
+			#else
+				#set($resultsPage = "$applink/views/modules/asset/index.html?pageposition")
+			#end
+			$context.putPageValue('targetdivinner',  "applicationmaincontent")
+			$context.putPageValue('oemaxlevel', "2")
+		#elseif($module.getId()=="librarycollection")
+			#if(!$resultsPage)
+				#set($resultsPage = "$applink/views/modules/librarycollection/media/showcategory.html")
+			#end
+			#set($resultsPage = "$resultsPage?hitssessionid=$!hits.sessionId&searchtype=$!hits.getSearchType()")
+			#set($resultsPage = "$resultsPage&categoryid=$!categoryid&collectionid=$!collectionid")
+			#set($resultsPage = "$resultsPage&pageposition")
+			
+			$context.putPageValue('targetdivinner',  "resultsarea")
+			$context.putPageValue('oemaxlevel', "2")
+		#end
+
+
+		$context.putPageValue('resultsPage',  $resultsPage)
+		
+		##$pages.include("$componenthome/results/positions.html",$context)
+	#end
+	
+
+#else
+$pages.stream("/$!{searchhome}/empty.html", $context)
+#end
+
+</div>

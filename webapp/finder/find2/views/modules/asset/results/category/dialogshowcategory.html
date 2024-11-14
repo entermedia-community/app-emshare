@@ -1,0 +1,20 @@
+$context.putPageValue("hits", $entityassethits)
+
+#if(!$topmodule)
+	#set ( $topmodule = $context.getRequestParameter("topmodule") )
+	$context.putPageValue("topmodule", $topmodule)
+#end
+#if(!$rootcategory)
+	#set ( $rootcategory = $context.getRequestParameter("rootcategory") )
+	$context.putPageValue("rootcategory", $rootcategory)
+#end
+#if(!$category)
+	#set ( $category = $context.getRequestParameter("category") )
+	$context.putPageValue("category", $category)
+#end
+$context.putPageValue("dialogresults", true)
+
+
+<div id="dialogmediaentity" data-setpagetitle="#text($entity) #text($category)" data-categoryid="$!{category.id}">
+$pages.include("$componenthome/results/index.html", $context)
+</div>

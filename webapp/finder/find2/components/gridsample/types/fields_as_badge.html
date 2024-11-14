@@ -1,0 +1,45 @@
+
+##All other data show as badge
+
+##check for view
+#set($viewid = "${searchtype}gridfields")
+#set($view = "$searchtype/$viewid")
+
+#if (!$details && $view)
+	#if( $context.getUserProfile() )
+		#set ($details = $searcher.getDetailsForView($view, $context.getUserProfile()))
+	#else
+		#set ($details = $searcher.getDetailsForView($view))
+	#end
+#end
+
+#if($details)
+	<div class="emgridcell-fields">
+	#foreach( $detail in $details )
+		#if( $searcherManager )
+			#set( $val = $searcherManager.getValue($data,$detail,$context.getLocale()) )	
+		#else
+			#set( $val = $!{data.getProperty($detail.getId())} )
+		#end
+	
+		#if( !$val )
+			#set( $val = $!{data.get($detail.getId())} )
+		#end
+		
+		#if( !$val) 
+			#set( $val = "") 
+		#end
+		
+		#if( $val) 
+			$!context.putPageValue("val",$val)
+			$!context.putPageValue("detail",$detail)
+			
+			##<a class="badge  badge-secondary" href="$!previewurl"	title="$!val"> 
+			<span class="badge badge-secondary" data-fieldid="$!detail.getId()" data-fieldvalue="$!val">
+			$pages.include("$apphome/components/xml/detailplaintext.html", $context)
+			</span>
+			##</a>	
+		#end
+	#end
+	</div>
+#end 

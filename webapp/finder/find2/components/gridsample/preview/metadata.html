@@ -1,0 +1,237 @@
+#if(!$searchtype)
+	#set($searchtype = $context.getRequestParameter("searchtype"))
+	$context.putPageValue("searchtype",$searchtype)
+#end
+#if(!$searchtype)
+	#set( $searchtype = $context.findValue("module"))
+	$context.putPageValue("searchtype",$searchtype)
+#end
+#ifnull($id)
+	#set( $id = $context.getRequestParameter("entityid"))
+	$context.putPageValue("id", $id)
+#end
+
+#set( $ismulti = $id.startsWith("multiedit:") || $context.getRequestParameter("multi") == "true")
+
+#if(!$data)
+	#set($data = $entity)
+#end
+
+#ifnull($data)
+	#set($data = $mediaarchive.getSearcher($searchtype).createNewData())
+	
+	#set ($fieldexternalid = $context.getRequestParameter("fieldexternalid"))
+	#set ($fieldexternalvalue = $context.getRequestParameter("fieldexternalvalue"))
+	#ifnotnull($fieldexternalid)
+		$data.setValue($fieldexternalid, $fieldexternalvalue)
+	#end
+#end
+
+$context.putPageValue("data",$data)
+
+#set( $searcher = $mediaarchive.getSearcher($searchtype) )
+$context.putPageValue("searcher",$searcher)
+
+#if(!$moduleid)
+	#set($moduleid = $context.getRequestParameter("moduleid"))
+#end
+#if(!$moduleid)
+	#set($moduleid = $searchtype)
+#end
+
+#set($edit = $context.getRequestParameter("edit"))
+#if($edit!="true")
+	#set($edit="false")
+#end
+$context.putPageValue("edit", $edit)
+
+#ifnull($viewid)
+#set($viewid = $context.getRequestParameter("viewid"))
+#end
+
+#if($ismulti)
+	$context.putPageValue("multiedit", $ismulti)
+#end
+
+<div id="editentitymetadata" data-url="$!siteroot$applink/views/modules/$!{moduleid}/components/gridsample/preview/metadata.html?edit=true&entityid=$!data.id&moduleid=$!moduleid&showmedia=$!showmedia&viewid=$!viewid" class='fieldsParent entitymetadatamodal #if($edit=="true") entitymetadataediting #else entitymetadatapreview #end' data-id="$!id">
+
+#if($ismulti)
+	#set($targetentitytabid = "entity-tab-multiedit")
+#else
+	#set($addnew = $context.getRequestParameter("addnew"))
+	#if($addnew)
+		#set($viewid = "${searchtype}addnew")
+		#set($reloadtargets = $context.getRequestParameter("reloadtargets"))
+	
+	#end
+	#set($targetentitytabid = "entity-tab-#eid($id)")
+#end
+
+#ifnotnull($data)
+#if( $module.getBoolean("enableuploading"))
+	#set($defaultfolder =  $mediaarchive.getBean("entityManager").loadDefaultFolder($module, $data, $context.getUser()))
+	$context.putPageValue("defaultfolder", $defaultfolder)
+#end
+#end
+
+#set($view = "$searchtype/$viewid")
+#set($action = "$siteroot$applink/views/modules/${moduleid}/components/gridsample/preview/metadata-save.html")
+
+<form id="entitydataeditor" 
+		name="entitydataeditor" 
+		class="ajaxform checkCloseDialog" 
+		#if($addnew)
+			data-targetdiv="addnew$searchtype"
+		#else
+			data-targetdivinner="entitypreviewdialog-body"
+		#end 
+		#if($addnew && $reloadtargets)
+			data-ajaxreloadtargets="$reloadtargets"
+		#else
+			data-ajaxreloadtargets="moduleajaxreloadtarget"
+		#end
+	##	data-onsuccess="updateentities"
+		method="post"  
+		action="$action"
+		enctype="multipart/form-data">
+    	<input name="save" type="hidden" value="true" />
+    	
+
+		#set($saveaction = $context.getRequestParameter("saveaction"))
+		<input name="saveaction" type="hidden" value="$!saveaction" />
+		#set($copyinghitssessionid = $context.getRequestParameter("copyinghitssessionid"))
+		<input name="copyinghitssessionid" type="hidden" value="$!copyinghitssessionid" />
+		#set($copyingsearchtype = $context.getRequestParameter("copyingsearchtype"))
+		<input name="copyingsearchtype" type="hidden" value="$!copyingsearchtype" />
+		<input name="pickedmoduleid" type="hidden" value="$!moduleid" />
+		
+		#set($pickedassetid = $context.getRequestParameter("pickedassetid"))
+		<input name="pickedassetid" type="hidden" value="$!pickedassetid" />
+		
+		#set($copyingcategoryid = $context.getRequestParameter("copyingcategoryid"))
+		<input name="copyingcategoryid" type="hidden" value="$!copyingcategoryid" />
+
+    	<input name="id" type="hidden" value="$!id" />
+    	<input name="entityid" type="hidden" value="$!id" />
+    	<input name="searchtype" type="hidden" value="$!searchtype" />
+    	<input name="moduleid" type="hidden" value="$!moduleid" />
+    	<input name="viewid" type="hidden" value="$!viewid" />
+    	<input name="view" type="hidden" value="$!view" />
+    	
+    	
+	   	#if(!$hitssessionid)
+    		#set( $hitssessionid = $context.getRequestParameter("hitssessionid"))
+    	#end
+    	#if($hitssessionid)
+    		<input name="hitssessionid" type="hidden" value="$hitssessionid" />
+		#end
+
+	
+		#ifnull($showmedia)
+			#set($showmedia = $context.getRequestParameter("showmedia"))
+		#end
+		#ifnotnull($showmedia)
+			<input name="showmedia" type="hidden" value="$showmedia" />
+		#end
+    	
+    	$context.putPageValue("view", $view)
+    	$context.putPageValue("viewid", $viewid)
+    	
+		#if($edit =="true")  ##TODO - Permissions
+			##1 or 2 colums feature
+			#set($detailviewercolumns = $context.getRequestParameter("detailviewercolumns"))
+			#if(!$detailviewercolumns)
+				#set($detailviewercolumns = 2)
+			#end
+		
+			$pages.include("/$applicationid/components/xml/detaileditor-entities.html?longform=true&detailviewercolumns=$detailviewercolumns", $context)
+		#else
+			##Tags search link
+			$context.putPageValue("tagssearchlink", "$siteroot$apphome/views/modules/$moduleid/index.html")
+		
+			$pages.include("$apphome/components/xml/detaileditor-entities.html?detailsreadonly=true&alwaysshow=true", $context)
+		#end
+	
+    #if($edit=="true")
+    <div class="d-flex align-items-center justify-content-between form-submit-btns">
+			<div class="d-flex align-items-center">
+			#if($id) 
+				<a class="btn focused-btn submitform mr-2"><i class="bi bi-floppy-fill mr-1"></i> [[Save]]</a>
+				#if($id.startsWith("multiedit"))
+					<button id="closebutton" type="button" class="btn btn-secondary mr-2" data-dismiss="modal">[[Cancel]]</button>
+				#else
+					<a class="btn btn-secondary mr-2 ajax" data-targetdiv="editentitymetadata" 
+						href="$!siteroot$applink/views/modules/$!{moduleid}/components/gridsample/preview/metadata.html?entityid=$!id&moduleid=$!moduleid&showmedia=$!showmedia&viewid=$!viewid">[[Cancel]]</a>
+				#end
+			#else
+			  <a class="btn focused-btn submitform mr-2"><i class="bi bi-floppy-fill mr-1"></i> [[Save]]</a>
+				<button id="closebutton" type="button" class="btn btn-secondary mr-2" data-dismiss="modal">[[Cancel]]</button>
+			#end
+			</div>
+		
+		#if($detailviewercolumns==1)
+			#set($changedetailviewercolumns = 2)
+			#set($icondetailviewercolumns = "vertical")
+		#else
+			#set($changedetailviewercolumns = 1)
+			#set($icondetailviewercolumns = "horizontal")
+		#end
+		
+			<div class="d-flex align-items-center">
+				#if($canviewmodulesettings)
+				<a class="emdialog btn btn-accent px-2 mr-2" href="$siteroot$apphome/views/settings/modules/$!{searcher.searchType}/metadata/views/dialog/index.html?viewid=$viewid&viewpath=$!view"
+					title="[[Edit Fields]]" data-dialogid="fieldpicker" data-hidefooter="true"
+				><i class="bi bi-gear-fill mr-1"></i> [[Fields]]</a>
+				#end
+				<a class="ajax btn btn-accent" data-targetdiv="editentitymetadata" 
+					href="$!siteroot$applink/views/modules/$!{moduleid}/components/gridsample/preview/metadata.html?edit=true&entityid=$!{data.id}&detailviewercolumns=${changedetailviewercolumns}&moduleid=$!{moduleid}&viewid=$!{viewid}">
+					<i class="bi bi-grip-$icondetailviewercolumns"></i>
+				</a> 
+			</div>
+    </div>
+    #end
+    </form>
+	<div id="fieldsPicker"></div> 
+
+	#if($edit!="true")
+		#if($permissions.can($moduleid, "edit"))
+			#if(!$ismultisaved) 
+				<a href="$!siteroot$applink/views/modules/$!{moduleid}/components/gridsample/preview/metadata.html?edit=true&entityid=$!data.id&moduleid=$!moduleid&showmedia=$!showmedia&viewid=$!viewid&hitssessionid=$!hitssessionid" 
+					data-targetdiv="editentitymetadata" 
+					class="ajax btn focused-btn" 
+					style="margin-right:10px;"><i class="bi bi-pencil-square mr-1"></i> [[Edit]]</a>
+			#end
+		#end
+		#if(false && !$ismulti && $module.getBoolean("enableuploading") && $permissions.can($moduleid, "view_files"))
+			<a href="$applink/views/modules/${moduleid}/components/gridsample/preview/entitytabmedia.html" 
+				class="btn btn-primary entitytabactions"
+				data-tabaction="media"
+				data-uploadmedia="true" 
+				style="margin-right:10px;"><i class="bi bi-image mr-1"></i> 
+				#if($module.getBoolean("enableuploading"))
+				[[View / Upload Files]]
+				#else
+				[[View Files]]
+				#end
+				</a>
+		#end
+		
+		
+		#if(!$ismulti && $permissions.can($moduleid, "delete"))
+		<a href="$!siteroot$applink/views/modules/$!{moduleid}/components/entities/delete.html?id=$data.id" 
+			class="ajax btn btn-danger" 
+			data-targetdiv="editentitymetadata" 
+			data-ajaxreloadtargets="moduleajaxreloadtarget"
+			
+			data-alertmessage="[[Deleted Successfully]]"
+			
+			data-closedialog="true" 
+			data-confirm="[[Are you sure]]?"
+			data-id="$data.id" 
+			><i class="bi bi-trash-fill mr-1"></i>[[Delete]]</a>
+		#end
+	#end
+
+
+
+</div>

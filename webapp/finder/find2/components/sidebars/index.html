@@ -1,0 +1,274 @@
+#set ($moduleid = $module.getId())
+#set($title=$mediaarchive.getCatalogSettingValue("sitetitle")) 
+#set( $section=$context.getRequestParameter("sitetitle"))
+<div id="col-sidebars" 
+	class="col-sidebars-sticky sidebarcontent setpagetitle" 
+	#ifnotnull( $section ) data-setpagetitle="#text($section) - $title" #end 
+	#ifnull( $section ) data-setpagetitle="$title" #end 
+	data-url="$applink/components/sidebars/index.html">
+
+
+
+	<div class="col-main col-sidebar-togglers sidebar-togglers-bar">
+
+		<div class="col-main-inner" >
+
+			##force specific sidebar from URL only if sidebars open
+			#set($forcedsidebarcomponent = $context.getRequestParameter("sidebarcomponent"))
+			
+			#if($forcedsidebarcomponent == "none")
+				#set( $sidebarcomponent = $forcedsidebarcomponent )
+			#else
+
+				#ifnull($forcedsidebarcomponent)
+					#set($forcedsidebarcomponent = $content.sidebarcomponent)
+				#end
+	
+				#ifnotnull($forcedsidebarcomponent)
+					#set( $sidebarcomponent = $forcedsidebarcomponent )
+				#end
+	
+				#ifnull($sidebarcomponent)
+					#set( $sidebarcomponent = $userprofile.get("sidebarcomponent"))
+				#end
+	
+				##very first time
+				#if( !$sidebarcomponent && $modulehits.isEmpty() )
+				#set( $sidebarcomponent = "guide" )
+				#end
+			#end
+			
+			
+			#if($sidebarcomponent == "localdrives")
+				#ifnull($desktop)
+				#set( $sidebarcomponent = "")
+				#end
+			#end
+
+
+			<div class="sidebar-togglers ">
+				
+				#set( $link="$!apphome/index.html")
+				<a href="$link"
+					class="sidebar-toggler-show resetsearch" 
+					data-action="home"
+					data-targetdiv="applicationcontent" 
+					data-oemaxlevel="4" 
+					data-sidebarcomponent="none"
+					data-resetsearch="true"
+					data-updateurl="true" 
+					data-clearfilters="true"
+					title="[[Home]]">
+					<i class="bi bi-house-door-fill"></i>
+				</a>
+			</div>
+
+			#if( $canviewcategorynav || ( $librarycol && $canviewcategorynavcollections ) )
+			<div class="sidebar-togglers #if($sidebarcomponent == "categories") sidebar-selected #end">
+				<a href="#" class="sidebar-toggler sidebar-toggler-show" data-action="show"
+					data-targetdiv="col-sidebars" data-sidebar="categories" data-sitetitle="[[Files]]"
+					data-modulesearchhitssessionid="$!modulehits.sessionId" title="[[Files]]">
+					<i class="bi bi-folder-fill"></i>
+				</a>
+			</div>
+			#end
+
+			#if(false && $canviewopencollections )
+			<div class="sidebar-togglers #if($sidebarcomponent == "libraries") sidebar-selected #end">
+				<a href="#" class="sidebar-toggler sidebar-toggler-show" data-action="show"
+					data-targetdiv="col-sidebars" data-sidebar="libraries"
+					data-modulesearchhitssessionid="$!modulehits.sessionId" data-sitetitle="[[Albums]]"
+					title="[[Recent Albums]]">
+					<i class="bi bi-diagram-3-fill"></i>
+				</a>
+			</div>
+			#end
+
+			#if($desktop)
+			<div class="sidebar-togglers #if($sidebarcomponent == "localdrives") sidebar-selected #end
+				sidebartogglerlocaldrives">
+				<a href="#" id="sidebarUserUploads" class="sidebar-toggler sidebar-toggler-show position-relative"
+					data-action="show" data-targetdiv="col-sidebars" data-sidebar="localdrives"
+					data-modulesearchhitssessionid="$modulehits.sessionId" title="[[Cloud Sync]]">
+					<i class="bi bi-folder-plus"></i></i>
+				</a>
+			</div>
+			#end
+
+			#if($user.getId())
+				#if($candownload || $canconvert || $candownloadfpo)
+					<div class="sidebar-togglers #if($sidebarcomponent == "userdownloads") sidebar-selected #end">
+						<a href="#" class="sidebar-toggler sidebar-toggler-show" data-action="show"
+							data-targetdiv="col-sidebars" data-sidebar="userdownloads"
+							data-modulesearchhitssessionid="$!modulehits.sessionId" title="[[Download Orders]]">
+							
+							<div id="downloadsStatus">
+								$pages.include("$home$apphome/components/orders/download/iconajaxorderstatus.html",$context)
+								<div id="triggerpendingdownloads"></div>
+							</div>
+							
+							## <div class="downloadsUpdateWrapper">
+								## <div class="downloadsUpdate">
+									## #if($user && $sidebarcomponent != "userdownloads")
+									## #set($recentdownloads =	$mediaarchive.query("userdownloads").named("udownloadshits").exact("user",$user.getId()).sort("dateDown").search($context))
+									## $!recentdownloads.size()
+									## #end
+									## </div>
+								## </div>
+							
+						</a>
+					</div>
+				#end
+			#end
+			
+
+			#if($canviewmodulelist)
+				#if( $userprofile.getModules().size() > 1 )
+					#set( $urlbase = "$siteroot$applink/views/modules" )
+		
+					<div class=" sidebar-togglers #if($sidebarcomponent == "addentity") sidebar-selected #end">
+						<a href="#" class="ajax sidebar-toggler sidebar-toggler-show"
+							data-modulesearchhitssessionid="$!modulehits.sessionId" data-action="show"
+							data-targetdiv="col-sidebars" data-sidebar="addentity" title="[[Database]]">
+							<i class="bi bi-database-fill"></i>
+						</a>
+					</div>
+				#end
+			#end
+
+
+
+			#if( $canviewsettings )
+			<div class="sidebar-togglers #if($sidebarcomponent == "settings") sidebar-selected #end">
+				<a href="#" class="sidebar-toggler sidebar-toggler-show" data-action="show"
+					data-targetdiv="col-sidebars" data-sidebar="settings"
+					data-modulesearchhitssessionid="$!modulehits.sessionId" data-sitetitle="[[Settings]]"
+					title="[[Settings]]">
+					<i class="bi bi-gear-fill"></i>
+				</a>
+			</div>
+			#end
+			
+		</div>
+		
+		
+					#if($user && $canviewsidebarhelp)	
+			<div class="sidebar-togglers #if($sidebarcomponent == "guide") sidebar-selected #end"  style="margin-top:40px">
+				<a href="#" class="sidebar-toggler sidebar-toggler-show" data-action="show"
+					data-targetdiv="col-sidebars" data-sidebar="guide"
+					data-modulesearchhitssessionid="$modulehits.sessionId" data-sitetitle="[[User Guide]]"
+					title="[[User Guide]]">
+					<i class="bi bi-question-octagon-fill"></i>
+				</a>
+			</div>
+			#end	
+
+			#if($canviewsettings)
+				#if( $userprofile.getModules().size() > 1 )
+					#set( $urlbase = "$siteroot$applink/views/modules" )
+					<div class="sidebar-togglers #if($sidebarcomponent == "smartorganaizer") sidebar-selected #end" Xstyle="width: 32px; height: 32px;  position: absolute;   top: 40px;">
+						<a href="$applink/components/smartorganizer/index.html" class="emdialog sidebar-toggler-show" data-oemaxlevel="1"
+							data-modulesearchhitssessionid="$!modulehits.sessionId" data-action="show" data-sidebar="addentity" title="[[Smart Organizer]]">
+							<i class="bi bi-magic" style="color: #ff91f6;"></i>
+						</a>
+					</div>
+				#end
+			#end
+
+		<div class="mt-auto">
+		</div>
+
+		
+		
+	</div>
+
+#set($sidebarurl = "")
+#if($cantogglesidebar)
+	#if($sidebarcomponent != "")
+		#if($sidebarcomponent == "libraries" )
+		#set($sidebarurl = "$apphome/components/sidebars/libraries/index.html")
+		#end
+	
+		#if($sidebarcomponent == "guide" )
+		#set($sidebarurl = "$apphome/components/sidebars/guide/index.html")
+		#end
+	
+	
+		#if($sidebarcomponent == "filters" )
+		#set($sidebarurl = "$apphome/components/sidebars/filters/index.html")
+		#end
+	
+		#if($sidebarcomponent == "topics" )
+		#set($sidebarurl = "$apphome/components/sidebars/tags/index.html")
+		#end
+	
+		#if($sidebarcomponent == "faceprofiles" )
+		#set($sidebarurl = "$apphome/components/sidebars/faceprofiles/index.html")
+		#end
+	
+		#if($sidebarcomponent == "favorites" )
+		#set($sidebarurl = "$applink/views/modules/modulesearch/favorites.html?clearselection=true&clearfilters=true")
+		#end
+	
+	
+		#if($sidebarcomponent == "categories" )
+		#if( $canviewcategorynav || ( $librarycol && $canviewcategorynavcollections ) )
+		#set($sidebarurl = "$apphome/components/sidebars/categories/index.html")
+		#end
+		#end
+	
+		#if($sidebarcomponent == "localdrives" )
+		#if($canviewcategorynav && $desktop)
+			#set( $selectedModuleId = $userprofile.get("desktop_lastselected_module") )
+			
+			#ifnull($selectedModuleId )
+				#set( $selectedModuleId = $module.id )
+			#end
+			#set($sidebarurl = "$apphome/views/modules/${selectedModuleId}/components/sidebars/localdrives/index.html")
+		#end
+		#end
+	
+		#if($sidebarcomponent == "addentity" )
+		#set($sidebarurl = "$apphome/components/sidebars/addentity/index.html?selectedmodule=$!module.id")
+		#end
+	
+		#if($sidebarcomponent == "userdownloads" )
+		#if($candownload || $canconvert || $candownloadfpo)
+		#set($sidebarurl = "$apphome/components/sidebars/userdownloads/index.html")
+		#end
+		#end
+	
+		#if($sidebarcomponent == "settings" )
+		#set($sidebarurl = "$apphome/components/sidebars/settings/index.html")
+		#end
+	
+	
+		##SIDEBAR WIDTH
+	
+		#set( $sidebarwidth = $userprofile.get("sidebarwidth"))
+	
+		#if($sidebarurl)
+		#if($sidebarwidth=='' || $sidebarwidth=='undefined')
+		#set($sidebarwidth = 280)
+		#end
+	
+		#ifnotnull($sidebarurl)
+		<div class="col-main col-mainsidebar #if($sidebarwidth && $sidebarwidth>320)sidebarwide #end"
+			style="#if($sidebarwidth) width:${sidebarwidth}px;#end" data-sidebarwidth="$!sidebarwidth">
+			<div id="col-$sidebarcomponent" class="col-left col-$sidebarcomponent">
+				<div class="col-main-inner">
+					$pages.include($sidebarurl, $context)
+					<div class="colslidercontainer">
+						<a href="#" class="col-resize" title="[[Resize Sidebar]]"><i class="bi bi-arrows-expand-vertical"></i></a>
+						
+					</div>
+				</div>
+			</div>
+		</div>
+		#end
+	#end
+
+	#end
+#end
+
+</div>

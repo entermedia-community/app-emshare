@@ -1,0 +1,52 @@
+#set( $subtab = $context.findValue("subtab") )
+
+#if( $subtab )
+	#set ( $module = $context.findValue("module") )
+	#set ( $parentid = $context.findValue("tab") )
+	
+	
+	
+	<div id="eml-tab-subnav" class="settingssubtabnav">
+			#set( $searcher = $searcherManager.getSearcher($catalogid,"settingsmenumodule") )
+			#set( $query = $searcher.createSearchQuery() )
+			#set( $null = $query.addExact("parentid", $parentid ))
+			$!query.addSortBy("ordering")
+			#set($tabs = $searcher.cachedSearch($context,$query))		
+		<ul>
+		
+		
+		
+			#if($tabs)
+				#foreach($screen in $tabs )
+				<li #if( $subtab == "$screen.id" ) class="current" #end>
+					#if($tabs.size()>1)
+					<a  href="$siteroot$apphome${screen.path}" 
+						class="ajax" 
+						data-targetdiv="applicationmaincontent" 
+						data-oemaxlayout="3"
+						data-updateurl="true">
+						#if ( $screen.sublabel ) $context.getText($screen.sublabel.toString()) #else $context.getText($screen.toString()) #end
+					</a>
+					#else
+					<a  href="#" 
+						>
+						#if ( $screen.sublabel ) $context.getText($screen.sublabel.toString()) #else $context.getText($screen.toString()) #end 
+					</a>
+					#end
+				</li>
+				#end
+			#else
+			<li class="current"><a href="">$!subtab</a></li>
+			#end
+		</ul>
+	</div>
+	
+	<div id="eml-tab-green-container" class="eml-tab-content">
+			$pages.includeContent()
+	</div>
+
+#else
+	<div class="eml-full-content">
+			$pages.includeContent()
+	</div>
+#end

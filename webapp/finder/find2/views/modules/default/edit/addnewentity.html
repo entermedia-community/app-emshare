@@ -1,0 +1,101 @@
+##edit/addnew.html?viewid=projectgeneral&viewpath=project/projectgeneral&hitssessionid=hitsprojectfinder/catalog
+
+#set( $moduleid = $context.findValue("searchtype") )
+#set( $viewid = $context.findValue("viewid") )
+
+#set( $searchtype = $context.findValue("searchtype") )
+$context.putPageValue("searcher",$mediaarchive.getSearcher($searchtype))
+
+#if( !$viewid )	
+	#set($viewid = "${moduleid}general")
+#end
+
+#if( !$viewpath )	
+	#set($viewpath = "${moduleid}/$viewid")
+#end
+
+
+#set($id = $data.id )
+#if( !$id )
+	#set( $id = $context.getRequestParameter("id") )
+#end
+
+#set($parentsearchtype = $context.getRequestParameter("parentsearchtype"))
+#set($parentid = $context.getRequestParameter("parentid"))
+#set($parentviewid = $context.getRequestParameter("parentviewid"))
+
+#set ($fieldexternalid = $context.getRequestParameter("fieldexternalid"))
+#set ($fieldexternalvalue = $context.getRequestParameter("fieldexternalvalue"))
+
+#set($targetdiv = $context.getRequestParameter("parenttargetdiv"))
+#set($defaultaction = "$!siteroot$apphome/views/modules/$searchtype/edit/addnewentitysave.html")
+
+<div id="default-fields">
+    <div id="editlayout">
+    <form id="dataeditor" 
+    		name="dataeditor" 
+    		class="ajaxform" 
+    		data-targetdiv="$!targetdiv"
+    		data-oemaxlevel="1"
+    		data-ajaxreloadtargets="topmodulecontainer"
+    		data-onsuccess="formsavebackbutton"
+    		method="post"  
+    		data-defaultaction="$!defaultaction">
+    	<input name="save" type="hidden" value="true" />
+    	<input name="id" type="hidden" value="$!id" />
+    	<input name="searchtype" type="hidden" value="$searchtype" />
+    	<input name="viewid" type="hidden" value="$viewid" />
+    	<input name="entitytype" type="hidden" value="$searchtype" />
+    	<input name="module" type="hidden" value="$searchtype" />
+    	<input name="enablebackbutton" type="hidden" value="true" />
+    	
+    	
+    	<input name="parentsearchtype" type="hidden" value="$!parentsearchtype" />
+    	<input name="parentid" type="hidden" value="$!parentid" />
+    	
+    	#if($fieldexternalid)
+			##<input name="operation" value="not" type="hidden">
+			<input name="field" value="$fieldexternalid" type="hidden">
+			<input name="${fieldexternalid}.value" value="$fieldexternalvalue" type="hidden">
+		#end
+    	
+    	
+    	$context.putPageValue("view", $viewpath)
+    	$context.putPageValue("viewid", $viewid)
+
+		#set( $origURL = $context.getRequestParameter("origURL" ) )
+		#set( $moduleid = $context.findValue("module") )
+		
+		$pages.include("/$applicationid/components/xml/detaileditor-entities.html", $context)
+		<div style="padding:10px 0 0 0">
+		#if( $caneditmetadatasetup )
+			 <a class=" float-right btn btn-sm btn-secondary" href="$siteroot$apphome/views/settings/modules/${searcher.searchType}/metadata/views/index.html?viewid=$viewid&viewpath=$viewpath">
+			 <i class="bi bi-gear-fill"></i> [[Fields]]</a>
+		#end
+			
+	    #if($permissions.can($searchtype , "create"))
+	    <a class="btn btn-sm btn-dark submitform float-left" style="margin-right: 10px;"><i class="fas fa-save"></i>  [[Next]]</a>
+	    
+	    #end
+	    #if($entitydialogeditor)
+	    	<a href="#" 
+	    		class="btn btn-sm btn-dark float-left reloadcontainer" 
+	    		data-reloadcontainer="tab_$!{parentviewid}">[[Cancel]]</a> 
+	    #else
+	    	<button id="closebutton" type="button" class="btn btn-sm btn-dark float-left" data-dismiss="modal">[[Close]]</button>
+	    #end
+	    ###if($caneditdata || $candelete)	
+	    ##<a class="btn btn-sm btn-danger ajax" data-targetdiv="editlayout" data-confirm="[[Are you sure]]?" style="margin-righ:10px;" href="$siteroot$content.searchhome/edit/delete.html?id=$data.id&catalogid=$searcher.catalogId&searchtype=$searcher.searchType&viewid=$viewid&viewpath=$viewpath&oemaxlevel=1" style="margin: 20px 20px 0 0;">[[Delete]]</a>
+	    ###end
+		
+		<div class="clearfix"></div>
+		</div>
+    </form>
+
+    </div>
+</div>
+
+
+
+
+

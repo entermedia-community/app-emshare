@@ -1,0 +1,88 @@
+<div style="padding:20px;">
+	
+	<h2 class="float-left"><a href="$!siteroot$apphome/views/settings/modules/asset/hotfolders/index.html" title="[[Hot Folders]]">[[Hot Folders]]</a></h2>
+	
+	<a class="btn  btn-primary float-right ajax" style="margin-left:10px;" 
+		href="$siteroot$apphome/views/settings/modules/asset/hotfolders/add-new-folder.html"
+		data-targetdivinner="hotfolderscontainer"
+		data-oemaxlevel="1">[[Add Hot Folder]]</a>
+	#set( $pathEventManager = $moduleManager.getBean($catalogid,"pathEventManager") )
+	#set( $event = $pathEventManager.getPathEvent("/$catalogid/events/importing/importfolders.html") )
+	#if( $event.isRunning() )
+		<a class="btn btn-primary float-right">[[Scan in Progress]]</a>
+	#else
+		<a class="btn btn-secondary float-right" 
+			href="$siteroot$apphome/views/settings/events/triggers/edit/edit.html?eventpath=/$catalogid/events/importing/importfolders.html"
+			##data-targetdivinner="applicationmaincontent"
+			##data-autoactivecontainer="scheduler-system-menu"
+			##data-oemaxlevel="4"
+			>[[Schedule Importing]]</a>
+	#end
+
+	<div class="clearfix"></div>
+</div>
+<div id="hotfolderscontainer" style="padding:10px 0 20px;">
+<ul id="folders" class="fwlist">
+	#foreach($source in $sources )
+		#set( $folder = $source.getConfig() )
+	<li class="auto">
+		<div class="folder">
+		<a href="$siteroot$apphome/views/settings/modules/asset/hotfolders/folder-setup.html?id=$folder.id"
+			class="ajax"
+			data-targetdivinner="hotfolderscontainer"
+			data-oemaxlevel="1"
+			data-updateurl="true"
+			title="#text($folder.name) [[Hot Folder]]">
+			<div class="name">
+				<div class="alias">#text($folder.name)
+				#if( $folder.enabled )
+				 <span class="path" >([[Enabled]]: $folder.enabled)</span> 
+				#end
+				</div>
+				#if( $folder.subfolder )
+				<div class="path" title="$folder.subfolder">[[Path]]: $folder.subfolder</div> 
+				#end
+				
+				
+				<div class="last-activity">[[Fully Scanned]]: $!context.getDateTime($folder.lastscanstart)</div>
+				
+			</div>
+		</a>
+
+		</div>
+	</li>
+	#end
+	
+	
+	<!-- 
+	<li class="auto">
+		<a href="$home$apphome/views/folders/folder-setup.html" class="folder">
+			<div class="name">
+				<div class="alias" title="Really Long Alias that is dumb and really long">Really Long Alias that is dumb and really long</div>
+				<div class="path" title="C:/Path/To/The/Files/Goes/Here">C:/Path/To/The/Files/Goes/Here</div>
+				<div class="last-activity">Last Scanned: 3:14 PM May 9, 2012</div>
+			</div>
+		</a>
+		<div class="scan">
+			<a class="btn">Scan</a>
+		</div>
+	</li>
+	<li class="manual">
+		<a href="$home$apphome/views/folders/folder-setup.html" class="folder">
+			<div class="name">
+				<div class="alias" title="Really Long Alias that is dumb and really long">Really Long Alias that is dumb and really long</div>
+				<div class="path" title="C:/Path/To/The/Files/Goes/Here">C:/Path/To/The/Files/Goes/Here</div>
+				<div class="last-activity">Last Scanned: 3:14 PM May 9, 2012</div>
+			</div>
+		</a>
+		<div class="scan">
+			<a class="btn">Scan</a>
+		</div>
+	</li>
+	 -->
+</ul>				
+</div>
+
+
+
+
