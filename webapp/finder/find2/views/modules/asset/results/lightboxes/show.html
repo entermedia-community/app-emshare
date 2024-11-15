@@ -1,10 +1,9 @@
 #set( $searchhome = $page.get("searchhome"))
 $context.putPageValue("searchhome",$searchhome)
 
-
 #set( $searchtype = $context.findValue("searchtype"))
 #set( $parentsearchtype = $searchtype)
-#if( !$entity)
+#ifnull($entity)
 	#set($entityid = $context.getRequestParameter("entityid"))
 	#set( $entity  = $mediaarchive.getData($searchtype, $entityid) )
 #end
@@ -35,7 +34,6 @@ data-url="$componenthome/gridsample/preview/tabpublishing_gallery.html"
 >
 
 <div  class="tablightbox d-flex h-100" style="height: 100%;">
-	
 	#set($boxes =  $mediaarchive.getBean("entityManager").loadLightBoxesForModule($module, $entity, $context.getUser()))
 	$context.putPageValue("boxes",$boxes)
 	
