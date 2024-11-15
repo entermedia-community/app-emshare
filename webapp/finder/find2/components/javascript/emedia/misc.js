@@ -174,14 +174,14 @@ uiload = function () {
 		} //datepicker
 	});
 
-	if ($.fn.minicolors) {
-		lQuery(".color-picker").livequery(function () {
-			$(this).minicolors({
-				defaultValue: "",
-				letterCase: "uppercase",
-			});
+	// if ($.fn.minicolors) {
+	lQuery(".color-picker").livequery(function () {
+		$(this).minicolors({
+			defaultValue: "",
+			letterCase: "uppercase",
 		});
-	}
+	});
+	// }
 
 	lQuery(".focusme").livequery(function () {
 		$(this).focus();
