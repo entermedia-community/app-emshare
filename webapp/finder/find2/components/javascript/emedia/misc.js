@@ -1308,19 +1308,19 @@ uiload = function () {
 			}
 		}
 	});
-
 	//Main Module results
-	lQuery(".topmodulecontainer .resultsdiv .resultsdivdata").livequery(
+	lQuery(".topmodulecontainer .resultsdivdata").livequery(
 		"click",
 		function (event) {
-			var clicked = $(this);
-			if (!handleclick(clicked)) {
+			event.stopPropagation();
+			var row = $(this);
+			console.log(row);
+			if (!handleclick(row)) {
 				return true;
 			}
 
-			var emselectable = clicked.closest(".emselectablemodule");
+			var emselectable = row.closest(".emselectablemodule");
 
-			var row = $(clicked.closest(".resultsdivdata"));
 			var rowid = row.data("dataid");
 
 			var targetlink = emselectable.data("targetlink");
@@ -1369,7 +1369,7 @@ uiload = function () {
 	);
 
 	//Submodule picker reuslts
-	lQuery(".submodulepicker .resultsdiv .resultsdivdata").livequery(
+	lQuery(".submodulepicker .resultsdivdata").livequery(
 		"click",
 		function (event) {
 			var clicked = $(this);
@@ -1403,68 +1403,69 @@ uiload = function () {
 					"/index.html?entityid=" +
 					rowid;
 				row.data("urlbar", urlbar);
-
 				row.emDialog();
 			}
 		}
 	);
 
 	//Entity picker field
-	lQuery(
-		".pickerresults.entitypickerfield .resultsdiv .resultsdivdata"
-	).livequery("click", function (event) {
-		var clicked = $(this);
-		if (!handleclick(clicked)) {
-			return true;
-		}
-		var row = $(clicked.closest(".resultsdivdata"));
-		var rowid = row.data("dataid");
-		var pickerresults = clicked.closest(".pickerresults");
-
-		if (pickerresults.length) {
-			//Entity Picker Field
-			var pickertarget = pickerresults.data("pickertarget");
-			pickertarget = $("#" + pickertarget);
-			if (pickertarget.length > 0) {
-				updateentityfield(pickertarget, rowid, row.data("rowname"));
+	lQuery(".pickerresults.entitypickerfield .resultsdivdata").livequery(
+		"click",
+		function (event) {
+			var clicked = $(this);
+			if (!handleclick(clicked)) {
+				return true;
 			}
-			closeemdialog(pickerresults.closest(".modal"));
+			var row = $(clicked.closest(".resultsdivdata"));
+			var rowid = row.data("dataid");
+			var pickerresults = clicked.closest(".pickerresults");
+
+			if (pickerresults.length) {
+				//Entity Picker Field
+				var pickertarget = pickerresults.data("pickertarget");
+				pickertarget = $("#" + pickertarget);
+				if (pickertarget.length > 0) {
+					updateentityfield(pickertarget, rowid, row.data("rowname"));
+				}
+				closeemdialog(pickerresults.closest(".modal"));
+			}
 		}
-	});
+	);
 
 	//Entity picker Submodule Table
-	lQuery(
-		".pickerresults.entitypickersubmodule .resultsdiv .resultsdivdata"
-	).livequery("click", function (event) {
-		var clicked = $(this);
-		if (!handleclick(clicked)) {
-			return true;
-		}
-		var row = $(clicked.closest(".resultsdivdata"));
-		var rowid = row.data("dataid");
-		var pickerresults = clicked.closest(".pickerresults");
-
-		if (pickerresults.length) {
-			var clickurl = pickerresults.data("clickurl");
-			var options = pickerresults.data();
-			options.id = rowid;
-			var pickertarget = pickerresults.data("pickertarget");
-			pickertarget = $("#" + pickertarget);
-			if (clickurl !== undefined && clickurl != "") {
-				jQuery.ajax({
-					url: clickurl,
-					data: options,
-					success: function (data) {
-						autoreload(pickertarget);
-					},
-				});
+	lQuery(".pickerresults.entitypickersubmodule .resultsdivdata").livequery(
+		"click",
+		function (event) {
+			var clicked = $(this);
+			if (!handleclick(clicked)) {
+				return true;
 			}
-			closeemdialog(pickerresults.closest(".modal"));
+			var row = $(clicked.closest(".resultsdivdata"));
+			var rowid = row.data("dataid");
+			var pickerresults = clicked.closest(".pickerresults");
+
+			if (pickerresults.length) {
+				var clickurl = pickerresults.data("clickurl");
+				var options = pickerresults.data();
+				options.id = rowid;
+				var pickertarget = pickerresults.data("pickertarget");
+				pickertarget = $("#" + pickertarget);
+				if (clickurl !== undefined && clickurl != "") {
+					jQuery.ajax({
+						url: clickurl,
+						data: options,
+						success: function (data) {
+							autoreload(pickertarget);
+						},
+					});
+				}
+				closeemdialog(pickerresults.closest(".modal"));
+			}
 		}
-	});
+	);
 
 	//Upload to Entity
-	lQuery(".pickerresults.pickandupload .resultsdiv .resultsdivdata").livequery(
+	lQuery(".pickerresults.pickandupload .resultsdivdata").livequery(
 		"click",
 		function (event) {
 			var clicked = $(this);
@@ -1477,6 +1478,7 @@ uiload = function () {
 			var options = pickerresults.data();
 			options.id = rowid;
 			if (pickerresults.length) {
+				console.log(pickerresults);
 				pickerresults.emDialog();
 			}
 		}
