@@ -38,7 +38,7 @@ var convolutionMatrices = {
 	Edge: [1, 1, 1, 1, -7, 1, 1, 1, 1],
 };
 
-$("document").ready(function () {
+$(document).ready(function () {
 	function initializeEditor() {
 		$(".photo-editor-container").css("width", window.innerWidth);
 		var imgSrc = $(this).attr("src");
@@ -935,78 +935,79 @@ $("document").ready(function () {
 		});
 	}
 	lQuery("#editingCandidate").livequery(initializeEditor);
-});
 
-var fonts = {
-	Lato: ["Bold", "Italic", "Regular"],
-	Arvo: ["Bold", "Italic", "Regular"],
-	Caveat: ["Bold", "Regular"],
-	Corinthia: ["Bold", "Regular"],
-	DancingScript: ["Bold", "Regular"],
-	KodeMono: ["Bold", "Regular"],
-	MadimiOne: ["Regular"],
-	MajorMonoDisplay: ["Regular"],
-	Montserrat: ["Bold", "Italic", "Regular"],
-	OpenSans: ["Bold", "Italic", "Regular"],
-	Oswald: ["Bold", "Regular"],
-	PixelifySans: ["Bold", "Regular"],
-	Poppins: ["Bold", "Italic", "Regular"],
-	PTSans: ["Bold", "Italic", "Regular"],
-	PTSerif: ["Bold", "Italic", "Regular"],
-	Roboto: ["Bold", "Italic", "Regular"],
-	Wallpoet: ["Regular"],
-};
+	var fonts = {
+		Lato: ["Bold", "Italic", "Regular"],
+		Arvo: ["Bold", "Italic", "Regular"],
+		Caveat: ["Bold", "Regular"],
+		Corinthia: ["Bold", "Regular"],
+		DancingScript: ["Bold", "Regular"],
+		KodeMono: ["Bold", "Regular"],
+		MadimiOne: ["Regular"],
+		MajorMonoDisplay: ["Regular"],
+		Montserrat: ["Bold", "Italic", "Regular"],
+		OpenSans: ["Bold", "Italic", "Regular"],
+		Oswald: ["Bold", "Regular"],
+		PixelifySans: ["Bold", "Regular"],
+		Poppins: ["Bold", "Italic", "Regular"],
+		PTSans: ["Bold", "Italic", "Regular"],
+		PTSerif: ["Bold", "Italic", "Regular"],
+		Roboto: ["Bold", "Italic", "Regular"],
+		Wallpoet: ["Regular"],
+	};
 
-lQuery("select#font-family").livequery(function () {
-	var _this = $(this);
-	var options = _this.find("option");
-	if (options.length !== 0) return;
+	lQuery("select#font-family").livequery(function () {
+		var _this = $(this);
+		var options = _this.find("option");
+		if (options.length !== 0) return;
 
-	var themeprefix = siteroot + $("#application").data("themeprefix");
+		var themeprefix = siteroot + $("#application").data("themeprefix");
 
-	var promises = [];
-	var fontInstances = [];
-	Object.keys(fonts).forEach((font) => {
-		_this.append('<option value="' + font + '">' + font + "</option>");
-		var styles = fonts[font];
-		styles.forEach((style) => {
-			var url = "url(" + themeprefix + "/fonts/" + font + "-" + style + ".ttf)";
-			var f = new FontFace(font, url, {
-				style: style === "Italic" ? "italic" : "normal",
-				weight: style === "Bold" ? "bold" : "normal",
-			});
-			fontInstances.push(f);
-			promises.push(function () {
-				return f.load();
+		var promises = [];
+		var fontInstances = [];
+		Object.keys(fonts).forEach((font) => {
+			_this.append('<option value="' + font + '">' + font + "</option>");
+			var styles = fonts[font];
+			styles.forEach((style) => {
+				var url =
+					"url(" + themeprefix + "/fonts/" + font + "-" + style + ".ttf)";
+				var f = new FontFace(font, url, {
+					style: style === "Italic" ? "italic" : "normal",
+					weight: style === "Bold" ? "bold" : "normal",
+				});
+				fontInstances.push(f);
+				promises.push(function () {
+					return f.load();
+				});
 			});
 		});
-	});
-	Promise.all(promises).then(() => {
-		fontInstances.forEach((ins) => {
-			document.fonts.add(ins);
+		Promise.all(promises).then(() => {
+			fontInstances.forEach((ins) => {
+				document.fonts.add(ins);
+			});
 		});
-	});
-	_this.val("Roboto").change();
-	_this.select2({
-		minimumResultsForSearch: 10,
-		templateResult: function (state) {
-			if (!state.id) {
-				return state.text;
-			}
-			var $state = $(
-				`<span style="font-family:${state.id};font-size:1.25em">${state.text}</span>`
-			);
-			return $state;
-		},
-		templateSelection: function (state) {
-			if (!state.id) {
-				return state.text;
-			}
-			var $state = $(
-				`<span style="font-family:${state.id};font-size:1.25em">${state.text}</span>`
-			);
-			return $state;
-		},
-		dropdownParent: _this.parent(),
+		_this.val("Roboto").change();
+		_this.select2({
+			minimumResultsForSearch: 10,
+			templateResult: function (state) {
+				if (!state.id) {
+					return state.text;
+				}
+				var $state = $(
+					`<span style="font-family:${state.id};font-size:1.25em">${state.text}</span>`
+				);
+				return $state;
+			},
+			templateSelection: function (state) {
+				if (!state.id) {
+					return state.text;
+				}
+				var $state = $(
+					`<span style="font-family:${state.id};font-size:1.25em">${state.text}</span>`
+				);
+				return $state;
+			},
+			dropdownParent: _this.parent(),
+		});
 	});
 });
