@@ -53,40 +53,15 @@
 	#set($resultslink = $context.getRequestParameter("resultslink"))
 	#end
 	
-	<form  	name="filterform" 
+	<form name="filterform" 
 			id="filterform" 
 			class="ajaxform autosubmitform filterform"
 			method="POST" 
-
-			#if($resultslink)
-				action="$resultslink"
-				data-targetdiv="$targetdivsearch"
-			#elseif($topmoduleid)
-				#if($moduleid== "asset" && $categoryid)
-					action="$siteroot$apphome/views/modules/$moduleid/dialogshowcategory.html"
-					data-oemaxlevel="1"
-					data-targetdivinner="$targetdivsearch"
-				#else
-					#if($tabletype == "subentity")
-						action="$siteroot$apphome/views/modules/$moduleid/components/table/subentitytable.html"
-						data-targetdiv="results$!{viewid}"
-					#else
-						action="$siteroot$apphome/views/modules/$moduleid/dialogindex.html"
-						data-targetdivinner="$targetdivsearch"
-					#end
-				#end
-				
-				data-updateurl="false"
-			#else
-				#if($moduleid== "asset" && $categoryid)
-					action="$siteroot$apphome/views/modules/$moduleid/showcategory.html"
-					data-oemaxlevel="2"
-					data-targetdiv="$targetdivsearch"
-				#else
-					action="$siteroot$apphome/views/modules/$moduleid/index.html"
-					data-targetdiv="$targetdivsearch"
-				#end
-			#end  
+			action="$resultslink"
+			data-targetdiv="$targetdivsearch"
+			action="$searchhome/index.html"
+			data-targetdivinner="$targetdivsearch"
+			data-updateurl="false"
 	>
 	<input type="hidden" name="targetdivsearch" value="$targetdivsearch" />
 	<input type="hidden" name="searching" value="true" />
@@ -103,17 +78,7 @@
 		#set($idprefix = "dialogsearch")
 		
 		###if( $hits.getSearchQuery().hasMainInput())
-		#if($moduleid=="asset")
-			#if($dialogresults)
-				#set($href = "$siteroot$apphome/views/modules/$moduleid/dialogindex.html?hitssessionid=$!hits.getSessionId()&topmoduleid=$!topmoduleid&rootcategory=$!rootcategory&categoryid=$!{categoryid}&removeterm=description")
-			#else
-				#set($href = "$siteroot$apphome/views/modules/$moduleid/index.html?hitssessionid=$!hits.getSessionId()&topmoduleid=$!topmoduleid&rootcategory=$!rootcategory&categoryid=$!{categoryid}&removeterm=description")		
-			#end
-			#set($oemaxlevel = "1")
-		#else
-			#set($href = "$siteroot$apphome/views/modules/$moduleid/index.html?hitssessionid=$!hits.getSessionId()&removeterm=$!term.getId()")
-			#set($oemaxlevel = "1")
-		#end
+		#set($href = "$searchhome/index.html?hitssessionid=$!hits.getSessionId()&topmoduleid=$!topmoduleid&rootcategory=$!rootcategory&categoryid=$!{categoryid}&removeterm=description")
 		#set($inputsearch = $!hits.getSearchQuery().getMainInput())
 		#if(!$targetdivsearch)
 			#set($targetdivsearch = "$!{moduleid}resultscontainer")
@@ -199,7 +164,6 @@
 			<input name="dialogresults" type="hidden" value="true" />
 			
 			
-			#if($tabletype == "subentity")
 				#if($viewid)
 					<input name="viewid" type="hidden" value="$!viewid" />
 				#end
@@ -209,12 +173,6 @@
 				
 				<input name="fieldexternalid" type="hidden" value="$!fieldexternalid" />
 				<input name="fieldexternalvalue" type="hidden" value="$!fieldexternalvalue" />
-			#else
-				#set($dialogindextype = $context.getRequestParameter("dialogindextype"))
-				<input name="dialogindextype" type="hidden" value="$!dialogindextype" />
-				<input name="targetdivsearch" type="hidden" value="$!targetdivsearch" />
-				
-			#end
 			
 		#end
 		

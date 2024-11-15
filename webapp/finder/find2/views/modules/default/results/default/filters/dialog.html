@@ -67,7 +67,7 @@ $context.putPageValue("caneditlists",false)
 			#if($resultslink)
 				action="$resultslink"
 			#elseif($topmoduleid)
-				action="$siteroot$apphome/views/modules/$moduleid/dialogindex.html"
+				action="$searchome/index.html"
 			#else
 				#if($moduleid== "asset" && $categoryid)
 					action="$siteroot$apphome/views/modules/$moduleid/showcategory.html"
@@ -149,21 +149,8 @@ $context.putPageValue("caneditlists",false)
 							#end
 						</select>
 					
-						#if($moduleid=="asset")
-							#if(!$dialogresults)
-								#set($dialogresults = $context.getRequestParameter("dialogresults"))
-							#end
-							#if($dialogresults)
-								#set($href = "$siteroot$apphome/views/modules/$moduleid/dialogindex.html?hitssessionid=$!hits.getSessionId()&topmoduleid=$!topmoduleid&rootcategory=$!rootcategory&categoryid=$!{categoryid}&removeterm=description")
-							#else
-								#set($href = "$siteroot$apphome/views/modules/$moduleid/index.html?hitssessionid=$!hits.getSessionId()&topmoduleid=$!topmoduleid&rootcategory=$!rootcategory&categoryid=$!{categoryid}&removeterm=description")		
-							#end
-							#set($oemaxlevel = "1")
-						#else
-							#set($href = "$siteroot$apphome/views/modules/$moduleid/index.html?hitssessionid=$!hits.getSessionId()&removeterm=$!term.getId()")
-							#set($oemaxlevel = "1")
-						#end
-						
+						#set($href = "$searchome/index.html?hitssessionid=$!hits.getSessionId()&topmoduleid=$!topmoduleid&rootcategory=$!rootcategory&categoryid=$!{categoryid}&removeterm=description")
+						#set($oemaxlevel = "1")
 						
 						
 						<a href="$href" 

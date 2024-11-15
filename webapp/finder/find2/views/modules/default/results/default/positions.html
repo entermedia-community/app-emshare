@@ -8,12 +8,6 @@
 #set($oemaxlevel = "1")
 #set($targetdiv = "$!{moduleid}resultscontainer")
 
-#if(!$dialogresults)
-#set($dialogresults = $context.getRequestParameter("dialogresults"))
-#end
-#if(!$dialogindextype)
-#set($dialogindextype = $context.getRequestParameter("dialogindextype"))
-#end
 #if(!$topmoduleid)
 #set($topmoduleid = $context.getRequestParameter("topmoduleid"))
 #end
@@ -32,12 +26,11 @@
 #if($moduleid=="asset")
 		
 			#if($dialogresults)
-				#set($resultsPage = "${searchhome}/dialogindex.html?hitssessionid=$!hits.sessionId")
+				#set($resultsPage = "${searchhome}/index.html?hitssessionid=$!hits.sessionId")
 				#set($resultsPage = "$resultsPage&topmoduleid=$!topmoduleid")
 				#set($resultsPage = "$resultsPage&rootcategory=$!rootcategory")
 				#set($resultsPage = "$resultsPage&categoryid=$!categoryid")
 				#set($resultsPage = "$resultsPage&entityid=$!entityid")
-				#set($resultsPage = "$resultsPage&dialogindextype=$!dialogindextype")
 				#set($updateurl = "false")
 				#set($targetdiv = "dialog$!{moduleid}resultscontainer")
 			#else
