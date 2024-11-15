@@ -4,18 +4,31 @@
 <script type="text/javascript" src="/${applicationid}/components/javascript/bootstrap/4.5.3/js/bootstrap.min.js" ></script>
 <script type="text/javascript" src="/${applicationid}/components/javascript/jquery-ui/1.12/jquery-ui.min.js" ></script>
 <script type="text/javascript" src="/${applicationid}/components/javascript/jquery-ui/i18n/jquery-ui-i18n.js" ></script> 
+
 <script type="text/javascript" src="$applink/components/javascript/index.js" ></script>
+
+<script type="text/javascript" src="$apphome/theme/fontfaceobserver.js"></script>
+
+
 #foreach( $script in $pageManager.getScriptPathsWithoutApp($content))
-<script type="text/javascript" src="$script">  </script>
-#end
-#if( $desktop)
-<script  type="text/javascript" src="/${applicationid}/components/javascript/emedia/electron.js"></script>
-#else
-<script  type="text/javascript" rc="/${applicationid}/components/javascript/emedia/downloadxhr.js"   ></script>
+	<script type="text/javascript" src="$script">  </script>
 #end
 
+
 #foreach( $style in $pageManager.getStylePathsFor($content) )
-<link rel="stylesheet" type="text/css" href="$style" />
+	<link rel="stylesheet" type="text/css" href="$style" />
+#end
+
+#if( $desktop)
+<script  type="text/javascript"  id="download" src="/${applicationid}/components/javascript/electron.js"   ></script>
+#else
+<script  type="text/javascript"  id="download" src="/${applicationid}/components/javascript/downloadxhr.js"   ></script>
+#end
+
+
+#set( $mapskey = $mediaarchive.getCatalogSettingValue("google-maps-key"))
+#ifnotnull( $mapskey )
+	<script type="text/javascript"    src="https://maps.googleapis.com/maps/api/js?key=$mapskey"></script>
 #end
 
 #set($themeid = $userprofile.getValue("themeid") )
@@ -23,9 +36,3 @@
 	#set($themeid = $content.get("themeid") )
 #end	
 <link rel="stylesheet" type="text/css" href="/${applicationid}/theme/$themeid/custom.css" />
-
-#set( $mapskey = $mediaarchive.getCatalogSettingValue("google-maps-key"))
-#ifnotnull( $mapskey )
-	<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=$mapskey"></script>
-#end
-
