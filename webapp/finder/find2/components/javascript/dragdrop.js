@@ -564,7 +564,7 @@ onloadselectors = function () {
 	if ($("#assetsearchinput").val() != "Search") {
 		$("#assetsearchinput").removeClass("defaulttext");
 	}
-	
+
 	lQuery(".rowdraggable").livequery(function () {
 		$(this).draggable({
 			helper: "clone",
@@ -866,8 +866,8 @@ onloadselectors = function () {
 						.data("hitssessionid");
 					if (hitssessionid == undefined) {
 						hitssessionid = dragged
-						.closest(".resultsdiv")
-						.data("hitssessionid");
+							.closest(".resultsdiv")
+							.data("hitssessionid");
 					}
 					if (hitssessionid == undefined) {
 						hitssessionid = $("#main-results-table").data("hitssessionid");

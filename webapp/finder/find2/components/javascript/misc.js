@@ -25,15 +25,6 @@ formatHitCountResult = function (inRow) {
 	return inRow[1];
 };
 
-function getRandomColor() {
-	var letters = "0123456789ABCDEF".split("");
-	var color = "#";
-	for (var i = 0; i < 6; i++) {
-		color += letters[Math.floor(Math.random() * 16)];
-	}
-	return color;
-}
-
 function getScriptIfNotLoaded(scriptLocationAndName) {
 	var len = $('script[src*="' + scriptLocationAndName + '"]').length;
 
@@ -46,7 +37,6 @@ function getScriptIfNotLoaded(scriptLocationAndName) {
 	script.src = scriptLocationAndName;
 	head.appendChild(script);
 }
-
 findalldata = function (inlink) {
 	var item = $(inlink);
 	var options = item.data();
@@ -166,221 +156,12 @@ $(window).on("errorToast", function (_, anchor) {
 	destroyToast(toast, false);
 });
 
-runajaxonthis = function (inlink, e, callback = null) {
-	$(".ajaxprogress").show();
-	var inText = $(inlink).data("confirm");
-	if (e && inText && !confirm(inText)) {
-		e.stopPropagation();
-		e.preventDefault();
-		return false;
-	}
-	inlink.attr("disabled", "disabled");
-
-	if (inlink.hasClass("activelistener")) {
-		$(".activelistener").removeClass("active");
-		inlink.addClass("active");
-		$(".activelistener").removeClass("selected");
-		inlink.addClass("selected");
-	}
-	//for listeners in a container
-	if (inlink.hasClass("activelistenerparent")) {
-		var listenerparent = inlink.closest(".activelistcontainer");
-		if (listenerparent.length > 0) {
-			listenerparent.siblings().removeClass("active");
-			listenerparent.addClass("active");
-		}
-	}
-
-	var nextpage = inlink.attr("href");
-	if (!nextpage) {
-		nextpage = inlink.data("nextpage");
-	}
-
-	var options = $(inlink).data();
-	if (options.isEmptyObject || $(inlink).data("findalldata")) {
-		options = findalldata(inlink);
-	}
-
-	var targetDiv = inlink.data("targetdiv");
-	var replaceHtml = true;
-
-	var targetDivInner = inlink.data("targetdivinner");
-	if (targetDivInner) {
-		targetDiv = targetDivInner;
-		replaceHtml = false;
-	}
-
-	var useparent = inlink.data("useparent");
-	var activemenu;
-	if (inlink.hasClass("auto-active-link")) {
-		activemenu = inlink;
-	} else if (inlink.data("autoactivecontainer")) {
-		activemenu = $("." + inlink.data("autoactivecontainer"));
-	}
-	if (activemenu !== undefined && activemenu.length > 0) {
-		var container = activemenu.closest(".auto-active-container");
-		if (container.length == 0) {
-			container = activemenu.parent().parent();
-		}
-
-		jQuery(".auto-active-row", container).removeClass("current");
-		var row = activemenu.closest(".auto-active-row");
-		row.addClass("current");
-
-		jQuery("li", container).removeClass("current");
-		var row = activemenu.closest("li");
-		row.addClass("current");
-	}
-
-	var inlinkmodal = inlink.closest(".modal");
-
-	if (targetDiv) {
-		inlink.css("cursor", "wait");
-		$("body").css("cursor", "wait");
-
-		targetDiv = targetDiv.replace(/\//g, "\\/");
-
-		//before ajaxcall
-		if (inlink.data("onbefore")) {
-			var onbefore = inlink.data("onbefore");
-			var fnc = window[onbefore];
-			if (fnc && typeof fnc === "function") {
-				//make sure it exists and it is a function
-				fnc(inlink); //execute it
-			}
-		}
-
-		if (!targetDiv.startsWith("#") && !targetDiv.startsWith(".")) {
-			targetDiv = "#" + targetDiv;
-		}
-
-		$(window).trigger("showToast", [inlink]);
-		var toastUid = $(inlink).data("uid");
-		jQuery
-			.ajax({
-				url: nextpage,
-				data: options,
-				success: function (data) {
-					inlink.data("uid", toastUid);
-					$(window).trigger("successToast", [inlink]);
-					var cell;
-					if (useparent && useparent == "true") {
-						cell = $("#" + targetDiv, window.parent.document);
-					} else {
-						cell = findclosest(inlink, targetDiv);
-					}
-					var onpage;
-					var newcell;
-					if (replaceHtml) {
-						//Call replacer to pull $scope variables
-						onpage = cell.parent();
-						cell.replaceWith(data); //Cant get a valid dom element
-						newcell = findclosest(onpage, targetDiv);
-					} else {
-						onpage = cell;
-						cell.html(data);
-						newcell = onpage.children(":first");
-					}
-					$(window).trigger("setPageTitle", [newcell]);
-
-					//on success execute extra JS
-					if (inlink.data("onsuccess")) {
-						var onsuccess = inlink.data("onsuccess");
-						var fnc = window[onsuccess];
-						if (fnc && typeof fnc === "function") {
-							//make sure it exists and it is a function
-							fnc(inlink); //execute it
-						}
-					}
-
-					$(window).trigger("checkautoreload", [inlink]);
-
-					if (callback) {
-						callback();
-					}
-
-					//actions after autoreload?
-					var message = inlink.data("alertmessage");
-					if (message) {
-						$("body").append(
-							'<div class="alert alert-success fader alert-save">' +
-								message +
-								"</div>"
-						);
-					}
-				},
-				error: function () {
-					inlink.data("uid", toastUid);
-					$(window).trigger("errorToast", [inlink]);
-				},
-				type: "POST",
-				dataType: "text",
-				xhrFields: {
-					withCredentials: true,
-				},
-				crossDomain: true,
-			})
-			.always(function () {
-				var scrolltotop = inlink.data("scrolltotop");
-				if (scrolltotop) {
-					window.scrollTo(0, 0);
-				}
-
-				$(".ajaxprogress").hide();
-				//inlink.css("enabled",true);
-				inlink.removeAttr("disabled");
-
-				//Close All Dialogs
-				var closealldialogs = inlink.data("closealldialogs");
-				if (closealldialogs) {
-					closeallemdialogs();
-				} else {
-					//Close Dialog
-					var closedialog = inlink.data("closedialog");
-					if (closedialog && inlinkmodal != null) {
-						closeemdialog(inlinkmodal);
-					}
-					//Close MediaViewer
-					var closemediaviewer = inlink.data("closemediaviewer");
-					if (closemediaviewer) {
-						var overlay = $("#hiddenoverlay");
-						if (overlay.length) {
-							hideOverlayDiv(overlay);
-						}
-					}
-				}
-				//Close Navbar if exists
-				var navbar = inlink.closest(".navbar-collapse");
-				if (navbar) {
-					navbar.collapse("hide");
-				}
-
-				$(window).trigger("resize");
-
-				inlink.css("cursor", "");
-				$("body").css("cursor", "");
-
-				if (
-					typeof global_updateurl !== "undefined" &&
-					global_updateurl == false
-				) {
-					//globaly disabled updateurl
-				} else {
-					var updateurl = inlink.data("updateurl");
-					if (updateurl) {
-						//console.log("Saving state ", updateurl);
-						history.pushState($("#application").html(), null, nextpage);
-					}
-				}
-			});
-	}
-};
-runajax = function (e) {
+lQuery("a.ajax").livequery("click", function (e) {
 	e.stopPropagation();
 	e.preventDefault();
-	runajaxonthis($(this), e);
+	$(this).runAjax();
 	return false;
-};
+});
 
 lQuery(".reloadpage").livequery(function () {
 	window.location.reload();
@@ -412,8 +193,6 @@ uiload = function () {
 			});
 		});
 	}
-
-	lQuery("a.ajax").livequery("click", runajax);
 
 	var browserlanguage = app.data("browserlanguage");
 	if (browserlanguage == undefined || browserlanguage == "") {
@@ -858,227 +637,7 @@ uiload = function () {
 		e.preventDefault();
 		e.stopImmediatePropagation();
 		e.stopPropagation();
-
-		if ($(this).data("submitting")) {
-			console.log($(this).data("submitting"));
-			console.warn("Already submitting this form, skipping");
-			return;
-		}
-
-		var warning = $(this).data("warning");
-		if (warning && !confirm(warning)) {
-			return;
-		}
-
-		if (typeof CKEDITOR !== "undefined") {
-			for (instance in CKEDITOR.instances) {
-				var editor = CKEDITOR.instances[instance];
-				var div = $(editor.element.$);
-				var id = div.data("saveto");
-				var tosave = $("#" + id);
-				//editor.updateElement() //does not work
-				var data = editor.getData();
-				tosave.val(data);
-			}
-		}
-
-		var form = $(this);
-
-		if (!form.hasClass("novalidate")) {
-			if (form.validate) {
-				try {
-					form.validate({
-						ignore: ".ignore",
-					});
-					var isvalidate = form.valid();
-					if (!isvalidate) {
-						e.preventDefault();
-						return;
-					}
-				} catch (_) {
-					console.log(e);
-				}
-			}
-		}
-		var targetdiv_ = form.data("targetdiv");
-		if (targetdiv_ === undefined) {
-			targetdiv_ = form.attr("targetdiv");
-		}
-		if (targetdiv_ === undefined) {
-			targetdiv_ = form.data("targetdivinner");
-		}
-		var targetdiv = $("#" + $.escapeSelector(targetdiv_));
-		if (!targetdiv.length) {
-			targetdiv = $("." + $.escapeSelector(targetdiv_));
-		}
-		if (form.attr("action") == undefined) {
-			var action = targetdiv.data("saveaction");
-			if (action == undefined) {
-				action = form.data("defaultaction");
-			}
-			form.attr("action", action);
-		}
-
-		if (form.hasClass("showwaiting")) {
-			var apphome = app.data("siteroot") + app.data("apphome");
-			var showwaitingtarget = targetdiv;
-			if (form.data("showwaitingtarget")) {
-				showwaitingtarget = form.data("showwaitingtarget");
-				showwaitingtarget = $("#" + $.escapeSelector(showwaitingtarget));
-			}
-			showwaitingtarget.html(
-				'<img src="' + apphome + '/theme/images/ajax-loader.gif">'
-			);
-			showwaitingtarget.show();
-		}
-
-		var oemaxlevel = targetdiv.data("oemaxlevel");
-		if (oemaxlevel == undefined) {
-			oemaxlevel = form.data("oemaxlevel");
-		}
-		if (oemaxlevel == undefined) {
-			oemaxlevel = 1;
-		}
-		//targetdiv.data("oemaxlevel", oemaxlevel);
-
-		var data = {};
-		if (form.data("includesearchcontext") == true) {
-			data = jQuery("#resultsdiv").data();
-			data.oemaxlevel = oemaxlevel;
-		} else {
-			if (targetdiv.data() !== undefined) {
-				//data = targetdiv.data();
-			}
-		}
-
-		data.oemaxlevel = oemaxlevel;
-
-		var formmodal = form.closest(".modal");
-
-		var submitButton = form.find('button[type="submit"]');
-		if (submitButton.length == 0) {
-			submitButton = form.find('input[type="submit"]');
-		}
-		submitButton.attr("disabled", "disabled");
-		submitButton.append("<i class='fa fa-spinner fa-spin ml-2'></i>");
-
-		$(window).trigger("showToast", [form]);
-		var toastUid = $(form).data("uid");
-
-		form.data("submitting", true);
-
-		form.ajaxSubmit({
-			data: data,
-			xhrFields: {
-				withCredentials: true,
-			},
-			crossDomain: true,
-			success: function (result) {
-				form.data("uid", toastUid);
-				$(window).trigger("successToast", [form]);
-				$(window).trigger("checkautoreload", [form]);
-				if (showwaitingtarget !== undefined) {
-					showwaitingtarget.hide();
-				}
-
-				var pickertarget = form.data("pickertarget");
-				var targettype = form.data("targettype");
-				if (pickertarget !== undefined && targettype == "entitypickerfield") {
-					var parsed = $(result);
-					var dataid = parsed.data("dataid");
-					var dataname = parsed.data("dataname");
-
-					$(window).trigger("updatepickertarget", [
-						pickertarget,
-						dataid,
-						dataname,
-					]);
-				}
-
-				var targetdivinner = form.data("targetdivinner");
-				if (targetdivinner) {
-					$("#" + $.escapeSelector(targetdivinner)).html(result);
-				} else {
-					if (targetdiv) {
-						targetdiv.replaceWith(result);
-					}
-				}
-				if (formmodal.length > 0 && form.hasClass("autocloseform")) {
-					if (formmodal.modal) {
-						closeemdialog(formmodal);
-					}
-				}
-
-				//Entity Back Btn
-				formsavebackbutton(form);
-
-				//who uses this?
-				$("#resultsdiv").data("reloadresults", true);
-
-				//TODO: Move this to results.js
-				if (form.hasClass("autohideOverlay")) {
-					hideOverlayDiv(getOverlay());
-				}
-
-				if (form.hasClass("autoreloadsource")) {
-					//TODO: Use ajaxreloadtargets
-					var link = form.data("openedfrom");
-					if (link) {
-						window.location.replace(link);
-					}
-				}
-				$(window).trigger("resize");
-
-				//on success execute extra JS
-				if (form.data("onsuccess")) {
-					var onsuccess = form.data("onsuccess");
-					var fnc = window[onsuccess];
-					if (fnc && typeof fnc === "function") {
-						//make sure it exists and it is a function
-						fnc(form); //execute it
-					}
-				}
-
-				//experimental
-				if (form.data("onsuccessreload")) {
-					document.location.reload(true);
-				}
-			},
-			error: function (data) {
-				form.data("uid", toastUid);
-				$(window).trigger("errorToast", [form]);
-				if (targetdiv) {
-					$("#" + $.escapeSelector(targetdiv)).html(data);
-				}
-				form.append(data);
-			},
-			complete: function () {
-				submitButton.removeAttr("disabled");
-				submitButton.find(".fa-spinner").remove();
-				form.data("submitting", false);
-			},
-		});
-
-		var reset = form.data("reset");
-		if (reset == true) {
-			form.get(0).reset();
-		}
-
-		if (typeof global_updateurl !== "undefined" && global_updateurl == false) {
-			//globaly disabled updateurl
-		} else {
-			//Update Address Bar
-			var updateurl = form.data("updateurl");
-			if (updateurl) {
-				//serialize and attach
-				var params = form.serialize();
-				var url = form.attr("action");
-				url += (url.indexOf("?") >= 0 ? "&" : "?") + params;
-				history.pushState($("#application").html(), null, url);
-				window.scrollTo(0, 0);
-			}
-		}
-		return false;
+		$(this).ajaxFormSubmit();
 	});
 
 	lQuery("form.autosubmit").livequery(function () {
@@ -1205,279 +764,16 @@ uiload = function () {
 		$("#searchinput").val("");
 	}
 
-	emdialog = function (dialog, event) {
-		if (event) {
-			event.stopPropagation();
-		}
-		var dialog = dialog;
-		var hidescrolling = dialog.data("hidescrolling");
-
-		var width = dialog.data("width");
-		var maxwidth = dialog.data("maxwidth");
-		var id = dialog.data("dialogid");
-		if (!id) {
-			id = "modals";
-		}
-
-		var modaldialog = $("#" + id);
-		if (modaldialog.length == 0) {
-			jQuery("#application").append(
-				'<div class="modal" tabindex="-1" id="' +
-					id +
-					'" style="display:none" ></div>'
-			);
-			modaldialog = jQuery("#" + id);
-		}
-		var options = dialog.data();
-		var link = dialog.attr("href");
-		if (!link) {
-			link = dialog.data("targetlink");
-		}
-		if (
-			dialog.hasClass("entity-dialog") &&
-			dialog.closest(".modal").length !== 0
-		) {
-			//link = link.replace("entity.html", "entitytab.html");
-			options.oemaxlevel = 1;
-		}
-		var param = dialog.data("parameterdata");
-		if (param) {
-			var element = jQuery("#" + param);
-			var name = element.prop("name");
-			options[name] = element.val();
-		}
-		var openfrom = window.location.href;
-
-		var searchpagetitle = "";
-
-		$(window).trigger("showToast", [dialog]);
-		var toastUid = dialog.data("uid");
-		jQuery.ajax({
-			xhrFields: {
-				withCredentials: true,
-			},
-			crossDomain: true,
-			url: link,
-			data: options,
-			success: function (data) {
-				dialog.data("uiid", toastUid);
-				$(window).trigger("successToast", [dialog]);
-				//--Entities
-				if (
-					dialog.hasClass("entity-dialog") &&
-					dialog.closest(".modal").length !== 0
-				) {
-					//find tab
-					var tabid = dialog.data("tabid");
-					if (!tabid) {
-						tabid = "tab_metadata";
-					}
-					if (tabid) {
-						var container = dialog.closest(".entity-body");
-						var tabs = container.find(".entity-tab-content");
-						if (tabs.length >= 10) {
-							alert("Max Tabs Limit");
-							return;
-						}
-
-						//open new entity
-						var parent = container.closest(".entitydialog");
-						container = dialog.closest(".entity-wraper");
-						container.replaceWith(data);
-						tabbackbutton(parent);
-					}
-				} else if (dialog.data("targetrendertype") == "entity") {
-					var container = dialog.closest(".entity-wraper");
-					var parent = dialog.closest(".entitydialog");
-					container.replaceWith(data);
-					tabbackbutton(parent);
-				} else {
-					modaldialog.html(data);
-					if (width !== undefined) {
-						if (width > $(window).width()) {
-							width = $(window).width();
-						}
-
-						$(".modal-dialog", modaldialog).css("min-width", width + "px");
-					}
-					if (maxwidth) {
-						$(".modal-dialog", modaldialog).css("max-width", maxwidth + "px");
-					}
-
-					var modalkeyboard = false;
-					var modalbackdrop = true;
-					if ($(".modal-backdrop").length) {
-						modalbackdrop = false;
-					}
-
-					var modalinstance;
-					if (modalkeyboard) {
-						modalinstance = modaldialog.modal({
-							closeExisting: false,
-							show: true,
-							backdrop: modalbackdrop,
-						});
-					} else {
-						modalinstance = modaldialog.modal({
-							keyboard: false,
-							closeExisting: false,
-							show: true,
-							backdrop: modalbackdrop,
-						});
-					}
-
-					var firstform = $("form", modaldialog);
-					firstform.data("openedfrom", openfrom);
-					// fix submit button
-					var justok = dialog.data("cancelsubmit");
-					if (justok != null) {
-						$(".modal-footer #submitbutton", modaldialog).hide();
-					} else {
-						var id = $("form", modaldialog).attr("id");
-						$("#submitbutton", modaldialog).attr("form", id);
-					}
-					var hidetitle = dialog.data("hideheader");
-					if (hidetitle == null) {
-						var title = dialog.attr("title");
-						if (title == null) {
-							title = dialog.text();
-						}
-						$(".modal-title", modaldialog).text(title);
-					}
-					var hidefooter = dialog.data("hidefooter");
-					if (hidefooter != null) {
-						$(".modal-footer", modaldialog).hide();
-					}
-
-					//backup url
-					var currenturl = window.location.href;
-					modalinstance.data("oldurlbar", currenturl);
-
-					searchpagetitle = modaldialog.find("[data-setpagetitle]");
-
-					modalinstance.on("hidden.bs.modal", function () {
-						//on close execute extra JS -- Todo: Move it to closedialog()
-						if (dialog.data("onclose")) {
-							var onclose = dialog.data("onclose");
-							var fnc = window[onclose];
-							if (fnc && typeof fnc === "function") {
-								//make sure it exists and it is a function
-								fnc(dialog); //execute it
-							}
-						}
-
-						closeemdialog($(this)); //Without this the asset Browse feature does not close all the way
-						$(window).trigger("resize");
-					});
-
-					modalinstance.on("scroll", function () {
-						//checkScroll();
-					});
-
-					adjustzindex(modalinstance);
-				}
-
-				if (
-					typeof global_updateurl !== "undefined" &&
-					global_updateurl == false
-				) {
-					//globaly disabled updateurl
-				} else {
-					//Update Address Bar
-					var updateurl = dialog.data("updateurl");
-					if (updateurl) {
-						var urlbar = dialog.data("urlbar");
-						if (!urlbar) {
-							urlbar = link;
-						}
-
-						history.pushState($("#application").html(), null, urlbar);
-						window.scrollTo(0, 0);
-					}
-				}
-
-				if (searchpagetitle) {
-					$(window).trigger("setPageTitle", [searchpagetitle]);
-				}
-
-				//on success execute extra JS
-				if (dialog.data("onsuccess")) {
-					var onsuccess = dialog.data("onsuccess");
-					var fnc = window[onsuccess];
-					if (fnc && typeof fnc === "function") {
-						//make sure it exists and it is a function
-						fnc(dialog); //execute it
-					}
-				}
-
-				$(window).trigger("resize");
-			},
-			error: function () {
-				dialog.data("uiid", toastUid);
-				$(window).trigger("errorToast", [dialog]);
-			},
-		});
-
-		$(modaldialog).on("shown.bs.modal", function () {
-			trackKeydown = true;
-			//adjustzindex($(this));
-			var focuselement = modaldialog.data("focuson");
-			if (focuselement) {
-				//console.log(focuselement);
-				var elmnt = document.getElementById(focuselement);
-				elmnt.scrollIntoView();
-			} else {
-				var focusme = modaldialog.find(".focusme");
-				if (focusme.length) {
-					setTimeout(function () {
-						focusme.focus();
-					}, 1000);
-				} else {
-					$("form", modaldialog)
-						.find("*")
-						.filter(":input:visible:first")
-						.focus();
-				}
-			}
-		});
-
-		$(modaldialog).on("hide.bs.modal", function (e) {
-			trackKeydown = false;
-			if (!$(this).hasClass("onfront")) {
-				e.stopPropagation();
-				e.stopImmediatePropagation();
-				return;
-			} else {
-				if ($(".modal:visible").length > 0) {
-					// restore the modal-open class to the body element, so that scrolling works
-					// properly after de-stacking a modal.
-					setTimeout(function () {
-						$(document.body).removeClass("modal-open");
-					}, 0);
-				}
-			}
-		});
-
-		//Close drodpown if exists
-		if (dialog.closest(".dropdown-menu").length !== 0) {
-			dialog.closest(".dropdown-menu").removeClass("show");
-		}
-		if (event) {
-			event.preventDefault();
-		}
-
-		return false;
-	}; //emdialog
-
-	lQuery("a.openemdialog").livequery(function () {
-		var link = $(this);
-		//link[0].click();
-		emdialog($(this), event);
-		//link.trigger("click");
+	lQuery("a.openemdialog").livequery(function (e) {
+		e.preventDefault();
+		e.stopPropagation();
+		$(this).emDialog();
 	});
 
-	lQuery("a.emdialog").livequery("click", function (event) {
-		emdialog($(this), event);
+	lQuery("a.emdialog").livequery("click", function (e) {
+		e.preventDefault();
+		e.stopPropagation();
+		$(this).emDialog();
 	});
 
 	lQuery(".closemodal").livequery("click", function (event) {
@@ -1819,8 +1115,10 @@ uiload = function () {
 		}, 2000);
 	});
 
-	lQuery(".autoopenemdialog").livequery(function () {
-		emdialog($(this));
+	lQuery(".autoopenemdialog").livequery(function (e) {
+		e.preventDefault();
+		e.stopPropagation();
+		$(this).emDialog();
 	});
 
 	lQuery(".mediaboxheader").livequery("click", function (event) {
@@ -2166,8 +1464,7 @@ uiload = function () {
 						"/index.html?entityid=" +
 						rowid;
 					row.data("urlbar", urlbar);
-
-					emdialog(row, event);
+					row.emDialog();
 				}
 			}
 		}
@@ -2209,7 +1506,7 @@ uiload = function () {
 					rowid;
 				row.data("urlbar", urlbar);
 
-				emdialog(row, event);
+				row.emDialog();
 			}
 		}
 	);
@@ -2282,7 +1579,7 @@ uiload = function () {
 			var options = pickerresults.data();
 			options.id = rowid;
 			if (pickerresults.length) {
-				emdialog(pickerresults, event);
+				pickerresults.emDialog();
 			}
 		}
 	);
