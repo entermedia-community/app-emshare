@@ -66,7 +66,21 @@ $context.putPageValue("title",$title)
 		$!context.putPageValue("value",$value)
 		$!context.putPageValue("data", $hit)
 		<td  class="resultstablecell $detail.id">
-      $pages.include("$componenthome/xml/detailreadonly.html", $context)	        
+      		##$pages.include("$componenthome/xml/detailreadonly.html", $context)
+      		
+      		#set($viewtype = $detail.viewType)
+					
+			#if($viewtype  == "tageditor")
+				#set($tagssearchlink = "$siteroot$apphome/views/modules/${searchtype}/index.html")
+				$context.putPageValue("tagssearchlink",$tagssearchlink)
+			#end
+			#if($viewtype  == "primarymedia")
+				#set($viewtype = "primarymediafolder")
+			#end
+			$context.putPageValue('viewtype',  $viewtype)
+			   <div id="edit_${hit.id}_$detail.id" class="popupdetails" data-id="${hit.id}">
+			        $pages.include("$apphome/components/xml/detailreadonly.html", $context)
+			    </div>	        
 		</td>	
 	#end
 	

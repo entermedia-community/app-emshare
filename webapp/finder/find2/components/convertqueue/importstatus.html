@@ -32,7 +32,11 @@
    	$pages.include("${searchhome}/thumbnails/${rendertype}.html?clearcache=true", $context)     
 
 #elseif($publish && $publish.size() >0 )
-    <div id="status$!hit.id"  class="ajaxstatus"  #if( $content == $page)data-ajaxrunning="true"#end  ajaxpath="$siteroot$apphome/components/convertqueue/importstatus.html?assetid=$hit.id&thumbsize=$thumbsize" >
+    <div id="status$!hit.id"  
+    	class="ajaxstatus"  
+    	#if( $content == $page)data-ajaxrunning="true"#end  
+    	data-oemaxlevel="1"
+    	ajaxpath="$siteroot$apphome/components/convertqueue/importstatus.html?assetid=$hit.id&thumbsize=$thumbsize" >
     	<div class="uiinfo	 proxythumb" title="[[Publishing Proxy]] $publish.size()" >
     		<div class="loadingbar" style="width:30px;"></div>
     	</div> 
@@ -41,6 +45,7 @@
     <div id="status$!hit.id" class="ajaxstatus" 
     	#if( $content == $page)data-ajaxrunning="true"#end  
     	data-reloadspeed="3500"
+    	data-oemaxlevel="1"
     	ajaxpath="$siteroot$apphome/components/convertqueue/importstatus.html?assetid=$hit.id&thumbsize=$thumbsize" >
         <div class="uiinfo	 proxythumb" title="[[Queing Conversions]]" >
         	<div class="loadingbarout" style="width:20px;">
@@ -52,6 +57,7 @@
     <div id="status$!hit.id" class="ajaxstatus importstatusreport" 
     	#if( $content == $page)data-ajaxrunning="true"#end 
     	data-reloadspeed="2000"
+    	data-oemaxlevel="1"
     	ajaxpath="$siteroot$apphome/components/convertqueue/importstatus.html?assetid=$hit.id&thumbsize=$thumbsize" >
         #set( $totalcount = $conversions.size() )
 
