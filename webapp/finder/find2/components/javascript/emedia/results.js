@@ -243,18 +243,18 @@ jQuery(document).ready(function (url, params) {
 			if (moduleid == "asset") {
 				if (originalhitsperpage) {
 					href =
-						componenthome +
-						"/results/changehitsperpage.html?cache=false&hitsperpage=" +
+						searchhome +
+						"/changehitsperpage.html?cache=false&hitsperpage=" +
 						originalhitsperpage;
 				} else {
-					href = componenthome + "/results/changehitsperpage.html";
+					href = searchhome + "/changehitsperpage.html";
 				}
 			} else {
 				href =
 					siteroot +
 					"/views/modules/" +
 					moduleid +
-					"/components/results/changehitsperpage.html";
+					"/results/default/changehitsperpage.html";
 			}
 
 			// the selected option
@@ -1106,8 +1106,8 @@ jQuery(document).ready(function (url, params) {
 			var resultsdiv = $(".resultsdiv");
 			var moduleid = resultsdiv.data("moduleid");
 			var searchhome = resultsdiv.data("searchhome");
-			if (moduleid && componenthome) {
-				var url = componenthome + "/gridsample/preview/entity.html";
+			if (moduleid && searchhome) {
+				var url = searchhome + "/tabs/preview/entity.html";
 				entity.data("targetlink", url);
 				entity.data("updateurl", true);
 				entity.data("urlbar", window.location.href);
@@ -1138,7 +1138,7 @@ jQuery(document).ready(function (url, params) {
 			var searchhome = resultsdiv.data("searchhome");
 			options["dataid"] = dataid;
 			var targetdiv = resultsdiv.find("#resultsheader");
-			refreshdiv(targetdiv, componenthome + "/results/toggle.html", options);
+			refreshdiv(targetdiv, searchhome + "/toggle.html", options);
 
 			if (typeof refreshSelections != "undefined") {
 				refreshSelections();
@@ -1202,7 +1202,7 @@ jQuery(document).ready(function (url, params) {
 			options.action = "page";
 			refreshdiv(
 				targetdiv,
-				componenthome + "/results/togglepage.html",
+				searchhome + "/togglepage.html",
 				options
 			);
 			$(".selectionbox", resultsdiv).prop("checked", true);
@@ -1210,7 +1210,7 @@ jQuery(document).ready(function (url, params) {
 			options.action = "pagenone";
 			refreshdiv(
 				targetdiv,
-				componenthome + "/results/togglepage.html",
+				searchhome + "/togglepage.html",
 				options
 			);
 			$(".selectionbox", resultsdiv).prop("checked", false);
@@ -1232,7 +1232,7 @@ jQuery(document).ready(function (url, params) {
 
 		var targetdiv = resultsdiv.find("#resultsheader");
 		options.action = selectpage.data("action");
-		refreshdiv(targetdiv, componenthome + "/results/togglepage.html", options);
+		refreshdiv(targetdiv, searchhome + "/togglepage.html", options);
 		$(".selectionbox", resultsdiv).prop("checked", options.action != "none");
 		$("input[name=pagetoggle]", resultsdiv).prop(
 			"checked",
