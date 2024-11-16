@@ -19,6 +19,8 @@
 		data-module="$!moduleid"
 		data-section="$!content.section">
 
+<div id="emresultscontent">
+
 ##set( $showtoolbar = $page.isPropertyTrue("showtoolbar"))
 #set( $showtoolbar = true)
 $context.putPageValue("showtoolbar",  $showtoolbar)
@@ -26,6 +28,9 @@ $context.putPageValue("showcaption", $page.isPropertyTrue("showcaption"))
 $context.putPageValue("resultstype", $context.getRequestParameter("resultstype"))
 
 $context.putPageValue("assetrootfolder", "/$catalogid/assets")
+
+
+$pages.include("${searchhome}/resultheader.html",$context)
 
 #if ( $hits && $hits.size() > 0 )
 	
@@ -100,5 +105,6 @@ $context.putPageValue("assetrootfolder", "/$catalogid/assets")
 #else
 $pages.stream("$!{searchhome}/empty.html", $context)
 #end
+</div>
 
 </div>
