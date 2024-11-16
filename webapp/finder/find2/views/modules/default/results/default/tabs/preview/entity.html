@@ -45,7 +45,6 @@ $context.putPageValue("topmoduleid", $moduleid)
 #set($firstviewid = $enttiyviews.first().getId())
 #set($userentities = $userprofile.getEntitiesIds())
 #set($dialogtabid = "${moduleid}$!{entityid}")
-#set($entitytabopen = "")
 #set($saveaction = $context.getRequestParameter("saveaction"))
 #set($addnew = $context.getRequestParameter("addnew"))
 #if ($addnew)
@@ -57,12 +56,16 @@ $context.putPageValue("topmoduleid", $moduleid)
 		#set($entitytabopen = "tabimport")
 	#end
 #end
-#if(!$entitytabopen)
+#ifnull($entitytabopen)
 	#set( $entitytabopen = $context.getRequestParameter("entitytabopen"))
 #end
-#if(!$entitytabopen)
+#ifnull($entitytabopen)
 	#set( $entitytabopen = $userprofile.get("${moduleid}_entitytabopen"))
+	
+	TRIE TOG ET VALue $entitytabopen
 #end
+
+
 #if(!$entitytabopen && $viewfiles)
 	#set($entitytabopen = "media")
 #end
