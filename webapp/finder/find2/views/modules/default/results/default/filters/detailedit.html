@@ -34,13 +34,13 @@
 			#set($filterboxid = "$!{idprefix}filterbox${detail.getId()}")
 			<div class="filter-box-header">
 				
-				#set($selectedpreference = $userprofile.get("minimize${filterboxid}"))
+				#set($selectedpreference = $userprofile.getBoolean("minimize${filterboxid}"))
 				#ifnull($selectedpreference)
-					#set($selectedpreference = "false")
+					#set($selectedpreference = false)
 				#end
 				<div class="d-flex align-items-center toggle-filter sidetoggle flex-grow-1" data-target="$!module$filterboxid" data-toggle="$filterboxid">
 					<span class="mr-2" >
-					<i class="caret bi bi-caret-right-fill#if($selectedpreference == "false") exp#end"></i>
+					<i class="caret bi bi-caret-right-fill#if($selectedpreference == false) exp#end"></i>
 					</span> 
 					<p class="m-0 flex-grow-1">$!detail.getText($context)</p>
 					</div>
@@ -50,7 +50,7 @@
 			
 			<div class="filter-box-options soft-scrollbar p-2" 
 				id="$!module$filterboxid" 
-				#if($selectedpreference == "true") style="display: none;" #end
+				#if($selectedpreference) style="display: none;" #end
 				data-viewtype="${viewtype}">
 				$pages.include("/${applicationid}/components/filters/types/${viewtype}.html?search=true", $context)
 				<span class="filter-na">[[This filter is unavailable for the selected entity]]</span>

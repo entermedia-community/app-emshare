@@ -1,3 +1,5 @@
+var app, siteroot, apphome, themeprefix;
+
 function getRandomColor() {
 	var letters = "0123456789ABCDEF".split("");
 	var color = "#";
@@ -84,3 +86,61 @@ function contrastColor(hex) {
 
 	return r * 0.299 + g * 0.587 + b * 0.114 > 186 ? "#444444" : "#FFFFFF";
 }
+
+
+
+saveProfileProperty = function (property, value, onsuccess = null) {
+	app = $("#application");
+	siteroot = app.data("siteroot");
+	apphome = siteroot + app.data("apphome");
+	
+	var data = app.cleandata();
+	data.oemaxlevel = 1;
+	data.propertyfield = property;
+	data['property.value'] = value;
+	
+	jQuery.ajax({
+		url:
+		apphome +"/components/userprofile/saveprofileproperty.html",
+		data: data,
+		success: function () {
+			if (onsuccess) onsuccess();
+		},
+		xhrFields: {
+			withCredentials: true,
+		},
+		crossDomain: true,
+	});
+};
+
+setSessionValue = function (key, value) {
+	app = $("#application");
+	siteroot = app.data("siteroot");
+	apphome = siteroot + app.data("apphome");
+
+	jQuery.ajax({
+		url:
+			apphome +
+			"/components/session/setvalue.html?key=" +
+			key +
+			"&value=" +
+			value,
+	});
+};
+
+getSessionValue = function (key) {
+	var returnval = null;
+	app = $("#application");
+	siteroot = app.data("siteroot");
+	apphome = siteroot + app.data("apphome");
+
+	jQuery.ajax({
+		url: apphome + "/components/session/getvalue.html?key=" + key,
+		async: false,
+		success: function (data) {
+			returnval = data;
+		},
+	});
+
+	return returnval;
+};

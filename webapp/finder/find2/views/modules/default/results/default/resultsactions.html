@@ -257,7 +257,7 @@ $context.putPageValue("entityrendertype", $entityrendertype)
 				<li>
 
 					<a href="$searchhome/filters/dialogsort.html" 
-						class="emdialog emsort #if($selectedpreference == "true") closed #end"
+						class="emdialog emsort #if($selectedpreference) closed #end"
 						data-dialogid="sortdialog"
 						data-hidebackdrop="true"
 						data-hidefooter="true"
@@ -293,12 +293,12 @@ $context.putPageValue("entityrendertype", $entityrendertype)
 					</li>		
 				#end
 				#set($preference = "minimize$!{moduleid}summary")
-				#set($selectedpreference = $userprofile.get($preference))
+				#set($selectedpreference = $userprofile.getBoolean($preference))
 				#ifnull($selectedpreference)
-					#set($selectedpreference = "true")
+					#set($selectedpreference = true)
 				#end
 				<li class="resultsnavitem">
-					<button class='btn summary-toggler summary-opener #if($selectedpreference == "true") closed #end' data-target="$preference">
+					<button class='btn summary-toggler summary-opener #if($selectedpreference) closed #end' data-target="$preference">
 						<i class="fas fa-angle-double-left"></i> [[Summary]]
 					</button>
 				</li>

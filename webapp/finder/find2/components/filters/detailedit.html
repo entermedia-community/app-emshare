@@ -52,9 +52,9 @@
 							#set($preference = '#set($selectedpreference = ' + '$userprofile.' + 'minimizefilterbox' + $minimized + ')')
 							#evaluate($preference)
 							#ifnull($selectedpreference)
-							#set($selectedpreference = "false")
+							#set($selectedpreference = false)
 							#end
-							#if($selectedpreference == "false") 
+							#if($selectedpreference == false) 
 								 fa-caret-down 
 						  	#else 
 						  		 fa-caret-right 
@@ -70,7 +70,7 @@
 					 
 					##if ($edit == "true" && $detail.searchType)   (${detail.searchType} ) #end
 			</div>
-			<div class="filter-box-options" id="filterbox${detail.getId()}" #if($selectedpreference == "true") style="display: none;" #end>
+			<div class="filter-box-options" id="filterbox${detail.getId()}" #if($selectedpreference) style="display: none;" #end>
 			##$detail.isFilter()
 			#if ($detail.isFilter())
 				$pages.include("/${applicationid}/components/filters/types/${viewtype}.html?search=true", $context)

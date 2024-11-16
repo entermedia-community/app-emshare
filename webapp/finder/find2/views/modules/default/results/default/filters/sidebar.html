@@ -2,12 +2,12 @@
 	#set( $moduleid = $module.getId())
 #end
 #set($preference = "minimize$!{moduleid}summary")
-#set($selectedpreference = $userprofile.get($preference))
+#set($selectedpreference = $userprofile.getBoolean($preference))
 #ifnull($selectedpreference)
-	#set($selectedpreference = "true")
+	#set($selectedpreference = true)
 #end
-
-<div class="summary-container #if($selectedpreference == "false") closed #end">
+$selectedpreference
+<div class="summary-container #if($selectedpreference == false) closed #end">
 	<div class="d-flex align-items-center justify-content-between h-row">
 		<div class="summary-header summary-toggler" data-target="$preference"> 
 			<button class="btn">
@@ -88,8 +88,7 @@
 	<div class="summary-container-filters">
 		<div class="col-sidebar-scroll overflow-y">
 
-		$pages.include("$componenthome/filters/index.html", $context)
-
+		$pages.include("$searchhome/filters/index.html", $context)
 		## ENTITIES
 		#if($canviewentitiesbreadcrumb)
 			#set( $entities = $userprofile.getEntitiesInParent($category) )

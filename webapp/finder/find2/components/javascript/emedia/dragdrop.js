@@ -31,62 +31,6 @@ toggleUserProperty = function (property, onsuccess = null) {
 	});
 };
 
-saveProfileProperty = function (property, value, onsuccess = null) {
-	app = $("#application");
-	siteroot = app.data("siteroot");
-	apphome = siteroot + app.data("apphome");
-
-	jQuery.ajax({
-		url:
-			apphome +
-			"/components/userprofile/saveprofileproperty.html?propertyfield=" +
-			property +
-			"&" +
-			property +
-			".value=" +
-			value,
-		success: function () {
-			if (onsuccess) onsuccess();
-		},
-		xhrFields: {
-			withCredentials: true,
-		},
-		crossDomain: true,
-	});
-};
-
-setSessionValue = function (key, value) {
-	app = $("#application");
-	siteroot = app.data("siteroot");
-	apphome = siteroot + app.data("apphome");
-
-	jQuery.ajax({
-		url:
-			apphome +
-			"/components/session/setvalue.html?key=" +
-			key +
-			"&value=" +
-			value,
-	});
-};
-
-getSessionValue = function (key) {
-	var returnval = null;
-	app = $("#application");
-	siteroot = app.data("siteroot");
-	apphome = siteroot + app.data("apphome");
-
-	jQuery.ajax({
-		url: apphome + "/components/session/getvalue.html?key=" + key,
-		async: false,
-		success: function (data) {
-			returnval = data;
-		},
-	});
-
-	return returnval;
-};
-
 outlineSelectionCol = function (event, ui) {
 	// $(this).addClass("selected");
 	$(this).addClass("dragoverselected");
