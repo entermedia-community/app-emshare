@@ -374,7 +374,7 @@ $context.putPageValue("entityid", $entityid)
 			#if($showsort)
 			<li>
 				<a href="$searchhome/filters/dialogsort.html" 
-					class="emdialog emsort #if($selectedpreference == "true") closed #end"
+					class="emdialog emsort #if($selectedpreference) closed #end"
 					data-dialogid="sortdialog"
 					data-hidebackdrop="true"
 					data-hidefooter="true"
@@ -400,20 +400,16 @@ $context.putPageValue("entityid", $entityid)
 							<option value="$ho.id" #if($currenthitsperpage==$ho.id) selected="selected"#end>#text($ho)</option>
 						#end	
 					</select>
-				</li>		
-			#end
-			
+				</li>
+			#end			
 			#if($showsummary)
 			<li class="resultsnavitem">
-				
-				#set($preference = "minimizeassetsummary")
-				
-				#set($selectedpreference = $userprofile.get($preference))
+				#set($preference = "minimize$!{module.id}summary")
+				#set($selectedpreference = $userprofile.getBoolean($preference))
 				#ifnull($selectedpreference)
-					#set($selectedpreference = "true")
+					#set($selectedpreference = true)
 				#end
-				
-				<button class='btn summary-toggler summary-opener #if($selectedpreference == "true") closed #end' data-target="$!preference">
+				<button class='btn summary-toggler summary-opener #if($selectedpreference == true) closed #end' data-target="$!preference">
 					<i class="fas fa-angle-double-left"></i> [[Summary]]
 				</button>
 			</li>
