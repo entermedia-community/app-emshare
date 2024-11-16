@@ -1,33 +1,15 @@
-#ifnull($moduleid)
-	#set($moduleid = $context.getRequestParameter("moduleid"))
-#end
-#ifnull($moduleid)
-	#set($moduleid = $module.getId())
-#end
-#ifnull($searchhome)
-	#set($searchhome = "$apphome/views/modules/$moduleid" )
-#end
-$context.putPageValue("searchhome", $searchhome)
+#set($moduleid = $context.findPathValue("module"))
 
-#ifnull($viewid)
-	#set( $viewid = $context.getRequestParameter("viewid"))
-	#ifnull($viewid)
-		#set($viewid = "${moduleid}resultstable")
-	#end
-#end
-#ifnull($viewpath)
-	#set( $viewpath = $context.getRequestParameter("viewpath"))
-	#ifnull($viewpath)
-		#if($viewid)
-			#set($viewpath = "${moduleid}/${viewid}")
-		#else
-			#set($viewpath = "${moduleid}/${moduleid}resultstable")
-		#end
-	#end
-#end
+##View ID and everthing is loaded by results/default/index.html
+
+
 #ifnull($resultdetails)
 	#set($resultdetails = $searcher.getDetailsForView($viewpath, $userprofile))
 #end
+
+#ifnull($resultdetails)
+		No view  defined: $viewpath on $searcher.getSearchType() 
+#end		
 
 <div id="resultsdiv" 
 		class="tableresults" 
@@ -43,17 +25,12 @@ $context.putPageValue("searchhome", $searchhome)
 		data-viewid="$!viewid"
 		data-viewpath="$!viewpath">
 
- 
-
 <div id="emresultscontent">
-
 $pages.include("${searchhome}/resultsactions.html",$context)
 
 #if ( $hits.size() == 0 )
 	$pages.stream("$!{searchhome}/empty.html", $context)	
 #else
-	##set ($canedit = $context.getPageValue("${moduleid}edit") )
-	
 	
 	#if( $caneditdata )
 		#set( $readonly = false)
@@ -67,6 +44,7 @@ $pages.include("${searchhome}/resultsactions.html",$context)
 		<div class="tablecontainer">
 		
 		<div id="messagearea"> </div>
+		
 		#set($defaultview = $userprofile.getDefaultViewForModule($moduleid) )
 		#if($defaultview)
 		 	#set($defaultviewid = $defaultview.id )
@@ -76,7 +54,6 @@ $pages.include("${searchhome}/resultsactions.html",$context)
 		#end
 		
 		#set($targetdiv = "applicationmaincontent")
-		
 		#set($targetlink = "$searchhome/tabs/preview/entity.html")
 		
 		#if($moduleid == "order")
@@ -110,10 +87,6 @@ $pages.include("${searchhome}/resultsactions.html",$context)
 					<div class="d-flex align-items-center">
 					<input name="pagetoggle" type="checkbox" #if($hits.isAllSelected()) checked #end title="[[Select All on This Page]]"  />
 			    	</div>
-
-					##<a id="unselectall" class="ajax deselectpage" data-targetdiv="resultsheader" href="${searchhome}/components/results/togglepage.html?oemaxlevel=1&hitssessionid=$hits.getSessionId()&action=none" style="display: none;" title="[[Deselect All]]">
-					##	<i class="bi bi-x-lg ns"></i>
-					##</a>
 				</th>
 			
 			###end

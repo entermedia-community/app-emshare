@@ -1,25 +1,10 @@
-#if(!$module)
-	#set($module = $context.getRequestParameter("module"))
-#end
-#if(!$module)
-	#set($module = $context.getRequestParameter("moduleid"))
-#end
-#if(!$module)
-	#set( $module = $content.module)
-#end
+#set( $moduleid = $page.module)
 
-	##fix module vs moduleid
-	#if($module)
-		#if($module.id)
-			#set($moduleid = $module.id)
-		#else
-			#set($moduleid = $module)
-		#end
-	#end
-	$context.putPageValue("moduleid", $module.id)
+##fix module vs moduleid
+#set( $module = $mediaarchive.getCachedData("module",$moduleid))
+$context.putPageValue("moduleid", $module.id)
 	
-	
-#set($searcher = $searcherManager.getSearcher($catalogid, $module.id))
+#set($searcher = $searcherManager.getSearcher($catalogid, $moduleid))
 $context.putPageValue("searcher", $searcher)
 
 #set($isentity = $module.get("isentity"))
@@ -31,65 +16,29 @@ $context.putPageValue("isentity", $isentity )
 	$context.putPageValue("nodeID",$nodeID)
 #end
 
-#if( !$librarycol && $category ) 
-	#set( $librarycol = $mediaarchive.query("librarycollection").orgroup("rootcategory",$category.getParentCategories()).searchOne() )
-#end
+##set what view they are using
 
-#ifnull($librarycol )
-	#set($collectionid = $context.getRequestParameter("collectionid"))
-	#if($module =="librarycollection" && $collectionid)
-		#set( $librarycol = $mediaarchive.query("librarycollection").exact("id",$collectionid).searchOne() )
-	#end
-#end
-
-#if( $librarycol )	
-	$context.putPageValue("librarycol", $librarycol)
-#end
-
-#if($moduleid=="librarycollection")
+#if($moduleid=="asset")
+		$context.putPageValue("viewid", "assetresultstable")
+		$context.putPageValue("viewpath", "asset/assetresultstable")
+			
+		##MAIN ALBUMS VIEW
+		#ifnull($resultview)
+			#set($resultview = $userprofile.get("${moduleid}resultview"))
+		#end
 		
-		#if( $librarycol )	
-			#set($resultview = $userprofile.get("assetresultview"))
-			#ifnull($resultview)
-				#set($resultview = $module.get("moduleresultsview"))
-			#end
-			#ifnull($resultview)
-				#set($resultview = "brickvertical")
-			#end
-			
-			#set($searcher = $searcherManager.getSearcher($catalogid, "asset"))
-			$context.putPageValue("searcher", $searcher)
-			
-			#set($searchhome = "$apphome/views/modules/asset" )
-			$context.putPageValue("searchhome", $searchhome )
-			
-			#set($componenthome = "$apphome/views/modules/asset/components")
-			$context.putPageValue("componenthome", $componenthome)
-			
-			##SET INTERNAL VIEWS same as ASSET
-			$context.putPageValue("viewid", "assetresultstable")
-			$context.putPageValue("viewpath", "asset/assetresultstable")
-			else
-			
-		#else
-			##MAIN ALBUMS VIEW
-			#ifnull($resultview)
-				#set($resultview = $userprofile.get("${moduleid}resultview"))
-			#end
-			
-			##$module.moduleresultsview
-			
-			#ifnull($resultview)
-				#set($resultview = "$module.moduleresultsview")
-			#end
-			#ifnull($resultview)
-				#set($resultview = "grid")
-			#end
+		#ifnull($resultview)
+			#set($resultview = "$module.moduleresultsview")
+		#end
+		#ifnull($resultview)
+			#set($resultview = "grid")
 		#end
 #elseif($moduleid=="faceprofilegroup")
 	#set($resultview = "table")
 #else
 	##All Other Entities
+	$context.putPageValue("viewid", "${moduleid}resultstable")
+	$context.putPageValue("viewpath", "${moduleid}/${moduleid}resultstable")
 	
 	#set($resultview = $userprofile.get("${moduleid}resultview"))
 
@@ -111,8 +60,7 @@ $context.putPageValue("isentity", $isentity )
 
 #end
 	
-	$context.putPageValue("searchtype", $module.id)
-	
+	$context.putPageValue("searchtype", $moduleid)
 	$context.putPageValue("resultview",$resultview)
 	
 	#if($module.modulerendertype)
@@ -125,5 +73,3 @@ $context.putPageValue("isentity", $isentity )
 
 
 	$pages.include("${searchhome}/resultviews.html", $context)
-
-
