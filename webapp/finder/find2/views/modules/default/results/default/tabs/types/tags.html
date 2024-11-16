@@ -1,0 +1,40 @@
+#set( $vals = $val.split("\s*\|\s*") )
+#set($count=0)
+#set($characters = 0)
+#if ($vals)
+     	<div class="emgridcell-fields-tags">
+     	  	
+     	  	#set($link = $tagssearchlink)
+			#if(!$link)
+				#set($link = "$siteroot$apphome/views/modules/asset/index.html")
+			#end
+			#set( $type = $detail.getListId() )
+			#set($clearfilters = $context.getPageValue("clearfilters"))
+			
+	      #foreach( $val in $vals )
+	       	#if($count<3 && $characters<75)
+		       	
+				#set($fulllink = "$link?field=${type}&operation=contains&${type}.value=#esc($val)")
+				#if ($clearfilters)
+					#set($fulllink = "$fulllink&clearfilters=true")
+				#end
+				#set($count=$count+1)
+				<a class="badge badge-secondary" title="#text($val)"	
+					href="$fulllink">
+					<span class="">#text($val)</span>
+				</a>
+				#set($tagsize = $val.length())
+				#set($characters = $characters + $tagsize)
+			#end
+			
+		  #end
+		  #if($vals.size()>3)
+		  	#set($morekeywords = $vals.size()-$count)
+		  	<a class="emdialog badge badge-secondary" 
+		  		href="$!previewurl" 
+		  		title="${morekeywords} more keywords"
+		  		>${morekeywords}+</a> 
+		  #end
+	</div>
+	
+#end

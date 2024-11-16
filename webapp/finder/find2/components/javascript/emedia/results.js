@@ -155,7 +155,7 @@ jQuery(document).ready(function (url, params) {
 		select.on("change", function () {
 			var options = resultsdiv.data();
 
-			var componenthome = resultsdiv.data("componenthome");
+			var searchhome = resultsdiv.data("searchhome");
 			var moduleid = resultsdiv.data("moduleid");
 			var originalhitsperpage = resultsdiv.data("hitsperpage");
 			var targetdiv = resultsdiv.data("targetdiv");
@@ -169,18 +169,18 @@ jQuery(document).ready(function (url, params) {
 			if (moduleid == "asset") {
 				if (originalhitsperpage) {
 					href =
-						componenthome +
-						"/results/changeresultview.html?cache=false&hitsperpage=" +
+						searchhome +
+						"/changeresultview.html?cache=false&hitsperpage=" +
 						originalhitsperpage;
 				} else {
-					href = componenthome + "/results/changeresultview.html";
+					href = searchhome + "/changeresultview.html";
 				}
 			} else {
 				href =
 					siteroot +
 					"/views/modules/" +
 					moduleid +
-					"/components/results/changeresultview.html";
+					"/results/default/changeresultview.html";
 			}
 
 			options.resultviewtype = moduleid + "resultview";
@@ -228,7 +228,7 @@ jQuery(document).ready(function (url, params) {
 		select.on("change", function () {
 			var options = resultsdiv.data();
 
-			var componenthome = resultsdiv.data("componenthome");
+			var searchhome = resultsdiv.data("searchhome");
 			var moduleid = resultsdiv.data("moduleid");
 			var resultview = resultsdiv.data("resultview");
 			var originalhitsperpage = resultsdiv.data("hitsperpage");
@@ -1105,7 +1105,7 @@ jQuery(document).ready(function (url, params) {
 		if (entity.length) {
 			var resultsdiv = $(".resultsdiv");
 			var moduleid = resultsdiv.data("moduleid");
-			var componenthome = resultsdiv.data("componenthome");
+			var searchhome = resultsdiv.data("searchhome");
 			if (moduleid && componenthome) {
 				var url = componenthome + "/gridsample/preview/entity.html";
 				entity.data("targetlink", url);
@@ -1135,7 +1135,7 @@ jQuery(document).ready(function (url, params) {
 			}
 
 			var options = resultsdiv.data();
-			var componenthome = resultsdiv.data("componenthome");
+			var searchhome = resultsdiv.data("searchhome");
 			options["dataid"] = dataid;
 			var targetdiv = resultsdiv.find("#resultsheader");
 			refreshdiv(targetdiv, componenthome + "/results/toggle.html", options);
@@ -1192,7 +1192,7 @@ jQuery(document).ready(function (url, params) {
 		}
 		//var hitssessionid = resultsdiv.data('hitssessionid');
 		var options = resultsdiv.data();
-		var componenthome = resultsdiv.data("componenthome");
+		var searchhome = resultsdiv.data("searchhome");
 		options.oemaxlevel = 1;
 
 		var status = input.is(":checked");
@@ -1227,7 +1227,7 @@ jQuery(document).ready(function (url, params) {
 		}
 		//var hitssessionid = resultsdiv.data('hitssessionid');
 		var options = resultsdiv.data();
-		var componenthome = resultsdiv.data("componenthome");
+		var searchhome = resultsdiv.data("searchhome");
 		options.oemaxlevel = 1;
 
 		var targetdiv = resultsdiv.find("#resultsheader");

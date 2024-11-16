@@ -1,0 +1,117 @@
+<div class="emgrid-expanded">
+<div class="emgrid-box">
+
+	
+	#if($module.id=="asset")
+	
+##		#set($hits = $assethits)
+		##$context.putPageValue("hits",$hits)
+		
+		$context.putPageValue("componenthome","$apphome/views/modules/$module.id/components")
+		
+		<div class="emgrid-subtitle">
+	 		<h3>
+	    	#set($moduleicon = "entity")
+	    	#if ($module.moduleicon)
+	    		#set($moduleicon = $module.moduleicon)
+	    	#end
+	
+	   		#set($entityurl = "$siteroot$apphome/views/modules/$module.id/index.html")
+		<a href="$entityurl" 
+			class="ajax" 
+			data-targetdiv="applicationcontent" 
+			data-oemaxlevel="3" 
+			data-updateurl="true" 
+			title="#text($module)">
+		<img src="$siteroot$apphome/theme/images/entity/${moduleicon}.svg" style="height: 24px;"> 
+		
+		#set( $count = $hits.size())
+
+		#text($module) <span class="count">($count)</span> 
+		$context.putPageValue("$moduletotalhits", $count)
+		</a>
+			<div style="float:right" >
+				<a href="$siteroot$apphome/views/modules/modulesearch/expand.html?profilepreference=expanded_module&profilepreference.value=" 
+				data-targetdiv="applicationcontent"
+				data-oemaxlevel="2"
+				class="ajax">
+				<i class="fas fa-compress-alt"></i></a>
+			</div>
+		</h3>
+		
+	</div>
+	<div class="clearfix"></div>
+		
+	<div class="emgrid-module emgrid-module-$!rendertype">
+  		<div class="emgrid-module-$rendertype-inside"  id="modulesearchexpandedmodule">
+  			#set($resultview = $userprofile.get("assetresultview"))
+			#if(!$resultview)
+				#set($resultview = $content.get("resultview"))
+			#end
+			#if(!$resultview)
+				#set($resultview = "stackedgallery")
+			#end
+		
+			$context.putPageValue("searchtype","asset")
+			$context.putPageValue("resultview",$resultview)
+			
+	   		$pages.include("$apphome/views/modules/$module.id/components/results/index.html?module=${module.id}", $context)
+	   		<div class="clearfix"></div>
+	   		
+		</div>
+##			#set($resultsPage = "$siteroot$apphome/views/modules/asset/index.html")
+##			#if($hits.size() > 4 && $section != "favorites")
+##				#if( $jsonsearch)
+##					#set($resultsPage = $url_util.urlEscape("$resultsPage?${module.id}clearfilters=true&${module.id}_jsonquery=$jsonsearch" ) )
+##				#end		
+##				<div class="emgrid-seemore"><a href="$resultsPage">[[See More]]</a></div>
+##				<div class="clearfix"></div>
+##			#end
+	 
+	 </div>
+	 
+	#else
+	
+	 	<div class="emgrid-subtitle">
+		 		<h3>
+		    	#set($moduleicon = "entity")
+		    	#if ($module.moduleicon)
+		    		#set($moduleicon = $module.moduleicon)
+		    	#end
+		
+		   		#set($entityurl = "$siteroot$apphome/views/modules/$module.id/index.html")
+			<a href="$entityurl" 
+				class="ajax" 
+				data-targetdiv="applicationcontent" 
+				data-oemaxlevel="3" 
+				data-updateurl="true" 
+				title="#text($module)">
+			<img src="$siteroot$apphome/theme/images/entity/${moduleicon}.svg" style="height: 24px;"> 
+	
+			#set( $count = $filter.getCount($module.id) )
+		
+			#text($module) <span class="count">($count)</span>
+			$context.putPageValue("$moduletotalhits", $count)
+			</a>
+				<div style="float:right" >
+					<a href="$siteroot$apphome/views/modules/modulesearch/expand.html?profilepreference=expanded_module&profilepreference.value=" 
+					data-targetdiv="applicationcontent"
+					data-oemaxlevel="2"
+					class="ajax">
+					<i class="fas fa-compress-alt"></i></a>
+				</div>
+		</h3>
+		</div>
+		<div class="clearfix"></div>
+		<div id="${module.id}resultscontainer">
+			
+			
+			$pages.include("$apphome/views/modules/$module.id/components/results/index.html?module=${module.id}", $context)
+			<div class="clearfix"></div>   
+		</div>
+	
+	#end
+	</div>	
+</div>
+	
+	
