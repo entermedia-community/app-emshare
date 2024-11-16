@@ -87,6 +87,21 @@ function contrastColor(hex) {
 	return r * 0.299 + g * 0.587 + b * 0.114 > 186 ? "#444444" : "#FFFFFF";
 }
 
+toggleUserProperty = function (property, onsuccess = null) {
+	app = $("#application");
+	siteroot = app.data("siteroot");
+	apphome = siteroot + app.data("apphome");
+	console.log("Saving: " + property);
+	jQuery.ajax({
+		url:
+			apphome +
+			"/components/userprofile/toggleprofileproperty.html?field=" +
+			property,
+		success: function () {
+			if (onsuccess) onsuccess();
+		},
+	});
+};
 
 
 saveProfileProperty = function (property, value, onsuccess = null) {

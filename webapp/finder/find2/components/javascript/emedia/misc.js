@@ -3179,22 +3179,22 @@ uiload = function () {
 		var toggler = $(this);
 		var results = toggler.closest(".resultsarea");
 		var container = $(".summary-container", results);
-		var nowopen = false;
+		var isminimized = true;
 
-		if (container.hasClass("closed")) {
-			nowopen = true;
+		if (container.length == 0 || container.hasClass("closed")) {
+			isminimized = true;
 			container.removeClass("closed");
-			$(".summary-opener", results).addClass("closed");
+			$(".summary-opener", results).addClass("closed");  //hide the button
 			$(".summary-container", results).removeClass("closed");
 		} else {
-			nowopen = false;
+			isminimized = false;
 			container.addClass("closed");
 			$(".summary-opener", results).removeClass("closed");
 		}
 		setTimeout(() => {
 			$(window).trigger("resize");
 		}, 210); //match the transition speed of summary sidebar 200ms
-		saveProfileProperty($(this).data("target"), nowopen);
+		saveProfileProperty($(this).data("target"), !isminimized);
 	});
 
 	/*

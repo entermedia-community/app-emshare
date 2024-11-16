@@ -15,21 +15,6 @@ repaint = function (divid) {
 		div.replaceWith(data);
 	});
 };
-toggleUserProperty = function (property, onsuccess = null) {
-	app = $("#application");
-	siteroot = app.data("siteroot");
-	apphome = siteroot + app.data("apphome");
-	console.log("Saving: " + property);
-	jQuery.ajax({
-		url:
-			apphome +
-			"/components/userprofile/toggleprofileproperty.html?field=" +
-			property,
-		success: function () {
-			if (onsuccess) onsuccess();
-		},
-	});
-};
 
 outlineSelectionCol = function (event, ui) {
 	// $(this).addClass("selected");
