@@ -2273,6 +2273,8 @@ uiload = function () {
 	var searchmodalmask;
 	var mainsearcheinput;
 
+
+	//Not used?
 	lQuery(".filtertypeahead").livequery(function () {
 		mainsearcheinput = $(this);
 		var q = "";
