@@ -1,28 +1,29 @@
-
-#if($filternode)
-	#set( $viewpermission = $context.getPageValue("canviewfilter${type.getId()}") )
-	#ifnull($viewpermission)
-		#set( $viewpermission = true)
-	#end
-	
-	#if( $viewpermission )
-		#set( $fieldname = $detail.getId() )
-		#set($entry = $filternode.children[1])
-		<a class="addfilter #if ($first) filter-current #end radiofilter" data-filtertype="$filternode.getId()" data-filtervalue="true" data-filterlabel="$entry.getText($context)" href="#" title="($entry.count)">
-		<input type="checkbox" name="${fieldname}.value" id="$entry.getId()${fieldname}_val" value="true" #if( $hits.getSearchQuery().hasTermValue($filternode.id,"true") ) checked #end />
-		<label for="$entry.getId()${fieldname}_val"> [[True]] </label>
-		</a>
-		#set($entry = $filternode.children[0])
-		<a class="addfilter #if ($first) filter-current #end radiofilter" data-filtertype="$filternode.getId()" data-filtervalue="false" data-filterlabel="$entry.getText($context)" href="#" title="($entry.count)">
-		<input type="checkbox" name="${fieldname}.value" id="$entry.getId()${fieldname}_val" value="false" #if( $hits.getSearchQuery().hasTermValue($filternode.id,"false") ) checked #end />
-		<label for="$entry.getId()${fieldname}_val"> [[False]] </label>
-		</a>
-		
-
-		
-	#end  ##permission
-#end 
-
-
-
-	
+#set( $fieldname = $detail.getId() )
+<div class="d-flex flex-column boolean-switches">
+	<div class="custom-control custom-switch">
+		<input 
+			type="checkbox" 
+			class='custom-control-input true-switch #if($hits.getSearchQuery().hasTermValue($detail.id,"true"))filtercheck#end' 
+			id="$!{idprefix}${fieldname}_val" 
+			name="${fieldname}.value"
+			data-fieldtype="boolean"
+			data-fieldname="${fieldname}" 
+			value="true" 
+			#if( $hits.getSearchQuery().hasTermValue($detail.id,"true") ) checked #end
+		>
+		<label class="custom-control-label" for="$!{idprefix}${fieldname}_val">[[True]]</label>
+	</div>
+	<div class="custom-control custom-switch">
+		<input 
+			type="checkbox" 
+			class='custom-control-input false-switch #if($hits.getSearchQuery().hasTermValue($detail.id,"false"))filtercheck#end'
+			id="$!{idprefix}${fieldname}_val_f" 
+			name="${fieldname}.value"
+			data-fieldtype="boolean"
+			data-fieldname="${fieldname}" 
+			value="false" 
+			#if( $hits.getSearchQuery().hasTermValue($detail.id,"false") ) checked #end
+		>
+		<label class="custom-control-label" for="$!{idprefix}${fieldname}_val_f">[[False]]</label>
+	</div>
+</div>

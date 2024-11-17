@@ -1120,7 +1120,7 @@ jQuery(document).ready(function (url, params) {
 	};
 
 	// Selections
-	function handleAsssetSelect(clicked) {
+	function handRowSelection(clicked) {
 		var dataid = clicked.data("dataid");
 		var resultsdiv = clicked.closest(".resultsdiv");
 		if (!resultsdiv.length) {
@@ -1156,13 +1156,13 @@ jQuery(document).ready(function (url, params) {
 			.parent()
 			.siblings("input.resultsselection.selectionbox");
 		checkbox.prop("checked", !checkbox.prop("checked"));
-		handleAsssetSelect(checkbox);
+		handRowSelection(checkbox);
 	});
 
 	lQuery("input.resultsselection.selectionbox").livequery(
 		"change",
 		function () {
-			handleAsssetSelect($(this));
+			handRowSelection($(this));
 		}
 	);
 
