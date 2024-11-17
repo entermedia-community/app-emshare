@@ -1,5 +1,6 @@
 var app, siteroot, apphome, themeprefix;
 
+
 function getRandomColor() {
 	var letters = "0123456789ABCDEF".split("");
 	var color = "#";
@@ -159,3 +160,4 @@ getSessionValue = function (key) {
 
 	return returnval;
 };
+

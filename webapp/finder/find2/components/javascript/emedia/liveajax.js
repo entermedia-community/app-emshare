@@ -6,6 +6,22 @@ If list2 not init: Make sure .html is correct and livequeryrunning
 */
 
 (function ($) {
+	
+	$.fn.cleandata = function () {
+		var element = $(this);
+		var params = element.data();
+	
+		var cleaned = {};
+		Object.keys(params).forEach(function (key) {
+			var param = params[key];
+			var thetype = typeof param;
+			if (thetype === "string" || thetype === "number" || thetype === "boolean") {
+				cleaned[key] = param;
+			}
+		});
+		return cleaned;
+	};
+
 	var oldLoad = $.fn.load;
 	$.fn.load = function (inArg, maybeData, inComplete) {
 		var oldscope = this;
