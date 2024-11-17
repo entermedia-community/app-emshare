@@ -1,4 +1,4 @@
-	<div id="detail_${detail.id}" valign="middle">
+<div id="detail_${detail.id}" class="detailtagcontainer" valign="middle">
 	<div class="form-group">
 		<input name="field" value="$searcher.getCatalogId():$view:${detail.getId()}" type="hidden">
 
@@ -15,6 +15,10 @@
 		#end
 		#if ($viewtype == "date")
 			#set ($viewtype = "datesearch")
+		#end
+
+		#if ($viewtype == "multiselect")
+			#set ($viewtype = "list")
 		#end
 		
 		##$viewtype
@@ -38,30 +42,30 @@
 			#set( $values = $hits.getSearchQuery().getInputs($detail.id) )
 			
 			#set( $term = $hits.getSearchQuery().getTermByDetailId($detail.id) )
-			$context.putPageValue("term",$!term)			
-			$context.putPageValue("val",$!value)
-			$context.putPageValue("values",$!values)
+			$context.putPageValue("term",$term)			
+			$context.putPageValue("val",$value)
+			$context.putPageValue("values",$values)
 			$context.putPageValue("data",$hits.getSearchQuery())
 		#end	
 		<input name="${detail.getId()}.searchtype" value="${detail.getSearchType()}" type="hidden" />
 		<div class="filter-box">
 			<div class="filter-box-header">
-					<span class="toggle-filter sidetoggle" data-target="filterbox${detail.getId()}">
+					<div class="toggle-filter sidetoggle" data-target="filterbox${detail.getId()}">
 					<i class="caret fas 
 							#set($minimized = $detail.getId())
-							#set($preference = '#set($selectedpreference = ' + '$userprofile.' + 'minimizefilterbox' + $minimized + ')')
-							#evaluate($preference)
+							#set($preference = "${userprofile}.${minimized}")
 							#ifnull($selectedpreference)
-							#set($selectedpreference = false)
+								#set($selectedpreference = true)
 							#end
 							#if($selectedpreference == false) 
 								 fa-caret-down 
 						  	#else 
 						  		 fa-caret-right 
 						  	#end"></i>
-					</span> 
 					
 					$!detail.getText($context)
+					</div> 
+					
 					#if ($edit == "true")
 						<a class="float-right" title="[[Delete Filter]]" href="#" onclick="javascript:deleteFilterField('${detail.getSearchType()}','${detail.id}'); return false;">
 						<i class="fas fa-times"></i>
@@ -70,10 +74,9 @@
 					 
 					##if ($edit == "true" && $detail.searchType)   (${detail.searchType} ) #end
 			</div>
-			<div class="filter-box-options" id="filterbox${detail.getId()}" #if($selectedpreference) style="display: none;" #end>
-			##$detail.isFilter()
+			<div class="filter-box-options overflow-y" id="filterbox${detail.getId()}" #if($selectedpreference) style="display: none;" #end>
 			#if ($detail.isFilter())
-				$pages.include("/${applicationid}/components/filters/types/${viewtype}.html?search=true", $context)
+				$pages.include("/${applicationid}/components/gridfilters/types/${viewtype}.html?search=true", $context)
 			#else
                 ##$context.putPageValue("removeclear",true)
 				$pages.include("/${applicationid}/components/xml/types/${viewtype}.html?search=true", $context)
@@ -81,8 +84,6 @@
 			</div>
 		</div>
 		</div>
-	</div>
-
-
+</div>
 
 

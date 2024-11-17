@@ -1,4 +1,8 @@
-#set( $module = $content.module)
+#if(!$moduleid)
+	#set( $moduleid = $module.getId())
+#end
+##$hits
+
 #if ($editfilters)
 	#set( $edit = true )
 #elseif( !$editfilters)
@@ -8,30 +12,35 @@
 	$context.putPageValue("edit",$edit)
 #end
 
-#if( !$librarycol )
-	#set($collectionid = $context.getRequestParameter("collectionid"))
-	#if($module=="librarycollection" && $collectionid)
-		#set( $librarycol = $mediaarchive.query("librarycollection").exact("id",$collectionid).searchOne() )
-	#end
+#if(!$categoryid)
+	#set($categoryid = $context.getRequestParameter("categoryid"))
+#end
+#if(!$topmoduleid)
+	#set ( $topmoduleid = $context.getRequestParameter("topmoduleid") )
+#end
+#if(!$entityid)
+	#set ( $entityid = $context.getRequestParameter("entityid") )
+#end
+#if(!$targetdivsearch)
+	#set ( $targetdivsearch = $context.getRequestParameter("targetdivsearch") )
+#end
+#if(!$targetdivsearch)
+	#set($targetdivsearch = "$!{moduleid}resultscontainer")
 #end
 
-#if( $librarycol )	
-	$context.putPageValue("librarycol",$librarycol)
-	$context.putPageValue("collectionid", $librarycol.getId())
+#if(!$tabletype)
+	#set($tabletype = $context.getRequestParameter("tabletype"))
 #end
+#if(!$viewid)
+	#set($viewid = $context.getRequestParameter("viewid"))
+#end
+	
+<div id="moduleadvfilterpanel" class="advfilterpanel" >
 
-<div id="advfilterpanel" class="advfilterpanel" >
-#if( !$edit )
-	<div class="filters-edit-icon">
-		<a class="ajax" 
-			data-targetdiv="advfilterpanel" 
-			href="$apphome/components/filters/index.html?editfilters=true&oemaxlevel=1&collectionid=$!collectionid"
-			title="[[Edit Filters]]"><i class="fas fa-cog"></i></a>
-	</div>
-#end
-<div class="tanmodule" >
-	#set( $view = "asset/assetadvancedfilter")
-	#set( $searcher = $mediaarchive.getAssetSearcher())
+<div class="advfilterpanelcontent" >
+	#set( $view = "$moduleid/$!{moduleid}advancedfilter")
+
+	#set( $searcher = $mediaarchive.getSearcher($moduleid))
 	
 	$context.putPageValue("view", $view)
 	$context.putPageValue("searcher", $searcher)
@@ -39,235 +48,222 @@
 	#set($usestartswith = $page.isPropertyTrue('usestartswith'))
 	$context.putPageValue("usestartswith",$usestartswith)
 	$context.putPageValue("caneditlists",false)
-				
-	
-##SORT
-<form  	name="filtersortform" 
-		id="filtersortform" 
-		class="autosubmitform filterform em-widget-content ajaxform" 
-		data-targetdiv="searchlayout" 
-		method="POST"  
-		data-oemaxlevel="1" 
-		action="$searchome/columnsort.html" 
-	>
-	#if( $librarycol)
-		<input name="collectionid" type="hidden" value="$librarycol.getId()">
-	#end
-		<input name="searchtype" type="hidden" value="asset">
-		<div class="filter-box">
-			<div class="filter-box-header">
-					<span class="toggle-filter sidetoggle" data-target="filterboxsorting">
-					#set($minimizedfilterbox = true)
-					#if(!$userprofile.minimizefilterboxsorting || $userprofile.minimizefilterboxsorting == "false")
-						#set($minimizedfilterbox = false)
-					#end
-					<i class="caret fas 
-						#if($minimizedfilterbox) 
-							 fa-caret-right 
-					  	#else 
-					  		 fa-caret-down 
-					  	#end"></i>
-					</span> 
-					[[Sort]]
-			</div>
-			<div class="filter-box-options" id="filterboxsorting" #if($minimizedfilterbox) style="display: none;" #end>
-				#set ($alldetails = $searcher.getUserPropertyDetails() )
-				<div style="width:145px; display: inline-block;">
-				<select data-sortup="$hits.searchQuery.isSortUp()" 
-						class="form-control form-control-sm select2 autosubmited" 
-						name="sortby" 
-						id="assetsortby" 
-						data-allowclear="false" 
-						 >
-					#foreach( $detail in $alldetails)
-						
-						 #if($hits.searchQuery.isSortUp())
-						 	#set($value = "${detail.id}Up")
-						 #else
-						 	#set($value = "${detail.id}Down")
-						 #end
-						<option data-detailid="${detail.id}" 
-								value="$value" 
-								#if($hits.isSortedBy($detail.id)) 
-								selected="selected" 
-								#end>$detail.getText($context)</option>
-					#end
-				</select>
-				</div>
-				<div class=" float-right" ><i class="filterschangesort fas #if($hits.searchQuery.isSortUp()) fa-sort-alpha-up #else fa-sort-alpha-down #end" style="padding-top:5px"></i></div>
-			</div>
-		</div>
-	</form>	
-		
-		
-	
-	<form  	name="filterform" id="filterform" class="autosubmitform filterform em-widget-content" 
-			data-targetdiv="filteredresults" method="POST"  
-	#if( $librarycol)
-		data-oemaxlevel="2" 
-		action="$home$apphome/views/modules/librarycollection/search.html" 
-	#else
-		data-oemaxlevel="1" 
-		action="$home$apphome/views/search/search.html" 
-	#end 
-	>
-	#if( $librarycol)
-		<input name="collectionid" type="hidden" value="$librarycol.getId()">
-	#end
-	
-	##We need 2 things passed in: $searcher, $view or $searcher $details
-	#if (!$details && $userprofile)
-		#set ($details = $searcher.getDetailsForView($view, $userprofile))
-	#else
-		#set ($details = $searcher.getDetailsForView($view))
-	#end
-	
-	
-	$context.putPageValue("idprefix","search")
-	
 
-	##FILTERS
-		
-	#foreach( $detail in $details)   
-		
-		#set( $viewpermission = $context.getPageValue("canviewfilter${detail.getId()}") )
-		##ifnull($viewpermission)
-			#set( $viewpermission = true)
-		##end
+	#if(!$resultslink)
+	#set($resultslink = $context.getRequestParameter("resultslink"))
+	#end
 	
-		  #if( $viewpermission )
+	<form  	name="filterform" 
+			id="filterform" 
+			class="ajaxform autosubmitform filterform"
+			method="POST" 
+
+			#if($resultslink)
+				action="$resultslink"
+				data-targetdiv="$targetdivsearch"
+			#elseif($topmoduleid)
+				#if($moduleid== "asset" && $categoryid)
+					action="$siteroot$apphome/views/modules/$moduleid/dialogshowcategory.html"
+					data-oemaxlevel="1"
+					data-targetdivinner="$targetdivsearch"
+				#else
+					#if($tabletype == "subentity")
+						action="$siteroot$apphome/views/modules/$moduleid/components/table/subentitytable.html"
+						data-targetdiv="results$!{viewid}"
+					#else
+						action="$siteroot$apphome/views/modules/$moduleid/dialogindex.html"
+						data-targetdivinner="$targetdivsearch"
+					#end
+				#end
+				
+				data-updateurl="false"
+			#else
+				#if($moduleid== "asset" && $categoryid)
+					action="$siteroot$apphome/views/modules/$moduleid/showcategory.html"
+					data-oemaxlevel="2"
+					data-targetdiv="$targetdivsearch"
+				#else
+					action="$siteroot$apphome/views/modules/$moduleid/index.html"
+					data-targetdiv="$targetdivsearch"
+				#end
+			#end  
+	>
+	<input type="hidden" name="targetdivsearch" value="$targetdivsearch" />
+	<input type="hidden" name="searching" value="true" />
+	
+	#set($pickertarget = $context.getRequestParameter("pickertarget"))
+	<input type="hidden" name="pickertarget" value="$!pickertarget" />
+	
+	#set($lightboxid = $context.getRequestParameter("lightboxid"))
+	<input type="hidden" name="lightboxid" value="$!lightboxid" />
+	
+	
+	#if($dialogresults)
+	
+		#set($idprefix = "dialogsearch")
 		
+		###if( $hits.getSearchQuery().hasMainInput())
+		#if($moduleid=="asset")
+			#if($dialogresults)
+				#set($href = "$siteroot$apphome/views/modules/$moduleid/dialogindex.html?hitssessionid=$!hits.getSessionId()&topmoduleid=$!topmoduleid&rootcategory=$!rootcategory&categoryid=$!{categoryid}&removeterm=description")
+			#else
+				#set($href = "$siteroot$apphome/views/modules/$moduleid/index.html?hitssessionid=$!hits.getSessionId()&topmoduleid=$!topmoduleid&rootcategory=$!rootcategory&categoryid=$!{categoryid}&removeterm=description")		
+			#end
+			#set($oemaxlevel = "1")
+		#else
+			#set($href = "$siteroot$apphome/views/modules/$moduleid/index.html?hitssessionid=$!hits.getSessionId()&removeterm=$!term.getId()")
+			#set($oemaxlevel = "1")
+		#end
+		#set($inputsearch = $!hits.getSearchQuery().getMainInput())
+		#if(!$targetdivsearch)
+			#set($targetdivsearch = "$!{moduleid}resultscontainer")
+		#end
+		<div class="d-flex w-100 justify-content-center mt-1 mb-2">
+			<label class="d-inline search-term text-brand" style="font-size: 0.8rem;" for="editSearch">
+				
+				<input type="hidden" name="field" value="description" />
+				<input type="hidden" name="operation" value="freeform" />
+				<input type="text" value="$!inputsearch" class="filter-search " name="description.value" autocomplete="off" />
+				<a href="$href"
+					class="submitform text-brand"
+					title="[[Search]]: #esc($!inputsearch)"
+					> 
+					<i class="bi bi-search mr-1"></i>
+				</a>
+			</label>
+		</div>
+		###end
+	#end
+	
+		#if( $librarycol)
+			<input name="collectionid" type="hidden" value="$!librarycol.getId()">
+		#end
+		
+		##We need 2 things passed in: $searcher, $view or $searcher $details
+		#set ($details = $searcher.getDetailsForView($view))
+
+		
+		#ifnull($idprefix)
+			#set($idprefix = "search")
+		#end
+		$context.putPageValue("idprefix",$idprefix)
+		
+		##FILTERS
+		#foreach( $detail in $details)   
+			##set( $viewpermission = $context.getPageValue("canviewfilter${detail.getId()}") )
 			$context.putPageValue("detail", $detail)
 			$context.putPageValue("searchform", true)
-			#if ($detail.isLeaf())
-				#if ($detail.isFilter())
-					#set($filternode = $hits.findFilterValue($detail.id))
-					$context.putPageValue("filternode",$filternode)
-					#if(($edit == "true") || ($filternode && !$filternode.isEmpty() && $filternode.children.size() > 1))
-						$pages.include("/${applicationid}/components/filters/detailedit.html", $context)
+			
+			#set( $viewtype = $detail.searchcomponent )
+			#if (!$viewtype)
+				#set( $viewtype = $detail.viewType )
+			#end
+			#if (!$viewtype)
+				#set ($viewtype = $detail.dataType)
+			#end
+			#if (!$viewtype || $viewtype == "text" || $detail.isMultiLanguage() || $viewtype == "textarea" || $viewtype == "html")
+				#set ($viewtype = "default")
+			#end
+			#if ($viewtype == "date")
+				#set ($viewtype = "datesearch")
+			#end
+			$context.putPageValue("viewtype", $viewtype)
+			
+			#if ($detail.isLeaf() )
+				#set($filternode = $hits.findFilterValue($detail))
+				$context.putPageValue("filternode",$filternode)
+				#ifnull($filternode)
+					#if( $viewtype != "list" && $viewtype != "entity" )  ##always show dates and text boxes
+						$pages.include("${searchhome}/filters/detailedit.html", $context) 
+					#else
+						##dont show this on the form	
 					#end	
-				#else
-					$pages.include("/${applicationid}/components/filters/detailedit.html", $context)
+				#end
+				
+				#ifnotnull($filternode)
+					$pages.include("${searchhome}/filters/detailedit.html", $context) 
 				#end
 			#else
-				$pages.include("/${applicationid}/components/filters/section.html", $context)
+				#if($detail.hasChildren())
+					$pages.include("${searchhome}/filters/section.html", $context) 
+				#end
 			#end
-			
-		  #end
-	#end
-			
+		#end
 		
 		#set( $nodeID = $context.getRequestParameter("nodeID"))
 		
-		
-		#if( $librarycol.rootcategory )
-			<input type="hidden" name="field" value="category" />
-			<input type="hidden" name="operation" value="exact" />
-			<input type="hidden" name="collectionid" value="$librarycol.getId()" />
-			#if($nodeID && $nodeID != $librarycol.rootcategory) 
-				<input type="hidden" name="category.value" value="$!nodeID" />
-				<input type="hidden" name="nodeID" value="$!nodeID" />
+		#if($topmoduleid)
+			<input name="topmoduleid" type="hidden" value="$!topmoduleid" />
+			<input name="entityid" type="hidden" value="$!entityid" />
+			
+			<input name="dialogresults" type="hidden" value="true" />
+			
+			
+			#if($tabletype == "subentity")
+				#if($viewid)
+					<input name="viewid" type="hidden" value="$!viewid" />
+				#end
+				<input name="field" type="hidden" value="$!fieldexternalid" />
+				<input name="$!{fieldexternalid}.value" type="hidden" value="$!fieldexternalvalue" />
+				<input type="hidden" name="operation" value="exact" />
+				
+				<input name="fieldexternalid" type="hidden" value="$!fieldexternalid" />
+				<input name="fieldexternalvalue" type="hidden" value="$!fieldexternalvalue" />
 			#else
-				<input type="hidden" name="category.value" value="$librarycol.rootcategory" />
+				#set($dialogindextype = $context.getRequestParameter("dialogindextype"))
+				<input name="dialogindextype" type="hidden" value="$!dialogindextype" />
+				<input name="targetdivsearch" type="hidden" value="$!targetdivsearch" />
+				
 			#end
-		#elseif( $selectedlibrary.categoryid )
-			<input type="hidden" name="field" value="category" />
-			<input type="hidden" name="operation" value="exact" />
-			<input type="hidden" name="category.value" value="$selectedlibrary.categoryid" />
-			<input type="hidden" name="selectedlibrary" value="$selectedlibrary.getId()" />
-		#elseif( $category )
-			#set($categoryid = $category.getId())
+			
+		#end
+		
+		#if( $categoryid )
+			<input type="hidden" name="exact-search" value="false" />
+			
 			<input type="hidden" name="field" value="category" />
 			<input type="hidden" name="operation" value="exact" />
 			<input type="hidden" name="category.value" value="$categoryid" />
 			<input type="hidden" name="nodeID" value="$!nodeID" />
+			<input type="hidden" name="categoryid" value="$categoryid" />
 		#end
 		
 
-		<input type="hidden" name="${searcher.getSearchType()}endusersearch" value="true"/>
+		<input type="hidden" name="$!{moduleid}endusersearch" value="true"/>
 	
 		<input type="hidden" name="customproperty" value="userinputsearch"/>
 		<input type="hidden" name="userinputsearch.value" value="true"/>
 		<input type="hidden" name="removeterm" id="filtersremoveterm" value=""/>
-					
-				    
-					
 			
-		#set ($resultview = $userprofile.get('resultview'))
+##		#set ($resultview = $userprofile.get('resultview'))
+##		#if( !$resultview )
+##		<input type="hidden" name="resultstype" value="table" />
+##		#end
 		
-		#if( !$resultview )
-		<input type="hidden" name="resultstype" value="table" />
+		#set( $usefirstfilters = $userprofile.getBoolean("usefirstfilters"))
+		#if( $hits.hasFiltersChanged() || $usefirstfilters )
+			<div class="clearfix"></div>
+			<div class="d-flex flex-column py-1 pl-2 my-1 bg-light align-items-right filter-showall-group">
+				##<span class="text-brand">Filter Behavior</span>
+				<div class="d-flex align-items-center">
+					<label  class="mb-0 pr-2 #if($usefirstfilters)filter-exclusive #else filter-inclusive #end" for="filterautorefresh">[[Show Active Filters]]</label>
+					<div class="custom-control custom-switch  boolean-switcher">
+					<input 	type="hidden"	name="usefirstfilters"	value="$usefirstfilters" />
+					<input 	type="checkbox"
+						id="filterautorefresh" 
+					name="usefirstfiltersvalue"
+					class="custom-control-input "
+					value="true"
+					#if( $usefirstfilters) checked #end 
+					>
+					<label class="custom-control-label" for="filterautorefresh"></label>
+					</div>
+					<label class="mb-0 #if($usefirstfilters)filter-inclusive #else filter-exclusive  #end" for="filterautorefresh">[[Show All]]</label>
+				</div>
+			</div>
 		#end
-		
-		</form>
-		
-		#if ($edit == "true")
-		
-		##TODO: Pass this view name in
-		#set ($alldetails = $searcher.getUserPropertyDetails() )
-		<div class="advancedsearcheditform">
-		<strong style="margin-bottom:10px;display:block">[[Edit Fiters]]:</strong>
-		<form id="searchaddfield" class="ajaxform" targetdiv="advfilterpanel" action="$home$apphome/components/filters/addfield.html" method="post">
-		
-			<input type="hidden" name="oemaxlevel" value="1"/>
-			<input type="hidden" name="editadvsearch" value="true"/>
-			<input type="hidden" name="view" value="$view"/>
-			<input type="hidden" name="catalogid" value="$searcher.getCatalogId()"/>
-			<input type="hidden" name="collectionid" value="$!collectionid"/>
-			<input type="hidden" name="searchtype" value="$searcher.getSearchType()"/>
-			<div class="form-group">
-			<select  class="form-control"  name="field" onChange="jQuery('#searchaddfield').submit();">
-				<option value="">[[Asset]]</option>
-				#foreach( $detail in $alldetails)
-					#if($detail.isLeaf())
-					<option value="$detail.id" style="margin-left: 10px;">$detail.getText($context)</option>
-					#else							
-						<optgroup label="$detail.title"></optgroup>
-						#foreach($child in $detail)
-						<option value="$child.id" style="margin-left: 10px;">$child.getText($context)</option>
-						#end
-					#end
-				#end	
-			</select>
-			</div>
-			<div class="form-group">
-			<select class="form-control" name="field" onChange="jQuery('#searchaddfield').submit();">
-				<option value="">[[Collection]]</option>
-				#set( $librarydetails = $mediaarchive.getSearcher("librarycollection").getUserPropertyDetails() )
-				#foreach( $detail in $librarydetails)
-				<option value="librarycollection.${detail.id}" style="margin-left: 10px;">$detail.getText($context)</option>
-				#end
-			</select>
-			</div>
-			<div class="form-group">
-			<select  class="form-control"  name="field" onChange="jQuery('#searchaddfield').submit();">
-				<option value="">[[Library]]</option>
-				#set( $librarydetails = $mediaarchive.getSearcher("library").getUserPropertyDetails() )
-				#foreach( $detail in $librarydetails)
-				<option value="library.${detail.id}" style="margin-left: 10px;">$detail.getText($context)</option>
-				#end
-			</select>
-			</div>
-		<div class="form-group">
-			#if( $collectionid )
-				#set($doneUrl = "$home$apphome/views/modules/librarycollection/media/index.html?collectionid=$!collectionid&clearselection=true") 
-			#else
-				#set($doneUrl = "$home$apphome/views/modules/asset/index.html")
-				 
-			#end
-			<a class="btn btn-sm btn-secondary" href="$doneUrl">[[Done Editing]]</a>
-		</div>	
-		</form>
-		</div>
-		#end
+</form>
+
+</div>
 	
-		<script type="text/javascript">
-			deleteFilterField = function(inType,inFieldId)
-			{	
-				console.log('Delete filter');
-				var params = 'oemaxlevel=1&editfilters=true&collectionid=$!collectionid&view=$view&catalogid=$searcher.getCatalogId()&searchtype=' + inType + "&field=" + inFieldId;
-				jQuery('#advfilterpanel').load("$home$apphome/components/filters/deletefield.html?" + params)
-			}
-		</script>
-	</div>
 </div>

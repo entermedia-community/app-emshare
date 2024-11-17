@@ -48,6 +48,9 @@ $context.putPageValue("entityrendertype", $entityrendertype)
 	#end
 #end
 
+#set($preference = "minimize$!{moduleid}summary")
+#set($isminimized = $userprofile.getBoolean($preference))
+
 <div id="resultsheader" class="resultsheader #if($!hits.getSelectionSize() > 0)hasselections#end">
 	<div id="sub-nav" class="search-views emsubnav sub-nav-$!moduleid">
 		<ul class="resultsnav">
@@ -257,7 +260,7 @@ $context.putPageValue("entityrendertype", $entityrendertype)
 				<li>
 
 					<a href="$searchhome/filters/dialogsort.html" 
-						class="emdialog emsort #if($selectedpreference) closed #end"
+						class="emdialog emsort #if($isminimized) closed #end"
 						data-dialogid="sortdialog"
 						data-hidebackdrop="true"
 						data-hidefooter="true"
@@ -292,13 +295,11 @@ $context.putPageValue("entityrendertype", $entityrendertype)
 						</select>
 					</li>		
 				#end
-				#set($preference = "minimize$!{moduleid}summary")
-				#set($selectedpreference = $userprofile.getBoolean($preference))
-				#ifnull($selectedpreference)
-					#set($selectedpreference = true)
+				#ifnull($isminimized)
+					#set($isminimized = false)
 				#end
 				<li class="resultsnavitem">
-					<button class='btn summary-toggler summary-opener #if($selectedpreference) closed #end' data-target="$preference">
+					<button class='btn summary-toggler summary-opener #if(!$isminimized) closed #end' data-target="$preference">
 						<i class="fas fa-angle-double-left"></i> [[Summary]]
 					</button>
 				</li>
