@@ -4,18 +4,27 @@ If double clicks: Make sure livequeryrunning is correct
 If fancybox errors: Make sure get is correct
 If list2 not init: Make sure .html is correct and livequeryrunning
 */
+$.ajaxSetup({
+	xhrFields: {
+		withCredentials: true,
+	},
+	crossDomain: true,
+});
 
 (function ($) {
-	
 	$.fn.cleandata = function () {
 		var element = $(this);
 		var params = element.data();
-	
+
 		var cleaned = {};
 		Object.keys(params).forEach(function (key) {
 			var param = params[key];
 			var thetype = typeof param;
-			if (thetype === "string" || thetype === "number" || thetype === "boolean") {
+			if (
+				thetype === "string" ||
+				thetype === "number" ||
+				thetype === "boolean"
+			) {
 				cleaned[key] = param;
 			}
 		});
