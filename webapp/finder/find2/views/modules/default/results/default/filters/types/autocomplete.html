@@ -38,28 +38,28 @@
 </select>
 
  #if( $caneditlists)
-	<a class="emdialog addnewitem btn btn-xs btn-light" href="$apphome/views/settings/lists/datamanager/edit/inline.html?searchtype=$detail.getListId()" title="[[Add New]] $detail" data-hidefooter="true">+ [[New]] $detail</a>
+	<a class="emdialog addnewitem btn btn-secondary" href="$apphome/views/settings/lists/datamanager/edit/inline.html?searchtype=$detail.getListId()" title="[[Add New]] $detail" data-hidefooter="true"><i class="bi bi-plus-lg mr-1"></i> [[New]] $detail</a>
 #end
 
 
 
 #if( $idprefix != "search"  && $foundrow )
-	#set($module = $searcherManager.getData($catalogid, "module", $detail.listId ) )
+	#set($module = $searcherManager.getCachedData($catalogid, "module", $detail.listId ) )
 	#if($module)
 	
 		#if($module.id == "asset")
-		    #set($link = "$home$apphome/views/modules/asset/editor/generalinformation/index.html?assetid=$val" )
+		    #set($link = "$siteroot$apphome/views/modules/asset/editor/generalinformation/index.html?assetid=$val" )
 		#else
 			#set ( $defaultview = $userprofile.getDefaultViewForModule($module.id) )
-			#set($link = "$home$apphome/views/modules/${module.id}/edit/edit.html?id=$val&viewid=$defaultview.id&viewpath=$module.id/$defaultview.id&hitssessionid=$!{hits.sessionId}&searchtype=$module.id")
+			#set($link = "$siteroot$apphome/views/modules/${module.id}/edit/edit.html?id=$val&viewid=$defaultview.id&viewpath=$module.id/$defaultview.id&hitssessionid=$!{hits.sessionId}&searchtype=$module.id")
 			
 		#end
 	
 	#elseif( $detail.listid == "user")
-		#set($link = "$home$apphome/views/settings/users/usermanager/user/index.html?username=$val")
+		#set($link = "$siteroot$apphome/views/settings/users/usermanager/user/index.html?username=$val")
 		
 	#else
-		#set($link = "$home$apphome/views/settings/lists/datamanager/edit/edit.html?id=$val&searchtype=$detail.listId")
+		#set($link = "$siteroot$apphome/views/settings/lists/datamanager/edit/edit.html?id=$val&searchtype=$detail.listId")
 		
 	#end
  	
