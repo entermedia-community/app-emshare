@@ -3,15 +3,6 @@
 #end
 ##$hits
 
-#if ($editfilters)
-	#set( $edit = true )
-#elseif( !$editfilters)
-	#set( $edit = $context.getRequestParameter("editfilters"))
-#end
-#if( $edit)
-	$context.putPageValue("edit",$edit)
-#end
-
 #if(!$categoryid)
 	#set($categoryid = $context.getRequestParameter("categoryid"))
 #end
@@ -97,48 +88,6 @@
 	#set($lightboxid = $context.getRequestParameter("lightboxid"))
 	<input type="hidden" name="lightboxid" value="$!lightboxid" />
 	
-	
-	#if($dialogresults)
-	
-		#set($idprefix = "dialogsearch")
-		
-		###if( $hits.getSearchQuery().hasMainInput())
-		#if($moduleid=="asset")
-			#if($dialogresults)
-				#set($href = "$siteroot$apphome/views/modules/$moduleid/dialogindex.html?hitssessionid=$!hits.getSessionId()&topmoduleid=$!topmoduleid&rootcategory=$!rootcategory&categoryid=$!{categoryid}&removeterm=description")
-			#else
-				#set($href = "$siteroot$apphome/views/modules/$moduleid/index.html?hitssessionid=$!hits.getSessionId()&topmoduleid=$!topmoduleid&rootcategory=$!rootcategory&categoryid=$!{categoryid}&removeterm=description")		
-			#end
-			#set($oemaxlevel = "1")
-		#else
-			#set($href = "$siteroot$apphome/views/modules/$moduleid/index.html?hitssessionid=$!hits.getSessionId()&removeterm=$!term.getId()")
-			#set($oemaxlevel = "1")
-		#end
-		#set($inputsearch = $!hits.getSearchQuery().getMainInput())
-		#if(!$targetdivsearch)
-			#set($targetdivsearch = "$!{moduleid}resultscontainer")
-		#end
-		<div class="d-flex w-100 justify-content-center mt-1 mb-2">
-			<label class="d-inline search-term text-brand" style="font-size: 0.8rem;" for="editSearch">
-				
-				<input type="hidden" name="field" value="description" />
-				<input type="hidden" name="operation" value="freeform" />
-				<input type="text" value="$!inputsearch" class="filter-search " name="description.value" autocomplete="off" />
-				<a href="$href"
-					class="submitform text-brand"
-					title="[[Search]]: #esc($!inputsearch)"
-					> 
-					<i class="bi bi-search mr-1"></i>
-				</a>
-			</label>
-		</div>
-		###end
-	#end
-	
-		#if( $librarycol)
-			<input name="collectionid" type="hidden" value="$!librarycol.getId()">
-		#end
-		
 		##We need 2 things passed in: $searcher, $view or $searcher $details
 		#set ($details = $searcher.getDetailsForView($view))
 
@@ -195,9 +144,6 @@
 		#if($topmoduleid)
 			<input name="topmoduleid" type="hidden" value="$!topmoduleid" />
 			<input name="entityid" type="hidden" value="$!entityid" />
-			
-			<input name="dialogresults" type="hidden" value="true" />
-			
 			
 			#if($tabletype == "subentity")
 				#if($viewid)
