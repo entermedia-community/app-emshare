@@ -65,6 +65,10 @@ function customToast(message, options = {}) {
 	}
 }
 
+customToast("hello", {
+	autohide: false,
+});
+
 function destroyToast(toast, success = true) {
 	clearTimeout(toastTO);
 	if (!toast) return;
