@@ -13,8 +13,8 @@ $context.putPageValue("rendertype", $rendertype)
 #end
 $context.putPageValue("count", $count)
 
-#set( $topmodule = $module)
-$context.putPageValue("topmodule", $topmodule)
+#set( $parentmodule = $module)
+$context.putPageValue("topmodule", $parentmodule)
 
 #set($topentityid = $context.getRequestParameter("topentityid"))
 
@@ -25,7 +25,7 @@ $context.putPageValue("topmodule", $topmodule)
 	#if($topentityid) data-topentityid="$topentityid" #end
 	data-oemaxlevel="2">
 
-	#if($topmodule.getId() == "searchcategory")
+	#if($parentmodule.getId() == "searchcategory")
 	$pages.include("${searchhome}/tabs/categorybreadcrumb.html", $context) 
 	#end
 	$pages.include("$searchhome/filters/filters-selected.html", $context)

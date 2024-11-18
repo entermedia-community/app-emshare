@@ -8,7 +8,7 @@ $context.putPageValue("module", $submodule)
 #set($componenthome = "$applink/views/modules/$!{subentitysearchtype}/components")
 $context.putPageValue("componenthome", $componenthome)
 
-#set($topmoduleid =  $context.getRequestParameter("topmoduleid"))
+#set($parentmoduleid =  $context.getRequestParameter("topmoduleid"))
 
 #ifnull($entityid)
 #set( $entityid = $context.getRequestParameter("entityid"))
@@ -24,7 +24,7 @@ $context.putPageValue("fieldexternalid", $fieldexternalid)
 $context.putPageValue("fieldexternalvalue", $fieldexternalvalue)
 
 #set( $viewid = $context.getRequestParameter("viewid"))
-#set( $viewpath = "${topmoduleid}/${viewid}")
+#set( $viewpath = "${parentmoduleid}/${viewid}")
 $context.putPageValue("viewid", $!viewid )
 $context.putPageValue("viewpath", $!viewpath)
 
@@ -55,7 +55,7 @@ $context.putPageValue("tabletype", $tabletype)
 			#text($submodule) <small>($hits.size())</small>
 		</h3>
 		
-		#if($permissions.can($topmoduleid, "edit"))
+		#if($permissions.can($parentmoduleid, "edit"))
 			#if($permissions.can($!submodule.getId() , "create"))
 
 				#set($pickerurl= "$applink/views/modules/$!{subentitysearchtype}/components/entities/search/searchpicker.html")
@@ -80,7 +80,7 @@ $context.putPageValue("tabletype", $tabletype)
 					data-dialogid="entitypicker"
 					data-width="1200"
 					data-entityid="$entity.id"
-					data-topmodule="${topmoduleid}"
+					data-topmodule="${parentmoduleid}"
 					data-fieldexternalid = '$fieldexternalid'
 					data-fieldexternalvalue = '$fieldexternalvalue'
 					data-entitymodule="$!{subentitysearchtype}"
@@ -96,7 +96,7 @@ $context.putPageValue("tabletype", $tabletype)
 					data-dialogid="entitypicker"
 					data-width="600"
 					data-entityid="$entity.id"
-					data-topmodule="${topmoduleid}"
+					data-topmodule="${parentmoduleid}"
 					data-fieldexternalid = '$fieldexternalid'
 					data-fieldexternalvalue = '$fieldexternalvalue'
 					data-entitymodule="$!{subentitysearchtype}"

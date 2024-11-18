@@ -47,9 +47,9 @@
 	#set($moduleid = $module.getId())
 	$context.putPageValue("moduleid",$moduleid)
 #end
-#if(!$topmoduleid)
-	#set($topmoduleid = $context.getRequestParameter("topmoduleid"))
-	$context.putPageValue("topmoduleid",$topmoduleid)
+#if(!$parentmoduleid)
+	#set($parentmoduleid = $context.getRequestParameter("topmoduleid"))
+	$context.putPageValue("topmoduleid",$parentmoduleid)
 #end
 #if(!$entityid)
 	#set($entityid = $context.getRequestParameter("entityid"))
@@ -127,16 +127,16 @@ $context.putPageValue("entityid", $entityid)
 							<i class="fas fa-angle-double-right "></i>
 							</a>
 					</li>
-					#ifnull($topmodule)
-						#set($topmodule = $mediaarchive.getCachedData("module", $topmoduleid))
+					#ifnull($parentmodule)
+						#set($parentmodule = $mediaarchive.getCachedData("module", $parentmoduleid))
 					#end
 				#end
 			#end
 			
 			#if ($resultview != "map")
 				
-				#if($topmoduleid)
-					#if(!$hideupload && $canviewupload && $topmoduleid != "favorites" && $permissions.can($topmoduleid, "upload_files"))
+				#if($parentmoduleid)
+					#if(!$hideupload && $canviewupload && $parentmoduleid != "favorites" && $permissions.can($parentmoduleid, "upload_files"))
 					<li>
 						<a href="#"
 						class='resultsnavlink px-3 entitytabactions tabactionimport #if($entitytabopen=="import")enabledaction #end '

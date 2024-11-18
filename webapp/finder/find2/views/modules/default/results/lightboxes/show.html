@@ -26,10 +26,10 @@ data-url="${searchhome}/tabs/preview/tabpublishing_gallery.html"
 >
 
 <div  class="tablightbox d-flex h-100" style="height: 100%;">
-	#set($boxes =  $mediaarchive.getBean("entityManager").loadLightBoxesForModule($topmodule, $entity, $context.getUser()))
+	#set($boxes =  $mediaarchive.getBean("entityManager").loadLightBoxesForModule($parentmodule, $entity, $context.getUser()))
 	$context.putPageValue("boxes",$boxes)
 	
-	#set($hitcounts = $mediaarchive.getBean("entityManager").loadLightBoxCounts($boxes, $topmodule, $entity) )
+	#set($hitcounts = $mediaarchive.getBean("entityManager").loadLightBoxCounts($boxes, $parentmodule, $entity) )
 	$context.putPageValue("hitcounts",$hitcounts)
 	
 
@@ -49,7 +49,7 @@ data-url="${searchhome}/tabs/preview/tabpublishing_gallery.html"
 	$context.putPageValue("lightboxid",$lightboxid)
 	$context.putPageValue("selectedbox",$selectedbox)
 	
-	#set($defaultfolder =  $mediaarchive.getBean("entityManager").loadDefaultFolder($topmodule, $entity, $context.getUser(),true))
+	#set($defaultfolder =  $mediaarchive.getBean("entityManager").loadDefaultFolder($parentmodule, $entity, $context.getUser(),true))
 
 	#set($allassets = $mediaarchive.query("asset").exact("category",$defaultfolder).search($context) )
 	

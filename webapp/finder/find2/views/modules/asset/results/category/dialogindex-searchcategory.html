@@ -30,18 +30,18 @@ $context.putPageValue("categoryid", $categoryid)
 	#set( $rootcategory = $categoryid)
 #end
 
-#if(!$topmoduleid)
-	#set ( $topmoduleid = $context.getRequestParameter("topmoduleid") )
+#if(!$parentmoduleid)
+	#set ( $parentmoduleid = $context.getRequestParameter("topmoduleid") )
 #end
-#ifnotnull($topmoduleid)
-	#set($topmodule = $mediaarchive.getCachedData("module", $topmoduleid))
+#ifnotnull($parentmoduleid)
+	#set($parentmodule = $mediaarchive.getCachedData("module", $parentmoduleid))
 #end
-#ifnull($topmodule)
-	#set($topmodule = $mediaarchive.getCachedData("module", $parentsearchtype))
+#ifnull($parentmodule)
+	#set($parentmodule = $mediaarchive.getCachedData("module", $parentsearchtype))
 	
 #end
-$context.putPageValue("topmodule", $topmodule)
-$context.putPageValue("topmoduleid", $topmoduleid)
+$context.putPageValue("topmodule", $parentmodule)
+$context.putPageValue("topmoduleid", $parentmoduleid)
 
 #ifnull($entityid)
 #set($entityid = $context.getRequestParameter('entityid'))
@@ -95,7 +95,7 @@ $context.putPageValue("targetdivmedia", $targetdivmedia)
 		
 		#set($canupload = false)
 		#if($canviewupload)
-			#if($topmodule.getBoolean("enableuploading") && $permissions.can($topmoduleid, "upload_files"))
+			#if($parentmodule.getBoolean("enableuploading") && $permissions.can($parentmoduleid, "upload_files"))
 				#set($canupload = true)
 			#end
 		#end
@@ -135,7 +135,7 @@ $context.putPageValue("targetdivmedia", $targetdivmedia)
 								<h3 class="embedmediacolheader">[[Folders]]</h3>
 							</a>
 		
-							#if($canviewupload && $topmodule.getBoolean("enableuploading") && $permissions.can($topmoduleid, "upload_files"))
+							#if($canviewupload && $parentmodule.getBoolean("enableuploading") && $permissions.can($parentmoduleid, "upload_files"))
 							<a href="" 
 								class="createfoldertree"
 								data-tree="dialogentitymediatreetree" 

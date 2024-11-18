@@ -7,16 +7,16 @@
    	#set($rendertype = $module.modulerendertype)
 #end
 
-#set( $topmodule = $module)
-$context.putPageValue("topmodule", $topmodule)
+#set( $parentmodule = $module)
+$context.putPageValue("topmodule", $parentmodule)
 
 #set($topentityid = $context.getRequestParameter("topentityid"))
 
 #if( !$entity)
-	#set( $entity  = $mediaarchive.getData($topmodule.getId(), $entityid) )
+	#set( $entity  = $mediaarchive.getData($parentmodule.getId(), $entityid) )
 #end
 
-#set($uploadsourcepath =  $topmodule.getValue("uploadsourcepath"))
+#set($uploadsourcepath =  $parentmodule.getValue("uploadsourcepath"))
 $context.putPageValue("uploadsourcepath", $uploadsourcepath)
 
 #set($maintargetdiv = "$!{moduleid}resultscontainer")
@@ -24,7 +24,7 @@ $context.putPageValue("maintargetdiv", $maintargetdiv)
 
 <div id="$maintargetdiv"
 	class="resultsdiv moduleajaxreloadtarget adjustHeight"
-	data-moduleid="$topmodule.getId()"
+	data-moduleid="$parentmodule.getId()"
 	data-hitssessionid="$!hits.getSessionId()"
 	data-url="$apphome/views/modules/$!{module.id}/index.html"
 	data-componenthome = "$apphome/views/modules/$!{module.id}/components"

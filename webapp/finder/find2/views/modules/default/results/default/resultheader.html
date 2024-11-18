@@ -5,8 +5,8 @@
 #set($moduleid = $module.id)
 $context.putPageValue("moduleid", $moduleid)
 
-#if(!$topmoduleid)
-	#set($topmoduleid = $context.getRequestParameter("topmoduleid"))
+#if(!$parentmoduleid)
+	#set($parentmoduleid = $context.getRequestParameter("topmoduleid"))
 #end
 #set( $fieldexternalid = $context.getRequestParameter("fieldexternalid"))
 #set( $fieldexternalvalue = $context.getRequestParameter("fieldexternalvalue"))
@@ -58,7 +58,7 @@ $context.putPageValue("entityrendertype", $entityrendertype)
 			#ifnull($pickertarget)
 				#if($permissions.can($moduleid, "create") && $moduleid!="faceprofilegroup" && $moduleid!="order")
 					<li>
-						#if($topmoduleid)
+						#if($parentmoduleid)
 							#set($addnew = "$!{siteroot}${apphome}/views/modules/${moduleid}/components/entities/addnew.html")
 							<a class="resultsnavlink emdialog"
 							data-dialogid="entitypickeraddnew"
@@ -130,8 +130,8 @@ $context.putPageValue("entityrendertype", $entityrendertype)
 					#ifnull($tabid)
 					#set($tabid = $context.getRequestParameter("tabid"))
 					#end
-					#ifnull($topmoduleid)
-					#set($topmoduleid = $context.getRequestParameter("topmoduleid"))
+					#ifnull($parentmoduleid)
+					#set($parentmoduleid = $context.getRequestParameter("topmoduleid"))
 					#end
 					#ifnull($viewid)
 					#set($viewid = $context.getRequestParameter("viewid"))
@@ -146,7 +146,7 @@ $context.putPageValue("entityrendertype", $entityrendertype)
 							 data-tabletype="$tabletype"
 							 data-viewid="$viewid"
 							 data-entityid="$entityid"
-							 data-topmoduleid="$topmoduleid"
+							 data-topmoduleid="$parentmoduleid"
 							 href="${searchhome}/actions/deleteselections.html?hitssessionid=$hits.sessionId&module=$!{module.id}"
 						 #else
 							 data-oemaxlevel="2" 

@@ -49,10 +49,10 @@
 	#set($moduleid = $module.getId())
 	$context.putPageValue("moduleid",$moduleid)
 #end
-#if(!$topmoduleid)
-	#set($topmoduleid = $context.getRequestParameter("topmoduleid"))
+#if(!$parentmoduleid)
+	#set($parentmoduleid = $context.getRequestParameter("topmoduleid"))
 #end
-$context.putPageValue("topmoduleid",$topmoduleid)
+$context.putPageValue("topmoduleid",$parentmoduleid)
 #if(!$entityid)
 	#set($entityid = $context.getRequestParameter("entityid"))
 #end
@@ -134,8 +134,8 @@ $context.putPageValue("entityid", $entityid)
 							<i class="fas fa-angle-double-right "></i>
 							</a>
 					</li>
-					#ifnull($topmodule)
-						#set($topmodule = $mediaarchive.getCachedData("module", $topmoduleid))
+					#ifnull($parentmodule)
+						#set($parentmodule = $mediaarchive.getCachedData("module", $parentmoduleid))
 					#end
 				#end
 			#end
@@ -148,8 +148,8 @@ $context.putPageValue("entityid", $entityid)
 					#set($hideupload = $context.getRequestParameter("hideupload"))
 				#end
 				
-				#if($topmoduleid)
-					#if(!$hideupload && $canviewupload && $topmoduleid != "favorites" && $permissions.can($topmoduleid, "upload_files"))				
+				#if($parentmoduleid)
+					#if(!$hideupload && $canviewupload && $parentmoduleid != "favorites" && $permissions.can($parentmoduleid, "upload_files"))				
 					<li>
 						<a href="$siteroot$apphome/views/modules/asset/add/entityaddmedia.html"
 						class="ajax px-3 webUploadButton"

@@ -10,18 +10,18 @@ $context.putPageValue("module", $module)
 $context.putPageValue("componenthome", $componenthome)
 
 
-#if(!$topmoduleid)
-	#set ( $topmoduleid = $context.getRequestParameter("topmoduleid") )
+#if(!$parentmoduleid)
+	#set ( $parentmoduleid = $context.getRequestParameter("topmoduleid") )
 #end
-#ifnotnull($topmoduleid)
-	#set($topmodule = $mediaarchive.getCachedData("module", $topmoduleid))
+#ifnotnull($parentmoduleid)
+	#set($parentmodule = $mediaarchive.getCachedData("module", $parentmoduleid))
 #end
-#ifnull($topmodule)
-	#set($topmodule = $mediaarchive.getCachedData("module", $parentsearchtype))
+#ifnull($parentmodule)
+	#set($parentmodule = $mediaarchive.getCachedData("module", $parentsearchtype))
 	
 #end
-$context.putPageValue("topmodule", $topmodule)
-$context.putPageValue("topmoduleid", $topmoduleid)
+$context.putPageValue("topmodule", $parentmodule)
+$context.putPageValue("topmoduleid", $parentmoduleid)
 
 #if(!$entityid)
 	#set ( $entityid = $context.getRequestParameter("entityid") )

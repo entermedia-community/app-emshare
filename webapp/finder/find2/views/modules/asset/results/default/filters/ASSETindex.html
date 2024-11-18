@@ -50,8 +50,8 @@ $context.putPageValue("caneditlists",false)
 
 #set( $targetmodule = $context.getRequestParameter("targetmodule"))
 
-#if(!$topmoduleid)
-	#set ( $topmoduleid = $context.getRequestParameter("topmoduleid") )
+#if(!$parentmoduleid)
+	#set ( $parentmoduleid = $context.getRequestParameter("topmoduleid") )
 #end
 
 
@@ -69,7 +69,7 @@ $context.putPageValue("caneditlists",false)
 			#set($resultslink = $context.getRequestParameter("resultslink"))
 			#if($resultslink)
 				action="$resultslink"
-			#elseif($topmoduleid)
+			#elseif($parentmoduleid)
 				action="$searchome/index.html"
 			#else
 				#if($moduleid== "asset" && $categoryid)
@@ -85,8 +85,8 @@ $context.putPageValue("caneditlists",false)
 		
 		<input name="hitssessionid" type="hidden" value="$!hits.getSessionId()" />
 		<input type="hidden" name="$!{moduleid}endusersearch" value="true" />
-		#if($topmoduleid)
-			<input name="topmoduleid" type="hidden" value="$topmoduleid" />
+		#if($parentmoduleid)
+			<input name="topmoduleid" type="hidden" value="$parentmoduleid" />
 			<input name="dialogresults" type="hidden" value="true" />
 		#end
 		#if($categoryid)

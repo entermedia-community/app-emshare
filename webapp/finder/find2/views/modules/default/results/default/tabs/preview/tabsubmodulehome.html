@@ -4,8 +4,8 @@
 	#set($viewid = $context.getRequestParameter("viewid"))
 #end
 
-#ifnull($topmoduleid)
-	#set($topmoduleid = $context.getRequestParameter("topmoduleid"))
+#ifnull($parentmoduleid)
+	#set($parentmoduleid = $context.getRequestParameter("topmoduleid"))
 #end
 #ifnull($parentid)
 	#set($parentid = $context.getRequestParameter("parentid"))
@@ -14,7 +14,7 @@
 	#set($parentid = $context.getRequestParameter("entityid"))
 #end
 
-#set( $targetviewpath = "${topmoduleid}/"+$viewid)
+#set( $targetviewpath = "${parentmoduleid}/"+$viewid)
 #set( $viewdata = $viewsearcher.searchById($viewid))
 
 #set( $submoduleid = $viewdata.rendertable )

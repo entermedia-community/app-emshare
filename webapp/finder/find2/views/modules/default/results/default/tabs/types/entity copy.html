@@ -24,8 +24,8 @@ $context.putPageValue("moduleid", $moduleid)
 
 #set($module = $mediaarchive.getCachedData("module", $moduleid))
 
-#if(!$topmodule)
-	#set($topmodule = $module)
+#if(!$parentmodule)
+	#set($parentmodule = $module)
 #end
 
 #set($topentityid = $context.getRequestParameter("topentityid"))
@@ -91,7 +91,7 @@ $context.putPageValue("previewurl", $previewurl)
 	    			   	
 	   	#set($link = "$!siteroot$applink/views/modules/$!topmodule.getId()/index.html")
 	   	
-		#if( $topmodule == $module)
+		#if( $parentmodule == $module)
 			#set($link = "$link?entityid=$!entity.getId()&entitytype=$!moduleid&topentityid=$!entity.getId()")
 		#else
 			#set($link = "$link?entityid=$!entity.getId()&entitytype=$!moduleid&topentityid=$!topentityid")

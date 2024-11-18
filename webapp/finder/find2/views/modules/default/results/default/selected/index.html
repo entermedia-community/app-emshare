@@ -43,17 +43,17 @@
 		</li>
 		#end
 
-		#if($entityid && $topmoduleid)
+		#if($entityid && $parentmoduleid)
 			#ifnull($entity)
-				#set($entity = $mediaarchive.getCachedData($topmoduleid, $entityid))
+				#set($entity = $mediaarchive.getCachedData($parentmoduleid, $entityid))
 			#end
 			#set($removefrom = "$siteroot$applink/views/modules/$!{topmoduleid}/components/entities/removeassets.html")
-			#set($removefrom = "$removefrom?moduleid=$topmoduleid&entityid=$entityid&copyinghitssessionid=$hits.getSessionId()&reloadtargets=topmodulecontainer")
+			#set($removefrom = "$removefrom?moduleid=$parentmoduleid&entityid=$entityid&copyinghitssessionid=$hits.getSessionId()&reloadtargets=topmodulecontainer")
 			<li><a class="dropdown-item ajax"
 				data-targetdiv="tab_media" 
 					data-dialogid="addtoentity"
 					data-hidefooter="true"
-					data-pickedmoduleid="$topmoduleid"
+					data-pickedmoduleid="$parentmoduleid"
 					data-pickedentityid="$entityid"
 					data-copyingsearchtype="assets"
 					data-copyinghitssessionid="$hits.getSessionId()"
@@ -111,8 +111,8 @@
 				</li>
 			#end
 			
-			#ifnotnull($topmoduleid)
-				#if($permissions.can($topmoduleid, "view_assetworkflow"))
+			#ifnotnull($parentmoduleid)
+				#if($permissions.can($parentmoduleid, "view_assetworkflow"))
 					<li>
 						<a class="dropdown-item ajax"
 						data-targetdivinner="empty"
@@ -210,7 +210,7 @@
 	#end
 	
 	#ifnotnull($lightboxassetsresults)
-			#if($permissions.can($topmoduleid, "assign_files"))
+			#if($permissions.can($parentmoduleid, "assign_files"))
 			#set($lightboxid = $context.getRequestParameter("lightboxid"))
 				<li>
 					<a class="resultsnavlink ajax"
