@@ -51,35 +51,9 @@
 			class="ajaxform autosubmitform filterform"
 			method="POST" 
 
-			#if($resultslink)
-				action="$resultslink"
-				data-targetdiv="$targetdivsearch"
-			#elseif($parentmoduleid)
-				#if($moduleid== "asset" && $categoryid)
-					action="$siteroot$apphome/views/modules/$moduleid/dialogshowcategory.html"
-					data-oemaxlevel="1"
-					data-targetdivinner="$targetdivsearch"
-				#else
-					#if($tabletype == "subentity")
-						action="$siteroot$apphome/views/modules/$moduleid/components/table/subentitytable.html"
-						data-targetdiv="results$!{viewid}"
-					#else
-						action="$siteroot$apphome/views/modules/$moduleid/dialogindex.html"
-						data-targetdivinner="$targetdivsearch"
-					#end
-				#end
-				
-				data-updateurl="false"
-			#else
-				#if($moduleid== "asset")
-					action="$siteroot$apphome/views/modules/$moduleid/showcategory.html"
-					data-oemaxlevel="2"
-					data-targetdiv="$targetdivsearch"
-				#else
-					action="$siteroot$apphome/views/modules/$moduleid/results/entitydialog/index.html"
-					data-targetdiv="$targetdivsearch"
-				#end
-			#end  
+			action="${searchhome}/index.html"
+			data-oemaxlevel="1"
+			data-targetdiv="resultsdiv${module.id}"
 	>
 	<input type="hidden" name="targetdivsearch" value="$targetdivsearch" />
 	<input type="hidden" name="searching" value="true" />

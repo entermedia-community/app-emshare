@@ -1341,26 +1341,25 @@ jQuery(document).ready(function (url, params) {
 	});
 
 	lQuery("th.sortable").livequery("click", function () {
-		var id = $(this).data("sortby");
-		var resultsdiv = "";
-		var searchome = "";
-		var options = "";
-		var targetdiv = "";
+		var column = $(this);
+		var id = column.data("sortby");
 
-		resultsdiv = $(this).closest(".resultsdiv");
+		var resultsdiv = column.closest(".resultsdiv");
 		if (!resultsdiv.length) {
-			resultsdiv = $(this).closest("#resultsdiv");
+			resultsdiv = column.closest("#resultsdiv");
 		}
-		searchhome = resultsdiv.data("searchhome");
-		targetdiv = resultsdiv.data("targetdiv");
+		var targetdiv_ = resultsdiv.data("targetdiv");
+		var targetdiv = column.closest("." + targetdiv_);
+		
+		var searchhome = resultsdiv.data("searchhome");
 		var moduleid = resultsdiv.data("moduleid");
-		options = resultsdiv.data();
-		targetdiv = $("#" + targetdiv);
+		var options = resultsdiv.data();
+		
 
 		var link = searchhome + "/columnsort.html";
 
-		if ($(this).hasClass("currentsort")) {
-			if ($(this).hasClass("up")) {
+		if (column.hasClass("currentsort")) {
+			if (column.hasClass("up")) {
 				// $(resultsdiv).load( columnsort + '&sortby=' + id +
 				// 'Down', options);
 
@@ -1382,7 +1381,7 @@ jQuery(document).ready(function (url, params) {
 			}
 		} else {
 			$("th.sortable").removeClass("currentsort");
-			$(this).addClass("currentsort");
+			column.addClass("currentsort");
 			// $(resultsdiv).load( columnsort + '&sortby=' + id + 'Down',
 			// options);
 			if (moduleid !== undefined) {
