@@ -247,10 +247,13 @@
 		resultsdiv.data("pagenum", page);
 
 		var stackedviewpath = resultsdiv.data("stackedviewpath");
-		if (!stackedviewpath) {
-			stackedviewpath = "brickvertical.html";
-		}
-		var link = componenthome + "/results/" + stackedviewpath;
+		// if (!stackedviewpath) {
+		// 	stackedviewpath = "/brickvertical.html";
+		// }
+
+		// var searchhome = resultsdiv.data("searchhome");
+		// debugger;
+		var link = stackedviewpath;
 		var collectionid = $(resultsdiv).data("collectionid");
 		var params = {
 			hitssessionid: session,
