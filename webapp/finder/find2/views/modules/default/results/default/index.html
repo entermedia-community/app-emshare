@@ -1,47 +1,35 @@
-#set( $moduleid = $page.module)
-
-##fix module vs moduleid
-#set( $module = $mediaarchive.getCachedData("module",$moduleid))
-$context.putPageValue("moduleid", $module.id)
-	
-#set($searcher = $searcherManager.getSearcher($catalogid, $moduleid))
-$context.putPageValue("searcher", $searcher)
-
-#set($isentity = $module.get("isentity"))
-$context.putPageValue("isentity", $isentity )
+#set( $moduleid = $module.id)
 
 
-#if (!$nodeID)
-	#set($nodeID = $context.getRequestParameter("nodeID"))
-	$context.putPageValue("nodeID",$nodeID)
-#end
-
-##set what view they are using
-
-#if($moduleid=="asset")
-		$context.putPageValue("viewid", "assetresultstable")
-		$context.putPageValue("viewpath", "asset/assetresultstable")
-			
-		##MAIN ALBUMS VIEW
-		#ifnull($resultview)
-			#set($resultview = $userprofile.get("${moduleid}resultview"))
-		#end
+<div id="resultsdiv" class="tableresults resultsdiv" 
+		data-hitssessionid="$!hits.getSessionId()" 
+		data-componenthome="$!home$!componenthome"
+		data-searchhome="$!searchhome"
+		data-category="$!category.id"
+		data-collectionid="$!collectionid"
+		data-lightboxid="$!lightboxid"  
+		data-pagenum="$!hits.getPage()" 
+		data-totalpages="$!hits.getTotalPages()"
+		data-module="$!module.id"
+		data-section="$!content.section">
 		
-		#ifnull($resultview)
-			#set($resultview = "$module.moduleresultsview")
-		#end
-		#ifnull($resultview)
-			#set($resultview = "grid")
-		#end
-#elseif($moduleid=="faceprofilegroup")
-	#set($resultview = "table")
-#else
-	##All Other Entities
+	#set($searcher = $searcherManager.getSearcher($catalogid, $moduleid))
+	$context.putPageValue("searcher", $searcher)
+	
+	#set($isentity = $module.get("isentity"))
+	$context.putPageValue("isentity", $isentity )
+	
+	
+	#if (!$nodeID)
+		#set($nodeID = $context.getRequestParameter("nodeID"))
+		$context.putPageValue("nodeID",$nodeID)
+	#end
+	
 	$context.putPageValue("viewid", "${moduleid}resultstable")
 	$context.putPageValue("viewpath", "${moduleid}/${moduleid}resultstable")
 	
 	#set($resultview = $userprofile.get("${moduleid}resultview"))
-
+	
 	#if(!$resultview)
 		#set($resultview = $content.get("${moduleid}resultview"))
 	#end
@@ -58,7 +46,6 @@ $context.putPageValue("isentity", $isentity )
 		#set($resultview = "table")
 	#end
 
-#end
 	
 	$context.putPageValue("searchtype", $moduleid)
 	$context.putPageValue("resultview",$resultview)
@@ -73,3 +60,8 @@ $context.putPageValue("isentity", $isentity )
 
 
 	$pages.include("${searchhome}/resultviews.html", $context)
+	
+		
+</div>
+
+

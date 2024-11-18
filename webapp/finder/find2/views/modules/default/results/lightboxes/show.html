@@ -1,11 +1,3 @@
-#set( $searchhome = $page.get("searchhome"))
-$context.putPageValue("searchhome",$searchhome)
-
-#set( $searchtype = $context.findValue("searchtype"))
-#set( $parentsearchtype = $searchtype)
-#set($entityid = $entity.id)
-$context.putPageValue("entity", $entity)
-$context.putPageValue("entityid", $entityid)
 
 #if(!$currenttab)
 	#set($currenttab = $context.getRequestParameter("currenttab"))
@@ -19,20 +11,18 @@ $context.putPageValue("lightboxassetsresults", $lightboxassetsresults)
 <div id="${tabid}" 
 class=" entity-tab-content entity-tab-media tabtypemedia" 
 data-tabid="$!{tabid}"
-data-entityid="$!entityid"
+data-entityid="$!entity.id"
 data-currenttab="$!viewid"
-data-topmoduleid="$!topmodule.id"
 data-url="${searchhome}/tabs/preview/tabpublishing_gallery.html"
 >
 
 <div  class="tablightbox d-flex h-100" style="height: 100%;">
-	#set($boxes =  $mediaarchive.getBean("entityManager").loadLightBoxesForModule($parentmodule, $entity, $context.getUser()))
+	#set($boxes =  $mediaarchive.getBean("entityManager").loadLightBoxesForModule($module, $entity, $context.getUser()))
 	$context.putPageValue("boxes",$boxes)
 	
-	#set($hitcounts = $mediaarchive.getBean("entityManager").loadLightBoxCounts($boxes, $parentmodule, $entity) )
+	#set($hitcounts = $mediaarchive.getBean("entityManager").loadLightBoxCounts($boxes, $module, $entity) )
 	$context.putPageValue("hitcounts",$hitcounts)
 	
-
 	#set( $lightboxid = $context.getRequestParameter("lightboxid"))
 	
 	#ifnotnull($lightboxid)
@@ -49,12 +39,12 @@ data-url="${searchhome}/tabs/preview/tabpublishing_gallery.html"
 	$context.putPageValue("lightboxid",$lightboxid)
 	$context.putPageValue("selectedbox",$selectedbox)
 	
-	#set($defaultfolder =  $mediaarchive.getBean("entityManager").loadDefaultFolder($parentmodule, $entity, $context.getUser(),true))
+	#set($defaultfolder =  $mediaarchive.getBean("entityManager").loadDefaultFolder($module, $entity, $context.getUser(),true))
 
 	#set($allassets = $mediaarchive.query("asset").exact("category",$defaultfolder).search($context) )
 	
 	$context.putPageValue("allassets",$allassets)
-	
+
 	$pages.include("$searchhome/sidemenu.html",$context)
 
 	$pages.include("$searchhome/search.html",$context)
