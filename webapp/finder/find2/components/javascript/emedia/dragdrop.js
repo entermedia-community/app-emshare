@@ -11,30 +11,23 @@ repaint = function (divid) {
 	var href = div.data("href");
 	var args = div.data("args");
 	jQuery.get(href + "?" + args, {}, function (data) {
-		// var toreplace = $("#" + targetDiv);
 		div.replaceWith(data);
 	});
 };
-
-outlineSelectionCol = function (event, ui) {
-	// $(this).addClass("selected");
+var currentlyOver = null;
+function handleDroppableOver(event, ui) {
+	currentlyOver = $(this).parent().attr("id");
 	$(this).addClass("dragoverselected");
-};
+	ui.helper.css("transform", "scale(0.45)");
+}
 
-unoutlineSelectionCol = function (event, ui) {
-	// $(this).removeClass("selected");
+function handleDroppableOut(event, ui) {
+	console.log('dropping out "' + $(this).attr("id") + '"');
 	$(this).removeClass("dragoverselected");
-};
-
-outlineSelectionRow = function (event, ui) {
-	$(this).addClass("rowdraggableenabled");
-	$(this).before('<li class="placeholder"></li>');
-};
-
-unoutlineSelectionRow = function (event, ui) {
-	$(this).removeClass("rowdraggableenabled");
-	$(".placeholder").remove();
-};
+	if ($(this).parent().attr("id") == currentlyOver) {
+		ui.helper.css("transform", "scale(1)");
+	}
+}
 
 toggleajax = function (e) {
 	e.preventDefault();
@@ -599,8 +592,8 @@ onloadselectors = function () {
 					// $(this).children("a") }, 200);
 				},
 				tolerance: "pointer",
-				over: outlineSelectionCol,
-				out: unoutlineSelectionCol,
+				over: handleDroppableOver,
+				out: handleDroppableOut,
 			});
 		}); //headerdroppable
 
@@ -705,8 +698,8 @@ onloadselectors = function () {
 					}
 				},
 				tolerance: "pointer",
-				over: outlineSelectionCol,
-				out: unoutlineSelectionCol,
+				over: handleDroppableOver,
+				out: handleDroppableOut,
 			});
 		}); //assetdropcategory
 
@@ -769,8 +762,8 @@ onloadselectors = function () {
 					});
 				},
 				tolerance: "pointer",
-				over: outlineSelectionCol,
-				out: unoutlineSelectionCol,
+				over: handleDroppableOver,
+				out: handleDroppableOut,
 			});
 		}); //assetdropentity
 
@@ -834,8 +827,8 @@ onloadselectors = function () {
 					});
 				},
 				tolerance: "pointer",
-				over: outlineSelectionCol,
-				out: unoutlineSelectionCol,
+				over: handleDroppableOver,
+				out: handleDroppableOut,
 			});
 		}); //lightboxdropasset
 
@@ -881,8 +874,8 @@ onloadselectors = function () {
 					});
 				},
 				tolerance: "pointer",
-				over: outlineSelectionCol,
-				out: unoutlineSelectionCol,
+				over: handleDroppableOver,
+				out: handleDroppableOut,
 			});
 		}); //lightboxdropasset
 
@@ -1016,8 +1009,8 @@ emcomponents = function () {
 					);
 				},
 				tolerance: "pointer",
-				over: outlineSelectionCol,
-				out: unoutlineSelectionCol,
+				over: handleDroppableOver,
+				out: handleDroppableOut,
 			});
 		});
 	} // droppable
@@ -1119,8 +1112,8 @@ emcomponents = function () {
 				});
 			},
 			tolerance: "pointer",
-			over: outlineSelectionCol,
-			out: unoutlineSelectionCol,
+			over: handleDroppableOver,
+			out: handleDroppableOut,
 		});
 	});
 
@@ -1152,8 +1145,8 @@ emcomponents = function () {
 				});
 			},
 			tolerance: "pointer",
-			over: outlineSelectionCol,
-			out: unoutlineSelectionCol,
+			over: handleDroppableOver,
+			out: handleDroppableOut,
 		});
 	});
 };
