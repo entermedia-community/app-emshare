@@ -54,7 +54,7 @@ lQuery(".redirecttopage").livequery(function () {
 	window.location.href = url;
 });
 
-uiload = function () {
+function intializeUI() {
 	var app = jQuery("#application");
 	siteroot = app.data("siteroot");
 	apphome = app.data("apphome");
@@ -2872,7 +2872,7 @@ uiload = function () {
 				data: options,
 				success: function (data) {
 					//data = $(data);
-					var cell = findclosest(toggler, "#" + targetdiv);
+					var cell = findClosest(toggler, "#" + targetdiv);
 					cell.replaceWith(data); //Cant get a valid dom element
 					$(".pushcontent").removeClass("pushcontent-" + sidebar);
 					$(".pushcontent").removeClass("pushcontent-open");
@@ -2899,7 +2899,7 @@ uiload = function () {
 				async: false,
 				data: options,
 				success: function (data) {
-					var cell = findclosest(toggler, "#" + targetdiv);
+					var cell = findClosest(toggler, "#" + targetdiv);
 					cell.replaceWith(data); //Cant get a valid dom element
 					$(".pushcontent").removeClass("pushcontent-" + sidebar);
 					$(".pushcontent").removeClass("pushcontent-open");
@@ -2927,7 +2927,7 @@ uiload = function () {
 			targetdiv = $("#" + targetdiv);
 		} else {
 			url = apphome + "/components/sidebars/index.html";
-			targetdiv = findclosest(toggler, "#" + targetdiv);
+			targetdiv = findClosest(toggler, "#" + targetdiv);
 		}
 
 		jQuery.ajax({
@@ -3625,7 +3625,41 @@ uiload = function () {
 			},
 		});
 	});
-}; // uiload
+
+	function posiitionSubmitButtons() {
+		var submitBtns = $(".form-submit-btns");
+		console.log(submitBtns);
+		if (!submitBtns.length) return;
+		var offsetTop = submitBtns.offset().top;
+		if (offsetTop > $(window).height()) {
+			submitBtns.css({
+				position: "sticky",
+				bottom: 0,
+				left: 0,
+				zIndex: "1000",
+				margin: 0,
+				padding: 8,
+				background: "var(--themed-light-bg)",
+				borderTop: "var(--1px-light)",
+			});
+		}
+	}
+	//posiitionSubmitButtons(); Dont run this here becuase it slows down loading
+
+	lQuery(".form-submit-btns").livequery(function () {
+		posiitionSubmitButtons();
+	});
+}
+
+jQuery(document).ready(function () {
+	intializeUI();
+
+	jQuery(window).trigger("resize");
+	window.onhashchange = function () {
+		$("body").css({ overflow: "visible" }); //Enable scroll
+		$(window).trigger("resize");
+	};
+});
 
 function formsavebackbutton(form) {
 	var savedcontainer = $(".enablebackbtn");
@@ -3713,140 +3747,6 @@ function isInViewport(cell) {
 	return isin;
 }
 
-var ranajaxon = {};
-var ranajaxonrunning = false;
-
-runajaxstatus = function () {
-	//for each asset on the page reload it's status
-	//console.log(uid);
-
-	for (const [uid, enabled] of Object.entries(ranajaxon)) {
-		if (!enabled || enabled === undefined) {
-			continue;
-		}
-		var cell = $("#" + uid);
-		if (cell.length == 0) {
-			continue;
-		}
-
-		if (!cell.hasClass("ajaxstatus")) {
-			continue; //Must be done
-		}
-
-		if (!isInViewport(cell[0])) {
-			continue;
-		}
-
-		var path = cell.attr("ajaxpath");
-		if (!path || path == "") {
-			path = cell.data("ajaxpath");
-		}
-		//console.log("Loading " + path );
-		if (path && path.length > 1) {
-			var entermediakey = "";
-			if (app && app.data("entermediakey") != null) {
-				entermediakey = app.data("entermediakey");
-			}
-			var data = cell.cleandata();
-			jQuery.ajax({
-				url: path,
-				async: false,
-				data: data,
-				success: function (data) {
-					cell.replaceWith(data);
-					//$(window).trigger("checkautoreload", [cell]);
-					$(window).trigger("resize");
-				},
-				xhrFields: {
-					withCredentials: true,
-				},
-				crossDomain: true,
-			});
-		}
-	}
-	setTimeout("runajaxstatus();", 1000); //Start checking any and all fields on the screeen that are saved in ranajaxon
-};
-
-resizecolumns = function () {
-	var windowh = $(window).height();
-
-	//togglers always screen height
-	var coltogglers = $(".col-sidebar-togglers");
-	coltogglers.css("height", windowh - 1);
-	var colsidebar = $(".col-mainsidebar");
-	colsidebar.css("height", windowh);
-
-	//reset some heights
-	$(".settingslayout").css("height", "auto");
-	$(".col-content-main").css("height", "auto"); //reset
-
-	$(".adjustHeight").each(function () {
-		setMaxHeight($(this));
-	});
-};
-
-resizesearchcategories = function () {
-	var container = $("#sidecategoryresults");
-	if (!container) {
-		return;
-	}
-	var w = container.width();
-	var h = container.height();
-
-	var ctree = container.find(".searchcategories-tree");
-	var cfilter = container.find(".searchcategories-filter");
-	if (w > 640) {
-		ctree.addClass("widesidebar");
-		cfilter.addClass("widesidebar");
-		//var wt = ctree.width();
-		//cfilter.width(w-wt-12);
-		//cfilter.height(h);
-		//ctree.height(h);
-	} else {
-		ctree.removeClass("widesidebar");
-		cfilter.removeClass("widesidebar");
-		//cfilter.width(w-12);
-		//ctree.height('250');
-		//cfilter.height(h-300);
-	}
-	//console.log(h);
-};
-
-function setMaxHeight(elm, child, offset = 32) {
-	if (!elm || !elm.length) {
-		return;
-	}
-	var target = elm;
-	if (child) {
-		target = elm.find(child);
-		if (!target || !target.length) {
-			return;
-		}
-	}
-	var top = $(window).height() - elm.offset().top - offset;
-	top = Math.max(top, 400);
-	target.css("height", top + "px");
-}
-
-lQuery(".ajaxstatus").livequery(function () {
-	var uid = $(this).attr("id");
-
-	var iscomplete = $(this).data("ajaxstatuscomplete");
-
-	if (iscomplete) {
-		ranajaxon[uid] = false;
-	} else {
-		var inqueue = ranajaxon[uid];
-		if (inqueue == undefined) {
-			ranajaxon[uid] = true; //Only load once per id
-		}
-	}
-	if (ranajaxonrunning == false) {
-		setTimeout("runajaxstatus();", 500); //Start checking then runs every second on all status
-		ranajaxonrunning = true;
-	}
-});
-
 lQuery(".changeimportmodule").livequery("change", function () {
 	var select = $(this);
 	var moduleid = select.val();
@@ -3875,100 +3775,5 @@ lQuery(".changeimportmodule").livequery("change", function () {
 			withCredentials: true,
 		},
 		crossDomain: true,
-	});
-});
-
-//TODO: Move these to a jquery plugin
-resizegallery = function () {
-	var container = $("#emslidesheet");
-	if (container.length) {
-		var containerw = container.width();
-		var boxes = Math.floor(containerw / 230);
-		var boxw = Math.floor(containerw / boxes) - 12;
-		$("#emslidesheet .emthumbbox").width(boxw);
-	}
-};
-
-adjustdatamanagertable = function () {
-	if ($(".datamanagertable").length) {
-		var height = $(window).height();
-		$(".datamanagertable").height(height - 320);
-	}
-};
-
-jQuery(document).ready(function () {
-	uiload();
-	jQuery(window).trigger("resize");
-
-	window.onhashchange = function () {
-		$("body").css({ overflow: "visible" }); //Enable scroll
-		$(window).trigger("resize");
-	};
-});
-
-function posiitionSubmitButtons() {
-	var submitBtns = $(".form-submit-btns");
-	console.log(submitBtns);
-	if (!submitBtns.length) return;
-	var offsetTop = submitBtns.offset().top;
-	if (offsetTop > $(window).height()) {
-		submitBtns.css({
-			position: "sticky",
-			bottom: 0,
-			left: 0,
-			zIndex: "1000",
-			margin: 0,
-			padding: 8,
-			background: "var(--themed-light-bg)",
-			borderTop: "var(--1px-light)",
-		});
-	}
-}
-//posiitionSubmitButtons(); Dont run this here becuase it slows down loading
-
-lQuery(".form-submit-btns").livequery(function () {
-	posiitionSubmitButtons();
-});
-
-jQuery(window).on("resize", function () {
-	adjustdatamanagertable();
-	resizesearchcategories();
-	resizecolumns();
-	//posiitionSubmitButtons();
-});
-
-jQuery(document).on("domchanged", function () {
-	//gridResize();
-	//resizecolumns();
-	//jQuery(window).trigger("resize");
-});
-
-jQuery(document).on("emtreeselect", function (event) {
-	var treename = event.tree.data("treename");
-	if (treename == "sidebarCategories") {
-		var selectednode = event.nodeid;
-		$("#parentfilter").val(selectednode);
-
-		$("#autosubmitfilter").trigger("submit");
-	}
-	return false;
-});
-
-jQuery(window).on("ajaxsocketautoreload", function () {
-	$(".ajaxsocketautoreload").each(function () {
-		var cell = $(this);
-		var path = cell.data("ajaxpath");
-		jQuery.ajax({
-			url: path,
-			async: false,
-			data: {},
-			success: function (data) {
-				cell.replaceWith(data);
-			},
-			xhrFields: {
-				withCredentials: true,
-			},
-			crossDomain: true,
-		});
 	});
 });

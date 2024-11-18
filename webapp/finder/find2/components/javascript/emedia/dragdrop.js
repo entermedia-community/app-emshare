@@ -6,14 +6,6 @@ var newCollection;
 var isCategoryDragged = false;
 var isCollectionCreatedByDragging = false;
 
-repaint = function (divid) {
-	var div = $("#" + divid);
-	var href = div.data("href");
-	var args = div.data("args");
-	jQuery.get(href + "?" + args, {}, function (data) {
-		div.replaceWith(data);
-	});
-};
 var currentlyOver = null;
 function handleDroppableOver(event, ui) {
 	currentlyOver = $(this).parent().attr("id");
@@ -63,17 +55,6 @@ toggleajax = function (e) {
 	}
 };
 
-findclosest = function (link, inid) {
-	var result = link.closest(inid);
-	if (result.length == 0) {
-		result = link.children(inid);
-		if (result.length == 0) {
-			result = $(inid);
-		}
-	}
-	return result.first();
-};
-
 // window.addEventListener("hashchange", function(e) { //Try listening to
 // popstate and put the state (html) back in
 $(window).bind("popstate", function change(e) {
@@ -84,25 +65,6 @@ $(window).bind("popstate", function change(e) {
 		$(".modal-backdrop").remove();
 	}
 });
-
-reloadpageajax = function (nextpage, targetDiv) {
-	console.log("Reloading...");
-	var options;
-	targetDiv = targetDiv.replace(/\//g, "\\/");
-	$.get(nextpage, options, function (data) {
-		var cell;
-		cell = $("#" + targetDiv);
-		// Call replacer to pull $scope variables
-		cell.replaceWith(data);
-		$(window).trigger("resize");
-	});
-};
-showHoverMenu = function (inDivId) {
-	el = $("#" + inDivId);
-	if (el.attr("status") == "show") {
-		el.show();
-	}
-};
 
 updatebasket = function (e) {
 	var action = $(this).data("action");
@@ -226,9 +188,11 @@ onloadselectors = function () {
 	});
 
 	lQuery("a.propertyset").livequery("click", function (e) {
+		e.stopPropagation();
+		e.preventDefault();
+		var thelink = $(this);
 		var propertyname = $(this).attr("propertyname");
 		var propertyvalue = $(this).attr("propertyvalue");
-		var thelink = $(this);
 
 		app = $("#application");
 		siteroot = app.data("siteroot");
@@ -244,7 +208,7 @@ onloadselectors = function () {
 		jQuery.ajax({
 			url: href,
 			success: function () {
-				runajaxonthis(thelink, e);
+				thelink.runAjax();
 			},
 			type: "POST",
 			dataType: "text",
@@ -462,7 +426,12 @@ onloadselectors = function () {
 			// need delay the show
 			el.show();
 			var id = el.attr("id");
-			setTimeout('showHoverMenu("' + id + '")', 300);
+			setTimeout(function () {
+				el = $("#" + id);
+				if (el.attr("status") == "show") {
+					el.show();
+				}
+			}, 300);
 		});
 	});
 	if (jQuery.history) {
@@ -573,9 +542,7 @@ onloadselectors = function () {
 
 					options.editheader = editing;
 
-					console.log(options.moduleid);
 					$.get(searchhome + "/savecolumns.html", options, function (data) {
-						var cell = findclosest(resultsdiv, resultsdiv);
 						resultsdiv.replaceWith(data);
 					});
 					/*

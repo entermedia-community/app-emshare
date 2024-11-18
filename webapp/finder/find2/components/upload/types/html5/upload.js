@@ -233,7 +233,7 @@ $(document).ready(function () {
 					}
 					uploadTarget.data("toastmessage", "Processing files...");
 					uploadTarget.data("toastsuccess", "Ready to upload!");
-					runajaxonthis(uploadTarget, null, function () {
+					uploadTarget.runAjax(function () {
 						var dropDiv = $("#drop-area > .drop-over");
 						var categoryid = dropDiv.data("categoryid");
 						if (categoryid) {

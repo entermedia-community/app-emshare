@@ -65,10 +65,6 @@ function customToast(message, options = {}) {
 	}
 }
 
-customToast("hello", {
-	autohide: false,
-});
-
 function destroyToast(toast, success = true) {
 	clearTimeout(toastTO);
 	if (!toast) return;
@@ -91,14 +87,13 @@ function destroyToast(toast, success = true) {
 
 $(window).on("successToast", function (_, anchor) {
 	var uid = anchor.data("uid");
-	console.log(anchor);
 	console.log("successfully removing uid:" + uid);
 	var toast = $(".toastContainer[data-uid='" + uid + "']");
 	destroyToast(toast);
 });
+
 $(window).on("errorToast", function (_, anchor) {
 	var uid = anchor.data("uid");
-	console.log(anchor);
 	console.error("unsuccessfully removing uid:" + uid);
 	var toast = $(".toastContainer[data-uid='" + uid + "']");
 	destroyToast(toast, false);

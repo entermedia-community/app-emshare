@@ -1,53 +1,53 @@
 (function ($) {
 	$.fn.runAjax = function (successCallback = null) {
-		var inlink = $(this);
-		$(".ajaxprogress").show();
-		var confirmation = $(inlink).data("confirm");
+		var anchor = $(this);
+		var confirmation = $(anchor).data("confirm");
 		if (confirmation && !confirm(confirmation)) {
 			return this;
 		}
-		inlink.attr("disabled", "disabled");
 
-		if (inlink.hasClass("activelistener")) {
+		anchor.attr("disabled", "disabled");
+
+		if (anchor.hasClass("activelistener")) {
 			$(".activelistener").removeClass("active");
-			inlink.addClass("active");
+			anchor.addClass("active");
 			$(".activelistener").removeClass("selected");
-			inlink.addClass("selected");
+			anchor.addClass("selected");
 		}
 		//for listeners in a container
-		if (inlink.hasClass("activelistenerparent")) {
-			var listenerparent = inlink.closest(".activelistcontainer");
-			if (listenerparent.length > 0) {
-				listenerparent.siblings().removeClass("active");
-				listenerparent.addClass("active");
+		if (anchor.hasClass("activelistenerparent")) {
+			var listenerParent = anchor.closest(".activelistcontainer");
+			if (listenerParent.length > 0) {
+				listenerParent.siblings().removeClass("active");
+				listenerParent.addClass("active");
 			}
 		}
 
-		var nextpage = inlink.attr("href");
+		var nextpage = anchor.attr("href");
 		if (!nextpage) {
-			nextpage = inlink.data("nextpage");
+			nextpage = anchor.data("nextpage");
 		}
 
-		var options = $(inlink).data();
-		if (options.isEmptyObject || $(inlink).data("findalldata")) {
-			options = findalldata(inlink);
+		var options = $(anchor).data();
+		if (options.isEmptyObject || $(anchor).data("findalldata")) {
+			options = findalldata(anchor);
 		}
 
-		var targetDiv = inlink.data("targetdiv");
+		var targetDiv = anchor.data("targetdiv");
 		var replaceHtml = true;
 
-		var targetDivInner = inlink.data("targetdivinner");
+		var targetDivInner = anchor.data("targetdivinner");
 		if (targetDivInner) {
 			targetDiv = targetDivInner;
 			replaceHtml = false;
 		}
 
-		var useparent = inlink.data("useparent");
+		var useparent = anchor.data("useparent");
 		var activemenu;
-		if (inlink.hasClass("auto-active-link")) {
-			activemenu = inlink;
-		} else if (inlink.data("autoactivecontainer")) {
-			activemenu = $("." + inlink.data("autoactivecontainer"));
+		if (anchor.hasClass("auto-active-link")) {
+			activemenu = anchor;
+		} else if (anchor.data("autoactivecontainer")) {
+			activemenu = $("." + anchor.data("autoactivecontainer"));
 		}
 		if (activemenu !== undefined && activemenu.length > 0) {
 			var container = activemenu.closest(".auto-active-container");
@@ -64,21 +64,21 @@
 			row.addClass("current");
 		}
 
-		var inlinkmodal = inlink.closest(".modal");
+		var anchorModal = anchor.closest(".modal");
 
 		if (targetDiv) {
-			inlink.css("cursor", "wait");
+			anchor.css("cursor", "wait");
 			$("body").css("cursor", "wait");
 
 			targetDiv = targetDiv.replace(/\//g, "\\/");
 
 			//before ajaxcall
-			if (inlink.data("onbefore")) {
-				var onbefore = inlink.data("onbefore");
+			if (anchor.data("onbefore")) {
+				var onbefore = anchor.data("onbefore");
 				var fnc = window[onbefore];
 				if (fnc && typeof fnc === "function") {
 					//make sure it exists and it is a function
-					fnc(inlink); //execute it
+					fnc(anchor); //execute it
 				}
 			}
 
@@ -86,20 +86,20 @@
 				targetDiv = "#" + targetDiv;
 			}
 
-			$(window).trigger("showToast", [inlink]);
-			var toastUid = $(inlink).data("uid");
+			$(window).trigger("showToast", [anchor]);
+			var toastUid = $(anchor).data("uid");
 			jQuery
 				.ajax({
 					url: nextpage,
 					data: options,
 					success: function (data) {
-						inlink.data("uid", toastUid);
-						$(window).trigger("successToast", [inlink]);
+						anchor.data("uid", toastUid);
+						$(window).trigger("successToast", [anchor]);
 						var cell;
 						if (useparent && useparent == "true") {
 							cell = $("#" + targetDiv, window.parent.document);
 						} else {
-							cell = findclosest(inlink, targetDiv);
+							cell = findClosest(anchor, targetDiv);
 						}
 						var onpage;
 						var newcell;
@@ -107,7 +107,7 @@
 							//Call replacer to pull $scope variables
 							onpage = cell.parent();
 							cell.replaceWith(data); //Cant get a valid dom element
-							newcell = findclosest(onpage, targetDiv);
+							newcell = findClosest(onpage, targetDiv);
 						} else {
 							onpage = cell;
 							cell.html(data);
@@ -116,23 +116,23 @@
 						$(window).trigger("setPageTitle", [newcell]);
 
 						//on success execute extra JS
-						if (inlink.data("onsuccess")) {
-							var onsuccess = inlink.data("onsuccess");
+						if (anchor.data("onsuccess")) {
+							var onsuccess = anchor.data("onsuccess");
 							var fnc = window[onsuccess];
 							if (fnc && typeof fnc === "function") {
 								//make sure it exists and it is a function
-								fnc(inlink); //execute it
+								fnc(anchor); //execute it
 							}
 						}
 
-						$(window).trigger("checkautoreload", [inlink]);
+						$(window).trigger("checkautoreload", [anchor]);
 
 						if (successCallback) {
 							successCallback();
 						}
 
 						//actions after autoreload?
-						var message = inlink.data("alertmessage");
+						var message = anchor.data("alertmessage");
 						if (message) {
 							$("body").append(
 								'<div class="alert alert-success fader alert-save">' +
@@ -143,8 +143,8 @@
 						// TODO?
 					},
 					error: function () {
-						inlink.data("uid", toastUid);
-						$(window).trigger("errorToast", [inlink]);
+						anchor.data("uid", toastUid);
+						$(window).trigger("errorToast", [anchor]);
 					},
 					type: "POST",
 					dataType: "text",
@@ -154,27 +154,25 @@
 					crossDomain: true,
 				})
 				.always(function () {
-					var scrolltotop = inlink.data("scrolltotop");
+					var scrolltotop = anchor.data("scrolltotop");
 					if (scrolltotop) {
 						window.scrollTo(0, 0);
 					}
-
-					$(".ajaxprogress").hide();
-					//inlink.css("enabled",true);
-					inlink.removeAttr("disabled");
+					//anchor.css("enabled",true);
+					anchor.removeAttr("disabled");
 
 					//Close All Dialogs
-					var closealldialogs = inlink.data("closealldialogs");
+					var closealldialogs = anchor.data("closealldialogs");
 					if (closealldialogs) {
 						closeallemdialogs();
 					} else {
 						//Close Dialog
-						var closedialog = inlink.data("closedialog");
-						if (closedialog && inlinkmodal != null) {
-							closeemdialog(inlinkmodal);
+						var closedialog = anchor.data("closedialog");
+						if (closedialog && anchorModal != null) {
+							closeemdialog(anchorModal);
 						}
 						//Close MediaViewer
-						var closemediaviewer = inlink.data("closemediaviewer");
+						var closemediaviewer = anchor.data("closemediaviewer");
 						if (closemediaviewer) {
 							var overlay = $("#hiddenoverlay");
 							if (overlay.length) {
@@ -183,14 +181,14 @@
 						}
 					}
 					//Close Navbar if exists
-					var navbar = inlink.closest(".navbar-collapse");
+					var navbar = anchor.closest(".navbar-collapse");
 					if (navbar) {
 						navbar.collapse("hide");
 					}
 
 					$(window).trigger("resize");
 
-					inlink.css("cursor", "");
+					anchor.css("cursor", "");
 					$("body").css("cursor", "");
 
 					if (
@@ -199,7 +197,7 @@
 					) {
 						//globaly disabled updateurl
 					} else {
-						var updateurl = inlink.data("updateurl");
+						var updateurl = anchor.data("updateurl");
 						if (updateurl) {
 							//console.log("Saving state ", updateurl);
 							history.pushState($("#application").html(), null, nextpage);
@@ -210,3 +208,76 @@
 		return this;
 	};
 })(jQuery);
+
+var runAjaxOn = {};
+var ajaxRunning = false;
+
+runAjaxStatus = function () {
+	//for each asset on the page reload it's status
+	//console.log(uid);
+
+	for (const [uid, enabled] of Object.entries(runAjaxOn)) {
+		if (!enabled || enabled === undefined) {
+			continue;
+		}
+		var cell = $("#" + uid);
+		if (cell.length == 0) {
+			continue;
+		}
+
+		if (!cell.hasClass("ajaxstatus")) {
+			continue; //Must be done
+		}
+
+		if (!isInViewport(cell[0])) {
+			continue;
+		}
+
+		var path = cell.attr("ajaxpath");
+		if (!path || path == "") {
+			path = cell.data("ajaxpath");
+		}
+		//console.log("Loading " + path );
+		if (path && path.length > 1) {
+			var entermediakey = "";
+			if (app && app.data("entermediakey") != null) {
+				entermediakey = app.data("entermediakey");
+			}
+			var data = cell.cleandata();
+			jQuery.ajax({
+				url: path,
+				async: false,
+				data: data,
+				success: function (data) {
+					cell.replaceWith(data);
+					//$(window).trigger("checkautoreload", [cell]);
+					$(window).trigger("resize");
+				},
+				xhrFields: {
+					withCredentials: true,
+				},
+				crossDomain: true,
+			});
+		}
+	}
+	setTimeout("runAjaxStatus();", 1000); //Start checking any and all fields on the screeen that are saved in runAjaxOn
+};
+
+lQuery(".ajaxstatus").livequery(function () {
+	var uid = $(this).attr("id");
+
+	var iscomplete = $(this).data("ajaxstatuscomplete");
+
+	if (iscomplete) {
+		runAjaxOn[uid] = false;
+	} else {
+		var inqueue = runAjaxOn[uid];
+		if (inqueue == undefined) {
+			runAjaxOn[uid] = true; //Only load once per id
+		}
+	}
+	if (!ajaxRunning) {
+		setTimeout("runAjaxStatus();", 500); //Start checking then runs every second on all status
+		ajaxRunning = true;
+	}
+});

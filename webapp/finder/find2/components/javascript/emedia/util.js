@@ -157,3 +157,98 @@ getSessionValue = function (key) {
 
 	return returnval;
 };
+
+findClosest = function (link, inid) {
+	var result = link.closest(inid);
+	if (result.length == 0) {
+		result = link.children(inid);
+		if (result.length == 0) {
+			result = $(inid);
+		}
+	}
+	return result.first();
+};
+
+function setMaxHeight(elm, child, offset = 32) {
+	if (!elm || !elm.length) {
+		return;
+	}
+	var target = elm;
+	if (child) {
+		target = elm.find(child);
+		if (!target || !target.length) {
+			return;
+		}
+	}
+	var top = $(window).height() - elm.offset().top - offset;
+	top = Math.max(top, 400);
+	target.css("height", top + "px");
+}
+
+function resizeColumns() {
+	var windowh = $(window).height();
+
+	//togglers always screen height
+	var coltogglers = $(".col-sidebar-togglers");
+	coltogglers.css("height", windowh - 1);
+	var colsidebar = $(".col-mainsidebar");
+	colsidebar.css("height", windowh);
+
+	//reset some heights
+	$(".settingslayout").css("height", "auto");
+	$(".col-content-main").css("height", "auto"); //reset
+
+	$(".adjustHeight").each(function () {
+		setMaxHeight($(this));
+	});
+}
+
+function resizeSearchCategories() {
+	var container = $("#sidecategoryresults");
+	if (!container) {
+		return;
+	}
+	var w = container.width();
+
+	var ctree = container.find(".searchcategories-tree");
+	var cfilter = container.find(".searchcategories-filter");
+	if (w > 640) {
+		ctree.addClass("widesidebar");
+		cfilter.addClass("widesidebar");
+		//var wt = ctree.width();
+		//cfilter.width(w-wt-12);
+		//cfilter.height(h);
+		//ctree.height(h);
+	} else {
+		ctree.removeClass("widesidebar");
+		cfilter.removeClass("widesidebar");
+		//cfilter.width(w-12);
+		//ctree.height('250');
+		//cfilter.height(h-300);
+	}
+	//console.log(h);
+}
+
+function adjustDataManagerTable() {
+	if ($(".datamanagertable").length) {
+		var height = $(window).height();
+		$(".datamanagertable").height(height - 320);
+	}
+}
+
+jQuery(window).on("resize", function () {
+	adjustDataManagerTable();
+	resizeSearchCategories();
+	resizeColumns();
+});
+
+// NOT USED ANYWHERE
+// resizeGallery = function () {
+// 	var container = $("#emslidesheet");
+// 	if (container.length) {
+// 		var containerw = container.width();
+// 		var boxes = Math.floor(containerw / 230);
+// 		var boxw = Math.floor(containerw / boxes) - 12;
+// 		$("#emslidesheet .emthumbbox").width(boxw);
+// 	}
+// };

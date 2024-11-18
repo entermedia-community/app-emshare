@@ -191,7 +191,7 @@ $(function () {
 					}
 				}
 
-				cell = findclosest(onpage, "#" + targetdiv);
+				cell = findClosest(onpage, "#" + targetdiv);
 
 				$(window).trigger("setPageTitle", [cell]);
 
@@ -613,7 +613,18 @@ $(function () {
 		}
 	});
 
-	repaintEmTree = function (tree) {
+	jQuery(document).on("emtreeselect", function (event) {
+		var treename = event.tree.data("treename");
+		if (treename == "sidebarCategories") {
+			var selectednode = event.nodeid;
+			$("#parentfilter").val(selectednode);
+
+			$("#autosubmitfilter").trigger("submit");
+		}
+		return false;
+	});
+
+	function repaintEmTree(tree) {
 		var home = tree.data("home");
 		var link = home + "/components/emtree/tree.html";
 		var options = tree.data();
@@ -622,5 +633,5 @@ $(function () {
 			tree.closest("#treeholder").replaceWith(data);
 			$(document).trigger("domchanged");
 		});
-	};
+	}
 });

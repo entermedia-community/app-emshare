@@ -1795,7 +1795,7 @@ $(document).ready(function () {
 	lQuery(".restoreversion").livequery("click", function (e) {
 		e.stopImmediatePropagation();
 		e.preventDefault();
-		runajaxonthis($(this), e);
+		$(this).runAjax();
 		closeemdialog($(this).closest(".modal"));
 	});
 

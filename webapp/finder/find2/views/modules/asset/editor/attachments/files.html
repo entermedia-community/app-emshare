@@ -95,275 +95,273 @@ $context.putPageValue("attachmentroot",$attachmentroot)
 	</div>
 ##$sizer.inEnglish($attachment.size)
 <script type="text/javascript">
-	lQuery('#attachmenttree ul li div').livequery(function()
-	{ 
-	  $(this).on({
-		click: function(){
-			
-			$(this).parent().find('> ul').toggle('fast');
-			
-			if ( $(this).find('.arrow').hasClass('down') )
-			{
-				$(this).find('.arrow').removeClass('down fa-caret-down');
-				$(this).find('.arrow').addClass('fa-caret-right');
+function reloadTree() {
+	jQuery("#attachments-tree").load(
+		"$home$attachmentroot/files.html?assetid=$asset.id&oemaxlevel=1"
+	);
+};
+lQuery("#attachmenttree ul li div").livequery(function () {
+	$(this).on({
+		click: function () {
+			$(this).parent().find("> ul").toggle("fast");
+
+			if ($(this).find(".arrow").hasClass("down")) {
+				$(this).find(".arrow").removeClass("down fa-caret-down");
+				$(this).find(".arrow").addClass("fa-caret-right");
+			} else {
+				$(this).find(".arrow").removeClass("fa-caret-right");
+				$(this).find(".arrow").addClass("down fa-caret-down");
 			}
-			else 
-			{
-				$(this).find('.arrow').removeClass('fa-caret-right');
-				$(this).find('.arrow').addClass('down fa-caret-down');
-			}
-			var file = $(this).find('.name');
+			var file = $(this).find(".name");
 			file = $(file);
 			var fileid = file.attr("fileid");
-			$("#preview-pane").load("$home$attachmentroot/details.html?oemaxlevel=1&assetid=$asset.id&fileid=" + fileid );
-			$('#attachmenttree ul li div').removeClass('selected');
-			$(this).addClass('selected');
-		}
-	 });
+			$("#preview-pane").load(
+				"$home$attachmentroot/details.html?oemaxlevel=1&assetid=$asset.id&fileid=" +
+					fileid
+			);
+			$("#attachmenttree ul li div").removeClass("selected");
+			$(this).addClass("selected");
+		},
 	});
+});
 
-	lQuery('#attachmenttree .clearfield').livequery(function()
-	{ 
-	  $(this).on({
+lQuery("#attachmenttree .clearfield").livequery(function () {
+	$(this).on({
 		click: function (event) {
 			event.stopPropagation();
 		},
-		focusin: function(){
-			if ($(this).val() == this.defaultValue ) { 
-				$(this).val(''); 
+		focusin: function () {
+			if ($(this).val() == this.defaultValue) {
+				$(this).val("");
 			}
-		}, 
-		focusout: function(){
-			if ($(this).val() == "") { 
-				$(this).val(this.defaultValue); 
+		},
+		focusout: function () {
+			if ($(this).val() == "") {
+				$(this).val(this.defaultValue);
 			}
-		}
-			
+		},
 	});
-	});
+});
 
-	lQuery("#attachmenttree .add-folder").livequery(function()
-	{ 
-	  $(this).on({
-			click: function (event) {
-				
-				event.stopPropagation();
-				
-				var id = $(this).attr("id");
-				padding = $("#" + id + "_row div").css('padding-left');
-				padding = padding.replace('px', '');
-				padding = parseInt(padding);
-				padding += 20;
-				var node = $(this).parents('.noderow:first').data('nodeid');
-				
-				if ( $("#" + id + "_row > div .arrow").length > 0 ) {
-					if ( $("#" + id + "_row > div .arrow").hasClass('down') ) {	
-						
-					} else {
-					   $("#" + id + "_row").find('> ul').toggle('fast');
-					   $("#" + id + "_row > div .arrow").addClass('down');
-					   jQuery.get("$home$apphome/views/settings/modules/asset/metadata/categories/expandnode.html?nodeID=" + node);
-					}
-				} else {
-					$("#" + id + "_row > div").prepend('<span class="arrow down bi bi-caret-down-fill" id="newarrow"></span>');
-					$("#" + id + "_row").find('> ul').toggle('fast');
-					$("#" + id + "_row > div .arrow").addClass('down  fa-caret-down');
-				}
-				
-				$("#" + id + "_add-folder").show("fast");
-				$("#" + id + "_add-folder div").css('padding-left', padding );
-				$("#" + id + "_row > div").addClass('selected');
-				$("#" + id + "_add input").focus();
-			}
-	} );
-	});
-
-	lQuery("#attachmenttree .upload-file").livequery(function()
-	{ 
-		$(this).on({
-			click: function (event) {
-				event.stopPropagation();
-				
-				var id = $(this).attr("id");
-				padding = $("#" + id + "_row div").css('padding-left');
-				padding = padding.replace('px', '');
-				padding = parseInt(padding);
-				padding += 20;
-				var node = $(this).parents('.noderow:first').data('nodeid');
-				
-				if ( $("#" + id + "_row > div .arrow").length > 0 ) {
-					if ( $("#" + id + "_row > div .arrow").hasClass('down') ) {	
-						
-					} else {
-					   $("#" + id + "_row").find('> ul').toggle('fast');
-					   $("#" + id + "_row > div .arrow").addClass('down');
-					   jQuery.get("$home$apphome/views/settings/modules/asset/metadata/categories/expandnode.html?nodeID=" + node);
-					}
-				} else {
-					$("#" + id + "_row > div").prepend('<span class="arrow down" id="newarrow"></span>');
-					$("#" + id + "_row").find('> ul').toggle('fast');
-					$("#" + id + "_row > div .arrow").addClass('down');
-				}
-				
-				$("#" + id + "_upload-file").load('$home$attachmentroot/upload.html?assetid=${asset.id}&fileid=' + id);
-				$("#" + id + "_upload-file").show("fast");
-				$("#" + id + "_upload-file div").css('padding-left', padding );
-				$("#" + id + "_row > div").addClass('selected');
-				$("#" + id + "_add input").focus();
-			}
-	} );
-	});
-
-	lQuery("#attachmenttree .cancel").livequery(function()
-	{ 
-      $(this).on({
+lQuery("#attachmenttree .add-folder").livequery(function () {
+	$(this).on({
 		click: function (event) {
-			
 			event.stopPropagation();
-			
+
+			var id = $(this).attr("id");
+			padding = $("#" + id + "_row div").css("padding-left");
+			padding = padding.replace("px", "");
+			padding = parseInt(padding);
+			padding += 20;
+			var node = $(this).parents(".noderow:first").data("nodeid");
+
+			if ($("#" + id + "_row > div .arrow").length > 0) {
+				if ($("#" + id + "_row > div .arrow").hasClass("down")) {
+				} else {
+					$("#" + id + "_row")
+						.find("> ul")
+						.toggle("fast");
+					$("#" + id + "_row > div .arrow").addClass("down");
+					jQuery.get(
+						"$home$apphome/views/settings/modules/asset/metadata/categories/expandnode.html?nodeID=" +
+							node
+					);
+				}
+			} else {
+				$("#" + id + "_row > div").prepend(
+					'<span class="arrow down bi bi-caret-down-fill" id="newarrow"></span>'
+				);
+				$("#" + id + "_row")
+					.find("> ul")
+					.toggle("fast");
+				$("#" + id + "_row > div .arrow").addClass("down  fa-caret-down");
+			}
+
+			$("#" + id + "_add-folder").show("fast");
+			$("#" + id + "_add-folder div").css("padding-left", padding);
+			$("#" + id + "_row > div").addClass("selected");
+			$("#" + id + "_add input").focus();
+		},
+	});
+});
+
+lQuery("#attachmenttree .upload-file").livequery(function () {
+	$(this).on({
+		click: function (event) {
+			event.stopPropagation();
+
+			var id = $(this).attr("id");
+			padding = $("#" + id + "_row div").css("padding-left");
+			padding = padding.replace("px", "");
+			padding = parseInt(padding);
+			padding += 20;
+			var node = $(this).parents(".noderow:first").data("nodeid");
+
+			if ($("#" + id + "_row > div .arrow").length > 0) {
+				if ($("#" + id + "_row > div .arrow").hasClass("down")) {
+				} else {
+					$("#" + id + "_row")
+						.find("> ul")
+						.toggle("fast");
+					$("#" + id + "_row > div .arrow").addClass("down");
+					jQuery.get(
+						"$home$apphome/views/settings/modules/asset/metadata/categories/expandnode.html?nodeID=" +
+							node
+					);
+				}
+			} else {
+				$("#" + id + "_row > div").prepend(
+					'<span class="arrow down" id="newarrow"></span>'
+				);
+				$("#" + id + "_row")
+					.find("> ul")
+					.toggle("fast");
+				$("#" + id + "_row > div .arrow").addClass("down");
+			}
+
+			$("#" + id + "_upload-file").load(
+				"$home$attachmentroot/upload.html?assetid=${asset.id}&fileid=" + id
+			);
+			$("#" + id + "_upload-file").show("fast");
+			$("#" + id + "_upload-file div").css("padding-left", padding);
+			$("#" + id + "_row > div").addClass("selected");
+			$("#" + id + "_add input").focus();
+		},
+	});
+});
+
+lQuery("#attachmenttree .cancel").livequery(function () {
+	$(this).on({
+		click: function (event) {
+			event.stopPropagation();
 
 			$("#newarrow").remove();
-	
-			var id = $(this).attr("id");	
+
+			var id = $(this).attr("id");
 			$("#" + id + "_add-folder").hide("fast");
 			$("#" + id + "_upload-file").hide("fast");
-			$("#" + id + "_row > div").removeClass('selected');
-		}
-	
-	  });
+			$("#" + id + "_row > div").removeClass("selected");
+		},
 	});
-	lQuery("#attachmenttree .click-link").livequery(function()
-	{ 
-	  $(this).on({
+});
+lQuery("#attachmenttree .click-link").livequery(function () {
+	$(this).on({
 		click: function (event) {
-				event.stopPropagation();
-				var href= $(this).attr("href");
-				document.location = href;		
-				return false;
-		}
+			event.stopPropagation();
+			var href = $(this).attr("href");
+			document.location = href;
+			return false;
+		},
 	});
-	});
+});
 
-	lQuery("#attachmenttree .edit").livequery(function()
-	{ 
-	  $(this).on({
+lQuery("#attachmenttree .edit").livequery(function () {
+	$(this).on({
 		click: function (event) {
-				event.stopPropagation();
-				var id = $(this).parents('.noderow:first').data('nodeid');
-	
-				
-				jQuery("#" + id +"_display").hide("fast");
-				jQuery("#" + id +"_edit").show("fast");		
-				
-				return false;
-		}
-	});
-	});
+			event.stopPropagation();
+			var id = $(this).parents(".noderow:first").data("nodeid");
 
-	lQuery("#attachmenttree .editcancel").livequery(function()
-	{ 
-	  $(this).on({
-		click: function (event) {
-				event.stopPropagation();
-				var id = $(this).parents('.noderow:first').data('nodeid');
-	
-				
-				jQuery("#" + id +"_display").show("fast");
-				jQuery("#" + id +"_edit").hide("fast");		
-				return false;
-		}
-	});
-	});
-	lQuery("#attachmenttree .editsave").livequery(function()
-	{ 
-	  $(this).on({
-		click: function (event) {
-				event.stopPropagation();
-				var id = $(this).parents('.noderow:first').data('nodeid');
+			jQuery("#" + id + "_display").hide("fast");
+			jQuery("#" + id + "_edit").show("fast");
 
-				
-				
-				var newname = $("#" + id + "_edit_field").val();
-				jQuery.get("$home$attachmentroot/renamefolder.html", {
+			return false;
+		},
+	});
+});
+
+lQuery("#attachmenttree .editcancel").livequery(function () {
+	$(this).on({
+		click: function (event) {
+			event.stopPropagation();
+			var id = $(this).parents(".noderow:first").data("nodeid");
+
+			jQuery("#" + id + "_display").show("fast");
+			jQuery("#" + id + "_edit").hide("fast");
+			return false;
+		},
+	});
+});
+lQuery("#attachmenttree .editsave").livequery(function () {
+	$(this).on({
+		click: function (event) {
+			event.stopPropagation();
+			var id = $(this).parents(".noderow:first").data("nodeid");
+
+			var newname = $("#" + id + "_edit_field").val();
+			jQuery.get(
+				"$home$attachmentroot/renamefolder.html",
+				{
 					id: id,
 					fileid: id,
 					foldername: newname.toString(),
-					assetid: '$asset.id'
-					} , function () {						
-						jQuery("#" + id +"_display").show("fast");
-						jQuery("#" + id +"_edit").hide("fast");		
-						jQuery("#" + id + "_display").html(newname);
-					}
-				
-				);
-				
-				return false;
-		}
-	});
-	});
-
-
-
-	lQuery("#attachmenttree .addfoldersave").livequery(function()
-	{ 
-	  $(this).on({
-		click: function (event) {
-				event.stopPropagation();
-				var id = $(this).data('parent');
-				//alert("adding new folder under: " + id);
-				var newname = $("#" + id + "_new").val();
-				var parentid = $("#" + id + "_new").data("parent");
-
-				jQuery.get("$home$attachmentroot/createfolder-finish.html", {
-					//'id': id,
-					'fileid': id,
-					'foldername': newname,
-					'assetid': '$asset.id'
-				
-					} , function () {						
-					repaint();
-					}
-				
-				);
-				
-				return false;
-		}
-	});
-	});
-
-
-	lQuery("#attachmenttree .delete").livequery(function()
-	{ 
-	  $(this).on({
-		click: function (event) {
-				event.stopPropagation();
-				var confirmtext = $(this).attr('title');
-				var agree=confirm( confirmtext + "?");
-				if(!agree){
-					return false;
+					assetid: "$asset.id",
+				},
+				function () {
+					jQuery("#" + id + "_display").show("fast");
+					jQuery("#" + id + "_edit").hide("fast");
+					jQuery("#" + id + "_display").html(newname);
 				}
+			);
 
-				var id = $(this).attr('fileid');
-				jQuery.get("$home$attachmentroot/delete.html", {
-					fileid: id,					
-					assetid: '$asset.id'
-					} , function () {						
-						repaint();	 //this is problematic, delete should repaint
-  				    }
-				);
-				
+			return false;
+		},
+	});
+});
+
+lQuery("#attachmenttree .addfoldersave").livequery(function () {
+	$(this).on({
+		click: function (event) {
+			event.stopPropagation();
+			var id = $(this).data("parent");
+			//alert("adding new folder under: " + id);
+			var newname = $("#" + id + "_new").val();
+			var parentid = $("#" + id + "_new").data("parent");
+
+			jQuery.get(
+				"$home$attachmentroot/createfolder-finish.html",
+				{
+					//'id': id,
+					fileid: id,
+					foldername: newname,
+					assetid: "$asset.id",
+				},
+				function () {
+					reloadTree();
+				}
+			);
+
+			return false;
+		},
+	});
+});
+
+lQuery("#attachmenttree .delete").livequery(function () {
+	$(this).on({
+		click: function (event) {
+			event.stopPropagation();
+			var confirmtext = $(this).attr("title");
+			var agree = confirm(confirmtext + "?");
+			if (!agree) {
 				return false;
-		}
-	
-	});
-	});
+			}
 
-	repaint = function () {
-		jQuery("#attachments-tree").load("$home$attachmentroot/files.html?assetid=$asset.id&oemaxlevel=1");
-		
-		
-	}
-	
+			var id = $(this).attr("fileid");
+			jQuery.get(
+				"$home$attachmentroot/delete.html",
+				{
+					fileid: id,
+					assetid: "$asset.id",
+				},
+				function () {
+					reloadTree(); //this is problematic, delete should repaint
+				}
+			);
+
+			return false;
+		},
+	});
+});
+
 </script>
 <form id="uploadform" action="#">
 	<div id="here"></div>
