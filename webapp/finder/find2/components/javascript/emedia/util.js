@@ -1,6 +1,5 @@
 var app, siteroot, apphome, themeprefix;
 
-
 function getRandomColor() {
 	var letters = "0123456789ABCDEF".split("");
 	var color = "#";
@@ -104,20 +103,18 @@ toggleUserProperty = function (property, onsuccess = null) {
 	});
 };
 
-
 saveProfileProperty = function (property, value, onsuccess = null) {
 	app = $("#application");
 	siteroot = app.data("siteroot");
 	apphome = siteroot + app.data("apphome");
-	
+
 	var data = app.cleandata();
 	data.oemaxlevel = 1;
 	data.propertyfield = property;
-	data['property.value'] = value;
-	
+	data["property.value"] = value;
+
 	jQuery.ajax({
-		url:
-		apphome +"/components/userprofile/saveprofileproperty.html",
+		url: apphome + "/components/userprofile/saveprofileproperty.html",
 		data: data,
 		success: function () {
 			if (onsuccess) onsuccess();
@@ -160,4 +157,3 @@ getSessionValue = function (key) {
 
 	return returnval;
 };
-

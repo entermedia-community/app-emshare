@@ -121,7 +121,6 @@
 	}
 
 	function shortestColumn(colheight, defaultcolumn) {
-
 		var shortColumn = 0;
 		var shortColumnHeight = -1;
 		for (let column in Object.keys(colheight)) {
@@ -132,17 +131,15 @@
 			}
 		}
 		//	return shortColumn;
-		
+
 		//Only change if its over 50px in diference
 		var defaulttop = colheight[defaultcolumn];
 		var shortesttop = colheight[shortColumn];
-		if( (defaulttop - shortesttop) > 175)
-		{
+		if (defaulttop - shortesttop > 175) {
 			return shortColumn;
 		}
 
 		return defaultcolumn;
-		
 	}
 
 	function isInViewport(cell) {
@@ -293,11 +290,11 @@
 			jQuery(window).on("resize", function () {
 				verticalGridResize(grid);
 			});
-			
+
 			jQuery(window).on("scroll", function () {
-			    checkScroll(grid);
-			});	
-			
+				checkScroll(grid);
+			});
+
 			grid.parents().filter(function () {
 				var element = jQuery(this);
 				if (
