@@ -1,10 +1,3 @@
-$.ajaxSetup({
-	xhrFields: {
-		withCredentials: true,
-	},
-	crossDomain: true,
-});
-
 (function ($) {
 	$.fn.runAjax = function (successCallback = null) {
 		var inlink = $(this);
@@ -147,6 +140,7 @@ $.ajaxSetup({
 									"</div>"
 							);
 						}
+						// TODO?
 					},
 					error: function () {
 						inlink.data("uid", toastUid);
