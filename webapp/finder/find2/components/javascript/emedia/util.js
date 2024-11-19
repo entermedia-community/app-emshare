@@ -268,13 +268,25 @@ adjustZIndex = function (element) {
 		$(window).trigger("resize");
 	});
 };
-
-lQuery("[autofocus]").livequery(function () {
-	var input = $(this);
-	input.focus();
-	var inputVal = input.val();
-	if (inputVal) {
-		inputVal.val("");
-		inputVal.val(val);
+focusInput = function (input) {
+	if (input) {
+		input.focus();
+		var inputVal = input.val();
+		if (inputVal) {
+			input.val("");
+			input.val(inputVal);
+		}
 	}
+};
+
+lQuery("form").livequery(function () {
+	var modal = $(this).closest(".modal");
+	if (modal.length === 0) {
+		return;
+	}
+	var input = $(this).find("input[autofocus]:visible:first");
+	if (!input.length) {
+		input = $(this).find("input:visible:first");
+	}
+	focusInput(input);
 });
