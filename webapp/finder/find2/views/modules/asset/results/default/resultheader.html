@@ -45,18 +45,7 @@
 #if(!$categoryid && $rootcategory)
 	#set($categoryid = $rootcategory)
 #end
-#if(!$moduleid)
-	#set($moduleid = $module.getId())
-	$context.putPageValue("moduleid",$moduleid)
-#end
-#if(!$parentmoduleid)
-	#set($parentmoduleid = $context.getRequestParameter("topmoduleid"))
-#end
-$context.putPageValue("topmoduleid",$parentmoduleid)
-#if(!$entityid)
-	#set($entityid = $context.getRequestParameter("entityid"))
-#end
-$context.putPageValue("entityid", $entityid)
+
 #if(!$dialogresults)
 	#set($dialogresults = $context.getRequestParameter("dialogresults"))
 	$context.putPageValue("dialogresults",$dialogresults)
@@ -122,44 +111,38 @@ $context.putPageValue("entityid", $entityid)
 					<a href="" 
 							class="toggledialogtree"
 							style="padding:0 10px"
-							data-targetdiv="dialogassetresultscontainer"
+							data-targetdiv="resultsdiv"
 							data-oemaxlevel="1"
 							data-url="$searchhome/index.html"
 							data-categoryid="$!categoryid"
-							data-topmoduleid="$!topmoduleid"
-							data-entityid="$!entityid"
+							data-entityid="$!entity.id"
+							data-entitymoduleid="$!entitymodule.id"
 							data-rootcategory="$!rootcategory"
 							data-treestatus="open"
 							title="[[Expand Tree]]">
 							<i class="fas fa-angle-double-right "></i>
 							</a>
 					</li>
-					#ifnull($parentmodule)
-						#set($parentmodule = $mediaarchive.getCachedData("module", $parentmoduleid))
-					#end
 				#end
 			#end
 			
 			#if ($resultview != "map")
-				
-				
 				#set($hideupload = false)
 				#ifnotnull($context.getRequestParameter("hideupload"))
 					#set($hideupload = $context.getRequestParameter("hideupload"))
 				#end
 				
-				#if($parentmoduleid)
-					#if(!$hideupload && $canviewupload && $parentmoduleid != "favorites" && $permissions.can($parentmoduleid, "upload_files"))				
+				#ifnotnull($entitymodule)
+					#if(!$hideupload && $canviewupload && $entitymodule.id != "favorites" && $permissions.can($entitymodule.id, "upload_files"))				
 					<li>
 						<a href="$siteroot$apphome/views/modules/asset/add/entityaddmedia.html"
 						class="ajax px-3 webUploadButton"
-						data-targetdiv="dialogmediaentity"
+						data-targetdiv="resultsdiv"
 						data-oemaxlevel="1"
 						data-categoryid="$!categoryid"
 						data-categorypath="$category.getCategoryPath()"
 						data-entityid="$!entity.getId()" 
-						data-topmoduleid="$!moduleid"
-						data-moduleid="$!moduleid"
+						data-entitymoduleid="$!entitymodule.id"
 						data-tabsection="upload"
 						data-hitssessionid="$!hits.getSessionId()"
 						title="[[Upload]]"><i class="bi bi-upload"></i></a>
@@ -176,8 +159,8 @@ $context.putPageValue("entityid", $entityid)
 						 ><i class="bi bi-download"></i></a>
 						 </li>
 					#end
-				#else
-				
+				#end
+				#ifnull($entitymodule)
 					#if($moduleid == "asset" && $canviewupload)
 					<li>
 						<a  class="ajax resultsnavlink px-3" 
@@ -224,8 +207,7 @@ $context.putPageValue("entityid", $entityid)
 								data-viewid="export"
 								data-tabtype="tabexport" 
 								data-entityid="$!entity.getId()" 
-								data-topmoduleid="$!moduleid"
-								data-moduleid="$!moduleid"
+								data-entitymoduleid="$!entitymodule.id"
 									title="[[Download All]]">[[Download All in Zip]]</a>
 								 </li>
 							 #end
@@ -261,12 +243,7 @@ $context.putPageValue("entityid", $entityid)
 					#end	
 				#end
 			#end
-			
-			##if($desktop && $user && ($candownload || $canconvert || $candownloadfpo ) )
-			##	$pages.include("$componenthome/desktop/menu.html?collectionid=$librarycol.getId()",$context)
-			##end
 
-			##<li><div id="resultsmessages"></div></li>
 		</ul>
 
 		<ul class="resultsnavright">
@@ -379,12 +356,11 @@ $context.putPageValue("entityid", $entityid)
 					data-hidebackdrop="true"
 					data-hidefooter="true"
 					data-modalsize="sm"
-					data-moduleid="$!{moduleid}"
 					data-hitssessionid="$hits.getSessionId()"
 					data-categoryid="$!categoryid"
 					data-rootcategory="$!rootcategory"
-					data-topmoduleid="$!topmoduleid"
-					data-entityid="$!entityid"
+					data-entityid="$!entity.id"
+					data-entitymoduleid="$!entitymodule.id"
 					data-targetdivsearch="$!{moduleid}resultscontainer"
 					style="padding:0 8px 0 10px;" 
 					title="[[Sort Results]]"><i class="bi bi-sort-down"></i> [[Sort]]</a>

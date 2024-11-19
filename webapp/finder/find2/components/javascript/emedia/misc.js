@@ -717,7 +717,7 @@ function intializeUI() {
 		var currenttab = link.data("currenttab");
 		$(".entity-tab").removeClass("current-entity");
 		link.closest(".entity-tab").addClass("current-entity");
-		var topmoduleid = link.data("topmoduleid");
+		var entitymoduleid = link.data("entitymoduleid");
 		var entityid = link.data("entityid");
 
 		var options = link.data();
@@ -764,7 +764,7 @@ function intializeUI() {
 			$(".tabactionexport").addClass("enabledaction");
 		} else {
 			saveProfileProperty(
-				topmoduleid + "_entitytabopen",
+				entitymoduleid + "_entitytabopen",
 				link.data("currenttab"),
 				function () {}
 			);
@@ -773,7 +773,7 @@ function intializeUI() {
 		var url =
 			apphome +
 			"/views/modules/" +
-			topmoduleid +
+			entitymoduleid +
 			"/index.html?entityid=" +
 			entityid +
 			"&entitytabopen=" +
@@ -2900,11 +2900,18 @@ function intializeUI() {
 		var toggler = $(this);
 		var options = toggler.data();
 		var url = toggler.data("url");
-		var targetdiv = toggler.data("targetdiv");
 		var treestatus = toggler.data("treestatus");
+		
+		var targetdiv_ = toggler.data("targetdiv");
+		var targetDiv = toggler.closest("." + $.escapeSelector(targetdiv_));
+		if (!targetDiv.length) {
+			targetDiv = $("." + $.escapeSelector(targetdiv_));
+		}
+		if (!targetDiv.length) {
+			targetDiv = $("#" + $.escapeSelector(targetdiv_)); //legacy
+		}
 
-		var dialogresults = $("#" + targetdiv).find("#dialogmediaentity");
-		var currentcategoryid = dialogresults.data("categoryid");
+		var currentcategoryid = targetDiv.data("categoryid");
 		if (currentcategoryid !== undefined) {
 			options.categoryid = currentcategoryid;
 		}
@@ -2915,7 +2922,7 @@ function intializeUI() {
 			data: options,
 			success: function (data) {
 				data = $(data);
-				$("#" + targetdiv).replaceWith(data);
+				targetDiv.replaceWith(data);
 				$(window).trigger("resize");
 			},
 		});

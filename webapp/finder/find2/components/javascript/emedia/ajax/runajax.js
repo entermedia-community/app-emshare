@@ -32,16 +32,6 @@
 		if (options.isEmptyObject || $(anchor).data("findalldata")) {
 			options = findalldata(anchor);
 		}
-
-		var targetDiv = anchor.data("targetdiv");
-		var replaceHtml = true;
-
-		var targetDivInner = anchor.data("targetdivinner");
-		if (targetDivInner) {
-			targetDiv = targetDivInner;
-			replaceHtml = false;
-		}
-
 		var useparent = anchor.data("useparent");
 		var activemenu;
 		if (anchor.hasClass("auto-active-link")) {
@@ -65,12 +55,26 @@
 		}
 
 		var anchorModal = anchor.closest(".modal");
+		
+		var targetdiv_ = anchor.data("targetdiv");
+		var replaceHtml = true;
 
-		if (targetDiv) {
+		var targetDivInner = anchor.data("targetdivinner");
+		if (targetDivInner) {
+			targetdiv_ = targetDivInner;
+			replaceHtml = false;
+		}
+		var targetDiv = anchor.closest("." + $.escapeSelector(targetdiv_));
+		if (!targetDiv.length) {
+			targetDiv = $("." + $.escapeSelector(targetdiv_));
+		}
+		if (!targetDiv.length) {
+			targetDiv = $("#" + $.escapeSelector(targetdiv_)); //legacy
+		}
+		
+		if (targetDiv.length) {
 			anchor.css("cursor", "wait");
 			$("body").css("cursor", "wait");
-
-			targetDiv = targetDiv.replace(/\//g, "\\/");
 
 			//before ajaxcall
 			if (anchor.data("onbefore")) {
@@ -82,10 +86,6 @@
 				}
 			}
 
-			if (!targetDiv.startsWith("#") && !targetDiv.startsWith(".")) {
-				targetDiv = "#" + targetDiv;
-			}
-
 			$(window).trigger("showToast", [anchor]);
 			var toastUid = $(anchor).data("uid");
 			jQuery
@@ -95,22 +95,23 @@
 					success: function (data) {
 						anchor.data("uid", toastUid);
 						$(window).trigger("successToast", [anchor]);
+						/*
 						var cell;
 						if (useparent && useparent == "true") {
 							cell = $("#" + targetDiv, window.parent.document);
 						} else {
 							cell = findClosest(anchor, targetDiv);
-						}
+						}*/
 						var onpage;
 						var newcell;
 						if (replaceHtml) {
 							//Call replacer to pull $scope variables
-							onpage = cell.parent();
-							cell.replaceWith(data); //Cant get a valid dom element
+							onpage = targetDiv.parent();
+							targetDiv.replaceWith(data); //Cant get a valid dom element
 							newcell = findClosest(onpage, targetDiv);
 						} else {
-							onpage = cell;
-							cell.html(data);
+							onpage = targetDiv;
+							targetDiv.html(data);
 							newcell = onpage.children(":first");
 						}
 						$(window).trigger("setPageTitle", [newcell]);
