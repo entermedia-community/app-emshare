@@ -469,16 +469,15 @@ $.fn.initUpload = function () {
 				.css("width", "100%");
 		},
 		onError: function (event, name, error) {
-			alert("error while uploading file " + name);
+			customToast("Error while uploading file " + name, {
+				autohide: false,
+				positive: false,
+			});
 			haderror = true;
 		},
 		onFinish: function (event, total) {
-			$("body").append(
-				'<div class="alert alert-success fader alert-save">Uploaded ' +
-					total +
-					" file" +
-					(total > 1 ? "s" : "") +
-					" successfully!</div>"
+			customToast(
+				`Uploaded ${total} file${total > 1 ? "s" : ""} successfully!`
 			);
 			//do a search
 			if (!haderror) {

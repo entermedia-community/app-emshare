@@ -133,14 +133,7 @@
 
 						//actions after autoreload?
 						var message = anchor.data("alertmessage");
-						if (message) {
-							$("body").append(
-								'<div class="alert alert-success fader alert-save">' +
-									message +
-									"</div>"
-							);
-						}
-						// TODO?
+						if (message) customToast(message);
 					},
 					error: function () {
 						anchor.data("uid", toastUid);
@@ -208,6 +201,34 @@
 		return this;
 	};
 })(jQuery);
+
+$(document).ajaxError(function (e, jqXhr, settings, exception) {
+	console.log(e, jqXhr, exception);
+	if (exception == "abort") {
+		return;
+	}
+	var err = "Error processing the request!";
+	if (jqXhr.readyState == 0) {
+		err = "Network error!";
+	} else if (exception == "timeout") {
+		err = "Request timed out!";
+	}
+
+	customToast(err, {
+		autohide: false,
+		positive: false,
+	});
+
+	var errors =
+		"Error: " +
+		exception +
+		"\n" +
+		jqXhr.responseText +
+		"\n URL: " +
+		settings.url;
+	console.error(errors);
+	return;
+});
 
 var runAjaxOn = {};
 var ajaxRunning = false;

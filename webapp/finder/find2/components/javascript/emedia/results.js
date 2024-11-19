@@ -555,7 +555,7 @@ jQuery(document).ready(function (url, params) {
 		inOverlay.hide();
 		inOverlay.removeClass("show");
 		if ($(".modal.behind").length) {
-			adjustzindex($(".modal.behind"));
+			adjustZIndex($(".modal.behind"));
 		}
 
 		var reloadonclose = $("#resultsdiv").data("reloadresults");
@@ -584,7 +584,7 @@ jQuery(document).ready(function (url, params) {
 		$("body").css({ overflow: "hidden" });
 		inOverlay.show();
 
-		adjustzindex(inOverlay);
+		adjustZIndex(inOverlay);
 
 		inOverlay.addClass("show");
 		var lastscroll = $(window).scrollTop();

@@ -656,39 +656,6 @@ function intializeUI() {
 		closeemdialog($(this).closest(".modal"));
 	});
 
-	closeemdialog = function (modaldialog) {
-		var oldurlbar = modaldialog.data("oldurlbar");
-
-		if (modaldialog.modal) {
-			modaldialog.modal("hide");
-			modaldialog.remove();
-		}
-		//other modals?
-		var othermodal = $(".modal");
-		if (othermodal.length && !othermodal.is(":hidden")) {
-			adjustzindex(othermodal);
-		}
-
-		$(window).trigger("hideLoader");
-		$(window).trigger("setPageTitle", [othermodal]);
-
-		if (oldurlbar !== undefined) {
-			history.pushState($("#application").html(), null, oldurlbar);
-		}
-	};
-
-	closeallemdialogs = function () {
-		$(".modal").each(function () {
-			var modaldialog = $(this);
-			modaldialog.modal("hide");
-			modaldialog.remove();
-		});
-		var overlay = $("#hiddenoverlay");
-		if (overlay.length) {
-			hideOverlayDiv(overlay);
-		}
-	};
-
 	$(window).on("setPageTitle", function (event, element) {
 		if (element === undefined) {
 			element = $("#applicationcontent");
@@ -723,34 +690,6 @@ function intializeUI() {
 			}
 		}
 	});
-
-	adjustzindex = function (element) {
-		var zIndex = 100000;
-		setTimeout(function () {
-			var adjust = 0;
-
-			if (element.hasClass("modalmediaviewer")) {
-				$(".modal:visible").css("z-index", zIndex);
-				$(".modal:visible").off();
-				$(".modal:visible").addClass("behind");
-				$(".modal:visible").hide();
-			} else {
-				$(".modalmediaviewer").css("z-index", zIndex);
-				$(".modal:visible").css("z-index", zIndex - 1); //reset others?
-				$(".modal-backdrop")
-					.not(".modal-stack")
-					.css("z-index", zIndex - 1)
-					.addClass("modal-stack");
-			}
-			adjust = 1 + 1 * $(".modal:visible").length;
-			element.css("z-index", zIndex + adjust);
-			$(".onfront").removeClass("onfront");
-			element.show();
-			element.addClass("onfront");
-
-			$(window).trigger("resize");
-		}, 0);
-	};
 
 	lQuery("a.triggerjs").livequery("click", function (event) {
 		event.preventDefault();
@@ -945,7 +884,6 @@ function intializeUI() {
 		event.preventDefault();
 		var targetModal = $(this).closest(".modal");
 		confirmModalClose(targetModal);
-		$(window).trigger("hideLoader");
 	});
 
 	lQuery(".entitytabactions").livequery("click", function (event) {

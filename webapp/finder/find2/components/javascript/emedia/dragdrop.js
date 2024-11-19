@@ -77,7 +77,6 @@ updatebasket = function (e) {
 		targetDiv = targetDiv.replace(/\//g, "\\/");
 
 		$("#" + targetDiv).load(nextpage, function () {
-			$(window).trigger("showLoader");
 			var url = apphome + "/components/basket/menuitem.html";
 			$.ajax({
 				xhrFields: {
@@ -93,13 +92,7 @@ updatebasket = function (e) {
 							window.location.reload();
 						}
 					}
-					$("body").append(
-						'<div class="alert alert-success fader alert-save">Added to cart</div>'
-					);
-					$(window).trigger("hideLoader");
-				},
-				complete: function () {
-					hideLoader();
+					customToast("Added to cart!");
 				},
 			});
 		});
@@ -115,9 +108,7 @@ updatebasketmediaviewer = function (e) {
 	var alerttxt = $(this).data("alerttxt");
 	$("#" + targetDiv).load(nextpage, function () {
 		$("#basket-paint").load(apphome + "/components/basket/menuitem.html");
-		$("#mainmedianotifications").html(
-			'<div class="alert alert-success alert-save fader">' + alerttxt + "</div>"
-		);
+		customToast(alerttxt);
 	});
 	if ($(this).closest(".dropdown-menu").length !== 0) {
 		$(this).closest(".dropdown-menu").removeClass("show");
@@ -655,10 +646,7 @@ onloadselectors = function () {
 								rootcategoryid: rootcategory,
 							},
 							function (data) {
-								node.append(
-									"<span class='fader emnotify'>+" + data + "</span>"
-								);
-								node.find(".fader").fadeOut(3000);
+								customToast(data);
 								node.removeClass("dragoverselected");
 							}
 						);
@@ -717,10 +705,7 @@ onloadselectors = function () {
 									// success
 									targetdiv.replaceWith(data2);
 									if (data.trim() != "") {
-										targetdiv.append(
-											"<span class='fader emnotify'>+" + data + "</span>"
-										);
-										targetdiv.find(".fader").fadeOut(3000);
+										customToast(data);
 									}
 									targetdiv.removeClass("dragoverselected");
 								});
@@ -908,34 +893,6 @@ $(document).ready(function () {
 	siteroot = app.data("siteroot");
 	apphome = siteroot + app.data("apphome");
 	themeprefix = app.data("siteroot") + app.data("themeprefix");
-
-	$(document).ajaxError(function (e, jqxhr, settings, exception) {
-		console.log(e, jqxhr, exception);
-		if (exception == "abort" || exception == "timeout") {
-			// options
-			// are
-			// "timeout",
-			// "error",
-			// "abort",
-			// and
-			// "parsererror".
-			return;
-		}
-
-		$("#application").append(
-			'<div class="alert fader alert-error" role="alert">Error processing the request</div>'
-		);
-
-		var errors =
-			"Error: " +
-			exception +
-			"\n" +
-			jqxhr.responseText +
-			"\n URL: " +
-			settings.url;
-		console.error(errors);
-		return;
-	});
 	onloadselectors();
 	emcomponents();
 });

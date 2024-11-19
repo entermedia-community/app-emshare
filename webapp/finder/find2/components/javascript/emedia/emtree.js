@@ -169,49 +169,43 @@ $(function () {
 			options.oemaxlevel = inOptions["oemaxlevel"];
 		}
 
-		$(window).trigger("showLoader");
-
 		//jQuery.get(prefix + nodeid + postfix,
-		jQuery
-			.get(prefix, options, function (data) {
-				//data = $(data);
+		jQuery.get(prefix, options, function (data) {
+			//data = $(data);
 
-				var targetdiv = tree.data("targetdivinner");
-				var onpage;
+			var targetdiv = tree.data("targetdivinner");
+			var onpage;
+			if (targetdiv) {
+				var cell = jQuery("#" + targetdiv);
+				onpage = cell;
+				cell.html(data);
+			} else {
+				targetdiv = tree.data("targetdiv");
 				if (targetdiv) {
 					var cell = jQuery("#" + targetdiv);
-					onpage = cell;
-					cell.html(data);
-				} else {
-					targetdiv = tree.data("targetdiv");
-					if (targetdiv) {
-						var cell = jQuery("#" + targetdiv);
-						onpage = cell.parent();
-						cell.replaceWith(data);
-					}
+					onpage = cell.parent();
+					cell.replaceWith(data);
 				}
+			}
 
-				cell = findClosest(onpage, "#" + targetdiv);
+			cell = findClosest(onpage, "#" + targetdiv);
 
-				$(window).trigger("setPageTitle", [cell]);
+			$(window).trigger("setPageTitle", [cell]);
 
-				if (
-					typeof global_updateurl !== "undefined" &&
-					global_updateurl == false
-				) {
-					//globaly disabled updateurl
-				} else {
-					//Update Address Bar
-					if (tree.data("updateaddressbar")) {
-						history.pushState($("#application").html(), null, reloadurl);
-					}
+			if (
+				typeof global_updateurl !== "undefined" &&
+				global_updateurl == false
+			) {
+				//globaly disabled updateurl
+			} else {
+				//Update Address Bar
+				if (tree.data("updateaddressbar")) {
+					history.pushState($("#application").html(), null, reloadurl);
 				}
+			}
 
-				$(window).trigger("resize");
-			})
-			.always(function () {
-				$(window).trigger("hideLoader");
-			});
+			$(window).trigger("resize");
+		});
 	};
 
 	var treeTop = $(".cat-current");

@@ -44,10 +44,10 @@ jQuery(document).ready(function () {
 		} else {
 			console.error(error);
 		}
-
-		app.append(
-			'<div class="alert fader alert-error" role="alert">Desktop Error: Check log for details.</div>'
-		);
+		customToast("Desktop Error: Check log for details.", {
+			autohide: false,
+			positive: false,
+		});
 	});
 
 	function humanFileSize(bytes, htm = false) {

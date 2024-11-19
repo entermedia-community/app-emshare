@@ -40,7 +40,7 @@ lQuery(".toastClose").livequery("click", function () {
 	}, 500);
 });
 
-function customToast(message, options = {}) {
+customToast = function (message, options = {}) {
 	var autohide = options.autohide === undefined ? true : options.autohide;
 	var autohideDelay = options.autohideDelay || 3000;
 	var positive = options.positive === undefined ? true : options.positive;
@@ -63,7 +63,7 @@ function customToast(message, options = {}) {
 			}, 500);
 		}, autohideDelay);
 	}
-}
+};
 
 function destroyToast(toast, success = true) {
 	clearTimeout(toastTO);

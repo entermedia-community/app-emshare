@@ -1197,7 +1197,6 @@ $(document).ready(function () {
 		lQuery("#icons-list").livequery(function () {
 			$(this).on("click", "button", function (e) {
 				e.stopImmediatePropagation();
-				$(window).trigger("showLoader");
 				var iconPath =
 					apphome +
 					"/theme/icons/bootstrap/" +
@@ -1208,7 +1207,6 @@ $(document).ready(function () {
 					var allSelected = canvas.getSelection().getAll().data;
 					if (allSelected.length == 0) {
 						closeemdialog($(this).closest(".modal"));
-						$(window).trigger("hideLoader");
 						return;
 					} else {
 						selectedFolder = allSelected[0];
@@ -1219,14 +1217,12 @@ $(document).ready(function () {
 				var prevIcon = canvas.getFigure(selectedFolderId + "-icon");
 				if (!prevIcon) {
 					closeemdialog($(this).closest(".modal"));
-					hideLoader();
 					return;
 				}
 				prevIcon.setPath(iconPath);
 				$("#folderThumbPickerBtn").html(`<img src="${iconPath}" />`);
 				selectedLabel.getUserData().moduleicon = iconPath;
 				closeemdialog($(this).closest(".modal"));
-				hideLoader();
 				saveJSON();
 			});
 		});

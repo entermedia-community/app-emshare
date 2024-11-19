@@ -164,7 +164,7 @@
 						//checkScroll();
 					});
 
-					adjustzindex(modalinstance);
+					adjustZIndex(modalinstance);
 				}
 
 				if (
@@ -210,7 +210,6 @@
 
 		$(modaldialog).on("shown.bs.modal", function () {
 			trackKeydown = true;
-			//adjustzindex($(this));
 			var focuselement = modaldialog.data("focuson");
 			if (focuselement) {
 				//console.log(focuselement);
@@ -255,3 +254,35 @@
 		return this;
 	};
 })(jQuery);
+
+closeemdialog = function (modaldialog) {
+	var oldurlbar = modaldialog.data("oldurlbar");
+
+	if (modaldialog.modal) {
+		modaldialog.modal("hide");
+		modaldialog.remove();
+	}
+	//other modals?
+	var othermodal = $(".modal");
+	if (othermodal.length && !othermodal.is(":hidden")) {
+		adjustZIndex(othermodal);
+	}
+
+	$(window).trigger("setPageTitle", [othermodal]);
+
+	if (oldurlbar !== undefined) {
+		history.pushState($("#application").html(), null, oldurlbar);
+	}
+};
+
+closeallemdialogs = function () {
+	$(".modal").each(function () {
+		var modaldialog = $(this);
+		modaldialog.modal("hide");
+		modaldialog.remove();
+	});
+	var overlay = $("#hiddenoverlay");
+	if (overlay.length) {
+		hideOverlayDiv(overlay);
+	}
+};
