@@ -28,23 +28,6 @@ $context.putPageValue("categoryid", $categoryid)
 	#set( $rootcategory = $categoryid)
 #end
 
-#if(!$parentmoduleid)
-	#set ( $parentmoduleid = $context.getRequestParameter("topmoduleid") )
-#end
-#ifnotnull($parentmoduleid)
-	#set($parentmodule = $mediaarchive.getCachedData("module", $parentmoduleid))
-#end
-#ifnull($parentmodule)
-	#set($parentmodule = $mediaarchive.getCachedData("module", $parentsearchtype))
-	
-#end
-$context.putPageValue("topmodule", $parentmodule)
-$context.putPageValue("topmoduleid", $parentmoduleid)
-
-#ifnull($entityid)
-#set($entityid = $context.getRequestParameter('entityid'))
-#end
-
 #set($resultview = $userprofile.get("assetresultview"))
 
 #set($maintargetdiv = "dialogassetresultscontainer")
@@ -63,7 +46,7 @@ $context.putPageValue("targetdivmedia", $targetdivmedia)
 
 <div id="resultscontainer${module.id}"
 	class="dialogassetresults assetresults resultsdiv resultsdiv${module.id}" 
-	data-moduleid="asset"
+	data-moduleid="asset"  ##required for sorting
 	data-resultview="$!resultview"
 	data-url="$searchhome/index.html"
 	data-categoryid="$!categoryid"
@@ -76,8 +59,8 @@ $context.putPageValue("targetdivmedia", $targetdivmedia)
 	data-componenthome = "$!componenthome"
 	data-searchhome="$!searchhome"
 	data-targetdiv="resultsdiv"
-	data-topmoduleid="$!topmoduleid"
-	data-entityid="$!entityid"
+	data-entityid="$!entity.id"
+	data-entitymoduleid="$!entitymodule.id"
 	data-rootcategory="$!rootcategory"
 	data-oemaxlevel="1"
 	data-assetsortby="$!hits.getSearchQuery().getSortBy()"
@@ -120,11 +103,11 @@ $context.putPageValue("targetdivmedia", $targetdivmedia)
 							
 							<a href="#" 
 							class="d-flex align-items-center toggledialogtree toggledialogclose"
-							data-targetdiv="dialogassetresultscontainer"
+							data-targetdiv="resultsdiv"
 							data-oemaxlevel="1"
 							data-url="$searchhome/index.html"
-							data-topmoduleid="$!topmoduleid"
-							data-entityid="$!entityid"
+							data-entityid="$!entity.id"
+							data-entitymoduleid="$!entitymodule.id"
 							data-rootcategory="$!rootcategory"
 							data-categoryid="$!categoryid"
 							data-treestatus="close"
