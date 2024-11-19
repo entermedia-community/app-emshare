@@ -1,0 +1,158 @@
+<div id="pickersearchentities" data-setpagetitle="[[Select]] #text($module)">
+
+	#set($moduleid = $context.getRequestParameter("moduleid"))
+	#if(!$moduleid)
+		#set($moduleid = $module.getId())	
+	#end
+	$context.putPageValue("moduleid", $moduleid)
+	
+	#set($copyinghitssessionid = $context.getRequestParameter("copyinghitssessionid"))
+	
+	#set($copyinghits = $context.getSessionValue($copyinghitssessionid))
+
+	#set($copyingsearchtype = $context.getRequestParameter("copyingsearchtype"))
+	
+	#set($pickedassetid = $context.getRequestParameter("pickedassetid"))
+	
+	#set($copyingcategoryid = $context.getRequestParameter("copyingcategoryid"))
+	
+	#set($fieldexternalid = $context.getRequestParameter("fieldexternalid"))
+	
+	#set($fieldexternalvalue = $context.getRequestParameter("fieldexternalvalue"))	
+	
+	#set($pickertarget = $context.getRequestParameter("pickertarget"))
+	
+	#set($targettype = $context.getRequestParameter("targettype"))
+
+	#if(!$viewid)
+		#set( $viewid = "$!{searchtype}advancedfilter") 
+	#end
+	#if( !$viewpath )
+		#set( $viewpath = $context.getRequestParameter("viewpath"))
+	#end
+	#if( !$viewpath )
+		#set( $viewpath = $context.getRequestParameter("view"))
+	#end
+	#if( !$viewpath )
+		#set( $viewpath = "$!{searchtype}/$!{viewid}")
+	#end
+	
+	#if( $copyinghits || $pickedassetid)
+	<div class="alert alert-info">
+		
+		#if( $copyinghitssessionid && $copyinghits.getSelectionSize() > 0)	
+		  		<strong>[[Adding]]</strong> $copyinghits.getSelectionSize() [[items]]
+		#elseif($pickedassetid)	
+				<strong>[[Adding]]</strong> 1 [[asset]]
+		#end	
+	</div>
+	#end
+	
+	
+	#set($pickersearchaddnew = $context.getRequestParameter("pickersearchaddnew"))
+	
+	#if($moduleid != "asset")
+		#if($pickersearchaddnew)
+			#set($addnew = "$apphome/views/modules/${moduleid}/components/entities/addnew.html")
+			<a class="btn btn-lg btn-accent rounded mb-3 ajax float-left" style="min-width: 150px;"
+			data-targetdivinner="pickersearchentities"
+			data-pickertarget="$!pickertarget"
+			data-targettype="$!targettype"
+			data-ajaxreloadtargets="onetomanytab"
+			data-fieldexternalid="$!fieldexternalid"
+			data-fieldexternalvalue="$!fieldexternalvalue"
+			data-oemaxlevel="1"
+			href="$addnew">
+			<i class="bi bi-plus-lg mr-1"></i> [[Create New]]</a>
+		#else
+			#set($addnew = "${searchhome}/tabs/preview/entity.html")
+			
+			#if($pickedassetid)
+				#set($addnew = "${addnew}?edit=true&addnew=true&viewfiles=true&saveaction=addassets&pickedassetid=$!pickedassetid&copyingsearchtype=asset")
+			#elseif($copyingcategoryid)
+				#set($addnew = "${addnew}?edit=true&addnew=true&viewfiles=true&copyingsearchtype=$!copyingsearchtype&saveaction=additems&copyingcategoryid=$!copyingcategoryid&moduleid=$moduleid")
+			#elseif($copyinghits)
+				#set($addnew = "${addnew}?edit=true&addnew=true&viewfiles=true&copyingsearchtype=$!copyingsearchtype&saveaction=additems&copyinghitssessionid=$!copyinghitssessionid&moduleid=$moduleid")
+			#else
+				#set($addnew = "${addnew}?edit=true&addnew=true&saveaction=upload")
+			#end
+			<a class="btn btn-lg btn-accent rounded mb-3 emdialog float-righ" style="min-width: 150px;"
+			data-dialogid="addnewentity"
+			href="$addnew">
+			<i class="bi bi-plus-lg mr-1"></i> [[Create New]]</a>
+		#end 
+	#end
+	<div class="clearfix"></div>
+		
+		
+
+	<div class="overflow-y">
+		<div id="entitypickerresults" class="pickerresults #if( $copyinghits || $pickedassetid || $copyingcategoryid) pickerresultscopy #end $!targettype"
+			
+			#if( $copyinghits || $pickedassetid || $copyingcategoryid) 
+				#if($pickedassetid)
+					data-pickedassetid="$pickedassetid"
+					data-clickurl="$applink/views/modules/${moduleid}/components/entities/addassettoentity.html"
+					data-clicktargetdiv="assetentityresultsmediaviewer"
+				#else
+					data-copyinghitssessionid="$!copyinghitssessionid"
+				#end
+				#if($pickertarget=="addtocategory")
+					data-copyinghitssessionid="$!copyinghitssessionid"
+					data-copyingsearchtype="$!copyingsearchtype"
+					data-clickurl="$applink/views/modules/searchcategory/savetoentities.html"
+					data-clicktargetdiv="applicationmaincontent"
+					data-targettype="message"
+				#else
+					#if($copyingsearchtype == "category")
+						data-clickurl="$applink/views/modules/${moduleid}/components/entities/addcategorytoentity.html" 
+						data-copyingcategoryid="$!copyingcategoryid"
+					#else
+						#if($copyingsearchtype == "assets")
+							data-clickurl="$applink/views/modules/${moduleid}/components/entities/addassetstoentity.html"
+						#else 
+							data-clickurl="$applink/views/modules/${moduleid}/components/entities/copytoentity.html"
+						#end
+					#end
+					data-copyingsearchtype="$!copyingsearchtype"
+					data-clicktargetdiv="applicationmaincontent"
+					data-targettype="message"
+				#end
+			#elseif($pickertarget)
+				data-pickertarget="$!pickertarget"
+				data-targettype="$!targettype"
+				
+				#if($targettype == "entitypickersubmodule")
+					data-clickurl="$applink/views/modules/${moduleid}/components/entities/savesubmodule.html"
+					data-clicktargetdiv="entitydialog"
+					data-fieldexternalid="$!fieldexternalid"
+					data-fieldexternalvalue="$!fieldexternalvalue"
+				#end
+			#else
+				data-targettype="pickandupload"
+				data-targetlink="${searchhome}/tabs/preview/entity.html"
+				data-saveaction="upload"
+				data-uploadmedia="true"
+			#end
+			data-pickedmoduleid="$!{moduleid}"
+			data-moduleid="${moduleid}">
+		
+		##Used? legacy?
+		#set( $foreignkeyid = $context.getRequestParameter("foreignkeyid") )
+		#set( $foreignkeyvalue = $context.getRequestParameter("foreignkeyvalue") )
+		
+		
+
+		#if( $fieldexternalid && $fieldexternalvalue )
+				$pages.include("$apphome/views/modules/$!{moduleid}/components/entities/search/results.html?field=${fieldexternalid}&${fieldexternalid}.value=${fieldexternalvalue}&operation=not",$context)
+		#elseif( $foreignkeyid && $foreignkeyvalue )	
+				$pages.include("$apphome/views/modules/$!{moduleid}/components/entities/search/results.html?field=$foreignkeyid&${foreignkeyid}.value=$foreignkeyvale&operation=exact",$context)
+		#else
+				$pages.include("$apphome/views/modules/$!{moduleid}/components/entities/search/results.html",$context)
+		#end		
+		</div>
+	</div>
+
+	
+
+</div>

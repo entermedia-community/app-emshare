@@ -1,9 +1,8 @@
 
-#set($viewsearcher = $searcherManager.getSearcher($catalogid, "view"))
 #ifnull($viewid)
 	#set($viewid = $context.getRequestParameter("viewid"))
 #end
-#set( $viewdata = $viewsearcher.searchById($viewid))
+#set($viewdata = $mediaarchive.getCachedData("view",$viewid))
 
 #set( $submoduleid = $viewdata.rendertable )
 
@@ -23,7 +22,7 @@
 		data-url="${searchhome}/tabs/preview/tabsubmodulehome.html"
 		#if($hidesubmodule) style="display: none; #end">
 		
-			#set($searchhome = "$apphome/views/modules/${module.id}/results/submodules")
+			#set($searchhome = "$apphome/views/modules/${module.id}/results/submoduleslist")
 			$context.putPageValue("searchhome", $searchhome)
 			$pages.include("${searchhome}/index.html?viewid=$!viewid",$context)
 		

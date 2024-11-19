@@ -1,23 +1,15 @@
-
-#ifnull($entityid)
-#set( $entityid = $context.getRequestParameter("entityid"))
-#end
-#ifnull($entityid)
-#set( $entityid = $context.getRequestParameter("parentid"))
-#end
-$context.putPageValue("entityid", $entityid)
-
 #set( $fieldexternalid = $context.getRequestParameter("fieldexternalid"))
 #set( $fieldexternalvalue = $context.getRequestParameter("fieldexternalvalue"))
 $context.putPageValue("fieldexternalid", $fieldexternalid)
 $context.putPageValue("fieldexternalvalue", $fieldexternalvalue)
+
+#set($viewid = $context.getRequestParameter("viewid"))
 
 #set($tabid = "tab_${viewid}")
 #set($submoduleresults = "results$!{viewid}")
 $context.putPageValue("submoduleresults", $submoduleresults)
 
 #set($hits = $subtablehits)
-$hits
 $context.putPageValue("hits", $hits)
 $context.putPageValue("tablehits", $hits)
 
@@ -38,16 +30,16 @@ $context.putPageValue("tabletype", $tabletype)
 		#if($permissions.can($parentmoduleid, "edit"))
 			#if($permissions.can($!submodule.getId() , "create"))
 
-				#set($pickerurl= "$applink/views/modules/$!{subentitysearchtype}/components/entities/search/searchpicker.html")
+				#set($pickerurl= "$applink/views/modules/$!{module.id}/results/pickersubmodules/index.html")
 				<a href="$pickerurl" 
 					class="emdialog btn btn-accent ml-1"
 					data-dialogid="entitypicker"
 					data-width="1200"
 					data-entityid="$!{entityid}"
-					data-topmodule="$!{topmoduleid}"
-					data-fieldexternalid = '$!{fieldexternalid}'
-					data-fieldexternalvalue = '$!{fieldexternalvalue}'
-					data-entitymodule="$!{subentitysearchtype}"
+					data-entitymoduleid="$!{module.id}"
+					data-viewid="$viewid"
+					data-entityid="$entity.id"
+					data-entitymodule="$!{module.id}"
 					data-pickertarget="$!{tabid}"
 					data-targettype="entitypickersubmodule"
 					data-pickersearchaddnew="true"
