@@ -116,9 +116,11 @@
 						});
 					}
 
-					var firstform = $("form", modaldialog);
-					firstform.data("openedfrom", openfrom);
-					firstform.data("initiator", initiator);
+					if (initiator.is(":visible")) {
+						var firstform = $("form", modaldialog);
+						firstform.data("openedfrom", openfrom);
+						firstform.data("initiatorX", initiator);
+					}
 
 					// fix submit button
 					var justok = initiator.data("cancelsubmit");

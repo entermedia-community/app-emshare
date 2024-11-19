@@ -51,9 +51,9 @@
 			class="ajaxform autosubmitform filterform"
 			method="POST" 
 
-			action="${searchhome}/index.html"
+			action="${searchhome}/search.html"
 			data-oemaxlevel="1"
-			data-targetdiv="resultsdiv${module.id}"
+			data-targetdiv="resultsdiv"
 	>
 	<input type="hidden" name="targetdivsearch" value="$targetdivsearch" />
 	<input type="hidden" name="searching" value="true" />
@@ -117,9 +117,9 @@
 		
 		#set( $nodeID = $context.getRequestParameter("nodeID"))
 		
-		#if($parentmoduleid)
-			<input name="topmoduleid" type="hidden" value="$!topmoduleid" />
-			<input name="entityid" type="hidden" value="$!entityid" />
+		#ifnotnull($entitymodule)
+			<input name="entitymoduleid" type="hidden" value="$!entitymodule.id" />
+			<input name="entityid" type="hidden" value="$!entity.id" />
 			
 			#if($tabletype == "subentity")
 				#if($viewid)
