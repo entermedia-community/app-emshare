@@ -9,12 +9,12 @@ var allfiles = new Array();
 
 // wait for the DOM to be loaded
 $(document).ready(function () {
-	var isDesktop = $("#application").data("desktop");
-	var ipcRenderer;
-	if (isDesktop) {
-		const { ipcRenderer: ipc } = require("electron");
-		ipcRenderer = ipc;
-	}
+	// var isDesktop = $("#application").data("desktop");
+	// var ipcRenderer;
+	// if (isDesktop) {
+	// 	const { ipcRenderer: ipc } = require("electron");
+	// 	ipcRenderer = ipc;
+	// }
 	if (apphome === undefined) {
 		if (!siteroot) {
 			siteroot = $("#application").data("siteroot");
@@ -208,28 +208,28 @@ $(document).ready(function () {
 					e.preventDefault();
 					e.stopPropagation();
 					var uploadTarget = $(".webUploadButton");
-					if (ipcRenderer) {
-						const { webUtils } = require("electron");
-						var filePaths = [];
-						for (const f of e.originalEvent.dataTransfer.files) {
-							filePaths.push(webUtils.getPathForFile(f));
-						}
-						var data = uploadTarget.data();
-						div.removeClass("filehover");
-						ipcRenderer.send("filesDropped", { data: data, files: filePaths });
-						customToast(
-							filePaths.length +
-								" file" +
-								(filePaths.length > 1 ? "s" : "") +
-								" added to upload process!",
-							{
-								autohide: false,
-								btnText: "Show",
-								btnClass: "btn btn-sm px-2 mx-2 btn-outline-primary",
-							}
-						);
-						return;
-					}
+					// if (ipcRenderer) {
+					// 	const { webUtils } = require("electron");
+					// 	var filePaths = [];
+					// 	for (const f of e.originalEvent.dataTransfer.files) {
+					// 		filePaths.push(webUtils.getPathForFile(f));
+					// 	}
+					// 	var data = uploadTarget.data();
+					// 	div.removeClass("filehover");
+					// 	ipcRenderer.send("filesDropped", { data: data, files: filePaths });
+					// 	customToast(
+					// 		filePaths.length +
+					// 			" file" +
+					// 			(filePaths.length > 1 ? "s" : "") +
+					// 			" added to upload process!",
+					// 		{
+					// 			autohide: false,
+					// 			btnText: "Show",
+					// 			btnClass: "btn btn-sm px-2 mx-2 btn-outline-primary",
+					// 		}
+					// 	);
+					// 	return;
+					// }
 					uploadTarget.data("toastmessage", "Processing files...");
 					uploadTarget.data("toastsuccess", "Ready to upload!");
 					uploadTarget.runAjax(function () {
