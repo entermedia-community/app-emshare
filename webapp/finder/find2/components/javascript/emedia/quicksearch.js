@@ -91,7 +91,7 @@ lQuery(".mainsearch").livequery(function () {
 
 		var wh = window.innerHeight;
 		if (wh) {
-			searchmodaldialog.css("height", wh - topposition - 20 + "px");
+			searchmodaldialog.css("height", wh - topposition - 52 + "px");
 		}
 	}
 	setSearchModalSize();

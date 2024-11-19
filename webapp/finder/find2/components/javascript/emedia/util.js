@@ -268,13 +268,13 @@ adjustZIndex = function (element) {
 		$(window).trigger("resize");
 	});
 };
-// NOT USED ANYWHERE
-// resizeGallery = function () {
-// 	var container = $("#emslidesheet");
-// 	if (container.length) {
-// 		var containerw = container.width();
-// 		var boxes = Math.floor(containerw / 230);
-// 		var boxw = Math.floor(containerw / boxes) - 12;
-// 		$("#emslidesheet .emthumbbox").width(boxw);
-// 	}
-// };
+
+lQuery("[autofocus]").livequery(function () {
+	var input = $(this);
+	input.focus();
+	var inputVal = input.val();
+	if (inputVal) {
+		inputVal.val("");
+		inputVal.val(val);
+	}
+});

@@ -1350,11 +1350,10 @@ jQuery(document).ready(function (url, params) {
 		}
 		var targetdiv_ = resultsdiv.data("targetdiv");
 		var targetdiv = column.closest("." + targetdiv_);
-		
+
 		var searchhome = resultsdiv.data("searchhome");
 		var moduleid = resultsdiv.data("moduleid");
 		var options = resultsdiv.data();
-		
 
 		var link = searchhome + "/columnsort.html";
 

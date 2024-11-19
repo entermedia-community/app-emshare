@@ -47,6 +47,12 @@ html::-webkit-scrollbar-track {
 body {
 	background: var(--themed-light-bg);
 }
+#application {
+	--pad-left: 0px;
+}
+#application:has(.pushcontent-open) {
+	--pad-left: 347px;
+}
 .bi {
 	transform: scale(1.2);
 	display: inline-block;
@@ -3840,12 +3846,25 @@ a#searchEntityDropdown {
 	color: var(--primary-color-normal);
 	border: var(--1px-light);
 }
+.nav-quicksearch {
+	position: relative;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	container-type: inline-size;
+}
 .nav-quicksearch .input-group {
 	margin: 0 auto;
 	width: 100%;
 	max-width: 450px;
 	z-index: 101;
 	opacity: 1;
+}
+@container (width > 550px) {
+	.input-group {
+		position: absolute;
+		left: calc(calc(100vw - var(--pad-left)) / 2 - 500px);
+	}
 }
 .nav-quicksearch .form-control:focus {
 	box-shadow: none;
@@ -3931,6 +3950,7 @@ a#searchEntityDropdown {
 }
 .quicksearchmodules {
 	display: flex;
+	flex-wrap: wrap;
 	justify-content: center;
 }
 .qsmodule {
