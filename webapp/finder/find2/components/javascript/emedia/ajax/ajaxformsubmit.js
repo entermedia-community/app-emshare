@@ -48,9 +48,18 @@
 		if (targetdiv_ === undefined) {
 			targetdiv_ = form.data("targetdivinner");
 		}
-		var targetdiv = $("#" + $.escapeSelector(targetdiv_));
+		
+		var initiator = form.data("initiator");
+		if (initiator === undefined)
+		{
+			initiator = form;
+		}
+		var targetdiv = initiator.closest("." + $.escapeSelector(targetdiv_));
 		if (!targetdiv.length) {
 			targetdiv = $("." + $.escapeSelector(targetdiv_));
+		}
+		if (!targetdiv.length) {
+			targetdiv = $("#" + $.escapeSelector(targetdiv_)); //legacy
 		}
 		if (form.attr("action") == undefined) {
 			var action = targetdiv.data("saveaction");
@@ -84,14 +93,10 @@
 
 		var data = {};
 		if (form.data("includesearchcontext") == true) {
-			data = jQuery("#resultsdiv").data();
-			data.oemaxlevel = oemaxlevel;
-		} else {
-			if (targetdiv.data() !== undefined) {
-				//data = targetdiv.data();
-			}
-		}
-
+			var resultsdiv = initiator.closest(".resultsdiv");
+			data = resultsdiv.cleandata();
+		} 
+		
 		data.oemaxlevel = oemaxlevel;
 
 		var formmodal = form.closest(".modal");

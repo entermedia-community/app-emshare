@@ -1,10 +1,10 @@
 (function ($) {
 	$.fn.emDialog = function () {
-		var dialog = $(this);
+		var initiator = $(this);
 
-		var width = dialog.data("width");
-		var maxwidth = dialog.data("maxwidth");
-		var id = dialog.data("dialogid");
+		var width = initiator.data("width");
+		var maxwidth = initiator.data("maxwidth");
+		var id = initiator.data("dialogid");
 		if (!id) {
 			id = "modals";
 		}
@@ -18,19 +18,19 @@
 			);
 			modaldialog = jQuery("#" + id);
 		}
-		var options = dialog.data();
-		var link = dialog.attr("href");
+		var options = initiator.data();
+		var link = initiator.attr("href");
 		if (!link) {
-			link = dialog.data("targetlink");
+			link = initiator.data("targetlink");
 		}
 		if (
-			dialog.hasClass("entity-dialog") &&
-			dialog.closest(".modal").length !== 0
+			initiator.hasClass("entity-dialog") &&
+			initiator.closest(".modal").length !== 0
 		) {
 			//link = link.replace("entity.html", "entitytab.html");
 			options.oemaxlevel = 1;
 		}
-		var param = dialog.data("parameterdata");
+		var param = initiator.data("parameterdata");
 		if (param) {
 			var element = jQuery("#" + param);
 			var name = element.prop("name");
@@ -40,8 +40,8 @@
 
 		var searchpagetitle = "";
 
-		$(window).trigger("showToast", [dialog]);
-		var toastUid = dialog.data("uid");
+		$(window).trigger("showToast", [initiator]);
+		var toastUid = initiator.data("uid");
 		jQuery.ajax({
 			xhrFields: {
 				withCredentials: true,
@@ -50,20 +50,20 @@
 			url: link,
 			data: options,
 			success: function (data) {
-				dialog.data("uiid", toastUid);
-				$(window).trigger("successToast", [dialog]);
+				initiator.data("uiid", toastUid);
+				$(window).trigger("successToast", [initiator]);
 				//--Entities
 				if (
-					dialog.hasClass("entity-dialog") &&
-					dialog.closest(".modal").length !== 0
+					initiator.hasClass("entity-dialog") &&
+					initiator.closest(".modal").length !== 0
 				) {
 					//find tab
-					var tabid = dialog.data("tabid");
+					var tabid = initiator.data("tabid");
 					if (!tabid) {
 						tabid = "tab_metadata";
 					}
 					if (tabid) {
-						var container = dialog.closest(".entity-body");
+						var container = initiator.closest(".entity-body");
 						var tabs = container.find(".entity-tab-content");
 						if (tabs.length >= 10) {
 							alert("Max Tabs Limit");
@@ -72,13 +72,13 @@
 
 						//open new entity
 						var parent = container.closest(".entitydialog");
-						container = dialog.closest(".entity-wraper");
+						container = initiator.closest(".entity-wraper");
 						container.replaceWith(data);
 						tabbackbutton(parent);
 					}
-				} else if (dialog.data("targetrendertype") == "entity") {
-					var container = dialog.closest(".entity-wraper");
-					var parent = dialog.closest(".entitydialog");
+				} else if (initiator.data("targetrendertype") == "entity") {
+					var container = initiator.closest(".entity-wraper");
+					var parent = initiator.closest(".entitydialog");
 					container.replaceWith(data);
 					tabbackbutton(parent);
 				} else {
@@ -118,23 +118,25 @@
 
 					var firstform = $("form", modaldialog);
 					firstform.data("openedfrom", openfrom);
+					firstform.data("initiator", initiator);
+					
 					// fix submit button
-					var justok = dialog.data("cancelsubmit");
+					var justok = initiator.data("cancelsubmit");
 					if (justok != null) {
 						$(".modal-footer #submitbutton", modaldialog).hide();
 					} else {
 						var id = $("form", modaldialog).attr("id");
 						$("#submitbutton", modaldialog).attr("form", id);
 					}
-					var hidetitle = dialog.data("hideheader");
+					var hidetitle = initiator.data("hideheader");
 					if (hidetitle == null) {
-						var title = dialog.attr("title");
+						var title = initiator.attr("title");
 						if (title == null) {
-							title = dialog.text();
+							title = initiator.text();
 						}
 						$(".modal-title", modaldialog).text(title);
 					}
-					var hidefooter = dialog.data("hidefooter");
+					var hidefooter = initiator.data("hidefooter");
 					if (hidefooter != null) {
 						$(".modal-footer", modaldialog).hide();
 					}
@@ -147,12 +149,12 @@
 
 					modalinstance.on("hidden.bs.modal", function () {
 						//on close execute extra JS -- Todo: Move it to closedialog()
-						if (dialog.data("onclose")) {
-							var onclose = dialog.data("onclose");
+						if (initiator.data("onclose")) {
+							var onclose = initiator.data("onclose");
 							var fnc = window[onclose];
 							if (fnc && typeof fnc === "function") {
 								//make sure it exists and it is a function
-								fnc(dialog); //execute it
+								fnc(initiator); //execute it
 							}
 						}
 
@@ -174,9 +176,9 @@
 					//globaly disabled updateurl
 				} else {
 					//Update Address Bar
-					var updateurl = dialog.data("updateurl");
+					var updateurl = initiator.data("updateurl");
 					if (updateurl) {
-						var urlbar = dialog.data("urlbar");
+						var urlbar = initiator.data("urlbar");
 						if (!urlbar) {
 							urlbar = link;
 						}
@@ -191,20 +193,20 @@
 				}
 
 				//on success execute extra JS
-				if (dialog.data("onsuccess")) {
-					var onsuccess = dialog.data("onsuccess");
+				if (initiator.data("onsuccess")) {
+					var onsuccess = initiator.data("onsuccess");
 					var fnc = window[onsuccess];
 					if (fnc && typeof fnc === "function") {
 						//make sure it exists and it is a function
-						fnc(dialog); //execute it
+						fnc(initiator); //execute it
 					}
 				}
 
 				$(window).trigger("resize");
 			},
 			error: function () {
-				dialog.data("uiid", toastUid);
-				$(window).trigger("errorToast", [dialog]);
+				initiator.data("uiid", toastUid);
+				$(window).trigger("errorToast", [initiator]);
 			},
 		});
 
@@ -248,8 +250,8 @@
 		});
 
 		//Close drodpown if exists
-		if (dialog.closest(".dropdown-menu").length !== 0) {
-			dialog.closest(".dropdown-menu").removeClass("show");
+		if (initiator.closest(".dropdown-menu").length !== 0) {
+			initiator.closest(".dropdown-menu").removeClass("show");
 		}
 		return this;
 	};
