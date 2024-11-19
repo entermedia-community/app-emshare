@@ -58,7 +58,7 @@ $context.putPageValue("entityrendertype", $entityrendertype)
 			#ifnull($pickertarget)
 				#if($permissions.can($moduleid, "create") && $moduleid!="faceprofilegroup" && $moduleid!="order")
 					<li>
-						#if($parentmoduleid)
+						#ifnotnull($entity)
 							#set($addnew = "$!{siteroot}${apphome}/views/modules/${moduleid}/components/entities/addnew.html")
 							<a class="resultsnavlink emdialog"
 							data-dialogid="entitypickeraddnew"
@@ -70,8 +70,9 @@ $context.putPageValue("entityrendertype", $entityrendertype)
 							href="$addnew"
 							title="[[Create New]] #text($entity)">
 							<i class="bi bi-plus-lg mr-1"></i> [[Create New]]</a>
-						#else
-							#set($addurl = "$!{siteroot}${apphome}/views/modules/${moduleid}${searchhome}/tabs/preview/$!{entityrendertype}.html?edit=true&addnew=true&viewid=$!{moduleid}addnew")
+						#end
+						#ifnull($entity)
+							#set($addurl = "${searchhome}/tabs/preview/$!{entityrendertype}.html?edit=true&addnew=true&viewid=$!{moduleid}addnew")
 							#ifnotnull($topentityid)
 								#set($addurl = "$addurl&fieldexternalid=${topmodule.getId()}&fieldexternalvalue=${topentityid}&reloadtargets=topmodulecontainer")
 							#end
@@ -120,7 +121,7 @@ $context.putPageValue("entityrendertype", $entityrendertype)
 				#if( $!hits.getSelectionSize() > 0)
 					
 					#if($permissions.can($moduleid, "edit"))
-					#set($previewediturl = "$!{siteroot}${apphome}/views/modules/${moduleid}${searchhome}/tabs/preview/$!{entityrendertype}.html?entityid=multiedit:$!hits.sessionId&hitssessionid=$!hits.sessionId&searchtype=$moduleid&edit=true")
+					#set($previewediturl = "${searchhome}/tabs/preview/$!{entityrendertype}.html?entityid=multiedit:$!hits.sessionId&hitssessionid=$!hits.sessionId&searchtype=$moduleid&edit=true")
 					<li><a class="dropdown-item emdialog" 
 						href="$previewediturl"
 						title="[[Multi edit selected items]]">[[Bulk Edit]] $!hits.getSelectionSize() [[Records]]</a>
@@ -295,6 +296,7 @@ $context.putPageValue("entityrendertype", $entityrendertype)
 						</select>
 					</li>		
 				#end
+				
 				#ifnull($isminimized)
 					#set($isminimized = false)
 				#end

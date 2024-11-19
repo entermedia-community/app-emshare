@@ -172,7 +172,7 @@ $context.putPageValue("topmoduleid", $moduleid)
 						$pages.include("${searchhome}/tabs/favorites.html?id=$entity.id&moduleid=$moduleid", $context)
 						
 						#if($permissions.can($moduleid, "shareentity"))
-						<a href="$applink/views/modules/${moduleid}${searchhome}/tabs/preview/tabexport.html?entityid=$!entity.getId()" 
+						<a href="${searchhome}/tabs/preview/tabexport.html?entityid=$!entity.getId()" 
 						class="entitytabactions btn-accent"
 						data-viewid="export"
 						data-tabtype="tabexport" 
@@ -311,9 +311,8 @@ $context.putPageValue("topmoduleid", $moduleid)
 												#set($tabtype= "tabsubmodulehome")
 												$context.putPageValue("tabtype", $tabtype)
 
-												#set($subsearchome = "$apphome/views/modules/$subentitysearchtype/results/default")
-												$context.putPageValue("searchhome", $subsearchome)
-												$pages.include("$subsearchome/tabs/preview/entitytabmenu.html", $context)
+
+												$pages.include("${searchhome}/tabs/preview/entitytabmenu.html", $context)
 											#end
 										#end
 									#end
@@ -465,7 +464,7 @@ $context.putPageValue("topmoduleid", $moduleid)
 								#set( $subentitysearchtype = $viewdata.rendertable )
 								##Permission check
 								#if($userentities.contains($subentitysearchtype))
-									$pages.include("$apphome/views/modules/${subentitysearchtype}${searchhome}/tabs/preview/tabsubmodulehome.html", $context)
+									$pages.include("${searchhome}/tabs/preview/tabsubmodulehome.html", $context)
 								#end
 							#end
 						#end

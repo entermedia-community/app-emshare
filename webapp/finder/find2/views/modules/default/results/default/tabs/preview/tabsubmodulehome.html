@@ -1,36 +1,15 @@
-#set($viewsearcher = $searcherManager.getSearcher($catalogid, "view"))
 
+#set($viewsearcher = $searcherManager.getSearcher($catalogid, "view"))
 #ifnull($viewid)
 	#set($viewid = $context.getRequestParameter("viewid"))
 #end
-
-#ifnull($parentmoduleid)
-	#set($parentmoduleid = $context.getRequestParameter("topmoduleid"))
-#end
-#ifnull($parentid)
-	#set($parentid = $context.getRequestParameter("parentid"))
-#end
-#ifnull($parentid)
-	#set($parentid = $context.getRequestParameter("entityid"))
-#end
-
-#set( $targetviewpath = "${parentmoduleid}/"+$viewid)
 #set( $viewdata = $viewsearcher.searchById($viewid))
 
 #set( $submoduleid = $viewdata.rendertable )
-#set( $fieldexternalid = $viewdata.renderexternalid)
-#set( $fieldexternalvalue = $parentid)
- 
-#set( $sortby = $!viewdata.rendersort)
-#if(!$sortby)
-	#set( $sortby = "name")
-#end
 
 #if(!$currenttab)
 	#set($currenttab = $context.getRequestParameter("currenttab"))
 #end
-
-
  
 #if($submoduleid)
 	<div id="tab_${viewid}" 
@@ -40,26 +19,14 @@
 		data-currenttab="$currenttab"
 		data-submoduleid="$!submoduleid"
 		data-viewid="$!viewid"
-		data-topmoduleid="$!topmoduleid"
 		data-parentid="$!parentid"
 		data-url="${searchhome}/tabs/preview/tabsubmodulehome.html"
 		#if($hidesubmodule) style="display: none; #end">
 		
-		##if($currenttab == $viewid)
+			#set($searchhome = "$apphome/views/modules/${module.id}/results/submodules")
+			$context.putPageValue("searchhome", $searchhome)
+			$pages.include("${searchhome}/index.html?viewid=$!viewid",$context)
 		
-			#set( $args = "${submoduleid}hitsname=$!{viewid}hits&${submoduleid}clearfilters=true&$!{submoduleid}clearresults=true")
-			#set( $args = "$args&searchtype=$!submoduleid&parentid=$!parentid&topmoduleid=$!topmoduleid")
-			#set( $args = "$args&fieldexternalid=$!fieldexternalid&fieldexternalvalue=$!fieldexternalvalue&field=$!fieldexternalid&$!{fieldexternalid}.value=$!fieldexternalvalue&operation=exact")
-			#set( $args = "$args&viewid=$!viewid&viewpath=$!targetviewpath")
-			#set( $args = "$args&targetdiv=submodulepicker&sortby=$!sortby")
-			
-			$context.putPageValue("moduleid", $!submoduleid )
-			$context.putPageValue("submoduleresults", $!submoduleresults )	
-			
-			
-			$pages.include("/$applicationid/views/modules/$!submoduleid/components/table/subentitytable.html?$!args",$context)
-		
-		##end
 	</div>
 	
 	
