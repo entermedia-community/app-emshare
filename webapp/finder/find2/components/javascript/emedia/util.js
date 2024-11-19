@@ -268,13 +268,25 @@ adjustZIndex = function (element) {
 		$(window).trigger("resize");
 	});
 };
-// NOT USED ANYWHERE
-// resizeGallery = function () {
-// 	var container = $("#emslidesheet");
-// 	if (container.length) {
-// 		var containerw = container.width();
-// 		var boxes = Math.floor(containerw / 230);
-// 		var boxw = Math.floor(containerw / boxes) - 12;
-// 		$("#emslidesheet .emthumbbox").width(boxw);
-// 	}
-// };
+focusInput = function (input) {
+	if (input) {
+		input.focus();
+		var inputVal = input.val();
+		if (inputVal) {
+			input.val("");
+			input.val(inputVal);
+		}
+	}
+};
+
+lQuery("form").livequery(function () {
+	var modal = $(this).closest(".modal");
+	if (modal.length === 0) {
+		return;
+	}
+	var input = $(this).find("input[autofocus]:visible:first");
+	if (!input.length) {
+		input = $(this).find("input:visible:first");
+	}
+	focusInput(input);
+});

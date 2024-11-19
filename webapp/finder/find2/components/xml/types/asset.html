@@ -4,20 +4,17 @@
 #end
 
 <div class="assetpicker"  id="entitypicker${detail.id}" data-detailid="${detail.id}">
-	<div class="render-type-thumbnail p-1" id="${detail.id}-preview">
+	<div class="render-type-thumbnail p-1 position-relative mb-1" id="${detail.id}-preview">
 		#if($val && $val != "")
 			#set( $foundrow = $mediaarchive.getAsset($val)  )
 			#if($foundrow)
 				$pages.include("$apphome/components/xml/types/assetpicker/preview.html?assetid=$val", $context)
-				<div style="padding:5px 0;">
-				<span id="${detail.id}-file-info" class="mr-2"></span>
 				<a href="#" 
-					class="removefieldassetvalue text-danger"
-					title="[[Remove Selected Asset]]" 
+					class="removefieldassetvalue"
+					title="[[Remove This Asset]]" 
 					data-targetdivinner="${detail.id}-preview"
 					data-detailid="${detail.id}"
-					><i class="bi bi-x"></i> [[Remove]]</a>
-				</div>
+					><i class="bi bi-x"></i></a>
 			#end
 		#end
 	</div>

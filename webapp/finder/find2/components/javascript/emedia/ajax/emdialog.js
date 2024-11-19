@@ -115,14 +115,13 @@
 							backdrop: modalbackdrop,
 						});
 					}
-					
-					if(initiator.is(":visible"))
-					{
+
+					if (initiator.is(":visible")) {
 						var firstform = $("form", modaldialog);
 						firstform.data("openedfrom", openfrom);
 						firstform.data("initiatorX", initiator);
 					}
-					
+
 					// fix submit button
 					var justok = initiator.data("cancelsubmit");
 					if (justok != null) {
@@ -220,18 +219,6 @@
 				//console.log(focuselement);
 				var elmnt = document.getElementById(focuselement);
 				elmnt.scrollIntoView();
-			} else {
-				var focusme = modaldialog.find(".focusme");
-				if (focusme.length) {
-					setTimeout(function () {
-						focusme.focus();
-					}, 1000);
-				} else {
-					$("form", modaldialog)
-						.find("*")
-						.filter(":input:visible:first")
-						.focus();
-				}
 			}
 		});
 
