@@ -316,7 +316,10 @@ lQuery(".emrowpicker table td").livequery("click", function (event) {
 						url: clickurl,
 						data: options,
 						success: function (data) {
-							pickertarget.replaceWith(data);
+							
+							var entity = $(".entitydialog");
+							autoreload(entity);
+							//pickertarget.replaceWith(data);
 						},
 					});
 				}
