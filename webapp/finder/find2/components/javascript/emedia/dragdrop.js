@@ -7,13 +7,14 @@ var isCategoryDragged = false;
 var isCollectionCreatedByDragging = false;
 
 var currentlyOver = null;
-function handleDroppableOver(event, ui) {
+function handleDroppableOver(_, ui) {
 	currentlyOver = $(this).parent().attr("id");
 	$(this).addClass("dragoverselected");
+	if ($(".assetdroppable.ui-droppable-hover").length > 0) return;
 	ui.helper.css("transform", "scale(0.25)");
 }
 
-function handleDroppableOut(event, ui) {
+function handleDroppableOut(_, ui) {
 	$(this).removeClass("dragoverselected");
 	if ($(this).parent().attr("id") == currentlyOver) {
 		var scale = ui.helper.data("scale") || 1;
