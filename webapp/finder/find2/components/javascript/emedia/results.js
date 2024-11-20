@@ -118,7 +118,7 @@ jQuery(document).ready(function (url, params) {
 			var options = resultsdiv.data();
 
 			var searchhome = resultsdiv.data("searchhome");
-			var moduleid = resultsdiv.data("moduleid");
+			//var moduleid = resultsdiv.data("moduleid");
 			var originalhitsperpage = resultsdiv.data("hitsperpage");
 			var targetdiv = resultsdiv.data("targetdiv");
 
@@ -127,25 +127,8 @@ jQuery(document).ready(function (url, params) {
 			if (oemaxlevel) {
 				options.oemaxlevel = oemaxlevel;
 			}
-
-			if (moduleid == "asset") {
-				if (originalhitsperpage) {
-					href =
-						searchhome +
-						"/changeresultview.html?cache=false&hitsperpage=" +
-						originalhitsperpage;
-				} else {
-					href = searchhome + "/changeresultview.html";
-				}
-			} else {
-				href =
-					siteroot +
-					"/views/modules/" +
-					moduleid +
-					"/results/default/changeresultview.html";
-			}
-
-			options.resultviewtype = moduleid + "resultview";
+		
+			var	href = searchhome +	"/changeresultview.html";
 
 			var resultviewselected = select.val();
 			options.resultview = resultviewselected;
