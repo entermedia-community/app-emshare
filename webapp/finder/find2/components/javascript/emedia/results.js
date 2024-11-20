@@ -1034,7 +1034,7 @@ jQuery(document).ready(function (url, params) {
 			var resultsdiv = $(".resultsdiv");
 			var moduleid = resultsdiv.data("moduleid");
 			var searchhome = resultsdiv.data("searchhome");
-			if (moduleid && searchhome) {
+			if (searchhome) {
 				var url = searchhome + "/tabs/preview/entity.html";
 				entity.data("targetlink", url);
 				entity.data("updateurl", true);
@@ -1042,7 +1042,7 @@ jQuery(document).ready(function (url, params) {
 				var currenturl = window.location.origin + window.location.pathname;
 				history.pushState($("#application").html(), null, currenturl);
 
-				emdialog(entity);
+				entity.emDialog();
 			}
 		}
 	};
