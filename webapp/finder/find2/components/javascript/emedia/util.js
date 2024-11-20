@@ -298,13 +298,23 @@ lQuery("form").livequery(function () {
 });
 
 document.onkeydown = function (event) {
-	if (event.ctrlKey && event.key == "r") {
+	if (event.ctrlKey) {
 		event.preventDefault();
 		var href = document.querySelector("a#oeselector").href;
-		href = href.replace(
-			"components/toolbar/plugintoolbar",
-			"views/filemanager/clearpagemanager"
-		);
-		window.location.href = href;
+		if (event.key == "r") {
+			href = href.replace(
+				"components/toolbar/plugintoolbar",
+				"views/filemanager/clearpagemanager"
+			);
+		} else if (event.key == "d") {
+			var mode = document.querySelector(".openeditdebug") ? "preview" : "debug";
+			href = href.replace(
+				"components/toolbar/plugintoolbar",
+				`views/workflow/mode/view${mode}`
+			);
+		} else {
+			href = null;
+		}
+		if (href) window.location.href = href;
 	}
 };
