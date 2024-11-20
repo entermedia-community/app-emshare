@@ -340,24 +340,23 @@ lQuery(".emrowpicker table td").livequery("click", function (event) {
 			var row = $(clicked.closest(".resultsdivdata"));
 			var rowid = row.data("dataid");
 			var pickerresults = clicked.closest(".pickerresults");
-
-			var options = pickerresults.data();
-			options.id = rowid;
 			var clickurl = pickerresults.data("clickurl");
-			var targetdiv = pickerresults.data("clicktargetdiv");
-			var targettype = pickerresults.data("targettype");
-
-			if (clickurl !== undefined && clickurl != "") {
-				jQuery.ajax({
-					url: clickurl,
-					data: options,
-					success: function (data) {
-						targetdiv.prepend(data);
-						targetdiv.find(".fader").fadeOut(3000, "linear");
-						closeemdialog(pickerresults.closest(".modal"));
-					},
-				});
-			}
+			var options = pickerresults.cleandata();
+			options.oemaxlevel=1;
+			options.id = rowid;
+			$(window).trigger("showToast", [pickerresults]);
+			var toastUid = pickerresults.data("uid");
+			jQuery.ajax({
+				url: clickurl,
+				data: options,
+				success: function (data) {
+					//show toast or reload page or both	
+					pickerresults.data("uid", toastUid);
+					$(window).trigger("successToast", [pickerresults]);
+			
+				},
+			});
+			closeemdialog(clicked.closest(".modal"));
 		}
 	);
 
