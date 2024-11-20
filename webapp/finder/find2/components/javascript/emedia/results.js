@@ -188,36 +188,19 @@ jQuery(document).ready(function (url, params) {
 		});
 
 		select.on("change", function () {
-			var options = resultsdiv.data();
+			var options = resultsdiv.cleandata();
 
 			var searchhome = resultsdiv.data("searchhome");
 			var moduleid = resultsdiv.data("moduleid");
-			var resultview = resultsdiv.data("resultview");
 			var originalhitsperpage = resultsdiv.data("hitsperpage");
 			var targetdiv = resultsdiv.data("targetdiv");
 
 			var oemaxlevel = select.data("oemaxlevel"); //could be custom
-			if (oemaxlevel) {
-				options.oemaxlevel = oemaxlevel;
+			if (oemaxlevel === undefined) {
+				options.oemaxlevel = 1;
 			}
 
-			var href = "";
-			if (moduleid == "asset") {
-				if (originalhitsperpage) {
-					href =
-						searchhome +
-						"/changehitsperpage.html?cache=false&hitsperpage=" +
-						originalhitsperpage;
-				} else {
-					href = searchhome + "/changehitsperpage.html";
-				}
-			} else {
-				href =
-					siteroot +
-					"/views/modules/" +
-					moduleid +
-					"/results/default/changehitsperpage.html";
-			}
+			var	href = searchhome + "/changehitsperpage.html";
 
 			// the selected option
 			options.hitsperpage = select.val();
