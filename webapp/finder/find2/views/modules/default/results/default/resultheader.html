@@ -51,6 +51,7 @@ $context.putPageValue("entityrendertype", $entityrendertype)
 #set($preference = "minimize$!{moduleid}summary")
 #set($isminimized = $userprofile.getBoolean($preference))
 
+#set($showaddnew = $page.isPropertyTrue("showaddnew",true))
 <div id="resultsheader" class="resultsheader #if($!hits.getSelectionSize() > 0)hasselections#end">
 	<div id="sub-nav" class="search-views emsubnav sub-nav-$!moduleid">
 		<ul class="resultsnav">
@@ -58,6 +59,7 @@ $context.putPageValue("entityrendertype", $entityrendertype)
 			#ifnull($pickertarget)
 				#if($permissions.can($moduleid, "create") && $moduleid!="faceprofilegroup" && $moduleid!="order")
 					<li>
+					#if( $showaddnew )
 						#ifnotnull($entity)
 							#set($addnew = "$!{siteroot}${apphome}/views/modules/${moduleid}/components/entities/addnew.html")
 							<a class="resultsnavlink emdialog"
@@ -71,6 +73,7 @@ $context.putPageValue("entityrendertype", $entityrendertype)
 							title="[[Create New]] #text($entity)">
 							<i class="bi bi-plus-lg mr-1"></i> [[Create New]]</a>
 						#end
+						
 						#ifnull($entity)
 							#set($addurl = "${searchhome}/tabs/preview/$!{entityrendertype}.html?edit=true&addnew=true&viewid=$!{moduleid}addnew")
 							#ifnotnull($topentityid)
@@ -80,6 +83,7 @@ $context.putPageValue("entityrendertype", $entityrendertype)
 								<i class="bi bi-plus-lg mr-1"></i> [[Create New]]
 							</a>
 						#end
+					#end	
 					</li>
 				#end
 			#end
