@@ -4,9 +4,6 @@
 		<a class="resultsnavlink dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="navbarCopyto$!{moduleid}">[[Copy To]]</a>
 		<ul class="dropdown-menu" aria-labelledby="navbarCopyto$!{module.id}">
 			
-	
-		
-			
 			#foreach ( $amodule in $userprofile.getEntities() )
 				#set($amoduleid = $amodule.getId())
 				#if($amodule.getBoolean("enableuploading"))
@@ -17,7 +14,7 @@
 						#if ($amodule.modulerendertype)
 							#set($entityrendertype = $amodule.modulerendertype)
 						#end
-						#set($addtourl = "$siteroot$applink/views/modules/${module.id}/edit/copyentities.html")
+						#set($addtourl = "${searchhome}/actions/copyentities.html")
 						#set($moduleicon = "entity")
 						#ifnotnull($amodule.moduleicon)
 							#set($moduleicon = $amodule.moduleicon)
@@ -26,7 +23,7 @@
 							data-targetdiv="applicationmaincontent"
 							data-oemaxlevel="3" 
 							data-pickedmoduleid="$amoduleid"
-							data-copyingsearchtype="$moduleid"
+							data-copyingsearchtype="$module.id"
 							data-copyinghitssessionid="$hits.getSessionId()"	
 							data-toastmessage="[[Copying selected files and metadata to]] #text($amodule)"
 							data-toastsuccess="[[Successfully copied files and metadata to]] #text($amodule)"
