@@ -117,9 +117,17 @@
 					}
 
 					if (initiator.is(":visible")) {
-						var firstform = $("form", modaldialog);
+						var firstform = modaldialog.find("form");
 						firstform.data("openedfrom", openfrom);
-						firstform.data("initiatorX", initiator);
+					}
+					var autosetformtargetdiv = initiator.data("autosetformtargetdiv")
+					if( autosetformtargetdiv !== undefined)
+					{	
+						var tdiv = initiator.closest("." + autosetformtargetdiv);
+						if( tdiv.length == 1)
+						{
+							firstform.data("targetdiv", tdiv.attr("id"));
+						}
 					}
 
 					// fix submit button

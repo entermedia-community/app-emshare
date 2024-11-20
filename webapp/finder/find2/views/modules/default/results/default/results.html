@@ -1,7 +1,7 @@
 #set( $moduleid = $module.id)
 
 #ifnull($viewid)
-	#set($viewid = $context.getRequestParamenter("viewid"))
+	#set($viewid = $context.getRequestParameter("viewid"))
 #end
 #ifnull($viewid)
 	#set($viewid = "${moduleid}resultstable")
@@ -10,20 +10,23 @@ $context.putPageValue("viewid", $viewid)
 #ifnull($viewpath)
 	$context.putPageValue("viewpath", "${module.id}/${viewid}")
 #end
+#set($entitymoduleviewid = $context.getRequestParameter("entitymoduleviewid"))
 
-
-<div id="resultsdiv" class="tableresults resultsdiv" 
+#set($searchhomename = $page.get("searchhomename") )
+<div id="$searchhomename" class="tableresults resultsdiv" 
 		data-${module.id}hitssessionid="$!hits.getSessionId()" 
 		data-hitssessionid="$!hits.getSessionId()"
 		data-componenthome="$!home$!componenthome"
 		data-searchhome="$!searchhome"
-		data-tagetdiv="resultsdiv"
+		data-targetdiv="$searchhomename"
 		data-category="$!category.id"
 		#if( $page.isPropertyTrue("filterbyentity",false) )
 			data-field="$!{entitymodule.id}"
 			data-$!{entitymodule.id}value="$!entity.id"
 			data-operation="exact"
+			data-entitymoduleviewid="$!entitymoduleviewid"  ##this is used in sub-modules to keep the views right
 		#end
+
 		
 		data-lightboxid="$!lightboxid"  
 		data-pagenum="$!hits.getPage()" 

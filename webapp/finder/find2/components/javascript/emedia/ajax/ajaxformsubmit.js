@@ -46,17 +46,14 @@
 			targetdiv_ = form.attr("targetdiv");
 		}
 		if (targetdiv_ === undefined) {
-			targetdiv_ = form.data("targetdivinner");
+			targetdiv_ = form.data("targetdivinner"); //TODO: Remove this
 		}
-		
-		var	initiator = form;
-		var targetdiv = initiator.closest("." + $.escapeSelector(targetdiv_));
+
+		var	targetdiv = $("#" + $.escapeSelector(targetdiv_)); //Noting is close to the form we are using... So make sure to use data-autosetformtargetdiv="targetdiv" 
 		if (!targetdiv.length) {
 			targetdiv = $("." + $.escapeSelector(targetdiv_));
 		}
-		if (!targetdiv.length) {
-			targetdiv = $("#" + $.escapeSelector(targetdiv_)); //legacy
-		}
+
 		if (form.attr("action") == undefined) {
 			var action = targetdiv.data("saveaction");
 			if (action == undefined) {
@@ -88,8 +85,8 @@
 		//targetdiv.data("oemaxlevel", oemaxlevel);
 
 		var data = {};
-		if (form.data("includesearchcontext") == true) {
-			var resultsdiv = initiator.closest(".resultsdiv");
+		if (form.data("includesearchcontext") == true) {  //Is this a good idea or a bad idea?
+			var resultsdiv = $("#" + targetdiv_);
 			data = resultsdiv.cleandata();
 		} 
 		

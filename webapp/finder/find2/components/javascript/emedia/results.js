@@ -1340,7 +1340,7 @@ jQuery(document).ready(function (url, params) {
 		);
 	});
 
-	lQuery("th.sortable").livequery("click", function () {
+	lQuery("th.sortable").livequery("click", function () {   //.emselectable ?
 		var column = $(this);
 		var id = column.data("sortby");
 
@@ -1349,11 +1349,15 @@ jQuery(document).ready(function (url, params) {
 			resultsdiv = column.closest("#resultsdiv");
 		}
 		var targetdiv_ = resultsdiv.data("targetdiv");
-		var targetdiv = column.closest("." + targetdiv_);
+		var targetdiv = column.closest("#" + targetdiv_);
+		if(targetdiv.length == 0)
+		{
+			targetdiv = column.closest("." + targetdiv_);
+		}
 
 		var searchhome = resultsdiv.data("searchhome");
 		var moduleid = resultsdiv.data("moduleid");
-		var options = resultsdiv.data();
+		var options = resultsdiv.cleandata();
 
 		var link = searchhome + "/columnsort.html";
 
