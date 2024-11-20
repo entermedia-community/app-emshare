@@ -1,0 +1,67 @@
+
+
+<div class="entity-ction-header">
+		<h3 class="m-0 mr-auto align-items-center">
+			#set($moduleicon = "box")
+			#ifnotnull($submodule.moduleicon)
+				#set($moduleicon = $submodule.moduleicon)
+			#end	
+			<i class="bi bi-$moduleicon module-icon" style="font-size: 0.8em;;"></i> 
+			#text($module) <small>($hits.size())</small>
+		</h3>
+		
+		#if($permissions.can($parentmoduleid, "edit"))
+			#if($permissions.can($!submodule.getId() , "create"))
+				#set($pickerurl= "$applink/views/modules/$!{module.id}/results/pickersubmodules/index.html")
+				<a href="$pickerurl" 
+					class="emdialog btn btn-accent ml-1"
+					data-dialogid="entitypicker"
+					data-width="1200"
+
+					data-entityid="$entity.id"
+					data-entitymoduleid="$!{entitymodule.id}"
+					
+					#set($entitymoduleviewid = $context.getRequestParameter("entitymoduleviewid"))
+					data-entitymoduleviewid="$entitymoduleviewid"
+	
+					data-pickersearchaddnew="true"
+					data-hidefooter="true"
+					data-viewid="$viewid"
+
+					title="[[Create or Choose Existing]] #text($entity)"><i class="bi bi-plus-lg mr-2"></i> [[Add Existing]]</a>
+					
+					#set($pickerurl = "$!{componenthome}/entities/csvupload/picker.html")
+					<a href="$pickerurl" 
+					class="emdialog btn btn-accent ml-1"
+					data-dialogid="entitypicker"
+					data-width="1200"
+					data-entityid="$entity.id"
+					data-topmodule="${parentmoduleid}"
+					data-fieldexternalid = '$fieldexternalid'
+					data-fieldexternalvalue = '$fieldexternalvalue'
+					data-entitymodule="$!{subentitysearchtype}"
+					data-pickertarget="$tabid"
+					data-targettype="entitypickersubmodule"
+					data-pickersearchaddnew="true"
+					data-hidefooter="true"
+					title="[[Upload]]"><i class="bi bi-upload mr-2"></i> [[Upload Spreadsheet]]</a>	
+
+					#set($pickerurl = "$!{componenthome}/entities/ai/input.html")
+					<a href="$pickerurl" 
+					class="emdialog btn btn-accent ml-1"
+					data-dialogid="entitypicker"
+					data-width="600"
+					data-entityid="$entity.id"
+					data-topmodule="${parentmoduleid}"
+					data-fieldexternalid = '$fieldexternalid'
+					data-fieldexternalvalue = '$fieldexternalvalue'
+					data-entitymodule="$!{subentitysearchtype}"
+					data-pickertarget="$tabid"
+					data-targettype="entitypickersubmodule"
+					data-pickersearchaddnew="true"
+					data-hidefooter="true"
+					title="[[Create New]] #text($submodule) [[With AI]]"><i class="bi bi-brush mr-2"></i> [[Create With AI]]</a>	
+					
+			#end
+		#end
+	</div>

@@ -1,96 +1,14 @@
 <div id="pickersearchentities" data-setpagetitle="[[Select]] #text($module)">
 
-	#ifnull($viewid)
-		#set($viewid = $context.getRequestParameter("viewid"))
-	#end
-	#set($viewdata = $mediaarchive.getCachedData("view",$viewid))
-	
-	#set($moduleid = $context.getRequestParameter("moduleid"))
-	#if(!$moduleid)
-		#set($moduleid = $module.getId())	
-	#end
-	$context.putPageValue("moduleid", $moduleid)
-	
-	#set($copyinghitssessionid = $context.getRequestParameter("copyinghitssessionid"))
-	
-	#set($copyinghits = $context.getSessionValue($copyinghitssessionid))
 
-	#set($copyingsearchtype = $context.getRequestParameter("copyingsearchtype"))
-	
-	#set($pickedassetid = $context.getRequestParameter("pickedassetid"))
-	
-	#set($copyingcategoryid = $context.getRequestParameter("copyingcategoryid"))
-	
-	#set($fieldexternalid = $context.getRequestParameter("fieldexternalid"))
-	
-	#set($fieldexternalvalue = $context.getRequestParameter("fieldexternalvalue"))	
-	
-	#set($pickertarget = $context.getRequestParameter("pickertarget"))
-	
-	#set($targettype = $context.getRequestParameter("targettype"))
+#set($entitymoduleviewid = $context.getRequestParameter("entitymoduleviewid"))
+#set($viewdata = $mediaarchive.getCachedData("view",$entitymoduleviewid))
+#set($submoduleid = $!viewdata.rendertable)
 
-	#if(!$viewid)
-		#set( $viewid = "$!{searchtype}advancedfilter") 
-	#end
-	#if( !$viewpath )
-		#set( $viewpath = $context.getRequestParameter("viewpath"))
-	#end
-	#if( !$viewpath )
-		#set( $viewpath = $context.getRequestParameter("view"))
-	#end
-	#if( !$viewpath )
-		#set( $viewpath = "$!{searchtype}/$!{viewid}")
-	#end
-	
-	#if( $copyinghits || $pickedassetid)
-	<div class="alert alert-info">
 		
-		#if( $copyinghitssessionid && $copyinghits.getSelectionSize() > 0)	
-		  		<strong>[[Adding]]</strong> $copyinghits.getSelectionSize() [[items]]
-		#elseif($pickedassetid)	
-				<strong>[[Adding]]</strong> 1 [[asset]]
-		#end	
-	</div>
-	#end
-	
-	
-	#set($pickersearchaddnew = $context.getRequestParameter("pickersearchaddnew"))
-	
-	#if($moduleid != "asset")
-		#if($pickersearchaddnew)
-			#set($addnew = "$apphome/views/modules/${moduleid}/components/entities/addnew.html")
-			<a class="btn btn-lg btn-accent rounded mb-3 ajax float-left" style="min-width: 150px;"
-			data-targetdivinner="pickersearchentities"
-			data-pickertarget="$!pickertarget"
-			data-targettype="$!targettype"
-			data-ajaxreloadtargets="onetomanytab"
-			data-fieldexternalid="$!fieldexternalid"
-			data-fieldexternalvalue="$!fieldexternalvalue"
-			data-oemaxlevel="1"
-			href="$addnew">
-			<i class="bi bi-plus-lg mr-1"></i> [[Create New]]</a>
-		#else
-			#set($addnew = "${searchhome}/tabs/preview/entity.html")
-			
-			#if($pickedassetid)
-				#set($addnew = "${addnew}?edit=true&addnew=true&viewfiles=true&saveaction=addassets&pickedassetid=$!pickedassetid&copyingsearchtype=asset")
-			#elseif($copyingcategoryid)
-				#set($addnew = "${addnew}?edit=true&addnew=true&viewfiles=true&copyingsearchtype=$!copyingsearchtype&saveaction=additems&copyingcategoryid=$!copyingcategoryid&moduleid=$moduleid")
-			#elseif($copyinghits)
-				#set($addnew = "${addnew}?edit=true&addnew=true&viewfiles=true&copyingsearchtype=$!copyingsearchtype&saveaction=additems&copyinghitssessionid=$!copyinghitssessionid&moduleid=$moduleid")
-			#else
-				#set($addnew = "${addnew}?edit=true&addnew=true&saveaction=upload")
-			#end
-			<a class="btn btn-lg btn-accent rounded mb-3 emdialog float-righ" style="min-width: 150px;"
-			data-dialogid="addnewentity"
-			href="$addnew">
-			<i class="bi bi-plus-lg mr-1"></i> [[Create New]]</a>
-		#end 
-	#end
-	<div class="clearfix"></div>
-		
-		
+</div>
 
+		
 	<div class="overflow-y">
 		<div id="entitypickerresults" class="pickerresults #if( $copyinghits || $pickedassetid || $copyingcategoryid) pickerresultscopy #end $!targettype"
 			
@@ -142,22 +60,19 @@
 			data-pickedmoduleid="$!{moduleid}"
 			data-moduleid="${moduleid}">
 		
-		
-#set($viewsearcher = $searcherManager.getSearcher($catalogid, "view"))
-#set($viewid = $context.getRequestParameter("viewid"))
-$context.putPageValue("viewid", $!viewid)
-#set( $viewpath = "${module.id}/${viewid}")
-#set($viewdata = $viewsearcher.searchById($viewid))
-$context.putPageValue("viewpath", $!viewpath)
-
-#set($sortby = $!viewdata.rendersort)
-#set($submoduleid = $!viewdata.rendertable)
-#set($submodule = $mediaarchive.getCachedData("module",$submoduleid))
-$context.putPageValue("module", $submodule)
+#set($module = $mediaarchive.getCachedData("module",$submoduleid))
+$context.putPageValue("module", $module)
 #set($searchhome = "$apphome/views/modules/${submoduleid}/results/pickersubmodules")
 $context.putPageValue("searchhome", $searchhome)
-#set($args = "field=$!{entitymodule.id}&$!{entitymodule.id}.value=$!{entity.id}&operation=not&sortby=$!sortby")
+
+		
+		
+#set($sortby = $!viewdata.rendersort)
+#set($args = "field=$!{entitymodule.id}&$!{entitymodule.id}.value=$!{entity.id}&operation=not")
+#set($args = "$args&sortby=$!sortby&entitymoduleviewid=$entitymoduleviewid")
+
 $pages.include("${searchhome}/search.html?$!args",$context)
+
 
 		</div>
 	</div>
