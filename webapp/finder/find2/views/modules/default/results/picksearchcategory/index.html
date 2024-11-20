@@ -4,12 +4,16 @@
 #set( $copyingsearchtype = $context.getRequestParameter("copyingsearchtype"))
 #set( $copyinghitssessionid = $context.getRequestParameter("copyinghitssessionid"))
 
+#set( $hits = $context.getSessionValue($copyinghitssessionid) )
+
 </div>
 	<div class="overflow-y">
-		<div id="entitypickerresults" class="pickerresults pickeselectedentitycopyto" 
+		<div id="entitypickerresults" class="pickerresults picktosearchcategory" 
+			data-toastmessage="[[Saving]] $hits.getSelectionSize()"
+			data-toastsuccess="$hits.getSelectionSize() [[Records Saved]]"
 			data-clickurl="$searchhome/actions/categorysavetoentities.html"
 			data-copyingsearchtype="$copyingsearchtype"
-			data-pickerhitssessionid="$copyinghitssessionid"
+			data-copyinghitssessionid="$copyinghitssessionid"
 			
 		>
 $pages.include("${searchhome}/search.html?resultview=table",$context)

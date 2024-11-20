@@ -268,7 +268,7 @@ lQuery(".emrowpicker table td").livequery("click", function (event) {
 		}
 	);
 
-	//CB working
+	//CB working for entity fieldpicking
 	lQuery(".pickerresults.pickerforfield .resultsdivdata").livequery(
 		"click",
 		function (event) {
@@ -286,6 +286,36 @@ lQuery(".emrowpicker table td").livequery("click", function (event) {
 				pickertarget = $("#" + pickertarget);
 				if (pickertarget.length > 0) {
 					updateentityfield(pickertarget, rowid, row.data("rowname"));
+				}
+				closeemdialog(pickerresults.closest(".modal"));
+			}
+		}
+	);
+
+	//CB: assign a asset to a field 
+	lQuery(".pickerresults.pickerpickasset .resultsdivdata").livequery(
+		"click",
+		function (event) {
+				var clicked = $(this);
+			if (!handleclick(clicked)) {
+				return true;
+			}
+			var row = $(clicked.closest(".resultsdivdata"));
+			var rowid = row.data("dataid");
+			var pickerresults = clicked.closest(".pickerresults");
+
+			if (pickerresults.length) {
+				var pickertarget = pickerresults.data("pickertargetfield");
+				pickertarget = $("#" + pickertarget);  //This is the field itself
+				if (pickertarget.length > 0) {
+					var detailid = pickertarget.data("detailid");
+					$("#" + detailid + "-value").attr("value", rowid);
+					$("#" + detailid + "-preview").load(
+						apphome +
+							"/components/xml/types/assetpicker/preview.html?oemaxlevel=1&assetid=" +
+							rowid,
+						function () {}
+					);
 				}
 				closeemdialog(pickerresults.closest(".modal"));
 			}
@@ -329,8 +359,8 @@ lQuery(".emrowpicker table td").livequery("click", function (event) {
 		}
 	);
 
-	//CB: assign a searchcategory to some selected entities 
-	lQuery(".pickerresults.picktosearchcategory .resultsdivdata").livequery(
+	//CB: Good assign a searchcategory to some selected entities 
+	lQuery(".pickerresults.picksearchcategory .resultsdivdata").livequery(
 		"click",
 		function (event) {
 			var clicked = $(this);
@@ -340,29 +370,28 @@ lQuery(".emrowpicker table td").livequery("click", function (event) {
 			var row = $(clicked.closest(".resultsdivdata"));
 			var rowid = row.data("dataid");
 			var pickerresults = clicked.closest(".pickerresults");
-
-			var options = pickerresults.data();
-			options.id = rowid;
 			var clickurl = pickerresults.data("clickurl");
-			var targetdiv = pickerresults.data("clicktargetdiv");
-			var targettype = pickerresults.data("targettype");
-
-			if (clickurl !== undefined && clickurl != "") {
-				jQuery.ajax({
-					url: clickurl,
-					data: options,
-					success: function (data) {
-						targetdiv.prepend(data);
-						targetdiv.find(".fader").fadeOut(3000, "linear");
-						closeemdialog(pickerresults.closest(".modal"));
-					},
-				});
-			}
+			var options = pickerresults.cleandata();
+			options.oemaxlevel=1;
+			options.id = rowid;
+			$(window).trigger("showToast", [pickerresults]);
+			var toastUid = pickerresults.data("uid");
+			jQuery.ajax({
+				url: clickurl,
+				data: options,
+				success: function (data) {
+					//show toast or reload page or both	
+					pickerresults.data("uid", toastUid);
+					$(window).trigger("successToast", [pickerresults]);
+			
+				},
+			});
+			closeemdialog(clicked.closest(".modal"));
 		}
 	);
 
 
-	//Upload to Entity
+	//Upload to Entity. Still needed?
 	lQuery(".pickerresults.pickandupload .resultsdivdata").livequery(
 		"click",
 		function (event) {
@@ -457,17 +486,6 @@ lQuery(".emrowpicker table td").livequery("click", function (event) {
 	);
 
 	updateentityfield = function (pickertarget, id, name) {
-		if (pickertarget.hasClass("assetpicker")) {
-			//Asset  Picker
-			var detailid = pickertarget.data("detailid");
-			$("#" + detailid + "-value").attr("value", id);
-			$("#" + detailid + "-preview").load(
-				apphome +
-					"/components/xml/types/assetpicker/preview.html?oemaxlevel=1&assetid=" +
-					id,
-				function () {}
-			);
-		} else {
 			var template = $("#pickedtemplateREPLACEID", pickertarget).html(); //clone().appendTo(pickertarget);
 			var newcode = template.replaceAll("REPLACEID", id);
 			newcode = newcode.replaceAll("REPLACEFIELDNAME", "");
@@ -481,7 +499,6 @@ lQuery(".emrowpicker table td").livequery("click", function (event) {
 			newrow.attr("id", id);
 			newrow.find("a:first").text(name);
 			newrow.show();
-		}
 	};
 
 	showmodal = function (emselecttable, url) {

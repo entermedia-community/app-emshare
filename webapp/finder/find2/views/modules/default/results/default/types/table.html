@@ -64,7 +64,7 @@ $pages.include("${searchhome}/resultheader.html",$context)
 			
 			<thead>
 			<tr id="tableheader" class="tableheader" >
-			###if($content.isPropertyTrue("showactions"))
+			#if($content.isPropertyTrue("showselections",true))
 			
 				<th class="firstheader p-0" id="th-checkbox">
 				
@@ -73,7 +73,7 @@ $pages.include("${searchhome}/resultheader.html",$context)
 			    	</div>
 				</th>
 			
-			###end
+			#end
 			
 			#set( $edit = $context.getRequestParameter("editheader"))
 			#if( !$edit || $edit == "false")
@@ -148,8 +148,7 @@ $pages.include("${searchhome}/resultheader.html",$context)
 			
 			    <tr class="resultsdivdata" data-dataid="$!{hit.id}" data-rowname="#text($hit)" rowid="$!{hit.id}">
 			   
-			    
-				###if($content.isPropertyTrue("showactions"))
+				#if($content.isPropertyTrue("showselections",true))
 			
 				<td class="borderedcell checkbox" noclick="true"> 
 					
@@ -158,7 +157,7 @@ $pages.include("${searchhome}/resultheader.html",$context)
 					##<input type="checkbox" class="moduleselectionbox" name="count" value="" #if($hits.isSelectedOnPage(${hit.id})) checked #end data-dataid='${hit.id}' data-hitssessionid='$hits.sessionId' />
 					<div id="check_${count}"></div>
 				</td>
-				###end
+				#end
 			
 				#foreach( $detail in $resultdetails )
 					<td class="editfield highlightMe tablecell tablecell-$!detail.id tablecell-$!detail.rendertype"
