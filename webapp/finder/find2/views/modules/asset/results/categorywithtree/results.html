@@ -44,26 +44,35 @@ $context.putPageValue("targetdivmedia", $targetdivmedia)
 	#set($lightboxid = $context.getRequestParameter("lightboxid"))
 #end
 
-<div id="resultscontainer${module.id}"
+#set($searchhomename = $page.get("searchhomename") )
+
+<div id="$searchhomename"
 	class="dialogassetresults assetresults resultsdiv resultsdiv${module.id}" 
 	data-moduleid="asset"  ##required for sorting
 	data-resultview="$!resultview"
 	data-url="$searchhome/index.html"
-	data-categoryid="$!categoryid"
 	data-nodeID="$!categoryid"
 	data-exactsearch="true"
 	data-dialogresults="true"
 	data-lightboxassetsresults="$!{lightboxassetsresults}"
-	data-lightboxid="$!lightboxid"
 	data-hitssessionid="$!hits.getSessionId()"
 	data-componenthome = "$!componenthome"
 	data-searchhome="$!searchhome"
-	data-targetdiv="resultsdiv"
-	data-entityid="$!entity.id"
-	data-entitymoduleid="$!entitymodule.id"
-	data-rootcategory="$!rootcategory"
 	data-oemaxlevel="1"
 	data-assetsortby="$!hits.getSearchQuery().getSortBy()"
+	
+	data-rootcategory="$!rootcategory"
+	data-targetdiv="$searchhomename"
+	data-category="$!category.id"
+	
+	data-lightboxid="$!lightboxid"  
+	data-pagenum="$!hits.getPage()" 
+	data-totalpages="$!hits.getTotalPages()"
+	#ifnotnull($entity)
+		data-entityid="$!entity.id"
+		data-entitymoduleid="$!entitymodule.id"
+	#end
+		
 	> 
 	
 	<div class="emgrid-module emgrid-box emgrid-module-asset h-100">
@@ -150,6 +159,7 @@ $context.putPageValue("targetdivmedia", $targetdivmedia)
 						$pages.include("$apphome/views/modules/asset/add/entityaddmedia.html?categoryid=$rootcategory", $context)
 					#else
 						$context.putPageValue("targetdivsearch", $targetdivmedia)
+						$context.putPageValue("resultview",$resultview)
 						
 						$pages.include("${searchhome}/resultviews.html", $context)
 					#end
