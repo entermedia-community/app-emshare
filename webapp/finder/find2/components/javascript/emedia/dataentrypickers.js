@@ -268,8 +268,8 @@ lQuery(".emrowpicker table td").livequery("click", function (event) {
 		}
 	);
 
-	//CB Almost working
-	lQuery(".pickerresults.entitypickerfield .resultsdivdata").livequery(
+	//CB working
+	lQuery(".pickerresults.pickerforfield .resultsdivdata").livequery(
 		"click",
 		function (event) {
 			var clicked = $(this);
@@ -292,7 +292,7 @@ lQuery(".emrowpicker table td").livequery("click", function (event) {
 		}
 	);
 
-	//CB: Is working
+	//CB: Is good. for submodules
 	lQuery(".pickerresults.entitypickersubmodule .resultsdivdata").livequery(
 		"click",
 		function (event) {
@@ -329,6 +329,39 @@ lQuery(".emrowpicker table td").livequery("click", function (event) {
 		}
 	);
 
+	//CB: assign a searchcategory to some selected entities 
+	lQuery(".pickerresults.picktosearchcategory .resultsdivdata").livequery(
+		"click",
+		function (event) {
+			var clicked = $(this);
+			if (!handleclick(clicked)) {
+				return true;
+			}
+			var row = $(clicked.closest(".resultsdivdata"));
+			var rowid = row.data("dataid");
+			var pickerresults = clicked.closest(".pickerresults");
+
+			var options = pickerresults.data();
+			options.id = rowid;
+			var clickurl = pickerresults.data("clickurl");
+			var targetdiv = pickerresults.data("clicktargetdiv");
+			var targettype = pickerresults.data("targettype");
+
+			if (clickurl !== undefined && clickurl != "") {
+				jQuery.ajax({
+					url: clickurl,
+					data: options,
+					success: function (data) {
+						targetdiv.prepend(data);
+						targetdiv.find(".fader").fadeOut(3000, "linear");
+						closeemdialog(pickerresults.closest(".modal"));
+					},
+				});
+			}
+		}
+	);
+
+
 	//Upload to Entity
 	lQuery(".pickerresults.pickandupload .resultsdivdata").livequery(
 		"click",
@@ -348,8 +381,8 @@ lQuery(".emrowpicker table td").livequery("click", function (event) {
 			}
 		}
 	);
-
-	//Copy Entities
+	
+	//Assets or Categories and you import into a entity
 	lQuery(".pickerresultscopy .resultsdivdata").livequery(
 		"click",
 		function (event) {
@@ -378,37 +411,7 @@ lQuery(".emrowpicker table td").livequery("click", function (event) {
 						if (targettype == "message") {
 							if (targetdiv !== undefined) {
 								targetdiv.prepend(data);
-								tar//Entity picker Submodule Table
-	lQuery(".pickerresults.entitypickersubmodule .resultsdivdata").livequery(
-		"click",
-		function (event) {
-			var clicked = $(this);
-			if (!handleclick(clicked)) {
-				return true;
-			}
-			var row = $(clicked.closest(".resultsdivdata"));
-			var rowid = row.data("dataid");
-			var pickerresults = clicked.closest(".pickerresults");
-
-			if (pickerresults.length) {
-				var clickurl = pickerresults.data("clickurl");
-				var options = pickerresults.data();
-				options.id = rowid;
-				var pickertarget = pickerresults.data("pickertarget");
-				pickertarget = $("#" + pickertarget);
-				if (clickurl !== undefined && clickurl != "") {
-					jQuery.ajax({
-						url: clickurl,
-						data: options,
-						success: function (data) {
-							autoreload(pickertarget);
-						},
-					});
-				}
-				closeemdialog(pickerresults.closest(".modal"));
-			}
-		}
-	);getdiv.find(".fader").fadeOut(3000, "linear");
+								targetdiv.find(".fader").fadeOut(3000, "linear");
 							}
 						} else {
 							//regular targetdiv
@@ -423,6 +426,9 @@ lQuery(".emrowpicker table td").livequery("click", function (event) {
 			}
 		}
 	);
+
+
+								
 
 	function handleclick(clicked) {
 		if (clicked.attr("noclick") == "true") {
