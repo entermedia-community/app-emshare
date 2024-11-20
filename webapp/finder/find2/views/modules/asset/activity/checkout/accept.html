@@ -1,30 +1,29 @@
 <div id="checkoutterms" class="acceptterms">
-	
-#set( $requestapproveremail = $mediaarchive.getCatalogSettingsValue("requestapproveremail"))
+	#set( $requestapproveremail = $mediaarchive.getCatalogSettingsValue("requestapproveremail"))
 
-##if($requestapproveremail)
-<form id="processorder" 
-	name="emailprocess"
-	class="ajaxform"
-	method="post"
-	data-targetdiv="checkoutterms" 
-	action="$apphome/views/modules/asset/activity/checkout/processorder.html">
+	##if($requestapproveremail)
+	<form id="processorder" 
+		name="emailprocess"
+		class="ajaxform"
+		method="post"
+		data-targetdiv="checkoutterms" 
+		action="$apphome/views/modules/asset/activity/checkout/processorder.html">
 
-	$context.putPageValue("searcher",$mediaarchive.getSearcher("order") )	
-	$context.putPageValue("view","order/ordercheckoutconfirm")	
-	$pages.include("/$applicationid/components/xml/detaileditorcss.html", $context)
-	
-	##$pages.include("$apphome/views/modules/asset/activity/checkout/termsconditions.html")
-	<div class="text-right">
-  <button id="closebutton" type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal" data-dismiss="modal">[[Close]]</button>
-  <input id="submitbutton" type="submit" form="processorder" value="[[Ok]]" name="submitbutton" class="btn btn-sm btn-primary dialogsubmitbtn">
-</div>
+		$context.putPageValue("searcher",$mediaarchive.getSearcher("order") )	
+		$context.putPageValue("view","order/ordercheckoutconfirm")	
+		$pages.include("/$applicationid/components/xml/detaileditorcss.html", $context)
+		
+		##$pages.include("$apphome/views/modules/asset/activity/checkout/termsconditions.html")
 
-</form>
-##else
-##	[[Missing Request Approver Email, contact your Administrator.]]
-##	#if($canviewsettings)
-##	<pre>Catalog Setting value: requestapproveremail</pre>
-##	#end
-##end
+		<div class="text-right">
+			<button id="closebutton" type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-dismiss="modal">[[Close]]</button>
+			<input id="submitbutton" type="submit" form="processorder" value="[[Ok]]" name="submitbutton" class="btn btn-primary dialogsubmitbtn">
+		</div>
+	</form>
+	##else
+	##	[[Missing Request Approver Email, contact your Administrator.]]
+	##	#if($canviewsettings)
+	##	<pre>Catalog Setting value: requestapproveremail</pre>
+	##	#end
+	##end
 </div>
