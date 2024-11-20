@@ -227,7 +227,7 @@ lQuery(".emrowpicker table td").livequery("click", function (event) {
 		}
 	);
 
-	//Submodule picker reuslts
+	//To open an entity in a submodule
 	lQuery(".submodulepicker .resultsdivdata").livequery(
 		"click",
 		function (event) {
@@ -299,26 +299,28 @@ lQuery(".emrowpicker table td").livequery("click", function (event) {
 			if (!handleclick(clicked)) {
 				return true;
 			}
-			var row = $(clicked.closest(".resultsdivdata"));
+			var row = $(clicked.closest(".resultsdivdata"));  //?
 			var rowid = row.data("dataid");
-			var pickerresults = clicked.closest(".pickerresults");
+			var resultsdiv = clicked.closest(".resultsdiv");
 
-			if (pickerresults.length) {
+			if (resultsdiv.length) {
+				var pickerresults = clicked.closest(".pickerresults");
 				var clickurl = pickerresults.data("clickurl");
-				var options = pickerresults.data();
+				var options = resultsdiv.cleandata();
+				options.oemaxlevel=1;
 				options.id = rowid;
-				var pickertarget = pickerresults.data("pickertarget");
+				var pickertarget = pickerresults.data("targetdiv");
 				pickertarget = $("#" + pickertarget);
 				if (clickurl !== undefined && clickurl != "") {
 					jQuery.ajax({
 						url: clickurl,
 						data: options,
 						success: function (data) {
-							autoreload(pickertarget);
+							pickertarget.replaceWith(data);
 						},
 					});
 				}
-				closeemdialog(pickerresults.closest(".modal"));
+				closeemdialog(clicked.closest(".modal"));
 			}
 		}
 	);
@@ -372,7 +374,37 @@ lQuery(".emrowpicker table td").livequery("click", function (event) {
 						if (targettype == "message") {
 							if (targetdiv !== undefined) {
 								targetdiv.prepend(data);
-								targetdiv.find(".fader").fadeOut(3000, "linear");
+								tar//Entity picker Submodule Table
+	lQuery(".pickerresults.entitypickersubmodule .resultsdivdata").livequery(
+		"click",
+		function (event) {
+			var clicked = $(this);
+			if (!handleclick(clicked)) {
+				return true;
+			}
+			var row = $(clicked.closest(".resultsdivdata"));
+			var rowid = row.data("dataid");
+			var pickerresults = clicked.closest(".pickerresults");
+
+			if (pickerresults.length) {
+				var clickurl = pickerresults.data("clickurl");
+				var options = pickerresults.data();
+				options.id = rowid;
+				var pickertarget = pickerresults.data("pickertarget");
+				pickertarget = $("#" + pickertarget);
+				if (clickurl !== undefined && clickurl != "") {
+					jQuery.ajax({
+						url: clickurl,
+						data: options,
+						success: function (data) {
+							autoreload(pickertarget);
+						},
+					});
+				}
+				closeemdialog(pickerresults.closest(".modal"));
+			}
+		}
+	);getdiv.find(".fader").fadeOut(3000, "linear");
 							}
 						} else {
 							//regular targetdiv
