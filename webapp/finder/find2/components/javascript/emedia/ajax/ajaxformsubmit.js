@@ -49,11 +49,7 @@
 			targetdiv_ = form.data("targetdivinner");
 		}
 		
-		var initiator = form.data("initiator");
-		if (initiator === undefined)
-		{
-			initiator = form;
-		}
+		var	initiator = form;
 		var targetdiv = initiator.closest("." + $.escapeSelector(targetdiv_));
 		if (!targetdiv.length) {
 			targetdiv = $("." + $.escapeSelector(targetdiv_));
