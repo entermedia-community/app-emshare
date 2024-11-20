@@ -1,16 +1,11 @@
 ##needs 	$hits  $moduleid
-#ifnull($moduleid)
-#set($moduleid = $context.getRequestParameter("moduleid"))
-#end
-	
-#set($reloadsearchtype = $moduleid)
+
+#set($reloadsearchtype = $module.id)
 #set($updateurl = "true")
 #set($oemaxlevel = "1")
-#set($targetdiv = "$!{moduleid}resultscontainer")
+#set($targetdiv = "resultsdiv")
 
-#if(!$parentmoduleid)
-#set($parentmoduleid = $context.getRequestParameter("topmoduleid"))
-#end
+
 #if(!$rootcategory)
 #set($rootcategory = $context.getRequestParameter("rootcategory"))
 #end
@@ -23,7 +18,7 @@
 
 
 
-#if($moduleid=="asset")
+#if($module.id=="asset")
 		
 			#if($dialogresults)
 				#set($resultsPage = "${searchhome}/index.html?hitssessionid=$!hits.sessionId")
@@ -32,7 +27,7 @@
 				#set($resultsPage = "$resultsPage&categoryid=$!categoryid")
 				#set($resultsPage = "$resultsPage&entityid=$!entityid")
 				#set($updateurl = "false")
-				#set($targetdiv = "dialog$!{moduleid}resultscontainer")
+				#set($targetdiv = "dialog$!{module.id}resultscontainer")
 			#else
 				#if($categoryid)
 					#if(!$category)
@@ -52,37 +47,15 @@
 			#set($resultsPage = "$resultsPage&$!{hits.getSearchType()}pageposition")
 		
 #else
-	#if(!$tabletype)
-	#set($tabletype = $context.getRequestParameter("tabletype"))
+
+	#if(!$resultsPage)
+		#set($resultsPage = "${searchhome}/search.html")
 	#end
-	#if(!$viewid)
-	#set($viewid = $context.getRequestParameter("viewid"))
-	#end
-	#if($tabletype == "subentity")
-		#set($resultsPage = "${searchhome}/tabs/preview/tabsubmodulehome.html")
-		#set($resultsPage = "$resultsPage?hitssessionid=$!hits.sessionId")
-		#set($resultsPage = "$resultsPage&topmoduleid=$!topmoduleid")
-		#set($resultsPage = "$resultsPage&entityid=$!entityid")
-		#set($resultsPage = "$resultsPage&viewid=$!viewid")
-		#set($resultsPage = "$resultsPage&$!{hits.getSearchType()}pageposition")
-		
-		#set($targetdiv = "tab_$!{viewid}")
-	#else
-		#if(!$resultsPage)
-			#set($resultsPage = "$applink/views/modules/${moduleid}/showpage.html")
-		#end
-		#set($resultsPage = "$resultsPage?hitssessionid=$!hits.sessionId")
-		#if($resultstype)
-			#set($resultsPage = "$resultsPage&resultstype=$!resultstype")
-		#end
-		#if($moduleX)
-			#set($resultsPage = "$resultsPage&module=$module.id")
-		#end
-		#set($resultsPage = "$resultsPage&$!{hits.getSearchType()}pageposition")
-		#set($oemaxlevel = "1")
-		
-		#set($targetdiv = "${moduleid}resultscontainer")
-	#end
+	#set($resultsPage = "$resultsPage?$!{module.id}hitssessionid=$!hits.sessionId")
+	#set($resultsPage = "$resultsPage&$!{hits.getSearchType()}pageposition")
+	#set($oemaxlevel = "2")
+	
+	#set($targetdiv = "resultsdiv")
 #end
 
 
@@ -100,21 +73,17 @@
 #set( $afters = $links.getAfter() )
 
 #set( $selectedpos = $prhits.toPosition($prhits.getPage()))
+
 <li class="resultpages">
+	
+	
 <div class="resultspositions" 
 	data-url="${searchhome}/positions.html" 
-	data-moduleid="$moduleid"
 	data-categoryid="$!categoryid"
-	data-topmoduleid="$!topmoduleid" 
 	data-rootcategory="$!rootcategory"
 	data-hitssessionid="$!hits.getSessionId()" 
-	data-searchtype="$!hits.getSearchType()" 
-	data-dialogresults="$!dialogresults"
 	data-currentpagenum="$prhits.getPage()">
  
-
-	
-
 		<span>
 			[[Page]]
 			$selectedpos
@@ -124,6 +93,11 @@
 				data-updateurl="$!updateurl"  
 				data-oemaxlevel="$oemaxlevel" 
 				data-position="$selectedpos"  
+				#ifnotnull($entity)
+					data-entityid="${entity.id}"
+					data-entitymoduleid="${entitymodule.id}"
+					data-entitymoduleviewid="$!{entitymoduleviewid}" 
+				#end
 				href="$resultsPage=$totalPages">$totalPages</a>
 		</span>
 		#set($prev = $selectedpos - 1)
@@ -132,6 +106,11 @@
 			data-updateurl="$!updateurl"  
 			data-oemaxlevel="$oemaxlevel" 
 			data-position="$prev"  
+			#ifnotnull($entity)
+					data-entityid="${entity.id}"
+					data-entitymoduleid="${entitymodule.id}"
+					data-entitymoduleviewid="$!{entitymoduleviewid}"
+			#end
 			title="[[Previous]]"
 			href="$resultsPage=$prev">
 			<i class="bi bi-chevron-left"></i>
@@ -143,6 +122,12 @@
 			data-oemaxlevel="$oemaxlevel" 
 			data-position="$next"  
 			title="[[Next]]"
+			#ifnotnull($entity)
+					data-entityid="${entity.id}"
+					data-entitymoduleid="${entitymodule.id}"
+					data-entitymoduleid="${entitymodule.id}"
+					data-entitymoduleviewid="$!{entitymoduleviewid}"
+				#end
 			href="$resultsPage=$next">
 			<i class="bi bi-chevron-right"></i>
 		</a>
