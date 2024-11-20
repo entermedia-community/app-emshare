@@ -138,21 +138,14 @@ $(function () {
 			reloadurl = reloadurl + "?hitssessionid=" + hitssessionid;
 		}
 
-		var topmoduleid = resultsdiv.data("topmoduleid");
-		if (!topmoduleid) {
-			topmoduleid = "";
-		}
-
 		var options = structuredClone(tree.data());
 
-		options["treenameme"] = tree.data("treename");
 		options["nodeID"] = nodeid;
 		options["treetoplocation"] = toplocation;
 		options["treeleftlocation"] = leftlocation;
 		options["depth"] = depth;
 		options["categoryid"] = nodeid;
 		options["rootcategory"] = tree.data("rootnodeid");
-		options["topmoduleid"] = topmoduleid;
 		options["hitssessionid"] = hitssessionid;
 
 		if (collectionid) {
