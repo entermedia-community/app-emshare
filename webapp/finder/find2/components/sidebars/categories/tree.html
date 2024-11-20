@@ -1,0 +1,85 @@
+#if (!$treename)
+	#set( $treename = "MainTree" )
+#end
+
+#set( $pickone = false )
+#set( $action = $context.getRequestParameter("pickedcategoryaction") ) 
+
+#if (!$targetdiv)
+	#set( $targetdiv = $context.getRequestParameter("targetdiv") )
+#end
+
+$context.putPageValue("targetdiv",$targetdiv)
+
+#set( $detailid = $context.getRequestParameter("detailid") )
+#if(!$detailid)
+	#set( $detailid = "category") 
+#end
+
+
+
+#set( $categories = $context.getRequestParameter("${detailid}.value") )
+#if(!$categories)
+	#set( $categories = $context.getRequestParameter("category-exact.values") )
+#end	
+#if(!$categories)
+	#set( $categories = $context.getRequestParameter("category.values") )
+#end
+#if(!$categories)
+	#set( $categories = $context.getRequestParameter("category-exact.values") )
+#end	
+#if(!$categories)
+	#set( $categories = $context.getRequestParameter("existingcategories") )
+#end
+
+#if(!$categories)
+	#set( $categories = $context.getRequestParameter("nodeID") )
+#end
+
+#if(!$categories && $category)
+	#set( $categories = $category.getId() )
+#end
+
+
+
+#set( $multivalue = $context.getRequestParameter("multivalue") )
+#if($multivalue != "true")
+	$context.putPageValue("selectedcategories",$categories)
+	#set($category = $mediaarchive.getCategory($categories))
+	#ifnotnull($category)
+		#set($initialcategory = $category.getId())
+	#end
+	#if(!$initialcategory)
+		#set($initialcategory = "index")
+	#end
+#end
+
+#set( $assetid = $context.getRequestParameter("assetid") )
+
+#if($canviewupload || $canviewcategoryupload)
+	#set($canupload = true)
+#end
+$context.putPageValue("canupload", $!canupload)
+		
+		
+<div class="searchcategories-tree #if(!$canviewcategorysearch) h-100 #end">
+    <div class="assetdropcategory assetdropcategorymove searchcategories-treecontainer #if(!$canviewcategorysearch) h-100 #else searchcategories-treecontainer-max #end categorytreescrolllable" >
+
+        	##General Category Tree
+        	#set( $link = "$apphome/components/emtree/tree.html")
+        	#set( $link = "${link}?treename=$treename&editabletree=true&clearselection=$!clearselection" )
+        	#set( $link = "${link}&oemaxlevel=4&uploadmaxlevel=2&maxlevelclick=$!maxlevelclick" )
+        	#set($link = "$link&targetdiv=applicationmaincontent")
+        
+			$pages.include($link, $context)  
+	</div>
+</div>
+#if($canviewcategorysearch)
+<div class="searchcategories-filter">
+	<div id="searchareacontent" class="searchcategories-results"> 
+	$pages.include("$apphome/components/sidebars/category/searchcategoryfilter.html?nodeID=$!initialcategory",$context)
+	</div>
+</div>
+#end
+<div class="clearfix"></div>
+	
