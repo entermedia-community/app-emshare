@@ -268,7 +268,7 @@ lQuery(".emrowpicker table td").livequery("click", function (event) {
 		}
 	);
 
-	//CB working
+	//CB working for entity fieldpicking
 	lQuery(".pickerresults.pickerforfield .resultsdivdata").livequery(
 		"click",
 		function (event) {
@@ -286,6 +286,36 @@ lQuery(".emrowpicker table td").livequery("click", function (event) {
 				pickertarget = $("#" + pickertarget);
 				if (pickertarget.length > 0) {
 					updateentityfield(pickertarget, rowid, row.data("rowname"));
+				}
+				closeemdialog(pickerresults.closest(".modal"));
+			}
+		}
+	);
+
+	//CB: assign a asset to a field 
+	lQuery(".pickerresults.pickerpickasset .resultsdivdata").livequery(
+		"click",
+		function (event) {
+				var clicked = $(this);
+			if (!handleclick(clicked)) {
+				return true;
+			}
+			var row = $(clicked.closest(".resultsdivdata"));
+			var rowid = row.data("dataid");
+			var pickerresults = clicked.closest(".pickerresults");
+
+			if (pickerresults.length) {
+				var pickertarget = pickerresults.data("pickertargetfield");
+				pickertarget = $("#" + pickertarget);  //This is the field itself
+				if (pickertarget.length > 0) {
+					var detailid = pickertarget.data("detailid");
+					$("#" + detailid + "-value").attr("value", rowid);
+					$("#" + detailid + "-preview").load(
+						apphome +
+							"/components/xml/types/assetpicker/preview.html?oemaxlevel=1&assetid=" +
+							rowid,
+						function () {}
+					);
 				}
 				closeemdialog(pickerresults.closest(".modal"));
 			}
@@ -329,8 +359,8 @@ lQuery(".emrowpicker table td").livequery("click", function (event) {
 		}
 	);
 
-	//CB: assign a searchcategory to some selected entities 
-	lQuery(".pickerresults.picktosearchcategory .resultsdivdata").livequery(
+	//CB: Good assign a searchcategory to some selected entities 
+	lQuery(".pickerresults.picksearchcategory .resultsdivdata").livequery(
 		"click",
 		function (event) {
 			var clicked = $(this);
@@ -361,7 +391,7 @@ lQuery(".emrowpicker table td").livequery("click", function (event) {
 	);
 
 
-	//Upload to Entity
+	//Upload to Entity. Still needed?
 	lQuery(".pickerresults.pickandupload .resultsdivdata").livequery(
 		"click",
 		function (event) {
@@ -456,17 +486,6 @@ lQuery(".emrowpicker table td").livequery("click", function (event) {
 	);
 
 	updateentityfield = function (pickertarget, id, name) {
-		if (pickertarget.hasClass("assetpicker")) {
-			//Asset  Picker
-			var detailid = pickertarget.data("detailid");
-			$("#" + detailid + "-value").attr("value", id);
-			$("#" + detailid + "-preview").load(
-				apphome +
-					"/components/xml/types/assetpicker/preview.html?oemaxlevel=1&assetid=" +
-					id,
-				function () {}
-			);
-		} else {
 			var template = $("#pickedtemplateREPLACEID", pickertarget).html(); //clone().appendTo(pickertarget);
 			var newcode = template.replaceAll("REPLACEID", id);
 			newcode = newcode.replaceAll("REPLACEFIELDNAME", "");
@@ -480,7 +499,6 @@ lQuery(".emrowpicker table td").livequery("click", function (event) {
 			newrow.attr("id", id);
 			newrow.find("a:first").text(name);
 			newrow.show();
-		}
 	};
 
 	showmodal = function (emselecttable, url) {
