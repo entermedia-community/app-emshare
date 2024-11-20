@@ -180,9 +180,9 @@ jQuery(document).ready(function (url, params) {
 
 			var oemaxlevel = select.data("oemaxlevel"); //could be custom
 			if (oemaxlevel === undefined) {
-				options.oemaxlevel = 1;
+				 oemaxlevel = 1;
 			}
-
+			options.oemaxlevel = oemaxlevel;
 			var	href = searchhome + "/changehitsperpage.html";
 
 			// the selected option

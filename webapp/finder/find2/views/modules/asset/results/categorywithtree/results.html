@@ -35,7 +35,7 @@ $context.putPageValue("maintargetdiv", $maintargetdiv)
 
 $context.putPageValue("dialogresults", true)
 
-#set( $targetdivmedia = "dialogmediaentity")
+
 $context.putPageValue("targetdivmedia", $targetdivmedia)
 #ifnull($lightboxassetsresults)
 	#set($lightboxassetsresults = $context.getRequestParameter("lightboxassetsresults"))
@@ -45,7 +45,7 @@ $context.putPageValue("targetdivmedia", $targetdivmedia)
 #end
 
 #set($searchhomename = $page.get("searchhomename") )
-
+#set( $targetdivmedia = "$searchhomename")
 <div id="$searchhomename"
 	class="dialogassetresults assetresults resultsdiv resultsdiv${module.id}" 
 	data-moduleid="asset"  ##required for sorting
@@ -143,7 +143,7 @@ $context.putPageValue("targetdivmedia", $targetdivmedia)
 							#set( $link = "${link}?dialogentitymediatreeroot=$rootcategory&treename=dialogentitymediatree&editabletree=true&targetdivsearch=$!targetdivmedia" )
 							#set( $link = "${link}&maintargetdiv=$!maintargetdiv&targetdiv=$!targetdivmedia&maxlevelclick=1&updateAddressBar=false&uploadmaxlevel=1&nodeID=$!{categoryid}&exactsearch=true" )
 							#set( $link = "${link}&customurladdmedia=$apphome/views/modules/asset/add/entityaddmedia.html" )
-							#set( $link = "${link}&oemaxlevel=1&urlprefix=$apphome/views/modules/asset/dialogshowcategory.html" )
+							#set( $link = "${link}&oemaxlevel=1&urlprefix=${searchhome}/search.html" )
 								
 							$pages.include($link, $context)
 							</div>
