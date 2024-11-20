@@ -1,6 +1,7 @@
+#set($hits = $pickerhits)
+$context.putPageValue("hits", $hits)
 
-#set($assetid = $context.getRequestParameter("assetid"))
-$context.putPageValue("resultsLink", "${componenthome}/entities/search/results.html")
+#set( $viewpath = "${module.id}/${module.id}resultstable")
+$context.putPageValue("viewpath", $!viewpath)
 
-$context.putPageValue("hits", $tablehits)
-$pages.include("$apphome/views/modules/$!{moduleid}/index.html?$!args", $context)
+$pages.include("${searchhome}/results.html",$context)
