@@ -167,7 +167,8 @@ lQuery(".emrowpicker table td").livequery("click", function (event) {
 			}
 		}
 	});
-	//Main Module results
+	
+	//CB This works. Opens entities
 	lQuery(".topmodulecontainer .resultsdivdata").livequery(
 		"click",
 		function (event) {
@@ -227,7 +228,7 @@ lQuery(".emrowpicker table td").livequery("click", function (event) {
 		}
 	);
 
-	//To open an entity in a submodule
+	//To open an entity in a submodule. CB Lose Back button
 	lQuery(".submodulepicker .resultsdivdata").livequery(
 		"click",
 		function (event) {
@@ -267,7 +268,7 @@ lQuery(".emrowpicker table td").livequery("click", function (event) {
 		}
 	);
 
-	//Entity picker field
+	//CB Almost working
 	lQuery(".pickerresults.entitypickerfield .resultsdivdata").livequery(
 		"click",
 		function (event) {
@@ -281,7 +282,7 @@ lQuery(".emrowpicker table td").livequery("click", function (event) {
 
 			if (pickerresults.length) {
 				//Entity Picker Field
-				var pickertarget = pickerresults.data("pickertarget");
+				var pickertarget = pickerresults.data("pickertargetfield");
 				pickertarget = $("#" + pickertarget);
 				if (pickertarget.length > 0) {
 					updateentityfield(pickertarget, rowid, row.data("rowname"));
@@ -291,7 +292,7 @@ lQuery(".emrowpicker table td").livequery("click", function (event) {
 		}
 	);
 
-	//Entity picker Submodule Table
+	//CB: Is working
 	lQuery(".pickerresults.entitypickersubmodule .resultsdivdata").livequery(
 		"click",
 		function (event) {
