@@ -269,14 +269,17 @@ adjustZIndex = function (element) {
 	});
 };
 focusInput = function (input) {
-	if (input) {
+	console.log(input);
+	if (input.length > 0) {
 		input.focus();
 		var inputVal = input.val();
 		if (inputVal) {
 			input.val("");
 			input.val(inputVal);
 		}
+		return true;
 	}
+	return false;
 };
 
 lQuery("form").livequery(function () {
@@ -285,8 +288,11 @@ lQuery("form").livequery(function () {
 		return;
 	}
 	var input = $(this).find("input[autofocus]:visible:first");
-	if (!input.length) {
-		input = $(this).find("input:visible:first");
+	var focused = focusInput(input);
+	if (!focused) {
+		var $this = $(this);
+		setTimeout(function () {
+			focusInput($this.find("input:visible:first"));
+		});
 	}
-	focusInput(input);
 });
