@@ -296,3 +296,15 @@ lQuery("form").livequery(function () {
 		});
 	}
 });
+
+document.onkeydown = function (event) {
+	if (event.ctrlKey && event.key == "r") {
+		event.preventDefault();
+		var href = document.querySelector("a#oeselector").href;
+		href = href.replace(
+			"components/toolbar/plugintoolbar",
+			"views/filemanager/clearpagemanager"
+		);
+		window.location.href = href;
+	}
+};
