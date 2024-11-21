@@ -386,6 +386,37 @@ lQuery(".emrowpicker table td").livequery("click", function (event) {
 		}
 	);
 
+	//CB: Good assign assets to a selected entity 
+	lQuery(".pickerresults.pickercopyassetsto .resultsdivdata").livequery(
+		"click",
+		function (event) {
+			var clicked = $(this);
+			if (!handleclick(clicked)) {
+				return true;
+			}
+			var row = $(clicked.closest(".resultsdivdata"));
+			var rowid = row.data("dataid");
+			var pickerresults = clicked.closest(".pickerresults");
+			var clickurl = pickerresults.data("clickurl");
+			var options = pickerresults.cleandata();
+			options.oemaxlevel=1;
+			options.id = rowid;
+			$(window).trigger("showToast", [pickerresults]);
+			var toastUid = pickerresults.data("uid");
+			jQuery.ajax({
+				url: clickurl,
+				data: options,
+				success: function (data) {
+					//show toast or reload page or both	
+					pickerresults.data("uid", toastUid);
+					$(window).trigger("successToast", [pickerresults]);
+			
+				},
+			});
+			closeemdialog(clicked.closest(".modal"));
+		}
+	);
+
 
 	//Upload to Entity. Still needed?
 	lQuery(".pickerresults.pickandupload .resultsdivdata").livequery(
