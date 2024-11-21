@@ -735,38 +735,32 @@ onloadselectors = function () {
 			node.droppable({
 				scope: scope,
 				drop: function (event, ui) {
-					var element = $(this);
+					var boxmenu = $(this);
 					var assetid = ui.draggable.data("assetid");
 
 					var dragged = $(ui.draggable);
+					
+					var resultsdiv = dragged.closest(".resultsdiv")
 					var hitssessionid = dragged
 						.closest(".lightboxresults")
 						.data("hitssessionid");
 					if (hitssessionid == undefined) {
-						hitssessionid = dragged
-							.closest(".resultsdiv")
-							.data("hitssessionid");
+						hitssessionid = resultsdiv.data("hitssessionid");
 					}
 					if (hitssessionid == undefined) {
 						hitssessionid = $("#main-results-table").data("hitssessionid");
 					}
 
-					var options = element.cleandata();
+					var options = boxmenu.cleandata();
 					if (assetid) {
 						options.assetid = assetid;
 					}
 					options.hitssessionid = hitssessionid;
 
-					var targetdiv = node.data("targetdiv");
-
-					var moduleid = node.data("moduleid");
+					var searchhome = boxmenu.data("searchhome");
 
 					$.ajax({
-						url:
-							apphome +
-							"/views/modules/" +
-							moduleid +
-							"/components/entities/lightboxes/addassetstobox.html",
+						url: searchhome +"/addassetstobox.html",
 						data: options,
 						xhrFields: {
 							withCredentials: true,
@@ -774,7 +768,7 @@ onloadselectors = function () {
 						crossDomain: true,
 						type: "POST",
 						success: function (data) {
-							targetdiv = node.closest("#lightboxessidemenu");
+							var targetdiv = node.closest("#lightboxessidemenu");
 							if (targetdiv.length) {
 								targetdiv.replaceWith(data);
 							}

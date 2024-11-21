@@ -8,8 +8,8 @@ $context.putPageValue("dialogresults", true)
 $context.putPageValue("lightboxassetsresults", $lightboxassetsresults)
 
 
-
 #set($entitymoduleviewid = $context.getRequestParameter("entitymoduleviewid"))
+
 #ifnull($entitymoduleviewid)
 #set($entitymoduleviewid = $viewid)
 #end
@@ -17,25 +17,30 @@ $context.putPageValue("lightboxassetsresults", $lightboxassetsresults)
 #ifnull($entitymoduleviewid)
 	#set($entitymoduleviewid = $context.getRequestParameter("viewid"))
 #end
+$context.putPageValue("entitymoduleviewid",$entitymoduleviewid)
 
+#set($lightboxtype = $context.getRequestParameter("lightboxtype"))
+
+#ifnull( $lightboxtype )
 #set($viewdata = $mediaarchive.getCachedData("view",$entitymoduleviewid))
-#set($submoduleid = $!viewdata.rendertable)
-
-
+#set($lightboxtype = $!viewdata.rendertable)
+#end
+$context.putPageValue("lightboxtype",$lightboxtype)
 
 #set($tabid = "tablightboxes")
-<div id="${tabid}" 
+<div id="tablightboxes" 
 class=" entity-tab-content entity-tab-media tabtypemedia" 
 data-tabid="$!{tabid}"
 data-entityid="$!entity.id"
 data-entitymoduleid="$!entitymodule.id"
 data-currenttab="$!viewid"
 data-entitymoduleviewid="$entitymoduleviewid"
-data-lightboxtype="$submoduleid"
+data-lightboxtype="$lightboxtype"
+data-oemaxlevel="1"
 >
 
 <div  class="tablightbox d-flex h-100" style="height: 100%;">
-	#set($boxes =  $mediaarchive.getEntityManager().loadBoxesForModule($submoduleid,$entitymodule, $entity, $context.getUser()))
+	#set($boxes =  $mediaarchive.getEntityManager().loadBoxesForModule($lightboxtype,$entitymodule, $entity, $context.getUser()))
 	$context.putPageValue("boxes",$boxes)
 	
 	#set($hitcounts = $mediaarchive.getEntityManager().loadLightBoxCounts($module, $entity) )
@@ -45,7 +50,7 @@ data-lightboxtype="$submoduleid"
 	
 	#ifnotnull($lightboxid)
 		#if( $lightboxid != "files")
-			#set($selectedbox =  $mediaarchive.getCachedData("emedialightbox",$lightboxid) )
+			#set($selectedbox =  $mediaarchive.getCachedData($lightboxtype,$lightboxid) )
 		#end	
 	#end
 	
@@ -57,6 +62,9 @@ data-lightboxtype="$submoduleid"
 	$context.putPageValue("lightboxid",$lightboxid)
 	$context.putPageValue("selectedbox",$selectedbox)
 	
+	
+	
+	##Load all assets
 	#set($defaultfolder =  $mediaarchive.getEntityManager().loadDefaultFolder($module, $entity, $context.getUser(),true))
 
 	#set($allassets = $mediaarchive.query("asset").exact("category",$defaultfolder).search($context) )

@@ -1028,6 +1028,7 @@ jQuery(document).ready(function (url, params) {
 		}
 	});
 
+	//Launch the Dialog? Use a parmeter check instead
 	showEntity = function (entityid) {
 		var entity = $(".showentity");
 		if (entity.length) {
@@ -1380,7 +1381,7 @@ jQuery(document).ready(function (url, params) {
 		}
 	}
 
-	showEntity();
+	//showEntity();  //Why here? 
 
 	/* lQuery(".scrollview").livequery("scroll", function () {
 		checkScroll();

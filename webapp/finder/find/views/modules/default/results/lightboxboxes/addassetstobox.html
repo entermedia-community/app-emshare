@@ -3,42 +3,43 @@
 ##</div>
 
 #set($entityid = $entity.id)
-$context.putPageValue("entity", $entity)
 $context.putPageValue("entityid", $entityid)
 
 #if(!$currenttab)
 	#set($currenttab = $context.getRequestParameter("currenttab"))
 #end
-#if(!$parentmoduleid)
-	#set ( $parentmoduleid = $context.getRequestParameter("topmoduleid") )
-#end
-#if(!$parentmoduleid)
-	#set ( $parentmoduleid = $context.getRequestParameter("moduleid") )
-#end
-$context.putPageValue("topmoduleid", $parentmoduleid)
-#ifnotnull($parentmoduleid)
-	#set($parentmodule = $mediaarchive.getCachedData("module", $parentmoduleid))
-#end
-$context.putPageValue("topmodule",$parentmodule)
 
-#set($boxes =  $mediaarchive.getEntityManager().loadLightBoxesForModule($parentmodule, $entity, $context.getUser()))
+#set($entitymoduleviewid = $context.getRequestParameter("entitymoduleviewid"))
+$context.putPageValue("entitymoduleviewid",$entitymoduleviewid)
+
+
+#set( $lightboxtype = $context.getRequestParameter("lightboxtype"))
+$context.putPageValue("lightboxtype",$lightboxtype)
+
+#set( $lightboxid = $context.getRequestParameter("lightbox"))
+
+
+#set($boxes =  $mediaarchive.getEntityManager().loadBoxesForModule($lightboxtype,$entitymodule, $entity, $context.getUser()))
 $context.putPageValue("boxes",$boxes)
 
 #set($hitcounts = $mediaarchive.getEntityManager().loadLightBoxCounts($module, $entity) )
 $context.putPageValue("hitcounts",$hitcounts)
 
-#set( $lightboxtypeid = $context.getRequestParameter("lightboxtypeid"))
 
-#ifnotnull($lightboxtypeid)
-	#if( $lightboxtypeid != "files")
-		#set($selectedbox =  $mediaarchive.getEntityManager().loadLightBoxForEntity($lightboxtypeid, $module, $entity))
+#ifnull($lightboxid)
+	#set($selectedbox =  $mediaarchive.getEntityManager().findFirstSelectedLightBox($boxes,$hitcounts))
+#end	
+
+#ifnotnull($lightboxid)
+	#if( $lightboxtype != "files")
+		#set($selectedbox =  $mediaarchive.getEntityManager().loadLightBoxForEntity($lightboxtype,$lightboxid, $module, $entity))
 	#end	
 #end
 
-#ifnull($lightboxtypeid)
-	##set($selectedbox =  $mediaarchive.getEntityManager().findFirstSelectedLightBox($boxes,$assets))
-#end	
+$context.putPageValue("selectedbox",$selectedbox)
 
+#set($lightboxid = $selectedbox.getId())
+$context.putPageValue("lightboxid",$lightboxid)
 
 
 $context.putPageValue("boxes",$boxes)
