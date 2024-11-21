@@ -150,6 +150,7 @@ $context.putPageValue("filter", $filter)
 		   $context.putPageValue("hits", $hits)
 		   
 		   $context.putPageValue("searchresults", true)
+		   $context.putPageValue("searchhome", "$apphome/views/modules/${module.id}/results/default")
 			
 			<div class="emgridflex">  	
 				<div id="galleryimg-entitiy" 
@@ -166,7 +167,8 @@ $context.putPageValue("filter", $filter)
 					   			#set($rendertype = "entity")
 							#end
 							 <div class="emgridcell emgridcellqs emgridcell-$rendertype activelistcontainer 
-					 			#if($selectedid == $hit.getId() || $topselectedid == $hit.getId()) active #end" style="width: 180px;"> 
+					 			#if($selectedid == $hit.getId() || $topselectedid == $hit.getId()) active #end" style="width: 180px;">
+					 			 
 							    $pages.include("$apphome/views/modules/$!{module.id}/results/default/tabs/types/qsresult.html", $context)
 							   	
 							   	#set($highlight =  $hits.highlight($hit, "description", 20, true))
