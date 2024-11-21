@@ -16,48 +16,25 @@
 #set($entityid = $context.getRequestParameter("entityid"))
 #end
 
+#set($targetdiv = "resultsdiv")
+#set($oemaxlevel = "1")
+#set($updateurl = $page.isPropertyTrue("updateurl", true))
 
-
+#set($resultsPage = "${searchhome}/showpage.html")
 #if($module.id=="asset")
-		
-			#if($dialogresults)
-				#set($resultsPage = "${searchhome}/index.html?hitssessionid=$!hits.sessionId")
-				#set($resultsPage = "$resultsPage&topmoduleid=$!topmoduleid")
-				#set($resultsPage = "$resultsPage&rootcategory=$!rootcategory")
-				#set($resultsPage = "$resultsPage&categoryid=$!categoryid")
-				#set($resultsPage = "$resultsPage&entityid=$!entityid")
-				#set($updateurl = "false")
-				#set($targetdiv = "dialog$!{module.id}resultscontainer")
-			#else
-				#if($categoryid)
-					#if(!$category)
-						#set($category = $mediaarchive.getCachedData("category", $categoryid))
-					#end
-					#set($resultsPage = "${searchhome}/viewfiles/${categoryid}/#dash($category).html?hitssessionid=$!hits.sessionId")
-					#set($oemaxlevel = "2")
-				#else
-					#set($resultsPage = "${searchhome}/showpage.html?hitssessionid=$!hits.sessionId")
-				#end
-			#end
-			
-			#if($collectionid)
-				#set($resultsPage = "$resultsPage&collectionid=$!collectionid")
-			#end
-			
-			#set($resultsPage = "$resultsPage&$!{hits.getSearchType()}pageposition")
-		
-#else
-
-	#if(!$resultsPage)
-		#set($resultsPage = "${searchhome}/search.html")
+	#if($categoryid)
+		#if(!$category)
+			#set($category = $mediaarchive.getCachedData("category", $categoryid))
+		#end
 	#end
-	#set($resultsPage = "$resultsPage?$!{module.id}hitssessionid=$!hits.sessionId")
-	#set($resultsPage = "$resultsPage&$!{hits.getSearchType()}pageposition")
-	#set($oemaxlevel = "2")
-	
-	#set($targetdiv = "resultsdiv")
+	#if($updateurl)
+		#set($resultsPage = "${searchhome}/${categoryid}/#dash($category).html")
+		#set($oemaxlevel = "2")
+	#end
 #end
 
+#set($resultsPage = "$resultsPage?$!{module.id}hitssessionid=$!hits.sessionId")
+#set($resultsPage = "$resultsPage&$!{hits.getSearchType()}pageposition")
 
 #set($totalPages = $hits.getTotalPages() )
 
@@ -73,6 +50,7 @@
 #set( $afters = $links.getAfter() )
 
 #set( $selectedpos = $prhits.toPosition($prhits.getPage()))
+
 
 <li class="resultpages">
 	
