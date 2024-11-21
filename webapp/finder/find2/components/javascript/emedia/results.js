@@ -180,9 +180,9 @@ jQuery(document).ready(function (url, params) {
 
 			var oemaxlevel = select.data("oemaxlevel"); //could be custom
 			if (oemaxlevel === undefined) {
-				options.oemaxlevel = 1;
+				 oemaxlevel = 1;
 			}
-
+			options.oemaxlevel = oemaxlevel;
 			var	href = searchhome + "/changehitsperpage.html";
 
 			// the selected option
@@ -1034,7 +1034,7 @@ jQuery(document).ready(function (url, params) {
 			var resultsdiv = $(".resultsdiv");
 			var moduleid = resultsdiv.data("moduleid");
 			var searchhome = resultsdiv.data("searchhome");
-			if (moduleid && searchhome) {
+			if (searchhome) {
 				var url = searchhome + "/tabs/preview/entity.html";
 				entity.data("targetlink", url);
 				entity.data("updateurl", true);
@@ -1042,7 +1042,7 @@ jQuery(document).ready(function (url, params) {
 				var currenturl = window.location.origin + window.location.pathname;
 				history.pushState($("#application").html(), null, currenturl);
 
-				emdialog(entity);
+				entity.emDialog();
 			}
 		}
 	};

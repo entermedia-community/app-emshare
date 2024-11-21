@@ -7,7 +7,9 @@
 			<a class="ajax btn-wide #if( $box.id == $selectedbox.getId() ) active #end"
 				data-targetdiv="tablightboxes"
 				data-oemaxlevel="1"
-				href="$searchhome/show.html?lightboxid=$box.id&entityid=$entity.id">
+				data-entityid="$!{entity.id}"
+				data-entitymoduleid="$!{entitymodule.id}"
+				href="$searchhome/show.html?lightboxid=$box.id">
 			
 			#set( $moduleicon = $box.moduleicon)
 			#ifnull($moduleicon)
@@ -36,7 +38,10 @@
 		class="rounded assetdroplightbox side-select-menu">
 		<a class="ajax btn-wide #ifnull($selectedbox) active #end" 
 			data-targetdiv="tablightboxes" 
-			data-oemaxlevel="1" href="$searchhome/show.html?lightboxid=files&entityid=$entity.id&topmoduleid=$parentmodule.id">
+			data-oemaxlevel="1" 
+			data-entityid="$!{entity.id}"
+			data-entitymoduleid="$!{entitymodule.id}"
+			href="$searchhome/show.html?lightboxid=files">
 			#set( $moduleicon = $mediaarchive.getCachedData("module","asset").moduleicon)
 			#ifnull($allassets)
 				#set($defaultfolder =  $mediaarchive.getBean("entityManager").loadDefaultFolder($parentmodule, $entity, $context.getUser(),true))

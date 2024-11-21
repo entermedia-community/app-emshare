@@ -7,17 +7,18 @@ var isCategoryDragged = false;
 var isCollectionCreatedByDragging = false;
 
 var currentlyOver = null;
-function handleDroppableOver(event, ui) {
+function handleDroppableOver(_, ui) {
 	currentlyOver = $(this).parent().attr("id");
 	$(this).addClass("dragoverselected");
-	ui.helper.css("transform", "scale(0.45)");
+	if ($(".assetdroppable.ui-droppable-hover").length > 0) return;
+	ui.helper.css("transform", "scale(0.25)");
 }
 
-function handleDroppableOut(event, ui) {
-	console.log('dropping out "' + $(this).attr("id") + '"');
+function handleDroppableOut(_, ui) {
 	$(this).removeClass("dragoverselected");
 	if ($(this).parent().attr("id") == currentlyOver) {
-		ui.helper.css("transform", "scale(1)");
+		var scale = ui.helper.data("scale") || 1;
+		ui.helper.css("transform", "scale(" + scale + ")");
 	}
 }
 
@@ -454,6 +455,14 @@ onloadselectors = function () {
 		});
 	});
 
+	function scaleDown(el, maxD = 150) {
+		var scale = maxD / Math.max(el.width(), el.height());
+		if (scale === Infinity) {
+			scale = 1;
+		}
+		el.css("transform", "scale(" + scale + ")");
+		el.data("scale", scale);
+	}
 	//Check on jquery.draggable
 	if (jQuery.fn.draggable) {
 		lQuery(".assetdraggable").livequery(function () {
@@ -476,21 +485,19 @@ onloadselectors = function () {
 						}
 					}
 					var cloned = toclone.clone();
-
+					scaleDown(cloned);
 					cloned.addClass("clonedragging");
 
-					// var status =
-					// $('input[name=pagetoggle]').is(':checked');
-					var n = $("input.selectionbox:checked").length;
-					if (n > 1) {
+					if ($("input.selectionbox:checked").length > 1) {
 						cloned.append('<div class="dragcount emnotify">+' + n + "</div>");
 					}
+
 					return cloned;
 				},
-				start: function (event, ui) {
+				start: function () {
 					$(this).draggable("instance").offset.click = {
-						left: Math.floor(ui.helper.width() / 2),
-						top: Math.floor(ui.helper.height() / 2),
+						left: Math.floor($(this).width() / 2),
+						top: Math.floor($(this).height() / 2),
 					};
 				},
 				handle: $(".draggholder"),
@@ -560,13 +567,10 @@ onloadselectors = function () {
 				delay: 300,
 				helper: function () {
 					var cloned = $(this).clone();
-
+					scaleDown(cloned, 250);
 					$(cloned).addClass("categorydragging");
 
-					// var status =
-					// $('input[name=pagetoggle]').is(':checked');
-					var n = $("input.selectionbox:checked").length;
-					if (n > 1) {
+					if ($("input.selectionbox:checked").length > 1) {
 						cloned.append('<div class="dragcount emnotify">+' + n + "</div>");
 					}
 

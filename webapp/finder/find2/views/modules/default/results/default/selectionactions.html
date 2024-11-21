@@ -2,10 +2,7 @@
 
 <li class="resultsnavlink dropdown">
 		<a class="resultsnavlink dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="navbarCopyto$!{moduleid}">[[Copy To]]</a>
-		<ul class="dropdown-menu" aria-labelledby="navbarCopyto$!{moduleid}">
-			
-	
-		
+		<ul class="dropdown-menu" aria-labelledby="navbarCopyto$!{module.id}">
 			
 			#foreach ( $amodule in $userprofile.getEntities() )
 				#set($amoduleid = $amodule.getId())
@@ -17,19 +14,16 @@
 						#if ($amodule.modulerendertype)
 							#set($entityrendertype = $amodule.modulerendertype)
 						#end
-						#set($addtourl = "$siteroot$applink/views/modules/${moduleid}/components/entities/copyentities.html")
-						#ifnotnull($topentityid)
-							#set($addtourl = "$addurl&fieldexternalid=${topmodule.getId()}&fieldexternalvalue=${topentityid}&reloadtargets=topmodulecontainer")
-						#end
+						#set($addtourl = "${searchhome}/actions/copyentities.html")
 						#set($moduleicon = "entity")
 						#ifnotnull($amodule.moduleicon)
 							#set($moduleicon = $amodule.moduleicon)
 						#end
 						<li><a class="ajax dropdown-item"
 							data-targetdiv="applicationmaincontent"
-							data-oemaxlevel="2" 
+							data-oemaxlevel="3" 
 							data-pickedmoduleid="$amoduleid"
-							data-copyingsearchtype="$moduleid"
+							data-copyingsearchtype="$module.id"
 							data-copyinghitssessionid="$hits.getSessionId()"	
 							data-toastmessage="[[Copying selected files and metadata to]] #text($amodule)"
 							data-toastsuccess="[[Successfully copied files and metadata to]] #text($amodule)"

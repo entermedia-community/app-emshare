@@ -272,9 +272,9 @@ $(document).ready(function () {
 			}
 		}
 
-		var dialogassets = btn.closest("#dialogassetresultscontainer");
-		if (dialogassets.length > 0) {
-			autoreload(dialogassets);
+		var entitydialog  = btn.closest(".entitydialog ");
+		if (entitydialog .length > 0) {
+			autoreload(entitydialog);
 			return;
 		}
 

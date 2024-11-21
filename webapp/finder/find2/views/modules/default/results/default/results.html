@@ -11,6 +11,7 @@ $context.putPageValue("viewid", $viewid)
 	$context.putPageValue("viewpath", "${module.id}/${viewid}")
 #end
 #set($entitymoduleviewid = $context.getRequestParameter("entitymoduleviewid"))
+$context.putPageValue("entitymoduleviewid", "${entitymoduleviewid}")
 
 #set($searchhomename = $page.get("searchhomename") )
 <div id="$searchhomename" class="tableresults resultsdiv" 
@@ -55,7 +56,6 @@ $context.putPageValue("viewid", $viewid)
 	
 	
 	#set($resultview = $userprofile.get("${moduleid}resultview"))
-	
 	#if(!$resultview)
 		#set($resultview = $content.get("${moduleid}resultview"))
 	#end
@@ -84,33 +84,14 @@ $context.putPageValue("viewid", $viewid)
 	
 	$context.putPageValue("moduletotalhits",$moduletotalhits)
 
-
-
-	#if( $hits && $hits.size() > 0 )		
-		$pages.include("${searchhome}/resultviews.html", $context)
-	#else
-	
-		#set($addnew = "$!{componenthome}/entities/addnew.html")
-		<div class="w-100 text-center mt-5">
-			<p class="text-muted">[[No]] #text($module) [[created yet]]</p>
-			<a class="btn btn-accent emdialog rounded"
-			data-dialogid="entitypickeraddnew"
-			data-hidefooter="true"
-			data-targetdivinner="pickersearchentities"
-			data-ajaxreloadtargets="onetomanytab"
-			data-fieldexternalid="$!fieldexternalid"
-			data-fieldexternalvalue="$!fieldexternalvalue"
-			href="$addnew"
-			title="[[Create New]] #text($entity)">
-			<i class="bi bi-plus-lg mr-1"></i> [[Create New]]</a>
-		
-			#if($tabletype == "subentity")
-				#set($entity = $mediaarchive.getCachedData("module", $searchtype))	
-				<div id="resultsdiv$!{entity.getId()}"></div>
-			#end
-		</div>
-	#end
+	$pages.include("${searchhome}/resultviews.html", $context)
 		
 </div>
 
+##opens an entity
+#set($entityid = $context.getRequestParameter('entityid'))
+#set($entitytabopen = $context.getRequestParameter('entitytabopen'))
+#if($entityid)
+<span class="showentity" data-dataid="$entityid" data-entitytabopen="$!{entitytabopen}"></span>
+#end
 

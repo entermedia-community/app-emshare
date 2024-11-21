@@ -167,7 +167,8 @@ lQuery(".emrowpicker table td").livequery("click", function (event) {
 			}
 		}
 	});
-	//Main Module results
+	
+	//CB This works. Opens entities
 	lQuery(".topmodulecontainer .resultsdivdata").livequery(
 		"click",
 		function (event) {
@@ -214,12 +215,8 @@ lQuery(".emrowpicker table td").livequery("click", function (event) {
 					row.data("id", rowid);
 					row.data("hitssessionid", emselectable.data("hitssessionid"));
 					row.data("updateurl", true);
-					var urlbar =
-						apphome +
-						"/views/modules/" +
-						emselectable.data("searchtype") +
-						"/index.html?entityid=" +
-						rowid;
+					var urlbar = emselectable.data("urlbar");
+					urlbar = urlbar + "?entityid=" + rowid;
 					row.data("urlbar", urlbar);
 					row.emDialog();
 				}
@@ -227,7 +224,7 @@ lQuery(".emrowpicker table td").livequery("click", function (event) {
 		}
 	);
 
-	//To open an entity in a submodule
+	//To open an entity in a submodule. CB Lose Back button
 	lQuery(".submodulepicker .resultsdivdata").livequery(
 		"click",
 		function (event) {
@@ -267,8 +264,8 @@ lQuery(".emrowpicker table td").livequery("click", function (event) {
 		}
 	);
 
-	//Entity picker field
-	lQuery(".pickerresults.entitypickerfield .resultsdivdata").livequery(
+	//CB working for entity fieldpicking
+	lQuery(".pickerresults.pickerforfield .resultsdivdata").livequery(
 		"click",
 		function (event) {
 			var clicked = $(this);
@@ -281,7 +278,7 @@ lQuery(".emrowpicker table td").livequery("click", function (event) {
 
 			if (pickerresults.length) {
 				//Entity Picker Field
-				var pickertarget = pickerresults.data("pickertarget");
+				var pickertarget = pickerresults.data("pickertargetfield");
 				pickertarget = $("#" + pickertarget);
 				if (pickertarget.length > 0) {
 					updateentityfield(pickertarget, rowid, row.data("rowname"));
@@ -291,7 +288,37 @@ lQuery(".emrowpicker table td").livequery("click", function (event) {
 		}
 	);
 
-	//Entity picker Submodule Table
+	//CB: assign a asset to a field 
+	lQuery(".pickerresults.pickerpickasset .resultsdivdata").livequery(
+		"click",
+		function (event) {
+				var clicked = $(this);
+			if (!handleclick(clicked)) {
+				return true;
+			}
+			var row = $(clicked.closest(".resultsdivdata"));
+			var rowid = row.data("dataid");
+			var pickerresults = clicked.closest(".pickerresults");
+
+			if (pickerresults.length) {
+				var pickertarget = pickerresults.data("pickertargetfield");
+				pickertarget = $("#" + pickertarget);  //This is the field itself
+				if (pickertarget.length > 0) {
+					var detailid = pickertarget.data("detailid");
+					$("#" + detailid + "-value").attr("value", rowid);
+					$("#" + detailid + "-preview").load(
+						apphome +
+							"/components/xml/types/assetpicker/preview.html?oemaxlevel=1&assetid=" +
+							rowid,
+						function () {}
+					);
+				}
+				closeemdialog(pickerresults.closest(".modal"));
+			}
+		}
+	);
+
+	//CB: Is good. for submodules
 	lQuery(".pickerresults.entitypickersubmodule .resultsdivdata").livequery(
 		"click",
 		function (event) {
@@ -328,7 +355,39 @@ lQuery(".emrowpicker table td").livequery("click", function (event) {
 		}
 	);
 
-	//Upload to Entity
+	//CB: Good assign a searchcategory to some selected entities 
+	lQuery(".pickerresults.picksearchcategory .resultsdivdata").livequery(
+		"click",
+		function (event) {
+			var clicked = $(this);
+			if (!handleclick(clicked)) {
+				return true;
+			}
+			var row = $(clicked.closest(".resultsdivdata"));
+			var rowid = row.data("dataid");
+			var pickerresults = clicked.closest(".pickerresults");
+			var clickurl = pickerresults.data("clickurl");
+			var options = pickerresults.cleandata();
+			options.oemaxlevel=1;
+			options.id = rowid;
+			$(window).trigger("showToast", [pickerresults]);
+			var toastUid = pickerresults.data("uid");
+			jQuery.ajax({
+				url: clickurl,
+				data: options,
+				success: function (data) {
+					//show toast or reload page or both	
+					pickerresults.data("uid", toastUid);
+					$(window).trigger("successToast", [pickerresults]);
+			
+				},
+			});
+			closeemdialog(clicked.closest(".modal"));
+		}
+	);
+
+
+	//Upload to Entity. Still needed?
 	lQuery(".pickerresults.pickandupload .resultsdivdata").livequery(
 		"click",
 		function (event) {
@@ -347,8 +406,8 @@ lQuery(".emrowpicker table td").livequery("click", function (event) {
 			}
 		}
 	);
-
-	//Copy Entities
+	
+	//Assets or Categories and you import into a entity
 	lQuery(".pickerresultscopy .resultsdivdata").livequery(
 		"click",
 		function (event) {
@@ -377,37 +436,7 @@ lQuery(".emrowpicker table td").livequery("click", function (event) {
 						if (targettype == "message") {
 							if (targetdiv !== undefined) {
 								targetdiv.prepend(data);
-								tar//Entity picker Submodule Table
-	lQuery(".pickerresults.entitypickersubmodule .resultsdivdata").livequery(
-		"click",
-		function (event) {
-			var clicked = $(this);
-			if (!handleclick(clicked)) {
-				return true;
-			}
-			var row = $(clicked.closest(".resultsdivdata"));
-			var rowid = row.data("dataid");
-			var pickerresults = clicked.closest(".pickerresults");
-
-			if (pickerresults.length) {
-				var clickurl = pickerresults.data("clickurl");
-				var options = pickerresults.data();
-				options.id = rowid;
-				var pickertarget = pickerresults.data("pickertarget");
-				pickertarget = $("#" + pickertarget);
-				if (clickurl !== undefined && clickurl != "") {
-					jQuery.ajax({
-						url: clickurl,
-						data: options,
-						success: function (data) {
-							autoreload(pickertarget);
-						},
-					});
-				}
-				closeemdialog(pickerresults.closest(".modal"));
-			}
-		}
-	);getdiv.find(".fader").fadeOut(3000, "linear");
+								targetdiv.find(".fader").fadeOut(3000, "linear");
 							}
 						} else {
 							//regular targetdiv
@@ -422,6 +451,9 @@ lQuery(".emrowpicker table td").livequery("click", function (event) {
 			}
 		}
 	);
+
+
+								
 
 	function handleclick(clicked) {
 		if (clicked.attr("noclick") == "true") {
@@ -450,17 +482,6 @@ lQuery(".emrowpicker table td").livequery("click", function (event) {
 	);
 
 	updateentityfield = function (pickertarget, id, name) {
-		if (pickertarget.hasClass("assetpicker")) {
-			//Asset  Picker
-			var detailid = pickertarget.data("detailid");
-			$("#" + detailid + "-value").attr("value", id);
-			$("#" + detailid + "-preview").load(
-				apphome +
-					"/components/xml/types/assetpicker/preview.html?oemaxlevel=1&assetid=" +
-					id,
-				function () {}
-			);
-		} else {
 			var template = $("#pickedtemplateREPLACEID", pickertarget).html(); //clone().appendTo(pickertarget);
 			var newcode = template.replaceAll("REPLACEID", id);
 			newcode = newcode.replaceAll("REPLACEFIELDNAME", "");
@@ -474,7 +495,6 @@ lQuery(".emrowpicker table td").livequery("click", function (event) {
 			newrow.attr("id", id);
 			newrow.find("a:first").text(name);
 			newrow.show();
-		}
 	};
 
 	showmodal = function (emselecttable, url) {

@@ -52,11 +52,12 @@ $pages.include("${searchhome}/resultheader.html",$context)
 				data-viewid="$!defaultviewid"
 				data-${module.id}hitssessionid="$!hits.getSessionId()" 
 				data-id="$!id"
-				data-searchtype="$!searchtype" 
 				data-searchhome="$!searchhome"
 				data-tabletype="$!{tabletype}"
 				data-targetlink="$!targetlink"
-				data-targetdiv="$!targetdiv">
+				data-targetdiv="$!targetdiv"
+				data-urlbar= "${apphome}/views/modules/${moduleid}/index.html"
+					>
 		
 			<table class="table table-striped table-hover" 
 					id="$!searchtype-main-results-table" 
@@ -65,7 +66,7 @@ $pages.include("${searchhome}/resultheader.html",$context)
 			
 			<thead>
 			<tr id="tableheader" class="tableheader" >
-			###if($content.isPropertyTrue("showactions"))
+			#if($content.isPropertyTrue("showselections",true))
 			
 				<th class="firstheader p-0" id="th-checkbox">
 				
@@ -74,7 +75,7 @@ $pages.include("${searchhome}/resultheader.html",$context)
 			    	</div>
 				</th>
 			
-			###end
+			#end
 			
 			#set( $edit = $context.getRequestParameter("editheader"))
 			#if( !$edit || $edit == "false")
@@ -149,8 +150,7 @@ $pages.include("${searchhome}/resultheader.html",$context)
 			
 			    <tr class="resultsdivdata" data-dataid="$!{hit.id}" data-rowname="#text($hit)" rowid="$!{hit.id}">
 			   
-			    
-				###if($content.isPropertyTrue("showactions"))
+				#if($content.isPropertyTrue("showselections",true))
 			
 				<td class="borderedcell checkbox" noclick="true"> 
 					
@@ -159,7 +159,7 @@ $pages.include("${searchhome}/resultheader.html",$context)
 					##<input type="checkbox" class="moduleselectionbox" name="count" value="" #if($hits.isSelectedOnPage(${hit.id})) checked #end data-dataid='${hit.id}' data-hitssessionid='$hits.sessionId' />
 					<div id="check_${count}"></div>
 				</td>
-				###end
+				#end
 			
 				#foreach( $detail in $resultdetails )
 					<td class="editfield highlightMe tablecell tablecell-$!detail.id tablecell-$!detail.rendertype"

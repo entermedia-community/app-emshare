@@ -152,11 +152,11 @@ $context.putPageValue("entityrendertype", $entityrendertype)
 							 data-viewid="$viewid"
 							 data-entityid="$entityid"
 							 data-topmoduleid="$parentmoduleid"
-							 href="${searchhome}/actions/deleteselections.html?hitssessionid=$hits.sessionId&module=$!{module.id}"
+							 href="${searchhome}/actions/deleteselections.html?hitssessionid=$hits.sessionId"
 						 #else
-							 data-oemaxlevel="2" 
-							 data-targetdiv="$!{moduleid}resultscontainer" 
-							 href ="${searchhome}/actions/deleteselections.html?hitssessionid=$hits.sessionId&module=$!{module.id}"
+							 data-oemaxlevel="3" 
+							 data-targetdiv="resultsdiv" 
+							 href ="${searchhome}/actions/deleteselections.html?hitssessionid=$hits.sessionId"
 						 #end
 						 title="[[Delete selected items]]">[[Delete]] $!hits.getSelectionSize() [[Records]]</a></li>
 					#end
@@ -182,13 +182,11 @@ $context.putPageValue("entityrendertype", $entityrendertype)
 				><i class="bi bi-bookmark-fill mr-2"></i> [[Bookmark]]</a></li>
 				#end
 				#if($permissions.can("searchcategory", "create"))
-					#set($addurl = "$!{siteroot}${applink}/views/modules/searchcategory/components/entities/search/searchpicker.html") 
+					#set($addurl = "$!{siteroot}${applink}/views/modules/searchcategory/results/picktosearchcategory/index.html") 
 					<li><a 
 					class="dropdown-item emdialog" 
 							href="$addurl" 
-							data-viewfiles="true"
-							data-pickertarget="addtocategory"
-							data-copyingsearchtype="$moduleid"
+							data-copyingsearchtype="$module.id"
 							data-copyinghitssessionid="$hits.getSessionId()"	
 							title="[[Add To Category]]"
 							data-width="1200"><i class="bi bi-category mr-2"></i>[[Assign]] #text( $mediaarchive.getCachedData("module","searchcategory") )</a></li>
@@ -211,13 +209,10 @@ $context.putPageValue("entityrendertype", $entityrendertype)
 				
 					#if($hits && $resultview == "table" && $hits.hasSelections())
 					
-						$pages.include("${apphome}/views/modules/${moduleid}/selectionactions.html", $context)
+						$pages.include("${searchhome}/selectionactions.html", $context)
 					#end
 				#end
 			#end
-			
-			##<li> <div id="resultsmessages"></div> </li>
-			
 			
 		</ul>
 			
@@ -226,7 +221,7 @@ $context.putPageValue("entityrendertype", $entityrendertype)
 				#if($edit != "true")
 					#set($total = $hits.getTotalPages() )
 					#if( $total > 1)
-							$pages.include("$searchhome/positions.html", $context)
+							$pages.include("${searchhome}/positions.html", $context)
 					#end
 				#end
 
@@ -264,7 +259,7 @@ $context.putPageValue("entityrendertype", $entityrendertype)
 				
 				<li>
 
-					<a href="$searchhome/filters/dialogsort.html" 
+					<a href="${searchhome}/filters/dialogsort.html" 
 						class="emdialog emsort #if($isminimized) closed #end"
 						data-dialogid="sortdialog"
 						data-hidebackdrop="true"
@@ -302,6 +297,6 @@ $context.putPageValue("entityrendertype", $entityrendertype)
 			</ul>
 		#end
 	</div>
-	$pages.include("$searchhome/filters/filters-inline.html", $context)
+	$pages.include("${searchhome}/filters/filters-inline.html", $context)
 </div>
 

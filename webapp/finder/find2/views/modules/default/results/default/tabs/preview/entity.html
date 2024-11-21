@@ -1,13 +1,16 @@
 #set( $searchtype = $context.findValue("searchtype"))
 #set( $parentsearchtype = $searchtype)
-#set( $id = $context.getRequestParameter("id"))
-$context.putPageValue("parentsearchtype", $parentsearchtype)
-$context.putPageValue("parentid", $id)
 
+#set( $id = $context.getRequestParameter("id"))
+#ifnull($id)
+	#set( $id = $context.getRequestParameter("dataid"))
+#end
 #ifnull($id)
 	#set( $id = $context.getRequestParameter("entityid"))
-	$context.putPageValue("id", $id)
 #end
+$context.putPageValue("id", $id)
+$context.putPageValue("parentsearchtype", $parentsearchtype)
+$context.putPageValue("parentid", $id)
 
 #set( $ismulti = $id.startsWith("multiedit:") || $context.getRequestParameter("multi") == "true")
 $context.putPageValue("ismulti", $ismulti)
@@ -415,6 +418,7 @@ $context.putPageValue("topmoduleid", $moduleid)
 				$context.putPageValue("currenttab", $entitytabopen)
 				$pages.include("${searchhome}/tabs/preview/entitytab.html", $context)
 			#end
+			
 			#ifnotnull($id)
 				$context.putPageValue("currenttab", $entitytabopen)
 				

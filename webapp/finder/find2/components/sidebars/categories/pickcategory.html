@@ -1,8 +1,9 @@
+##AssetPicker Media Viewer
+
+
 #if (!$treename)
 	#set( $treename = "MainTree" )
 #end
-
-#set( $pickone = false )
 #set( $action = $context.getRequestParameter("pickedcategoryaction") ) 
 
 #if (!$targetdiv)
@@ -16,8 +17,10 @@ $context.putPageValue("targetdiv",$targetdiv)
 	#set( $detailid = "category") 
 #end
 
-
-
+#set( $pickone = $context.getRequestParameter("pickone") )
+#if (!$pickone)
+	#set( $pickone = false )
+#end
 #set( $categories = $context.getRequestParameter("${detailid}.value") )
 #if(!$categories)
 	#set( $categories = $context.getRequestParameter("category-exact.values") )
@@ -61,25 +64,24 @@ $context.putPageValue("targetdiv",$targetdiv)
 #end
 $context.putPageValue("canupload", $!canupload)
 		
-		
-<div class="searchcategories-tree #if(!$canviewcategorysearch) h-100 #end">
-    <div class="assetdropcategory assetdropcategorymove searchcategories-treecontainer #if(!$canviewcategorysearch) h-100 #else searchcategories-treecontainer-max #end categorytreescrolllable" >
-
-        	##General Category Tree
-        	#set( $link = "$apphome/components/emtree/tree.html")
-        	#set( $link = "${link}?treename=$treename&editabletree=true&clearselection=$!clearselection" )
-        	#set( $link = "${link}&oemaxlevel=4&uploadmaxlevel=2&maxlevelclick=$!maxlevelclick" )
-        	#set($link = "$link&targetdiv=applicationmaincontent")
-        
+<div class="pickcategoriesdialog">
+	<div class="searchcategories-tree">
+	    <div class="assetdropcategory assetdropcategorymove searchcategories-treecontainer categorytreescrolllable" >
+	       	
+	        	#set( $link = "$apphome/components/emtree/tree.html")
+	        	#set( $link = "${link}?treename=$treename&editabletree=false&clearselection=$!clearselection&updateAddressBar=false&hidecontextmenu=true" )
+	        	#set( $link = "${link}&oemaxlevel=4&uploadmaxlevel=2&maxlevelclick=$!maxlevelclick" )
+	        	#set($link = "$link&targetdivinner=pickcategorycontent&urlprefix=$apphome/sidebars/categories/searchcategoryfilter.html")
+	        	
+	        	$context.putPageValue("canupload", false)
+	
 			$pages.include($link, $context)  
+		</div>
+	</div>
+	<div class="searchcategories-filter flex-grow-1">
+		<div id="pickcategorycontent" class="searchcategories-results"> 
+		$pages.include("$apphome/sidebars/categories/searchcategoryfilter.html?nodeID=$!initialcategory",$context)
+		</div>
 	</div>
 </div>
-#if($canviewcategorysearch)
-<div class="searchcategories-filter">
-	<div id="searchareacontent" class="searchcategories-results"> 
-	$pages.include("$apphome/components/categories/search/searchcategoryfilter.html?nodeID=$!initialcategory",$context)
-	</div>
-</div>
-#end
-<div class="clearfix"></div>
 	

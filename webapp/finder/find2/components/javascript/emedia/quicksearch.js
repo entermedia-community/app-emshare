@@ -211,6 +211,11 @@ lQuery(".mainsearch").livequery(function () {
 			togglemodaldialog("hide");
 		}
 	});
+	$(document).on("keydown", function (event) {
+		if ((event.ctrlKey || event.metaKey) && event.keyCode == 191) {
+			$(".quicksearchexpand").trigger("click");
+		}
+	});
 	lQuery(".quicksearchexpand").livequery("click", function (e) {
 		e.preventDefault();
 		e.stopPropagation();
