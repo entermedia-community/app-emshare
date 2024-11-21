@@ -28,11 +28,17 @@
 			nextpage = anchor.data("nextpage");
 		}
 
-		var options = $(anchor).data();
-		if (options.isEmptyObject || $(anchor).data("findalldata")) {
-			options = findalldata(anchor);
-		}
-		var useparent = anchor.data("useparent");
+		var options = anchor.cleandata();
+		if (anchor.data("includesearchcontext") == true) {  //Is this a good idea or a bad idea?
+			var resultsdivS = "resultsdiv";//anchor.data("resultsdiv"); 
+			var resultsdiv = anchor.closest("." + resultsdivS);
+			var otherdata = resultsdiv.cleandata();
+			options = {  //Merge em
+				...options,
+				...otherdata
+			}
+		} 
+		
 		var activemenu;
 		if (anchor.hasClass("auto-active-link")) {
 			activemenu = anchor;
