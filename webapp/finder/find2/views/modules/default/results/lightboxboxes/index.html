@@ -16,11 +16,18 @@ data-currenttab="$!viewid"
 data-url="${searchhome}/tabs/preview/tabpublishing_gallery.html"
 >
 
+
+#set($entitymoduleviewid = $context.getRequestParameter("entitymoduleviewid"))
+#set($viewdata = $mediaarchive.getCachedData("view",$entitymoduleviewid))
+#set($submoduleid = $!viewdata.rendertable)
+
+
+
 <div  class="tablightbox d-flex h-100" style="height: 100%;">
-	#set($boxes =  $mediaarchive.getBean("entityManager").loadLightBoxesForModule($module, $entity, $context.getUser()))
+	#set($boxes =  $mediaarchive.getEntityManager().loadBoxesForModule($submoduleid,$entitymodule, $entity, $context.getUser()))
 	$context.putPageValue("boxes",$boxes)
 	
-	#set($hitcounts = $mediaarchive.getBean("entityManager").loadLightBoxCounts($boxes, $module, $entity) )
+	#set($hitcounts = $mediaarchive.getEntityManager().loadLightBoxCounts($module, $entity) )
 	$context.putPageValue("hitcounts",$hitcounts)
 	
 	#set( $lightboxid = $context.getRequestParameter("lightboxid"))
@@ -32,14 +39,14 @@ data-url="${searchhome}/tabs/preview/tabpublishing_gallery.html"
 	#end
 	
 	#ifnull($lightboxid)
-		#set($selectedbox =  $mediaarchive.getBean("entityManager").findFirstSelectedLightBox($boxes,$hitcounts))
+		#set($selectedbox =  $mediaarchive.getEntityManager().findFirstSelectedLightBox($boxes,$hitcounts))
 		#set($lightboxid = $selectedbox.getId())
 	#end	
 	
 	$context.putPageValue("lightboxid",$lightboxid)
 	$context.putPageValue("selectedbox",$selectedbox)
 	
-	#set($defaultfolder =  $mediaarchive.getBean("entityManager").loadDefaultFolder($module, $entity, $context.getUser(),true))
+	#set($defaultfolder =  $mediaarchive.getEntityManager().loadDefaultFolder($module, $entity, $context.getUser(),true))
 
 	#set($allassets = $mediaarchive.query("asset").exact("category",$defaultfolder).search($context) )
 	

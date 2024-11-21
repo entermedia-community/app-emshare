@@ -98,7 +98,7 @@ $context.putPageValue("topmoduleid", $moduleid)
 
 ##TODO: Check on enableuploading
 #if($moduleid && $entityid)
-	#set($defaultfolder =  $mediaarchive.getBean("entityManager").loadDefaultFolder($module, $entity, $context.getUser()))
+	#set($defaultfolder =  $mediaarchive.getEntityManager().loadDefaultFolder($module, $entity, $context.getUser()))
 	$context.putPageValue("defaultfolder", $defaultfolder)
 #end
 
@@ -424,7 +424,12 @@ $context.putPageValue("topmoduleid", $moduleid)
 				
 				#if($entitytabopen == "tablightboxes" && !$ismulti)
 						$context.putPageValue("searchhome", "$apphome/views/modules/${module.id}/results/lightboxes")
-						$pages.include("$apphome/views/modules/${module.id}/results/lightboxes/show.html?entityid=$id", $context)
+						$pages.include("$apphome/views/modules/${module.id}/results/lightboxes/index.html?entityid=$id", $context)
+						
+				#elseif($entitytabopen == "tablightboxboxes" && !$ismulti)
+						$context.putPageValue("searchhome", "$apphome/views/modules/${module.id}/results/tablightboxboxes")
+						$pages.include("$apphome/views/modules/${module.id}/results/tablightboxboxes/index.html?entityid=$id", $context)
+						
 				#elseif($entitytabopen == "tabimport" && !$ismulti)
 						$context.putPageValue("viewid", "import")
 						$pages.include("${searchhome}/tabs/preview/tabimport.html?entityid=$id", $context)
