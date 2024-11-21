@@ -1,0 +1,66 @@
+#set( $clientroot = "/${applicationid}/components/timeline" )
+<div id="timelinemetaface"
+	class="timelineface" 
+	data-ratio="$timeline.getPxToTimeRatio()" 
+	data-savelink="$siteroot$clientroot/timelinefacesave.html"
+	data-targetdiv="timelinefacecontainer" 
+	data-assetid="$asset.id" 
+	style="margin:0; width:1200px;">
+	#set( $faceprofiles = $asset.getValues("faceprofiles") )
+	#foreach($facedata in $faceprofiles)
+		#set( $index = ${foreach.count} - 1)
+		<div id="slider$index" 
+			class="ts-face-selection"  
+			data-timecodestart="$facedata.facedatastarttime"
+			data-timecodelength="$facedata.facedataendtime"
+			>
+				<div class="timecell" style="left: ${timeline.getPxFaceStart($facedata)}px; width: ${timeline.getPxFaceLength($facedata)}px; top: ${timeline.getFaceRow($faceprofiles,$facedata)}px;">
+					<a href="#" title="[[Move Tag]]" class="grabmove"><i class="fas fa-arrows-alt"></i></a>
+					<div class="grabresize"></div>
+					<span class="cliptext">  #esc($facedata.get("faceprofilegroup"))</span>
+					#if( $other.size() > 1)
+					<span class="clipdetails"> 
+					#foreach($fieldid in $other.keySet())	
+						#set( $v = false )
+						#set( $v = $other.get($fieldid) )
+						#if( $v )
+							#if( $fieldid == "verticaloffset")
+								##skip
+							#elseif( $fieldid == "keywords")
+								#set ($keywords = $v.split("\s*\|\s*"))
+	      						#foreach ($tag in $keywords)
+									<span class="clipdetail">
+										<a href="$siteroot$apphome/views/modules/modulesearch/index.html?description.value=$tag&operation=freeform&field=description"
+											title="[[Search]]: $!tag"
+											class="ajax"
+											data-targetdivinner="applicationcontainer"
+											data-oemaxlayout="1"
+											data-updateurl="true"
+											data-closemediaviewer="true">$!tag</a>
+										</span>
+								#end
+							#elseif( $v)
+								#set( $list = $v.split("\|"))
+								#foreach($row in $list)
+									#set( $val = false )
+									#set( $val = $mediaarchive.getCachedData($fieldid,$row) )
+									#if( $val)
+										<span class="clipdetail">
+											<a href="$siteroot$apphome/components/gridsample/preview/entity.html?id=$val.getId()&searchtype=$fieldid"
+											title="[[Entity]]: $!val" 
+											class="emdialog entity-dialog"
+											data-noesc="true"
+											>$!val</a></span>
+									#else
+									##Missing: $fieldid = $v
+									#end
+								#end
+							#end	 
+						#end	
+					#end
+					</span>
+					#end
+				</div>
+			##</div>
+		</div>
+	#end
