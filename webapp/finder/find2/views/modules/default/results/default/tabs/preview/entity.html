@@ -293,28 +293,22 @@ $context.putPageValue("topmoduleid", $moduleid)
 					#if($enttiyviews)		
 						$context.putPageValue("currenttab", $entitytabopen)
 						#foreach( $targetview in $enttiyviews)
-							#set( $viewid = $targetview.getId())
-							$context.putPageValue("viewid", $viewid)
-							#set( $viewdata = $viewsearcher.searchById($viewid))
-							$context.putPageValue("viewdata", $viewdata)
+							#set( $tabviewid = $targetview.getId())
+							$context.putPageValue("viewid", $tabviewid)
+							#set( $tabviewdata = $viewsearcher.searchById($tabviewid))
+							$context.putPageValue("viewdata", $tabviewdata)
 							
-							#set($tabid = "tab_${viewid}")
-
 							#if($targetview.rendertype=="table")
 								#if(!$ismulti)
 									##View Permission
 									#if($permissions.can($moduleid, $viewid))
-										#set( $subentitysearchtype = $viewdata.rendertable )
+										#set( $subentitysearchtype = $tabviewdata.rendertable )
 										#ifnotnull($subentitysearchtype)
 											##Permission check
-											##$subentitysearchtype $userentities.contains($subentitysearchtype)
 											#if($userentities.contains($subentitysearchtype))
-												#set($submodule = $mediaarchive.getCachedData("module", $viewdata.rendertable))
+												#set($submodule = $mediaarchive.getCachedData("module", $tabviewdata.rendertable))
 												$context.putPageValue("tabmodule", $submodule)
-												#set($tabtype= "tabsubmodulehome")
-												$context.putPageValue("tabtype", $tabtype)
-
-
+												$context.putPageValue("tabtype", "tabsubmodulehome")
 												$pages.include("${searchhome}/tabs/preview/entitytabmenu.html", $context)
 											#end
 										#end
@@ -329,14 +323,9 @@ $context.putPageValue("topmoduleid", $moduleid)
 										#set($tabtype= $targetview.rendertype)
 									#end
 									
-									#if($tabtype=="default")
-										#set($tabtype= "entitytab")
-									#end
-									
 									$context.putPageValue("tabmodule", $module)
 									$context.putPageValue("tabtype", $tabtype)
-									
-									
+							
 									##hide files Tab if Lightbox tab is enabled
 									#if($tabtype == "tablightboxes")
 										#set($hidefilestab = true)
@@ -418,80 +407,80 @@ $context.putPageValue("topmoduleid", $moduleid)
 				$context.putPageValue("currenttab", $entitytabopen)
 				$pages.include("${searchhome}/tabs/preview/entitytab.html", $context)
 			#end
-
-			$context.putPageValue("viewid", $viewid)
+		
 			
 			#ifnotnull($id)
-				$context.putPageValue("currenttab", $entitytabopen)
-				
-				#if($entitytabopen == "tablightboxes" && !$ismulti)
-						$context.putPageValue("searchhome", "$apphome/views/modules/${module.id}/results/lightboxes")
-						$pages.include("$apphome/views/modules/${module.id}/results/lightboxes/index.html?entityid=$id", $context)
-						
-				#elseif($entitytabopen == "tablightboxboxes" && !$ismulti)
-						$context.putPageValue("searchhome", "$apphome/views/modules/${module.id}/results/lightboxboxes")
-						$pages.include("$apphome/views/modules/${module.id}/results/lightboxboxes/index.html?entityid=$id", $context)
-						
-				#elseif($entitytabopen == "tabimport" && !$ismulti)
-						$context.putPageValue("viewid", "import")
-						$pages.include("${searchhome}/tabs/preview/tabimport.html?entityid=$id", $context)
-					
-				#elseif($entitytabopen == "tabexport" && !$ismulti)
-						$context.putPageValue("viewid", "export")
-						$pages.include("${searchhome}/tabs/preview/tabexport.html?entityid=$id", $context)
-					
-				#elseif($entitytabopen == "tabactivityhistory" && !$ismulti)
-						$context.putPageValue("viewid", "activityhistory")
-						$pages.include("${searchhome}/tabs/preview/tabactivityhistory.html?entityid=$id", $context)
-						
-				#elseif($entitytabopen == "tabworkflowchat" && !$ismulti)
-						$context.putPageValue("viewid", "tabworkflowchat")
-						$pages.include("$componenthome/entities/chatterbox/index.html?entityid=$id", $context)
-						
-				#elseif(!$hidefilestab && $entitytabopen == "media" && $module.getBoolean("enableuploading") && $permissions.can($moduleid, "view_files"))
-					#if(!$ismulti)
-						$context.putPageValue("parentsearchtype", $parentsearchtype)
-						$pages.include("${searchhome}/tabs/preview/entitytabmedia.html?entityid=$id", $context)
-					#end
-					
-				#else
+				#set($tabviewdata = $viewsearcher.searchById($entitytabopen))
+				 
+				#if($tabviewdata)
+					#set($tabtype= $tabviewdata.rendertype)
 					#set( $viewid = $entitytabopen)
 					$context.putPageValue("viewid", $viewid)
-				
-					#set($tabid = "tab_${viewid}")
-					#if($entitytabopen.equals($viewid))
-						$context.putPageValue("currenttab", $viewid)
-						$context.putPageValue("hidesubmodule", false)
-					#end
+					$context.putPageValue("currenttab", $entitytabopen)
 					
-					#set($targetview = $viewsearcher.searchById($viewid))
-					#set($tabtype= $targetview.rendertype)
-					
-					#if($tabtype == "table")
+					#if($tabtype == "tablightboxes" && !$ismulti)
+							$context.putPageValue("searchhome", "$apphome/views/modules/${module.id}/results/lightboxes")
+							$pages.include("$apphome/views/modules/${module.id}/results/lightboxes/index.html?entityid=$id", $context)
+						
+					#elseif($tabtype == "tablightboxboxes" && !$ismulti)
+							$context.putPageValue("searchhome", "$apphome/views/modules/${module.id}/results/lightboxboxes")
+							$pages.include("$apphome/views/modules/${module.id}/results/lightboxboxes/index.html?entityid=$id", $context)
+							
+					#elseif($tabtype == "tabimport" && !$ismulti)
+							$context.putPageValue("viewid", "import")
+							$pages.include("${searchhome}/tabs/preview/tabimport.html?entityid=$id", $context)
+						
+					#elseif($tabtype == "tabexport" && !$ismulti)
+							$context.putPageValue("viewid", "export")
+							$pages.include("${searchhome}/tabs/preview/tabexport.html?entityid=$id", $context)
+						
+					#elseif($tabtype == "tabactivityhistory" && !$ismulti)
+							$context.putPageValue("viewid", "activityhistory")
+							$pages.include("${searchhome}/tabs/preview/tabactivityhistory.html?entityid=$id", $context)
+							
+					#elseif($tabtype == "tabworkflowchat" && !$ismulti)
+							$context.putPageValue("viewid", "tabworkflowchat")
+							$pages.include("$componenthome/entities/chatterbox/index.html?entityid=$id", $context)
+							
+					#elseif(!$hidefilestab && $tabtype == "media" && $module.getBoolean("enableuploading") && $permissions.can($moduleid, "view_files"))
 						#if(!$ismulti)
-							##View Permission
-							#if($permissions.can($moduleid, $viewid))
-								#set( $viewdata = $viewsearcher.searchById($viewid))
-								#set( $subentitysearchtype = $viewdata.rendertable )
-								##Permission check
-								#if($userentities.contains($subentitysearchtype))
-									$pages.include("${searchhome}/tabs/preview/tabsubmodulehome.html", $context)
+							$context.putPageValue("parentsearchtype", $parentsearchtype)
+							$pages.include("${searchhome}/tabs/preview/entitytabmedia.html?entityid=$id", $context)
+						#end
+						
+					#else
+						#set($tabid = "tab_${viewid}")
+						#if($entitytabopen.equals($viewid))
+							$context.putPageValue("currenttab", $viewid)
+							$context.putPageValue("hidesubmodule", false)
+						#end
+						
+						#if($tabtype == "table")
+							#if(!$ismulti)
+								##View Permission
+								#if($permissions.can($moduleid, $viewid))
+									#set( $viewdata = $viewsearcher.searchById($viewid))
+									#set( $subentitysearchtype = $viewdata.rendertable )
+									##Permission check
+									#if($userentities.contains($subentitysearchtype))
+										$pages.include("${searchhome}/tabs/preview/tabsubmodulehome.html", $context)
+									#end
 								#end
 							#end
-						#end
-					#else
-						##View Permission
-						#if($permissions.can($moduleid, $viewid))
-							#ifnotnull($targetview.rendertype)
-								#set($tabtype= $targetview.rendertype)
+						#else
+							##View Permission
+							#if($permissions.can($moduleid, $viewid))
+								#ifnotnull($targetview.rendertype)
+									#set($tabtype= $targetview.rendertype)
+								#end
+								#if(!$tabtype || $tabtype=="default")
+									#set($tabtype= "entitytab")
+								#end
+								
+								$context.putPageValue("tabtype", $tabtype)
+	
+								$pages.include("${searchhome}/tabs/preview/${tabtype}.html", $context)
 							#end
-							#if(!$tabtype || $tabtype=="default")
-								#set($tabtype= "entitytab")
-							#end
-							
-							$context.putPageValue("tabtype", $tabtype)
-
-							$pages.include("${searchhome}/tabs/preview/${tabtype}.html", $context)
 						#end
 					#end
 				#end

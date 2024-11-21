@@ -296,7 +296,7 @@ lQuery("form").livequery(function () {
 		});
 	}
 });
-
+/*
 document.onkeydown = function (event) {
 	if (event.ctrlKey) {
 		event.preventDefault();
@@ -318,3 +318,4 @@ document.onkeydown = function (event) {
 		if (href) window.location.href = href;
 	}
 };
+*/

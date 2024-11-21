@@ -10,47 +10,35 @@
 #ifnull($id)
 	#set( $id = $context.getRequestParameter("entityid"))
 #end
-#if(!$tabtype)
-	#set($tabtype = $context.getRequestParamenter("tabtype"))
-#end
 
 #set($tablink = "${searchhome}/tabs/preview/${tabtype}.html")
-	
+
 #if($tabtype == "tabsubmodulehome")
 	#set($tabid = "tab_${viewid}")
 	#set($tabname = $viewdata.getName($context))
 
 #elseif($tabtype=="tabsubmoduleboxes")
-	#set($tabid = "tab_submoduleboxes")
 	#set($tabname = $viewdata.getName($context))
-	#set($viewid = "tabsubmoduleboxes")
 	##set($moduleicon = "check-circle")
 	#set($tablink = "$apphome/views/modules/${entitymodule.id}/results/submoduleboxes/show.html")
 #elseif($tabtype=="tablightboxes")
-	#set($tabid = "tab_lightboxes")
 	#set($tabname = $viewdata.getName($context))
-	#set($viewid = "tablightboxes")
 	#set($moduleicon = "check-circle")
 	#set($tablink = "$apphome/views/modules/${entitymodule.id}/results/lightboxes/index.html")
 #elseif($tabtype=="tablightboxboxes")
-	#set($tabid = "tab_lightboxboxes")
 	#set($tabname = $viewdata.getName($context))
 	#set($moduleicon = "check-circle")
 	#set($tablink = "$apphome/views/modules/${entitymodule.id}/results/lightboxboxes/index.html")
 #elseif($tabtype=="tabworkflowchat")
-	#set($tabid = "tab_workflowchat")
 	#set($tabname = $viewdata.getName($context))
-	#set($viewid = "tabworkflowchat")
 	#set($moduleicon = "chat-left-text")
 	#set($tablink = "$componenthome/entities/chatterbox/index.html")	###TODO move this to results
 #elseif($tabtype=="tabimport")
-	#set($tabid = "tab_import")
 	#set($tabname = "[[Import]]")
 	#set($viewid = "tabimport")
 	#set($moduleicon = "box-arrow-in-right")
 	
 #elseif($tabtype=="tabexport")
-	#set($tabid = "tab_export")
 	#set($tabname = "[[Export]]")
 	#set($viewid = "tabexport")
 	#set($moduleicon = "box-arrow-right")
@@ -62,7 +50,6 @@
 	#set($moduleicon = "clock-history")	
 
 #elseif($tabtype=="entitytabmedia")
-	#set($tabid = "tab_media")
 	#set($tabname = $tabmodule.getName($context))
 	#set($viewid = "media")
 #else
@@ -71,8 +58,8 @@
 	#end
 	#set($tabname = $viewdata.getName($context))
 	#set($targetentitytabid = "entity-tab-#eid($!{viewid})")
-	#set($tabid = "tab_$viewid")
 #end
+#set($tabid = "tab_$viewid")
 
 <div class="entity-tab#if($currenttab == $viewid) current-entity#end"#if(!$tabtype) data-entityid="$!entity.getId()"#end>
 	<a 
@@ -83,11 +70,9 @@
 			href="$!{tablink}"
 		#end 
 		class="entity-tab-label"
-		id="tab_$!tabid"
-		data-tabid="$!tabid"
+		id="$!tabid"
 		data-currenttab="$!viewid"
 		data-viewid="$!viewid"
-		data-tabtype="$tabtype" 
 		data-toggle="tab"
 		data-target="$!targetentitytabid"
 		data-entityid="$!entity.getId()" 
