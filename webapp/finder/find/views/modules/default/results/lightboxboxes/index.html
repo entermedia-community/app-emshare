@@ -25,6 +25,8 @@ $context.putPageValue("entitymoduleviewid",$entitymoduleviewid)
 #set($viewdata = $mediaarchive.getCachedData("view",$entitymoduleviewid))
 #set($lightboxtype = $!viewdata.rendertable)
 #end
+
+
 $context.putPageValue("lightboxtype",$lightboxtype)
 
 #set($tabid = "tablightboxes")
@@ -38,6 +40,10 @@ data-entitymoduleviewid="$entitymoduleviewid"
 data-lightboxtype="$lightboxtype"
 data-oemaxlevel="1"
 >
+
+#ifnull($lightboxtype)
+	Please set rendertable in view to emedialightboxes 
+#end
 
 <div  class="tablightbox d-flex h-100" style="height: 100%;">
 	#set($boxes =  $mediaarchive.getEntityManager().loadBoxesForModule($lightboxtype,$entitymodule, $entity, $context.getUser()))
