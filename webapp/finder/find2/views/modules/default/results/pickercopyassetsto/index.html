@@ -1,11 +1,17 @@
 <div id="pickersearchentities" data-setpagetitle="[[Select]] #text($module)">
+#set( $copyinghitssessionid = $context.getRequestParameter("copyinghitssessionid"))
 
-#set( $pickertargetfield = $context.getRequestParameter("pickertargetfield"))
+#set( $hits = $context.getSessionValue($copyinghitssessionid) )
+
 </div>
 	<div class="overflow-y">
-		<div id="entitypickerresults" class="pickerresults entitypickerfield" 
-			data-clickurl="$searchhome/actions/pickedfield.html"
-			data-pickertargetfield="$pickertargetfield"
+		<div id="entitypickerresults" class="pickerresults picktosearchcategory" 
+			data-toastmessage="[[Saving]] $hits.getSelectionSize()"
+			data-toastsuccess="$hits.getSelectionSize() [[Records Saved]]"
+			data-clickurl="$searchhome/actions/categorysavetoentities.html"
+			data-copyingsearchtype="$copyingsearchtype"
+			data-copyinghitssessionid="$copyinghitssessionid"
+			
 		>
 $pages.include("${searchhome}/search.html?resultview=table",$context)
 
