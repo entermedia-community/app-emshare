@@ -1,0 +1,137 @@
+#if($hit)
+	#set($entity = $hit)
+	#set($entityid = $entity.id)
+	#if($rendermoduleid)
+		#set($moduleid = $rendermoduleid)
+	#else
+		#set($moduleid = $module.id)
+	#end
+#else
+	#if(!$moduleid)
+		#set($moduleid = $context.getRequestParameter("moduleid"))
+	#end
+	#if(!$entityid)
+		#set($entityid = $context.getRequestParameter("entityid"))
+	#end
+	#if($moduleid && $entityid)
+		#set($entity = $mediaarchive.getCachedData($moduleid, $entityid))
+	#end
+#end
+
+
+#set($module = $mediaarchive.getCachedData("module", $moduleid))
+
+$context.putPageValue("entityid", $entityid)
+$context.putPageValue("moduleid", $moduleid)
+
+#set( $librarycol = $mediaarchive.getData("librarycollection",$entityid))
+$context.putPageValue("librarycol", $librarycol)
+
+#set($rootcategory = $librarycol.rootcategory)
+$context.putPageValue("rootcategory", $rootcategory)
+
+#if (!$rendertype)
+	#set( $rendertype = "librarycollection")
+#end
+
+#set($previewurl = "$!{siteroot}$apphome/views/modules/asset/bycategory/$!{rootcategory}.html")
+$context.putPageValue("previewurl", $previewurl)
+
+<div class="emgrid-content entitycontainer emgrid-type-$!previewrendertype entity$!moduleid$!entityid"
+		id="emgridentity$!moduleid$!entityid"
+		data-id="$!{entity.id}"
+   	 	data-moduleid="$!moduleid">
+   	 <div class="emgrid-entityheader">
+   	 <h3>
+   	 #set($moduleicon = "entity")
+    	#if ($module.moduleicon)
+    		#set($moduleicon = $module.moduleicon)
+    	#end
+    	<img src="$siteroot$apphome/theme/images/entity/${moduleicon}.svg" style="height: 23px;">
+   	 <a href="$previewurl" 
+   	 	class="ajax emgridresulttitle" 
+   	 	data-targetdiv="applicationcontent"
+   	 	data-oemaxlevel="4"
+   	 	data-categoryid="$!rootcategory"
+   	 	data-sidebarcomponent="categories"
+   	 	data-updateurl="true" 
+   	 	id="clickid${entity.id}"  
+   	 	title="#text($!entity.name)">
+   	 	##$!hits.highlight($hit,"name")
+   	 	#text($!entity.name)
+   	 	</a>
+   	 
+   	 </h3> 
+   	 
+   	 </div>
+   	 
+		##check for view
+		#set($viewid = "${moduleid}gridfields")
+		#set($view = "$moduleid/$viewid")
+		
+		#if (!$details && $view)
+			#if( $context.getUserProfile() )
+				#set ($details = $searcher.getDetailsForView($view, $context.getUserProfile()))
+			#else
+				#set ($details = $searcher.getDetailsForView($view))
+			#end
+		#end
+		
+		
+		
+		$context.putPageValue("details", $details)
+		
+		##look for primaryimage
+		#foreach( $detail in $details )
+		
+			#if($detail.getId() == "collectionimage")
+				#set( $primaryasset = $mediaarchive.getAsset($entity.collectionimage))
+				$context.putPageValue("primaryasset", $primaryasset)
+			#end
+		#end
+			
+   	
+		<div class="emgrid-entitydata">
+			$context.putPageValue("searchtype", $moduleid)
+			$context.putPageValue("data", $entity)
+			
+	      	$pages.include("${searchhome}/tabs/types/fields.html",$context)
+	    </div>
+    
+	   	#set($assetsshown = 1)
+	    $context.putPageValue("viewer", "l_m_g_${entity.id}")
+	    #set( $entityassetshits = $mediaarchive.query("asset").exact($moduleid, $entityid).not("id",$primaryasset.getId()).sort("assetaddeddateDown").search() )
+		#set($entityassetscount = $entityassetshits.size())
+		#ifnotnull($primaryasset)
+			#set($entityassetscount = $entityassetshits.size() + 1)	
+		#end
+		$context.putPageValue("entityassetshits", $entityassetshits)
+		
+       #ifnotnull($primaryasset)
+       <div class="emgrid-entitymedia assetdropentity"
+       		id="attachedmedia$entityid" 
+       		data-moduleid="$moduleid" 
+       		data-entityid="$entityid" 
+       		data-assetsshown="$assetsshown"
+       		data-attachedmediaurl="$siteroot${searchhome}/tabs/types/entity.html"
+       		data-targetdiv="emgridentity$!moduleid$!entityid"> 	
+	        $pages.include("${searchhome}/tabs/types/attachedmedia/librarycollection.html", $context)
+	   
+	        
+        <div class="clearfix"></div>
+        
+
+        </div>
+        #end
+        
+<div class="grid-gallery-footer">
+
+	#if($entityassetscount>0)
+	$entityassetscount <i class="fas fa-images"></i>
+	#end
+	
+	<div class="emgrid-moredetailsright">
+ 	$pages.include("${searchhome}/tabs/favorites.html?id=$hit.id&searchtype=$moduleid", $context)
+	</div>
+</div>
+</div>

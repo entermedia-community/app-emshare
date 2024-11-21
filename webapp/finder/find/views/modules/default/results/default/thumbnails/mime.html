@@ -1,0 +1,23 @@
+#if (!$hit)
+	#set ($hit = $asset)
+#end
+
+#if (!$hit)
+	#set ($hit = $data)
+#end
+
+#set ($sourcepath = $hit.sourcepath)
+#set ( $urlutils = $context.getPageValue("url_util"))
+#if ($urlutils)
+	#set ( $sourcepath = $urlutils.encode($sourcepath))
+	#set ( $sourcepath = $sourcepath.replace("%2F", "/") )
+#end
+
+
+
+<div class="emthumbholder-mime">
+	#set ($mime = $mediaarchive.getMimeTypeIcon($hit.fileformat))
+	<div class="format-thumb">
+		<i class="bi bi-$mime"></i>
+	</div>
+</div>

@@ -1,0 +1,87 @@
+<div id="syncFolderList">
+#ifnull($syncfolders)
+  #set($syncfolders = $mediaarchive.query("desktopsyncfolder").exact("desktop", $desktop.id).exact("module", $module.id).sort("name").search())
+#end
+#if($syncfolders.size() == 0)
+  <div class="alert alert-info mx-2">
+    <i class="bi bi-info-circle ns"></i> 
+    <span>[[Press the]] <strong>[[Add]]</strong> [[button to import one or multiple folders into]] #text($module)</span>
+  </div>
+#else
+
+  #ifnull($scanstatus)
+    #set($scanstatus = "scan-started")
+  #end
+  
+  #if($scanstatus != "upload-completed")
+  <div class="alert import-verify p-2 mx-2 mt-1 mb-2 text-center $scanstatus #if($verifynow) verifynow #end">
+    #if($scanstatus == "scan-started")
+      <p class="mb-1">
+        <i class="fas fa-spin fa-apinner mr-1"></i>
+        <span>[[Looking for new files in the local folders]]</span>
+      </p>
+      <button class="btn btn-sm rounded mt-2" id="syncAutoFolders" disabled>[[Scanning...]]</button>
+      #elseif($scanstatus == "upload-started")
+      <p class="m-0">
+        <i class="fas fa-spin fa-apinner mr-1"></i>
+        <span>[[Uploading new files from local folders to the server]]</span>
+      </p>
+      <p class="upload-counter my-1"></p>
+      <button class="btn btn-sm btn-warning rounded mt-2" id="cancelAutoUpload">[[Cancel]]</button>
+    #elseif($scanstatus == "upload-canceled")
+      <p class="m-0 text-warning">
+        <i class="bi bi-exclamation-triangle ns mr-1"></i>
+        <span>[[Upload canceled]]</span>
+      </p>
+      <button class="btn btn-sm btn-warning rounded mt-2" id="syncAutoFolders">[[Restart]]</button>
+    #end
+  </div>
+  #end
+
+  <div class='work-dir-tree #if($scanstatus != "upload-completed") processing #end'>
+    #foreach($syncfolder in $syncfolders) 
+    <div class="work-folder" id="wf-$syncfolder.id" title="Open: $syncfolder.localpath" data-id="$syncfolder.id" data-localpath="$syncfolder.localpath" data-categorypath="$syncfolder.categorypath" data-entityid="$syncfolder.entityid">
+      <div class="d-flex flex-column flex-grow-1 p-2 position-relative">
+        <p class="my-0">
+          #set($moduleicon = $module.moduleicon)
+          #ifnull($moduleicon)
+            #set($moduleicon = "images")
+          #end
+          <i class="bi bi-$moduleicon"></i>
+          $syncfolder.name
+        </p>
+        <small class="mt-1 last-scanned">
+          #ifnotnull($syncfolder.lastscandate)
+          	#set($ago = $context.getAge($syncfolder.getDate("lastscandate"))) 
+          	#ifnull($ago)
+            Imported files 1 Second ago
+            #end
+            #ifnotnull($ago)
+            Imported files $ago ago
+            #end
+          #end 
+        </small>
+      </div>
+      
+      <button class="btn deleteAutoFolder" data-id="$syncfolder.id">
+        <div></div>
+      </button>
+      #set($previewurl = "$!{siteroot}$apphome/views/modules/$!{module.id}${searchhome}/tabs/preview/entity.html?id=$!{syncfolder.entityid}")
+      <a href="$!{previewurl}" class="emdialog entity-dialog"  data-localpath="$syncfolder.localpath" title="[[Show the folder in Server]]">
+        <i class="bi bi-box-arrow-up-right"></i>
+      </a>
+      <div class="open-folder"  data-localpath="$syncfolder.localpath" title="[[Show the folder in Server]]">
+        <i class="bi bi-display"></i>
+      </div>
+    </div>
+    #end
+    #if($scanstatus == "upload-completed")
+    <div class="w-100 text-right my-2">
+      <button class="btn text-success rounded mt-2 pr-0" style="font-family: Roboto;" id="syncAutoFolders">[[Refresh]]</button>
+    </div>
+    #end
+  </div>
+
+
+#end
+</div>

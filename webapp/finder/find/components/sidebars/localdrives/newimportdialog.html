@@ -1,0 +1,56 @@
+<div class="modal-dialog">
+  <div class="modal-content bg-white rounded">
+    <div class="modal-header">
+      <h5 class="modal-title"></h5>
+      <button type="button" class="close" data-dismiss="modal" title="[[Esc to Close]]">
+        <span aria-hidden="true">×</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <form action="$apphome/components/sidebars/localdrives/newimportdialogsave.html" method="post" class="ajaxform validate autocloseform d-flex flex-column w-100 auto-importer-form" 
+      data-targetdiv="syncFolderList" 
+      data-ajaxreloadtargets="topmodulecontainer" 
+      id="newAutoImportForm">
+        <input type="hidden" name="save" value="true">
+        #set( $moduleid = $context.getRequestParameter("moduleid"))
+        <input type="hidden" name="module" value="$moduleid">
+        <input type="hidden" name="desktop" value="$desktop.id">
+        
+        <div class="folder-picker">
+          <button type="button" id="folderAbsPath" class="btn btn-accent btn-lg rounded-pill">
+            [[Choose Folders]]
+          </button>
+          <p class="text-success mb-0 mx-2 fl-stats"></p>
+        </div>
+        
+        <input type="hidden" name="field" value="name">
+
+        <div class="mt-3">
+          #set( $searcher = $mediaarchive.getSearcher($moduleid))
+          #set($details = $searcher.getPropertyDetails().findRequiredProperties())
+          
+          #set( $xmledithome = "$apphome/views/modules/${moduleid}/components/xml/")
+          $context.putPageValue("xmledithome",$xmledithome)
+          
+          #foreach( $detail in $details)
+            #if($detail.id != "name")
+            $context.putPageValue("detail", $detail)
+            <div id="detail_$detail.id" class="emdatafieldvalue emdatafieldvalue-$!{detail.viewType} #if ($detail.isRequired()) requiredfield #end">
+              <label class="d-block w-100 m-0 text-muted">#text($detail)</label> 
+              $pages.include("$xmledithome/detailedit.html", $context)
+              #if ( $detail.note )
+                <span class="detail-note">$context.getText($detail.note.toString())<span>
+              #end 
+            </div>
+            #end
+          #end
+        </div>
+    
+      </form>
+    </div>
+    <div class="modal-footer d-flex justify-content-between">
+      <button type="submit" form="newAutoImportForm" class="btn btn-lg btn-accent rounded">[[OK]]</button>
+      <button type="button" type="button" data-dismiss="modal" class="btn btn-lg btn-secondary rounded">[[Cancel]]</button>
+    </div>
+  </div>
+</div>

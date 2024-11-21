@@ -1,0 +1,48 @@
+
+
+
+<table  id="tlmain-results-table" class="emdata table table-striped  table-hover" >
+	<thead>
+	<tr class="tableheader">
+		<th>[[Time]]</th>
+		<th>[[Type]]</th>
+		<th>[[Label]]</th>
+		
+	</tr>
+	</thead>
+	<tbody ng-foreach="hit in dataresults">
+
+#foreach($row in $searchresults)
+	#set($time = $row.getStartTime())
+	<tr class="rowclick" data-rowtime="$!time" data-cliptype="$!row.type">
+		<td>
+			$timeline.toHourTime($time)
+		</td>
+		<td>
+		#if( $row.type == "clip" ) 
+			[[Tag]]
+		#elseif( $row.type == "closedcaption" ) 
+			[[Closed Caption]]
+		#else
+			[[Face Detected]]
+		#end
+		</td>
+		<td style="text-align: left;">
+		#if( $row.type == "clip" ) 
+			$row.getData().get("cliplabel")
+		#elseif( $row.type == "closedcaption" ) 
+			$row.getData().get("cliplabel")
+		#elseif( $row.type == "faceprofilegroup" )
+			#if( $row.getData().getName() )
+				$row.getData().getName()
+			#else
+				[[User]] $!row.getData().get("facecounter") 
+			#end
+		#end
+			
+		</td>
+
+	</tr>
+#end
+	</tbody>
+</table>

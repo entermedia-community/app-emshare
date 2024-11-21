@@ -1,0 +1,36 @@
+#set($entityid = $context.getRequestParameter("entityid"))
+#if(!$parentsearchtype)
+	#set($parentsearchtype = $context.getRequestParameter("parentsearchtype"))
+#end
+$context.putPageValue("parentsearchtype", $parentsearchtype)
+#if( !$entity)
+	#set( $entity  = $mediaarchive.getData($parentsearchtype, $entityid) )
+#end
+#set($entityid = $entity.id)
+#if(!$currenttab)
+	#set($currenttab = $context.getRequestParameter("currenttab"))
+#end
+#if(!$parentmoduleid)
+	#set ( $parentmoduleid = $context.getRequestParameter("topmoduleid") )
+	$context.putPageValue("topmoduleid", $parentmoduleid)
+#end
+#ifnotnull($parentmoduleid)
+		#set($parentmodule = $mediaarchive.getCachedData("module", $parentmoduleid))
+#end
+
+<div id="${tabid}" 
+class="entity-tab-content entity-tab-media tabtypemedia" 
+##style=" #if($currenttab != $tabid || $hidesubmodule) display:none; #end"
+data-tabid="${tabid}"
+data-viewid="$viewid"
+data-entityid="$!entityid"
+data-currenttab="$!viewid"
+data-parentsearchtype="$!parentsearchtype"
+data-topmoduleid="$!topmoduleid"
+data-url="${searchhome}/tabs/preview/tabpopulatecategory.html"
+>
+	$context.putPageValue("searchhome","$searchome/tabs/types/dita")
+	$pages.include("$searchome/tabs/types/dita/tab.html",$context)
+</div>
+
+

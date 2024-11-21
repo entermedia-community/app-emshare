@@ -1,0 +1,62 @@
+<div class="row justify-content-md-center" style="margin: 90px 0; ">
+
+
+
+#if($user)
+	<p class="text-center"><strong>[[You are currently logged in as]] $user 
+	(<a href="home$content.loginroot/logout.html" style="text-decoration:underline">Logout</a>)</strong></p>
+#end
+
+#set($providers = $mediaarchive.query("oauthprovider").exact("enabled","true").search())
+
+#if( $providers )
+<div class="col-md-3" style="padding:70px 0px 0 0px; ">
+		
+		<p class="text-center"><strong>[[Create Account and Sign-in with]]</strong></p>
+		
+        <div style="text-align: center;">
+		$pages.include("$content.loginroot/oauth/providers.html", $context)
+		</div>
+</div>
+#end
+
+<div class="col-md-8" style=" max-width:500px; padding:40px 0px 0 40px; ">
+		
+		 #set($loginok = $context.findValue("loginokpage") ) 
+
+		#set( $to = $context.getRequestParameter("to") )	
+			#set( $username = $context.getRequestParameter("username") )
+			
+			<form class="" action="sendmagiclinkfinish.html" id="password-reminder" name="passwordReminder"  method="post">
+			
+					<p>[[A magic link will be sent to you via e-mail:]]</p>
+					<p><input class="form-control form-control-sm required" type="text" name="to" size="40" style="margin:0 auto; width:300px" placeholder="[[Enter your Email Address]]" required /></p>
+					<input type="hidden" name="subject" VALUE="[[Your Login Info]]"/>
+					<input class="btn btn-secondary" name="submit" type="submit" value="[[Send Link]]" />
+                <a href="$siteroot$content.loginroot/emkeysignin.html" class="emdialog" title="Enter App Key" style="text-decoration:underline">[[Sign-In with App Key]]</a> 
+					
+            </form>
+		
+
+	<div class="text-center"><br>[[Do you have any questions?]] [[Please]] <a href="https://entermediadb.org/#contact" style="text-decoration: underline;">[[contact us]]</a></div>
+		
+</div>
+
+</div>
+<script language="JavaScript" >
+	function confirmPassword(form)
+	{
+		if(form.entermediakey.value=="")
+		{
+			alert("[[Please enter your password]]");
+			form.entermediakey.focus();
+			return false;
+		}
+		else
+		{
+			return true;
+		}
+	}
+</script> 
+
+</div>

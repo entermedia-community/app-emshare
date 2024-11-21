@@ -1,0 +1,41 @@
+
+
+<li class="resultsnavlink dropdown">
+		<a class="resultsnavlink dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="navbarCopyto$!{moduleid}">[[Copy To]]</a>
+		<ul class="dropdown-menu" aria-labelledby="navbarCopyto$!{module.id}">
+			
+			#foreach ( $amodule in $userprofile.getEntities() )
+				#set($amoduleid = $amodule.getId())
+				#if($amodule.getBoolean("enableuploading"))
+					
+					##TODO: Add new permissions "Copying To Enabled" "Copying From Enabled"
+					#if($permissions.can($amoduleid, "create") && $amoduleid!="searchcategory" && $amoduleid!="faceprofilegroup" && $amoduleid!="asset" && $amoduleid!="modulesearch")
+						#set($entityrendertype = "entity")
+						#if ($amodule.modulerendertype)
+							#set($entityrendertype = $amodule.modulerendertype)
+						#end
+						#set($addtourl = "${searchhome}/actions/copyentities.html")
+						#set($moduleicon = "entity")
+						#ifnotnull($amodule.moduleicon)
+							#set($moduleicon = $amodule.moduleicon)
+						#end
+						<li><a class="ajax dropdown-item"
+							data-targetdiv="applicationmaincontent"
+							data-oemaxlevel="3" 
+							data-pickedmoduleid="$amoduleid"
+							data-copyingsearchtype="$module.id"
+							data-copyinghitssessionid="$hits.getSessionId()"	
+							data-toastmessage="[[Copying selected files and metadata to]] #text($amodule)"
+							data-toastsuccess="[[Successfully copied files and metadata to]] #text($amodule)"
+							data-toasterror="[[Error while copying files and metadata to]] #text($amodule)"
+							title="[[Copies files and metadata to]] #text($amodule)"
+							href="$addtourl"><i class="bi bi-$moduleicon mr-2"></i>#text($amodule)</a></li>
+						#end
+					#end
+			#end	
+		</ul>
+</li>
+
+
+
+

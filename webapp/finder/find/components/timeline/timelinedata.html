@@ -1,0 +1,116 @@
+#set( $clientroot = "/${applicationid}/components/timeline" )
+
+<div id="timelinedatacontainer" class="timelinedatacontainer" style="width:100%;">
+<div id="timelinemetadata"
+	class="timelinedata" 
+	data-ratio="$timeline.getPxToTimeRatio()" 
+	data-savelink="$siteroot$clientroot/timelinedatasave.html"
+	data-targetdiv="timelinedatacontainer" 
+	data-assetid="$asset.id" 
+	style="width:1200px;">
+	#set( $clips = $timeline.loadClips($asset,"clips") )
+	#foreach($clip in $clips)
+		#set( $index = ${foreach.count} - 1)
+		<div id="slider$index" 
+			class="ts-data-selection"  
+			data-cliplabel="#esc($clip.getLabel())"
+			data-timecodestart="$clip.getStart()"
+			data-timecodelength="$clip.getLength()"
+			#set( $other = $clip.getOtherDetails() )
+			#foreach($fieldid in $other.keySet())
+				#set( $v = $other.get($fieldid))
+				data-${fieldid}="$v" 
+			#end
+			>
+			##<div class="ruler" >
+				<div class="timecell #if( $clip.data.faceprofilegroup ) timecellfaceprofile #end" 
+					style="left: ${timeline.getPxStart($clip)}px; width: ${timeline.getPxLength($clip)}px; top: ${timeline.getPxVertical($clip)}px;">
+					<a href="#" title="[[Move Tag]]" class="grabmove"><i class="fas fa-arrows-alt"></i></a>
+					<div class="grabresize"></div> 
+					#set( $label = $!clip.getValue("cliplabel"))
+						#if( $label)
+						<span class="cliptext"> 
+						#if( $label.length()  > 30)
+						#set( $label = $label.substring(0,30) )
+						#set( $label = "${label}..." )
+						#end
+					 #esc($label) </span>
+					#end
+					#if( $other.size() > 0)
+					<span class="clipdetails">
+					#foreach($fieldid in $other.keySet())	
+						#set( $v = false )
+						#set( $v = $other.get($fieldid) )
+						#if( $v )
+							#if( $fieldid == "verticaloffset")
+								##skip
+							#elseif( $fieldid == "keywords")
+								#set ($keywords = $v.split("\s*\|\s*"))
+	      						#foreach ($tag in $keywords)
+									<span class="clipdetail">
+										<a href="$siteroot$apphome/views/modules/modulesearch/index.html?description.value=$tag&operation=freeform&field=description"
+											title="[[Search]]: $!tag"
+											class="ajax"
+											data-targetdivinner="applicationcontainer"
+											data-oemaxlayout="1"
+											data-updateurl="true"
+											data-closemediaviewer="true">$!tag</a>
+										</span>
+								#end
+							#elseif( $v)
+								#set( $list = $v.split("\|"))
+								#foreach($row in $list)
+									#set( $val = false )
+									#set( $val = $mediaarchive.getCachedData($fieldid,$row) )
+									#if( $val)
+										<span class="clipdetail">
+										#if( $fieldid == "faceprofilegroup")
+										
+											<a href="$siteroot$apphome/views/modules/faceprofilegroup/components/gridsample/preview/entity.html?entityid=$val.getId()&searchtype=$fieldid"
+										#else
+											<a href="$siteroot$apphome/components/gridsample/preview/entity.html?id=$val.getId()&searchtype=$fieldid"
+										#end	
+											title="[[Entity]]: $!val" 
+											class="emdialog entity-dialog"
+											data-noesc="true"
+											>
+											#if( $val.getName() )
+												$val.getName()
+											#elseif( $fieldid == "faceprofilegroup")
+											[[User]] $!val.facecounter 
+											#else
+												$!val 
+											#end
+											</a></span>
+									#else
+									##Missing: $fieldid = $v
+									#end
+								#end
+							#end	 
+						#end	
+					#end
+					</span>
+					#end
+				</div>
+			##</div>
+		</div>
+		
+		
+
+		
+		
+	#end
+</div>
+</div>
+<div id="templateclip" class="ts-data-selection" style="height: 45px;display:none;"
+	data-cliplabel='[[New Clip]]' 
+	data-timecodestart="0"
+	data-timecodelength="10">
+	##<div class="ruler" >
+		<div class="timecell">
+			<a href="#" title="[[Move Tag]]" class="grabmove"><i class="fas fa-arrows-alt"></i></a>
+			<div class="grabresize"></div>
+			<span class="cliptext">[[New Clip]]</span>
+		</div>
+	##</div>
+</div>	

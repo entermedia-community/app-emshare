@@ -1,0 +1,68 @@
+#set( $searcher = $mediaarchive.searcherManager.getSearcher($catalogid, "convertpreset"))
+#set( $collectionid = $context.getRequestParameter("collectionid") )
+$context.putPageValue("collectionid",$collectionid)
+$context.putPageValue("asset", $asset) 
+#set( $rendertype = $mediaarchive.getMediaRenderType($asset))
+$context.putPageValue("rendertype",$rendertype)
+#set( $playertype = $mediaarchive.getMediaPlayerType($asset))
+#if( !$playertype )
+	##[[No template for]] $playertype
+#end
+#set( $cdnprefix = $mediaarchive.getCatalogSettingValue("cdn_prefix") )
+$context.putPageValue("cdn",$cdnprefix)
+
+#set( $mediadbappid=$mediaarchive.getMediaDbId())
+
+##This is used to make a readonly version for mediadb
+#set( $previewonly = $context.getPageValue("previewonly"))
+#if( !$previewonly)
+	#set( $previewonly = false)
+#end
+$context.putPageValue("previewonly", $previewonly) 
+
+#set( $opentab = $userprofile.get("assetopentab"))
+#set( $opentabactions = "")
+
+#ifnull($opentab)
+	#set( $opentab = "viewpreview")
+#end
+
+#if( !$canviewmetadatageneral )
+	#set( $opentab = "viewpreview")
+#end
+
+#if(($opentab == "viewtimeline" || $opentab == "viewclosedcaptions") && $rendertype != "video")
+	#set( $opentab = "viewpreview")
+#end
+
+#if($opentab == "imageeditor" && $rendertype != "image")
+	#set( $opentab = "viewpreview")
+#end
+
+#if($opentab == "viewdownloads" && !$canviewmediaedit)
+	#set( $opentab = "viewpreview")
+#end
+
+#set( $ismulti = $asset.id.startsWith("multiedit:") || $context.getRequestParameter("multi") == "true")
+#if( $ismulti )
+	#set( $opentab = "viewproperties")
+	$context.putPageValue("ismulti",$ismulti)
+#end
+
+
+$context.putPageValue("opentab",$opentab)
+$context.putPageValue("opentabactions",$opentabactions)
+
+#set( $hitssessionid = $hits.getSessionId())
+$context.putPageValue("hitssessionid",$hitssessionid)
+
+
+
+
+<div id="main-media-container">
+
+$pages.include("$componenthome/mediaviewer/fullscreen/currentassettabs.html",$context)
+$pages.include("$componenthome/mediaviewer/fullscreen/mainmediaviewer.html",$context)
+
+</div>
+

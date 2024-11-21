@@ -1,0 +1,22 @@
+$context.putPageValue("hits", $searchcategoryhits)
+
+#set($topcategoryid = $context.getRequestParameter("searchcategory.value"))
+$context.putPageValue("topcategoryid", $topcategoryid)
+
+#set($moduleid = $module.id)
+
+#set($expandedmodule = $moduleid)
+
+#set( $parentmodule = $module)
+$context.putPageValue("topmodule", $parentmodule)
+
+#set($topentityid = $context.getRequestParameter("topentityid"))
+
+$context.putPageValue("topmoduleid", "searchcategory")
+$context.putPageValue("modulecount", $organizedModules.size())
+#set($url = "$apphome/views/modules/modulesearch/index.html")
+
+$pages.include($url,$context)
+
+
+

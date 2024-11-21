@@ -1,0 +1,48 @@
+<div class="col-sidebar-header">
+	<h2>
+	[[FACE PROFILES]] 
+
+	</h2>
+	<a href="#"
+		title="[[Hide Categories Sidebar]]"
+		class="sidebar-toggler sidebar-toggler-hide"
+		data-action="hide" 
+		data-targetdiv="col-sidebars">
+		<i class="bi bi-chevron-double-left closebar"></i>
+	</a>					
+
+</div>
+
+
+
+#set( $faceprofiles = $mediaarchive.query("faceprofilegroup").all().enduser(true).search($context) )
+#if($faceprofiles)
+<div class="faceprofilessidebar">
+	#foreach($faceprofile in $faceprofiles)
+		#if($faceprofile.collectionimage)
+			
+			#set($asset = $mediaarchive.getAsset($faceprofile.collectionimage))
+			#set($link = $mediaarchive.asLinkToPreview($asset,"image200x200.jpg"))
+			
+			#set($profilename = $faceprofile.name)
+			#set( $selectedid = $context.getRequestParameter("faceprofiles.faceprofilegroup.value"))
+			
+			<div class="card card-mini card-collections #if($selectedid == $faceprofile.id) active #end">
+			<a href="$applink/views/modules/asset/search.html?field=faceprofiles.faceprofilegroup&operation=exact&faceprofiles.faceprofilegroup.value=${faceprofile.id}" 
+			   title="#if($profilename) $profilename #else ? #end">
+			 <div class="card-collections-thumb" style='#if($link) background-image: url("#urlencode($link)") #end'></div>
+			 ##<div class="card-name collectionbox">#if($profilename) $profilename #else ? #end</div>
+			 </a>
+			 <a href="$apphome/views/modules/faceprofilegroup/edit/settings.html?id=$faceprofile.id" 
+			 title="[[Edit Profile Properties]]" 
+			 class="btn btn-xs btn-light btn-editprofile emdialog"
+			 data-hidefooter="true"><i class="fas fa-edit"></i></a>
+			</div>
+  	
+		#end
+	#end
+</div>
+#end
+
+<div class="clearfix"></div>
+

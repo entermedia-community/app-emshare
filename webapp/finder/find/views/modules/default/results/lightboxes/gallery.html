@@ -1,0 +1,27 @@
+<div id="lightboxeditor" class="h-100">
+
+$context.putPageValue("hideheader","false")
+
+##set($resultview = $userprofile.get("assetresultview"))
+
+#set($maintargetdiv = "lightboxeditor")
+$context.putPageValue("maintargetdiv", $maintargetdiv)
+
+#set($parentmoduleid = $module.id)
+$context.putPageValue("topmoduleid",$parentmoduleid)
+
+#ifnull($lightboxid)
+	#set($lightboxid = $selectedbox.getId())
+#end
+$context.putPageValue("lightboxid",$lightboxid)
+
+#set( $targetdivmedia = "dialogmediaentity")
+$context.putPageValue("targetdivmedia", $targetdivmedia)
+
+#set($componenthome = "$apphome/views/modules/asset/components")
+
+$pages.include("$searchhome/resultheader.html", $context)
+
+$pages.include("${searchhome}/brickvertical.html",$context)
+</div>
+

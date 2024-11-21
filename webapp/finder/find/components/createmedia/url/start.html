@@ -1,0 +1,63 @@
+
+<div class="tabheader">[[Add Remote Media]]</div>
+<div class="p-2 w-100 d-flex flex-column">
+	#set( $categoryid = $context.getRequestParameter("categoryid") )
+	<p>
+		[[Fetch an external asset by its publicly accessible URL or embed code (may not be protected by a login)]].
+		[[The EnterMedia scheduler will then download the file and create thumbnails or conversions]].
+	</p>
+
+	<form  method="post" class="ajaxform" data-targetdiv="addedcomplete" action="$home$apphome/components/createmedia/url/createnew.html">
+		<input type="hidden" name="categoryid" value="$categoryid"/>
+		<div id="eml-tab-green-container" class="clearfix">
+			<div class="inner-content">
+				<script>
+					$("#externalmediainput").on("change input", function() {
+						var externalmediainput = $(this).val();
+						var youtubeid = false;
+						if (externalmediainput.startsWith("https://youtu.be/")) {
+							youtubeid = externalmediainput.substring(17);
+						} else if (externalmediainput.indexOf("youtube.com/") > -1) {
+							var start = externalmediainput.indexOf("watch?v=");
+							youtubeid = externalmediainput.substring(start + 8);
+						}
+						if (youtubeid) {
+							var code = '<iframe width="560" height="315" src="https://www.youtube.com/embed/' + youtubeid + '" frameborder="0" allowfullscreen></iframe>';
+							$("#embeddedurl").val(code);
+						}
+						if (externalmediainput.indexOf("vimeo") > -1) {
+							var vimeoid = externalmediainput.substring(externalmediainput.lastIndexOf("/") + 1);
+							var code = '<iframe src="https://player.vimeo.com/video/' + vimeoid + '" width="500" height="281" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>';
+							$("#embeddedurl").val(code);
+							$("#embeddedurl").closest(".oeinputform").hide();
+						}
+					});
+				</script>	
+
+				<div class="mb-4">
+					<span class="emdatafield">
+							[[Media URL Address]]: 
+					</span>
+					<div id="detail_embeddedurl" class="emdatafieldvalue ">
+						<div class="emfield-textarea">
+							<textarea name="externalmediainput" id="externalmediainput" class="form-control" placeholder="[[Enter URL]]" type="text" value="" rows="1"></textarea>
+						</div>
+						<span class="detail-note">[[URL to external asset or YouTube/Vimeo link]]<span></span></span>
+					</div>
+				</div>
+				
+				$context.putPageValue("searcher",$mediaarchive.getAssetSearcher() )	
+				$context.putPageValue("view","asset/assettype/default/createnewurl")	
+				$pages.include("/$applicationid/components/xml/detaileditorcss.html", $context)
+			
+				<div class="w-100 text-center">
+					<button class="btn btn-accent upload-btn" type="submit" id="finishbutton">
+						<i class="bi bi-box-arrow-in-down rr mr-1" ></i>
+						[[Import URL]]
+					</button>
+				</div>
+				<div id="addedcomplete"></div>
+			</div>
+		</div>
+	</form>
+</div>

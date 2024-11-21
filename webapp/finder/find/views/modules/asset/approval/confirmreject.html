@@ -1,0 +1,16 @@
+#set($collectionid = $context.getRequestParameter("collectionid"))
+#set($nodeid = $context.getRequestParameter("nodeID"))
+#set($hitssessionid = $context.getRequestParameter("hitssessionid"))
+
+
+<form id="approveform" 
+	  action="$siteroot$apphome/views/modules/asset/approval/reject.html"
+	  class="ajaxform autocloseform"
+		data-ajaxreloadtargets="assetresults">
+	<input type="hidden" name="collectionid" value="$!{collectionid}" />
+	<input type="hidden" name="nodeID" value="$!{nodeid}" />
+	<input type="hidden" name="hitssessionid" value="$!{hitssessionid}" />
+
+	 <div class="alert alert-info">[[Reject]] $hits.getSelectionSize() [[pending assets]]</div>
+	<textarea name="comment" class="form-control" style="width: 100%; height: 100px" placeholder="[[Enter an optional reject note]]"></textarea>
+</form>

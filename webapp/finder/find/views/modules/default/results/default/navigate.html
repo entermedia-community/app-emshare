@@ -1,0 +1,50 @@
+#set( $moduleid = $context.findValue("module") )
+
+#if(!$searchhome)
+	#set( $searchhome = $content.searchhome) ##$context.findValue("searchhome") )
+#end
+
+#set($oemaxlevel = $context.getRequestParameter("resultsoemaxlevel"))
+#if(!$oemaxlevel)
+	#set( $oemaxlevel = 2)
+#end
+$context.putPageValue('oemaxlevel',  $oemaxlevel)
+
+#set($targetdivinner = "applicationmaincontent")
+$context.putPageValue('targetdivinner',  $targetdivinner)
+
+#set($hitsperpage = $context.getRequestParameter("hitsperpage"))
+#if(!$hitsperpage)
+	#set( $hitsperpage = $!hits.hitsPerPage)
+	##or-> #set( $hitsperpage = $userprofile.get("modulehitsperpage"))
+#end
+
+#set($totalhits = $context.getRequestParameter("moduletotalhits"))
+
+#if(!$totalhits)
+	#set( $totalhits = $hits.total)
+#end
+
+
+#if( $hits)
+	$context.putPageValue('hits',  $hits)
+	
+	###set($resultsPage = "$home$!{searchhome}/index.html?hitssessionid=$hits.sessionId&searchtype=$moduleid&hitsperpage=$!hitsperpage&categoryid=$!category.id&resultstype=$!resultstype")
+	#set($resultsPage = "$home$!{searchhome}/index.html?pageposition")
+	$context.putPageValue('resultsPage',  $resultsPage)
+	
+	#set($thispage = $hits.getPage())
+	
+    <div class="resultsnumber float-left">
+    [[Displaying]]: $!hits.getPageStart() - $!hits.getPageEnd()  [[of]] $!totalhits [[items]]
+    </div>
+    #if($totalhits > $hits.total)
+    	<div id="pages-bottom" class="pages float-right">
+         <ul>
+         	<li><a class="ajax" data-targetdivinner="$targetdivinner" data-oemaxlevel="$!oemaxlevel" href="$resultsPage" title="[[All Results]]">[[View All]]</a></li>
+         </ul>
+         </div>
+    #end
+    
+#end
+

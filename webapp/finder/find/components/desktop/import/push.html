@@ -1,0 +1,71 @@
+#set($autoscan = $context.getRequestParameter("autoscan"))
+
+#if($autoscan && $autoscan == "true")
+	<div id="immediate-scan" data-toplevelcategorypath="$category.getCategoryPath()"></div>
+#end
+
+<div class="entityuploadheader" style="font-size:1rem; font-weight: 600;">
+	[[Bulk Upload From Local]] #text($!category) [[Folder]]
+</div>
+
+#if($category.getCategoryPath())
+<div class="row no-gutters mt-2 mb-1 watch-entity" data-entityid="$!entity.getId()" data-toplevelcategorypath="$category.getCategoryPath()">
+	<div class="col-4">
+		<div class="d-flex align-items-center p-2 h-100">
+			<button class="btn btn-success rounded scan-changes"
+				data-toplevelcategorypath="$category.getCategoryPath()">
+				<i class="bi bi-arrow-repeat mr-1"></i> <span>[[Refresh]]</span>
+			</button> 
+			<button class="ml-2 btn btn-success rounded upload-push-all" style="display: none;"
+				data-entityid="$!entity.getId()"
+				data-categorypath="$category.getCategoryPath()">
+				<i class="bi bi-cloud-arrow-up-fill mr-1"></i>
+				[[Push to server]]
+			</button>
+		</div>
+	</div>
+	<div class="col">
+		<div class="d-flex align-items-center p-2">
+			<div class="pending-folders">
+				<p class="alert alert-success no-upload mb-0" style="display: none;">[[All files uploaded]]</p>
+				<div class="d-flex flex-column">
+					<div class="alert alert-success mb-0 push-msg" style="display: none;">
+						<p class="mb-0 scan-result">[[You have ]] <strong class="up-count">0</strong> [[file(s)]] (<strong class="up-size">0</strong>) [[pending upload to the server.]]</p>
+						<p class="mb-0 upload-progress" style="display: none;">
+							<span style="display: none;"><strong class="up-completed">0</strong> of <strong class="up-total"></strong> [[file(s)]]</span> (<strong class="up-progress">0</strong>) uploaded to the server.
+						</p>
+					</div> 
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+#end
+
+<div class="sync-container row no-gutters">
+	<div class="col-4">
+		<div class="syncfoldertree mr-2">
+		#set($allchildren = $mediaarchive.getCategorySearcher().listAllCategories($category))
+		#foreach($parent in $allchildren)
+			#set($padding = ($parent.getLevel() - 1) * 8)
+			#set($index = $foreach.count - 1)
+			<div style="padding-left: ${padding}px;" class="pull-folder" id="folder-$index">
+				<a href="#"
+					class="pullfetchfolder"
+					data-tab="push"
+					data-entityid="$!entity.getId()" 
+					data-categorypath="$!parent.getCategoryPath()">
+					<i class="bi bi-folder mr-1"></i>
+					<span class="mx-1 notif">$parent.name <i class="bi bi-circle-fill"></i></span>
+					<i class="fas fa-spinner fa-spin text-muted" style="display: none;"></i>
+				</a>
+			</div>
+		#end
+		</div>
+	</div>
+	<div class="col">
+		<div id="fetchfolder">
+			##load content via pullfetchfolder click -> Electron
+		</div>
+	</div>
+</div>

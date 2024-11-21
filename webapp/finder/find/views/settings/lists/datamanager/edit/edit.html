@@ -1,0 +1,42 @@
+<div class="tab">
+	##$pages.include("../list/actions.html")
+		<div id="editlayout">
+		#set( $origURL = $context.getRequestParameter("origURL" ) )
+		#set( $view = $context.findValue("editview") )
+		
+		$context.putPageValue("view", $view)
+		$context.putPageValue("detailviewercolumns",1)
+		
+		<form id="dataeditor" name="dataeditor" method="post" 
+				action="$siteroot$content.dataroot/edit/save.html?oemaxlevel=1" 
+				enctype="multipart/form-data"
+				class="ajaxform"
+				data-targetdivinner="datamanager-workarea">
+			<input name="save" type="hidden" value="true" />
+			<input name="id" type="hidden" value="$!data.id" />
+			<input name="catalogid" type="hidden" value="$searcher.catalogId" />
+			<input name="searchtype" type="hidden" value="$searcher.searchType" />
+			<input name="origURL"  type="hidden" value="$!origURL" />
+		<div id="edit-data" class="datamanager-editor">
+		$context.putPageValue("editortype","datamanager")	
+		
+		$pages.include("/${applicationid}/components/xml/detaileditor.html", $context)
+		</div>
+		<div style="padding:10px">
+		<input class="btn btn-sm btn-primary" type="submit" value="[[Save]]" />
+		<a class="btn btn-sm btn-secondary ajax"
+			data-targetdivinner="datamanager-workarea" 
+			style="margin-left: 10px;" 
+			href="$siteroot$content.dataroot/list/index.html?searchtype=$searcher.searchType&catalogid=$searcher.catalogId&oemaxlevel=1">[[Cancel]]</a>
+		<a class="btn btn-sm btn-danger ajax"
+			data-targetdivinner="datamanager-workarea"
+			data-confirm="[[Delete Database Record?]]" 
+			data-oemaxlevel="1"
+			style="margin-left: 10px;" 
+			href="$siteroot$content.dataroot/edit/delete.html?searchtype=$searcher.searchType&id=$data.id">[[Delete]]</a>
+		<div id="messagearea">$!message</div>
+		</div>
+		
+		</form>
+	</div>
+</div>

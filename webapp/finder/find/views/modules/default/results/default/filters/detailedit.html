@@ -1,0 +1,60 @@
+##requires $viewtype
+##$viewtype
+
+<div id="$!{idprefix}detail_${detail.id}" valign="middle">
+	<div class="form-group">
+		<input name="field" value="$searcher.getCatalogId():$view:${detail.getId()}" type="hidden">
+		
+		#if(!$detail.isDate() && $detail.getId() != "category" && !$viewtype.endsWith("search") )
+			#if($detail.defaultoperation && $detail.defaultoperation != "")
+				<input name="operation" value="$detail.defaultoperation" type="hidden" />
+			#elseif($detail.isList() || $detail.isBoolean() || $viewtype == "multiselect")
+				<input name="operation" value="matches" type="hidden" />
+			#else
+				<input name="operation" value="startswith" type="hidden" />
+			#end
+		#end
+		
+		#if (!$viewtype || $viewtype == "boolean")
+			#set ($viewtype = "booleansearch")
+		#end
+
+		#if( $hits.getSearchQuery() )
+			#set( $value = "$!hits.getSearchQuery().getInput($detail.id)" )
+			#set( $values = $!hits.getSearchQuery().getInputs($detail.id) )
+			
+			#set( $term = $hits.getSearchQuery().getTermByDetailId($detail.id) )
+			$context.putPageValue("term",$!term)			
+			$context.putPageValue("val",$!value)
+			$context.putPageValue("values",$!values)
+			$context.putPageValue("data",$hits.getSearchQuery())
+		#end	
+		<input name="${detail.getId()}.searchtype" value="${detail.getSearchType()}" type="hidden" />
+		<div class="filter-box">
+			#set($filterboxid = "$!{idprefix}filterbox${detail.getId()}")
+			<div class="filter-box-header">
+				
+				#set($selectedpreference = $userprofile.get("minimize${filterboxid}"))
+				#ifnull($selectedpreference)
+					#set($selectedpreference = "false")
+				#end
+				<div class="d-flex align-items-center toggle-filter sidetoggle flex-grow-1" data-target="$!{module.id}$filterboxid" data-toggle="$filterboxid">
+					<span class="mr-2" >
+					<i class="caret bi bi-caret-right-fill#if($selectedpreference == "false") exp#end"></i>
+					</span> 
+					<p class="m-0 flex-grow-1">$!detail.getText($context)</p>
+					</div>
+					 
+					##if ($edit == "true" && $detail.searchType)   (${detail.searchType} ) #end
+			</div>
+			
+			<div class="filter-box-options soft-scrollbar p-2" 
+				id="$!{module.id}$filterboxid" 
+				#if($selectedpreference == "true") style="display: none;" #end
+				data-viewtype="${viewtype}">
+				$pages.include("$searchhome/filters/types/${viewtype}.html?search=true", $context)
+				<span class="filter-na">[[This filter is unavailable for the selected entity]]</span>
+			</div>
+		</div>
+	</div>
+</div>

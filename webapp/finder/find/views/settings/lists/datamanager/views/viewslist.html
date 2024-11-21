@@ -1,0 +1,39 @@
+#set($viewid = $context.getRequestParameter("viewid"))
+
+#set ( $moduleid = $context.findValue("searchtype") )		
+
+
+#set($views = $mediaarchive.getPropertyDetailsArchive().listViews($moduleid))
+$context.putPageValue("views", $views)
+
+
+#set( $viewsroot = $content.viewsroot )
+
+<ul data-path="$siteroot$viewsroot/moveviews.html?searchtype=view&field=ordering" class="emsettingslist" data-searchtype="view" data-field="ordering">
+		
+				<li class="header no-sort">[[System Views]]</li>
+				<li class="no-sort subheader" id="addeditbox" >
+				<a class="btn btn-xs btn-primary ajax" targetdivinner="addeditbox" href="$siteroot$viewsroot/addneweditingbox.html?oemaxlevel=1&searchtype=${moduleid}">[[Add New]]</a></li>
+
+              
+			#foreach( $target in $views)
+                
+                
+                #set($sortid = $target.id.replaceAll("_", ""))
+				<li id="view_$sortid" data-ordering="${view.ordering}" class="#if($viewid == $target) current #end " byassettype="$!target.byassettype">
+				   
+					#if( ($target.byassettype && $target.byassettype == "true") )
+						#set( $viewpath = "${moduleid}/assettype/default/$target.id")
+					#else
+						#set( $viewpath = "${moduleid}/$target")
+					#end
+					<a class="sortableitem ajax" targetdivinner="datamanager-workarea" href="$siteroot$viewsroot/index.html?viewid=$target&viewpath=$viewpath&searchtype=${moduleid}&oemaxlevel=2">
+					$context.getText($target.toString())</a>
+					<a class="ajax delete-row" data-targetdiv="" href="./deleteview.html?searchtype=${moduleid}&id=${target.id}&viewpath=$viewpath&searchtype=${moduleid}">
+					<i class="fas fa-times"></i></a>
+
+                </li>
+			
+			#end			
+								
+			</ul>

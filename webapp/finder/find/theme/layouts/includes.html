@@ -1,0 +1,36 @@
+#foreach( $style in $pageManager.getStylePathsFor($content) )
+<link rel="stylesheet" type="text/css" href="$style" />
+#end
+#set($themeid = $userprofile.getValue("themeid") )
+#ifnull($themeid)
+	#set($themeid = $content.get("themeid") )
+#end	
+<link rel="stylesheet" type="text/css" href="/${applicationid}/theme/$themeid/custom.css" />
+
+<script type="text/javascript" src="/${applicationid}/components/javascript/jquery-core/jquery-3.7.1.js" onload="if (!window.jQuery) window.$ = window.jQuery = module.exports;"></script>
+
+<script type="text/javascript" src="/${applicationid}/components/javascript/jquery-ui/1.12/jquery-ui.min.js"></script>
+<script type="text/javascript" src="/${applicationid}/components/javascript/jquery-ui/i18n/jquery-ui-i18n.js"></script> 
+
+<script type="text/javascript" src="/${applicationid}/components/javascript/bootstrap/4.5.3/js/popper.min.js"></script>
+<script type="text/javascript" src="/${applicationid}/components/javascript/bootstrap/4.5.3/js/bootstrap.min.js"></script>
+
+
+##This has all the js in one for performance
+<script type="text/javascript" src="$applink/components/javascript/index.js"></script>
+<script type="text/javascript" src="$applink/components/javascript/indexdefer.js" defer></script>
+
+#foreach( $script in $pageManager.getScriptPathsWithoutApp($content))
+<script type="text/javascript" src="$script"></script>
+#end
+
+#if( $desktop)
+<script type="text/javascript" src="/${applicationid}/components/javascript/emedia/electron.js"></script>
+#else
+<script type="text/javascript" src="/${applicationid}/components/javascript/emedia/downloadxhr.js"></script>
+#end
+
+#set( $mapskey = $mediaarchive.getCatalogSettingValue("google-maps-key"))
+#ifnotnull( $mapskey )
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=$mapskey"></script>
+#end

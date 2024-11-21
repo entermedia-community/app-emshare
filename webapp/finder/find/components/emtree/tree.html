@@ -1,0 +1,308 @@
+#set( $treename = $context.getRequestParameter("treename") ) 
+#set( $webtree = $context.getPageValue($treename) )
+
+#set( $showinput = $webtree.getTreeRenderer().isAllowSelections() )
+#set( $editable = $webtree.getTreeRenderer().isEditable() )
+
+#set( $model = $webtree.getModel() )
+#set( $render = $webtree.getTreeRenderer() )
+
+#set( $adding = $context.getRequestParameter("adding" ) )
+
+#set( $scrolltocat = $context.getRequestParameter("scrolltocat") )
+#set( $uploadmaxlevel = $context.getRequestParameter("uploadmaxlevel") )
+
+#if($selectednodes)
+	$!webtree.getTreeRenderer().selectNodes($selectednodes)
+#end
+
+#set( $hidecontextmenu = $context.getRequestParameter("hidecontextmenu" ) )
+#ifnull($hidecontextmenu)
+#set( $hidecontextmenu = false)
+#end
+
+#ifnull($canupload)
+	#set( $canupload = $context.getRequestParameter("canupload" ) )
+#end
+#ifnull($canupload)
+	#if($canviewupload || $canviewcategoryupload)
+			#set($canupload = true)
+	#end
+#end
+
+#macro(showtreecategories2 $cat $depth)
+	#set($children = $model.getChildren($cat))
+	#if( $children.size() > 0)
+		#set( $haschildren = true)
+	#else
+		#set( $haschildren = false)
+	#end
+	#set( $open = $haschildren)
+	#set( $expanded = $webtree.isExpanded($cat) )
+	#set( $isselected = $render.isNodeSelected($cat))
+	
+	
+	##Collection
+	#set( $collectionid = $categoryCollectionCache.findCollectionId($cat))
+	#set( $isCollectionRoot = $categoryCollectionCache.isCollectionRoot($cat))
+	
+	#if($collectionid)   
+		#set( $iscollection = true )
+	#else
+		#set( $iscollection = false  )
+	#end	
+	
+	<li id="${cat.id}_row" 
+		class="noderow categorydraggable #if(${cat.id}==${rootcategory.getId()}) rootnoderow #end" 
+		data-nodeid="$cat.id" 
+		data-depth="$depth" 
+		data-categorynameesc="#dash($cat.name)"
+		data-setpagetitle="#dash($cat.name)"
+		data-collectionid="$!collectionid"> 
+		#set( $checked = $render.isIdSelected($cat.id) )
+		#set ( $padding = (8 * ($depth - 1)) )
+		#if($padding == 0)
+			#set($padding  = 4)
+		#end
+		<div 
+			class="treerow #if( $isselected ) cat-current #if( $scrolltocat ) scrolltocat #end #else categorydroparea #end  #if( $checked) idchecked #end #if($expanded) expanded #end" 
+			style="padding-left: $!{padding}px" 
+			title="[[Category id]]: $cat.id">
+			#if($haschildren)
+				<div class="cat-arrow" title="[[Expand ]] $cat.name"><i class="fas #if($expanded) fa-caret-down #else fa-caret-right #end "></i></div>
+			#else
+				<div style="width:14px"></div>
+			#end
+			<div id="${cat.id}_display" 
+				class="cat-name #if($isCollectionRoot) cat-collection #else cat-folder #end #if($haschildren) cat-leaf #end" 
+				title="$cat.getCategoryPath()">
+			#if($cat.hasCountData())
+				#if( $cat.getCounts() > 0)
+					<b>$cat.name</b> 
+				#else
+					$cat.name  
+				#end
+				<b class="cat-count"> 
+				($cat.getCount())
+				</b> 
+			#else
+				$cat.name  
+			#end
+			</div>
+			
+			<div class="cat-options">
+				#if( $canupload == "true")
+					<a href="#" class="cat-uploadfromtree" data-oemaxlevel="$!uploadmaxlevel" title="[[Upload]]"><i class="fas fa-upload"></i></a>
+				#end
+				#if(!$hidecontextmenu && ($caneditcategorytree || $caneditcategories))
+					<a href="#" class="cat-menu" title="$cat.name"><i class="fas fa-ellipsis-v"></i></a>
+				#end
+			</div>
+
+		</div>
+		#if($haschildren && $expanded)
+			<ul class="open"> <!-- Open with $cat.name $children.size() -->
+			#foreach( $subcategory in $children) 
+				#set ( $newdepth = $depth + 1) ##weird bug when this was above the loop 3 = 1 + 1
+				#showtreecategories2($subcategory, $newdepth)
+			#end
+			</ul>
+		#end
+	</li>
+		
+#end
+
+#set( $toggle = $context.getRequestParameter("toggle" ) )
+#if( $toggle && $toggle == "true" )
+	#set( $nodeid = $context.getRequestParameter("nodeID" ) )
+	#set( $target = $webtree.getModel().getChildById($nodeid) )
+
+	$!webtree.getTreeRenderer().toggleNode($target)
+
+	#set( $depths = $context.getRequestParameter("depth" ) )
+	#set( $depth = 0 )
+	#set( $depth = $depth.parseInt($depths) )
+	#showtreecategories2($target, $depth)
+
+#elseif( $adding && $adding == "true" )
+	#set( $nodeid = $context.getRequestParameter("nodeID" ) )
+	#set( $target = $webtree.getModel().getChildById($nodeid) )
+	$!webtree.getTreeRenderer().expandNode($target)
+	#set( $depths = $context.getRequestParameter("depth" ) )
+	#set( $depth = 0 )
+	#set( $depth = $depth.parseInt($depths) )
+	#showtreecategories2($target, $depth)
+	
+#else
+	#if($category && $content.isPropertyTrue("searchcategory") )
+		$render.setSelectedNode($category)
+	#end
+	
+	#set($rootcategory = $webtree.getModel().getRoot())  
+
+	#set( $top = $context.getRequestParameter("treetoplocation") )
+	#set( $left = $context.getRequestParameter("treeleftlocation") )
+	
+	#set( $prefix = $context.getRequestParameter("urlprefix" ) )
+	#set( $postfix = $context.getRequestParameter("urlpostfix" ) )
+	
+	
+	#set( $maxlevelclick = $context.getRequestParameter("maxlevelclick" ) )
+	#set( $customurlprefix = $context.getRequestParameter("customurlprefix") )
+	#set( $customurladdmedia = $context.getRequestParameter("customurladdmedia") )
+	
+	#set( $updateAddressBar = $context.getRequestParameter("updateAddressBar" ) )
+	#ifnull($updateAddressBar)
+		#set($updateAddressBar="true")
+	#end
+	
+	#set( $searchchildren = $context.getRequestParameter("searchchildren") )
+	#if( !$searchchildren)
+		#set( $searchchildren = true )
+	#end		
+	
+	#set( $targetdiv = $context.getRequestParameter("targetdiv" ) )
+	
+
+	<div id="treeholder" data-treetoplocation="$!top" data-treeleftlocation="$!left" >
+		<div id="${treename}tree" 
+			class="emtree emtree-widget" 
+			data-home="$siteroot$apphome" 
+			data-treename="$!treename"
+			data-$!{treename}root="$rootcategory.getId()" 
+			data-rootnodeid="$rootcategory.getId()"
+			
+			data-editable="$!editable" 
+			data-urlprefix="$!prefix" 
+			data-urlpostfix="$!postfix" 
+			
+			#set( $targetdivinner = $context.getRequestParameter("targetdivinner" ) )
+			#set( $maintargetdiv = $context.getRequestParameter("maintargetdiv" ) )
+			#set( $oemaxlevel = $context.getRequestParameter("oemaxlevel" ) )
+			#set( $oemaxlayout = $context.getRequestParameter("oemaxlayout" ) )
+			
+			
+			#if($treename=="dialogentitymediatree")
+				data-customurladdmedia="$!customurladdmedia"
+				data-targetdiv="$!targetdiv"
+				data-oemaxlevel="$!oemaxlevel"
+				data-entityid="$!entity.id"
+				data-entitymoduleid="$!entitymodule.id"
+			#else
+				#if( $maintargetdiv )
+					data-maintargetdiv="$maintargetdiv"
+				#end
+				#if( $targetdiv )
+					data-targetdiv="$targetdiv"
+				#end	 
+				#if( $targetdivinner )
+					data-targetdivinner="$targetdivinner"
+				#end
+				#set( $targetdivsearch = $context.getRequestParameter("targetdivsearch" ) )
+				#if( $targetdivsearch )
+					data-targetdivsearch="$targetdivsearch"
+				#end	
+				#if( $oemaxlayout )
+					data-oemaxlayout="$oemaxlayout"
+				#end	
+				#if( $oemaxlevel )
+					data-oemaxlevel="$oemaxlevel"
+				#end	
+				
+				
+				#if( $uploadmaxlevel )
+					data-uploadmaxlevel="$uploadmaxlevel"
+				#end
+			#end
+				
+				#set($pickone = $context.getRequestParameter("pickone") )
+				#set($assetid = $context.getRequestParameter("assetid") )
+				#if ($pickone )
+					data-pickone="true"
+					data-assetid="$!assetid"
+				#end
+
+				data-maxlevelclick="$!maxlevelclick"
+				data-customurlprefix="$!customurlprefix"
+				data-searchchildren="$!searchchildren"
+				data-updateAddressBar="$!updateAddressBar"
+				#if( $canupload )
+					data-canupload="true"
+				#else
+					data-canupload="false"
+				#end
+				
+				#set( $exactsearch = $context.getRequestParameter("exactsearch" ) )
+				#if($exactsearch)
+					data-exactsearch="$!exactsearch"
+				#end
+			
+			>
+				<ul  class="open" >
+				#ifnull( $rootcategory)
+					[[No folder set]]
+				#end
+				#if( $rootcategory)
+					#showtreecategories2($rootcategory, 1)
+				#end	
+				</ul>
+		</div>
+	
+	
+	#if(!$hidecontextmenu && ($caneditcategorytree || $editcategories || $canupload || $download))
+	<div id="$!{treename}contextMenu" class="treecontext"  data-treename="$!{treename}">
+	  <ul class="dropdown-context" role="menu">
+	    #if( $desktop )
+			<li>       	
+				<a href="#" class="treedesktopdownload  drx	opdown-item" title="[[Download]]">
+					<i class="fas fa-download"> </i> [[Download]]
+				</a>
+			</li>
+			#end
+			#if( $canupload )
+				<li><a id="addmedia" tabindex="-1" href="#" data-cancelsubmit="false" data-oemaxlevel="$!{uploadmaxlevel}">[[Upload]]</a></li>	
+	    #end
+	    #if( $candownload  )
+	    	<li><a id="downloadnode" tabindex="-1" href="#">[[Download]]</a></li>
+	    #end
+	    #if( $editable && $caneditcategorytree  )
+				<li><a id="createnode" tabindex="-1" href="#">[[Add Sub-Folder]]</a></li>
+				#if($canaddnewcollection) 
+					<li><a id="createcollection" tabindex="-1" href="#">[[Create Gallery]]</a></li>      		
+	    	#end
+				<li><a id="renamenode" tabindex="-1" href="#">[[Rename]]</a></li>
+				<li><a id="deletenode" tabindex="-1" href="#">[[Remove]]</a></li>
+				<li><a id="nodeproperties" href="#" data-hidefooter="true">[[Properties]]</a></li>
+			#end
+	    <li class="dropdown dropright">
+				<a class="dropdown-item dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="navbarAddto$!{moduleid}">[[Add to]]&nbsp;&nbsp;</a>
+				<div class="dropdown-menu" aria-labelledby="navbarAddto$!{moduleid}">
+				#foreach ( $amodule in $userprofile.getEntities() )
+						#set($amoduleid = $amodule.getId())
+						#if($amodule.getBoolean("enableuploading"))
+							#if($permissions.can($amoduleid, "create") && $amoduleid!="faceprofilegroup" && $amoduleid!="asset" && $amoduleid!="modulesearch")
+								#set($entityrendertype = "entity")
+							#if ($amodule.modulerendertype)
+								#set($entityrendertype = $amodule.modulerendertype)
+							#end
+							
+							#set($addtourl = "$!siteroot$applink/views/modules/${amoduleid}/results/pickercopycategoryto/index.html")
+							<a class="dropdown-item addtomodule" 
+									data-dialogid="addtomodule"
+									data-maxwidth="1400"
+									data-hidefooter="true"
+									href="$addtourl">#text($amodule)</a>
+								#end
+							#end
+					#end
+					</div>
+			</li>	     
+	     
+			##      <li><a tabindex="-1" href="#">[[Copy]]</a></li>
+			##      <li><a tabindex="-1" href="#">[[Cut]]</a></li>      
+			##      <li><a tabindex="-1" href="#">[[Paste]]</a></li>
+		</ul>
+	</div>
+	#end
+</div>
+#end

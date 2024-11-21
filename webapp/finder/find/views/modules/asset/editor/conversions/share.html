@@ -1,0 +1,60 @@
+#set($mediadbappid=$mediaarchive.getMediaDbId())
+#if($canembedasset)
+
+#end
+
+#set($mediaurl = "$siteroot/$mediadbappid/services/module/asset/downloads/preset/$asset.sourcepath/$presetdata.generatedoutputfile")
+
+<div  style="margin:5px 0;text-align: center;">
+	#if($presetdata.id!="videohls")
+
+			 ##Crop
+			 #set($cancrop = $conversionUtil.canCrop($mediaarchive, $catalogid, $presetdata.id, $asset.id))
+			 #if($caneditasset && $cancrop) 
+				<a class="btn btn-xs btn-secondary ajax" 
+					targetdivinner="photo-editor-container"  
+					data-oemaxlevel="1"  
+					href="$siteroot$apphome/views/modules/asset/editor/media/croppreview.html?assetid=${asset.id}&presetid=${presetdata.id}"
+					title="[[Crop]] $!presetdata.name">[[Crop]]</a>&nbsp;
+			 #end
+			##UPLOAD
+			#if($caneditasset &&  $presetdata.id != "0" )
+				<a class="btn btn-xs btn-secondary emdialog"  
+				data-width="600" 
+				data-height="300"
+				data-hidefooter="true"  title="[[Select File]]" href="$siteroot$apphome/views/modules/asset/editor/conversions/upload.html?assetid=${asset.id}&presetid=${presetdata.id}">[[Upload]]</a>
+			#end
+</div>			
+			
+			
+			
+			#if($cancrop)
+				<div style="margin:4px 0 0; text-align: center;">
+				#set($mediaurl = "$siteroot/$mediadbappid/services/module/asset/downloads/preset/$asset.sourcepath/$presetdata.generatedoutputfile")	  
+				#set($previewurl="$siteroot$apphome/components/asseteditor/preview.html?previewimg=$mediaurl")
+				<a href="#urlescape($previewurl)"
+					class="emdialog" data-cancelsubmit="true" data-hidefooter="true" data-noesc="true"
+					title="$!presetdata.name">
+					##why not cache=false?
+					#set($imgurl="$mediaurl?cache=false&r=$mathutil.getRandomValue(99999)")
+					<img src="#urlescape($imgurl)" alt="$!presetdata.name" style="height: 60px;" />
+				</a>
+				</div>
+			
+				#if($caneditasset && $presetdata.id)
+					##FATWIRE & FALCON
+					#if($result.publishtofatwire == "true")
+						$pages.include("$apphome/views/modules/asset/editor/conversions/submittofatwire.html", $context)
+					#end	
+					
+					$pages.include("$apphome/views/modules/asset/editor/conversions/submittofalcon.html", $context)
+						
+				#end
+			#end
+	#else
+	
+	#end
+
+
+
+

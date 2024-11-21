@@ -1,0 +1,70 @@
+#set($moduleid = $context.getRequestParameter("moduleid"))
+#if(!$moduleid)
+	#set($moduleid = $userprofile.mainsearchmodule)
+#end
+
+#set($resetsearch = $context.getRequestParameter("resetsearch"))
+#if($resetsearch == "true")
+	#set($moduleid = "") 
+#end
+
+#if($moduleid)
+	#set($module = $mediaarchive.getCachedData("module", $moduleid))
+#end
+<div class="nav-form nav-quicksearch" id="mainsearchcontainer" data-url="$apphome/components/quicksearch/navbar.html">
+
+#ifnull($hits)
+	#set($hits = $modulehits)
+#end
+		#set( $input = $hits.getSearchQuery().getMainInput())
+		#if (!$input)
+			#set( $input = "")
+		#end
+		
+		#set( $input = $url_util.decode($input) )
+		
+		<div class="input-group">
+			<div class="dropdown search-entity-dropdown">
+				#if(!$moduleid)
+				<a class="dropdown-toggle" href="#" role="button" id="searchEntityDropdown" data-toggle="dropdown">
+					[[All]]
+				</a>
+				#else
+					<a class="dropdown-toggle" href="#" role="button" id="searchEntityDropdown" data-toggle="dropdown">
+						#text($module)
+					</a>
+				#end
+				<div class="dropdown-menu" aria-labelledby="searchEntityDropdown">
+					#if($moduleid)
+						<a class="dropdown-item switchmainsearch" data-moduleid="">
+							[[All]]
+						</a>
+					#end
+					#foreach($amodule in $userprofile.getEntities())
+						#set($amoduleid = $amodule.getId())
+						<a class="dropdown-item switchmainsearch" data-moduleid="$amoduleid">#text($amodule)</a>
+					#end
+				</div>
+			</div>
+			<input name="description.value" 
+				id="mainsearchvalue" 
+				class="form-control mainsearch"
+				##data-url="$componenthome/xml/types/autocomplete/tagsearch.txt" 
+				data-typeaheadurl="$siteroot$applink/components/quicksearch/results.html"
+				data-mainsearchmodule="$!{moduleid}"
+				data-sortby="" 
+				value="#esc($input)"
+				autocomplete="off"
+				placeholder="[[Search...]]"
+				data-width="100%"
+				autofocus
+			/>
+			<div class="quicksearchexpand"><i class="bi bi-caret-down-fill text-brand"></i></div>
+		</div>
+		
+		
+
+
+</div>
+
+

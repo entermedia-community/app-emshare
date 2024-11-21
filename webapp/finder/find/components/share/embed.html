@@ -1,0 +1,146 @@
+#set( $type = $mediaarchive.getMediaRenderType($asset.fileFormat))
+<div id="embed-wrapper">
+<div class="embedlink">
+
+#set( $mediadbappid = $mediaarchive.getMediaDbId() )
+
+#if( $mediadbappid )
+#set( $sharelink = "$siteroot/${mediadbappid}/services/module/asset/players/play/${asset.getId()}.html")
+#else
+#set( $sharelink = "$siteroot$apphome/views/modules/asset/embed/index.html?type=$type&sourcepath=$asset.sourcepath&embed=true")
+#end
+
+#if ( $cansharetosocialmedia  && !$multi)
+<h5>[[Social Networks]]</h5>
+		##set ( $sharelink = "$siteroot$apphome/views/share/viewer.html?sourcepath=$asset.sourcepath&embed=true" )
+		<div id="share">
+			<!-- AddThis Button BEGIN -->
+			<div class="addthis_toolbox addthis_default_style"
+			addthis:url="$sharelink"
+			addthis:title="$asset"
+			addthis:description="#if ( $asset.longcaption ) $asset.longcaption #else Check this out! #end">
+				<a class="addthis_button_facebook"></a>
+				<a class="addthis_button_twitter"></a>
+				<a class="addthis_button_google"></a>
+                 <a class="addthis_button_evernote"></a>
+                 <a class="addthis_button_reddit"></a>
+                 <a class="addthis_button_pinterest_share"></a>
+                 <a class="addthis_button_skype"></a>
+                 <a class="addthis_button_tumblr"></a>
+                 <a class="addthis_button_whatsapp"></a>
+                 <a class="addthis_button_hootsuite"></a>
+                 <a class="addthis_button_delicious"></a>
+                 <a class="addthis_button_flipboard"></a>
+                 <a class="addthis_button_gmail"></a>
+			</div>
+
+<script type="text/javascript">
+	var addthis_config = {
+    	ui_click: true
+    };
+</script>
+
+
+<script type="text/javascript">
+    // Call this function once the rest of the document is loaded
+    jQuery(document).ready(function() 
+	{ 
+
+		var script = document.createElement('script');
+		script.src = "https://s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5b06fc4d3e3ca9e8";
+		script.onload = function () {
+		    //do stuff with the script
+			addthis.toolbox('.addthis_toolbox');    
+		};
+		
+		document.head.appendChild(script); 
+    	
+    });
+</script>
+<!-- AddThis Button END -->
+		</div>
+#end
+
+
+<div style="margin-bottom:20px">
+<h5>[[Embed]]</h5> 
+<textarea class="embedlinktextarea form-control" id="embedcode" onclick="this.select();" readonly="readonly" rows="4" cols="45">
+#if( $type == "audio" )
+<iframe src="$sharelink" width="350" height="150" style="border:none" webkitallowfullscreen="true" mozallowfullscreen="true" allowfullscreen="true"></iframe>
+#else 
+<iframe src="$sharelink" width="550" height="400" style="border:none" webkitallowfullscreen="true" mozallowfullscreen="true" allowfullscreen="true"></iframe>
+#end
+</textarea>
+<a href="#" 
+			class="copytoclipboard btn btn-xxs btn-light"
+			data-targetdiv="embedalertdialog"
+			data-copytext="embedcode" title="[[Copy to Clipboard]]"><i class="far fa-copy"></i> [[Copy]]</a>
+</div>
+
+<div id="embedalertdialog" style="display:none; position: absolute;" class="alert alert-success fader">[[Copied to Clipboard]]</div>
+
+<div style="margin-bottom:20px">
+	#set( $mediaviewerlink = "$siteroot$apphome/views/modules/asset/index.html#asset-${asset.getId()}")
+	<h5>[[Media Viewer]]</h5> 
+	<p class="hyphenate" style="margin:0;">
+	<a href="$mediaviewerlink">$mediaviewerlink</a>
+	</p>
+	<input style="position:absolute; top:-1000px;" id="mediaviewerlink" value="$mediaviewerlink" />
+	<a href="#" 
+			class="copytoclipboard btn btn-xxs btn-light"
+			data-targetdiv="embedalertdialog"
+			data-copytext="mediaviewerlink" title="[[Copy to Clipboard]]"><i class="far fa-copy"></i> [[Copy]]</a>
+</div>
+
+	
+	#set( $collectionid = $context.getRequestParameter("collectionid"))
+	#if( $collectionid )
+		<div style="margin-bottom:20px">	
+			#set( $collectionlink = "$siteroot/${mediadbappid}/services/module/librarycollection/downloads/originals/${collectionid}/$asset.getSourcePath()/$asset.getMediaName()")
+			<h5>[[Album Share]] 
+			<a href="#" 
+				class="copytoclipboard btn btn-xxs btn-light"
+				data-targetdiv="embedalertdialog"
+				data-copytext="collectionlink" title="[[Copy to Clipboard]]"><i class="far fa-copy"></i> [[Copy]]</a>
+				</h5> 
+			<p class="hyphenate">
+			<a href="$collectionlink" target="_blank" >$collectionlink</a>
+			<input style="position:absolute; top:-1000px;" id="collectionlink" value="$collectionlink" />
+			</p>
+		</div>
+	#end
+
+	<div style="margin-bottom:20px">
+	<h5>[[Preview Page]]</h5> 
+	<p class="hyphenate" style="margin:0">
+	<a href="$sharelink">$sharelink</a>
+	</p>
+	<input style="position:absolute; top:-1000px;" id="previewlink" value="$sharelink" />
+	<a href="#" 
+			class="copytoclipboard btn btn-xxs btn-light"
+			data-targetdiv="embedalertdialog"
+			data-copytext="previewlink" title="[[Copy to Clipboard]]"><i class="far fa-copy"></i> [[Copy]]</a>
+	</div>
+	
+	#if( $mediadbappid )
+		#set( $downloadlink = "$siteroot/${mediadbappid}/services/module/asset/downloads/originals/$asset.getSourcePath()/$asset.getMediaName()")
+	#else
+		#set( $downloadlink = "$siteroot$apphome/views/modules/asset/downloads/originals/$asset.getSourcePath()/$asset.getMediaName()")
+	#end
+	
+	<div style="margin-bottom:20px">
+	<h5>[[Original Media Download]]
+	
+	</h5>
+	<p class="hyphenate" style="margin:0">
+	<a href="$downloadlink">$downloadlink</a>
+	<input style="position:absolute; top:-1000px;" id="downloadlink" value="$downloadlink" >
+	</p>
+	<a href="#" 
+			class="copytoclipboard btn btn-xxs btn-light"
+			data-targetdiv="embedalertdialog"
+			data-copytext="downloadlink" title="[[Copy to Clipboard]]"><i class="far fa-copy"></i> [[Copy]]</a>
+	</div>
+	
+</div>
+</div>

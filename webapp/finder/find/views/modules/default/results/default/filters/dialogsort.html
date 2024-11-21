@@ -1,0 +1,107 @@
+#set( $moduleid = $module.getId())
+
+#if(!$categoryid)
+	#set($categoryid = $context.getRequestParameter("categoryid"))
+#end
+#if(!$parentmoduleid)
+	#set ( $parentmoduleid = $context.getRequestParameter("topmoduleid") )
+#end
+
+#set($targetdivsearch = $context.getRequestParameter("targetdivsearch"))
+#ifnull($targetdivsearch)
+	#set($targetdivsearch = "$!{moduleid}resultscontainer")
+#end
+#if(!$targetdivsearch && $parentmoduleid)
+	#set($targetdivsearch = "dialog$!{moduleid}resultscontainer")
+#end
+#if(!$entityid)
+	#set ( $entityid = $context.getRequestParameter("entityid") )
+#end
+#if(!$entityid)
+	#set ( $entityid = $context.getRequestParameter("entityid") )
+#end
+
+##SORT
+	<form  	name="filtersortform" 
+			id="filtersortformdialog" 
+			class="filterform ajaxform autosubmitform"
+			method="POST"   
+			data-targetdiv="resultsdiv" 
+			data-oemaxlevel="2" 
+			data-includesearchcontext="true"
+			action="$siteroot${searchhome}/columnsort.html" 
+		>
+
+		#if($parentmoduleid)
+	
+			#set($tabletype = $context.getRequestParameter("tabletype"))
+			#if($tabletype == "subentity")	
+				#set( $fieldexternalid = $context.getRequestParameter("fieldexternalid"))
+				#set( $fieldexternalvalue = $context.getRequestParameter("fieldexternalvalue"))
+				#set( $viewid = $context.getRequestParameter("viewid"))
+		
+				<input name="tabletype" type="hidden" value="subentity" />
+				<input name="viewid" type="hidden" value="$!{viewid}" />
+				<input name="fieldexternalid" type="hidden" value="$!fieldexternalid" />
+				<input name="fieldexternalvalue" type="hidden" value="$!fieldexternalvalue" />
+				
+				##<input name="field" type="hidden" value="$!fieldexternalid" />
+				##<input name="$!{fieldexternalid}.value" type="hidden" value="$!fieldexternalvalue" />
+				##<input name="operation" type="hidden" value="exact" />
+				
+			#end
+		#end
+		
+		##<input name="searchtype" type="hidden" value="$!moduleid" />
+		<input name="hitssessionid" type="hidden" value="$!hits.getSessionId()" />
+		#if($categoryid)
+			<input name="categoryid" type="hidden" value="$categoryid" />
+		#end
+		#set($rootcategory = $context.getRequestParameter("rootcategory"))
+		#if($rootcategory)
+			<input name="rootcategory" type="hidden" value="$rootcategory" />
+		#end
+		#if( $librarycol)
+			<input name="collectionid" type="hidden" value="$!{librarycol.getId()}" />
+		#end
+		
+
+		
+		<div class="form-group" style="margin:15px 0;">
+			<div class="filter-box d-flex align-items-center px-1">
+				<div class="fw-bold">[[Sort by]]:</div>
+				<div class="filter-box-options overflow-y flex-grow-1 mx-1" id="filterboxsorting">
+					#set ($alldetails = $searcher.getUserPropertyDetails() )
+					<select data-sortup="$hits.searchQuery.isSortUp()" 
+							class="form-control  select2 autosubmited" 
+							name="sortby" 
+							id="$!{moduleid}dialogsortby" 
+							data-allowclear="false">
+						#foreach( $detail in $alldetails)
+							
+							#if($hits.searchQuery.isSortUp())
+								#set($value = "${detail.id}Up")
+								#set($currentSortOrder = "up")
+							#else
+								#set($value = "${detail.id}Down")
+								#set($currentSortOrder = "down")
+							#end
+							<option data-detailid="${detail.id}" 
+									value="$value" 
+									#if($hits.isSortedBy($detail.id)) 
+										selected="selected" 
+										#set($currentSort = $detail.getText($context))
+									#end>$detail.getText($context)</option>
+						#end
+					</select>
+				</div>
+				<a href="#" 
+					class="filterschangesort px-1 py-2"
+					data-sortbyfield="${moduleid}dialogsortby" 
+					title='[[Sort by]] $currentSort #if($currentSortOrder == "up") [[Down]] #else [[Up]] #end'>
+					<i class=" fas #if($hits.searchQuery.isSortUp()) fa-sort-alpha-down #else fa-sort-alpha-up #end" style="padding-top:5px"></i>
+				</a> 
+			</div>
+		</div>
+	</form>	
+	

@@ -1,0 +1,392 @@
+##Header for ASSET module
+
+#if( !$hits )
+	#set( $hits = $collectionassets)
+	$context.putPageValue("hits",$hits)
+#end
+
+#if( !$hits )
+	#set( $hits = $orderassets)
+	$context.putPageValue("hits", $hits)
+#end
+
+#if(!$searchtype)
+	#set ( $searchtype = $context.getRequestParameter("searchtype") )
+#end
+#if(!$searchtype)
+	#set ( $searchtype = "asset" )
+#end
+
+#set($categoryid = $context.getRequestParameter("categoryid"))
+#if (!$categoryid)
+	#set( $categoryid = $context.getRequestParameter("category"))
+#end
+#set( $nodeID = $context.getRequestParameter("nodeID"))
+#if (!$categoryid && $nodeID)
+	#set( $categoryid = $nodeID )
+#end
+#if ($categoryid)
+	$context.putPageValue("catid",$categoryid)  ##used?
+	$context.putPageValue("categoryid",$categoryid)
+#end
+#if( $categoryid && !$category)
+	#set( $category = $mediaarchive.getData("category",$categoryid) )
+#end
+
+#if(!$rootcategory)
+	#set($rootcategory = $context.getRequestParameter("rootcategory"))
+	#if(!$rootcategory)
+		#set( $rootcategory = $categoryid)
+	#end
+	$context.putPageValue("rootcategory",$rootcategory)
+#end
+#if(!$categoryid && $rootcategory)
+	#set($categoryid = $rootcategory)
+#end
+#if(!$moduleid)
+	#set($moduleid = $module.getId())
+	$context.putPageValue("moduleid",$moduleid)
+#end
+#if(!$parentmoduleid)
+	#set($parentmoduleid = $context.getRequestParameter("topmoduleid"))
+	$context.putPageValue("topmoduleid",$parentmoduleid)
+#end
+#if(!$entityid)
+	#set($entityid = $context.getRequestParameter("entityid"))
+#end
+$context.putPageValue("entityid", $entityid)
+#if(!$dialogresults)
+	#set($dialogresults = $context.getRequestParameter("dialogresults"))
+	$context.putPageValue("dialogresults",$dialogresults)
+#end
+#if(!$hidedialogtree)
+	#set($hidedialogtree = $context.getRequestParameter("hidedialogtree"))
+#end
+#if(!$hideupload)
+	#set($hideupload = $context.getRequestParameter("hideupload"))
+#end
+
+#if(!$maintargetdiv)
+	#set($maintargetdiv = $context.getRequestParameter("maintargetdiv"))
+	$context.putPageValue("maintargetdiv",$maintargetdiv)
+#end
+
+#set( $orderid = $hits.getInput("orderid") )
+#if( $orderid )
+	#set( $order = $mediaarchive.getData("order", $orderid) )
+	$context.putPageValue("order",$order)
+#end
+
+#if( !$librarycol && $category ) 
+	#set( $librarycol = $mediaarchive.query("librarycollection").orgroup("rootcategory",$category.getParentCategories()).searchOne() )
+#end
+
+#if( $librarycol )	
+	$context.putPageValue("librarycol",$librarycol)
+#end
+
+#set($reloadsearchtype = $searchtype)
+#set($librarycollectionassets = $context.findValue("librarycollectionassets"))
+#if($searchtype=="librarycollection")
+	#if($librarycollectionassets)
+		#set($reloadsearchtype = "asset")
+	#end
+#end
+
+#if(!$maintargetdiv)
+	#set ($maintargetdiv = $context.getRequestParameter("maintargetdiv") )
+	$context.putPageValue("maintargetdiv",$maintargetdiv)
+#end
+	
+<div id="resultsheader" class="resultsheader #if($hits && $hits.getSelectionSize() > 0)hasselections#end #if(!$dialogresults) autostickywidth #end" >
+	<div id="sub-nav" class="emsubnav sub-nav-${module.id}">
+		<ul class="resultsnav">
+			#set ($enabled = false)
+			#if ($hits.getSelectionSize() && $hits.getSelectionSize()>0)
+				#set ($enabled = true)
+			#end
+			
+			#if($dialogresults)
+				#ifnull($dialogtreestatus)
+					#set($dialogtreestatus = $userprofile.get("dialogtreestatus"))
+				#end
+				#if(!$hidedialogtree && $dialogtreestatus == "close")
+					<li>
+					<a href="" 
+							class="toggledialogtree"
+							style="padding:0 10px"
+							data-targetdiv="dialogassetresultscontainer"
+							data-oemaxlevel="1"
+							data-url="$applink/views/modules/asset/results/lightboxes/index.html"
+							data-categoryid="$!categoryid"
+							data-topmoduleid="$!topmoduleid"
+							data-entityid="$!entityid"
+							data-rootcategory="$!rootcategory"
+							data-treestatus="open"
+							title="[[Expand Tree]]">
+							<i class="fas fa-angle-double-right "></i>
+							</a>
+					</li>
+					#ifnull($parentmodule)
+						#set($parentmodule = $mediaarchive.getCachedData("module", $parentmoduleid))
+					#end
+				#end
+			#end
+			
+			#if ($resultview != "map")
+				
+				#if($parentmoduleid)
+					#if(!$hideupload && $canviewupload && $parentmoduleid != "favorites" && $permissions.can($parentmoduleid, "upload_files"))
+					<li>
+						<a href="#"
+						class='resultsnavlink px-3 entitytabactions tabactionimport #if($entitytabopen=="import")enabledaction #end '
+						data-tabaction="import"
+						data-viewid="import"
+						data-tabtype="tabimport" 
+						data-entityid="$!entity.getId()" 
+						data-topmoduleid="$!moduleid"
+						data-moduleid="$!moduleid"
+						data-tabsection="upload"
+						data-hitssessionid="$!hits.getSessionId()"
+							title="[[Upload]]"><i class="bi bi-upload"></i></a>
+					</li>
+					#end
+					#if ($candownload && $hits && $hits.getSelectionSize() > 0)
+					<li>
+						<a  class='resultsnavlink emdialog px-3'
+						data-dialogid="downloadeasset"
+						data-hidefooter="true"
+						href="$siteroot$apphome/views/modules/asset/activity/downloadassets.html?hitssessionid=$!hits.getSessionId()&collectionid=$!{librarycol.getId()}"
+						title="[[Download]] $!hits.getSelectionSize() [[assets]]"  
+						 ><i class="bi bi-download"></i></a>
+						 </li>
+					#end
+				#else
+					#if($moduleid == "asset" && $canviewupload)
+					<li>
+						<a  class="ajax resultsnavlink px-3" 
+							data-updateurl="true" 
+							data-targetdivinner="applicationmaincontent" 
+							data-oemaxlayout="3"
+							href="$siteroot$applink/views/modules/asset/add/start.html?categoryid=$!categoryid"
+							title="[[Upload]]"><i class="bi bi-upload"></i></a>
+					</li>
+					#end
+				#end
+
+				<li class="dropdown">
+					<a class="resultsnavlink dropdown-toggle #if($hits && $hits.getSelectionSize() > 0)btn-accent#end" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="navbarActionsDropdown">
+						#if($hits && $hits.getSelectionSize() > 0)
+							[[File]]#if($hits.getSelectionSize() > 1)s#end ($hits.getSelectionSize())
+						#else
+							[[File]]
+						#end
+					</a>
+					<ul class="dropdown-menu">
+						#if($hits && $hits.getSelectionSize() > 0)
+						<li><a class="dropdown-item selectpage" data-action="none">[[Deselect All]]</a> </li>
+						#end
+						<li><a class="dropdown-item selectpage" data-action="all">[[Select All Results]]</a></li>
+						<li><a class="dropdown-item selectpage" data-action="page">[[Select This Page]]</a></li>
+
+						
+						#if( $user && ($candownload || $canconvert || $candownloadfpo ) )
+							#if($hits && $hits.getSelectionSize() > 0)
+							<li><a class="dropdown-item emdialog"  
+								data-dialogid="downloadeasset" 
+								data-hidefooter="true" 
+								href="$siteroot$apphome/views/modules/asset/activity/downloadassets.html?hitssessionid=$!hits.getSessionId()&collectionid=$!{librarycol.getId()}"   
+								 >[[Download Selected]] ($!hits.getSelectionSize())</a></li>
+							<li>
+							#end
+							#if($dialogresults)
+								<a href="#"
+								class='dropdown-item  entitytabactions tabactionexport #if($entitytabopen=="export")enabledaction #end '
+								data-tabaction="export"
+								data-tabsection="downloadzip"
+								data-viewid="export"
+								data-tabtype="tabexport" 
+								data-entityid="$!entity.getId()" 
+								data-topmoduleid="$!moduleid"
+								data-moduleid="$!moduleid"
+									title="[[Download All]]">[[Download All in Zip]]</a>
+								 </li>
+							 #end
+						#end
+						
+					</ul>
+				</li>
+
+				$pages.include("${searchhome}/selected/index.html",$context)
+	
+	  			#set( $edit = $context.getRequestParameter("editheader") )
+			
+				#if ( $cancheckout && $orderid)
+					<li>
+						<a class="resultsnavlink updatebasket emdialog -cart" 
+							data-action="checkout" 
+							data-onsuccess="updatebasket"
+							data-onclose="checkoutrefresh"
+							data-hidefooter="true"
+							targetdiv="basket-paint"  
+							href="$siteroot$apphome/views/modules/asset/activity/checkout/accept.html?orderid=$!{orderid}" 
+							title="[[Checkout your Cart]]">[[Checkout Cart]] <i class="bi bi-caret-right-fill ns"></i></a>
+					</li>		
+					#if($hits && $hits.getSelectionSize() > 0)
+					<li>
+					<a class="resultsnavlink updatebasket" 
+						data-action="remove" 
+						data-targetdiv="basket-paint"  
+						title="[[Remove From Cart]]"
+						href="$siteroot$componenthome/basket/removeselection.html?hitssessionid=$hits.getSessionId()" >[[Remove From Cart]]</a>
+					</li>	
+					#end	
+				#end
+			#end
+			
+			##if($desktop && $user && ($candownload || $canconvert || $candownloadfpo ) )
+			##	$pages.include("$componenthome/desktop/menu.html?collectionid=$librarycol.getId()",$context)
+			##end
+
+			##<li><div id="resultsmessages"></div></li>
+		</ul>
+
+		<ul class="resultsnavright">
+			#if(!$resultview)
+				#set($resultview = $userprofile.get("$!{searchtype}resultview"))
+				#if (!$resultview)
+					#set($resultview = $content.get("resultview"))
+				#end
+				#if (!$resultview)
+					#set($resultview = "stackedgallery")
+				#end
+			#end
+				
+			$context.putPageValue("resultview", $resultview)
+				
+			#if(!$currenthitsperpage)
+				#set( $currenthitsperpage = $hits.getHitsPerPage())
+			#end
+
+			#if(!$currenthitsperpage)
+				#set( $currenthitsperpage = $userprofile.get("asset${resultview}hitsperpage"))
+			#end
+
+			#if(!$currenthitsperpage)
+				#set( $currenthitsperpage = $userprofile.get("assethitsperpage"))
+			#end
+
+			#if(!$edit || $edit == "false"  )
+
+				#if($resultview != "stackedgallery")
+			
+					##-PAGINATION
+					
+					#set($total = $hits.getTotalPages())
+					
+					#if($total &&  $total > 1)
+						##<li class="resultpages">		
+							$pages.include("${searchhome}/positions.html", $context)
+						##</li>
+					#end
+
+					##-HITSPERPAGE
+
+					#if($dialogresults)
+						#set($targetdiv= "dialog$!{moduleid}resultscontainer")
+					#else
+						#set($targetdiv= "$!{moduleid}resultscontainer")
+					#end
+				#else
+					## TODO?: infinie scroll for stacked media
+				#end
+				
+				
+				##-RESULTS TYPE
+				
+				<li class="resultsnavitem" style="min-width: 75px;">
+					#set( $types = $mediaarchive.getList("resulttype"))
+					<select class="select2 form-control" 
+						name="resultview" 
+						id="selectresultview"
+						data-oemaxlevel="1"
+						data-minimum-results-for-search="Infinity"
+						data-allowclear="false"
+						data-hitsperpage="$!currenthitsperpage">
+						
+						#foreach($type in $types)
+							<option value="$!type.getId()" #if( $resultview == "$type.getId()") selected #end>#text($type)</option>
+						#end
+					</select>
+					
+				</li>
+				
+			#end
+				
+			#if(!$resultview || $resultview == 'table')
+				#if( $canedittablecolumns )
+					#if( $edit )
+						
+						<li class="resultsnavitem s2h" style="min-width:180px;">
+							#set ($alldetails = $searcher.getUserPropertyDetails() )
+							<select class="form-control form-control-sm select2 tableresultsaddcolumn" 
+									name="addcolumn"
+									data-componenthome="$!siteroot${searchhome}/addremovecolumns.html?searchtype=asset&hitssessionid=$hits.getSessionId()&editheader=true"
+									data-targetdiv="$!module.getId()resultsarea" 
+									data-oemaxlevel="1"
+									data-allowclear="false">
+								<option>[[Add Column]]</option>
+								#foreach( $detail in $alldetails) <option value="$!detail.id">$detail.getText($context)</option>
+								#end
+							</select>
+							
+							<a href="#" class="reset-columns">
+								<i class="bi bi-arrow-counterclockwise mr-1"></i>
+								[[Reset Columns]]
+							</a>
+						</li>
+					#end	
+				#end								
+			#end 
+			<li>
+				<a href="$searchhome/dialogsort.html" 
+					class="emdialog emsort #if($selectedpreference) closed #end"
+					data-dialogid="sortdialog"
+					data-hidebackdrop="true"
+					data-hidefooter="true"
+					data-modalsize="sm"
+					data-moduleid="$!{moduleid}"
+					data-hitssessionid="$hits.getSessionId()"
+					data-categoryid="$!categoryid"
+					data-rootcategory="$!rootcategory"
+					data-topmoduleid="$!topmoduleid"
+					data-entityid="$!entityid"
+					data-targetdivsearch="$!{moduleid}resultscontainer"
+					style="padding:0 8px 0 10px;" 
+					title="[[Sort Results]]"><i class="bi bi-sort-down"></i> [[Sort]]</a>
+			</li>
+			#if($resultview != "stackedgallery")
+				<li class="resultsnavitem rpp" title="[[Results per page]]">
+					#set( $currenthitsperpage = $hits.getHitsPerPage())
+					#set($hitcountoptions = $mediaarchive.getList("hitcount"))
+					<select class="form-control hitsperpagechange" id="hitsperpagechange$!{moduleid}">
+						#foreach($ho in $hitcountoptions)
+							<option value="$ho.id" #if($currenthitsperpage==$ho.id) selected="selected"#end>#text($ho)</option>
+						#end	
+					</select>
+				</li>		
+			#end
+			<li class="resultsnavitem">
+				#set($preference = "minimize$!{moduleid}summary")
+				#set($selectedpreference = $userprofile.getBoolean($preference))
+				#ifnull($selectedpreference)
+					#set($selectedpreference = true)
+				#end
+				<button class='btn summary-toggler summary-opener #if($selectedpreference) closed #end' data-target="$!preference">
+					<i class="fas fa-angle-double-left"></i> [[Summary]]
+				</button>
+			</li>
+		</ul>
+	</div>
+	$pages.include("$searchhome/filters/filters-inline.html", $context)
+</div>

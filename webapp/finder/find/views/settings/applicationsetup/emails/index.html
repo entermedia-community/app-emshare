@@ -1,0 +1,32 @@
+#set( $emails = $mediaarchive.getList("templatefiles"))
+#set($notifications = $mediaarchive.getList("notificationtype"))
+<div class="eml-content-title">
+<div class="float-left">
+<h2>[[Email Templates]]</h2>
+</div>
+</div>
+	<div class="clearfix"></div>
+<table class="table table-striped settings-table">
+	#foreach( $email in $emails)
+		<tr>
+			<td>
+				$email
+			</td>
+			<td>
+				<a  href="/openedit/components/html/edit/text/index.html?width=1000editPath=$apphome$email.templatefilepath&path=$apphome$email.templatefilepath"> $apphome$email.templatefilepath</a><br/>
+				<br>
+			</td>
+		</tr>
+	#end
+#foreach( $email in $notifications)
+		<tr>
+			<td>
+				$email
+			</td>
+			<td>
+				<a  href="/openedit/components/html/edit/text/index.html?width=1000editPath=$apphome/theme/emails/notifications/${email.id}.html&path=$apphome$apphome/theme/emails/notifications/${email.id}.html"> $apphome/theme/emails/notifications/${email.id}.html</a><br/>
+				<br>
+			</td>
+		</tr>
+	#end
+</table>

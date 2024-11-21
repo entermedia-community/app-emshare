@@ -1,0 +1,49 @@
+
+#set( $filestodownload = $pendingpull.files )
+#set( $filestoupload = $pendingpush.files )
+
+#set($categorypath = $!pendingpull.categorypath)
+#ifnull($categorypath)
+	#set($categorypath = $!pendingpush.categorypath)
+#end
+
+#set($filedownloadpath = $!pendingpull.filedownloadpath)
+#ifnull($filedownloadpath)
+	#set($filedownloadpath = $!pendingpush.filedownloadpath)
+#end
+
+<div id="currentfolder"
+	data-categorypath="${categorypath}"
+	class="p-2 sync-stage new">
+	
+	<div class="sync-folder">
+		<span>[[Folder]]:</span>
+		<input id="pullSaveFolder" type="text" class="form-control" placeholder="[[Save Folder]]" readonly value="$!filedownloadpath">
+		#if($filedownloadpath)
+			<a href="#" 
+				class="btn btn-primary rounded ml-2 open-folder" 
+				data-path="$!filedownloadpath"
+				title="[[View Local Folder]]">
+				<i class="bi bi-display mr-1"></i>
+				[[View Local Folder]]
+			</a>
+		#end
+	</div>
+
+	#if($filestodownload.size() > 0)
+		<div class="d-flex align-items-center justify-content-between px-1 py-2">
+			<a href="#pullfiles" data-toggle="collapse" role="button">
+				<i class="bi bi-caret-right-fill ns"></i> 
+				$filestodownload.size() [[new]] file#if($filestodownload.size()>1)s#end [[found on the server]]
+			</a>
+		</div>
+
+		<ul id="pullfiles" class="collapse list-unstyled overflow-y pl-4">
+		#foreach( $file in $filestodownload)
+			<li class="d-flex" data-assetid="$file.id" data-categorypath="$!categorypath" data-path="$file.path" data-url="$file.url">
+				<i class="bi bi-file-earmark-richtext ns"></i> <span class="pl-2">#if($file.path) $file.path #else $file.url #end</span>
+			</li>
+		#end
+		</ul>
+	#end
+</div>

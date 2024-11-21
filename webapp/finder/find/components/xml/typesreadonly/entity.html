@@ -1,0 +1,28 @@
+#if( !$values && $data )
+	#set($values = $data.getValues($detail.id) )
+#end
+
+#set($entity_module = $detail.getListId())
+#set($searchhome = "$applink/views/modules/$!{entity_module}/results/default")
+<ul class="entity-value-list">
+	#foreach( $type in $values )
+		#set( $row = false )
+		#set( $row = $mediaarchive.getCachedData($entity_module, $type ))
+	    #if( $row )
+		   #set($namefield = $mediaarchive.getSearcher($entity_module).getDetail("name"))
+		   #set($name = $searcherManager.getValue($row, $namefield, $context.getLocale()))
+		    #set($entityid = $row.id)
+		    #set($link = "${searchhome}/tabs/preview/entity.html?id=$entityid&hitssessionid=$!hits.sessionId")
+		    <li>
+		    <a href="$link" 
+		    	class="emdialog entity-dialog" 
+		    	data-noesc="true" 
+		    	data-entityid="$!row.getId()"
+		    	data-targetrendertype="$!{rendertype}"
+		    	data-targetcomponenthome="$!{siteroot}$applink/views/modules/$!{entity_module}/components"
+		    	data-searchtype="$!entity_module"
+		    	title="$!name">$name</a>
+		    </li>
+	    #end 
+	#end	
+</ul>

@@ -1,0 +1,38 @@
+#set($moduleid = $module.id)
+#set($expandedmodule = $moduleid)
+
+#set($rendertype = "entity")
+#if ($module.modulerendertype)
+	#set($rendertype = $module.modulerendertype)
+#end
+
+$context.putPageValue("rendertype", $rendertype)
+
+#if(!$hits.isEmpty())
+	#set( $count = $hits.size())
+#end
+$context.putPageValue("count", $count)
+
+#set( $parentmodule = $module)
+$context.putPageValue("topmodule", $parentmodule)
+
+#set($topentityid = $context.getRequestParameter("topentityid"))
+
+<div id="$!{moduleid}topcontainer"
+	class="topmodulecontainer $!{moduleid}topcontainer"
+	data-hitssessionid="$!hits.getSessionId()"
+	data-url="$apphome/views/modules/$!{module.id}/index.html"
+	#if($topentityid) data-topentityid="$topentityid" #end
+	data-oemaxlevel="2">
+
+	#if($parentmodule.getId() == "searchcategory")
+	$pages.include("${searchhome}/tabs/categorybreadcrumb.html", $context) 
+	#end
+	$pages.include("$searchhome/filters/filters-selected.html", $context)
+	
+	$pages.includeContent()
+
+</div>
+
+
+

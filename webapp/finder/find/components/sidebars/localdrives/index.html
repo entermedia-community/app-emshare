@@ -1,0 +1,49 @@
+<div id="sidebarfolderimport" class="col-sidebar-header sidebar-header-desktops"> 
+	<div class="d-flex flex-column align-items-center justify-content-between">
+		<h2 class="w-100">[[Cloud Sync]]</h2>
+		
+#set( $selectedModuleId = $userprofile.get("desktop_lastselected_module") )
+#ifnotnull( $selectedModuleId)
+
+	#set( $module =	$mediaarchive.getCachedData("module",$selectedModuleId) )
+	$context.putPageValue("module",$module)
+	#set( $componenthome = "$apphome/views/${module.getId()}/components")
+	$context.putPageValue("componenthome",$componenthome)
+		
+#end
+		
+		
+		<div class="px-2 w-100 d-flex flex-column mb-2">
+			<label for="selectedModule" class="d-block w-100 mt-2 mb-1 fw-bold text-muted">[[Importing Into]]:</label>
+						
+			<select id="selectedModule" name="selectedModule" data-targetdiv="sidebarfolderimport" class="form-control rounded changeimportmodule"> ##this auto saves and reloads div
+				#foreach ( $amodule in $userprofile.getEntities() )
+					#set($amoduleid = $amodule.getId())
+					#if($amodule.getBoolean("enableuploading") && $permissions.can($amoduleid, "create") && $amoduleid!="faceprofilegroup" && $amoduleid!="asset" && $amoduleid!="modulesearch")
+						<option value="$amodule.id" #if($module.id == $amodule.id) selected #end>#text($amodule)</option>
+					#end
+				#end
+			</select>
+			<input type="hidden" id="desktopId" value="$desktop.id" />
+		</div>
+		<div class="w-100 d-flex  text-center px-2 mb-2">
+			<a class="emdialog btn focused-btn rounded"
+				data-oemaxlevel="1"
+				data-moduleid="$module.id"
+				data-modulename="#text($amodule)"
+				href="$apphome/components/sidebars/localdrives/newimportdialog.html"
+				title="[[Add New Folders]]" 
+				>
+					<i class="fa fa-plus"></i> <span>[[Add]]</span>
+			</a>
+		</div> 
+	</div>
+	<a href="#" title="[[Hide Desktops Sidebar]]"
+		class="sidebar-toggler sidebar-toggler-hide"
+		data-action="hide" 
+		data-targetdiv="col-sidebars"
+	>
+		<i class="bi bi-chevron-double-left closebar"></i>
+	</a>			
+</div> 
+$pages.include("$apphome/components/sidebars/localdrives/listsyncfolders.html", $context)

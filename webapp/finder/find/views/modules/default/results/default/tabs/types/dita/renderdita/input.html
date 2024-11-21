@@ -1,0 +1,48 @@
+
+#set( $pickertaget = $context.getRequestParameter("pickertarget") )
+#set( $submodule = $context.getRequestParameter("submodule") )  ##child
+
+#set( $entityid = $context.getRequestParameter("entityid") ) 
+#set( $parentmoduleid = $context.getRequestParameter("topmodule"))
+#set($entity = $mediaarchive.getCachedData( $parentmoduleid,$entityid) )
+<div class="bg-white shadow-sm dita-ai-tabcontent">
+
+  <div class="w-100 my-2">
+    <form name="save" class="ajaxform d-flex flex-column align-items-center" 
+    data-targetdiv="importdone" action="$searchhome/tabs/renderdita/finish.html">
+      <input type="hidden" name="importtype" value="dita" />
+      <input type="hidden" name="moduleid" value="${module.id}" />
+      <input type="hidden" name="entityid" value="${entity.id}" />
+
+	<input type="hidden" name="entityid" value="$entity.getId()"/>
+	<input type="hidden" name="pickertarget" value='$context.getRequestParameter("pickertarget")'/>
+
+
+	<input type="hidden" name="fieldexternalid" value='$entity.id'/>
+	<input type="hidden" name="fieldexternalvalue" value='$entity.entitysourcetype'/>
+	<input type="hidden" name="targettype" value='$context.getRequestParameter("targettype")'/>
+	<input type="hidden" name="topmodule" value='$parentmoduleid'/>
+	<input type="hidden" name="submodule" value='$submodule'/>
+
+#set($children = $mediaarchive.query($submodule).exact($parentmoduleid,$entity.id).search() )
+		
+  <div class="d-flex flex-column align-items-center mb-3">
+        <label for="aiInstruction" class="mb-1">$children.size() Questions to be exported as DITA</label>
+         <div style="width: 400px;">
+	        </div>
+        
+       </div> 
+       <div class="d-flex flex-column align-items-center mb-3">
+        <label for="aiInstruction" class="mb-1">Export Name:</label>
+         <div style="width: 400px;">
+          <input name="exportname" id="aiInstruction" class="form-control rounded" width="200" value="${entity.getName()}.ditamap"/>
+        </div>
+        
+       </div> 
+
+      <button class="input-group-text btn-accent px-3 ml-2" type="submit" for="inputGroupDITA">Create</button>
+
+    </form>
+    <div id="importdone"></div>
+  </div>
+</div>

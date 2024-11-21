@@ -1,0 +1,145 @@
+
+#set( $downloadorders = $ordermanager.findDownloadOrdersForUser( $context,  $user))
+
+<div class="sidebarorders overflow-y">
+	#foreach($downloadorder in $downloadorders)
+
+		#set($orderstatus = $downloadorder.getOrder().get("orderstatus"))
+		#set($downloadorderitem = $downloadorder.getCurrentItem())
+		#set($assetid = $downloadorderitem.get("assetid"))
+		#set($asset = $mediaarchive.getAsset($assetid))
+		#set($publishstatus = $downloadorderitem.get("publishstatus"))
+		#set($status = $downloadorderitem.get("status"))
+		
+		##set($errordetails = $downloadorderitem.get("errordetails"))
+
+
+		<div class='sidebarorder d-block py-2 px-2 #if($orderstatus == "complete") complete #else $publishstatus $status #end' id="d-$downloadorderitem">
+
+			#if($publishstatus == "publishingexternal" )
+			<div id="dl-$downloadorderitem" class="downloadProgress" style="display:none;width:0%">
+				<div class="shine" style="display:none;"></div>
+			</div>
+			#end
+
+			<div class="d-flex align-items-center">
+				<div class="d-flex align-items-center justify-content-between flex-grow-1">
+					<div class="d-flex flex-column flex-grow-1">
+						<div class="order-name">
+							#if( $downloadorder.getItemCount() > 1 )
+								$downloadorder.getItemCount() [[files]]
+							#else
+								$downloadorderitem.get("itemexportname")
+							#end
+						</div>
+						<div class="d-flex align-items-center">			
+							<span class="status">
+								#if($orderstatus == "complete")
+									[[Downloaded]]
+								#elseif($orderstatus == "canceled")
+									[[Canceled]]
+								#else
+									#if($publishstatus == "readytopublish" )
+										[[Download Started]]
+									#elseif($publishstatus == "publishingexternal" )
+										[[Downloading]]
+									#elseif($publishstatus == "complete" )
+										[[Downloaded]]
+									#elseif($publishstatus == "canceled" ) 
+										[[Canceled]]
+									#elseif($publishstatus == "new" ) 
+										[[Processing]]
+									#end 
+								#end 
+							</span>
+							<i class="bi bi-dot mx-1"></i>
+							<span class="file-size text-right">
+								#if($publishstatus == "publishingexternal" )
+								<span id="dlp-$downloadorderitem"></span>
+								#end
+								$sizer.inEnglish( $downloadorder.totalBytes() )
+							</span>
+						</div>
+						<div class="d-flex align-items-center">	
+							#if($publishstatus == "complete" || $orderstatus)
+								#set( $orderage = $!context.getAge($downloadorder.getPublishedDate()))
+								#ifnotnull($orderage )
+									<span class="date">
+										$orderage [[ago]]
+									</span>
+								#end
+							#elseif($publishstatus == "publishingexternal" )
+								#set( $orderage = $!context.getAge($downloadorder.getEstimatedEndDate()))
+								#ifnotnull($orderage )
+									<span class="date">
+											$orderage [[remaining]]
+									</span>
+								#end
+							#end
+						</div>
+					</div>
+				</div>
+				<div class="file-thumb #if($downloadorder.getItemCount() > 1) multiple #end">
+					
+					#if($status == "error")
+						<i class="bi bi-x-circle-fill error"></i>
+					#else
+						#if($publishstatus == "complete" || $orderstatus == "complete")
+							<i class="bi bi-check-circle-fill success"></i>
+						#elseif($publishstatus == "readytopublish" )
+							<i class="bi bi bi-cloud-arrow-down-fill ready"></i>
+						#elseif($publishstatus == "publishingexternal" ) 
+							#if(!$orderstatus)
+								<div class="spinner-border text-white"></div>
+							#else
+								<i class="bi bi-slash-circle-fill canceled"></i>
+							#end
+						#elseif($publishstatus == "canceled" ) 
+							<i class="bi bi-slash-circle-fill canceled"></i>
+						#elseif($publishstatus == "new" ) 
+							<i class="bi bi-hourglass-split processing"></i>
+						#end 
+					#end 
+					$context.putPageValue("asset", $asset)
+					$context.putPageValue("thumbsize","carousel")
+					$pages.include("${searchhome}/thumbnails/small.html",$context) 
+				</div>
+				<div class="actions"> 
+					#if(!$orderstatus)
+						#if($status != "error" && ($publishstatus == "complete" || $publishstatus == "readytopublish" || $publishstatus == "canceled"))
+							#if($desktop)
+							<a href="#" class="opendownloadedfile" 
+								data-orderitemid="$downloadorderitem" 
+								data-orderid='$downloadorderitem.get("orderid")'
+								data-itemexportname='$downloadorderitem.get("itemexportname")'
+								data-itemdownloadurl='$downloadorderitem.get("itemdownloadurl")'
+								title="[[Open File]]">
+								<i class="bi bi-box-arrow-up-right"></i>
+							</a>
+							#end
+						#end
+						#if($publishstatus == "complete" || $orderstatus == "complete")
+							<a title="[[Download Again]]" download='$downloadorderitem.get("itemexportname")' href='$downloadorderitem.get("itemdownloadurl")'>
+								<i class="bi bi-arrow-repeat"></i>
+							</a>
+						#end
+						#if($publishstatus == "publishingexternal")
+							<a href="#" class="abortdownloadorder" data-orderitemid="$downloadorderitem" data-orderid='$downloadorderitem.get("orderid")' title="[[Cancel Download]]">
+								<i class="bi bi-x-circle"></i>
+							</a>
+						#end
+						#if($publishstatus == "new" || $publishstatus == "readytopublish")
+							<a href="#" class="abortdownloadorder" data-orderitemid="$downloadorderitem" data-orderid='$downloadorderitem.get("orderid")' title="[[Cancel Order Processing]]">
+								<i class="bi bi-x-circle"></i>
+							</a>
+						#end 
+					#end 
+				</div>
+			</div>
+		</div>
+	#end
+
+	#if( $downloadorders.size() == 0 )
+		<p class="text-center text-muted mt-4">[[No recent downloads]]</p>
+	#end
+</div>

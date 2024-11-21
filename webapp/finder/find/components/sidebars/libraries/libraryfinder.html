@@ -1,0 +1,82 @@
+##Copied from:
+	##$pages.include("$apphome/views/collections/libraryresults.html",$context)
+
+	#set($selectedlibraryid = $context.getRequestParameter("libraryid"))
+#if( $library && !$selectedlibraryid )
+	#set($selectedlibraryid = $library.id )
+#end	
+	
+	#set( $libraries = $mediaarchive.query("library").all().enduser(true).sort("name").search($context) )
+	
+	#if($canviewfeaturedcollections && !$selectedlibraryid)
+		#set($selectedlibraryid = "featured")
+	#end
+	
+	
+	 #if($selectedlibraryid != "featured")
+	 	#set($selectedlibrary = $mediaarchive.getCachedData("library",$selectedlibraryid) )
+	 #end 
+	
+	<div id="collectionshomecontainer" class="libraryfinder" >
+		
+			<div class="libraryfinder-libraries"  style="position:relative">
+			<div class="libraryfinder-header text-right">
+			&nbsp;
+			</div>
+					#if($libraries.size())
+						<ul>
+						#if($canviewfeaturedcollections)
+							<li #if($selectedlibraryid=="featured") class="current"#end>
+							<a class="ajax" 
+								data-targetdiv="collectionshomecontainer" 
+								data-oemaxlevel="1" 
+								href="$apphome/components/sidebars/libraries/libraryfinder.html?libraryid=featured&resultpage=libraryresults.html">
+								<i class="fa fa-star"></i>&nbsp;[[Featured]]</a>
+							</li>			
+						#end
+						
+						#if ( $canviewopencollections )
+							<li #if($selectedlibraryid=="recent") class="current"#end>
+							<a class="ajax" 
+								data-targetdiv="collectionshomecontainer" 
+								data-oemaxlevel="1" 
+								href="$apphome/components/sidebars/libraries/libraryfinder.html?libraryid=recent&resultpage=libraryresults.html">
+								<i class="fa fa-business-time"></i>&nbsp;[[Recent]]</a>
+							</li>			
+						#end
+						
+						#foreach($library in $libraries)
+							<li class="#if($selectedlibraryid==$library.getId())current #end">
+							<a class="ajax" 
+								data-targetdiv="collectionshomecontainer" 
+								data-oemaxlevel="1" 
+								href="$apphome/components/sidebars/libraries/libraryfinder.html?libraryid=$library.getId()&resultpage=libraryresults.html">
+								#if($library.libraryicon)
+									#set($libraryicon = $library.libraryicon)
+								#else
+									#set($libraryicon = "fas fa-book")
+								#end
+								<i class="$libraryicon"></i>&nbsp;$library</a>
+							</li>			
+						#end
+						</ul>
+					#end
+					<a href="" title="[[Add Library]]" class="btn btn-xs btn-primary" 
+					style="position:absolute; bottom: 5px; left:3px; padding:3px 5px; margin-left:5px;"><i class="fas fa-plus-square "></i> [[Add Library]]</a> 	
+			</div>
+			<div class="libraryfinder-collections">
+				#set($args = "")
+			 	#if($selectedlibraryid == "recent")
+					$pages.include("$apphome/components/sidebars/libraries/recentcollections.html${args}",$context)
+			 	#elseif($selectedlibraryid == "featured")
+			 		#set($args = "?field=featuredcollection&operation=exact&featuredcollection.value=true")
+					$pages.include("$apphome/components/sidebars/libraries/collectionresults.html${args}",$context)
+			 	#elseif($selectedlibrary)
+					#set($args = "?field=library&operation=exact&library.value=$selectedlibrary.getId()")
+					$pages.include("$apphome/components/sidebars/libraries/collectionresults.html${args}",$context)
+				#else
+					
+				#end
+			</div>
+			
+		</div>

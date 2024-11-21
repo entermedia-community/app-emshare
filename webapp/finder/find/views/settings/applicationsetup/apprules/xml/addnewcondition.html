@@ -1,0 +1,30 @@
+<div id="edit$permission.name"  style=" padding:10px;" >
+
+#set( $inparent = $context.getRequestParameter("inparent"))
+
+#set( $list = $searcherManager.getList("system","conditiontypes"))
+
+#set( $traverse = $context.getRequestParameter("traverse"))
+
+<p><strong>[[Add Condition]]:</strong><p>		
+	<select name="selecttype$permission.name" id="selecttype$permission.name"  class="form-control form-control-sm" >
+			<option value="">[[select a type]]</option>
+		#foreach( $condition in $list)
+			<option value="$condition.id">$condition.name</option>
+		#end
+	</select>
+	<input class="btn btn-sm btn-primary"  onclick="addCondition('$permission.name','$!traverse');"  value="[[Ok]]" />
+
+<script>
+
+	addCondition = function(inName, inTraverse )
+	{
+		var theselect = document.getElementById("selecttype" + inName );
+		var conditiontype = theselect.options[theselect.selectedIndex].value;
+		$('#edit'+inName).load('$home$content.permissionrootpath/addnewfinish.html?editPath=$editPath&name='+ inName + '&traverse=' + inTraverse + "&conditiontype=" + conditiontype + "&oemaxlevel=1");
+	}
+	//The parent javascript has showpath
+</script>
+<div class="clearix"></div>
+</div>
+	
