@@ -7,14 +7,6 @@ $context.putPageValue("dialogresults", true)
 #set($lightboxassetsresults = true)
 $context.putPageValue("lightboxassetsresults", $lightboxassetsresults)
 
-#set($tabid = "tablightboxes")
-<div id="${tabid}" 
-class=" entity-tab-content entity-tab-media tabtypemedia" 
-data-tabid="$!{tabid}"
-data-entityid="$!entity.id"
-data-currenttab="$!viewid"
-data-url="${searchhome}/tabs/preview/tabpublishing_gallery.html"
->
 
 
 #set($entitymoduleviewid = $context.getRequestParameter("entitymoduleviewid"))
@@ -28,6 +20,19 @@ data-url="${searchhome}/tabs/preview/tabpublishing_gallery.html"
 
 #set($viewdata = $mediaarchive.getCachedData("view",$entitymoduleviewid))
 #set($submoduleid = $!viewdata.rendertable)
+
+
+
+#set($tabid = "tablightboxes")
+<div id="${tabid}" 
+class=" entity-tab-content entity-tab-media tabtypemedia" 
+data-tabid="$!{tabid}"
+data-entityid="$!entity.id"
+data-entitymoduleid="$!entitymodule.id"
+data-currenttab="$!viewid"
+data-entitymoduleviewid="$entitymoduleviewid"
+data-lightboxtype="$submoduleid"
+>
 
 <div  class="tablightbox d-flex h-100" style="height: 100%;">
 	#set($boxes =  $mediaarchive.getEntityManager().loadBoxesForModule($submoduleid,$entitymodule, $entity, $context.getUser()))
