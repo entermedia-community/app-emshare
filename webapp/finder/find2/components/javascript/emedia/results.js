@@ -1,8 +1,7 @@
 jQuery(document).ready(function (url, params) {
 	var appdiv = $("#application");
 	var siteroot = appdiv.data("siteroot") + appdiv.data("apphome");
-	var defaultcomponenthome = siteroot + "/components";
-	
+	var componenthome = appdiv.data("siteroot") + appdiv.data("componenthome");
 
 	var header = $("#header");
 
@@ -357,7 +356,7 @@ jQuery(document).ready(function (url, params) {
 		var dataid = $(this).data("dataid");
 		var sessionid = $(this).data("hitssessionid");
 
-		$.get(defaultcomponenthome + "/moduleresults/selections/toggle.html", {
+		$.get(componenthome + "/moduleresults/selections/toggle.html", {
 			dataid: dataid,
 			hitssessionid: sessionid,
 		});
@@ -588,7 +587,7 @@ jQuery(document).ready(function (url, params) {
 			// Not needed?
 			var link = resultsdiv.data("assettemplate");
 			if (link == null) {
-				link = defaultcomponenthome + "/mediaviewer/fullscreen/currentasset.html";
+				link = componenthome + "/mediaviewer/fullscreen/currentasset.html";
 			}
 			var hitssessionid, hitsname;
 
@@ -734,7 +733,7 @@ jQuery(document).ready(function (url, params) {
 			var grid = $(".masonry-grid");
 			var href = grid.data("viewertemplate");
 			if (href == null) {
-				href = defaultcomponenthome + "/mediaviewer/fullscreen/currentasset.html";
+				href = componenthome + "/mediaviewer/fullscreen/index.html";
 			}
 
 			$.ajax({
@@ -742,7 +741,9 @@ jQuery(document).ready(function (url, params) {
 				async: false,
 				data: { oemaxlevel: 1 },
 				success: function (data) {
-					
+					$("#application").append(data);
+					hidden = $("#hiddenoverlay");
+					initKeyBindings(hidden);
 				},
 			});
 		}
@@ -1198,6 +1199,25 @@ jQuery(document).ready(function (url, params) {
 		window.location = href;
 	});
 
+	lQuery(".tableresultsaddcolumn").livequery("change", function () {
+		var selector = $(this);
+		var targetdiv = selector.data("targetdiv");
+		var selectedval = $(this).val();
+		if (selectedval) {
+			var link = selector.data("componenthome");
+			var args = {
+				addcolumn: selectedval,
+				oemaxlevel: selector.data("oemaxlevel"),
+			};
+
+			// jQuery("#"+targetdiv).load(link);
+			$.get(link, args, function (data) {
+				$("#" + targetdiv).replaceWith(data);
+				$(window).trigger("resize");
+			});
+		}
+	});
+
 	paintimagebox = function (image) {
 		var faceprofilebox = image.closest(".emshowbox");
 		if (faceprofilebox.length == 0) {
@@ -1368,7 +1388,20 @@ jQuery(document).ready(function (url, params) {
 	
 	*/
 
+	// TODO: remove this. using ajax Used for modules
+	togglehits = function (action) {
+		var data = $("#resultsdiv").data();
+		data.oemaxlevel = 1;
+		data.action = action;
 
+		$.get(componenthome + "/moduleresults/selections/togglepage.html", data);
+		if (action == "all" || action == "page") {
+			$(".moduleselectionbox").attr("checked", "checked");
+		} else {
+			$(".moduleselectionbox").removeAttr("checked");
+		}
+		return false;
+	};
 
 	function updateentities(element) {
 		// get form fields as data

@@ -9,6 +9,7 @@ $context.putPageValue("detail",$detail)
 	#set($values = $data.getValues($detail.id) )
 #end
 #set($entity_module = $detail.getListId())
+#set($searchhome = "$applink/views/modules/$!{entity_module}/results/default")
 #set($ismulti = $detail.isMultiValue())
 <div>
 	<ul class="entity-value-list" id="entitypicker${detail.id}" data-ismulti="$!{ismulti}">
@@ -20,8 +21,8 @@ $context.putPageValue("detail",$detail)
 	   		   #set($namefield = $mediaarchive.getSearcher($entity_module).getDetail("name"))
 			   #set($name = $searcherManager.getValue($row, $namefield, $context.getLocale()))
 			    #set($entityid = $row.id)
-			    #set($link = "$!{siteroot}$applink/views/modules/$!{entity_module}${searchhome}/tabs/preview/entity.html?id=$entityid")
-			    <li>
+			    #set($link = "${searchhome}/tabs/preview/entity.html?id=$entityid")
+			    <li>$searchhome
 			    <a href="$link" 
 			    	class="emdialog entity-dialog" 
 			    	data-noesc="true" 
@@ -33,7 +34,7 @@ $context.putPageValue("detail",$detail)
 		    #end 
 		#end
 		 <li style="display: none;" id="pickedtemplateREPLACEID">
-		    <a href="$!{siteroot}$applink/views/modules/$!{entity_module}${searchhome}/tabs/preview/entity.html?id=REPLACEID" 
+		    <a href="${searchhome}/tabs/preview/entity.html?id=REPLACEID" 
 		    	class="emdialog entity-dialog" 
 		    	data-noesc="true"
 		    	onclick='  return false;'></a>  

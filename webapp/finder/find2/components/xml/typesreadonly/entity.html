@@ -3,7 +3,7 @@
 #end
 
 #set($entity_module = $detail.getListId())
-
+#set($searchhome = "$applink/views/modules/$!{entity_module}/results/default")
 <ul class="entity-value-list">
 	#foreach( $type in $values )
 		#set( $row = false )
@@ -12,11 +12,7 @@
 		   #set($namefield = $mediaarchive.getSearcher($entity_module).getDetail("name"))
 		   #set($name = $searcherManager.getValue($row, $namefield, $context.getLocale()))
 		    #set($entityid = $row.id)
-		    #set($rendertype = $row.modulerendertype)
-			#if(!$rendertype)
-				#set($rendertype = "entity")
-			#end
-		    #set($link = "$!{siteroot}$applink/views/modules/$!{entity_module}${searchhome}/tabs/preview/${rendertype}.html?id=$entityid&hitssessionid=$!hits.sessionId")
+		    #set($link = "${searchhome}/tabs/preview/entity.html?id=$entityid&hitssessionid=$!hits.sessionId")
 		    <li>
 		    <a href="$link" 
 		    	class="emdialog entity-dialog" 
