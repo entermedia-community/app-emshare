@@ -364,11 +364,10 @@ $(function () {
 		var node = getNode(this);
 		var nodeid = node.data("nodeid");
 		var tree = node.closest(".emtree");
-		var collectionid = node.data("collectionid");
 
 		link.data("copyingcategoryid", nodeid);
 
-		emdialog(link, event);
+		link.emDialog();
 
 		return false;
 	});
