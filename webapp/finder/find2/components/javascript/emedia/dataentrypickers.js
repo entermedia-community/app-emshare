@@ -215,12 +215,8 @@ lQuery(".emrowpicker table td").livequery("click", function (event) {
 					row.data("id", rowid);
 					row.data("hitssessionid", emselectable.data("hitssessionid"));
 					row.data("updateurl", true);
-					var urlbar =
-						apphome +
-						"/views/modules/" +
-						emselectable.data("searchtype") +
-						"/index.html?entityid=" +
-						rowid;
+					var urlbar = emselectable.data("urlbar");
+					urlbar = urlbar + "?entityid=" + rowid;
 					row.data("urlbar", urlbar);
 					row.emDialog();
 				}
