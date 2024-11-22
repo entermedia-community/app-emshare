@@ -134,6 +134,8 @@ lQuery(".emrowpicker table td").livequery("click", function (event) {
 		}
 	});
 
+
+	//CB Asset picker finish
 	lQuery(".assetpickerselectrow").livequery("click", function () {
 		var assetid = $(this).data("assetid");
 		jQuery("#" + targetdiv).attr("value", assetid);
