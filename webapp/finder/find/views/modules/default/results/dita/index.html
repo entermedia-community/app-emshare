@@ -15,6 +15,21 @@ $context.putPageValue("entityid", $entityid)
 	#set($subtab = "html")
 #end
 
+#ifnull($viewid)
+
+	#set($viewid = $context.getRequestParameter("entitymoduleviewid"))
+	#ifnull($viewid)
+		#set($viewid = $context.getRequestParameter("viewid"))
+	#end
+#end
+#ifnull($viewid)
+ No view id
+#end
+#set($viewdata = $mediaarchive.getCachedData("view",$viewid))
+
+#set($submoduleid = $!viewdata.rendertable)
+$context.putPageValue("submoduleid",$submoduleid)
+
 
 <div id="ditavizeditor"
 	class="entity-tab-content entity-tab-media tabtypemedia" 
@@ -26,7 +41,6 @@ $context.putPageValue("entityid", $entityid)
 
 <div  class="tablightbox d-flex h-100" style="height: 100%;">
 	
-	$context.putPageValue("topmodule",$module)
 
 	$pages.include("$searchhome/sidemenu.html",$context) 
 	$pages.include("$searchhome/${subtab}.html",$context) 
