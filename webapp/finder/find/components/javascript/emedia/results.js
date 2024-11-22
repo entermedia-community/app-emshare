@@ -1532,7 +1532,7 @@ jQuery(document).ready(function (url, params) {
 				// saveProfileProperty("assetopentabassettable",assettabtable,function(){});
 			}
 		}
-	});
+	}); //End of 
 
 	//FUSE Library
 	var Fuse;
@@ -1587,5 +1587,14 @@ jQuery(document).ready(function (url, params) {
 				search(searchInput.val());
 			}, 250);
 		});
+		
+		
+		
 	});
+	
+	lQuery(".forceresize").livequery(function () 
+	{
+		$(window).trigger("resize");
+	});	
+	
 }); // document ready

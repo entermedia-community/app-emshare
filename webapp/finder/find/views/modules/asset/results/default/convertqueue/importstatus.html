@@ -28,8 +28,9 @@
    	#elseif( $rendertype =="video")
    		#set( $rendertype = "videothumbnail" )
    	#end   
-   	
-   	$pages.include("${searchhome}/thumbnails/${rendertype}.html?clearcache=true", $context)     
+   	<div id="status$!hit.id"  class="forceresize">
+   	$pages.include("${searchhome}/thumbnails/${rendertype}.html?clearcache=true", $context)
+   	</div>     
 
 #elseif($publish && $publish.size() >0 )
     <div id="status$!hit.id"  
@@ -72,10 +73,7 @@
 		<div class="mimethumbcontainer">
 			##<img class="mimethumb" src="$!siteroot$thumbpath" border="0"/>
 			<i class="bi bi-$!mime mimeicon" title="[[Conversions in process]]" ></i>
-			#set( $completed = $totalcount - $remaining )
-	        #set( $total = 80 * $mathutil.getPercentage($completed, $totalcount) )
-	        #set( $total = $total + 20 )
-	        <div class="uiinfo" title="[[Conversions Completed]] $completed / $totalcount">${total}% [[complete]]</div>
+	        <div class="uiinfo" title="[[Conversions Completed]] $completed / $totalcount">$hit.name [[Importing...]]</div>
 		</div>
         
         
