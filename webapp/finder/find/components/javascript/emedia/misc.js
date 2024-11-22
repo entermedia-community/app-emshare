@@ -2442,9 +2442,10 @@ function intializeUI() {
 	});
 
 	lQuery(".assetpicker .assetInput").livequery("change", function () {
-		var detailId = $(this).data("detailid");
-		var assetName = $(this).val();
-		var assets = $(this).prop("files");
+		var input = $(this);
+		var detailId = input.data("detailid");
+		var assetName = input.val();
+		var assets = input.prop("files");
 		if (assets.length == 0) return;
 		var asset = assets[0];
 		if (asset.name) assetName = asset.name;
@@ -2453,7 +2454,7 @@ function intializeUI() {
 			if (!assetName && e.target.fileName) {
 				assetName = e.target.fileName;
 			}
-			var preview = $(".render-type-thumbnail");
+			var preview = input.closest(".assetpicker").find(".render-type-thumbnail");
 			preview.html("");
 			var img = $("<img>");
 			img.attr("src", e.target.result);
