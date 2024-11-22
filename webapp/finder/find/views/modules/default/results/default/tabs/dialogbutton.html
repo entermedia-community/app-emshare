@@ -1,0 +1,34 @@
+
+
+<div class="entity-tab #if($viewdata.id == $entitymoduleviewid) current-entity#end">
+	<a 
+		#if($addnew=='true')
+			href="#"
+			data-isnewentity="true"
+		#else
+			href="${searchhome}/index.html"
+		#end 
+		class="ajax entity-tab-label"
+		data-oemaxlevel="2"
+		data-targetdiv="entitydialog"
+		data-entityid="$!entity.getId()" 
+		data-entitymoduleid="$!entitymodule.id"
+		role="tab" 
+		title="#text($viewdata)">
+
+	   	#if (!$moduleicon && $tabmodule.moduleicon)
+	   		#set($moduleicon = $tabmodule.moduleicon)
+	   	#end
+
+		#ifnull($moduleicon)
+			#set($moduleicon = "box")
+		#end
+
+		<i class="bi bi-${moduleicon} module-icon"></i> 
+			#text($viewdata)
+	</a>
+</div>
+
+
+
+

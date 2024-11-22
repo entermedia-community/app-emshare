@@ -55,18 +55,18 @@ $context.putPageValue("showmedia", $showmedia)
 	#set($currenttab = $context.getRequestParameter("currenttab"))
 #end
 
-#ifnull($viewid)
-#set($viewid = $context.getRequestParameter("viewid"))
+#ifnull($entitymoduleviewid)
+#set($entitymoduleviewid = $context.getRequestParameter("viewid"))
 #end
 
 #set($tabid = $context.getRequestParameter("tabid"))
 #ifnull($tabid)
-	#set($tabid = "tab_$viewid")
+	#set($tabid = "tab_$entitymoduleviewid")
 #end
 
 <div id="$tabid"
 	class=" reloadonupload entity-tab-content tabtype$!tabtype edittab"
-	##style=" #if($currenttab != $viewid) display:none; #end" 
+	##style=" #if($currenttab != $entitymoduleviewid) display:none; #end" 
 	data-entityid="$!entity.id" 
 	data-tabtype="metadata"
 	data-tabid="$tabid"

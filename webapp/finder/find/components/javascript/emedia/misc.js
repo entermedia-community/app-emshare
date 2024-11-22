@@ -882,6 +882,8 @@ function intializeUI() {
 		confirmModalClose(targetModal);
 	});
 
+
+//to be removed
 	lQuery(".entitytabactions").livequery("click", function (event) {
 		event.preventDefault();
 		var link = $(this);

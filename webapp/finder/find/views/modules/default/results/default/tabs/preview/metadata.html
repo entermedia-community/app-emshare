@@ -45,8 +45,8 @@ $context.putPageValue("searcher",$searcher)
 #end
 $context.putPageValue("edit", $edit)
 
-#ifnull($viewid)
-#set($viewid = $context.getRequestParameter("viewid"))
+#ifnull($entitymoduleviewid)
+#set($entitymoduleviewid = $context.getRequestParameter("viewid"))
 #end
 
 #if($ismulti)
@@ -60,7 +60,7 @@ $context.putPageValue("edit", $edit)
 #else
 	#set($addnew = $context.getRequestParameter("addnew"))
 	#if($addnew)
-		#set($viewid = "${searchtype}addnew")
+		#set($entitymoduleviewid = "${searchtype}addnew")
 		#set($reloadtargets = $context.getRequestParameter("reloadtargets"))
 	
 	#end
@@ -74,7 +74,7 @@ $context.putPageValue("edit", $edit)
 #end
 #end
 
-#set($view = "$searchtype/$viewid")
+#set($view = "$searchtype/$entitymoduleviewid")
 #set($action = "${searchhome}/tabs/preview/metadata-save.html")
 
 <form id="entitydataeditor" 
@@ -134,7 +134,7 @@ $context.putPageValue("edit", $edit)
 		#end
     	
     	$context.putPageValue("view", $view)
-    	$context.putPageValue("viewid", $viewid)
+    	$context.putPageValue("viewid", $entitymoduleviewid)
     	
 		#if($edit =="true")  ##TODO - Permissions
 			##1 or 2 colums feature
@@ -178,12 +178,12 @@ $context.putPageValue("edit", $edit)
 		
 			<div class="d-flex align-items-center">
 				#if($canviewmodulesettings)
-				<a class="emdialog btn btn-accent px-2 mr-2" href="$siteroot$apphome/views/settings/modules/$!{searcher.searchType}/metadata/views/dialog/index.html?viewid=$viewid&viewpath=$!view"
+				<a class="emdialog btn btn-accent px-2 mr-2" href="$siteroot$apphome/views/settings/modules/$!{searcher.searchType}/metadata/views/dialog/index.html?viewid=$entitymoduleviewid&viewpath=$!view"
 					title="[[Edit Fields]]" data-dialogid="fieldpicker" data-hidefooter="true"
 				><i class="bi bi-gear-fill mr-1"></i> [[Fields]]</a>
 				#end
 				<a class="ajax btn btn-accent" data-targetdiv="editentitymetadata" 
-					href="${searchhome}/tabs/preview/metadata.html?edit=true&entityid=$!{data.id}&detailviewercolumns=${changedetailviewercolumns}&moduleid=$!{moduleid}&viewid=$!{viewid}">
+					href="${searchhome}/tabs/preview/metadata.html?edit=true&entityid=$!{data.id}&detailviewercolumns=${changedetailviewercolumns}&moduleid=$!{moduleid}&viewid=$!{entitymoduleviewid}">
 					<i class="bi bi-grip-$icondetailviewercolumns"></i>
 				</a> 
 			</div>

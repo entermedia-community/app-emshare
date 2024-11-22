@@ -43,7 +43,7 @@ $context.putPageValue("searchtype", $searchtype)
 #set ( $edit = $context.getRequestParameter("edit") )
 #set ( $editpath = $context.getRequestParameter("editpath"))
 #if(!$editpath)
-	#set( $editpath = "$componenthome/detaileditor/genericsave.html" )
+	#set( $editpath = "${edithome}/genericsave.html" )
 #end
 #if($data.getId().startsWith("multiedit"))
 	#set($multiedit = true)
@@ -55,7 +55,7 @@ $context.putPageValue("searchtype", $searchtype)
    href="$home$apphome/views/settings/modules/${module}/metadata/views/index.html?viewid=${viewid}&viewpath=${view}&assettype=$!type"
    title="[[Configure View]]"><i class="fas fa-cog"></i></a>
    
-##<a href="$componenthome/detaileditor/generalinformation/editform.html?viewpath=$viewpath&oemaxlevel=1&edit=$!caneditasset&assetid=${asset.id}&columns=1" 
+##<a href="${edithome}/generalinformation/editform.html?viewpath=$viewpath&oemaxlevel=1&edit=$!caneditasset&assetid=${asset.id}&columns=1" 
 ##	class="detail-edit-icon float-right ajax btn btn-xs"
 ##	data-targetdiv="edit-$viewid"
 ##	title="[[Edit]] $context.getText($target.toString())"><i class="fas fa-bars"></i></a>
@@ -221,7 +221,7 @@ $context.putPageValue("searchtype", $searchtype)
 		<div class="col">
 			<div class="btns">
 			<a class="ajax btn btn-sm btn-primary" targetdiv="${view}editor" 
-			href="$home$componenthome/detaileditor/generic.html?catalogid=$catalogid&searchtype=$searcher.searchType&id=$!data.id&view=$view&assetid=$!asset.id&edit=1&oemaxlevel=1" >[[Edit ]]</a>
+			href="$home${edithome}/index.html?catalogid=$catalogid&searchtype=$searcher.searchType&id=$!data.id&view=$view&assetid=$!asset.id&edit=1&oemaxlevel=1" >[[Edit ]]</a>
 			#if( $caneditmetadatasetup  )
 				#if ( $view.contains("$asset.assettype") )
 					#set ( $type = $asset.assettype )

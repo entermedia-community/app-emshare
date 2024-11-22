@@ -1036,7 +1036,7 @@ jQuery(document).ready(function (url, params) {
 			var moduleid = resultsdiv.data("moduleid");
 			var searchhome = resultsdiv.data("searchhome");
 			if (searchhome) {
-				var url = searchhome + "/tabs/preview/entity.html";
+				var url = searchhome + "/tabs/index.html";
 				entity.data("targetlink", url);
 				entity.data("updateurl", true);
 				entity.data("urlbar", window.location.href);

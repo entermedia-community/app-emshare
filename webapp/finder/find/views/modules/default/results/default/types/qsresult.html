@@ -1,0 +1,124 @@
+#if($hit)
+	#set($entityid = $hit.id)
+	#if($rendermoduleid)
+		#set($moduleid = $rendermoduleid)
+	#else
+		#set($moduleid = $module.id)
+	#end
+#else
+	#if(!$moduleid)
+		#set($moduleid = $context.getRequestParameter("moduleid"))
+	#end
+	#if(!$entityid)
+		#set($entityid = $context.getRequestParameter("entityid"))
+	#end
+#end
+
+$context.putPageValue("entityid", $entityid)
+$context.putPageValue("moduleid", $moduleid)
+
+#if($moduleid && $entityid)
+	#set($module = $mediaarchive.getCachedData("module", $moduleid))
+	#set($entity = $mediaarchive.getCachedData($moduleid, $entityid))
+#end
+
+#if(!$parentmodule)
+	#set($parentmodule = $module)
+#end
+
+#set($topentityid = $context.getRequestParameter("topentityid"))
+$context.putPageValue("topentityid", $topentityid)
+
+#set($previewurl = "${searchhome}/tabs/index.html?id=$entityid&hitssessionid=$!hits.sessionId")
+
+$context.putPageValue("previewurl", $previewurl)
+
+ <div class="emfolder-wrapper compact emgrid-type-$!moduleid entitycontainer entity$!moduleid$!entityid" 
+	id="emgridentity$!moduleid$!entityid"
+	data-id="${entityid}"
+  data-moduleid="$!moduleid"
+  data-rendertype="entity">
+
+	#if(!$primarymediareadonly)
+	<a href="$!{previewurl}" 
+		id="clickid${entityid}"  
+		class="emdialog entity-dialog" 
+		data-updateurl="true"
+		data-urlbar="$!{siteroot}$apphome/views/modules/$!{moduleid}/index.html?entityid=$entityid"
+		data-hidefooter="true" 
+		data-hideheader="true" 
+		data-categorypath="$!entity.uploadsourcepath"
+		data-id="${entityid}"
+		data-moduleid="$!moduleid" 
+		title="[[View]]: #text($!entity)">
+  	 #end
+	
+		##look for primaryimage
+		#set( $primarymediafield = $entity.primarymedia )
+		
+		#if($primarymediafield)
+			#set( $primarymediatemp = $mediaarchive.getCachedAsset($entity.primarymedia))
+				#ifnotnull($primarymediatemp)
+					#set($rendertype = $mediaarchive.getMediaRenderType($primarymediatemp.fileformat))
+					#if($rendertype != 'audio')				
+						#set($primarymedia = $primarymediatemp)
+					#end
+			#end
+		#end
+		
+		#ifnull($primarymedia)
+			#set( $primarymediafield = $entity.primaryimage )
+			#if($primarymediafield)
+				#ifnotnull($entity.primaryimage)
+						#set( $primarymediatemp = $mediaarchive.getCachedAsset($entity.primaryimage))
+						#set($rendertype = $mediaarchive.getMediaRenderType($primarymediatemp.fileformat))
+						#if($rendertype != 'audio')
+							#set($primarymedia = $primarymediatemp)
+						#end
+				#end
+			#end
+		#end	
+
+		
+		$context.putPageValue("type", $rendertype)
+	   	#set($link = "$!siteroot$applink/views/modules/$!topmodule.getId()/index.html")
+		#if( $parentmodule == $module)
+			#set($link = "$link?entityid=$!entity.getId()&entitytype=$!moduleid&topentityid=$!entity.getId()")
+		#else
+			#set($link = "$link?entityid=$!entity.getId()&entitytype=$!moduleid&topentityid=$!topentityid")
+		#end
+		#set($moduleicon = "grid")
+		#if ($module.moduleicon)
+			#set($moduleicon = $module.moduleicon)
+		#end
+		<div 
+			class="emfolder-inner assetdropentity drop-over" 
+			id="attachedmedia$entityid" 
+			data-moduleid="$!moduleid" 
+			data-entityid="$!entityid" 
+			data-assetsshown="$!assetsshown"
+			data-attachedmediaurl="$!siteroot${searchhome}/tabs/types/entity.html"
+			data-targetdiv="emgridentity$!moduleid$!entityid">
+			<div class="emfolder-icon">
+				#if($primarymedia)
+					$context.putPageValue("thumbsize", "thumbnail" )
+					#set($hit = $primarymedia)
+					$context.putPageValue("hit", $hit) 
+					$context.putPageValue("asset", $primarymedia)
+					#set( $assetrendertype = $mediaarchive.getMediaRenderType($hit.fileformat))
+					$pages.include("${searchhome}/thumbnails/${assetrendertype}.html", $context)
+			  #else
+					<i class="bi bi-$moduleicon module-icon"></i> 
+			  #end
+			</div>
+			<div class="emfolder-text">
+				<i class="bi bi-$moduleicon module-icon"></i>
+				<span>#text($!entity)</span>
+			</div>
+		</div>
+	#if(!$primarymediareadonly)
+	</a>
+	#end
+</div>
+
+
