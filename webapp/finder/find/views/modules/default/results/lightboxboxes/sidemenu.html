@@ -45,19 +45,32 @@
 
 	<div id="entitypicker" 
 		data-entityid="$entity.id" 
-		data-moduleid="$parentmodule.id"
+
+		 data-entityid="$entity.id" 
+		 data-entitymoduleid="$entitymodule.id" 
+		 data-lightboxid=""
+		 data-lightboxtype="$lightboxtype"
+		 data-entitymoduleviewid="$entitymoduleviewid"
+		 data-oemaxlevel="1"
+		 data-searchhome="$searchhome"
+		 data-targetdiv="tablightboxes"
+
+
 		class="rounded assetdroplightbox side-select-menu">
+		
+		#set($defaultfolder =  $mediaarchive.getEntityManager().loadDefaultFolder($module, $entity, $context.getUser(),true))
+		#set($allassets = $mediaarchive.query("asset").exact("category",$defaultfolder).search($context) )
+		
 		<a class="ajax btn-wide #ifnull($selectedbox) active #end" 
 			data-targetdiv="tablightboxes" 
 			data-oemaxlevel="1" 
 			data-entityid="$!{entity.id}"
 			data-entitymoduleid="$!{entitymodule.id}"
+			 data-lightboxid=""
+			 data-lightboxtype="$lightboxtype"
+			 data-entitymoduleviewid="$entitymoduleviewid"
 			href="$searchhome/index.html?lightboxid=files">
 			#set( $moduleicon = $mediaarchive.getCachedData("module","asset").moduleicon)
-			#ifnull($allassets)
-				#set($defaultfolder =  $mediaarchive.getEntityManager().loadDefaultFolder($parentmodule, $entity, $context.getUser(),true))
-				#set($allassets = $mediaarchive.query("asset").exact("category",$defaultfolder).search($context) )
-			#end
 			<i class="bi bi-${moduleicon}"></i>
 			<span>
 				[[Working Files]]

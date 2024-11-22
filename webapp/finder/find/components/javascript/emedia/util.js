@@ -269,7 +269,7 @@ adjustZIndex = function (element) {
 	});
 };
 focusInput = function (input) {
-	console.log(input);
+	//console.log(input);
 	if (input.length > 0) {
 		input.focus();
 		var inputVal = input.val();

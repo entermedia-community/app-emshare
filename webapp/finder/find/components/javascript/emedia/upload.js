@@ -181,7 +181,7 @@ $(document).ready(function () {
 	lQuery(".resultsdiv").livequery(function () {
 		var div = $(this);
 		if (div.find(".webUploadButton").length == 0) {
-			console.log("No upload target!");
+			//console.log("No upload target!");
 			return;
 		}
 		if (div.find(".drop-feedback").length == 0) {

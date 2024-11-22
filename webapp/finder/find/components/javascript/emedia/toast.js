@@ -87,14 +87,14 @@ function destroyToast(toast, success = true) {
 
 $(window).on("successToast", function (_, anchor) {
 	var uid = anchor.data("uid");
-	console.log("successfully removing uid:" + uid);
+	//console.log("successfully removing uid:" + uid);
 	var toast = $(".toastContainer[data-uid='" + uid + "']");
 	destroyToast(toast);
 });
 
 $(window).on("errorToast", function (_, anchor) {
 	var uid = anchor.data("uid");
-	console.error("unsuccessfully removing uid:" + uid);
+	//console.error("unsuccessfully removing uid:" + uid);
 	var toast = $(".toastContainer[data-uid='" + uid + "']");
 	destroyToast(toast, false);
 });
