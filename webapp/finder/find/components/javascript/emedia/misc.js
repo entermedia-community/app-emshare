@@ -716,8 +716,8 @@ function intializeUI() {
 		var entitymoduleid = link.data("entitymoduleid");
 		var entityid = link.data("entityid");
 
-		var options = link.data();
-		options["oemaxlevel"] = 1;
+		var options = link.cleandata();
+		//options["oemaxlevel"] = 1;
 		var url = link.attr("href");
 
 		$.ajax({

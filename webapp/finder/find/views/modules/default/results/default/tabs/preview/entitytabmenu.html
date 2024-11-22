@@ -13,6 +13,7 @@
 
 #set($tablink = "${searchhome}/tabs/preview/${tabtype}.html")
 
+#set( $$oemaxlevel = 1)
 #if($tabtype == "tabsubmodulehome")
 	#set($tabid = "tab_${viewid}")
 	#set($tabname = $viewdata.getName($context))
@@ -25,10 +26,11 @@
 	#set($tabname = $viewdata.getName($context))
 	#set($moduleicon = "check-circle")
 	#set($tablink = "$apphome/views/modules/${entitymodule.id}/results/lightboxes/index.html")
-#elseif($tabtype=="tablightboxboxes")
+#elseif($tabtype=="tabrenderditaeditor")
 	#set($tabname = $viewdata.getName($context))
 	#set($moduleicon = "check-circle")
-	#set($tablink = "$apphome/views/modules/${entitymodule.id}/results/lightboxboxes/index.html")
+	####set( $$oemaxlevel = 2)
+	#set($tablink = "$apphome/views/modules/${entitymodule.id}/results/dita/index.html")
 #elseif($tabtype=="tabworkflowchat")
 	#set($tabname = $viewdata.getName($context))
 	#set($moduleicon = "chat-left-text")
@@ -72,6 +74,8 @@
 		class="entity-tab-label"
 		id="$!tabid"
 		data-currenttab="$!viewid"
+		data-oemaxlevel="$oemaxlevel"
+		
 		data-viewid="$!viewid"
 		data-toggle="tab"
 		data-target="$!targetentitytabid"
