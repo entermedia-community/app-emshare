@@ -3,13 +3,14 @@
 #set( $entityid = $context.getRequestParameter("entityid") ) 
 #set( $parentmoduleid = $context.getRequestParameter("fieldexternalid"))
 #set($entity = $mediaarchive.getCachedData( $parentmoduleid,$entityid) )
+#set( $targetmoduleid = $context.getRequestParameter("entitymodule") )
 
 <div class="bg-white">
 
   <div class="w-100 my-2">
     <form name="save" class="ajaxform " data-targetdiv="importdone" action="$componenthome/entities/ai/finish.html">
       <input type="hidden" name="importtype" value="dita" />
-      <input type="hidden" name="moduleid" value="${module.id}" />
+      <input type="hidden" name="moduleid" value="$targetmoduleid" />
       <input type="hidden" name="topmodule" value="$parentmoduleid" />
 
 	<input type="hidden" name="entityid" value="$entity.getId()"/>
