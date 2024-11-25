@@ -1,40 +1,11 @@
-#set($entityid = $context.getRequestParameter("entityid"))
-#if( !$entity)
-	#set( $entity  = $mediaarchive.getData($parentsearchtype, $entityid) )
-#end
-#set($entityid = $entity.id)
-#if(!$currenttab)
-	#set($currenttab = $context.getRequestParameter("currenttab"))
-#end
-#if(!$parentmoduleid)
-	#set ( $parentmoduleid = $context.getRequestParameter("topmoduleid") )
-#end
-#if(!$parentmoduleid)
-	#set ( $parentmoduleid = $context.getRequestParameter("moduleid") )
-#end
-$context.putPageValue("topmoduleid", $parentmoduleid)
-#ifnotnull($parentmoduleid)
-	#set($parentmodule = $mediaarchive.getCachedData("module", $parentmoduleid))
-#end
-#set($tabid = "tab_publishingcarousel")
 
-
-<div id="${tabid}" 
-class=" entity-tab-content entity-tab-media tabtypemedia" 
-data-tabid="${tabid}"
-
-data-entityid="$!entityid"
-data-currenttab="$!viewid"
-data-topmoduleid="$!topmoduleid"
-data-url="${searchhome}/tabs/preview/tabpublishing_carousel.html"
->
-
+<div id="tabexportcontent" class="entitytabcolumcontent">
 <div id="publishingcontainer" class="tabpulications" style="height: 100%;">
 	<div class="tabpulications-col overflow-y" style="padding:10px 20px;  flex: 0 0 500px;">
 	
-	<form action="${searchhome}/tabs/preview/tabpublishing_carouselsave.html" 
+	<form action="${edithome}/save.html" 
 	class="ajaxform mt-1" 
-	data-targetdiv="${tabid}">
+	data-targetdiv="tabexportcontent">
 		<div class="form-group">
 			<div class="form-check form-check-inline">
 				<input type="hidden" value="enabled" name="field" />
@@ -137,7 +108,7 @@ data-url="${searchhome}/tabs/preview/tabpublishing_carousel.html"
 			</div>
 
 			<input type="hidden" value="entityid" name="field" />
-			<input type="hidden" name="entityid.value" value="$!entityid" />
+			<input type="hidden" name="entityid.value" value="$!entity.id" />
 			<input type="hidden" value="distributiontype" name="field" />
 			<input type="hidden" name="distributiontype.value" value="carousel" />
 			#if($publishing)
@@ -147,10 +118,9 @@ data-url="${searchhome}/tabs/preview/tabpublishing_carousel.html"
 			
 			<input type="hidden" name="searchtype" value="distributiongallery" />
 			<input type="hidden" name="field" value="moduleid" />
-			<input type="hidden" name="moduleid.value" value="$!topmoduleid" />
-			<input type="hidden" name="topmoduleid" value="$!topmoduleid" />
+			<input type="hidden" name="moduleid.value" value="$!module.id" />
 			<input type="hidden" name="parentviewid" value="$!viewid" />
-			<input type="hidden" name="entityid" value="$!entityid" />
+			<input type="hidden" name="entityid" value="$!entity.id" />
 			<input name="save" type="hidden" value="true">
 			
 			<div class="d-flex align-items-center">

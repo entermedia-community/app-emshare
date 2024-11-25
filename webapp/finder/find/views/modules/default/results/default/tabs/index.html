@@ -21,8 +21,6 @@ $context.putPageValue("ismulti", $ismulti)
 
 
 #set($enttiyviews = $mediaarchive.query("view").exact("moduleid", $module.id).exact("systemdefined","false").sort("orderingUp").named("view").search($context) )
-$context.putPageValue("enttiyviews", $enttiyviews)
-
 #set($entitymoduleviewid = $context.getRequestParameter("entitymoduleviewid"))
 
 #ifnull($entitymoduleviewid)
@@ -37,6 +35,8 @@ $context.putPageValue("enttiyviews", $enttiyviews)
 
 #if ($addnew =="true")
 	#set($entitymoduleviewid = $enttiyviews.first().getId())
+	#set($enttiyviews = "")
+	$context.putPageValue("addnew", "true")
 #else
 	##check if saveaction
 	#if($saveaction == "upload")
@@ -49,6 +49,7 @@ $context.putPageValue("enttiyviews", $enttiyviews)
 #end
 $context.putPageValue("entitymoduleviewid", $entitymoduleviewid)
 $context.putPageValue("entityviewdata", $entityviewdata)
+$context.putPageValue("enttiyviews", $enttiyviews)
 
 <div data-entityid="$!entity.id"
 	data-entitymoduleid="$!entitymodule.id"
@@ -92,7 +93,7 @@ $context.putPageValue("entityviewdata", $entityviewdata)
 		<div class="entity-tab-content tabtype$!rendertype">
 		
 			#ifnull($entityviewdata)
-				Please select a tab for $entitymoduleviewid		
+				[[Please select a tab for]] $entitymoduleviewid		
 			#end
 			
 			#ifnotnull($entityviewdata)

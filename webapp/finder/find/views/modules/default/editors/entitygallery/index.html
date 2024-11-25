@@ -6,7 +6,7 @@
 	
 	<form action="${edithome}/save.html" 
 	class="ajaxform mt-1" 
-	data-targetdiv="${tabid}">
+	data-targetdiv="tabexportcontent">
 		<div class="form-group">
 			<div class="form-check form-check-inline">
 				<input type="hidden" value="enabled" name="field" />
@@ -25,6 +25,7 @@
 					#ifnull($lightboxid)
 						#set($lightboxid = $publishing.lightboxid)
 					#end
+					
 					#set($boxes =  $mediaarchive.getEntityManager().loadLightBoxesForModule($module, $entity, $context.getUser()))
 					<select class="form-control form-control-sm form-select form-select-sm wg-autosave" id="wgSortLabel" name="lightboxid.value">
 						<option value="">[[Unsorted]]</option>
@@ -79,7 +80,7 @@
 			#end
 
 			<input type="hidden" value="entityid" name="field" />
-			<input type="hidden" name="entityid.value" value="$!entityid" />
+			<input type="hidden" name="entityid.value" value="$!entity.id" />
 			<input type="hidden" value="distributiontype" name="field" />
 			<input type="hidden" name="distributiontype.value" value="gallery" />
 			#if($publishing)
@@ -91,7 +92,7 @@
 			<input type="hidden" name="field" value="moduleid" />
 			<input type="hidden" name="moduleid.value" value="$!module.id" />
 			<input type="hidden" name="parentviewid" value="$!viewid" />
-			<input type="hidden" name="entityid" value="$!entityid" />
+			<input type="hidden" name="entityid" value="$!entity.id" />
 			<input name="save" type="hidden" value="true">
 			
 			#set($overrideligthboxid = $context.getRequestParameter("lightboxid"))
