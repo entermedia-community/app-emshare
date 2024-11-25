@@ -102,7 +102,8 @@ $context.putPageValue("edit", $edit)
     	<input name="entitymoduleid" type="hidden" value="$!entitymodule.id" />
     	<input name="viewid" type="hidden" value="$!viewid" />
     	<input name="view" type="hidden" value="$!view" />
-    	
+    	<input name="entitymoduleviewid" type="hidden" value="$!entitymoduleviewid" />
+    
     	
 	   	#if(!$hitssessionid)
     		#set( $hitssessionid = $context.getRequestParameter("hitssessionid"))
@@ -140,17 +141,18 @@ $context.putPageValue("edit", $edit)
     #if($edit=="true")
     <div class="d-flex align-items-center justify-content-between form-submit-btns">
 			<div class="d-flex align-items-center">
-			#if($id) 
 				<a class="btn focused-btn submitform mr-2"><i class="bi bi-floppy-fill mr-1"></i> [[Save]]</a>
+			#if($id) 
 				#if($id.startsWith("multiedit"))
 					<button id="closebutton" type="button" class="btn btn-secondary mr-2" data-dismiss="modal">[[Cancel]]</button>
 				#else
-					<a class="btn btn-secondary mr-2 ajax" data-targetdiv="editentitymetadata" 
-						href="${edithome}/index.html?entityid=$!id&moduleid=$!module.id&showmedia=$!showmedia&viewid=$!viewid">[[Cancel]]</a>
+					<a class="btn btn-secondary mr-2 ajax" 
+						data-targetdiv="editentitymetadata"
+						data-oemaxlevel="1" 
+						href="${edithome}/index.html?entityid=$!id&viewid=$!viewid">[[Cancel]]</a>
 				#end
 			#else
-			  <a class="btn focused-btn submitform mr-2"><i class="bi bi-floppy-fill mr-1"></i> [[Save]]</a>
-				<button id="closebutton" type="button" class="btn btn-secondary mr-2" data-dismiss="modal">[[Cancel]]</button>
+			  <button id="closebutton" type="button" class="btn btn-secondary mr-2" data-dismiss="modal">[[Cancel]]</button>
 			#end
 			</div>
 		
