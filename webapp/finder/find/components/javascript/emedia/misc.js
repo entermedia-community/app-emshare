@@ -2328,7 +2328,7 @@ function intializeUI() {
 		$("#sidebarUserUploads").trigger("click");
 	};
 
-/*
+	/*
 	lQuery(".toggledialogtree").livequery("click", function (e) {
 		e.preventDefault();
 		e.stopImmediatePropagation();
@@ -3158,4 +3158,29 @@ lQuery(".changeimportmodule").livequery("change", function () {
 		},
 		crossDomain: true,
 	});
+});
+
+lQuery(".entityNavHistory").livequery(function () {
+	var history = [];
+	$(".entityNavHistory").each(function () {
+		history.push($(this).data());
+	});
+	var link = $(".entityNavBack");
+	var currentLinkIdx = history.findIndex(function (d) {
+		return d.entityid == link.data("entityid");
+	});
+	if (currentLinkIdx > 0) {
+		var backLink = history[currentLinkIdx - 1];
+		link.attr("data-entityid", backLink.entityid);
+		link.attr("data-entitymoduleid", backLink.entitymoduleid);
+		link.attr("data-entitymoduleviewid", backLink.entitymoduleviewid);
+		link.attr("data-url", backLink.url);
+		link.attr("href", backLink.url);
+		link.show();
+	}
+	// }
+	// entityNavBack
+	// <a href="$apphome/views/modules/$lightboxtype/results/default/tabs/index.html?entityid=$box.id" class="ajax lightboxbtn-edit" data-targetdiv="entitydialog" data-oemaxlevel="1">
+	// 	<i class="bi bi-eye ns"></i>
+	// </a>
 });
