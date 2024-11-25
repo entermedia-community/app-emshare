@@ -296,17 +296,18 @@ lQuery("form").livequery(function () {
 		});
 	}
 });
-/*
+
 document.onkeydown = function (event) {
 	if (event.ctrlKey) {
-		event.preventDefault();
 		var href = document.querySelector("a#oeselector").href;
 		if (event.key == "r") {
+			event.preventDefault();
 			href = href.replace(
 				"components/toolbar/plugintoolbar",
 				"views/filemanager/clearpagemanager"
 			);
 		} else if (event.key == "d") {
+			event.preventDefault();
 			var mode = document.querySelector(".openeditdebug") ? "preview" : "debug";
 			href = href.replace(
 				"components/toolbar/plugintoolbar",
@@ -315,7 +316,8 @@ document.onkeydown = function (event) {
 		} else {
 			href = null;
 		}
-		if (href) window.location.href = href;
+		if (href) {
+			jQuery.get(href);
+		}
 	}
 };
-*/
