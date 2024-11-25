@@ -296,26 +296,25 @@ lQuery("form").livequery(function () {
 		});
 	}
 });
-/*
+
 document.onkeydown = function (event) {
 	if (event.ctrlKey) {
-		event.preventDefault();
 		var href = document.querySelector("a#oeselector").href;
 		if (event.key == "r") {
+			event.preventDefault();
 			href = href.replace(
 				"components/toolbar/plugintoolbar",
 				"views/filemanager/clearpagemanager"
 			);
+			window.location.href = href;
 		} else if (event.key == "d") {
+			event.preventDefault();
 			var mode = document.querySelector(".openeditdebug") ? "preview" : "debug";
 			href = href.replace(
 				"components/toolbar/plugintoolbar",
 				`views/workflow/mode/view${mode}`
 			);
-		} else {
-			href = null;
+			jQuery.get(href);
 		}
-		if (href) window.location.href = href;
 	}
 };
-*/

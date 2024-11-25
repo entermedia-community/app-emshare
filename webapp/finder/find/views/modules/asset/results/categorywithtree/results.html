@@ -1,52 +1,8 @@
-
-#set($module = $mediaarchive.getCachedData("module", "asset"))
-$context.putPageValue("module", $module)
-#set($moduleid = $module.getId())
-
-#set($componenthome = "$apphome/views/modules/asset/components")
-$context.putPageValue("componenthome", $componenthome)
-
-#if( !$category)
-	#set($categoryid = $context.getRequestParameter("categoryid"))
-	#if(!$categoryid)
-		#set($categoryid = $context.getRequestParameter("rootcategory"))
-	#end
-	#if($categoryid)
-		#set($category = $mediaarchive.getCachedData("category", $categoryid))
-	#end
+#ifnull($searchhomeid)
+	#set($searchhomeid = $page.get("searchhomeid") )
 #end
 
-#if( !$categoryid && $category)
-	#set( $categoryid= $category.getId())
-#end
-$context.putPageValue("category", $category)
-$context.putPageValue("categoryid", $categoryid)
-#set($rootcategories = $category.getParentCategories()) 
-
-#set($rootcategory = $context.getRequestParameter("rootcategory"))
-#if(!$rootcategory)
-	#set( $rootcategory = $categoryid)
-#end
-
-#set($resultview = $userprofile.get("assetresultview"))
-
-#set($maintargetdiv = "dialogassetresultscontainer")
-$context.putPageValue("maintargetdiv", $maintargetdiv)
-
-$context.putPageValue("dialogresults", true)
-
-
-$context.putPageValue("targetdivmedia", $targetdivmedia)
-#ifnull($lightboxassetsresults)
-	#set($lightboxassetsresults = $context.getRequestParameter("lightboxassetsresults"))
-#end
-#ifnull($lightboxid)
-	#set($lightboxid = $context.getRequestParameter("lightboxid"))
-#end
-
-#set($searchhomeid = $page.get("searchhomeid") )
-#set( $targetdivmedia = "$searchhomeid")
-<div id="$searchhomeid"
+<div id="$searchhomeid" 	
 	class="dialogassetresults assetresults resultsdiv resultsdiv${module.id}" 
 	data-moduleid="asset"  ##required for sorting
 	data-resultview="$!resultview"
@@ -58,6 +14,7 @@ $context.putPageValue("targetdivmedia", $targetdivmedia)
 	data-hitssessionid="$!hits.getSessionId()"
 	data-componenthome = "$!componenthome"
 	data-searchhome="$!searchhome"
+	data-edithome="$!edithome"
 	data-oemaxlevel="1"
 	data-assetsortby="$!hits.getSearchQuery().getSortBy()"
 	
@@ -74,100 +31,16 @@ $context.putPageValue("targetdivmedia", $targetdivmedia)
 	#end
 		
 	> 
-	
-	<div class="emgrid-module emgrid-box emgrid-module-asset h-100">
+				
+		#set( $uploadmedia = $context.getRequestParameter("uploadmedia"))
 		
-		$context.putPageValue("rootcategory", $rootcategory)
-
-		#if($categoryid != $rootcategory)
-			$context.putPageValue("selectednodes", $categoryid)
-		#end
-		
-		#set($canupload = false)
-		#if($canviewupload)
-			#if($parentmodule.getBoolean("enableuploading") && $permissions.can($parentmoduleid, "upload_files"))
-				#set($canupload = true)
-			#end
-		#end
-
-		$context.putPageValue("canupload", $canupload)
-		
-		#ifnull($hidedialogtree)
-		
-			#set($dialogtreestatus = $userprofile.get("dialogtreestatus"))
-			#ifnotnull($dialogtreestatus)
-				#if($dialogtreestatus != "open")
-					#set($dialogtreestatus = "close")
-				#end
-			#end
-			#ifnull($dialogtreestatus)
-				#set($dialogtreestatus = "close")
-			#end
-			$context.putPageValue("dialogtreestatus", $dialogtreestatus)
+		#if($uploadmedia && $canupload)
+			$pages.include("$apphome/views/modules/asset/add/entityaddmedia.html?categoryid=$rootcategory", $context)
+		#else
+			$context.putPageValue("targetdivsearch", $targetdivmedia)
+			$context.putPageValue("resultview",$resultview)
 			
-			<div class="embedmediacontainer">
-				#if($dialogtreestatus == "open")
-					<div class="embedmediacol embedmediacol-tree embedtreestatus$dialogtreestatus">
-						<div class="embedmediacolactions d-flex align-items-center">
-							
-							<a href="#" 
-							class="d-flex align-items-center toggledialogtree toggledialogclose"
-							data-targetdiv="resultsdiv"
-							data-oemaxlevel="1"
-							data-url="${searchhome}/search.html"
-							data-entityid="$!entity.id"
-							data-entitymoduleid="$!entitymodule.id"
-							data-rootcategory="$!rootcategory"
-							data-categoryid="$!categoryid"
-							data-treestatus="close"
-							title="[[Collapse Tree]]">
-								<i class="fas fa-angle-double-left"></i>
-								<h3 class="embedmediacolheader">[[Folders]]</h3>
-							</a>
+			$pages.include("${searchhome}/resultviews.html", $context)
+		#end
 		
-							#if($canviewupload && $parentmodule.getBoolean("enableuploading") && $permissions.can($parentmoduleid, "upload_files"))
-							<a href="" 
-								class="createfoldertree"
-								data-tree="dialogentitymediatreetree" 
-								style="width:32px;" 
-								title="[[Add Sub-Folder]]"><i class="bi bi-folder-plus"></i></a>
-								
-							
-							#end
-						</div>
-						
-						<div class="assetdropcategory h-100 dialogdroppable">
-							<div class="embedmediatree">
-							
-							#set( $link = "$componenthome/emtree/tree.html")
-							#set( $link = "${link}?dialogentitymediatreeroot=$rootcategory&treename=dialogentitymediatree&editabletree=true&targetdivsearch=$!targetdivmedia" )
-							#set( $link = "${link}&maintargetdiv=$!maintargetdiv&targetdiv=$!targetdivmedia&maxlevelclick=1&updateAddressBar=false&uploadmaxlevel=1&nodeID=$!{categoryid}&exactsearch=true" )
-							#set( $link = "${link}&customurladdmedia=$apphome/views/modules/asset/add/entityaddmedia.html" )
-							#set( $link = "${link}&oemaxlevel=1&urlprefix=${searchhome}/search.html" )
-								
-							$pages.include($link, $context)
-							</div>
-						</div>
-					</div>
-				#end
-			#end
-			<div class="embedmediacol embedmediacol-results" #ifnotnull($hidedialogtree)style="width:100%;"#end>
-				<div id="dialogmediaentity" >
-					#set( $uploadmedia = $context.getRequestParameter("uploadmedia"))
-					
-					#if($uploadmedia && $canupload)
-						$pages.include("$apphome/views/modules/asset/add/entityaddmedia.html?categoryid=$rootcategory", $context)
-					#else
-						$context.putPageValue("targetdivsearch", $targetdivmedia)
-						$context.putPageValue("resultview",$resultview)
-						
-						$pages.include("${searchhome}/resultviews.html", $context)
-					#end
-				</div>
-			</div>
-		</div>
-		
-	</div>
-
-
 </div>

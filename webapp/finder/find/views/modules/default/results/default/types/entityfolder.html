@@ -40,7 +40,7 @@ $context.putPageValue("topentityid", $topentityid)
 		#set($linktype = "ajax searchcategory")
 	#end
 #else
-	#set($previewurl = "$!{siteroot}$apphome/views/modules/$!moduleid${searchhome}/tabs/index.html?entityid=$entityid&hitssessionid=$!hits.sessionId")
+	#set($previewurl = "${searchhome}/tabs/index.html?entityid=$entityid&hitssessionid=$!hits.sessionId")
 	#set($urladdressbar = "$!{siteroot}$apphome/views/modules/$!moduleid/index.html?entityid=$entityid&hitssessionid=$!hits.sessionId")
 	#set($linktype = "emdialog entity-dialog")
 #end
@@ -87,13 +87,20 @@ $context.putPageValue("previewurl", $previewurl)
 	id="emgridentity$!moduleid$!entityid"
 	data-rowname="#text($hit)"
 	data-dataid="${entityid}"
-  	data-moduleid="$!{moduleid}"
-  	data-rendertype="entity">
+  data-moduleid="$!{moduleid}"
+  data-rendertype="entity">
 	#ifnotnull($entity.longcaption)
 		<div class="emfolder-hover">
 			<strong>[[Description]]:</strong> $entity.longcaption
 		</div>
 	#end
+
+	#if($permissions.can($module.id, "edit"))
+	<a href="#edit" class="ajax emfolder-edit">
+		<i class="bi bi-pencil-square"></i>
+	</a>
+	#end
+
 	#set($pickertarget = $context.getRequestParameter("pickertarget"))
 	
 	<a #ifnull($pickertarget)

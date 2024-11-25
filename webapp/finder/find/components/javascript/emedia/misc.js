@@ -803,8 +803,7 @@ function intializeUI() {
 		confirmModalClose(targetModal);
 	});
 
-
-//to be removed
+	//to be removed
 	lQuery(".entitytabactions").livequery("click", function (event) {
 		event.preventDefault();
 		var link = $(this);
@@ -970,7 +969,6 @@ function intializeUI() {
 		expandmediabox($(this));
 	});
 
-	
 	lQuery("img.framerotator").livequery(function () {
 		$(this).hover(
 			function () {
@@ -2330,6 +2328,7 @@ function intializeUI() {
 		$("#sidebarUserUploads").trigger("click");
 	};
 
+/*
 	lQuery(".toggledialogtree").livequery("click", function (e) {
 		e.preventDefault();
 		e.stopImmediatePropagation();
@@ -2363,7 +2362,7 @@ function intializeUI() {
 			},
 		});
 	});
-
+*/
 	lQuery(".assetpicker .assetInput").livequery("change", function () {
 		var input = $(this);
 		var detailId = input.data("detailid");
@@ -2377,7 +2376,9 @@ function intializeUI() {
 			if (!assetName && e.target.fileName) {
 				assetName = e.target.fileName;
 			}
-			var preview = input.closest(".assetpicker").find(".render-type-thumbnail");
+			var preview = input
+				.closest(".assetpicker")
+				.find(".render-type-thumbnail");
 			preview.html("");
 			var img = $("<img>");
 			img.attr("src", e.target.result);
@@ -3020,7 +3021,7 @@ function intializeUI() {
 				zIndex: "1000",
 				margin: 0,
 				padding: 8,
-				background: "var(--themed-light-bg)",
+				background: "var(--dark-text)",
 				borderTop: "var(--1px-light)",
 			});
 		}

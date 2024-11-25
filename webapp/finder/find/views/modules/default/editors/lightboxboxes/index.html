@@ -27,16 +27,17 @@ $context.putPageValue("entitymoduleviewid",$entitymoduleviewid)
 #set($lightboxtype = $!viewdata.rendertable)
 #end
 
+#ifnull($lightboxtype)
+	#set($lightboxtype = "emedialightbox")
+#end
 
 $context.putPageValue("lightboxtype",$lightboxtype)
 
-#set($tabid = "tablightboxes")
-<div id="tablightboxes" 
+
+<div id="$edithomeid" 
 class=" entity-tab-content entity-tab-media tabtypemedia" 
-data-tabid="$!{tabid}"
 data-entityid="$!entity.id"
 data-entitymoduleid="$!entitymodule.id"
-data-currenttab="$!viewid"
 data-entitymoduleviewid="$entitymoduleviewid"
 data-lightboxtype="$lightboxtype"
 data-oemaxlevel="1"
@@ -79,8 +80,8 @@ data-oemaxlevel="1"
 	
 	$context.putPageValue("allassets",$allassets)
 
-	$pages.include("$searchhome/sidemenu.html",$context)
+	$pages.include("$edithome/sidemenu.html",$context)
 
-	$pages.include("$searchhome/search.html",$context)
+	$pages.include("$edithome/search.html",$context)
 
 </div>
