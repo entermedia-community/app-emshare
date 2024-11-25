@@ -729,7 +729,7 @@ jQuery(document).ready(function () {
 			if (lightbox) {
 				var syncLightbox = $(".sync-lightbox");
 				syncLightbox.find("span").text("Synced");
-				autoreload($(".assetresults"));
+				autoreload($(".entity-tab-media"));
 				setTimeout(() => {
 					syncLightbox.prop("disabled", false);
 					syncLightbox.find("span").text("Sync");

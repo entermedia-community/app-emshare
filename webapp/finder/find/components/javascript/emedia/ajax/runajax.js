@@ -29,16 +29,18 @@
 		}
 
 		var options = anchor.cleandata();
-		if (anchor.data("includesearchcontext") == true) {  //Is this a good idea or a bad idea?
-			var resultsdivS = "resultsdiv";//anchor.data("resultsdiv"); 
+		if (anchor.data("includesearchcontext") == true) {
+			//Is this a good idea or a bad idea?
+			var resultsdivS = "resultsdiv"; //anchor.data("resultsdiv");
 			var resultsdiv = anchor.closest("." + resultsdivS);
 			var otherdata = resultsdiv.cleandata();
-			options = {  //Merge em
+			options = {
+				//Merge em
 				...options,
-				...otherdata
-			}
-		} 
-		
+				...otherdata,
+			};
+		}
+
 		var activemenu;
 		if (anchor.hasClass("auto-active-link")) {
 			activemenu = anchor;
@@ -61,23 +63,23 @@
 		}
 
 		var anchorModal = anchor.closest(".modal");
-		
-		var targetdiv_ = anchor.data("targetdiv");
+
+		var _targetdiv = anchor.data("targetdiv");
 		var replaceHtml = true;
 
 		var targetDivInner = anchor.data("targetdivinner");
 		if (targetDivInner) {
-			targetdiv_ = targetDivInner;
+			_targetdiv = targetDivInner;
 			replaceHtml = false;
 		}
-		var targetDiv = anchor.closest("." + $.escapeSelector(targetdiv_));
+		var targetDiv = anchor.closest("." + $.escapeSelector(_targetdiv));
 		if (!targetDiv.length) {
-			targetDiv = $("." + $.escapeSelector(targetdiv_));
+			targetDiv = $("." + $.escapeSelector(_targetdiv));
 		}
 		if (!targetDiv.length) {
-			targetDiv = $("#" + $.escapeSelector(targetdiv_)); //legacy
+			targetDiv = $("#" + $.escapeSelector(_targetdiv)); //legacy
 		}
-		
+
 		if (targetDiv.length) {
 			anchor.css("cursor", "wait");
 			$("body").css("cursor", "wait");
@@ -204,6 +206,8 @@
 						}
 					}
 				});
+		} else {
+			anchor.removeAttr("disabled");
 		}
 		return this;
 	};
