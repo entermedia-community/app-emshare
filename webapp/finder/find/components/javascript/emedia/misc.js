@@ -2328,6 +2328,7 @@ function intializeUI() {
 		$("#sidebarUserUploads").trigger("click");
 	};
 
+/*
 	lQuery(".toggledialogtree").livequery("click", function (e) {
 		e.preventDefault();
 		e.stopImmediatePropagation();
@@ -2361,7 +2362,7 @@ function intializeUI() {
 			},
 		});
 	});
-
+*/
 	lQuery(".assetpicker .assetInput").livequery("change", function () {
 		var input = $(this);
 		var detailId = input.data("detailid");
