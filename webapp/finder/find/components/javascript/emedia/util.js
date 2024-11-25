@@ -306,6 +306,7 @@ document.onkeydown = function (event) {
 				"components/toolbar/plugintoolbar",
 				"views/filemanager/clearpagemanager"
 			);
+			window.location.href = href;
 		} else if (event.key == "d") {
 			event.preventDefault();
 			var mode = document.querySelector(".openeditdebug") ? "preview" : "debug";
@@ -313,10 +314,6 @@ document.onkeydown = function (event) {
 				"components/toolbar/plugintoolbar",
 				`views/workflow/mode/view${mode}`
 			);
-		} else {
-			href = null;
-		}
-		if (href) {
 			jQuery.get(href);
 		}
 	}
