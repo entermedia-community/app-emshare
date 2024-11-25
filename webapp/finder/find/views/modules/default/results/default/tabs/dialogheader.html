@@ -53,14 +53,13 @@
 						#if($permissions.can($moduleid, "shareentity"))
 							<a href="${searchhome}/index.html" 
 							class="ajax btn-accent"
-							
-		data-targetdiv="entitydialog"
-		data-entityid="$!entity.getId()" 
-		data-entitymoduleid="$!entitymodule.id"
-		data-entitymoduleviewid="${module.id}entityshare"
-		data-oemaxlevel="1"
-		data-propertyfield="${entitymodule.id}_entitytabopen"
-		data-propertyvalue="${module.id}entityshare"
+							data-targetdiv="entitydialog"
+							data-entityid="$!entity.getId()" 
+							data-entitymoduleid="$!entitymodule.id"
+							data-entitymoduleviewid="${module.id}entityshare"
+							data-oemaxlevel="1"
+							data-propertyfield="${entitymodule.id}_entitytabopen"
+							data-propertyvalue="${module.id}entityshare"
 							data-hitssessionid="$entityhits.getSessionId()"
 							title="[[Share]]"><i class="bi bi-share"></i></a>
 						#end
@@ -91,12 +90,14 @@
 						$permissions.can($moduleid, "importfolders") ||
 						($desktop && $permissions.can($moduleid, "importpushtoserver")))
 						<a
-							class='btn btn-sm btn-accent ajax tabactionimport #if($entitymoduleviewid=="${module.id}upload")enabledaction #end '
-							href="${searchhome}/index.html" 
-							data-entitymoduleviewid="${module.id}upload"
+							class='btn btn-sm btn-accent ajax tabactionimport #if($entitymoduleviewid=="${module.id}entityimports")enabledaction #end '
+							href="${searchhome}/tabs/index.html" 
+							data-entitymoduleviewid="${module.id}entityimports"
 							data-entityid="$!entity.getId()" 
 							data-entitymoduleid="$!module.id"
 							data-targetdiv="entitydialog"
+							data-oemaxlevel="1"
+							data-tabsection="upload"
 							data-hitssessionid="$entityhits.getSessionId()"
 							title="[[Upload to]] #text($module) "><i class="bi bi-box-arrow-in-right mr-1"></i> [[Import]]</a>
 					#end	
@@ -108,12 +109,13 @@
 						($desktop && $permissions.can($moduleid, "exportpulltoserver")))	
 						
 						<a 
-							class='btn btn-sm btn-accent ajax tabactionexport #if($entitymoduleviewid=="${module.id}share")enabledaction #end '
-							href="${searchhome}/index.html" 
-							data-entitymoduleviewid="${module.id}share"
+							class='btn btn-sm btn-accent ajax tabactionexport #if($entitymoduleviewid=="${module.id}entityexports")enabledaction #end '
+							href="${searchhome}/tabs/index.html" 
+							data-entitymoduleviewid="${module.id}entityexports"
 							data-entityid="$!entity.getId()" 
 							data-entitymoduleid="$!module.id"
 							data-targetdiv="entitydialog"
+							data-oemaxlevel="1"
 							data-hitssessionid="$entityhits.getSessionId()"
 							title="[[Download]] #text($module) ">[[Export]]&nbsp;<i class="bi bi-box-arrow-right ml-1"></i></a>
 					#end

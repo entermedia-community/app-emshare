@@ -1,25 +1,3 @@
-#set($entityid = $context.getRequestParameter("entityid"))
-#if(!$parentsearchtype)
-	#set($parentsearchtype = $context.getRequestParameter("parentsearchtype"))
-#end
-$context.putPageValue("parentsearchtype", $parentsearchtype)
-#if( !$entity)
-	#set( $entity  = $mediaarchive.getData($parentsearchtype, $entityid) )
-#end
-#set($entityid = $entity.id)
-#if(!$currenttab)
-	#set($currenttab = $context.getRequestParameter("currenttab"))
-#end
-#if(!$parentmoduleid)
-	#set ( $parentmoduleid = $context.getRequestParameter("topmoduleid") )
-	$context.putPageValue("topmoduleid", $parentmoduleid)
-#end
-#ifnotnull($parentmoduleid)
-	#set($parentmodule = $mediaarchive.getCachedData("module", $parentmoduleid))
-#end
-#if(!$moduleid)
-	#set($moduleid = $parentmodule.getId())
-#end
 
 #ifnull($entitymoduleviewid)
 #set($entitymoduleviewid = $context.getRequestParameter("entitymoduleviewid"))
@@ -38,20 +16,9 @@ $context.putPageValue("defaultcategoryid", $defaultcategory.getId())
 #set($tabmode = 1)
 $context.putPageValue("tabmode", $tabmode)
 
-<div id="${tabid}"
-	class=" entity-tab-content "
-	data-tabid="${tabid}"
-	data-viewid="$!viewid"
-	data-entityid="$!entityid"
-	data-currenttab="$!viewid"
-	data-parentsearchtype="$!parentsearchtype"
-	data-topmoduleid="$!topmoduleid"
-	data-url="${searchhome}/tabs/preview/tabimport.html"
->
-	<div id="$!submodulepickerid" class="d-flex align-items-stretch" style="height: 100%;">
+<div id="$!submodulepickerid" class="d-flex align-items-stretch" style="height: 100%;">
 		<div class="entityimport auto-active-container overflow-y">
-			
-			#if($parentmodule.getBoolean("enableuploading") && ($permissions.can($moduleid, "upload_files") || $permissions.can($moduleid, "upload_folfers")) ) 
+			#if($entitymodule.getBoolean("enableuploading") && ($permissions.can($moduleid, "upload_files") || $permissions.can($moduleid, "upload_folfers")) ) 
 			<div class='auto-active-row  #if($tabsection=="upload") current #end'>
 			<a href="$apphome/views/modules/asset/add/tabentityaddmedia.html?categoryid=$!defaultcategory.getId()"
 				class="btn btn-lg btn-wide ajax auto-active-link "
@@ -106,7 +73,6 @@ $context.putPageValue("tabmode", $tabmode)
 					data-targetdivinner="tabimportcontent"
 					data-oemaxlevel="1"
 					data-entityid="$!{entityid}"
-					data-moduleid="$!{topmoduleid}"
 					data-defaultcategoryid="$!defaultcategory.getId()"
 					data-tabsection="pushlocal"
 					href="$componenthome/desktop/import/push.html">
@@ -114,57 +80,18 @@ $context.putPageValue("tabmode", $tabmode)
 				</div>
 			#end
 			
-			#if($content.publishexternal)
-				<div class="border-top w-100" style="margin-bottom: 12px;"></div>
-				<div class="auto-active-row">
-					<a class="ajax btn btn-lg btn-wide auto-active-link "
-						data-targetdivinner="tabimportcontent"
-						data-oemaxlevel="1"
-						data-entityid="$!{entityid}"
-						data-moduleid="$!{topmoduleid}"
-						href="$componenthome/entities/metadata/import/onix.html">
-						<i class="bi bi-filetype-xml"></i> <span>[[ONIX]]</span></a>
-				</div>
-				<div class="auto-active-row">
-					<a class="ajax btn btn-lg btn-wide auto-active-link "
-						data-targetdivinner="tabimportcontent"
-						data-oemaxlevel="1"
-						data-entityid="$!{entityid}"
-						data-moduleid="$!{topmoduleid}"
-						href="$componenthome/entities/metadata/import/bits.html?id=$!searchby">
-						<i class="bi bi-filetype-xml"></i> <span>[[BITS / JATS]]</span></a>
-				</div>
-				<div class="auto-active-row">
-					<a class="ajax btn btn-lg btn-wide auto-active-link "
-						data-targetdivinner="tabimportcontent"
-						data-oemaxlevel="1"
-						data-entityid="$!{entityid}"
-						data-moduleid="$!{topmoduleid}"
-						href="$componenthome/entities/metadata/import/dita.html?id=$!searchby">
-						<i class="bi bi-filetype-xml"></i> <span>[[DITA]]</span></a>
-				</div>
-				<div class="auto-active-row">
-					<a class="ajax btn btn-lg btn-wide auto-active-link "
-						data-targetdivinner="tabimportcontent"
-						data-oemaxlevel="1"
-						data-entityid="$!{entityid}"
-						data-moduleid="$!{topmoduleid}"
-						href="$componenthome/entities/metadata/import/scorm.html?id=$!searchby">
-						<i class="bi bi-file-zip"></i> <span>[[SCORM]]</span></a>
-				</div>
-			#end
+			
 		</div>
 
 		<div id="tabimportcontent" class="overflow-y entitytabcolumcontent">
 			#if($tabsection=="pushlocal")
 				$pages.include("$componenthome/desktop/import/push.html?entityid=$!{entityid}&moduleid=$!{topmoduleid}&defaultcategoryid=$defaultcategory.getId()", $context)
 			#else
-				#if($parentmodule.getBoolean("enableuploading") && ($permissions.can($moduleid, "upload_files") || $permissions.can($moduleid, "upload_folfers")) )
+				#if($entitymodule.getBoolean("enableuploading") && ($permissions.can($moduleid, "upload_files") || $permissions.can($moduleid, "upload_folfers")) )
 					$pages.include("$apphome/views/modules/asset/add/tabentityaddmedia.html?categoryid=$!defaultcategory.getId()")
 				#else
 					$pages.include("$componenthome/createmedia/url/start.html?categoryid=$!defaultcategory.getId()")
 				#end
 			#end	
 		</div>
-	</div>
 </div>

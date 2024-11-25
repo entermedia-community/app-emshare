@@ -67,14 +67,14 @@ $context.putPageValue("viewid", $view.id)
 
 
 		#set( $origURL = $context.getRequestParameter("origURL" ) )
-		#set ( $moduleid = $context.findValue("module") )
-		#if($caneditdata)
+		
+		 #if($permissions.can($module.id, "edit"))
 			$pages.include("/$applicationid/components/xml/detaileditor.html?longform=true", $context)
 		#else
 			$pages.include("/$applicationid/components/xml/detaileditor.html?detailsreadonly=true&alwaysshow=false", $context)
 		#end
     
-	    #if($caneditdata)
+	    #if($permissions.can($module.id, "edit"))
 	    <input class="btn btn-accent float-left" type="submit" value="[[Save Permissions]]" style="margin-right:10px;"  />
 	    #end
 	    
