@@ -11,16 +11,16 @@
 			data-entitymoduleviewid="$entitymoduleviewid"
 			data-oemaxlevel="1"
 			data-searchhome="$searchhome"
-			data-targetdiv="tablightboxes"
+			data-targetdiv="$edithomeid"
 		>
 
 			<a class="ajax btn-wide #if( $box.id == $selectedbox.getId() ) active #end"
-				data-targetdiv="tablightboxes"
+				data-targetdiv="$edithomeid"
 				data-oemaxlevel="1"
 				data-entityid="$!{entity.id}"
 				data-entitymoduleid="$!{entitymodule.id}"
 				data-lightboxtype="$lightboxtype"
-				href="$searchhome/index.html?lightboxid=$box.id">
+				href="$edithome/index.html?lightboxid=$box.id">
 				#set( $moduleicon = $box.moduleicon)
 				#ifnull($moduleicon)
 					#set( $moduleicon = "check-circle-fill")
@@ -47,31 +47,29 @@
 
 	<div id="entitypicker" 
 		data-entityid="$entity.id" 
-
-		 data-entityid="$entity.id" 
-		 data-entitymoduleid="$entitymodule.id" 
-		 data-lightboxid=""
-		 data-lightboxtype="$lightboxtype"
-		 data-entitymoduleviewid="$entitymoduleviewid"
-		 data-oemaxlevel="1"
-		 data-searchhome="$searchhome"
-		 data-targetdiv="tablightboxes"
-
-
+		data-entityid="$entity.id" 
+		data-entitymoduleid="$entitymodule.id" 
+		data-lightboxid=""
+		data-lightboxtype="$lightboxtype"
+		data-entitymoduleviewid="$entitymoduleviewid"
+		data-oemaxlevel="1"
+		data-searchhome="$searchhome"
+		data-targetdiv="$edithomeid"
 		class="rounded assetdroplightbox side-select-menu">
 		
 		#set($defaultfolder =  $mediaarchive.getEntityManager().loadDefaultFolder($module, $entity, $context.getUser(),true))
 		#set($allassets = $mediaarchive.query("asset").exact("category",$defaultfolder).search($context) )
 		
-		<a class="ajax btn-wide #ifnull($selectedbox) active #end" 
-			data-targetdiv="tablightboxes" 
+		<a href="$edithome/index.html?lightboxid=files"
+			class="ajax btn-wide #ifnull($selectedbox) active #end" 
+			data-targetdiv="$edithomeid" 
 			data-oemaxlevel="1" 
 			data-entityid="$!{entity.id}"
 			data-entitymoduleid="$!{entitymodule.id}"
-			 data-lightboxid=""
-			 data-lightboxtype="$lightboxtype"
-			 data-entitymoduleviewid="$entitymoduleviewid"
-			href="$searchhome/index.html?lightboxid=files">
+			data-lightboxid=""
+			data-lightboxtype="$lightboxtype"
+			data-entitymoduleviewid="$entitymoduleviewid"
+		>
 			#set( $moduleicon = $mediaarchive.getCachedData("module","asset").moduleicon)
 			<i class="bi bi-${moduleicon}"></i>
 			<span>
