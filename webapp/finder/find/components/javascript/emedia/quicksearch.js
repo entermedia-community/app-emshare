@@ -65,8 +65,6 @@ lQuery(".mainsearch").livequery(function () {
 		dropdownParent = parent;
 	}
 
-	var hidescrolling = mainsearcheinput.data("hidescrolling");
-
 	var id = mainsearcheinput.data("dialogid");
 	if (!id) {
 		id = "typeahead";
@@ -97,20 +95,12 @@ lQuery(".mainsearch").livequery(function () {
 	setSearchModalSize();
 	window.onresize = setSearchModalSize;
 
-	var options = mainsearcheinput.data();
-	var searchurltargetdiv = mainsearcheinput.data("searchurltargetdiv");
 	var typeaheadtargetdiv = mainsearcheinput.data("typeaheadtargetdiv");
 
 	if (typeaheadtargetdiv == null) {
 		typeaheadtargetdiv = "applicationmaincontent";
 	}
 
-	var searchurlentertargetdiv = mainsearcheinput.data(
-		"searchurlentertargetdiv"
-	);
-
-	var searchfield = mainsearcheinput.data("searchfield");
-	var sortby = mainsearcheinput.data("sortby");
 	var defaulttext = mainsearcheinput.data("showdefault");
 	if (!defaulttext) {
 		defaulttext = "Search";
@@ -203,6 +193,7 @@ lQuery(".mainsearch").livequery(function () {
 	lQuery(searchmodalmask).livequery("click", function () {
 		togglemodaldialog("hide");
 	});
+
 	$(document).on("click", function (event) {
 		if ($(event.target).closest(".search-entity-dropdown").length > 0) {
 			return;
@@ -211,11 +202,13 @@ lQuery(".mainsearch").livequery(function () {
 			togglemodaldialog("hide");
 		}
 	});
-	$(document).on("keydown", function (event) {
-		if ((event.ctrlKey || event.metaKey) && event.keyCode == 191) {
+
+	mainsearcheinput.bind("paste", function () {
+		if (mainsearcheinput.val().length > 0) {
 			$(".quicksearchexpand").trigger("click");
 		}
 	});
+
 	lQuery(".quicksearchexpand").livequery("click", function (e) {
 		e.preventDefault();
 		e.stopPropagation();
