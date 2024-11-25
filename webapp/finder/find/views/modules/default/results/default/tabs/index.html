@@ -1,12 +1,3 @@
-#set( $id = $context.getRequestParameter("id"))
-#ifnull($id)
-	#set( $id = $context.getRequestParameter("dataid"))
-#end
-#ifnull($id)
-	#set( $id = $context.getRequestParameter("entityid"))
-#end
-$context.putPageValue("id", $id)
-$context.putPageValue("parentid", $id)
 
 #set( $ismulti = $id.startsWith("multiedit:") || $context.getRequestParameter("multi") == "true")
 $context.putPageValue("ismulti", $ismulti)
@@ -14,12 +5,8 @@ $context.putPageValue("ismulti", $ismulti)
 #if($ismulti)
 
 #else
-	#if( !$entity && $id)
-		#set( $entity  = $mediaarchive.getCachedData($entitymodule.id, $id) )
-	#end
-	#if($entity)
+	#ifnotnull($entity)
 		#set($entityid = $entity.id)
-		$context.putPageValue("entity", $entity)
 		$context.putPageValue("entityid", $entityid)
 		
 		##Publishing (Gallery)
