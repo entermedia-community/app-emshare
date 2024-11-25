@@ -61,16 +61,20 @@ $context.putPageValue("entityrendertype", $entityrendertype)
 					<li>
 					#if( $showaddnew )
 						#ifnotnull($entity)
-							#set($addnew = "$!{siteroot}${apphome}/views/modules/${moduleid}/components/entities/addnew.html")
+							#set($addnew = "${edithome}/addnew.html")
 							<a class="resultsnavlink emdialog"
 							data-dialogid="entitypickeraddnew"
 							data-hidefooter="true"
 							data-targetdivinner="pickersearchentities"
-							data-ajaxreloadtargets="onetomanytab"
-							data-fieldexternalid="$!fieldexternalid"
-							data-fieldexternalvalue="$!fieldexternalvalue"
+							data-ajaxreloadtargets="emdialog"
+							data-fieldexternalid="$entitymodule.id"
+							data-fieldexternalvalue="$entity.id"
+							data-entityid="$entity.id"
+							data-entitymoduleid="$entitymodule.id"
+							data-entitymoduleviewid="$entitymoduleviewid"
+							data-edithome="${edithome}"
 							href="$addnew"
-							title="[[Create New]] #text($entity)">
+							title="[[Create New]] #text($module)">
 							<i class="bi bi-plus-lg mr-1"></i> [[Create New]]</a>
 						#end
 						

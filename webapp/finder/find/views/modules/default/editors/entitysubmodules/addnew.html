@@ -1,29 +1,22 @@
-#if(!$searchtype)
-	#set($searchtype = $context.getRequestParameter("searchtype"))
-	$context.putPageValue("searchtype",$searchtype)
-#end
-#if(!$searchtype)
-	#set( $searchtype = $context.findValue("module"))
-	$context.putPageValue("searchtype",$searchtype)
-#end
+
 #set ($fieldexternalid = $context.getRequestParameter("fieldexternalid"))
 #set ($fieldexternalvalue = $context.getRequestParameter("fieldexternalvalue"))
 #ifnull($data)
 	#ifnotnull($fieldexternalid)
-		#set($data = $mediaarchive.getSearcher($searchtype).createNewData())
+		#set($data = $mediaarchive.getSearcher($module.id).createNewData())
 		$data.setValue($fieldexternalid, $fieldexternalvalue)
 		$context.putPageValue("data",$data)
 	#end
 #end
 
-#set( $searcher = $mediaarchive.getSearcher($searchtype) )
+#set( $searcher = $mediaarchive.getSearcher($module.id) )
 $context.putPageValue("searcher",$searcher)
 
 #if(!$moduleid)
 	#set($moduleid = $context.getRequestParameter("moduleid"))
 #end
 #if(!$moduleid)
-	#set($moduleid = $searchtype)
+	#set($moduleid = $module.id)
 #end
 
 #set($edit = $context.getRequestParameter("edit"))
@@ -33,25 +26,24 @@ $context.putPageValue("searcher",$searcher)
 $context.putPageValue("edit", $edit)
 
 
-#set($viewid = "${searchtype}addnew")
-#set($view = "$searchtype/$viewid")
-#set($action = "$siteroot$applink/views/modules/${moduleid}/components/entities/addnewsave.html")
+#set($viewid = "${module.id}addnew")
+#set($view = "${module.id}/$viewid")
+
+#set($action = "${edithome}/addnewsave.html")
 
 #set($pickertarget = $context.getRequestParameter("pickertarget"))
 #set($targettype = $context.getRequestParameter("targettype"))
 
 #set($ajaxreloadtargets = $context.getRequestParameter("ajaxreloadtargets"))
-
 	<form id="searchentitydataeditor" 
 			name="searchentitydataeditor" 
 			class="ajaxform checkCloseDialog autocloseform" 
-			data-targetdiv="pickersearchentities"
+			data-targetdiv="submodulepicker"
 			method="post"  
 			action="$action"
 			enctype="multipart/form-data"
 			data-ajaxreloadtargets="$!ajaxreloadtargets"
-			data-pickertarget="$!pickertarget"
-			data-targettype="$!targettype">
+			>
 				<input name="save" type="hidden" value="true" />
 				#set($viewfiles = $context.getRequestParameter("viewfiles"))
 				#if($viewfiles)
@@ -62,15 +54,16 @@ $context.putPageValue("edit", $edit)
 					<input name="saveaction" type="hidden" value="$!saveaction" />
 					#set($copyinghitssessionid = $context.getRequestParameter("copyinghitssessionid"))
 					<input name="copyinghitssessionid" type="hidden" value="$!copyinghitssessionid" />
-					#set($copyingsearchtype = $context.getRequestParameter("copyingsearchtype"))
-					<input name="copyingsearchtype" type="hidden" value="$!copyingsearchtype" />
+					#set($copyingmodule.id = $context.getRequestParameter("copyingmodule.id"))
+					<input name="copyingmodule.id" type="hidden" value="$!copyingmodule.id" />
 					
 					#set($pickedassetid = $context.getRequestParameter("pickedassetid"))
 					<input name="pickedassetid" type="hidden" value="$!pickedassetid" />
 				#end
+				
 				<input name="id" type="hidden" value="$!id" />
-				<input name="searchtype" type="hidden" value="$!searchtype" />
-				<input name="moduleid" type="hidden" value="$!moduleid" />
+				<input name="entityid" type="hidden" value="$!entity.id" />
+				<input name="entitymoduleviewid" type="hidden" value="$!entitymoduleviewid" />
 				<input name="viewid" type="hidden" value="$!viewid" />
 				<input name="view" type="hidden" value="$!view" />
 						

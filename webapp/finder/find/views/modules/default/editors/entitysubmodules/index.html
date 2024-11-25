@@ -1,9 +1,14 @@
-
-#set($viewid = $context.getRequestParameter("entitymoduleviewid"))
-#set($viewdata = $mediaarchive.getCachedData("view",$viewid))
-
-<div id="$!submoduleresults" class="submodulepicker">
+#ifnull($entitymoduleviewid) 
+	#set($entitymoduleviewid = $context.getRequestParameter("entitymoduleviewid"))
 	
+#end
+#set($viewdata = $mediaarchive.getCachedData("view",$entitymoduleviewid))
+
+<div class="submodulepicker ">
+	
+#set($entitymoduleid = $!viewdata.moduleid)
+#set($entitymodule = $mediaarchive.getCachedData("module",$entitymoduleid))
+$context.putPageValue("entitymodule", $entitymodule)
 #set($submoduleid = $!viewdata.rendertable)
 
 #set($module = $mediaarchive.getCachedData("module",$submoduleid))
@@ -11,10 +16,12 @@ $context.putPageValue("module", $module)
 #set($searchhome = "$apphome/views/modules/${submoduleid}/results/submoduleslist")
 $context.putPageValue("searchhome", $searchhome)
 
+#set($edithome = "$apphome/views/modules/${submoduleid}/editors/entitysubmodules")
+$context.putPageValue("edithome", $edithome)
+
 #set($sortby = $!viewdata.rendersort)
 #set($args = "field=$!{entitymodule.id}&$!{entitymodule.id}.value=$!{entity.id}&operation=exact")
-#set($args = "$args&sortby=$!sortby&entitymoduleviewid=$viewid")
-
+#set($args = "$args&sortby=$!sortby&entitymoduleviewid=$entitymoduleviewid")
 $pages.include("${searchhome}/index.html?$!args",$context)
 		
 </div>

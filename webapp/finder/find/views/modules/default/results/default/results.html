@@ -14,12 +14,13 @@ $context.putPageValue("viewid", $viewid)
 $context.putPageValue("entitymoduleviewid", "${entitymoduleviewid}")
 
 #set($searchhomeid = $page.get("searchhomeid") )
-<div id="$searchhomeid" class="tableresults resultsdiv" 
+<div id="${searchhomeid}" class="tableresults resultsdiv" 
 		data-${module.id}hitssessionid="$!hits.getSessionId()" 
 		data-hitssessionid="$!hits.getSessionId()"
 		data-componenthome="$!home$!componenthome"
-		data-searchhome="$!searchhome"
-		data-targetdiv="$searchhomeid"
+		data-searchhome="$!{searchhome}"
+		data-edithome="$!{edithome}"
+		data-targetdiv="${searchhomeid}"
 		data-category="$!category.id"
 		#if( $page.isPropertyTrue("filterbyentity",false) )
 			data-field="$!{entitymodule.id}"
