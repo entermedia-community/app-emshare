@@ -703,11 +703,6 @@ $(document).ready(function () {
 				format: format,
 				...imgDim,
 			});
-			var a = document.createElement("a");
-			a.href = data;
-			a.download = "download." + format;
-			a.click();
-			a.remove();
 			return data;
 		}
 
