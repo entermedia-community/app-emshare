@@ -1,4 +1,4 @@
-#set ($searchtype = $context.getRequestParameter("searchtype"))
+#set (${module.id} = $context.getRequestParameter("searchtype"))
 #set ($parentid = $context.getRequestParameter("parentid"))
 #set ($hitssessionid = $context.getRequestParameter("hitssessionid"))
 #set ($fieldexternalid = $context.getRequestParameter("fieldexternalid"))
@@ -33,8 +33,8 @@
 
 #set ($id = $context.getRequestParameter("id"))
 
-#set( $args = "id=$id&candelete=$candelete&editpath=$editpath&parentid=$parentid&jumptomodule=$!jumptomodule&catalogid=$catalogid&searchtype=$searchtype&fieldexternalid=$fieldexternalid&fieldexternalvalue=$fieldexternalvalue&viewid=$viewid&viewpath=$viewpath&permissionname=$!permissionname&hitssessionid=$!hitssessionid&selectlink=$!link")
-#set( $argsnoid = "candelete=$candelete&jumptomodule=$!jumptomodule&editpath=$editpath&parentid=$parentid&catalogid=$catalogid&searchtype=$searchtype&fieldexternalid=$fieldexternalid&fieldexternalvalue=$fieldexternalvalue&viewid=$viewid&viewpath=$viewpath&permissionname=$!permissionname&hitssessionid=$!hitssessionid&selectlink=$!link")
+#set( $args = "id=$id&candelete=$candelete&editpath=$editpath&parentid=$parentid&jumptomodule=$!jumptomodule&catalogid=$catalogid&searchtype=${module.id}&fieldexternalid=$fieldexternalid&fieldexternalvalue=$fieldexternalvalue&viewid=$viewid&viewpath=$viewpath&permissionname=$!permissionname&hitssessionid=$!hitssessionid&selectlink=$!link")
+#set( $argsnoid = "candelete=$candelete&jumptomodule=$!jumptomodule&editpath=$editpath&parentid=$parentid&catalogid=$catalogid&searchtype=${module.id}&fieldexternalid=$fieldexternalid&fieldexternalvalue=$fieldexternalvalue&viewid=$viewid&viewpath=$viewpath&permissionname=$!permissionname&hitssessionid=$!hitssessionid&selectlink=$!link")
 
 #set($viewdetailspath = $context.getRequestParameter("viewdetailspath"))
 #set ($passalong = "viewdetailspath=$!viewdetailspath&jumptomodule=$!jumptomodule&candelete=$candelete&viewid=$viewid&viewpath=$viewpath&parentid=$parentid&hitssessionid=$!hitssessionid&selectlink=$!link&fieldexternalid=$fieldexternalid&fieldexternalvalue=$fieldexternalvalue&$fieldexternalid=$!fieldexternalvalue")
@@ -67,7 +67,7 @@
 	<form name="edit${viewid}" class="ajaxform" data-targetdiv="${viewid}editor" method="post" id="edit${viewid}" action="$home$editpath" enctype="multipart/form-data">
 	
 		$context.putPageValue("view", $viewpath)
-		#set ($searcher = $searcherManager.getSearcher($catalogid, $searchtype))
+		#set ($searcher = $searcherManager.getSearcher($catalogid, ${module.id}))
 		$context.putPageValue("searcher", $searcher)
 		#set( $data = $searcher.searchById($id) )
 		$context.putPageValue("data", $data)
@@ -99,7 +99,7 @@
 		<input name="save" type="hidden" value="true" />
 		<input name="permissionname" type="hidden" value="$!permissionname" />
 		
-		<input name="searchtype" type="hidden" value="$searchtype" />
+		<input name="searchtype" type="hidden" value="${module.id}" />
 		<input name="jumptomodule" type="hidden" value="$!jumptomodule" />
 
 		#if ($id)

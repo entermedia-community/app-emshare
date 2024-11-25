@@ -1,4 +1,4 @@
-#set ($searchtype = $context.getRequestParameter("searchtype"))
+#set (${module.id} = $context.getRequestParameter("searchtype"))
 #set ($searchhome = $context.getRequestParameter("searchhome"))
 #set ($parentsearchtype = $context.getRequestParameter("parentsearchtype"))
 $context.putPageValue("searchhome", $searchhome)
@@ -37,8 +37,8 @@ $context.putPageValue("searchhome", $searchhome)
 
 #set( $id = $context.getRequestParameter("id"))
 
-#set( $args = "id=$id&candelete=$candelete&editpath=$editpath&parentid=$parentid&jumptomodule=$!jumptomodule&catalogid=$catalogid&searchtype=$searchtype&fieldexternalid=$fieldexternalid&fieldexternalvalue=$fieldexternalvalue&viewid=$viewid&viewpath=$viewpath&permissionname=$!permissionname&hitssessionid=$!hitssessionid&selectlink=$!link")
-#set( $argsnoid = "candelete=$candelete&jumptomodule=$!jumptomodule&parentid=$parentid&catalogid=$catalogid&searchtype=$searchtype&fieldexternalid=$fieldexternalid&fieldexternalvalue=$fieldexternalvalue&viewid=$viewid&viewpath=$viewpath&permissionname=$!permissionname&hitssessionid=$!hitssessionid")
+#set( $args = "id=$id&candelete=$candelete&editpath=$editpath&parentid=$parentid&jumptomodule=$!jumptomodule&catalogid=$catalogid&searchtype=${module.id}&fieldexternalid=$fieldexternalid&fieldexternalvalue=$fieldexternalvalue&viewid=$viewid&viewpath=$viewpath&permissionname=$!permissionname&hitssessionid=$!hitssessionid&selectlink=$!link")
+#set( $argsnoid = "candelete=$candelete&jumptomodule=$!jumptomodule&parentid=$parentid&catalogid=$catalogid&searchtype=${module.id}&fieldexternalid=$fieldexternalid&fieldexternalvalue=$fieldexternalvalue&viewid=$viewid&viewpath=$viewpath&permissionname=$!permissionname&hitssessionid=$!hitssessionid")
 
 #set( $viewdetailspath = $context.getRequestParameter("viewdetailspath"))
 
@@ -55,14 +55,14 @@ $context.putPageValue("searchhome", $searchhome)
 
 #if( $showit && $viewid)
 <div id="${viewid}editor" >
-	#set ($searcher = $searcherManager.getSearcher($catalogid, $searchtype))
+	#set ($searcher = $searcherManager.getSearcher($catalogid, ${module.id}))
 	#set( $viewdata = $searcher.getViewData($viewid) )
 	
 	<h4 style="float:left;">$!context.getText($viewdata)</h4>
 	
 	<div class="addnew-generic">
 		<a class="btn btn-primary emdialog"  
-			href="$home${page.directory}/generictablesearch.html?submodulesearchtype=$searchtype&fieldexternalid=$fieldexternalid&fieldexternalvalue=$!fieldexternalvalue&parentviewid=$!viewid&parentviewpath=$!viewpath&parentid=$!id&parentsearchtype=$!parentsearchtype" 
+			href="$home${page.directory}/generictablesearch.html?submodulesearchtype=${module.id}&fieldexternalid=$fieldexternalid&fieldexternalvalue=$!fieldexternalvalue&parentviewid=$!viewid&parentviewpath=$!viewpath&parentid=$!id&parentsearchtype=$!parentsearchtype" 
 			data-targetdiv="${viewid}editor"
 			data-parentviewid="$!viewid"
 			data-parentviewpath="$!viewpath"

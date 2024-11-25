@@ -3,8 +3,8 @@
 #set( $moduleid = $context.findValue("searchtype") )
 #set( $viewid = $context.findValue("viewid") )
 
-#set( $searchtype = $context.findValue("searchtype") )
-$context.putPageValue("searcher",$mediaarchive.getSearcher($searchtype))
+#set( ${module.id} = $context.findValue("searchtype") )
+$context.putPageValue("searcher",$mediaarchive.getSearcher($module.id))
 
 #if( !$viewid )	
 	#set($viewid = "${moduleid}general")
@@ -28,7 +28,7 @@ $context.putPageValue("searcher",$mediaarchive.getSearcher($searchtype))
 #set ($fieldexternalvalue = $context.getRequestParameter("fieldexternalvalue"))
 
 #set($targetdiv = $context.getRequestParameter("parenttargetdiv"))
-#set($defaultaction = "$!siteroot$apphome/views/modules/$searchtype/edit/addnewentitysave.html")
+#set($defaultaction = "$!siteroot$apphome/views/modules/${module.id}/edit/addnewentitysave.html")
 
 <div id="default-fields">
     <div id="editlayout">
@@ -43,10 +43,10 @@ $context.putPageValue("searcher",$mediaarchive.getSearcher($searchtype))
     		data-defaultaction="$!defaultaction">
     	<input name="save" type="hidden" value="true" />
     	<input name="id" type="hidden" value="$!id" />
-    	<input name="searchtype" type="hidden" value="$searchtype" />
+    	<input name="searchtype" type="hidden" value="${module.id}" />
     	<input name="viewid" type="hidden" value="$viewid" />
-    	<input name="entitytype" type="hidden" value="$searchtype" />
-    	<input name="module" type="hidden" value="$searchtype" />
+    	<input name="entitytype" type="hidden" value="${module.id}" />
+    	<input name="module" type="hidden" value="${module.id}" />
     	<input name="enablebackbutton" type="hidden" value="true" />
     	
     	
@@ -73,7 +73,7 @@ $context.putPageValue("searcher",$mediaarchive.getSearcher($searchtype))
 			 <i class="bi bi-gear-fill"></i> [[Fields]]</a>
 		#end
 			
-	    #if($permissions.can($searchtype , "create"))
+	    #if($permissions.can(${module.id} , "create"))
 	    <a class="btn btn-sm btn-dark submitform float-left" style="margin-right: 10px;"><i class="fas fa-save"></i>  [[Next]]</a>
 	    
 	    #end

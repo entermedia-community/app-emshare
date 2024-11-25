@@ -2,7 +2,7 @@
 
 #set( $xmledithome = $context.getPageProperty("xmledithome"))
 
-#set( $searchtype = $context.getRequestParameter("searchtype")) ##jointable
+#set( ${module.id} = $context.getRequestParameter("searchtype")) ##jointable
 #set( $candelete = $context.getRequestParameter("candelete")) 
 
 
@@ -21,7 +21,7 @@
 #set ($hitssessionid = $context.getRequestParameter("hitssessionid"))
 #set( $moduleid = $context.findValue("module") )
 			
-#set( $joinsearcher = $searcherManager.getSearcher($catalogid, $searchtype))
+#set( $joinsearcher = $searcherManager.getSearcher($catalogid, ${module.id}))
 #if(!$existingrecords)
 
 	##set ($existingrecords = $joinsearcher.fieldSearch($fieldexternalid,$fieldexternalvalue))
@@ -40,7 +40,7 @@
 #set( $passalong = $context.getRequestParameter("passalong"))
 #set( $passalongdec = $url_util.decode($passalong) )
 #set( $passalong = $url_util.encode($passalongdec) )
-#set( $args = "id=$id&module=$moduleid&hitssessionid=$hitssessionid&catalogid=$catalogId&searchtype=$searchtype&fieldexternalid=$fieldexternalid&fieldexternalvalue=$fieldexternalvalue&candelete=$!candelete&viewpath=$viewpath&viewid=$viewid&editpath=$editpath#if( $passalong )&$passalongdec&passalong=$passalong#end")
+#set( $args = "id=$id&module=$moduleid&hitssessionid=$hitssessionid&catalogid=$catalogId&searchtype=${module.id}&fieldexternalid=$fieldexternalid&fieldexternalvalue=$fieldexternalvalue&candelete=$!candelete&viewpath=$viewpath&viewid=$viewid&editpath=$editpath#if( $passalong )&$passalongdec&passalong=$passalong#end")
   
 
 #set($selectedid = $context.getRequestParameter("selectedid"))

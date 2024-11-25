@@ -8,7 +8,7 @@
 #set($viewsearcher = $searcherManager.getSearcher($catalogid, "view"))
 #set( $viewdata = $viewsearcher.searchById($viewid))
 
-#set( $searchtype = $viewdata.rendertable )
+#set( ${module.id} = $viewdata.rendertable )
 #set( $fieldexternalid = $viewdata.renderexternalid)
 
 #set( $permissionname = "canedit${searchtype}")
@@ -28,7 +28,7 @@
 
 $context.putPageValue("canedittable", $caneditdata)
 #set($ismodule = false )
-#set($ismodule = $searcherManager.getData($catalogid, "module", $searchtype ) )
+#set($ismodule = $searcherManager.getData($catalogid, "module", ${module.id} ) )
 #set($jumptomodule = $context.getRequestParameter("jumptomodule"))
 
 
@@ -39,10 +39,10 @@ $context.putPageValue("canedittable", $caneditdata)
 
 ##TODO: Create a new type of table.html component that runs locally using searchhome and has a TableModel with it passed along with sessionids
 
-#set( $args = "id=$!id&parentid=$id&jumptomodule=$!jumptomodule&catalogid=$mediaarchive.getCatalogId()&searchtype=$searchtype&fieldexternalid=$!fieldexternalid&fieldexternalvalue=$!fieldexternalvalue&listid=$!listid&listexternalid=$!listexternalid&permissionname=$permissionname&hitssessionid=$hitssessionid")
+#set( $args = "id=$!id&parentid=$id&jumptomodule=$!jumptomodule&catalogid=$mediaarchive.getCatalogId()&searchtype=${module.id}&fieldexternalid=$!fieldexternalid&fieldexternalvalue=$!fieldexternalvalue&listid=$!listid&listexternalid=$!listexternalid&permissionname=$permissionname&hitssessionid=$hitssessionid")
 #set( $args = "$args&searchhome=$!{searchhome}/edit&parentsearchtype=$!parentsearchtype")
 
-#if( $searchtype == "librarycollection")
+#if( ${module.id} == "librarycollection")
 	#set( $args = "$args&viewdetailspath=$apphome/views/modules/librarycollection/media/")
 #end
 

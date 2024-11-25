@@ -7,15 +7,15 @@
 #end
 
 #if(!$searcher)
-	#set ( $searchtype = $context.getRequestParameter("searchtype") )
-	#if( $searchtype )
-		#set ( $searcher = $searcherManager.getSearcher($catalogid, $searchtype ) )
+	#set ( ${module.id} = $context.getRequestParameter("searchtype") )
+	#if( ${module.id} )
+		#set ( $searcher = $searcherManager.getSearcher($catalogid, ${module.id} ) )
 	#else		
 		#set ( $searcher = $mediaarchive.assetSearcher )
 	#end
 #end
 #set( $catalogid = $searcher.getCatalogId() )
-#set( $searchtype = $searcher.getSearchType() )
+#set( ${module.id} = $searcher.getSearchType() )
 #if(!$data)
 	#if( $asset )
 		#set( $data = $asset )
@@ -27,7 +27,7 @@
 #end
 
 $context.putPageValue("searcher", $searcher)
-$context.putPageValue("searchtype", $searchtype)
+$context.putPageValue("searchtype", ${module.id})
 
 #set ( $openview = $context.getRequestParameter("openview") )
 #set ( $edit = $context.getRequestParameter("edit") )
@@ -50,7 +50,7 @@ $context.putPageValue("searchtype", $searchtype)
 		<input type="hidden" name="view" value="$view" />
 		<input type="hidden" name="label" value="$label" />
 		
-		#if( $searchtype == "asset" )
+		#if( ${module.id} == "asset" )
 			<input type="hidden" name="field" value="assetid" />
 			<input type="hidden" name="assetid.value" value="$asset.getId()" />
 			<input type="hidden" name="assetid" value="$asset.getId()" />

@@ -1,4 +1,4 @@
-#set ($searchtype = $context.getRequestParameter("searchtype"))
+#set (${module.id} = $context.getRequestParameter("searchtype"))
 #set ($searchhome = $context.getRequestParameter("searchhome"))
 $context.putPageValue("searchhome", $searchhome)
 
@@ -28,7 +28,7 @@ $context.putPageValue("searchhome", $searchhome)
 #set ($id = $context.getRequestParameter("id"))
 
 $context.putPageValue("view", $viewpath)
-#set ($searcher = $searcherManager.getSearcher($catalogid, $searchtype))
+#set ($searcher = $searcherManager.getSearcher($catalogid, ${module.id}))
 $context.putPageValue("searcher", $searcher)
 
 #set( $data = $searcher.searchById($id) )
@@ -42,7 +42,7 @@ $context.putPageValue("data", $data)
 	#if( $viewdetailspath )
 	
 		#set($themodule = false )
-		#set($themodule = $searcherManager.getData($catalogid, "module", $searchtype ) )
+		#set($themodule = $searcherManager.getData($catalogid, "module", ${module.id} ) )
 		<div style="padding: 10px;">
 				<a href="$home$viewdetailspath${id}.html">
 				<div class="largeicon" title="[[see more details]]"><i class="fas fa-external-link-alt"></i> [[View In $themodule]]	</div> 

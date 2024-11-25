@@ -1,4 +1,4 @@
-#set($searchtype = $context.getRequestParameter("submodulesearchtype"))
+#set(${module.id} = $context.getRequestParameter("submodulesearchtype"))
 #set($parentsearchtype = $context.getRequestParameter("parentsearchtype"))
 #set($parentviewid = $context.getRequestParameter("parentviewid"))
 #set($parentviewpath = $context.getRequestParameter("parentviewpath"))
@@ -12,7 +12,7 @@
 <div id="search-entities-modal" class="searchonetomany" >
 
 	
-	#set($predata = $mediaarchive.getSearcher($searchtype).createNewData())
+	#set($predata = $mediaarchive.getSearcher($module.id).createNewData())
 	$predata.setValue($fieldexternalid, $fieldexternalvalue)
 	$context.putPageValue("data", $predata)
 	
@@ -94,7 +94,7 @@ class="btn btn-sm btn-blue" >[[Choose From Existing]]</a></h5>
 		data-fieldexternalid="$fieldexternalid"
 		data-fieldexternalvalue="$fieldexternalvalue"
 		data-clickurl="${page.directory}/generictablesavesubmodule.html"
-		data-submodulesearchtype="$searchtype"
+		data-submodulesearchtype="${module.id}"
 		data-parentsearchtype="$!{parentsearchtype}"
 		data-viewid="$!parentviewid"
 		data-viewpath="$!parentviewpath"
