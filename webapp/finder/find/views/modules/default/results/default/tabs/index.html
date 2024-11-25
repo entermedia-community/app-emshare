@@ -32,18 +32,12 @@ $context.putPageValue("enttiyviews", $enttiyviews)
 	#set($entitymoduleviewid = $enttiyviews.first().getId())
 #end
 
-#ifnotnull($entitymoduleviewid)
-		#set($entityviewdata = $mediaarchive.getCachedData("view", $entitymoduleviewid))
-#end
-
-$context.putPageValue("entitymoduleviewid", $entitymoduleviewid)
-$context.putPageValue("entityviewdata", $entityviewdata)
 
 #set($saveaction = $context.getRequestParameter("saveaction"))
 #set($addnew = $context.getRequestParameter("addnew"))
-#if ($addnew)
 
-	#set($entitytabopen = $firstviewid)
+#if ($addnew =="true")
+	#set($entitymoduleviewid = $enttiyviews.first().getId())
 #else
 	##check if saveaction
 	#if($saveaction == "upload")
@@ -51,8 +45,13 @@ $context.putPageValue("entityviewdata", $entityviewdata)
 	#end
 #end
 
+#ifnotnull($entitymoduleviewid)
+	#set($entityviewdata = $mediaarchive.getCachedData("view", $entitymoduleviewid))
+#end
+$context.putPageValue("entitymoduleviewid", $entitymoduleviewid)
+$context.putPageValue("entityviewdata", $entityviewdata)
+
 <div class="entitydialog #if($enablebackbutton || $addnew) enablebackbtn #end "
-	##id="#eid($!dialogtabid)" 
 	data-entityid="$!entity.id"
 	data-entitymoduleid="$!entitymodule.id"
 	data-entitymoduleviewid="$!entitymoduleviewid"

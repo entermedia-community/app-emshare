@@ -20,7 +20,7 @@ $context.putPageValue("tabmode", $tabmode)
 		<div class='entityimport auto-active-container overflow-y'>
 			#if($permissions.can($module.id, "shareentity"))	
 				<div class='auto-active-row #if($tabsection=="share") current #end'>
-				<a href="$componenthome/share/entity.html?entityid=$!{entityid}&defaultcategoryid=$!defaultcategory.getId()"
+				<a href="$componenthome/share/entity.html?entityid=$!{entity.id}&defaultcategoryid=$!defaultcategory.getId()"
 				class='btn btn-lg btn-wide ajax auto-active-link'
 				data-targetdivinner="tabexportcontent"
 				data-oemaxlevel="1"><i class="bi bi-share-fill"></i> <span>[[Share Links]]</span></a>
@@ -28,15 +28,15 @@ $context.putPageValue("tabmode", $tabmode)
 			#end	
 			#if($permissions.can($module.id, "publishinggallery"))	
 				<div class='auto-active-row #if($tabsection=="sharegallery") current #end'>
-				<a href="${searchhome}/tabs/preview/tabpublishing_gallery.html?entityid=$!{entityid}&defaultcategoryid=$!defaultcategory.getId()"
+				<a href="$apphome/views/modules/${module.id}/editors/entitygallery/index.html?entityid=$!{entity.id}&defaultcategoryid=$!defaultcategory.getId()"
 				class='btn btn-lg btn-wide ajax auto-active-link'
-				data-targetdivinner="tabexportcontent"
+				data-targetdiv="tabexportcontent"
 				data-oemaxlevel="1"><i class="bi bi-columns-gap"></i> <span>[[Publish Gallery]]</span></a>
 				</div>
 				
 				
 				<div class='auto-active-row #if($tabsection=="sharecarousel") current #end'>
-				<a href="${searchhome}/tabs/preview/tabpublishing_carousel.html?entityid=$!{entityid}&defaultcategoryid=$!defaultcategory.getId()"
+				<a href="${searchhome}/tabs/preview/tabpublishing_carousel.html?entityid=$!{entity.id}&defaultcategoryid=$!defaultcategory.getId()"
 				class='btn btn-lg btn-wide ajax auto-active-link'
 				data-targetdivinner="tabexportcontent"
 				data-oemaxlevel="1"><i class="bi bi-images"></i> <span>[[Publish Carousel]]</span></a>
@@ -57,7 +57,7 @@ $context.putPageValue("tabmode", $tabmode)
 				data-oemaxlevel="1"
 				data-targetcategoryid="$!defaultcategory.id"
 				data-tabsection="copy"
-				href="$componenthome/entities/copydialog.html?entityid=$!{entityid}&defaultcategoryid=$defaultcategory.getId()">
+				href="$componenthome/entities/copydialog.html?entityid=$!{entity.id}&defaultcategoryid=$defaultcategory.getId()">
 				<i class="bi bi-folder-plus"></i> <span>[[Copy]]</span></a>
 			</div>
 			#end
@@ -68,7 +68,7 @@ $context.putPageValue("tabmode", $tabmode)
 				data-oemaxlevel="1"
 				data-tabsection="move"
 				data-targetcategoryid="$!defaultcategory.id"
-				href="$componenthome/entities/movedialog.html?entityid=$!{entityid}&defaultcategoryid=$defaultcategoryid">
+				href="$componenthome/entities/movedialog.html?entityid=$!{entity.id}&defaultcategoryid=$defaultcategoryid">
 				<i class="bi bi-folder-plus"></i> <span>[[Move]]</span></a>
 			</div>
 			#end
@@ -82,7 +82,7 @@ $context.putPageValue("tabmode", $tabmode)
 				data-oemaxlevel="1"
 				data-tabsection="download"
 				title="[[Download All Files]]"
-				href="$componenthome/entities/download.html?entityid=$!{entityid}&defaultcategoryid=$defaultcategory.getId()">
+				href="$componenthome/entities/download.html?entityid=$!{entity.id}&defaultcategoryid=$defaultcategory.getId()">
 				<i class="bi bi-folder"></i> <span>[[Download Zip]]</span></a>
 				</div>
 			#end
@@ -93,7 +93,7 @@ $context.putPageValue("tabmode", $tabmode)
 				<a  class='btn btn-lg btn-wide ajax auto-active-link '
 					data-targetdivinner="tabexportcontent"
 					data-oemaxlevel="1"
-					data-entityid="$!{entityid}"
+					data-entityid="$!{entity.id}"
 					data-defaultcategoryid="$!defaultcategory.getId()"
 					data-tabsection="pulllocal"
 					href="$componenthome/desktop/export/pull.html">
@@ -102,46 +102,22 @@ $context.putPageValue("tabmode", $tabmode)
 				</div>
 				#end
 				
-				#if($content.publishexternal)
-				<div class="border-top w-100" style="margin-bottom: 12px;"></div>
-				<div class="auto-active-row">
-					<a class="ajax btn btn-lg btn-wide auto-active-link "
-						data-targetdivinner="tabexportcontent"
-						data-oemaxlevel="1"
-						href="$componenthome/entities/metadata/export/onix.html?id=$!searchby">
-						<i class="bi bi-filetype-xml"></i> <span>[[ONIX]]</span></a>
-				</div>
-				<div class="auto-active-row">
-					<a class="ajax btn btn-lg btn-wide auto-active-link "
-						data-targetdivinner="tabexportcontent"
-						data-oemaxlevel="1"
-						href="$componenthome/entities/metadata/export/dita.html?id=$!searchby">
-						<i class="bi bi-filetype-xml"></i> <span>[[DITA]]</span></a>
-				</div>
-				<div class="auto-active-row">
-					<a class="ajax btn btn-lg btn-wide auto-active-link "
-						data-targetdivinner="tabexportcontent"
-						data-oemaxlevel="1"
-						href="$componenthome/entities/metadata/export/scorm.html?id=$!searchby">
-						<i class="bi bi-file-zip"></i> <span>[[SCORM]]</span></a>
-				</div> 
-				#end
 		</div>
 		 
 		
 		<div id="tabexportcontent" class="entitytabcolumcontent">
 			#if($tabsection=="share")
-				$pages.include("$componenthome/share/entity.html?entityid=$!{entityid}", $context)
+				$pages.include("$componenthome/share/entity.html?entityid=$!{entity.id}", $context)
 			#elseif($tabsection=="sharegallery")
-				$pages.include("${searchhome}/tabs/preview/tabpublishing_gallery.html?entityid=$!{entityid}&defaultcategoryid=$defaultcategory.getId()", $context)
+				$pages.include("${searchhome}/tabs/preview/tabpublishing_gallery.html?entityid=$!{entity.id}&defaultcategoryid=$defaultcategory.getId()", $context)
 			#elseif($tabsection=="sharecarousel")
-				$pages.include("${searchhome}/tabs/preview/tabpublishing_carousel.html?entityid=$!{entityid}&defaultcategoryid=$defaultcategory.getId()", $context)
+				$pages.include("${searchhome}/tabs/preview/tabpublishing_carousel.html?entityid=$!{entity.id}&defaultcategoryid=$defaultcategory.getId()", $context)
 			#elseif($tabsection=="copy")
-				$pages.include("$componenthome/entities/copydialog.html?entityid=$!{entityid}&defaultcategoryid=$defaultcategory.getId()", $context)
+				$pages.include("$componenthome/entities/copydialog.html?entityid=$!{entity.id}&defaultcategoryid=$defaultcategory.getId()", $context)
 			#elseif($tabsection=="downloadzip")
-				$pages.include("$componenthome/entities/download.html?entityid=$!{entityid}&defaultcategoryid=$defaultcategory.getId()", $context)
+				$pages.include("$componenthome/entities/download.html?entityid=$!{entity.id}&defaultcategoryid=$defaultcategory.getId()", $context)
 			#elseif($tabsection=="pulllocal")
-				$pages.include("$componenthome/desktop/export/pull.html?entityid=$!{entityid}&defaultcategoryid=$defaultcategory.getId()", $context)
+				$pages.include("$componenthome/desktop/export/pull.html?entityid=$!{entity.id}&defaultcategoryid=$defaultcategory.getId()", $context)
 			#end
 		</div>
 		

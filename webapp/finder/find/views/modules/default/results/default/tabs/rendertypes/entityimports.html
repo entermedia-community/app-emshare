@@ -72,7 +72,7 @@ $context.putPageValue("tabmode", $tabmode)
 					<a  class="btn btn-lg btn-wide ajax auto-active-link "
 					data-targetdivinner="tabimportcontent"
 					data-oemaxlevel="1"
-					data-entityid="$!{entityid}"
+					data-entityid="$!{entity.id}"
 					data-defaultcategoryid="$!defaultcategory.getId()"
 					data-tabsection="pushlocal"
 					href="$componenthome/desktop/import/push.html">
@@ -85,7 +85,7 @@ $context.putPageValue("tabmode", $tabmode)
 
 		<div id="tabimportcontent" class="overflow-y entitytabcolumcontent">
 			#if($tabsection=="pushlocal")
-				$pages.include("$componenthome/desktop/import/push.html?entityid=$!{entityid}&moduleid=$!{topmoduleid}&defaultcategoryid=$defaultcategory.getId()", $context)
+				$pages.include("$componenthome/desktop/import/push.html?entityid=$!{entity.id}&moduleid=$!{topmoduleid}&defaultcategoryid=$defaultcategory.getId()", $context)
 			#else
 				#if($entitymodule.getBoolean("enableuploading") && ($permissions.can($moduleid, "upload_files") || $permissions.can($moduleid, "upload_folfers")) )
 					$pages.include("$apphome/views/modules/asset/add/tabentityaddmedia.html?categoryid=$!defaultcategory.getId()")

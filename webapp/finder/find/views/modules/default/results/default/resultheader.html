@@ -75,11 +75,14 @@ $context.putPageValue("entityrendertype", $entityrendertype)
 						#end
 						
 						#ifnull($entity)
-							#set($addurl = "${searchhome}/tabs/preview/$!{entityrendertype}.html?edit=true&addnew=true&viewid=$!{moduleid}addnew")
+							#set($addurl = "${searchhome}/tabs/index.html?edit=true&addnew=true&viewid=$!{moduleid}addnew")
 							#ifnotnull($topentityid)
 								#set($addurl = "$addurl&fieldexternalid=${topmodule.getId()}&fieldexternalvalue=${topentityid}&reloadtargets=topmodulecontainer")
 							#end
-							<a class="emdialog resultsnavlink focused-btn" href="$addurl" title="[[Add New Record]]">
+							<a class="emdialog resultsnavlink focused-btn" 
+								href="$addurl" 
+								data-addnew="true"
+								title="[[Add New Record]]">
 								<i class="bi bi-plus-lg mr-1"></i> [[Create New]]
 							</a>
 						#end
