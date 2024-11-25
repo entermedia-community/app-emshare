@@ -3166,17 +3166,19 @@ lQuery(".entityNavHistory").livequery(function () {
 		history.push($(this).data());
 	});
 	var link = $(".entityNavBack");
+	console.log(link.data());
 	var currentLinkIdx = history.findIndex(function (d) {
 		return d.entityid == link.data("entityid");
 	});
 	if (currentLinkIdx > 0) {
 		var backLink = history[currentLinkIdx - 1];
-		link.attr("data-entityid", backLink.entityid);
-		link.attr("data-entitymoduleid", backLink.entitymoduleid);
-		link.attr("data-entitymoduleviewid", backLink.entitymoduleviewid);
-		link.attr("data-url", backLink.url);
+		link.data("entityid", backLink.entityid);
+		link.data("entitymoduleid", backLink.entitymoduleid);
+		link.data("entitymoduleviewid", backLink.entitymoduleviewid);
+		link.data("url", backLink.url);
 		link.attr("href", backLink.url);
 		link.show();
+		console.log(link.data());
 	}
 	// }
 	// entityNavBack
