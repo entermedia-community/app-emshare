@@ -1,27 +1,26 @@
-#set($enttiyviews = $viewsearcher.query().exact("moduleid", $module.id).exact("systemdefined","false").sort("orderingUp").search($context) )
-$context.putPageValue("enttiyviews", $enttiyviews)
 
 <nav>
 	<div class="nav nav-tabs entity-navigation" id="entity-nav-tab" role="tablist" 
 		data-tabmenuurl="tabs/dialogbutton.html">
-		#ifnull($id)
-			#set( $entitymoduleviewid = $firstviewid)
-			$context.putPageValue("viewid", $entitymoduleviewid)
-			#set( $viewdata = $viewsearcher.searchById($entitymoduleviewid))
-			$context.putPageValue("viewdata", $viewdata)
-			#set($entitytabopen = $firstviewid)
-			$context.putPageValue("currenttab", $entitytabopen)
+
+		#ifnotnull($entitymoduleviewid)
+			#set( $openotherview = true )
+		#end
+		
+		#foreach( $targetview in $enttiyviews)
+			#if( $targetview.id  == $entitymoduleviewid)
+				#set( $openotherview = false )
+			#end
+			$context.putPageValue("viewdata", $targetview)
 			$pages.include("${searchhome}/tabs/dialogbutton.html", $context)
 		#end
-		#ifnotnull($id)  
-			#if($enttiyviews)		
-				$context.putPageValue("currenttab", $entitytabopen)
-				
-				#foreach( $targetview in $enttiyviews)
-					$context.putPageValue("viewdata", $targetview)
-					$pages.include("${searchhome}/tabs/dialogbutton.html", $context)
-				#end
-			#end	
+
+		#ifnotnull($entitymoduleviewid)
+			#if($openotherview)
+				#set( $entityviewdata = $mediaarchive.getCachedData("view",$entitymoduleviewid))
+				$context.putPageValue("viewdata", $entityviewdata)
+				$pages.include("${searchhome}/tabs/dialogbutton.html", $context)
+			#end
 		#end
 		
 		

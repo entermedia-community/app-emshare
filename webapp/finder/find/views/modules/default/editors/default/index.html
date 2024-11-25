@@ -1,11 +1,5 @@
-#if(!$searchtype)
-	#set($searchtype = $context.getRequestParameter("searchtype"))
-	$context.putPageValue("searchtype",$searchtype)
-#end
-#if(!$searchtype)
-	#set( $searchtype = $context.findValue("module"))
-	$context.putPageValue("searchtype",$searchtype)
-#end
+$context.putPageValue("searchtype",$module.getId())
+
 #ifnull($id)
 	#set( $id = $context.getRequestParameter("entityid"))
 	$context.putPageValue("id", $id)
@@ -13,7 +7,7 @@
 
 #set( $ismulti = $id.startsWith("multiedit:") || $context.getRequestParameter("multi") == "true")
 
-#if(!$data)
+#ifnull($data)
 	#set($data = $entity)
 #end
 
@@ -29,15 +23,9 @@
 
 $context.putPageValue("data",$data)
 
-#set( $searcher = $mediaarchive.getSearcher($searchtype) )
+#set( $searcher = $mediaarchive.getSearcher($module.id) )
 $context.putPageValue("searcher",$searcher)
 
-#if(!$moduleid)
-	#set($moduleid = $context.getRequestParameter("moduleid"))
-#end
-#if(!$moduleid)
-	#set($moduleid = $searchtype)
-#end
 
 #set($edit = $context.getRequestParameter("edit"))
 #if($edit!="true")

@@ -1,32 +1,18 @@
 
-#ifnull($entitymoduleviewid)
-	#set($entitymoduleviewid = $context.getRequestParameter("entitymoduleviewid"))
-#end
-#set($viewdata = $mediaarchive.getCachedData("view",$entitymoduleviewid))
 
-#set( $submoduleid = $viewdata.rendertable )
+<div id="$!submoduleresults" class="submodulepicker">
+	
+#set($submoduleid = $!entityviewdata.rendertable)
 
-#if(!$currenttab)
-	#set($currenttab = $context.getRequestParameter("currenttab"))
-#end
- 
-#if($submoduleid)
-	<div id="tab_${entitymoduleviewid}" 
-		class="editentitymetadata-submodule entity-tab-content tabtypetabsubmodulehome onetomanytab" 
-		data-tabtype="tabsubmodulehome"
-		data-viewid="$!viewid"
-		data-currenttab="$currenttab"
-		data-submoduleid="$!submoduleid"
-		data-viewid="$!viewid"
-		data-parentid="$!parentid"
-		data-url="${searchhome}/tabs/preview/tabsubmodulehome.html"
-		#if($hidesubmodule) style="display: none; #end">
+#set($module = $mediaarchive.getCachedData("module",$submoduleid))
+$context.putPageValue("module", $module)
+#set($searchhome = "$apphome/views/modules/${submoduleid}/results/submoduleslist")
+$context.putPageValue("searchhome", $searchhome)
+
+#set($sortby = $!entityviewdata.rendersort)
+#set($args = "field=$!{entitymodule.id}&$!{entitymodule.id}.value=$!{entity.id}&operation=exact")
+#set($args = "$args&sortby=$!sortby&entitymoduleviewid=$entitymoduleviewid")
+
+$pages.include("${searchhome}/search.html?$!args",$context)
 		
-			#set($searchhome = "$apphome/views/modules/${module.id}/results/submoduleslist")
-			$context.putPageValue("searchhome", $searchhome)
-			$pages.include("${searchhome}/index.html?entitymoduleviewid=$!viewid",$context)
-		
-	</div>
-	
-	
-#end
+</div>

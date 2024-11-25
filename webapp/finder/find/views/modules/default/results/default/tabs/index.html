@@ -32,24 +32,27 @@ $context.putPageValue("ismulti", $ismulti)
 	#end
 #end
 
+
+#set($enttiyviews = $mediaarchive.query("view").exact("moduleid", $module.id).exact("systemdefined","false").sort("orderingUp").search($context) )
+$context.putPageValue("enttiyviews", $enttiyviews)
+
+
+
 #set($entitymoduleviewid = $context.getRequestParameter("entitymoduleviewid"))
 
-#ifnull($id)
+#ifnull($entitymoduleviewid)
+	#set( $entitymoduleviewid = $userprofile.get("${module.id}_entitytabopen"))
+#end
+#ifnull($entitymoduleviewid)
 	#set($entitymoduleviewid = $enttiyviews.first().getId())
 #end
-#ifnotnull($id)
-	#ifnull($entityviewdata)
-		#ifnull($entitymoduleviewid)
-			#set( $entitymoduleviewid = $userprofile.get("${module.id}_entitytabopen"))
-		#end
-		#ifnull($entitymoduleviewid)
-			#set($entitymoduleviewid = $enttiyviews.first().getId())
-		#end
+
+#ifnotnull($entitymoduleviewid)
 		#set($entityviewdata = $mediaarchive.getCachedData("view", $entitymoduleviewid))
-		$context.putPageValue("entitymoduleviewid", $entitymoduleviewid)
-		$context.putPageValue("entityviewdata", $entityviewdata)
-	#end
 #end
+
+$context.putPageValue("entitymoduleviewid", $entitymoduleviewid)
+$context.putPageValue("entityviewdata", $entityviewdata)
 
 #set($saveaction = $context.getRequestParameter("saveaction"))
 #set($addnew = $context.getRequestParameter("addnew"))
@@ -87,12 +90,25 @@ $context.putPageValue("ismulti", $ismulti)
 		$pages.include("${searchhome}/tabs/dialogtabbuttons.html", $context)
 		
 		#set($rendertype = $entityviewdata.rendertype)
+		
+		#ifnull($rendertype)
+			#set($rendertype = "default")  
+		#end
+		
 		#if($rendertype == "table")
 			#set($rendertype = "tabsubmodulehome")
 		#end
+		
 		<div class="entity-tab-content tabtype$!rendertype">
+		
+			#ifnull($entityviewdata)
+				Please select a tab for $entitymoduleviewid		
+			#end
 			
-			$pages.include("${searchhome}/tabs/rendertypes/${rendertype}.html", $context)
+			#ifnotnull($entityviewdata)
+				$context.putPageValue("viewdata", $entityviewdata)
+				$pages.include("${searchhome}/tabs/rendertypes/${rendertype}.html", $context)
+			#end
 		</div>
 			
 </div>
