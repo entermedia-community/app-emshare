@@ -19,39 +19,24 @@
 	</div>
 	#end
 	
-	
-	#set($pickersearchaddnew = $context.getRequestParameter("pickersearchaddnew"))
-	
-	#if($moduleid != "asset")
-		#if($pickersearchaddnew)
-			#set($addnew = "$apphome/views/modules/${module.id}/components/entities/addnew.html")
-			<a class="btn btn-lg btn-accent rounded mb-3 ajax float-left" style="min-width: 150px;"
+	#if($module.id != "asset")
+			#set($addnew = "$apphome/views/modules/${module.id}/editors/entitysubmodules/addnew.html")
+			<a class="btn btn-lg btn-accent rounded mb-3 float-left emdialog"
+			data-dialogid="entitypicker"
+			data-hidefooter="true"
 			data-targetdivinner="pickersearchentities"
-			data-pickertarget="$!pickertarget"
-			data-targettype="$!targettype"
-			data-ajaxreloadtargets="onetomanytab"
-			data-fieldexternalid="$!fieldexternalid"
-			data-fieldexternalvalue="$!fieldexternalvalue"
-			data-oemaxlevel="1"
-			href="$addnew">
+			data-ajaxreloadtargets="emdialog"
+			data-fieldexternalid="$entitymodule.id"
+			data-fieldexternalvalue="$entity.id"
+			data-entityid="$entity.id"
+			data-entitymoduleid="$entitymodule.id"
+			data-entitymoduleviewid="$entitymoduleviewid"
+			data-edithome="${edithome}"
+			href="$addnew"
+			title="[[Create New]] #text($module)">
 			<i class="bi bi-plus-lg mr-1"></i> [[Create New]]</a>
-		#else
-			#set($addnew = "${searchhome}/tabs/index.html")
-			
-			#if($pickedassetid)
-				#set($addnew = "${addnew}?edit=true&addnew=true&viewfiles=true&saveaction=addassets&pickedassetid=$!pickedassetid&copyingsearchtype=asset")
-			#elseif($copyingcategoryid)
-				#set($addnew = "${addnew}?edit=true&addnew=true&viewfiles=true&copyingsearchtype=$!copyingsearchtype&saveaction=additems&copyingcategoryid=$!copyingcategoryid&moduleid=$moduleid")
-			#elseif($copyinghits)
-				#set($addnew = "${addnew}?edit=true&addnew=true&viewfiles=true&copyingsearchtype=$!copyingsearchtype&saveaction=additems&copyinghitssessionid=$!copyinghitssessionid&moduleid=$moduleid")
-			#else
-				#set($addnew = "${addnew}?edit=true&addnew=true&saveaction=upload")
-			#end
-			<a class="btn btn-lg btn-accent rounded mb-3 emdialog float-righ" style="min-width: 150px;"
-			data-dialogid="addnewentity"
-			href="$addnew">
-			<i class="bi bi-plus-lg mr-1"></i> [[Create New]]</a>
-		#end 
-	#end
+		#end
+	
+	
 	<div class="clearfix"></div>
 </div>
