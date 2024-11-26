@@ -1,0 +1,25 @@
+#set($category =  $mediaarchive.getEntityManager().createDefaultFolder($entity, $context.getUser()))
+$context.putPageValue("category", $category)
+$context.putPageValue("categoryid", $category.getId())
+		
+#set($module = $mediaarchive.getCachedData("module", "asset"))
+$context.putPageValue("module", $module)
+$context.putPageValue("moduleid", $module.getId())
+
+#set($searchhome = "$apphome/views/modules/asset/results/categorywithtree")
+$context.putPageValue("searchhome", $searchhome)
+$context.putPageValue("searchhomeid", "categorywithtree")
+
+
+<div id="$edithomeid" 
+	class="entity-tab-content entity-tab-media tabtypemedia" 
+	data-entityid="$!entity.id"
+	data-entitymoduleid="$!entitymodule.id"
+	data-entitymoduleviewid="$entitymoduleviewid"
+	data-oemaxlevel="1"
+	data-url="$edithome/index.html"
+>
+
+
+$pages.include("${searchhome}/index.html", $context)
+</div>

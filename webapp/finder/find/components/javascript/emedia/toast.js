@@ -29,20 +29,21 @@ $(window).on("showToast", function (_, anchor) {
 	);
 	toastTO = setTimeout(function () {
 		$(".toastList").append(toast);
-	}, delay);
 
-	var selector = "";
-	var anchorId = anchor.attr("id");
-	if (anchorId) {
-		selector = "#" + anchorId;
-	}
-	var anchorClass = anchor.attr("class");
-	if (anchorClass) {
-		selector += "." + anchorClass.split(" ").join(".");
-	}
-	console.log({
-		["[data-uid='" + uid + "']"]: { selector, innerText: anchor.text() },
-	});
+		// debug toast
+		// var selector = "";
+		// var anchorId = anchor.attr("id");
+		// if (anchorId) {
+		// 	selector = "#" + anchorId;
+		// }
+		// var anchorClass = anchor.attr("class");
+		// if (anchorClass) {
+		// 	selector += "." + anchorClass.split(" ").join(".");
+		// }
+		// console.log({
+		// 	["[data-uid='" + uid + "']"]: { selector, innerText: anchor.text() },
+		// });
+	}, delay);
 });
 
 lQuery(".toastClose").livequery("click", function () {
