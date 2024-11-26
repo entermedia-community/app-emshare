@@ -1,17 +1,16 @@
 ##edit/addnew.html?viewid=projectgeneral&viewpath=project/projectgeneral&hitssessionid=hitsprojectfinder/catalog
 
-#set( $moduleid = $context.findValue("searchtype") )
+
 #set( $viewid = $context.findValue("viewid") )
 
-#set( ${module.id} = $context.findValue("searchtype") )
 $context.putPageValue("searcher",$mediaarchive.getSearcher($module.id))
 
 #if( !$viewid )	
-	#set($viewid = "${moduleid}general")
+	#set($viewid = "${module.id}general")
 #end
 
 #if( !$viewpath )	
-	#set($viewpath = "${moduleid}/$viewid")
+	#set($viewpath = "${module.id}/$viewid")
 #end
 
 
@@ -20,45 +19,33 @@ $context.putPageValue("searcher",$mediaarchive.getSearcher($module.id))
 	#set( $id = $context.getRequestParameter("id") )
 #end
 
-#set($parentsearchtype = $context.getRequestParameter("parentsearchtype"))
-#set($parentid = $context.getRequestParameter("parentid"))
-#set($parentviewid = $context.getRequestParameter("parentviewid"))
-
 #set ($fieldexternalid = $context.getRequestParameter("fieldexternalid"))
 #set ($fieldexternalvalue = $context.getRequestParameter("fieldexternalvalue"))
 
-#set($targetdiv = $context.getRequestParameter("parenttargetdiv"))
-#set($defaultaction = "$!siteroot$apphome/views/modules/${module.id}/edit/addnewentitysave.html")
+#set($pickertargetfield = $context.getRequestParameter("pickertargetfield"))
+
+#set($action = "${edithome}/addnewentitytofieldsave.html")
 
 <div id="default-fields">
     <div id="editlayout">
     <form id="dataeditor" 
     		name="dataeditor" 
     		class="ajaxform" 
-    		data-targetdiv="$!targetdiv"
+    		data-targetdiv="entitypicker${pickertargetfield}"
     		data-oemaxlevel="1"
     		data-ajaxreloadtargets="topmodulecontainer"
-    		data-onsuccess="formsavebackbutton"
     		method="post"  
-    		data-defaultaction="$!defaultaction">
+    		action="$!action">
+    		
     	<input name="save" type="hidden" value="true" />
     	<input name="id" type="hidden" value="$!id" />
-    	<input name="searchtype" type="hidden" value="${module.id}" />
     	<input name="viewid" type="hidden" value="$viewid" />
-    	<input name="entitytype" type="hidden" value="${module.id}" />
-    	<input name="module" type="hidden" value="${module.id}" />
-    	<input name="enablebackbutton" type="hidden" value="true" />
+    	<input name="enablebackbutton" type="hidden" value="true" />  
     	
-    	
-    	<input name="parentsearchtype" type="hidden" value="$!parentsearchtype" />
-    	<input name="parentid" type="hidden" value="$!parentid" />
-    	
-    	#if($fieldexternalid)
-			##<input name="operation" value="not" type="hidden">
-			<input name="field" value="$fieldexternalid" type="hidden">
-			<input name="${fieldexternalid}.value" value="$fieldexternalvalue" type="hidden">
-		#end
-    	
+    	<input name="pickertargetfield" type="hidden" value="${pickertargetfield}" />	
+    	<input name="entityid" type="hidden" value="${entity.id}" />
+    	<input name="entitymoduleid" type="hidden" value="${entitymodule.id}" />
+   	
     	
     	$context.putPageValue("view", $viewpath)
     	$context.putPageValue("viewid", $viewid)
@@ -68,10 +55,6 @@ $context.putPageValue("searcher",$mediaarchive.getSearcher($module.id))
 		
 		$pages.include("/$applicationid/components/xml/detaileditor-entities.html", $context)
 		<div style="padding:10px 0 0 0">
-		#if( $caneditmetadatasetup )
-			 <a class=" float-right btn btn-sm btn-secondary" href="$siteroot$apphome/views/settings/modules/${searcher.searchType}/metadata/views/index.html?viewid=$viewid&viewpath=$viewpath">
-			 <i class="bi bi-gear-fill"></i> [[Fields]]</a>
-		#end
 			
 	    #if($permissions.can(${module.id} , "create"))
 	    <a class="btn btn-sm btn-dark submitform float-left" style="margin-right: 10px;"><i class="fas fa-save"></i>  [[Next]]</a>
@@ -84,9 +67,6 @@ $context.putPageValue("searcher",$mediaarchive.getSearcher($module.id))
 	    #else
 	    	<button id="closebutton" type="button" class="btn btn-sm btn-dark float-left" data-dismiss="modal">[[Close]]</button>
 	    #end
-	    ###if($caneditdata || $candelete)	
-	    ##<a class="btn btn-sm btn-danger ajax" data-targetdiv="editlayout" data-confirm="[[Are you sure]]?" style="margin-righ:10px;" href="$siteroot$content.searchhome/edit/delete.html?id=$data.id&catalogid=$searcher.catalogId&searchtype=$searcher.searchType&viewid=$viewid&viewpath=$viewpath&oemaxlevel=1" style="margin: 20px 20px 0 0;">[[Delete]]</a>
-	    ###end
 		
 		<div class="clearfix"></div>
 		</div>

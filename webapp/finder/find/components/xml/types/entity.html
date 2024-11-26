@@ -49,18 +49,20 @@ $context.putPageValue("detail",$detail)
 	#set($pickmoduleid = $detail.getListId())
 	
 	#set($pickerurl= "$applink/views/modules/$!{pickmoduleid}/results/pickerforfield/index.html")
-	#set($module = $mediaarchive.getCachedData("module", $pickmoduleid ))
+	#set($pickmodule = $mediaarchive.getCachedData("module", $pickmoduleid ))
 	#set($label = "[[Choose]]")
 	#if($ismulti)
-		#set($label = "[[Add]] #text($module)")
+		#set($label = "[[Add]] #text($pickmodule)")
 	#end 
 	<a href="$pickerurl" 
 		class="emdialog btn btn-secondary"
 		data-dialogid="dialogpicker$!{entity_module}"
 		data-width="1200"
-		data-pickertargetfield="entitypicker${detail.id}"
+		data-pickertargetfield="${detail.id}"
+		data-entityid="${entity.id}"
+		data-entitymoduleid="${module.id}"
 		data-hidefooter="true"
-		title="[[Add]] #text($module)"><i class="bi bi-plus-lg mr-1"></i> $label</a>
+		title="[[Add]] #text($pickmodule)"><i class="bi bi-plus-lg mr-1"></i> $label</a>
 </div>	
 	
 	

@@ -20,38 +20,19 @@
 	#end
 	
 	
-	#set($pickersearchaddnew = $context.getRequestParameter("pickersearchaddnew"))
+	#if($module.id != "asset")
 	
-	#if($moduleid != "asset")
-		#if($pickersearchaddnew)
-			#set($addnew = "$apphome/views/modules/${moduleid}/components/entities/addnew.html")
+			#set($addnew = "$apphome/views/modules/${module.id}/editors/data/addnewentity.html")
+			
 			<a class="btn btn-lg btn-accent rounded mb-3 ajax float-left" style="min-width: 150px;"
-			data-targetdivinner="pickersearchentities"
-			data-pickertarget="$!pickertarget"
-			data-targettype="$!targettype"
-			data-ajaxreloadtargets="onetomanytab"
-			data-fieldexternalid="$!fieldexternalid"
-			data-fieldexternalvalue="$!fieldexternalvalue"
+			data-targetdiv="searchcategorypickerforfield"
+			data-pickertargetfield="${pickertargetfield}"
+			data-entityid="${entity.id}"
+			data-entitymoduleid="${entitymodule.id}"
 			data-oemaxlevel="1"
 			href="$addnew">
 			<i class="bi bi-plus-lg mr-1"></i> [[Create New]]</a>
-		#else
-			#set($addnew = "${searchhome}/tabs/index.html")
-			
-			#if($pickedassetid)
-				#set($addnew = "${addnew}?edit=true&addnew=true&viewfiles=true&saveaction=addassets&pickedassetid=$!pickedassetid&copyingsearchtype=asset")
-			#elseif($copyingcategoryid)
-				#set($addnew = "${addnew}?edit=true&addnew=true&viewfiles=true&copyingsearchtype=$!copyingsearchtype&saveaction=additems&copyingcategoryid=$!copyingcategoryid&moduleid=$moduleid")
-			#elseif($copyinghits)
-				#set($addnew = "${addnew}?edit=true&addnew=true&viewfiles=true&copyingsearchtype=$!copyingsearchtype&saveaction=additems&copyinghitssessionid=$!copyinghitssessionid&moduleid=$moduleid")
-			#else
-				#set($addnew = "${addnew}?edit=true&addnew=true&saveaction=upload")
-			#end
-			<a class="btn btn-lg btn-accent rounded mb-3 emdialog float-righ" style="min-width: 150px;"
-			data-dialogid="addnewentity"
-			href="$addnew">
-			<i class="bi bi-plus-lg mr-1"></i> [[Create New]]</a>
-		#end 
+		
 	#end
 	<div class="clearfix"></div>
 </div>
