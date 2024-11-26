@@ -1,7 +1,5 @@
 package entityproject
 
-import org.apache.jasper.tagplugins.jstl.core.ForEach
-import org.apache.velocity.runtime.directive.Foreach
 import org.entermediadb.asset.MediaArchive
 import org.openedit.Data
 import org.openedit.hittracker.HitTracker
