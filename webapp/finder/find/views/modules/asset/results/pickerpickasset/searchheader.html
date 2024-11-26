@@ -1,25 +1,38 @@
 <div class="entity-ction-header">
+	<div class="w-100 d-flex align-items-center justify-content-between">
 		<h3 class="m-0 mr-auto align-items-center">
 			#set($moduleicon = "box")
 			#ifnotnull($submodule.moduleicon)
 				#set($moduleicon = $submodule.moduleicon)
 			#end	
-			<i class="bi bi-$moduleicon module-icon" style="font-size: 0.8em;;"></i> 
-			#text($module) <small>($hits.size())</small>
+			<i class="ns bi bi-$moduleicon module-icon" style="font-size: 0.8em;"></i> 
+			#if($entity)
+				#text($entity) <small>($hits.size())</small>
+			#else
+				[[All Files]] <small>($hits.size())</small>
+			#end
 		</h3>
+
+		#set( $pickertargetfield = $context.getRequestParameter("pickertargetfield"))
+		#set( $categoryid = $context.getRequestParameter("categoryid"))
+		
+		#ifnotnull($categoryid)
+		<a href="$searchhome/index.html" class="ajax btn btn-accent" 
+			data-targetdiv="pickersearchresults" 
+			data-oemaxlevel="1" 
+			data-pickertargetfield="$pickertargetfield">
+			[[Show All Files]]
+		</a>
+		#end
+	</div>
 
 	#if( $copyinghits || $pickedassetid)
 	<div class="alert alert-info">
-		
 		#if( $copyinghitssessionid && $copyinghits.getSelectionSize() > 0)	
-		  		<strong>[[Adding]]</strong> $copyinghits.getSelectionSize() [[items]]
+		  <strong>[[Adding]]</strong> $copyinghits.getSelectionSize() [[items]]
 		#elseif($pickedassetid)	
-				<strong>[[Adding]]</strong> 1 [[asset]]
+			<strong>[[Adding]]</strong> 1 [[asset]]
 		#end	
 	</div>
 	#end
-	
-	
-	
-	<div class="clearfix"></div>
 </div>
