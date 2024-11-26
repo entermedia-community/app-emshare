@@ -39,8 +39,11 @@ public void init() {
 				tosave.add(newactivity);
 			}
 		}
-		log.info("Saved " + tosave.size() + " - " + entitysubmodule);
-		mediaArchive.saveData(entitysubmodule, tosave);
+		if(tosave.size()>0)
+		{
+			log.info("Saved " + tosave.size() + " - " + entitysubmodule);
+			mediaArchive.saveData(entitysubmodule, tosave);
+		}
 		
 	
 }
