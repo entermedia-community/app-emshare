@@ -16,16 +16,27 @@ $.ajaxSetup({
 		var element = $(this);
 		var params = element.data();
 
+		if( params === undefined)
+		{
+			console.log("Element not found",element);
+			return;
+		}
+
 		var cleaned = {};
-		Object.keys(params).forEach(function (key) {
+		let obj = Object.keys(params);
+		
+		obj.forEach(function (key) {
 			var param = params[key];
-			var thetype = typeof param;
-			if (
-				thetype === "string" ||
-				thetype === "number" ||
-				thetype === "boolean"
-			) {
-				cleaned[key] = param;
+			if( param !== undefined)
+			{
+				var thetype = typeof param;
+				if (
+					thetype === "string" ||
+					thetype === "number" ||
+					thetype === "boolean"
+				) {
+					cleaned[key] = param;
+				}
 			}
 		});
 		return cleaned;

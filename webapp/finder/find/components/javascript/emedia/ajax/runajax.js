@@ -31,8 +31,22 @@
 		var options = anchor.cleandata();
 		if (anchor.data("includesearchcontext") == true) {
 			//Is this a good idea or a bad idea?
-			var resultsdivS = "resultsdiv"; //anchor.data("resultsdiv");
-			var resultsdiv = anchor.closest("." + resultsdivS);
+			var resultsdiv = anchor.closest(".resultsdiv");
+			
+			if( resultsdiv.length == 0)
+			{
+				var _targetdiv = anchor.data("targetdiv");
+				var target = $("#" + _targetdiv);
+				if( target.hasClass("resultsdiv"))
+				{
+					resultsdiv = target;
+				}
+				else
+				{
+					resultsdiv = target.find(".resultsdiv");
+				}
+			}
+			
 			var otherdata = resultsdiv.cleandata();
 			options = {
 				//Merge em
