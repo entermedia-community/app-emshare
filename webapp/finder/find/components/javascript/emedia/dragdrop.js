@@ -757,7 +757,7 @@ onloadselectors = function () {
 					}
 					options.hitssessionid = hitssessionid;
 
-					var searchhome = boxmenu.data("searchhome");
+					var searchhome = boxmenu.data("edithome");
 
 					$.ajax({
 						url: searchhome +"/addassetstobox.html",
