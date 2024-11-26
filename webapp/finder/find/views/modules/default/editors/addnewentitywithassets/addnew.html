@@ -1,0 +1,50 @@
+#set( $searcher = $mediaarchive.getSearcher($module.id) )
+$context.putPageValue("searcher",$searcher)
+
+#set($viewid = "${module.id}addnew")
+#set($view = "${module.id}/$viewid")
+
+#set($action = "${edithome}/addnewsave.html")
+
+#set($ajaxreloadtargets = $context.getRequestParameter("ajaxreloadtargets"))
+	<form id="searchentitydataeditor" 
+			name="searchentitydataeditor" 
+			class="ajaxform checkCloseDialog autocloseform" 
+			data-targetdiv="submodulepicker"
+			method="post"  
+			action="$action"
+			enctype="multipart/form-data"
+			data-ajaxreloadtargets="$!ajaxreloadtargets"
+			>
+				<input name="save" type="hidden" value="true" />
+
+				#set($saveaction = $context.getRequestParameter("saveaction"))
+				<input name="saveaction" type="hidden" value="$!saveaction" />
+				#set($copyinghitssessionid = $context.getRequestParameter("copyinghitssessionid"))
+				<input name="copyinghitssessionid" type="hidden" value="$!copyinghitssessionid" />
+				#set($copyingmodule.id = $context.getRequestParameter("copyingmodule.id"))
+				<input name="copyingmodule.id" type="hidden" value="$!copyingmodule.id" />
+				
+				#set($pickedassetid = $context.getRequestParameter("pickedassetid"))
+				<input name="pickedassetid" type="hidden" value="$!pickedassetid" />
+				
+				<input name="id" type="hidden" value="$!id" />
+				<input name="entityid" type="hidden" value="$!entity.id" />
+				<input name="entitymoduleviewid" type="hidden" value="$!entitymoduleviewid" />
+				<input name="viewid" type="hidden" value="$!viewid" />
+				<input name="view" type="hidden" value="$!view" />
+						
+			
+			$context.putPageValue("view", $view)
+			$context.putPageValue("viewid", $viewid)
+	
+			#set($detailviewercolumns = 1)
+			$pages.include("/$applicationid/components/xml/detaileditor-entities.html?longform=true&detailviewercolumns=$detailviewercolumns", $context)
+		
+			<div class="d-flex align-items-center mt-3">
+				<a class="btn focused-btn submitform mr-3"><i class="mr-1 bi bi-floppy-fill mr-1"></i> [[Save]]</a>
+				<button id="closebutton" type="button" class="btn btn-secondary" data-dismiss="modal">[[Cancel]]</button>
+			</div>
+	</form>
+
+
