@@ -487,9 +487,11 @@ onloadselectors = function () {
 					var cloned = toclone.clone();
 					scaleDown(cloned);
 					cloned.addClass("clonedragging");
-
-					if ($("input.selectionbox:checked").length > 1) {
-						cloned.append('<div class="dragcount emnotify">+' + n + "</div>");
+					var total = $("input.selectionbox:checked").length;
+					if (total > 1) {
+						cloned.append(
+							'<div class="dragcount emnotify">+' + total + "</div>"
+						);
 					}
 
 					return cloned;
@@ -569,9 +571,11 @@ onloadselectors = function () {
 					var cloned = $(this).clone();
 					scaleDown(cloned, 250);
 					$(cloned).addClass("categorydragging");
-
-					if ($("input.selectionbox:checked").length > 1) {
-						cloned.append('<div class="dragcount emnotify">+' + n + "</div>");
+					var total = $("input.selectionbox:checked").length;
+					if (total > 1) {
+						cloned.append(
+							'<div class="dragcount emnotify">+' + total + "</div>"
+						);
 					}
 
 					return cloned;
@@ -739,8 +743,8 @@ onloadselectors = function () {
 					var assetid = ui.draggable.data("assetid");
 
 					var dragged = $(ui.draggable);
-					
-					var resultsdiv = dragged.closest(".resultsdiv")
+
+					var resultsdiv = dragged.closest(".resultsdiv");
 					var hitssessionid = dragged
 						.closest(".lightboxresults")
 						.data("hitssessionid");
@@ -760,7 +764,7 @@ onloadselectors = function () {
 					var searchhome = boxmenu.data("edithome");
 
 					$.ajax({
-						url: searchhome +"/addassetstobox.html",
+						url: searchhome + "/addassetstobox.html",
 						data: options,
 						xhrFields: {
 							withCredentials: true,
