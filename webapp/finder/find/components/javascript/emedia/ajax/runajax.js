@@ -27,32 +27,28 @@
 		if (!nextpage) {
 			nextpage = anchor.data("nextpage");
 		}
+		if (!nextpage && anchor.data("url")) {
+			nextpage = anchor.data("url");
+		}
 
 		var options = anchor.cleandata();
 		if (anchor.data("includesearchcontext") == true) {
 			//Is this a good idea or a bad idea?
-			var resultsdiv = anchor.closest(".resultsdiv");
-			
-			if( resultsdiv.length == 0)
-			{
-				var _targetdiv = anchor.data("targetdiv");
-				var target = $("#" + _targetdiv);
-				if( target.hasClass("resultsdiv"))
-				{
-					resultsdiv = target;
-				}
-				else
-				{
-					resultsdiv = target.find(".resultsdiv");
-				}
+			var resultsdiv = anchor.find(".resultsdiv");
+
+			if (resultsdiv.length == 0) {
+				resultsdiv = anchor.closest(".resultsdiv");
 			}
-			
-			var otherdata = resultsdiv.cleandata();
-			options = {
-				//Merge em
-				...options,
-				...otherdata,
-			};
+
+			if (resultsdiv.length > 0) {
+				var otherdata = resultsdiv.cleandata();
+				options = {
+					...otherdata,
+					...options,
+				};
+			} else {
+				console.warn("No resultsdiv found for icludesearchcontext");
+			}
 		}
 
 		var activemenu;

@@ -16,19 +16,17 @@ $.ajaxSetup({
 		var element = $(this);
 		var params = element.data();
 
-		if( params === undefined)
-		{
-			console.log("Element not found",element);
+		if (params === undefined) {
+			console.log("Element not found", element);
 			return;
 		}
 
 		var cleaned = {};
-		let obj = Object.keys(params);
-		
+		var obj = Object.keys(params);
+
 		obj.forEach(function (key) {
 			var param = params[key];
-			if( param !== undefined)
-			{
+			if (param !== undefined) {
 				var thetype = typeof param;
 				if (
 					thetype === "string" ||
