@@ -318,3 +318,15 @@ document.onkeydown = function (event) {
 		}
 	}
 };
+$(function () {
+	setTimeout(function () {
+		var path = new URL(window.location.href).pathname;
+		$(".auto-active-link").each(function () {
+			var href = $(this).attr("href");
+			if (href == path) {
+				$(this).addClass("active");
+				$(this).parents("li").addClass("current");
+			}
+		});
+	});
+});

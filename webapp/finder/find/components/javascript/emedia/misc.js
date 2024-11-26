@@ -3014,16 +3014,7 @@ function intializeUI() {
 		if (!submitBtns.length) return;
 		var offsetTop = submitBtns.offset().top;
 		if (offsetTop > $(window).height()) {
-			submitBtns.css({
-				position: "sticky",
-				bottom: 0,
-				left: 0,
-				zIndex: "1000",
-				margin: 0,
-				padding: 8,
-				background: "var(--dark-text)",
-				borderTop: "var(--1px-light)",
-			});
+			submitBtns.addClass("sticky");
 		}
 	}
 	//posiitionSubmitButtons(); Dont run this here becuase it slows down loading
