@@ -83,10 +83,11 @@
 			oemaxlevel = 1;
 		}
 		//targetdiv.data("oemaxlevel", oemaxlevel);
-
 		var data = {};
-		if (anchor.data("includeeditcontext") == true) {
-			var editdiv = form.closest(".editdiv"); //This is used for lightbox tree opening
+		if (form.data("includeeditcontext") == true) {
+			var edithomeid = form.data("edithomeid");
+			
+			var editdiv = $("#" + edithomeid);
 			if (editdiv.length > 0) {
 				var otherdata = editdiv.cleandata();
 				data = {

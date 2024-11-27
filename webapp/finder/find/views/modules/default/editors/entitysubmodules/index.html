@@ -5,35 +5,28 @@
 #set($viewdata = $mediaarchive.getCachedData("view",$entitymoduleviewid))
 
 <div id="$edithomeid" class="editdiv submodulepicker" 
-
 		data-entityid="$!entity.id"
 		data-entitymoduleid="$!entitymodule.id"
-		data-entitymoduleviewid="$entitymoduleviewid"
-
-		data-componenthome="$!home$!componenthome"
-
-
-		data-targetdiv="$edithomeid"
-		
-
-
+		data-entitymoduleviewid="$!entitymoduleviewid"
+		data-edithome="${edithome}"
+		data-edithomeid="${edithomeid}"
 >
 	
-#set($entitymoduleid = $!viewdata.moduleid)
-#set($entitymodule = $mediaarchive.getCachedData("module",$entitymoduleid))
-$context.putPageValue("entitymodule", $entitymodule)
-
-#set($submoduleid = $!viewdata.rendertable)
-
-#set($module = $mediaarchive.getCachedData("module",$submoduleid))
-$context.putPageValue("module", $module)
-#set($searchhome = "$apphome/views/modules/${submoduleid}/results/submoduleslist")
-$context.putPageValue("searchhome", $searchhome)
-
-#set($sortby = $!viewdata.rendersort)
-#set($args = "field=$!{entitymodule.id}&$!{entitymodule.id}.value=$!{entity.id}&operation=exact")
-#set($args = "$args&sortby=$!sortby&entitymoduleviewid=$entitymoduleviewid")
-
-$pages.include("${searchhome}/index.html?$!args",$context)
+	#set($entitymoduleid = $!viewdata.moduleid)
+	#set($entitymodule = $mediaarchive.getCachedData("module",$entitymoduleid))
+	$context.putPageValue("entitymodule", $entitymodule)
+	
+	#set($submoduleid = $!viewdata.rendertable)
+	
+	#set($module = $mediaarchive.getCachedData("module",$submoduleid))
+	$context.putPageValue("module", $module)
+	#set($searchhome = "$apphome/views/modules/${submoduleid}/results/submoduleslist")
+	$context.putPageValue("searchhome", $searchhome)
+	
+	#set($sortby = $!viewdata.rendersort)
+	#set($args = "field=$!{entitymodule.id}&$!{entitymodule.id}.value=$!{entity.id}&operation=exact")
+	#set($args = "$args&sortby=$!sortby&entitymoduleviewid=$entitymoduleviewid")
+	
+	$pages.include("${searchhome}/index.html?$!args",$context)
 		
 </div>

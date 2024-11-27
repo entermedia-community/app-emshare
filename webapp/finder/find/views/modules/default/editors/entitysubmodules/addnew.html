@@ -1,0 +1,48 @@
+#set($submoduleid = $entitymoduleviewdata.rendertable)
+#set($module = $mediaarchive.getCachedData("module", $submoduleid))
+
+#set ($fieldexternalid = $entitymodule.id)
+#set ($fieldexternalvalue = $entity.id)
+#ifnull($data)
+	#ifnotnull($fieldexternalid)
+		#set($data = $mediaarchive.getSearcher($module.id).createNewData())
+		$data.setValue($fieldexternalid, $fieldexternalvalue)
+		$context.putPageValue("data",$data)
+	#end
+#end
+
+#set( $searcher = $mediaarchive.getSearcher($module.id) )
+$context.putPageValue("searcher",$searcher)
+
+#set($viewid = "${module.id}addnew")
+#set($view = "${module.id}/$viewid")
+
+#set($action = "$apphome/views/modules/${module.id}/editors/entitysubmodules/addnewsave.html")
+
+#set($edithomeid = $context.getRequestParameter("edithomeid"))
+<form id="searchentitydataeditor"
+	name="searchentitydataeditor"
+	action="$action" 
+	class="ajaxform checkCloseDialog autocloseform reloadentitydialog" 
+	data-edithomeid="${edithomeid}"
+	data-targetdiv="${edithomeid}"
+	data-includeeditcontext="true"
+	method="post"  
+	enctype="multipart/form-data"
+	>
+		<input name="save" type="hidden" value="true" />
+		<input name="id" type="hidden" value="$!id" />
+			
+		$context.putPageValue("view", $view)
+		$context.putPageValue("viewid", $viewid)
+		#set($detailviewercolumns = 1)
+		
+		$pages.include("/$applicationid/components/xml/detaileditor-entities.html?longform=true&detailviewercolumns=$detailviewercolumns", $context)
+	
+		<div class="d-flex align-items-center mt-3">
+			<a class="btn focused-btn submitform mr-3"><i class="mr-1 bi bi-floppy-fill mr-1"></i> [[Save]]</a>
+			<button id="closebutton" type="button" class="btn btn-secondary" data-dismiss="modal">[[Cancel]]</button>
+		</div>
+</form>
+
+
