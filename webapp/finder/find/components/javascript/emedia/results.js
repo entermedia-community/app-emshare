@@ -1272,59 +1272,25 @@ jQuery(document).ready(function (url, params) {
 		var id = column.data("sortby");
 
 		var resultsdiv = column.closest(".resultsdiv");
-		if (!resultsdiv.length) {
-			resultsdiv = column.closest("#resultsdiv");
-		}
-		var targetdiv_ = resultsdiv.data("targetdiv");
-		var targetdiv = column.closest("#" + targetdiv_);
-		if(targetdiv.length == 0)
-		{
-			targetdiv = column.closest("." + targetdiv_);
-		}
-
 		var searchhome = resultsdiv.data("searchhome");
-		var moduleid = resultsdiv.data("moduleid");
-		var options = resultsdiv.cleandata();
-
-		var link = searchhome + "/columnsort.html";
-
+		
+		resultsdiv.data("url", searchhome + "/columnsort.html");
+		resultsdiv.data("includeeditcontext", true);
+		
 		if (column.hasClass("currentsort")) {
 			if (column.hasClass("up")) {
-				// $(resultsdiv).load( columnsort + '&sortby=' + id +
-				// 'Down', options);
-
-				options["sortby"] = id + "Down";
-				$.get(link, options, function (data) {
-					$(targetdiv).replaceWith(data);
-				});
+				resultsdiv.data("sortby", id + "Down");
 			} else {
-				// $(resultsdiv).load( columnsort + '&sortby=' + id + 'Up',
-				// options);
-				if (moduleid !== undefined) {
-					options[moduleid + "sortby"] = id + "Up";
-				} else {
-					options["sortby"] = id + "Up";
-				}
-				$.get(link, options, function (data) {
-					$(targetdiv).replaceWith(data);
-				});
+				resultsdiv.data("sortby", id + "Up");
 			}
 		} else {
 			$("th.sortable").removeClass("currentsort");
 			column.addClass("currentsort");
-			// $(resultsdiv).load( columnsort + '&sortby=' + id + 'Down',
-			// options);
-			if (moduleid !== undefined) {
-				options[moduleid + "sortby"] = id + "Down";
-			} else {
-				options["sortby"] = id + "Down";
-			}
-			$.get(link, options, function (data) {
-				//$(targetdiv).replaceWith(data);
-				$(targetdiv).replaceWith(data);
-			});
+			resultsdiv.data("sortby", id + "Down");
 		}
+		resultsdiv.runAjax();
 	});
+	
 
 	var hash = window.location.hash;
 	var hidemediaviewer = $("body").data("hidemediaviewer");
