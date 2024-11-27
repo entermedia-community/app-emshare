@@ -170,24 +170,19 @@ lQuery(".assetpickerselectrow").livequery("click", function () {
 });
 
 //CB This works. Opens entities
-lQuery(".topmodules .resultsdivdata").livequery(
-	"click",
-	function (event) {
-		event.stopPropagation();
-		var row = $(this);
-		console.log(row);
-		if (!handleclick(row)) {
-			return true;
-		}
-		var rowid = row.data("dataid");
-
-		var clickableresultlist = row.closest(".clickableresultlist");
-
-		clickableresultlist.data("id", rowid);
-		clickableresultlist.data("entityid", rowid);
-		row.emDialog();
+lQuery(".topmodules .resultsdivdata").livequery("click", function (event) {
+	var row = $(this);
+	if (!handleclick(row)) {
+		return true;
 	}
-);
+	var rowid = row.data("dataid");
+
+	var clickableresultlist = row.closest(".clickableresultlist");
+
+	clickableresultlist.data("id", rowid);
+	clickableresultlist.data("entityid", rowid);
+	clickableresultlist.emDialog();
+});
 
 //To open an entity in a submodule. CB Lose Back button
 lQuery(".submodulepicker .resultsdivdata").livequery("click", function (event) {

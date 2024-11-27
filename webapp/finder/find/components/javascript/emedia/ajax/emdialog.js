@@ -19,7 +19,7 @@
 			modaldialog = jQuery("#" + id);
 		}
 		var options = initiator.data();
-		
+
 		if (initiator.data("includeeditcontext") == true) {
 			var editdiv = initiator.closest(".editdiv"); //This is used for lightbox tree opening
 			if (editdiv.length > 0) {
@@ -31,9 +31,8 @@
 			} else {
 				console.warn("No editdiv found for includeeditcontext");
 			}
-			
 		}
-		
+
 		if (initiator.data("includesearchcontext") == true) {
 			var editdiv = initiator.closest(".editdiv"); //This is used for lightbox tree opening
 			var resultsdiv = editdiv.find(".resultsdiv");
@@ -48,10 +47,13 @@
 				console.warn("No resultsdiv found for includesearchcontext");
 			}
 		}
-		
+
 		var link = initiator.attr("href");
 		if (!link) {
 			link = initiator.data("targetlink");
+		}
+		if (!link) {
+			link = initiator.data("url");
 		}
 		if (
 			initiator.hasClass("entity-dialog") &&
@@ -60,7 +62,7 @@
 			//link = link.replace("entity.html", "entitytab.html");
 			options.oemaxlevel = 1;
 		}
-		
+
 		//NOT USED. Delete
 		var param = initiator.data("parameterdata");
 		if (param) {
@@ -152,12 +154,10 @@
 						var firstform = modaldialog.find("form");
 						firstform.data("openedfrom", openfrom);
 					}
-					var autosetformtargetdiv = initiator.data("autosetformtargetdiv")
-					if( autosetformtargetdiv !== undefined)
-					{	
+					var autosetformtargetdiv = initiator.data("autosetformtargetdiv");
+					if (autosetformtargetdiv !== undefined) {
 						var tdiv = initiator.closest("." + autosetformtargetdiv);
-						if( tdiv.length == 1)
-						{
+						if (tdiv.length == 1) {
 							firstform.data("targetdiv", tdiv.attr("id"));
 						}
 					}
