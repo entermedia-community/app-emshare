@@ -1,13 +1,9 @@
-lQuery(".emrowpicker table td").livequery("click", function (event) {
+lQuery(".emrowpicker table td").livequery("click", function () {
 	var clicked = $(this);
-	if (clicked.attr("noclick") == "true") {
-		return true;
-	}
-	if ($(event.target).is("input") || $(event.target).is("a")) {
+	if (!handleclick(clicked)) {
 		return true;
 	}
 
-	event.preventDefault();
 	var row = clicked.closest("tr");
 	var table = clicked.closest("table");
 	var form = clicked.closest(".pickedcategoryform");
@@ -46,18 +42,9 @@ lQuery(".emrowpicker table td").livequery("click", function (event) {
 	}
 });
 
-lQuery(".emselectable table td").livequery("click", function (event) {
+lQuery(".emselectable table td").livequery("click", function () {
 	var clicked = $(this);
-	if (clicked.attr("noclick") == "true") {
-		return true;
-	}
-	if ($(event.target).is("input")) {
-		return true;
-	}
-	if ($(event.target).is("a")) {
-		return true;
-	}
-	if ($(event.target).hasClass("jp-audio")) {
+	if (!handleclick(clicked)) {
 		return true;
 	}
 
@@ -65,42 +52,38 @@ lQuery(".emselectable table td").livequery("click", function (event) {
 	if (emselectable.length < 1) {
 		emselectable = clicked.closest(".emselectable");
 	}
-	var row = $(clicked.closest("tr"));
+	var row = clicked.closest("tr");
 	var rowid = row.attr("rowid");
 
-	if (row.hasClass("thickbox")) {
-		var href = row.data("href");
-		openFancybox(href);
-	} else {
-		emselectable.find("table tr").each(function (index) {
-			clicked.removeClass("emhighlight");
-		});
-		row.addClass("emhighlight");
-		row.removeClass("emborderhover");
-		var table = row.closest("table");
+	emselectable.find("table tr").each(function (index) {
+		clicked.removeClass("emhighlight");
+	});
+	row.addClass("emhighlight");
+	row.removeClass("emborderhover");
+	var table = row.closest("table");
 
-		// var url = emselectable.data("clickpath");
+	// var url = emselectable.data("clickpath");
 
-		var url = table.data("clickpath");
-		var form = emselectable.find("form");
-		if (!form.length) {
-			form = emselectable.data("emselectableform");
-			if (form) {
-				form = $("#" + form);
-			}
+	var url = table.data("clickpath");
+	var form = emselectable.find("form");
+	if (!form.length) {
+		form = emselectable.data("emselectableform");
+		if (form) {
+			form = $("#" + form);
 		}
-		var data = row.data();
+	}
+	var data = row.data();
 
-		if (form && form.length > 0) {
-			data.id = rowid;
-			data.oemaxlevel = form.data("oemaxlevel");
-			form.find("#emselectedrow").val(rowid);
-			form.find(".emneedselection").each(function () {
-				clicked.removeAttr("disabled");
-			});
-			//form.submit();
-			var targetdiv = form.data("targetdiv");
-			/*if ((typeof targetdiv) != "undefined") {
+	if (form && form.length > 0) {
+		data.id = rowid;
+		data.oemaxlevel = form.data("oemaxlevel");
+		form.find("#emselectedrow").val(rowid);
+		form.find(".emneedselection").each(function () {
+			clicked.removeAttr("disabled");
+		});
+		//form.submit();
+		var targetdiv = form.data("targetdiv");
+		/*if ((typeof targetdiv) != "undefined") {
 					$(form).ajaxSubmit({
 						target : "#" + $.escapeSelector(targetdiv), 
 						data:data
@@ -108,28 +91,27 @@ lQuery(".emselectable table td").livequery("click", function (event) {
 					});
 				} else {
 					*/
-			$(form).trigger("submit");
-			//}
-			if (form.hasClass("autoclose")) {
-				closeemdialog(form.closest(".modal"));
-			}
-		} else if (url != undefined) {
-			//-- table clickpath
-			if (url == "") {
-				return true;
-			}
-			var link = url;
-			var post = table.data("viewpostfix");
-			if (post != undefined) {
-				link = link + rowid + post;
-			} else {
-				link = link + rowid;
-			}
-			if (emselectable.hasClass("showmodal")) {
-				showmodal(emselectable, link);
-			} else {
-				parent.document.location.href = link;
-			}
+		$(form).trigger("submit");
+		//}
+		if (form.hasClass("autoclose")) {
+			closeemdialog(form.closest(".modal"));
+		}
+	} else if (url != undefined) {
+		//-- table clickpath
+		if (url == "") {
+			return true;
+		}
+		var link = url;
+		var post = table.data("viewpostfix");
+		if (post != undefined) {
+			link = link + rowid + post;
+		} else {
+			link = link + rowid;
+		}
+		if (emselectable.hasClass("showmodal")) {
+			showmodal(emselectable, link);
+		} else {
+			parent.document.location.href = link;
 		}
 	}
 });
@@ -170,7 +152,7 @@ lQuery(".assetpickerselectrow").livequery("click", function () {
 });
 
 //CB This works. Opens entities
-lQuery(".topmodules .resultsdivdata").livequery("click", function (event) {
+lQuery(".topmodules .resultsdivdata").livequery("click", function () {
 	var row = $(this);
 	if (!handleclick(row)) {
 		return true;
@@ -185,7 +167,7 @@ lQuery(".topmodules .resultsdivdata").livequery("click", function (event) {
 });
 
 //To open an entity in a submodule. CB Lose Back button
-lQuery(".submodulepicker .resultsdivdata").livequery("click", function (event) {
+lQuery(".submodulepicker .resultsdivdata").livequery("click", function () {
 	var row = $(this);
 	if (!handleclick(row)) {
 		return true;
@@ -209,7 +191,7 @@ lQuery(".entitysubmodules .resultsdivdata").livequery("click", function () {
 //CB working for entity fieldpicking
 lQuery(".pickerresults.pickerforfield .resultsdivdata").livequery(
 	"click",
-	function (event) {
+	function () {
 		var clicked = $(this);
 		if (!handleclick(clicked)) {
 			return true;
@@ -233,7 +215,7 @@ lQuery(".pickerresults.pickerforfield .resultsdivdata").livequery(
 //CB: assign a asset to a field
 lQuery(".pickerresults.pickerpickasset .resultsdivdata").livequery(
 	"click",
-	function (event) {
+	function () {
 		var clicked = $(this);
 		if (!handleclick(clicked)) {
 			return true;
@@ -263,7 +245,7 @@ lQuery(".pickerresults.pickerpickasset .resultsdivdata").livequery(
 //CB: Is good. for submodules
 lQuery(".pickerresults.entitypickersubmodule .resultsdivdata").livequery(
 	"click",
-	function (event) {
+	function () {
 		var clicked = $(this);
 		if (!handleclick(clicked)) {
 			return true;
@@ -298,7 +280,7 @@ lQuery(".pickerresults.entitypickersubmodule .resultsdivdata").livequery(
 //CB: Good assign a searchcategory to some selected entities
 lQuery(".pickerresults.picksearchcategory .resultsdivdata").livequery(
 	"click",
-	function (event) {
+	function () {
 		var clicked = $(this);
 		if (!handleclick(clicked)) {
 			return true;
@@ -328,7 +310,7 @@ lQuery(".pickerresults.picksearchcategory .resultsdivdata").livequery(
 //CB: Good assign assets to a selected entity
 lQuery(".pickerresults.pickercopyassetsto .resultsdivdata").livequery(
 	"click",
-	function (event) {
+	function () {
 		var clicked = $(this);
 		if (!handleclick(clicked)) {
 			return true;
@@ -358,7 +340,7 @@ lQuery(".pickerresults.pickercopyassetsto .resultsdivdata").livequery(
 //Upload to Entity. Still needed?
 lQuery(".pickerresults.pickandupload .resultsdivdata").livequery(
 	"click",
-	function (event) {
+	function () {
 		var clicked = $(this);
 		if (!handleclick(clicked)) {
 			return true;
@@ -376,61 +358,53 @@ lQuery(".pickerresults.pickandupload .resultsdivdata").livequery(
 );
 
 //Assets or Categories and you import into a entity
-lQuery(".pickerresultscopy .resultsdivdata").livequery(
-	"click",
-	function (event) {
-		var clicked = $(this);
-		if (!handleclick(clicked)) {
-			return true;
-		}
-		var row = $(clicked.closest(".resultsdivdata"));
-		var rowid = row.data("dataid");
-		var pickerresults = clicked.closest(".pickerresults");
-
-		var options = pickerresults.data();
-		options.id = rowid;
-		var clickurl = pickerresults.data("clickurl");
-		var targetdiv = pickerresults.data("clicktargetdiv");
-		var targettype = pickerresults.data("targettype");
-
-		if (clickurl !== undefined && clickurl != "") {
-			jQuery.ajax({
-				url: clickurl,
-				data: options,
-				success: function (data) {
-					if (!targetdiv.jquery) {
-						targetdiv = $("#" + targetdiv);
-					}
-					if (targettype == "message") {
-						if (targetdiv !== undefined) {
-							targetdiv.prepend(data);
-							targetdiv.find(".fader").fadeOut(3000, "linear");
-						}
-					} else {
-						//regular targetdiv
-						if (targetdiv !== undefined) {
-							targetdiv.replaceWith(data);
-						}
-					}
-
-					closeemdialog(pickerresults.closest(".modal"));
-				},
-			});
-		}
+lQuery(".pickerresultscopy .resultsdivdata").livequery("click", function () {
+	var clicked = $(this);
+	if (!handleclick(clicked)) {
+		return true;
 	}
-);
+	var row = $(clicked.closest(".resultsdivdata"));
+	var rowid = row.data("dataid");
+	var pickerresults = clicked.closest(".pickerresults");
+
+	var options = pickerresults.data();
+	options.id = rowid;
+	var clickurl = pickerresults.data("clickurl");
+	var targetdiv = pickerresults.data("clicktargetdiv");
+	var targettype = pickerresults.data("targettype");
+
+	if (clickurl !== undefined && clickurl != "") {
+		jQuery.ajax({
+			url: clickurl,
+			data: options,
+			success: function (data) {
+				if (!targetdiv.jquery) {
+					targetdiv = $("#" + targetdiv);
+				}
+				if (targettype == "message") {
+					if (targetdiv !== undefined) {
+						targetdiv.prepend(data);
+						targetdiv.find(".fader").fadeOut(3000, "linear");
+					}
+				} else {
+					//regular targetdiv
+					if (targetdiv !== undefined) {
+						targetdiv.replaceWith(data);
+					}
+				}
+				closeemdialog(pickerresults.closest(".modal"));
+			},
+		});
+	}
+});
 
 function handleclick(clicked) {
-	if (clicked.attr("noclick") == "true") {
-		return false;
-	}
-	if ($(event.target).is("input")) {
-		return false;
-	}
-	if ($(event.target).is("a")) {
-		return false;
-	}
-	if ($(event.target).closest(".jp-audio").length) {
+	if (
+		clicked.attr("noclick") == "true" ||
+		$(clicked).is("input") ||
+		$(clicked).is("a") ||
+		$(clicked).closest(".jp-audio").length
+	) {
 		return false;
 	}
 	return true;
@@ -438,7 +412,7 @@ function handleclick(clicked) {
 
 $(window).on(
 	"updatepickertarget",
-	function (event, pickertargetid, dataid, dataname) {
+	function (e, pickertargetid, dataid, dataname) {
 		var pickertarget = $("#" + pickertargetid);
 		if (pickertarget.length > 0) {
 			updateentityfield(pickertarget, dataid, dataname);
