@@ -60,9 +60,16 @@ customToast = function (message, options = {}) {
 	var positive = options.positive === undefined ? true : options.positive;
 	var btnText = options.btnText;
 	var btnClass = options.btnClass || "";
+	var icon = options.icon;
+	var iconHtml = `<div class="toast${positive ? "Success" : "Error"}"></div>`;
+	if (icon) {
+		iconHtml = `<div class="toastIcon ${
+			!positive ? "error" : ""
+		}"><i class="bi bi-${icon}"></i></div>`;
+	}
 	var toast = $(
 		`<div class="toastContainer" role="alert">
-			<div class="toast${positive ? "Success" : "Error"}"></div>
+			${iconHtml}
 			<div class="toastMessage">${message}</div>
 			${btnText ? `<button class="${btnClass}">${btnText}</button>` : ""}
 			<div class="toastClose">&times;</div>

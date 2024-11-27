@@ -296,8 +296,8 @@ lQuery("form").livequery(function () {
 		});
 	}
 });
-
-document.onkeydown = function (event) {
+window.debugMode = false;
+window.onkeydown = function (event) {
 	if (event.ctrlKey) {
 		var href = document.querySelector("a#oeselector").href;
 		if (event.key == "r") {
@@ -309,12 +309,21 @@ document.onkeydown = function (event) {
 			window.location.href = href;
 		} else if (event.key == "d") {
 			event.preventDefault();
-			var mode = document.querySelector(".openeditdebug") ? "preview" : "debug";
+			if (!debugMode) {
+				debugMode = !document.querySelector(".openeditdebug");
+			} else {
+				debugMode = false;
+			}
+			var mode = debugMode ? "debug" : "preview";
 			href = href.replace(
 				"components/toolbar/plugintoolbar",
 				`views/workflow/mode/view${mode}`
 			);
 			jQuery.get(href);
+			customToast("Switched to&nbsp;<b>" + mode + "</b>&nbsp;mode!", {
+				positive: !debugMode,
+				icon: debugMode ? "bug-fill" : "eye-fill",
+			});
 		}
 	}
 };
