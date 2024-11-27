@@ -1,0 +1,32 @@
+
+#ifnull($entitymoduleviewid)
+	#set($entitymoduleviewid = $context.getRequestParameter("viewid"))
+#end
+#set($entityviewdata = $mediaarchive.getCachedData("view",$entitymoduleviewid))
+
+#set( $submoduleid = $entityviewdata.rendertable )
+
+#if(!$currenttab)
+	#set($currenttab = $context.getRequestParameter("currenttab"))
+#end
+ 
+#if($submoduleid)
+	<div id="tab_${entitymoduleviewid}" 
+		class="editentitymetadata-submodule entity-tab-content tabtypetabsubmodulehome onetomanytab" 
+		data-tabtype="tabsubmodulehome"
+		data-viewid="$!viewid"
+		data-currenttab="$currenttab"
+		data-submoduleid="$!submoduleid"
+		data-viewid="$!viewid"
+		data-parentid="$!parentid"
+		data-url="${edithome}/tabs/preview/tabsubmodulehome.html"
+		#if($hidesubmodule) style="display: none; #end">
+		
+			#set($edithome = "$apphome/views/modules/${module.id}/results/submoduleslist")
+			$context.putPageValue("edithome", $edithome)
+			$pages.include("${edithome}/index.html?entitymoduleviewid=$!viewid",$context)
+		
+	</div>
+	
+	
+#end

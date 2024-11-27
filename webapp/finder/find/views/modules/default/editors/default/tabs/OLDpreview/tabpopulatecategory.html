@@ -1,0 +1,47 @@
+#set($entityid = $context.getRequestParameter("entityid"))
+#if(!$parentsearchtype)
+	#set($parentsearchtype = $context.getRequestParameter("parentsearchtype"))
+#end
+$context.putPageValue("parentsearchtype", $parentsearchtype)
+#if( !$entity)
+	#set( $entity  = $mediaarchive.getData($parentsearchtype, $entityid) )
+#end
+#set($entityid = $entity.id)
+#if(!$currenttab)
+	#set($currenttab = $context.getRequestParameter("currenttab"))
+#end
+#if(!$parentmoduleid)
+	#set ( $parentmoduleid = $context.getRequestParameter("topmoduleid") )
+	$context.putPageValue("topmoduleid", $parentmoduleid)
+#end
+#ifnotnull($parentmoduleid)
+		#set($parentmodule = $mediaarchive.getCachedData("module", $parentmoduleid))
+#end
+#ifnull($entitymoduleviewid)
+#set($entitymoduleviewid = $context.getRequestParameter("viewid"))
+#end
+#set($tabid = "tab_$entitymoduleviewid")
+
+
+<div id="${tabid}" 
+class=" entity-tab-content entity-tab-media tabtypemedia" 
+##style=" #if($currenttab != $tabid || $hidesubmodule) display:none; #end"
+data-tabid="${tabid}"
+data-viewid="$entitymoduleviewid"
+data-entityid="$!entityid"
+data-currenttab="$!viewid"
+data-parentsearchtype="$!parentsearchtype"
+data-topmoduleid="$!topmoduleid"
+data-url="${edithome}/tabs/preview/tabpopulatecategory.html"
+>
+<div id="$!submodulepickerid" class="submodulepicker entity-tab-content" style="border-bottom:1px solid #252e3c">
+		##Display MEDIA based in a custom query, may require custom 
+		$context.putPageValue("entitydialogid", "entity")
+		
+		$pages.include("$apphome/components/entities/import/index.html?autorun=true", $context)
+	
+	<div class="clearfix"></div>
+</div>
+</div>
+
+

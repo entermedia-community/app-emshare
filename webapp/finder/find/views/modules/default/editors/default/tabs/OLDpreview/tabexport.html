@@ -1,0 +1,182 @@
+#set($entityid = $context.getRequestParameter("entityid"))
+#if(!$parentsearchtype)
+	#set($parentsearchtype = $context.getRequestParameter("parentsearchtype"))
+#end
+$context.putPageValue("parentsearchtype", $parentsearchtype)
+
+#if( !$entity)
+	#set( $entity  = $mediaarchive.getData($parentsearchtype, $entityid) )
+#end
+#set($entityid = $entity.id)
+#if(!$currenttab)
+	#set($currenttab = $context.getRequestParameter("currenttab"))
+#end
+#if(!$parentmoduleid)
+	#set ( $parentmoduleid = $context.getRequestParameter("topmoduleid") )
+	$context.putPageValue("topmoduleid", $parentmoduleid)
+#end
+#ifnotnull($parentmoduleid)
+		#set($parentmodule = $mediaarchive.getCachedData("module", $parentmoduleid))
+#end
+#if(!$moduleid)
+	#set($moduleid = $parentmodule.getId())
+#end
+#ifnull($entitymoduleviewid)
+#set($entitymoduleviewid = $context.getRequestParameter("viewid"))
+#end
+#set($tabid = "tab_$entitymoduleviewid")
+
+#set ( $tabsection = $context.getRequestParameter("tabsection") )
+#ifnull($tabsection)
+#set ( $tabsection = "share")
+#end
+
+#set($defaultcategory = $mediaarchive.getEntityManager().createDefaultFolder($entity, $context.getUser()))
+$context.putPageValue("defaultcategory", $defaultcategory)
+$context.putPageValue("defaultcategoryid", $defaultcategory.getId())
+
+#set($tabmode = 1)
+$context.putPageValue("tabmode", $tabmode)
+
+<div id="${tabid}"
+	class=" entity-tab-content"
+	data-tabid="$!{tabid}"
+	data-viewid="$!viewid"
+	data-entityid="$!entityid"
+	data-currenttab="$!viewid"
+	data-parentsearchtype="$!parentsearchtype"
+	data-topmoduleid="$!topmoduleid"
+	data-url="${edithome}/tabs/preview/tabexport.html"
+>
+	<div id="$!submodulepickerid" class="d-flex align-items-stretch" style="height: 100%;">
+		<div class='entityimport auto-active-container overflow-y'>
+			#if($permissions.can($moduleid, "shareentity"))	
+				<div class='auto-active-row #if($tabsection=="share") current #end'>
+				<a href="$componenthome/share/entity.html?entityid=$!{entityid}&moduleid=$!{topmoduleid}&defaultcategoryid=$!defaultcategory.getId()"
+				class='btn btn-lg btn-wide ajax auto-active-link'
+				data-targetdivinner="tabexportcontent"
+				data-oemaxlevel="1"><i class="bi bi-share-fill"></i> <span>[[Share Links]]</span></a>
+				</div>
+			#end	
+			#if($permissions.can($moduleid, "publishinggallery"))	
+				<div class='auto-active-row #if($tabsection=="sharegallery") current #end'>
+				<a href="${edithome}/tabs/preview/tabpublishing_gallery.html?entityid=$!{entityid}&moduleid=$!{topmoduleid}&defaultcategoryid=$!defaultcategory.getId()"
+				class='btn btn-lg btn-wide ajax auto-active-link'
+				data-targetdivinner="tabexportcontent"
+				data-oemaxlevel="1"><i class="bi bi-columns-gap"></i> <span>[[Publish Gallery]]</span></a>
+				</div>
+				
+				
+				<div class='auto-active-row #if($tabsection=="sharecarousel") current #end'>
+				<a href="${edithome}/tabs/preview/tabpublishing_carousel.html?entityid=$!{entityid}&moduleid=$!{topmoduleid}&defaultcategoryid=$!defaultcategory.getId()"
+				class='btn btn-lg btn-wide ajax auto-active-link'
+				data-targetdivinner="tabexportcontent"
+				data-oemaxlevel="1"><i class="bi bi-images"></i> <span>[[Publish Carousel]]</span></a>
+				</div>
+			#end	
+				<div class='auto-active-row #if($tabsection=="sharegallery") current #end disabled' style="display: none;">
+				<a href="#"
+				class='btn btn-lg btn-wide ajaxX auto-active-link'
+				data-targetdivinner="tabexportcontent"
+				data-oemaxlevel="1"><i class="bi bi-columns"></i> <span>[[Folder Viewer]]</span></a>
+				</div>
+				
+			
+			#if($permissions.can($moduleid, "copyentity"))
+			<div class='auto-active-row #if($tabsection=="copy") current #end'>
+			<a class='ajax btn btn-lg btn-wide  auto-active-link '
+				data-targetdivinner="tabexportcontent"
+				data-oemaxlevel="1"
+				data-targetcategoryid="$!defaultcategory.id"
+				data-tabsection="copy"
+				href="$componenthome/entities/copydialog.html?entityid=$!{entityid}&moduleid=$!{topmoduleid}&defaultcategoryid=$defaultcategory.getId()">
+				<i class="bi bi-folder-plus"></i> <span>[[Copy]]</span></a>
+			</div>
+			#end
+			#if($permissions.can($moduleid, "moveentity"))
+			<div class='auto-active-row #if($tabsection=="move") current #end'>
+			<a class='ajax btn btn-lg btn-wide auto-active-link '
+				data-targetdivinner="tabexportcontent"
+				data-oemaxlevel="1"
+				data-tabsection="move"
+				data-targetcategoryid="$!defaultcategory.id"
+				href="$componenthome/entities/movedialog.html?entityid=$!{entityid}&moduleid=$!{topmoduleid}&defaultcategoryid=$defaultcategoryid">
+				<i class="bi bi-folder-plus"></i> <span>[[Move]]</span></a>
+			</div>
+			#end
+			
+			
+					
+			#if($permissions.can($moduleid, "downloadall"))
+				<div class='auto-active-row  #if($tabsection=="downloadzip") current #end'>
+				<a class='ajax btn btn-lg btn-wide auto-active-link '
+				data-targetdivinner="tabexportcontent"
+				data-oemaxlevel="1"
+				data-tabsection="download"
+				title="[[Download All Files]]"
+				href="$componenthome/entities/download.html?entityid=$!{entityid}&moduleid=$!{topmoduleid}&defaultcategoryid=$defaultcategory.getId()">
+				<i class="bi bi-folder"></i> <span>[[Download Zip]]</span></a>
+				</div>
+			#end
+	
+				
+				#if($desktop && $permissions.can($moduleid, "exportpulltoserver"))
+				<div class='auto-active-row #if($tabsection=="pulllocal") current #end'>
+				<a  class='btn btn-lg btn-wide ajax auto-active-link '
+					data-targetdivinner="tabexportcontent"
+					data-oemaxlevel="1"
+					data-entityid="$!{entityid}"
+					data-moduleid="$!{topmoduleid}"
+					data-defaultcategoryid="$!defaultcategory.getId()"
+					data-tabsection="pulllocal"
+					href="$componenthome/desktop/export/pull.html">
+					<i class="bi bi-folder-symlink"></i> <span>[[Bulk Downloader]]</span>
+				</a>
+				</div>
+				#end
+				
+				#if($content.publishexternal)
+				<div class="border-top w-100" style="margin-bottom: 12px;"></div>
+				<div class="auto-active-row">
+					<a class="ajax btn btn-lg btn-wide auto-active-link "
+						data-targetdivinner="tabexportcontent"
+						data-oemaxlevel="1"
+						href="$componenthome/entities/metadata/export/onix.html?id=$!searchby">
+						<i class="bi bi-filetype-xml"></i> <span>[[ONIX]]</span></a>
+				</div>
+				<div class="auto-active-row">
+					<a class="ajax btn btn-lg btn-wide auto-active-link "
+						data-targetdivinner="tabexportcontent"
+						data-oemaxlevel="1"
+						href="$componenthome/entities/metadata/export/dita.html?id=$!searchby">
+						<i class="bi bi-filetype-xml"></i> <span>[[DITA]]</span></a>
+				</div>
+				<div class="auto-active-row">
+					<a class="ajax btn btn-lg btn-wide auto-active-link "
+						data-targetdivinner="tabexportcontent"
+						data-oemaxlevel="1"
+						href="$componenthome/entities/metadata/export/scorm.html?id=$!searchby">
+						<i class="bi bi-file-zip"></i> <span>[[SCORM]]</span></a>
+				</div> 
+				#end
+		</div>
+		 
+		
+		<div id="tabexportcontent" class="entitytabcolumcontent">
+			#if($tabsection=="share")
+				$pages.include("$componenthome/share/entity.html?entityid=$!{entityid}&moduleid=$!{topmoduleid}", $context)
+			#elseif($tabsection=="sharegallery")
+				$pages.include("${edithome}/tabs/preview/tabpublishing_gallery.html?entityid=$!{entityid}&moduleid=$!{topmoduleid}&defaultcategoryid=$defaultcategory.getId()", $context)
+			#elseif($tabsection=="sharecarousel")
+				$pages.include("${edithome}/tabs/preview/tabpublishing_carousel.html?entityid=$!{entityid}&moduleid=$!{topmoduleid}&defaultcategoryid=$defaultcategory.getId()", $context)
+			#elseif($tabsection=="copy")
+				$pages.include("$componenthome/entities/copydialog.html?entityid=$!{entityid}&moduleid=$!{topmoduleid}&defaultcategoryid=$defaultcategory.getId()", $context)
+			#elseif($tabsection=="downloadzip")
+				$pages.include("$componenthome/entities/download.html?entityid=$!{entityid}&moduleid=$!{topmoduleid}&defaultcategoryid=$defaultcategory.getId()", $context)
+			#elseif($tabsection=="pulllocal")
+				$pages.include("$componenthome/desktop/export/pull.html?entityid=$!{entityid}&moduleid=$!{topmoduleid}&defaultcategoryid=$defaultcategory.getId()", $context)
+			#end
+		</div>
+		
+	</div>
+</div>

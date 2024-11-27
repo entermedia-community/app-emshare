@@ -191,7 +191,7 @@ lQuery(".topmodulecontainer .resultsdivdata").livequery(
 			var targetdiv = emselectable.data("targetdiv");
 			if (targetlink && targetlink != "") {
 				targetlink +=
-					(targetlink.indexOf("?") >= 0 ? "&" : "?") + "id=" + rowid;
+					(targetlink.indexOf("?") >= 0 ? "&" : "?") + "entityid=" + rowid;
 
 				$.ajax({
 					url: targetlink,

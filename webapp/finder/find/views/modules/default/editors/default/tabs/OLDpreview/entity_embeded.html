@@ -1,0 +1,46 @@
+#set( $searchtype = $context.findValue("searchtype"))
+#set( $id = $context.getRequestParameter("id"))
+
+
+#if($id.startsWith("multiedit"))
+
+#else
+	#if( !$entity)
+		#set( $entity  = $mediaarchive.getData($searchtype, $id) )
+	#end
+	#set($entityid = $entity.id)
+	$context.putPageValue("entity", $entity)
+	$context.putPageValue("entityid", $entityid)
+#end
+
+#set($module = $mediaarchive.getData("module", $searchtype))
+#set($moduleid = $module.getId())
+$context.putPageValue("moduleid", $moduleid)
+
+
+#if($moduleid == "faceprofilegroup")
+	#set($name = $entity.name)
+	#if($name)
+		#set($name = "$!name ([[Profile]] $entity.facecounter)")
+	#else	
+		#set($name = "[[Profile]] $entity.facecounter")
+	#end
+#else
+	#if($entity.getName($context))
+		#set($name = $!entity.getName($context))
+	#else 
+		#set($name = "[[Add New]]")
+	#end
+#end
+
+<div class="entity-wraper-embedded" data-moduleid="$moduleid">	
+	<div class="tab-content entity-body" id="entity-nav-tabContent">
+		
+		$context.putPageValue("showmedia", false)
+		$pages.include("$apphome/views/modules/$moduleid${edithome}/tabs/preview/entitytab_embeded.html", $context)
+		
+	</div>
+	
+</div>
+
+

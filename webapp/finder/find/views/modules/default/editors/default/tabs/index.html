@@ -1,0 +1,105 @@
+
+#set( $ismulti = $id.startsWith("multiedit:") || $context.getRequestParameter("multi") == "true")
+$context.putPageValue("ismulti", $ismulti)
+
+#if($ismulti)
+
+#else
+	#ifnotnull($entity)
+		#set($entityid = $entity.id)
+		$context.putPageValue("entityid", $entityid)
+		
+		##Publishing (Gallery)
+		#if($permissions.can($moduleid, "publishinggallery"))
+			#set($canpublishinggallery = true)
+		#end
+		#if($permissions.can($moduleid, "publishingcarousel"))
+			#set($canpublishingcarousel = true)
+		#end
+	#end
+#end
+
+
+#set($enttiyviews = $mediaarchive.query("view").exact("moduleid", $module.id).exact("systemdefined","false").sort("orderingUp").named("view").search($context) )
+#set($entitymoduleviewid = $context.getRequestParameter("entitymoduleviewid"))
+
+#ifnull($entitymoduleviewid)
+	#set( $entitymoduleviewid = $userprofile.get("${module.id}_entitytabopen"))
+#end
+#ifnull($entitymoduleviewid)
+	#set($entitymoduleviewid = $enttiyviews.first().getId())
+#end
+
+#set($saveaction = $context.getRequestParameter("saveaction"))
+#set($addnew = $context.getRequestParameter("addnew"))
+
+#if ($addnew =="true")
+	#set($entitymoduleviewid = $enttiyviews.first().getId())
+	#set($enttiyviews = "")
+	$context.putPageValue("addnew", "true")
+#else
+	##check if saveaction
+	#if($saveaction == "upload")
+		#set($entitytabopen = "tabimport")
+	#end
+#end
+
+#ifnotnull($entitymoduleviewid)
+	#set($entityviewdata = $mediaarchive.getCachedData("view", $entitymoduleviewid))
+#end
+$context.putPageValue("entitymoduleviewid", $entitymoduleviewid)
+$context.putPageValue("entityviewdata", $entityviewdata)
+$context.putPageValue("enttiyviews", $enttiyviews)
+
+<div data-entityid="$!entity.id"
+	data-entitymoduleid="$!entitymodule.id"
+	data-entitymoduleviewid="$!entitymoduleviewid" 
+	data-oemaxlevel="1" 
+	data-url="${edithome}/tabs/index.html"
+	class="entityNavHistory"></div>
+
+<div class="entitydialog #if($enablebackbutton || $addnew) enablebackbtn #end "
+	data-entityid="$!entity.id"
+	data-entitymoduleid="$!entitymodule.id"
+	data-entitymoduleviewid="$!entitymoduleviewid"
+	data-oemaxlevel="1"
+	data-url="${edithome}/tabs/index.html"
+	data-urlbar="$apphome/views/modules/$!{moduleid}/index.html?entityid=$!entityid"
+	#if($entityhits && $entityhits.size() > 1)
+		$context.putPageValue("hitssessionid", $entityhits.getSessionId())
+		data-hitssessionid="$entityhits.getSessionId()" 
+	#end
+	#if($entity)
+		data-setpagetitle="#text($entity)"
+	#else
+		data-setpagetitle="[[Add New]]"
+	#end
+	>
+
+		$pages.include("${edithome}/tabs/dialogheader.html", $context)
+		
+		$pages.include("${edithome}/tabs/dialogtabbuttons.html", $context)
+		
+		#set($rendertype = $entityviewdata.rendertype)
+		
+		#ifnull($rendertype)
+			#set($rendertype = "data")  
+		#end
+		
+		#if($rendertype == "table")
+			#set($rendertype = "tabsubmodulehome")
+		#end
+		
+		<div class="entity-tab-content tabtype$!rendertype">
+		
+			#ifnull($entityviewdata)
+				[[Please select a tab for]] $entitymoduleviewid		
+			#end
+			
+			#ifnotnull($entityviewdata)
+				$context.putPageValue("viewdata", $entityviewdata)
+				$pages.include("${edithome}/tabs/rendertypes/${rendertype}.html", $context)
+			#end
+		</div>
+			
+</div>

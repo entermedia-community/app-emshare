@@ -3171,9 +3171,4 @@ lQuery(".entityNavHistory").livequery(function () {
 		link.show();
 		console.log(link.data());
 	}
-	// }
-	// entityNavBack
-	// <a href="$apphome/views/modules/$lightboxtype/results/default/tabs/index.html?entityid=$box.id" class="ajax lightboxbtn-edit" data-targetdiv="entitydialog" data-oemaxlevel="1">
-	// 	<i class="bi bi-eye ns"></i>
-	// </a>
 });

@@ -1,0 +1,80 @@
+<div id="pickersearchentities" data-setpagetitle="[[Select]] #text($module)">
+
+
+#set($entitymoduleviewid = $context.getRequestParameter("entitymoduleviewid"))
+#set($viewdata = $mediaarchive.getCachedData("view",$entitymoduleviewid))
+#set($submoduleid = $!viewdata.rendertable)
+
+		
+</div>
+
+		
+	<div class="overflow-y">
+		<div id="entitypickerresults" class="pickerresults entitypickersubmodule" ###if( $copyinghits || $pickedassetid || $copyingcategoryid) pickerresultscopy #end $!targettype"
+			
+			#if( $copyinghits || $pickedassetid || $copyingcategoryid) 
+				#if($pickedassetid)
+					data-pickedassetid="$pickedassetid"
+					data-clickurl="$applink/views/modules/${moduleid}/components/entities/addassettoentity.html"
+					data-clicktargetdiv="assetentityresultsmediaviewer"
+				#else
+					data-copyinghitssessionid="$!copyinghitssessionid"
+				#end
+				#if($pickertarget=="addtocategory")
+					data-copyinghitssessionid="$!copyinghitssessionid"
+					data-copyingsearchtype="$!copyingsearchtype"
+					data-clickurl="$applink/views/modules/searchcategory/savetoentities.html"
+					data-clicktargetdiv="applicationmaincontent"
+					data-targettype="message"
+				#else
+					#if($copyingsearchtype == "category")
+						data-clickurl="$applink/views/modules/${moduleid}/components/entities/addcategorytoentity.html" 
+						data-copyingcategoryid="$!copyingcategoryid"
+					#else
+						#if($copyingsearchtype == "assets")
+							data-clickurl="$applink/views/modules/${moduleid}/components/entities/addassetstoentity.html"
+						#else 
+							data-clickurl="$applink/views/modules/${moduleid}/components/entities/copytoentity.html"
+						#end
+					#end
+					data-copyingsearchtype="$!copyingsearchtype"
+					data-clicktargetdiv="applicationmaincontent"
+					data-targettype="message"
+				#end
+			#elseif($pickertarget)
+				data-pickertarget="$!pickertarget"
+				data-targettype="$!targettype"
+				
+				#if($targettype == "entitypickersubmodule")
+					data-clickurl="$applink/views/modules/${moduleid}/components/entities/savesubmodule.html"
+					data-clicktargetdiv="entitydialog"
+					data-fieldexternalid="$!fieldexternalid"
+					data-fieldexternalvalue="$!fieldexternalvalue"
+				#end
+			#else
+				data-targettype="pickandupload"
+				data-targetlink="${edithome}/tabs/index.html"
+				data-saveaction="upload"
+				data-uploadmedia="true"
+			#end
+			data-pickedmoduleid="$!{moduleid}"
+			data-moduleid="${moduleid}">
+		
+#set($module = $mediaarchive.getCachedData("module",$submoduleid))
+$context.putPageValue("module", $module)
+#set($searchhome = "$apphome/views/modules/${submoduleid}/results/pickersubmodules")
+$context.putPageValue("searchhome", $searchhome)
+
+		
+		
+#set($sortby = $!viewdata.rendersort)
+#set($args = "field=$!{entitymodule.id}&$!{entitymodule.id}.value=$!{entity.id}&operation=not")
+#set($args = "$args&sortby=$!sortby&entitymoduleviewid=$entitymoduleviewid")
+
+$pages.include("${searchhome}/search.html?$!args",$context)
+
+
+		</div>
+	</div>
+
+</div>
