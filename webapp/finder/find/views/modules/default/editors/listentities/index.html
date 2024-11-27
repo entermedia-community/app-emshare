@@ -1,0 +1,27 @@
+#ifnull($entitymoduleviewid) 
+	#set($entitymoduleviewid = $context.getRequestParameter("entitymoduleviewid"))
+	
+#end
+#set($viewdata = $mediaarchive.getCachedData("view",$entitymoduleviewid))
+
+<div id="$edithomeid" class="editdiv topmodules" 
+	data-edithome="${edithome}"
+	data-edithomeid="${edithomeid}"
+	
+>
+	
+	#set($searchhome = "$apphome/views/modules/${module.id}/results/default")
+	$context.putPageValue("searchhome", $searchhome)
+
+<div class="clickableresultlist"
+	data-${module.id}hitssessionid="$!hits.getSessionId()"
+	data-targetdiv="entitydialog"
+	data-oemaxlevel="1"
+	data-url= "${apphome}/views/modules/${module.id}/editors/default/tabs/index.html"
+>
+	
+	$pages.include("${searchhome}/index.html?$!args",$context)
+
+</div>
+		
+</div>

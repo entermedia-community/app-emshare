@@ -170,7 +170,7 @@ lQuery(".assetpickerselectrow").livequery("click", function () {
 });
 
 //CB This works. Opens entities
-lQuery(".topmodulecontainer .resultsdivdata").livequery(
+lQuery(".topmodules .resultsdivdata").livequery(
 	"click",
 	function (event) {
 		event.stopPropagation();
@@ -179,49 +179,13 @@ lQuery(".topmodulecontainer .resultsdivdata").livequery(
 		if (!handleclick(row)) {
 			return true;
 		}
-
-		var emselectable = row.closest(".emselectablemodule");
-
 		var rowid = row.data("dataid");
 
-		var targetlink = emselectable.data("targetlink");
+		var clickableresultlist = row.closest(".clickableresultlist");
 
-		if (emselectable.hasClass("emselectablemodule_order")) {
-			//Order Module
-			var targetdiv = emselectable.data("targetdiv");
-			if (targetlink && targetlink != "") {
-				targetlink +=
-					(targetlink.indexOf("?") >= 0 ? "&" : "?") + "entityid=" + rowid;
-
-				$.ajax({
-					url: targetlink,
-					data: { oemaxlevel: "2" },
-					success: function (data) {
-						$("#" + targetdiv).replaceWith(data);
-						jQuery(window).trigger("resize");
-					},
-				});
-			}
-		} else {
-			//All entities
-			if (targetlink && targetlink != "") {
-				targetlink +=
-					(targetlink.indexOf("?") >= 0 ? "&" : "?") + "id=" + rowid;
-				row.data("targetlink", targetlink);
-				row.data("oemaxlevel", "2");
-				if (emselectable.data("tabletype") == "subentity") {
-					row.data("targetrendertype", "entity");
-					row.data("oemaxlevel", "1");
-				}
-				row.data("id", rowid);
-				row.data("hitssessionid", emselectable.data("hitssessionid"));
-				row.data("updateurl", true);
-				var urlbar = emselectable.data("urlbar");
-				urlbar = urlbar + "?entityid=" + rowid;
-				row.data("urlbar", urlbar);
-				row.emDialog();
-			}
-		}
+		clickableresultlist.data("id", rowid);
+		clickableresultlist.data("entityid", rowid);
+		row.emDialog();
 	}
 );
 
@@ -237,12 +201,12 @@ lQuery(".submodulepicker .resultsdivdata").livequery("click", function (event) {
 	submodulepicker.runAjax();
 });
 //To open an entity in a submodule. CB Lose Back button
-lQuery(".opensubmodule .resultsdivdata").livequery("click", function () {
+lQuery(".entitysubmodules .resultsdivdata").livequery("click", function () {
 	var row = $(this);
 	if (!handleclick(row)) {
 		return true;
 	}
-	var submoduleOpener = row.closest(".opensubmodule");
+	var submoduleOpener = row.closest(".clickableresultlist");
 	submoduleOpener.data("entityid", row.data("dataid"));
 	submoduleOpener.runAjax();
 });
