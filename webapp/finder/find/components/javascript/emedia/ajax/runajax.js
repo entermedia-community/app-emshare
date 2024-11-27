@@ -48,26 +48,6 @@
 		}
 		
 		if (anchor.data("includesearchcontext") == true) {
-/*
-			var _targetdiv = anchor.data("targetdiv"); //This is used for lightbox tree opening
-			var target = $("#" + _targetdiv);
-			if( target.hasClass("resultsdiv"))
-			{
-				resultsdiv = target;
-			}
-			else
-			{
-				resultsdiv = target.find(".resultsdiv");
-			}
-
-			//Look more?
-			if (resultsdiv.length == 0) {
-			 	resultsdiv = anchor.find(".resultsdiv");
-			}
-			if (resultsdiv.length == 0) {
-				resultsdiv = anchor.closest(".resultsdiv");
-			}
-*/
 			var editdiv = anchor.closest(".editdiv"); //This is used for lightbox tree opening
 			var resultsdiv = editdiv.find(".resultsdiv");
 
@@ -105,23 +85,34 @@
 
 		var anchorModal = anchor.closest(".modal");
 
-		var _targetdiv = anchor.data("targetdiv");
+		var targetdivS = anchor.data("targetdiv");
 		var replaceHtml = true;
 
 		var targetDivInner = anchor.data("targetdivinner");
 		if (targetDivInner) {
-			_targetdiv = targetDivInner;
+			targetdivS = targetDivInner;
 			replaceHtml = false;
 		}
-		var targetDiv = anchor.closest("." + $.escapeSelector(_targetdiv));
-		if (!targetDiv.length) {
-			targetDiv = $("." + $.escapeSelector(_targetdiv));
+		
+		var edithomeid = options["edithomeid"];
+		var targetdiv = false;
+		if (edithomeid !== undefined) 
+		{
+			targetdiv = $("#" + edithomeid).find("." + targetdivS);
 		}
-		if (!targetDiv.length) {
-			targetDiv = $("#" + $.escapeSelector(_targetdiv)); //legacy
+		
+		if (!targetdiv.length) 
+		{		
+			targetdiv = anchor.closest("." + $.escapeSelector(targetdivS));
+		}
+		if (!targetdiv.length) {
+			targetdiv = $("." + $.escapeSelector(targetdivS));
+		}
+		if (!targetdiv.length) {
+			targetdiv = $("#" + $.escapeSelector(targetdivS)); //legacy
 		}
 
-		if (targetDiv.length) {
+		if (targetdiv.length) {
 			anchor.css("cursor", "wait");
 			$("body").css("cursor", "wait");
 
@@ -155,12 +146,12 @@
 						var newcell;
 						if (replaceHtml) {
 							//Call replacer to pull $scope variables
-							onpage = targetDiv.parent();
-							targetDiv.replaceWith(data); //Cant get a valid dom element
-							newcell = findClosest(onpage, targetDiv);
+							onpage = targetdiv.parent();
+							targetdiv.replaceWith(data); //Cant get a valid dom element
+							newcell = findClosest(onpage, targetdiv);
 						} else {
-							onpage = targetDiv;
-							targetDiv.html(data);
+							onpage = targetdiv;
+							targetdiv.html(data);
 							newcell = onpage.children(":first");
 						}
 						$(window).trigger("setPageTitle", [newcell]);

@@ -41,20 +41,24 @@
 				}
 			}
 		}
-		var targetdiv_ = form.data("targetdiv");
-		if (targetdiv_ === undefined) {
-			targetdiv_ = form.attr("targetdiv");
+		var targetdivS = form.data("targetdiv");
+		var targetdiv;
+		var edithomeid = form.data("edithomeid");
+		if (edithomeid !== undefined) 
+		{
+			targetdiv = $("#" + edithomeid).find("." + targetdivS);
 		}
-		if (targetdiv_ === undefined) {
-			targetdiv_ = form.data("targetdivinner"); //TODO: Remove this
+		if (!targetdiv.length) 
+		{
+			targetdiv = $("#" + $.escapeSelector(targetdivS));
+		}  
+		if (!targetdiv.length) 
+		{
+			targetdiv = $("." + $.escapeSelector(targetdivS));
 		}
 
-		var	targetdiv = $("#" + $.escapeSelector(targetdiv_)); //Noting is close to the form we are using... So make sure to use data-autosetformtargetdiv="targetdiv" 
-		if (!targetdiv.length) {
-			targetdiv = $("." + $.escapeSelector(targetdiv_));
-		}
-
-		if (form.attr("action") == undefined) {
+		if (form.attr("action") == undefined) 
+		{
 			var action = targetdiv.data("saveaction");
 			if (action == undefined) {
 				action = form.data("defaultaction");

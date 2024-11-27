@@ -1090,6 +1090,7 @@ jQuery(document).ready(function (url, params) {
 			$(".selectionbox", resultsdiv).prop("checked", false);
 		}
 			
+		
 		clicked.data("targetdiv", "resultsheader");
 		clicked.data("action", action);
 		clicked.data("oemaxlevel", "1");
