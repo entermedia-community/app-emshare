@@ -51,8 +51,6 @@ $context.putPageValue("entityrendertype", $entityrendertype)
 #set($preference = "minimize$!{moduleid}summary")
 #set($isminimized = $userprofile.getBoolean($preference))
 
-
-
 #set($showaddnew = $page.isPropertyTrue("showaddnew",true))
 <div id="resultsheader" class="resultsheader #if($!hits.getSelectionSize() > 0)hasselections#end">
 	<div id="sub-nav" class="search-views emsubnav sub-nav-$!moduleid">
@@ -105,21 +103,30 @@ $context.putPageValue("entityrendertype", $entityrendertype)
 					<a class="dropdown-item  dropdown-toggle" href="#" data-bs-toggle="dropdown">[[Select]]</a>
 						<ul class="submenu dropdown-menu">
 							<li>
-						<a class="dropdown-item ajax  selectpage" 
-						targetdiv="resultsheader" 
-						href="$!{siteroot}${apphome}/views/modules/${moduleid}/components/results/togglepage.html?oemaxlevel=1&hitssessionid=$hits.getSessionId()&action=all"
+						<a class="dropdown-item  selectpage" 
+						href="${searchhome}/togglepage.html"
+						data-targetdiv="resultsheader"
+						data-action="all"
+						data-includesearchcontext="true"
+						data-includeeditcontext="true"
 						title="[[Select All results]]">[[Select All]]</a>
 						</li>
 						<li>				
-						<a class="dropdown-item ajax selectpage" 
-						targetdiv="resultsheader" 
-						href="$!{siteroot}${apphome}/views/modules/${moduleid}/components/results/togglepage.html?oemaxlevel=1&hitssessionid=$hits.getSessionId()&action=page"
+						<a class="dropdown-item selectpage" 
+						href="${searchhome}/togglepage.html"
+						data-targetdiv="resultsheader"
+						data-action="page"
+						data-includesearchcontext="true"
+						data-includeeditcontext="true"
 						title="[[Select this page of results]]">[[Select Only This Page]]</a>
 						</li>
 						<li>
-						<a class="dropdown-item ajax  deselectpage" 
-						targetdiv="resultsheader" 
-						href="$!{siteroot}${apphome}/views/modules/${moduleid}/components/results/togglepage.html?oemaxlevel=1&hitssessionid=$hits.getSessionId()&action=none"
+						<a class="dropdown-item  selectpage" 
+						href="${searchhome}/togglepage.html"
+						data-targetdiv="resultsheader"
+						data-action="none"
+						data-includesearchcontext="true"
+						data-includeeditcontext="true"
 						title="[[Deselect all results]]">[[Select None]]</a>
 						</li>
 					</ul>
@@ -231,7 +238,7 @@ $context.putPageValue("entityrendertype", $entityrendertype)
 								#set ($alldetails = $searcher.getUserPropertyDetails() )
 								<select class="form-control form-control-sm select2 tableresultsaddcolumn" 
 										name="addcolumn"
-										data-componenthome="$!{siteroot}${apphome}/views/modules/${moduleid}/components/results/addremovecolumns.html?searchtype=$!moduleid&hitssessionid=$hits.getSessionId()&editheader=true&moduleid=$!moduleid&viewid=$!{moduleid}resultstable"
+										data-componenthome="${searchhome}/addremovecolumns.html?searchtype=$!moduleid&hitssessionid=$hits.getSessionId()&editheader=true&moduleid=$!moduleid&viewid=$!{moduleid}resultstable"
 										data-targetdiv="$!{moduleid}resultsarea"
 										data-oemaxlevel="1" 
 										data-allowclear="false" 
@@ -242,7 +249,7 @@ $context.putPageValue("entityrendertype", $entityrendertype)
 									#end
 								</select>
 								##<span class="hint">*[[Drag columns to move them]]</span>
-								<a href="$!{siteroot}${apphome}/views/modules/${moduleid}/components/results/resetcolumns.html?searchtype=$!moduleid&hitssessionid=$hits.getSessionId()&moduleid=$!moduleid&viewid=$!{moduleid}resultstable&$!{moduleid}clearresults=true"
+								<a href="${searchhome}/resetcolumns.html?searchtype=$!moduleid&hitssessionid=$hits.getSessionId()&moduleid=$!moduleid&viewid=$!{moduleid}resultstable&$!{moduleid}clearresults=true"
 									data-targetdiv="$!{moduleid}resultsarea"
 									data-oemaxlevel="1"
 									data-confirm="[[Are you sure you want to reset all columns?]]"

@@ -322,26 +322,6 @@ jQuery(document).ready(function (url, params) {
 		}
 	});
 
-	lQuery("a.selectpage").livequery("click", function () {
-		var resultsdiv = $(this).closest(".resultsdiv");
-		if (!resultsdiv) {
-			resultsdiv = $("#resultsdiv");
-		}
-		jQuery("input[name=pagetoggle]", resultsdiv).prop("checked", true);
-		jQuery(".selectionbox", resultsdiv).prop("checked", true);
-		$(".selectionbox", resultsdiv)
-			.closest(".resultsassetcontainer")
-			.addClass("emrowselected");
-		$(".selectionbox", resultsdiv)
-			.closest(".emboxthumb")
-			.addClass("emrowselected");
-		if (typeof refreshSelections != "undefined") {
-			refreshSelections();
-		}
-
-		// $("#select-dropdown-open").click();
-	});
-
 	lQuery(".gallery-checkbox input").livequery("click", function () {
 		if ($(this).is(":checked")) {
 			$(this).closest(".emthumbbox").addClass("selected");
@@ -1048,13 +1028,11 @@ jQuery(document).ready(function (url, params) {
 		}
 	};
 
+	
 	// Selections
 	function handRowSelection(clicked) {
-		var dataid = clicked.data("dataid");
 		var resultsdiv = clicked.closest(".resultsdiv");
-		if (!resultsdiv.length) {
-			resultsdiv = $("#resultsdiv");
-		}
+		
 		if (resultsdiv.length) {
 			var ischecked = clicked.prop("checked");
 			if (ischecked == true) {
@@ -1063,19 +1041,19 @@ jQuery(document).ready(function (url, params) {
 				clicked.closest(".resultsassetcontainer").removeClass("emrowselected");
 			}
 
-			var options = resultsdiv.data();
 			var searchhome = resultsdiv.data("searchhome");
-			options["dataid"] = dataid;
-			var targetdiv = resultsdiv.find("#resultsheader");
-			refreshdiv(targetdiv, searchhome + "/toggle.html", options);
-
-			if (typeof refreshSelections != "undefined") {
-				refreshSelections();
-			}
-
-			$(".assetproperties").trigger("click");
+			
+			clicked.data("targetdiv", "resultsheader");
+			clicked.data("oemaxlevel", "1");
+			clicked.data("includesearchcontext", true);
+			clicked.data("includeeditcontext", true);
+			clicked.data("url",searchhome + "/toggle.html");
+			clicked.runAjax();
+			
+			//$(".assetproperties").trigger("click");
 		}
 	}
+
 	lQuery("div.toggle-selection").livequery("click", function () {
 		var pickerresults = $(this).closest(".pickerresults");
 		if (pickerresults.length) {
@@ -1094,24 +1072,6 @@ jQuery(document).ready(function (url, params) {
 			handRowSelection($(this));
 		}
 	);
-
-	lQuery("a.deselectpage").livequery("click", function () {
-		var resultsdiv = $(this).closest(".resultsdiv");
-		if (!resultsdiv.length) {
-			resultsdiv = $("#resultsdiv");
-		}
-		$("input[name=pagetoggle]", resultsdiv).prop("checked", false);
-		$(".selectionbox", resultsdiv).prop("checked", false); // Not firing the page
-		$(".selectionbox", resultsdiv)
-			.closest(".resultsassetcontainer")
-			.removeClass("emrowselected");
-		$(".selectionbox", resultsdiv)
-			.closest(".emboxthumb")
-			.removeClass("emrowselected");
-		if (typeof refreshSelections != "undefined") {
-			refreshSelections();
-		}
-	});
 
 	lQuery("input[name=pagetoggle]").livequery("click", function () {
 		var input = $(this);
@@ -1138,6 +1098,7 @@ jQuery(document).ready(function (url, params) {
 		}
 	});
 
+
 	lQuery("a.selectpage").livequery("click", function (e) {
 		e.preventDefault();
 		e.stopPropagation();
@@ -1146,19 +1107,15 @@ jQuery(document).ready(function (url, params) {
 		if (!resultsdiv.length) {
 			resultsdiv = $("#resultsdiv");
 		}
-		//var hitssessionid = resultsdiv.data('hitssessionid');
-		var options = resultsdiv.data();
-		var searchhome = resultsdiv.data("searchhome");
-		options.oemaxlevel = 1;
+		var action = selectpage.data("action");
 
-		var targetdiv = resultsdiv.find("#resultsheader");
-		options.action = selectpage.data("action");
-		refreshdiv(targetdiv, searchhome + "/togglepage.html", options);
-		$(".selectionbox", resultsdiv).prop("checked", options.action != "none");
+		$(".selectionbox", resultsdiv).prop("checked", action != "none");
 		$("input[name=pagetoggle]", resultsdiv).prop(
-			"checked",
-			options.action != "none"
+			"checked", action != "none"
 		);
+		
+		selectpage.data("oemaxlevel", "1");
+		selectpage.runAjax();
 	});
 
 	lQuery(".showasset").livequery("click", function (e) {
