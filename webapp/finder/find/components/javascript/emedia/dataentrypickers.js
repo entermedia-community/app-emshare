@@ -271,10 +271,10 @@ lQuery(".pickerresults.pickerpickasset .resultsdivdata").livequery(
 		}
 		var row = $(clicked.closest(".resultsdivdata"));
 		var rowid = row.data("dataid");
-		var pickerresults = clicked.closest(".pickerresults");
+		var editdiv = clicked.closest(".editdiv");
 
-		if (pickerresults.length) {
-			var pickertarget = pickerresults.data("pickertargetfield");
+		if (editdiv.length) {
+			var pickertarget = editdiv.data("pickertargetfield");
 			pickertarget = $("#" + pickertarget); //This is the field itself
 			if (pickertarget.length > 0) {
 				var detailid = pickertarget.data("detailid");
