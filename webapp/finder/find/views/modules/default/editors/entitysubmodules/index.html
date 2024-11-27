@@ -17,7 +17,13 @@
 	$context.putPageValue("entitymodule", $entitymodule)
 	
 	#set($submoduleid = $!viewdata.rendertable)
-	
+
+<div class="clickableresultlist"
+	data-targetdiv="entitydialog"
+	data-oemaxlevel="1"
+	data-includesearchcontext="true"
+	data-url= "${apphome}/views/modules/${submoduleid}/editors/default/tabs/index.html"
+>	
 	#set($module = $mediaarchive.getCachedData("module",$submoduleid))
 	$context.putPageValue("module", $module)
 	#set($searchhome = "$apphome/views/modules/${submoduleid}/results/submoduleslist")
@@ -28,12 +34,7 @@
 	#set($args = "$args&sortby=$!sortby&entitymoduleviewid=$entitymoduleviewid")
 	
 
-<div class="clickableresultlist"
-	data-${module.id}hitssessionid="$!hits.getSessionId()"
-	data-targetdiv="entitydialog"
-	data-oemaxlevel="1"
-	data-url= "${apphome}/views/modules/${module.id}/editors/default/tabs/index.html"
->	
+	
 	$pages.include("${searchhome}/index.html?$!args",$context)
 </div>	
 		

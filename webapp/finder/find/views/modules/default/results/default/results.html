@@ -10,27 +10,27 @@ $context.putPageValue("viewid", $viewid)
 #ifnull($viewpath)
 	$context.putPageValue("viewpath", "${module.id}/${viewid}")
 #end
-#set($entitymoduleviewid = $context.getRequestParameter("entitymoduleviewid"))
-$context.putPageValue("entitymoduleviewid", "${entitymoduleviewid}")
 
 #set($searchhomeid = $page.get("searchhomeid") )
-<div id="${searchhomeid}" class="tableresults resultsdiv" 
-		data-${module.id}hitssessionid="$!hits.getSessionId()" 
-		data-hitssessionid="$!hits.getSessionId()"
-		data-searchhome="$!{searchhome}"
-		data-targetdiv="${searchhomeid}"
-		data-category="$!category.id"
-		#if( $page.isPropertyTrue("filterbyentity",false) )
-			data-field="$!{entitymodule.id}"
-			data-$!{entitymodule.id}value="$!entity.id"
-			data-operation="exact"
-			data-entitymoduleviewid="$!entitymoduleviewid"  ##this is used in sub-modules to keep the views right
-		#end
+<div id="${searchhomeid}" 
+	class="tableresults resultsdiv" 
+	data-${module.id}hitssessionid="$!hits.getSessionId()" 
+	data-hitssessionid="$!hits.getSessionId()"
+	data-searchhome="$!{searchhome}"
+	data-targetdiv="${searchhomeid}"
+	data-category="$!category.id"
+	#if( $page.isPropertyTrue("filterbyentity",false) )
+		data-field="$!{entitymodule.id}"
+		data-$!{entitymodule.id}value="$!entity.id"
+		data-operation="exact"
+		data-entityid="${entity.id}"
+		data-entitymoduleviewid="$!entitymoduleviewid"  ##this is used in sub-modules to keep the views right
+	#end
 
-		data-pagenum="$!hits.getPage()" 
-		data-totalpages="$!hits.getTotalPages()"
-		data-viewid="$!viewid"
-		data-section="$!content.section">
+	data-pagenum="$!hits.getPage()" 
+	data-totalpages="$!hits.getTotalPages()"
+	data-viewid="$!viewid"
+	data-section="$!content.section">
 	
 	$pages.include("${edithome}/searchheader.html", $context)	
 		
