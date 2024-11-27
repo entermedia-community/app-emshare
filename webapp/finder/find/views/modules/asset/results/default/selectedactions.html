@@ -21,13 +21,13 @@
 						<a class="dropdown-item emdialog" 
 							data-dialogid="approveasset" 
 							title="[[Approve Pending]]" 
-							href="$siteroot$apphome/views/modules/asset/approval/confirmapprove.html?hitssessionid=$hits.getSessionId()&collectionid=$!librarycol.getId()&nodeID=$!categoryid&dialogresults=$!dialogresults">[[Approve]]</a>
+							href="$siteroot$apphome/views/modules/asset/approval/confirmapprove.html?${hits.getSearchType()}hitssessionid=$hits.getSessionId()&collectionid=$!librarycol.getId()&nodeID=$!categoryid&dialogresults=$!dialogresults">[[Approve]]</a>
 					</li>
 			        <li> 
 						<a class="dropdown-item emdialog" 
 				    		data-dialogid="approveasset" 
 				    		title="[[Reject Pending]]" 
-				    		href="$siteroot$apphome/views/modules/asset/approval/confirmreject.html?hitssessionid=$hits.getSessionId()&collectionid=$!librarycol.getId()&nodeID=$!categoryid&dialogresults=$!dialogresults">[[Reject]]</a>
+				    		href="$siteroot$apphome/views/modules/asset/approval/confirmreject.html?${hits.getSearchType()}hitssessionid=$hits.getSessionId()&collectionid=$!librarycol.getId()&nodeID=$!categoryid&dialogresults=$!dialogresults">[[Reject]]</a>
 					</li>  
 				</ul>    
 			</li>
@@ -48,7 +48,7 @@
 				#set($entity = $mediaarchive.getCachedData($parentmoduleid, $entityid))
 			#end
 			#set($removefrom = "$siteroot$applink/views/modules/$!{topmoduleid}/components/entities/removeassets.html")
-			#set($removefrom = "$removefrom?moduleid=$parentmoduleid&entityid=$entityid&copyinghitssessionid=$hits.getSessionId()&reloadtargets=topmodulecontainer")
+			#set($removefrom = "$removefrom?moduleid=$parentmoduleid&entityid=$entityid&copying${hits.getSearchType()}hitssessionid=$hits.getSessionId()&reloadtargets=topmodulecontainer")
 			<li><a class="dropdown-item ajax"
 				data-targetdiv="tab_media" 
 					data-dialogid="addtoentity"
@@ -62,7 +62,7 @@
 		#end
 		
 		#if($canmultidelete)
-			#set($deleteurl = "$siteroot$componenthome/mediaviewer/fullscreen/delete/index.html?hitssessionid=$hits.getSessionId()&nodeID=$!catid")
+			#set($deleteurl = "$siteroot$componenthome/mediaviewer/fullscreen/delete/index.html?${hits.getSearchType()}hitssessionid=$hits.getSessionId()&nodeID=$!catid")
 			#if($module=="librarycollection")
 				#set($deleteurl = "${deleteurl}&collectionid=$!librarycol.getId()")
 			#end	    
@@ -73,7 +73,7 @@
 	   	#end 
 	   	
 	   	#if($canprintpreview)
-	    	 <li><a class="dropdown-item" href="$siteroot$apphome/views/modules/asset/editor/printpreview/printselections.html?hitssessionid=$hits.getSessionId()">[[Print Assets]]</a></li>
+	    	 <li><a class="dropdown-item" href="$siteroot$apphome/views/modules/asset/editor/printpreview/printselections.html?${hits.getSearchType()}hitssessionid=$hits.getSessionId()">[[Print Assets]]</a></li>
 		#end
 
 		</ul>
@@ -91,7 +91,7 @@
 					data-targetdiv="basket-paint"  
 					data-action="addtocart"
 					title="[[Add To Cart]]"
-					href="$siteroot$componenthome/basket/addselection.html?hitssessionid=$hits.getSessionId()">
+					href="$siteroot$componenthome/basket/addselection.html?${hits.getSearchType()}hitssessionid=$hits.getSessionId()">
 					<i class="bi bi-cart-plus-fill mr-2"></i> [[Cart]]
 				</a>
 				</li>
@@ -104,7 +104,7 @@
 					data-toastmessage="[[Adding to Bookmarks]]"
 					data-oemaxlevel="2" 
 					title="[[Add To Bookmarks]]"  
-					href="$siteroot$apphome/views/modules/asset/editor/favorite/favorite-add-multi.html?hitssessionid=$hits.getSessionId()"
+					href="$siteroot$apphome/views/modules/asset/editor/favorite/favorite-add-multi.html?${hits.getSearchType()}hitssessionid=$hits.getSessionId()"
 					>
 					<i class="bi bi-bookmark-fill mr-2"></i> [[Bookmarks]]
 					</a>
@@ -120,7 +120,7 @@
 						data-toastmessage="[[Adding to Workflow]]"
 						data-oemaxlevel="2" 
 						title="[[Add To Workflow]]"  
-						href="$siteroot$apphome/views/modules/asset/editor/workflow/add.html?hitssessionid=$hits.getSessionId()"
+						href="$siteroot$apphome/views/modules/asset/editor/workflow/add.html?${hits.getSearchType()}hitssessionid=$hits.getSessionId()"
 						>
 						<i class="bi bi-funnel-fill mr-2"></i> [[Workflow]]
 						</a>

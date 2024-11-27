@@ -181,7 +181,7 @@ $context.putPageValue("entityrendertype", $entityrendertype)
 					data-alertmessage="[[Added to Bookmarks]]"
 					data-oemaxlevel="2" 
 				title="[[Add To Bookmarks]]"  
-				href="$!{siteroot}${apphome}/views/modules/asset/editor/favorite/favorite-add-multi.html?hitssessionid=$hits.getSessionId()"
+				href="$!{siteroot}${apphome}/views/modules/asset/editor/favorite/favorite-add-multi.html?${hits.getSearchType()}hitssessionid=$hits.getSessionId()"
 				><i class="bi bi-bookmark-fill mr-2"></i> [[Bookmark]]</a></li>
 				#end
 				#if($permissions.can("searchcategory", "create"))
@@ -235,7 +235,7 @@ $context.putPageValue("entityrendertype", $entityrendertype)
 								#set ($alldetails = $searcher.getUserPropertyDetails() )
 								<select class="form-control form-control-sm select2 tableresultsaddcolumn" 
 										name="addcolumn"
-										data-componenthome="${searchhome}/addremovecolumns.html?searchtype=$!moduleid&hitssessionid=$hits.getSessionId()&editheader=true&moduleid=$!moduleid&viewid=$!{moduleid}resultstable"
+										data-componenthome="${searchhome}/addremovecolumns.html?searchtype=$!moduleid&${hits.getSearchType()}hitssessionid=$hits.getSessionId()&editheader=true&moduleid=$!moduleid&viewid=$!{moduleid}resultstable"
 										data-targetdiv="$!{moduleid}resultsarea"
 										data-oemaxlevel="1" 
 										data-allowclear="false" 
@@ -246,7 +246,7 @@ $context.putPageValue("entityrendertype", $entityrendertype)
 									#end
 								</select>
 								##<span class="hint">*[[Drag columns to move them]]</span>
-								<a href="${searchhome}/resetcolumns.html?searchtype=$!moduleid&hitssessionid=$hits.getSessionId()&moduleid=$!moduleid&viewid=$!{moduleid}resultstable&$!{moduleid}clearresults=true"
+								<a href="${searchhome}/resetcolumns.html?searchtype=$!moduleid&${hits.getSearchType()}hitssessionid=$hits.getSessionId()&moduleid=$!moduleid&viewid=$!{moduleid}resultstable&$!{moduleid}clearresults=true"
 									data-targetdiv="$!{moduleid}resultsarea"
 									data-oemaxlevel="1"
 									data-confirm="[[Are you sure you want to reset all columns?]]"
