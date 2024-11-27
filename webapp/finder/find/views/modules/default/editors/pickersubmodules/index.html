@@ -3,23 +3,22 @@
 #set($submoduleid = $!viewdata.rendertable)
 
 
-<div id="pickersearchentities" class="editdiv" 
+<div id="pickersearchentities" class="editdiv pickerresults entitypickersubmodule" 
 	data-entityid="$!entity.id"
 	data-entitymoduleid="$!entitymodule.id"
 	data-entitymoduleviewid="$entitymoduleviewid"
 
 	data-oemaxlevel="1"
 	data-edithome="$!{edithome}"
-	data-targetdiv="pickersearchentities"
+	data-targetdiv="${module.id}submoduleslist"
 	data-pickertarget="$!pickertarget"
-	data-setpagetitle="[[Select]] #text($module)">
+	data-setpagetitle="[[Select]] #text($module)"
+	data-clickurl="$apphome/views/modules/$module.id/results/submoduleslist/actions/savesubmodule.html"
 
+>
 		
 	<div class="overflow-y">
-		<div id="entitypickerresults" class="pickerresults entitypickersubmodule"
-			data-clickurl="$apphome/views/modules/$module.id/results/submoduleslist/actions/savesubmodule.html"
-			data-targetdiv="${module.id}submoduleslist"				
-		>
+		<div id="entitypickerresults"	>
 		
 #set($module = $mediaarchive.getCachedData("module",$submoduleid))
 $context.putPageValue("module", $module)
