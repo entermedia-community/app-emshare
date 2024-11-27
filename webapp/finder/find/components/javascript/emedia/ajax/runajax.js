@@ -101,16 +101,18 @@
 		{
 			targetdiv = $("#" + edithomeid).find("." + targetdivS);
 		}
-		
-		if (!targetdiv.length) 
-		{		
+		else 
+		{
 			targetdiv = anchor.closest("." + $.escapeSelector(targetdivS));
 		}
+		
 		if (!targetdiv.length) {
-			targetdiv = $("." + $.escapeSelector(targetdivS));
+			targetdiv = $("#" + $.escapeSelector(targetdivS));
+			console.log("Set edithomeid.");
 		}
 		if (!targetdiv.length) {
-			targetdiv = $("#" + $.escapeSelector(targetdivS)); //legacy
+			targetdiv = $("." + $.escapeSelector(targetdivS)); //legacy
+			console.log("Set edithomeid!.");
 		}
 
 		if (targetdiv.length) {

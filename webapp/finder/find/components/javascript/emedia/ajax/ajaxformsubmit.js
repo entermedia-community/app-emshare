@@ -48,13 +48,19 @@
 		{
 			targetdiv = $("#" + edithomeid).find("." + targetdivS);
 		}
+		else 
+		{
+			targetdiv = form.closest("." + $.escapeSelector(targetdivS));
+		}
 		if (!targetdiv.length) 
 		{
 			targetdiv = $("#" + $.escapeSelector(targetdivS));
+			console.log("Set edithomeid.");
 		}  
 		if (!targetdiv.length) 
 		{
 			targetdiv = $("." + $.escapeSelector(targetdivS));
+			console.log("Set edithomeid.");
 		}
 
 		if (form.attr("action") == undefined) 
