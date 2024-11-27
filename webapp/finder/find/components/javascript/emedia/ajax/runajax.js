@@ -33,9 +33,22 @@
 
 		var options = anchor.cleandata();
 		if (anchor.data("includesearchcontext") == true) {
-			//Is this a good idea or a bad idea?
-			var resultsdiv = anchor.find(".resultsdiv");
 
+			var _targetdiv = anchor.data("targetdiv"); //This is used for lightbox tree opening
+			var target = $("#" + _targetdiv);
+			if( target.hasClass("resultsdiv"))
+			{
+				resultsdiv = target;
+			}
+			else
+			{
+				resultsdiv = target.find(".resultsdiv");
+			}
+
+			//Look more?
+			if (resultsdiv.length == 0) {
+			 	resultsdiv = anchor.find(".resultsdiv");
+			}
 			if (resultsdiv.length == 0) {
 				resultsdiv = anchor.closest(".resultsdiv");
 			}

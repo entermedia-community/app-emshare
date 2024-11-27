@@ -27,6 +27,9 @@
 	#set( $terms = $modulehits.getFilteredTerms($context,"advancedfilter") )
 #end
 
+$edithome
+
+
 #if(($hits.getSearchQuery().hasMainInput()) || ($terms && $terms.size() > 0))
 	<div class="d-flex align-items-center justify-content-between selectedfilters">
 		<div id="filtersselected" class="filtersselected overflow-x">
@@ -38,6 +41,7 @@
 						class="ajax clearsearchbar"
 						title="[[Clear Search]]"
 						data-targetdiv="resultsdiv" 
+						data-includesearchcontext="true"
 						data-oemaxlevel="$!oemaxlevel"
 						data-updateurl="false"> 
 						[[Searching for]] <strong>$hits.getSearchQuery().getMainInput()</strong> 
@@ -91,6 +95,7 @@
 							class="ajax"
 							title="[[Clear]] ${term.getDetail()}"
 							data-targetdiv="resultsdiv" 
+							data-includesearchcontext="true"
 							data-oemaxlevel="$!{oemaxlevel}"
 							data-updateurl="false">
 							$term.getDetail():
@@ -142,38 +147,14 @@
 			</div>
 			#end
 		</div>
-		#if($moduleid=="asset")
-			#if($dialogresults)
-				#set($href = "$searchhome/search.html?hitssessionid=$!hits.getSessionId()&topmoduleid=$!topmoduleid&entityid=$!entityid&rootcategory=$!rootcategory&categoryid=$!{categoryid}&${moduleid}clearfilters=true")
-				#set($targetdiv = "dialogassetresultscontainer")
-			#else
-				#if($categoryid)
-					#ifnull($category)
-						#set($category = $mediaarchive.getCachedData("category", $categoryid))
-					#end
-					#set($href = "$applink/views/modules/asset/viewfiles/${categoryid}/#dash($category).html?hitssessionid=$!hits.sessionId&${moduleid}clearfilters=true")
-					#set($oemaxlevel = "2")
-				#else
-					#set($href = "${searchhome}/search.html?hitssessionid=$!hits.getSessionId()&${moduleid}clearfilters=true")
-					#set($oemaxlevel = "2")
-				#end
-				
-			#end
-		#else	
-			#if($tabletype == "subentity")
-				#set($href = "${searchhome}/components/table/subentitytable.html?hitssessionid=$!hits.getSessionId()&${moduleid}clearfilters=true")
-				#set($href = "$href&topmoduleid=$!{topmoduleid}&entityid=$!{entityid}&viewid=$!{viewid}")
-				#set($href = "$href&fieldexternalid=$!fieldexternalid&fieldexternalvalue=$!fieldexternalvalue&field=$!fieldexternalid&$!{fieldexternalid}.value=$!fieldexternalvalue&operation=exact")
-				#set( $targetdiv = "results$!{viewid}")
-			
-			#else
-				#set($href = "${searchhome}/search.html?hitssessionid=$!hits.getSessionId()&${moduleid}clearfilters=true")
-			#end
-		#end
+		#set($href = "${edithome}/search.html")
 		<a href="${href}" title="[[Clear All Filters]]" 
+			data-includesearchcontext="true"
+			data-hitssessionid="$!hits.getSessionId()"
+			data-${moduleid}clearfilters="true"
 			class="clear-all ajax clearsearchbar" 
-			data-oemaxlevel="${oemaxlevel}" 
-			data-targetdiv="resultsdiv"><i class="bi bi-x"></i> [[Clear All]]</a>
+			data-oemaxlevel="1" 
+			data-targetdiv="$edithomeid"><i class="bi bi-x"></i> [[Clear All]]</a>
 	</div>
 #end
 
