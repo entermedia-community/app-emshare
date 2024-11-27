@@ -48,7 +48,7 @@
 			#end
 			
 			
-			<div class=" adjustHeight"
+			<div id="emselectable" class="emselectablemodule adjustHeight"
 			>
 			
 				<table class="table table-striped table-hover" 
@@ -61,10 +61,9 @@
 				#if($content.isPropertyTrue("showselections",true))
 				
 					<th class="firstheader p-0" id="th-checkbox">
-					
 						<div class="d-flex align-items-center">
 						<input name="pagetoggle" type="checkbox" #if($hits.isAllSelected()) checked #end title="[[Select All on This Page]]"  />
-				    	</div>
+						</div>
 					</th>
 				
 				#end
@@ -95,17 +94,17 @@
 											href="${searchhome}/addremovecolumns.html?searchtype=${moduleid}&hitssessionid=$hits.getSessionId()&editheader=true&removecolumn=$detail.id">
 											<i class="bi bi-x"></i></a>
 									#elseif ($sortby.startsWith($detail.getId()))
-						 				#if($sortby.endsWith("Up"))
-						 					#set($sorticon="up")
-						 				#else
-						 					#set($sorticon="down")
-						 				#end	
+										#if($sortby.endsWith("Up"))
+											#set($sorticon="up")
+										#else
+											#set($sorticon="down")
+										#end	
 										#if($detail.id != 'primarymedia')
-						 					&nbsp;&nbsp;&nbsp;<i class="bi bi-caret-$sorticon-fill"></i>
+											&nbsp;&nbsp;&nbsp;<i class="bi bi-caret-$sorticon-fill"></i>
 										#end
 									#end
 							</div>
-						 </th>
+						</th>
 					#end
 					
 					#if(!$hiderowactions)
@@ -136,12 +135,12 @@
 				#set($count = 0)
 				#foreach ( $hit in $hits.getPageOfHits() )
 				
-				   	$context.putPageValue('data', $hit)
-			    
+						$context.putPageValue('data', $hit)
+					
 					#set( $clink = "$home${content.linkprefix}${cell.id}${content.linksuffix}" )
 				
-				    <tr class="resultsdivdata" data-dataid="$!{hit.id}" data-rowname="#text($hit)">
-				   
+						<tr class="resultsdivdata" data-dataid="$!{hit.id}" data-rowname="#text($hit)">
+					
 					#if($content.isPropertyTrue("showselections",true))
 				
 					<td class="borderedcell checkbox" noclick="true"> 
@@ -179,9 +178,9 @@
 						#end
 						$context.putPageValue('viewtype',  $viewtype)
 						
-						   <div id="edit_${hit.id}_$detail.id" class="popupdetails" data-id="${hit.id}">
-						        $pages.include("$apphome/components/xml/detailreadonly.html", $context)
-						    </div>
+							<div id="edit_${hit.id}_$detail.id" class="popupdetails" data-id="${hit.id}">
+										$pages.include("$apphome/components/xml/detailreadonly.html", $context)
+								</div>
 						</td>
 					#end
 				
