@@ -1074,28 +1074,31 @@ jQuery(document).ready(function (url, params) {
 	);
 
 	lQuery("input[name=pagetoggle]").livequery("click", function () {
-		var input = $(this);
-		var resultsdiv = input.closest(".resultsdiv");
-		if (!resultsdiv.length) {
-			resultsdiv = $("#resultsdiv");
-		}
-		//var hitssessionid = resultsdiv.data('hitssessionid');
-		var options = resultsdiv.data();
+		var clicked = $(this);
+		var resultsdiv = clicked.closest(".resultsdiv");
+
+		var status = clicked.is(":checked");
+		
 		var searchhome = resultsdiv.data("searchhome");
-		options.oemaxlevel = 1;
-
-		var status = input.is(":checked");
-
-		var targetdiv = resultsdiv.find("#resultsheader");
+		
+		var action;
 		if (status) {
-			options.action = "page";
-			refreshdiv(targetdiv, searchhome + "/togglepage.html", options);
+			action = "page";
 			$(".selectionbox", resultsdiv).prop("checked", true);
 		} else {
-			options.action = "pagenone";
-			refreshdiv(targetdiv, searchhome + "/togglepage.html", options);
+			action = "pagenone";
 			$(".selectionbox", resultsdiv).prop("checked", false);
 		}
+			
+		clicked.data("targetdiv", "resultsheader");
+		clicked.data("action", action);
+		clicked.data("oemaxlevel", "1");
+		clicked.data("includesearchcontext", true);
+		clicked.data("includeeditcontext", true);
+		clicked.data("url",searchhome + "/togglepage.html");
+		clicked.runAjax();
+		
+		
 	});
 
 
