@@ -12,17 +12,15 @@
 		
 		#if($permissions.can($parentmoduleid, "edit"))
 			#if($permissions.can($!submodule.getId() , "create"))
-				#set($pickerurl= "$applink/views/modules/$!{module.id}/results/pickersubmodules/index.html")
+				#set($pickerurl= "$applink/views/modules/$!{module.id}/editors/pickersubmodules/index.html")
 				<a href="$pickerurl" 
 					class="emdialog btn btn-accent ml-1"
 					data-dialogid="entitypicker"
 					data-width="1200"
 
-					data-entityid="$entity.id"
-					data-entitymoduleid="$!{entitymodule.id}"
-					
-					#set($entitymoduleviewid = $context.getRequestParameter("entitymoduleviewid"))
-					data-entitymoduleviewid="$entitymoduleviewid"
+					data-includeeditcontext="true"
+					##data-includesearchcontext="true"
+
 					data-pickersearchaddnew="true"
 					data-hidefooter="true"
 					data-viewid="$viewid"
@@ -34,8 +32,7 @@
 					class="emdialog btn btn-accent ml-1"
 					data-dialogid="entitypicker"
 					data-width="1200"
-					data-entityid="$entity.id"
-					data-entitymoduleid="$!{entitymodule.id}"
+					data-includeeditcontext="true"
 					data-hidefooter="true"
 					title="[[Upload]]"><i class="bi bi-upload mr-2"></i> [[Upload Spreadsheet]]</a>	
 
@@ -44,10 +41,11 @@
 					class="emdialog btn btn-accent ml-1"
 					data-dialogid="entitypicker"
 					data-width="600"
-					data-entityid="$entity.id"
 					data-fieldexternalid = '$!{entitymodule.id}'
 					data-fieldexternalvalue = '$entity.id'
-					data-entitymodule="$module.id"
+
+					data-includeeditcontext="true"
+
 					data-pickertarget="$tabid"
 					data-targettype="entitypickersubmodule"
 					data-pickersearchaddnew="true"

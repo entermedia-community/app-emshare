@@ -4,20 +4,31 @@
 #end
 #set($viewdata = $mediaarchive.getCachedData("view",$entitymoduleviewid))
 
-<div class="submodulepicker ">
+<div id="$edithomeid" class="editdiv submodulepicker" 
+
+		data-entityid="$!entity.id"
+		data-entitymoduleid="$!entitymodule.id"
+		data-entitymoduleviewid="$entitymoduleviewid"
+
+		data-componenthome="$!home$!componenthome"
+
+
+		data-targetdiv="$edithomeid"
+		
+
+
+>
 	
 #set($entitymoduleid = $!viewdata.moduleid)
 #set($entitymodule = $mediaarchive.getCachedData("module",$entitymoduleid))
 $context.putPageValue("entitymodule", $entitymodule)
+
 #set($submoduleid = $!viewdata.rendertable)
 
 #set($module = $mediaarchive.getCachedData("module",$submoduleid))
 $context.putPageValue("module", $module)
 #set($searchhome = "$apphome/views/modules/${submoduleid}/results/submoduleslist")
 $context.putPageValue("searchhome", $searchhome)
-
-#set($edithome = "$apphome/views/modules/${submoduleid}/editors/entitysubmodules")
-$context.putPageValue("edithome", $edithome)
 
 #set($sortby = $!viewdata.rendersort)
 #set($args = "field=$!{entitymodule.id}&$!{entitymodule.id}.value=$!{entity.id}&operation=exact")

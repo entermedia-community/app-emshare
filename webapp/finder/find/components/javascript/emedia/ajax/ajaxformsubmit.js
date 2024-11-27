@@ -85,10 +85,33 @@
 		//targetdiv.data("oemaxlevel", oemaxlevel);
 
 		var data = {};
-		if (form.data("includesearchcontext") == true) {  //Is this a good idea or a bad idea?
-			var resultsdiv = $("#" + targetdiv_);
-			data = resultsdiv.cleandata();
-		} 
+		if (anchor.data("includeeditcontext") == true) {
+			var editdiv = form.closest(".editdiv"); //This is used for lightbox tree opening
+			if (editdiv.length > 0) {
+				var otherdata = editdiv.cleandata();
+				data = {
+					...otherdata,
+					...data,
+				};
+			} else {
+				console.warn("No editdiv found for includeeditcontext");
+			}
+		}
+		if (form.data("includesearchcontext") == true) 
+		{
+			var editdiv = form.closest(".editdiv"); //This is used for lightbox tree opening
+			var resultsdiv = editdiv.find(".resultsdiv");
+
+			if (resultsdiv.length > 0) {
+				var otherdata = resultsdiv.cleandata();
+				data = {
+					...otherdata,
+					...data,
+				};
+			} else {
+				console.warn("No resultsdiv found for icludesearchcontext");
+			}
+		}
 		
 		data.oemaxlevel = oemaxlevel;
 

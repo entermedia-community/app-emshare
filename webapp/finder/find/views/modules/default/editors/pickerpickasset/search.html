@@ -4,4 +4,12 @@ $context.putPageValue("hits", $hits)
 #set( $viewpath = "${module.id}/${module.id}resultstable")
 $context.putPageValue("viewpath", $!viewpath)
 
+#set($module = $mediaarchive.getCachedData("module", "asset"))
+$context.putPageValue("module", $module)
+$context.putPageValue("moduleid", $module.getId())
+
+#set($searchhome = "$apphome/views/modules/asset/results/categorywithtree")
+$context.putPageValue("searchhome", $searchhome)
+$context.putPageValue("searchhomeid", "categorywithtree")
+
 $pages.include("${searchhome}/results.html",$context)

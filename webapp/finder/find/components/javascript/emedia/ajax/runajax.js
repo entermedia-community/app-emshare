@@ -32,8 +32,23 @@
 		}
 
 		var options = anchor.cleandata();
+		
+		if (anchor.data("includeeditcontext") == true) {
+			var editdiv = anchor.closest(".editdiv"); //This is used for lightbox tree opening
+			if (editdiv.length > 0) {
+				var otherdata = editdiv.cleandata();
+				options = {
+					...otherdata,
+					...options,
+				};
+			} else {
+				console.warn("No editdiv found for includeeditcontext");
+			}
+			
+		}
+		
 		if (anchor.data("includesearchcontext") == true) {
-
+/*
 			var _targetdiv = anchor.data("targetdiv"); //This is used for lightbox tree opening
 			var target = $("#" + _targetdiv);
 			if( target.hasClass("resultsdiv"))
@@ -52,6 +67,9 @@
 			if (resultsdiv.length == 0) {
 				resultsdiv = anchor.closest(".resultsdiv");
 			}
+*/
+			var editdiv = anchor.closest(".editdiv"); //This is used for lightbox tree opening
+			var resultsdiv = editdiv.find(".resultsdiv");
 
 			if (resultsdiv.length > 0) {
 				var otherdata = resultsdiv.cleandata();

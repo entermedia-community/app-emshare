@@ -19,6 +19,36 @@
 			modaldialog = jQuery("#" + id);
 		}
 		var options = initiator.data();
+		
+		if (initiator.data("includeeditcontext") == true) {
+			var editdiv = initiator.closest(".editdiv"); //This is used for lightbox tree opening
+			if (editdiv.length > 0) {
+				var otherdata = editdiv.cleandata();
+				options = {
+					...otherdata,
+					...options,
+				};
+			} else {
+				console.warn("No editdiv found for includeeditcontext");
+			}
+			
+		}
+		
+		if (initiator.data("includesearchcontext") == true) {
+			var editdiv = initiator.closest(".editdiv"); //This is used for lightbox tree opening
+			var resultsdiv = editdiv.find(".resultsdiv");
+
+			if (resultsdiv.length > 0) {
+				var otherdata = resultsdiv.cleandata();
+				options = {
+					...otherdata,
+					...options,
+				};
+			} else {
+				console.warn("No resultsdiv found for includesearchcontext");
+			}
+		}
+		
 		var link = initiator.attr("href");
 		if (!link) {
 			link = initiator.data("targetlink");
@@ -30,6 +60,8 @@
 			//link = link.replace("entity.html", "entitytab.html");
 			options.oemaxlevel = 1;
 		}
+		
+		//NOT USED. Delete
 		var param = initiator.data("parameterdata");
 		if (param) {
 			var element = jQuery("#" + param);

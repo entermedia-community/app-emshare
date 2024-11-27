@@ -1,16 +1,6 @@
-
-#set($viewid = $context.getRequestParameter("entitymoduleviewid"))
-#set($viewdata = $mediaarchive.getCachedData("view",$viewid))
-
-<div id="$!submoduleresults" class="submodulepicker" data-url="$edithome/tabs/index.html" data-includesearchcontext="true" data-targetdiv="entitydialog" data-oemaxlevel="1" data-entitymoduleid="$module.id" data-entitymoduleviewid="">
+$edithome
+<div id="$!submoduleresults" class="submodulepicker" >
 	
-#set($submoduleid = $!viewdata.rendertable)
-
-#set($module = $mediaarchive.getCachedData("module",$submoduleid))
-$context.putPageValue("module", $module)
-#set($searchhome = "$apphome/views/modules/${submoduleid}/results/submoduleslist")
-$context.putPageValue("searchhome", $searchhome)
-
 #set($sortby = $!viewdata.rendersort)
 #set($args = "field=$!{entitymodule.id}&$!{entitymodule.id}.value=$!{entity.id}&operation=exact")
 #set($args = "$args&sortby=$!sortby&entitymoduleviewid=$viewid")

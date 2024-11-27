@@ -17,7 +17,12 @@
 #set( $url = "${edithome}/generalinformation/editform.html")
 #set( $url = "$url?viewpath=$viewpath&oemaxlevel=1&edit=$!caneditasset&assetid=${asset.id}&collectionid=$!{collectionid}&hitssessionid=$!hitssessionid" )
 #set( $url = "$url&targetdiv=asset-detail-editor&editpath=${edithome}/generalinformation/save.html" )
-<div id="edit-${viewid}" class="asseteditpanel edit-panel-generic fieldsParent" data-assetid="$!asset.getId()" data-url="#urlescape($url)">
+<div id="edit-${viewid}" class="editdiv asseteditpanel edit-panel-generic fieldsParent" 
+	data-assetid="$!asset.getId()" 
+	data-url="#urlescape($url)"
+	data-entitymoduleviewid="$!entitymoduleviewid"
+	
+	>
 #if( !$catalogid )
 	#set( $catalogid = $mediaarchive.getCatalogId() )
 #end
@@ -76,7 +81,8 @@ $context.putPageValue("searchtype", $searchtype)
 			data-targetdiv="$!targetdiv" 
 			method="post" 
 			action="$siteroot$editpath" 
-			data-includesearchcontext="false">
+			data-includeeditcontext="true"
+		>
 	
 		<input type="hidden" name="saveasnew" value="false" />
 		<input name="oemaxlevel" type="hidden" value="1" />
