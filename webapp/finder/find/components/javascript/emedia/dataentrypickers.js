@@ -236,6 +236,16 @@ lQuery(".submodulepicker .resultsdivdata").livequery("click", function (event) {
 	submodulepicker.data("entityid", row.data("dataid"));
 	submodulepicker.runAjax();
 });
+//To open an entity in a submodule. CB Lose Back button
+lQuery(".opensubmodule .resultsdivdata").livequery("click", function () {
+	var row = $(this);
+	if (!handleclick(row)) {
+		return true;
+	}
+	var submoduleOpener = row.closest(".opensubmodule");
+	submoduleOpener.data("entityid", row.data("dataid"));
+	submoduleOpener.runAjax();
+});
 
 //CB working for entity fieldpicking
 lQuery(".pickerresults.pickerforfield .resultsdivdata").livequery(
