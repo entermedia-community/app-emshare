@@ -25,11 +25,21 @@
 		</div>
 	</div>
 
-#set( $val = $hits.getInput("description"))
+
+#ifnull($hits)
+	#set($hits = $modulehits)
+#end
+
+#set( $input = $hits.getSearchQuery().getMainInput())
+#if (!$input)
+	#set( $input = "")
+#end
+
+#set( $input = $url_util.decode($input) )
 
 #if($organizedHits.isEmpty() && $hits.isEmpty() && $livesuggestions.isEmpty())
 	<div class="text-secondary py-3 text-center">
-		[[No results found for]]: <strong>$val</strong>
+		[[No results found for]]: <strong>$input</strong>
 	</div>
 #end
 
@@ -90,8 +100,8 @@ $context.putPageValue("filter", $filter)
 		   		#set($moduleicon = $module.moduleicon)
 		   	#end
 		   	
-			#set($entityurl = "$!siteroot$apphome/views/modules/$!{module.id}/index.html?$!{module.id}page=1&field=description&operation=freeform&description.value=$val")
-			<div style="margin-bottom: 3em;">
+			#set($entityurl = "$!siteroot$apphome/views/modules/$!{module.id}/index.html?$!{module.id}page=1&field=description&operation=freeform&description.value=$input")
+			<div >
 			<a href="$entityurl" 
 				class="ajax qsresultsEntity" 
 				data-targetdiv="applicationmaincontent" 
@@ -192,13 +202,16 @@ $context.putPageValue("filter", $filter)
 	#set($moduleicon = $assetmodule.moduleicon)
 #end
 
+#set($searchhome = "$apphome/views/modules/asset/results/default")
+$context.putPageValue("searchhome", $searchhome)
+
 #set($hits = $assethits)
-#set($entityurl = "$!siteroot$apphome/views/modules/asset/search.html?field=description&operation=freeform&description.value=$val")
+#set($entityurl = "${searchhome}/search.html?field=description&operation=freeform&description.value=$input")
 #set( $count = $assethits.size())
 <a href="$entityurl" 
 		class="ajax qsresultsEntity"
-		data-targetdiv="applicationmaincontent" 
-		data-oemaxlevel="3" 
+		data-targetdiv="application" 
+		data-oemaxlayout="1" 
 		data-updateurl="true" 
 		data-profilepreference="defaultmodule"
 		data-profilepreference.value="$!assetmodule.getId()"
@@ -235,16 +248,16 @@ $context.putPageValue("filter", $filter)
 		data-maxheight="140" 
 		data-cellpadding="10"
 		data-makebox="true"
-		data-visibleposition="$hits.getStartingPosition()"
-	>
-	#set($count = 0)
-	#foreach( $hit in $hits.getPageOfHits() )
-		#if($count<30)
-		$context.putPageValue("hit", $hit)
-	    $pages.include("$apphome/views/modules/asset/results/editors/tabs/types/media.html", $context)
-	    #set($count = $count +1)
-	    #end
-	#end
+		data-visibleposition="$!hits.getStartingPosition()">
+		#set($count = 0)
+		
+		#foreach( $hit in $hits.getPageOfHits() )
+			#if($count<30)
+			$context.putPageValue("hit", $hit)
+		    $pages.include("${searchhome}/types/media.html", $context)
+		    #set($count = $count +1)
+		    #end
+		#end
 	</div>
 #end
 
