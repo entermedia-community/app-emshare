@@ -1,0 +1,25 @@
+#if($organizedModules.size() > 0)
+	<div class="searchcategorysidebar overflow-y">
+		<h3>[[View By Type]]</h3>
+		#foreach($module in $organizedModules)
+			#set($idhits = $organizedHits.get($module.id))
+			$context.putPageValue("hits", $idhits)
+			$context.putPageValue("module", $module)
+			$context.putPageValue("moduleid", $module.id)
+			$context.putPageValue("componenthome", "$apphome/views/modules/$module.id/components")
+			#set( $favorites = $userprofile.get("favorites_"+$module.id))
+			$context.putPageValue("favorites", $favorites)
+			#set($moduleicon = "grid")
+			#if ($module.moduleicon)
+				#set($moduleicon = $module.moduleicon)
+			#end
+			#set($entityurl = "$!siteroot$apphome/views/modules/$!{module.id}/index.html?$!{module.id}page=1&field=searchcategory&searchcategory.value=${searchcategory.id}&operation=exact")
+			#set( $entitysourcetype = $hits.getActiveFilterValues().get("entitysourcetype")) 
+			#set($count = $entitysourcetype.getCount($module.id))
+
+			<a href="$entityurl" class="ajax" data-targetdiv="application" data-updateurl="true" data-oemaxlayout="1">
+				<i class="bi bi-$!{moduleicon} module-icon ns"></i> #text($module) <span>($!{count})</span>
+			</a>
+		#end
+	</div>
+#end

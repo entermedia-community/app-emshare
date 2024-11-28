@@ -38,11 +38,17 @@
 	$context.putPageValue("modulecount", $organizedModules.size())
 
 	$context.putPageValue("searchhome", $searchhome)
+	
 	#set($url = "$searchhome/searchalltypes.html?field=searchcategory&operation=exact&searchcategory.value=$!searchcategoryid")
 	$pages.include($url,$context)
-
 #else
 
+#ifnotnull( $organizedModules)
+<div class="fixme">
+	$pages.include("${edithome}/bymodule.html",$context)
+</div>
+
+#end
 	$context.putPageValue("searchhome", $searchhome)
 	$pages.include("${searchhome}/index.html",$context)
 	
