@@ -1,5 +1,17 @@
 #if($organizedModules.size() > 0)
 	<div class="searchcategorysidebar auto-active-container overflow-y">
+		#if($organizedModules.size() > 1)
+		<div class="mb-2 auto-active-row current">
+			<a href="$entityurl" class="ajax btn btn-wide auto-active-link" data-targetdiv="modulesearchsearchcategory" data-updateurl="true" data-oemaxlevel="1">
+			#set($moduleicon = "grid")
+			#if ($module.moduleicon)
+				#set($moduleicon = $module.moduleicon)
+			#end
+				<i class="bi bi-$!{moduleicon} module-icon ns"></i> <span>All #text($searchcategory) ($!{hits.size()})</span>
+			</a>
+		</div>
+		#end
+		
 		#foreach($module in $organizedModules)
 			#set($idhits = $organizedHits.get($module.id))
 			$context.putPageValue("hits", $idhits)
@@ -15,8 +27,8 @@
 			#set($entityurl = "$!siteroot$apphome/views/modules/$!{module.id}/index.html?$!{module.id}page=1&field=searchcategory&searchcategory.value=${searchcategory.id}&operation=exact")
 			#set( $entitysourcetype = $hits.getActiveFilterValues().get("entitysourcetype")) 
 			#set($count = $entitysourcetype.getCount($module.id))
-
-			<div class="auto-active-row">
+			
+			<div class="mb-2 auto-active-row #if($organizedModules.size()  == 1) current #end">
 				<a href="$entityurl" class="ajax btn btn-wide auto-active-link" data-targetdiv="modulesearchsearchcategory" data-updateurl="true" data-oemaxlevel="1">
 					<i class="bi bi-$!{moduleicon} module-icon ns"></i> <span>#text($module) ($!{count})</span>
 				</a>
