@@ -76,6 +76,7 @@
 
 		$(window).trigger("showToast", [initiator]);
 		var toastUid = initiator.data("uid");
+		var initiatorData = initiator.data();
 		jQuery.ajax({
 			xhrFields: {
 				withCredentials: true,
@@ -92,7 +93,7 @@
 					initiator.closest(".modal").length !== 0
 				) {
 					//find tab
-					var tabid = initiator.data("tabid");
+					var tabid = initiatorData["tabid"];
 					if (!tabid) {
 						tabid = "tab_metadata";
 					}
@@ -110,7 +111,7 @@
 						container.replaceWith(data);
 						tabbackbutton(parent);
 					}
-				} else if (initiator.data("targetrendertype") == "entity") {
+				} else if (initiatorData["targetrendertype"] == "entity") {
 					var container = initiator.closest(".entity-wraper");
 					var parent = initiator.closest(".entitydialog");
 					container.replaceWith(data);
@@ -154,7 +155,7 @@
 						var firstform = modaldialog.find("form");
 						firstform.data("openedfrom", openfrom);
 					}
-					var autosetformtargetdiv = initiator.data("autosetformtargetdiv");
+					var autosetformtargetdiv = initiatorData["autosetformtargetdiv"];
 					if (autosetformtargetdiv !== undefined) {
 						var tdiv = initiator.closest("." + autosetformtargetdiv);
 						if (tdiv.length == 1) {
@@ -163,14 +164,14 @@
 					}
 
 					// fix submit button
-					var justok = initiator.data("cancelsubmit");
+					var justok = initiatorData["cancelsubmit"];
 					if (justok != null) {
 						$(".modal-footer #submitbutton", modaldialog).hide();
 					} else {
 						var id = $("form", modaldialog).attr("id");
 						$("#submitbutton", modaldialog).attr("form", id);
 					}
-					var hidetitle = initiator.data("hideheader");
+					var hidetitle = initiatorData["hideheader"];
 					if (hidetitle == null) {
 						var title = initiator.attr("title");
 						if (title == null) {
@@ -178,7 +179,7 @@
 						}
 						$(".modal-title", modaldialog).text(title);
 					}
-					var hidefooter = initiator.data("hidefooter");
+					var hidefooter = initiatorData["hidefooter"];
 					if (hidefooter != null) {
 						$(".modal-footer", modaldialog).hide();
 					}
@@ -191,8 +192,8 @@
 
 					modalinstance.on("hidden.bs.modal", function () {
 						//on close execute extra JS -- Todo: Move it to closedialog()
-						if (initiator.data("onclose")) {
-							var onclose = initiator.data("onclose");
+						if (initiatorData["onclose"]) {
+							var onclose = initiatorData["onclose"];
 							var fnc = window[onclose];
 							if (fnc && typeof fnc === "function") {
 								//make sure it exists and it is a function
@@ -218,9 +219,9 @@
 					//globaly disabled updateurl
 				} else {
 					//Update Address Bar
-					var updateurl = initiator.data("updateurl");
+					var updateurl = initiatorData["updateurl"];
 					if (updateurl) {
-						var urlbar = initiator.data("urlbar");
+						var urlbar = initiatorData["urlbar"];
 						if (!urlbar) {
 							urlbar = link;
 						}
@@ -235,8 +236,8 @@
 				}
 
 				//on success execute extra JS
-				if (initiator.data("onsuccess")) {
-					var onsuccess = initiator.data("onsuccess");
+				if (initiatorData["onsuccess"]) {
+					var onsuccess = initiatorData["onsuccess"];
 					var fnc = window[onsuccess];
 					if (fnc && typeof fnc === "function") {
 						//make sure it exists and it is a function
