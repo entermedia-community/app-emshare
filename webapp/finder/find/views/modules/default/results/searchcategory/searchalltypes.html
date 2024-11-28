@@ -15,13 +15,13 @@ $context.putPageValue("topmodule", $parentmodule)
 $context.putPageValue("topmoduleid", "searchcategory")
 $context.putPageValue("modulecount", $organizedModules.size())
 	
+$pages.include("${edithome}/categorybreadcrumb.html", $context)
 
-
-<div class="fixme">
-	$pages.include("${edithome}/bymodule.html",$context)
+<div class="d-flex">
+	#ifnotnull( $organizedModules)
+		$pages.include("${edithome}/bymodule.html",$context)
+	#end
+	<div class="flex-grow-1 border-left-subtle">
+		$pages.include("$searchhome/results.html",$context)
+	</div>
 </div>
-
-$pages.include("$searchhome/results.html",$context)
-
-
-
