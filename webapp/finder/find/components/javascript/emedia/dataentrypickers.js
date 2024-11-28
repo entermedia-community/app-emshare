@@ -1,8 +1,26 @@
+function isValidTarget(clickEvent) {
+	var target = $(clickEvent.target);
+	if (
+		target.attr("noclick") == "true" ||
+		target.is("input") ||
+		target.is("a") ||
+		target.closest(".jp-audio").length
+	) {
+		return false;
+	}
+
+	clickEvent.preventDefault();
+	clickEvent.stopImmediatePropagation();
+
+	return true;
+}
+
 lQuery(".emrowpicker table td").livequery("click", function (e) {
-	var clicked = $(this);
-	if (!handleclick(clicked,e)) {
+	if (!isValidTarget(e)) {
 		return true;
 	}
+
+	var clicked = $(this);
 
 	var row = clicked.closest("tr");
 	var table = clicked.closest("table");
@@ -43,10 +61,11 @@ lQuery(".emrowpicker table td").livequery("click", function (e) {
 });
 
 lQuery(".emselectable table td").livequery("click", function (e) {
-	var clicked = $(this);
-	if (!handleclick(clicked,e)) {
+	if (!isValidTarget(e)) {
 		return true;
 	}
+
+	var clicked = $(this);
 
 	var emselectable = clicked.closest("#emselectable");
 	if (emselectable.length < 1) {
@@ -153,10 +172,10 @@ lQuery(".assetpickerselectrow").livequery("click", function (e) {
 
 //CB This works. Opens entities
 lQuery(".topmodules .resultsdivdata").livequery("click", function (e) {
-	var row = $(this);
-	if (!handleclick(row,e)) {
+	if (!isValidTarget(e)) {
 		return true;
 	}
+	var row = $(this);
 
 	var clickableresultlist = row.closest(".clickableresultlist");
 
@@ -167,10 +186,11 @@ lQuery(".topmodules .resultsdivdata").livequery("click", function (e) {
 });
 
 lQuery(".listofentities .resultsdivdata").livequery("click", function (e) {
-	var row = $(this);
-	if (!handleclick(row,e)) {
+	if (!isValidTarget(e)) {
 		return true;
 	}
+
+	var row = $(this);
 
 	var clickableresultlist = row.closest(".clickableresultlist");
 
@@ -187,10 +207,11 @@ lQuery(".listofentities .resultsdivdata").livequery("click", function (e) {
 
 //To open an entity in a submodule. CB Lose Back button
 lQuery(".submodulepicker .resultsdivdata").livequery("click", function (e) {
-	var row = $(this);
-	if (!handleclick(row,e)) {
+	if (!isValidTarget(e)) {
 		return true;
 	}
+
+	var row = $(this);
 
 	var submodulepicker = row.closest(".submodulepicker");
 	submodulepicker.data("entityid", row.data("dataid"));
@@ -198,40 +219,49 @@ lQuery(".submodulepicker .resultsdivdata").livequery("click", function (e) {
 });
 //To open an entity in a submodule. CB Lose Back button
 lQuery(".entitysubmodules .resultsdivdata").livequery("click", function (e) {
-	var row = $(this);
-	if (!handleclick(row,e)) {
+	if (!isValidTarget(e)) {
 		return true;
 	}
+
+	var row = $(this);
+
 	var submoduleOpener = row.closest(".clickableresultlist");
 	submoduleOpener.data("entityid", row.data("dataid"));
 	submoduleOpener.runAjax();
 });
 
 //CB working. Uses edithome for searchcategory clicking
-lQuery(".listsearchcategories .resultsdivdata").livequery("click", function (e) {
-	var row = $(this);
-	if (!handleclick(row,e)) {
-		return true;
+lQuery(".listsearchcategories .resultsdivdata").livequery(
+	"click",
+	function (e) {
+		if (!isValidTarget(e)) {
+			return true;
+		}
+
+		var row = $(this);
+
+		var searchId = row.data("dataid");
+		var submoduleOpener = row.closest(".clickableresultlist");
+		submoduleOpener.data("updateurl", true);
+		submoduleOpener.data(
+			"urlbar",
+			`${submoduleOpener.data("url")}?searchcategoryid=${searchId}`
+		);
+		submoduleOpener.data("searchcategoryid", searchId);
+		submoduleOpener.runAjax();
 	}
-	var searchId = row.data("dataid");
-	var submoduleOpener = row.closest(".clickableresultlist");
-	submoduleOpener.data("updateurl", true);
-	submoduleOpener.data(
-		"urlbar",
-		`${submoduleOpener.data("url")}?searchcategoryid=${searchId}`
-	);
-	submoduleOpener.data("searchcategoryid", searchId);
-	submoduleOpener.runAjax();
-});
+);
 
 //CB working for entity fieldpicking
 lQuery(".pickerresults.pickerforfield .resultsdivdata").livequery(
 	"click",
 	function (e) {
-		var clicked = $(this);
-		if (!handleclick(clicked,e)) {
+		if (!isValidTarget(e)) {
 			return true;
 		}
+
+		var clicked = $(this);
+
 		var row = $(clicked.closest(".resultsdivdata"));
 		var rowid = row.data("dataid");
 		var pickerresults = clicked.closest(".pickerresults");
@@ -251,11 +281,13 @@ lQuery(".pickerresults.pickerforfield .resultsdivdata").livequery(
 //CB: assign a asset to a field
 lQuery(".pickerresults.pickerpickasset .resultsdivdata").livequery(
 	"click",
-	function () {
-		var clicked = $(this);
-		if (!handleclick(clicked,e)) {
+	function (e) {
+		if (!isValidTarget(e)) {
 			return true;
 		}
+
+		var clicked = $(this);
+
 		var row = $(clicked.closest(".resultsdivdata"));
 		var rowid = row.data("dataid");
 		var editdiv = clicked.closest(".editdiv");
@@ -281,11 +313,13 @@ lQuery(".pickerresults.pickerpickasset .resultsdivdata").livequery(
 //CB: Is good. for submodules
 lQuery(".pickerresults.entitypickersubmodule .resultsdivdata").livequery(
 	"click",
-	function () {
-		var clicked = $(this);
-		if (!handleclick(clicked,e)) {
+	function (e) {
+		if (!isValidTarget(e)) {
 			return true;
 		}
+
+		var clicked = $(this);
+
 		var row = clicked.closest(".resultsdivdata");
 		var rowid = row.data("dataid");
 		var editdiv = clicked.closest(".editdiv");
@@ -317,16 +351,18 @@ lQuery(".pickerresults.entitypickersubmodule .resultsdivdata").livequery(
 lQuery(".pickerresults.entitypickersearchcategory .resultsdivdata").livequery(
 	"click",
 	function (e) {
-		var clicked = $(this);
-		if (!handleclick(clicked,e)) {
+		if (!isValidTarget(e)) {
 			return true;
 		}
+
+		var clicked = $(this);
+
 		var row = $(clicked.closest(".resultsdivdata"));
 		var rowid = row.data("dataid");
 		var pickerresults = clicked.closest(".clickableresultlist");
-		pickerresults.data("id",rowid);
+		pickerresults.data("id", rowid);
 		pickerresults.runAjax();
-		
+
 		/*$(window).trigger("showToast", [pickerresults]);
 		var toastUid = pickerresults.data("uid");
 		jQuery.ajax({
@@ -339,25 +375,26 @@ lQuery(".pickerresults.entitypickersearchcategory .resultsdivdata").livequery(
 			},
 		});*/
 		closeemdialog(clicked.closest(".modal"));
-		
+
 		var originaledithomeid = pickerresults.data("originaledithomeid");
 		var reloaddiv = $(`#${originaledithomeid}`).closest(".topmodulecontainer");
 		reloaddiv.data("includeeditcontext", false);
 		reloaddiv.data("includesearchcontext", true);
 		reloaddiv.data("targetdiv", reloaddiv.attr("id"));
 		reloaddiv.runAjax();
-
 	}
 );
 
 //CB: Good assign assets to a selected entity
 lQuery(".pickerresults.pickercopyassetsto .resultsdivdata").livequery(
 	"click",
-	function () {
-		var clicked = $(this);
-		if (!handleclick(clicked,e)) {
+	function (e) {
+		if (!isValidTarget(e)) {
 			return true;
 		}
+
+		var clicked = $(this);
+
 		var row = $(clicked.closest(".resultsdivdata"));
 		var rowid = row.data("dataid");
 		var pickerresults = clicked.closest(".pickerresults");
@@ -383,11 +420,13 @@ lQuery(".pickerresults.pickercopyassetsto .resultsdivdata").livequery(
 //Upload to Entity. Still needed?
 lQuery(".pickerresults.pickandupload .resultsdivdata").livequery(
 	"click",
-	function () {
-		var clicked = $(this);
-		if (!handleclick(clicked,e)) {
+	function (e) {
+		if (!isValidTarget(e)) {
 			return true;
 		}
+
+		var clicked = $(this);
+
 		var row = $(clicked.closest(".resultsdivdata"));
 		var rowid = row.data("dataid");
 		var pickerresults = clicked.closest(".pickerresults");
@@ -402,10 +441,12 @@ lQuery(".pickerresults.pickandupload .resultsdivdata").livequery(
 
 //Assets or Categories and you import into a entity
 lQuery(".pickerresultscopy .resultsdivdata").livequery("click", function (e) {
-	var clicked = $(this);
-	if (!handleclick(clicked,e)) {
+	if (!isValidTarget(e)) {
 		return true;
 	}
+
+	var clicked = $(this);
+
 	var row = $(clicked.closest(".resultsdivdata"));
 	var rowid = row.data("dataid");
 	var pickerresults = clicked.closest(".pickerresults");
@@ -441,24 +482,8 @@ lQuery(".pickerresultscopy .resultsdivdata").livequery("click", function (e) {
 	}
 });
 
-function handleclick(div,e) {
-	var clicked = $(e.target);
-	
-	if (
-		clicked.attr("noclick") == "true" ||
-		clicked.is("input") ||
-		clicked.is("a") ||
-		clicked.closest(".jp-audio").length
-	) {
-		return false;
-	}
-	e.preventDefault();
-	e.stopPropagation();
-	return true;
-}
-
 //Not used?
-$(window).on(  
+$(window).on(
 	"updatepickertarget",
 	function (e, pickertargetid, dataid, dataname) {
 		var pickertarget = $("#" + pickertargetid);
