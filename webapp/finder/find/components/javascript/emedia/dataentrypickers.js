@@ -264,16 +264,12 @@ lQuery(".pickerresults.pickerforfield .resultsdivdata").livequery(
 
 		var row = $(clicked.closest(".resultsdivdata"));
 		var rowid = row.data("dataid");
-		var pickerresults = clicked.closest(".pickerresults");
+		var clickableresultlist = clicked.closest(".clickableresultlist");
 
-		if (pickerresults.length) {
-			//Entity Picker Field
-			var pickertarget = pickerresults.data("pickertargetfield");
-			pickertarget = $("#" + pickertarget);
-			if (pickertarget.length > 0) {
-				updateentityfield(pickertarget, rowid, row.data("rowname"));
-			}
-			closeemdialog(pickerresults.closest(".modal"));
+		if (clickableresultlist.length) {
+			clickableresultlist.data("dataid",rowid);
+			clickableresultlist.runAjax();
+			closeemdialog(clickableresultlist.closest(".modal"));
 		}
 	}
 );
@@ -433,7 +429,7 @@ lQuery(".pickerresults.pickandupload .resultsdivdata").livequery(
 		var options = pickerresults.data();
 		options.id = rowid;
 		if (pickerresults.length) {
-			console.log(pickerresults);
+			//console.log(pickerresults);
 			pickerresults.emDialog();
 		}
 	}

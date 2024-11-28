@@ -5,21 +5,25 @@ $context.putPageValue("pickertargetfield", $pickertargetfield)
 
 	data-edithome="${edithome}"
 	data-edithomeid="${edithomeid}"
+	
+		data-entityid="$!entity.id"
+	data-entitymoduleid="$!entitymodule.id"
+	data-entitymoduleviewid="$entitymoduleviewid"
+	
 >
 	
 	<div class="clickableresultlist"
-		data-targetdiv="entitydialog"
 		data-oemaxlevel="1"
-		data-includeeditcontext="false"
-		data-url="${edithome}/actions/pickedfield.html"
-		data-pickertargetfield="entitypicker${pickertargetfield}"
+		data-url="${edithome}/actions/savepick.html"
+		data-targetdiv="entitypicker${pickertargetfield}"  ##global
+ 		data-pickertargetfield="${pickertargetfield}"
 	>	
 		<div class="overflow-y">
 		
 		#set($searchhome = "$apphome/views/modules/${module.id}/results/default")
 		$context.putPageValue("searchhome", $searchhome)
 		
-		$pages.include("${searchhome}/search.html",$context)
+		$pages.include("${searchhome}/searchinclude.html",$context)
 		</div>
 	</div>
 
