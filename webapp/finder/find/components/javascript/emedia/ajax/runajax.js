@@ -110,7 +110,7 @@
 			targetdiv = $("." + $.escapeSelector(targetdivS)); //legacy?
 		}
 
-		if (targetdiv.length) {
+		//if (targetdiv.length) {
 			anchor.css("cursor", "wait");
 			$("body").css("cursor", "wait");
 
@@ -238,9 +238,7 @@
 						}
 					}
 				});
-		} else {
-			anchor.removeAttr("disabled");
-		}
+		//} 
 		return this;
 	};
 })(jQuery);

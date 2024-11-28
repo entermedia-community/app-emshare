@@ -339,6 +339,14 @@ lQuery(".pickerresults.entitypickersearchcategory .resultsdivdata").livequery(
 			},
 		});*/
 		closeemdialog(clicked.closest(".modal"));
+		
+		var originaledithomeid = pickerresults.data("originaledithomeid");
+		var reloaddiv = $(`#${originaledithomeid}`).closest(".topmodulecontainer");
+		reloaddiv.data("includeeditcontext", false);
+		reloaddiv.data("includesearchcontext", true);
+		reloaddiv.data("targetdiv", reloaddiv.attr("id"));
+		reloaddiv.runAjax();
+
 	}
 );
 

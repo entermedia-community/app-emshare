@@ -1,12 +1,15 @@
 #set( $copyingsearchtype = $context.getRequestParameter("copyingsearchtype"))
 #set( $copyinghitssessionid = $context.getRequestParameter("copyinghitssessionid"))
+#set( $originaledithomeid = $context.getRequestParameter("originaledithomeid"))
+
 <div id="${edithomeid}" 
 	class="editdiv pickerresults entitypickersearchcategory"
 	data-edithome="${edithome}"
 	data-edithomeid="${edithomeid}"  
 	data-setpagetitle="[[Select]] #text($module)" 
 	data-copyingsearchtype="$copyingsearchtype"
-	data-copyinghitssessionid="$copyinghitssessionid">
+	data-copyinghitssessionid="$copyinghitssessionid"
+	data-originaledithomeid="${originaledithomeid}">
 
 #set( $hits = $context.getSessionValue($copyinghitssessionid) )
 	<div class="overflow-y">
@@ -15,9 +18,10 @@
 			data-toastmessage="[[Saving]] $hits.getSelectionSize()"
 			data-toastsuccess="$hits.getSelectionSize() [[Records Saved]]"
 			data-url="${edithome}/actions/categorysavetoentities.html"
-			data-targetdiv="editdiv"
+			data-targetdiv="donotshow"
 			data-copyingsearchtype="$copyingsearchtype"
 			data-copyinghitssessionid="$copyinghitssessionid"
+			data-originaledithomeid="${originaledithomeid}"
 		>
 			#set($submoduleid = "searchcategory")
 			#set($module = $mediaarchive.getCachedData("module",$submoduleid))
