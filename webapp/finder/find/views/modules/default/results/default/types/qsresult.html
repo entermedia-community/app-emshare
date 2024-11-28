@@ -1,38 +1,14 @@
-#if($hit)
-	#set($entityid = $hit.id)
-	#if($rendermoduleid)
-		#set($moduleid = $rendermoduleid)
-	#else
-		#set($moduleid = $module.id)
-	#end
+
+#set($entity = $hit)
+#set($entityid = $hit.id)
+#if($rendermoduleid)
+	#set($moduleid = $rendermoduleid)
 #else
-	#if(!$moduleid)
-		#set($moduleid = $context.getRequestParameter("moduleid"))
-	#end
-	#if(!$entityid)
-		#set($entityid = $context.getRequestParameter("entityid"))
-	#end
+	#set($moduleid = $module.id)
 #end
 
-$context.putPageValue("entityid", $entityid)
-$context.putPageValue("moduleid", $moduleid)
 
-#if($moduleid && $entityid)
-	#set($module = $mediaarchive.getCachedData("module", $moduleid))
-	#set($entity = $mediaarchive.getCachedData($moduleid, $entityid))
-#end
-
-#if(!$parentmodule)
-	#set($parentmodule = $module)
-#end
-
-#set($topentityid = $context.getRequestParameter("topentityid"))
-$context.putPageValue("topentityid", $topentityid)
-
-#set($previewurl = "${edithome}/tabs/index.html?entityid=$entityid&$!{hits.getSearchType()}hitssessionid=$!hits.sessionId")
-
-$context.putPageValue("previewurl", $previewurl)
-
+#set($previewurl = "$apphome/views/modules/${moduleid}/editors/default/tabs/index.html?entityid=$entityid")
  <div class="emfolder-wrapper compact emgrid-type-$!moduleid entitycontainer entity$!moduleid$!entityid" 
 	id="emgridentity$!moduleid$!entityid"
 	data-id="${entityid}"

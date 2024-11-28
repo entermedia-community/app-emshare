@@ -1,6 +1,6 @@
-lQuery(".emrowpicker table td").livequery("click", function () {
+lQuery(".emrowpicker table td").livequery("click", function (e) {
 	var clicked = $(this);
-	if (!handleclick(clicked)) {
+	if (!handleclick(clicked,e)) {
 		return true;
 	}
 
@@ -42,9 +42,9 @@ lQuery(".emrowpicker table td").livequery("click", function () {
 	}
 });
 
-lQuery(".emselectable table td").livequery("click", function () {
+lQuery(".emselectable table td").livequery("click", function (e) {
 	var clicked = $(this);
-	if (!handleclick(clicked)) {
+	if (!handleclick(clicked,e)) {
 		return true;
 	}
 
@@ -117,7 +117,7 @@ lQuery(".emselectable table td").livequery("click", function () {
 });
 
 //CB Asset picker finish
-lQuery(".assetpickerselectrow").livequery("click", function () {
+lQuery(".assetpickerselectrow").livequery("click", function (e) {
 	var assetid = $(this).data("assetid");
 	jQuery("#" + targetdiv).attr("value", assetid);
 
@@ -152,9 +152,9 @@ lQuery(".assetpickerselectrow").livequery("click", function () {
 });
 
 //CB This works. Opens entities
-lQuery(".topmodules .resultsdivdata").livequery("click", function () {
+lQuery(".topmodules .resultsdivdata").livequery("click", function (e) {
 	var row = $(this);
-	if (!handleclick(row)) {
+	if (!handleclick(row,e)) {
 		return true;
 	}
 
@@ -166,9 +166,9 @@ lQuery(".topmodules .resultsdivdata").livequery("click", function () {
 	clickableresultlist.emDialog();
 });
 
-lQuery(".listofentities .resultsdivdata").livequery("click", function () {
+lQuery(".listofentities .resultsdivdata").livequery("click", function (e) {
 	var row = $(this);
-	if (!handleclick(row)) {
+	if (!handleclick(row,e)) {
 		return true;
 	}
 
@@ -186,9 +186,9 @@ lQuery(".listofentities .resultsdivdata").livequery("click", function () {
 });
 
 //To open an entity in a submodule. CB Lose Back button
-lQuery(".submodulepicker .resultsdivdata").livequery("click", function () {
+lQuery(".submodulepicker .resultsdivdata").livequery("click", function (e) {
 	var row = $(this);
-	if (!handleclick(row)) {
+	if (!handleclick(row,e)) {
 		return true;
 	}
 
@@ -197,9 +197,9 @@ lQuery(".submodulepicker .resultsdivdata").livequery("click", function () {
 	submodulepicker.runAjax();
 });
 //To open an entity in a submodule. CB Lose Back button
-lQuery(".entitysubmodules .resultsdivdata").livequery("click", function () {
+lQuery(".entitysubmodules .resultsdivdata").livequery("click", function (e) {
 	var row = $(this);
-	if (!handleclick(row)) {
+	if (!handleclick(row,e)) {
 		return true;
 	}
 	var submoduleOpener = row.closest(".clickableresultlist");
@@ -208,9 +208,9 @@ lQuery(".entitysubmodules .resultsdivdata").livequery("click", function () {
 });
 
 //CB working. Uses edithome for searchcategory clicking
-lQuery(".listsearchcategories .resultsdivdata").livequery("click", function () {
+lQuery(".listsearchcategories .resultsdivdata").livequery("click", function (e) {
 	var row = $(this);
-	if (!handleclick(row)) {
+	if (!handleclick(row,e)) {
 		return true;
 	}
 	var searchId = row.data("dataid");
@@ -227,9 +227,9 @@ lQuery(".listsearchcategories .resultsdivdata").livequery("click", function () {
 //CB working for entity fieldpicking
 lQuery(".pickerresults.pickerforfield .resultsdivdata").livequery(
 	"click",
-	function () {
+	function (e) {
 		var clicked = $(this);
-		if (!handleclick(clicked)) {
+		if (!handleclick(clicked,e)) {
 			return true;
 		}
 		var row = $(clicked.closest(".resultsdivdata"));
@@ -253,7 +253,7 @@ lQuery(".pickerresults.pickerpickasset .resultsdivdata").livequery(
 	"click",
 	function () {
 		var clicked = $(this);
-		if (!handleclick(clicked)) {
+		if (!handleclick(clicked,e)) {
 			return true;
 		}
 		var row = $(clicked.closest(".resultsdivdata"));
@@ -283,7 +283,7 @@ lQuery(".pickerresults.entitypickersubmodule .resultsdivdata").livequery(
 	"click",
 	function () {
 		var clicked = $(this);
-		if (!handleclick(clicked)) {
+		if (!handleclick(clicked,e)) {
 			return true;
 		}
 		var row = clicked.closest(".resultsdivdata");
@@ -318,7 +318,7 @@ lQuery(".pickerresults.picksearchcategory .resultsdivdata").livequery(
 	"click",
 	function () {
 		var clicked = $(this);
-		if (!handleclick(clicked)) {
+		if (!handleclick(clicked,e)) {
 			return true;
 		}
 		var row = $(clicked.closest(".resultsdivdata"));
@@ -348,7 +348,7 @@ lQuery(".pickerresults.pickercopyassetsto .resultsdivdata").livequery(
 	"click",
 	function () {
 		var clicked = $(this);
-		if (!handleclick(clicked)) {
+		if (!handleclick(clicked,e)) {
 			return true;
 		}
 		var row = $(clicked.closest(".resultsdivdata"));
@@ -378,7 +378,7 @@ lQuery(".pickerresults.pickandupload .resultsdivdata").livequery(
 	"click",
 	function () {
 		var clicked = $(this);
-		if (!handleclick(clicked)) {
+		if (!handleclick(clicked,e)) {
 			return true;
 		}
 		var row = $(clicked.closest(".resultsdivdata"));
@@ -394,9 +394,9 @@ lQuery(".pickerresults.pickandupload .resultsdivdata").livequery(
 );
 
 //Assets or Categories and you import into a entity
-lQuery(".pickerresultscopy .resultsdivdata").livequery("click", function () {
+lQuery(".pickerresultscopy .resultsdivdata").livequery("click", function (e) {
 	var clicked = $(this);
-	if (!handleclick(clicked)) {
+	if (!handleclick(clicked,e)) {
 		return true;
 	}
 	var row = $(clicked.closest(".resultsdivdata"));
@@ -434,19 +434,24 @@ lQuery(".pickerresultscopy .resultsdivdata").livequery("click", function () {
 	}
 });
 
-function handleclick(clicked) {
+function handleclick(div,e) {
+	var clicked = $(e.target);
+	
 	if (
 		clicked.attr("noclick") == "true" ||
-		$(clicked).is("input") ||
-		$(clicked).is("a") ||
-		$(clicked).closest(".jp-audio").length
+		clicked.is("input") ||
+		clicked.is("a") ||
+		clicked.closest(".jp-audio").length
 	) {
 		return false;
 	}
+	e.preventDefault();
+	e.stopPropagation();
 	return true;
 }
 
-$(window).on(
+//Not used?
+$(window).on(  
 	"updatepickertarget",
 	function (e, pickertargetid, dataid, dataname) {
 		var pickertarget = $("#" + pickertargetid);
@@ -456,6 +461,7 @@ $(window).on(
 	}
 );
 
+//not used?
 updateentityfield = function (pickertarget, id, name) {
 	var template = $("#pickedtemplateREPLACEID", pickertarget).html(); //clone().appendTo(pickertarget);
 	var newcode = template.replaceAll("REPLACEID", id);
