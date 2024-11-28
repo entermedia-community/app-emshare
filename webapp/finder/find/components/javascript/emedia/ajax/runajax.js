@@ -32,8 +32,11 @@
 		}
 
 		var options = anchor.cleandata();
-		
-		if (anchor.data("includeeditcontext") === undefined || anchor.data("includeeditcontext") == true) {
+
+		if (
+			anchor.data("includeeditcontext") === undefined ||
+			anchor.data("includeeditcontext") == true
+		) {
 			var editdiv = anchor.closest(".editdiv"); //This is used for lightbox tree opening
 			if (editdiv.length > 0) {
 				var otherdata = editdiv.cleandata();
@@ -58,10 +61,6 @@
 			}
 			//	}
 		}
-		
-	
-		
-	
 
 		var activemenu;
 		if (anchor.hasClass("auto-active-link")) {
@@ -94,18 +93,15 @@
 			targetdivS = targetDivInner;
 			replaceHtml = false;
 		}
-		
+
 		var edithomeid = options["edithomeid"];
 		var targetdiv = false;
-		if (edithomeid !== undefined) 
-		{
+		if (edithomeid !== undefined) {
 			targetdiv = $("#" + edithomeid).find("." + targetdivS);
-		}
-		else 
-		{
+		} else {
 			targetdiv = anchor.closest("." + $.escapeSelector(targetdivS));
 		}
-		
+
 		if (!targetdiv.length) {
 			targetdiv = $("#" + $.escapeSelector(targetdivS));
 			console.log("Set edithomeid or use a parent class");
@@ -130,6 +126,8 @@
 
 			$(window).trigger("showToast", [anchor]);
 			var toastUid = $(anchor).data("uid");
+
+			var anchorData = anchor.data(); //anchor.data looses dynamically set data after ajax call, so we need to use this instead of anchor.data()
 			jQuery
 				.ajax({
 					url: nextpage,
@@ -159,8 +157,8 @@
 						$(window).trigger("setPageTitle", [newcell]);
 
 						//on success execute extra JS
-						if (anchor.data("onsuccess")) {
-							var onsuccess = anchor.data("onsuccess");
+						if (anchorData["onsuccess"]) {
+							var onsuccess = anchorData["onsuccess"];
 							var fnc = window[onsuccess];
 							if (fnc && typeof fnc === "function") {
 								//make sure it exists and it is a function
@@ -175,7 +173,7 @@
 						}
 
 						//actions after autoreload?
-						var message = anchor.data("alertmessage");
+						var message = anchorData["alertmessage"];
 						if (message) customToast(message);
 					},
 					error: function () {
@@ -190,7 +188,7 @@
 					crossDomain: true,
 				})
 				.always(function () {
-					var scrolltotop = anchor.data("scrolltotop");
+					var scrolltotop = anchorData["scrolltotop"];
 					if (scrolltotop) {
 						window.scrollTo(0, 0);
 					}
@@ -198,17 +196,17 @@
 					anchor.removeAttr("disabled");
 
 					//Close All Dialogs
-					var closealldialogs = anchor.data("closealldialogs");
+					var closealldialogs = anchorData["closealldialogs"];
 					if (closealldialogs) {
 						closeallemdialogs();
 					} else {
 						//Close Dialog
-						var closedialog = anchor.data("closedialog");
+						var closedialog = anchorData["closedialog"];
 						if (closedialog && anchorModal != null) {
 							closeemdialog(anchorModal);
 						}
 						//Close MediaViewer
-						var closemediaviewer = anchor.data("closemediaviewer");
+						var closemediaviewer = anchorData["closemediaviewer"];
 						if (closemediaviewer) {
 							var overlay = $("#hiddenoverlay");
 							if (overlay.length) {
@@ -227,16 +225,16 @@
 					anchor.css("cursor", "");
 					$("body").css("cursor", "");
 
+					var updateurl = anchorData["updateurl"];
 					if (
 						typeof global_updateurl !== "undefined" &&
 						global_updateurl == false
 					) {
-						//globaly disabled updateurl
+						console.warn("Global updateurl is disabled.");
 					} else {
-						var updateurl = anchor.data("updateurl");
 						if (updateurl) {
-							//console.log("Saving state ", updateurl);
-							history.pushState($("#application").html(), null, nextpage);
+							var url = anchorData["urlbar"] || nextpage;
+							history.pushState($("#application").html(), null, url);
 						}
 					}
 				});

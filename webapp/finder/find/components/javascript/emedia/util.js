@@ -324,6 +324,9 @@ window.onkeydown = function (event) {
 				positive: !debugMode,
 				icon: debugMode ? "bug-fill" : "eye-fill",
 			});
+			if (mode == "preview") {
+				window.location.reload();
+			}
 		}
 	}
 };
