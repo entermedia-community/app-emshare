@@ -55,8 +55,7 @@
 		if (!link) {
 			link = initiator.data("url");
 		}
-		if (initiator.closest(".modal").length !== 0) 
-		{
+		if (initiator.closest(".modal").length !== 0) {
 			options.oemaxlevel = 1;
 		}
 
@@ -72,7 +71,6 @@
 
 		$(window).trigger("showToast", [initiator]);
 		var toastUid = initiator.data("uid");
-		var initiatorData = initiator.data();
 		jQuery.ajax({
 			xhrFields: {
 				withCredentials: true,
@@ -84,11 +82,9 @@
 				initiator.data("uiid", toastUid);
 				$(window).trigger("successToast", [initiator]);
 				var targetdiv = modaldialog.find(".enablebackbtn");
-				if (targetdiv.length == 0)
-				{
+				if (targetdiv.length == 0) {
 					modaldialog.html(data);
-				}
-				else {
+				} else {
 					//--Entities
 					targetdiv.html(data);
 				}
@@ -97,17 +93,25 @@
 						width = $(window).width();
 					}
 
-						//open new entity
-						var parent = container.closest(".entitydialog");
-						container = initiator.closest(".entity-wraper");
-						container.replaceWith(data);
-						tabbackbutton(parent);
-					}
-				} else if (initiator.data("targetrendertype") == "entity") {
-					var container = initiator.closest(".entity-wraper");
-					var parent = initiator.closest(".entitydialog");
-					container.replaceWith(data);
-					tabbackbutton(parent);
+					$(".modal-dialog", modaldialog).css("min-width", width + "px");
+				}
+				if (maxwidth) {
+					$(".modal-dialog", modaldialog).css("max-width", maxwidth + "px");
+				}
+
+				var modalkeyboard = false;
+				var modalbackdrop = true;
+				if ($(".modal-backdrop").length) {
+					modalbackdrop = false;
+				}
+
+				var modalinstance;
+				if (modalkeyboard) {
+					modalinstance = modaldialog.modal({
+						closeExisting: false,
+						show: true,
+						backdrop: modalbackdrop,
+					});
 				} else {
 					modalinstance = modaldialog.modal({
 						keyboard: false,
@@ -150,36 +154,17 @@
 				var currenturl = window.location.href;
 				modalinstance.data("oldurlbar", currenturl);
 
-					if (initiator.is(":visible")) {
-						var firstform = modaldialog.find("form");
-						firstform.data("openedfrom", openfrom);
-					}
-					var autosetformtargetdiv = initiator.data("autosetformtargetdiv");
-					if (autosetformtargetdiv !== undefined) {
-						var tdiv = initiator.closest("." + autosetformtargetdiv);
-						if (tdiv.length == 1) {
-							firstform.data("targetdiv", tdiv.attr("id"));
-						}
-					}
+				searchpagetitle = modaldialog.find("[data-setpagetitle]");
 
-					// fix submit button
-					var justok = initiator.data("cancelsubmit");
-					if (justok != null) {
-						$(".modal-footer #submitbutton", modaldialog).hide();
-					} else {
-						var id = $("form", modaldialog).attr("id");
-						$("#submitbutton", modaldialog).attr("form", id);
-					}
-					var hidetitle = initiator.data("hideheader");
-					if (hidetitle == null) {
-						var title = initiator.attr("title");
-						if (title == null) {
-							title = initiator.text();
+				modalinstance.on("hidden.bs.modal", function () {
+					//on close execute extra JS -- Todo: Move it to closedialog()
+					if (initiator.data("onclose")) {
+						var onclose = initiator.data("onclose");
+						var fnc = window[onclose];
+						if (fnc && typeof fnc === "function") {
+							//make sure it exists and it is a function
+							fnc(initiator); //execute it
 						}
-					}
-					var hidefooter = initiator.data("hidefooter");
-					if (hidefooter != null) {
-						$(".modal-footer", modaldialog).hide();
 					}
 
 					closeemdialog($(this)); //Without this the asset Browse feature does not close all the way
@@ -188,28 +173,6 @@
 
 				adjustZIndex(modalinstance);
 
-					modalinstance.on("hidden.bs.modal", function () {
-						//on close execute extra JS -- Todo: Move it to closedialog()
-						if (initiator.data("onclose")) {
-							var onclose = initiator.data("onclose");
-							var fnc = window[onclose];
-							if (fnc && typeof fnc === "function") {
-								//make sure it exists and it is a function
-								fnc(initiator); //execute it
-							}
-						}
-
-						closeemdialog($(this)); //Without this the asset Browse feature does not close all the way
-						$(window).trigger("resize");
-					});
-
-					modalinstance.on("scroll", function () {
-						//checkScroll();
-					});
-
-					adjustZIndex(modalinstance);
-				}
-
 				if (
 					typeof global_updateurl !== "undefined" &&
 					global_updateurl == false
@@ -217,9 +180,9 @@
 					//globaly disabled updateurl
 				} else {
 					//Update Address Bar
-					var updateurl = initiatorData["updateurl"];
+					var updateurl = initiator.data("updateurl");
 					if (updateurl) {
-						var urlbar = initiatorData["urlbar"];
+						var urlbar = initiator.data("urlbar");
 						if (!urlbar) {
 							urlbar = link;
 						}
@@ -234,8 +197,8 @@
 				}
 
 				//on success execute extra JS
-				if (initiatorData["onsuccess"]) {
-					var onsuccess = initiatorData["onsuccess"];
+				if (initiator.data("onsuccess")) {
+					var onsuccess = initiator.data("onsuccess");
 					var fnc = window[onsuccess];
 					if (fnc && typeof fnc === "function") {
 						//make sure it exists and it is a function
