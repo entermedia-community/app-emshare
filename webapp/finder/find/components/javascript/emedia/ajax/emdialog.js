@@ -55,7 +55,8 @@
 		if (!link) {
 			link = initiator.data("url");
 		}
-		if (initiator.closest(".modal").length !== 0) {
+		var olddialog = initiator.closest(".modal");
+		if (olddialog.length !== 0 && olddialog.attr("id") == id) {
 			options.oemaxlevel = 1;
 		}
 
