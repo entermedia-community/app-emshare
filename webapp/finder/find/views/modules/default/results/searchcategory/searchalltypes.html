@@ -15,13 +15,25 @@ $context.putPageValue("topmodule", $parentmodule)
 $context.putPageValue("topmoduleid", "searchcategory")
 $context.putPageValue("modulecount", $organizedModules.size())
 	
+
+#set($hidenavigation = $context.getRequestParameter("hidenavigation"))
+
+#if($hidenavigation && $hidenavigation == "true")
+	
+			$pages.include("$searchhome/results.html?resulttype=grid",$context)
+	
+
+#else
+	
 $pages.include("${edithome}/categorybreadcrumb.html", $context)
 
 <div class="d-flex">
 	#ifnotnull( $organizedModules)
 		$pages.include("${edithome}/bymodule.html",$context)
 	#end
-	<div class="flex-grow-1 border-left-subtle">
+	
+	<div id="searchcategoryresults" class="flex-grow-1 border-left-subtle">
 		$pages.include("$searchhome/results.html",$context)
 	</div>
 </div>
+#end

@@ -2,12 +2,15 @@
 	<div class="searchcategorysidebar auto-active-container overflow-y">
 		#if($organizedModules.size() > 1)
 		<div class="mb-2 auto-active-row current">
-			<a href="$entityurl" class="ajax btn btn-wide auto-active-link" data-targetdiv="modulesearchsearchcategory" data-updateurl="true" data-oemaxlevel="1">
+
+			#set($url = "$searchhome/searchalltypes.html?field=searchcategory&operation=exact&searchcategory.value=$!searchcategory.id")
+
+			<a href="$url" class="ajax btn btn-wide auto-active-link"  data-targetdivinner="searchcategoryresults"  data-updateurl="true" data-oemaxlevel="1" data-hidenavigation="true">
 			#set($moduleicon = "grid")
 			#if ($module.moduleicon)
 				#set($moduleicon = $module.moduleicon)
 			#end
-				<i class="bi bi-$!{moduleicon} module-icon ns"></i> <span>All #text($searchcategory) ($!{hits.size()})</span>
+				<i class="bi bi-$!{moduleicon} module-icon ns"></i> <span>$!{hits.size()} Results </span>
 			</a>
 		</div>
 		#end
@@ -29,10 +32,17 @@
 			#set($count = $entitysourcetype.getCount($module.id))
 			
 			<div class="mb-2 auto-active-row #if($organizedModules.size()  == 1) current #end">
-				<a href="$entityurl" class="ajax btn btn-wide auto-active-link" data-targetdiv="modulesearchsearchcategory" data-updateurl="true" data-oemaxlevel="1">
+				<a href="$entityurl" class="ajax btn btn-wide auto-active-link" data-targetdivinner="searchcategoryresults" 
+					data-updateurl="true" data-oemaxlevel="1"
+					data-includeeditcontext="false"
+					>
 					<i class="bi bi-$!{moduleicon} module-icon ns"></i> <span>#text($module) ($!{count})</span>
 				</a>
 			</div>
 		#end
+	</div>
+#else
+	<div class="emnoresults">	
+		[[No modules added in this category]]
 	</div>
 #end

@@ -85,21 +85,26 @@
 
 		var anchorModal = anchor.closest(".modal");
 
-		var targetdivS = anchor.data("targetdiv");
 		var replaceHtml = true;
+
+		var targetdiv = false;
 
 		var targetDivInner = anchor.data("targetdivinner");
 		if (targetDivInner) {
-			targetdivS = targetDivInner;
+			targetdiv = $("#" + $.escapeSelector(targetDivInner));
 			replaceHtml = false;
 		}
 
+		var targetdivS = anchor.data("targetdiv");
+
 		var edithomeid = options["edithomeid"];
-		var targetdiv = false;
-		if (edithomeid !== undefined) {
-			targetdiv = $("#" + edithomeid).find("." + targetdivS);
-		} else {
-			targetdiv = anchor.closest("." + $.escapeSelector(targetdivS));
+		if(targetdiv == false)
+		{
+			if (edithomeid !== undefined) {
+				targetdiv = $("#" + edithomeid).find("." + targetdivS);
+			} else {
+				targetdiv = anchor.closest("." + $.escapeSelector(targetdivS));
+			}
 		}
 
 		if (!targetdiv.length) {
