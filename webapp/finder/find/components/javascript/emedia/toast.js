@@ -27,23 +27,14 @@ $(window).on("showToast", function (_, anchor) {
 			<div class="toastClose">&times;</div>
 		</div>`
 	);
-	toastTO = setTimeout(function () {
-		$(".toastList").append(toast);
-
-		// debug toast
-		var selector = "";
-		var anchorId = anchor.attr("id");
-		if (anchorId) {
-			selector = "#" + anchorId;
-		}
-		var anchorClass = anchor.attr("class");
-		if (anchorClass) {
-			selector += "." + anchorClass.split(" ").join(".");
-		}
-		console.log({
-			["[data-uid='" + uid + "']"]: { selector, innerText: anchor.text() },
-		});
-	}, delay);
+	var hasErrorToast = $(".toastList").find(".toastError").length > 0;
+	if (hasErrorToast) {
+		console.error("Additional error toast:", toastMessage);
+	} else {
+		toastTO = setTimeout(function () {
+			$(".toastList").append(toast);
+		}, delay);
+	}
 });
 
 lQuery(".toastClose").livequery("click", function () {
