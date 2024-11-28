@@ -1,0 +1,55 @@
+<!-- 
+<div id="$!{moduleid}topcontainer"
+	class="topmodulecontainer $!{moduleid}topcontainer"
+	data-hitssessionid="$!hits.getSessionId()"
+	data-url="$apphome/views/modules/$!{module.id}/index.html"
+	#if($topentityid) data-topentityid="$!topentityid" #end
+	data-oemaxlevel="2">
+ -->
+
+#set($searchcategoryid = $context.getRequestParameter("searchcategoryid"))
+
+<div id="$edithomeid"  
+	class="editdiv 
+			#ifnull($searchcategoryid)listsearchcategories #end
+			#ifnotnull($searchcategoryid) listofentities #end
+			" 
+	data-edithome="${edithome}"
+	data-edithomeid="${edithomeid}"
+	
+>
+
+#set($searchhome = "$apphome/views/modules/modulesearch/results/searchcategory")
+
+<div class="clickableresultlist"
+	data-${module.id}hitssessionid="$!hits.getSessionId()"
+#ifnull( $searchcategoryid)
+	#set($previewurl = "$apphome/views/modules/searchcategory/editors/listsearchcategories/index.html")
+	data-url= "$previewurl"
+	data-targetdiv="$edithomeid"
+	data-oemaxlevel="1"
+#end
+>
+#if($searchcategoryid)
+
+	#set( $searchcategory = $mediaarchive.getCachedData("searchcategory",$searchcategoryid) )
+	$context.putPageValue("searchcategory", $searchcategory)
+	$context.putPageValue("topmoduleid", "searchcategory")
+	$context.putPageValue("modulecount", $organizedModules.size())
+
+	$context.putPageValue("searchhome", $searchhome)
+	#set($url = "$searchhome/searchalltypes.html?field=searchcategory&operation=exact&searchcategory.value=$!searchcategoryid")
+	$pages.include($url,$context)
+
+#else
+
+	$context.putPageValue("searchhome", $searchhome)
+	$pages.include("${searchhome}/index.html",$context)
+	
+#end
+</div>
+
+		
+</div>
+
+

@@ -157,14 +157,32 @@ lQuery(".topmodules .resultsdivdata").livequery("click", function () {
 	if (!handleclick(row)) {
 		return true;
 	}
-	var rowid = row.data("dataid");
 
 	var clickableresultlist = row.closest(".clickableresultlist");
 
+	var rowid = row.data("dataid");
 	clickableresultlist.data("id", rowid);
 	clickableresultlist.data("entityid", rowid);
 	clickableresultlist.emDialog();
 });
+
+lQuery(".listofentities .resultsdivdata").livequery("click", function () {
+	var row = $(this);
+	if (!handleclick(row)) {
+		return true;
+	}
+
+	var clickableresultlist = row.closest(".clickableresultlist");
+
+	var rowid = row.data("dataid");
+	var entitymoduleid = row.data("entitymoduleid");
+	clickableresultlist.data("url", `${apphome}/views/modules/${entitymoduleid}/editors/default/tabs/index.html`);
+	clickableresultlist.data("id", rowid);
+	clickableresultlist.data("entityid", rowid);
+	clickableresultlist.emDialog();
+});
+
+
 
 //To open an entity in a submodule. CB Lose Back button
 lQuery(".submodulepicker .resultsdivdata").livequery("click", function () {
@@ -187,6 +205,18 @@ lQuery(".entitysubmodules .resultsdivdata").livequery("click", function () {
 	submoduleOpener.data("entityid", row.data("dataid"));
 	submoduleOpener.runAjax();
 });
+
+//CB working. Uses edithome for searchcategory clicking
+lQuery(".listsearchcategories .resultsdivdata").livequery("click", function () {
+	var row = $(this);
+	if (!handleclick(row)) {
+		return true;
+	}
+	var submoduleOpener = row.closest(".clickableresultlist");
+	submoduleOpener.data("searchcategoryid", row.data("dataid"));
+	submoduleOpener.runAjax();
+});
+
 
 //CB working for entity fieldpicking
 lQuery(".pickerresults.pickerforfield .resultsdivdata").livequery(

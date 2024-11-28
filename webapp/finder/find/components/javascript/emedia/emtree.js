@@ -110,7 +110,7 @@ $(function () {
 			//Asset Module
 			reloadurl =
 				home +
-				"/views/modules/asset/viewfiles/" +
+				"/views/modules/asset/editors/viewfiles/" +
 				nodeid +
 				"/" +
 				node.data("categorynameesc") +

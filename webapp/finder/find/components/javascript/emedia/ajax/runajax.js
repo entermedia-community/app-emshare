@@ -108,11 +108,10 @@
 		
 		if (!targetdiv.length) {
 			targetdiv = $("#" + $.escapeSelector(targetdivS));
-			console.log("Set edithomeid.");
+			console.log("Set edithomeid or use a parent class");
 		}
 		if (!targetdiv.length) {
-			targetdiv = $("." + $.escapeSelector(targetdivS)); //legacy
-			console.log("Set edithomeid!.");
+			targetdiv = $("." + $.escapeSelector(targetdivS)); //legacy?
 		}
 
 		if (targetdiv.length) {

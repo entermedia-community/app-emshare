@@ -1,52 +1,4 @@
-#if($hit)
-	#set($entityid = $hit.id)
-	#if($rendermoduleid)
-		#set($moduleid = $rendermoduleid)
-	#else
-		#set($moduleid = $module.id)
-	#end
-#else
-	#if(!$moduleid)
-		#set($moduleid = $context.getRequestParameter("moduleid"))
-	#end
-	#if(!$entityid)
-		#set($entityid = $context.getRequestParameter("entityid"))
-	#end
-	#if($moduleid && $entityid)
-		#set($entity = $mediaarchive.getCachedData($moduleid, $entityid))
-	#end
-#end
-
-$context.putPageValue("entityid", $entityid)
-$context.putPageValue("moduleid", $moduleid)
-
-#if($moduleid && $entityid)
-	#set($module = $mediaarchive.getCachedData("module", $moduleid))
-	#set($entity = $mediaarchive.getCachedData($moduleid, $entityid))
-#end
-
-#if(!$parentmodule)
-	#set($parentmodule = $module)
-#end
-
-#set($topentityid = $context.getRequestParameter("topentityid"))
-$context.putPageValue("topentityid", $topentityid)
-
-#if($moduleid == "searchcategory")
-	#set($previewurl = "$!{siteroot}$apphome/views/modules/searchcategory/searchcategory.html?field=searchcategory&operation=exact&searchcategory.value=$entityid")
-	#if($searchresults)
-		#set($linktype = "searchcategory")
-	#else
-		#set($linktype = "ajax searchcategory")
-	#end
-#else
-	#set($previewurl = "$apphome/views/modules/${moduleid}/editors/default/tabs/index.html?entityid=$entityid")
-	#set($urladdressbar = "$!{siteroot}$apphome/views/modules/$!moduleid/index.html?entityid=$entityid")
-	#set($linktype = "emdialog entity-dialog")
-#end
-
-$context.putPageValue("previewurl", $previewurl)
-  	 
+	 
 ##look for primaryimage
 #if($entity.primarymedia)
 	#set( $primarymediatemp = $mediaarchive.getCachedAsset($entity.primarymedia))
@@ -70,25 +22,22 @@ $context.putPageValue("previewurl", $previewurl)
 	#end
 #end	
 			   	
-#set($link = "$!siteroot$applink/views/modules/$!topmodule.getId()/index.html")
-
-#if( $parentmodule == $module)
-	#set($link = "$link?entityid=$!entity.getId()&entitytype=$!moduleid&entityid=$!entity.getId()")
-#else
-	#set($link = "$link?entityid=$!entity.getId()&entitytype=$!moduleid&entityid=$!topentityid")
-#end
-
 #set($moduleicon = "grid")
 #if ($module.moduleicon)
 	#set($moduleicon = $module.moduleicon)
 #end 
 
+#set( $entityid = $hit.id )
+#set( $moduleid = $hit.entitysourcetype )
+
 <div class="resultsdivdata emfolder-wrapper emgrid-type-$!moduleid entitycontainer entity$!moduleid$!entityid" 
 	id="emgridentity$!moduleid$!entityid"
 	data-rowname="#text($hit)"
 	data-dataid="${entityid}"
-  data-moduleid="$!{moduleid}"
-  data-rendertype="entity">
+	data-entityid="${entityid}"	
+  data-entitymoduleid="$!{moduleid}"
+  data-rendertype="entity"
+  >
 	#ifnotnull($entity.longcaption)
 		<div class="emfolder-hover">
 			<strong>[[Description]]:</strong> $entity.longcaption
@@ -102,23 +51,6 @@ $context.putPageValue("previewurl", $previewurl)
 	#end
 
 	#set($pickertarget = $context.getRequestParameter("pickertarget"))
-	
-	<a #ifnull($pickertarget)
-		href="$!{previewurl}" 
-		id="clickid${entityid}"
-		data-id="${entityid}"
-   		data-moduleid="$!moduleid" 
-		title="[[View]]: #text($!entity)"
-		class="$linktype"
-		#if($moduleid == "searchcategory")
-			data-targetdiv="searchcategorytopcontainer"
-			data-oemaxlevel="2"
-   	 	#else
-   	 		data-hideheader="true" 
-		#end
-		data-updateurl="true"
-		data-urlbar="$!urladdressbar"
-	#end>
 	
 		<div class="emfolder-inner assetdropentity drop-over" 
 			id="attachedmedia$entityid" 
@@ -144,5 +76,4 @@ $context.putPageValue("previewurl", $previewurl)
 				<span>#text($!entity)</span>
 			</div>
 		</div>
-	</a>
 </div>

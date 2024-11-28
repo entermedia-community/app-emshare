@@ -1,0 +1,23 @@
+#set($entitymoduleviewid = $context.getRequestParameter("entitymoduleviewid"))
+#set($viewdata = $mediaarchive.getCachedData("view",$entitymoduleviewid))
+#set($submoduleid = $!viewdata.rendertable)
+
+
+<div id="${edithomeid}" class="editdiv ${edithomeid}" 
+
+	data-oemaxlevel="1"
+	data-edithome="${edithome}"
+	data-targetdiv="resultsdiv"
+	data-setpagetitle="#text($asset)"
+>
+		
+#set($module = $mediaarchive.getCachedData("module","asset"))
+$context.putPageValue("module", $module)
+#set($searchhome = "$apphome/views/modules/asset/results/category")
+$context.putPageValue("searchhome", $searchhome)
+$pages.include("${searchhome}/search.html?$!args",$context)
+
+</div>
+
+
+		
