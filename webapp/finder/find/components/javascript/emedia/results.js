@@ -214,25 +214,9 @@ jQuery(document).ready(function (url, params) {
 					input.val("");
 					return;
 				}
-
 				var url = input.data("url");
-				var targetdiv = input.data("targetdiv");
-				var oemaxlevel = input.data("oemaxlevel");
-				var updateurl = input.data("updateurl");
-				var args = {
-					hitssessionid: input.data("hitssessionid"),
-					oemaxlevel: oemaxlevel,
-				};
-				url = url + page;
-				$.get(url, args, function (data) {
-					$("#" + targetdiv).html(data);
-					history.pushState(
-						$("#application").html(),
-						null,
-						updateurl ? url : undefined
-					);
-					$(window).trigger("resize");
-				});
+				input.data("url", url + page);
+				input.runAjax();
 			}
 		});
 	});
