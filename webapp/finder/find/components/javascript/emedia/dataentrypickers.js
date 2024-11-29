@@ -301,7 +301,7 @@ lQuery(".pickerresults.pickerpickasset .resultsdivdata").livequery(
 					function () {}
 				);
 			}
-			closeemdialog(pickerresults.closest(".modal"));
+			closeemdialog(clicked.closest(".modal"));
 		}
 	}
 );
@@ -472,7 +472,7 @@ lQuery(".pickerresultscopy .resultsdivdata").livequery("click", function (e) {
 						targetdiv.replaceWith(data);
 					}
 				}
-				closeemdialog(pickerresults.closest(".modal"));
+				closeemdialog(clicked.closest(".modal"));
 			},
 		});
 	}

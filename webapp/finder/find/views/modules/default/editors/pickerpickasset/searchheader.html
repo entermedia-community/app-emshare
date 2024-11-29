@@ -1,3 +1,5 @@
+		#set( $categoryid = $context.getRequestParameter("categoryid"))
+
 <div class="entity-action-header">
 	<div class="w-100 d-flex align-items-center justify-content-between">
 		<h3>
@@ -6,7 +8,7 @@
 				#set($moduleicon = $submodule.moduleicon)
 			#end	
 			<i class="ns bi bi-$moduleicon module-icon" style="font-size: 0.8em;"></i> 
-			#if($entity)
+			#if($categoryid && $categoryid != "")
 				#text($entity) <small>($hits.size())</small>
 			#else
 				[[All Files]] <small>($hits.size())</small>
@@ -14,12 +16,12 @@
 		</h3>
 
 		#set( $pickertargetfield = $context.getRequestParameter("pickertargetfield"))
-		#set( $categoryid = $context.getRequestParameter("categoryid"))
 		
-		#ifnotnull($categoryid)
-		<a href="$searchhome/index.html" class="ajax btn btn-accent" 
+		#if($categoryid && $categoryid != "")
+		<a href="$edithome/index.html" class="ajax btn btn-accent" 
 			data-targetdiv="pickersearchresults" 
 			data-oemaxlevel="1" 
+			data-categoryid=""
 			data-pickertargetfield="$pickertargetfield">
 			[[Show All Files]]
 		</a>
