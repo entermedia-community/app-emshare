@@ -151,9 +151,13 @@ data-path="$siteroot$viewsroot/saveview.html">
 				## #set( $pid = $pid.replace("_",""))//Why??? 
 				<li id="viewid_$pid">
 					#if( $canviewsettings )
-					<a class="sortableitem" href="$siteroot$apphome/views/settings/lists/datamanager/properties/edit.html?id=$pid&searchtype=$searchtype&viewid=${viewid}"><span class="drag-and-drop"></span> $element.getText($context)<span class="type-of-field">#if( $element.getDataType() ) $element.getDataType() #else textbox #end<span></a>
+					<a class="sortableitem" href="$siteroot$apphome/views/settings/lists/datamanager/properties/edit.html?id=$pid&searchtype=$searchtype&viewid=${viewid}">
+                        <i class="bi bi-chevron-expand mr-1"></i>  $element.getText($context)<span class="type-of-field">#if( $element.getDataType() ) $element.getDataType() #else textbox #end</span>
+                    </a>
 					#else	
-						<a href="#">$element.getText($context)<span class="type-of-field">#if( $element.getDataType() ) $element.getDataType() #else textbox #end<span></a>
+						<a href="#">
+                            $element.getText($context)<span class="type-of-field">#if( $element.getDataType() ) $element.getDataType() #else textbox #end</span>
+                        </a>
 					#end	
 					<a class="ajax delete-row" data-targetdiv="vieweditorarea" href="$apphome/views/settings/lists/datamanager/views/removefromview.html?searchtype=$moduleid&toremove=$pid&assettype=$assettype&viewid=$viewid&viewpath=$viewpath&oemaxlevel=1">
 					<i class="fas fa-times"></i></a>
