@@ -34,7 +34,10 @@ jQuery(document).ready(function () {
 		});
 	}
 
-	lQuery("#triggerpendingdownloads").livequery(checkForPendingDownloads);
+	lQuery("#triggerpendingdownloads").livequery( function()
+	{
+		setTimeout(	checkForPendingDownloads, 1000);
+	});
 
 	function downloadDirectly(id, url, filename, isZip = false) {
 		//console.log({ id, url, filename, isZip });
