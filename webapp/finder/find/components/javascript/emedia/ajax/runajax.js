@@ -98,8 +98,7 @@
 		var targetdivS = anchor.data("targetdiv");
 
 		var edithomeid = options["edithomeid"];
-		if(targetdiv == false)
-		{
+		if (targetdiv == false) {
 			if (edithomeid !== undefined) {
 				targetdiv = $("#" + edithomeid).find("." + targetdivS);
 			} else {
@@ -109,141 +108,140 @@
 
 		if (!targetdiv.length) {
 			targetdiv = $("#" + $.escapeSelector(targetdivS));
-			console.log("Set edithomeid or use a parent class");
 		}
 		if (!targetdiv.length) {
 			targetdiv = $("." + $.escapeSelector(targetdivS)); //legacy?
 		}
 
 		//if (targetdiv.length) {
-			anchor.css("cursor", "wait");
-			$("body").css("cursor", "wait");
+		anchor.css("cursor", "wait");
+		$("body").css("cursor", "wait");
 
-			//before ajaxcall
-			if (anchor.data("onbefore")) {
-				var onbefore = anchor.data("onbefore");
-				var fnc = window[onbefore];
-				if (fnc && typeof fnc === "function") {
-					//make sure it exists and it is a function
-					fnc(anchor); //execute it
-				}
+		//before ajaxcall
+		if (anchor.data("onbefore")) {
+			var onbefore = anchor.data("onbefore");
+			var fnc = window[onbefore];
+			if (fnc && typeof fnc === "function") {
+				//make sure it exists and it is a function
+				fnc(anchor); //execute it
 			}
+		}
 
-			$(window).trigger("showToast", [anchor]);
-			var toastUid = $(anchor).data("uid");
+		$(window).trigger("showToast", [anchor]);
+		var toastUid = $(anchor).data("uid");
 
-			var anchorData = anchor.data(); //anchor.data looses dynamically set data after ajax call, so we need to use this instead of anchor.data()
-			jQuery
-				.ajax({
-					url: nextpage,
-					data: options,
-					success: function (data) {
-						anchor.data("uid", toastUid);
-						$(window).trigger("successToast", [anchor]);
-						/*
+		var anchorData = anchor.data(); //anchor.data looses dynamically set data after ajax call, so we need to use this instead of anchor.data()
+		jQuery
+			.ajax({
+				url: nextpage,
+				data: options,
+				success: function (data) {
+					anchor.data("uid", toastUid);
+					$(window).trigger("successToast", [anchor]);
+					/*
 						var cell;
 						if (useparent && useparent == "true") {
 							cell = $("#" + targetDiv, window.parent.document);
 						} else {
 							cell = findClosest(anchor, targetDiv);
 						}*/
-						var onpage;
-						var newcell;
-						if (replaceHtml) {
-							//Call replacer to pull $scope variables
-							onpage = targetdiv.parent();
-							targetdiv.replaceWith(data); //Cant get a valid dom element
-							newcell = findClosest(onpage, targetdiv);
-						} else {
-							onpage = targetdiv;
-							targetdiv.html(data);
-							newcell = onpage.children(":first");
-						}
-						$(window).trigger("setPageTitle", [newcell]);
-
-						//on success execute extra JS
-						if (anchorData["onsuccess"]) {
-							var onsuccess = anchorData["onsuccess"];
-							var fnc = window[onsuccess];
-							if (fnc && typeof fnc === "function") {
-								//make sure it exists and it is a function
-								fnc(anchor); //execute it
-							}
-						}
-
-						$(window).trigger("checkautoreload", [anchor]);
-
-						if (successCallback) {
-							successCallback();
-						}
-
-						//actions after autoreload?
-						var message = anchorData["alertmessage"];
-						if (message) customToast(message);
-					},
-					error: function () {
-						anchor.data("uid", toastUid);
-						$(window).trigger("errorToast", [anchor]);
-					},
-					type: "POST",
-					dataType: "text",
-					xhrFields: {
-						withCredentials: true,
-					},
-					crossDomain: true,
-				})
-				.always(function () {
-					var scrolltotop = anchorData["scrolltotop"];
-					if (scrolltotop) {
-						window.scrollTo(0, 0);
-					}
-					//anchor.css("enabled",true);
-					anchor.removeAttr("disabled");
-
-					//Close All Dialogs
-					var closealldialogs = anchorData["closealldialogs"];
-					if (closealldialogs) {
-						closeallemdialogs();
+					var onpage;
+					var newcell;
+					if (replaceHtml) {
+						//Call replacer to pull $scope variables
+						onpage = targetdiv.parent();
+						targetdiv.replaceWith(data); //Cant get a valid dom element
+						newcell = findClosest(onpage, targetdiv);
 					} else {
-						//Close Dialog
-						var closedialog = anchorData["closedialog"];
-						if (closedialog && anchorModal != null) {
-							closeemdialog(anchorModal);
-						}
-						//Close MediaViewer
-						var closemediaviewer = anchorData["closemediaviewer"];
-						if (closemediaviewer) {
-							var overlay = $("#hiddenoverlay");
-							if (overlay.length) {
-								hideOverlayDiv(overlay);
-							}
-						}
+						onpage = targetdiv;
+						targetdiv.html(data);
+						newcell = onpage.children(":first");
 					}
-					//Close Navbar if exists
-					var navbar = anchor.closest(".navbar-collapse");
-					if (navbar) {
-						navbar.collapse("hide");
-					}
+					$(window).trigger("setPageTitle", [newcell]);
 
-					$(window).trigger("resize");
-
-					anchor.css("cursor", "");
-					$("body").css("cursor", "");
-
-					var updateurl = anchorData["updateurl"];
-					if (
-						typeof global_updateurl !== "undefined" &&
-						global_updateurl == false
-					) {
-						console.warn("Global updateurl is disabled.");
-					} else {
-						if (updateurl) {
-							var url = anchorData["urlbar"] || nextpage;
-							history.pushState($("#application").html(), null, url);
+					//on success execute extra JS
+					if (anchorData["onsuccess"]) {
+						var onsuccess = anchorData["onsuccess"];
+						var fnc = window[onsuccess];
+						if (fnc && typeof fnc === "function") {
+							//make sure it exists and it is a function
+							fnc(anchor); //execute it
 						}
 					}
-				});
-		//} 
+
+					$(window).trigger("checkautoreload", [anchor]);
+
+					if (successCallback) {
+						successCallback();
+					}
+
+					//actions after autoreload?
+					var message = anchorData["alertmessage"];
+					if (message) customToast(message);
+				},
+				error: function () {
+					anchor.data("uid", toastUid);
+					$(window).trigger("errorToast", [anchor]);
+				},
+				type: "POST",
+				dataType: "text",
+				xhrFields: {
+					withCredentials: true,
+				},
+				crossDomain: true,
+			})
+			.always(function () {
+				var scrolltotop = anchorData["scrolltotop"];
+				if (scrolltotop) {
+					window.scrollTo(0, 0);
+				}
+				//anchor.css("enabled",true);
+				anchor.removeAttr("disabled");
+
+				//Close All Dialogs
+				var closealldialogs = anchorData["closealldialogs"];
+				if (closealldialogs) {
+					closeallemdialogs();
+				} else {
+					//Close Dialog
+					var closedialog = anchorData["closedialog"];
+					if (closedialog && anchorModal != null) {
+						closeemdialog(anchorModal);
+					}
+					//Close MediaViewer
+					var closemediaviewer = anchorData["closemediaviewer"];
+					if (closemediaviewer) {
+						var overlay = $("#hiddenoverlay");
+						if (overlay.length) {
+							hideOverlayDiv(overlay);
+						}
+					}
+				}
+				//Close Navbar if exists
+				var navbar = anchor.closest(".navbar-collapse");
+				if (navbar) {
+					navbar.collapse("hide");
+				}
+
+				$(window).trigger("resize");
+
+				anchor.css("cursor", "");
+				$("body").css("cursor", "");
+
+				var updateurl = anchorData["updateurl"];
+				if (
+					typeof global_updateurl !== "undefined" &&
+					global_updateurl == false
+				) {
+					console.warn("Global updateurl is disabled.");
+				} else {
+					if (updateurl) {
+						var url = anchorData["urlbar"] || nextpage;
+						history.pushState($("#application").html(), null, url);
+					}
+				}
+			});
+		//}
 		return this;
 	};
 })(jQuery);

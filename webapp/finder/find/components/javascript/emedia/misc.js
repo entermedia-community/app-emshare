@@ -3146,7 +3146,6 @@ lQuery(".entityNavHistory").livequery(function () {
 		history.push($(this).data());
 	});
 	var link = $(".entityNavBack");
-	console.log(link.data());
 	var currentLinkIdx = history.findIndex(function (d) {
 		return d.entityid == link.data("entityid");
 	});
@@ -3158,6 +3157,5 @@ lQuery(".entityNavHistory").livequery(function () {
 		link.data("url", backLink.url);
 		link.attr("href", backLink.url);
 		link.show();
-		console.log(link.data());
 	}
 });

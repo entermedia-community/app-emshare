@@ -240,7 +240,6 @@ var resizeTimer = null; //Prevent back to back resize events, only run the last 
 jQuery(window).on("resize", function () {
 	resizeTimer && clearTimeout(resizeTimer);
 	resizeTimer = setTimeout(function () {
-		console.log("resize", Date.now());
 		adjustDataManagerTable();
 		resizeSearchCategories();
 		resizeColumns();
