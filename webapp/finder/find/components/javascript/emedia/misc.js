@@ -43,7 +43,23 @@ lQuery("a.ajax").livequery("click", function (e) {
 	e.stopPropagation();
 	e.preventDefault();
 	$(this).runAjax();
-	return false;
+});
+
+lQuery("a.toggleAjax").livequery("click", function (e) {
+	/**
+	 * Runs an ajax call and removes the element from the DOM on ajax success
+	 * Optionally checks for a focus parent
+	 **/
+	e.stopPropagation();
+	e.preventDefault();
+	var $this = $(this);
+	$this.runAjax(function () {
+		var focusParent = $this.closest(`.${$this.data("focusparent")}`);
+		if (focusParent.length) {
+			focusParent.find("input:visible:first").focus();
+		}
+		$this.remove();
+	});
 });
 
 lQuery(".reloadpage").livequery(function () {

@@ -17,15 +17,18 @@ $!query.addSortBy("ordering")
 	class="emsettingslist listsort" 
 	data-searchtype="view" 
 	data-field="ordering">
-        <li class="header no-sort">[[Editing Boxes]]</li>
+    <li class="header no-sort d-flex align-items-center justify-content-between py-0" style="height: 46px;">
+        <span>[[Editing Boxes]]</span>
         #if ($systemdefined != "true")
-        <li class="no-sort subheader" id="addeditbox" >
-        	<a class="btn btn-xs btn-primary ajax" 
-        		data-targetdivinner="addeditbox" 
-        		href="$siteroot$viewsroot/addneweditingbox.html?oemaxlevel=1">[[Add New]]</a>
-        </li>
-        #end
-      
+            <a class="btn btn-accent toggleAjax" 
+                data-targetdivinner="addeditbox"
+                data-focusparent="emsettingslist"
+                href="$siteroot$viewsroot/addneweditingbox.html?oemaxlevel=1">
+                [[Add New]]
+            </a>
+        #end      
+    </li>
+    <li id="addeditbox" class="no-sort"></li>
     #foreach( $target in $views)
 	    #set($sortid = $target.id) ##.replaceAll("_", "||"))
         <li id="$sortid" data-ordering="${target.ordering}" class="#if($viewid == $target.id) current #end" byassettype="$!target.byassettype">
