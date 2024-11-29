@@ -44,9 +44,11 @@
 		var targetdivS = form.data("targetdiv");
 		var targetdiv;
 		var edithomeid = form.data("edithomeid");
+		
+		//TODO: Move all this to a jQuery plugin form.findTargetDiv() 
 		if (edithomeid !== undefined) 
 		{
-			targetdiv = $("#" + edithomeid).find("." + targetdivS);
+			targetdiv = $("#" + edithomeid + " ." + targetdivS);
 		}
 		else 
 		{
@@ -62,7 +64,10 @@
 			targetdiv = $("." + $.escapeSelector(targetdivS));
 			console.log("Set edithomeid.");
 		}
-
+		if (targetdiv.length > 1) 
+		{
+			console.error("Should not have more than one target ",targetdiv);
+		}
 		if (form.attr("action") == undefined) 
 		{
 			var action = targetdiv.data("saveaction");
