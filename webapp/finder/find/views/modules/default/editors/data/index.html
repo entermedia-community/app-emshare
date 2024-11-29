@@ -121,17 +121,9 @@ $context.putPageValue("edit", $edit)
 	$context.putPageValue("viewid", $viewid)
 
 	#if($edit =="true")  ##TODO - Permissions
-		##1 or 2 colums feature
-		#set($detailviewercolumns = $context.getRequestParameter("detailviewercolumns"))
-		#if(!$detailviewercolumns)
-			#set($detailviewercolumns = 2)
-		#end
-	
-		$pages.include("$apphome/views/modules/${module.id}/components/xml/detaileditor-entities.html?longform=true&detailviewercolumns=$detailviewercolumns", $context)
+		$pages.include("$apphome/views/modules/${module.id}/components/xml/detaileditor-entities.html?longform=true", $context)
 	#else
-		##Tags search link
 		$context.putPageValue("tagssearchlink", "$siteroot$apphome/views/modules/$module.id/index.html")
-	
 		$pages.include("$apphome/components/xml/detaileditor-entities.html?detailsreadonly=true&alwaysshow=true", $context)
 	#end
 	
@@ -181,23 +173,13 @@ $context.putPageValue("edit", $edit)
 				><i class="bi bi-trash-fill mr-1"></i>[[Delete]]</a>
 			#end
 		</div>
-
-		#if($detailviewercolumns==1)
-			#set($changedetailviewercolumns = 2)
-			#set($icondetailviewercolumns = "vertical")
-		#else
-			#set($changedetailviewercolumns = 1)
-			#set($icondetailviewercolumns = "horizontal")
+		#if($canviewmodulesettings)
+		<a class="emdialog btn btn-accent px-2 mr-2" 
+			href="$siteroot$apphome/views/settings/modules/$!{searcher.searchType}/metadata/views/dialog/index.html?viewid=$viewid&viewpath=$!view"
+			title="[[Edit Fields]]" data-dialogid="fieldpicker" data-hidefooter="true">
+			<i class="bi bi-gear-fill mr-1"></i> [[Fields]]
+		</a>
 		#end
-		<div class="d-flex align-items-center">
-			#if($canviewmodulesettings)
-			<a class="emdialog btn btn-accent px-2 mr-2" 
-				href="$siteroot$apphome/views/settings/modules/$!{searcher.searchType}/metadata/views/dialog/index.html?viewid=$viewid&viewpath=$!view"
-				title="[[Edit Fields]]" data-dialogid="fieldpicker" data-hidefooter="true">
-				<i class="bi bi-gear-fill mr-1"></i> [[Fields]]
-			</a>
-			#end
-		</div>
 	</div>
 	#end
 </div>

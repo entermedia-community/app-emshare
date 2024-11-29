@@ -137,17 +137,10 @@ $context.putPageValue("edit", $edit)
     	$context.putPageValue("viewid", $entitymoduleviewid)
     	
 		#if($edit =="true")  ##TODO - Permissions
-			##1 or 2 colums feature
-			#set($detailviewercolumns = $context.getRequestParameter("detailviewercolumns"))
-			#if(!$detailviewercolumns)
-				#set($detailviewercolumns = 2)
-			#end
-		
-			$pages.include("/$applicationid/components/xml/detaileditor-entities.html?longform=true&detailviewercolumns=$detailviewercolumns", $context)
+			$pages.include("/$applicationid/components/xml/detaileditor-entities.html?longform=true", $context)
 		#else
 			##Tags search link
 			$context.putPageValue("tagssearchlink", "$siteroot$apphome/views/modules/$moduleid/index.html")
-		
 			$pages.include("$apphome/components/xml/detaileditor-entities.html?detailsreadonly=true&alwaysshow=true", $context)
 		#end
 	
@@ -168,25 +161,11 @@ $context.putPageValue("edit", $edit)
 			#end
 			</div>
 		
-		#if($detailviewercolumns==1)
-			#set($changedetailviewercolumns = 2)
-			#set($icondetailviewercolumns = "vertical")
-		#else
-			#set($changedetailviewercolumns = 1)
-			#set($icondetailviewercolumns = "horizontal")
-		#end
-		
-			<div class="d-flex align-items-center">
-				#if($canviewmodulesettings)
-				<a class="emdialog btn btn-accent px-2 mr-2" href="$siteroot$apphome/views/settings/modules/$!{searcher.searchType}/metadata/views/dialog/index.html?viewid=$entitymoduleviewid&viewpath=$!view"
-					title="[[Edit Fields]]" data-dialogid="fieldpicker" data-hidefooter="true"
-				><i class="bi bi-gear-fill mr-1"></i> [[Fields]]</a>
-				#end
-				<a class="ajax btn btn-accent" data-targetdiv="editentitymetadata" 
-					href="${edithome}/tabs/preview/metadata.html?edit=true&entityid=$!{data.id}&detailviewercolumns=${changedetailviewercolumns}&moduleid=$!{moduleid}&viewid=$!{entitymoduleviewid}">
-					<i class="bi bi-grip-$icondetailviewercolumns"></i>
-				</a> 
-			</div>
+			#if($canviewmodulesettings)
+			<a class="emdialog btn btn-accent px-2 mr-2" href="$siteroot$apphome/views/settings/modules/$!{searcher.searchType}/metadata/views/dialog/index.html?viewid=$entitymoduleviewid&viewpath=$!view"
+				title="[[Edit Fields]]" data-dialogid="fieldpicker" data-hidefooter="true"
+			><i class="bi bi-gear-fill mr-1"></i> [[Fields]]</a>
+			#end
     </div>
     #end
     </form>
