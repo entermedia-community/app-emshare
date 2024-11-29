@@ -783,10 +783,12 @@ function intializeUI() {
 	lQuery("form.checkCloseDialog").livequery(function () {
 		var modal = $(this).closest(".modal");
 		if (modal.length) {
-			modal.modal({
-				backdrop: "static",
-				keyboard: false,
-			});
+			if (typeof modal.modal == "function") {
+				modal.modal({
+					backdrop: "static",
+					keyboard: false,
+				});
+			}
 			modal.on("click", function (e) {
 				e.stopPropagation();
 				e.stopImmediatePropagation();
@@ -1350,31 +1352,6 @@ function intializeUI() {
 		saveProfileProperty(propertyname, newvalue, function () {
 			$(window).trigger("checkautoreload", [input]);
 		});
-	});
-
-	lQuery(".fieldsPicker").livequery("click", function (e) {
-		if (e.target !== this) {
-			return;
-		}
-		$(this).fadeOut(function () {
-			$(this).replaceWith("<div id='fieldsPicker'></div>");
-			$(".fieldsParent").trigger("refreshFields");
-			$(".fieldsPicker").each(function () {
-				$(this).remove();
-			});
-		});
-	});
-	lQuery(".close-fp").livequery("click", function (e) {
-		e.stopPropagation();
-		$(this)
-			.closest(".fieldsPicker")
-			.fadeOut(function () {
-				$(this).replaceWith("<div id='fieldsPicker'></div>");
-				$(".fieldsParent").trigger("refreshFields");
-				$(".fieldsPicker").each(function () {
-					$(this).remove();
-				});
-			});
 	});
 
 	lQuery(".resetsearch").livequery("click", function () {
@@ -3122,10 +3099,6 @@ $(window).on("checkautoreload", function (event, indiv) {
 			});
 		});
 	}
-});
-
-lQuery(".fieldsParent").livequery("refreshFields", function () {
-	autoreload($(this));
 });
 
 function isInViewport(cell) {
