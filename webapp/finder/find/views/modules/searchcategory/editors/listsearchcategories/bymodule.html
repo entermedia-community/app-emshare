@@ -6,11 +6,24 @@
 			#set($url = "$searchhome/searchalltypes.html?field=searchcategory&operation=exact&searchcategory.value=$!searchcategory.id")
 
 			<a href="$url" class="ajax btn btn-wide auto-active-link"  data-targetdivinner="searchcategoryresults"  data-updateurl="true" data-oemaxlevel="1" data-hidenavigation="true">
-			#set($moduleicon = "grid")
-			#if ($module.moduleicon)
-				#set($moduleicon = $module.moduleicon)
-			#end
-				<i class="bi bi-$!{moduleicon} module-icon ns"></i> <span>$!{hits.size()} Results </span>
+				$context.putPageValue("thumbsize", "crop" )
+				#set( $primarymedia = $mediaarchive.getCachedAsset($searchcategory.primarymedia))
+				#ifnotnull($primarymedia)
+					$context.putPageValue("hit", $primarymedia) 
+					$context.putPageValue("asset", $primarymedia)
+					#set( $assetrendertype = $mediaarchive.getMediaRenderType($primarymedia.fileformat))
+					<div class="category-breadcrumb-img">
+						$pages.include("${searchhome}/thumbnails/${assetrendertype}.html", $context)
+					</div>
+				#end
+				#ifnull($primarymedia)
+					#set($moduleicon = "grid")
+					#if ($module.moduleicon)
+						#set($moduleicon = $module.moduleicon)
+					#end
+					<i class="bi bi-$!{moduleicon} module-icon ns"></i>
+				#end
+				<span>#text($searchcategory) ($!{hits.size()})</span>
 			</a>
 		</div>
 		#end

@@ -2,39 +2,23 @@
 <div class="category-breadcrumb #if($searchcategory) category-breadcrumb-tall #end">
 	<div class="d-flex justify-content-between">
 		<div class="d-flex category-breadcrumb-name">
-			<a href="$!{siteroot}$apphome/views/modules/searchcategory/index.html" title="[[All Categories]]"><i class="bi bi-$module.moduleicon mr-1"></i> [[All]] #text($module)</a>
-
-			#if($searchcategory)
-				<i class="bi bi-chevron-right ns"></i>				
-				$context.putPageValue("thumbsize", "crop" )
-				#set( $primarymedia = $mediaarchive.getCachedAsset($searchcategory.primarymedia))
-
-				#ifnotnull($primarymedia)
-					$context.putPageValue("hit", $primarymedia) 
-					$context.putPageValue("asset", $primarymedia)
-					#set( $assetrendertype = $mediaarchive.getMediaRenderType($primarymedia.fileformat))
-					<div class="category-breadcrumb-img">
-						$pages.include("${searchhome}/thumbnails/${assetrendertype}.html", $context)
-					</div>
+			#ifnull($searchcategory)
+				#if($permissions.can($moduleid, "create") && $moduleid!="faceprofilegroup" && $moduleid!="order")
+				#set($addurl = "${edithome}/tabs/index.html?edit=true&addnew=true&viewid=$!{moduleid}addnew")
+					<a class="emdialog focused-btn border-left" href="$addurl" title="[[Add New Record]]">
+						<i class="bi bi-plus-lg mr-1"></i> [[Create New]]
+					</a>
 				#end
-
-				<p class="m-0">
-					#ifnull($primarymedia)
-						<i class="bi bi-$module.moduleicon mr-1 ml-3"></i> 
-					#end
+			#end
+			#if($searchcategory)	
+				<p class="m-0"> 
+					<i class="bi bi-$module.moduleicon mr-1 ml-3"></i>  
 					#text($searchcategory) <span >($!hits.size())</span>
 				</p>
 			#end
 		</div>
 
 		<div class="d-flex">
-			#if($permissions.can($moduleid, "create") && $moduleid!="faceprofilegroup" && $moduleid!="order")
-				#set($addurl = "${edithome}/tabs/index.html?edit=true&addnew=true&viewid=$!{moduleid}addnew")
-				<a class="emdialog border-left" href="$addurl" title="[[Add New Record]]">
-					<i class="bi bi-plus-lg mr-1"></i> [[Create New]]
-				</a>
-			#end
-			
 			<a href="$searchhome/filters/dialogsort.html" 
 				class='emdialog emsort #if($selectedpreference) closed #end border-left'
 				data-dialogid="sortdialog"
