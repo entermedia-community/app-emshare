@@ -38,6 +38,10 @@
 			var resultsdiv = editdiv.find(".resultsdiv");
 
 			if (resultsdiv.length > 0) {
+				if(resultsdiv.length > 1)
+				{
+					console.error("Should not be finding more than one resultdiv ",resultsdiv);
+				}
 				var otherdata = resultsdiv.cleandata();
 				options = {
 					...otherdata,
@@ -56,8 +60,12 @@
 			link = initiator.data("url");
 		}
 		var olddialog = initiator.closest(".modal");
-		if (olddialog.length !== 0 && olddialog.attr("id") == id) {
-			options.oemaxlevel = 1;
+		if (olddialog.length !== 0 && olddialog.attr("id") == id) { //Try and reuse the dialog 
+			var hasbackbutton = modaldialog.find(".enablebackbtn"); //Remove existing layouts if using backbutton
+			if (hasbackbutton.length !== 0 )
+			{
+				options.oemaxlevel = 1;
+			}
 		}
 
 		//NOT USED. Delete
