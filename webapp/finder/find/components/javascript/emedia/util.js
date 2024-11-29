@@ -236,10 +236,15 @@ function adjustDataManagerTable() {
 	}
 }
 
+var resizeTimer = null; //Prevent back to back resize events, only run the last trigger
 jQuery(window).on("resize", function () {
-	adjustDataManagerTable();
-	resizeSearchCategories();
-	resizeColumns();
+	resizeTimer && clearTimeout(resizeTimer);
+	resizeTimer = setTimeout(function () {
+		console.log("resize", Date.now());
+		adjustDataManagerTable();
+		resizeSearchCategories();
+		resizeColumns();
+	}, 50);
 });
 
 adjustZIndex = function (element) {
