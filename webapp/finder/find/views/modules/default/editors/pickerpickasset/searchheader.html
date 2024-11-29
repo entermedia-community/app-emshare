@@ -3,12 +3,13 @@
 <div class="entity-action-header">
 	<div class="w-100 d-flex align-items-center justify-content-between">
 		<h3>
+
 			#set($moduleicon = "box")
 			#ifnotnull($submodule.moduleicon)
 				#set($moduleicon = $submodule.moduleicon)
 			#end	
 			<i class="ns bi bi-$moduleicon module-icon" style="font-size: 0.8em;"></i> 
-			#if($categoryid && $categoryid != "")
+			#if($categoryid)
 				#text($entity) <small>($hits.size())</small>
 			#else
 				[[All Files]] <small>($hits.size())</small>
@@ -25,6 +26,17 @@
 			data-pickertargetfield="$pickertargetfield">
 			[[Show All Files]]
 		</a>
+		#else
+			#set( $originalcategoryid = $context.getRequestParameter("originalcategoryid"))
+			#if($originalcategoryid && $originalcategoryid != "")
+			<a href="$edithome/index.html" class="ajax btn btn-accent" 
+				data-targetdiv="pickersearchresults" 
+				data-oemaxlevel="1" 
+				data-categoryid="$originalcategoryid"
+				data-pickertargetfield="$pickertargetfield">
+				[[Show Folder Files]]
+			</a>
+			#end		
 		#end
 	</div>
 

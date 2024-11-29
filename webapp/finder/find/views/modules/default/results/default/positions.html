@@ -21,18 +21,6 @@
 #set($updateurl = $page.isPropertyTrue("updateurl", true))
 
 #set($resultsPage = "${searchhome}/showpage.html")
-#if($module.id=="asset")
-	#if($categoryid)
-		#if(!$category)
-			#set($category = $mediaarchive.getCachedData("category", $categoryid))
-		#end
-	#end
-	#if($updateurl)
-		#set($resultsPage = "${searchhome}/${categoryid}/#dash($category).html")
-		#set($oemaxlevel = "2")
-	#end
-#end
-
 #set($resultsPage = "$resultsPage?$!{module.id}hitssessionid=$!hits.sessionId")
 #set($resultsPage = "$resultsPage&$!{hits.getSearchType()}pageposition")
 

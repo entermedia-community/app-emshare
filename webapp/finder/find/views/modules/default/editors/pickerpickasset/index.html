@@ -1,5 +1,6 @@
 #set( $pickertargetfield = $context.getRequestParameter("pickertargetfield"))
 #set( $categoryid = $context.getRequestParameter("categoryid"))
+#set( $originalcategoryid = $context.getRequestParameter("originalcategoryid"))
 
 #set($pickertarget = $context.getRequestParameter("pickertarget")) ##? This still useful?
 
@@ -9,7 +10,11 @@
 	data-entitymoduleid="$!entitymodule.id"
 	data-entitymoduleviewid="$!entitymoduleviewid"
 	data-oemaxlevel="1"
-	data-categoryid="$categoryid"
+	data-categoryid="$!categoryid"
+	#if( $categoryid)
+		#set($originalcategoryid = $categoryid)
+	#end
+	data-originalcategoryid="$!originalcategoryid"
 
 	data-edithome="$!{edithome}"
 	data-targetdiv="pickersearchresults"

@@ -110,39 +110,22 @@ jQuery(document).ready(function (url, params) {
 	lQuery("select#selectresultview").livequery(function () {
 		var select = $(this);
 		var resultsdiv = select.closest(".resultsdiv");
-		if (!resultsdiv) {
-			resultsdiv = select.closest("#resultsdiv");
-		}
 
 		select.on("change", function () {
-			var options = resultsdiv.data();
-
 			var searchhome = resultsdiv.data("searchhome");
-			//var moduleid = resultsdiv.data("moduleid");
-			var originalhitsperpage = resultsdiv.data("hitsperpage");
-			var targetdiv = resultsdiv.data("targetdiv");
-
-			var oemaxlevel = select.data("oemaxlevel"); //could be custom
-
-			if (oemaxlevel) {
-				options.oemaxlevel = oemaxlevel;
-			}
-		
 			var	href = searchhome +	"/changeresultview.html";
+			resultsdiv.data("url",href);
 
 			var resultviewselected = select.val();
-			options.resultview = resultviewselected;
-			if (
-				resultviewselected == "stackedgallery" ||
-				resultviewselected == "brickvertical"
-			) {
-				options.page = "1";
+			resultsdiv.data("resultview", resultviewselected);
+			
+			if (resultviewselected == "stackedgallery" ||resultviewselected == "brickvertical")
+			{
+				resultsdiv.data("page","1");
 			}
 
-			$.get(href, options, function (data) {
-				$("#" + targetdiv).replaceWith(data);
-				$(window).trigger("resize");
-			});
+			resultsdiv.runAjax();
+			
 		});
 	});
 
@@ -150,44 +133,38 @@ jQuery(document).ready(function (url, params) {
 		var select = $(this);
 
 		var resultsdiv = select.closest(".resultsdiv");
-		if (!resultsdiv) {
-			resultsdiv = select.closest("#resultsdiv");
-		}
-
+	
 		var dropdownParent = select.data("dropdownparent");
 		if (dropdownParent && $("#" + dropdownParent).length) {
 			dropdownParent = $("#" + dropdownParent);
 		} else {
 			dropdownParent = $(this).parent();
 		}
-		var parent = select.parents(".modal-content");
+		var parent = select.closest(".modal-content");
 		if (parent.length) {
 			dropdownParent = parent;
 		}
 
 		select.select2({
 			tags: true,
-			dropdownParent: dropdownParent,
+			dropdownAutoWidth: true 
 		});
 
-		select.on("change", function () {
-			var options = resultsdiv.cleandata();
-
-			var searchhome = resultsdiv.data("searchhome");
-			var moduleid = resultsdiv.data("moduleid");
-			var originalhitsperpage = resultsdiv.data("hitsperpage");
-			var targetdiv = resultsdiv.data("targetdiv");
-
-			var oemaxlevel = select.data("oemaxlevel"); //could be custom
-			if (oemaxlevel === undefined) {
-				 oemaxlevel = 1;
+		select.on("change", function () 
+		{
+			if (resultsdiv.data("oemaxlevel") === undefined) 
+			{
+				 resultsdiv.data("oemaxlevel","1");
 			}
-			options.oemaxlevel = oemaxlevel;
+		
+			var searchhome = resultsdiv.data("searchhome");
 			var	href = searchhome + "/changehitsperpage.html";
+			resultsdiv.data("url",href);
 
 			// the selected option
-			options.hitsperpage = select.val();
-
+			resultsdiv.data("hitsperpage", select.val() );
+			resultsdiv.runAjax();
+/*
 			$.get(href, options, function (data) {
 				$("#" + targetdiv).replaceWith(data);
 				$(window).trigger("resize");
@@ -197,6 +174,7 @@ jQuery(document).ready(function (url, params) {
 					minimumResultsForSearch: Infinity,
 				});
 			});
+*/			
 		});
 	});
 
