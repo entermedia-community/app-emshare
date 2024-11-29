@@ -9,10 +9,18 @@
 
 #set($searchcategoryid = $context.getRequestParameter("searchcategoryid"))
 
+#ifnotnull($searchcategoryid)
+		#set( $searchcategory = $mediaarchive.getCachedData("searchcategory",$searchcategoryid) )
+		$context.putPageValue("searchcategory", $searchcategory)
+#end
+
 <div id="$edithomeid"  
 	class="editdiv #ifnull($searchcategoryid)listsearchcategories #end #ifnotnull($searchcategoryid) listofentities #end" 
 	data-edithome="${edithome}"
 	data-edithomeid="${edithomeid}"
+	
+	data-entityid="$!searchcategory.id"
+	data-entitymoduleid="searchcategory"
 >
 
 	#set($searchhome = "$apphome/views/modules/modulesearch/results/searchcategory")
@@ -29,15 +37,11 @@
 
 	#if($searchcategoryid)
 
-		#set( $searchcategory = $mediaarchive.getCachedData("searchcategory",$searchcategoryid) )
-		$context.putPageValue("searchcategory", $searchcategory)
-		$context.putPageValue("topmoduleid", "searchcategory")
-
+		##$context.putPageValue("topmoduleid", "searchcategory")
 		$context.putPageValue("searchhome", $searchhome)
-		
 		#set($url = "$searchhome/searchalltypes.html?field=searchcategory&operation=exact&searchcategory.value=$!searchcategoryid")
-		
 		$pages.include($url,$context)
+		
 	#else
 	
 		$context.removeSessionValue("organizedModules")

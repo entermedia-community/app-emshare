@@ -110,7 +110,7 @@
 		}
 		if (form.data("includesearchcontext") == true) 
 		{
-			var editdiv = form.closest(".editdiv"); //This is used for lightbox tree opening
+			var editdiv = targetdiv.closest(".editdiv"); //This is used for lightbox tree opening
 			var resultsdiv = editdiv.find(".resultsdiv");
 
 			if (resultsdiv.length > 0) {

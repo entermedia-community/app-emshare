@@ -1,3 +1,7 @@
+#set( $moduleid = $hit.entitysourcetype )
+#ifnotnull($moduleid)
+	#set( $module = $mediaarchive.getCachedData("module",$moduleid) ) 	
+#end
 	 
 ##look for primaryimage
 #if($entity.primarymedia)
@@ -21,14 +25,13 @@
 		#end
 	#end
 #end	
-			   	
+
 #set($moduleicon = "grid")
 #if ($module.moduleicon)
 	#set($moduleicon = $module.moduleicon)
 #end 
 
 #set( $entityid = $hit.id )
-#set( $moduleid = $hit.entitysourcetype )
 
 <div class="resultsdivdata emfolder-wrapper emgrid-type-$!moduleid entitycontainer entity$!moduleid$!entityid" 
 	id="emgridentity$!moduleid$!entityid"

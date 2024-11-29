@@ -11,8 +11,32 @@ $context.putPageValue("viewid", $viewid)
 	$context.putPageValue("viewpath", "${module.id}/${viewid}")
 #end
 
+#ifnull($resultview)
+	#set($resultview = $context.getRequestParameter("${moduleid}resultview"))
+#end
+
+#ifnull($resultview )
+	#set($resultview = $userprofile.get("${moduleid}resultview"))
+#end	
+#ifnull($resultview)
+	#set($resultview = $content.get("${moduleid}resultview"))
+#end
+#ifnull($resultview)
+	#set($resultview = $context.getRequestParameter("resultview"))
+#end
+#ifnull($resultview)
+	#set($resultview = $content.resultview)
+#end
+#ifnull($resultview)
+	#set($resultview = $module.get("moduleresultsview"))
+#end
+#ifnull($resultview)
+	#set($resultview = "table")
+#end
+
+
 #set($searchhomeid = $page.get("searchhomeid") )
-<div id="${searchhomeid}" 
+<div id="$!{searchhomeid}" 
 	class="tableresults resultsdiv" 
 	data-${module.id}hitssessionid="$!hits.getSessionId()" 
 	data-searchhome="$!{searchhome}"
@@ -25,7 +49,7 @@ $context.putPageValue("viewid", $viewid)
 		data-entityid="${entity.id}"
 		data-entitymoduleviewid="$!entitymoduleviewid"  ##this is used in sub-modules to keep the views right
 	#end
-
+	data-${moduleid}resultview="$resultview"
 	data-pagenum="$!hits.getPage()" 
 	data-totalpages="$!hits.getTotalPages()"
 	data-viewid="$!viewid"
@@ -44,26 +68,6 @@ $context.putPageValue("viewid", $viewid)
 		#set($nodeID = $context.getRequestParameter("nodeID"))
 		$context.putPageValue("nodeID",$nodeID)
 	#end
-	
-	
-	
-	#set($resultview = $userprofile.get("${moduleid}resultview"))
-	#if(!$resultview)
-		#set($resultview = $content.get("${moduleid}resultview"))
-	#end
-	#if(!$resultview)
-		#set($resultview = $context.getRequestParameter("resultview"))
-	#end
-	#if(!$resultview)
-		#set($resultview = $content.resultview)
-	#end
-	#if(!$resultview)
-		#set($resultview = $module.get("moduleresultsview"))
-	#end
-	#if(!$resultview)
-		#set($resultview = "table")
-	#end
-
 	
 	$context.putPageValue("searchtype", $moduleid)
 	$context.putPageValue("resultview",$resultview)
