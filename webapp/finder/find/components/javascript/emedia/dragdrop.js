@@ -10,8 +10,12 @@ var currentlyOver = null;
 function handleDroppableOver(_, ui) {
 	currentlyOver = $(this).parent().attr("id");
 	$(this).addClass("dragoverselected");
-	if ($(".assetdroppable.ui-droppable-hover").length > 0) return;
-	ui.helper.css("transform", "scale(0.25)");
+	if (
+		$(".lightboxdropasset.ui-droppable-hover").length > 0 ||
+		$(".categorydroparea.ui-droppable-hover").length > 0
+	) {
+		ui.helper.css("transform", "scale(0.25)");
+	}
 }
 
 function handleDroppableOut(_, ui) {

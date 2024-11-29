@@ -781,17 +781,17 @@ function intializeUI() {
 	}
 
 	lQuery("form.checkCloseDialog").livequery(function () {
-		var m = $(this).closest(".modal");
-		if (m) {
-			m.modal({
+		var modal = $(this).closest(".modal");
+		if (modal.length) {
+			modal.modal({
 				backdrop: "static",
 				keyboard: false,
 			});
-			m.on("click", function (e) {
+			modal.on("click", function (e) {
 				e.stopPropagation();
 				e.stopImmediatePropagation();
 				if (e.currentTarget === e.target) {
-					confirmModalClose(m);
+					confirmModalClose(modal);
 				}
 			});
 		}
