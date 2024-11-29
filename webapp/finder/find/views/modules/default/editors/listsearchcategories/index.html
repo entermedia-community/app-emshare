@@ -23,12 +23,10 @@
 	data-entitymoduleid="searchcategory"
 >
 
-	#set($searchhome = "$apphome/views/modules/modulesearch/results/searchcategory")
-
 	<div class="clickableresultlist"
 		data-${module.id}hitssessionid="$!hits.getSessionId()"
 		#ifnull( $searchcategoryid)
-			#set($previewurl = "$apphome/views/modules/searchcategory/editors/listsearchcategories/index.html")
+			#set($previewurl = "$edithome/index.html")
 			data-url= "$previewurl"
 			data-targetdiv="$edithomeid"
 			data-oemaxlevel="1"
@@ -37,19 +35,27 @@
 
 	#if($searchcategoryid)
 
-		##$context.putPageValue("topmoduleid", "searchcategory")
+		##Search across modules for this category
+		#set($searchhome = "$apphome/views/modules/modulesearch/results/searchcategory")
 		$context.putPageValue("searchhome", $searchhome)
-		#set($url = "$searchhome/searchalltypes.html?field=searchcategory&operation=exact&searchcategory.value=$!searchcategoryid")
+		
+		#set( $module = $mediaarchive.getCachedData("module","modulesearch") )
+		$context.putPageValue("module", $module)
+
+		##Since I have not yet searched for modules to build side menu I have to do this in special xconf:		
+		#set($url = "$searchhome/searchalltypes.html?field=searchcategory&operation=exact&searchcategory.value=$!searchcategoryid&resultviewmodulesearch=grid")
 		$pages.include($url,$context)
 		
 	#else
 	
+		##Search for searchcategories 
+		#set($searchhome = "$apphome/views/modules/searchcategory/results/searchcategory")
 		$context.removeSessionValue("organizedModules")
 	
 		$context.putPageValue("searchhome", $searchhome)
 		$pages.include("${edithome}/categorybreadcrumb.html", $context)
 		
-		$pages.include("${searchhome}/index.html",$context)
+		$pages.include("${searchhome}/searchinline.html",$context)
 	#end
 	</div>
 </div>
