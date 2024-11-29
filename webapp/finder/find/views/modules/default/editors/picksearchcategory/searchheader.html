@@ -1,22 +1,21 @@
 <div class="entity-action-header">
-		<h3>
-			#set($moduleicon = "box")
-			#ifnotnull($submodule.moduleicon)
-				#set($moduleicon = $submodule.moduleicon)
-			#end	
-			<i class="bi bi-$moduleicon module-icon" style="font-size: 0.8em;;"></i> 
-			#text($module) <small>($hits.size())</small>
-		</h3>
+	<h3>
+		#set($moduleicon = "box")
+		#ifnotnull($submodule.moduleicon)
+			#set($moduleicon = $submodule.moduleicon)
+		#end	
+		<i class="bi bi-$moduleicon module-icon" style="font-size: 0.8em;;"></i> 
+		#text($module) <small>($hits.size())</small>
+	</h3>
 
 	#if( $copyinghits || $pickedassetid)
-	<div class="alert alert-info">
-		
-		#if( $copyinghitssessionid && $copyinghits.getSelectionSize() > 0)	
-		  		<strong>[[Adding]]</strong> $copyinghits.getSelectionSize() [[items]]
-		#elseif($pickedassetid)	
+		<div class="alert alert-info">
+			#if( $copyinghitssessionid && $copyinghits.getSelectionSize() > 0)	
+				<strong>[[Adding]]</strong> $copyinghits.getSelectionSize() [[items]]
+			#elseif($pickedassetid)	
 				<strong>[[Adding]]</strong> 1 [[asset]]
-		#end	
-	</div>
+			#end	
+		</div>
 	#end
 	
 	
@@ -25,19 +24,19 @@
 	#if($moduleid != "asset")
 		#if($pickersearchaddnew)
 			#set($addnew = "$apphome/views/modules/${moduleid}/components/entities/addnew.html")
-			<a class="btn btn-lg btn-accent rounded mb-3 ajax float-left" style="min-width: 150px;"
-			data-targetdivinner="pickersearchentities"
-			data-pickertarget="$!pickertarget"
-			data-targettype="$!targettype"
-			data-ajaxreloadtargets="onetomanytab"
-			data-fieldexternalid="$!fieldexternalid"
-			data-fieldexternalvalue="$!fieldexternalvalue"
-			data-oemaxlevel="1"
-			href="$addnew">
-			<i class="bi bi-plus-lg mr-1"></i> [[Create New]]</a>
+			<a class="btn btn-lg btn-accent rounded ajax" style="min-width: 150px;"
+				data-targetdivinner="pickersearchentities"
+				data-pickertarget="$!pickertarget"
+				data-targettype="$!targettype"
+				data-ajaxreloadtargets="onetomanytab"
+				data-fieldexternalid="$!fieldexternalid"
+				data-fieldexternalvalue="$!fieldexternalvalue"
+				data-oemaxlevel="1"
+				href="$addnew">
+				<i class="bi bi-plus-lg mr-1"></i> [[Create New]]
+			</a>
 		#else
 			#set($addnew = "${edithome}/tabs/index.html")
-			
 			#if($pickedassetid)
 				#set($addnew = "${addnew}?edit=true&addnew=true&viewfiles=true&saveaction=addassets&pickedassetid=$!pickedassetid&copyingsearchtype=asset")
 			#elseif($copyingcategoryid)
@@ -47,11 +46,11 @@
 			#else
 				#set($addnew = "${addnew}?edit=true&addnew=true&saveaction=upload")
 			#end
-			<a class="btn btn-lg btn-accent rounded mb-3 emdialog float-righ" style="min-width: 150px;"
-			data-dialogid="addnewentity"
-			href="$addnew">
-			<i class="bi bi-plus-lg mr-1"></i> [[Create New]]</a>
+			<a class="btn btn-lg btn-accent rounded emdialog" style="min-width: 150px;"
+				data-dialogid="addnewentity"
+				href="$addnew">
+				<i class="bi bi-plus-lg mr-1"></i> [[Create New]]
+			</a>
 		#end 
 	#end
-	<div class="clearfix"></div>
 </div>
