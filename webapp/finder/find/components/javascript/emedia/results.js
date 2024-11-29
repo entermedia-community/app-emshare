@@ -117,7 +117,7 @@ jQuery(document).ready(function (url, params) {
 			resultsdiv.data("url",href);
 
 			var resultviewselected = select.val();
-			resultsdiv.data("resultview", resultviewselected);
+			resultsdiv.data("changeresultview", resultviewselected);
 			
 			if (resultviewselected == "stackedgallery" ||resultviewselected == "brickvertical")
 			{
