@@ -44,32 +44,23 @@
 		var targetdivS = form.data("targetdiv");
 		var targetdiv;
 		var edithomeid = form.data("edithomeid");
-		
-		//TODO: Move all this to a jQuery plugin form.findTargetDiv() 
-		if (edithomeid !== undefined) 
-		{
+
+		//TODO: Move all this to a jQuery plugin form.findTargetDiv()
+		if (edithomeid !== undefined) {
 			targetdiv = $("#" + edithomeid + " ." + targetdivS);
-		}
-		else 
-		{
+		} else {
 			targetdiv = form.closest("." + $.escapeSelector(targetdivS));
 		}
-		if (!targetdiv.length) 
-		{
+		if (!targetdiv.length) {
 			targetdiv = $("#" + $.escapeSelector(targetdivS));
-			console.log("Set edithomeid.");
-		}  
-		if (!targetdiv.length) 
-		{
+		}
+		if (!targetdiv.length) {
 			targetdiv = $("." + $.escapeSelector(targetdivS));
-			console.log("Set edithomeid.");
 		}
-		if (targetdiv.length > 1) 
-		{
-			console.error("Should not have more than one target ",targetdiv);
+		if (targetdiv.length > 1) {
+			console.error("Should not have more than one target ", targetdiv);
 		}
-		if (form.attr("action") == undefined) 
-		{
+		if (form.attr("action") == undefined) {
 			var action = targetdiv.data("saveaction");
 			if (action == undefined) {
 				action = form.data("defaultaction");
@@ -101,7 +92,7 @@
 		var data = {};
 		if (form.data("includeeditcontext") == true) {
 			var edithomeid = form.data("edithomeid");
-			
+
 			var editdiv = $("#" + edithomeid);
 			if (editdiv.length > 0) {
 				var otherdata = editdiv.cleandata();
@@ -113,8 +104,7 @@
 				console.warn("No editdiv found for includeeditcontext");
 			}
 		}
-		if (form.data("includesearchcontext") == true) 
-		{
+		if (form.data("includesearchcontext") == true) {
 			var editdiv = targetdiv.closest(".editdiv"); //This is used for lightbox tree opening
 			var resultsdiv = editdiv.find(".resultsdiv");
 
@@ -128,7 +118,7 @@
 				console.warn("No resultsdiv found for icludesearchcontext");
 			}
 		}
-		
+
 		data.oemaxlevel = oemaxlevel;
 
 		var formmodal = form.closest(".modal");

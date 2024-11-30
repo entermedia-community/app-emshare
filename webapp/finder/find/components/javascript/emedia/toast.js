@@ -18,6 +18,7 @@ $(window).on("showToast", function (_, anchor) {
 	if (!toastMessage) {
 		toastMessage = "Loading...";
 	}
+
 	var toast = $(
 		`<div class="toastContainer" role="alert" data-uid="${uid}">
 			<div class="toastLoader"></div>
@@ -27,14 +28,10 @@ $(window).on("showToast", function (_, anchor) {
 			<div class="toastClose">&times;</div>
 		</div>`
 	);
-	var hasErrorToast = $(".toastList").find(".toastError").length > 0;
-	if (hasErrorToast) {
-		console.error("Additional error toast:", toastMessage);
-	} else {
-		toastTO = setTimeout(function () {
-			$(".toastList").append(toast);
-		}, delay);
-	}
+
+	toastTO = setTimeout(function () {
+		$(".toastList").append(toast);
+	}, delay);
 });
 
 lQuery(".toastClose").livequery("click", function () {
@@ -49,6 +46,14 @@ customToast = function (message, options = {}) {
 	var autohide = options.autohide === undefined ? true : options.autohide;
 	var autohideDelay = options.autohideDelay || 3000;
 	var positive = options.positive === undefined ? true : options.positive;
+
+	if (!positive) {
+		if ($(".toastList").find(".toastError").length > 0) {
+			console.error("Additional error toast:", message);
+			return;
+		}
+	}
+
 	var btnText = options.btnText;
 	var btnClass = options.btnClass || "";
 	var icon = options.icon;
@@ -66,6 +71,7 @@ customToast = function (message, options = {}) {
 			<div class="toastClose">&times;</div>
 		</div>`
 	);
+
 	$(".toastList").append(toast);
 	if (autohide) {
 		setTimeout(function () {
