@@ -2284,14 +2284,22 @@ function intializeUI() {
 		var targetdiv = toggler.data("targetdiv");
 		var sidebar = toggler.data("sidebar");
 		options["propertyfield"] = "sidebarcomponent";
-		options["module"] = $("#applicationcontent").data("moduleid");
+		var moduleid = $("#applicationcontent").data("moduleid");
+		options["module"] = moduleid; 
 		options["sidebarcomponent.value"] = sidebar;
 		var url;
 		if (options["contenturl"] != undefined) {
 			url = options["contenturl"];
 			targetdiv = $("#" + targetdiv);
 		} else {
-			url = apphome + "/components/sidebars/index.html";
+			if( moduleid !== undefined)
+			{
+				url = `${apphome}/views/modules/${moduleid}/components/sidebars/index.html`;
+			}
+			else
+			{
+				url = apphome + "/components/sidebars/index.html";
+			}
 			targetdiv = findClosest(toggler, "#" + targetdiv);
 		}
 
