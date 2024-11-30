@@ -1,13 +1,9 @@
-#ifnull($entitymoduleviewid) 
-	#set($entitymoduleviewid = $context.getRequestParameter("entitymoduleviewid"))
-	
-#end
-#set($viewdata = $mediaarchive.getCachedData("view",$entitymoduleviewid))
 
-<div id="$edithomeid" class="editdiv topmodules" 
+
+<div id="$edithomeid" class="editdiv topmodules dataeditedreload" 
 	data-edithome="${edithome}"
 	data-edithomeid="${edithomeid}"
-	
+	data-autoreloadurl="${edithome}/index.html" ##Reload when someone edits data. .dataeditedreload is reloaded by most forms
 >
 	
 	#set($searchhome = "$apphome/views/modules/${module.id}/results/default")
@@ -17,8 +13,13 @@
 	data-${module.id}hitssessionid="$!hits.getSessionId()"
 	data-url= "${apphome}/views/modules/${module.id}/editors/default/tabs/index.html"
 >
-	
-	$pages.include("${searchhome}/index.html?$!args",$context)
+#ifnull($hits)
+	$pages.include("${searchhome}/searchinclude.html",$context)
+#end
+
+#ifnotnull($hits)	
+	$pages.include("${searchhome}/index.html",$context)   ##This hits came from default/index.xconf
+#end
 
 </div>
 		

@@ -97,10 +97,19 @@
 
 		var targetdivS = anchor.data("targetdiv");
 
-		var edithomeid = options["edithomeid"];
 		if (targetdiv == false) {
-			if (edithomeid !== undefined) {
-				targetdiv = $("#" + edithomeid).find("." + targetdivS);
+			var edithomeid = options["edithomeid"];
+			if (edithomeid !== undefined) 
+			{
+				var parent = $("#" + edithomeid);
+				if( parent.hasClass(targetdivS))
+				{
+					targetdiv = parent;
+				}
+				else
+				{
+					targetdiv = parent.find("." + targetdivS);
+				}
 			} else {
 				targetdiv = anchor.closest("." + $.escapeSelector(targetdivS));
 			}
