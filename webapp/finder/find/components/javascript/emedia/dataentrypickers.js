@@ -384,7 +384,7 @@ lQuery(".pickerresults.entitypickersearchcategory .resultsdivdata").livequery(
 );
 
 
-lQuery(".pickerresults.pickercopycategoryto .resultsdivdata").livequery(
+lQuery(".editdiv.pickercopycategoryto .resultsdivdata").livequery(
 	"click",
 	function (e) {
 		if (!isValidTarget(e)) {
@@ -417,7 +417,7 @@ lQuery(".pickerresults.pickercopycategoryto .resultsdivdata").livequery(
 
 
 //CB: Good assign assets to a selected entity
-lQuery(".pickerresults.pickercopyassetsto .resultsdivdata").livequery(
+lQuery(".editdiv.entitypickerassets .resultsdivdata").livequery(
 	"click",
 	function (e) {
 		if (!isValidTarget(e)) {
@@ -557,6 +557,7 @@ showmodal = function (emselecttable, url) {
 
 	var options = emselecttable.data();
 	modaldialog.load(url, options, function () {
+		
 		$(".modal-lg").css("min-width", width + "px");
 		modaldialog.modal({
 			keyboard: true,
