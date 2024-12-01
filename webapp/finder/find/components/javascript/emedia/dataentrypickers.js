@@ -15,6 +15,7 @@ function isValidTarget(clickEvent) {
 	return true;
 }
 
+//Not used? Or used in admin area?
 lQuery(".emrowpicker table td").livequery("click", function (e) {
 	if (!isValidTarget(e)) {
 		return true;
@@ -60,6 +61,7 @@ lQuery(".emrowpicker table td").livequery("click", function (e) {
 	}
 });
 
+//OLD select table. Not used
 lQuery(".emselectable table td").livequery("click", function (e) {
 	if (!isValidTarget(e)) {
 		return true;
@@ -381,6 +383,39 @@ lQuery(".pickerresults.entitypickersearchcategory .resultsdivdata").livequery(
 	}
 );
 
+
+lQuery(".pickerresults.pickercopycategoryto .resultsdivdata").livequery(
+	"click",
+	function (e) {
+		if (!isValidTarget(e)) {
+			return true;
+		}
+
+		var clicked = $(this);
+
+		var row = $(clicked.closest(".resultsdivdata"));
+		var rowid = row.data("dataid");
+		var pickerresults = clicked.closest(".pickerresults");
+		var clickurl = pickerresults.data("clickurl");
+		var options = pickerresults.cleandata();
+		options.oemaxlevel = 1;
+		options.id = rowid;
+		$(window).trigger("showToast", [pickerresults]);
+		var toastUid = pickerresults.data("uid");
+		jQuery.ajax({
+			url: clickurl,
+			data: options,
+			success: function (data) {
+				//show toast or reload page or both
+				pickerresults.data("uid", toastUid);
+				$(window).trigger("successToast", [pickerresults]);
+				closeemdialog(clicked.closest(".modal"));
+			},
+		});
+	}
+);
+
+
 //CB: Good assign assets to a selected entity
 lQuery(".pickerresults.pickercopyassetsto .resultsdivdata").livequery(
 	"click",
@@ -407,9 +442,9 @@ lQuery(".pickerresults.pickercopyassetsto .resultsdivdata").livequery(
 				//show toast or reload page or both
 				pickerresults.data("uid", toastUid);
 				$(window).trigger("successToast", [pickerresults]);
+				closeemdialog(clicked.closest(".modal"));
 			},
 		});
-		closeemdialog(clicked.closest(".modal"));
 	}
 );
 
