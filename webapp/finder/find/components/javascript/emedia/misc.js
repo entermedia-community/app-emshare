@@ -3181,7 +3181,6 @@ lQuery(".entityNavHistory").livequery(function () {
 
 lQuery(".entity-tab-content.overflow-x").livequery("scroll", function (event) {
 	if (event.shiftKey) {
-		console.log(event.originalEvent.deltaY);
 		if (event.originalEvent.deltaY > 0) {
 			event.preventDefault();
 			$(this).scrollLeft($(this).scrollLeft() - 100);
