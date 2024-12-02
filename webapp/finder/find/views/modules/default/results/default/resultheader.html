@@ -95,9 +95,6 @@ $context.putPageValue("entityrendertype", $entityrendertype)
 				</a>
 				<ul class="dropdown-menu">
 				
-					<li class="dropdown-submenu">
-					<a class="dropdown-item  dropdown-toggle" href="#" data-bs-toggle="dropdown">[[Select]]</a>
-						<ul class="submenu dropdown-menu">
 							<li>
 						<a class="dropdown-item  selectpage" 
 						href="${searchhome}/togglepage.html"
@@ -125,8 +122,6 @@ $context.putPageValue("entityrendertype", $entityrendertype)
 						data-includeeditcontext="true"
 						title="[[Deselect all results]]">[[Select None]]</a>
 						</li>
-					</ul>
-					</li>	
 					
 				#if( $!hits.getSelectionSize() > 0)
 					
@@ -279,7 +274,9 @@ $context.putPageValue("entityrendertype", $entityrendertype)
 					<li class="resultsnavitem rpp" title="[[Results per page]]">
 						#set( $currenthitsperpage = $hits.getHitsPerPage())
 						#set($hitcountoptions = $mediaarchive.getList("hitcount"))
-						<select class="form-control hitsperpagechange" id="hitsperpagechange$!{moduleid}">
+						<select class="form-control select2 hitsperpagechange" 
+								id="hitsperpagechange$!{moduleid}"
+								data-allowclear="false">
 							#foreach($ho in $hitcountoptions)
 								<option value="$ho.id" #if($currenthitsperpage==$ho.id) selected="selected"#end>#text($ho)</option>
 							#end	

@@ -8,25 +8,18 @@ $context.putPageValue("componenthome", $componenthome)
 
 #if( !$category)
 	#set($categoryid = $context.getRequestParameter("categoryid"))
-	#if(!$categoryid)
-		#set($categoryid = $context.getRequestParameter("rootcategory"))
-	#end
 	#if($categoryid)
 		#set($category = $mediaarchive.getCachedData("category", $categoryid))
 	#end
 #end
 
+
 #if( !$categoryid && $category)
 	#set( $categoryid= $category.getId())
 #end
+
 $context.putPageValue("category", $category)
 $context.putPageValue("categoryid", $categoryid)
-#set($rootcategories = $category.getParentCategories()) 
-
-#set($rootcategory = $context.getRequestParameter("rootcategory"))
-#if(!$rootcategory)
-	#set( $rootcategory = $categoryid)
-#end
 
 #set($resultview = $userprofile.get("assetresultview"))
 
@@ -35,22 +28,11 @@ $context.putPageValue("maintargetdiv", $maintargetdiv)
 
 $context.putPageValue("dialogresults", true)
 
-#ifnull($lightboxassetsresults)
-	#set($lightboxassetsresults = $context.getRequestParameter("lightboxassetsresults"))
-#end
-#ifnull($lightboxid)
-	#set($lightboxid = $context.getRequestParameter("lightboxid"))
-#end
 
-<div id="$edithomeid" class="emgridcontainer">
+<div id="categorywithtree" class="emgridcontainer">
 	<div class="emgrid-module emgrid-box emgrid-module-asset h-100">
-		$context.putPageValue("rootcategory", $rootcategory)
-		$context.putPageValue("categoryid", $rootcategory)
-
-
-		#if($categoryid != $rootcategory)
-			$context.putPageValue("selectednodes", $categoryid)
-		#end
+		
+		$context.putPageValue("selectednodes", $categoryid)
 		
 		#set($canupload = false)
 		#if($canviewupload)
@@ -105,13 +87,14 @@ $context.putPageValue("dialogresults", true)
 						
 						<div class="assetdropcategory dialogdroppable left-foldertree">
 							<div class="embedmediatree overflow-y">
-								#set( $link = "$componenthome/emtree/tree.html")
-								#set( $link = "${link}?dialogentitymediatreeroot=$rootcategory&treename=dialogentitymediatree&editabletree=true&targetdivsearch=$!searchhomeid" )
-								#set( $link = "${link}&maintargetdiv=$!maintargetdiv&targetdiv=$!searchhomeid&maxlevelclick=1&updateAddressBar=false&uploadmaxlevel=1&nodeID=$!{categoryid}&exactsearch=true" )
-								#set( $link = "${link}&customurladdmedia=$apphome/views/modules/asset/add/entityaddmedia.html" )
-								#set( $link = "${link}&oemaxlevel=1&urlprefix=${searchhome}/search.html" )
-									
-								$pages.include($link, $context)
+							
+							#set( $link = "$componenthome/emtree/tree.html")
+							#set( $link = "${link}?dialogentitymediatreeroot=$categoryid&treename=dialogentitymediatree&editabletree=true&targetdivsearch=$!searchhomeid" )
+							#set( $link = "${link}&maintargetdiv=$!maintargetdiv&targetdiv=$!searchhomeid&maxlevelclick=1&updateAddressBar=false&uploadmaxlevel=1&nodeID=$!{categoryid}&exactsearch=true" )
+							#set( $link = "${link}&customurladdmedia=$apphome/views/modules/asset/add/entityaddmedia.html" )
+							#set( $link = "${link}&oemaxlevel=1&urlprefix=${searchhome}/search.html" )
+								
+							$pages.include($link, $context)
 							</div>
 						</div>
 					</div>
@@ -119,7 +102,7 @@ $context.putPageValue("dialogresults", true)
 			#end
 			<div class="embedmediacol embedmediacol-results overflow-x" #ifnotnull($hidedialogtree)style="width:100%;"#end>
 				<div id="dialogmediaentity" > 
-						$pages.include("${searchhome}/search.html?exactsearch=false", $context)
+						$pages.include("${searchhome}/search.html?categoryid=$categoryid&exactsearch=false", $context)
 				</div>
 			</div>
 		</div>
