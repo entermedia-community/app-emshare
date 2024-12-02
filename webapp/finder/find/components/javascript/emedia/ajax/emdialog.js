@@ -129,7 +129,7 @@
 						backdrop: modalbackdrop,
 					});
 				}
-
+/*  Use editdivid
 				var autosetformtargetdiv = initiatorData["autosetformtargetdiv"];
 				if (autosetformtargetdiv !== undefined) {
 					var tdiv = initiator.closest("." + autosetformtargetdiv);
@@ -137,7 +137,7 @@
 						firstform.data("targetdiv", tdiv.attr("id"));
 					}
 				}
-
+*/
 				// fix submit button
 				var justok = initiatorData["cancelsubmit"];
 				if (justok != null) {
