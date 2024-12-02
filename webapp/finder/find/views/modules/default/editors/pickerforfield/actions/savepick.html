@@ -2,17 +2,23 @@
 #set($detailid = $context.getRequestParameter("pickertargetfield"))
 #set($dataid = $context.getRequestParameter("dataid"))
 
-$entity.addValue($detailid, $dataid)
+#set($detail = $mediaarchive.getSearcher($entitymodule.id).getDetail($detailid))
+#set($ismulti = $detail.isMultiValue())
+#if($ismulti)
+	$entity.addValue($detailid, $dataid)
+#else
+	$entity.setProperty($detailid, $dataid)
+#end
 #set($values = $entity.getValues($detailid))
-
-
-<ul class="entity-value-list" id="entitypicker${detailid}" data-ismulti="$!{ismulti}">
+<div id="entitypicker${detail.id}" data-ismulti="$!{ismulti}">
+<ul class="entity-value-list">
 		#foreach( $type in $values )
 			#set( $row = false )
 			#set( $row = $mediaarchive.getCachedData($module.id, $type ))
 			
 		    #if( $row )
 	   		   #set($namefield = $mediaarchive.getSearcher($module.id).getDetail("name"))
+	   		   
 			   #set($name = $searcherManager.getValue($row, $namefield, $context.getLocale()))
 			    #set($entityid = $row.id)
 			    #set($link = "${edithome}/tabs/index.html?entityid=$entity.id")
@@ -27,6 +33,6 @@ $entity.addValue($detailid, $dataid)
 			    </li>
 		    #end 
 		#end
-		
-		
-</ul>
+</ul>		
+<input type="hidden" name="${detail.id}.size" value="$!{values.size()}" data-entitypicker="entitypicker${detail.id}" class="#if($detail.isRequired()) entityRequired #end" />	
+</div>

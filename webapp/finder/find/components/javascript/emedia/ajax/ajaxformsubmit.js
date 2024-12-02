@@ -33,11 +33,11 @@
 					});
 					var isvalidate = form.valid();
 					if (!isvalidate) {
-						e.preventDefault();
+						//e.preventDefault();
 						return this;
 					}
-				} catch (_) {
-					console.log(e);
+				} catch (_e) {
+					console.log(_e);
 				}
 			}
 		}
