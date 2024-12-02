@@ -2,21 +2,22 @@
 	#set($entitymoduleviewid = $context.getRequestParameter("entitymoduleviewid"))
 	
 #end
-#set($viewdata = $mediaarchive.getCachedData("view",$entitymoduleviewid))
+#set($entitymoduleviewdata = $mediaarchive.getCachedData("view",$entitymoduleviewid))
 
 <div id="$edithomeid" class="editdiv entitysubmodules" 
 	data-entityid="$!entity.id"
 	data-entitymoduleid="$!entitymodule.id"
 	data-entitymoduleviewid="$!entitymoduleviewid"
+	data-url= "${apphome}/views/modules/${entitymodule.id}/editors/entitysubmodules/index.html"
 	data-edithome="${edithome}"
 	data-edithomeid="${edithomeid}"
 >
 	
-	#set($entitymoduleid = $!viewdata.moduleid)
+	#set($entitymoduleid = $!entitymoduleviewdata.moduleid)
 	#set($entitymodule = $mediaarchive.getCachedData("module",$entitymoduleid))
 	$context.putPageValue("entitymodule", $entitymodule)
 	
-	#set($submoduleid = $!viewdata.rendertable)
+	#set($submoduleid = $!entitymoduleviewdata.rendertable)
 
 <div class="clickableresultlist"
 	data-targetdiv="entitydialog"

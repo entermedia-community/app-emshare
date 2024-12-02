@@ -208,16 +208,16 @@ lQuery(".listofentities .resultsdivdata").livequery("click", function (e) {
 });
 
 //To open an entity in a submodule. CB Lose Back button
-lQuery(".submodulepicker .resultsdivdata").livequery("click", function (e) {
+lQuery(".editdiv.pickersubmodules .resultsdivdata").livequery("click", function (e) {
 	if (!isValidTarget(e)) {
 		return true;
 	}
 
 	var row = $(this);
 
-	var submodulepicker = row.closest(".submodulepicker");
-	submodulepicker.data("entityid", row.data("dataid"));
-	submodulepicker.runAjax();
+	var clickableresultlist = row.closest(".clickableresultlist");
+	clickableresultlist.data("id", row.data("dataid")); //They picked an entity
+	clickableresultlist.runAjax();
 });
 //To open an entity in a submodule. CB Lose Back button
 lQuery(".entitysubmodules .resultsdivdata").livequery("click", function (e) {

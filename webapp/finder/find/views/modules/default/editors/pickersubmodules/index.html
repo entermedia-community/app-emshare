@@ -2,23 +2,33 @@
 #set($viewdata = $mediaarchive.getCachedData("view",$entitymoduleviewid))
 #set($submoduleid = $!viewdata.rendertable)
 
+##Edithome might be wrong because the parent has one set
 
-<div id="pickersearchentities" class="editdiv pickerresults entitypickersubmodule" 
+<div id="$!{edithomeid}" class="editdiv pickersubmodules" 
 	data-entityid="$!entity.id"
 	data-entitymoduleid="$!entitymodule.id"
 	data-entitymoduleviewid="$entitymoduleviewid"
-
-	data-oemaxlevel="1"
 	data-edithome="$!{edithome}"
-	data-targetdiv="${module.id}submoduleslist"
-	data-pickertarget="$!pickertarget"
+	data-edithomeid="$!{edithomeid}"
 	data-setpagetitle="[[Select]] #text($module)"
-	data-clickurl="$apphome/views/modules/$module.id/results/submoduleslist/actions/savesubmodule.html"
 
 >
-		
+
+#set($submoduleid = $!entitymoduleviewdata.rendertable)
+
 	<div class="overflow-y">
-		<div id="entitypickerresults"	>
+		<div class="clickableresultlist"
+		data-edithomeid="$!{edithomeid}"
+		data-url= "${apphome}/views/modules/${submoduleid}/editors/pickersubmodules/actions/savesubmodule.html"
+		data-entityid="$!entity.id"
+		data-entitymoduleid="$!entitymodule.id"
+		data-entitymoduleviewid="$entitymoduleviewid"
+		data-toastmessage="[[Saving]]"
+		data-toastsuccess="[[Record Saved]]"
+		data-closedialog="true"
+		data-ajaxreloadtargets="entitysubmodules"  ##this reloads any
+		
+		>
 		
 #set($module = $mediaarchive.getCachedData("module",$submoduleid))
 $context.putPageValue("module", $module)
@@ -29,7 +39,6 @@ $context.putPageValue("searchhome", $searchhome)
 #set($sortby = $!viewdata.rendersort)
 #set($args = "field=$!{entitymodule.id}&$!{entitymodule.id}.value=$!{entity.id}&operation=not")
 #set($args = "$args&sortby=$!sortby&entitymoduleviewid=$entitymoduleviewid")
-
 $pages.include("${searchhome}/search.html?$!args",$context)
 
 
