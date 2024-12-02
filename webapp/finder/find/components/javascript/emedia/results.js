@@ -134,22 +134,13 @@ jQuery(document).ready(function (url, params) {
 
 		var resultsdiv = select.closest(".resultsdiv");
 	
-		var dropdownParent = select.data("dropdownparent");
-		if (dropdownParent && $("#" + dropdownParent).length) {
-			dropdownParent = $("#" + dropdownParent);
-		} else {
-			dropdownParent = $(this).parent();
-		}
-		var parent = select.closest(".modal-content");
-		if (parent.length) {
-			dropdownParent = parent;
-		}
-
+		/*
 		select.select2({
 			tags: true,
 			dropdownAutoWidth: true 
 		});
-
+		*/
+		
 		select.on("change", function () 
 		{
 			if (resultsdiv.data("oemaxlevel") === undefined) 
