@@ -346,7 +346,7 @@ lQuery(".pickerresults.entitypickersubmodule .resultsdivdata").livequery(
 );
 
 //CB: Good assign a searchcategory to some selected entities
-lQuery(".pickerresults.entitypickersearchcategory .resultsdivdata").livequery(
+lQuery(".pickerresults.picksearchcategory .resultsdivdata").livequery(
 	"click",
 	function (e) {
 		if (!isValidTarget(e)) {
@@ -359,27 +359,11 @@ lQuery(".pickerresults.entitypickersearchcategory .resultsdivdata").livequery(
 		var rowid = row.data("dataid");
 		var pickerresults = clicked.closest(".clickableresultlist");
 		pickerresults.data("id", rowid);
-		pickerresults.runAjax();
-
-		/*$(window).trigger("showToast", [pickerresults]);
-		var toastUid = pickerresults.data("uid");
-		jQuery.ajax({
-			url: clickurl,
-			data: options,
-			success: function (data) {
-				//show toast or reload page or both
-				pickerresults.data("uid", toastUid);
-				$(window).trigger("successToast", [pickerresults]);
-			},
-		});*/
-		closeemdialog(clicked.closest(".modal"));
-
-		var originaledithomeid = pickerresults.data("originaledithomeid");
-		var reloaddiv = $(`#${originaledithomeid}`).closest(".topmodulecontainer");
-		reloaddiv.data("includeeditcontext", false);
-		reloaddiv.data("includesearchcontext", true);
-		reloaddiv.data("targetdiv", reloaddiv.attr("id"));
-		reloaddiv.runAjax();
+		
+		pickerresults.runAjax(function(){ //Chain
+			closeemdialog(clicked.closest(".modal"));
+			//Reload parent
+		});
 	}
 );
 

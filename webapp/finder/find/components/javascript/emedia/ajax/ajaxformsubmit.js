@@ -89,7 +89,7 @@
 			oemaxlevel = 1;
 		}
 		//targetdiv.data("oemaxlevel", oemaxlevel);
-		var data = {};
+		var data = form.cleandata();
 		if (form.data("includeeditcontext") == true) {
 			var edithomeid = form.data("edithomeid");
 
@@ -156,7 +156,7 @@
 					var dataid = parsed.data("dataid");
 					var dataname = parsed.data("dataname");
 
-					$(window).trigger("updatepickertarget", [
+					$(window).trigger("updatepickertarget", [  //Is this still used? Delete?
 						pickertarget,
 						dataid,
 						dataname,

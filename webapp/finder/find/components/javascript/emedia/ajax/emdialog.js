@@ -9,15 +9,6 @@
 			id = "modals";
 		}
 
-		var modaldialog = $("#" + id);
-		if (modaldialog.length == 0) {
-			jQuery("#application").append(
-				'<div class="modal" tabindex="-1" id="' +
-					id +
-					'" style="display:none" ></div>'
-			);
-			modaldialog = jQuery("#" + id);
-		}
 		var options = initiator.data();
 
 		if (initiator.data("includeeditcontext") == true) {
@@ -50,6 +41,16 @@
 			} else {
 				console.warn("No resultsdiv found for includesearchcontext");
 			}
+		}
+
+		var modaldialog = $("#" + id);
+		if (modaldialog.length == 0) {
+			jQuery("#application").append(
+				'<div class="modal" tabindex="-1" id="' +
+					id +
+					'" style="display:none" ></div>'
+			);
+			modaldialog = jQuery("#" + id);
 		}
 
 		var link = initiator.attr("href");
