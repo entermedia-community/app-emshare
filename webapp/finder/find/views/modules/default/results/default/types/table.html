@@ -4,11 +4,14 @@
 
 
 #ifnull($resultdetails)
-	#set($resultdetails = $searcher.getDetailsForView($viewpath, $userprofile))
+	#ifnull($viewdata)
+		#set($viewdata = $mediaarchive.getCachedData("view", $viewid))
+	#end
+	#set($resultdetails = $searcher.getDetailsForView($viewdata, $userprofile))
 #end
 
 #ifnull($resultdetails)
-		No view  defined: $viewpath on $searcher.getSearchType() 
+		No view  defined: $viewid on $searcher.getSearchType() 
 #end		
 <div id="emresultscontent">
 	

@@ -35,9 +35,7 @@ $context.putPageValue("searcher",$mediaarchive.getSearcher($module.id))
     		
     	<input name="save" type="hidden" value="true" />
     	<input name="id" type="hidden" value="$!id" />
-    	<input name="viewid" type="hidden" value="$viewid" />
-    	<input name="enablebackbutton" type="hidden" value="true" />  
-    	
+    	    	
     	<input name="pickertargetfield" type="hidden" value="${pickertargetfield}" />	
     	<input name="entityid" type="hidden" value="${entity.id}" />
     	<input name="entitymoduleid" type="hidden" value="${entitymodule.id}" />
@@ -50,21 +48,10 @@ $context.putPageValue("searcher",$mediaarchive.getSearcher($module.id))
 		#set( $moduleid = $context.findValue("module") )
 		
 		$pages.include("/$applicationid/components/xml/detaileditor-entities.html", $context)
-		<div style="padding:10px 0 0 0">
-			
-	    #if($permissions.can(${module.id} , "create"))
-	    <a class="btn btn-sm btn-dark submitform float-left" style="margin-right: 10px;"><i class="fas fa-save"></i>  [[Next]]</a>
-	    
-	    #end
-	    #if($entitydialogeditor)
-	    	<a href="#" 
-	    		class="btn btn-sm btn-dark float-left reloadcontainer" 
-	    		data-reloadcontainer="tab_$!{parentviewid}">[[Cancel]]</a> 
-	    #else
-	    	<button id="closebutton" type="button" class="btn btn-sm btn-dark float-left" data-dismiss="modal">[[Close]]</button>
-	    #end
 		
-		<div class="clearfix"></div>
+		<div class="d-flex align-items-center mt-3">
+			<a class="btn btn-cta submitform mr-3"><i class="mr-1 bi bi-floppy-fill mr-1"></i> [[Save]]</a>
+			<button id="closebutton" type="button" class="btn btn-secondary" data-dismiss="modal">[[Cancel]]</button>
 		</div>
     </form>
 
