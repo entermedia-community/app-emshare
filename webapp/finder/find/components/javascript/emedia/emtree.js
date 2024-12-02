@@ -305,8 +305,7 @@ $(function () {
 			"&viewid=categorygeneral&viewpath=category/categorygeneral";
 		$(this).attr("href", link);
 		$(this).data("dialogid", "categoryproperties");
-		emdialog($(this), event);
-		//document.location = link;
+		$(this).emDialog();
 		return false;
 	});
 
