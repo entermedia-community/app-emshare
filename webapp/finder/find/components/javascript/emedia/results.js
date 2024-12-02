@@ -1081,7 +1081,9 @@ jQuery(document).ready(function (url, params) {
 		$("input[name=pagetoggle]", resultsdiv).prop(
 			"checked", action != "none"
 		);
-		
+		var resultsheader = resultsdiv.find(".resultsheader");		
+		selectpage.data("selectedtargetdiv", resultsheader);
+
 		selectpage.data("oemaxlevel", "1");
 		selectpage.runAjax();
 	});
