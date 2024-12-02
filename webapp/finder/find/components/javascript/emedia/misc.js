@@ -2285,19 +2285,16 @@ function intializeUI() {
 		var sidebar = toggler.data("sidebar");
 		options["propertyfield"] = "sidebarcomponent";
 		var moduleid = $("#applicationcontent").data("moduleid");
-		options["module"] = moduleid; 
+		options["module"] = moduleid;
 		options["sidebarcomponent.value"] = sidebar;
 		var url;
 		if (options["contenturl"] != undefined) {
 			url = options["contenturl"];
 			targetdiv = $("#" + targetdiv);
 		} else {
-			if( moduleid !== undefined)
-			{
+			if (moduleid !== undefined) {
 				url = `${apphome}/views/modules/${moduleid}/components/sidebars/index.html`;
-			}
-			else
-			{
+			} else {
 				url = apphome + "/components/sidebars/index.html";
 			}
 			targetdiv = findClosest(toggler, "#" + targetdiv);
@@ -3091,22 +3088,18 @@ replaceelement = function (url, div, options, callback) {
 
 autoreload = function (div, callback, classname = null) {
 	var url = div.data("autoreloadurl");
-	if( url !== undefined)
-	{
-		div.data("url",url);
+	if (url !== undefined) {
+		div.data("url", url);
 	}
-	 url = div.data("url");
-	if (url != undefined) 
-	{
+	url = div.data("url");
+	if (url != undefined) {
 		var targetdiv = div.data("targetdiv");
-		if( targetdiv == undefined)
-		{
-			 div.data("targetdiv", classname); //Save to ourself
-			 div.data("oemaxlevel",1);
+		if (targetdiv == undefined) {
+			div.data("targetdiv", classname); //Save to ourself
+			div.data("oemaxlevel", 1);
 		}
-		div.runAjax(function (){
-			if( callback !== undefined &&  callback != null)
-			{
+		div.runAjax(function () {
+			if (callback !== undefined && callback != null) {
 				callback();
 			}
 			jQuery(window).trigger("resize");
@@ -3114,8 +3107,7 @@ autoreload = function (div, callback, classname = null) {
 	}
 };
 
-$(window).on("checkautoreload", function (event, indiv) 
-{
+$(window).on("checkautoreload", function (event, indiv) {
 	var classes = indiv.data("ajaxreloadtargets"); //assetresults, projectpage, sidebaralbums
 	if (classes) {
 		var splitnames = classes.split(",");
@@ -3124,10 +3116,7 @@ $(window).on("checkautoreload", function (event, indiv)
 				autoreload($(div), null, classname);
 			});
 		});
-	}
-	else
-	{
-
+	} else {
 	}
 });
 
@@ -3187,5 +3176,18 @@ lQuery(".entityNavHistory").livequery(function () {
 		link.data("url", backLink.url);
 		link.attr("href", backLink.url);
 		link.show();
+	}
+});
+
+lQuery(".entity-tab-content.overflow-x").livequery("scroll", function (event) {
+	if (event.shiftKey) {
+		console.log(event.originalEvent.deltaY);
+		if (event.originalEvent.deltaY > 0) {
+			event.preventDefault();
+			$(this).scrollLeft($(this).scrollLeft() - 100);
+		} else {
+			event.preventDefault();
+			$(this).scrollLeft($(this).scrollLeft() + 100);
+		}
 	}
 });
