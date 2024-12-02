@@ -46,7 +46,7 @@
 		var edithomeid = form.data("edithomeid");
 
 		//TODO: Move all this to a jQuery plugin form.findTargetDiv()
-		if (edithomeid !== undefined) {
+		if (edithomeid !== undefined && edithomeid != "") {
 			targetdiv = $("#" + edithomeid + " ." + targetdivS);
 		} else {
 			targetdiv = form.closest("." + $.escapeSelector(targetdivS));
@@ -91,17 +91,18 @@
 		//targetdiv.data("oemaxlevel", oemaxlevel);
 		var data = form.cleandata();
 		if (form.data("includeeditcontext") == true) {
-			var edithomeid = form.data("edithomeid");
-
-			var editdiv = $("#" + edithomeid);
-			if (editdiv.length > 0) {
-				var otherdata = editdiv.cleandata();
-				data = {
-					...otherdata,
-					...data,
-				};
-			} else {
-				console.warn("No editdiv found for includeeditcontext");
+			if(edithomeid != "")
+			{
+				var editdiv = $("#" + edithomeid);
+				if (editdiv.length > 0) {
+					var otherdata = editdiv.cleandata();
+					data = {
+						...otherdata,
+						...data,
+					};
+				} else {
+					console.warn("No editdiv found for includeeditcontext");
+				}
 			}
 		}
 		if (form.data("includesearchcontext") == true) {
@@ -172,9 +173,21 @@
 					}
 				}
 				if (formmodal.length > 0 && form.hasClass("autocloseform")) {
+					if(form.data("closeedithomedialog"))
+					{
+						if (edithomeid != undefined && edithomeid != "")
+						{
+							var editdiv = $("#" + edithomeid);
+							if (editdiv.length > 0) 
+							{
+								closeemdialog(editdiv.closest(".modal"));
+							}
+						}
+					}
 					if (formmodal.modal) {
 						closeemdialog(formmodal);
 					}
+					
 				}
 
 				//Entity Back Btn

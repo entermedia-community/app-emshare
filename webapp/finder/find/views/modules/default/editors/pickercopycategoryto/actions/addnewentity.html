@@ -1,0 +1,61 @@
+##edit/addnew.html?viewid=projectgeneral&viewpath=project/projectgeneral&hitssessionid=hitsprojectfinder/catalog
+
+
+#set( $viewid = $context.findValue("viewid") )
+
+$context.putPageValue("searcher",$mediaarchive.getSearcher($module.id))
+
+#if( !$viewid )	
+	#set($viewid = "${module.id}general")
+#end
+
+#if( !$viewpath )	
+	#set($viewpath = "${module.id}/$viewid")
+#end
+
+
+#set($id = $data.id )
+#if( !$id )
+	#set( $id = $context.getRequestParameter("id") )
+#end
+
+#set($edithomeid = $context.getRequestParameter("edithomeid"))
+
+#set($action = "${edithome}/actions/addnewentitysave.html")
+
+<div id="default-fields" style="padding: 10px;">
+    <div id="editlayout">
+    <form id="dataeditor" 
+    		name="dataeditor" 
+    		class="ajaxform autocloseform" 
+    		data-oemaxlevel="1"
+    		method="post"  
+    		action="$!action"
+    		data-edithomeid="${edithomeid}"
+    		data-closeedithomedialog="true"
+    		data-includeeditcontext="true">
+    		
+    	<input name="save" type="hidden" value="true" />
+    	<input name="id" type="hidden" value="$!id" />
+    	    	
+    	$context.putPageValue("view", $viewpath)
+    	$context.putPageValue("viewid", $viewid)
+
+		#set( $origURL = $context.getRequestParameter("origURL" ) )
+		#set( $moduleid = $context.findValue("module") )
+		
+		$pages.include("/$applicationid/components/xml/detaileditor-entities.html", $context)
+		
+		<div class="d-flex align-items-center mt-3">
+			<a class="btn btn-cta submitform mr-3"><i class="mr-1 bi bi-floppy-fill mr-1"></i> [[Save]]</a>
+			<button id="closebutton" type="button" class="btn btn-secondary" data-dismiss="modal">[[Cancel]]</button>
+		</div>
+    </form>
+
+    </div>
+</div>
+
+
+
+
+

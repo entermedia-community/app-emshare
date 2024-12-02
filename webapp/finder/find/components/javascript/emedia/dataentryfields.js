@@ -114,8 +114,8 @@ $(document).ready(function () {
 			"entityrequired",
 			function (value, element) {
 				var picker = $(element).data("entitypicker");
-
-				if ($("#" + picker + " li").length > 1) {
+				var pickerul = picker.find("ul");
+				if ($("#" + pickerul + " li").length > 1) {
 					return true;
 				}
 				return false;
