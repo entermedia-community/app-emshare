@@ -87,7 +87,7 @@
 
 		var replaceHtml = true;
 
-		var targetdiv = false;
+		var targetdiv = anchor.data("selectedtargetdiv");
 
 		var targetDivInner = anchor.data("targetdivinner");
 		if (targetDivInner) {
@@ -97,7 +97,7 @@
 
 		var targetdivS = anchor.data("targetdiv");
 
-		if (targetdiv == false) {
+		if (targetdiv == undefined || targetdiv.length == 0) {
 			var edithomeid = options["edithomeid"];
 			if (edithomeid !== undefined) 
 			{

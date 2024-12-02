@@ -1002,13 +1002,14 @@ jQuery(document).ready(function (url, params) {
 			} else {
 				clicked.closest(".resultsassetcontainer").removeClass("emrowselected");
 			}
-
-			var searchhome = resultsdiv.data("searchhome");
-			
-			clicked.data("targetdiv", "resultsheader");
+	
+			var resultsheader = resultsdiv.find(".resultsheader");
+			clicked.data("selectedtargetdiv", resultsheader);
 			clicked.data("oemaxlevel", "1");
 			clicked.data("includesearchcontext", true);
 			clicked.data("includeeditcontext", true);
+
+			var searchhome = resultsdiv.data("searchhome");
 			clicked.data("url",searchhome + "/toggle.html");
 			clicked.runAjax();
 			
@@ -1052,8 +1053,9 @@ jQuery(document).ready(function (url, params) {
 			$(".selectionbox", resultsdiv).prop("checked", false);
 		}
 			
+		var resultsheader = resultsdiv.find(".resultsheader");
 		
-		clicked.data("targetdiv", "resultsheader");
+		clicked.data("selectedtargetdiv", resultsheader);
 		clicked.data("action", action);
 		clicked.data("oemaxlevel", "1");
 		clicked.data("includesearchcontext", true);
@@ -1079,7 +1081,9 @@ jQuery(document).ready(function (url, params) {
 		$("input[name=pagetoggle]", resultsdiv).prop(
 			"checked", action != "none"
 		);
-		
+		var resultsheader = resultsdiv.find(".resultsheader");		
+		selectpage.data("selectedtargetdiv", resultsheader);
+
 		selectpage.data("oemaxlevel", "1");
 		selectpage.runAjax();
 	});
