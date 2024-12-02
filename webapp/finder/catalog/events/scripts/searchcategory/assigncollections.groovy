@@ -12,10 +12,13 @@ public void init() {
 
 		MediaArchive mediaArchive = (MediaArchive)context.getPageValue("mediaarchive");
 		
-		
 		HitTracker entities = mediaArchive.query(entityparent).search();
 		entities.enableBulkOperations();
-		entities.each{
+
+		List tosave = new ArrayList();
+		
+		entities.each
+		{
 			Data data = it;
 			Collection categories = data.getValues("searchcategory");
 			if(categories != null) 
@@ -23,7 +26,6 @@ public void init() {
 				log.info("Searching unassigned categories for: " +  data);
 				HitTracker existing = mediaArchive.query(entitysubmodule).exact(entityparent, data.getId()).search();
 				Collection ids = existing.collectValues("id");
-				List tosave = new ArrayList();
 				for (String cat in categories) {
 					boolean foundcopy = false;
 					for (Data activity in existing) {
@@ -44,15 +46,17 @@ public void init() {
 						newactivity.setValue("searchcategory", cat);
 						newactivity.setValue("entity_date", data.getValue("entity_date"));
 						tosave.add(newactivity);
+						if(tosave.size()>100)
+						{
+							log.info("Saved " + tosave.size() + " - " + entitysubmodule);
+							mediaArchive.saveData(entitysubmodule, tosave);
+							tosave.clear();
+						}
 					}
-				}
-				if(tosave.size()>0)
-				{
-					log.info("Saved " + tosave.size() + " - " + entitysubmodule);
-					mediaArchive.saveData(entitysubmodule, tosave);
 				}
 			}
 		}
+		mediaArchive.saveData(entitysubmodule, tosave);
 }
 
 init();
