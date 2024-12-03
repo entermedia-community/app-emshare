@@ -1,0 +1,42 @@
+#set( $features = [
+  ["Photos", "camera", "Store memories"],
+  ["Videos", "film", "Organize video contents"],
+  ["Music", "music-note-beamed", "Manage audio collection"],
+  ["eBooks", "book", "Create and publish e-books"]
+])
+<div id="applicationmaincontent" class="applicationmaincontent">
+	$pages.include("${themeprefix}/layouts/header.html", $context)
+  <div class="bg-light text-dark" style="height: calc(100vh - 90px);">
+    <main class="d-flex flex-column">
+      <div class="py-5 bg-light">
+        <div class="container">
+          <div class="text-center mb-5">
+            <h1 class="display-4 mb-3">Welcome to eMedia Library</h1>
+            <p class="lead mb-5">
+              The one stop place to organize and enjoy all your digital content.
+            </p>
+          </div>
+          <div class="row">
+            #foreach($feature in $features)
+            <div class="col-md-6 col-lg-3 mb-4">
+              <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body text-center">
+                  <i class="mb-2 text-primary bi bi-$feature[1]" style="font-size: 32px;"></i>
+                  <h5 class="card-title mb-4">$feature[0]</h5>
+                  <p class="card-text text-muted">$feature[2]</p>
+                </div>
+              </div>
+            </div>
+            #end
+          </div>
+        </div>
+      </div>
+      <div class="p-5 bg-white w-lg-50 mx-auto rounded">
+        <div class="container text-center">
+          <h2 class="h2 mb-4">Your account needs to be approved by an administrator</h2>
+          <a class="py-2 btn btn-lg btn-primary" href="mailto:$adminmail" role="button"><i class="bi bi-envelope-at mr-1"></i> Email your Admin</a>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>

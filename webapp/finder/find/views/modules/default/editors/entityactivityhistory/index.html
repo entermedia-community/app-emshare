@@ -9,20 +9,19 @@ $context.putPageValue("parentsearchtype", $parentsearchtype)
 #end
 #set($entityid = $entity.id)
 
-<div id="${tabid}"
-	class=" entity-tab-content"
-	data-tabid="$!{tabid}"
-	data-viewid="$!viewid"
-	data-entityid="$!entityid"
-	data-currenttab="$!viewid"
-	data-parentsearchtype="$!parentsearchtype"
-	data-topmoduleid="$!topmoduleid"
-	data-url="${edithome}/tabs/preview/tabactivityhistory.html"
+<div id="$edithomeid" 
+	class="editdiv entity-tab-content entity-tab-media tabtypemedia" 
+	data-entityid="$!entity.id"
+	data-entitymoduleid="$!entitymodule.id"
+	data-entitymoduleviewid="$entitymoduleviewid"
+	data-edithome="$!{edithome}"
 >
 	<div id="entityactivityhistoryhistory" class="entiytabhistory p-2">
-		
+		 
 		#set( $assetActivityHistory =  $mediaarchive.getEntityManager().loadHistoryForEntity($applicationid, $context.getUser(), $module, $entity))
-		
+		#if($assetActivityHistory.isEmpty())
+			<p>History Is Empty</p>
+		#end
 		#if(!$assetActivityHistory.isEmpty())
 		<table class="emdata table table-striped table-hover">
 			<thead>
