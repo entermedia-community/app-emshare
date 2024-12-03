@@ -113,19 +113,20 @@ jQuery(document).ready(function (url, params) {
 
 		select.on("change", function () {
 			var searchhome = resultsdiv.data("searchhome");
-			var	href = searchhome +	"/changeresultview.html";
-			resultsdiv.data("url",href);
+			var href = searchhome + "/changeresultview.html";
+			resultsdiv.data("url", href);
 
 			var resultviewselected = select.val();
 			resultsdiv.data("changeresultview", resultviewselected);
-			
-			if (resultviewselected == "stackedgallery" ||resultviewselected == "brickvertical")
-			{
-				resultsdiv.data("page","1");
+
+			if (
+				resultviewselected == "stackedgallery" ||
+				resultviewselected == "brickvertical"
+			) {
+				resultsdiv.data("page", "1");
 			}
 
 			resultsdiv.runAjax();
-			
 		});
 	});
 
@@ -133,39 +134,16 @@ jQuery(document).ready(function (url, params) {
 		var select = $(this);
 
 		var resultsdiv = select.closest(".resultsdiv");
-	
-		/*
-		select.select2({
-			tags: true,
-			dropdownAutoWidth: true 
-		});
-		*/
-		
-		select.on("change", function () 
-		{
-			if (resultsdiv.data("oemaxlevel") === undefined) 
-			{
-				 resultsdiv.data("oemaxlevel","1");
+
+		select.on("change", function () {
+			if (resultsdiv.data("oemaxlevel") === undefined) {
+				resultsdiv.data("oemaxlevel", "1");
 			}
-		
+
 			var searchhome = resultsdiv.data("searchhome");
-			var	href = searchhome + "/changehitsperpage.html";
-			resultsdiv.data("url",href);
-
-			// the selected option
-			resultsdiv.data("hitsperpage", select.val() );
+			resultsdiv.data("url", searchhome + "/changehitsperpage.html");
+			resultsdiv.data("hitsperpage", select.val());
 			resultsdiv.runAjax();
-/*
-			$.get(href, options, function (data) {
-				$("#" + targetdiv).replaceWith(data);
-				$(window).trigger("resize");
-
-				// should I call in a trigger?
-				$(".select2simple").select2({
-					minimumResultsForSearch: Infinity,
-				});
-			});
-*/			
 		});
 	});
 
@@ -981,11 +959,10 @@ jQuery(document).ready(function (url, params) {
 		}
 	};
 
-	
 	// Selections
 	function handRowSelection(clicked) {
 		var resultsdiv = clicked.closest(".resultsdiv");
-		
+
 		if (resultsdiv.length) {
 			var ischecked = clicked.prop("checked");
 			if (ischecked == true) {
@@ -993,7 +970,7 @@ jQuery(document).ready(function (url, params) {
 			} else {
 				clicked.closest(".resultsassetcontainer").removeClass("emrowselected");
 			}
-	
+
 			var resultsheader = resultsdiv.find(".resultsheader");
 			clicked.data("selectedtargetdiv", resultsheader);
 			clicked.data("oemaxlevel", "1");
@@ -1001,9 +978,9 @@ jQuery(document).ready(function (url, params) {
 			clicked.data("includeeditcontext", true);
 
 			var searchhome = resultsdiv.data("searchhome");
-			clicked.data("url",searchhome + "/toggle.html");
+			clicked.data("url", searchhome + "/toggle.html");
 			clicked.runAjax();
-			
+
 			//$(".assetproperties").trigger("click");
 		}
 	}
@@ -1032,9 +1009,9 @@ jQuery(document).ready(function (url, params) {
 		var resultsdiv = clicked.closest(".resultsdiv");
 
 		var status = clicked.is(":checked");
-		
+
 		var searchhome = resultsdiv.data("searchhome");
-		
+
 		var action;
 		if (status) {
 			action = "page";
@@ -1043,20 +1020,17 @@ jQuery(document).ready(function (url, params) {
 			action = "pagenone";
 			$(".selectionbox", resultsdiv).prop("checked", false);
 		}
-			
+
 		var resultsheader = resultsdiv.find(".resultsheader");
-		
+
 		clicked.data("selectedtargetdiv", resultsheader);
 		clicked.data("action", action);
 		clicked.data("oemaxlevel", "1");
 		clicked.data("includesearchcontext", true);
 		clicked.data("includeeditcontext", true);
-		clicked.data("url",searchhome + "/togglepage.html");
+		clicked.data("url", searchhome + "/togglepage.html");
 		clicked.runAjax();
-		
-		
 	});
-
 
 	lQuery("a.selectpage").livequery("click", function (e) {
 		e.preventDefault();
@@ -1069,10 +1043,8 @@ jQuery(document).ready(function (url, params) {
 		var action = selectpage.data("action");
 
 		$(".selectionbox", resultsdiv).prop("checked", action != "none");
-		$("input[name=pagetoggle]", resultsdiv).prop(
-			"checked", action != "none"
-		);
-		var resultsheader = resultsdiv.find(".resultsheader");		
+		$("input[name=pagetoggle]", resultsdiv).prop("checked", action != "none");
+		var resultsheader = resultsdiv.find(".resultsheader");
 		selectpage.data("selectedtargetdiv", resultsheader);
 
 		selectpage.data("oemaxlevel", "1");
@@ -1225,16 +1197,17 @@ jQuery(document).ready(function (url, params) {
 		);
 	});
 
-	lQuery("th.sortable").livequery("click", function () {   //.emselectable ?
+	lQuery("th.sortable").livequery("click", function () {
+		//.emselectable ?
 		var column = $(this);
 		var id = column.data("sortby");
 
 		var resultsdiv = column.closest(".resultsdiv");
 		var searchhome = resultsdiv.data("searchhome");
-		
+
 		resultsdiv.data("url", searchhome + "/columnsort.html");
 		resultsdiv.data("includeeditcontext", true);
-		
+
 		if (column.hasClass("currentsort")) {
 			if (column.hasClass("up")) {
 				resultsdiv.data("sortby", id + "Down");
@@ -1248,7 +1221,6 @@ jQuery(document).ready(function (url, params) {
 		}
 		resultsdiv.runAjax();
 	});
-	
 
 	var hash = window.location.hash;
 	var hidemediaviewer = $("body").data("hidemediaviewer");
@@ -1265,7 +1237,7 @@ jQuery(document).ready(function (url, params) {
 		}
 	}
 
-	//openEntity();  //Why here?. Use a selector? 
+	//openEntity();  //Why here?. Use a selector?
 
 	/* lQuery(".scrollview").livequery("scroll", function () {
 		checkScroll();
@@ -1416,7 +1388,7 @@ jQuery(document).ready(function (url, params) {
 				// saveProfileProperty("assetopentabassettable",assettabtable,function(){});
 			}
 		}
-	}); //End of 
+	}); //End of
 
 	//FUSE Library
 	var Fuse;
@@ -1471,14 +1443,9 @@ jQuery(document).ready(function (url, params) {
 				search(searchInput.val());
 			}, 250);
 		});
-		
-		
-		
 	});
-	
-	lQuery(".forceresize").livequery(function () 
-	{
+
+	lQuery(".forceresize").livequery(function () {
 		$(window).trigger("resize");
-	});	
-	
+	});
 }); // document ready
