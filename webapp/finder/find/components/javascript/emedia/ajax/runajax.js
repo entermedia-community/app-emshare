@@ -228,7 +228,7 @@
 				}
 				//Close Navbar if exists
 				var navbar = anchor.closest(".navbar-collapse");
-				if (navbar) {
+				if (navbar.length) {
 					navbar.collapse("hide");
 				}
 
