@@ -137,40 +137,6 @@ lQuery(".emselectable table td").livequery("click", function (e) {
 	}
 });
 
-//CB Asset picker finish
-lQuery(".assetpickerselectrow").livequery("click", function (e) {
-	var assetid = $(this).data("assetid");
-	jQuery("#" + targetdiv).attr("value", assetid);
-
-	//Todo: Integrte with emselectable
-	var emselectable = $(this).closest(".emselectable");
-
-	var launcher = emselectable.data("launcher");
-	launcher = $("#" + launcher);
-	if (launcher.length) {
-		var options = launcher.data();
-		options.assetid = assetid;
-
-		var clickurl = launcher.data("clickurl");
-		if (clickurl && clickurl != "") {
-			var targetdiv = launcher.data("targetdiv");
-			if (targetdiv !== undefined) {
-				jQuery.ajax({
-					url: clickurl,
-					data: options,
-					success: function (data) {
-						if (!targetdiv.jquery) {
-							targetdiv = $("#" + targetdiv);
-						}
-						targetdiv.replaceWith(data);
-						closeemdialog(emselectable.closest(".modal"));
-					},
-				});
-			}
-			return;
-		}
-	}
-});
 
 //CB This works. Opens entities
 lQuery(".topmodules .resultsdivdata").livequery("click", function (e) {
@@ -272,6 +238,33 @@ lQuery(".pickerresults.pickerforfield .resultsdivdata").livequery(
 			clickableresultlist.data("dataid",rowid);
 			clickableresultlist.runAjax();
 			closeemdialog(clickableresultlist.closest(".modal"));
+		}
+	}
+);
+
+// CM-CB
+// 2024-12-03
+// working for asset pick an entity (Media Viewer)
+lQuery(".pickerresults.assetpickentity .resultsdivdata").livequery(
+	"click",
+	function (e) {
+		if (!isValidTarget(e)) {
+			return true;
+		}
+
+		var clicked = $(this);
+
+		var row = $(clicked.closest(".resultsdivdata"));
+		var rowid = row.data("dataid");
+		var clickableresultlist = clicked.closest(".clickableresultlist");
+
+		if (clickableresultlist.length) {
+			clickableresultlist.data("dataid",rowid);
+			clickableresultlist.runAjax(function()
+			{
+				closeemdialog(clicked.closest(".modal"));	
+			});
+			
 		}
 	}
 );
