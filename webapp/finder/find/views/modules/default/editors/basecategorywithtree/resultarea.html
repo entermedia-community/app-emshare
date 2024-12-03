@@ -49,7 +49,9 @@ $context.putPageValue("categoryid", $categoryid)
 		<div class="embedmediacontainer">
 			#if($dialogtreestatus == "open")
 				<div class="embedmediacol embedmediacol-tree embedtreestatus$dialogtreestatus">
+				
 					<div class="embedmediacolactions d-flex align-items-center">
+
 						
 						<a href="$edithome/index.html" 
 						class="d-flex align-items-center ajax toggledialogtree toggledialogclose"
@@ -63,7 +65,6 @@ $context.putPageValue("categoryid", $categoryid)
 							<i class="fas fa-angle-double-left"></i>
 							<h3 class="embedmediacolheader">[[Folders]]</h3>
 						</a>
-	
 						#if($canviewupload && $parentmodule.getBoolean("enableuploading") && $permissions.can($parentmoduleid, "upload_files"))
 						<a href="" 
 							class="createfoldertree"
@@ -74,9 +75,13 @@ $context.putPageValue("categoryid", $categoryid)
 						
 						#end
 					</div>
+								#end	
+					
 #set($searchhome = "$apphome/views/modules/asset/results/category")
 #set($searchhomeid = "assetcategory")
 $context.putPageValue("searchhome", $searchhome)
+
+			#if($dialogtreestatus == "open")
 
 					<div class="assetdropcategory dialogdroppable left-foldertree">
 						<div class="embedmediatree overflow-y">
@@ -92,8 +97,9 @@ $context.putPageValue("searchhome", $searchhome)
 						$pages.include($link, $context)
 						</div>
 					</div>
-				</div>
-			#end
+					
+			</div>
+				#end   ##tree hide
 			<div class="embedmediacol embedmediacol-results overflow-x" #if($dialogtreestatus != "open")style="width:100%;"#end>
 				<div id="dialogmediaentity" class="h-100"> 
 				
