@@ -1,0 +1,35 @@
+<div class="entity-action-header">
+		<h3>
+			#set($moduleicon = "box")
+			#ifnotnull($submodule.moduleicon)
+				#set($moduleicon = $submodule.moduleicon)
+			#end	
+			<i class="bi bi-$moduleicon module-icon" style="font-size: 0.8em;;"></i> 
+			#text($module) <small>($hits.size())</small>
+		</h3>
+
+	#if( $copyinghits || $pickedassetid)
+	<div class="alert alert-info">
+		
+		#if( $copyinghitssessionid && $copyinghits.getSelectionSize() > 0)	
+		  		<strong>[[Adding]]</strong> $copyinghits.getSelectionSize() [[items]]
+		#elseif($pickedassetid)	
+				<strong>[[Adding]]</strong> 1 [[asset]]
+		#end	
+	</div>
+	#end
+	
+	
+	#set($pickersearchaddnew = $context.getRequestParameter("pickersearchaddnew"))
+	
+	#if($moduleid != "asset")
+		#set($addnew = "$apphome/views/modules/${module.id}/editors/assetpickentity/addnew.html")
+		<a class="btn btn-lg btn-accent rounded mb-3 emdialog float-righ" style="min-width: 150px;"
+		data-dialogid="addassettonewentity"
+		data-hidefooter="true"
+		data-includeeditcontext="true"
+		href="$addnew">
+		<i class="bi bi-plus-lg mr-1"></i> [[Create New]]</a>
+	#end
+	<div class="clearfix"></div>
+</div>
