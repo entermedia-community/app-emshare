@@ -138,7 +138,19 @@ $(function () {
 			reloadurl = reloadurl + "?hitssessionid=" + hitssessionid;
 		}
 
-		var options = structuredClone(tree.data());
+		var options = tree.cleandata();
+
+		//includeeditcontext
+		var editdiv = tree.closest(".editdiv"); //This is used for lightbox tree opening
+		if (editdiv.length > 0) {
+			var otherdata = editdiv.cleandata();
+			options = {
+				...otherdata,
+				...options,
+			};
+		} else {
+			//console.warn("No editdiv found for includeeditcontext");
+		}
 
 		options["nodeID"] = nodeid;
 		options["treetoplocation"] = toplocation;

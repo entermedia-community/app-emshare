@@ -80,13 +80,13 @@ $context.putPageValue("category",$selectedcategory)
 	data-entitymoduleviewid="$entitymoduleviewid"
 	
 	data-categoryid="$!selectedcategory.getId()"
+	data-rootcategory="$!selectedcategory.getId()"
 
 	data-lightboxtype="$lightboxtype"
 	data-lightboxid="$!selectedbox.getId()"
 
 	data-edithome="$!{edithome}"
-	data-targetdiv="$edithomeid"
-	data-oemaxlevel="1"
+
 	
 >
 
@@ -100,7 +100,18 @@ $context.putPageValue("category",$selectedcategory)
 
 		$pages.include("$edithome/sidemenu.html",$context)
 
-		$pages.include("$edithome/search.html",$context)
+
+		<div  id="lightboxresults"  class="tabpulications-col submodulepicker entity-tab-content" >
+			
+			$pages.include("${edithome}/lightboxheader.html", $context)
+			
+			$context.putPageValue("entitydialogid", "entity")
+			
+			$context.putPageValue("category", $selectedcategory)
+			$context.putPageValue("categoryid", $selectedcategory.getId())
+			$pages.include("${edithome}/resultarea.html?rootcategory=${selectedcategory.id}", $context)
+		</div>
+
 
 	</div>
 </div>
