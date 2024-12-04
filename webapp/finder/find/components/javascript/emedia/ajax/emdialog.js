@@ -1,5 +1,5 @@
 (function ($) {
-	$.fn.emDialog = function () {
+	$.fn.emDialog = function (onsuccess) {
 		var initiator = $(this);
 
 		var width = initiator.data("width");
@@ -9,7 +9,7 @@
 			id = "modals";
 		}
 
-		var options = initiator.data();
+		var options = initiator.cleandata();
 
 		if (initiator.data("includeeditcontext") == true) {
 			var editdiv = initiator.closest(".editdiv"); //This is used for lightbox tree opening
@@ -84,6 +84,7 @@
 		$(window).trigger("showToast", [initiator]);
 		var toastUid = initiator.data("uid");
 		var initiatorData = initiator.data();
+		var onsuccessVar = onsuccess;
 		jQuery.ajax({
 			xhrFields: {
 				withCredentials: true,
@@ -92,6 +93,10 @@
 			url: link,
 			data: options,
 			success: function (data) {
+				if( onsuccessVar !== undefined)
+				{
+					onsuccessVar();
+				}
 				$(window).trigger("successToast", toastUid);
 				var targetdiv = modaldialog.find(".enablebackbtn");
 				if (targetdiv.length == 0) {

@@ -7,27 +7,12 @@
 		<i class="bi bi-$moduleicon module-icon" style="font-size: 0.8em;;"></i> 
 		#text($module) <small>($hits.size())</small>
 	</h3>
-
-	#if( $copyinghits || $pickedassetid)
-		<div class="alert alert-info">
-			#if( $copyinghitssessionid && $copyinghits.getSelectionSize() > 0)	
-				<strong>[[Adding]]</strong> $copyinghits.getSelectionSize() [[items]]
-			#elseif($pickedassetid)	
-				<strong>[[Adding]]</strong> 1 [[asset]]
-			#end	
-		</div>
-	#end
 	
-	#if($module.id != "asset")
 		#set($addnew = "$apphome/views/modules/${module.id}/editors/data/addnewentity.html")
 		<a class="btn btn-lg btn-accent rounded ajax" style="min-width: 150px;"
-			data-targetdiv="searchcategorypickerforfield"
-			data-pickertargetfield="${pickertargetfield}"
-			data-entityid="${entity.id}"
-			data-entitymoduleid="${entitymodule.id}"
+			data-targetdiv="$edithomeid"
 			data-oemaxlevel="1"
 			href="$addnew">
 			<i class="bi bi-plus-lg mr-1"></i> [[Create New]]
 		</a>
-	#end
 </div>
