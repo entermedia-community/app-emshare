@@ -807,10 +807,11 @@ function intializeUI() {
 		closeallemdialogs();
 	});
 
+	//Remove this? Not useing ajax
 	$(document).on("click", ".modal", function (e) {
-		e.stopPropagation();
-		e.stopImmediatePropagation();
 		if (e.target.classList.contains("modal")) {
+			e.stopPropagation();
+			e.stopImmediatePropagation();
 			confirmModalClose($(this));
 		}
 	});
