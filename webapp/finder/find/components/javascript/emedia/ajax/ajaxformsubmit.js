@@ -171,15 +171,14 @@
 						targetdiv.replaceWith(result);
 					}
 				}
-				if (formmodal.length > 0 && form.hasClass("autocloseform")) {
-					if (form.data("closeedithomedialog")) {
-						if (edithomeid != undefined && edithomeid != "") {
-							var editdiv = $("#" + edithomeid);
-							if (editdiv.length > 0) {
-								closeemdialog(editdiv.closest(".modal"));
-							}
-						}
+				let closedialogid = form.data("closedialogid");
+				if ( closedialogid !== undefined) {
+					let closedialog = $("#"+closedialogid);
+					if (closedialog.length > 0) {
+						closeemdialog(closedialog.closest(".modal"));
 					}
+				}
+				if (formmodal.length > 0 && form.hasClass("autocloseform")) {
 					if (formmodal.modal) {
 						closeemdialog(formmodal);
 					}
