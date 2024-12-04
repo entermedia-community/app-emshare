@@ -2379,14 +2379,24 @@ function intializeUI() {
 				.closest(".assetpicker")
 				.find(".render-type-thumbnail");
 			preview.html("");
-			var img = $("<img>");
-			img.attr("src", e.target.result);
-			img.attr("height", "140px");
-			img.attr("width", "auto");
-			preview.append(img);
+			if (/\.(jpe?g|png|gif|webp)$/i.test(assetName)) {
+				var img = $("<img>");
+				img.attr("src", e.target.result);
+				img.attr("height", "140px");
+				img.attr("width", "auto");
+				preview.append(img);
+			}
+			else if (/\.(mp4|mov|mpeg|avi)$/i.test(assetName)) {
+				var img = $("<i>");
+				img.attr("class", "bi bi-film");
+				preview.append(img);
+			}
+			
+			
 			preview.append(
 				`<div class="p-1"><span class="mr-2">${assetName}</span><a href="#" class="removefieldassetvalue" title="Remove Selected Asset" data-detailid="${detailId}"><i class="bi bi-x"></i> Remove</a></div>`
 			);
+			
 		};
 		fileReader.readAsDataURL(asset);
 	});

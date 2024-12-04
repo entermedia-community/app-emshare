@@ -1,5 +1,8 @@
 #set($searchhome = "$apphome/views/modules/${module.id}/results/default")
 #set($detailid = $context.getRequestParameter("pickertargetfield"))
+#ifnull($entity)
+	#set($entity = $context.getPageValue("newdata${module.id}"))
+#end
 $entity.addValue($detailid, $data.id)
 #set($values = $entity.getValues($detailid))
 
