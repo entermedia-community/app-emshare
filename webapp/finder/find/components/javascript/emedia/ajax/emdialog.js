@@ -29,9 +29,11 @@
 			var resultsdiv = editdiv.find(".resultsdiv");
 
 			if (resultsdiv.length > 0) {
-				if(resultsdiv.length > 1)
-				{
-					console.error("Should not be finding more than one resultdiv ",resultsdiv);
+				if (resultsdiv.length > 1) {
+					console.error(
+						"Should not be finding more than one resultdiv ",
+						resultsdiv
+					);
 				}
 				var otherdata = resultsdiv.cleandata();
 				options = {
@@ -61,10 +63,10 @@
 			link = initiator.data("url");
 		}
 		var olddialog = initiator.closest(".modal");
-		if (olddialog.length !== 0 && olddialog.attr("id") == id) { //Try and reuse the dialog 
+		if (olddialog.length !== 0 && olddialog.attr("id") == id) {
+			//Try and reuse the dialog
 			var hasbackbutton = modaldialog.find(".enablebackbtn"); //Remove existing layouts if using backbutton
-			if (hasbackbutton.length !== 0 )
-			{
+			if (hasbackbutton.length !== 0) {
 				options.oemaxlevel = 1;
 			}
 		}
@@ -90,8 +92,7 @@
 			url: link,
 			data: options,
 			success: function (data) {
-				initiator.data("uiid", toastUid);
-				$(window).trigger("successToast", [initiator]);
+				$(window).trigger("successToast", toastUid);
 				var targetdiv = modaldialog.find(".enablebackbtn");
 				if (targetdiv.length == 0) {
 					modaldialog.html(data);
@@ -129,7 +130,7 @@
 						backdrop: modalbackdrop,
 					});
 				}
-/*  Use editdivid
+				/*  Use editdivid
 				var autosetformtargetdiv = initiatorData["autosetformtargetdiv"];
 				if (autosetformtargetdiv !== undefined) {
 					var tdiv = initiator.closest("." + autosetformtargetdiv);
@@ -218,8 +219,7 @@
 				$(window).trigger("resize");
 			},
 			error: function () {
-				initiator.data("uiid", toastUid);
-				$(window).trigger("errorToast", [initiator]);
+				$(window).trigger("errorToast", toastUid);
 			},
 		});
 

@@ -137,7 +137,6 @@ lQuery(".emselectable table td").livequery("click", function (e) {
 	}
 });
 
-
 //CB This works. Opens entities
 lQuery(".topmodules .resultsdivdata").livequery("click", function (e) {
 	if (!isValidTarget(e)) {
@@ -174,17 +173,20 @@ lQuery(".listofentities .resultsdivdata").livequery("click", function (e) {
 });
 
 //To open an entity in a submodule. CB Lose Back button
-lQuery(".editdiv.pickersubmodules .resultsdivdata").livequery("click", function (e) {
-	if (!isValidTarget(e)) {
-		return true;
+lQuery(".editdiv.pickersubmodules .resultsdivdata").livequery(
+	"click",
+	function (e) {
+		if (!isValidTarget(e)) {
+			return true;
+		}
+
+		var row = $(this);
+
+		var clickableresultlist = row.closest(".clickableresultlist");
+		clickableresultlist.data("id", row.data("dataid")); //They picked an entity
+		clickableresultlist.runAjax();
 	}
-
-	var row = $(this);
-
-	var clickableresultlist = row.closest(".clickableresultlist");
-	clickableresultlist.data("id", row.data("dataid")); //They picked an entity
-	clickableresultlist.runAjax();
-});
+);
 //To open an entity in a submodule. CB Lose Back button
 lQuery(".entitysubmodules .resultsdivdata").livequery("click", function (e) {
 	if (!isValidTarget(e)) {
@@ -235,7 +237,7 @@ lQuery(".pickerresults.pickerforfield .resultsdivdata").livequery(
 		var clickableresultlist = clicked.closest(".clickableresultlist");
 
 		if (clickableresultlist.length) {
-			clickableresultlist.data("dataid",rowid);
+			clickableresultlist.data("dataid", rowid);
 			clickableresultlist.runAjax();
 			closeemdialog(clickableresultlist.closest(".modal"));
 		}
@@ -259,12 +261,10 @@ lQuery(".pickerresults.assetpickentity .resultsdivdata").livequery(
 		var clickableresultlist = clicked.closest(".clickableresultlist");
 
 		if (clickableresultlist.length) {
-			clickableresultlist.data("dataid",rowid);
-			clickableresultlist.runAjax(function()
-			{
-				closeemdialog(clicked.closest(".modal"));	
+			clickableresultlist.data("dataid", rowid);
+			clickableresultlist.runAjax(function () {
+				closeemdialog(clicked.closest(".modal"));
 			});
-			
 		}
 	}
 );
@@ -352,14 +352,14 @@ lQuery(".pickerresults.picksearchcategory .resultsdivdata").livequery(
 		var rowid = row.data("dataid");
 		var pickerresults = clicked.closest(".clickableresultlist");
 		pickerresults.data("id", rowid);
-		
-		pickerresults.runAjax(function(){ //Chain
+
+		pickerresults.runAjax(function () {
+			//Chain
 			closeemdialog(clicked.closest(".modal"));
 			//Reload parent
 		});
 	}
 );
-
 
 lQuery(".editdiv.pickercopycategoryto .resultsdivdata").livequery(
 	"click",
@@ -384,14 +384,12 @@ lQuery(".editdiv.pickercopycategoryto .resultsdivdata").livequery(
 			data: options,
 			success: function (data) {
 				//show toast or reload page or both
-				pickerresults.data("uid", toastUid);
-				$(window).trigger("successToast", [pickerresults]);
+				$(window).trigger("successToast", toastUid);
 				closeemdialog(clicked.closest(".modal"));
 			},
 		});
 	}
 );
-
 
 //CB: Good assign assets to a selected entity
 lQuery(".editdiv.entitypickerassets .resultsdivdata").livequery(
@@ -415,10 +413,8 @@ lQuery(".editdiv.entitypickerassets .resultsdivdata").livequery(
 		jQuery.ajax({
 			url: clickurl,
 			data: options,
-			success: function (data) {
-				//show toast or reload page or both
-				pickerresults.data("uid", toastUid);
-				$(window).trigger("successToast", [pickerresults]);
+			success: function () {
+				$(window).trigger("successToast", toastUid);
 				closeemdialog(clicked.closest(".modal"));
 			},
 		});
@@ -534,7 +530,6 @@ showmodal = function (emselecttable, url) {
 
 	var options = emselecttable.data();
 	modaldialog.load(url, options, function () {
-		
 		$(".modal-lg").css("min-width", width + "px");
 		modaldialog.modal({
 			keyboard: true,

@@ -99,15 +99,11 @@
 
 		if (targetdiv == undefined || targetdiv.length == 0) {
 			var edithomeid = options["edithomeid"];
-			if (edithomeid !== undefined) 
-			{
+			if (edithomeid !== undefined) {
 				var parent = $("#" + edithomeid);
-				if( parent.hasClass(targetdivS))
-				{
+				if (parent.hasClass(targetdivS)) {
 					targetdiv = parent;
-				}
-				else
-				{
+				} else {
 					targetdiv = parent.find("." + targetdivS);
 				}
 			} else {
@@ -145,8 +141,7 @@
 				url: nextpage,
 				data: options,
 				success: function (data) {
-					anchor.data("uid", toastUid);
-					$(window).trigger("successToast", [anchor]);
+					$(window).trigger("successToast", toastUid);
 					/*
 						var cell;
 						if (useparent && useparent == "true") {
@@ -189,8 +184,7 @@
 					if (message) customToast(message);
 				},
 				error: function () {
-					anchor.data("uid", toastUid);
-					$(window).trigger("errorToast", [anchor]);
+					$(window).trigger("errorToast", toastUid);
 				},
 				type: "POST",
 				dataType: "text",
@@ -228,7 +222,7 @@
 				}
 				//Close Navbar if exists
 				var navbar = anchor.closest(".navbar-collapse");
-				if (navbar) {
+				if (navbar.length) {
 					navbar.collapse("hide");
 				}
 

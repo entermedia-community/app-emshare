@@ -310,7 +310,7 @@ $(function () {
 		var nodeid = node.data("nodeid");
 		var link =
 			tree.data("home") +
-			"/views/modules/category/edit/editdialog.html?categoryid=" +
+			"/views/modules/category/editors/data/editdialog.html?categoryid=" +
 			nodeid +
 			"&id=" +
 			nodeid +

@@ -91,8 +91,7 @@
 		//targetdiv.data("oemaxlevel", oemaxlevel);
 		var data = form.cleandata();
 		if (form.data("includeeditcontext") == true) {
-			if(edithomeid != "")
-			{
+			if (edithomeid != "") {
 				var editdiv = $("#" + edithomeid);
 				if (editdiv.length > 0) {
 					var otherdata = editdiv.cleandata();
@@ -143,8 +142,7 @@
 			},
 			crossDomain: true,
 			success: function (result) {
-				form.data("uid", toastUid);
-				$(window).trigger("successToast", [form]);
+				$(window).trigger("successToast", toastUid);
 				$(window).trigger("checkautoreload", [form]);
 				if (showwaitingtarget !== undefined) {
 					showwaitingtarget.hide();
@@ -157,7 +155,8 @@
 					var dataid = parsed.data("dataid");
 					var dataname = parsed.data("dataname");
 
-					$(window).trigger("updatepickertarget", [  //Is this still used? Delete?
+					$(window).trigger("updatepickertarget", [
+						//Is this still used? Delete?
 						pickertarget,
 						dataid,
 						dataname,
@@ -173,13 +172,10 @@
 					}
 				}
 				if (formmodal.length > 0 && form.hasClass("autocloseform")) {
-					if(form.data("closeedithomedialog"))
-					{
-						if (edithomeid != undefined && edithomeid != "")
-						{
+					if (form.data("closeedithomedialog")) {
+						if (edithomeid != undefined && edithomeid != "") {
 							var editdiv = $("#" + edithomeid);
-							if (editdiv.length > 0) 
-							{
+							if (editdiv.length > 0) {
 								closeemdialog(editdiv.closest(".modal"));
 							}
 						}
@@ -187,7 +183,6 @@
 					if (formmodal.modal) {
 						closeemdialog(formmodal);
 					}
-					
 				}
 
 				//Entity Back Btn
@@ -225,8 +220,7 @@
 				}
 			},
 			error: function (data) {
-				form.data("uid", toastUid);
-				$(window).trigger("errorToast", [form]);
+				$(window).trigger("errorToast", toastUid);
 				if (targetdiv) {
 					$("#" + $.escapeSelector(targetdiv)).html(data);
 				}

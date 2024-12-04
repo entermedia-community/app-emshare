@@ -3098,6 +3098,7 @@ autoreload = function (div, callback, classname = null) {
 			div.data("targetdiv", classname); //Save to ourself
 			div.data("oemaxlevel", 1);
 		}
+		div.data("noToast", true);
 		div.runAjax(function () {
 			if (callback !== undefined && callback != null) {
 				callback();

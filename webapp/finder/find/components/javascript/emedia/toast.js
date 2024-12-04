@@ -2,6 +2,9 @@ var toastTO;
 
 $(window).on("showToast", function (_, anchor) {
 	if (!anchor || typeof anchor.data != "function") return;
+	if (anchor.data("noToast") !== true) {
+		return;
+	}
 	var uid = Date.now();
 	anchor.data("uid", uid);
 	var delay = 10;
@@ -103,16 +106,14 @@ function destroyToast(toast, success = true) {
 	}, 2000);
 }
 
-$(window).on("successToast", function (_, anchor) {
-	var uid = anchor.data("uid");
-	//console.log("successfully removing uid:" + uid);
+$(window).on("successToast", function (_, uid) {
+	if (!uid) return;
 	var toast = $(".toastContainer[data-uid='" + uid + "']");
 	destroyToast(toast);
 });
 
-$(window).on("errorToast", function (_, anchor) {
-	var uid = anchor.data("uid");
-	//console.error("unsuccessfully removing uid:" + uid);
+$(window).on("errorToast", function (_, uid) {
+	if (!uid) return;
 	var toast = $(".toastContainer[data-uid='" + uid + "']");
 	destroyToast(toast, false);
 });
