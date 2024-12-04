@@ -172,8 +172,8 @@
 					}
 				}
 				let closedialogid = form.data("closedialogid");
-				if ( closedialogid !== undefined) {
-					let closedialog = $("#"+closedialogid);
+				if (closedialogid !== undefined) {
+					let closedialog = $("#" + closedialogid);
 					if (closedialog.length > 0) {
 						closeemdialog(closedialog.closest(".modal"));
 					}

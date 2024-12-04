@@ -125,7 +125,7 @@ jQuery(document).ready(function (url, params) {
 			) {
 				resultsdiv.data("page", "1");
 			}
-
+			resultsdiv.data("noToast", true);
 			resultsdiv.runAjax();
 		});
 	});
@@ -143,6 +143,7 @@ jQuery(document).ready(function (url, params) {
 			var searchhome = resultsdiv.data("searchhome");
 			resultsdiv.data("url", searchhome + "/changehitsperpage.html");
 			resultsdiv.data("hitsperpage", select.val());
+			resultsdiv.data("noToast", true);
 			resultsdiv.runAjax();
 		});
 	});
@@ -163,6 +164,7 @@ jQuery(document).ready(function (url, params) {
 				}
 				var url = input.data("url");
 				input.data("url", url + page);
+				input.data("noToast", true);
 				input.runAjax();
 			}
 		});
@@ -979,6 +981,7 @@ jQuery(document).ready(function (url, params) {
 
 			var searchhome = resultsdiv.data("searchhome");
 			clicked.data("url", searchhome + "/toggle.html");
+			clicked.data("noToast", true);
 			clicked.runAjax();
 
 			//$(".assetproperties").trigger("click");
@@ -1029,6 +1032,7 @@ jQuery(document).ready(function (url, params) {
 		clicked.data("includesearchcontext", true);
 		clicked.data("includeeditcontext", true);
 		clicked.data("url", searchhome + "/togglepage.html");
+		clicked.data("noToast", true);
 		clicked.runAjax();
 	});
 
