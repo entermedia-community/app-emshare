@@ -53,6 +53,7 @@ lQuery("a.toggleAjax").livequery("click", function (e) {
 	e.stopPropagation();
 	e.preventDefault();
 	var $this = $(this);
+	$this.data("noToast", true);
 	$this.runAjax(function () {
 		var focusParent = $this.closest(`.${$this.data("focusparent")}`);
 		if (focusParent.length) {

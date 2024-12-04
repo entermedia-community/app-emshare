@@ -132,7 +132,9 @@
 			}
 		}
 
-		$(window).trigger("showToast", [anchor]);
+		if (anchor.data("noToast") !== true) {
+			$(window).trigger("showToast", [anchor]);
+		}
 		var toastUid = $(anchor).data("uid");
 
 		var anchorData = anchor.data(); //anchor.data looses dynamically set data after ajax call, so we need to use this instead of anchor.data()
