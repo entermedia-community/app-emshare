@@ -1,3 +1,4 @@
+#set($moduleid = $module.id)
 <div class="entity-header d-flex align-items-center justify-content-between">
 			<div class="d-flex align-items-center">
 				<a href="#" class="ajax entityNavBack" data-targetdiv="entitydialog" data-entityid="$entity.id" data-oemaxlevel="1" style="display: none;">
@@ -100,7 +101,15 @@
 							data-oemaxlevel="1"
 							data-tabsection="upload"
 							data-hitssessionid="$entityhits.getSessionId()"
-							title="[[Upload to]] #text($module) "><i class="bi bi-box-arrow-in-right mr-1"></i> [[Import]]</a>
+							title="[[Upload to]] #text($module) "><i class="bi bi-box-arrow-in-right mr-1"></i> [[Import]]
+					    $permissions.can($moduleid, "upload_files") || 
+						$permissions.can($moduleid, "upload_folders") ||
+						$permissions.can($moduleid, "importurl") ||
+						$permissions.can($moduleid, "importassets") ||
+						$permissions.can($moduleid, "importfolders") ||
+						($desktop && $permissions.can($moduleid, "importpushtoserver") 
+							
+							</a>
 					#end	
 					#end
 					#if($permissions.can($moduleid, "copyentity") ||
