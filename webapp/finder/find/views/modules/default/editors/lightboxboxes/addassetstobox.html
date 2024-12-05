@@ -18,23 +18,14 @@ $context.putPageValue("lightboxtype",$lightboxtype)
 
 #set( $lightboxid = $context.getRequestParameter("lightbox"))
 
-
 #set($boxes =  $mediaarchive.getEntityManager().loadBoxesForModule($lightboxtype,$entitymodule, $entity, $context.getUser()))
 $context.putPageValue("boxes",$boxes)
 
-#set($hitcounts = $mediaarchive.getEntityManager().loadLightBoxCounts($module, $entity) )
-$context.putPageValue("hitcounts",$hitcounts)
+#set( $lightboxid = $context.getRequestParameter("lightboxid"))  ##Must be passed in here for adding
 
-
-#ifnull($lightboxid)
-	#set($selectedbox =  $mediaarchive.getEntityManager().findFirstSelectedLightBox($boxes,$hitcounts))
+#if( $lightboxid != "files")
+	#set($selectedbox =  $mediaarchive.getEntityManager().findLightBox($boxes,$lightboxid))
 #end	
-
-#ifnotnull($lightboxid)
-	#if( $lightboxtype != "files")
-		#set($selectedbox =  $mediaarchive.getEntityManager().loadLightBoxForEntity($lightboxtype,$lightboxid, $module, $entity))
-	#end	
-#end
 
 #set($lightboxid = $selectedbox.getId())
 $context.putPageValue("selectedbox",$selectedbox)
@@ -42,5 +33,4 @@ $context.putPageValue("lightboxid",$lightboxid)
 
 $context.putPageValue("boxes",$boxes)
 $context.putPageValue("assets",$assets)
-$context.putPageValue("selectedbox",$selectedfirst)
 $pages.include("$edithome/sidemenu.html",$context)
