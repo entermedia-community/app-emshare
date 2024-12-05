@@ -1,49 +1,46 @@
 <div id="modulesearchresultsdiv" class="h-100"  data-moduleid="$!module.id">
   #set( $favorites = $userprofile.get("favorites_"+$module.id))
   $context.putPageValue("favorites", $favorites) 
-  #if (!$rendertype)
-    #set($rendertype = $module.modulerendertype) 
-    #if (!$rendertype)
-      #set($rendertype = "entity") 
-    #end 
+
+  $context.putPageValue("rendermoduleid", $module.id) 
+  
+  #if($content.section != "favorites")
+    $pages.include("${searchhome}/resultheader.html",$context)
   #end 
-  $context.putPageValue("rendertype", $rendertype) $context.putPageValue("rendermoduleid", $module.id) 
-  #if($moduleid != "searchcategory")
-    $pages.include("$searchhome/resultheader.html",$context)
-  #end 
+  
   #set($currentpage = $context.getRequestParameter("currentpagenum")) 
   #set($prhits = $hits.getPositionRender() ) 
   #ifnotnull($currentpage)
     $prhits.setPageOneBased($currentpage) 
   #end
   #set($pos = $prhits.toPosition($prhits.getPage())) 
-  #set($resultsPage = "${searchhome}/index.html?hitssessionid=$!{hits.sessionId}&pageposition")
+  #set($resultsPage = "${searchhome}/index.html?${module.id}hitssessionid=$!{hits.sessionId}&pageposition")
   #set($targetdivinner = "${module.id}resultsarea") 
   #set($oemaxlevel = "2")
 
   <div class="emgridflexcontainer h-100 overflow-y" >
     <div class="emgridflex">
-      <div id="galleryimg-${rendertype}"
+      <div id="galleryimg"
         class="emgrid entitiescontainer"
         data-fixedwidth="210"
-        data-cellpadding="15"
-        data-entityrenderurl="$siteroot$apphome/views/modules/${module.id}${edithome}/tabs/gridcell.html"
-        data-rendertype="$rendertype">
+        data-cellpadding="15">
         #foreach( $hit in $hits.getPageOfHits())
           $context.putPageValue("rendermoduleid", $hit.entitysourcetype)
           $context.putPageValue("entity", $hit) $context.putPageValue("hit", $hit)
-          <div class="emgridcell emgridcell-$rendertype activelistcontainer #if($selectedid == $hit.getId() || $topselectedid == $hit.getId()) active #end">
+          <div class="emgridcell activelistcontainer #if($selectedid == $hit.getId() || $topselectedid == $hit.getId()) active #end">
            
             $pages.include("$searchhome/types/entityfolder.html", $context) 
            
             #set($editurl = "${edithome}/tabs/index.html?entityid=${hit.getId()}&hitssessionid=$!{hits.sessionId}")
-            #if($moduleid == "searchcategory")
+            
+            #if($module.id == "searchcategory")
               <div class="emgridcell-edit">
                 <a href="${editurl}" class="emdialog emgridcell-edit-link" title="[[Edit]] #text($hit)">
                   <i class="bi bi-pencil"></i> 
                 </a>
               </div>
             #end
+            
           </div>
         #end
       </div>

@@ -11,7 +11,6 @@ $context.putPageValue("viewid", $viewid)
 #ifnull($resultview)
 	#set($resultview = $context.getRequestParameter("resultview${moduleid}"))
 #end
-
 #ifnull($resultview )
 	#set($resultview = $userprofile.get("${moduleid}resultview"))
 #end	
@@ -52,14 +51,10 @@ $context.putPageValue("viewid", $viewid)
 	data-viewid="$!viewid"
 	data-section="$!content.section">
 	
-	$pages.include("${edithome}/searchheader.html", $context)	
+	##$pages.include("${edithome}/searchheader.html", $context)	
 	
 	#set($searcher = $searcherManager.getSearcher($catalogid, $moduleid))
 	$context.putPageValue("searcher", $searcher)
-	
-	#set($isentity = $module.get("isentity"))
-	$context.putPageValue("isentity", $isentity )
-	
 	
 	#if (!$nodeID)
 		#set($nodeID = $context.getRequestParameter("nodeID"))

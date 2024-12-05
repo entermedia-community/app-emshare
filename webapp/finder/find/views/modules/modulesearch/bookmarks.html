@@ -1,5 +1,5 @@
 $context.putPageValue("hits", $modulehits)
-<div class="bookmarksarea" data-url="$!{page.path}" data-oemaxlevel="1">
+<div id="bookmarkscontainer" class="bookmarksarea" data-url="$!{page.path}" data-oemaxlevel="1">
 <div class="finder-title">
 	<h2><i class="bi bi-bookmarks-fill"></i> [[Bookmarks]]</h2>
 </div>
@@ -7,31 +7,52 @@ $context.putPageValue("hits", $modulehits)
  <div class="favoritescontainer">
 
  
- #foreach($module in $organizedModules)
+ #foreach($bmodule in $organizedModules)
  
- 		#set($idhits = $organizedHits.get($module.id))
+ 		#set($idhits = $organizedHits.get($bmodule.id))
 		$context.putPageValue("hits", $idhits)
-		$context.putPageValue("module", $module)
-		$context.putPageValue("moduleid", $module.id)
-		$context.putPageValue("componenthome", "$apphome/views/modules/$module.id/components")
+		$context.putPageValue("module", $bmodule)
 		
-		$context.putPageValue("topmoduleid", "favorites")
-   		
+		<div class="emgrid-subtitle">
+		<h3 class="pt-2 pb-2">
+			#set($moduleicon = "grid")
+			#if ($bmodule.moduleicon)
+				#set($moduleicon = $bmodule.moduleicon)
+			#end
+		
+			#set($entityurl = "$!siteroot$apphome/views/modules/$!{bmodule.id}/index.html?$!{module.id}page=1&hitssessionid=$!hits.getSessionId()")
+		
+			<i class="bi bi-$!{moduleicon} module-icon" style="font-size:0.9em;line-height:1;"></i> 
+
+			#if( $bmodule.id == "asset") ##this is safe
+				#set( $count = $idhits.size()) 
+			#else
+				#set( $count = $filter.getCount($bmodule.id) ) 
+			#end
+			#ifnull($count)
+				#set( $count = $idhits.size()) 
+			#end
+
+			#text($bmodule) ($count)
+	
+			<a href="$apphome/views/modules/modulesearch/bookmarksremove.html?moduleid=${bmodule.id}" 
+				class="ajax removemodulebookmarks rounded btn btn-sm btn-brand clear-bookmarks ml-2"
+				data-targetdiv="bookmarkscontainer"
+				data-oemaxlevel="1"
+				data-confirm="[[Are you sure to remove items from Bookmarks?]]"
+				title="[[Clear Bookmarks]]"><i class="bi bi-bookmark-x mr-1"></i>[[Remove All]]</a>
+	</h3>
+	</div>
  
-	#if($module.id != "asset")
-	   	#set($modulerendertype = "entity")
-	   	#if ($module.homepagerendertype)
-	   		#set($modulerendertype = $module.homepagerendertype)
-	   	#end
-	   	
-	   	$context.putPageValue("modulerendertype", $modulerendertype)
+	#if($bmodule.id != "asset")
 	  	
-	   	#set( $favorites = $userprofile.get("favorites_"+$module.id))
+	   	#set( $favorites = $userprofile.get("favorites_"+$bmodule.id))
 		$context.putPageValue("favorites", $favorites)
-		#set($edithome = "$apphome/views/modules/$module.id/editors/listentities")
-		$context.putPageValue("edithome", $edithome)
 		
-		$pages.include("${edithome}/tabs/modulegrid.html", $context)
+		#set($edithome = "$apphome/views/modules/${bmodule.id}/editors/listentities")
+		$context.putPageValue("edithome", $edithome)
+
+		$pages.include("${edithome}/index.html", $context)
 		
 	#else
 		$context.putPageValue("showheader", true)
