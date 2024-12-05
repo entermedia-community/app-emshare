@@ -32,12 +32,12 @@
 		}
 
 		var options = anchor.cleandata();
-
+		var editdiv = anchor.closest(".editdiv"); //This is used for lightbox tree opening
 		if (
 			anchor.data("includeeditcontext") === undefined ||
 			anchor.data("includeeditcontext") == true
 		) {
-			var editdiv = anchor.closest(".editdiv"); //This is used for lightbox tree opening
+			
 			if (editdiv.length > 0) {
 				var otherdata = editdiv.cleandata();
 				options = {
@@ -47,7 +47,13 @@
 			} else {
 				//console.warn("No editdiv found for includeeditcontext");
 			}
-			//	if (anchor.data("includesearchcontext") == true) {
+			
+		}
+		
+		if (
+			anchor.data("includesearchcontext") === undefined ||
+			anchor.data("includesearchcontext") == true
+		) {
 			var editresultsdiv = editdiv.find(".resultsdiv");
 
 			if (editresultsdiv.length > 0) {
@@ -59,7 +65,6 @@
 			} else {
 				//console.warn("No resultsdiv found for icludesearchcontext");
 			}
-			//	}
 		}
 
 		var activemenu;
