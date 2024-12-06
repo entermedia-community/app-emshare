@@ -2,20 +2,23 @@
 
 <div class="category-breadcrumb #if($searchcategory) category-breadcrumb-tall #end">
 	<div class="d-flex justify-content-between">
-		#ifnull($searchcategory)
-			#if($permissions.can($moduleid, "create") && $moduleid!="faceprofilegroup" && $moduleid!="order")
-			#set($addurl = "${edithome}/tabs/index.html?edit=true&addnew=true&viewid=$!{moduleid}addnew")
-				<a class="emdialog btn-cta" href="$addurl" title="[[Add New Record]]">
-					<i class="bi bi-plus-lg mr-1"></i> [[Create New]]
-				</a>
+
+		<div class="d-flex align-items-center">
+			#ifnull($searchcategory)
+				#if($permissions.can($moduleid, "create") && $moduleid!="faceprofilegroup" && $moduleid!="order")
+				#set($addurl = "${edithome}/tabs/index.html?edit=true&addnew=true&viewid=$!{moduleid}addnew")
+					<a class="emdialog btn-cta" href="$addurl" title="[[Add New Record]]">
+						<i class="bi bi-plus-lg mr-1"></i> [[Create New]]
+					</a>
+				#end
 			#end
-		#end
-		#if($searchcategory)	
-			<p class="m-0"> 
-				<i class="bi bi-$module.moduleicon mr-1 ml-3"></i>  
-				#text($searchcategory) <span >($!hits.size())</span>
-			</p>
-		#end
+			#if($searchcategory)	
+				<p class="m-0"> 
+					<i class="bi bi-$module.moduleicon mr-1 ml-3"></i>  
+					#text($searchcategory) <span >($!hits.size())</span>
+				</p>
+			#end
+		</div>
 
 		<a href="$searchhome/filters/dialogsort.html" 
 			class="emdialog emsort border-left #if($isminimized) closed #end"
@@ -25,8 +28,8 @@
 			data-modalsize="sm"
 			data-includesearchcontext="true"						
 			data-includeeditcontext="true"
-			
-			title="[[Sort Results]]"><i class="bi bi-sort-down"></i> [[Sort]]</a>
+			title="[[Sort Results]]">
+			<i class="bi bi-sort-down"></i> [[Sort]]
+		</a>
 	</div>
 </div>
-
