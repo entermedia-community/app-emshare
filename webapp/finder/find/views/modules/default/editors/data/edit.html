@@ -1,12 +1,6 @@
 #if( !$view )
 	#set($viewid = $context.getRequestParameter("viewid"))
 #end
-#if( !$viewpath )	
-	#set($viewpath = $context.getRequestParameter("viewpath"))
-#end
-#if( !$viewpath )
-	#set($viewpath = "category/$viewid")
-#end
 #set( $moduleid = $context.findValue("module") )
 
 #set($id = $data.id )
@@ -39,15 +33,11 @@ $context.putPageValue("viewid", $view.id)
     	<input name="catalogid" type="hidden" value="$searcher.catalogId" />
     	<input name="searchtype" type="hidden" value="$searcher.searchType" />
     	<input name="viewid" type="hidden" value="$viewid" />
-    	<input name="view" type="hidden" value="$viewpath" />
       <input name="hitssessionid" type="hidden" value="$hits.sessionId" />
-    	<input name="viewpath" type="hidden" value="$viewpath" />
     	<input name="origURL"  type="hidden" value="$!origURL" />
     	<input name="savereload"  type="hidden" value="editdialog.html" />
     	
 			<div class="d-flex flex-column">
-				$context.putPageValue("view", $viewpath)
-
 				#set( $origURL = $context.getRequestParameter("origURL" ) )
 				#set ( $moduleid = $context.findValue("module") )
 				#if($caneditdata)
@@ -72,7 +62,7 @@ $context.putPageValue("viewid", $view.id)
 								data-confirm="[[Are you sure]]?"
 								data-ajaxreloadtargets="dataeditedreload"
 								data-closedialog="true" 
-								href="$siteroot$content.searchhome/edit/delete.html?id=$data.id&catalogid=$searcher.catalogId&searchtype=$searcher.searchType&viewid=$viewid&viewpath=$viewpath&oemaxlevel=1" >
+								href="$siteroot$content.searchhome/edit/delete.html?id=$data.id&catalogid=$searcher.catalogId&searchtype=$searcher.searchType&viewid=$viewid&oemaxlevel=1" >
 								<i class="bi bi-trash mr-1"></i> [[Delete]]
 							</a>
 						#end
@@ -80,7 +70,7 @@ $context.putPageValue("viewid", $view.id)
 		
 					#if( $caneditmetadatasetup )
 						<a class="btn btn-light emdialog" 
-							href="$siteroot$apphome/views/settings/modules/${searcher.searchType}/metadata/views/dialog/index.html?viewid=$viewid&viewpath=$viewpath"
+							href="$siteroot$apphome/views/settings/modules/${searcher.searchType}/metadata/views/dialog/index.html?viewid=$viewid"
 							title="[[Edit Fields]]"
 							data-dialogid="fieldpicker"
 							data-hidefooter="true">

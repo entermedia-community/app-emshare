@@ -34,18 +34,24 @@ $context.putPageValue("viewid", $viewid)
 
 #set($searchhomeid = $page.get("searchhomeid") )
 
+#if($permissions.can($module.id, "edit"))
+$context.putPageValue("enableactions", true) ##used for selections
+#else
+$context.putPageValue("enableactions", false)
+#end
+
 <div id="$!{searchhomeid}$!{edithomeid}" 
 	class="tableresults resultsdiv" 
 	data-${module.id}hitssessionid="$!hits.getSessionId()" 
 	data-searchhome="$!{searchhome}"
 	data-targetdiv="${searchhomeid}$!{edithomeid}"
 	##data-categoryid="$!category.id" ##Use the editor context or pass this in each time
-	#if( $page.isPropertyTrue("filterbyentity",false) )
+	#if( $page.isPropertyTrue("filterbyentity",false) )   ##replaced by edit context?
 		data-field="$!{entitymodule.id}"
 		data-$!{entitymodule.id}value="$!entity.id"
 		data-operation="exact"
 		data-entityid="${entity.id}"
-		data-entitymoduleviewid="$!entitymoduleviewid"  ##this is used in sub-modules to keep the views right
+		data-entitymoduleviewid="$!entitymoduleviewid"  ##this is used in sub-modules to keep the views right?
 	#end
 	data-resultview${moduleid}="$resultview"
 	data-pagenum="$!hits.getPage()" 

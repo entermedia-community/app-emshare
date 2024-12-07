@@ -65,8 +65,10 @@ $context.putPageValue("searchtype", $searchtype)
 	#set($multiedit = true)
 #end
 
-#set( $viewdata = $searcher.getViewData($view) )
-<h4>$context.getText($viewdata)</h4>
+#set( $viewdata = $mediaarchive.getCachedData("view",$viewid) )
+
+
+<h4>#text($viewdata)</h4>
 ##th-large
 
 #if (($edit && $edit != "false") || ($openview && $openview == $view))
@@ -75,8 +77,8 @@ $context.putPageValue("searchtype", $searchtype)
 	#if (!$targetdiv)
 		#set( $targetdiv = "tabsummarypanel")
 	#end
-	<form name="formedit$view" 
-			id="formedit$view" 
+	<form name="formedit$viewid" 
+			id="formedit$viewid" 
 			class="ajaxform" 
 			data-targetdiv="$!targetdiv" 
 			method="post" 
@@ -90,7 +92,7 @@ $context.putPageValue("searchtype", $searchtype)
 		<input type="hidden" name="catalogid" value="$!catalogid" />
 		<input type="hidden" name="searchtype" value="$searcher.getSearchType()" />
 		
-		<input type="hidden" name="view" value="$view" />
+		<input type="hidden" name="viewid" value="$viewid" />
 		<input type="hidden" name="label" value="$label" />
 		<input type="hidden" name="module" value="$moduleid" />
 		#if( $collectionid  )
@@ -110,7 +112,6 @@ $context.putPageValue("searchtype", $searchtype)
 			<input type="hidden" name="field" value="$fieldexternalid" />
 			<input type="hidden" name="${fieldexternalid}.value" type="hidden" value="$parentid" />
 			<input type="hidden" name="parentid" value="$parentid" />
-			<input type="hidden" name="viewpath" value="$view" />
 			<input type="hidden" name="viewid" value="$viewid" />
 			<input type="hidden" name="fieldexternalid" value="$fieldexternalid" />
 			<input type="hidden" name="fieldexternalvalue" value="$fieldexternalvalue" />
@@ -121,7 +122,6 @@ $context.putPageValue("searchtype", $searchtype)
 			<input type="hidden" name="id" value="$!data.id" />
 		#end
 		
-		$context.putPageValue("view",$view)	
 		$context.putPageValue("origURL", "$apphome/assets/${asset.sourcePath}.html")
 		<div id="default-fields" class="fields-editor">
 			$pages.include("/$applicationid/components/xml/detaileditor.html?multiedit=$multiedit", $context)
@@ -135,13 +135,12 @@ $context.putPageValue("searchtype", $searchtype)
 						<a class="ajax btn btn-secondary" style="margin-right:10px;" data-targetdiv="$targetdiv" 
 							href="${edithome}/generalinformation/index.html?oemaxlevel=1&assetid=$asset.id&hitssessionid=$!hitssessionid">[[Cancel]]</a>
 						#else
-						##set( $args = "id=$id&candelete=$candelete&editpath=$editpath&parentid=$parentid&jumptomodule=$!jumptomodule&catalogid=$catalogid&searchtype=$searchtype&fieldexternalid=$fieldexternalid&fieldexternalvalue=$fieldexternalvalue&viewid=$viewid&viewpath=$view&permissionname=$!permissionname&hitssessionid=$!hitssessionid&selectlink=$!link")
-							#set( $args = "assetid=$!asset.getId()&candelete=$candelete&editpath=$editpath&catalogid=$catalogid&searchtype=$searchtype&viewid=$!viewid&viewpath=$!view&hitssessionid=$!hitssessionid")
+							#set( $args = "assetid=$!asset.getId()&candelete=$candelete&editpath=$editpath&catalogid=$catalogid&searchtype=$searchtype&viewid=$!viewid&hitssessionid=$!hitssessionid")
 							<a class="ajax btn btn-secondary" style="margin-right:10px;" data-targetdiv="$targetdiv" data-oemaxlevel="1" 
 								href="$siteroot$selfpath?save=false&${args}">[[Cancel]]</a>
 						#end
 						<a class="emdialog float-right btn btn-secondary"
-							 href="$siteroot$apphome/views/settings/modules/$!{moduleid}/metadata/views/dialog/index.html?viewid=${viewid}&viewpath=${view}&assettype=$!type" 
+							 href="$siteroot$apphome/views/settings/modules/$!{moduleid}/metadata/views/dialog/index.html?viewid=${viewid}&assettype=$!type" 
 							 data-dialogid="fieldpicker" data-hidefooter="true"
 							 title="[[Configure View]]"><i class="bi bi-gear-fill mr-1"></i> [[Fields]]</a>
 						

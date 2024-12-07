@@ -314,7 +314,7 @@ $(function () {
 			nodeid +
 			"&id=" +
 			nodeid +
-			"&viewid=categorygeneral&viewpath=category/categorygeneral";
+			"&viewid=categorygeneral";
 		$(this).attr("href", link);
 		$(this).data("dialogid", "categoryproperties");
 		$(this).emDialog();

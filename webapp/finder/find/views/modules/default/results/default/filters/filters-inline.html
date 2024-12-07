@@ -21,12 +21,7 @@
 
 #set($filtercount = 0)
 
-#set( $terms = $hits.getFilteredTerms($context,"advancedfilter") )
-
-#if(!$terms)
-	##check modulehits
-	#set( $terms = $modulehits.getFilteredTerms($context,"advancedfilter") )
-#end
+#set( $terms = $hits.getFilteredTerms("${module.id}advancedsearch",$userprofile) )
 
 #if(($hits.getSearchQuery().hasMainInput()) || ($terms && $terms.size() > 0))
 	<div class="d-flex align-items-center justify-content-between selectedfilters">

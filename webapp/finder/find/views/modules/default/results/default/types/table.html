@@ -1,264 +1,47 @@
-#set($moduleid = $context.findPathValue("module"))
+#ifnull($viewid)
+	#set($viewid = "${module.id}resultstable")
+	$context.putPageValue("viewid",$viewid)
+#end	
 
-##View ID and everthing is loaded by results/default/index.html
-
-
-#ifnull($resultdetails)
-	#ifnull($viewdata)
-		#set($viewdata = $mediaarchive.getCachedData("view", $viewid))
-	#end
-	#set($resultdetails = $searcher.getDetailsForView($viewdata, $userprofile))
-#end
-
-#ifnull($resultdetails)
-		No view  defined: $viewid on $searcher.getSearchType() 
-#end		
 <div id="emresultscontent">
+
+
+$context.putPageValue("showcaption", $page.isPropertyTrue("showcaption"))
+$context.putPageValue("resultstype", $context.getRequestParameter("resultstype"))
+
+$pages.include("${searchhome}/resultheader.html",$context)
+
+#if ( $hits && $hits.size() > 0 )
+
+    #set( $details = $searcher.getDetailsForView($viewid,$userprofile) )
+    
+	$context.putPageValue("details",$details)
 	
-	$pages.include("${searchhome}/resultheader.html",$context)
-
-	#if ( $hits.size() == 0 )
-		$pages.stream("$!{searchhome}/empty.html", $context)	
-	#else
-		
-		#if( $caneditdata )
-			#set( $readonly = false)
-		#else
-			#set( $readonly = true)
-		#end
-		
-		<form name="selectionform" action="$home$!{searchhome}/toggle.html">
-			<input type="hidden" name="hitsname" value="hits"/>
-		
-			<div class="tablecontainer">
-			
-			<div id="messagearea"> </div>
-			
-			#set($defaultview = $userprofile.getDefaultViewForModule($moduleid) )
-			#if($defaultview)
-			 	#set($defaultviewid = $defaultview.id )
-			#end
-			#if(!$defaultviewid)
-				#set($defaultviewid = "${moduleid}general" )
-			#end
-			
-			#set($targetdiv = "applicationmaincontent")
-			#set($targetlink = "$edithome/tabs/index.html")
-			
-			#if($moduleid == "order")
-				#set($targetdiv = "orderresultsarea")
-				#set($targetlink = "$!apphome/views/modules/order/edit/edit.html")
-			#end
-			
-			
-			<div id="emselectable" class="emselectablemodule adjustHeight"
-			>
-			
-				<table class="table table-striped table-hover" 
-						id="$!searchtype-main-results-table" 
-						data-resultsarea="resultsarea" 
-						data-hitssessionid="$!hits.sessionId">
-				
-				<thead>
-				<tr id="tableheader" class="tableheader" >
-				#if($content.isPropertyTrue("showselections",true))
-				
-					<th class="firstheader p-0" id="th-checkbox">
-						<div class="d-flex align-items-center">
-						<input name="pagetoggle" type="checkbox" #if($hits.isAllSelected()) checked #end title="[[Select All on This Page]]"  />
-						</div>
-					</th>
-				
-				#end
-				
-				#set( $edit = $context.getRequestParameter("editheader"))
-				#if( !$edit || $edit == "false")
-					#set( $edit = false)
-				#end
-					#set( $sortby = $hits.getSearchQuery().getSortBy() )
-					#foreach( $detail in $resultdetails)
-						<th id="th-$detail.id"
-							#if($detail.id != 'primarymedia')
-								class="sortable #if( $edit)editcolumnheader #end #if( $sortby.startsWith($detail.getId() ) ) currentsort #if( $sortby.endsWith("Up") ) up #else down #end #end tableheader-${detail.id}"
-								style='#if($detail.viewType =="asset" || $detail.viewType =="primarymedia" )width:180px;#end'
-								sortby="$detail.id"
-								data-sortby="$detail.id"
-							#else
-								class="tableheader-${detail.id}"
-							#end >
-							<div id="$detail.id" 
-									hitssessionid="$hits.getSessionId()"  
-									editing="$edit"> 
-									#text( $detail.name )
-									#if( $edit) 
-										<a class="baseemenableonhover ajax edit-table-header" 
-											data-targetdiv="$!{moduleid}resultsarea" 
-											data-oemaxlevel="1"
-											href="${searchhome}/addremovecolumns.html?searchtype=${moduleid}&${hits.getSearchType()}hitssessionid=$hits.getSessionId()&editheader=true&removecolumn=$detail.id">
-											<i class="bi bi-x"></i></a>
-									#elseif ($sortby.startsWith($detail.getId()))
-										#if($sortby.endsWith("Up"))
-											#set($sorticon="up")
-										#else
-											#set($sorticon="down")
-										#end	
-										#if($detail.id != 'primarymedia')
-											&nbsp;&nbsp;&nbsp;<i class="bi bi-caret-$sorticon-fill"></i>
-										#end
-									#end
-							</div>
-						</th>
-					#end
-					
-					#if(!$hiderowactions)
-					<th class="lastheader">
-						#if(!$tabletype)
-							#if(!$edit || $edit == "false")  
-								<a class="emdialog nav-hover text-center" 
-									id="table-editor-close" 
-									title="[[Edit Table Header]]"
-									href="$applink/views/settings/modules/${moduleid}/metadata/viewssystem/dialog/index.html?viewid=${moduleid}resultstable&viewpath=${moduleid}/${moduleid}resultstable" class="emdialog bg-brand summary-gear text-center" data-hidefooter="true" data-dialogid="defaulttablecolumns" data-oemaxlevel="4"><i class="bi bi-pencil-square"></i></a>
-									
-							#else
-								<a class="ajax table-edit-close" 
-									data-targetdiv="$!{moduleid}topcontainer"
-									data-oemaxlevel="2"
-									title="[[Cancel Edit Table Header]]"
-									href="${searchhome}/index.html?searchtype=$!moduleid&hitssessionid=$!hits.getSessionId()&editheader=false&moduleid=$!moduleid"><i class="bi bi-x-lg"></i></a>
-							#end
-						#end
-					</th>
-					#end
-				</tr>
-				</thead>
-				
-				<tbody>
-				
-				#set( $even = true )
+	<div class="table-autoresize-inner">	
+	
+		<table id="main-results-table" class="table table-striped table-hover emresultstable stackedplayertable" >
+				$pages.include("${searchhome}/types/tableheader.html",$context)
 				#set($count = 0)
-				#foreach ( $hit in $hits.getPageOfHits() )
-				
-						$context.putPageValue('data', $hit)
-					
-					#set( $clink = "$home${content.linkprefix}${cell.id}${content.linksuffix}" )
-				
-						<tr class="resultsdivdata" data-dataid="$!{hit.id}" data-rowname="#text($hit)">
-					
-					#if($content.isPropertyTrue("showselections",true))
-				
-					<td class="borderedcell checkbox" noclick="true"> 
-						
-						<input type="checkbox" class="selectionbox resultsselection" name="count" value="" #if($hits.isSelected(${hit.id})) checked #end data-dataid="${hit.id}" />
-				
-						##<input type="checkbox" class="moduleselectionbox" name="count" value="" #if($hits.isSelectedOnPage(${hit.id})) checked #end data-dataid='${hit.id}' data-hitssessionid='$hits.sessionId' />
-						<div id="check_${count}"></div>
-					</td>
-					#end
-				
-					#foreach( $detail in $resultdetails )
-						<td class="editfield highlightMe tablecell tablecell-$!detail.id tablecell-$!detail.rendertype"
-						>
-						#set($val =  $hit.get($detail.id) )
-						#set($value = $searcherManager.getValue($hit, $detail, $context.getLocale() ) ) 
-		
-						#ifnull($val)
-							#set($val = "")	
-						#end		
-						
-						$context.putPageValue('val',  $val)
-						$context.putPageValue('value',  $value)
-						
-						$context.putPageValue('detail',  $detail)
-						
-						#set($viewtype = $detail.viewType)
-						
-						#if($viewtype  == "tageditor")
-							#set($tagssearchlink = "$siteroot$apphome/views/modules/${searchtype}/index.html")
-							$context.putPageValue("tagssearchlink",$tagssearchlink)
-						#end
-						#if($viewtype  == "primarymedia")
-							#set($viewtype = "primarymediafolder")
-						#end
-						$context.putPageValue('viewtype',  $viewtype)
-						
-							<div id="edit_${hit.id}_$detail.id" class="popupdetails" data-id="${hit.id}">
-										$pages.include("$apphome/components/xml/detailreadonly.html", $context)
-								</div>
-						</td>
-					#end
-				
-					#if(!$hiderowactions)
-					<td class="rowactions" noclick="true">
-						<div class="actionicons">
-						$pages.include("${edithome}/actions/addtobookmarks.html?id=$!{hit.id}&moduleid=$moduleid", $context)
-						#if($desktop)
-		
-							#set($perm = $module.getBoolean("enableuploading") && $moduleid!="faceprofilegroup" && $moduleid!="asset" && $moduleid!="modulesearch")
-							#if($perm && $permissions.can($moduleid, "view_files"))
-							<a href="$!searchhome${edithome}/tabs/index.html?entityid=$!{hit.id}&entitytabopen=export&tabsection=pulllocal&immediate=true" 
-								class="emdialog px-1 mb-2" 
-								title="[[Bulk Download]]" 
-								data-moduleid="${moduleid}"
-								data-updateurl="true"
-								data-urlbar="$!searchhome/index.html?entityid=$!{hit.id}&entitytabopen=import"><i class="bi bi-cloud-arrow-down bi2"></i></a>
-							#end
-		
-							#if($perm && $permissions.can($moduleid, "upload_folders"))
-							<a href="$!searchhome${edithome}/tabs/index.html?entityid=$!{hit.id}&entitytabopen=import&tabsection=pushlocal&autoscan=true" 
-								class="emdialog px-1 mb-2" 
-								title="[[Bulk Upload]]"
-								id="pushlocal-$!{hit.id}"
-								data-moduleid="${moduleid}"
-								data-updateurl="true"
-								data-urlbar="$!searchhome/index.html?entityid=$!{hit.id}&entitytabopen=import"><i class="bi bi-cloud-arrow-up bi2"></i></a>
-							#end
-		
-							#if($module.getBoolean("enableuploading") && ($permissions.can($moduleid, "upload_files") || $permissions.can($moduleid, "upload_folders")) )
-								<a class="emdialog px-1 mb-2"
-									data-oemaxlevel="1"
-									data-moduleid="${moduleid}"
-									data-modulename="#text($module)"
-									data-entityid="$!{hit.id}"
-									data-entityname="$!{hit.name}"
-									href="$apphome/components/sidebars/localdrives/importexistingdialog.html"
-									title="[[Add to Auto Import]]" 
-									><i class="bi bi-folder-plus"></i></a>
-							#end
-						#else
-							#if($module.getBoolean("enableuploading") && 
-								($permissions.can($moduleid, "upload_files") ||
-								$permissions.can($moduleid, "upload_folders")) )
-								<a href="$!searchhome${edithome}/tabs/index.html?entityid=$!{hit.id}&entitytabopen=import" 
-								class="emdialog px-1 mb-2" 
-								title="[[Add New Folders]]" 
-								data-moduleid="${moduleid}"
-								data-updateurl="true"
-								data-urlbar="$!searchhome/index.html?entityid=$!{hit.id}&entitytabopen=import"><i class="bi bi-cloud-arrow-up bi2"></i></a>
-							#end
-							#if($permissions.can($moduleid, "downloadall"))
-								<a href="$!searchhome${edithome}/tabs/index.html?entityid=$!{hit.id}&entitytabopen=export&tabsection=downloadzip" 
-								class="emdialog px-1 mb-2" 
-								title="[[Download Folder]]" 
-								data-moduleid="${moduleid}"
-								data-updateurl="true"
-								data-urlbar="$!searchhome/index.html?entityid=$!{hit.id}&entitytabopen=export&tabsection=downloadzip"><i class="bi bi-cloud-arrow-down bi2"></i></a>
-							#end
-						#end
-						</div>
-					</td>
-					#end
-				
-				</tr>
-				#set($count = $count + 1)
+				#foreach( $hit in $hits.getPageOfHits() )
+					$context.putPageValue("hit", $hit)
+					$context.putPageValue("count", $count)
+					$context.putPageValue("sourcepath", $hit.sourcepath)
+					$pages.include("${searchhome}/types/row.html", $context)
+					#set($count = $count + 1)
 				#end
-				</tbody>
-				</table>
-			</div>
+		</table>
+	
+	</div>
+	#if ($resultview != "map" && $resultview != "stackedgallery")
+		<div class="table-pagination">
+			<p class="m-0">
+				<span>$!hits.getPageStart()</span> &mdash; <span>$!hits.getPageEnd()</span>  [[of]] <span>$!hits.total</span>
+			</p>
 		</div>
-	</form>
-		
-	<div class="clearfix"></div>
+	#end
 
+#else
+	$pages.stream("$!{searchhome}/empty.html", $context)
 #end
-
 </div>
+

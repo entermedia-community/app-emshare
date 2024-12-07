@@ -34,9 +34,16 @@ $context.putPageValue("searcher",$searcher)
 #end
 $context.putPageValue("edit", $edit)
 
+
+#set($addnew = $context.getRequestParameter("addnew"))
+#if($addnew)
+	#set($viewid = "${searchtype}addnew")
+#end
+
 #ifnull($viewid)
 #set($viewid = $context.getRequestParameter("viewid"))
 #end
+$context.putPageValue("viewid", $viewid)
 
 #if($ismulti)
 	$context.putPageValue("multiedit", $ismulti)
@@ -48,30 +55,12 @@ $context.putPageValue("edit", $edit)
 	class='entity-metadata entitymetadatamodal #if($edit=="true") entitymetadataediting #else entitymetadatapreview #end' 
 	data-id="$!id">
 
-	#if($ismulti)
-		#set($targetentitytabid = "entity-tab-multiedit")
-	#else
-		#set($addnew = $context.getRequestParameter("addnew"))
-		#if($addnew)
-			#set($viewid = "${searchtype}addnew")
-			#set($reloadtargets = $context.getRequestParameter("reloadtargets"))
-		
-		#end
-		#set($targetentitytabid = "entity-tab-#eid($id)")
-	#end
-
-	#set($view = "${module.id}/$viewid")
-
 	<form id="entitydataeditor" 
 		name="entitydataeditor" 
 		class="ajaxform checkCloseDialog" 
 		data-targetdiv="entitydialog"
 		data-oemaxlevel="1"
-		#if($addnew && $reloadtargets)
-			data-ajaxreloadtargets="$reloadtargets"
-		#else
-			data-ajaxreloadtargets="dataeditedreload"
-		#end
+		data-ajaxreloadtargets="dataeditedreload"
 		method="post"  
 		action="${edithome}/save.html"
 		enctype="multipart/form-data">
@@ -98,7 +87,6 @@ $context.putPageValue("edit", $edit)
 		<input name="entityid" type="hidden" value="$!id" />
 		<input name="entitymoduleid" type="hidden" value="$!entitymodule.id" />
 		<input name="viewid" type="hidden" value="$!viewid" />
-		<input name="view" type="hidden" value="$!view" />
 		<input name="entitymoduleviewid" type="hidden" value="$!entitymoduleviewid" />
 
 		#if(!$hitssessionid)
@@ -113,9 +101,6 @@ $context.putPageValue("edit", $edit)
 		#ifnotnull($showmedia)
 			<input name="showmedia" type="hidden" value="$showmedia" />
 		#end
-
-		$context.putPageValue("view", $view)
-		$context.putPageValue("viewid", $viewid)
 
 		#if($edit =="true")  ##TODO - Permissions
 			$pages.include("$apphome/views/modules/${module.id}/components/xml/detaileditor-entities.html?longform=true", $context)
@@ -154,7 +139,7 @@ $context.putPageValue("edit", $edit)
 					#end
 					#if($canviewmodulesettings)
 						<a class="emdialog btn btn-light px-2 mr-2" 
-							href="$siteroot$apphome/views/settings/modules/$!{searcher.searchType}/metadata/views/dialog/index.html?viewid=$viewid&viewpath=$!view"
+							href="$siteroot$apphome/views/settings/modules/$!{searcher.searchType}/metadata/views/dialog/index.html?viewid=$viewid"
 							title="[[Edit Fields]]" data-dialogid="fieldpicker" data-hidefooter="true">
 							<i class="bi bi-gear-fill mr-1"></i> [[Fields]]
 						</a>
