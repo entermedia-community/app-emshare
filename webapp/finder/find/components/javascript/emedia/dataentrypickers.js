@@ -172,7 +172,7 @@ lQuery(".listofentities .resultsdivdata").livequery("click", function (e) {
 	clickableresultlist.emDialog();
 });
 
-//To open an entity in a submodule. CB Lose Back button
+//To open an entity in a submodule.
 lQuery(".editdiv.pickersubmodules .resultsdivdata").livequery(
 	"click",
 	function (e) {
@@ -184,6 +184,7 @@ lQuery(".editdiv.pickersubmodules .resultsdivdata").livequery(
 
 		var clickableresultlist = row.closest(".clickableresultlist");
 		clickableresultlist.data("id", row.data("dataid")); //They picked an entity
+		
 		clickableresultlist.runAjax();
 	}
 );

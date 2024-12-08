@@ -142,7 +142,9 @@
 		}
 		var toastUid = $(anchor).data("uid");
 
-		var anchorData = anchor.data(); //anchor.data looses dynamically set data after ajax call, so we need to use this instead of anchor.data()
+		//console.log("Run Ajax",nextpage, options);
+
+		var anchorData = anchor.cleandata(); //anchor.data looses dynamically set data after ajax call, so we need to use this instead of anchor.data()
 		jQuery
 			.ajax({
 				url: nextpage,
