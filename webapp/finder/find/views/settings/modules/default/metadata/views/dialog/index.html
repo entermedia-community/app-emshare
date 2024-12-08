@@ -13,10 +13,19 @@
 
 #set( $ids = [])
 #set( $viewsroot = $content.viewsroot )
+
+#if( $viewdata.rendertable)
+	#set($searcher = $searcherManager.getSearcher($catalogid, $viewdata.rendertable))
+#else
+	#set($searcher = $searcherManager.getSearcher($catalogid, $module.id))
+#end	
+
+#set($details = false)
+#set($details = $searcher.getDetailsForView($viewdata, $userprofile))
+
+
 <div id="viewpicker" class="viewpickereditor" data-viewid="$viewid" data-oemaxlevel="1" data-url="$siteroot$viewsroot/dialog/index.html" >
 <div class="emsettingslist  pb-3" >
-	#set($details = false)
-	#set($details = $searcher.getDetailsForView($viewdata, $userprofile))
 	
 #if($canviewsettings)
 	<div class="pb-1" style="text-align:right;">
@@ -66,11 +75,6 @@
 		 
 			<input type="hidden" name="oemaxlevel" value="1"/>
 			<input type="hidden" name="viewid" value="$viewid"/>
-			#if( $viewdata.rendertable)
-				#set($searcher = $searcherManager.getSearcher($catalogid, $viewdata.rendertable))
-			#else
-				#set($searcher = $searcherManager.getSearcher($catalogid, $module.id))
-			#end	
 			<input id="tableid" name="tableid" type="hidden" value="$moduleid">
 
 			<div class="d-flex justify-content-between align-items-center mb-2">
