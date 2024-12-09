@@ -7,19 +7,19 @@
 #if(!$tabletype)
 	#set($tabletype = $context.getRequestParameter("tabletype"))
 #end
-#if(!$viewid)
+#ifnull($viewid)
 	#set($viewid = $context.getRequestParameter("viewid"))
 #end
+
+#set($viewdata = $mediaarchive.getCachedData("view",$viewid))
 
 <div id="moduleadvfilterpanel" class="advfilterpanel" >
 
 <div class="advfilterpanelcontent" >
 
-	#set( $view = "$moduleid/$!{moduleid}advancedfilter")
-
 	#set( $searcher = $mediaarchive.getSearcher($moduleid))
 	
-	$context.putPageValue("view", $view)
+	$context.putPageValue("viewid", $viewid)
 	$context.putPageValue("searcher", $searcher)
 	
 	#set($usestartswith = $page.isPropertyTrue('usestartswith'))
@@ -29,7 +29,6 @@
 	#if(!$resultslink)
 	#set($resultslink = $context.getRequestParameter("resultslink"))
 	#end
-	
 	
 	
 	<form  name="filterform" 
@@ -43,10 +42,7 @@
 			action="${searchhome}/search.html"
 			data-oemaxlevel="1"
 	>
-	
-		##We need 2 things passed in: $searcher, $view or $searcher $details
-		#set ($details = $searcher.getDetailsForView($view))
-
+		#set ($details = $searcher.getDetailsForView($viewdata,$userprofile))
 		
 		#ifnull($idprefix)
 			#set($idprefix = "search")
@@ -76,6 +72,7 @@
 			
 			#if ($detail.isLeaf() )
 				#set($filternode = $hits.findFilterValue($detail))
+				
 				$context.putPageValue("filternode",$filternode)
 				#ifnull($filternode)
 					#if( $viewtype != "list" && $viewtype != "entity" )  ##always show dates and text boxes

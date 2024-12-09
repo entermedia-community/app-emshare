@@ -15,19 +15,22 @@
 $context.putPageValue("searcher",$searcher)
 
 #set($viewid = "${module.id}addnew")
-#set($view = "${module.id}/$viewid")
 
 #set($action = "$apphome/views/modules/${module.id}/editors/entitysubmodules/addnewsave.html")
 
 #set($edithomeid = $context.getRequestParameter("edithomeid"))
+#set($ajaxreloadtargetsvalue = $context.getRequestParameter("ajaxreloadtargetsvalue"))
+
+
 <form id="searchentitydataeditor"
 	name="searchentitydataeditor"
 	action="$action" 
-	class="ajaxform checkCloseDialog autocloseform reloadentitydialog" 
+	class="ajaxform checkCloseDialog autocloseform" 
 	data-edithomeid="$!{edithomeid}"
-	data-closeedithomedialog="true"
+	data-closedialogid="entitysubmoduleaddexisting"
 	data-targetdiv="resultsdiv"
 	data-includeeditcontext="true"
+	data-ajaxreloadtargets="$!{ajaxreloadtargetsvalue}"
 	method="post"  
 	enctype="multipart/form-data"
 	>
@@ -35,7 +38,6 @@ $context.putPageValue("searcher",$searcher)
 		<input name="id" type="hidden" value="$!id" />
 			
 		$context.putPageValue("view", $view)
-		$context.putPageValue("viewid", $viewid)
 		#set($detailviewercolumns = 1)
 		
 		$pages.include("/$applicationid/components/xml/detaileditor-entities.html?longform=true&detailviewercolumns=$detailviewercolumns", $context)

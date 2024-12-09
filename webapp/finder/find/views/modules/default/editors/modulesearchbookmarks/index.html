@@ -1,0 +1,50 @@
+
+<div id="$edithomeid"  
+	class="editdiv "
+	data-autoreloadurl="${edithome}/index.html"
+	data-edithome="${edithome}"
+	
+	data-edithomeid="${edithomeid}"
+>
+
+	<div class="clickableresultlist heightExcludingHeaderFooter"
+		data-${module.id}hitssessionid="$!hits.getSessionId()"
+		data-includesearchcontext="false"
+		#ifnull( $searchcategoryid)
+			#set($previewurl = "$edithome/index.html")
+			data-url= "$previewurl"
+			data-targetdiv="$edithomeid"
+			data-oemaxlevel="1"
+		#end
+	>
+
+		#if( $organizedModules.isEmpty())
+			<div class="emnoresults">[[No modules added in this category]]</div>
+		#end
+
+		#set($selectedmoduleid = $context.getRequestParameter("selectedmoduleid"))
+		#ifnull($selectedmoduleid)
+			#set($selectedmodule = $organizedModules.iterator().next())
+		#end
+
+		#ifnull($selectedmodule)
+			#set($selectedmodule = $mediaarchive.getCachedData("module",$selectedmoduleid) )
+		#end
+
+		#ifnotnull($selectedmodule)
+			$context.putPageValue("selectedmodule",$selectedmodule)
+			$pages.include("${edithome}/categorybreadcrumb.html", $context)
+			<div class="d-flex h--36">
+				$pages.include("${edithome}/bymodule.html",$context)
+				<div id="searchcategoryresults" class="flex-grow-1">
+					#set($idhits = $organizedHits.get($selectedmodule.id))
+					$context.putPageValue("hits", $idhits)
+					$context.putPageValue("module", $selectedmodule)
+					#set($edithome = "$apphome/views/modules/${selectedmodule.id}/editors/listentities")
+					$context.putPageValue("edithome", $edithome)
+					$pages.include("${edithome}/index.html",$context)
+				</div>
+			</div>
+		#end
+	</div>
+</div>

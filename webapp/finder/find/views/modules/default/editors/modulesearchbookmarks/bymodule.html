@@ -1,0 +1,32 @@
+	<div class="searchcategorysidebar auto-active-container overflow-y">
+		
+		#foreach($module in $organizedModules)
+			#set($idhits = $organizedHits.get($module.id))
+
+			#set($moduleicon = "grid")
+			#if ($module.moduleicon)
+				#set($moduleicon = $module.moduleicon)
+			#end
+			#set($url = "$edithome/index.html?selectedmoduleid=${module.id}")
+			
+			#if( $module.id == "asset") ##this is safe
+				#set( $count = $idhits.size()) 
+			#else
+				#set($entitysourcetype = $modulehits.getActiveFilterValues().get("entitysourcetype")) 
+				#set($count = $entitysourcetype.getCount($module.id))
+			#end
+			
+			<div class="mb-2 auto-active-row #if($selectedmodule.id == $module.id) current #end">
+				<a href="$url" 
+					class="ajax btn btn-wide auto-active-link" 
+					data-targetdiv="${edithomeid}" 
+					data-updateurl="true" 
+					data-oemaxlevel="1"
+					data-includeeditcontext="false"
+					data-includesearchcontext="false"
+					>
+					<i class="bi bi-$!{moduleicon} module-icon ns"></i> <span>#text($module) ($!{count})</span>
+				</a>
+			</div>
+		#end
+	</div>

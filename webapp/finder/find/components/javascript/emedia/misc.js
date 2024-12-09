@@ -53,6 +53,7 @@ lQuery("a.toggleAjax").livequery("click", function (e) {
 	e.stopPropagation();
 	e.preventDefault();
 	var $this = $(this);
+	$this.data("noToast", true);
 	$this.runAjax(function () {
 		var focusParent = $this.closest(`.${$this.data("focusparent")}`);
 		if (focusParent.length) {
@@ -807,10 +808,11 @@ function intializeUI() {
 		closeallemdialogs();
 	});
 
+	//Remove this? Not useing ajax
 	$(document).on("click", ".modal", function (e) {
-		e.stopPropagation();
-		e.stopImmediatePropagation();
 		if (e.target.classList.contains("modal")) {
+			e.stopPropagation();
+			e.stopImmediatePropagation();
 			confirmModalClose($(this));
 		}
 	});
@@ -2188,24 +2190,47 @@ function intializeUI() {
 
 	lQuery(".summary-toggler").livequery("click", function (e) {
 		var toggler = $(this);
-		var results = toggler.closest(".resultsarea");
-		var container = $(".summary-container", results);
-		var isminimized = true;
 
+		var resultsdiv = toggler.closest(".resultsdiv");
+
+		var container = $(".summary-container", resultsdiv);
+		var isminimized = true;
+		
+		//Refresh the UI quickly
 		if (container.length == 0 || container.hasClass("closed")) {
 			isminimized = true;
 			container.removeClass("closed");
-			$(".summary-opener", results).addClass("closed"); //hide the button
-			$(".summary-container", results).removeClass("closed");
+			$(".summary-opener", resultsdiv).addClass("closed"); //hide the button
+			container.removeClass("closed");
 		} else {
 			isminimized = false;
 			container.addClass("closed");
-			$(".summary-opener", results).removeClass("closed");
+			$(".summary-opener", resultsdiv).removeClass("closed");
 		}
 		setTimeout(() => {
 			$(window).trigger("resize");
 		}, 210); //match the transition speed of summary sidebar 200ms
-		saveProfileProperty($(this).data("target"), !isminimized);
+
+		var preferencename = toggler.data("preferencename");
+		var url = resultsdiv.data("searchhome");
+		resultsdiv.data("url",url + "/changeminimizefilter.html");
+		
+		var toggle = !isminimized;
+		resultsdiv.data("profilepreference.value",toggle);
+		resultsdiv.data("profilepreference",preferencename);
+		if( isminimized)
+		{
+			resultsdiv.data("targetdiv",resultsdiv.attr("id"));
+			resultsdiv.data("oemaxlevel",1);
+		}
+		else
+		{
+			resultsdiv.data("targetdiv","null");
+			resultsdiv.data("oemaxlevel",0);
+		}
+		resultsdiv.runAjax();
+
+
 	});
 
 	/*
@@ -2378,11 +2403,18 @@ function intializeUI() {
 				.closest(".assetpicker")
 				.find(".render-type-thumbnail");
 			preview.html("");
-			var img = $("<img>");
-			img.attr("src", e.target.result);
-			img.attr("height", "140px");
-			img.attr("width", "auto");
-			preview.append(img);
+			if (/\.(jpe?g|png|gif|webp)$/i.test(assetName)) {
+				var img = $("<img>");
+				img.attr("src", e.target.result);
+				img.attr("height", "140px");
+				img.attr("width", "auto");
+				preview.append(img);
+			} else if (/\.(mp4|mov|mpeg|avi)$/i.test(assetName)) {
+				var img = $("<i>");
+				img.attr("class", "bi bi-film");
+				preview.append(img);
+			}
+
 			preview.append(
 				`<div class="p-1"><span class="mr-2">${assetName}</span><a href="#" class="removefieldassetvalue" title="Remove Selected Asset" data-detailid="${detailId}"><i class="bi bi-x"></i> Remove</a></div>`
 			);
@@ -3176,6 +3208,7 @@ lQuery(".entityNavHistory").livequery(function () {
 		link.data("entitymoduleviewid", backLink.entitymoduleviewid);
 		link.data("url", backLink.url);
 		link.attr("href", backLink.url);
+		//link.find("#showname").html();
 		link.show();
 	}
 });

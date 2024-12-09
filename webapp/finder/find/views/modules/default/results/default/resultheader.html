@@ -51,6 +51,10 @@ $context.putPageValue("entityrendertype", $entityrendertype)
 #set($preference = "minimize$!{moduleid}summary")
 #set($isminimized = $userprofile.getBoolean($preference))
 #set($showaddnew = $content.isPropertyTrue("showaddnew",true))
+#if($content.section == "favorites")
+	#set($showaddnew = false)
+#end
+
 <div id="resultsheader" class="resultsheader #if($!hits.getSelectionSize() > 0)hasselections#end">
 	<div id="sub-nav" class="search-views emsubnav sub-nav-$!moduleid">
 		<ul class="resultsnav">
@@ -61,7 +65,7 @@ $context.putPageValue("entityrendertype", $entityrendertype)
 						#ifnotnull($entity)
 							#set($addnew = "${edithome}/addnew.html")
 							<a href="$addnew"
-							class="resultsnavlink emdialog"
+							class="resultsnavlink emdialog btn-cta"
 							data-dialogid="entitypickeraddnew"
 							data-hidefooter="true"
 							data-includeeditcontext="true"
@@ -72,8 +76,8 @@ $context.putPageValue("entityrendertype", $entityrendertype)
 						
 						#ifnull($entity)
 							#set($addurl = "${edithome}/tabs/index.html?edit=true&addnew=true&viewid=$!{moduleid}addnew")
-							<a class="emdialog resultsnavlink btn-cta" 
-								href="$addurl" 
+							<a href="$addurl"
+								class="resultsnavlink emdialog btn-cta" 
 								data-addnew="true"
 								title="[[Add New Record]]">
 								<i class="bi bi-plus-lg mr-1"></i> [[Create New]]
@@ -168,15 +172,7 @@ $context.putPageValue("entityrendertype", $entityrendertype)
 					</li>
 					
 					
-				#if($canaddtofavorites && $librarycol.id != "${user.id}-favorites" )
-				<li><a class="dropdown-item ajax"
-					data-targetdivinner="empty"
-					data-alertmessage="[[Added to Bookmarks]]"
-					data-oemaxlevel="2" 
-				title="[[Add To Bookmarks]]"  
-				href="$!{siteroot}${apphome}/views/modules/asset/editor/favorite/favorite-add-multi.html?${hits.getSearchType()}hitssessionid=$hits.getSessionId()"
-				><i class="bi bi-bookmark-fill mr-2"></i> [[Bookmark]]</a></li>
-				#end
+
 				#if($permissions.can("searchcategory", "create"))
 					#set($edithome = "$apphome/views/modules/${module.id}/editors/picksearchcategory")
 					#set($addurl = "$!{edithome}/index.html") 
@@ -287,13 +283,15 @@ $context.putPageValue("entityrendertype", $entityrendertype)
 					#set($isminimized = false)
 				#end
 				<li class="resultsnavitem" style="border: none;">
-					<button class='btn summary-toggler summary-opener #if(!$isminimized) closed #end' data-target="$preference">
+					<button class='btn summary-toggler summary-opener #if(!$isminimized) closed #end' data-preferencename="$preference">
 						<i class="fas fa-angle-double-left"></i> [[Summary]]
 					</button>
 				</li>
 			</ul>
 		#end
 	</div>
-	$pages.include("${searchhome}/filters/filters-inline.html", $context)
+	#if($content.section != "favorites")
+		$pages.include("${searchhome}/filters/filters-inline.html", $context)
+	#end
 </div>
 

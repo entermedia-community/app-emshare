@@ -1,9 +1,15 @@
 #set($searchhome = "$apphome/views/modules/${module.id}/results/default")
 #set($detailid = $context.getRequestParameter("pickertargetfield"))
 #set($dataid = $context.getRequestParameter("dataid"))
-
 #set($detail = $mediaarchive.getSearcher($entitymodule.id).getDetail($detailid))
+#ifnull($detail)
+	[[No detail found]] $entitymodule $detailid
+#end
 #set($ismulti = $detail.isMultiValue())
+#ifnull($entity)
+	#set($entity = $context.getPageValue("newdata${entitymodule.id}"))
+#end
+
 #if($ismulti)
 	$entity.addValue($detailid, $dataid)
 #else
@@ -21,7 +27,7 @@
 	   		   
 			   #set($name = $searcherManager.getValue($row, $namefield, $context.getLocale()))
 			    #set($entityid = $row.id)
-			    #set($link = "${edithome}/tabs/index.html?entityid=$entity.id")
+			    #set($link = "${edithome}/tabs/index.html?entityid=$!row.id")
 			    <li>
 			    <a href="$link" 
 			    	class="emdialog" 

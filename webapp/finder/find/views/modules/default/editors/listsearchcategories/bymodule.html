@@ -1,11 +1,16 @@
 #if($organizedModules.size() > 0)
 	<div class="searchcategorysidebar auto-active-container overflow-y">
 		#if($organizedModules.size() > 1)
-		<div class="mb-2 auto-active-row current">
+		<div class="mb-2 auto-active-row #ifnull($selectedmodule) current #end">
 
 			#set($url = "$edithome/index.html?searchcategoryid=$searchcategory.id")
 
-			<a href="$url" class="ajax btn btn-wide auto-active-link"  data-targetdivinner="searchcategoryresults"  data-updateurl="true" data-oemaxlevel="1" data-hidenavigation="true">
+			<a href="$url" 
+				class="ajax btn btn-wide auto-active-link"  
+				data-targetdiv="${edithomeid}"  
+				data-updateurl="true" 
+				data-oemaxlevel="1" 
+				data-hidenavigation="true">
 				$context.putPageValue("thumbsize", "crop" )
 				#set( $primarymedia = $mediaarchive.getCachedAsset($searchcategory.primarymedia))
 				#ifnotnull($primarymedia)
@@ -34,19 +39,24 @@
 			$context.putPageValue("module", $module)
 			$context.putPageValue("moduleid", $module.id)
 			$context.putPageValue("componenthome", "$apphome/views/modules/$module.id/components")
-			#set( $favorites = $userprofile.get("favorites_"+$module.id))
-			$context.putPageValue("favorites", $favorites)
+			
 			#set($moduleicon = "grid")
 			#if ($module.moduleicon)
 				#set($moduleicon = $module.moduleicon)
 			#end
-			#set($entityurl = "$!siteroot$apphome/views/modules/$!{module.id}/index.html?$!{module.id}page=1&field=searchcategory&searchcategory.value=${searchcategory.id}&operation=exact")
-			#set( $entitysourcetype = $hits.getActiveFilterValues().get("entitysourcetype")) 
+				###set($entityurl = "$!siteroot$apphome/views/modules/$!{module.id}/index.html?$!{module.id}page=1&field=searchcategory&searchcategory.value=${searchcategory.id}&operation=exact")
+			
+			#set($url = "$edithome/index.html?searchcategoryid=$searchcategory.id&selectedmodule=${module.id}")
+			
+			#set($entitysourcetype = $hits.getActiveFilterValues().get("entitysourcetype")) 
 			#set($count = $entitysourcetype.getCount($module.id))
 			
-			<div class="mb-2 auto-active-row #if($organizedModules.size()  == 1) current #end">
-				<a href="$entityurl" class="ajax btn btn-wide auto-active-link" data-targetdivinner="searchcategoryresults" 
-					data-updateurl="true" data-oemaxlevel="1"
+			<div class="mb-2 auto-active-row #if($selectedmodule == $module.id) current #end">
+				<a href="$url" 
+					class="ajax btn btn-wide auto-active-link" 
+					data-targetdiv="${edithomeid}" 
+					data-updateurl="true" 
+					data-oemaxlevel="1"
 					data-includeeditcontext="false"
 					>
 					<i class="bi bi-$!{moduleicon} module-icon ns"></i> <span>#text($module) ($!{count})</span>

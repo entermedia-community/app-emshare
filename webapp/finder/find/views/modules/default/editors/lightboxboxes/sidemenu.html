@@ -27,9 +27,9 @@
 					#set( $moduleicon = "check-circle-fill")
 				#end
 				<i class="bi bi-${moduleicon}"></i>
-				#set( $val = $hitcounts.get( $box.getName() ) )
+				#set( $val = $box.getAssetCount() )
 				<span id="lightbox-stat-$!{box.id}" data-filecount="$!val">
-					#text($box) 
+					#text($box.getName()) 
 					#ifnotnull( $val )
 						(${val})
 					#end
@@ -40,9 +40,11 @@
 					#end
 				#end
 			</a>
-			<a href="$apphome/views/modules/$lightboxtype/editors/default/tabs/index.html?entityid=$box.id" class="ajax lightboxbtn-edit" data-targetdiv="entitydialog" data-oemaxlevel="1" data-includeeditcontext="false">
+			#if( $lightboxtype != "emedialightbox")
+			<a href="$apphome/views/modules/$lightboxtype/editors/default/tabs/index.html?entityid=$box.id&edit=true" class="ajax lightboxbtn-edit" data-targetdiv="entitydialog" data-oemaxlevel="1" data-includeeditcontext="false">
 				<i class="bi bi-eye ns"></i>
 			</a>
+			#end
 		</div>
 	#end
 

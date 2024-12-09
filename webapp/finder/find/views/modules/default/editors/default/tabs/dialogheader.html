@@ -2,7 +2,7 @@
 <div class="entity-header d-flex align-items-center justify-content-between">
 			<div class="d-flex align-items-center">
 				<a href="#" class="ajax entityNavBack" data-targetdiv="entitydialog" data-entityid="$entity.id" data-oemaxlevel="1" style="display: none;">
-					<i class="fas fa-arrow-left"></i>
+					<i class="fas fa-arrow-left"></i><span id="showname"></span>
 				</a>
 				
 				<h2 class="d-flex align-items-center">
@@ -51,7 +51,7 @@
 					<div class="entity-actions-bar">
 
 						$context.putPageValue("itemid", $entity.id)
-						$pages.include("${edithome}/tabs/favorites.html?id=$entity.id&moduleid=$module.id", $context)
+						$pages.include("${edithome}/actions/addtobookmarks.html?id=$entity.id&moduleid=$module.id", $context)
 
 						#if($permissions.can($moduleid, "shareentity"))
 							<a href="${edithome}/tabs/index.html" 
@@ -60,7 +60,7 @@
 							data-entityid="$!entity.getId()" 
 							data-entitymoduleid="$!entitymodule.id"
 							data-entitymoduleviewid="${module.id}entityexports"
-							data-$!{module.id}hitssessionid="$entityhits.getSessionId()"
+							data-$!{module.id}hitssessionid="$!entityhits.getSessionId()"
 							data-oemaxlevel="1"
 							title="[[Share]]"><i class="bi bi-share"></i></a>
 						#end
@@ -72,7 +72,7 @@
 							data-entitymoduleid="$!module.id"
 							data-targetdiv="entitydialog"
 							data-oemaxlevel="1"
-							data-$!{module.id}hitssessionid="$entityhits.getSessionId()"
+							data-$!{module.id}hitssessionid="$!entityhits.getSessionId()"
 							data-entitymoduleviewid="${module.id}entityactivityhistory"
 							title="[[Activity History]]"><i class="bi bi-clock-history"></i></a>
 						#end
@@ -93,14 +93,14 @@
 						($desktop && $permissions.can($moduleid, "importpushtoserver")))
 						<a
 							class='btn btn-sm btn-accent ajax tabactionimport #if($entitymoduleviewid=="${module.id}entityimports")enabledaction #end '
-							href="${edithome}/tabs/index.html" 
+							href="$apphome/views/modules/$module.id/editors/entityimports/tabs/index.html" 
 							data-entitymoduleviewid="${module.id}entityimports"
 							data-entityid="$!entity.getId()" 
 							data-entitymoduleid="$!module.id"
 							data-targetdiv="entitydialog"
 							data-oemaxlevel="1"
 							data-tabsection="upload"
-							data-hitssessionid="$entityhits.getSessionId()"
+							data-$!{module.id}hitssessionid="$!entityhits.getSessionId()"
 							title="[[Upload to]] #text($module) "><i class="bi bi-box-arrow-in-right mr-1"></i> [[Import]]							
 							</a>
 					#end	
@@ -119,7 +119,7 @@
 							data-entitymoduleid="$!module.id"
 							data-targetdiv="entitydialog"
 							data-oemaxlevel="1"
-							data-hitssessionid="$entityhits.getSessionId()"
+							data-$!{module.id}hitssessionid="$!entityhits.getSessionId()"
 							title="[[Download]] #text($module) ">[[Export]]&nbsp;<i class="bi bi-box-arrow-right ml-1"></i></a>
 					#end
 					
@@ -135,7 +135,7 @@
 							#if($previous)
 							<a class="text-white btn mr-1 emdialog btn-accent" 
 								href="${edithome}/tabs/index.html?entityid=$previous.getId()"
-								data-${module.id}hitssessionid="$entityhits.getSessionId()"
+								data-$!{module.id}hitssessionid="$!entityhits.getSessionId()"
 								title="#text($previous)">
 								<i class="bi bi-caret-left-fill"></i> <span>[[Prev]]</span>
 							</a>
@@ -143,7 +143,7 @@
 							#if($next)
 							<a class="text-white btn ml-1 emdialog btn-accent"  
 								href="${edithome}/tabs/index.html?entityid=$next.getId()"
-								data-${module.id}hitssessionid="$entityhits.getSessionId()" 
+								data-$!{module.id}hitssessionid="$!entityhits.getSessionId()"
 								title="#text($next)">
 								<span>[[Next]]</span> <i class="bi bi-caret-right-fill"></i>
 							</a>

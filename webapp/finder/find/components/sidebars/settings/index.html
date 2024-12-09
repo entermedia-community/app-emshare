@@ -67,21 +67,22 @@
 
 <div  class="ui-widget-content categories-widget no-padding-for-real">
 	<ul id="settings-menu" class="sidebar-list overflow-y">
-		
 		#set( $searcher = $searcherManager.getSearcher($catalogid,"settingsmenumodule") )
 		#set( $query = $searcher.createSearchQuery() )
 		#set( $null = $query.addExact("menulevel","toplevel") )
 		#set( $null = $query.addExact("moduleid","system") )						
 		$!query.addSortBy("ordering")
 		#foreach($screen in $searcher.search($query) )
-		<li id="$screen.id" >
-			<a href="$siteroot$apphome${screen.path}" 
-			    class="ajax auto-active-link ${screen.id}-system-menu" 
-				data-targetdiv="applicationmaincontent" 
-				data-updateurl="true" 
-				data-oemaxlevel="4" 
-				data-scrolltotop="true">$context.getText($screen.toString())</a>
-		</li>
+			#if($screen.id != "modules")
+			<li id="$screen.id" >
+				<a href="$siteroot$apphome${screen.path}" 
+					class="ajax auto-active-link ${screen.id}-system-menu" 
+					data-targetdiv="applicationmaincontent" 
+					data-updateurl="true" 
+					data-oemaxlevel="4" 
+					data-scrolltotop="true">$context.getText($screen.toString())</a>
+			</li>
+			#end
 		#end
 	</ul>
 </div>

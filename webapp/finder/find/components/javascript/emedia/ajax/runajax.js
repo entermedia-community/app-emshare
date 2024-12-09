@@ -32,12 +32,12 @@
 		}
 
 		var options = anchor.cleandata();
-
+		var editdiv = anchor.closest(".editdiv"); //This is used for lightbox tree opening
 		if (
 			anchor.data("includeeditcontext") === undefined ||
 			anchor.data("includeeditcontext") == true
 		) {
-			var editdiv = anchor.closest(".editdiv"); //This is used for lightbox tree opening
+			
 			if (editdiv.length > 0) {
 				var otherdata = editdiv.cleandata();
 				options = {
@@ -47,7 +47,13 @@
 			} else {
 				//console.warn("No editdiv found for includeeditcontext");
 			}
-			//	if (anchor.data("includesearchcontext") == true) {
+			
+		}
+		
+		if (
+			anchor.data("includesearchcontext") === undefined ||
+			anchor.data("includesearchcontext") == true
+		) {
 			var editresultsdiv = editdiv.find(".resultsdiv");
 
 			if (editresultsdiv.length > 0) {
@@ -59,7 +65,6 @@
 			} else {
 				//console.warn("No resultsdiv found for icludesearchcontext");
 			}
-			//	}
 		}
 
 		var activemenu;
@@ -132,10 +137,14 @@
 			}
 		}
 
-		$(window).trigger("showToast", [anchor]);
+		if (anchor.data("noToast") !== true) {
+			$(window).trigger("showToast", [anchor]);
+		}
 		var toastUid = $(anchor).data("uid");
 
-		var anchorData = anchor.data(); //anchor.data looses dynamically set data after ajax call, so we need to use this instead of anchor.data()
+		//console.log("Run Ajax",nextpage, options);
+
+		var anchorData = anchor.cleandata(); //anchor.data looses dynamically set data after ajax call, so we need to use this instead of anchor.data()
 		jQuery
 			.ajax({
 				url: nextpage,

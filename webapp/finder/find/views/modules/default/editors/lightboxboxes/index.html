@@ -41,19 +41,16 @@ $context.putPageValue("lightboxtype",$lightboxtype)
 #set($boxes =  $mediaarchive.getEntityManager().loadBoxesForModule($lightboxtype,$entitymodule, $entity, $context.getUser()))
 $context.putPageValue("boxes",$boxes)
 
-#set($hitcounts = $mediaarchive.getEntityManager().loadLightBoxCounts($module, $entity) )
-$context.putPageValue("hitcounts",$hitcounts)
-
 #set( $lightboxid = $context.getRequestParameter("lightboxid"))
 
 #ifnotnull($lightboxid)
 	#if( $lightboxid != "files")
-		#set($selectedbox =  $mediaarchive.getCachedData($lightboxtype,$lightboxid) )
+		#set($selectedbox =  $mediaarchive.getEntityManager().findLightBox($boxes,$lightboxid))
 	#end	
 #end
 
 #ifnull($lightboxid)
-	#set($selectedbox =  $mediaarchive.getEntityManager().findFirstSelectedLightBox($boxes,$hitcounts))
+	#set($selectedbox =  $mediaarchive.getEntityManager().findFirstSelectedLightBox($boxes))
 	#set($lightboxid = $selectedbox.getId())
 #end	
 
@@ -67,9 +64,10 @@ $context.putPageValue("selectedbox",$selectedbox)
 	#set( $selectedcategory = $defaultfolder)
 #end
 #ifnotnull($selectedbox)
-	#set($selectedcategory = $mediaarchive.getEntityManager().loadLightboxCategory($module, $entity, $selectedbox, $context.getUser()))
+	#set($selectedcategory = $selectedbox.getRootCategory() )
 	
 #end
+
 $context.putPageValue("selectedcategory",$selectedcategory)
 $context.putPageValue("category",$selectedcategory)
 
@@ -88,21 +86,15 @@ $context.putPageValue("category",$selectedcategory)
 	data-edithome="$!{edithome}"
 	data-autoreloadurl="$!{edithome}/index.html">
 
-
 	<div  class="tablightbox d-flex h-100" style="height: 100%;">
-		
 
 		#set($allassets = $mediaarchive.query("asset").exact("category",$defaultfolder).search($context) )
-		
 		$context.putPageValue("allassets",$allassets)
-
 		$pages.include("$edithome/sidemenu.html",$context)
-
 
 		<div  id="lightboxresults"  class="tabpulications-col submodulepicker entity-tab-content" >
 			
 			$pages.include("${edithome}/lightboxheader.html", $context)
-			
 			$context.putPageValue("entitydialogid", "entity")
 			
 			$context.putPageValue("category", $selectedcategory)

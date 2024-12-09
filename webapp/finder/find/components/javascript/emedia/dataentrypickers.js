@@ -172,7 +172,7 @@ lQuery(".listofentities .resultsdivdata").livequery("click", function (e) {
 	clickableresultlist.emDialog();
 });
 
-//To open an entity in a submodule. CB Lose Back button
+//To open an entity in a submodule.
 lQuery(".editdiv.pickersubmodules .resultsdivdata").livequery(
 	"click",
 	function (e) {
@@ -184,6 +184,7 @@ lQuery(".editdiv.pickersubmodules .resultsdivdata").livequery(
 
 		var clickableresultlist = row.closest(".clickableresultlist");
 		clickableresultlist.data("id", row.data("dataid")); //They picked an entity
+		
 		clickableresultlist.runAjax();
 	}
 );
@@ -268,6 +269,32 @@ lQuery(".pickerresults.assetpickentity .resultsdivdata").livequery(
 		}
 	}
 );
+
+// CB
+// 2024-12-04
+// Upload To dialog
+lQuery(".editdiv.pickerforuploading .resultsdivdata").livequery(
+	"click",
+	function (e) {
+		if (!isValidTarget(e)) {
+			return true;
+		}
+
+		var clicked = $(this);
+
+		var row = $(clicked.closest(".resultsdivdata"));
+		var rowid = row.data("dataid");
+		var clickableresultlist = clicked.closest(".clickableresultlist");
+
+		if (clickableresultlist.length) {
+			clickableresultlist.data("entityid", rowid);
+			clickableresultlist.emDialog( function(){
+				closeemdialog(clicked.closest(".modal"));
+			});
+		}
+	}
+);
+
 
 //CB: assign a asset to a field
 lQuery(".pickerresults.pickerpickasset .resultsdivdata").livequery(
@@ -422,6 +449,7 @@ lQuery(".editdiv.entitypickerassets .resultsdivdata").livequery(
 );
 
 //Upload to Entity. Still needed?
+/*
 lQuery(".pickerresults.pickandupload .resultsdivdata").livequery(
 	"click",
 	function (e) {
@@ -442,6 +470,7 @@ lQuery(".pickerresults.pickandupload .resultsdivdata").livequery(
 		}
 	}
 );
+*/
 
 //Assets or Categories and you import into a entity
 lQuery(".pickerresultscopy .resultsdivdata").livequery("click", function (e) {

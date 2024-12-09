@@ -1,0 +1,48 @@
+$context.putPageValue("hits", $searchcategoryhits)
+
+#set($topcategoryid = $context.getRequestParameter("searchcategory.value"))
+$context.putPageValue("topcategoryid", $topcategoryid)
+
+#set($moduleid = $module.id)
+
+#set($expandedmodule = $moduleid)
+
+#set( $parentmodule = $module)
+$context.putPageValue("topmodule", $parentmodule)
+
+#set($topentityid = $context.getRequestParameter("topentityid"))
+
+$context.putPageValue("topmoduleid", "searchcategory")
+$context.putPageValue("modulecount", $organizedModules.size())
+	
+$pages.include("${edithome}/categorybreadcrumb.html", $context)
+
+<div class="d-flex h--36">
+
+	#set($selectedmodule = $context.getRequestParameter("selectedmodule"))
+	#ifnull($selectedmodule)
+		#if($organizedModules.size() == 1)
+			#set($selectedmodule = $organizedModules.iterator().next().getId())
+		#end
+	#end
+	$context.putPageValue("selectedmodule",$selectedmodule)
+	
+	#ifnotnull( $organizedModules)
+		$pages.include("${edithome}/bymodule.html",$context)
+	#end
+	
+	<div id="searchcategoryresults" class="flex-grow-1">
+		#if($selectedmodule)
+			#set($bmodule = $mediaarchive.getCachedData("module",$selectedmodule) )
+		 	#set($idhits = $organizedHits.get($bmodule.id))
+			$context.putPageValue("hits", $idhits)
+			$context.putPageValue("module", $bmodule)
+			#set($searchhome = "$apphome/views/modules/${bmodule.id}/results/default")
+			$context.putPageValue("searchhome", $searchhome)
+			$pages.include("${searchhome}/results.html",$context)
+		#else
+			$pages.include("$searchhome/results.html?resultviewmodulesearch=grid",$context)
+		#end
+	</div>
+</div>
+

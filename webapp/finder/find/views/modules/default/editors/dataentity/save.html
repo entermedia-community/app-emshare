@@ -16,4 +16,13 @@
 	$context.putPageValue("ismultisaved", true)
 #end
 
+#*
+	#ifnotnull($data)
+		#if( $module.getBoolean("enableuploading"))
+			#set($defaultfolder =  $mediaarchive.getEntityManager().loadDefaultFolder($module, $data, $context.getUser()))
+			$context.putPageValue("defaultfolder", $defaultfolder)
+		#end
+	#end
+*#
+
 $pages.include("${edithome}/tabs/index.html", $context)
