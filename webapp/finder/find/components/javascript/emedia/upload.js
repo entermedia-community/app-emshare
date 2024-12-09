@@ -307,8 +307,6 @@ function bytesToSize(bytes, precision) {
 	}
 }
 
-var totaluploads = 0;
-
 $.fn.initUpload = function () {
 	var inputfield = $(this);
 	var uploadformarea = inputfield.closest(".uploadformarea");
@@ -381,8 +379,10 @@ $.fn.initUpload = function () {
 				.css("width", Math.ceil(val * 100) + "%");
 		},
 		onFinishOne: function (event, response, name, number, total) {
-			totaluploads++;
 			var div = uploadformarea.find(".uploadcompleteText");
+			var totaluploads = div.data("totaluploads");
+			totaluploads++;
+			div.data("totaluploads",totaluploads);
 			div.html( totaluploads + div.data("postfix") );
 
 			uploadformarea
