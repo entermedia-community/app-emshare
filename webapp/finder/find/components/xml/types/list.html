@@ -9,7 +9,9 @@
 #ifnull ($fieldname)
 	#set ($fieldname = $context.getRequestParameter('fieldname')) ##lastmodified
 #end
-#set ($view = $context.getRequestParameter('view')) 
+#ifnull($view)
+#set ($viewid = $context.getRequestParameter('viewid'))
+#end 
 ##we need to load up the existing detail object
 
 #ifnull($detail) ##this is new. To reduce complexity we want to just load up the detail all the time
@@ -21,8 +23,9 @@
 	#end
 ##	#set( $originalsearcher = $searcherManager.getSearcher($catalogid, $searchtype))
 	#set ($fieldname = $context.getRequestParameter('fieldname')) ##lastmodified
-	#set( $detail = $originalsearcher.getDetailForView($view, $fieldname, $user) )
+	#set( $detail = $originalsearcher.getDetailForView($viewid, $fieldname, $user) )
 #end
+
 
 #set ($fieldname = $detail.id)
 #set( $listid = $detail.getListId())
@@ -31,11 +34,11 @@
 ##set( $originalsearcher = $searcherManager.getSearcher($catalogid, $listid))
 
 <div id="$csslistid" class="listdetailpicker">
-##set( $lsearcher = $searcherManager.getSearcher( $detail.getListCatalogId(), $listid ))	
+#set( $lsearcher = $searcherManager.getSearcher( $detail.getListCatalogId(), $listid ))	
 ##require both 
 #set ($listfilterid = $detail.get("listfilterid") )   ##local field that we depend on to get the value, get the value
 #if( $listfilterid)
-	#set( $listfilterdetail = $originalsearcher.getDetailForView($view, $listfilterid, $user) )
+	#set( $listfilterdetail = $originalsearcher.getDetailForView($viewid, $listfilterid, $user) )
 	#set ($remotevalue = $context.getRequestParameter('foreignkeyvalue'))
 	#if(!$remotevalue)
 		#set( $remotevalue  = $data.get($listfilterid) )
@@ -56,7 +59,8 @@
 #if($query)
 	$query.setSortBy($detail.getDefaultSort())
 #end
-####$lsearcher.addShowOnly($context, $query) 
+####$lsearcher.addShowOnly($context, $query)
+ 
 #set ($types = $lsearcher.search($context, $query))
 #ifnull ($value)
 	#set ($value = $context.getRequestParameter('val'))
