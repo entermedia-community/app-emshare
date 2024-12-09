@@ -121,20 +121,18 @@ $(document).ready(function () {
 
 	lQuery(".startbutton").livequery("click", function (e) {
 		e.preventDefault();
-		var uploadformarea = $(this).closest(".uploadformarea");
-		if ($(this).prop("disabled")) {
+		var startbutton = $(this);
+		var uploadformarea = startbutton.closest(".uploadformarea");
+		if (startbutton.prop("disabled")) {
 			return;
 		}
 		var valid = $("#uploaddata").validate().form();
-		if (!valid) {
-			return;
+		if (!valid) {startbuttonn;
 		}
 
-		$(this).text("Uploading");
-
-		$(this).attr("disabled", "disabled");
-		//$(this).prop('disabled', true);
-		$(".viewassetsbtn").attr("disabled", "disabled");
+		startbutton.text(startbutton.data("textuploading"));
+		startbutton.attr("disabled", "disabled");
+		//startbutton.prop('disabled', true);
 		$(uploadformarea)
 			.find(".upload_field")
 			.triggerHandler("html5_upload.start");
@@ -252,89 +250,6 @@ $(document).ready(function () {
 			div.removeClass("filehover");
 		});
 	});
-	lQuery(".viewassetsbtn").livequery("click", function (e) {
-		e.preventDefault();
-
-		var btn = jQuery(this);
-		var options = btn.data();
-		var href = null;
-		var collectionid = jQuery("#currentcollection").val();
-		var nodeid = $("#nodeid").val();
-
-		if (btn.data("entityupload")) {
-			var tab_media = $("#tab_tab_media");
-			var selector = tab_media.data("tabid");
-			var container = $(selector);
-			if (container.length > 0) {
-				container.data("sortby", "assetaddeddateDown");
-				tab_media.trigger("click");
-				return;
-			}
-		}
-
-		var entitydialog  = btn.closest(".entitydialog ");
-		if (entitydialog .length > 0) {
-			autoreload(entitydialog);
-			return;
-		}
-
-		if (href == null && collectionid) {
-			href =
-				apphome +
-				"/views/modules/librarycollection/media/showcategory.html?collectionid=" +
-				collectionid +
-				"&clearfilters=true&sortby=assetaddeddateDown";
-			if (nodeid) {
-				href =
-					apphome +
-					"/views/modules/asset/viewfiles/" +
-					nodeid +
-					"/index.html?sortby=assetaddeddateDown";
-			} else {
-				var currentcollectionrootcategory = jQuery(
-					"#currentcollectionrootcategory"
-				).val();
-				if (currentcollectionrootcategory) {
-					href = href + "&nodeID=" + currentcollectionrootcategory;
-				}
-			}
-			options.oemaxlevel = btn.data("oemaxlevel");
-		} else if (href == null && nodeid) {
-			href =
-				apphome +
-				"/views/modules/asset/viewfiles/" +
-				nodeid +
-				"/index.html?sortby=assetaddeddateDown";
-			options.oemaxlevel = btn.data("oemaxlevel");
-		} else if (href == null) {
-			href =
-				apphome + "/views/modules/asset/index.html?sortby=assetaddeddateDown";
-			options.oemaxlevel = 2;
-		}
-		//console.log(href);
-		//document.location.href = href;
-		var targetdiv = btn.data("targetdivinner");
-
-		jQuery.ajax({
-			url: href,
-			async: false,
-			data: options,
-			success: function (data) {
-				jQuery("#" + targetdiv).html(data);
-				if (
-					typeof global_updateurl !== "undefined" &&
-					global_updateurl == false
-				) {
-					//globaly disabled updateurl
-				} else {
-					//Update Address Bar
-					history.pushState({}, null, href);
-					window.scrollTo(0, 0);
-				}
-				jQuery(window).trigger("resize");
-			},
-		});
-	});
 
 	//Detect Youtube Link
 	$("#uploaddescription").on("keyup", function () {
@@ -392,6 +307,8 @@ function bytesToSize(bytes, precision) {
 	}
 }
 
+var totaluploads = 0;
+
 $.fn.initUpload = function () {
 	var inputfield = $(this);
 	var uploadformarea = inputfield.closest(".uploadformarea");
@@ -427,7 +344,7 @@ $.fn.initUpload = function () {
 
 			uploadformarea.show();
 
-			var entityuploadPicker = uploadformarea.find(".entityuploadPicker");
+			var entityuploadPicker = uploadformarea.find(".entityuploadPicker");  //Remove This. This is silly. Just close yourself in Javascript 
 			if (entityuploadPicker) {
 				entityuploadPicker.hide();
 				entityuploadPicker.parent().find(".hideonupload").hide();
@@ -464,6 +381,10 @@ $.fn.initUpload = function () {
 				.css("width", Math.ceil(val * 100) + "%");
 		},
 		onFinishOne: function (event, response, name, number, total) {
+			totaluploads++;
+			var div = uploadformarea.find(".uploadcompleteText");
+			div.html( totaluploads + div.data("postfix") );
+
 			uploadformarea
 				.find(".progress_report_bar" + currentupload)
 				.css("width", "100%");
@@ -482,10 +403,9 @@ $.fn.initUpload = function () {
 			//do a search
 			if (!haderror) {
 				var startb = uploadformarea.find(".startbutton");
-				var complete = startb.data("complete");
-
-				$(startb).text(complete);
-				$(startb).prop("disabled", "disabled");
+				
+				startb.text(startb.data("textcomplete"));
+				
 				allfiles = new Array();
 
 				var completed = uploadformarea.find(".up-files-list-completed li span");
@@ -493,69 +413,16 @@ $.fn.initUpload = function () {
 					$(this).removeAttr("id");
 				});
 
-				uploadformarea.find(".filePicker").text("Pick More Files...");
-				uploadformarea.find(".upload_field").removeAttr("disabled");
-
-				var viewassets = uploadformarea.find(".viewassetsbtn");
-				viewassets.removeAttr("disabled");
-
-				if (viewassets.hasClass("autoclick")) {
-					viewassets.trigger("click");
+				//Go to the editor and submit its ajax
+				var editdiv = startb.closest(".uploadshowuploads");
+				if(editdiv.length)
+				{
+					editdiv.runAjax();
 				}
-
-				var form = $(startb.closest("form"));
-
-				if (form.hasClass("autofinishaction")) {
-					var finishaction = form.data("finishaction");
-					form.attr("action", finishaction);
-					//TODO remove the last file?
-					//form.submit();
-
-					var targetdiv = form.data("finishtargetdiv");
-					form.ajaxSubmit({
-						type: "get",
-						target: "#" + $.escapeSelector(targetdiv),
-					});
+				else
+				{
+					startb.prop("disabled", false);
 				}
-				/*
-		    				   //new ajaxautoreload
-								var classes = uploadformarea.data("ajaxreloadtargets"); //assetresults, projectpage, sidebaralbums
-								if(classes) 
-								{
-									var splitnames = classes.split(",");
-									$.each(splitnames,function(index,classname)
-									{
-										$("." + classname).each(function(index,div)
-										{
-											if(!$(div).is(':hidden')) {
-									  	 		autoreload($(div));
-									  	 	}
-										});
-									});
-								}*/
-
-				/*
-		    				   if(uploadformarea.data("onupload")=="reloadentity") {
-		    					   var entityid=uploadformarea.data("entityid");
-		    					   if(entityid) {
-		    						   //Todo create a generic method
-		    						   setTimeout(()=> {
-		    							   $('a[data-entityid="'+entityid+'"].entity-tab-label').trigger("click");
-		    						      }
-		    						      ,2000);
-		    						   
-		    					   }
-		    				   }
-		    				   else if(uploadformarea.data("onupload")=="reloadcontainer") {
-								   var container_ = uploadformarea.data("container");
-								   var container = uploadformarea.closest("."+container_);
-								   if(container.length >0) { 
-		    					   var entityid=uploadformarea.data("entityid");
-			    					   
-		    					   }
-		    				   }*/
-				//$("#uploadsfinishedtrigger").trigger("submit");
-				//$(".media_results_tab").data("tabloaded",false);
 			}
 		},
 	});
@@ -597,10 +464,10 @@ function filesPicked(_, files, uploadformarea = null) {
 	uploadformareainline.find("#completed-uploads").show();
 
 	//Upload page
-	uploadformarea.find(".uploadinstructionsafter").hide();
 	var startb = uploadformarea.find(".startbutton");
-	//$(startb).text("Upload");
-	$(startb).prop("disabled", false);
+	startb.text(startb.data("textstartupload"));
+
+	startb.prop("disabled", false);
 	uploadformarea.find(".uploadinstructionsafter").show();
 	uploadformarea.find(".showonselect").show();
 

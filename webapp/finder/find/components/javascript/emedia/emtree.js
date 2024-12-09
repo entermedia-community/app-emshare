@@ -352,7 +352,7 @@ $(function () {
 				var maxlevel = 1;
 				gotopage(tree, node, maxlevel, url, options);
 			} else {
-				var url = tree.data("home") + "/views/modules/asset/add/start.html";
+				var url = tree.data("home") + "/views/modules/asset/editors/assetupload/index.html";
 				var maxlevel = 1;
 				//options["oemaxlevel"] = $(this).data("oemaxlevel");
 				options["oemaxlevel"] = tree.data("uploadmaxlevel");

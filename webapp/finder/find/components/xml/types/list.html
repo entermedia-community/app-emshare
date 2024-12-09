@@ -12,14 +12,14 @@
 #set ($view = $context.getRequestParameter('view')) 
 ##we need to load up the existing detail object
 
-#if( !$detail) ##this is new. To reduce complexity we want to just load up the detail all the time
+#ifnull($detail) ##this is new. To reduce complexity we want to just load up the detail all the time
 	#if(!$searchtype)
 		#set ( $searchtype = $context.getRequestParameter("searchtype") )
 	#end
 	#if( !$searchtype)
 		searchtype not found!
 	#end
-	#set( $originalsearcher = $searcherManager.getSearcher($catalogid, $searchtype))
+##	#set( $originalsearcher = $searcherManager.getSearcher($catalogid, $searchtype))
 	#set ($fieldname = $context.getRequestParameter('fieldname')) ##lastmodified
 	#set( $detail = $originalsearcher.getDetailForView($view, $fieldname, $user) )
 #end
@@ -28,10 +28,10 @@
 #set( $listid = $detail.getListId())
 #set( $csslistid = "listdetail_$fieldname")
 
-#set( $originalsearcher = $searcherManager.getSearcher($catalogid, $listid))
+##set( $originalsearcher = $searcherManager.getSearcher($catalogid, $listid))
 
 <div id="$csslistid" class="listdetailpicker">
-#set( $lsearcher = $searcherManager.getSearcher( $detail.getListCatalogId(), $listid ))	
+##set( $lsearcher = $searcherManager.getSearcher( $detail.getListCatalogId(), $listid ))	
 ##require both 
 #set ($listfilterid = $detail.get("listfilterid") )   ##local field that we depend on to get the value, get the value
 #if( $listfilterid)
