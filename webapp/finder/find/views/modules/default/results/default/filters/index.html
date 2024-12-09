@@ -11,7 +11,6 @@
 	#set($viewid = $context.getRequestParameter("viewid"))
 #end
 
-
 #set($viewdata = $mediaarchive.getCachedData("view",$viewid))
 
 <div id="moduleadvfilterpanel" class="advfilterpanel" >
@@ -44,6 +43,7 @@
 			data-oemaxlevel="1"
 	>
 		#set ($details = $searcher.getDetailsForView($viewdata,$userprofile))
+		
 		#ifnull($idprefix)
 			#set($idprefix = "search")
 		#end
@@ -72,6 +72,7 @@
 			
 			#if ($detail.isLeaf() )
 				#set($filternode = $hits.findFilterValue($detail))
+				
 				$context.putPageValue("filternode",$filternode)
 				#ifnull($filternode)
 					#if( $viewtype != "list" && $viewtype != "entity" )  ##always show dates and text boxes
