@@ -24,20 +24,19 @@
 							#set($label = "$entity.samplecount")
 						#end
 					#else
+						#text($module) <i class="bi bi-chevron-right mx-1 bi-small"></i>
 						#if($ismulti)
-							#text($module) <i class="bi bi-chevron-right mx-1 bi-small"></i> 
 							[[Multi Edit]] $!entity.getSelectedResults().size() [[Items]]		
 						#else	
 							#if($addnew=='true')
-								#text($module) <i class="bi bi-chevron-right mx-1 bi-small"></i>
 								#set($label = "[[Add New]]")
 								#text($label)	
 								$context.putPageValue("addnew", $addnew)
 							#elseif($module.getValue("customname"))
-								#set($label = $searcherManager.renderMask($entity, $searcher.getDetail("name") ,$module.getValue("customname"), null, $context.getLocale())) 
+								#set($detail= $mediaarchive.getSearcher($module.id).getDetail("name"))
+								#set($label = $searcherManager.renderMask($entity, $detail ,$module.getValue("customname"), null, $context.getLocale())) 
 								#text($label) 
 							#else
-								#text($module) <i class="bi bi-chevron-right mx-1 bi-small"></i>
 								#set($label = $!entity.getName($context))
 								#text($label) 				
 							#end
