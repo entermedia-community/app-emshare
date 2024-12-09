@@ -31,7 +31,9 @@
 			#end
 			
 			$context.putPageValue("searcher", $userSearcher)	 
-			$context.putPageValue("view", "user/useredit")	
+			#set( $details = $mediaarchive.getPropertyDetailsArchive().getViewFields("user", "useredit",$userprofile))
+			
+			$context.putPageValue("details", $details)
 			$context.putPageValue("data", $selectedUser)	
 			<div class="clearfix">
 			$pages.include("/${applicationid}/components/xml/detaileditorcss.html", $context)
