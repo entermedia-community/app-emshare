@@ -66,9 +66,9 @@
 				if (mode == "container") {
 					w = colwidthpx - 8;
 					newheight = cell.find(".emcategory-inner").height();
-					console.log({
+					/*console.log({
 						newheight: newheight,
-					});
+					});*/
 					a = w / h;
 					var $img = cell.find("img");
 					if ($img.length > 0) {
@@ -97,7 +97,7 @@
 
 				cell.css("top", runningtotal + "px");
 				cell.width(eachwidth);
-				console.log(newheight);
+				//console.log(newheight);
 				cell.height(newheight);
 				cell.css("min-height", newheight + "px");
 
@@ -146,7 +146,7 @@
 
 	function gridupdatepositions(grid) {
 		var resultsdiv = grid.closest(".lightboxresults");
-		if (!resultsdiv) {
+		if (resultsdiv.length < 1) {
 			resultsdiv = grid.closest(".resultsdiv");
 		}
 
@@ -195,7 +195,7 @@
 			});
 
 		var resultsdiv = grid.closest(".lightboxresults");
-		if (!resultsdiv) {
+		if (resultsdiv.length < 1)  {
 			resultsdiv = grid.closest(".resultsdiv");
 		}
 
@@ -232,11 +232,12 @@
 		}
 
 		stopautoscroll = true;
-		var session = resultsdiv.data("hitssessionid");
+		var sessionname = resultsdiv.data("hitssessionname");
+		var session = resultsdiv.data(sessionname);
 		page = page + 1;
 		resultsdiv.data("pagenum", page);
 
-		var stackedviewpath = resultsdiv.data("stackedviewpath");
+		var stackedviewpath = grid.data("stackedviewpath");
 		// if (!stackedviewpath) {
 		// 	stackedviewpath = "/brickvertical.html";
 		// }
@@ -244,36 +245,43 @@
 		// var searchhome = resultsdiv.data("searchhome");
 		// debugger;
 		var link = stackedviewpath;
+		if(link == undefined)
+		{
+			console.log("No stackedviewpath defined");
+			return;
+		}	
 		var collectionid = $(resultsdiv).data("collectionid");
 		var params = {
-			hitssessionid: session,
 			page: page,
 			oemaxlevel: "1",
 		};
+		params[sessionname] = session;
+		
 		if (collectionid) {
 			params.collectionid = collectionid;
 		}
 
 		console.log("Loading page: #" + page + " - " + link);
-
-		$.ajax({
-			url: link,
-			xhrFields: {
-				withCredentials: true,
-			},
-			cache: false,
-			data: params,
-			success: function (data) {
-				var jdata = $(data);
-				var code = $(".brickvertical", jdata).html();
-				$(grid).append(code);
-				$(window).trigger("resize");
-				stopautoscroll = false;
-				//if (getOverlay().is(":hidden")) {
-				//checkScroll(grid);
-				//}
-			},
-		});
+	
+			$.ajax({
+				url: link,
+				xhrFields: {
+					withCredentials: true,
+				},
+				cache: false,
+				data: params,
+				success: function (data) {
+					var jdata = $(data);
+					var code = $(".brickvertical", jdata).html();
+					$(grid).append(code);
+					$(window).trigger("resize");
+					stopautoscroll = false;
+					//if (getOverlay().is(":hidden")) {
+					//checkScroll(grid);
+					//}
+				},
+			});
+		
 	}
 
 	var methods = {
