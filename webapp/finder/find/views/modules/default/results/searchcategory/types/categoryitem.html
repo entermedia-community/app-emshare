@@ -41,14 +41,9 @@
   data-entitymoduleid="$!{moduleid}"
   data-rendertype="entity"
 >
-	#if($moduleid == "searchcategory" && $permissions.can($module.id, "edit"))
-	<a href="$apphome/views/modules/$moduleid/editors/default/tabs/index.html?edit=true" data-entityid="${entityid}" class="emdialog emcategory-edit">
-		<i class="bi bi-pencil-square"></i>
-	</a>
-	#end
 
 	#set($pickertarget = $context.getRequestParameter("pickertarget"))
-	<div class="emcategory-inner assetdropentity drop-over" 
+	<div class="emcategory-inner" 
 		id="attachedmedia$entityid" 
 		data-moduleid="$!moduleid" 
 		data-entityid="$!entityid" 
@@ -57,19 +52,30 @@
 		data-targetdiv="emgridentity$!moduleid$!entityid">
 		<div class="emcategory-thumb">
 			#if($primarymedia)
+
+				#set($assetwidth = $mediaarchive.getRealImageWidth($primarymedia)) 
+				#set($assetheight = $mediaarchive.getRealImageHeight($primarymedia)) 
+				<div class="imgDim d-none" data-width="$assetwidth" data-height="$assetheight"></div>
+				
 				$context.putPageValue("thumbsize", "thumbnail" )
-				#set($hit = $primarymedia)
-				$context.putPageValue("hit", $hit) 
-				$context.putPageValue("asset", $primarymedia)
-				#set( $assetrendertype = $mediaarchive.getMediaRenderType($hit.fileformat))
-				$pages.include("${searchhome}/thumbnails/${assetrendertype}.html", $context)
+				$context.putPageValue("hit", $primarymedia) 
+				#set( $assetrendertype = $mediaarchive.getMediaRenderType($primarymedia.fileformat))
+				$context.putPageValue("searchhome", "${apphome}/views/modules/asset/results/default")
+				$pages.include("${apphome}/views/modules/asset/results/default/thumbnails/${assetrendertype}.html", $context)
 			#else
 				<i class="bi bi-${moduleicon} module-icon"></i>			
 			#end 
 		</div>
-		<span class="emcategory-name">	
-			#text($!entity)
-		</span>
+		<p class="emcategory-name">	
+			<span>
+				#text($!entity) 	
+			</span>
+			#if($moduleid == "searchcategory" && $permissions.can($module.id, "edit"))
+			<a href="$apphome/views/modules/$moduleid/editors/default/tabs/index.html?edit=true" data-entityid="${entityid}" class="emdialog emcategory-edit">
+				<i class="bi bi-pencil-square"></i>
+			</a>
+			#end
+		</p>
 		#ifnotnull($entity.longcaption)
 		<div class="emcategory-desc">
 			<p>$entity.longcaption</p>

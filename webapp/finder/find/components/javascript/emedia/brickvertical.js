@@ -1,7 +1,5 @@
 (function ($) {
 	var stopautoscroll = false;
-	var gridcurrentpageviewport = 1;
-	var gridlastscroll = 0;
 
 	function verticalGridResize(grid) {
 		//TODO: Put these on grid.data()
@@ -43,7 +41,7 @@
 
 		var autosort = true;
 
-		eachwidth = eachwidth - 8;
+		eachwidth -= 8;
 		var colwidthpx = totalavailablew / maxcols;
 		var colnum = 0;
 		$(grid)
@@ -54,15 +52,37 @@
 				var h = cell.data("height");
 				w = parseInt(w);
 				h = parseInt(h);
-				if (isNaN(w) || w == 0) {
+				var a = w / h;
+
+				if (isNaN(w) || w == 0 || isNaN(h) || h == 0) {
 					w = eachwidth;
 					h = eachwidth;
+					a = w / h;
 				}
-				var a = 1;
-				a = w / h;
+
+				var newheight = Math.floor(eachwidth / a);
+
+				var mode = cell.data("mode");
+				if (mode == "container") {
+					w = colwidthpx - 8;
+					newheight = cell.find(".emcategory-inner").height();
+					console.log({
+						newheight: newheight,
+					});
+					a = w / h;
+					var $img = cell.find("img");
+					if ($img.length > 0) {
+						if (!$img.height()) {
+							var imgDim = cell.find(".imgDim");
+							a = imgDim.data("width") / imgDim.data("height");
+							if (isNaN(a)) a = 1;
+							newheight = cell.height() + w / a;
+						}
+					}
+				}
 
 				cell.data("aspect", a);
-				var newheight = Math.floor(eachwidth / a);
+
 				if (autosort) {
 					colnum = shortestColumn(colheight, colnum);
 				}
@@ -77,7 +97,9 @@
 
 				cell.css("top", runningtotal + "px");
 				cell.width(eachwidth);
+				console.log(newheight);
 				cell.height(newheight);
+				cell.css("min-height", newheight + "px");
 
 				var colx = colwidthpx * colnum;
 				cell.css("left", colx + "px");
@@ -88,35 +110,6 @@
 					colnum = 0;
 				}
 			});
-		/*
-	//Gray boxes on bottom    
-   var maxheight = 0;
-   for (let column in Object.keys(colheight)) {
-		if( colheight[column] > maxheight)
-		{
-			maxheight = colheight[column]; 
-		}
-    }
-
-	$(".grid-filler",grid).remove();
-	
- 	for (let column in Object.keys(colheight)) 
- 	{
-		var onecolheight = colheight[column] + 8;
-		if( onecolheight < maxheight)
-		{
-			var cell = $('<div></div>');
-			cell.addClass("grid-filler");
-			cell.css("top",onecolheight + "px");
-	        var colx = colwidthpx * column;
-			cell.css("left",colx + "px");
-      		cell.width(eachwidth);
-      		var h = maxheight - onecolheight - 4;
-      		cell.height(h);
-   	 	    grid.append(cell); //This is slow 25ms
-		}
-    }
-*/
 		checkScroll(grid);
 	}
 
@@ -180,9 +173,6 @@
 	}
 
 	function checkScroll(grid) {
-		var appdiv = $("#application");
-		var siteroot = appdiv.data("siteroot") + appdiv.data("apphome");
-		var componenthome = appdiv.data("siteroot") + appdiv.data("componenthome");
 		var currentscroll = $(".scrollview").scrollTop();
 
 		var gridcells = $(".masonry-grid-cell", grid);
