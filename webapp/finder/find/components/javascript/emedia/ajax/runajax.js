@@ -37,7 +37,6 @@
 			anchor.data("includeeditcontext") === undefined ||
 			anchor.data("includeeditcontext") == true
 		) {
-			
 			if (editdiv.length > 0) {
 				var otherdata = editdiv.cleandata();
 				options = {
@@ -47,9 +46,8 @@
 			} else {
 				//console.warn("No editdiv found for includeeditcontext");
 			}
-			
 		}
-		
+
 		if (
 			anchor.data("includesearchcontext") === undefined ||
 			anchor.data("includesearchcontext") == true
@@ -289,25 +287,46 @@ $(document).ajaxError(function (e, jqXhr, settings, exception) {
 var runAjaxOn = {};
 var ajaxRunning = false;
 
+var statusCallCount = {};
 runAjaxStatus = function () {
 	//for each asset on the page reload it's status
 	//console.log(uid);
 
 	for (const [uid, enabled] of Object.entries(runAjaxOn)) {
+		if (uid) {
+			if (statusCallCount[uid] === undefined) {
+				statusCallCount[uid] = 0;
+			} else {
+				statusCallCount[uid]++;
+			}
+		}
 		if (!enabled || enabled === undefined) {
+			if (statusCallCount[uid]) {
+				delete statusCallCount[uid];
+			}
 			continue;
 		}
 		var cell = $("#" + uid);
-		if (cell.length == 0) {
-			continue;
-		}
 
-		if (!cell.hasClass("ajaxstatus")) {
-			continue; //Must be done
+		if (cell.length == 0 || !cell.hasClass("ajaxstatus")) {
+			delete statusCallCount[uid];
+			continue;
 		}
 
 		if (!isInViewport(cell[0])) {
+			delete statusCallCount[uid];
 			continue;
+		}
+
+		// Warn if ajax status is called more than 10 times
+		var WARN_CAP = 20;
+		if (
+			statusCallCount[uid] >= WARN_CAP &&
+			statusCallCount[uid] % WARN_CAP == 0
+		) {
+			console.warn(
+				"Ajax Status for " + uid + " ran " + statusCallCount[uid] + " times"
+			);
 		}
 
 		var path = cell.attr("ajaxpath");
