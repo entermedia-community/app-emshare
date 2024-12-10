@@ -2,7 +2,6 @@
 #set( $readonly = "false" )
 #set( $readonly = $context.getRequestParameter("detailsreadonly"))
 
-
 #ifnull($viewid)
 	#set($viewid = $context.getRequestParameter("viewid"))
 #end
@@ -10,16 +9,13 @@
 #set( $viewdata = $mediaarchive.getCachedData("view",$viewid) )
 
 #ifnull($details)
-	#set ($details = $searcher.getDetailsForView($viewid, $context.getUserProfile()))
+	#set ($details = $viewdata.getDetailsForView($context.getUserProfile()))
 #end	
-$details
+
 #ifnull($details)
-	[[404 on view]]:  $searcher.getCatalogId() $searcher.getSearchType() $viewid
+	No viewdata found $content.path
 #end
-##leagacy check. We used to pass in the $details
-#if( !$details)
-	#set ( $details = $searcher.getPropertyDetails() )
-#end
+
 <div class="oeinputform validate-inputs">
 	<div id="allerrors">
 	</div>
