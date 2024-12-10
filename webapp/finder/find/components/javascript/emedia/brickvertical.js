@@ -142,7 +142,7 @@
 
 	function gridupdatepositions(grid) {
 		var resultsdiv = grid.closest(".lightboxresults");
-		if (!resultsdiv) {
+		if (resultsdiv.length < 1) {
 			resultsdiv = grid.closest(".resultsdiv");
 		}
 
@@ -191,7 +191,7 @@
 			});
 
 		var resultsdiv = grid.closest(".lightboxresults");
-		if (!resultsdiv) {
+		if (resultsdiv.length < 1) {
 			resultsdiv = grid.closest(".resultsdiv");
 		}
 
@@ -228,11 +228,12 @@
 		}
 
 		stopautoscroll = true;
-		var session = resultsdiv.data("hitssessionid");
+		var sessionname = resultsdiv.data("hitssessionname");
+		var session = resultsdiv.data(sessionname);
 		page = page + 1;
 		resultsdiv.data("pagenum", page);
 
-		var stackedviewpath = resultsdiv.data("stackedviewpath");
+		var stackedviewpath = grid.data("stackedviewpath");
 		// if (!stackedviewpath) {
 		// 	stackedviewpath = "/brickvertical.html";
 		// }
@@ -240,12 +241,17 @@
 		// var searchhome = resultsdiv.data("searchhome");
 		// debugger;
 		var link = stackedviewpath;
+		if (link == undefined) {
+			console.log("No stackedviewpath defined");
+			return;
+		}
 		var collectionid = $(resultsdiv).data("collectionid");
 		var params = {
-			hitssessionid: session,
 			page: page,
 			oemaxlevel: "1",
 		};
+		params[sessionname] = session;
+
 		if (collectionid) {
 			params.collectionid = collectionid;
 		}
