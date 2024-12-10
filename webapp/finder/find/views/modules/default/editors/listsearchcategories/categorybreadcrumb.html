@@ -5,12 +5,9 @@
 
 		<div class="d-flex align-items-center">
 			#ifnull($searchcategory)
-				#if($permissions.can($moduleid, "create") && $moduleid!="faceprofilegroup" && $moduleid!="order")
-				#set($addurl = "${edithome}/tabs/index.html?edit=true&addnew=true&viewid=$!{moduleid}addnew")
-					<a class="emdialog btn-cta" href="$addurl" title="[[Add New Record]]">
-						<i class="bi bi-plus-lg mr-1"></i> [[Create New]]
-					</a>
-				#end
+			<span class="px-2 border-right">
+				<i class="bi bi-$module.moduleicon ns mr-1"></i> [[All Categories]]
+			</span>
 			#end
 			#if($searchcategory)	
 				<p class="m-0"> 
@@ -19,8 +16,16 @@
 				</p>
 			#end
 		</div>
-
+		
 		<div class="d-flex align-items-center">
+			#ifnull($searchcategory)
+				#if($permissions.can($moduleid, "create") && $moduleid!="faceprofilegroup" && $moduleid!="order")
+				#set($addurl = "${edithome}/tabs/index.html?edit=true&addnew=true&viewid=$!{moduleid}addnew")
+					<a class="emdialog btn-cta" href="$addurl" title="[[Add New Record]]">
+						<i class="bi bi-plus-lg mr-1"></i> [[Create New]]
+					</a>
+				#end
+			#end
 		
 			#if($resultview == "brickvertical")
 				<a class="ajax border-left ajax" targetdiv="resultsdiv" data-oemaxlevel="1" data-changeresultview="table" href="$searchhome/changeresultview.html">
