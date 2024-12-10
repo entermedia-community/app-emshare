@@ -33,7 +33,7 @@
 
 #set( $entityid = $hit.id )
 
-<div class="resultsdivdata emcategory-wrapper emgrid-type-$!moduleid entitycontainer entity$!moduleid$!entityid" 
+<div class="resultsdivdata emcategory-wrapper #ifnull($primarymedia) nothumb #end emgrid-type-$!moduleid entitycontainer entity$!moduleid$!entityid" 
 	id="emgridentity$!moduleid$!entityid"
 	data-rowname="#text($hit)"
 	data-dataid="${entityid}"
@@ -65,17 +65,18 @@
 			#else
 				<i class="bi bi-${moduleicon} module-icon"></i>			
 			#end 
+			<div class="emthumb-mask">[[Open]]</div>
 		</div>
-		<p class="emcategory-name">	
-			<span>
+		<div class="emcategory-name">	
+			<p>
 				#text($!entity) 	
-			</span>
+			</p>
 			#if($moduleid == "searchcategory" && $permissions.can($module.id, "edit"))
 			<a href="$apphome/views/modules/$moduleid/editors/default/tabs/index.html?edit=true" data-entityid="${entityid}" class="emdialog emcategory-edit">
 				<i class="bi bi-pencil-square"></i>
 			</a>
 			#end
-		</p>
+		</div>
 		#ifnotnull($entity.longcaption)
 		<div class="emcategory-desc">
 			<p>$entity.longcaption</p>

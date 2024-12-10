@@ -12,7 +12,6 @@
 		}
 
 		if (!grid.is(":visible")) {
-			//console.log("grid not visible yet", grid);
 			return;
 		}
 
@@ -21,8 +20,10 @@
 			minwidth = 250;
 		}
 		var totalavailablew = grid.width();
-		//console.log("grid width:" + totalavailablew);
 		var maxcols = 5;
+		if (totalavailablew >= minwidth * 6 + 50) {
+			maxcols = 6;
+		}
 		var eachwidth = 0;
 
 		while (eachwidth < minwidth) {
@@ -66,9 +67,6 @@
 				if (mode == "container") {
 					w = colwidthpx - 8;
 					newheight = cell.find(".emcategory-inner").height();
-					console.log({
-						newheight: newheight,
-					});
 					a = w / h;
 					var $img = cell.find("img");
 					if ($img.length > 0) {
@@ -97,9 +95,7 @@
 
 				cell.css("top", runningtotal + "px");
 				cell.width(eachwidth);
-				console.log(newheight);
 				cell.height(newheight);
-				cell.css("min-height", newheight + "px");
 
 				var colx = colwidthpx * colnum;
 				cell.css("left", colx + "px");
@@ -253,8 +249,6 @@
 		if (collectionid) {
 			params.collectionid = collectionid;
 		}
-
-		console.log("Loading page: #" + page + " - " + link);
 
 		$.ajax({
 			url: link,
