@@ -170,35 +170,6 @@ jQuery(document).ready(function (url, params) {
 		});
 	});
 
-	lQuery(".selectresultviewXX").livequery(function () {
-		var select = $(this);
-		select.on("click", function (e) {
-			e.preventDefault();
-			var href = select.attr("href");
-
-			var args = {
-				hitssessionid: select.data("hitssessionid"),
-				searchtype: select.data("searchtype"),
-				page: select.data("page"),
-				showremoveselections: select.data("showremoveselections"),
-			};
-
-			var category = $("#resultsdiv").data("category");
-			if (category) {
-				args.category = category;
-			}
-			var collectionid = $("#resultsdiv").data("collectionid");
-			if (collectionid) {
-				args.collectionid = collectionid;
-			}
-
-			$.get(href, args, function (data) {
-				$("#emresultscontent").replaceWith(data);
-				$(window).trigger("resize");
-			});
-		});
-	});
-
 	lQuery(".filterschangesort").livequery("click", function (e) {
 		// debugger;
 		e.preventDefault();
