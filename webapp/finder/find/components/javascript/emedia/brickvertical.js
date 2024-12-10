@@ -228,8 +228,6 @@
 		}
 
 		stopautoscroll = true;
-		var sessionname = resultsdiv.data("hitssessionname");
-		var session = resultsdiv.data(sessionname);
 		page = page + 1;
 		resultsdiv.data("pagenum", page);
 
@@ -245,17 +243,11 @@
 			console.log("No stackedviewpath defined");
 			return;
 		}
-		var collectionid = $(resultsdiv).data("collectionid");
-		var params = {
-			page: page,
-			oemaxlevel: "1",
-		};
-		params[sessionname] = session;
 
-		if (collectionid) {
-			params.collectionid = collectionid;
-		}
-
+		var params = resultsdiv.cleandata();
+		params.page = page;
+		oemaxlevel = 1;
+		
 		$.ajax({
 			url: link,
 			xhrFields: {
@@ -269,9 +261,6 @@
 				$(grid).append(code);
 				$(window).trigger("resize");
 				stopautoscroll = false;
-				//if (getOverlay().is(":hidden")) {
-				//checkScroll(grid);
-				//}
 			},
 		});
 	}
