@@ -6,13 +6,13 @@
 #ifnull($viewid)
 	#set($viewid = $context.getRequestParameter("viewid"))
 #end
-
+ 
 #set( $viewdata = $mediaarchive.getCachedData("view",$viewid) )
 
 #ifnull($details)
-	#set ($details = $searcher.getDetailsForView($viewdata, $context.getUserProfile()))
+	#set ($details = $searcher.getDetailsForView($viewid, $context.getUserProfile()))
 #end	
-
+$details
 #ifnull($details)
 	[[404 on view]]:  $searcher.getCatalogId() $searcher.getSearchType() $viewid
 #end
