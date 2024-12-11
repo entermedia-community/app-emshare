@@ -802,7 +802,8 @@ jQuery(document).ready(function () {
 		lQuery("#changeLocalDirve").livequery("click", function (e) {
 			e.preventDefault();
 			var selectedPath = $("#localRootPathInput").val();
-			ipcRenderer.send("changeLocalDrive", selectedPath);
+			var isReadOnly = $("#isReadOnlyPath").val();
+			ipcRenderer.send("changeLocalDrive", { selectedPath, isReadOnly });
 			closeemdialog($(this).closest(".modal"));
 		});
 
@@ -1087,7 +1088,6 @@ jQuery(document).ready(function () {
 			var uploadsourcepath = $(this).data("path");
 			var lightbox = $(this).data("lightbox");
 			$(this).prop("disabled", true);
-			$(this).find("span").text("Downloading...");
 			ipcRenderer.send("syncLightboxDown", {
 				uploadsourcepath,
 				lightbox,
@@ -1095,6 +1095,27 @@ jQuery(document).ready(function () {
 			ipcRenderer.send("shouldSyncLightboxShow", {
 				uploadsourcepath,
 				lightbox,
+			});
+		});
+
+		ipcRenderer.on("readonly-lightbox-opened", (_, { lightbox }) => {
+			$(".open-lightbox").each(function () {
+				var $this = $(this);
+				if ($this.data("lightbox") === lightbox) {
+					$this.find("span").text("Opened!");
+					setTimeout(() => {
+						$this.prop("disabled", false);
+						$this.find("span").text("Open Locally");
+					}, 1000);
+				}
+			});
+		});
+
+		ipcRenderer.on("lightbox-downloading", (_, { lightbox }) => {
+			$(".open-lightbox").each(function () {
+				if ($(this).data("lightbox") === lightbox) {
+					$(this).find("span").text("Downloading...");
+				}
 			});
 		});
 
