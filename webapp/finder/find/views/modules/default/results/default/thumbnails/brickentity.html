@@ -31,7 +31,9 @@
 #if($primarymedia)
 	#set($assetwidth = $mediaarchive.getRealImageWidth($primarymedia)) 
 	#set($assetheight = $mediaarchive.getRealImageHeight($primarymedia)) 
-#else ##moduleicon or audio
+#end
+
+#if(!$assetheight || $assetheight == "0")
 	#set($assetwidth = "250") 
 	#set($assetheight = "110")
 #end
@@ -39,27 +41,28 @@
 <div class="resultsdivdata embrickcontent emcategory-wrapper #ifnull($primarymedia) nothumb #end emgrid-type-$!moduleid entitycontainer entity$!moduleid$!entityid" 
 	id="emgridentity$!moduleid$!entityid"
 	data-rowname="#text($hit)"
-	data-dataid="${entityid}"
-	data-entityid="${entityid}"
+	data-dataid="$!{entityid}"
+	data-entityid="$!{entityid}"
   	data-entitymoduleid="$!{moduleid}"
-	data-imgwidth="$assetwidth"
-	data-imgheight="$assetheight"
+	data-imgwidth="$!{assetwidth}"
+	data-imgheight="$!{assetheight}"
   
 >
 
 	#set($pickertarget = $context.getRequestParameter("pickertarget"))
 	<div class="emcategory-inner" 
-		id="attachedmedia$entityid" 
-		data-moduleid="$!moduleid" 
-		data-entityid="$!entityid" 
-		data-assetsshown="$!assetsshown"
+		id="attachedmedia${entityid}" 
+		data-moduleid="$!{moduleid}" 
+		data-entityid="$!{entityid}" 
+		data-assetsshown="$!{assetsshown}"
 		data-attachedmediaurl="${edithome}/types/entityfolder.html"
 		data-targetdiv="emgridentity$!moduleid$!entityid">
-		<div class="emcategory-thumb">
+		#set( $assetrendertype = $mediaarchive.getMediaRenderType($primarymedia.fileformat))
+		<div class="emcategory-thumb emcategory-thumb-$assetrendertype">
 			#if($primarymedia)
 				$context.putPageValue("thumbsize", "thumbnail" )
 				$context.putPageValue("hit", $primarymedia) 
-				#set( $assetrendertype = $mediaarchive.getMediaRenderType($primarymedia.fileformat))
+				
 				$context.putPageValue("searchhome", "${apphome}/views/modules/asset/results/default")
 				$pages.include("${apphome}/views/modules/asset/results/default/thumbnails/${assetrendertype}.html", $context)
 			#else
