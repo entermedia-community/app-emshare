@@ -31,6 +31,10 @@ $pages.include("${edithome}/categorybreadcrumb.html", $context)
 		$pages.include("${edithome}/bymodule.html",$context)
 	#end
 	
+	#set($resultview = $userprofile.get("${module.id}resultview"))
+	#ifnull( $resultview)
+		#set($resultview = "brickvertical")
+	#end
 	<div id="searchcategoryresults" class="flex-grow-1">
 		#if($selectedmodule)
 			#set($bmodule = $mediaarchive.getCachedData("module",$selectedmodule) )
@@ -41,7 +45,7 @@ $pages.include("${edithome}/categorybreadcrumb.html", $context)
 			$context.putPageValue("searchhome", $searchhome)
 			$pages.include("${searchhome}/results.html",$context)
 		#else
-			$pages.include("$searchhome/results.html?resultviewmodulesearch=grid",$context)
+			$pages.include("$searchhome/results.html?resultviewmodulesearch=$resultview",$context)
 		#end
 	</div>
 </div>

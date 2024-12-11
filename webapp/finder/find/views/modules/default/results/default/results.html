@@ -34,11 +34,14 @@ $context.putPageValue("viewid", $viewid)
 
 #set($searchhomeid = $page.get("searchhomeid") )
 
-#if($permissions.can($module.id, "edit"))
-$context.putPageValue("enableactions", true) ##used for selections
-#else
+
 $context.putPageValue("enableactions", false)
-#end
+#set($enableactions = $content.isPropertyTrue("enableactions",true))
+#if($enableactions)
+	#if($permissions.can($module.id, "edit"))
+	$context.putPageValue("enableactions", true) ##used for selections
+	#end
+#end	
 
 <div id="$!{searchhomeid}$!{edithomeid}" 
 	class="tableresults resultsdiv"

@@ -51,6 +51,7 @@ $context.putPageValue("entityrendertype", $entityrendertype)
 #set($preference = "minimize$!{moduleid}summary")
 #set($isminimized = $userprofile.getBoolean($preference))
 #set($showaddnew = $content.isPropertyTrue("showaddnew",true))
+
 #if($content.section == "favorites")
 	#set($showaddnew = false)
 #end
@@ -87,7 +88,7 @@ $context.putPageValue("entityrendertype", $entityrendertype)
 					</li>
 				#end
 			#end
-			#if($resultview != "grid")
+			#if($enableactions)
 			<li class="dropdown">
 				<a class="resultsnavlink dropdown-toggle #if($!hits.getSelectionSize() > 0)btn-accent#end" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 					#if($!hits.getSelectionSize() > 0)
@@ -253,6 +254,22 @@ $context.putPageValue("entityrendertype", $entityrendertype)
 						#end	
 					#end								
 				#end
+				
+				<li>
+				
+				#if($resultview != "table")
+				<a class="ajax border-left ajax" data-changeresultview="table" data-resultviewsearchcategory="table"
+				 data-targetdiv="resultsdiv" data-oemaxlevel="1"  href="$searchhome/changeresultview.html">
+					
+					<i class="bi bi-list-task mr-1" style="transform: scale(1.4);"></i>
+				</a>
+				#else
+				<a class="ajax border-left ajax" 	data-changeresultview="brickvertical" data-resultviewsearchcategory="brickvertical"
+					data-targetdiv="resultsdiv" data-oemaxlevel="1" 	href="$searchhome/changeresultview.html">
+					<i class="bi bi-layout-three-columns mr-1"></i>
+				</a>
+				#end
+				</li>	
 				
 				<li>
 
