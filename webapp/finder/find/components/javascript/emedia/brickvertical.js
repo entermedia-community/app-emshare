@@ -215,14 +215,13 @@
 		page = page + 1;
 		resultsdiv.data("pagenum", page);
 
-		var stackedviewpath = grid.data("stackedviewpath");
 		// if (!stackedviewpath) {
 		// 	stackedviewpath = "/brickvertical.html";
 		// }
 
 		// var searchhome = resultsdiv.data("searchhome");
 		// debugger;
-		var link = stackedviewpath;
+		var link = grid.data("stackedviewpath");
 		if (link == undefined) {
 			console.log("No stackedviewpath defined");
 			return;
@@ -230,7 +229,7 @@
 
 		var params = resultsdiv.cleandata();
 		params.page = page;
-		oemaxlevel = 1;
+		params.oemaxlevel = 1;
 		
 		$.ajax({
 			url: link,
