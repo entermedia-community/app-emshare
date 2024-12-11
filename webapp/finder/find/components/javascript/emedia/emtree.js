@@ -43,8 +43,7 @@ $(function () {
 		);
 	}
 
-	lQuery(".emtree-widget ul li div .cat-name").livequery(
-		"click",
+	lQuery(".emtree-widget ul li div .cat-name").livequery("click",
 		function (event) {
 			event.stopPropagation();
 			if (
@@ -81,6 +80,12 @@ $(function () {
 			event.tree = tree;
 			event.nodeid = nodeid;
 			$(document).trigger(event);
+			
+			var $contextMenu = $(".treecontext");
+			if($contextMenu.length>0)
+			{
+				$contextMenu.hide();
+			}
 		}
 	);
 
@@ -396,7 +401,7 @@ $(function () {
 			nodeid +
 			"&depth=" +
 			node.data("depth");
-		node.find("> .categorydroparea").load(link, function () {
+		node.find("> .treerow").load(link, function () {
 			node.find("input").select().focus();
 		});
 		return false;
@@ -591,8 +596,11 @@ $(function () {
 
 	lQuery("body").livequery("click", function () {
 		var $contextMenu = $(".treecontext");
-		$contextMenu.hide();
-		$(".categorydroparea").removeClass("selected");
+		if($contextMenu.length>0)
+		{
+			$contextMenu.hide();
+			$(".categorydroparea").removeClass("selected");
+		}
 	});
 
 	$(document).keydown(function (e) {
