@@ -7,16 +7,6 @@ $context.putPageValue("rendermoduleid", $module.id)
 	$pages.include("${searchhome}/resultheader.html",$context)
 #end 
 
-#set($currentpage = $context.getRequestParameter("currentpagenum")) 
-#set($prhits = $hits.getPositionRender() ) 
-#ifnotnull($currentpage)
-	$prhits.setPageOneBased($currentpage) 
-#end
-#set($pos = $prhits.toPosition($prhits.getPage())) 
-#set($resultsPage = "${searchhome}/index.html?${module.id}hitssessionid=$!{hits.sessionId}&pageposition")
-#set($targetdivinner = "${module.id}resultsarea") 
-#set($oemaxlevel = "2")
-
 <div class="scrollview" style="overflow-x: hidden;">
 	<div class="brickvertical brickverticalsortable" 
 		data-cellpadding="4" 
@@ -32,13 +22,8 @@ $context.putPageValue("rendermoduleid", $module.id)
 				id="gallerycell_$!{hit.id}"
 				data-assetid="$!{hit.id}"
 				data-dataid="$hit.id"
-				#if($rendertype == "audio")
-					data-width="250"
-					data-height="110"
-				#else 
-					data-mode="container"
-				#end> 
-				$pages.include("$searchhome/types/entityitem.html", $context) 
+			> 
+			$pages.include("${searchhome}/thumbnails/brickentity.html", $context)
 			</div>
 			#set ( $count = $count + 1) 
 		#end

@@ -1,18 +1,42 @@
 #set($isselected = $hits.isSelectedOnPage(${hit.id}) )
 $context.putPageValue("isselected", "isselected" )
 
-<div class="grid-cell-hover"></div>
-<input type="checkbox" class="resultsselection selectionbox" name="count" id="sl-${hit.id}" value="${hit.id}" #if($isselected) checked #end data-dataid="${hit.id}" />
-<label class="selectionbox-label" for="sl-${hit.id}">
-	<i class="bi bi-check-lg"></i>
-</label>
-##<div class="grid-gallery-checked"></div>
-
 #if(!$rendertype || $type =="rendertype")
 	#set( $rendertype = "mime" )
 #elseif( $rendertype =="video")
 	#set( $rendertype = "image" )
 #end
+
+
+<div class="grid-cell-hover"></div>
+
+<div class="embrickcontent" 
+	data-rowname="#text($hit)"
+	data-dataid="${entityid}"
+	data-entityid="${entityid}"
+  data-entitymoduleid="$!{moduleid}"
+  ##data-rendertype="entity"
+
+#set($assetwidth = $mediaarchive.getRealImageWidth($hit)) 
+#set($assetheight = $mediaarchive.getRealImageHeight($hit)) 
+  
+#if($assetwidth > 0)
+	data-imgwidth="$!assetwidth"
+	data-imgheight="$!assetheight"
+#elseif($rendertype == "audio")
+	data-imgwidth="250"
+	data-imgheight="110"
+#else 
+	data-imgwidth="250"  ##moduleicon
+	data-imgheight="110"
+#end
+>
+
+<input type="checkbox" class="resultsselection selectionbox" name="count" id="sl-${hit.id}" value="${hit.id}" #if($isselected) checked #end data-dataid="${hit.id}" />
+<label class="selectionbox-label" for="sl-${hit.id}">
+	<i class="bi bi-check-lg"></i>
+</label>
+##<div class="grid-gallery-checked"></div>
 
 <div class="grid-thumbimage" data-assetid="$!hit.id" data-rendertype="$!rendertype">
 	$pages.include("${searchhome}/thumbnails/${rendertype}.html", $context)
@@ -80,4 +104,6 @@ $context.putPageValue("isselected", "isselected" )
 			<i class="fas fa-expand-arrows-alt"></i>
 		</a>
 	</div>
+</div>
+
 </div>

@@ -49,39 +49,23 @@
 			.find(".masonry-grid-cell")
 			.each(function () {
 				var cell = $(this);
-				var w = cell.data("width");
-				var h = cell.data("height");
-				w = parseInt(w);
-				h = parseInt(h);
-				var a = w / h;
-
-				if (isNaN(w) || w == 0 || isNaN(h) || h == 0) {
-					w = eachwidth;
-					h = eachwidth;
-					a = w / h;
-				}
+				var embrickcontent = cell.find(".embrickcontent");
+				var imgw = embrickcontent.data("imgwidth");
+				var imgh = embrickcontent.data("imgheight");
+				imgw = parseInt(imgw);
+				imgh = parseInt(imgh);
+				var a = imgw / imgh;
 
 				var newheight = Math.floor(eachwidth / a);
 
-				var mode = cell.data("mode");
-				if (mode == "container") {
-					w = colwidthpx - 8;
-					newheight = cell.find(".emcategory-inner").height();
-					a = w / h;
-					var $img = cell.find("img");
-					if ($img.length > 0) {
-						if (!$img.height()) {
-							var imgDim = cell.find(".imgDim");
-							a = imgDim.data("width") / imgDim.data("height");
-							if (isNaN(a)) a = 1;
-							newheight = cell.height() + w / a;
-						}
-					}
+				//w = colwidthpx - 8;
+				var textcontent = embrickcontent.find(".embricktext");
+				if( textcontent.length )
+				{
+					newheight = newheight + textcontent.height();
 				}
 
-				cell.data("aspect", a);
-
-				if (autosort) {
+				if(autosort) {
 					colnum = shortestColumn(colheight, colnum);
 				}
 				cell.data("colnum", colnum);
