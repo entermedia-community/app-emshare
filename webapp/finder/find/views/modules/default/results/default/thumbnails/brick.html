@@ -12,13 +12,13 @@ $context.putPageValue("isselected", "isselected" )
 
 <div class="embrickcontent" 
 	data-rowname="#text($hit)"
-	data-dataid="${entityid}"
-	data-entityid="${entityid}"
-  data-entitymoduleid="$!{moduleid}"
-  ##data-rendertype="entity"
+	data-dataid="$!{entityid}"
+	data-entityid="$!{entityid}"
+  	data-entitymoduleid="$!{moduleid}"
+  	##data-rendertype="entity"
 
-#set($assetwidth = $mediaarchive.getRealImageWidth($hit)) 
-#set($assetheight = $mediaarchive.getRealImageHeight($hit)) 
+	#set($assetwidth = $mediaarchive.getRealImageWidth($hit)) 
+	#set($assetheight = $mediaarchive.getRealImageHeight($hit)) 
   
 #if($assetwidth > 0)
 	data-imgwidth="$!assetwidth"
@@ -32,13 +32,13 @@ $context.putPageValue("isselected", "isselected" )
 #end
 >
 
-<input type="checkbox" class="resultsselection selectionbox" name="count" id="sl-${hit.id}" value="${hit.id}" #if($isselected) checked #end data-dataid="${hit.id}" />
-<label class="selectionbox-label" for="sl-${hit.id}">
+<input type="checkbox" class="resultsselection selectionbox" name="count" id="sl-$!{hit.id}" value="$!{hit.id}" #if($isselected) checked #end data-dataid="${hit.id}" />
+<label class="selectionbox-label" for="sl-$!{hit.id}">
 	<i class="bi bi-check-lg"></i>
 </label>
 ##<div class="grid-gallery-checked"></div>
 
-<div class="grid-thumbimage" data-assetid="$!hit.id" data-rendertype="$!rendertype">
+<div class="grid-thumbimage" data-assetid="$!{hit.id}" data-rendertype="$!rendertype">
 	$pages.include("${searchhome}/thumbnails/${rendertype}.html", $context)
 </div>
 
@@ -56,7 +56,7 @@ $context.putPageValue("isselected", "isselected" )
 		#end
 	#end
 
-	<div class="toggle-selection grid-caption-link" id="clickid${hit.id}" title="[[Click to select]]">
+	<div class="toggle-selection grid-caption-link" id="clickid$!{hit.id}" title="[[Click to select]]">
 		$context.putPageValue("data",$hit)	
 		$context.putPageValue("searcher",$mediaarchive.getAssetSearcher() )	
 		$context.putPageValue("view", "asset/stackedgallery")
@@ -74,7 +74,7 @@ $context.putPageValue("isselected", "isselected" )
 		<div class="d-flex align-items-center"> 
 			<div class="d-flex align-items-center ml-1">
 				#if($canaddtofavorites)
-					<div id="gsassetfavorite-${hit.id}" class="media-info-icons mr-1">
+					<div id="gsassetfavorite-$!{hit.id}" class="media-info-icons mr-1">
 						$pages.include("$apphome/views/modules/asset/editor/favorite/index.html?targetdiv=gsassetfavorite", $context)
 					</div>
 				#end
@@ -88,19 +88,19 @@ $context.putPageValue("isselected", "isselected" )
 					#ifnotnull($category)
 						#set($dlink = $mediaarchive.asLinkToOriginal($hit))
 						#set($dlink = "$siteroot/$mediadbappid/services/module/asset/downloads/originals/$dlink")
-						<div class="open-file-default ml-1 mr-2" style="font-size:1.3rem" data-categorypath="$category.getCategoryPath()" data-filename="$hit.name" data-dlink='$dlink' title="[[Open this file locally with your default application]]">
+						<div class="open-file-default ml-1 mr-2" style="font-size:1.3rem" data-categorypath="$!category.getCategoryPath()" data-filename="$!{hit.name}" data-dlink='$!{dlink}' title="[[Open this file locally with your default application]]">
 							<i class="bi bi-eye"></i>
 						</div>
 					#end
 				#end
 				#if($hits.getSortBy().contains("ordering"))
-				<a href="#" class="hitmovetotop mr-1" data-assetid="$hit.id" title="[[Move to top]]">
+				<a href="#" class="hitmovetotop mr-1" data-assetid="$!{hit.id}" title="[[Move to top]]">
 					<i class="bi bi-arrow-up-circle ns" style="font-size:22px"></i>
 				</a>
 				#end
 			</div>
 		</div>
-		<a href="#" class="stackedplayer asset-maximize" data-assetid="$hit.id" title="$!title">
+		<a href="#" class="stackedplayer asset-maximize" data-assetid="$!{hit.id}" title="$!title">
 			<i class="fas fa-expand-arrows-alt"></i>
 		</a>
 	</div>
