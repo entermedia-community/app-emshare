@@ -56,7 +56,8 @@ $context.putPageValue("entityrendertype", $entityrendertype)
 	#set($showaddnew = false)
 #end
 
-<div id="resultsheader" class="resultsheader #if($!hits.getSelectionSize() > 0)hasselections#end">
+#set($islightheader = $module.id == "searchcategory" || $module.id == "modulesearch")
+<div id="resultsheader" class="#if($islightheader) lighttheme #end resultsheader #if($!hits.getSelectionSize() > 0)hasselections#end">
 	<div id="sub-nav" class="search-views emsubnav sub-nav-$!moduleid">
 		<ul class="resultsnav">
 			#set($pickertarget = $context.getRequestParameter("pickertarget"))
@@ -256,18 +257,16 @@ $context.putPageValue("entityrendertype", $entityrendertype)
 				#end
 				
 				<li>
-				
 				#if($resultview != "table")
-				<a class="ajax border-left ajax" data-changeresultview="table" data-resultviewsearchcategory="table"
-				 data-targetdiv="resultsdiv" data-oemaxlevel="1"  href="$searchhome/changeresultview.html">
-					
-					<i class="bi bi-list-task mr-1" style="transform: scale(1.4);"></i>
-				</a>
+					<a class="px-3 border-left ajax" data-changeresultview="table" data-resultviewsearchcategory="table"
+						data-targetdiv="resultsdiv" data-oemaxlevel="1"  href="$searchhome/changeresultview.html" title="[[Change to Table View]]">
+						<i class="bi bi-layout-three-columns"></i>
+					</a>
 				#else
-				<a class="ajax border-left ajax" 	data-changeresultview="brickvertical" data-resultviewsearchcategory="brickvertical"
-					data-targetdiv="resultsdiv" data-oemaxlevel="1" 	href="$searchhome/changeresultview.html">
-					<i class="bi bi-layout-three-columns mr-1"></i>
-				</a>
+					<a class="px-3 border-left ajax" 	data-changeresultview="brickvertical" data-resultviewsearchcategory="brickvertical"
+						data-targetdiv="resultsdiv" data-oemaxlevel="1" 	href="$searchhome/changeresultview.html" title="[[Change to Column View]]">
+						<i class="bi bi-list-task" style="transform: scale(1.4);padding-top: 2px;"></i>
+					</a>
 				#end
 				</li>	
 				

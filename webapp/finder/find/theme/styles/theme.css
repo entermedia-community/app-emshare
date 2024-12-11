@@ -70,6 +70,9 @@ body {
 .heightExcludingHeaderFooter {
 	height: var(--height-ex-hf);
 }
+.heightExcludingHeaderFooter:has(.category-breadcrumb) .tableresults {
+	height: calc(100% - 38px);
+}
 .bi {
 	transform: scale(1.2);
 	display: inline-block;
@@ -930,6 +933,7 @@ a.edit-table-header:hover {
 #sub-nav li {
 	list-style: none;
 	position: relative;
+	overflow: hidden;
 }
 .emtabs li a,
 #eml-tab-subnav ul li a {
@@ -1039,9 +1043,6 @@ ul.list-group.list-group-striped li:nth-of-type(odd),
 }
 tr.emborderhover td,
 .table-hover tbody tr:hover,
-.emsettingslist li:not([class*="header"]):hover,
-.emsettingslist li.current,
-.emsettingslist li:nth-of-type(even):hover,
 .search-list li.current a.search-href,
 .search-list li:hover,
 .filters-sidebar li:hover,
@@ -1060,6 +1061,13 @@ a.categorypathlink:hover,
 .version-list-current {
 	background: rgb(215, 215, 215, 0.25) !important;
 	color: var(--default-text);
+}
+.emsettingslist li.current {
+	color: var(--themed-btn-cta-text);
+	background-color: var(--themed-btn-cta-hover);
+}
+.emsettingslist li.current:hover {
+	background-color: var(--themed-btn-cta);
 }
 .sidebar-list li:last-child {
 	border-bottom: none;
@@ -3166,6 +3174,7 @@ ul.table-positions-top {
 	/* line-height: 2.5; */
 	display: inline-block;
 	background: var(--themed-navbar-secondary);
+	/* overflow: hidden; */
 }
 .lighttheme .emsubnav ul.resultsnavright li a {
 	background: var(--light-bg);
@@ -5597,7 +5606,7 @@ table.greytxt {
 .emsettingslist li:first-child {
 	border-top: var(--1px-light);
 }
-.emsettingslist li:nth-of-type(even) {
+.emsettingslist li:not(.current):nth-of-type(even) {
 	background: rgba(0, 0, 0, 0.05);
 }
 .emsettingslist li.subheader,
@@ -9890,9 +9899,9 @@ button#folderAbsPath:focus {
 }
 .lightbox-header {
 	height: 42px;
-	background: var(--themed-navbar-secondary);
+	/* background: var(--themed-navbar-secondary); */
 	font-size: 1.2rem;
-	color: var(--themed-navbar-secondary-text);
+	/* color: var(--themed-navbar-secondary-text); */
 	padding: 0 0 0 16px;
 	border-bottom: var(--1px-dark);
 	display: flex;
