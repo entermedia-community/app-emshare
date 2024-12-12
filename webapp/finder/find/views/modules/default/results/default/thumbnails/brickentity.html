@@ -33,9 +33,11 @@
 	#set($assetheight = $mediaarchive.getRealImageHeight($primarymedia)) 
 #end
 
+#set($hasheight = "true")
 #if(!$assetheight || $assetheight == "0")
 	#set($assetwidth = "250") 
 	#set($assetheight = "110")
+	#set($hasheight = "false")
 #end
 
 <div class="resultsdivdata embrickcontent emcategory-wrapper #ifnull($primarymedia) nothumb #end emgrid-type-$!moduleid entitycontainer entity$!moduleid$!entityid" 
@@ -46,7 +48,7 @@
 	data-entitymoduleid="$!{moduleid}"
 	data-imgwidth="$!{assetwidth}"
 	data-imgheight="$!{assetheight}"
-  
+  data-hasheight="$!{hasheight}"
 >
 
 	#set($pickertarget = $context.getRequestParameter("pickertarget"))

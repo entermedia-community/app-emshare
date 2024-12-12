@@ -60,12 +60,14 @@
 
 				//w = colwidthpx - 8;
 				var textcontent = embrickcontent.find(".embricktext");
-				if( textcontent.length )
-				{
+				if (textcontent.length) {
 					newheight = newheight + textcontent.height();
 				}
+				if (!embrickcontent.data("hasheight")) {
+					newheight = embrickcontent.height();
+				}
 
-				if(autosort) {
+				if (autosort) {
 					colnum = shortestColumn(colheight, colnum);
 				}
 				cell.data("colnum", colnum);
@@ -230,7 +232,7 @@
 		var params = resultsdiv.cleandata();
 		params.page = page;
 		params.oemaxlevel = 1;
-		
+
 		$.ajax({
 			url: link,
 			xhrFields: {
