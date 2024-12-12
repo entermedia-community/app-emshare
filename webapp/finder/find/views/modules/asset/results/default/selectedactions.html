@@ -200,21 +200,18 @@
 			</li>
 	#end
 
-	#ifnull($lightboxassetsresults)
-		#set($lightboxassetsresults = $context.getRequestParameter("lightboxassetsresults"))
-	#end
-	
-	#ifnotnull($lightboxassetsresults)
+	#set($lightboxid = $context.getRequestParameter("lightboxid"))
+	#if($lightboxid && $lightboxid != "files")
 			#if($permissions.can($parentmoduleid, "assign_files"))
-			#set($lightboxid = $context.getRequestParameter("lightboxid"))
+			
 				<li>
 					<a class="resultsnavlink ajax"
 					
 					##Use searchhome
 					 
-						href="$apphome/views/modules/asset/results/lightboxes/galleryremoveasset.html" 
-						data-targetdiv="tablightboxes"
-						data-entityid="$entityid"
+						href="$apphome/views/modules/asset/editors/lightboxes/galleryremoveasset.html" 
+						data-targetdiv="${edithomeid}"
+						data-entityid="$!{entity.id}"
 						data-lightboxid="$!{lightboxid}"
 						data-categoryid="$!categoryid"
 						data-hitssessionid="$hits.getSessionId()"
