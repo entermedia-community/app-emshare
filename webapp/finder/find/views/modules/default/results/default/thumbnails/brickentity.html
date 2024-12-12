@@ -33,9 +33,11 @@
 	#set($assetheight = $mediaarchive.getRealImageHeight($primarymedia)) 
 #end
 
+#set($hasheight = "true")
 #if(!$assetheight || $assetheight == "0")
 	#set($assetwidth = "250") 
 	#set($assetheight = "110")
+	#set($hasheight = "false")
 #end
 
 <div class="resultsdivdata embrickcontent emcategory-wrapper #ifnull($primarymedia) nothumb #end emgrid-type-$!moduleid entitycontainer entity$!moduleid$!entityid" 
@@ -43,10 +45,10 @@
 	data-rowname="#text($hit)"
 	data-dataid="$!{entityid}"
 	data-entityid="$!{entityid}"
-  	data-entitymoduleid="$!{moduleid}"
+	data-entitymoduleid="$!{moduleid}"
 	data-imgwidth="$!{assetwidth}"
 	data-imgheight="$!{assetheight}"
-  
+  data-hasheight="$!{hasheight}"
 >
 
 	#set($pickertarget = $context.getRequestParameter("pickertarget"))
@@ -58,7 +60,7 @@
 		data-attachedmediaurl="${edithome}/types/entityfolder.html"
 		data-targetdiv="emgridentity$!moduleid$!entityid">
 		#set( $assetrendertype = $mediaarchive.getMediaRenderType($primarymedia.fileformat))
-		<div class="emcategory-thumb emcategory-thumb-$assetrendertype">
+		<div class="emcategory-thumb emcategory-thumb-$assetrendertype" style="max-height: calc($!{assetheight}px + 8px);">
 			#if($primarymedia)
 				$context.putPageValue("thumbsize", "thumbnail" )
 				$context.putPageValue("hit", $primarymedia) 
@@ -71,7 +73,7 @@
 			<div class="emthumb-mask">
 				<span>
 					#if($moduleid == "searchcategory")
-						<i class="bi bi-binoculars-fill ns mr-1"></i> [[View]]
+						<i class="bi bi-eye-fill ns mr-1"></i> [[View]]
 					#else
 					<i class="bi bi-arrows-angle-expand ns mr-1"></i> [[Open]]
 					#end

@@ -126,7 +126,13 @@
 					[[Bookmarks]] <i class="bi bi-bookmarks-fill ml-1"></i>
 			</a> 
 		#end
-
+		#set($guidelink = $mediaarchive.getCatalogSettingValue("guidelink"))
+		#ifnotnull($guidelink)
+			<a class="btn-upload" target="_blank" href="$guidelink">
+				[[Guide]]
+				<i class="bi bi-book ml-2"></i>
+			</a>
+		#end
 		#if($canviewsettings && $userprofile.hasModule("order") )
 			#set( $orders = $mediaarchive.query("order").exact("checkoutstatus","pending").search($context))
 		#end
