@@ -30,18 +30,26 @@ $context.putPageValue("entityid", $entityid)
 #set($submoduleid = $!viewdata.rendertable)
 $context.putPageValue("submoduleid",$submoduleid)
 
+#set($selectedcategory =  $mediaarchive.getEntityManager().loadDefaultFolder($entitymodule, $entity, $context.getUser(),true))
+$context.putPageValue("selectedcategory",$selectedcategory)
 
-<div id="ditavizeditor"
-	class="entity-tab-content entity-tab-media tabtypemedia" 
-	data-tabid="${tabid}"
+
+<div id="ditavizeditor"  class="editdiv entity-tab-content entity-tab-media tabtypemedia" 
 	data-entityid="$!entityid"
-	data-currenttab="$!viewid"
-	data-topmoduleid="$!moduleid"
+	data-entitymoduleid="$!entitymodule.id"
+	data-entitymoduleviewid="$entitymoduleviewid"
+	
+	data-categoryid="$!selectedcategory.getId()"
+	data-rootcategory="$!selectedcategory.getId()"
+	data-edithome="$!{edithome}"
+	data-autoreloadurl="$!{edithome}/index.html"
+	
 >
 
 <div  class="tablightbox d-flex h-100" style="height: 100%;">
 	
-
 	$pages.include("$edithome/sidemenu.html",$context) 
-	$pages.include("$edithome/${subtab}.html",$context) 
+	<div id="ditacontent">
+	$pages.include("$edithome/${subtab}.html",$context)
+	</div> 
 </div>
