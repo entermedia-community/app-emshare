@@ -27,10 +27,14 @@ public void init()
 		Collection tosave = new ArrayList();
 		for (Data hit in hits)
 		{
-			if( hit.getValue("uploadsourcepath") != null || hit.getValue("rootcategory") )
+			if( hit.getValue("uploadsourcepath") != null || hit.getValue("rootcategory") != null)
 			{
-				hit.setValue("uploadsourcepath",null);
-				hit.setValue("rootcategory",null);
+				//Reload path 
+				hit.setValue("rootcategory",null); //this will auto correct
+				
+				String sourcepath = mediaArchive.getEntityManager().loadUploadSourcepath(module, hit, null, false);
+				hit.setValue("uploadsourcepath",sourcepath);
+				//TODO: Now reload one at a time based on parent child relationships
 				tosave.add(hit);
 				count++;
 			}
@@ -38,6 +42,7 @@ public void init()
 		mediaArchive.saveData(module.getId(),tosave);
 		log.info("Edited " + module + " " + count);
 	}	
+	mediaArchive.clearCaches();
 }
 
 init();
