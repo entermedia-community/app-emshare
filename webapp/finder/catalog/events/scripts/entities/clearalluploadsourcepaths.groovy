@@ -24,16 +24,18 @@ public void init()
 	{
 		int count = 0;
 		Collection hits = mediaArchive.query(module.getId()).all().search();
+		Collection tosave = new ArrayList();
 		for (Data hit in hits)
 		{
 			if( hit.getValue("uploadsourcepath") != null || hit.getValue("rootcategory") )
 			{
 				hit.setValue("uploadsourcepath",null);
 				hit.setValue("rootcategory",null);
-				mediaArchive.saveData(module.getId(),hit);
+				tosave.add(hit);
 				count++;
 			}
 		}
+		mediaArchive.saveData(module.getId(),tosave);
 		log.info("Edited " + module + " " + count);
 	}	
 }
