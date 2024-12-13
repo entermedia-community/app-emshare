@@ -43,7 +43,7 @@ public void init()
 				count++;
 		}
 		mediaArchive.saveData(module.getId(),tosave);
-		log.info( module + " " + count);
+		log.info( "" + module + " " + count);
 	}	
 	mediaArchive.clearCaches();
 }
