@@ -15,8 +15,6 @@
 				<addressdetails>$!entity.useraddressdetails</addressdetails>
 			</organizationinfo>
 		</authorinformation>
-		<audience type="services" />
-		<keywords />
 		<bookid>
 			<isbn>$!entity.userisbn</isbn>
 			<booknumber>$!entity.userbooknumber</booknumber>
@@ -40,12 +38,14 @@
 		</booklists>
 	</frontmatter>
 
-	<chapter>
-#foreach( $topic in $savedtopics)
-		<topicref href="$topic"></topicref>
+#foreach( $chapter in $chapters)
+	<chapter href="$chapter">
+#set( $ditasections  = $groupsoftopics.get($chapter))	
+#foreach( $dita in $ditasections)
+		<topicref href="$dita"></topicref>
 #end
 	</chapter>
-
+#end
 	<backmatter>
 		<booklists>
 			<indexlist />
