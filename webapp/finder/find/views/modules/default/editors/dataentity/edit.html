@@ -12,16 +12,16 @@
 
 #ifnull($data)
 	#set($data = $mediaarchive.getSearcher($module.id).createNewData())
-	
-	#set ($fieldexternalid = $context.getRequestParameter("fieldexternalid"))
-	#set ($fieldexternalvalue = $context.getRequestParameter("fieldexternalvalue"))
-	#ifnotnull($fieldexternalid)
-		$data.setValue($fieldexternalid, $fieldexternalvalue)
-	#end
-	$context.putSessionValue("newdata${module.id}", $data)
+#end	
+
+#set ($fieldexternalid = $context.getRequestParameter("fieldexternalid"))
+#set ($fieldexternalvalue = $context.getRequestParameter("fieldexternalvalue"))
+#ifnotnull($fieldexternalid)
+	$data.setValue($fieldexternalid, $fieldexternalvalue)
+	$fieldexternalid, $fieldexternalvalue
 #end
 
-
+$context.putSessionValue("newdata${module.id}", $data) ##needed?
 $context.putPageValue("data",$data)
 
 #set( $searcher = $mediaarchive.getSearcher($module.id) )
@@ -43,6 +43,7 @@ $context.putPageValue("edit", $edit)
 #ifnull($viewid)
 #set($viewid = $context.getRequestParameter("viewid"))
 #end
+
 $context.putPageValue("viewid", $viewid)
 
 #if($ismulti)
@@ -66,6 +67,8 @@ $context.putPageValue("viewid", $viewid)
 		enctype="multipart/form-data">
 
 		<input name="save" type="hidden" value="true" />
+
+		##this is all no longer needed
 
 		#set($saveaction = $context.getRequestParameter("saveaction"))
 		<input name="saveaction" type="hidden" value="$!saveaction" />
