@@ -26,7 +26,7 @@ public void init()
 		Collection hits = mediaArchive.query(module.getId()).all().search();
 		for (Data hit in hits)
 		{
-			if( hit.getValue("uploadsourcepath") != null )
+			if( hit.getValue("uploadsourcepath") != null || hit.getValue("rootcategory") )
 			{
 				hit.setValue("uploadsourcepath",null);
 				hit.setValue("rootcategory",null);
