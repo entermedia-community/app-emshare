@@ -16,7 +16,7 @@
   <small><span class="mx-2">&middot;</span>[[Drag and drop selected files from your desktop, to order them or to link with another box]]</small>
   
 
-	
+	#set( $modulelist  = $mediaarchive.getCatalogSettingValue("useexternalsync_modulelist"))
 	<div class="d-flex align-items-center ml-auto">
 	#if ($desktop) 
 		<button class="sync-lightbox lightbox-header-btn positive"
@@ -25,7 +25,11 @@
 			#ifnotnull($selectedbox)
 				data-lightbox="#text($selectedbox)"
 			#end
-			data-path='$!entity.get("uploadsourcepath")'>
+			data-path='$!entity.get("uploadsourcepath")'
+			#if( $modulelist.contains($module.getId()))
+				data-useexternalsync="true"
+			#end
+			>
 			<i class="bi bi-upload mr-1 ns"></i> <span>[[Sync]]</span>
 		</button>
 		<button class="lightbox-header-btn open-lightbox"
@@ -35,7 +39,6 @@
 			#end
 			data-entityid="$!entity.getId()"
 			data-path='$!entity.get("uploadsourcepath")'
-			#set( $modulelist  = $mediaarchive.getCatalogSettingValue("useexternalsync_modulelist"))
 			#if( $modulelist.contains($module.getId()))
 				data-useexternalsync="true"
 			#end
