@@ -1,0 +1,38 @@
+
+#set( $pickertaget = $context.getRequestParameter("pickertarget") )
+#set( $entityid = $context.getRequestParameter("entityid") ) 
+#set( $parentmoduleid = $context.getRequestParameter("fieldexternalid"))
+#set($entity = $mediaarchive.getCachedData( $parentmoduleid,$entityid) )
+#set( $targetmoduleid = $context.getRequestParameter("entitymodule") )
+
+
+#ifnull($entitymoduleviewid) 
+	#set($entitymoduleviewid = $context.getRequestParameter("entitymoduleviewid"))
+	
+#end
+#set($viewdata = $mediaarchive.getCachedData("view",$entitymoduleviewid))
+
+<div class="bg-white">
+$edithome
+  <div class="w-100 my-2">
+    <form name="Xsave" class="ajaxform "  data-includeeditcontext="true" data-targetdiv="importdone" action="$edithome/aitools/createassetsfinish.html">
+      	<input type="hidden" name="importtype" value="dita" />
+		<input type="hidden" name="pickertarget" value='$context.getRequestParameter("pickertarget")'/>
+		<input type="hidden" name="fieldexternalid" value='$context.getRequestParameter("fieldexternalid")'/>
+		<input type="hidden" name="fieldexternalvalue" value='$context.getRequestParameter("fieldexternalvalue")'/>
+		<input type="hidden" name="targettype" value='$context.getRequestParameter("targettype")'/>
+		<input type="hidden" name="onetomanytab" value='$context.getRequestParameter("onetomanytab")'/>
+		<input type="hidden" name="entitymoduleviewid" value='$context.getRequestParameter("entitymoduleviewid")'/>
+		<input type="hidden" name="entityid" value='$entityid'/>
+
+		#set($viewid = "assetllmtools")
+       	$context.putPageValue("viewid", $viewid)
+		#set($detailviewercolumns = 1)
+		$pages.include("/$applicationid/components/xml/detaileditor.html?longform=true", $context)
+		
+		<input type="submit" class="form-control" />
+
+    </form>
+    <div id="importdone"></div>
+  </div>
+</div>
