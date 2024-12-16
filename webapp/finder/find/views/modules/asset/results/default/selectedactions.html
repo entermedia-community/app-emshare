@@ -43,20 +43,15 @@
 		</li>
 		#end
 
-		#if($entityid && $parentmoduleid)
-			#ifnull($entity)
-				#set($entity = $mediaarchive.getCachedData($parentmoduleid, $entityid))
-			#end
-			#set($removefrom = "$siteroot$applink/views/modules/$!{topmoduleid}/components/entities/removeassets.html")
-			#set($removefrom = "$removefrom?moduleid=$parentmoduleid&entityid=$entityid&copying${hits.getSearchType()}hitssessionid=$hits.getSessionId()&reloadtargets=topmodulecontainer")
+		#if($entity.id)
+			#set($removefrom = "${edithome}/actions/removeassetsfromentity.html")
 			<li><a class="dropdown-item ajax"
 				data-targetdiv="tab_media" 
 					data-dialogid="addtoentity"
 					data-hidefooter="true"
-					data-pickedmoduleid="$parentmoduleid"
-					data-pickedentityid="$entityid"
-					data-copyingsearchtype="assets"
-					data-copyinghitssessionid="$hits.getSessionId()"
+					data-entityid="${entity.id}"
+					data-removinghitssessionid="$hits.getSessionId()"
+					data-ajaxreloadtargets="dataeditedreload"
 					href="$removefrom" >[[Remove Selected Assets From]] #text($entity)</a>
 			</li>
 		#end
