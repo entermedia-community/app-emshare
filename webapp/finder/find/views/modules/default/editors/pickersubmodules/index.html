@@ -32,13 +32,13 @@
 		
 #set($module = $mediaarchive.getCachedData("module",$submoduleid))
 $context.putPageValue("module", $module)
-#set($searchhome = "$apphome/views/modules/${submoduleid}/results/submoduleslist")
+#set($searchhome = "$apphome/views/modules/${submoduleid}/results/submodulesexcludelist")
 $context.putPageValue("searchhome", $searchhome)
 
 		
 #set($sortby = $!viewdata.rendersort)
 #set($args = "field=$!{entitymodule.id}&$!{entitymodule.id}.value=$!{entity.id}&operation=not")
-#set($args = "$args&sortby=$!sortby&entitymoduleviewid=$entitymoduleviewid&viewid=$entitymoduleviewid")
+#set($args = "$args&sortby=$!sortby&entitymoduleviewid=$entitymoduleviewid&viewid=$entitymoduleviewid&${module.id}setpage=1")
 $pages.include("${searchhome}/search.html?$!args",$context)
 
 

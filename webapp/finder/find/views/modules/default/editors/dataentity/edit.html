@@ -50,16 +50,25 @@ $context.putPageValue("viewid", $viewid)
 	$context.putPageValue("multiedit", $ismulti)
 #end
 
+#ifnull($entitycategoryid)
+	#set( $originalcategory = $mediaarchive.getEntityManager().loadDefaultFolder($entitymodule, $entity, $user))
+	#ifnotnull($originalcategory)
+		#set( $entitycategoryid = $originalcategory.getId()) 
+	#end
+#end
+
 <div id="editentitymetadata"
-	data-oemaxlevel="1" 
-	data-url="${edithome}/index.html?entityid=$!data.id" 
-	class='metadataeditorreload entity-metadata entitymetadatamodal #if($edit=="true") entitymetadataediting #else entitymetadatapreview #end'
+	data-url="${edithome}/index.html?oemaxlevel=1" 
+	class='editdiv metadataeditorreload entity-metadata entitymetadatamodal #if($edit=="true") entitymetadataediting #else entitymetadatapreview #end'
 	
-	data-entityid="$!entityid"
+	data-id="$!id"
+	data-entityid="$!{data.id}"
 	data-entitymoduleid="$!entitymodule.id"
 	data-entitymoduleviewid="$entitymoduleviewid"
 	data-viewid="$viewid"
-	data-id="$!id">
+	
+	data-entitycategoryid="${entitycategoryid}"
+	>
 
 	<form id="entitydataeditor" 
 		name="entitydataeditor" 

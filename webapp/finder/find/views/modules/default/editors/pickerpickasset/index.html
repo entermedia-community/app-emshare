@@ -1,6 +1,9 @@
 #set( $pickertargetfield = $context.getRequestParameter("pickertargetfield"))
 #set( $categoryid = $context.getRequestParameter("categoryid"))
-#set( $originalcategoryid = $context.getRequestParameter("originalcategoryid"))
+#set( $entitycategoryid = $context.getRequestParameter("entitycategoryid"))
+#ifnull($categoryid)
+	#set( $categoryid = $entitycategoryid)
+#end
 
 #set($pickertarget = $context.getRequestParameter("pickertarget")) ##? This still useful?
 
@@ -9,12 +12,9 @@
 	data-entityid="$!entity.id"
 	data-entitymoduleid="$!entitymodule.id"
 	data-entitymoduleviewid="$!entitymoduleviewid"
+	data-entitycategoryid="$!{entitycategoryid}"
+	
 	data-oemaxlevel="1"
-	data-categoryid="$!categoryid"
-	#if( $categoryid)
-		#set($originalcategoryid = $categoryid)
-	#end
-	data-originalcategoryid="$!originalcategoryid"
 
 	data-edithome="$!{edithome}"
 	data-targetdiv="pickersearchresults"
@@ -30,7 +30,7 @@
 			>
 			
 			#if($categoryid)
-				$pages.include("${searchhome}/search.html?field=category&category.value=${categoryid}&operation=exact",$context)
+				$pages.include("${searchhome}/search.html?categoryid=${categoryid}&field=category&category.value=${categoryid}&operation=exact",$context)
 			#else
 				$pages.include("${searchhome}/searchinclude.html",$context)
 			#end

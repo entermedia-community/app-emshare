@@ -1,4 +1,5 @@
-		#set( $categoryid = $context.getRequestParameter("categoryid"))
+#set( $categoryid = $context.getRequestParameter("categoryid"))
+#set($entitycategoryid = $context.getRequestParameter("entitycategoryid"))
 
 <div class="entity-action-header">
 	<div class="w-100 d-flex align-items-center justify-content-between">
@@ -9,7 +10,8 @@
 				#set($moduleicon = $submodule.moduleicon)
 			#end	
 			<i class="ns bi bi-$moduleicon module-icon" style="font-size: 0.8em;"></i> 
-			#if($categoryid)
+			
+			#if($categoryid == $entitycategoryid)
 				#text($entity) <small>($hits.size())</small>
 			#else
 				[[All Files]] <small>($hits.size())</small>
@@ -18,25 +20,22 @@
 
 		#set( $pickertargetfield = $context.getRequestParameter("pickertargetfield"))
 		
-		#if($categoryid && $categoryid != "")
-		<a href="$edithome/index.html" class="ajax btn btn-accent" 
-			data-targetdiv="$!{edithomeid}" 
-			data-oemaxlevel="1" 
-			data-categoryid=""
-			data-pickertargetfield="$pickertargetfield">
-			[[Show All Files]]
-		</a>
-		#else
-			#set( $originalcategoryid = $context.getRequestParameter("originalcategoryid"))
-			#if($originalcategoryid && $originalcategoryid != "")
+		#if($categoryid == $entitycategoryid)
 			<a href="$edithome/index.html" class="ajax btn btn-accent" 
 				data-targetdiv="$!{edithomeid}" 
 				data-oemaxlevel="1" 
-				data-categoryid="$originalcategoryid"
-				data-pickertargetfield="$pickertargetfield">
-				[[Show Folder Files]]
+				data-categoryid="index"
+				data-pickertargetfield="${pickertargetfield}">
+				[[Show All Files]]
 			</a>
-			#end		
+		#else
+			<a href="$edithome/index.html" class="ajax btn btn-accent" 
+				data-targetdiv="$!{edithomeid}" 
+				data-oemaxlevel="1" 
+				data-categoryid="${entitycategoryid}"
+				data-pickertargetfield="${pickertargetfield}">
+				[[Show]] #text($entity) [[Files]]
+			</a>
 		#end
 	</div>
 

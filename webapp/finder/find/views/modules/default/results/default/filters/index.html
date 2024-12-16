@@ -39,13 +39,15 @@
 			data-edithomeid="${edithomeid}"
 			data-targetdiv="resultsdiv"
 			
+			data-includeeditcontext="true"
+			
 			action="${searchhome}/search.html"
 			data-oemaxlevel="1"
 	>
 		#set ($details = $searcher.getDetailsForView($viewdata,$userprofile))
 		
 		#ifnull($idprefix)
-			#set($idprefix = "search")
+			#set($idprefix = "search${edithomeid}")
 		#end
 		$context.putPageValue("idprefix",$idprefix)
 		
@@ -99,10 +101,15 @@
 			#set($entitymoduleviewid = $context.getRequestParameter("entitymoduleviewid"))
 			<input name="entitymoduleviewid" type="hidden" value="$!entitymoduleviewid" />
 
-			#if( $page.isPropertyTrue("filterbyentity",false) )
+			#if( $page.isPropertyTrue("includeentityinfilter",false) )
 				<input name="field" type="hidden" value="$!{entitymodule.id}" />
 				<input name="$!{entitymodule.id}value" type="hidden" value="$!entity.id" />
 				<input type="hidden" name="operation" value="exact" />
+			#end
+			#if( $page.isPropertyTrue("excludeentityinfilter",false) )
+				<input name="field" type="hidden" value="$!{entitymodule.id}" />
+				<input name="$!{entitymodule.id}value" type="hidden" value="$!entity.id" />
+				<input type="hidden" name="operation" value="not" />
 			#end
 		#end
 		
