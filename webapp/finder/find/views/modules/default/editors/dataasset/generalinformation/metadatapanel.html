@@ -36,13 +36,15 @@ $context.putPageValue("searcher", $searcher )
 					$pages.include("/$applicationid/components/xml/detailviewer.html", $context)
 					#if($caneditasset)
 						<div class="assetpanel-editor-actions">
-							#set( $url = "${edithome}/generalinformation/editform.html")
-							#set( $url = "$url?viewid=$viewid&oemaxlevel=1&edit=$!caneditasset&assetid=${asset.id}&collectionid=$!{collectionid}&hitssessionid=$!hitssessionid" )
-							#set( $url = "$url&targetdiv=asset-detail-editor&editpath=${edithome}/generalinformation/save.html" )
+							#set( $url = "${edithome}/generalinformation/editform.html?assetid=${asset.id}")
 							<a href="#urlescape($url)" 
 							   class="ajax btn btn-accent"
+							   data-edit="$!caneditasset"
 							   data-viewid="$viewid"
+							   data-assethitssessionid="$!hitssessionid"
 							   data-targetdiv="edit-${viewdata.getId()}"
+							   data-editpath="${edithome}/generalinformation/save.html"
+							   data-oemaxlevel="1"
 							   title="[[Edit]] #text($viewdata)"><i class="bi bi-pencil-square mr-1"></i> [[Edit]] </a>
 						</div>
 					#end
