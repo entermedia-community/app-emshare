@@ -802,8 +802,11 @@ jQuery(document).ready(function () {
 		lQuery("#changeLocalDirve").livequery("click", function (e) {
 			e.preventDefault();
 			var selectedPath = $("#localRootPathInput").val();
-			var isReadOnly = $("#isReadOnlyPath").val();
-			ipcRenderer.send("changeLocalDrive", { selectedPath, isReadOnly });
+			var externalSyncEnabled = $("#externalSyncEnabled").val();
+			ipcRenderer.send("changeLocalDrive", {
+				selectedPath,
+				externalSyncEnabled,
+			});
 			closeemdialog($(this).closest(".modal"));
 		});
 
