@@ -34,7 +34,12 @@
 				data-lightbox="#text($selectedbox)"
 			#end
 			data-entityid="$!entity.getId()"
-			data-path='$!entity.get("uploadsourcepath")'>
+			data-path='$!entity.get("uploadsourcepath")'
+			#set( $modulelist  = $mediaarchive.getCatalogSettingValue("useexternalsync_modulelist"))
+			#if( $modulelist.contains($module.getId()))
+				data-useexternalsync="true"
+			#end
+			>
 			<i class="bi bi-download mr-1 ns"></i> <span>[[Open Locally]]</span>
 		</button>  
 	#end
