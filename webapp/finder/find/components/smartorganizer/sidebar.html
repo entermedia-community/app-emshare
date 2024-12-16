@@ -1,20 +1,10 @@
-#ifnotnull($category)
-  #set( $assetid = $category.findValue("headercategoryimage") )
-  #ifnotnull($assetid)
-    #set($logoasset = $mediaarchive.getCachedData("asset",$assetid))
-    #set($logourl = $mediaarchive.asLinkToOriginal($logoasset))
-    #set($logourl = "$siteroot/$mediadbappid/services/module/asset/downloads/originals/${logourl}")
-  #end
-#end
-#ifnull( $logourl)
-  #set( $logourl = "$!{siteroot}$themeprefix/lighttheme/logo.png")
-#end
+#set( $logourl = "$!{siteroot}$themeprefix/lighttheme/logo.png")
 
 #set( $themeid = $context.getRequestParameter("themeid"))
 #if(!$themeid)
 	#set( $themeid = $content.get("themeid") )
 #end
-#set($data = $mediaarchive.getData("theme", $themeid))
+#set($data = $mediaarchive.getData("theme", "lighttheme"))
 #set($bgcolor = $data["navbar-primary"])
 #set($strokeColor = $data["navbar-secondary"])
 #ifnull($bgcolor)

@@ -31,12 +31,16 @@ jQuery(document).ready(function () {
 					}
 				}
 			},
+			error: function(jqXHR, textStatus, errorThrown )
+			{
+				console.log("Error loading queue make sure mediadb points to finder",errorThrown);
+				return false;
+			}
 		});
 	}
 
-	lQuery("#triggerpendingdownloads").livequery( function()
-	{
-		setTimeout(	checkForPendingDownloads, 1000);
+	lQuery("#triggerpendingdownloads").livequery(function () {
+		setTimeout(checkForPendingDownloads, 1000);
 	});
 
 	function downloadDirectly(id, url, filename, isZip = false) {

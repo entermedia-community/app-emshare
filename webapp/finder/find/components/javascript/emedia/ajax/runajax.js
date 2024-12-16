@@ -268,11 +268,6 @@ $(document).ajaxError(function (e, jqXhr, settings, exception) {
 		err = "Request timed out!";
 	}
 
-	customToast(err, {
-		autohide: false,
-		positive: false,
-	});
-
 	var errors =
 		"Error: " +
 		exception +
