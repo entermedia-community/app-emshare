@@ -328,7 +328,7 @@ jQuery(document).ready(function (url, params) {
 
 		$("#hiddenoverlay .playerarea").width(avwidth);
 
-		var avheight = $(window).height() - 40;
+		var avheight = $(window).height() - 65;
 		if (!isNaN(w) && w != "") {
 			w = parseInt(w);
 
@@ -349,7 +349,7 @@ jQuery(document).ready(function (url, params) {
 				var remaining = avheight - newh;
 
 				if (remaining > 0) {
-					remaining = remaining / 2;
+					remaining = Math.floor(remaining / 2);
 					img.css("margin-top", remaining + "px");
 				} else {
 					img.css("margin-top", "0px");
