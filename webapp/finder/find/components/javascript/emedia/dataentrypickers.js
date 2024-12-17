@@ -295,6 +295,27 @@ lQuery(".editdiv.pickerforuploading .resultsdivdata").livequery(
 	}
 );
 
+// CM: 2024-12-17
+// Picker Folder (Category Tree) for Asset (Media Viewer)
+lQuery(".pickerresults.pickercategorytree .resultsdivdata").livequery(
+	"click",
+	function (e) {
+		if (!isValidTarget(e)) {
+			return true;
+		}
+
+		var clicked = $(this);
+		var rowid = clicked.data("dataid");
+		var clickableresultlist = clicked.closest(".clickableresultlist");
+
+		if (clickableresultlist.length) {
+			clickableresultlist.data("categoryid", rowid);
+			clickableresultlist.runAjax();
+			closeemdialog(clickableresultlist.closest(".modal"));
+		}
+	}
+);
+
 
 //CB: assign a asset to a field
 lQuery(".pickerresults.pickerpickasset .resultsdivdata").livequery(
