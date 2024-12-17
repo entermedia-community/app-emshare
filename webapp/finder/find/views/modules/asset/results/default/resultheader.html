@@ -102,7 +102,7 @@
 				#set ($enabled = true)
 			#end
 			
-			#if($dialogresults)
+			#if($page.isPropertyTrue("showsidetree", true))
 				#ifnull($dialogtreestatus)
 					#set($dialogtreestatus = $userprofile.get("dialogtreestatus"))
 				#end
@@ -306,14 +306,7 @@
 							$pages.include("$searchhome/positions.html", $context)
 						##</li>
 					#end
-
-					##-HITSPERPAGE
-
-					#if($dialogresults)
-						#set($targetdiv= "dialog$!{moduleid}resultscontainer")
-					#else
-						#set($targetdiv= "$!{moduleid}resultscontainer")
-					#end
+					
 				#else
 					## TODO?: infinie scroll for stacked media
 				#end
