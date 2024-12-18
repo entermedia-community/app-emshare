@@ -1,5 +1,6 @@
 jQuery(document).ready(function (url, params) {
 	var appdiv = $("#application");
+	var apphome = appdiv.data("apphome");
 	var siteroot = appdiv.data("siteroot") + appdiv.data("apphome");
 	var componenthome = appdiv.data("siteroot") + appdiv.data("componenthome");
 
@@ -476,7 +477,7 @@ jQuery(document).ready(function (url, params) {
 			// Not needed?
 			var link = resultsdiv.data("assettemplate");
 			if (link == null) {
-				link = componenthome + "/mediaviewer/fullscreen/currentasset.html";
+				link = apphome + "/views/modules/asset/mediaviewer/fullscreen/currentasset.html";
 			}
 			var hitssessionid, hitsname;
 
@@ -622,7 +623,7 @@ jQuery(document).ready(function (url, params) {
 			var grid = $(".masonry-grid");
 			var href = grid.data("viewertemplate");
 			if (href == null) {
-				href = componenthome + "/mediaviewer/fullscreen/index.html";
+				href = apphome + "/views/modules/asset/mediaviewer/fullscreen/index.html";
 			}
 
 			$.ajax({
