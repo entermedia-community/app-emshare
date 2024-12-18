@@ -18,19 +18,22 @@
 		#end
 	>
 
-		#if( $organizedModules.isEmpty())
+	#ifnotnull($organizedModules)
+		#if($organizedModules.isEmpty())
 			<div class="emnoresults">[[No modules added in this category]]</div>
 		#end
 
 		#set($selectedmoduleid = $context.getRequestParameter("selectedmoduleid"))
 		#ifnull($selectedmoduleid)
-			#set($selectedmodule = $organizedModules.iterator().next())
+			#if(!$organizedModules.isEmpty())
+				#set($selectedmodule = $organizedModules.iterator().next())
+			#end
 		#end
 
 		#ifnull($selectedmodule)
 			#set($selectedmodule = $mediaarchive.getCachedData("module",$selectedmoduleid) )
 		#end
-
+	#end
 		#ifnotnull($selectedmodule)
 			$context.putPageValue("selectedmodule",$selectedmodule)
 			$pages.include("${edithome}/categorybreadcrumb.html", $context)
