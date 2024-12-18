@@ -1,0 +1,22 @@
+<div class="assetpanel-container">
+		#set($action = $context.getRequestParameter("action"))
+	<div class="assetpanel-content-inside">
+
+		#set( $targetpage = $mediaarchive.getPageManager().getPage("/$applicationid/views/modules/asset/editor/$action/index.html"))
+
+		#if($action == "closedcaptions" || $action == "timeline")
+			#set( $targetpage = $mediaarchive.getPageManager().getPage("/$applicationid/components/$action/index.html"))
+		#end
+		
+		<div class="assetpanel-editor">
+		#foreach( $script in $pageManager.getScriptPathsWithoutApp($targetpage))
+			<script type="text/javascript" src="#if(!$script.startsWith("http"))$home#end$script">  </script>
+		#end
+		#foreach( $style in $pageManager.getStylePathsFor($targetpage) )
+			<link rel="stylesheet" type="text/css" href="#if(!$style.startsWith("http"))$siteroot#end$style" />
+		#end
+		$pages.include($targetpage, $context)
+		</div>
+	</div>
+	
+</div>

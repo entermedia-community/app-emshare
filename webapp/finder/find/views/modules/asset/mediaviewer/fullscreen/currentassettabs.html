@@ -1,0 +1,196 @@
+#set( $previewonly = $context.getRequestParameter("previewonly"))
+#if (!$previewonly)
+	#set($previewonly = false)
+#end
+
+#if(!$title)
+	#if( $asset.assettitle )
+		#set($title = $asset.getText("assettitle",$context)) 
+	#else 
+		#set($title = $asset.getText("name",$context) )
+	#end
+#end
+<div class="d-flex justify-content-center p-1 w-100 media-namecard">
+	<p class="m-0">#text($asset.sourcePath)</p>
+</div>
+<div id="assettabnavs">
+	<ul class="flex-grow-1">
+		#if($rendertype=="document")
+			#set($totalpages = $numberutils.toInt($asset.pages))
+			#if($totalpages>1)
+			<li class="assettabnav mvshowpagestab">
+				<a class="expandmenu mvshowpages" 
+					title="$totalpages [[Pages]]">
+					<i class="bi bi-list ns mr-1"></i> $totalpages [[Pages]]
+				</a>
+			</li>
+			#end
+		#end
+
+		#if( $canaddtofavorites)
+		$context.putPageValue("assetid", $asset.id)
+		<li class="assettabnav">
+			<div id="tabassetfavorite-${asset.id}" class="media-info-icons">
+				$pages.include("$apphome/views/modules/asset/editor/favorite/index.html?targetdiv=tabassetfavorite", $context)
+			</div>
+		</li>
+		#end
+
+		#if( !$previewonly && $canviewmetadatageneral )
+		<li class="assettabnav #if($opentab == "viewproperties")tabselected#end">
+			<a class="expandmenu assettab rememberassettab" 
+				data-link="$siteroot${apphome}/views/modules/asset/mediaviewer/fullscreen/tabs/viewasset.html" 
+				title="[[Metadata]]"
+				data-assettab="viewproperties">
+				<i class="bi bi-info-circle mr-1 ns"></i> [[Data]] 
+			</a>
+		</li>
+		#end
+
+		#if (!$ismulti && $canviewmetadatageneral)
+		<li class="assettabnav #if($opentab == "viewpreview")tabselected#end">	
+			<a class="expandmenu assetpreview assettab rememberassettab" 
+				data-link="$siteroot${apphome}/views/modules/asset/mediaviewer/fullscreen/tabs/viewpreview.html"
+				data-assettab="viewpreview"
+				title="[[View]] #esc($!title)">
+				<i class="bi bi-fullscreen ns mr-1"></i> [[Viewer]] 
+			</a>
+		</li>
+		#end
+
+		#if(!$previewonly && !$ismulti && $canviewmediaedit && $canviewconversions && ($rendertype == "image" ))
+		<li class="hidemulti assettabnav #if($opentab == 'imageeditor')tabselected #end">
+			<a class="expandmenu assettab rememberassettab" 
+				data-link="$siteroot${apphome}/views/modules/asset/mediaviewer/fullscreen/tabs/viewactions.html?action=imageeditor" 
+				title="[[Image Editor]]"
+				data-assettab="imageeditor"
+				data-assettabname="[[Image Editor]]">
+				<i class="bi bi-image ns mr-1"></i> [[Image Editor]] 
+			</a>
+		</li>
+		#end
+
+
+		#if(!$ismulti && ($rendertype == "video"))
+			#if($canviewtimeline)
+			<li class='assettabnav #if($opentab == "viewtimeline")tabselected#end'>
+				<a class="expandmenu assettab rememberassettab" 
+					data-link="$siteroot${apphome}/views/modules/asset/mediaviewer/fullscreen/tabs/viewactions.html?action=timeline" title="[[Timeline]]"
+					data-assettab="viewtimeline"
+					data-assettabname="[[Timeline]]">
+					<i class="bi bi-play-circle mr-1"></i> [[Timeline]]
+				</a>
+			</li>
+			#end
+		#end
+
+		#if(!$ismulti && ($rendertype == "video" || $rendertype == "audio"))
+			#if($canviewclosedcaptions)
+			<li class='assettabnav #if($opentab == "viewclosedcaptions")tabselected#end'>
+				<a class="expandmenu assettab rememberassettab" 
+					data-link="$siteroot${apphome}/views/modules/asset/mediaviewer/fullscreen/tabs/viewactions.html?action=closedcaptions" title="[[Closed Captions]]"
+					data-assettab="viewclosedcaptions"
+					data-assettabname="[[Closed Captions]]">
+					<i class="bi bi-badge-cc ns mr-1"></i> [[Closed Captions]]
+				</a>
+			</li>
+			#end
+		#end
+
+		#if (!$ismulti)
+			<li class="hidemulti">
+				$pages.include("${edithome}/assetdatatables.html",$context)
+			</li>
+		#end
+
+		#if($candownload && $asset.getFileFormat() == "pdf")
+			#set( $link = "$siteroot/$mediadbappid/services/module/asset/downloads/vieworiginal/${asset.getSourcePath()}")
+		<li class="assettabnav">
+			<a class="expandmenu" data-assetid="${asset.id}" target="_new" href="#urlescape($link)">
+				<i class="bi bi-filetype-pdf ns mr-1"></i> [[View PDF]]
+			</a>
+		</li> 
+		#end
+
+		#if( !$ismulti)
+		#if ($canviewconversions || $canconverthistory || $canconverthistory )
+			<li class="assettabnav #if($opentab == 'assethistory')tabselected #end">
+				<a class="expandmenu assettab rememberassettab" 
+					data-link="$siteroot${apphome}/views/modules/asset/mediaviewer/fullscreen/tabs/viewactions.html?action=assethistory" title="[[History]]"
+					data-title="[[History]]"
+					data-assettab="assethistory"
+					data-assettabname="[[History]]">
+					<i class="bi bi-clock-history ns mr-1"></i> [[History]] 
+				</a>
+			</li>
+		#end
+		#end
+
+		#if ( $canshareasset && !$ismulti )
+			#if ($canpublish || $canemaillink || $canembedasset || $canaddtoproject)
+			<li class="assettabnav hidemulti dropdown">
+				<a href="#" class="expandmenu dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" title="[[Share]]">
+					<i class="bi bi-share ns mr-1"></i> [[Share]]
+				</a>
+				<ul class="dropdown-menu">
+					#if ($canpublish)
+					<li>
+						<a class="dropdown-item emdialog" data-hidefooter="true" data-noesc="true" data-dialogid="shareasset" href="$siteroot$apphome/views/modules/asset/activity/publishassets.html?assetid=$asset.id">[[Publish]]</a>
+					</li>
+					#end
+					#if( $canemaillink )
+					<li>
+						<a class="dropdown-item emdialog" data-hidefooter="true" data-noesc="true" data-dialogid="shareasset" href="$siteroot$apphome/views/modules/asset/activity/emailassets.html?assetid=$asset.id">[[Email]]</a>
+					</li>
+					#end
+					#if( $canembedasset)
+					<li>
+						<a class="dropdown-item emdialog" data-hidefooter="true" data-noesc="true" data-dialogid="shareasset" href="$siteroot$componenthome/share/embed.html?assetid=$asset.id&collectionid=$!collectionid">[[Links]]</a>
+					</li>
+					#end
+					#if ( $canaddtoproject )
+					<li id="add-to-collection">
+						<a class="dropdown-item ajax" data-targetdivinner="shareOptionsContainer" data-dialogid="shareasset" href="#">[[Add to Project]]</a>
+					</li>
+					#end
+				</ul>
+			</li>
+			#end
+		#end
+
+		#if(!$ismulti && ($candownload || $canconvert || $candownloadfpo) && $asset.getFileFormat() != "pdf")
+		<li class="assettabnav">
+			#set($dlink = "$applink/views/modules/asset/activity/downloadassets.html") 
+			<a href="$dlink"
+				class="emdialog expandmenu" 
+				data-hidefooter="true" 
+				data-dialogid="donwloadasset" 
+				data-assetid="${asset.id}"
+				data-hitssessionid="$!hitssessionid">
+				<i class="bi bi-download ns mr-1"></i> [[Download]]
+			</a>
+		</li>
+		#end
+
+		#if ( $cancheckout )
+			<li class="assettabnav" id="mediaviewerbasket">
+				#if($orderManager.isAssetInOrder($catalogid, $order, $asset.id) )
+				<a class="dropdown-item updatebasketmediaviewer expandmenu" data-action="remove" data-alerttxt="[[Removed From Basket]]" data-targetdiv="mediaviewerbasket" 
+					href="$siteroot$componenthome/basket/mediaviewertoggleitem.html?assetid=$asset.id">
+					<span class="bi bi-cart-fill ns mr-1"> </span> [[Remove From Order]]
+				</a>
+				#else
+				<a class="dropdown-item updatebasketmediaviewer expandmenu"  data-targetdiv="mediaviewerbasket" data-alerttxt="[[Added To Basket]]" 
+					href="$siteroot$componenthome/basket/mediaviewertoggleitem.html?assetid=$asset.id">
+					<span class="bi bi-cart ns mr-1"> </span> [[Add To Order]]
+				</a>
+				#end
+			</li>
+		#end
+	</ul>
+
+	<div class="assetcaretnav">
+		<a class="goleftclick gotoarrows" id="goleftclick" data-enabled="false" href="#"><span class="bi bi-caret-left-fill overlay-nav gocaret"></span></a>	
+		<a class="gorightclick gotoarrows" id="gorightclick" data-enabled="false" href="#"><span class="bi bi-caret-right-fill overlay-nav gocaret"></span></a>	
+	</div>
+</div>
