@@ -1,4 +1,6 @@
 
+#set( $isowner = $entity.owner == $user.id)
+
 
 <div class="entity-action-header">
 		<h3>
@@ -10,8 +12,8 @@
 			#text($module) <small>($hits.size())</small>
 		</h3>
 		
-		#if($permissions.can($parentmoduleid, "edit"))
-			#if($permissions.can($!submodule.getId() , "create"))
+		#if($permissions.can($parentmoduleid, $isowner, "edit"))
+			#if($permissions.can($!submodule.getId(), $isowner, "create"))
 				#set($newedithomelink= "$applink/views/modules/$!{module.id}/editors/pickersubmodules")
 				#set($newedithome= "$apphome/views/modules/$!{module.id}/editors/pickersubmodules")
 				
@@ -38,7 +40,7 @@
 					data-includeeditcontext="true"
 					data-hidefooter="true"
 					title="[[Upload]]"><i class="bi bi-upload mr-2"></i> [[Upload Spreadsheet]]</a>	
-					#if($permissions.can($module.getId() , "createwithai"))					
+					#if($permissions.can($module.getId(),$isowner,"createwithai"))					
 					#set($pickerurl = "$!{edithome}/ai/input.html")
 					<a href="$pickerurl" 
 					class="emdialog btn btn-accent ml-1"
