@@ -164,6 +164,11 @@ jQuery(document).ready(function (url, params) {
 				}
 				var url = input.data("url");
 				input.data("url", url + page);
+				var urlbar = input.data("urlbar");
+				if(urlbar !== undefined)
+				{
+					input.data("urlbar", urlbar + page);
+				}
 				input.data("noToast", true);
 				input.runAjax();
 			}
