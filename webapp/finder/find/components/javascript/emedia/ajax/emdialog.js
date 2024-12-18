@@ -55,12 +55,15 @@
 			modaldialog = jQuery("#" + id);
 		}
 
-		var link = initiator.attr("href");
-		if (!link) {
-			link = initiator.data("targetlink");
+		var	link = initiator.data("url");
+
+		if( link === undefined)
+		{
+			link = initiator.attr("href");
 		}
-		if (!link) {
-			link = initiator.data("url");
+		if( link === undefined)
+		{
+			link = initiator.data("targetlink");
 		}
 		var olddialog = initiator.closest(".modal");
 		if (olddialog.length !== 0 && olddialog.attr("id") == id) {

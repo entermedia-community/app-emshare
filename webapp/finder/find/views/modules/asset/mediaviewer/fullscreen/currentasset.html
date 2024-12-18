@@ -20,7 +20,13 @@ $context.putPageValue("cdn",$cdnprefix)
 #end
 $context.putPageValue("previewonly", $previewonly) 
 
+#ifnull($opentab)
+#set( $opentab = $context.getRequestParameter("opentab") )
+#end
+
+#ifnull($opentab)
 #set( $opentab = $userprofile.get("assetopentab"))
+#end
 #set( $opentabactions = "")
 
 #ifnull($opentab)
@@ -43,12 +49,26 @@ $context.putPageValue("previewonly", $previewonly)
 	#set( $opentab = "viewpreview")
 #end
 
+#ifnull($hitssessionid)
+#set( $hitssessionid = $context.getRequestParameter("hitssessionid") )
+#end
+#ifnull($rendertype)
+#set( $rendertype = $context.getRequestParameter("rendertype") )
+#end
+#set( $index = $hits.indexOfId($asset.id))
+#set( $previous = false )
+#set( $previous = $hits.previous($index))
+$context.putPageValue("previous",$previous)
+#set( $next = false )
+#set( $next = $hits.next($index))  
+$context.putPageValue("next",$next)
+
+
 #set( $ismulti = $asset.id.startsWith("multiedit:") || $context.getRequestParameter("multi") == "true")
 #if( $ismulti )
 	#set( $opentab = "viewproperties")
 	$context.putPageValue("ismulti",$ismulti)
 #end
-
 
 $context.putPageValue("opentab",$opentab)
 $context.putPageValue("opentabactions",$opentabactions)
@@ -56,10 +76,30 @@ $context.putPageValue("opentabactions",$opentabactions)
 #set( $hitssessionid = $hits.getSessionId())
 $context.putPageValue("hitssessionid",$hitssessionid)
 
+#set( $originaledithomeid = $context.getRequestParameter("edithomeid") )
 
+<div id="main-media-container"  class="editdiv"
 
-
-<div id="main-media-container">
+	data-originaledithomeid="$originaledithomeid"
+	data-includeeditcontext="true"
+	data-includesearchcontext="false"
+	
+data-oemaxlevel="1" 
+data-editable="$!caneditasset" 
+data-assetid="$!{asset.id}"  
+data-previous="$!previous.getId()"
+data-previousname="$!previous.getName()"
+data-previouspage="$!hits.idOnPreviousPage()"
+data-next="$!next.getId()"
+data-nextname="$!next.getName()"
+data-nextpage="$!hits.idOnNextPage()"
+data-assethitssessionid="$hitssessionid"
+data-opentab="$!{opentab}"
+data-rendertype="$!rendertype"
+data-multieeditlink="${apphome}/views/modules/asset/mediaviewer/fullscreen/tabs/multiedit.html?assetid=multi:$!hitssessionid&hitssessionid=$!hitssessionid&multi=true"
+data-url="$siteroot${apphome}/views/modules/asset/mediaviewer/fullscreen/currentasset.html"
+	
+>
 
 $pages.include("${apphome}/views/modules/asset/mediaviewer/fullscreen/currentassettabs.html",$context)
 $pages.include("${apphome}/views/modules/asset/mediaviewer/fullscreen/mainmediaviewer.html",$context)

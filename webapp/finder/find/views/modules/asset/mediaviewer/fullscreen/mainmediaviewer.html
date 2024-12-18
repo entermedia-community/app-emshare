@@ -1,38 +1,13 @@
 #ifnull($opentab)
 #set( $opentab = $context.getRequestParameter("opentab") )
 #end
-#ifnull($hitssessionid)
-#set( $hitssessionid = $context.getRequestParameter("hitssessionid") )
-#end
 #ifnull($rendertype)
 #set( $rendertype = $context.getRequestParameter("rendertype") )
 #end
-#set( $index = $hits.indexOfId($asset.id))
-#set( $previous = false )
-#set( $previous = $hits.previous($index))
-$context.putPageValue("previous",$previous)
-#set( $next = false )
-#set( $next = $hits.next($index))  
-$context.putPageValue("next",$next)
 
 <div id="main-media-viewer" 
 class="mainmediaviewer"
-data-hitssessionid="$!{hitssessionid}"
-data-hitsname="$!hits.getHitsName()" 
-data-searchtype="asset" 
-data-oemaxlevel="1" 
-data-editable="$!caneditasset" 
-data-assetid="$!{asset.id}"  
-data-previous="$!previous.getId()"
-data-previousname="$!previous.getName()"
-data-previouspage="$!hits.idOnPreviousPage()"
-data-next="$!next.getId()"
-data-nextname="$!next.getName()"
-data-nextpage="$!hits.idOnNextPage()"
-data-opentab="$!{opentab}"
-data-rendertype="$!rendertype"
-data-multieeditlink="${apphome}/views/modules/asset/mediaviewer/fullscreen/tabs/multiedit.html?assetid=multi:$!hitssessionid&hitssessionid=$!hitssessionid&multi=true"
-data-url="$siteroot${apphome}/views/modules/asset/mediaviewer/fullscreen/mainmediaviewer.html"
+
  ><div id="mainmedianotifications"></div>
 
 	#if( !$mediadbappid)
