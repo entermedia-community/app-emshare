@@ -2950,7 +2950,8 @@ function intializeUI() {
 					e.stopPropagation();
 					e.preventDefault();
 				} else {
-					hideOverlayDiv(getOverlay());
+					//hideOverlayDiv(getOverlay());
+					//Todo Close MV modal
 				}
 
 				return;

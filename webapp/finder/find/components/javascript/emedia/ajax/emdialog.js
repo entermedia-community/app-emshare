@@ -256,6 +256,9 @@
 					}, 0);
 				}
 			}
+			
+			disposevideos(); //too generic?
+			
 		});
 
 		//Close drodpown if exists

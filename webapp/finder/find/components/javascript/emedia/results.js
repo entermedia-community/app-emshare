@@ -322,57 +322,6 @@ jQuery(document).ready(function (url, params) {
 		return false;
 	});
 
-	overlayResize = function () {
-		var img = $("#hiddenoverlay #main-media");
-		var avwidth = $(window).width();
-		var wheight = $(window).height();
-		var overlay = $("#hiddenoverlay");
-		overlay.height(wheight);
-		overlay.width(avwidth);
-		var w = parseInt(img.data("width"));
-		var h = parseInt(img.data("height"));
-
-		$("#hiddenoverlay .playerarea").width(avwidth);
-
-		var avheight = $(window).height() - 65;
-		if (!isNaN(w) && w != "") {
-			w = parseInt(w);
-
-			var newh = Math.floor((avwidth * h) / w);
-			var neww = Math.max(avwidth, Math.floor((avwidth * w) / h));
-			img.width(avwidth);
-			img.css("height", "auto");
-			// Only if limited by height
-
-			if (newh > avheight) {
-				img.height(avheight);
-				img.css("margin-top", "0px");
-				// var neww2 = Math.floor( avheight * w / h );
-				// img.width(neww2);
-				img.css("width", "auto");
-				img.css("height", avheight);
-			} else {
-				var remaining = avheight - newh;
-
-				if (remaining > 0) {
-					remaining = Math.floor(remaining / 2);
-					img.css("margin-top", remaining + "px");
-				} else {
-					img.css("margin-top", "0px");
-				}
-			}
-			// img.css("height", avheight);
-		} else {
-			/*
-			 * img.width(avwidth); //img.css("height", "auto");
-			 * img.css("height", avheight); img.css("margin-top","0px");
-			 */
-		}
-	};
-	$(window).resize(function () {
-		overlayResize(); // TODO: Add this to the shared
-	});
-
 	$.fn.exists = function () {
 		return this.length !== 0;
 	};
@@ -403,49 +352,7 @@ jQuery(document).ready(function (url, params) {
 		//Stop Audios
 		$.jPlayer.pause();
 	};
-	hideOverlayDiv = function (inOverlay) {
-		// debugger;
-		disposevideos();
-		stopautoscroll = false;
-		$("body").css({ overflow: "auto" });
-		inOverlay.hide();
-		inOverlay.removeClass("show");
-		if ($(".modal.behind").length) {
-			adjustZIndex($(".modal.behind"));
-		}
-
-		var reloadonclose = $("#resultsdiv").data("reloadresults");
-		if (reloadonclose == undefined) {
-			reloadonclose = false;
-		}
-		if (reloadonclose) {
-			refreshresults();
-		} else {
-			//$(document).trigger("domchanged");
-			$(window).trigger("resize");
-			// gridResize();
-		}
-		var assetdetaileditor = $("#asset-detail-editor");
-		$(window).trigger("checkautoreload", [assetdetaileditor]);
-
-		var lastscroll = getOverlay().data("lastscroll");
-		// remove Asset #hash
-		history.replaceState(null, null, " ");
-		$(window).scrollTop(lastscroll);
-		jQuery(window).trigger("resize");
-	};
-
-	showOverlayDiv = function (inOverlay) {
-		stopautoscroll = true;
-		$("body").css({ overflow: "hidden" });
-		inOverlay.show();
-
-		adjustZIndex(inOverlay);
-
-		inOverlay.addClass("show");
-		var lastscroll = $(window).scrollTop();
-		getOverlay().data("lastscroll", lastscroll);
-	};
+	
 
 	showAsset = function (element, assetid, pagenum) {
 		if (assetid) {
@@ -459,11 +366,12 @@ jQuery(document).ready(function (url, params) {
 			assetdialog.data("pageheight",$(window).height() - 100);
 
 			window.location.hash = "asset-" + assetid;
+			
 			disposevideos();
 			
 			assetdialog.runAjax(function()
 			{
-				showOverlayDiv(overlay);
+				//showOverlayDiv(overlay); //--Anything need it from show/hide overlay?
 
 				//assetdialog = $("#main-media-viewer");
 				//$(".gallery-thumb").removeClass("active-asset");
@@ -508,7 +416,7 @@ jQuery(document).ready(function (url, params) {
 						e.stopPropagation();
 						return;
 					} else {
-						hideOverlayDiv(getOverlay());
+						//hideOverlayDiv(getOverlay());
 					}
 					break;
 
@@ -520,30 +428,7 @@ jQuery(document).ready(function (url, params) {
 		});
 	};
 
-	getOverlay = function () {
-		var hidden = $("#hiddenoverlay");
-		if (hidden.length == 0) {
-			var grid = $(".masonry-grid");
-			var href = grid.data("viewertemplate");
-			if (href == null) {
-				href = apphome + "/views/modules/asset/mediaviewer/fullscreen/index.html";
-			}
-
-			$.ajax({
-				url: href,
-				async: false,
-				data: { oemaxlevel: 1 },
-				success: function (data) {
-					$("#application").append(data);
-					hidden = $("#hiddenoverlay");
-					initKeyBindings(hidden);
-				},
-			});
-		}
-		hidden = $("#hiddenoverlay");
-
-		return hidden;
-	};
+	
 
 	refreshresults = function () {
 		var resultsdiv = $("#resultsdiv");

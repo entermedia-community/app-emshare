@@ -190,9 +190,9 @@
 				$("#resultsdiv").data("reloadresults", true);
 
 				//TODO: Move this to results.js
-				if (form.hasClass("autohideOverlay")) {
-					hideOverlayDiv(getOverlay());
-				}
+				//if (form.hasClass("autohideOverlay")) {
+				//	hideOverlayDiv(getOverlay());
+				//}
 
 				if (form.hasClass("autoreloadsource")) {
 					//TODO: Use ajaxreloadtargets
