@@ -1212,7 +1212,9 @@ jQuery(document).ready(function (url, params) {
 		}
 	});
 
-	lQuery("a.assettab").livequery("click", function (e) {
+
+/**ToDelete: Now Tab works with emdialog */
+	lQuery("a.assettabTODELETE").livequery("click", function (e) {
 		e.preventDefault();
 		var tab = $(this);
 
@@ -1241,19 +1243,25 @@ jQuery(document).ready(function (url, params) {
 			showAsset($(this), assetid);
 		} else if (assettab == "multiedit") {
 			var link = $(this).data("link");
-			div.load(link, options, function () {
-				// Update AssetID
-				var assetid = $("#multieditpanel").data("assetid");
-				$("#main-media-viewer").data("assetid", assetid);
-				$(window).trigger("tabready");
-			});
+			if (link !== undefined)
+			{
+				div.load(link, options, function () {
+					// Update AssetID
+					var assetid = $("#multieditpanel").data("assetid");
+					$("#main-media-viewer").data("assetid", assetid);
+					$(window).trigger("tabready");
+				});
+			}
 		} else {
 			disposevideos();
 			var link = tab.data("link");
-			div.load(link, options, function () {
-				// console.log("triggered");
-				$(window).trigger("tabready");
-			});
+			if (link !== undefined)
+			{
+				div.load(link, options, function () {
+					// console.log("triggered");
+					$(window).trigger("tabready");
+				});
+			}
 
 			var assettabactions = $(this).data("assettabactions");
 			if (assettabactions) {
@@ -1275,6 +1283,9 @@ jQuery(document).ready(function (url, params) {
 			}
 		}
 	}); //End of
+/**-- **/
+
+
 
 	//FUSE Library
 	var Fuse;

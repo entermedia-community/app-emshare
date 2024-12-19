@@ -40,13 +40,12 @@
 		<li class="assettabnav #if($opentab == "viewproperties")tabselected#end">
 			<a class="expandmenu ajax " 
 				href="$siteroot${apphome}/views/modules/asset/mediaviewer/fullscreen/currentasset.html"
+				data-opentab="viewproperties"
 				data-targetdiv="main-media-container"
 				data-oemaxlevel="1" 
 				data-propertyfield="assetopentab"
 				data-propertyfieldvalue="viewproperties"
-				data-opentab="viewproperties"
-				title="[[Metadata]]"
-				>
+				title="[[Metadata]]">
 				<i class="bi bi-info-circle mr-1 ns"></i> [[Data]] 
 			</a>
 		</li>
@@ -55,15 +54,12 @@
 		#if (!$ismulti && $canviewmetadatageneral)
 		<li class="assettabnav #if($opentab == "viewpreview")tabselected#end">	
 			<a class="expandmenu assetpreview ajax rememberassettab" 
-				
-				data-opentab="viewpreview"
-				
 				href="$siteroot${apphome}/views/modules/asset/mediaviewer/fullscreen/currentasset.html"
+				data-opentab="viewpreview"
 				data-targetdiv="main-media-container"
 				data-oemaxlevel="1" 
 				data-propertyfield="assetopentab"
 				data-propertyfieldvalue="viewpreview"
-				
 				title="[[View]] #esc($!title)">
 				<i class="bi bi-fullscreen ns mr-1"></i> [[Viewer]] 
 			</a>
@@ -72,11 +68,14 @@
 
 		#if(!$previewonly && !$ismulti && $canviewmediaedit && $canviewconversions && ($rendertype == "image" ))
 		<li class="hidemulti assettabnav #if($opentab == 'imageeditor')tabselected #end">
-			<a class="expandmenu assettab rememberassettab" 
-				data-link="$siteroot${apphome}/views/modules/asset/mediaviewer/fullscreen/tabs/viewactions.html?action=imageeditor" 
-				title="[[Image Editor]]"
-				data-assettab="imageeditor"
-				data-assettabname="[[Image Editor]]">
+			<a class="expandmenu assettab ajax rememberassettab" 
+				href="$siteroot${apphome}/views/modules/asset/mediaviewer/fullscreen/currentasset.html?action=imageeditor"
+				data-opentab="imageeditor"
+				data-targetdiv="main-media-container"
+				data-oemaxlevel="1" 
+				data-propertyfield="assetopentab"
+				data-propertyfieldvalue="imageeditor" 
+				title="[[Image Editor]]">
 				<i class="bi bi-image ns mr-1"></i> [[Image Editor]] 
 			</a>
 		</li>
@@ -86,8 +85,8 @@
 		#if(!$ismulti && ($rendertype == "video"))
 			#if($canviewtimeline)
 			<li class='assettabnav #if($opentab == "viewtimeline")tabselected#end'>
-				<a class="expandmenu assettab rememberassettab" 
-					data-link="$siteroot${apphome}/views/modules/asset/mediaviewer/fullscreen/tabs/viewactions.html?action=timeline" title="[[Timeline]]"
+				<a class="expandmenu assettab ajax rememberassettab" 
+					data-link="$siteroot${apphome}/views/modules/asset/mediaviewer/fullscreen/currentasset.html?action=timeline" title="[[Timeline]]"
 					data-assettab="viewtimeline"
 					data-assettabname="[[Timeline]]">
 					<i class="bi bi-play-circle mr-1"></i> [[Timeline]]
@@ -99,9 +98,13 @@
 		#if(!$ismulti && ($rendertype == "video" || $rendertype == "audio"))
 			#if($canviewclosedcaptions)
 			<li class='assettabnav #if($opentab == "viewclosedcaptions")tabselected#end'>
-				<a class="expandmenu assettab rememberassettab" 
-					data-link="$siteroot${apphome}/views/modules/asset/mediaviewer/fullscreen/tabs/viewactions.html?action=closedcaptions" title="[[Closed Captions]]"
-					data-assettab="viewclosedcaptions"
+				<a class="expandmenu assettab ajax rememberassettab" 
+					href="$siteroot${apphome}/views/modules/asset/mediaviewer/fullscreen/currentasset.html?action=closedcaptions" title="[[Closed Captions]]"
+					data-opentab="viewclosedcaptions"
+					data-targetdiv="main-media-container"
+					data-oemaxlevel="1" 
+					data-propertyfield="assetopentab"
+					data-propertyfieldvalue="viewclosedcaptions" 
 					data-assettabname="[[Closed Captions]]">
 					<i class="bi bi-badge-cc ns mr-1"></i> [[Closed Captions]]
 				</a>
@@ -127,10 +130,13 @@
 		#if( !$ismulti)
 		#if ($canviewconversions || $canconverthistory || $canconverthistory )
 			<li class="assettabnav #if($opentab == 'assethistory')tabselected #end">
-				<a class="expandmenu assettab rememberassettab" 
-					data-link="$siteroot${apphome}/views/modules/asset/mediaviewer/fullscreen/tabs/viewactions.html?action=assethistory" title="[[History]]"
-					data-title="[[History]]"
-					data-assettab="assethistory"
+				<a class="expandmenu assettab ajax rememberassettab" 
+					href="$siteroot${apphome}/views/modules/asset/mediaviewer/fullscreen/currentasset.html?action=assethistory" title="[[History]]"
+					data-opentab="assethistory"
+					data-targetdiv="main-media-container"
+					data-oemaxlevel="1" 
+					data-propertyfield="assetopentab"
+					data-propertyfieldvalue="assethistory"
 					data-assettabname="[[History]]">
 					<i class="bi bi-clock-history ns mr-1"></i> [[History]] 
 				</a>
@@ -204,5 +210,8 @@
 	<div class="assetcaretnav">
 		<a class="goleftclick gotoarrows" id="goleftclick" data-enabled="false" href="#"><span class="bi bi-caret-left-fill overlay-nav gocaret"></span></a>	
 		<a class="gorightclick gotoarrows" id="gorightclick" data-enabled="false" href="#"><span class="bi bi-caret-right-fill overlay-nav gocaret"></span></a>	
+	</div>
+	<div class="entityclose">
+		<span title="[[Esc to Close]]" class="bi bi-x-lg ns"></span>
 	</div>
 </div>
