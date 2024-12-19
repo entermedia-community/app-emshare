@@ -32,6 +32,7 @@
 		}
 
 		var options = anchor.cleandata();
+		if (!options) options = {};
 		var editdiv = anchor.closest(".editdiv"); //This is used for lightbox tree opening
 		if (
 			anchor.data("includeeditcontext") === undefined ||
@@ -143,6 +144,7 @@
 		//console.log("Run Ajax",nextpage, options);
 
 		var anchorData = anchor.cleandata(); //anchor.data looses dynamically set data after ajax call, so we need to use this instead of anchor.data()
+		if (!anchorData) anchorData = {};
 		jQuery
 			.ajax({
 				url: nextpage,
