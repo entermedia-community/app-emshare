@@ -1,5 +1,6 @@
 jQuery(document).ready(function (url, params) {
 	var appdiv = $("#application");
+	var apphome = appdiv.data("apphome");
 	var siteroot = appdiv.data("siteroot") + appdiv.data("apphome");
 	var componenthome = appdiv.data("siteroot") + appdiv.data("componenthome");
 
@@ -164,6 +165,11 @@ jQuery(document).ready(function (url, params) {
 				}
 				var url = input.data("url");
 				input.data("url", url + page);
+				var urlbar = input.data("urlbar");
+				if(urlbar !== undefined)
+				{
+					input.data("urlbar", urlbar + page);
+				}
 				input.data("noToast", true);
 				input.runAjax();
 			}
@@ -372,8 +378,8 @@ jQuery(document).ready(function (url, params) {
 	};
 
 	getCurrentAssetId = function () {
-		var mainmedia = $("#main-media-viewer");
-		return mainmedia.data("assetid");
+		var assetdialog = $("#main-media-viewer");
+		return assetdialog.data("assetid");
 	};
 
 	function enable(inData, inSpan) {
@@ -443,123 +449,26 @@ jQuery(document).ready(function (url, params) {
 
 	showAsset = function (element, assetid, pagenum) {
 		if (assetid) {
-			var mainmedia = $("#main-media-viewer");
+			var assetdialog = $("#main-media-container");
 
-			var resultsdiv;
-			if (element) {
-				resultsdiv = element.closest("#resultsdiv");
-			}
-			if (typeof resultsdiv == "undefined" || !resultsdiv.length) {
-				resultsdiv = mainmedia;
-			}
-			if (typeof resultsdiv == "undefined" || !resultsdiv.length) {
-				resultsdiv = $("#resultsdiv");
-			}
-			if (!pagenum) {
-				if (element) {
-					pagenum = element.data("pagenum");
-				}
-				if (!pagenum) {
-					pagenum = mainmedia.data("pagenum");
-				}
-				if (!pagenum) {
-					pagenum = resultsdiv.data("pagenum");
-				}
-			}
-			var hidden = getOverlay();
+			var tmpedithomeid = assetdialog.data("originaledithomeid");
+			assetdialog.data("edithomeid",tmpedithomeid);
 
-			// Not needed?
-			var link = resultsdiv.data("assettemplate");
-			if (link == null) {
-				link = componenthome + "/mediaviewer/fullscreen/currentasset.html";
-			}
-			var hitssessionid, hitsname;
+			var overlay = getOverlay();
 
-			if (element != null && element.data("hitssessionid")) {
-				hitssessionid = element.data("hitssessionid");
-			} else {
-				hitssessionid = resultsdiv.data("hitssessionid");
-			}
-			if (element != null && element.data("hitsname")) {
-				hitsname = element.data("hitsname");
-			} else {
-				hitsname = resultsdiv.data("hitsname");
-			}
-			var params = {
-				embed: true,
-				assetid: assetid,
-				hitssessionid: hitssessionid,
-				hitsname: hitsname,
-				oemaxlevel: 1,
-			};
-			if (pagenum != null) {
-				params.pagenum = pagenum; // Do we use this for anything?
-			}
-			params.pageheight = $(window).height() - 100;
-
-			var collectionid = $("#collectiontoplevel").data("collectionid");
-			if (!collectionid) {
-				collectionid = resultsdiv.data("collectionid");
-				if (collectionid) {
-					params.collectionid = collectionid;
-				}
-			}
-			if (resultsdiv.data("previewonly") == true) {
-				params.previewonly = "true";
-			}
+			assetdialog.data("pageheight",$(window).height() - 100);
 
 			window.location.hash = "asset-" + assetid;
-
 			disposevideos();
+			
+			assetdialog.runAjax(function()
+			{
+				showOverlayDiv(overlay);
 
-			$.get(link, params, function (data) {
-				showOverlayDiv(hidden);
+				//assetdialog = $("#main-media-viewer");
+				//$(".gallery-thumb").removeClass("active-asset");
 
-				var container = $("#main-media-container");
-				container.replaceWith(data);
-
-				mainmedia = $("#main-media-viewer");
-
-				var previousid = mainmedia.data("previous");
-				if (typeof previousid != "undefined" && previousid != "") {
-					enable(previousid, ".goleftclick");
-					enable(previousid, "#leftpage");
-					var title = mainmedia.data("previousname");
-					if (title) {
-						$(".goleftclick").attr("title", title);
-					} else {
-						$(".goleftclick").attr("title", "<");
-					}
-				}
-				var nextid = mainmedia.data("next");
-				if (typeof nextid != "undefined" && nextid != "") {
-					enable(nextid, ".gorightclick");
-					enable(nextid, "#rightpage");
-					var title = mainmedia.data("nextname");
-					if (title) {
-						$(".gorightclick").attr("title", title);
-					} else {
-						$(".gorightclick").attr("title", ">");
-					}
-				}
-				$(document).trigger("domchanged");
-				$(window).trigger("resize");
-				$(".gallery-thumb").removeClass("active-asset");
-
-				if (assetid.indexOf("multiedit:") > -1) {
-					/*
-					 * var link = $("#main-media-viewer").data("multieeditlink");
-					 * var mainmedia2 = $("#main-media-viewer");
-					 *
-					 * var options = mainmedia2.data(); mainmedia2.load(link,
-					 * options, function() { $(window).trigger("tabready"); });
-					 */
-				} else {
-					var escape = assetid.replace(/\//g, "\\/");
-					$("#gallery-" + escape).addClass("active-asset");
-				}
 			});
-			$(document).trigger("domchanged");
 		}
 	};
 	initKeyBindings = function (hidden) {
@@ -617,7 +526,7 @@ jQuery(document).ready(function (url, params) {
 			var grid = $(".masonry-grid");
 			var href = grid.data("viewertemplate");
 			if (href == null) {
-				href = componenthome + "/mediaviewer/fullscreen/index.html";
+				href = apphome + "/views/modules/asset/mediaviewer/fullscreen/index.html";
 			}
 
 			$.ajax({
@@ -743,13 +652,15 @@ jQuery(document).ready(function (url, params) {
 
 	lQuery("a.stackedplayer").livequery("click", function (e) {
 		e.preventDefault();
+		e.stopPropagation();
 		var link = $(this);
-		var pickerresults = link.closest(".pickerresults");
-		if (link.hasClass("resultsdivdata") && pickerresults.length > 0) {
-			return;
-		}
-		var assetid = link.data("assetid");
-		showAsset(link, assetid);
+		link.data("includeeditconext",true);
+		link.data("includesearchconext",true);
+		link.data("dialogid","mediaviewer");
+		//var url = link.attr("href");
+		link.data("url",apphome + "/views/modules/asset/mediaviewer/fullscreen/currentasset.html")
+		
+		link.emDialog();
 		return false;
 	});
 

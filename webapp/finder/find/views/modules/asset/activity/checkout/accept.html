@@ -1,7 +1,11 @@
 <div id="checkoutterms" class="acceptterms">
-	#set( $requestapproveremail = $mediaarchive.getCatalogSettingsValue("requestapproveremail"))
-
-	##if($requestapproveremail)
+	#set( $requestapproveremail = $mediaarchive.getCatalogSettingValue("requestapproveremail"))
+	#if(!$requestapproveremail)
+		[[Missing Request Approver Email, contact your Administrator.]]
+		#if($canviewsettings)
+		<pre>Catalog Setting value: requestapproveremail</pre>
+		#end
+	#else
 	<form id="processorder" 
 		name="emailprocess"
 		class="ajaxform"
@@ -10,7 +14,7 @@
 		action="$apphome/views/modules/asset/activity/checkout/processorder.html">
 
 		$context.putPageValue("searcher",$mediaarchive.getSearcher("order") )	
-		$context.putPageValue("view","order/ordercheckoutconfirm")	
+		$context.putPageValue("viewid","ordercheckoutconfirm")	
 		$pages.include("/$applicationid/components/xml/detaileditorcss.html", $context)
 		
 		##$pages.include("$apphome/views/modules/asset/activity/checkout/termsconditions.html")
@@ -20,10 +24,5 @@
 			<input id="submitbutton" type="submit" form="processorder" value="[[Ok]]" name="submitbutton" class="btn btn-primary dialogsubmitbtn">
 		</div>
 	</form>
-	##else
-	##	[[Missing Request Approver Email, contact your Administrator.]]
-	##	#if($canviewsettings)
-	##	<pre>Catalog Setting value: requestapproveremail</pre>
-	##	#end
-	##end
+	#end
 </div>

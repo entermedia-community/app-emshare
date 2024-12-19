@@ -1,0 +1,64 @@
+#ifnull($opentab)
+#set( $opentab = $context.getRequestParameter("opentab") )
+#end
+#ifnull($rendertype)
+#set( $rendertype = $context.getRequestParameter("rendertype") )
+#end
+
+<div id="main-media-viewer" 
+class="mainmediaviewer"
+
+ ><div id="mainmedianotifications"></div>
+
+	#if( !$mediadbappid)
+		<p style="color: white;">[[mediadbappid not defined in datamanager]]</p>
+	#end
+	
+	#if($opentab == "viewpreview")
+		$pages.include("${apphome}/views/modules/asset/mediaviewer/fullscreen/tabs/viewpreview.html",$context)
+		#ifnotnull( $next )
+			#set( $preloadtype = $mediaarchive.getMediaPlayerType($next))
+			#if( $preloadtype == "image")
+				#set($tpath = $mediaarchive.asLinkToPreview($next,  $libarycol.id, "image3000x3000.jpg"))
+				<div style="display:none;"><img src="$tpath" /></div>  ##cache the next one
+			#end
+		#end
+	#elseif($opentab == "viewproperties")
+		$pages.include("${apphome}/views/modules/asset/mediaviewer/fullscreen/tabs/viewasset.html")
+	#elseif($opentab == "imageeditor")
+		$pages.include("${apphome}/views/modules/asset/mediaviewer/fullscreen/tabs/viewactions.html?action=imageeditor")
+	#elseif($opentab == "viewcollaborate")
+		$pages.include("${apphome}/views/modules/asset/mediaviewer/fullscreen/tabs/viewcollaborate.html")
+	#elseif($opentab == "viewtimeline")
+		$pages.include("${apphome}/views/modules/asset/mediaviewer/fullscreen/tabs/viewactions.html?action=timeline")
+	#elseif($opentab == "viewclosedcaptions")
+		$pages.include("${apphome}/views/modules/asset/mediaviewer/fullscreen/tabs/viewactions.html?action=closedcaptions")
+	#elseif($opentab == "viewdownloads")
+		$pages.include("${apphome}/views/modules/asset/mediaviewer/fullscreen/tabs/viewactions.html?action=conversions")
+	#elseif($opentab == "assethistory")
+		$pages.include("${apphome}/views/modules/asset/mediaviewer/fullscreen/tabs/viewactions.html?action=assethistory")
+	#elseif($opentab == "multiedit")
+		$pages.include("${apphome}/views/modules/asset/mediaviewer/fullscreen/tabs/multiedit.html")
+	#elseif($opentab == "viewactions")
+		#set( $opentabactions = $userprofile.get("assetopentabactions"))
+		#if ( $rendertype !='video')
+			#if(!$opentabactions || $opentabactions == 'timeline' || $opentabactions == 'closedcaptions')
+				##Back to Preview
+				#set( $opentab = "viewproperties")
+				#set( $opentabactions = "")
+				##userprofile.set("assetopentabactions", "")
+				$pages.include("${apphome}/views/modules/asset/mediaviewer/fullscreen/tabs/viewproperties.html")
+			#else
+				$pages.include("${apphome}/views/modules/asset/mediaviewer/fullscreen/tabs/viewactions.html?action=$opentabactions")
+			#end
+		#else
+			$pages.include("${apphome}/views/modules/asset/mediaviewer/fullscreen/tabs/viewactions.html?action=$opentabactions")
+		#end
+	#elseif($opentab=="viewtable")
+		#set( $opentabassettable = $userprofile.get("assetopentabassettable"))
+		#if($opentabassettable)
+			$pages.include("$siteroot$apphome/views/modules/asset/edit/moduletable.html?oemaxlevel=3&id=${asset.id}&assetid=$asset.id&viewid=$opentabassettable&viewpath=asset/$opentabassettable&hitssessionid=${hitssessionid}",$context)
+		#end
+	#end
+	
+</div>

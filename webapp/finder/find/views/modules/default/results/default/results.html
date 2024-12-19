@@ -57,6 +57,11 @@ $context.putPageValue("enableactions", false)
 		data-entitymoduleviewid="$!entitymoduleviewid"  ##this is used in sub-modules to keep the views right?
 	#end
 	data-resultview${moduleid}="$resultview"
+	#ifnull($urlbarprefix)
+		#set($urlbarprefix = $context.getRequestParameter("urlbarprefix"))
+		$context.putPageValue("urlbarprefix", $urlbarprefix)
+	#end
+	data-urlbarprefix="$!{urlbarprefix}"
 	data-pagenum="$!hits.getPage()" 
 	data-totalpages="$!hits.getTotalPages()"
 	data-viewid="$!viewid"
