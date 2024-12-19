@@ -2949,10 +2949,10 @@ function intializeUI() {
 					closeemdialog(ismodal);
 					e.stopPropagation();
 					e.preventDefault();
-				} else {
-					//hideOverlayDiv(getOverlay());
-					//Todo Close MV modal
-				}
+				} 
+				// else {
+				// 	hideOverlayDiv(getOverlay());
+				// }
 
 				return;
 				break;

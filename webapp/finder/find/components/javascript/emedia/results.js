@@ -166,8 +166,7 @@ jQuery(document).ready(function (url, params) {
 				var url = input.data("url");
 				input.data("url", url + page);
 				var urlbar = input.data("urlbar");
-				if(urlbar !== undefined)
-				{
+				if (urlbar !== undefined) {
 					input.data("urlbar", urlbar + page);
 				}
 				input.data("noToast", true);
@@ -359,11 +358,11 @@ jQuery(document).ready(function (url, params) {
 			var assetdialog = $("#main-media-container");
 
 			var tmpedithomeid = assetdialog.data("originaledithomeid");
-			assetdialog.data("edithomeid",tmpedithomeid);
+			assetdialog.data("edithomeid", tmpedithomeid);
 
-			var overlay = getOverlay();
+			// var overlay = getOverlay();
 
-			assetdialog.data("pageheight",$(window).height() - 100);
+			assetdialog.data("pageheight", $(window).height() - 100);
 
 			window.location.hash = "asset-" + assetid;
 			
@@ -373,9 +372,10 @@ jQuery(document).ready(function (url, params) {
 			{
 				//showOverlayDiv(overlay); //--Anything need it from show/hide overlay?
 
+			assetdialog.runAjax(function () {
+				// showOverlayDiv(overlay);
 				//assetdialog = $("#main-media-viewer");
 				//$(".gallery-thumb").removeClass("active-asset");
-
 			});
 		}
 	};
@@ -418,6 +418,9 @@ jQuery(document).ready(function (url, params) {
 					} else {
 						//hideOverlayDiv(getOverlay());
 					}
+					// else {
+					// 	hideOverlayDiv(getOverlay());
+					// }
 					break;
 
 				default:
@@ -539,12 +542,15 @@ jQuery(document).ready(function (url, params) {
 		e.preventDefault();
 		e.stopPropagation();
 		var link = $(this);
-		link.data("includeeditconext",true);
-		link.data("includesearchconext",true);
-		link.data("dialogid","mediaviewer");
+		link.data("includeeditconext", true);
+		link.data("includesearchconext", true);
+		link.data("dialogid", "mediaviewer");
 		//var url = link.attr("href");
-		link.data("url",apphome + "/views/modules/asset/mediaviewer/fullscreen/currentasset.html")
-		
+		link.data(
+			"url",
+			apphome + "/views/modules/asset/mediaviewer/fullscreen/currentasset.html"
+		);
+
 		link.emDialog();
 		return false;
 	});
@@ -843,10 +849,10 @@ jQuery(document).ready(function (url, params) {
 		return false;
 	});
 
-	lQuery("#hiddenoverlay .overlay-close").livequery("click", function (e) {
-		e.preventDefault();
-		hideOverlayDiv(getOverlay());
-	});
+	// lQuery("#hiddenoverlay .overlay-close").livequery("click", function (e) {
+	// 	e.preventDefault();
+	// 	hideOverlayDiv(getOverlay());
+	// });
 
 	lQuery("#hiddenoverlay .overlay-popup span").livequery("click", function (e) {
 		e.preventDefault();
