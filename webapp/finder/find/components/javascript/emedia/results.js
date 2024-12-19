@@ -166,8 +166,7 @@ jQuery(document).ready(function (url, params) {
 				var url = input.data("url");
 				input.data("url", url + page);
 				var urlbar = input.data("urlbar");
-				if(urlbar !== undefined)
-				{
+				if (urlbar !== undefined) {
 					input.data("urlbar", urlbar + page);
 				}
 				input.data("noToast", true);
@@ -428,10 +427,10 @@ jQuery(document).ready(function (url, params) {
 		var assetdetaileditor = $("#asset-detail-editor");
 		$(window).trigger("checkautoreload", [assetdetaileditor]);
 
-		var lastscroll = getOverlay().data("lastscroll");
+		// var lastscroll = getOverlay().data("lastscroll");
 		// remove Asset #hash
 		history.replaceState(null, null, " ");
-		$(window).scrollTop(lastscroll);
+		// $(window).scrollTop(lastscroll);
 		jQuery(window).trigger("resize");
 	};
 
@@ -443,8 +442,8 @@ jQuery(document).ready(function (url, params) {
 		adjustZIndex(inOverlay);
 
 		inOverlay.addClass("show");
-		var lastscroll = $(window).scrollTop();
-		getOverlay().data("lastscroll", lastscroll);
+		// var lastscroll = $(window).scrollTop();
+		// getOverlay().data("lastscroll", lastscroll);
 	};
 
 	showAsset = function (element, assetid, pagenum) {
@@ -452,22 +451,19 @@ jQuery(document).ready(function (url, params) {
 			var assetdialog = $("#main-media-container");
 
 			var tmpedithomeid = assetdialog.data("originaledithomeid");
-			assetdialog.data("edithomeid",tmpedithomeid);
+			assetdialog.data("edithomeid", tmpedithomeid);
 
-			var overlay = getOverlay();
+			// var overlay = getOverlay();
 
-			assetdialog.data("pageheight",$(window).height() - 100);
+			assetdialog.data("pageheight", $(window).height() - 100);
 
 			window.location.hash = "asset-" + assetid;
 			disposevideos();
-			
-			assetdialog.runAjax(function()
-			{
-				showOverlayDiv(overlay);
 
+			assetdialog.runAjax(function () {
+				// showOverlayDiv(overlay);
 				//assetdialog = $("#main-media-viewer");
 				//$(".gallery-thumb").removeClass("active-asset");
-
 			});
 		}
 	};
@@ -507,9 +503,10 @@ jQuery(document).ready(function (url, params) {
 						closeemdialog(ismodal);
 						e.stopPropagation();
 						return;
-					} else {
-						hideOverlayDiv(getOverlay());
 					}
+					// else {
+					// 	hideOverlayDiv(getOverlay());
+					// }
 					break;
 
 				default:
@@ -520,30 +517,30 @@ jQuery(document).ready(function (url, params) {
 		});
 	};
 
-	getOverlay = function () {
-		var hidden = $("#hiddenoverlay");
-		if (hidden.length == 0) {
-			var grid = $(".masonry-grid");
-			var href = grid.data("viewertemplate");
-			if (href == null) {
-				href = apphome + "/views/modules/asset/mediaviewer/fullscreen/index.html";
-			}
+	// getOverlay = function () {
+	// 	var hidden = $("#hiddenoverlay");
+	// 	if (hidden.length == 0) {
+	// 		var grid = $(".masonry-grid");
+	// 		var href = grid.data("viewertemplate");
+	// 		if (href == null) {
+	// 			href = apphome + "/views/modules/asset/mediaviewer/fullscreen/index.html";
+	// 		}
 
-			$.ajax({
-				url: href,
-				async: false,
-				data: { oemaxlevel: 1 },
-				success: function (data) {
-					$("#application").append(data);
-					hidden = $("#hiddenoverlay");
-					initKeyBindings(hidden);
-				},
-			});
-		}
-		hidden = $("#hiddenoverlay");
+	// 		$.ajax({
+	// 			url: href,
+	// 			async: false,
+	// 			data: { oemaxlevel: 1 },
+	// 			success: function (data) {
+	// 				$("#application").append(data);
+	// 				hidden = $("#hiddenoverlay");
+	// 				initKeyBindings(hidden);
+	// 			},
+	// 		});
+	// 	}
+	// 	hidden = $("#hiddenoverlay");
 
-		return hidden;
-	};
+	// 	return hidden;
+	// };
 
 	refreshresults = function () {
 		var resultsdiv = $("#resultsdiv");
@@ -654,12 +651,15 @@ jQuery(document).ready(function (url, params) {
 		e.preventDefault();
 		e.stopPropagation();
 		var link = $(this);
-		link.data("includeeditconext",true);
-		link.data("includesearchconext",true);
-		link.data("dialogid","mediaviewer");
+		link.data("includeeditconext", true);
+		link.data("includesearchconext", true);
+		link.data("dialogid", "mediaviewer");
 		//var url = link.attr("href");
-		link.data("url",apphome + "/views/modules/asset/mediaviewer/fullscreen/currentasset.html")
-		
+		link.data(
+			"url",
+			apphome + "/views/modules/asset/mediaviewer/fullscreen/currentasset.html"
+		);
+
 		link.emDialog();
 		return false;
 	});
@@ -958,10 +958,10 @@ jQuery(document).ready(function (url, params) {
 		return false;
 	});
 
-	lQuery("#hiddenoverlay .overlay-close").livequery("click", function (e) {
-		e.preventDefault();
-		hideOverlayDiv(getOverlay());
-	});
+	// lQuery("#hiddenoverlay .overlay-close").livequery("click", function (e) {
+	// 	e.preventDefault();
+	// 	hideOverlayDiv(getOverlay());
+	// });
 
 	lQuery("#hiddenoverlay .overlay-popup span").livequery("click", function (e) {
 		e.preventDefault();

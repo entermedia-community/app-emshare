@@ -2949,9 +2949,10 @@ function intializeUI() {
 					closeemdialog(ismodal);
 					e.stopPropagation();
 					e.preventDefault();
-				} else {
-					hideOverlayDiv(getOverlay());
-				}
+				} 
+				// else {
+				// 	hideOverlayDiv(getOverlay());
+				// }
 
 				return;
 				break;

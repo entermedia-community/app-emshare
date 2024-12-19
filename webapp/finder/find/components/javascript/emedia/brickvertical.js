@@ -183,13 +183,13 @@
 
 		if (stopautoscroll) {
 			// ignore scrolls
-			if (typeof getOverlay === "function" && getOverlay().is(":visible")) {
-				var lastscroll = getOverlay().data("lastscroll");
+			// if (typeof getOverlay === "function" && getOverlay().is(":visible")) {
+			// 	var lastscroll = getOverlay().data("lastscroll");
 
-				if (Math.abs(lastscroll - currentscroll) > 50) {
-					$(window).scrollTop(lastscroll);
-				}
-			}
+			// 	if (Math.abs(lastscroll - currentscroll) > 50) {
+			// 		$(window).scrollTop(lastscroll);
+			// 	}
+			// }
 			return;
 		}
 
