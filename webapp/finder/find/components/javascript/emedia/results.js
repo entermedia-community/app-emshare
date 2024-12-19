@@ -371,14 +371,10 @@ jQuery(document).ready(function (url, params) {
 			assetdialog.runAjax(function()
 			{
 				//showOverlayDiv(overlay); //--Anything need it from show/hide overlay?
-
-			assetdialog.runAjax(function () {
-				// showOverlayDiv(overlay);
-				//assetdialog = $("#main-media-viewer");
-				//$(".gallery-thumb").removeClass("active-asset");
-			});
+			})
 		}
 	};
+	
 	initKeyBindings = function (hidden) {
 		$(document).keydown(function (e) {
 			if (hidden && !hidden.is(":visible")) {
