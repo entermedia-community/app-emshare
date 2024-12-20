@@ -91,7 +91,7 @@
 		//targetdiv.data("oemaxlevel", oemaxlevel);
 		var data = form.cleandata();
 		if (form.data("includeeditcontext") == true) {
-			if (edithomeid != "") {
+			if (edithomeid !== undefined) {
 				var editdiv = $("#" + edithomeid);
 				if (editdiv.length > 0) {
 					var otherdata = editdiv.cleandata();
