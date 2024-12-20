@@ -107,7 +107,17 @@ $context.putPageValue("viewid", $viewid)
 		<input name="entityid" type="hidden" value="$!id" />
 		<input name="entitymoduleid" type="hidden" value="$!entitymodule.id" />
 		<input name="viewid" type="hidden" value="$!viewid" />
-		<input name="entitymoduleviewid" type="hidden" value="$!entitymoduleviewid" />
+		#set($moduleviewid = $entitymoduleviewid)
+		#ifnull($addmedia)
+			#set($addmedia = $context.getRequestParameter("addmedia"))
+		#end
+		#ifnotnull($addmedia)
+			#set($moduleviewid = "$!{module.id}entityimports")
+		#end
+		<input name="entitymoduleviewid" type="hidden" value="$moduleviewid" />
+		
+		<input name="field" type="hidden" value="entitysourcetype" />
+		<input name="entitysourcetype.value" type="hidden" value="${module.id}" />
 
 		#if(!$hitssessionid)
 			#set( $hitssessionid = $context.getRequestParameter("hitssessionid"))
@@ -115,12 +125,7 @@ $context.putPageValue("viewid", $viewid)
 		#if($hitssessionid)
 			<input name="hitssessionid" type="hidden" value="$hitssessionid" />
 		#end
-		#ifnull($showmedia)
-			#set($showmedia = $context.getRequestParameter("showmedia"))
-		#end
-		#ifnotnull($showmedia)
-			<input name="showmedia" type="hidden" value="$showmedia" />
-		#end
+		
 
 		#if($edit =="true")  ##TODO - Permissions
 			$pages.include("$apphome/views/modules/${module.id}/components/xml/detaileditor-entities.html?longform=true", $context)
