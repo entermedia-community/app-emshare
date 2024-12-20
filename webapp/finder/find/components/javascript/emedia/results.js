@@ -353,27 +353,39 @@ jQuery(document).ready(function (url, params) {
 	};
 	
 
-	showAsset = function (element, assetid, pagenum) {
-		if (assetid) {
-			var assetdialog = $("#main-media-container");
-
-			var tmpedithomeid = assetdialog.data("originaledithomeid");
-			assetdialog.data("edithomeid", tmpedithomeid);
-
-			// var overlay = getOverlay();
-
-			assetdialog.data("pageheight", $(window).height() - 100);
-
-			window.location.hash = "asset-" + assetid;
-			
-			disposevideos();
-			
-			assetdialog.runAjax(function()
+	showAsset = function (link, assetid, pagenum) {
+		if (link.length>0) {
+			link.data("includeeditconext", true);
+			link.data("includesearchconext", true);
+			link.data("dialogid", "mediaviewer");
+			//var url = link.attr("href");
+			link.data(
+				"url",
+				apphome + "/views/modules/asset/mediaviewer/fullscreen/currentasset.html"
+			);
+			if(assetid === undefined)
 			{
-				//showOverlayDiv(overlay); //--Anything need it from show/hide overlay?
-			})
+				assetid = link.data("assetid");
+			}
+			if(assetid !== undefined)
+			{
+				link.data("assetid", assetid);
+				window.location.hash = "asset-" + assetid;
+				link.emDialog();
+			}
+			
 		}
 	};
+	
+	
+	lQuery("a.stackedplayer").livequery("click", function (e) {
+		e.preventDefault();
+		e.stopPropagation();
+		var link = $(this);
+		showAsset(link);
+		
+		return false;
+	});
 	
 	initKeyBindings = function (hidden) {
 		$(document).keydown(function (e) {
@@ -534,22 +546,7 @@ jQuery(document).ready(function (url, params) {
 		}
 	});
 
-	lQuery("a.stackedplayer").livequery("click", function (e) {
-		e.preventDefault();
-		e.stopPropagation();
-		var link = $(this);
-		link.data("includeeditconext", true);
-		link.data("includesearchconext", true);
-		link.data("dialogid", "mediaviewer");
-		//var url = link.attr("href");
-		link.data(
-			"url",
-			apphome + "/views/modules/asset/mediaviewer/fullscreen/currentasset.html"
-		);
-
-		link.emDialog();
-		return false;
-	});
+	
 
 	// Select multiple assets with Shift+Mouse
 	var isMouseDown = false;
@@ -1006,7 +1003,7 @@ jQuery(document).ready(function (url, params) {
 	) {
 		var assetid = hash.substring(7, hash.length);
 		if (assetid) {
-			showAsset(null, assetid);
+			showAsset($("#showasset"), assetid);
 		}
 	}
 

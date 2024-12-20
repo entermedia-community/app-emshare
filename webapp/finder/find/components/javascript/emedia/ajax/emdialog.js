@@ -257,7 +257,7 @@
 				}
 			}
 			
-			disposevideos(); //too generic?
+			
 			
 		});
 
@@ -271,7 +271,7 @@
 
 closeemdialog = function (modaldialog) {
 	var oldurlbar = modaldialog.data("oldurlbar");
-
+	var dialogid = modaldialog.attr("id");
 	if (modaldialog.modal) {
 		modaldialog.modal("hide");
 		modaldialog.remove();
@@ -281,11 +281,17 @@ closeemdialog = function (modaldialog) {
 	if (othermodal.length && !othermodal.is(":hidden")) {
 		adjustZIndex(othermodal);
 	}
+	
+	disposevideos(); 
 
 	$(window).trigger("setPageTitle", [othermodal]);
 
 	if (oldurlbar !== undefined) {
 		history.pushState($("#application").html(), null, oldurlbar);
+	}
+	if(dialogid == "mediaviewer")
+	{
+		history.replaceState(null, null, " ");
 	}
 };
 
