@@ -1,0 +1,69 @@
+#set( $apphome = "/${order.applicationid}")
+<p>[[Hello]],</p>
+<p>$userManager.getScreenName( $order.userid ) [[has shared some assets with you]].
+#if($order.sharenote)
+[[Below is a note that was attached]]:</p>
+<blockquote>$order.sharenote</blockquote>
+<hr />
+#else 
+</p>
+#end
+
+<p>[[Please review the assets at this link]]: 
+	<a href="$context.siteRoot$home$apphome/views/modules/asset/activity/email/emailedassets.html?orderid=$order.id" target="_blank" style="font-size: 14px; color: blue;">
+$context.siteRoot$home$apphome/views/modules/asset/activity/email/emailedassets.html?orderid=$order.id</a></p>
+
+#if( $order.expireson)
+[[Access to these files will expire on ]]
+	#if( $expiresondate )  ##Use this since events do not have a locale
+		$expiresformat.format($expiresondate)
+	#else
+		$context.getDateTime($order.expireson)	
+	#end	
+#end
+
+
+<p>
+
+</p>
+#set($orderitems = $mediaarchive.getSearcher("orderitem").query().exact("orderid", $order.id).search())
+<hr />
+<p>[[Below is a list of assets available at the link above]]:</p>
+<table cellspacing="0" cellpadding="0" width="100%" style="margin-bottom:20px;">		
+	<tr style="background-color:#555; color:#eee;">
+	<th style="padding:5px">[[Title]]</th>
+	<th style="padding:5px">[[File Name]]</th>
+	<th style="padding:5px">[[Asset Type]]</th>
+	<th style="padding:5px">[[Format]]</th>
+	</tr>
+
+	#foreach( $item in $orderitems )
+		#set( $asset = $mediaarchive.getAssetBySourcePath($item.assetsourcepath))
+		$context.putPageValue("asset", $asset)
+		$context.putPageValue("item", $item)
+		$context.setRequestParameter("sourcepath", $asset.sourcepath)					
+		<tr style="background-color:rgba(0,0,0,.05); ">
+		<td style="padding:5px">
+			$!asset.assettitle
+		</td>
+		<td style="padding:5px">
+			$!asset.name
+		</td>
+		<td style="padding:5px">
+			$!searcherManager.getData($catalogid,"assettype",$asset.assettype).getName($context.getLocale())
+		</td>
+		<td style="padding:5px">
+		    #set($val=$context.getRequestParameter("${item.id}.presetid.value"))
+		    #if( !$val)
+				#set( $val = $item.get("presetid") )		    	
+		    #end
+			#if( $val )
+				#set($preset = $searcherManager.getData($catalogid, "convertpreset",$val ))
+				$!preset.getName($context.getLocale())
+			#else
+				[[Online Preview]]
+			#end	
+			</td>
+		</tr>
+	#end
+</table>

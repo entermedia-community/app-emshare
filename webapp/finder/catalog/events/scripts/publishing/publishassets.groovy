@@ -48,7 +48,7 @@ public void init() {
 	HitTracker tracker = queuesearcher.search(query);
 	tracker.enableBulkOperations();
 	
-	log.info("publishing " + tracker.size() + " assets" + queuesearcher.getCatalogId());
+	log.info("Publishing " + tracker.size() + " assets - " + queuesearcher.getCatalogId());
 	if( tracker.size() > 0)
 	{
 		for( Data result:tracker)
@@ -79,9 +79,11 @@ public void init() {
 				publishrequest.setProperty('status', 'error');
 				publishrequest.setProperty("errordetails", "Publish destination is invalid " + publishdestination);
 				queuesearcher.saveData(publishrequest, context.getUser());
-				log.error("Publish destination is invalid " + publishdestination);
+				log.info("Publish destination is invalid " + publishdestination);
 				continue;
 			}
+			
+			log.info("publishing: " + assetid + " with preset: " + presetid + "  destination: " +destination);
 			
 			Collection excludes = destination.getValues("excludeassettype");
 			if( excludes != null)
@@ -132,7 +134,7 @@ public void init() {
 				
 				
 				
-					
+				
 					presult = publisher.publish(mediaArchive,asset,publishrequest, destination,preset);
 					//Thread.sleep(3000);
 				
