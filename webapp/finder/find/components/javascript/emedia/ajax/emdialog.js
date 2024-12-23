@@ -55,14 +55,12 @@
 			modaldialog = jQuery("#" + id);
 		}
 
-		var	link = initiator.data("url");
+		var link = initiator.data("url");
 
-		if( link === undefined)
-		{
+		if (link === undefined) {
 			link = initiator.attr("href");
 		}
-		if( link === undefined)
-		{
+		if (link === undefined) {
 			link = initiator.data("targetlink");
 		}
 		var olddialog = initiator.closest(".modal");
@@ -96,8 +94,7 @@
 			url: link,
 			data: options,
 			success: function (data) {
-				if( onsuccessVar !== undefined)
-				{
+				if (onsuccessVar !== undefined) {
 					onsuccessVar();
 				}
 				$(window).trigger("successToast", toastUid);
@@ -117,27 +114,17 @@
 					$(".modal-dialog", modaldialog).css("max-width", maxwidth + "px");
 				}
 
-				var modalkeyboard = false;
 				var modalbackdrop = true;
 				if ($(".modal-backdrop").length) {
 					modalbackdrop = false;
 				}
 
-				var modalinstance;
-				if (modalkeyboard) {
-					modalinstance = modaldialog.modal({
-						closeExisting: false,
-						show: true,
-						backdrop: modalbackdrop,
-					});
-				} else {
-					modalinstance = modaldialog.modal({
-						keyboard: false,
-						closeExisting: false,
-						show: true,
-						backdrop: modalbackdrop,
-					});
-				}
+				var modalinstance = modaldialog.modal({
+					closeExisting: false,
+					show: true,
+					backdrop: modalbackdrop,
+					keyboard: false,
+				});
 				/*  Use editdivid
 				var autosetformtargetdiv = initiatorData["autosetformtargetdiv"];
 				if (autosetformtargetdiv !== undefined) {
@@ -241,6 +228,15 @@
 			}
 		});
 
+		// $(modaldialog).on("hidePrevented.bs.modal", function (e) {
+		// 	var backUrl = $(modaldialog).find(".entityNavBack");
+		// 	if (backUrl.length > 0) {
+		// 		e.stopImmediatePropagation();
+		// 		e.preventDefault();
+		// 		backUrl.trigger("click");
+		// 	}
+		// });
+
 		$(modaldialog).on("hide.bs.modal", function (e) {
 			trackKeydown = false;
 			if (!$(this).hasClass("onfront")) {
@@ -256,9 +252,6 @@
 					}, 0);
 				}
 			}
-			
-			
-			
 		});
 
 		//Close drodpown if exists
@@ -281,16 +274,15 @@ closeemdialog = function (modaldialog) {
 	if (othermodal.length && !othermodal.is(":hidden")) {
 		adjustZIndex(othermodal);
 	}
-	
-	disposevideos(); 
+
+	disposevideos();
 
 	$(window).trigger("setPageTitle", [othermodal]);
 
 	if (oldurlbar !== undefined) {
 		history.pushState($("#application").html(), null, oldurlbar);
 	}
-	if(dialogid == "mediaviewer")
-	{
+	if (dialogid == "mediaviewer") {
 		history.replaceState(null, null, " ");
 	}
 };

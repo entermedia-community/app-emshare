@@ -1,63 +1,60 @@
-
-#set( $isowner = $entity.owner == $user.id)
-
-
 <div class="entity-action-header">
-		<h3>
-			#set($moduleicon = "box")
-			#ifnotnull($submodule.moduleicon)
-				#set($moduleicon = $submodule.moduleicon)
-			#end	
-			<i class="bi bi-$moduleicon module-icon" style="font-size: 0.8em;;"></i> 
-			#text($module) <small>($hits.size())</small>
-		</h3>
-		
-		#if($permissions.can($parentmoduleid, $isowner, "edit"))
-			#if($permissions.can($!submodule.getId(), $isowner, "create"))
-				#set($newedithomelink= "$applink/views/modules/$!{module.id}/editors/pickersubmodules")
-				#set($newedithome= "$apphome/views/modules/$!{module.id}/editors/pickersubmodules")
+	<h3>
+		#set($moduleicon = "box")
+		#ifnotnull($submodule.moduleicon)
+		#set($moduleicon = $submodule.moduleicon)
+		#end	
+		<i class="bi bi-$moduleicon module-icon" style="font-size: 0.8em;;"></i> 
+		#text($module) <small>($hits.size())</small>
+	</h3>
+	
+	#set( $isowner = $entity.owner == $user.id)
+	#if($permissions.can($parentmoduleid, $isowner, "edit"))
+		#if($permissions.can($!submodule.getId(), $isowner, "create"))
+			#set($newedithomelink= "$applink/views/modules/$!{module.id}/editors/pickersubmodules")
+			#set($newedithome= "$apphome/views/modules/$!{module.id}/editors/pickersubmodules")
+			
+			<a href="$newedithomelink/index.html" 
+				class="emdialog btn btn-accent ml-1"
+				data-dialogid="entitysubmoduleaddexisting"
+				data-width="1200"
+				data-includeeditcontext="true"
+				data-edithome="$newedithome"  ##make sure we set this to the new one
 				
-				<a href="$newedithomelink/index.html" 
-					class="emdialog btn btn-accent ml-1"
-					data-dialogid="entitysubmoduleaddexisting"
-					data-width="1200"
-					data-includeeditcontext="true"
-					data-edithome="$newedithome"  ##make sure we set this to the new one
-					
-					##data-includesearchcontext="true"
+				##data-includesearchcontext="true"
 
-					data-pickersearchaddnew="true"
-					data-hidefooter="true"
-					data-viewid="$viewid"
+				data-pickersearchaddnew="true"
+				data-hidefooter="true"
+				data-viewid="$viewid"
 
-					title="[[Create or Choose Existing]] #text($entity)"><i class="bi bi-plus-lg mr-2"></i> [[Add Existing]]</a>
-					
-					#set($pickerurl = "$!{searchhome}/csvupload/picker.html")
-					<a href="$pickerurl" 
-					class="emdialog btn btn-accent ml-1"
-					data-dialogid="entitypicker"
-					data-width="1200"
-					data-includeeditcontext="true"
-					data-hidefooter="true"
-					title="[[Upload]]"><i class="bi bi-upload mr-2"></i> [[Upload Spreadsheet]]</a>	
-					#if($permissions.can($module.getId(),$isowner,"createwithai"))					
-					#set($pickerurl = "$!{edithome}/ai/input.html")
-					<a href="$pickerurl" 
-					class="emdialog btn btn-accent ml-1"
-					data-dialogid="entitypicker"
-					data-width="600"
-					data-fieldexternalid = '$!{entitymodule.id}'
-					data-fieldexternalvalue = '$entity.id'
+				title="[[Create or Choose Existing]] #text($entity)"><i class="bi bi-plus-lg mr-2"></i> [[Add Existing]]</a>
+				
+				#set($pickerurl = "$!{searchhome}/csvupload/picker.html")
+				<a href="$pickerurl" 
+				class="emdialog btn btn-accent ml-1"
+				data-dialogid="entitypicker"
+				data-width="1200"
+				data-includeeditcontext="true"
+				data-hidefooter="true"
+				title="[[Upload]]"><i class="bi bi-upload mr-2"></i> [[Upload Spreadsheet]]</a>	
+				#if($permissions.can($module.getId(),$isowner,"createwithai"))					
+				#set($pickerurl = "$!{edithome}/ai/input.html")
+				<a href="$pickerurl" 
+				class="emdialog btn btn-accent ml-1"
+				data-dialogid="entitypicker"
+				data-width="600"
+				data-fieldexternalid = '$!{entitymodule.id}'
+				data-fieldexternalvalue = '$entity.id'
 
-					data-includeeditcontext="true"
+				data-includeeditcontext="true"
 
-					data-pickertarget="$tabid"
-					data-targettype="entitypickersubmodule"
-					data-pickersearchaddnew="true"
-					data-hidefooter="true"
-					title="[[Create New]] #text($submodule) [[With AI]]"><i class="bi bi-brush mr-2"></i> [[Create With AI]]</a>
-					#end	
-					
-			#end
+				data-pickertarget="$tabid"
+				data-targettype="entitypickersubmodule"
+				data-pickersearchaddnew="true"
+				data-hidefooter="true"
+				title="[[Create New]] #text($submodule) [[With AI]]"><i class="bi bi-brush mr-2"></i> [[Create With AI]]</a>
+				#end	
+				
 		#end
-	</div>
+	#end
+</div>
