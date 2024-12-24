@@ -269,7 +269,7 @@ adjustZIndex = function (element) {
 		element.show();
 		element.addClass("onfront");
 
-		$(window).trigger("resize");
+		//$(window).trigger("resize");
 	});
 };
 focusInput = function (input) {
