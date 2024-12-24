@@ -63,9 +63,9 @@
 				if (textcontent.length) {
 					newheight = newheight + textcontent.height();
 				}
-				if (!embrickcontent.data("hasheight")) {
-					newheight = embrickcontent.height();
-				}
+				//if (!embrickcontent.data("hasheight")) {
+				//	newheight = embrickcontent.height();
+				//}
 
 				if (autosort) {
 					colnum = shortestColumn(colheight, colnum);
