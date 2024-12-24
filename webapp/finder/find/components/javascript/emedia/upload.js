@@ -121,13 +121,17 @@ $(document).ready(function () {
 
 	lQuery(".startbutton").livequery("click", function (e) {
 		e.preventDefault();
+		if (CK5Editor) {
+			CK5Editor.updateSourceElement();
+		}
 		var startbutton = $(this);
 		var uploadformarea = startbutton.closest(".uploadformarea");
 		if (startbutton.prop("disabled")) {
 			return;
 		}
 		var valid = $("#uploaddata").validate().form();
-		if (!valid) {startbuttonn;
+		if (!valid) {
+			startbuttonn;
 		}
 
 		startbutton.text(startbutton.data("textuploading"));
@@ -342,7 +346,7 @@ $.fn.initUpload = function () {
 
 			uploadformarea.show();
 
-			var entityuploadPicker = uploadformarea.find(".entityuploadPicker");  //Remove This. This is silly. Just close yourself in Javascript 
+			var entityuploadPicker = uploadformarea.find(".entityuploadPicker"); //Remove This. This is silly. Just close yourself in Javascript
 			if (entityuploadPicker) {
 				entityuploadPicker.hide();
 				entityuploadPicker.parent().find(".hideonupload").hide();
@@ -382,8 +386,8 @@ $.fn.initUpload = function () {
 			var div = uploadformarea.find(".uploadcompleteText");
 			var totaluploads = div.data("totaluploads");
 			totaluploads++;
-			div.data("totaluploads",totaluploads);
-			div.html( totaluploads + div.data("postfix") );
+			div.data("totaluploads", totaluploads);
+			div.html(totaluploads + div.data("postfix"));
 
 			uploadformarea
 				.find(".progress_report_bar" + currentupload)
@@ -403,9 +407,9 @@ $.fn.initUpload = function () {
 			//do a search
 			if (!haderror) {
 				var startb = uploadformarea.find(".startbutton");
-				
+
 				startb.text(startb.data("textcomplete"));
-				
+
 				allfiles = new Array();
 
 				var completed = uploadformarea.find(".up-files-list-completed li span");
@@ -415,12 +419,9 @@ $.fn.initUpload = function () {
 
 				//Go to the editor and submit its ajax
 				var editdiv = startb.closest(".uploadshowuploads");
-				if(editdiv.length)
-				{
+				if (editdiv.length) {
 					editdiv.runAjax();
-				}
-				else
-				{
+				} else {
 					startb.prop("disabled", false);
 				}
 			}

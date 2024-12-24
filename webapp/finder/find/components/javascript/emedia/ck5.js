@@ -30,9 +30,6 @@ import {
 	Underline,
 } from "ckeditor5";
 
-/**
- * Create a free account with a trial: https://portal.ckeditor.com/checkout?plan=free
- */
 const LICENSE_KEY = "GPL"; // or <YOUR_LICENSE_KEY>.
 
 const editorConfig = {
@@ -176,7 +173,6 @@ const editorConfig = {
 window.CK5Editor = null;
 
 function createCK5(target) {
-	console.log(target);
 	ClassicEditor.create(target, editorConfig)
 		.then((editor) => {
 			window.CK5Editor = editor;
