@@ -13,16 +13,8 @@
 			return this;
 		}
 
-		if (typeof CKEDITOR !== "undefined") {
-			for (instance in CKEDITOR.instances) {
-				var editor = CKEDITOR.instances[instance];
-				var div = $(editor.element.$);
-				var id = div.data("saveto");
-				var tosave = $("#" + id);
-				//editor.updateElement() //does not work
-				var data = editor.getData();
-				tosave.val(data);
-			}
+		if (CK5Editor) {
+			CK5Editor.updateSourceElement();
 		}
 
 		if (!form.hasClass("novalidate")) {

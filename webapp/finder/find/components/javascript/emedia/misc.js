@@ -591,6 +591,9 @@ function intializeUI() {
 		e.preventDefault();
 		e.stopPropagation();
 		e.stopImmediatePropagation();
+		if (CK5Editor) {
+			CK5Editor.updateSourceElement();
+		}
 		console.log($(this).prop("disabled"));
 		$(this).prop("disabled", true);
 		var theform = $(this).closest("form");
@@ -623,6 +626,10 @@ function intializeUI() {
 				e.preventDefault();
 				e.stopImmediatePropagation();
 				e.stopPropagation();
+
+				if (CK5Editor) {
+					CK5Editor.updateSourceElement();
+				}
 
 				theform.data("readytosubmit", "true");
 				theform.find(".oehtmlinput").trigger("blur");
@@ -2195,7 +2202,7 @@ function intializeUI() {
 
 		var container = $(".summary-container", resultsdiv);
 		var isminimized = true;
-		
+
 		//Refresh the UI quickly
 		if (container.length == 0 || container.hasClass("closed")) {
 			isminimized = true;
@@ -2213,24 +2220,19 @@ function intializeUI() {
 
 		var preferencename = toggler.data("preferencename");
 		var url = resultsdiv.data("searchhome");
-		resultsdiv.data("url",url + "/changeminimizefilter.html");
-		
+		resultsdiv.data("url", url + "/changeminimizefilter.html");
+
 		var toggle = !isminimized;
-		resultsdiv.data("profilepreference.value",toggle);
-		resultsdiv.data("profilepreference",preferencename);
-		if( isminimized)
-		{
-			resultsdiv.data("targetdiv",resultsdiv.attr("id"));
-			resultsdiv.data("oemaxlevel",1);
-		}
-		else
-		{
-			resultsdiv.data("targetdiv","null");
-			resultsdiv.data("oemaxlevel",0);
+		resultsdiv.data("profilepreference.value", toggle);
+		resultsdiv.data("profilepreference", preferencename);
+		if (isminimized) {
+			resultsdiv.data("targetdiv", resultsdiv.attr("id"));
+			resultsdiv.data("oemaxlevel", 1);
+		} else {
+			resultsdiv.data("targetdiv", "null");
+			resultsdiv.data("oemaxlevel", 0);
 		}
 		resultsdiv.runAjax();
-
-
 	});
 
 	/*
@@ -2949,7 +2951,7 @@ function intializeUI() {
 					closeemdialog(ismodal);
 					e.stopPropagation();
 					e.preventDefault();
-				} 
+				}
 				// else {
 				// 	hideOverlayDiv(getOverlay());
 				// }
