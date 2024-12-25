@@ -57,11 +57,23 @@
 				var a = imgw / imgh;
 
 				var newheight = Math.floor(eachwidth / a);
+				if (embrickcontent.hasClass("nothumb")) {
+					// newheight += 16;
+				}
+				embrickcontent
+					.find(".emcategory-thumb")
+					.attr("data-height", newheight)
+					.height(newheight)
+					.css("height", newheight + "px"); //need both height and css("height") cz jquery hates us
 
 				//w = colwidthpx - 8;
 				var textcontent = embrickcontent.find(".embricktext");
 				if (textcontent.length) {
-					newheight = newheight + textcontent.height();
+					embrickcontent.attr(
+						"data-textcontent-height",
+						textcontent.outerHeight()
+					);
+					newheight = newheight + textcontent.outerHeight();
 				}
 				//if (!embrickcontent.data("hasheight")) {
 				//	newheight = embrickcontent.height();
