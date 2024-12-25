@@ -1,12 +1,30 @@
 <div id="lightboxessidemenu" class="overflow-y p-0">
+#if($lightboxtype != "emedialightbox")
 	<div class="lightbox-label">
-		<h5>[[Activity]]</h5>
+	#set( $submodule = $mediaarchive.getCachedData("module",$lightboxtype))
+		<h5>#text($submodule)</h5>
 		<div class="dropdown">
 			<button class="btn ml-auto dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">
 				<i class="bi bi-three-dots"></i>
 			</button>
 			<div class="dropdown-menu dropdown-menu-right">
 				#set( $isowner = $entity.owner == $user.id)
+
+				#set($newedithomelink= "$applink/views/modules/$!{module.id}/editors/entitysubmodules")
+				#if($permissions.can($moduleid, "create"))
+					#set($addnew = "${newedithomelink}/addnew.html")
+					<a href="$addnew"
+						class="emdialog dropdown-item"
+						data-dialogid="entitypickeraddnew"
+						data-hidefooter="true"
+						data-includeeditcontext="true"
+						data-autosetformtargetdiv="editdiv"
+						data-entitymoduleviewid="$entitymoduleviewid" ##we have the render table set
+						
+						title="[[Create New]] #text($submodule)">
+						[[Create New]]
+					</a>
+				#end
 
 				#if($permissions.can($!submodule.getId(), $isowner, "create"))
 					#set($newedithomelink= "$applink/views/modules/$!{module.id}/editors/pickersubmodules")
@@ -19,27 +37,14 @@
 						data-edithome="$newedithome"
 						data-pickersearchaddnew="true"
 						data-hidefooter="true"
-						data-viewid="$viewid"
+						data-viewid="$entitymoduleviewid"
+						data-entitymoduleviewid="$entitymoduleviewid" ##we have the render table set
 						title="[[Create or Choose Existing]] #text($entity)">
 						[[Add Existing]]
 					</a>
 				#end
 
-				#set($newedithomelink= "$applink/views/modules/$!{module.id}/editors/entitysubmodules")
-
-				#if($permissions.can($moduleid, "create"))
-					#set($addnew = "${newedithomelink}/addnew.html")
-					<a href="$addnew"
-						class="emdialog dropdown-item"
-						data-dialogid="entitypickeraddnew"
-						data-hidefooter="true"
-						data-includeeditcontext="true"
-						data-autosetformtargetdiv="editdiv"
-						title="[[Create New]] #text($module)">
-						[[Create New]]
-					</a>
-				#end
-
+			
 				#if($permissions.can($module.getId(),$isowner,"createwithai"))					
 					#set($pickerurl = "$!{newedithomelink}/ai/input.html")
 					<a 
@@ -55,8 +60,10 @@
 						data-targettype="entitypickersubmodule"
 						data-pickersearchaddnew="true"
 						data-hidefooter="true"
+						data-entitymoduleviewid="$entitymoduleviewid" ##we have the render table set
+						
 						title="[[Create New]] #text($submodule) [[With AI]]">
-						[[Create With AI]]
+						[[Add With AI]]
 					</a>
 				#end
 				
@@ -64,7 +71,7 @@
 		</div>
 
 	</div>
-
+#end
 	<div class="p-1">
 		#set($assetsadded = $context.getPageValue("assetsadded"))
 		#set($assetsaddedto = $context.getRequestParameter("lightboxid"))
@@ -109,7 +116,7 @@
 				</a>
 				#if( $lightboxtype != "emedialightbox")
 				<a href="$apphome/views/modules/$lightboxtype/editors/default/tabs/index.html?entityid=$box.id&edit=true" class="ajax lightboxbtn-edit" data-targetdiv="entitydialog" data-oemaxlevel="1" data-includeeditcontext="false">
-					<i class="bi bi-eye ns"></i>
+					<i class="bi bi-pencil-square ns"></i>
 				</a>
 				#end
 			</div>

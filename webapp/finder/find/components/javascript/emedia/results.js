@@ -355,9 +355,10 @@ jQuery(document).ready(function (url, params) {
 
 	showAsset = function (link, assetid, pagenum) {
 		if (link.length>0) {
-			link.data("includeeditconext", true);
-			link.data("includesearchconext", true);
+			link.data("includeeditcontext", true);
+			link.data("includesearchcontext", true);
 			link.data("dialogid", "mediaviewer");
+			link.data("edithome","");
 			//var url = link.attr("href");
 			link.data(
 				"url",
@@ -494,25 +495,16 @@ jQuery(document).ready(function (url, params) {
 		$("#jumptoform .jumpto-left").removeClass("invisible");
 	});
 
-	lQuery(".goleftclick").livequery("click", function (e) {
+	lQuery(".gotoarrows").livequery("click", function (e) {
 		e.preventDefault();
-		var div = $("#main-media-viewer");
-		var id = div.data("previous");
-		var enabled = $(this).data("enabled");
+		var link = $(this);
+		var id = link.data("assetid");
+		var enabled = link.hasClass("arrowenabled");
 		if (id && enabled) {
-			showAsset($(this), id);
+			showAsset(link, id);
 		}
 	});
-
-	lQuery(".gorightclick").livequery("click", function (e) {
-		e.preventDefault();
-		var div = $("#main-media-viewer");
-		var id = div.data("next");
-		var enabled = $(this).data("enabled");
-		if (id && enabled) {
-			showAsset($(this), id);
-		}
-	});
+	
 
 	lQuery(".carousel-indicators li#leftpage").livequery("click", function (e) {
 		e.preventDefault();
