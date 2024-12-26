@@ -2,7 +2,7 @@ package llm
 
 import org.entermediadb.asset.Asset
 import org.entermediadb.asset.MediaArchive
-import org.entermediadb.llm.GptManager
+import org.entermediadb.llm.LLMManager
 import org.openedit.WebPageRequest
 import org.openedit.data.Searcher
 import org.openedit.hittracker.HitTracker
@@ -19,13 +19,13 @@ public void tagAssets(){
 	MediaArchive archive = inReq.getPageValue("mediaarchive");
 	Searcher searcher = archive.getAssetSearcher();
 	//TODO:  get the bean to use programatically from catalog settings or something
-	GptManager manager = archive.getBean("gptManager");
+	LLMManager manager = archive.getBean("ollamaManager");
 	def cat = archive.getCategorySearcher().getRootCategory();
 	inReq.putPageValue("category", cat);
 
 	//Refine this to use a hit tracker?
 	HitTracker assets = searcher.getAllHits();
-	String model = inReq.findValue("model.value");
+	String model = "llama3.2-vision"
 	if(model == null) {
 		model = archive.getCatalogSettingValue("gpt-model");
 	}
