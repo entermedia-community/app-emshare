@@ -38,7 +38,7 @@ public void tagAssets(){
 	inReq.putPageValue("category", cat);
 
 	//Refine this to use a hit tracker?
-	HitTracker assets = searcher.getAllHits();
+	HitTracker assets = searcher.query().exact("needsllmtags", true).search();
 	
 	for (hit in assets) {
 		Asset asset = archive.getAsset(hit.id);
@@ -71,6 +71,7 @@ public void tagAssets(){
 						asset.setValue(key, value);
 					}
 				}
+				asset.setValue("needsllmtags", false);
 				archive.saveAsset(asset);
 			}
 			catch(Exception e){
