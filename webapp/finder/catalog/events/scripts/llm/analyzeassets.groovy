@@ -60,7 +60,7 @@ public void tagAssets(){
 
 
 
-			String template = manager.loadInputFromTemplate(inReq, archive.getCatalogId() + "/gpt/templates/analyzeasset.html");
+			String template = manager.loadInputFromTemplate(inReq, "/" +  archive.getMediaDbId() + "/gpt/templates/analyzeasset.html");
 			try{
 
 				JSONObject results = manager.callFunction(inReq, model, "generate_metadata", template, 0, 5000,base64EncodedString );
