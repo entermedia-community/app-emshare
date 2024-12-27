@@ -24,11 +24,20 @@
 		<input type="hidden" name="entitymoduleviewid" value='$context.getRequestParameter("entitymoduleviewid")'/>
 		<input type="hidden" name="entityid" value='$entityid'/>
 
-		#set($viewid = "assetllmtools")
-       	$context.putPageValue("viewid", $viewid)
-		#set($detailviewercolumns = 1)
-		$pages.include("/$applicationid/components/xml/detaileditor.html?longform=true", $context)
-		
+		<input type="hidden" name="llmmodel.value" value='dall-e-3'/>
+ 		<!--
+ 				<input type="hidden" name="llmmodel.value" value='gpt-4o'/>
+ 				 -->
+       <div class="">
+        <div style="margin-left:20px;margin-bottom:20px;">
+        <label for="aiInstruction" class="mb-1">AI Prompt: </label>
+        
+          <textarea name="createassetprompt.value" id="aiInstruction" class="form-control rounded" rows="8">
+          			$context.putPageValue("entity", $entity)
+		            $pages.include("$edithome/aitools/createassetinstructions.html", $context)
+          </textarea>
+			
+			
 		<input type="submit" class="form-control" />
 
     </form>

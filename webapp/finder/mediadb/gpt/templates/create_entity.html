@@ -24,21 +24,10 @@ The data you're adding is underneath of the $module module.
 
 This is pertinent info on the parent data:
 #foreach($detail in $parentdetails)
-    #set($val = $parent.get($detail.id))
     #set($value = $searcherManager.getValue($parent, $detail, $context.getLocale()))
-    #if($detail.isMultiValue())
-        #set($values = $value)
-    #else
-        #ifnull($val)
-            #set($val = "")
-        #end
-    #end
-	#if($value)
+ 	#ifnotnull($value)
 		$detail.getText($context):$value
 	#end
-     
-          
-        
 #end
 
 

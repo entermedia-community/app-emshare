@@ -9,18 +9,18 @@
         "properties": {
 #foreach($detail in $details)
             "$detail.id": {
-                "type": #if($detail.dataType == "string") "string" 
-                        #elseif($detail.dataType == "boolean") "boolean"
-                        #elseif($detail.dataType == "list") "array"
+                "type": 
+                        #if($detail.dataType == "boolean") "boolean"
+                        #elseif($detail.dataType == "list" || $detail.isMultiValue()) "array"
                         #else "string" #end,
                 "description": "$detail.name $!detail.note"
                 #if($detail.dataType == "list"),
                 "items": {
                     "type": "string",
                     "enum": [
-#foreach($option in $mediaarchive.getList($detail.id))
-                        "$option.id"#if($foreach.count < $mediaarchive.getList($detail.id).size()),#end
-#end 
+						#foreach($option in $mediaarchive.getList($detail.id))
+						                        "$option.id"#if($foreach.count < $mediaarchive.getList($detail.id).size()),#end
+						#end 
                     ]
                 }
                 #end
