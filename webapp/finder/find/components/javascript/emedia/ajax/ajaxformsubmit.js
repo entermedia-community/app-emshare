@@ -1,5 +1,6 @@
 (function ($) {
 	$.fn.ajaxFormSubmit = function () {
+		// $(window).trigger("ajaxsubmitting");
 		var form = $(this);
 
 		if (form.data("submitting")) {
@@ -11,10 +12,6 @@
 		var warning = form.data("warning");
 		if (warning && !confirm(warning)) {
 			return this;
-		}
-
-		if (CK5Editor) {
-			CK5Editor.updateSourceElement();
 		}
 
 		if (!form.hasClass("novalidate")) {
