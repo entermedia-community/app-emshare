@@ -340,6 +340,9 @@ $(function () {
 		$(".auto-active-link").each(function () {
 			var href = $(this).attr("href");
 			if (href == path) {
+				var container = $(this).closest(".auto-active-container");
+				container.find("li.current").removeClass("current");
+				container.find("a.active").removeClass("active");
 				$(this).addClass("active");
 				$(this).parents("li").addClass("current");
 			}

@@ -1,11 +1,14 @@
+#set($urlbarprefix = "${edithome}/$!{category.id}/#dash($category).html")
+$context.putPageValue("urlbarprefix", $urlbarprefix)
 <div id="${edithomeid}" 
-	class="editdiv ${edithomeid} heightExcludingHeaderFooter" 
-	data-oemaxlevel="1"
+	class="editdiv ${edithomeid} heightExcludingHeaderFooter dataeditedreload" 
+	data-oemaxlevel="2"
 	data-edithome="${edithome}"
 	data-edithomeid="data-${edithomeid}"
 	data-targetdiv="resultsdiv"
 	data-setpagetitle="#text($asset)"
 	data-categoryid="$!category.id"
+	data-url="${urlbarprefix}"
 >
 
 #set($module = $mediaarchive.getCachedData("module","asset"))
@@ -13,8 +16,7 @@ $context.putPageValue("module", $module)
 #set($searchhome = "$apphome/views/modules/asset/results/categoryviewfiles")
 $context.putPageValue("searchhome", $searchhome)
 
-#set($urlbarprefix = "${edithome}/$!{category.id}/#dash($category).html")
-$context.putPageValue("urlbarprefix", $urlbarprefix)
+
 
 $pages.include("${searchhome}/results.html",$context)
 
