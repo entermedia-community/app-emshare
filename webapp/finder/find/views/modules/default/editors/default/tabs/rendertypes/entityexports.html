@@ -26,6 +26,14 @@ $context.putPageValue("tabmode", $tabmode)
 				data-oemaxlevel="1"><i class="bi bi-share-fill"></i> <span>[[Share Links]]</span></a>
 				</div>
 			#end	
+			#if($permissions.can($module.id, "shareentity"))	
+				<div class='auto-active-row #if($tabsection=="viewer") current #end'>
+				<a href="$componenthome/entities/visibility.html?entityid=$!{entity.id}&defaultcategoryid=$defaultcategory.getId()"
+				class='btn btn-lg btn-wide ajax auto-active-link'
+				data-targetdivinner="tabexportcontent"
+				data-oemaxlevel="1"><i class="bi bi-eye-fill"></i> <span>[[Visible To]]</span></a>
+				</div>
+			#end	
 			#if($permissions.can($module.id, "publishinggallery"))	
 				<div class='auto-active-row #if($tabsection=="sharegallery") current #end'>
 				<a href="$apphome/views/modules/${module.id}/editors/entitygallery/index.html?entityid=$!{entity.id}&defaultcategoryid=$!defaultcategory.getId()"
