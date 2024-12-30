@@ -11,10 +11,18 @@
 #end
 #set($viewdata = $mediaarchive.getCachedData("view",$entitymoduleviewid))
 
+##DOESN'T WORK -> #set( $submodule = $mediaarchive.getCachedData("module",$lightboxtype))
 <div class="bg-white">
 
   <div class="w-100 my-2">
-    <form name="save" class="ajaxform"  data-includeeditcontext="true" data-targetdiv="importdone" action="$edithome/aitools/finish.html">
+    <form name="save"
+			class="ajaxform"
+			data-includeeditcontext="true"
+			data-targetdiv="importdone"
+			action="$edithome/aitools/finish.html"
+			data-toastmessage="[[Creating]] #text($submodule) [[with AI]]"
+			data-toastsuccess="[[Created]] #text($submodule) [[successfully]]"
+			data-toasterror="[[Failed to create]] #text($submodule)">
 			<input type="hidden" name="importtype" value="dita" />
 			<input type="hidden" name="pickertarget" value='$context.getRequestParameter("pickertarget")'/>
 			<input type="hidden" name="fieldexternalid" value='$context.getRequestParameter("fieldexternalid")'/>
