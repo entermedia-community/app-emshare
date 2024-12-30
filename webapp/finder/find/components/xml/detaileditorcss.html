@@ -7,7 +7,7 @@
 #ifnull($viewid)
 	#set($viewid = $context.getRequestParameter("viewid"))
 #end
- 
+
 #set( $viewdata = $mediaarchive.getCachedData("view",$viewid) )
 
 #ifnull($details)
@@ -19,71 +19,68 @@
 #end
 
 <div class="oeinputform validate-inputs">
-<div id="allerrors">
-</div>
- #foreach( $detail in $details )
- 
- 	<div class="inputformrow">
-	#set( $val = "" )
-	#set($val =  $data.get($detail.id) )
-	#set($value = $searcherManager.getValue($data, $detail, $context.getLocale() ) ) 
-	#if($detail.isMultiValue())
-		#set($values = $value )
-		$!context.putPageValue("values",$values)
-	#end
-	#ifnull($val)
-		#set($val = "")	
-	#end
-	
-	$context.putPageValue("val", $val)
-	$context.putPageValue("value", $value)
-	$context.putPageValue("detail", $detail)
-	
-	#if ($detail.header)
-		#if ($detail.header != "blank")
-			<div class="header"><h4>$detail.header</h4></div>
-		#end
-	#end
-	
-	#set( $editrow = $detail.isEditable() && $readonly != "true") 
-	#if( $editrow || $val  || !$detail.isEditable() || $detail.dataType == "searchjoin" )
+	<div id="allerrors"></div>
+	#foreach( $detail in $details )
+		<div class="inputformrow">
+			#set( $val = "" )
+			#set($val =  $data.get($detail.id) )
+			#set($value = $searcherManager.getValue($data, $detail, $context.getLocale() ) ) 
 
-		#if( $detail.hidelabel == true )
-		#else
-			
-			#if ($detail.dataType && $detail.dataType == "boolean" )
-				$!context.putPageValue("label", $!detail.getText($context))
-			#else
-			<label class="emdatafield" >
-					$!detail.getText($context)
-			</label>
+			#if($detail.isMultiValue())
+				#set($values = $value )
+				$!context.putPageValue("values",$values)
 			#end
-		#end
-		<div id="detail_$detail.id" class="emdatafieldvalue emdatafieldvalue-$!detail.dataType #if ($detail.isRequired()) requiredfield #end">
-		#if( $editrow )	
-			$pages.include("$xmledithome/detailedit.html", $context)
-		#else  
-			##NOT EDITABLE
-			$pages.include("$xmledithome/detailreadonly.html", $context) 
-		#end
-		#if ( $detail.note )
-			<span class="detail-note">$context.getText($detail.note.toString())<span>
-		#end
+
+			#ifnull($val)
+				#set($val = "")	
+			#end
+
+			$context.putPageValue("val", $val)
+			$context.putPageValue("value", $value)
+			$context.putPageValue("detail", $detail)
+
+			#if ($detail.header)
+				#if ($detail.header != "blank")
+					<div class="header"><h4>$detail.header</h4></div>
+				#end
+			#end
+
+			#set( $editrow = $detail.isEditable() && $readonly != "true") 
+			#if( $editrow || $val  || !$detail.isEditable() || $detail.dataType == "searchjoin" )
+				#if( $detail.hidelabel == true )
+				#else
+					#if ($detail.dataType && $detail.dataType == "boolean" )
+						$!context.putPageValue("label", $!detail.getText($context))
+					#else
+						<label class="emdatafield">
+							$!detail.getText($context)
+						</label>
+					#end
+				#end
+				<div id="detail_$detail.id" class="emdatafieldvalue emdatafieldvalue-$!detail.dataType #if ($detail.isRequired()) requiredfield #end">
+					#if( $editrow )	
+						$pages.include("$xmledithome/detailedit.html", $context)
+					#else  
+						##NOT EDITABLE
+						$pages.include("$xmledithome/detailreadonly.html", $context) 
+					#end
+					#if ( $detail.note )
+						<span class="detail-note">$context.getText($detail.note.toString())<span>
+					#end
+				</div>
+			#end
+
+			#if ($detail.viewType && ($detail.viewType == "html" || $detail.viewType == "largehtml"))
+				#if($usedhtml)
+					#set( $usedhtml = "htmltextarea=${detail.getId()}&$usedhtml")
+				#else
+					#set( $usedhtml = "htmltextarea=${detail.getId()}")
+				#end
+			#end
 		</div>
 	#end
-	#if ($detail.viewType && ($detail.viewType == "html" || $detail.viewType == "largehtml"))
-		#if($usedhtml)
-			#set( $usedhtml = "htmltextarea=${detail.getId()}&$usedhtml")
-		#else
-			#set( $usedhtml = "htmltextarea=${detail.getId()}")
-		#end
-	#end
-	</div>
-#end
 </div>
 
-##needed for fast loading HTML edit boxes
 #if( $usedhtml && $readonly !=  "true") 
 	$pages.include("/system/tools/html/textarea.html?$usedhtml")	
 #end
- 
