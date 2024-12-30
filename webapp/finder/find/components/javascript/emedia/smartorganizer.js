@@ -810,6 +810,7 @@ $(document).ready(function () {
 				selectedGroup = canvas.getPrimarySelection();
 			}
 			if (selectedGroup) {
+				$("#copySmartNodes").show();
 				if (selectedGroup.cssClass === "folderGroup") {
 					var selectedGroupId = selectedGroup.getId();
 					var selectedIcon = canvas.getFigure(selectedGroupId + "-icon");
@@ -888,6 +889,7 @@ $(document).ready(function () {
 					hideFolderConfig();
 				}
 			} else {
+				$("#copySmartNodes").hide();
 				hideFolderConfig();
 				hideLabelConfig();
 			}
@@ -959,6 +961,7 @@ $(document).ready(function () {
 		});
 
 		canvas.on("unselect", function () {
+			$("#copySmartNodes").hide();
 			hideFolderConfig();
 			hideLabelConfig();
 			$("#folderThumbPickerBtn").html("");
@@ -1641,6 +1644,72 @@ $(document).ready(function () {
 				}
 			);
 		}
+
+		lQuery("#copySmartNodes").livequery("click", function () {
+			var icon = $(this).find("i");
+			icon.removeClass("bi-copy").addClass("bi-check-lg");
+			getSelectedJson(function (json) {
+				navigator.clipboard
+					.writeText(JSON.stringify(json))
+					.then(function () {
+						validateClipboard();
+					})
+					.catch((error) => {
+						console.error("Error copying to clipboard:", error);
+					});
+			});
+			var selectedGroup = canvas.getSelection();
+			console.log(selectedGroup);
+			setTimeout(function () {
+				icon.removeClass("bi-check-lg").addClass("bi-copy");
+			}, 1000);
+		});
+
+		function validateClipboard(callback) {
+			var $this = $("#pasteSmartNodes");
+			var json = null;
+			navigator.clipboard
+				.readText()
+				.then(function (text) {
+					if (!text) {
+						$this.hide();
+					} else {
+						try {
+							json = JSON.parse(text);
+							if (Array.isArray(json) && json.length > 0) {
+								$this.show();
+							} else {
+								json = null;
+								$this.hide();
+							}
+						} catch (error) {
+							console.log("Clipboard is not valid JSON");
+							$this.hide();
+						}
+					}
+				})
+				.catch((error) => {
+					json = null;
+					console.error("Error reading clipboard:", error);
+				})
+				.finally(() => {
+					if (callback) {
+						callback(json);
+					}
+				});
+		}
+
+		lQuery("#pasteSmartNodes").livequery(function () {
+			validateClipboard();
+			$(this).on("click", function () {
+				validateClipboard(function (json) {
+					if (json) {
+						reader.unmarshal(canvas, json);
+					}
+				});
+			});
+		});
+
 		lQuery("#closeorgnizer").livequery("click", function () {
 			var changed = $("#organizer_canvas").data("changed");
 			if (!changed) {
@@ -1669,71 +1738,78 @@ $(document).ready(function () {
 				return;
 			}
 			if (exportType === "selected") {
-				var figures = canvas.getSelection().getAll();
-				var ids = [];
-				function fetchIds({ data }) {
-					data.forEach(function (d) {
-						if (d.assignedFigures) {
-							fetchIds(d.getAssignedFigures());
-						}
-						ids.push(d.getId());
-					});
-				}
-				fetchIds(figures);
-				var idReplacement = {};
-				ids.forEach((id) => {
-					if (
-						id !== "main" &&
-						!id.endsWith("-label") &&
-						!id.endsWith("-image") &&
-						!id.endsWith("-icon") &&
-						!id.endsWith("-title") &&
-						!id.endsWith("-caption")
-					) {
-						idReplacement[id] = draw2d.util.UUID.create();
-					}
-				});
-				const parentIds = Object.keys(idReplacement);
-				ids.forEach((id) => {
-					if (id !== "main" && !idReplacement[id]) {
-						var parentId = id
-							.replace("-label", "")
-							.replace("-image", "")
-							.replace("-icon", "")
-							.replace("-title", "")
-							.replace("-caption", "");
-						if (parentIds.includes(parentId)) {
-							idReplacement[id] = id.replace(parentId, idReplacement[parentId]);
-						}
-					}
-				});
-				writer.marshal(canvas, function (json) {
-					json.forEach(function (jso) {
-						if (jso.id == "main" || jso.id == "logo") {
-							return;
-						}
-						if (ids.includes(jso.id)) {
-							if (jso.id && idReplacement[jso.id]) {
-								jso.id = idReplacement[jso.id];
-							}
-							if (jso.composite && idReplacement[jso.composite]) {
-								jso.composite = idReplacement[jso.composite];
-							}
-							if (jso.type === "draw2d.Connection") {
-								if (jso.source && idReplacement[jso.source.node]) {
-									jso.source.node = idReplacement[jso.source.node];
-								}
-								if (jso.target && idReplacement[jso.target.node]) {
-									jso.target.node = idReplacement[jso.target.node];
-								}
-							}
-							exportJson.push(jso);
-						}
-					});
-					downloadJson(exportJson);
+				getSelectedJson(function (json) {
+					downloadJson(json);
 				});
 			}
 		});
+
+		function getSelectedJson(callback) {
+			var figures = canvas.getSelection().getAll();
+			var ids = [];
+			function fetchIds({ data }) {
+				data.forEach(function (d) {
+					if (d.assignedFigures) {
+						fetchIds(d.getAssignedFigures());
+					}
+					ids.push(d.getId());
+				});
+			}
+			fetchIds(figures);
+			var idReplacement = {};
+			ids.forEach((id) => {
+				if (
+					id !== "main" &&
+					!id.endsWith("-label") &&
+					!id.endsWith("-image") &&
+					!id.endsWith("-icon") &&
+					!id.endsWith("-title") &&
+					!id.endsWith("-caption")
+				) {
+					idReplacement[id] = draw2d.util.UUID.create();
+				}
+			});
+			const parentIds = Object.keys(idReplacement);
+			ids.forEach((id) => {
+				if (id !== "main" && !idReplacement[id]) {
+					var parentId = id
+						.replace("-label", "")
+						.replace("-image", "")
+						.replace("-icon", "")
+						.replace("-title", "")
+						.replace("-caption", "");
+					if (parentIds.includes(parentId)) {
+						idReplacement[id] = id.replace(parentId, idReplacement[parentId]);
+					}
+				}
+			});
+			var selectedJson = [];
+			writer.marshal(canvas, function (json) {
+				json.forEach(function (jso) {
+					if (jso.id == "main" || jso.id == "logo") {
+						return;
+					}
+					if (ids.includes(jso.id)) {
+						if (jso.id && idReplacement[jso.id]) {
+							jso.id = idReplacement[jso.id];
+						}
+						if (jso.composite && idReplacement[jso.composite]) {
+							jso.composite = idReplacement[jso.composite];
+						}
+						if (jso.type === "draw2d.Connection") {
+							if (jso.source && idReplacement[jso.source.node]) {
+								jso.source.node = idReplacement[jso.source.node];
+							}
+							if (jso.target && idReplacement[jso.target.node]) {
+								jso.target.node = idReplacement[jso.target.node];
+							}
+						}
+						selectedJson.push(jso);
+					}
+				});
+				callback(selectedJson);
+			});
+		}
 
 		lQuery("#importForm").livequery("submit", function (e) {
 			e.preventDefault();
