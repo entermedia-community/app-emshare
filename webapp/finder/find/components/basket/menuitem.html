@@ -1,14 +1,16 @@
 <div id="basket-paint" data-href="$home$apphome/components/basket/menuitem.html" class="cart-btn">
 	#set($colSize = $orderitems.size() )
-	<a  class="btn-upload ajax "
+	<a  class="btn-upload ajax position-relative"
 		data-targetdiv="applicationmaincontent"  
 		data-oemaxlevel="2"
 		data-updateurl="true"
 		href="$home$apphome/views/basket/index.html" 
 		title="#if($colSize > 0)$colSize #if($colSize > 1) [[assets]] #else [[asset]]#end #else [[Cart is Empty]]#end">
-
-	###if($colSize > 0)<span class="notification">$colSize</span>#end
-	<span class="">[[Cart]]  #if($colSize > 0)($colSize)#end &nbsp;</span>
-	<i class="bi bi-cart-fill"></i>
+		<i class="bi bi-cart-fill"></i>
+		#if($colSize > 0)
+		<span class="position-absolute rounded-circle bg-secondary text-center" style="top:-6px;right:-6px;min-width: 20px">
+			$colSize
+		</span>
+		#end
 	</a>
 </div>
