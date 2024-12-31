@@ -371,7 +371,10 @@ jQuery(document).ready(function (url, params) {
 			if(assetid !== undefined)
 			{
 				link.data("assetid", assetid);
-				window.location.hash = "asset-" + assetid;
+				var url = window.location.href;
+				url += (url.indexOf("?") >= 0 ? "&" : "?") + "assetid=" + assetid;
+				history.pushState($("#application").html(), null, url);
+				//window.location.hash = "asset-" + assetid;
 				link.emDialog();
 			}
 			
@@ -700,7 +703,7 @@ jQuery(document).ready(function (url, params) {
 	});
 
 	//Launch the Dialog? Use a parmeter check instead
-	openEntity = function (entityid) {
+	openEntity = function () {
 		var entity = $(".showentity");
 		if (entity.length) {
 			var resultsdiv = $(".resultsdiv");
