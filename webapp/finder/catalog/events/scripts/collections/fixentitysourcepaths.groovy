@@ -27,18 +27,23 @@ public void init(){
 			if( cat == null)
 			{
 				log.error("No rootcategory on" + collection);
-				
+				return;
 			}
 			collection.setValue("uploadsourcepath",cat.getCategoryPath());
 			tosave.add(collection);
+			
+			if( !cat.getName().equals(collection.getName() ) )
+			{
+				log.error("Category not the same name on" + collection.getName() + " != " +  cat.getName() );
+			}			
 			fixed++;
 		}
 		else
 		{
 			log.error("No rootcategory on" + collection);
 		}
-		archive.saveData("librarycollection",tosave);
 	}
+	archive.saveData("librarycollection",tosave);
 	log.info("Fixed collections " + fixed);
 }
 
