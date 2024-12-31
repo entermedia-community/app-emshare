@@ -730,7 +730,7 @@ onloadselectors = function () {
 
 					var resultsdiv = dragged.closest(".resultsdiv");
 					var hitssessionid = dragged
-						.closest(".lightboxresults")
+						.closest(".resultsdiv")
 						.data("assethitssessionid");
 					if (hitssessionid == undefined) {
 						hitssessionid = resultsdiv.data("assethitssessionid");
@@ -781,7 +781,7 @@ onloadselectors = function () {
 					var sourcenode = $(ui.draggable);
 					var sourceid = sourcenode.data("dataid");
 
-					var resultsdiv = $(targetnode).closest(".lightboxresults");
+					var resultsdiv = $(targetnode).closest(".resultsdiv");
 
 					var options = resultsdiv.cleandata();
 					options.dataid = sourceid;
@@ -789,13 +789,11 @@ onloadselectors = function () {
 					options.hitssessionid = resultsdiv.data("assethitssessionid");
 
 					//Save scroll location?
-					var moduleid = resultsdiv.data("moduleid");
+					var searchhome = resultsdiv.data("searchhome");
 					$.ajax({
 						url:
-							apphome +
-							"/views/modules/" +
-							moduleid +
-							"/components/results/orderInsertData.html",
+							searchhome +
+							"/orderInsertData.html",
 						data: options,
 						xhrFields: {
 							withCredentials: true,
@@ -804,7 +802,9 @@ onloadselectors = function () {
 						type: "POST",
 						success: function (data) {
 							//load
-							$(window).trigger("checkautoreload", [resultsdiv]);
+							var editdiv = resultsdiv.closest(".editdiv");
+							autoreload(editdiv, null, "editdiv");
+							//$(window).trigger("checkautoreload", [resultsdiv]);
 						},
 					});
 				},
@@ -816,19 +816,17 @@ onloadselectors = function () {
 
 		lQuery(".hitmovetotop").livequery("click", function () {
 			var cell = $(this).closest(".masonry-grid-cell");
-			var resultsdiv = cell.closest(".lightboxresults");
+			var resultsdiv = cell.closest(".resultsdiv");
 
 			var options = resultsdiv.cleandata();
 			options.dataid = cell.data("dataid");
 
 			//Save scroll location?
-			var moduleid = resultsdiv.data("moduleid");
+			var searchhome = resultsdiv.data("searchhome");
 			$.ajax({
 				url:
-					apphome +
-					"/views/modules/" +
-					moduleid +
-					"/components/results/orderMoveToTop.html",
+					searchhome  +
+					"/orderMoveToTop.html",
 				data: options,
 				xhrFields: {
 					withCredentials: true,
@@ -837,7 +835,9 @@ onloadselectors = function () {
 				type: "POST",
 				success: function (data) {
 					//load
-					$(window).trigger("checkautoreload", [resultsdiv]);
+					//$(window).trigger("checkautoreload", [resultsdiv]);
+					var editdiv = resultsdiv.closest(".editdiv");
+					autoreload(editdiv, null, "editdiv");
 				},
 			});
 		});
