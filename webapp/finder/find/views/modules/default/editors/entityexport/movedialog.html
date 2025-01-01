@@ -1,32 +1,23 @@
-#set($moduleid = $context.getRequestParameter("moduleid"))
-#set($entityid = $context.getRequestParameter("entityid"))
-#if( !$entity)
-	#set( $entity  = $mediaarchive.getCachedData($moduleid, $entityid) )
-#end
-
-#set($addtourl = "$siteroot$applink/views/modules/$!{moduleid}/components/entities/moveentity.html")
-
-<div class="tabheader">[[Move]] $module</div>
+<div class="tabheader">[[Move]] $entity</div>
 <h6 class="px-2 mt-2 mb-0">
 	[[Moves files and metadata to a specific location. Removes them from current location.]]
 </h6>
 <div id="embed-wrapper" class="my-4 px-2">
-	<form action="$addtourl" class="ajaxform" data-targetdivinner="tabexportcontent" data-oemaxlevel="1" method="post" data-ajaxreloadtargets="topmodulecontainer">
-		<input type="hidden" name="copyingsearchtype" value="$!moduleid" />
-		<input type="hidden" name="copyingentityid" value="$!entityid" />
-		<input type="hidden" name="entityid" value="$!entityid" />
-		<input type="hidden" name="moduleid" value="$!moduleid" />
+	<form action="$edithome/moveentity.html" class="ajaxform" data-targetdiv="entitydialog" data-oemaxlevel="1" method="post" data-ajaxreloadtargets="topmodules">
+		<input type="hidden" name="copyingsearchtype" value="$!module.id" />
+		<input type="hidden" name="copyingentityid" value="$!entity.id" />
+		<input type="hidden" name="entityid" value="$!entity.id" />
 		<input type="hidden" name="action" value="moveentity" />
 		
 		<div class="w-75 text-left mb-3">
 			<div class="emfield-textarea">
 				<label>[[New Name]]:</label>
-				<input name="nameoverwrite" id="" class="form-control"type="text" value="#text($entity.name)" />
+				<input name="nameoverwrite" id="" class="form-control"type="text" value="#text($entity)" />
 			</div>
 		</div>
 		<div class="w-75 text-left mb-3">
 			<label>[[Move To]]:</label>
-			<select class="form-control" name="pickedmoduleid">
+			<select class="form-control" name="entitymoduleid">
 			#foreach ( $amodule in $userprofile.getEntities() )
 				#set($amoduleid = $amodule.getId())
 				#if($amodule.getBoolean("enableuploading"))

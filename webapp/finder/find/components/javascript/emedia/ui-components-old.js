@@ -6,72 +6,7 @@ var exitWarning = false;
 var siteroot;
 var apphome;
 
-formatHitCountResult = function (inRow) {
-	return inRow[1];
-};
-
-function getScriptIfNotLoaded(scriptLocationAndName) {
-	var len = $('script[src*="' + scriptLocationAndName + '"]').length;
-
-	//script already loaded!
-	if (len > 0) return;
-
-	var head = document.getElementsByTagName("head")[0];
-	var script = document.createElement("script");
-	script.type = "text/javascript";
-	script.src = scriptLocationAndName;
-	head.appendChild(script);
-}
-findalldata = function (inlink) {
-	var item = $(inlink);
-	var options = item.data();
-	var parent = item;
-	do {
-		parent = parent.parent().closest(".domdatacontext");
-		var moreoptions = parent.data();
-		$.each(moreoptions, function (key, value) {
-			if (!options[key]) {
-				options[key] = value;
-			}
-		});
-	} while (parent.length > 0);
-
-	return options;
-};
-
-lQuery("a.ajax").livequery("click", function (e) {
-	e.stopPropagation();
-	e.preventDefault();
-	$(this).runAjax();
-});
-
-lQuery("a.toggleAjax").livequery("click", function (e) {
-	/**
-	 * Runs an ajax call and removes the element from the DOM on ajax success
-	 * Optionally checks for a focus parent
-	 **/
-	e.stopPropagation();
-	e.preventDefault();
-	var $this = $(this);
-	$this.data("noToast", true);
-	$this.runAjax(function () {
-		var focusParent = $this.closest(`.${$this.data("focusparent")}`);
-		if (focusParent.length) {
-			focusParent.find("input:visible:first").focus();
-		}
-		$this.remove();
-	});
-});
-
-lQuery(".reloadpage").livequery(function () {
-	window.location.reload();
-});
-lQuery(".redirecttopage").livequery(function () {
-	var url = $(this).data("redirectok");
-	window.location.href = url;
-});
-
-function intializeUI() {
+function initializeUI() {
 	var app = jQuery("#application");
 	siteroot = app.data("siteroot");
 	apphome = app.data("apphome");
@@ -505,8 +440,6 @@ function intializeUI() {
 			});
 		});
 	});
-
-	
 
 	lQuery(".ajaxchange select").livequery(function () {
 		var select = $(this);
@@ -3041,11 +2974,10 @@ function intializeUI() {
 }
 
 jQuery(document).ready(function () {
-	intializeUI();
+	initializeUI();
 
 	jQuery(window).trigger("resize");
 });
-
 
 function switchsubmodulebox(item) {
 	var parent = item.closest(".editentitymetadata-submodule");
@@ -3076,10 +3008,6 @@ replaceelement = function (url, div, options, callback) {
 		crossDomain: true,
 	});
 };
-
-
-
-
 
 function TODELETEisInViewport(cell) {
 	const rect = cell.getBoundingClientRect();
@@ -3119,5 +3047,3 @@ lQuery(".changeimportmodule").livequery("change", function () {
 		crossDomain: true,
 	});
 });
-
-

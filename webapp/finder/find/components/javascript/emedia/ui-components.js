@@ -1,15 +1,38 @@
-
 jQuery(document).ready(function () {
-	lQuery(".uipanel").livequery(function () {
-			$(this).addClass("ui-widget");
-			var header = $(this).attr("header");
-			if (header != undefined) {
-				// http://dev.$.it/ticket/9134
-				$(this).wrapInner('<div class="ui-widget-content"/>');
-				$(this).prepend('<div class="ui-widget-header">' + header + "</div>");
-			}
+	lQuery("a.ajax").livequery("click", function (e) {
+		e.stopPropagation();
+		e.preventDefault();
+		$(this).runAjax();
 	});
-	
+
+	lQuery("a.toggleAjax").livequery("click", function (e) {
+		/**
+		 * Runs an ajax call and removes the element from the DOM on ajax success
+		 * Optionally checks for a focus parent
+		 **/
+		e.stopPropagation();
+		e.preventDefault();
+		var $this = $(this);
+		$this.data("noToast", true);
+		$this.runAjax(function () {
+			var focusParent = $this.closest(`.${$this.data("focusparent")}`);
+			if (focusParent.length) {
+				focusParent.find("input:visible:first").focus();
+			}
+			$this.remove();
+		});
+	});
+
+	lQuery(".uipanel").livequery(function () {
+		$(this).addClass("ui-widget");
+		var header = $(this).attr("header");
+		if (header != undefined) {
+			// http://dev.$.it/ticket/9134
+			$(this).wrapInner('<div class="ui-widget-content"/>');
+			$(this).prepend('<div class="ui-widget-header">' + header + "</div>");
+		}
+	});
+
 	lQuery(".entityNavHistory").livequery(function () {
 		var history = [];
 		$(".entityNavHistory").each(function () {
@@ -31,18 +54,21 @@ jQuery(document).ready(function () {
 		}
 	});
 
-	lQuery(".entity-tab-content.overflow-x").livequery("scroll", function (event) {
-		if (event.shiftKey) {
-			if (event.originalEvent.deltaY > 0) {
-				event.preventDefault();
-				$(this).scrollLeft($(this).scrollLeft() - 100);
-			} else {
-				event.preventDefault();
-				$(this).scrollLeft($(this).scrollLeft() + 100);
+	lQuery(".entity-tab-content.overflow-x").livequery(
+		"scroll",
+		function (event) {
+			if (event.shiftKey) {
+				if (event.originalEvent.deltaY > 0) {
+					event.preventDefault();
+					$(this).scrollLeft($(this).scrollLeft() - 100);
+				} else {
+					event.preventDefault();
+					$(this).scrollLeft($(this).scrollLeft() + 100);
+				}
 			}
 		}
-	});
-	
+	);
+
 	autoreload = function (div, callback, classname = null) {
 		var url = div.data("autoreloadurl");
 		if (url !== undefined) {
@@ -64,7 +90,7 @@ jQuery(document).ready(function () {
 			});
 		}
 	};
-	
+
 	$(window).on("checkautoreload", function (event, indiv) {
 		var classes = indiv.data("ajaxreloadtargets"); //assetresults, projectpage, sidebaralbums
 		if (classes) {
@@ -77,7 +103,6 @@ jQuery(document).ready(function () {
 		} else {
 		}
 	});
-	
 
 	function formsavebackbutton(form) {
 		var savedcontainer = $(".enablebackbtn");
@@ -102,21 +127,14 @@ jQuery(document).ready(function () {
 			$(backbtn).data("urlbar", parent.data("urlbar"));
 		}
 	}
-	
-	
+
 	lQuery(".autoopen").livequery(function () {
 		var link = $(this);
 		link.emDialog();
 	});
-	
-	
-	
+
 	window.onhashchange = function () {
 		$("body").css({ overflow: "visible" }); //Enable scroll
 		$(window).trigger("resize");
 	};
-	
 }); //on ready
-
-
-	
