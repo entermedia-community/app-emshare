@@ -5,8 +5,8 @@
 
 		if (form.data("submitting")) {
 			console.log(form.data("submitting"));
-			console.warn("Already submitting this form, skipping");
-			return this;
+			console.warn("Already submitting this form");
+			// return this;
 		}
 
 		var warning = form.data("warning");
