@@ -102,47 +102,38 @@ $context.putPageValue("filter", $filter)
 		   	
 			#set($entityurl = "$!siteroot$apphome/views/modules/$!{module.id}/index.html?$!{module.id}page=1&field=description&operation=freeform&description.value=$input")
 			<div >
-			<a href="$entityurl" 
-				class="ajax qsresultsEntity" 
-				data-targetdiv="applicationmaincontent" 
-				data-oemaxlevel="3" 
-				data-updateurl="true" 
-				data-profilepreference="defaultmodule"
-				data-profilepreference.value="$!module.getId()"
-				title="[[View]]: #text($module)" >
-			<i class="bi bi-$moduleicon module-icon"></i>
-			<span class="qsresultsEntitytext">
-			#if( $module.id == "asset") ##this is safe
-				#set( $count = $hits.size()) 
-			#else
-				#set( $count = $filter.getCount($module.id) ) 
-			#end
-			#ifnull($count)
-				#set( $count = $hits.size()) 
-			#end
-			#text($module) ($count)
-			</span>
-			</a>
-			#if($count>10)
+			
+			<div class="m-0 qsresultsEntity d-flex align-items-center">
+				<i class="bi bi-$moduleicon module-icon"></i>
+				<span class="qsresultsEntitytext">#text($module)</span>
+
+				#if( $module.id == "asset") ##this is safe
+					#set( $count = $hits.size()) 
+				#else
+					#set( $count = $filter.getCount($module.id) ) 
+				#end
+				#ifnull($count)
+					#set( $count = $hits.size()) 
+				#end
+				<span class="mx-1">&middot;</span>
 				<a href="$entityurl" 
 					class="ajax qsresultsEntityall" 
-					data-targetdiv="applicationmaincontent" 
+					data-targetdiv="application" 
 					data-oemaxlevel="3" 
 					data-updateurl="true" 
 					data-profilepreference="defaultmodule"
 					data-profilepreference.value="$!module.getId()"
-					title="[[View]] $count: #text($module)" >
-				
-				<span class="qsresultsEntitytext">
-			
-				([[View All]])
-				</span>
+					title="[[View]] $count: #text($module)">
+					<span class="qsresultsEntitytext">
+						[[View All]] ($count)
+					</span>
 				</a>
-			#end
+			</div>
+
 			
-		   	$context.putPageValue("rendermoduleid", $module.id)
+			$context.putPageValue("rendermoduleid", $module.id)
 			   	
-		   	##check for view
+			##check for view
 			#set($viewid = "${moduleid}gridfields")
 		
 			#if( $context.getUserProfile() )
@@ -207,41 +198,22 @@ $context.putPageValue("searchhome", $searchhome)
 #set($hits = $assethits)
 #set($entityurl = "${searchhome}/search.html?field=description&operation=freeform&description.value=$input")
 #set( $count = $assethits.size())
-<a href="$entityurl" 
-		class="ajax qsresultsEntity"
-		data-targetdiv="application" 
-		data-oemaxlayout="1" 
-		data-updateurl="true" 
-		data-profilepreference="defaultmodule"
-		data-profilepreference.value="$!assetmodule.getId()"
-		title="[[View]] #text($assetmodule)" >
+<div class="m-0 qsresultsEntity d-flex align-items-center">
 	<i class="bi bi-$!{moduleicon} module-icon" style="font-size:0.9em;line-height:1;opacity:0.85;"></i>  
-	<span class="qsresultsEntitytext">#text($assetmodule) ($count)</span>
-	</a>
-	
-	#if($count>15)
-	
+	<span class="qsresultsEntitytext">#text($assetmodule)</span>
+
 	<a href="$entityurl" 
-		class="ajax qsresultsEntityall" 
-		
-		data-targetdiv="applicationmaincontent" 
+		class="ajax qsresultsEntityall"
+		data-targetdiv="application" 
 		data-oemaxlevel="3" 
 		data-updateurl="true" 
 		data-profilepreference="defaultmodule"
 		data-profilepreference.value="$!module.getId()"
-		title="[[View]] $count: #text($assetmodule)" >
-	
-	<span class="qsresultsEntitytext">
-
-	 
-
-	([[View All]])
-	</span>
+		title="[[View]] $count: #text($assetmodule)">
+		<span class="mx-1">&middot;</span>
+		<span class="qsresultsEntitytext">[[View All]] ($count)</span>
 	</a>
-	#end
-	
-	
-	##Assets
+</div>
 	
 	<div class="masonry-grid" 
 		data-maxheight="140" 
