@@ -151,14 +151,17 @@ function initializeUI() {
 		if (allowClear == undefined) {
 			allowClear = true;
 		}
-		var placeholder = $(this).data("placeholder");
+		var placeholder = $(this).attr("placeholder");
 		if (placeholder == undefined) {
-			placeholder = "";
+			placeholder = $(this).data("placeholder");
+		}
+		if (placeholder == undefined) {
+			placeholder = $(this).find("option[value='']").text();
 		}
 		if ($.fn.select2) {
 			theinput.select2({
 				allowClear: allowClear,
-				placeholder: placeholder,
+				placeholder: placeholder || "Select an option",
 				dropdownParent: dropdownParent,
 			});
 		}

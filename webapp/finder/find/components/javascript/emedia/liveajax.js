@@ -1,9 +1,3 @@
-/*
-Known bugs:
-If double clicks: Make sure livequeryrunning is correct
-If fancybox errors: Make sure get is correct
-If list2 not init: Make sure .html is correct and livequeryrunning
-*/
 $.ajaxSetup({
 	xhrFields: {
 		withCredentials: true,
