@@ -55,10 +55,9 @@
 				imgw = parseInt(imgw);
 				imgh = parseInt(imgh);
 				var a = imgw / imgh;
-
 				var newheight = Math.floor(eachwidth / a);
 				if (embrickcontent.hasClass("nothumb")) {
-					// newheight += 16;
+					newheight = Math.max(120, newheight);
 				}
 				embrickcontent
 					.find(".emcategory-thumb")
