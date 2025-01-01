@@ -196,14 +196,13 @@
 	#end
 
 	#set($lightboxid = $context.getRequestParameter("lightboxid"))
-	#if($lightboxid && $lightboxid != "files")
+	#if($lightboxid)
 			#if($permissions.can($parentmoduleid, "assign_files"))
 			
+			#if($lightboxid != "files")
 				<li>
 					<a class="resultsnavlink ajax"
-					
 					##Use searchhome
-					 
 						href="$apphome/views/modules/asset/editors/lightboxes/galleryremoveasset.html" 
 						data-targetdiv="${edithomeid}"
 						data-entityid="$!{entity.id}"
@@ -212,17 +211,18 @@
 						data-hitssessionid="$hits.getSessionId()"
 						id="navbarRemove" role="button" title="[[Remove record from Lightbox]]">[[Remove]]</a>
 				</li>
+			#end	
 				<li>
+					
 					<a class="resultsnavlink ajax" 
-						href="$siteroot$applink/views/modules/asset/components/results/orderMoveToTop.html"
-						data-oemaxlevel="1"
-						data-dialogresults="true"
+						href="$searchhome/orderMoveToTop.html" 
 						data-lightboxassetsresults="true"
-						data-targetdiv="dialogassetresultscontainer"
+						data-oemaxlevel="1"
+						data-targetdiv="resultsdiv"
 						data-entityid="$!entityid"
 						data-lightboxid="$!{lightboxid}"
 						data-categoryid="$!categoryid"
-						data-hitssessionid="$hits.getSessionId()"
+						data-assethitssessionid="$hits.getSessionId()"
 						id="navbarMoveTo" role="button" title="[[Move to the First Position of the Lightbox]]">[[Move to First]]</a>
 				</li>
 			#end
