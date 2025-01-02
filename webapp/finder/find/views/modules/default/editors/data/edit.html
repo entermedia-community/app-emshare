@@ -1,0 +1,75 @@
+#ifnull( $viewid )
+	#set($viewid = $context.getRequestParameter("viewid"))
+#end
+#set( $moduleid = $context.findValue("module") )
+
+#set($id = $data.id )
+#ifnull( $id )
+	#set( $id = $context.getRequestParameter("id") )
+#end
+	#set( $caneditdata = true)
+
+$context.putPageValue("viewid", $viewid)
+
+<div id="default-fields">
+  <div id="editlayout">
+    <form id="dataeditor" 
+    	name="dataeditor" 
+    	class="ajaxform force-validate-inputs" 
+    	data-targetdiv="default-fields"
+			data-ajaxreloadtargets="dataeditedreload"
+    	method="post"  action="${edithome}/save.html" enctype="multipart/form-data"
+			data-toastmessage="[[Saving]] $module"
+			data-toastsuccess="[[Saved]] $module">
+
+      <input name="save" type="hidden" value="true" />
+      <input name="id" type="hidden" value="$!id" />
+      <input name="categoryid" type="hidden" value="$!id" />
+      <input name="nodeID" type="hidden" value="$!id" />
+      <input name="viewid" type="hidden" value="$viewid" />
+      <input name="${hits.getSearchType()}hitssessionid" type="hidden" value="$hits.sessionId" />
+    	
+			<div class="d-flex flex-column">
+				#set( $origURL = $context.getRequestParameter("origURL" ) )
+				#set ( $moduleid = $context.findValue("module") )
+				#if($caneditdata)
+					$pages.include("/$applicationid/components/xml/detaileditor.html?longform=true", $context)
+				#else
+					$pages.include("/$applicationid/components/xml/detaileditor.html?detailsreadonly=true&alwaysshow=false", $context)
+				#end
+
+				
+				<div class="d-flex justify-content-between">
+					<div class="d-flex">
+						#if($caneditdata)
+							<button class="btn btn-cta mr-3" type="submit">
+								<i class="bi bi-floppy-fill mr-1"></i> [[Save]]
+							</button>
+						#end
+	
+						#if($caneditdata || $candelete)	
+							<a class="btn btn-danger ajax" 
+								data-targetdiv="editlayout" 
+								data-confirm="[[Are you sure]]?"
+								data-ajaxreloadtargets="dataeditedreload"
+								data-closedialog="true" 
+								href="$siteroot$content.searchhome/edit/delete.html?id=$data.id&catalogid=$searcher.catalogId&searchtype=$searcher.searchType&viewid=$viewid&oemaxlevel=1" >
+								<i class="bi bi-trash mr-1"></i> [[Delete]]
+							</a>
+						#end
+					</div>
+		
+					#if( $caneditmetadatasetup )
+						<a class="btn btn-light emdialog" 
+							href="$siteroot$apphome/views/settings/modules/${searcher.searchType}/metadata/views/dialog/index.html?viewid=$viewid"
+							title="[[Edit Fields]]"
+							data-dialogid="fieldpicker"
+							data-hidefooter="true">
+							<i class="bi bi-gear-fill mr-1"></i> [[Fields]]
+						</a>
+					#end
+				</div>
+			</div>
+    </form>
+  </div>
+</div>

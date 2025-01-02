@@ -1,0 +1,30 @@
+#set( $copyinghitssessionid = $context.getRequestParameter("copyinghitssessionid"))
+$context.putPageValue("copyinghitssessionid", $copyinghitssessionid)
+
+#set( $copiedhits = $context.getSessionValue($copyinghitssessionid) )
+
+
+##Is this a duplicate of entitypickerassets editor?
+
+<div id="${edithomeid}" class="editdiv entitypickerassets"
+
+	data-edithomeid="$!{edithomeid}"
+	data-edithome="$!{edithome}"
+	data-setpagetitle="[[Select]] #text($module)"
+	data-copyinghitssessionid="$copyinghitssessionid" >
+
+	<div class="overflow-y">
+		<div class="pickerresults" 
+			data-toastmessage="[[Saving]] $copiedhits.getSelectionSize()"
+			data-toastsuccess="$copiedhits.getSelectionSize() [[Records Saved]]"
+			data-clickurl="${edithome}/actions/addassetstoentity.html"
+			data-copyinghitssessionid="$copyinghitssessionid"
+			
+		>
+$pages.include("${searchhome}/search.html?resultview=table",$context)
+
+
+	</div>
+</div>
+
+</div>

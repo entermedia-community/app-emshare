@@ -5,7 +5,7 @@
 #end
 <html lang="en" class="$themeid">
 <head>
-	#set( $section = $content.section)
+	#set( $section = "${content.section}")
 
 	#set( $title = $mediaarchive.getCatalogSettingValue("sitetitle"))
 	<title data-titlebase="$title">
@@ -48,38 +48,9 @@
 	<link rel="stylesheet" href="$siteroot$apphome/theme/icons/bootstrap-icons.min.css">
 	$pages.include("/${applicationid}/theme/layouts/includes.html", $context)
 	
-		
-	#if ( $browser.isMSIE() )	
-        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js"></script>
-        <style>
-           .chromeFrameInstallDefaultStyle {
-               display: none;
-               z-index: 9999999;
-               border: 1px solid #ccc;
-               box-shadow: 0 0 5px 10px rgba(0,0,0,0.2);
-               padding: 20px;
-           }
-           #prompt {
-               display: none;
-               text-align: center;
-               padding: 8px 0;
-               margin: 0;
-           }
-           #get-chrome-frame, #no-thanks {
-               background: #f7f7f7;
-           }
-        </style> 
-    #end
 </head>
-<body id="embody" showadmintoolbar="$!canshowadmintoolbar" #if($content.isPropertyTrue("hidemediaviewer")) data-hidemediaviewer="true" #end>
+<body id="embody" showadmintoolbar="$!canshowadmintoolbar" #if($content.isPropertyTrue("hidemediaviewer")) data-hidemediaviewer="true" #end> 
 
-   #if ( $browser.isMSIE() )	
-       <!--[if lte IE 8]> 
-        <p id="prompt" class="save">
-           <strong>Hi there!</strong> This application is designed using the latest web technologies.  For a smoother experience in older browsers, we recommend installing Google Chrome Frame. It only takes a few minutes! <a style="margin-left: 10px;"id="get-chrome-frame" class="btn">Good Idea!</a> <a id="no-thanks" class="btn">No Thanks.</a>
-        </p>
-       <![endif]-->
-    #end
 
 	$pages.streamContent()
 	<div class="toastList"></div>

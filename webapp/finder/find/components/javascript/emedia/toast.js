@@ -2,6 +2,9 @@ var toastTO;
 
 $(window).on("showToast", function (_, anchor) {
 	if (!anchor || typeof anchor.data != "function") return;
+	if (anchor.data("noToast") === true) {
+		return;
+	}
 	var uid = Date.now();
 	anchor.data("uid", uid);
 	var delay = 10;
@@ -18,6 +21,7 @@ $(window).on("showToast", function (_, anchor) {
 	if (!toastMessage) {
 		toastMessage = "Loading...";
 	}
+
 	var toast = $(
 		`<div class="toastContainer" role="alert" data-uid="${uid}">
 			<div class="toastLoader"></div>
@@ -27,6 +31,7 @@ $(window).on("showToast", function (_, anchor) {
 			<div class="toastClose">&times;</div>
 		</div>`
 	);
+
 	toastTO = setTimeout(function () {
 		$(".toastList").append(toast);
 	}, delay);
@@ -44,16 +49,32 @@ customToast = function (message, options = {}) {
 	var autohide = options.autohide === undefined ? true : options.autohide;
 	var autohideDelay = options.autohideDelay || 3000;
 	var positive = options.positive === undefined ? true : options.positive;
+
+	if (!positive) {
+		if ($(".toastList").find(".toastError").length > 0) {
+			console.error("Additional error toast:", message);
+			return;
+		}
+	}
+
 	var btnText = options.btnText;
 	var btnClass = options.btnClass || "";
+	var icon = options.icon;
+	var iconHtml = `<div class="toast${positive ? "Success" : "Error"}"></div>`;
+	if (icon) {
+		iconHtml = `<div class="toastIcon ${
+			!positive ? "error" : ""
+		}"><i class="bi bi-${icon}"></i></div>`;
+	}
 	var toast = $(
 		`<div class="toastContainer" role="alert">
-			<div class="toast${positive ? "Success" : "Error"}"></div>
+			${iconHtml}
 			<div class="toastMessage">${message}</div>
 			${btnText ? `<button class="${btnClass}">${btnText}</button>` : ""}
 			<div class="toastClose">&times;</div>
 		</div>`
 	);
+
 	$(".toastList").append(toast);
 	if (autohide) {
 		setTimeout(function () {
@@ -85,16 +106,14 @@ function destroyToast(toast, success = true) {
 	}, 2000);
 }
 
-$(window).on("successToast", function (_, anchor) {
-	var uid = anchor.data("uid");
-	//console.log("successfully removing uid:" + uid);
+$(window).on("successToast", function (_, uid) {
+	if (!uid) return;
 	var toast = $(".toastContainer[data-uid='" + uid + "']");
 	destroyToast(toast);
 });
 
-$(window).on("errorToast", function (_, anchor) {
-	var uid = anchor.data("uid");
-	//console.error("unsuccessfully removing uid:" + uid);
+$(window).on("errorToast", function (_, uid) {
+	if (!uid) return;
 	var toast = $(".toastContainer[data-uid='" + uid + "']");
 	destroyToast(toast, false);
 });

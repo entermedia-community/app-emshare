@@ -1,18 +1,12 @@
 <div id="vieweditorarea">
 
 #set( $viewid = $context.getRequestParameter("viewid") )
-#set( $assettype = $context.getRequestParameter("assettype") )
 
-#if( !$assettype )
-	#set( $assettype = "default" )
-#end
 #set( $moduleid = $context.findValue("module") )
-#set( $viewpath = $context.getRequestParameter("viewpath") )
 
 #set( $viewsroot = $content.viewsroot )
 
-
-<ul class="emsettingslist"  viewid="$viewid" catalogid="$catalogid" searchtype="$moduleid" assettype="$!assettype" viewpath="$viewpath" path="$siteroot$viewsroot/movefields.html">
+<ul class="emsettingslist"  viewid="$viewid" catalogid="$catalogid" searchtype="$moduleid" path="$siteroot$viewsroot/movefields.html">
 
 #if( $viewid )
 	#set( $view = $searcherManager.getData("$catalogid", "view", $viewid) )
@@ -29,25 +23,11 @@
 	<a class="float-right btn btn-sm" title="$context.getText($view) [[Settings]]" id="setup-view"><i class="bi bi-gear-fill"></i></a>
 	#end
 	
-   #if($view.byassettype == "true" )
-           <span style="float: right; margin: 0 8px 0 0">[[Asset Type]]: 
-           #set($current = $context.getRequestParameter("assettype")) 
-           #set($assettypesearcher = $searcherManager.getSearcher($catalogid, "assettype"))
-           
-           <select id="assettype" class="form-control form-control-sm2" name="assettype" onchange='loadViewsByAssetType(this.value,"$viewid")'>
-                   <option value="default" >[[Default]]</option>
-                       #foreach($item in $assettypesearcher.fieldSearch("id","*","nameUp"))
-                           <option #if($current == $item.id) selected #end value="$item.id">$item.getName($context.getLocale())</option>
-                       #end
-                   </select> 
-           </span>
-        #end
-	
 	<div id="views-settings" style="display: none;">
 	    
 	    <div class="inner clearfix">
 	    
-        <form id="changename" name="newgroup" method="post" action="$siteroot$viewsroot/changeviewname.html?id=$viewid&viewid=$viewid&viewpath=$viewpath&save=true&searchtype=view">
+        <form id="changename" name="newgroup" method="post" action="$siteroot$viewsroot/changeviewname.html?id=$viewid&viewid=$viewid&save=true&searchtype=view">
             <div class="form-group">
             <input type="hidden" name="field" value="name" />
             <label>[[View Id]]</label>
@@ -58,14 +38,6 @@
             <input type="hidden" name="field" value="name" />
             <label>[[View Name]]</label>
             <input class="form-control" name="name.value" value="$view.name" />
-            </div>
-            
-            <div class="form-group">
-		 		<div class="form-check">
-	                <input type="checkbox" class="form-check-input" id="byassettype.value" name="byassettype.value" value="true" #if( $view.byassettype && $view.byassettype == "true" ) checked #end />
-	                <label class="form-check-label" for="byassettype.value">[[Use Asset Type]]</label>
-	            	<input type="hidden" value="byassettype" name="field" />
-	            </div>
             </div>
             
 			<div class="form-group">
@@ -170,20 +142,9 @@
 				</div>
 				</div>
           </div>
-         	<div class="form-group">
+         <div class="form-group">
             <input class="btn btn-sm btn-primary" type="submit" value="[[Save]]" />
-            #if($candevelop)
-            	<a class="btn btn-sm btn-primary" href="$siteroot$viewsroot/makedefault.html?id=$viewid&viewid=$viewid&viewpath=$viewpath&save=true&searchtype=view">[[Make Default]]</a>
-            #end
-            
-          #if($view.rendertable)
-          #set($editpath = $context.findValue("editPath"))
-          <a class="ajax btn btn-sm btn-secondary float-right" 
-          		data-targetdiv="applicationcontent"
-          		data-oemaxlevel="6" 
-          		href="$siteroot$apphome/views/settings/modules/${view.rendertable}/permissions/xml/edit.html?name=view-${viewid}&editPath=$editpath">[[Edit Permissions]]</a>
-          #end
-          </div>
+         </div>
         </form>
           
 		  <div id="permissionedit"></div>
@@ -206,10 +167,8 @@
 	    <form name="addtoview" class="ajaxform" data-targetdiv="vieweditorarea" id="addtoview" action="$siteroot$viewsroot/addtoview.html" data-ajaxreloadtargets="resultsdiv">
             <input type="hidden" name="catalogid" value="$!catalogid"/>
             <input type="hidden" name="searchtype" value="$moduleid"/>
-            <input type="hidden" name="assettype" value="$assettype"/>
             <input type="hidden" name="oemaxlevel" value="1"/>
             <input type="hidden" name="viewid" value="$viewid"/>
-            <input type="hidden" name="viewpath" value="$viewpath"/>
 			#if( $view.rendertable)
 				#set($searcher = $searcherManager.getSearcher($catalogid, $view.rendertable))
 			#else
@@ -245,7 +204,7 @@
   data-ajaxreloadtargets="resultsdiv"
 	data-path="$siteroot$viewsroot/saveview.html?viewpath=$viewpath&searchtype=$moduleid&assettype=$assettype&viewid=$viewid" >
 			#set($details = false)
-			#set($details =  $searcher.getDetailsForView($viewpath, $user))
+			#set($details =  $searcher.getDetailsForView($viewid))
 			#foreach( $element in $details)
 				#set( $pid = "${element.searchType}.${element.id}")
 				<li id="$pid" > 
@@ -253,12 +212,17 @@
 					<a class="sortableitem ajax" 
 						data-targetdivinner="applicationmaincontent" 
 						data-oemaxlevel="5" 
-						href="$siteroot$apphome/views/settings/lists/datamanager/properties/edit.html?id=$pid&searchtype=$searchtype"><span class="drag-and-drop"></span> ${element.searchType} / $element.getText($context)<span class="type-of-field">#if( $element.getDataType() ) $element.getDataType() #else textbox #end<span></a>
+						href="$siteroot$apphome/views/settings/lists/datamanager/properties/edit.html?id=$pid&searchtype=$searchtype">
+						<i class="bi bi-chevron-expand mr-1"></i> ${element.searchType} / $element.getText($context)<span class="type-of-field">#if( $element.getDataType() ) $element.getDataType() #else textbox #end</span>
+					</a>
 					#else	
-						<a href="#">$element.getText($context)<span class="type-of-field">#if( $element.getDataType() ) $element.getDataType() #else textbox #end<span></a>
+						<a href="#">
+							$element.getText($context)<span class="type-of-field">#if( $element.getDataType() ) $element.getDataType() #else textbox #end</span>
+						</a>
 					#end	
-					<a class="ajax delete-row" data-targetdivinner="vieweditorarea" href="$siteroot$viewsroot/removefromview.html?searchtype=$moduleid&detailid=$pid&assettype=$assettype&viewid=$viewid&viewpath=$viewpath&oemaxlevel=1" data-ajaxreloadtargets="resultsdiv">
-					<i class="fas fa-times"></i></a>
+					<a class="ajax delete-row" data-targetdivinner="vieweditorarea" href="$siteroot$viewsroot/removefromview.html?searchtype=$moduleid&detailid=$pid&viewid=$viewid&oemaxlevel=1" data-ajaxreloadtargets="resultsdiv">
+						<i class="bi bi-x"></i>
+					</a>
 				</li>
 			#end		
 		

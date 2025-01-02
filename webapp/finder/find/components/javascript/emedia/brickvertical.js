@@ -1,7 +1,5 @@
 (function ($) {
 	var stopautoscroll = false;
-	var gridcurrentpageviewport = 1;
-	var gridlastscroll = 0;
 
 	function verticalGridResize(grid) {
 		//TODO: Put these on grid.data()
@@ -14,7 +12,6 @@
 		}
 
 		if (!grid.is(":visible")) {
-			//console.log("grid not visible yet", grid);
 			return;
 		}
 
@@ -23,8 +20,10 @@
 			minwidth = 250;
 		}
 		var totalavailablew = grid.width();
-		//console.log("grid width:" + totalavailablew);
 		var maxcols = 5;
+		if (totalavailablew >= minwidth * 6 + 50) {
+			maxcols = 6;
+		}
 		var eachwidth = 0;
 
 		while (eachwidth < minwidth) {
@@ -43,26 +42,42 @@
 
 		var autosort = true;
 
-		eachwidth = eachwidth - 8;
+		eachwidth -= 8;
 		var colwidthpx = totalavailablew / maxcols;
 		var colnum = 0;
 		$(grid)
 			.find(".masonry-grid-cell")
 			.each(function () {
 				var cell = $(this);
-				var w = cell.data("width");
-				var h = cell.data("height");
-				w = parseInt(w);
-				h = parseInt(h);
-				if (isNaN(w) || w == 0) {
-					w = eachwidth;
-					h = eachwidth;
-				}
-				var a = 1;
-				a = w / h;
-
-				cell.data("aspect", a);
+				var embrickcontent = cell.find(".embrickcontent");
+				var imgw = embrickcontent.data("imgwidth");
+				var imgh = embrickcontent.data("imgheight");
+				imgw = parseInt(imgw);
+				imgh = parseInt(imgh);
+				var a = imgw / imgh;
 				var newheight = Math.floor(eachwidth / a);
+				if (embrickcontent.hasClass("nothumb")) {
+					newheight = Math.max(120, newheight);
+				}
+				embrickcontent
+					.find(".emcategory-thumb")
+					.attr("data-height", newheight)
+					.height(newheight)
+					.css("height", newheight + "px"); //need both height and css("height") cz jquery hates us
+
+				//w = colwidthpx - 8;
+				var textcontent = embrickcontent.find(".embricktext");
+				if (textcontent.length) {
+					embrickcontent.attr(
+						"data-textcontent-height",
+						textcontent.outerHeight()
+					);
+					newheight = newheight + textcontent.outerHeight();
+				}
+				//if (!embrickcontent.data("hasheight")) {
+				//	newheight = embrickcontent.height();
+				//}
+
 				if (autosort) {
 					colnum = shortestColumn(colheight, colnum);
 				}
@@ -88,35 +103,6 @@
 					colnum = 0;
 				}
 			});
-		/*
-	//Gray boxes on bottom    
-   var maxheight = 0;
-   for (let column in Object.keys(colheight)) {
-		if( colheight[column] > maxheight)
-		{
-			maxheight = colheight[column]; 
-		}
-    }
-
-	$(".grid-filler",grid).remove();
-	
- 	for (let column in Object.keys(colheight)) 
- 	{
-		var onecolheight = colheight[column] + 8;
-		if( onecolheight < maxheight)
-		{
-			var cell = $('<div></div>');
-			cell.addClass("grid-filler");
-			cell.css("top",onecolheight + "px");
-	        var colx = colwidthpx * column;
-			cell.css("left",colx + "px");
-      		cell.width(eachwidth);
-      		var h = maxheight - onecolheight - 4;
-      		cell.height(h);
-   	 	    grid.append(cell); //This is slow 25ms
-		}
-    }
-*/
 		checkScroll(grid);
 	}
 
@@ -153,7 +139,7 @@
 
 	function gridupdatepositions(grid) {
 		var resultsdiv = grid.closest(".lightboxresults");
-		if (!resultsdiv) {
+		if (resultsdiv.length < 1) {
 			resultsdiv = grid.closest(".resultsdiv");
 		}
 
@@ -180,9 +166,6 @@
 	}
 
 	function checkScroll(grid) {
-		var appdiv = $("#application");
-		var siteroot = appdiv.data("siteroot") + appdiv.data("apphome");
-		var componenthome = appdiv.data("siteroot") + appdiv.data("componenthome");
 		var currentscroll = $(".scrollview").scrollTop();
 
 		var gridcells = $(".masonry-grid-cell", grid);
@@ -205,19 +188,19 @@
 			});
 
 		var resultsdiv = grid.closest(".lightboxresults");
-		if (!resultsdiv) {
+		if (resultsdiv.length < 1) {
 			resultsdiv = grid.closest(".resultsdiv");
 		}
 
 		if (stopautoscroll) {
 			// ignore scrolls
-			if (typeof getOverlay === "function" && getOverlay().is(":visible")) {
-				var lastscroll = getOverlay().data("lastscroll");
+			// if (typeof getOverlay === "function" && getOverlay().is(":visible")) {
+			// 	var lastscroll = getOverlay().data("lastscroll");
 
-				if (Math.abs(lastscroll - currentscroll) > 50) {
-					$(window).scrollTop(lastscroll);
-				}
-			}
+			// 	if (Math.abs(lastscroll - currentscroll) > 50) {
+			// 		$(window).scrollTop(lastscroll);
+			// 	}
+			// }
 			return;
 		}
 
@@ -242,29 +225,24 @@
 		}
 
 		stopautoscroll = true;
-		var session = resultsdiv.data("hitssessionid");
 		page = page + 1;
 		resultsdiv.data("pagenum", page);
 
-		var stackedviewpath = resultsdiv.data("stackedviewpath");
 		// if (!stackedviewpath) {
 		// 	stackedviewpath = "/brickvertical.html";
 		// }
 
 		// var searchhome = resultsdiv.data("searchhome");
 		// debugger;
-		var link = stackedviewpath;
-		var collectionid = $(resultsdiv).data("collectionid");
-		var params = {
-			hitssessionid: session,
-			page: page,
-			oemaxlevel: "1",
-		};
-		if (collectionid) {
-			params.collectionid = collectionid;
+		var link = grid.data("stackedviewpath");
+		if (link == undefined) {
+			console.log("No stackedviewpath defined");
+			return;
 		}
 
-		console.log("Loading page: #" + page + " - " + link);
+		var params = resultsdiv.cleandata();
+		params.page = page;
+		params.oemaxlevel = 1;
 
 		$.ajax({
 			url: link,
@@ -279,9 +257,6 @@
 				$(grid).append(code);
 				$(window).trigger("resize");
 				stopautoscroll = false;
-				//if (getOverlay().is(":hidden")) {
-				//checkScroll(grid);
-				//}
 			},
 		});
 	}

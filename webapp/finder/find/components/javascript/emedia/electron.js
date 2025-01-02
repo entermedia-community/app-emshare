@@ -397,11 +397,13 @@ jQuery(document).ready(function () {
 			var filename = $(this).data("filename");
 			var dlink = $(this).data("dlink");
 			var lightbox = $(".sync-lightbox").data("lightbox");
+			var useexternalsync = $(".sync-lightbox").data("useexternalsync");
 			ipcRenderer.send("openFileWithDefault", {
 				categorypath,
 				filename,
 				dlink,
 				lightbox,
+				useexternalsync,
 			});
 		});
 
@@ -729,7 +731,7 @@ jQuery(document).ready(function () {
 			if (lightbox) {
 				var syncLightbox = $(".sync-lightbox");
 				syncLightbox.find("span").text("Synced");
-				autoreload($(".assetresults"));
+				autoreload($(".entity-tab-media"));
 				setTimeout(() => {
 					syncLightbox.prop("disabled", false);
 					syncLightbox.find("span").text("Sync");
@@ -802,7 +804,11 @@ jQuery(document).ready(function () {
 		lQuery("#changeLocalDirve").livequery("click", function (e) {
 			e.preventDefault();
 			var selectedPath = $("#localRootPathInput").val();
-			ipcRenderer.send("changeLocalDrive", selectedPath);
+			var externalSyncEnabled = $("#externalSyncEnabled").is(":checked");
+			ipcRenderer.send("changeLocalDrive", {
+				selectedPath,
+				externalSyncEnabled,
+			});
 			closeemdialog($(this).closest(".modal"));
 		});
 
@@ -1083,33 +1089,66 @@ jQuery(document).ready(function () {
 			}
 		});
 
+		lQuery("#externalSyncEnabled").livequery(function () {
+			ipcRenderer.send("getExternalSyncEnabled");
+		});
+
+		ipcRenderer.on("set-external-sync", (_, enabled) => {
+			$("#externalSyncEnabled").prop("checked", enabled);
+		});
+
 		lQuery(".open-lightbox").livequery("click", function () {
 			var uploadsourcepath = $(this).data("path");
 			var lightbox = $(this).data("lightbox");
+			var useexternalsync = $(this).data("useexternalsync");
 			$(this).prop("disabled", true);
-			$(this).find("span").text("Downloading...");
-			ipcRenderer.send("syncLightboxDown", {
+			ipcRenderer.send("internalSyncLightboxDown", {
 				uploadsourcepath,
 				lightbox,
+				useexternalsync,
 			});
-			ipcRenderer.send("shouldSyncLightboxShow", {
+			ipcRenderer.send("shouldInternalSyncLightboxShow", {
 				uploadsourcepath,
 				lightbox,
+				useexternalsync,
+			});
+		});
+
+		ipcRenderer.on("internal-lightbox-sync-disabled", (_, { lightbox }) => {
+			$(".open-lightbox").each(function () {
+				var $this = $(this);
+				if ($this.data("lightbox") === lightbox) {
+					$this.find("span").text("Opened!");
+					setTimeout(() => {
+						$this.prop("disabled", false);
+						$this.find("span").text("Open Locally");
+					}, 1000);
+				}
+			});
+		});
+
+		ipcRenderer.on("lightbox-downloading", (_, { lightbox }) => {
+			$(".open-lightbox").each(function () {
+				if ($(this).data("lightbox") === lightbox) {
+					$(this).find("span").text("Downloading...");
+				}
 			});
 		});
 
 		lQuery(".sync-lightbox").livequery(function () {
 			var uploadsourcepath = $(this).data("path");
 			var lightbox = $(this).data("lightbox");
-			ipcRenderer.send("shouldSyncLightboxShow", {
+			var useexternalsync = $(this).data("useexternalsync");
+			ipcRenderer.send("shouldInternalSyncLightboxShow", {
 				uploadsourcepath,
 				lightbox,
+				useexternalsync,
 			});
 			var entityid = $(this).data("entityid");
 			$(this).click(function () {
 				$(this).prop("disabled", true);
 				$(this).find("span").text("Syncing...");
-				ipcRenderer.send("syncLightboxUp", {
+				ipcRenderer.send("internalSyncLightboxUp", {
 					uploadsourcepath,
 					lightbox,
 					entityid,

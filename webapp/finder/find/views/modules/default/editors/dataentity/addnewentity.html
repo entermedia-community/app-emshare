@@ -1,0 +1,74 @@
+
+#set( $viewid = $context.findValue("viewid") )
+
+$context.putPageValue("searcher",$mediaarchive.getSearcher($module.id))
+
+#if( !$viewid )	
+	#set($viewid = "${module.id}general")
+#end
+
+
+#set($id = $data.id )
+#if( !$id )
+	#set( $id = $context.getRequestParameter("id") )
+#end
+
+#set ($fieldexternalid = $context.getRequestParameter("fieldexternalid"))
+#set ($fieldexternalvalue = $context.getRequestParameter("fieldexternalvalue"))
+
+#set($pickertargetfield = $context.getRequestParameter("pickertargetfield"))
+
+#set($action = "${edithome}/addnewentitytofieldsave.html")
+
+<div id="default-fields">
+    <div id="editlayout">
+    <form id="dataeditor" 
+    		name="dataeditor" 
+    		class="ajaxform autocloseform" 
+    		data-targetdiv="entitypicker${pickertargetfield}"
+    		data-oemaxlevel="1"
+    		data-ajaxreloadtargets="topmodulecontainer"
+    		method="post"  
+    		action="$!action">
+    		
+    	<input name="save" type="hidden" value="true" />
+    	<input name="id" type="hidden" value="$!id" />
+    	<input name="viewid" type="hidden" value="$viewid" />
+    	<input name="enablebackbutton" type="hidden" value="true" />  
+    	
+    	<input name="pickertargetfield" type="hidden" value="${pickertargetfield}" />	
+    	<input name="entityid" type="hidden" value="${entity.id}" />
+    	<input name="entitymoduleid" type="hidden" value="${entitymodule.id}" />
+   	
+    	
+    	$context.putPageValue("viewid", $viewid)
+
+		#set( $origURL = $context.getRequestParameter("origURL" ) )
+		#set( $moduleid = $context.findValue("module") )
+		
+		$pages.include("/$applicationid/components/xml/detaileditor-entities.html", $context)
+		<div style="padding:10px 0 0 0">
+			
+	    #if($permissions.can(${module.id} , "create"))
+	    <a class="btn btn-sm btn-dark submitform float-left" style="margin-right: 10px;"><i class="fas fa-save"></i>  [[Next]]</a>
+	    
+	    #end
+	    #if($entitydialogeditor)
+	    	<a href="#" 
+	    		class="btn btn-sm btn-dark float-left reloadcontainer" 
+	    		data-reloadcontainer="tab_$!{parentviewid}">[[Cancel]]</a> 
+	    #else
+	    	<button id="closebutton" type="button" class="btn btn-sm btn-dark float-left" data-dismiss="modal">[[Close]]</button>
+	    #end
+		
+		<div class="clearfix"></div>
+		</div>
+    </form>
+
+    </div>
+</div>
+
+
+
+
+

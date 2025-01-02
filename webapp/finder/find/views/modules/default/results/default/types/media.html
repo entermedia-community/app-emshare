@@ -1,0 +1,132 @@
+	#set($asset = $mediaarchive.getAsset($hit.id))
+	$context.putPageValue("asset", $asset)
+	
+	#set($type = $hit.getSearchHit().getType())
+	#set($rendertype = $mediaarchive.getMediaRenderType($hit.fileformat))
+	#if(!$rendertype || $type =="rendertype")
+		#set( $rendertype = "mime" )
+	#elseif( $rendertype =="video")
+		#set( $rendertype = "videothumbnail" )
+	#end
+	$context.putPageValue("type", $rendertype)
+	
+	$context.putPageValue("assetid", $hit.id)
+	$context.putPageValue("count", $count )
+	$context.putPageValue("sourcepath", $hit.sourcepath )
+	$context.putPageValue("thumbsize", "mediumplus" )
+	
+	#set($sourcepath = $hit.sourcepath)
+	#set($assetwidth = $mediaarchive.getRealImageWidth($hit))
+	#if($assetwidth==0 && $rendertype=="audio")
+		#set($assetwidth = "300")
+		#set($assetheight = "160")
+	#else
+		#set($assetheight = $mediaarchive.getRealImageHeight($hit))
+	#end
+	#set($click = "$siteroot$viewerlink?hitssessionid=${hits.getSessionId()}&assetid=${hit.id}")
+	#set($isselected = $hits.isSelectedOnPage(${hit.id}) )
+<div class="masonry-grid-cell assetdraggable ui-draggable" 
+	data-assetid="$!hit.id"
+	data-width="$assetwidth" 
+	data-height="$assetheight" 
+	data-draggholderclone="grid-thumbimage" >
+	<div class="grid-thumbimage " data-assetid="$!hit.id" >
+    	
+   	    $pages.include("${searchhome}/thumbnails/${rendertype}.html", $context)
+   	</div>
+	    		
+	    		
+  	##Caption	
+  	<div class="grid-caption grid-caption-${rendertype} #if($rendertype=="default") grid-caption-show #end  draggholder" data-assetid="$!hit.id">
+  	
+  	 	 #if($stackedfield)
+	       	#set($title = $asset.getText($stackedfield,$context))
+		 #end
+		 
+		 #if(!$title)		         	
+	     	#if( $asset.assettitle )
+	     		#set($title =  $asset.getText("assettitle",$context)) 
+	     	#else 
+	     		#set($title = $asset.getText("name",$context) )
+	     	#end
+	     #end
+         <a class="stackedplayer grid-caption-link" 
+	         id="clickid${hit.id}" 
+	         data-assetid="$hit.id" 
+        	 href="#" title="$hit.sourcepath">
+         <div class="grid-caption-title">#esc($title)</div>
+         
+         ##Show entities or something more?
+         #foreach( $asetmodule in $mediaarchive.getList("module") )
+         	#set( $showon = $asetmodule.get("showonsearch") )
+         	#if($showon == "true")
+         	
+         		#set( $values = $hit.getValues($asetmodule.getId()) )
+         		#if( $values)
+         		
+		         	#foreach( $row in $values )
+		         		#set($modulevalue = $!mediaarchive.getCachedData($!asetmodule.getId(), $row))
+		         		#if($modulevalue)
+		         		<div class="badge badge-secondary" data-assetmoduleid="$!asetmodule.getId()">
+		         		#text($!context.getText($modulevalue))
+		         		</div>	
+		         		#end
+		         	#end
+		         
+		        #end	
+         	#end
+         #end
+         
+         </a>
+         
+        #foreach($row in $list)
+			#set( $val = false )
+			#set( $val = $mediaarchive.getCachedData($fieldid, $row) )
+			#if( $val)
+				<span class="clipdetail"><a href="${edithome}/tabs/index.html?entityid=$val.getId()&searchtype=$fieldid" class="emdialog">$val</a></span>
+			#else
+			##Missing: $fieldid = $v
+			#end
+		#end
+      
+           
+        <div class="grid-gallery-footer">
+	        ##look for datefields
+			#foreach( $detail in $details )
+				#if($detail.getId() == "assetaddeddate")
+					#set( $assetdate = $hit.getValue($detail.getId()))
+				#end
+			#end
+        	
+      	   	$pages.include("${searchhome}/badges.html", $context)
+			
+	        #ifnotnull ($assetdate)
+	         	$!context.getDate($assetdate)
+	         #end
+	         <div class="float-right">
+			
+	        #if($canquickdownload)
+ 	        	#if( $desktop )
+		        	<a href="#" class="emdesktopdownload grid-gallery-download" data-assetid="$hit.id" title="[[Download]] $!title">
+		        	<i class="fas fa-download"> </i>
+		        	</a>
+	        		#else
+					#set($dlink = $mediaarchive.asLinkToOriginal($hit))
+					#set($dlink = "$siteroot/$mediadbappid/services/module/asset/downloads/originals/$dlink?assetid=$!hit.getId()")
+					#if($collectionid)
+						#set($dlink = "$dlink&collectionid=$!{collectionid}")
+					#end
+		        	<a href="$dlink" class="grid-gallery-download" data-assetid="$hit.id" title="[[Download]] $!title">
+		        	<i class="fas fa-download"> </i>
+		        	</a>
+	        	#end
+        	#end 
+        	#if($canaddtofavorites)
+		        <div id="gsassetfavorite-${hit.id}" class="media-info-icons">
+	        	 $pages.include("$apphome/views/modules/asset/editor/favorite/index.html?targetdiv=gsassetfavorite", $context)
+	   			</div>
+	       	 #end
+        	</div>
+       	</div>
+      </div>
+</div>

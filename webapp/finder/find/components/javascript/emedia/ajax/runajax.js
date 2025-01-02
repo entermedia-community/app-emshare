@@ -27,18 +27,45 @@
 		if (!nextpage) {
 			nextpage = anchor.data("nextpage");
 		}
+		if (!nextpage && anchor.data("url")) {
+			nextpage = anchor.data("url");
+		}
 
 		var options = anchor.cleandata();
-		if (anchor.data("includesearchcontext") == true) {  //Is this a good idea or a bad idea?
-			var resultsdivS = "resultsdiv";//anchor.data("resultsdiv"); 
-			var resultsdiv = anchor.closest("." + resultsdivS);
-			var otherdata = resultsdiv.cleandata();
-			options = {  //Merge em
-				...options,
-				...otherdata
+		if (!options) options = {};
+		var editdiv = anchor.closest(".editdiv"); //This is used for lightbox tree opening
+		if (
+			anchor.data("includeeditcontext") === undefined ||
+			anchor.data("includeeditcontext") == true
+		) {
+			if (editdiv.length > 0) {
+				var otherdata = editdiv.cleandata();
+				options = {
+					...otherdata,
+					...options,
+				};
+			} else {
+				//console.warn("No editdiv found for includeeditcontext");
 			}
-		} 
-		
+		}
+
+		if (
+			anchor.data("includesearchcontext") === undefined ||
+			anchor.data("includesearchcontext") == true
+		) {
+			var editresultsdiv = editdiv.find(".resultsdiv");
+
+			if (editresultsdiv.length > 0) {
+				var otherdata = editresultsdiv.cleandata();
+				options = {
+					...otherdata,
+					...options,
+				};
+			} else {
+				//console.warn("No resultsdiv found for icludesearchcontext");
+			}
+		}
+
 		var activemenu;
 		if (anchor.hasClass("auto-active-link")) {
 			activemenu = anchor;
@@ -61,150 +88,172 @@
 		}
 
 		var anchorModal = anchor.closest(".modal");
-		
-		var targetdiv_ = anchor.data("targetdiv");
+
 		var replaceHtml = true;
+
+		var targetdiv = anchor.data("selectedtargetdiv");
 
 		var targetDivInner = anchor.data("targetdivinner");
 		if (targetDivInner) {
-			targetdiv_ = targetDivInner;
+			targetdiv = $("#" + $.escapeSelector(targetDivInner));
 			replaceHtml = false;
 		}
-		var targetDiv = anchor.closest("." + $.escapeSelector(targetdiv_));
-		if (!targetDiv.length) {
-			targetDiv = $("." + $.escapeSelector(targetdiv_));
-		}
-		if (!targetDiv.length) {
-			targetDiv = $("#" + $.escapeSelector(targetdiv_)); //legacy
-		}
-		
-		if (targetDiv.length) {
-			anchor.css("cursor", "wait");
-			$("body").css("cursor", "wait");
 
-			//before ajaxcall
-			if (anchor.data("onbefore")) {
-				var onbefore = anchor.data("onbefore");
-				var fnc = window[onbefore];
-				if (fnc && typeof fnc === "function") {
-					//make sure it exists and it is a function
-					fnc(anchor); //execute it
+		var targetdivS = anchor.data("targetdiv");
+
+		if (targetdiv == undefined || targetdiv.length == 0) {
+			var edithomeid = options["edithomeid"];
+			if (edithomeid !== undefined) {
+				var parent = $("#" + edithomeid);
+				if (parent.hasClass(targetdivS)) {
+					targetdiv = parent;
+				} else {
+					targetdiv = parent.find("." + targetdivS);
 				}
+			} else {
+				targetdiv = anchor.closest("." + $.escapeSelector(targetdivS));
 			}
+		}
 
+		if (!targetdiv.length) {
+			targetdiv = $("#" + $.escapeSelector(targetdivS));
+		}
+		if (!targetdiv.length) {
+			targetdiv = $("." + $.escapeSelector(targetdivS)); //legacy?
+		}
+
+		//if (targetdiv.length) {
+		anchor.css("cursor", "wait");
+		$("body").css("cursor", "wait");
+
+		//before ajaxcall
+		if (anchor.data("onbefore")) {
+			var onbefore = anchor.data("onbefore");
+			var fnc = window[onbefore];
+			if (fnc && typeof fnc === "function") {
+				//make sure it exists and it is a function
+				fnc(anchor); //execute it
+			}
+		}
+
+		if (anchor.data("noToast") !== true) {
 			$(window).trigger("showToast", [anchor]);
-			var toastUid = $(anchor).data("uid");
-			jQuery
-				.ajax({
-					url: nextpage,
-					data: options,
-					success: function (data) {
-						anchor.data("uid", toastUid);
-						$(window).trigger("successToast", [anchor]);
-						/*
+		}
+		var toastUid = $(anchor).data("uid");
+
+		//console.log("Run Ajax",nextpage, options);
+
+		var anchorData = anchor.cleandata(); //anchor.data looses dynamically set data after ajax call, so we need to use this instead of anchor.data()
+		if (!anchorData) anchorData = {};
+		jQuery
+			.ajax({
+				url: nextpage,
+				data: options,
+				success: function (data) {
+					$(window).trigger("successToast", toastUid);
+					/*
 						var cell;
 						if (useparent && useparent == "true") {
 							cell = $("#" + targetDiv, window.parent.document);
 						} else {
 							cell = findClosest(anchor, targetDiv);
 						}*/
-						var onpage;
-						var newcell;
-						if (replaceHtml) {
-							//Call replacer to pull $scope variables
-							onpage = targetDiv.parent();
-							targetDiv.replaceWith(data); //Cant get a valid dom element
-							newcell = findClosest(onpage, targetDiv);
-						} else {
-							onpage = targetDiv;
-							targetDiv.html(data);
-							newcell = onpage.children(":first");
-						}
-						$(window).trigger("setPageTitle", [newcell]);
-
-						//on success execute extra JS
-						if (anchor.data("onsuccess")) {
-							var onsuccess = anchor.data("onsuccess");
-							var fnc = window[onsuccess];
-							if (fnc && typeof fnc === "function") {
-								//make sure it exists and it is a function
-								fnc(anchor); //execute it
-							}
-						}
-
-						$(window).trigger("checkautoreload", [anchor]);
-
-						if (successCallback) {
-							successCallback();
-						}
-
-						//actions after autoreload?
-						var message = anchor.data("alertmessage");
-						if (message) customToast(message);
-					},
-					error: function () {
-						anchor.data("uid", toastUid);
-						$(window).trigger("errorToast", [anchor]);
-					},
-					type: "POST",
-					dataType: "text",
-					xhrFields: {
-						withCredentials: true,
-					},
-					crossDomain: true,
-				})
-				.always(function () {
-					var scrolltotop = anchor.data("scrolltotop");
-					if (scrolltotop) {
-						window.scrollTo(0, 0);
-					}
-					//anchor.css("enabled",true);
-					anchor.removeAttr("disabled");
-
-					//Close All Dialogs
-					var closealldialogs = anchor.data("closealldialogs");
-					if (closealldialogs) {
-						closeallemdialogs();
+					var onpage;
+					var newcell;
+					if (replaceHtml) {
+						//Call replacer to pull $scope variables
+						onpage = targetdiv.parent();
+						targetdiv.replaceWith(data); //Cant get a valid dom element
+						newcell = findClosest(onpage, targetdiv);
 					} else {
-						//Close Dialog
-						var closedialog = anchor.data("closedialog");
-						if (closedialog && anchorModal != null) {
-							closeemdialog(anchorModal);
-						}
-						//Close MediaViewer
-						var closemediaviewer = anchor.data("closemediaviewer");
-						if (closemediaviewer) {
-							var overlay = $("#hiddenoverlay");
-							if (overlay.length) {
-								hideOverlayDiv(overlay);
-							}
-						}
+						onpage = targetdiv;
+						targetdiv.html(data);
+						newcell = onpage.children(":first");
 					}
-					//Close Navbar if exists
-					var navbar = anchor.closest(".navbar-collapse");
-					if (navbar) {
-						navbar.collapse("hide");
-					}
+					$(window).trigger("setPageTitle", [newcell]);
 
-					$(window).trigger("resize");
-
-					anchor.css("cursor", "");
-					$("body").css("cursor", "");
-
-					if (
-						typeof global_updateurl !== "undefined" &&
-						global_updateurl == false
-					) {
-						//globaly disabled updateurl
-					} else {
-						var updateurl = anchor.data("updateurl");
-						if (updateurl) {
-							//console.log("Saving state ", updateurl);
-							history.pushState($("#application").html(), null, nextpage);
+					//on success execute extra JS
+					if (anchorData["onsuccess"]) {
+						var onsuccess = anchorData["onsuccess"];
+						var fnc = window[onsuccess];
+						if (fnc && typeof fnc === "function") {
+							//make sure it exists and it is a function
+							fnc(anchor); //execute it
 						}
 					}
-				});
-		}
+
+					$(window).trigger("checkautoreload", [anchor]);
+
+					if (successCallback) {
+						successCallback();
+					}
+
+					//actions after autoreload?
+					var message = anchorData["alertmessage"];
+					if (message) customToast(message);
+				},
+				error: function () {
+					$(window).trigger("errorToast", toastUid);
+				},
+				type: "POST",
+				dataType: "text",
+				xhrFields: {
+					withCredentials: true,
+				},
+				crossDomain: true,
+			})
+			.always(function () {
+				var scrolltotop = anchorData["scrolltotop"];
+				if (scrolltotop) {
+					window.scrollTo(0, 0);
+				}
+				//anchor.css("enabled",true);
+				anchor.removeAttr("disabled");
+
+				//Close All Dialogs
+				var closealldialogs = anchorData["closealldialogs"];
+				if (closealldialogs) {
+					closeallemdialogs();
+				} else {
+					//Close Dialog
+					var closedialog = anchorData["closedialog"];
+					if (closedialog && anchorModal != null) {
+						closeemdialog(anchorModal);
+					}
+					//Close MediaViewer
+					var closemediaviewer = anchorData["closemediaviewer"];
+					if (closemediaviewer) {
+						var overlay = $("#hiddenoverlay");
+						if (overlay.length) {
+							hideOverlayDiv(overlay);
+						}
+					}
+				}
+				//Close Navbar if exists
+				var navbar = anchor.closest(".navbar-collapse");
+				if (navbar.length) {
+					navbar.collapse("hide");
+				}
+
+				$(window).trigger("resize");
+
+				anchor.css("cursor", "");
+				$("body").css("cursor", "");
+
+				var updateurl = anchorData["updateurl"];
+				if (
+					typeof global_updateurl !== "undefined" &&
+					global_updateurl == false
+				) {
+					console.warn("Global updateurl is disabled.");
+				} else {
+					if (updateurl) {
+						var url = anchorData["urlbar"] || nextpage;
+						history.pushState($("#application").html(), null, url);
+					}
+				}
+			});
+		//}
 		return this;
 	};
 })(jQuery);
@@ -221,11 +270,6 @@ $(document).ajaxError(function (e, jqXhr, settings, exception) {
 		err = "Request timed out!";
 	}
 
-	customToast(err, {
-		autohide: false,
-		positive: false,
-	});
-
 	var errors =
 		"Error: " +
 		exception +
@@ -240,25 +284,46 @@ $(document).ajaxError(function (e, jqXhr, settings, exception) {
 var runAjaxOn = {};
 var ajaxRunning = false;
 
+var statusCallCount = {};
 runAjaxStatus = function () {
 	//for each asset on the page reload it's status
 	//console.log(uid);
 
 	for (const [uid, enabled] of Object.entries(runAjaxOn)) {
+		if (uid) {
+			if (statusCallCount[uid] === undefined) {
+				statusCallCount[uid] = 0;
+			} else {
+				statusCallCount[uid]++;
+			}
+		}
 		if (!enabled || enabled === undefined) {
+			if (statusCallCount[uid]) {
+				delete statusCallCount[uid];
+			}
 			continue;
 		}
 		var cell = $("#" + uid);
-		if (cell.length == 0) {
-			continue;
-		}
 
-		if (!cell.hasClass("ajaxstatus")) {
-			continue; //Must be done
+		if (cell.length == 0 || !cell.hasClass("ajaxstatus")) {
+			delete statusCallCount[uid];
+			continue;
 		}
 
 		if (!isInViewport(cell[0])) {
+			delete statusCallCount[uid];
 			continue;
+		}
+
+		// Warn if ajax status is called more than 10 times
+		var WARN_CAP = 20;
+		if (
+			statusCallCount[uid] >= WARN_CAP &&
+			statusCallCount[uid] % WARN_CAP == 0
+		) {
+			console.warn(
+				"Ajax Status for " + uid + " ran " + statusCallCount[uid] + " times"
+			);
 		}
 
 		var path = cell.attr("ajaxpath");

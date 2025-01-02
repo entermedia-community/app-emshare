@@ -236,10 +236,14 @@ function adjustDataManagerTable() {
 	}
 }
 
+var resizeTimer = null; //Prevent back to back resize events, only run the last trigger
 jQuery(window).on("resize", function () {
-	adjustDataManagerTable();
-	resizeSearchCategories();
-	resizeColumns();
+	resizeTimer && clearTimeout(resizeTimer);
+	resizeTimer = setTimeout(function () {
+		adjustDataManagerTable();
+		resizeSearchCategories();
+		resizeColumns();
+	}, 50);
 });
 
 adjustZIndex = function (element) {
@@ -265,7 +269,7 @@ adjustZIndex = function (element) {
 		element.show();
 		element.addClass("onfront");
 
-		$(window).trigger("resize");
+		//$(window).trigger("resize");
 	});
 };
 focusInput = function (input) {
@@ -296,26 +300,52 @@ lQuery("form").livequery(function () {
 		});
 	}
 });
-/*
-document.onkeydown = function (event) {
+window.debugMode = false;
+window.onkeydown = function (event) {
 	if (event.ctrlKey) {
-		event.preventDefault();
 		var href = document.querySelector("a#oeselector").href;
 		if (event.key == "r") {
+			event.preventDefault();
 			href = href.replace(
 				"components/toolbar/plugintoolbar",
 				"views/filemanager/clearpagemanager"
 			);
+			window.location.href = href;
 		} else if (event.key == "d") {
-			var mode = document.querySelector(".openeditdebug") ? "preview" : "debug";
+			event.preventDefault();
+			if (!debugMode) {
+				debugMode = !document.querySelector(".openeditdebug");
+			} else {
+				debugMode = false;
+			}
+			var mode = debugMode ? "debug" : "preview";
 			href = href.replace(
 				"components/toolbar/plugintoolbar",
 				`views/workflow/mode/view${mode}`
 			);
-		} else {
-			href = null;
+			jQuery.get(href);
+			customToast("Switched to&nbsp;<b>" + mode + "</b>&nbsp;mode!", {
+				positive: !debugMode,
+				icon: debugMode ? "bug-fill" : "eye-fill",
+			});
+			if (mode == "preview") {
+				window.location.reload();
+			}
 		}
-		if (href) window.location.href = href;
 	}
 };
-*/
+$(function () {
+	setTimeout(function () {
+		var path = new URL(window.location.href).pathname;
+		$(".auto-active-link").each(function () {
+			var href = $(this).attr("href");
+			if (href == path) {
+				var container = $(this).closest(".auto-active-container");
+				container.find("li.current").removeClass("current");
+				container.find("a.active").removeClass("active");
+				$(this).addClass("active");
+				$(this).parents("li").addClass("current");
+			}
+		});
+	});
+});

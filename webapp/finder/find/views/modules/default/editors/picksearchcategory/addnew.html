@@ -1,0 +1,42 @@
+
+#set($viewid = "${module.id}addnew")
+
+#set($edithomeid = $context.getRequestParameter("edithomeid"))
+#set( $copyinghitssessionid = $context.getRequestParameter("copyinghitssessionid"))
+#set( $entitymoduleid = $context.getRequestParameter("entitymoduleid"))
+
+
+<form id="searchentitydataeditor"
+	name="searchentitydataeditor"
+	
+	##Change types here
+	#set($savecategory = "$apphome/views/modules/searchcategory/editors/picksearchcategory/addnewsave.html")
+	
+	data-ajaxreloadtargets="dataeditedreload"  ##this reloads the top level listeners
+	
+	action="$savecategory" 
+	class="ajaxform checkCloseDialog autocloseform" 
+	data-edithomeid="${edithomeid}"
+	data-includeeditcontext="false" ##Not on the screen anyways
+	data-copyinghitssessionid="$copyinghitssessionid"
+	data-entitymoduleid="$entitymoduleid"
+	
+	
+	method="post"  
+	enctype="multipart/form-data"
+	>
+		<input name="save" type="hidden" value="true" />
+		<input name="id" type="hidden" value="$!id" />
+			
+		$context.putPageValue("viewid", $viewid)
+		#set($detailviewercolumns = 1)
+		
+		$pages.include("/$applicationid/components/xml/detaileditor-entities.html?longform=true&detailviewercolumns=$detailviewercolumns", $context)
+	
+		<div class="d-flex align-items-center mt-3">
+			<a class="btn btn-cta submitform mr-3"><i class="mr-1 bi bi-floppy-fill mr-1"></i> [[Save]]</a>
+			<button id="closebutton" type="button" class="btn btn-secondary" data-dismiss="modal">[[Cancel]]</button>
+		</div>
+</form>
+
+

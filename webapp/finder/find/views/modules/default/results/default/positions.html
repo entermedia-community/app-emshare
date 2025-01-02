@@ -1,7 +1,6 @@
 ##needs 	$hits  $moduleid
 
 #set($reloadsearchtype = $module.id)
-#set($updateurl = "true")
 #set($oemaxlevel = "1")
 #set($targetdiv = "resultsdiv")
 
@@ -21,18 +20,6 @@
 #set($updateurl = $page.isPropertyTrue("updateurl", true))
 
 #set($resultsPage = "${searchhome}/showpage.html")
-#if($module.id=="asset")
-	#if($categoryid)
-		#if(!$category)
-			#set($category = $mediaarchive.getCachedData("category", $categoryid))
-		#end
-	#end
-	#if($updateurl)
-		#set($resultsPage = "${searchhome}/${categoryid}/#dash($category).html")
-		#set($oemaxlevel = "2")
-	#end
-#end
-
 #set($resultsPage = "$resultsPage?$!{module.id}hitssessionid=$!hits.sessionId")
 #set($resultsPage = "$resultsPage&$!{hits.getSearchType()}pageposition")
 
@@ -52,49 +39,62 @@
 #set( $selectedpos = $prhits.toPosition($prhits.getPage()))
 
 
+
+
 <li class="resultpages">
 	
 	
 <div class="resultspositions" 
 	data-url="${searchhome}/positions.html" 
-	data-categoryid="$!categoryid"
-	data-rootcategory="$!rootcategory"
-	data-hitssessionid="$!hits.getSessionId()" 
+	##data-categoryid="$!categoryid"
+	##data-rootcategory="$!rootcategory"
+	##data-${module.id}hitssessionid="$!hits.getSessionId()" 
 	data-currentpagenum="$prhits.getPage()">
- 
+
+	#ifnotnull($urlbarprefix)
+		#set($urlbar = "$urlbarprefix?$!{hits.getSearchType()}pageposition")
+	#end 
 		<span>
 			[[Page]]
 			$selectedpos
 			[[of]]
 			<a class="ajax pl-1 pr-2" 
 				data-targetdiv="$targetdiv" 
-				data-updateurl="$!updateurl"  
+				#ifnotnull($urlbar)
+					data-updateurl="true"
+					data-urlbar="$!{urlbar}=${totalPages}"
+				#end  
 				data-oemaxlevel="$oemaxlevel" 
 				data-position="$selectedpos"  
 				data-includesearchcontext="true"
-				href="$resultsPage=$totalPages">$totalPages</a>
+				href="${resultsPage}=${totalPages}">$totalPages</a>
 		</span>
 		#set($prev = $selectedpos - 1)
 		<a class="ajax #if($prev <= 0) disabled #end px-2" 
 			data-targetdiv="$targetdiv" 
-			data-updateurl="$!updateurl"  
+			#ifnotnull($urlbar)
+				data-updateurl="true"
+				data-urlbar="$!{urlbar}=${prev}" 
+			#end 
 			data-oemaxlevel="$oemaxlevel" 
 			data-position="$prev"  
 			data-includesearchcontext="true"
 			title="[[Previous]]"
-			href="$resultsPage=$prev">
+			href="${resultsPage}=${prev}">
 			<i class="bi bi-chevron-left"></i>
 		</a>
 		#set($next = $selectedpos + 1)
 		<a class="ajax #if($next > $totalPages) disabled #end px-2" 
 			data-targetdiv="$targetdiv" 
-			data-updateurl="$!updateurl"  
+			#ifnotnull($urlbar)
+				data-updateurl="true"
+				data-urlbar="$!{urlbar}=${next}"  
+			#end
 			data-oemaxlevel="$oemaxlevel" 
 			data-position="$next"
 			data-includesearchcontext="true"
-			  
 			title="[[Next]]"
-			href="$resultsPage=$next">
+			href="${resultsPage}=${next}">
 			<i class="bi bi-chevron-right"></i>
 		</a>
 	</div>
@@ -108,11 +108,13 @@
 			<input class="resultsnavselect" 
 				name="$!{hits.getSearchType()}pageposition" 
 				id="jumptopageresults"
-				data-maxpage="$totalPages" 
-				data-url="$resultsPage="
-				data-updateurl="$!updateurl"
+				data-maxpage="$totalPages"
+				data-url="$!{resultsPage}=" 
+				#ifnotnull($urlbar)
+					data-urlbar="$!{urlbar}="
+					data-updateurl="true"
+				#end
 				data-includesearchcontext="true"
-				
 				data-targetdiv="$targetdiv"
 				data-oemaxlevel="$oemaxlevel"
 				placeholder= "[[Jump To]]"

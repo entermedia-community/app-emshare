@@ -1,0 +1,26 @@
+#set( $copyinghitssessionid = $context.getRequestParameter("copyinghitssessionid"))
+$context.putPageValue("copyinghitssessionid", $copyinghitssessionid)
+
+#set( $copiedhits = $context.getSessionValue($copyinghitssessionid) )
+
+<div id="${edithomeid}" class="editdiv entitypickerassets"
+
+	data-edithomeid="$!{edithomeid}"
+	data-edithome="$!{edithome}"
+	data-setpagetitle="[[Select]] #text($module)"
+	data-copyinghitssessionid="$copyinghitssessionid" >
+
+	<div class="overflow-y">
+		<div class="pickerresults" 
+			data-toastmessage="[[Saving]] $copiedhits.getSelectionSize()"
+			data-toastsuccess="$copiedhits.getSelectionSize() [[Records Saved]]"
+			data-clickurl="${edithome}/actions/addassetstoentity.html"
+			data-copyinghitssessionid="$copyinghitssessionid"
+		>
+#set($searchhome = "$apphome/views/modules/${module.id}/results/default")
+$pages.include("${searchhome}/searchinclude.html?resultview=table",$context)
+
+		</div>
+	</div>	
+</div>
+ 

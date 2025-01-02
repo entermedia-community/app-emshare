@@ -7,19 +7,19 @@
 #if(!$tabletype)
 	#set($tabletype = $context.getRequestParameter("tabletype"))
 #end
-#if(!$viewid)
+#ifnull($viewid)
 	#set($viewid = $context.getRequestParameter("viewid"))
 #end
+
+#set($viewdata = $mediaarchive.getCachedData("view",$viewid))
 
 <div id="moduleadvfilterpanel" class="advfilterpanel" >
 
 <div class="advfilterpanelcontent" >
 
-	#set( $view = "$moduleid/$!{moduleid}advancedfilter")
-
 	#set( $searcher = $mediaarchive.getSearcher($moduleid))
 	
-	$context.putPageValue("view", $view)
+	$context.putPageValue("viewid", $viewid)
 	$context.putPageValue("searcher", $searcher)
 	
 	#set($usestartswith = $page.isPropertyTrue('usestartswith'))
@@ -31,29 +31,23 @@
 	#end
 	
 	
-	
-	<form  	name="filterform" 
+	<form  name="filterform" 
 			id="filterform" 
 			class="ajaxform autosubmitform filterform"
 			method="POST" 
-
+			
+			data-edithomeid="${edithomeid}"
+			data-targetdiv="resultsdiv"
+			
+			data-includeeditcontext="true"
+			
 			action="${searchhome}/search.html"
 			data-oemaxlevel="1"
-			data-targetdiv="resultsdiv"
 	>
-	
-	#set($pickertarget = $context.getRequestParameter("pickertarget"))
-	<input type="hidden" name="pickertarget" value="$!pickertarget" />
-	
-	#set($lightboxid = $context.getRequestParameter("lightboxid"))
-	<input type="hidden" name="lightboxid" value="$!lightboxid" />
-	
-		##We need 2 things passed in: $searcher, $view or $searcher $details
-		#set ($details = $searcher.getDetailsForView($view))
-
+		#set ($details = $searcher.getDetailsForView($viewdata,$userprofile))
 		
 		#ifnull($idprefix)
-			#set($idprefix = "search")
+			#set($idprefix = "search${edithomeid}")
 		#end
 		$context.putPageValue("idprefix",$idprefix)
 		
@@ -80,6 +74,7 @@
 			
 			#if ($detail.isLeaf() )
 				#set($filternode = $hits.findFilterValue($detail))
+				
 				$context.putPageValue("filternode",$filternode)
 				#ifnull($filternode)
 					#if( $viewtype != "list" && $viewtype != "entity" )  ##always show dates and text boxes
@@ -106,10 +101,15 @@
 			#set($entitymoduleviewid = $context.getRequestParameter("entitymoduleviewid"))
 			<input name="entitymoduleviewid" type="hidden" value="$!entitymoduleviewid" />
 
-			#if( $page.isPropertyTrue("filterbyentity",false) )
+			#if( $page.isPropertyTrue("includeentityinfilter",false) )
 				<input name="field" type="hidden" value="$!{entitymodule.id}" />
 				<input name="$!{entitymodule.id}value" type="hidden" value="$!entity.id" />
 				<input type="hidden" name="operation" value="exact" />
+			#end
+			#if( $page.isPropertyTrue("excludeentityinfilter",false) )
+				<input name="field" type="hidden" value="$!{entitymodule.id}" />
+				<input name="$!{entitymodule.id}value" type="hidden" value="$!entity.id" />
+				<input type="hidden" name="operation" value="not" />
 			#end
 		#end
 		
@@ -125,6 +125,8 @@
 		#end
 		<input type="hidden" name="$!{moduleid}endusersearch" value="true"/>
 	
+		<input type="hidden" name="searchhome" value="${searchhome}"/>
+		<input type="hidden" name="edithome" value="${edithome}"/>
 		<input type="hidden" name="customproperty" value="userinputsearch"/>
 		<input type="hidden" name="userinputsearch.value" value="true"/>
 		<input type="hidden" name="removeterm" id="filtersremoveterm" value=""/>

@@ -1,0 +1,32 @@
+
+<nav>
+	<div class="nav nav-tabs entity-navigation" id="entity-nav-tab" role="tablist" 
+		data-tabmenuurl="tabs/dialogbutton.html">
+
+		#ifnotnull($entitymoduleviewid)
+			#set( $openotherview = true )
+		#end
+		
+		#set( $isowner = $entity.owner == $user.id)
+	
+		#foreach( $targetview in $enttiyviews)
+			#if($permissions.can($module.getId() , $isowner, "${targetview.id}"))					
+				#if( $targetview.id  == $entitymoduleviewid)
+					#set( $openotherview = false )
+				#end
+				$context.putPageValue("viewdata", $targetview)
+				$pages.include("${edithome}/tabs/dialogbutton.html", $context)
+		   #end
+		#end
+		#ifnotnull($entitymoduleviewid)
+			#if($openotherview)
+				#set( $entityviewdata = $mediaarchive.getCachedData("view",$entitymoduleviewid))
+				$context.putPageValue("viewdata", $entityviewdata)
+				$pages.include("${edithome}/tabs/dialogbutton.html", $context)
+			#end
+		#end
+		
+		
+
+	</div>
+</nav>

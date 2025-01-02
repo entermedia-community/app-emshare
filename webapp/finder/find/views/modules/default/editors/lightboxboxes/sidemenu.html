@@ -1,0 +1,159 @@
+<div id="lightboxessidemenu" class="overflow-y p-0">
+#if($lightboxtype != "emedialightbox")
+	<div class="lightbox-label">
+		#set( $submodule = $mediaarchive.getCachedData("module",$lightboxtype))
+		<h5>#text($submodule)</h5>
+		<div class="dropdown">
+			<button class="btn ml-auto dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">
+				<i class="bi bi-three-dots"></i>
+			</button>
+			<div class="dropdown-menu dropdown-menu-right">
+				#set( $isowner = $entity.owner == $user.id)
+
+				#set($newedithomelink= "$applink/views/modules/$!{module.id}/editors/entitysubmodules")
+				#if($permissions.can($moduleid, "create"))
+					#set($addnew = "${newedithomelink}/addnew.html")
+					<a href="$addnew"
+						class="emdialog dropdown-item"
+						data-dialogid="entitypickeraddnew"
+						data-hidefooter="true"
+						data-includeeditcontext="true"
+						data-autosetformtargetdiv="editdiv"
+						data-entitymoduleviewid="$entitymoduleviewid" ##we have the render table set
+						
+						title="[[Create New]] #text($submodule)">
+						[[Create New]]
+					</a>
+				#end
+
+				#if($permissions.can($!submodule.getId(), $isowner, "create"))
+					#set($newedithomelink= "$applink/views/modules/$!{module.id}/editors/pickersubmodules")
+					#set($newedithome= "$apphome/views/modules/$!{module.id}/editors/pickersubmodules")
+					<a href="$newedithomelink/index.html" 
+						class="emdialog dropdown-item"
+						data-dialogid="entitysubmoduleaddexisting"
+						data-width="1200"
+						data-includeeditcontext="true"
+						data-edithome="$newedithome"
+						data-pickersearchaddnew="true"
+						data-hidefooter="true"
+						data-viewid="$entitymoduleviewid"
+						data-entitymoduleviewid="$entitymoduleviewid" ##we have the render table set
+						title="[[Create or Choose Existing]] #text($entity)">
+						[[Add Existing]]
+					</a>
+				#end
+
+			
+				#if($permissions.can($module.getId(),$isowner,"createwithai"))					
+					#set($pickerurl = "$!{newedithomelink}/ai/input.html")
+					<a 
+						##href="$pickerurl"
+						##class="emdialog dropdown-item" ##not working
+						class="dropdown-item"
+						data-dialogid="entitypicker"
+						data-width="600"
+						data-fieldexternalid="$!{entitymodule.id}'"
+						data-fieldexternalvalue="$entity.id'"
+						data-includeeditcontext="true"
+						data-pickertarget="$tabid"
+						data-targettype="entitypickersubmodule"
+						data-pickersearchaddnew="true"
+						data-hidefooter="true"
+						data-entitymoduleviewid="$entitymoduleviewid" ##we have the render table set
+						
+						title="[[Create New]] #text($submodule) [[With AI]]">
+						[[Add With AI]]
+					</a>
+				#end
+				
+			</div>
+		</div>
+
+	</div>
+#end
+	<div class="p-1">
+		#set($assetsadded = $context.getPageValue("assetsadded"))
+		#set($assetsaddedto = $context.getRequestParameter("lightboxid"))
+
+		#foreach( $box in $boxes )
+			<div class="rounded lightboxnavbtn #if( $box.id != $selectedbox.getId() ) lightboxdropasset #end"
+				data-entityid="$entity.id" 
+				data-entitymoduleid="$entitymodule.id" 
+				data-lightboxid="$box.id"
+				data-lightboxtype="$lightboxtype"
+				data-entitymoduleviewid="$entitymoduleviewid"
+				data-oemaxlevel="1"
+				data-searchhome="$searchhome"
+				data-edithome="$edithome"
+				data-targetdiv="$edithomeid"
+			>
+
+				<a class="ajax btn-wide #if( $box.id == $selectedbox.getId() ) active #end"
+					data-targetdiv="$edithomeid"
+					data-oemaxlevel="1"
+					data-entityid="$!{entity.id}"
+					data-entitymoduleid="$!{entitymodule.id}"
+					data-lightboxtype="$lightboxtype"
+					href="$edithome/index.html?lightboxid=$box.id">
+					#set( $moduleicon = $box.moduleicon)
+					#ifnull($moduleicon)
+						#set( $moduleicon = "check-circle-fill")
+					#end
+					<i class="bi bi-${moduleicon}"></i>
+					#set( $val = $box.getAssetCount() )
+					<span id="lightbox-stat-$!{box.id}" data-filecount="$!val">
+						#text($box.getName()) 
+						#ifnotnull( $val )
+							(${val})
+						#end
+					</span>
+					#ifnotnull( $assetsadded )
+						#if($box.id == $assetsaddedto )
+							<span class="fader fade-quick emnotify">+$!{assetsadded}</span>
+						#end
+					#end
+				</a>
+				#if( $lightboxtype != "emedialightbox")
+				<a href="$apphome/views/modules/$lightboxtype/editors/default/tabs/index.html?entityid=$box.id&edit=true" class="ajax lightboxbtn-edit" data-targetdiv="entitydialog" data-oemaxlevel="1" data-includeeditcontext="false">
+					<i class="bi bi-pencil-square ns"></i>
+				</a>
+				#end
+			</div>
+		#end
+
+		<div id="entitypicker" 
+			data-entityid="$entity.id" 
+			data-entityid="$entity.id" 
+			data-entitymoduleid="$entitymodule.id" 
+			data-lightboxid=""
+			data-lightboxtype="$lightboxtype"
+			data-entitymoduleviewid="$entitymoduleviewid"
+			data-oemaxlevel="1"
+			data-searchhome="$searchhome"
+			data-targetdiv="$edithomeid"
+			class="rounded assetdroplightbox side-select-menu">
+			
+			#set($defaultfolder =  $mediaarchive.getEntityManager().loadDefaultFolder($module, $entity, $context.getUser(),true))
+			#set($allassets = $mediaarchive.query("asset").exact("category",$defaultfolder).search($context) )
+			
+			<a href="$edithome/index.html?lightboxid=files"
+				class="ajax btn-wide #ifnull($selectedbox) active #end" 
+				data-targetdiv="$edithomeid" 
+				data-oemaxlevel="1" 
+				data-entityid="$!{entity.id}"
+				data-entitymoduleid="$!{entitymodule.id}"
+				data-lightboxid=""
+				data-lightboxtype="$lightboxtype"
+				data-entitymoduleviewid="$entitymoduleviewid"
+			>
+				#set( $moduleicon = $mediaarchive.getCachedData("module","asset").moduleicon)
+				<i class="bi bi-${moduleicon}"></i>
+				<span>
+					[[Working Files]]
+					($allassets.size())
+				</span>
+			</a>
+		</div>
+	</div>
+</div>

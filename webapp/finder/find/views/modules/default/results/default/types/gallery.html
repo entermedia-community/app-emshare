@@ -55,10 +55,8 @@ $context.putPageValue("assetrootfolder", "/$catalogid/assets")
 	</div>
 	##$pages.include("${searchhome}/pages.html",$context)
 #end
-#if ( $hits.totalPages == 0 )
-	<p class="info" style="padding:20px; margin:0;">
-	[[No results found.]]
-	</p>
+#if ( $hits.getPageOfHits().size() == 0 )
+	$pages.stream("$!{searchhome}/empty.html", $context)
 #end
 <div id="messagearea"></div>
 <script type="text/javascript">

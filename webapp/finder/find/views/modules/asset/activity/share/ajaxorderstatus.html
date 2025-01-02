@@ -3,15 +3,15 @@
 
 	#if( $order.ordertype == "email")
 	
-	[[Order Complete]] $!order.orderstatusdetails
+		[[Order Complete]] $!order.orderstatusdetails
 	
 	#elseif( $order.ordertype == "gallery")
 	
-	[[Your Gallery is ready.]] <a class="btn" href="$home$apphome/views/modules/asset/activity/details/vieworder.html?orderid=${order.id}">View gallery</a>
+		[[Your gallery is ready.]] <a class="btn" href="$home$apphome/views/modules/asset/activity/details/vieworder.html?orderid=${order.id}">View gallery</a>
 		
 	#else
 	
-	[[Published]] $!{order.getValue("itemsuccesscount")} 
+		[[Published]] $!{order.getValue("itemsuccesscount")} 
 	
 	#if( $order.getValue("itemerrorcount") > 0)
 		
@@ -19,7 +19,7 @@
 	
 		#set( $errors = $mediaarchive.query("orderitem").exact("publishstatus","error").exact("orderid",$order.getId()).search() )
 		$errors.size()
-		<table>
+		<table class="table table-striped">
 		#foreach( $error in $errors)
 			#set($asset = $mediaarchive.getAsset($error.get("assetid")))
 			<tr>
@@ -40,23 +40,16 @@
 	#end
 #elseif( $order.orderstatus == "error" )
 
-[[Error]]
-
-<pre>
-$!order.orderstatusdetails
-</pre>
+	[[Error]]
+	
+	<pre>
+	$!order.orderstatusdetails
+	</pre>
 
 #else
-
-<div id="status$order.id" class="ajaxstatus" data-oemaxlevel="1" ajaxpath="$home$apphome/views/modules/asset/activity/share/ajaxorderstatus.html?orderid=$order.id" period="1500">
-
-[[Your Order is processing]]
-
-
-<img src="$home$themeprefix/images/ajax-loader.gif" />
-
-
-</div>
-
+	<div id="status$order.id" class="ajaxstatus" data-oemaxlevel="1" ajaxpath="$home$apphome/views/modules/asset/activity/share/ajaxorderstatus.html?orderid=$order.id" period="1500">
+	[[Your order is processing]]
+	<img src="$home$themeprefix/images/ajax-loader.gif" class="ml-2" alt="[[Loading]]" />
+	</div>
 #end
 

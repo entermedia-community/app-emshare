@@ -11,7 +11,7 @@
 	<div class="versiontoolbar">
 		#ifnotnull( $selectedrevision.getPreviewFileName() )		  
 		<a href="$apphome/views/modules/asset/editor/versioncontrol/replace.html?version=${selectedrevision.version}&assetid=$asset.getId()" 
-			class="btn focused-btn ajax"
+			class="btn btn-cta ajax"
 			data-targetdiv="asset-editor-container" 
 			title="[[Restore this Version]]">
 			<i class="bi bi-arrow-clockwise mr-1"></i> [[Restore this Version]]
@@ -41,12 +41,13 @@
 	#if($selectedrevision.getPreviewFileName() )
 	  	#set ($previewlink ="/${mediaarchive.getMediaDbId()}/services/module/asset/downloads/revisionpreviews/$selectedrevision.getPreviewFileName()?assetid=$asset.id&version=${selectedrevision.version}")
 	#else
-		#set ($previewlink = $mediaarchive.asLinkToPreview($asset,"image3000x3000") )
+		#set ($previewlink = $mediaarchive.asLinkToPreview($asset,"image550x350") )
 		#set ($previewlink = "$previewlink?_=$version") 
 	#end	
 	
 	<div class="versionpreviewcontent">
 		#if( $previewlink )
+		<h5 class="mb-2">[[Preview]]:</h5>
 		<img src="$previewlink">
 		#else
 			<p>[[No preview available]]</p>

@@ -1,3 +1,7 @@
+#set($asset = $mediaarchive.getAssetSearcher().loadData($hit))
+$context.putPageValue("asset", $asset)
+$context.putPageValue("assetid", $hit.id)
+
 #if($hits.isSelected(${hit.id}))
 	#set($selectedrow = true)
 #end
@@ -16,16 +20,12 @@ $context.putPageValue("title",$title)
 	data-rowid="$hit.id"  
 	data-dataid="$hit.id"  
 	title="$sourcepath">
-#if( $showtoolbar )
-	<td class="borderedcell checkbox" noclick="true">
-	
-		<input type="checkbox" 
-		class="selectionbox resultsselection" 
-		name="count" 
-		value="" 
-		#if($selectedrow) checked #end 
-		data-dataid="${hit.id}"	/>
-		
+
+
+#if($enableactions)
+	<td class="borderedcell checkbox" noclick="true"> 
+		<input type="checkbox" class="selectionbox resultsselection" name="count" value="" #if($hits.isSelected(${hit.id})) checked #end data-dataid="${hit.id}" />
+		<div id="check_${count}"></div>
 	</td>
 #end	
 
@@ -80,7 +80,7 @@ $context.putPageValue("title",$title)
 				#if(($candownload || $canconvert || $candownloadfpo) && $canquickdownload)
 				
 					#set($dlink =  "$applink/views/modules/asset/activity/downloadassets.html")
-				   	<a href="$dlink" class="emdialog"  data-assetid="$hit.id" data-hidefooter="true" title="[[Download]] $!title">
+				   	<a href="$dlink" class="emdialog" data-dialogid="downloaddialog"  data-assetid="$hit.id" data-hidefooter="true" title="[[Download]] $!title">
 						   <i class="bi bi-cloud-arrow-down bi2"></i></a>
 				    
 				    

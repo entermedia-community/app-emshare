@@ -1,75 +1,27 @@
 #if($hits.isSelected(${hit.id}))
 	#set($selectedrow = true)
 #end
-
-#if(!$title)		         	
-	#if( $asset.assettitle )
-		#set($title =  $asset.getText("assettitle",$context)) 
-	#else 
-		#set($title = $asset.getText("name",$context) )
-	#end
-#end
-
-$context.putPageValue("title",$title)
      
-     
-<tr class="resultsdivdata resultsassetcontainer #if($selectedrow) emrowselected #end"  
+<tr class="resultsdivdata #if($selectedrow) emrowselected #end"  
 	data-rowid="$hit.id"  
 	data-dataid="$hit.id"  
-	title="$sourcepath">
-#if( $showtoolbar )
+	title="[[Click to open]] #text($hit)">
+	
+	
+#if($enableactions)
 	<td class="borderedcell checkbox" noclick="true"> 
-		<input type="checkbox" 
-		class="selectionbox resultsselection" 
-		name="count" 
-		value="" 
-		#if($selectedrow) checked #end 
-		data-dataid="${hit.id}"	/>
-		
+		<input type="checkbox" class="selectionbox resultsselection" name="count" value="" #if($hits.isSelected(${hit.id})) checked #end data-dataid="${hit.id}" />
+		<div id="check_${count}"></div>
 	</td>
 #end	
 
-	#set( $type = $mediaarchive.getMediaRenderType($hit.fileformat))
-	<td class="resultstablecell thumbnail assetdraggable" data-dataid="${hit.id}" data-assetid="${hit.id}" #if($type=="audio") noclick="true" #end>
-		#if($parentmoduleid=="faceprofilegroup")
-			$context.putPageValue("resulttype", "faceprofilegroupassets")
-			$context.putPageValue("asset", $asset)
-			$context.putPageValue("faceprofilegroupid", $entity.id)
-			$pages.include("${searchhome}/thumbnails/small.html",$context)
-		#else
-			$pages.include("${searchhome}/thumbnails/small.html",$context)	
-			$pages.include("${searchhome}/badges.html", $context)
-		#end
-	</td>
-
 	#foreach( $detail in $details)
-		#if( $detail.id == "name")
-			#if( $hit.name )
-	      		#set($value =  $asset.getText("name",$context))
-	      	#elseif ( $asset.assettitle )
-	      		#set($value =  $asset.getText("assettitle",$context))
-	      	#else
-	      		#set( $value = "" )
-	      	#end
-	      	#set($val = $value)
-	    #else	
-			#set($val =  $hit.get($detail.id) )
-			#set($value = $searcherManager.getValue($hit, $detail, $context.getLocale() ) ) 
-			
-			#ifnull($val)
-				#set($val = "")	
-			#end		
-		#end
-		
+		#set($value = $searcherManager.getValue($hit, $detail, $context.getLocale() ) ) 
 		$!context.putPageValue("detail",$detail)
-		$!context.putPageValue("val", $val)	
 		$!context.putPageValue("value",$value)
 		$!context.putPageValue("data", $hit)
 		<td  class="resultstablecell $detail.id">
-      		##$pages.include("$componenthome/xml/detailreadonly.html", $context)
-      		
       		#set($viewtype = $detail.viewType)
-					
 			#if($viewtype  == "tageditor")
 				#set($tagssearchlink = "$siteroot$apphome/views/modules/${searchtype}/index.html")
 				$context.putPageValue("tagssearchlink",$tagssearchlink)
@@ -84,23 +36,70 @@ $context.putPageValue("title",$title)
 		</td>	
 	#end
 	
+	
+	#if(!$hiderowactions)
 		<td class="rowactions" noclick="true">
 			<div class="actionicons">
-				$context.putPageValue("assetid",$hit.id)
-			    <div id="mvassetfavorite-$hit.id" class=" mb-2">
-		        	$pages.include("$apphome/views/modules/asset/editor/favorite/index.html?targetdiv=mvassetfavorite", $context)
-		   		</div>
-				
-				#if(($candownload || $canconvert || $candownloadfpo) && $canquickdownload)
-				
-					#set($dlink =  "$applink/views/modules/asset/activity/downloadassets.html")
-				   	<a href="$dlink" class="emdialog"  data-assetid="$hit.id" data-hidefooter="true" title="[[Download]] $!title">
-						   <i class="bi bi-cloud-arrow-down bi2"></i></a>
-				    
-				    
-			    #end
-		    </div>
-			</td>	
+			$pages.include("${edithome}/actions/addtobookmarks.html?id=$!{hit.id}&moduleid=$moduleid", $context)
+			#if($desktop)
+
+				#set($perm = $module.getBoolean("enableuploading") && $moduleid!="faceprofilegroup" && $moduleid!="asset" && $moduleid!="modulesearch")
+				#if($perm && $permissions.can($moduleid, "view_files"))
+				<a href="$!searchhome${edithome}/tabs/index.html?entityid=$!{hit.id}&entitytabopen=export&tabsection=pulllocal&immediate=true" 
+					class="emdialog px-1 mb-2" 
+					title="[[Bulk Download]]" 
+					data-moduleid="${moduleid}"
+					data-updateurl="true"
+					data-urlbar="$!searchhome/index.html?entityid=$!{hit.id}&entitytabopen=import"><i class="bi bi-cloud-arrow-down bi2"></i></a>
+				#end
+
+				#if($perm && $permissions.can($moduleid, "upload_folders"))
+				<a href="$!searchhome${edithome}/tabs/index.html?entityid=$!{hit.id}&entitytabopen=import&tabsection=pushlocal&autoscan=true" 
+					class="emdialog px-1 mb-2" 
+					title="[[Bulk Upload]]"
+					id="pushlocal-$!{hit.id}"
+					data-moduleid="${moduleid}"
+					data-updateurl="true"
+					data-urlbar="$!searchhome/index.html?entityid=$!{hit.id}&entitytabopen=import"><i class="bi bi-cloud-arrow-up bi2"></i></a>
+				#end
+
+				#if($module.getBoolean("enableuploading") && ($permissions.can($moduleid, "upload_files") || $permissions.can($moduleid, "upload_folders")) )
+					<a class="emdialog px-1 mb-2"
+						data-oemaxlevel="1"
+						data-moduleid="${moduleid}"
+						data-modulename="#text($module)"
+						data-entityid="$!{hit.id}"
+						data-entityname="$!{hit.name}"
+						href="$apphome/components/sidebars/localdrives/importexistingdialog.html"
+						title="[[Add to Auto Import]]" 
+						><i class="bi bi-folder-plus"></i></a>
+				#end
+			#else
+				#if($module.getBoolean("enableuploading") && 
+					($permissions.can($moduleid, "upload_files") ||
+					$permissions.can($moduleid, "upload_folders")) )
+					<a href="$!searchhome${edithome}/tabs/index.html?entityid=$!{hit.id}&entitytabopen=import" 
+					class="emdialog px-1 mb-2" 
+					title="[[Add New Folders]]" 
+					data-moduleid="${moduleid}"
+					data-updateurl="true"
+					data-urlbar="$!searchhome/index.html?entityid=$!{hit.id}&entitytabopen=import"><i class="bi bi-cloud-arrow-up bi2"></i></a>
+				#end
+				#if($permissions.can($moduleid, "downloadall"))
+					<a href="$!searchhome${edithome}/tabs/index.html?entityid=$!{hit.id}&entitytabopen=export&tabsection=downloadzip" 
+					class="emdialog px-1 mb-2" 
+					title="[[Download Folder]]" 
+					data-moduleid="${moduleid}"
+					data-updateurl="true"
+					data-urlbar="$!searchhome/index.html?entityid=$!{hit.id}&entitytabopen=export&tabsection=downloadzip"><i class="bi bi-cloud-arrow-down bi2"></i></a>
+				#end
+			#end
+			</div>
+		</td>
+		#end
+
+	
+			
  </tr>
  
  

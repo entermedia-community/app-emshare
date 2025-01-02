@@ -1,0 +1,77 @@
+#set($hits = $entityassethits)
+$context.putPageValue("hits", $hits)
+
+
+#set($module = $mediaarchive.getCachedData("module", "asset"))
+#set($moduleid = $module.getId())
+
+$context.putPageValue("module", $module)
+#set($componenthome = "$apphome/views/modules/asset/components")
+$context.putPageValue("componenthome", $componenthome)
+
+
+#if(!$parentmoduleid)
+	#set ( $parentmoduleid = $context.getRequestParameter("topmoduleid") )
+#end
+#ifnotnull($parentmoduleid)
+	#set($parentmodule = $mediaarchive.getCachedData("module", $parentmoduleid))
+#end
+#ifnull($parentmodule)
+	#set($parentmodule = $mediaarchive.getCachedData("module", $parentsearchtype))
+	
+#end
+$context.putPageValue("topmodule", $parentmodule)
+$context.putPageValue("topmoduleid", $parentmoduleid)
+
+#if(!$entityid)
+	#set ( $entityid = $context.getRequestParameter("entityid") )
+#end
+$context.putPageValue("entityid", $entityid)
+
+#set($resultview = $userprofile.get("assetresultview"))
+#set($maintargetdiv = "dialogassetresultscontainer")
+$context.putPageValue("maintargetdiv", $maintargetdiv)
+$context.putPageValue("dialogresults", true)
+
+$context.putPageValue("hidedialogtree", true)
+$context.putPageValue("hideupload", true)
+
+
+<div id="$maintargetdiv"
+	class="assetresults h-100 resultsdiv" 
+	data-moduleid="asset"
+	data-resultview="$!resultview"
+	data-url="$searchhome/index.html"
+	
+	data-dialogresults="true"
+	data-hidedialogtree="true"
+	data-hideupload="true"
+	
+	data-hitssessionid="$!hits.getSessionId()"
+	data-componenthome = "$!componenthome"
+	data-searchhome="$!home$!componenthome/results"
+	data-targetdiv="$maintargetdiv"
+	data-topmoduleid="$!topmoduleid"
+	data-entityid="$!entityid"
+	data-oemaxlevel="1">
+	
+	<div class="emgrid-module emgrid-box emgrid-module-asset h-100">
+		
+		#set( $targetdivmedia = "dialogmediaentity")
+		$context.putPageValue("targetdivmedia", $targetdivmedia)
+		
+		#ifnull($dialogtreestatus)
+			#set($dialogtreestatus = "close")
+		#end
+		$context.putPageValue("dialogtreestatus", $dialogtreestatus)
+		$context.putPageValue("hidedialogtree", true)
+		
+		<div class="embedmediacontainer">
+			<div class="embedmediacol embedmediacol-results dialogmediacol-faceprofiles" id="$!{targetdivmedia}" >
+				$context.putPageValue("targetdivsearch", $targetdivmedia)
+				$pages.include("${searchhome}/index.html", $context)
+			</div>
+		</div>
+
+	</div>
+</div>

@@ -1,0 +1,55 @@
+<div class="d-flex flex-column">
+	<p class="dita-render-header">DITA MAP FILES</p>
+	<div id="lightboxessidemenu" class="overflow-y dita-list pt-1" style="width:300px;flex:1;">
+	
+		<div class="d-flex my-2">
+
+			#if($permissions.can($entitymodule.id, "upload_files"))		
+				<a href="$siteroot$apphome/views/modules/asset/editors/assetupload/index.html"
+					class="ajax btn btn-accent light px-3 py-2 mx-auto rounded"
+					data-targetdiv="ditacontent"
+					data-categoryid="$!selectedcategory.id"
+					data-oemaxlevel="1"
+					data-categorypath="$selectedcategory.getCategoryPath()"
+					data-tabsection="upload"
+					title="[[Upload]]"><i class="bi bi-upload  mr-1"></i> [[Upload DITA]]</a>
+			#end
+
+			#set($pickerurl = "$!{edithome}/renderdita/input.html")
+			<a href="$pickerurl"  
+				class="emdialog btn btn-accent light px-3 py-2 mx-auto rounded"
+				data-dialogid="entitypicker"
+				data-width="800"
+				data-entityid="$entity.id"
+				data-entitymoduleid="$entitymodule.id"
+				data-entitymoduleviewid="$!entitymoduleviewid"
+				data-submoduleid="$submoduleid"
+				data-pickersearchaddnew="true"
+				data-hidefooter="true"
+				title="[[Generate DITA]]">
+				<i class="bi bi-plus-circle-fill mr-1"></i> [[Generate DITA]]
+			</a>	
+		</div>
+		<div class="d-flex flex-column">
+			#foreach($hit in $found)
+				<div class="rounded lightboxnavbtn #if( $asset.id != $hit.id ) lightboxdropasset #end">
+					<a class="ajax btn-wide #if( $asset.id == $hit.id ) active #end"
+						data-targetdiv="ditavizeditor" 
+						data-oemaxlevel="2"
+						data-assetid="$hit.id"
+						data-entityid="$entity.id" data-entitymoduleid="$entitymodule.id"  
+						data-entitymoduleviewid="$!entitymoduleviewid"
+						href="$edithome/html.html?assetid=$hit.id&entityid=$entity.id&moduleid=$module.id">
+						#text( $hit )
+					</a>
+				</div>
+			#end
+			#if($found.size() == 0)
+				<p class="my-2 px-2 text-center text-muted">No DITA files found</p>
+			#end
+		</div>
+		
+		
+		<hr class="mt-1 mb-3" />
+	</div>
+</div>

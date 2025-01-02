@@ -1,0 +1,84 @@
+$context.putPageValue("showalllanguagevalues",true)
+<div class="tab-pane" id="tabsummarypanel">
+##TODO: Enforce View Metadata permission
+#set($hitssessionid = $hits.sessionId )
+#if(!$hitssessionid)
+	#set( $hitssessionid = $context.getRequestParameter("hitssessionid") )
+#end
+$context.putPageValue("showalllanguagevalues",true)
+#set( $collectionid = $context.getRequestParameter("collectionid") )
+
+
+<div class="row h-100 no-gutters">
+	<div class="col-6 h-100">
+			#set( $ismulti = $asset.id.startsWith("multiedit:") || $context.getRequestParameter("multi") == "true")
+	        #if( $ismulti )
+	        
+   				<div class="media-player-mini">
+	                <div class="primary" style="padding:20% 20%;">
+	                <div class="alert alert-info">
+	                [[Editing across]] <strong>$asset.size() [[assets]]</strong></div>
+	                </div>
+	        	</div>
+	        
+	        #else
+				$pages.include("${apphome}/views/modules/asset/mediaviewer/player/summary.html",$context)
+			#end
+			
+	</div>	
+	<div class="col-6 h-100">
+		<div class="tab-details" style="height: calc(100% - 36px);; overflow-y: auto;">
+		
+			$pages.include("${edithome}/generalinformation/metadatapanel.html", $context)
+		
+			$pages.include("${apphome}/views/modules/asset/editors/assetpickentity/listentities.html",$context)
+									
+			$pages.include("${apphome}/views/modules/asset/editors/assetlistfolder/index.html",$context)
+	
+				
+			
+			
+				
+			</div>	
+				
+			#if($caneditasset)
+				##$pages.include("/$applicationid/views/modules/asset/editor/edit/metadata/assetreadmetadata.html")
+			
+			
+				#set($view = "assetreadmetadata")
+				#set($hitssessionid = $context.findValue("hitssessionid"))
+				<div class="asset-data-readwritemetadata">
+						
+						<a class="ajax"
+							href="$siteroot$apphome/views/modules/asset/editor/edit/metadata/read.html?oemaxlevel=1&assetid=$asset.getId()&force=true" 
+							data-targetdiv="assetrwmetadata" ><i class="fas fa-upload"></i> [[Read Metadata]]</a>
+						<a class="ajax"
+							href="$siteroot$apphome/views/modules/asset/editor/edit/metadata/write.html?oemaxlevel=1&assetid=$asset.getId()&force=true" 
+							data-targetdiv="assetrwmetadata" ><i class="fas fa-download"></i> [[Rewrite Metadata]]</a>
+						
+						#if( !$ismulti )
+						<form name="lockform" class="autosubmit ajaxform" style="display: inline-block;" action="$siteroot${apphome}/views/modules/asset/mediaviewer/player/summary-mini.html?oemaxlevel=1" data-targetdiv="summary-mini">
+							<input type="hidden" name="assetid" value="${asset.id}"/>
+							<div class="assetlocked">
+								<input id="assetlocked" class="togglelock form-check-input" data-uncheckedlabel="[[Lock Asset]]" data-checkedlabel="[[Asset locked by]]" data-user="$user" type="checkbox" #if($asset.isLocked()) checked #end /> 
+								<label for="assetlocked" class="form-check-label-left m-0">
+									#if(!$asset.isLocked())
+										[[Lock]]
+									#else
+										[[Asset locked by]] <strong>$asset.getLockOwner()</strong>
+									#end
+								</label>
+							</div> 
+						</form>
+						#end
+						
+						<span id="assetrwmetadata"></span>
+				</div>
+						
+			#end
+			
+			
+					
+		
+</div>
+</div>

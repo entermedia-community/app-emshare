@@ -71,7 +71,7 @@
 			#if($haschildren)
 				<div class="cat-arrow" title="[[Expand ]] $cat.name"><i class="fas #if($expanded) fa-caret-down #else fa-caret-right #end "></i></div>
 			#else
-				<div style="width:14px"></div>
+				<div style="width:18px"></div>
 			#end
 			<div id="${cat.id}_display" 
 				class="cat-name #if($isCollectionRoot) cat-collection #else cat-folder #end #if($haschildren) cat-leaf #end" 
@@ -134,7 +134,7 @@
 	#showtreecategories2($target, $depth)
 	
 #else
-	#if($category && $content.isPropertyTrue("searchcategory") )
+	#if($category)
 		$render.setSelectedNode($category)
 	#end
 	
@@ -164,7 +164,7 @@
 	#set( $targetdiv = $context.getRequestParameter("targetdiv" ) )
 	
 
-	<div id="treeholder" data-treetoplocation="$!top" data-treeleftlocation="$!left" >
+	<div id="treeholder" data-treetoplocation="$!top" data-treeleftlocation="$!left" class="overflow-y">
 		<div id="${treename}tree" 
 			class="emtree emtree-widget" 
 			data-home="$siteroot$apphome" 
@@ -258,8 +258,8 @@
 					<i class="fas fa-download"> </i> [[Download]]
 				</a>
 			</li>
-			#end
-			#if( $canupload )
+		#end
+		#if( $canupload )
 				<li><a id="addmedia" tabindex="-1" href="#" data-cancelsubmit="false" data-oemaxlevel="$!{uploadmaxlevel}">[[Upload]]</a></li>	
 	    #end
 	    #if( $candownload  )
@@ -286,7 +286,7 @@
 								#set($entityrendertype = $amodule.modulerendertype)
 							#end
 							
-							#set($addtourl = "$!siteroot$applink/views/modules/${amoduleid}/results/pickercopycategoryto/index.html")
+							#set($addtourl = "$!siteroot$applink/views/modules/${amoduleid}/editors/pickercopycategoryto/index.html")
 							<a class="dropdown-item addtomodule" 
 									data-dialogid="addtomodule"
 									data-maxwidth="1400"

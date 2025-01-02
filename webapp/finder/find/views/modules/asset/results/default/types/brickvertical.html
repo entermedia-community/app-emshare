@@ -1,13 +1,3 @@
-#if(!$ismodulesearch)
-	#set ( $ismodulesearch = $content.get("ismodulesearch") )
-#end
-#if(!$ismodulesearch)
-	#set ( $ismodulesearch = $context.getRequestParameter("ismodulesearch") )
-#end
-
-#set($componenthome = "$apphome/views/modules/asset/components")
-
-
 #ifnull($lightboxassetsresults)
 	#set($lightboxassetsresults = $context.getRequestParameter("lightboxassetsresults"))
 #end
@@ -25,30 +15,6 @@
 	$context.putPageValue("hits",$hits)
 #end
 
-<div id="resultsdiv" 
-	class="lightboxselect lightboxresults"
-	data-hitssessionid="$!hits.getSessionId()" 
-	data-hitsname="$!hits.getHitsName()"
-	data-componenthome="$!componenthome"
-	data-searchhome="$!searchhome"
-	data-targetdiv="$maintargetdiv"
-	data-category="$!category.getId()"
-	data-collectionid="$!librarycol.getId()" 
-	data-rendertype="$!rendertype"
-	data-dialogresults="$!dialogresults"
-	data-lightboxassetsresults="$!{lightboxassetsresults}"
-	data-lightboxid="$!lightboxid"
-	data-pagenum="$!hits.getPage()" 
-	data-totalpages="$!hits.getTotalPages()"
-	data-moduleid="asset"
-	data-topmoduleid="$!topmoduleid"
-	data-entityid="$!entity.id"
-	data-section="$!content.section"
-	#set( $inputid = $context.getRequestParameter("inputid") )
-	data-inputid="$!inputid"
-	data-ajaxreloadtargets="dialogassetresults"
-	data-stackedviewpath="$!searchhome/types/brickvertical.html">
-
 	#if( $hideheader &&  $hideheader != "true")
 		$pages.include("${searchhome}/resultheader.html",$context)
 	#end
@@ -57,7 +23,8 @@
 			data-maxheight="180" 
 			data-maxwidth="180"
 			data-targeth="180"
-			data-cellpadding="4">
+			data-cellpadding="4"
+			data-stackedviewpath="${apphome}/views/modules/asset/results/default/types/brickvertical.html">
 		
 		#set($count = 0)
 		#set($viewerlink = $content.get("assetviewerlink") )
@@ -107,9 +74,9 @@
 				 
 				id="gallerycell_$!{hit.id}"
 				data-assetid="$!{hit.id}"
-				data-dataid="$hit.id"
-				data-assetlightboxid="${brick.id}"
-				data-ordering="${brick.ordering}"
+				data-dataid="$!{hit.id}"
+				data-assetlightboxid="$!{brick.id}"
+				data-ordering="$!{brick.ordering}"
 				
 				#if($rendertype == "audio")
 					data-width="250"
@@ -127,7 +94,8 @@
 		    #set ( $count = $count + 1) 
 		    
 		#end
-		
+		#if ( $loop.getPageOfHits().size() == 0 )
+			$pages.stream("$!{searchhome}/empty.html", $context)
+		#end
 	</div>
 	</div>
-</div>

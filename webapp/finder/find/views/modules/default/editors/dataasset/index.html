@@ -1,0 +1,162 @@
+#ifnull($viewid)
+#set ($viewid = $context.getRequestParameter("viewid"))
+#end
+
+#set ($label = $context.getRequestParameter("label"))
+#set ($id = $context.getRequestParameter("id"))
+#set ($moduleid = $context.findValue("module"))
+#set ($columns = $context.getRequestParameter("columns"))
+#if ($columns)
+	$context.putPageValue("detailviewercolumns",$columns)
+#end
+#if(!$hitssessionid)
+	#set( $hitssessionid = $context.getRequestParameter("hitssessionid") )
+#end
+
+#set($collectionid = $context.getRequestParameter("collectionid"))
+
+#set( $url = "${edithome}/generalinformation/editform.html")
+#set( $url = "$url?oemaxlevel=1&edit=$!caneditasset&assetid=${asset.id}" )
+#set( $url = "$url&targetdiv=asset-detail-editor&editpath=${edithome}/generalinformation/save.html" )
+<div id="${edithomeid}" class="editdiv asseteditpanel dataeditedreload edit-panel-generic" 
+	data-assetid="$!asset.getId()" 
+	data-edithomeid="${edithomeid}"
+	data-url="#urlescape($url)"
+	data-assethitssessionid="$!hitssessionid"
+	data-viewid="${viewid}"
+	data-entitymoduleviewid="$!entitymoduleviewid"
+	
+	>
+#if( !$catalogid )
+	#set( $catalogid = $mediaarchive.getCatalogId() )
+#end
+
+#if(!$searcher)
+	#set ( $searchtype = $context.getRequestParameter("searchtype") )
+	#if( $searchtype )
+		#set ( $searcher = $searcherManager.getSearcher($catalogid, $searchtype ) )
+	#else		
+		#set ( $searcher = $mediaarchive.assetSearcher )
+	#end
+#end
+
+#set( $catalogid = $searcher.getCatalogId() )
+#set( $searchtype = $searcher.getSearchType() )
+
+#if(!$data)
+	#if( $asset )
+		#set( $data = $asset )
+
+	#else
+		#set ($data = $searcher.searchById($id))		
+	#end
+	$context.putPageValue("data", $data)	
+#end
+
+$context.putPageValue("searcher", $searcher)
+$context.putPageValue("searchtype", $searchtype)
+
+#set( $openview = $context.getRequestParameter("openview") )
+#set( $edit = $context.getRequestParameter("edit") )
+#set( $editpath = $context.getRequestParameter("editpath"))
+#if(!$editpath)
+	#set( $editpath = "${edithome}/genericsave.html" )
+#end
+
+#set( $selfpath = "${edithome}/generalinformation/metadatapanel.html" )
+
+#if($data.getId().startsWith("multiedit"))
+	#set($multiedit = true)
+#end
+
+#set( $viewdata = $mediaarchive.getCachedData("view",$viewid) )
+
+
+<h4>#text($viewdata)</h4>
+##th-large
+
+#if (($edit && $edit != "false") || ($openview && $openview == $view))
+	
+	#set( $targetdiv = $context.getRequestParameter("targetdiv"))
+	#if (!$targetdiv)
+		#set( $targetdiv = "tabsummarypanel")
+	#end
+	<form name="formedit$viewid" 
+			id="formedit$viewid" 
+			class="ajaxform" 
+			data-targetdiv="asset-detail-editor" 
+			method="post" 
+			action="$siteroot$editpath" 
+			data-includeeditcontext="true"
+		>
+	
+		<input type="hidden" name="saveasnew" value="false" />
+		<input name="oemaxlevel" type="hidden" value="1" />
+		<input type="hidden" name="save" value="true" />
+		##<input type="hidden" name="catalogid" value="$!catalogid" />
+		##<input type="hidden" name="searchtype" value="$searcher.getSearchType()" />
+		
+		<input type="hidden" name="viewid" value="$viewid" />
+		<input type="hidden" name="label" value="$label" />
+		<input type="hidden" name="module" value="$moduleid" />
+		#if( $collectionid  )
+                	<input type="hidden" name="collectionid" value="$!collectionid" />
+		#end
+		#if( $searchtype == "asset" )
+			<input type="hidden" name="assetid" value="$asset.getId()" />
+		#end
+		
+		<input type="hidden" name="${searchtype}hitssessionid" value="$!hitssessionid" />
+		
+		##Generic Tables
+		#set ($parentid = $context.getRequestParameter("parentid"))
+		#set ($fieldexternalid = $context.getRequestParameter("fieldexternalid"))
+		#set ($fieldexternalvalue = $context.getRequestParameter("fieldexternalvalue"))
+		#if($fieldexternalid)
+			<input type="hidden" name="field" value="$fieldexternalid" />
+			<input type="hidden" name="${fieldexternalid}.value" type="hidden" value="$parentid" />
+			<input type="hidden" name="parentid" value="$parentid" />
+			<input type="hidden" name="viewid" value="$viewid" />
+			<input type="hidden" name="fieldexternalid" value="$fieldexternalid" />
+			<input type="hidden" name="fieldexternalvalue" value="$fieldexternalvalue" />
+			<input type="hidden" name="permissionname" value="$!permissionname" />
+			<input type="hidden" name="jumptomodule" value="$!jumptomodule" />
+		#end
+		#if ($data.id)
+			<input type="hidden" name="id" value="$!data.id" />
+		#end
+		
+		$context.putPageValue("origURL", "$apphome/assets/${asset.sourcePath}.html")
+		<div id="default-fields" class="fields-editor">
+			$pages.include("/$applicationid/components/xml/detaileditor.html?multiedit=$multiedit", $context)
+		</div>
+		<div class="container-fluid">
+	 		<div class="row">
+		 		<div class="col">
+					<div class="btns">
+						<input class="btn btn-accent submitform" type="button" value="[[Save values]]"/>
+						#if ($targetdiv == "tabsummarypanel")
+						<a class="ajax btn btn-secondary" style="margin-right:10px;" data-targetdiv="$targetdiv" 
+							href="${edithome}/generalinformation/index.html?oemaxlevel=1&assetid=$asset.id&hitssessionid=$!hitssessionid">[[Cancel]]</a>
+						#else
+							#set( $args = "assetid=$!asset.getId()&candelete=$candelete&editpath=$editpath&catalogid=$catalogid&searchtype=$searchtype&viewid=$!viewid&hitssessionid=$!hitssessionid")
+							<a class="ajax btn btn-secondary" style="margin-right:10px;" data-targetdiv="$targetdiv" data-oemaxlevel="1" 
+								href="$siteroot$selfpath?save=false&${args}">[[Cancel]]</a>
+						#end
+						<a class="emdialog float-right btn btn-secondary"
+							 href="$siteroot$apphome/views/settings/modules/$!{moduleid}/metadata/views/dialog/index.html?viewid=${viewid}" 
+							 data-dialogid="fieldpicker" data-hidefooter="true"
+							 title="[[Configure View]]"><i class="bi bi-gear-fill mr-1"></i> [[Fields]]</a>
+						
+						#if( $caneditmetadatasetup  )
+							<div class="clearfix"></div>
+						#end
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+#else
+	[[Missing Edit Permission]]
+#end ##edit
+</div>

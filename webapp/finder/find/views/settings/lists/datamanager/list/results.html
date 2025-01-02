@@ -1,23 +1,7 @@
 $context.putPageValue("searcher",$searcher)
-#set( $view = $context.getRequestParameter("view") )
-#if( !$view )
-    #set( $view = "${searcher.searchType}/${searcher.searchType}search.xml")
-#end
-$context.putPageValue("view",$view) 
 $context.putPageValue("hits",$datalist)
  
-#if( $view )
-	#set( $details = $searcher.getDetailsForView($view, $userprofile) ) 
-#else
-  	#set( $details = $searcher.getSearchProperties($user) )
-#end
-#if(!$details)  
-	#set( $view = "${searcher.searchType}/${searcher.searchType}results.xml")
-	#set( $details = $searcher.getDetailsForView($view, $userprofile) ) 
-	#if(!$details)
-		#set( $details = $searcher.getStoredProperties() )
-	#end
-#end
+#set( $details = $searcher.getStoredProperties() )
 $context.putPageValue("details",$details) 
 
 

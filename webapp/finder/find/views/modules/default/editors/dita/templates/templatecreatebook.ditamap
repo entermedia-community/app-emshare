@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE bookmap PUBLIC "-//OASIS//DTD DITA BookMap//EN" "http://docs.oasis-open.org/dita/v1.1/OS/dtd/bookmap.dtd">
+<bookmap id="topic">
+	<booktitle>
+		<booklibrary>
+				$!entity.userbooklibrary
+		</booklibrary>
+		<mainbooktitle>$entity.name</mainbooktitle>
+		<booktitlealt></booktitlealt>
+	</booktitle>
+	<bookmeta>
+		<author>$!entity.userauthor</author>
+		<authorinformation>
+			<organizationinfo>
+				<addressdetails>$!entity.useraddressdetails</addressdetails>
+			</organizationinfo>
+		</authorinformation>
+		<bookid>
+			<isbn>$!entity.userisbn</isbn>
+			<booknumber>$!entity.userbooknumber</booknumber>
+			<maintainer>
+				<organization>$!entity.userorganization</organization>
+				<person />
+			</maintainer>
+		</bookid>
+		<bookrights>
+			<copyrfirst>
+				<year>$!entity.usercopyrightyear</year>
+			</copyrfirst>
+			<bookowner>
+				<organization>$!entity.usercopyrightorganization</organization>
+			</bookowner>
+		</bookrights>
+	</bookmeta>
+	<frontmatter>
+		<booklists>
+			<toc />
+		</booklists>
+	</frontmatter>
+
+#foreach( $chapter in $chapters)
+	<chapter href="$chapter">
+#set( $ditasections  = $groupsoftopics.get($chapter))	
+#foreach( $dita in $ditasections)
+		<topicref href="$dita"></topicref>
+#end
+	</chapter>
+#end
+	<backmatter>
+		<booklists>
+			<indexlist />
+		</booklists>
+	</backmatter>
+</bookmap>

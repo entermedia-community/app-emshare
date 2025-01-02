@@ -1,5 +1,6 @@
 jQuery(document).ready(function (url, params) {
 	var appdiv = $("#application");
+	var apphome = appdiv.data("apphome");
 	var siteroot = appdiv.data("siteroot") + appdiv.data("apphome");
 	var componenthome = appdiv.data("siteroot") + appdiv.data("componenthome");
 
@@ -110,39 +111,23 @@ jQuery(document).ready(function (url, params) {
 	lQuery("select#selectresultview").livequery(function () {
 		var select = $(this);
 		var resultsdiv = select.closest(".resultsdiv");
-		if (!resultsdiv) {
-			resultsdiv = select.closest("#resultsdiv");
-		}
 
 		select.on("change", function () {
-			var options = resultsdiv.data();
-
 			var searchhome = resultsdiv.data("searchhome");
-			//var moduleid = resultsdiv.data("moduleid");
-			var originalhitsperpage = resultsdiv.data("hitsperpage");
-			var targetdiv = resultsdiv.data("targetdiv");
-
-			var oemaxlevel = select.data("oemaxlevel"); //could be custom
-
-			if (oemaxlevel) {
-				options.oemaxlevel = oemaxlevel;
-			}
-		
-			var	href = searchhome +	"/changeresultview.html";
+			var href = searchhome + "/changeresultview.html";
+			resultsdiv.data("url", href);
 
 			var resultviewselected = select.val();
-			options.resultview = resultviewselected;
+			resultsdiv.data("changeresultview", resultviewselected);
+
 			if (
 				resultviewselected == "stackedgallery" ||
 				resultviewselected == "brickvertical"
 			) {
-				options.page = "1";
+				resultsdiv.data("page", "1");
 			}
-
-			$.get(href, options, function (data) {
-				$("#" + targetdiv).replaceWith(data);
-				$(window).trigger("resize");
-			});
+			resultsdiv.data("noToast", true);
+			resultsdiv.runAjax();
 		});
 	});
 
@@ -150,53 +135,17 @@ jQuery(document).ready(function (url, params) {
 		var select = $(this);
 
 		var resultsdiv = select.closest(".resultsdiv");
-		if (!resultsdiv) {
-			resultsdiv = select.closest("#resultsdiv");
-		}
-
-		var dropdownParent = select.data("dropdownparent");
-		if (dropdownParent && $("#" + dropdownParent).length) {
-			dropdownParent = $("#" + dropdownParent);
-		} else {
-			dropdownParent = $(this).parent();
-		}
-		var parent = select.parents(".modal-content");
-		if (parent.length) {
-			dropdownParent = parent;
-		}
-
-		select.select2({
-			tags: true,
-			dropdownParent: dropdownParent,
-		});
 
 		select.on("change", function () {
-			var options = resultsdiv.cleandata();
+			if (resultsdiv.data("oemaxlevel") === undefined) {
+				resultsdiv.data("oemaxlevel", "1");
+			}
 
 			var searchhome = resultsdiv.data("searchhome");
-			var moduleid = resultsdiv.data("moduleid");
-			var originalhitsperpage = resultsdiv.data("hitsperpage");
-			var targetdiv = resultsdiv.data("targetdiv");
-
-			var oemaxlevel = select.data("oemaxlevel"); //could be custom
-			if (oemaxlevel === undefined) {
-				 oemaxlevel = 1;
-			}
-			options.oemaxlevel = oemaxlevel;
-			var	href = searchhome + "/changehitsperpage.html";
-
-			// the selected option
-			options.hitsperpage = select.val();
-
-			$.get(href, options, function (data) {
-				$("#" + targetdiv).replaceWith(data);
-				$(window).trigger("resize");
-
-				// should I call in a trigger?
-				$(".select2simple").select2({
-					minimumResultsForSearch: Infinity,
-				});
-			});
+			resultsdiv.data("url", searchhome + "/changehitsperpage.html");
+			resultsdiv.data("hitsperpage", select.val());
+			resultsdiv.data("noToast", true);
+			resultsdiv.runAjax();
 		});
 	});
 
@@ -214,55 +163,15 @@ jQuery(document).ready(function (url, params) {
 					input.val("");
 					return;
 				}
-
 				var url = input.data("url");
-				var targetdiv = input.data("targetdiv");
-				var oemaxlevel = input.data("oemaxlevel");
-				var updateurl = input.data("updateurl");
-				var args = {
-					hitssessionid: input.data("hitssessionid"),
-					oemaxlevel: oemaxlevel,
-				};
-				url = url + page;
-				$.get(url, args, function (data) {
-					$("#" + targetdiv).html(data);
-					history.pushState(
-						$("#application").html(),
-						null,
-						updateurl ? url : undefined
-					);
-					$(window).trigger("resize");
-				});
+				input.data("url", url + page);
+				var urlbar = input.data("urlbar");
+				if (urlbar !== undefined) {
+					input.data("urlbar", urlbar + page);
+				}
+				input.data("noToast", true);
+				input.runAjax();
 			}
-		});
-	});
-
-	lQuery(".selectresultviewXX").livequery(function () {
-		var select = $(this);
-		select.on("click", function (e) {
-			e.preventDefault();
-			var href = select.attr("href");
-
-			var args = {
-				hitssessionid: select.data("hitssessionid"),
-				searchtype: select.data("searchtype"),
-				page: select.data("page"),
-				showremoveselections: select.data("showremoveselections"),
-			};
-
-			var category = $("#resultsdiv").data("category");
-			if (category) {
-				args.category = category;
-			}
-			var collectionid = $("#resultsdiv").data("collectionid");
-			if (collectionid) {
-				args.collectionid = collectionid;
-			}
-
-			$.get(href, args, function (data) {
-				$("#emresultscontent").replaceWith(data);
-				$(window).trigger("resize");
-			});
 		});
 	});
 
@@ -320,26 +229,6 @@ jQuery(document).ready(function (url, params) {
 		} else {
 			$(this).parent().find("#unselectall").hide();
 		}
-	});
-
-	lQuery("a.selectpage").livequery("click", function () {
-		var resultsdiv = $(this).closest(".resultsdiv");
-		if (!resultsdiv) {
-			resultsdiv = $("#resultsdiv");
-		}
-		jQuery("input[name=pagetoggle]", resultsdiv).prop("checked", true);
-		jQuery(".selectionbox", resultsdiv).prop("checked", true);
-		$(".selectionbox", resultsdiv)
-			.closest(".resultsassetcontainer")
-			.addClass("emrowselected");
-		$(".selectionbox", resultsdiv)
-			.closest(".emboxthumb")
-			.addClass("emrowselected");
-		if (typeof refreshSelections != "undefined") {
-			refreshSelections();
-		}
-
-		// $("#select-dropdown-open").click();
 	});
 
 	lQuery(".gallery-checkbox input").livequery("click", function () {
@@ -432,64 +321,13 @@ jQuery(document).ready(function (url, params) {
 		return false;
 	});
 
-	overlayResize = function () {
-		var img = $("#hiddenoverlay #main-media");
-		var avwidth = $(window).width();
-		var wheight = $(window).height();
-		var overlay = $("#hiddenoverlay");
-		overlay.height(wheight);
-		overlay.width(avwidth);
-		var w = parseInt(img.data("width"));
-		var h = parseInt(img.data("height"));
-
-		$("#hiddenoverlay .playerarea").width(avwidth);
-
-		var avheight = $(window).height() - 40;
-		if (!isNaN(w) && w != "") {
-			w = parseInt(w);
-
-			var newh = Math.floor((avwidth * h) / w);
-			var neww = Math.max(avwidth, Math.floor((avwidth * w) / h));
-			img.width(avwidth);
-			img.css("height", "auto");
-			// Only if limited by height
-
-			if (newh > avheight) {
-				img.height(avheight);
-				img.css("margin-top", "0px");
-				// var neww2 = Math.floor( avheight * w / h );
-				// img.width(neww2);
-				img.css("width", "auto");
-				img.css("height", avheight);
-			} else {
-				var remaining = avheight - newh;
-
-				if (remaining > 0) {
-					remaining = remaining / 2;
-					img.css("margin-top", remaining + "px");
-				} else {
-					img.css("margin-top", "0px");
-				}
-			}
-			// img.css("height", avheight);
-		} else {
-			/*
-			 * img.width(avwidth); //img.css("height", "auto");
-			 * img.css("height", avheight); img.css("margin-top","0px");
-			 */
-		}
-	};
-	$(window).resize(function () {
-		overlayResize(); // TODO: Add this to the shared
-	});
-
 	$.fn.exists = function () {
 		return this.length !== 0;
 	};
 
 	getCurrentAssetId = function () {
-		var mainmedia = $("#main-media-viewer");
-		return mainmedia.data("assetid");
+		var assetdialog = $("#main-media-viewer");
+		return assetdialog.data("assetid");
 	};
 
 	function enable(inData, inSpan) {
@@ -513,171 +351,46 @@ jQuery(document).ready(function (url, params) {
 		//Stop Audios
 		$.jPlayer.pause();
 	};
-	hideOverlayDiv = function (inOverlay) {
-		// debugger;
-		disposevideos();
-		stopautoscroll = false;
-		$("body").css({ overflow: "auto" });
-		inOverlay.hide();
-		inOverlay.removeClass("show");
-		if ($(".modal.behind").length) {
-			adjustZIndex($(".modal.behind"));
-		}
+	
 
-		var reloadonclose = $("#resultsdiv").data("reloadresults");
-		if (reloadonclose == undefined) {
-			reloadonclose = false;
-		}
-		if (reloadonclose) {
-			refreshresults();
-		} else {
-			//$(document).trigger("domchanged");
-			$(window).trigger("resize");
-			// gridResize();
-		}
-		var assetdetaileditor = $("#asset-detail-editor");
-		$(window).trigger("checkautoreload", [assetdetaileditor]);
-
-		var lastscroll = getOverlay().data("lastscroll");
-		// remove Asset #hash
-		history.replaceState(null, null, " ");
-		$(window).scrollTop(lastscroll);
-		jQuery(window).trigger("resize");
-	};
-
-	showOverlayDiv = function (inOverlay) {
-		stopautoscroll = true;
-		$("body").css({ overflow: "hidden" });
-		inOverlay.show();
-
-		adjustZIndex(inOverlay);
-
-		inOverlay.addClass("show");
-		var lastscroll = $(window).scrollTop();
-		getOverlay().data("lastscroll", lastscroll);
-	};
-
-	showAsset = function (element, assetid, pagenum) {
-		if (assetid) {
-			var mainmedia = $("#main-media-viewer");
-
-			var resultsdiv;
-			if (element) {
-				resultsdiv = element.closest("#resultsdiv");
+	showAsset = function (link, assetid, pagenum) {
+		if (link.length>0) {
+			link.data("includeeditcontext", true);
+			link.data("includesearchcontext", true);
+			link.data("dialogid", "mediaviewer");
+			link.data("edithome","");
+			//var url = link.attr("href");
+			link.data(
+				"url",
+				apphome + "/views/modules/asset/mediaviewer/fullscreen/currentasset.html"
+			);
+			if(assetid === undefined)
+			{
+				assetid = link.data("assetid");
 			}
-			if (typeof resultsdiv == "undefined" || !resultsdiv.length) {
-				resultsdiv = mainmedia;
+			if(assetid !== undefined)
+			{
+				link.data("assetid", assetid);
+				var url = window.location.href;
+				url += (url.indexOf("?") >= 0 ? "&" : "?") + "assetid=" + assetid;
+				history.pushState($("#application").html(), null, url);
+				//window.location.hash = "asset-" + assetid;
+				link.emDialog();
 			}
-			if (typeof resultsdiv == "undefined" || !resultsdiv.length) {
-				resultsdiv = $("#resultsdiv");
-			}
-			if (!pagenum) {
-				if (element) {
-					pagenum = element.data("pagenum");
-				}
-				if (!pagenum) {
-					pagenum = mainmedia.data("pagenum");
-				}
-				if (!pagenum) {
-					pagenum = resultsdiv.data("pagenum");
-				}
-			}
-			var hidden = getOverlay();
-
-			// Not needed?
-			var link = resultsdiv.data("assettemplate");
-			if (link == null) {
-				link = componenthome + "/mediaviewer/fullscreen/currentasset.html";
-			}
-			var hitssessionid, hitsname;
-
-			if (element != null && element.data("hitssessionid")) {
-				hitssessionid = element.data("hitssessionid");
-			} else {
-				hitssessionid = resultsdiv.data("hitssessionid");
-			}
-			if (element != null && element.data("hitsname")) {
-				hitsname = element.data("hitsname");
-			} else {
-				hitsname = resultsdiv.data("hitsname");
-			}
-			var params = {
-				embed: true,
-				assetid: assetid,
-				hitssessionid: hitssessionid,
-				hitsname: hitsname,
-				oemaxlevel: 1,
-			};
-			if (pagenum != null) {
-				params.pagenum = pagenum; // Do we use this for anything?
-			}
-			params.pageheight = $(window).height() - 100;
-
-			var collectionid = $("#collectiontoplevel").data("collectionid");
-			if (!collectionid) {
-				collectionid = resultsdiv.data("collectionid");
-				if (collectionid) {
-					params.collectionid = collectionid;
-				}
-			}
-			if (resultsdiv.data("previewonly") == true) {
-				params.previewonly = "true";
-			}
-
-			window.location.hash = "asset-" + assetid;
-
-			disposevideos();
-
-			$.get(link, params, function (data) {
-				showOverlayDiv(hidden);
-
-				var container = $("#main-media-container");
-				container.replaceWith(data);
-
-				mainmedia = $("#main-media-viewer");
-
-				var previousid = mainmedia.data("previous");
-				if (typeof previousid != "undefined" && previousid != "") {
-					enable(previousid, ".goleftclick");
-					enable(previousid, "#leftpage");
-					var title = mainmedia.data("previousname");
-					if (title) {
-						$(".goleftclick").attr("title", title);
-					} else {
-						$(".goleftclick").attr("title", "<");
-					}
-				}
-				var nextid = mainmedia.data("next");
-				if (typeof nextid != "undefined" && nextid != "") {
-					enable(nextid, ".gorightclick");
-					enable(nextid, "#rightpage");
-					var title = mainmedia.data("nextname");
-					if (title) {
-						$(".gorightclick").attr("title", title);
-					} else {
-						$(".gorightclick").attr("title", ">");
-					}
-				}
-				$(document).trigger("domchanged");
-				$(window).trigger("resize");
-				$(".gallery-thumb").removeClass("active-asset");
-
-				if (assetid.indexOf("multiedit:") > -1) {
-					/*
-					 * var link = $("#main-media-viewer").data("multieeditlink");
-					 * var mainmedia2 = $("#main-media-viewer");
-					 *
-					 * var options = mainmedia2.data(); mainmedia2.load(link,
-					 * options, function() { $(window).trigger("tabready"); });
-					 */
-				} else {
-					var escape = assetid.replace(/\//g, "\\/");
-					$("#gallery-" + escape).addClass("active-asset");
-				}
-			});
-			$(document).trigger("domchanged");
+			
 		}
 	};
+	
+	
+	lQuery("a.stackedplayer").livequery("click", function (e) {
+		e.preventDefault();
+		e.stopPropagation();
+		var link = $(this);
+		showAsset(link);
+		
+		return false;
+	});
+	
 	initKeyBindings = function (hidden) {
 		$(document).keydown(function (e) {
 			if (hidden && !hidden.is(":visible")) {
@@ -715,8 +428,11 @@ jQuery(document).ready(function (url, params) {
 						e.stopPropagation();
 						return;
 					} else {
-						hideOverlayDiv(getOverlay());
+						//hideOverlayDiv(getOverlay());
 					}
+					// else {
+					// 	hideOverlayDiv(getOverlay());
+					// }
 					break;
 
 				default:
@@ -727,30 +443,7 @@ jQuery(document).ready(function (url, params) {
 		});
 	};
 
-	getOverlay = function () {
-		var hidden = $("#hiddenoverlay");
-		if (hidden.length == 0) {
-			var grid = $(".masonry-grid");
-			var href = grid.data("viewertemplate");
-			if (href == null) {
-				href = componenthome + "/mediaviewer/fullscreen/index.html";
-			}
-
-			$.ajax({
-				url: href,
-				async: false,
-				data: { oemaxlevel: 1 },
-				success: function (data) {
-					$("#application").append(data);
-					hidden = $("#hiddenoverlay");
-					initKeyBindings(hidden);
-				},
-			});
-		}
-		hidden = $("#hiddenoverlay");
-
-		return hidden;
-	};
+	
 
 	refreshresults = function () {
 		var resultsdiv = $("#resultsdiv");
@@ -805,25 +498,16 @@ jQuery(document).ready(function (url, params) {
 		$("#jumptoform .jumpto-left").removeClass("invisible");
 	});
 
-	lQuery(".goleftclick").livequery("click", function (e) {
+	lQuery(".gotoarrows").livequery("click", function (e) {
 		e.preventDefault();
-		var div = $("#main-media-viewer");
-		var id = div.data("previous");
-		var enabled = $(this).data("enabled");
+		var link = $(this);
+		var id = link.data("assetid");
+		var enabled = link.hasClass("arrowenabled");
 		if (id && enabled) {
-			showAsset($(this), id);
+			showAsset(link, id);
 		}
 	});
-
-	lQuery(".gorightclick").livequery("click", function (e) {
-		e.preventDefault();
-		var div = $("#main-media-viewer");
-		var id = div.data("next");
-		var enabled = $(this).data("enabled");
-		if (id && enabled) {
-			showAsset($(this), id);
-		}
-	});
+	
 
 	lQuery(".carousel-indicators li#leftpage").livequery("click", function (e) {
 		e.preventDefault();
@@ -857,17 +541,7 @@ jQuery(document).ready(function (url, params) {
 		}
 	});
 
-	lQuery("a.stackedplayer").livequery("click", function (e) {
-		e.preventDefault();
-		var link = $(this);
-		var pickerresults = link.closest(".pickerresults");
-		if (link.hasClass("resultsdivdata") && pickerresults.length > 0) {
-			return;
-		}
-		var assetid = link.data("assetid");
-		showAsset(link, assetid);
-		return false;
-	});
+	
 
 	// Select multiple assets with Shift+Mouse
 	var isMouseDown = false;
@@ -1029,14 +703,14 @@ jQuery(document).ready(function (url, params) {
 	});
 
 	//Launch the Dialog? Use a parmeter check instead
-	showEntity = function (entityid) {
+	openEntity = function () {
 		var entity = $(".showentity");
 		if (entity.length) {
 			var resultsdiv = $(".resultsdiv");
 			var moduleid = resultsdiv.data("moduleid");
 			var searchhome = resultsdiv.data("searchhome");
 			if (searchhome) {
-				var url = searchhome + "/tabs/preview/entity.html";
+				var url = searchhome + "/tabs/index.html";
 				entity.data("targetlink", url);
 				entity.data("updateurl", true);
 				entity.data("urlbar", window.location.href);
@@ -1050,11 +724,8 @@ jQuery(document).ready(function (url, params) {
 
 	// Selections
 	function handRowSelection(clicked) {
-		var dataid = clicked.data("dataid");
 		var resultsdiv = clicked.closest(".resultsdiv");
-		if (!resultsdiv.length) {
-			resultsdiv = $("#resultsdiv");
-		}
+
 		if (resultsdiv.length) {
 			var ischecked = clicked.prop("checked");
 			if (ischecked == true) {
@@ -1063,19 +734,21 @@ jQuery(document).ready(function (url, params) {
 				clicked.closest(".resultsassetcontainer").removeClass("emrowselected");
 			}
 
-			var options = resultsdiv.data();
+			var resultsheader = resultsdiv.find(".resultsheader");
+			clicked.data("selectedtargetdiv", resultsheader);
+			clicked.data("oemaxlevel", "1");
+			clicked.data("includesearchcontext", true);
+			clicked.data("includeeditcontext", true);
+
 			var searchhome = resultsdiv.data("searchhome");
-			options["dataid"] = dataid;
-			var targetdiv = resultsdiv.find("#resultsheader");
-			refreshdiv(targetdiv, searchhome + "/toggle.html", options);
+			clicked.data("url", searchhome + "/toggle.html");
+			clicked.data("noToast", true);
+			clicked.runAjax();
 
-			if (typeof refreshSelections != "undefined") {
-				refreshSelections();
-			}
-
-			$(".assetproperties").trigger("click");
+			//$(".assetproperties").trigger("click");
 		}
 	}
+
 	lQuery("div.toggle-selection").livequery("click", function () {
 		var pickerresults = $(this).closest(".pickerresults");
 		if (pickerresults.length) {
@@ -1095,47 +768,33 @@ jQuery(document).ready(function (url, params) {
 		}
 	);
 
-	lQuery("a.deselectpage").livequery("click", function () {
-		var resultsdiv = $(this).closest(".resultsdiv");
-		if (!resultsdiv.length) {
-			resultsdiv = $("#resultsdiv");
-		}
-		$("input[name=pagetoggle]", resultsdiv).prop("checked", false);
-		$(".selectionbox", resultsdiv).prop("checked", false); // Not firing the page
-		$(".selectionbox", resultsdiv)
-			.closest(".resultsassetcontainer")
-			.removeClass("emrowselected");
-		$(".selectionbox", resultsdiv)
-			.closest(".emboxthumb")
-			.removeClass("emrowselected");
-		if (typeof refreshSelections != "undefined") {
-			refreshSelections();
-		}
-	});
-
 	lQuery("input[name=pagetoggle]").livequery("click", function () {
-		var input = $(this);
-		var resultsdiv = input.closest(".resultsdiv");
-		if (!resultsdiv.length) {
-			resultsdiv = $("#resultsdiv");
-		}
-		//var hitssessionid = resultsdiv.data('hitssessionid');
-		var options = resultsdiv.data();
+		var clicked = $(this);
+		var resultsdiv = clicked.closest(".resultsdiv");
+
+		var status = clicked.is(":checked");
+
 		var searchhome = resultsdiv.data("searchhome");
-		options.oemaxlevel = 1;
 
-		var status = input.is(":checked");
-
-		var targetdiv = resultsdiv.find("#resultsheader");
+		var action;
 		if (status) {
-			options.action = "page";
-			refreshdiv(targetdiv, searchhome + "/togglepage.html", options);
+			action = "page";
 			$(".selectionbox", resultsdiv).prop("checked", true);
 		} else {
-			options.action = "pagenone";
-			refreshdiv(targetdiv, searchhome + "/togglepage.html", options);
+			action = "pagenone";
 			$(".selectionbox", resultsdiv).prop("checked", false);
 		}
+
+		var resultsheader = resultsdiv.find(".resultsheader");
+
+		clicked.data("selectedtargetdiv", resultsheader);
+		clicked.data("action", action);
+		clicked.data("oemaxlevel", "1");
+		clicked.data("includesearchcontext", true);
+		clicked.data("includeeditcontext", true);
+		clicked.data("url", searchhome + "/togglepage.html");
+		clicked.data("noToast", true);
+		clicked.runAjax();
 	});
 
 	lQuery("a.selectpage").livequery("click", function (e) {
@@ -1146,19 +805,15 @@ jQuery(document).ready(function (url, params) {
 		if (!resultsdiv.length) {
 			resultsdiv = $("#resultsdiv");
 		}
-		//var hitssessionid = resultsdiv.data('hitssessionid');
-		var options = resultsdiv.data();
-		var searchhome = resultsdiv.data("searchhome");
-		options.oemaxlevel = 1;
+		var action = selectpage.data("action");
 
-		var targetdiv = resultsdiv.find("#resultsheader");
-		options.action = selectpage.data("action");
-		refreshdiv(targetdiv, searchhome + "/togglepage.html", options);
-		$(".selectionbox", resultsdiv).prop("checked", options.action != "none");
-		$("input[name=pagetoggle]", resultsdiv).prop(
-			"checked",
-			options.action != "none"
-		);
+		$(".selectionbox", resultsdiv).prop("checked", action != "none");
+		$("input[name=pagetoggle]", resultsdiv).prop("checked", action != "none");
+		var resultsheader = resultsdiv.find(".resultsheader");
+		selectpage.data("selectedtargetdiv", resultsheader);
+
+		selectpage.data("oemaxlevel", "1");
+		selectpage.runAjax();
 	});
 
 	lQuery(".showasset").livequery("click", function (e) {
@@ -1182,10 +837,10 @@ jQuery(document).ready(function (url, params) {
 		return false;
 	});
 
-	lQuery("#hiddenoverlay .overlay-close").livequery("click", function (e) {
-		e.preventDefault();
-		hideOverlayDiv(getOverlay());
-	});
+	// lQuery("#hiddenoverlay .overlay-close").livequery("click", function (e) {
+	// 	e.preventDefault();
+	// 	hideOverlayDiv(getOverlay());
+	// });
 
 	lQuery("#hiddenoverlay .overlay-popup span").livequery("click", function (e) {
 		e.preventDefault();
@@ -1307,63 +962,29 @@ jQuery(document).ready(function (url, params) {
 		);
 	});
 
-	lQuery("th.sortable").livequery("click", function () {   //.emselectable ?
+	lQuery("th.sortable").livequery("click", function () {
+		//.emselectable ?
 		var column = $(this);
 		var id = column.data("sortby");
 
 		var resultsdiv = column.closest(".resultsdiv");
-		if (!resultsdiv.length) {
-			resultsdiv = column.closest("#resultsdiv");
-		}
-		var targetdiv_ = resultsdiv.data("targetdiv");
-		var targetdiv = column.closest("#" + targetdiv_);
-		if(targetdiv.length == 0)
-		{
-			targetdiv = column.closest("." + targetdiv_);
-		}
-
 		var searchhome = resultsdiv.data("searchhome");
-		var moduleid = resultsdiv.data("moduleid");
-		var options = resultsdiv.cleandata();
 
-		var link = searchhome + "/columnsort.html";
+		resultsdiv.data("url", searchhome + "/columnsort.html");
+		resultsdiv.data("includeeditcontext", true);
 
 		if (column.hasClass("currentsort")) {
 			if (column.hasClass("up")) {
-				// $(resultsdiv).load( columnsort + '&sortby=' + id +
-				// 'Down', options);
-
-				options["sortby"] = id + "Down";
-				$.get(link, options, function (data) {
-					$(targetdiv).replaceWith(data);
-				});
+				resultsdiv.data("sortby", id + "Down");
 			} else {
-				// $(resultsdiv).load( columnsort + '&sortby=' + id + 'Up',
-				// options);
-				if (moduleid !== undefined) {
-					options[moduleid + "sortby"] = id + "Up";
-				} else {
-					options["sortby"] = id + "Up";
-				}
-				$.get(link, options, function (data) {
-					$(targetdiv).replaceWith(data);
-				});
+				resultsdiv.data("sortby", id + "Up");
 			}
 		} else {
 			$("th.sortable").removeClass("currentsort");
 			column.addClass("currentsort");
-			// $(resultsdiv).load( columnsort + '&sortby=' + id + 'Down',
-			// options);
-			if (moduleid !== undefined) {
-				options[moduleid + "sortby"] = id + "Down";
-			} else {
-				options["sortby"] = id + "Down";
-			}
-			$.get(link, options, function (data) {
-				//$(targetdiv).replaceWith(data);
-				$(targetdiv).replaceWith(data);
-			});
+			resultsdiv.data("sortby", id + "Down");
 		}
+		resultsdiv.runAjax();
 	});
 
 	var hash = window.location.hash;
@@ -1377,11 +998,11 @@ jQuery(document).ready(function (url, params) {
 	) {
 		var assetid = hash.substring(7, hash.length);
 		if (assetid) {
-			showAsset(null, assetid);
+			showAsset($("#showasset"), assetid);
 		}
 	}
 
-	//showEntity();  //Why here? 
+	//openEntity();  //Why here?. Use a selector?
 
 	/* lQuery(".scrollview").livequery("scroll", function () {
 		checkScroll();
@@ -1470,7 +1091,9 @@ jQuery(document).ready(function (url, params) {
 		}
 	});
 
-	lQuery("a.assettab").livequery("click", function (e) {
+
+/**ToDelete: Now Tab works with emdialog */
+	lQuery("a.assettabTODELETE").livequery("click", function (e) {
 		e.preventDefault();
 		var tab = $(this);
 
@@ -1499,19 +1122,25 @@ jQuery(document).ready(function (url, params) {
 			showAsset($(this), assetid);
 		} else if (assettab == "multiedit") {
 			var link = $(this).data("link");
-			div.load(link, options, function () {
-				// Update AssetID
-				var assetid = $("#multieditpanel").data("assetid");
-				$("#main-media-viewer").data("assetid", assetid);
-				$(window).trigger("tabready");
-			});
+			if (link !== undefined)
+			{
+				div.load(link, options, function () {
+					// Update AssetID
+					var assetid = $("#multieditpanel").data("assetid");
+					$("#main-media-viewer").data("assetid", assetid);
+					$(window).trigger("tabready");
+				});
+			}
 		} else {
 			disposevideos();
 			var link = tab.data("link");
-			div.load(link, options, function () {
-				// console.log("triggered");
-				$(window).trigger("tabready");
-			});
+			if (link !== undefined)
+			{
+				div.load(link, options, function () {
+					// console.log("triggered");
+					$(window).trigger("tabready");
+				});
+			}
 
 			var assettabactions = $(this).data("assettabactions");
 			if (assettabactions) {
@@ -1532,7 +1161,10 @@ jQuery(document).ready(function (url, params) {
 				// saveProfileProperty("assetopentabassettable",assettabtable,function(){});
 			}
 		}
-	}); //End of 
+	}); //End of
+/**-- **/
+
+
 
 	//FUSE Library
 	var Fuse;
@@ -1587,14 +1219,9 @@ jQuery(document).ready(function (url, params) {
 				search(searchInput.val());
 			}, 250);
 		});
-		
-		
-		
 	});
-	
-	lQuery(".forceresize").livequery(function () 
-	{
+
+	lQuery(".forceresize").livequery(function () {
 		$(window).trigger("resize");
-	});	
-	
+	});
 }); // document ready

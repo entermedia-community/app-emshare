@@ -102,23 +102,22 @@
 				#set ($enabled = true)
 			#end
 			
-			#if($dialogresults)
+			#if($page.isPropertyTrue("showsidetree", true))
 				#ifnull($dialogtreestatus)
 					#set($dialogtreestatus = $userprofile.get("dialogtreestatus"))
 				#end
 				#if(!$hidedialogtree && $dialogtreestatus == "close")
 					<li>
-					<a href="" 
-							class="toggledialogtree"
+					<a  href="$edithome/index.html"
+							class="ajax"
 							style="padding:0 10px"
-							data-targetdiv="resultsdiv"
+							data-targetdiv="$edithomeid"
 							data-oemaxlevel="1"
-							data-url="${searchhome}/search.html"
-							data-categoryid="$!categoryid"
-							data-entityid="$!entity.id"
-							data-entitymoduleid="$!entitymodule.id"
-							data-rootcategory="$!rootcategory"
-							data-treestatus="open"
+							data-propertyfield="dialogtreestatus"
+							data-propertyvalue="open"
+							data-includeeditcontext="true"
+							data-includesearchcontext="true"
+
 							title="[[Expand Tree]]">
 							<i class="fas fa-angle-double-right "></i>
 							</a>
@@ -135,16 +134,14 @@
 				#ifnotnull($entitymodule)
 					#if(!$hideupload && $canviewupload && $entitymodule.id != "favorites" && $permissions.can($entitymodule.id, "upload_files"))				
 					<li>
-						<a href="$siteroot$apphome/views/modules/asset/add/entityaddmedia.html"
+						<a href="$siteroot$apphome/views/modules/asset/editors/assetupload/index.html"
 						class="ajax px-3 webUploadButton"
 						data-targetdiv="resultsdiv"
 						data-oemaxlevel="1"
+						data-edithome=""
 						data-categoryid="$!categoryid"
 						data-categorypath="$category.getCategoryPath()"
-						data-entityid="$!entity.getId()" 
-						data-entitymoduleid="$!entitymodule.id"
 						data-tabsection="upload"
-						data-hitssessionid="$!hits.getSessionId()"
 						title="[[Upload]]"><i class="bi bi-upload"></i></a>
 					</li>
 					#end
@@ -167,7 +164,7 @@
 							data-updateurl="true" 
 							data-targetdivinner="applicationmaincontent" 
 							data-oemaxlayout="3"
-							href="$siteroot$applink/views/modules/asset/add/start.html?categoryid=$!categoryid"
+							href="$siteroot$applink/views/modules/asset/editors/assetupload/index.html?categoryid=$!categoryid"
 							title="[[Upload]]"><i class="bi bi-upload"></i></a>
 					</li>
 					#end
@@ -183,11 +180,35 @@
 						#end
 					</a>
 					<ul class="dropdown-menu">
-						#if($hits && $hits.getSelectionSize() > 0)
-						<li><a class="dropdown-item selectpage" data-action="none">[[Deselect All]]</a> </li>
-						#end
-						<li><a class="dropdown-item selectpage" data-action="all">[[Select All Results]]</a></li>
-						<li><a class="dropdown-item selectpage" data-action="page">[[Select This Page]]</a></li>
+						
+
+							<li>
+						<a class="dropdown-item  selectpage" 
+						href="${searchhome}/togglepage.html"
+						data-targetdiv="resultsheader"
+						data-action="all"
+						data-includesearchcontext="true"
+						data-includeeditcontext="true"
+						title="[[Select All results]]">[[Select All]]</a>
+						</li>
+						<li>				
+						<a class="dropdown-item selectpage" 
+						href="${searchhome}/togglepage.html"
+						data-targetdiv="resultsheader"
+						data-action="page"
+						data-includesearchcontext="true"
+						data-includeeditcontext="true"
+						title="[[Select this page of results]]">[[Select Only This Page]]</a>
+						</li>
+						<li>
+						<a class="dropdown-item  selectpage" 
+						href="${searchhome}/togglepage.html"
+						data-targetdiv="resultsheader"
+						data-action="none"
+						data-includesearchcontext="true"
+						data-includeeditcontext="true"
+						title="[[Deselect all results]]">[[Select None]]</a>
+						</li>
 
 						
 						#if( $user && ($candownload || $canconvert || $candownloadfpo ) )
@@ -238,7 +259,7 @@
 						data-action="remove" 
 						data-targetdiv="basket-paint"  
 						title="[[Remove From Cart]]"
-						href="$siteroot$componenthome/basket/removeselection.html?hitssessionid=$hits.getSessionId()" >[[Remove From Cart]]</a>
+						href="$siteroot$componenthome/basket/removeselection.html?${hits.getSearchType()}hitssessionid=$hits.getSessionId()" >[[Remove From Cart]]</a>
 					</li>	
 					#end	
 				#end
@@ -285,14 +306,7 @@
 							$pages.include("$searchhome/positions.html", $context)
 						##</li>
 					#end
-
-					##-HITSPERPAGE
-
-					#if($dialogresults)
-						#set($targetdiv= "dialog$!{moduleid}resultscontainer")
-					#else
-						#set($targetdiv= "$!{moduleid}resultscontainer")
-					#end
+					
 				#else
 					## TODO?: infinie scroll for stacked media
 				#end
@@ -327,7 +341,7 @@
 							#set ($alldetails = $searcher.getUserPropertyDetails() )
 							<select class="form-control form-control-sm select2 tableresultsaddcolumn" 
 									name="addcolumn"
-									data-componenthome="$!siteroot${searchhome}/addremovecolumns.html?searchtype=asset&hitssessionid=$hits.getSessionId()&editheader=true"
+									data-componenthome="$!siteroot${searchhome}/addremovecolumns.html?searchtype=asset&${hits.getSearchType()}hitssessionid=$hits.getSessionId()&editheader=true"
 									data-targetdiv="$!module.getId()resultsarea" 
 									data-oemaxlevel="1"
 									data-allowclear="false">
@@ -356,12 +370,8 @@
 					data-hidebackdrop="true"
 					data-hidefooter="true"
 					data-modalsize="sm"
-					data-hitssessionid="$hits.getSessionId()"
-					data-categoryid="$!categoryid"
-					data-rootcategory="$!rootcategory"
-					data-entityid="$!entity.id"
-					data-entitymoduleid="$!entitymodule.id"
-					data-autosetformtargetdiv="resultsdiv"
+					data-includesearchcontext="true"						
+					data-includeeditcontext="true"
 					style="padding:0 8px 0 10px;" 
 					title="[[Sort Results]]"><i class="bi bi-sort-down"></i> [[Sort]]</a>
 			</li>
@@ -379,13 +389,13 @@
 				</li>
 			#end			
 			#if($showsummary)
-			<li class="resultsnavitem">
+			<li class="resultsnavitem" style="border: none;">
 				#set($preference = "minimize$!{module.id}summary")
 				#set($selectedpreference = $userprofile.getBoolean($preference))
 				#ifnull($selectedpreference)
 					#set($selectedpreference = true)
 				#end
-				<button class='btn summary-toggler summary-opener #if(!$selectedpreference) closed #end' data-target="$!preference">
+				<button class='btn summary-toggler summary-opener #if(!$selectedpreference) closed #end' data-preferencename="$!preference">
 					<i class="fas fa-angle-double-left"></i> [[Summary]]
 				</button>
 			</li>

@@ -35,76 +35,58 @@ data-section="$!section ">
 		<div class="entityNavBarContainer autostickywidth" id="entityNavBarContainer">
 			<ul class="entity-navbar">
 				
-				#if($topmenu.isEmpty())
-				<li>
-					<a href="$applink/index.html" class="ajax #ifnull($topmenuselected) active #end" 
-						data-targetdiv="applicationcontent" 
-						data-oemaxlevel="3" 
-						data-updateurl="true"
-						data-sidebarcomponent="categories"
-						data-profilepreference="defaultmodule" 
-						data-profilepreference.value="" 
-						data-scrolltotop="true"
-					 	title="[[View All]]">
-							  [[Folders]]
-					</a>
-				</li>
-				#else
-				
-					#set($sectionid = $context.getRequestParameter("section"))
-					#set($topmenuselected = $sectionid)
-							
-					#foreach( $link in $topmenu)
-						#set( $topmenuentity = $mediaarchive.getCachedData("module",$link.toplevelentity) )
-						#set($url = "$applink/views/modules/$topmenuentity.getId()/index.html")
-	
-						#if($link.getValue("custompath"))
-								##sample: ${apphome}/views/modules/searchcategory/index.html?categoryid=AY82YpA9RucN_HGNkhB-
-								#set($url = $content.replaceProperty($link.getValue("custompath")))
-						#end
+				#set($sectionid = $context.getRequestParameter("section"))
+				#set($topmenuselected = $sectionid)
 						
-						#if($link.toplevelentity == $moduleid )
-							#set($topmenuselected = $link.getId() )
-						#end						
-						
-						#if($link.get("submenu"))
-							#foreach($s in $submenu)
-							$s.entity == $moduleid
-								#if($s.entity == $moduleid)
-									#set($topmenuselected = $s.parentsection)
-									#set($submenuselected = $s.entity )
-									#set($submenu = $link.getValue("submenu"))
-								#end
-							#end
-							
-						#end
-						
-	
-						<li > 
-							<a href="$url" 
-								class="ajax activelistener #if( $topmenuselected == $link.getId()) active#end" 
-								data-targetdiv="applicationcontent" 
-								data-oemaxlevel="4" 
-								data-updateurl="true"
-								####data-$!{topmenuentity.getId()}page="1"
-								data-$!{topmenuentity.getId()}clearselection="true"
-								#ifnotnull($topmenuentity.getId())
-									data-profilepreference="defaultmodule" 
-									data-profilepreference.value="${topmenuentity.getId()}"
-								#end 
-								data-scrolltotop="true"
-								#if($topmenuentity.getId() =="asset") data-sidebarcomponent="categories" #end
-								title="[[View]] #text($link)">
-								#set($moduleicon = "grid")
-						     	#if ($topmenuentity.moduleicon)
-						     		#set($moduleicon = $topmenuentity.moduleicon)
-						     	#end
-								<i class="bi bi-${moduleicon} module-icon"></i> #text($link)
-							</a>
-						</li>
+				#foreach( $link in $topmenu)
+					#set( $topmenuentity = $mediaarchive.getCachedData("module",$link.toplevelentity) )
+					#set($url = "$applink/views/modules/$topmenuentity.getId()/index.html")
+
+					#if($link.getValue("custompath"))
+							##sample: ${apphome}/views/modules/searchcategory/index.html?categoryid=AY82YpA9RucN_HGNkhB-
+							#set($url = $content.replaceProperty($link.getValue("custompath")))
 					#end
+					
+					#if($link.toplevelentity == $moduleid )
+						#set($topmenuselected = $link.getId() )
+					#end						
+					
+					#if($link.get("submenu"))
+						#foreach($s in $submenu)
+						$s.entity == $moduleid
+							#if($s.entity == $moduleid)
+								#set($topmenuselected = $s.parentsection)
+								#set($submenuselected = $s.entity )
+								#set($submenu = $link.getValue("submenu"))
+							#end
+						#end
 						
-				#end
+					#end
+					
+
+					<li > 
+						<a href="$url" 
+							class="ajax activelistener #if( $topmenuselected == $link.getId()) active#end" 
+							data-targetdiv="applicationcontent" 
+							data-oemaxlevel="4" 
+							data-updateurl="true"
+							####data-$!{topmenuentity.getId()}page="1"
+							data-$!{topmenuentity.getId()}clearselection="true"
+							#ifnotnull($topmenuentity.getId())
+								data-profilepreference="defaultmodule" 
+								data-profilepreference.value="${topmenuentity.getId()}"
+							#end 
+							data-scrolltotop="true"
+							#if($topmenuentity.getId() =="asset") data-sidebarcomponent="categories" #end
+							title="[[View]] #text($link)">
+							#set($moduleicon = "grid")
+					     	#if ($topmenuentity.moduleicon)
+					     		#set($moduleicon = $topmenuentity.moduleicon)
+					     	#end
+							<i class="bi bi-${moduleicon} module-icon"></i> #text($link)
+						</a>
+					</li>
+					#end
 			</ul>
 		</div>
 
@@ -140,6 +122,13 @@ data-section="$!section ">
 	<hr class="m-0">
 	#end
 
+#if($canviewsettings)
 	$pages.streamContent()
-	
+#else
+	#if($topmenu.isEmpty())
+		$pages.include("$apphome/welcome.html")
+	#else
+		$pages.streamContent()
+	#end	
+#end	
 </div>

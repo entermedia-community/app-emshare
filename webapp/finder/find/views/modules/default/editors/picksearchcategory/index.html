@@ -1,0 +1,43 @@
+#set( $copyinghitssessionid = $context.getRequestParameter("copyinghitssessionid"))
+
+<div id="${edithomeid}" 
+	class="editdiv pickerresults picksearchcategory"
+	data-edithome="${edithome}"
+	data-edithomeid="${edithomeid}"  
+	data-setpagetitle="[[Select]] #text($module)" 
+	
+	$context.setRequestParameter("entitymoduleid",$module.id))
+	
+	data-entitymoduleid="$!module.id"
+	
+	data-copyinghitssessionid="$copyinghitssessionid"
+
+#set( $hits = $context.getSessionValue($copyinghitssessionid) )
+
+	<div class="overflow-y">
+		<div id="entitypickerresults" 
+			class="clickableresultlist" 
+			data-toastmessage="[[Saving]] $hits.getSelectionSize()"
+			data-toastsuccess="$hits.getSelectionSize() [[Records Saved]]"
+			data-url="${edithome}/categorysavetoentities.html"
+			data-targetdiv="donotshow"
+			data-ajaxreloadtargets="dataeditedreload"  ##this reloads the top level listeners
+
+			data-copyinghitssessionid="$copyinghitssessionid"
+		>
+			#set($submoduleid = "searchcategory")
+			#set($module = $mediaarchive.getCachedData("module",$submoduleid))
+			$context.putPageValue("module", $module)
+			#set($searchhome = "$apphome/views/modules/${submoduleid}/results/searchcategory")
+			$context.putPageValue("searchhome", $searchhome)
+			
+			$pages.include("${searchhome}/searchinclude.html?resultview=grid",$context)
+##			$pages.include("${searchhome}/results.html?resultview=grid",$context)
+			
+			#set( $hits = $context.getSessionValue($copyinghitssessionid) )
+
+			
+		</div>
+
+	</div>
+</div>

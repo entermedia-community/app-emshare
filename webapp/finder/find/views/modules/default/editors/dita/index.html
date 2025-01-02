@@ -1,0 +1,54 @@
+#set( $searchtype = $context.findPathValue("module"))
+
+#set( $parentsearchtype = $searchtype)
+#if( !$entity)
+	#set($entityid = $context.getRequestParameter("entityid"))
+	#set( $entity  = $mediaarchive.getData($searchtype, $entityid) )
+#end
+#set($entityid = $entity.id)
+$context.putPageValue("entity", $entity)
+$context.putPageValue("entityid", $entityid)
+
+#set($subtab = $content.subtab )
+
+#ifnull($subtab)
+	#set($subtab = "html")
+#end
+
+#ifnull($viewid)
+
+	#set($viewid = $context.getRequestParameter("entitymoduleviewid"))
+	#ifnull($viewid)
+		#set($viewid = $context.getRequestParameter("viewid"))
+	#end
+#end
+#ifnull($viewid)
+ No view id
+#end
+#set($viewdata = $mediaarchive.getCachedData("view",$viewid))
+
+#set($submoduleid = $!viewdata.rendertable)
+$context.putPageValue("submoduleid",$submoduleid)
+
+#set($selectedcategory =  $mediaarchive.getEntityManager().loadDefaultFolder($entitymodule, $entity, $context.getUser(),true))
+$context.putPageValue("selectedcategory",$selectedcategory)
+
+
+<div id="ditavizeditor"  class="editdiv entity-tab-content entity-tab-media tabtypemedia" 
+	data-entityid="$!entityid"
+	data-entitymoduleid="$!entitymodule.id"
+	data-entitymoduleviewid="$entitymoduleviewid"
+	
+	data-categoryid="$!selectedcategory.getId()"
+	data-rootcategory="$!selectedcategory.getId()"
+	data-edithome="$!{edithome}"
+	data-autoreloadurl="$!{edithome}/index.html"
+	
+>
+	<div  class="tablightbox d-flex h-100" style="height: 100%;">
+		
+		$pages.include("$edithome/sidemenu.html",$context) 
+		$pages.include("$edithome/${subtab}.html",$context)
+	</div>
+
+</div>

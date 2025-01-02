@@ -1,0 +1,89 @@
+<div class="lightbox-header"> 
+  #set( $moduleicon = $selectedbox.moduleicon)
+	#ifnull($moduleicon)
+	  #set( $moduleicon = "check-circle-fill")
+	#end
+  <div class="d-flex align-items-center" title="#if($lightboxassets && $lightboxassets.size()>0) $lightboxassets.size() [[Assets]]#end">
+    #if($selectedbox)
+      <i class="bi bi-${moduleicon}"></i> 
+      <strong>#text($selectedbox)</strong>
+    #else
+      <i class="bi bi-image"></i>
+      <strong>[[Working Files]]</strong>
+    #end
+  </div>
+
+  <small><span class="mx-2">&middot;</span>[[Drag and drop selected files from your desktop, to order them or to link with another box]]</small>
+  
+
+	#set( $modulelist  = $mediaarchive.getCatalogSettingValue("useexternalsync_modulelist"))
+	<div class="d-flex align-items-center ml-auto">
+	#if ($desktop) 
+		<button class="sync-lightbox lightbox-header-btn positive"
+			style="display: none"
+			data-entityid="$!entity.getId()"
+			#ifnotnull($selectedbox)
+				data-lightbox="#text($selectedbox)"
+			#end
+			data-path='$!entity.get("uploadsourcepath")'
+			#if( $modulelist.contains($module.getId()))
+				data-useexternalsync="true"
+			#end
+			>
+			<i class="bi bi-upload mr-1 ns"></i> <span>[[Sync]]</span>
+		</button>
+		<button class="lightbox-header-btn open-lightbox"
+			#ifnotnull($selectedbox)
+				data-lightboxid="$selectedbox.id"
+				data-lightbox="#text($selectedbox)"
+			#end
+			data-entityid="$!entity.getId()"
+			data-path='$!entity.get("uploadsourcepath")'
+			#if( $modulelist.contains($module.getId()))
+				data-useexternalsync="true"
+			#end
+			>
+			<i class="bi bi-download mr-1 ns"></i> <span>[[Open Locally]]</span>
+		</button>  
+	#end
+	
+	#set($showpublishbtn = false)
+	#set( $val = $hitcounts.get( $selectedbox.getName() ) )
+	#if(!$val && !$selectedbox)
+		#set($val = $allassets)
+	#end
+	#if($val && $permissions.can($module.getId(), "publishinggallery"))
+			#set($showpublishbtn = true) 
+	#end
+	
+	#if ($showpublishbtn) 
+		<a href="${edithome}/tabs/index.html"
+			class="lightbox-header-btn ajax tabactionexport" 
+			data-entitymoduleviewid="${module.id}entityexports"
+			data-entityid="$!entity.getId()" 
+			data-entitymoduleid="$!module.id"
+			data-targetdiv="entitydialog"
+			data-oemaxlevel="1"
+			data-tabsection="sharegallery"
+			data-includeeditcontext="false"
+			data-lightboxid="$!{selectedbox.id}">
+			<i class="bi bi-send-fill mr-1 ns"></i> [[Publish as Gallery]]
+		</a> 
+	#end 
+	
+	#if($permissions.can($module.getId(), "createassetswithai"))
+		#set($pickerurl = "$!{edithome}/aitools/createassets.html")
+		<a href="$pickerurl" 
+		class="emdialog btn btn-accent ml-1"
+		data-dialogid="createassetswithai"
+		data-width="600"
+		data-fieldexternalid = '$!{entitymodule.id}'
+		data-fieldexternalvalue = '$entity.id'
+		data-includeeditcontext="true"				
+		data-hidefooter="true"
+		title="[[Create New]] #text($submodule) [[With AI]]"><i class="bi bi-brush mr-1"></i> [[Create With AI]]</a>
+	#end
+	
+	
+	</div>
+</div>

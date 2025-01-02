@@ -1,0 +1,110 @@
+
+#set($module = $mediaarchive.getCachedData("module", "asset"))
+$context.putPageValue("module", $module)
+#set($moduleid = $module.getId())
+
+#set($componenthome = "$apphome/views/modules/asset/components")
+$context.putPageValue("componenthome", $componenthome)
+
+#if( !$category)
+	#set($categoryid = $context.getRequestParameter("categoryid"))
+	#if($categoryid)
+		#set($category = $mediaarchive.getCachedData("category", $categoryid))
+	#end
+#end
+
+
+#if( !$categoryid && $category)
+	#set( $categoryid= $category.getId())
+#end
+
+$context.putPageValue("category", $category)
+$context.putPageValue("categoryid", $categoryid)
+
+#set($resultview = $userprofile.get("assetresultview"))
+
+#set($maintargetdiv = "dialogassetresultscontainer")
+$context.putPageValue("maintargetdiv", $maintargetdiv)
+
+$context.putPageValue("dialogresults", true)
+
+
+<div id="categorywithtree" class="emgridcontainer">
+	<div class="emgrid-module emgrid-box emgrid-module-asset h-100">
+		
+		$context.putPageValue("selectednodes", $categoryid)
+		
+		#set($canupload = false)
+		#if($canviewupload)
+			#if($parentmodule.getBoolean("enableuploading") && $permissions.can($parentmoduleid, "upload_files"))
+				#set($canupload = true)
+			#end
+		#end
+
+		$context.putPageValue("canupload", $canupload)
+		
+		#ifnull($hidedialogtree)
+		
+			#set($dialogtreestatus = $userprofile.get("dialogtreestatus"))
+			#ifnotnull($dialogtreestatus)
+				#if($dialogtreestatus != "open")
+					#set($dialogtreestatus = "close")
+				#end
+			#end
+			#ifnull($dialogtreestatus)
+				#set($dialogtreestatus = "close")
+			#end
+			$context.putPageValue("dialogtreestatus", $dialogtreestatus)
+			
+			<div class="embedmediacontainer">
+				#if($dialogtreestatus == "open")
+					<div class="embedmediacol embedmediacol-tree embedtreestatus$dialogtreestatus">
+						<div class="embedmediacolactions d-flex align-items-center">
+							
+							<a href="$edithome/index.html" 
+							class="d-flex align-items-center ajax toggledialogtree toggledialogclose"
+							data-targetdiv="${edithomeid}"
+							data-oemaxlevel="1"
+							data-propertyfield="dialogtreestatus"
+							data-propertyvalue="close"
+							data-includeeditcontext="true"
+							data-includesearchcontext="true"
+							title="[[Collapse Tree]]">
+								<i class="fas fa-angle-double-left"></i>
+								<h3 class="embedmediacolheader">[[Folders]]</h3>
+							</a>
+		
+							#if($canviewupload && $parentmodule.getBoolean("enableuploading") && $permissions.can($parentmoduleid, "upload_files"))
+							<a href="" 
+								class="createfoldertree"
+								data-tree="dialogentitymediatreetree" 
+								style="width:32px;" 
+								title="[[Add Sub-Folder]]"><i class="bi bi-folder-plus"></i></a>
+								
+							
+							#end
+						</div>
+						
+						<div class="assetdropcategory dialogdroppable left-foldertree">
+							<div class="embedmediatree overflow-y">
+							
+							#set( $link = "$componenthome/emtree/tree.html")
+							#set( $link = "${link}?dialogentitymediatreeroot=$categoryid&treename=dialogentitymediatree&editabletree=true&targetdivsearch=$!searchhomeid" )
+							#set( $link = "${link}&maintargetdiv=$!maintargetdiv&targetdiv=$!searchhomeid&maxlevelclick=1&updateAddressBar=false&uploadmaxlevel=1&nodeID=$!{categoryid}&exactsearch=true" )
+							#set( $link = "${link}&customurladdmedia=$apphome/views/modules/asset/add/entityaddmedia.html" )
+							#set( $link = "${link}&oemaxlevel=1&urlprefix=${searchhome}/search.html" )
+								
+							$pages.include($link, $context)
+							</div>
+						</div>
+					</div>
+				#end
+			#end
+			<div class="embedmediacol embedmediacol-results overflow-x" #ifnotnull($hidedialogtree)style="width:100%;"#end>
+				<div id="dialogmediaentity" class="h-100"> 
+						$pages.include("${searchhome}/search.html?categoryid=$categoryid&exactsearch=false", $context)
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

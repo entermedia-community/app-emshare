@@ -2,13 +2,15 @@
 #if(!$idcount)
 	#set($idcount = "")
 #end
-
+#ifnull($value)
+#set($value = $val)
+#end
 <div class="assetpicker"  id="entitypicker${detail.id}" data-detailid="${detail.id}">
 	<div class="render-type-thumbnail p-1 position-relative mb-1" id="${detail.id}-preview">
-		#if($val && $val != "")
-			#set( $foundrow = $mediaarchive.getAsset($val)  )
+		#if($value && $value != "")
+			#set( $foundrow = $mediaarchive.getAsset($value)  )
 			#if($foundrow)
-				$pages.include("$apphome/components/xml/types/assetpicker/preview.html?assetid=$val", $context)
+				$pages.include("$apphome/components/xml/types/assetpicker/preview.html?assetid=$value", $context)
 				<a href="#" 
 					class="removefieldassetvalue"
 					title="[[Remove This Asset]]" 
@@ -33,16 +35,17 @@
 		
 		##?targetdiv=${detail.id}-value&detailid=${detail.id}&categoryid=$!{defaultfolder.getId()}
 		
-		<a href="$siteroot$apphome/views/modules/asset/results/pickerpickasset/index.html" 
+		<a href="$siteroot$apphome/views/modules/asset/editors/pickerpickasset/index.html" 
 			class="emdialog btn btn-secondary"
 			data-dialogid="dialogpickerassetpicker"
 			data-assetclearresults="true"
 			data-assetclearselections="true"
 			data-width="1200"
-			data-detailid = '${detail.id}'
-			data-entitymodule="asset"
+			data-detailid="${detail.id}" 
 			data-pickertargetfield="entitypicker${detail.id}"
 			data-hidefooter="true"
+			data-includeeditcontext="true"
+			data-edithome=""
 		>
 			<i class="bi bi-card-list mr-1"></i> [[Browse]]
 		</a>

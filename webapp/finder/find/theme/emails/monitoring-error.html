@@ -1,0 +1,48 @@
+<h3>[[Monitoring Alert]]</h3>
+<hr>
+<strong>[[The following instance has entered an error state]]:  <a href="$monitored.instanceid">$instance.name</a></strong>
+
+<br/><br/>
+
+<h4>[[Errors]]:</h4>
+<ul>
+#if($monitored.isreachable == "false")
+	<li>[[The instance seems to be down]]: <a href="$monitored.monitoringurl">$instance.name ($monitored.monitoringurl)</a></li>
+#end
+
+#if($monitored.isssl == "true")
+	<li>
+	#if($monitored.sslstatus == "torenew")
+		[[The instance's SSL certificate will expires in ]]$monitored.daystoexpiration[[days]],[[on]] <b>$monitored.expirationdate</b>. [[Please renew it by running sudo /home/entermedia/letsencrypt/letsencrypt-auto renew on the corresponding instance's server]].
+	#elseif($monitored.sslstatus == "expired")
+		[[The instance's SSL certificate has expired on]] <b>$monitored.expirationdate</b>. <br>
+		[[Deploy a new one by running sudo: <em>/home/entermedia/letsencrypt/letsencrypt-auto renew</em> on the instance's server]].
+	#elseif($monitored.sslstatus == "error")
+		[[Can't retrieve any SSL certificate for]]: <a href="$instance.instanceurl">$instance.instanceurl</a>
+	#end
+	</li>
+#else
+	#if ($monitored.isdisk == "true")
+		#foreach($partition in $monitored.getValue("partitions"))
+			#if($partition.isIsOverloaded() == true)
+				<li>[[The following instance's partition is running out of disk space]]: <b>$partition.getName()</b> <b>${partition.getFreePartitionSpace()}Mb</b> [[remaining of]] <b>${partition.getUsablePartitionSpace()}Mb</b>.</li>
+			#end
+		#end
+	#end
+	#if($monitored.iscpu == "true")
+		<li>[[The instance's CPUs are overloaded]]: <b>$monitored.loadaverage</b> [[currently used]].</li>
+	#end
+	#if($monitored.isheap == "true")
+		<li>[[The instance's heap partition is running out of space]]: <b>$monitored.heapusedpercent</b> [[currenlty used]].</li>
+	#end
+	#if($monitored.ismemory == "true")
+		<li>[[The instance is running out of memory]]: <b>${monitored.servermemoryfree}Mb</b> [[remaining of]] <b>${monitored.servermemorytotal}Mb</b>.</li>
+	#end
+#end
+</ul>
+<h5>[[Trace Result]]:</h5>
+<pre>$traceresult</pre>
+
+<p>
+[[Monitor]]:<a href="https://monitoring.entermediadb.org/entermediadb/emshare2/views/modules/entermedia_instances_monitor/index.html">https://monitoring.entermediadb.org/entermediadb/emshare2/views/modules/entermedia_instances_monitor/index.html</a>
+</p> 

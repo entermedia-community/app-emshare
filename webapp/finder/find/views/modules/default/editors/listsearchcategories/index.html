@@ -1,0 +1,57 @@
+#set($searchcategoryid = $context.getRequestParameter("searchcategoryid"))
+
+#ifnotnull($searchcategoryid)
+		#set( $searchcategory = $mediaarchive.getCachedData("searchcategory",$searchcategoryid) )
+		$context.putPageValue("searchcategory", $searchcategory)
+#end
+
+<div id="$edithomeid"  
+	class="editdiv dataeditedreload #ifnull($searchcategoryid)listsearchcategories #end #ifnotnull($searchcategoryid) listofentities #end"
+	data-autoreloadurl="${edithome}/index.html"
+	data-edithome="${edithome}"
+	
+	data-edithomeid="${edithomeid}"
+	
+	data-entityid="$!searchcategory.id"
+	data-entitymoduleid="searchcategory"
+>
+
+	<div class="clickableresultlist heightExcludingHeaderFooter"
+		data-${module.id}hitssessionid="$!hits.getSessionId()"
+		data-includesearchcontext="false"
+		#ifnull( $searchcategoryid)
+			#set($previewurl = "$edithome/index.html")
+			data-url= "$previewurl"
+			data-targetdiv="$edithomeid"
+			data-oemaxlevel="1"
+		#end
+	>
+
+	#if(!$searchcategoryid)
+	
+		##Search for searchcategories 
+		#set($searchhome = "$apphome/views/modules/searchcategory/results/searchcategory")
+		$context.removeSessionValue("organizedModules")
+	
+		$context.putPageValue("searchhome", $searchhome)
+		$pages.include("${edithome}/categorybreadcrumb.html", $context)
+		
+		$pages.include("${searchhome}/searchinclude.html",$context)
+		
+	#else
+		##Search across modules for this category
+		#set($searchhome = "$apphome/views/modules/modulesearch/results/searchcategory")
+		$context.putPageValue("searchhome", $searchhome)
+		
+		#set( $module = $mediaarchive.getCachedData("module","modulesearch") )
+		$context.putPageValue("module", $module)
+
+		##Since I have not yet searched for modules to build side menu I have to do this in special xconf:		
+		#set($url = "${edithome}/searchalltypes.html?field=searchcategory&operation=exact&searchcategory.value=$!searchcategoryid")
+		$pages.include($url,$context)
+	
+	#end
+	</div>
+</div>
+
+

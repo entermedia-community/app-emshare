@@ -1,0 +1,57 @@
+#set($searcher = $mediaarchive.getAssetSearcher())
+$context.putPageValue("searcher", $searcher )
+#set($collectionid = $context.getRequestParameter("collectionid"))
+<div id="asset-detail-editor" 
+	class="asset-details-editor" 
+	data-assetid="$!asset.getId()"
+	data-ajaxreloadtargets="resultsdiv">
+	
+#set($views = $mediaarchive.query("view").exact("moduleid", $module.id).exact("systemdefined","false").sort("orderingUp").named("view").search($context) )
+	
+#foreach( $viewdata in $views )
+	#set($details = "" )
+	#set($permissionvalue = $permissions.can($module.id,$viewdata.getId() ) )
+    #if($permissionvalue)
+		#if( !$viewdata.rendertable )
+			$context.putPageValue("data",$asset)	
+			#set($viewid = $viewdata.getId())
+			$context.putPageValue("viewid",$viewid)
+	
+			<div id="edit-${viewdata.getId()}" 
+				 class="asset-data-detail asset-data-preview assetpanel-editor-box edit-panel-generic">
+				
+				<h4>#text($viewdata)</h4>
+				$context.putPageValue("clearfilters","true")	
+				
+				#set ($details = $searcher.getDetailsForView($viewdata, $context.getUserProfile()))
+
+				#ifnull($details)
+					<div class="p-3">
+							[[Not view details defined on]]: $viewid
+					</div>
+				#end
+
+				#ifnotnull($details)
+					$context.putPageValue("details", $details)
+					$pages.include("/$applicationid/components/xml/detailviewer.html", $context)
+					#if($caneditasset)
+						<div class="assetpanel-editor-actions">
+							#set( $url = "${edithome}/generalinformation/editform.html?assetid=${asset.id}")
+							<a href="#urlescape($url)" 
+							   class="ajax btn btn-accent"
+							   data-edit="$!caneditasset"
+							   data-viewid="$viewid"
+							   data-assethitssessionid="$!hitssessionid"
+							   data-targetdiv="edit-${viewdata.getId()}"
+							   data-editpath="${edithome}/generalinformation/save.html"
+							   data-oemaxlevel="1"
+							   title="[[Edit]] #text($viewdata)"><i class="bi bi-pencil-square mr-1"></i> [[Edit]] </a>
+						</div>
+					#end
+				#end
+				</div>
+			#end
+			#set($permissionvalue = "")
+		#end
+#end
+</div>

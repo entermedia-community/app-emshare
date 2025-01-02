@@ -1,0 +1,158 @@
+#set($moduleid = $module.id)
+<div class="entity-header d-flex align-items-center justify-content-between">
+			<div class="d-flex align-items-center">
+				<a href="#" class="ajax entityNavBack" data-targetdiv="entitydialog" data-entityid="$entity.id" data-oemaxlevel="1" style="display: none;">
+					<i class="fas fa-arrow-left"></i><span id="showname"></span>
+				</a>
+				
+				<h2 class="d-flex align-items-center">
+					
+					#if ($module.moduleicon)
+						#set($moduleicon = $module.moduleicon)
+					#end
+					#ifnull($moduleicon)
+						#set($moduleicon = "grid")
+					#end
+					<i class="bi bi-${moduleicon} module-icon"></i> 
+					 
+					#if($moduleid == "faceprofilegroup")
+						#text($module) <i class="bi bi-chevron-right mx-1 bi-small"></i>
+						#if($entity.entitypeople)
+							#set($people =  $mediaarchive.getCachedData("entitypeople", $entity.entitypeople))
+							#set($label = "[[Profile]] $!people")
+						#else
+							#set($label = "$entity.samplecount")
+						#end
+					#else
+						#text($module) <i class="bi bi-chevron-right mx-1 bi-small"></i>
+						#if($ismulti)
+							[[Multi Edit]] $!entity.getSelectedResults().size() [[Items]]		
+						#else	
+							#if($addnew=='true')
+								#set($label = "[[Add New]]")
+								#text($label)	
+								$context.putPageValue("addnew", $addnew)
+							#elseif($module.getValue("customname"))
+								#set($detail= $mediaarchive.getSearcher($module.id).getDetail("name"))
+								#set($label = $searcherManager.renderMask($entity, $detail ,$module.getValue("customname"), null, $context.getLocale())) 
+								#text($label) 
+							#else
+								#set($label = $!entity.getName($context))
+								#text($label) 				
+							#end
+							
+						#end
+					#end 
+				</h2>
+				
+				
+				#if(!$ismulti && $entity.id)
+					<div class="entity-actions-bar">
+
+						$context.putPageValue("itemid", $entity.id)
+						$pages.include("${edithome}/actions/addtobookmarks.html?id=$entity.id&moduleid=$module.id", $context)
+
+						#if($permissions.can($moduleid, "shareentity"))
+							<a href="${edithome}/tabs/index.html" 
+							class="ajax btn-accent"
+							data-targetdiv="entitydialog"
+							data-entityid="$!entity.getId()" 
+							data-entitymoduleid="$!entitymodule.id"
+							data-entitymoduleviewid="${module.id}entityexports"
+							data-$!{module.id}hitssessionid="$!entityhits.getSessionId()"
+							data-oemaxlevel="1"
+							title="[[Share]]"><i class="bi bi-share"></i></a>
+						#end
+						
+						#if($canviewsettings)
+							<a href="${edithome}/tabs/index.html" 
+							class="ajax btn-accent"
+							data-entityid="$!entity.getId()" 
+							data-entitymoduleid="$!module.id"
+							data-targetdiv="entitydialog"
+							data-oemaxlevel="1"
+							data-$!{module.id}hitssessionid="$!entityhits.getSessionId()"
+							data-entitymoduleviewid="${module.id}entityactivityhistory"
+							title="[[Activity History]]"><i class="bi bi-clock-history"></i></a>
+						#end
+					</div>
+				#end
+			</div>
+	
+	
+			<div class="d-flex entity-actions-bar align-items-center text-white">
+				#if(!$ismulti && $entity)
+			
+					#if($module.getBoolean("enableuploading"))
+					#if($permissions.can($moduleid, "upload_files") ||
+						$permissions.can($moduleid, "upload_folders") ||
+						$permissions.can($moduleid, "importurl") ||
+						$permissions.can($moduleid, "importassets") ||
+						$permissions.can($moduleid, "importfolders") ||
+						($desktop && $permissions.can($moduleid, "importpushtoserver")))
+						<a
+							class='btn btn-sm btn-accent ajax tabactionimport #if($entitymoduleviewid=="${module.id}entityimports")enabledaction #end '
+							href="$apphome/views/modules/$module.id/editors/entityimports/tabs/index.html" 
+							data-entitymoduleviewid="${module.id}entityimports"
+							data-entityid="$!entity.getId()" 
+							data-entitymoduleid="$!module.id"
+							data-targetdiv="entitydialog"
+							data-oemaxlevel="1"
+							data-tabsection="upload"
+							data-$!{module.id}hitssessionid="$!entityhits.getSessionId()"
+							title="[[Upload to]] #text($module) "><i class="bi bi-box-arrow-in-right mr-1"></i> [[Import]]							
+							</a>
+					#end	
+					#end
+					#if($permissions.can($moduleid, "copyentity") ||
+						$permissions.can($moduleid, "moveentity") ||
+						$permissions.can($moduleid, "downloadall") ||
+						$permissions.can($moduleid, "shareentity") ||
+						($desktop && $permissions.can($moduleid, "exportpulltoserver")))	
+						
+						<a 
+							class='btn btn-sm btn-accent ajax tabactionexport #if($entitymoduleviewid=="${module.id}entityexports")enabledaction #end '
+							href="${edithome}/tabs/index.html" 
+							data-entitymoduleviewid="${module.id}entityexports"
+							data-entityid="$!entity.getId()" 
+							data-entitymoduleid="$!module.id"
+							data-targetdiv="entitydialog"
+							data-oemaxlevel="1"
+							data-$!{module.id}hitssessionid="$!entityhits.getSessionId()"
+							title="[[Download]] #text($module) ">[[Export]]&nbsp;<i class="bi bi-box-arrow-right ml-1"></i></a>
+					#end
+					
+				#end
+						
+				#if($entityhits && $entityhits.size() > 1)
+					#set( $index = $entityhits.indexOfId($entity.getId()))
+					#set( $previous = false )
+					#set( $previous = $entityhits.previous($index))
+					#set( $next = false )
+					#set( $next = $!entityhits.next($index))
+						<div class="d-flex align-items-center entity-navigator">
+							#if($previous)
+							<a class="text-white btn mr-1 emdialog btn-accent" 
+								href="${edithome}/tabs/index.html?entityid=$previous.getId()"
+								data-$!{module.id}hitssessionid="$!entityhits.getSessionId()"
+								title="#text($previous)">
+								<i class="bi bi-caret-left-fill"></i> <span>[[Prev]]</span>
+							</a>
+							#end
+							#if($next)
+							<a class="text-white btn ml-1 emdialog btn-accent"  
+								href="${edithome}/tabs/index.html?entityid=$next.getId()"
+								data-$!{module.id}hitssessionid="$!entityhits.getSessionId()"
+								title="#text($next)">
+								<span>[[Next]]</span> <i class="bi bi-caret-right-fill"></i>
+							</a>
+							#end
+						</div>
+				#end
+					
+				<div class="entityclose">
+					<span title="[[Esc to Close]]" class="bi bi-x-lg ns"></span>
+				</div>
+			</div>
+			
+		</div>

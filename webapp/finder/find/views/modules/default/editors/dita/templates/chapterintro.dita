@@ -1,0 +1,35 @@
+#set( $ditaid = $entity.ditaid)
+#ifnull($ditaid)
+#set( $ditaid = $entity.getId())
+#end
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE concept PUBLIC "-//OASIS//DTD DITA Concept//EN" "concept.dtd">
+<!--  This file is part of the DITA Open Toolkit project. See the accompanying LICENSE file for applicable license.  -->
+<concept id="$ditaid">
+  <title>$entity.getName()</title>
+  <shortdesc>$!entity.longcaption</shortdesc>
+  
+  #ifnotnull($entity.userconceptbody)
+   <conbody>
+    <section> ##<!-- can include p and b tags  <dl>        <dlentry>          <dt><codeph> -->
+    #ifnotnull($entity.getValue("contentimagepre") )
+		#set( $relpath = $contentmanager.saveImage($inputdirectory, $entity.get("contentimagepre"),"image3000x3000") )
+		<p><image href="$relpath"></image></p>
+	#end
+    
+    $!entity.userconceptbody   
+    
+    #ifnotnull($entity.getValue("contentimagepost") )
+		#set( $relpath = $contentmanager.saveImage($inputdirectory, $entity.get("contentimagepost"),"image3000x3000") )
+		<p><image href="$relpath"></image></p>
+	#end
+	
+	#ifnotnull($entity.getValue("usersource") )
+		<ph>
+		$entity.getValue("usersource")
+		</ph>
+	#end
+    </section>
+  </conbody>
+  #end
+</concept>

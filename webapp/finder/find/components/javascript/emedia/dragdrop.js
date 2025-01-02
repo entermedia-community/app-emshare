@@ -10,8 +10,12 @@ var currentlyOver = null;
 function handleDroppableOver(_, ui) {
 	currentlyOver = $(this).parent().attr("id");
 	$(this).addClass("dragoverselected");
-	if ($(".assetdroppable.ui-droppable-hover").length > 0) return;
-	ui.helper.css("transform", "scale(0.25)");
+	if (
+		$(".lightboxdropasset.ui-droppable-hover").length > 0 ||
+		$(".categorydroparea.ui-droppable-hover").length > 0
+	) {
+		ui.helper.css("transform", "scale(0.25)");
+	}
 }
 
 function handleDroppableOut(_, ui) {
@@ -487,9 +491,11 @@ onloadselectors = function () {
 					var cloned = toclone.clone();
 					scaleDown(cloned);
 					cloned.addClass("clonedragging");
-
-					if ($("input.selectionbox:checked").length > 1) {
-						cloned.append('<div class="dragcount emnotify">+' + n + "</div>");
+					var total = $("input.selectionbox:checked").length;
+					if (total > 1) {
+						cloned.append(
+							'<div class="dragcount emnotify">+' + total + "</div>"
+						);
 					}
 
 					return cloned;
@@ -521,9 +527,6 @@ onloadselectors = function () {
 
 					var resultsdiv = $(this).closest(".resultsdiv");
 					if (!resultsdiv.length) {
-						resultsdiv = $(this).closest("#resultsdiv");
-					}
-					if (!resultsdiv.length) {
 						resultsdiv = $(this).data("targetdiv");
 						resultsdiv = $("#" + resultsdiv);
 					}
@@ -543,18 +546,6 @@ onloadselectors = function () {
 					$.get(searchhome + "/savecolumns.html", options, function (data) {
 						resultsdiv.replaceWith(data);
 					});
-					/*
-					 * $("#resultsdiv").load(apphome +
-					 * "/components/results/savecolumns.html", {
-					 * "source":source,
-					 * "destination":destination,
-					 * editheader:editing,
-					 * searchtype:searchtype,
-					 * moduleid:moduleid,
-					 * "hitssessionid":sessionid });
-					 */
-					// ui.helper.effect("transfer", { to:
-					// $(this).children("a") }, 200);
 				},
 				tolerance: "pointer",
 				over: handleDroppableOver,
@@ -569,9 +560,11 @@ onloadselectors = function () {
 					var cloned = $(this).clone();
 					scaleDown(cloned, 250);
 					$(cloned).addClass("categorydragging");
-
-					if ($("input.selectionbox:checked").length > 1) {
-						cloned.append('<div class="dragcount emnotify">+' + n + "</div>");
+					var total = $("input.selectionbox:checked").length;
+					if (total > 1) {
+						cloned.append(
+							'<div class="dragcount emnotify">+' + total + "</div>"
+						);
 					}
 
 					return cloned;
@@ -624,14 +617,11 @@ onloadselectors = function () {
 							//Could be an entity drop
 							return;
 						}
-						var resultsdiv = ui.draggable.closest("#resultsdiv");
+						var resultsdiv = ui.draggable.closest(".resultsdiv");
 						if (!resultsdiv.length) {
-							resultsdiv = $("#resultsdiv");
+							resultsdiv = $(".resultsdiv");
 						}
-						var hitssessionid = resultsdiv.data("hitssessionid");
-						if (!hitssessionid) {
-							hitssessionid = $("#main-results-table").data("hitssessionid");
-						}
+						var hitssessionid = resultsdiv.data("assethitssessionid");
 
 						// this is a category
 						var moveit = false;
@@ -645,9 +635,10 @@ onloadselectors = function () {
 							{
 								assetid: assetid,
 								categoryid: categoryid,
-								hitssessionid: hitssessionid,
+								assethitssessionid: hitssessionid,
 								moveasset: moveit,
 								rootcategoryid: rootcategory,
+								oemaxlevel: 1,
 							},
 							function (data) {
 								customToast(data);
@@ -675,10 +666,7 @@ onloadselectors = function () {
 					var assetid = ui.draggable.data("assetid");
 					var categoryid = ui.draggable.data("nodeid");
 
-					var hitssessionid = $("#resultsdiv").data("hitssessionid");
-					if (!hitssessionid) {
-						hitssessionid = $("#main-results-table").data("hitssessionid");
-					}
+					var hitssessionid = $(".resultsdiv").data("assethitssessionid");
 
 					var options = {};
 					if (assetid) {
@@ -739,16 +727,13 @@ onloadselectors = function () {
 					var assetid = ui.draggable.data("assetid");
 
 					var dragged = $(ui.draggable);
-					
-					var resultsdiv = dragged.closest(".resultsdiv")
+
+					var resultsdiv = dragged.closest(".resultsdiv");
 					var hitssessionid = dragged
-						.closest(".lightboxresults")
-						.data("hitssessionid");
+						.closest(".resultsdiv")
+						.data("assethitssessionid");
 					if (hitssessionid == undefined) {
-						hitssessionid = resultsdiv.data("hitssessionid");
-					}
-					if (hitssessionid == undefined) {
-						hitssessionid = $("#main-results-table").data("hitssessionid");
+						hitssessionid = resultsdiv.data("assethitssessionid");
 					}
 
 					var options = boxmenu.cleandata();
@@ -757,10 +742,10 @@ onloadselectors = function () {
 					}
 					options.hitssessionid = hitssessionid;
 
-					var searchhome = boxmenu.data("searchhome");
+					var searchhome = boxmenu.data("edithome");
 
 					$.ajax({
-						url: searchhome +"/addassetstobox.html",
+						url: searchhome + "/addassetstobox.html",
 						data: options,
 						xhrFields: {
 							withCredentials: true,
@@ -796,21 +781,19 @@ onloadselectors = function () {
 					var sourcenode = $(ui.draggable);
 					var sourceid = sourcenode.data("dataid");
 
-					var resultsdiv = $(targetnode).closest(".lightboxresults");
+					var resultsdiv = $(targetnode).closest(".resultsdiv");
 
 					var options = resultsdiv.cleandata();
 					options.dataid = sourceid;
 					options.targetid = targetnode.data("dataid");
-					options.hitssessionid = resultsdiv.data("hitssessionid");
+					options.hitssessionid = resultsdiv.data("assethitssessionid");
 
 					//Save scroll location?
-					var moduleid = resultsdiv.data("moduleid");
+					var searchhome = resultsdiv.data("searchhome");
 					$.ajax({
 						url:
-							apphome +
-							"/views/modules/" +
-							moduleid +
-							"/components/results/orderInsertData.html",
+							searchhome +
+							"/orderInsertData.html",
 						data: options,
 						xhrFields: {
 							withCredentials: true,
@@ -819,7 +802,9 @@ onloadselectors = function () {
 						type: "POST",
 						success: function (data) {
 							//load
-							$(window).trigger("checkautoreload", [resultsdiv]);
+							var editdiv = resultsdiv.closest(".editdiv");
+							autoreload(editdiv, null, "editdiv");
+							//$(window).trigger("checkautoreload", [resultsdiv]);
 						},
 					});
 				},
@@ -831,19 +816,17 @@ onloadselectors = function () {
 
 		lQuery(".hitmovetotop").livequery("click", function () {
 			var cell = $(this).closest(".masonry-grid-cell");
-			var resultsdiv = cell.closest(".lightboxresults");
+			var resultsdiv = cell.closest(".resultsdiv");
 
 			var options = resultsdiv.cleandata();
 			options.dataid = cell.data("dataid");
 
 			//Save scroll location?
-			var moduleid = resultsdiv.data("moduleid");
+			var searchhome = resultsdiv.data("searchhome");
 			$.ajax({
 				url:
-					apphome +
-					"/views/modules/" +
-					moduleid +
-					"/components/results/orderMoveToTop.html",
+					searchhome  +
+					"/orderMoveToTop.html",
 				data: options,
 				xhrFields: {
 					withCredentials: true,
@@ -852,7 +835,9 @@ onloadselectors = function () {
 				type: "POST",
 				success: function (data) {
 					//load
-					$(window).trigger("checkautoreload", [resultsdiv]);
+					//$(window).trigger("checkautoreload", [resultsdiv]);
+					var editdiv = resultsdiv.closest(".editdiv");
+					autoreload(editdiv, null, "editdiv");
 				},
 			});
 		});
@@ -896,46 +881,6 @@ $(document).ready(function () {
 });
 
 emcomponents = function () {
-	if (jQuery.fn.draggable) {
-		lQuery(".librarydroparea").livequery(function () {
-			$(this).droppable({
-				drop: function (event, ui) {
-					var assetid = ui.draggable.data("assetid");
-					var node = $(this);
-
-					node.removeClass("selected");
-					node.removeClass("dragoverselected");
-
-					node.css(
-						"background-image",
-						'url("' + themeprefix + '/images/icons/loader.gif")'
-					);
-					var targetDiv = node.data("targetdiv");
-					var libraryid = node.data("libraryid");
-					var hitssessionid = $("#resultsdiv").data("hitssessionid");
-					if (!hitssessionid) {
-						hitssessionid = $("#main-results-table").data("hitssessionid");
-					}
-
-					jQuery.get(
-						apphome + "/components/libraries/addasset.html",
-						{
-							assetid: assetid,
-							libraryid: libraryid,
-							hitssessionid: hitssessionid,
-						},
-						function (data) {
-							var cell = $("#" + targetDiv);
-							cell.replaceWith(data);
-						}
-					);
-				},
-				tolerance: "pointer",
-				over: handleDroppableOver,
-				out: handleDroppableOut,
-			});
-		});
-	} // droppable
 
 	lQuery("img.assetdragdrop").livequery(function () {
 		var img = $(this);
@@ -980,97 +925,9 @@ emcomponents = function () {
 		// ); //Deal with A tags?
 	});
 
-	lQuery(".librarycollectiondroparea").livequery(function () {
-		$(this).droppable({
-			drop: function (event, ui) {
-				/*
-				 * Current droppable element
-				 */
-				var anode = $(this);
-				var collectionid = anode.data("collectionid");
-				var targetDiv = anode.data("targetdiv");
-				var dropsave = anode.data("dropsaveurl");
-				var hitssessionid = $("#resultsdiv").data("hitssessionid");
-				var collectionName = anode
-					.find("a.librarylabel")
-					.data("collectionname");
+	
 
-				var params = {
-					collectionid: collectionid,
-				};
-
-				// console.log("Drop" + ui.draggable);
-				/*
-				 * Current draggable element
-				 */
-				var assetid = ui.draggable.data("assetid");
-				var categoryid = ui.draggable.data("nodeid");
-				var categoryName = ui.draggable.data("categoryname");
-				params.categoryid = categoryid;
-				params.categoryName = categoryName;
-
-				var response;
-				/*
-				 * if(!categoryName){ response =
-				 * true;//confirm("Move asset to
-				 * "+collectionName+" collection?"); }else{
-				 * response = confirm("Copy "+categoryName+"
-				 * category to "+collectionName+" collection?"); }
-				 * if(response == false){ return false; }
-				 */
-
-				if (!hitssessionid) {
-					hitssessionid = $("#main-results-table").data("hitssessionid");
-				}
-
-				var nextpage = dropsave;
-				if (assetid) {
-					params.assetid = assetid;
-				}
-				params.hitssessionid = hitssessionid;
-				jQuery.get(nextpage, params, function (data) {
-					var cell = $("#" + targetDiv);
-					cell.replaceWith(data);
-				});
-			},
-			tolerance: "pointer",
-			over: handleDroppableOver,
-			out: handleDroppableOut,
-		});
-	});
-
-	lQuery(".newcollectiondroparea").livequery(function () {
-		$(this).droppable({
-			drop: function (event, ui) {
-				var categortyid = ui.draggable.data("nodeid");
-				var dropsaveurl;
-				var params = {};
-				if (typeof categortyid != "undefined") {
-					var categoryName = ui.draggable.data("categoryname");
-					dropsaveurl =
-						apphome + "/components/opencollections/dropcategory.html";
-					params.categoryid = categortyid;
-					params.categoryname = categoryName;
-				} else {
-					var assetid = ui.draggable.data("assetid");
-					dropsaveurl =
-						apphome +
-						"/components/opencollections/addnewchild.html?assetid=" +
-						assetid;
-					params.assetid = assetid;
-					var hitssessionid = $("#resultsdiv").data("hitssessionid");
-					params.hitssessionid = hitssessionid;
-				}
-				jQuery.get(dropsaveurl, params, function (data) {
-					var cell = $("#opencollectioncreatenewarea");
-					cell.html(data);
-				});
-			},
-			tolerance: "pointer",
-			over: handleDroppableOver,
-			out: handleDroppableOut,
-		});
-	});
+	
 };
 
 String.prototype.trimEllip = function (length) {

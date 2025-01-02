@@ -1,0 +1,33 @@
+#set( $favorites = $userprofile.get("favorites_"+$module.id))
+$context.putPageValue("favorites", $favorites) 
+
+$context.putPageValue("rendermoduleid", $module.id) 
+
+#if($content.section != "favorites")
+	$pages.include("${searchhome}/resultheader.html",$context)
+#end 
+
+<div class="scrollview" style="overflow-x: hidden;">
+	<div class="brickvertical brickverticalsortable" 
+		data-cellpadding="4" 
+		data-stackedviewpath="${apphome}/views/modules/${module.id}/results/default/types/brickvertical.html">
+		#foreach( $hit in $hits.getPageOfHits())
+		
+			$context.putPageValue("rendermoduleid", $hit.entitysourcetype)
+			$context.putPageValue("entity", $hit) 
+			$context.putPageValue("hit", $hit)
+
+			<div class="resultsdivdata masonry-grid-cell full-height"
+				id="gallerycell_$!{hit.id}"
+				data-assetid="$!{hit.id}"
+				data-dataid="$hit.id"
+			> 
+			$pages.include("${searchhome}/thumbnails/brickentity.html", $context)
+			</div>
+			#set ( $count = $count + 1) 
+		#end
+		#if ( $hits.getPageOfHits().size() == 0 )
+			$pages.stream("$!{searchhome}/empty.html", $context)
+		#end
+	</div>
+</div>

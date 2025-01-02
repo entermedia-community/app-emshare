@@ -1,0 +1,109 @@
+#set( $searcher = $mediaarchive.searcherManager.getSearcher($catalogid, "convertpreset"))
+#set( $collectionid = $context.getRequestParameter("collectionid") )
+$context.putPageValue("collectionid",$collectionid)
+$context.putPageValue("asset", $asset) 
+#set( $rendertype = $mediaarchive.getMediaRenderType($asset))
+$context.putPageValue("rendertype",$rendertype)
+#set( $playertype = $mediaarchive.getMediaPlayerType($asset))
+#if( !$playertype )
+	##[[No template for]] $playertype
+#end
+#set( $cdnprefix = $mediaarchive.getCatalogSettingValue("cdn_prefix") )
+$context.putPageValue("cdn",$cdnprefix)
+
+#set( $mediadbappid=$mediaarchive.getMediaDbId())
+
+##This is used to make a readonly version for mediadb
+#set( $previewonly = $context.getPageValue("previewonly"))
+#if( !$previewonly)
+	#set( $previewonly = false)
+#end
+$context.putPageValue("previewonly", $previewonly) 
+
+#ifnull($opentab)
+#set( $opentab = $context.getRequestParameter("opentab") )
+#end
+
+#ifnull($opentab)
+#set( $opentab = $userprofile.get("assetopentab"))
+#end
+#set( $opentabactions = "")
+
+#ifnull($opentab)
+	#set( $opentab = "viewpreview")
+#end
+
+#if( !$canviewmetadatageneral )
+	#set( $opentab = "viewpreview")
+#end
+
+#if(($opentab == "viewtimeline" || $opentab == "viewclosedcaptions") && $rendertype != "video")
+	#set( $opentab = "viewpreview")
+#end
+
+#if($opentab == "imageeditor" && $rendertype != "image")
+	#set( $opentab = "viewpreview")
+#end
+
+#if($opentab == "viewdownloads" && !$canviewmediaedit)
+	#set( $opentab = "viewpreview")
+#end
+
+#ifnull($hitssessionid)
+#set( $hitssessionid = $context.getRequestParameter("assethitssessionid") )
+#end
+
+#ifnull($rendertype)
+#set( $rendertype = $context.getRequestParameter("rendertype") )
+#end
+#set( $index = $hits.indexOfId($asset.id))
+#set( $previous = false )
+#set( $previous = $hits.previous($index))
+$context.putPageValue("previous",$previous)
+#set( $next = false )
+#set( $next = $hits.next($index))  
+$context.putPageValue("next",$next)
+
+
+#set( $ismulti = $asset.id.startsWith("multiedit:") || $context.getRequestParameter("multi") == "true")
+#if( $ismulti )
+	#set( $opentab = "viewproperties")
+	$context.putPageValue("ismulti",$ismulti)
+#end
+
+$context.putPageValue("opentab",$opentab)
+$context.putPageValue("opentabactions",$opentabactions)
+
+#set( $hitssessionid = $hits.getSessionId())
+$context.putPageValue("hitssessionid",$hitssessionid)
+
+#set( $originaledithomeid = $context.getRequestParameter("edithomeid") )
+
+<div id="main-media-container"  class="editdiv"
+
+	data-originaledithomeid="$originaledithomeid"
+	data-includeeditcontext="true"
+	data-includesearchcontext="false"
+	
+data-oemaxlevel="1" 
+data-editable="$!caneditasset" 
+data-assetid="$!{asset.id}"  
+data-previous="$!previous.getId()"
+data-previousname="$!previous.getName()"
+data-previouspage="$!hits.idOnPreviousPage()"
+data-next="$!next.getId()"
+data-nextname="$!next.getName()"
+data-nextpage="$!hits.idOnNextPage()"
+data-assethitssessionid="$hitssessionid"
+data-opentab="$!{opentab}"
+data-rendertype="$!rendertype"
+data-multieeditlink="${apphome}/views/modules/asset/mediaviewer/fullscreen/tabs/multiedit.html?assetid=multi:$!hitssessionid&assethitssessionid=$!hitssessionid&multi=true"
+data-url="$siteroot${apphome}/views/modules/asset/mediaviewer/fullscreen/currentasset.html"
+	
+>
+
+$pages.include("${apphome}/views/modules/asset/mediaviewer/fullscreen/currentassettabs.html",$context)
+$pages.include("${apphome}/views/modules/asset/mediaviewer/fullscreen/mainmediaviewer.html",$context)
+
+</div>
+

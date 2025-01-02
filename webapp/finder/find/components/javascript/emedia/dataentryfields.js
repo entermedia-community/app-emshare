@@ -114,8 +114,8 @@ $(document).ready(function () {
 			"entityrequired",
 			function (value, element) {
 				var picker = $(element).data("entitypicker");
-
-				if ($("#" + picker + " li").length > 1) {
+				var pickerul = picker.find("ul");
+				if ($("#" + pickerul + " li").length > 1) {
 					return true;
 				}
 				return false;
@@ -161,20 +161,10 @@ $(document).ready(function () {
 		var select = $("#" + targetselect);
 		//debugger;
 		$.getJSON(url, queryString, function (data) {
-			//				select.append($('<option>', {
-			//					selected: true,
-			//				    value: data.id,
-			//				    text: data.name
-			//				}));
-			//
-
 			var newOption = new Option(data.name, data.id, true, true);
 			$("#" + targetselect)
 				.append(newOption)
 				.trigger("change");
-
-			//$('#' + targetselect).list2();
-			//$("#" + targetselect).val(data.id);
 		});
 		$(this).closest(".modal").modal("hide");
 	});

@@ -1,0 +1,67 @@
+
+<div class="entity-tab #if($viewdata.id == $entitymoduleviewid) current-entity#end">
+	<a 
+		#if($addnew=='true')
+			href="#"
+			data-isnewentity="true"
+			class="entity-tab-label"
+		#else
+			href="${edithome}/tabs/index.html"
+			class="ajax entity-tab-label"
+		#end 
+		class="ajax entity-tab-label"
+		data-oemaxlevel="1"
+		data-targetdiv="entitydialog"
+		data-entityid="$!entity.getId()" 
+		data-entitymoduleid="$!entitymodule.id"
+		data-entitymoduleviewid="$viewdata.id"
+		data-propertyfield="${entitymodule.id}_entitytabopen"
+		data-propertyvalue="$viewdata.id"
+		data-$!{entityhits.getSearchType()}hitssessionid="$!entityhits.getSessionId()"		
+		role="tab" 
+		title="#text($viewdata)">
+
+#if( $viewdata.rendertype == "data" )
+	#set($moduleicon = $entitymodule.moduleicon)
+#elseif( $viewdata.rendertype == "entityshare" )
+	#set($moduleicon = "share")
+#elseif( $viewdata.rendertype == "tablightboxes" )
+	#set($moduleicon = "check-circle")
+#elseif( $viewdata.rendertype == "tabrenderditaeditor" )
+	#set($moduleicon = "file-richtext")
+#elseif( $viewdata.rendertype == "entityupload" )
+	#set($moduleicon = "upload")
+#end
+
+#ifnull($moduleicon)
+
+	#set( $othermodule = $viewdata.rendertable )
+	#ifnotnull($othermodule)
+		#set( $tabmodule = $mediaarchive.getCachedData("module", $othermodule))
+		#ifnotnull($tabmodule)
+		   	#set($moduleicon = $tabmodule.moduleicon)
+		#end
+	#end
+#end
+
+#ifnotnull($viewdata.moduleicon)
+	#set($moduleicon = $viewdata.moduleicon)
+#end
+
+
+#ifnull($moduleicon)
+	#set($moduleicon = $entitymodule.moduleicon)
+#end
+
+#ifnull($moduleicon)
+	#set($moduleicon = "box")
+#end
+
+		<i class="bi bi-${moduleicon} module-icon"></i> 
+			#text($viewdata)
+	</a>
+</div>
+
+
+
+

@@ -1,0 +1,42 @@
+#ifnull($entitymoduleviewid) 
+	#set($entitymoduleviewid = $context.getRequestParameter("entitymoduleviewid"))
+	
+#end
+#set($entitymoduleviewdata = $mediaarchive.getCachedData("view",$entitymoduleviewid))
+
+<div id="$edithomeid" class="editdiv entitysubmodules dataeditedreload" 
+	data-entityid="$!entity.id"
+	data-entitymoduleid="$!entitymodule.id"
+	data-entitymoduleviewid="$!entitymoduleviewid"
+	data-url= "${apphome}/views/modules/${entitymodule.id}/editors/entitysubmodules/index.html"
+	data-edithome="${edithome}"
+	data-edithomeid="${edithomeid}"
+>
+	#set($entitymoduleid = $!entitymoduleviewdata.moduleid)
+	#set($entitymodule = $mediaarchive.getCachedData("module",$entitymoduleid))
+	$context.putPageValue("entitymodule", $entitymodule)
+	
+	#set($submoduleid = $!entitymoduleviewdata.rendertable)
+
+<div class="clickableresultlist"
+	data-targetdiv="entitydialog"
+	data-oemaxlevel="1"
+	data-includeeditcontext="false"
+	data-includesearchcontext="false"
+	data-url= "${apphome}/views/modules/${submoduleid}/editors/default/tabs/index.html"
+>	
+	#set($module = $mediaarchive.getCachedData("module",$submoduleid))
+	$context.putPageValue("module", $module)
+	#set($searchhome = "$apphome/views/modules/${submoduleid}/results/submoduleslist")
+	$context.putPageValue("searchhome", $searchhome)
+	
+	#set($sortby = $!viewdata.rendersort)
+	#set($args = "field=$!{entitymodule.id}&$!{entitymodule.id}.value=$!{entity.id}&operation=exact")
+	#set($args = "$args&sortby=$!sortby&entitymoduleviewid=$entitymoduleviewid&${module.id}setpage=1")
+	
+	$context.putPageValue("viewid", $entitymoduleviewid)
+	
+	$pages.include("${searchhome}/search.html?$!args",$context)
+</div>	
+		
+</div>

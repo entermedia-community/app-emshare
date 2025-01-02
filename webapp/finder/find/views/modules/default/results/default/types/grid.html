@@ -1,0 +1,41 @@
+<div id="modulesearchresultsdiv" class="h-100"  data-moduleid="$!module.id">
+  #set( $favorites = $userprofile.get("favorites_"+$module.id))
+  $context.putPageValue("favorites", $favorites) 
+
+  $context.putPageValue("rendermoduleid", $module.id) 
+  
+  #if($content.section != "favorites")
+    $pages.include("${searchhome}/resultheader.html",$context)
+  #end 
+  
+  #set($currentpage = $context.getRequestParameter("currentpagenum")) 
+  #set($prhits = $hits.getPositionRender() ) 
+  #ifnotnull($currentpage)
+    $prhits.setPageOneBased($currentpage) 
+  #end
+  #set($pos = $prhits.toPosition($prhits.getPage())) 
+  #set($resultsPage = "${searchhome}/index.html?${module.id}hitssessionid=$!{hits.sessionId}&pageposition")
+  #set($targetdivinner = "${module.id}resultsarea") 
+  #set($oemaxlevel = "2")
+
+  <div class="emgridflexcontainer h-100 overflow-y" >
+    <div class="emgridflex">
+      <div id="galleryimg"
+        class="emgrid entitiescontainer"
+        data-fixedwidth="210"
+        data-cellpadding="15">
+        #foreach( $hit in $hits.getPageOfHits())
+          $context.putPageValue("rendermoduleid", $hit.entitysourcetype)
+          $context.putPageValue("entity", $hit) $context.putPageValue("hit", $hit)
+          <div class="emgridcell activelistcontainer #if($selectedid == $hit.getId() || $topselectedid == $hit.getId()) active #end">
+           
+            $pages.include("$searchhome/types/entityfolder.html", $context) 
+           
+            #set($editurl = "${edithome}/tabs/index.html?entityid=${hit.getId()}&hitssessionid=$!{hits.sessionId}")
+            
+          </div>
+        #end
+      </div>
+    </div>
+  </div>
+</div>

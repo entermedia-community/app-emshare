@@ -1,5 +1,5 @@
 (function ($) {
-	$.fn.emDialog = function () {
+	$.fn.emDialog = function (onsuccess) {
 		var initiator = $(this);
 
 		var width = initiator.data("width");
@@ -7,6 +7,42 @@
 		var id = initiator.data("dialogid");
 		if (!id) {
 			id = "modals";
+		}
+
+		var options = initiator.cleandata();
+
+		if (initiator.data("includeeditcontext") == true) {
+			var editdiv = initiator.closest(".editdiv"); //This is used for lightbox tree opening
+			if (editdiv.length > 0) {
+				var otherdata = editdiv.cleandata();
+				options = {
+					...otherdata,
+					...options,
+				};
+			} else {
+				console.warn("No editdiv found for includeeditcontext");
+			}
+		}
+
+		if (initiator.data("includesearchcontext") == true) {
+			var editdiv = initiator.closest(".editdiv"); //This is used for lightbox tree opening
+			var resultsdiv = editdiv.find(".resultsdiv");
+
+			if (resultsdiv.length > 0) {
+				if (resultsdiv.length > 1) {
+					console.error(
+						"Should not be finding more than one resultdiv ",
+						resultsdiv
+					);
+				}
+				var otherdata = resultsdiv.cleandata();
+				options = {
+					...otherdata,
+					...options,
+				};
+			} else {
+				console.warn("No resultsdiv found for includesearchcontext");
+			}
 		}
 
 		var modaldialog = $("#" + id);
@@ -18,30 +54,38 @@
 			);
 			modaldialog = jQuery("#" + id);
 		}
-		var options = initiator.data();
-		var link = initiator.attr("href");
-		if (!link) {
+
+		var link = initiator.data("url");
+
+		if (link === undefined) {
+			link = initiator.attr("href");
+		}
+		if (link === undefined) {
 			link = initiator.data("targetlink");
 		}
-		if (
-			initiator.hasClass("entity-dialog") &&
-			initiator.closest(".modal").length !== 0
-		) {
-			//link = link.replace("entity.html", "entitytab.html");
-			options.oemaxlevel = 1;
+		var olddialog = initiator.closest(".modal");
+		if (olddialog.length !== 0 && olddialog.attr("id") == id) {
+			//Try and reuse the dialog
+			var hasbackbutton = modaldialog.find(".enablebackbtn"); //Remove existing layouts if using backbutton
+			if (hasbackbutton.length !== 0) {
+				options.oemaxlevel = 1;
+			}
 		}
+
+		//NOT USED. Delete
 		var param = initiator.data("parameterdata");
 		if (param) {
 			var element = jQuery("#" + param);
 			var name = element.prop("name");
 			options[name] = element.val();
 		}
-		var openfrom = window.location.href;
 
 		var searchpagetitle = "";
 
 		$(window).trigger("showToast", [initiator]);
 		var toastUid = initiator.data("uid");
+		var initiatorData = initiator.data();
+		var onsuccessVar = onsuccess;
 		jQuery.ajax({
 			xhrFields: {
 				withCredentials: true,
@@ -50,134 +94,89 @@
 			url: link,
 			data: options,
 			success: function (data) {
-				initiator.data("uiid", toastUid);
-				$(window).trigger("successToast", [initiator]);
-				//--Entities
-				if (
-					initiator.hasClass("entity-dialog") &&
-					initiator.closest(".modal").length !== 0
-				) {
-					//find tab
-					var tabid = initiator.data("tabid");
-					if (!tabid) {
-						tabid = "tab_metadata";
-					}
-					if (tabid) {
-						var container = initiator.closest(".entity-body");
-						var tabs = container.find(".entity-tab-content");
-						if (tabs.length >= 10) {
-							alert("Max Tabs Limit");
-							return this;
-						}
-
-						//open new entity
-						var parent = container.closest(".entitydialog");
-						container = initiator.closest(".entity-wraper");
-						container.replaceWith(data);
-						tabbackbutton(parent);
-					}
-				} else if (initiator.data("targetrendertype") == "entity") {
-					var container = initiator.closest(".entity-wraper");
-					var parent = initiator.closest(".entitydialog");
-					container.replaceWith(data);
-					tabbackbutton(parent);
-				} else {
-					modaldialog.html(data);
-					if (width !== undefined) {
-						if (width > $(window).width()) {
-							width = $(window).width();
-						}
-
-						$(".modal-dialog", modaldialog).css("min-width", width + "px");
-					}
-					if (maxwidth) {
-						$(".modal-dialog", modaldialog).css("max-width", maxwidth + "px");
-					}
-
-					var modalkeyboard = false;
-					var modalbackdrop = true;
-					if ($(".modal-backdrop").length) {
-						modalbackdrop = false;
-					}
-
-					var modalinstance;
-					if (modalkeyboard) {
-						modalinstance = modaldialog.modal({
-							closeExisting: false,
-							show: true,
-							backdrop: modalbackdrop,
-						});
-					} else {
-						modalinstance = modaldialog.modal({
-							keyboard: false,
-							closeExisting: false,
-							show: true,
-							backdrop: modalbackdrop,
-						});
-					}
-
-					if (initiator.is(":visible")) {
-						var firstform = modaldialog.find("form");
-						firstform.data("openedfrom", openfrom);
-					}
-					var autosetformtargetdiv = initiator.data("autosetformtargetdiv")
-					if( autosetformtargetdiv !== undefined)
-					{	
-						var tdiv = initiator.closest("." + autosetformtargetdiv);
-						if( tdiv.length == 1)
-						{
-							firstform.data("targetdiv", tdiv.attr("id"));
-						}
-					}
-
-					// fix submit button
-					var justok = initiator.data("cancelsubmit");
-					if (justok != null) {
-						$(".modal-footer #submitbutton", modaldialog).hide();
-					} else {
-						var id = $("form", modaldialog).attr("id");
-						$("#submitbutton", modaldialog).attr("form", id);
-					}
-					var hidetitle = initiator.data("hideheader");
-					if (hidetitle == null) {
-						var title = initiator.attr("title");
-						if (title == null) {
-							title = initiator.text();
-						}
-						$(".modal-title", modaldialog).text(title);
-					}
-					var hidefooter = initiator.data("hidefooter");
-					if (hidefooter != null) {
-						$(".modal-footer", modaldialog).hide();
-					}
-
-					//backup url
-					var currenturl = window.location.href;
-					modalinstance.data("oldurlbar", currenturl);
-
-					searchpagetitle = modaldialog.find("[data-setpagetitle]");
-
-					modalinstance.on("hidden.bs.modal", function () {
-						//on close execute extra JS -- Todo: Move it to closedialog()
-						if (initiator.data("onclose")) {
-							var onclose = initiator.data("onclose");
-							var fnc = window[onclose];
-							if (fnc && typeof fnc === "function") {
-								//make sure it exists and it is a function
-								fnc(initiator); //execute it
-							}
-						}
-
-						closeemdialog($(this)); //Without this the asset Browse feature does not close all the way
-						$(window).trigger("resize");
-					});
-
-					modalinstance.on("scroll", function () {
-						//checkScroll();
-					});
-
-					adjustZIndex(modalinstance);
+				if (onsuccessVar !== undefined) {
+					onsuccessVar();
 				}
+				$(window).trigger("successToast", toastUid);
+				var targetdiv = modaldialog.find(".enablebackbtn");
+				if (targetdiv.length == 0) {
+					modaldialog.html(data);
+				} else {
+					//--Entities
+					targetdiv.html(data);
+				}
+
+				if (width) {
+					width = Math.min(width, $(window).width() - 16);
+					$(".modal-dialog", modaldialog).css("min-width", width + "px");
+				}
+				if (maxwidth) {
+					$(".modal-dialog", modaldialog).css("max-width", maxwidth + "px");
+				}
+
+				var modalbackdrop = true;
+				if ($(".modal-backdrop").length) {
+					modalbackdrop = false;
+				}
+
+				var modalinstance = modaldialog.modal({
+					closeExisting: false,
+					show: true,
+					backdrop: modalbackdrop,
+					keyboard: false,
+				});
+				/*  Use editdivid
+				var autosetformtargetdiv = initiatorData["autosetformtargetdiv"];
+				if (autosetformtargetdiv !== undefined) {
+					var tdiv = initiator.closest("." + autosetformtargetdiv);
+					if (tdiv.length == 1) {
+						firstform.data("targetdiv", tdiv.attr("id"));
+					}
+				}
+*/
+				// fix submit button
+				var justok = initiatorData["cancelsubmit"];
+				if (justok != null) {
+					$(".modal-footer #submitbutton", modaldialog).hide();
+				} else {
+					var id = $("form", modaldialog).attr("id");
+					$("#submitbutton", modaldialog).attr("form", id);
+				}
+				var hidetitle = initiatorData["hideheader"];
+				if (hidetitle == null) {
+					var title = initiator.attr("title");
+					if (title == null) {
+						title = initiator.text();
+					}
+					$(".modal-title", modaldialog).text(title);
+				}
+				var hidefooter = initiatorData["hidefooter"];
+				if (hidefooter != null) {
+					$(".modal-footer", modaldialog).hide();
+				}
+
+				//backup url
+				var currenturl = window.location.href;
+				modalinstance.data("oldurlbar", currenturl);
+
+				searchpagetitle = modaldialog.find("[data-setpagetitle]");
+
+				modalinstance.on("hidden.bs.modal", function () {
+					//on close execute extra JS -- Todo: Move it to closedialog()
+					if (initiatorData["onclose"]) {
+						var onclose = initiatorData["onclose"];
+						var fnc = window[onclose];
+						if (fnc && typeof fnc === "function") {
+							//make sure it exists and it is a function
+							fnc(initiator); //execute it
+						}
+					}
+
+					closeemdialog($(this)); //Without this the asset Browse feature does not close all the way
+					$(window).trigger("resize");
+				});
+
+				adjustZIndex(modalinstance);
 
 				if (
 					typeof global_updateurl !== "undefined" &&
@@ -186,9 +185,9 @@
 					//globaly disabled updateurl
 				} else {
 					//Update Address Bar
-					var updateurl = initiator.data("updateurl");
+					var updateurl = initiatorData["updateurl"];
 					if (updateurl) {
-						var urlbar = initiator.data("urlbar");
+						var urlbar = initiatorData["urlbar"];
 						if (!urlbar) {
 							urlbar = link;
 						}
@@ -203,8 +202,8 @@
 				}
 
 				//on success execute extra JS
-				if (initiator.data("onsuccess")) {
-					var onsuccess = initiator.data("onsuccess");
+				if (initiatorData["onsuccess"]) {
+					var onsuccess = initiatorData["onsuccess"];
 					var fnc = window[onsuccess];
 					if (fnc && typeof fnc === "function") {
 						//make sure it exists and it is a function
@@ -215,8 +214,7 @@
 				$(window).trigger("resize");
 			},
 			error: function () {
-				initiator.data("uiid", toastUid);
-				$(window).trigger("errorToast", [initiator]);
+				$(window).trigger("errorToast", toastUid);
 			},
 		});
 
@@ -229,6 +227,15 @@
 				elmnt.scrollIntoView();
 			}
 		});
+
+		// $(modaldialog).on("hidePrevented.bs.modal", function (e) {
+		// 	var backUrl = $(modaldialog).find(".entityNavBack");
+		// 	if (backUrl.length > 0) {
+		// 		e.stopImmediatePropagation();
+		// 		e.preventDefault();
+		// 		backUrl.trigger("click");
+		// 	}
+		// });
 
 		$(modaldialog).on("hide.bs.modal", function (e) {
 			trackKeydown = false;
@@ -257,7 +264,7 @@
 
 closeemdialog = function (modaldialog) {
 	var oldurlbar = modaldialog.data("oldurlbar");
-
+	var dialogid = modaldialog.attr("id");
 	if (modaldialog.modal) {
 		modaldialog.modal("hide");
 		modaldialog.remove();
@@ -268,10 +275,18 @@ closeemdialog = function (modaldialog) {
 		adjustZIndex(othermodal);
 	}
 
+	disposevideos();
+
 	$(window).trigger("setPageTitle", [othermodal]);
 
 	if (oldurlbar !== undefined) {
+		if (dialogid == "mediaviewer") {
+			//history.replaceState(null, null, " ");
+			oldurlbar = RemoveParameterFromUrl(oldurlbar, "assetid");
+		}
+		
 		history.pushState($("#application").html(), null, oldurlbar);
+		
 	}
 };
 
@@ -286,3 +301,9 @@ closeallemdialogs = function () {
 		hideOverlayDiv(overlay);
 	}
 };
+
+function RemoveParameterFromUrl(url, parameter) {
+  return url
+    .replace(new RegExp('[?&]' + parameter + '=[^&#]*(#.*)?$'), '$1')
+    .replace(new RegExp('([?&])' + parameter + '=[^&]*&'), '$1');
+}

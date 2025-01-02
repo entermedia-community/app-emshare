@@ -1,0 +1,71 @@
+#if($organizedModules.size() > 1)
+	<div class="searchcategorysidebar auto-active-container overflow-y">
+		#if($organizedModules.size() > 1)
+		<div class="mb-2 auto-active-row #ifnull($selectedmodule) current #end">
+
+			#set($url = "$edithome/index.html?searchcategoryid=$searchcategory.id")
+
+			<a href="$url" 
+				class="ajax btn btn-wide auto-active-link"  
+				data-targetdiv="${edithomeid}"  
+				data-updateurl="true" 
+				data-oemaxlevel="1" 
+				data-hidenavigation="true">
+				$context.putPageValue("thumbsize", "crop" )
+				#set( $primarymedia = $mediaarchive.getCachedAsset($searchcategory.primarymedia))
+				#ifnotnull($primarymedia)
+					$context.putPageValue("hit", $primarymedia) 
+					$context.putPageValue("asset", $primarymedia)
+					#set( $assetrendertype = $mediaarchive.getMediaRenderType($primarymedia.fileformat))
+					<div class="btn-img">
+						$pages.include("${searchhome}/thumbnails/${assetrendertype}.html", $context)
+					</div>
+				#end
+				#ifnull($primarymedia)
+					#set($moduleicon = "grid")
+					#if ($module.moduleicon)
+						#set($moduleicon = $module.moduleicon)
+					#end
+					<i class="bi bi-$!{moduleicon} module-icon ns"></i>
+				#end
+				<span>#text($searchcategory) ($!{hits.size()})</span>
+			</a>
+		</div>
+		#end
+		
+		#foreach($module in $organizedModules)
+			#set($idhits = $organizedHits.get($module.id))
+			$context.putPageValue("hits", $idhits)
+			$context.putPageValue("module", $module)
+			$context.putPageValue("moduleid", $module.id)
+			$context.putPageValue("componenthome", "$apphome/views/modules/$module.id/components")
+			
+			#set($moduleicon = "grid")
+			#if ($module.moduleicon)
+				#set($moduleicon = $module.moduleicon)
+			#end
+				###set($entityurl = "$!siteroot$apphome/views/modules/$!{module.id}/index.html?$!{module.id}page=1&field=searchcategory&searchcategory.value=${searchcategory.id}&operation=exact")
+			
+			#set($url = "$edithome/index.html?searchcategoryid=$searchcategory.id&selectedmodule=${module.id}")
+			
+			#set($entitysourcetype = $hits.getActiveFilterValues().get("entitysourcetype")) 
+			#set($count = $entitysourcetype.getCount($module.id))
+			
+			<div class="mb-2 auto-active-row #if($selectedmodule == $module.id) current #end">
+				<a href="$url" 
+					class="ajax btn btn-wide auto-active-link" 
+					data-targetdiv="${edithomeid}" 
+					data-updateurl="true" 
+					data-oemaxlevel="1"
+					data-includeeditcontext="false"
+					>
+					<i class="bi bi-$!{moduleicon} module-icon ns"></i> <span>#text($module) ($!{count})</span>
+				</a>
+			</div>
+		#end
+	</div>
+#else
+	<div class="emnoresults">	
+		[[No modules added in this category]]
+	</div>
+#end

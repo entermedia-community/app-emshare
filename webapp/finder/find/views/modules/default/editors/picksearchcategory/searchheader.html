@@ -1,0 +1,28 @@
+#set( $copyinghitssessionid = $context.getRequestParameter("copyinghitssessionid"))
+#set( $entitymoduleid = $context.getRequestParameter("entitymoduleid"))
+
+<div class="entity-action-header">
+		<h3>
+			#set($moduleicon = "box")
+			#ifnotnull($module.moduleicon)
+				#set($moduleicon = $module.moduleicon)
+			#end	
+			<i class="bi bi-$moduleicon module-icon" style="font-size: 0.8em;;"></i>
+			
+			#set( $hits = $context.getSessionValue($copyinghitssessionid) )
+			 
+			[[Assign Category To]] <small>($hits.getSelectionSize())</small> [[Selections]]
+		</h3>
+
+			#set($addnew = "$edithome/addnew.html")
+			<a class="btn btn-lg btn-accent rounded mb-3 float-left emdialog"
+			data-dialogid="pickeraddnew"
+			
+			data-hidefooter="true"
+			data-includeeditcontext="true"
+			href="$addnew"
+			title="[[Create New]] #text($module)">
+			<i class="bi bi-plus-lg mr-1"></i> [[Create New]]</a>
+	
+	<div class="clearfix"></div>
+</div>

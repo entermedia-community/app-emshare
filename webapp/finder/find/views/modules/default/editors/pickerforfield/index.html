@@ -1,0 +1,28 @@
+#set( $pickertargetfield = $context.getRequestParameter("pickertargetfield"))
+$context.putPageValue("pickertargetfield", $pickertargetfield)
+
+<div id="$edithomeid" class="editdiv pickerresults pickerforfield" 
+
+	data-edithome="${edithome}"
+	data-edithomeid="${edithomeid}"
+	data-entityid="$!{entity.id}"
+	data-entitymoduleid="$!{entitymodule.id}"
+	data-entitymoduleviewid="$entitymoduleviewid"
+	
+>
+	<div class="clickableresultlist"
+		data-oemaxlevel="1"
+		data-url="${edithome}/actions/savepick.html"
+		data-targetdiv="entitypicker${pickertargetfield}"  ##global
+ 		data-pickertargetfield="${pickertargetfield}"
+	>	
+		<div class="overflow-y">
+		
+		#set($searchhome = "$apphome/views/modules/${module.id}/results/default")
+		$context.putPageValue("searchhome", $searchhome)
+		
+		$pages.include("${searchhome}/searchinclude.html",$context)
+		</div>
+	</div>
+
+</div>

@@ -1,0 +1,48 @@
+#ifnull($searchhomeid)
+	#set($searchhomeid = $page.get("searchhomeid") )
+#end
+
+<div id="$searchhomeid" 	
+	class="dialogassetresults assetresults resultsdiv resultsdiv${module.id}" 
+	data-moduleid="asset"  ##required for sorting
+	data-resultview="$!resultview"
+	data-url="$searchhome/index.html"
+	data-nodeID="$!categoryid"
+	data-exactsearch="true"
+	data-dialogresults="true"
+	data-lightboxassetsresults="$!{lightboxassetsresults}"
+	data-entitymoduleviewid="$entitymoduleviewid"
+	
+	data-hitssessionid="$!hits.getSessionId()"
+	data-componenthome = "$!componenthome"
+	data-searchhome="$!searchhome"
+	data-edithome="$!edithome"
+	data-oemaxlevel="1"
+	data-assetsortby="$!hits.getSearchQuery().getSortBy()"
+	
+	data-rootcategory="$!rootcategory"
+	data-targetdiv="$searchhomeid"
+	data-category="$!category.id"
+	
+	data-lightboxid="$!lightboxid"  
+	data-pagenum="$!hits.getPage()" 
+	data-totalpages="$!hits.getTotalPages()"
+	#ifnotnull($entity)
+		data-entityid="$!entity.id"
+		data-entitymoduleid="$!entitymodule.id"
+	#end
+		
+	> 
+			
+		#set( $uploadmedia = $context.getRequestParameter("uploadmedia"))
+		
+		#if($uploadmedia && $canupload)
+			$pages.include("$apphome/views/modules/asset/add/entityaddmedia.html?categoryid=$rootcategory", $context)
+		#else
+			$context.putPageValue("targetdivsearch", $targetdivmedia)
+			$context.putPageValue("resultview",$resultview)
+			
+			$pages.include("${searchhome}/resultviews.html", $context)
+		#end
+		
+</div>

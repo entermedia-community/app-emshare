@@ -50,44 +50,46 @@ $context.putPageValue("entityrendertype", $entityrendertype)
 
 #set($preference = "minimize$!{moduleid}summary")
 #set($isminimized = $userprofile.getBoolean($preference))
+#set($showaddnew = $content.isPropertyTrue("showaddnew",true))
 
-#set($showaddnew = $page.isPropertyTrue("showaddnew",true))
-<div id="resultsheader" class="resultsheader #if($!hits.getSelectionSize() > 0)hasselections#end">
+#if($content.section == "favorites")
+	#set($showaddnew = false)
+#end
+
+#set($islightheader = $module.id == "searchcategory" || $module.id == "modulesearch")
+<div id="resultsheader" class="#if($islightheader) lighttheme #end resultsheader #if($!hits.getSelectionSize() > 0)hasselections#end">
 	<div id="sub-nav" class="search-views emsubnav sub-nav-$!moduleid">
 		<ul class="resultsnav">
 			#set($pickertarget = $context.getRequestParameter("pickertarget"))
 			#ifnull($pickertarget)
-				#if($permissions.can($moduleid, "create") && $moduleid!="faceprofilegroup" && $moduleid!="order")
-					<li>
-					#if( $showaddnew )
+				#if($permissions.can($moduleid, "create") && $showaddnew)
+					<li> 
 						#ifnotnull($entity)
-							#set($addnew = "$!{siteroot}${apphome}/views/modules/${moduleid}/components/entities/addnew.html")
-							<a class="resultsnavlink emdialog"
+							#set($addnew = "${edithome}/addnew.html")
+							<a href="$addnew"
+							class="resultsnavlink emdialog btn-cta"
 							data-dialogid="entitypickeraddnew"
 							data-hidefooter="true"
-							data-targetdivinner="pickersearchentities"
-							data-ajaxreloadtargets="onetomanytab"
-							data-fieldexternalid="$!fieldexternalid"
-							data-fieldexternalvalue="$!fieldexternalvalue"
-							href="$addnew"
-							title="[[Create New]] #text($entity)">
+							data-includeeditcontext="true"
+							data-autosetformtargetdiv="editdiv"
+							title="[[Create New]] #text($module)">
 							<i class="bi bi-plus-lg mr-1"></i> [[Create New]]</a>
 						#end
 						
 						#ifnull($entity)
-							#set($addurl = "${searchhome}/tabs/preview/$!{entityrendertype}.html?edit=true&addnew=true&viewid=$!{moduleid}addnew")
-							#ifnotnull($topentityid)
-								#set($addurl = "$addurl&fieldexternalid=${topmodule.getId()}&fieldexternalvalue=${topentityid}&reloadtargets=topmodulecontainer")
-							#end
-							<a class="emdialog resultsnavlink focused-btn" href="$addurl" title="[[Add New Record]]">
+							#set($addurl = "${edithome}/tabs/index.html?edit=true&addnew=true&viewid=$!{moduleid}addnew")
+							<a href="$addurl"
+								class="resultsnavlink emdialog btn-cta" 
+								data-addnew="true"
+								title="[[Add New Record]]">
 								<i class="bi bi-plus-lg mr-1"></i> [[Create New]]
 							</a>
 						#end
-					#end	
+	
 					</li>
 				#end
 			#end
-			#if($resultview != "grid")
+			#if($enableactions)
 			<li class="dropdown">
 				<a class="resultsnavlink dropdown-toggle #if($!hits.getSelectionSize() > 0)btn-accent#end" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 					#if($!hits.getSelectionSize() > 0)
@@ -98,34 +100,38 @@ $context.putPageValue("entityrendertype", $entityrendertype)
 				</a>
 				<ul class="dropdown-menu">
 				
-					<li class="dropdown-submenu">
-					<a class="dropdown-item  dropdown-toggle" href="#" data-bs-toggle="dropdown">[[Select]]</a>
-						<ul class="submenu dropdown-menu">
 							<li>
-						<a class="dropdown-item ajax  selectpage" 
-						targetdiv="resultsheader" 
-						href="$!{siteroot}${apphome}/views/modules/${moduleid}/components/results/togglepage.html?oemaxlevel=1&hitssessionid=$hits.getSessionId()&action=all"
+						<a class="dropdown-item  selectpage" 
+						href="${searchhome}/togglepage.html"
+						data-targetdiv="resultsheader"
+						data-action="all"
+						data-includesearchcontext="true"
+						data-includeeditcontext="true"
 						title="[[Select All results]]">[[Select All]]</a>
 						</li>
 						<li>				
-						<a class="dropdown-item ajax selectpage" 
-						targetdiv="resultsheader" 
-						href="$!{siteroot}${apphome}/views/modules/${moduleid}/components/results/togglepage.html?oemaxlevel=1&hitssessionid=$hits.getSessionId()&action=page"
+						<a class="dropdown-item selectpage" 
+						href="${searchhome}/togglepage.html"
+						data-targetdiv="resultsheader"
+						data-action="page"
+						data-includesearchcontext="true"
+						data-includeeditcontext="true"
 						title="[[Select this page of results]]">[[Select Only This Page]]</a>
 						</li>
 						<li>
-						<a class="dropdown-item ajax  deselectpage" 
-						targetdiv="resultsheader" 
-						href="$!{siteroot}${apphome}/views/modules/${moduleid}/components/results/togglepage.html?oemaxlevel=1&hitssessionid=$hits.getSessionId()&action=none"
+						<a class="dropdown-item  selectpage" 
+						href="${searchhome}/togglepage.html"
+						data-targetdiv="resultsheader"
+						data-action="none"
+						data-includesearchcontext="true"
+						data-includeeditcontext="true"
 						title="[[Deselect all results]]">[[Select None]]</a>
 						</li>
-					</ul>
-					</li>	
 					
 				#if( $!hits.getSelectionSize() > 0)
 					
 					#if($permissions.can($moduleid, "edit"))
-					#set($previewediturl = "${searchhome}/tabs/preview/$!{entityrendertype}.html?entityid=multiedit:$!hits.sessionId&hitssessionid=$!hits.sessionId&searchtype=$moduleid&edit=true")
+					#set($previewediturl = "${edithome}/tabs/index.html?entityid=multiedit:$!hits.sessionId&hitssessionid=$!hits.sessionId&searchtype=$moduleid&edit=true")
 					<li><a class="dropdown-item emdialog" 
 						href="$previewediturl"
 						title="[[Multi edit selected items]]">[[Bulk Edit]] $!hits.getSelectionSize() [[Records]]</a>
@@ -148,11 +154,11 @@ $context.putPageValue("entityrendertype", $entityrendertype)
 							 data-tabletype="$tabletype"
 							 data-viewid="$viewid"
 							 data-entityid="$entityid"
-							 href="${searchhome}/actions/deleteselections.html?hitssessionid=$hits.sessionId"
+							 href="${edithome}/actions/deleteselections.html?hitssessionid=$hits.sessionId"
 						 #else
 							 data-oemaxlevel="3" 
 							 data-targetdiv="resultsdiv" 
-							 href ="${searchhome}/actions/deleteselections.html?hitssessionid=$hits.sessionId"
+							 href ="${edithome}/actions/deleteselections.html?hitssessionid=$hits.sessionId"
 						 #end
 						 title="[[Delete selected items]]">[[Delete]] $!hits.getSelectionSize() [[Records]]</a></li>
 					#end
@@ -168,22 +174,17 @@ $context.putPageValue("entityrendertype", $entityrendertype)
 					</li>
 					
 					
-				#if($canaddtofavorites && $librarycol.id != "${user.id}-favorites" )
-				<li><a class="dropdown-item ajax"
-					data-targetdivinner="empty"
-					data-alertmessage="[[Added to Bookmarks]]"
-					data-oemaxlevel="2" 
-				title="[[Add To Bookmarks]]"  
-				href="$!{siteroot}${apphome}/views/modules/asset/editor/favorite/favorite-add-multi.html?hitssessionid=$hits.getSessionId()"
-				><i class="bi bi-bookmark-fill mr-2"></i> [[Bookmark]]</a></li>
-				#end
+
 				#if($permissions.can("searchcategory", "create"))
-					#set($addurl = "$!{siteroot}${applink}/views/modules/searchcategory/results/picktosearchcategory/index.html") 
+					#set($edithome = "$apphome/views/modules/${module.id}/editors/picksearchcategory")
+					#set($addurl = "$!{edithome}/index.html") 
 					<li><a 
 					class="dropdown-item emdialog" 
 							href="$addurl" 
+							data-dialogid="pickeraddnew" ##This is the same as the ADD new dialog
 							data-copyingsearchtype="$module.id"
 							data-copyinghitssessionid="$hits.getSessionId()"	
+							data-originaledithomeid="${edithomeid}"
 							title="[[Add To Category]]"
 							data-width="1200"><i class="bi bi-category mr-2"></i>[[Assign]] #text( $mediaarchive.getCachedData("module","searchcategory") )</a></li>
 			 	#end	
@@ -215,9 +216,11 @@ $context.putPageValue("entityrendertype", $entityrendertype)
 		#if($hits)
 			<ul class="resultsnavright">
 				#if($edit != "true")
-					#set($total = $hits.getTotalPages() )
-					#if( $total > 1)
-							$pages.include("${searchhome}/positions.html", $context)
+					#if($resultview != "stackedgallery" && $resultview != "brickvertical")
+						#set($total = $hits.getTotalPages() )
+						#if( $total > 1)
+								$pages.include("${searchhome}/positions.html", $context)
+						#end
 					#end
 				#end
 
@@ -228,7 +231,7 @@ $context.putPageValue("entityrendertype", $entityrendertype)
 								#set ($alldetails = $searcher.getUserPropertyDetails() )
 								<select class="form-control form-control-sm select2 tableresultsaddcolumn" 
 										name="addcolumn"
-										data-componenthome="$!{siteroot}${apphome}/views/modules/${moduleid}/components/results/addremovecolumns.html?searchtype=$!moduleid&hitssessionid=$hits.getSessionId()&editheader=true&moduleid=$!moduleid&viewid=$!{moduleid}resultstable"
+										data-componenthome="${searchhome}/addremovecolumns.html?searchtype=$!moduleid&${hits.getSearchType()}hitssessionid=$hits.getSessionId()&editheader=true&moduleid=$!moduleid&viewid=$!{moduleid}resultstable"
 										data-targetdiv="$!{moduleid}resultsarea"
 										data-oemaxlevel="1" 
 										data-allowclear="false" 
@@ -239,7 +242,7 @@ $context.putPageValue("entityrendertype", $entityrendertype)
 									#end
 								</select>
 								##<span class="hint">*[[Drag columns to move them]]</span>
-								<a href="$!{siteroot}${apphome}/views/modules/${moduleid}/components/results/resetcolumns.html?searchtype=$!moduleid&hitssessionid=$hits.getSessionId()&moduleid=$!moduleid&viewid=$!{moduleid}resultstable&$!{moduleid}clearresults=true"
+								<a href="${searchhome}/resetcolumns.html?searchtype=$!moduleid&${hits.getSearchType()}hitssessionid=$hits.getSessionId()&moduleid=$!moduleid&viewid=$!{moduleid}resultstable&$!{moduleid}clearresults=true"
 									data-targetdiv="$!{moduleid}resultsarea"
 									data-oemaxlevel="1"
 									data-confirm="[[Are you sure you want to reset all columns?]]"
@@ -254,6 +257,20 @@ $context.putPageValue("entityrendertype", $entityrendertype)
 				#end
 				
 				<li>
+				#if($resultview != "table")
+					<a class="px-3 border-left ajax" data-changeresultview="table" data-resultviewsearchcategory="table"
+						data-targetdiv="resultsdiv" data-oemaxlevel="1"  href="$searchhome/changeresultview.html" title="[[Change to Table View]]">
+						<i class="bi bi-layout-three-columns"></i>
+					</a>
+				#else
+					<a class="px-3 border-left ajax" 	data-changeresultview="brickvertical" data-resultviewsearchcategory="brickvertical"
+						data-targetdiv="resultsdiv" data-oemaxlevel="1" 	href="$searchhome/changeresultview.html" title="[[Change to Column View]]">
+						<i class="bi bi-list-task" style="transform: scale(1.4);"></i>
+					</a>
+				#end
+				</li>	
+				
+				<li>
 
 					<a href="${searchhome}/filters/dialogsort.html" 
 						class="emdialog emsort #if($isminimized) closed #end"
@@ -261,12 +278,8 @@ $context.putPageValue("entityrendertype", $entityrendertype)
 						data-hidebackdrop="true"
 						data-hidefooter="true"
 						data-modalsize="sm"
-						data-moduleid="$!{moduleid}"
-						data-hitssessionid="$hits.getSessionId()"
-						data-categoryid="$!categoryid"
-						data-rootcategory="$!rootcategory"
-						data-autosetformtargetdiv="resultsdiv"
-						
+						data-includesearchcontext="true"						
+						data-includeeditcontext="true"
 						style="padding:0 8px 0 10px;" 
 						title="[[Sort Results]]"><i class="bi bi-sort-down"></i> [[Sort]]</a>
 				</li>
@@ -274,7 +287,9 @@ $context.putPageValue("entityrendertype", $entityrendertype)
 					<li class="resultsnavitem rpp" title="[[Results per page]]">
 						#set( $currenthitsperpage = $hits.getHitsPerPage())
 						#set($hitcountoptions = $mediaarchive.getList("hitcount"))
-						<select class="form-control hitsperpagechange" id="hitsperpagechange$!{moduleid}">
+						<select class="form-control hitsperpagechange" 
+								id="hitsperpagechange$!{moduleid}"
+								data-allowclear="false">
 							#foreach($ho in $hitcountoptions)
 								<option value="$ho.id" #if($currenthitsperpage==$ho.id) selected="selected"#end>#text($ho)</option>
 							#end	
@@ -285,14 +300,16 @@ $context.putPageValue("entityrendertype", $entityrendertype)
 				#ifnull($isminimized)
 					#set($isminimized = false)
 				#end
-				<li class="resultsnavitem">
-					<button class='btn summary-toggler summary-opener #if(!$isminimized) closed #end' data-target="$preference">
+				<li class="resultsnavitem" style="border: none;">
+					<button class='btn summary-toggler summary-opener #if(!$isminimized) closed #end' data-preferencename="$preference">
 						<i class="fas fa-angle-double-left"></i> [[Summary]]
 					</button>
 				</li>
 			</ul>
 		#end
 	</div>
-	$pages.include("${searchhome}/filters/filters-inline.html", $context)
+	#if($content.section != "favorites")
+		$pages.include("${searchhome}/filters/filters-inline.html", $context)
+	#end
 </div>
 

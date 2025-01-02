@@ -1,0 +1,20 @@
+Create a new image underneath of the topic $entity which is part of the $module module. 
+
+This is from extra information to use to ensure a suitable image: 
+
+#set($details =  $mediaarchive.getSearcher($module.id).getDetailsForView("${module.id}addnew"))
+
+#foreach( $detail in $details )
+	#if(!$detail.isDate())
+		#set($value = $searcherManager.getValue($entity, $detail, $context.getLocale() ) )	  
+	 	#ifnotnull($value)
+			$detail.getText($context):$value
+		#end
+	#end
+#end
+
+
+
+
+
+

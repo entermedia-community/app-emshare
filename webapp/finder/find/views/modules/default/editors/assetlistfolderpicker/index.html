@@ -1,0 +1,47 @@
+
+#set( $assetid = $context.getRequestParameter("assetid") )
+<div id="$edithomeid" class="editdiv pickerresults pickercategorytree" 
+	data-edithome="${edithome}"
+	data-edithomeid="${edithomeid}"
+	data-assetid="$!{assetid}"
+>
+	<div class="clickableresultlist"
+		data-oemaxlevel="1"
+		data-url="${apphome}/views/modules/asset/editors/assetlistfolder/addassetcategory.html"
+		data-targetdiv="assetcategoryresultsmediaviewer"  ##global
+		data-assetid="$!{assetid}"	
+		data-includeeditcontext="false"
+	>	
+		<div class="overflow-y">
+		
+		<div class="pickcategoriesdialog">
+			<div class="searchcategories-tree">
+			    <div class="assetdropcategory assetdropcategorymove searchcategories-treecontainer categorytreescrolllable" >
+						#set($category = $mediaarchive.getCategory("index"))
+			       		$context.putPageValue("selectednodes", [$category])
+			        	#set( $link = "$apphome/components/emtree/tree.html")
+			        	#set( $link = "${link}?treename=$treename&nodeID=index&editabletree=false&clearselection=$!clearselection&updateAddressBar=false&hidecontextmenu=true" )
+			        	#set( $link = "${link}&oemaxlevel=1&uploadmaxlevel=2&maxlevelclick=$!maxlevelclick" )
+			        	#set($link = "$link&targetdivinner=pickcategorycontent&urlprefix=${edithome}/searchcategoryfilter.html")
+			        	
+			        	$context.putPageValue("canupload", false)
+			
+						$pages.include($link, $context)  
+				</div>
+			</div>
+			<div class="searchcategories-filter flex-grow-1">
+				<div id="pickcategorycontent" class="searchcategories-results"> 
+					
+					$pages.include("${edithome}/searchcategoryfilter.html?nodeID=index",$context)
+					
+				</div>
+			</div>
+		</div>
+		
+		
+		
+		
+		</div>
+	</div>
+
+</div>

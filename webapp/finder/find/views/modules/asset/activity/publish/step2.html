@@ -61,7 +61,7 @@
 					<input type="hidden" name="${item.id}.username.value" value="${username}">
 				#end
 			#end
-			<table id="shared-asset-table" class="striped download-table" width="100%" >
+			<table id="shared-asset-table" class="striped download-table mb-3" width="100%" >
 			#foreach( $ft in $filetypes)
 				#set($filetype = $ft.get(0))
 				#set($num = $ft.get(1))
@@ -82,9 +82,9 @@
 						<input type="hidden" name="field" value="filetype"/>
 						<input type="hidden" name="filetype.value" value="$filetype"/>
 						#if($omit == "true")
-							Selected $num $filetype
+							[[Selected]] $num $filetype
 						#else
-							Publishing $num $filetype
+							[[Publishing]] $num $filetype
 						#end
 					</td>
 					#if($omit == "true")
@@ -122,9 +122,9 @@
 				  	   	#end
 						
 						#set($null = $presetquery.addSortBy("ordering"))
-						#set( $results = $presetsearcher.search($presetquery) )
+						#set($results = $presetsearcher.search($presetquery) )
 						#if($canconvert || $candownloadfpo)
-					  		<select name="${ftid}.presetid.value">
+					  		<select name="${ftid}.presetid.value" class="form-control">
 							#foreach ($preset in $results)
 								<option value="$preset.id">$preset</option>
 							#end

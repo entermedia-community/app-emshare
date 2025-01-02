@@ -1,0 +1,40 @@
+#set( $nodeID = $context.getRequestParameter("nodeID"))
+#set( $searcher = $mediaarchive.getSearcher("category") )
+#set( $results = $searcher.query().exact("parents",$nodeID).sort("categorypathUp").search($context) )
+
+
+$context.putPageValue("hits",$results)
+$context.putPageValue("searcher",$searcher)
+#set ($details = $searcher.getDetailsForView("category/searchcategory", $userprofile))
+
+	#set($searchhome = "$apphome/views/modules/${module.id}/results/categorylist")
+	$context.putPageValue("searchhome", $searchhome)
+
+	<form id="autosubmitfilter" 
+			name="autosubmitfilter" 
+			class="autosubmit ajaxform" 
+			autocomplete="off"  
+			data-targetdiv="categoryresults"
+			action="${searchhome}/searchinline.html"
+			>
+		<input type="hidden" name="searchtype" value="category" />
+		<input type="hidden" name="sortby" value="categorypathUp" />
+		<input type="hidden" name="field" value="parents" />
+		<input type="hidden" name="operation" value="exact" />
+		<input type="hidden" name="parents.value" id="parentfilter" value="$!nodeID" />
+		
+		<div class="emsearchfieldrow">
+			<div id="detail_categorypath" align="left" class="emsearchfieldvalue">
+				<input name="field" value="categorypath" type="hidden">
+				<input name="operation" value="contains" type="hidden">
+				<input type="text" class="form-control detail_categorypath textinput autosubmited " 
+						placeholder="[[Search Folders]]" value="" id="categorypath.value" name="categorypath.value">
+			</div>
+		</div>
+	</form>
+	
+
+	$pages.include("${searchhome}/searchinline.html", $context)
+		
+
+

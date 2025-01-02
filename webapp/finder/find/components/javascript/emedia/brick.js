@@ -199,10 +199,6 @@
 	}
 
 	function checkScroll(grid) {
-		var appdiv = $("#application");
-		var siteroot = appdiv.data("siteroot") + appdiv.data("apphome");
-		var componenthome = appdiv.data("siteroot") + appdiv.data("componenthome");
-
 		if (!grid) {
 			return;
 		}
@@ -210,16 +206,16 @@
 			return;
 		}
 
-		var resultsdiv = $(grid).closest("#resultsdiv");
+		var resultsdiv = $(grid).closest(".resultsdiv");
 		if (stopautoscroll) {
 			// ignore scrolls
-			if (typeof getOverlay === "function" && getOverlay().is(":visible")) {
-				var lastscroll = getOverlay().data("lastscroll");
+			// if (typeof getOverlay === "function" && getOverlay().is(":visible")) {
+			// 	var lastscroll = getOverlay().data("lastscroll");
 
-				if (Math.abs(lastscroll - currentscroll) > 50) {
-					$(window).scrollTop(lastscroll);
-				}
-			}
+			// 	if (Math.abs(lastscroll - currentscroll) > 50) {
+			// 		$(window).scrollTop(lastscroll);
+			// 	}
+			// }
 			return;
 		}
 
@@ -249,24 +245,18 @@
 		}
 
 		stopautoscroll = true;
-		var session = resultsdiv.data("hitssessionid");
 		page = page + 1;
 		resultsdiv.data("pagenum", page);
 
-		var stackedviewpath = resultsdiv.data("stackedviewpath");
-		if (!stackedviewpath) {
-			stackedviewpath = "stackedgallery.html";
+		var link = grid.data("stackedviewpath");
+		if (link == undefined) {
+			console.log("No stackedviewpath defined");
+			return;
 		}
-		var link = componenthome + "/results/" + stackedviewpath;
-		var collectionid = $(resultsdiv).data("collectionid");
-		var params = {
-			hitssessionid: session,
-			page: page,
-			oemaxlevel: "1",
-		};
-		if (collectionid) {
-			params.collectionid = collectionid;
-		}
+
+		var params = resultsdiv.cleandata();
+		params.page = page;
+		params.oemaxlevel = 1;
 
 		console.log("Loading page: #" + page + " - " + link);
 
@@ -283,9 +273,6 @@
 				$(grid).append(code);
 				$(window).trigger("resize");
 				stopautoscroll = false;
-				//if (getOverlay().is(":hidden")) {
-				checkScroll(grid);
-				//}
 			},
 		});
 	}

@@ -1,0 +1,33 @@
+
+#set($entityid = $entity.id)
+$context.putPageValue("entityid", $entityid)
+
+#if(!$currenttab)
+	#set($currenttab = $context.getRequestParameter("currenttab"))
+#end
+
+#set($entitymoduleviewid = $context.getRequestParameter("entitymoduleviewid"))
+$context.putPageValue("entitymoduleviewid",$entitymoduleviewid)
+
+
+#set( $lightboxtype = $context.getRequestParameter("lightboxtype"))
+$context.putPageValue("lightboxtype",$lightboxtype)
+
+#set( $lightboxid = $context.getRequestParameter("lightbox"))
+
+#set($boxes =  $mediaarchive.getEntityManager().loadBoxesForModule($lightboxtype,$entitymodule, $entity, $context.getUser()))
+$context.putPageValue("boxes",$boxes)
+
+#set( $lightboxid = $context.getRequestParameter("lightboxid"))  ##Must be passed in here for adding
+
+#if( $lightboxid != "files")
+	#set($selectedbox =  $mediaarchive.getEntityManager().findLightBox($boxes,$lightboxid))
+#end	
+
+#set($lightboxid = $selectedbox.getId())
+$context.putPageValue("selectedbox",$selectedbox)
+$context.putPageValue("lightboxid",$lightboxid)
+
+$context.putPageValue("boxes",$boxes)
+$context.putPageValue("assets",$assets)
+$pages.include("$edithome/sidemenu.html",$context)

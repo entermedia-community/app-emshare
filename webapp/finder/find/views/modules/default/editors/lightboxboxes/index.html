@@ -1,0 +1,107 @@
+
+#if(!$currenttab)
+	#set($currenttab = $context.getRequestParameter("currenttab"))
+#end
+ 
+$context.putPageValue("dialogresults", true)
+#set($lightboxassetsresults = true)
+$context.putPageValue("lightboxassetsresults", $lightboxassetsresults)
+
+#ifnull($entitymoduleviewid)
+#set($entitymoduleviewid = $context.getRequestParameter("entitymoduleviewid"))
+#end
+
+#ifnull($entitymoduleviewid)
+#set($entitymoduleviewid = $viewid)
+#end
+
+#ifnull($entitymoduleviewid)
+	#set($entitymoduleviewid = $context.getRequestParameter("viewid"))
+#end
+$context.putPageValue("entitymoduleviewid",$entitymoduleviewid)
+
+#set($lightboxtype = $context.getRequestParameter("lightboxtype"))
+
+#ifnull( $lightboxtype )
+#set($viewdata = $mediaarchive.getCachedData("view",$entitymoduleviewid))
+#set($lightboxtype = $!viewdata.rendertable)
+#end
+
+#ifnull($lightboxtype)
+	#set($lightboxtype = "emedialightbox")
+#end
+
+$context.putPageValue("lightboxtype",$lightboxtype)
+
+#ifnull($lightboxtype)
+	##Please set rendertable in view to emedialightboxes  $entitymoduleviewid
+	#set( $lightboxtype = "emedialightbox" )
+#end
+
+#set($boxes =  $mediaarchive.getEntityManager().loadBoxesForModule($lightboxtype,$entitymodule, $entity, $context.getUser()))
+$context.putPageValue("boxes",$boxes)
+
+#set( $lightboxid = $context.getRequestParameter("lightboxid"))
+#ifnotnull($lightboxid)
+	#if( $lightboxid != "files")
+		#set($selectedbox =  $mediaarchive.getEntityManager().findLightBox($boxes,$lightboxid))
+	#end	
+#end
+#ifnull($lightboxid)
+	#set($selectedbox =  $mediaarchive.getEntityManager().findFirstSelectedLightBox($boxes))
+	#set($lightboxid = $selectedbox.getId())
+#end	
+#ifnull($lightboxid)
+	#set($lightboxid = "files")
+#end
+$context.putPageValue("lightboxid",$lightboxid)
+$context.putPageValue("selectedbox",$selectedbox)
+
+##Load all assets
+#set($defaultfolder =  $mediaarchive.getEntityManager().loadDefaultFolder($module, $entity, $context.getUser(),true))
+
+#ifnull($selectedbox)
+	#set( $selectedcategory = $defaultfolder)
+#end
+#ifnotnull($selectedbox)
+	#set($selectedcategory = $selectedbox.getRootCategory() )
+#end
+
+$context.putPageValue("selectedcategory",$selectedcategory)
+$context.putPageValue("category",$selectedcategory)
+
+<div id="$edithomeid" 
+	class="editdiv entity-tab-content entity-tab-media tabtypemedia dataeditedreload" 
+	data-entityid="$!entity.id"
+	data-entitymoduleid="$!entitymodule.id"
+	data-entitymoduleviewid="$entitymoduleviewid"
+	
+	data-categoryid="$!selectedcategory.getId()"
+	data-rootcategory="$!selectedcategory.getId()"
+
+	data-lightboxtype="$lightboxtype"
+	data-lightboxid="$!{lightboxid}"
+
+	data-edithome="$!{edithome}"
+	data-edithomeid="${edithomeid}"
+	data-autoreloadurl="$!{edithome}/index.html">
+
+	<div  class="tablightbox d-flex h-100" style="height: 100%;">
+
+		#set($allassets = $mediaarchive.query("asset").exact("category",$defaultfolder).search($context) )
+		$context.putPageValue("allassets",$allassets)
+		$pages.include("$edithome/sidemenu.html",$context)
+
+		<div  id="lightboxresults"  class="tabpulications-col submodulepicker entity-tab-content" >
+			
+			$pages.include("${edithome}/lightboxheader.html", $context)
+			$context.putPageValue("entitydialogid", "entity")
+			
+			$context.putPageValue("category", $selectedcategory)
+			$context.putPageValue("categoryid", $selectedcategory.getId())
+			$pages.include("${edithome}/resultarea.html?rootcategory=${selectedcategory.id}", $context)
+		</div>
+
+
+	</div>
+</div>

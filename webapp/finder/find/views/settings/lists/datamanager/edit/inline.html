@@ -1,16 +1,11 @@
 #set( $origURL = $context.getRequestParameter("origURL" ) )
-#set( $view = $context.findValue("editview") )
+#set( $viewid = $context.findValue("editview") )
 
-#if( !$view )
-	#set( $view = "default/addnew")
-	#set( $foundview = $searcher.getPropertyDetailsArchive().getView(${searcher.searchType},"${searcher.searchType}/${searcher.searchType}addnew"))
-	
-	#if( $foundview.size() > 0 )
-		#set( $view = "${searcher.searchType}/${searcher.searchType}addnew")
-	#end
+#ifnull($view )
+	#set( $view = "${searcher.searchType}addnew")
 #end
 
-$context.putPageValue("view", $view)
+$context.putPageValue("viewid", $view)
 #set( $targetselect = $context.getRequestParameter("update" ) )
 
 <form class="inlinedata" name="dataeditor"   >

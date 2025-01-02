@@ -1,19 +1,15 @@
-<div class="ui-widget">
+
 <h3>[[Transcoder Paremeters]]</h3>
 
 
-<div id="editlayout">
+<div id="editlayout" class="mr-4">
 	#if($message)
-	<div class="alert alert-save fader">$message</div>
+	<div class="alert alert-save fader" role="alert">$message</div>
 	#end
 
 	#set( $origURL = $context.getRequestParameter("origURL" ) )
-	
-	#if( !$view )				
-		#set( $view = "${searcher.searchType}/edit" )
-	#end
-	
-	$context.putPageValue("view", $view)
+
+	$context.putPageValue("viewid", "presetdatageneral")
 	
 	<form id="dataeditor-settings" name="dataeditor-settings" 
 			method="post" 
@@ -48,15 +44,13 @@
 		<a href="$origURL">[[Go Back]]</a>	
 	#end
 
-</div>
-</div>
+
+
 
 
 #if($data && $data.id)
+<div class="mr-4">
 <h3>[[Preset Parameters]]</h3>
-#set($viewsearcher = $searcherManager.getSearcher($catalogid, "view"))
-#set( $viewdata = $viewsearcher.searchById($viewid))
-#set($viewdetailspath = "presetparameter/edit")
 
 #set( $searchtype = "presetparameter" )
 #set( $fieldexternalid = "parameterdata")
@@ -69,8 +63,15 @@
 #end
 #set( $fieldexternalvalue = $id )
 $context.putPageValue("canedittable", $caneditdata)
+$context.putPageValue("searcher", $mediaarchive.getSearcher($searchtype))
+$context.putPageValue("viewid", "presetparametergeneral")
 
-#set( $args = "id=$id&parentid=$id&viewdetailspath=$!viewdetailspath&viewid=presetparameter&viewpath=presetparameter/edit&catalogid=$mediaarchive.getCatalogId()&searchtype=$searchtype&fieldexternalid=$!fieldexternalid&fieldexternalvalue=$!fieldexternalvalue&listid=$!listid&listexternalid=$!listexternalid&permissionname=$permissionname&hitssessionid=$hitssessionid")
+#set( $args = "id=$id&parentid=$id&viewdetailspath=$!viewdetailspath&viewid=presetparametergeneral&catalogid=$mediaarchive.getCatalogId()&searchtype=$searchtype&fieldexternalid=$!fieldexternalid&fieldexternalvalue=$!fieldexternalvalue&listid=$!listid&listexternalid=$!listexternalid&permissionname=$permissionname&hitssessionid=$hitssessionid")
 
-$pages.include("$apphome/components/detaileditor/generictable.html?$args", $context)
+$pages.include("/$applicationid/components/xml/table.html?$args",$context)
+
+</div>
 #end
+
+
+</div>

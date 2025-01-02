@@ -18,7 +18,7 @@
 			#end
 			</select>
 			<input class="btn btn-secondary d-none" type=button  onClick='location.href = "./copy.html?themeid=$!themeid"' value="[[Copy]]" />
-			<input class="btn focused-btn" type=button  onClick='location.href = "$home$apphome/views/settings/lists/datamanager/list/index.html?searchtype=theme"' value="[[Export]]" />
+			<input class="btn btn-cta" type=button  onClick='location.href = "$home$apphome/views/settings/lists/datamanager/list/index.html?searchtype=theme"' value="[[Export]]" />
 			<a class="btn btn-danger" type=button  href="./reset.html?themeid=$!themeid" >[[Reset All]]</a>
 			<input class="btn btn-danger d-none" type=button  onClick='location.href = "./remove.html?themeid=$!themeid"' value="[[Remove]]" />
 		</form>
@@ -29,13 +29,11 @@
 	$context.putPageValue("searcher", $searcher)
 	$context.putPageValue("data", $data)
 	
-	<link rel="stylesheet" type="text/css" href="$home$apphome/theme/${themeid}/custom.css?cache=false" />
+	<!-- <link rel="stylesheet" type="text/css" href="$home$apphome/theme/${themeid}/custom.css?cache=false" /> -->
 	
 	#if( $data )
 		#if ($message) 
-		<div class="alert alert-success fader alert-save" role="alert" style="bottom: initial;">
-		$message
-		</div>
+		<div class="alert alert-save fader" role="alert">$message</div>
 		#end
 		<form id="themeeditor" method="post" action="$home$apphome/views/settings/applicationsetup/theme/save.html"  enctype="multipart/form-data">
 			<input name="save" type="hidden" value="true" />
@@ -44,15 +42,15 @@
 			
 			<input name="searchtype" type="hidden" value="theme" />
 			<div class="themeeditor">
-				$context.putPageValue("view", "theme/edit") 
+				$context.putPageValue("viewid", "themeedit") 
 				$pages.include("/${applicationid}/components/xml/detaileditor.html", $context)
 				<div class="d-none px-2 pt-4 pb-2 my-2 rounded bg-light">
-					$context.putPageValue("view", "theme/advanced")
+					$context.putPageValue("viewid", "themeadvancededdit")
 					$pages.include("/${applicationid}/components/xml/detaileditor.html", $context)
 				</div>
 			</div>
 			<div class="form-submit-btns">
-				<button type="submit" class="btn focused-btn">
+				<button type="submit" class="btn btn-cta">
 					<i class="bi bi-floppy-fill ns mr-1"></i>
 					[[Save]]
 				</button>

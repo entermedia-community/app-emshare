@@ -41,7 +41,7 @@
 					#foreach( $parent in $parentcategories)
 						#if( ${foreach.count}> 1) / #end
 						<a style="padding:0px 4px 0;" 
-							href="$siteroot$apphome/views/modules/asset/viewfiles/$!{parent.id}/#dash($parent).html?hitssessionid=$!hits.getSessionId()"
+							href="$siteroot$apphome/views/modules/asset/editors/viewfiles/$!{parent.id}/#dash($parent).html?assethitssessionid=$!hits.getSessionId()"
 							title="[[View Files]]: $parent"
 							class="ajax #if($nodeID == $parent.id) currentcategory #end"
 							data-targetdiv="applicationcontent"
@@ -65,7 +65,7 @@
 							<div class="drop-over">
 								<div class="uploadinstructions">
 									<div class="pickerHolder">
-										<a class="btn focused-btn btn-lg picker filePicker my-2 ml-2 mr-1" href="#">
+										<a class="btn btn-cta btn-lg picker filePicker my-2 ml-2 mr-1" href="#">
 										<i class="fas fa-file-upload"></i> [[Choose Files]]</a>
 										<a class="btn btn-secondary btn-lg picker folderPicker my-2 mr-2 ml-1" href="#">
 										<i class="bi bi-folder-plus"></i> [[Choose Folder]]</a>
@@ -87,6 +87,7 @@
 								</div>
 							</div>
 						</div>
+						
 					</div>	
 					<!-- This is not shown -->
 					<div class="progress_report_template" style="display:none;">
@@ -124,19 +125,15 @@
 						#end	
 					#end
 					<div id="uploadmetadata" class="h-100">
-						#set($viewid = "multipleupload") ##Default finder
-						#set($viewpath = "asset/$viewid") 
-						$context.putPageValue("view",$viewpath)
+						#set($viewid = "assetmultipleupload") ##Default finder
+						$context.putPageValue("viewid",$viewid)
 						<div class="upload-detail-box h-100 rounded">
 							<div class="details-header">
 								[[Add File Details]]
-								#if( $caneditmetadatasetup )
+								#if( $caneditsettings )
 								<span class="widget-header-edit">
-								<a class="ajax" 
-									data-targetdivinner="applicationmaincontent"
-									data-closedialog="true" 
-									data-oemaxlayout="3" 
-									href="$siteroot$apphome/views/settings/modules/asset/metadata/views/index.html?viewid=$viewid&viewpath=$viewpath" title="[[Edit Fields]]">
+								<a class="emdialog" 
+									href="$siteroot$apphome/views/settings/modules/asset/metadata/views/dialog/index.html?viewid=$viewid" title="[[Edit Fields]]">
 									<i class="bi bi-gear-fill"></i></a>
 								</span>
 								#end
@@ -150,20 +147,17 @@
 					</div>
 				</div>
 			</div>
+
+			<span class="uploadcompleteText" data-totaluploads="0" data-postfix=" [[Files Complete. Choose More Files.]]"></span>
+			
 			<div class="uploadinstructionsafter text-center my-3" style="display: none;">
-				<a class="btn focused-btn btn-lg upload-btn startbutton" 
-					data-uploadreadytext="[[Upload]]" data-complete="[[Upload Complete]]" 
+				<a class="btn btn-cta btn-lg upload-btn startbutton"
+					data-textstartupload="[[Start Uploading]]" 
+					data-textuploading="[[Uploading...]]"
+					data-textcomplete="[[Complete]]"
 					href="#">
 					<i class="fas fa-cloud-upload-alt mr-1"></i> [[Start Uploading]]
-				</a>
-				<a	class="viewassetsbtn autoclick btn btn-sm btn-primary" style="display:none;" 
-					disabled 
-					href ="#" 
-					data-entityupload="true"
-					data-targetdivinner="dialogmediaentity" 
-					data-oemaxlevel="1" 
-					data-updateurl="true">
-					[[View Uploads]]
+					
 				</a>
 			</div>
 		</div>

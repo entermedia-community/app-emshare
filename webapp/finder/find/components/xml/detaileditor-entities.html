@@ -2,23 +2,21 @@
 #set( $readonly = "false" )
 #set( $readonly = $context.getRequestParameter("detailsreadonly"))
 
+#ifnull($viewid)
+	#set($viewid = $context.getRequestParameter("viewid"))
+#end
+ 
+#set( $viewdata = $mediaarchive.getCachedData("view",$viewid) )
 
-
-##We need 3 things passed in: $searcher, $view, $data
-#if (!$details && $view)
-	#if( $context.getUserProfile() )
-		#set ($details = $searcher.getDetailsForView($view, $context.getUserProfile()))
-	#else
-		#set ($details = $searcher.getDetailsForView($view))
-	#end
+#ifnull($details)
+	#set ($details = $viewdata.getDetailsForView($context.getUserProfile()))
 #end	
-#if( !$details)
-	[[404 on view]]:  $searcher.getCatalogId() $searcher.getSearchType() $view
+
+#ifnull($details)
+	No viewdata found  viewid: $viewid $content.path
 #end
-##leagacy check. We used to pass in the $details
-#if( !$details)
-	#set ( $details = $searcher.getPropertyDetails() )
-#end
+
+
 <div class="oeinputform entitiesinfputform validate-inputs">
 	<div id="allerrors"></div>
 
@@ -89,6 +87,7 @@
 						$!detail.getText($context)
 				</label>
 			#end
+			
 			<div id="detail_$detail.id" class="emdatafieldvalue emdatafieldvalue-$!{detail.viewType} #if ($detail.isRequired()) requiredfield #end">
 				#if( $editrow )	
 					$pages.include("$xmledithome/detailedit.html", $context)
@@ -119,9 +118,3 @@
 #end
 </div>
 </div>
-
-##needed for fast loading HTML edit boxes
-#if( $usedhtml && $readonly !=  "true") 
-	$pages.include("/system/tools/html/textarea.html?$usedhtml")	
-#end
- 

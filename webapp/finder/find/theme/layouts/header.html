@@ -82,49 +82,26 @@
 		#end
 		#if( $uploadmodules > 0 && $canviewupload )
 			<div class="headeruploadarea">
-				##$pages.include("$apphome/components/upload/types/html5inlinetop.html", $context)
 				<div class="dropdown">
 					<a class="btn-upload dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-						[[Upload to]]
+						[[Upload To]]
 					</a>
 					<div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
 						#foreach ( $amodule in $userprofile.getEntities() )
 							#set($amoduleid = $amodule.getId())
-
-							
 							#if($amodule.getBoolean("enableuploading"))
 								#if($permissions.can($amoduleid, "create") && $amoduleid!="faceprofilegroup" && $amoduleid!="asset" && $amoduleid!="modulesearch")
-									#set($entityrendertype = "entity")
-									#if ($amodule.modulerendertype)
-										#set($entityrendertype = $amodule.modulerendertype)
-									#end
-									##set($addurl = "$siteroot$applink/views/modules/${amoduleid}${searchhome}/tabs/preview/$!{entityrendertype}.html?edit=true&addnew=true&viewid=$!{moduleid}addnew")
-									
-									#set($addurl = "$siteroot$applink/views/modules/${amoduleid}/components/entities/search/searchpicker.html")
-									
-									#ifnotnull($topentityid)
-										#set($addurl = "$addurl&fieldexternalid=${topmodule.getId()}&fieldexternalvalue=${topentityid}&reloadtargets=topmodulecontainer")
-									#end
+								
+									#set($addurl = "$siteroot$applink/views/modules/${amoduleid}/editors/pickerforuploading/index.html")
 									<a class="dropdown-item emdialog" 
+										data-hidefooter="true"
+										data-dialogid="entityuploadto"
 										href="$addurl" 
-										data-viewfiles="true"
-										data-width="1200"
-										data-targettype="pickandupload">#text($amodule)</a>
-									#if($amoduleid=="librarycollection")
-									<a class="dropdown-item ajax sidebarselected"
-										data-updateurl="true" 
-										data-targetdiv="applicationmaincontent" 
-										data-oemaxlayout="3"
-										href="$siteroot$applink/views/modules/asset/add/start.html"
-										title="[[Upload Media]]">[[My Gallery]]</a>	
-									#end
-									
+										title="[[Upload To]] #text($amodule)"
+										data-width="1200"	>#text($amodule)</a>
 								#end
 							#end
-							
-							
 						#end
-
 					</div>
 				</div>
 			</div>
@@ -135,7 +112,7 @@
 		#end
 		
 		#if($user && $canaddtofavorites)
-			<a href="$siteroot$applink/views/modules/modulesearch/bookmarks.html" 
+			<a href="$siteroot$applink/views/modules/modulesearch/editors/modulesearchbookmarks/index.html" 
 				class='ajax activelistener btn-upload #if( $selected=="favorites" || $selected=="modulesearch") active #end' 
 				data-targetdiv="applicationmaincontent" 
 				data-oemaxlevel="3" 
@@ -144,10 +121,20 @@
 				data-updateurl="true"
 				data-scrolltotop="true"
 				title="[[View Bookmarks]]">
-					[[Bookmarks]] <i class="bi bi-bookmarks-fill ml-1"></i>
+				<i class="bi bi-bookmarks-fill"></i>
 			</a> 
 		#end
-
+		#set($guidelink = $mediaarchive.getCatalogSettingValue("guidelink"))
+		#ifnotnull($guidelink)
+			<a class="btn-upload" target="_blank" href="$guidelink" title="[[Guides]]">
+				<i class="bi bi-book"></i>
+			</a>
+		#end
+		#ifnull($destop)
+			<a class="btn-upload" target="_blank" href="https://emedialibrary.com/downloads.html" title="[[Desktop App]]">
+				<i class="bi bi-laptop mr-2"></i> [[Desktop App]]
+			</a>
+		#end
 		#if($canviewsettings && $userprofile.hasModule("order") )
 			#set( $orders = $mediaarchive.query("order").exact("checkoutstatus","pending").search($context))
 		#end

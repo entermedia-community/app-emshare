@@ -1,11 +1,10 @@
 #set( $mediadbappid = $mediaarchive.getMediaDbId() )
 
-#set($moduleid = $context.getRequestParameter("moduleid"))
 #set($entityid = $context.getRequestParameter("entityid"))
 #set($categoryid = $context.getRequestParameter("defaultcategoryid"))
 
 #if( !$entity)
-	#set( $entity  = $mediaarchive.getData($moduleid, $entityid) )
+	#set( $entity  = $mediaarchive.getData($module.id, $entityid) )
 #end
 
 #set( $type = $mediaarchive.getMediaRenderType($asset.fileFormat))
@@ -13,11 +12,11 @@
 <div id="embed-wrapper" class="mx-3 my-4">
 	<div class="embedlink">
 		#set($entitytabopen = $context.getRequestParameter('entitytabopen'))
-		#if($moduleid)
-			#set( $sharelink = "$siteroot$apphome/views/modules/${moduleid}/userview/${entityid}/#dash($entity).html")
+		#if($module.id)
+			#set( $sharelink = "$siteroot$apphome/views/modules/${module.id}/userview/${entityid}/#dash($entity).html")
 		#end
 		#ifnotnull($sharelink )
-			<div id="embedalertdialog" style="display:none; position: absolute;" class="alert alert-success fader">[[Copied to Clipboard]]</div>
+			<div id="embedalertdialog" style="display:none; position: absolute;" class="alert alert-save fader">[[Copied to Clipboard]]</div>
 				
 				<h5>[[Data]]</h5> 
 				<div class="hyphenate hyphenate-bg" style="margin:5px 0">
@@ -49,7 +48,7 @@
 				</div>
 				
 				
-				#if($moduleid=="librarycollection")
+				#if($module.id=="librarycollection")
 				#set( $sharecollectionlink = "$!{siteroot}$!{siteid}/$!{mediadbappid}/services/module/asset/players/collections/display/$!{entityid}.html")
 				<h5 class="pt-4">[[Share Collection]]</h5> 
 				<div class="hyphenate hyphenate-bg" style="margin:5px 0">
@@ -69,16 +68,3 @@
 		
 	</div>
 </div>
-
-
-<div id="embed-wrapper" class="mt-4 mx-2 ">
-	<h5 class="mb-2">[[Share With]]</h5>
-	<div class="pb-3">[[Add users who needs access to this record.]]</div>
-	<div class="row no-gutters">
-	<div class="col-5">
-	$pages.include("$apphome/views/modules/${moduleid}/edit/editdialog.html?entityid=$!{entityid}&moduleid=$!{topmoduleid}&viewid=entitypermissions", $context)
-	</div>
-	</div>
-</div>
-
-

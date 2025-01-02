@@ -1,0 +1,25 @@
+#set( $copyingcategoryid = $context.getRequestParameter("copyingcategoryid"))
+#set( $searchhomename = $page.searchhomename )
+#set($category = $mediaarchive.getCategory($copyingcategoryid))
+
+
+<div id="${edithomeid}" class="editdiv pickercopycategoryto"
+ 
+	data-edithomeid="$!{edithomeid}"
+	data-edithome="$!{edithome}"
+	data-setpagetitle="[[Select]] #text($module)"
+	data-copyingcategoryid="$!copyingcategoryid"		>
+	
+	#set($searchhome = "$apphome/views/modules/${module.id}/results/default")
+	<div class="overflow-y">
+		<div id="entitypickerresults" class="pickerresults" 
+			data-toastmessage="[[Saving]] #text($category)"
+			data-toastsuccess="#text($category) [[Saved]]"
+			data-clickurl="${edithome}/actions/addcategorytoentity.html"
+			data-copyingcategoryid="$!copyingcategoryid"		>
+				$pages.include("${searchhome}/searchinclude.html?resultview=table",$context)
+		</div>	
+	</div>
+
+</div>
+

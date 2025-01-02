@@ -1,79 +1,69 @@
-<div id="emvalueeditor" class="" style="max-width: 600px">
-  <form
-    name="adder"
-    class="ajaxform validate-inputs"
-    data-targetdiv="emvalueeditor"
-    action="$home$apphome/views/settings/modules/$module.id/info/save.html"
-  >
-    $context.putPageValue("searcher",$searcherManager.getSearcher($catalogid,"module")
-    ) $context.putPageValue("view","module/edit")
-    $context.putPageValue("data",$module)
-    <div class="inputformrow">
-      <label class="emdatafield"> [[Id]] </label>
-      <div id="detail_id" class="emdatafieldvalue emdatafieldvalue-number">
-        <div class="emfield-number">
-          $!module.getId() &nbsp;&nbsp;&nbsp;
-          <a
-            href="$applink/views/settings/lists/datamanager/list/index.html?searchtype=$!module.getId()"
-            class="ajax btn btn-xs btn-light"
-            data-oemaxlevel="5"
-            data-targetdiv="applicationmaincontent"
-            data-autoactivecontainer="datamanager-system-menu"
-            title="[[Open Database Table]]"
-          >
-            <i class="bi bi-table mr-1"></i> [[Table]]</a
-          >
+<div id="workarea">
+  <div id="emvalueeditor" class="" style="max-width: 600px">
+    <form name="adder"
+      class="ajaxform validate-inputs"
+      data-targetdiv="emvalueeditor"
+      action="$home$apphome/views/settings/modules/$module.id/info/savegeneral.html">
+      $context.putPageValue("searcher",$searcherManager.getSearcher($catalogid,"module")) 
+      $context.putPageValue("viewid","modulegeneral")
+      $context.putPageValue("data",$module)
+      <div class="inputformrow"> 
+        <div id="detail_id" class="emdatafieldvalue emdatafieldvalue-number">
+          <div class="emfield-number">
+            <a href="$applink/views/settings/lists/datamanager/list/index.html?searchtype=$!module.getId()"
+              class="ajax btn btn-light"
+              data-oemaxlevel="5"
+              data-targetdiv="applicationmaincontent"
+              data-autoactivecontainer="datamanager-system-menu"
+              title="[[Open Database Table]]">
+              <i class="bi bi-table mr-2"></i><strong> $!module.getId()</strong> [[table]]
+            </a>
+          </div>
         </div>
       </div>
-    </div>
-
-    #set ( $urlutils = $context.getPageValue("url_util")) 
-	#if (!$urlutils)
-		#set($urlenc = $hit.sourcepath) 
-	#else 
-		#set ( $urlenc = $urlutils.encode($hit.sourcepath))
-		#set ( $urlenc = $urlenc.replace("%2F", "/")) 
-	#end
-    ##$apphome/views/settings/modules/${module.getId()}/info/module-setup.html?icon=$icon[0]
-    <div class="d-flex flex-column align-items-start"> 
-      <a
-        class="rounded text-brand mb-3 emdialog" 
-        href="$applink/views/settings/modules/${module.id}/info/icon-picker.html?edit=true"
-        data-hidefooter="true" 
-      >
-        <div class="d-flex flex-column align-items-center">
-          <span>[[Change Icon]]</span>
-          #set($selectedIcon = $context.getRequestParameter("icon"))
-          #ifnull($selectedIcon)
-            #set($selectedIcon = "$module.moduleicon")
-          #end
-          <input type="hidden" name="field" value="moduleicon" />
-          <input type="hidden" name="moduleicon.value" value="$selectedIcon" />
-          <i
-            class="bi bi-$selectedIcon m-1"
-            style="font-size: 2rem; line-height: 1"
-          ></i>
-        </div>
-      </a>
-    </div>
-
-    $pages.include("/$applicationid/components/xml/detaileditorcss.html", $context)
-
-    <input type="hidden" name="save" value="true" />
-    <input type="hidden" name="id" value="$module.id" />
-
-    <div class="form-submit-btns">
-      <button class="btn focused-btn" type="submit">
-        <i class="bi bi-floppy-fill mr-1"></i> [[Save]]
-      </button>
   
-      <div class="delete" style="float: right">
-        <a class="btn btn-danger confirm"
-          href="$home$apphome/views/settings/modules/setup/remove.html?id=$module.id"
-          data-confirm="[[Are you sure]]?">
-          [[Delete]]
+      #set ( $urlutils = $context.getPageValue("url_util")) 
+      #if (!$urlutils)
+        #set($urlenc = $hit.sourcepath) 
+      #else 
+        #set ( $urlenc = $urlutils.encode($hit.sourcepath))
+        #set ( $urlenc = $urlenc.replace("%2F", "/")) 
+      #end
+  
+      <div class="d-flex flex-column align-items-start"> 
+        <a class="rounded text-brand mb-3 emdialog" 
+          href="$applink/views/settings/modules/${module.id}/info/icon-picker.html?edit=true"
+          data-hidefooter="true">
+          <div class="d-flex flex-column align-items-center">
+            <span>[[Change Icon]]</span>
+            #set($selectedIcon = $context.getRequestParameter("icon"))
+            #ifnull($selectedIcon)
+              #set($selectedIcon = "$module.moduleicon")
+            #end
+            <input type="hidden" name="field" value="moduleicon" />
+            <input type="hidden" name="moduleicon.value" value="$selectedIcon" />
+            <i class="bi bi-$selectedIcon m-1" style="font-size:2rem;line-height:1"></i>
+          </div>
         </a>
       </div>
-    </div>
-  </form>
+  
+      $pages.include("/$applicationid/components/xml/detaileditorcss.html", $context)
+  
+      <input type="hidden" name="save" value="true" />
+      <input type="hidden" name="id" value="$module.id" />
+  
+      <div class="form-submit-btns">
+        <button class="btn btn-cta" type="submit">
+          <i class="bi bi-floppy-fill mr-1"></i> [[Save]]
+        </button>
+        <div class="delete" style="float: right">
+          <a class="btn btn-danger confirm"
+            href="$home$apphome/views/settings/modules/setup/remove.html?id=$module.id"
+            data-confirm="[[Are you sure]]?">
+            [[Delete]]
+          </a>
+        </div>
+      </div>
+    </form>
+  </div>
 </div>

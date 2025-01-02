@@ -1,12 +1,17 @@
 <div id="asset-editor-container" class=" assetpanel-editor-box">
 
-##<h2>[[Download Report]]</h2>
-
-#set( $details = $searcher.getDetailsForView("assetdownloadLog/historydownloads",$user) )
-$context.putPageValue("details",$details)
-
-$context.putPageValue("resultsPage","$page.path?oemaxlevel=1&assetid=$asset.id")
-$context.putPageValue("targetdiv","downloadreport")
-$pages.include("./results.html?foldername=${catalogid}/assetdownloadLog&field=sourcepath&sourcepath.value=$asset.sourcepath&operation=exact", $context)
+	##<div class="assetpanel-editortitle">
+	##<h3>[[Downloads]]</h3>
+	##</div>
+	
+	#set( $viewid = "historydownloads")
+	#set( $details = $searcher.getDetailsForView($viewid, $context.getUserProfile()) )
+	#ifnull($details)
+		Error: No details for $viewid, $context.getUserProfile()
+	#end
+	$context.putPageValue("details",$details)
+	$context.putPageValue("resultsPage","$page.path?oemaxlevel=1&assetid=$asset.id")
+	$context.putPageValue("targetdiv","downloadreport")
+	$pages.include("./results.html?foldername=${catalogid}/assetdownloadLog&field=sourcepath&sourcepath.value=$asset.sourcepath&operation=exact", $context)
 
 </div>

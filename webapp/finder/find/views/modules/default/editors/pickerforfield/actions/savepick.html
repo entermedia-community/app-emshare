@@ -1,0 +1,44 @@
+#set($searchhome = "$apphome/views/modules/${module.id}/results/default")
+#set($detailid = $context.getRequestParameter("pickertargetfield"))
+#set($dataid = $context.getRequestParameter("dataid"))
+#set($detail = $mediaarchive.getSearcher($entitymodule.id).getDetail($detailid))
+#ifnull($detail)
+	[[No detail found]] $entitymodule $detailid
+#end
+#set($ismulti = $detail.isMultiValue())
+#ifnull($entity)
+	#set($entity = $context.getPageValue("newdata${entitymodule.id}"))
+#end
+
+#if($ismulti)
+	$entity.addValue($detailid, $dataid)
+#else
+	$entity.setProperty($detailid, $dataid)
+#end
+#set($values = $entity.getValues($detailid))
+<div id="entitypicker${detail.id}" data-ismulti="$!{ismulti}">
+<ul class="entity-value-list">
+		#foreach( $type in $values )
+			#set( $row = false )
+			#set( $row = $mediaarchive.getCachedData($module.id, $type ))
+			
+		    #if( $row )
+	   		   #set($namefield = $mediaarchive.getSearcher($module.id).getDetail("name"))
+	   		   
+			   #set($name = $searcherManager.getValue($row, $namefield, $context.getLocale()))
+			    #set($entityid = $row.id)
+			    #set($link = "${edithome}/tabs/index.html?entityid=$!row.id")
+			    <li>
+			    <a href="$link" 
+			    	class="emdialog" 
+			    	data-noesc="true" 
+			    	data-entityid="$!row.getId()"
+			    	title="$name">$name</a>  
+			    	<a class="removeentity"  href="#" title="[[Remove]] $!name" onclick='$(this).closest("li").remove(); return false;'><i class="bi bi-x"></i></a>
+			    	<input type="hidden" name="${detailid}.value" value="$!row.getId()" />
+			    </li>
+		    #end 
+		#end
+</ul>		
+<input type="hidden" name="${detail.id}.size" value="$!{values.size()}" data-entitypicker="entitypicker${detail.id}" class="#if($detail.isRequired()) entityRequired #end" />	
+</div>

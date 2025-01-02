@@ -1,0 +1,26 @@
+#set($searcher = $searcherManager.getSearcher($catalogid, "catalogsettings"))
+#set($uploadflow = $searcher.searchById("uploadflow_nextpage"))
+#if($uploadflow)
+	#set($nextpage = $uploadflow.value)
+#else
+	#set($nextpage = "default")
+#end
+#if(!$nextpage || $nextpage == "")
+	#set($nextpage = "default")
+#end
+
+<div id="uploadarea" data-nextpage="${nextpage}">
+       
+        	#if( $browser.isHtml5Browser() )
+        	
+        		$pages.include("$apphome/components/upload/types/html5.html",$context)
+        	
+        	#else
+        
+        		$pages.include("$apphome/components/upload/types/simpler.html",$context)
+        	
+        	#end	
+       
+</div>
+
+			

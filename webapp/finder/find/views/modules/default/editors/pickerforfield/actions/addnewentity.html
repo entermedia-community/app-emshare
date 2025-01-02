@@ -1,0 +1,58 @@
+##edit/addnew.html?viewid=projectgeneral&viewpath=project/projectgeneral&hitssessionid=hitsprojectfinder/catalog
+
+
+#set( $viewid = $context.findValue("viewid") )
+
+$context.putPageValue("searcher",$mediaarchive.getSearcher($module.id))
+
+#if( !$viewid )	
+	#set($viewid = "${module.id}general")
+#end
+
+#set($id = $data.id )
+#if( !$id )
+	#set( $id = $context.getRequestParameter("id") )
+#end
+
+#set($pickertargetfield = $context.getRequestParameter("pickertargetfield"))
+
+#set($action = "${edithome}/actions/addnewentitytofieldsave.html")
+
+<div id="default-fields" style="padding: 10px;">
+    <div id="editlayout">
+    <form id="dataeditor" 
+    		name="dataeditor" 
+    		class="ajaxform autocloseform" 
+    		data-targetdiv="entitypicker${pickertargetfield}"
+    		data-oemaxlevel="1"
+    		method="post"  
+    		action="$!action">
+    		
+    	<input name="save" type="hidden" value="true" />
+    	<input name="id" type="hidden" value="$!id" />
+    	    	
+    	<input name="pickertargetfield" type="hidden" value="${pickertargetfield}" />	
+    	<input name="entityid" type="hidden" value="$!{entity.id}" />
+    	<input name="entitymoduleid" type="hidden" value="$!{entitymodule.id}" />
+   	
+    	
+    	$context.putPageValue("viewid", $viewid)
+
+		#set( $origURL = $context.getRequestParameter("origURL" ) )
+		#set( $moduleid = $context.findValue("module") )
+		
+		$pages.include("/$applicationid/components/xml/detaileditor-entities.html", $context)
+		
+		<div class="d-flex align-items-center mt-3">
+			<a class="btn btn-cta submitform mr-3"><i class="mr-1 bi bi-floppy-fill mr-1"></i> [[Save]]</a>
+			<button id="closebutton" type="button" class="btn btn-secondary" data-dismiss="modal">[[Cancel]]</button>
+		</div>
+    </form>
+
+    </div>
+</div>
+
+
+
+
+

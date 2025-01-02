@@ -1,28 +1,17 @@
 (function ($) {
 	$.fn.ajaxFormSubmit = function () {
+		// $(window).trigger("ajaxsubmitting");
 		var form = $(this);
 
 		if (form.data("submitting")) {
 			console.log(form.data("submitting"));
-			console.warn("Already submitting this form, skipping");
-			return this;
+			console.warn("Already submitting this form");
+			// return this;
 		}
 
 		var warning = form.data("warning");
 		if (warning && !confirm(warning)) {
 			return this;
-		}
-
-		if (typeof CKEDITOR !== "undefined") {
-			for (instance in CKEDITOR.instances) {
-				var editor = CKEDITOR.instances[instance];
-				var div = $(editor.element.$);
-				var id = div.data("saveto");
-				var tosave = $("#" + id);
-				//editor.updateElement() //does not work
-				var data = editor.getData();
-				tosave.val(data);
-			}
 		}
 
 		if (!form.hasClass("novalidate")) {
@@ -33,27 +22,33 @@
 					});
 					var isvalidate = form.valid();
 					if (!isvalidate) {
-						e.preventDefault();
+						//e.preventDefault();
 						return this;
 					}
-				} catch (_) {
-					console.log(e);
+				} catch (_e) {
+					console.log(_e);
 				}
 			}
 		}
-		var targetdiv_ = form.data("targetdiv");
-		if (targetdiv_ === undefined) {
-			targetdiv_ = form.attr("targetdiv");
-		}
-		if (targetdiv_ === undefined) {
-			targetdiv_ = form.data("targetdivinner"); //TODO: Remove this
-		}
+		var targetdivS = form.data("targetdiv");
+		var targetdiv;
+		var edithomeid = form.data("edithomeid");
 
-		var	targetdiv = $("#" + $.escapeSelector(targetdiv_)); //Noting is close to the form we are using... So make sure to use data-autosetformtargetdiv="targetdiv" 
+		//TODO: Move all this to a jQuery plugin form.findTargetDiv()
+		if (edithomeid !== undefined && edithomeid != "") {
+			targetdiv = $("#" + edithomeid + " ." + targetdivS);
+		} else {
+			targetdiv = form.closest("." + $.escapeSelector(targetdivS));
+		}
 		if (!targetdiv.length) {
-			targetdiv = $("." + $.escapeSelector(targetdiv_));
+			targetdiv = $("#" + $.escapeSelector(targetdivS));
 		}
-
+		if (!targetdiv.length) {
+			targetdiv = $("." + $.escapeSelector(targetdivS));
+		}
+		if (targetdiv.length > 1) {
+			console.error("Should not have more than one target ", targetdiv);
+		}
 		if (form.attr("action") == undefined) {
 			var action = targetdiv.data("saveaction");
 			if (action == undefined) {
@@ -83,13 +78,36 @@
 			oemaxlevel = 1;
 		}
 		//targetdiv.data("oemaxlevel", oemaxlevel);
+		var data = form.cleandata();
+		if (form.data("includeeditcontext") == true) {
+			if (edithomeid !== undefined) {
+				var editdiv = $("#" + edithomeid);
+				if (editdiv.length > 0) {
+					var otherdata = editdiv.cleandata();
+					data = {
+						...otherdata,
+						...data,
+					};
+				} else {
+					console.warn("No editdiv found for includeeditcontext");
+				}
+			}
+		}
+		if (form.data("includesearchcontext") == true) {
+			var editdiv = targetdiv.closest(".editdiv"); //This is used for lightbox tree opening
+			var resultsdiv = editdiv.find(".resultsdiv");
 
-		var data = {};
-		if (form.data("includesearchcontext") == true) {  //Is this a good idea or a bad idea?
-			var resultsdiv = $("#" + targetdiv_);
-			data = resultsdiv.cleandata();
-		} 
-		
+			if (resultsdiv.length > 0) {
+				var otherdata = resultsdiv.cleandata();
+				data = {
+					...otherdata,
+					...data,
+				};
+			} else {
+				console.warn("No resultsdiv found for icludesearchcontext");
+			}
+		}
+
 		data.oemaxlevel = oemaxlevel;
 
 		var formmodal = form.closest(".modal");
@@ -113,8 +131,7 @@
 			},
 			crossDomain: true,
 			success: function (result) {
-				form.data("uid", toastUid);
-				$(window).trigger("successToast", [form]);
+				$(window).trigger("successToast", toastUid);
 				$(window).trigger("checkautoreload", [form]);
 				if (showwaitingtarget !== undefined) {
 					showwaitingtarget.hide();
@@ -128,6 +145,7 @@
 					var dataname = parsed.data("dataname");
 
 					$(window).trigger("updatepickertarget", [
+						//Is this still used? Delete?
 						pickertarget,
 						dataid,
 						dataname,
@@ -142,21 +160,25 @@
 						targetdiv.replaceWith(result);
 					}
 				}
+				let closedialogid = form.data("closedialogid");
+				if (closedialogid !== undefined) {
+					let closedialog = $("#" + closedialogid);
+					if (closedialog.length > 0) {
+						closeemdialog(closedialog.closest(".modal"));
+					}
+				}
 				if (formmodal.length > 0 && form.hasClass("autocloseform")) {
 					if (formmodal.modal) {
 						closeemdialog(formmodal);
 					}
 				}
 
-				//Entity Back Btn
-				formsavebackbutton(form);
-
 				$("#resultsdiv").data("reloadresults", true);
 
 				//TODO: Move this to results.js
-				if (form.hasClass("autohideOverlay")) {
-					hideOverlayDiv(getOverlay());
-				}
+				//if (form.hasClass("autohideOverlay")) {
+				//	hideOverlayDiv(getOverlay());
+				//}
 
 				if (form.hasClass("autoreloadsource")) {
 					//TODO: Use ajaxreloadtargets
@@ -183,8 +205,7 @@
 				}
 			},
 			error: function (data) {
-				form.data("uid", toastUid);
-				$(window).trigger("errorToast", [form]);
+				$(window).trigger("errorToast", toastUid);
 				if (targetdiv) {
 					$("#" + $.escapeSelector(targetdiv)).html(data);
 				}

@@ -1,0 +1,52 @@
+<page>
+
+	<property name="edithomename">dataasset</property>
+	<property name="edithomeid">${module}${edithomename}</property>
+	<property name="edithome">/${applicationid}/views/modules/${module}/editors/${edithomename}</property>
+	
+	<property name="fallbackdirectory">../default</property>
+	
+	<path-action name="AssetEditModule.getAsset"/>
+	<!--
+			<path-action name="Admin.loadPermissions"/>
+			<path-action name="Admin.allowViewing">
+					<login-path>/${applicationid}/authentication/nopermissions.html</login-path>
+			</path-action>
+			<permission name="editasset">
+				<or>
+					<userprofile property="editallassets" equals="true" />
+					<action name="AssetControlModule.canEditAsset" />
+				</or>
+			</permission>
+	-->
+	
+	<path-action name="DataPermissionModule.loadCustomModulePermissions">
+		<property name="module">asset</property>
+		<property name="parameterid">assetid</property>
+		<property name="parentparameterid">collectionid</property>
+	</path-action>
+	
+	
+	<path-action name="DataPermissionModule.loadCustomModulePermissions" allowduplicates="true">
+		<property name="module">asset</property>
+
+		<property name="parameterid">collectionid</property>
+		<property name="parametertype">librarycollection</property>
+
+		<property name="parentparameterid">library</property>
+		<property name="parentparametertype">library</property>
+
+	</path-action>
+	
+	
+	<path-action name="Admin.allowViewing">
+					<login-path>/${applicationid}/authentication/nopermissions.html</login-path>
+			</path-action>
+	
+	
+	<property name="searchtype"></property>
+
+
+
+	
+</page>

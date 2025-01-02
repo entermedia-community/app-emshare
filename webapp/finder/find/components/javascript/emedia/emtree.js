@@ -43,8 +43,7 @@ $(function () {
 		);
 	}
 
-	lQuery(".emtree-widget ul li div .cat-name").livequery(
-		"click",
+	lQuery(".emtree-widget ul li div .cat-name").livequery("click",
 		function (event) {
 			event.stopPropagation();
 			if (
@@ -81,6 +80,12 @@ $(function () {
 			event.tree = tree;
 			event.nodeid = nodeid;
 			$(document).trigger(event);
+			
+			var $contextMenu = $(".treecontext");
+			if($contextMenu.length>0)
+			{
+				$contextMenu.hide();
+			}
 		}
 	);
 
@@ -110,7 +115,7 @@ $(function () {
 			//Asset Module
 			reloadurl =
 				home +
-				"/views/modules/asset/viewfiles/" +
+				"/views/modules/asset/editors/viewfiles/" +
 				nodeid +
 				"/" +
 				node.data("categorynameesc") +
@@ -138,7 +143,19 @@ $(function () {
 			reloadurl = reloadurl + "?hitssessionid=" + hitssessionid;
 		}
 
-		var options = structuredClone(tree.data());
+		var options = tree.cleandata();
+
+		//includeeditcontext
+		var editdiv = tree.closest(".editdiv"); //This is used for lightbox tree opening
+		if (editdiv.length > 0) {
+			var otherdata = editdiv.cleandata();
+			options = {
+				...otherdata,
+				...options,
+			};
+		} else {
+			//console.warn("No editdiv found for includeeditcontext");
+		}
 
 		options["nodeID"] = nodeid;
 		options["treetoplocation"] = toplocation;
@@ -298,15 +315,14 @@ $(function () {
 		var nodeid = node.data("nodeid");
 		var link =
 			tree.data("home") +
-			"/views/modules/category/edit/editdialog.html?categoryid=" +
+			"/views/modules/category/editors/data/editdialog.html?categoryid=" +
 			nodeid +
 			"&id=" +
 			nodeid +
-			"&viewid=categorygeneral&viewpath=category/categorygeneral";
+			"&viewid=categorygeneral";
 		$(this).attr("href", link);
 		$(this).data("dialogid", "categoryproperties");
-		emdialog($(this), event);
-		//document.location = link;
+		$(this).emDialog();
 		return false;
 	});
 
@@ -341,7 +357,7 @@ $(function () {
 				var maxlevel = 1;
 				gotopage(tree, node, maxlevel, url, options);
 			} else {
-				var url = tree.data("home") + "/views/modules/asset/add/start.html";
+				var url = tree.data("home") + "/views/modules/asset/editors/assetupload/index.html";
 				var maxlevel = 1;
 				//options["oemaxlevel"] = $(this).data("oemaxlevel");
 				options["oemaxlevel"] = tree.data("uploadmaxlevel");
@@ -385,7 +401,7 @@ $(function () {
 			nodeid +
 			"&depth=" +
 			node.data("depth");
-		node.find("> .categorydroparea").load(link, function () {
+		node.find("> .treerow").load(link, function () {
 			node.find("input").select().focus();
 		});
 		return false;
@@ -580,8 +596,11 @@ $(function () {
 
 	lQuery("body").livequery("click", function () {
 		var $contextMenu = $(".treecontext");
-		$contextMenu.hide();
-		$(".categorydroparea").removeClass("selected");
+		if($contextMenu.length>0)
+		{
+			$contextMenu.hide();
+			$(".categorydroparea").removeClass("selected");
+		}
 	});
 
 	$(document).keydown(function (e) {

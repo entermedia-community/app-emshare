@@ -1,0 +1,14 @@
+#set($category =  $mediaarchive.getEntityManager().createDefaultFolder($entity, $context.getUser()))
+$context.putPageValue("category", $category)
+$context.putPageValue("categoryid", $category.getId())
+
+<div id="$edithomeid" 
+	class="editdiv entity-tab-content entity-tab-media tabtypemedia" 
+	data-entityid="$!entity.id"
+	data-entitymoduleid="$!entitymodule.id"
+	data-edithome="$edithome"
+	data-entitymoduleviewid="$entitymoduleviewid"
+	data-rootcategory="$category.id"
+>
+$pages.include("${edithome}/resultarea.html?rootcategory=${category.id}", $context)
+</div>
