@@ -184,7 +184,7 @@ lQuery(".editdiv.pickersubmodules .resultsdivdata").livequery(
 
 		var clickableresultlist = row.closest(".clickableresultlist");
 		clickableresultlist.data("id", row.data("dataid")); //They picked an entity
-		
+
 		clickableresultlist.runAjax();
 	}
 );
@@ -288,7 +288,7 @@ lQuery(".editdiv.pickerforuploading .resultsdivdata").livequery(
 
 		if (clickableresultlist.length) {
 			clickableresultlist.data("entityid", rowid);
-			clickableresultlist.emDialog( function(){
+			clickableresultlist.emDialog(function () {
 				closeemdialog(clicked.closest(".modal"));
 			});
 		}
@@ -315,7 +315,6 @@ lQuery(".pickerresults.pickercategorytree .resultsdivdata").livequery(
 		}
 	}
 );
-
 
 //CB: assign a asset to a field
 lQuery(".pickerresults.pickerpickasset .resultsdivdata").livequery(
