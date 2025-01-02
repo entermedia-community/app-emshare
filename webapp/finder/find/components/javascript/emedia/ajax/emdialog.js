@@ -280,10 +280,13 @@ closeemdialog = function (modaldialog) {
 	$(window).trigger("setPageTitle", [othermodal]);
 
 	if (oldurlbar !== undefined) {
+		if (dialogid == "mediaviewer") {
+			//history.replaceState(null, null, " ");
+			oldurlbar = RemoveParameterFromUrl(oldurlbar, "assetid");
+		}
+		
 		history.pushState($("#application").html(), null, oldurlbar);
-	}
-	if (dialogid == "mediaviewer") {
-		history.replaceState(null, null, " ");
+		
 	}
 };
 
@@ -298,3 +301,9 @@ closeallemdialogs = function () {
 		hideOverlayDiv(overlay);
 	}
 };
+
+function RemoveParameterFromUrl(url, parameter) {
+  return url
+    .replace(new RegExp('[?&]' + parameter + '=[^&#]*(#.*)?$'), '$1')
+    .replace(new RegExp('([?&])' + parameter + '=[^&]*&'), '$1');
+}
