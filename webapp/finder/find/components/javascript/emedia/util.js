@@ -232,7 +232,7 @@ function resizeSearchCategories() {
 function adjustDataManagerTable() {
 	if ($(".datamanagertable").length) {
 		var height = $(window).height();
-		$(".datamanagertable").height(height - 320);
+		$(".datamanagertable").height(height - 352);
 	}
 }
 
