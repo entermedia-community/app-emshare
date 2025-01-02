@@ -158,8 +158,7 @@ lQuery(".listofentities .resultsdivdata").livequery("click", function (e) {
 	}
 
 	var row = $(this);
-
-	var clickableresultlist = row.closest(".clickableresultlist");
+	var clickableresultlist = row.closest(".clickopenentity");
 
 	var rowid = row.data("dataid");
 	var entitymoduleid = row.data("entitymoduleid");

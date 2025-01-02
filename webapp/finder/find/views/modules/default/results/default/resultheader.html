@@ -56,9 +56,19 @@ $context.putPageValue("entityrendertype", $entityrendertype)
 	#set($showaddnew = false)
 #end
 
+#ifnull($enableactions)
+	#set($enableactions = $content.isPropertyTrue("enableactions",true))
+#end
+#if($enableactions)
+	#set($enableactions = $permissions.can($module.id, "edit"))
+#end
+$context.putPageValue("enableactions", $enableactions)
+
+
 #set($islightheader = $module.id == "searchcategory" || $module.id == "modulesearch")
 <div id="resultsheader" class="#if($islightheader) lighttheme #end resultsheader #if($!hits.getSelectionSize() > 0)hasselections#end">
 	<div id="sub-nav" class="search-views emsubnav sub-nav-$!moduleid">
+		
 		<ul class="resultsnav">
 			#set($pickertarget = $context.getRequestParameter("pickertarget"))
 			#ifnull($pickertarget)
