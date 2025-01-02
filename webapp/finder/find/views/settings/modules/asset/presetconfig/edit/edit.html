@@ -9,7 +9,7 @@
 
 	#set( $origURL = $context.getRequestParameter("origURL" ) )
 
-	$context.putPageValue("viewid", "presetdataedit")
+	$context.putPageValue("viewid", "presetdatageneral")
 	
 	<form id="dataeditor-settings" name="dataeditor-settings" 
 			method="post" 
@@ -63,10 +63,13 @@
 #end
 #set( $fieldexternalvalue = $id )
 $context.putPageValue("canedittable", $caneditdata)
+$context.putPageValue("searcher", $mediaarchive.getSearcher($searchtype))
+$context.putPageValue("viewid", "presetparametergeneral")
 
-#set( $args = "id=$id&parentid=$id&viewdetailspath=$!viewdetailspath&viewid=presetparameteredit&catalogid=$mediaarchive.getCatalogId()&searchtype=$searchtype&fieldexternalid=$!fieldexternalid&fieldexternalvalue=$!fieldexternalvalue&listid=$!listid&listexternalid=$!listexternalid&permissionname=$permissionname&hitssessionid=$hitssessionid")
+#set( $args = "id=$id&parentid=$id&viewdetailspath=$!viewdetailspath&viewid=presetparametergeneral&catalogid=$mediaarchive.getCatalogId()&searchtype=$searchtype&fieldexternalid=$!fieldexternalid&fieldexternalvalue=$!fieldexternalvalue&listid=$!listid&listexternalid=$!listexternalid&permissionname=$permissionname&hitssessionid=$hitssessionid")
 
-$pages.include("$apphome/views/modules/asset/editors/dataasset/generictable.html?$args", $context)
+$pages.include("/$applicationid/components/xml/table.html?$args",$context)
+
 </div>
 #end
 

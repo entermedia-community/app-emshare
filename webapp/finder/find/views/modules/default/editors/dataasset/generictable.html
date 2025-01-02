@@ -7,11 +7,6 @@
 #set( $candelete = "true")
 
 #set($viewid = $context.getRequestParameter("viewid"))
-#if( !$viewid )
-    #set( $viewid = $context.getRequestParameter("view"))
-#end
-
-#set($viewpath = $context.getRequestParameter("viewpath"))
 
 #set ($editpath = $context.getRequestParameter("editorpath"))
 #if(!$editpath)
@@ -22,15 +17,13 @@
 	#set( $link = "${edithome}/generictablesave.html" )
 #end
 
-#set( $jumptomodule = $context.getRequestParameter("jumptomodule"))
-
 #set ($id = $context.getRequestParameter("id"))
 
-#set( $args = "id=$id&candelete=$candelete&editpath=$editpath&parentid=$parentid&jumptomodule=$!jumptomodule&catalogid=$catalogid&searchtype=$searchtype&fieldexternalid=$fieldexternalid&fieldexternalvalue=$fieldexternalvalue&viewid=$viewid&viewpath=$viewpath&permissionname=$!permissionname&hitssessionid=$!hitssessionid&selectlink=$!link")
+#set( $args = "id=$id&candelete=$candelete&editpath=$editpath&parentid=$parentid&searchtype=$searchtype&fieldexternalid=$fieldexternalid&fieldexternalvalue=$fieldexternalvalue&viewid=$viewid&viewpath=$viewpath&permissionname=$!permissionname&hitssessionid=$!hitssessionid&selectlink=$!link")
 #set( $argsnoid = "candelete=$candelete&editpath=$editpath&parentid=$parentid&catalogid=$catalogid&searchtype=$searchtype&fieldexternalid=$fieldexternalid&fieldexternalvalue=$fieldexternalvalue&viewid=$viewid&viewpath=$viewpath&permissionname=$!permissionname&hitssessionid=$!hitssessionid&selectlink=$!link")
 
 #set( $viewdetailspath = $context.getRequestParameter("viewdetailspath"))
-#set( $passalong = "viewdetailspath=$!viewdetailspath&jumptomodule=$!jumptomodule&candelete=$candelete&viewid=$viewid&viewpath=$viewpath&parentid=$parentid&hitssessionid=$!hitssessionid&selectlink=$!link&fieldexternalid=$fieldexternalid&fieldexternalvalue=$fieldexternalvalue&$fieldexternalid=$!fieldexternalvalue")
+#set( $passalong = "viewdetailspath=$!viewdetailspath&candelete=$candelete&viewid=$viewid&parentid=$parentid&hitssessionid=$!hitssessionid&selectlink=$!link&fieldexternalid=$fieldexternalid&fieldexternalvalue=$fieldexternalvalue&$fieldexternalid=$!fieldexternalvalue")
 #set( $passalong = $passalong.replace("=","%3D").replace("&","%26").replace(" ","%20"))
 
 #set( $showit = true )
@@ -45,6 +38,8 @@
 <div id="#makeid(${viewid})editor" >
 	#if( !$edit || $edit == "false")
 		
+	$searcher.getSearchType()
+	
 		$pages.include("/$applicationid/components/xml/table.html?$args&passalong=$passalong",$context)
 		
 		#if( !$parser.parseBoolean($edit) && ($caneditdata || $caneditasset) && !$print.equals("true"))
@@ -58,7 +53,7 @@
 	
 		<form name="edit${viewid}" class="ajaxform" targetdiv="#makeid(${viewid})editor" method="post" id="edit${viewid}" action="$home$editpath" enctype="multipart/form-data">
 		
-			$context.putPageValue("view", $viewpath)
+			$context.putPageValue("viewid", $viewid)
 			#set ($searcher = $searcherManager.getSearcher($catalogid, $searchtype))
 			$context.putPageValue("searcher", $searcher)
 			#set( $data = $searcher.searchById($id) )
