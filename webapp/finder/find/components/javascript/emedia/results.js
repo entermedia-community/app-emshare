@@ -918,26 +918,47 @@ jQuery(document).ready(function (url, params) {
 		context.strokeStyle = "#fff";
 		context.strokeRect(box[0] - 1, box[1] - 1, box[2] + 1, box[3] + 1);
 	};
-
-	lQuery(".emshowbox").livequery(function () {
-		var div = $(this);
-		div.css("position", "relative");
-		var image = $(div.find("img"));
-
-		paintimagebox(image);
-
-		image.on("load", function () {
+	
+	lQuery(".emshowboximg").livequery(function () {
+		var image = $(this);
+		image.on("load", function (e) {
 			paintimagebox(image);
 		});
+		paintimagebox(image);
+	});
+	
+	lQuery(".emshowboxX").livequery(function () {
+		var div = $(this);
+		div.css("position", "relative");
+		var image = div.find("img");
 
-		var container = div.data("centerbox");
-		if (container) {
-			var topbox = box[1];
-			if (topbox > h / 2) {
-				div.css("top", topbox + 5);
+		paintimagebox(image);
+		
+		$(image).on('load', function() {
+			paintimagebox(image);
+			var container = div.data("centerbox");
+			if (container) {
+				var topbox = box[1];
+				if (topbox > h / 2) {
+					div.css("top", topbox + 5);
+				}
 			}
+		});
+	});
+	
+	lQuery(".showimagebox").livequery("click", function () {
+		var link = $(this);
+		var mediaplayer = link.data("target");
+		var emshowbox = $("#"+mediaplayer).find(".emshowbox");
+		emshowbox.data("showbox", link.data("showbox"));
+		emshowbox.data("imagewidth", link.data("imagewidth"));
+		emshowbox.data("inputheight", link.data("inputheight"));
+		var image = emshowbox.find(".imagethumb");
+		if(image.length > 0) {
+			paintimagebox(image);
 		}
 	});
+	
 
 	lQuery("select.addremovecolumns").livequery("change", function () {
 		var selectedval = $(this).val();

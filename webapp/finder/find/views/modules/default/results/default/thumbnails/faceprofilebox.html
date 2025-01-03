@@ -3,15 +3,15 @@
 
 #set($thumbimagesize = $mediaarchive.readImageSize($imagesize) )
 
-#set($imagelocation = $facemanager.getImageAndLocationForGroup($asset, $faceprofilegroups, $thumbimagesize.h) )
+#set($imagebox = $facemanager.getImageAndLocationForGroup($asset, $faceprofilegroups, $thumbimagesize.h) )
 
-#if($imagelocation)
-	#if($imagelocation.timecodestartseconds > -1)
-		 #set($imagepath = "$imagepath?timeoffset=$imagelocation.timecodestartseconds")
+#if($imagebox)
+	#if($imagebox.timecodestartseconds > -1)
+		 #set($imagepath = "$imagepath?timeoffset=$imagebox.timecodestartseconds")
 	#end
 	
 	<div class="emshowbox faceprofileboximage h-100" 
-		data-showbox="$imagelocation.locationxy"
+		data-showbox="$imagebox.locationxy"
 		data-imagewidth="${thumbimagesize.w}"
 		data-inputheight="${thumbimagesize.h}"
 		>

@@ -57,39 +57,53 @@ $context.putPageValue("searchhome", $searchhome)
 		#else
 			#set($imagepath = $mediaarchive.asLinkToPreview($hit, $librarycol.id, $imagesize, true))
 		#end
-		
-		#if($tstamp)
-			#set($imagepath = "${imagepath}?_=$tstamp")
-		#end
 
 		$context.putPageValue("imagepath", $imagepath)
 		$context.putPageValue("asset", $hit)
 		$context.putPageValue("imagesize", $imagesize)
+			
+		#set($clearcache = $context.getRequestParameter("clearcache"))
+		#ifnotnull($clearcache)
+			#set( $time = $context.getLocaleManager().getDateStorageUtil().getTime( $hit.get("assetmodificationdate") ) )
+			#set( $urlparams= "?_=$time")
+		#end
 		
+		#if($assetheight && $assetwidth)
+			#set($facemanager = $mediaarchive.getBean("faceProfileManager") )
+			#set($imagebox = $facemanager.getImageBox( $faceprofilegroups, $hit, $assetwidth, $assetheight) )
+		#end
 		
-		#if($moduleid == "faceprofilegroup")
-			#set($faceprofilegroups = [$data] )	
-			$context.putPageValue("faceprofilegroups", $faceprofilegroups)
-			$pages.include("${searchhome}/thumbnails/faceprofilebox.html", $context)
-		#elseif($hits.getInput("showfacebox"))
-				$context.putPageValue("faceprofilegroups", $hits.getSearchQuery().getValue("faceprofilegroups"))
-				$pages.include("${searchhome}/thumbnails/faceprofilebox.html", $context)
-		#else
-			#set($clearcache = $context.getRequestParameter("clearcache"))
-			#ifnotnull($clearcache)
-				#set( $time = $context.getLocaleManager().getDateStorageUtil().getTime( $hit.get("assetmodificationdate") ) )
-				#set( $urlparams= "?_=$time")
+		#ifnotnull($imagebox)
+			
+			#if($imagebox.timecodestartseconds > -1)
+				#ifnotnull($urlparams)
+					#set($urlparams = "$urlparams&timeoffset=$imagebox.timecodestartseconds")
+				#end
+				#ifnull($urlparams)
+					#set($urlparams = "?timeoffset=$imagebox.timecodestartseconds")
+				#end
 			#end
-			<img class="imagethumb img-fluid  img$!thumbsize "
-					catalogid="$catalogid" 
-					assetid="$hit.id" 
-					alt="#if($title)#esc($title)#else$!{hit.name}#end"
-					draggable="true"  
-					data-name="#if($title)#esc($title)#else$!{hit.name}#end" 		
-					src="$imagepath$!urlparams" 
-			/>
-			#if($type =="video")<button class="videoplay-button"><span class="videoplay-icon"></span></button>#end
-		#end			
+	
+			<div class="emshowbox faceprofileboximage h-100" 
+				data-showbox="$imagebox.locationxy"
+				data-imagewidth="${assetwidth}"
+				data-inputheight="${assetheight}"
+				>
+		#end
+				<img class="imagethumb img-fluid  img$!thumbsize #ifnotnull($imagebox) emshowboximg #end"
+						catalogid="$catalogid" 
+						assetid="$hit.id" 
+						alt="#if($title)#esc($title)#else$!{hit.name}#end"
+						draggable="true"  
+						data-name="#if($title)#esc($title)#else$!{hit.name}#end" 		
+						src="$imagepath$!urlparams" 
+				/>
+				#if($type =="video")<button class="videoplay-button"><span class="videoplay-icon"></span></button>#end
+		#ifnotnull($imagebox)
+			</div>
+		#end
+		
+					
 	#end
 </div>
 

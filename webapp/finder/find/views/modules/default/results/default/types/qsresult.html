@@ -78,10 +78,13 @@
 			<div class="emfolder-icon">
 				#if($primarymedia)
 					$context.putPageValue("thumbsize", "thumbnail" )
-					#set($hit = $primarymedia)
-					$context.putPageValue("hit", $hit) 
+					$context.putPageValue("hit", $primarymedia) 
 					$context.putPageValue("asset", $primarymedia)
-					#set( $assetrendertype = $mediaarchive.getMediaRenderType($hit.fileformat))
+					#set( $assetrendertype = $mediaarchive.getMediaRenderType($primarymedia.fileformat))
+					
+					#if($module.id == "faceprofilegroup")
+						$context.putPageValue("faceprofilegroups", [$entity]) 
+					#end
 					$pages.include("${searchhome}/thumbnails/${assetrendertype}.html", $context)
 			  #else
 					<i class="bi bi-$moduleicon module-icon"></i> 

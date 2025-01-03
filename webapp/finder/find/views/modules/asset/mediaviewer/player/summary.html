@@ -1,11 +1,21 @@
+#if( !$thumbsize )
+	#set( $thumbsize  = "largepreview" )
+#end
+$context.putPageValue("thumbsize",$thumbsize)
+#set($assetwidth = $mediaarchive.getRealImageWidth($asset)) 
+$context.putPageValue("assetwidth",$assetwidth)	
+#set($assetheight = $mediaarchive.getRealImageHeight($asset)) 
+$context.putPageValue("assetheight",$assetheight)	
+#if($asset.faceprofiles)
+	$pages.include("$apphome/views/modules/asset/components/xml/typesreadonly/faceprofilesforasset.html", $context) 
+#end
 <div id="mediaplayer" class="media-player-mini">
 		#set($totalpages = $numberutils.toInt($asset.pages))
 		#set ( $hitssessionid = $context.findValue("hitssessionid"))
-			<div class="media-thumbnail">
-				#if( !$thumbsize )
-		    		#set( $thumbsize  = "largepreview" )
-				#end
-				$context.putPageValue("thumbsize",$thumbsize)
+		
+
+			<div class="media-thumbnail #if($asset.faceprofiles) emshowbox #end">
+				
 				$context.putPageValue("viewer","summary")
 				
 				#set( $type = $mediaarchive.getMediaRenderType($asset.fileformat))
@@ -26,8 +36,7 @@
 							$context.putPageValue("cdnprefix", $cdnprefix)
 							$context.putPageValue("useoriginal", "true")
 						#end
-						#set($tstamp = $mathutil.getRandomValue(9999))
-						$context.putPageValue("tstamp", $tstamp)
+
 		 				$pages.include("$searchhome/thumbnails/${type}.html", $context) 
 					##</a>
 				#end

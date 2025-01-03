@@ -1,9 +1,8 @@
+#set($collection = $asset.getValues("faceprofiles"))
 
-#set($collection = $data.getValues($detail.getId()))
 #ifnotnull($collection)
 #if(!$collection.isEmpty())
-<div class="emfield-scroll">
-<ul class="entity-value-list">
+<div class="asset-faceprofiles d-flex justify-content-center">
 	#foreach( $profile in $collection )
 		#set( $row = false )
 		#set( $name = "")
@@ -29,16 +28,20 @@
 	    		#set($secs = $mediaarchive.formatMilliseconds($profile.timecodestart))
 	    		#set($name = "$name &nbsp;($secs)")
 	    	#end
+			
+			#set( $facemanager = $mediaarchive.getBean("faceProfileManager") )
+			#set($imagebox = $facemanager.getImageBox( [$row], $asset, $assetwidth, $assetheight) )
 		    
-		    
-		    <li><a href="$link" 
-		    	class=""
-				data-target="applicationcontent"
+		    <a href="#" 
+		    	class="showimagebox"
+				data-target="mediaplayer"
+				data-showbox="$imagebox.locationxy"
+				data-imagewidth="${thumbimaassetwidth}"
+				data-inputheight="${assetheight}"
 		    	title="$!title ($!row.get('samplecount') [[Sample Count]])"
-		    	>$!name</a></li>
+		    	>$!name</a>
 	    #end 
 	#end	
-</ul>
 </div>
 #end
 #end
