@@ -152,16 +152,22 @@ function initializeUI() {
 			allowClear = true;
 		}
 		var placeholder = $(this).attr("placeholder");
-		if (placeholder == undefined) {
+		if (!placeholder) {
 			placeholder = $(this).data("placeholder");
 		}
-		if (placeholder == undefined) {
+		if (!placeholder) {
 			placeholder = $(this).find("option[value='']").text();
+		}
+		if (!placeholder) {
+			var label = $(this).closest(".inputformrow").find("label");
+			if (label.length) {
+				placeholder = label.text();
+			}
 		}
 		if ($.fn.select2) {
 			theinput.select2({
 				allowClear: allowClear,
-				placeholder: placeholder || "Select an option",
+				placeholder: placeholder.trim() || "Select an option",
 				dropdownParent: dropdownParent,
 			});
 		}
@@ -205,11 +211,20 @@ function initializeUI() {
 			dropdownParent = parent;
 		}
 
-		//console.log(theinput.attr("id")+"using: "+dropdownParent.attr("id"));
-		var placeholder = theinput.data("placeholder");
-		if (!placeholder) {
-			placeholder = "";
+		var placeholder = $(this).attr("placeholder");
+		if (placeholder == undefined) {
+			placeholder = $(this).data("placeholder");
 		}
+		if (placeholder == undefined) {
+			placeholder = $(this).find("option[value='']").text();
+		}
+		if (placeholder == undefined) {
+			var label = $(this).closest(".inputformrow").find("label");
+			if (label.length) {
+				placeholder = label.text().trim();
+			}
+		}
+
 		var allowClear = theinput.data("allowclear");
 
 		if (allowClear == undefined) {
@@ -217,7 +232,7 @@ function initializeUI() {
 		}
 		if ($.fn.select2) {
 			theinput = theinput.select2({
-				placeholder: placeholder,
+				placeholder: placeholder || "Select an option",
 				allowClear: allowClear,
 				minimumInputLength: 0,
 				dropdownParent: dropdownParent,
