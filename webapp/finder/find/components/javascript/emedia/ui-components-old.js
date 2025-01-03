@@ -522,10 +522,9 @@ function initializeUI() {
 		if (CK5Editor) {
 			CK5Editor.updateSourceElement();
 		}
-		console.log($(this).prop("disabled"));
+
 		$(this).prop("disabled", true);
 		var theform = $(this).closest("form");
-		console.log($(this).prop("disabled"));
 
 		var clicked = $(this);
 		if (clicked.data("updateaction")) {
