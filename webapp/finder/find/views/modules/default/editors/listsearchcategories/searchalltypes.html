@@ -35,8 +35,9 @@ $pages.include("${edithome}/categorybreadcrumb.html", $context)
 	#ifnull( $resultview)
 		#set($resultview = "brickvertical")
 	#end
-	
+	<div class="flex-grow-1 ">
 		#if($selectedmodule)
+		
 			#set($bmodule = $mediaarchive.getCachedData("module",$selectedmodule) )
 			#set($edithome = "$apphome/views/modules/${selectedmodule}/editors/listentities")
 			$context.putPageValue("edithome", $edithome)
@@ -46,16 +47,18 @@ $pages.include("${edithome}/categorybreadcrumb.html", $context)
 			#set($idhits = $organizedHits.get($bmodule.id))
 			$context.putPageValue("hits", $idhits)
 			$context.putPageValue("enableactions", true)
+			
 			$pages.include("${edithome}/index.html",$context)
 
 		#else
+			
 			<div id="searchcategoryresults" 
-						class="flex-grow-1 clickopenentity" 
+						class="clickopenentity" 
 						data-entitymoduleid="$selectedmodule"
 						data-url="${apphome}/views/modules/$!{selectedmodule}/editors/default/tabs/index.html">
 				$pages.include("$searchhome/results.html?resultviewmodulesearch=$resultview",$context)
 			</div>
 		#end
-	
+	</div>
 </div>
 
