@@ -74,7 +74,7 @@ public Data saveUserProfile(String inUserId)
 		userprofile.setSourcePath(inUserId);
 	}
 		
-	details = userprofilesearcher.getDetailsForView("userprofile/edit", context.getPageValue("user"));
+	details = userprofilesearcher.getDetailsForView("userprofileedit", context.getPageValue("userprofile"));
 	
 	fieldlist = []
 	
@@ -92,7 +92,7 @@ public void addUser()
 	User newuser = createUser();
 	Searcher usersearcher = searcherManager.getSearcher(catalogid,"user");
 	
-	List details = usersearcher.getDetailsForView("user/simpleuseradd", context.getPageValue("user"));
+	List details = usersearcher.getDetailsForView("simpleuseradd", context.getPageValue("userprofile"));
 	
 	fieldlist = []
 	details.each { fieldlist << it.id; }
@@ -131,7 +131,7 @@ public void editUser()
 		//save the user object
 		Searcher usersearcher = searcherManager.getSearcher(catalogid,"user");
 
-		List details = usersearcher.getDetailsForView("user/simpleuseredit", loggedin);
+		List details = usersearcher.getDetailsForView("useredit", loggedin);
 		
 		fieldlist = []
 		
