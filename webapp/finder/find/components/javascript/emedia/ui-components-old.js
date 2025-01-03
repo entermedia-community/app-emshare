@@ -130,6 +130,29 @@ function initializeUI() {
 			$("#module-list").show();
 		}
 	});
+	function getSelect2Placeholder() {
+		var placeholder = $(this).attr("placeholder");
+		if (!placeholder) {
+			placeholder = $(this).data("placeholder");
+		}
+		if (!placeholder) {
+			placeholder = $(this).find("option[value='']").text();
+		}
+		if (!placeholder) {
+			var label = $(this).closest(".inputformrow").find("label");
+			console.log(label);
+			if (label.length) {
+				placeholder = label.text().trim();
+				if (placeholder) {
+					return "Select " + placeholder.toLowerCase();
+				}
+			}
+		}
+		if (!placeholder) {
+			return "Select an option";
+		}
+		return placeholder;
+	}
 
 	lQuery("select.select2").livequery(function () {
 		var theinput = $(this);
@@ -151,17 +174,11 @@ function initializeUI() {
 		if (allowClear == undefined) {
 			allowClear = true;
 		}
-		var placeholder = $(this).attr("placeholder");
-		if (placeholder == undefined) {
-			placeholder = $(this).data("placeholder");
-		}
-		if (placeholder == undefined) {
-			placeholder = $(this).find("option[value='']").text();
-		}
+		var placeholder = getSelect2Placeholder.call(this);
 		if ($.fn.select2) {
 			theinput.select2({
 				allowClear: allowClear,
-				placeholder: placeholder || "Select an option",
+				placeholder: placeholder,
 				dropdownParent: dropdownParent,
 			});
 		}
@@ -205,11 +222,8 @@ function initializeUI() {
 			dropdownParent = parent;
 		}
 
-		//console.log(theinput.attr("id")+"using: "+dropdownParent.attr("id"));
-		var placeholder = theinput.data("placeholder");
-		if (!placeholder) {
-			placeholder = "";
-		}
+		var placeholder = getSelect2Placeholder.call(this);
+
 		var allowClear = theinput.data("allowclear");
 
 		if (allowClear == undefined) {
@@ -522,10 +536,9 @@ function initializeUI() {
 		if (CK5Editor) {
 			CK5Editor.updateSourceElement();
 		}
-		console.log($(this).prop("disabled"));
+
 		$(this).prop("disabled", true);
 		var theform = $(this).closest("form");
-		console.log($(this).prop("disabled"));
 
 		var clicked = $(this);
 		if (clicked.data("updateaction")) {
