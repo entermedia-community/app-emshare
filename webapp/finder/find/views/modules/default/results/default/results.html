@@ -35,13 +35,14 @@ $context.putPageValue("viewid", $viewid)
 #set($searchhomeid = $page.get("searchhomeid") )
 
 
-$context.putPageValue("enableactions", false)
-#set($enableactions = $content.isPropertyTrue("enableactions",true))
+#ifnull($enableactions)
+	#set($enableactions = $content.isPropertyTrue("enableactions",true))
+#end
 #if($enableactions)
-	#if($permissions.can($module.id, "edit"))
-	$context.putPageValue("enableactions", true) ##used for selections
-	#end
-#end	
+	#set($enableactions = $permissions.can($module.id, "edit"))
+#end
+$context.putPageValue("enableactions", $enableactions)
+
 <div id="$!{searchhomeid}$!{edithomeid}" 
 	class="tableresults resultsdiv"
 	data-${hits.getSearchType()}hitssessionid="$!hits.getSessionId()" 

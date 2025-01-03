@@ -1,7 +1,7 @@
 var toastTO;
 
 $(window).on("showToast", function (_, anchor) {
-	if (!anchor || typeof anchor.data != "function") return;
+	if (!anchor || anchor.length == 0 || typeof anchor.data != "function") return;
 	if (anchor.data("noToast") === true) {
 		return;
 	}

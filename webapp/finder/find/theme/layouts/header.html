@@ -130,11 +130,6 @@
 				<i class="bi bi-book"></i>
 			</a>
 		#end
-		#ifnull($destop)
-			<a class="btn-upload" target="_blank" href="https://emedialibrary.com/downloads.html" title="[[Desktop App]]">
-				<i class="bi bi-laptop mr-2"></i> [[Desktop App]]
-			</a>
-		#end
 		#if($canviewsettings && $userprofile.hasModule("order") )
 			#set( $orders = $mediaarchive.query("order").exact("checkoutstatus","pending").search($context))
 		#end
@@ -175,8 +170,8 @@
 						</a>
 					#end
 					<div class="dropdown dropleft">
-						<a class="dropdown-item dropdown-toggle" href="#" data-toggle="dropdown">
-							[[Theme]]: <strong>#text($theme)</strong>
+						<a class="dropdown-item dropdown-toggle" href="#" data-toggle="dropdown" style="padding-left:0.25rem">
+							<i class="bi bi-palette mr-1"></i> [[Theme]]: <strong>#text($theme)</strong>
 						</a>
 						<div class="dropdown-menu">
 							#set($themes = $mediaarchive.getList("theme") )
@@ -197,7 +192,8 @@
 					#set( $localesearcher = $mediaarchive.getSearcher("locale") )
 					#set($currentlang = $localesearcher.searchById($context.language))
 					<div class="dropdown dropleft">
-						<a class="dropdown-item dropdown-toggle" href="#" data-toggle="dropdown">
+						<a class="dropdown-item dropdown-toggle" href="#" data-toggle="dropdown" style="padding-left:0.25rem">
+							<i class="bi bi-translate mr-1"></i>
 							#if($currentlang)
 								$currentlang
 							#else
@@ -211,11 +207,16 @@
 								<a class="dropdown-item" href="#urlescape($langurl)">$lang</a>
 							#end
 						</div> 
-					</div> 
+					</div>
+					#ifnull($destop)
+						<a class="dropdown-item" target="_blank" href="https://emedialibrary.com/downloads.html" title="[[Desktop App]]">
+							<i class="bi bi-laptop mr-1"></i> [[Desktop App]]
+						</a>
+					#end
 					<a class="dropdown-item" href="$!siteroot$apphome/authentication/logout.html" title="[[Logout]]">
-						[[Logout]] ($user)
+						<i class="bi bi-box-arrow-right mr-1"></i> [[Logout]] ($user)
 					</a> 
-				#else  
+				#else
 					<a class="dropdown-item" href="$!siteroot$apphome/authentication/login.html"  title="[[Login]]">
 						[[Login]]
 					</a> 

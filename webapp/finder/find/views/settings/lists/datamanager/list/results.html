@@ -8,68 +8,68 @@ $context.putPageValue("details",$details)
 <div class="tab" id="datatab">
 	$pages.include("$apphome/views/settings/lists/datamanager/list/actions.html", $context)
 	
-		<div id="emselectable" class="emselectable datamanagertable adjustHeight">
+	<div id="emselectable" class="emselectable datamanagertable">
 		<table class="emdata table table-striped table-hover" id="main-results-table" 
-		 data-hitssessionid="$datalist.sessionId" 
-		 data-origURL="$!origURL" 
-		 data-catalogid="$searcher.catalogId" 
-		 data-searchtype="$searcher.searchType" >
-		 <thead>
-			<tr id="tableheader" class="tableheader">
-			#set( $sortby = $datalist.getSearchQuery().getSortBy() )
-			#foreach( $detail in $details )
-			<th align="left" nowrap class="sortable #if( $edit)editcolumnheader #end #if( $sortby.startsWith($detail.getId() ) ) currentsort #if( $sortby.endsWith("Up") ) up #else down #end #end" id="$detail.id" data-fieldid="$detail.id">
-				$detail.getText($context)
-				#if ($sortby.startsWith($detail.getId()))
-	 				#if($sortby.endsWith("Up"))
-	 					#set($sorticon="down")
-	 				#else
-	 					#set($sorticon="up")
-	 				#end	
-	 				&nbsp;&nbsp;<i class="bi bi-sort-$sorticon"></i>
+			data-hitssessionid="$datalist.sessionId" 
+			data-origURL="$!origURL" 
+			data-catalogid="$searcher.catalogId" 
+			data-searchtype="$searcher.searchType" >
+			<thead>
+				<tr id="tableheader" class="tableheader">
+				#set( $sortby = $datalist.getSearchQuery().getSortBy() )
+				#foreach( $detail in $details )
+				<th align="left" nowrap class="sortable #if( $edit)editcolumnheader #end #if( $sortby.startsWith($detail.getId() ) ) currentsort #if( $sortby.endsWith("Up") ) up #else down #end #end" id="$detail.id" data-fieldid="$detail.id">
+					$detail.getText($context)
+					#if ($sortby.startsWith($detail.getId()))
+						#if($sortby.endsWith("Up"))
+							#set($sorticon="down")
+						#else
+							#set($sorticon="up")
+						#end	
+						&nbsp;&nbsp;<i class="bi bi-sort-$sorticon"></i>
+					#end
+				</th>
 				#end
-			</th>
-			#end
-			</tr>	
-		   </thead>
-		
-    
-		
-		
-		#set( $origURL = $context.getRequestParameter("origURL" ) )				
+				</tr>	
+				</thead>
 			
-		#foreach ( $hit in $datalist.getPageOfHits() )
-		  	$context.putPageValue('data', $hit)
-    		$context.putPageValue('cell', $hit)
-    
-			<tr rowid="$hit.id">
-			#foreach( $detail in $details )
-			<td>
-	
-			 	#set($val = $hit.get($detail.id))
-				#set($value = $searcherManager.getValue($hit, $detail, $context.getLocale()))
-						
+			
+			
+			
+			#set( $origURL = $context.getRequestParameter("origURL" ) )				
 				
-			 	$context.putPageValue('val',  $val)
-			 	$context.putPageValue('value',  $value)
-             	$context.putPageValue('detail',  $detail)
-             	
-				#set ($viewtype = $detail.viewType)
-             		#if($viewtype && $viewtype.equals("html"))
-             			#set ($viewtype = "htmlescaped")
-             		#end
-				#if(!$viewtype)
-					#set ($viewtype = $detail.dataType)
+			#foreach ( $hit in $datalist.getPageOfHits() )
+					$context.putPageValue('data', $hit)
+					$context.putPageValue('cell', $hit)
+			
+				<tr rowid="$hit.id">
+				#foreach( $detail in $details )
+				<td>
+		
+					#set($val = $hit.get($detail.id))
+					#set($value = $searcherManager.getValue($hit, $detail, $context.getLocale()))
+							
+					
+					$context.putPageValue('val',  $val)
+					$context.putPageValue('value',  $value)
+								$context.putPageValue('detail',  $detail)
+								
+					#set ($viewtype = $detail.viewType)
+									#if($viewtype && $viewtype.equals("html"))
+										#set ($viewtype = "htmlescaped")
+									#end
+					#if(!$viewtype)
+						#set ($viewtype = $detail.dataType)
+					#end
+					#if (!$viewtype || $viewtype.equals("text"))
+						#set ($viewtype = "default")
+					#end
+					$pages.include("$apphome/components/xml/typesreadonly/${viewtype}.html?viewonly=true", $context)
+				</td>
 				#end
-				#if (!$viewtype || $viewtype.equals("text"))
-					#set ($viewtype = "default")
-				#end
-				$pages.include("$apphome/components/xml/typesreadonly/${viewtype}.html?viewonly=true", $context)
-			</td>
+				</tr>
 			#end
-			</tr>
-		#end
-		</table>
+			</table>
 			<form name="editrow" 
 				action="$siteroot$content.dataroot/edit/edit.html"
 				class="ajaxform"
@@ -89,8 +89,8 @@ $context.putPageValue("details",$details)
 	
 	
 	
-	<div id="datamanagerpages" class="pages" style="text-align: left; padding-left: 20px;">
-	[[Found]] $!datalist.size() [[Records]]&nbsp;&nbsp;
+	<div id="datamanagerpages" class="pages p-2">
+		[[Found]] $!datalist.size() [[Records]]&nbsp;&nbsp;
 		#if ( $datalist.totalPages == 0 )
 		#elseif( $datalist.totalPages == 1 )
 		#elseif( $datalist )
