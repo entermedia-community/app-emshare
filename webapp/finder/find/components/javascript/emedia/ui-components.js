@@ -1,3 +1,12 @@
+function isInViewport(cell) {
+	const rect = cell.getBoundingClientRect();
+	var isin =
+		rect.top >= 0 &&
+		rect.top <= (window.innerHeight || document.documentElement.clientHeight);
+	return isin;
+}
+
+
 jQuery(document).ready(function () {
 	lQuery("a.ajax").livequery("click", function (e) {
 		e.stopPropagation();

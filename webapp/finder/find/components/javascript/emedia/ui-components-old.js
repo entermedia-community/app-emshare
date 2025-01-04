@@ -3028,14 +3028,6 @@ replaceelement = function (url, div, options, callback) {
 	});
 };
 
-function TODELETEisInViewport(cell) {
-	const rect = cell.getBoundingClientRect();
-	var isin =
-		rect.top >= 0 &&
-		rect.top <= (window.innerHeight || document.documentElement.clientHeight);
-	return isin;
-}
-
 lQuery(".changeimportmodule").livequery("change", function () {
 	var select = $(this);
 	var moduleid = select.val();
