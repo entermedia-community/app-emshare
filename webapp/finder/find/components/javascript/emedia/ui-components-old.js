@@ -2977,6 +2977,9 @@ function initializeUI() {
 	function posiitionSubmitButtons() {
 		var submitBtns = $(".form-submit-btns");
 		if (!submitBtns.length) return;
+		if (submitBtns.hasClass("sticky")) {
+			return;
+		}
 		var offsetTop = submitBtns.offset().top;
 		if (offsetTop > $(window).height()) {
 			submitBtns.addClass("sticky");
