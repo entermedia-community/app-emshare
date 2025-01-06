@@ -347,6 +347,25 @@ lQuery(".pickerresults.pickerpickasset .resultsdivdata").livequery(
 	}
 );
 
+lQuery(".pickerresults.oipickasset .resultsdivdata").livequery(
+	"click",
+	function (e) {
+		if (!isValidTarget(e)) {
+			return true;
+		}
+
+		var clicked = $(this);
+
+		var row = $(clicked.closest(".resultsdivdata"));
+		var rowid = row.data("dataid");
+		var sourcepath = row.data("sourcepath");
+		
+		$(window).trigger("assetpicked", [rowid,sourcepath]);
+
+		
+	}
+);
+
 //CB: Is good. for submodules
 lQuery(".pickerresults.entitypickersubmodule .resultsdivdata").livequery(
 	"click",

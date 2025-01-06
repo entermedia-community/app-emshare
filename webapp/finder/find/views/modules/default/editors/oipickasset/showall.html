@@ -1,0 +1,29 @@
+#set( $pickertargetfield = $context.getRequestParameter("pickertargetfield"))
+#set( $categoryid = $context.getRequestParameter("categoryid"))
+
+#set($pickertarget = $context.getRequestParameter("pickertarget")) ##? This still useful?
+
+<div id="pickersearchresults" class="editdiv pickerresults pickerpickasset"
+
+	data-oemaxlevel="1"
+	data-edithome="$!{edithome}"
+	data-targetdiv="pickersearchresults"
+	data-pickertarget="$!pickertarget"
+	
+	data-clickurl="${edithome}/actions/pickedasset.html"
+	data-pickertargetfield="$pickertargetfield"
+
+>
+	<div id="pickersearchentities" data-setpagetitle="[[Select]] #text($module)"></div>
+	<div class="overflow-y">
+		<div id="entitypickerresults"
+			>
+			
+			#if($categoryid)
+				$pages.include("${searchhome}/search.html?field=category&category.value=${categoryid}&operation=exact",$context)
+			#else
+				$pages.include("${searchhome}/searchinclude.html",$context)
+			#end
+		</div>
+	</div>
+</div>
