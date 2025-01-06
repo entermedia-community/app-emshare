@@ -2878,19 +2878,17 @@ function initializeUI() {
 		switch (e.which) {
 			case 27: //esckey
 				var ismodal = $(".modal.onfront");
+				var backBtn = ismodal.find(".entityNavBack");
 				if (ismodal.length) {
-					// Close modal only
-					closeemdialog(ismodal);
 					e.stopPropagation();
 					e.preventDefault();
+					if (backBtn.length) {
+						backBtn.trigger("click");
+					} else {
+						closeemdialog(ismodal);
+					}
 				}
-				// else {
-				// 	hideOverlayDiv(getOverlay());
-				// }
-
 				return;
-				break;
-
 			default:
 				return; // exit this handler for other keys
 		}
@@ -3027,14 +3025,6 @@ replaceelement = function (url, div, options, callback) {
 		crossDomain: true,
 	});
 };
-
-function TODELETEisInViewport(cell) {
-	const rect = cell.getBoundingClientRect();
-	var isin =
-		rect.top >= 0 &&
-		rect.top <= (window.innerHeight || document.documentElement.clientHeight);
-	return isin;
-}
 
 lQuery(".changeimportmodule").livequery("change", function () {
 	var select = $(this);

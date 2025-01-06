@@ -2,7 +2,7 @@
 
 #set( $ordersearcher = $searcherManager.getSearcher($catalogid,"order") )
 
-#set( $details = $ordersearcher.getDetailsForView("order/activityresults",$context.getUserProfile() ) ) 
+#set( $details = $ordersearcher.getDetailsForView("orderactivityresults",$context.getUserProfile() ) ) 
 
 <div class="emselectable" >
 <table class="emresultscontent emresultstable table table-striped table-hover table-clickable table-padding" > 
@@ -23,11 +23,12 @@
 		#if( $detail.id == "historyuserstatus" && $userstatus)
 		<td class="statuscolumn"> <span style="color:$userstatus.color;">$!userstatus</span></td>
 		#else
-		<td>		
+		<td>
 			#set( $value = false)
-			#set( $value = $order.get($detail.id) )
-			#if( $value)
-			$!context.putPageValue("val",$value)		
+			#set( $value = $order.getValue($detail.id) )
+			#ifnotnull($value)
+			$!context.putPageValue("val",$value)
+			$!context.putPageValue("value",$value)
 			$pages.include("$apphome/components/xml/detailreadonly.html", $context)
 			#end
 		</td>
