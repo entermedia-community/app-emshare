@@ -358,12 +358,14 @@ lQuery(".pickerresults.oipickasset .resultsdivdata").livequery(
 		var clicked = $(this);
 
 		var row = $(clicked.closest(".resultsdivdata"));
-		var rowid = row.data("dataid");
+		var assetid = row.data("dataid");
 		var sourcepath = row.data("sourcepath");
 
-		// var original  = mediadbhome + /services/module/asset/downloadloads/vieworiginal/" + sourecpath;
+		var mediadb = $("#application").data("mediadbappid");
 
-		$(window).trigger("assetpicked", [rowid, original]);
+		var url  = "/" + mediadb + "/services/module/asset/downloads/vieworiginal/" + sourcepath;
+
+		$(window).trigger("assetpicked", [assetid, url]);
 	}
 );
 
