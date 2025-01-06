@@ -2878,19 +2878,17 @@ function initializeUI() {
 		switch (e.which) {
 			case 27: //esckey
 				var ismodal = $(".modal.onfront");
+				var backBtn = ismodal.find(".entityNavBack");
 				if (ismodal.length) {
-					// Close modal only
-					closeemdialog(ismodal);
 					e.stopPropagation();
 					e.preventDefault();
+					if (backBtn.length) {
+						backBtn.trigger("click");
+					} else {
+						closeemdialog(ismodal);
+					}
 				}
-				// else {
-				// 	hideOverlayDiv(getOverlay());
-				// }
-
 				return;
-				break;
-
 			default:
 				return; // exit this handler for other keys
 		}
