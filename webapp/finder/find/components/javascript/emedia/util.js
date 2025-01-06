@@ -246,32 +246,6 @@ jQuery(window).on("resize", function () {
 	}, 50);
 });
 
-adjustZIndex = function (element) {
-	var zIndex = 100000;
-	setTimeout(function () {
-		var adjust = 0;
-		if (element.hasClass("modalmediaviewer")) {
-			$(".modal:visible").css("z-index", zIndex);
-			$(".modal:visible").off();
-			$(".modal:visible").addClass("behind");
-			$(".modal:visible").hide();
-		} else {
-			$(".modalmediaviewer").css("z-index", zIndex);
-			$(".modal:visible").css("z-index", zIndex - 1); //reset others?
-			$(".modal-backdrop")
-				.not(".modal-stack")
-				.css("z-index", zIndex - 1)
-				.addClass("modal-stack");
-		}
-		adjust = 1 + 1 * $(".modal:visible").length;
-		element.css("z-index", zIndex + adjust);
-		$(".onfront").removeClass("onfront");
-		element.show();
-		element.addClass("onfront");
-
-		//$(window).trigger("resize");
-	});
-};
 focusInput = function (input) {
 	//console.log(input);
 	if (input.length > 0) {
