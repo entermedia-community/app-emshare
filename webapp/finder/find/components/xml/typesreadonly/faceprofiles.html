@@ -17,12 +17,12 @@
 				#set($namefield = $mediaarchive.getSearcher("entityperson").getDetail("name"))
 		    	#set($name = $mediaarchive.getSearcherManager().getValue($person, $namefield, $context.getLocale()))
 		    	#set($name= "$name ($!row.get('samplecount'))")
-		    	#set($link = "$!siteroot$applink/views/modules/entityperson/index.html?entityid=$person.id&hitssessionid=$!hits.sessionId")
+		    	#set($link = "$!siteroot$applink/views/modules/entityperson/editors/default/tabs/index.html?entityid=$person.id&hitssessionid=$!hits.sessionId")
 		    	#set($title = "[[Person]]: ")
 			#end
 	    	#if( $name == "")
 	    		#set($name = "[[Profile]] $!row.get('facecounter') ($!row.get('samplecount'))")
-	    		#set($link = "$!siteroot$applink/views/modules/faceprofilegroup/index.html?entityid=$row.id&hitssessionid=$!hits.sessionId")
+	    		#set($link = "$!siteroot$applink/views/modules/faceprofilegroup/editors/default/tabs/index.html?entityid=$row.id&hitssessionid=$!hits.sessionId")
 	    		#set($title = "[[Face Profile]] ") 
 	    	#end
 	    	#if($profile.timecodestart)
@@ -32,8 +32,8 @@
 		    
 		    
 		    <li><a href="$link" 
-		    	class=""
-				data-target="applicationcontent"
+		    	class="emdialog"
+				data-dialogid="faceprofiledialog"
 		    	title="$!title ($!row.get('samplecount') [[Sample Count]])"
 		    	>$!name</a></li>
 	    #end 

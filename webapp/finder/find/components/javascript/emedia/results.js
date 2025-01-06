@@ -897,19 +897,24 @@ jQuery(document).ready(function (url, params) {
 			originalbox[2] * scale,
 			originalbox[3] * scale
 		);
-
-		var canvas = $(faceprofilebox.find("canvas"));
+		var thumbholder = image.closest(".imagethumbholder");
+		var canvas = thumbholder.find("canvas");
 		if (canvas.length >= 0) {
 			canvas.remove();
 		}
-		faceprofilebox.prepend("<canvas></canvas>");
-		canvas = $(faceprofilebox.find("canvas"));
+		thumbholder.prepend("<canvas></canvas>");
+		canvas = thumbholder.find("canvas");
 		canvas.css("position", "absolute");
 
 		var w = faceprofilebox.data("imagewidth");
 		//var h = faceprofilebox.data("inputheight");
 
 		canvas.attr({ width: image.width(), height: image.height() });
+		var position = image.position();
+		canvas.css("top", position.top);
+		canvas.css("left", position.left);
+		
+		
 		var context = canvas[0].getContext("2d");
 		context.beginPath();
 		context.lineWidth = 1;
@@ -946,7 +951,7 @@ jQuery(document).ready(function (url, params) {
 		});
 	});
 	
-	lQuery(".showimagebox").livequery("click", function () {
+	lQuery(".showimagebox").livequery("mouseover", function () {
 		var link = $(this);
 		var mediaplayer = link.data("target");
 		var emshowbox = $("#"+mediaplayer).find(".emshowbox");
