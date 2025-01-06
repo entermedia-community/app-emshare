@@ -26,11 +26,11 @@
 <div class="player-outer">
 <div id="playarea-$hit.id$!assetidpostfix" class="player">
 	<video id="videoviewer-$hit.id$!assetidpostfix" 
-			class="video-js vjs-default-skin vjs-big-play-centered" 
-			poster='$thumb'
-			#if( $loop && $loop == "true") loop #end
-			data-setup='{ "controls": true, "autoplay": #if( $autoplay)$autoplay#else false #end, "preload": "auto" }'
-		> 
+		class="video-js vjs-default-skin vjs-big-play-centered" 
+		poster='$thumb'
+		#if( $loop && $loop == "true") loop #end
+		#if($autoplay && $autoplay == "true") autoplay #end
+	>
 			#if( $streams )
 					#foreach( $size in $streams)
 					<source src="$source/$size/video.m3u8" type="application/x-mpegURL" label="$size" res="$size" />
@@ -55,7 +55,11 @@
 </div>
 <script>
 		var thevideo = "videoviewer-$hit.id$!assetidpostfix";
-		var myPlayer = videojs(thevideo, {}, function() {
+		var myPlayer = videojs.getPlayer(thevideo);
+		if(player){
+			player.dispose();
+		}
+		myPlayer = videojs(thevideo, { controls: true }, function() {
 			this.controlBar.addChild('QualitySelector');
 		});
 	</script>

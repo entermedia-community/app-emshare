@@ -23,11 +23,12 @@
 
 <div id="playarea-$hit.id" class="player">
 	<video id="video-$hit.id" 
-			class="video-js vjs-default-skin vjs-big-play-centered" 
-			style="width: 100%!important; height: 100%!important;" 
-			poster='$thumb' 
-			#if( $loop && $loop=="true" ) loop #end 
-			data-setup='{ "controls": true, "autoplay": #if( $autoplay)$autoplay#else false #end, "preload": "auto" }'>
+		class="video-js vjs-default-skin vjs-big-play-centered" 
+		style="width: 100%!important; height: 100%!important;" 
+		poster='$thumb'
+		#if( $loop && $loop == "true") loop #end
+		#if($autoplay && $autoplay == "true") autoplay #end
+	>
 		#if( $streams )
 			#foreach( $size in $streams)
 			<source src="$source/$size/video.m3u8" type="application/x-mpegURL" label="$size" />
@@ -54,7 +55,11 @@
 	var baseUrl = '$!cdnprefix';
 	var applink = '${applink}';
 
-	var player = videojs('video-$hit.id', {}, function() {
+	var player = videojs.getPlayer('video-$hit.id');
+	if(player){
+		player.dispose();
+	}
+	player = videojs('video-$hit.id', { controls: true }, function() {
 		this.controlBar.addChild('QualitySelector');
 	});
 
