@@ -347,7 +347,6 @@ lQuery(".pickerresults.pickerpickasset .resultsdivdata").livequery(
 	}
 );
 
-
 //http://einnovation.local.org:8080/site/blockfind/views/modules/asset/editors/oipickasset/index.html
 lQuery(".pickerresults.oipickasset .resultsdivdata").livequery(
 	"click",
@@ -361,12 +360,10 @@ lQuery(".pickerresults.oipickasset .resultsdivdata").livequery(
 		var row = $(clicked.closest(".resultsdivdata"));
 		var rowid = row.data("dataid");
 		var sourcepath = row.data("sourcepath");
-		
-		var original  = mediadbhome + /services/module/asset/downloadloads/vieworiginal/" + sourecpath;
-		
-		$(window).trigger("assetpicked", [rowid,original]);
 
-		
+		// var original  = mediadbhome + /services/module/asset/downloadloads/vieworiginal/" + sourecpath;
+
+		$(window).trigger("assetpicked", [rowid, original]);
 	}
 );
 
