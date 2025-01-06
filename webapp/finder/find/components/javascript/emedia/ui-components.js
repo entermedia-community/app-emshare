@@ -6,7 +6,6 @@ function isInViewport(cell) {
 	return isin;
 }
 
-
 jQuery(document).ready(function () {
 	lQuery("a.ajax").livequery("click", function (e) {
 		e.stopPropagation();

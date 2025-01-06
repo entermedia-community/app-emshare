@@ -1,0 +1,108 @@
+
+#set($dropboxmanager = $mediaarchive.getBean("dropboxManager"))
+#set($dropbox = $mediaarchive.getData("oauthprovider", "dropbox"))
+#if($dropbox.enabled == "true")
+	<h3>[[Authentication]]</h3>
+	<h4>Dropbox Connectivity</h4> 
+	<a class="btn btn-secondary" href="$apphome/views/settings/modules/asset/hotfolders/types/dropbox/connect.html">Connect Personal Dropbox  </a> 
+	#if($dropbox.accountid)
+		<a class="btn btn-secondary" href="$apphome/views/settings/modules/asset/hotfolders/types/dropbox/connectteam.html">Connect Dropbox Team Account </a>
+	#end
+	
+	
+	#if($dropbox.teamid)
+		
+		 <div class="form-group">
+            <label>[[Namespace]]</label>
+            <input type="hidden" name="field" value="dropboxnamespace" />            
+            <select class="form-control" name="dropboxnamespace.value">
+                <option value="" >[[Select a Namespace]]</option>
+                #set($namespaces = $dropboxmanager.listNamespaces())
+                #foreach($namespace in $namespaces)
+                    <option value="$namespace.namespace_id" #if($namespace.namespace_id == $data.dropboxnamespace)selected#end>
+                        $namespace.name 
+                    </option>
+                #end
+            </select>
+            <div class="note">[[Choose the namespace to use for this connection.]]</div>
+        </div>
+
+        <div class="form-group">
+            <label>[[Account ID]]</label>
+            <input type="hidden" name="field" value="dropboxuser" />            
+            <select class="form-control" name="dropboxuser.value">
+                <option value="" >[[Select an Account ID]]</option>
+                #set($accounts = $dropboxmanager.listTeamMembers())
+                #foreach($account in $accounts)
+                    <option value="$account.profile.team_member_id" #if($account.profile.team_member_id == $data.dropboxuser)selected#end>
+                        $account.profile.name.display_name
+                    </option>
+                #end
+            </select>
+            <div class="note">[[Choose the account ID to act as for this connection.]]</div>
+        </div>
+		
+	#end
+	
+	
+
+
+<div class="form-group">
+<label>[[External Import Path]]</label>
+<input type="hidden" name="field" value="externalpath" />
+<input class="form-control" name="externalpath.value" value="$!data.externalpath" />
+<div class="note">[[Optional: Local disk drive, path, url, or Windows Share that will be mounted.]] /media/marketing_drive</div> 
+</div>
+
+<div class="form-group">
+<label>[[Internal Category Path]]</label>
+<input type="hidden" name="field" value="subfolder" />
+#set( $subfolder = $context.getRequestParameter("subfolder"))
+#if( !$subfolder )
+#set( $subfolder = $!data.subfolder )
+#end
+<input class="form-control" name="subfolder.value" value="$!subfolder" />
+<div class="note">[[Required: The path to the category location such as: ]] Marketing_Drive</div>
+</div>
+
+
+##<div class="form-group">
+##<label>[[Include Filters]]</label>
+##<input type="hidden" name="field" value="includes" />
+##<textarea class="form-control" name="includes.value" cols="45" rows="3" >$!data.includes</textarea>
+##<div class="note">[[comma delimited]] *.jpg,*/Completed/*</div>
+##</div> 
+
+##<div class="form-group">
+##<label>[[Exclude Filter]]</label>
+##<input type="hidden" name="field" value="excludes" />
+##<textarea class="form-control" name="excludes.value" cols="45" rows="3" >#if ($data.excludes)$data.excludes#else*/.*,*/Thumbs.db,*.old, *_tmp*#end</textarea>
+##<div class="note">[[comma or new line delimited]] */.*,*/Thumbs.db,*.old </div>
+##</div> 
+
+##<div class="form-group">
+##<label>[[Attachment Filter]]</label>
+##<input type="hidden" name="field" value="attachmenttrigger" />
+##<textarea class="form-control" name="attachmenttrigger.value" cols="45" rows="3" >$!data.attachmenttrigger</textarea>
+##<div class="note">[[Files in attachment folder that will trigger auto creation of attachments. Comma or New line delimited]] */Fonts,*/attachments.txt</div> 
+##</div>
+
+
+
+#else
+<div class="alert alert-warning" role="alert">
+    Dropbox is not enabled for this account.  Please enable it in the "outhprovider" table.
+    
+    
+    
+    
+</div>
+
+#end
+
+
+
+
+
+
+
