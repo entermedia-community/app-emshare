@@ -363,9 +363,13 @@ lQuery(".pickerresults.oipickasset .resultsdivdata").livequery(
 
 		var mediadb = $("#application").data("mediadbappid");
 
-		var url  = "/" + mediadb + "/services/module/asset/downloads/vieworiginal/" + sourcepath;
+		var url =
+			"/" +
+			mediadb +
+			"/services/module/asset/downloads/vieworiginal/" +
+			sourcepath;
 
-		$(window).trigger("assetpicked", [assetid, url]);
+		$(window).trigger("assetpicked", [url]);
 	}
 );
 
