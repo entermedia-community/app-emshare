@@ -32,12 +32,12 @@ $context.putPageValue("thumbsize", $thumbsize)
 #end		
 
 #ifnull($hit)
-#set($hit = $asset)
+	#set($hit = $asset)
 #end
 
 #set($imagesize = $mediaarchive.exportOutputName($hit, $imagesize))
-
 #set($searchhome = "${apphome}/views/modules/asset/results/default")
+
 $context.putPageValue("searchhome", $searchhome)
 
 <div class="emthumbholder draggholder">
@@ -47,10 +47,9 @@ $context.putPageValue("searchhome", $searchhome)
 		$pages.include("$apphome/views/modules/asset/results/default/convertqueue/importstatus.html?assetid=$!{hit.id}",$context)
 	#elseif( $hit.previewstatus && $hit.previewstatus == "mime")
 		#set ($mime = $mediaarchive.getMimeTypeIcon($hit.fileformat))
-
 		<div class="mimethumbcontainer">
-       		<i class="bi bi-$!mime mimeicon"  title="#if($title)#esc($title)#else$!{hit.name}#end" ></i>
-       </div>
+			<i class="bi bi-$!mime mimeicon" title="#if($title)#esc($title)#else$!{hit.name}#end" ></i>
+		</div>
 	#else	
 		#if($useoriginal)
 			#set($imagepath = "$siteroot/$mediadbappid/services/module/asset/downloads/originals/"+$mediaarchive.asLinkToOriginal($hit))
@@ -87,8 +86,7 @@ $context.putPageValue("searchhome", $searchhome)
 			<div class="emshowbox faceprofileboximage h-100" 
 				data-showbox="$imagebox.locationxy"
 				data-imagewidth="${assetwidth}"
-				data-inputheight="${assetheight}"
-				>
+				data-inputheight="${assetheight}">
 		#end
 			<div class="imagethumbholder">
 				<img class="imagethumb img-fluid  img$!thumbsize #ifnotnull($imagebox) emshowboximg #end"
@@ -99,14 +97,18 @@ $context.putPageValue("searchhome", $searchhome)
 						data-name="#if($title)#esc($title)#else$!{hit.name}#end" 		
 						src="$imagepath$!urlparams" 
 				/>
-				#if($type =="video")<button class="videoplay-button"><span class="videoplay-icon"></span></button>#end
+				#set( $type = $mediaarchive.getMediaRenderType($hit.fileformat))
+				#if( $type == "image")
+					#set($originalLink = "$siteroot/$mediadbappid/services/module/asset/downloads/originals/"+$mediaarchive.asLinkToOriginal($hit))
+					<div class="pickfromiframe" data-imageurl="$originalLink">
+						<i class="bi bi-check2-circle"></i>
+						<span>[[Pick this image]]</span>
+					</div>
+				#end
+				## #if($type =="video")<button class="videoplay-button"><span class="videoplay-icon"></span></button>#end
 			</div>
 		#ifnotnull($imagebox)
 			</div>
 		#end
-		
-					
 	#end
 </div>
-
-

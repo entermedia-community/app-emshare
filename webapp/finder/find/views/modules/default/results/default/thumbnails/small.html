@@ -9,41 +9,51 @@
 		#set($title = $asset.getText("name",$context) )
 	#end
 #end
+
 <div class="small-thumb-container draggholder" > 
-   #if( ($hit.previewstatus && $hit.previewstatus == "mime") || $alwaysmime)
-       #set ($mime = $mediaarchive.getMimeTypeIcon($hit.fileformat))
-       <div class="mimethumbcontainer">
-       <i class="bi bi-$!mime mimeicon"  title="#if($title)#esc($title)#else$!{hit.name}#end" ></i>
-       </div>
-    #elseif( ($hit.previewstatus != "2" && $hit.previewstatus != "exif" && $hit.previewstatus != "1" && $hit.previewstatus != "generated") && !$mediaarchive.isCatalogSettingTrue("realtimethumbs"))
+	#if( ($hit.previewstatus && $hit.previewstatus == "mime") || $alwaysmime)
+		#set ($mime = $mediaarchive.getMimeTypeIcon($hit.fileformat))
+		<div class="mimethumbcontainer">
+			<i class="bi bi-$!mime mimeicon"  title="#if($title)#esc($title)#else$!{hit.name}#end" ></i>
+		</div>
+	#elseif( ($hit.previewstatus != "2" && $hit.previewstatus != "exif" && $hit.previewstatus != "1" && $hit.previewstatus != "generated") && !$mediaarchive.isCatalogSettingTrue("realtimethumbs"))
     
-       $pages.include("$searchhome/convertqueue/previewstatus.html?assetid=$!{hit.id}",$context)
-   #else   
-       	#set( $type = $mediaarchive.getMediaRenderType($hit.fileformat))
-       	#if( $type == "audio" || $type == "default")
-           $pages.include("${searchhome}/thumbnails/${type}.html", $context)
-        #else
-		   	#set ($thumbsize = $context.getPageValue("thumbsize"))
-	     	#set($tabletarget = $mediaarchive.getCatalogSettingValue("tablethumbnail"))
+		$pages.include("$searchhome/convertqueue/previewstatus.html?assetid=$!{hit.id}",$context)
+	#else   
+		#set( $type = $mediaarchive.getMediaRenderType($hit.fileformat))
+
+		#if( $type == "audio" || $type == "default")
+			$pages.include("${searchhome}/thumbnails/${type}.html", $context)
+		#else
+			#set ($thumbsize = $context.getPageValue("thumbsize"))
+			#set($tabletarget = $mediaarchive.getCatalogSettingValue("tablethumbnail"))
 			#if($tabletarget)
-			 		#set( $imagepath = $mediaarchive.asLinkToPreview($hit, $librarycol.id,$tabletarget))  
+				#set( $imagepath = $mediaarchive.asLinkToPreview($hit, $librarycol.id,$tabletarget))  
+			#else
+				#if($thumbsize == "carousel")
+					#set($imagesize = "image200x200.jpg")
 				#else
-					#if($thumbsize == "carousel")
-						#set($imagesize = "image200x200.jpg")
-					#else
-						#set($imagesize = "image110x62cropped.jpg")
-					#end
-			      	#set( $imagepath = $mediaarchive.asLinkToPreview($hit,$librarycol.id,$imagesize, true))  
+					#set($imagesize = "image110x62cropped.jpg")
+				#end
+				#set( $imagepath = $mediaarchive.asLinkToPreview($hit,$librarycol.id,$imagesize, true))  
 			#end
-		   $context.putPageValue("imagepath", $imagepath)
-				       
-	        <img class="smallthumb assetdragdrop" 
-	        	draggable="true" 
-	        	data-sourcepath="$hit.sourcepath" 
-	        	data-name="#if($title)#esc($title)#else$!{hit.name}#end" 
-	        	src="$imagepath" 
-	        	alt="#if($title)#esc($title)#else$!{hit.name}#end" 
-	        	border="0" />
+			
+			$context.putPageValue("imagepath", $imagepath)
+
+			#if( $type == "image")
+				#set($originalLink = "$siteroot/$mediadbappid/services/module/asset/downloads/originals/"+$mediaarchive.asLinkToOriginal($hit))
+				<div class="pickfromiframe" data-imageurl="$originalLink">
+					<i class="bi bi-check2-circle"></i>
+					<span>[[Pick this image]]</span>
+				</div>
+			#end
+			<img class="smallthumb assetdragdrop" 
+				draggable="true" 
+				data-sourcepath="$hit.sourcepath" 
+				data-name="#if($title)#esc($title)#else$!{hit.name}#end" 
+				src="$imagepath" 
+				alt="#if($title)#esc($title)#else$!{hit.name}#end" 
+			/>
 		#end			   
    #end
 </div>    

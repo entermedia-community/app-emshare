@@ -322,4 +322,15 @@ $(function () {
 			}
 		});
 	});
+	if ($("#application").hasClass("blockfind")) {
+		lQuery(".pickfromiframe").livequery("click", function (e) {
+			e.preventDefault();
+			e.stopImmediatePropagation();
+			var imageUrl = $(this).data("imageurl");
+			window.parent.postMessage(
+				"assetpicked:" + imageUrl,
+				window.location.origin
+			);
+		});
+	}
 });
