@@ -1,9 +1,5 @@
-//Finder
-var uploadid = new Date().getTime();
-var home = null;
 var currentupload = 0;
 var haderror = false;
-var uploadid;
 
 var allfiles = new Array();
 
@@ -586,7 +582,6 @@ function filesPicked(_, files, uploadformarea = null) {
 	}
 
 	files = allfiles;
-	var inputbox = uploadformarea.find(".upload_field")[0];
 
 	var upload_field = uploadformarea.find(".upload_field");
 	upload_field.triggerHandler("html5_upload.setFiles", [allfiles]);
