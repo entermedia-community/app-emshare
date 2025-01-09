@@ -32,6 +32,17 @@
 			<input type="hidden" name="entitymoduleviewid" value='$context.getRequestParameter("entitymoduleviewid")'/>
 			<input type="hidden" name="entityid" value='$entityid'/>
 			<input type="hidden" name="llmmodel.value" value='dall-e-3'/>
+
+			$context.putPageValue("viewid", "${module.id}ai_prompt")
+			$context.putPageValue("details",null)
+			$context.putPageValue("data",$entity)
+			
+			<div class="updatetemplate" data-template="$edithome/aitools/createassetinstructions.html"
+				data-targetarea="aiInstruction"
+			>
+			$pages.include("$apphome/components/xml/detaileditor-entities.html", $context)
+			</div>
+		
 			<label for="aiInstruction" class="mb-1">AI Prompt: </label>
 			<textarea name="createassetprompt.value" id="aiInstruction" class="form-control rounded" rows="8">
 				$context.putPageValue("entity", $entity)
