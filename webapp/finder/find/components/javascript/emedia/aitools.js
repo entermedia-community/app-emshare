@@ -27,6 +27,9 @@ $(document).ready(function () {
 		aiexamples: "",
 	};
 	lQuery(".updateaitemplate").livequery(function () {
+		if ($(this).hasClass("customized")) {
+			return;
+		}
 		$(this).find("input[name='aitarget.value']").trigger("input");
 		$(this).find("select[name='aicontentlist.value']").trigger("change");
 		$(this).find("select[name='aistyle.values']").trigger("change");
