@@ -81,11 +81,11 @@ $(document).ready(function () {
 		var prompt = `Create a picture of ${
 			promptBuilder.aitarget || "[[TARGET]]"
 		}.`;
-		if (promptBuilder.aistyle) {
-			prompt += ` It is ${promptBuilder.aistyle}.`;
-		}
 		if (promptBuilder.aicontentlist) {
 			prompt += ` It has ${promptBuilder.aicontentlist}.`;
+		}
+		if (promptBuilder.aistyle) {
+			prompt += ` It is ${promptBuilder.aistyle}.`;
 		}
 		if (promptBuilder.aiexamples) {
 			prompt += ` Similar to ${promptBuilder.aiexamples}.`;
