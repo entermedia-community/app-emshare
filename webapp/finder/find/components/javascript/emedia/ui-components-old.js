@@ -1284,11 +1284,21 @@ function initializeUI() {
 		});
 	});
 
-	lQuery("a.changeuserprofile").livequery("click", function () {
+	lQuery("a.changeuserprofile").livequery("click", function (e) {
+		e.stopImmediatePropagation();
+		e.preventDefault();
 		var link = $(this);
 		var propertyname = link.data("propertyname");
 		var newvalue = link.data(propertyname);
-		saveProfileProperty(propertyname, newvalue, function () {});
+		var redir = link.data("redirect");
+		if (!redir) {
+			redir = link.attr("href");
+		}
+		saveProfileProperty(propertyname, newvalue, function () {
+			if (redir) {
+				window.location.href = redir;
+			}
+		});
 	});
 
 	lQuery("input.changeuserprofile").livequery("change", function () {
