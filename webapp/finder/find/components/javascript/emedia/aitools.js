@@ -1,8 +1,95 @@
 $(document).ready(function () {
+	function getCommaSeparatedList(value) {
+		if (!value) return;
+		var values = Array.isArray(value) ? value : value.split(",");
+		if (values.length === 0) return;
+		value = values.join(", ");
+		if (values.length > 1) {
+			var pos = value.lastIndexOf(", ");
+			value =
+				value.substring(0, pos) +
+				(values.length > 2 ? "," : "") +
+				" and " +
+				value.substring(pos + 2);
+		}
+		return value;
+	}
 	lQuery("#aiInstruction").livequery(function () {
 		var value = $(this).val();
 		value = value.replace(/^\s+/gm, "");
 		value = value.replace(/ +/gm, " ");
 		$(this).val(value);
 	});
+	var promptBuilder = {
+		aitarget: "",
+		aicontentlist: "",
+		aistyle: "",
+		aiexamples: "",
+	};
+	lQuery(".updateaitemplate").livequery(function () {
+		$(this).find("input[name='aitarget.value']").trigger("input");
+		$(this).find("select[name='aicontentlist.value']").trigger("change");
+		$(this).find("select[name='aistyle.values']").trigger("change");
+		$(this).find("input[name='aiexamples.value']").trigger("input");
+	});
+	lQuery(".updateaitemplate input[name='aitarget.value']").livequery(
+		"input",
+		function () {
+			var value = $(this).val();
+			if (!value) return;
+			promptBuilder.aitarget = value;
+			updatePrompt();
+		}
+	);
+	lQuery(".updateaitemplate select[name='aicontentlist.value']").livequery(
+		"change",
+		function () {
+			var value = $(this).val();
+			promptBuilder.aicontentlist = getCommaSeparatedList(value);
+			updatePrompt();
+		}
+	);
+	lQuery(".updateaitemplate select[name='aistyle.values']").livequery(
+		"change",
+		function () {
+			var value = $(this).val();
+			var options = {};
+			$(this)
+				.find("option")
+				.each(function () {
+					options[$(this).attr("value")] = $(this).text();
+				});
+			var values = Array.isArray(value) ? value : value.split(",");
+			values = values.map((val) => {
+				return options[val];
+			});
+			promptBuilder.aistyle = getCommaSeparatedList(values);
+			updatePrompt();
+		}
+	);
+	lQuery(".updateaitemplate input[name='aiexamples.value']").livequery(
+		"input",
+		function () {
+			var value = $(this).val();
+			if (!value) return;
+			promptBuilder.aiexamples = value;
+			updatePrompt();
+		}
+	);
+
+	function updatePrompt() {
+		var prompt = `Create a picture of ${
+			promptBuilder.aitarget || "[[TARGET]]"
+		}.`;
+		if (promptBuilder.aistyle) {
+			prompt += ` It is ${promptBuilder.aistyle}.`;
+		}
+		if (promptBuilder.aicontentlist) {
+			prompt += ` It has ${promptBuilder.aicontentlist}.`;
+		}
+		if (promptBuilder.aiexamples) {
+			prompt += ` Similar to ${promptBuilder.aiexamples}.`;
+		}
+		$("#aiInstruction").val(prompt);
+	}
 });

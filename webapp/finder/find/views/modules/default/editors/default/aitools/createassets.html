@@ -39,17 +39,16 @@
 			$context.putPageValue("details",null)
 			$context.putPageValue("data",$entity)
 			
-			<div class="updatetemplate" data-template="$edithome/aitools/createassetinstructions.html"
-				data-targetarea="aiInstruction"
-			>
-			$pages.include("$apphome/components/xml/detaileditor-entities.html", $context)
+			<div class="updateaitemplate" 
+				data-template="$edithome/aitools/createassetinstructions.html"
+				data-targetarea="aiInstruction">
+				$pages.include("$apphome/components/xml/detaileditor-entities.html", $context)
 			</div>
 		
 			<label for="aiInstruction" class="mb-1">AI Prompt: </label>
-			<textarea name="createassetprompt.value" id="aiInstruction" class="form-control rounded" rows="8">
-				$context.putPageValue("entity", $entity)
-				$pages.include("$edithome/aitools/createassetinstructions.html", $context)
-			</textarea>
+			$context.putPageValue("entity", $entity)
+			<textarea name="createassetprompt.value" id="aiInstruction" class="form-control rounded" rows="8" required autocomplete="off" data-gramm="false">$pages.include("$edithome/aitools/createassetinstructions.html", $context)</textarea>
+
 			<div class="d-flex justify-content-center mt-3">
 				<button type="submit" class="btn btn-cta">
 					<i class="bi bi-brush mr-1"></i>
