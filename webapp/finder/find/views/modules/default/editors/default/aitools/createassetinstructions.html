@@ -1,20 +1,24 @@
-Create a new image underneath of the topic $entity which is part of the $module module. 
+#set( $aitarget = $data.aitarget )
+Create a picture of a $aitarget 
 
-This is from extra information to use to ensure a suitable image: 
+#set( $aistyles = $data.getValues("aistyle") )
+that is
+#foreach($aistyle in $aistyles)
+	$aistyle
+#end
+.	
+#set( $aicontents = $data.getValues("aikeywords") )
+	
+The scene features
 
-#set($details =  $mediaarchive.getSearcher($module.id).getDetailsForView("${module.id}addnew"))
+#foreach($aicontent in $aicontents)
 
-#foreach( $detail in $details )
-	#if(!$detail.isDate())
-		#set($value = $searcherManager.getValue($entity, $detail, $context.getLocale() ) )	  
-	 	#ifnotnull($value)
-			$detail.getText($context):$value
-		#end
-	#end
+${aicontent}  
+
 #end
 
-
-
+#set( $aiexamples = $data.aiexamples )
+Make it similar: $aiexamples  
 
 
 

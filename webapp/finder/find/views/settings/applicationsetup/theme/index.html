@@ -1,79 +1,53 @@
 <div id="editlayout">
-#set($searcher = $mediaarchive.getSearcher("theme"))
+  #set( $themeid = $context.getRequestParameter("themeid"))
+  
+  #ifnull($themeid)
+    #set( $themeid = $content.get("themeid") )
+  #end
 
-#set( $themeid = $context.getRequestParameter("themeid"))
+	#set($currentthemeid = $userprofile.getValue("themeid") )
 
-#ifnull($themeid)
-	#set( $themeid = $content.get("themeid") )
-#end
-	<div class="d-flex align-items-center justify-content-between mb-4">
-		<h2>[[Theme Editor]]</h2>
-		<div class="d-flex align-items-center">
-			<a class="btn btn-secondary d-none ml-1" href="$home$apphome/views/settings/applicationsetup/theme/copy.html?themeid=$!themeid">[[Copy]]</a>
-			<a class="btn btn-cta ml-1" href="$home$apphome/views/settings/lists/datamanager/list/index.html?searchtype=theme">[[Export]]</a>
-			<a class="btn btn-danger ml-1" href="$home$apphome/views/settings/applicationsetup/theme/reset.html?themeid=$!themeid">[[Reset All]]</a>
-			<a class="btn btn-danger d-none ml-1" href="./remove.html?themeid=$!themeid">[[Remove]]</a>
-		</div>
-	</div>
-	
-	<div class="d-flex">
-		<div class="theme-sidebar">
-			<a href="$home$apphome/views/settings/applicationsetup/theme/change.html?themeid=defaulttheme" data-targetdiv="editlayout" data-oemaxlevel="1" class="ajax btn btn-wide mb-2 #if($themeid == 'defaulttheme') active #end">
-				<i class="bi bi-moon ns mr-1 mb-2"></i>
-				[[Default Theme]]
-			</a>
-			<a href="$home$apphome/views/settings/applicationsetup/theme/change.html?themeid=lighttheme" data-targetdiv="editlayout" data-oemaxlevel="1" class="ajax btn btn-wide mb-2 #if($themeid == 'lighttheme') active #end">
-				<i class="bi bi-sun ns mr-1 mb-2"></i>
-				[[Light Theme]]
-			</a>
-		</div>
-		<div style="flex: 1;">
-			#set($data = $mediaarchive.getData("theme", $themeid))
-			
-			$context.putPageValue("searcher", $searcher)
-			$context.putPageValue("data", $data)
-			
-			<!-- <link rel="stylesheet" type="text/css" href="$home$apphome/theme/${themeid}/custom.css?cache=false" /> -->
-			
-			#if( $data )
-				#if ($message) 
-				<div class="alert alert-save fader" role="alert">$message</div>
-				#end
-				<form id="themeeditor" method="post" action="$home$apphome/views/settings/applicationsetup/theme/save.html"  enctype="multipart/form-data">
-					<input name="save" type="hidden" value="true" />
-					<input name="id" type="hidden" value="$data.id" />
-					<input name="themeid" type="hidden" value="$data.id" />
+  <div class="d-flex align-items-center justify-content-between mb-4">
+    <h2>[[Select Default Theme]]</h2>
+    <div class="d-flex align-items-center">
+      <a class="btn btn-danger ml-1" href="$home$apphome/views/settings/applicationsetup/theme/reset.html?themeid=$!themeid">[[Reset All]]</a>
+    </div>
+  </div>
+    
+  <div class="d-flex">
+    <div class="theme-sidebar">
+      <a href="$home$apphome/views/settings/applicationsetup/theme/index.html" data-targetdiv="editlayout" data-updateurl="true" data-oemaxlevel="1" class="ajax btn btn-wide mb-2 active">
+        <i class="bi bi-gear ns mr-1 mb-2"></i>
+        [[Select Default]]
+      </a>
+      <a href="$home$apphome/views/settings/applicationsetup/theme/change.html?themeid=lighttheme" data-targetdiv="editlayout" data-updateurl="true" data-oemaxlevel="1" class="ajax btn btn-wide mb-2">
+        <i class="bi bi-sun ns mr-1 mb-2"></i>
+        [[Light Theme]]
+      </a>
+      <a href="$home$apphome/views/settings/applicationsetup/theme/change.html?themeid=defaulttheme" data-targetdiv="editlayout" data-updateurl="true" data-oemaxlevel="1" class="ajax btn btn-wide mb-2">
+        <i class="bi bi-moon ns mr-1 mb-2"></i>
+        [[Dark Theme]]
+      </a>
+    </div>
+
+    <div style="flex: 1;" class="px-2">
+			<div class="dropdown">
+				<h4 class="mt-0"> 
+					[[Selected a Default Theme]]
+				</h4>
+				<div class="d-flex flex-wrap align-items-center">
+					#set($themes = $mediaarchive.getList("theme") )
 					
-					<input name="searchtype" type="hidden" value="theme" />
-					<div class="themeeditor">
-						$context.putPageValue("viewid", "themeedit") 
-						$pages.include("/${applicationid}/components/xml/detaileditor.html", $context)
-						<div class="row mb-3"><div class="col-md-3 col-lg-2"></div>
-							<div class="col-md-9 col-lg-9">
-								<a class="advanced-theme-edit p-2 collapsed" data-toggle="collapse" href="#collapseAdvanceThemeEdit" role="button" aria-expanded="false" aria-controls="collapseAdvanceThemeEdit">
-									<i class="bi bi-gear ns mr-1"></i><i class="bi bi-gear-fill ns mr-1"></i> [[Advanced options]]
-								</a>
-							</div>
-						</div>
-						<div class="collapse" id="collapseAdvanceThemeEdit">
-							<div class="d-block py-2">
-								$context.putPageValue("viewid", "themeadvancededit") 
-								$pages.include("/${applicationid}/components/xml/detaileditor.html", $context)
-							</div>
-						</div>
-						<div class="d-none px-2 pt-4 pb-2 my-2 rounded bg-light">
-							$context.putPageValue("viewid", "themehiddenedit")
-							$pages.include("/${applicationid}/components/xml/detaileditor.html", $context)
-						</div>
-					</div>
-					<div class="form-submit-btns sticky">
-						<button type="submit" class="btn btn-cta">
-							<i class="bi bi-floppy-fill ns mr-1"></i>
-							[[Save]]
-						</button>
-					</div>
-				</form>
-			#end
-		</div>
-	</div>
+					#foreach( $th in $themes)
+					<a class="btn #if($currentthemeid==$th.id) btn-cta #else btn-light #end changeuserprofile p-2 rounded border mr-2"
+						style="min-width:100px"
+						href="$home$apphome/views/settings/applicationsetup/theme/index.html"
+						data-propertyname="themeid"
+						data-themeid="$th.id">
+						#if($currentthemeid==$th.id)<i class="bi bi-check-circle-fill ns mr-1"></i>#end #text($th)</a>
+					#end
+				</div>
+			</div>
+    </div>
+  </div>
 </div>
