@@ -83,7 +83,7 @@
 		#if( $uploadmodules > 0 && $canviewupload )
 			<div class="headeruploadarea">
 				<div class="dropdown">
-					<a class="btn-upload dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					<a class="btn-topnav dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 						[[Upload To]]
 					</a>
 					<div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
@@ -106,14 +106,28 @@
 				</div>
 			</div>
 		#end
+
+		#if($user && $canviewupload)
+			<a href="$siteroot$applink/views/modules/contentcreator/index.html" 
+				class='ajax activelistener btn-topnav' 
+				data-targetdiv="applicationmaincontent" 
+				data-oemaxlevel="3" 
+				data-clearselection="true"
+				data-clearfilters="true"
+				data-updateurl="true"
+				data-scrolltotop="true"
+				title="[[Create Content with AI]]">
+				<i class="bi bi-magic"></i>
+			</a> 
+		#end
 		
 		#if($cancheckout)
 			$pages.include("$apphome/components/basket/menuitem.html")
 		#end
-		
+
 		#if($user && $canaddtofavorites)
 			<a href="$siteroot$applink/views/modules/modulesearch/editors/modulesearchbookmarks/index.html" 
-				class='ajax activelistener btn-upload #if( $selected=="favorites" || $selected=="modulesearch") active #end' 
+				class='ajax activelistener btn-topnav' 
 				data-targetdiv="applicationmaincontent" 
 				data-oemaxlevel="3" 
 				data-clearselection="true"
@@ -126,7 +140,7 @@
 		#end
 		#set($guidelink = $mediaarchive.getCatalogSettingValue("guidelink"))
 		#ifnotnull($guidelink)
-			<a class="btn-upload" target="_blank" href="$guidelink" title="[[Guides]]">
+			<a class="btn-topnav" target="_blank" href="$guidelink" title="[[Guides]]">
 				<i class="bi bi-book"></i>
 			</a>
 		#end
