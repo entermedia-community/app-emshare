@@ -109,7 +109,7 @@
 
 		#if($user && $canviewupload)
 			<a href="$siteroot$applink/views/modules/contentcreator/index.html" 
-				class='ajax activelistener btn-topnav' 
+				class='ajax activelistener btn-topnav #if($module.id == "contentcreator") btn-cta #end' 
 				data-targetdiv="applicationmaincontent" 
 				data-oemaxlevel="3" 
 				data-clearselection="true"
@@ -127,7 +127,7 @@
 
 		#if($user && $canaddtofavorites)
 			<a href="$siteroot$applink/views/modules/modulesearch/editors/modulesearchbookmarks/index.html" 
-				class='ajax activelistener btn-topnav' 
+				class='ajax activelistener btn-topnav #if($content.section == "favorites") btn-cta #end' 
 				data-targetdiv="applicationmaincontent" 
 				data-oemaxlevel="3" 
 				data-clearselection="true"
@@ -138,6 +138,7 @@
 				<i class="bi bi-bookmarks-fill"></i>
 			</a> 
 		#end
+		
 		#set($guidelink = $mediaarchive.getCatalogSettingValue("guidelink"))
 		#ifnotnull($guidelink)
 			<a class="btn-topnav" target="_blank" href="$guidelink" title="[[Guides]]">
