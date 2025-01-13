@@ -517,6 +517,38 @@ lQuery(".pickerresults.pickandupload .resultsdivdata").livequery(
 );
 */
 
+
+lQuery(".orderpending .resultsdivdata").livequery("click", function (e) {
+	if (!isValidTarget(e)) {
+		return true;
+	}
+	var row = $(this);
+
+	var clickableresultlist = row.closest(".clickableresultlist");
+
+	var rowid = row.data("dataid");
+	clickableresultlist.data("id", rowid);
+	clickableresultlist.data("entityid", rowid);
+	clickableresultlist.emDialog();
+});
+
+lQuery(".orderuserlist .resultsdivdata").livequery("click", function (e) {
+	if (!isValidTarget(e)) {
+		return true;
+	}
+	var row = $(this);
+
+	var clickableresultlist = row.closest(".clickableresultlist");
+
+	var rowid = row.data("dataid");
+	clickableresultlist.data("id", rowid);
+	clickableresultlist.data("entityid", rowid);
+	clickableresultlist.emDialog();
+});
+
+
+
+
 //Assets or Categories and you import into a entity
 lQuery(".pickerresultscopy .resultsdivdata").livequery("click", function (e) {
 	if (!isValidTarget(e)) {
