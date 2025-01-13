@@ -80,21 +80,37 @@
 			</div>
 	
 	
-			<div class="d-flex entity-actions-bar align-items-center text-white">
+			<div class="d-flex entity-actions-bar align-items-center text-white position-relative">
+				#set($withai = $context.getRequestParameter("withai"))
 				#if($addnew=='true')
-					#set($viewid = $context.getRequestParameter("viewid"))
-					<a class='btn btn-accent ajax #if($viewid=="$!{module.id}addnewai")enabledaction #end'
-						href="$siteroot$applink/views/modules/contentcreator/editors/contentcreator/tabs/index.html?edit=true&addnew=true&viewid=$!{module.id}addnewai" 
-						data-entitymoduleviewid="$!{module.id}addnewai"
-						data-entityid="$!entity.getId()" 
-						data-entitymoduleid="$!module.id"
-						data-targetdiv="entitydialog"
-						data-oemaxlevel="1"
-						data-tabsection="contentcreator"
-						data-$!{module.id}hitssessionid="$!entityhits.getSessionId()"
-						title="[[Create new]] #text($module) [[with AI]]">
-						<i class="bi bi-magic mr-1"></i> [[Create with AI]]
-					</a>
+					#set($entityedithome = $context.getRequestParameter("entityedithome"))
+					#if($withai != "true")
+						<a class='btn btn-cta ajax action-lg'
+							href="$siteroot$applink/views/modules/contentcreator/editors/contentcreator/tabs/index.html?edit=true&addnew=true&withai=true&viewid=$!{module.id}addnewai" 
+							data-entitymoduleviewid="$!{module.id}addnewai"
+							data-entityid="$!entity.getId()" 
+							data-entitymoduleid="$!module.id"
+							data-entityedithome="$!edithome"
+							data-targetdiv="entitydialog"
+							data-oemaxlevel="1"
+							data-$!{module.id}hitssessionid="$!entityhits.getSessionId()"
+							title="[[Create new]] #text($module) [[with AI]]">
+							<i class="bi bi-magic mr-1"></i> [[Create with AI]]
+						</a>
+					#else
+						#set($addurl = "${entityedithome}/tabs/index.html?edit=true&addnew=true&viewid=$!{moduleid}addnew")
+						<a href="$addurl"
+							class='btn btn-accent ajax action-lg'
+							data-entitymoduleviewid="$!{module.id}addnew"
+							data-entityid="$!entity.getId()" 
+							data-entitymoduleid="$!module.id"
+							data-targetdiv="entitydialog"
+							data-oemaxlevel="1"
+							data-$!{module.id}hitssessionid="$!entityhits.getSessionId()"
+							title="[[Create new]] #text($module)">
+							<i class="bi bi-plus-lg mr-1"></i> [[Create Manually]]
+						</a>
+					#end
 				#end
 
 				#if(!$ismulti && $entity)
