@@ -1,3 +1,6 @@
+var trackKeydown = false;
+var exitWarning = false;
+
 function isInViewport(cell) {
 	const rect = cell.getBoundingClientRect();
 	var isin =
@@ -31,6 +34,14 @@ jQuery(document).ready(function () {
 		});
 	});
 
+	$(window).on("keydown", function (e) {
+		if (trackKeydown) {
+			exitWarning = true;
+		} else {
+			exitWarning = false;
+		}
+	});
+
 	lQuery(".uipanel").livequery(function () {
 		$(this).addClass("ui-widget");
 		var header = $(this).attr("header");
@@ -38,6 +49,106 @@ jQuery(document).ready(function () {
 			// http://dev.$.it/ticket/9134
 			$(this).wrapInner('<div class="ui-widget-content"/>');
 			$(this).prepend('<div class="ui-widget-header">' + header + "</div>");
+		}
+	});
+
+	function confirmModalClose(modal) {
+		var checkForm = modal.find("form.checkCloseDialog");
+
+		if (!checkForm) {
+			closeemdialog(modal);
+			trackKeydown = false;
+		} else {
+			var prevent = false;
+			$(checkForm)
+				.find("input, textarea, select")
+				.each(function () {
+					if ($(this).attr("type") == "hidden") {
+						return true;
+					}
+					var value = $(this).val();
+					if (value) {
+						prevent = value.length > 0;
+						return false;
+					}
+				});
+
+			if (prevent && exitWarning) {
+				$("#exitConfirmationModal").css("display", "flex");
+				return false;
+			} else {
+				closeemdialog(modal);
+				trackKeydown = false;
+			}
+			return false;
+		}
+	}
+
+	lQuery("form.checkCloseDialog").livequery(function () {
+		trackKeydown = true;
+		var modal = $(this).closest(".modal");
+		if (modal.length) {
+			if (typeof modal.modal == "function") {
+				modal.modal({
+					backdrop: "static",
+					keyboard: false,
+				});
+			}
+			modal.on("click", function (e) {
+				e.stopPropagation();
+				e.stopImmediatePropagation();
+				if (e.currentTarget === e.target) {
+					confirmModalClose(modal);
+				}
+			});
+		}
+	});
+
+	lQuery("#closeExit").livequery("click", function () {
+		$("#exitConfirmationModal").hide();
+	});
+	lQuery("#confirmExit").livequery("click", function () {
+		$("#exitConfirmationModal").hide();
+		closeallemdialogs();
+		trackKeydown = false;
+	});
+
+	//Remove this? Not useing ajax
+	$(document).on("click", ".modal", function (e) {
+		if (e.target.classList.contains("modal")) {
+			e.stopPropagation();
+			e.stopImmediatePropagation();
+			confirmModalClose($(this));
+		}
+	});
+
+	lQuery(".entityclose").livequery("click", function (event) {
+		event.preventDefault();
+		var targetModal = $(this).closest(".modal");
+		confirmModalClose(targetModal);
+	});
+
+	$(document).keydown(function (e) {
+		switch (e.which) {
+			case 27: //esckey
+				var modal = $(".modal.onfront");
+				if (modal.length) {
+					e.stopPropagation();
+					e.preventDefault();
+					var backBtn = modal.find(".entityNavBack");
+					var checkForm = modal.find("form.checkCloseDialog");
+					if (backBtn.length && backBtn.is(":visible")) {
+						backBtn.trigger("click");
+					} else if (checkForm.length) {
+						confirmModalClose(modal);
+					} else {
+						closeemdialog(modal);
+						trackKeydown = false;
+					}
+				}
+				return;
+			default:
+				return; // exit this handler for other keys
 		}
 	});
 
@@ -145,4 +256,74 @@ jQuery(document).ready(function () {
 		$("body").css({ overflow: "visible" }); //Enable scroll
 		$(window).trigger("resize");
 	};
+
+	lQuery(".copytoclipboard").livequery("click", function (e) {
+		e.preventDefault();
+		e.stopPropagation();
+		var btn = $(this);
+		var copytextcontainer = btn.data("copytext");
+		var copyText = $("#" + copytextcontainer);
+		copyText.select();
+		document.execCommand("copy");
+		var alertdiv = btn.data("targetdiv");
+		if (alertdiv) {
+			console.log(copyText);
+			$("#" + alertdiv)
+				.show()
+				.fadeOut(2000);
+		}
+	});
+
+	lQuery(".copyFromTarget").livequery("click", function (e) {
+		e.preventDefault();
+		if ("clipboard" in navigator) {
+			var $this = $(this);
+			var type = $this.data("type") || "text";
+			var btnText = $this.text();
+			var target = $this.data("target");
+			if (!target) return;
+			var targetEl = $("#" + target);
+			if (type == "text") {
+				var data = targetEl.text();
+				if (targetEl.is("input") || targetEl.is("textarea")) {
+					data = targetEl.val();
+				}
+				navigator.clipboard.writeText(data);
+				$this.html('<i class="bi bi-check-lg mr-1"></i> Copied!');
+				setTimeout(() => {
+					$this.html('<i class="bi bi-clipboard mr-1"></i> ' + btnText);
+				}, 2000);
+			} else {
+				if (!targetEl.is("img")) {
+					targetEl = targetEl.find("img");
+				}
+				var dataURL = targetEl.attr("src");
+				if (!dataURL) {
+					return;
+				}
+				$this.html('<i class="fas fa-spinner fa-spin"></i>');
+				fetch(dataURL)
+					.then((res) => res.blob())
+					.then((blob) => {
+						navigator.clipboard.write([
+							new ClipboardItem({
+								"image/png": blob,
+							}),
+						]);
+					})
+					.then(() => {
+						$this.html('<i class="bi bi-check-lg"></i> Copied!');
+						setTimeout(() => {
+							$this.html('<i class="bi bi-clipboard"></i> ' + btnText);
+						}, 2000);
+					})
+					.catch(() => {
+						$this.html('<i class="bi bi-clipboard"></i> ' + btnText);
+					});
+			}
+		} else {
+			alert("Clipboard API not supported, please use a modern browser.");
+			return;
+		}
+	});
 }); //on ready
