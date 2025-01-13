@@ -81,6 +81,22 @@
 	
 	
 			<div class="d-flex entity-actions-bar align-items-center text-white">
+				#if($addnew=='true')
+					#set($viewid = $context.getRequestParameter("viewid"))
+					<a class='btn btn-accent ajax #if($viewid=="$!{module.id}addnewai")enabledaction #end'
+						href="$siteroot$applink/views/modules/contentcreator/editors/contentcreator/tabs/index.html?edit=true&addnew=true&viewid=$!{module.id}addnewai" 
+						data-entitymoduleviewid="$!{module.id}addnewai"
+						data-entityid="$!entity.getId()" 
+						data-entitymoduleid="$!module.id"
+						data-targetdiv="entitydialog"
+						data-oemaxlevel="1"
+						data-tabsection="contentcreator"
+						data-$!{module.id}hitssessionid="$!entityhits.getSessionId()"
+						title="[[Create new]] #text($module) [[with AI]]">
+						<i class="bi bi-magic mr-1"></i> [[Create with AI]]
+					</a>
+				#end
+
 				#if(!$ismulti && $entity)
 			
 					#if($module.getBoolean("enableuploading"))
