@@ -145,4 +145,74 @@ jQuery(document).ready(function () {
 		$("body").css({ overflow: "visible" }); //Enable scroll
 		$(window).trigger("resize");
 	};
+
+	lQuery(".copytoclipboard").livequery("click", function (e) {
+		e.preventDefault();
+		e.stopPropagation();
+		var btn = $(this);
+		var copytextcontainer = btn.data("copytext");
+		var copyText = $("#" + copytextcontainer);
+		copyText.select();
+		document.execCommand("copy");
+		var alertdiv = btn.data("targetdiv");
+		if (alertdiv) {
+			console.log(copyText);
+			$("#" + alertdiv)
+				.show()
+				.fadeOut(2000);
+		}
+	});
+
+	lQuery(".copyFromTarget").livequery("click", function (e) {
+		e.preventDefault();
+		if ("clipboard" in navigator) {
+			var $this = $(this);
+			var type = $this.data("type") || "text";
+			var btnText = $this.text();
+			var target = $this.data("target");
+			if (!target) return;
+			var targetEl = $("#" + target);
+			if (type == "text") {
+				var data = targetEl.text();
+				if (targetEl.is("input") || targetEl.is("textarea")) {
+					data = targetEl.val();
+				}
+				navigator.clipboard.writeText(data);
+				$this.html('<i class="bi bi-check-lg mr-1"></i> Copied!');
+				setTimeout(() => {
+					$this.html('<i class="bi bi-clipboard mr-1"></i> ' + btnText);
+				}, 2000);
+			} else {
+				if (!targetEl.is("img")) {
+					targetEl = targetEl.find("img");
+				}
+				var dataURL = targetEl.attr("src");
+				if (!dataURL) {
+					return;
+				}
+				$this.html('<i class="fas fa-spinner fa-spin"></i>');
+				fetch(dataURL)
+					.then((res) => res.blob())
+					.then((blob) => {
+						navigator.clipboard.write([
+							new ClipboardItem({
+								"image/png": blob,
+							}),
+						]);
+					})
+					.then(() => {
+						$this.html('<i class="bi bi-check-lg"></i> Copied!');
+						setTimeout(() => {
+							$this.html('<i class="bi bi-clipboard"></i> ' + btnText);
+						}, 2000);
+					})
+					.catch(() => {
+						$this.html('<i class="bi bi-clipboard"></i> ' + btnText);
+					});
+			}
+		} else {
+			alert("Clipboard API not supported, please use a modern browser.");
+			return;
+		}
+	});
 }); //on ready
