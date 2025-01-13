@@ -1,0 +1,33 @@
+
+
+<div id="$edithomeid" class="editdiv orderpending dataeditedreload" 
+	data-edithome="${edithome}"
+	data-edithomeid="${edithomeid}"
+	data-autoreloadurl="${edithome}/index.html" ##Reload when someone edits data. .dataeditedreload is reloaded by most forms
+>
+	
+	#set($searchhome = "$apphome/views/modules/${module.id}/results/default")
+	$context.putPageValue("searchhome", $searchhome)
+
+<div class="clickableresultlist heightExcludingHeaderFooter"
+	data-${module.id}hitssessionid="$!hits.getSessionId()"
+	data-url= "${apphome}/views/modules/${module.id}/editors/orderapproval/index.html"
+	data-width="1400"
+	data-hidefooter="true"
+	title="[[Order Approval]]"
+>
+
+#set($urlbarprefix = "${apphome}/views/modules/${module.id}/index.html")
+$context.putPageValue("urlbarprefix", $urlbarprefix)
+
+#ifnull($hits)
+	$pages.include("${searchhome}/searchinclude.html",$context)
+#end
+
+#ifnotnull($hits)	
+	$pages.include("${searchhome}/index.html",$context)   ##This hits came from default/index.xconf
+#end
+
+</div>
+		
+</div>

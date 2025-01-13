@@ -12,6 +12,21 @@ $context.putPageValue("hidefilters",true)
 		<h5 class="mr-auto p-0 m-0 pl-3">
 			<i class="bi bi-cart-fill"></i> [[Cart]] #if($orderitems.size() >0)<span class="text-secondary">($orderitems.size())</span>#end
 		</h5>
+		
+		
+		#if($canviewsettings && $userprofile.hasModule("order") )
+			#set( $pendingorders = $mediaarchive.query("order").named("pendingorders").exact("checkoutstatus","pending").search($context))
+			#if( $pendingorders.size() > 0)
+				<a href="$apphome/views/modules/order/editors/orderlistpending/index.html" 
+					class="btn-cta ajax" 
+					data-targetdiv="applicationmaincontent" 
+					data-oemaxlevel="3" 
+					data-updateurl="true" 
+					title="[[Pending Orders]]">
+					 [[Pending Orders]] ($pendingorders.size())
+				</a>
+			#end
+		#end
     </div>
     </div>
     

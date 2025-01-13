@@ -1250,4 +1250,54 @@ jQuery(document).ready(function (url, params) {
 	lQuery(".forceresize").livequery(function () {
 		$(window).trigger("resize");
 	});
+	
+	updatebasket = function (e) {
+		var action = $(this).data("action");
+		if (action == "addtocart" || action == "remove") {
+			var nextpage = $(this).attr("href");
+			var targetDiv = $(this).data("targetdiv");
+			if (!targetDiv) {
+				targetDiv = $(this).attr("targetdiv");
+			}
+			targetDiv = targetDiv.replace(/\//g, "\\/");
+
+			$("#" + targetDiv).load(nextpage, function () {
+				var url = apphome + "/components/basket/menuitem.html";
+				$.ajax({
+					xhrFields: {
+						withCredentials: true,
+					},
+					crossDomain: true,
+					url: url,
+					success: function (data) {
+						$("#basket-paint").replaceWith(data);
+						if (action == "remove") {
+							var checkoutpage = $("#collectionbasket");
+							if (checkoutpage.length > 0) {
+								window.location.reload();
+							}
+						}
+						customToast("Added to cart!");
+					},
+				});
+			});
+		}
+		return false;
+	};
+
+	updatebasketmediaviewer = function (e) {
+		var nextpage = $(this).attr("href");
+		var targetDiv = $(this).data("targetdiv");
+		var action = $(this).data("action");
+		var alerttxt = $(this).data("alerttxt");
+		$("#" + targetDiv).load(nextpage, function () {
+			$("#basket-paint").load(apphome + "/components/basket/menuitem.html");
+			customToast(alerttxt);
+		});
+		if ($(this).closest(".dropdown-menu").length !== 0) {
+			$(this).closest(".dropdown-menu").removeClass("show");
+		}
+		e.preventDefault();
+		return false;
+	};
 }); // document ready
