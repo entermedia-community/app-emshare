@@ -1,8 +1,3 @@
-//EM Media Finder
-var lwt;
-var lwht;
-var trackKeydown = false;
-var exitWarning = false;
 var siteroot;
 var apphome;
 
@@ -16,7 +11,6 @@ function initializeUI() {
 		apphome = siteroot + apphome;
 		themeprefix = siteroot + themeprefix;
 	}
-	var mediadb = $("#application").data("mediadbappid");
 
 	if ($.fn.tablesorter) {
 		$("#tablesorter").tablesorter();
@@ -680,87 +674,6 @@ function initializeUI() {
 			//close dialog
 			closeemdialog($(this).closest(".modal"));
 		}
-	});
-
-	$(window).on("keydown", function (e) {
-		if (trackKeydown) {
-			exitWarning = true;
-		} else {
-			exitWarning = false;
-		}
-	});
-
-	function confirmModalClose(modal) {
-		var checkForm = modal.find("form.checkCloseDialog");
-
-		if (!checkForm) {
-			closeemdialog(modal);
-		} else {
-			var prevent = false;
-			$(checkForm)
-				.find("input, textarea, select")
-				.each(function () {
-					if ($(this).attr("type") == "hidden") {
-						return true;
-					}
-					var value = $(this).val();
-					if (value) {
-						prevent = value.length > 0;
-						return false;
-					}
-				});
-
-			if (prevent && exitWarning) {
-				$("#exitConfirmationModal").css("display", "flex");
-				return false;
-			} else {
-				closeemdialog(modal);
-			}
-			return false;
-		}
-		trackKeydown = false;
-	}
-
-	lQuery("form.checkCloseDialog").livequery(function () {
-		var modal = $(this).closest(".modal");
-		if (modal.length) {
-			if (typeof modal.modal == "function") {
-				modal.modal({
-					backdrop: "static",
-					keyboard: false,
-				});
-			}
-			modal.on("click", function (e) {
-				e.stopPropagation();
-				e.stopImmediatePropagation();
-				if (e.currentTarget === e.target) {
-					confirmModalClose(modal);
-				}
-			});
-		}
-	});
-
-	lQuery("#closeExit").livequery("click", function () {
-		$("#exitConfirmationModal").hide();
-	});
-	lQuery("#confirmExit").livequery("click", function () {
-		$("#exitConfirmationModal").hide();
-		closeallemdialogs();
-	});
-
-	//Remove this? Not useing ajax
-	$(document).on("click", ".modal", function (e) {
-		if (e.target.classList.contains("modal")) {
-			e.stopPropagation();
-			e.stopImmediatePropagation();
-			confirmModalClose($(this));
-		}
-	});
-
-	lQuery(".entityclose").livequery("click", function (event) {
-		event.preventDefault();
-		var targetModal = $(this).closest(".modal");
-		confirmModalClose(targetModal);
 	});
 
 	//to be removed
@@ -2857,26 +2770,6 @@ function initializeUI() {
 			}
 		}
 		return;
-	});
-
-	$(document).keydown(function (e) {
-		switch (e.which) {
-			case 27: //esckey
-				var ismodal = $(".modal.onfront");
-				var backBtn = ismodal.find(".entityNavBack");
-				if (ismodal.length) {
-					e.stopPropagation();
-					e.preventDefault();
-					if (backBtn.length) {
-						backBtn.trigger("click");
-					} else {
-						closeemdialog(ismodal);
-					}
-				}
-				return;
-			default:
-				return; // exit this handler for other keys
-		}
 	});
 
 	lQuery(".emcarousel-link").livequery("click", function (e) {

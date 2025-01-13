@@ -1,3 +1,6 @@
+var trackKeydown = false;
+var exitWarning = false;
+
 function isInViewport(cell) {
 	const rect = cell.getBoundingClientRect();
 	var isin =
@@ -31,6 +34,14 @@ jQuery(document).ready(function () {
 		});
 	});
 
+	$(window).on("keydown", function (e) {
+		if (trackKeydown) {
+			exitWarning = true;
+		} else {
+			exitWarning = false;
+		}
+	});
+
 	lQuery(".uipanel").livequery(function () {
 		$(this).addClass("ui-widget");
 		var header = $(this).attr("header");
@@ -38,6 +49,106 @@ jQuery(document).ready(function () {
 			// http://dev.$.it/ticket/9134
 			$(this).wrapInner('<div class="ui-widget-content"/>');
 			$(this).prepend('<div class="ui-widget-header">' + header + "</div>");
+		}
+	});
+
+	function confirmModalClose(modal) {
+		var checkForm = modal.find("form.checkCloseDialog");
+
+		if (!checkForm) {
+			closeemdialog(modal);
+			trackKeydown = false;
+		} else {
+			var prevent = false;
+			$(checkForm)
+				.find("input, textarea, select")
+				.each(function () {
+					if ($(this).attr("type") == "hidden") {
+						return true;
+					}
+					var value = $(this).val();
+					if (value) {
+						prevent = value.length > 0;
+						return false;
+					}
+				});
+
+			if (prevent && exitWarning) {
+				$("#exitConfirmationModal").css("display", "flex");
+				return false;
+			} else {
+				closeemdialog(modal);
+				trackKeydown = false;
+			}
+			return false;
+		}
+	}
+
+	lQuery("form.checkCloseDialog").livequery(function () {
+		trackKeydown = true;
+		var modal = $(this).closest(".modal");
+		if (modal.length) {
+			if (typeof modal.modal == "function") {
+				modal.modal({
+					backdrop: "static",
+					keyboard: false,
+				});
+			}
+			modal.on("click", function (e) {
+				e.stopPropagation();
+				e.stopImmediatePropagation();
+				if (e.currentTarget === e.target) {
+					confirmModalClose(modal);
+				}
+			});
+		}
+	});
+
+	lQuery("#closeExit").livequery("click", function () {
+		$("#exitConfirmationModal").hide();
+	});
+	lQuery("#confirmExit").livequery("click", function () {
+		$("#exitConfirmationModal").hide();
+		closeallemdialogs();
+		trackKeydown = false;
+	});
+
+	//Remove this? Not useing ajax
+	$(document).on("click", ".modal", function (e) {
+		if (e.target.classList.contains("modal")) {
+			e.stopPropagation();
+			e.stopImmediatePropagation();
+			confirmModalClose($(this));
+		}
+	});
+
+	lQuery(".entityclose").livequery("click", function (event) {
+		event.preventDefault();
+		var targetModal = $(this).closest(".modal");
+		confirmModalClose(targetModal);
+	});
+
+	$(document).keydown(function (e) {
+		switch (e.which) {
+			case 27: //esckey
+				var modal = $(".modal.onfront");
+				if (modal.length) {
+					e.stopPropagation();
+					e.preventDefault();
+					var backBtn = modal.find(".entityNavBack");
+					var checkForm = modal.find("form.checkCloseDialog");
+					if (backBtn.length && backBtn.is(":visible")) {
+						backBtn.trigger("click");
+					} else if (checkForm.length) {
+						confirmModalClose(modal);
+					} else {
+						closeemdialog(modal);
+						trackKeydown = false;
+					}
+				}
+				return;
+			default:
+				return; // exit this handler for other keys
 		}
 	});
 
