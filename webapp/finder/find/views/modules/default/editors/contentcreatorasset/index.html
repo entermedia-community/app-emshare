@@ -8,14 +8,17 @@
 #end
 #set($viewdata = $mediaarchive.getCachedData("view",$entitymoduleviewid))
 
+#set( $pickertargetfield = $context.getRequestParameter("pickertargetfield"))
+
 <div class="bg-white">
   <div class="w-100 my-2 px-2">
     <form
-			class="ajaxform autocloseform"
+			class="contentpickerForm autocloseform"
+			action="$edithome/finish.html"
 			data-ajaxreloadtargets="dataeditedreload"
 			data-includeeditcontext="true"
 			data-targetdiv="importdone"
-			action="$edithome/finish.html"
+			data-pickertargetfield="$!pickertargetfield"
 			data-toastmessage="[[Creating]] #text($submodule) [[with AI]]"
 			data-toastsuccess="[[Created]] #text($submodule) [[successfully]]"
 			data-toasterror="[[Failed to create]] #text($submodule)">

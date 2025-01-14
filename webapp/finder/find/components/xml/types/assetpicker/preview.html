@@ -6,12 +6,13 @@
 #if(!$idcount)
 	#set($idcount = "")
 #end
-####if(!$val)
-	#set($val = $context.getRequestParameter('assetid'))
-####end
+
+#set($val = $context.getRequestParameter('assetid'))
+
 #if($val && $val != "")
 	#set( $foundrow = $mediaarchive.getAsset($val)  )
 #end
+
 #if( $foundrow )
 	#set( $rootid = $hits.sessionId )
 	#set( $hit = $foundrow)
@@ -26,7 +27,6 @@
 	#if(!$thumbsize)
 		$context.putPageValue("thumbsize", "small" )
 	#end
-	
 		
 	#if($rendertype == "audio")
 		#if($hit.getValue("length"))

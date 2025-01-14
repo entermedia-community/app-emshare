@@ -96,10 +96,41 @@ $(document).ready(function () {
 		$("#aiInstruction").val(prompt);
 	}
 
+	var mediadb = "/" + $("#application").data("mediadbappid");
 	lQuery("form.contentpickerForm").livequery("submit", function (e) {
 		e.preventDefault();
 		e.stopImmediatePropagation();
 		e.stopPropagation();
-		$(this).ajaxFormSubmit();
+		var $this = $(this);
+		var formData = new FormData(this);
+		jQuery.ajax({
+			type: "POST",
+			url: `${mediadb}/services/module/contentcreator/createNewImageRequest`,
+			data: formData,
+			processData: false,
+			contentType: false,
+			success: function (res) {
+				var assetid = res.data.primarymedia?.id;
+				if (!assetid) {
+					alert("No asset created");
+					return;
+				}
+				var pickertarget = $this.data("pickertargetfield");
+				if (pickertarget) {
+					pickertarget = $("#" + pickertarget); //This is the field itself
+					if (pickertarget.length > 0) {
+						var detailid = pickertarget.data("detailid");
+						$("#" + detailid + "-value").attr("value", assetid);
+						$("#" + detailid + "-preview").load(
+							apphome +
+								"/components/xml/types/assetpicker/preview.html?oemaxlevel=1&assetid=" +
+								assetid,
+							function () {}
+						);
+					}
+				}
+				closeemdialog($this.closest(".modal"));
+			},
+		});
 	});
 });

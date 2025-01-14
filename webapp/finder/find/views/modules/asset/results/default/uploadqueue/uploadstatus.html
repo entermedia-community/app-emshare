@@ -1,0 +1,21 @@
+#ifnull ($hit )
+  #set( $hit = $asset )
+#end
+
+$context.putPageValue("hit", $hit)
+
+#if( $hit.importstatus && $hit.importstatus == "uploading")
+<div id="status$!hit.id" class="ajaxstatus importstatusreport" 
+  #if( $content == $page ) data-ajaxrunning="true" #end 
+  data-reloadspeed="2000"
+  data-oemaxlevel="1"
+  ajaxpath="$apphome/views/modules/asset/results/default/uploadqueue/uploadstatus.html?assetid=$hit.id&thumbsize=$thumbsize" >
+  #set ($mime = $mediaarchive.getMimeTypeIcon($hit.fileformat))
+  <div class="mimethumbcontainer">
+    <i class="bi bi-$!mime mimeicon" title="[[Conversions in process]]"></i>
+    <div class="uiinfo">$hit.name [[Uploading...]]</div>
+  </div>
+</div>
+#else
+  $pages.include("$apphome/views/modules/asset/results/default/convertqueue/importstatus.html?assetid=$hit.id", $context)
+#end
