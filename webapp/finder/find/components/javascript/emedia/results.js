@@ -351,25 +351,23 @@ jQuery(document).ready(function (url, params) {
 		//Stop Audios
 		$.jPlayer.pause();
 	};
-	
 
 	showAsset = function (link, assetid, pagenum) {
-		if (link.length>0) {
+		if (link.length > 0) {
 			link.data("includeeditcontext", true);
 			link.data("includesearchcontext", true);
 			link.data("dialogid", "mediaviewer");
-			link.data("edithome","");
+			link.data("edithome", "");
 			//var url = link.attr("href");
 			link.data(
 				"url",
-				apphome + "/views/modules/asset/mediaviewer/fullscreen/currentasset.html"
+				apphome +
+					"/views/modules/asset/mediaviewer/fullscreen/currentasset.html"
 			);
-			if(assetid === undefined)
-			{
+			if (assetid === undefined) {
 				assetid = link.data("assetid");
 			}
-			if(assetid !== undefined)
-			{
+			if (assetid !== undefined) {
 				link.data("assetid", assetid);
 				var url = window.location.href;
 				url += (url.indexOf("?") >= 0 ? "&" : "?") + "assetid=" + assetid;
@@ -377,20 +375,18 @@ jQuery(document).ready(function (url, params) {
 				//window.location.hash = "asset-" + assetid;
 				link.emDialog();
 			}
-			
 		}
 	};
-	
-	
+
 	lQuery("a.stackedplayer").livequery("click", function (e) {
 		e.preventDefault();
 		e.stopPropagation();
 		var link = $(this);
 		showAsset(link);
-		
+
 		return false;
 	});
-	
+
 	initKeyBindings = function (hidden) {
 		$(document).keydown(function (e) {
 			if (hidden && !hidden.is(":visible")) {
@@ -442,8 +438,6 @@ jQuery(document).ready(function (url, params) {
 			// caret)
 		});
 	};
-
-	
 
 	refreshresults = function () {
 		var resultsdiv = $("#resultsdiv");
@@ -507,7 +501,6 @@ jQuery(document).ready(function (url, params) {
 			showAsset(link, id);
 		}
 	});
-	
 
 	lQuery(".carousel-indicators li#leftpage").livequery("click", function (e) {
 		e.preventDefault();
@@ -540,8 +533,6 @@ jQuery(document).ready(function (url, params) {
 			showAsset($(this), id);
 		}
 	});
-
-	
 
 	// Select multiple assets with Shift+Mouse
 	var isMouseDown = false;
@@ -913,8 +904,7 @@ jQuery(document).ready(function (url, params) {
 		var position = image.position();
 		canvas.css("top", position.top);
 		canvas.css("left", position.left);
-		
-		
+
 		var context = canvas[0].getContext("2d");
 		context.beginPath();
 		context.lineWidth = 1;
@@ -923,7 +913,7 @@ jQuery(document).ready(function (url, params) {
 		context.strokeStyle = "#fff";
 		context.strokeRect(box[0] - 1, box[1] - 1, box[2] + 1, box[3] + 1);
 	};
-	
+
 	lQuery(".emshowboximg").livequery(function () {
 		var image = $(this);
 		image.on("load", function (e) {
@@ -931,15 +921,15 @@ jQuery(document).ready(function (url, params) {
 		});
 		paintimagebox(image);
 	});
-	
+
 	lQuery(".emshowboxX").livequery(function () {
 		var div = $(this);
 		div.css("position", "relative");
 		var image = div.find("img");
 
 		paintimagebox(image);
-		
-		$(image).on('load', function() {
+
+		$(image).on("load", function () {
 			paintimagebox(image);
 			var container = div.data("centerbox");
 			if (container) {
@@ -950,20 +940,19 @@ jQuery(document).ready(function (url, params) {
 			}
 		});
 	});
-	
+
 	lQuery(".showimagebox").livequery("mouseover", function () {
 		var link = $(this);
 		var mediaplayer = link.data("target");
-		var emshowbox = $("#"+mediaplayer).find(".emshowbox");
+		var emshowbox = $("#" + mediaplayer).find(".emshowbox");
 		emshowbox.data("showbox", link.data("showbox"));
 		emshowbox.data("imagewidth", link.data("imagewidth"));
 		emshowbox.data("inputheight", link.data("inputheight"));
 		var image = emshowbox.find(".imagethumb");
-		if(image.length > 0) {
+		if (image.length > 0) {
 			paintimagebox(image);
 		}
 	});
-	
 
 	lQuery("select.addremovecolumns").livequery("change", function () {
 		var selectedval = $(this).val();
@@ -1117,8 +1106,7 @@ jQuery(document).ready(function (url, params) {
 		}
 	});
 
-
-/**ToDelete: Now Tab works with emdialog */
+	/**ToDelete: Now Tab works with emdialog */
 	lQuery("a.assettabTODELETE").livequery("click", function (e) {
 		e.preventDefault();
 		var tab = $(this);
@@ -1148,8 +1136,7 @@ jQuery(document).ready(function (url, params) {
 			showAsset($(this), assetid);
 		} else if (assettab == "multiedit") {
 			var link = $(this).data("link");
-			if (link !== undefined)
-			{
+			if (link !== undefined) {
 				div.load(link, options, function () {
 					// Update AssetID
 					var assetid = $("#multieditpanel").data("assetid");
@@ -1160,8 +1147,7 @@ jQuery(document).ready(function (url, params) {
 		} else {
 			disposevideos();
 			var link = tab.data("link");
-			if (link !== undefined)
-			{
+			if (link !== undefined) {
 				div.load(link, options, function () {
 					// console.log("triggered");
 					$(window).trigger("tabready");
@@ -1188,9 +1174,7 @@ jQuery(document).ready(function (url, params) {
 			}
 		}
 	}); //End of
-/**-- **/
-
-
+	/**-- **/
 
 	//FUSE Library
 	var Fuse;
@@ -1250,7 +1234,7 @@ jQuery(document).ready(function (url, params) {
 	lQuery(".forceresize").livequery(function () {
 		$(window).trigger("resize");
 	});
-	
+
 	updatebasket = function (e) {
 		var action = $(this).data("action");
 		if (action == "addtocart" || action == "remove") {

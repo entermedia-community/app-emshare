@@ -284,10 +284,12 @@
 					});
 				}
 			});
+			grid.removeClass("uninitialized");
 		},
 		resize: function () {
 			var grid = $(this);
 			verticalGridResize(grid);
+			grid.removeClass("uninitialized");
 		},
 	}; //Methods end
 
