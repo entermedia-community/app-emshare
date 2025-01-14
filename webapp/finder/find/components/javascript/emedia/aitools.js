@@ -95,4 +95,11 @@ $(document).ready(function () {
 		}
 		$("#aiInstruction").val(prompt);
 	}
+
+	lQuery("form.contentpickerForm").livequery("submit", function (e) {
+		e.preventDefault();
+		e.stopImmediatePropagation();
+		e.stopPropagation();
+		$(this).ajaxFormSubmit();
+	});
 });
