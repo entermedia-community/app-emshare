@@ -1,6 +1,6 @@
 #set($searcher = $mediaarchive.getSearcher($targetmodule.id))
 #set($viewid = "${targetmodule.id}addnew")
-#set ($details = $searcher.getDetailsForView($viewid))
+#set($details = $searcher.getDetailsForView($viewid))
 {
     "name": "create_entity",
     "description": "Generates metadata for an image, including descriptions, a caption, and relevant tags.",
@@ -14,14 +14,16 @@
                         #elseif($detail.dataType == "list" || $detail.isMultiValue()) "array"
                         #else "string" #end,
                 "description": "$detail.name $!detail.note"
-                #if($detail.dataType == "list"),
+                #if($detail.dataType == "list" || $detail.isMultiValue()),
                 "items": {
-                    "type": "string",
+                    "type": "string"
+                    #if($mediaarchive.getList($detail.id).size() > 0),
                     "enum": [
-						#foreach($option in $mediaarchive.getList($detail.id))
-						                        "$option.id"#if($foreach.count < $mediaarchive.getList($detail.id).size()),#end
-						#end 
+                        #foreach($option in $mediaarchive.getList($detail.id))
+                            "$option.id"#if($foreach.count < $mediaarchive.getList($detail.id).size()),#end
+                        #end
                     ]
+                    #end
                 }
                 #end
             }#if($foreach.count < $details.size()),#end
