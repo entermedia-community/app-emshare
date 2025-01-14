@@ -1,0 +1,33 @@
+#set( $pickertargetfield = $context.getRequestParameter("pickertargetfield"))
+#set( $categoryid = $context.getRequestParameter("categoryid"))
+#set( $entitycategoryid = $context.getRequestParameter("entitycategoryid"))
+#ifnull($categoryid)
+	#set( $categoryid = $entitycategoryid)
+#end
+
+#set($pickertarget = $context.getRequestParameter("pickertarget")) ##? This still useful?
+
+<div id="$!{edithomeid}" class="editdiv pickerresults pickerpickasset"
+
+	data-entityid="$!entity.id"
+	data-entitymoduleid="$!entitymodule.id"
+	data-entitymoduleviewid="$!entitymoduleviewid"
+	data-entitycategoryid="$!{entitycategoryid}"
+	
+	data-oemaxlevel="1"
+
+	data-edithome="$!{edithome}"
+	data-targetdiv="pickersearchresults"
+	data-pickertarget="$!pickertarget"
+	
+	data-clickurl="${edithome}/actions/pickedasset.html"
+	data-pickertargetfield="$pickertargetfield"
+
+>
+	<div id="pickersearchentities" data-setpagetitle="[[Select]] #text($module)"></div>
+	<div class="overflow-y">
+		<div id="entitypickerresults">
+			$pages.include("$apphome/views/modules/contentcreator/editors/contentcreatorasset/index.html", $context)
+		</div>
+	</div>
+</div>
