@@ -1,0 +1,71 @@
+
+#set( $pickertaget = $context.getRequestParameter("pickertarget") )
+#set( $entityid = $context.getRequestParameter("entityid") ) 
+#set( $parentmoduleid = $context.getRequestParameter("fieldexternalid"))
+#set($entity = $mediaarchive.getCachedData( $parentmoduleid,$entityid) )
+#set( $targetmoduleid = $context.getRequestParameter("entitymodule") )
+
+
+#ifnull($entitymoduleviewid) 
+	#set($entitymoduleviewid = $context.getRequestParameter("entitymoduleviewid"))
+	
+#end
+#set($viewdata = $mediaarchive.getCachedData("view",$entitymoduleviewid))
+
+##DOESN'T WORK -> #set( $submodule = $mediaarchive.getCachedData("module",$lightboxtype))
+<div class="bg-white">
+  <div class="w-100 my-2 px-2">
+    <form
+			class="ajaxform autocloseform checkCloseDialog"
+			data-includeeditcontext="true"
+			data-targetdiv="importdone"
+			action="$edithome/aitools/createassetsfinish.html"
+			data-toastmessage="[[Creating]] #text($submodule) [[with AI]]"
+			data-toastsuccess="[[Created]] #text($submodule) [[successfully]]"
+			data-toasterror="[[Failed to create]] #text($submodule)">
+			<input type="hidden" name="importtype" value="dita" />
+			<input type="hidden" name="pickertarget" value='$context.getRequestParameter("pickertarget")'/>
+			<input type="hidden" name="fieldexternalid" value='$context.getRequestParameter("fieldexternalid")'/>
+			<input type="hidden" name="fieldexternalvalue" value='$context.getRequestParameter("fieldexternalvalue")'/>
+			<input type="hidden" name="targettype" value='$context.getRequestParameter("targettype")'/>
+			<input type="hidden" name="onetomanytab" value='$context.getRequestParameter("onetomanytab")'/>
+			<input type="hidden" name="entitymoduleviewid" value='$context.getRequestParameter("entitymoduleviewid")'/>
+			<input type="hidden" name="id" value='$entityid'/>
+			<input type="hidden" name="entityid" value='$entityid'/>
+			<input type="hidden" name="save" value='true'/>
+			<input type="hidden" name="llmmodel.value" value='dall-e-3'/>
+
+			$context.putPageValue("viewid", "${module.id}general")
+			$context.putPageValue("details",null)
+			$context.putPageValue("data",$entity)
+			
+			<div class="updateaitemplate #if($customprompt) customized #end"
+				data-template="$edithome/aitools/createassetinstructions.html"
+				data-targetarea="aiInstruction">
+				$pages.include("$apphome/components/xml/detaileditor-entities.html", $context)
+			</div>
+
+			<label class="mb-1 fw-bold text-dark">[[Attach Image]]</label>
+			<div class="d-flex align-items-center mb-3">
+				<a href="#" class="btn btn-primary mr-2">
+					<i class="bi bi-card-list mr-1"></i> Browse Image
+				</a>
+				<a href="#" class="btn btn-primary">
+					<i class="bi bi-magic mr-1"></i> Generate Image
+				</a>
+			</div>
+		
+			<label for="aiInstruction" class="fw-bold mb-1">AI Prompt: </label>
+			$context.putPageValue("entity", $entity)
+			<textarea name="createassetprompt.value" id="aiInstruction" class="form-control rounded" rows="8" required autocomplete="off" data-gramm="false">$pages.include("$edithome/aitools/createassetinstructions.html", $context)</textarea>
+
+			<div class="d-flex justify-content-center mt-3">
+				<button type="submit" class="btn btn-cta">
+					<i class="bi bi-brush mr-1"></i>
+					[[Create with AI]]
+				</button>
+			</div>
+    </form>
+    <div id="importdone"></div>
+  </div>
+</div>
