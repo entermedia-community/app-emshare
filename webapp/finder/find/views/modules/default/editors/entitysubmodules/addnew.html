@@ -25,10 +25,12 @@ $context.putPageValue("searcher",$searcher)
 $pages.include("$apphome/views/modules/${module.id}/editors/entitysubmodules/addnewheader.html")
 
 <div class="modal-body">
+	
+<div class="createnewtoggle">
 <form id="searchentitydataeditor"
 	name="searchentitydataeditor"
 	action="$action" 
-	class="ajaxform checkCloseDialog autocloseform createnewtoggle" 
+	class="ajaxform checkCloseDialog autocloseform" 
 	data-edithomeid="$!{edithomeid}"
 	data-closedialogid="entitysubmoduleaddexisting"
 	data-targetdiv="$!{edithomeid}"
@@ -37,12 +39,7 @@ $pages.include("$apphome/views/modules/${module.id}/editors/entitysubmodules/add
 	method="post"  
 	enctype="multipart/form-data"
 	>
-	#if($permissions.can($module.getId(), "createassetswithai"))
-		#set($pickerurl = "$!{edithome}/aitools/createassets.html")
-		<a href="#" class="btn btn-accent ml-1" onclick="jQuery('.createnewtoggle').toggle()" 
-		
-		title="[[Create New]] #text($submodule) [[With AI]]"><i class="bi bi-brush mr-1"></i> [[Create With AI]]</a>
-	#end
+
 		<input name="save" type="hidden" value="true" />
 		<input name="id" type="hidden" value="$!id" />
 			
@@ -56,7 +53,9 @@ $pages.include("$apphome/views/modules/${module.id}/editors/entitysubmodules/add
 			<button id="closebutton" type="button" class="btn btn-secondary" data-dismiss="modal">[[Cancel]]</button>
 		</div>
 </form>
+
 </div>
+
 
 
 #ifnull($entitymoduleviewid) 
@@ -66,15 +65,7 @@ $pages.include("$apphome/views/modules/${module.id}/editors/entitysubmodules/add
 #set($viewdata = $mediaarchive.getCachedData("view",$entitymoduleviewid))
 #set($aiaction = "$apphome/views/modules/${module.id}/editors/contentcreatorchild/finish.html")
   <div class="bg-white createnewtoggle" style="display: none;" >
-  #if($permissions.can($module.getId(), "createassetswithai"))
-		#set($pickerurl = "$!{edithome}/aitools/createassets.html")
-		<a href="#" class="btn btn-accent ml-1" onclick="jQuery('.createnewtoggle').toggle()" 
-		
-		title="[[Create New]] #text($submodule) [[With AI]]"><i class="bi bi-brush mr-1"></i> [[Create Manually]]</a>
-	#end
-  <div class="w-100 my-2 px-2">
-    <form
-			class="ajaxform autocloseform checkCloseDialog"
+    <form	class="ajaxform autocloseform checkCloseDialog"
 			data-includeeditcontext="true"
 			data-targetdiv="importdone"
 			action="$aiaction"
@@ -99,24 +90,24 @@ $pages.include("$apphome/views/modules/${module.id}/editors/entitysubmodules/add
 				$pages.include("$apphome/components/xml/detaileditor-entities.html", $context)
 			</div>
 		
-			<label for="aiInstruction" class="mb-1">AI Prompt: </label>
-						<input type="hidden" name="field" value="createassetprompt" />
+			<label for="aiInstruction" class="mb-1">[[AI Prompt]]: </label>
+			<input type="hidden" name="field" value="createassetprompt" />
 			
 			<textarea name="createassetprompt.value" id="aiInstruction" class="form-control rounded" rows="8" required autocomplete="off" data-gramm="false">$pages.include("$edithome/createentityinstructions.html", $context)</textarea>
 
-			<div class="d-flex justify-content-center mt-3">
-				<button type="submit" class="btn btn-cta">
+			<div class="d-flex align-items-center mt-3">
+				<button type="submit" class="btn btn-cta  mr-3">
 					<i class="bi bi-brush mr-1"></i>
 					[[Create with AI]]
 				</button>
+				<button id="closebutton" type="button" class="btn btn-secondary" data-dismiss="modal">[[Cancel]]</button>
 			</div>
     </form>
     <div id="importdone"></div>
-  </div>
 </div>
 
 
-
+</div>
 
 
 
