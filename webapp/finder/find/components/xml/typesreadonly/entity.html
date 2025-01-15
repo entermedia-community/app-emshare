@@ -1,11 +1,17 @@
+#ifnull($values)
+
+	#set($values = $value)
+#end
 #if( !$values && $data )
 	#set($values = $data.getValues($detail.id) )
 #end
 
 #set($entity_module = $detail.getListId())
+
 <ul class="entity-value-list">
 	#foreach( $type in $values )
 		#set( $row = false )
+		
 		#set( $row = $mediaarchive.getCachedData($entity_module, $type ))
 		
 	    #if( $row ) 

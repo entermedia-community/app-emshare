@@ -35,6 +35,7 @@ $context.putPageValue("xmledithome",$xmledithome)
  <div class="row no-gutters">
  #foreach( $detail in $details )
  	#set($detailid = $detail.getId())
+	#set($values = "")
 	#set($value = "")
 	#set($val = "")
 	
@@ -53,10 +54,11 @@ $context.putPageValue("xmledithome",$xmledithome)
 	
 	#if(!$val)
 		#set($val =  $data.get($detail.id) )
+		
 		#set($value = $searcherManager.getValue($data, $detail, $context.getLocale() ) )
+		
 		#if($detail.isMultiValue())
 			#set($values = $value )
-			$!context.putPageValue("values",$values)
 		#end
 	#end 
 
@@ -73,6 +75,7 @@ $context.putPageValue("xmledithome",$xmledithome)
 			 
 		$!context.putPageValue("val",$val)
 		$!context.putPageValue("value",$value)
+		$!context.putPageValue("values",$values)
 		$!context.putPageValue("detail",$detail)
 		
 		#if ($detail.header)
@@ -100,6 +103,7 @@ $context.putPageValue("xmledithome",$xmledithome)
 						<span class="text-muted d-inline-block mt-1" style="font-size: 13px;">[[Hit]] <kbd>[[enter]]</kbd> [[or]] <kbd>[[return]]</kbd> [[key after typing each tag]]<span>
 					#end
 				#else 
+				
 					##NOT EDITABLE
 					<div class="emdatafieldvalue-readonly">
 					$pages.include("$xmledithome/detailreadonly.html", $context)
