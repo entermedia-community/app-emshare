@@ -1,0 +1,89 @@
+#set($moduleid = $module.id)
+<div class="entity-header d-flex align-items-center justify-content-between">
+			<div class="d-flex align-items-center">
+				<a href="#" class="ajax entityNavBack" data-targetdiv="entitydialog" data-entityid="$entity.id" data-oemaxlevel="1" style="display: none;">
+					<i class="fas fa-arrow-left"></i><span id="showname"></span>
+				</a>
+				
+				<h2 class="d-flex align-items-center">
+					
+					#if ($module.moduleicon)
+						#set($moduleicon = $module.moduleicon)
+					#end
+					#ifnull($moduleicon)
+						#set($moduleicon = "grid")
+					#end
+					<i class="bi bi-${moduleicon} module-icon"></i> 
+					 
+					#if($moduleid == "faceprofilegroup")
+						#text($module) <i class="bi bi-chevron-right mx-1 bi-small"></i>
+						#if($entity.entitypeople)
+							#set($people =  $mediaarchive.getCachedData("entitypeople", $entity.entitypeople))
+							#set($label = "[[Profile]] $!people")
+						#else
+							#set($label = "$entity.samplecount")
+						#end
+					#else
+						#text($module) <i class="bi bi-chevron-right mx-1 bi-small"></i>
+						#if($ismulti)
+							[[Multi Edit]] $!entity.getSelectedResults().size() [[Items]]		
+						#else	
+							#if($addnew=='true')
+								#set($label = "[[Add New]]")
+								#text($label)	
+								$context.putPageValue("addnew", $addnew)
+							#elseif($module.getValue("customname"))
+								#set($detail= $mediaarchive.getSearcher($module.id).getDetail("name"))
+								#set($label = $searcherManager.renderMask($entity, $detail ,$module.getValue("customname"), null, $context.getLocale())) 
+								#text($label) 
+							#else
+								#set($label = $!entity.getName($context))
+								#text($label) 				
+							#end
+							
+						#end
+					#end 
+				</h2>
+				
+			
+			</div>
+	
+	
+			<div class="d-flex entity-actions-bar align-items-center text-white position-relative">
+				#set($withai = $context.getRequestParameter("withai"))
+				#if($addnew=='true')
+					#set($entityedithome = $context.getRequestParameter("entityedithome"))
+					#if($withai != "true")
+						<a class='btn btn-cta ajax action-lg'
+							href="$siteroot$applink/views/modules/contentcreator/editors/contentcreatortoplevel/index.html?edit=true&addnew=true&withai=true" 
+							data-entitymoduleviewid="$!{module.id}addnew"
+							data-entitymoduleid="$!module.id"
+							data-entityedithome="$!edithome"
+							data-targetdiv="editentitymetadata"
+							data-oemaxlevel="1"
+							title="[[Create new]] #text($module) [[with AI]]">
+							<i class="bi bi-magic mr-1"></i> [[Create with AI]]
+						</a>
+					#else
+						#set($addurl = "${entityedithome}/tabs/index.html?edit=true&addnew=true&viewid=$!{moduleid}addnew")
+						<a href="$addurl"
+							class='btn btn-accent ajax action-lg'
+							data-entitymoduleviewid="$!{module.id}addnew"
+							data-entityid="$!entity.getId()" 
+							data-entitymoduleid="$!module.id"
+							data-targetdiv="entitydialog"
+							data-oemaxlevel="1"
+							data-$!{module.id}hitssessionid="$!entityhits.getSessionId()"
+							title="[[Create new]] #text($module)">
+							<i class="bi bi-plus-lg mr-1"></i> [[Create Manually]]
+						</a>
+					#end
+				#end
+
+					
+				<div class="entityclose">
+					<span title="[[Esc to Close]]" class="bi bi-x-lg ns"></span>
+				</div>
+			</div>
+			
+		</div>

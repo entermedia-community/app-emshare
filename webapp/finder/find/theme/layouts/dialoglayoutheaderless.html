@@ -1,0 +1,23 @@
+#if ( $canviewerrors )
+<div id="errordiv"></div>
+#end
+
+#set( $title = $context.getRequestParameter("dialogtitle"))
+
+#set( $customdialogclass = $context.getRequestParameter("customdialogclass"))
+#if(!$customdialogclass)
+#set( $customdialogclass = $context.getRequestParameter("modalsize"))
+#end
+
+<div class="modal-dialog #if($customdialogclass) modal-$customdialogclass #end" id="searchareaheaderless">
+	<div class="modal-content modal-content-headerless">
+		
+		<div class="modal-body-headerless">
+			$pages.includeContent()
+		</div>
+		<div class="modal-footer">
+			<button id="closebutton" type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-dismiss="modal">[[Close]]</button>
+			<input id="submitbutton" type="button" form="notset" value="[[Ok]]" name="submitbutton" class="btn btn-primary dialogsubmitbtn">
+		</div>
+	</div>
+</div>
