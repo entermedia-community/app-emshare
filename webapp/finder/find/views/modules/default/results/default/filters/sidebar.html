@@ -27,38 +27,45 @@ $context.putPageValue("viewid",$viewid)
 
 	<div class="px-2 pt-1" style="border-left:1px solid #e5e5e5">
 	<div class="d-flex flex-column">
-		#set($currentpage = $context.getRequestParameter("currentpagenum"))
-		#set( $prhits = $hits.getPositionRender() )
-		#ifnotnull($currentpage)
-			$prhits.setPageOneBased($currentpage)
-		#end
-
-		#set( $selectedpos = $prhits.toPosition($prhits.getPage()))
-
-		#set($totalResults = $hits.size())
-
-		#set( $hitsPerPage = $hits.getHitsPerPage())
-		#set($showingFrom = ($selectedpos - 1) * $hitsPerPage)
-		#set($showingTo = $showingFrom + $hitsPerPage)
-
-		#if($showingTo > $totalResults)
-			#set($showingTo = $totalResults)
-		#end
 		
-		#set($showingFrom = $showingFrom + 1)
+		#set($totalResults = 0)
+		
+		#ifnotnull($hits)
+			#set($currentpage = $context.getRequestParameter("currentpagenum"))
+			#set( $prhits = $hits.getPositionRender() )
+			#ifnotnull($currentpage)
+				$prhits.setPageOneBased($currentpage)
+			#end
+	
+			#set( $selectedpos = $prhits.toPosition($prhits.getPage()))
+	
+			#set($totalResults = $hits.size())
+	
+			#set( $hitsPerPage = $hits.getHitsPerPage())
+			#set($showingFrom = ($selectedpos - 1) * $hitsPerPage)
+			#set($showingTo = $showingFrom + $hitsPerPage)
+	
+			#if($showingTo > $totalResults)
+				#set($showingTo = $totalResults)
+			#end
+			
+			#set($showingFrom = $showingFrom + 1)
+		#end
 		<div class="">
 			<span class="d-inline-block text-brand pb-1 w-100 showing" >
 				<strong>#text($module)</strong> <span>($totalResults)</span>
 			</span>
 
-			#if($resultview != "stackedgallery" && $resultview != "brickvertical")
+			#if($totalResults> 0 && $resultview != "stackedgallery" && $resultview != "brickvertical")
 				<span   class="d-inline-block text-brand pb-1 w-100 showing" >
 					[[Showing]] <strong>$showingFrom</strong> &mdash; <strong>$showingTo</strong>
 				</span>
 			#else
+				#if($totalResults> 0 )
 				<span class="d-inline-block text-brand pb-1 w-100 showing">
 					[[Showing]] <strong>$totalResults</strong>
 				</span>
+				#end
 			#end
 		</div>
 
