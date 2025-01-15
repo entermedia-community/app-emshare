@@ -1,9 +1,14 @@
 #set($searcher = $mediaarchive.getSearcher($targetmodule.id))
-#set($viewid = "${targetmodule.id}addnew")
-#set($details = $searcher.getDetailsForView($viewid))
+#set($viewid = "${targetmodule.id}aifields")
+#set($viewdata = $mediaarchive.getData("view", $viewid)
+
+#ifnull($viewdata)
+	#set($viewdata = $mediaarchive.getData("view", "${targetmodule.id}addnew")
+#end
+#set($details = $searcher.getDetailsForView($viewdata.id))
 {
     "name": "create_entity",
-    "description": "Generates metadata for an image, including descriptions, a caption, and relevant tags.",
+    "description": "Generates metadata for a new Entity, with various metadata",
     "parameters": {
         "type": "object",
         "properties": {
