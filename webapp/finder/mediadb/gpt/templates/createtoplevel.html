@@ -1,26 +1,27 @@
+Task:
+
+ $contentrequest.createassetprompt
 
 
-$inputdata
+#set($searcher = $mediaarchive.getSearcher($targetmodule.id))
+#set($viewid = "${targetmodule.id}aifields")
+#set($viewdata = $mediaarchive.getData("view", $viewid)
 
-This is pertinent info on the parent data:
-
-#foreach($detail in $parentdetails)
-	
-    #set($value = $searcherManager.getValue($parent, $detail, $context.getLocale()))
- 	#ifnotnull($value)
-		$detail.getText($context):$value
-	#end
+#ifnull($viewdata)
+	#set($viewdata = $mediaarchive.getData("view", "${targetmodule.id}addnew")
 #end
+#set($details = $searcher.getDetailsForView($viewdata.id))
 
 
 
-You're adding data to a sub module called $targetmodule.  It is structured like this:
+You're adding data to a  module called $targetmodule.  It is structured like this:
 #set($childsearcher = $mediaarchive.getSearcher($targetmodule.id))
 
 
-#set($view = "$targetmodule.id/${targetmodule.id}addnew")
+#set($view = "$targetmodule.id/${targetmodule.id}aifields")
+
 #set ($childdetails = $childsearcher.getDetailsForView($view))
-$view
+
 
 #foreach($detail in $childdetails)
 
@@ -45,16 +46,3 @@ $view
 #end
 
 
- 
-
-#if($directions) These are some specific directions:
-	$!directions
-#end
-
-
-Main Task:
-
-Follow the directions and create the new data as requested
-
-
-$contentrequest $contentrequest.aitarget
