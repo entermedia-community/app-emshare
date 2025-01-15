@@ -110,6 +110,7 @@ $(document).ready(function () {
 			processData: false,
 			contentType: false,
 			success: function (res) {
+				$(window).trigger("checkautoreload", [$this]);
 				var assetid = res.data.primarymedia?.id;
 				if (!assetid) {
 					alert("No asset created");
