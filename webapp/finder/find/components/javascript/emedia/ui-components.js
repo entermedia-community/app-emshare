@@ -326,4 +326,11 @@ jQuery(document).ready(function () {
 			return;
 		}
 	});
+	
+	
+	lQuery(".addnewwithai").livequery("click", function (e) {
+		e.preventDefault();
+		$(".createnewtoggle").toggle();
+		
+	});
 }); //on ready
