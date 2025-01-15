@@ -31,17 +31,12 @@
 	#set( $catalogid = $mediaarchive.getCatalogId() )
 #end
 
-#if(!$searcher)
-	#set ( $searchtype = $context.getRequestParameter("searchtype") )
-	#if( $searchtype )
-		#set ( $searcher = $searcherManager.getSearcher($catalogid, $searchtype ) )
-	#else		
-		#set ( $searcher = $mediaarchive.assetSearcher )
-	#end
+#set ($searchtype = $context.findValue("module"))
+#if( $searchtype )
+	#set ( $searcher = $searcherManager.getSearcher($catalogid, $searchtype ) )
+#else		
+	#set ( $searcher = $mediaarchive.assetSearcher )
 #end
-
-#set( $catalogid = $searcher.getCatalogId() )
-#set( $searchtype = $searcher.getSearchType() )
 
 #if(!$data)
 	#if( $asset )
