@@ -19,8 +19,8 @@
 
 #set ($id = $context.getRequestParameter("id"))
 
-#set( $args = "id=$id&candelete=$candelete&editpath=$editpath&parentid=$parentid&searchtype=$searchtype&fieldexternalid=$fieldexternalid&fieldexternalvalue=$fieldexternalvalue&viewid=$viewid&viewpath=$viewpath&permissionname=$!permissionname&hitssessionid=$!hitssessionid&selectlink=$!link")
-#set( $argsnoid = "candelete=$candelete&editpath=$editpath&parentid=$parentid&catalogid=$catalogid&searchtype=$searchtype&fieldexternalid=$fieldexternalid&fieldexternalvalue=$fieldexternalvalue&viewid=$viewid&viewpath=$viewpath&permissionname=$!permissionname&hitssessionid=$!hitssessionid&selectlink=$!link")
+#set( $args = "id=$id&candelete=$candelete&editpath=$editpath&parentid=$parentid&searchtype=$searchtype&fieldexternalid=$fieldexternalid&fieldexternalvalue=$fieldexternalvalue&viewid=$viewid&permissionname=$!permissionname&hitssessionid=$!hitssessionid&selectlink=$!link")
+#set( $argsnoid = "candelete=$candelete&editpath=$editpath&parentid=$parentid&catalogid=$catalogid&searchtype=$searchtype&fieldexternalid=$fieldexternalid&fieldexternalvalue=$fieldexternalvalue&viewid=$viewid&permissionname=$!permissionname&hitssessionid=$!hitssessionid&selectlink=$!link")
 
 #set( $viewdetailspath = $context.getRequestParameter("viewdetailspath"))
 #set( $passalong = "viewdetailspath=$!viewdetailspath&candelete=$candelete&viewid=$viewid&parentid=$parentid&hitssessionid=$!hitssessionid&selectlink=$!link&fieldexternalid=$fieldexternalid&fieldexternalvalue=$fieldexternalvalue&$fieldexternalid=$!fieldexternalvalue")
@@ -38,8 +38,6 @@
 <div id="#makeid(${viewid})editor" >
 	#if( !$edit || $edit == "false")
 		
-	$searcher.getSearchType()
-	
 		$pages.include("/$applicationid/components/xml/table.html?$args&passalong=$passalong",$context)
 		
 		#if( !$parser.parseBoolean($edit) && ($caneditdata || $caneditasset) && !$print.equals("true"))
