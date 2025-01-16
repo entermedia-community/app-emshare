@@ -68,18 +68,22 @@ $context.putPageValue("viewid",$viewid)
 				#end
 			#end
 		</div>
-
-		#set ($currentSort = $hits.searchQuery.getSortByDetail() )
-		#if($hits.searchQuery.isSortUp())
-			#set($sortOrder = "asc")
-		#else
-			#set($sortOrder = "desc")
+		
+		#if($totalResults> 0 )
+			#set ($currentSort = $hits.searchQuery.getSortByDetail() )
+			#if($hits.searchQuery.isSortUp())
+				#set($sortOrder = "asc")
+			#else
+				#set($sortOrder = "desc")
+			#end
+			#ifnotnull($currentSort)
+			<span class="d-inline-block text-brand pb-1 w-100 showing">
+				[[Sorted by]] <strong>#text($currentSort)</strong> (${sortOrder}.)
+			</span>
+			#end
+			
 		#end
-		#ifnotnull($currentSort)
-		<span class="d-inline-block text-brand pb-1 w-100 showing">
-			[[Sorted by]] <strong>#text($currentSort)</strong> (${sortOrder}.)
-		</span>
-		#end
+		
 		#set($desc = $entity.get('longcaption'))
 		#if($dialogresults && $desc)
 		<p class="text-brand pt-1 mb-0 border-top">
