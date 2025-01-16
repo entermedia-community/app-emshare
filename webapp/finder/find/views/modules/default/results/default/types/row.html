@@ -16,9 +16,14 @@
 #end	
 
 	#foreach( $detail in $details)
+		#set($values = false)
 		#set($value = $searcherManager.getValue($hit, $detail, $context.getLocale() ) ) 
+		#if($detail.isMultiValue())
+			#set($values = $value )
+		#end
 		$!context.putPageValue("detail",$detail)
 		$!context.putPageValue("value",$value)
+		$!context.putPageValue("values",$values)
 		$!context.putPageValue("data", $hit)
 		<td  class="resultstablecell $detail.id">
       		#set($viewtype = $detail.viewType)

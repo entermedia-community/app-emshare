@@ -35,30 +35,25 @@ $context.putPageValue("xmledithome",$xmledithome)
 	#end
 	
 	
- 	#set( $val = false )
+ 	
 	#set( $target = "${detail.id}.value" )
-	#set( $val = $context.getRequestParameter($target) )
 				
-	#set($val =  $data.get($detail.id) )
+	#set($values = false)
 	#set($value = $searcherManager.getValue($data, $detail, $context.getLocale() ) ) 
 	#if($detail.isMultiValue())
 		#set($values = $value )
-		$!context.putPageValue("values",$values)
-	#end
-	#ifnull($val)
-		#set($val = "")	
 	#end
 	
 	$!context.putPageValue("detail",$detail)
-	$!context.putPageValue("val",$val)
 	$!context.putPageValue("value", $value)
+	$!context.putPageValue("values",$values)
 
  	
  	<div class="$detailviewercolumnclass asset-data-detail emdatafield-$!viewtype">
 
 	#set( $editrow = $detail.isEditable() && $readonly != "true") 
 	
-	#if( $editrow || $val  || !$detail.isEditable() || $detail.dataType == "searchjoin" )
+	#if( $editrow   || !$detail.isEditable() || $detail.dataType == "searchjoin" )
 		#if( !$val) 
 			#set( $val = "") 
 		#end	
