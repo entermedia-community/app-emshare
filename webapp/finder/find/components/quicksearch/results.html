@@ -115,14 +115,12 @@ $context.putPageValue("filter", $filter)
 				#ifnull($count)
 					#set( $count = $hits.size()) 
 				#end
-				<span class="mx-1">&middot;</span>
+				<span class="mx-1">&middot;</span> 
 				<a href="$entityurl" 
 					class="ajax qsresultsEntityall" 
 					data-targetdiv="application" 
 					data-oemaxlevel="3" 
 					data-updateurl="true" 
-					data-profilepreference="defaultmodule"
-					data-profilepreference.value="$!module.getId()"
 					title="[[View]] $count: #text($module)">
 					<span class="qsresultsEntitytext">
 						[[View All]] ($count)
@@ -192,11 +190,14 @@ $context.putPageValue("filter", $filter)
 	#set($moduleicon = $assetmodule.moduleicon)
 #end
 
-#set($searchhome = "$apphome/views/modules/asset/results/default")
+#set($searchhome = "$apphome/views/modules/asset/results/categoryviewfiles")
 $context.putPageValue("searchhome", $searchhome)
 
 #set($hits = $assethits)
-#set($entityurl = "${searchhome}/search.html?field=description&operation=freeform&description.value=$input")
+##set($entityurl = "${searchhome}/search.html?field=description&operation=freeform&description.value=$input")
+
+#set($entityurl = "$apphome/views/modules/asset/editors/viewfiles/index/search.html?field=description&operation=freeform&description.value=$input")
+
 #set( $count = $assethits.size())
 <div class="m-0 qsresultsEntity d-flex align-items-center">
 	<i class="bi bi-$!{moduleicon} module-icon" style="font-size:0.9em;line-height:1;opacity:0.85;"></i>  
@@ -204,11 +205,9 @@ $context.putPageValue("searchhome", $searchhome)
 
 	<a href="$entityurl" 
 		class="ajax qsresultsEntityall"
-		data-targetdiv="application" 
+		data-targetdiv="applicationmaincontent" 
 		data-oemaxlevel="3" 
 		data-updateurl="true" 
-		data-profilepreference="defaultmodule"
-		data-profilepreference.value="$!module.getId()"
 		title="[[View]] $count: #text($assetmodule)">
 		<span class="mx-1">&middot;</span>
 		<span class="qsresultsEntitytext">[[View All]] ($count)</span>
