@@ -35,18 +35,12 @@
 		#set ($viewtype = "default")
 	#end
 	
-	#set($val =  $data.get($detail.id) )
 	#set($value = $searcherManager.getValue($data, $detail, $context.getLocale() ) ) 
 	#if($detail.isMultiValue())
 		#set($values = $value )
-		$!context.putPageValue("values",$values)
 	#end
-	#ifnull($val)
-		#set($val = "")	
-	#end
-	
-	
-	#if(  $val  || $value)
+
+	#if( $value || $values)
 		<div class="$!detailviewercolumnclass asset-data-detail emdatafield-$!viewtype ">
 			<div class="container-fluid">
 				<div class="row">
@@ -57,9 +51,8 @@
 					</div>
 					<div class="col-9">
 					<div class="emdatafieldvalue">		
-									
-						$!context.putPageValue("val",$val)
 						$!context.putPageValue("value",$value)
+						$!context.putPageValue("values",$values)
 						$context.putPageValue("showalllanguagevalues",true)
 						$!context.putPageValue("detail",$detail)
 						$pages.include("$apphome/components/xml/detailreadonly.html", $context) 

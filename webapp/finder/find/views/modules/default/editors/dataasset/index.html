@@ -58,8 +58,6 @@ $context.putPageValue("searchtype", $searchtype)
 	#set( $editpath = "${edithome}/genericsave.html" )
 #end
 
-#set( $selfpath = "${edithome}/generalinformation/metadatapanel.html" )
-
 #if($data.getId().startsWith("multiedit"))
 	#set($multiedit = true)
 #end
@@ -130,14 +128,11 @@ $context.putPageValue("searchtype", $searchtype)
 		 		<div class="col">
 					<div class="btns">
 						<input class="btn btn-accent submitform" type="button" value="[[Save values]]"/>
-						#if ($targetdiv == "tabsummarypanel")
-						<a class="ajax btn btn-secondary" style="margin-right:10px;" data-targetdiv="${edithomeid}" 
-							href="${edithome}/generalinformation/index.html?oemaxlevel=1&assetid=$asset.id&hitssessionid=$!hitssessionid">[[Cancel]]</a>
-						#else
-							#set( $args = "assetid=$!asset.getId()&candelete=$candelete&editpath=$editpath&catalogid=$catalogid&searchtype=$searchtype&viewid=$!viewid&hitssessionid=$!hitssessionid")
-							<a class="ajax btn btn-secondary" style="margin-right:10px;" data-targetdiv="${edithomeid}" data-oemaxlevel="1" 
-								href="$siteroot$selfpath?save=false&${args}">[[Cancel]]</a>
-						#end
+						
+						#set( $args = "assetid=$!asset.getId()&viewid=$!viewid&assethitssessionid=$!hitssessionid")
+						<a class="ajax btn btn-secondary" style="margin-right:10px;" data-targetdiv="asset-detail-editor" data-oemaxlevel="1" 
+							href="${edithome}/generalinformation/metadatapanel.html?save=false&${args}">[[Cancel]]</a>
+					
 						<a class="emdialog float-right btn btn-secondary"
 							 href="$siteroot$apphome/views/settings/modules/$!{moduleid}/metadata/views/dialog/index.html?viewid=${viewid}" 
 							 data-dialogid="fieldpicker" data-hidefooter="true"
