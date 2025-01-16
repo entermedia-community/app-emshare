@@ -35,9 +35,9 @@ $context.putPageValue("xmledithome",$xmledithome)
  <div class="row no-gutters">
  #foreach( $detail in $details )
  	#set($detailid = $detail.getId())
-	#set($values = "")
+	#set($values = false)
 	#set($value = "")
-	#set($val = "")
+	
 	
 	#set( $editrow = $detail.isEditable() && $readonly != "true")
 	
@@ -48,12 +48,11 @@ $context.putPageValue("xmledithome",$xmledithome)
 			#set( $contextval = $context.getPageValue($target) )
 		#end
 		#ifnotnull($contextval)
-			#set($val = $contextval)
+			#set($value = $contextval)
 		#end
 	#end
 	
-	#if(!$val)
-		#set($val =  $data.get($detail.id) )
+	#if(!$value)
 		
 		#set($value = $searcherManager.getValue($data, $detail, $context.getLocale() ) )
 		
@@ -62,18 +61,14 @@ $context.putPageValue("xmledithome",$xmledithome)
 		#end
 	#end 
 
-	#if(!$val && $detailid=="primarymedia")
-		#set( $val = $!data.getValue("primaryimage") )
+	#if(!$value && $detailid=="primarymedia")
+		#set( $value = $!data.getValue("primaryimage") )
 	#end
 	
-	#ifnull($val)
-		#set($val = "")	
-	#end
 		
-	#if( $editrow || $val || $value)
+	#if( $editrow || $value || $values)
 	 	<div class="$detailviewercolumnclass detail-${detail.id}">
 			 
-		$!context.putPageValue("val",$val)
 		$!context.putPageValue("value",$value)
 		$!context.putPageValue("values",$values)
 		$!context.putPageValue("detail",$detail)
