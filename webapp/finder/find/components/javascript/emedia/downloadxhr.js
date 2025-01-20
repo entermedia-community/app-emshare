@@ -104,7 +104,7 @@ jQuery(document).ready(function () {
 		});
 
 		setTimeout(function () {
-			autoreload($("#userdownloadlist"));
+			$(window).trigger("autoreload", [$("#userdownloadlist")]);
 		}, 1000);
 	}
 
@@ -120,7 +120,7 @@ jQuery(document).ready(function () {
 				"/services/module/order/orderchangestatus?orderstatus=canceled&downloadstatus=canceled&orderid=" +
 				orderid,
 			success: function () {
-				autoreload($("#userdownloadlist"));
+				$(window).trigger("autoreload", [$("#userdownloadlist")]);
 			},
 		});
 	});
