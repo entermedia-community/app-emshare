@@ -48,18 +48,22 @@
 			<button id="closebutton" type="button" class="btn btn-secondary" data-dismiss="modal">[[Cancel]]</button>
         </div>
         <div id="itemsaved"></div>
-        <span id="itemsent"></span>
+        
 	</div>
 	
 	
 	<div  class="pl-4" style="width: 40%;">
 		#if($orderitems)
-		<div class="d-flex">
+		<div class="d-flex  justify-content-end">
 		<input class="btn btn-sm btn-primary mr-2" type="button" id="approveall" value="[[Approve All]]"/>
 		<input class="btn btn-sm btn-primary mr-2" type="button" value="[[Reject All]]" id="rejectall">
 		
 		<input class="btn btn-sm btn-primary" type="button" name="Send" id="sendnotification" value="[[Send Notification]]"/>
 		</div>
+		
+		<span id="itemsent"></span>
+		
+			
 	    <table class="emdata table table-striped table-hover">
 			<thead>
 	        <tr class="tableheader">
@@ -96,22 +100,20 @@
 	
 </div>
 </form>
+<div style="display: none;">
+		  <form id="emailform" class="ajaxform" data-targetdiv="itemsent" name="emailform" 
+		  	action="${edithome}/sendnotification.html">
+		    <input type="hidden" name="to" value="$owner.email"/>
+		    <input type="submit" name="Notification" value="[[Send Notification]]"/>
+		    <input type="hidden" name="id" value="$order.id"/>
+
+		    </form>
+		</div>
 </div>
     
    
 
-<div style="display: none;">
-  <form id="emailform" class="ajaxform" data-targetdiv="itemsent" name="emailform" 
-  	action="${edithome}/sendnotification.html">
-    <input type="hidden" name="to" value="$owner.email"/>
-    <input type="submit" name="Notification" value="[[Send Notification]]"/>
-    <input type="hidden" name="id" value="$order.id"/>
-    
-    
-    
-    </form>
-</div>
-	
+
 
     
 
@@ -122,6 +124,7 @@ lQuery("#approveall").livequery("click", function (e) {
 	$("#itemsave #checkoutstatusvalue").val("approved").trigger("change", true);
 		e.preventDefault();
 	jQuery("#itemsave").trigger("submit");
+	jQuery("#itemsent").remove();
 	return false;
 } );
 lQuery("#sendnotification").livequery("click", function (e) {
@@ -133,7 +136,7 @@ lQuery("#rejectall").livequery("click", function () {
 	jQuery("#itemsave .statusfield").val("rejected");
 	jQuery("#itemsave #list-checkoutstatus").val("rejected").trigger("change", true);
 	jQuery("#itemsave").submit();
-
+	jQuery("#itemsent").remove();
 	return false;
 } ); 
 
