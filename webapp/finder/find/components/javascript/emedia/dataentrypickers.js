@@ -400,7 +400,8 @@ lQuery(".pickerresults.entitypickersubmodule .resultsdivdata").livequery(
 					data: options,
 					success: function (data) {
 						var entity = $(".entitydialog");
-						autoreload(entity);
+						//autoreload(entity);
+						$(window).trigger("autoreload", [entity]);
 						//pickertarget.replaceWith(data);
 					},
 				});

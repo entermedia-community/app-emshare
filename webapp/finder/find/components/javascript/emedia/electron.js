@@ -159,7 +159,7 @@ jQuery(document).ready(function () {
 						orderitemid +
 						"&publishstatus=canceled",
 					success: function () {
-						autoreload($("#userdownloadlist"));
+						$(window).trigger("autoreload", [$("#userdownloadlist")]);
 						showDownloadToast(orderitemid, "error", file.itemexportname);
 					},
 				});
@@ -184,7 +184,7 @@ jQuery(document).ready(function () {
 						(downloadStartDate ? downloadStartDate : new Date().toISOString()),
 					success: function () {
 						showDownloadToast(orderitemid, "downloading", file.itemexportname);
-						autoreload($("#userdownloadlist"));
+						$(window).trigger("autoreload", [$("#userdownloadlist")]);
 						showDownloadProgress(orderitemid);
 					},
 				});
@@ -216,7 +216,7 @@ jQuery(document).ready(function () {
 							"&downloaditemdownloadedfilesize=" +
 							progress.loaded,
 						success: function () {
-							autoreload($("#userdownloadlist"));
+							$(window).trigger("autoreload", [$("#userdownloadlist")]);
 							$("#dl-" + orderitemid).css("width", percentComplete + "%");
 							$("#dlp-" + orderitemid).text(
 								humanFileSize(progress.loaded) + " / "

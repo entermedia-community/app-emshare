@@ -754,7 +754,9 @@ onloadselectors = function () {
 						success: function (data) {
 							//load
 							var editdiv = resultsdiv.closest(".editdiv");
-							autoreload(editdiv, null, "editdiv");
+							//autoreload(editdiv, null, "editdiv");
+							$(window).trigger("autoreload", [editdiv,null, "editdiv"]);
+
 							//$(window).trigger("checkautoreload", [resultsdiv]);
 						},
 					});
@@ -788,7 +790,7 @@ onloadselectors = function () {
 					//load
 					//$(window).trigger("checkautoreload", [resultsdiv]);
 					var editdiv = resultsdiv.closest(".editdiv");
-					autoreload(editdiv, null, "editdiv");
+					$(window).trigger("autoreload", [editdiv,null, "editdiv"]);
 				},
 			});
 		});

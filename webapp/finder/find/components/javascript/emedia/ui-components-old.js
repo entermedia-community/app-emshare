@@ -630,7 +630,7 @@ function initializeUI() {
 		if (parent.length) {
 			var grandparent = parent.parent().closest(".entitydialog");
 			var urlbar = parent.data("urlbar");
-			autoreload(parent);
+			$(window).trigger("autoreload", [parent]);
 			tabbackbutton(grandparent);
 			if (urlbar !== undefined) {
 				history.pushState($("#application").html(), null, urlbar);
@@ -690,7 +690,7 @@ function initializeUI() {
 		entity.data("tabsection", tabsection);
 		entity.data("lightboxid", lightboxid);
 		var parent = entity.parent(".entitydialog");
-		autoreload(entity);
+		$(window).trigger("autoreload", [entity]);
 		if (parent !== undefined) {
 			tabbackbutton(parent);
 		}
@@ -2766,7 +2766,7 @@ function initializeUI() {
 			var container_ = link.data("reloadcontainer");
 			var container = $("#" + container_);
 			if (container.length) {
-				autoreload(container);
+				$(window).trigger("autoreload", [container]);
 			}
 		}
 		return;
