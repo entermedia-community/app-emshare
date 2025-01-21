@@ -51,8 +51,9 @@
 	
 			<div class="d-flex entity-actions-bar align-items-center text-white position-relative">
 				
+				#set( $isowner = $entity.owner == $user.id)
 				
-				#if($mediaarchive.isCatalogSettingTrue("ai_create_enabled") && $permissions.can($module.getId(), "createassetswithai"))
+				#if($mediaarchive.isCatalogSettingTrue("ai_create_enabled") && $permissions.can($module.getId(), $isowner, "createassetswithai"))
 					<a href="#" class="btn btn-accent ml-1 addnewwithai" 
 						title="[[Create New]] #text($submodule) [[With AI]]"><i class="bi bi-brush mr-1"></i> [[Create With AI]]</a>
 				#end
