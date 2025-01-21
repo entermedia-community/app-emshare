@@ -1,4 +1,4 @@
-<div class="maincontentlayout" id="myaccountcontent" style="margin:0; height: 100%; overflow-y: auto;">
+##<div class="maincontentlayout" id="myaccountcontent" style="margin:0; height: 100%; overflow-y: auto;">
 <div class="d-flex">
 	
 	<div class="pl-2"style="width: 50%;">
@@ -7,29 +7,29 @@
 	    #set($ordersearcher = $searcherManager.getSearcher($catalogid, "order"))
 	    
 	    #set($owner = $userManager.getUser($order.userid))
-	
-	    <table class="settings-table table table-striped" id="order-details">
-		  <tr id="inputarea_owner">
-			<td class="emdatafield">
-			[[Requester]]
-			</td>
-			<td id="detail_owner" class="emdatafieldvalue  emdatafieldtype">
-			<div class="emdatafieldreadonly emdatafieldreadonly-default">
-				$owner.getName() $owner.get("lastname")
-	    (<a href="$home/$applicationid/views/settings/users/usermanager/user/index.html?username=$owner.id" style="text-decoration: underline;">$owner</a>)
-			</div>
-			</td>
-		</tr>
-
-	   </table> 
-
-	
-	    #set($details = $mediaarchive.getAssetSearcher().getDetailsForView("assetorderitems",$context.getUserProfile()) )
-	    #foreach( $detail in $details )
-	     #if($detail.isEditable())
-	    	<input type="hidden" name="field" value="$detail.id" />
-	      #end
-	    #end
+		<div class="row no-gutters">
+		<div class="col-md-12 editor-data-detail emdatafield-default">
+		<div class="container-fluid">
+			   <div class="row">
+					<div class="col-md-3 col-lg-2 col-emdatafield">
+						<label class="emdatafield" data-field="name">
+								[[Requester]]
+						</label>				
+					</div>
+					<div class="col-md-9 col-lg-9">
+						<div id="detail_name" class="emdatafieldvalue ">
+						<div class="emdatafieldvalue-readonly">
+						   <div class="emdatafieldreadonly emdatafieldreadonly-default">
+							$owner.getName() $owner.get("lastname")
+						    (<a href="$home/$applicationid/views/settings/users/usermanager/user/index.html?username=$owner.id" style="text-decoration: underline;">$owner</a>)
+						   </div>
+						</div> 
+						</div>
+					</div>
+				</div>
+		</div>
+		</div>
+		</div>
 	   
 	    $context.putPageValue("searcher", $ordersearcher)	 
 	    $context.putPageValue("viewid", "orderviewcheckoutorder")	
@@ -46,5 +46,5 @@
 		</div>
   
 </div>
-</div>
+##</div>
 

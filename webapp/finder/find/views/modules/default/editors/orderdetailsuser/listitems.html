@@ -76,9 +76,9 @@
 					#else
 						#set ($originalpath = $mediaarchive.asLinkToOriginal($asset) )
 						
-						#if( $status == "pending" )
-							[[Pending]]
-						#else
+						###if( $status == "pending" )
+						##	[[Pending]]
+						###else
 							#if($item.status == "approved")
 								#set($dlink = "$applink/views/modules/asset/activity/downloadassets.html") 
 								<a href="$dlink"
@@ -89,15 +89,14 @@
 									data-assethitssessionid="$!hitssessionid">
 									<i class="bi bi-download ns mr-1"></i> [[Download]]
 								</a>
-							
-								
 								#set( $downloadall = true)
-						
-							##<a class="btn btn-sm btn-secondary" href="/${mediadbappid}/services/module/asset/downloads/orders/originals/#urlencode($originalpath)?orderid=${order.id}">[[Download]]</a>
-						#else
-						[[Not Approved for Download]] 
-						#end
-						#end
+								##<a class="btn btn-sm btn-secondary" href="/${mediadbappid}/services/module/asset/downloads/orders/originals/#urlencode($originalpath)?orderid=${order.id}">[[Download]]</a>
+							#elseif($item.status == "pending")
+								[[Pending]]
+							#else
+								[[Not Approved for Download]] 
+							#end
+						###end
 					#end
 					
 					
