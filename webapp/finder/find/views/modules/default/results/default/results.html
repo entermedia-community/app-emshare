@@ -34,7 +34,13 @@ $context.putPageValue("viewid", $viewid)
 
 #set($searchhomeid = $page.get("searchhomeid") )
 
-
+#ifnull($mixedentitysourcetypes)
+	#set( $mixedentitysourcetypes = $context.getRequestParameter("mixedentitysourcetypes"))
+	$context.putPageValue("mixedentitysourcetypes", $mixedentitysourcetypes)
+#end
+#if($mixedentitysourcetypes)
+	#set($enableactions = false)
+#end
 #ifnull($enableactions)
 	#set($enableactions = $content.isPropertyTrue("enableactions",true))
 #end
@@ -65,7 +71,13 @@ $context.putPageValue("enableactions", $enableactions)
 	data-pagenum="$!hits.getPage()" 
 	data-totalpages="$!hits.getTotalPages()"
 	data-viewid="$!viewid"
-	data-section="$!content.section">
+	data-section="$!content.section"
+	#if($enableactions)
+		data-enableactions="$enableactions"
+	#end
+	#if($mixedentitysourcetypes)
+	data-mixedentitysourcetypes="true"
+	#end>
 	
 	
 	$pages.include("${edithome}/searchheader.html", $context)	
