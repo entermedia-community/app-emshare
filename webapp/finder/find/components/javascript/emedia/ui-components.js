@@ -298,6 +298,7 @@ jQuery(document).ready(function () {
 	lQuery(".addnewwithai").livequery("click", function (e) {
 		e.preventDefault();
 		$(".createnewtoggle").toggle();
+		//$(this).hide(); //One time only?
 		
 	});
 }); //on ready

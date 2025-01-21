@@ -20,9 +20,15 @@ You're adding data to a sub module called $targetmodule.  It is structured like 
 #set($childsearcher = $mediaarchive.getSearcher($targetmodule.id))
 
 
+#set($view = "$targetmodule.id/${targetmodule.id}aiaddnew")
+
+#set($childdetails = $childsearcher.getDetailsForView($view))
+#ifnull( $childdetails )
+
 #set($view = "$targetmodule.id/${targetmodule.id}addnew")
-#set ($childdetails = $childsearcher.getDetailsForView($view))
-$view
+#set($childdetails = $childsearcher.getDetailsForView($view))
+
+#end
 
 #foreach($detail in $childdetails)
 
