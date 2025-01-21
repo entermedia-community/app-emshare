@@ -519,8 +519,8 @@ function initializeUI() {
 		e.preventDefault();
 		e.stopPropagation();
 		e.stopImmediatePropagation();
-		if (CK5Editor) {
-			CK5Editor.updateSourceElement();
+		if (window.CK5Editor) {
+			window.CK5Editor.updateSourceElement();
 		}
 
 		$(this).prop("disabled", true);
@@ -554,8 +554,8 @@ function initializeUI() {
 				e.stopImmediatePropagation();
 				e.stopPropagation();
 
-				if (CK5Editor) {
-					CK5Editor.updateSourceElement();
+				if (window.CK5Editor) {
+					window.CK5Editor.updateSourceElement();
 				}
 
 				theform.data("readytosubmit", "true");
