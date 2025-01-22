@@ -84,6 +84,18 @@ public void init(){
 					foundcount++;//found
 				}
 			}
+			
+			//Find Product Image
+			if (product.get("primaryimage") == null) {  //Overwrite if exists?
+				Data asset = archive.getAssetSearcher().query().startsWith("name", pubitem).searchOne();
+				if (asset != null)
+				{
+					product.setValue("primaryimage", asset.getId());
+					log.info("Asset found and assigned to: " + pubitem + " id: " + product.getId());
+				}
+			}
+			
+			
 			rows.add(product);
 			
 			if(rows.size() > 1000){
