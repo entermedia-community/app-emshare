@@ -9,8 +9,11 @@
 	   	#set( $assetrendertype = $mediaarchive.getMediaRenderType($asset.fileformat))
 	   	
 		$pages.include("${searchhome}/thumbnails/${assetrendertype}.html", $context)
-		<div>
+	</td>
+	<td>
+		<div style="word-wrap: break-word;">
 			#set($details = $mediaarchive.getAssetSearcher().getDetailsForView("assetorderitems",$userprofile) )
+			
 			#foreach( $detail in $details )
 				#set( $value = false )
 				#set($value = $item.get($detail.id) )
@@ -21,6 +24,7 @@
 					$detail.getText($context) :
 					<textarea name="${item.id}.${detail.id}.value" >#if( $value )$value#end</textarea><br>
 				#elseif( $value )
+				
 					$detail.getText($context) : $value<br>
 				#end
 			#end
@@ -34,8 +38,7 @@
 	      		 
 	      		 #foreach($status in $statuslist)
 	       	  			<option #if($item.get("status") == $status.id) selected #end value="$status.id">$status</option>
-       		
-			       #end
+			     #end
 	       	</select>
 	</td>
  </tr>	  

@@ -1,0 +1,50 @@
+##<div class="maincontentlayout" id="myaccountcontent" style="margin:0; height: 100%; overflow-y: auto;">
+<div class="d-flex">
+	
+	<div class="pl-2"style="width: 50%;">
+		
+	    #set($orderitemsearcher = $searcherManager.getSearcher($catalogid, "orderitem"))
+	    #set($ordersearcher = $searcherManager.getSearcher($catalogid, "order"))
+	    
+	    #set($owner = $userManager.getUser($order.userid))
+		<div class="row no-gutters">
+		<div class="col-md-12 editor-data-detail emdatafield-default">
+		<div class="container-fluid">
+			   <div class="row">
+					<div class="col-md-3 col-lg-2 col-emdatafield">
+						<label class="emdatafield" data-field="name">
+								[[Requester]]
+						</label>				
+					</div>
+					<div class="col-md-9 col-lg-9">
+						<div id="detail_name" class="emdatafieldvalue ">
+						<div class="emdatafieldvalue-readonly">
+						   <div class="emdatafieldreadonly emdatafieldreadonly-default">
+							$owner.getName() $owner.get("lastname")
+						    (<a href="$home/$applicationid/views/settings/users/usermanager/user/index.html?username=$owner.id" style="text-decoration: underline;">$owner</a>)
+						   </div>
+						</div> 
+						</div>
+					</div>
+				</div>
+		</div>
+		</div>
+		</div>
+	   
+	    $context.putPageValue("searcher", $ordersearcher)	 
+	    $context.putPageValue("viewid", "orderviewcheckoutorder")	
+	    $context.putPageValue("data", $order)
+	    
+	    $pages.include("/$applicationid/components/xml/detaileditor.html?detailsreadonly=true", $context)
+
+	</div>
+	
+	<div  class="pl-4" style="width: 50%;">
+			#if($orderitems)
+				$pages.include("${edithome}/listitems.html", $context)
+			#end
+		</div>
+  
+</div>
+##</div>
+

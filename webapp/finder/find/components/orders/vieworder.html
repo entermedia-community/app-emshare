@@ -1,7 +1,7 @@
 
-#set($order = $data)
+
 #if( $order.userid != $user.getId()  && !$user.id=="admin" )
-Invalid order
+	[[Invalid order]]
 #else
 
 	#set($orderitemsearcher = $searcherManager.getSearcher($catalogid, "orderitem"))
@@ -9,19 +9,19 @@ Invalid order
 	#set($owner = $userManager.getUser($order.userid))
 	
 	<ul>
-		<li>Order Id: $order.id </li>
-		<li>Order Date: $context.getDateTime($order.date)</li>
+		<li>[[Order Id]]: $order.id </li>
+		<li>[[Order Date]]: $context.getDateTime($order.date)</li>
 			
 	</ul>	
 	
 	<div >
 	<form name="download" action="$home$apphome/components/orders/download/${order.id}.zip" method="post">
 	
-	<table class="striped" width="80%">
+	<table class="table striped" width="70%">
 	<tr>
-	<th></th>
-	<th>Name</th>
-	<th>Status</th>
+	<th style="width:220px">[[File]]</th>
+	<th>[[Name]]</th>
+	<th>[[Status]]</th>
 	<th></th>
 	</tr>
 	
@@ -41,7 +41,7 @@ Invalid order
 	
 	</table>
 	#if( $order.orderstatus == "1" ) 
-	<input type="submit" value="Download All"/>
+	<input type="submit" value="[[Download All]]"/>
 	#end
 	</form>
 	</div>
