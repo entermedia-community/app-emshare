@@ -106,8 +106,8 @@
 				</li>
 			#end
 			
-			#ifnotnull($parentmoduleid)
-				#if($permissions.can($parentmoduleid, "view_assetworkflow"))
+			#ifnotnull($entitymodule)
+				#if($permissions.canModule($entitymodule, "view_assetworkflow"))
 					<li>
 						<a class="dropdown-item ajax"
 						data-targetdivinner="empty"
@@ -127,7 +127,7 @@
 			#foreach ( $amodule in $userprofile.getEntities() )
 		  		#set($amoduleid = $amodule.getId())
 		  		#if($amodule.getBoolean("enableuploading"))
-				  	#if($permissions.can($amoduleid, "create") && $amoduleid!="faceprofilegroup" && $amoduleid!="asset" && $amoduleid!="modulesearch")
+				  	#if($permissions.canModule($amodule, "create") && $amoduleid!="faceprofilegroup" && $amoduleid!="asset" && $amoduleid!="modulesearch")
 				  		#set($entityrendertype = "entity")
 						#if ($amodule.modulerendertype)
 							#set($entityrendertype = $amodule.modulerendertype)
@@ -197,7 +197,7 @@
 
 	#set($lightboxid = $context.getRequestParameter("lightboxid"))
 	#if($lightboxid)
-			#if($permissions.can($parentmoduleid, "assign_files"))
+			#if($permissions.canModule($entitymodule, "assign_files"))
 			
 			#if($lightboxid != "files")
 				<li>

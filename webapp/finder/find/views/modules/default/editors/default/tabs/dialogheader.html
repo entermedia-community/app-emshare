@@ -52,7 +52,7 @@
 						$context.putPageValue("itemid", $entity.id)
 						$pages.include("${edithome}/actions/addtobookmarks.html?id=$entity.id&moduleid=$module.id", $context)
 
-						#if($permissions.can($moduleid, "shareentity"))
+						#if($permissions.canModule($module, "shareentity"))
 							<a href="${edithome}/tabs/index.html" 
 							class="ajax btn-accent"
 							data-targetdiv="entitydialog"
@@ -84,7 +84,7 @@
 				
 				#set( $isowner = $entity.owner == $user.id)
 
-				#if($mediaarchive.isCatalogSettingTrue("ai_create_enabled") && $permissions.can($module.getId(), $isowner, "createwithai"))
+				#if($mediaarchive.isCatalogSettingTrue("ai_create_enabled") && $permissions.canModule($module, "createwithai"))
 
 					#set($withai = $context.getRequestParameter("withai"))
 					#if($addnew=='true')
@@ -121,12 +121,12 @@
 				#if(!$ismulti && $entity)
 			
 					#if($module.getBoolean("enableuploading"))
-					#if($permissions.can($moduleid, "upload_files") ||
-						$permissions.can($moduleid, "upload_folders") ||
-						$permissions.can($moduleid, "importurl") ||
-						$permissions.can($moduleid, "importassets") ||
-						$permissions.can($moduleid, "importfolders") ||
-						($desktop && $permissions.can($moduleid, "importpushtoserver")))
+					#if($permissions.canModule($module, "upload_files") ||
+						$permissions.canModule($module, "upload_folders") ||
+						$permissions.canModule($module, "importurl") ||
+						$permissions.canModule($module, "importassets") ||
+						$permissions.canModule($module, "importfolders") ||
+						($desktop && $permissions.canModule($module, "importpushtoserver")))
 						<a
 							class='btn btn-sm btn-accent ajax tabactionimport #if($entitymoduleviewid=="${module.id}entityimports")enabledaction #end '
 							href="$apphome/views/modules/$module.id/editors/entityimports/tabs/index.html" 
@@ -141,11 +141,11 @@
 							</a>
 					#end	
 					#end
-					#if($permissions.can($moduleid, "copyentity") ||
-						$permissions.can($moduleid, "moveentity") ||
-						$permissions.can($moduleid, "downloadall") ||
-						$permissions.can($moduleid, "shareentity") ||
-						($desktop && $permissions.can($moduleid, "exportpulltoserver")))	
+					#if($permissions.canModule($module, "copyentity") ||
+						$permissions.canModule($module, "moveentity") ||
+						$permissions.canModule($module, "downloadall") ||
+						$permissions.canModule($module, "shareentity") ||
+						($desktop && $permissions.canModule($module, "exportpulltoserver")))	
 						
 						<a 
 							class='btn btn-sm btn-accent ajax tabactionexport #if($entitymoduleviewid=="${module.id}entityexports")enabledaction #end '
