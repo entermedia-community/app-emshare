@@ -123,32 +123,39 @@
 				#end
 			#end
 			
-			
-			#foreach ( $amodule in $userprofile.getEntities() )
-		  		#set($amoduleid = $amodule.getId())
-		  		#if($amodule.getBoolean("enableuploading"))
-				  	#if($permissions.canModule($amodule, "create") && $amoduleid!="faceprofilegroup" && $amoduleid!="asset" && $amoduleid!="modulesearch")
-				  		#set($entityrendertype = "entity")
-						#if ($amodule.modulerendertype)
-							#set($entityrendertype = $amodule.modulerendertype)
-						#end
-				 		#set($addtourl = "$siteroot$applink/views/modules/${amoduleid}/editors/entitypickerassets/index.html")
-						#set($moduleicon = "entity")
-						#ifnotnull($amodule.moduleicon)
-							#set($moduleicon = $amodule.moduleicon)
-						#end
-				    	<li><a class="dropdown-item emdialog"  
-				    		data-dialogid="addtoentity"
-							data-maxwidth="1400"
-				    		data-hidefooter="true"
-				    		data-copyinghitssessionid="$hits.getSessionId()"
-				    		title="[[Copies files and metadata to]] #text($amodule)"
-				    		href="$addtourl">
-								<i class="bi bi-$moduleicon mr-2"></i>#text($amodule)</a>
-							</li>
+
+			##Copy to Entity...
+			#set($parentmodule = $module)
+			#ifnotnull($entitymodule)
+				#set($parentmodule = $entitymodule)
+			#end
+			#if($permissions.canModule($parentmodule, "copyentity"))
+				#foreach ( $amodule in $userprofile.getEntities() )
+			  		#set($amoduleid = $amodule.getId())
+			  		#if($amodule.getBoolean("enableuploading"))
+					  	#if($permissions.canModule($amodule, "create") && $amoduleid!="faceprofilegroup" && $amoduleid!="asset" && $amoduleid!="modulesearch")
+					  		#set($entityrendertype = "entity")
+							#if ($amodule.modulerendertype)
+								#set($entityrendertype = $amodule.modulerendertype)
+							#end
+					 		#set($addtourl = "$siteroot$applink/views/modules/${amoduleid}/editors/entitypickerassets/index.html")
+							#set($moduleicon = "entity")
+							#ifnotnull($amodule.moduleicon)
+								#set($moduleicon = $amodule.moduleicon)
+							#end
+					    	<li><a class="dropdown-item emdialog"  
+					    		data-dialogid="addtoentity"
+								data-maxwidth="1400"
+					    		data-hidefooter="true"
+					    		data-copyinghitssessionid="$hits.getSessionId()"
+					    		title="[[Copies files and metadata to]] #text($amodule)"
+					    		href="$addtourl">
+									<i class="bi bi-$moduleicon mr-2"></i>#text($amodule)</a> 
+								</li>
+						    #end
 					    #end
-				    #end
-		    #end
+			    #end
+			#end
 		</ul>
 	</li>
 	
