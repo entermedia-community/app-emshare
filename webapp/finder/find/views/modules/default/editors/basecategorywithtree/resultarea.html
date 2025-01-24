@@ -21,6 +21,7 @@ $context.putPageValue("category", $category)
 $context.putPageValue("categoryid", $categoryid)
 
 
+
 <div id="categorywithtree" class="emgridcontainer">
 	<div class="emgrid-module emgrid-box emgrid-module-asset h-100">
 		
@@ -28,7 +29,7 @@ $context.putPageValue("categoryid", $categoryid)
 		
 		#set($canupload = false)
 		#if($canviewupload)
-			#if($parentmodule.getBoolean("enableuploading") && $permissions.canModule($module, "upload_files"))
+			#if($parentmodule.getBoolean("enableuploading") && $permissions.canModule($entitymodule, "upload_files"))
 				#set($canupload = true)
 			#end
 		#end
@@ -65,7 +66,7 @@ $context.putPageValue("categoryid", $categoryid)
 							<i class="fas fa-angle-double-left"></i>
 							<h3 class="embedmediacolheader">[[Folders]]</h3>
 						</a>
-						#if($canviewupload && $parentmodule.getBoolean("enableuploading") && $permissions.can($parentmoduleid, "upload_files"))
+						#if($canviewupload && $entitymodule.getBoolean("enableuploading") && $permissions.canModule($$entitymodule, "upload_files"))
 						<a href="" 
 							class="createfoldertree"
 							data-tree="dialogentitymediatreetree" 

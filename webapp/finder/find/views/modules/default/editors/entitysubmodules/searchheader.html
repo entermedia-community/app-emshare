@@ -1,16 +1,18 @@
 <div class="entity-action-header">
 	<h3>
 		#set($moduleicon = "box")
-		#ifnotnull($submodule.moduleicon)
-		#set($moduleicon = $submodule.moduleicon)
+		#ifnotnull($module.moduleicon)
+		#set($moduleicon = $module.moduleicon)
 		#end	
 		<i class="bi bi-$moduleicon module-icon" style="font-size: 0.8em;;"></i> 
 		#text($module) <small>($hits.size())</small>
 	</h3>
 	
+	
+	
 	#set( $isowner = $entity.owner == $user.id)
-	#if($permissions.can($parentmoduleid, $isowner, "edit"))
-		#if($permissions.can($!submodule.getId(), $isowner, "create"))
+	#if($permissions.canModule($entitymodule, "edit"))
+		#if($permissions.canModule($module, "create"))
 			#set($newedithomelink= "$applink/views/modules/$!{module.id}/editors/pickersubmodules")
 			#set($newedithome= "$apphome/views/modules/$!{module.id}/editors/pickersubmodules")
 			
