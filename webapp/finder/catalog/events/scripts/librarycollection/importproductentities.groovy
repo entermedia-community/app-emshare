@@ -16,11 +16,23 @@ public void init(){
 	WebPageRequest req = context;
 
 	MediaArchive archive = req.getPageValue("mediaarchive");
-	Searcher searcher = archive.getSearcher("entityproduct");
+	Searcher searcher = archive.getSearcher("entitypublication");
 
 	List rows = new ArrayList();
-	String csvpath = "/${catalogid}/imports/ALF2.txt";
+	//String csvpath = "/${catalogid}/imports/ALF2.txt";
+	
+	String csvpath = "/${catalogid}/imports/publications/CatData/DailyAll/ALF_ALL_ALL_PipeDelimited.txt";
+	
 
+	
+	/*
+	 *  -Numeric Items goes to numeric folders 000-xxx (so 24 "0024" will be at 00000-09999/000-0999/24, 4229 is 00000-09999/4000-4999/4229)
+		-Alpha numeric Items goes to Warner-X (so H1 will be at Warner-H/H1)
+		
+		00-43122S  --- Ends on S or Z just match the numeric part. (It may exisist same ID in Warner folders)
+		80000 attach a z
+
+	 * */
 
 	Page upload = archive.getPageManager().getPage(csvpath);
 	Downloader dl = new Downloader();
@@ -32,6 +44,7 @@ public void init(){
 	try{
 		Integer li = 1;
 		Integer foundcount = 0;
+		Integer imagefoundcount = 0;
 		//CSVReader read = new CSVReader(reader, (char)'\t', true);
 		CSVReader read = new CSVReader(reader, (char)'|', true);
 		String[] headers = read.readNext();
@@ -74,12 +87,19 @@ public void init(){
 			product.setValue("keywords",  getline(line, 26));
 			product.setValue("pubstatus",  getline(line, 3));
 			
+			product.setValue("rootcategory",  null);
+			product.setValue("uploadsourcepath",  null);
+			product.setValue("primaryimage",  null);
+			
 			if (product.get("rootcategory") == null) {
 				PubLookUp publookup = archive.getBean("pubLookUp");
+				
 				Category foundcat =  publookup.lookUpbyPubId(pubitem);
+				
 				if (foundcat != null)
 				{
 					product.setValue("rootcategory", foundcat.getId());
+					product.setValue("uploadsourcepath", foundcat.getCategoryPath());
 					//log.info("Line:"+li+" pubitem: " + pubitem + " category: " + foundcat.getParentCategories());
 					foundcount++;//found
 				}
@@ -87,11 +107,17 @@ public void init(){
 			
 			//Find Product Image
 			if (product.get("primaryimage") == null) {  //Overwrite if exists?
-				Data asset = archive.getAssetSearcher().query().startsWith("name", pubitem).searchOne();
+				
+				//Assets in category:   793939  -- Publication Files/Catpics/Large
+				
+				String thumbnailcat = "793939";
+				 
+				Data asset = archive.getAssetSearcher().query().match("category", thumbnailcat).startsWith("name", pubitem).searchOne();
 				if (asset != null)
 				{
 					product.setValue("primaryimage", asset.getId());
-					log.info("Asset found and assigned to: " + pubitem + " id: " + product.getId());
+					imagefoundcount++;
+					//log.info("Asset found and assigned to: " + pubitem + " id: " + product.getId());
 				}
 			}
 			
@@ -107,7 +133,7 @@ public void init(){
 		}
 		//log.info("Found: "+ foundcount + " on: " + li-1 + " lines");
 		searcher.saveAllData(rows, null);
-		log.info("Saving "+rows.size()+" Products. "+foundcount+" categories found.");
+		log.info("Saving "+rows.size()+" Products. Total: " + li + " - " +foundcount+" categories found - " + imagefoundcount + " assets assigned.");
 	} catch (Exception e){
 		throw new OpenEditException(e);
 	}
