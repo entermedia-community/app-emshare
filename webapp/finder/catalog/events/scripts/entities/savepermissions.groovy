@@ -3,6 +3,7 @@ package entities;
 import org.entermediadb.asset.MediaArchive
 import org.entermediadb.users.PermissionManager
 import org.openedit.Data
+import org.openedit.data.EntityPermissions
 import org.openedit.data.Searcher
 
 public void init()
@@ -38,6 +39,7 @@ public void init()
 			log.info("Permission saved " + permissionid);
 		}
 	}
+	mediaarchive.getSearcherManager().getCacheManager().clear("permissions" + mediaarchive.getCatalogId());
 	
     
 }

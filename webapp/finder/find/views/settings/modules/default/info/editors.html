@@ -1,0 +1,35 @@
+<div id="workarea">
+  
+  
+  <div id="emvalueeditor" class="" style="max-width: 600px">
+     <p class="text-muted mb-3">Editors (are automatically also viewers)</p>
+     <form name="adder"
+       class="ajaxform validate-inputs"
+       data-targetdiv="emvalueeditor"
+       action="$home$apphome/views/settings/modules/$module.id/info/savevisibility.html">
+       $context.putPageValue("searcher",$searcherManager.getSearcher($catalogid,"module")) 
+       $context.putPageValue("viewid","moduleeditors")
+       $context.putPageValue("data",$module)
+    
+       $pages.include("/$applicationid/components/xml/detaileditorcss.html", $context)
+   
+       <input type="hidden" name="save" value="true" />
+       <input type="hidden" name="id" value="$module.id" />
+   
+       <div class="form-submit-btns">
+         <button class="btn btn-cta" type="submit">
+           <i class="bi bi-floppy-fill mr-1"></i> [[Save]]
+         </button>
+         <div class="delete" style="float: right">
+           <a class="btn btn-danger confirm"
+             href="$home$apphome/views/settings/modules/setup/remove.html?id=$module.id"
+             data-confirm="[[Are you sure]]?">
+             [[Delete]]
+           </a>
+         </div>
+       </div>
+     </form>
+   </div>
+
+  
+</div>

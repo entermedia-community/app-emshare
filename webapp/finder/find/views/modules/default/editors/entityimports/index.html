@@ -19,7 +19,7 @@ $context.putPageValue("tabmode", $tabmode)
 
 <div id="$!submodulepickerid" class="d-flex align-items-stretch" style="height: 100%;">
 		<div class="entityimport auto-active-container overflow-y">
-			#if($entitymodule.getBoolean("enableuploading") && ($permissions.can($moduleid, "upload_files") || $permissions.can($moduleid, "upload_folfers")) ) 
+			#if($entitymodule.getBoolean("enableuploading") && ($permissions.canModule($module, "upload_files") || $permissions.canModule($module, "upload_folfers")) ) 
 			<div class='auto-active-row  #if($tabsection=="upload") current #end'>
 			<a href="$apphome/views/modules/asset/editors/assetupload/index.html?categoryid=$!defaultcategory.getId()"
 				class="btn btn-lg btn-wide ajax auto-active-link "
@@ -30,7 +30,7 @@ $context.putPageValue("tabmode", $tabmode)
 				##activate next one down
 				#set($tabsection="uploadurl")
 			#end
-			#if($permissions.can($moduleid, "importurl"))
+			#if($permissions.canModule($module, "importurl"))
 			<div class='auto-active-row #if($tabsection=="uploadurl") current #end'>
 			<a href="$componenthome/createmedia/url/start.html?categoryid=$!defaultcategory.getId()"
 				class="btn btn-lg btn-wide ajax auto-active-link" 
@@ -43,7 +43,7 @@ $context.putPageValue("tabmode", $tabmode)
 			##<h4 class="text-center">[[Importing]]</h4>
 			
 			#if($content.importsearchremotefiles)
-				#if($permissions.can($moduleid, "importassets"))
+				#if($permissions.canModule($module, "importassets"))
 				<div class="auto-active-row">
 				<a class="ajax btn btn-lg btn-wide auto-active-link "
 					id="poptrigger"
@@ -59,7 +59,7 @@ $context.putPageValue("tabmode", $tabmode)
 				#end
 			#end
 			
-			#if($permissions.can($moduleid, "importfolders"))
+			#if($permissions.canModule($module, "importfolders"))
 			<div class="auto-active-row">
 			<a class="ajax btn btn-lg btn-wide auto-active-link "
 				data-targetdivinner="tabimportcontent"
@@ -68,7 +68,7 @@ $context.putPageValue("tabmode", $tabmode)
 				<i class="bi bi-folder-plus"></i> <span>[[Add Existing Folders]]</span></a>
 			</div>
 			#end
-			#if($desktop && $permissions.can($moduleid, "importpushtoserver"))
+			#if($desktop && $permissions.canModule($module, "importpushtoserver"))
 				<div class='auto-active-row #if($tabsection=="pushlocal") current #end'>
 					<a  class="btn btn-lg btn-wide ajax auto-active-link "
 					data-targetdivinner="tabimportcontent"
@@ -88,7 +88,7 @@ $context.putPageValue("tabmode", $tabmode)
 			#if($tabsection=="pushlocal")
 				$pages.include("$componenthome/desktop/import/push.html?entityid=$!{entity.id}&moduleid=$!{topmoduleid}&defaultcategoryid=$defaultcategory.getId()", $context)
 			#else
-				#if($entitymodule.getBoolean("enableuploading") && ($permissions.can($moduleid, "upload_files") || $permissions.can($moduleid, "upload_folfers")) )
+				#if($entitymodule.getBoolean("enableuploading") && ($permissions.canModule($module, "upload_files") || $permissions.canModule($module, "upload_folfers")) )
 					$pages.include("$apphome/views/modules/asset/editors/assetupload/index.html?categoryid=$!defaultcategory.getId()")
 				#else
 					$pages.include("$componenthome/createmedia/url/start.html?categoryid=$!defaultcategory.getId()")

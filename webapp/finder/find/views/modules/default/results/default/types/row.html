@@ -53,7 +53,7 @@
 			#if($desktop)
 
 				#set($perm = $module.getBoolean("enableuploading") && $moduleid!="faceprofilegroup" && $moduleid!="asset" && $moduleid!="modulesearch")
-				#if($perm && $permissions.can($moduleid, "view_files"))
+				#if($perm && $permissions.canModule($module, "view_files"))
 				<a href="${edithome}/tabs/index.html?entityid=$!{hit.id}&entitytabopen=export&tabsection=pulllocal&immediate=true" 
 					class="emdialog px-1 mb-2" 
 					title="[[Bulk Download]]" 
@@ -62,7 +62,7 @@
 					data-urlbar="$!searchhome/index.html?entityid=$!{hit.id}&entitytabopen=import"><i class="bi bi-cloud-arrow-down bi2"></i></a>
 				#end
 
-				#if($perm && $permissions.can($moduleid, "upload_folders"))
+				#if($perm && $permissions.canModule($module, "upload_folders"))
 				<a href="${edithome}/tabs/index.html?entityid=$!{hit.id}&entitytabopen=import&tabsection=pushlocal&autoscan=true" 
 					class="emdialog px-1 mb-2" 
 					title="[[Bulk Upload]]"
@@ -72,7 +72,7 @@
 					data-urlbar="$!searchhome/index.html?entityid=$!{hit.id}&entitytabopen=import"><i class="bi bi-cloud-arrow-up bi2"></i></a>
 				#end
 
-				#if($module.getBoolean("enableuploading") && ($permissions.can($moduleid, "upload_files") || $permissions.can($moduleid, "upload_folders")) )
+				#if($module.getBoolean("enableuploading") && ($permissions.canModule($module, "upload_files") || $permissions.canModule($module, "upload_folders")) )
 					<a class="emdialog px-1 mb-2"
 						data-oemaxlevel="1"
 						data-moduleid="${moduleid}"
@@ -85,8 +85,8 @@
 				#end
 			#else
 				#if($module.getBoolean("enableuploading") && 
-					($permissions.can($moduleid, "upload_files") ||
-					$permissions.can($moduleid, "upload_folders")) )
+					($permissions.canModule($module, "upload_files") ||
+					$permissions.canModule($module, "upload_folders")) )
 					
 					<a href="${edithome}/tabs/index.html?entityid=$!{hit.id}&entitymoduleviewid=entityimports" 
 					class="emdialog px-1 mb-2" 
@@ -95,7 +95,7 @@
 					data-updateurl="true"
 					data-urlbar="$!searchhome/index.html?entityid=$!{hit.id}&entitymoduleviewid=entityimports"><i class="bi bi-cloud-arrow-up bi2"></i></a>
 				#end
-				#if($permissions.can($moduleid, "downloadall"))
+				#if($permissions.canModule($module, "downloadall"))
 					<a href="${edithome}/tabs/index.html?entityid=$!{hit.id}&entitymoduleviewid=entityexports&tabsection=downloadzip" 
 					class="emdialog px-1 mb-2" 
 					title="[[Download Folder]]" 
