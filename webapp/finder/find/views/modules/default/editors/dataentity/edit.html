@@ -1,6 +1,8 @@
-
 #ifnull($id)
 	#set( $id = $context.getRequestParameter("entityid"))
+#end
+#ifnull($id)
+	#set( $id = $context.getRequestParameter("id"))
 	$context.putPageValue("id", $id)
 #end
 
@@ -151,15 +153,17 @@ $context.putPageValue("viewid", $viewid)
 						<button id="closebutton" type="button" class="btn btn-secondary mr-2" data-dismiss="modal">[[Cancel]]</button>
 					#end
 				#else
-					#if($permissions.canEntity($module,$entity,"edit"))
-						#if(!$ismultisaved) 
-							<a href="${edithome}/index.html?edit=true&showmedia=$!showmedia&viewid=$!viewid&hitssessionid=$!hitssessionid" 
-								data-targetdiv="editentitymetadata"
-								data-entityid="${data.id}"
-								data-id="${data.id}" 
-								data-oemaxlevel="1"
-								class="ajax btn btn-cta" 
-								style="margin-right:10px;"><i class="bi bi-pencil-square mr-1"></i> [[Edit]]</a>
+					#if($id) 
+						#if($permissions.canEntity($module,$entity,"edit"))
+							#if(!$ismultisaved) 
+								<a href="${edithome}/index.html?edit=true&showmedia=$!showmedia&viewid=$!viewid&hitssessionid=$!hitssessionid" 
+									data-targetdiv="editentitymetadata"
+									data-entityid="${data.id}"
+									data-id="${data.id}" 
+									data-oemaxlevel="1"
+									class="ajax btn btn-cta" 
+									style="margin-right:10px;"><i class="bi bi-pencil-square mr-1"></i> [[Edit]]</a>
+							#end
 						#end
 					#end
 				#end
@@ -171,20 +175,22 @@ $context.putPageValue("viewid", $viewid)
 						</a>
 					#end
 			</div>
-			<div class="d-flex align-items-center">
-				#if(!$ismulti && $permissions.canEntity($module,$entity,"delete"))
-					<a href="${edithome}/delete.html?id=$data.id" 
-						class="ajax btn btn-danger" 
-						data-targetdiv="editentitymetadata" 
-						data-ajaxreloadtargets="dataeditedreload"
-						data-alertmessage="[[Deleted Successfully]]"
-						data-closedialog="true" 
-						data-confirm="[[Are you sure]]?"
-						data-id="$data.id">
-						<i class="bi bi-trash mr-1"></i>[[Delete]]
-					</a>
-				#end
-			</div>
+			#if($id) 
+				<div class="d-flex align-items-center">
+					#if(!$ismulti && $permissions.canEntity($module,$entity,"delete"))
+						<a href="${edithome}/delete.html?id=$data.id" 
+							class="ajax btn btn-danger" 
+							data-targetdiv="editentitymetadata" 
+							data-ajaxreloadtargets="dataeditedreload"
+							data-alertmessage="[[Deleted Successfully]]"
+							data-closedialog="true" 
+							data-confirm="[[Are you sure]]?"
+							data-id="$data.id">
+							<i class="bi bi-trash mr-1"></i>[[Delete]]
+						</a>
+					#end
+				</div>
+			#end
 		</div>
 	</form>
 </div>
