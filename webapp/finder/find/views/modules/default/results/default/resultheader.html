@@ -67,7 +67,7 @@ $context.putPageValue("entityrendertype", $entityrendertype)
 	#set($enableactions = $content.isPropertyTrue("enableactions",true))
 #end
 #if($enableactions)
-	#set($enableactions = $permissions.can($module.id, "edit"))
+	#set($enableactions = $permissions.canModule($module, "edit"))
 #end
 $context.putPageValue("enableactions", $enableactions)
 
@@ -78,7 +78,7 @@ $context.putPageValue("enableactions", $enableactions)
 		<ul class="resultsnav">
 			#set($pickertarget = $context.getRequestParameter("pickertarget"))
 			#ifnull($pickertarget)
-				#if($permissions.can($moduleid, "create") && $showaddnew)
+				#if($permissions.canModule($module, "create") && $showaddnew)
 					<li> 
 						#ifnotnull($entity)
 							#set($addnew = "${edithome}/addnew.html")
@@ -148,7 +148,7 @@ $context.putPageValue("enableactions", $enableactions)
 					
 				#if($enableactions && $!hits.getSelectionSize() > 0)
 					
-					#if($permissions.can($moduleid, "edit"))
+					#if($permissions.canModule($module, "edit"))
 					#set($previewediturl = "${edithome}/tabs/index.html?entityid=multiedit:$!hits.sessionId&hitssessionid=$!hits.sessionId&searchtype=$moduleid&edit=true")
 					<li><a class="dropdown-item emdialog" 
 						href="$previewediturl"
@@ -163,7 +163,7 @@ $context.putPageValue("enableactions", $enableactions)
 					#set($viewid = $context.getRequestParameter("viewid"))
 					#end
 					
-					#if($permissions.can($moduleid, "delete"))
+					#if($permissions.canModule($module, "delete"))
 						 <li><a class="dropdown-item ajax" 
 						 data-confirm="[[Delete items?]]" 
 						 #if($tabletype=="subentity")
@@ -193,7 +193,7 @@ $context.putPageValue("enableactions", $enableactions)
 					
 					
 
-				#if($permissions.can("searchcategory", "create"))
+				#if($permissions.canModule("searchcategory", "create"))
 					#set($edithome = "$apphome/views/modules/${module.id}/editors/picksearchcategory")
 					#set($addurl = "$!{edithome}/index.html") 
 					<li><a 
