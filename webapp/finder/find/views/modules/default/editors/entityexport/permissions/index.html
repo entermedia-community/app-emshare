@@ -1,48 +1,48 @@
 <div class="tabheader">
-	[[Visibility and Editing Access Settings]] <span class="mx-2">&middot;</span> <span class="hint">[[Change who can view or edit this record]]</span>
+	[[Permissions]] <span class="mx-2">&middot;</span> <span class="hint">[[Change who can view or edit this record]]</span>
 </div>
 
 <div id="embed-wrapper" class="mt-4 px-3">
 	<div class="row no-gutters mb-3">
 		<div class="col-12 col-md-4">
-			<div class="form-check mb-3 h-auto py-2 public-permission rounded" style="padding-left: 1.75rem;">
-				<input class="form-check-input" type="checkbox" value="" id="makeEntityPublic">
-				<label class="form-check-label" for="makeEntityPublic">
-					Make this record public
-				</label>
-				<p class="checkedhint m-0">[[This record is now visible to anyone who has access to the module.]]</p>
-			</div>
-
-			## #if($permissions.size() == 0)
+			#if($entitypermissions.isEmpty())
 			<p class="text-muted">
 				[[No permissions have been added yet.]]
 			</p>
-			## #end
-
-			## #foreach($permission in $permissions)
+			<p>
+			#end
+						$context.putPageValue("edithome", "$apphome/views/modules/${module.id}/editors/data")
+						<a class="emdialog btn btn-cta" 
+							href="$apphome/views/modules/${module.id}/editors/entityexport/permissions/addpermission.html?id=$!{entityid}" 
+							data-dialogid="addpermission"
+							data-hidefooter="true">
+							<i class="bi bi-plus-lg mr-1"></i>[[Add]]
+						</a></p>
+						## #end
+									<div class="form-check mb-3 h-auto py-2 public-permission rounded" style="padding-left: 1.75rem;">
+										<input class="form-check-input" type="checkbox" value="" id="makeEntityPublic">
+										<label class="form-check-label" for="makeEntityPublic">
+											Anyone Can View
+										</label>
+										<p class="checkedhint m-0">[[This record is now visible to anyone who has access to the module.]]</p>
+									</div>
+			#foreach($permission in $entitypermissions)
 			<div class="d-flex align-items-center bg-light rounded pl-2 pr-1 py-1 mb-2 border" id="permission-$permission.id">
 				<span class="mr-2 fw-bold">
-					Administrators
+					#text( $permission.getData() )
 				</span>
-				<span class="bg-secondary text-white px-1 rounded fs-small" style="padding-bottom: 2px;">Group</span>
+				<span class="bg-secondary text-white px-1 rounded fs-small" style="padding-bottom: 2px;">$permission.getPermissionType()</span>
 				<div class="d-flex align-items-center ml-auto">
 					<select class="form-control w-auto rounded py-1 px-2">
-						<option selected>Can View</option>
-						<option>Can Edit</option>
+						<option #if( !$permission.isEditor() ) selected #end>Can View</option>
+						<option #if( $permission.isEditor() ) selected #end>Can Edit</option>
 					</select>
 					<a class="ajax text-muted" href="#" data-confirm="Are you sure you want to remove this permission?" data-removeonsuccess="true" data-removetarget="permission-$permission.id">
 						<i class="bi bi-x-circle ns ml-2 mr-1"></i>
 					</a>
 				</div>
 			</div>
-			## #end
+			#end
 		</div>
 	</div>
-	$context.putPageValue("edithome", "$apphome/views/modules/${module.id}/editors/data")
-	<a class="emdialog btn btn-cta" 
-		href="$apphome/views/modules/${module.id}/editors/entityexport/permissions/addpermission.html?id=$!{entityid}" 
-		data-dialogid="addpermission"
-		data-hidefooter="true">
-		<i class="bi bi-plus-lg mr-1"></i>[[Add New Permission]]
-	</a>
 </div>
