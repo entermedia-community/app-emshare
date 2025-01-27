@@ -1,12 +1,16 @@
 ##opens an entity
 #set($entityid = $context.getRequestParameter('entityid'))
-#set($entitymoduleviewid = $context.getRequestParameter('entitymoduleviewid'))
 #ifnotnull($entityid)
-<span class="autoopen noToast"
-	data-dialogid="entitydialog"
-	data-entityid="$entityid" 
-	data-entitymoduleviewid="$!{entitymoduleviewid}" 
-	data-url="${apphome}/views/modules/${module.getId()}/editors/default/tabs/index.html"></span>
+	##validate Entity
+	#set($entity = $mediaarchive.getCacheData($module, $entityid))
+	#set($entitymoduleviewid = $context.getRequestParameter('entitymoduleviewid'))
+	#ifnotnull($entity)	
+	<span class="autoopen noToast"
+		data-dialogid="entitydialog"
+		data-entityid="$entityid" 
+		data-entitymoduleviewid="$!{entitymoduleviewid}" 
+		data-url="${apphome}/views/modules/${module.getId()}/editors/default/tabs/index.html"></span>
+	#end
 #end
 
 ##opens an asset (only assets module?)
