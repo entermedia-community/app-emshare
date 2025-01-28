@@ -297,9 +297,15 @@ jQuery(document).ready(function (url, params) {
 
 			$("input[type=text]", form)
 				.not(".datepicker")
+				.not(".typeahead")
 				.change(function () {
 					form.trigger("submit");
 				});
+				
+		/*	$("input[type=text].typeahead", form).on("keyup change", function (e) {
+				form.trigger("submit");
+			});*/
+			
 		}
 	};
 
