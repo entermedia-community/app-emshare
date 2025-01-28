@@ -7,6 +7,8 @@
 	$!context.putPageValue("thumbsize",$thumbsize)
 #end
 
+#set($statusid = "status$!hit.id$!{searchtype}")
+
 #if($conversionerrors && $conversionerrors.size() >0)
 	#set ($mime = $mediaarchive.getMimeTypeIcon($hit.fileformat))
 	<div class="mimethumbcontainer">
@@ -28,12 +30,12 @@
    	#elseif( $rendertype =="video")
    		#set( $rendertype = "videothumbnail" )
    	#end   
-   	<div id="status$!hit.id"  class="forceresize">
+   	<div id="$statusid"  class="forceresize">
    	$pages.include("$apphome/views/modules/asset/results/default/thumbnails/${rendertype}.html?clearcache=true", $context)
    	</div>     
 
 #elseif($publish && $publish.size() >0 )
-    <div id="status$!hit.id"  
+    <div id="$statusid"  
     	class="ajaxstatus"  
     	#if( $content == $page)data-ajaxrunning="true"#end  
     	data-oemaxlevel="1"
@@ -43,7 +45,7 @@
     	</div> 
      </div>
 #elseif($conversions && $conversions.size() == 0)
-    <div id="status$!hit.id" class="ajaxstatus" 
+    <div id="$statusid" class="ajaxstatus" 
     	#if( $content == $page)data-ajaxrunning="true"#end  
     	data-reloadspeed="3500"
     	data-oemaxlevel="1"
@@ -55,7 +57,7 @@
         </div> 
     </div>
 #else
-    <div id="status$!hit.id" class="ajaxstatus importstatusreport" 
+    <div id="$statusid" class="ajaxstatus importstatusreport" 
     	#if( $content == $page)data-ajaxrunning="true"#end 
     	data-reloadspeed="2000"
     	data-oemaxlevel="1"

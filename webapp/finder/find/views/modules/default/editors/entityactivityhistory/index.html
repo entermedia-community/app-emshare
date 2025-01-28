@@ -20,7 +20,7 @@ $context.putPageValue("parentsearchtype", $parentsearchtype)
 		 
 		#set( $assetActivityHistory =  $mediaarchive.getEntityManager().loadHistoryForEntity($applicationid, $context.getUser(), $module, $entity))
 		#if($assetActivityHistory.isEmpty())
-			<p>History Is Empty</p>
+			<p>[[History Is Empty]]</p>
 		#end
 		#if(!$assetActivityHistory.isEmpty())
 		<table class="emdata table table-striped table-hover">
@@ -29,7 +29,7 @@ $context.putPageValue("parentsearchtype", $parentsearchtype)
 						<th style="width: 200px;">[[Date]]</th>
 						<th>[[User]]</th>
 						<th>[[Activity]]</th>
-						<th>[[Assets]]</th>
+						<th>[[Details]]</th>
 						<th style="width: 200px;">[[Undo]]</th>
 					</tr>
 			</thead>
@@ -45,29 +45,43 @@ $context.putPageValue("parentsearchtype", $parentsearchtype)
 							#text($operaionName)
 						</td>
 						<td>
-							#set($assetids = $activity.getValue("assetids"))
-							#if($assetids.size()>3)
-							<span class="trim-text" data-max="100">
-							#end
-							#foreach($assetid in $assetids)
-								#set($asset = $mediaarchive.getAsset($assetid))
-								#if($asset)
-									$asset.getName()
-									#if($foreach.hasNext), &nbsp;#end
-								#else
-									$assetid
+							#if($activity.moduleid == "asset")
+								#set($assetids = $activity.getValue("assetids"))
+								#if($assetids.size()>3)
+								<span class="trim-text" data-max="100">
 								#end
-							#end
-							#if($assetids.size()>3)</span>
-							<button class="see-more-btn see-more" data-seemore="(...[[see more]])" data-seeless="(...[[see less]])">(..[[.see more]])</button>
+								#foreach($assetid in $assetids)
+									#set($asset = $mediaarchive.getAsset($assetid))
+									#if($asset)
+										$asset.getName()
+										#if($foreach.hasNext), &nbsp;#end
+									#else
+										$assetid
+									#end
+								#end
+								#if($assetids.size()>3)</span>
+								<button class="see-more-btn see-more" data-seemore="(...[[see more]])" data-seeless="(...[[see less]])">(..[[.see more]])</button>
+								#end
+							#else
+								#set($details = $activity.getValue("historydetails"))
+								$!details
 							#end
 							</td>
 						<td>
-							
-							#if($operation == "assetsremoved")
-								<a href="#" class="btn btn-xs btn-dark">[[Restore]]</a>
-							#elseif($operation == "assetsadded")
-								<a href="#" class="btn btn-xs btn-dark">[[Remove]]</a>
+							#if($activity.moduleid == "asset")
+								#if($operation == "assetsremoved")
+									<a href="#" class="btn btn-xs btn-dark">[[Restore]]</a>
+								#elseif($operation == "assetsadded")
+									<a href="#" class="btn btn-xs btn-dark">[[Remove]]</a>
+								#end
+							#else
+								<a href="${edithome}/restoresnapshot.html" 
+									class="btn btn-xs btn-dark ajax"
+									data-oemaxlevel="1"
+									data-historyid="$activity.getId()"
+									data-entityid="$entity.getId()"
+									data-toastsuccess="[[Restore Complete]]"
+									data-targetdiv="$edithomeid">[[Restore]]</a>
 							#end
 						</td>
 					</tr>
