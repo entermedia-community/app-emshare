@@ -121,9 +121,7 @@ $(document).ready(function () {
 
 	lQuery(".startbutton").livequery("click", function (e) {
 		e.preventDefault();
-		if (window.CK5Editor) {
-			window.CK5Editor.updateSourceElement();
-		}
+		if ("updateAllCK5" in window) updateAllCK5();
 		var startbutton = $(this);
 		var uploadformarea = startbutton.closest(".uploadformarea");
 		if (startbutton.prop("disabled")) {

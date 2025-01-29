@@ -519,9 +519,8 @@ function initializeUI() {
 		e.preventDefault();
 		e.stopPropagation();
 		e.stopImmediatePropagation();
-		if (window.CK5Editor) {
-			window.CK5Editor.updateSourceElement();
-		}
+
+		if ("updateAllCK5" in window) updateAllCK5();
 
 		$(this).prop("disabled", true);
 		var theform = $(this).closest("form");
@@ -554,9 +553,7 @@ function initializeUI() {
 				e.stopImmediatePropagation();
 				e.stopPropagation();
 
-				if (window.CK5Editor) {
-					window.CK5Editor.updateSourceElement();
-				}
+				if ("updateAllCK5" in window) updateAllCK5();
 
 				theform.data("readytosubmit", "true");
 				theform.find(".oehtmlinput").trigger("blur");
