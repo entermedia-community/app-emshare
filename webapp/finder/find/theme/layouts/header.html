@@ -27,19 +27,21 @@
 				#set($logourl = "$siteroot/$mediadbappid/services/module/asset/downloads/originals/${logourl}")
 			#end
 		#end
+
+		#ifnotnull($user)
+			#set($themeid = $userprofile.getValue("themeid") )
+		#end
+
+		#ifnull($themeid)
+			#set($themeid = $content.get("themeid") )
+		#end	
 		
 		#ifnull($logourl)
-			
-			#set($themeid = $userprofile.getValue("themeid") )
-			#ifnull($themeid)
-				#set($themeid = $content.get("themeid") )
-			#end	
-			
 			#set( $logourl = "$!{siteroot}$themeprefix/$themeid/logo.png")
 			
 			#set($theme = $mediaarchive.getCachedData("theme", $themeid))
-	    	#set($logowidth = $theme.logowidth)
-	    	#set($logoheight = $theme.logoheight)
+			#set($logowidth = $theme.logowidth)
+			#set($logoheight = $theme.logoheight)
 		#end
 		
 		#ifnotnull($logourl)
