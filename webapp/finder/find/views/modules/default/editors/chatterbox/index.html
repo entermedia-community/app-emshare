@@ -1,0 +1,42 @@
+
+#ifnull($entity)
+	#set($entityid = $context.getRequestParameter("entityid"))
+	#set( $entity  = $mediaarchive.getData($moduleid, $entityid) )
+#end
+#set($entityid = $entity.id)
+$context.putPageValue("entity", $entity)
+$context.putPageValue("entityid", $entityid)
+
+##set($channel = $context.getRequestParameter("channel"))
+
+
+#set($tabid = "tabworkflowchat")
+<div id="${tabid}" 
+	class=" entity-tab-content entity-tab-chatterbox h-100" 
+	data-tabid="$!{tabid}"
+	data-entityid="$!entityid"
+	data-moduleid="$!module.getId()"
+	data-currenttab="$!viewid"
+	data-url=""
+>
+	<div class="chatterbox"
+	data-collectionid="$!entityid"
+	data-entityid="$!entityid"  
+	data-moduleid="$!module.getId()"
+	data-renderurl="${edithome}/index.html" 
+	data-rendermessageurl="${edithome}/message.html"
+	data-channel="$!{currenttopic.getId()}" 
+	data-channeltype="community" 
+	data-user="$!{user.id}" 
+	data-catalogid="$!{catalogid}"
+	data-broadcastall="true">
+		
+		$pages.include("${edithome}/messages.html", $context)				
+					
+		#if( $caneditcollection)
+				$pages.include("${edithome}/editarea.html", $context)				
+		#end
+	
+	
+	</div>
+</div>
