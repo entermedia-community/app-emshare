@@ -158,17 +158,6 @@ getSessionValue = function (key) {
 	return returnval;
 };
 
-findClosest = function (link, inid) {
-	var result = link.closest(inid);
-	if (result.length == 0) {
-		result = link.children(inid);
-		if (result.length == 0) {
-			result = $(inid);
-		}
-	}
-	return result.first();
-};
-
 function setMaxHeight(elm, child, offset = 32) {
 	if (!elm || !elm.length) {
 		return;
