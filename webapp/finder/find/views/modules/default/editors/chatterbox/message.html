@@ -11,6 +11,7 @@
 #set($goal = $goalsinmessages.get($chat.id))
 #set($chatuser = $mediaarchive.getUser($chat.user) ) 
 #set($attachedassets = $attachmentspermessage.get($chat.id))
+#set($otherassets = $messageidwithassets.get($chat.id))
 
 <div id="chatter-message-$!chat.id" class="msg-bubble">
 <div class="chatterbox-chat" role="alert" >
@@ -47,7 +48,7 @@
 			</a>
 			#end		
 			
-			#if(false && !$chat.attachedassets && $chat.user == $user.id)
+			#if(!$chat.attachedassets && $chat.user == $user.id)
 			<a class="message-menu-link ajax" 
 				data-oemaxlevel="1"    
 				data-targetdiv="attach-${chat.id}"
@@ -85,11 +86,18 @@
 		</div>
 		
 		<div class="msg-body #if($chat.user == $user.id) me #end" style=" #if($attachedassets) min-height: 110px; #end">
-			
+		<!-- Legacy -->			
 		#if($attachedassets)
 			$context.putPageValue("attachedassets", $attachedassets)
 			$pages.include("${edithome}/attach.html",$context)
 		#end
+
+
+		#if($otherassets)
+			$context.putPageValue("otherassets", $otherassets)
+			$pages.include("${edithome}/listassets.html",$context)
+		#end
+
 			
 			#ifnotnull($chat.replytoid)
 			#set( $otherchat = $mediaarchive.getCachedData("chatterbox",$chat.replytoid))
