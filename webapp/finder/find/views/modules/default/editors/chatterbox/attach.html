@@ -30,17 +30,19 @@
 	<input type="hidden" name="messageid" value="$!chat.id" />
 	<input type="hidden" name="messageids" value="$!chat.id" />
 	<!-- <input type="hidden" name="collectionid" value="$collectionid" /> -->
+	#if($librarycol)
 	<input type="hidden" name="collectionid" value="$librarycol.id" />
+	#end
 
 	#ifnotnull($attachedasset)
 		<input type="hidden" name="attachedassetid" value="$!{attachedasset.id}" />
 	#end
 	
-	$pages.include("${communityhome}/components/xml/types/asset.html", $context)
+	$pages.include("$apphome/views/modules/${module.id}/components/xml/types/asset.html", $context)
 
 	</form>
 #else
-	$pages.include("${communityhome}/components/xml/typesreadonly/asset.html", $context)
+	$pages.include("$apphome/views/modules/${module.id}/components/xml/typesreadonly/asset.html", $context)
 #end
 </div>
 
