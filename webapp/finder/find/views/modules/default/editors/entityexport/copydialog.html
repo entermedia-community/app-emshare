@@ -4,7 +4,7 @@
 	#set( $entity  = $mediaarchive.getCachedData($moduleid, $entityid) )
 #end
 
-#set($addtourl = "$siteroot$applink/views/modules/$!{moduleid}/components/entities/copyentity.html")
+#set($addtourl = "${edithome}/copyentity.html")
 
 <div class="tabheader">[[Copy]] $module</div>
 <h6 class="px-2 mt-2 mb-0">
@@ -12,10 +12,10 @@
 </h6>
 <div id="embed-wrapper" class="mx-3 my-4" >
 	<form action="$addtourl" class="ajaxform" data-targetdivinner="tabexportcontent" data-oemaxlevel="1" method="post" data-ajaxreloadtargets="topmodulecontainer">
-		<input type="hidden" name="copyingsearchtype" value="$!moduleid" />
-		<input type="hidden" name="copyingentityid" value="$!entityid" />
-		<input type="hidden" name="entityid" value="$!entityid" />
-		<input type="hidden" name="moduleid" value="$!moduleid" />
+		<input type="hidden" name="copyingsearchtype" value="$!module.getId()" />
+		<input type="hidden" name="copyingentityid" value="$!entity.id" />
+		<input type="hidden" name="entityid" value="$!entity.id" />
+		<input type="hidden" name="moduleid" value="$!module.id" />
 		
 		<div class="w-75 text-left mb-3">
 			<div class="emfield-textarea">
@@ -25,7 +25,7 @@
 		</div>
 		<div class="w-75 text-left mb-3">
 			<label>[[Copy To]]:</label>
-			<select class="form-control" name="pickedmoduleid">
+			<select class="form-control" name="entitymoduleid">
 			#foreach ( $amodule in $userprofile.getEntities() )
 				#set($amoduleid = $amodule.getId())
 				#if($amodule.getBoolean("enableuploading"))
@@ -47,7 +47,7 @@
 	
 	#ifnotnull($saveddata)
 	<div class="mt-4 mb-4">
-		<a href='$applink/views/modules/${saveddata.get("entitysourcetype")}${edithome}/tabs/index.html?entityid=${saveddata.getId()}'
-			class="emdialog entity-dialog action-link">$saveddata.getName()</a> [[created]].</div>
+		<a href='$applink/views/modules/${saveddata.get("entitysourcetype")}/index.html?entityid=${saveddata.getId()}'
+			class="action-link">$saveddata.getName()</a> [[created]].</div>
 	#end
 </div>

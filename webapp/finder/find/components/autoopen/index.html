@@ -2,8 +2,10 @@
 #set($entityid = $context.getRequestParameter('entityid'))
 #ifnotnull($entityid)
 	##validate Entity
-	#set($entity = $mediaarchive.getCacheData($module, $entityid))
+	
+	#set($entity = $mediaarchive.getCachedData($module.getId(), $entityid))
 	#set($entitymoduleviewid = $context.getRequestParameter('entitymoduleviewid'))
+	
 	#ifnotnull($entity)	
 	<span class="autoopen noToast"
 		data-dialogid="entitydialog"
