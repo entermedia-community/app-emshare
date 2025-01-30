@@ -52,18 +52,21 @@
 		#end
 
 		#if (!$ismulti && $canviewmetadatageneral)
-		<li class="assettabnav #if($opentab == "viewpreview")tabselected#end">	
-			<a class="expandmenu assetpreview ajax rememberassettab" 
-				href="$siteroot${apphome}/views/modules/asset/mediaviewer/fullscreen/currentasset.html"
-				data-opentab="viewpreview"
-				data-targetdiv="main-media-container"
-				data-oemaxlevel="1" 
-				data-propertyfield="assetopentab"
-				data-propertyvalue="viewpreview"
-				title="[[View]] #esc($!title)">
-				<i class="bi bi-fullscreen ns mr-1"></i> [[Viewer]] 
-			</a>
-		</li>
+			#if(!$candownload && $asset.getFileFormat() == "pdf")
+			#else
+			<li class="assettabnav #if($opentab == "viewpreview")tabselected#end">	
+				<a class="expandmenu assetpreview ajax rememberassettab" 
+					href="$siteroot${apphome}/views/modules/asset/mediaviewer/fullscreen/currentasset.html"
+					data-opentab="viewpreview"
+					data-targetdiv="main-media-container"
+					data-oemaxlevel="1" 
+					data-propertyfield="assetopentab"
+					data-propertyvalue="viewpreview"
+					title="[[View]] #esc($!title)">
+					<i class="bi bi-fullscreen ns mr-1"></i> [[Viewer]] 
+				</a>
+			</li>
+			#end
 		#end
 
 		#if(!$previewonly && !$ismulti && $canviewmediaedit && $canviewconversions && ($rendertype == "image" ))
@@ -122,14 +125,7 @@
 			</li>
 		#end
 
-		#if($candownload && $asset.getFileFormat() == "pdf")
-			#set( $link = "$siteroot/$mediadbappid/services/module/asset/downloads/vieworiginal/${asset.getSourcePath()}")
-		<li class="assettabnav">
-			<a class="expandmenu" data-assetid="${asset.id}" target="_new" href="#urlescape($link)">
-				<i class="bi bi-filetype-pdf ns mr-1"></i> [[View PDF]]
-			</a>
-		</li> 
-		#end
+		
 
 		#if( !$ismulti)
 		#if ($canviewconversions || $canconverthistory || $canconverthistory )
