@@ -316,10 +316,21 @@ $(function () {
 			e.preventDefault();
 			e.stopImmediatePropagation();
 			var imageUrl = $(this).data("imageurl");
-			window.parent.postMessage(
-				"assetpicked:" + imageUrl,
+			var assetinfo = $(this).closest("[data-assetid]");
+			var assetid = "";
+			if (assetinfo.length)
+			{
+				assetid = assetinfo.data("assetid");
+			}
+			var object = {
+							assetpicked: imageUrl,
+							assetid: assetid
+						};
+			var str = JSON.stringify(object);
+			window.parent.postMessage("assetpicked:"+str,
 				window.location.origin
 			);
+			
 		});
 	}
 });

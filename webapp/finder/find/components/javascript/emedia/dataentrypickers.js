@@ -494,6 +494,23 @@ lQuery(".editdiv.entitypickerassets .resultsdivdata").livequery(
 	}
 );
 
+
+$(window).on("assetpicked", function (_, input) {
+	var params = JSON.parse(input);
+	var assetid = params.assetid;
+	var messageid = $("#blockfindpicker").data("messageid");
+	
+	if( messageid !== undefined)
+	{
+		var div = $("#attachasset" + messageid);
+		//Submit this assetid and reload the chat box we are in
+		var form = div.closest(".chatattachasset");
+		form.find(".pickedassetid").val(assetid);
+		form.trigger("submit");
+		//close the form
+	}
+});
+				
 //Upload to Entity. Still needed?
 /*
 lQuery(".pickerresults.pickandupload .resultsdivdata").livequery(
