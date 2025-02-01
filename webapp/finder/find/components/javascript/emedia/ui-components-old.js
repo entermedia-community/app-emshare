@@ -580,26 +580,6 @@ function initializeUI() {
 		$("#searchinput").val("");
 	}
 
-	lQuery("a.openemdialog").livequery(function (e) {
-		e.preventDefault();
-		e.stopPropagation();
-		$(this).emDialog();
-	});
-
-	lQuery("a.emdialog").livequery("click", function (e) {
-		e.preventDefault();
-		e.stopPropagation();
-		$(this).emDialog();
-	});
-
-	lQuery(".closemodal").livequery("click", function (event) {
-		closeemdialog($(this).closest(".modal"));
-	});
-
-	lQuery("#closebutton").livequery("click", function (event) {
-		closeemdialog($(this).closest(".modal"));
-	});
-
 	$(window).on("setPageTitle", function (event, element) {
 		if (element === undefined) {
 			element = $("#applicationcontent");
