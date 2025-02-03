@@ -1,3 +1,31 @@
-$context.putPageValue("viewid", "${module.id}permissionedit")
-##$context.putPageValue("data",$entity)
-$pages.include("$apphome/views/modules/${module.id}/editors/data/autoadd.html?id=$!{entityid}", $context)
+#set( $viewid = "${module.id}permissionedit")
+
+#set( $data = $entity)
+
+#ifnull( $viewid )
+	#set($viewid = $context.getRequestParameter("viewid"))
+#end
+#set( $moduleid = $context.findValue("module") )
+
+#set($id = $data.id )
+#ifnull( $id )
+	#set( $id = $context.getRequestParameter("id") )
+#end
+
+$context.putPageValue("viewid", $viewid)
+
+<form name="permission-picker" 
+	class="ajaxform autocloseform autosubmitform force-validate-inputs mt-3 noToast" 
+	data-ajaxreloadtargets="permission-fields"
+	method="post"  action="${edithome}/permissions/save.html">
+
+	<input name="save" type="hidden" value="true" />
+	<input name="entityid" type="hidden" value="$entity.id" />
+	<input name="id" type="hidden" value="$!id" />
+	<input name="viewid" type="hidden" value="$viewid" />
+	
+	<div class="d-flex flex-column">
+		$pages.include("/$applicationid/components/xml/detaileditorcss.html?longform=true", $context)
+	</div>
+</form>
+
