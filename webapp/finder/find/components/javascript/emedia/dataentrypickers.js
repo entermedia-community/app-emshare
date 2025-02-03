@@ -149,6 +149,10 @@ lQuery(".topmodules .resultsdivdata").livequery("click", function (e) {
 	var rowid = row.data("dataid");
 	clickableresultlist.data("id", rowid);
 	clickableresultlist.data("entityid", rowid);
+		clickableresultlist.data("updateurl", true);
+		var urlbar =  clickableresultlist.data("baseurlbar");
+		clickableresultlist.data("urlbar", urlbar + "?entityid="+rowid);
+		clickableresultlist.data("dialogid", "entitydialog");
 	clickableresultlist.emDialog();
 });
 
@@ -161,13 +165,18 @@ lQuery(".listofentities .resultsdivdata").livequery("click", function (e) {
 	var clickableresultlist = row.closest(".clickopenentity");
 
 	var rowid = row.data("dataid");
+	clickableresultlist.data("id", rowid);
+	clickableresultlist.data("entityid", rowid);
 	var entitymoduleid = row.data("entitymoduleid");
 	clickableresultlist.data(
 		"url",
 		`${apphome}/views/modules/${entitymoduleid}/editors/default/tabs/index.html`
 	);
-	clickableresultlist.data("id", rowid);
-	clickableresultlist.data("entityid", rowid);
+	
+		clickableresultlist.data("updateurl", true);
+		var urlbar = `${apphome}/views/modules/${entitymoduleid}/index.html?entityid=${rowid}`;
+		clickableresultlist.data("urlbar", urlbar);
+		clickableresultlist.data("dialogid", "entitydialog");
 	clickableresultlist.emDialog();
 });
 
@@ -194,9 +203,12 @@ lQuery(".entitysubmodules .resultsdivdata").livequery("click", function (e) {
 	}
 
 	var row = $(this);
-
+	var rowid = row.data("dataid");
 	var submoduleOpener = row.closest(".clickableresultlist");
 	submoduleOpener.data("entityid", row.data("dataid"));
+	submoduleOpener.data("updateurl", true);
+		var urlbar =  submoduleOpener.data("baseurlbar");
+		submoduleOpener.data("urlbar", urlbar + "?entityid="+rowid);
 	submoduleOpener.runAjax();
 });
 
