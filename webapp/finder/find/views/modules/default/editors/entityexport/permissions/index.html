@@ -12,9 +12,9 @@
 			</p>
 			<p>
 			#end
-						$context.putPageValue("edithome", "$apphome/views/modules/${module.id}/editors/data")
+						##$context.putPageValue("edithome", "$apphome/views/modules/${module.id}/editors/data")
 						<a class="emdialog btn btn-cta" 
-							href="$apphome/views/modules/${module.id}/editors/entityexport/permissions/addpermission.html?id=$!{entityid}" 
+							href="$apphome/views/modules/${module.id}/editors/entityexport/permissions/permissionadd.html?id=$!{entityid}" 
 							data-dialogid="addpermission"
 							data-includeeditcontext="true"
 							data-hidefooter="true">
@@ -28,6 +28,14 @@
 										</label>
 										<p class="checkedhint m-0">[[This record is now visible to anyone who has access to the module.]]</p>
 									</div>
+			<form name="savepermiossions" 
+				class="ajaxform autosubmitform force-validate-inputs mt-3 noToast" 
+				data-targetdiv="$edithomeid"
+				method="post"  
+				action="${edithome}/permissions/permissionssave.html">
+
+				<input name="entityid" type="hidden" value="$entity.id" />
+							
 			#foreach($permission in $entitypermissions)
 			<div class="d-flex align-items-center bg-light rounded pl-2 pr-1 py-1 mb-2 border" id="permission-$permission.id">
 				<span class="mr-2 fw-bold">
@@ -35,16 +43,20 @@
 				</span>
 				<span class="bg-secondary text-white px-1 rounded fs-small" style="padding-bottom: 2px;">$permission.getPermissionType()</span>
 				<div class="d-flex align-items-center ml-auto">
-					<select class="form-control w-auto rounded py-1 px-2">
-						<option #if( !$permission.isEditor() ) selected #end>Can View</option>
-						<option #if( $permission.isEditor() ) selected #end>Can Edit</option>
+					<input type="hidden" name="dataid" value="$permission.getId()" />
+					<select name="permissiontype" class="form-control w-auto rounded py-1 px-2" >
+						<option value="custom" #if( !$permission.isEditor() ) selected #end>Can View</option>
+						<option value="editor" #if( $permission.isEditor() ) selected #end>Can Edit</option>
 					</select>
-					<a class="ajax text-muted" href="#" data-confirm="Are you sure you want to remove this permission?" data-removeonsuccess="true" data-removetarget="permission-$permission.id">
+					<a class="ajax text-muted"
+						href="$apphome/views/modules/${module.id}/editors/entityexport/permissions/permissionremove.html?id=$!{entityid}"
+					 	data-confirm="Are you sure you want to remove this permission?" data-removeonsuccess="true" data-removetarget="permission-$permission.id">
 						<i class="bi bi-x-circle ns ml-2 mr-1"></i>
 					</a>
 				</div>
 			</div>
 			#end
+			</form>
 		</div>
 	</div>
 </div>
