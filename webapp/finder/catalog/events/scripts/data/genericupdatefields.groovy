@@ -1,5 +1,4 @@
 import org.entermediadb.asset.MediaArchive
-import org.entermediadb.asset.cluster.IdManager
 import org.openedit.Data
 import org.openedit.data.Searcher
 import org.openedit.hittracker.HitTracker
@@ -22,6 +21,7 @@ public void init() {
 		if (keywords != null)
 		{
 			String fixedkeywords = keywords.replace(",", "|");
+			log.info("Fix: " + fixedkeywords);
 			row.setValue("knowledgebase_tag", fixedkeywords);
 			saveAll.add(row);
 		}
