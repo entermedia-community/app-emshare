@@ -260,6 +260,15 @@ jQuery(document).ready(function (url, params) {
 					form.trigger("submit");
 				}
 			});
+			$("select", form).on("change", function () {
+				if( !$(this).hasClass("select2"))
+				{
+					if (!$(this).hasClass("cancelautosubmit")) 
+					{	
+						form.trigger("submit");
+					}
+				}
+			});
 			$("select", form).on("select2:unselect", function () {
 				if (!$(this).hasClass("cancelautosubmit")) {
 					$("#filtersremoveterm", form).val($(this).data("searchfield"));
