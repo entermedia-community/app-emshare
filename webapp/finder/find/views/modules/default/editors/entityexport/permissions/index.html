@@ -32,7 +32,7 @@
 				class="ajaxform autosubmitform force-validate-inputs mt-3 noToast" 
 				data-targetdiv="$edithomeid"
 				method="post"  
-				action="${edithome}/permissions/permissionssave.html">
+				action="${edithome}/permissions/permissionsave.html">
 
 				<input name="entityid" type="hidden" value="$entity.id" />
 							
@@ -43,10 +43,11 @@
 				</span>
 				<span class="bg-secondary text-white px-1 rounded fs-small" style="padding-bottom: 2px;">$permission.getPermissionType()</span>
 				<div class="d-flex align-items-center ml-auto">
-					<input type="hidden" name="dataid" value="$permission.getId()" />
-					<select name="permissiontype" class="form-control w-auto rounded py-1 px-2" >
-						<option value="custom" #if( !$permission.isEditor() ) selected #end>Can View</option>
-						<option value="editor" #if( $permission.isEditor() ) selected #end>Can Edit</option>
+					<input type="hidden" name="dataid" value="$permission.getData().getId()" />
+					<input type="hidden" name="permissiontype" value="$permission.getPermissionType()" />
+					<select name="iseditor" class="form-control w-auto rounded py-1 px-2" >
+						<option value="false" #if( !$permission.isEditor() ) selected #end>Can View</option>
+						<option value="true" #if( $permission.isEditor() ) selected #end>Can Edit</option>
 					</select>
 					<a class="ajax text-muted"
 						href="$apphome/views/modules/${module.id}/editors/entityexport/permissions/permissionremove.html?id=$!{entityid}"
