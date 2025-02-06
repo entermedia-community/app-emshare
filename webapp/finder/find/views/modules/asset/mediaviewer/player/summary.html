@@ -26,6 +26,23 @@ $context.putPageValue("thumbsize",$thumbsize)
 							$context.putPageValue("cdnprefix", $cdnprefix)
 							$context.putPageValue("useoriginal", "true")
 						#end
+						
+						
+						
+						#set($faceprofilegroupid = $context.getRequestParameter("showfaceprofileid"))
+						
+						#ifnotnull($faceprofilegroupid)
+							$context.putPageValue("faceprofilegroupid",$faceprofilegroupid)
+							#set($assetwidth = $mediaarchive.getRealImageWidth($asset)) 
+							$context.putPageValue("assetwidth",$assetwidth)	
+							#set($assetheight = $mediaarchive.getRealImageHeight($asset)) 
+							$context.putPageValue("assetheight",$assetheight)
+							#if($assetheight && $assetwidth)
+								#set($facemanager = $mediaarchive.getBean("faceProfileManager") )
+								#set($imagebox = $facemanager.getImageBoxById( $faceprofilegroupid, $asset, $assetwidth, $assetheight) )
+								$context.putPageValue("imagebox", $imagebox)
+							#end
+						#end 						
 
 		 				$pages.include("$searchhome/thumbnails/${type}.html", $context) 
 				#end

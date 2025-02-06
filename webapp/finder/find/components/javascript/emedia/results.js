@@ -373,6 +373,16 @@ jQuery(document).ready(function (url, params) {
 			if (assetid === undefined) {
 				assetid = link.data("assetid");
 			}
+			
+			var editdiv = link.closest(".editdiv");
+			if (editdiv.hasClass("faceprofileassetsearch"))
+			{
+				var entityid = editdiv.data("entityid");
+				link.data("showfaceprofileid", entityid);	
+			}
+			
+		
+			
 			if (assetid !== undefined) {
 				link.data("assetid", assetid);
 				var url = window.location.href;

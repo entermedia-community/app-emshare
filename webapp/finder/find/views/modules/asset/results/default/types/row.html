@@ -32,15 +32,20 @@ $context.putPageValue("title",$title)
 
 	#set( $type = $mediaarchive.getMediaRenderType($hit.fileformat))
 	<td class="resultstablecell thumbnail assetdraggable" data-dataid="${hit.id}" data-assetid="${hit.id}" #if($type=="audio") noclick="true" #end>
-		#if($parentmoduleid=="faceprofilegroup")
-			$context.putPageValue("resulttype", "faceprofilegroupassets")
-			$context.putPageValue("asset", $asset)
-			$context.putPageValue("faceprofilegroupid", $entity.id)
-			$pages.include("${searchhome}/thumbnails/small.html",$context)
-		#else
-			$pages.include("${searchhome}/thumbnails/small.html",$context)	
-			$pages.include("${searchhome}/badges.html", $context)
-		#end
+
+		$pages.include("${searchhome}/thumbnails/small.html",$context)
+		
+		##
+		###set($assetwidth = $mediaarchive.getRealImageWidth($hit)) 
+		##$context.putPageValue("assetwidth",$assetwidth)	
+		###set($assetheight = $mediaarchive.getRealImageHeight($hit)) 
+		##$context.putPageValue("assetheight",$assetheight)	
+		
+		##$pages.include("${searchhome}/thumbnails/${type}.html", $context)	
+		
+		
+		$pages.include("${searchhome}/badges.html", $context)
+
 	</td>
 
 	#foreach( $detail in $details)

@@ -9,19 +9,27 @@ $context.putPageValue("isselected", "isselected" )
 
 
 <div class="grid-cell-hover"></div>
+#set($assetwidth = $mediaarchive.getRealImageWidth($hit)) 
+$context.putPageValue("assetwidth",$assetwidth)	
+#set($assetheight = $mediaarchive.getRealImageHeight($hit)) 
+$context.putPageValue("assetheight",$assetheight)	
 
+#if($assetheight && $assetwidth)
+	#set($facemanager = $mediaarchive.getBean("faceProfileManager") )
+	#if($faceprofilegroups )
+		#set($imagebox = $facemanager.getImageBox( $faceprofilegroups, $hit, $assetwidth, $assetheight) )
+		#set($faceprofilegroupid = $imagebox.groupid)
+	#elseif($faceprofilegroupid)
+		#set($imagebox = $facemanager.getImageBoxById( $faceprofilegroupid, $hit, $assetwidth, $assetheight) )
+	#end
+	$context.putPageValue("imagebox", $imagebox)
+#end
 <div class="embrickcontent" 
 	data-rowname="#text($hit)"
 	data-dataid="$!{entityid}"
 	data-entityid="$!{entityid}"
   	data-entitymoduleid="$!{moduleid}"
   	##data-rendertype="entity"
-
-	#set($assetwidth = $mediaarchive.getRealImageWidth($hit)) 
-	$context.putPageValue("assetwidth",$assetwidth)	
-	#set($assetheight = $mediaarchive.getRealImageHeight($hit)) 
-	$context.putPageValue("assetheight",$assetheight)	
-  
 #if($assetwidth > 0)
 	data-imgwidth="$!assetwidth"
 	data-imgheight="$!assetheight"
@@ -104,7 +112,11 @@ $context.putPageValue("isselected", "isselected" )
 				#end
 			</div>
 		</div>
-		<a href="#" class="stackedplayer asset-maximize" data-assetid="$!{hit.id}" title="$!title">
+		<a href="#" 
+			class="stackedplayer asset-maximize" 
+			data-assetid="$!{hit.id}" 
+			#if($faceprofilegroupid) data-showfaceprofileid="$!faceprofilegroupid" #end 
+			title="$!title">
 			<i class="fas fa-expand-arrows-alt"></i>
 		</a>
 	</div>
