@@ -28,7 +28,7 @@
 		<div id="filtersselected" class="filtersselected overflow-x">
 			#if($hits.getSearchQuery().hasMainInput())
 
-				#set($href = "${searchhome}/search.html?removeterm=description")
+				#set($href = "${searchhome}/filterremove.html?removeterm=description")
 				#set($oemaxlevel = "1")
 				<div class="d-flex align-items-center selected-filters">
 					<a href="$href"
@@ -48,7 +48,7 @@
 			<div class="d-flex align-items-center selected-filters">		
 				#foreach( $term in $terms)
 					#if($term.getId() != "description")
-						#set($href = "${searchhome}/search.html?removeterm=$!term.getId()")
+						#set($href = "${searchhome}/filterremove.html?removeterm=$!term.getId()")
 					
 						#ifnotnull($nodeID)
 							#set($href = $href + "&nodeID=${nodeID}")
@@ -114,7 +114,7 @@
 			</div>
 			#end
 		</div>
-		#set($href = "${searchhome}/search.html")
+		#set($href = "${searchhome}/filterremove.html?removeterm=*")
 		<a href="${href}" 
 			title="[[Clear All Filters]]" 
 			data-${module.id}hitssessionid="$!hits.getSessionId()"

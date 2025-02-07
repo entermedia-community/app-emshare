@@ -40,7 +40,8 @@
 			data-targetdiv="resultsdiv"
 			
 			data-includeeditcontext="true"
-			
+			data-includesearchcontext="true"
+						
 			action="${searchhome}/search.html"
 			data-oemaxlevel="1"
 	>
@@ -51,6 +52,15 @@
 		#end
 		$context.putPageValue("idprefix",$idprefix)
 		
+		
+		#set( $extraterms = $hits.getSearchQuery().getExtraTerms($details) )
+		#foreach( $term in $details)   
+	
+			<input type="hidden" name="field" value="$term.getDetail().getId()" />
+			<input type="hidden" name="${term.getDetail().getId()}.value" value="$term.getValue()" />
+			<input type="hidden" name="operation" value="$term.getOperation()" />
+		
+		#end		
 		##FILTERS
 		#foreach( $detail in $details)   
 			##set( $viewpermission = $context.getPageValue("canviewfilter${detail.getId()}") )
