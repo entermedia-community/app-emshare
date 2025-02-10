@@ -1,0 +1,32 @@
+
+
+<div id="aichatsearch" 
+	class=" entity-tab-content entity-tab-chatterbox h-100" 
+	data-tabid="$!{tabid}"
+	data-entityid="${user.id}"
+	data-moduleid="user"
+	data-currenttab="$!viewid"
+	data-url=""
+>
+	<div class="chatterbox"
+	data-renderurl="${edithome}/index.html" 
+	data-rendermessageurl="${edithome}/message.html"
+	data-channel="${user.id}" 
+	data-channeltype="aichatsearch" 
+	data-user="$!{user.id}" 
+	data-entityid="${user.id}"
+	data-moduleid="user"
+	data-catalogid="$!{catalogid}"
+	data-broadcastall="true">
+	
+		$context.putPageValue("entityid", $user.id)
+		
+		$pages.include("${edithome}/messages.html", $context)				
+					
+		#if( $permissions.canModule($module, "chat_send_messages"))
+				$pages.include("${edithome}/editarea.html", $context)				
+		#end
+	
+	
+	</div>
+</div>
