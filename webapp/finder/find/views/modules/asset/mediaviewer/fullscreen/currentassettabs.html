@@ -1,4 +1,4 @@
-#set( $previewonly = $context.getRequestParameter("previewonly"))
+#set( $previewonly = $page.previewonly)
 #if (!$previewonly)
 	#set($previewonly = false)
 #end
@@ -15,40 +15,28 @@
 </div>
 <div id="assettabnavs">
 	<ul class="flex-grow-1">
-		#if($rendertype=="document")
-			#set($totalpages = $numberutils.toInt($asset.pages))
-			#if($totalpages>1)
-			<li class="assettabnav mvshowpagestab">
-				<a class="expandmenu mvshowpages" 
-					title="$totalpages [[Pages]]">
-					<i class="bi bi-list ns mr-1"></i> $totalpages [[Pages]]
-				</a>
-			</li>
-			#end
-		#end
-
 		#if( $canaddtofavorites)
-		$context.putPageValue("assetid", $asset.id)
-		<li class="assettabnav">
-			<div id="tabassetfavorite-${asset.id}" class="media-info-icons">
-				$pages.include("$apphome/views/modules/asset/editor/favorite/index.html?targetdiv=tabassetfavorite", $context)
-			</div>
-		</li>
+			$context.putPageValue("assetid", $asset.id)
+			<li class="assettabnav">
+				<div id="tabassetfavorite-${asset.id}" class="media-info-icons">
+					$pages.include("$apphome/views/modules/asset/editor/favorite/index.html?targetdiv=tabassetfavorite", $context)
+				</div>
+			</li>
 		#end
 
 		#if( !$previewonly && $canviewmetadatageneral )
-		<li class="assettabnav #if($opentab == "viewproperties")tabselected#end">
-			<a class="expandmenu ajax " 
-				href="$siteroot${apphome}/views/modules/asset/mediaviewer/fullscreen/currentasset.html"
-				data-opentab="viewproperties"
-				data-targetdiv="main-media-container"
-				data-oemaxlevel="1" 
-				data-propertyfield="assetopentab"
-				data-propertyvalue="viewproperties"
-				title="[[Metadata]]">
-				<i class="bi bi-info-circle mr-1 ns"></i> [[Data]] 
-			</a>
-		</li>
+			<li class="assettabnav #if($opentab == "viewproperties")tabselected#end">
+				<a class="expandmenu ajax " 
+					href="$siteroot${apphome}/views/modules/asset/mediaviewer/fullscreen/currentasset.html"
+					data-opentab="viewproperties"
+					data-targetdiv="main-media-container"
+					data-oemaxlevel="1" 
+					data-propertyfield="assetopentab"
+					data-propertyvalue="viewproperties"
+					title="[[Metadata]]">
+					<i class="bi bi-info-circle mr-1 ns"></i> [[Data]] 
+				</a>
+			</li>
 		#end
 
 		#if (!$ismulti && $canviewmetadatageneral)
