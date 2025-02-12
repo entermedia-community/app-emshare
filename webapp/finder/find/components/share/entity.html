@@ -9,62 +9,29 @@
 
 #set( $type = $mediaarchive.getMediaRenderType($asset.fileFormat))
 <div class="tabheader">[[Sharing Links]]</div>
+<div class="mx-3 my-4">
+<p>[[This link automatically grants users viewing access to this Entity.]]</p>
+
 <div id="embed-wrapper" class="mx-3 my-4">
 	<div class="embedlink">
-		#set($entitytabopen = $context.getRequestParameter('entitytabopen'))
-		#if($module.id)
-			#set( $sharelink = "$siteroot$apphome/views/modules/${module.id}/userview/${entityid}/#dash($entity).html")
-		#end
-		#ifnotnull($sharelink )
-			<div id="embedalertdialog" style="display:none; position: absolute;" class="alert alert-save fader">[[Copied to Clipboard]]</div>
-				
-				<h5>[[Data]]</h5> 
-				<div class="hyphenate hyphenate-bg" style="margin:5px 0">
-					<span class="sharelink">${sharelink}</span> 
-					<a href="#" 
-						class="copytoclipboard btn btn-xs btn-primary"
-						data-targetdiv="embedalertdialog"
-						data-copytext="previewlink" title="[[Copy to Clipboard]]"><i class="far fa-copy"></i> [[Copy]]</a>
-				
-				
-					<input class="sharelink" style="position:absolute; top:-1000px;" id="previewlink" value="$sharelink" />
-				
-				</div>
-				
-				
-				#set( $sharefilelink = "$!{sharelink}?entitytabopen=media") 
-				
-				<h5 class="pt-4">[[Files]]</h5> 
-				<div class="hyphenate hyphenate-bg" style="margin:5px 0">
-					<span class="sharelink">${sharefilelink}</span> 
-					<a href="#" 
-						class="copytoclipboard btn btn-xs btn-primary"
-						data-targetdiv="embedalertdialog"
-						data-copytext="previewfileslink" title="[[Copy to Clipboard]]"><i class="far fa-copy"></i> [[Copy]]</a>
-				
-				
-					<input class="sharelink" style="position:absolute; top:-1000px;" id="previewfileslink" value="$sharefilelink " />
-				
-				</div>
-				
-				
-				#if($module.id=="librarycollection")
-				#set( $sharecollectionlink = "$!{siteroot}$!{siteid}/$!{mediadbappid}/services/module/asset/players/collections/display/$!{entityid}.html")
-				<h5 class="pt-4">[[Share Collection]]</h5> 
-				<div class="hyphenate hyphenate-bg" style="margin:5px 0">
-					<span class="sharelink">${sharecollectionlink}</span> 
-					<a href="#" 
-						class="copytoclipboard btn btn-xs btn-primary"
-						data-targetdiv="embedalertdialog"
-						data-copytext="sharecollectionlink" title="[[Copy to Clipboard]]"><i class="far fa-copy"></i> [[Copy]]</a>
-				
-				
-					<input class="sharelink" style="position:absolute; top:-1000px;" id="sharecollectionlink" value="$sharecollectionlink " />
-				
-				</div>
-				#end
-
+		#set($enttiyviews = $mediaarchive.query("view").exact("moduleid", $module.id).exact("systemdefined","false").sort("orderingUp").named("view").search($context) )
+		#set( $sharelink = "$siteroot$apphome/views/modules/${module.id}/userview/${entityid}/#dash($entity).html")
+		#foreach( $targetview in $enttiyviews)
+			<div class="mb-3">	
+			<h5>#text($targetview)</h5>
+				<a href="#" 
+					class="copytoclipboard btn btn-xs btn-primary"
+					data-targetdiv="embedalertdialog"
+					data-copytext="previewlink${targetview.id}" title="[[Copy to Clipboard]]"><i class="far fa-copy"></i> [[Copy]]</a>
+					<input class="sharelink" style="position:absolute; top:-1000px;" id="previewlink${targetview.id}" 
+					value="${sharelink}?entitymoduleviewid=${targetview.id}" />
+					
+			</div>
 		#end
 		
+		
+		
+		
 	</div>
+</div>
 </div>
