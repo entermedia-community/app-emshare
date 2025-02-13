@@ -2,7 +2,7 @@
 <h3>[[Transcoder Paremeters]]</h3>
 
 
-<div id="editlayout" class="mr-4">
+<div id="editlayout" class="mt-4 mr-4">
 	#if($message)
 	<div class="alert alert-save fader" role="alert">$message</div>
 	#end
@@ -15,8 +15,8 @@
 			method="post" 
 			action="$siteroot$content.searchhome/edit/save.html"
 			class="ajaxform"
-			data-targetdivinner="applicationmaincontent"
-			data-oemaxlevel="4" >
+			data-targetdiv="settingslayout"
+			data-oemaxlevel="3" >
 		<input name="save" type="hidden" value="true" />
 		<input name="id" type="hidden" value="$!data.id" />
 		<input name="categoryid" type="hidden" value="$!categoryid" />
@@ -29,12 +29,14 @@
 		<a class="btn btn-sm btn-primary submitform" href="#"><span>[[Save]]</span></a>
 		<a class="btn btn-sm btn-secondary ajax" 
 			href='$!{apphome}/views/settings/modules/asset/presetconfig/index.html'
-			data-targetdivinner="applicationmaincontent"
-			data-oemaxlayout="3"><span>[[Cancel]]</span></a>
+			data-targetdivinner="settingslayout"
+			data-oemaxlevel="3"><span>[[Cancel]]</span></a>
+		#ifnotnull($data.id)
 		<a class="btn btn-sm btn-danger ajax" 
 			href='$!{apphome}/views/settings/modules/asset/presetconfig/edit/delete.html?searchtype=$searcher.searchType&catalogid=$searcher.catalogId&id=$!data.id'
-			data-targetdivinner="applicationmaincontent"
-			data-oemaxlayout="3">[[Delete]]</a>
+			data-targetdivinner="settingslayout"
+			data-oemaxlevel="3">[[Delete]]</a>
+		#end
 		</div>
 		##<div id="messagearea">$!message</div>
 	</form>
