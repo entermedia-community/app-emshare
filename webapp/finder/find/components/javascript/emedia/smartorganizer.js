@@ -60,6 +60,14 @@ function setContrast(hex) {
 	return brightness > 125 ? "#000000" : "#ffffff";
 }
 
+function fallbackCopyText(text) {
+	var $temp = $("<input>");
+	$("body").append($temp);
+	$temp.val(text).select();
+	document.execCommand("copy");
+	$temp.remove();
+}
+
 $(document).ready(function () {
 	var app = jQuery("#application");
 	var apphome = app.data("apphome");
@@ -576,6 +584,16 @@ $(document).ready(function () {
 			});
 		}
 
+		function localizeJSON(json) {
+			json = json.replaceAll("${apphome}", apphome);
+			return json;
+		}
+
+		function globalizeJSON(json) {
+			json = json.replaceAll(apphome, "${apphome}");
+			return json;
+		}
+
 		function loadJSON() {
 			var id = $("#organizerId").val();
 			var url =
@@ -592,7 +610,7 @@ $(document).ready(function () {
 						data = res.data;
 						var saveddata = data.json;
 						if (saveddata !== undefined) {
-							var updateddata = saveddata.replaceAll("${apphome}", apphome);
+							var updateddata = localizeJSON(saveddata);
 							var parsed = JSON.parse(updateddata);
 							if (parsed.length) {
 								insertjson = parsed;
@@ -1350,7 +1368,7 @@ $(document).ready(function () {
 				}
 
 				var datastring = JSON.stringify(data);
-				var updateddata = datastring.replaceAll(apphome, "${apphome}");
+				var updateddata = globalizeJSON(datastring);
 
 				jQuery.ajax({
 					dataType: "json",
@@ -1649,25 +1667,42 @@ $(document).ready(function () {
 			var icon = $(this).find("i");
 			icon.removeClass("bi-copy").addClass("bi-check-lg");
 			getSelectedJson(function (json) {
+				var copyJson = globalizeJSON(JSON.stringify(json));
+				if (!navigator.clipboard) {
+					fallbackCopyText(copyJson);
+					setTimeout(function () {
+						icon.removeClass("bi-check-lg").addClass("bi-copy");
+					}, 1000);
+					return;
+				}
 				navigator.clipboard
-					.writeText(JSON.stringify(json))
+					.writeText(copyJson)
 					.then(function () {
 						validateClipboard();
 					})
 					.catch((error) => {
-						console.error("Error copying to clipboard:", error);
+						customToast("Error copying to clipboard!", {
+							positive: false,
+							log: error,
+						});
+					})
+					.finally(() => {
+						setTimeout(function () {
+							icon.removeClass("bi-check-lg").addClass("bi-copy");
+						}, 1000);
 					});
 			});
-			var selectedGroup = canvas.getSelection();
-			console.log(selectedGroup);
-			setTimeout(function () {
-				icon.removeClass("bi-check-lg").addClass("bi-copy");
-			}, 1000);
 		});
 
-		function validateClipboard(callback) {
+		function validateClipboard(callback = null) {
 			var $this = $("#pasteSmartNodes");
 			var json = null;
+			if (!navigator.clipboard) {
+				customToast("Clipboard API is not supported in http mode!", {
+					positive: false,
+				});
+				return;
+			}
 			navigator.clipboard
 				.readText()
 				.then(function (text) {
@@ -1675,6 +1710,7 @@ $(document).ready(function () {
 						$this.hide();
 					} else {
 						try {
+							text = localizeJSON(text);
 							json = JSON.parse(text);
 							if (Array.isArray(json) && json.length > 0) {
 								$this.show();
@@ -1683,14 +1719,19 @@ $(document).ready(function () {
 								$this.hide();
 							}
 						} catch (error) {
-							console.log("Clipboard is not valid JSON");
+							customToast("Clipboard is not valid JSON", {
+								positive: false,
+							});
 							$this.hide();
 						}
 					}
 				})
 				.catch((error) => {
 					json = null;
-					console.error("Error reading clipboard:", error);
+					customToast("Error reading clipboard!", {
+						positive: false,
+						log: error,
+					});
 				})
 				.finally(() => {
 					if (callback) {
@@ -1832,10 +1873,15 @@ $(document).ready(function () {
 						loadEvents();
 						closeemdialog(thisModal);
 					} else {
-						alert("Invalid JSON structure.");
+						customToast("Invalid JSON structure.", {
+							positive: false,
+						});
 					}
 				} catch (error) {
-					alert("Error parsing JSON: " + error.message);
+					customToast("Error parsing JSON!", {
+						positive: false,
+						log: error,
+					});
 				}
 			};
 			fileReader.readAsText(file);
