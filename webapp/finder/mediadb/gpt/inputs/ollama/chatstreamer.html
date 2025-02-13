@@ -1,0 +1,45 @@
+#set($systeminfo = $gpt.loadInputFromTemplate($context, "/$mediaarchive.getMediaDbId()/gpt/systemmessage/entermediachat.html"))
+{
+	"model": "$model",
+	"stream": false,
+	"messages": [
+		{
+			"role": "system",
+			"content": #jesc($systeminfo)
+		},
+		#foreach($message in $recent)
+			#set($entry = $testbench.getData("chatterbox", $message.id))
+			#if($foreach.count != 1)
+			,
+			#end
+			{
+				#if($message.messagetype == "function_call")				
+					"role": "assistant",	
+					 "name" : "$message.function",					
+				#elseif($entry.user == "agent")
+					"role": "assistant",
+				#else
+					"role": "user",
+				#end
+					"content": #jesc("$!message.message $!message.functionresponse $!message.arguments")
+			}
+		#end		
+	]
+	,
+	"tools": [
+		{
+			"type": "function",
+			"function": $gpt.loadInputFromTemplate($context, "/$mediaarchive.getMediaDbId()/gpt/functiondefs/checkweather.json")
+		},
+		{
+			"type": "function",
+			"function": $gpt.loadInputFromTemplate($context, "/$mediaarchive.getMediaDbId()/gpt/functiondefs/searchdam.json")
+		},
+		{
+			"type": "function",
+			"function": $gpt.loadInputFromTemplate($context, "/$mediaarchive.getMediaDbId()/gpt/functiondefs/create_entity.json")
+		}
+	],
+	"function_call": "auto"
+	
+}
