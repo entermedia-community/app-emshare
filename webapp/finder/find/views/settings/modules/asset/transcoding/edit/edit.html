@@ -1,7 +1,7 @@
 <div class="ui-widget">
 <h3>[[Transcoder Settings]]</h3>
 
-<div id="editlayout">
+<div id="editlayout" class="mt-4 mr-4">
 	#set( $origURL = $context.getRequestParameter("origURL" ) )
 	#set( $categoryid = $context.getRequestParameter("categoryid" ) )
 	
@@ -24,7 +24,7 @@
 			method="post" 
 			action="$siteroot$content.searchhome/edit/save.html"
 			class="ajaxform"
-			data-targetdivinner="applicationmaincontent"
+			data-targetdiv="settingslayout"
 			data-oemaxlevel="3" >
 		<input name="save" type="hidden" value="true" />
 		<input name="id" type="hidden" value="$!data.id" />
@@ -39,15 +39,17 @@
 		<a class="btn btn-sm btn-primary submitform" href="#" ><span>[[Save]]</span></a>
 		<a class="btn btn-sm btn-secondary ajax"  
 				href='$siteroot$content.searchhome/index.html'
-				data-targetdivinner="applicationmaincontent"
+				data-targetdivinner="settingslayout"
 				data-oemaxlayout="3"><span>[[Cancel]]</span></a>
+		#ifnotnull($data.id)
 		<a class="btn btn-sm btn-danger ajax"  
 			href='$siteroot$content.searchhome/edit/delete.html?searchtype=$searcher.searchType&catalogid=$searcher.catalogId&id=$!data.id'
-			data-targetdivinner="applicationmaincontent"
+			data-targetdivinner="settingslayout"
 			data-oemaxlevel="3">
 			<span>
 				[[Delete]]
 			</span></a>
+		#end
 	</div>
 	
 	#if( $data.systemdefinedpreset == "true" )
