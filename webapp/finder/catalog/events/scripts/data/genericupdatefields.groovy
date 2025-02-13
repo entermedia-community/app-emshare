@@ -16,7 +16,7 @@ public void init() {
 		String id = it.id;
 	
 		Data row = searcher.loadData(id);
-
+/*
 		String keywords = row.get("knowledgebase_tag");
 		if (keywords != null)
 		{
@@ -25,7 +25,16 @@ public void init() {
 			row.setValue("knowledgebase_tag", fixedkeywords);
 			saveAll.add(row);
 		}
+	*/	
 		
+		String sourcepath = row.get("sourcepath");
+		if (sourcepath != null && sourcepath.length() > 2 && sourcepath.charAt(sourcepath.length() - 1) == '/')
+		{
+			String   fixed = sourcepath.substring(0, sourcepath.length() - 1) + ".html";
+			log.info("Fix: " + sourcepath + " -> " + fixed);
+			row.setValue("sourcepath", fixed);
+			saveAll.add(row);
+		}
 		
 	}
 	searcher.saveAllData(saveAll, null);
