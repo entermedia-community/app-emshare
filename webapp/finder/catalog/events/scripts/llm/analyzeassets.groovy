@@ -3,6 +3,7 @@ package llm
 import org.entermediadb.asset.Asset
 import org.entermediadb.asset.MediaArchive
 import org.entermediadb.llm.LLMManager
+import org.entermediadb.llm.LLMResponse
 import org.json.simple.JSONObject
 import org.openedit.Data
 import org.openedit.WebPageRequest
@@ -63,9 +64,9 @@ public void tagAssets(){
 			String template = manager.loadInputFromTemplate(inReq, "/" +  archive.getMediaDbId() + "/gpt/templates/analyzeasset.html");
 			try{
 
-				JSONObject results = manager.callFunction(inReq, model, "generate_metadata", template, 0, 5000,base64EncodedString );
+				LLMResponse results = manager.callFunction(inReq, model, "generate_metadata", template, 0, 5000,base64EncodedString );
 				def jsonSlurper = new JsonSlurper()
-				def result = jsonSlurper.parseText(results.toJSONString());
+				def result = jsonSlurper.parseText(results.getArguments().toJSONString());
 				result.metadata.each { key, value ->
 					if(!asset.getValue(key)){
 						asset.setValue(key, value);
