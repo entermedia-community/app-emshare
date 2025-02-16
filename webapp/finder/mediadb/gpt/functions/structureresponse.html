@@ -1,19 +1,11 @@
 <div>
-#if($hits.size() > 0)
-
-	<div>This is what I found for: <strong>$args</strong></div>
+	#set( $arguments = $data.get("arguments") )
 	
-	#foreach($hit in $hits)
-	<div class="ml-4">
-		Asset ID: $hit.id
-		Asset Discovered: $hit.name
-		Short Description: $hit.assetttitle
-		Text: $hit.fulltext
-		
-	</div>
+	#set( $results = $jsonUtil.parseString($arguments) )
+	$results.summary <br>
+	
+	#foreach($row in $results.collectedrecords)
+		#set( $item = $mediaarchive.getCachedData($row.searchtype,$row.id))	
+		<a href="Link--"> $item ( $row.id ) </a>
 	#end
-
-#else
-No results found for $hits
-#end
 </div> 
