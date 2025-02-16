@@ -4,12 +4,27 @@
     "parameters": {
         "type": "object",
         "properties": {
-            "keywords": {
-                "type": "string"
-            }
+          
+            "entity": {
+                    "type": "string",
+                    "enum": [
+                        "asset"
+                        #if($chatprofile)
+                        ,
+                        #foreach($entity in $chatprofile.getEntities())
+                        	#if($foreach.count != 1 ),#end
+                            "$entity.id"
+                        #end
+                        #end
+                       
+                    ]
+          }
+            
+            
         },
         "required": [
-            "keywords"
+            "keywords",
+             "entity"
         ]
     }
 }
