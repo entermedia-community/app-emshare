@@ -1719,9 +1719,6 @@ $(document).ready(function () {
 								$this.hide();
 							}
 						} catch (error) {
-							customToast("Clipboard is not valid JSON", {
-								positive: false,
-							});
 							$this.hide();
 						}
 					}
