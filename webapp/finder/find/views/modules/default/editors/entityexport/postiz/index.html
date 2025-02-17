@@ -1,33 +1,39 @@
 #set($postiz = $mediaarchive.getBean("postizManager"))
 #set($postoptions = $postiz.listIntegrations())
 
-$postoptions
 <div class="tabheader">[[Share to Postiz]]</div>
 <div class="my-3 px-3">
   <div class="bg-light p-2 rounded" style="max-width: 600px;" id="blogBody">
-    <p>
-      Ullam enim nulla ut perspiciatis quis. Temporibus harum sunt recusandae. Cupiditate officiis alias veritatis enim deserunt iusto aut. Quia dolorem voluptatum est impedit et saepe fugit.
-    </p>
-    <p>
-      Aperiam modi est aliquam ut repudiandae veniam necessitatibus. Aperiam necessitatibus et porro. Velit enim maiores minus fugit. Molestiae eum accusantium voluptatem enim hic incidunt. Ut laboriosam qui magnam.
-    </p>
-    <p>
-      Ullam enim nulla ut perspiciatis quis. Temporibus harum sunt recusandae. Cupiditate officiis alias veritatis enim deserunt iusto aut. Quia dolorem voluptatum est impedit et saepe fugit.
-    </p>     
-  </div>
-  <a href="#" class="my-2 copyFromTarget btn btn-cta" data-target="blogBody" title="Copy to Clipboard">
-    <i class="far fa-copy mr-1"></i> Copy Blog
-  </a>
-  <hr>
-  <div class="bg-light p-1 rounded" style="max-width: 480px;" id="blogImg">
-    <img src="https://fakeimg.pl/600x400" class="img-fluid" alt="Responsive image">
-  </div>
-  <div class="d-flex pl-1">
-    <a href="#" class="my-2 copyFromTarget btn btn-cta" data-target="blogImg" data-type="image" title="Copy to Clipboard">
-      <i class="far fa-copy mr-1"></i> Copy Image
-    </a>
-    <a href="https://fakeimg.pl/600x400" target="_blank" download="fakeimg.png" class="my-2 btn btn-primary ml-3" title="Download Image">
-      <i class="fas fa-download mr-1"></i> Download
-    </a>
-  </div>
-</div> 
+<div id="postizcreate"></div>
+<form class="ajaxform" action="$edithome/postiz/post.html?oemaxlevel=1" data-targetdiv="#postizcreate" method="post">
+
+    <div class="form-group">
+        <label for="postcontent">Post Content:</label>
+        <textarea name="postcontent" id="postcontent" rows="5" class="form-control" required></textarea>
+    </div>
+
+    <div class="form-group">
+        <label for="date">Post Date (optional):</label>
+        <input type="datetime-local" name="date.value" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label>Select Integrations:</label><br/>
+        #if($postoptions && $postoptions.size() > 0)
+            #foreach($postoption in $postoptions)
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input" name="integrations" value="$postoption.id" id="integration_${postoption.id}">
+                    <label class="form-check-label" for="integration_${postoption.id}">$postoption.name ($postoption.id)</label>
+                </div>
+            #end
+        #else
+            <p>No integrations available.</p>
+        #end
+    </div>
+	<input type="text" name="assetid" value="116"/>
+    <button type="submit" class="btn btn-primary">Create Draft Post</button>
+</form>
+
+</div>
+</div>
+
