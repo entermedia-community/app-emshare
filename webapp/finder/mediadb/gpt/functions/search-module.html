@@ -14,7 +14,10 @@
 				</tr>
 			</thead>
 			<tbody>
-				#foreach($hit in $hits)
+				#if( $hits.getTotalPages() > 1)
+					Returning $hits.getHitsPerPage() of $hits.size() records
+				#end
+				#foreach($hit in $hits.getPageOfHits())
 				<tr>
 					<th scope="row">#if($hit.id) $hit.id #else <span class="small text-muted">N/A</span> #end</th>
 					<td>#if($hit.name) $hit.name #else <span class="small text-muted">N/A</span> #end</td>
