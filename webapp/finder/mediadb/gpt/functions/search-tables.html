@@ -1,19 +1,33 @@
-<div class="">
+<div class="aisearchtable-container">
 #if($hits.size() > 0)
-
-	<div>Searching Records: <strong>$args</strong></div>
+	<p>Found $hits.size() matching records. <a class="expandaisearchtable" href="javascript:void(0);">See details</a></p>
 	
-	#foreach($hit in $hits)
-	<div class="ml-4">
-        ID: $hit.id
-		searchtype: $hits.getSearchType()
-		Name: $hit.name
-		Short Description: $!hit.assetttitle
-		Keywords: $!hit.keywords
+	<div class="aisearchtable overflow-x collapse">
+		<table class="table table-sm table-striped">
+			<thead>
+				<tr>
+					<th>ID</th>
+					<th>Name</th>
+					<th>Description</th>
+					<th>Keywords</th>
+					<th>Search Type</th>
+				</tr>
+			</thead>
+			<tbody>
+				#foreach($hit in $hits)
+				<tr>
+					<th scope="row">#if($hit.id) $hit.id #else <span class="small text-muted">N/A</span> #end</th>
+					<td>#if($hit.name) $hit.name #else <span class="small text-muted">N/A</span> #end</td>
+					<td>#if($!hit.assetttitle) $!hit.assetttitle #else <span class="small text-muted">N/A</span> #end</td>
+					<td>#if($!hit.keywords) $!hit.keywords #else <span class="small text-muted">N/A</span> #end</td>
+					<td>#if($hits.getSearchType()) $hits.getSearchType() #else <span class="small text-muted">N/A</span> #end</td>
+				</tr>
+				#end
+			</tbody>
+		</table>
 	</div>
-	#end
-
+	<p class="text-muted typeout">...waiting for the previews</p>
 #else
-No results found for $hits
+	No results found for $hits
 #end
-</div> 
+</div>
