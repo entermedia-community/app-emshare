@@ -28,7 +28,10 @@
 	,
 	"functions":[
 		##$gpt.loadInputFromTemplate($context, "/$mediaarchive.getMediaDbId()/gpt/functiondefs/checkweather.json"),
-		$gpt.loadInputFromTemplate($context, "/$mediaarchive.getMediaDbId()/gpt/functiondefs/search-tables.json"),
+		#foreach($module in $chatprofile.getEntities())                       	
+			$context.putPageValue("module",$module)
+			$gpt.loadInputFromTemplate($context, "/$mediaarchive.getMediaDbId()/gpt/functiondefs/search-moduletemplate.json"),
+		#end
 		$gpt.loadInputFromTemplate($context, "/$mediaarchive.getMediaDbId()/gpt/functiondefs/emediasearchformat.json")				
 						
 	],
