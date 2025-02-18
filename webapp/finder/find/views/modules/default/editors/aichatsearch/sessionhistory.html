@@ -4,20 +4,34 @@
       <i class="bi bi-plus-lg mr-1"></i> [[New Session]]
     </a>
   </div>
+  
   <hr>
-  <p class="text-center small my-2"><strong>Session History</strong></p>
+
+  <p class="text-center small my-2">
+    <strong>Session History</strong>
+  </p>
+
   #set( $hits = $mediaarchive.query("channel").exact("dataid",$user).exact("searchtype", "user").sort("refreshdateDown").search($context))
+
   #foreach($hit in $hits.getPageOfHits() )
-    <div class="sessionhistory-item #if( $foreach.count == 1 ) active #end">
-      <a class="ajax item d-flex flex-column" data-targetdiv="aichatsearch" data-channel="$hit.id" data-oemaxlevel="1"
-	  data-restorechannel="true"
-	   href="$edithome/sessionrestore.html" title="[[Retrieve this session]]"> 
+    <div class="sessionhistory-item #if( $currentchannel.id == $hit.id ) active #end">
+
+      <a class="ajax item d-flex flex-column" 
+        data-targetdiv="aichatsearch"
+        data-channel="$hit.id"
+        data-oemaxlevel="1"
+	      data-restorechannel="true"
+	      href="$edithome/sessionrestore.html" 
+        title="[[Retrieve this session]]"> 
         <span>$hit.name</span>
         <small class="text-muted">#datetime($hit.refreshdate)</small>
       </a>
-##      <a class="ajax del" href="#" title="[[Delete this session]]"> 
-##        <i class="far fa-trash-alt"></i>
-##      </a>
+
+      ##<a class="ajax del" href="#" title="[[Delete this session]]"> 
+      ##  <i class="far fa-trash-alt"></i>
+      ##</a>
+
     </div>
   #end
+
 </div>
