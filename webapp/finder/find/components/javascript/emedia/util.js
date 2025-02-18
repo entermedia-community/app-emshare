@@ -263,6 +263,7 @@ lQuery("form").livequery(function () {
 		});
 	}
 });
+
 window.debugMode = false;
 window.onkeydown = function (event) {
 	if (event.ctrlKey) {
@@ -318,19 +319,15 @@ $(function () {
 			var imageUrl = $(this).data("imageurl");
 			var assetinfo = $(this).closest("[data-assetid]");
 			var assetid = "";
-			if (assetinfo.length)
-			{
+			if (assetinfo.length) {
 				assetid = assetinfo.data("assetid");
 			}
 			var object = {
-							assetpicked: imageUrl,
-							assetid: assetid
-						};
+				assetpicked: imageUrl,
+				assetid: assetid,
+			};
 			var str = JSON.stringify(object);
-			window.parent.postMessage("assetpicked:"+str,
-				window.location.origin
-			);
-			
+			window.parent.postMessage("assetpicked:" + str, window.location.origin);
 		});
 	}
 });
