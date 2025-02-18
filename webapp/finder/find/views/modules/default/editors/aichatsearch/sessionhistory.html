@@ -1,19 +1,22 @@
 <div class="sessionhistory overflow-y">
   <div class="d-flex justify-content-center mt-3 mb-2">
-    <a class="btn btn-accent" href="#">
+    <a class="btn btn-accent ajax" data-targetdiv="sessionhistory" data-oemaxlevel="1" data-createnew="true" href="$edithome/sessionadd.html">
       <i class="bi bi-plus-lg mr-1"></i> [[New Session]]
     </a>
   </div>
   <hr>
   <p class="text-center small my-3"><strong>Session History</strong></p>
-  #foreach($i in [1..10])
+  #set( $hits = $mediaarchive.query("channel").exact("dataid",$user).exact("searchtype", "user").sort("refreshdateDown").search($context))
+  #foreach($hit in $hits.getPageOfHits() )
     <div class="sessionhistory-item">
-      <a class="ajax item" href="#" title="[[Retrieve this session]]"> 
-        <span>[[Session]] $i</span> 
+      <a class="ajax item #if( $foreach.count == 1 )active #end" data-targetdiv="aichatsearch" data-channel="$hit.id" data-oemaxlevel="1"
+	  data-restorechannel="true"
+	   href="$edithome/sessionrestore.html" title="[[Retrieve this session]]"> 
+        <span>#datetime($hit.refreshdate) $hit.name</span> 
       </a>
-      <a class="ajax del" href="#" title="[[Delete this session]]"> 
-        <i class="far fa-trash-alt"></i>
-      </a>
+##      <a class="ajax del" href="#" title="[[Delete this session]]"> 
+##        <i class="far fa-trash-alt"></i>
+##      </a>
     </div>
   #end
 </div>
