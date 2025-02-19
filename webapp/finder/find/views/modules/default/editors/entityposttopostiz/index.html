@@ -37,17 +37,25 @@
 	
 					<div class="form-group">
 						<label for="postcontent" class="fw-bold">Post Content:</label>
-						<textarea name="postcontent" id="postcontent" rows="5" class="form-control" required></textarea>
+						
+						#set($postcontent = $entity.get("maincontent"))
+						#ifnull($postcontent)
+						#set($postcontent = $entity.get("longcaption"))
+						#end
+						
+						<textarea name="postcontent" id="postcontent" rows="5" class="form-control" required>$!postcontent</textarea>
 					</div>
 				
 					<div class="form-group">
 						<label for="date" class="fw-bold">Post Date (optional):</label>
-						<input type="datetime-local" name="date.value" class="form-control" />
+						#set($postdate = $entity.get("entity_date"))
+						<input type="datetime-local" name="date.value" class="form-control" value="$context.getDateTime($postdate, "yyyy-MM-dd'T'HH:mm")" />
 					</div>
 					
 					<div class="form-group">
 						<label for="date" class="fw-bold">Asset (optional):</label>
-						<input type="text" name="assetid" value="116" class="form-control" />
+						#set($primaryasset = $entity.get("primarymedia"))
+						<input type="text" name="assetid" value="$!primaryasset" class="form-control" />
 					</div>
 	
 					<div class="form-group">
