@@ -5,65 +5,76 @@
 	data-entitymoduleid="$!entitymodule.id">
 
 	<div class="tabheader">
-	<div class="d-flex justify-content-between">
-		<span>[[Share to Postiz]]</span>
-		<div class="d-flex">
-			<form class="ajaxform autosubmitform" 
-				action="$edithome/selectmediaprofile.html?oemaxlevel=1" 
-				data-targetdiv="${edithomeid}" 
-				method="post">
-			<span>[[Media Profile]]</span> 
-			#set($profiles = $mediaarchive.getList("socialmediaprofile"))
-			<select name="socialmediaprofile" class="">
-				<option></option>
-				#foreach($profile in $profiles)
-				<option value="$profile.getId()" #if($userprofile.get("socialmediaprofile") == $profile.getId()) selected="selected" #end>
-					$profile.getName()
-				</option>
-				#end
-			</select>
-			</form>
-		</div>
-	</div>
-	</div>
-	
-	<div class="my-3 px-3">
-	  <div class="bg-light p-2 rounded" style="max-width: 600px;" id="blogBody">
-			<div id="postizcreate"></div>
-			<form class="ajaxform" action="$edithome/post.html?oemaxlevel=1" data-targetdiv="#postizcreate" method="post">
-			
-				
-			    <div class="form-group">
-			        <label for="postcontent">Post Content:</label>
-			        <textarea name="postcontent" id="postcontent" rows="5" class="form-control" required></textarea>
-			    </div>
-			
-			    <div class="form-group">
-			        <label for="date">Post Date (optional):</label>
-			        <input type="datetime-local" name="date.value" class="form-control" />
-			    </div>
-			
-			    <div class="form-group">
-			        <label>Select Integrations:</label><br/>
-			        #if($postoptions && $postoptions.size() > 0)
-			            #foreach($postoption in $postoptions)
-						<div>
-			                <div class="form-check">
-								<img src="$postoption.picture" style="width:60px" />
-			                    <input type="checkbox" class="form-check-input" name="integrations" value="$postoption.id" id="integration_${postoption.id}">
-			                    <label class="form-check-label" for="integration_${postoption.id}">$postoption.name ($postoption.id)</label>
-			                </div>
-							</div>
-			            #end
-			        #else
-			            <p>No integrations available.</p>
-			        #end
-			    </div>
-				<input type="text" name="assetid" value="116"/>
-			    <button type="submit" class="btn btn-primary">Create Draft Post</button>
-			</form>
-		
+		<div class="d-flex justify-content-between">
+			<span>[[Share to Postiz]]</span>
 		</div>
 	</div>
 
+	#set($selectedprofile = $userprofile.get("socialmediaprofile"))
+	<div class="postiz-postform my-3 px-3">
+		<div class="bg-light p-2 rounded" style="max-width: 720px;">
+
+			<div class="d-flex align-items-center justify-content-center pt-1 pb-3">
+				<h5 class="my-0">[[Select Media Profile]]</h5> 
+				<form class="ajaxform autosubmitform ml-3" 
+					action="$edithome/selectmediaprofile.html?oemaxlevel=1" 
+					data-targetdiv="${edithomeid}" 
+					method="post">
+					#set($profiles = $mediaarchive.getList("socialmediaprofile"))
+					<select name="socialmediaprofile" class="custom-select">
+						<option></option>
+						#foreach($profile in $profiles)
+						<option value="$profile.getId()" #if($selectedprofile == $profile.getId()) selected="selected" #end>
+							$profile.getName()
+						</option>
+						#end
+					</select>
+				</form>
+			</div>
+			<div class="collapse #ifnotnull($selectedprofile) show #end">
+				<div id="postizcreate"></div>
+				<form class="ajaxform d-flex flex-column bg-white p-2" action="$edithome/post.html?oemaxlevel=1" data-targetdiv="#postizcreate" method="post">
+	
+					<div class="form-group">
+						<label for="postcontent" class="fw-bold">Post Content:</label>
+						<textarea name="postcontent" id="postcontent" rows="5" class="form-control" required></textarea>
+					</div>
+				
+					<div class="form-group">
+						<label for="date" class="fw-bold">Post Date (optional):</label>
+						<input type="datetime-local" name="date.value" class="form-control" />
+					</div>
+					
+					<div class="form-group">
+						<label for="date" class="fw-bold">Asset (optional):</label>
+						<input type="text" name="assetid" value="116" class="form-control" />
+					</div>
+	
+					<div class="form-group">
+						<label class="fw-bold">Select Channels:</label>
+						<div class="postiz-channels">
+							#if($postoptions && $postoptions.size() > 0)
+								#foreach($postoption in $postoptions)
+									<label class="postiz-channel" for="integration_${postoption.id}" title="#ID: $postoption.id">
+										<input type="checkbox" name="integrations" value="$postoption.id" id="integration_${postoption.id}">
+										<div style="width:32px;height: 32px;" class="mx-2">
+											<img src="$postoption.picture" class="img-fluid rounded-circle" />
+										</div>
+										<span>$postoption.name</span>
+									</label>
+								#end
+							#else
+								<p>No integrations available.</p>
+							#end
+						</div>
+					</div>
+					
+					<div class="form-group w-100 text-center mt-2">
+						<button type="submit" class="btn btn-lg btn-primary">Create Draft Post</button>
+					</div>
+	
+				</form>
+			</div>
+		</div>
+	</div>
 </div>
