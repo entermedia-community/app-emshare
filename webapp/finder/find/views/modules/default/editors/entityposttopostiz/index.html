@@ -1,5 +1,3 @@
-#set($postiz = $mediaarchive.getBean("postizManager"))
-#set($postoptions = $postiz.listIntegrations())
 
 <div id="${edithomeid}"	
 	class="editdiv"
@@ -14,12 +12,12 @@
 				action="$edithome/selectmediaprofile.html?oemaxlevel=1" 
 				data-targetdiv="${edithomeid}" 
 				method="post">
-			<span>[[Media Profile]]</span>
+			<span>[[Media Profile]]</span> 
 			#set($profiles = $mediaarchive.getList("socialmediaprofile"))
 			<select name="socialmediaprofile" class="">
 				<option></option>
 				#foreach($profile in $profiles)
-				<option value="$profile.getId()">
+				<option value="$profile.getId()" #if($userprofile.get("socialmediaprofile") == $profile.getId()) selected="selected" #end>
 					$profile.getName()
 				</option>
 				#end
@@ -49,10 +47,13 @@
 			        <label>Select Integrations:</label><br/>
 			        #if($postoptions && $postoptions.size() > 0)
 			            #foreach($postoption in $postoptions)
+						<div>
 			                <div class="form-check">
+								<img src="$postoption.picture" style="width:60px" />
 			                    <input type="checkbox" class="form-check-input" name="integrations" value="$postoption.id" id="integration_${postoption.id}">
 			                    <label class="form-check-label" for="integration_${postoption.id}">$postoption.name ($postoption.id)</label>
 			                </div>
+							</div>
 			            #end
 			        #else
 			            <p>No integrations available.</p>
