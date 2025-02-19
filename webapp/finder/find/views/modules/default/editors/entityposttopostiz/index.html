@@ -54,7 +54,15 @@
 					
 					<div class="form-group">
 						<label for="date" class="fw-bold">Asset (optional):</label>
-						#set($primaryasset = $entity.get("primarymedia"))
+						#set($detail = $mediaarchive.getSearcher($entitymodule.id).getDetail("primarymedia") )
+						$context.putPageValue("data",$entity)
+						$context.putPageValue("detail",$detail)
+						#set( $xmledithome = "$apphome/components/xml")
+						$context.putPageValue("xmledithome",$xmledithome)
+						#set( $value = $entity.get($detail.getId()) )
+						$context.putPageValue("value",$value)
+						$pages.include("$xmledithome/types/asset.html")
+						
 						<input type="text" name="assetid" value="$!primaryasset" class="form-control" />
 					</div>
 	
