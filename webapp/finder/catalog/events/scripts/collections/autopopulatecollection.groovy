@@ -8,14 +8,7 @@ import org.openedit.hittracker.HitTracker
 import org.openedit.hittracker.SearchQuery
 
 
-
-public void init() {
-	//done in EnterMediaCloudModule.searchEnterMediaAssets
-}
-
-
-
-public void init_local(){
+public void init(){
 
 	MediaArchive archive = context.getPageValue("mediaarchive");
 	
@@ -27,41 +20,39 @@ public void init_local(){
 	
 	Searcher catsearcher = archive.getSearcher("category");
 	ArrayList rootcats = new ArrayList(); 
-		String name = id;
+	String name = id;
 
-		String [] splits = name.split("-");
-		String searchstring = splits[splits.length -1];
-		//searchstring = searchstring.replaceFirst("^0+(?!\$)", "")
+	String [] splits = name.split("-");
+	String searchstring = splits[splits.length -1];
+	//searchstring = searchstring.replaceFirst("^0+(?!\$)", "")
 
-		//log.info("Searching for categories contains categorypath = " +  searchstring);
-		HitTracker categories =  catsearcher.query().contains("categorypath", searchstring).sort("categorypathUp").search();
-		//log.info("Found ${categories.size()} existing categories");
-		categories.enableBulkOperations();
-		if(categories.size() > 0){
-			rootcats = findCommonRoots(categories);
-			//rootcats.remove(collection.get("rootcategory"));
-			
-			context.putPageValue("foundcategories", rootcats);
-		}
+	//log.info("Searching for categories contains categorypath = " +  searchstring);
+	HitTracker categories =  catsearcher.query().contains("categorypath", searchstring).sort("categorypathUp").search();
+	//log.info("Found ${categories.size()} existing categories");
+	categories.enableBulkOperations();
+	if(categories.size() > 0){
+		rootcats = findCommonRoots(categories);	
+		context.putPageValue("foundcategories", rootcats);
+	}
+
+	Searcher assets = archive.getAssetSearcher();
+	SearchQuery query = assets.createSearchQuery();
+	query.addSortBy("sourcepath");
+	//query.addContains("description", searchstring);
+	query.addContains("name", searchstring);  //Search Only Filename
+	log.info("Searching assets contains = " +  searchstring + " for Collection: " + name);
 	
-		Searcher assets = archive.getAssetSearcher();
-		SearchQuery query = assets.createSearchQuery();
-		query.addSortBy("sourcepath");
-		//query.addContains("description", searchstring);
-		query.addContains("name", searchstring);  //Search Only Filename
-		log.info("Searching assets contains = " +  searchstring + " for Collection: " + name);
-		
-		rootcats.each{
-			query.addNot("category", it);
-		}
-		
-		//log.info(query.toFriendly());
-		
-		
-		HitTracker hits = assets.search(query);
-		//log.info(hits.getSearchQuery().getTerms());
-		
-		context.putPageValue("assets", hits);
+	rootcats.each{
+		query.addNot("category", it);
+	}
+	
+	//log.info(query.toFriendly());
+	
+	
+	HitTracker hits = assets.search(query);
+	//log.info(hits.getSearchQuery().getTerms());
+	
+	context.putPageValue("assets", hits);
 	
 }
 
@@ -91,13 +82,18 @@ public List findCommonRoots(HitTracker inCategories){
 	}	
 	);
 
+	String excludepath = context.getRequestParameter("excludepath");
 	List finallist = new ArrayList();
-
 	String lastroot = "_";
+	
 	sorted.each{
 		Data hit = (Data)it;
 		String catpath = hit.getValue("categorypath");
 		
+		if (excludepath != null && catpath.startsWith(excludepath))
+		{
+			return;
+		}
 		if(catpath.contains("Collections")) {
 			return;
 		}
@@ -115,7 +111,7 @@ public List findCommonRoots(HitTracker inCategories){
 	
 	
 	
-	log.info("got  " + finallist.size());
+	//log.info("got  " + finallist.size());
 	return finallist;
 }
 
