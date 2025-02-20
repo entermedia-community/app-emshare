@@ -613,7 +613,7 @@ if( !jQuery.fn.videoTimeline ) { (function ( $ ) {
 		//clean fields
 		$('#nestedfields input[name="field"]').each(function() {
 			var fieldid = $(this).val();
-			var select2 = jQuery("#list-" + fieldid);
+			var select2 = jQuery('select[name="' + fieldid + '.value"]');
 			if( select2.length > 0)
 			{
 				//select2.val(null).trigger('change');
