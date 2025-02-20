@@ -1727,7 +1727,7 @@ $(document).ready(function () {
 						zip.file("export.json", copyJson);
 						zip.file("export.zip", exBlob);
 						zip.generateAsync({ type: "blob" }).then(function (blob) {
-							saveAs(blob, "name.zip");
+							saveAs(blob, moduleids.join(",") + ".zip");
 						});
 					},
 					error: function (error) {
