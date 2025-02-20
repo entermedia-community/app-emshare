@@ -829,6 +829,7 @@ $(document).ready(function () {
 			}
 			if (selectedGroup) {
 				$("#copySmartNodes").show();
+				$("#exportSmartNodes").show();
 				if (selectedGroup.cssClass === "folderGroup") {
 					var selectedGroupId = selectedGroup.getId();
 					var selectedIcon = canvas.getFigure(selectedGroupId + "-icon");
@@ -980,6 +981,7 @@ $(document).ready(function () {
 
 		canvas.on("unselect", function () {
 			$("#copySmartNodes").hide();
+			$("#exportSmartNodes").hide();
 			hideFolderConfig();
 			hideLabelConfig();
 			$("#folderThumbPickerBtn").html("");
@@ -1694,6 +1696,101 @@ $(document).ready(function () {
 			});
 		});
 
+		lQuery("#exportSmartNodes").livequery("click", function () {
+			getSelectedJson(function (json) {
+				if (!Array.isArray(json) || json.length == 0) {
+					customToast("Invalid JSON structure.", {
+						positive: false,
+					});
+					return;
+				}
+				var moduleids = [];
+				for (var i = 0; i < json.length; i++) {
+					var moduleid = json[i].userData.moduleid;
+					if (moduleid) {
+						moduleids.push(moduleid);
+					}
+				}
+				var copyJson = globalizeJSON(JSON.stringify(json));
+				$.ajax({
+					url:
+						apphome +
+						"/views/settings/customizations/export/customizations.zip",
+					data: {
+						moduleid: moduleids,
+					},
+					method: "GET",
+					xhrFields: { responseType: "arraybuffer" },
+					success: function (data) {
+						var exBlob = new Blob([data], { type: "octet/stream" });
+						var zip = new JSZip();
+						zip.file("export.json", copyJson);
+						zip.file("export.zip", exBlob);
+						zip.generateAsync({ type: "blob" }).then(function (blob) {
+							saveAs(blob, "name.zip");
+						});
+					},
+					error: function (error) {
+						customToast("Error exporting!", {
+							positive: false,
+							log: error,
+						});
+					},
+				});
+			});
+		});
+
+		lQuery("#importSmartNodes").livequery("click", function () {
+			$("#importSmartNodesFile").click();
+		});
+
+		lQuery("#importSmartNodesFile").livequery("change", function () {
+			var file = this.files[0];
+			if (file) {
+				JSZip.loadAsync(file).then(function (zip) {
+					zip
+						.file("export.json")
+						.async("string")
+						.then(function (data) {
+							var json = JSON.parse(localizeJSON(data));
+							if (!Array.isArray(json) || json.length == 0) {
+								customToast("Invalid JSON structure.", {
+									positive: false,
+								});
+								return false;
+							}
+							reader.unmarshal(canvas, json);
+							return true;
+						})
+						.then(function (result) {
+							if (!result) {
+								return false;
+							}
+							zip
+								.file("export.zip")
+								.async("blob")
+								.then(function (blob) {
+									var data = new FormData();
+									data.append("file", blob);
+									$.ajax({
+										url: apphome + "/views/settings/customizations/import.html",
+										method: "POST",
+										data: data,
+										contentType: false,
+										processData: false,
+									});
+								});
+						})
+						.catch((error) => {
+							customToast("Error importing!", {
+								positive: false,
+								log: error,
+							});
+						});
+				});
+			}
+		});
+
 		function validateClipboard(callback = null) {
 			var $this = $("#pasteSmartNodes");
 			var json = null;
@@ -1955,4 +2052,10 @@ $(document).ready(function () {
 		});
 		cancelBtn.click(hideInput);
 	});
+
+	// var zip = new JSZip();
+	// zip.file("Hello.", "hello.txt");
+	// zip.generateAsync({ type: "blob" }).then(function (blob) {
+	// 	saveAs(blob, "hello.zip");
+	// });
 });
