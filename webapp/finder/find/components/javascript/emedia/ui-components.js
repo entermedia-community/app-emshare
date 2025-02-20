@@ -104,6 +104,16 @@ jQuery(document).ready(function () {
 		confirmModalClose(targetModal);
 	});
 
+	lQuery("#checkallcustomizations").livequery("change", function (event) {
+		event.preventDefault();
+		var checked = $(this).is(":checked");
+		if (checked) {
+			$(".customizationcheckbox").prop("checked", true);
+		} else {
+			$(".customizationcheckbox").prop("checked", false);
+		}
+	});
+
 	$(document).keydown(function (e) {
 		switch (e.which) {
 			case 27: //esckey
