@@ -29,6 +29,7 @@ public void tagAssets(){
 
 	String type = modelinfo != null ?  modelinfo.get("llmtype") : null;
 	
+	log.info("AI manager selected: " + type + " Model: "+ model);
 	if(type == null) {
 		type = "gptManager";
 	} else {
@@ -59,13 +60,16 @@ public void tagAssets(){
 				inputStream.close() // Close the InputStream
 			}
 
+			log.info("Analyze Asset: " + asset.getId());
 
-
-			String template = manager.loadInputFromTemplate(inReq, "/" +  archive.getMediaDbId() + "/gpt/templates/analyzeasset.html");
+			String template = manager.loadInputFromTemplate(inReq, "/" +  archive.getMediaDbId() + "/gpt/systemmessage/analyzeasset.html");
 			try{
 
 				LLMResponse results = manager.callFunction(inReq, model, "generate_metadata", template, 0, 5000,base64EncodedString );
-				def jsonSlurper = new JsonSlurper()
+				def jsonSlurper = new JsonSlurper();
+				if (results.getArguments() == null) {
+					log.info("Error on asset: " + asset.getId() + " "+ results);
+				}
 				def result = jsonSlurper.parseText(results.getArguments().toJSONString());
 				result.metadata.each { key, value ->
 					if(!asset.getValue(key)){
@@ -77,6 +81,7 @@ public void tagAssets(){
 			}
 			catch(Exception e){
 				log.info(e);
+				return;
 			}
 		}
 	}
