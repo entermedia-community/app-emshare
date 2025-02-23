@@ -15,10 +15,12 @@
   data-moduleid="$!moduleid"
   data-rendertype="entity">
 
-	#if(!$primarymediareadonly)
-	<a href="$!{previewurl}" 
-		id="clickid${entityid}"  
-		class="emdialog entity-dialog" 
+	<a 
+		#if(!$primarymediareadonly)
+			id="clickid${entityid}"  
+			href="$!{previewurl}" 
+			class="emdialog entity-dialog"
+		#end
 		data-updateurl="true"
 		data-urlbar="$!{siteroot}$apphome/views/modules/$!{moduleid}/index.html?entityid=$entityid"
 		data-hidefooter="true" 
@@ -27,7 +29,6 @@
 		data-id="${entityid}"
 		data-moduleid="$!moduleid" 
 		title="[[View]]: #text($!entity)">
-  	 #end
 	
 		##look for primaryimage
 		#set( $primarymediafield = $entity.primarymedia )
@@ -95,9 +96,7 @@
 				<span>#text($!entity)</span>
 			</div>
 		</div>
-	#if(!$primarymediareadonly)
 	</a>
-	#end
 </div>
 
 
