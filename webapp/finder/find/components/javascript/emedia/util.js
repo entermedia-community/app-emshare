@@ -331,3 +331,128 @@ $(function () {
 		});
 	}
 });
+
+function asciiBoldText(text) {
+	return text.replace(/[A-Za-z0-9]/g, function (char) {
+		let diff;
+		if (/[0-9]/.test(char)) {
+			diff = "𝟬".codePointAt(0) - "0".codePointAt(0);
+		} else if (/[A-Z]/.test(char)) {
+			diff = "𝗔".codePointAt(0) - "A".codePointAt(0);
+		} else {
+			diff = "𝗮".codePointAt(0) - "a".codePointAt(0);
+		}
+		return String.fromCodePoint(char.codePointAt(0) + diff);
+	});
+}
+function asciiItalicText(text) {
+	return text.replace(/[A-Za-z]/g, function (char) {
+		let diff;
+		if (/[A-Z]/.test(char)) {
+			diff = "𝘈".codePointAt(0) - "A".codePointAt(0);
+		} else {
+			diff = "𝘢".codePointAt(0) - "a".codePointAt(0);
+		}
+		return String.fromCodePoint(char.codePointAt(0) + diff);
+	});
+}
+function asciiBoldItalicText(text) {
+	return text.replace(/[A-Za-z]/g, function (char) {
+		let diff;
+		if (/[A-Z]/.test(char)) {
+			diff = "𝘼".codePointAt(0) - "A".codePointAt(0);
+		} else {
+			diff = "𝙖".codePointAt(0) - "a".codePointAt(0);
+		}
+		return String.fromCodePoint(char.codePointAt(0) + diff);
+	});
+}
+
+function asciiUnderlineText(text) {
+	return text.replace(/[A-Za-z0-9]/g, function (char) {
+		return String.fromCodePoint(char.codePointAt(0), 818);
+	});
+}
+function asciiBoldUnderlineText(text) {
+	return text.replace(/[A-Za-z]/g, function (char) {
+		let diff;
+		if (/[0-9]/.test(char)) {
+			diff = "𝟬".codePointAt(0) - "0".codePointAt(0);
+		} else if (/[A-Z]/.test(char)) {
+			diff = "𝗔".codePointAt(0) - "A".codePointAt(0);
+		} else {
+			diff = "𝗮".codePointAt(0) - "a".codePointAt(0);
+		}
+		return String.fromCodePoint(char.codePointAt(0) + diff, 818);
+	});
+}
+
+function asciiItalicUnderlineText(text) {
+	return text.replace(/[A-Za-z]/g, function (char) {
+		let diff;
+		if (/[A-Z]/.test(char)) {
+			diff = "𝘈".codePointAt(0) - "A".codePointAt(0);
+		} else {
+			diff = "𝘢".codePointAt(0) - "a".codePointAt(0);
+		}
+		return String.fromCodePoint(char.codePointAt(0) + diff, 818);
+	});
+}
+
+lQuery("textarea#postcontent").livequery(function () {
+	var text = $(this).val();
+	var $text = $(text);
+	// $(document).append($text);
+	var finalText = "";
+	function getText(node, parents = []) {
+		var nodeName = node.nodeName;
+		if (nodeName == "BR") {
+			finalText += "\n";
+		} else if (nodeName == "#text") {
+			var textContent = node.textContent;
+			if (parents.length > 0) {
+				var parent = parents[parents.length - 1];
+				var grandParents = parents.slice(0, parents.length - 1);
+				if (parent == "B" || parent == "STRONG") {
+					if (grandParents.includes("I") || grandParents.includes("EM")) {
+						textContent = asciiBoldItalicText(textContent);
+					} else {
+						textContent = asciiBoldText(textContent);
+					}
+				} else if (parent == "I" || parent == "EM") {
+					if (grandParents.includes("B") || grandParents.includes("STRONG")) {
+						textContent = asciiBoldItalicText(textContent);
+					} else {
+						textContent = asciiItalicText(textContent);
+					}
+				} else if (parent == "U" || parent == "INS") {
+					if (grandParents.includes("B") || grandParents.includes("STRONG")) {
+						textContent = asciiBoldUnderlineText(textContent);
+					} else if (
+						grandParents.includes("I") ||
+						grandParents.includes("EM")
+					) {
+						textContent = asciiBoldUnderlineText(textContent);
+					} else {
+						textContent = asciiUnderlineText(textContent);
+					}
+				}
+			}
+			finalText += textContent;
+		} else {
+			var childNodes = node.childNodes;
+			for (var i = 0; i < childNodes.length; i++) {
+				getText(childNodes[i], parents.concat(node.nodeName));
+			}
+		}
+		if (nodeName == "P") {
+			finalText += "\n";
+		}
+	}
+	$text.each(function () {
+		getText(this);
+	});
+	$(this).text(finalText);
+	$(this).val(finalText);
+	// $text.remove();
+});
