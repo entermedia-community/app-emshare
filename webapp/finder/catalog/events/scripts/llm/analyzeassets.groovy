@@ -89,10 +89,17 @@ public void tagAssets(){
 								detected.put(key, value);
 							}
 						}
-						log.info(asset.getId()+" - Detected: " + detected + " Took: "+duration +"ms");
+						if (detected.size() > 0)
+						{
+							log.info("("+asset.getId() +") "+ asset.getName()+" - Detected: " + detected + " Took: "+duration +"ms");
+						}
+						else 
+						{
+							log.info("("+asset.getId() +") "asset.getName()+" - Detected but not saved: "  + result + " Took: "+duration +"ms")
+						}
 					}
 					else {
-						log.info(asset.getId()+" - No Detections." + " Took: "+duration +"ms");
+						log.info("("+asset.getId() +") "asset.getName()+" - Nothing Detected." + " Took: "+duration +"ms");
 					}
 					asset.setValue("taggedbyllm", true);
 					archive.saveAsset(asset);
