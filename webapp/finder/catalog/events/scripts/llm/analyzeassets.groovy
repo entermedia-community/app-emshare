@@ -40,8 +40,14 @@ public void tagAssets(){
 	inReq.putPageValue("category", cat);
 
 	//Refine this to use a hit tracker?
-	HitTracker assets = searcher.query().exact("taggedbyllm","false").search();
+	HitTracker assets = searcher.query().exact("taggedbyllm","false").exact("llmerror","false").search();
 	
+	if(assets.size() < 1)
+	{
+		return;
+	}
+
+	log.info("Tagging: " + assets.size() + " assets");
 	for (hit in assets) {
 		Asset asset = archive.getAsset(hit.id);
 		inReq.putPageValue("asset", asset);
@@ -60,29 +66,52 @@ public void tagAssets(){
 				inputStream.close() // Close the InputStream
 			}
 
-			log.info("Analyze Asset: " + asset.getId());
+			log.info("Analyzing asset: (" + asset.getId() + ") " + asset.getName());
 
 			String template = manager.loadInputFromTemplate(inReq, "/" +  archive.getMediaDbId() + "/gpt/systemmessage/analyzeasset.html");
 			try{
-
+				long startTime = System.nanoTime();
 				LLMResponse results = manager.callFunction(inReq, model, "generate_metadata", template, 0, 5000,base64EncodedString );
-				def jsonSlurper = new JsonSlurper();
-				if (results.getArguments() == null) {
-					log.info("Error on asset: " + asset.getId() + " "+ results);
-				}
-				def result = jsonSlurper.parseText(results.getArguments().toJSONString());
-				result.metadata.each { key, value ->
-					if(!asset.getValue(key)){
-						asset.setValue(key, value);
+				
+				if (results != null)
+				{
+					JSONObject arguments = results.getArguments();
+					//log.info(arguments);
+					long duration = (System.nanoTime() - startTime) / 1_000_000;
+					if (arguments != null) {
+						def jsonSlurper = new JsonSlurper();
+						def result = jsonSlurper.parseText(results.getArguments().toJSONString());
+						HashMap detected = new HashMap();
+						
+						result.metadata.each { key, value ->
+							if(!asset.getValue(key)){
+								asset.setValue(key, value);
+								detected.put(key, value);
+							}
+						}
+						if (detected.size() > 0)
+						{
+							log.info("("+asset.getId() +") "+ asset.getName()+" - Detected: " + detected + " Took: "+duration +"ms");
+						}
+						else 
+						{
+							log.info("("+asset.getId() +") "asset.getName()+" - Detected but not saved: "  + result + " Took: "+duration +"ms")
+						}
 					}
+					else {
+						log.info("("+asset.getId() +") "asset.getName()+" - Nothing Detected." + " Took: "+duration +"ms");
+					}
+					asset.setValue("taggedbyllm", true);
+					archive.saveAsset(asset);
 				}
-				asset.setValue("taggedbyllm", true);
-				archive.saveAsset(asset);
 			}
 			catch(Exception e){
-				log.info(e);
-				return;
+				log.error("LLM Error", e);
+				asset.setValue("llmerror", true);
+				archive.saveAsset(asset);
+				continue;
 			}
+			
 		}
 	}
 }
