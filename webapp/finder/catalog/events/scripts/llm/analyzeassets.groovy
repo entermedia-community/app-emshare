@@ -66,7 +66,7 @@ public void tagAssets(){
 				inputStream.close() // Close the InputStream
 			}
 
-			//log.info("Analyze Asset: " + asset.getId());
+			log.info("Analyzing asset: (" + asset.getId() + ") " + asset.getName());
 
 			String template = manager.loadInputFromTemplate(inReq, "/" +  archive.getMediaDbId() + "/gpt/systemmessage/analyzeasset.html");
 			try{
