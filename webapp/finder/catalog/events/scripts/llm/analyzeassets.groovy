@@ -40,7 +40,7 @@ public void tagAssets(){
 	inReq.putPageValue("category", cat);
 
 	//Refine this to use a hit tracker?
-	HitTracker assets = searcher.query().exact("taggedbyllm","false").search();
+	HitTracker assets = searcher.query().exact("taggedbyllm","false").exact("llmerror","false").search();
 	
 	for (hit in assets) {
 		Asset asset = archive.getAsset(hit.id);
@@ -93,9 +93,12 @@ public void tagAssets(){
 				}
 			}
 			catch(Exception e){
-				log.info(e);
-				return;
+				log.error("LLM Error", e);
+				asset.setValue("llmerror", true);
+				archive.saveAsset(asset);
+				continue;
 			}
+			
 		}
 	}
 }
