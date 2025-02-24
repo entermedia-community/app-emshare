@@ -60,24 +60,37 @@ public void tagAssets(){
 				inputStream.close() // Close the InputStream
 			}
 
-			log.info("Analyze Asset: " + asset.getId());
+			//log.info("Analyze Asset: " + asset.getId());
 
 			String template = manager.loadInputFromTemplate(inReq, "/" +  archive.getMediaDbId() + "/gpt/systemmessage/analyzeasset.html");
 			try{
-
+				long startTime = System.nanoTime();
 				LLMResponse results = manager.callFunction(inReq, model, "generate_metadata", template, 0, 5000,base64EncodedString );
-				def jsonSlurper = new JsonSlurper();
-				if (results.getArguments() == null) {
-					log.info("Error on asset: " + asset.getId() + " "+ results);
-				}
-				def result = jsonSlurper.parseText(results.getArguments().toJSONString());
-				result.metadata.each { key, value ->
-					if(!asset.getValue(key)){
-						asset.setValue(key, value);
+				
+				if (results != null)
+				{
+					JSONObject arguments = results.getArguments();
+					//log.info(arguments);
+					long duration = (System.nanoTime() - startTime) / 1_000_000;
+					if (arguments != null) {
+						def jsonSlurper = new JsonSlurper();
+						def result = jsonSlurper.parseText(results.getArguments().toJSONString());
+						HashMap detected = new HashMap();
+						
+						result.metadata.each { key, value ->
+							if(!asset.getValue(key)){
+								asset.setValue(key, value);
+								detected.put(key, value);
+							}
+						}
+						log.info(asset.getId()+" - Detected: " + detected + " Took: "+duration +"ms");
 					}
+					else {
+						log.info(asset.getId()+" - No Detections." + " Took: "+duration +"ms");
+					}
+					asset.setValue("taggedbyllm", true);
+					archive.saveAsset(asset);
 				}
-				asset.setValue("taggedbyllm", true);
-				archive.saveAsset(asset);
 			}
 			catch(Exception e){
 				log.info(e);
