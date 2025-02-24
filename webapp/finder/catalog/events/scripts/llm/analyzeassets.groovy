@@ -42,6 +42,12 @@ public void tagAssets(){
 	//Refine this to use a hit tracker?
 	HitTracker assets = searcher.query().exact("taggedbyllm","false").exact("llmerror","false").search();
 	
+	if(assets.size() < 1)
+	{
+		return;
+	}
+
+	log.info("Tagging: " + assets.size() + " assets");
 	for (hit in assets) {
 		Asset asset = archive.getAsset(hit.id);
 		inReq.putPageValue("asset", asset);
