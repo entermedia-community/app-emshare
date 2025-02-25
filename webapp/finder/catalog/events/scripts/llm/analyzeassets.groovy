@@ -82,7 +82,7 @@ public void tagAssets(){
 					long duration = (System.currentTimeMillis() - startTime) / 1000L;
 					if (arguments != null) {
 						def jsonSlurper = new JsonSlurper();
-						def result = jsonSlurper.parseText(results.getArguments().toJSONString());
+						def result = jsonSlurper.parseText(results.getArguments().toJSONString());  //Why are you doing this?
 						HashMap detected = new HashMap();
 						
 						result.metadata.each { key, value ->
