@@ -40,7 +40,9 @@ $context.putPageValue("thumbsize", $thumbsize)
 
 $context.putPageValue("searchhome", $searchhome)
 
-<div class="emthumbholder draggholder" data-assetid="$hit.id">
+#set( $rendertype = $mediaarchive.getMediaRenderType($hit.fileformat))
+
+<div class="emthumbholder draggholder emthumbholder-${rendertype}" data-assetid="$hit.id">
 	#if( $hit.importstatus && $hit.importstatus == "uploading" )
 		$pages.include("$apphome/views/modules/asset/results/default/uploadqueue/uploadstatus.html?assetid=${hit.id}",$context)	
 	#elseif( !$hit.importstatus || $hit.importstatus != "complete" )
@@ -92,15 +94,15 @@ $context.putPageValue("searchhome", $searchhome)
 						data-name="#if($title)#esc($title)#else$!{hit.name}#end" 		
 						src="$imagepath$!urlparams" 
 				/>
-				#set( $type = $mediaarchive.getMediaRenderType($hit.fileformat))
-				#if( $type == "image")
+				
+				#if( $rendertype == "image")
 					#set($originalLink = "$siteroot/$mediadbappid/services/module/asset/downloads/originals/"+$mediaarchive.asLinkToOriginal($hit))
 					<div class="pickfromiframe" data-imageurl="$originalLink">
 						<i class="bi bi-check2-circle"></i>
 						<span>[[Pick this image]]</span>
 					</div>
 				#end
-				#if($type =="video")<div class="videoplay-button"><span class="videoplay-icon"></span></div>#end
+				#if($rendertype =="video")<div class="videoplay-button"><span class="videoplay-icon"></span></div>#end
 			</div>
 		#ifnotnull($imagebox)
 			</div>
