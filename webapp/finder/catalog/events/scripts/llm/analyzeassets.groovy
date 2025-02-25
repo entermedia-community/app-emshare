@@ -72,14 +72,14 @@ public void tagAssets(){
 			
 			String template = manager.loadInputFromTemplate(inReq, "/" +  archive.getMediaDbId() + "/gpt/systemmessage/analyzeasset.html");
 			try{
-				long startTime = System.nanoTime();
+				long startTime = System.currentTimeMillis();
 				LLMResponse results = manager.callFunction(inReq, model, "generate_metadata", template, 0, 5000,base64EncodedString );
 				
 				if (results != null)
 				{
 					JSONObject arguments = results.getArguments();
 					//log.info(arguments);
-					long duration = (System.nanoTime() - startTime) / 1_000_000;
+					long duration = (System.currentTimeMillis() - startTime) / 1000L;
 					if (arguments != null) {
 						def jsonSlurper = new JsonSlurper();
 						def result = jsonSlurper.parseText(results.getArguments().toJSONString());
@@ -94,15 +94,15 @@ public void tagAssets(){
 						}
 						if (detected.size() > 0)
 						{
-							log.info("("+asset.getId() +") "+ asset.getName()+" - Detected: " + detected + " Took: "+duration +"ms");
+							log.info("("+asset.getId() +") "+ asset.getName()+" - Detected: " + detected + " Took: "+duration +"s");
 						}
 						else 
 						{
-							log.info("("+asset.getId() +") "+ asset.getName()+" - Detected but not saved: "  + result + " Took: "+duration +"ms")
+							log.info("("+asset.getId() +") "+ asset.getName()+" - Detected but not saved: "  + result + " Took: "+duration +"s")
 						}
 					}
 					else {
-						log.info("("+asset.getId() +") "+asset.getName()+" - Nothing Detected." + " Took: "+duration +"ms");
+						log.info("("+asset.getId() +") "+asset.getName()+" - Nothing Detected." + " Took: "+duration +"s");
 					}
 					asset.setValue("taggedbyllm", true);
 					archive.saveAsset(asset);
