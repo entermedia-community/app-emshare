@@ -23,16 +23,17 @@ public void tagAssets(){
 	if(model == null) {
 		model = "gpt-4o-mini";
 	}
+	String type = "gptManager";
+	
 	Data modelinfo = archive.query("llmmodel").exact("modelid",model).searchOne();
-
-	String type = modelinfo.get("llmtype");
+	
+	if(modelinfo != null)
+	{
+		type = modelinfo.get("llmtype") + "Manager";
+	}
 	
 	log.info("AI manager selected: " + type + " Model: "+ model);
-	if(type == null) {
-		type = "gptManager";
-	} else {
-		type = type + "Manager";
-	}	
+	
 	LLMManager manager = archive.getBean(type);
 	def cat = archive.getCategorySearcher().getRootCategory();
 	inReq.putPageValue("category", cat);
@@ -49,6 +50,7 @@ public void tagAssets(){
 	for (hit in assets) {
 		Asset asset = archive.getAssetSearcher().loadData(hit);
 		inReq.putPageValue("asset", asset);
+		
 		String mediatype = archive.getMediaRenderType(asset);
 		String imagesize = null;
 		if (mediatype == "image")
@@ -82,8 +84,7 @@ public void tagAssets(){
 
 		log.info("Analyzing asset: (" + asset.getId() + ") " + asset.getName());
 		
-		inReq.putPageValue("asset",asset);
-		
+
 		String template = manager.loadInputFromTemplate(inReq, "/" +  archive.getMediaDbId() + "/gpt/systemmessage/analyzeasset.html");
 		try{
 			long startTime = System.currentTimeMillis();

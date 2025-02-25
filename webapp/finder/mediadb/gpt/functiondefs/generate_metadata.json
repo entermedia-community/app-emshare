@@ -1,28 +1,22 @@
 {
 	"name": "generate_metadata",
-	"description": "Generates metadata for an image, including descriptions, a caption, and relevant tags.",
+	"description": "Generates metadata for an image, including long caption, asset title and relevant keywords.",
 	"parameters": {
 		"type": "object",
 		"properties": {
 			"metadata": {
 				"type": "object",
 				"properties": {	
-					#ifnull( $asset.caption )
-					"caption": {
-						"type": "string",
-						"description": "A brief description of the image, capturing its main elements in one or two sentences."
-					},
-					#end
 					#ifnull( $asset.longcaption )
 					"longcaption": {
 						"type": "string",
-						"description": "A detailed description of the image, elaborating on its content, context, and notable features."
+						"description": "A two or three sentences description of the image, elaborating on image content, context, and notable features."
 					},
 					#end
 					#ifnull( $asset.assettitle)
 					"assettitle": {
 						"type": "string",
-						"description": "A concise title suitable for social media or gallery display."
+						"description": "A very brief summary of the image, using 5 words or less."
 					},
 					#end
 					"googlekeywords": {
@@ -34,11 +28,9 @@
 					}
 				},
 				"required": [
-					"caption",
 					"longcaption",
 					"assettitle",
-					"googlekeywords",
-					"longarabic"
+					"googlekeywords"
 					
 				]
 			}
