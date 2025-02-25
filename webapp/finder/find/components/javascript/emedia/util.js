@@ -255,6 +255,9 @@ lQuery("form").livequery(function () {
 		return;
 	}
 	var input = $(this).find("input[autofocus]:visible:first");
+	if (input.length === 0) {
+		input = $(this).find("textarea[autofocus]:visible:first");
+	}
 	var focused = focusInput(input);
 	if (!focused) {
 		var $this = $(this);
@@ -402,10 +405,24 @@ function asciiItalicUnderlineText(text) {
 lQuery("textarea#postcontent").livequery(function () {
 	var text = $(this).val();
 	var $text = $(text);
-	// $(document).append($text);
 	var finalText = "";
+	let counter = 0;
 	function getText(node, parents = []) {
 		var nodeName = node.nodeName;
+
+		if (nodeName == "OL") {
+			counter = 0;
+		}
+
+		if (nodeName == "LI") {
+			if (parents.length >= 1 && parents[parents.length - 1] == "OL") {
+				counter++;
+				finalText += counter + ". ";
+			} else {
+				finalText += "  •  ";
+			}
+		}
+
 		if (nodeName == "BR") {
 			finalText += "\n";
 		} else if (nodeName == "#text") {
@@ -413,7 +430,7 @@ lQuery("textarea#postcontent").livequery(function () {
 			if (parents.length > 0) {
 				var parent = parents[parents.length - 1];
 				var grandParents = parents.slice(0, parents.length - 1);
-				if (parent == "B" || parent == "STRONG") {
+				if (parent == "B" || parent == "STRONG" || /H\d/.test(parent)) {
 					if (grandParents.includes("I") || grandParents.includes("EM")) {
 						textContent = asciiBoldItalicText(textContent);
 					} else {
@@ -446,13 +463,23 @@ lQuery("textarea#postcontent").livequery(function () {
 			}
 		}
 		if (nodeName == "P") {
+			finalText += "\n\n";
+		}
+		if (
+			/H\d/.test(nodeName) ||
+			nodeName == "LI" ||
+			nodeName == "UL" ||
+			nodeName == "OL"
+		) {
 			finalText += "\n";
 		}
 	}
+
 	$text.each(function () {
 		getText(this);
 	});
+
+	finalText = finalText.trim();
 	$(this).text(finalText);
 	$(this).val(finalText);
-	// $text.remove();
 });
