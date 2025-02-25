@@ -11,8 +11,6 @@ import org.openedit.data.Searcher
 import org.openedit.hittracker.HitTracker
 import org.openedit.repository.ContentItem
 
-import groovy.json.JsonSlurper
-
 public void tagAssets(){
 
 	//Create the MediaArchive object
@@ -40,19 +38,31 @@ public void tagAssets(){
 	inReq.putPageValue("category", cat);
 
 	//Refine this to use a hit tracker?
-	HitTracker assets = searcher.query().exact("taggedbyllm","false").exact("llmerror","false").search();
+	HitTracker assets = searcher.query().exact("previewstatus", "2").exact("taggedbyllm","false").exact("llmerror","false").search();
 	
 	if(assets.size() < 1)
 	{
 		return;
 	}
 
-	log.info("Tagging: " + assets.size() + " assets");
+	//log.info("Tagging: " + assets.size() + " assets");
 	for (hit in assets) {
-		Asset asset = archive.getAsset(hit.id);
+		Asset asset = archive.getAssetSearcher().loadData(hit);
 		inReq.putPageValue("asset", asset);
-
-		ContentItem item = archive.getGeneratedContent(asset, "image3000x3000.jpg");
+		String mediatype = archive.getMediaRenderType(asset);
+		String imagesize = null;
+		if (mediatype == "image")
+		{
+			imagesize = "image3000x3000.jpg";
+		}
+		else if (mediatype == "video")
+		{
+			imagesize = "image1900x1080.jpg";
+		}
+		else {
+			continue;
+		}
+		ContentItem item = archive.getGeneratedContent(asset, imagesize);
 		if(item.exists()) {
 
 			InputStream inputStream = item.getInputStream()
@@ -73,39 +83,27 @@ public void tagAssets(){
 			String template = manager.loadInputFromTemplate(inReq, "/" +  archive.getMediaDbId() + "/gpt/systemmessage/analyzeasset.html");
 			try{
 				long startTime = System.currentTimeMillis();
+				
 				LLMResponse results = manager.callFunction(inReq, model, "generate_metadata", template, 0, 5000,base64EncodedString );
 				
 				if (results != null)
 				{
-					JSONObject arguments = results.getArguments();
-					//log.info(arguments);
 					long duration = (System.currentTimeMillis() - startTime) / 1000L;
+					JSONObject arguments = results.getArguments();
 					if (arguments != null) {
-						def jsonSlurper = new JsonSlurper();
-						def result = jsonSlurper.parseText(results.getArguments().toJSONString());  //Why are you doing this?
-						HashMap detected = new HashMap();
-						
-						result.metadata.each { key, value ->
-							if(key =="googlekeywords" || asset.getValue(key) == null)
-							{
-								asset.setValue(key, value);
-								detected.put(key, value);
-							}
-						}
-						if (detected.size() > 0)
+
+						int detected =  manager.copyData(arguments, asset);
+						if (detected > 0)
 						{
-							log.info("("+asset.getId() +") "+ asset.getName()+" - Detected: " + detected + " Took: "+duration +"s");
-						}
-						else 
-						{
-							log.info("("+asset.getId() +") "+ asset.getName()+" - Detected but not saved: "  + result + " Took: "+duration +"s")
+							log.info("("+asset.getId() +") "+ asset.getName()+" - Detected: " + detected);
 						}
 					}
 					else {
-						log.info("("+asset.getId() +") "+asset.getName()+" - Nothing Detected." + " Took: "+duration +"s");
+						log.info("("+asset.getId() +") "+asset.getName()+" - Nothing Detected.");
 					}
 					asset.setValue("taggedbyllm", true);
 					archive.saveAsset(asset);
+					log.info("Took "+duration +"s");
 				}
 			}
 			catch(Exception e){
@@ -116,6 +114,7 @@ public void tagAssets(){
 			}
 			
 		}
+		log.info("Missing 3000x3000 generated image for:" + asset.getName())
 	}
 }
 
