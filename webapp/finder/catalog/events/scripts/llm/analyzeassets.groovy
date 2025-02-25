@@ -67,7 +67,9 @@ public void tagAssets(){
 			}
 
 			log.info("Analyzing asset: (" + asset.getId() + ") " + asset.getName());
-
+			
+			inReq.putPageValue("asset",asset);
+			
 			String template = manager.loadInputFromTemplate(inReq, "/" +  archive.getMediaDbId() + "/gpt/systemmessage/analyzeasset.html");
 			try{
 				long startTime = System.nanoTime();
@@ -84,7 +86,8 @@ public void tagAssets(){
 						HashMap detected = new HashMap();
 						
 						result.metadata.each { key, value ->
-							if(!asset.getValue(key)){
+							if(key =="googlekeywords" || asset.getValue(key) == null)
+							{
 								asset.setValue(key, value);
 								detected.put(key, value);
 							}
