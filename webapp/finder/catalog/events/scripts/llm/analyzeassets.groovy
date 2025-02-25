@@ -23,9 +23,9 @@ public void tagAssets(){
 	if(model == null) {
 		model = "gpt-4o-mini";
 	}
-	Data modelinfo = archive.getData("llmmodel", model);
+	Data modelinfo = archive.query("llmmodel").exact("modelid",model).searchOne();
 
-	String type = modelinfo != null ?  modelinfo.get("llmtype") : null;
+	String type = modelinfo.get("llmtype");
 	
 	log.info("AI manager selected: " + type + " Model: "+ model);
 	if(type == null) {
@@ -45,7 +45,7 @@ public void tagAssets(){
 		return;
 	}
 
-	//log.info("Tagging: " + assets.size() + " assets");
+	log.info("Tagging: " + assets.size() + " assets");
 	for (hit in assets) {
 		Asset asset = archive.getAssetSearcher().loadData(hit);
 		inReq.putPageValue("asset", asset);
@@ -63,59 +63,62 @@ public void tagAssets(){
 			continue;
 		}
 		ContentItem item = archive.getGeneratedContent(asset, imagesize);
-		if(item.exists()) {
-
-			InputStream inputStream = item.getInputStream()
-			String base64EncodedString = ''
-			try {
-				byte[] bytes = inputStream.bytes // Read InputStream as bytes
-				base64EncodedString = Base64.getEncoder().encodeToString(bytes) // Encode to Base64
-			} catch (Exception e) {
-				log.info("Error encoding asset to Base64: ${e}")
-			} finally {
-				inputStream.close() // Close the InputStream
-			}
-
-			log.info("Analyzing asset: (" + asset.getId() + ") " + asset.getName());
-			
-			inReq.putPageValue("asset",asset);
-			
-			String template = manager.loadInputFromTemplate(inReq, "/" +  archive.getMediaDbId() + "/gpt/systemmessage/analyzeasset.html");
-			try{
-				long startTime = System.currentTimeMillis();
-				
-				LLMResponse results = manager.callFunction(inReq, model, "generate_metadata", template, 0, 5000,base64EncodedString );
-				
-				if (results != null)
-				{
-					long duration = (System.currentTimeMillis() - startTime) / 1000L;
-					JSONObject arguments = results.getArguments();
-					if (arguments != null) {
-
-						int detected =  manager.copyData(arguments, asset);
-						if (detected > 0)
-						{
-							log.info("("+asset.getId() +") "+ asset.getName()+" - Detected: " + detected);
-						}
-					}
-					else {
-						log.info("("+asset.getId() +") "+asset.getName()+" - Nothing Detected.");
-					}
-					asset.setValue("taggedbyllm", true);
-					archive.saveAsset(asset);
-					log.info("Took "+duration +"s");
-				}
-			}
-			catch(Exception e){
-				log.error("LLM Error", e);
-				asset.setValue("llmerror", true);
-				archive.saveAsset(asset);
-				continue;
-			}
-			
+		if(!item.exists()) {
+			log.info("Missing 3000x3000 generated image for:" + asset.getName());
+			continue;
 		}
-		log.info("Missing 3000x3000 generated image for:" + asset.getName())
+		
+
+		InputStream inputStream = item.getInputStream()
+		String base64EncodedString = ''
+		try {
+			byte[] bytes = inputStream.bytes // Read InputStream as bytes
+			base64EncodedString = Base64.getEncoder().encodeToString(bytes) // Encode to Base64
+		} catch (Exception e) {
+			log.info("Error encoding asset to Base64: ${e}")
+		} finally {
+			inputStream.close() // Close the InputStream
+		}
+
+		log.info("Analyzing asset: (" + asset.getId() + ") " + asset.getName());
+		
+		inReq.putPageValue("asset",asset);
+		
+		String template = manager.loadInputFromTemplate(inReq, "/" +  archive.getMediaDbId() + "/gpt/systemmessage/analyzeasset.html");
+		try{
+			long startTime = System.currentTimeMillis();
+			
+			LLMResponse results = manager.callFunction(inReq, model, "generate_metadata", template, 0, 5000,base64EncodedString );
+			
+			if (results != null)
+			{
+				long duration = (System.currentTimeMillis() - startTime) / 1000L;
+				JSONObject arguments = results.getArguments();
+				if (arguments != null) {
+
+					int detected =  manager.copyData(arguments, asset);
+					if (detected > 0)
+					{
+						log.info("("+asset.getId() +") "+ asset.getName()+" - Detected: " + detected);
+					}
+				}
+				else {
+					log.info("("+asset.getId() +") "+asset.getName()+" - Nothing Detected.");
+				}
+				asset.setValue("taggedbyllm", true);
+				archive.saveAsset(asset);
+				log.info("Took "+duration +"s");
+			}
+		}
+		catch(Exception e){
+			log.error("LLM Error", e);
+			asset.setValue("llmerror", true);
+			archive.saveAsset(asset);
+			continue;
+		}
+		
 	}
+		
 }
 
 tagAssets();
