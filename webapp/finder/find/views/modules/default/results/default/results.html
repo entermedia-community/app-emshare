@@ -73,8 +73,11 @@ $context.putPageValue("enableactions", $enableactions)
 		$context.putPageValue("urlbarprefix", $urlbarprefix)
 	#end
 	data-urlbarprefix="$!{urlbarprefix}"
-	data-pagenum="$!hits.getPage()" 
+	data-pagenum="$!hits.getPosition()" 
 	data-totalpages="$!hits.getTotalPages()"
+	#if($hits.getPosition())
+	data-addtopagetitle="[[Page]] $hits.getPosition()"
+	#end
 	data-viewid="$!viewid"
 	data-section="$!content.section"
 	#if($lightboxassetsresults)
