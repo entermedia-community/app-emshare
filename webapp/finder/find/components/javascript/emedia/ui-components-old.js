@@ -580,24 +580,7 @@ function initializeUI() {
 		$("#searchinput").val("");
 	}
 
-	$(window).on("setPageTitle", function (event, element) {
-		if (element === undefined) {
-			element = $("#applicationcontent");
-		}
-		if (element === undefined || $(element).data("setpagetitle") == null) {
-			element = $("#application");
-		}
-		var setpagetitle = $(element).data("setpagetitle");
-		var titlepostfix = $("#application").data("titlepostfix");
-		var title = "";
-		if (setpagetitle) {
-			title = setpagetitle;
-		}
-		if (titlepostfix) {
-			title = title ? title + " - " + titlepostfix : titlepostfix;
-		}
-		document.title = title;
-	});
+	
 
 	lQuery(".entitydialogback").livequery("click", function (event) {
 		var link = $(this);
