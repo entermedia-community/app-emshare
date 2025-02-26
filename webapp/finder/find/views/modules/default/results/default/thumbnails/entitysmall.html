@@ -1,98 +1,104 @@
+#set($entity = $hit)
+#set($entityid = $hit.id)
+
 #set( $moduleid = $hit.entitysourcetype )
 #ifnotnull($moduleid)
 	#set( $module = $mediaarchive.getCachedData("module",$moduleid) ) 	
 #end
-	 
-#set($moduleicon = "grid")
-#if ($module.moduleicon)
-	#set($moduleicon = $module.moduleicon)
-#end 
 
-#set( $entityid = $hit.id )
 
-##look for primaryimage
-#if($entity.primarymedia)
-	#set( $primarymediatemp = $mediaarchive.getCachedAsset($entity.primarymedia))
-	#ifnotnull($primarymediatemp)
-		#if($primarymediatemp.previewstatus == '2')				
-			#set($primarymedia = $primarymediatemp)
-		#end
-	#end
-#end
-#ifnull($primarymedia)
-	#ifnotnull($entity.primaryimage)
-		#set( $primarymediatemp = $mediaarchive.getCachedAsset($entity.primaryimage))
-		#if($primarymediatemp.previewstatus == '2')
-			#set($primarymedia = $primarymediatemp)
-		#end
-	#end
-#end	
-
-#if($primarymedia)
-	#set($assetwidth = $mediaarchive.getRealImageWidth($primarymedia)) 
-	#set($assetheight = $mediaarchive.getRealImageHeight($primarymedia)) 
-#end
-
-#if(!$assetheight || $assetheight == "0")
-	#set($assetwidth = "298")
-	#set($assetheight = "98")
-#end
-
-<div class="resultsdivdata embrickcontent emcategory-wrapper #ifnull($primarymedia) nothumb #end emgrid-type-$!moduleid entitycontainer entity$!moduleid$!entityid" 
+#set($previewurl = "$apphome/views/modules/${moduleid}/editors/default/tabs/index.html?entityid=$entityid")
+ <div class="emfolder-wrapper compact emgrid-type-$!moduleid entitycontainer entity$!moduleid$!entityid" 
 	id="emgridentity$!moduleid$!entityid"
-	data-rowname="#text($hit)"
-	data-dataid="$!{entityid}"
-	data-entityid="$!{entityid}"
-	data-entitymoduleid="$!{moduleid}"
-	data-imgwidth="$!{assetwidth}"
-	data-imgheight="$!{assetheight}"
->
+	data-id="${entityid}"
+  data-moduleid="$!moduleid"
+  data-rendertype="entity">
 
-	#set($pickertarget = $context.getRequestParameter("pickertarget"))
-	<div class="emcategory-inner" 
-		id="attachedmedia${entityid}" 
-		data-moduleid="$!{moduleid}" 
-		data-entityid="$!{entityid}" 
-		data-assetsshown="$!{assetsshown}"
-		data-attachedmediaurl="${edithome}/types/entityfolder.html"
-		data-targetdiv="emgridentity$!moduleid$!entityid">
-		#set( $assetrendertype = $mediaarchive.getMediaRenderType($primarymedia.fileformat))
-		<div class="emcategory-thumb emcategory-thumb-$assetrendertype">
-			#if($primarymedia)
-				$context.putPageValue("thumbsize", "thumbnail" )
-				$context.putPageValue("hit", $primarymedia) 
-				
-				$context.putPageValue("searchhome", "${apphome}/views/modules/asset/results/default")
-				$pages.include("${apphome}/views/modules/asset/results/default/thumbnails/${assetrendertype}.html", $context)
-			#else
-				<i class="bi bi-${moduleicon} module-icon"></i>			
-			#end 
-			<div class="emthumb-mask">
-				<span>
-					#if($moduleid == "searchcategory")
-						<i class="bi bi-eye-fill ns mr-1"></i> [[View]]
-					#else
-					<i class="bi bi-arrows-angle-expand ns mr-1"></i> [[Open]]
+	<a 
+		#if(!$primarymediareadonly)
+			id="clickid${entityid}"  
+			href="$!{previewurl}" 
+			class="emdialog entity-dialog"
+		#end
+		data-updateurl="true"
+		data-urlbar="$!{siteroot}$apphome/views/modules/$!{moduleid}/index.html?entityid=$entityid"
+		data-hidefooter="true" 
+		data-hideheader="true" 
+		data-categorypath="$!entity.uploadsourcepath"
+		data-id="${entityid}"
+		data-moduleid="$!moduleid" 
+		title="[[View]]: #text($!entity)">
+	
+		##look for primaryimage
+		#set( $primarymediafield = $entity.primarymedia )
+		
+		#if($primarymediafield)
+			#set( $primarymediatemp = $mediaarchive.getCachedAsset($entity.primarymedia))
+				#ifnotnull($primarymediatemp)
+					#set($rendertype = $mediaarchive.getMediaRenderType($primarymediatemp.fileformat))
+					#if($rendertype != 'audio')				
+						#set($primarymedia = $primarymediatemp)
 					#end
-				</span>
-			</div>
-		</div>
-		<div class="embricktext">
-			<div class="emcategory-name">	
-				<p>
-					#text($!entity) 	
-				</p>
-				#if($moduleid == "searchcategory" && $permissions.canModule($module, "edit"))
-				<a href="$apphome/views/modules/$moduleid/editors/default/tabs/index.html?edit=true" data-entityid="${entityid}" class="emdialog emcategory-edit">
-					<i class="bi bi-pencil-square"></i>
-				</a>
-				#end
-			</div>
-			#ifnotnull($entity.longcaption)
-			<div class="emcategory-desc">
-				<p>$entity.longcaption</p>
-			</div>
 			#end
+		#end
+		
+		#ifnull($primarymedia)
+			#set( $primarymediafield = $entity.primaryimage )
+			#if($primarymediafield)
+				#ifnotnull($entity.primaryimage)
+						#set( $primarymediatemp = $mediaarchive.getCachedAsset($entity.primaryimage))
+						#set($rendertype = $mediaarchive.getMediaRenderType($primarymediatemp.fileformat))
+						#if($rendertype != 'audio')
+							#set($primarymedia = $primarymediatemp)
+						#end
+				#end
+			#end
+		#end	
+
+		
+		$context.putPageValue("type", $rendertype)
+	   	#set($link = "$!siteroot$applink/views/modules/$!topmodule.getId()/index.html")
+		#if( $parentmodule == $module)
+			#set($link = "$link?entityid=$!entity.getId()&entitytype=$!moduleid&topentityid=$!entity.getId()")
+		#else
+			#set($link = "$link?entityid=$!entity.getId()&entitytype=$!moduleid&topentityid=$!topentityid")
+		#end
+		#set($moduleicon = "grid")
+		#if ($module.moduleicon)
+			#set($moduleicon = $module.moduleicon)
+		#end
+		<div 
+			class="emfolder-inner" 
+			id="attachedmedia$entityid" 
+			data-moduleid="$!moduleid" 
+			data-entityid="$!entityid" 
+			data-assetsshown="$!assetsshown"
+			data-attachedmediaurl="${edithome}/types/entityfolder.html"
+			data-targetdiv="emgridentity$!moduleid$!entityid">
+			<div class="emfolder-icon">
+				#if($primarymedia)
+					$context.putPageValue("thumbsize", "thumbnail" )
+					$context.putPageValue("hit", $primarymedia) 
+					$context.putPageValue("asset", $primarymedia)
+					#set( $assetrendertype = $mediaarchive.getMediaRenderType($primarymedia.fileformat))
+					
+					#if($module.id == "faceprofilegroup")
+						$context.putPageValue("faceprofilegroups", [$entity]) 
+					#end
+
+					#set($searchhome = "${apphome}/views/modules/asset/results/default")
+					$context.putPageValue("searchhome", $searchhome)
+					$pages.include("${searchhome}/thumbnails/${assetrendertype}.html", $context)
+			  #else
+					<i class="bi bi-$moduleicon module-icon"></i> 
+			  #end
+			</div>
+			<div class="emfolder-text">
+				<i class="bi bi-$moduleicon module-icon"></i>
+				<span>#text($!entity)</span>
+			</div>
 		</div>
-	</div>
+	</a>
 </div>
+
+
