@@ -335,6 +335,42 @@ $(function () {
 	}
 });
 
+var asciiFormatRanges = {
+	n: [120812, 120821],
+	bA: [120276, 120301],
+	ba: [120302, 120327],
+	iA: [120328, 120353],
+	ia: [120354, 120379],
+};
+
+function getAsciiFormat(char) {
+	for (var type in asciiFormatRanges) {
+		var start = asciiFormatRanges[type][0];
+		var end = asciiFormatRanges[type][1];
+		if (char.codePointAt(0) >= start && char.codePointAt(0) <= end) {
+			return type;
+		}
+	}
+	return false;
+}
+
+function asciiNormalText(text) {
+	Object.keys(asciiFormatRanges).forEach(function (type) {
+		var start = asciiFormatRanges[type][0];
+		var end = asciiFormatRanges[type][1];
+		var diff = 48;
+		if (type == "bA" || type == "iA") diff = 65;
+		else if (type == "ba" || type == "ia") diff = 97;
+		for (var i = start; i <= end; i++) {
+			text = text.replaceAll(String.fromCodePoint(i), function (char) {
+				return String.fromCharCode(char.codePointAt(0) - start + diff);
+			});
+		}
+		text = text.replaceAll(String.fromCodePoint(818), "");
+	});
+	return text;
+}
+
 function asciiBoldText(text) {
 	return text.replace(/[A-Za-z0-9]/g, function (char) {
 		let diff;
@@ -489,7 +525,7 @@ lQuery(".postiz-format").livequery("click", function () {
 	var format = $(this).data("format");
 	var selectionStart = textarea.selectionStart;
 	var selectionEnd = textarea.selectionEnd;
-	var selection;
+	var selection = "";
 	if (selectionStart >= 0 && selectionEnd >= 1) {
 		if (selectionStart == selectionEnd) {
 			selection = prompt("Enter the text you want to insert");
@@ -498,6 +534,7 @@ lQuery(".postiz-format").livequery("click", function () {
 		}
 	}
 	if (selection.length) {
+		selection = asciiNormalText(selection);
 		if (format == "bold") {
 			selection = asciiBoldText(selection);
 		} else if (format == "italic") {
@@ -512,9 +549,8 @@ lQuery(".postiz-format").livequery("click", function () {
 			selection +
 			textarea.value.substring(selectionEnd);
 	} else {
-		textarea.value =
-			textarea.value.substring(0, selectionStart) +
-			selection +
-			textarea.value.substring(selectionEnd);
+		textarea.value = textarea.value + selection;
+		textarea.scroll(0, textarea.scrollHeight);
 	}
+	$(textarea).focus();
 });
