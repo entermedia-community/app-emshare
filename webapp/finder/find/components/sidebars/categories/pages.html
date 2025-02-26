@@ -11,7 +11,7 @@
 	#set($module = $content.module)
 
 	#set($assetid = $context.getRequestParameter("assetid") )
-	#set($resultsPage = "$home$apphome/sidebars/categories/results.html?hitssessionid=$hits.sessionId&searchtype=categories&hitsperpage=$!hits.hitsPerPage&oemaxlevel=1")
+	#set($resultsPage = "$home$apphome/components/sidebars/categories/searchpath.html?categoryhitssessionid=$hits.sessionId&oemaxlevel=1")
 	#set($resultsPage = "$resultsPage&pickone=$!pickone&assetid=$!assetid")
 	#set($resultsPage = "$resultsPage&page")
 	#set($thispage = $hits.getPage())
@@ -20,9 +20,10 @@
 	
 	
 	#set($targetdiv = "categoryresultsdialog")
-	<div id="categoriespages" class="pages categoriespages d-flex align-items-center justify-content-between flex-wrap">
-		<p class="resultsnumber m-0">$!hits.getPageStart() - $!hits.getPageEnd()  [[of]] $!hits.total</p>
-		<ul>
+	
+	<div id="categoriespages" class="pages categoriespages d-flex align-items-center justify-content-between flex-wrap mt-1">
+		##<p class="catresultsnumber m-0" style="width:130px">$!hits.getPageStart() - $!hits.getPageEnd()  [[of]] $!hits.total</p>
+		<ul style="flex-grow: 1;">
 			#if( $hits.prevPage() )
 				<li class="pagenav"><a class="ajax" data-targetdiv="$targetdiv" href="$resultsPage=$hits.prevPage()" title="[[Previous]]" accesskey="p" ><span class="bi bi-caret-left-fill overlay-nav gocaret"></span></a></li>
 			#end
