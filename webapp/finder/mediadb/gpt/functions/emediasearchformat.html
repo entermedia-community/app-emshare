@@ -9,30 +9,36 @@ $context.putPageValue("apphome","/${channel.chatapplicationid}")
 	#end
 	<div class="chat-assets">
 		#foreach($row in $results.collectedrecords)
-			#set( $item = $mediaarchive.getCachedData($row.searchtype, $row.id))	
-			#set($title =  $item.assettitle)
-	
-			#if(!$title)
-				#set($title = $item.name) 
-			#end
-	
 			#set($searchtype = $row.get("searchtype"))
-	
-			#if($searchtype == "asset")
-				<a class="stackedplayer" id="clickid${item.id}" data-assetid="$item.id" href="#" title="#esc($!title)">
-					$context.putPageValue("thumbsize", "thumbnail")
-					$context.putPageValue("hit", $item) 
-					$context.putPageValue("asset", $item)
-					#set( $assetrendertype = $mediaarchive.getMediaRenderType($item.fileformat))
-					
-					$context.putPageValue("searchhome", "/${channel.chatapplicationid}/views/modules/${searchtype}/results/default")
-					$pages.include("/${channel.chatapplicationid}/views/modules/${searchtype}/results/default/thumbnails/${assetrendertype}.html", $context)
-				</a>
-			#else
-				$context.putPageValue("hit", $item)
-				$pages.include("/${channel.chatapplicationid}/views/modules/${searchtype}/results/default/thumbnails/entitysmall.html", $context)
+			
+			#set( $hit = $mediaarchive.getCachedData($searchtype, $row.id))
+			
+			#ifnotnull($hit)
+
+				#set($title =  $hit.assettitle)
+		
+				#if(!$title)
+					#set($title = $hit.name) 
+				#end
+		
+				$context.putPageValue("hit", $hit) 
+
+				#if($searchtype == "asset")
+					<a class="stackedplayer" id="clickid${hit.id}" data-assetid="$hit.id" href="#" title="#esc($!title)">
+						$context.putPageValue("thumbsize", "thumbnail")
+						$context.putPageValue("asset", $hit)
+
+						#set( $assetrendertype = $mediaarchive.getMediaRenderType($hit.fileformat))
+						
+						$context.putPageValue("searchhome", "/${channel.chatapplicationid}/views/modules/${searchtype}/results/default")
+						$pages.include("/${channel.chatapplicationid}/views/modules/${searchtype}/results/default/thumbnails/${assetrendertype}.html", $context)
+					</a>
+				#else
+					$pages.include("/${channel.chatapplicationid}/views/modules/${searchtype}/results/default/thumbnails/entitysmall.html", $context)
+				#end
+
 			#end
-	
+
 		#end
 	</div>
 </div>

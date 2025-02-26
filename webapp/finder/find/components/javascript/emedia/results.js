@@ -261,10 +261,8 @@ jQuery(document).ready(function (url, params) {
 				}
 			});
 			$("select", form).on("change", function () {
-				if( !$(this).hasClass("select2"))
-				{
-					if (!$(this).hasClass("cancelautosubmit")) 
-					{	
+				if (!$(this).hasClass("select2")) {
+					if (!$(this).hasClass("cancelautosubmit")) {
 						form.trigger("submit");
 					}
 				}
@@ -310,11 +308,10 @@ jQuery(document).ready(function (url, params) {
 				.change(function () {
 					form.trigger("submit");
 				});
-				
-		/*	$("input[type=text].typeahead", form).on("keyup change", function (e) {
+
+			/*	$("input[type=text].typeahead", form).on("keyup change", function (e) {
 				form.trigger("submit");
 			});*/
-			
 		}
 	};
 
@@ -382,16 +379,13 @@ jQuery(document).ready(function (url, params) {
 			if (assetid === undefined) {
 				assetid = link.data("assetid");
 			}
-			
+
 			var editdiv = link.closest(".editdiv");
-			if (editdiv.hasClass("faceprofileassetsearch"))
-			{
+			if (editdiv.hasClass("faceprofileassetsearch")) {
 				var entityid = editdiv.data("entityid");
-				link.data("showfaceprofileid", entityid);	
+				link.data("showfaceprofileid", entityid);
 			}
-			
-		
-			
+
 			if (assetid !== undefined) {
 				link.data("assetid", assetid);
 				var url = window.location.href;
@@ -403,7 +397,7 @@ jQuery(document).ready(function (url, params) {
 		}
 	};
 
-	lQuery("a.stackedplayer").livequery("click", function (e) {
+	lQuery(".stackedplayer").livequery("click", function (e) {
 		e.preventDefault();
 		e.stopPropagation();
 		var link = $(this);
