@@ -483,3 +483,47 @@ lQuery("textarea#postcontent").livequery(function () {
 	$(this).text(finalText);
 	$(this).val(finalText);
 });
+
+lQuery(".postiz-format").livequery("click", function () {
+	var textarea = document.querySelector("textarea#postcontent");
+	var format = $(this).data("format");
+	var selectionStart = textarea.selectionStart;
+	var selectionEnd = textarea.selectionEnd;
+	var selection;
+	if (selectionStart >= 0 && selectionEnd >= 1) {
+		if (selectionStart == selectionEnd) {
+			selection = prompt("Enter the text you want to insert");
+		} else {
+			selection = textarea.value.substring(selectionStart, selectionEnd);
+		}
+	}
+	if (selection.length) {
+		if (format == "bold") {
+			selection = asciiBoldText(selection);
+		} else if (format == "italic") {
+			selection = asciiItalicText(selection);
+		} else if (format == "underline") {
+			selection = asciiUnderlineText(selection);
+		}
+	}
+	if (selectionStart != selectionEnd) {
+		textarea.value =
+			textarea.value.substring(0, selectionStart) +
+			selection +
+			textarea.value.substring(selectionEnd);
+	} else {
+		textarea.value =
+			textarea.value.substring(0, selectionStart) +
+			selection +
+			textarea.value.substring(selectionEnd);
+	}
+});
+
+lQuery("a.auto-redirect").livequery(function () {
+	var url = $(this).attr("href");
+	if ($(this).attr("target") == "_blank") {
+		window.open(url, "_blank").focus();
+	} else {
+		window.location.href = url;
+	}
+});
