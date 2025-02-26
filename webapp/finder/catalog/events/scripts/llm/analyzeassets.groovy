@@ -32,7 +32,7 @@ public void tagAssets(){
 		type = modelinfo.get("llmtype") + "Manager";
 	}
 	
-	log.info("AI manager selected: " + type + " Model: "+ model);
+	
 	
 	LLMManager manager = archive.getBean(type);
 	def cat = archive.getCategorySearcher().getRootCategory();
@@ -45,8 +45,9 @@ public void tagAssets(){
 	{
 		return;
 	}
-
-	log.info("Tagging: " + assets.size() + " assets");
+	
+	log.info("AI manager selected: " + type + " Model: "+ model + " - Tagging: " + assets.size() + " assets");
+	
 	for (hit in assets) {
 		Asset asset = archive.getAssetSearcher().loadData(hit);
 		inReq.putPageValue("asset", asset);
