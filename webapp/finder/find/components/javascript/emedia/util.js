@@ -518,12 +518,3 @@ lQuery(".postiz-format").livequery("click", function () {
 			textarea.value.substring(selectionEnd);
 	}
 });
-
-lQuery("a.auto-redirect").livequery(function () {
-	var url = $(this).attr("href");
-	if ($(this).attr("target") == "_blank") {
-		window.open(url, "_blank").focus();
-	} else {
-		window.location.href = url;
-	}
-});
