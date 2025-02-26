@@ -21,7 +21,6 @@
 					data-targetdiv="${edithomeid}" 
 					method="post">
 					#set($profiles = $mediaarchive.getList("socialmediaprofile"))
-					#ifnotnull($profiles)
 					<select name="socialmediaprofile" class="custom-select">
 						<option></option>
 						#foreach($profile in $profiles)
@@ -30,15 +29,10 @@
 						</option>
 						#end
 					</select>
-					#end
-					#ifnull($profiles)
-					[[First create a Social Media Profile.]]
-					#end
 				</form>
 			</div>
 			<div class="collapse #ifnotnull($selectedprofile) show #end">
-				<div id="postizcreate"></div>
-				<form class="ajaxform d-flex flex-column bg-white p-2" action="$edithome/post.html?oemaxlevel=1" data-targetdiv="#postizcreate" method="post">
+				<form class="ajaxform d-flex flex-column bg-white p-2" action="$edithome/post.html?oemaxlevel=1" data-targetdiv="${edithomeid}" method="post">
 	
 					<div class="form-group">
 						<label for="postcontent" class="fw-bold">Post Content:</label>
@@ -49,7 +43,16 @@
 						#end
 						
 						<textarea name="postcontent" id="postcontent" rows="15" class="form-control" autofocus required>$!postcontent</textarea>
-						<div class="position-relative text-right">
+						<div class="d-flex align-items-center justify-content-end position-relative w-100">
+							<button type="button" class="btn postiz-format" data-format="bold">
+								<i class="bi bi-type-bold"></i>
+							</button>
+							<button type="button" class="btn postiz-format" data-format="italic">
+								<i class="bi bi-type-italic"></i>
+							</button>
+							<button type="button" class="btn postiz-format" data-format="underline">
+								<i class="bi bi-type-underline"></i>
+							</button>
 							<div id="emojipicker" data-textarea="postcontent" style="left:auto;right:0"></div>
 							<a class="btn chatter-emoji"
 								href="${apphome}/views/modules/${module.id}/editors/aichatsearch/chatterbox/emojipicker.html"
