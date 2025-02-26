@@ -21,6 +21,7 @@
 					data-targetdiv="${edithomeid}" 
 					method="post">
 					#set($profiles = $mediaarchive.getList("socialmediaprofile"))
+					#ifnotnull($profiles)
 					<select name="socialmediaprofile" class="custom-select">
 						<option></option>
 						#foreach($profile in $profiles)
@@ -29,6 +30,10 @@
 						</option>
 						#end
 					</select>
+					#end
+					#ifnull($profiles)
+					[[First create a Social Media Profile.]]
+					#end
 				</form>
 			</div>
 			<div class="collapse #ifnotnull($selectedprofile) show #end">
