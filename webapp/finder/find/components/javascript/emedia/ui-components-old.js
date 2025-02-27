@@ -134,7 +134,7 @@ function initializeUI() {
 		}
 		if (!placeholder) {
 			var label = $(this).closest(".inputformrow").find("label");
-			console.log(label);
+			//console.log(label);
 			if (label.length) {
 				placeholder = label.text().trim();
 				if (placeholder) {
