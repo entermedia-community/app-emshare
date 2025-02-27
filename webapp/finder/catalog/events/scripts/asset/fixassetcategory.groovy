@@ -3,12 +3,16 @@ package asset
 import org.entermediadb.asset.*
 import org.openedit.Data
 import org.openedit.hittracker.HitTracker
+import org.openedit.util.PathUtilities
 
 public void init()
 {
-	MediaArchive archive = context.getPageValue("mediaarchive");//Search for all files looking for videos
+	MediaArchive archive = context.getPageValue("mediaarchive");
+	
+	
+	//remove all categories first
 
-	HitTracker hits = archive.query("asset").startsWith("sourcepath", "netshare/").search();
+	HitTracker hits = archive.query("asset").all().sort("sourcepath").search();
 	hits.enableBulkOperations();
 		
 	int saved = 0;
@@ -19,6 +23,14 @@ public void init()
 		Asset asset = archive.getAssetSearcher().loadData(hit);
 		
 		String path = asset.getPath();
+		if (!asset.isFolder())
+		{
+			path = PathUtilities.extractDirectoryPath(path);
+			if (path==null)
+			{
+				continue;
+			}
+		}
 		Category cat = archive.getCategorySearcher().createCategoryPath(path);
 		asset.removeCategory(root);
 		asset.addCategory(cat);
