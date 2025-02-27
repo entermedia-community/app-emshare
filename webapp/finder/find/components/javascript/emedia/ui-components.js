@@ -154,7 +154,7 @@ jQuery(document).ready(function () {
 			link.data("entitymoduleviewid", backLink.entitymoduleviewid);
 			link.data("url", backLink.url);
 			link.attr("href", backLink.url);
-			//link.find("#showname").html();
+			link.find("#showname").text(backLink.parententiylabel);
 			link.show();
 		}
 	});
