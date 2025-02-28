@@ -14,89 +14,113 @@
 
 	<div class="$detailviewercolumnclass asset-data-detail emdatafield-$!viewtype p-3">
 		#set($collection = $data.getValue("faceprofiles"))
-		<div class="emfield-scroll" id="entitypickerentityperson">
-			<ul class="entity-value-list mb-3">
+		<div class="emfield-scroll mb-3" id="entitypickerentityperson">
+			#set( $facemanager = $mediaarchive.getBean("faceProfileManager") )
+			#set( $assigned = 0)
+			#set( $unassigned = 0)
+			<ul class="entity-value-list d-flex flex-wrap">
 				#foreach( $profile in $collection )
-					#set( $row = false )
-					#set( $name = "")
-					
 					#set( $row = $mediaarchive.getCachedData("faceprofilegroup", $profile.faceprofilegroup) )
-					#if( $row )
-					
+					#if($row)
 						#set( $person = $mediaarchive.getCachedData("entityperson", $row.entityperson) )
 					
 						#ifnotnull($person)
 							#set($namefield = $mediaarchive.getSearcher("entityperson").getDetail("name"))
-								#set($name = $mediaarchive.getSearcherManager().getValue($person, $namefield, $context.getLocale()))
-								#set($name= "$name ($!row.get('samplecount'))")
+							#set($name = $mediaarchive.getSearcherManager().getValue($person, $namefield, $context.getLocale()))
+							#set($name= "$name ($!row.get('samplecount'))")
 							#set($link = "$!siteroot$applink/views/modules/entityperson/editors/default/tabs/index.html?entityid=$person.id&hitssessionid=$!hits.sessionId")
-								#set($title = "[[Person]]: ")
-						#end
-
-						#if( $name == "")
-							#set($name = "[[Profile]] $!row.get('facecounter') ($!row.get('samplecount'))")
-							#set($link = "$!siteroot$applink/views/modules/faceprofilegroup/editors/default/tabs/index.html?entityid=$row.id&hitssessionid=$!hits.sessionId")
-							#set($title = "[[Face Profile]] ") 
-						#end
-
-						#if($profile.timecodestart)
-							#set($secs = $mediaarchive.formatMilliseconds($profile.timecodestart))
-							#set($name = "$name &nbsp;($secs)")
-						#end
-						
-						
-						<li>
-							#set( $facemanager = $mediaarchive.getBean("faceProfileManager") )
-							#set($imagebox = $facemanager.getImageBox( [$row], $asset, $assetwidth, $assetheight) )
-							<a href="$link" 
-								class="emdialog entityupdateurl"
-								data-dialogid="faceprofiledialog"
-								data-moduleid="faceprofilegroup"
-								title="[[View Face Profile]]">
-								<i class="bi bi-person-fill"></i> $!name
-							</a>
-							#if($caneditasset) 
-								<a href="$siteroot$applink/components/faceprofile/removefromprofile.html" 
-									data-assetid="$!asset.getId()" 
-									data-profileid="$row.id" 
-									class="ajax entityremoveurl"
-									data-targetdiv="faceprofilefield" 
-									data-confirm="[[Remove face profile from this asset]]" title="[[Remove Face Profile]]">
-									<i class="bi bi-x"></i>
+							#if($profile.timecodestart)
+								#set($secs = $mediaarchive.formatMilliseconds($profile.timecodestart))
+								#set($name = "$name &nbsp;($secs)")
+							#end
+							<li class="position-relative facepf-item">
+								#set($imagebox = $facemanager.getImageBox( [$row], $asset, $assetwidth, $assetheight) )
+								<a href="$link" 
+									class="emdialog facepf"
+									data-dialogid="faceprofiledialog"
+									data-moduleid="faceprofilegroup"
+									data-location="$imagebox.locationxy"
+									data-width="$assetwidth"
+									data-height="$assetheight"
+									data-img='$mediaarchive.asLinkToGenerated($asset, "image3000x3000.jpg")'
+									title="[[View Face Profile]]">
 								</a>
-							#end	
-						</li>
+								<span>$!name</span>
+								#if($caneditasset) 
+									<a href="$siteroot$applink/components/faceprofile/removefromprofile.html" 
+										data-assetid="$!asset.getId()" 
+										data-profileid="$row.id" 
+										class="ajax facepf-remove"
+										data-targetdiv="faceprofilefield" 
+										title="[[Remove Face]]"></a>
+								#end	
+							</li>
+							#set($assigned = $assigned + 1)
+						#end
+						#ifnull($person)
+							#set($unassigned = $unassigned + 1)
+						#end
 					#end 
 				#end	
 			</ul>
-			
-			#set($pickmoduleid = "entityperson")
-			#set($pickerurl= "$apphome/views/modules/${pickmoduleid}/editors/pickerforfield/index.html")
-			#set($pickmodule = $mediaarchive.getCachedData("module", $pickmoduleid ))
-			<a href="$pickerurl" 
-				class="emdialog btn btn-secondary"
-				data-dialogid="dialogpicker${pickmoduleid}"
-				data-width="1200"
-				data-pickertargetfield="${pickmoduleid}"
-				data-entityid="$!{id}"
-				data-entitymoduleid="faceprofilegroup"
-				data-hidefooter="true"
-				title="[[Add]] #text($pickmodule)">
-				<i class="bi bi-person-plus mr-1"></i> [[Add Existing Person]]
-			</a>
-#*
-			#set($addnew = "$apphome/views/modules/${pickmoduleid}/editors/pickerforfield/actions/addnewentity.html")
-			<a class="btn btn-accent rounded emdialog"
-				data-dialogid="dialogpickerentityPerson"
-				data-width="1200"
-				data-hidefooter="true"
-				data-pickertargetfield="faceprofilefield"
-				data-entityid="$!{entity.id}"
-				data-entitymoduleid="$!{pickmoduleid}"
-				href="$addnew">
-				<i class="bi bi-plus-lg mr-1"></i> [[Create New]]
-			</a>
-*#
+			#if($assigned == 0)
+				<p class="text-muted">No #if($unassigned > 0) assigned #end faces found</p>
+			#end
+			#if($unassigned > 0)
+				<p>Found #if($unassigned == 1) an unassigned face #else $unassigned unassigned faces #end <a class="text-success collapsed facepf-hidden ml-1" data-toggle="collapse" href="#collapseUnassigned" role="button" aria-expanded="false" aria-controls="collapseUnassigned">
+					<span>show <i class="bi bi-chevron-down ns ml-1"></i></span><span>hide<i class="bi bi-chevron-up ns ml-1"></i></span>
+				</a></p>
+				<div class="collapse" id="collapseUnassigned">
+					<ul class="list-unstyled mt-3 d-flex flex-wrap">
+						#foreach( $profile in $collection )
+							#set( $row = $mediaarchive.getCachedData("faceprofilegroup", $profile.faceprofilegroup) )
+							#if( $row )
+							
+								#set( $person = $mediaarchive.getCachedData("entityperson", $row.entityperson) )
+							
+								#ifnull($person)
+									#set($link = "$!siteroot$applink/views/modules/faceprofilegroup/editors/default/tabs/index.html?entityid=$row.id&hitssessionid=$!hits.sessionId")
+									#set($title = "[[Face Profile]] ") 
+		
+									#if($profile.timecodestart)
+										#set($secs = $mediaarchive.formatMilliseconds($profile.timecodestart))
+									#end
+		
+									<li class="position-relative facepf-item">
+										#set( $facemanager = $mediaarchive.getBean("faceProfileManager") )
+										#set($imagebox = $facemanager.getImageBox( [$row], $asset, $assetwidth, $assetheight) )
+										<a href="$link" 
+											class="emdialog facepf"
+											data-dialogid="faceprofiledialog"
+											data-moduleid="faceprofilegroup"
+											data-location="$imagebox.locationxy"
+											data-width="$assetwidth"
+											data-height="$assetheight"
+											data-img='$mediaarchive.asLinkToGenerated($asset, "image3000x3000.jpg")'
+											title="[[View Face Profile]]">
+										</a>
+		
+										#if($caneditasset) 
+											#set($pickmoduleid = "entityperson")
+											#set($pickerurl= "$apphome/views/modules/${pickmoduleid}/editors/pickerforfield/index.html")
+											#set($pickmodule = $mediaarchive.getCachedData("module", $pickmoduleid ))
+											<a href="$pickerurl" 
+												class="emdialog facepf-add"
+												data-dialogid="dialogpicker${pickmoduleid}"
+												data-width="1200"
+												data-pickertargetfield="${pickmoduleid}"
+												data-entityid="$!{id}"
+												data-entitymoduleid="faceprofilegroup"
+												data-hidefooter="true"
+												title="[[Assign]] #text($pickmodule)"></a> 
+										#end	
+									</li>
+								#end 
+							#end 
+						#end	
+					</ul>
+				</div>
+			#end
 		</div>
 	</div>
 </div>

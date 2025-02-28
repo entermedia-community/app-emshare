@@ -283,4 +283,21 @@ jQuery(document).ready(function () {
 		$(".createnewtoggle").toggle();
 		//$(this).hide(); //One time only?
 	});
+
+	lQuery(".facepf").livequery(function (e) {
+		var location = $(this).data("location");
+		var width = $(this).data("width");
+		var height = $(this).data("height");
+		var x = location[0];
+		var y = location[1];
+		var fw = 80 / location[2];
+		var fh = 80 / location[3];
+		var imageUrl = $(this).data("img");
+		var box = $(this);
+		box.css({
+			backgroundImage: `url(${imageUrl})`,
+			backgroundSize: `${Math.ceil(width * fw)}px ${Math.ceil(height * fh)}px`,
+			backgroundPosition: `-${x * fw}px -${y * fh}px`,
+		});
+	});
 }); //on ready
