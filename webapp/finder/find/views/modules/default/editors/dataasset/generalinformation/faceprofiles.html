@@ -1,14 +1,11 @@
-<div id="edit-faceprofiles" 
-	 class="asset-data-detail asset-data-preview assetpanel-editor-box edit-panel-generic">
-	
+<div id="edit-faceprofiles" class="asset-data-detail asset-data-preview assetpanel-editor-box edit-panel-generic">
 	<h4>[[Face Profiles]]</h4>
+
 	$context.putPageValue("clearfilters","true")	
 	#set ($viewtype = "faceprofiles")
 	#set( $val = false )
 	#set( $target = "${detail.id}.value" )
 
-	
-	
 	$context.putPageValue("thumbsize",$thumbsize)
 	#set($assetwidth = $mediaarchive.getRealImageWidth($asset)) 
 	$context.putPageValue("assetwidth",$assetwidth)	
@@ -17,71 +14,66 @@
 
 	<div class="$detailviewercolumnclass asset-data-detail emdatafield-$!viewtype p-3">
 		#set($collection = $data.getValue("faceprofiles"))
-		
-			<div class="emfield-scroll" id="faceprofilefield">
-			<ul class="entity-value-list">
+		<div class="emfield-scroll" id="faceprofilefield">
+			<ul class="entity-value-list mb-3">
 				#foreach( $profile in $collection )
 					#set( $row = false )
 					#set( $name = "")
 					
 					#set( $row = $mediaarchive.getCachedData("faceprofilegroup", $profile.faceprofilegroup) )
-				    #if( $row )
-				    
+					#if( $row )
+					
 						#set( $person = $mediaarchive.getCachedData("entityperson", $row.entityperson) )
-						
+					
 						#ifnotnull($person)
 							#set($namefield = $mediaarchive.getSearcher("entityperson").getDetail("name"))
-					    	#set($name = $mediaarchive.getSearcherManager().getValue($person, $namefield, $context.getLocale()))
-					    	#set($name= "$name ($!row.get('samplecount'))")
+								#set($name = $mediaarchive.getSearcherManager().getValue($person, $namefield, $context.getLocale()))
+								#set($name= "$name ($!row.get('samplecount'))")
 							#set($link = "$!siteroot$applink/views/modules/entityperson/editors/default/tabs/index.html?entityid=$person.id&hitssessionid=$!hits.sessionId")
-					    	#set($title = "[[Person]]: ")
+								#set($title = "[[Person]]: ")
 						#end
-				    	#if( $name == "")
-				    		#set($name = "[[Profile]] $!row.get('facecounter') ($!row.get('samplecount'))")
-				    		#set($link = "$!siteroot$applink/views/modules/faceprofilegroup/editors/default/tabs/index.html?entityid=$row.id&hitssessionid=$!hits.sessionId")
-				    		#set($title = "[[Face Profile]] ") 
-				    	#end
-				    	#if($profile.timecodestart)
-				    		#set($secs = $mediaarchive.formatMilliseconds($profile.timecodestart))
-				    		#set($name = "$name &nbsp;($secs)")
-				    	#end
-					    
-					    
-					    <li>
+
+						#if( $name == "")
+							#set($name = "[[Profile]] $!row.get('facecounter') ($!row.get('samplecount'))")
+							#set($link = "$!siteroot$applink/views/modules/faceprofilegroup/editors/default/tabs/index.html?entityid=$row.id&hitssessionid=$!hits.sessionId")
+							#set($title = "[[Face Profile]] ") 
+						#end
+
+						#if($profile.timecodestart)
+							#set($secs = $mediaarchive.formatMilliseconds($profile.timecodestart))
+							#set($name = "$name &nbsp;($secs)")
+						#end
+						
+						
+						<li>
 							#set( $facemanager = $mediaarchive.getBean("faceProfileManager") )
 							#set($imagebox = $facemanager.getImageBox( [$row], $asset, $assetwidth, $assetheight) )
-							
-							<a href="#" 
-						    	class="showimagebox"
-								data-target="mediaplayer"
-								data-showbox="$imagebox.locationxy"
-								data-imagewidth="${assetwidth}"
-								data-inputheight="${assetheight}"
-						    	title="$!title ($!row.get('samplecount') [[Sample Count]])"
-						    	>$!name</a>
-							&nbsp;
-						    	<a href="$link" 
-									class="emdialog entityupdateurl"
-									data-dialogid="faceprofiledialog"
-									data-moduleid="faceprofilegroup"
-						    		title="[[View Face Profile]]"><i class="bi bi-person-fill"></i></a>
-							#if($caneditasset)
-									&nbsp;
-					    	<a href="$siteroot$applink/components/faceprofile/removefromprofile.html" 
-					    		data-assetid="$!asset.getId()" 
-					    		data-profileid="$row.id" 
-					    		class="ajax"
-					    		data-targetdiv="faceprofilefield" 
-					    		data-confirm="[[Remove face profile from this asset]]" title="[[Remove Face Profile]]"><i class="bi bi-person-fill-x"></i></a>
+							<a href="$link" 
+								class="emdialog entityupdateurl"
+								data-dialogid="faceprofiledialog"
+								data-moduleid="faceprofilegroup"
+								title="[[View Face Profile]]">
+								<i class="bi bi-person-fill"></i> $!name
+							</a>
+							#if($caneditasset) 
+								<a href="$siteroot$applink/components/faceprofile/removefromprofile.html" 
+									data-assetid="$!asset.getId()" 
+									data-profileid="$row.id" 
+									class="ajax entityremoveurl"
+									data-targetdiv="faceprofilefield" 
+									data-confirm="[[Remove face profile from this asset]]" title="[[Remove Face Profile]]">
+									<i class="bi bi-x"></i>
+								</a>
 							#end	
-					    </li>
-				    #end 
+						</li>
+					#end 
 				#end	
 			</ul>
-			</div>
-		
+			#ifnull($xmledithome)
+				#set( $xmledithome = "$apphome/components/xml")
+			#end
+			$context.putPageValue("detail",$detail)
+			$pages.include("$xmledithome/types/entity.html", $context)
+		</div>
 	</div>
-
-		
 </div>
-			
