@@ -35,9 +35,10 @@
 	#set($searchhome = "$apphome/views/modules/${submoduleid}/results/submodulesexcludelist")
 	$context.putPageValue("searchhome", $searchhome)
 	
-			
+	#set($renderexternalid = $entitymoduleviewdata.renderexternalid)
+	
 	#set($sortby = $!viewdata.rendersort)
-	#set($args = "field=$!{entitymodule.id}&$!{entitymodule.id}.value=$!{entity.id}&operation=not")
+	#set($args = "field=$!{renderexternalid}&$!{renderexternalid}.value=$!{entity.id}&operation=not")
 	#set($args = "$args&sortby=$!sortby&entitymoduleviewid=$entitymoduleviewid&viewid=$entitymoduleviewid&${module.id}setpage=1")
 	$pages.include("${searchhome}/search.html?$!args",$context)
 
