@@ -1,6 +1,8 @@
 
 #if($ismulti)
-
+	##only show "data" views (rendertype)
+	#set($enttiyviews = $mediaarchive.query("view").exact("moduleid", $module.id).exact("systemdefined","false").exact("rendertype", "data").sort("orderingUp").named("view").search($context) )
+	#set($entitymoduleviewid = $enttiyviews.first().getId())
 #else
 	#ifnotnull($entity)
 		#set($entityid = $entity.id)
@@ -14,11 +16,10 @@
 			#set($canpublishingcarousel = true)
 		#end
 	#end
+	
+	#set($enttiyviews = $mediaarchive.query("view").exact("moduleid", $module.id).exact("systemdefined","false").sort("orderingUp").named("view").search($context) )
+	#set($entitymoduleviewid = $context.getRequestParameter("entitymoduleviewid"))
 #end
-
-
-#set($enttiyviews = $mediaarchive.query("view").exact("moduleid", $module.id).exact("systemdefined","false").sort("orderingUp").named("view").search($context) )
-#set($entitymoduleviewid = $context.getRequestParameter("entitymoduleviewid"))
 
 #ifnull($entitymoduleviewid)
 	#set( $entitymoduleviewid = $userprofile.get("${module.id}_entitytabopen"))
