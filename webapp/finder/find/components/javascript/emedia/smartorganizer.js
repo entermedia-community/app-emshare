@@ -828,8 +828,6 @@ $(document).ready(function () {
 				selectedGroup = canvas.getPrimarySelection();
 			}
 			if (selectedGroup) {
-				$("#copySmartNodes").show();
-				$("#exportSmartNodes").show();
 				if (selectedGroup.cssClass === "folderGroup") {
 					var selectedGroupId = selectedGroup.getId();
 					var selectedIcon = canvas.getFigure(selectedGroupId + "-icon");
@@ -908,7 +906,6 @@ $(document).ready(function () {
 					hideFolderConfig();
 				}
 			} else {
-				$("#copySmartNodes").hide();
 				hideFolderConfig();
 				hideLabelConfig();
 			}
@@ -980,8 +977,6 @@ $(document).ready(function () {
 		});
 
 		canvas.on("unselect", function () {
-			$("#copySmartNodes").hide();
-			$("#exportSmartNodes").hide();
 			hideFolderConfig();
 			hideLabelConfig();
 			$("#folderThumbPickerBtn").html("");
@@ -1666,9 +1661,9 @@ $(document).ready(function () {
 		}
 
 		lQuery("#copySmartNodes").livequery("click", function () {
-			var icon = $(this).find("i");
-			icon.removeClass("bi-copy").addClass("bi-check-lg");
 			getSelectedJson(function (json) {
+				var icon = $(this).find("i");
+				icon.removeClass("bi-copy").addClass("bi-check-lg");
 				var copyJson = globalizeJSON(JSON.stringify(json));
 				if (!navigator.clipboard) {
 					fallbackCopyText(copyJson);
@@ -1792,7 +1787,6 @@ $(document).ready(function () {
 		});
 
 		function validateClipboard(callback = null) {
-			var $this = $("#pasteSmartNodes");
 			var json = null;
 			if (!navigator.clipboard) {
 				customToast("Clipboard API is not supported in http mode!", {
@@ -1804,19 +1798,22 @@ $(document).ready(function () {
 				.readText()
 				.then(function (text) {
 					if (!text) {
-						$this.hide();
+						customToast("Clipboard is empty!", {
+							positive: false,
+						});
 					} else {
 						try {
 							text = localizeJSON(text);
 							json = JSON.parse(text);
-							if (Array.isArray(json) && json.length > 0) {
-								$this.show();
-							} else {
-								json = null;
-								$this.hide();
+							if (!Array.isArray(json) || json.length == 0) {
+								customToast("Invalid JSON.", {
+									positive: false,
+								});
 							}
 						} catch (error) {
-							$this.hide();
+							customToast("Invalid JSON structure.", {
+								positive: false,
+							});
 						}
 					}
 				})
@@ -1834,14 +1831,11 @@ $(document).ready(function () {
 				});
 		}
 
-		lQuery("#pasteSmartNodes").livequery(function () {
-			validateClipboard();
-			$(this).on("click", function () {
-				validateClipboard(function (json) {
-					if (json) {
-						reader.unmarshal(canvas, json);
-					}
-				});
+		lQuery("#pasteSmartNodes").livequery("click", function () {
+			validateClipboard(function (json) {
+				if (json) {
+					reader.unmarshal(canvas, json);
+				}
 			});
 		});
 
@@ -1881,6 +1875,12 @@ $(document).ready(function () {
 
 		function getSelectedJson(callback) {
 			var figures = canvas.getSelection().getAll();
+			if (figures.data && figures.data.length == 0) {
+				customToast("No nodes selected.", {
+					positive: false,
+				});
+				return;
+			}
 			var ids = [];
 			function fetchIds({ data }) {
 				data.forEach(function (d) {
