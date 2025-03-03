@@ -507,6 +507,33 @@ lQuery(".editdiv.entitypickerassets .resultsdivdata").livequery(
 );
 
 
+/**
+ * CM
+ * Assign Person to a Faceprofile (From MediaViewer)
+*/
+
+lQuery(".pickerresults.pickerfaceprofileperson .resultsdivdata").livequery(
+	"click",
+	function (e) {
+		if (!isValidTarget(e)) {
+			return true;
+		}
+
+		var clicked = $(this);
+
+		var row = $(clicked.closest(".resultsdivdata"));
+		var rowid = row.data("dataid");
+		var clickableresultlist = clicked.closest(".clickableresultlist");
+
+		if (clickableresultlist.length) {
+			clickableresultlist.data("dataid", rowid);
+			clickableresultlist.runAjax();
+			closeemdialog(clickableresultlist.closest(".modal"));
+		}
+	}
+);
+
+
 $(window).on("assetpicked", function (_, input) {
 	var params = JSON.parse(input);
 	var assetid = params.assetid;

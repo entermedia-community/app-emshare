@@ -1,0 +1,31 @@
+#set( $faceprofilegroupid = $context.getRequestParameter("faceprofilegroupid"))
+$context.putPageValue("faprofilegroupid", $faprofilegroupid)
+
+#set( $assetid = $context.getRequestParameter("assetid"))
+
+<div id="$edithomeid" class="editdiv pickerresults pickerfaceprofileperson" 
+
+	data-edithome="${edithome}"
+	data-edithomeid="${edithomeid}"
+	data-entityid="$!{entity.id}"
+	data-entitymoduleid="$!{entitymodule.id}"
+	data-entitymoduleviewid="$entitymoduleviewid"
+	
+>
+	<div class="clickableresultlist"
+		data-oemaxlevel="1"
+		data-url="${edithome}/actions/savepick.html"
+		data-targetdiv="editfaceprofiles"  ##global
+ 		data-faceprofilegroupid="$!{faceprofilegroupid}"
+		data-assetid="$!{assetid}"
+	>	
+		<div class="overflow-y">
+		
+		#set($searchhome = "$apphome/views/modules/${module.id}/results/default")
+		$context.putPageValue("searchhome", $searchhome)
+		
+		$pages.include("${searchhome}/searchinclude.html",$context)
+		</div>
+	</div>
+
+</div>

@@ -962,11 +962,11 @@ jQuery(document).ready(function (url, params) {
 
 	lQuery(".showimagebox").livequery("mouseover", function () {
 		var link = $(this);
-		var mediaplayer = link.data("target");
+		var mediaplayer = link.data("showboxtarget");
 		var emshowbox = $("#" + mediaplayer).find(".emshowbox");
-		emshowbox.data("showbox", link.data("showbox"));
-		emshowbox.data("imagewidth", link.data("imagewidth"));
-		emshowbox.data("inputheight", link.data("inputheight"));
+		emshowbox.data("showbox", link.data("location"));
+		emshowbox.data("imagewidth", link.data("width"));
+		emshowbox.data("inputheight", link.data("height"));
 		var image = emshowbox.find(".imagethumb");
 		if (image.length > 0) {
 			paintimagebox(image);
