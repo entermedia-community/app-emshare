@@ -885,6 +885,9 @@ jQuery(document).ready(function (url, params) {
 	});
 
 	paintimagebox = function (image) {
+		if ($("#manAddFace").length > 0) {
+			return;
+		}
 		var faceprofilebox = image.closest(".emshowbox");
 		if (faceprofilebox.length == 0) {
 			return;
@@ -908,7 +911,7 @@ jQuery(document).ready(function (url, params) {
 			originalbox[3] * scale
 		);
 		var thumbholder = image.closest(".imagethumbholder");
-		var canvas = thumbholder.find("canvas");
+		var canvas = thumbholder.children("canvas");
 		if (canvas.length >= 0) {
 			canvas.remove();
 		}
@@ -924,13 +927,15 @@ jQuery(document).ready(function (url, params) {
 		canvas.css("top", position.top);
 		canvas.css("left", position.left);
 
-		var context = canvas[0].getContext("2d");
-		context.beginPath();
-		context.lineWidth = 1;
-		context.strokeStyle = "#666";
-		context.strokeRect(box[0], box[1], box[2], box[3]);
-		context.strokeStyle = "#fff";
-		context.strokeRect(box[0] - 1, box[1] - 1, box[2] + 1, box[3] + 1);
+		var ctx = canvas[0].getContext("2d");
+		ctx.beginPath();
+		ctx.lineWidth = 1;
+		ctx.strokeStyle = "#454545";
+		ctx.strokeRect(box[0], box[1], box[2], box[3]);
+		ctx.lineWidth = 2;
+		ctx.strokeStyle = "#efefef";
+		ctx.strokeRect(box[0] - 1, box[1] - 1, box[2] + 1, box[3] + 1);
+		ctx.closePath();
 	};
 
 	lQuery(".emshowboximg").livequery(function () {
@@ -971,6 +976,81 @@ jQuery(document).ready(function (url, params) {
 		if (image.length > 0) {
 			paintimagebox(image);
 		}
+	});
+
+	var faceCanvas = null;
+	lQuery(".facepf-new").livequery("click", function (e) {
+		e.preventDefault();
+		e.stopPropagation();
+		if (faceCanvas) {
+			faceCanvas.dispose();
+			faceCanvas = null;
+		}
+		var thumbholder = $(this).closest(".modal").find(".imagethumbholder");
+		thumbholder.find("canvas").remove();
+		thumbholder.prepend("<div class='face-canvas'><canvas></canvas></div>");
+		var canvas = thumbholder.find("canvas");
+		faceCanvas = new fabric.Canvas(canvas[0]);
+		var thumb = thumbholder.find("img");
+		var width = thumb.width();
+		var height = thumb.height();
+
+		faceCanvas.setWidth(width);
+		faceCanvas.setHeight(height);
+		faceCanvas.selection = false;
+
+		var rectWidth = Math.max(width * 0.15, 80);
+		var faceRect = new fabric.Rect({
+			left: width / 2 - rectWidth / 2,
+			top: height / 2 - rectWidth / 2,
+			width: rectWidth,
+			height: rectWidth,
+			fill: "rgba(0,0,0,0.3)",
+			stroke: "white",
+			strokeWidth: 1,
+			id: "faceRect",
+		});
+		faceRect.setControlVisible("mtr", false);
+		faceRect.setControlVisible("mt", false);
+		faceRect.setControlVisible("mr", false);
+		faceRect.setControlVisible("mb", false);
+		faceRect.setControlVisible("ml", false);
+		faceCanvas.add(faceRect);
+		setTimeout(function () {
+			faceCanvas.setActiveObject(faceRect);
+			faceCanvas.renderAll();
+		});
+
+		faceCanvas.on("selection:cleared", function () {
+			setTimeout(function () {
+				faceCanvas.setActiveObject(faceRect);
+				faceCanvas.renderAll();
+			});
+		});
+
+		thumbholder.append(
+			`<div class="facepf-buttons" style="top:${
+				height - 50
+			}px"><a id="manAddFace">Add</a><a id="manCancelFace">Cancel</a></div>`
+		);
+	});
+
+	lQuery("#manAddFace").livequery("click", function (e) {
+		e.preventDefault();
+		e.stopPropagation();
+		var faceRect = faceCanvas.getActiveObject();
+		console.log(faceRect.getBoundingRect());
+	});
+	lQuery("#manCancelFace").livequery("click", function (e) {
+		e.preventDefault();
+		e.stopPropagation();
+		if (faceCanvas) {
+			faceCanvas.dispose();
+			faceCanvas = null;
+		}
+		var thumbholder = $(this).closest(".modal").find(".imagethumbholder");
+		thumbholder.find(".face-canvas").remove();
+		thumbholder.find(".facepf-buttons").remove();
 	});
 
 	lQuery("select.addremovecolumns").livequery("change", function () {
