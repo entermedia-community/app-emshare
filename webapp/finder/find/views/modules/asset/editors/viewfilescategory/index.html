@@ -1,4 +1,11 @@
-#set($urlbarprefix = "${edithome}/$!{category.id}/#dash($category).html")
+#ifnull($category)
+	#set($urlbarprefix = "${edithome}/index.html")
+	#set($category = $mediaarchive.getCategory("index"))
+	$context.putPageValue("category", $category)
+#end
+#ifnotnull($category)
+	#set($urlbarprefix = "${edithome}/$!{category.id}/#dash($category).html")
+#end
 $context.putPageValue("urlbarprefix", $urlbarprefix)
 <div id="${edithomeid}" 
 	class="editdiv ${edithomeid} heightExcludingHeaderFooter dataeditedreload" 
@@ -16,9 +23,7 @@ $context.putPageValue("module", $module)
 #set($searchhome = "$apphome/views/modules/asset/results/categoryviewfiles")
 $context.putPageValue("searchhome", $searchhome)
 
-
-
-$pages.include("${searchhome}/results.html",$context)
+$pages.include("${searchhome}/searchcategory.html",$context)
 
 </div>
 

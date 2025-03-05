@@ -285,7 +285,7 @@ $(document).ready(function () {
 			if (nodeid) {
 				href =
 					apphome +
-					"/views/modules/asset/viewfiles/" +
+					"/views/modules/asset/viewfilescategory/" +
 					nodeid +
 					"/index.html?sortby=assetaddeddateDown";
 			} else {
@@ -300,7 +300,7 @@ $(document).ready(function () {
 		} else if (href == null && nodeid) {
 			href =
 				apphome +
-				"/views/modules/asset/viewfiles/" +
+				"/views/modules/asset/viewfilescategory/" +
 				nodeid +
 				"/index.html?sortby=assetaddeddateDown";
 			options.oemaxlevel = btn.data("oemaxlevel");

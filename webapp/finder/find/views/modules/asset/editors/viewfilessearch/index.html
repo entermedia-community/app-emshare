@@ -1,0 +1,23 @@
+
+#set($urlbarprefix = "${edithome}/index.html")
+
+$context.putPageValue("urlbarprefix", $urlbarprefix)
+<div id="${edithomeid}" 
+	class="editdiv ${edithomeid} heightExcludingHeaderFooter dataeditedreload" 
+	data-oemaxlevel="2"
+	data-edithome="${edithome}"
+	data-edithomeid="data-${edithomeid}"
+	data-targetdiv="resultsdiv"
+	data-setpagetitle="#text($asset)"
+	data-url="${urlbarprefix}"
+>
+
+#set($module = $mediaarchive.getCachedData("module","asset"))
+$context.putPageValue("module", $module)
+
+$pages.include("${searchhome}/results.html",$context)
+
+</div>
+
+
+		
