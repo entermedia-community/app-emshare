@@ -1082,6 +1082,10 @@ jQuery(document).ready(function (url, params) {
 		var id = column.data("sortby");
 
 		var resultsdiv = column.closest(".resultsdiv");
+		if (resultsdiv.length <= 0)
+			{
+				return;
+			}
 		var searchhome = resultsdiv.data("searchhome");
 
 		resultsdiv.data("url", searchhome + "/columnsort.html");
