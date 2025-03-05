@@ -42,8 +42,17 @@
 				<div id="searchcategoryresults" class="flex-grow-1">
 					#set($idhits = $organizedHits.get($selectedmodule.id))
 					$context.putPageValue("hits", $idhits)
+					$context.putPageValue("hitssessionid", $idhits.getSessionId())
 					$context.putPageValue("module", $selectedmodule)
-					#set($edithome = "$apphome/views/modules/${selectedmodule.id}/editors/listentities")
+					
+					#if($selectedmodule.id=="asset")
+						$context.putPageValue("searchhome", "${apphome}/views/modules/asset/results/default")
+						#set($edithome = "$apphome/views/modules/asset/editors/viewfilessearch")
+					#else
+						#set($edithome = "$apphome/views/modules/${selectedmodule.id}/editors/listentities")
+					#end
+					
+					
 					$context.putPageValue("edithome", $edithome)
 					$pages.include("${edithome}/index.html",$context)
 				</div>
