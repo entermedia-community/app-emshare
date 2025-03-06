@@ -3,7 +3,7 @@
 	<div class="d-flex align-items-center justify-content-between mr-3">
 		<h4 class="m-0">[[Face Profiles]]</h4>
 	</div>
-
+	
 	$context.putPageValue("clearfilters","true")	
 	#set ($viewtype = "faceprofiles")
 
@@ -37,6 +37,11 @@
 							#end
 							<li class="position-relative facepf-item">
 								#set($imagebox = $facemanager.getImageBox( [$row], $asset, $assetwidth, $assetheight) )
+								#if($rendertype=="video")
+									#set($imageboxsource = $mediaarchive.asLinkToGenerated($asset, "image1900x1080.jpg"))
+								#else
+									#set($imageboxsource = $mediaarchive.asLinkToGenerated($asset, "image3000x3000.jpg"))
+								#end
 								<a href="$link" 
 									class="emdialog facepf showimagebox"
 									data-showboxtarget="mediaplayer"
@@ -46,7 +51,7 @@
 									data-location="$imagebox.locationxy"
 									data-width="$assetwidth"
 									data-height="$assetheight"
-									data-img='$mediaarchive.asLinkToGenerated($asset, "image3000x3000.jpg")'
+									data-img="${imageboxsource}"
 									title="[[View Face Profile]]">
 								</a>
 								<span>$!name</span>
@@ -70,11 +75,11 @@
 			#if($unassigned > 0)
 			<hr class="m-0">
 			<p class="mt-2 mb-0">
-				Found $unassigned unassigned face#if($unassigned > 1)s#end <a class="text-success facepf-hidden ml-1 #if($assigned > 0)collapsed#end" data-toggle="collapse" href="#collapseUnassigned" role="button" aria-expanded="false" aria-controls="collapseUnassigned"> <span>show <i class="bi bi-chevron-down ns ml-1"></i></span><span>hide<i class="bi bi-chevron-up ns ml-1"></i></span></a>
+				[[Found]] $unassigned [[unassigned face]]#if($unassigned > 1)s#end <a class="text-success facepf-hidden ml-1 #if($assigned > 0)collapsed#end" data-toggle="collapse" href="#collapseUnassigned" role="button" aria-expanded="false" aria-controls="collapseUnassigned"> <span>show <i class="bi bi-chevron-down ns ml-1"></i></span><span>hide<i class="bi bi-chevron-up ns ml-1"></i></span></a>
 			</p>
 			#end
 			#if($assigned == 0 && $unassigned == 0)
-				<p class="text-muted">No faces Found</p>
+				<p class="text-muted">[[No faces Found]]</p>
 				<hr class="m-0">
 			#end
 			<div class="collapse #if($assigned == 0 || $unassigned == 0)show#end" id="collapseUnassigned">
@@ -93,6 +98,12 @@
 								<li class="position-relative facepf-item">
 									#set( $facemanager = $mediaarchive.getBean("faceProfileManager") )
 									#set($imagebox = $facemanager.getImageBox( [$row], $asset, $assetwidth, $assetheight) )
+									#if($rendertype=="video")
+										#set($imageboxsource = $mediaarchive.asLinkToGenerated($asset, "image1900x1080.jpg"))
+									#else
+										#set($imageboxsource = $mediaarchive.asLinkToGenerated($asset, "image3000x3000.jpg"))
+									#end
+									
 									<a href="$link" 
 										class="emdialog facepf showimagebox"
 										data-showboxtarget="mediaplayer"
@@ -101,7 +112,7 @@
 										data-location="$imagebox.locationxy"
 										data-width="$assetwidth"
 										data-height="$assetheight"
-										data-img='$mediaarchive.asLinkToGenerated($asset, "image3000x3000.jpg")'
+										data-img="${imageboxsource}"
 										title="[[View Face Profile]]">
 									</a>
 									#if($caneditasset) 
