@@ -2,7 +2,19 @@
 	#set( $thumbsize  = "largepreview" )
 #end
 $context.putPageValue("thumbsize",$thumbsize)
-<div id="mediaplayer" class="media-player-mini">
+
+#set($assetwidth = $mediaarchive.getRealImageWidth($asset)) 
+$context.putPageValue("assetwidth",$assetwidth)	
+#set($assetheight = $mediaarchive.getRealImageHeight($asset)) 
+$context.putPageValue("assetheight",$assetheight)
+
+<div id="mediaplayer" 
+	class="media-player-mini editdiv" 
+	data-assetid="${asset.id}" 
+	data-assetwidth="${assetwidth}"
+	data-assetheight="${assetheight}"
+	data-opentab="viewproperties"
+	data-faceprofileedithome="$siteroot$apphome/views/modules/asset/editor/faceprofiles">
 		#set($totalpages = $numberutils.toInt($asset.pages))
 		#set ( $hitssessionid = $context.findValue("hitssessionid"))
 		
@@ -33,10 +45,7 @@ $context.putPageValue("thumbsize",$thumbsize)
 						
 						#ifnotnull($faceprofilegroupid)
 							$context.putPageValue("faceprofilegroupid",$faceprofilegroupid)
-							#set($assetwidth = $mediaarchive.getRealImageWidth($asset)) 
-							$context.putPageValue("assetwidth",$assetwidth)	
-							#set($assetheight = $mediaarchive.getRealImageHeight($asset)) 
-							$context.putPageValue("assetheight",$assetheight)
+							
 							#if($assetheight && $assetwidth)
 								#set($facemanager = $mediaarchive.getBean("faceProfileManager") )
 								#set($imagebox = $facemanager.getImageBoxById( $faceprofilegroupid, $asset, $assetwidth, $assetheight) )
@@ -48,6 +57,7 @@ $context.putPageValue("thumbsize",$thumbsize)
 				#end
 				
 			</div>
+			
 		    <div class="media-player-mini-links">      
 				
 			<a href="$siteroot$apphome/views/modules/asset/editor/conversions/replaceoriginal/index.html" 

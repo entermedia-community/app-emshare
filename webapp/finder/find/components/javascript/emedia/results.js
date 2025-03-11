@@ -986,7 +986,8 @@ jQuery(document).ready(function (url, params) {
 			faceCanvas.dispose();
 			faceCanvas = null;
 		}
-		var thumbholder = $(this).closest(".modal").find(".imagethumbholder");
+		var mediaplayer = $(this).closest(".modal").find("#mediaplayer")
+		var thumbholder = mediaplayer.find(".imagethumbholder");
 		thumbholder.find("canvas").remove();
 		thumbholder.prepend("<div class='face-canvas'><canvas></canvas></div>");
 		var canvas = thumbholder.find("canvas");
@@ -994,6 +995,7 @@ jQuery(document).ready(function (url, params) {
 		var thumb = thumbholder.find("img");
 		var width = thumb.width();
 		var height = thumb.height();
+		
 
 		faceCanvas.setWidth(width);
 		faceCanvas.setHeight(height);
@@ -1012,8 +1014,8 @@ jQuery(document).ready(function (url, params) {
 		});
 		faceRect.setControlVisible("mtr", false);
 		faceRect.setControlVisible("mt", false);
-		faceRect.setControlVisible("mr", false);
-		faceRect.setControlVisible("mb", false);
+		//faceRect.setControlVisible("mr", false);
+		//faceRect.setControlVisible("mb", false);
 		faceRect.setControlVisible("ml", false);
 		faceCanvas.add(faceRect);
 		setTimeout(function () {
@@ -1027,19 +1029,34 @@ jQuery(document).ready(function (url, params) {
 				faceCanvas.renderAll();
 			});
 		});
-
+		
+		var addlink = mediaplayer.data("faceprofileedithome");
+		var assetid = mediaplayer.data("assetid");
 		thumbholder.append(
 			`<div class="facepf-buttons" style="top:${
 				height - 50
-			}px"><a id="manAddFace">Add</a><a id="manCancelFace">Cancel</a></div>`
+			}px">
+			<a id="manAddFace"
+				class="" 
+				href="${addlink}/addmanualfaceprofile.html"
+				data-includeeditcontext="true"
+				data-thumbwidth="${width}" 
+				data-targetdiv="main-media-container">Add</a><a id="manCancelFace">Cancel</a></div>`
 		);
 	});
 
 	lQuery("#manAddFace").livequery("click", function (e) {
 		e.preventDefault();
 		e.stopPropagation();
+		var btn = $(this);
 		var faceRect = faceCanvas.getActiveObject();
-		console.log(faceRect.getBoundingRect());
+		var location = faceRect.getBoundingRect();
+		console.log(location);
+		btn.data("boxlocation", JSON.stringify(location));
+		
+		btn.runAjax();
+		
+		
 	});
 	lQuery("#manCancelFace").livequery("click", function (e) {
 		e.preventDefault();
