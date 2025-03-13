@@ -16,8 +16,18 @@ $context.putPageValue("title",$title)
 
 
 
-<div class="emthumbbox embox$thumbsize resultsassetcontainer" id="cell${catalogid}_${hit.id}"> 
-	<input type="checkbox" class="selectionbox resultsselection show" name="count" id="${hit.id}" #if($hits.isSelectedOnPage(${hit.id})) checked #end data-dataid="${hit.id}" />
+
+<div class="emthumbbox embox$thumbsize resultsassetcontainer #if($isdraggable)assetdroppable sort-droppable #end"	
+	id="cell${catalogid}_${hit.id}"	
+	data-dataid="$hit.id">
+		
+	<input type="checkbox" 
+			class="selectionbox resultsselection show" 
+			name="count" 
+			id="${hit.id}" 
+			#if($hits.isSelectedOnPage(${hit.id})) checked #end 
+			data-dataid="${hit.id}" />
+	
 	<label class="selectionbox-label" for="${hit.id}">
 		<i class="bi bi-check-lg"></i>
 	</label>
@@ -43,9 +53,13 @@ $context.putPageValue("title",$title)
 	       	</div>
 	</div>
 
+	
 	<a class="resultsdivdata hovering stackedplayer" href="$click"  data-assetid="$hit.id" data-dataid="$hit.id">
-		<div class="emthumbimage em$thumbsize assetdraggable"
-			data-assetid="${hit.id}" title="$sourcepath">
+		<div class="emthumbimage em$thumbsize  #if($isdraggable)assetdraggable#end" 
+			data-ordering="$!{hit.ordering}" 
+			data-dataid="${hit.id}"
+			data-assetid="${hit.id}" 
+			title="$sourcepath">
 			$context.putPageValue("thumbsize", "medium" )
    	    	#if(!$type)
    	    		#set( $type = "mime" )
@@ -71,6 +85,7 @@ $context.putPageValue("title",$title)
 		</div>
 	</a> 
 	
+	
 	<div style="position: absolute; bottom: 35px;">
 	$pages.include("${searchhome}/badges.html", $context)
 	</div>
@@ -83,4 +98,5 @@ $context.putPageValue("title",$title)
 		</div>
 	</div>
 	#end
+
 </div>

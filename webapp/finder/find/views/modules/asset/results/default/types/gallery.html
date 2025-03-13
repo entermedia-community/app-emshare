@@ -26,7 +26,15 @@ $context.putPageValue("assetrootfolder", "/$catalogid/assets")
     $context.putPageValue("details",$details)
 
 	#set( $viewerlink = $content.get("assetviewerlink") )
+	
+	#set($isdraggable = false)
+	#if($module && $permissions.canModule($module, "assign_files"))
+		#set($isdraggable = true)
+	#end
+	$context.putPageValue("isdraggable", $isdraggable)
+				
 	<div class="scrollview">
+		
 	<div  class="emgallery"  >
 	    <div  id="emslidesheet" class="clearfix">
 		    #set( $rootid = $hits.sessionId )

@@ -23,6 +23,11 @@
 #set($viewerlink = $content.get("assetviewerlink") )
 #set($stackedfield = $mediaarchive.getCatalogSettingValue("stackedgalleryfield"))
 
+#set($isdraggable = false)
+#if($module && $permissions.canModule($module, "assign_files"))
+	#set($isdraggable = true)
+#end
+
 #foreach( $hit in $hits.getPageOfHits())
 	
 	$context.putPageValue("hit", $hit)
@@ -54,10 +59,11 @@
 	#set($isselected = $hits.isSelectedOnPage(${hit.id}) )
 	$context.putPageValue("isselected", "isselected" )
 	
-	<div class="resultsdivdata masonry-grid-cell stackedplayer-cell assetdraggable resultsassetcontainer #if($isselected) emrowselected #end" 
+	<div class="resultsdivdata masonry-grid-cell stackedplayer-cell resultsassetcontainer  #if($isdraggable)assetdraggable#end #if($isselected) emrowselected #end " 
 		id="gallerycell_$!{hit.id}"
 		data-assetid="$!{hit.id}"
 		data-dataid="$!{hit.id}"
+		data-ordering="$!{hit.ordering}"
 		style="height:180px;width:250px;" 
 		#if($rendertype == "audio")
 			data-width="220"
@@ -68,7 +74,9 @@
 			$context.putPageValue("thumbheight", "180" ) 
 		#end
 		>
+		<div class="#if($isdraggable)assetdroppable sort-droppable #end" data-dataid="$hit.id">
 		$pages.include("${searchhome}/thumbnails/brick.html", $context)
+		</div>
 		
 	</div>
     #set ( $count = $count + 1) 
