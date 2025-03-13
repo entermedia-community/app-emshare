@@ -396,14 +396,12 @@ jQuery(document).ready(function () {
 			var categorypath = $(this).data("categorypath");
 			var filename = $(this).data("filename");
 			var dlink = $(this).data("dlink");
-			var lightbox = $(".sync-lightbox").data("lightbox");
-			var useexternalsync = $(".sync-lightbox").data("useexternalsync");
+			var lightbox = $(".upload-lightbox").data("lightbox");
 			ipcRenderer.send("openFileWithDefault", {
 				categorypath,
 				filename,
 				dlink,
 				lightbox,
-				useexternalsync,
 			});
 		});
 
@@ -494,7 +492,7 @@ jQuery(document).ready(function () {
 			});
 		});
 
-		ipcRenderer.on("scan-entity-progress", (_, option) => {
+		ipcRenderer.on("scan-progress", (_, option) => {
 			var pendingFolders = $(".pending-folders");
 
 			pendingFolders.find(".no-download").hide();
@@ -541,14 +539,22 @@ jQuery(document).ready(function () {
 			}
 		});
 
-		ipcRenderer.on("scan-entity-complete", () => {
+		let alreadyScanning = false;
+		let scanToastId = null;
+
+		lQuery(".scan-changes").livequery("click", function (e) {
+			e.preventDefault();
+			scanEntityChange();
+		});
+
+		ipcRenderer.on("scan-complete", () => {
 			var pendingFolders = $(".pending-folders");
 			if (pendingFolders.data("totalDownloadCount") == 0) {
 				pendingFolders.find(".no-download").show();
 			} else {
 				pendingFolders.find(".no-download").hide();
 				$(".pull-msg").show();
-				$(".download-pull-all").prop("disabled", false).show();
+				$(".download-lightbox-all").prop("disabled", false).show();
 			}
 
 			if (pendingFolders.data("totalUploadCount") == 0) {
@@ -556,35 +562,36 @@ jQuery(document).ready(function () {
 			} else {
 				pendingFolders.find(".no-upload").hide();
 				$(".push-msg").show();
-				$(".upload-push-all").prop("disabled", false).show();
+				$(".upload-lightbox-all").prop("disabled", false).show();
 			}
 			setTimeout(() => {
 				$(".scan-changes").find("span").text("Refresh");
 				$(".scan-changes").prop("disabled", false);
+				if (scanToastId) {
+					destroyToast($("." + scanToastId));
+				}
 			}, 100);
 			alreadyScanning = false;
 		});
 
-		let alreadyScanning = false;
-		function scanEntityChange(verifying = false) {
+		function scanEntityChange() {
 			if (alreadyScanning) return;
 			alreadyScanning = true;
 			$(".notif").removeClass("dl up");
-			var pendingFolders = $(".pending-folders");
-			pendingFolders.data("totalDownloadSize", 0);
-			pendingFolders.data("totalDownloadCount", 0);
-			pendingFolders.data("totalUploadSize", 0);
-			pendingFolders.data("totalUploadCount", 0);
-			$(".watch-entity").data("downloading", false);
-			$(".pull-msg").hide();
-			$(".download-pull-all").hide();
-			$(".push-msg").hide();
-			$(".upload-push-all").hide();
-			$(".scan-changes")
-				.find("span")
-				.text(verifying ? "Verifying..." : "Refreshing...");
+			$(".download-lightbox-all").hide();
+			$(".upload-lightbox-all").hide();
+			$(".scan-changes").find("span").text("Refreshing...");
 			$(".scan-changes").prop("disabled", true);
 			var categorypath = $(".scan-changes").data("toplevelcategorypath");
+			if (scanToastId) {
+				destroyToast($("." + scanToastId));
+			}
+			scanToastId = "scan-" + Date.now();
+			customToast("Scanning for changes...", {
+				id: scanToastId,
+				autohide: false,
+				loading: true,
+			});
 			ipcRenderer.send("scanAll", categorypath);
 			var openedFolder = $(".pullfetchfolder").first();
 			fetchFolderFilesList(openedFolder);
@@ -594,169 +601,26 @@ jQuery(document).ready(function () {
 			scanEntityChange();
 		});
 
-		lQuery(".scan-changes").livequery("click", function (e) {
+		lQuery(".download-lightbox-all").livequery("click", function (e) {
 			e.preventDefault();
-			scanEntityChange();
-		});
-
-		lQuery("#immediate-download").livequery(function () {
 			var categorypath = $(this).data("toplevelcategorypath");
-			$(".pullfetchfolder").first().find(".fa-spinner").show();
 			$(".watch-entity").data("downloading", true);
-			ipcRenderer.send("downloadAll", categorypath);
-			$(this).remove();
-		});
-
-		lQuery(".download-pull-all").livequery("click", function (e) {
-			e.preventDefault();
-			$(".dl-progress").data("transferTotal", 0);
-			var categorypath = $(this).data("toplevelcategorypath");
-			$(".pullfetchfolder").first().find(".fa-spinner").show();
 			$(this).prop("disabled", true);
-			$(".watch-entity").data("downloading", true);
+			$(this).find("span").text("Downloading...");
 			ipcRenderer.send("downloadAll", categorypath);
 		});
 
-		ipcRenderer.on("download-next", (_, { index }) => {
-			$(".pull-folder").each(function () {
-				var folder = $(this);
-				var spinner = folder.find(".fa-spinner");
-				if (folder.attr("id") == "folder-" + index) {
-					spinner.show();
-				} else {
-					spinner.hide();
-				}
-			});
-		});
-
-		ipcRenderer.on("download-batch-progress", (_, { transferredBytes }) => {
-			var dlp = $(".dl-progress");
-			let serverTotal = dlp.data("serverTotal") || 0;
-			if (transferredBytes == 0) {
-				dlp.html("Downloading...");
-			} else {
-				dlp.html(
-					`Downloaded <b>${humanFileSize(
-						transferredBytes
-					)}</b> of <b>${humanFileSize(serverTotal)}</b>`
-				);
-			}
-			if (transferredBytes >= serverTotal) {
-				$(".pullfetchfolder").find(".fa-spinner").hide();
-			}
-		});
-
-		ipcRenderer.on("download-batch-next", (_, { categoryPath }) => {
-			$(".pullfetchfolder").each(function () {
-				$(this).find(".fa-spinner").hide();
-				if ($(this).data("categorypath") == categoryPath) {
-					$(this).find(".fa-spinner").show();
-				}
-			});
-		});
-
-		ipcRenderer.on("download-batch-complete", (_, { lightbox = false }) => {
-			if (lightbox) {
-				var openLightbox = $(".open-lightbox");
-				openLightbox.find("span").text("Downloaded");
-				setTimeout(() => {
-					openLightbox.prop("disabled", false);
-					openLightbox.find("span").text("Open Locally");
-				}, 2000);
-			} else {
-				setTimeout(() => {
-					$(".pullfetchfolder").find(".fa-spinner").hide();
-					$(".watch-entity").data("downloading", false);
-					scanEntityChange(true);
-				}, 100);
-			}
-		});
-
-		lQuery("#immediate-scan").livequery(function () {
-			scanEntityChange();
-			$(this).remove();
-		});
-
-		lQuery(".upload-push-all").livequery("click", function (e) {
+		lQuery(".upload-lightbox-all").livequery("click", function (e) {
 			e.preventDefault();
 			var entityId = $(this).data("entityid");
-			var categorypath = $(this).data("categorypath");
-			$(".scan-result").hide();
+			var categorypath = $(this).data("toplevelcategorypath");
 			$(this).prop("disabled", true);
+			$(this).find("span").text("Uploading...");
 			$(".scan-changes").prop("disabled", true);
 			ipcRenderer.send("uploadAll", {
 				categorypath: categorypath,
 				entityId: entityId,
 			});
-		});
-
-		ipcRenderer.on("entity-upload-progress", (_, { loaded }) => {
-			var total = $(".up-count").text();
-			$(".up-total").text(total);
-			var sp = $(".upload-progress");
-			var progress = parseInt(sp.data("progress"));
-			if (!progress) progress = 0;
-			$(".up-progress").text(humanFileSize(progress + loaded));
-			sp.show();
-		});
-
-		ipcRenderer.on("entity-upload-next", (_, { index, size }) => {
-			$(".syncfoldertree").find(".fa-spinner").hide();
-			var folder = $("#folder-" + index);
-			folder.find(".fa-spinner").show();
-			var sp = $(".upload-progress");
-			var fileCount = parseInt(sp.data("fileCount"));
-			if (!fileCount) fileCount = 0;
-			$(".up-completed").text(fileCount + 1);
-			sp.find("span").show();
-			sp.data("fileCount", fileCount + 1);
-			var progress = parseInt(sp.data("progress"));
-			if (!progress) progress = 0;
-			progress += size;
-			sp.data("progress", progress);
-			$(".up-progress").text(humanFileSize(progress));
-		});
-
-		ipcRenderer.on("upload-error", (_, { id, error }) => {
-			var folder = $("#f-" + id);
-			if (folder.length === 0) return;
-			folder.find(".up-progress").css("width", "0%");
-			folder
-				.find(".fl")
-				.attr("class", "fl fas fa-exclamation-circle text-danger");
-			console.error(error);
-		});
-
-		ipcRenderer.on("entity-upload-complete", (_, { lightbox = false }) => {
-			if (lightbox) {
-				var syncLightbox = $(".sync-lightbox");
-				syncLightbox.find("span").text("Synced");
-				autoreload($(".entity-tab-media"));
-				setTimeout(() => {
-					syncLightbox.prop("disabled", false);
-					syncLightbox.find("span").text("Sync");
-				}, 2000);
-			} else {
-				$("#sidebarUserUploads").find(".status-circle").remove();
-				$(".syncfoldertree").find(".fa-spinner").hide();
-				$(".push-msg").hide();
-				$(".upload-push-all").hide();
-				$(".notif").removeClass("up");
-				$(".upload-progress").hide();
-				$(".upload-progress").data("fileCount", 0);
-				$(".upload-progress").data("progress", 0);
-				scanEntityChange();
-			}
-		});
-
-		lQuery("#abortUpload").livequery("click", function (e) {
-			e.preventDefault();
-			ipcRenderer.send("abortUpload");
-		});
-
-		lQuery("#cancelAutoUpload").livequery("click", function (e) {
-			e.preventDefault();
-			ipcRenderer.send("cancelAutoUpload");
 		});
 
 		ipcRenderer.on("upload-canceled", () => {
@@ -768,24 +632,6 @@ jQuery(document).ready(function () {
 			formData.append("desktopimportstatus", "upload-canceled");
 			uploadInProgress = false;
 			desktopImportStatusUpdater(formData);
-		});
-
-		lQuery(".pull-individual").livequery("click", function (e) {
-			e.preventDefault();
-			var entitydialog = $(this).closest(".entitydialog");
-			if (entitydialog.length == 0) {
-				return;
-			}
-			var categorypath = entitydialog.data("categorypath");
-			console.log("categorypath", categorypath);
-			var item = $(this).closest("li");
-			var file = {
-				itemexportname: categorypath + "/" + item.data("path"),
-				itemdownloadurl: item.data("url"),
-				categorypath: categorypath,
-			};
-			var assetid = item.data("id");
-			ipcRenderer.send("fetchfilesdownload", { assetid, file, headers });
 		});
 
 		lQuery(".dir-picker").livequery("click", function (e) {
@@ -804,10 +650,8 @@ jQuery(document).ready(function () {
 		lQuery("#changeLocalDirve").livequery("click", function (e) {
 			e.preventDefault();
 			var selectedPath = $("#localRootPathInput").val();
-			var externalSyncEnabled = $("#externalSyncEnabled").is(":checked");
 			ipcRenderer.send("changeLocalDrive", {
 				selectedPath,
-				externalSyncEnabled,
 			});
 			closeemdialog($(this).closest(".modal"));
 		});
@@ -867,23 +711,6 @@ jQuery(document).ready(function () {
 			}
 		});
 
-		lQuery("#selectedModule").livequery("change", function () {
-			var moduleid = $(this).val();
-			var data = {
-				updateurl: "true",
-				oemaxlevel: "4",
-			};
-			var nextpage = apphome + "/views/modules/" + moduleid + "/index.html";
-			jQuery.ajax({
-				url: nextpage,
-				data: data,
-				success: function (res) {
-					$("#applicationcontent").replaceWith(res);
-					$(window).trigger("resize");
-				},
-			});
-		});
-
 		function getCurrentWorkFolders() {
 			var folders = [];
 			$(".work-folder").each(function () {
@@ -901,13 +728,9 @@ jQuery(document).ready(function () {
 			});
 			return folders;
 		}
+
 		var uploadInProgress = false;
 		function desktopImportStatusUpdater(formData, callback = null) {
-			var moduleid = $("#selectedModule").val();
-			if (!moduleid) {
-				console.log("No module selected");
-				return;
-			}
 			jQuery.ajax({
 				url:
 					apphome +
@@ -925,7 +748,8 @@ jQuery(document).ready(function () {
 				},
 			});
 		}
-		ipcRenderer.on("scan-auto-folder-completed", (_, ids) => {
+
+		ipcRenderer.on("scan-folder-completed", (_, ids) => {
 			var formData = new FormData();
 			ids.forEach((id) => {
 				formData.append("id", id);
@@ -958,11 +782,6 @@ jQuery(document).ready(function () {
 			verifyAutoUploads();
 		});
 
-		lQuery("#sidebarfolderimport").livequery(function () {
-			if (uploadInProgress) return;
-			verifyAutoUploads();
-		});
-
 		lQuery(".verifynow").livequery(function () {
 			if (uploadInProgress) return;
 			verifyAutoUploads();
@@ -989,13 +808,13 @@ jQuery(document).ready(function () {
 			counter.html(htm);
 		}
 
-		ipcRenderer.on("auto-upload-progress", (_, loaded) => {
-			console.log("auto-upload-progress", loaded);
+		ipcRenderer.on("upload-progress", (_, loaded) => {
+			console.log("upload-progress", loaded);
 			updateCounter(loaded);
 		});
 
-		ipcRenderer.on("auto-upload-next", (_, { id, size }) => {
-			console.log("auto-upload-next", id, size);
+		ipcRenderer.on("upload-next", (_, { id, size }) => {
+			console.log("upload-next", id, size);
 			$(".fl").attr("class", "fl fas fa-folder");
 			$("#wf-" + id)
 				.find(".fl")
@@ -1022,7 +841,7 @@ jQuery(document).ready(function () {
 		}
 
 		ipcRenderer.on(
-			"auto-upload-each-complete",
+			"upload-each-complete",
 			(_, [completedSyncFolderId, count = 0]) => {
 				var folder = $("#wf-" + completedSyncFolderId);
 				folder.addClass("completed");
@@ -1033,28 +852,25 @@ jQuery(document).ready(function () {
 			}
 		);
 
-		ipcRenderer.on(
-			"auto-upload-all-complete",
-			(_, [lasSyncFolderId, count = 0]) => {
-				var refreshList = function () {
-					var syncFolders = getCurrentWorkFolders();
-					var formData = new FormData();
-					syncFolders.forEach((folder) => {
-						formData.append("id", folder.id);
-					});
-					formData.append("desktopimportstatus", "upload-completed");
-					uploadInProgress = false;
-					desktopImportStatusUpdater(formData);
-				};
-				if (count > 0) {
-					lastScandateUpdater(lasSyncFolderId, refreshList);
-				} else {
-					refreshList();
-				}
+		ipcRenderer.on("upload-complete", (_, [lasSyncFolderId, count = 0]) => {
+			var refreshList = function () {
+				var syncFolders = getCurrentWorkFolders();
+				var formData = new FormData();
+				syncFolders.forEach((folder) => {
+					formData.append("id", folder.id);
+				});
+				formData.append("desktopimportstatus", "upload-completed");
+				uploadInProgress = false;
+				desktopImportStatusUpdater(formData);
+			};
+			if (count > 0) {
+				lastScandateUpdater(lasSyncFolderId, refreshList);
+			} else {
+				refreshList();
 			}
-		);
+		});
 
-		ipcRenderer.on("auto-file-added", () => {
+		ipcRenderer.on("file-added", () => {
 			verifyAutoUploads();
 		});
 
@@ -1089,79 +905,51 @@ jQuery(document).ready(function () {
 			}
 		});
 
-		lQuery("#externalSyncEnabled").livequery(function () {
-			ipcRenderer.send("getExternalSyncEnabled");
-		});
-
-		ipcRenderer.on("set-external-sync", (_, enabled) => {
-			$("#externalSyncEnabled").prop("checked", enabled);
-		});
-
-		lQuery(".open-lightbox").livequery("click", function () {
+		lQuery(".lightbox-header-btns").livequery(function () {
 			var uploadsourcepath = $(this).data("path");
 			var lightbox = $(this).data("lightbox");
-			var useexternalsync = $(this).data("useexternalsync");
-			$(this).prop("disabled", true);
-			ipcRenderer.send("internalSyncLightboxDown", {
-				uploadsourcepath,
-				lightbox,
-				useexternalsync,
-			});
-			ipcRenderer.send("shouldInternalSyncLightboxShow", {
-				uploadsourcepath,
-				lightbox,
-				useexternalsync,
-			});
-		});
-
-		ipcRenderer.on("internal-lightbox-sync-disabled", (_, { lightbox }) => {
-			$(".open-lightbox").each(function () {
-				var $this = $(this);
-				if ($this.data("lightbox") === lightbox) {
-					$this.find("span").text("Opened!");
-					setTimeout(() => {
-						$this.prop("disabled", false);
-						$this.find("span").text("Open Locally");
-					}, 1000);
-				}
-			});
-		});
-
-		ipcRenderer.on("lightbox-downloading", (_, { lightbox }) => {
-			$(".open-lightbox").each(function () {
-				if ($(this).data("lightbox") === lightbox) {
-					$(this).find("span").text("Downloading...");
-				}
-			});
-		});
-
-		lQuery(".sync-lightbox").livequery(function () {
-			var uploadsourcepath = $(this).data("path");
-			var lightbox = $(this).data("lightbox");
-			var useexternalsync = $(this).data("useexternalsync");
-			ipcRenderer.send("shouldInternalSyncLightboxShow", {
-				uploadsourcepath,
-				lightbox,
-				useexternalsync,
-			});
 			var entityid = $(this).data("entityid");
-			$(this).click(function () {
-				$(this).prop("disabled", true);
-				$(this).find("span").text("Syncing...");
-				ipcRenderer.send("internalSyncLightboxUp", {
-					uploadsourcepath,
-					lightbox,
-					entityid,
-				});
-			});
-		});
+			var name = $(this).data("name");
+			var moduleid = $(this).data("moduleid");
+			var desktop = $(this).data("desktop");
 
-		ipcRenderer.on("show-sync-lightbox", (_, { lightbox }) => {
-			$(".sync-lightbox").each(function () {
-				if ($(this).data("lightbox") === lightbox) {
-					$(this).show();
-				}
-			});
+			//TODO check if btns should be disabled
+
+			$(this)
+				.find(".download-lightbox")
+				.click(function () {
+					customToast(
+						"Download in progress, check Active Cloud Sync panel for status"
+					);
+					$(this).prop("disabled", true);
+					$(this).find("span").text("Downloading...");
+					ipcRenderer.send("lightboxDownload", {
+						uploadsourcepath,
+						lightbox,
+						entityid,
+						name,
+						desktop,
+						moduleid,
+					});
+				});
+
+			$(this)
+				.find(".upload-lightbox")
+				.click(function () {
+					customToast(
+						"Upload in progress, check Active Cloud Sync panel for status"
+					);
+					$(this).prop("disabled", true);
+					$(this).find("span").text("Uploading...");
+					ipcRenderer.send("lightboxUpload", {
+						uploadsourcepath,
+						lightbox,
+						entityid,
+						name,
+						desktop,
+						moduleid,
+					});
+				});
 		});
 	});
 

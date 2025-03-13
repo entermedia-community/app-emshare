@@ -18,34 +18,24 @@
   
 	#set( $modulelist  = $mediaarchive.getCatalogSettingValue("useexternalsync_modulelist"))
 	<div class="d-flex align-items-center ml-auto">
-		#if ($desktop) 
-			<button class="sync-lightbox lightbox-header-btn positive"
-				style="display: none"
-				data-entityid="$!entity.getId()"
-				#ifnotnull($selectedbox)
-					data-lightbox="#text($selectedbox)"
-				#end
-				data-path='$!entity.get("uploadsourcepath")'
-				#if( $modulelist.contains($module.getId()))
-					data-useexternalsync="true"
-				#end
-			>
-				<i class="bi bi-upload mr-1 ns"></i> <span>[[Sync]]</span>
-			</button>
-			<button class="lightbox-header-btn open-lightbox"
-				#ifnotnull($selectedbox)
-					data-lightboxid="$selectedbox.id"
-					data-lightbox="#text($selectedbox)"
-				#end
-				data-entityid="$!entity.getId()"
-				data-path='$!entity.get("uploadsourcepath")'
-				#if( $modulelist.contains($module.getId()))
-					data-useexternalsync="true"
-				#end
-			>
-				<i class="bi bi-download mr-1 ns"></i> <span>[[Open Locally]]</span>
-			</button>  
+		<div class="d-flex align-items-center lightbox-header-btns"
+		#ifnotnull($selectedbox) 
+			data-lightbox="#text($selectedbox)"
 		#end
+		data-name="$!entity.getId()"
+		data-moduleid="$!module.id"
+		data-desktop="$!desktop.id"
+		data-entityid="$!entity.getId()"
+		data-path='$!entity.get("uploadsourcepath")'>
+			#if ($desktop) 
+				<button class="lightbox-header-btn upload-lightbox positive">
+					<i class="bi bi-cloud-arrow-up mr-1 ns"></i> <span>[[Upload]]</span>
+				</button>
+				<button class="lightbox-header-btn download-lightbox">
+					<i class="bi bi-cloud-arrow-down mr-1 ns"></i> <span>[[Download]]</span>
+				</button>  
+			#end
+		</div>
 		
 		#set($showpublishbtn = false)
 		#if($permissions.canModule($module, "publishinggallery"))
