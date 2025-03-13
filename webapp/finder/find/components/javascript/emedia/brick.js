@@ -111,7 +111,7 @@
 			var image = $("img.imagethumb", div);
 			// div.css("line-height",fixedheight + "px");
 			div.css("height", fixedheight + "px");
-			image.height(fixedheight);
+			//image.height(fixedheight);
 			image.data("fixedheight", fixedheight);
 
 			var a = div.data("aspect");
@@ -122,6 +122,8 @@
 			div.css("width", neww + "px");
 			image.width(neww);
 			totalwused = totalwused + neww;
+			
+
 		});
 
 		totalavailablew = grid.width();
