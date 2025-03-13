@@ -10,6 +10,12 @@ $context.putPageValue("resultstype", $context.getRequestParameter("resultstype")
 
 $pages.include("${searchhome}/resultheader.html",$context)
 
+#set($isdraggable = false)
+#if($module && $permissions.canModule($module, "assign_files"))
+	#set($isdraggable = true)
+#end
+$context.putPageValue("isdraggable", $isdraggable)
+
 #if ( $hits && $hits.size() > 0 )
 
     #set( $details = $searcher.getDetailsForView($viewid,$userprofile) )
