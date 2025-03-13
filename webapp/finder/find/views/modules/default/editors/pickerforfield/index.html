@@ -1,6 +1,14 @@
 #set( $pickertargetfield = $context.getRequestParameter("pickertargetfield"))
 $context.putPageValue("pickertargetfield", $pickertargetfield)
 
+#ifnull($enableactions)
+	#set($enableactions = $content.isPropertyTrue("enableactions",true))
+#end
+#if($enableactions)
+	#set($enableactions = $permissions.canModule($module, "edit"))
+#end
+$context.putPageValue("enableactions", $enableactions)
+
 <div id="$edithomeid" class="editdiv pickerresults pickerforfield" 
 
 	data-edithome="${edithome}"
@@ -8,6 +16,7 @@ $context.putPageValue("pickertargetfield", $pickertargetfield)
 	data-entityid="$!{entity.id}"
 	data-entitymoduleid="$!{entitymodule.id}"
 	data-entitymoduleviewid="$entitymoduleviewid"
+	data-enableactions="$!{enableactions}"
 	
 >
 	<div class="clickableresultlist"

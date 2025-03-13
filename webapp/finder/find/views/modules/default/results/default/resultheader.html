@@ -64,11 +64,15 @@ $context.putPageValue("entityrendertype", $entityrendertype)
 #end
 
 #ifnull($enableactions)
+	#set($enableactions = $context.getRequestParameter("enableactions"))
+#end
+#ifnull($enableactions)
 	#set($enableactions = $content.isPropertyTrue("enableactions",true))
 #end
-#if($enableactions)
+#if($enableactions == "true")
 	#set($enableactions = $permissions.canModule($module, "edit"))
 #end
+
 $context.putPageValue("enableactions", $enableactions)
 
 #set($islightheader = $module.id == "searchcategory" || $module.id == "modulesearch")
@@ -107,7 +111,7 @@ $context.putPageValue("enableactions", $enableactions)
 					</li>
 				#end
 			#end
-			#if($enableactions)
+			#if($enableactions != "false")
 			<li class="dropdown">
 				<a class="resultsnavlink dropdown-toggle #if($!hits.getSelectionSize() > 0)btn-accent#end" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 					
@@ -147,7 +151,7 @@ $context.putPageValue("enableactions", $enableactions)
 						title="[[Deselect all results]]">[[Select None]]</a>
 						</li>
 					
-				#if($enableactions && $!hits.getSelectionSize() > 0)
+				#if($enableactions != "false" && $!hits.getSelectionSize() > 0)
 					
 					#if($permissions.canModule($module, "edit"))
 					#set($previewediturl = "${edithome}/tabs/index.html?entityid=multiedit:$!hits.sessionId&hitssessionid=$!hits.sessionId&searchtype=$moduleid&edit=true")
@@ -223,7 +227,7 @@ $context.putPageValue("enableactions", $enableactions)
 			#if($moduleid != "faceprofilegroup")
 				#if(!$edit)
 				
-					#if($enableactions && $hits && $resultview == "table" && $hits.hasSelections())
+					#if($enableactions != "false" && $hits && $resultview == "table" && $hits.hasSelections())
 					
 						$pages.include("${searchhome}/selectionactions.html", $context)
 					#end
