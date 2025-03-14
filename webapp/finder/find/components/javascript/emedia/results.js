@@ -896,12 +896,25 @@ jQuery(document).ready(function (url, params) {
 		if (newheight === undefined) {
 			newheight = image.height();
 		}
+		var newwidth =  image.width();
+		
 
 		//check if faceprofilebox
+		
+		var scale = 1;
 
 		var inputheight = faceprofilebox.data("inputheight");
+		var inputwidth = faceprofilebox.data("inputwidth");
+		
+		if (inputheight > inputwidth) {
+			scale = newwidth / inputwidth;	
+		}
+		else 
+		{
+			scale = newheight / inputheight;
+		}
 
-		var scale = newheight / inputheight;
+		
 
 		var originalbox = faceprofilebox.data("showbox");
 		var box = new Array(

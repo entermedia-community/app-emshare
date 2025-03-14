@@ -98,7 +98,7 @@
 					#set( $moduleicon = $box.moduleicon)
 					#ifnull($moduleicon)
 						#set( $moduleicon = "check-circle-fill")
-					#end
+					#end 
 					<i class="bi bi-${moduleicon}"></i>
 					#set( $val = $box.getAssetCount() )
 					<span id="lightbox-stat-$!{box.id}" data-filecount="$!val">
@@ -147,9 +147,12 @@
 				data-entitymoduleviewid="$entitymoduleviewid"
 			>
 				#set( $moduleicon = $mediaarchive.getCachedData("module","asset").moduleicon)
+				#ifnull($moduleicon)
+					#set( $moduleicon = "image-fill")
+				#end 
 				<i class="bi bi-${moduleicon}"></i>
 				<span>
-					[[Working Files]]
+					[[All Files]]
 					($allassets.size())
 				</span>
 			</a>

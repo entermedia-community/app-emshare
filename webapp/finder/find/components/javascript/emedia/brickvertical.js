@@ -102,6 +102,9 @@
 				if (colnum >= maxcols) {
 					colnum = 0;
 				}
+				
+				
+				
 			});
 		checkScroll(grid);
 	}

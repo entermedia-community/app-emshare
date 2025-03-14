@@ -16,7 +16,7 @@ $context.putPageValue("assetid", $hit.id)
 
 $context.putPageValue("title",$title)
      
-<tr class="resultsdivdata resultsassetcontainer #if($selectedrow) emrowselected #end"  
+<tr class="resultsdivdata resultsassetcontainer #if($selectedrow) emrowselected #end #if($isdraggable)assetdroppable sort-droppable #end"  
 	data-rowid="$hit.id"  
 	data-dataid="$hit.id"  
 	data-sourcepath="$sourcepath"
@@ -31,7 +31,12 @@ $context.putPageValue("title",$title)
 #end	
 
 	#set( $type = $mediaarchive.getMediaRenderType($hit.fileformat))
-	<td class="resultstablecell thumbnail assetdraggable" data-dataid="${hit.id}" data-assetid="${hit.id}" #if($type=="audio") noclick="true" #end>
+	<td class="resultstablecell thumbnail assetdraggable" 
+		data-dataid="${hit.id}" 
+		data-ordering="$!{hit.ordering}"
+		#if($type=="audio") noclick="true" #end 
+		data-assetid="${hit.id}" 
+		>
 
 		$pages.include("${searchhome}/thumbnails/small.html",$context)
 		
