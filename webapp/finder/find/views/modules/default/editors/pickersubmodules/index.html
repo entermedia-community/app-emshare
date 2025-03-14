@@ -2,6 +2,14 @@
 #set($viewdata = $mediaarchive.getCachedData("view",$entitymoduleviewid))
 #set($submoduleid = $!viewdata.rendertable)
 
+#ifnull($enableactions)
+	#set($enableactions = $content.isPropertyTrue("enableactions",true))
+#end
+#if($enableactions)
+	#set($enableactions = $permissions.canModule($module, "edit"))
+#end
+$context.putPageValue("enableactions", $enableactions)
+
 ##Edithome might be wrong because the parent has one set
 
 <div id="$!{edithomeid}" class="editdiv pickersubmodules" 
@@ -11,7 +19,8 @@
 	data-edithome="$!{edithome}"
 	data-edithomeid="$!{edithomeid}"
 	data-setpagetitle="[[Select]] #text($module)"
-
+	data-enableactions="$!{enableactions}"
+	data-showaddnew="false"
 >
 
 #set($submoduleid = $!entitymoduleviewdata.rendertable)

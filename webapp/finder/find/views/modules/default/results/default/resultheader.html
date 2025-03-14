@@ -50,8 +50,14 @@ $context.putPageValue("entityrendertype", $entityrendertype)
 
 #set($preference = "minimize$!{moduleid}summary")
 #set($isminimized = $userprofile.getBoolean($preference))
-#set($showaddnew = $content.isPropertyTrue("showaddnew",true))
 
+#ifnull($showaddnew)
+	#set($showaddnew = $context.getRequestParameter("showaddnew"))
+#end
+
+#ifnull($showaddnew)
+	#set($showaddnew = $content.isPropertyTrue("showaddnew",true))
+#end
 #if($content.section == "favorites")
 	#set($showaddnew = false)
 #end
@@ -83,7 +89,7 @@ $context.putPageValue("enableactions", $enableactions)
 			#set($pickertarget = $context.getRequestParameter("pickertarget"))
 			
 			#ifnull($pickertarget)
-				#if($permissions.canModule($module, "create") && $showaddnew)
+				#if($permissions.canModule($module, "create") && $showaddnew != "false")
 					<li> 
 						#ifnotnull($entity)
 							#set($addnew = "${edithome}/addnew.html")
