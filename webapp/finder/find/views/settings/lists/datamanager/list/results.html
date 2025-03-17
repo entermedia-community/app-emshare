@@ -52,18 +52,20 @@ $context.putPageValue("details",$details)
 					
 					$context.putPageValue('val',  $val)
 					$context.putPageValue('value',  $value)
-								$context.putPageValue('detail',  $detail)
+					$context.putPageValue('detail',  $detail)
 								
 					#set ($viewtype = $detail.viewType)
-									#if($viewtype && $viewtype.equals("html"))
-										#set ($viewtype = "htmlescaped")
-									#end
+					#if($viewtype && $viewtype.equals("html"))
+						#set ($viewtype = "htmlescaped")
+					#end
+					
 					#if(!$viewtype)
 						#set ($viewtype = $detail.dataType)
 					#end
 					#if (!$viewtype || $viewtype.equals("text"))
 						#set ($viewtype = "default")
 					#end
+					
 					$pages.include("$apphome/components/xml/typesreadonly/${viewtype}.html?viewonly=true", $context)
 				</td>
 				#end
