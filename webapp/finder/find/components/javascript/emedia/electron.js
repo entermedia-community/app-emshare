@@ -562,7 +562,7 @@ jQuery(document).ready(function () {
 			} else {
 				pendingFolders.find(".no-upload").hide();
 				$(".push-msg").show();
-				$(".upload-lightbox-all").prop("disabled", false).show();
+				$(".upload-lightbox-all").show();
 			}
 			setTimeout(() => {
 				$(".scan-changes").find("span").text("Refresh");
@@ -608,30 +608,6 @@ jQuery(document).ready(function () {
 			$(this).prop("disabled", true);
 			$(this).find("span").text("Downloading...");
 			ipcRenderer.send("downloadAll", categorypath);
-		});
-
-		lQuery(".upload-lightbox-all").livequery("click", function (e) {
-			e.preventDefault();
-			var entityId = $(this).data("entityid");
-			var categorypath = $(this).data("toplevelcategorypath");
-			$(this).prop("disabled", true);
-			$(this).find("span").text("Uploading...");
-			$(".scan-changes").prop("disabled", true);
-			ipcRenderer.send("uploadAll", {
-				categorypath: categorypath,
-				entityId: entityId,
-			});
-		});
-
-		ipcRenderer.on("upload-canceled", () => {
-			var syncFolders = getCurrentWorkFolders();
-			var formData = new FormData();
-			syncFolders.forEach((folder) => {
-				formData.append("id", folder.id);
-			});
-			formData.append("desktopimportstatus", "upload-canceled");
-			uploadInProgress = false;
-			desktopImportStatusUpdater(formData);
 		});
 
 		lQuery(".dir-picker").livequery("click", function (e) {
@@ -773,53 +749,18 @@ jQuery(document).ready(function () {
 			formData.append("desktopimportstatus", "scan-started");
 
 			desktopImportStatusUpdater(formData, () => {
-				ipcRenderer.send("syncAutoFolders", syncFolders);
+				ipcRenderer.send("syncSelectedFolders", syncFolders);
 			});
 		}
 
-		lQuery("#syncAutoFolders").livequery("click", function () {
-			if (uploadInProgress) return;
-			verifyAutoUploads();
-		});
+		// lQuery("#syncAutoFolders").livequery("click", function () {
+		// 	if (uploadInProgress) return;
+		// 	verifyAutoUploads();
+		// });
 
 		lQuery(".verifynow").livequery(function () {
 			if (uploadInProgress) return;
 			verifyAutoUploads();
-		});
-
-		function updateCounter(size, persist = false) {
-			var counter = $(".upload-counter");
-			var fileCount = parseInt(counter.data("fileCount"));
-			if (isNaN(fileCount)) fileCount = 0;
-			var uploadSize = parseInt(counter.data("uploadSize"));
-			if (isNaN(uploadSize)) uploadSize = 0;
-			uploadSize += size;
-			if (persist) {
-				fileCount++;
-				counter.data("fileCount", fileCount);
-				counter.data("uploadSize", uploadSize);
-			}
-			var readableSize = humanFileSize(uploadSize, true);
-			var htm = "";
-			if (fileCount > 0) {
-				htm += `<b>${fileCount}</b> files `;
-			}
-			htm += `(${readableSize}) uploaded.`;
-			counter.html(htm);
-		}
-
-		ipcRenderer.on("upload-progress", (_, loaded) => {
-			console.log("upload-progress", loaded);
-			updateCounter(loaded);
-		});
-
-		ipcRenderer.on("upload-next", (_, { id, size }) => {
-			console.log("upload-next", id, size);
-			$(".fl").attr("class", "fl fas fa-folder");
-			$("#wf-" + id)
-				.find(".fl")
-				.attr("class", "fl fas fa-spinner fa-spin");
-			updateCounter(size, true);
 		});
 
 		function lastScandateUpdater(syncFolderId, callback = null) {
@@ -840,47 +781,26 @@ jQuery(document).ready(function () {
 				});
 		}
 
-		ipcRenderer.on(
-			"upload-each-complete",
-			(_, [completedSyncFolderId, count = 0]) => {
-				var folder = $("#wf-" + completedSyncFolderId);
-				folder.addClass("completed");
-				if (count > 0) {
-					folder.find(".last-scanned").text("Imported files 1 Second ago");
-					lastScandateUpdater(completedSyncFolderId);
-				}
-			}
-		);
-
-		ipcRenderer.on("upload-complete", (_, [lasSyncFolderId, count = 0]) => {
-			var refreshList = function () {
-				var syncFolders = getCurrentWorkFolders();
-				var formData = new FormData();
-				syncFolders.forEach((folder) => {
-					formData.append("id", folder.id);
-				});
-				formData.append("desktopimportstatus", "upload-completed");
-				uploadInProgress = false;
-				desktopImportStatusUpdater(formData);
-			};
-			if (count > 0) {
-				lastScandateUpdater(lasSyncFolderId, refreshList);
-			} else {
-				refreshList();
-			}
-		});
-
 		ipcRenderer.on("file-added", () => {
 			verifyAutoUploads();
 		});
 
 		lQuery(".watch-entity").livequery(function () {
-			var toplevelcategorypath = $(this).data("toplevelcategorypath");
-			var entityid = $(this).data("entityid");
-			ipcRenderer.send("watchFolder", {
-				id: entityid,
-				path: toplevelcategorypath,
-			});
+			ipcRenderer.send("check-uploads");
+			$(this)
+				.find(".upload-lightbox-all")
+				.click(function (e) {
+					e.preventDefault();
+					var entityId = $(this).data("entityid");
+					var categorypath = $(this).data("toplevelcategorypath");
+					$(this).prop("disabled", true);
+					$(this).find("span").text("Uploading...");
+					$(".scan-changes").prop("disabled", true);
+					ipcRenderer.send("uploadAll", {
+						categorypath: categorypath,
+						entityId: entityId,
+					});
+				});
 		});
 
 		ipcRenderer.on("file-added", (_, catPath) => {
@@ -906,9 +826,11 @@ jQuery(document).ready(function () {
 		});
 
 		lQuery(".lightbox-header-btns").livequery(function () {
+			ipcRenderer.send("check-uploads");
+
 			var uploadsourcepath = $(this).data("path");
 			var lightbox = $(this).data("lightbox");
-			var entityid = $(this).data("entityid");
+			var entityId = $(this).data("entityid");
 			var name = $(this).data("name");
 			var moduleid = $(this).data("moduleid");
 			var desktop = $(this).data("desktop");
@@ -926,7 +848,7 @@ jQuery(document).ready(function () {
 					ipcRenderer.send("lightboxDownload", {
 						uploadsourcepath,
 						lightbox,
-						entityid,
+						entityId,
 						name,
 						desktop,
 						moduleid,
@@ -944,14 +866,70 @@ jQuery(document).ready(function () {
 					ipcRenderer.send("lightboxUpload", {
 						uploadsourcepath,
 						lightbox,
-						entityid,
-						name,
-						desktop,
-						moduleid,
+						entityId,
 					});
 				});
 		});
 	});
+
+	function validateDupes(identifier, identifiers) {
+		for (let i = 0; i < identifiers.length; i++) {
+			const identifier2 = identifiers[i];
+			if (identifier === identifier2) return true;
+			else if (identifier.startsWith(identifier2)) return true;
+			else if (identifier2.startsWith(identifier)) return true;
+		}
+		return false;
+	}
+	ipcRenderer.on("check-uploads", (_, data) => {
+		var identifier = $(".lightbox-header-btns").data("path");
+		var btn;
+		if (!identifier) {
+			identifier = $(".watch-entity").data("toplevelcategorypath");
+			btn = $(".upload-lightbox-all");
+		} else {
+			btn = $(".upload-lightbox");
+		}
+		if (!identifier) {
+			return;
+		}
+		if (validateDupes(identifier, data)) {
+			btn.prop("disabled", true);
+			btn.find("span").text("Uploading...");
+		}
+	});
+
+	// <all upload events>
+	ipcRenderer.on("upload-progress-update", (_, data) => {
+		console.log("upload-progress-update", data);
+	});
+	ipcRenderer.on("upload-completed", (_, data) => {
+		console.log("upload-completed", data);
+	});
+	ipcRenderer.on("upload-cancelled", (_, data) => {
+		console.log("upload-cancelled", data);
+	});
+	ipcRenderer.on("file-status-update", (_, data) => {
+		console.log("file-status-update", data);
+	});
+	ipcRenderer.on("file-progress-update", (_, data) => {
+		console.log("file-progress-update", data);
+	});
+	ipcRenderer.on("duplicate-upload", (_, data) => {
+		console.log("duplicate-upload", data);
+		customToast("Already uploading in this entity, wait until it finishes", {
+			positive: false,
+			autohideDelay: 5000,
+		});
+	});
+	ipcRenderer.on("too-many-uploads", (_, data) => {
+		console.log("too-many-uploads", data);
+		customToast("Wait for other uploads to finish", {
+			positive: false,
+			autohideDelay: 5000,
+		});
+	});
+	// </all upload events>
 
 	function getMediadb() {
 		var elem = app;
