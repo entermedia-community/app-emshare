@@ -40,7 +40,14 @@ public void runit()
 	String message = data.get("message");
 		
 	String topicid = data.get("channel");
+	
+	
 	MultiValued topicdata = (MultiValued)mediaArchive.getData("collectiveproject", topicid);
+	
+	if (topicdata == null) {
+		log.error("No channel defined in: " + data);
+		return;
+	}
 	//If it ends with messages
 	
    		Map extra = new HashMap();
