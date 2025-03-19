@@ -8,7 +8,7 @@
 			"content": #jesc($systeminfo)
 		},
 		#foreach($message in $recent)
-			#set($entry = $testbench.getData("chatterbox", $message.id))
+			
 			#if($foreach.count != 1)
 			,
 			#end
@@ -16,7 +16,7 @@
 				#if($message.messagetype == "function_call")				
 					"role": "function",	
 					 "name" : "$message.function",					
-				#elseif($entry.user == "agent")
+				#elseif($message.user == "agent")
 					"role": "assistant",
 				#else
 					"role": "user",
@@ -28,11 +28,16 @@
 	,
 	"functions":[
 		##$gpt.loadInputFromTemplate($context, "/$mediaarchive.getMediaDbId()/gpt/functiondefs/checkweather.json"),
-		#foreach($module in $chatprofile.getEntities())                       	
-			$context.putPageValue("module",$module)
-			$gpt.loadInputFromTemplate($context, "/$mediaarchive.getMediaDbId()/gpt/functiondefs/search-moduletemplate.json"),
+		#foreach($module in $chatprofile.getEntities())    
+			#if($module.showonsearch =="true")                    	
+				$context.putPageValue("module",$module)
+				$gpt.loadInputFromTemplate($context, "/$mediaarchive.getMediaDbId()/gpt/functiondefs/search-moduletemplate.json"),
+			#end
 		#end
-		$gpt.loadInputFromTemplate($context, "/$mediaarchive.getMediaDbId()/gpt/functiondefs/emediasearchformat.json")				
+		
+		$gpt.loadInputFromTemplate($context, "/$mediaarchive.getMediaDbId()/gpt/functiondefs/emediasearchformat.json"),
+		
+		$gpt.loadInputFromTemplate($context, "/$mediaarchive.getMediaDbId()/gpt/functiondefs/emediasearchall.json")					
 						
 	],
 	"function_call": "auto"

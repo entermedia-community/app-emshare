@@ -1,0 +1,48 @@
+<div class="aisearchtable-container">
+#if($hits.size() > 0)
+	<p>Found $hits.size() matching. 
+	<a class="expandaisearchtable" href="javascript:void(0);">See details</a></p>
+	#if( $hits.getTotalPages() > 1)
+		Showing $hits.getHitsPerPage() of $hits.size() records.
+	#end
+	<div class="aisearchtable overflow-x collapse">
+		<table class="table table-sm table-striped">
+			<thead>
+				<tr>
+					<th>ID</th>
+					<th>Name</th>
+					<th>Description</th>
+					<th>Keywords</th>
+					<th>Search Type</th>
+				</tr>
+			</thead>
+			<tbody>
+				
+				#foreach($hit in $hits.getPageOfHits())
+				
+				#set($sourcetype = $hit.get("entitysourcetype"))
+				#ifnull($sourcetype)
+					#set($sourcetype = "asset")
+				#end
+				
+				<tr class="stackedplayer" id="clickid${hit.id}" data-assetid="$hit.id">
+					<th scope="row" class="text-primary">#if($hit.id) $hit.id #else <span class="small text-muted">N/A</span> #end</th>
+					<td>#if($hit.name) $hit.name #else <span class="small text-muted">N/A</span> #end</td>
+					#if($sourcetype != "asset")
+					<td>#if($!hit.longcaption) $!hit.longcaption #else <span class="small text-muted">N/A</span> #end</td>
+					#else
+					<td>#if($!hit.assetttitle) $!hit.assetttitle #else <span class="small text-muted">N/A</span> #end</td>
+					#end
+					<td>#if($!hit.keywords) $!hit.keywords #else <span class="small text-muted">N/A</span> #end</td>
+					<td>$sourcetype</td>
+				</tr>
+				#end
+			</tbody>
+		</table>
+		##$0/finder/find/views/modules/entityparent/index.html?hits.getSessionId()
+	</div>
+	<p class="text-muted typeout">...waiting for the previews</p>
+#else
+	##No results found for $hits
+#end
+</div>
