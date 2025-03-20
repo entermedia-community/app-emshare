@@ -256,6 +256,11 @@ jQuery(document).ready(function () {
 	});
 
 	var progItem = (identifier) => {
+		console.log(
+			"progItem",
+			identifier,
+			".work-folder[data-categorypath='" + identifier + "']"
+		);
 		var el = $(".work-folder[data-categorypath='" + identifier + "']");
 		if (el.length > 0) {
 			return el;
@@ -264,12 +269,13 @@ jQuery(document).ready(function () {
 	};
 
 	// <all upload events>
-	ipcRenderer.on("upload-started", (_, { total, identifier }) => {
-		var idEl = progItem(identifier);
+	ipcRenderer.on("upload-started", (_, data) => {
+		console.log("upload-started", data);
+		var idEl = progItem(data.identifier);
 		if (idEl) {
 			idEl.addClass("processing");
 			idEl.find(".filesCompleted").text(0);
-			idEl.find(".filesTotal").text(total);
+			idEl.find(".filesTotal").text(data.total);
 			idEl.find(".filesFailed").text(0);
 			idEl.find(".fileProgress").css("width", "0%");
 			idEl.find(".fileProgressLoaded").text(0);
@@ -278,6 +284,7 @@ jQuery(document).ready(function () {
 	});
 
 	ipcRenderer.on("upload-progress-update", (_, data) => {
+		console.log("upload-progress-update", data);
 		var idEl = progItem(data.identifier);
 		if (idEl) {
 			idEl.removeClass("processing");
@@ -287,28 +294,27 @@ jQuery(document).ready(function () {
 		}
 	});
 
-	ipcRenderer.on(
-		"upload-completed",
-		(_, { identifier, completed, failed, remainingUploads }) => {
-			var idEl = progItem(identifier);
-			if (idEl) {
-				idEl.removeClass("processing");
-				idEl.data("index", undefined);
-			}
-
-			var formData = new FormData();
-			formData.append("completedfiles", completed || 0);
-			formData.append("failedfiles", failed || 0);
-			formData.append("categorypath", identifier);
-			formData.append("desktopimportstatus", "upload-completed");
-			desktopImportStatusUpdater(formData, () => {
-				shouldDisableSyncBtns(remainingUploads);
-				customToast("An upload task has completed");
-			});
+	ipcRenderer.on("upload-completed", (_, data) => {
+		console.log("upload-completed", data);
+		var idEl = progItem(data.identifier);
+		if (idEl) {
+			idEl.removeClass("processing");
+			idEl.data("index", undefined);
 		}
-	);
+
+		var formData = new FormData();
+		formData.append("completedfiles", data.completed || 0);
+		formData.append("failedfiles", data.failed || 0);
+		formData.append("categorypath", data.identifier);
+		formData.append("desktopimportstatus", "upload-completed");
+		desktopImportStatusUpdater(formData, () => {
+			shouldDisableSyncBtns(data.remainingUploads);
+			customToast("An upload task has completed");
+		});
+	});
 
 	ipcRenderer.on("upload-cancelled", (_, identifier) => {
+		console.log("upload-cancelled", identifier);
 		var idEl = progItem(identifier);
 		if (idEl) {
 			idEl.removeClass("processing");
@@ -322,6 +328,7 @@ jQuery(document).ready(function () {
 	});
 
 	ipcRenderer.on("file-status-update", (_, data) => {
+		console.log("file-status-update", data);
 		var idEl = progItem(data.identifier);
 		if (!idEl) return;
 		idEl.data("index", data.index);
@@ -335,6 +342,7 @@ jQuery(document).ready(function () {
 	});
 
 	ipcRenderer.on("file-progress-update", (_, data) => {
+		console.log("file-progress-update", data);
 		var idEl = progItem(data.identifier);
 		if (!idEl) return;
 		var index = idEl.data("index");
