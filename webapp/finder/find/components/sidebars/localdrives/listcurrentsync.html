@@ -10,69 +10,94 @@
     </div>
 
   #else
-
-    #ifnull($scanstatus)
-      #set($scanstatus = "scan-started")
-    #end
-    
-    #if($scanstatus != "upload-completed")
-    <div class="alert import-verify p-2 mx-2 mt-1 mb-2 text-center $scanstatus #if($verifynow) verifynow #end">
-      #if($scanstatus == "scan-started")
-        <p class="mb-1">
-          <i class="fas fa-spin fa-apinner mr-1"></i>
-          <span>[[Looking for new files in the local folders]]</span>
-        </p>
-        <button class="btn btn-sm rounded mt-2" id="syncAutoFolders" disabled>[[Scanning...]]</button>
-        #elseif($scanstatus == "upload-started")
-        <p class="m-0">
-          <i class="fas fa-spin fa-apinner mr-1"></i>
-          <span>[[Uploading new files from local folders to the server]]</span>
-        </p>
-        <p class="upload-counter my-1"></p>
-        <button class="btn btn-sm btn-warning rounded mt-2" id="cancelAutoUpload">[[Cancel]]</button>
-      #elseif($scanstatus == "upload-canceled")
-        <p class="m-0 text-warning">
-          <i class="bi bi-exclamation-triangle ns mr-1"></i>
-          <span>[[Upload canceled]]</span>
-        </p>
-      #end
-    </div>
-    #end
-
-    <div class='work-dir-tree #if($scanstatus != "upload-completed") processing #end'>
-      #foreach($syncfolder in $syncfolders) 
-        <div class="work-folder" id="wf-$syncfolder.id" title="Open: $syncfolder.localpath" data-id="$syncfolder.id" data-localpath="$syncfolder.localpath" data-categorypath="$syncfolder.categorypath" data-entityid="$syncfolder.entityid">
-          <div class="d-flex flex-column flex-grow-1 p-2 position-relative">
-            <p class="my-0">
-              #set($moduleicon = $module.moduleicon)
-              #ifnull($moduleicon)
-                #set($moduleicon = "images")
+    <div class='work-dir-tree'>
+      #foreach($syncfolder in $syncfolders)
+        #set($previewclass = "processing")
+        #if($syncfolder.desktopimportstatus == "upload-completed")
+          #set($previewclass = "uploaded")
+        #end
+        #if($syncfolder.desktopimportstatus == "download-completed")
+          #set($previewclass = "downloaded")
+        #end
+        <div class='work-folder #if($syncfolder.isdownload == "true") download #else upload #end $previewclass $syncfolder.desktopimportstatus'
+          id="wf-$syncfolder.id"
+          data-id="$syncfolder.id"
+          data-categorypath="$syncfolder.categorypath"
+          data-entityid="$syncfolder.entityid">
+          <div class="upload-summary">
+            <div class="d-flex flex-column flex-grow-1 p-2 position-relative">
+              #if($syncfolder.isdownload == "true")
+                <small class="text-success"><i class="bi bi-arrow-down ns"></i> DOWNLOAD</small>
+              #else
+                <small class="text-primary"><i class="bi bi-arrow-up ns"></i> UPLOAD</small>
               #end
-              <i class="bi bi-$moduleicon"></i>
-              $syncfolder.name
-            </p>
-            <small class="mt-1 last-scanned">
-              #ifnotnull($syncfolder.lastscandate)
-                #set($ago = $context.getAge($syncfolder.getDate("lastscandate"))) 
-                #ifnull($ago)
-                Imported files 1 Second ago
+              <p class="my-1">
+                #set($moduleicon = $module.moduleicon)
+                #ifnull($moduleicon)
+                  #set($moduleicon = "images")
                 #end
-                #ifnotnull($ago)
-                Imported files $ago ago
+                <i class="ns bi bi-$moduleicon"></i>
+                $syncfolder.categorybreadcrumb
+              </p>
+              #if($syncfolder.desktopimportstatus == "upload-cancelled")
+                <small class="text-danger">[[Upload cancelled]]</small>
+              #else
+                #ifnotnull($syncfolder.lastscandate)
+                  <small class="last-scanned">
+                    #set($ago = $context.getAge($syncfolder.getDate("lastscandate")))
+                    Last scanned
+                    #ifnull($ago)
+                    1 second ago
+                    #end
+                    #ifnotnull($ago)
+                    <span style="text-transform:lowercase;">$ago</span> ago
+                    #end
+                  </small>
                 #end
-              #end 
-            </small>
+                <small class="mb-1 files-stats">
+                  #if($syncfolder.isdownload == "true")
+                    Downloaded
+                  #else
+                    Uploaded
+                  #end
+                  <b>$syncfolder.completedfiles</b>, <span class="f$!syncfolder.failedfiles">failed <b>$syncfolder.failedfiles</b></span>
+                </small> 
+              #end
+            </div>
+            
+            <button class="btn deleteSyncFolder" data-id="$syncfolder.id">
+              <div></div>
+            </button>
+            #set($previewurl = "$!{siteroot}$apphome/views/modules/$!{module.id}${edithome}/tabs/index.html?entityid=$!{syncfolder.entityid}")
+            <div class="m-1">
+              <a href="$!{previewurl}" class="mb-1 d-block p-2 text-primary emdialog" title="[[Show the folder in Server]]">
+                <i class="bi bi-box-arrow-up-right ns"></i>
+              </a>
+              <div class="open-folder flex-1 p-2"
+                #if($syncfolder.categorypath)
+                  data-path="$syncfolder.categorypath"
+                #end
+                title="[[Show the folder in your computer]]">
+                <i class="bi bi-display ns"></i>
+              </div>
+            </div>
           </div>
-          
-          <button class="btn deleteAutoFolder" data-id="$syncfolder.id">
-            <div></div>
-          </button>
-          #set($previewurl = "$!{siteroot}$apphome/views/modules/$!{module.id}${edithome}/tabs/index.html?entityid=$!{syncfolder.entityid}")
-          <a href="$!{previewurl}" class="emdialog"  data-localpath="$syncfolder.localpath" title="[[Show the folder in Server]]">
-            <i class="bi bi-box-arrow-up-right"></i>
-          </a>
-          <div class="open-folder"  data-localpath="$syncfolder.localpath" title="[[Show the folder in Server]]">
-            <i class="bi bi-display"></i>
+          <div class="current-upload">
+            <p class="mb-2 text-primary">
+              <strong>[[Uploading]] <span class="filesCompleted">0</span> of <span class="filesTotal">0</span> [[Files]], <span class="filesFailed">0</span> [[Failed]]</strong>
+            </p>
+            <p class="mb-1 text-muted fileName"></p>
+            <div class="progress">
+              <div class="progress-bar progress-bar-striped fileProgress" style="width: 35%"></div>
+            </div>
+            <p class="mt-1 mb-0 text-right">
+              <span><span class="fileProgressLoaded"></span> / <span class="fileProgressTotal"></span></span>
+            </p>
+            <div class="text-center mt-1">
+              <button class="border-0 bg-white mx-auto text-danger cancelUpload" title="[[Cancel the upload]]">
+                <i class="bi bi-x"></i> [[Cancel]]
+              </button>
+            </div>
           </div>
         </div>
       #end
