@@ -148,15 +148,20 @@ jQuery(document).ready(function () {
 			ipcRenderer.send("cancel-upload", {
 				identifier: categorypath,
 			});
-			jQuery
-				.ajax({
-					type: "DELETE",
-					url:
-						getMediadb() + "/services/module/desktopsyncfolder/data/" + delId,
-				})
-				.done(function () {
+			jQuery.ajax({
+				type: "DELETE",
+				url: getMediadb() + "/services/module/desktopsyncfolder/data/" + delId,
+				success: function (res) {
 					$("#wf-" + delId).remove();
-				});
+					customToast("Folder deleted successfully!");
+				},
+				error: function (xhr, status, error) {
+					console.log("deleteSyncFolder", error);
+					customToast("Error deleting folder!", {
+						positive: false,
+					});
+				},
+			});
 		}
 	});
 
