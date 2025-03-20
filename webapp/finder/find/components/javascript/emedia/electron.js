@@ -264,11 +264,27 @@ jQuery(document).ready(function () {
 	};
 
 	// <all upload events>
-	ipcRenderer.on("upload-started", (_, data) => {
-		console.log("upload-started", data);
+	ipcRenderer.on("upload-started", (_, { total, identifier }) => {
+		var idEl = progItem(identifier);
+		if (idEl) {
+			idEl.addClass("processing");
+			idEl.find(".filesCompleted").text(0);
+			idEl.find(".filesTotal").text(total);
+			idEl.find(".filesFailed").text(0);
+			idEl.find(".fileProgress").css("width", "0%");
+			idEl.find(".fileProgressLoaded").text(0);
+			idEl.find(".fileProgressTotal").text(0);
+		}
 	});
+
 	ipcRenderer.on("upload-progress-update", (_, data) => {
-		console.log("upload-progress-update", data);
+		var idEl = progItem(data.identifier);
+		if (idEl) {
+			idEl.removeClass("processing");
+			idEl.find(".filesCompleted").text(data.completed);
+			idEl.find(".filesFailed").text(data.failed);
+			idEl.find(".filesTotal").text(data.total);
+		}
 	});
 
 	ipcRenderer.on(
@@ -311,17 +327,10 @@ jQuery(document).ready(function () {
 		idEl.data("index", data.index);
 		if (data.status === "uploading") {
 			idEl.addClass("processing");
-			idEl.find(".filesCompleted").text(0);
-			idEl.find(".filesFailed").text(0);
-		} else {
-			idEl.removeClass("processing");
-			if (data.status === "completed") {
-				var filesCompleted = idEl.find(".filesCompleted");
-				filesCompleted.text(parseInt(filesCompleted.text()) + 1);
-			} else if (data.status === "failed") {
-				var filesFailed = idEl.find(".filesFailed");
-				filesFailed.text(parseInt(filesFailed.text()) + 1);
-			}
+			idEl.find(".fileName").text(data.name);
+			idEl.find(".fileProgress").css("width", "0%");
+			idEl.find(".fileProgressLoaded").text(0);
+			idEl.find(".fileProgressTotal").text(0);
 		}
 	});
 
@@ -330,9 +339,9 @@ jQuery(document).ready(function () {
 		if (!idEl) return;
 		var index = idEl.data("index");
 		if (index === undefined) return;
-		var percent = data.percent;
-		var progressEl = idEl.find(".progress .progress-bar");
-		progressEl.css("width", percent + "%");
+
+		var progressEl = idEl.find(".fileProgress");
+		progressEl.css("width", data.percent + "%");
 
 		var loadedEl = idEl.find(".fileProgressLoaded");
 		loadedEl.text(data.loaded);
