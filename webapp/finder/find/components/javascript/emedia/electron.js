@@ -167,6 +167,8 @@ jQuery(document).ready(function () {
 		if (lightbox) {
 			categorypath += "/" + lightbox;
 		}
+		categorypath = categorypath.replace(/\\/g, "/");
+		categorypath = categorypath.replace(/\/+/g, "/");
 
 		$(this)
 			.find(".download-lightbox")
