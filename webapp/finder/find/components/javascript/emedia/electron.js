@@ -51,6 +51,8 @@ jQuery(document).ready(function () {
 	});
 
 	function humanFileSize(bytes, htm = false) {
+		if (typeof bytes === "string") bytes = parseInt(bytes);
+		if (isNaN(bytes)) return "";
 		var thresh = 1000;
 		if (Math.abs(bytes) < thresh) {
 			return bytes + " B";
@@ -339,7 +341,7 @@ jQuery(document).ready(function () {
 			idEl.find(".fileName").text(data.name);
 			idEl.find(".fileProgress").css("width", "0%");
 			idEl.find(".fileProgressLoaded").text(0);
-			idEl.find(".fileProgressTotal").text(0);
+			idEl.find(".fileProgressTotal").text(humanFileSize(data.size));
 		}
 	});
 
@@ -347,17 +349,17 @@ jQuery(document).ready(function () {
 		console.log("file-progress-update", data);
 		var idEl = progItem(data.identifier);
 		if (!idEl) return;
-		var index = idEl.data("index");
-		if (index === undefined) return;
+		// var index = idEl.data("index");
+		// if (index === undefined) return;
 
 		var progressEl = idEl.find(".fileProgress");
-		progressEl.css("width", data.percent + "%");
+		progressEl.css("width", Math.min(data.percent * 100, 100) + "%");
 
 		var loadedEl = idEl.find(".fileProgressLoaded");
-		loadedEl.text(data.loaded);
+		loadedEl.text(humanFileSize(data.loaded));
 
 		var totalEl = idEl.find(".fileProgressTotal");
-		totalEl.text(data.total);
+		totalEl.text(humanFileSize(data.total));
 	});
 
 	ipcRenderer.on("duplicate-upload", (_, data) => {
