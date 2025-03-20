@@ -8,16 +8,12 @@
       <i class="bi bi-info-circle ns mr-1"></i> 
       [[You will see your bulk upload/download progress here]]
     </div>
-
   #else
     <div class='work-dir-tree'>
       #foreach($syncfolder in $syncfolders)
-        #set($previewclass = "processing")
-        #if($syncfolder.desktopimportstatus == "upload-completed")
-          #set($previewclass = "uploaded")
-        #end
-        #if($syncfolder.desktopimportstatus == "download-completed")
-          #set($previewclass = "downloaded")
+        #set($previewclass = "")
+        #if($syncfolder.desktopimportstatus == "scan-started" || $syncfolder.desktopimportstatus == "upload-started" || $syncfolder.desktopimportstatus == "download-started")
+          #set($previewclass = "processing")
         #end
         <div class='work-folder #if($syncfolder.isdownload == "true") download #else upload #end $previewclass $syncfolder.desktopimportstatus'
           id="wf-$syncfolder.id"
