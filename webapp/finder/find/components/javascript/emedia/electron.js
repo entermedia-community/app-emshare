@@ -144,6 +144,10 @@ jQuery(document).ready(function () {
 	lQuery(".deleteSyncFolder").livequery("click", function () {
 		if (confirm("Are you sure you want to remove this folder from importer?")) {
 			var delId = $(this).data("id");
+			var categorypath = $(this).data("categorypath");
+			ipcRenderer.send("cancel-upload", {
+				identifier: categorypath,
+			});
 			jQuery
 				.ajax({
 					type: "DELETE",
@@ -253,7 +257,7 @@ jQuery(document).ready(function () {
 		e.preventDefault();
 		e.stopPropagation();
 		var btn = $(this);
-		var identifier = btn.closest(".work-folder").data("categorypath");
+		var identifier = btn.data("categorypath");
 		ipcRenderer.send("cancel-upload", {
 			identifier,
 		});
