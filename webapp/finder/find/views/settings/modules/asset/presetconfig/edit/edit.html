@@ -2,10 +2,7 @@
 <h3>[[Transcoder Paremeters]]</h3>
 
 
-<div id="editlayout" class="mt-4 mr-4">
-	#if($message)
-	<div class="alert alert-save fader" role="alert">$message</div>
-	#end
+<div id="editlayout" class="mt-4 mr-1" style="width:650px;">
 
 	#set( $origURL = $context.getRequestParameter("origURL" ) )
 
@@ -32,7 +29,8 @@
 			data-targetdivinner="settingslayout"
 			data-oemaxlevel="3"><span>[[Cancel]]</span></a>
 		#ifnotnull($data.id)
-		<a class="btn btn-sm btn-danger ajax" 
+		<a class="btn btn-sm btn-danger confirm ajax" 
+			data-confirm="[[Are you sure?]]"
 			href='$!{apphome}/views/settings/modules/asset/presetconfig/edit/delete.html?searchtype=$searcher.searchType&catalogid=$searcher.catalogId&id=$!data.id'
 			data-targetdivinner="settingslayout"
 			data-oemaxlevel="3">[[Delete]]</a>
@@ -51,28 +49,68 @@
 
 
 #if($data && $data.id)
-<div class="mr-4">
-<h3>[[Preset Parameters]]</h3>
+	<div class="mr-4">
+	<h3>[[Preset Parameters]]</h3>
+	
+	<div class="tab-actions mb-2">
+		<a class="btn btn-primary emdialog" 
+			href="$!{apphome}/views/settings/modules/asset/presetconfig/presetparameter/addnew.html"
+			data-parameterdata="${data.id}"
+			data-hidefooter="true"
+			title="[[New Parameter]]"
+			>[[Add New Parameter]]</a>
+	</div>
+	
+	
+	#set($searcher = $searcherManager.getSearcher($catalogid, "presetparameter"))
+	#set( $query = $searcher.createSearchQuery() )
+	#set( $null = $query.addMatches("parameterdata",$data.id) )
+	##$query.addSortBy("inputtype")
+	$query.addSortBy("ordering")
+	
+	
+	<div class="emselectable showmodal"  
+		data-dialogwidth="500" 
+		title="[[Edit Parameter]]" 
+		data-hidefooter="true" 
+		data-url="/${applicationid}/views/settings/modules/asset/presetconfig/presetparameter/edit.html"
+		data-parameterdata="${data.id}">
+	<table class="table table-striped table-hover emdata">
+		<thead>
+			<tr class="tableheader">
+				
+				<th style="width: 40%">[[Parameter Name]]</th>
+				<th>[[Parameter Value]]</th>
+			</tr>
+		</thead>
+		<tbody>
+			#foreach($row in $searcher.search($query) )
+			<tr rowid="$row.id" >
+					<td>				
+						$!context.putPageValue("value",$row.get("name"))		
+						$!context.putPageValue("data",$row)		
+						$pages.include("$apphome/components/xml/detailreadonly.html", $context)
+					</td>
+					<td class="pl-3">				
+						$!context.putPageValue("value",$row.get("value"))		
+						$!context.putPageValue("data",$row)		
+						$pages.include("$apphome/components/xml/detailreadonly.html", $context)
+					</td>
+				
+			</tr>
+			#end
+		</tbody>
+	</table>
+	
 
-#set( $searchtype = "presetparameter" )
-#set( $fieldexternalid = "parameterdata")
-
-#set( $permissionname = "canedit${searchtype}")
-#set ( $id = $context.getRequestParameter("id") )
-#if ( $!id )
-    #set ( $id = $data.id )
-    #set( $fieldexternalvalue = $data.getId())
-#end
-#set( $fieldexternalvalue = $id )
-$context.putPageValue("canedittable", $caneditdata)
-$context.putPageValue("searcher", $mediaarchive.getSearcher($searchtype))
-$context.putPageValue("viewid", "presetparametergeneral")
-
-#set( $args = "id=$id&parentid=$id&viewdetailspath=$!viewdetailspath&viewid=presetparametergeneral&catalogid=$mediaarchive.getCatalogId()&searchtype=$searchtype&fieldexternalid=$!fieldexternalid&fieldexternalvalue=$!fieldexternalvalue&listid=$!listid&listexternalid=$!listexternalid&permissionname=$permissionname&hitssessionid=$hitssessionid")
-
-$pages.include("/$applicationid/components/xml/table.html?$args",$context)
-
-</div>
+	</div>
+	
+	
+	
+	
+	
+	
+	</div>
 #end
 
 

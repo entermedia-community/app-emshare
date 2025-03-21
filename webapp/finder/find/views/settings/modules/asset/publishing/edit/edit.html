@@ -1,9 +1,9 @@
 
-<div>
+<div id="publishing">
 <h3>[[Publishing Settings]]</h3>
  
 
-<div id="editlayout">
+<div id="editlayout" style="width:900px;">
 #set( $origURL = $context.getRequestParameter("origURL" ) )
 #set( $categoryid = $context.getRequestParameter("categoryid" ) )
 
@@ -25,13 +25,15 @@ $context.putPageValue("viewid", "publishdestinationgeneral")
 <a href="#" class="btn btn-sm btn-primary submitform">[[Save]]</a>
 <a class="btn btn-sm btn-secondary ajax" 
 	href='$siteroot$content.searchhome/index.html'
-	data-targetdivinner="applicationmaincontent"
-			data-oemaxlayout="3">[[Cancel]]</a>
-<a class="btn btn-sm btn-danger ajax" 
-	href='$siteroot$content.searchhome/edit/delete.html?searchtype=$searcher.searchType&catalogid=$searcher.catalogId&id=$!data.id'
-	data-targetdivinner="applicationmaincontent"
-			data-oemaxlayout="4">[[Delete]]</a>
-
+	data-targetdivinner="publishing"
+			data-oemaxlevel="1">[[Cancel]]</a>
+#if($data.id)
+<a class="btn btn-sm btn-danger ajax confirm" 
+	data-confirm="[[Are you sure?]]"
+	href='$siteroot$content.searchhome/edit/delete.html?id=$!data.id'
+	data-targetdivinner="publishing"
+	data-oemaxlevel="1">[[Delete]]</a>
+#end
 <div id="messagearea">$!message
 </div>
 </form>

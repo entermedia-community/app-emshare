@@ -5,24 +5,26 @@
 	</div>
 	</div>
 	<div class="clearfix"></div>
-<div id="" class="emselectable  showmodal" data-dialogwidth="500" data-dialogtitle="[[Edit Setting]]">
-#set( $settings = $mediaarchive.getSearcher("catalogsettings") )
-<table id="main-results-table"  class="table table-striped table-hover settings-table" data-clickpath="$apphome/views/settings/applicationsetup/parameters/edit.html?id=" >
-
-#foreach( $data in $settings.query().all().sort("name").search() )
-	<tr rowid="$data.getId()">
-	<td>
-	 <b>$data</b><br>
-	 	&nbsp;&nbsp;<i> $data.id </i>
-	</td>
-	<td>
-	$!data.value
-	</td>
+	<div id="" class="emselectable  showmodal" data-dialogwidth="500" title="[[Edit Setting]]" data-url="$apphome/views/settings/applicationsetup/parameters/edit.html">
+	#set( $settings = $mediaarchive.getSearcher("catalogsettings") )
+	<table id="main-results-table"  
+			class="table table-striped table-hover settings-table" 
+			 >
 	
+	#foreach( $data in $settings.query().all().sort("name").search() )
+		<tr rowid="$data.getId()">
+		<td>
+		 <b>$data</b><br>
+		 	&nbsp;&nbsp;<i> $data.id </i>
+		</td>
+		<td>
+		$!data.value
+		</td>
+		
+		
+		</tr>
 	
-	</tr>
-
-#end
-</table>
-</div>
+	#end
+	</table>
+	</div>
 </div>

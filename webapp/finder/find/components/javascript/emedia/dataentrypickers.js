@@ -117,7 +117,7 @@ lQuery(".emrowpicker table td").livequery("click", function (e) {
 	}
 });
 
-//OLD select table. Not used
+//OLD select table.
 lQuery(".emselectable table td").livequery("click", function (e) {
 	if (!isValidTarget(e)) {
 		return true;
@@ -137,11 +137,11 @@ lQuery(".emselectable table td").livequery("click", function (e) {
 	});
 	row.addClass("emhighlight");
 	row.removeClass("emborderhover");
+	
 	var table = row.closest("table");
 
-	// var url = emselectable.data("clickpath");
-
-	var url = table.data("clickpath");
+	var url = emselectable.data("url");
+	
 	var form = emselectable.find("form");
 	if (!form.length) {
 		form = emselectable.data("emselectableform");
@@ -173,22 +173,14 @@ lQuery(".emselectable table td").livequery("click", function (e) {
 		if (form.hasClass("autoclose")) {
 			closeemdialog(form.closest(".modal"));
 		}
-	} else if (url != undefined) {
-		//-- table clickpath
-		if (url == "") {
-			return true;
-		}
-		var link = url;
-		var post = table.data("viewpostfix");
-		if (post != undefined) {
-			link = link + rowid + post;
-		} else {
-			link = link + rowid;
-		}
+	} else if (url != undefined && url != "") {
+	
 		if (emselectable.hasClass("showmodal")) {
-			showmodal(emselectable, link);
+			emselectable.data("id", rowid);
+			emselectable.emDialog();
+			//showmodal(emselectable, url);;
 		} else {
-			parent.document.location.href = link;
+			parent.document.location.href = url + rowid; //?
 		}
 	}
 });
@@ -739,7 +731,7 @@ showmodal = function (emselecttable, url) {
 	var modaldialog = $("#" + id);
 	var width = emselecttable.data("dialogwidth");
 	if (modaldialog.length == 0) {
-		$("#emcontainer").append(
+		$("#application").append(
 			'<div class="modal " tabindex="-1" id="' +
 				id +
 				'" style="display:none" ></div>'
