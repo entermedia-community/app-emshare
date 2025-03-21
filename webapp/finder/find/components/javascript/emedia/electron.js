@@ -190,42 +190,38 @@ jQuery(document).ready(function () {
 		formData.append("desktop", desktop);
 		formData.append("categorypath", categorypath);
 
-		$(this)
-			.find(".download-lightbox")
-			.click(function () {
-				customToast("Download task added to Active Cloud Sync");
+		$(this).on("click", ".download-lightbox", function () {
+			customToast("Download task added to Active Cloud Sync");
 
-				$(this).prop("disabled", true);
-				$(this).find("span").text("Downloading...");
+			$(this).prop("disabled", true);
+			$(this).find("span").text("Downloading...");
 
-				formData.append("desktopimportstatus", "scan-started");
-				formData.append("isdownload", "true");
+			formData.append("desktopimportstatus", "scan-started");
+			formData.append("isdownload", "true");
 
-				desktopImportStatusUpdater(formData, () => {
-					ipcRenderer.send("lightboxDownload", {
-						toplevelcategorypath: uploadsourcepath,
-						lightbox,
-					});
+			desktopImportStatusUpdater(formData, () => {
+				ipcRenderer.send("lightboxDownload", {
+					toplevelcategorypath: uploadsourcepath,
+					lightbox,
 				});
 			});
+		});
 
-		$(this)
-			.find(".upload-lightbox")
-			.click(function () {
-				customToast("Upload task added to Active Cloud Sync");
+		$(this).on("click", ".upload-lightbox", function () {
+			customToast("Upload task added to Active Cloud Sync");
 
-				$(this).prop("disabled", true);
-				$(this).find("span").text("Uploading...");
+			$(this).prop("disabled", true);
+			$(this).find("span").text("Uploading...");
 
-				formData.append("desktopimportstatus", "scan-started");
+			formData.append("desktopimportstatus", "scan-started");
 
-				desktopImportStatusUpdater(formData, () => {
-					ipcRenderer.send("lightboxUpload", {
-						toplevelcategorypath: uploadsourcepath,
-						lightbox,
-					});
+			desktopImportStatusUpdater(formData, () => {
+				ipcRenderer.send("lightboxUpload", {
+					toplevelcategorypath: uploadsourcepath,
+					lightbox,
 				});
 			});
+		});
 	});
 
 	function validateDupes(identifier, identifiers) {
