@@ -300,7 +300,6 @@ jQuery(document).ready(function () {
 		console.log("upload-progress-update", data);
 		var idEl = progItem(data.identifier);
 		if (idEl) {
-			idEl.removeClass("processing");
 			idEl.find(".filesCompleted").text(data.completed);
 			idEl.find(".filesFailed").text(data.failed);
 			idEl.find(".filesTotal").text(data.total);
@@ -329,14 +328,17 @@ jQuery(document).ready(function () {
 	ipcRenderer.on("upload-cancelled", (_, identifier) => {
 		console.log("upload-cancelled", identifier);
 		var idEl = progItem(identifier);
+		var filesCompleted = 0;
 		if (idEl) {
 			idEl.removeClass("processing");
 			idEl.data("index", undefined);
+			filesCompleted = idEl.find(".filesCompleted").text();
 		}
 
 		var formData = new FormData();
 		formData.append("categorypath", identifier);
 		formData.append("desktopimportstatus", "upload-cancelled");
+		if (filesCompleted > 0) formData.append("completedfiles", filesCompleted);
 		desktopImportStatusUpdater(formData);
 	});
 

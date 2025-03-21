@@ -35,7 +35,12 @@
                 <span class="folder-crumb"><i class="ns bi bi-$moduleicon"></i> #elidemiddle($syncfolder.name, 100)</span>
               </p>
               #if($syncfolder.desktopimportstatus == "upload-cancelled")
-                <small class="text-muted">[[Upload cancelled]]</small>
+                <small class="text-muted">
+                  [[Upload cancelled]]
+                  #if($syncfolder.completedfiles > 0)
+                  after uploading <b>$syncfolder.completedfiles</b> files
+                  #end
+                </small>
               #else
                 #ifnotnull($syncfolder.lastscandate)
                   <small class="last-scanned">
