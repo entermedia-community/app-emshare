@@ -6,12 +6,16 @@ jQuery(document).ready(function () {
 	var downloadInProgress = {};
 	const { ipcRenderer } = require("electron");
 
-	var entermediakey = "";
+	var entermediakey = app.data("entermediakey");
 	if (app && app.data("entermediakey") != null) {
 		entermediakey = app.data("entermediakey");
 	}
 
 	var headers = { "X-tokentype": "entermedia", "X-token": entermediakey };
+
+	function getMediadb() {
+		return siteroot + "/" + mediadb;
+	}
 
 	ipcRenderer.send("setConnectionOptions", {
 		headers: headers,
@@ -144,20 +148,19 @@ jQuery(document).ready(function () {
 	lQuery(".deleteSyncFolder").livequery("click", function () {
 		if (confirm("Are you sure you want to remove this folder from importer?")) {
 			var delId = $(this).data("id");
-			var categorypath = $(this).data("categorypath");
-			ipcRenderer.send("cancel-upload", {
-				identifier: categorypath,
-			});
+			var identifier = $(this).data("categorypath");
+			var isDownload = $(this).hasClass("download");
+			ipcRenderer.send("cancelSync", { identifier, isDownload });
 			jQuery.ajax({
 				type: "DELETE",
 				url: getMediadb() + "/services/module/desktopsyncfolder/data/" + delId,
-				success: function (res) {
+				success: function () {
 					$("#wf-" + delId).remove();
-					customToast("Folder deleted successfully!");
+					customToast("Sync task deleted successfully!");
 				},
 				error: function (xhr, status, error) {
 					console.log("deleteSyncFolder", error);
-					customToast("Error deleting folder!", {
+					customToast("Error deleting sync task!", {
 						positive: false,
 					});
 				},
@@ -166,7 +169,7 @@ jQuery(document).ready(function () {
 	});
 
 	lQuery(".lightbox-header-btns").livequery(function () {
-		ipcRenderer.send("check-uploads");
+		ipcRenderer.send("check-sync");
 
 		var uploadsourcepath = $(this).data("path");
 		var lightbox = $(this).data("lightbox");
@@ -181,21 +184,28 @@ jQuery(document).ready(function () {
 		categorypath = categorypath.replace(/\\/g, "/");
 		categorypath = categorypath.replace(/\/+/g, "/");
 
+		var formData = new FormData();
+		formData.append("moduleid", moduleid);
+		formData.append("entityid", entityId);
+		formData.append("desktop", desktop);
+		formData.append("categorypath", categorypath);
+
 		$(this)
 			.find(".download-lightbox")
 			.click(function () {
-				customToast(
-					"Download in progress, check Active Cloud Sync panel for status"
-				);
+				customToast("Download task added to Active Cloud Sync");
+
 				$(this).prop("disabled", true);
 				$(this).find("span").text("Downloading...");
-				ipcRenderer.send("lightboxDownload", {
-					uploadsourcepath,
-					lightbox,
-					entityId,
-					name,
-					desktop,
-					moduleid,
+
+				formData.append("desktopimportstatus", "scan-started");
+				formData.append("isdownload", "true");
+
+				desktopImportStatusUpdater(formData, () => {
+					ipcRenderer.send("lightboxDownload", {
+						toplevelcategorypath: uploadsourcepath,
+						lightbox,
+					});
 				});
 			});
 
@@ -207,18 +217,12 @@ jQuery(document).ready(function () {
 				$(this).prop("disabled", true);
 				$(this).find("span").text("Uploading...");
 
-				var formData = new FormData();
-				formData.append("moduleid", moduleid);
-				formData.append("entityid", entityId);
-				formData.append("desktop", desktop);
-				formData.append("categorypath", categorypath);
 				formData.append("desktopimportstatus", "scan-started");
 
 				desktopImportStatusUpdater(formData, () => {
 					ipcRenderer.send("lightboxUpload", {
-						uploadsourcepath,
+						toplevelcategorypath: uploadsourcepath,
 						lightbox,
-						entityId,
 					});
 				});
 			});
@@ -234,14 +238,11 @@ jQuery(document).ready(function () {
 		return false;
 	}
 
-	function shouldDisableSyncBtns(data) {
+	function shouldDisableUploadSyncBtn(data) {
 		var identifier = $(".lightbox-header-btns").data("path");
-		var btn;
+		var btn = $(".upload-lightbox");
 		if (!identifier) {
 			identifier = $(".watch-entity").data("toplevelcategorypath");
-			btn = $(".upload-lightbox-all");
-		} else {
-			btn = $(".upload-lightbox");
 		}
 		if (!identifier) {
 			return;
@@ -254,39 +255,64 @@ jQuery(document).ready(function () {
 			btn.find("span").text("Upload");
 		}
 	}
-	ipcRenderer.on("check-uploads", (_, data) => {
-		shouldDisableSyncBtns(data);
+
+	ipcRenderer.on("check-sync", (_, { up_identifiers, dn_identifiers }) => {
+		if (up_identifiers?.length > 0) {
+			shouldDisableUploadSyncBtn(up_identifiers);
+		}
+		if (dn_identifiers?.length > 0) {
+			shouldDisableDownloadSyncBtn(dn_identifiers);
+		}
 	});
 
-	lQuery(".cancelUpload").livequery("click", function (e) {
+	function shouldDisableDownloadSyncBtn(data) {
+		var identifier = $(".lightbox-header-btns").data("path");
+		var btn = $(".download-lightbox");
+		if (!identifier) {
+			identifier = $(".watch-entity").data("toplevelcategorypath");
+		}
+		if (!identifier) {
+			return;
+		}
+		if (validateDupes(identifier, data)) {
+			btn.prop("disabled", true);
+			btn.find("span").text("Downloading...");
+		} else {
+			btn.prop("disabled", false);
+			btn.find("span").text("Download");
+		}
+	}
+
+	lQuery(".cancelSync").livequery("click", function (e) {
 		e.preventDefault();
 		e.stopPropagation();
 		var btn = $(this);
 		var identifier = btn.data("categorypath");
-		ipcRenderer.send("cancel-upload", {
-			identifier,
-		});
+		var isDownload = btn.hasClass("download");
+		ipcRenderer.send("cancelSync", { identifier, isDownload });
 	});
 
-	var progItem = (identifier) => {
-		console.log(
-			"progItem",
-			identifier,
-			".work-folder[data-categorypath='" + identifier + "']"
+	var progItem = (identifier, dl = false) => {
+		var el = $(
+			`.work-folder${dl ? ".download" : ""}[data-categorypath="${identifier}"]`
 		);
-		var el = $(".work-folder[data-categorypath='" + identifier + "']");
 		if (el.length > 0) {
 			return el;
 		}
 		return null;
 	};
 
-	// <all upload events>
-	ipcRenderer.on("upload-started", (_, data) => {
-		console.log("upload-started", data);
-		var idEl = progItem(data.identifier);
+	// <all sync events>
+	ipcRenderer.on("sync-started", (_, data) => {
+		console.log("sync-started", data);
+		var idEl = progItem(data.identifier, data.isDownload);
 		if (idEl) {
 			idEl.addClass("processing");
+			if (data.isDownload) {
+				idEl.addClass("download");
+			} else {
+				idEl.addClass("upload");
+			}
 			idEl.find(".filesCompleted").text(0);
 			idEl.find(".filesTotal").text(data.total);
 			idEl.find(".filesFailed").text(0);
@@ -296,9 +322,9 @@ jQuery(document).ready(function () {
 		}
 	});
 
-	ipcRenderer.on("upload-progress-update", (_, data) => {
-		console.log("upload-progress-update", data);
-		var idEl = progItem(data.identifier);
+	ipcRenderer.on("sync-progress-update", (_, data) => {
+		console.log("sync-progress-update", data);
+		var idEl = progItem(data.identifier, data.isDownload);
 		if (idEl) {
 			idEl.find(".filesCompleted").text(data.completed);
 			idEl.find(".filesFailed").text(data.failed);
@@ -306,9 +332,9 @@ jQuery(document).ready(function () {
 		}
 	});
 
-	ipcRenderer.on("upload-completed", (_, data) => {
-		console.log("upload-completed", data);
-		var idEl = progItem(data.identifier);
+	ipcRenderer.on("sync-completed", (_, data) => {
+		console.log("sync-completed", data);
+		var idEl = progItem(data.identifier, data.isDownload);
 		if (idEl) {
 			idEl.removeClass("processing");
 			idEl.data("index", undefined);
@@ -318,16 +344,21 @@ jQuery(document).ready(function () {
 		formData.append("completedfiles", data.completed || 0);
 		formData.append("failedfiles", data.failed || 0);
 		formData.append("categorypath", data.identifier);
-		formData.append("desktopimportstatus", "upload-completed");
+		formData.append("desktopimportstatus", "sync-completed");
+		if (data.isDownload) formData.append("isdownload", "true");
 		desktopImportStatusUpdater(formData, () => {
-			shouldDisableSyncBtns(data.remainingUploads);
+			if (data.isDownload) {
+				shouldDisableDownloadSyncBtn(data.remaining);
+			} else {
+				shouldDisableUploadSyncBtn(data.remaining);
+			}
 			customToast("An upload task has completed");
 		});
 	});
 
-	ipcRenderer.on("upload-cancelled", (_, identifier) => {
-		console.log("upload-cancelled", identifier);
-		var idEl = progItem(identifier);
+	ipcRenderer.on("sync-cancelled", (_, { identifier, isDownload }) => {
+		console.log("sync-cancelled", identifier);
+		var idEl = progItem(identifier, isDownload);
 		var filesCompleted = 0;
 		if (idEl) {
 			idEl.removeClass("processing");
@@ -337,17 +368,18 @@ jQuery(document).ready(function () {
 
 		var formData = new FormData();
 		formData.append("categorypath", identifier);
-		formData.append("desktopimportstatus", "upload-cancelled");
-		if (filesCompleted > 0) formData.append("completedfiles", filesCompleted);
+		formData.append("desktopimportstatus", "sync-cancelled");
+		if (isDownload) formData.append("isdownload", "true");
+		if (filesCompleted >= 0) formData.append("completedfiles", filesCompleted);
 		desktopImportStatusUpdater(formData);
 	});
 
 	ipcRenderer.on("file-status-update", (_, data) => {
 		console.log("file-status-update", data);
-		var idEl = progItem(data.identifier);
+		var idEl = progItem(data.identifier, data.isDownload);
 		if (!idEl) return;
 		idEl.data("index", data.index);
-		if (data.status === "uploading") {
+		if (data.status === "uploading" || data.status === "downloading") {
 			idEl.addClass("processing");
 			idEl.find(".fileName").text(data.name);
 			idEl.find(".fileProgress").css("width", "0%");
@@ -358,7 +390,7 @@ jQuery(document).ready(function () {
 
 	ipcRenderer.on("file-progress-update", (_, data) => {
 		console.log("file-progress-update", data);
-		var idEl = progItem(data.identifier);
+		var idEl = progItem(data.identifier, data.isDownload);
 		if (!idEl) return;
 		// var index = idEl.data("index");
 		// if (index === undefined) return;
@@ -373,27 +405,42 @@ jQuery(document).ready(function () {
 		totalEl.text(humanFileSize(data.total));
 	});
 
-	ipcRenderer.on("duplicate-upload", (_, data) => {
-		console.log("duplicate-upload", data);
+	ipcRenderer.on("duplicate-upload", () => {
 		customToast("Already uploading in this entity, wait until it finishes", {
 			positive: false,
 			autohideDelay: 5000,
 		});
 	});
-
-	ipcRenderer.on("too-many-uploads", (_, data) => {
-		console.log("too-many-uploads", data);
+	ipcRenderer.on("too-many-uploads", () => {
 		customToast("Wait for other uploads to finish", {
 			positive: false,
 			autohideDelay: 5000,
 		});
 	});
-	// </all upload events>
 
-	function getMediadb() {
-		var elem = app;
-		return elem.data("siteroot") + "/" + elem.data("mediadbappid");
-	}
+	ipcRenderer.on("duplicate-download", () => {
+		customToast("Already downloading in this entity, wait until it finishes", {
+			positive: false,
+			autohideDelay: 5000,
+		});
+	});
+	ipcRenderer.on("too-many-downloads", () => {
+		customToast("Wait for other downloads to finish", {
+			positive: false,
+			autohideDelay: 5000,
+		});
+	});
+	// </all sync events>
+
+	lQuery(".work-folder.processing").livequery(function () {
+		var task = $(this);
+		var categorypath = task.data("categorypath");
+		var isDownload = task.hasClass("download");
+		ipcRenderer.send("continueSync", {
+			categorypath,
+			isDownload,
+		});
+	});
 
 	lQuery(".desktopdirectdownload").livequery("click", function (e) {
 		e.preventDefault();

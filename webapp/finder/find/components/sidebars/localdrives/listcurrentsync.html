@@ -6,27 +6,45 @@
   #if($syncfolders.size() == 0)
     <div class="alert alert-info mx-2 mt-2">
       <i class="bi bi-info-circle ns mr-1"></i> 
-      [[You will see your bulk upload/download progress here]]
+      [[You will see your upload/download task here]]
     </div>
   #else
     <div class='work-dir-tree'>
       #foreach($syncfolder in $syncfolders)
         #set($previewclass = "")
-        #if($syncfolder.desktopimportstatus == "scan-started" || $syncfolder.desktopimportstatus == "upload-started" || $syncfolder.desktopimportstatus == "download-started")
+        #if($syncfolder.desktopimportstatus == "scan-started" || $syncfolder.desktopimportstatus == "sync-started")
           #set($previewclass = "processing")
+        #else
+          #set($previewclass = "done")
         #end
-        <div class='work-folder #if($syncfolder.isdownload == "true") download #else upload #end $previewclass $syncfolder.desktopimportstatus'
+        
+        #set($label = "")
+        #set($labelPast = "")
+        #set($labelGerund = "")
+        #if($syncfolder.isdownload == "true")
+          #set($label = "download")
+          #set($labelPast = "downloaded")
+          #set($labelGerund = "downloading")
+        #else
+          #set($label = "upload")
+          #set($labelPast = "uploaded")
+          #set($labelGerund = "uploading")
+        #end
+        
+        <div class='work-folder $label $previewclass $syncfolder.desktopimportstatus'
           id="wf-$syncfolder.id"
           data-id="$syncfolder.id"
           data-categorypath="$syncfolder.categorypath"
           data-entityid="$syncfolder.entityid">
-          <div class="upload-summary">
+          <div class="sync-summary">
             <div class="d-flex flex-column flex-grow-1 p-2 position-relative">
-              #if($syncfolder.isdownload == "true")
-                <small class="text-success"><i class="bi bi-arrow-down ns"></i> DOWNLOAD</small>
-              #else
-                <small class="text-primary"><i class="bi bi-arrow-up ns"></i> UPLOAD</small>
-              #end
+              <span class="sync-type">
+                #if($syncfolder.isdownload == "true")
+                  <small class="dl"><i class="bi bi-arrow-down ns"></i> $label</small>
+                #else
+                  <small class="ul"><i class="bi bi-arrow-up ns"></i> $label</small>
+                #end
+              </span>
               <p class="my-2">
                 #set($moduleicon = $module.moduleicon)
                 #ifnull($moduleicon)
@@ -34,11 +52,11 @@
                 #end
                 <span class="folder-crumb"><i class="ns bi bi-$moduleicon"></i> #elidemiddle($syncfolder.name, 100)</span>
               </p>
-              #if($syncfolder.desktopimportstatus == "upload-cancelled")
-                <small class="text-muted">
-                  [[Upload cancelled]]
+              #if($syncfolder.desktopimportstatus == "sync-cancelled")
+                <small class="text-muted fupper">
+                  $label cancelled
                   #if($syncfolder.completedfiles > 0)
-                  after uploading <b>$syncfolder.completedfiles</b> files
+                  after $labelGerund <b>$syncfolder.completedfiles</b> files
                   #end
                 </small>
               #else
@@ -54,18 +72,13 @@
                     #end
                   </small>
                 #end
-                <small class="mb-1 files-stats">
-                  #if($syncfolder.isdownload == "true")
-                    Downloaded
-                  #else
-                    Uploaded
-                  #end
-                  <b>$syncfolder.completedfiles</b>, <span class="f$!syncfolder.failedfiles">failed <b>$syncfolder.failedfiles</b></span>
+                <small class="mb-1 files-stats fupper">
+                  $labelPast <b>$syncfolder.completedfiles</b>, <span class="f$!syncfolder.failedfiles">failed <b>$syncfolder.failedfiles</b></span>
                 </small> 
               #end
             </div>
             
-            <button class="btn deleteSyncFolder" data-id="$syncfolder.id" data-categorypath="$syncfolder.categorypath">
+            <button class="btn deleteSyncFolder $label" data-id="$syncfolder.id" data-categorypath="$syncfolder.categorypath">
               <div></div>
             </button>
             #set($previewurl = "$!{siteroot}$apphome/views/modules/$!{module.id}${edithome}/tabs/index.html?entityid=$!{syncfolder.entityid}")
@@ -82,9 +95,9 @@
               </div>
             </div>
           </div>
-          <div class="currentUpload">
+          <div class="currentSync">
             <p class="mb-2 text-primary">
-              <strong>[[Uploaded]] <span class="filesCompleted">0</span> of <span class="filesTotal">0</span> [[Files]], <span class="filesFailed">0</span> [[Failed]]</strong>
+              <strong class="fupper">$labelPast <span class="filesCompleted">0</span> of <span class="filesTotal">0</span> files, <span class="filesFailed">0</span> failed</strong>
             </p>
             <p class="mb-1 text-muted fileName"></p>
             <div class="progress">
@@ -94,7 +107,9 @@
               <span><span class="fileProgressLoaded"></span> / <span class="fileProgressTotal"></span></span>
             </p>
             <div class="text-center mt-1">
-              <button class="border-0 bg-white mx-auto text-danger cancelUpload" data-categorypath="$syncfolder.categorypath" title="[[Cancel the upload]]">
+              <button class="border-0 bg-white mx-auto text-danger cancelSync $label"
+                data-categorypath="$syncfolder.categorypath"
+                title="[[Cancel this task]]">
                 <i class="bi bi-x"></i> [[Cancel]]
               </button>
             </div>
