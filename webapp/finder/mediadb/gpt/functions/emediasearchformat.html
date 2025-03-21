@@ -1,15 +1,16 @@
 #set( $arguments = $data.get("arguments") )
-#set( $results = $jsonUtil.parseString($arguments) )
-
+###set( $results = $jsonUtil.parseString($arguments) )
 $context.putPageValue("apphome","/${channel.chatapplicationid}")
-
+$airesultshits
 <div>
 	#ifnotnull($results.summary)
 		<p>$results.summary</p>
 	#end
 	<div class="chat-assets">
-		#foreach($row in $results.collectedrecords)
-			#set($searchtype = $row.get("searchtype"))
+		###foreach($row in $results.collectedrecords)
+		
+		#foreach($row in $airesultshits)
+			#set($searchtype = $row.get("entitysourcetype"))
 			
 			#set( $hit = $mediaarchive.getCachedData($searchtype, $row.id))
 			

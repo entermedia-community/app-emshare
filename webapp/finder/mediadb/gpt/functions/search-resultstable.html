@@ -1,11 +1,12 @@
 <div class="aisearchtable-container">
-#if($hits.size() > 0)
-	<p>Found $hits.size() matching. 
+#if($airesultshits.size() > 0)
+	<p>Found $airesultshits.size() matching. 
 	<a class="expandaisearchtable" href="javascript:void(0);">See details</a></p>
-	#if( $hits.getTotalPages() > 1)
-		Showing $hits.getHitsPerPage() of $hits.size() records.
-	#end
+	
 	<div class="aisearchtable overflow-x collapse">
+		#if( $airesultshits.getTotalPages() > 1)
+				Showing $airesultshits.getHitsPerPage() of $airesultshits.size() records.
+			#end
 		<table class="table table-sm table-striped">
 			<thead>
 				<tr>
@@ -18,7 +19,7 @@
 			</thead>
 			<tbody>
 				
-				#foreach($hit in $hits.getPageOfHits())
+				#foreach($hit in $airesultshits.getPageOfHits())
 				
 				#set($sourcetype = $hit.get("entitysourcetype"))
 				#ifnull($sourcetype)
@@ -39,10 +40,13 @@
 				#end
 			</tbody>
 		</table>
-		##$0/finder/find/views/modules/entityparent/index.html?hits.getSessionId()
+		##$0/finder/find/views/modules/entityparent/index.html?airesultshits.getSessionId()
 	</div>
 	<p class="text-muted typeout">...waiting for the previews</p>
+	
+	
+	
 #else
-	##No results found for $hits
+	##No results found for $airesultshits
 #end
 </div>
