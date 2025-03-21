@@ -200,10 +200,10 @@ jQuery(document).ready(function () {
 			formData.append("isdownload", "true");
 
 			desktopImportStatusUpdater(formData, () => {
-				ipcRenderer.send("lightboxDownload", {
-					toplevelcategorypath: uploadsourcepath,
-					lightbox,
-				});
+				// ipcRenderer.send("lightboxDownload", {
+				// 	toplevelcategorypath: uploadsourcepath,
+				// 	lightbox,
+				// });
 			});
 		});
 
@@ -216,10 +216,10 @@ jQuery(document).ready(function () {
 			formData.append("desktopimportstatus", "scan-started");
 
 			desktopImportStatusUpdater(formData, () => {
-				ipcRenderer.send("lightboxUpload", {
-					toplevelcategorypath: uploadsourcepath,
-					lightbox,
-				});
+				// ipcRenderer.send("lightboxUpload", {
+				// 	toplevelcategorypath: uploadsourcepath,
+				// 	lightbox,
+				// });
 			});
 		});
 	});
