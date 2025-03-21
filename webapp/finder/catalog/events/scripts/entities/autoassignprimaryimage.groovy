@@ -38,9 +38,10 @@ public void init()
 				entities.each{
 					Data entity = it;		
 						
-						Category entitycategory = archive.getEntityManager().loadDefaultFolder(module, entity, null, false);
-						if(entitycategory != null) {
-							Data asset = (Data)archive.getAssetSearcher().query().match("category", entitycategory.getId()).exact("importstatus","complete").not("editstatus","7").exact("previewstatus", "2").sort("uploadeddate").searchOne();
+						//Category entitycategory = archive.getEntityManager().loadDefaultFolder(module, entity, null, false);
+					
+						if(entity.rootcategory != null) {
+							Data asset = (Data)archive.getAssetSearcher().query().match("category", entity.rootcategory).exact("importstatus","complete").not("editstatus","7").exact("previewstatus", "2").sort("uploadeddate").searchOne();
 							if (asset) {
 								entity.setValue("primaryimage", asset.getId());
 								tosave.add(entity);
