@@ -385,6 +385,10 @@ jQuery(document).ready(function () {
 			idEl.find(".fileProgress").css("width", "0%");
 			idEl.find(".fileProgressLoaded").text(0);
 			idEl.find(".fileProgressTotal").text(humanFileSize(data.size));
+		} else if (data.status === "completed") {
+			idEl.find(".fileProgress").css("width", "100%");
+			idEl.find(".fileProgressLoaded").text(humanFileSize(data.size));
+			idEl.find(".fileProgressTotal").text(humanFileSize(data.size));
 		}
 	});
 
