@@ -187,10 +187,10 @@ jQuery(document).ready(function () {
 		categorypath = categorypath.replace(/\/+/g, "/");
 
 		var formData = new FormData();
-		formData.append("moduleid", moduleid);
-		formData.append("entityid", entityId);
-		formData.append("desktop", desktop);
-		formData.append("categorypath", categorypath);
+		formData.set("moduleid", moduleid);
+		formData.set("entityid", entityId);
+		formData.set("desktop", desktop);
+		formData.set("categorypath", categorypath);
 
 		$(this).on("click", ".download-lightbox", function () {
 			customToast("Download task added to Active Cloud Sync");
@@ -198,15 +198,17 @@ jQuery(document).ready(function () {
 			$(this).prop("disabled", true);
 			$(this).find("span").text("Downloading...");
 
-			formData.append("desktopimportstatus", "scan-started");
-			formData.append("isdownload", "true");
+			formData.set("desktopimportstatus", "scan-started");
+			formData.set("isdownload", "true");
 
-			desktopImportStatusUpdater(formData, () => {
-				ipcRenderer.send("lightboxDownload", {
+			ipcRenderer
+				.invoke("lightboxDownload", {
 					toplevelcategorypath: uploadsourcepath,
 					lightbox,
+				})
+				.then((scanStarted) => {
+					if (scanStarted) desktopImportStatusUpdater(formData);
 				});
-			});
 		});
 
 		$(this).on("click", ".upload-lightbox", function () {
@@ -215,14 +217,16 @@ jQuery(document).ready(function () {
 			$(this).prop("disabled", true);
 			$(this).find("span").text("Uploading...");
 
-			formData.append("desktopimportstatus", "scan-started");
+			formData.set("desktopimportstatus", "scan-started");
 
-			desktopImportStatusUpdater(formData, () => {
-				ipcRenderer.send("lightboxUpload", {
+			ipcRenderer
+				.invoke("lightboxUpload", {
 					toplevelcategorypath: uploadsourcepath,
 					lightbox,
+				})
+				.then((scanStarted) => {
+					if (scanStarted) desktopImportStatusUpdater(formData);
 				});
-			});
 		});
 	});
 
