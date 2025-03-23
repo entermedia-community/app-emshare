@@ -114,12 +114,14 @@ jQuery(document).ready(function () {
 
 	lQuery(".open-folder").livequery("click", function () {
 		var path = $(this).data("path") || $(this).data("localpath");
+		var lightbox = $(this).data("lightbox");
 		if (!path) {
 			path =
 				$(this).parent().data("path") || $(this).parent().data("localpath");
+			lightbox = $(this).parent().data("lightbox");
 		}
 		if (path) {
-			ipcRenderer.send("openFolder", { path });
+			ipcRenderer.send("openFolder", { path, lightbox });
 		}
 	});
 
@@ -200,10 +202,10 @@ jQuery(document).ready(function () {
 			formData.append("isdownload", "true");
 
 			desktopImportStatusUpdater(formData, () => {
-				// ipcRenderer.send("lightboxDownload", {
-				// 	toplevelcategorypath: uploadsourcepath,
-				// 	lightbox,
-				// });
+				ipcRenderer.send("lightboxDownload", {
+					toplevelcategorypath: uploadsourcepath,
+					lightbox,
+				});
 			});
 		});
 
@@ -216,10 +218,10 @@ jQuery(document).ready(function () {
 			formData.append("desktopimportstatus", "scan-started");
 
 			desktopImportStatusUpdater(formData, () => {
-				// ipcRenderer.send("lightboxUpload", {
-				// 	toplevelcategorypath: uploadsourcepath,
-				// 	lightbox,
-				// });
+				ipcRenderer.send("lightboxUpload", {
+					toplevelcategorypath: uploadsourcepath,
+					lightbox,
+				});
 			});
 		});
 	});
@@ -290,7 +292,9 @@ jQuery(document).ready(function () {
 
 	var progItem = (identifier, dl = false) => {
 		var el = $(
-			`.work-folder${dl ? ".download" : ""}[data-categorypath="${identifier}"]`
+			`.work-folder${
+				dl ? ".download" : ".upload"
+			}[data-categorypath="${identifier}"]`
 		);
 		if (el.length > 0) {
 			return el;
@@ -428,14 +432,19 @@ jQuery(document).ready(function () {
 	});
 	// </all sync events>
 
-	lQuery(".work-folder.processing").livequery(function () {
-		var task = $(this);
-		var categorypath = task.data("categorypath");
-		var isDownload = task.hasClass("download");
-		ipcRenderer.send("continueSync", {
-			categorypath,
-			isDownload,
-		});
+	lQuery("#col-localdrives").livequery(function () {
+		$(this)
+			.find(".work-folder.processing")
+			.each(function () {
+				if ($(this).hasClass("upload-started")) return;
+				if ($(this).hasClass("download-started")) return;
+				var categorypath = $(this).data("categorypath");
+				var isDownload = $(this).hasClass("download");
+				ipcRenderer.send("continueSync", {
+					categorypath,
+					isDownload,
+				});
+			});
 	});
 
 	lQuery(".desktopdirectdownload").livequery("click", function (e) {
