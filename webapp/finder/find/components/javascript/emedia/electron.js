@@ -194,10 +194,12 @@ jQuery(document).ready(function () {
 			lQuery(".lightbox-header-btns").livequery(function () {
 				ipcRenderer.send("check-sync");
 
-				var uploadsourcepath = $(this).data("path");
-				var lightbox = $(this).data("lightbox");
-				var entityId = $(this).data("entityid");
-				var moduleid = $(this).data("moduleid");
+				var headerBtns = $(this);
+
+				var uploadsourcepath = headerBtns.data("path");
+				var lightbox = headerBtns.data("lightbox") || "";
+				var entityId = headerBtns.data("entityid");
+				var moduleid = headerBtns.data("moduleid");
 
 				var categorypath = uploadsourcepath;
 				if (lightbox) {
@@ -211,11 +213,13 @@ jQuery(document).ready(function () {
 				formData.set("entityid", entityId);
 				formData.set("categorypath", categorypath);
 
-				$(this).on("click", ".download-lightbox", function () {
+				headerBtns.on("click", ".download-lightbox", function () {
 					customToast("Download task added to Active Cloud Sync");
 
 					$(this).prop("disabled", true);
 					$(this).find("span").text("Downloading...");
+
+					$(this).removeClass("has-changes");
 
 					formData.set("desktopimportstatus", "scan-started");
 					formData.set("isdownload", "true");
@@ -230,11 +234,13 @@ jQuery(document).ready(function () {
 						});
 				});
 
-				$(this).on("click", ".upload-lightbox", function () {
+				headerBtns.on("click", ".upload-lightbox", function () {
 					customToast("Upload task added to Active Cloud Sync");
 
 					$(this).prop("disabled", true);
 					$(this).find("span").text("Uploading...");
+
+					$(this).removeClass("has-changes");
 
 					formData.set("desktopimportstatus", "scan-started");
 
@@ -245,6 +251,43 @@ jQuery(document).ready(function () {
 						})
 						.then((scanStarted) => {
 							if (scanStarted) desktopImportStatusUpdater(formData);
+						});
+				});
+
+				headerBtns.on("click", ".scan-changes", function () {
+					customToast("Scanning for changes...");
+
+					$(this).prop("disabled", true);
+					$(this).addClass("scanning");
+
+					var idEl = headerBtns;
+					ipcRenderer
+						.invoke("scanChanges", {
+							toplevelcategorypath: uploadsourcepath,
+							lightbox,
+						})
+						.then(({ hasUploads, hasDownloads }) => {
+							var ch = [];
+
+							if (hasUploads) {
+								ch.push("upload");
+								idEl.find(".upload-lightbox").addClass("has-changes");
+							} else {
+								idEl.find(".upload-lightbox").removeClass("has-changes");
+							}
+							if (hasDownloads) {
+								ch.push("download");
+								idEl.find(".download-lightbox").addClass("has-changes");
+							} else {
+								idEl.find(".download-lightbox").removeClass("has-changes");
+							}
+							if (ch.length > 0) {
+								customToast("Found changes to " + ch.join(" & ") + "!");
+							}
+						})
+						.finally(() => {
+							$(this).prop("disabled", false);
+							$(this).removeClass("scanning");
 						});
 				});
 			});
@@ -474,35 +517,6 @@ jQuery(document).ready(function () {
 			lQuery(".desktopdirectdownload").livequery("click", function (e) {
 				e.preventDefault();
 				ipcRenderer.send("directDownload", $(this).attr("href"));
-			});
-
-			var hostUrl = location.protocol + "//" + location.host;
-			var hoverATO;
-			var anchorHovering = false;
-			lQuery("a").livequery("mouseover", function () {
-				if (hoverATO) clearTimeout(hoverATO);
-				anchorHovering = true;
-				var hoverpreview = $(".hoverpreview");
-				if (!hoverpreview.length) {
-					$("body").append('<div class="hoverpreview"></div>');
-					hoverpreview = $(".hoverpreview");
-				}
-				var href = $(this).attr("href");
-				if (!href || href === "#") {
-					hoverpreview.hide();
-					return;
-				}
-				if (href.startsWith("/")) {
-					href = hostUrl + href;
-				}
-				hoverATO = setTimeout(function () {
-					if (!anchorHovering) return;
-					hoverpreview.text(href).fadeIn(200);
-				}, 1500);
-			});
-			lQuery("a").livequery("mouseout", function () {
-				anchorHovering = false;
-				$(".hoverpreview").fadeOut(200);
 			});
 		});
 });
