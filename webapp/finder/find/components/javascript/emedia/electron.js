@@ -18,6 +18,17 @@ function humanFileSize(bytes, htm = false) {
 	return bytes.toFixed(1) + units[u];
 }
 
+function elideCat(text, maxLength = 80) {
+	text = text.replace(/\//g, " › ");
+	if (text.length <= maxLength) {
+		return text;
+	}
+	const charsPerSide = Math.floor((maxLength - 3) / 2);
+	const leftSide = text.substring(0, charsPerSide);
+	const rightSide = text.substring(text.length - charsPerSide);
+	return leftSide + "..." + rightSide;
+}
+
 function isDuplicateIdentifier(identifier, identifiers) {
 	for (let i = 0; i < identifiers.length; i++) {
 		const identifier2 = identifiers[i];
@@ -166,9 +177,7 @@ jQuery(document).ready(function () {
 			});
 
 			lQuery(".deleteSyncFolder").livequery("click", function () {
-				if (
-					confirm("Are you sure you want to remove this folder from importer?")
-				) {
+				if (confirm("Are you sure you want to remove this sync task?")) {
 					var delId = $(this).data("id");
 					var identifier = $(this).data("categorypath");
 					var isDownload = $(this).hasClass("download");
@@ -255,7 +264,10 @@ jQuery(document).ready(function () {
 				});
 
 				headerBtns.on("click", ".scan-changes", function () {
-					customToast("Scanning for changes...");
+					customToast(
+						"Scanning for unsynced files in " + elideCat(categorypath),
+						{ id: categorypath }
+					);
 
 					$(this).prop("disabled", true);
 					$(this).addClass("scanning");
@@ -282,7 +294,20 @@ jQuery(document).ready(function () {
 								idEl.find(".download-lightbox").removeClass("has-changes");
 							}
 							if (ch.length > 0) {
-								customToast("Found changes to " + ch.join(" & ") + "!");
+								customToast(
+									"Found new files to " +
+										ch.join(" & ") +
+										"in " +
+										elideCat(categorypath),
+									{
+										id: categorypath,
+									}
+								);
+							} else {
+								customToast(
+									"No unsynced files found in " + elideCat(categorypath),
+									{ id: categorypath, autohide: false }
+								);
 							}
 						})
 						.finally(() => {
@@ -408,7 +433,11 @@ jQuery(document).ready(function () {
 					} else {
 						shouldDisableUploadSyncBtn(data.remaining);
 					}
-					customToast("An upload task has completed");
+					customToast(
+						`${data.isDownload ? "Downloaded" : "Uploaded"} all files from ${
+							data.identifier
+						}!`
+					);
 				});
 			});
 
