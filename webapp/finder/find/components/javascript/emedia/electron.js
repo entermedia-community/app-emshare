@@ -306,7 +306,7 @@ jQuery(document).ready(function () {
 							} else {
 								customToast(
 									"No unsynced files found in " + elideCat(categorypath),
-									{ id: categorypath, autohide: false }
+									{ id: categorypath }
 								);
 							}
 						})
