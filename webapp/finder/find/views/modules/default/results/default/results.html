@@ -46,12 +46,15 @@ $context.putPageValue("viewid", $viewid)
 #if($mixedentitysourcetypes)
 	#set($enableactions = false)
 #end
+
 #ifnull($enableactions)
 	#set($enableactions = $context.getRequestParameter("enableactions"))
 #end
 #ifnull($enableactions)
+	
 	#set($enableactions = $content.isPropertyTrue("enableactions",true))
 #end
+
 #if($enableactions == "true")
 	#set($enableactions = $permissions.canModule($module, "edit"))
 #end
