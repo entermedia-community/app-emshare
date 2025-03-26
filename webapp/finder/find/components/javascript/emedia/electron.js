@@ -273,7 +273,9 @@ jQuery(document).ready(function () {
 				formData.set("categorypath", categorypath);
 
 				headerBtns.on("click", ".download-lightbox", function () {
-					customToast("Download task added to Active Cloud Sync");
+					customToast(
+						elideCat(categorypath) + " download task added to Cloud Sync"
+					);
 
 					$(this).prop("disabled", true);
 					$(this).find("span").text("Downloading...");
@@ -297,7 +299,9 @@ jQuery(document).ready(function () {
 				});
 
 				headerBtns.on("click", ".upload-lightbox", function () {
-					customToast("Upload task added to Active Cloud Sync");
+					customToast(
+						elideCat(categorypath) + " upload task added to Cloud Sync"
+					);
 
 					$(this).prop("disabled", true);
 					$(this).find("span").text("Uploading...");
