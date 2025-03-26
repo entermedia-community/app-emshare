@@ -34,12 +34,22 @@
 	#set($renderexternalid = $entitymoduleviewdata.renderexternalid)
 	
 	#set($sortby = $!viewdata.rendersort)
-	#set($args = "field=$!{renderexternalid}&$!{renderexternalid}.value=$!{entity.id}&operation=exact")
-	#set($args = "$args&sortby=$!sortby&entitymoduleviewid=$entitymoduleviewid&${module.id}setpage=1")
 	
-	$context.putPageValue("viewid", $entitymoduleviewid)
-	
-	$pages.include("${searchhome}/search.html?$!args",$context)
+	#set($renderinternalid = $entitymoduleviewdata.renderinternalid)
+	#ifnull($renderinternalid)
+		#set($renderinternalid = "id")
+	#end
+	#set($renderinternalvalue = $entity.get($renderinternalid))
+	#ifnull($renderinternalvalue)
+		[[No Records Found]]
+	#end
+	#ifnotnull($renderinternalvalue)
+		#set($args = "field=$!{renderexternalid}&$!{renderexternalid}.value=$!{renderinternalvalue}&operation=exact")
+		#set($args = "$args&sortby=$!sortby&entitymoduleviewid=$entitymoduleviewid&${module.id}setpage=1")
+		
+		$context.putPageValue("viewid", $entitymoduleviewid)
+		$pages.include("${searchhome}/search.html?$!args",$context)
+	#end
 </div>	
 		
 </div>

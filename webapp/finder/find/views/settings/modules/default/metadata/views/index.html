@@ -54,15 +54,6 @@
             </div>
             
 			<div class="form-group">
-			##what is this? TODO remove it
-				<div class="form-check">
-   				<input id="showonregistration.value" class="form-check-input" type="checkbox" name="showonregistration.value" value="true" #if($view.showonregistration == "true") checked #else #end/>
-                <label class="form-check-label" for="showonregistration.value">[[Show on registration section]]  </label>
-            	<input type="hidden" value="showonregistration" name="field" />
-            	</div>
-            </div>
-
-			<div class="form-group">
 				<div class="form-check">
 	    		<input id="systemdefined.value" class="form-check-input" type="checkbox" name="systemdefined.value" value="true" #if($view.systemdefined == "true") checked #else #end/>
                 <label class="form-check-label" for="systemdefined.value">[[System View]]</label>
@@ -71,25 +62,7 @@
             
             </div>
             
-            <div class="form-group">
-            	<div class="form-check">
-  					<input id="showonsearch.value" class="form-check-input" type="checkbox" name="showonsearch.value" value="true" #if($view.showonsearch == "true") checked #else #end/>
-	                <label class="form-check-label" for="showonsearch.value">[[Show on Entity Dialog]]</label>
-	            	<input type="hidden" value="showonsearch" name="field" />
-					</div>
-            
-            </div>
-            
-            
-            <div class="form-group">
-            	<div class="form-check">
-  					<input id="printview.value" class="form-check-input" type="checkbox" name="printview.value" value="true" #if($view.printview == "true") checked #else #end/>
-	                <label class="form-check-label" for="printview.value">[[Print View]]</label>
-	            	<input type="hidden" value="printview" name="field" />
-					</div>
-            
-            </div>
-            
+           
             <div class="row">
             	<div class="col-md-6">
 		            <div class="form-group">
@@ -111,33 +84,44 @@
 					<div class="form-group">
 		                <label>[[External ID]]</label>
 		            	<input type="hidden" value="renderexternalid" name="field" />
-		                <input class="field" name="renderexternalid.value" value="$!view.renderexternalid" />
+						#set($externalid = $view.renderexternalid)
+						#ifnull($externalid)
+							#set($externalid = $module.id)
+						#end
+		                <input class="field form-control" name="renderexternalid.value" value="${externalid}" />
+						
+	
 					</div>
 				</div>
             </div>
 		
 
         <div id="rendertableoptions">
-	            <div class="form-group">
-	            <div class="form-check">
-	            	<input type="hidden" value="linktomodule" name="field" />
-	                <input type="checkbox" class="form-check-input" id="linktomodule.value" name="linktomodule.value" value="true" #if($!view.linktomodule == "true") checked #end >
-	   		 		<label class="form-check-label" for="linktomodule.value">[[Link to Module]]</label>
-				</div>
-				</div>
+	  
 				<div class="row">
             	<div class="col-md-6">
-					<div class="form-group">
-			    		<label>[[Render Table Default Sort]]</label>
-						<input type="hidden" value="rendersort" name="field" />
-		                <input class="field" name="rendersort.value" value="$!view.rendersort" >
-		            </div>
+					
 		        </div>
 		        <div class="col">
 		            <div class="form-group">
-						<label>[[Render Table Custom View]]</label>
-						<input type="hidden" value="rendercustomview" name="field" />
-		                <input class="field" name="rendercustomview.value" value="$!view.rendercustomview" >
+						<label>[[Internal Value Field]]</label>
+						<input type="hidden" value="renderinternalid" name="field" />
+		                ##<input class="field form-control" name="renderinternalid.value" value="$!view.renderinternalid" placeholder="id" >
+						#set($internalid = $view.renderinternalid)
+						#ifnull($internalid)
+							#set($internalid = "id")
+						#end
+						<select id="renderinternalpicker" 
+								name="renderinternalid.value" 
+								class=" form-control" 
+								data-allowclear="false"
+								>
+							<option value=""></option>
+							#set($searcher = $mediaarchive.getSearcher($module.id))
+							#foreach( $type in $searcher.getPropertyDetails() )
+								<option value="$type.getId()" #if($type.getId() == ${internalid}) [[selected]] #end>#text($type)</option>
+							#end
+						</select>
 					</div>
 				</div>
 				</div>
