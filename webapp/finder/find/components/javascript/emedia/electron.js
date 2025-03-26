@@ -606,19 +606,15 @@ jQuery(document).ready(function () {
 			});
 			// </single file download events>
 
-			lQuery("#col-localdrives").livequery(function () {
-				$(this)
-					.find(".work-folder.processing")
-					.each(function () {
-						if ($(this).hasClass("upload-started")) return;
-						if ($(this).hasClass("download-started")) return;
-						var categorypath = $(this).data("categorypath");
-						var isDownload = $(this).hasClass("download");
-						ipcRenderer.send("continueSync", {
-							categorypath,
-							isDownload,
-						});
-					});
+			lQuery(".work-folder.processing").livequery(function () {
+				if ($(this).hasClass("upload-started")) return;
+				if ($(this).hasClass("download-started")) return;
+				var categorypath = $(this).data("categorypath");
+				var isDownload = $(this).hasClass("download");
+				ipcRenderer.send("continueSync", {
+					categorypath,
+					isDownload,
+				});
 			});
 
 			lQuery(".desktopdirectdownload").livequery("click", function (e) {
