@@ -99,7 +99,7 @@ jQuery(document).ready(function () {
 					console.error(error);
 				}
 				customToast("Desktop Error: Check log for details.", {
-				autohideDelay: 5000,
+					autohideDelay: 5000,
 					positive: false,
 				});
 			});
@@ -553,7 +553,9 @@ jQuery(document).ready(function () {
 			// </all sync events>
 
 			// <single file download events>
-			ipcRenderer.on("download-updated", (_, data) => {});
+			ipcRenderer.on("download-update", (_, data) => {
+				console.log(data);
+			});
 			// </single file download events>
 
 			lQuery("#col-localdrives").livequery(function () {
