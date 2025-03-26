@@ -495,7 +495,8 @@ jQuery(document).ready(function () {
 					customToast(
 						`${
 							data.isDownload ? "Downloaded" : "Uploaded"
-						} all files from ${elideCat(data.identifier)}!`
+						} all files from ${elideCat(data.identifier)}!`,
+						{ id: data.identifier }
 					);
 				});
 				var dataeditedreload = $(".dataeditedreload");
