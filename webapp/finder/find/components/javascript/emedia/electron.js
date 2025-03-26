@@ -609,12 +609,46 @@ jQuery(document).ready(function () {
 			lQuery(".work-folder.processing").livequery(function () {
 				if ($(this).hasClass("upload-started")) return;
 				if ($(this).hasClass("download-started")) return;
-				var categorypath = $(this).data("categorypath");
+				if ($(this).hasClass("sync-completed")) return;
+				var uploadsourcepath = $(this).data("categorypath");
+				var categorypath = uploadsourcepath;
+				categorypath = categorypath.replace(/\\/g, "/");
+				categorypath = categorypath.replace(/\/+/g, "/");
 				var isDownload = $(this).hasClass("download");
-				ipcRenderer.send("continueSync", {
-					categorypath,
-					isDownload,
-				});
+				var entityid = $(this).data("entityid");
+				var moduleid = $(this).data("moduleid");
+				ipcRenderer
+					.invoke("continueSync", {
+						toplevelcategorypath: uploadsourcepath,
+						isDownload,
+					})
+					.then((scanStarted) => {
+						if (scanStarted)
+							customToast(
+								"Continuing " +
+									(isDownload ? "download" : "upload") +
+									" task for " +
+									elideCat(categorypath)
+							);
+						else {
+							customToast(
+								"Failed to continue " +
+									(isDownload ? "download" : "upload") +
+									" task for " +
+									elideCat(categorypath)
+							);
+							var formData = new FormData();
+							formData.set("categorypath", categorypath);
+							formData.set("entityid", entityid);
+							formData.set("moduleid", moduleid);
+							formData.set("desktopimportstatus", "sync-cancelled");
+							if (isDownload) formData.set("isdownload", "true");
+							desktopImportStatusUpdater(formData);
+						}
+					})
+					.catch((err) => {
+						console.error("continueSync", err);
+					});
 			});
 
 			lQuery(".desktopdirectdownload").livequery("click", function (e) {
