@@ -30,22 +30,22 @@
 			#if ($desktop)
 				#set($perm = $module.getBoolean("enableuploading") && $module.id!="faceprofilegroup" && $module.id!="asset" && $module.id!="modulesearch")
 				#if($perm)
-					<button class="lightbox-header-btn scan-changes px-2">
-						<i class="bi bi-arrow-repeat ns m-0"></i>
-					</button> 
-					#if($permissions.canModule($module, "upload_folders"))
-					<button class="lightbox-header-btn upload-lightbox positive">
-						<i class="bi bi-cloud-arrow-up mr-1 ns"></i> <span>[[Upload]]</span>
-					</button>
-					#end
-					#if($permissions.canModule($module, "view_files"))
-					<button class="lightbox-header-btn download-lightbox">
+					#if($permissions.canModule($module, "downloadall"))
+					<button class="lightbox-header-btn download-lightbox positive">
 						<i class="bi bi-cloud-arrow-down mr-1 ns"></i> <span>[[Download]]</span>
 					</button>
 					#end
 					<button class="lightbox-header-btn open-folder">
 						<i class="bi bi-eye mr-1 ns"></i> <span>[[Open]]</span>
 					</button>
+					#if($permissions.canModule($module, "upload_folders"))
+					<button class="lightbox-header-btn upload-lightbox">
+						<i class="bi bi-cloud-arrow-up mr-1 ns"></i> <span>[[Upload]]</span>
+					</button>
+					#end
+					<button class="lightbox-header-btn scan-changes px-2">
+						<i class="bi bi-arrow-repeat ns m-0"></i>
+					</button> 
 				#end
 			#end
 		</div>

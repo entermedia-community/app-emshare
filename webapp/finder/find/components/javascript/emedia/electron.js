@@ -64,14 +64,19 @@ jQuery(document).ready(function () {
 			mediadb:
 				window.location.protocol + "//" + window.location.host + "/" + mediadb,
 		})
-		.then(({ computerName, localRoot }) => {
+		.then(({ computerName, rootPath, downloadPath }) => {
 			$("#desktopLoading").remove();
-			app.data("local-root", localRoot);
+			app.data("local-root", rootPath);
+			app.data("local-download", downloadPath);
 			app.data("computer-name", computerName);
 
-			ipcRenderer.on("set-local-root", (_, localRoot) => {
-				app.data("local-root", localRoot);
-			});
+			ipcRenderer.on(
+				"set-local-root",
+				(_, { rootPath: rP, downloadPath: dP }) => {
+					app.data("local-root", rP);
+					app.data("local-download", dP);
+				}
+			);
 
 			ipcRenderer.on("electron-log", (_, ...log) => {
 				console.log("Desktop ▼");
@@ -94,7 +99,7 @@ jQuery(document).ready(function () {
 					console.error(error);
 				}
 				customToast("Desktop Error: Check log for details.", {
-					autohide: false,
+				autohideDelay: 5000,
 					positive: false,
 				});
 			});
@@ -123,10 +128,6 @@ jQuery(document).ready(function () {
 					},
 				});
 			}
-
-			lQuery("#localRootPathInput").livequery(function () {
-				$(this).val(app.data("local-root"));
-			});
 
 			lQuery(".open-file-default").livequery("click", function () {
 				var categorypath = $(this).data("categorypath");
@@ -167,11 +168,21 @@ jQuery(document).ready(function () {
 				$("#" + targetDiv).val(path);
 			});
 
-			lQuery("#changeLocalDirve").livequery("click", function (e) {
+			lQuery("#localRootPathInput").livequery(function () {
+				$(this).val(app.data("local-root"));
+			});
+
+			lQuery("#localDownloadPathInput").livequery(function () {
+				$(this).val(app.data("local-download"));
+			});
+
+			lQuery("#changeDesktopSettings").livequery("click", function (e) {
 				e.preventDefault();
-				var selectedPath = $("#localRootPathInput").val();
-				ipcRenderer.send("changeLocalDrive", {
-					selectedPath,
+				var rootPath = $("#localRootPathInput").val();
+				var downloadPath = $("#localDownloadPathInput").val();
+				ipcRenderer.send("changeDesktopSettings", {
+					rootPath,
+					downloadPath,
 				});
 				closeemdialog($(this).closest(".modal"));
 			});
@@ -198,6 +209,15 @@ jQuery(document).ready(function () {
 						},
 					});
 				}
+			});
+
+			lQuery(".quick-download").livequery("click", function () {
+				$("#col-sidebars").load(apphome + "/components/sidebars/index.html", {
+					propertyfield: "sidebarcomponent",
+					sidebarcomponent: "localdrives",
+					"sidebarcomponent.value": "localdrives",
+				});
+				$(window).trigger("resize");
 			});
 
 			lQuery(".lightbox-header-btns").livequery(function () {
@@ -434,10 +454,14 @@ jQuery(document).ready(function () {
 						shouldDisableUploadSyncBtn(data.remaining);
 					}
 					customToast(
-						`${data.isDownload ? "Downloaded" : "Uploaded"} all files from ${
-							data.identifier
-						}!`
+						`${
+							data.isDownload ? "Downloaded" : "Uploaded"
+						} all files from ${elideCat(data.identifier)}!`
 					);
+				});
+				var dataeditedreload = $(".dataeditedreload");
+				dataeditedreload.each(function () {
+					$(window).trigger("autoreload", [$(this), null, "dataeditedreload"]);
 				});
 			});
 
@@ -527,6 +551,10 @@ jQuery(document).ready(function () {
 				});
 			});
 			// </all sync events>
+
+			// <single file download events>
+			ipcRenderer.on("download-updated", (_, data) => {});
+			// </single file download events>
 
 			lQuery("#col-localdrives").livequery(function () {
 				$(this)

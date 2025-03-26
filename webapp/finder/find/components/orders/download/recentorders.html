@@ -32,7 +32,7 @@
 								$downloadorderitem.get("itemexportname")
 							#end
 						</div>
-						<div class="d-flex align-items-center">			
+						<div class="d-flex align-items-center mb-1">			
 							<span class="status">
 								#if($orderstatus == "complete")
 									[[Downloaded]]
@@ -106,37 +106,25 @@
 					
 					$pages.include("${apphome}/views/modules/asset/results/default/thumbnails/small.html",$context) 
 				</div>
+				#if(!$orderstatus)
 				<div class="actions"> 
-					#if(!$orderstatus)
-						#if($status != "error" && ($publishstatus == "complete" || $publishstatus == "readytopublish" || $publishstatus == "canceled"))
-							#if($desktop)
-							<a href="#" class="opendownloadedfile" 
-								data-orderitemid="$downloadorderitem" 
-								data-orderid='$downloadorderitem.get("orderid")'
-								data-itemexportname='$downloadorderitem.get("itemexportname")'
-								data-itemdownloadurl='$downloadorderitem.get("itemdownloadurl")'
-								title="[[Open File]]">
-								<i class="bi bi-box-arrow-up-right"></i>
-							</a>
-							#end
-						#end
-						#if($publishstatus == "complete" || $orderstatus == "complete")
-							<a title="[[Download Again]]" download='$downloadorderitem.get("itemexportname")' href='$downloadorderitem.get("itemdownloadurl")'>
-								<i class="bi bi-arrow-repeat"></i>
-							</a>
-						#end
-						#if($publishstatus == "publishingexternal")
-							<a href="#" class="abortdownloadorder" data-orderitemid="$downloadorderitem" data-orderid='$downloadorderitem.get("orderid")' title="[[Cancel Download]]">
-								<i class="bi bi-x-circle"></i>
-							</a>
-						#end
-						#if($publishstatus == "new" || $publishstatus == "readytopublish")
-							<a href="#" class="abortdownloadorder" data-orderitemid="$downloadorderitem" data-orderid='$downloadorderitem.get("orderid")' title="[[Cancel Order Processing]]">
-								<i class="bi bi-x-circle"></i>
-							</a>
-						#end 
+					#if($publishstatus == "complete" || $orderstatus == "complete")
+						<a title="[[Download Again]]" download='$downloadorderitem.get("itemexportname")' href='$downloadorderitem.get("itemdownloadurl")'>
+							<i class="bi bi-arrow-repeat"></i>
+						</a>
+					#end
+					#if($publishstatus == "publishingexternal")
+						<a href="#" class="abortdownloadorder" data-orderitemid="$downloadorderitem" data-orderid='$downloadorderitem.get("orderid")' title="[[Cancel Download]]">
+							<i class="bi bi-x-circle"></i>
+						</a>
+					#end
+					#if($publishstatus == "new" || $publishstatus == "readytopublish")
+						<a href="#" class="abortdownloadorder" data-orderitemid="$downloadorderitem" data-orderid='$downloadorderitem.get("orderid")' title="[[Cancel Order Processing]]">
+							<i class="bi bi-x-circle"></i>
+						</a>
 					#end 
 				</div>
+				#end 
 			</div>
 		</div>
 	#end

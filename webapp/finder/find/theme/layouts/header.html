@@ -179,10 +179,18 @@
 				#if( $user )
 					#if( $canviewmyaccount ) 
 						<a class="dropdown-item ajax" data-targetdivinner="application" data-updateurl="true" data-oemaxlevel="4" href="$!siteroot$apphome/views/myaccount/index.html"  title="[[Account Settings]]">
+							<i class="bi bi-person-circle mr-1"></i>
 							[[My Account]]
 						</a>
 						<a class="dropdown-item ajax" data-targetdivinner="application" data-updateurl="true" data-oemaxlevel="4" href="$!siteroot$apphome/views/modules/order/editors/orderuserlist/index.html"  title="[[My Orders]]">
+							<i class="bi bi-bag mr-1"></i>
 							[[My Orders]]
+						</a>
+					#end
+					#if($desktop)
+						<a class="dropdown-item emdialog" href="$apphome/components/sidebars/localdrives/workspacedialog.html"  title="[[Desktop Settings]]">
+							<i class="bi bi-gear-fill mr-1"></i>
+							[[Desktop Settings]]
 						</a>
 					#end
 					<div class="dropdown dropleft">
@@ -199,12 +207,7 @@
 								data-themeid="$th.id">#if($currentthemeid==$th.id)<i class="bi bi-check-circle-fill ns mr-1"></i>#end#text($th)</a>
 							#end
 						</div>
-					</div> 
-					#if($desktop)
-						<a class="dropdown-item emdialog" href="$apphome/components/sidebars/localdrives/workspacedialog.html"  title="[[Local Workspace]]">
-							[[Local Workspace]]
-						</a>
-					#end
+					</div>
 					#set( $localesearcher = $mediaarchive.getSearcher("locale") )
 					#set($currentlang = $localesearcher.searchById($context.language))
 					<div class="dropdown dropleft">
@@ -224,9 +227,9 @@
 							#end
 						</div> 
 					</div>
-					#ifnull($destop)
-						<a class="dropdown-item" target="_blank" href="https://emedialibrary.com/downloads.html" title="[[Desktop App]]">
-							<i class="bi bi-laptop mr-1"></i> [[Desktop App]]
+					#ifnull($desktop)
+						<a class="dropdown-item" target="_blank" href="https://emedialibrary.com/downloads.html" title="[[Download Desktop App]]">
+							<i class="bi bi-laptop mr-1"></i> [[Download Desktop App]]
 						</a>
 					#end
 					<a class="dropdown-item" href="$!siteroot$apphome/authentication/logout.html" title="[[Logout]]">
