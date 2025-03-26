@@ -1,6 +1,6 @@
 <div id="syncFolderList">
   #ifnull($syncfolders)
-    #set($syncfolders = $mediaarchive.query("desktopsyncfolder").exact("desktop", $desktop.getComputerName()).sort("createddateDown").search())
+    #set($syncfolders = $mediaarchive.query("desktopsyncfolder").exact("desktop", $desktop.getComputerName()).sort("lastscandateDown").search())
   #end
 
   #if($syncfolders.size() == 0)
@@ -35,6 +35,7 @@
           id="wf-$syncfolder.id"
           data-id="$syncfolder.id"
           data-categorypath="$syncfolder.categorypath"
+          data-moduleid="$syncfolder.module"
           data-entityid="$syncfolder.entityid">
           <div class="sync-summary">
             <div class="d-flex flex-column flex-grow-1 p-2 position-relative">
