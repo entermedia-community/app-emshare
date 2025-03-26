@@ -232,9 +232,10 @@ jQuery(document).ready(function () {
 				formData.set("entityid", entityid);
 				formData.set("moduleid", moduleid);
 				formData.set("desktopimportstatus", "scan-started");
+				formData.set("isdownload", "true");
 
 				ipcRenderer
-					.invoke("lightboxUpload", {
+					.invoke("lightboxDownload", {
 						toplevelcategorypath: uploadsourcepath,
 						lightbox: "",
 					})
