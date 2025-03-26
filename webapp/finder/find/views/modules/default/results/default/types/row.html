@@ -4,6 +4,9 @@
 #if($mixedentitysourcetypes) 
 	#set($moduleid = $hit.get("entitysourcetype"))
 #end
+#ifnull($moduleid)
+	#set($moduleid = $module.id)
+#end
 
 <tr class="resultsdivdata #if($selectedrow) emrowselected #end"  
 	data-rowid="$hit.id"  
@@ -65,30 +68,6 @@
 					<i class="bi bi-cloud-arrow-down bi2"></i>
 				</button>
 				#end
-				
-				#*
-				#if($perm && $permissions.canModule($module, "upload_folders"))
-				<a href="${edithome}/tabs/index.html?entityid=$!{hit.id}&entitytabopen=import&tabsection=pushlocal&autoscan=true" 
-					class="emdialog px-1 mb-2" 
-					title="[[Bulk Upload]]"
-					id="pushlocal-$!{hit.id}"
-					data-moduleid="${moduleid}"
-					data-updateurl="true"
-					data-urlbar="$!searchhome/index.html?entityid=$!{hit.id}&entitytabopen=import"><i class="bi bi-cloud-arrow-up bi2"></i></a>
-				#end
-				
-				#if($module.getBoolean("enableuploading") && ($permissions.canModule($module, "upload_files") || $permissions.canModule($module, "upload_folders")) )
-					<a class="emdialog px-1 mb-2"
-						data-oemaxlevel="1"
-						data-moduleid="${moduleid}"
-						data-modulename="#text($module)"
-						data-entityid="$!{hit.id}"
-						data-entityname="$!{hit.name}"
-						href="$apphome/components/sidebars/localdrives/importexistingdialog.html"
-						title="[[Add to Auto Import]]" 
-						><i class="bi bi-folder-plus"></i></a>
-				#end
-				*#
 			#else
 				#if($module.getBoolean("enableuploading") && 
 					($permissions.canModule($module, "upload_files") ||

@@ -212,12 +212,41 @@ jQuery(document).ready(function () {
 			});
 
 			lQuery(".quick-download").livequery("click", function () {
+				$(this).prop("disabled", true);
 				$("#col-sidebars").load(apphome + "/components/sidebars/index.html", {
 					propertyfield: "sidebarcomponent",
 					sidebarcomponent: "localdrives",
 					"sidebarcomponent.value": "localdrives",
 				});
 				$(window).trigger("resize");
+
+				var entityid = $(this).data("entityid");
+				var moduleid = $(this).data("moduleid");
+				var uploadsourcepath = $(this).data("path");
+				var categorypath = uploadsourcepath;
+				categorypath = categorypath.replace(/\\/g, "/");
+				categorypath = categorypath.replace(/\/+/g, "/");
+
+				var formData = new FormData();
+				formData.set("categorypath", categorypath);
+				formData.set("entityid", entityid);
+				formData.set("moduleid", moduleid);
+				formData.set("desktopimportstatus", "scan-started");
+
+				ipcRenderer
+					.invoke("lightboxUpload", {
+						toplevelcategorypath: uploadsourcepath,
+						lightbox: "",
+					})
+					.then((scanStarted) => {
+						if (scanStarted) desktopImportStatusUpdater(formData);
+					})
+					.catch((error) => {
+						console.log("quick-download", error);
+					})
+					.finally(() => {
+						$(this).prop("disabled", false);
+					});
 			});
 
 			lQuery(".lightbox-header-btns").livequery(function () {
@@ -260,6 +289,9 @@ jQuery(document).ready(function () {
 						})
 						.then((scanStarted) => {
 							if (scanStarted) desktopImportStatusUpdater(formData);
+						})
+						.catch((error) => {
+							console.log("lightboxDownload", error);
 						});
 				});
 
@@ -280,6 +312,9 @@ jQuery(document).ready(function () {
 						})
 						.then((scanStarted) => {
 							if (scanStarted) desktopImportStatusUpdater(formData);
+						})
+						.catch((error) => {
+							console.log("lightboxUpload", error);
 						});
 				});
 
@@ -329,6 +364,9 @@ jQuery(document).ready(function () {
 									{ id: categorypath }
 								);
 							}
+						})
+						.catch((error) => {
+							console.log("scanChanges", error);
 						})
 						.finally(() => {
 							$(this).prop("disabled", false);
@@ -554,7 +592,11 @@ jQuery(document).ready(function () {
 
 			// <single file download events>
 			ipcRenderer.on("download-update", (_, data) => {
-				console.log(data);
+				const toastId = data.filename.replace(/[^a-zA-Z0-9]/g, "_");
+				customToast(data.message, {
+					id: toastId,
+					positive: !data.error,
+				});
 			});
 			// </single file download events>
 
@@ -576,6 +618,12 @@ jQuery(document).ready(function () {
 			lQuery(".desktopdirectdownload").livequery("click", function (e) {
 				e.preventDefault();
 				ipcRenderer.send("directDownload", $(this).attr("href"));
+			});
+		})
+		.catch((err) => {
+			console.error(err);
+			customToast("Error establishing connection with Electron!", {
+				positive: false,
 			});
 		});
 });

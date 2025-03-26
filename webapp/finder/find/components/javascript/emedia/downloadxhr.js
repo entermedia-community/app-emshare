@@ -1,6 +1,7 @@
 jQuery(document).ready(function () {
 	var siteroot = $("#application").data("siteroot");
 	var mediadb = $("#application").data("mediadbappid");
+	var isDesktop = $("#application").data("desktop");
 	var downloaded = {};
 
 	function checkForPendingDownloads() {
@@ -83,7 +84,11 @@ jQuery(document).ready(function () {
 		a.click();
 		document.body.removeChild(a);
 
-		customToast(`Downloaded ${filename}!`, { id });
+		var toastId = filename.replace(/[^a-zA-Z0-9]/g, "_");
+		customToast(`Download${isDesktop ? "ing" : "ed"} ${filename}!`, {
+			id: toastId,
+			loading: isDesktop,
+		});
 
 		setTimeout(function () {
 			$(window).trigger("autoreload", [$("#userdownloadlist")]);
