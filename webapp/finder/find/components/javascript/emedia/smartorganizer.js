@@ -591,6 +591,7 @@ $(document).ready(function () {
 
 		function globalizeJSON(json) {
 			json = json.replaceAll(apphome, "${apphome}");
+			json = json.replace(/([^"]*?)\$\{apphome\}/, "/${apphome}");
 			return json;
 		}
 
