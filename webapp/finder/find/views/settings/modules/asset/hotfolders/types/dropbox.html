@@ -1,6 +1,8 @@
 
 #set($dropboxmanager = $mediaarchive.getBean("dropboxManager"))
 #set($dropbox = $mediaarchive.getData("oauthprovider", "dropbox"))
+
+
 #if($dropbox.enabled == "true")
 	<h3>[[Authentication]]</h3>
 	<h4>Dropbox Connectivity 	(<a  target="_blank" href="$apphome/views/settings/modules/asset/hotfolders/types/dropbox/help.html">?</a>) 
@@ -41,6 +43,22 @@
             <div class="note">[[Choose the account ID to act as for this connection.]]</div>
         </div>
 		
+	#else
+	<div class="form-group">
+            <label>[[Folder]]</label>
+            <input type="hidden" name="field" value="syncroot" />            
+            <select class="form-control" name="syncroot.value">
+                <option value="" >[[Select a Folder]]</option>
+                #set($namespaces = $dropboxmanager.listRootFolders())
+                #foreach($namespace in $namespaces)
+                    <option value="$namespace.path_lower" #if($namespace.path_lower == $data.syncroot)selected#end>
+                        $namespace.name ($namespace.path_display)
+                    </option>
+                #end
+            </select>
+            <div class="note">[[Choose the namespace to use for this connection.]]</div>
+        </div>
+	
 	#end
 	
 	
