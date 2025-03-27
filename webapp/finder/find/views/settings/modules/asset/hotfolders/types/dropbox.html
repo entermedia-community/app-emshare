@@ -1,7 +1,6 @@
 
 #set($dropboxmanager = $mediaarchive.getBean("dropboxManager"))
 #set($dropbox = $mediaarchive.getData("oauthprovider", "dropbox"))
-            $dropboxmanager.listRootNamespaces()
 
 
 #if($dropbox.enabled == "true")
@@ -47,13 +46,13 @@
 	#else
 	<div class="form-group">
             <label>[[Folder]]</label>
-            <input type="hidden" name="field" value="dropboxnamespace" />            
-            <select class="form-control" name="dropboxnamespace.value">
+            <input type="hidden" name="field" value="syncroot" />            
+            <select class="form-control" name="syncroot.value">
                 <option value="" >[[Select a Folder]]</option>
-                #set($namespaces = $dropboxmanager.listFolders())
+                #set($namespaces = $dropboxmanager.listRootFolders())
                 #foreach($namespace in $namespaces)
-                    <option value="$namespace.namespace_id" #if($namespace.namespace_id == $data.dropboxnamespace)selected#end>
-                        $namespace.type 
+                    <option value="$namespace.path_lower" #if($namespace.path_lower == $data.syncroot)selected#end>
+                        $namespace.name ($namespace.path_display)
                     </option>
                 #end
             </select>
