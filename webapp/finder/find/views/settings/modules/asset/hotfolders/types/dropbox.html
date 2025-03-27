@@ -1,7 +1,11 @@
 
-#set($dropboxmanager = $mediaarchive.getBean("dropboxManager"))
+#ifnotnull($data.subfolder)
+	#set($assetSource = $mediaarchive.getAssetManager().findAssetSource($data.subfolder))
+	$assetSource
+	#set($dropboxmanager = $assetSource.getDropboxManager())
+#end
+$dropboxmanager
 #set($dropbox = $mediaarchive.getData("oauthprovider", "dropbox"))
-
 
 #if($dropbox.enabled == "true")
 	<h3>[[Authentication]]</h3>
@@ -44,21 +48,22 @@
         </div>
 		
 	#else
-	<div class="form-group">
-            <label>[[Folder]]</label>
-            <input type="hidden" name="field" value="syncroot" />            
-            <select class="form-control" name="syncroot.value">
-                <option value="" >[[Select a Folder]]</option>
-                #set($namespaces = $dropboxmanager.listRootFolders())
-                #foreach($namespace in $namespaces)
-                    <option value="$namespace.path_lower" #if($namespace.path_lower == $data.syncroot)selected#end>
-                        $namespace.name ($namespace.path_display)
-                    </option>
-                #end
-            </select>
-            <div class="note">[[Choose the namespace to use for this connection.]]</div>
-        </div>
-	
+		#ifnotnull($dropboxmanager)
+		<div class="form-group">
+	            <label>[[Sub Directory]]</label>
+	            <input type="hidden" name="field" value="syncroot" />            
+	            <select class="form-control" name="syncroot.value">
+	                <option value="" >[[Select a Subfolder]]</option>
+	                #set($namespaces = $dropboxmanager.listRootFolders())
+	                #foreach($namespace in $namespaces)
+	                    <option value="$namespace.path_lower" #if($namespace.path_lower == $data.syncroot)selected#end>
+	                        $namespace.name ($namespace.path_display)
+	                    </option>
+	                #end
+	            </select>
+	            <div class="note">[[Choose the namespace to use for this connection.]]</div>
+	        </div>
+		#end
 	#end
 	
 	
