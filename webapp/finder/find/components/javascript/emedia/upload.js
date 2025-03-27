@@ -223,7 +223,7 @@ $(document).ready(function () {
 					// 			(filePaths.length > 1 ? "s" : "") +
 					// 			" added to upload process!",
 					// 		{
-					// 			autohide: false,
+					// 			autohideDelay: 5000,
 					// 			btnText: "Show",
 					// 			btnClass: "btn btn-sm px-2 mx-2 btn-outline-primary",
 					// 		}
@@ -393,7 +393,7 @@ $.fn.initUpload = function () {
 		},
 		onError: function (event, name, error) {
 			customToast("Error while uploading file " + name, {
-				autohide: false,
+				autohideDelay: 5000,
 				positive: false,
 			});
 			haderror = true;
