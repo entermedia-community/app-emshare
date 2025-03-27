@@ -1,9 +1,10 @@
 
-#ifnotnull($data.externalpath)
-	#set($assetSource = $mediaarchive.getAssetManager().findAssetSource($data.externalpath))
-	#set($dropboxmanager = $assetSource.getDropBoxManager())
+#ifnotnull($data.subfolder)
+	#set($assetSource = $mediaarchive.getAssetManager().findAssetSource($data.subfolder))
+	$assetSource
+	#set($dropboxmanager = $assetSource.getDropboxManager())
 #end
-
+$dropboxmanager
 #set($dropbox = $mediaarchive.getData("oauthprovider", "dropbox"))
 
 #if($dropbox.enabled == "true")
@@ -49,10 +50,10 @@
 	#else
 		#ifnotnull($dropboxmanager)
 		<div class="form-group">
-	            <label>[[Folder]]</label>
+	            <label>[[Sub Directory]]</label>
 	            <input type="hidden" name="field" value="syncroot" />            
 	            <select class="form-control" name="syncroot.value">
-	                <option value="" >[[Select a Folder]]</option>
+	                <option value="" >[[Select a Subfolder]]</option>
 	                #set($namespaces = $dropboxmanager.listRootFolders())
 	                #foreach($namespace in $namespaces)
 	                    <option value="$namespace.path_lower" #if($namespace.path_lower == $data.syncroot)selected#end>
