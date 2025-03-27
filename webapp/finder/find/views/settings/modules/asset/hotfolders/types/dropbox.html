@@ -12,19 +12,20 @@
 
 #ifnotnull($data.subfolder)
 	#set($assetSource = $mediaarchive.getAssetManager().findAssetSource($data.subfolder))
-	$assetSource
 	#set($dropboxmanager = $assetSource.getDropboxManager())
 #end
-$dropboxmanager
+
 #set($dropbox = $mediaarchive.getData("oauthprovider", "dropbox"))
 
 #if($dropbox.enabled == "true")
+
 	<h3>[[Authentication]]</h3>
+	<div class="form-group">
 	<h4>Dropbox Connectivity 	(<a  target="_blank" href="$apphome/views/settings/modules/asset/hotfolders/types/dropbox/help.html">?</a>) 
 	</h4> 
 	<a class="btn btn-secondary" href="$apphome/views/settings/modules/asset/hotfolders/types/dropbox/connect.html">Connect Personal Dropbox  </a> 
 		<a class="btn btn-secondary" href="$apphome/views/settings/modules/asset/hotfolders/types/dropbox/connectteam.html">Connect Dropbox Team Account </a>
-	
+	</div>
 	
 	#if($dropbox.teamid)
 		
