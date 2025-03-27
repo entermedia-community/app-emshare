@@ -33,19 +33,18 @@
 		#end
 		data-moduleid="$!module.id"
 		data-entityid="$!entity.getId()"
-		data-path='$category.getCategoryPath()'
-		data-userlocaldesktoppath="$!{userlocaldesktoppath}">
+		data-path="$category.getCategoryPath()">
 		#if ($desktop)
 			
-			
 			#ifnotnull($userlocaldesktoppath)
-				<button class="lightbox-header-btn open-folder">
+				<button class="lightbox-header-btn open-folder" 
+					data-root="${userlocaldesktoppath}">
 					<i class="bi bi-eye mr-1 ns"></i> <span>[[Open]]</span>
 				</button>
 			#end
 			
 			#ifnull($userlocaldesktoppath)
-			
+
 					#set($perm = $module.getBoolean("enableuploading") && $module.id!="faceprofilegroup" && $module.id!="asset" && $module.id!="modulesearch")
 					#if($perm)
 						#if($permissions.canModule($module, "downloadall"))

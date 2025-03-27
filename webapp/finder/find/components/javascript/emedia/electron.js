@@ -149,16 +149,17 @@
 				});
 
 				lQuery(".open-folder").livequery("click", function () {
-					let path = $(this).data("path") || $(this).data("localpath");
+					let path = $(this).data("path");
 					let lightbox = $(this).data("lightbox");
 					if (!path) {
-						path =
-							$(this).parent().data("path") ||
-							$(this).parent().data("localpath");
+						path = $(this).parent().data("path");
+					}
+					if (!lightbox) {
 						lightbox = $(this).parent().data("lightbox");
 					}
+					const customRoot = $(this).data("root");
 					if (path) {
-						ipcRenderer.send("openFolder", { path, lightbox });
+						ipcRenderer.send("openFolder", { customRoot, path, lightbox });
 					}
 				});
 
