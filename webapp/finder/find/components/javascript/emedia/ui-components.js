@@ -416,4 +416,153 @@ jQuery(document).ready(function () {
 			});
 		});
 	});
+
+	lQuery(".summary-toggler").livequery("click", function (e) {
+		var toggler = $(this);
+
+		var resultsdiv = toggler.closest(".resultsdiv");
+
+		var container = $(".summary-container", resultsdiv);
+		var isminimized = true;
+
+		//Refresh the UI quickly
+		if (container.length == 0 || container.hasClass("closed")) {
+			isminimized = true;
+			container.removeClass("closed");
+			$(".summary-opener", resultsdiv).addClass("closed"); //hide the button
+			container.removeClass("closed");
+		} else {
+			isminimized = false;
+			container.addClass("closed");
+			$(".summary-opener", resultsdiv).removeClass("closed");
+		}
+		setTimeout(() => {
+			$(window).trigger("resize");
+		}, 210); //match the transition speed of summary sidebar 200ms
+
+		var preferencename = toggler.data("preferencename");
+		var url = resultsdiv.data("searchhome");
+		resultsdiv.data("url", url + "/changeminimizefilter.html");
+
+		var toggle = !isminimized;
+		resultsdiv.data("profilepreference.value", toggle);
+		resultsdiv.data("profilepreference", preferencename);
+		if (isminimized) {
+			resultsdiv.data("targetdiv", resultsdiv.attr("id"));
+			resultsdiv.data("oemaxlevel", 1);
+		} else {
+			resultsdiv.data("targetdiv", "null");
+			resultsdiv.data("oemaxlevel", 0);
+		}
+		resultsdiv.runAjax();
+	});
+
+	lQuery(".sidebar-toggler").livequery("click", function (e) {
+		e.preventDefault();
+		e.stopImmediatePropagation();
+		var toggler = $(this);
+		var options = toggler.data();
+		var targetdiv = toggler.data("targetdiv");
+		var sidebar = toggler.data("sidebar");
+		options["propertyfield"] = "sidebarcomponent";
+		var url = toggler.attr("href");
+
+		if (toggler.data("action") == "home") {
+			options["sidebarcomponent.value"] = "";
+			options["sidebarcomponent"] = "home";
+
+			jQuery.ajax({
+				url: url,
+				async: false,
+				data: options,
+				success: function (data) {
+					//data = $(data);
+					var cell = findClosest(toggler, "#" + targetdiv);
+					cell.replaceWith(data); //Cant get a valid dom element
+					$(".pushcontent").removeClass("pushcontent-" + sidebar);
+					$(".pushcontent").removeClass("pushcontent-open");
+					$(".pushcontent").addClass("pushcontent-fullwidth");
+
+					$(window).trigger("setPageTitle", [cell]);
+
+					$(window).trigger("resize");
+
+					history.pushState($("#application").html(), null, url);
+				},
+				xhrFields: {
+					withCredentials: true,
+				},
+				crossDomain: true,
+			});
+		} else if (toggler.data("action") == "hide") {
+			//hide sidebar
+			options["module"] = $("#applicationcontent").data("moduleid");
+			options["sidebarcomponent.value"] = "";
+			var url = apphome + "/components/sidebars/index.html";
+			jQuery.ajax({
+				url: url,
+				async: false,
+				data: options,
+				success: function (data) {
+					var cell = findClosest(toggler, "#" + targetdiv);
+					cell.replaceWith(data); //Cant get a valid dom element
+					$(".pushcontent").removeClass("pushcontent-" + sidebar);
+					$(".pushcontent").removeClass("pushcontent-open");
+					$(".pushcontent").addClass("pushcontent-fullwidth");
+
+					$(window).trigger("resize");
+				},
+			});
+		} else {
+			//showsidebar
+			showsidebar(toggler);
+		}
+	});
+
+	showsidebar = function (toggler) {
+		var options = toggler.data();
+		var targetdiv = toggler.data("targetdiv");
+		var sidebar = toggler.data("sidebar");
+		options["propertyfield"] = "sidebarcomponent";
+		var moduleid = $("#applicationcontent").data("moduleid");
+		options["module"] = moduleid;
+		options["sidebarcomponent.value"] = sidebar;
+		var url;
+		if (options["contenturl"] != undefined) {
+			url = options["contenturl"];
+			targetdiv = $("#" + targetdiv);
+		} else {
+			if (moduleid !== undefined) {
+				url = `${apphome}/views/modules/${moduleid}/components/sidebars/index.html`;
+			} else {
+				url = apphome + "/components/sidebars/index.html";
+			}
+			targetdiv = findClosest(toggler, "#" + targetdiv);
+		}
+
+		jQuery.ajax({
+			url: url,
+			async: false,
+			data: options,
+			success: function (data) {
+				targetdiv.replaceWith(data); //Cant get a valid dom element
+				$(".pushcontent").removeClass("pushcontent-fullwidth");
+				$(".pushcontent").addClass("pushcontent-open");
+				$(".pushcontent").addClass("pushcontent-" + sidebar);
+				var mainsidebar = $(".col-mainsidebar");
+				if (mainsidebar.data("sidebarwidth")) {
+					var width = mainsidebar.data("sidebarwidth");
+					if (typeof width == "number") {
+						$(".pushcontent").css("margin-left", width + "px");
+					}
+				}
+				$(window).trigger("setPageTitle", [targetdiv]);
+				$(window).trigger("resize");
+			},
+		});
+	};
+
+	showsidebaruploads = function () {
+		$("#sidebarUserUploads").trigger("click");
+	};
 }); //on ready
