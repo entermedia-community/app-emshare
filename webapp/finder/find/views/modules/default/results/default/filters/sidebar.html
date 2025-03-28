@@ -27,77 +27,129 @@ $context.putPageValue("viewid",$viewid)
 	</div>
 
 	<div class="px-2 pt-1" style="border-left:1px solid #e5e5e5">
-	<div class="d-flex flex-column">
-		
-		#set($totalResults = 0)
-		
-		#ifnotnull($hits)
-			#set($currentpage = $context.getRequestParameter("currentpagenum"))
-			#set( $prhits = $hits.getPositionRender() )
-			#ifnotnull($currentpage)
-				$prhits.setPageOneBased($currentpage)
-			#end
-	
-			#set( $selectedpos = $prhits.toPosition($prhits.getPage()))
-	
-			#set($totalResults = $hits.size())
-	
-			#set( $hitsPerPage = $hits.getHitsPerPage())
-			#set($showingFrom = ($selectedpos - 1) * $hitsPerPage)
-			#set($showingTo = $showingFrom + $hitsPerPage)
-	
-			#if($showingTo > $totalResults)
-				#set($showingTo = $totalResults)
-			#end
+		<div class="d-flex flex-column">
+			#set($totalResults = 0)
 			
-			#set($showingFrom = $showingFrom + 1)
-		#end
-		<div class="">
-			<span class="d-inline-block text-brand pb-1 w-100 showing" >
-				<strong>#text($module)</strong> <span>($totalResults)</span>
-			</span>
-
-			#if($totalResults> 0 && $resultview != "stackedgallery" && $resultview != "brickvertical")
-				<span   class="d-inline-block text-brand pb-1 w-100 showing" >
-					[[Showing]] <strong>$showingFrom</strong> &mdash; <strong>$showingTo</strong>
+			#ifnotnull($hits)
+				#set($currentpage = $context.getRequestParameter("currentpagenum"))
+				#set( $prhits = $hits.getPositionRender() )
+				#ifnotnull($currentpage)
+					$prhits.setPageOneBased($currentpage)
+				#end
+		
+				#set( $selectedpos = $prhits.toPosition($prhits.getPage()))
+		
+				#set($totalResults = $hits.size())
+		
+				#set( $hitsPerPage = $hits.getHitsPerPage())
+				#set($showingFrom = ($selectedpos - 1) * $hitsPerPage)
+				#set($showingTo = $showingFrom + $hitsPerPage)
+		
+				#if($showingTo > $totalResults)
+					#set($showingTo = $totalResults)
+				#end
+				
+				#set($showingFrom = $showingFrom + 1)
+			#end
+			<div>
+				<span class="d-inline-block text-brand pb-1 w-100 showing" >
+					<strong>#text($module)</strong> <span>($totalResults)</span>
 				</span>
-			#else
-				#if($totalResults> 0 )
+
+				#if($totalResults> 0 && $resultview != "stackedgallery" && $resultview != "brickvertical")
+					<span   class="d-inline-block text-brand pb-1 w-100 showing" >
+						[[Showing]] <strong>$showingFrom</strong> &mdash; <strong>$showingTo</strong>
+					</span>
+				#else
+					#if($totalResults> 0 )
+					<span class="d-inline-block text-brand pb-1 w-100 showing">
+						[[Showing]] <strong>$totalResults</strong>
+					</span>
+					#end
+				#end
+			</div>
+			
+			#if($totalResults> 0)
+				#set ($currentSort = $hits.searchQuery.getSortByDetail() )
+				#if($hits.searchQuery.isSortUp())
+					#set($sortOrder = "asc")
+				#else
+					#set($sortOrder = "desc")
+				#end
+				#ifnotnull($currentSort)
 				<span class="d-inline-block text-brand pb-1 w-100 showing">
-					[[Showing]] <strong>$totalResults</strong>
+					[[Sorted by]] <strong>#text($currentSort)</strong> (${sortOrder}.)
 				</span>
 				#end
 			#end
+
+			#ifnotnull($entity)
+				###set($desc = $entity.get("longcaption"))
+				#ifnotnull($desc)
+				<p class="text-brand pt-1 mb-0 border-top">
+					<strong>[[Description]]:</strong>
+					<span class="trim-text" data-max="150">$desc</span>
+				</p>
+				#end
+			#end
 		</div>
-		
-		#if($totalResults> 0 )
-			#set ($currentSort = $hits.searchQuery.getSortByDetail() )
-			#if($hits.searchQuery.isSortUp())
-				#set($sortOrder = "asc")
-			#else
-				#set($sortOrder = "desc")
-			#end
-			#ifnotnull($currentSort)
-			<span class="d-inline-block text-brand pb-1 w-100 showing">
-				[[Sorted by]] <strong>#text($currentSort)</strong> (${sortOrder}.)
-			</span>
-			#end
-			
-		#end
-		
-		#ifnotnull($entity)
-		$entity
-			###set($desc = $entity.get("longcaption"))
-			#ifnotnull($desc)
-			<p class="text-brand pt-1 mb-0 border-top">
-				<strong>[[Description]]:</strong>
-				<span class="trim-text" data-max="150">$desc</span>
-			</p>
-			#end
-		#end
-		
 	</div>
-	</div>
+
+	#if($desktop)
+		#if($entityviewdata.rendertype == "entitymedia")
+			#set( $assetsource = $mediaarchive.getAssetManager().findAssetSource($!entity.get("uploadsourcepath")) )
+			#ifnotnull($assetsource)
+				#set($userlocaldesktoppath  = $assetsource.getConfig().get("userlocaldesktoppath"))
+			#end
+			<div class="py-2" style="border-left:1px solid #e5e5e5;border-top:1px solid #e5e5e5">
+				<p class="mb-1 text-center"><strong>[[Cloud Sync]]</strong></p>
+				<div class="d-flex flex-column lightbox-header-btns px-2 ofl-path mx-auto"
+					style="max-width: 180px;"
+					#if($selectedbox) 
+						data-lightbox="#text($selectedbox)"
+					#else
+						data-lightbox=""
+					#end
+					data-moduleid="$!module.id"
+					data-entityid="$!entity.getId()"
+					data-path="$category.getCategoryPath()">
+
+					#ifnotnull($userlocaldesktoppath)
+						<button class="lightbox-header-btn open-folder" 
+							data-root="${userlocaldesktoppath}">
+							<i class="bi bi-eye mr-1 ns"></i> <span>[[Open]]</span>
+						</button>
+					#end
+					
+					#ifnull($userlocaldesktoppath)
+						#if($module.id!="faceprofilegroup" && $module.id!="modulesearch")
+							<div class="d-flex flex-column">
+								#if($permissions.canModule($module, "downloadall"))
+								<button class="lightbox-header-btn download-lightbox positive" style="margin-bottom:6px">
+									<i class="bi bi-cloud-arrow-down mr-1 ns"></i> <span>[[Download]]</span>
+								</button>
+								#end
+								#if($permissions.canModule($module, "upload_folders"))
+									<button class="lightbox-header-btn upload-lightbox" style="margin-bottom:6px">
+										<i class="bi bi-cloud-arrow-up mr-1 ns"></i> <span>[[Upload]]</span>
+									</button>
+								#end
+							</div>
+
+							<div class="d-flex align-items-center">
+								<button class="lightbox-header-btn open-folder flex-grow-1">
+									<i class="bi bi-eye mr-1 ns"></i> <span>[[Open]]</span>
+								</button>
+								<button class="lightbox-header-btn scan-changes px-2">
+									<i class="bi bi-arrow-repeat ns m-0"></i>
+								</button>
+							</div>
+						#end
+					#end
+				</div>
+			</div>
+		#end
+	#end
 
 	<div class="summary-container-filters">
 		<div class="col-sidebar-scroll overflow-y">

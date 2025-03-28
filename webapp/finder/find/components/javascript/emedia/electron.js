@@ -152,10 +152,10 @@
 					let path = $(this).data("path");
 					let lightbox = $(this).data("lightbox");
 					if (!path) {
-						path = $(this).parent().data("path");
+						path = $(this).closest(".ofl-path").data("path");
 					}
 					if (!lightbox) {
-						lightbox = $(this).parent().data("lightbox");
+						lightbox = $(this).closest(".ofl-path").data("lightbox");
 					}
 					const customRoot = $(this).data("root");
 					if (path) {
