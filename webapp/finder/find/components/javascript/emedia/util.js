@@ -87,7 +87,7 @@ function contrastColor(hex) {
 	return r * 0.299 + g * 0.587 + b * 0.114 > 186 ? "#444444" : "#FFFFFF";
 }
 
-toggleUserProperty = function (property, onsuccess = null) {
+toggleUserProperty = function (property, onsuccess = null, onfailure = null) {
 	app = $("#application");
 	siteroot = app.data("siteroot");
 	apphome = siteroot + app.data("apphome");
@@ -99,6 +99,9 @@ toggleUserProperty = function (property, onsuccess = null) {
 			property,
 		success: function () {
 			if (onsuccess) onsuccess();
+		},
+		error: function () {
+			if (onfailure) onfailure();
 		},
 	});
 };
