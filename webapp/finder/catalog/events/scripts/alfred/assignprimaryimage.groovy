@@ -17,6 +17,8 @@ public void init(){
 	Searcher relatedsearcher = archive.getSearcher("publicationrelated");
 	
 	assignimage(archive, publicationsearcher);
+	assignimage(archive, pubpartsearcher);
+	assignimage(archive, pubpartsearcher);
 }
 
 public void assignimage(MediaArchive archive, Searcher searcher) {
@@ -29,26 +31,25 @@ public void assignimage(MediaArchive archive, Searcher searcher) {
 		List tosave = new ArrayList();
 		entities.each{
 			Data entity = it;
-			if (entity.get("Ref_SKU") == null)
+			String refSku = entity.get("ref_sku");
+			if ( refSku != null)
 			{
-				continue;
-			}
-			//Assets in category:   793939  -- Publication Files/Catpics/Large
-			
-			String thumbnailcat = "793939";
-			 
-			Data asset = archive.getAssetSearcher().query().match("category", thumbnailcat).startsWith("name", entity.get("Ref_SKU")).searchOne();
-			log.info("searching: " + asset);
-			if (asset != null)
-			{
-				entity.setValue("primaryimage", asset.getId());
-				log.info("Image found: " + asset);
-				tosave.add(entity);
-			}
-			if( tosave.size() == 1000)	{
-				searcher.saveAllData(tosave, null);
-				tosave.clear();
-				log.info("Saved: " + tosave.size() + " images - " + searcher.getSearchType());
+				//Assets in category:   793939  -- Publication Files/Catpics/Large
+				
+				String thumbnailcat = "793939";
+				 
+				Data asset = archive.getAssetSearcher().query().match("category", thumbnailcat).startsWith("name", refSku).searchOne();
+				if (asset != null)
+				{
+					entity.setValue("primaryimage", asset.getId());
+					log.info("Image found: " + asset + " - for:  sku: " + refSku);
+					tosave.add(entity);
+				}
+				if( tosave.size() == 1000)	{
+					searcher.saveAllData(tosave, null);
+					tosave.clear();
+					log.info("Saved: " + tosave.size() + " images - " + searcher.getSearchType());
+				}
 			}
 		}
 		if( tosave.size() > 0 )	{
