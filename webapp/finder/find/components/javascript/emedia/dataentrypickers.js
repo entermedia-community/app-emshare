@@ -170,7 +170,7 @@ lQuery(".emselectable table td").livequery("click", function (e) {
 	} else if (url != undefined && url != "") {
 		if (emselectable.hasClass("showmodal")) {
 			emselectable.data("id", rowid);
-			emselectable.emDialog(function () {
+			emselectable.emDialog(null, function () {
 				clicked.css("pointer-events", "auto");
 			});
 			//showmodal(emselectable, url);;
@@ -197,7 +197,7 @@ lQuery(".topmodules .resultsdivdata").livequery("click", function (e) {
 	var urlbar = clickableresultlist.data("baseurlbar");
 	clickableresultlist.data("urlbar", urlbar + "?entityid=" + rowid);
 	clickableresultlist.data("dialogid", "entitydialog");
-	clickableresultlist.emDialog(function () {
+	clickableresultlist.emDialog(null, function () {
 		row.css("pointer-events", "auto");
 	});
 });
@@ -225,7 +225,7 @@ lQuery(".listofentities .resultsdivdata").livequery("click", function (e) {
 	var urlbar = `${apphome}/views/modules/${entitymoduleid}/index.html?entityid=${rowid}`;
 	clickableresultlist.data("urlbar", urlbar);
 	clickableresultlist.data("dialogid", "entitydialog");
-	clickableresultlist.emDialog(function () {
+	clickableresultlist.emDialog(null, function () {
 		row.css("pointer-events", "auto");
 	});
 });
@@ -350,7 +350,7 @@ lQuery(".editdiv.pickerforuploading .resultsdivdata").livequery(
 
 		if (clickableresultlist.length) {
 			clickableresultlist.data("entityid", rowid);
-			clickableresultlist.emDialog(function () {
+			clickableresultlist.emDialog(null, function () {
 				closeemdialog(clicked.closest(".modal"));
 				clicked.css("pointer-events", "auto");
 			});
@@ -611,7 +611,7 @@ lQuery(".orderpending .resultsdivdata").livequery("click", function (e) {
 	var rowid = row.data("dataid");
 	clickableresultlist.data("id", rowid);
 	clickableresultlist.data("entityid", rowid);
-	clickableresultlist.emDialog(function () {
+	clickableresultlist.emDialog(null, function () {
 		row.css("pointer-events", "auto");
 	});
 });
@@ -628,7 +628,7 @@ lQuery(".orderuserlist .resultsdivdata").livequery("click", function (e) {
 	var rowid = row.data("dataid");
 	clickableresultlist.data("id", rowid);
 	clickableresultlist.data("entityid", rowid);
-	clickableresultlist.emDialog(function () {
+	clickableresultlist.emDialog(null, function () {
 		row.css("pointer-events", "auto");
 	});
 });
