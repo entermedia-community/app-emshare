@@ -15,61 +15,55 @@ function isValidTarget(clickEvent) {
 	return true;
 }
 
-
 lQuery(".assetpicker .assetInput").livequery("change", function () {
-		var input = $(this);
-		var detailId = input.data("detailid");
-		var assetName = input.val();
-		var assets = input.prop("files");
-		if (assets.length == 0) return;
-		var asset = assets[0];
-		if (asset.name) assetName = asset.name;
-		var fileReader = new FileReader();
-		fileReader.onload = function (e) {
-			if (!assetName && e.target.fileName) {
-				assetName = e.target.fileName;
-			}
-			var preview = input
-				.closest(".assetpicker")
-				.find(".render-type-thumbnail");
-			preview.html("");
-			if (/\.(jpe?g|png|gif|webp)$/i.test(assetName)) {
-				var img = $("<img>");
-				img.attr("src", e.target.result);
-				img.attr("height", "140px");
-				img.attr("width", "auto");
-				preview.append(img);
-			} else if (/\.(mp4|mov|mpeg|avi)$/i.test(assetName)) {
-				var img = $("<i>");
-				img.attr("class", "bi bi-film");
-				preview.append(img);
-			}
-
-			preview.append(
-				`<div class="p-1"><span class="mr-2">${assetName}</span><a href="#" class="removefieldassetvalue" title="Remove Selected Asset" data-detailid="${detailId}"><i class="bi bi-x"></i> Remove</a></div>`
-			);
-		};
-		fileReader.readAsDataURL(asset);
-	});
-
-	lQuery(".assetpicker .removefieldassetvalue").livequery(
-		"click",
-		function (e) {
-			e.preventDefault();
-			var picker = $(this).closest(".assetpicker");
-			var detailid = $(this).data("detailid");
-
-			picker.find("#" + detailid + "-preview").html("");
-			picker.find("#" + detailid + "-value").val("");
-			picker.find("#" + detailid + "-file").val("");
-
-			var theform = $(picker).closest("form");
-			theform = $(theform);
-			if (theform.hasClass("autosubmit")) {
-				theform.trigger("submit");
-			}
+	var input = $(this);
+	var detailId = input.data("detailid");
+	var assetName = input.val();
+	var assets = input.prop("files");
+	if (assets.length == 0) return;
+	var asset = assets[0];
+	if (asset.name) assetName = asset.name;
+	var fileReader = new FileReader();
+	fileReader.onload = function (e) {
+		if (!assetName && e.target.fileName) {
+			assetName = e.target.fileName;
 		}
-	);
+		var preview = input.closest(".assetpicker").find(".render-type-thumbnail");
+		preview.html("");
+		if (/\.(jpe?g|png|gif|webp)$/i.test(assetName)) {
+			var img = $("<img>");
+			img.attr("src", e.target.result);
+			img.attr("height", "140px");
+			img.attr("width", "auto");
+			preview.append(img);
+		} else if (/\.(mp4|mov|mpeg|avi)$/i.test(assetName)) {
+			var img = $("<i>");
+			img.attr("class", "bi bi-film");
+			preview.append(img);
+		}
+
+		preview.append(
+			`<div class="p-1"><span class="mr-2">${assetName}</span><a href="#" class="removefieldassetvalue" title="Remove Selected Asset" data-detailid="${detailId}"><i class="bi bi-x"></i> Remove</a></div>`
+		);
+	};
+	fileReader.readAsDataURL(asset);
+});
+
+lQuery(".assetpicker .removefieldassetvalue").livequery("click", function (e) {
+	e.preventDefault();
+	var picker = $(this).closest(".assetpicker");
+	var detailid = $(this).data("detailid");
+
+	picker.find("#" + detailid + "-preview").html("");
+	picker.find("#" + detailid + "-value").val("");
+	picker.find("#" + detailid + "-file").val("");
+
+	var theform = $(picker).closest("form");
+	theform = $(theform);
+	if (theform.hasClass("autosubmit")) {
+		theform.trigger("submit");
+	}
+});
 
 //Not used? Or used in admin area?
 lQuery(".emrowpicker table td").livequery("click", function (e) {
@@ -124,6 +118,7 @@ lQuery(".emselectable table td").livequery("click", function (e) {
 	}
 
 	var clicked = $(this);
+	clicked.css("pointer-events", "none");
 
 	var emselectable = clicked.closest("#emselectable");
 	if (emselectable.length < 1) {
@@ -137,11 +132,9 @@ lQuery(".emselectable table td").livequery("click", function (e) {
 	});
 	row.addClass("emhighlight");
 	row.removeClass("emborderhover");
-	
-	var table = row.closest("table");
 
 	var url = emselectable.data("url");
-	
+
 	var form = emselectable.find("form");
 	if (!form.length) {
 		form = emselectable.data("emselectableform");
@@ -159,7 +152,7 @@ lQuery(".emselectable table td").livequery("click", function (e) {
 			clicked.removeAttr("disabled");
 		});
 		//form.submit();
-		var targetdiv = form.data("targetdiv");
+		// var targetdiv = form.data("targetdiv");
 		/*if ((typeof targetdiv) != "undefined") {
 					$(form).ajaxSubmit({
 						target : "#" + $.escapeSelector(targetdiv), 
@@ -173,11 +166,13 @@ lQuery(".emselectable table td").livequery("click", function (e) {
 		if (form.hasClass("autoclose")) {
 			closeemdialog(form.closest(".modal"));
 		}
+		clicked.css("pointer-events", "auto");
 	} else if (url != undefined && url != "") {
-	
 		if (emselectable.hasClass("showmodal")) {
 			emselectable.data("id", rowid);
-			emselectable.emDialog();
+			emselectable.emDialog(function () {
+				clicked.css("pointer-events", "auto");
+			});
 			//showmodal(emselectable, url);;
 		} else {
 			parent.document.location.href = url + rowid; //?
@@ -191,17 +186,20 @@ lQuery(".topmodules .resultsdivdata").livequery("click", function (e) {
 		return true;
 	}
 	var row = $(this);
+	row.css("pointer-events", "none");
 
 	var clickableresultlist = row.closest(".clickableresultlist");
 
 	var rowid = row.data("dataid");
 	clickableresultlist.data("id", rowid);
 	clickableresultlist.data("entityid", rowid);
-		clickableresultlist.data("updateurl", true);
-		var urlbar =  clickableresultlist.data("baseurlbar");
-		clickableresultlist.data("urlbar", urlbar + "?entityid="+rowid);
-		clickableresultlist.data("dialogid", "entitydialog");
-	clickableresultlist.emDialog();
+	clickableresultlist.data("updateurl", true);
+	var urlbar = clickableresultlist.data("baseurlbar");
+	clickableresultlist.data("urlbar", urlbar + "?entityid=" + rowid);
+	clickableresultlist.data("dialogid", "entitydialog");
+	clickableresultlist.emDialog(function () {
+		row.css("pointer-events", "auto");
+	});
 });
 
 lQuery(".listofentities .resultsdivdata").livequery("click", function (e) {
@@ -210,6 +208,8 @@ lQuery(".listofentities .resultsdivdata").livequery("click", function (e) {
 	}
 
 	var row = $(this);
+	row.css("pointer-events", "none");
+
 	var clickableresultlist = row.closest(".clickopenentity");
 
 	var rowid = row.data("dataid");
@@ -220,12 +220,14 @@ lQuery(".listofentities .resultsdivdata").livequery("click", function (e) {
 		"url",
 		`${apphome}/views/modules/${entitymoduleid}/editors/default/tabs/index.html`
 	);
-	
-		clickableresultlist.data("updateurl", true);
-		var urlbar = `${apphome}/views/modules/${entitymoduleid}/index.html?entityid=${rowid}`;
-		clickableresultlist.data("urlbar", urlbar);
-		clickableresultlist.data("dialogid", "entitydialog");
-	clickableresultlist.emDialog();
+
+	clickableresultlist.data("updateurl", true);
+	var urlbar = `${apphome}/views/modules/${entitymoduleid}/index.html?entityid=${rowid}`;
+	clickableresultlist.data("urlbar", urlbar);
+	clickableresultlist.data("dialogid", "entitydialog");
+	clickableresultlist.emDialog(function () {
+		row.css("pointer-events", "auto");
+	});
 });
 
 //To open an entity in a submodule.
@@ -255,8 +257,8 @@ lQuery(".entitysubmodules .resultsdivdata").livequery("click", function (e) {
 	var submoduleOpener = row.closest(".clickableresultlist");
 	submoduleOpener.data("entityid", row.data("dataid"));
 	submoduleOpener.data("updateurl", true);
-		var urlbar =  submoduleOpener.data("baseurlbar");
-		submoduleOpener.data("urlbar", urlbar + "?entityid="+rowid);
+	var urlbar = submoduleOpener.data("baseurlbar");
+	submoduleOpener.data("urlbar", urlbar + "?entityid=" + rowid);
 	submoduleOpener.runAjax();
 });
 
@@ -340,6 +342,7 @@ lQuery(".editdiv.pickerforuploading .resultsdivdata").livequery(
 		}
 
 		var clicked = $(this);
+		clicked.css("pointer-events", "none");
 
 		var row = $(clicked.closest(".resultsdivdata"));
 		var rowid = row.data("dataid");
@@ -349,6 +352,7 @@ lQuery(".editdiv.pickerforuploading .resultsdivdata").livequery(
 			clickableresultlist.data("entityid", rowid);
 			clickableresultlist.emDialog(function () {
 				closeemdialog(clicked.closest(".modal"));
+				clicked.css("pointer-events", "auto");
 			});
 		}
 	}
@@ -554,11 +558,10 @@ lQuery(".editdiv.entitypickerassets .resultsdivdata").livequery(
 	}
 );
 
-
 /**
  * CM
  * Assign Person to a Faceprofile (From MediaViewer)
-*/
+ */
 
 lQuery(".pickerresults.pickerfaceprofileperson .resultsdivdata").livequery(
 	"click",
@@ -581,14 +584,12 @@ lQuery(".pickerresults.pickerfaceprofileperson .resultsdivdata").livequery(
 	}
 );
 
-
 $(window).on("assetpicked", function (_, input) {
 	var params = JSON.parse(input);
 	var assetid = params.assetid;
 	var messageid = $("#blockfindpicker").data("messageid");
-	
-	if( messageid !== undefined)
-	{
+
+	if (messageid !== undefined) {
 		var div = $("#attachasset" + messageid);
 		//Submit this assetid and reload the chat box we are in
 		var form = div.closest(".chatattachasset");
@@ -597,44 +598,22 @@ $(window).on("assetpicked", function (_, input) {
 		//close the form
 	}
 });
-				
-//Upload to Entity. Still needed?
-/*
-lQuery(".pickerresults.pickandupload .resultsdivdata").livequery(
-	"click",
-	function (e) {
-		if (!isValidTarget(e)) {
-			return true;
-		}
-
-		var clicked = $(this);
-
-		var row = $(clicked.closest(".resultsdivdata"));
-		var rowid = row.data("dataid");
-		var pickerresults = clicked.closest(".pickerresults");
-		var options = pickerresults.data();
-		options.id = rowid;
-		if (pickerresults.length) {
-			//console.log(pickerresults);
-			pickerresults.emDialog();
-		}
-	}
-);
-*/
-
 
 lQuery(".orderpending .resultsdivdata").livequery("click", function (e) {
 	if (!isValidTarget(e)) {
 		return true;
 	}
 	var row = $(this);
+	row.css("pointer-events", "none");
 
 	var clickableresultlist = row.closest(".clickableresultlist");
 
 	var rowid = row.data("dataid");
 	clickableresultlist.data("id", rowid);
 	clickableresultlist.data("entityid", rowid);
-	clickableresultlist.emDialog();
+	clickableresultlist.emDialog(function () {
+		row.css("pointer-events", "auto");
+	});
 });
 
 lQuery(".orderuserlist .resultsdivdata").livequery("click", function (e) {
@@ -642,17 +621,17 @@ lQuery(".orderuserlist .resultsdivdata").livequery("click", function (e) {
 		return true;
 	}
 	var row = $(this);
+	row.css("pointer-events", "none");
 
 	var clickableresultlist = row.closest(".clickableresultlist");
 
 	var rowid = row.data("dataid");
 	clickableresultlist.data("id", rowid);
 	clickableresultlist.data("entityid", rowid);
-	clickableresultlist.emDialog();
+	clickableresultlist.emDialog(function () {
+		row.css("pointer-events", "auto");
+	});
 });
-
-
-
 
 //Assets or Categories and you import into a entity
 lQuery(".pickerresultscopy .resultsdivdata").livequery("click", function (e) {
