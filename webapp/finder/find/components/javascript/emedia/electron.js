@@ -664,33 +664,31 @@
 					ipcRenderer.send("directDownload", $(this).attr("href"));
 				});
 
-				setTimeout(() => {
-					var favicon = document.querySelector("link[rel='icon']");
-					if (!favicon) {
-						favicon = document.querySelector("link[rel='shortcut icon']");
-					}
-					if (favicon) {
-						$("#desktopTitle .desktop-icon").css(
-							"background-image",
-							"url('" + favicon.href + "')"
-						);
-					}
+				// var favicon = document.querySelector("link[rel='icon']");
+				// if (!favicon) {
+				// 	favicon = document.querySelector("link[rel='shortcut icon']");
+				// }
+				// if (favicon) {
+				// 	$("#desktopTitle .desktop-icon").css(
+				// 		"background-image",
+				// 		"url('" + favicon.href + "')"
+				// 	);
+				// }
 
-					window.addEventListener("offline", () => {
-						$("#desktopTitle").addClass("error");
-						$("#desktopTitle .desktop-error").text("Network connection lost");
-						console.log("The network connection has been lost.");
-					});
-
-					window.addEventListener("online", () => {
-						$("#desktopTitle").removeClass("error");
-						console.log("The network connection has been restored.");
-					});
+				window.addEventListener("offline", () => {
+					$("#desktopTitle").addClass("error");
+					$("#desktopTitle .desktop-error").text("Network connection lost");
+					console.log("The network connection has been lost.");
 				});
+
+				window.addEventListener("online", () => {
+					$("#desktopTitle").removeClass("error");
+					console.log("The network connection has been restored.");
+				});
+
 				lQuery("#desktopTitle button").livequery("click", function (e) {
 					e.preventDefault();
 					var type = $(this).attr("class");
-					console.log(type);
 					ipcRenderer.send("menu-action", type);
 				});
 			})
