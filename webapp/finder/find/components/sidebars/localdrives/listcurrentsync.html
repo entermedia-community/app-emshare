@@ -79,19 +79,26 @@
               #end
             </div>
             
-            <button class="btn deleteSyncFolder $label" data-id="$syncfolder.id" data-categorypath="$syncfolder.categorypath">
+            <button class="btn deleteSyncFolder $label" data-id="$syncfolder.id" data-categorypath="$syncfolder.categorypath" title="[[Remove this task]]">
               <div></div>
             </button>
-            #set($previewurl = "$!{siteroot}$apphome/views/modules/$!{syncfolder.module}/editors/default/tabs/index.html?entityid=$!{syncfolder.entityid}")
             <div class="m-1">
-              <a href="$!{previewurl}" class="mb-1 d-block p-2 text-primary emdialog entity-dialog" title="[[Show the record]]">
-                <i class="bi bi-arrows-angle-expand ns"></i>
-              </a>
+              #if($syncfolder.entityid)
+                #set($previewurl = "$!{siteroot}$apphome/views/modules/$!{syncfolder.module}/editors/default/tabs/index.html?entityid=$!{syncfolder.entityid}")
+                <a href="$!{previewurl}" class="mb-1 d-block p-2 text-primary emdialog entity-dialog" title="[[Show the record]]">
+                  <i class="bi bi-folder-fill ns"></i>
+                </a>
+              #else
+              #set($previewurl = "http://localhost:8080/finder/find/views/modules/asset/editors/viewfilescategory/AZXda1peafE7nu45zFIL/Gemini.html")
+                <a href="$!{previewurl}" class="mb-1 d-block p-2 text-warning emdialog entity-dialog" title="[[Show the record]]">
+                  <i class="bi bi-folder-fill ns"></i>
+                </a>
+              #end
               #if($syncfolder.categorypath)
                 <div class="open-folder flex-1 p-2"
                   data-path="$syncfolder.categorypath"
                   title="[[Open the folder in your computer]]">
-                  <i class="bi bi-folder ns"></i>
+                  <i class="bi bi-eye-fill ns"></i>
                 </div>
               #end
             </div>
