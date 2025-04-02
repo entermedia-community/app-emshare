@@ -2010,7 +2010,6 @@ function initializeUI() {
 	lQuery(".col-resize").livequery(function () {
 		var slider = $(this);
 		var column = $(this).closest(".col-main");
-		var content = $(".pushcontent");
 
 		var clickspot;
 		var startwidth;

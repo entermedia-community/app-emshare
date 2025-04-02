@@ -187,7 +187,7 @@ $(document).ready(function () {
 
 		//togglers always screen height
 		var coltogglers = $(".col-sidebar-togglers");
-		coltogglers.css("height", windowh - 1);
+		coltogglers.css("height", windowh - 4);
 		var colsidebar = $(".col-mainsidebar");
 		colsidebar.css("height", windowh);
 
