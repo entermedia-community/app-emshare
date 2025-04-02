@@ -146,27 +146,21 @@
 					const categorypath = $(this).data("categorypath");
 					const filename = $(this).data("filename");
 					const dlink = $(this).data("dlink");
-					const lightbox = $(".upload-lightbox").data("lightbox");
 					ipcRenderer.send("openFileWithDefault", {
 						categorypath,
 						filename,
 						dlink,
-						lightbox,
 					});
 				});
 
 				lQuery(".open-folder").livequery("click", function () {
 					let path = $(this).data("path");
-					let lightbox = $(this).data("lightbox");
 					if (!path) {
 						path = $(this).closest(".ofl-path").data("path");
 					}
-					if (!lightbox) {
-						lightbox = $(this).closest(".ofl-path").data("lightbox");
-					}
 					const customRoot = $(this).data("root");
 					if (path) {
-						ipcRenderer.send("openFolder", { customRoot, path, lightbox });
+						ipcRenderer.send("openFolder", { customRoot, folderPath: path });
 					}
 				});
 
@@ -254,10 +248,7 @@
 					formData.set("isdownload", "true");
 
 					ipcRenderer
-						.invoke("lightboxDownload", {
-							toplevelcategorypath: uploadsourcepath,
-							lightbox: "",
-						})
+						.invoke("lightboxDownload", uploadsourcepath)
 						.then((scanStarted) => {
 							if (scanStarted) desktopImportStatusUpdater(formData);
 						})
@@ -275,14 +266,10 @@
 					const headerBtns = $(this);
 
 					const uploadsourcepath = headerBtns.data("path");
-					const lightbox = headerBtns.data("lightbox") || "";
 					const entityId = headerBtns.data("entityid");
 					const moduleid = headerBtns.data("moduleid");
 
 					let categorypath = uploadsourcepath;
-					if (lightbox) {
-						categorypath += "/" + lightbox;
-					}
 					categorypath = categorypath.replace(/\\/g, "/");
 					categorypath = categorypath.replace(/\/+/g, "/");
 					categorypath = categorypath.replace(/\/$/g, "");
@@ -306,10 +293,7 @@
 						formData.set("isdownload", "true");
 
 						ipcRenderer
-							.invoke("lightboxDownload", {
-								toplevelcategorypath: uploadsourcepath,
-								lightbox,
-							})
+							.invoke("lightboxDownload", uploadsourcepath)
 							.then((scanStarted) => {
 								if (scanStarted) desktopImportStatusUpdater(formData);
 							})
@@ -331,10 +315,7 @@
 						formData.set("desktopimportstatus", "scan-started");
 
 						ipcRenderer
-							.invoke("lightboxUpload", {
-								toplevelcategorypath: uploadsourcepath,
-								lightbox,
-							})
+							.invoke("lightboxUpload", uploadsourcepath)
 							.then((scanStarted) => {
 								if (scanStarted) desktopImportStatusUpdater(formData);
 							})
@@ -354,10 +335,7 @@
 
 						const idEl = headerBtns;
 						ipcRenderer
-							.invoke("scanChanges", {
-								toplevelcategorypath: uploadsourcepath,
-								lightbox,
-							})
+							.invoke("scanChanges", uploadsourcepath)
 							.then(({ hasUploads, hasDownloads }) => {
 								const ch = [];
 
@@ -649,7 +627,7 @@
 					const moduleid = $(this).data("moduleid");
 					ipcRenderer
 						.invoke("continueSync", {
-							toplevelcategorypath: uploadsourcepath,
+							categoryPath: uploadsourcepath,
 							isDownload,
 						})
 						.then((scanStarted) => {

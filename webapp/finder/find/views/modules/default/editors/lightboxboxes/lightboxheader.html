@@ -15,62 +15,8 @@
   </div>
 
   <small><span class="mx-2">&middot;</span>[[Drag and drop selected files from your desktop, to order them or to link with another box]]</small>
-  
-	#set( $modulelist  = $mediaarchive.getCatalogSettingValue("useexternalsync_modulelist"))
-	
-	#set( $assetsource = $mediaarchive.getAssetManager().findAssetSource($!entity.get("uploadsourcepath")) )
-	#ifnotnull($assetsource)
-		#set($userlocaldesktoppath  = $assetsource.getConfig().get("userlocaldesktoppath"))
-	#end	
 	
 	<div class="d-flex align-items-center ml-auto">
-		<div class="d-flex align-items-center lightbox-header-btns ofl-path"
-		#if($selectedbox) 
-			data-lightbox="#text($selectedbox)"
-		#else
-			data-lightbox=""
-		#end
-		data-moduleid="$!module.id"
-		data-entityid="$!entity.getId()"
-		data-path="$category.getCategoryPath()">
-		#if ($desktop)
-			
-			#ifnotnull($userlocaldesktoppath)
-				<button class="lightbox-header-btn open-folder" 
-					data-root="${userlocaldesktoppath}">
-					<i class="bi bi-eye mr-1 ns"></i> <span>[[Open]]</span>
-				</button>
-			#end
-			
-			#ifnull($userlocaldesktoppath)
-
-					#set($perm = $module.getBoolean("enableuploading") && $module.id!="faceprofilegroup" && $module.id!="asset" && $module.id!="modulesearch")
-					#if($perm)
-						#if($permissions.canModule($module, "downloadall"))
-						<button class="lightbox-header-btn download-lightbox positive">
-							<i class="bi bi-cloud-arrow-down mr-1 ns"></i> <span>[[Download]]</span>
-						</button>
-						#end
-						
-					
-						<button class="lightbox-header-btn open-folder">
-							<i class="bi bi-eye mr-1 ns"></i> <span>[[Open]]</span>
-						</button>
-						
-						
-						#if($permissions.canModule($module, "upload_folders"))
-						<button class="lightbox-header-btn upload-lightbox">
-							<i class="bi bi-cloud-arrow-up mr-1 ns"></i> <span>[[Upload]]</span>
-						</button>
-						#end
-						<button class="lightbox-header-btn scan-changes px-2">
-							<i class="bi bi-arrow-repeat ns m-0"></i>
-						</button> 
-					#end
-				#end
-			#end
-		</div>
-		
 		#set($showpublishbtn = false)
 		#if($permissions.canModule($module, "publishinggallery"))
 				#set($showpublishbtn = true) 
