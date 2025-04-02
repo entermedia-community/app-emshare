@@ -80,8 +80,23 @@ public void init(){
 						continue;
 					}
 					
-					Data datarow = null;
+					String ref_SKU = trow.get("Ref_SKU");
 					
+					
+					
+					PubLookUp publookup = archive.getBean("pubLookUp");
+					String foundcatsourcepath =  publookup.lookUpSourcepathbyPubId(ref_SKU);
+					
+					if (foundcatsourcepath != null)
+					{
+						foundcount++;//found
+					}
+					else {
+						continue; //Skip record since is not matching standard Pub Lookup with ref_SKU
+					}
+					
+					Data datarow = null;		
+
 					String recType = trow.get("ens_RecType");
 		
 					if (recType.equals("Score") || SKU.endsWith("S"))
@@ -106,20 +121,36 @@ public void init(){
 					}
 					else 
 					{
+						/*
 						if (recType != null && !recType.equals("Parent") && !recType.equals("") )
 						{
 							getLog().info("Unknown recType: " +recType );
-							return;
+							continue;
 						}
+						*/
+						
 						setSearcher(publicationsearcher);
 						datarow = publicationsearcher.searchById(SKU);
 						if(datarow == null) {
 							datarow = publicationsearcher.createNewData();
 							datarow.setId(SKU);
 						}
+						String fullpath = "/WEB-INF/data/" + mediaArchive.getCatalogId() + "/originals/"+ foundcatsourcepath;
+						if (mediaArchive.getPageManager().getRepository().doesExist(fullpath) )
+							{
+								datarow.setValue("foundproductcat", true);
+							}
+						//mediaArchive.getCategorySearcher().loadCategoryByPath(foundcatsourcepath);
 						parentrows.add(datarow);
 					}
+										
+					datarow.setValue("uploadsourcepath", foundcatsourcepath);
 					
+					//Clean Old Stuff - Dev
+					datarow.setValue("rootcategory",  null);
+					datarow.setValue("primaryimage",  null);
+					
+
 					
 					addProperties(trow, datarow);
 		
@@ -129,7 +160,7 @@ public void init(){
 					}
 					datarow.setName(datarowname);
 					
-					String ref_SKU = trow.get("Ref_SKU");
+					
 					String groupID = trow.get("ens_GroupID");
 					if (groupID == null)
 					{
@@ -152,44 +183,7 @@ public void init(){
 						relatedrecordsrows.add(foundrelatedrecord);
 					}
 					
-					
-					
-					/*
-					for (int i = 0; i <= 10; i++) {
-						datarow.setValue("Contributor" + i.toString(), trow.get("Contributor"+ i.toString()));
-						datarow.setValue("Contributor"+ i.toString() +"_Role", trow.get("Contributor" + i.toString()+ "_Role"));
-					}
-					
-					datarow.setValue("dateadded",  trow.get("DateAdded"));
-					datarow.setValue("pubenabled",  trow.get("Enabled"));
-					
-					datarow.setValue("arrangement",  trow.get("Arrangement"));
-					datarow.setValue("genre",  trow.get("Genre"));
-					datarow.setValue("pubpages",  trow.get("Pages"));
-					datarow.setValue("territory",  trow.get("Territory"));
-					
-					datarow.setValue("coverlink",  trow.get("CoverLink"));
-					*/
-					
-					datarow.setValue("rootcategory",  null);
-					datarow.setValue("uploadsourcepath",  null);
-					datarow.setValue("primaryimage",  null);
-					datarow.setValue("foundproductcat", false);
-					
-					if (datarow.get("rootcategory") == null) {
-						PubLookUp publookup = archive.getBean("pubLookUp");
-						
-						Category foundcat =  publookup.lookUpbyPubId(ref_SKU);
-						
-						if (foundcat != null)
-						{
-							datarow.setValue("rootcategory", foundcat.getId());
-							datarow.setValue("uploadsourcepath", foundcat.getCategoryPath());
-							datarow.setValue("foundproductcat", true);
-							//getLog().info("Line:"+li+" pubitem: " + pubitem + " category: " + foundcat.getParentCategories());
-							foundcount++;//found
-						}
-					}
+
 					
 					if(scorerows.size() > 3000){
 						pubscoresearcher.saveAllData(scorerows, null);
