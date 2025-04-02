@@ -207,16 +207,9 @@ function resizeSearchCategories() {
 	if (w > 640) {
 		ctree.addClass("widesidebar");
 		cfilter.addClass("widesidebar");
-		//var wt = ctree.width();
-		//cfilter.width(w-wt-12);
-		//cfilter.height(h);
-		//ctree.height(h);
 	} else {
 		ctree.removeClass("widesidebar");
 		cfilter.removeClass("widesidebar");
-		//cfilter.width(w-12);
-		//ctree.height('250');
-		//cfilter.height(h-300);
 	}
 	//console.log(h);
 }
@@ -252,24 +245,6 @@ focusInput = function (input) {
 	return false;
 };
 
-lQuery("form").livequery(function () {
-	var modal = $(this).closest(".modal");
-	if (modal.length === 0) {
-		return;
-	}
-	var input = $(this).find("input[autofocus]:visible:first");
-	if (input.length === 0) {
-		input = $(this).find("textarea[autofocus]:visible:first");
-	}
-	var focused = focusInput(input);
-	if (!focused) {
-		var $this = $(this);
-		setTimeout(function () {
-			focusInput($this.find("input:visible:first"));
-		});
-	}
-});
-
 window.debugMode = false;
 window.onkeydown = function (event) {
 	if (event.ctrlKey) {
@@ -304,7 +279,7 @@ window.onkeydown = function (event) {
 		}
 	}
 };
-$(function () {
+$(document).ready(function () {
 	setTimeout(function () {
 		var path = new URL(window.location.href).pathname;
 		$(".auto-active-link").each(function () {
@@ -336,6 +311,140 @@ $(function () {
 			window.parent.postMessage("assetpicked:" + str, window.location.origin);
 		});
 	}
+
+	lQuery("form").livequery(function () {
+		var modal = $(this).closest(".modal");
+		if (modal.length === 0) {
+			return;
+		}
+		var input = $(this).find("input[autofocus]:visible:first");
+		if (input.length === 0) {
+			input = $(this).find("textarea[autofocus]:visible:first");
+		}
+		var focused = focusInput(input);
+		if (!focused) {
+			var $this = $(this);
+			setTimeout(function () {
+				focusInput($this.find("input:visible:first"));
+			});
+		}
+	});
+	lQuery("textarea#postcontent").livequery(function () {
+		var text = $(this).val();
+		var $text = $(text);
+		var finalText = "";
+		let counter = 0;
+		function getText(node, parents = []) {
+			var nodeName = node.nodeName;
+
+			if (nodeName == "OL") {
+				counter = 0;
+			}
+
+			if (nodeName == "LI") {
+				if (parents.length >= 1 && parents[parents.length - 1] == "OL") {
+					counter++;
+					finalText += counter + ". ";
+				} else {
+					finalText += "  •  ";
+				}
+			}
+
+			if (nodeName == "BR") {
+				finalText += "\n";
+			} else if (nodeName == "#text") {
+				var textContent = node.textContent;
+				if (parents.length > 0) {
+					var parent = parents[parents.length - 1];
+					var grandParents = parents.slice(0, parents.length - 1);
+					if (parent == "B" || parent == "STRONG" || /H\d/.test(parent)) {
+						if (grandParents.includes("I") || grandParents.includes("EM")) {
+							textContent = asciiBoldItalicText(textContent);
+						} else {
+							textContent = asciiBoldText(textContent);
+						}
+					} else if (parent == "I" || parent == "EM") {
+						if (grandParents.includes("B") || grandParents.includes("STRONG")) {
+							textContent = asciiBoldItalicText(textContent);
+						} else {
+							textContent = asciiItalicText(textContent);
+						}
+					} else if (parent == "U" || parent == "INS") {
+						if (grandParents.includes("B") || grandParents.includes("STRONG")) {
+							textContent = asciiBoldUnderlineText(textContent);
+						} else if (
+							grandParents.includes("I") ||
+							grandParents.includes("EM")
+						) {
+							textContent = asciiBoldUnderlineText(textContent);
+						} else {
+							textContent = asciiUnderlineText(textContent);
+						}
+					}
+				}
+				finalText += textContent;
+			} else {
+				var childNodes = node.childNodes;
+				for (var i = 0; i < childNodes.length; i++) {
+					getText(childNodes[i], parents.concat(node.nodeName));
+				}
+			}
+			if (nodeName == "P") {
+				finalText += "\n\n";
+			}
+			if (
+				/H\d/.test(nodeName) ||
+				nodeName == "LI" ||
+				nodeName == "UL" ||
+				nodeName == "OL"
+			) {
+				finalText += "\n";
+			}
+		}
+
+		$text.each(function () {
+			getText(this);
+		});
+
+		finalText = finalText.trim();
+		$(this).text(finalText);
+		$(this).val(finalText);
+	});
+
+	lQuery(".postiz-format").livequery("click", function () {
+		var textarea = document.querySelector("textarea#postcontent");
+		var format = $(this).data("format");
+		var selectionStart = textarea.selectionStart;
+		var selectionEnd = textarea.selectionEnd;
+		var selection = "";
+		if (selectionStart >= 0 && selectionEnd >= 1) {
+			if (selectionStart == selectionEnd) {
+				selection = prompt("Enter the text you want to insert");
+			} else {
+				selection = textarea.value.substring(selectionStart, selectionEnd);
+			}
+		}
+		if (selection.length) {
+			selection = asciiNormalText(selection);
+			if (format == "bold") {
+				selection = asciiBoldText(selection);
+			} else if (format == "italic") {
+				selection = asciiItalicText(selection);
+			} else if (format == "underline") {
+				selection = asciiUnderlineText(selection);
+			}
+		}
+		if (selectionStart != selectionEnd) {
+			textarea.value =
+				textarea.value.substring(0, selectionStart) +
+				selection +
+				textarea.value.substring(selectionEnd);
+		} else {
+			textarea.value = textarea.value + selection;
+			textarea.scroll(0, textarea.scrollHeight);
+		}
+		$(textarea).focus();
+	});
 });
 
 var asciiFormatRanges = {
@@ -440,120 +549,3 @@ function asciiItalicUnderlineText(text) {
 		return String.fromCodePoint(char.codePointAt(0) + diff, 818);
 	});
 }
-
-lQuery("textarea#postcontent").livequery(function () {
-	var text = $(this).val();
-	var $text = $(text);
-	var finalText = "";
-	let counter = 0;
-	function getText(node, parents = []) {
-		var nodeName = node.nodeName;
-
-		if (nodeName == "OL") {
-			counter = 0;
-		}
-
-		if (nodeName == "LI") {
-			if (parents.length >= 1 && parents[parents.length - 1] == "OL") {
-				counter++;
-				finalText += counter + ". ";
-			} else {
-				finalText += "  •  ";
-			}
-		}
-
-		if (nodeName == "BR") {
-			finalText += "\n";
-		} else if (nodeName == "#text") {
-			var textContent = node.textContent;
-			if (parents.length > 0) {
-				var parent = parents[parents.length - 1];
-				var grandParents = parents.slice(0, parents.length - 1);
-				if (parent == "B" || parent == "STRONG" || /H\d/.test(parent)) {
-					if (grandParents.includes("I") || grandParents.includes("EM")) {
-						textContent = asciiBoldItalicText(textContent);
-					} else {
-						textContent = asciiBoldText(textContent);
-					}
-				} else if (parent == "I" || parent == "EM") {
-					if (grandParents.includes("B") || grandParents.includes("STRONG")) {
-						textContent = asciiBoldItalicText(textContent);
-					} else {
-						textContent = asciiItalicText(textContent);
-					}
-				} else if (parent == "U" || parent == "INS") {
-					if (grandParents.includes("B") || grandParents.includes("STRONG")) {
-						textContent = asciiBoldUnderlineText(textContent);
-					} else if (
-						grandParents.includes("I") ||
-						grandParents.includes("EM")
-					) {
-						textContent = asciiBoldUnderlineText(textContent);
-					} else {
-						textContent = asciiUnderlineText(textContent);
-					}
-				}
-			}
-			finalText += textContent;
-		} else {
-			var childNodes = node.childNodes;
-			for (var i = 0; i < childNodes.length; i++) {
-				getText(childNodes[i], parents.concat(node.nodeName));
-			}
-		}
-		if (nodeName == "P") {
-			finalText += "\n\n";
-		}
-		if (
-			/H\d/.test(nodeName) ||
-			nodeName == "LI" ||
-			nodeName == "UL" ||
-			nodeName == "OL"
-		) {
-			finalText += "\n";
-		}
-	}
-
-	$text.each(function () {
-		getText(this);
-	});
-
-	finalText = finalText.trim();
-	$(this).text(finalText);
-	$(this).val(finalText);
-});
-
-lQuery(".postiz-format").livequery("click", function () {
-	var textarea = document.querySelector("textarea#postcontent");
-	var format = $(this).data("format");
-	var selectionStart = textarea.selectionStart;
-	var selectionEnd = textarea.selectionEnd;
-	var selection = "";
-	if (selectionStart >= 0 && selectionEnd >= 1) {
-		if (selectionStart == selectionEnd) {
-			selection = prompt("Enter the text you want to insert");
-		} else {
-			selection = textarea.value.substring(selectionStart, selectionEnd);
-		}
-	}
-	if (selection.length) {
-		selection = asciiNormalText(selection);
-		if (format == "bold") {
-			selection = asciiBoldText(selection);
-		} else if (format == "italic") {
-			selection = asciiItalicText(selection);
-		} else if (format == "underline") {
-			selection = asciiUnderlineText(selection);
-		}
-	}
-	if (selectionStart != selectionEnd) {
-		textarea.value =
-			textarea.value.substring(0, selectionStart) +
-			selection +
-			textarea.value.substring(selectionEnd);
-	} else {
-		textarea.value = textarea.value + selection;
-		textarea.scroll(0, textarea.scrollHeight);
-	}
-	$(textarea).focus();
-});
