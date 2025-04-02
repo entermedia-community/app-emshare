@@ -78,11 +78,17 @@
 
 				ipcRenderer.on(
 					"set-local-root",
-					(_, { rootPath: rP, downloadPath: dP }) => {
+					(_, { rootPath: rP, downloadPath: dP, url }) => {
+						console.log("object");
 						app.data("local-root", rP);
 						app.data("local-download", dP);
 					}
 				);
+				ipcRenderer.on("page-title-updated", (_, title) => {
+					if (title && title != document.title) {
+						window.trigger("setPageTitle", [title]);
+					}
+				});
 
 				ipcRenderer.on("electron-log", (_, ...log) => {
 					console.log("Desktop ▼");
@@ -677,6 +683,30 @@
 				lQuery(".desktopdirectdownload").livequery("click", function (e) {
 					e.preventDefault();
 					ipcRenderer.send("directDownload", $(this).attr("href"));
+				});
+
+				setTimeout(() => {
+					var favicon = document.querySelector("link[rel='icon']");
+					if (!favicon) {
+						favicon = document.querySelector("link[rel='shortcut icon']");
+					}
+					if (favicon) {
+						$("#desktopTitle .desktop-icon").css(
+							"background-image",
+							"url('" + favicon.href + "')"
+						);
+					}
+
+					window.addEventListener("offline", () => {
+						$("#desktopTitle").addClass("error");
+						$("#desktopTitle .desktop-error").text("Network connection lost");
+						console.log("The network connection has been lost.");
+					});
+
+					window.addEventListener("online", () => {
+						$("#desktopTitle").removeClass("error");
+						console.log("The network connection has been restored.");
+					});
 				});
 			})
 			.catch((err) => {

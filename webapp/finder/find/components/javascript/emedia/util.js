@@ -1,4 +1,4 @@
-var app, siteroot, apphome, themeprefix;
+var app, siteroot, apphome;
 
 function getRandomColor() {
 	var letters = "0123456789ABCDEF".split("");
@@ -160,126 +160,131 @@ getSessionValue = function (key) {
 
 	return returnval;
 };
-
-function setMaxHeight(elm, child, offset = 32) {
-	if (!elm || !elm.length) {
-		return;
+var desktopOffset = 0;
+$(document).ready(function () {
+	app = $("#application");
+	if (app.data("desktop")) {
+		desktopOffset = 32;
 	}
-	var target = elm;
-	if (child) {
-		target = elm.find(child);
-		if (!target || !target.length) {
+	function setMaxHeight(elm, child, offset = 32) {
+		if (!elm || !elm.length) {
 			return;
 		}
+		var target = elm;
+		if (child) {
+			target = elm.find(child);
+			if (!target || !target.length) {
+				return;
+			}
+		}
+		var top = $(window).height() - elm.offset().top - offset - desktopOffset;
+		top = Math.max(top, 400);
+		target.css("height", top + "px");
 	}
-	var top = $(window).height() - elm.offset().top - offset;
-	top = Math.max(top, 400);
-	target.css("height", top + "px");
-}
 
-function resizeColumns() {
-	var windowh = $(window).height();
+	function resizeColumns() {
+		var windowh = $(window).height() - desktopOffset;
 
-	//togglers always screen height
-	var coltogglers = $(".col-sidebar-togglers");
-	coltogglers.css("height", windowh - 1);
-	var colsidebar = $(".col-mainsidebar");
-	colsidebar.css("height", windowh);
+		//togglers always screen height
+		var coltogglers = $(".col-sidebar-togglers");
+		coltogglers.css("height", windowh - 1);
+		var colsidebar = $(".col-mainsidebar");
+		colsidebar.css("height", windowh);
 
-	//reset some heights
-	$(".settingslayout").css("height", "auto");
-	$(".col-content-main").css("height", "auto"); //reset
+		//reset some heights
+		$(".settingslayout").css("height", "auto");
+		$(".col-content-main").css("height", "auto"); //reset
 
-	$(".adjustHeight").each(function () {
-		setMaxHeight($(this));
+		$(".adjustHeight").each(function () {
+			setMaxHeight($(this));
+		});
+	}
+
+	function resizeSearchCategories() {
+		var container = $("#sidecategoryresults");
+		if (!container) {
+			return;
+		}
+		var w = container.width();
+
+		var ctree = container.find(".searchcategories-tree");
+		var cfilter = container.find(".searchcategories-filter");
+		if (w > 640) {
+			ctree.addClass("widesidebar");
+			cfilter.addClass("widesidebar");
+		} else {
+			ctree.removeClass("widesidebar");
+			cfilter.removeClass("widesidebar");
+		}
+		//console.log(h);
+	}
+
+	function adjustDataManagerTable() {
+		if ($(".datamanagertable").length) {
+			var height = $(window).height() - desktopOffset;
+			$(".datamanagertable").height(height - 352);
+		}
+	}
+
+	var resizeTimer = null; //Prevent back to back resize events, only run the last trigger
+	jQuery(window).on("resize", function () {
+		resizeTimer && clearTimeout(resizeTimer);
+		resizeTimer = setTimeout(function () {
+			adjustDataManagerTable();
+			resizeSearchCategories();
+			resizeColumns();
+		}, 50);
 	});
-}
 
-function resizeSearchCategories() {
-	var container = $("#sidecategoryresults");
-	if (!container) {
-		return;
-	}
-	var w = container.width();
-
-	var ctree = container.find(".searchcategories-tree");
-	var cfilter = container.find(".searchcategories-filter");
-	if (w > 640) {
-		ctree.addClass("widesidebar");
-		cfilter.addClass("widesidebar");
-	} else {
-		ctree.removeClass("widesidebar");
-		cfilter.removeClass("widesidebar");
-	}
-	//console.log(h);
-}
-
-function adjustDataManagerTable() {
-	if ($(".datamanagertable").length) {
-		var height = $(window).height();
-		$(".datamanagertable").height(height - 352);
-	}
-}
-
-var resizeTimer = null; //Prevent back to back resize events, only run the last trigger
-jQuery(window).on("resize", function () {
-	resizeTimer && clearTimeout(resizeTimer);
-	resizeTimer = setTimeout(function () {
-		adjustDataManagerTable();
-		resizeSearchCategories();
-		resizeColumns();
-	}, 50);
-});
-
-focusInput = function (input) {
-	//console.log(input);
-	if (input.length > 0) {
-		input.focus();
-		var inputVal = input.val();
-		if (inputVal) {
-			input.val("");
-			input.val(inputVal);
-		}
-		return true;
-	}
-	return false;
-};
-
-window.debugMode = false;
-window.onkeydown = function (event) {
-	if (event.ctrlKey) {
-		var href = document.querySelector("a#oeselector").href;
-		if (event.key == "r") {
-			event.preventDefault();
-			href = href.replace(
-				"components/toolbar/plugintoolbar",
-				"views/filemanager/clearpagemanager"
-			);
-			window.location.href = href;
-		} else if (event.key == "d") {
-			event.preventDefault();
-			if (!debugMode) {
-				debugMode = !document.querySelector(".openeditdebug");
-			} else {
-				debugMode = false;
+	focusInput = function (input) {
+		//console.log(input);
+		if (input.length > 0) {
+			input.focus();
+			var inputVal = input.val();
+			if (inputVal) {
+				input.val("");
+				input.val(inputVal);
 			}
-			var mode = debugMode ? "debug" : "preview";
-			href = href.replace(
-				"components/toolbar/plugintoolbar",
-				`views/workflow/mode/view${mode}`
-			);
-			jQuery.get(href);
-			customToast("Switched to&nbsp;<b>" + mode + "</b>&nbsp;mode!", {
-				positive: !debugMode,
-				icon: debugMode ? "bug-fill" : "eye-fill",
-			});
-			if (mode == "preview") {
-				window.location.reload();
+			return true;
+		}
+		return false;
+	};
+
+	window.debugMode = false;
+	window.onkeydown = function (event) {
+		if (event.ctrlKey) {
+			var href = document.querySelector("a#oeselector").href;
+			if (event.key == "r") {
+				event.preventDefault();
+				href = href.replace(
+					"components/toolbar/plugintoolbar",
+					"views/filemanager/clearpagemanager"
+				);
+				window.location.href = href;
+			} else if (event.key == "d") {
+				event.preventDefault();
+				if (!debugMode) {
+					debugMode = !document.querySelector(".openeditdebug");
+				} else {
+					debugMode = false;
+				}
+				var mode = debugMode ? "debug" : "preview";
+				href = href.replace(
+					"components/toolbar/plugintoolbar",
+					`views/workflow/mode/view${mode}`
+				);
+				jQuery.get(href);
+				customToast("Switched to&nbsp;<b>" + mode + "</b>&nbsp;mode!", {
+					positive: !debugMode,
+					icon: debugMode ? "bug-fill" : "eye-fill",
+				});
+				if (mode == "preview") {
+					window.location.reload();
+				}
 			}
 		}
-	}
-};
-$(document).ready(function () {
+	};
+
 	setTimeout(function () {
 		var path = new URL(window.location.href).pathname;
 		$(".auto-active-link").each(function () {

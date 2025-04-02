@@ -49,9 +49,17 @@
 	$pages.include("/${applicationid}/theme/layouts/includes.html", $context)
 	
 </head>
-<body id="embody" showadmintoolbar="$!canshowadmintoolbar" #if($content.isPropertyTrue("hidemediaviewer")) data-hidemediaviewer="true" #end> 
+<body id="embody" #if($desktop) class="desktop" #end showadmintoolbar="$!canshowadmintoolbar" #if($content.isPropertyTrue("hidemediaviewer")) data-hidemediaviewer="true" #end> 
 
-
+	#if($desktop)
+		<div id="desktopTitle" style="user-select:none;app-region:drag">
+			<div class="desktop-icon"></div>
+			<div class="desktop-title" style="user-select:none;app-region:drag">
+				$!mediaarchive.getCatalogSettingValue("sitetitle")
+			</div>
+			<div class="desktop-error"></div>
+		</div>
+	#end
 	$pages.streamContent()
 	<div class="toastList"></div>
 </body>
