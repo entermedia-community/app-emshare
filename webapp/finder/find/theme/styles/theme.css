@@ -72,20 +72,69 @@ body.desktop {
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	justify-content: flex-start;
 	background-color: #444;
 	position: fixed;
 	top: 0;
 	left: 0;
-	z-index: 99999;
+	z-index: 99998;
 	overflow: hidden;
-	background: url(data:image/webp;base64,UklGRlwBAABXRUJQVlA4IFABAAAQBwCdASpLACAAPp1Mn0umIyMiJngKALATiWlV0hzyrx2Z+M3lE6QQrju1AjQL+m0zWi8O+R609w8fu/kYAyLmAAD+9MFEYei9QbELj6oaZRRdDU7IjcRspeO1jRCdEbNCK8Wi8WLSwTkBNXQYogdhc54Y0W2AzyuEXeiFxQ4RkDCVLt7ww1xTnQeHu+cn6WYHSVJogJHROUre+TRZwgtnW2PNutWi/z/MVntHFNy5fzNwRoYaeV5HzQkGngSUiyFRkdUM9j0LzvwLp93aS6abYMq2suPaCNI2GY81dNr16sBm0m3U18OJWqorW6p/tHxGIHwAlVPVkkKG/UCBlErIj/OZ/wO13aS8l52Zu01yTMy+ZmLCTeldjpa8GlVa61qxbb0DLcoaO3HtJLN51Fi7N1uKrSrGpGKt1n3D2caPY66Sj2uIp3cHeZubTtAVAAA=)
-		repeat-x;
+	background: #151515;
+}
+#desktopTitle .menubar {
+	width: 142px;
+	height: 32px;
+	position: fixed;
+	top: 0;
+	left: 8px;
+	z-index: 99999;
+}
+#desktopTitle.darwin .menubar {
+	margin-left: 68px;
+}
+#desktopTitle .menubar button {
+	background: transparent;
+	border: none;
+	cursor: pointer;
+	color: #ffff;
+	font-size: 0.8rem;
+	margin-left: 8px;
+	display: none;
+}
+#desktopTitle .titlebar {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: calc(100% - 118px);
+	margin-left: 46px;
+}
+#desktopTitle.win32 .titlebar,
+#desktopTitle.linux .titlebar {
+	width: calc(100% - 288px);
+	margin-left: 142px;
+}
+#desktopTitle .trafficlight {
+	width: 8px;
+	height: 32px;
+}
+#desktopTitle.darwin .trafficlight {
+	display: block;
+	width: 72px;
+}
+#desktopTitle .menubar button:hover {
+	opacity: 0.75;
+}
+#desktopTitle.darwin .menubar button.home {
+	display: block;
+}
+#desktopTitle.win32 .menubar button,
+#desktopTitle.linux .menubar button {
+	display: block;
 }
 #desktopTitle .desktop-icon {
 	width: 20px;
 	height: 20px;
-	margin-left: 100px;
-	margin-right: 8px;
+	margin: 0 8px;
 	background-size: contain;
 	background-position: center;
 	background-repeat: no-repeat;
@@ -94,7 +143,7 @@ body.desktop {
 #desktopTitle .desktop-error {
 	max-width: calc(100% - 300px);
 	height: 32px;
-	padding-right: 28px;
+	margin-right: 8px;
 	line-height: 32px;
 	color: #fff;
 	font-size: 0.8rem;
@@ -103,6 +152,7 @@ body.desktop {
 	text-overflow: ellipsis;
 	white-space: nowrap;
 	text-align: center;
+	user-select: none;
 }
 #desktopTitle .desktop-error {
 	display: none;
@@ -149,6 +199,10 @@ body.desktop #application {
 	background-color: white;
 }
 body.desktop .modal {
+	top: 32px !important;
+	height: var(--vertical-height) !important;
+}
+body.desktop .modal-backdrop {
 	top: 32px !important;
 	height: var(--vertical-height) !important;
 }
@@ -1262,8 +1316,8 @@ a.categorypathlink:hover,
 	display: flex;
 	align-items: center;
 	justify-content: flex-end;
-	background-color: #ffffff;
-	height: 30px;
+	background-color: var(--themed-footer);
+	height: 32px;
 	width: 100%;
 	margin: 0;
 	padding: 0;
@@ -1284,7 +1338,6 @@ body.desktop #footer {
 	margin: 0;
 	text-align: right;
 	line-height: 1;
-	background: var(--themed-footer);
 	color: var(--themed-footer-text);
 }
 .footer-p a {

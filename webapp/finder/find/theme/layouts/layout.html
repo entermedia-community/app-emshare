@@ -41,24 +41,18 @@
 	 
 	<meta name="MSSmartTagsPreventParsing" content="TRUE" />  
 	<meta name="robots" content="noindex">
-	<link rel="Shortcut Icon" type="image/x-icon" href="$siteroot$apphome/theme/images/favicon.png" />
+	<link rel="Shortcut Icon" type="image/x-icon" href="$apphome/theme/images/favicon.png" />
 	  
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 	
-	<link rel="stylesheet" href="$siteroot$apphome/theme/icons/bootstrap-icons.min.css">
+	<link rel="stylesheet" href="$apphome/theme/icons/bootstrap-icons.min.css">
 	$pages.include("/${applicationid}/theme/layouts/includes.html", $context)
 	
 </head>
 <body id="embody" #if($desktop) class="desktop" #end showadmintoolbar="$!canshowadmintoolbar" #if($content.isPropertyTrue("hidemediaviewer")) data-hidemediaviewer="true" #end> 
 
 	#if($desktop)
-		<div id="desktopTitle" style="user-select:none;app-region:drag">
-			<div class="desktop-icon"></div>
-			<div class="desktop-title" style="user-select:none;app-region:drag">
-				$!mediaarchive.getCatalogSettingValue("sitetitle")
-			</div>
-			<div class="desktop-error"></div>
-		</div>
+		$pages.include("/${applicationid}/theme/layouts/desktoptitlebar.html", $context)
 	#end
 	$pages.streamContent()
 	<div class="toastList"></div>

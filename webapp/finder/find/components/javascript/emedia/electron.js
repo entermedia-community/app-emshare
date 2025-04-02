@@ -70,7 +70,8 @@
 					"/" +
 					mediadb,
 			})
-			.then(({ computerName, rootPath, downloadPath }) => {
+			.then(({ computerName, rootPath, downloadPath, platform }) => {
+				$("#desktopTitle").addClass(platform);
 				$("#desktopLoading").remove();
 				app.data("local-root", rootPath);
 				app.data("local-download", downloadPath);
@@ -707,6 +708,12 @@
 						$("#desktopTitle").removeClass("error");
 						console.log("The network connection has been restored.");
 					});
+				});
+				lQuery("#desktopTitle button").livequery("click", function (e) {
+					e.preventDefault();
+					var type = $(this).attr("class");
+					console.log(type);
+					ipcRenderer.send("menu-action", type);
 				});
 			})
 			.catch((err) => {
