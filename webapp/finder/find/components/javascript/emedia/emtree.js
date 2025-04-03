@@ -43,7 +43,8 @@ $(function () {
 		);
 	}
 
-	lQuery(".emtree-widget ul li div .cat-name").livequery("click",
+	lQuery(".emtree-widget ul li div .cat-name").livequery(
+		"click",
 		function (event) {
 			event.stopPropagation();
 			if (
@@ -80,10 +81,9 @@ $(function () {
 			event.tree = tree;
 			event.nodeid = nodeid;
 			$(document).trigger(event);
-			
+
 			var $contextMenu = $(".treecontext");
-			if($contextMenu.length>0)
-			{
+			if ($contextMenu.length > 0) {
 				$contextMenu.hide();
 			}
 		}
@@ -92,7 +92,7 @@ $(function () {
 	lQuery(".scrolltocat").livequery(function () {
 		var tree = $(this).closest(".categorytreescrolllable");
 		var scrollTo = $(this);
-
+		if (tree.length == 0 || scrollTo.length == 0) return;
 		var position =
 			scrollTo.offset().top - tree.offset().top + tree.scrollTop() - 100;
 		//console.log(position);
@@ -357,7 +357,9 @@ $(function () {
 				var maxlevel = 1;
 				gotopage(tree, node, maxlevel, url, options);
 			} else {
-				var url = tree.data("home") + "/views/modules/asset/editors/assetupload/index.html";
+				var url =
+					tree.data("home") +
+					"/views/modules/asset/editors/assetupload/index.html";
 				var maxlevel = 1;
 				//options["oemaxlevel"] = $(this).data("oemaxlevel");
 				options["oemaxlevel"] = tree.data("uploadmaxlevel");
@@ -596,8 +598,7 @@ $(function () {
 
 	lQuery("body").livequery("click", function () {
 		var $contextMenu = $(".treecontext");
-		if($contextMenu.length>0)
-		{
+		if ($contextMenu.length > 0) {
 			$contextMenu.hide();
 			$(".categorydroparea").removeClass("selected");
 		}
