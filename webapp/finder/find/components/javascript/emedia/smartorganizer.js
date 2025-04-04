@@ -586,12 +586,14 @@ $(document).ready(function () {
 
 		function localizeJSON(json) {
 			json = json.replaceAll("${apphome}", apphome);
+			json = json.replaceAll("//", '"/');
 			return json;
 		}
 
 		function globalizeJSON(json) {
 			json = json.replaceAll(apphome, "${apphome}");
 			json = json.replace(/([^"]*?)\$\{apphome\}/, "/${apphome}");
+			json = json.replaceAll("//", '"/');
 			return json;
 		}
 
