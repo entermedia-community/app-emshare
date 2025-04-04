@@ -21,6 +21,7 @@ public void init(){
 
 	MediaArchive archive = req.getPageValue("mediaarchive");
 	Searcher publicationsearcher = archive.getSearcher("publication");
+	Searcher digitalpublicationsearcher = archive.getSearcher("publicationdigital");
 	Searcher pubpartsearcher = archive.getSearcher("publicationpart");
 	Searcher pubscoresearcher = archive.getSearcher("publicationscore");
 	Searcher relatedsearcher = archive.getSearcher("publicationrelated");
@@ -29,6 +30,7 @@ public void init(){
 	List scorerows = new ArrayList();
 	List partrows = new ArrayList();
 	List parentrows = new ArrayList();
+	List digitalrows = new ArrayList();	
 	List relatedrecordsrows = new ArrayList();
 	//String csvpath = "/${catalogid}/imports/ALF2.txt";
 	
@@ -82,10 +84,14 @@ public void init(){
 					
 					String ref_SKU = trow.get("Ref_SKU");
 					
-					
+					if (ref_SKU == null)
+					{
+						log.info(SKU + " skipped");
+						continue;
+					}
 					
 					PubLookUp publookup = archive.getBean("pubLookUp");
-					String foundcatsourcepath =  publookup.lookUpSourcepathbyPubId(ref_SKU);
+					String foundcatsourcepath =  publookup.lookUpSourcepathbyPubId(ref_SKU, SKU);
 					
 					if (foundcatsourcepath != null)
 					{
@@ -121,27 +127,43 @@ public void init(){
 					}
 					else 
 					{
-						/*
-						if (recType != null && !recType.equals("Parent") && !recType.equals("") )
-						{
-							getLog().info("Unknown recType: " +recType );
-							continue;
-						}
-						*/
+								/*
+								if (recType != null && !recType.equals("Parent") && !recType.equals("") )
+								{
+									getLog().info("Unknown recType: " +recType );
+									continue;
+								}
+								*/
 						
-						setSearcher(publicationsearcher);
-						datarow = publicationsearcher.searchById(SKU);
-						if(datarow == null) {
-							datarow = publicationsearcher.createNewData();
-							datarow.setId(SKU);
-						}
-						String fullpath = "/WEB-INF/data/" + mediaArchive.getCatalogId() + "/originals/"+ foundcatsourcepath;
-						if (mediaArchive.getPageManager().getRepository().doesExist(fullpath) )
-							{
-								datarow.setValue("foundproductcat", true);
+						//ref_SKY is all alphanumeric
+						if(ref_SKU != null && !ref_SKU.matches(".*\\d.*")) {
+							setSearcher(digitalpublicationsearcher);
+							datarow = getSearcher().searchById(SKU);
+							if(datarow == null) {
+								datarow = getSearcher().createNewData();
+								datarow.setId(SKU);
 							}
-						//mediaArchive.getCategorySearcher().loadCategoryByPath(foundcatsourcepath);
-						parentrows.add(datarow);
+							digitalrows.add(datarow);
+						}
+						else 
+						{
+							//publications
+							setSearcher(publicationsearcher);
+							datarow = getSearcher().searchById(SKU);
+							if(datarow == null) {
+								datarow = getSearcher().createNewData();
+								datarow.setId(SKU);
+							}
+							String fullpath = "/WEB-INF/data/" + mediaArchive.getCatalogId() + "/originals/"+ foundcatsourcepath;
+							if (mediaArchive.getPageManager().getRepository().doesExist(fullpath) )
+								{
+									datarow.setValue("foundproductcat", true);
+								}
+							parentrows.add(datarow);
+						}
+					
+						
+					
 					}
 										
 					datarow.setValue("uploadsourcepath", foundcatsourcepath);
@@ -160,47 +182,60 @@ public void init(){
 					}
 					datarow.setName(datarowname);
 					
-					
+					//ens_GroupID is for ensable Publications
 					String groupID = trow.get("ens_GroupID");
-					if (groupID == null)
-					{
-						groupID = ref_SKU;
-					}
-					if (groupID == null)
-					{
-						groupID = SKU;
-					}
-					datarow.setValue("ens_groupid", groupID);
-					
-					
-					String moduleid = getSearcher().getSearchType();
-					Data foundrelatedrecord = relatedsearcher.query().exact("ens_groupid", groupID).exact(moduleid, datarow.getId()).searchOne();
-					if (foundrelatedrecord == null)
-					{
-						foundrelatedrecord = relatedsearcher.createNewData();
-						foundrelatedrecord.setValue("ens_groupid", groupID);
-						foundrelatedrecord.setValue(moduleid, datarow.getId());
-						relatedrecordsrows.add(foundrelatedrecord);
+					if (groupID == null && getSearcher() == publicationsearcher) {
+						if (groupID == null)
+						 {
+							 groupID = ref_SKU;
+						 }
+						 if (groupID == null)
+						 {
+							 groupID = SKU;
+						 }
+							 
 					}
 					
+					if (groupID != null)
+					{
+						
+						datarow.setValue("ens_groupid", groupID);
+						
+						
+						String moduleid = getSearcher().getSearchType();
+						Data foundrelatedrecord = relatedsearcher.query().exact("ens_groupid", groupID).exact(moduleid, datarow.getId()).searchOne();
+						if (foundrelatedrecord == null)
+						{
+							foundrelatedrecord = relatedsearcher.createNewData();
+							foundrelatedrecord.setValue("ens_groupid", groupID);
+							foundrelatedrecord.setValue(moduleid, datarow.getId());
+							relatedrecordsrows.add(foundrelatedrecord);
+						}
+					}
 
 					
-					if(scorerows.size() > 3000){
+					if(scorerows.size() > 1000){
 						pubscoresearcher.saveAllData(scorerows, null);
 						getLog().info("Saving "+scorerows.size()+" Score Publications. ");
 						scorerows.clear();
 					}
-					if(partrows.size() > 3000){
+					if(partrows.size() > 1000){
 						pubpartsearcher.saveAllData(partrows, null);
 						getLog().info("Saving "+partrows.size()+" Part Publications. ");
 						partrows.clear();
 					}
-					if(parentrows.size() > 3000){
+					if(parentrows.size() > 1000){
 						publicationsearcher.saveAllData(parentrows, null);
 						getLog().info("Saving "+parentrows.size()+" Parent Publications. ");
 						parentrows.clear();
 					}
-					if (relatedrecordsrows.size() > 3000) {
+					if(digitalrows.size() > 1000){
+						digitalpublicationsearcher.saveAllData(digitalrows, null);
+						getLog().info("Saving "+digitalrows.size()+" Digital Publications. ");
+						digitalrows.clear();
+						
+					}
+					if (relatedrecordsrows.size() > 1000) {
 						relatedsearcher.saveAllData(relatedrecordsrows, null);
 						getLog().info("Saving "+relatedrecordsrows.size()+" Related Groups. ");
 						relatedrecordsrows.clear();
@@ -223,6 +258,11 @@ public void init(){
 					if(parentrows.size() > 0){
 						publicationsearcher.saveAllData(parentrows, null);
 						getLog().info("Saving "+parentrows.size()+" Parent Publications. ")
+						
+					}
+					if(digitalrows.size() > 0){
+						digitalpublicationsearcher.saveAllData(digitalrows, null);
+						getLog().info("Saving "+digitalrows.size()+" Digital Publications. ")
 						
 					}
 					if (relatedrecordsrows.size() > 0) {
