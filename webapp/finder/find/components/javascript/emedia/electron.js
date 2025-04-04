@@ -58,7 +58,7 @@
 		function getMediadb() {
 			return siteroot + "/" + mediadb;
 		}
-
+		const desktopTitle = $("#desktopTitle");
 		ipcRenderer
 			.invoke("connection-established", {
 				headers: headers,
@@ -71,16 +71,21 @@
 					mediadb,
 			})
 			.then(({ computerName, rootPath, downloadPath, platform }) => {
-				$("#desktopTitle").addClass(platform);
+				if (desktopTitle.length === 0) {
+					$("body").prepend(
+						'<div id="desktopTitle"><div class="desktop-icon"></div><button class="desktop-close"><i class="fa fa-times"></i></button></div>'
+					);
+					desktopTitle = $("#desktopTitle");
+				}
+				desktopTitle.addClass(platform);
 				$("#desktopLoading").remove();
 				app.data("local-root", rootPath);
 				app.data("local-download", downloadPath);
 				app.data("computer-name", computerName);
 
 				ipcRenderer.on(
-					"set-local-root",
-					(_, { rootPath: rP, downloadPath: dP, url }) => {
-						console.log("object");
+					"siteLoaded",
+					(_, { rootPath: rP, downloadPath: dP }) => {
 						app.data("local-root", rP);
 						app.data("local-download", dP);
 					}
@@ -676,13 +681,13 @@
 				// }
 
 				window.addEventListener("offline", () => {
-					$("#desktopTitle").addClass("error");
-					$("#desktopTitle .desktop-error").text("Network connection lost");
+					desktopTitle.addClass("error");
+					desktopTitle.find(".desktop-error").text("Network connection lost");
 					console.log("The network connection has been lost.");
 				});
 
 				window.addEventListener("online", () => {
-					$("#desktopTitle").removeClass("error");
+					desktopTitle.removeClass("error");
 					console.log("The network connection has been restored.");
 				});
 
