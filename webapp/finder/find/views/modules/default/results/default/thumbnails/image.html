@@ -9,34 +9,31 @@
 #set ($thumbsize = $context.getPageValue("thumbsize"))
 $context.putPageValue("thumbsize", $thumbsize)
 
-#set( $imagesize = "image200x200.jpg")
+#set( $imagesize = "image200x200")
 
 #if($thumbsize == "largepreview")
 	#if( $type == "video" )
-		#set($imagesize = "image640x480.jpg")
+		#set($imagesize = "image640x480")
 	#else
-		#set($imagesize = "image3000x3000.jpg")
+		#set($imagesize = "image3000x3000")
 	#end
 #elseif($thumbsize == "mediumplus")
 	#if( $type == "video" )
-		#set($imagesize = "image640x480.jpg")
+		#set($imagesize = "image640x480")
 	#else
-		#set($imagesize = "image550x350.jpg")
+		#set($imagesize = "image550x350")
 	#end
 #elseif($thumbsize == "postsize")
-	#set($imagesize = "image730x480cropped.jpg")
+	#set($imagesize = "image730x480cropped")
 #elseif($thumbsize == "small")
-	#set($imagesize = "image200x200.jpg")
+	#set($imagesize = "image200x200")
 #elseif($thumbsize == "crop")
-	#set($imagesize = "image110x62cropped.jpg")
+	#set($imagesize = "image110x62cropped")
 #end		
 
 #ifnull($hit)
 	#set($hit = $asset)
 #end
-
-##TODO: Remove this and Pass in thumbsize and look in a DB table and cache it
-#set($imagesize = $mediaarchive.exportOutputName($hit, $imagesize))
 
 #set($searchhome = "${apphome}/views/modules/asset/results/default")
 
