@@ -28,14 +28,16 @@
 			#set ($thumbsize = $context.getPageValue("thumbsize"))
 			#set($tabletarget = $mediaarchive.getCatalogSettingValue("tablethumbnail"))
 			#if($tabletarget)
-				#set( $imagepath = $mediaarchive.asLinkToPreview($hit, $librarycol.id,$tabletarget))  
+				#set( $imagepath = $mediaarchive.asLinkToGenerated($hit, $tabletarget))  
 			#else
 				#if($thumbsize == "carousel")
 					#set($imagesize = "image200x200")
 				#else
 					#set($imagesize = "image110x62cropped")
 				#end
-				#set( $imagepath = $mediaarchive.asLinkToPreview($hit,$librarycol.id,$imagesize, true))  
+				
+				#set( $imagepath = $mediaarchive.asLinkToGenerated($hit, $imagesize))
+				 
 			#end
 			
 			$context.putPageValue("imagepath", $imagepath)
