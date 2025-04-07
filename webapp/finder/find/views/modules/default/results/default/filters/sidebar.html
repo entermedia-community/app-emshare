@@ -32,9 +32,6 @@ $context.putPageValue("viewid",$viewid)
 				#set( $categorypath = $category.getCategoryPath() )
 				#ifnotnull($categorypath)
 					#set( $assetsource = $mediaarchive.getAssetManager().findAssetSource($!entity.get("uploadsourcepath")) )
-					#ifnotnull($assetsource)
-						#set($userlocaldesktoppath  = $assetsource.getConfig().get("userlocaldesktoppath"))
-					#end
 					<div class="p-2 bg-light">
 						<span class="d-inline-block text-brand pb-1 w-100 showing">
 							#set($categorybradcrumb = $categorypath.replace("/", " &rsaquo; "))
@@ -46,9 +43,18 @@ $context.putPageValue("viewid",$viewid)
 							data-entityid="$!entity.getId()"
 							data-path="$categorypath">
 
+							#ifnotnull($assetsource)
+								#set($userlocaldesktoppath  = $assetsource.getConfig().get("userlocaldesktoppath"))
+								#ifnotnull($userlocaldesktoppath)
+									#set($removecategorysubfolder  = $assetsource.getConfig().get("subfolder"))
+								#end
+							#end
+
 							#ifnotnull($userlocaldesktoppath)
 								<button class="lightbox-header-btn open-folder" 
-									data-root="${userlocaldesktoppath}">
+									data-root="${userlocaldesktoppath}"
+									data-removecategorysubfolder="$!removecategorysubfolder"
+									>
 									<i class="bi bi-eye-fill mr-1 ns"></i> <span>[[Open]]</span>
 								</button>
 							#end
