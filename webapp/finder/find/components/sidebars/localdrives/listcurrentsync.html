@@ -83,14 +83,15 @@
               <div></div>
             </button>
             <div class="m-1">
-              #if($syncfolder.entityid)
-                #set($previewurl = "$!{siteroot}$apphome/views/modules/$!{syncfolder.module}/editors/default/tabs/index.html?entityid=$!{syncfolder.entityid}")
-                <a href="$!{previewurl}" class="mb-1 d-block p-2 text-primary emdialog entity-dialog" title="[[Show the record]]">
+              #if($syncfolder.module == "category")
+                #set($category = $mediaarchive.getCachedData("category", $syncfolder.entityid))
+                #set($previewurl = "$!{siteroot}$apphome/views/modules/asset/editors/viewfilescategory/$!{syncfolder.entityid}/#dash($!category).html")
+                <a href="$!{previewurl}" class="mb-1 d-block p-2 text-warning entity-dialog" title="[[Show the record]]">
                   <i class="bi bi-folder-fill ns"></i>
                 </a>
               #else
-              #set($previewurl = "http://localhost:8080/finder/find/views/modules/asset/editors/viewfilescategory/AZXda1peafE7nu45zFIL/Gemini.html")
-                <a href="$!{previewurl}" class="mb-1 d-block p-2 text-warning emdialog entity-dialog" title="[[Show the record]]">
+                #set($previewurl = "$!{siteroot}$apphome/views/modules/$!{syncfolder.module}/editors/default/tabs/index.html?entityid=$!{syncfolder.entityid}")
+                <a href="$!{previewurl}" class="mb-1 d-block p-2 text-primary emdialog entity-dialog" title="[[Show the record]]">
                   <i class="bi bi-folder-fill ns"></i>
                 </a>
               #end
