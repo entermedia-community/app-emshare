@@ -15,17 +15,22 @@
 	   		data-dialogid="catpicker" 
 	    	data-hidefooter="true" 
 			data-parameterdata="categoryvalues"><i class="bi bi-plus-lg mr-1"></i> [[Add Category]]</a>
-	*#   
+*#   
+		#if($entity.get("ref_sku"))
+			#set($searchby = $entity.get("ref_sku"))
+		#else
+			#set($searchby = $entityid)
+		#end
 	
-	   <input type="text" name="id" class="form-control form-control-sm" value="$!{entityid}" />
+	   <input type="text" name="id" class="form-control form-control-sm" value="$!{searchby}" />
 	   
 	   <input type="hidden" name="excludepath" value="$entity.get("uploadsourcepath")" />
 	    
 	   <a  	class="btn btn-brand submitform"
-			title="ID: ($entityid)"
+			title="Search by: (${searchby})"
 			href="#" 
 			 >
-			<i class="far fa-arrow-alt-circle-down"></i> [[Search By Id]] </a> 
+			<i class="far fa-arrow-alt-circle-down"></i> [[Search]] </a> 
 	</form>
 	
 	
@@ -48,7 +53,7 @@
 		</div>
 		
 		<div id="autopopulate">
-			$pages.include("$apphome/components/createmedia/copycategory/autopopulate.html?id=$!{entityid}", $context)
+			$pages.include("$apphome/components/createmedia/copycategory/autopopulate.html?search=$!{searchby}", $context)
 		</div>
 		
 		<div class="mt-3">

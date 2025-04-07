@@ -12,15 +12,15 @@ public void init(){
 
 	MediaArchive archive = context.getPageValue("mediaarchive");
 	
-	String id = context.getRequestParameter("id");
+	String search = context.getRequestParameter("search");
 	
-	if(id == null) {
+	if(search == null) {
 		return;
 	}
 	
 	Searcher catsearcher = archive.getSearcher("category");
 	ArrayList rootcats = new ArrayList(); 
-	String name = id;
+	String name = search;
 
 	String [] splits = name.split("-");
 	String searchstring = splits[splits.length -1];
