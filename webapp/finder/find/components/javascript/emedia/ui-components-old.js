@@ -470,6 +470,15 @@ function initializeUI() {
 			$("#" + divid).load(url2);
 		});
 	});
+	
+	
+	
+	lQuery(".redirecttopage").livequery(function () {
+		var url = $(this).data("redirectok");
+		window.location.href = url;
+	});
+	
+	
 
 	lQuery("form.autosubmit").livequery(function () {
 		var form = $(this);
