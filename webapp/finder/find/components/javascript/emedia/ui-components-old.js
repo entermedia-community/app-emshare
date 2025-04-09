@@ -169,11 +169,18 @@ function initializeUI() {
 			allowClear = true;
 		}
 		var placeholder = getSelect2Placeholder.call(this);
+		
+		var dropdownCssClass = "";
+		if (theinput.data("dropdowncssclass") != null){
+			dropdownCssClass =theinput.data("dropdowncssclass"); 
+		}
+		
 		if ($.fn.select2) {
 			theinput.select2({
 				allowClear: allowClear,
 				placeholder: placeholder,
 				dropdownParent: dropdownParent,
+				dropdownCssClass: dropdownCssClass
 			});
 		}
 
