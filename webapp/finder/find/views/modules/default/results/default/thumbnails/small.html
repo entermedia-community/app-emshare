@@ -9,14 +9,17 @@
 		#set($title = $asset.getText("name",$context) )
 	#end
 #end
-
-<div class="small-thumb-container draggholder" > 
-	#if( ($hit.previewstatus && $hit.previewstatus == "mime") || $alwaysmime)
+#ifnull($alwaysmime)
+	#set($alwaysmime = false)
+#end
+<div class="small-thumb-container draggholder" >
+	
+	#if( $hit.previewstatus == "mime" || $alwaysmime)
 		#set ($mime = $mediaarchive.getMimeTypeIcon($hit.fileformat))
-		
 		<div class="mimethumbcontainer">
 			<i class="bi bi-$!mime mimeicon"  title="#if($title)#esc($title)#else$!{hit.name}#end" ></i>
 		</div>
+		
 	#elseif( ($hit.previewstatus != "2" && $hit.previewstatus != "exif" && $hit.previewstatus != "1" && $hit.previewstatus != "generated") && !$mediaarchive.isCatalogSettingTrue("realtimethumbs"))
     
 		$pages.include("$searchhome/convertqueue/previewstatus.html?assetid=$!{hit.id}",$context)
@@ -52,8 +55,9 @@
 					<i class="bi bi-check2-circle"></i>
 					<span>[[Pick this image]]</span>
 				</div>
+			#elseif($type =="video")
+				<div class="videoplay-button"><span class="videoplay-icon"></span></div>
 			#end
-			#if($type =="video")<div class="videoplay-button"><span class="videoplay-icon"></span></div>#end
 			<img class="smallthumb assetdragdrop" 
 				draggable="true" 
 				data-sourcepath="$hit.sourcepath" 
@@ -61,6 +65,7 @@
 				src="$imagepath" 
 				alt="#if($title)#esc($title)#else$!{hit.name}#end" 
 			/>
+			
 		#end			   
    #end
 </div>    
