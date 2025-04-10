@@ -16,7 +16,7 @@
 	#end
 #end
 
-<div id="header" class="mediacenterheader autostickywidth d-flex align-items-center justify-content-between pl-2 pr-3">
+<div id="header" class="mediacenterheader autostickywidth d-flex align-items-center justify-content-between px-2">
 	<div class="logocontainer">
 		#set ($homeurl = "$!{siteroot}$apphome/index.html")
 		#ifnotnull($category)
@@ -51,7 +51,7 @@
 		#end
 		
 		
-    #if ( $canviewappsmenu && $appsmenu.size() > 1)
+    #if (!$browser.isNarrow() && $canviewappsmenu && $appsmenu.size() > 1)
     <div class="dropdown site-switcher">
       <button class="dropdown-toggle btn py-1 px-2 rounded" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         <i class="fas fa-chevron-down text-white" style="margin-top: 2px;"></i>
@@ -75,7 +75,7 @@
 	#end
 	
 	#if($user)
-	<div class="d-flex align-items-center z-n1">
+	<div class="z-n1 nav-btn-row">
 		#set($uploadmodules = 0)
 		#foreach ( $amodule in $userprofile.getEntities() )
 			#if($amodule.getBoolean("enableuploading"))
@@ -152,7 +152,7 @@
 			</a>
 		#end
 		
-		<div class="position-relative em">
+		<div class="position-relative em account-btn">
 			<div class="dropdown">
 			<button class="dropdown-toggle dropdown-toggle-btn" type="button" data-toggle="dropdown">
 				<span class="navbar-toggler-icon">
