@@ -1,5 +1,5 @@
 
-
+#*
 <div class="form-group">
 <label>[[Client ID]]</label>
 <input type="hidden" name="field" value="accesskey" />
@@ -11,18 +11,42 @@
 <input type="hidden" name="field" value="secretkey" />
 <input class="form-control" name="secretkey.value" value="$!data.secretkey" />
 </div>
+*#
 
-<div class="form-group">
+<div class="form-group mb-4">
 <a class="btn btn-primary" href="$apphome/views/settings/google/connect.html?state=hotfolder${data.id}">
 [[Connect Google Drive]]</a>
+<div><small>*Setup Client Id & Secret in oAuth Providers table</small></div>
 </div>
 
-##<div class="form-group">
-##<label>[[External Import Path]]</label>
-##<input type="hidden" name="field" value="externalpath" />
-##<input class="form-control" name="externalpath.value" value="$!data.externalpath" />
-##<div class="note">[[Optional: Local disk drive, path, url, or Windows Share that will be mounted.]] /media/marketing_drive</div> 
-##</div>
+
+
+
+#ifnotnull($data.subfolder)
+	#set($assetSource = $mediaarchive.getAssetManager().findAssetSource($data.subfolder))
+	
+	#set($googlemanager = $assetSource.getGoogleManager())
+#end
+
+#ifnotnull($googlemanager)
+		<div class="form-group">
+	            <label>[[Sub Directory]]</label>
+	            <input type="hidden" name="field" value="syncroot" />
+				#set($namespaces = $googlemanager.listDriveRootFolders())
+		          
+	            <select class="form-control" name="syncroot.value">
+	                <option value="" >[[Select a Subfolder]]</option>
+	                
+	                #foreach($item in $namespaces)
+	                    <option value="$item.id" #if($item.id == $data.syncroot)selected#end>
+	                        $item.name 
+	                    </option>
+	                #end
+	            </select>
+	            <div class="note">[[Choose the Root Folder to use for this connection.]]</div>
+	        </div>
+		#end
+
 
 <div class="form-group">
 <label>[[Internal Category Path]]</label>
@@ -35,28 +59,11 @@
 <div class="note">[[Required: The path to the category location such as: ]] Marketing_Drive</div>
 </div>
 
- 
-##<div class="form-group">
-##<label>[[Include Filters]]</label>
-##<input type="hidden" name="field" value="includes" />
-##<textarea class="form-control" name="includes.value" cols="45" rows="3" >$!data.includes</textarea>
-##<div class="note">[[comma delimited]] *.jpg,*/Completed/*</div>
-##</div> 
-
-##<div class="form-group">
-##<label>[[Exclude Filter]]</label>
-##<input type="hidden" name="field" value="excludes" />
-##<textarea class="form-control" name="excludes.value" cols="45" rows="3" >#if ($data.excludes)$data.excludes#else*/.*,*/Thumbs.db,*.old, *_tmp*#end</textarea>
-##<div class="note">[[comma or new line delimited]] */.*,*/Thumbs.db,*.old </div>
-##</div> 
-
-##<div class="form-group">
-##<label>[[Attachment Filter]]</label>
-##<input type="hidden" name="field" value="attachmenttrigger" />
-##<textarea class="form-control" name="attachmenttrigger.value" cols="45" rows="3" >$!data.attachmenttrigger</textarea>
-##<div class="note">[[Files in attachment folder that will trigger auto creation of attachments. Comma or New line delimited]] */Fonts,*/attachments.txt</div> 
-##</div>
-
-
+<div class="form-group">
+<label>[[External Import Path]]</label>
+<input type="hidden" name="field" value="externalpath" />
+<input class="form-control" name="externalpath.value" value="$!data.externalpath" />
+<div class="note">[[Optional: Local disk drive, path, url, or Windows Share that will be mounted.]] /media/marketing_drive</div> 
+</div>
 
 
