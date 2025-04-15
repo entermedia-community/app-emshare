@@ -1,5 +1,6 @@
 package collections;
 
+import org.apache.lucene.queryparser.flexible.core.builders.QueryBuilder
 import org.entermediadb.asset.MediaArchive
 import org.entermediadb.projects.ProjectManager
 import org.openedit.Data
@@ -15,9 +16,18 @@ public void init(){
 	String search = context.getRequestParameter("search");
 	
 	if(search == null) {
+		search = context.getRequestParameter("entityid");
+	}
+	
+	context.putPageValue("searchby", search);
+	
+	log.info(search);
+	
+	if(search == null) {
 		return;
 	}
 	
+		
 	Searcher catsearcher = archive.getSearcher("category");
 	ArrayList rootcats = new ArrayList(); 
 	String name = search;
@@ -27,29 +37,33 @@ public void init(){
 	//searchstring = searchstring.replaceFirst("^0+(?!\$)", "")
 
 	//log.info("Searching for categories contains categorypath = " +  searchstring);
-	HitTracker categories =  catsearcher.query().contains("categorypath", searchstring).sort("categorypathUp").search();
-	//log.info("Found ${categories.size()} existing categories");
+	
+	String rootCategory = "4";
+	
+	HitTracker categories =  catsearcher.query().exact("parents", rootCategory).contains("categorypath", searchstring).sort("categorypathUp").search();
+	log.info(categories);
+	log.info("Found ${categories.size()} existing categories");
 	categories.enableBulkOperations();
+	
 	if(categories.size() > 0){
 		rootcats = findCommonRoots(categories);	
 		context.putPageValue("foundcategories", rootcats);
 	}
 
 	Searcher assets = archive.getAssetSearcher();
-	SearchQuery query = assets.createSearchQuery();
-	query.addSortBy("sourcepath");
-	//query.addContains("description", searchstring);
-	query.addContains("name", searchstring);  //Search Only Filename
-	log.info("Searching assets contains = " +  searchstring + " for Collection: " + name);
-	
+	org.openedit.data.QueryBuilder query = assets.query().freeform("description", searchstring).exact("category", rootCategory).sort("sourcepath");
 	rootcats.each{
-		query.addNot("category", it);
+		query.not("category", it);
 	}
 	
-	//log.info(query.toFriendly());
+	
+	log.info("Searching assets contains = " +  searchstring );
+	
+	HitTracker hits = query.search();
+	
+	log.info(hits);
 	
 	
-	HitTracker hits = assets.search(query);
 	//log.info(hits.getSearchQuery().getTerms());
 	
 	context.putPageValue("assets", hits);
@@ -109,9 +123,7 @@ public List findCommonRoots(HitTracker inCategories){
 
 	}
 	
-	
-	
-	//log.info("got  " + finallist.size());
+	log.info("got  " + finallist);
 	return finallist;
 }
 
