@@ -42,11 +42,8 @@ $context.putPageValue("searchhome", $searchhome)
 #set( $rendertype = $mediaarchive.getMediaRenderType($hit.fileformat))
 
 <div class="emthumbholder draggholder emthumbholder-${rendertype}" data-assetid="$hit.id">
-	#if( $hit.importstatus && $hit.importstatus == "uploading" )
-		$pages.include("$apphome/views/modules/asset/results/default/uploadqueue/uploadstatus.html?assetid=${hit.id}",$context)	
-	#elseif( !$hit.importstatus || $hit.importstatus != "complete" )
-		$pages.include("$apphome/views/modules/asset/results/default/convertqueue/importstatus.html?assetid=$!{hit.id}",$context)
-	#elseif( $hit.previewstatus && $hit.previewstatus == "mime")
+	
+	#if( $hit.previewstatus && $hit.previewstatus == "mime")
 		#set ($mime = $mediaarchive.getMimeTypeIcon($hit.fileformat))
 		<div class="mimethumbcontainer">
 			<i class="bi bi-$!mime mimeicon" title="#if($title)#esc($title)#else$!{hit.name}#end" ></i>

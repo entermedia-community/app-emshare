@@ -1,59 +1,63 @@
-#if ( !$hit )
+#ifnull($hit)
     #set( $hit = $asset )
 #end
-#if (!$thumbsize )
+$context.putPageValue("hit", $hit)
+
+#ifnull($thumbsize )
     #set($thumbsize = $context.getRequestParameter("thumbsize") )
 #end
-#if(!$thumbsize)
+#ifnull($thumbsize)
     #set( $thumbsize = $content.thumbsize )
 #end
-#if($conversionerrors && $conversionerrors.size() >0)
-	#set ($mime = $mediaarchive.getMimeTypeIcon($hit.fileformat))
-	<div class="mimethumbcontainer">
-		<i class="bi bi-$!mime mimeicon" title="[[Conversion Error]]" ></i>
-    	<div class="mimeconversionerror">[[Conversion Error]]</div>
-    </div>
-	
-#elseif($publisherrors && $publisherrors.size() >0)
-    <span style="color:red; font-size: 10px; position: relative; top: -2px;">[[Publish Error]]</span>
-#elseif( $hit.previewstatus && $hit.previewstatus == "2")  
-    $context.putPageValue("hit",$hit)
+
+
+#if( $hit.previewstatus && $hit.previewstatus == "2")  
     
-    #if($thumbsize == "thumb")
-    	$pages.include("$searchhome/thumbnails/image.html",$context)
-    #else
-    	$pages.include("$searchhome/thumbnails/small.html",$context)
-    #end        
-#elseif($publish && $publish.size() >0 )
-    <div id="status$!hit.id"  class="ajaxstatus "  
-    data-oemaxlevel="1"
-     data-firstrun="500" ajaxpath="$siteroot${searchhome}/convertqueue/importstatus.html?assetid=$hit.id&thumbsize=$thumbsize" >
-    	<div class="uiinfo	 proxythumb" title="[[Publishing Proxy]] $publish.size()" >
-    		<div class="loadingbarout">
-    		<div class="loadingbar" style="width:30px;"></div>
-    		</div>
-    	</div> 
-    </div>
-#elseif($conversions && $conversions.size() == 0)
-    <div id="status$!hit.id" class="ajaxstatus"  
-    data-oemaxlevel="1"
-    data-firstrun="500" ajaxpath="$siteroot${searchhome}/convertqueue/importstatus.html?assetid=$hit.id&thumbsize=$thumbsize" >
-        <div class="uiinfo	 proxythumb" title="[[Queing Conversions]]" >
-        	<div class="loadingbarout">
-        	<div class="loadingbar" style="width:20px;"></div>
-        	</div>
-        </div> 
-    </div>
+	#set($rendertype = $mediaarchive.getMediaRenderType($hit.fileformat))
+	$context.putPageValue("rendertype", $rendertype)
+	#if(!$rendertype)
+		#set( $rendertype = "mime" )
+	#elseif( $rendertype =="video")
+		#set( $rendertype = "image" )
+	#end
+	$pages.include("$searchhome/thumbnails/${rendertype}.html",$context)
+	        
 #else
-    <div id="status$!hit.id" class="ajaxstatus  " 
-    data-oemaxlevel="1"
-    data-firstrun="500" ajaxpath="$siteroot${searchhome}/convertqueue/importstatus.html?assetid=$hit.id&thumbsize=$thumbsize" >
-        <div class="uiinfo proxythumb" title="[[Converting">
-        	<div class="loadingbarout">
-        		<div class="loadingbar" style="width:50px;"></div>
-        		$hit.name [[Converting]]
-        	</div>
-        </div>
+	
+    <div id="status$!hit.id" 
+		class="ajaxstatus  " 
+	    data-oemaxlevel="1"
+	    data-firstrun="500" 
+		ajaxpath="$siteroot${searchhome}/convertqueue/previewstatus.html?assetid=$hit.id&thumbsize=${thumbsize}" >
+			#if($hit.importstatus && $hit.importstatus == "created")
+				#set($label = "[[Created]]")
+				#set($progress = 5)
+			#elseif($hit.importstatus == "imported")
+				#set($label = "[[Converting]]")
+				#set($progress = 70)
+			#elseif($hit.importstatus == "needsmetadata")
+				#set($label = "[[Awaiting Metadata]]")
+				#set($progress = 25)
+			#elseif($hit.importstatus == "needsdownload")
+				#set($label = "[[Awaiting Download]]")
+				#set($progress = 25)
+			#elseif($hit.importstatus == "error")
+				#set($label = "[[Import Error]]")
+				#set($progress = 0)
+			#else
+    			#set($label = "[[Converting]]")
+				#set($progress = 50)
+			#end
+	        <div class="uiinfo proxythumb" title="${label}">
+	        	<div class="loadingbarout">
+					${label}
+					#if($progress > 0)
+						<div class="loadingbarfull"  title="${progress}% [[Imported]]">
+						<div class="loadingbar" style="width:${progress}%;"></div>
+						</div>
+					#end
+	        	</div>
+	        </div>
     </div>
 
 #end

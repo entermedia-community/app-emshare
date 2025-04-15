@@ -1,12 +1,11 @@
-import groovy.json.JsonSlurper
-
 import org.entermediadb.asset.Asset
 import org.entermediadb.asset.Category
 import org.entermediadb.asset.MediaArchive
 import org.entermediadb.projects.ProjectManager
-import org.openedit.page.*
 import org.openedit.util.DateStorageUtil
 import org.openedit.util.PathUtilities
+
+import groovy.json.JsonSlurper
 
 
 public void init()
@@ -16,7 +15,6 @@ public void init()
 	Asset asset = mediaarchive.getAssetSearcher().createNewData();
 	asset.setFolder(true);
 	asset.setProperty("owner", context.userName);
-	asset.setProperty("importstatus", "needsdownload")
 	asset.setProperty("datatype", "original");
 	asset.setProperty("assetaddeddate", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
 	
@@ -40,31 +38,49 @@ public void init()
 	log.info("Importing asset: "+externalmediainput);
 	
 	String fetchthumb = null;
+	String fileformat = null;
+	
 	if( externalmediainput.startsWith("https://youtu.be/") )
 	{
 		//set the thumbnail
 		//https://youtu.be/n7GxnhQjBaw
-		String link = externalmediainput.substring(17);
-		fetchthumb = "http://img.youtube.com/vi/" + link + "/hqdefault.jpg";
-		assetname = link;
+		String videoid = externalmediainput.substring(17);
+		fetchthumb = "http://img.youtube.com/vi/" + videoid + "/hqdefault.jpg";
+		assetname = videoid;
+		asset.setProperty("embeddedid",videoid);
+		asset.setProperty("embeddedtype", "youtube");
+		fileformat = "ytube";
+		
 		log.info("Create asset from youtube.be: " + externalmediainput);
 		
 	}
 	else if (externalmediainput.contains("youtube.com/") )
 	{
 		//https://www.youtube.com/watch?v=n7GxnhQjBaw
-		String link = externalmediainput.substring(externalmediainput.indexOf("watch?v=") + 8);
-		fetchthumb = "http://img.youtube.com/vi/" + link + "/hqdefault.jpg";
-		assetname = link;
+		String videoid = externalmediainput.substring(externalmediainput.indexOf("watch?v=") + 8);
+		fetchthumb = "http://img.youtube.com/vi/" + videoid + "/hqdefault.jpg";
+		assetname = videoid;
+		asset.setProperty("embeddedid",videoid);
+		asset.setProperty("embeddedtype", "youtube");
+		fileformat = "ytube";
+		
 		log.info("Create asset from youtube.com: " + externalmediainput);
 		
 	}
 	else if (externalmediainput.contains("vimeo") )
 	{
 		//https://vimeo.com/api/v2/video/145706460.json
-		String vimeoVideoID = externalmediainput.substring(externalmediainput.lastIndexOf("/") + 1);
 		
-		URL apiUrl = new URL('https://vimeo.com/api/v2/video/' + vimeoVideoID + '.json');
+		//https://vimeo.com/1061341623?autoplay=1&muted=1&stream_id=ZmVhdHVyZWR8fGlkOmRlc2N8eyJyZW1vdmVfdm9kX3RpdGxlcyI6ZmFsc2V9
+		
+		
+		
+		URL originalUrl = new URL(externalmediainput);
+		
+		String vimeoVideoID = originalUrl.getPath() ;
+		vimeoVideoID = PathUtilities.extractPageName(vimeoVideoID);
+		
+		URL apiUrl = new URL('https://vimeo.com/api/v2/video/' +  vimeoVideoID + '.json');
 	
 		String text = apiUrl.text;
 		def video = new JsonSlurper().parseText(text).get(0);
@@ -75,7 +91,10 @@ public void init()
 		asset.setProperty("longcaption", video.description);
 		//asset.setProperty("assettitle", video.title);
 		
+		asset.setProperty("embeddedid",vimeoVideoID);
+		asset.setProperty("embeddedtype", "vimeo");
 		asset.addKeywords(video.tags);
+		fileformat = "vimeo";
 		
 		log.info("Create asset from vimeo.com: " + externalmediainput);
 	}
@@ -88,12 +107,11 @@ public void init()
 			name = name.substring(0,ques);
 		}
 		assetname = PathUtilities.extractFileName(name);		
+		//TODO: Use some parser interface and grab more metadata from youtube or vimeo, flickr
+		asset.setProperty("linkurl",externalmediainput);
 		
 		log.info("Create asset from external url: " + externalmediainput);
 	}
-	
-	//TODO: Use some parser interface and grab more metadata from youtube or vimeo, flickr
-	asset.setProperty("linkurl",externalmediainput);
 	
 	if( fetchthumb == null)
 	{
@@ -104,14 +122,17 @@ public void init()
 		//this is still set because we dont currently have a way to make thumbnails for embdedded file formats
 		asset.setProperty("fetchurl",fetchthumb);
 		asset.setProperty("fetchthumbnailurl",fetchthumb);
-		asset.setProperty("assettype","embedded");
+		asset.setProperty("fileformat", fileformat);
 	}
+	
+	
 	asset.setProperty("importstatus","needsdownload");
+	asset.setProperty("previewstatus", "0"); //unknown
 	
 	
 	
 	String sourcepath = mediaarchive.getAssetImporter().getAssetUtilities().createSourcePath(context, mediaarchive, assetname);
-	asset.setSourcePath(sourcepath);
+	asset.setSourcePath(sourcepath + "." + fileformat);
 
 	asset.setName(assetname);
 	
@@ -121,6 +142,8 @@ public void init()
 	//	asset.setProperty("fileformat","embedded");	
 	//}
 	//See if embed video is set? if not then fill it in?
+	
+	
 	
 	mediaarchive.saveAsset(asset, context.getUser());
 	
@@ -135,22 +158,7 @@ public void init()
 	context.putPageValue("asset", asset);
 	context.setRequestParameter("assetid", asset.id);
 	context.setRequestParameter("sourcepath", asset.sourcePath);
-	
-	
-	//category = product.defaultCategory;
-	//webTree = context.getPageValue("catalogTree");
-	//webTree.treeRenderer.setSelectedNode(category);
-	//webTree.treeRenderer.expandNode(category);
-	//
-	//context.putPageValue("category", category);
-	//moduleManager.execute("CatalogModule.loadCrumbs", context );
-	
-	//String sendto = context.findValue("sendtoeditor");
-	//
-	//if (Boolean.parseBoolean(sendto))
-	//{
-	//	context.redirect("/" + editor.store.catalogId + "/admin/products/editor/" + product.id + ".html");
-	//}
+
 	
 	mediaarchive.fireSharedMediaEvent("importing/fetchdownloads");
 }
