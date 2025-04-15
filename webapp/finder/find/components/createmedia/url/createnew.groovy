@@ -70,10 +70,7 @@ public void init()
 	else if (externalmediainput.contains("vimeo") )
 	{
 		//https://vimeo.com/api/v2/video/145706460.json
-		
-		//https://vimeo.com/1061341623?autoplay=1&muted=1&stream_id=ZmVhdHVyZWR8fGlkOmRlc2N8eyJyZW1vdmVfdm9kX3RpdGxlcyI6ZmFsc2V9
-		
-		
+	
 		
 		URL originalUrl = new URL(externalmediainput);
 		
