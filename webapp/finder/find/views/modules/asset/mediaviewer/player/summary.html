@@ -22,34 +22,43 @@ $context.putPageValue("assetheight",$assetheight)
 			<div class="media-thumbnail #if($asset.faceprofiles) emshowbox #end">
 				
 				$context.putPageValue("viewer","summary")
+								
+				#if( $hit.previewstatus == "mime" || $alwaysmime)
+						#set ($mime = $mediaarchive.getMimeTypeIcon($hit.fileformat))
+						<div class="mimethumbcontainer">
+							<i class="bi bi-$!mime mimeicon"  title="#if($title)#esc($title)#else$!{hit.name}#end" ></i>
+						</div>
+						
+				#elseif( ($hit.previewstatus != "2" && $hit.previewstatus != "exif" && $hit.previewstatus != "1" && $hit.previewstatus != "generated") && !$mediaarchive.isCatalogSettingTrue("realtimethumbs"))
+			    
+					$pages.include("$searchhome/convertqueue/previewstatus.html?assetid=$!{hit.id}",$context)
+					
+				#else   
+						#set( $type = $mediaarchive.getMediaRenderType($hit.fileformat))
+						
+						#if($type == "image")
 				
-				#set( $type = $mediaarchive.getMediaRenderType($asset.fileformat))
-				#if(!$type)
-					[[Unknown Asset File Format]]
-				#elseif ($type == "video")
-					$pages.include("$searchhome/thumbnails/${type}.html", $context)
-				#else
-
-						#if($asset.fileformat == "gif")
-							#set($cdnprefix = $!{mediaarchive.getCatalogSettingValue("cdn_prefix")})
-							#if(!$cdnprefix )
-								#set($cdnprefix = $context.siteRoot )
+							#if($asset.fileformat == "gif")
+								#set($cdnprefix = $!{mediaarchive.getCatalogSettingValue("cdn_prefix")})
+								#if(!$cdnprefix )
+									#set($cdnprefix = $context.siteRoot )
+								#end
+								$context.putPageValue("cdnprefix", $cdnprefix)
+								$context.putPageValue("useoriginal", "true")
 							#end
-							$context.putPageValue("cdnprefix", $cdnprefix)
-							$context.putPageValue("useoriginal", "true")
-						#end
-						
-						
-						
-						#set($faceprofilegroupid = $context.getRequestParameter("showfaceprofileid"))
-						
-						#ifnotnull($faceprofilegroupid)
-							$context.putPageValue("faceprofilegroupid",$faceprofilegroupid)
 							
-							#if($assetheight && $assetwidth)
-								#set($facemanager = $mediaarchive.getBean("faceProfileManager") )
-								#set($imagebox = $facemanager.getImageBoxById( $faceprofilegroupid, $asset, $assetwidth, $assetheight) )
-								$context.putPageValue("imagebox", $imagebox)
+							
+							
+							#set($faceprofilegroupid = $context.getRequestParameter("showfaceprofileid"))
+							
+							#ifnotnull($faceprofilegroupid)
+								$context.putPageValue("faceprofilegroupid",$faceprofilegroupid)
+								
+								#if($assetheight && $assetwidth)
+									#set($facemanager = $mediaarchive.getBean("faceProfileManager") )
+									#set($imagebox = $facemanager.getImageBoxById( $faceprofilegroupid, $asset, $assetwidth, $assetheight) )
+									$context.putPageValue("imagebox", $imagebox)
+								#end
 							#end
 						#end 						
 

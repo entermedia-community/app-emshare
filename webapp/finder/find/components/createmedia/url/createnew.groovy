@@ -4,6 +4,7 @@ import org.entermediadb.asset.MediaArchive
 import org.entermediadb.projects.ProjectManager
 import org.openedit.util.DateStorageUtil
 import org.openedit.util.PathUtilities
+import org.openedit.util.URLUtilities
 
 import groovy.json.JsonSlurper
 
@@ -85,7 +86,9 @@ public void init()
 		//fetchthumb = "http://i.vimeocdn.com/video/" + link + ".webp?mw=960&mh=540";
 		fetchthumb = video.thumbnail_large;
 		assetname = video.title;
-		asset.setProperty("longcaption", video.description);
+		String videodescription  = video.description;
+		
+		asset.setProperty("longcaption", videodescription);
 		//asset.setProperty("assettitle", video.title);
 		
 		asset.setProperty("embeddedid",vimeoVideoID);
