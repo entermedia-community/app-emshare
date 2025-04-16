@@ -15,8 +15,6 @@ $context.putPageValue("asset",$asset)
 $context.putPageValue("title",$title)
 
 
-
-
 <div class="emthumbbox embox$thumbsize resultsassetcontainer #if($isdraggable)assetdroppable sort-droppable #end"	
 	id="cell${catalogid}_${hit.id}"	
 	data-dataid="$hit.id">
@@ -61,10 +59,10 @@ $context.putPageValue("title",$title)
 			data-assetid="${hit.id}" 
 			title="$sourcepath">
 			$context.putPageValue("thumbsize", "medium" )
-   	    	#if(!$type)
-   	    		#set( $type = "mime" )
-   	    	#elseif( $type =="video")
-   	    		#set( $type = "image" )
+   	    	#if(!$rendertype)
+   	    		#set( $rendertype = "mime" )
+   	    	#elseif( $rendertype =="video")
+   	    		#set( $rendertype = "image" )
    	    	#end
 			
 			#set($assetwidth = $mediaarchive.getRealImageWidth($hit)) 
@@ -81,7 +79,15 @@ $context.putPageValue("title",$title)
 				$context.putPageValue("imagebox", $imagebox)
 			#end
 			
-			$pages.include("${searchhome}/thumbnails/${type}.html", $context)
+			
+			
+			#if( ($hit.previewstatus != "2" && $hit.previewstatus != "exif" && $hit.previewstatus != "1" && $hit.previewstatus != "generated") && !$mediaarchive.isCatalogSettingTrue("realtimethumbs"))
+			 	$pages.include("$searchhome/convertqueue/previewstatus.html?assetid=$!{hit.id}",$context)
+			#else
+				$pages.include("${searchhome}/thumbnails/${rendertype}.html", $context)
+			#end
+			
+			
 		</div>
 	</a> 
 	

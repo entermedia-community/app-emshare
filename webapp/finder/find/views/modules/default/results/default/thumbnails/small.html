@@ -9,17 +9,24 @@
 		#set($title = $asset.getText("name",$context) )
 	#end
 #end
+#ifnull($alwaysmime)
+	#set($alwaysmime = false)
+#end
 
-<div class="small-thumb-container draggholder" > 
-	#if( ($hit.previewstatus && $hit.previewstatus == "mime") || $alwaysmime)
+#set ($thumbsize = $context.getPageValue("thumbsize"))
+
+<div class="small-thumb-container draggholder" >
+
+	#if( $hit.previewstatus == "mime" || $alwaysmime)
 		#set ($mime = $mediaarchive.getMimeTypeIcon($hit.fileformat))
-		
 		<div class="mimethumbcontainer">
 			<i class="bi bi-$!mime mimeicon"  title="#if($title)#esc($title)#else$!{hit.name}#end" ></i>
 		</div>
+		
 	#elseif( ($hit.previewstatus != "2" && $hit.previewstatus != "exif" && $hit.previewstatus != "1" && $hit.previewstatus != "generated") && !$mediaarchive.isCatalogSettingTrue("realtimethumbs"))
     
 		$pages.include("$searchhome/convertqueue/previewstatus.html?assetid=$!{hit.id}",$context)
+		
 	#else   
 		#set( $type = $mediaarchive.getMediaRenderType($hit.fileformat))
 
@@ -27,40 +34,40 @@
 			$pages.include("${searchhome}/thumbnails/${type}.html", $context)
 		#else
 		
-			#set ($thumbsize = $context.getPageValue("thumbsize"))
+			
+			
 			#set($tabletarget = $mediaarchive.getCatalogSettingValue("tablethumbnail"))
 			#if($tabletarget)
 				#set( $imagepath = $mediaarchive.asLinkToGenerated($hit, $tabletarget))  
 			#else
-				#if($thumbsize == "carousel")
-					#set($imagesize = "image200x200")
-				#else
-					#set($imagesize = "image110x62cropped")
-				#end
 				
+				#set($imagesize = "image110x62cropped")
 				#set( $imagepath = $mediaarchive.asLinkToGenerated($hit, $imagesize))
 				 
 			#end
 			
 			$context.putPageValue("imagepath", $imagepath)
 			
-			
-
-			#if( $type == "image")
+			#if($content.isPropertyTrue("showassetpicker"))
 				#set($originalLink = "$siteroot/$mediadbappid/services/module/asset/downloads/originals/"+$mediaarchive.asLinkToOriginal($hit))
 				<div class="pickfromiframe" data-imageurl="$originalLink">
 					<i class="bi bi-check2-circle"></i>
 					<span>[[Pick this image]]</span>
 				</div>
 			#end
-			#if($type =="video")<div class="videoplay-button"><span class="videoplay-icon"></span></div>#end
+				
+			#if($type =="video")
+				<div class="videoplay-button"><span class="videoplay-icon"></span></div>
+			#end
+			
 			<img class="smallthumb assetdragdrop" 
 				draggable="true" 
 				data-sourcepath="$hit.sourcepath" 
 				data-name="#if($title)#esc($title)#else$!{hit.name}#end" 
-				src="$imagepath" 
+				src="${imagepath}" 
 				alt="#if($title)#esc($title)#else$!{hit.name}#end" 
 			/>
+			
 		#end			   
    #end
 </div>    

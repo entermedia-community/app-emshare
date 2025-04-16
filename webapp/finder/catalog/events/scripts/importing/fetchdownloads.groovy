@@ -56,6 +56,8 @@ public void init() {
 				
 				dl.download(fetchurl, image);
 				log.info("Downloaded ${fetchurl}" );
+				
+				
 				current.setPrimaryFile(image.getName());
 				current.setFolder(true);
 				
@@ -83,7 +85,7 @@ public void init() {
 			}
 			if( regenerate )
 			{
-				current.setValue("importstatus","imported");				
+				current.setValue("importstatus","created");				
 				def tasksearcher = archive.getSearcher("conversiontask");
 				def existing = tasksearcher.query().match("assetid", current.getId() ).search(); 
 				existing.each
@@ -91,7 +93,7 @@ public void init() {
 					tasksearcher.delete(it,user);		
 				}			
 				archive.saveAsset(current,user);
-				archive.fireMediaEvent( "assetimported", user, current); //TODO: Fire more than one at a time
+				//archive.fireMediaEvent( "assetimported", user, current); //TODO: Fire more than one at a time
 			}
 		}
 		catch( Exception ex )
@@ -102,6 +104,8 @@ public void init() {
 			
 		}	
 	}
+	
+	archive.fireSharedMediaEvent("importing/assetscreated");
 
 }
 

@@ -1,4 +1,4 @@
-#set( $type = $mediaarchive.getMediaPlayerType($asset))
+#set( $playertype = $mediaarchive.getMediaPlayerType($asset))
 
 ##Old CDN
 $context.putPageValue("cdn",$siteroot)
@@ -10,19 +10,7 @@ $context.putPageValue("cdnprefix",$siteroot)
 	<p style="color: white;">[[mediadbappid not defined in datamanager]]</p>
 #end
 
-#if($asset.fileformat=="gif")
-	$context.putPageValue("useoriginal", "true")
-#end
 
-#if($type)
-	#if ($type=="document" && $asset.fileformat!="pdf")
-		#set($type = "image")
-		$context.putPageValue("imagesize", "image3000x3000.png") 
-	#end
-	$pages.include("/${mediadbappid}/services/module/asset/players/large2/${type}.html", $context)
-#else
-	<div style="text-align: center; padding:20px">[[No viewer for asset type]] ($type)</div>
-#end
-
+   $pages.include("/${mediadbappid}/services/module/asset/players/${playertype}/index.html", $context)
 
 </div>
