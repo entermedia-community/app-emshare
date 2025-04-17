@@ -78,15 +78,16 @@
 			data-targetdiv="emgridentity$!moduleid$!entityid">
 			<div class="emfolder-icon">
 				#if($primarymedia)
-					$context.putPageValue("thumbsize", "thumbnail" )
+					$context.putPageValue("thumbsize", "crop" )
 					$context.putPageValue("hit", $primarymedia) 
 					$context.putPageValue("asset", $primarymedia)
-					#set( $assetrendertype = $mediaarchive.getMediaRenderType($primarymedia.fileformat))
 					
 					#if($module.id == "faceprofilegroup")
 						$context.putPageValue("faceprofilegroups", [$entity]) 
 					#end
-					$pages.include("${searchhome}/thumbnails/${assetrendertype}.html", $context)
+					
+					$!context.putPageValue("searchhome", "$apphome/views/modules/asset/results/default")
+					$pages.include("$apphome/views/modules/asset/results/default/thumbnails/small.html",$context)
 			  #else
 					<i class="bi bi-$moduleicon module-icon"></i> 
 			  #end

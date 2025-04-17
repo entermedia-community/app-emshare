@@ -18,14 +18,12 @@
 <div class="small-thumb-container draggholder" >
 
 	#if( $hit.previewstatus == "mime" || $alwaysmime)
-		#set ($mime = $mediaarchive.getMimeTypeIcon($hit.fileformat))
-		<div class="mimethumbcontainer">
-			<i class="bi bi-$!mime mimeicon"  title="#if($title)#esc($title)#else$!{hit.name}#end" ></i>
-		</div>
+		
+		$pages.include("${searchhome}/thumbnails/mime.html", $context)
 		
 	#elseif( ($hit.previewstatus != "2" && $hit.previewstatus != "exif" && $hit.previewstatus != "1" && $hit.previewstatus != "generated") && !$mediaarchive.isCatalogSettingTrue("realtimethumbs"))
     
-		$pages.include("$searchhome/convertqueue/previewstatus.html?assetid=$!{hit.id}",$context)
+		$pages.include("${searchhome}/convertqueue/previewstatus.html?assetid=$!{hit.id}",$context)
 		
 	#else   
 		#set( $type = $mediaarchive.getMediaRenderType($hit.fileformat))
@@ -49,7 +47,7 @@
 			$context.putPageValue("imagepath", $imagepath)
 			
 			#if($content.isPropertyTrue("showassetpicker"))
-				#set($originalLink = "$siteroot/$mediadbappid/services/module/asset/downloads/originals/"+$mediaarchive.asLinkToOriginal($hit))
+				#set($originalLink = "$siteroot/${mediadbappid}/services/module/asset/downloads/originals/"+$mediaarchive.asLinkToOriginal($hit))
 				<div class="pickfromiframe" data-imageurl="$originalLink">
 					<i class="bi bi-check2-circle"></i>
 					<span>[[Pick this image]]</span>
