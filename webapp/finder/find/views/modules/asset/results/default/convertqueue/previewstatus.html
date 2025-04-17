@@ -25,7 +25,8 @@ $context.putPageValue("thumbsize", $thumbsize)
 		#set( $rendertype = "image" )
 	#end
 	$pages.include("$searchhome/thumbnails/${rendertype}.html",$context)
-	        
+#elseif($hit.importstatus == "error")
+	[[Import Error]]       
 #else
 	
     <div id="status$!{prefixid}$!{hit.id}" 
@@ -45,14 +46,15 @@ $context.putPageValue("thumbsize", $thumbsize)
 			#elseif($hit.importstatus == "needsdownload")
 				#set($label = "[[Awaiting Download]]")
 				#set($progress = 25)
-			#elseif($hit.importstatus == "error")
-				#set($label = "[[Import Error]]")
-				#set($progress = 0)
+			###elseif($hit.importstatus == "error")
+			##	#set($label = "[[Import Error]]")
+			##	#set($progress = 0)
 			#else
     			#set($label = "[[Converting]]")
 				#set($progress = 50)
 			#end
 	        <div class="uiinfo proxythumb" title="${label}">
+
 	        	<div class="loadingbarout">
 					${label}
 					#if($progress > 0)
