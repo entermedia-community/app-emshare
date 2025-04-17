@@ -32,7 +32,18 @@
 	data-draggholderclone="grid-thumbimage" >
 	<div class="grid-thumbimage " data-assetid="$!hit.id" >
     	
-   	    $pages.include("${searchhome}/thumbnails/${rendertype}.html", $context)
+   	   ## $pages.include("${searchhome}/thumbnails/${rendertype}.html", $context)
+	   
+	   #set($searchhome = "$apphome/views/modules/asset/results/default")
+	   $!context.putPageValue("searchhome", $searchhome)
+	   #set( $rendertype = "mime" )
+	   
+	   #if( ($hit.previewstatus != "2" && $hit.previewstatus != "exif" && $hit.previewstatus != "1" && $hit.previewstatus != "generated") && !$mediaarchive.isCatalogSettingTrue("realtimethumbs"))
+	   	 	$pages.include("${searchhome}/convertqueue/previewstatus.html?assetid=$!{hit.id}",$context)
+	   	#else
+	   		$pages.include("${searchhome}/thumbnails/${rendertype}.html", $context)
+	   	#end
+	   
    	</div>
 	    		
 	    		

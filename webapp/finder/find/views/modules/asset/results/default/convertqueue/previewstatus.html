@@ -9,6 +9,10 @@ $context.putPageValue("hit", $hit)
 #ifnull($thumbsize)
     #set( $thumbsize = $content.thumbsize )
 #end
+$context.putPageValue("thumbsize", $thumbsize)
+
+
+#set($prefixid = $context.getRequestParameter("prefixid") )
 
 
 #if( $hit.previewstatus && $hit.previewstatus == "2")  
@@ -24,11 +28,11 @@ $context.putPageValue("hit", $hit)
 	        
 #else
 	
-    <div id="status$!hit.id" 
+    <div id="status$!{prefixid}$!{hit.id}" 
 		class="ajaxstatus  " 
 	    data-oemaxlevel="1"
 	    data-firstrun="500" 
-		ajaxpath="$siteroot${searchhome}/convertqueue/previewstatus.html?assetid=$hit.id&thumbsize=${thumbsize}" >
+		ajaxpath="$siteroot${searchhome}/convertqueue/previewstatus.html?assetid=${hit.id}&thumbsize=${thumbsize}&prefixid=$!{prefixid}" >
 			#if($hit.importstatus && $hit.importstatus == "created")
 				#set($label = "[[Created]]")
 				#set($progress = 5)
