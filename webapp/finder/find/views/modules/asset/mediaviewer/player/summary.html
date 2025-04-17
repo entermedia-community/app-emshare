@@ -22,19 +22,21 @@ $context.putPageValue("assetheight",$assetheight)
 			<div class="media-thumbnail #if($asset.faceprofiles) emshowbox #end">
 				
 				$context.putPageValue("viewer","summary")
-								
-				#if( $hit.previewstatus == "mime" || $alwaysmime)
-						#set ($mime = $mediaarchive.getMimeTypeIcon($hit.fileformat))
+					
+				#if( $asset.previewstatus == "mime" || $alwaysmime)
+				
+				
+						#set ($mime = $mediaarchive.getMimeTypeIcon($asset.fileformat))
 						<div class="mimethumbcontainer">
-							<i class="bi bi-$!mime mimeicon"  title="#if($title)#esc($title)#else$!{hit.name}#end" ></i>
+							<i class="bi bi-$!mime mimeicon"  title="#if($title)#esc($title)#else$!{asset.name}#end" ></i>
 						</div>
 						
-				#elseif( ($hit.previewstatus != "2" && $hit.previewstatus != "exif" && $hit.previewstatus != "1" && $hit.previewstatus != "generated") && !$mediaarchive.isCatalogSettingTrue("realtimethumbs"))
+				#elseif( ($asset.previewstatus != "2" && $asset.previewstatus != "exif" && $asset.previewstatus != "1" && $asset.previewstatus != "generated") && !$mediaarchive.isCatalogSettingTrue("realtimethumbs"))
 			    
-					$pages.include("$searchhome/convertqueue/previewstatus.html?assetid=$!{hit.id}",$context)
+					$pages.include("$searchhome/convertqueue/previewstatus.html?assetid=$!{asset.id}",$context)
 					
 				#else   
-						#set( $type = $mediaarchive.getMediaRenderType($hit.fileformat))
+						#set( $type = $mediaarchive.getMediaRenderType($asset.fileformat))
 						
 						#if($type == "image")
 				
