@@ -60,13 +60,34 @@
 				
 				
 				#if($perm && $permissions.canModule($module, "view_files"))
-				<button class="quick-download btn text-primary px-1 mb-2" 
-					title="[[Download Folder]]"
-					data-moduleid="${moduleid}" 
-					data-entityid="$!{hit.id}"
-					data-path="$!{hit.uploadsourcepath}">
-					<i class="bi bi-cloud-arrow-down bi2"></i>
-				</button>
+					#set( $assetsource = $mediaarchive.getAssetManager().findAssetSource($!hit.get("uploadsourcepath")) )
+					#ifnotnull($assetsource)
+						#set($userlocaldesktoppath  = $assetsource.getConfig().get("userlocaldesktoppath"))
+						#ifnotnull($userlocaldesktoppath)
+							#set($removecategorysubfolder  = $assetsource.getConfig().get("subfolder"))
+						#end
+					#end
+					
+					#ifnull($userlocaldesktoppath)
+					<button class="quick-download btn text-primary px-1 mb-2" 
+						title="[[Download Folder]]"
+						data-moduleid="${moduleid}" 
+						data-entityid="$!{hit.id}"
+						data-path="$!{hit.uploadsourcepath}">
+						<i class="bi bi-cloud-arrow-down bi2"></i>
+					</button>
+					#end
+					
+					#ifnotnull($userlocaldesktoppath)
+						<button class="open-folder btn text-primary px-1 mb-2"
+							data-path="$!{hit.uploadsourcepath}"
+							data-root="${userlocaldesktoppath}"
+							data-removecategorysubfolder="$!removecategorysubfolder"
+							>
+							<i class="bi bi-eye bi2"></i>
+						</button>
+					#end
+
 				#end
 			#else
 				#if($module.getBoolean("enableuploading") && 
