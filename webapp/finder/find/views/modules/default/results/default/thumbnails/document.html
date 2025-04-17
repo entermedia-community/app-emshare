@@ -28,17 +28,9 @@
 
 #set($tpath = $mediaarchive.asLinkToPreview($hit, $imagesize))
 <div id="emthumbholder" class="emthumbholder">
-	#if( $hit.importstatus && $hit.importstatus == "uploading" )
-		$pages.include("$apphome/views/modules/asset/uploadqueue/uploadstatus.html?assetid=${hit.id}",$context)	
-	#elseif( !$hit.importstatus || $hit.importstatus != "complete" )
+	#if( !$hit.importstatus || $hit.importstatus != "complete" )
 		$context.putPageValue("thumbsize", $thumbsize)
 		$pages.include("$apphome/views/modules/asset/results/default/convertqueue/previewstatus.html?assetid=$!{hit.id}",$context)
-	
-	#elseif( $hit.previewstatus && $hit.previewstatus == "mime")
-		#set ($mime = $mediaarchive.getMimeTypeIcon($hit.fileformat))
-		<div class="mimethumbcontainer">
-       	<i class="bi bi-$!mime mimeicon"  title="#if($title)#esc($title)#else$!{hit.name}#end" ></i>
-       </div>
 	#else
 		
 		
