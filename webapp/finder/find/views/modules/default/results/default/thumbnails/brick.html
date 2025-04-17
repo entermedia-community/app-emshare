@@ -50,7 +50,11 @@ $context.putPageValue("assetheight",$assetheight)
 
 <div class="grid-thumbimage" data-assetid="$!{hit.id}" data-rendertype="$!rendertype">
 	
-	#if( ($hit.previewstatus != "2" && $hit.previewstatus != "exif" && $hit.previewstatus != "1" && $hit.previewstatus != "generated") && !$mediaarchive.isCatalogSettingTrue("realtimethumbs"))
+	#if( $hit.previewstatus == "mime" || $alwaysmime)
+		#set( $rendertype = "mime" )
+	#end
+		
+	#if( ($hit.previewstatus != "2" && $hit.previewstatus != "mime" && $hit.previewstatus != "exif" && $hit.previewstatus != "1" && $hit.previewstatus != "generated") && !$mediaarchive.isCatalogSettingTrue("realtimethumbs"))
 	 	$pages.include("$searchhome/convertqueue/previewstatus.html?assetid=$!{hit.id}",$context)
 	#else
 		$pages.include("${searchhome}/thumbnails/${rendertype}.html", $context)

@@ -65,23 +65,31 @@ $context.putPageValue("title",$title)
    	    		#set( $rendertype = "image" )
    	    	#end
 			
-			#set($assetwidth = $mediaarchive.getRealImageWidth($hit)) 
-			$context.putPageValue("assetwidth",$assetwidth)	
-			#set($assetheight = $mediaarchive.getRealImageHeight($hit)) 
-			$context.putPageValue("assetheight",$assetheight)	
-			#if($assetheight && $assetwidth)
-				#set($facemanager = $mediaarchive.getBean("faceProfileManager") )
-				#if($faceprofilegroups )
-					#set($imagebox = $facemanager.getImageBox( $faceprofilegroups, $hit, $assetwidth, $assetheight) )
-				#elseif($faceprofilegroupid)
-					#set($imagebox = $facemanager.getImageBoxById( $faceprofilegroupid, $hit, $assetwidth, $assetheight) )
+			#if( $hit.previewstatus == "mime" || $alwaysmime)
+				#set( $rendertype = "mime" )
+			#end
+			
+			#if($rendertype == "image")
+				
+				#set($assetwidth = $mediaarchive.getRealImageWidth($hit)) 
+				$context.putPageValue("assetwidth",$assetwidth)	
+				#set($assetheight = $mediaarchive.getRealImageHeight($hit)) 
+				$context.putPageValue("assetheight",$assetheight)	
+				#if($assetheight && $assetwidth)
+					#set($facemanager = $mediaarchive.getBean("faceProfileManager") )
+					#if($faceprofilegroups )
+						#set($imagebox = $facemanager.getImageBox( $faceprofilegroups, $hit, $assetwidth, $assetheight) )
+					#elseif($faceprofilegroupid)
+						#set($imagebox = $facemanager.getImageBoxById( $faceprofilegroupid, $hit, $assetwidth, $assetheight) )
+					#end
+					$context.putPageValue("imagebox", $imagebox)
 				#end
-				$context.putPageValue("imagebox", $imagebox)
+			
 			#end
 			
 			
 			
-			#if( ($hit.previewstatus != "2" && $hit.previewstatus != "exif" && $hit.previewstatus != "1" && $hit.previewstatus != "generated") && !$mediaarchive.isCatalogSettingTrue("realtimethumbs"))
+			#if( ($hit.previewstatus != "2" && $hit.previewstatus != "exif" && $hit.previewstatus != "mime"  && $hit.previewstatus != "1" && $hit.previewstatus != "generated") && !$mediaarchive.isCatalogSettingTrue("realtimethumbs"))
 			 	$pages.include("$searchhome/convertqueue/previewstatus.html?assetid=$!{hit.id}",$context)
 			#else
 				$pages.include("${searchhome}/thumbnails/${rendertype}.html", $context)
