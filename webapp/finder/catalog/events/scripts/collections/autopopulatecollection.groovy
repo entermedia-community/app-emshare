@@ -38,7 +38,7 @@ public void init(){
 
 	//log.info("Searching for categories contains categorypath = " +  searchstring);
 	
-	String rootCategory = "4";
+	String rootCategory = "90762";   //Prior Media 
 	
 	HitTracker categories =  catsearcher.query().exact("parents", rootCategory).contains("categorypath", searchstring).sort("categorypathUp").search();
 	log.info(categories);
