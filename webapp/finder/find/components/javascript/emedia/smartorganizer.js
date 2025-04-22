@@ -426,6 +426,18 @@ $(document).ready(function () {
 		var reader = new draw2d.io.json.Reader();
 		var writer = new draw2d.io.json.Writer();
 
+		function readerUnmarshal(canvas, json) {
+			console.log("reader.unmarshal", json);
+			reader.unmarshal(canvas, json);
+		}
+
+		function writerMarshal(canvas, callback) {
+			writer.marshal(canvas, function (json) {
+				console.log("writer.marshal", json);
+				callback(json);
+			});
+		}
+
 		canvas.installEditPolicy(
 			new draw2d.policy.connection.DragConnectionCreatePolicy({
 				createConnection: function () {
@@ -517,7 +529,7 @@ $(document).ready(function () {
 								dupFolder[2].userData.description =
 									label.getUserData().description;
 								dupFolder[3].path = icon.getPath();
-								reader.unmarshal(canvas, dupFolder);
+								readerUnmarshal(canvas, dupFolder);
 							} else if (figure.cssClass === "labelGroup") {
 								var title = assignedFigures.find(
 									(f) => f.cssClass === "titleLabel"
@@ -586,14 +598,16 @@ $(document).ready(function () {
 
 		function localizeJSON(json) {
 			json = json.replaceAll("${apphome}", apphome);
-			json = json.replaceAll("//", '"/');
+			json = json.replaceAll('"//', '"/');
+			console.log("localizeJSON", json);
 			return json;
 		}
 
 		function globalizeJSON(json) {
 			json = json.replaceAll(apphome, "${apphome}");
 			json = json.replace(/([^"]*?)\$\{apphome\}/, "/${apphome}");
-			json = json.replaceAll("//", '"/');
+			json = json.replaceAll('"//', '"/');
+			console.log("globalizeJSON", json);
 			return json;
 		}
 
@@ -624,7 +638,7 @@ $(document).ready(function () {
 					}
 				},
 				complete: function () {
-					reader.unmarshal(canvas, insertjson);
+					readerUnmarshal(canvas, insertjson);
 					loadEvents();
 
 					recenterCanvas();
@@ -1007,7 +1021,7 @@ $(document).ready(function () {
 				x: x,
 				y: y,
 			});
-			reader.unmarshal(canvas, newFolder);
+			readerUnmarshal(canvas, newFolder);
 			var folderGroup = canvas.getFigure(newFolder[0].id);
 			var prevSelections = canvas.getSelection();
 			if (prevSelections) {
@@ -1285,7 +1299,7 @@ $(document).ready(function () {
 				canvasContainer.data("changed", true); //Version save
 			}
 
-			writer.marshal(canvas, function (json) {
+			writerMarshal(canvas, function (json) {
 				if (json.length === 0) return;
 				var data = {};
 
@@ -1629,7 +1643,7 @@ $(document).ready(function () {
 				},
 				function (json) {
 					var groupId = json[0].id;
-					reader.unmarshal(canvas, json);
+					readerUnmarshal(canvas, json);
 					var labelGroup = canvas.getFigure(groupId);
 					loadEvents([labelGroup]);
 					if (id) {
@@ -1757,7 +1771,7 @@ $(document).ready(function () {
 								});
 								return false;
 							}
-							reader.unmarshal(canvas, json);
+							readerUnmarshal(canvas, json);
 							return true;
 						})
 						.then(function (result) {
@@ -1837,7 +1851,7 @@ $(document).ready(function () {
 		lQuery("#pasteSmartNodes").livequery("click", function () {
 			validateClipboard(function (json) {
 				if (json) {
-					reader.unmarshal(canvas, json);
+					readerUnmarshal(canvas, json);
 				}
 			});
 		});
@@ -1863,7 +1877,7 @@ $(document).ready(function () {
 			var exportType = $(this).find("select[name='exportType']").val();
 			var exportJson = [];
 			if (exportType === "all") {
-				writer.marshal(canvas, function (json) {
+				writerMarshal(canvas, function (json) {
 					exportJson = json;
 					downloadJson(exportJson);
 				});
@@ -1922,7 +1936,7 @@ $(document).ready(function () {
 				}
 			});
 			var selectedJson = [];
-			writer.marshal(canvas, function (json) {
+			writerMarshal(canvas, function (json) {
 				json.forEach(function (jso) {
 					if (jso.id == "main" || jso.id == "logo") {
 						return;
@@ -1966,7 +1980,7 @@ $(document).ready(function () {
 				try {
 					var json = JSON.parse(fileReader.result);
 					if (Array.isArray(json) && json.length > 0) {
-						reader.unmarshal(canvas, json);
+						readerUnmarshal(canvas, json);
 						loadEvents();
 						closeemdialog(thisModal);
 					} else {
