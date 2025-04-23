@@ -1,52 +1,42 @@
-<div class="aisearchtable-container">
-#if($airesultshits.size() > 0)
-	<p>Found $airesultshits.size() matching. 
-	<a class="expandaisearchtable" href="javascript:void(0);">See details</a></p>
-	
-	<div class="aisearchtable overflow-x collapse">
-		#if( $airesultshits.getTotalPages() > 1)
-				Showing $airesultshits.getHitsPerPage() of $airesultshits.size() records.
+#set( $arguments = $data.get("arguments") )
+#set( $results = $jsonUtil.parseString($arguments) )
+$context.putPageValue("apphome","/${channel.chatapplicationid}")
+<div>
+	#ifnotnull($results.summary)
+		<p>$results.summary</p>
+	#end
+	<div class="chat-assets">
+		#foreach($row in $airesultshits)
+			#set($searchtype = $row.get("entitysourcetype"))
+			
+			#set( $hit = $mediaarchive.getCachedData($searchtype, $row.id))
+			
+			#ifnotnull($hit)
+
+				#set($title =  $hit.assettitle)
+		
+				#if(!$title)
+					#set($title = $hit.name) 
+				#end
+		
+				$context.putPageValue("hit", $hit) 
+
+				#if($searchtype == "asset")
+					<a class="stackedplayer" id="clickid${hit.id}" data-assetid="$hit.id" href="#" title="#esc($!title)">
+						$context.putPageValue("thumbsize", "thumbnail")
+						$context.putPageValue("asset", $hit)
+
+						#set( $assetrendertype = $mediaarchive.getMediaRenderType($hit.fileformat))
+						
+						$context.putPageValue("searchhome", "/${channel.chatapplicationid}/views/modules/${searchtype}/results/default")
+						$pages.include("/${channel.chatapplicationid}/views/modules/${searchtype}/results/default/thumbnails/${assetrendertype}.html", $context)
+					</a>
+				#else
+					$pages.include("/${channel.chatapplicationid}/views/modules/${searchtype}/results/default/thumbnails/entitysmall.html", $context)
+				#end
+
 			#end
-		<table class="table table-sm table-striped">
-			<thead>
-				<tr>
-					<th>ID</th>
-					<th>Name</th>
-					<th>Description</th>
-					<th>Keywords</th>
-					<th>Search Type</th>
-				</tr>
-			</thead>
-			<tbody>
-				
-				#foreach($hit in $airesultshits.getPageOfHits())
-				
-				#set($sourcetype = $hit.get("entitysourcetype"))
-				#ifnull($sourcetype)
-					#set($sourcetype = "asset")
-				#end
-				
-				<tr class="stackedplayer" id="clickid${hit.id}" data-assetid="$hit.id">
-					<th scope="row" class="text-primary">#if($hit.id) $hit.id #else <span class="small text-muted">N/A</span> #end</th>
-					<td>#if($hit.name) $hit.name #else <span class="small text-muted">N/A</span> #end</td>
-					#if($sourcetype != "asset")
-					<td>#if($!hit.longcaption) $!hit.longcaption #else <span class="small text-muted">N/A</span> #end</td>
-					#else
-					<td>#if($!hit.assetttitle) $!hit.assetttitle #else <span class="small text-muted">N/A</span> #end</td>
-					#end
-					<td>#if($!hit.keywords) $!hit.keywords #else <span class="small text-muted">N/A</span> #end</td>
-					<td>$sourcetype</td>
-				</tr>
-				#end
-			</tbody>
-		</table>
-		##$0/finder/find/views/modules/entityparent/index.html?airesultshits.getSessionId()
+
+		#end
 	</div>
-	<p class="text-muted typeout">...waiting for the previews</p>
-	
-	
-	
-#else
-	##No results found for $airesultshits
-#end
 </div>
