@@ -22,7 +22,7 @@ public void init()
 	HitTracker found = mediaArchive.query("librarycollection").match("lastmodifieddatedirty","true").search();
 	if( found.isEmpty() )
 	{
-		log.info("No edited collections");
+		//log.info("No edited collections");
 		return;
 	}
 	for (MultiValued collection in found)
@@ -43,7 +43,7 @@ public void init()
 	}
 	if( collections.isEmpty() )
 	{
-		log.info("no collections edited or within 10 min");
+		//log.info("no collections edited or within 10 min");
 		return;
 	}
 	//TODO: Add owners as followers automatically
@@ -90,7 +90,7 @@ public void init()
 	}	
 	if( users.isEmpty() )
 		{
-			log.info("No followers or groups on collection");
+			//log.info("No followers or groups on collection");
 			return;
 		}
 	
@@ -105,14 +105,14 @@ public void init()
 			Data profile = mediaArchive.getData("userprofile", userid);
 			if(profile != null && profile.getBoolean("sendcollectionnotifications") == false)
 			{
-				log.info("Notification disabled " + userid);
+				//log.info("Notification disabled " + userid);
 				continue;	
 			}
 			String appid  = null;
 			if( profile != null)
 			{
 				appid = profile.get("lastviewedapp");
-				log.info("User app id is set to " + appid);
+				//log.info("User app id is set to " + appid);
 			}
 			if( appid == null)
 			{
@@ -131,6 +131,8 @@ public void init()
 			objects.put("followeruser",followeruser);
 			objects.put("apphome","/" + appid);
 			templatemail.send(objects);
+			
+			log.info(N"Notification sent on Asset Count Change: " + dirtycollections);
 		}
 	}
 	Searcher searcher = mediaArchive.getSearcher("librarycollection");
