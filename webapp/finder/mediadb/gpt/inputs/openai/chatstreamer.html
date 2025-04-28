@@ -29,8 +29,12 @@
 	,
 	"functions": [
 		{
+			"name": "showHintOrHelpInfo",
+			"description": "Show hints on how to properly use the search function and provide examples. Use this function when people ask questions like: 'What can you do?', 'How can I search using this tool?', 'Give me example of some search queries'."
+		},
+		{
 			"name": "searchByModule",
-			"description": "Search with one or more keywords in one or more modules. Keywords can be mutually exclusive or inclusive depending on the use of the word \"and\" or \"or\", default is \"or\". If modules are not specified, all modules will be searched. Modules may have conjunction too, ignore it.",
+			"description": "Search with one or more keywords in one or more modules. Keywords can be mutually exclusive or inclusive depending on their phrasing. For example: \"search fils containing any of the words 'red' and 'blue'\" is an exclusive search; \"search fils containing all of the words 'red' and 'blue'\" is an inclusive search. If not specified, exclusive search will be used. If modules are not specified, all modules will be searched. Modules may have conjunction too, ignore it.",
 			"parameters": {
 					"type": "object",
 					"properties": {
@@ -43,10 +47,10 @@
 							},
 							"conjunction": {
 									"type": "string",
-									"description": "The conjunction to use",
+									"description": "The conjunction to use. Inclusive if user asks to search with all of the keywords. Exclusive if user asks to search with any of the keywords. Default value 'exclusive' if conjunction is not specified.",
 									"enum": [
-											"and",
-											"or"
+											"exclusive",
+											"inclusive"
 									]
 							},
 							"modules": {
