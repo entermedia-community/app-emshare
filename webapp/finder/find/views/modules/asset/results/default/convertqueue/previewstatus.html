@@ -11,6 +11,11 @@ $context.putPageValue("hit", $hit)
 #end
 $context.putPageValue("thumbsize", $thumbsize)
 
+#ifnull($searchhome)
+	#set($searchhome = "$!{apphome}/views/modules/asset/results/default")
+	$!context.putPageValue("searchhome", $searchhome)
+#end
+
 
 #set($prefixid = $context.getRequestParameter("prefixid") )
 
@@ -24,7 +29,7 @@ $context.putPageValue("thumbsize", $thumbsize)
 	#elseif( $rendertype =="video")
 		#set( $rendertype = "image" )
 	#end
-	$pages.include("$searchhome/thumbnails/${rendertype}.html",$context)
+	$pages.include("$!{searchhome}/thumbnails/${rendertype}.html",$context)
 #elseif($hit.importstatus == "error")
 	<span class="text-muted">[[Import Error]]</span>       
 #else
@@ -33,7 +38,7 @@ $context.putPageValue("thumbsize", $thumbsize)
 		class="ajaxstatus  " 
 	    data-oemaxlevel="1"
 	    data-firstrun="500" 
-		ajaxpath="$siteroot${searchhome}/convertqueue/previewstatus.html?assetid=${hit.id}&thumbsize=${thumbsize}&prefixid=$!{prefixid}" >
+		ajaxpath="$!{siteroot}$!{searchhome}/convertqueue/previewstatus.html?assetid=$!{hit.id}&thumbsize=$!{thumbsize}&prefixid=$!{prefixid}" >
 			#if($hit.importstatus && $hit.importstatus == "created")
 				#set($label = "[[Created]]")
 				#set($progress = 5)
