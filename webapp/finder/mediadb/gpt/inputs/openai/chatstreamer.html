@@ -12,10 +12,11 @@
 			#if($foreach.count != 1)
 			,
 			#end
+
 			{
 				#if($message.messagetype == "function_call")				
 					"role": "function",	
-					 "name" : "$message.function",					
+					"name" : "$message.function",					
 				#elseif($message.user == "agent")
 					"role": "assistant",
 				#else
@@ -26,20 +27,57 @@
 		#end		
 	]
 	,
-	"functions":[
-		##$gpt.loadInputFromTemplate($context, "/$mediaarchive.getMediaDbId()/gpt/functiondefs/checkweather.json"),
-		#foreach($module in $chatprofile.getEntities())    
-			#if($module.showonsearch =="true")                    	
-				$context.putPageValue("module",$module)
-				$gpt.loadInputFromTemplate($context, "/$mediaarchive.getMediaDbId()/gpt/functiondefs/search-moduletemplate.json"),
-			#end
-		#end
-		
-		###$gpt.loadInputFromTemplate($context, "/$mediaarchive.getMediaDbId()/gpt/functiondefs/emediasearchformat.json"),
-		
-		$gpt.loadInputFromTemplate($context, "/$mediaarchive.getMediaDbId()/gpt/functiondefs/emediasearchall.json")					
-						
+	"functions": [
+		{
+			"name": "showHintOrHelpInfo",
+			"description": "Show hints on how to properly use the search function and provide examples. Use this function when people ask questions like: 'What can you do?', 'How can I search using this tool?', 'Give me example of some search queries'."
+		},
+		{
+			"name": "searchByModule",
+			"description": "Search with one or more keywords in one or more modules. Keywords can be mutually exclusive or inclusive depending on their phrasing. For example: \"search fils containing any of the words 'red' and 'blue'\" is an exclusive search; \"search fils containing all of the words 'red' and 'blue'\" is an inclusive search. If not specified, exclusive search will be used. If modules are not specified, all modules will be searched. Modules may have conjunction too, ignore it.",
+			"parameters": {
+					"type": "object",
+					"properties": {
+							"keywords": {
+									"type": "array",
+									"description": "The keywords to search for",
+									"items": {
+											"type": "string"
+									}
+							},
+							"conjunction": {
+									"type": "string",
+									"description": "The conjunction to use. Inclusive if user asks to search with all of the keywords. Exclusive if user asks to search with any of the keywords. Default value 'exclusive' if conjunction is not specified.",
+									"enum": [
+											"exclusive",
+											"inclusive"
+									]
+							},
+							"modules": {
+									"anyOf": [
+										{
+											"type": "string",
+											"enum": ["all"],
+											"description": "Search all modules. Default value if modules are not specified."
+										},
+										#foreach($module in $chatprofile.getEntities())
+											#if($module.getBoolean("showonsearch"))
+												#if($foreach.count != 1), #end
+												{
+													"type": "string",
+													"enum": ["${module.id}", "${module.name}"],
+													"description": "This is ${module.name} module.#ifnotnull($module.aisearch_contains) This module includes ${moduleProp.aisearch_contains}#end"
+												}
+											#end
+										#end
+									]
+							}
+					},
+					"required": [
+						"keywords"
+					]
+			}
+		}
 	],
 	"function_call": "auto"
-	
 }
