@@ -3,12 +3,20 @@
     <strong>I can help you search the database using natural language.</strong>
   </p>
   <p>
-    Below are some example queries to illustrate how you can use me to run a search:
+    Below are some example queries that you can try:
   </p>
   <ul class="ai-search-suggestions">
-    <li>Search for handbag in Product module</li>
-    <li>Find John Doe in People and Project module</li>
-    <li>Search in Project for files containing any of the words: red, orange, or blue</li>
-    <li>Search in Food module for assets containing all of the words: tasty, delicious, and dessert</li>
+    #set( $count = 0 )
+    #foreach( $module in $chatprofile.getEntities() )
+      #if($module.getBoolean("showonsearch") && $module.id != "asset" && $count < 5)
+        #set( $entity = $mediaarchive.query($module.id).searchOne() )
+        #set( $entityname = "#text($entity)" )
+        #if( $entityname )
+          #set( $str = $foreach.count % 3 )
+          <li class="ai-suggest" role="button">#if( $str == 0 ) Search for #else Find #end <u>$entityname</u> in <u>#text($module)</u></li>
+          #set( $count = $count + 1 )
+        #end
+      #end
+    #end 
   </ul>
 </div>
