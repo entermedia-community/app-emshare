@@ -5,17 +5,46 @@ import org.openedit.hittracker.HitTracker
 
 public void init() {
 	
-	String searcherid = "postdata";
+	String searcherid = "asset";
 	
 	MediaArchive archive = context.getPageValue("mediaarchive");
 	Searcher searcher = archive.getSearcher(searcherid);
 	HitTracker rows = searcher.getAllHits();
+
 	ArrayList saveAll = new ArrayList();
 	rows.enableBulkOperations();
+	int count = 0;
 	rows.each{
 		String id = it.id;
 	
 		Data row = searcher.loadData(id);
+		String type = archive.getMediaRenderType(row);
+		if(type == "image") 
+		{
+			if(row.get("importstatus") == "imported")
+			{
+				row.setValue("importstatus", "created");
+				saveAll.add(row);
+				count ++;
+			}
+		}
+		else 
+		{
+			if(row.get("previewstatus") != "mime")
+				{
+					row.setValue("previewstatus", "mime");
+					saveAll.add(row);
+					count ++;
+				}
+		}
+		
+		if(saveAll.size()> 1000)
+		{
+			searcher.saveAllData(saveAll, null);
+			log.info("Saved " + count);
+			saveAll.clear();
+		}
+		
 /*
 		String keywords = row.get("knowledgebase_tag");
 		if (keywords != null)
@@ -25,7 +54,7 @@ public void init() {
 			row.setValue("knowledgebase_tag", fixedkeywords);
 			saveAll.add(row);
 		}
-	*/	
+	
 		
 		String sourcepath = row.get("sourcepath");
 		if (sourcepath != null && sourcepath.length() > 2 && sourcepath.charAt(sourcepath.length() - 1) == '/')
@@ -35,9 +64,12 @@ public void init() {
 			row.setValue("sourcepath", fixed);
 			saveAll.add(row);
 		}
+		*/	
 		
 	}
 	searcher.saveAllData(saveAll, null);
+	
+	archive.fireSharedMediaEvent("importing/assetscreated");
 	
 }
 
