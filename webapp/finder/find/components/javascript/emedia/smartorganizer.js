@@ -1752,8 +1752,10 @@ $(document).ready(function () {
 			});
 		});
 
-		lQuery("#importSmartNodes").livequery("click", function () {
-			$("#importSmartNodesFile").click();
+		lQuery("#importSmartNodes").livequery("click", function (e) {
+			e.stopPropagation();
+			e.preventDefault();
+			$("#importSmartNodesFile").trigger("click");
 		});
 
 		lQuery("#importSmartNodesFile").livequery("change", function () {
@@ -1798,8 +1800,13 @@ $(document).ready(function () {
 								positive: false,
 								log: error,
 							});
+						})
+						.finally(() => {
+							$("#importSmartNodesFile").val("");
 						});
 				});
+			} else {
+				$("#importSmartNodesFile").val("");
 			}
 		});
 
