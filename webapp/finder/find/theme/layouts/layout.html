@@ -3,7 +3,7 @@
 #ifnull($themeid)
 	#set($themeid = $content.get("themeid") )
 #end
-<html lang="en" class="$themeid">
+<html lang="en" class="$!themeid">
 <head>
 	#set( $section = "${content.section}")
 
@@ -22,10 +22,13 @@
 				[[My Account]] - $title
 			#elseif($section == "dashboard")
 				[[Dashboard Reports]] - $title
-			#elseif($module)
-				#text($module) - $title
-			#else($module)
-				$title
+			#else
+				#ifnotnull($module)
+					#text($module) - $title
+				#end
+				#ifnull($module)
+					$title
+				#end
 			#end
 		#end		
 	#end	
@@ -53,7 +56,9 @@
 	#if($desktop)
 		$pages.include("${apphome}/components/desktop/loading.html")
 	#end
+	
 	$pages.streamContent()
+	
 	<div class="toastList"></div>
 </body>
 </html>
