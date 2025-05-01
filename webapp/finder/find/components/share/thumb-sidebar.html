@@ -1,0 +1,22 @@
+<div class="share-sidebar">
+	<h4 class="mt-0 mb-2">[[Share Conversions]]</h4>
+	<div class="share-sidebar-items">
+		#set( $dlink = $mediaarchive.asLinkToDownload($asset, null, 0))
+		#ifnotnull($dlink)      
+			$context.putPageValue("dlink", $parent)
+			$context.putPageValue("preset", "Original")
+			$context.putPageValue("isoriginal", "true")
+			$pages.include("./thumb-sideitem.html", $context)
+			<div style="border-top:1px dashed #666"></div>
+		#end 
+	
+		#set($thumpresets = $mediaarchive.asListOfPreviewLinks($asset) )
+		#foreach ($preset in $thumpresets)
+			#set($dlink = $mediaarchive.asLinkToDownload($asset, null, $thumpresets))
+	
+			$context.putPageValue("dlink", $dlink)
+			$context.putPageValue("preset", $thumpresets)
+			$pages.include("./thumb-sideitem.html", $context)
+		#end 
+	</div>
+</div>
