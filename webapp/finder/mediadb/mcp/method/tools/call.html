@@ -1,0 +1,15 @@
+#set($raw = $render.loadInputFromTemplate($context,"$apphome/mcp/functions/${payload.params.name}.html"))
+
+{
+  "jsonrpc": "2.0",
+  "id": $payload.id,
+  "result": {
+    "content": [
+      {
+        "type": "text",
+        "text": #jesc($raw)
+      }
+    ],
+    "isError": false
+  }
+}
