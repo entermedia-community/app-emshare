@@ -427,13 +427,11 @@ $(document).ready(function () {
 		var writer = new draw2d.io.json.Writer();
 
 		function readerUnmarshal(canvas, json) {
-			console.log("reader.unmarshal", json);
 			reader.unmarshal(canvas, json);
 		}
 
 		function writerMarshal(canvas, callback) {
 			writer.marshal(canvas, function (json) {
-				console.log("writer.marshal", json);
 				callback(json);
 			});
 		}
@@ -596,19 +594,83 @@ $(document).ready(function () {
 			});
 		}
 
-		function localizeJSON(json) {
-			json = json.replaceAll("${apphome}", apphome);
-			json = json.replaceAll('"//', '"/');
-			console.log("localizeJSON", json);
-			return json;
+		function localizeJSON(jsonText) {
+			var json;
+			try {
+				json = JSON.parse(jsonText);
+				if (!Array.isArray(json) || json.length == 0) {
+					throw new Error();
+				}
+			} catch (error) {
+				customToast("Invalid JSON structure.", {
+					positive: false,
+				});
+				throw new Error("Invalid JSON structure.");
+			}
+
+			function restoreAppHomeRecursive(obj) {
+				if (!obj || typeof obj !== "object") {
+					return;
+				}
+				Object.entries(obj).forEach(([key, value]) => {
+					if (typeof value === "object") {
+						restoreAppHomeRecursive(value);
+					} else if (typeof value === "string") {
+						if (key !== "path" && key !== "moduleicon") return;
+						var apphomeIdx = value.indexOf("${apphome}");
+						if (apphomeIdx === -1) return;
+						obj[key] = apphome + value.substring(apphomeIdx + 10);
+					}
+				});
+			}
+
+			json.forEach(restoreAppHomeRecursive);
+
+			return JSON.stringify(json);
+		}
+
+		function getDynamicPath(path) {
+			if (path.startsWith("//")) {
+				path = path.substring(1);
+			} else if (!path.startsWith("/")) {
+				path = "/" + path;
+			}
+			if (path.startsWith(apphome)) {
+				path = "${apphome}" + path.substring(apphome.length());
+			}
+			return path;
 		}
 
 		function globalizeJSON(json) {
-			json = json.replaceAll(apphome, "${apphome}");
-			json = json.replace(/([^"]*?)\$\{apphome\}/, "/${apphome}");
-			json = json.replaceAll('"//', '"/');
-			console.log("globalizeJSON", json);
-			return json;
+			if (!Array.isArray(json) || json.length == 0) {
+				customToast("Invalid JSON structure.", {
+					positive: false,
+				});
+				throw new Error("Invalid JSON structure.");
+			}
+
+			function addAppHomeRecursive(obj) {
+				if (!obj || typeof obj !== "object") {
+					return;
+				}
+				Object.entries(obj).forEach(([key, value]) => {
+					if (typeof value === "object") {
+						addAppHomeRecursive(value);
+					} else if (typeof value === "string") {
+						if (key !== "path" && key !== "moduleicon") return;
+						try {
+							var url = new URL(value);
+							obj[key] = getDynamicPath(url.pathname);
+						} catch {
+							obj[key] = getDynamicPath(value);
+						}
+					}
+				});
+			}
+
+			json.forEach(addAppHomeRecursive);
+
+			return JSON.stringify(json);
 		}
 
 		function loadJSON() {
@@ -1381,8 +1443,7 @@ $(document).ready(function () {
 					submitmethod = "POST";
 				}
 
-				var datastring = JSON.stringify(data);
-				var updateddata = globalizeJSON(datastring);
+				var updateddata = globalizeJSON(data);
 
 				jQuery.ajax({
 					dataType: "json",
@@ -1681,7 +1742,7 @@ $(document).ready(function () {
 			getSelectedJson(function (json) {
 				var icon = $(this).find("i");
 				icon.removeClass("bi-copy").addClass("bi-check-lg");
-				var copyJson = globalizeJSON(JSON.stringify(json));
+				var copyJson = globalizeJSON(json);
 				if (!navigator.clipboard) {
 					fallbackCopyText(copyJson);
 					setTimeout(function () {
@@ -1723,7 +1784,9 @@ $(document).ready(function () {
 						moduleids.push(moduleid);
 					}
 				}
-				var copyJson = globalizeJSON(JSON.stringify(json));
+
+				var copyJson = globalizeJSON(json);
+
 				$.ajax({
 					url:
 						apphome +
