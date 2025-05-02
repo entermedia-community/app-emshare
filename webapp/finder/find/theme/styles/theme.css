@@ -82,7 +82,6 @@ body {
 }
 .pickerresults .pickfromiframe,
 #application.blockfind .pickfromiframe {
-	display: block;
 	position: absolute;
 	display: flex;
 	flex-direction: column;
@@ -93,14 +92,22 @@ body {
 	top: 50%;
 	left: 50%;
 	width: 50%;
+	max-width: 60px;
 	height: 50%;
+	max-height: 60px;
 	border-radius: 50%;
 	transform: translate(-50%, -50%);
 	z-index: 1000;
 	background: radial-gradient(var(--themed-btn-acc-active), transparent 80%);
+	opacity: 0;
+	transition: all 0.2s ease-in-out;
 	cursor: pointer;
 }
-.pickerresults .emfolder-wrapper .pickfromiframe,
+.pickerresults div:hover > .pickfromiframe,
+.pickerresults .emgridcell:hover .pickfromiframe,
+#application.blockfind div:hover > .pickfromiframe {
+	opacity: 1;
+}
 #application.blockfind .emfolder-wrapper .pickfromiframe {
 	display: none;
 	pointer-events: none;
@@ -108,7 +115,7 @@ body {
 .pickerresults .pickfromiframe i.bi,
 #application.blockfind .pickfromiframe i.bi {
 	transition: all 0.2s ease-in-out;
-	font-size: 1rem;
+	font-size: 0.85rem;
 }
 .pickerresults .pickfromiframe:hover i.bi,
 #application.blockfind .pickfromiframe:hover i.bi {
@@ -118,6 +125,12 @@ body {
 #application.blockfind .pickfromiframe span {
 	font-size: 0.7rem;
 	text-shadow: 0px 1px 1px rgb(0, 0, 0);
+}
+.pickerresults .emthumb-mask {
+	display: none !important;
+}
+.pickerresults .emdialog.emcategory-edit {
+	display: none !important;
 }
 .heightExcludingHeaderFooter {
 	height: var(--height-ex-hf);
@@ -2368,6 +2381,12 @@ a.col-resize i {
 .col-left-library.col-left,
 .col-left-library.col-filters {
 	top: 80px;
+}
+.emresultstable:has(~ .summary-container) {
+	max-width: calc(100% - 250px);
+}
+.emresultstable:has(~ .summary-container.closed) {
+	max-width: 100%;
 }
 .summary-container {
 	display: flex;
