@@ -1,9 +1,23 @@
 <div class="share-preset">
-	<a class="preset-dl-link"><i class="bi bi-download ns"></i></a>
-	<div class="preset-prop"><strong>[[Size]]:</strong> 200x200</div>
-	<div class="preset-prop"><strong>[[Format]]:</strong> JPEG</div> 
+	
+	#set($dlink = $mediaarchive.asLinkToShare($context.getSiteRoot(),$asset,$preset))
+	<a target="_new" href="$dlink" class="preset-dl-link">
+
+		#set( $ext = $url_util.getPathUtilities().extractPageType($dlink))
+		#set ($mime = $mediaarchive.getMimeTypeIcon($ext))
+		<div class="format-thumb">
+			<i class="bi bi-$mime"></i>
+		</div>
+	</a>
+	<div class="preset-prop"><strong>[[Type]]:</strong> #text($preset)</div>
+	
+	#set( $type = $mediaarchive.getCachedData("fileformat",$preset.outputextension))
+	<div class="preset-prop"><strong>[[Format]]:</strong> #text($type)</div>
+	 
+	#set( $filename = $url_util.getPathUtilities().extractFileName($dlink))
+	<div class="preset-prop"><strong>[[Name]]:</strong> #elidemiddle($filename, 30)</div>
 	<div class="d-flex flex-column align-items-center preset-links">
-		<a class="preset-copy-link copytoclipboard" data-text="$plink"><i class="bi bi-copy ns mr-1"></i> Preview Page Link</a>
-		<a class="preset-copy-link dl copytoclipboard" data-text="$dlink"><i class="bi bi-copy ns mr-1"></i> Download Link</a>
+		<a class="preset-copy-link copytoclipboard"  data-text="$dlink"><i class="bi bi-copy ns mr-1"></i> Preview Page Link</a>
+		<a class="preset-copy-link dl copytoclipboard" data-text="$dlink?download=true"><i class="bi bi-copy ns mr-1"></i> Download Link</a>
 	</div>
 </div>

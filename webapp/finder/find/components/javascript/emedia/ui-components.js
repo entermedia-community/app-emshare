@@ -250,9 +250,6 @@ jQuery(document).ready(function () {
 			return;
 		}
 
-		if (textToCopy.startsWith("http://") || textToCopy.startsWith("https://")) {
-			textToCopy = encodeURI(textToCopy);
-		}
 		copyTextToClipboard(textToCopy, function () {
 			customToast("Copied to clipboard!");
 			var btnHtm = btn.html();
