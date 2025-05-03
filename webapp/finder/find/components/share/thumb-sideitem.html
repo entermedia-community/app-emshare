@@ -9,13 +9,17 @@
 			<i class="bi bi-$mime"></i>
 		</div>
 	</a>
-	<div class="preset-prop"><strong>[[Type]]:</strong> #text($preset)</div>
-	
-	#set( $type = $mediaarchive.getCachedData("fileformat",$preset.outputextension))
-	<div class="preset-prop"><strong>[[Format]]:</strong> #text($type)</div>
-	 
-	#set( $filename = $url_util.getPathUtilities().extractFileName($dlink))
-	<div class="preset-prop"><strong>[[Name]]:</strong> #elidemiddle($filename, 30)</div>
+
+	<div class="d-flex flex-column">
+		<div class="preset-prop"><strong>[[Type]]:</strong> #text($preset)</div>
+		
+		#set( $type = $mediaarchive.getCachedData("fileformat",$preset.outputextension))
+		<div class="preset-prop"><strong>[[Format]]:</strong> #text($type)</div>
+		 
+		#set( $filename = $url_util.getPathUtilities().extractFileName($dlink))
+		<div class="preset-prop"><strong>[[Name]]:</strong> #elidemiddle($filename, 25)</div>
+	</div>
+
 	<div class="d-flex flex-column align-items-center preset-links">
 		<a class="preset-copy-link copytoclipboard"  data-text="$dlink"><i class="bi bi-copy ns mr-1"></i> Preview Page Link</a>
 		<a class="preset-copy-link dl copytoclipboard" data-text="$dlink?download=true"><i class="bi bi-copy ns mr-1"></i> Download Link</a>

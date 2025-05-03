@@ -22,8 +22,17 @@
         data-oemaxlevel="1"
 	      data-restorechannel="true"
 	      href="$edithome/sessionrestore.html" 
-        title="[[Retrieve this session]]"> 
-        <span>$!hit.name</span>
+        title="[[Retrieve this session]]">
+        #ifnotnull($hit.name)
+          <span>$!hit.name</span>
+        #end
+        #ifnull($hit.name)
+          #if($foreach.count == 1)
+            <span class="text-muted">[[Current Session]]</span>
+          #else
+            <span class="text-muted">[[Session]] #$foreach.count</span>
+          #end
+        #end
         <small class="text-muted">#datetime($hit.refreshdate)</small>
       </a>
 
