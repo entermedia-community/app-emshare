@@ -707,7 +707,7 @@ $(document).ready(function () {
 							}
 						}
 					} else {
-						console.error("Error", res);
+						console.log("No saved data", res);
 					}
 				},
 				complete: function () {
