@@ -598,7 +598,7 @@ $(document).ready(function () {
 			var json;
 			try {
 				json = JSON.parse(jsonText);
-				if (!Array.isArray(json) || json.length == 0) {
+				if (!json || typeof json !== "object") {
 					throw new Error();
 				}
 			} catch (error) {
@@ -608,25 +608,30 @@ $(document).ready(function () {
 				throw new Error("Invalid JSON structure.");
 			}
 
-			function restoreAppHomeRecursive(obj) {
-				if (!obj || typeof obj !== "object") {
-					return;
-				}
-				Object.entries(obj).forEach(([key, value]) => {
-					if (typeof value === "object") {
-						restoreAppHomeRecursive(value);
-					} else if (typeof value === "string") {
-						if (key !== "path" && key !== "moduleicon") return;
-						var apphomeIdx = value.indexOf("${apphome}");
-						if (apphomeIdx === -1) return;
-						obj[key] = apphome + value.substring(apphomeIdx + 10);
+			if (!Array.isArray(json)) {
+				json.json = localizeJSON(json.json);
+				return JSON.stringify(json);
+			} else {
+				function restoreAppHomeRecursive(obj) {
+					if (!obj || typeof obj !== "object") {
+						return;
 					}
-				});
+					Object.entries(obj).forEach(([key, value]) => {
+						if (typeof value === "object") {
+							restoreAppHomeRecursive(value);
+						} else if (typeof value === "string") {
+							if (key !== "path" && key !== "moduleicon") return;
+							var apphomeIdx = value.indexOf("${apphome}");
+							if (apphomeIdx === -1) return;
+							obj[key] = apphome + value.substring(apphomeIdx + 10);
+						}
+					});
+				}
+
+				json.forEach(restoreAppHomeRecursive);
+
+				return JSON.stringify(json);
 			}
-
-			json.forEach(restoreAppHomeRecursive);
-
-			return JSON.stringify(json);
 		}
 
 		function getDynamicPath(path) {
@@ -636,41 +641,47 @@ $(document).ready(function () {
 				path = "/" + path;
 			}
 			if (path.startsWith(apphome)) {
-				path = "${apphome}" + path.substring(apphome.length());
+				path = "${apphome}" + path.substring(apphome.length);
 			}
 			return path;
 		}
 
 		function globalizeJSON(json) {
-			if (!Array.isArray(json) || json.length == 0) {
+			if (!json || typeof json !== "object") {
 				customToast("Invalid JSON structure.", {
 					positive: false,
 				});
 				throw new Error("Invalid JSON structure.");
 			}
 
-			function addAppHomeRecursive(obj) {
-				if (!obj || typeof obj !== "object") {
-					return;
-				}
-				Object.entries(obj).forEach(([key, value]) => {
-					if (typeof value === "object") {
-						addAppHomeRecursive(value);
-					} else if (typeof value === "string") {
-						if (key !== "path" && key !== "moduleicon") return;
-						try {
-							var url = new URL(value);
-							obj[key] = getDynamicPath(url.pathname);
-						} catch {
-							obj[key] = getDynamicPath(value);
-						}
+			if (!Array.isArray(json)) {
+				var jsonObj = JSON.parse(json.json);
+				json.json = globalizeJSON(jsonObj);
+				return JSON.stringify(json);
+			} else {
+				function addAppHomeRecursive(obj) {
+					if (!obj || typeof obj !== "object") {
+						return;
 					}
-				});
+					Object.entries(obj).forEach(([key, value]) => {
+						if (typeof value === "object") {
+							addAppHomeRecursive(value);
+						} else if (typeof value === "string") {
+							if (key !== "path" && key !== "moduleicon") return;
+							try {
+								var url = new URL(value);
+								obj[key] = getDynamicPath(url.pathname);
+							} catch {
+								obj[key] = getDynamicPath(value);
+							}
+						}
+					});
+				}
+
+				json.forEach(addAppHomeRecursive);
+
+				return JSON.stringify(json);
 			}
-
-			json.forEach(addAppHomeRecursive);
-
-			return JSON.stringify(json);
 		}
 
 		function loadJSON() {
@@ -696,7 +707,7 @@ $(document).ready(function () {
 							}
 						}
 					} else {
-						console.error("Error", res);
+						console.log("No saved data", res);
 					}
 				},
 				complete: function () {

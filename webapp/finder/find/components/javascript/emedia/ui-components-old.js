@@ -1,6 +1,8 @@
 var siteroot;
 var apphome;
 
+window.VIDEOJS_NO_DYNAMIC_STYLE = true;
+
 function initializeUI() {
 	var app = jQuery("#application");
 	siteroot = app.data("siteroot");
@@ -11,6 +13,8 @@ function initializeUI() {
 		apphome = siteroot + apphome;
 		themeprefix = siteroot + themeprefix;
 	}
+	
+	
 
 	if ($.fn.tablesorter) {
 		$("#tablesorter").tablesorter();
@@ -2106,7 +2110,10 @@ function initializeUI() {
 		}
 		$("#datamanager-workarea").load(
 			apphome + "/views/settings/lists/datamanager/list/columnsort.html",
-			args
+			args,
+			function(response, status, xhr) {
+				$(window).trigger("resize");
+			}
 		);
 		e.stopPropagation();
 	});

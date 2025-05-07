@@ -1,0 +1,49 @@
+#ifnull($childasset)
+  #set($childassetid = $context.getRequestParameter("assetid"))
+  #set($childasset = $mediaarchive.getAsset($childassetid))
+#end
+
+#ifnull($aspectratio)
+  #set($aspectratio = $context.getRequestParameter("aspectratio"))
+#end
+
+#ifnull($aspectratio)
+  #set($aspectratio = "1/1")
+#end
+
+<div id="cropeditor" class="d-flex flex-column align-items-center justify-content-center flex-grow-1" data-aspectratio="$aspectratio">
+  #set ($previewlink = $mediaarchive.asLinkToPreview($childasset, "image3000x3000") )
+  <img src="$previewlink" id="cropsubject">
+  <div class="d-flex align-items-center">
+    <button class="btn btn-lg btn-primary m-2" id="cropbtn">
+      <i class="bi bi-crop mr-2"></i> [[Crop]]
+    </button>
+  </div>
+  <script>
+    (function() {
+      var aspect = $("#cropeditor").data("aspectratio").split("/");
+      var aspectratio = aspect[0] / aspect[1];
+      if(isNaN(aspectratio)) {
+        aspectratio = 1;
+        console.log("Invalid aspect ratio, defaulting to 1:1");
+      }
+      var cropContext;
+      $('#cropsubject').Jcrop({  
+        allowResize: true,  // required
+        handles: true, // required
+        aspectRatio: aspectratio, 
+        boxWidth: Math.min(1000, $(window).width() - 500), 
+        setSelect: [20, 40, 200, 400], //load from the server 
+        trueSize: [3000, 1688], //load from server
+        onSelect: function(c) { 
+          console.log('Crop selected:', c);
+        }
+      }, function() {
+        cropContext = this;
+        $("#cropbtn").click(function() {
+          var bounds = cropContext.getBounds(); 
+        });
+      });
+    })();
+  </script>
+</div>

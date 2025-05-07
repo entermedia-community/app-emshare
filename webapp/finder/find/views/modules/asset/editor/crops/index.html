@@ -1,0 +1,18 @@
+#set($childassetid = $context.getRequestParameter("assetid"))
+#set($childasset = $mediaarchive.getAsset($childassetid))
+
+#set($aspectratio = $context.getRequestParameter("aspectratio"))
+
+#ifnull($aspectratio)
+  #set($aspectratio = "1/1")
+#end
+
+$context.putPageValue("childasset", $childasset)
+$context.putPageValue("aspectratio", $aspectratio)
+
+<div id="asset-editor-container" class="h-100">
+  <div class="d-flex w-100 h-100">
+    $pages.include("./cropsidebar.html", $context)
+    $pages.include("./cropeditor.html", $context)
+  </div>
+</div>
