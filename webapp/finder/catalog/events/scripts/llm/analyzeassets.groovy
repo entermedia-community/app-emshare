@@ -47,7 +47,8 @@ public void tagAssets(){
 	}
 	
 	log.info("AI manager selected: " + type + " Model: "+ model + " - Tagging: " + assets.size() + " assets");
-	
+	assets.enableBulkOperations();
+	int count = 1;
 	for (hit in assets) {
 		Asset asset = archive.getAssetSearcher().loadData(hit);
 		inReq.putPageValue("asset", asset);
@@ -56,18 +57,18 @@ public void tagAssets(){
 		String imagesize = null;
 		if (mediatype == "image")
 		{
-			imagesize = "image3000x3000.jpg";
+			imagesize = "image3000x3000";
 		}
 		else if (mediatype == "video")
 		{
-			imagesize = "image1900x1080.jpg";
+			imagesize = "image1900x1080";
 		}
 		else {
 			continue;
 		}
 		ContentItem item = archive.getGeneratedContent(asset, imagesize);
 		if(!item.exists()) {
-			log.info("Missing 3000x3000 generated image for:" + asset.getName());
+			log.info("Missing " + imagesize + " generated image for:" + asset.getName());
 			continue;
 		}
 		
@@ -83,7 +84,7 @@ public void tagAssets(){
 			inputStream.close() // Close the InputStream
 		}
 
-		log.info("Analyzing asset: (" + asset.getId() + ") " + asset.getName());
+		log.info("Analyzing asset ("+count+"/"+assets.size()+") Id: " + asset.getId() + " " + asset.getName());
 		
 
 		String template = manager.loadInputFromTemplate(inReq, "/" +  archive.getMediaDbId() + "/gpt/systemmessage/analyzeasset.html");
@@ -101,11 +102,11 @@ public void tagAssets(){
 					int detected =  manager.copyData(arguments, asset);
 					if (detected > 0)
 					{
-						log.info("("+asset.getId() +") "+ asset.getName()+" - Detected: " + detected);
+						log.info(" Asset "+asset.getId() +" "+ asset.getName()+" - Detected: " + detected);
 					}
 				}
 				else {
-					log.info("("+asset.getId() +") "+asset.getName()+" - Nothing Detected.");
+					log.info("Asset "+asset.getId() +" "+asset.getName()+" - Nothing Detected.");
 				}
 				asset.setValue("taggedbyllm", true);
 				archive.saveAsset(asset);
