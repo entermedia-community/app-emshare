@@ -57,17 +57,18 @@ public void tagAssets(){
 		String imagesize = null;
 		if (mediatype == "image")
 		{
-			imagesize = "image3000x3000";
+			imagesize = "image3000x3000.jpg";
 		}
 		else if (mediatype == "video")
 		{
-			imagesize = "image1900x1080";
+			imagesize = "image1900x1080.jpg";
 		}
 		else {
 			continue;
 		}
 		ContentItem item = archive.getGeneratedContent(asset, imagesize);
 		if(!item.exists()) {
+			
 			log.info("Missing " + imagesize + " generated image for:" + asset.getName());
 			continue;
 		}
@@ -83,6 +84,8 @@ public void tagAssets(){
 		} finally {
 			inputStream.close() // Close the InputStream
 		}
+		
+		
 
 		log.info("Analyzing asset ("+count+"/"+assets.size()+") Id: " + asset.getId() + " " + asset.getName());
 		
