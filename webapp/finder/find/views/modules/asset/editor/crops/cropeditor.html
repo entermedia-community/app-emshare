@@ -1,49 +1,109 @@
-#ifnull($childasset)
-  #set($childassetid = $context.getRequestParameter("assetid"))
-  #set($childasset = $mediaarchive.getAsset($childassetid))
-#end
+#set($presetid = $context.getRequestParameter("presetid"))
 
-#ifnull($aspectratio)
-  #set($aspectratio = $context.getRequestParameter("aspectratio"))
-#end
+#set($preset = $mediaarchive.query("convertpreset").exact("id", $presetid).searchOne())
 
-#ifnull($aspectratio)
-  #set($aspectratio = "1/1")
-#end
+#set($dimension = $conversionUtil.getConvertPresetDimension($mediaarchive.getCatalogId(), $presetid))
 
-<div id="cropeditor" class="d-flex flex-column align-items-center justify-content-center flex-grow-1" data-aspectratio="$aspectratio">
-  #set ($previewlink = $mediaarchive.asLinkToPreview($childasset, "image3000x3000") )
-  <img src="$previewlink" id="cropsubject">
-  <div class="d-flex align-items-center">
-    <button class="btn btn-lg btn-primary m-2" id="cropbtn">
+#set($aspectratio = $conversionUtil.getConvertPresetAspectRatio($dimension))
+
+<div id="cropeditor" class="d-flex flex-column align-items-center justify-content-center flex-grow-1">
+  <div id="cropdata" class="d-none" data-aspectratio="$aspectratio"></div>
+
+  <div class="mb-3 text-center">
+    <h4 class="p-0 mb-1">$preset.getName() </h4>
+    <span class="text-muted">$aspectratio</span>
+  </div>
+  
+  #set ($img = $mediaarchive.asLinkToPreview($asset, "image3000x3000") )
+
+  <img src="$img" id="cropsubject">
+
+  <form class="d-flex align-items-center ajaxform" data-targetdiv="asset-editor-container" action="${apphome}/views/modules/asset/editor/crops/save.html" method="post" id="cropform">
+    <input type="hidden" name="sourcepath" value='$asset.get("sourcepath")'>
+    <input name="field" value="crop" type="hidden" />
+    <input name="crop.value" value="true" type="hidden" />
+    
+    <input name="field" value="presetid" type="hidden" />
+    <input name="presetid.value" value="${presetid}" type="hidden" />
+    
+    <input name="field" value="x1" type="hidden" />
+    <input name="x1.value" value="" type="hidden" />
+    
+    <input name="field" value="y1" type="hidden" />
+    <input name="y1.value" value="" type="hidden" />
+    
+    <input name="field" value="cropwidth" type="hidden" />
+    <input name="cropwidth.value" value="" type="hidden" />
+    
+    <input name="field" value="cropheight" type="hidden" />
+    <input name="cropheight.value" value="" type="hidden" />
+    
+    <input name="field" value="cropprevieww" type="hidden" />
+    <input name="cropprevieww.value" value="" type="hidden" />
+    
+    <input name="field" value="croppreviewh" type="hidden" />
+    <input name="croppreviewh.value" value="" type="hidden" />
+    
+    <button class="btn btn-lg btn-primary m-2" type="submit">
       <i class="bi bi-crop mr-2"></i> [[Crop]]
     </button>
-  </div>
+    
+  </form>
+  
   <script>
     (function() {
-      var aspect = $("#cropeditor").data("aspectratio").split("/");
-      var aspectratio = aspect[0] / aspect[1];
+      var cropdata = $("#cropdata").data();
+      var aspect = cropdata.aspectratio.split(":");
+      var aspectratio = parseFloat(aspect[0]);
+
       if(isNaN(aspectratio)) {
         aspectratio = 1;
-        console.log("Invalid aspect ratio, defaulting to 1:1");
+        console.warn("Invalid aspect ratio, defaulting to 1:1");
       }
-      var cropContext;
-      $('#cropsubject').Jcrop({  
-        allowResize: true,  // required
-        handles: true, // required
+
+      var cropData;
+
+      var options = {
+        allowResize: true,
+        handles: true,
         aspectRatio: aspectratio, 
         boxWidth: Math.min(1000, $(window).width() - 500), 
-        setSelect: [20, 40, 200, 400], //load from the server 
-        trueSize: [3000, 1688], //load from server
-        onSelect: function(c) { 
-          console.log('Crop selected:', c);
-        }
+        setSelect: [0, 0, 200, 400],
+      }
+
+      $('#cropsubject').Jcrop({
+        ...options, 
+        onSelect: function() {
+          if(this.ui) {
+            setForm(this.ui.holder, this.ui.selection);
+          }
+        } 
       }, function() {
-        cropContext = this;
-        $("#cropbtn").click(function() {
-          var bounds = cropContext.getBounds(); 
-        });
+        this.focus();
+        if(this.ui) {
+          setForm(this.ui.holder, this.ui.selection);
+        }
       });
+
+      function setForm(holder, selection) {
+        var H = $(holder).offset();
+        var S = $(selection).offset();
+        var pos = {
+          x: S.left - H.left,
+          y: S.top - H.top,
+          w: $(selection).width(),
+          h: $(selection).height()
+        };
+        $("#cropform input[name='x1.value']").val(pos.x);
+        $("#cropform input[name='y1.value']").val(pos.y);
+        $("#cropform input[name='cropwidth.value']").val(pos.w);
+        $("#cropform input[name='cropheight.value']").val(pos.h);
+        var ar = $('#cropsubject').width() / $('#cropsubject').height();
+        var w = options.boxWidth;
+        var h = w / ar;
+        $("#cropform input[name='cropprevieww.value']").val(w);
+        $("#cropform input[name='croppreviewh.value']").val(h);
+      }
     })();
   </script>
 </div>
