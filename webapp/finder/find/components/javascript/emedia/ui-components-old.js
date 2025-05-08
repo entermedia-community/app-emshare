@@ -2110,7 +2110,10 @@ function initializeUI() {
 		}
 		$("#datamanager-workarea").load(
 			apphome + "/views/settings/lists/datamanager/list/columnsort.html",
-			args
+			args,
+			function(response, status, xhr) {
+				$(window).trigger("resize");
+			}
 		);
 		e.stopPropagation();
 	});
