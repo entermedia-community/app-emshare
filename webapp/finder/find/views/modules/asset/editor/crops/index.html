@@ -1,18 +1,49 @@
-#set($childassetid = $context.getRequestParameter("assetid"))
-#set($childasset = $mediaarchive.getAsset($childassetid))
-
-#set($aspectratio = $context.getRequestParameter("aspectratio"))
-
-#ifnull($aspectratio)
-  #set($aspectratio = "1/1")
+#ifnull($asset)
+  #set($assetid = $context.getRequestParameter("assetid"))
+  #set($asset = $mediaarchive.getAsset($assetid))
 #end
 
-$context.putPageValue("childasset", $childasset)
-$context.putPageValue("aspectratio", $aspectratio)
+$context.putPageValue("asset", $asset)
 
 <div id="asset-editor-container" class="h-100">
   <div class="d-flex w-100 h-100">
-    $pages.include("./cropsidebar.html", $context)
-    $pages.include("./cropeditor.html", $context)
+    #set ($previewlink = $mediaarchive.asLinkToPreview($asset, "image200x200") )
+    
+    #set( $presets = $conversionUtil.getCroppablePresetList($mediaarchive, $asset) )
+      
+    #if($presets.size() == 0)
+      <div class="alert alert-warning">
+        [[No Crop Presets Available]]
+      </div>
+    #else
+      <div class="bg-light border-right" style="min-width: 200px;">
+        <h4 class="mt-2 mb-1 text-center">[[Crop Presets]]</h4>
+        <div class="crop-presets overflow-y px-2 pt-1 pb-3 auto-active-container">
+          #foreach($presetdata in $presets)
+              #set($dimension = $conversionUtil.getConvertPresetDimension($mediaarchive.getCatalogId(),$presetdata.id))
+              #set($height = $mathtool.toInteger($dimension.getHeight()))
+              #set($width = $mathtool.toInteger($dimension.getWidth()))
+              
+              #set($aspectratio = $conversionUtil.getConvertPresetAspectRatio($dimension))
+      
+              #set($name = $presetdata.getName())
+              
+              <a href="${apphome}/views/modules/asset/editor/crops/cropeditor.html" class="btn btn-wide ajax auto-active-link w-100 mb-2 #if($foreach.count == 1) current #end" data-targetdiv="cropeditor" data-oemaxlevel="1" data-presetid="$presetdata.getId()">
+                <span>$name</span> 
+                #set($generated = $presetdata.get("generatedoutputfile") )
+                #set ($previewlink = $mediaarchive.asLinkToPreview($asset, null, "${generated}") )
+                <img src="$previewlink" class="img-fluid">
+                <strong>$width &times; $height</strong>
+              </a>
+      
+          #end
+      
+        </div>
+      </div>
+
+      $pages.include("./cropeditor.html?presetid=${presets[0].getId()}", $context)
+
+    #end
+    
   </div>
 </div>
