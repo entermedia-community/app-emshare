@@ -8,31 +8,106 @@ $pages.include("${searchhome}/resultheader.html",$context)
 #set($positiondetail = "geo_point")
 #end
 
+
 <script type="text/javascript">
+	
+	
+jQuery(document).ready(function(){ 
+	
+	let map;
+
+	async function initMap() {
+	  
+	  const position = { lat: 29.025818619038375, lng: -15.03089171562499 };
+	  const { Map, InfoWindow } = await google.maps.importLibrary("maps");
+	  const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
+	  map = new Map(document.getElementById("map"), {
+	    zoom: 2,
+	    center: position,
+	    mapId: "RESULTSMAP",
+	  });
+	  
+	  const infoWindow = new InfoWindow();
+	
+	  #foreach($location in $hits.getPageOfHits())
+	  	#set($latandlong= $location.getValue("geo_point"))
+		#ifnotnull($latandlong)
+	  		//$latandlong
+		   #set( $lat = $latandlong.getLatitude() )
+		   #set( $lng = $latandlong.getLongitude() )
+			var marker${location.getId()} = new AdvancedMarkerElement({
+						position: getLatLngFromString('$lat,$lng'),
+						draggable: true, 
+				        map: map,
+					    #if($icon)
+							icon: '$icon.url',
+						#end
+				        title: '$location.getName()',
+						//content: infoWindow("$location.getId()")
+						
+						gmpClickable: true,
+				     });
+					 
+			lQuery(marker${location.getId()}).livequery("click", function () {
+				   infoWindow.close();
+				   infoWindow.setContent(assetdetails("$location.getId()"));
+				   infoWindow.open(marker${location.getId()}.map, marker${location.getId()});
+				 });
+	  	#end
+	  #end
+	}
+	
+	function assetdetails(assetid){
+		const content = document.createElement("div");
+		const detaildivid = "assetmapdetails"+assetid;
+		content.setAttribute("id", detaildivid);
+		content.classList.add("mapmarker");
+		var mapinfopage = "${searchhome}/types/mapbubble.html?oemaxlevel=1&id="+assetid;
+		jQuery.ajax({
+			url: mapinfopage,
+			success: function (data) {
+				$("#"+detaildivid).replaceWith(data);
+ 			}
+		});
+		return content;
+	}
+	
+	function getLatLngFromString(ll) {
+	    var latlng = ll.split(/, ?/);
+	    return new google.maps.LatLng(parseFloat(latlng[0]), parseFloat(latlng[1])); 
+	}
+
+	initMap();
+
+});
+	
+	
+	
+	/*
 
 jQuery(document).ready(function(){ 
-$('#map').gmap({
-	 'center':'39.025818619038375,-95.03089171562499',
-}).bind('init', function(ev, map) {
-	#foreach($location in $hits.getPageOfHits())
-		
-      	$('#map').gmap('addMarker', 
-		{
-			'position': '$!location.get("$positiondetail")'		    
-	 	}).click(function() {
-	 		var location = this;
-	 		jQuery.get("$apphome/views/modules/${moduleid}/search/mapbubble.html?id=$location.id&sourcepath=$location.sourcepath", function (content){
-	 			$('#map').gmap('openInfoWindow', {'content': content}, location);
-
-	 		});
-
-		});;
+	$('#map').gmap({
+		 'center':'39.025818619038375,-95.03089171562499',
+	}).bind('init', function(ev, map) {
+		#foreach($location in $hits.getPageOfHits())
+			
+	      	$('#map').gmap('addMarker', 
+			{
+				'position': '$!location.get("$positiondetail")'		    
+		 	}).click(function() {
+		 		var location = this;
+		 		jQuery.get("$apphome/views/modules/${moduleid}/search/mapbubble.html?id=$location.id&sourcepath=$location.sourcepath", function (content){
+		 			$('#map').gmap('openInfoWindow', {'content': content}, location);
 	
-	#end
-});
+		 		});
+	
+			});;
+		
+		#end
+	});
 });
     
-
+*/
 
    
     </script>
