@@ -14,14 +14,14 @@ $pages.include("${searchhome}/resultheader.html",$context)
 	
 jQuery(document).ready(function(){ 
 	
-	let map;
+	let mapresults;
 
 	async function initMap() {
 	  
 	  const position = { lat: 29.025818619038375, lng: -15.03089171562499 };
 	  const { Map, InfoWindow } = await google.maps.importLibrary("maps");
 	  const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
-	  map = new Map(document.getElementById("map"), {
+	  mapresults = new Map(document.getElementById("mapresults"), {
 	    zoom: 2,
 	    center: position,
 	    mapId: "RESULTSMAP",
@@ -38,7 +38,7 @@ jQuery(document).ready(function(){
 			var marker${location.getId()} = new AdvancedMarkerElement({
 						position: getLatLngFromString('$lat,$lng'),
 						draggable: true, 
-				        map: map,
+				        map: mapresults,
 					    #if($icon)
 							icon: '$icon.url',
 						#end
@@ -111,7 +111,7 @@ jQuery(document).ready(function(){
 
    
     </script>
-<div id="map" align style="width: 100%; height: 680px;">
+<div id="mapresults" align style="width: 100%; height: 680px;">
 	<p class="info mt-3">
     <strong>Map view is not available</strong>
   </p>
