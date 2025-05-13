@@ -1,0 +1,39 @@
+#set( $moduleid = $context.findValue("module") )
+
+#set ( $defaultview = $userprofile.getDefaultViewForModule($moduleid) )
+#set( $searchhome = $context.findValue("searchhome") )
+
+
+
+
+
+
+
+<div class="mapviewassetpanel d-flex panel-default">
+	<div>
+		#if($data)
+			#if( $data.assettitle )
+				#set($title =  $data.getText("assettitle",$context)) 
+			#else 
+				#set($title = $data.getText("name",$context) )
+			#end
+			$context.putPageValue("thumbsize", "crop" )
+			$context.putPageValue("hit", $data) 
+			$context.putPageValue("asset", $data)
+			$!context.putPageValue("searchhome", "$apphome/views/modules/asset/results/default")
+			<a href="#" class="stackedplayer" data-dataid="$data.getId()" data-assetid="$data.getId()" title="$!title">
+			$pages.include("$apphome/views/modules/asset/results/default/thumbnails/small.html",$context)
+			</a>
+		#end
+	</div>
+  	<div class="pl-2">
+	  <a href="#" class="stackedplayer" data-dataid="$data.getId()" data-assetid="$data.getId()" title="$!title"><h3 class="panel-title">$!data.name</h3></a>
+	</div>
+	
+</div>
+
+
+
+
+
+

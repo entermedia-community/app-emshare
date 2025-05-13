@@ -1,0 +1,28 @@
+#set($inputid="${detail.id}")
+
+#set( $op = $term.getParameter("op") )
+##<select name="operation" id="operation${inputid}" >
+##	<option value="mapaddress" >[[City or Address]]</option>
+##	<option value="mapip" #if( $op && $op == "mapip" )selected #end >[[IP Address]]</option>
+##</select>
+<input name="operation" type="hidden" value="mapaddress" >
+
+<div id="datevalue${inputid}" class="mb-1" >
+#if( $val.isEmpty() )
+	<input name="${inputid}.value"  id="${inputid}" placeholder="[[Address or Zip code]]" type="text" class="form-control" />
+#else
+	<input name="${inputid}.value"  id="${inputid}" value="$!val" size="10" type="text"  class="form-control" />
+
+#end	
+	$!term.getParameter("maperror")
+</div>
+
+#set( $maprange = $term.getDistance() )
+<select name="maprange${inputid}" id="operation${inputid}" class="form-control" >
+	<option value="5000000" >[[5000 km - 3100 miles]]</option>	
+	<option value="1000000" #if($maprange == "1000000")selected #end>[[1000 km - 620 miles]]</option>
+	<option value="100000" #if($maprange == "100000")selected #end>[[100 km - 62 miles]]</option>
+	<option value="10000" #if($maprange == "10000")selected #end>[[10km - 6 miles]]</option>
+</select>
+
+
