@@ -1,18 +1,25 @@
 #set($collectionid = $context.getRequestParameter("collectionid"))
 #set($nodeid = $context.getRequestParameter("nodeID"))
 #set($hitssessionid = $context.getRequestParameter("assethitssessionid"))
-
+#set($assetid = $context.getRequestParameter("assetid"))
 
 
 <form id="approveform" 
 	  action="$siteroot$apphome/views/modules/asset/approval/approve.html"
 	  class="ajaxform autocloseform"
-	  data-ajaxreloadtargets="assetresults">
+	  data-ajaxreloadtargets="assetviewfilescategory,assetmainmediaviewer">
 	<input type="hidden" name="collectionid" value="$!{collectionid}" />
 	<input type="hidden" name="nodeID" value="$!{nodeid}" />
 	<input type="hidden" name="assethitssessionid" value="$!{hitssessionid}" />
+	<input type="hidden" name="assetid" value="$!{assetid}" />
 	<div class="alert alert-info">
-	 [[Approve]] $hits.getSelectionSize() #if($hits.getSelectionSize()==1)[[Asset]] #else [[Assets]] #end
+	 [[Approve]] 
+	 #ifnotnull($hits.getSelectionSize())
+	 	$hits.getSelectionSize() #if($hits.getSelectionSize()==1)[[Asset]] #else [[Assets]] #end
+	 #end
+	 #ifnull($hits.getSelectionSize())
+		1 [[Asset]]
+	#end
 	</div>
 	<textarea class="form-control" style="width: 100%; height: 100px" placeholder="[[Enter an optional note]]"></textarea>
 
