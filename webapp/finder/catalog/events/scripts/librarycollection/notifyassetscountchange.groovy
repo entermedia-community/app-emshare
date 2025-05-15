@@ -132,7 +132,7 @@ public void init()
 			objects.put("apphome","/" + appid);
 			templatemail.send(objects);
 			
-			log.info(N"Notification sent on Asset Count Change: " + dirtycollections);
+			log.info("Notification sent " + followeruser + " on Asset Count Change: " + dirtycollections);
 		}
 	}
 	Searcher searcher = mediaArchive.getSearcher("librarycollection");
