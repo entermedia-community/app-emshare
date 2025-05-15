@@ -19,7 +19,7 @@ public void init()
 	Searcher modulesearcher = archive.getSearcher("module");
 	AssetSearcher assetsearcher = (AssetSearcher)archive.getAssetSearcher();
 	
-	HitTracker modulehits = modulesearcher.query().exact('isentity', true).exact("enableuploading", true).search();
+	HitTracker modulehits = modulesearcher.query().exact("enableuploading", true).search();
 	
 	Boolean changed = false;
 	
