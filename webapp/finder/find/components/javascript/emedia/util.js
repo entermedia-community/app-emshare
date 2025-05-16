@@ -90,7 +90,7 @@ function contrastColor(hex) {
 toggleUserProperty = function (property, onsuccess = null, onfailure = null) {
 	app = $("#application");
 	siteroot = app.data("siteroot");
-	apphome = siteroot + app.data("apphome");
+	apphome =  app.data("apphome");
 	console.log("Saving: " + property);
 	jQuery.ajax({
 		url:
@@ -109,7 +109,7 @@ toggleUserProperty = function (property, onsuccess = null, onfailure = null) {
 saveProfileProperty = function (property, value, onsuccess = null) {
 	app = $("#application");
 	siteroot = app.data("siteroot");
-	apphome = siteroot + app.data("apphome");
+	apphome = app.data("apphome");
 
 	var data = app.cleandata();
 	data.oemaxlevel = 1;
@@ -132,7 +132,7 @@ saveProfileProperty = function (property, value, onsuccess = null) {
 setSessionValue = function (key, value) {
 	app = $("#application");
 	siteroot = app.data("siteroot");
-	apphome = siteroot + app.data("apphome");
+	apphome = app.data("apphome");
 
 	jQuery.ajax({
 		url:
@@ -148,7 +148,7 @@ getSessionValue = function (key) {
 	var returnval = null;
 	app = $("#application");
 	siteroot = app.data("siteroot");
-	apphome = siteroot + app.data("apphome");
+	apphome =  app.data("apphome");
 
 	jQuery.ajax({
 		url: apphome + "/components/session/getvalue.html?key=" + key,

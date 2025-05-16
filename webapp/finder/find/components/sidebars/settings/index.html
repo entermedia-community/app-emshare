@@ -30,7 +30,7 @@
 			<div class="dropdown-menu">
 			#foreach ( $amodule in $userprofile.getModules() )
 					<a class="dropdown-item" 
-					href="$siteroot$apphome/views/settings/modules/${amodule.id}/info/module-setup.html?propertyfield=last_selected_module&last_selected_module.value=${amodule.id}">#text($amodule)</a>
+					href="$!{apphome}/views/settings/modules/${amodule.id}/info/module-setup.html?propertyfield=last_selected_module&last_selected_module.value=${amodule.id}">#text($amodule)</a>
 				#end
 			</div>
 		</h3>
@@ -38,7 +38,7 @@
 	<div>
 		<ul id="settings-menu" class="sidebar-list">
 			<li id="setup" #if( $tab == "setup" ) class="current" #end>
-				<a href="$home$apphome/views/settings/modules/${module.id}/info/module-setup.html" class="ajax auto-active-link" 
+				<a href="$!home$apphome/views/settings/modules/${module.id}/info/module-setup.html" class="ajax auto-active-link" 
 				data-targetdiv="applicationmaincontent" data-updateurl="true" data-oemaxlayout="3">[[Properties]]</a>
 			</li>
 		
@@ -51,7 +51,7 @@
 			
 			#foreach($screen in $screens) 
 				<li id="$screen.id" #if( $tab == "$screen.id" ) class="current" #end>
-					<a href="$siteroot$apphome${screen.path}" class="ajax auto-active-link" 
+					<a href="${apphome}${screen.path}" class="ajax auto-active-link" 
 					data-targetdiv="applicationmaincontent" data-updateurl="true" data-oemaxlayout="3">$context.getText($screen.toString())</a>
 				</li>
 			#end
@@ -74,7 +74,7 @@
 		#foreach($screen in $searcher.search($query) )
 			#if($screen.id != "modules")
 			<li id="$screen.id" >
-				<a href="$siteroot$apphome${screen.path}" 
+				<a href="${apphome}${screen.path}" 
 					class="ajax auto-active-link ${screen.id}-system-menu" 
 					data-targetdiv="applicationmaincontent" 
 					data-updateurl="true" 

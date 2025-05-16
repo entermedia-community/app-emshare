@@ -9,11 +9,8 @@ function initializeUI() {
 	apphome = app.data("apphome");
 	var themeprefix = app.data("themeprefix");
 	if (siteroot !== undefined) {
-		//legacy siteroot
-		apphome = siteroot + apphome;
 		themeprefix = siteroot + themeprefix;
 	}
-	
 	
 
 	if ($.fn.tablesorter) {
@@ -2579,7 +2576,7 @@ lQuery(".changeimportmodule").livequery("change", function () {
 
 	app = $("#application");
 	siteroot = app.data("siteroot");
-	apphome = siteroot + app.data("apphome");
+	apphome = app.data("apphome");
 	var property = "desktop_lastselected_module";
 
 	var targetdiv = select.data("targetdiv");

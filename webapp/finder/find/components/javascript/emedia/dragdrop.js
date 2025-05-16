@@ -143,7 +143,7 @@ onloadselectors = function () {
 
 		app = $("#application");
 		siteroot = app.data("siteroot");
-		apphome = siteroot + app.data("apphome");
+		apphome = app.data("apphome");
 		var href =
 			apphome +
 			"/components/userprofile/saveprofileproperty.html?field=" +
@@ -174,7 +174,7 @@ onloadselectors = function () {
 
 		app = $("#application");
 		siteroot = app.data("siteroot");
-		apphome = siteroot + app.data("apphome");
+		apphome = app.data("apphome");
 		jQuery.ajax({
 			url: apphome + "/components/desktop/sendcommand.html?command=" + json,
 		});
@@ -827,7 +827,7 @@ autoheight = function (container) {
 $(document).ready(function () {
 	app = $("#application");
 	siteroot = app.data("siteroot");
-	apphome = siteroot + app.data("apphome");
+	apphome =  app.data("apphome");
 	themeprefix = app.data("siteroot") + app.data("themeprefix");
 	onloadselectors();
 	emcomponents();
