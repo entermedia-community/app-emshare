@@ -499,6 +499,11 @@ jQuery(document).ready(function () {
 	lQuery(".sidebar-toggler").livequery("click", function (e) {
 		e.preventDefault();
 		e.stopImmediatePropagation();
+		var drawer = $(this).closest(".drawer");
+		if (drawer.length) {
+			closeDrawer(drawer);
+			return;
+		}
 		var toggler = $(this);
 		var options = toggler.data();
 		var targetdiv = toggler.data("targetdiv");

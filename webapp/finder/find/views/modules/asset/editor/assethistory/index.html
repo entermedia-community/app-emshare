@@ -6,7 +6,7 @@
 
 #set ($listid = "asseteditorhistory" )
 <div class="asset-panel-settings d-flex pt-0"> 
-	<div class="entityimport auto-active-container overflow-y">
+	<div class="entityimport auto-active-container overflow-y mbl-hidden" id="assethistorytabs">
 			#set( $screens = $searcherManager.query($catalogid,$listid).all().sort("ordering").search() )
 			#foreach($screen in $screens)
 			<div class="auto-active-row #if( $currentab == $screen.id ) current #end">
@@ -16,7 +16,6 @@
 				</a>
 			</div>
 			#end
-		</ul>
 	</div>
 	<div id="assethistorytabs" class="assethistorytabs flex-grow-1 h-100">
 		$pages.include("/$applicationid/views/modules/asset/editor/versioncontrol/index.html", $context)

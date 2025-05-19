@@ -17,57 +17,62 @@
 #end
 
 <div id="header" class="mediacenterheader autostickywidth d-flex align-items-center justify-content-between px-2">
-	<div class="logocontainer">
-		#set ($homeurl = "$!{siteroot}$apphome/index.html")
-		#ifnotnull($category)
-			#set( $assetid = $category.findValue("headercategoryimage") )
-			#ifnotnull($assetid)
-				#set($logoasset = $mediaarchive.getCachedData("asset",$assetid))
-				#set($logourl = $mediaarchive.asLinkToOriginal($logoasset))
-				#set($logourl = "$siteroot/$mediadbappid/services/module/asset/downloads/originals/${logourl}")
+	<div class="d-flex align-items-center">
+		#if( $browser.isNarrow() )
+			<button class="emdrawer btn icon-btn icon-btn mr-2 px-1" data-source="#col-sidebars" data-noheader="true"><i class="bi bi-list"></i></button>
+		#end
+		<div class="logocontainer">
+			#set ($homeurl = "$!{siteroot}$apphome/index.html")
+			#ifnotnull($category)
+				#set( $assetid = $category.findValue("headercategoryimage") )
+				#ifnotnull($assetid)
+					#set($logoasset = $mediaarchive.getCachedData("asset",$assetid))
+					#set($logourl = $mediaarchive.asLinkToOriginal($logoasset))
+					#set($logourl = "$siteroot/$mediadbappid/services/module/asset/downloads/originals/${logourl}")
+				#end
 			#end
-		#end
 
-		#ifnotnull($user)
-			#set($themeid = $userprofile.getValue("themeid") )
-		#end
+			#ifnotnull($user)
+				#set($themeid = $userprofile.getValue("themeid") )
+			#end
 
-		#ifnull($themeid)
-			#set($themeid = $content.get("themeid") )
-		#end	
-		
-		#ifnull($logourl)
-			#set( $logourl = "$!{siteroot}$themeprefix/$themeid/logo.png")
+			#ifnull($themeid)
+				#set($themeid = $content.get("themeid") )
+			#end	
 			
-			#set($theme = $mediaarchive.getCachedData("theme", $themeid))
-			#set($logowidth = $theme.logowidth)
-			#set($logoheight = $theme.logoheight)
-		#end
-		
-		#ifnotnull($logourl)
-			<a class="emlogo" href="$homeurl" title="[[eMedia Library]]" style="width: var(--themed-logo-width); height: var(--themed-logo-height);">
-				<img src="$logourl" class="logoimg" alt="[[eMedia Library]]" />
-			</a>
-		#end
-		
-		
-    #if (!$browser.isNarrow() && $canviewappsmenu && $appsmenu.size() > 1)
-    <div class="dropdown site-switcher">
-      <button class="dropdown-toggle btn py-1 px-2 rounded" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        <i class="fas fa-chevron-down text-white" style="margin-top: 2px;"></i>
-      </button>
-      <div class="dropdown-menu">
-        #foreach( $link in $appsmenu)
-          #set($linkurl = $link.get("url"))
-          #ifnotnull($linkurl) 
-            <a href='$linkurl' class='dropdown-item d-flex align-items-center' title='#if( $link.deploypath != $apphome)[[Go to]] #end #text($link)'>
-              #text($link) #if( $link.deploypath == $apphome)<i class="bi bi-check-circle-fill ns ml-2"></i>#end
-            </a>
-          #end
-        #end
-      </div>
-    </div>
-    #end
+			#ifnull($logourl)
+				#set( $logourl = "$!{siteroot}$themeprefix/$themeid/logo.png")
+				
+				#set($theme = $mediaarchive.getCachedData("theme", $themeid))
+				#set($logowidth = $theme.logowidth)
+				#set($logoheight = $theme.logoheight)
+			#end
+			
+			#ifnotnull($logourl)
+				<a class="emlogo" href="$homeurl" title="[[eMedia Library]]" style="width: var(--themed-logo-width); height: var(--themed-logo-height);">
+					<img src="$logourl" class="logoimg" alt="[[eMedia Library]]" />
+				</a>
+			#end
+			
+			
+			#if (!$browser.isNarrow() && $canviewappsmenu && $appsmenu.size() > 1)
+			<div class="dropdown site-switcher">
+				<button class="dropdown-toggle btn py-1 px-2 rounded" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					<i class="fas fa-chevron-down text-white" style="margin-top: 2px;"></i>
+				</button>
+				<div class="dropdown-menu">
+					#foreach( $link in $appsmenu)
+						#set($linkurl = $link.get("url"))
+						#ifnotnull($linkurl) 
+							<a href='$linkurl' class='dropdown-item d-flex align-items-center' title='#if( $link.deploypath != $apphome)[[Go to]] #end #text($link)'>
+								#text($link) #if( $link.deploypath == $apphome)<i class="bi bi-check-circle-fill ns ml-2"></i>#end
+							</a>
+						#end
+					#end
+				</div>
+			</div>
+			#end
+		</div>
 	</div>
 	
 	#if( !$browser.isNarrow() )
