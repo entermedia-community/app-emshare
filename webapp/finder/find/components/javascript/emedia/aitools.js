@@ -101,7 +101,25 @@ $(document).ready(function () {
 		e.preventDefault();
 		e.stopImmediatePropagation();
 		e.stopPropagation();
-		var $this = $(this);
+		var form = $(this);
+		
+		if (!form.hasClass("novalidate")) {
+					if (form.validate) {
+						try {
+							form.validate({
+								ignore: ".ignore",
+							});
+							var isvalidate = form.valid();
+							if (!isvalidate) {
+								//e.preventDefault();
+								return this;
+							}
+						} catch (_e) {
+							console.log(_e);
+						}
+					}
+				}
+		
 		var formData = new FormData(this);
 		jQuery.ajax({
 			type: "POST",
@@ -110,13 +128,13 @@ $(document).ready(function () {
 			processData: false,
 			contentType: false,
 			success: function (res) {
-				$(window).trigger("checkautoreload", [$this]);
+				$(window).trigger("checkautoreload", [form]);
 				var assetid = res.data.primarymedia?.id;
 				if (!assetid) {
 					alert("No asset created");
 					return;
 				}
-				var pickertarget = $this.data("pickertargetfield");
+				var pickertarget = form.data("pickertargetfield");
 				if (pickertarget) {
 					pickertarget = $("#" + pickertarget); //This is the field itself
 					if (pickertarget.length > 0) {
@@ -130,7 +148,7 @@ $(document).ready(function () {
 						);
 					}
 				}
-				closeemdialog($this.closest(".modal"));
+				closeemdialog(form.closest(".modal"));
 			},
 		});
 	});
