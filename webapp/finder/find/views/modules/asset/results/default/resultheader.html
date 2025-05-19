@@ -96,7 +96,7 @@
 	
 <div id="resultsheader" class="resultsheader #if($hits && $hits.getSelectionSize() > 0)hasselections#end #if(!$dialogresults) autostickywidth #end" >
 	<div id="sub-nav" class="emsubnav sub-nav-${module.id}">
-		<ul class="resultsnav">
+		<ul class="resultsnav mbl-hideexcept">
 			#set ($enabled = false)
 			#if ($hits.getSelectionSize() && $hits.getSelectionSize()>0)
 				#set ($enabled = true)
@@ -132,7 +132,7 @@
 				
 				#ifnotnull($entitymodule)
 					#if(!$hideupload && $canviewupload && $entitymodule.id != "favorites" && $permissions.canModule($entitymodule, "upload_files"))				
-					<li>
+					<li class="mbl-except">
 						<a href="$siteroot$apphome/views/modules/asset/editors/assetupload/index.html"
 						class="ajax px-3 webUploadButton"
 						data-targetdiv="resultsarea"
@@ -158,7 +158,7 @@
 				#end
 				#ifnull($entitymodule)
 					#if($moduleid == "asset" && $canviewupload)
-					<li>
+					<li class="mbl-except">
 						<a  class="ajax resultsnavlink px-3" 
 							data-updateurl="true" 
 							data-targetdivinner="applicationmaincontent" 
@@ -266,7 +266,7 @@
 
 		</ul>
 
-		<ul class="resultsnavright">
+		<ul class="resultsnavright mbl-hideexcept">
 			#if(!$resultview)
 				#set($resultview = $userprofile.get("$!{searchtype}resultview"))
 				#if (!$resultview)

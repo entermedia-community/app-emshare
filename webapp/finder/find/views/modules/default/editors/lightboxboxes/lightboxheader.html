@@ -5,6 +5,9 @@
 	#end
 
   <div class="d-flex align-items-center" title="#if($lightboxassets && $lightboxassets.size()>0) $lightboxassets.size() [[Assets]]#end">
+		#if( $browser.isNarrow() )
+			<button class="emdrawer btn btn-accent icon-btn mr-3" data-source="#lightboxessidemenu"><i class="bi bi-list mr-0"></i></button>
+		#end
     #if($selectedbox)
       <i class="bi bi-${moduleicon}"></i> 
       <strong>#text($selectedbox)</strong>
@@ -16,7 +19,7 @@
 
   <small><span class="mx-2">&middot;</span>[[Drag and drop selected files from your desktop, to order them or to link with another box]]</small>
 	
-	<div class="d-flex align-items-center ml-auto">
+	<div class="d-flex align-items-center ml-auto mbl-hidden">
 		#set($showpublishbtn = false)
 		#if($permissions.canModule($module, "publishinggallery"))
 				#set($showpublishbtn = true) 

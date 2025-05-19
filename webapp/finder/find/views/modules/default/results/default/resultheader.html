@@ -85,12 +85,12 @@ $context.putPageValue("enableactions", $enableactions)
 <div id="resultsheader" class="#if($islightheader) lighttheme #end resultsheader #if($!hits.getSelectionSize() > 0)hasselections#end">
 	<div id="sub-nav" class="search-views emsubnav sub-nav-$!moduleid">
 		
-		<ul class="resultsnav">
+		<ul class="resultsnav mbl-hideexcept">
 			#set($pickertarget = $context.getRequestParameter("pickertarget"))
 			
 			#ifnull($pickertarget)
 				#if($permissions.canModule($module, "create") && $showaddnew != "false")
-					<li> 
+					<li class="mbl-except"> 
 						#ifnotnull($entity)
 							#set($addnew = "${edithome}/addnew.html")
 							<a href="$addnew"
@@ -101,7 +101,7 @@ $context.putPageValue("enableactions", $enableactions)
 							data-includeeditcontext="true"
 							data-autosetformtargetdiv="editdiv"
 							title="[[Create New]] #text($module)">
-							<i class="bi bi-plus-lg mr-1"></i> [[Create New]]</a>
+							<i class="bi bi-plus-lg mr-1"></i> <span class="mbl-hidden">[[Create New]]</span></a>
 						#end
 						
 						#ifnull($entity)
@@ -110,7 +110,7 @@ $context.putPageValue("enableactions", $enableactions)
 								class="resultsnavlink emdialog btn-cta" 
 								data-addnew="true"
 								title="[[Add New Record]]">
-								<i class="bi bi-plus-lg mr-1"></i> [[Create New]]
+								<i class="bi bi-plus-lg mr-1"></i> <span class="mbl-hidden">[[Create New]]</span>
 							</a>
 						#end
 	
