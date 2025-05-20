@@ -2,47 +2,42 @@ Task:
 
  $contentrequest.createassetprompt
 
-
 #set($searcher = $mediaarchive.getSearcher($targetmodule.id))
 #set($viewid = "${targetmodule.id}aifields")
-#set($viewdata = $mediaarchive.getData("view", $viewid))
-
+#ifnotnull($viewid)
+	#set($viewdata = $mediaarchive.getData("view", $viewid))
+#end
 #ifnull($viewdata)
 	#set($viewdata = $mediaarchive.getData("view", "${targetmodule.id}addnew"))
 #end
-#set($details = $searcher.getDetailsForView($viewdata.id))
-
-
-
-You're adding data to a  module called $targetmodule.  It is structured like this:
-#set($childsearcher = $mediaarchive.getSearcher($targetmodule.id))
-
-
-#set($view = "$targetmodule.id/${targetmodule.id}aifields")
-
-#set ($childdetails = $childsearcher.getDetailsForView($view))
-
-
-#foreach($detail in $childdetails)
-
-    - **Field Name**: $detail.getText($context)
-        - **Field ID**: $detail.id
-        - **Editable**: #if($detail.isEditable()) Yes #else No #end
-        - **Required**: #if($detail.isRequired()) Yes #else No #end
-        #if($detail.dataType)
-        - **Data Type**: $detail.dataType
-        #else
-        - **Data Type**: String
-        #end
-        #if($detail.note)
-            - **Note**: $context.getText($detail.note.toString())
-        #end
-        #if($detail.isList())
-        - **Options Mapping**:
-            #foreach($option in $mediaarchive.getList($detail.id))
-                - ID: $option.id, Name: $option.name
-            #end
-        #end
+#set($details = $searcher.getDetailsForView($viewdata.id))  
+###set($childsearcher = $mediaarchive.getSearcher($targetmodule.id))
+###set($childviewdata = $mediaarchive.getData("view", "${targetmodule.id}aifields"))
+###ifnull($childviewdata)
+##	#set($childviewdata = $mediaarchive.getData("view", "contentcreatortoplevel"))
+###end
+###set ($childdetails = $childsearcher.getDetailsForView($childviewdata.id))
+#ifnotnull($details)
+The module called $targetmodule it is structured like this:
+	#foreach($detail in $details)
+	    - **Field Name**: $detail.getText($context)
+	        - **Field ID**: $detail.id
+##          - **Editable**: #if($detail.isEditable()) Yes #else No #end
+	        - **Required**: #if($detail.isRequired()) Yes #else No #end
+	        #if($detail.dataType)
+	        - **Data Type**: $detail.dataType
+	        #else
+	        - **Data Type**: String
+	        #end
+	        #if($detail.note)
+	            - **Note**: $context.getText($detail.note.toString())
+	        #end
+	        #if($detail.isList())
+	        - **Options Mapping**:
+	            #foreach($option in $mediaarchive.getList($detail.id))
+	                - ID: $option.id, Name: $option.name
+	            #end
+	        #end
+	#end
 #end
-
 

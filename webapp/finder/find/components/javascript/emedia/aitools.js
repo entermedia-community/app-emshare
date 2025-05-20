@@ -26,7 +26,7 @@ $(document).ready(function () {
 		aistyle: "",
 		aiexamples: "",
 	};
-	lQuery(".updateaitemplate").livequery(function () {
+	lQuery(".updateaiimagetemplate").livequery(function () {
 		if ($(this).hasClass("customized")) {
 			return;
 		}
@@ -35,7 +35,7 @@ $(document).ready(function () {
 		$(this).find("select[name='aistyle.values']").trigger("change");
 		$(this).find("input[name='aiexamples.value']").trigger("input");
 	});
-	lQuery(".updateaitemplate input[name='aitarget.value']").livequery(
+	lQuery(".updateaiimagetemplate input[name='aitarget.value']").livequery(
 		"input",
 		function () {
 			var value = $(this).val();
@@ -44,7 +44,7 @@ $(document).ready(function () {
 			updatePrompt();
 		}
 	);
-	lQuery(".updateaitemplate select[name='aicontentlist.value']").livequery(
+	lQuery(".updateaiimagetemplate select[name='aicontentlist.value']").livequery(
 		"change",
 		function () {
 			var value = $(this).val();
@@ -52,7 +52,7 @@ $(document).ready(function () {
 			updatePrompt();
 		}
 	);
-	lQuery(".updateaitemplate select[name='aistyle.values']").livequery(
+	lQuery(".updateaiimagetemplate select[name='aistyle.values']").livequery(
 		"change",
 		function () {
 			var value = $(this).val();
@@ -70,7 +70,7 @@ $(document).ready(function () {
 			updatePrompt();
 		}
 	);
-	lQuery(".updateaitemplate input[name='aiexamples.value']").livequery(
+	lQuery(".updateaiimagetemplate input[name='aiexamples.value']").livequery(
 		"input",
 		function () {
 			var value = $(this).val();
@@ -81,6 +81,7 @@ $(document).ready(function () {
 	);
 
 	function updatePrompt() {
+		//updateaiimagetemplate
 		var prompt = `Create a picture of ${
 			promptBuilder.aitarget || "[[TARGET]]"
 		}.`;
@@ -95,6 +96,9 @@ $(document).ready(function () {
 		}
 		$("#aiInstruction").val(prompt);
 	}
+	
+	
+	
 
 	var mediadb = "/" + $("#application").data("mediadbappid");
 	lQuery("form.contentpickerForm").livequery("submit", function (e) {
