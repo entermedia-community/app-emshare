@@ -1,0 +1,33 @@
+  <div id="emvalueeditor" class=" mb-4" style="max-width: 600px">
+	<p>$module available to everyone or limited to the following:</p>
+    <form name="adder"
+      class="ajaxform validate-inputs"
+      data-targetdiv="emvalueeditor"
+      action="$home${apphome}/views/settings/modules/${module.id}/permissions/savegeneral.html">
+      $context.putPageValue("searcher",$searcherManager.getSearcher($catalogid,"module")) 
+      $context.putPageValue("viewid","modulepermissions")
+      $context.putPageValue("data",$module)
+      
+      #set ( $urlutils = $context.getPageValue("url_util")) 
+      #if (!$urlutils)
+        #set($urlenc = $hit.sourcepath) 
+      #else 
+        #set ( $urlenc = $urlutils.encode($hit.sourcepath))
+        #set ( $urlenc = $urlenc.replace("%2F", "/")) 
+      #end
+  
+      $pages.include("/$applicationid/components/xml/detaileditorcss.html", $context)
+  
+      <input type="hidden" name="save" value="true" />
+      <input type="hidden" name="id" value="$module.id" />
+  
+      <div class="form-submit-btns">
+        <button class="btn btn-cta" type="submit">
+          <i class="bi bi-floppy-fill mr-1"></i> [[Save]]
+        </button>
+      </div>
+    </form>
+  </div>
+  
+  
+  
