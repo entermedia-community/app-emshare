@@ -552,13 +552,13 @@ jQuery(document).ready(function () {
           $(window).trigger("resize");
         },
       });
+      var drawer = $(".drawer.open");
+      if (drawer.length) {
+        closeDrawer(drawer);
+      }
     } else {
       //showsidebar
       showsidebar(toggler);
-    }
-    var drawer = $(this).closest(".drawer");
-    if (drawer.length) {
-      closeDrawer(drawer);
     }
   });
 
