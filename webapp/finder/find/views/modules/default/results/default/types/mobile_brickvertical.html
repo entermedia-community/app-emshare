@@ -1,0 +1,30 @@
+#set( $favorites = $userprofile.get("favorites_"+$module.id))
+$context.putPageValue("favorites", $favorites) 
+
+$context.putPageValue("rendermoduleid", $module.id) 
+
+#if($content.section != "favorites")
+	$pages.include("${searchhome}/resultheader.html",$context)
+#end 
+
+<div class="scrollview py-2" style="overflow-x: hidden;">
+	<div class="row mx-2">
+		#foreach( $hit in $hits.getPageOfHits())
+		
+			$context.putPageValue("rendermoduleid", $hit.entitysourcetype)
+			$context.putPageValue("entity", $hit) 
+			$context.putPageValue("hit", $hit)
+
+			<div class="resultsdivdata col-12 col-sm-6 col-md-4 p-1"
+				id="gallerycell_$!{hit.id}"
+				data-assetid="$!{hit.id}"
+				data-dataid="$hit.id"> 
+			$pages.include("${searchhome}/thumbnails/mobile_brickentity.html", $context)
+			</div>
+		#end
+
+		#if ( $hits.getPageOfHits().size() == 0 )
+			$pages.stream("$!{searchhome}/empty.html", $context)
+		#end
+	</div>
+</div>

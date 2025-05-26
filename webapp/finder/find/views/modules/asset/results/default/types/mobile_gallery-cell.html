@@ -1,0 +1,94 @@
+#set($asset = $mediaarchive.getAsset($hit.id))
+$context.putPageValue("asset",$asset)
+
+#set($stackedfield = $mediaarchive.getCatalogSettingValue("stackedgalleryfield"))
+
+#if($stackedfield)
+	#set($title = $asset.getText($stackedfield,$context))
+#end
+
+#if(!$title)		         	
+ 	#if( $asset.assettitle )
+ 		#set($title =  $asset.getText("assettitle",$context)) 
+	#else 
+ 		#set($title = $asset.getText("name",$context) )
+	#end
+#end
+
+$context.putPageValue("title",$title)
+
+<div class="emthumbbox emboxthumb resultsassetcontainer"	
+	id="cell${catalogid}_${hit.id}"	
+	data-dataid="$hit.id">
+
+	<div class="d-flex align-items-end" style="position: absolute; top: 6px; right: 6px;">
+		<div class="actionicons">
+			$context.putPageValue("assetid", $hit.id) 
+			#if( $canviewvoting )
+				<div class="gallerycell-favorite">
+					<div id="galleryassetfavorite-${hit.id}" class="mx-2">
+						$pages.include("$apphome/views/modules/asset/editor/favorite/index.html?targetdiv=galleryassetfavorite", $context)
+					</div>
+				</div>
+			#end
+			#if(($candownload || $canconvert || $candownloadfpo) && $canquickdownload)
+				#set($dlink =  "$applink/views/modules/asset/activity/downloadassets.html")
+				<a href="$dlink" class="emdialog mx-2" data-assetid="$hit.id" data-hidefooter="true" title="[[Download]] $!title">
+					<i class="bi bi-cloud-arrow-down bi2"></i>
+				</a>
+			#end
+		</div>
+	</div>
+	
+	<a class="resultsdivdata hovering stackedplayer" href="$click"  data-assetid="$hit.id" data-dataid="$hit.id">
+		<div class="emthumbimage emthumb" 
+			data-ordering="$!{hit.ordering}" 
+			data-dataid="${hit.id}"
+			data-assetid="${hit.id}" 
+			title="$sourcepath">
+			$context.putPageValue("thumbsize", "medium" )
+			#if(!$rendertype)
+				#set( $rendertype = "mime" )
+			#elseif( $rendertype == "video")
+				#set( $rendertype = "image" )
+			#end
+			
+			#if( $hit.previewstatus == "mime" || $alwaysmime)
+				#set( $rendertype = "mime" )
+			#end
+			
+			#if($rendertype == "image")
+				#set($assetwidth = $mediaarchive.getRealImageWidth($hit)) 
+				$context.putPageValue("assetwidth",$assetwidth)	
+				#set($assetheight = $mediaarchive.getRealImageHeight($hit)) 
+				$context.putPageValue("assetheight",$assetheight)	
+				#if($assetheight && $assetwidth)
+					#set($facemanager = $mediaarchive.getBean("faceProfileManager") )
+					#if($faceprofilegroups )
+						#set($imagebox = $facemanager.getImageBox( $faceprofilegroups, $hit, $assetwidth, $assetheight) )
+					#elseif($faceprofilegroupid)
+						#set($imagebox = $facemanager.getImageBoxById( $faceprofilegroupid, $hit, $assetwidth, $assetheight) )
+					#end
+					$context.putPageValue("imagebox", $imagebox)
+				#end
+			#end
+
+			#if( ($hit.previewstatus != "2" && 
+				$hit.previewstatus != "exif" && 
+				$hit.previewstatus != "mime" && 
+				$hit.previewstatus != "1" && 
+				$hit.previewstatus != "generated") && 
+				!$mediaarchive.isCatalogSettingTrue("realtimethumbs")
+			)
+			 	$pages.include("$searchhome/convertqueue/previewstatus.html?assetid=$!{hit.id}",$context)
+			#else
+				$pages.include("${searchhome}/thumbnails/${rendertype}.html", $context)
+			#end
+
+		</div>
+	</a> 
+
+	<div class="position-absolute bottom-0">
+		$pages.include("${searchhome}/badges.html", $context)
+	</div>
+</div>
