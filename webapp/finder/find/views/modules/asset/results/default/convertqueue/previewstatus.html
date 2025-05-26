@@ -16,9 +16,7 @@ $context.putPageValue("thumbsize", $thumbsize)
 	$!context.putPageValue("searchhome", $searchhome)
 #end
 
-
 #set($prefixid = $context.getRequestParameter("prefixid") )
-
 
 #if( $hit.previewstatus && $hit.previewstatus == "2")  
     
@@ -29,7 +27,10 @@ $context.putPageValue("thumbsize", $thumbsize)
 	#elseif( $rendertype =="video")
 		#set( $rendertype = "image" )
 	#end
+	
 	$pages.include("$!{searchhome}/thumbnails/${rendertype}.html",$context)
+	
+	
 #elseif($hit.importstatus == "error")
 	<span class="text-muted">[[Import Error]]</span>       
 #else

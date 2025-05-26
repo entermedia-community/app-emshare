@@ -28,9 +28,11 @@
 
 #set($tpath = $mediaarchive.asLinkToPreview($hit, $imagesize))
 <div id="emthumbholder" class="emthumbholder">
-	#if( !$hit.importstatus || $hit.importstatus != "complete" )
+	###if( !$hit.importstatus || $hit.importstatus != "complete" )
+	
+	#if( ($hit.previewstatus != "2" && $hit.previewstatus != "exif" && $hit.previewstatus != "1" && $hit.previewstatus != "generated") && !$mediaarchive.isCatalogSettingTrue("realtimethumbs"))
 		$context.putPageValue("thumbsize", $thumbsize)
-		$pages.include("$apphome/views/modules/asset/results/default/convertqueue/previewstatus.html?assetid=$!{hit.id}",$context)
+		##$pages.include("$apphome/views/modules/asset/results/default/convertqueue/previewstatus.html?assetid=$!{hit.id}",$context)
 	#else
 		
 		
