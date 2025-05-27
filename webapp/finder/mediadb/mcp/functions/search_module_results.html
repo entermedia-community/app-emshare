@@ -1,0 +1,174 @@
+$context.putPageValue("applicationid", $mcpapplicationid)
+
+#set($apphome = "/${mcpapplicationid}")
+$context.putPageValue("apphome", $apphome)
+
+<div class="quicksearchresults">
+	#set( $input = $keywords)
+	#if(!$input)
+		#set( $input = $modulehits.getSearchQuery().getMainInput())
+	#end
+
+	#if($organizedHits.isEmpty())
+		#ifnull($assethits)
+			<div class="text-secondary py-3 text-center">
+				[[No results found]] #ifnotnull($input) [[for]] <strong>#esc($input)</strong> #end #ifnotnull($modulenamestext) [[in]] <strong>#esc($modulenamestext)</strong> #end
+			</div>
+		#end
+		#ifnotnull($assethits)
+			#if($assethits.isEmpty())
+				<div class="text-secondary py-3 text-center">
+					[[No results found]] #ifnotnull($input) [[for]] <strong>#esc($input)</strong> #end #ifnotnull($modulenamestext) [[in]] <strong>#esc($modulenamestext)</strong> #end
+				</div>
+			#end
+		#end
+	#end
+
+	#set($filter = $modulehits.findFilterValue("entitysourcetype") )
+	$context.putPageValue("filter", $filter)
+
+	#foreach($module in $organizedModules)
+		#set($hits = $organizedHits.get($module.id))
+		#ifnotnull($hits)
+			$context.putPageValue("module", $module)
+			$context.putPageValue("moduleid", $module.id)
+		
+			#set($moduleicon = "grid")
+			#if ($module.moduleicon)
+				#set($moduleicon = $module.moduleicon)
+			#end
+			
+			#if(!$input)
+				#set($input = "")
+			#end
+
+			#set($entityurl = "$!siteroot$apphome/views/modules/$!{module.id}/index.html?$!{module.id}page=1&field=description&operation=freeform&description.value=$input")
+				
+			<div class="#if($foreach.count > 1) mt-3 #else mb-3 #end">
+				<div class="m-0 qsresultsEntity d-flex align-items-center">
+					<i class="bi bi-$moduleicon module-icon"></i>
+					<span class="qsresityteultsEntxt">#text($module)</span>
+	
+					#if( $module.id == "asset") ##this is safe
+						#set( $count = $hits.size()) 
+					#else
+						#set( $count = $filter.getCount($module.id) ) 
+					#end
+
+					#ifnull($count)
+						#set( $count = $hits.size()) 
+					#end
+					<span class="mx-1">&middot;</span> 
+					<a href="$entityurl" 
+						class="ajax qsresultsEntityall" 
+						data-targetdiv="applicationmaincontent" 
+						data-oemaxlevel="3" 
+						data-updateurl="true" 
+						title="[[View]] $count: #text($module)">
+						<span class="qsresultsEntitytext">
+							[[View All]] ($count)
+						</span>
+					</a>
+				</div>
+
+				$context.putPageValue("rendermoduleid", $module.id)
+				
+				#set($viewid = "${moduleid}gridfields")
+			
+				#if( $context.getUserProfile() )
+					#set($searcher = $searcherManager.getSearcher($catalogid,$moduleid))
+					#set ($details = $searcher.getDetailsForView($viewid, $context.getUserProfile()))
+				#else
+					#set ($details = $searcher.getDetailsForView($viewid))
+				#end
+				
+				$context.putPageValue("details", $details)
+				
+				$hits.setHitsPerPage(10)
+				$context.putPageValue("hits", $hits)
+				
+				$context.putPageValue("searchresults", true)
+				$context.putPageValue("searchhome", "$apphome/views/modules/${module.id}/results/default")
+				
+				<div class="emgridflex">  	
+					<div id="galleryimg-entitiy" 
+						class='emgrid #if($section != "favorites")emgridlimited#end entitiescontainer emgridquickresults' 
+						style="width:100%"
+						data-fixedwidth="180" 
+						data-cellpadding="10"
+						data-entityrenderurl="$!{siteroot}$apphome/views/modules/${module.id}/editors/default/tabs/gridcell.html"
+						data-rendertype="$!rendertype">
+						#foreach( $hit in $hits.getPageOfHits() )
+							$context.putPageValue("hit", $hit)
+							#set($rendertype = $module.modulerendertype)
+							#if (!$rendertype)
+								#set($rendertype = "entity")
+							#end
+							<div class="emgridcell emgridcellqs emgridcell-$rendertype activelistcontainer 
+								#if($selectedid == $hit.getId() || $topselectedid == $hit.getId()) active #end">
+								$pages.include("$apphome/views/modules/$!{module.id}/results/default/types/qsresult.html", $context)
+								#set($highlight =  $hits.highlight($hit, "description", 20, true))
+								#if($highlight)
+									<div class="gridcellhighlight">$highlight</div>
+								#end
+							</div>
+						#end
+					</div>
+				</div>
+			</div>
+		#end
+	#end
+
+	#if($assethits)
+		#set($assetmodule = $mediaarchive.getCachedData("module","asset"))
+
+		#set($moduleicon = "grid")
+		#if ($assetmodule.moduleicon)
+			#set($moduleicon = $assetmodule.moduleicon)
+		#end
+
+		#set($hits = $assethits)
+
+		#set($edithome = "$apphome/views/modules/asset/editors/quicksearch")
+		#set($entityurl = "${edithome}/index.html?search=$input")
+
+		#set( $count = $assethits.size())
+		<div class="m-0 qsresultsEntity d-flex align-items-center">
+			<i class="bi bi-$!{moduleicon} module-icon" style="font-size:0.9em;line-height:1;opacity:0.85;"></i>  
+			<span class="qsresultsEntitytext">#text($assetmodule)</span>
+		
+			<a href="$entityurl" 
+				class="ajax qsresultsEntityall"
+				data-targetdiv="applicationmaincontent" 
+				data-oemaxlevel="3" 
+				data-updateurl="true" 
+				title="[[View]] $count: #text($assetmodule)">
+				<span class="mx-1">&middot;</span>
+				<span class="qsresultsEntitytext">[[View All]] ($count)</span>
+			</a>
+		</div>
+	
+		<div class="masonry-grid" 
+			data-maxheight="140" 
+			data-cellpadding="10"
+			data-makebox="true"
+			data-visibleposition="$!hits.getStartingPosition()">
+			#set($count = 0)
+	
+			#set( $searchhome = "$apphome/views/modules/${assetmodule.id}/results/default" )
+			$context.putPageValue("searchhome", $searchhome)
+			
+			#foreach( $hit in $hits.getPageOfHits() )
+				#if($count < 30)
+					$context.putPageValue("hit", $hit)
+					$pages.include("${searchhome}/types/media.html", $context)
+					#set($count = $count +1)
+				#end
+			#end
+	
+			#if($hit.getPageOfHits().size() == 0)
+				$pages.stream("$!{searchhome}/empty.html", $context)
+			#end
+		</div>
+	#end
+</div>
