@@ -1,4 +1,4 @@
-**I can help you search the database using natural language.**  
+**I can help you search the database using natural language.**
 Below are some example queries that you can try:
 
 #set( $count = 0 )
@@ -8,9 +8,7 @@ Below are some example queries that you can try:
 #set( $entityname = "#text($entity)" )
 #if( $entityname )
 #set( $str = $foreach.count % 3 )
-
-- #if( $str == 0 ) Search for #else Find #end *${entityname}* in *#text($module)*  
-
+- #if( $str == 0 )Search for #else Find #end `${entityname}` in `#text($module)`
 #set( $count = $count + 1 )
 #end
 #end
