@@ -2,6 +2,8 @@
 #set($apphome = "/${mcpapplicationid}")
 #set( $input = $keywords)
 
+#set($H = "#")
+
 #if(!$input)
 	#set( $input = $modulehits.getSearchQuery().getMainInput())
 #end
@@ -41,14 +43,14 @@ No results found #ifnotnull($input) for #mdTag("code", "#esc($input)") #end #ifn
 				#set( $count = $hits.size())
 			#end
 
-#mdTag("h2", "Found ${count} modules")
+#mdTag("h2", "Found ${count} types")
 
-- 📁 #mdTag("b", "#text($module)")    (#mdLink("Open in eMedia Website", "$entityurl"))
+$H$H$H 📁 #mdTag("b", "#text($module)")    (#mdLink("Open in eMedia Website", "$entityurl"))
 
-			$hits.setHitsPerPage(10)
+			$hits.setHitsPerPage(12)
 
 			#foreach( $hit in $hits.getPageOfHits() )
-				#set($previewurl = "$apphome/views/modules/${module.id}/editors/default/tabs/index.html?entityid=${hit.id}")
+				#set($previewurl = "$!siteroot$apphome/views/modules/${module.id}/editors/default/tabs/index.html?entityid=${hit.id}")
 
 				#set( $primarymediafield = $hit.primarymedia )
 
@@ -92,7 +94,7 @@ No results found #ifnotnull($input) for #mdTag("code", "#esc($input)") #end #ifn
 					#set( $imagepath = $mediaarchive.asLinkToGenerated($hit, $imagesize))
 				#end
 
-#mdLink("<img alt='#if($title)#esc($title)#else$!{hit.name}#end' src='$imagepath'>", "$link")
+#mdLink("<img alt='#if($title)#esc($title)#else$!{hit.name}#end' src='$siteroot$imagepath'>", "$link")
 
 			#end
 		#end
@@ -105,19 +107,21 @@ No results found #ifnotnull($input) for #mdTag("code", "#esc($input)") #end #ifn
 ---
 	#end
 
-#mdTag("h2", "Found ${assethits.size()} assets")
+#mdTag("h2", "Found ${assethits.size()} files")
 
 	#set($assetmodule = $mediaarchive.getCachedData("module","asset"))
 	#set($hits = $assethits)
-	#set($edithome = "$apphome/views/modules/asset/editors/quicksearch")
+	#set($edithome = "$!siteroot$apphome/views/modules/asset/editors/quicksearch")
 	#set($entityurl = "${edithome}/index.html?search=$input")
 
-- 📄 #mdTag("b", "#text($assetmodule)")    (#mdLink("Open in eMedia Website", "$entityurl"))
+$H$H$H 📄 #mdTag("b", "#text($assetmodule)")    (#mdLink("Open in eMedia Website", "$entityurl"))
 
-	#set( $searchhome = "$apphome/views/modules/${assetmodule.id}/results/default" )
+	$hits.setHitsPerPage(12)
 
-  
-  #foreach( $hit in $assethits  )
+	#set($parsedAssets = [])
+	#set($threes = [])
+
+  #foreach( $hit in $hits.getPageOfHits()  )
     #set($asset = $mediaarchive.getAsset($hit.id))
 
     #if($stackedfield)
@@ -159,8 +163,25 @@ No results found #ifnotnull($input) for #mdTag("code", "#esc($input)") #end #ifn
       #end
     #end
 
-#mdLink("<img alt='#if($title)#esc($title)#else$!{hit.name}#end' src='$imagepath$!urlparams'>", "$link")
+		#set($link = "$!siteroot$apphome?assetid=${hit.id}$")
+
+		#if($threes.size() < 3)
+			#if($threes.add(["#if($title)#esc($title)#else$!{hit.name}#end", "$siteroot$imagepath$!urlparams", "$link"]))#end
+		#else
+			#if($parsedAssets.add($threes))#end
+			#set($threes = [])
+		#end
 
 	#end
+
+	#if($threes.size() > 0)
+		#if($parsedAssets.add($threes))#end
+	#end
+
+| | | |
+|:-------------------------:|:-------------------------:|:-------------------------:|
+#foreach( $assets in $parsedAssets)#foreach( $asset in $assets )|#mdLink("<img alt='${asset[0]}' src='${asset[1]}'>", "${asset[1]}" )#end|
+#end
+
 #end
 #end
