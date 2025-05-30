@@ -1,4 +1,5 @@
 var app, siteroot, apphome;
+var parenturl;
 
 function getRandomColor() {
   var letters = "0123456789ABCDEF".split("");
@@ -160,7 +161,11 @@ getSessionValue = function (key) {
 
   return returnval;
 };
+
+
 var desktopOffset = 0;
+
+
 $(document).ready(function () {
   app = $("#application");
   if (app.data("desktop")) {
@@ -299,6 +304,7 @@ $(document).ready(function () {
       }
     });
   });
+
   if ($("#application").hasClass("blockfind")) {
     lQuery(".pickfromiframe").livequery("click", function (e) {
       e.preventDefault();
@@ -314,9 +320,25 @@ $(document).ready(function () {
         assetid: assetid,
       };
       var str = JSON.stringify(object);
-      window.parent.postMessage("assetpicked:" + str, window.location.origin);
+
+      if (top) {
+        if (parenturl !== null) {
+          // Extract the schema and port from the parenturl.
+          const parentProtocol = new URL(parenturl).protocol; 
+          const parentPort = new URL(parenturl).port; 
+          const targetOrigin = parentPort ? `${parentProtocol}//${new URL(parenturl).hostname}:${parentPort}` : `${parentProtocol}//${new URL(parenturl).hostname}`;
+
+          // Use the target origin in the postMessage.
+          top.postMessage("assetpicked:" + str, targetOrigin);
+        }
+      } else {
+        window.parent.postMessage("assetpicked:" + str);
+      }
+
     });
   }
+
+ 
 
   lQuery("form").livequery(function () {
     var modal = $(this).closest(".modal");
@@ -451,7 +473,16 @@ $(document).ready(function () {
     }
     $(textarea).focus();
   });
-});
+}); //document ready
+
+
+if (window.addEventListener) {
+  window.addEventListener("message", function(e) {
+    if (e.data.startsWith("parenturl:")) {
+      parenturl = e.data.replace("parenturl:", "");
+    }
+  }, false);
+}
 
 var asciiFormatRanges = {
   n: [120812, 120821],
