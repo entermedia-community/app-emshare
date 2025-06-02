@@ -1,12 +1,7 @@
 #set($applicationid = "${mcpapplicationid}")
 #set($apphome = "/${mcpapplicationid}")
-#set( $input = $keywords)
 
 #set($H = "#")
-
-#if(!$input)
-	#set( $input = $modulehits.getSearchQuery().getMainInput())
-#end
 
 #ifnull($organizedHits)
 	#set( $$organizedHits = [])
@@ -16,7 +11,7 @@
 #end
 
 #if( $organizedHits.size() <= 0 && $assethits.size() <= 0)
-No results found #ifnotnull($input) for #mdTag("code", "#esc($input)") #end #ifnotnull($modulenamestext) in #mdTag("code", "#esc($modulenamestext)") #end
+No results found for $keywordsstring #ifnotnull($modulenamestext) in $modulenamestext #end
 #else
 
 	#if( $organizedHits.size() > 0 )
@@ -80,9 +75,9 @@ $H$H$H 📁 #mdTag("b", "#text($module)")    (#mdLink("Open in eMedia Website", 
 				#set($link = "$!siteroot$applink/views/modules/$!topmodule.getId()/index.html")
 
 				#if( $parentmodule == $module)
-					#set($link = "$link?entityid=$!entity.getId()&entitytype=$!{module.id}&topentityid=$!entity.getId()")
+					#set($link = "$link?entityid=${hit.id}&entitytype=$!{module.id}&topentityid=${hit.id}")
 				#else
-					#set($link = "$link?entityid=$!entity.getId()&entitytype=$!{module.id}&topentityid=$!topentityid")
+					#set($link = "$link?entityid=${hit.id}&entitytype=$!{module.id}&topentityid=$!topentityid")
 				#end
 
 				#set($tabletarget = $mediaarchive.getCatalogSettingValue("tablethumbnail"))
@@ -124,7 +119,7 @@ $H$H$H 📄 #mdTag("b", "#text($assetmodule)")    (#mdLink("Open in eMedia Websi
   #foreach( $hit in $hits.getPageOfHits()  )
     #set($asset = $mediaarchive.getAsset($hit.id))
 
-    #if($stackedfield)
+		#if($stackedfield)
       #set($title = $asset.getText($stackedfield,$context))
     #end
 
@@ -137,7 +132,7 @@ $H$H$H 📄 #mdTag("b", "#text($assetmodule)")    (#mdLink("Open in eMedia Websi
     #end
 
     #set($dlink = $mediaarchive.asLinkToOriginal($hit))
-    #set($dlink = "$siteroot/$mediadbappid/services/module/asset/downloads/originals/$dlink?assetid=$!hit.getId()")
+    #set($dlink = "$siteroot/$mediadbappid/services/module/asset/downloads/originals/$dlink?assetid=${hit.id}")
 
     #if($collectionid)
       #set($dlink = "$dlink&collectionid=$!{collectionid}")
