@@ -92,7 +92,7 @@ $H$H$H 📁 #mdTag("b", "#text($module)")    (#mdLink("Open in eMedia", "$entity
 
 #if( $assethits.size() > 0 )
 
-	#if($organizeHits.size() > 0)
+	#if($organizedHits.size() > 0)
 ---
 	#end
 
