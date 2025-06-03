@@ -3,7 +3,11 @@ $context.putPageValue("apphome", $apphome)
 
 <div class="ignoreContext">
 	<div class="quicksearchresults">
-		#set( $input = $keywords)
+		#set( $input = $keywordsstring)
+
+		#ifnull($input)
+			#set( $input = $keywords)
+		#end
 		#if(!$input)
 			#set( $input = $modulehits.getSearchQuery().getMainInput())
 		#end
