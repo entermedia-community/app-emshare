@@ -105,10 +105,7 @@ $H$H$H 📁 #mdTag("b", "#text($module)")    (#mdLink("Open in eMedia", "$entity
 
 $H$H$H 📄 #mdTag("b", "#text($assetmodule)")    (#mdLink("Open in eMedia", "$entityurl"))
 
-	$hits.setHitsPerPage(12)
-
-	#set($parsedAssets = [])
-	#set($threes = [])
+	$hits.setHitsPerPage(10)
 
   #foreach( $hit in $hits.getPageOfHits()  )
 		#set($asset = $mediaarchive.getAsset($hit.id))
@@ -158,23 +155,9 @@ $H$H$H 📄 #mdTag("b", "#text($assetmodule)")    (#mdLink("Open in eMedia", "$e
 
 		#set($link = "$!siteroot$apphome?assetid=${hit.id}$")
 
-		#if($threes.size() < 3)
-			#if($threes.add(["#if($title)#esc($title)#else$!{hit.name}#end", "$siteroot$imagepath$!urlparams", "$link"]))#end
-		#else
-			#if($parsedAssets.add($threes))#end
-			#set($threes = [])
-		#end
+#mdLink("<img alt='#if($title)#esc($title)#else$!{hit.name}#end' src='$siteroot$imagepath$!urlparams'>", "$link" )
 
 	#end
-
-	#if($threes.size() > 0)
-		#if($parsedAssets.add($threes))#end
-	#end
-
-| | | |
-|:-------------------------:|:-------------------------:|:-------------------------:|
-#foreach( $assets in $parsedAssets)#foreach( $asset in $assets )|#mdLink("<img alt='${asset[0]}' src='${asset[1]}'>", "${asset[1]}" )#end|
-#end
 
 #end
 #end

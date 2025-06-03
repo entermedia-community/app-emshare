@@ -33,8 +33,8 @@
 			"description": "Show hints on how to properly use the search function and provide examples. Use this function when people ask questions like: 'What can you do?', 'How can I search using this tool?', 'Give me example of some search queries'."
 		},
 		{
-			"name": "searchByModule",
-			"description": "Search with one or more keywords in one or more modules. Keywords can be mutually exclusive or inclusive depending on their phrasing. For example: \"search fils containing any of the words 'red' and 'blue'\" is an exclusive search; \"search fils containing all of the words 'red' and 'blue'\" is an inclusive search. If not specified, exclusive search will be used. If modules are not specified, all modules will be searched. Modules may have conjunction too, ignore it.",
+			"name": "searchByType",
+			"description": "Search with one or more keywords in one or more types. Keywords can be mutually exclusive or inclusive depending on their phrasing. For example: \"search fils containing any of the words 'red' and 'blue'\" is an exclusive search; \"search fils containing all of the words 'red' and 'blue'\" is an inclusive search. If not specified, exclusive search will be used. If types are not specified, all types will be searched. Types may have conjunction too, ignore it.",
 			"parameters": {
 					"type": "object",
 					"properties": {
@@ -53,12 +53,12 @@
 											"inclusive"
 									]
 							},
-							"modules": {
+							"types": {
 									"anyOf": [
 										{
 											"type": "string",
 											"enum": ["all"],
-											"description": "Search all modules. Default value if modules are not specified."
+											"description": "Search all types. Default value if types are not specified."
 										}
 								#foreach($module in $chatprofile.getEntities())
 									#if($module.getBoolean("showonsearch"))
@@ -66,7 +66,7 @@
 										{
 											"type": "string",
 											"enum": ["${module.id}", "${module.name}"],
-											"description": #jesc("This is ${module.name} module.#ifnotnull($module.aisearch_contains) This module includes ${moduleProp.aisearch_contains}#end")
+											"description": #jesc("This is ${module.name} type.#ifnotnull($module.aisearch_contains) This type includes ${moduleProp.aisearch_contains}#end")
 										}
 									#end
 								#end
