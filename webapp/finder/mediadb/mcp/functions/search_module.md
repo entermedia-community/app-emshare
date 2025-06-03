@@ -40,7 +40,7 @@ No results found for $keywordsstring #ifnotnull($modulenamestext) in $modulename
 
 #mdTag("h2", "Found ${count} types")
 
-$H$H$H 📁 #mdTag("b", "#text($module)")    (#mdLink("Open in eMedia Website", "$entityurl"))
+$H$H$H 📁 #mdTag("b", "#text($module)")    (#mdLink("Open in eMedia", "$entityurl"))
 
 			$hits.setHitsPerPage(12)
 
@@ -109,7 +109,7 @@ $H$H$H 📁 #mdTag("b", "#text($module)")    (#mdLink("Open in eMedia Website", 
 	#set($edithome = "$!siteroot$apphome/views/modules/asset/editors/quicksearch")
 	#set($entityurl = "${edithome}/index.html?search=$input")
 
-$H$H$H 📄 #mdTag("b", "#text($assetmodule)")    (#mdLink("Open in eMedia Website", "$entityurl"))
+$H$H$H 📄 #mdTag("b", "#text($assetmodule)")    (#mdLink("Open in eMedia", "$entityurl"))
 
 	$hits.setHitsPerPage(12)
 
@@ -117,13 +117,17 @@ $H$H$H 📄 #mdTag("b", "#text($assetmodule)")    (#mdLink("Open in eMedia Websi
 	#set($threes = [])
 
   #foreach( $hit in $hits.getPageOfHits()  )
-    #set($asset = $mediaarchive.getAsset($hit.id))
+		#set($asset = $mediaarchive.getAsset($hit.id))
 
-		#if($stackedfield)
-      #set($title = $asset.getText($stackedfield,$context))
-    #end
+    #set($title = $hit.name)
 
-    #if(!$title)
+		#ifnull($title)
+			#if($stackedfield)
+				#set($title = $asset.getText($stackedfield,$context))
+			#end
+		#end
+
+    #ifnull($title)
       #if( $asset.assettitle )
         #set($title =  $asset.getText("assettitle",$context))
       #else
