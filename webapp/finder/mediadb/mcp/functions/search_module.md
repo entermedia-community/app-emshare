@@ -58,7 +58,6 @@ $H$H$H 📁 #mdTag("b", "#text($module)")    (#mdLink("Open in eMedia", "$entity
 						#end
 					#end
 				#end
-
 				#ifnull($primarymedia)
 					#set( $primarymediafield = $hit.primaryimage )
 					#if($primarymediafield)
@@ -80,14 +79,9 @@ $H$H$H 📁 #mdTag("b", "#text($module)")    (#mdLink("Open in eMedia", "$entity
 					#set($link = "$link?entityid=${hit.id}&entitytype=$!{module.id}&topentityid=$!topentityid")
 				#end
 
-				#set($tabletarget = $mediaarchive.getCatalogSettingValue("tablethumbnail"))
 
-				#if($tabletarget)
-					#set( $imagepath = $mediaarchive.asLinkToGenerated($hit, $tabletarget))
-				#else
-					#set($imagesize = "image110x62cropped")
-					#set( $imagepath = $mediaarchive.asLinkToGenerated($hit, $imagesize))
-				#end
+				#set($imagesize = "image110x62cropped")
+				#set( $imagepath = $mediaarchive.asLinkToGenerated($primarymedia, $imagesize))		
 
 #mdLink("<img alt='#if($title)#esc($title)#else$!{hit.name}#end' src='$siteroot$imagepath'>", "$link")
 
