@@ -11,6 +11,9 @@ import org.openedit.hittracker.SearchQuery
 public void init()
 {
 		MediaArchive mediaarchive = context.getPageValue("mediaarchive");//Search for all files looking for videos
+		
+		mediaarchive.clearCaches();
+		
 		Searcher assetsearcher = mediaarchive.getAssetSearcher();
 		Searcher tasksearcher = mediaarchive.getSearcherManager().getSearcher (mediaarchive.getCatalogId(), "conversiontask");
 		PresetCreator presets = mediaarchive.getPresetManager();

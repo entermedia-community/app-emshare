@@ -10,7 +10,7 @@
 #end
 	<div class="versiontoolbar">
 		#ifnotnull( $selectedrevision.getPreviewFileName() )		  
-		<a href="$apphome/views/modules/asset/editor/versioncontrol/replace.html?version=${selectedrevision.version}&assetid=$asset.getId()" 
+		<a href="$apphome/views/modules/asset/editor/versioncontrol/replace.html?version=$!{selectedrevision.version}&assetid=$asset.getId()" 
 			class="btn btn-cta ajax"
 			data-targetdiv="asset-editor-container" 
 			title="[[Restore this Version]]">
@@ -26,9 +26,9 @@
 
 		  #set($originalpath = $mediaarchive.asLinkToOriginal($asset))
 		  #if( $selectedrevision.getBackUpPath() )
-			  #set ($downloadlink = "/${mediaarchive.getMediaDbId()}/services/module/asset/downloads/originals/${originalpath}?version=${selectedrevision.version}")
+			  #set ($downloadlink = "/${mediaarchive.getMediaDbId()}/services/module/asset/downloads/originals/${originalpath}?version=$!{selectedrevision.version}")
 		  #else
-			  #set ($downloadlink = "/${mediaarchive.getMediaDbId()}/services/module/asset/downloads/originals/${originalpath}?_=$version")
+			  #set ($downloadlink = "/${mediaarchive.getMediaDbId()}/services/module/asset/downloads/originals/${originalpath}?_=$!{selectedrevision.version}")
 		  #end
 
 		  <a href="${downloadlink}" 
@@ -39,10 +39,10 @@
 	</div>
 
 	#if($selectedrevision.getPreviewFileName() )
-	  	#set ($previewlink ="/${mediaarchive.getMediaDbId()}/services/module/asset/downloads/revisionpreviews/$selectedrevision.getPreviewFileName()?assetid=$asset.id&version=${selectedrevision.version}")
+	  	#set ($previewlink ="/${mediaarchive.getMediaDbId()}/services/module/asset/downloads/revisionpreviews/$selectedrevision.getPreviewFileName()?assetid=$asset.id&version=$!{selectedrevision.version}")
 	#else
 		#set ($previewlink = $mediaarchive.asLinkToPreview($asset,"image550x350") )
-		#set ($previewlink = "$previewlink?_=$version") 
+		#set ($previewlink = "$previewlink?_=$!{selectedrevision.version}") 
 	#end	
 	
 	<div class="versionpreviewcontent">
