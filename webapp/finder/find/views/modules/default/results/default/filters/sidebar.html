@@ -144,7 +144,7 @@ $context.putPageValue("viewid",$viewid)
 				#else
 					#set($sortOrder = "desc")
 				#end
-				#ifnotnull($currentSort)
+				
 				<span class="d-inline-block text-brand pb-1 w-100 showing">
 					[[Sorted by]] <a href="$searchhome/filters/dialogsort.html" 
 					class="emdialog emsort #if($selectedpreference) closed #end text-success"
@@ -156,9 +156,16 @@ $context.putPageValue("viewid",$viewid)
 					data-includesearchcontext="true"						
 					data-includeeditcontext="true"
 					style="padding:0 4px 1px;" 
-					title="[[Sort Results]]">#text($currentSort)</a> (${sortOrder}.)
+					title="[[Sort Results]]">
+					#ifnull($currentSort)
+					[[Default]]
+					#end 
+					#ifnotnull($currentSort)
+					#text($currentSort) (${sortOrder}.)
+					#end
+					</a>
 				</span>
-				#end 
+				
 	
 				#ifnotnull($entity)
 					###set($desc = $entity.get("longcaption"))
