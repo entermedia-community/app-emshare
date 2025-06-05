@@ -38,9 +38,9 @@ No results found for $keywordsstring #ifnotnull($modulenamestext) in $modulename
 				#set( $count = $hits.size())
 			#end
 
-#mdTag("h2", "Found ${count} types")
+$H$H Found ${count} types
 
-$H$H$H 📁 #mdTag("b", "#text($module)")    (#mdLink("Open in eMedia", "$entityurl"))
+$H$H$H 📁 **#text($module)**    ([Open in eMedia]($entityurl))
 
 			$hits.setHitsPerPage(12)
 
@@ -83,7 +83,7 @@ $H$H$H 📁 #mdTag("b", "#text($module)")    (#mdLink("Open in eMedia", "$entity
 				#set($imagesize = "image110x62cropped")
 				#set( $imagepath = $mediaarchive.asLinkToGenerated($primarymedia, $imagesize))		
 
-#mdLink("<img alt='#if($title)#esc($title)#else$!{hit.name}#end' src='$siteroot$imagepath'>", "$link")
+[<img alt="#if($title)#esc($title)#else$!{hit.name}#end" src="$siteroot$imagepath">]($link)
 
 			#end
 		#end
@@ -96,14 +96,14 @@ $H$H$H 📁 #mdTag("b", "#text($module)")    (#mdLink("Open in eMedia", "$entity
 ---
 	#end
 
-#mdTag("h2", "Found ${assethits.size()} files")
+$H$H Found ${assethits.size()} files
 
 	#set($assetmodule = $mediaarchive.getCachedData("module","asset"))
 	#set($hits = $assethits)
 	#set($edithome = "$!siteroot$apphome/views/modules/asset/editors/quicksearch")
 	#set($entityurl = "${edithome}/index.html?search=$input")
 
-$H$H$H 📄 #mdTag("b", "#text($assetmodule)")    (#mdLink("Open in eMedia", "$entityurl"))
+$H$H$H 📄 **#text($assetmodule)**    ([Open in eMedia]($entityurl))
 
 	$hits.setHitsPerPage(10)
 
@@ -155,7 +155,7 @@ $H$H$H 📄 #mdTag("b", "#text($assetmodule)")    (#mdLink("Open in eMedia", "$e
 
 		#set($link = "$!siteroot$apphome?assetid=${hit.id}$")
 
-#mdLink("<img alt='#if($title)#esc($title)#else$!{hit.name}#end' src='$siteroot$imagepath$!urlparams'>", "$link" )
+[<img alt="#if($title)#esc($title)#else$!{hit.name}#end" src="$siteroot$imagepath$!urlparams">]($link)
 
 	#end
 
