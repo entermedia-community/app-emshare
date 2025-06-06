@@ -18,8 +18,12 @@ $context.putPageValue("assetheight",$assetheight)
 		#set($totalpages = $numberutils.toInt($asset.pages))
 		#set ( $hitssessionid = $context.findValue("hitssessionid"))
 		
+		
+			#set($facemanager = $mediaarchive.getBean("faceProfileManager") )
+			#set($faceboxescollection =  $facemanager.collectFaceBoxesAllPeople($asset,$assetwidth) )
+					
 
-			<div class="media-thumbnail #if($asset.faceprofiles) emshowbox #end">
+			<div class="media-thumbnail #if($faceboxescollection) emshowbox #end">
 				
 				#set( $rendertype = $mediaarchive.getMediaRenderType($asset.fileformat))
 				

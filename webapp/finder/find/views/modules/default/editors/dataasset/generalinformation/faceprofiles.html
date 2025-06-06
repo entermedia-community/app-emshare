@@ -13,21 +13,27 @@
 	#set($assetheight = $mediaarchive.getRealImageHeight($asset)) 
 	$context.putPageValue("assetheight",$assetheight)	
 
-	##if($rendertype=="video")							##	#set($imageboxsource = $mediaarchive.asLinkToGenerated($asset, "image1900x1080"))										##else
+	##if($rendertype=="video")							
+	##	#set($imageboxsource = $mediaarchive.asLinkToGenerated($asset, "image1900x1080"))										##else
 	#set($imageboxsource = $mediaarchive.asLinkToGenerated($asset, "image3000x3000"))
 	
 	<div class="$detailviewercolumnclass asset-data-detail emdatafield-$!viewtype p-3">
 		##set($collection =  $asset.getValue("faceprofiles"))
 		<div class="emfield-scroll" id="entitypickerentityperson">
 			#set( $facemanager = $mediaarchive.getBean("faceProfileManager") )
-			#set($collection =  $facemanager.collectFaceBoxesAllPeople($asset,$assetwidth) )
+			#set($faceboxescollection =  $facemanager.collectFaceBoxesAllPeople($asset,$assetwidth) )
+			
 			<ul class="entity-value-list d-flex flex-wrap">
-				#foreach( $row in $collection )
-					#set( $person = $mediaarchive.getCachedData("entityperson", $row.entityperson) )
+				#foreach( $row in $faceboxescollection )
+					
+					#set( $box = $row.getEmbeddedData())	
+					#set( $person = $row.getPerson() )
+					
 					<li class="position-relative facepf-item">
 						<div class="d-flex align-items-center justify-content-between">
 							<div>
-								#set($link = "$!siteroot$applink/views/modules/faceprofilegroup/editors/default/tabs/index.html?entityid=$row.id&hitssessionid=$!hits.sessionId")
+								
+								#set($link = "$!siteroot$applink/views/modules/faceprofilegroup/editors/default/tabs/index.html?entityid=${person.id}&hitssessionid=$!hits.sessionId")
 								
 								#if($row.timecodestart)
 									#set($secs = $mediaarchive.formatMilliseconds($row.timecodestart))
@@ -38,9 +44,9 @@
 									data-showboxtarget="mediaplayer"
 									data-dialogid="faceprofiledialog"
 									data-moduleid="faceprofilegroup"
-									data-location="$row.toJsonArray()"
-									data-width="$assetwidth"
-									data-height="$assetheight"
+									data-location="${row.toJsonArray()}"
+									data-width="${assetwidth}"
+									data-height="${assetheight}"
 									data-img="${imageboxsource}"
 									data-entitymoduleviewid="faceprofilegroupassets"
 									title="[[Show Box]]">
@@ -62,14 +68,14 @@
 								</a>
 								#if($caneditasset) 
 										<a href="$apphome/views/modules/asset/editor/faceprofiles/removefromprofile.html" 
-											data-assetid="$!asset.getId()" 
-											data-profileid="$row.id" 
+											data-assetid="$!{asset.getId()}" 
+											data-profileid="${box.id}" 
 											class="ajax facepf-remove"
 											data-targetdiv="editfaceprofiles" 
 											title="[[Remove Person]]"></a>
 									#end	
 							#end
-							#ifnull($person))
+							#ifnull($person)
 									#set($pickmoduleid = "entityperson")
 									#set($pickerurl= "$apphome/views/modules/${pickmoduleid}/editors/faceprofilepersonpicker/index.html")
 									##TODO: Show ALL the related assets and let them pick a name
@@ -78,8 +84,8 @@
 										class="emdialog facepf-add"
 										data-dialogid="dialogpicker${pickmoduleid}"
 										data-width="1200"
-										data-faceprofilegroupid="${faceprofilegroupid}"
-										data-assetid="$asset.id"
+										data-faceid="${box.id}"
+										data-assetid="${asset.id}"
 										data-entityid="$!{id}"
 										data-entitymoduleid="faceprofilegroup"
 										data-hidefooter="true"

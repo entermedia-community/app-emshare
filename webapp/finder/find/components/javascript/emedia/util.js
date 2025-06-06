@@ -1,5 +1,5 @@
 var app, siteroot, apphome;
-var parenturl;
+var externalmessage;
 
 function getRandomColor() {
   var letters = "0123456789ABCDEF".split("");
@@ -312,16 +312,22 @@ $(document).ready(function () {
       var imageUrl = $(this).data("imageurl");
       var assetinfo = $(this).closest("[data-assetid]");
       var assetid = "";
+	  var target = "";
+	  if (externalmessage) {
+	  	target = externalmessage["target"];
+	  }
       if (assetinfo.length) {
         assetid = assetinfo.data("assetid");
       }
       var object = {
         assetpicked: imageUrl,
         assetid: assetid,
+		target: target,
       };
       var str = JSON.stringify(object);
 
-      if (top) {
+      if (top && externalmessage) {
+		const parenturl = externalmessage["parenturl"];
         if (parenturl !== null) {
           // Extract the schema and port from the parenturl.
           const parentProtocol = new URL(parenturl).protocol; 
@@ -329,9 +335,10 @@ $(document).ready(function () {
           const targetOrigin = parentPort ? `${parentProtocol}//${new URL(parenturl).hostname}:${parentPort}` : `${parentProtocol}//${new URL(parenturl).hostname}`;
 
           // Use the target origin in the postMessage.
-          top.postMessage("assetpicked:" + str, targetOrigin);
+          top.postMessage(object, targetOrigin);
         }
       } else {
+		//Todo: Make it work with Json Object
         window.parent.postMessage("assetpicked:" + str);
       }
 
@@ -478,9 +485,12 @@ $(document).ready(function () {
 
 if (window.addEventListener) {
   window.addEventListener("message", function(e) {
-    if (e.data.startsWith("parenturl:")) {
-      parenturl = e.data.replace("parenturl:", "");
-    }
+	if (e.data == null || e.data == '') {
+		return;
+	}
+	
+    externalmessage=e.data;
+    
   }, false);
 }
 
