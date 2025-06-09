@@ -33,7 +33,7 @@
 						<div class="d-flex align-items-center justify-content-between">
 							<div>
 								
-								#set($link = "$!siteroot$applink/views/modules/asset/editors/facesshowsimilar/index.html?faceembeddedid=$box.getId()&hitssessionid=$!hits.sessionId")
+								#set($link = "$!siteroot$applink/views/modules/asset/editors/facesshowsimilar/index.html?hitssessionid=$!hits.sessionId")
 								
 								#if($row.timecodestart)
 									#set($secs = $mediaarchive.formatMilliseconds($row.timecodestart))
@@ -43,7 +43,8 @@
 									class="emdialog facepf showimagebox"
 									data-showboxtarget="mediaplayer"
 									data-dialogid="faceprofiledialog"
-									data-moduleid="faceprofilegroup"
+									data-faceembeddingid="$box.getId()"
+									data-assetid="$asset.getId()"
 									data-location="${row.toJsonArray()}"
 									data-width="${assetwidth}"
 									data-height="${assetheight}"
@@ -60,33 +61,28 @@
 									class="emdialog faceperson"
 									data-showboxtarget="mediaplayer"
 									data-dialogid="faceprofiledialog"
+									data-faceembeddingid="$box.getId()"
+									data-assetid="$asset.getId()"
 									title="[[View]] #text($name)">
 									<span title="$!name">$!name</span>
 								</a>
-								#if($caneditasset) 
-										<a href="$apphome/views/modules/asset/editor/faceprofiles/removefromprofile.html" 
-											data-assetid="$!{asset.getId()}" 
-											data-profileid="${box.id}" 
-											class="ajax facepf-remove"
-											data-targetdiv="editfaceprofiles" 
-											title="[[Remove Person]]"></a>
-									#end	
 							#end
-							#ifnull($person)
-									#set($pickmoduleid = "entityperson")
-									#set($link = "$!siteroot$applink/views/modules/asset/editors/facesshowsimilar/index.html?faceembeddedid=$box.getId()&hitssessionid=$!hits.sessionId")
-									##TODO: Show ALL the related assets and let them pick a name
-									#set($pickmodule = $mediaarchive.getCachedData("module", $pickmoduleid ))
-									<a href="$link" 
-										class="emdialog facepf-add"
-										data-dialogid="dialogpicker${pickmoduleid}"
-										data-width="1200"
-										data-faceid="${box.id}"
-										data-assetid="${asset.id}"
-										data-hidefooter="true"
-										title="[[Assign]] #text($pickmodule)"></a> 
-							#end
-							</div>
+							#if($caneditasset) 
+
+							#set($pickmoduleid = "entityperson")
+							#set($link = "$!siteroot$applink/views/modules/asset/editors/facesshowsimilar/index.html?hitssessionid=$!hits.sessionId")
+							##TODO: Show ALL the related assets and let them pick a name
+							#set($pickmodule = $mediaarchive.getCachedData("module", $pickmoduleid ))
+							<a href="$link" 
+								class="emdialog facepf-add"
+								data-dialogid="dialogpicker${pickmoduleid}"
+								data-faceembeddingid="$box.getId()"
+								data-assetid="$asset.getId()"
+								data-width="1200"
+								data-assetid="${asset.id}"
+								data-hidefooter="true"
+								title="[[Assign]] #text($pickmodule)"></a>
+							#end	 
 						</div>
 					</li>
 				#end	
