@@ -569,7 +569,7 @@ $(document).ready(function () {
    * Assign Person to a Faceprofile (From MediaViewer)
    */
 
-  lQuery(".pickerresults.pickerfaceprofileperson .resultsdivdata").livequery(
+  lQuery(".pickerresults.facepickerperson .resultsdivdata").livequery(
     "click",
     function (e) {
       if (!isValidTarget(e)) {

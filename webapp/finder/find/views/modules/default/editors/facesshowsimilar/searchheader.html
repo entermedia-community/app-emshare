@@ -1,5 +1,40 @@
-#ifnotnull($entityperson)
-$entityperson
-#end
+<div class="d-flex p-4">
 
-<a href="" class="btn btn-primary">Choose Person</a>
+#set($assetid = $context.getRequestParameter("assetid"))
+
+#set($asset = $mediaarchive.getAsset($assetid)) 
+#set($imageboxsource = $mediaarchive.asLinkToGenerated($asset, "image3000x3000"))
+#set($assetwidth = $mediaarchive.getRealImageWidth($asset))
+#set($assetheight = $mediaarchive.getRealImageHeight($asset))
+
+<div class="pl-4">
+	#set($pickerurl= "$apphome/views/modules/entityperson/editors/facepersonpicker/index.html")
+
+	<a href="$pickerurl" class="emdialog btn btn-primary">Choose Person</a>
+</div>
+
+<div style="width: 120px;">
+<a href="#" 
+	class="facepf"
+	data-location="${row.toJsonArray()}"
+	data-width="${assetwidth}"
+	data-height="${assetheight}"
+	data-img="${imageboxsource}">
+</a>
+</div>
+<div>
+	
+	
+	#ifnotnull($entityperson)
+		#set($namefield = $mediaarchive.getSearcher("entityperson").getDetail("name"))
+		#set($label = $mediaarchive.getSearcherManager().getValue($entityperson, $namefield, $context.getLocale()))
+		#text($label)
+
+	#end
+	
+</div>
+
+
+
+
+</div>
