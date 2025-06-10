@@ -1937,22 +1937,34 @@ $(document).ready(function () {
       }
     });
 
+    function downloadJson(jsonString) {
+      var exportName = $("#organizerName").val() + "-" + Date.now();
+      var dataStr =
+        "data:text/json;charset=utf-8," + encodeURIComponent(jsonString);
+      var dlAnchor = document.createElement("a");
+      dlAnchor.setAttribute("href", dataStr);
+      dlAnchor.setAttribute("download", exportName + ".json");
+      document.body.appendChild(dlAnchor);
+      dlAnchor.click();
+      dlAnchor.remove();
+    }
+
     lQuery("#exportForm").livequery("submit", function (e) {
       e.preventDefault();
       e.stopImmediatePropagation();
 
       var exportType = $(this).find("select[name='exportType']").val();
-      var exportJson = [];
       if (exportType === "all") {
         writerMarshal(canvas, function (json) {
-          exportJson = json;
-          downloadJson(exportJson);
+          var expJson = globalizeJSON(json);
+          downloadJson(expJson);
         });
         return;
       }
       if (exportType === "selected") {
         getSelectedJson(function (json) {
-          downloadJson(json);
+          var expJson = globalizeJSON(json);
+          downloadJson(expJson);
         });
       }
     });
@@ -2064,19 +2076,6 @@ $(document).ready(function () {
       };
       fileReader.readAsText(file);
     });
-
-    function downloadJson(json) {
-      var exportName = $("#organizerName").val() + "-" + Date.now();
-      var dataStr =
-        "data:text/json;charset=utf-8," +
-        encodeURIComponent(JSON.stringify(json));
-      var dlAnchor = document.createElement("a");
-      dlAnchor.setAttribute("href", dataStr);
-      dlAnchor.setAttribute("download", exportName + ".json");
-      document.body.appendChild(dlAnchor);
-      dlAnchor.click();
-      dlAnchor.remove();
-    }
 
     loadJSON();
   });
