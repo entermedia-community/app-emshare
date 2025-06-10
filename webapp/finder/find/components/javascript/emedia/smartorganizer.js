@@ -1736,7 +1736,7 @@ $(document).ready(function () {
       );
     }
 
-    lQuery("#copySmartNodes").livequery("click", function () {
+    $("#copySmartNodes").on("click", function () {
       getSelectedJson(function (json) {
         var icon = $(this).find("i");
         icon.removeClass("bi-copy").addClass("bi-check-lg");
@@ -1767,7 +1767,7 @@ $(document).ready(function () {
       });
     });
 
-    lQuery("#exportSmartNodes").livequery("click", function () {
+    $("#exportSmartNodes").on("click", function () {
       getSelectedJson(function (json) {
         if (!Array.isArray(json) || json.length == 0) {
           customToast("Invalid JSON structure.", {
@@ -1813,13 +1813,13 @@ $(document).ready(function () {
       });
     });
 
-    lQuery("#importSmartNodes").livequery("click", function (e) {
+    $("#importSmartNodes").on("click", function (e) {
       e.stopPropagation();
       e.preventDefault();
       $("#importSmartNodesFile").trigger("click");
     });
 
-    lQuery("#importSmartNodesFile").livequery("change", function () {
+    $("#importSmartNodesFile").on("change", function () {
       var file = this.files[0];
       if (file) {
         JSZip.loadAsync(file).then(function (zip) {
@@ -1916,7 +1916,7 @@ $(document).ready(function () {
         });
     }
 
-    lQuery("#pasteSmartNodes").livequery("click", function () {
+    $("#pasteSmartNodes").on("click", function () {
       validateClipboard(function (json) {
         if (json) {
           readerUnmarshal(canvas, json);
@@ -1924,7 +1924,7 @@ $(document).ready(function () {
       });
     });
 
-    lQuery("#closeorgnizer").livequery("click", function () {
+    $("#closeorgnizer").on("click", function () {
       var changed = $("#organizer_canvas").data("changed");
       if (!changed) {
         closeemdialog($(this).closest(".modal"));
