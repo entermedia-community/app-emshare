@@ -480,17 +480,18 @@ $(document).ready(function () {
   });
 }); //document ready
 
-
-if (window.addEventListener) {
-  window.addEventListener("message", function(e) {
-	if (e.data == null || e.data == '') {
-		return;
-	}
-	
-    externalmessage=e.data;
-    
-  }, false);
-}
+window.addEventListener(
+  "message",
+  function (e) {
+    if (
+      typeof e.data === "object" &&
+      e.data.name === "setEmediaLibraryPicker"
+    ) {
+      externalmessage = e.data;
+    }
+  },
+  false
+);
 
 var asciiFormatRanges = {
   n: [120812, 120821],
