@@ -586,6 +586,8 @@ $(document).ready(function () {
         clickableresultlist.data("dataid", rowid);
         clickableresultlist.runAjax();
         closeemdialog(clickableresultlist.closest(".modal"));
+		closeemdialog($("#faceprofiledialog"));
+		
       }
     }
   );
