@@ -55,10 +55,10 @@ function lightenHex(hex, lighten = 0) {
   h = Math.round(360 * h);
 
   l /= 100;
-  const a = (s * Math.min(l, 1 - l)) / 100;
-  const f = (n) => {
-    const k = (n + h / 30) % 12;
-    const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
+  var a = (s * Math.min(l, 1 - l)) / 100;
+  var f = (n) => {
+    var k = (n + h / 30) % 12;
+    var color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
     return Math.round(255 * color)
       .toString(16)
       .padStart(2, "0");
@@ -162,9 +162,7 @@ getSessionValue = function (key) {
   return returnval;
 };
 
-
 var desktopOffset = 0;
-
 
 $(document).ready(function () {
   app = $("#application");
@@ -312,40 +310,40 @@ $(document).ready(function () {
       var imageUrl = $(this).data("imageurl");
       var assetinfo = $(this).closest("[data-assetid]");
       var assetid = "";
-	  var target = "";
-	  if (externalmessage) {
-	  	target = externalmessage["target"];
-	  }
+      var target = "";
+      if (externalmessage && externalmessage.target) {
+        target = externalmessage.target;
+      }
       if (assetinfo.length) {
         assetid = assetinfo.data("assetid");
       }
-      var object = {
+
+      var payload = {
+        name: "eMediaAssetPicked",
         assetpicked: imageUrl,
         assetid: assetid,
-		target: target,
+        target: target,
       };
-      var str = JSON.stringify(object);
 
       if (top && externalmessage) {
-		const parenturl = externalmessage["parenturl"];
+        var parenturl = externalmessage["parenturl"];
         if (parenturl !== null) {
           // Extract the schema and port from the parenturl.
-          const parentProtocol = new URL(parenturl).protocol; 
-          const parentPort = new URL(parenturl).port; 
-          const targetOrigin = parentPort ? `${parentProtocol}//${new URL(parenturl).hostname}:${parentPort}` : `${parentProtocol}//${new URL(parenturl).hostname}`;
+          var parentProtocol = new URL(parenturl).protocol;
+          var hostname = new URL(parenturl).hostname;
+          var parentPort = new URL(parenturl).port;
+          var targetOrigin = `${parentProtocol}//${hostname}`;
+          if (parentPort) targetOrigin += `:${parentPort}`;
 
           // Use the target origin in the postMessage.
-          top.postMessage(object, targetOrigin);
+          top.postMessage(payload, targetOrigin);
         }
       } else {
-		//Todo: Make it work with Json Object
-        window.parent.postMessage("assetpicked:" + str);
+        //Todo: Make it work with Json Object
+        window.parent.postMessage(payload);
       }
-
     });
   }
-
- 
 
   lQuery("form").livequery(function () {
     var modal = $(this).closest(".modal");
