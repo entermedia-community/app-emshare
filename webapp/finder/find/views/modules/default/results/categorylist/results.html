@@ -1,7 +1,8 @@
-<div id="$!{searchhomeid}$!{edithomeid}" 
-	 class="tableresults resultsdiv categoryresults ">
-	##<div id="categoryresultsdialog">
-			<div class="categorypathpicker" style="min-height: 200px"  >
+#set($hits = $categoryhits)
+
+<div id="$!{searchhomeid}$!{edithomeid}results" 
+	 class="tableresults resultsdiv categoryresults overflow-y mb-1">
+			##<div class="categorypathpicker" style="min-height: 200px"  >
 				#foreach( $hit in $hits.getPageOfHits() )
 					<div class="categorypath resultsdivdata" data-dataid="$hit.getId()">
 						##href="$applink/components/categories/asset/listassetcategories.html"
@@ -9,8 +10,10 @@
 					</div>
 				#end	
 				
-			</div>
-			##$pages.include("$apphome/sidebars/categories/pages.html",$context)
-		
-	##</div>
+			##</div>
+			
 </div>
+
+$context.putPageValue("resultsPage", "${searchhome}/searchinline.html")
+$context.putPageValue("targetdiv", "searchcategorydialogresults")
+$pages.include("${searchhome}/pages.html",$context)

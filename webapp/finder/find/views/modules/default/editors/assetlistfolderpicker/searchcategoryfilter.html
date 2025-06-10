@@ -1,40 +1,35 @@
 #set( $nodeID = $context.getRequestParameter("nodeID"))
 #set( $searcher = $mediaarchive.getSearcher("category") )
-#set( $results = $searcher.query().exact("parents",$nodeID).sort("categorypathUp").search() )
-
-
-$context.putPageValue("hits",$results)
 $context.putPageValue("searcher",$searcher)
 #set ($details = $searcher.getDetailsForView("category/searchcategory", $userprofile))
 
-	#set($searchhome = "$apphome/views/modules/${module.id}/results/categorylist")
-	$context.putPageValue("searchhome", $searchhome)
+#set($searchhome = "$apphome/views/modules/${module.id}/results/categorylist")
+$context.putPageValue("searchhome", $searchhome)
 
-	<form id="autosubmitfilter" 
-			name="autosubmitfilter" 
-			class="autosubmit ajaxform" 
-			autocomplete="off"  
-			data-targetdiv="categoryresults"
-			action="${searchhome}/searchinline.html"
-			>
-		<input type="hidden" name="searchtype" value="category" />
-		<input type="hidden" name="sortby" value="categorypathUp" />
-		<input type="hidden" name="field" value="parents" />
-		<input type="hidden" name="operation" value="exact" />
-		<input type="hidden" name="parents.value" id="parentfilter" value="$!nodeID" />
-		
-		<div class="emsearchfieldrow">
-			<div id="detail_categorypath" align="left" class="emsearchfieldvalue">
-				<input name="field" value="categorypath" type="hidden">
-				<input name="operation" value="contains" type="hidden">
-				<input type="text" class="form-control detail_categorypath textinput autosubmited " 
-						placeholder="[[Search Folders]]" value="" id="categorypath.value" name="categorypath.value">
-			</div>
-		</div>
-	</form>
+<div class="pt-2 pb-2" style="height: 46px;">
+<form id="autosubmitfilter" 
+		name="autosubmitfilter" 
+		class="autosubmit ajaxform" 
+		autocomplete="off"  
+		data-targetdiv="categoryresults"
+		action="${searchhome}/searchinline.html"
+		>
+	<input type="hidden" name="searchtype" value="category" />
+	<input type="hidden" name="sortby" value="categorypathUp" />
+	<input type="hidden" name="field" value="parents" />
+	<input type="hidden" name="operation" value="exact" />
+	<input type="hidden" name="parents.value" id="parentfilter" value="$!nodeID" />
 	
-
-	$pages.include("${searchhome}/searchinline.html", $context)
-		
-
-
+	<div class="emsearchfieldrow pr-2">
+		<div id="detail_categorypath" align="left" class="emsearchfieldvalue">
+			<input name="field" value="categorypath" type="hidden">
+			<input name="operation" value="contains" type="hidden">
+			<input type="text" class="form-control detail_categorypath textinput autosubmited " 
+					placeholder="[[Search Folders]]" value="" id="categorypath.value" name="categorypath.value">
+		</div>
+	</div>
+</form>
+</div>
+<div id="searchcategorydialogresults" style="height: calc(100% - 46px);">
+$pages.include("${searchhome}/searchinline.html", $context)
+</div>
