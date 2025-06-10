@@ -426,12 +426,35 @@ $(document).ready(function () {
     var reader = new draw2d.io.json.Reader();
     var writer = new draw2d.io.json.Writer();
 
+    function removeDuplicates(json) {
+      var checkedIds = {
+        Connection: {},
+        Group: {},
+        Label: {},
+        Image: {},
+        End: {},
+      };
+      json.forEach((element, index) => {
+        Object.keys(checkedIds).forEach((key) => {
+          if (element.type && element.type.endsWith("." + key)) {
+            if (checkedIds[key][element.id]) {
+              json.splice(index, 1);
+            } else {
+              checkedIds[key][element.id] = true;
+            }
+          }
+        });
+      });
+    }
+
     function readerUnmarshal(canvas, json) {
+      removeDuplicates(json);
       reader.unmarshal(canvas, json);
     }
 
     function writerMarshal(canvas, callback) {
       writer.marshal(canvas, function (json) {
+        removeDuplicates(json);
         callback(json);
       });
     }
