@@ -726,6 +726,7 @@ $(document).ready(function () {
               var updateddata = localizeJSON(saveddata);
               var parsed = JSON.parse(updateddata);
               if (parsed.length) {
+                removeDuplicates(parsed);
                 insertjson = parsed;
               }
             }
