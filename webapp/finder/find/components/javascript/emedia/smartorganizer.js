@@ -2058,16 +2058,10 @@ $(document).ready(function () {
       var fileReader = new FileReader();
       fileReader.onload = function () {
         try {
-          var json = JSON.parse(fileReader.result);
-          if (Array.isArray(json) && json.length > 0) {
-            readerUnmarshal(canvas, json);
-            loadEvents();
-            closeemdialog(thisModal);
-          } else {
-            customToast("Invalid JSON structure.", {
-              positive: false,
-            });
-          }
+          var impJson = localizeJSON(fileReader.result);
+          readerUnmarshal(canvas, JSON.parse(impJson));
+          loadEvents();
+          closeemdialog(thisModal);
         } catch (error) {
           customToast("Error parsing JSON!", {
             positive: false,
