@@ -1963,7 +1963,12 @@ $(document).ready(function () {
         return;
       }
       if (exportType === "selected") {
-        getSelectedJson(function (json) {
+        getSelectedJson(function (json, index) {
+          json.forEach(function (d) {
+            if (d.id === "main" || d.id === "logo") {
+              json.splice(index, 1);
+            }
+          });
           var expJson = globalizeJSON(json);
           downloadJson(expJson);
         });
