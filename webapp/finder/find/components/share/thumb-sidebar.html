@@ -1,10 +1,34 @@
 <div class="share-sidebar">
-	<h4 class="mt-0 mb-2">[[Converted Files]]</h4>
-	<div class="share-sidebar-items overflow-y">
-		#set($thumpresets = $mediaarchive.asListOfPreviewLinks($asset) )
+	<div class="share-sidebar-items">
+		
+		#set($fileformat = $asset.fileformat)
+		#set($rendertypeid = $mediaarchive.getMediaRenderType($fileformat) )
+		#set($thumpresets = $mediaarchive.query("convertpreset").exact("inputtype", $rendertypeid).exact("inputtype", "all").sort("ordering").search() )
+	
 		#foreach ($preset in $thumpresets)
-			$context.putPageValue("preset", $preset)
-			$pages.include("./thumb-sideitem.html", $context)
+			#set($ok = false)
+			#if($canconvert && $candownloadfpo)
+				#set($ok = true) 
+			#elseif ($canconvert && $preset.watermark != "true")
+				#set($ok = true) 
+			#elseif($candownloadfpo && $preset.watermark == "true")
+				#set($ok = true) 
+			#end
+			#if($preset.id == "0" && $candownload)
+				#set($ok = true) 
+			#end
+			#if($preset.id == "0" && !$candownload)
+				#set($ok = false) 
+			#end
+			##Hide if display = false in preset
+			#if($preset.id != "0" && $preset.getValue("display")=="false")
+				#set($ok = false) 
+			#end
+			#if($ok)
+				$context.putPageValue("preset", $preset)
+				$pages.include("./thumb-sideitem.html", $context)
+			#end
+			
 		#end 
 	</div>
 </div>

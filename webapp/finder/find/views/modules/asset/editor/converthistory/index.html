@@ -5,7 +5,7 @@
 	#set( $permissionname = "caneditasset")
 	#set( $viewid = "conversionsresultstable")
 
-	#if($caneditasset && $canconvert)
+	#if($caneditasset && $canviewconversions)
 	<div class="assetpanel-editorinner">
 		#set( $args = "parentid=$!asset.id&assetid=$asset.id&catalogid=$mediaarchive.getCatalogId()&searchtype=$searchtype&fieldexternalid=$fieldexternalid&fieldexternalvalue=$fieldexternalvalue&listid=$!listid&listexternalid=$!listexternalid&permissionname=$permissionname&viewid=$viewid&edit=false&${searchtype}sortby=orderingUp")
 		#set( $args = "$args&selectlink=$home$apphome/views/modules/asset/editor/converthistory/index.html")
@@ -14,7 +14,7 @@
 		$pages.include("$apphome/views/modules/asset/editors/dataasset/generictable.html?$args", $context)
 
 		<div class="d-flex px-2">
-			#if($canshowadmintoolbar)
+			#if($canshowadmintoolbar && $canconvert)
 			<a class="btn btn-primary previewcrop-btn mt-2 mr-2"
 				data-oemaxlevel="1"  
 				target="_new"
@@ -24,20 +24,22 @@
 			</a> 
 			#end
 	
-			#if($caneditasset && $canconvert) 
+			#if($caneditasset) 
 			<a class="btn btn-primary ajax mt-2 mr-2" data-targetdivinner="asset-editor-container" data-oemaxlevel="1" 
 				href="$siteroot$apphome/views/modules/asset/editor/conversions/reloadthumbs.html?assetid=$asset.id">
 				<i class="bi bi-images mr-1"></i> [[Recreate Conversions]]
 			</a>
 			#end
 	
-			#if( !$ismulti && $canconvert && $canviewconversions && $canviewassetedit)
+			#if( !$ismulti && $caneditasset)
 			<a class="btn btn-primary ajax mt-2 mr-2" targetdivinner="asset-editor-container" data-oemaxlevel="1" href="$home$apphome/views/modules/asset/editor/converthistory/reloadthumbs.html?assetid=$asset.id">
 				[[Re-Convert]]
 			</a>
 			#end
 		</div>
 	</div>
+	#else
+		[[You don't have permissions to see asset conversions]]
 	#end
 </div>
 

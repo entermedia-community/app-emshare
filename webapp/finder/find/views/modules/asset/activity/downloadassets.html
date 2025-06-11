@@ -17,27 +17,28 @@
 		method="post"
 		##onSubmit='$("#submitbutton").attr("disabled","disabled");$("#submitbutton").val("[[Processing]]...");'
 		action="$home$apphome/components/orders/download/processorder.html">
-	#set($searcher = $searcherManager.getSearcher($catalogid, "order"))
-	$context.putPageValue("searcher", $searcher)	 
-	$context.putPageValue("data", $order)	 
-	$context.putPageValue("view", "order/downloadform")	
-	<input type="hidden" name="view" value="order/downloadform"/>
-	<input type="hidden" name="searchtype" value="order"/>
-	<input type="hidden" name="catalogid" value="$catalogid"/>
-	<input type="hidden" name="orderid" value="$order.id"/>
-	<input type="hidden" name="newuserstatus" value="downloadrequested"/>
+		#set($searcher = $searcherManager.getSearcher($catalogid, "order"))
+		$context.putPageValue("searcher", $searcher)	 
+		$context.putPageValue("data", $order)	 
+		$context.putPageValue("view", "order/downloadform")	
+		<input type="hidden" name="view" value="order/downloadform"/>
+		<input type="hidden" name="searchtype" value="order"/>
+		<input type="hidden" name="catalogid" value="$catalogid"/>
+		<input type="hidden" name="orderid" value="$order.id"/>
+		<input type="hidden" name="newuserstatus" value="downloadrequested"/>
+		
+		<input type="hidden" name="field" value="desktopid"/>
+		<input type="hidden" name="desktopid.value" value="$!desktop.getDesktopId()"/>
 	
-	<input type="hidden" name="field" value="desktopid"/>
-	<input type="hidden" name="desktopid.value" value="$!desktop.getDesktopId()"/>
-
-	<input type="hidden" name="field" value="collectionid"/>
-	<input type="hidden" name="collectionid.value" value="$!context.getRequestParameter('collectionid')"/>
-
-	<input type="hidden" name="field" value="publishdestination" />
-	<input type="hidden" name="publishdestination.value" value="$mediaarchive.getCatalogSettingValue("downloadpublisher")" /> ## 0 is http 1 is aspera
+		<input type="hidden" name="field" value="collectionid"/>
+		<input type="hidden" name="collectionid.value" value="$!context.getRequestParameter('collectionid')"/>
 	
-	<input type="hidden" name="field" value="ordertype" />
-	<input type="hidden" name="ordertype.value" value="download" />
+		<input type="hidden" name="field" value="publishdestination" />
+		<input type="hidden" name="publishdestination.value" value="$mediaarchive.getCatalogSettingValue("downloadpublisher")" /> ## 0 is http 1 is aspera
+		
+		<input type="hidden" name="field" value="ordertype" />
+		<input type="hidden" name="ordertype.value" value="download" />
+		
 		<h4>$orderitems.size() [[Items]]</h4>
 		#if($canconvert)
 		<div>[[Choose a download format for each type of asset]].</div>
