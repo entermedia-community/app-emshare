@@ -8,10 +8,6 @@
 	#set ($viewtype = "faceprofiles")
 
 	$context.putPageValue("thumbsize",$thumbsize)
-	#set($assetwidth = $mediaarchive.getRealImageWidth($asset))
-	$context.putPageValue("assetwidth",$assetwidth)	
-	#set($assetheight = $mediaarchive.getRealImageHeight($asset))
-	$context.putPageValue("assetheight",$assetheight)
 
 	##if($rendertype=="video")							
 	##	#set($imageboxsource = $mediaarchive.asLinkToGenerated($asset, "image1900x1080"))										##else
@@ -46,8 +42,8 @@
 									data-faceembeddingid="$box.getId()"
 									data-assetid="$asset.getId()"
 									data-location="${row.toJsonArray()}"
-									data-width="${assetwidth}"
-									data-height="${assetheight}"
+									data-width="${box.originalwidth}"
+									data-height="${box.originalheight}"
 									data-img="${imageboxsource}"
 									title="[[See Similar Faces]]">
 								</a>
