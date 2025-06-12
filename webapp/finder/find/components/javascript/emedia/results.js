@@ -885,113 +885,133 @@ jQuery(document).ready(function (url, params) {
   });
 
   $(window).on("resize", function () {
-    $(".face-canvas").remove();
+    $(".face-canvas").css("opacity", 0);
   });
 
-  var faceCanvas;
+  var faceCanvas,
+    faceCanvasCtx,
+    faceEventsRegistered = false;
 
-  function paintimagebox(image, faceData) {
+  function paintFaceBoxes(image, facesData) {
     var imageContainer = image.closest(".imagethumbholder");
     faceCanvas = imageContainer.find("canvas").get(0);
-    if (faceCanvas) {
-      faceCanvas.style.opacity = 1;
-      return;
+    if (!faceCanvas) {
+      faceCanvas = document.createElement("canvas");
+      faceCanvas.classList.add("face-canvas");
+      faceCanvas.width = image.width();
+      faceCanvas.height = image.height();
+      imageContainer.append(faceCanvas);
+      faceCanvasCtx = faceCanvas.getContext("2d");
+      faceEventsRegistered = true;
     }
+
+    faceCanvasCtx.clearRect(0, 0, faceCanvas.width, faceCanvas.height);
+
     var imgWidth = image.width();
-    var mainImgWidth = faceData.originalwidth;
-    var scale = imgWidth / mainImgWidth;
 
-    var [boxLeft, boxTop, boxWidth, boxHeight] = faceData.location;
+    var nameRectBound = {};
 
-    boxLeft *= scale;
-    boxTop *= scale;
-    boxWidth *= scale;
-    boxHeight *= scale;
+    facesData.forEach(function (faceData) {
+      var id = faceData.faceembeddingid;
+      var mainImgWidth = faceData.originalwidth;
+      var scale = imgWidth / mainImgWidth;
 
-    faceCanvas = document.createElement("canvas");
-    faceCanvas.classList.add("face-canvas");
-    faceCanvas.width = image.width();
-    faceCanvas.height = image.height();
+      var [boxLeft, boxTop, boxWidth, boxHeight] = faceData.location;
 
-    var ctx = faceCanvas.getContext("2d");
+      boxLeft *= scale;
+      boxTop *= scale;
+      boxWidth *= scale;
+      boxHeight *= scale;
 
-    ctx.fillStyle = "rgba(255, 255, 255, 0.05)";
-    ctx.fillRect(boxLeft, boxTop, boxWidth, boxHeight);
-    ctx.strokeStyle = "rgba(255, 255, 255, 0.5)";
-    ctx.lineWidth = 2;
-    ctx.setLineDash([5, 5]);
-    ctx.strokeRect(boxLeft, boxTop, boxWidth, boxHeight);
+      faceCanvasCtx.fillStyle = "rgba(255, 255, 255, 0.05)";
+      faceCanvasCtx.fillRect(boxLeft, boxTop, boxWidth, boxHeight);
+      faceCanvasCtx.strokeStyle = "rgba(255, 255, 255, 0.5)";
+      faceCanvasCtx.lineWidth = 2;
+      faceCanvasCtx.setLineDash([5, 5]);
+      faceCanvasCtx.strokeRect(boxLeft, boxTop, boxWidth, boxHeight);
 
-    var nameRectBound = null;
+      var facename = "Click to Tag";
+      if (faceData.facename) {
+        facename = faceData.facename.trim();
+      }
+      faceCanvasCtx.font = "16px Arial";
+      faceCanvasCtx.textAlign = "center";
 
-    var facename = "Click to Tag";
-    if (faceData.facename) {
-      facename = faceData.facename.trim();
-    }
-    ctx.font = "16px Arial";
-    ctx.textAlign = "center";
+      var textWidth = faceCanvasCtx.measureText(facename).width;
 
-    var textWidth = ctx.measureText(facename).width;
+      nameRectBound[id] = {
+        x: boxLeft + boxWidth / 2 - textWidth / 2 - 6,
+        y: boxTop + boxHeight + 12,
+        width: textWidth + 12,
+        height: 24,
+      };
 
-    nameRectBound = {
-      x: boxLeft + boxWidth / 2 - textWidth / 2 - 6,
-      y: boxTop + boxHeight + 12,
-      width: textWidth + 12,
-      height: 24,
-    };
+      faceCanvasCtx.fillStyle = "rgba(0, 0, 0, 0.75)";
+      faceCanvasCtx.roundRect(
+        nameRectBound[id].x,
+        nameRectBound[id].y,
+        nameRectBound[id].width,
+        nameRectBound[id].height,
+        6
+      );
+      faceCanvasCtx.fill();
 
-    ctx.fillStyle = "rgba(0, 0, 0, 0.75)";
-    ctx.roundRect(
-      nameRectBound.x,
-      nameRectBound.y,
-      nameRectBound.width,
-      nameRectBound.height,
-      6
-    );
-    ctx.fill();
+      faceCanvasCtx.beginPath();
+      faceCanvasCtx.moveTo(boxLeft + boxWidth / 2 + 6, boxTop + boxHeight + 12);
+      faceCanvasCtx.lineTo(boxLeft + boxWidth / 2, boxTop + boxHeight + 2);
+      faceCanvasCtx.lineTo(boxLeft + boxWidth / 2 - 6, boxTop + boxHeight + 12);
+      faceCanvasCtx.closePath();
+      faceCanvasCtx.fill();
 
-    ctx.beginPath();
-    ctx.moveTo(boxLeft + boxWidth / 2 + 6, boxTop + boxHeight + 12);
-    ctx.lineTo(boxLeft + boxWidth / 2, boxTop + boxHeight + 2);
-    ctx.lineTo(boxLeft + boxWidth / 2 - 6, boxTop + boxHeight + 12);
-    ctx.closePath();
-    ctx.fill();
+      faceCanvasCtx.fillStyle = "white";
+      faceCanvasCtx.fillText(
+        facename,
+        boxLeft + boxWidth / 2,
+        boxTop + boxHeight + 30
+      );
 
-    ctx.fillStyle = "white";
-    ctx.fillText(facename, boxLeft + boxWidth / 2, boxTop + boxHeight + 30);
+      faceCanvas.style.opacity = 1;
+    });
 
-    imageContainer.append(faceCanvas);
-
-    function isNameRect(clientX, clientY) {
-      if (!nameRectBound || !faceCanvas) return false;
+    function isNameRect(bound, clientX, clientY) {
+      if (!bound || !faceCanvas) return false;
       var rect = faceCanvas.getBoundingClientRect();
       var mouseX = clientX - rect.left;
       var mouseY = clientY - rect.top;
 
       if (
-        mouseX >= nameRectBound.x &&
-        mouseX <= nameRectBound.x + nameRectBound.width &&
-        mouseY >= nameRectBound.y &&
-        mouseY <= nameRectBound.y + nameRectBound.height
+        mouseX >= bound.x &&
+        mouseX <= bound.x + bound.width &&
+        mouseY >= bound.y &&
+        mouseY <= bound.y + bound.height
       ) {
         return true;
       }
       return false;
     }
 
-    faceCanvas.addEventListener("click", function (e) {
-      if (isNameRect(e.clientX, e.clientY)) {
-        $(".showimagebox").trigger("click");
-      }
-    });
+    if (faceEventsRegistered) {
+      faceEventsRegistered = false;
+      faceCanvas.addEventListener("click", function (e) {
+        Object.keys(nameRectBound).forEach(function (id) {
+          if (isNameRect(nameRectBound[id], e.clientX, e.clientY)) {
+            var selector = ".showimagebox[data-faceembeddingid='" + id + "']";
+            $(selector).trigger("click");
+          }
+        });
+      });
 
-    faceCanvas.addEventListener("mousemove", function (e) {
-      if (isNameRect(e.clientX, e.clientY)) {
-        faceCanvas.style.cursor = "pointer";
-      } else {
-        faceCanvas.style.cursor = "default";
-      }
-    });
+      faceCanvas.addEventListener("mousemove", function (e) {
+        var hover = false;
+        Object.keys(nameRectBound).forEach(function (id) {
+          if (isNameRect(nameRectBound[id], e.clientX, e.clientY)) {
+            hover = true;
+          }
+        });
+
+        faceCanvas.style.cursor = hover ? "pointer" : "default";
+      });
+    }
   }
 
   var faceTO;
@@ -1004,32 +1024,33 @@ jQuery(document).ready(function (url, params) {
     if (showboxtarget) {
       var image = showboxtarget.find(".imagethumb");
       if (image.length > 0) {
-        paintimagebox(image, link.data());
+        paintFaceBoxes(image, [link.data()]);
       }
     }
   });
 
   lQuery(".showimagebox").livequery("mouseleave", function () {
     if (faceTO) clearTimeout(faceTO);
-    faceTO = setTimeout(function () {
-      $(".face-canvas").css("opacity", 0);
-    }, 500);
+    $(".face-canvas").css("opacity", 0);
   });
 
-  lQuery("#mediaplayer").livequery("mouseover", function () {
-    if (faceTO) clearTimeout(faceTO);
-    var canvas = $(this).find(".face-canvas");
-    if (canvas.length > 0) {
-      canvas.css("opacity", 1);
-    } else {
-      $(".showimagebox").trigger("mouseover");
+  lQuery("#mediaplayer .imagethumbholder").livequery("mouseover", function (e) {
+    if ($(e.target).is(".imagethumb") || $(e.target).is(".face-canvas")) {
+      if (faceTO) clearTimeout(faceTO);
+      var data = [];
+      $(".showimagebox").each(function () {
+        data.push($(this).data());
+      });
+      var image = $("#mediaplayer").find(".imagethumb");
+      if (image.length > 0) {
+        paintFaceBoxes(image, data);
+      }
     }
   });
-  lQuery("#mediaplayer").livequery("mouseleave", function () {
+
+  lQuery("#mediaplayer .imagethumbholder").livequery("mouseleave", function () {
     if (faceTO) clearTimeout(faceTO);
-    faceTO = setTimeout(function () {
-      $(".face-canvas").css("opacity", 0);
-    }, 500);
+    $(".face-canvas").css("opacity", 0);
   });
 
   lQuery(".facepf").livequery(function () {
