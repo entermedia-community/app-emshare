@@ -17,7 +17,7 @@
 			
 			<ul class="entity-value-list d-flex flex-wrap">
 			#foreach( $row in $faceboxescollection )
-				#set( $box = $row.getEmbeddedData())
+				#set( $rowdata = $row.getEmbeddedData())
 				#set( $person = false)
 				#set( $person = $row.getPerson() )
 
@@ -38,10 +38,10 @@
 						data-hidefooter="true"
 						data-showboxtarget="mediaplayer"
 						data-dialogid="faceprofiledialog"
-						data-faceembeddingid="$box.getId()"
+						data-faceembeddingid="$rowdata.getId()"
 						data-assetid="$asset.getId()"
 						data-location="${row.toJsonArray()}"
-						data-originalwidth="${box.originalwidth}"
+						data-originalwidth="${rowdata.originalwidth}"
 						#if($facename)
 							data-facename="#elidemiddle($facename, 100)"
 							title="[[View more of]] #text($facename)"
@@ -51,22 +51,25 @@
 						data-dialogtitle="[[Similar Faces]]"
 					>
 						<div>
-							#if($row.timecodestart)
-								#set($secs = $mediaarchive.formatMilliseconds($row.timecodestart))
-							#end
-
-							#set($imageboxsource = $mediaarchive.asLinkToGenerated($asset, "image3000x3000"))
-							
+							#set($rendertype = $mediaarchive.getMediaRenderType($asset))
+							#if( $rendertype == "video")
+								#set( $offset = $rowdata.getValue("timecodestart"))
+								#set($imageboxsource = $mediaarchive.asLinkToGeneratedOffset($asset, "image1900x1080" , $offset) )
+							#else
+								#set($imageboxsource = $mediaarchive.asLinkToGenerated($asset, "image3000x3000"))
+							#end							
 							<div class="facepf"
 								data-location="${row.toJsonArray()}"
-								data-originalwidth="${box.originalwidth}"
-								data-originalheight="${box.originalheight}"
+								data-originalwidth="${rowdata.originalwidth}"
+								data-originalheight="${rowdata.originalheight}"
+								data-previewimage="$imageboxsource"
 								style='background-image: url("${imageboxsource}")'></div>
 						</div>
 						<div class="vr"></div>
 						<div class="d-flex flex-column align-items-center">
+							#set($secs = $mediaarchive.formatMilliseconds($row.timecodestart) )
 							#if($facename)
-								<span>$!facename</span>
+								<span>$!facename</span> $!secs
 							#else
 								<span class="text-muted">[[Unknown Person]]</span>
 								<small>Click to Tag</small>
