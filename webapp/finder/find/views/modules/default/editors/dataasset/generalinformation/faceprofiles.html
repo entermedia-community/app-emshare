@@ -9,10 +9,6 @@
 
 	$context.putPageValue("thumbsize",$thumbsize)
 
-	##if($rendertype=="video")							
-	##	#set($imageboxsource = $mediaarchive.asLinkToGenerated($asset, "image1900x1080"))										##else
-	#set($imageboxsource = $mediaarchive.asLinkToGenerated($asset, "image3000x3000"))
-	
 	<div class="$detailviewercolumnclass asset-data-detail emdatafield-$!viewtype p-3">
 		##set($collection =  $asset.getValue("faceprofiles"))
 		<div class="emfield-scroll" id="entitypickerentityperson">
@@ -20,68 +16,64 @@
 			#set($faceboxescollection =  $facemanager.collectFaceBoxesAllPeople($asset) )
 			
 			<ul class="entity-value-list d-flex flex-wrap">
-				#foreach( $row in $faceboxescollection )
-					
-					#set( $box = $row.getEmbeddedData())	
-					#set( $person = $row.getPerson() )
-					
-					<li class="position-relative facepf-item">
-						<div class="d-flex align-items-center justify-content-between">
-							<div>
-								
-								#set($link = "$!siteroot$applink/views/modules/asset/editors/facesshowsimilar/index.html?hitssessionid=$!hits.sessionId")
-								
-								#if($row.timecodestart)
-									#set($secs = $mediaarchive.formatMilliseconds($row.timecodestart))
-									##TODO: Click on image to play video
-								#end
-								<a href="$link" 
-									class="emdialog facepf showimagebox"
-									data-showboxtarget="mediaplayer"
-									data-dialogid="faceprofiledialog"
-									data-faceembeddingid="$box.getId()"
-									data-assetid="$asset.getId()"
-									data-location="${row.toJsonArray()}"
-									data-width="${box.originalwidth}"
-									data-height="${box.originalheight}"
-									data-img="${imageboxsource}"
-									title="[[See Similar Faces]]">
-								</a>
-							</div>
-							<i class="bi bi-chevron-right mx-2 text-muted"></i>
-							<div>
-							#ifnotnull($person)
-								#set($namefield = $mediaarchive.getSearcher("entityperson").getDetail("name"))
-								#set($name = $mediaarchive.getSearcherManager().getValue($person, $namefield, $context.getLocale()))
-								<a href="$link" 
-									class="emdialog faceperson"
-									data-showboxtarget="mediaplayer"
-									data-dialogid="faceprofiledialog"
-									data-faceembeddingid="$box.getId()"
-									data-assetid="$asset.getId()"
-									title="[[View]] #text($name)">
-									<span title="$!name">$!name</span>
-								</a>
-							#end
-							#if($caneditasset) 
+			#foreach( $row in $faceboxescollection )
+				
+				#set( $box = $row.getEmbeddedData())	
+				#set( $person = $row.getPerson() )
+				
+				<li class="position-relative facepf-item">
 
-							#set($pickmoduleid = "entityperson")
-							#set($link = "$!siteroot$applink/views/modules/asset/editors/facesshowsimilar/index.html?hitssessionid=$!hits.sessionId")
-							##TODO: Show ALL the related assets and let them pick a name
-							#set($pickmodule = $mediaarchive.getCachedData("module", $pickmoduleid ))
-							<a href="$link" 
-								class="emdialog facepf-add"
-								data-dialogid="dialogpicker${pickmoduleid}"
-								data-faceembeddingid="$box.getId()"
-								data-assetid="$asset.getId()"
-								data-width="1200"
-								data-assetid="${asset.id}"
-								data-hidefooter="true"
-								title="[[Assign]] #text($pickmodule)"></a>
-							#end	 
+					#set($link = "$!siteroot$applink/views/modules/asset/editors/facesshowsimilar/index.html?hitssessionid=$!hits.sessionId")
+
+					#ifnotnull($person)
+						#set($namefield = $mediaarchive.getSearcher("entityperson").getDetail("name"))
+						#set($facename = $mediaarchive.getSearcherManager().getValue($person, $namefield, $context.getLocale()))
+					#end
+
+					<a href="$link" 
+						class="emdialog showimagebox d-flex align-items-center justify-content-between"
+						data-width="1200"
+						data-hidefooter="true"
+						data-showboxtarget="mediaplayer"
+						data-dialogid="faceprofiledialog"
+						data-faceembeddingid="$box.getId()"
+						data-assetid="$asset.getId()"
+						data-location="${row.toJsonArray()}"
+						data-originalwidth="${box.originalwidth}"
+						#ifnotnull($facename)
+							data-facename="#elidemiddle($facename, 100)"
+							title="[[View more of]] #text($facename)"
+						#end
+						#ifnull($facename)
+							title="[[See Similar Faces]]"
+						#end
+					>
+						<div>
+							#if($row.timecodestart)
+								#set($secs = $mediaarchive.formatMilliseconds($row.timecodestart))
+							#end
+
+							#set($imageboxsource = $mediaarchive.asLinkToGenerated($asset, "image3000x3000"))
+							
+							<div class="facepf"
+								data-location="${row.toJsonArray()}"
+								data-originalwidth="${box.originalwidth}"
+								data-originalheight="${box.originalheight}"
+								style='background-image: url("${imageboxsource}")'></div>
 						</div>
-					</li>
-				#end	
+						<div class="vr"></div>
+						<div class="d-flex flex-column align-items-center">
+							#ifnotnull($facename)
+								<span>$!facename</span>
+							#end
+							#ifnull($facename)
+								<span class="text-muted">[[Unknown Person]]</span>
+								<small>Click to Tag</small>
+							#end
+						</div>
+					</a>
+				</li>
+			#end	
 			</ul>
 			#if($$collection.isEmpty())
 				<p class="text-muted">[[No faces Found]]</p>

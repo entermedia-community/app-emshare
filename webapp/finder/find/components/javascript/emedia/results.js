@@ -884,195 +884,177 @@ jQuery(document).ready(function (url, params) {
     }
   });
 
-  paintimagebox = function (image) {
-    if ($("#manAddFace").length > 0) {
-      return;
-    }
-    var faceprofilebox = image.closest(".emshowbox");
-    if (faceprofilebox.length == 0) {
-      return;
-    }
-    var newheight = image.data("fixedheight");
-    if (newheight === undefined) {
-      newheight = image.height();
-    }
-    var newwidth = image.width();
-
-    //check if faceprofilebox
-
-    var scale = 1;
-
-    var inputheight = faceprofilebox.data("inputheight");
-    var inputwidth = faceprofilebox.data("inputwidth");
-
-    if (inputheight > inputwidth) {
-      scale = newwidth / inputwidth;
-    } else {
-      scale = newheight / inputheight;
-    }
-
-    var originalbox = faceprofilebox.data("showbox");
-    var box = new Array(
-      originalbox[0] * scale,
-      originalbox[1] * scale,
-      originalbox[2] * scale,
-      originalbox[3] * scale
-    );
-    var thumbholder = image.closest(".imagethumbholder");
-    var canvas = thumbholder.children("canvas");
-    if (canvas.length >= 0) {
-      canvas.remove();
-    }
-    thumbholder.prepend("<canvas></canvas>");
-    canvas = thumbholder.find("canvas");
-    canvas.css("position", "absolute");
-
-    var w = faceprofilebox.data("imagewidth");
-    //var h = faceprofilebox.data("inputheight");
-
-    canvas.attr({ width: image.width(), height: image.height() });
-    var position = image.position();
-    canvas.css("top", position.top);
-    canvas.css("left", position.left);
-
-    var ctx = canvas[0].getContext("2d");
-    ctx.beginPath();
-    ctx.lineWidth = 1;
-    ctx.strokeStyle = "#454545";
-    ctx.strokeRect(box[0], box[1], box[2], box[3]);
-    ctx.lineWidth = 2;
-    ctx.strokeStyle = "#efefef";
-    ctx.strokeRect(box[0] - 1, box[1] - 1, box[2] + 1, box[3] + 1);
-    ctx.closePath();
-  };
-
-  lQuery(".emshowboximg").livequery(function () {
-    var image = $(this);
-    image.on("load", function (e) {
-      paintimagebox(image);
-    });
-    paintimagebox(image);
+  $(window).on("resize", function () {
+    $(".face-canvas").remove();
   });
 
-  lQuery(".emshowboxX").livequery(function () {
-    var div = $(this);
-    div.css("position", "relative");
-    var image = div.find("img");
+  var faceCanvas;
 
-    paintimagebox(image);
+  function paintimagebox(image, faceData) {
+    var imageContainer = image.closest(".imagethumbholder");
+    faceCanvas = imageContainer.find("canvas").get(0);
+    if (faceCanvas) {
+      faceCanvas.style.opacity = 1;
+      return;
+    }
+    var imgWidth = image.width();
+    var mainImgWidth = faceData.originalwidth;
+    var scale = imgWidth / mainImgWidth;
 
-    $(image).on("load", function () {
-      paintimagebox(image);
-      var container = div.data("centerbox");
-      if (container) {
-        var topbox = box[1];
-        if (topbox > h / 2) {
-          div.css("top", topbox + 5);
-        }
+    var [boxLeft, boxTop, boxWidth, boxHeight] = faceData.location;
+
+    boxLeft *= scale;
+    boxTop *= scale;
+    boxWidth *= scale;
+    boxHeight *= scale;
+
+    faceCanvas = document.createElement("canvas");
+    faceCanvas.classList.add("face-canvas");
+    faceCanvas.width = image.width();
+    faceCanvas.height = image.height();
+
+    var ctx = faceCanvas.getContext("2d");
+
+    ctx.fillStyle = "rgba(255, 255, 255, 0.05)";
+    ctx.fillRect(boxLeft, boxTop, boxWidth, boxHeight);
+    ctx.strokeStyle = "rgba(255, 255, 255, 0.5)";
+    ctx.lineWidth = 2;
+    ctx.setLineDash([5, 5]);
+    ctx.strokeRect(boxLeft, boxTop, boxWidth, boxHeight);
+
+    var nameRectBound = null;
+
+    var facename = "Click to Tag";
+    if (faceData.facename) {
+      facename = faceData.facename.trim();
+    }
+    ctx.font = "16px Arial";
+    ctx.textAlign = "center";
+
+    var textWidth = ctx.measureText(facename).width;
+
+    nameRectBound = {
+      x: boxLeft + boxWidth / 2 - textWidth / 2 - 6,
+      y: boxTop + boxHeight + 12,
+      width: textWidth + 12,
+      height: 24,
+    };
+
+    ctx.fillStyle = "rgba(0, 0, 0, 0.75)";
+    ctx.roundRect(
+      nameRectBound.x,
+      nameRectBound.y,
+      nameRectBound.width,
+      nameRectBound.height,
+      6
+    );
+    ctx.fill();
+
+    ctx.beginPath();
+    ctx.moveTo(boxLeft + boxWidth / 2 + 6, boxTop + boxHeight + 12);
+    ctx.lineTo(boxLeft + boxWidth / 2, boxTop + boxHeight + 2);
+    ctx.lineTo(boxLeft + boxWidth / 2 - 6, boxTop + boxHeight + 12);
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.fillStyle = "white";
+    ctx.fillText(facename, boxLeft + boxWidth / 2, boxTop + boxHeight + 30);
+
+    imageContainer.append(faceCanvas);
+
+    function isNameRect(clientX, clientY) {
+      if (!nameRectBound || !faceCanvas) return false;
+      var rect = faceCanvas.getBoundingClientRect();
+      var mouseX = clientX - rect.left;
+      var mouseY = clientY - rect.top;
+
+      if (
+        mouseX >= nameRectBound.x &&
+        mouseX <= nameRectBound.x + nameRectBound.width &&
+        mouseY >= nameRectBound.y &&
+        mouseY <= nameRectBound.y + nameRectBound.height
+      ) {
+        return true;
+      }
+      return false;
+    }
+
+    faceCanvas.addEventListener("click", function (e) {
+      if (isNameRect(e.clientX, e.clientY)) {
+        $(".showimagebox").trigger("click");
       }
     });
-  });
+
+    faceCanvas.addEventListener("mousemove", function (e) {
+      if (isNameRect(e.clientX, e.clientY)) {
+        faceCanvas.style.cursor = "pointer";
+      } else {
+        faceCanvas.style.cursor = "default";
+      }
+    });
+  }
+
+  var faceTO;
 
   lQuery(".showimagebox").livequery("mouseover", function () {
+    if (faceTO) clearTimeout(faceTO);
     var link = $(this);
     var mediaplayer = link.data("showboxtarget");
-    var emshowbox = $("#" + mediaplayer).find(".emshowbox");
-    if (emshowbox) {
-      emshowbox.data("showbox", link.data("location"));
-      emshowbox.data("imagewidth", link.data("width"));
-      emshowbox.data("inputheight", link.data("height"));
-      var image = emshowbox.find(".imagethumb");
+    var showboxtarget = $("#" + mediaplayer);
+    if (showboxtarget) {
+      var image = showboxtarget.find(".imagethumb");
       if (image.length > 0) {
-        paintimagebox(image);
+        paintimagebox(image, link.data());
       }
     }
   });
 
-  var faceCanvas = null;
-  lQuery(".facepf-new").livequery("click", function (e) {
-    e.preventDefault();
-    e.stopPropagation();
-    if (faceCanvas) {
-      faceCanvas.dispose();
-      faceCanvas = null;
-    }
-    var mediaplayer = $(this).closest(".modal").find("#mediaplayer");
-    var thumbholder = mediaplayer.find(".imagethumbholder");
-    thumbholder.find("canvas").remove();
-    thumbholder.prepend("<div class='face-canvas'><canvas></canvas></div>");
-    var canvas = thumbholder.find("canvas");
-    faceCanvas = new fabric.Canvas(canvas[0]);
-    var thumb = thumbholder.find("img");
-    var width = thumb.width();
-    var height = thumb.height();
-
-    faceCanvas.setWidth(width);
-    faceCanvas.setHeight(height);
-    faceCanvas.selection = false;
-
-    var rectWidth = Math.max(width * 0.15, 80);
-    var faceRect = new fabric.Rect({
-      left: width / 2 - rectWidth / 2,
-      top: height / 2 - rectWidth / 2,
-      width: rectWidth,
-      height: rectWidth,
-      fill: "rgba(0,0,0,0.3)",
-      stroke: "white",
-      strokeWidth: 1,
-      id: "faceRect",
-    });
-    faceRect.setControlVisible("mtr", false);
-    faceRect.setControlVisible("mt", false);
-    //faceRect.setControlVisible("mr", false);
-    //faceRect.setControlVisible("mb", false);
-    faceRect.setControlVisible("ml", false);
-    faceCanvas.add(faceRect);
-    setTimeout(function () {
-      faceCanvas.setActiveObject(faceRect);
-      faceCanvas.renderAll();
-    });
-
-    faceCanvas.on("selection:cleared", function () {
-      setTimeout(function () {
-        faceCanvas.setActiveObject(faceRect);
-        faceCanvas.renderAll();
-      });
-    });
-
-    var addlink = mediaplayer.data("faceprofileedithome");
-    var assetid = mediaplayer.data("assetid");
-    thumbholder.append(
-      `<div class="facepf-buttons" style="top:${height - 50}px">
-			<a id="manAddFace"
-				class="" 
-				href="${addlink}/addmanualfaceprofile.html"
-				data-includeeditcontext="true"
-				data-thumbwidth="${width}" 
-				data-targetdiv="main-media-container">Add</a><a id="manCancelFace">Cancel</a></div>`
-    );
+  lQuery(".showimagebox").livequery("mouseleave", function () {
+    if (faceTO) clearTimeout(faceTO);
+    faceTO = setTimeout(function () {
+      $(".face-canvas").css("opacity", 0);
+    }, 500);
   });
 
-  lQuery("#manAddFace").livequery("click", function (e) {
-    e.preventDefault();
-    e.stopPropagation();
-    var btn = $(this);
-    var faceRect = faceCanvas.getActiveObject();
-    var location = faceRect.getBoundingRect();
-    console.log(location);
-    btn.data("boxlocation", JSON.stringify(location));
-
-    btn.runAjax();
-  });
-  lQuery("#manCancelFace").livequery("click", function (e) {
-    e.preventDefault();
-    e.stopPropagation();
-    if (faceCanvas) {
-      faceCanvas.dispose();
-      faceCanvas = null;
+  lQuery("#mediaplayer").livequery("mouseover", function () {
+    if (faceTO) clearTimeout(faceTO);
+    var canvas = $(this).find(".face-canvas");
+    if (canvas.length > 0) {
+      canvas.css("opacity", 1);
+    } else {
+      $(".showimagebox").trigger("mouseover");
     }
-    var thumbholder = $(this).closest(".modal").find(".imagethumbholder");
-    thumbholder.find(".face-canvas").remove();
-    thumbholder.find(".facepf-buttons").remove();
+  });
+  lQuery("#mediaplayer").livequery("mouseleave", function () {
+    if (faceTO) clearTimeout(faceTO);
+    faceTO = setTimeout(function () {
+      $(".face-canvas").css("opacity", 0);
+    }, 500);
+  });
+
+  lQuery(".facepf").livequery(function () {
+    $("#tabsummarypanel").data("facepf", this);
+
+    var [boxLeft, boxTop, boxWidth, boxHeight] = $(this).data("location");
+
+    var thumbHeight = 80;
+    var thumbWidth = 80 * (boxWidth / boxHeight);
+    $(this).width(thumbWidth);
+
+    var width = $(this).data("originalwidth");
+    var height = $(this).data("originalheight");
+
+    var scale = thumbHeight / boxHeight;
+
+    var w = Math.ceil(width * scale);
+    var h = Math.ceil(height * scale);
+    var x = Math.ceil(boxLeft * scale);
+    var y = Math.ceil(boxTop * scale);
+
+    $(this).css({
+      backgroundSize: `${w}px ${h}px`,
+      backgroundPosition: `-${x}px -${y}px`,
+    });
   });
 
   lQuery("select.addremovecolumns").livequery("change", function () {
