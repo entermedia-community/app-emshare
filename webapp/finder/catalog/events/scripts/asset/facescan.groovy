@@ -38,14 +38,17 @@ public void init()
 			for(Data hit in hits)
 			{
 				Asset asset = archive.getAssetSearcher().loadData(hit);
-				if(manager.extractFaces(asset)) {
-					count = count +1;
+				int more = manager.extractFaces(asset);
+				if( more > 0 )
+				{
+					log.info(more + " face found in " + hit.getName());
 				}
+				count = count + more;
 				tosave.add(asset);
 				if(tosave.size() == 100)
 				{
 						archive.saveAssets(tosave);
-						log.info("Faceprofile scanned:  " + tosave.size() + " assets. Found " + count);
+						log.info("Faceprofile scanned:  " + tosave.size() + " assets. Found " + count + " faces ");
 						tosave.clear();
 						count = 0;
 				}
@@ -53,7 +56,7 @@ public void init()
 			if(tosave.size() > 0)
 			{
 				archive.saveAssets(tosave);
-				log.info("Faceprofile scanned:  " + tosave.size() + " assets. Found " + count);
+				log.info("Faceprofile scanned:  " + tosave.size() + " assets. Found " + count + " faces ");
 			}
 			//log.info("("+archive.getCatalogId()+") Facescan processed  " + hits.size() + " assets, " + count + " faces detected");
 		}
