@@ -1,39 +1,46 @@
-<div class="d-flex p-4">
+<div class="face-smilar-header">
 
-#set($imageboxsource = $mediaarchive.asLinkToGenerated($asset, "image3000x3000"))
+	#set($imageboxsource = $mediaarchive.asLinkToGenerated($asset, "image3000x3000"))
+	#set($facelocation = "[${face.locationx},${face.locationy},${face.locationw},${face.locationh}]")
 
+	<div class="facepf"
+		data-location="$facelocation"
+		data-originalwidth="${face.originalwidth}"
+		data-originalheight="${face.originalheight}"
+		style='background-image: url("${imageboxsource}")'>
+	</div>
+	<div class="vr"></div>
+	<div>
+		#ifnotnull($entityperson)
+			#set($namefield = $mediaarchive.getSearcher("entityperson").getDetail("name"))
+			#set($facename = $mediaarchive.getSearcherManager().getValue($entityperson, $namefield, $context.getLocale()))
+		#end
+		
+		#set($pickerurl= "$apphome/views/modules/entityperson/editors/facepersonpicker/index.html")
+			
+		#ifnotnull($facename)
+			<div class="d-flex align-items-center">
+				<span>$!facename</span>
+				<a href="$pickerurl" data-edithome="" data-includeeditcontext="true" class="emdialog">
+					<i class="bi bi-pencil-square ml-1 ns"></i>
+				</a>
+			</div>
+		#end
 
+		#ifnull($facename)
+			<div class="d-flex flex-column align-items-center">
+				<span class="text-muted mb-2">[[Unknown Person]]</span>
+				<a href="$pickerurl"
+					data-edithome=""
+					data-includeeditcontext="true"
+					class="emdialog  btn btn-primary"
+					data-hidefooter="true">
+					<i class="bi bi-tag-fill mr-1"></i>
+					Click to Tag
+				</a>
+			</div>
+		#end
 
-<div class="pl-4">
-	#set($pickerurl= "$apphome/views/modules/entityperson/editors/facepersonpicker/index.html")
-
-	<a href="$pickerurl" data-edithome="" data-includeeditcontext="true" class="emdialog  btn btn-primary">Choose Person</a>
-</div>
-
-#set($facelocation = "[${face.locationx},${face.locationy},${face.locationw},${face.locationh}]")
-
-<div style="width: 120px;">
-<a href="#" 
-	class="facepf"
-	data-location="$facelocation"
-	data-width="${face.originalwidth}"
-	data-height="${face.originalheight}"
-	data-img="${imageboxsource}">
-</a>
-</div>
-<div>
-	
-	
-	#ifnotnull($entityperson)
-		#set($namefield = $mediaarchive.getSearcher("entityperson").getDetail("name"))
-		#set($label = $mediaarchive.getSearcherManager().getValue($entityperson, $namefield, $context.getLocale()))
-		#text($label)
-
-	#end
-	
-</div>
-
-
-
+	</div>
 
 </div>

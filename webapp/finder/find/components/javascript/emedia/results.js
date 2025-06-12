@@ -884,16 +884,22 @@ jQuery(document).ready(function (url, params) {
     }
   });
 
-  $(window).on("resize", function () {
-    $(".face-canvas").css("opacity", 0);
-  });
-
   var faceCanvas,
     faceCanvasCtx,
     faceEventsRegistered = false;
 
+  const faceCanvasResizeObserver = new ResizeObserver(() => {
+    if (faceCanvas) {
+      faceCanvas.remove();
+    }
+  });
+
   function paintFaceBoxes(image, facesData) {
     var imageContainer = image.closest(".imagethumbholder");
+    if (!imageContainer.length) {
+      return;
+    }
+    faceCanvasResizeObserver.observe(imageContainer.get(0));
     faceCanvas = imageContainer.find("canvas").get(0);
     if (!faceCanvas) {
       faceCanvas = document.createElement("canvas");
@@ -923,11 +929,21 @@ jQuery(document).ready(function (url, params) {
       boxWidth *= scale;
       boxHeight *= scale;
 
-      faceCanvasCtx.fillStyle = "rgba(255, 255, 255, 0.05)";
-      faceCanvasCtx.fillRect(boxLeft, boxTop, boxWidth, boxHeight);
-      faceCanvasCtx.strokeStyle = "rgba(255, 255, 255, 0.5)";
       faceCanvasCtx.lineWidth = 2;
-      faceCanvasCtx.setLineDash([5, 5]);
+
+      if (!faceData.facename) {
+        faceCanvasCtx.fillStyle = "rgba(255, 255, 255, 0.05)";
+        faceCanvasCtx.strokeStyle = "rgba(255, 255, 255, 0.5)";
+      } else {
+        faceCanvasCtx.fillStyle = "rgba(255, 255, 255, 0.08)";
+        faceCanvasCtx.strokeStyle = "rgba(255, 255, 255, 0.5)";
+      }
+      if (facesData.length === 1) {
+        faceCanvasCtx.setLineDash([8, 5]);
+      } else {
+        faceCanvasCtx.setLineDash([5, 5]);
+      }
+      faceCanvasCtx.fillRect(boxLeft, boxTop, boxWidth, boxHeight);
       faceCanvasCtx.strokeRect(boxLeft, boxTop, boxWidth, boxHeight);
 
       var facename = "Click to Tag";
@@ -1053,9 +1069,14 @@ jQuery(document).ready(function (url, params) {
     $(".face-canvas").css("opacity", 0);
   });
 
-  lQuery(".facepf").livequery(function () {
-    $("#tabsummarypanel").data("facepf", this);
+  lQuery("#mediaplayer .imagethumbholder").livequery("mousemove", function (e) {
+    if (!$(e.target).is(".face-canvas")) {
+      if (faceTO) clearTimeout(faceTO);
+      $(".face-canvas").css("opacity", 0);
+    }
+  });
 
+  lQuery(".facepf").livequery(function () {
     var [boxLeft, boxTop, boxWidth, boxHeight] = $(this).data("location");
 
     var thumbHeight = 80;
