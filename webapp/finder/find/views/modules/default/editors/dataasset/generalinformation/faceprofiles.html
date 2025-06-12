@@ -17,16 +17,19 @@
 			
 			<ul class="entity-value-list d-flex flex-wrap">
 			#foreach( $row in $faceboxescollection )
-				#set( $box = $row.getEmbeddedData())	
+				#set( $box = $row.getEmbeddedData())
+				#set( $person = false)
 				#set( $person = $row.getPerson() )
-				
+
 				<li class="position-relative facepf-item">
 
 					#set($link = "$!siteroot$applink/views/modules/asset/editors/facesshowsimilar/index.html?hitssessionid=$!hits.sessionId")
 
-					#ifnotnull($person)
+					#if($person)
 						#set($namefield = $mediaarchive.getSearcher("entityperson").getDetail("name"))
 						#set($facename = $mediaarchive.getSearcherManager().getValue($person, $namefield, $context.getLocale()))
+					#else
+						#set($facename = false)
 					#end
 
 					<a href="$link" 
@@ -39,11 +42,10 @@
 						data-assetid="$asset.getId()"
 						data-location="${row.toJsonArray()}"
 						data-originalwidth="${box.originalwidth}"
-						#ifnotnull($facename)
+						#if($facename)
 							data-facename="#elidemiddle($facename, 100)"
 							title="[[View more of]] #text($facename)"
-						#end
-						#ifnull($facename)
+						#else
 							title="[[View Similar Faces]]"
 						#end
 						data-dialogtitle="[[Similar Faces]]"
@@ -63,10 +65,9 @@
 						</div>
 						<div class="vr"></div>
 						<div class="d-flex flex-column align-items-center">
-							#ifnotnull($facename)
+							#if($facename)
 								<span>$!facename</span>
-							#end
-							#ifnull($facename)
+							#else
 								<span class="text-muted">[[Unknown Person]]</span>
 								<small>Click to Tag</small>
 							#end
