@@ -11,6 +11,7 @@
 	</div>
 	<div class="vr"></div>
 	<div>
+		#set ($entityperson = $mediaarchive.getCachedData("entityperson", $face.entityperson))
 		#ifnotnull($entityperson)
 			#set($namefield = $mediaarchive.getSearcher("entityperson").getDetail("name"))
 			#set($facename = $mediaarchive.getSearcherManager().getValue($entityperson, $namefield, $context.getLocale()))
@@ -20,7 +21,7 @@
 			
 		#ifnotnull($facename)
 			<div class="d-flex align-items-center">
-				<span>$!facename</span>
+				<a href="$apphome/views/modules/entityperson/editors/dataentity/index.html?entityid=$entityperson.getId()" class="emdialog" data-emedialogid="entitypersonface"><span>$!facename</span></a>&nbsp;
 				<a href="$pickerurl" data-edithome="" data-includeeditcontext="true" class="emdialog">
 					<i class="bi bi-pencil-square ml-1 ns"></i>
 				</a>
@@ -36,7 +37,7 @@
 					class="emdialog  btn btn-primary"
 					data-hidefooter="true">
 					<i class="bi bi-tag-fill mr-1"></i>
-					Click to Tag
+					[[Click to Tag]]
 				</a>
 			</div>
 		#end
