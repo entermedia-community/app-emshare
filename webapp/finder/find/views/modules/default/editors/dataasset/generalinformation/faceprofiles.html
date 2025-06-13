@@ -10,7 +10,6 @@
 	$context.putPageValue("thumbsize",$thumbsize)
 
 	<div class="$detailviewercolumnclass asset-data-detail emdatafield-$!viewtype p-3">
-		##set($collection =  $asset.getValue("faceprofiles"))
 		<div class="emfield-scroll" id="entitypickerentityperson">
 			#set( $facemanager = $mediaarchive.getBean("faceProfileManager") )
 			#set($faceboxescollection =  $facemanager.collectFaceBoxesAllPeople($asset) )
@@ -78,7 +77,7 @@
 								</div>
 							#end
 							#if($facename)
-								<span class="text-dark">$!facename</span>
+								<span>$!facename</span>
 							#else
 								<span class="text-muted">Click to Tag</span>
 							#end
@@ -87,8 +86,8 @@
 				</li>
 			#end	
 			</ul>
-			#if($$collection.isEmpty())
-				<p class="text-muted">[[No faces Found]]</p>
+			#if($faceboxescollection.isEmpty())
+				<p class="text-muted">[[No faces detected]]</p>
 			#end
 			<hr class="m-0">
 			

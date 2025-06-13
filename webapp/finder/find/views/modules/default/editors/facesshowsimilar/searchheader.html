@@ -13,17 +13,18 @@
 
 	#if( $rendertype == "video")
 		#set($secs = $mediaarchive.formatTime($face.get("timecodestart")) )
+		#ifnotnull($secs)
+			<div class="d-flex flex-column align-items-center mr-2">
+				<div class="text-muted mb-1">Found at</div>
+				<span>$secs</span>
+			</div>
+			<i class="bi bi-chevron-right mr-2"></i>
+		#end
 	#end
-	#ifnotnull($secs)
-		<div class="d-flex flex-column align-items-center mr-2">
-			<div class="text-muted mb-1">Found at</div>
-			<span>$secs</span>
-		</div>
-		<i class="bi bi-chevron-right mr-2"></i>
-		<img class="videoframe mr-2" src="${imageboxsource}">
-		<i class="bi bi-chevron-right mr-2"></i>
-	#end
-	
+
+	<img class="sourceimg mr-2" src="${imageboxsource}">
+	<i class="bi bi-chevron-right mr-2"></i>
+
 	<div class="facepf"
 		data-location="$facelocation"
 		data-originalwidth="${face.originalwidth}"
@@ -42,9 +43,9 @@
 			
 		<div class="d-flex flex-column align-items-center position-relative">
 			#ifnotnull($facename)
-				<a href="$apphome/views/modules/entityperson/editors/listentities/tabs/index.html?entityid=$entityperson.getId()" class="emdialog" data-emedialogid="entitypersonface"><span>$!facename</span></a>&nbsp;
-				<a href="$pickerurl" data-edithome="" data-includeeditcontext="true" class="emdialog">
-					<i class="bi bi-pencil-square ml-1 ns"></i>
+				<a href="$apphome/views/modules/entityperson/editors/listentities/tabs/index.html?entityid=$entityperson.getId()" class="emdialog" data-emedialogid="entitypersonface"><span>$!facename</span></a>
+				<a href="$pickerurl" data-edithome="" data-includeeditcontext="true" class="mt-1 emdialog small ml-auto text-secondary">
+					<i class="bi bi-pencil-square mr-1 ns"></i> Reassign Person
 				</a> 
 			#end
 
@@ -52,7 +53,7 @@
 				<a href="$pickerurl"
 					data-edithome=""
 					data-includeeditcontext="true"
-					class="emdialog  btn btn-primary"
+					class="emdialog btn btn-primary"
 					data-hidefooter="true">
 					<i class="bi bi-tag-fill mr-1"></i>
 					[[Click to Tag]]
