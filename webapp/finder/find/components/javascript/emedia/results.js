@@ -900,7 +900,7 @@ jQuery(document).ready(function (url, params) {
       return;
     }
     faceCanvasResizeObserver.observe(imageContainer.get(0));
-    faceCanvas = imageContainer.find("canvas").get(0);
+    faceCanvas = imageContainer.find("canvas.face-canvas").get(0);
     if (!faceCanvas) {
       faceCanvas = document.createElement("canvas");
       faceCanvas.classList.add("face-canvas");
@@ -910,7 +910,7 @@ jQuery(document).ready(function (url, params) {
       faceCanvasCtx = faceCanvas.getContext("2d");
       faceEventsRegistered = true;
     }
-
+    if (!faceCanvasCtx) return;
     faceCanvasCtx.clearRect(0, 0, faceCanvas.width, faceCanvas.height);
 
     var imgWidth = image.width();
@@ -1072,9 +1072,10 @@ jQuery(document).ready(function (url, params) {
       $(".showimagebox").each(function () {
         data.push($(this).data());
       });
-      var image = $("#mediaplayer").find(".imagethumb");
-      if (image.length > 0) {
-        paintFaceBoxes(image, data);
+
+      var thumbimage = $("#mediaplayer").find(".imagethumb");
+      if (thumbimage.length > 0) {
+        paintFaceBoxes(thumbimage, data);
       }
     }
   });
@@ -1112,6 +1113,143 @@ jQuery(document).ready(function (url, params) {
       backgroundSize: `${w}px ${h}px`,
       backgroundPosition: `-${x}px -${y}px`,
     });
+  });
+
+  var manualCanvas = null;
+
+  function positionManualAddBtn(coords) {
+    $(".manual-canvas div.controls").css({
+      width: coords.width + "px",
+      top: coords.top + coords.height + "px",
+      left: coords.left + coords.width + "px",
+    });
+  }
+  fabric.Canvas.prototype.getAbsoluteCoords = function (object) {
+    return {
+      left: object.left + this._offset.left,
+      top: object.top + this._offset.top,
+      width: object.getScaledWidth(),
+      height: object.getScaledHeight(),
+    };
+  };
+  fabric.Object.prototype.transparentCorners = false;
+  fabric.Object.prototype.originX = "center";
+  fabric.Object.prototype.originY = "center";
+  lQuery(".manual-fp").livequery("click", function (e) {
+    e.preventDefault();
+    e.stopPropagation();
+    if (manualCanvas) {
+      manualCanvas.dispose();
+      manualCanvas = null;
+    }
+    var thumbholder = $("#mediaplayer").find(".imagethumbholder");
+    var canvasContainer = thumbholder.find(".manual-canvas");
+    if (canvasContainer.length) {
+      canvasContainer.remove();
+    }
+    canvasContainer = $(`<div class="manual-canvas">
+      <div class="controls">
+        <button id="addManually">Add</button>
+        <button id="cancelAddManually">Cancel</button>
+      </div>
+    </div>`);
+    var canvas = $("<canvas></canvas>");
+    canvasContainer.append(canvas);
+    thumbholder.append(canvasContainer);
+
+    manualCanvas = new fabric.Canvas(canvas[0]);
+    var thumb = thumbholder.find("img");
+    var width = thumb.width();
+    var height = thumb.height();
+
+    manualCanvas.setWidth(width);
+    manualCanvas.setHeight(height);
+    manualCanvas.selection = false;
+
+    var rectWidth = Math.max(width * 0.15, 150);
+    var manualRect = new fabric.Rect({
+      left: width / 2 - rectWidth / 2,
+      top: height / 2 - rectWidth / 2,
+      width: rectWidth,
+      height: rectWidth,
+      fill: "rgba(160,32,240,0.1)",
+      id: "manualRect",
+    });
+    manualRect.setControlVisible("mtr", false);
+
+    manualCanvas.add(manualRect);
+
+    setTimeout(function () {
+      manualCanvas.setActiveObject(manualRect);
+      manualCanvas.renderAll();
+      manualRect.on("moving", function () {
+        positionManualAddBtn(manualCanvas.getAbsoluteCoords(manualRect));
+      });
+
+      manualRect.on("scaling", function () {
+        positionManualAddBtn(manualCanvas.getAbsoluteCoords(manualRect));
+      });
+
+      positionManualAddBtn(manualCanvas.getAbsoluteCoords(manualRect));
+    });
+
+    manualCanvas.on("selection:cleared", function () {
+      setTimeout(function () {
+        manualCanvas.setActiveObject(manualRect);
+        manualCanvas.requestRenderAll();
+      });
+    });
+    manualCanvas.on("object:moving", function () {
+      if (manualRect.top < 0) {
+        manualRect.top = 0;
+      }
+      if (manualRect.left < 0) {
+        manualRect.left = 0;
+      }
+      if (manualRect.top + manualRect.height > manualCanvas.height) {
+        manualRect.top = manualCanvas.height - manualRect.height;
+      }
+      if (manualRect.left + manualRect.width > manualCanvas.width) {
+        manualRect.left = manualCanvas.width - manualRect.width;
+      }
+      manualCanvas.requestRenderAll();
+    });
+  });
+  lQuery("#addManually").livequery("click", function (e) {
+    e.preventDefault();
+    e.stopPropagation();
+    var btn = $(this);
+    var manualRect = manualCanvas.getActiveObject();
+    var location = manualRect.getBoundingRect();
+    console.log(location);
+    btn.data("boxlocation", JSON.stringify(location));
+
+    var faceprofileedithome = $(this)
+      .closest("#mediaplayer")
+      .data("faceprofileedithome");
+
+    btn.data("url", faceprofileedithome + "/addmanualfaceprofile.html");
+    btn.data("includeeditcontext", true);
+    btn.data("thumbwidth", manualCanvas.width);
+    btn.data("targetdiv", "main-media-container");
+    btn.data("toastmessage", "Adding manual face profile");
+    btn.data("toastsuccess", "Face profile added");
+    btn.data("toasterror", "Error adding face profile");
+
+    btn.runAjax();
+
+    manualCanvas.dispose();
+    manualCanvas = null;
+    $(".manual-canvas").remove();
+  });
+  lQuery("#cancelAddManually").livequery("click", function (e) {
+    e.preventDefault();
+    e.stopPropagation();
+    if (manualCanvas) {
+      manualCanvas.dispose();
+      manualCanvas = null;
+      $(".manual-canvas").remove();
+    }
   });
 
   lQuery("select.addremovecolumns").livequery("change", function () {
