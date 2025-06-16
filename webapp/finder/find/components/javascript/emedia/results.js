@@ -1206,11 +1206,11 @@ jQuery(document).ready(function (url, params) {
       if (manualRect.left < 0) {
         manualRect.left = 0;
       }
-      if (manualRect.top + manualRect.height > manualCanvas.height) {
-        manualRect.top = manualCanvas.height - manualRect.height;
+      if (manualRect.top + manualRect.getScaledHeight() > manualCanvas.height) {
+        manualRect.top = manualCanvas.height - manualRect.getScaledHeight();
       }
-      if (manualRect.left + manualRect.width > manualCanvas.width) {
-        manualRect.left = manualCanvas.width - manualRect.width;
+      if (manualRect.left + manualRect.getScaledWidth() > manualCanvas.width) {
+        manualRect.left = manualCanvas.width - manualRect.getScaledWidth();
       }
       manualCanvas.requestRenderAll();
     });
