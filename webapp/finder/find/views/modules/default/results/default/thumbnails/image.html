@@ -64,32 +64,30 @@ $context.putPageValue("searchhome", $searchhome)
 			#set( $time = $context.getLocaleManager().getDateStorageUtil().getTime( $hit.get("assetmodificationdate") ) )
 			#set( $urlparams= "?_=$time")
 		#end
-		
-		#ifnotnull($imagebox)
+
+		#ifnotnull( $showfaceboxes )
+			#set( $facemanager = $mediaarchive.getBean("faceProfileManager") )
+			#set($faceboxescollection =  $facemanager.collectFaceBoxesAllPeople($hit) )
 			
-			#if($imagebox.timecodestartseconds > -1)
-				#ifnotnull($urlparams)
-					#set($urlparams = "$urlparams&timeoffset=$imagebox.timecodestartseconds")
-				#end
-				#ifnull($urlparams)
-					#set($urlparams = "?timeoffset=$imagebox.timecodestartseconds")
+			#ifnotnull($faceboxescollection)
+				#if(!$faceboxescollection.isEmpty())
+					#set($boxes = []) 
+					#foreach( $row in $faceboxescollection )
+						#set( $rowdata = $row.getEmbeddedData())
+						#if($boxes.add([$rowdata.locationx, $rowdata.locationy, $rowdata.locationw, $rowdata.locationh, $rowdata.originalwidth, $rowdata.originalheight]))#end
+					#end
+					<div class="renderfaceboxes h-100" data-faceboxes="$boxes">
 				#end
 			#end
-	
-			<div class="emshowbox faceprofileboximage h-100" 
-				data-showbox="$imagebox.locationxy"
-				data-imagewidth="${assetwidth}"
-				data-inputwidth="${assetwidth}"
-				data-inputheight="${assetheight}">
 		#end
 			<div class="imagethumbholder">
-				<img class="imagethumb img-fluid  img$!thumbsize #ifnotnull($imagebox) emshowboximg #end"
+				<img class="imagethumb img-fluid  img$!thumbsize"
 						catalogid="$catalogid" 
 						assetid="$hit.id" 
 						alt="#if($title)#esc($title)#else$!{hit.name}#end"
 						draggable="true"  
 						data-name="#if($title)#esc($title)#else$!{hit.name}#end" 		
-						src="$imagepath$!urlparams" 
+						src="$imagepath$!urlparams"
 				/>
 				#if($content.isPropertyTrue("showassetpicker"))
 					#if( $rendertype == "image")
@@ -108,8 +106,12 @@ $context.putPageValue("searchhome", $searchhome)
 				#end
 				#if($rendertype =="video")<div class="videoplay-button"><span class="videoplay-icon"></span></div>#end
 			</div>
-		#ifnotnull($imagebox)
-			</div>
+		#ifnotnull( $showfaceboxes )
+			#ifnotnull($faceboxescollection)
+				#if(!$faceboxescollection.isEmpty())
+					</div>
+				#end
+			#end
 		#end
 	#end
 </div>

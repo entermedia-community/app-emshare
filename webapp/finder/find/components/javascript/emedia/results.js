@@ -884,6 +884,46 @@ jQuery(document).ready(function (url, params) {
     }
   });
 
+  function batchPaintFaces() {
+    var faceboxes = $(this).data("faceboxes");
+    if (faceboxes) {
+      $(this).find("canvas").remove();
+      var canv = document.createElement("canvas");
+      var imgWidth = $(this).closest(".masonry-grid-cell").width();
+      var imgHeight = $(this).closest(".masonry-grid-cell").height();
+      if (imgWidth == 0 || imgHeight == 0) {
+        return;
+      }
+      canv.width = imgWidth;
+      canv.height = imgHeight;
+      var ctx = canv.getContext("2d");
+      $(this).append(canv);
+      ctx.clearRect(0, 0, canv.width, canv.height);
+      ctx.strokeStyle = "red";
+      ctx.lineWidth = 2;
+      faceboxes.forEach(function (face) {
+        var [x, y, width, height, originalwidth] = face;
+        var scale = imgWidth / originalwidth;
+        x *= scale;
+        y *= scale;
+        width *= scale;
+        height *= scale;
+        ctx.strokeRect(x, y, width, height);
+      });
+    }
+  }
+
+  $(window).on("bricksgenerated", function () {
+    $(".renderfaceboxes").each(function () {
+      batchPaintFaces.apply(this);
+    });
+  });
+  $(window).on("resize", function () {
+    $(".renderfaceboxes").each(function () {
+      batchPaintFaces.apply(this);
+    });
+  });
+
   var faceCanvas,
     faceCanvasCtx,
     faceEventsRegistered = false;
@@ -1029,10 +1069,6 @@ jQuery(document).ready(function (url, params) {
       });
     }
   }
-
-  lQuery(".seekTo").livequery("mouseover", function () {
-    var seekPreview = $(this).siblings(".seekPreview");
-  });
 
   lQuery(".seekTo").livequery("click", function (e) {
     e.stopImmediatePropagation();
