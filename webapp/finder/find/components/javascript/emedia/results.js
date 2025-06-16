@@ -1030,6 +1030,21 @@ jQuery(document).ready(function (url, params) {
     }
   }
 
+  lQuery(".seekTo").livequery("mouseover", function () {
+    var seekPreview = $(this).siblings(".seekPreview");
+  });
+
+  lQuery(".seekTo").livequery("click", function (e) {
+    e.stopImmediatePropagation();
+    e.preventDefault();
+    var vjsPlayer = videojs.getPlayer("videopreview-AZdqkuS_B1TPheh8Veab");
+    if (!vjsPlayer) return;
+    var seekTo = $(this).data("seekto");
+    vjsPlayer.play();
+    vjsPlayer.currentTime(parseFloat(seekTo));
+    vjsPlayer.pause();
+  });
+
   var faceTO;
 
   lQuery(".showimagebox").livequery("mouseover", function () {

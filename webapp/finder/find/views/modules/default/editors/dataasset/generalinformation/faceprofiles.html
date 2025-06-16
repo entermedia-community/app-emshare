@@ -10,7 +10,6 @@
 	$context.putPageValue("thumbsize",$thumbsize)
 
 	<div class="$detailviewercolumnclass asset-data-detail emdatafield-$!viewtype p-3">
-		##set($collection =  $asset.getValue("faceprofiles"))
 		<div class="emfield-scroll" id="entitypickerentityperson">
 			#set( $facemanager = $mediaarchive.getBean("faceProfileManager") )
 			#set($faceboxescollection =  $facemanager.collectFaceBoxesAllPeople($asset) )
@@ -50,37 +49,45 @@
 						#end
 						data-dialogtitle="[[Similar Faces]]"
 					>
-						<div>
-							#set($rendertype = $mediaarchive.getMediaRenderType($asset))
-							#if( $rendertype == "video")
-								#set( $offset = $rowdata.getValue("timecodestart"))
-								#set($imageboxsource = $mediaarchive.asLinkToGeneratedOffset($asset, "image1900x1080" , $offset) )
-							#else
-								#set($imageboxsource = $mediaarchive.asLinkToGenerated($asset, "image3000x3000"))
-							#end							
+
+						#set($rendertype = $mediaarchive.getMediaRenderType($asset))
+						#if( $rendertype == "video")
+							#set( $offset = $rowdata.getValue("timecodestart"))
+							#set($imageboxsource = $mediaarchive.asLinkToGeneratedOffset($asset, "image1900x1080" , $offset) )
+						#else
+							#set($imageboxsource = $mediaarchive.asLinkToGenerated($asset, "image3000x3000"))
+						#end
+
+						<div class="d-flex flex-column align-items-center">
 							<div class="facepf"
 								data-location="${row.toJsonArray()}"
 								data-originalwidth="${rowdata.originalwidth}"
 								data-originalheight="${rowdata.originalheight}"
-								data-previewimage="$imageboxsource"
 								style='background-image: url("${imageboxsource}")'></div>
 						</div>
 						<div class="vr"></div>
-						<div class="d-flex flex-column align-items-center">
-							#set($secs = $mediaarchive.formatMilliseconds($row.timecodestart) )
+						<div class="d-flex flex-column align-items-center position-relative">
+							#if( $rendertype == "video")
+								#set($secs = $mediaarchive.formatTime($rowdata.get("timecodestart")) )
+							#end
+							#ifnotnull($secs)
+								<button data-seekto="$offset" class="seekTo" data-vjs='videopreview-${rowdata.get("assetid")}' title="[[Seek to]] $secs">$secs</button>
+								<div class="seekPreview" style="display: block;">
+									<img src="${imageboxsource}">
+								</div>
+							#end
 							#if($facename)
-								<span>$!facename</span> $!secs
+								<span>$!facename</span>
 							#else
-								<span class="text-muted">[[Unknown Person]]</span>
-								<small>Click to Tag</small>
+								<span class="text-muted">Click to Tag</span>
 							#end
 						</div>
 					</a>
 				</li>
 			#end	
 			</ul>
-			#if($$collection.isEmpty())
-				<p class="text-muted">[[No faces Found]]</p>
+			#if($faceboxescollection.isEmpty())
+				<p class="text-muted">[[No faces detected]]</p>
 			#end
 			<hr class="m-0">
 			

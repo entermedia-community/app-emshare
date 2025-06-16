@@ -1,46 +1,71 @@
 <div class="face-smilar-header">
 
-	#set($imageboxsource = $mediaarchive.asLinkToGenerated($asset, "image3000x3000"))
+	#set($rendertype = $mediaarchive.getMediaRenderType($asset))
+
+	#if( $rendertype == "video")
+		#set( $offset = $face.getValue("timecodestart"))
+		#set($imageboxsource = $mediaarchive.asLinkToGeneratedOffset($asset, "image1900x1080" , $offset) )
+	#else
+		#set($imageboxsource = $mediaarchive.asLinkToGenerated($asset, "image3000x3000"))
+	#end
+
 	#set($facelocation = "[${face.locationx},${face.locationy},${face.locationw},${face.locationh}]")
 
+	#if( $rendertype == "video")
+		#set($secs = $mediaarchive.formatTime($face.get("timecodestart")) )
+		#ifnotnull($secs)
+			<div class="d-flex flex-column align-items-center mr-2">
+				<div class="text-muted mb-1">Found at</div>
+				<span>$secs</span>
+			</div>
+			<i class="bi bi-chevron-right mr-2"></i>
+		#end
+	#end
+	<a href="#" class="closeemdialog" data-dismiss="modal" title="$!asset.name">
+		<img class="sourceimg mr-2" src="${imageboxsource}">
+	</a>
+	<i class="bi bi-chevron-right mr-2"></i>
+
+	#set ($entityperson = $mediaarchive.getCachedData("entityperson", $face.entityperson))
+	#ifnotnull($entityperson)
+		#set($namefield = $mediaarchive.getSearcher("entityperson").getDetail("name"))
+		#set($facename = $mediaarchive.getSearcherManager().getValue($entityperson, $namefield, $context.getLocale()))
+		#set($personlink = "$apphome/views/modules/entityperson/editors/listentities/tabs/index.html?entityid=$entityperson.getId()")
+	#end
+	
+	#ifnotnull($facename) <a href="$personlink" class="emdialog" data-emedialogid="entitypersonface"> #end
 	<div class="facepf"
 		data-location="$facelocation"
 		data-originalwidth="${face.originalwidth}"
 		data-originalheight="${face.originalheight}"
 		style='background-image: url("${imageboxsource}")'>
 	</div>
-	<div class="vr"></div>
-	<div>
-		#set ($entityperson = $mediaarchive.getCachedData("entityperson", $face.entityperson))
-		#ifnotnull($entityperson)
-			#set($namefield = $mediaarchive.getSearcher("entityperson").getDetail("name"))
-			#set($facename = $mediaarchive.getSearcherManager().getValue($entityperson, $namefield, $context.getLocale()))
-		#end
-		
-		#set($pickerurl= "$apphome/views/modules/entityperson/editors/facepersonpicker/index.html")
-			
-		#ifnotnull($facename)
-			<div class="d-flex align-items-center">
-				<a href="$apphome/views/modules/entityperson/editors/listentities/tabs/index.html?entityid=$entityperson.getId()" class="emdialog" data-emedialogid="entitypersonface"><span>$!facename</span></a>&nbsp;
-				<a href="$pickerurl" data-edithome="" data-includeeditcontext="true" class="emdialog">
-					<i class="bi bi-pencil-square ml-1 ns"></i>
-				</a>
-			</div>
-		#end
+	#ifnotnull($facename) </a> #end
 
-		#ifnull($facename)
-			<div class="d-flex flex-column align-items-center">
-				<span class="text-muted mb-2">[[Unknown Person]]</span>
+	<div class="vr"></div>
+	
+	<div>			
+		<div class="d-flex flex-column align-items-center position-relative">
+			#set($pickerurl= "$apphome/views/modules/entityperson/editors/facepersonpicker/index.html")
+			
+			#ifnotnull($facename)
+				<a href="$personlink" class="emdialog" data-emedialogid="entitypersonface"><span>$!facename</span></a>
+				<a href="$pickerurl" data-edithome="" data-includeeditcontext="true" class="mt-1 emdialog small ml-auto text-secondary">
+					<i class="bi bi-pencil-square mr-1 ns"></i> Reassign Person
+				</a> 
+			#end
+
+			#ifnull($facename) 
 				<a href="$pickerurl"
 					data-edithome=""
 					data-includeeditcontext="true"
-					class="emdialog  btn btn-primary"
+					class="emdialog btn btn-primary"
 					data-hidefooter="true">
 					<i class="bi bi-tag-fill mr-1"></i>
 					[[Click to Tag]]
 				</a>
-			</div>
-		#end
+			#end
+		</div>
 
 	</div>
 
