@@ -1070,16 +1070,13 @@ jQuery(document).ready(function (url, params) {
     }
   }
 
-  lQuery(".seekTo").livequery("click", function (e) {
-    e.stopImmediatePropagation();
-    e.preventDefault();
-    var vjsPlayer = videojs.getPlayer("videopreview-AZdqkuS_B1TPheh8Veab");
+  function seekToVJS(vjs, sec) {
+    var vjsPlayer = videojs.getPlayer(vjs);
     if (!vjsPlayer) return;
-    var seekTo = $(this).data("seekto");
     vjsPlayer.play();
-    vjsPlayer.currentTime(parseFloat(seekTo));
+    vjsPlayer.currentTime(parseFloat(sec));
     vjsPlayer.pause();
-  });
+  }
 
   var faceTO;
 
@@ -1092,6 +1089,12 @@ jQuery(document).ready(function (url, params) {
       var image = showboxtarget.find(".imagethumb");
       if (image.length > 0) {
         paintFaceBoxes(image, [link.data()]);
+      } else {
+        var vjs = link.data("vjs");
+        var seekto = link.data("seekto");
+        if (vjs && seekto !== undefined) {
+          seekToVJS(vjs, seekto);
+        }
       }
     }
   });

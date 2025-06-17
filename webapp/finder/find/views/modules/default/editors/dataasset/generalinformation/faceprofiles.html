@@ -31,6 +31,16 @@
 						#set($facename = false)
 					#end
 
+					#set($rendertype = $mediaarchive.getMediaRenderType($asset))
+
+					#if( $rendertype == "video")
+						#set( $offset = $rowdata.getValue("timecodestart") )
+						#set( $imageboxsource = $mediaarchive.asLinkToGeneratedOffset($asset, "image1900x1080" , $offset) )
+						#set( $secs = $mediaarchive.formatTime($rowdata.get("timecodestart")) )
+					#else
+						#set( $imageboxsource = $mediaarchive.asLinkToGenerated($asset, "image3000x3000"))
+					#end 
+
 					<a href="$link" 
 						class="emdialog showimagebox d-flex align-items-center justify-content-between"
 						data-dialogwidth="1200"
@@ -48,15 +58,11 @@
 							title="[[View Similar Faces]]"
 						#end
 						data-dialogtitle="[[Similar Faces]]"
-					>
-
-						#set($rendertype = $mediaarchive.getMediaRenderType($asset))
 						#if( $rendertype == "video")
-							#set( $offset = $rowdata.getValue("timecodestart"))
-							#set($imageboxsource = $mediaarchive.asLinkToGeneratedOffset($asset, "image1900x1080" , $offset) )
-						#else
-							#set($imageboxsource = $mediaarchive.asLinkToGenerated($asset, "image3000x3000"))
+							data-vjs='videopreview-${rowdata.get("assetid")}'
+							data-seekto="$offset"
 						#end
+					> 
 
 						<div class="d-flex flex-column align-items-center">
 							<div class="facepf"
@@ -67,14 +73,8 @@
 						</div>
 						<div class="vr"></div>
 						<div class="d-flex flex-column align-items-center position-relative">
-							#if( $rendertype == "video")
-								#set($secs = $mediaarchive.formatTime($rowdata.get("timecodestart")) )
-							#end
 							#ifnotnull($secs)
-								<button data-seekto="$offset" class="seekTo" data-vjs='videopreview-${rowdata.get("assetid")}' title="[[Seek to]] $secs">$secs</button>
-								<div class="seekPreview" style="display: block;">
-									<img src="${imageboxsource}">
-								</div>
+								<span>$secs</span>
 							#end
 							#if($facename)
 								<span>$!facename</span>
