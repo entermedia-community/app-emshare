@@ -1,0 +1,62 @@
+##edit/addnew.html?viewid=projectgeneral&viewpath=project/projectgeneral&hitssessionid=hitsprojectfinder/catalog
+
+
+#set( $viewid = $context.findValue("viewid") )
+
+$context.putPageValue("searcher",$mediaarchive.getSearcher($module.id))
+
+#if( !$viewid )	
+	#set($viewid = "${module.id}general")
+#end
+
+#set($id = $data.id )
+#if( !$id )
+	#set( $id = $context.getRequestParameter("id") )
+#end
+
+#set($savetargetdiv = $context.getRequestParameter("savetargetdiv"))
+
+#set($faceembeddingid = $context.getRequestParameter("faceembeddingid"))
+
+#set($action = "${edithome}/actions/savenew.html")
+
+<div id="default-fields" style="padding: 10px;">
+    <div id="editlayout">
+    <form id="dataeditor" 
+    		name="dataeditor" 
+    		class="ajaxform autocloseform" 
+    		data-targetdiv="${savetargetdiv}"
+    		data-oemaxlevel="1"
+    		method="post"  
+    		action="$!action">
+    		
+    	<input name="save" type="hidden" value="true" />
+    	<input name="id" type="hidden" value="$!id" />
+    	    	
+    	<input name="savetargetdiv" type="hidden" value="${savetargetdiv}" />	
+		
+    	<input name="assetid" type="hidden" value="$!{asset.id}" />
+		
+    	<input name="faceembeddingid" type="hidden" value="$!{faceembeddingid}" />
+   	
+    	
+    	$context.putPageValue("viewid", $viewid)
+
+		#set( $origURL = $context.getRequestParameter("origURL" ) )
+		#set( $moduleid = $context.findValue("module") )
+		
+		$pages.include("/$applicationid/components/xml/detaileditor-entities.html", $context)
+		
+		<div class="d-flex align-items-center mt-3">
+			<a class="btn btn-cta submitform mr-3"><i class="mr-1 bi bi-floppy-fill mr-1"></i> [[Save]]</a>
+			<button id="closebutton" type="button" class="btn btn-secondary" data-dismiss="modal">[[Cancel]]</button>
+		</div>
+    </form>
+
+    </div>
+</div>
+
+
+
+
+

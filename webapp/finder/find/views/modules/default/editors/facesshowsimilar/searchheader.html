@@ -15,7 +15,7 @@
 		#set($secs = $mediaarchive.formatTime($face.get("timecodestart")) )
 		#ifnotnull($secs)
 			<div class="d-flex flex-column align-items-center mr-2">
-				<div class="text-muted mb-1">Found at</div>
+				<div class="text-muted mb-1">[[Found at]]</div>
 				<span>$secs</span>
 			</div>
 			<i class="bi bi-chevron-right mr-2"></i>
@@ -48,7 +48,7 @@
 	#ifnotnull($facename) </a>
 
 	<a href="$pickerurl" data-edithome="" data-includeeditcontext="true" class="emdialog small ml-auto text-secondary">
-		<i class="bi bi-pencil-square mr-1 ns"></i> Reassign Person
+		<i class="bi bi-pencil-square mr-1 ns"></i> [[Reassign Person]]
 	</a> 
 
  </div> 
@@ -65,14 +65,13 @@
 					#ifnotnull( $entityperson.primaryimage )
 						#set( $thumb = $mediaarchive.getAsset($entityperson.primaryimage))
 						#set($personimage = $mediaarchive.asLinkToGenerated($thumb, "image200x200"))
-						<img style="height:100px" src="$personimage" />
+						<img style="height:100px" src="$!{personimage}" />
 					#end					
 					<span>$!facename</span></a>
 			#end
 
 			#ifnull($facename) 
-				<a href="$pickerurl"
-					data-edithome=""
+				<a href="${pickerurl}"
 					data-includeeditcontext="true"
 					class="emdialog btn btn-primary"
 					data-hidefooter="true">
@@ -83,5 +82,7 @@
 		</div>
 
 	</div>
+	
+
 
 </div>
