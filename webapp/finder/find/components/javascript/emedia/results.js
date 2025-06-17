@@ -884,9 +884,10 @@ jQuery(document).ready(function (url, params) {
     }
   });
 
-  function batchPaintFaces() {
-    var faceboxes = $(this).data("faceboxes");
-    if (faceboxes) {
+  function quickPaintFace() {
+    var facebox = $(this).data("facebox");
+    var originalwidth = $(this).data("originalwidth");
+    if (facebox && originalwidth) {
       $(this).find("canvas").remove();
       var canv = document.createElement("canvas");
       var imgWidth = $(this).closest(".masonry-grid-cell").width();
@@ -901,26 +902,25 @@ jQuery(document).ready(function (url, params) {
       ctx.clearRect(0, 0, canv.width, canv.height);
       ctx.strokeStyle = "red";
       ctx.lineWidth = 2;
-      faceboxes.forEach(function (face) {
-        var [x, y, width, height, originalwidth] = face;
-        var scale = imgWidth / originalwidth;
-        x *= scale;
-        y *= scale;
-        width *= scale;
-        height *= scale;
-        ctx.strokeRect(x, y, width, height);
-      });
+      var [x, y, width, height] = facebox;
+      var scale = imgWidth / originalwidth;
+      x *= scale;
+      y *= scale;
+      width *= scale;
+      height *= scale;
+      ctx.strokeRect(x, y, width, height);
     }
   }
 
   $(window).on("bricksgenerated", function () {
     $(".renderfaceboxes").each(function () {
-      batchPaintFaces.apply(this);
+      quickPaintFace.apply(this);
     });
   });
+
   $(window).on("resize", function () {
     $(".renderfaceboxes").each(function () {
-      batchPaintFaces.apply(this);
+      quickPaintFace.apply(this);
     });
   });
 

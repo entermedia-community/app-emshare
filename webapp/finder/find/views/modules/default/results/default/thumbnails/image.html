@@ -65,19 +65,12 @@ $context.putPageValue("searchhome", $searchhome)
 			#set( $urlparams= "?_=$time")
 		#end
 
-		#ifnotnull( $showfaceboxes )
-			#set( $facemanager = $mediaarchive.getBean("faceProfileManager") )
-			#set($faceboxescollection =  $facemanager.collectFaceBoxesAllPeople($hit) )
-			
-			#ifnotnull($faceboxescollection)
-				#if(!$faceboxescollection.isEmpty())
-					#set($boxes = []) 
-					#foreach( $row in $faceboxescollection )
-						#set( $rowdata = $row.getEmbeddedData())
-						#if($boxes.add([$rowdata.locationx, $rowdata.locationy, $rowdata.locationw, $rowdata.locationh, $rowdata.originalwidth, $rowdata.originalheight]))#end
-					#end
-					<div class="renderfaceboxes h-100" data-faceboxes="$boxes">
-				#end
+		#ifnotnull( $boxlookup )
+			#set( $box = $boxlookup.get($hit.id) )
+			<div class="renderfaceboxes h-100" data-facebox="$box.getBoxArea()" data-originalwidth="$box.getOriginalWidth()">
+
+			#if($rendertype == "video")
+				#set($imagepath = $mediaarchive.asLinkToGeneratedOffset($hit, "image1900x1080", $box.getTimecodeStartSeconds()))
 			#end
 		#end
 			<div class="imagethumbholder">
@@ -106,12 +99,8 @@ $context.putPageValue("searchhome", $searchhome)
 				#end
 				#if($rendertype =="video")<div class="videoplay-button"><span class="videoplay-icon"></span></div>#end
 			</div>
-		#ifnotnull( $showfaceboxes )
-			#ifnotnull($faceboxescollection)
-				#if(!$faceboxescollection.isEmpty())
-					</div>
-				#end
-			#end
+		#ifnotnull( $boxlookup ) 
+			</div>  
 		#end
 	#end
 </div>
