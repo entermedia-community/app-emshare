@@ -11,88 +11,105 @@
 
 	<div class="$detailviewercolumnclass asset-data-detail emdatafield-$!viewtype p-3">
 		<div class="emfield-scroll" id="entitypickerentityperson">
+
 			#set( $facemanager = $mediaarchive.getBean("faceProfileManager") )
 			#set($faceboxescollection =  $facemanager.collectFaceBoxesAllPeople($asset) )
 			
 			<ul class="entity-value-list d-flex flex-wrap">
-			#foreach( $row in $faceboxescollection )
-				#set( $rowdata = $row.getEmbeddedData())
-				#set( $person = false)
-				#set( $person = $row.getPerson() )
+				#foreach( $row in $faceboxescollection )
+					#set( $rowdata = $row.getEmbeddedData())
+					#set( $person = false)
+					#set( $person = $row.getPerson() )
 
-				<li class="position-relative facepf-item">
+					<li class="position-relative mb-2 mr-2">
 
-					#set($link = "$!siteroot$applink/views/modules/asset/editors/facesshowsimilar/index.html?hitssessionid=$!hits.sessionId")
+						#set($similarfaceslink = "$!siteroot$applink/views/modules/asset/editors/facesshowsimilar/index.html?hitssessionid=$!hits.sessionId")
 
-					#if($person)
-						#set($namefield = $mediaarchive.getSearcher("entityperson").getDetail("name"))
-						#set($facename = $mediaarchive.getSearcherManager().getValue($person, $namefield, $context.getLocale()))
-					#else
-						#set($facename = false)
-					#end
-
-					#set($rendertype = $mediaarchive.getMediaRenderType($asset))
-
-					#if( $rendertype == "video")
-						#set( $offset = $rowdata.getValue("timecodestart") )
-						#set( $imageboxsource = $mediaarchive.asLinkToGeneratedOffset($asset, "image1900x1080" , $offset) )
-						#set( $secs = $mediaarchive.formatTime($rowdata.get("timecodestart")) )
-					#else
-						#set( $imageboxsource = $mediaarchive.asLinkToGenerated($asset, "image3000x3000"))
-					#end 
-
-					<a href="$link" 
-						class="emdialog showimagebox d-flex align-items-center justify-content-between"
-						data-dialogwidth="1200"
-						data-hidefooter="true"
-						data-showboxtarget="mediaplayer"
-						data-dialogid="faceprofiledialog"
-						data-faceembeddingid="$rowdata.getId()"
-						data-assetid="$asset.getId()"
-						data-location="${row.toJsonArray()}"
-						data-originalwidth="${rowdata.originalwidth}"
-						#if($facename)
-							data-facename="#elidemiddle($facename, 100)"
-							title="[[View more of]] #text($facename)"
+						#if($person)
+							#set($namefield = $mediaarchive.getSearcher("entityperson").getDetail("name"))
+							#set($facename = $mediaarchive.getSearcherManager().getValue($person, $namefield, $context.getLocale()))
 						#else
-							title="[[View Similar Faces]]"
+							#set($facename = false)
 						#end
-						data-dialogtitle="[[Similar Faces]]"
-						#if( $rendertype == "video")
-							data-vjs='videopreview-${rowdata.get("assetid")}'
-							data-seekto="$offset"
-						#end
-					> 
 
-						<div class="d-flex flex-column align-items-center">
-							<div class="facepf"
-								data-location="${row.toJsonArray()}"
-								data-originalwidth="${rowdata.originalwidth}"
-								data-originalheight="${rowdata.originalheight}"
-								style='background-image: url("${imageboxsource}")'></div>
-						</div>
-						<div class="vr"></div>
-						<div class="d-flex flex-column align-items-center position-relative">
-							#ifnotnull($secs)
-								<span>$secs</span>
-							#end
+						#set($rendertype = $mediaarchive.getMediaRenderType($asset))
+
+						#if( $rendertype == "video")
+							#set( $offset = $rowdata.getValue("timecodestart") )
+							#set( $imageboxsource = $mediaarchive.asLinkToGeneratedOffset($asset, "image1900x1080" , $offset) )
+							#set( $secs = $mediaarchive.formatTime($rowdata.get("timecodestart")) )
+						#else
+							#set( $imageboxsource = $mediaarchive.asLinkToGenerated($asset, "image3000x3000"))
+						#end 
+
+						<a href="$similarfaceslink" 
+							class="emdialog showimagebox d-flex align-items-center justify-content-between facepf-item"
+							data-dialogwidth="1200"
+							data-hidefooter="true"
+							data-showboxtarget="mediaplayer"
+							data-dialogid="faceprofiledialog"
+							data-faceembeddingid="$rowdata.getId()"
+							data-assetid="$asset.getId()"
+							data-location="${row.toJsonArray()}"
+							data-originalwidth="${rowdata.originalwidth}"
 							#if($facename)
-								<span>$!facename</span>
+								data-facename="#elidemiddle($facename, 100)"
+								title="[[View more of]] #text($facename)"
 							#else
-								<span class="text-muted">Click to Tag</span>
+								title="[[View Similar Faces]]"
 							#end
-						</div>
-					</a>
-				</li>
-			#end	
+							data-dialogtitle="[[Similar Faces]]"
+							#if( $rendertype == "video")
+								data-vjs='videopreview-${rowdata.get("assetid")}'
+								data-seekto="$offset"
+							#end
+						> 
+
+							<div class="d-flex flex-column align-items-center">
+								<div class="facepf"
+									data-location="${row.toJsonArray()}"
+									data-originalwidth="${rowdata.originalwidth}"
+									data-originalheight="${rowdata.originalheight}"
+									style='background-image: url("${imageboxsource}")'></div>
+							</div>
+							<div class="vr"></div>
+							<div class="d-flex flex-column align-items-center position-relative">
+								#ifnotnull($secs)
+									<span>$secs</span>
+								#end
+								#if($facename)
+									<span>$!facename</span>
+								#else
+									<span class="text-muted">[[View Similar Faces]]</span>
+								#end
+							</div>
+						</a>
+
+						#set($pickerurl= "$apphome/views/modules/entityperson/editors/facepersonpicker/index.html")
+						<a href="${pickerurl}"
+							data-faceembeddingid="$rowdata.getId()"
+							data-assetid="$asset.getId()"
+							class="emdialog face-assign-btn"
+							data-dialogid="tagpersondialog"
+							data-hidefooter="true"
+							title="#if($facename) [[Reassign Person]] #else [[Assign Person]] #end">
+							<i class="bi bi-pencil-square"></i>
+						</a>
+					</li>
+				#end
 			</ul>
+
 			#if($faceboxescollection.isEmpty())
-				<p class="text-muted">[[No faces detected]]</p>
+				<p class="text-muted">[[No face detected]]</p>
 			#end
-			<a href="#" class="manual-fp text-primary border rounded py-1 px-2 d-inline-block mb-2">
-				<i class="bi bi-plus-circle mr-1"></i>
-				[[Add a Face]]
-			</a>
+
+			#if( $rendertype == "image")
+				<a href="#" class="manual-fp text-primary border rounded py-1 px-2 d-inline-block mb-2">
+					<i class="bi bi-plus-circle mr-1"></i>
+					[[Add a Face]]
+				</a>
+			#end
+			
 			<hr class="m-0">
 			
 		</div>

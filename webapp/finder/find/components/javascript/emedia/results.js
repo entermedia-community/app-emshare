@@ -890,6 +890,7 @@ jQuery(document).ready(function (url, params) {
     if (facebox && originalwidth) {
       $(this).find("canvas").remove();
       var canv = document.createElement("canvas");
+      canv.className = "faceboxpreview";
       var imgWidth = $(this).closest(".masonry-grid-cell").width();
       var imgHeight = $(this).closest(".masonry-grid-cell").height();
       if (imgWidth == 0 || imgHeight == 0) {
@@ -900,7 +901,7 @@ jQuery(document).ready(function (url, params) {
       var ctx = canv.getContext("2d");
       $(this).append(canv);
       ctx.clearRect(0, 0, canv.width, canv.height);
-      ctx.strokeStyle = "red";
+      ctx.strokeStyle = "rgba(180, 255, 180)";
       ctx.lineWidth = 2;
       var [x, y, width, height] = facebox;
       var scale = imgWidth / originalwidth;
@@ -909,6 +910,8 @@ jQuery(document).ready(function (url, params) {
       width *= scale;
       height *= scale;
       ctx.strokeRect(x, y, width, height);
+      ctx.fillStyle = "rgba(180, 255, 180, 0.1)";
+      ctx.fillRect(x, y, width, height);
     }
   }
 
@@ -986,7 +989,7 @@ jQuery(document).ready(function (url, params) {
       faceCanvasCtx.fillRect(boxLeft, boxTop, boxWidth, boxHeight);
       faceCanvasCtx.strokeRect(boxLeft, boxTop, boxWidth, boxHeight);
 
-      var facename = "Click to Tag";
+      var facename = "Assign Person";
       if (faceData.facename) {
         facename = faceData.facename.trim();
       }
@@ -1051,8 +1054,11 @@ jQuery(document).ready(function (url, params) {
       faceCanvas.addEventListener("click", function (e) {
         Object.keys(nameRectBound).forEach(function (id) {
           if (isNameRect(nameRectBound[id], e.clientX, e.clientY)) {
-            var selector = ".showimagebox[data-faceembeddingid='" + id + "']";
-            $(selector).trigger("click");
+            var facebtn = $(`.showimagebox[data-faceembeddingid="${id}"]`);
+            if (!facebtn.data("facename")) {
+              facebtn = $(`.face-assign-btn[data-faceembeddingid="${id}"]`);
+            }
+            facebtn.emDialog();
           }
         });
       });

@@ -11,80 +11,44 @@
 
 	#set($facelocation = "[${face.locationx},${face.locationy},${face.locationw},${face.locationh}]")
 
-	#if( $rendertype == "video")
-		#set($secs = $mediaarchive.formatTime($face.get("timecodestart")) )
-		#ifnotnull($secs)
-			<div class="d-flex flex-column align-items-center mr-2">
-				<div class="text-muted mb-1">[[Found at]]</div>
-				<span>$secs</span>
-			</div>
-			<i class="bi bi-chevron-right mr-2"></i>
-		#end
-	#end
 	#set($pickerurl= "$apphome/views/modules/entityperson/editors/facepersonpicker/index.html")
-	<a href="#" class="closeemdialog" data-dismiss="modal" title="$!asset.name">
-		<img class="sourceimg mr-2" src="${imageboxsource}">
-	</a>
-	<i class="bi bi-chevron-right mr-2"></i>
 
-	##    entityperson is set in Java. set ($entityperson = $mediaarchive.getCachedData("entityperson", $face.entityperson))
 	#ifnotnull($entityperson)
 		#set($namefield = $mediaarchive.getSearcher("entityperson").getDetail("name"))
 		#set($facename = $mediaarchive.getSearcherManager().getValue($entityperson, $namefield, $context.getLocale()))
-		#set($personlink = "$apphome/views/modules/entityperson/editors/listentities/tabs/index.html?entityid=$entityperson.getId()")
+		#set($personlink = "$apphome/views/modules/entityperson/editors/listentities/tabs/index.html?entityid=$entityperson.getId()&entitymoduleviewid=entitypersongeneral")
 	#end
 	
 	#ifnotnull($facename)
-	<div>
-		 <a href="$personlink" class="emdialog" data-emedialogid="entitypersonface"> 
-	#end
-			
-	<div class="facepf"
-		data-location="$facelocation"
-		data-originalwidth="${face.originalwidth}"
-		data-originalheight="${face.originalheight}"
-		style='background-image: url("${imageboxsource}")'>
-	</div>
-
-	#ifnotnull($facename) </a>
-
-	<a href="$pickerurl" data-edithome="" data-includeeditcontext="true" class="emdialog small ml-auto text-secondary">
-		<i class="bi bi-pencil-square mr-1 ns"></i> [[Reassign Person]]
-	</a> 
-
- </div> 
-	#end
-
-	<div class="vr"></div>
-	
-	<div>			
-		<div class="d-flex flex-column align-items-center position-relative">
-			
-			#ifnotnull($facename)
-				<a href="$personlink" class="emdialog" data-emedialogid="entitypersonface">
-					#ifnotnull( $entityperson.primaryimage )
-						#set( $thumb = $mediaarchive.getAsset($entityperson.primaryimage))
-						#set($personimage = $mediaarchive.asLinkToGenerated($thumb, "image200x200"))
-						<img style="height:100px" src="$!{personimage}" />
-					#end					
-					<span>$!facename</span></a>
-			#end
-
-			#ifnull($facename) 
-				#set($faceembeddingid = $context.getRequestParameter("faceembeddingid"))
-				<a href="${pickerurl}"
-					##data-includeeditcontext="true"
-					data-faceembeddingid="$!{faceembeddingid}"
-					data-assetid="$asset.getId()"
-					class="emdialog btn btn-primary"
-					data-dialogid="tagpersondialog"
-					data-hidefooter="true">
-					<i class="bi bi-tag-fill mr-1"></i>
-					[[Click to Tag]]
+		<div class="d-flex align-items-center">
+			<a href="$personlink" class="emdialog" data-emedialogid="entitypersonface">
+				#ifnotnull( $entityperson.primaryimage )
+					#set( $thumb = $mediaarchive.getAsset($entityperson.primaryimage))
+					#set($personimage = $mediaarchive.asLinkToGenerated($thumb, "image200x200"))
+					<img src="$!{personimage}" />
+				#end
+			</a>
+			<div class="d-flex flex-column ml-2">
+				<a href="$personlink" class="emdialog mb-1" data-emedialogid="entitypersonface">
+					<span>$!facename</span>
 				</a>
-			#end
+				<a href="$pickerurl" data-edithome="" data-includeeditcontext="true" class="emdialog small" data-hidefooter="true">
+					<i class="bi bi-pencil-square mr-1 ns"></i> [[Reassign Person]]
+				</a>
+			</div>
 		</div>
+	#end
 
-	</div>
+	#ifnull($facename) 
+		#set($faceembeddingid = $context.getRequestParameter("faceembeddingid"))
+		<a href="${pickerurl}"
+			data-faceembeddingid="$!{faceembeddingid}"
+			data-assetid="$asset.getId()"
+			class="emdialog btn"
+			data-dialogid="tagpersondialog"
+			data-hidefooter="true">
+			<i class="bi bi-pencil-square mr-1"></i> [[Assign Person]]
+		</a>
+	#end
 	
 </div>
