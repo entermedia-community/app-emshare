@@ -10,7 +10,7 @@ public void init() {
 	DrupalManager manager = archive.getModuleManager().getBean( "DrupalManager");
 	manager.setCatalogId(archive.getCatalogId());
 	
-	manager.syncContent();
+	manager.syncContent(context);
 	
 }
 
