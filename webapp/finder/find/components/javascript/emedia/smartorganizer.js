@@ -968,7 +968,7 @@ $(document).ready(function () {
           $("#folderId").val(moduleid);
           $("#folderLabel").val(selectedLabel.getText() || "");
           $("#folderDesc").val(selectedLabel.getUserData()?.description || "");
-          var ordering = selectedLabel.getUserData()?.ordering || "0";
+          var ordering = selectedLabel.getUserData()?.ordering || "-1";
           $("#ordering").val(ordering).trigger("change");
 
           updateModPosition(selectedGroup);

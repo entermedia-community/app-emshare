@@ -1,23 +1,20 @@
-#set($presetid = $context.getRequestParameter("presetid"))
+#set( $presetid = $context.getRequestParameter("presetid") )
 
-#set($preset = $mediaarchive.query("convertpreset").exact("id", $presetid).searchOne())
+#set( $preset = $mediaarchive.getCachedData("convertpreset", $presetid) )
 
-#set($dimension = $conversionUtil.getConvertPresetDimension($mediaarchive.getCatalogId(), $presetid))
+#set( $dimension = $conversionUtil.getConvertPresetDimension($mediaarchive.getCatalogId(), $presetid) )
 
-#set($aspectratio = $conversionUtil.getConvertPresetAspectRatio($dimension))
+#set( $aspectratio = $conversionUtil.getConvertPresetAspectRatio($dimension) )
+
+#set( $cropbox = $conversionUtil.loadCropBox($mediaarchive, $asset, $preset) )
 
 <div id="cropeditor" class="d-flex flex-column align-items-center justify-content-center flex-grow-1">
-  <div id="cropdata" class="d-none" data-aspectratio="$aspectratio"></div>
-
   <div class="mb-3 text-center">
     <h4 class="p-0 mb-1">$preset.getName() </h4>
     <span class="text-muted">$aspectratio</span>
   </div>
-  
+
   #set ($img = $mediaarchive.asLinkToPreview($asset, "image3000x3000") )
-
-  <img src="$img" id="cropsubject">
-
   <form class="d-flex align-items-center ajaxform" data-targetdiv="asset-editor-container" action="${apphome}/views/modules/asset/editor/crops/save.html" method="post" id="cropform">
     <input type="hidden" name="sourcepath" value='$asset.get("sourcepath")'>
     <input name="field" value="crop" type="hidden" />
@@ -44,48 +41,133 @@
     <input name="field" value="croppreviewh" type="hidden" />
     <input name="croppreviewh.value" value="" type="hidden" />
     
-    <button class="btn btn-lg btn-primary m-2" type="submit">
+    <button class="btn btn-lg btn-cta m-2" type="submit">
       <i class="bi bi-crop mr-2"></i> [[Crop]]
     </button>
     
   </form>
+
+  #set($cheight = $mathtool.toInteger($dimension.getHeight()))
+  #set($cwidth = $mathtool.toInteger($dimension.getWidth()))
+
+  <div id="cropinner"
+      data-originalwidth="$asset.getInt('width')"
+      data-originalheight="$asset.getInt('height')"
+      data-cropbox="$cropbox"
+      data-cropheight="${cheight}"
+      data-cropwidth="${cwidth}"
+      data-cropaspectratio="$aspectratio">
+
+    <img src="$img" id="target" />
+
+    <div id="preview-pane">
+      <div class="preview-container" style="width: ${cwidth}px; height: ${cheight}px; aspect-ratio: ${cwidth} / ${cheight}">
+        <img src="$img" class="jcrop-preview" alt="Preview" />
+      </div>
+    </div>
+  </div>
   
   <script>
-    (function() {
-      var cropdata = $("#cropdata").data();
-      var aspect = cropdata.aspectratio.split(":");
-      var aspectratio = parseFloat(aspect[0]);
+    jQuery(function ($) {
+      var cropper,
+        boundX,
+        boundY,
+        crop_inner = $("#cropinner"),
+        cropBox = crop_inner.data("cropbox"),
+        original_width = crop_inner.data("originalwidth"),
+        original_height = crop_inner.data("originalheight"),
+        aspect_ratio = original_width / original_height,
+        crop_width = crop_inner.data("cropwidth"),
+        crop_height = crop_inner.data("cropheight"),
+        crop_aspect_ratio = parseFloat(crop_inner.data("cropaspectratio")),
+        preview = $("#preview-pane"),
+        preview_container = $("#preview-pane .preview-container"),
+        preview_image = $("#preview-pane .preview-container img"),
+        preview_width = preview_container.width(),
+        preview_height = preview_container.height();
 
-      if(isNaN(aspectratio)) {
-        aspectratio = 1;
-        console.warn("Invalid aspect ratio, defaulting to 1:1");
+      var crop_inner_width = crop_inner.width() - 32;
+      var crop_inner_height = crop_inner.height() - 32;
+
+      crop_width = Math.min(crop_width, crop_inner_width * 0.4);
+      crop_height = crop_width / crop_aspect_ratio;
+      if (crop_height > crop_inner_height) {
+        var scale = crop_inner_height / crop_height;
+        crop_width = crop_width * scale;
+        crop_height = crop_inner_height;
       }
 
-      var cropData;
-
-      var options = {
-        allowResize: true,
-        handles: true,
-        aspectRatio: aspectratio, 
-        boxWidth: Math.min(1000, $(window).width() - 500), 
-        boxHeight: Math.min(1000, $(window).height() - 200), 
-        setSelect: [0, 0, 200, 400],
+      var cropper_width = Math.max(
+        crop_inner_width * 0.6,
+        crop_inner_width - crop_width
+      );
+      var cropper_height = cropper_width / aspect_ratio;
+      if (cropper_height > crop_inner_height) {
+        var scale = crop_inner_height / cropper_height;
+        cropper_width = cropper_width * scale;
+        cropper_height = crop_inner_height;
       }
 
-      $('#cropsubject').Jcrop({
-        ...options, 
-        onSelect: function() {
-          if(this.ui) {
-            setForm(this.ui.holder, this.ui.selection);
-          }
-        } 
-      }, function() {
-        this.focus();
-        if(this.ui) {
-          setForm(this.ui.holder, this.ui.selection);
-        }
+      preview.css({
+        top: 0,
+        right: -crop_width + "px",
+        width: crop_width + 14 + "px",
+        height: crop_height + 14 + "px",
       });
 
+      preview_container.css({
+        width: crop_width + "px",
+        height: crop_height + "px",
+      });
+      preview_image.css({
+        width: crop_width + "px",
+        height: crop_height + "px",
+      });
+
+      $("#target").css({
+        width: cropper_width + "px",
+        height: cropper_height + "px",
+      });
+
+      var mainScale = cropper_width / original_width;
+      var scaledCroppedBox = cropBox.map((x) => x * mainScale);
+
+      $("#target").Jcrop(
+        {
+          setSelect: scaledCroppedBox,
+          onChange: updatePreview,
+          onSelect: function() {
+            updatePreview(this);
+            if(this.ui)
+            setForm(this.ui.holder, this.ui.selection);
+          },
+          aspectRatio: preview_width / preview_height,
+        },
+        function () {
+          var bounds = this.getBounds();
+          boundX = bounds[0];
+          boundY = bounds[1];
+          cropper = this;
+
+          cropper.setSelect(scaledCroppedBox);
+
+          preview.appendTo(cropper.ui.holder);
+          setForm(cropper.ui.holder, cropper.ui.selection);
+        }
+      );
+
+      function updatePreview(c) {
+        if (parseInt(c.w) > 0) {
+          var rx = crop_width / c.w;
+          var ry = crop_height / c.h;
+          preview_image.css({
+            width: Math.round(rx * boundX) + "px",
+            height: Math.round(ry * boundY) + "px",
+            marginLeft: "-" + Math.round(rx * c.x) + "px",
+            marginTop: "-" + Math.round(ry * c.y) + "px",
+          });
+        }
+      }
       function setForm(holder, selection) {
         var H = $(holder).offset();
         var S = $(selection).offset();
@@ -95,16 +177,14 @@
           w: $(selection).width(),
           h: $(selection).height()
         };
-        $("#cropform input[name='x1.value']").val(pos.x);
-        $("#cropform input[name='y1.value']").val(pos.y);
-        $("#cropform input[name='cropwidth.value']").val(pos.w);
-        $("#cropform input[name='cropheight.value']").val(pos.h);
-        var ar = $('#cropsubject').width() / $('#cropsubject').height();
-        var w = options.boxWidth;
-        var h = w / ar;
-        $("#cropform input[name='cropprevieww.value']").val(w);
-        $("#cropform input[name='croppreviewh.value']").val(h);
+
+        $("#cropform input[name='x1.value']").val(pos.x*mainScale);
+        $("#cropform input[name='y1.value']").val(pos.y*mainScale);
+        $("#cropform input[name='cropwidth.value']").val(pos.w*mainScale);
+        $("#cropform input[name='cropheight.value']").val(pos.h*mainScale);
+        $("#cropform input[name='cropprevieww.value']").val($(selection).width());
+        $("#cropform input[name='croppreviewh.value']").val($(selection).height());
       }
-    })();
+    });
   </script>
 </div>
