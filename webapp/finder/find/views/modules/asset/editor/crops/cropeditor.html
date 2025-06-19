@@ -10,7 +10,7 @@
 
 <div id="cropeditor" class="d-flex flex-column align-items-center justify-content-center flex-grow-1">
   <div class="mb-3 text-center">
-    <h4 class="p-0 mb-1">$preset.getName() </h4>
+    <h4 class="p-0 mb-1">$preset.getName() $cropbox</h4>
     <span class="text-muted">$aspectratio</span>
   </div>
 
@@ -177,13 +177,13 @@
           w: $(selection).width(),
           h: $(selection).height()
         };
-
+console.log(mainScale, pos);
         $("#cropform input[name='x1.value']").val(pos.x*mainScale);
         $("#cropform input[name='y1.value']").val(pos.y*mainScale);
         $("#cropform input[name='cropwidth.value']").val(pos.w*mainScale);
         $("#cropform input[name='cropheight.value']").val(pos.h*mainScale);
-        $("#cropform input[name='cropprevieww.value']").val($(selection).width());
-        $("#cropform input[name='croppreviewh.value']").val($(selection).height());
+        $("#cropform input[name='cropprevieww.value']").val($(selection).width()*mainScale);
+        $("#cropform input[name='croppreviewh.value']").val($(selection).height()*mainScale);
       }
     });
   </script>
