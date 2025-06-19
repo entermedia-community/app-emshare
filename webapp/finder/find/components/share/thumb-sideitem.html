@@ -1,7 +1,7 @@
 <div class="share-preset">
 	
 	#set($dlink = $mediaarchive.asLinkToShare($context.getSiteRoot(),$asset,$preset))
-	<a target="_new" href="$dlink" class="preset-dl-link">
+	<a target="_new" href="$dlink" class="preset-dl-link" title="View #text($preset)">
 
 		#set( $ext = $url_util.getPathUtilities().extractPageType($dlink))
 		#set ($mime = $mediaarchive.getMimeTypeIcon($ext))
@@ -11,18 +11,13 @@
 	</a>
 
 	<div class="d-flex flex-column">
-		
-		<div class="preset-prop"><strong>[[Type]]:</strong> #text($preset)</div>
-		
 		#set( $type = $mediaarchive.getCachedData("fileformat",$preset.outputextension))
-		#if($type)<div class="preset-prop"><strong>[[Format]]:</strong> #text($type)</div>#end
-		 
-		#set( $filename = $url_util.getPathUtilities().extractFileName($dlink))
-		<div class="preset-prop"><strong>[[Name]]:</strong> #elidemiddle($filename, 25)</div>
+		
+		<div class="preset-prop">#text($preset) #if($type)<em class="text-muted">(#text($type))#end</em></div>
 	</div>
 
-	<div class="d-flex flex-column align-items-center preset-links">
-		<a class="preset-copy-link copytoclipboard"  data-text="$dlink"><i class="bi bi-copy ns mr-1"></i> [[Copy Share Link]]</a>
-		<a class="preset-copy-link dl" href="$dlink?download=true"><i class="bi bi-download ns mr-1"></i> [[Download]]</a>
+	<div class="d-flex align-items-center preset-links">
+		<a class="btn btn-cta mb-1" href="$dlink?download=true&ondemand=true"><i class="bi bi-download ns mr-1"></i> [[Download]]</a>
+		<a class="btn  btn-accent copytoclipboard" data-text="$dlink?download=true&ondemand=true"><i class="bi bi-copy ns mr-1"></i> [[Copy Share Link]]</a>
 	</div>
 </div>

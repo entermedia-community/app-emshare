@@ -19,6 +19,10 @@ $context.putPageValue("asset", $asset)
       <div class="bg-light border-right" style="min-width:200px;max-width: 200px;">
         <h4 class="mt-2 mb-1 text-center">[[Crop Presets]]</h4>
         <div class="crop-presets overflow-y px-2 pt-1 pb-3 auto-active-container">
+          #set($presetid = $context.getRequestParameter("presetid.value"))
+          #ifnull($presetid) 
+            #set($presetid = $presets.iterator().next().getId())
+          #end
           #foreach($presetdata in $presets)
               #set($dimension = $conversionUtil.getConvertPresetDimension($mediaarchive.getCatalogId(),$presetdata.id))
               #set($height = $mathtool.toInteger($dimension.getHeight()))
@@ -28,7 +32,7 @@ $context.putPageValue("asset", $asset)
       
               #set($name = $presetdata.getName())
               
-              <a href="${apphome}/views/modules/asset/editor/crops/cropeditor.html" class="btn btn-wide ajax auto-active-link w-100 mb-2 #if($foreach.count == 1) current #end" data-targetdiv="cropeditor" data-oemaxlevel="1" data-presetid="$presetdata.getId()">
+              <a href="${apphome}/views/modules/asset/editor/crops/cropeditor.html" class="btn btn-wide ajax auto-active-link w-100 mb-2 #if($presetid == $presetdata.getId()) current #end" data-targetdiv="cropeditor" data-oemaxlevel="1" data-presetid="$presetdata.getId()">
                 <span>$name</span> 
                 #set($generated = $presetdata.get("generatedoutputfile") )
                 #set ($previewlink = $mediaarchive.asLinkToPreview($asset, null, "${generated}") ) 
@@ -40,7 +44,7 @@ $context.putPageValue("asset", $asset)
         </div>
       </div>
 
-      $pages.include("./cropeditor.html?presetid=${presets[0].getId()}", $context)
+      $pages.include("./cropeditor.html?presetid=${presetid}", $context)
 
     #end
     

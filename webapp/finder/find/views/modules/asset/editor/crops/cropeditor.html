@@ -58,7 +58,7 @@
       data-cropwidth="${cwidth}"
       data-cropaspectratio="$aspectratio">
 
-    <img src="$img" id="target" />
+    <img src="$img" id="croptarget" />
 
     <div id="preview-pane">
       <div class="preview-container" style="width: ${cwidth}px; height: ${cheight}px; aspect-ratio: ${cwidth} / ${cheight}">
@@ -67,8 +67,8 @@
     </div>
   </div>
   
-  <script>
-    jQuery(function ($) {
+  <script> 
+   (function () { 
       var cropper,
         boundX,
         boundY,
@@ -124,7 +124,7 @@
         height: crop_height + "px",
       });
 
-      $("#target").css({
+      $("#croptarget").css({
         width: cropper_width + "px",
         height: cropper_height + "px",
       });
@@ -132,7 +132,7 @@
       var mainScale = cropper_width / original_width;
       var scaledCroppedBox = cropBox.map((x) => x * mainScale);
 
-      $("#target").Jcrop(
+      $("#croptarget").Jcrop(
         {
           setSelect: scaledCroppedBox,
           onChange: updatePreview,
@@ -177,14 +177,12 @@
           w: $(selection).width(),
           h: $(selection).height()
         };
-console.log(mainScale, pos);
-        $("#cropform input[name='x1.value']").val(pos.x*mainScale);
-        $("#cropform input[name='y1.value']").val(pos.y*mainScale);
-        $("#cropform input[name='cropwidth.value']").val(pos.w*mainScale);
-        $("#cropform input[name='cropheight.value']").val(pos.h*mainScale);
-        $("#cropform input[name='cropprevieww.value']").val($(selection).width()*mainScale);
-        $("#cropform input[name='croppreviewh.value']").val($(selection).height()*mainScale);
+
+        $("#cropform input[name='x1.value']").val(pos.x/mainScale);
+        $("#cropform input[name='y1.value']").val(pos.y/mainScale);
+        $("#cropform input[name='cropwidth.value']").val(pos.w/mainScale);
+        $("#cropform input[name='cropheight.value']").val(pos.h/mainScale);
       }
-    });
+    })(); 
   </script>
 </div>
