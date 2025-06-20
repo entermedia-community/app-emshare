@@ -20,7 +20,7 @@ public void init()
 
 	try
 	{	
-		HitTracker hits = archive.query("asset").exact("facehasprofile", "true").exact("importstatus","complete").search();
+		HitTracker hits = archive.query("asset").exact("facescancomplete", "true").exact("importstatus","complete").search();
 		hits.enableBulkOperations();
 			
 		int saved = 0;
@@ -29,9 +29,8 @@ public void init()
 		for(Data hit in hits)
 		{
 			Asset asset = archive.getAssetSearcher().loadData(hit);
-			asset.setValue("faceprofiles",null);
 			asset.setValue("facescancomplete",false);
-			asset.setValue("facehasprofile",false);
+			asset.setValue("facescanerror",false);
 			tosave.add(asset);
 			if( tosave.size() == 1000 )
 			{
