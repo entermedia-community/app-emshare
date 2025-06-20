@@ -1169,6 +1169,60 @@ jQuery(document).ready(function (url, params) {
       left: coords.left + coords.width + "px",
     });
   }
+  var addicon =
+    "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 16 16'%3E%3Cpath fill='%23eeeeee' d='M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2z'/%3E%3Cpath  fill='%2328a745' d='M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zm6.5 4.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3a.5.5 0 0 1 1 0'/%3E%3C/svg%3E";
+  cancelicon =
+    "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' fill='%23eeeeee' viewBox='0 0 16 16'%3E%3Cpath d='M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708'/%3E%3C/svg%3E";
+  function renderIcn(icn) {
+    var icon = document.createElement("img");
+    icon.src = icn === "add" ? addicon : cancelicon;
+    const size = 32;
+    return function (ctx, left, top, _, fabricObject) {
+      ctx.save();
+      ctx.translate(left, top);
+      ctx.drawImage(icon, -size / 2, -size / 2, size, size);
+      ctx.restore();
+    };
+  }
+  function getAddControl() {
+    return new fabric.Control({
+      x: 0,
+      y: 0.5,
+      offsetY: 32,
+      offsetX: -32,
+      cursorStyle: "pointer",
+      mouseUpHandler: () => {
+        $("#addManually").trigger("click");
+      },
+      render: renderIcn("add"),
+    });
+  }
+  function getCancelControl() {
+    return new fabric.Control({
+      x: 0,
+      y: 0.5,
+      offsetY: 32,
+      offsetX: 32,
+      cursorStyle: "pointer",
+      mouseDownHandler: () => {
+        if (!manualCanvas) return;
+        manualCanvas.dispose();
+        manualCanvas = null;
+        $(".manual-canvas").remove();
+      },
+      render: renderIcn("cancel", "#ffffff"),
+    });
+  }
+  var controls = fabric.controlsUtils.createObjectDefaultControls();
+  delete controls.mt;
+  delete controls.ml;
+  delete controls.mr;
+  delete controls.mb;
+  fabric.InteractiveFabricObject.ownDefaults.controls = {
+    ...controls,
+    addControl: getAddControl(),
+    cancelControl: getCancelControl(),
+  };
   fabric.Canvas.prototype.getAbsoluteCoords = function (object) {
     return {
       left: object.left + this._offset.left,
@@ -1228,10 +1282,51 @@ jQuery(document).ready(function (url, params) {
       manualCanvas.setActiveObject(manualRect);
       manualCanvas.renderAll();
       manualRect.on("moving", function () {
+        if (manualRect.top < 0) {
+          manualRect.top = 0;
+        }
+        if (manualRect.left < 0) {
+          manualRect.left = 0;
+        }
+        if (
+          manualRect.top + manualRect.getScaledHeight() >
+          manualCanvas.height
+        ) {
+          manualRect.top = manualCanvas.height - manualRect.getScaledHeight();
+        }
+        if (
+          manualRect.left + manualRect.getScaledWidth() >
+          manualCanvas.width
+        ) {
+          manualRect.left = manualCanvas.width - manualRect.getScaledWidth();
+        }
+        manualCanvas.renderAll();
         positionManualAddBtn(manualCanvas.getAbsoluteCoords(manualRect));
       });
 
       manualRect.on("scaling", function () {
+        bound = manualRect.getBoundingRect();
+        if (bound.width < 50) {
+          manualRect.scaleX = 1;
+          manualRect.width = 50;
+        }
+        if (manualRect.getScaledHeight() < 50) {
+          manualRect.scaleY = 1;
+          manualRect.height = 50;
+        }
+        if (
+          manualRect.top + manualRect.getScaledHeight() >
+          manualCanvas.height
+        ) {
+          manualRect.height = manualCanvas.height - manualRect.top;
+        }
+        if (
+          manualRect.left + manualRect.getScaledWidth() >
+          manualCanvas.width
+        ) {
+          manualRect.width = manualCanvas.width - manualRect.left;
+        }
+        manualCanvas.renderAll();
         positionManualAddBtn(manualCanvas.getAbsoluteCoords(manualRect));
       });
 
@@ -1243,21 +1338,6 @@ jQuery(document).ready(function (url, params) {
         manualCanvas.setActiveObject(manualRect);
         manualCanvas.requestRenderAll();
       });
-    });
-    manualCanvas.on("object:moving", function () {
-      if (manualRect.top < 0) {
-        manualRect.top = 0;
-      }
-      if (manualRect.left < 0) {
-        manualRect.left = 0;
-      }
-      if (manualRect.top + manualRect.getScaledHeight() > manualCanvas.height) {
-        manualRect.top = manualCanvas.height - manualRect.getScaledHeight();
-      }
-      if (manualRect.left + manualRect.getScaledWidth() > manualCanvas.width) {
-        manualRect.left = manualCanvas.width - manualRect.getScaledWidth();
-      }
-      manualCanvas.requestRenderAll();
     });
   });
   lQuery("#addManually").livequery("click", function (e) {
@@ -1286,15 +1366,6 @@ jQuery(document).ready(function (url, params) {
     manualCanvas.dispose();
     manualCanvas = null;
     $(".manual-canvas").remove();
-  });
-  lQuery("#cancelAddManually").livequery("click", function (e) {
-    e.preventDefault();
-    e.stopPropagation();
-    if (manualCanvas) {
-      manualCanvas.dispose();
-      manualCanvas = null;
-      $(".manual-canvas").remove();
-    }
   });
 
   lQuery("select.addremovecolumns").livequery("change", function () {
