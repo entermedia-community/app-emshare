@@ -32,11 +32,12 @@ public void init()
 	{	
 		HitTracker hits = archive.query("asset").not("editstatus","7").exact("facescancomplete", "false").exact("importstatus","complete").sort("assetaddeddateDown").search();
 		hits.enableBulkOperations();
-		log.info("Checking :" + hits);
 		
 		List tosave = new ArrayList();
 		FaceProfileManager manager = archive.getBean("faceProfileManager");
-		if (hits.size() > 0) {
+		if (!hits.isEmpty()) 
+		{
+			log.info("Checking :" + hits);
 			for(Data hit in hits)
 			{
 				Asset asset = archive.getAssetSearcher().loadData(hit);
