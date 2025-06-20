@@ -8,10 +8,14 @@
 
 #set( $cropbox = $conversionUtil.loadCropBox($mediaarchive, $asset, $preset) )
 
+#set($cropuser = $mediaarchive.getUser($cropbox.userid))
+
 <div id="cropeditor" class="d-flex flex-column align-items-center justify-content-center flex-grow-1">
   <div class="mb-3 text-center">
-    <h4 class="p-0 mb-1">$preset.getName() $cropbox</h4>
-    <span class="text-muted">$aspectratio</span>
+    <h4 class="p-0 mb-1">$preset.getName()<span class="mx-2">&middot;</span><span class="text-muted">( $aspectratio )</span></h4>
+    #ifnotnull($cropuser)
+      <span class="text-muted">[[Last modified by ]] #text($cropuser)</span>
+    #end
   </div>
 
   #set ($img = $mediaarchive.asLinkToPreview($asset, "image3000x3000") )
@@ -53,7 +57,10 @@
   <div id="cropinner"
       data-originalwidth="$asset.getInt('width')"
       data-originalheight="$asset.getInt('height')"
-      data-cropbox="$cropbox"
+      data-cropx="${cropbox.cropx}"
+      data-cropy="${cropbox.cropy}"
+      data-cropw="${cropbox.cropwidth}"
+      data-croph="${cropbox.cropheight}" 
       data-cropheight="${cheight}"
       data-cropwidth="${cwidth}"
       data-cropaspectratio="$aspectratio">
@@ -73,7 +80,12 @@
         boundX,
         boundY,
         crop_inner = $("#cropinner"),
-        cropBox = crop_inner.data("cropbox"),
+        cropBox = {          
+          x: crop_inner.data("cropx"),
+          y: crop_inner.data("cropy"),
+          w: crop_inner.data("cropw"),
+          h: crop_inner.data("croph"),
+        },
         original_width = crop_inner.data("originalwidth"),
         original_height = crop_inner.data("originalheight"),
         aspect_ratio = original_width / original_height,
@@ -119,6 +131,7 @@
         width: crop_width + "px",
         height: crop_height + "px",
       });
+      
       preview_image.css({
         width: crop_width + "px",
         height: crop_height + "px",
@@ -130,7 +143,13 @@
       });
 
       var mainScale = cropper_width / original_width;
-      var scaledCroppedBox = cropBox.map((x) => x * mainScale);
+      
+      var scaledCroppedBox = [
+        cropBox.x * mainScale,
+        cropBox.y * mainScale,
+        cropBox.x * mainScale+cropBox.w * mainScale,
+        cropBox.y * mainScale+cropBox.h * mainScale
+      ]; 
 
       $("#croptarget").Jcrop(
         {
@@ -141,13 +160,14 @@
             if(this.ui)
             setForm(this.ui.holder, this.ui.selection);
           },
+          minSize: [50, 50/crop_aspect_ratio],
           aspectRatio: preview_width / preview_height,
         },
-        function () {
+        function () { 
           var bounds = this.getBounds();
           boundX = bounds[0];
           boundY = bounds[1];
-          cropper = this;
+          cropper = this; 
 
           cropper.setSelect(scaledCroppedBox);
 
