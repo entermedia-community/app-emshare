@@ -32,16 +32,21 @@ public void init()
 	{	
 		HitTracker hits = archive.query("asset").not("editstatus","7").exact("facescancomplete", "false").exact("importstatus","complete").sort("assetaddeddateDown").search();
 		hits.enableBulkOperations();
+		log.info("Checking :" + hits);
+		
 		List tosave = new ArrayList();
 		FaceProfileManager manager = archive.getBean("faceProfileManager");
 		if (hits.size() > 0) {
 			for(Data hit in hits)
 			{
 				Asset asset = archive.getAssetSearcher().loadData(hit);
+				long start = System.currentTimeMillis();
 				int more = manager.extractFaces(asset);
 				if( more > 0 )
 				{
-					log.info(more + " face found in " + hit.getName());
+					long end = System.currentTimeMillis();
+					long change = end-start;
+					log.info(more + " face found in " + hit.getName() + " in " + change + "milliseconds #id=" + hit.getId() );
 				}
 				count = count + more;
 				tosave.add(asset);
