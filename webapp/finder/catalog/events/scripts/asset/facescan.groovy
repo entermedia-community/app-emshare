@@ -37,7 +37,7 @@ public void init()
 		FaceProfileManager manager = archive.getBean("faceProfileManager");
 		if (!hits.isEmpty()) 
 		{
-			log.info("Checking :" + hits);
+			log.info("Checking :" + hits.size());
 			for(Data hit in hits)
 			{
 				Asset asset = archive.getAssetSearcher().loadData(hit);
@@ -47,7 +47,7 @@ public void init()
 				{
 					long end = System.currentTimeMillis();
 					long change = end-start;
-					log.info(more + " face found in " + hit.getName() + " in " + change + "milliseconds #id=" + hit.getId() );
+					log.info(more + " face found in " + hit.getName() + " in " + change + " milliseconds #id=" + hit.getId() );
 				}
 				count = count + more;
 				tosave.add(asset);
