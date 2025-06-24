@@ -1141,12 +1141,10 @@ jQuery(document).ready(function (url, params) {
     var [boxLeft, boxTop, boxWidth, boxHeight] = $(this).data("location");
     if (boxLeft < 0) {
       boxLeft = 0;
-      boxWidth -= boxLeft;
     }
 
     if (boxTop < 0) {
       boxTop = 0;
-      boxHeight -= boxTop;
     }
 
     var thumbHeight = 80;
