@@ -12,17 +12,21 @@ public void init()
 
 	HitTracker faces = archive.query("faceembedding").all().sort("locationhUp").search();
 	faces.enableBulkOperations();
-	List tosave = new ArrayList();
+	List<MultiValued> tosave = new ArrayList();
 	
-	Map<String,MultiValued> lookup = new HashSet(tosave.size());
-	for(Data face in faces)
+	Map<String,MultiValued> lookup = new HashMap();
+	for(MultiValued face in faces)
 	{
 		face.setValue("parentembeddingid",null);
 		face.setValue("parentids",null);
 		face.setValue("parentassetid",null);
-		face.setValue("parentscore",null);
+		face.setValue("parentdistance",null);
+		if( face.getId() == null)
+		{
+			throw new RuntimeException("Should not be nulll");
+		}
 		lookup.put(face.getId(),face);
-		tosave.add(tosave);
+		tosave.add(face);
 	}				
 	FaceProfileManager manager = archive.getBean("faceProfileManager");
 		
@@ -33,20 +37,39 @@ public void init()
 		{
 			face.setValue("parentembeddingid",parent.getId());
 			face.setValue("parentassetid",parent.get("assetid"));
-			
-			Collection parentids = new ArrayList();
-			Data startdata = face;
-			while( startdata != null)
-			{
-				parentids.add(startdata.getId());
-				String parentid = startdata.get("parentembeddingid");
-				startdata = lookup.get(parentid);
-			}
-			face.setValue("parentids",parentids);
-
-			tosave.add(tosave);
 		}
 	}
+	
+	for(MultiValued face in tosave)
+	{
+		Collection parentids = new ArrayList();
+		Data startdata = face;
+		while( startdata != null)
+		{
+			String currentid = startdata.getId();
+			parentids.add(currentid);
+			String parentid = startdata.get("parentembeddingid");
+			if( parentid == null || parentids.contains(parentid) )
+			{
+				//log.info("Stop" + startdata.getId());
+				break;
+			}
+			startdata = lookup.get(parentid);
+//			if( startdata != null)
+//			{
+//				Collection setparents = startdata.getValues("parentids"); //Make sure no parent ever has a parent already included
+//				if(setparents != null && setparents.contains(currentid) )
+//				{
+//					//Dont keep looking, circular loop
+//					break;
+//				}
+//			}
+		}
+		face.setValue("parentids",parentids);
+		log.info(face.get("assetid") + " Saved parents" + parentids);
+	}
+
+	
 	archive.saveData("faceembedding",tosave);
 		
 }
