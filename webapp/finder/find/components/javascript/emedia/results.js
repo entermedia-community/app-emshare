@@ -1139,6 +1139,15 @@ jQuery(document).ready(function (url, params) {
 
   lQuery(".facepf").livequery(function () {
     var [boxLeft, boxTop, boxWidth, boxHeight] = $(this).data("location");
+    if (boxLeft < 0) {
+      boxLeft = 0;
+      boxWidth -= boxLeft;
+    }
+
+    if (boxTop < 0) {
+      boxTop = 0;
+      boxHeight -= boxTop;
+    }
 
     var thumbHeight = 80;
     var thumbWidth = 80 * (boxWidth / boxHeight);
