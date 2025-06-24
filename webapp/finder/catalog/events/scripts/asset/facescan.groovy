@@ -32,7 +32,7 @@ public void init()
 	{	
 		HitTracker hits = archive.query("asset").not("editstatus","7").exact("facescancomplete", "false").exact("importstatus","complete").sort("filesizeDown").search();
 		hits.enableBulkOperations();
-		
+		hits.setHitsPerPage(200);
 		List tosave = new ArrayList();
 		FaceProfileManager manager = archive.getBean("faceProfileManager");
 		if (!hits.isEmpty()) 
@@ -43,13 +43,13 @@ public void init()
 				hits.setPage(i+1);
 				long start = System.currentTimeMillis();
 				int saved = manager.extractFaces(hits.getPageOfHits());
+				count = count + saved;
 				if( saved > 0 )
 				{
 					long end = System.currentTimeMillis();
 					long change = end-start;
-					log.info(" face scan created " + saved + " faces in " + change + " milliseconds" );
+					log.info(" face scan created " + saved + " faces in " + change + " milliseconds: Total: " + count );
 				}
-				count = count + saved;
 			}
 			//log.info("("+archive.getCatalogId()+") Facescan processed  " + hits.size() + " assets, " + count + " faces detected");
 		}
