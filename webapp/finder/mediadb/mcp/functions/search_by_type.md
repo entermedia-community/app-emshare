@@ -84,6 +84,8 @@ $H$H$H 📁 **#text($module)**    ([Open in eMedia]($entityurl))
 				#set( $imagepath = $mediaarchive.asLinkToGenerated($primarymedia, $imagesize))		
 
 [<img alt="#if($title)#esc($title)#else$!{hit.name}#end" src="$siteroot$imagepath">]($link)
+`#if($title)#esc($title)#else$!{hit.name}#end`
+#ifnotnull($hit.longcaption)${hit.longcaption}#end
 
 			#end
 		#end
@@ -155,7 +157,11 @@ $H$H$H 📄 **#text($assetmodule)**    ([Open in eMedia]($entityurl))
 
 		#set($link = "$!siteroot$apphome?assetid=${hit.id}$")
 
+#ifnotnull($imagepath)
 [<img alt="#if($title)#esc($title)#else$!{hit.name}#end" src="$siteroot$imagepath$!urlparams">]($link)
+#end
+`#if($title)#esc($title)#else$!{hit.name}#end`
+#ifnotnull($hit.longcaption)${hit.longcaption}#end
 
 	#end
 
