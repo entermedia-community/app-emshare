@@ -44,7 +44,7 @@ public void init()
 		saved = saved +  tosave.size();
 		log.info(" assets updated: " + saved);
 			
-		archive.getSearcher("faceprofilegroup").deleteAll(user);
+		//archive.getSearcher("faceprofilegroup").deleteAll(user);
 		
 	}
 	finally
