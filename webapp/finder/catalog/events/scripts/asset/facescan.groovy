@@ -30,7 +30,7 @@ public void init()
 
 	try
 	{	
-		HitTracker hits = archive.query("asset").not("editstatus","7").exact("facescancomplete", "false").exact("importstatus","complete").sort("assetaddeddateDown").search();
+		HitTracker hits = archive.query("asset").not("editstatus","7").exact("facescancomplete", "false").exact("importstatus","complete").sort("filesizeDown").search();
 		hits.enableBulkOperations();
 		
 		List tosave = new ArrayList();
