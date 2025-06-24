@@ -104,7 +104,6 @@
         }
       });
     checkScroll(grid);
-    $(window).trigger("bricksgenerated");
   }
 
   function shortestColumn(colheight, defaultcolumn) {
@@ -286,6 +285,9 @@
         }
       });
       grid.removeClass("uninitialized");
+      setTimeout(function () {
+        $(window).trigger("bricksgenerated");
+      });
     },
     resize: function () {
       var grid = $(this);
