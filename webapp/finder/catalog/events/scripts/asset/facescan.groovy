@@ -38,34 +38,22 @@ public void init()
 		if (!hits.isEmpty()) 
 		{
 			log.info("Checking :" + hits.size());
-			for(Data hit in hits)
+			for(int i=0;i < hits.getTotalPages();i++)
 			{
-				Asset asset = archive.getAssetSearcher().loadData(hit);
+				hits.setPage(i+1);
 				long start = System.currentTimeMillis();
-				int more = manager.extractFaces(asset);
-				if( more > 0 )
+				int saved = manager.extractFaces(hits.getPageOfHits());
+				if( saved > 0 )
 				{
 					long end = System.currentTimeMillis();
 					long change = end-start;
-					log.info(more + " face found in " + hit.getName() + " in " + change + " milliseconds #id=" + hit.getId() );
+					log.info(" face scan created " + saved + " faces in " + change + " milliseconds" );
 				}
-				count = count + more;
-				tosave.add(asset);
-				if(tosave.size() == 100)
-				{
-						archive.saveAssets(tosave);
-						log.info("Faceprofile scanned:  " + tosave.size() + " assets. Found " + count + " faces ");
-						tosave.clear();
-						count = 0;
-				}
-			}
-			if(tosave.size() > 0)
-			{
-				archive.saveAssets(tosave);
-				log.info("Faceprofile scanned:  " + tosave.size() + " assets. Found " + count + " faces ");
+				count = count + saved;
 			}
 			//log.info("("+archive.getCatalogId()+") Facescan processed  " + hits.size() + " assets, " + count + " faces detected");
 		}
+		log.info(" face scan total: " + count );
 	}
 	finally
 	{
