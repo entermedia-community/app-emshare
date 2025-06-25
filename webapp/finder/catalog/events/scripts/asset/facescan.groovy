@@ -32,7 +32,7 @@ public void init()
 	{	
 		HitTracker hits = archive.query("asset").not("editstatus","7").exact("facescancomplete", "false").exact("importstatus","complete").sort("filesizeDown").search();
 		hits.enableBulkOperations();
-		hits.setHitsPerPage(200);
+		hits.setHitsPerPage(50);
 		List tosave = new ArrayList();
 		FaceProfileManager manager = archive.getBean("faceProfileManager");
 		if (!hits.isEmpty()) 
