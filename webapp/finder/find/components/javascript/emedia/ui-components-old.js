@@ -12,6 +12,7 @@ function initializeUI() {
 		themeprefix = siteroot + themeprefix;
 	}
 	
+	console.log("init ui");
 
 	if ($.fn.tablesorter) {
 		$("#tablesorter").tablesorter();
