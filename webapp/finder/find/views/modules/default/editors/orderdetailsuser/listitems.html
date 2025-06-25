@@ -75,18 +75,14 @@
 						<a class="btn btn-sm btn-primary" href=$asset.linkurl>[[Download]]</a>
 					#else
 						#set ($originalpath = $mediaarchive.asLinkToOriginal($asset) )
-						
+						#set ($link = "$home$apphome/views/modules/asset/downloads/originals/$originalpath")
 						###if( $status == "pending" )
 						##	[[Pending]]
 						###else
 							#if($item.status == "approved")
-								#set($dlink = "$applink/views/modules/asset/activity/downloadassets.html") 
-								<a href="$dlink"
-									class="emdialog btn btn-sm btn-primary" 
-									data-hidefooter="true" 
-									data-dialogid="donwloadasset" 
-									data-assetid="${asset.id}"
-									data-assethitssessionid="$!hitssessionid">
+								 
+								<a href="$link"
+									class="btn btn-sm btn-primary">
 									<i class="bi bi-download ns mr-1"></i> [[Download]]
 								</a>
 								#set( $downloadall = true)
@@ -108,8 +104,9 @@
 				${publishqueue.exportname}
 				</td>
 				<td align="right">
-						#set($convertpreset = $searcherManager.getData($catalogid, "convertpreset", $presetid ) )
-					<a class="btn btn-sm btn-secondary" href="$cdnprefix$home/$mediadbappid/services/module/asset/orders/downloads/generated/${asset.sourcepath}/${convertpreset.generatedoutputfile}/${publishqueue.exportname}">[[Download]]</a>
+						#set($preset = $mediaarchive.getCacheData("convertpreset", $presetid ) )
+						#set($dlink = $mediaarchive.asLinkToShare($context.getSiteRoot(),$asset,$preset))
+					<a class="btn btn-sm btn-secondary" href="$dlink?download=true&ondemand=true">[[Download]]</a>
 							#set( $downloadall = true)
 				</td>
 			#end
