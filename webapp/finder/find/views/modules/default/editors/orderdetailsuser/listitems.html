@@ -8,6 +8,8 @@
 #if( !$cdnprefix )
 #set( $cdnprefix = $context.siteRoot )
 #end
+
+
 #foreach( $item in $orderitems )
 
     #set( $asset = $mediaarchive.getAssetBySourcePath($item.assetsourcepath))
@@ -17,6 +19,10 @@
 
 	<tr>
 	<td class="asset-thumb" style="width:120px; padding:5px;">		
+		
+		
+		
+		
 		$context.putPageValue("asset", $asset)
 		$context.putPageValue("item", $item)
 		$context.setRequestParameter("sourcepath", $sourcepath)					
@@ -35,7 +41,7 @@
 		
 			#set( $type = $mediaarchive.getMediaRenderType($asset.fileFormat))
 			#if(!$type)
-			#set ($type = "none")
+				#set ($type = "none")
 			#end
 			$context.putPageValue("cell", $asset)
 			$context.putPageValue("showdetails", "false")
@@ -65,51 +71,49 @@
 			<td>[[Error, download not available]]</td> ##Link to my orders
 			#set( $downloadall = false)
 		#else	
-			#if( $presetid == "0")
-				<td></td>
-				<td style="text-align:right;">
-					#if($asset.googleid && $asset.googledownloadurl)
-					<!-- Google puts quotes on the returned data so the href is correct below.   -->
-						<a class="btn btn-sm btn-primary" href="$asset.googledownloadurl">[[Download]]</a>
-					#elseif($asset.googleid && $asset.linkurl)
-						<a class="btn btn-sm btn-primary" href=$asset.linkurl>[[Download]]</a>
-					#else
-						#set ($originalpath = $mediaarchive.asLinkToOriginal($asset) )
-						#set ($link = "$home$apphome/views/modules/asset/downloads/originals/$originalpath")
-						###if( $status == "pending" )
-						##	[[Pending]]
-						###else
-							#if($item.status == "approved")
-								 
+			
+				#if($presetid == "0")
+					<td></td>
+					<td style="text-align:right;">
+						
+						#if($asset.googleid && $asset.googledownloadurl)
+						<!-- Google puts quotes on the returned data so the href is correct below.   -->
+							<a class="btn btn-sm btn-primary" href="$asset.googledownloadurl">[[Download]]</a>
+						#elseif($asset.googleid && $asset.linkurl)
+							<a class="btn btn-sm btn-primary" href=$asset.linkurl>[[Download]]</a>
+						#else
+							#set ($originalpath = $mediaarchive.asLinkToOriginal($asset) )
+							#set ($link = "$home$apphome/views/modules/asset/downloads/originals/$originalpath")
+							#if($item.status == "pending")
+								[[Pending]]
+							#elseif($order.ordertype == "download" || $item.status == "approved")
 								<a href="$link"
 									class="btn btn-sm btn-primary">
 									<i class="bi bi-download ns mr-1"></i> [[Download]]
 								</a>
 								#set( $downloadall = true)
-								##<a class="btn btn-sm btn-secondary" href="/${mediadbappid}/services/module/asset/downloads/orders/originals/#urlencode($originalpath)?orderid=${order.id}">[[Download]]</a>
-							#elseif($item.status == "pending")
-								[[Pending]]
 							#else
 								[[Not Approved for Download]] 
 							#end
-						###end
-					#end
-					
-					
-				</td>
-			#else
+
+						#end
+						
+						
+					</td>
+				#else
+				
+					##TODO: Support specific sized for generated orders
+					<td>
+					$!{publishqueue.exportname}
+					</td>
+					<td align="right">
+							#set($preset = $mediaarchive.getCacheData("convertpreset", $presetid ) )
+							#set($dlink = $mediaarchive.asLinkToShare($context.getSiteRoot(),$asset,$preset))
+						<a class="btn btn-sm btn-secondary" href="$dlink?download=true&ondemand=true">[[Download]]</a>
+								#set( $downloadall = true)
+					</td>
+				#end
 			
-				##TODO: Support specific sized for generated orders
-				<td>
-				${publishqueue.exportname}
-				</td>
-				<td align="right">
-						#set($preset = $mediaarchive.getCacheData("convertpreset", $presetid ) )
-						#set($dlink = $mediaarchive.asLinkToShare($context.getSiteRoot(),$asset,$preset))
-					<a class="btn btn-sm btn-secondary" href="$dlink?download=true&ondemand=true">[[Download]]</a>
-							#set( $downloadall = true)
-				</td>
-			#end
 		#end	
 
 
