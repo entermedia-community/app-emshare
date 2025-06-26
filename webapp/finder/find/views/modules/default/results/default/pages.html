@@ -4,12 +4,13 @@
 	#end
 	#if(!$resultsPage)
 		#set($resultsPage = "${searchhome}/index.html")
+		#set($resultsPage = "$resultsPage?hitssessionid=$!hits.sessionId&searchtype=$hits.getSearchType()")
+		#set($resultsPage = "$resultsPage&categoryid=$!categoryid&collectionid=$!collectionid&oemaxlevel=1&resultstype=$!resultstype")
+		#if($module)
+			#set($resultsPage = "$resultsPage&module=$module.id")
+		#end
 	#end
-	#set($resultsPage = "$resultsPage?hitssessionid=$!hits.sessionId&searchtype=$hits.getSearchType()")
-	#set($resultsPage = "$resultsPage&categoryid=$!categoryid&collectionid=$!collectionid&oemaxlevel=1&resultstype=$!resultstype")
-	#if($module)
-		#set($resultsPage = "$resultsPage&module=$module.id")
-	#end
+
 	#set($resultsPage = "$resultsPage&page")
 	#set($thispage = $hits.getPage())
 	
