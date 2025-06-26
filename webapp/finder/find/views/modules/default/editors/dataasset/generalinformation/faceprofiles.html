@@ -55,9 +55,11 @@
 							data-confidence="$rowdata.face_confidence"
 							#if($facename)
 								data-facename="#elidemiddle($facename, 100)"
-								title="[[View more of]] #text($facename)"
+							#end
+							#if($rowdata.hasmore)
+								title="[[View More Similar Faces]]"
 							#else
-								title='[[View Similar Faces]]'
+								title="[[No Similar Faces Found]]"
 							#end
 							data-dialogtitle="[[Similar Faces]]"
 							#if( $rendertype == "video")
@@ -80,7 +82,9 @@
 								#if($facename)
 									<span>$!facename</span>
 								#else
-									<span class="text-muted">[[View Similar Faces]]</span>
+									<span class="text-muted text-center">
+										#if($rowdata.hasmore) [[View Similar]] #else [[Assign Person]] #end
+									</span>
 								#end
 							</div>
 						</a>
