@@ -28,6 +28,10 @@ public void init() throws Exception
 		String startingpath = module.get("autocreatestartingpath");
 		int deeplevel = module.getInt("autocreatedeep");
 		log.info("Scanning: " + module + " for path: " + startingpath);
+		if(startingpath == null)
+		{
+			return;
+		}
 		//scan folders till deep
 		Category root = mediaArchive.createCategoryPath(startingpath);
 		int count = root.getParentCategories().size();
