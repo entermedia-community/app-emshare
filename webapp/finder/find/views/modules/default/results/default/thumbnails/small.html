@@ -52,12 +52,14 @@
 			
 			$context.putPageValue("imagepath", $imagepath)
 			
-			#if($content.isPropertyTrue("showassetpicker"))
-				#set($originalLink = "$siteroot/${mediadbappid}/services/module/asset/downloads/originals/"+$mediaarchive.asLinkToOriginal($hit))
-				<div class="pickfromiframe" data-imageurl="$originalLink">
-					<i class="bi bi-check2-circle"></i>
-					<span>[[Pick This]]</span>
-				</div>
+			#if($picker.getTargetType() != "entity")
+				#if($content.isPropertyTrue("showassetpicker"))
+					#set($originalLink = "$siteroot/${mediadbappid}/services/module/asset/downloads/originals/"+$mediaarchive.asLinkToOriginal($hit))
+					<div class="pickfromiframe" data-imageurl="$originalLink">
+						<i class="bi bi-check2-circle"></i>
+						<span>[[Pick This]] $picker.getTargetType()</span>
+					</div>
+				#end
 			#end
 				
 			#if($type =="video")

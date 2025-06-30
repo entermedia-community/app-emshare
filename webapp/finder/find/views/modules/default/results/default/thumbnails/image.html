@@ -82,13 +82,15 @@ $context.putPageValue("searchhome", $searchhome)
 						data-name="#if($title)#esc($title)#else$!{hit.name}#end" 		
 						src="$imagepath$!urlparams"
 				/>
-				#if($content.isPropertyTrue("showassetpicker"))
-					#if( $rendertype == "image")
-						#set($originalLink = "$siteroot/$mediadbappid/services/module/asset/downloads/originals/"+$mediaarchive.asLinkToOriginal($hit))
-						<div class="pickfromiframe" data-imageurl="$originalLink">
-							<i class="bi bi-check2-circle"></i>
-							<span>[[Pick This]]</span>
-						</div>
+				#if($picker.getTargetType() != "entity")
+					#if($content.isPropertyTrue("showassetpicker"))
+						#if( $rendertype == "image")
+							#set($originalLink = "$siteroot/$mediadbappid/services/module/asset/downloads/originals/"+$mediaarchive.asLinkToOriginal($hit))
+							<div class="pickfromiframe" data-imageurl="$originalLink">
+								<i class="bi bi-check2-circle"></i>
+								<span>[[Pick This]] $picker.getTargetType()</span>
+							</div>
+						#end
 					#end
 				#end
 				#if($rendertype =="video")<div class="videoplay-button"><span class="videoplay-icon"></span></div>#end
