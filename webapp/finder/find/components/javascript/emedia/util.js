@@ -321,11 +321,17 @@ $(document).ready(function () {
         assetid = assetinfo.data("assetid");
       }
 
+      var type = $("#application").data("targettype");
+      if (!type) {
+        type = "asset";
+      }
+
       var payload = {
         name: "eMediaAssetPicked",
         assetpicked: imageUrl,
         assetid: assetid,
         target: target,
+        type: type,
       };
 
       if (top && externalmessage) {
