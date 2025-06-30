@@ -15,7 +15,7 @@
   data-rendertype="entity">
 
 	<a 
-		#if(!$showassetpicker)
+		#ifnull($picker.getTargetType())
 			id="clickid${entityid}"  
 			href="$!{previewurl}" 
 			class="emdialog entity-dialog"
@@ -97,6 +97,12 @@
 				<i class="bi bi-$moduleicon module-icon"></i>
 				<span>#text($!entity)</span>
 			</div>
+			#if($picker.getTargetType() == "entity")
+				<div class="pickfromiframe" data-entityid="${entityid}" data-moduleid="${moduleid}">
+					<i class="bi bi-check2-circle"></i>
+					<span>[[Pick This]]</span>
+				</div>
+			#end
 		</div>
 	</a>
 </div>
