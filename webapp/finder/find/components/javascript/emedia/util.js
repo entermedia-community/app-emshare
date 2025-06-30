@@ -314,6 +314,9 @@ $(document).ready(function () {
       if (externalmessage && externalmessage.target) {
         target = externalmessage.target;
       }
+      if (!target) {
+        target = $("#application").data("targetfieldid") || "";
+      }
       if (assetinfo.length) {
         assetid = assetinfo.data("assetid");
       }
