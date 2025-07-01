@@ -177,18 +177,14 @@ $context.putPageValue("enableactions", $enableactions)
 					#if($permissions.canModule($module, "delete"))
 						 <li><a class="dropdown-item ajax" 
 						 data-confirm="[[Delete items?]]" 
-						 #if($tabletype=="subentity")
-							 data-oemaxlevel="2" 
-							 data-targetdiv="$tabid" 
-							 data-tabletype="$tabletype"
-							 data-viewid="$viewid"
-							 data-entityid="$entityid"
-							 href="${edithome}/actions/deleteselections.html?hitssessionid=$hits.sessionId"
-						 #else
+						     data-includesearchcontext="true"
+							 data-includeeditcontext="true"
 							 data-oemaxlevel="3" 
 							 data-targetdiv="resultsdiv" 
 							 href ="${edithome}/actions/deleteselections.html?hitssessionid=$hits.sessionId"
-						 #end
+							 #set($entitymoduleviewid = $context.getRequestParameter("entitymoduleviewid"))
+							 data-entitymoduleviewid="$entitymoduleviewid"
+							 data-entityid="$entityid"
 						 title="[[Delete selected items]]">[[Delete]] $!hits.getSelectionSize() [[Records]]</a></li>
 					#end
 					
