@@ -257,7 +257,11 @@ $(document).ready(function () {
   window.debugMode = false;
   window.onkeydown = function (event) {
     if (event.ctrlKey) {
-      var href = document.querySelector("a#oeselector").href;
+		var selector = document.querySelector("a#oeselector");
+		if (selector == undefined) {
+			return;
+		}
+      var href = selector.href;
       if (event.key == "r") {
         event.preventDefault();
         href = href.replace(
