@@ -307,14 +307,17 @@ $(document).ready(function () {
     lQuery(".pickfromiframe").livequery("click", function (e) {
       e.preventDefault();
       e.stopImmediatePropagation();
-      var imageUrl = $(this).data("imageurl");
-      var assetinfo = $(this).closest("[data-assetid]");
+	  
+	  var pickerbtn = $(this);
+	  
+      var imageUrl = pickerbtn.data("imageurl");
+      var assetinfo = pickerbtn.closest("[data-assetid]");
       var assetid = "";
       var target = "";
       if (externalmessage && externalmessage.target) {
         target = externalmessage.target;
       }
-      if (!target) {
+      if (!target) {	
         target = $("#application").data("targetfieldid") || "";
       }
       if (assetinfo.length) {
@@ -325,11 +328,18 @@ $(document).ready(function () {
       if (!type) {
         type = "asset";
       }
-
+	  
+	  if (type =="entity"){
+		assetid = pickerbtn.data("primarymedia");
+	  }
+		
+	  var entityid = pickerbtn.data("entityid");
+	  
       var payload = {
-        name: "eMediaAssetPicked",
+        name: "eMediaPicked",
         assetpicked: imageUrl,
         assetid: assetid,
+		entityid: entityid,
         target: target,
         type: type,
       };
