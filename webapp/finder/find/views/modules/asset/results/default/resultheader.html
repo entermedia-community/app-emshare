@@ -149,12 +149,12 @@
 					#if ($candownload && $hits)
 						#if($desktop)
 							<li class="position-relative">
-								<div class='resultsnavlink popover-toggle px-2 desktopSyncPreview' 
+								<label for="desktopSyncToggle" class='resultsnavlink px-2 desktopSyncPreview m-0' 
 									title="[[Download]] $!hits.getSelectionSize() [[assets]]"
 									data-path="$categorypath">
 									<i class="fas fa-spinner fa-spin"></i> [[Desktop]]
-								</div>
-
+								</label>
+								<input id="desktopSyncToggle" type="checkbox" class="d-none popover-toggle">
 								#set( $assetsource = $mediaarchive.getAssetManager().findAssetSource($!entity.get("uploadsourcepath")) )
 								<div class="lightbox-sync-panel popover-content">
 									<div class="d-flex flex-column lightbox-header-btns p-2 ofl-path mx-auto"
@@ -167,7 +167,12 @@
 											data-entityid="$!category.getId()"
 										#end
 										data-path="$categorypath">
-
+										<div class="d-flex align-items-center justify-content-between mb-2" style="line-height: 1;">
+											<span style="color:#888;">Download / Upload Folder</span>
+											<label for="desktopSyncToggle" class="close m-0">
+												<i class="bi bi-x ns"></i>
+											</label>
+										</div>
 										<div class="work-dir-tree">
 											<div class="work-folder download upload"
 												data-categorypath="$categorypath"
