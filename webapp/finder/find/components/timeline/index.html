@@ -44,6 +44,7 @@
 							<div class="iconbar" style="width:100%;  height: 66px; position:relative;">
 								#set( $space = 15*8)	
 								#set( $added = 60)
+								#set($imagesize = "image110x62cropped")
 								
 								#if($asset.previewstatus == "2")
 									#foreach($block in $timeline.getTicks())
@@ -51,7 +52,10 @@
 										#if( $block.showThumb() )
 											<a href="#" class="clickjump" data-starttime="$block.getSeconds()">
 											<div  style="position:absolute;left: ${added}px; top:2px;">
-											<img src="$home${apphome}/views/modules/asset/downloads/preview/crop/${asset.sourcepath}/image110x62cropped.webp?timeoffset=$block.getSeconds()&assetid=$asset.id" title="$block.getLabel()"/>
+											
+											#set( $imagepath = $mediaarchive.asLinkToGenerateOffset($asset, $imagesize, $block.getSeconds()))
+											<img src="${imagepath}?assetid=${asset.id}" 
+												title="$block.getLabel()" />
 											</div>
 											</a>
 											#set( $added = $added + $space)
