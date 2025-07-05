@@ -39,14 +39,14 @@
           data-entityid="$syncfolder.entityid">
           <div class="sync-summary">
             <div class="d-flex flex-column flex-grow-1 p-2 position-relative">
-              <span class="sync-type">
-                #if($syncfolder.isdownload == "true")
-                  <small class="dl"><i class="bi bi-arrow-down ns"></i> $label</small>
-                #else
-                  <small class="ul"><i class="bi bi-arrow-up ns"></i> $label</small>
-                #end
-              </span>
-              <p class="my-2">
+              <p class="mb-2">
+                <span class="sync-type">
+                  #if($syncfolder.isdownload == "true")
+                    <small class="dl"><i class="bi bi-arrow-down ns"></i></small>
+                  #else
+                    <small class="ul"><i class="bi bi-arrow-up ns"></i></small>
+                  #end
+                </span>
                 #set($moduleicon = $module.moduleicon)
                 #ifnull($moduleicon)
                   #set($moduleicon = "images")
@@ -55,7 +55,7 @@
               </p>
               #if($syncfolder.desktopimportstatus == "sync-cancelled")
                 <small class="text-muted fupper">
-                  $label cancelled
+                  Cancelled
                   #if($syncfolder.completedfiles > 0)
                   after $labelGerund <b>$syncfolder.completedfiles</b> files
                   #end
@@ -83,6 +83,19 @@
               <div></div>
             </button>
             <div class="m-1">
+              #if($syncfolder.categorypath)
+                <div class="open-folder flex-1 p-2"
+                  data-path="$syncfolder.categorypath"
+                  title="[[Open the folder in your computer]]">
+                  <i class="bi bi-eye-fill ns"></i>
+                </div>
+                #if($syncfolder.isdownload == "true")
+                <a href="#" class="mt-1 d-block p-2 text-primary ajax redownload" data-categorypath="$syncfolder.categorypath" title="[[Show the record]]">
+                  <i class="bi bi-arrow-clockwise ns"></i>
+                </a>
+                #end
+              #end
+#*
               #if($syncfolder.module == "category")
                 #set($category = $mediaarchive.getCachedData("category", $syncfolder.entityid))
                 #set($previewurl = "$!{siteroot}$apphome/views/modules/asset/editors/viewfilescategory/$!{syncfolder.entityid}/#dash($!category).html")
@@ -95,13 +108,7 @@
                   <i class="bi bi-folder-fill ns"></i>
                 </a>
               #end
-              #if($syncfolder.categorypath)
-                <div class="open-folder flex-1 p-2"
-                  data-path="$syncfolder.categorypath"
-                  title="[[Open the folder in your computer]]">
-                  <i class="bi bi-eye-fill ns"></i>
-                </div>
-              #end
+*#
             </div>
           </div>
           <div class="currentSync">

@@ -37,68 +37,6 @@ $context.putPageValue("viewid",$viewid)
 						<br>
 						<span>#elidemiddle($categorybradcrumb, 100)</span>
 					</span> 
-					#if($desktop)
-						#set( $assetsource = $mediaarchive.getAssetManager().findAssetSource($!entity.get("uploadsourcepath")) )
-						
-						<div class="d-flex flex-column lightbox-header-btns py-2 ofl-path mx-auto"
-							style="max-width: 180px;"
-							#if($entity)
-								data-moduleid="$!module.id"
-								data-entityid="$!entity.getId()"
-							#else
-								data-moduleid="category"
-								data-entityid="$!category.getId()"
-							#end
-							data-path="$categorypath">
-
-							#ifnotnull($assetsource)
-								#set($userlocaldesktoppath  = $assetsource.getConfig().get("userlocaldesktoppath"))
-								#ifnotnull($userlocaldesktoppath)
-									#set($removecategorysubfolder  = $assetsource.getConfig().get("subfolder"))
-								#end
-							#end
-
-							#ifnotnull($userlocaldesktoppath)
-								<button class="lightbox-header-btn open-folder" 
-									data-root="${userlocaldesktoppath}"
-									data-removecategorysubfolder="$!removecategorysubfolder">
-									<i class="bi bi-eye-fill mr-1 ns"></i> <span>[[Open]]</span>
-								</button>
-							#end
-							
-							#ifnull($userlocaldesktoppath)
-								#if($module.id!="faceprofilegroup" && $module.id!="modulesearch")
-									<div class="view-task-progress" style="display: none;">
-										<div class="d-flex align-items-center ">
-											<a class="show-sync-progress text-primary flex-grow-1 text-center mb-2 py-2 pr-1" style="cursor: pointer;">
-												<span>
-													<i class="fas fa-spinner fa-spin mr-1"></i>
-													[[View Progress]]
-												</span>
-											</a>
-										</div>
-									</div>
-
-									<div class="d-flex flex-column">
-										#if($permissions.canModule($module, "downloadall"))
-											<button class="lightbox-header-btn download-lightbox positive" style="margin-bottom:6px">
-												<i class="bi bi-cloud-arrow-down mr-1 ns"></i> <span>[[Download]]</span>
-											</button>
-										#end
-										#if($permissions.canModule($module, "upload_folders"))
-											<button class="lightbox-header-btn upload-lightbox" style="margin-bottom:6px">
-												<i class="bi bi-cloud-arrow-up mr-1 ns"></i> <span>[[Upload]]</span>
-											</button>
-										#end
-										<button class="lightbox-header-btn open-folder flex-grow-1" style="margin-bottom:6px">
-											<i class="bi bi-eye-fill mr-1 ns"></i> <span>[[Open]]</span>
-										</button>
-									</div>
-
-								#end
-							#end
-						</div>
-					#end
 				</div>
 			#end
 
