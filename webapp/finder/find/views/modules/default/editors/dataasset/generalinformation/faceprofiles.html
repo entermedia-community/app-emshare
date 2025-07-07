@@ -6,10 +6,12 @@
 	
 	$context.putPageValue("clearfilters","true")	
 	#set ($viewtype = "faceprofiles")
+	
+	#set($rendertype = $mediaarchive.getMediaRenderType($asset))
 
 	$context.putPageValue("thumbsize",$thumbsize)
 
-	<div class="$detailviewercolumnclass asset-data-detail emdatafield-$!viewtype p-3">
+	<div class="$detailviewercolumnclass asset-data-detail emdatafield-$!viewtype p-3" id="editfaceprofilesfaces">
 		<div class="emfield-scroll" id="entitypickerentityperson">
 
 			#set( $facemanager = $mediaarchive.getBean("faceProfileManager") )
@@ -31,8 +33,6 @@
 						#else
 							#set($facename = false)
 						#end
-
-						#set($rendertype = $mediaarchive.getMediaRenderType($asset))
 
 						#if( $rendertype == "video")
 							#set( $offset = $rowdata.getValue("timecodestart") )
@@ -88,29 +88,32 @@
 								#end
 							</div>
 						</a>
-						#set($pickerurl= "$apphome/views/modules/entityperson/editors/facepersonpicker/index.html")
-						<a href="${pickerurl}"
-							data-faceembeddingid="$rowdata.getId()"
-							data-assetid="$asset.getId()"
-							class="emdialog face-assign-btn"
-							data-dialogid="tagpersondialog"
-							data-hidefooter="true"
-							title="#if($facename) [[Reassign Person]] #else [[Assign Person]] #end">
-							<i class="bi bi-pencil-square"></i>
-						</a>
-						#set($deleteurl= "$apphome/views/modules/asset/editor/faceprofiles/facedelete.html")
-						<a href="${deleteurl}"
-							data-faceembeddingid="$rowdata.getId()"
-							data-targetdiv="main-media-container"
-							data-assetid="$asset.getId()"
-							class="ajax face-delete-btn"
-							data-confirm="[[Are you sure you want to remove this face]]?"
-							data-toastmessage="[[Deleting face]]"
-							data-toastsuccess="[[Face deleted]]"
-							data-toasterror="[[Error deleting face]]"
-							title="[[Remove Face]]">
-							<i class="bi bi-trash-fill"></i>
-						</a>
+						
+						#if($caneditasset)
+							#set($pickerurl= "$apphome/views/modules/entityperson/editors/facepersonpicker/index.html")
+							<a href="${pickerurl}"
+								data-faceembeddingid="$rowdata.getId()"
+								data-assetid="$asset.getId()"
+								class="emdialog face-assign-btn"
+								data-dialogid="tagpersondialog"
+								data-hidefooter="true"
+								title="#if($facename) [[Reassign Person]] #else [[Assign Person]] #end">
+								<i class="bi bi-pencil-square"></i>
+							</a>
+							#set($deleteurl= "$apphome/views/modules/asset/editor/faceprofiles/facedelete.html")
+							<a href="${deleteurl}"
+								data-faceembeddingid="$rowdata.getId()"
+								data-targetdiv="main-media-container"
+								data-assetid="$asset.getId()"
+								class="ajax face-delete-btn"
+								data-confirm="[[Are you sure you want to remove this face]]?"
+								data-toastmessage="[[Deleting face]]"
+								data-toastsuccess="[[Face deleted]]"
+								data-toasterror="[[Error deleting face]]"
+								title="[[Remove Face]]">
+								<i class="bi bi-trash-fill"></i>
+							</a>
+						#end
 					</li>
 				#end
 			</ul>
@@ -118,11 +121,21 @@
 			#if($faceboxescollection.isEmpty())
 				<p class="text-muted">[[No face detected]]</p>
 			#end
-
-			#if( $rendertype == "image")
+			
+			#if($caneditasset && $rendertype == "image")
 				<a href="#" class="manual-fp text-primary bg-white border rounded py-1 px-2 d-inline-block my-2">
 					<i class="bi bi-plus-circle mr-1"></i>
 					[[Add a Face]]
+				</a>
+				
+				<a href="$siteroot$apphome/views/modules/asset/editor/faceprofiles/rescanfaces.html?assetid=$asset.id&" 
+					class="text-primary bg-white border rounded py-1 px-2 d-inline-block my-2 ajax"
+					data-targetdiv="main-media-container"
+					data-toastmessage="[[Rescaning asset]]"
+					data-toastsuccess="[[Face scan complete]]"
+					data-toasterror="[[Error deleting faces]]">
+					<i class="bi bi-plus-circle mr-1"></i>
+					[[Add All Faces]]
 				</a>
 			#end
 			

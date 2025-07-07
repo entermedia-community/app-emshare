@@ -1,1 +1,10 @@
-Rescan complete
+#set($inline = $context.getRequestParameter("inline"))
+#if($inline)
+<div class="p-3">
+[[Rescan scheduled]]
+</div>
+
+#else
+$context.putPageValue("edithome", "${apphome}/views/modules/asset/editors/dataasset")
+$pages.include("${apphome}/views/modules/asset/mediaviewer/fullscreen/currentasset.html", $context)
+#end
