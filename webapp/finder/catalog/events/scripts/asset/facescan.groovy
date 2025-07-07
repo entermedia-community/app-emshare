@@ -2,8 +2,8 @@ package asset
 
 import org.entermediadb.asset.*
 import org.entermediadb.asset.facedetect.FaceProfileManager
-import org.json.simple.JSONArray
-import org.openedit.Data
+import org.entermediadb.asset.facedetect.FaceScanInstructions
+import org.openedit.MultiValued
 import org.openedit.hittracker.HitTracker
 import org.openedit.locks.Lock
 
@@ -32,26 +32,29 @@ public void init()
 	{	
 		HitTracker hits = archive.query("asset").not("editstatus","7").exact("facescancomplete", "false").exact("importstatus","complete").sort("filesizeDown").search();
 		hits.enableBulkOperations();
-		hits.setHitsPerPage(50);
 		List tosave = new ArrayList();
 		FaceProfileManager manager = archive.getBean("faceProfileManager");
 		if (!hits.isEmpty()) 
 		{
 			log.info("Checking :" + hits.size());
+			
+			FaceScanInstructions instructions = manager.createInstructions();
 			for(int i=0;i < hits.getTotalPages();i++)
 			{
 				hits.setPage(i+1);
 				long start = System.currentTimeMillis();
-				int saved = manager.extractFaces(hits.getPageOfHits());
+				Collection<MultiValued> onepage = hits.getPageOfHits();
+				int saved = manager.extractFaces(instructions, onepage);
 				count = count + saved;
 				if( saved > 0 )
 				{
 					long end = System.currentTimeMillis();
 					long change = end-start;
-					log.info(" face scan created " + saved + " faces in " + change + " milliseconds: Total: " + count );
+					double perasset = ((double)change/1000D)/(double)onepage.size();
+					
+					log.info(" face scan processed" + onepage.size() + " faces in " + change + " milliseconds " +  perasset + " asset/second");
 				}
 			}
-			//log.info("("+archive.getCatalogId()+") Facescan processed  " + hits.size() + " assets, " + count + " faces detected");
 		}
 		log.info(" face scan total: " + count );
 	}
