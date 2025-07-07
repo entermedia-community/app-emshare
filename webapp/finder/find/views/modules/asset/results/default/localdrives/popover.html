@@ -1,11 +1,16 @@
 #set( $syncfolder = $mediaarchive.query("desktopsyncfolder").exact("desktop", $desktop.getComputerName()).exact("entityid", $entity.getId()).searchOne() )
 
-<div id="desktoppendingpopover"
+#set( $processing = false )
 #if($syncfolder)
   #if($syncfolder.desktopimportstatus == "scan-started" || $syncfolder.desktopimportstatus == "sync-started")
-  class="ajaxstatus"
+    #set($processing = true)
   #end
 #end
+
+<div id="desktoppendingpopover"
+  #if($processing)
+    class="ajaxstatus" 
+  #end
   data-oemaxlevel="1" 
   #if($entity)
     data-entitymoduleid="$!entitymodule.id"
@@ -48,21 +53,23 @@
       </label>
     </div>
     <div class="work-dir-tree">
-      <div class="work-folder download upload"
+      <div class="work-folder download upload #if($processing) processing #end"
         data-categorypath="$!category.getCategoryPath()"
         data-entitymoduleid="$!entitymodule.id"
         data-entityid="$!entity.getId()">
         <div class="currentSync mb-2">
           <p class="mb-2 text-primary">
-            <strong class="fupper"><span class="filesCompleted">0</span> of <span class="filesTotal">0</span> files, <span class="filesFailed">0</span> failed</strong>
+            Uploading $syncfolder.currentfoldertotalcount files <strong>($syncfolder.currentfoldertotalsize)</strong>
           </p>
-          <p class="mb-1 text-muted fileName"></p>
+          <p class="mb-1 text-muted fileName">$syncfolder.currentfoldername</p>
+          #*
           <div class="progress">
             <div class="progress-bar progress-bar-striped fileProgress" style="width: 100%"></div>
           </div>
           <p class="mt-1 mb-0 text-right">
             <span><span class="fileProgressLoaded"></span> / <span class="fileProgressTotal"></span></span>
           </p>
+          *#
           <div class="text-center mt-1">
             <button class="border-0 bg-white mx-auto text-danger cancelSync"
               data-categorypath="$!category.getCategoryPath()"
