@@ -1,6 +1,10 @@
+<div id="desktopsynchistory"
+  class="ajaxstatus"
+  data-oemaxlevel="1" 
+  data-ajaxpath="$page.path">
 <div id="syncFolderList">
   #ifnull($syncfolders)
-    #set($syncfolders = $mediaarchive.query("desktopsyncfolder").exact("desktop", $desktop.getComputerName()).sort("lastscandateDown").search())
+    #set($syncfolders = $mediaarchive.query("desktopsyncfolder").exact("desktop", $desktop.getComputerName()).sort("completeddateDown").search())
   #end
 
   #if($syncfolders.size() == 0)
@@ -61,9 +65,9 @@
                   #end
                 </small>
               #else
-                #ifnotnull($syncfolder.lastscandate)
+                #ifnotnull($syncfolder.completeddate)
                   <small class="last-scanned">
-                    #set($ago = $context.getAge($syncfolder.getDate("lastscandate")))
+                    #set($ago = $context.getAge($syncfolder.getDate("completeddate")))
                     Last scanned
                     #ifnull($ago)
                     1 second ago
@@ -134,4 +138,5 @@
       #end
     </div>
   #end
+</div>
 </div>

@@ -152,91 +152,17 @@
 								<label for="desktopSyncToggle" class='resultsnavlink px-2 desktopSyncPreview m-0' 
 									title="[[Download]] $!hits.getSelectionSize() [[assets]]"
 									data-path="$categorypath">
-									<i class="fas fa-spinner fa-spin"></i> [[Desktop]]
+									<i class="fas fa-spinner fa-spin"></i> [[Desktop]] $categorypath
 								</label>
 								<input id="desktopSyncToggle" type="checkbox" class="d-none popover-toggle">
-								#set( $assetsource = $mediaarchive.getAssetManager().findAssetSource($!entity.get("uploadsourcepath")) )
 								<div class="lightbox-sync-panel popover-content">
-									<div class="d-flex flex-column lightbox-header-btns p-2 ofl-path mx-auto"
-										style="max-width: 180px;"
-										#if($entity)
-											data-moduleid="$!entitymodule.id"
-											data-entityid="$!entity.getId()"
-										#else
-											data-moduleid="category"
-											data-entityid="$!category.getId()"
-										#end
-										data-path="$categorypath">
-										<div class="d-flex align-items-center justify-content-between mb-2" style="line-height: 1;">
-											<span class="contrast-text">Download / Upload Folder</span>
-											<label for="desktopSyncToggle" class="close m-0">
-												<i class="bi bi-x ns"></i>
-											</label>
-										</div>
-										<div class="work-dir-tree">
-											<div class="work-folder download upload"
-												data-categorypath="$categorypath"
-												data-moduleid="$!entitymodule.id"
-												data-entityid="$!entity.getId()">
-												<div class="currentSync mb-2">
-													<p class="mb-2 text-primary">
-														<strong class="fupper"><span class="filesCompleted">0</span> of <span class="filesTotal">0</span> files, <span class="filesFailed">0</span> failed</strong>
-													</p>
-													<p class="mb-1 text-muted fileName"></p>
-													<div class="progress">
-														<div class="progress-bar progress-bar-striped fileProgress" style="width: 100%"></div>
-													</div>
-													<p class="mt-1 mb-0 text-right">
-														<span><span class="fileProgressLoaded"></span> / <span class="fileProgressTotal"></span></span>
-													</p>
-													<div class="text-center mt-1">
-														<button class="border-0 bg-white mx-auto text-danger cancelSync"
-															data-categorypath="$categorypath"
-															data-both="true"
-															title="[[Cancel this task]]">
-															<i class="bi bi-x"></i> [[Cancel]]
-														</button>
-													</div>
-												</div>
-											</div>
-										</div>
-	
-										#ifnotnull($assetsource)
-											#set($userlocaldesktoppath  = $assetsource.getConfig().get("userlocaldesktoppath"))
-											#ifnotnull($userlocaldesktoppath)
-												#set($removecategorysubfolder  = $assetsource.getConfig().get("subfolder"))
-											#end
-										#end
-	
-										#ifnotnull($userlocaldesktoppath)
-											<button class="lightbox-header-btn open-folder" 
-												data-root="${userlocaldesktoppath}"
-												data-removecategorysubfolder="$!removecategorysubfolder">
-												<i class="bi bi-eye-fill mr-1 ns"></i> <span>[[Open Folder]]</span>
-											</button>
-										#end
-										
-										#ifnull($userlocaldesktoppath)
-											#if($module.id!="faceprofilegroup" && $module.id!="modulesearch")
-												<div class="d-flex flex-column">
-													#if($permissions.canModule($module, "downloadall"))
-														<button class="lightbox-header-btn download-lightbox positive" style="margin-bottom:6px">
-															<i class="bi bi-cloud-arrow-down mr-1 ns"></i> <span>[[Download Folder]]</span>
-														</button>
-													#end
-													<button class="lightbox-header-btn open-folder flex-grow-1" style="margin-bottom:6px">
-														<i class="bi bi-eye-fill mr-1 ns"></i> <span>[[Open Folder]]</span>
-													</button>
-													#if($permissions.canModule($module, "upload_folders"))
-														<button class="lightbox-header-btn upload-lightbox" style="margin-bottom:6px">
-															<i class="bi bi-cloud-arrow-up mr-1 ns"></i> <span>[[Upload Folder]]</span>
-														</button>
-													#end
-												</div>
-	
-											#end
-										#end
-									</div>
+									#set( $assetsource = $mediaarchive.getAssetManager().findAssetSource($!entity.get("uploadsourcepath")) )
+
+									$context.putPageValue("category", $category)
+									$context.putPageValue("assetsource", $assetsource)
+
+									$pages.include("${searchhome}/localdrives/popover.html", $context)
+									
 								</div>
 							</li>
 						#end
