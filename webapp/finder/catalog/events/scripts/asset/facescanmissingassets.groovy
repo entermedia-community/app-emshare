@@ -1,12 +1,9 @@
 package asset
 
-import static org.junit.Assert.format
-
 import org.entermediadb.asset.*
 import org.entermediadb.asset.facedetect.FaceProfileManager
 import org.entermediadb.asset.facedetect.FaceScanInstructions
 import org.openedit.MultiValued
-import org.openedit.data.Searcher
 import org.openedit.hittracker.HitTracker
 import org.openedit.locks.Lock
 
