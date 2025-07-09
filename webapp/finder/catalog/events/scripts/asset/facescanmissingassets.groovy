@@ -30,12 +30,20 @@ public void init()
 
 	try
 	{	
-		HitTracker hits = archive.query("asset").not("editstatus","7").exact("facescancomplete", "false").exact("importstatus","complete").sort("filesizeDown").search();
+		//Searcher faceembeddingsearcher = getMediaArchive().getSearcher("faceembedding");
+		
+		HitTracker hits = archive.query("asset").not("editstatus","7").exact("facehasprofile", "false").exact("facescancomplete", "true").sort("filesizeDown").search();
 		hits.enableBulkOperations();
 		List tosave = new ArrayList();
 		FaceProfileManager manager = archive.getBean("faceProfileManager");
 		if (!hits.isEmpty()) 
 		{
+			
+			HitTracker allfaces = archive.query("faceembedding").all().sort("locationhUp").search();
+			allfaces.enableBulkOperations();
+			Collection assetids = allfaces.collectValues("assetid");
+			
+			
 			log.info("Checking :" + hits.size());
 			
 			FaceScanInstructions instructions = manager.createInstructions();
@@ -44,7 +52,18 @@ public void init()
 				hits.setPage(i+1);
 				long start = System.currentTimeMillis();
 				Collection<MultiValued> onepage = hits.getPageOfHits();
-				int saved = manager.extractFaces(instructions, onepage);
+				Collection<MultiValued> newpage = new ArrayList();
+				
+				
+				for(MultiValued data in onepage)
+				{
+					if(!assetids.contains(data.getId()))
+					{
+						newpage.add(data);
+					}
+				}
+				
+				int saved = manager.extractFaces(instructions, newpage);
 				count = count + saved;
 				if( saved > 0 )
 				{
@@ -52,12 +71,12 @@ public void init()
 					long change = end-start;
 					double perasset = ((double)change/1000D)/(double)onepage.size();
 					
-					log.info("face scan processed " + onepage.size() + " assets in " + change + " milliseconds " +  perasset + " asset/second");
-					log.info("face scan created: " + count + " faces");
+					log.info(" face scan processed " + onepage.size() + " assets in " + change + " milliseconds " +  perasset + " asset/second");
+					log.info(" face scan created: " + count + " faces");
 				}
 			}
 		}
-		log.info("face scan created: " + count + " faces");
+		log.info(" face scan created: " + count + " faces");
 	}
 	finally
 	{
