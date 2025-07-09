@@ -126,7 +126,7 @@ jQuery(document).ready(function (url, params) {
       ) {
         resultsdiv.data("page", "1");
       }
-      resultsdiv.data("noToast", true);
+      resultsdiv.data("no-toast", true);
       resultsdiv.runAjax();
     });
   });
@@ -144,7 +144,7 @@ jQuery(document).ready(function (url, params) {
       var searchhome = resultsdiv.data("searchhome");
       resultsdiv.data("url", searchhome + "/changehitsperpage.html");
       resultsdiv.data("hitsperpage", select.val());
-      resultsdiv.data("noToast", true);
+      resultsdiv.data("no-toast", true);
       resultsdiv.runAjax();
     });
   });
@@ -169,7 +169,7 @@ jQuery(document).ready(function (url, params) {
         if (urlbar !== undefined) {
           input.data("urlbar", urlbar + page);
         }
-        input.data("noToast", true);
+        input.data("no-toast", true);
         input.runAjax();
       }
     });
@@ -752,7 +752,7 @@ jQuery(document).ready(function (url, params) {
 
       var searchhome = resultsdiv.data("searchhome");
       clicked.data("url", searchhome + "/toggle.html");
-      clicked.data("noToast", true);
+      clicked.data("no-toast", true);
       clicked.runAjax();
 
       //$(".assetproperties").trigger("click");
@@ -803,7 +803,7 @@ jQuery(document).ready(function (url, params) {
     clicked.data("includesearchcontext", true);
     clicked.data("includeeditcontext", true);
     clicked.data("url", searchhome + "/togglepage.html");
-    clicked.data("noToast", true);
+    clicked.data("no-toast", true);
     clicked.runAjax();
   });
 
