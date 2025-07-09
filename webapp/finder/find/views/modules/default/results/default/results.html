@@ -65,8 +65,15 @@ $context.putPageValue("viewid", $viewid)
 
 $context.putPageValue("enableactions", $enableactions)
 
+#set( $terms = $hits.getFilteredTerms("${module.id}advancedsearch",$userprofile) )
+#if(($hits.getSearchQuery().hasMainInput()) || ($terms && $terms.size() > 0))
+#set($filteredresults = true)
+$context.putPageValue("filteredresults", $filteredresults)
+#end
+
+
 <div id="$!{searchhomeid}$!{edithomeid}" 
-	class="tableresults resultsdiv"
+	class="tableresults resultsdiv #if($filteredresults) filteredresults #end"
 	data-${hits.getSearchType()}hitssessionid="$!hits.getSessionId()" 
 	data-searchhome="$!{searchhome}"
 	data-targetdiv="${searchhomeid}$!{edithomeid}"
