@@ -1,4 +1,8 @@
-#set( $syncfolder = $mediaarchive.query("desktopsyncfolder").exact("desktop", $desktop.getComputerName()).exact("entityid", $entity.getId()).searchOne() )
+#set( $syncfolder = $mediaarchive.query("desktopsyncfolder").exact("desktop", $desktop.getComputerName()).exact("entityid", $entity.getId()).orgroup("desktopimportstatus", "scan-started sync-started").searchOne() )
+
+#ifnull($syncfolder)
+  #set( $syncfolder = $mediaarchive.query("desktopsyncfolder").exact("desktop", $desktop.getComputerName()).exact("entityid", $entity.getId()).sort("completeddateDown").searchOne() )
+#end
 
 #set( $processing = false )
 #if($syncfolder)
@@ -9,7 +13,7 @@
 
 <div id="desktoppendingpopover"
   #if($processing)
-    class="ajaxstatus" 
+    class="ajaxstatus"
   #end
   data-oemaxlevel="1" 
   #if($entity)
@@ -19,6 +23,7 @@
     data-entitymoduleid="category"
     data-entityid="$!category.getId()"
   #end
+  data-syncfolderid="$!syncfolder.id"
   data-categoryid="$!category.getId()"
   data-targetdiv="desktoppendingpopover"
   data-url="$page.path"
@@ -47,38 +52,54 @@
             #end
           </span>
         #end
+        #ifnull($syncfolder.completeddate)
+          #if($processing)
+            <span class="last-scanned">
+              #if($syncfolder.isdownload == "true")
+                Downloading...
+              #else
+                Uploading...
+              #end
+            </span>
+          #end
+        #end
       </span>
       <label for="desktopSyncToggle" class="close m-0">
         <i class="bi bi-x ns"></i>
       </label>
     </div>
     <div class="work-dir-tree">
-      <div class="work-folder download upload #if($processing) processing #end"
+      <div class='work-folder #if($syncfolder.isdownload == "true") download #else upload #end #if($processing) processing #end'
+        data-syncfolderid="$!syncfolder.id"
         data-categorypath="$!category.getCategoryPath()"
         data-entitymoduleid="$!entitymodule.id"
         data-entityid="$!entity.getId()">
+        #if($processing)
         <div class="currentSync mb-2">
-          <p class="mb-2 text-primary">
-            Uploading $syncfolder.currentfoldertotalcount files <strong>($syncfolder.currentfoldertotalsize)</strong>
+          <p class="mb-1 text-primary fileName">$syncfolder.currentcategorypath</p>
+          <p class="mb-2 text-muted">
+            <span class="fileCompletedCount"></span>$syncfolder.currentfoldertotalcount files
           </p>
-          <p class="mb-1 text-muted fileName">$syncfolder.currentfoldername</p>
-          #*
           <div class="progress">
-            <div class="progress-bar progress-bar-striped fileProgress" style="width: 100%"></div>
+            <div class="progress-bar progress-bar-striped fileProgress"></div>
           </div>
           <p class="mt-1 mb-0 text-right">
-            <span><span class="fileProgressLoaded"></span> / <span class="fileProgressTotal"></span></span>
+            <span>
+              <span class="fileCompletedSize"></span> 
+              <span class="fileTotalSize" data-total="$!syncfolder.currentfoldertotalsize">
+                $sizer.inEnglish($syncfolder.currentfoldertotalsize)
+              </span>
+            </span>
           </p>
-          *#
           <div class="text-center mt-1">
-            <button class="border-0 bg-white mx-auto text-danger cancelSync"
-              data-categorypath="$!category.getCategoryPath()"
-              data-both="true"
+            <button class='border-0 bg-white mx-auto text-danger cancelSync #if($syncfolder.isdownload == "true") download #else upload #end'
+              data-syncfolderid="$!syncfolder.id"
               title="[[Cancel this task]]">
               <i class="bi bi-x"></i> [[Cancel]]
             </button>
           </div>
         </div>
+        #end
       </div>
     </div>
   
@@ -114,7 +135,6 @@
             </button>
           #end
         </div>
-  
       #end
     #end
   </div>
