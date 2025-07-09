@@ -43,7 +43,7 @@
         #ifnotnull($syncfolder.completeddate)
           <span class="last-scanned">
             #set($ago = $context.getAge($syncfolder.getDate("completeddate")))
-            Last scanned
+            Last synced
             #ifnull($ago)
             1 second ago
             #end
@@ -68,13 +68,14 @@
         <i class="bi bi-x ns"></i>
       </label>
     </div>
+
+    #if($processing)
     <div class="work-dir-tree">
       <div class='work-folder #if($syncfolder.isdownload == "true") download #else upload #end #if($processing) processing #end'
         data-syncfolderid="$!syncfolder.id"
-        data-categorypath="$!category.getCategoryPath()"
-        data-entitymoduleid="$!entitymodule.id"
-        data-entityid="$!entity.getId()">
-        #if($processing)
+        data-categorypath="$!syncfolder.categorypath"
+        data-entitymoduleid="$!syncfolder.entitymoduleid"
+        data-entityid="$!syncfolder.entityid">
         <div class="currentSync mb-2">
           <p class="mb-1 text-primary fileName">$syncfolder.currentcategorypath</p>
           <p class="mb-2 text-muted">
@@ -99,9 +100,9 @@
             </button>
           </div>
         </div>
-        #end
       </div>
     </div>
+    #end
   
     #ifnotnull($assetsource)
       #set($userlocaldesktoppath  = $assetsource.getConfig().get("userlocaldesktoppath"))
