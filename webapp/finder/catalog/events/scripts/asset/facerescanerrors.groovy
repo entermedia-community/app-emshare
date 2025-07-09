@@ -32,9 +32,11 @@ public void init()
 	{	
 		//Searcher faceembeddingsearcher = getMediaArchive().getSearcher("faceembedding");
 		
-		HitTracker hits = archive.query("asset").not("editstatus","7").exact("facehasprofile", "false").exact("facescancomplete", "true").sort("filesizeDown").search();
+		
+		HitTracker hits = archive.query("asset").not("editstatus","7").exact("facescanerror", "true").sort("filesizeDown").search();
 		hits.enableBulkOperations();
 		List tosave = new ArrayList();
+		hits.setHitsPerPage(500);
 		FaceProfileManager manager = archive.getBean("faceProfileManager");
 		if (!hits.isEmpty()) 
 		{
@@ -69,9 +71,9 @@ public void init()
 				{
 					long end = System.currentTimeMillis();
 					long change = end-start;
-					double perasset = ((double)change/1000D)/(double)onepage.size();
+					double perasset = (double)onepage.size()/((double)change/hits.getHitsPerPage());
 					
-					log.info(" face scan processed " + onepage.size() + " assets in " + change + " milliseconds " +  perasset + " asset/second");
+					log.info(" face scan processed " + onepage.size() + " assets in " + (change/1000) + " sec. " +  perasset + " asset/second");
 					log.info(" face scan created: " + count + " faces");
 				}
 			}
