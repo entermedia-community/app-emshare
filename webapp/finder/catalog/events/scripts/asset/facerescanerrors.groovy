@@ -35,8 +35,11 @@ public void init()
 		
 		HitTracker hits = archive.query("asset").not("editstatus","7").exact("facescanerror", "true").sort("filesizeDown").search();
 		hits.enableBulkOperations();
-		List tosave = new ArrayList();
 		hits.setHitsPerPage(500);
+		log.info("Checking: " + hits.size());
+		
+		List tosave = new ArrayList();
+		
 		FaceProfileManager manager = archive.getBean("faceProfileManager");
 		if (!hits.isEmpty()) 
 		{
@@ -44,9 +47,6 @@ public void init()
 			HitTracker allfaces = archive.query("faceembedding").all().sort("locationhUp").search();
 			allfaces.enableBulkOperations();
 			Collection assetids = allfaces.collectValues("assetid");
-			
-			
-			log.info("Checking :" + hits.size());
 			
 			FaceScanInstructions instructions = manager.createInstructions();
 			for(int i=0;i < hits.getTotalPages();i++)
@@ -56,14 +56,29 @@ public void init()
 				Collection<MultiValued> onepage = hits.getPageOfHits();
 				Collection<MultiValued> newpage = new ArrayList();
 				
-				
 				for(MultiValued data in onepage)
 				{
+					data.setValue("facescanerror", false);
 					if(!assetids.contains(data.getId()))
 					{
 						newpage.add(data);
 					}
+					else
+                    {
+                      tosave.add(data);
+					  if (tosave.size() >= 1000)
+					  {
+						  log.info("Skiping " + tosave.size() + " assets");
+						  archive.saveData("asset", tosave);
+						  tosave.clear();
+					  }
+                    }
 				}
+				log.info("Skiped " + tosave.size() + " assets");
+				archive.saveData("asset", tosave);
+				tosave.clear();
+				
+				
 				
 				int saved = manager.extractFaces(instructions, newpage);
 				count = count + saved;
