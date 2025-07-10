@@ -1,4 +1,3 @@
-
 #set($module = $mediaarchive.getCachedData("module", "asset"))
 $context.putPageValue("module", $module)
 #set($moduleid = $module.getId())
@@ -20,40 +19,37 @@ $context.putPageValue("module", $module)
 $context.putPageValue("category", $category)
 $context.putPageValue("categoryid", $categoryid)
 
-
-
-<div id="categorywithtree" class="emgridcontainer">
+<div id="categorywithtree" class="emgridcontainer">		
+	$context.putPageValue("selectednodes", $categoryid)
 		
-		$context.putPageValue("selectednodes", $categoryid)
-		
-		#set($canupload = false)
-		#if($canviewupload)
-			#if($parentmodule.getBoolean("enableuploading") && $permissions.canModule($entitymodule, "upload_files"))
-				#set($canupload = true)
-			#end
+	#set($canupload = false)
+	#if($canviewupload)
+		#if($parentmodule.getBoolean("enableuploading") && $permissions.canModule($entitymodule, "upload_files"))
+			#set($canupload = true)
 		#end
+	#end
 
-		$context.putPageValue("canupload", $canupload)
+	$context.putPageValue("canupload", $canupload)
 		
-		#set($dialogtreestatus = $userprofile.get("dialogtreestatus"))
-		#ifnotnull($dialogtreestatus)
-			#if($dialogtreestatus != "open")
-				#set($dialogtreestatus = "close")
-			#end
-		#end
-		#ifnull($dialogtreestatus)
+	#set($dialogtreestatus = $userprofile.get("dialogtreestatus"))
+
+	#ifnotnull($dialogtreestatus)
+		#if($dialogtreestatus != "open")
 			#set($dialogtreestatus = "close")
 		#end
-		$context.putPageValue("dialogtreestatus", $dialogtreestatus)
-		
-		<div class="embedmediacontainer">
-			#if($dialogtreestatus == "open")
-				<div class="embedmediacol embedmediacol-tree embedtreestatus$dialogtreestatus">
-				
-					<div class="embedmediacolactions d-flex align-items-center">
+	#end
 
-						
-						<a href="$edithome/index.html" 
+	#ifnull($dialogtreestatus)
+		#set($dialogtreestatus = "close")
+	#end
+	
+	$context.putPageValue("dialogtreestatus", $dialogtreestatus)
+	
+	<div class="embedmediacontainer">
+		#if($dialogtreestatus == "open")
+			<div class="embedmediacol embedmediacol-tree embedtreestatus$dialogtreestatus">
+				<div class="embedmediacolactions d-flex align-items-center">						
+					<a href="$edithome/index.html" 
 						class="d-flex align-items-center ajax toggledialogtree toggledialogclose"
 						data-targetdiv="${edithomeid}"
 						data-oemaxlevel="1"
@@ -62,64 +58,58 @@ $context.putPageValue("categoryid", $categoryid)
 						data-includeeditcontext="true"
 						data-includesearchcontext="true"
 						title="[[Collapse Tree]]">
-							<i class="bi bi-chevron-left"></i>
-							<h3 class="embedmediacolheader">[[Folders]]</h3>
-						</a>
-						#if($canviewupload && $entitymodule.getBoolean("enableuploading") && $permissions.canModule($$entitymodule, "upload_files"))
+						<h3 class="embedmediacolheader">[[Folders]]</h3>
+						<i class="bi bi-chevron-left"></i>
+					</a>
+					
+					#if($canviewupload && $entitymodule.getBoolean("enableuploading") && $permissions.canModule($$entitymodule, "upload_files"))
 						<a href="" 
 							class="createfoldertree"
 							data-tree="dialogentitymediatreetree" 
 							style="width:32px;" 
-							title="[[Add Sub-Folder]]"><i class="bi bi-folder-plus"></i></a>
-							
-						
-						#end
-					</div>
-								#end	
+							title="[[Add Sub-Folder]]">
+							<i class="bi bi-folder-plus"></i>
+						</a>
+					#end
+				</div> 
+		#end	
 					
-#set($searchhome = "$apphome/views/modules/asset/results/category")
-#set($searchhomeid = "assetcategory")
-$context.putPageValue("searchhome", $searchhome)
+		#set($searchhome = "$apphome/views/modules/asset/results/category")
+		#set($searchhomeid = "assetcategory")
+		$context.putPageValue("searchhome", $searchhome)
 
-			#if($dialogtreestatus == "open")
-
-					##<div class="assetdropcategory dialogdroppable left-foldertree">
-						##<div class="embedmediatree overflow-y">
-							
-					<div class="searchcategories-tree #if(!$canviewcategorysearch) h-100 #end">
-					    <div class="assetdropcategory assetdropcategorymove searchcategories-treecontainer #if(!$canviewcategorysearch) h-100 #else searchcategories-treecontainer-max #end categorytreescrolllable" >
-
-							#set($emtreehome = "$apphome/views/modules/asset/components/emtree")
-							$context.putPageValue("emtreehome", $emtreehome)
-							
-							#set( $link = "$emtreehome/tree.html")
-							##General Category Tree
-				        	#set( $link = "${link}?treename=$treename&editabletree=true&clearselection=$!clearselection" )
-				        	#set( $link = "${link}&oemaxlevel=3&uploadmaxlevel=2&maxlevelclick=$!maxlevelclick" )
-				        	#set($link = "$link&targetdiv=applicationmaincontent")
-				        
-							$pages.include($link, $context) 
-						</div>
+		#if($dialogtreestatus == "open")		
+				<div class="searchcategories-tree #if(!$canviewcategorysearch) h-100 #end overflow-y">
+					<div class="assetdropcategory assetdropcategorymove searchcategories-treecontainer #if(!$canviewcategorysearch) h-100 #else searchcategories-treecontainer-max #end categorytreescrolllable" >
+						#set($emtreehome = "$apphome/views/modules/asset/components/emtree")
+						$context.putPageValue("emtreehome", $emtreehome)
+						#set( $link = "$emtreehome/tree.html")
+						##General Category Tree
+						#set( $link = "${link}?treename=$treename&editabletree=true&clearselection=$!clearselection" )
+						#set( $link = "${link}&oemaxlevel=3&uploadmaxlevel=2&maxlevelclick=$!maxlevelclick" )
+						#set($link = "$link&targetdiv=applicationmaincontent")
+									
+						$pages.include($link, $context) 
 					</div>
-					
-					#if($canviewcategorysearch)
-					<div class="searchcategories-filter">
+				</div>
+				
+				#if($canviewcategorysearch)
+					<div class="searchcategories-filter overflow-hidden">
 						<div id="searchareacontent" class="searchcategories-results d-flex flex-column"> 
 						$pages.include("${emtreehome}/search/searchcategoryfilter.html?nodeID=$!rootcategoryid",$context)
 						</div>
 					</div>
-					#end
-
-					
-			</div>
-				#end   ##tree hide
-			<div class="embedmediacol embedmediacol-results overflow-x" #if($dialogtreestatus != "open")style="width:100%;"#end>
-				<div id="dialogmediaentity" class="h-100"> 
+				#end
 				
-						$pages.include("${searchhome}/search.html?categoryid=$categoryid&exactsearch=false", $context)
-				</div>
+			</div> ## closing .embedmediacol
+		#end 
+
+		<div class="embedmediacol embedmediacol-results overflow-x" #if($dialogtreestatus != "open")style="width:100%;"#end>
+			<div id="dialogmediaentity" class="h-100"> 
+				$pages.include("${searchhome}/search.html?categoryid=$categoryid&exactsearch=false", $context)
 			</div>
 		</div>
-</div>
 
+	</div>
+</div> 
 
