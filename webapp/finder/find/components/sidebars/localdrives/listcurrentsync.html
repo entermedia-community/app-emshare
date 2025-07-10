@@ -39,11 +39,12 @@
           data-id="$syncfolder.id"
           data-syncfolderid="$!syncfolder.id"
           data-categorypath="$syncfolder.categorypath"
-          data-entitymoduleid="$syncfolder.module"
+          data-entitymoduleid="$syncfolder.entitymoduleid"
           data-entityid="$syncfolder.entityid">
           <div class="sync-summary">
             <div class="d-flex flex-column flex-grow-1 p-2 position-relative">
-              <p class="mb-2">
+              #set($folderlink = "$apphome/views/modules/${syncfolder.entitymoduleid}/editors/default/tabs/index.html?entityid=${syncfolder.entityid}")
+              <a href="$folderlink" class="emdialog d-inline-block mb-2 w-100 catpath">
                 <span class="sync-type">
                   #if($syncfolder.isdownload == "true")
                     <small class="dl"><i class="bi bi-arrow-down ns"></i></small>
@@ -52,7 +53,7 @@
                   #end
                 </span>
                 <span class="folder-crumb">#elidemiddle($syncfolder.name, 100)</span>
-              </p>
+              </a>
               #if(!$processing)
                 <small class="last-scanned fupper">
                   #if($syncfolder.desktopimportstatus == "sync-cancelled")
@@ -80,13 +81,13 @@
             #end
             <div class="m-1">
               #if($syncfolder.categorypath)
-                <div class="open-folder flex-1 p-2"
+                <div class="open-folder flex-1 p-2 action-button"
                   data-path="$syncfolder.categorypath"
                   title="[[Open the folder in your computer]]">
                   <i class="bi bi-eye-fill ns"></i>
                 </div>
                 #if(!$processing && $syncfolder.isdownload == "true")
-                <a href="#" class="mt-1 d-block p-2 text-primary ajax redownload" data-syncfolderid="$syncfolder.id" title="[[Show the record]]">
+                <a href="#" class="mt-1 d-block p-2 text-primary ajax redownload action-button"" data-syncfolderid="$syncfolder.id" title="[[Show the record]]">
                   <i class="bi bi-arrow-clockwise ns"></i>
                 </a>
                 #end
@@ -97,7 +98,7 @@
           <div class="currentSync">
             <p class="mb-1 text-primary fileName">$syncfolder.currentcategorypath</p>
             <p class="mb-2 text-muted">
-              <span class="fileCompletedCount"></span>$syncfolder.currentfoldertotalcount files
+              <span class="fileCompletedCount"></span><span class="fileTotalCount">$syncfolder.currentfoldertotalcount</span> files
             </p>
             <div class="progress">
               <div class="progress-bar progress-bar-striped fileProgress"></div>
