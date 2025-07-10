@@ -33,7 +33,7 @@ public void init()
 			hit.setValue("facescanerror", "true");
 			tosave.add(hit);
 			count++;
-			if (tosave.size() > 1000) 
+			if (tosave.size() >= 1000) 
             {
 				log.info("Saving " + tosave.size() + " assets");
                 archive.saveData("asset", tosave);
