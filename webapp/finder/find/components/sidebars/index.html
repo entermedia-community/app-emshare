@@ -65,14 +65,15 @@
 				</div>
 			#end
 			
-			#if( $canviewcategorynav )
-			<div class="sidebar-togglers #if($sidebarcomponent == "categories") sidebar-selected #end">
-				<a href="#" class="sidebar-toggler sidebar-toggler-show" data-action="show"
-					data-targetdiv="col-sidebars" data-sidebar="categories" data-sitetitle="[[Files]]"
-					data-modulesearchhitssessionid="$!modulehits.sessionId" title="[[Files]]">
-					<i class="bi bi-folder-fill"></i>
-				</a>
-			</div>
+			#if( $userprofile.hasModule("asset") )
+				#set($assetmodule = $mediaarchive.getCachedData("module", "asset"))
+				<div class="sidebar-togglers">
+					<a href="$apphome/views/modules/asset/index.html" class="sidebar-toggler-show"
+						data-targetdiv="applicationcontent" 
+						title="#text($assetmodule)">
+						<i class='bi bi-${assetmodule.get("moduleicon")}'></i>
+					</a>
+				</div>
 			#end
 
 			#if(false && $canviewopencollections )

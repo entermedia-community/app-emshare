@@ -1,3 +1,4 @@
+#set($rootcategory = $mediaarchive.getCategorySearcher().getRootCategory())
 #ifnull($category)
 	#set($urlbarprefix = "${edithome}/index.html")
 	#set($category = $mediaarchive.getCategory("index"))
@@ -20,12 +21,22 @@ $context.putPageValue("urlbarprefix", $urlbarprefix)
 	data-url="${urlbarprefix}"
 >
 
-#set($module = $mediaarchive.getCachedData("module","asset"))
-$context.putPageValue("module", $module)
-#set($searchhome = "$apphome/views/modules/asset/results/categoryviewfiles")
-$context.putPageValue("searchhome", $searchhome)
+#ifnull($dialogtreestatus)
+	#set($dialogtreestatus = "close")
+#end
+$context.putPageValue("dialogtreestatus", $dialogtreestatus)
+$context.putPageValue("hidedialogtree", false)
+		
+$pages.include("${edithome}/resultarea.html?rootcategory=${rootcategory.getId()}", $context)
 
-$pages.include("${searchhome}/searchcategory.html",$context)
+
+
+##set($module = $mediaarchive.getCachedData("module","asset"))
+##$context.putPageValue("module", $module)
+###set($searchhome = "$apphome/views/modules/asset/results/categoryviewfiles")
+##$context.putPageValue("searchhome", $searchhome)
+
+##$pages.include("${searchhome}/searchcategory.html",$context)
 
 </div>
 

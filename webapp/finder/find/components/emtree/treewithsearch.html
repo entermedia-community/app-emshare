@@ -1,0 +1,19 @@
+<div class="searchcategories-tree #if(!$canviewcategorysearch) h-100 #end">
+    <div class="assetdropcategory assetdropcategorymove searchcategories-treecontainer h-100" >
+
+        	##General Category Tree
+        	#set( $link = "$apphome/components/emtree/tree.html")
+        	#set( $link = "${link}?treename=$treename&editabletree=true&clearselection=$!clearselection" )
+        	#set( $link = "${link}&oemaxlevel=3&uploadmaxlevel=2&maxlevelclick=$!maxlevelclick" )
+        	#set($link = "$link&targetdiv=applicationmaincontent")
+        
+			$pages.include($link, $context)  
+	</div>
+</div>
+#if($canviewcategorysearch)
+<div class="searchcategories-filter">
+	<div id="searchareacontent" class="searchcategories-results d-flex flex-column"> 
+	$pages.include("$apphome/components/sidebars/categories/searchcategoryfilter.html?nodeID=$!initialcategory",$context)
+	</div>
+</div>
+#end
