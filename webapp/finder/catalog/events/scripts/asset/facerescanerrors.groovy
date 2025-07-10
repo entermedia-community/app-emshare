@@ -33,7 +33,7 @@ public void init()
 		//Searcher faceembeddingsearcher = getMediaArchive().getSearcher("faceembedding");
 		
 		
-		HitTracker hits = archive.query("asset").not("editstatus","7").exact("facescanerror", "true").sort("filesizeDown").search();
+		HitTracker hits = archive.query("asset").not("editstatus","7").exact("facescanerror", "true").sort("assetaddeddateDown").search();
 		hits.enableBulkOperations();
 		hits.setHitsPerPage(500);
 		log.info("Checking: " + hits.size());
