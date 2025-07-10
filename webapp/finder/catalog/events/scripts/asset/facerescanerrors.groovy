@@ -58,7 +58,6 @@ public void init()
 				
 				for(MultiValued data in onepage)
 				{
-					data.setValue("facescanerror", false);
 					if(!assetids.contains(data.getId()))
 					{
 						newpage.add(data);
