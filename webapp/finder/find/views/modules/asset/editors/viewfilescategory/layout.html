@@ -43,21 +43,13 @@ $context.putPageValue("urlbarprefix", $urlbarprefix)
 	
 <div id="categorywithtree" class="emgridcontainer">		
 	$context.putPageValue("selectednodes", $categoryid)
-		
-	#set($dialogtreestatus = $userprofile.get("dialogtreestatus"))
 
-	#ifnotnull($dialogtreestatus)
-		#if($dialogtreestatus != "open")
-			#set($dialogtreestatus = "close")
-		#end
-	#end
-
+	#set( $dialogtreename = "${module.id}dialogtreestatus")
+	#set($dialogtreestatus = $userprofile.get($dialogtreename))
 	#ifnull($dialogtreestatus)
-		#set($dialogtreestatus = "close")
+		#set($dialogtreestatus = "open")
 	#end
-	
-	$context.putPageValue("dialogtreestatus", $dialogtreestatus)
-	
+	$context.putPageValue("dialogtreestatus",$dialogtreestatus)
 	<div class="embedmediacontainer">
 		#if($dialogtreestatus == "open")
 			<div class="embedmediacol embedmediacol-tree embedtreestatus$dialogtreestatus">
@@ -66,7 +58,7 @@ $context.putPageValue("urlbarprefix", $urlbarprefix)
 						class="d-flex align-items-center ajax toggledialogtree toggledialogclose"
 						data-targetdiv="${edithomeid}"
 						data-oemaxlevel="1"
-						data-propertyfield="dialogtreestatus"
+						data-propertyfield="$dialogtreename"
 						data-propertyvalue="close"
 						data-includeeditcontext="true"
 						data-includesearchcontext="true"

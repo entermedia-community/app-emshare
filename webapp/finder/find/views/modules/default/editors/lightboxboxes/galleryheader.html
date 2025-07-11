@@ -106,18 +106,21 @@ $context.putPageValue("entityid", $entityid)
 				#set ($enabled = true)
 			#end
 			
-			#if($dialogresults)
+			#if($dialogresults
+
+				#set( $dialogtreename = "${module.id}dialogtreestatus")
+				#set($dialogtreestatus = $userprofile.get($dialogtreename))
 				#ifnull($dialogtreestatus)
-					#set($dialogtreestatus = $userprofile.get("dialogtreestatus"))
+					#set($dialogtreestatus = "close")
 				#end
-				#if(!$hidedialogtree && $dialogtreestatus == "close")
+				#if($dialogtreestatus == "close")
 					<li>
 						<a href="$edithome/index.html"
 							class="ajax exapand-tree-btn"
 							style="padding:0 10px"
 							data-targetdiv="$edithomeid"
 							data-oemaxlevel="1"
-							data-propertyfield="dialogtreestatus"
+							data-propertyfield="$dialogtreename"
 							data-propertyvalue="open"
 							data-includesearchcontext="true"
 							title="[[Expand Tree]]">

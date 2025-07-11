@@ -103,9 +103,13 @@
 			#end
 			
 			#if($page.isPropertyTrue("showsidetree", true))
-			
+
+				#set( $dialogtreename = "${module.id}dialogtreestatus")
+				#ifnull( $dialogtreestatus)
+					#set($dialogtreestatus = $userprofile.get($dialogtreename) )
+				#end
 				#ifnull($dialogtreestatus)
-					#set($dialogtreestatus = $userprofile.get("dialogtreestatus"))
+					#set( $dialogtreestatus = "close" ) ##by default
 				#end
 				
 				#if($dialogtreestatus == "close")
@@ -115,7 +119,7 @@
 							style="padding:0 10px"
 							data-targetdiv="${edithomeid}"
 							data-oemaxlevel="1"
-							data-propertyfield="dialogtreestatus"
+							data-propertyfield="$dialogtreename"
 							data-propertyvalue="open"
 							data-expandingtree="true"
 							data-includeeditcontext="true"

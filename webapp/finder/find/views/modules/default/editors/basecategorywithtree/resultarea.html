@@ -36,16 +36,11 @@ $context.putPageValue("categoryid", $categoryid)
 
 		$context.putPageValue("canupload", $canupload)
 		
-		#set($dialogtreestatus = $userprofile.get("dialogtreestatus"))
-		#ifnotnull($dialogtreestatus)
-			#if($dialogtreestatus != "open")
-				#set($dialogtreestatus = "close")
-			#end
-		#end
+		#set( $dialogtreename = "${module.id}dialogtreestatus")
+		#set($dialogtreestatus = $userprofile.get($dialogtreename) )
 		#ifnull($dialogtreestatus)
 			#set($dialogtreestatus = "close")
 		#end
-		$context.putPageValue("dialogtreestatus", $dialogtreestatus)
 		
 		<div class="embedmediacontainer">
 			#if($dialogtreestatus == "open")
@@ -58,7 +53,7 @@ $context.putPageValue("categoryid", $categoryid)
 						class="d-flex align-items-center ajax toggledialogtree toggledialogclose"
 						data-targetdiv="${edithomeid}"
 						data-oemaxlevel="1"
-						data-propertyfield="dialogtreestatus"
+						data-propertyfield="$dialogtreename"
 						data-propertyvalue="close"
 						data-includeeditcontext="true"
 						data-includesearchcontext="true"
