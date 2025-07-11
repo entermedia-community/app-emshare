@@ -34,9 +34,9 @@ public void init()
 		hits.enableBulkOperations();
 		List tosave = new ArrayList();
 		FaceProfileManager manager = archive.getBean("faceProfileManager");
+		log.info("Checking :" + hits.size());
 		if (!hits.isEmpty()) 
 		{
-			log.info("Checking :" + hits.size());
 			
 			FaceScanInstructions instructions = manager.createInstructions();
 			for(int i=0;i < hits.getTotalPages();i++)

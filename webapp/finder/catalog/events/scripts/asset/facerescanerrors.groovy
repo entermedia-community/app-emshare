@@ -35,7 +35,7 @@ public void init()
 		
 		HitTracker hits = archive.query("asset").not("editstatus","7").exact("facescanerror", "true").sort("assetaddeddateDown").search();
 		hits.enableBulkOperations();
-		hits.setHitsPerPage(500);
+		hits.setHitsPerPage(300);
 		log.info("Checking: " + hits.size());
 		
 		List tosave = new ArrayList();
@@ -67,13 +67,8 @@ public void init()
 					}
 					else
                     {
+					  data.setValue("facescanerror", false);
                       tosave.add(data);
-					  if (tosave.size() >= 1000)
-					  {
-						  log.info("Skiping " + tosave.size() + " assets");
-						  archive.saveData("asset", tosave);
-						  tosave.clear();
-					  }
                     }
 				}
 				log.info("Skiped " + tosave.size() + " assets");
@@ -88,7 +83,7 @@ public void init()
 				{
 					long end = System.currentTimeMillis();
 					long change = end-start;
-					double perasset = (double)onepage.size()/((double)change/hits.getHitsPerPage());
+					double perasset = (double)onepage.size()/((double)change/onepage.size());
 					
 					log.info(" face scan processed " + onepage.size() + " assets in " + (change/1000) + " sec. " +  perasset + " asset/second");
 					log.info(" face scan created: " + count + " faces");
