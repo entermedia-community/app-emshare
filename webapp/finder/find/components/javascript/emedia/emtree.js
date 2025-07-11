@@ -63,10 +63,6 @@ $(function () {
 			var nodeid = node.data("nodeid");
 			tree.data("currentnodeid", nodeid);
 			var prefix = tree.data("urlprefix");
-			var maxlevel = tree.data("maxlevelclick");
-			if (maxlevel == undefined || maxlevel == "") {
-				maxlevel = 2;
-			}
 
 			//Regular Tree
 			var options = [];
@@ -75,7 +71,7 @@ $(function () {
 				resultsdiv.data("categoryid", nodeid);
 				resultsdiv.data("nodeID", nodeid);
 			}
-			gotopage(tree, node, maxlevel, prefix, options);
+			gotopage(tree, node, prefix, options);
 
 			var event = $.Event("emtreeselect");
 			event.tree = tree;
@@ -99,7 +95,7 @@ $(function () {
 		tree.scrollTop(position);
 	});
 
-	gotopage = function (tree, node, maxlevel, prefix, inOptions) {
+	gotopage = function (tree, node, prefix, inOptions) {
 		//postfix not used
 
 		var treeholder = $("div#categoriescontent");
@@ -343,28 +339,26 @@ $(function () {
 			var node = getNode(this);
 			var nodeid = node.data("nodeid");
 			var tree = node.closest(".emtree");
-			var maxlevel = 2;
 
 			var collectionid = node.data("collectionid");
 			var postfix = "";
 
 			//clear other entities on Upload Form
 			var options = [];
-
+//debugger;
 			var customurladdmedia = tree.data("customurladdmedia");
 			if (customurladdmedia) {
 				var url = customurladdmedia;
-				var maxlevel = 1;
-				gotopage(tree, node, maxlevel, url, options);
+				options["oemaxlevel"] = tree.data("uploadmaxlevel");
+				gotopage(tree, node,  url, options);
 			} else {
 				var url =
 					tree.data("home") +
 					"/views/modules/asset/editors/assetupload/index.html";
-				var maxlevel = 1;
 				//options["oemaxlevel"] = $(this).data("oemaxlevel");
 				options["oemaxlevel"] = tree.data("uploadmaxlevel");
 				options["updateurl"] = "false";
-				gotopage(tree, node, maxlevel, url, options);
+				gotopage(tree, node, url, options);
 			}
 			$(".treerow").removeClass("cat-current").addClass("categorydroparea");
 			$("#" + nodeid + "_row > .treerow")

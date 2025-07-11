@@ -309,9 +309,11 @@ jQuery(document).ready(function (url, params) {
           form.trigger("submit");
         });
 
-      /*	$("input[type=text].typeahead", form).on("keyup change", function (e) {
+      $("input[type=text].typeahead", form).on("keyup change", function (e) {
+			if (e.keyCode == 13) { 
 				form.trigger("submit");
-			});*/
+			}
+		});
     }
   };
 

@@ -30,8 +30,8 @@ $context.putPageValue("categoryid", $categoryid)
 #end
 $context.putPageValue("urlbarprefix", $urlbarprefix)
 <div id="${edithomeid}" 
-	class="editdiv ${edithomeid} heightExcludingHeaderFooter dataeditedreload" 
-	data-oemaxlevel="2"
+	class="editdiv ${edithomeid} heightExcludingHeaderFooter " 
+	data-oemaxlevel="3"
 	data-edithome="${edithome}"
 	data-edithomeid="data-${edithomeid}"
 	data-targetdiv="${edithomeid}"
@@ -48,6 +48,7 @@ $context.putPageValue("urlbarprefix", $urlbarprefix)
 	#set($dialogtreestatus = $userprofile.get($dialogtreename))
 	#ifnull($dialogtreestatus)
 		#set($dialogtreestatus = "open")
+		$userprofile.setValue($dialogtreename, $dialogtreestatus)
 	#end
 	$context.putPageValue("dialogtreestatus",$dialogtreestatus)
 	<div class="embedmediacontainer">
@@ -91,8 +92,9 @@ $context.putPageValue("urlbarprefix", $urlbarprefix)
 						#set( $link = "$emtreehome/tree.html")
 						##General Category Tree
 						#set( $link = "${link}?treename=sidebarCategories&editabletree=true&clearselection=$!clearselection" )
-						#set( $link = "${link}&oemaxlevel=2&uploadmaxlevel=1&maxlevelclick=$!maxlevelclick" )
-						#set( $link = "${link}&targetdiv=assetcategoryassetviewfilescategory")
+						#set( $link = "${link}&oemaxlevel=2&maxlevelclick=$!maxlevelclick" )
+						#set( $link = "${link}&uploadmaxlevel=1&customurladdmedia=${edithome}/upload.html" )
+						#set( $link = "${link}&targetdiv=edithomeassetresultarea")
 									
 						$pages.include($link, $context) 
 					</div>

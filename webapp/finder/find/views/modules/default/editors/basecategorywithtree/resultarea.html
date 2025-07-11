@@ -36,7 +36,12 @@ $context.putPageValue("categoryid", $categoryid)
 
 		$context.putPageValue("canupload", $canupload)
 		
-		#set( $dialogtreename = "${module.id}dialogtreestatus")
+		#ifnotnull($entitymodule)			
+			#set( $dialogtreename = "${entitymodule}dialogtreestatus")
+		#end
+		#ifnull( $dialogtreename)
+			#set( $dialogtreename = "${module.id}dialogtreestatus")
+		#end
 		#set($dialogtreestatus = $userprofile.get($dialogtreename) )
 		#ifnull($dialogtreestatus)
 			#set($dialogtreestatus = "close")

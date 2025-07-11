@@ -46,6 +46,13 @@
 	#set($categoryid = $rootcategory)
 #end
 
+#ifnull($entitymodule)
+#set($entitymoduleid = $context.getRequestParameter("entitymoduleid"))
+#ifnotnull($entitymoduleid)
+	#set($entitymodule = $mediaarchive.getCachedData("module", $entitymoduleid))
+#end
+#end
+
 #if(!$dialogresults)
 	#set($dialogresults = $context.getRequestParameter("dialogresults"))
 	$context.putPageValue("dialogresults",$dialogresults)
@@ -103,11 +110,16 @@
 			#end
 			
 			#if($page.isPropertyTrue("showsidetree", true))
-
-				#set( $dialogtreename = "${module.id}dialogtreestatus")
+	        	#ifnotnull($entitymodule)			
+					#set( $dialogtreename = "${entitymodule}dialogtreestatus")
+				#end
+				#ifnull( $dialogtreename)
+					#set( $dialogtreename = "${module.id}dialogtreestatus")
+				#end
 				#ifnull( $dialogtreestatus)
 					#set($dialogtreestatus = $userprofile.get($dialogtreename) )
 				#end
+				
 				#ifnull($dialogtreestatus)
 					#set( $dialogtreestatus = "close" ) ##by default
 				#end
@@ -134,12 +146,14 @@
 			#set($categorypath = $category.getCategoryPath())
 			
 			#if ($resultview != "map")
+			
 				#set($hideupload = false)
 				#ifnotnull($context.getRequestParameter("hideupload"))
 					#set($hideupload = $context.getRequestParameter("hideupload"))
 				#end
-				
+			
 				#ifnotnull($entitymodule)
+				
 					#if(!$hideupload && $canviewupload && $entitymodule.id != "favorites" && $permissions.canModule($entitymodule, "upload_files"))				
 						<li class="mbl-except">
 							<a href="$siteroot$apphome/views/modules/asset/editors/assetupload/index.html"
@@ -184,6 +198,7 @@
 						#end
 					#end
 				#end
+				
 				#ifnull($entitymodule)
 					#if($moduleid == "asset" && $canviewupload)
 					<li class="mbl-except">
