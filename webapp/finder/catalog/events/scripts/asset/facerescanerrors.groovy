@@ -49,6 +49,9 @@ public void init()
 			Collection assetids = allfaces.collectValues("assetid");
 			
 			FaceScanInstructions instructions = manager.createInstructions();
+			
+			instructions.setFindParents(false);
+			
 			for(int i=0;i < hits.getTotalPages();i++)
 			{
 				hits.setPage(i+1);
