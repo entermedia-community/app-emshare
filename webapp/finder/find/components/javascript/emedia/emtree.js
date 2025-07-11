@@ -363,7 +363,6 @@ $(function () {
 				var maxlevel = 1;
 				//options["oemaxlevel"] = $(this).data("oemaxlevel");
 				options["oemaxlevel"] = tree.data("uploadmaxlevel");
-				options["sidebarcomponent"] = "categories";
 				options["updateurl"] = "false";
 				gotopage(tree, node, maxlevel, url, options);
 			}
