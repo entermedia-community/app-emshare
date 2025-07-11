@@ -1,7 +1,7 @@
 #set($emtreehome = "$apphome/views/modules/asset/components/emtree")
 
 #set($hits = $searchcathits)
-#set($pickone = $context.getRequestParameter("pickone") )
+
 <div id="categoryresultsdialog" class="categoryresults">
 
 		
@@ -14,26 +14,17 @@
 
 			#foreach( $hit in $hits.getPageOfHits() )
 				<div class="categorypath">
-					#if($pickone)
-						<a class="pickcategorylink ajax"
-						href="$applink/components/categories/asset/listassetcategories.html" 
-						data-targetdiv="assetcategoryresultsmediaviewer"
-						data-categoryid="$hit.getId()"
-						data-assetid="$assetid"
-						data-closedialog="true">
-						#esc($hit.categorypath)															
-						</a>
-					#else
+
 					<a class="categorypathlink ajax"
 						href="$applink/views/modules/asset/editors/viewfilescategory/$hit.getId()/#dash($hit.name).html" 
-						data-targetdiv="applicationmaincontent"
+						data-targetdiv="assetcategoryassetviewfilescategory"
 						data-categoryid="$hit.getId()"
-						data-oemaxlevel="3"
+						data-oemaxlevel="2"
 						data-updateurl="true"
 						data-scrolltocat="true">
 						#esc($hit.categorypath)															
 						</a>
-					#end
+					
 				</div>
 			#end	
 			

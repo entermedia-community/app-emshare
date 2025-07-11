@@ -364,6 +364,7 @@ $(function () {
 				//options["oemaxlevel"] = $(this).data("oemaxlevel");
 				options["oemaxlevel"] = tree.data("uploadmaxlevel");
 				options["sidebarcomponent"] = "categories";
+				options["updateurl"] = "false";
 				gotopage(tree, node, maxlevel, url, options);
 			}
 			$(".treerow").removeClass("cat-current").addClass("categorydroparea");

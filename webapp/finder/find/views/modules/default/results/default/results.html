@@ -77,7 +77,9 @@ $context.putPageValue("filteredresults", $filteredresults)
 	data-${hits.getSearchType()}hitssessionid="$!hits.getSessionId()" 
 	data-searchhome="$!{searchhome}"
 	data-targetdiv="${searchhomeid}$!{edithomeid}"
-	##data-categoryid="$!category.id" ##Use the editor context or pass this in each time
+	#if( $page.isPropertyTrue("storecategoryinsearchcontext",false) )
+		data-categoryid="$!category.id" ##Use the editor context or pass this in each time
+	#end
 	#if( $page.isPropertyTrue("filterbyentity",false) )   ##replaced by edit context?
 		data-field="$!{entitymodule.id}"
 		data-$!{entitymodule.id}value="$!entity.id"
