@@ -12,7 +12,8 @@ public void init()
 	MediaArchive archive = context.getPageValue("mediaarchive");//Search for all files looking for videos
 	
 	String api = archive.getCatalogSettingValue("faceapikey");
-	if(api==null) {
+	if(api==null)
+	{
 		//No Face API key defined
 		log.info("No Face Detect API key defined (faceapikey)");
 		return;
@@ -76,7 +77,6 @@ public void init()
 				tosave.clear();
 				
 				
-				
 				int saved = manager.extractFaces(instructions, newpage);
 				count = count + saved;
 				if( saved > 0 )
@@ -90,7 +90,7 @@ public void init()
 				}
 			}
 		}
-		log.info(" face scan created: " + count + " total faces);
+		log.info(" face scan created: " + count + " total faces");
 	}
 	finally
 	{
