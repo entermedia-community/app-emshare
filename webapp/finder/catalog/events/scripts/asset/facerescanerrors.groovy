@@ -86,11 +86,11 @@ public void init()
 					double perasset = (double)onepage.size()/((double)change/onepage.size());
 					
 					log.info(" face scan processed " + onepage.size() + " assets in " + (change/1000) + " sec. " +  perasset + " asset/second");
-					log.info(" face scan created: " + count + " faces");
+					log.info(" face scan created: " + count + " total faces");
 				}
 			}
 		}
-		log.info(" face scan created: " + count + " faces");
+		log.info(" face scan created: " + count + " total faces);
 	}
 	finally
 	{
