@@ -70,7 +70,7 @@ jQuery(document).ready(function () {
           keyboard: false,
         });
       }
-      modal.on("click", function (e) {
+      modal.on("mousedown", function (e) {
         e.stopPropagation();
         e.stopImmediatePropagation();
         if (e.currentTarget === e.target) {
@@ -90,7 +90,7 @@ jQuery(document).ready(function () {
   });
 
   //Remove this? Not useing ajax
-  $(document).on("click", ".modal", function (e) {
+  $(document).on("mousedown", ".modal", function (e) {
     if (e.target.classList.contains("modal")) {
       e.stopPropagation();
       e.stopImmediatePropagation();
@@ -98,7 +98,7 @@ jQuery(document).ready(function () {
     }
   });
 
-  lQuery(".entityclose").livequery("click", function (event) {
+  lQuery(".entityclose").livequery("mousedown", function (event) {
     event.preventDefault();
     var targetModal = $(this).closest(".modal");
     confirmModalClose(targetModal);
