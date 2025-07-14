@@ -1,4 +1,4 @@
-#set( $syncfolder = $mediaarchive.query("desktopsyncfolder").exact("desktop", $desktop.getComputerName()).exact("entityid", $entity.getId()).sort("completeddateDown").searchOne() )
+#set( $syncfolder = $mediaarchive.query("desktopsyncfolder").exact("desktop", $desktop.getComputerName()).exact("startcategory", $category.getId()).searchOne() )
 
 #set( $processing = false )
 #if($syncfolder)
@@ -29,7 +29,8 @@
       data-entitymoduleid="category"
       data-entityid="$!category.getId()"
     #end
-    data-path="$!category.getCategoryPath()">
+    data-startcategory="$!category.getId()"
+    data-categorypath="$!category.getCategoryPath()">
     <div class="d-flex align-items-center justify-content-between mb-2" style="line-height: 1;">
       <span class="contrast-text">
         #ifnotnull($syncfolder.completeddate)
