@@ -36,7 +36,7 @@ public void init()
 		
 		HitTracker hits = archive.query("asset").not("editstatus","7").exact("facescanerror", "true").sort("assetaddeddateDown").search();
 		hits.enableBulkOperations();
-		hits.setHitsPerPage(300);
+		hits.setHitsPerPage(500);
 		log.info("Checking: " + hits.size());
 		
 		List tosave = new ArrayList();
@@ -52,6 +52,7 @@ public void init()
 			FaceScanInstructions instructions = manager.createInstructions();
 			
 			instructions.setFindParents(false);
+			instructions.setUpdateExistingFace(false); //There will be no new ones anyways
 			
 			for(int i=0;i < hits.getTotalPages();i++)
 			{
