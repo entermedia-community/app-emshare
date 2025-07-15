@@ -351,7 +351,6 @@ $(document).ready(function () {
       if (top && externalmessage) {
         var parenturl = externalmessage["parenturl"];
         if (parenturl !== null) {
-          // Extract the schema and port from the parenturl.
           var parentProtocol = new URL(parenturl).protocol;
           var hostname = new URL(parenturl).hostname;
           var parentPort = new URL(parenturl).port;
@@ -362,7 +361,7 @@ $(document).ready(function () {
           top.postMessage(payload, targetOrigin);
         }
       } else {
-        //Todo: Make it work with Json Object
+        
         window.parent.postMessage(payload);
       }
     });
