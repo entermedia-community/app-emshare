@@ -48,7 +48,7 @@ public void init()
 			HitTracker allfaces = archive.query("faceembedding").all().sort("locationhUp").search();
 			allfaces.enableBulkOperations();
 			Collection assetids = allfaces.collectValues("assetid");
-			
+			log.info("Loaded ${assetids.size{()} assetids");  
 			FaceScanInstructions instructions = manager.createInstructions();
 			
 			instructions.setFindParents(false);
