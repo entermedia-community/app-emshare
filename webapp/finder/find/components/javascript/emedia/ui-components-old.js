@@ -1913,44 +1913,6 @@ function initializeUI() {
     $(this).parents(".dropdown-menu").removeClass("show");
   });
 
-  /*
-	lQuery(".toggledialogtree").livequery("click", function (e) {
-		e.preventDefault();
-		e.stopImmediatePropagation();
-		var toggler = $(this);
-		var options = toggler.data();
-		var url = toggler.data("url");
-		var treestatus = toggler.data("treestatus");
-
-		var targetdiv_ = toggler.data("targetdiv");
-		var targetDiv = toggler.closest("." + $.escapeSelector(targetdiv_));
-		if (!targetDiv.length) {
-			targetDiv = $("." + $.escapeSelector(targetdiv_));
-		}
-		if (!targetDiv.length) {
-			targetDiv = $("#" + $.escapeSelector(targetdiv_)); //legacy
-		}
-
-		var currentcategoryid = targetDiv.data("categoryid");
-		if (currentcategoryid !== undefined) {
-			options.categoryid = currentcategoryid;
-		}
-		saveProfileProperty("dialogtreestatus", treestatus, function () {});
-		jQuery.ajax({
-			url: url,
-			async: false,
-			data: options,
-			success: function (data) {
-				data = $(data);
-				targetDiv.replaceWith(data);
-				$(window).trigger("resize");
-			},
-		});
-	});
-*/
-
-  //$('[data-toggle="tooltipb"]').tooltip();
-
   //Sidebar Custom Width
   lQuery(".sidebar-toggler-resize").livequery(function () {
     var slider = $(this);
