@@ -7,39 +7,6 @@
 #else
 	#set($setpagetitle = "#text($category) #text($module)")
 #end
-#if($cansidebar)
-#set($forcedsidebarcomponent = $context.getRequestParameter("sidebarcomponent")) 
-#if($forcedsidebarcomponent)
-	#set( $sidebarcomponent = $forcedsidebarcomponent )
-#end
-
-
-#if( !$sidebarcomponent && $modulehits.isEmpty() )
-	#set( $sidebarcomponent = "guide" )
-#end
-
-#if($sidebarcomponent == "categories" && !$canviewcategorynav)
-	#set( $sidebarcomponent = "" )
-#end
-
-#if($sidebarcomponent == "localdrives")
-	#ifnull($desktop)
-	#set( $sidebarcomponent = "")
-	#end
-#end
-
-#if($sidebarcomponent == "none")
-	#set( $sidebarcomponent = false)
-#end
-
-#if($sidebarcomponent)
-	#set( $sidebarwidth = $userprofile.get("sidebarwidth"))
-	#if($sidebarwidth=='' || $sidebarwidth=='undefined')
-		#set($sidebarwidth = 280)
-	#end
-	#end
-#end
-
 
 
 <div id="applicationcontent"  
@@ -47,15 +14,14 @@
 	data-moduleid="$!module.id" 
 	data-setpagetitle="$!setpagetitle"
 >
-
 	#if($user )
 		 $pages.include("$componenthome/sidebars/index.html",$context)
 	#end
-	
 	<div class="col-main col-content-main">
 		##Todo: add permission $cansidebar 
-		<div class="pushcontent finderlayout col-main-inner #if($cantogglesidebar && $sidebarcomponent) pushcontent-open pushcontent-$sidebarcomponent #else pushcontent-fullwidth #end" 
-			  style="#if($sidebarcomponent && $sidebarwidth) margin-left:$!{sidebarwidth}px;#end">
+		<div class='pushcontent finderlayout col-main-inner #if($cantogglesidebar && $sidebarcomponent  && $sidebarcomponent != "none") pushcontent-open pushcontent-$sidebarcomponent #else pushcontent-fullwidth #end' 
+			  style="#if($sidebarcomponent && $sidebarwidth) margin-left:$!{sidebarwidth}px;#end"
+			  data-sidebarcomponent="$!sidebarcomponent">
 			  
 				$pages.includeContent()
 				

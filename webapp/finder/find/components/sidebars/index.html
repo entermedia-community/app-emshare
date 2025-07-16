@@ -13,7 +13,6 @@
 
 			##force specific sidebar from URL only if sidebars open
 			#set($forcedsidebarcomponent = $context.getRequestParameter("sidebarcomponent"))
-			
 			#if($forcedsidebarcomponent == "none")
 				#set( $sidebarcomponent = $forcedsidebarcomponent )
 			#else
@@ -42,6 +41,8 @@
 				#set( $sidebarcomponent = "")
 				#end
 			#end
+			
+			$context.putPageValue("sidebarcomponent", $sidebarcomponent)
 
 			#if($canviewhomelink)
 				<div class="sidebar-togglers " style="margin-bottom:15px;">
@@ -73,8 +74,10 @@
 						data-oemaxlayout="1"
 						data-targetdiv="application" 
 						data-propertyfield="sidebarcomponent"
+						data-sidebarcomponent.value="none"
 						data-sidebarcomponent="none"
-						data-propertyvalue="none"
+						data-sidebar="none"
+						data-updateurl="true"
 						title="#text($assetmodule)">
 						<i class='bi bi-${assetmodule.get("moduleicon")}'></i>
 					</a>
@@ -148,9 +151,12 @@
 
 			#if( $canviewsettings )
 			<div class="sidebar-togglers #if($sidebarcomponent == "settings") sidebar-selected #end">
-				<a href="#" class="sidebar-toggler sidebar-toggler-show" data-action="show"
-					data-targetdiv="col-sidebars" data-sidebar="settings"
-					data-modulesearchhitssessionid="$!modulehits.sessionId" data-sitetitle="[[Settings]]"
+				<a href="#" class="sidebar-toggler sidebar-toggler-show" 
+					data-action="show"
+					data-targetdiv="col-sidebars" 
+					data-sidebar="settings"
+					data-modulesearchhitssessionid="$!modulehits.sessionId" 
+					data-sitetitle="[[Settings]]"
 					title="[[Settings]]">
 					<i class="bi bi-gear-fill"></i>
 				</a>
@@ -176,8 +182,12 @@
 				#if( $userprofile.getModules().size() > 1 )
 					#set( $urlbase = "$siteroot$applink/views/modules" )
 					<div class="sidebar-togglers #if($sidebarcomponent == "smartorganaizer") sidebar-selected #end" Xstyle="width: 32px; height: 32px;  position: absolute;   top: 40px;">
-						<a href="$applink/components/smartorganizer/index.html" class="emdialog sidebar-toggler-show" data-oemaxlevel="1"
-							data-modulesearchhitssessionid="$!modulehits.sessionId" data-action="show" data-sidebar="addentity" title="[[Smart Organizer]]">
+						<a href="$applink/components/smartorganizer/index.html" 
+							class="emdialog sidebar-toggler-show" 
+							data-oemaxlevel="1"
+							data-modulesearchhitssessionid="$!modulehits.sessionId" 
+							data-action="show" 
+							data-sidebar="addentity" title="[[Smart Organizer]]">
 							<i class="bi bi-magic" style="color: #ff91f6;"></i>
 						</a>
 					</div>

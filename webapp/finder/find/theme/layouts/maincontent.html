@@ -24,9 +24,9 @@
 #end
 
 <div id="applicationmaincontent" 
-class="applicationmaincontent  applicationmaincontent$!section #if($hassubmenu) entitynavsubmenu #end"
-data-setpagetitle="$!setpagetitle"
-data-section="$!section ">
+	class="applicationmaincontent  applicationmaincontent$!section #if($hassubmenu) entitynavsubmenu #end"
+	data-setpagetitle="$!setpagetitle"
+	data-section="$!section ">
 
 	$pages.include("${themeprefix}/layouts/header.html", $context)
 	
@@ -78,6 +78,9 @@ data-section="$!section ">
 								data-profilepreference.value="${topmenuentity.getId()}"
 							#end 
 							data-scrolltotop="true"
+							#if($topmenuentity.getId() == "asset")
+                                data-sidebarcomponent="none"
+							#end
 							title="[[View]] #text($link)">
 							#set($moduleicon = "grid")
 					     	#if ($topmenuentity.moduleicon)
@@ -109,7 +112,6 @@ data-section="$!section ">
 							data-profilepreference="defaultmodule" 
 							data-profilepreference.value="${submenuentity.getId()}" 
 							data-scrolltotop="true"
-							#if($submenuentity.getId() =="asset") data-sidebarcomponent="categories" #end
 							title="[[View]] #text($link)">
 								<i class="bi bi-$!{menuicon} module-icon"></i> #text($link)
 						</a>

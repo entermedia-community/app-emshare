@@ -546,6 +546,7 @@ jQuery(document).ready(function () {
   });
 
   showsidebar = function (toggler) {
+	
     var options = toggler.data();
     var targetdiv = toggler.data("targetdiv");
     var sidebar = toggler.data("sidebar");
