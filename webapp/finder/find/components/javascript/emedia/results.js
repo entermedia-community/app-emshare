@@ -381,7 +381,9 @@ jQuery(document).ready(function (url, params) {
       if (assetid !== undefined) {
         link.data("assetid", assetid);
         var url = window.location.href;
-        url += (url.indexOf("?") >= 0 ? "&" : "?") + "assetid=" + assetid;
+		const urlObj = new URL(url, window.location.origin);
+		urlObj.searchParams.set('assetid', assetid);
+        url = urlObj.toString();
         history.pushState($("#application").html(), null, url);
         //window.location.hash = "asset-" + assetid;
         link.emDialog();
