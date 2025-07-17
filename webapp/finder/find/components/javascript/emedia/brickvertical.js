@@ -286,7 +286,7 @@
       });
       grid.removeClass("uninitialized");
       setTimeout(function () {
-        $(window).trigger("bricksgenerated");
+        $(window).trigger("resultsgenerated");
       });
     },
     resize: function () {

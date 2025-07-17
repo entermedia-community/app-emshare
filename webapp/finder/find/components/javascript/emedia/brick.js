@@ -295,7 +295,7 @@
         checkScroll(grid);
       });
       setTimeout(function () {
-        $(window).trigger("bricksgenerated");
+        $(window).trigger("resultsgenerated");
       });
     },
     render: function () {
