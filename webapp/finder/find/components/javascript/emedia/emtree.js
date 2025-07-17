@@ -117,7 +117,6 @@ $(function () {
 				node.data("categorynameesc") +
 				".html";
 			prefix = reloadurl;
-			//}
 		} else {
 			var customprefix = tree.data("customurlprefix");
 			if (customprefix) {
@@ -128,7 +127,6 @@ $(function () {
 			}
 		}
 
-		//reloadurl = reloadurl + "?nodeID="+ nodeid;
 
 		var resultsdiv = tree.closest(".assetresults");
 		if (!resultsdiv) {
@@ -142,15 +140,18 @@ $(function () {
 		var options = tree.cleandata();
 
 		//includeeditcontext
-		var editdiv = tree.closest(".editdiv"); //This is used for lightbox tree opening
-		if (editdiv.length > 0) {
-			var otherdata = editdiv.cleandata();
-			options = {
-				...otherdata,
-				...options,
-			};
-		} else {
-			//console.warn("No editdiv found for includeeditcontext");
+		if (options["includeeditcontext"] === undefined  || 
+			options["includeeditcontext"] === true) {
+			var editdiv = tree.closest(".editdiv"); //This is used for lightbox tree opening
+			if (editdiv.length > 0) {
+				var otherdata = editdiv.cleandata();
+				options = {
+					...otherdata,
+					...options,
+				};
+			} else {
+				//console.warn("No editdiv found for includeeditcontext");
+			}
 		}
 
 		options["nodeID"] = nodeid;

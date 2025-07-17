@@ -143,83 +143,79 @@
 	#set( $top = $context.getRequestParameter("treetoplocation") )
 	#set( $left = $context.getRequestParameter("treeleftlocation") )
 	
-	#set( $prefix = $context.getRequestParameter("urlprefix" ) )
-	#set( $postfix = $context.getRequestParameter("urlpostfix" ) )
-	
-	
-	#set( $maxlevelclick = $context.getRequestParameter("maxlevelclick" ) )
-	#set( $customurlprefix = $context.getRequestParameter("customurlprefix") )
-	#set( $customurladdmedia = $context.getRequestParameter("customurladdmedia") )
-	
-	#set( $updateAddressBar = $context.getRequestParameter("updateAddressBar" ) )
-	#ifnull($updateAddressBar)
-		#set($updateAddressBar="true")
-	#end
-	
-	#set( $searchchildren = $context.getRequestParameter("searchchildren") )
-	#if( !$searchchildren)
-		#set( $searchchildren = true )
-	#end		
-	
-	#set( $targetdiv = $context.getRequestParameter("targetdiv" ) )
-	
 
 	<div id="treeholder" data-treetoplocation="$!top" data-treeleftlocation="$!left" class="overflow-y">
 		<div id="${treename}tree" 
 			class="emtree emtree-widget" 
 			data-home="$siteroot$apphome" 
 			data-treename="$!treename"
-			data-$!{treename}root="$rootcategory.getId()" 
+			data-$!{treename}root="$!rootcategory.getId()" 
 			data-rootnodeid="$rootcategory.getId()"
-			
 			data-editable="$!editable" 
-			data-urlprefix="$!prefix" 
-			data-urlpostfix="$!postfix" 
-			
-			#set( $targetdivinner = $context.getRequestParameter("targetdivinner" ) )
-			#set( $maintargetdiv = $context.getRequestParameter("maintargetdiv" ) )
-			#set( $oemaxlevel = $context.getRequestParameter("oemaxlevel" ) )
-			#set( $oemaxlayout = $context.getRequestParameter("oemaxlayout" ) )
-			
+			#set( $prefix = $context.getRequestParameter("urlprefix" ) )
+			#ifnotnull( $prefix )
+				data-urlprefix="$!prefix" 
+			#end
+			#set( $postfix = $context.getRequestParameter("urlpostfix" ) )
+			#ifnotnull( $postfix )
+				data-urlpostfix="$!postfix"
+			#end 
+			#set( $customurladdmedia = $context.getRequestParameter("customurladdmedia") )
 			data-customurladdmedia="$!customurladdmedia"
+			#set( $targetdiv = $context.getRequestParameter("targetdiv" ) )
 			data-targetdiv="$!targetdiv"
+			#set( $oemaxlevel = $context.getRequestParameter("oemaxlevel" ) )
 			data-oemaxlevel="$!oemaxlevel"
 			
 			#if($treename=="dialogentitymediatree")
-				
 				data-entityid="$!entity.id"
 				data-entitymoduleid="$!entitymodule.id"
 			#else
-				#if( $maintargetdiv )
+			    #set( $maintargetdiv = $context.getRequestParameter("maintargetdiv" ) )
+				#ifnotnull( $maintargetdiv )
 					data-maintargetdiv="$maintargetdiv"
 				#end
-				 
-				#if( $targetdivinner )
+				#set( $targetdivinner = $context.getRequestParameter("targetdivinner" ) )
+				#ifnotnull( $targetdivinner )
 					data-targetdivinner="$targetdivinner"
 				#end
 				#set( $targetdivsearch = $context.getRequestParameter("targetdivsearch" ) )
-				#if( $targetdivsearch )
+				#ifnotnull( $targetdivsearch )
 					data-targetdivsearch="$targetdivsearch"
 				#end	
-				#if( $oemaxlayout )
+				#set( $oemaxlayout = $context.getRequestParameter("oemaxlayout" ) )
+				#ifnotnull( $oemaxlayout )
 					data-oemaxlayout="$oemaxlayout"
 				#end				
-				
-				#if( $uploadmaxlevel )
+				#ifnotnull( $uploadmaxlevel )
 					data-uploadmaxlevel="$uploadmaxlevel"
 				#end
 			#end
 				
 				#set($pickone = $context.getRequestParameter("pickone") )
 				#set($assetid = $context.getRequestParameter("assetid") )
-				#if ($pickone )
+				#ifnotnull($pickone )
 					data-pickone="true"
 					data-assetid="$!assetid"
 				#end
-
-				data-maxlevelclick="$!maxlevelclick"
-				data-customurlprefix="$!customurlprefix"
+				
+				#set( $maxlevelclick = $context.getRequestParameter("maxlevelclick" ) )
+				#ifnotnull($maxlevelclick )
+					data-maxlevelclick="$!maxlevelclick"
+				#end
+				#set( $customurlprefix = $context.getRequestParameter("customurlprefix") )
+                #ifnotnull($customurlprefix )
+                    data-customurlprefix="$!customurlprefix"
+				#end
+				#set( $searchchildren = $context.getRequestParameter("searchchildren") )
+				#if( !$searchchildren)
+					#set( $searchchildren = true )
+				#end	
 				data-searchchildren="$!searchchildren"
+				#set( $updateAddressBar = $context.getRequestParameter("updateAddressBar" ) )
+				#ifnull($updateAddressBar)
+					#set($updateAddressBar="true")
+				#end
 				data-updateAddressBar="$!updateAddressBar"
 				#if( $canupload )
 					data-canupload="true"
@@ -227,11 +223,15 @@
 					data-canupload="false"
 				#end
 				
-				#set( $exactsearch = $context.getRequestParameter("exactsearch" ) )
-				#if($exactsearch)
+				#set($exactsearch = $context.getRequestParameter("exactsearch" ) )
+				#ifnotnull($exactsearch)
 					data-exactsearch="$!exactsearch"
 				#end
-			
+				
+				#set( $includeeditcontext = $context.getRequestParameter("includeeditcontext" ) )
+				#ifnotnull($includeeditcontext)
+                    data-includeeditcontext="$!includeeditcontext"
+				#end
 			>
 				<ul  class="open" >
 				#ifnull( $rootcategory)
