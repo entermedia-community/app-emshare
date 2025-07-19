@@ -11,7 +11,7 @@ public void init()
 	MediaArchive archive = context.getPageValue("mediaarchive");//Search for all files looking for videos
 
 	FaceProfileManager manager = archive.getBean("faceProfileManager");
-	manager.clearAllParents(log);
+	manager.reinitClusters(log);
 		
 }
 
