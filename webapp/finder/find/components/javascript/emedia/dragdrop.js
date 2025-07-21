@@ -718,7 +718,7 @@ onloadselectors = function () {
 			});
 		}); //lightboxdropasset
 
-		lQuery(".tablightbox .assetdroppable").livequery(function () {
+		lQuery(".sortableassets .assetdroppable").livequery(function () {
 			var scope = "default";
 			var modalCheck = $(this).closest(".modal");
 			if (modalCheck.length) {
@@ -765,7 +765,7 @@ onloadselectors = function () {
 				over: handleDroppableOver,
 				out: handleDroppableOut,
 			});
-		}); //lightboxdropasset
+		}); //sortableassets
 
 		lQuery(".hitmovetotop").livequery("click", function () {
 			var cell = $(this).closest(".masonry-grid-cell");
