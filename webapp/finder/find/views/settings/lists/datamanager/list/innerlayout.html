@@ -1,24 +1,33 @@
+<div id="listselector">
+
 #set($currentsearch = $context.getRequestParameter("searchtype"))
-#if($currentsearch)
 	#set( $action = "$siteroot$content.dataroot/list/index.html" )
-	#set( $showfields = $context.getRequestParameter("showfields"))
 	<div class="d-flex align-items-center justify-content-between my-2 ml-1">
-	#if( $showfields )
-		<h3 class="settings-title m-0">[[Data Search]]</h3>
-		<form action="$action">
+		<h3 class="settings-title">[[Database]]</h3>
+
+		#ifnull($currentsearch)
+			<span class="mr-1">[[Select a table]]:</span>
+		#end
+		<form action="$action" class="ajaxform autosubmitform datamanagerchose" data-targetdiv="listselector" method="get">
 			<input type="hidden" name="catalogid" value="$catalogid"/>
-			[[Data Type]]: <select name="searchtype" onchange="submit();" class="form-control" >
+			<input type="hidden" name="oemaxlevel" value="2"/>
+			<div style="width: 280px;">
+			<select name="searchtype" class="select2 form-control">
+				<option value="">[[Choose Table]]</option>
 				#foreach( $type in $searchtypes )
 					#if($type != "CVS")
-						<option id="$type" #if($type == $currentsearch) selected #end>$type</option>
+					<option value="$type" #if($type == $currentsearch) [[selected]] #end>$type</option>
 					#end
 				#end
 			</select>
+		</div>
+	<a class="btn btn-primary ajax ml-2" data-targetdivinner="datamanagerpage" data-oemaxlevel="1" href="$home$apphome/views/settings/lists/datamanager/addtable/index.html">[[New Table]]</a>
 		</form>
-	#else
-		<h3 class="settings-title m-0">[[Table]]: <strong style="font-family: 'Courier New', Courier, monospace;">$!currentsearch</strong></h3>
-	#end
+
 	</div>
+#if($currentsearch)
+
+	<h3 class="settings-title m-0">[[Table]]: <strong style="font-family: 'Courier New', Courier, monospace;">$!currentsearch</strong></h3>
 
 	#set( $datatab = $content.datatab )
 	<div class="tabnav">
@@ -29,6 +38,8 @@
 	</div>
 
 	## <a class="btn" href="$siteroot$apphome/views/settings/lists/datamanager/properties/index.html?catalogid=$catalogid&searchtype=$currentsearch">[[Customize Fields]]</a>
+
+	
 
 	<div id="datamanager-workarea" class="datamanagerworkarea">
 		
@@ -44,3 +55,4 @@
 		<a href="$siteroot${content.dataroot}/list/reindex.html?catalogid=$catalogid&searchtype=$currentsearch">[[Reindex]]</a>
 	#end
 #end
+</div>
