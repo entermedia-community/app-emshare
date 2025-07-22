@@ -1,11 +1,11 @@
-Analyze the image provided and provide associated metadata
-
-#if( $asset.hasKeywords() )
-The existing keywords in the image are: 
-#foreach($kw in $asset.getKeywords())
-	$kw, 
-#end
-#end
+Analyze the image and associated metadata.
 #ifnotnull( $asset.name )
-The file name is $asset.name
+Current file name: $asset.name
 #end
+#if( $asset.hasKeywords() )
+Existing keywords: 
+#foreach($kw in $asset.getKeywords())
+#if($foreach.count > 1),#end $kw 
+#end
+#end
+

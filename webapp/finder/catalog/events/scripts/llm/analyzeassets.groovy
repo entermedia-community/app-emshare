@@ -1,5 +1,6 @@
 package llm
 
+import java.util.Map;
 import org.entermediadb.asset.Asset
 import org.entermediadb.asset.MediaArchive
 import org.entermediadb.llm.LLMManager
@@ -85,7 +86,6 @@ public void tagAssets(){
 			inputStream.close() // Close the InputStream
 		}
 		
-		
 
 		log.info("Analyzing asset ("+count+"/"+assets.size()+") Id: " + asset.getId() + " " + asset.getName());
 		
@@ -102,10 +102,33 @@ public void tagAssets(){
 				JSONObject arguments = results.getArguments();
 				if (arguments != null) {
 
-					int detected =  manager.copyData(arguments, asset);
-					if (detected > 0)
-					{
-						log.info(" Asset "+asset.getId() +" "+ asset.getName()+" - Detected: " + detected);
+					Map metadata =  (Map) arguments.get("metadata");
+	
+					String caption = (String) metadata.get("caption");
+					if(caption != null) {
+						asset.setValue("headline", caption);
+						log.info("Headline: "+caption);
+					}
+					String description = (String) metadata.get("description");
+					if(description != null) {
+						asset.setValue("longcaption", description);
+						log.info("Long Caption: "+description);
+					}
+					String assettitle = (String) metadata.get("assettitle");
+					if(assettitle != null) {
+						asset.setValue("assettitle", assettitle);
+						log.info("Asset Title: "+assettitle);
+					}
+					String keywords = (String) metadata.get("keywords");
+					if(keywords != null) {
+						Collection<String> keywordlist = Arrays.asList(keywords.split(","));
+						asset.setValue("keywordsai", keywordlist);
+						log.info("Keywords AI: "+keywords);
+					}
+					String alttext = (String) metadata.get("alttext");
+					if(alttext != null) {
+						asset.setValue("alternatetext", alttext);
+						log.info("Alt Text: "+alttext);
 					}
 				}
 				else {
@@ -121,15 +144,8 @@ public void tagAssets(){
 			asset.setValue("llmerror", true);
 			archive.saveAsset(asset);
 			continue;
-		}
-		
+		}	
 	}
-		
 }
 
 tagAssets();
-
-
-
-
-
