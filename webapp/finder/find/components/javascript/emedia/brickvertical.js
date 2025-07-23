@@ -254,8 +254,9 @@
       success: function (data) {
         var jdata = $(data);
         var code = $(".brickvertical", jdata).html();
-        $(grid).append(code);
-        $(window).trigger("resize");
+        grid.append(code);
+		gridResize(grid); //was resize event
+		$(window).trigger("resultsgenerated",grid);
         stopautoscroll = false;
       },
     });
@@ -285,9 +286,7 @@
         }
       });
       grid.removeClass("uninitialized");
-      setTimeout(function () {
-        $(window).trigger("resultsgenerated");
-      });
+	  $(window).trigger("resultsgenerated",grid);
     },
     resize: function () {
       var grid = $(this);

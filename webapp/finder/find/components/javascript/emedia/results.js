@@ -902,7 +902,7 @@ jQuery(document).ready(function (url, params) {
       canv.width = imgWidth;
       canv.height = imgHeight;
       var ctx = canv.getContext("2d");
-      $(this).append(canv);
+      this.appendChild(canv);
       ctx.clearRect(0, 0, canv.width, canv.height);
       ctx.strokeStyle = "rgba(180, 255, 180)";
       ctx.lineWidth = 2;
@@ -918,32 +918,36 @@ jQuery(document).ready(function (url, params) {
     }
   }
 
-  $(window).on("resultsgenerated", function () {
-    $(".renderfaceboxes").each(function () {
-      quickPaintFace.apply(this);
-    });
+  $(window).on("resultsgenerated", function (event,resultsarea) {
+	console.log("on(resultsgenerated", resultsarea);
+	setTimeout(function () {
+		$(".renderfaceboxes", resultsarea).each(function () {
+		  quickPaintFace.apply(this);
+		});
+	});
   });
-
+  
+  $(document).on("resize", function () {
+	setTimeout(function () {
+	    $(".resultsarea .renderfaceboxes").each(function () {
+	  	//console.log("on(renderfaceboxes");
+	      quickPaintFace.apply(this);
+	    });
+	});
+  });
+  
+/*
   $(window).on("renderfaceboxes", function (_, target) {
     if (!target) return;
+	console.log("on(renderfaceboxes");
+
     quickPaintFace.apply(target);
   });
-
-  $(window).on("resize", function () {
-    $(".renderfaceboxes").each(function () {
-      quickPaintFace.apply(this);
-    });
-  });
+*/
 
   lQuery(".emgallery").livequery(function () {
-    $(".renderfaceboxes").each(function () {
-      var _this = this;
-      $(this)
-        .find("img")
-        .on("load", function () {
-          quickPaintFace.apply(_this);
-        });
-    });
+	//TODO: Use width and height instead
+  	$(window).trigger("resultsgenerated",$(this));
   });
 
   $(window).on("hideMediaViewer", function () {

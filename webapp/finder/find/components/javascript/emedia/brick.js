@@ -270,8 +270,10 @@
       success: function (data) {
         var jdata = $(data);
         var code = $(".masonry-grid", jdata).html();
-        $(grid).append(code);
-        $(window).trigger("resize");
+        grid.append(code);
+        gridResize(grid); //was resize event
+		$(window).trigger("resultsgenerated",grid);
+
         stopautoscroll = false;
       },
     });
@@ -294,9 +296,7 @@
       lQuery(".scrollview").livequery("scroll", function () {
         checkScroll(grid);
       });
-      setTimeout(function () {
-        $(window).trigger("resultsgenerated");
-      });
+	  $(window).trigger("resultsgenerated",grid);
     },
     render: function () {
       gridResize($(this));
