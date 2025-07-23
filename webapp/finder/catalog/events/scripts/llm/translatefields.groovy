@@ -18,12 +18,16 @@ public void translateFields() {
 	Searcher searcher = archive.getAssetSearcher();
 	PropertyDetails details = searcher.getPropertyDetails();
 
-	HitTracker assets = searcher.query()
+	HitTracker assets = context.getPageValue("hits");
+	if( assets == null || assets.isEmpty())
+	{
+		assets = searcher.query()
 		.exact("previewstatus", "2")
 		.exact("taggedbyllm","true")
 		.exact("translatesuccess","false")
 		.exact("translaterror","false")
 		.search();
+	}
 	
 	assets.enableBulkOperations();
 
