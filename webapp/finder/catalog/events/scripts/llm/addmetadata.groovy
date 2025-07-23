@@ -99,9 +99,10 @@ public void addMetadataWithAI(){
 			
 			LLMResponse results = manager.callFunction(inReq, model, "generate_metadata", template, 0, 5000,base64EncodedString );
 			
+			long duration = (System.currentTimeMillis() - startTime) / 1000L;
+
 			if (results != null)
 			{
-				long duration = (System.currentTimeMillis() - startTime) / 1000L;
 				JSONObject arguments = results.getArguments();
 				if (arguments != null) {
 
@@ -112,7 +113,7 @@ public void addMetadataWithAI(){
 						asset.setValue("headline", caption);
 						log.info("Headline: "+caption);
 					}
-					String description = (String) metadata.get("description");
+					String description = (String) metadata.get("longcaption");
 					if(description != null) {
 						asset.setValue("longcaption", description);
 						log.info("Long Caption: "+description);
@@ -138,10 +139,11 @@ public void addMetadataWithAI(){
 				else {
 					log.info("Asset "+asset.getId() +" "+asset.getName()+" - Nothing Detected.");
 				}
-				asset.setValue("taggedbyllm", true);
-				archive.saveAsset(asset);
-				log.info("Took "+duration +"s");
 			}
+			
+			asset.setValue("taggedbyllm", true);
+			archive.saveAsset(asset);
+			log.info("Took "+duration +"s");
 		}
 		catch(Exception e){
 			log.error("LLM Error", e);
