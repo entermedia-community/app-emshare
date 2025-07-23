@@ -10,9 +10,10 @@ import org.openedit.Data
 import org.openedit.WebPageRequest
 import org.openedit.data.Searcher
 import org.openedit.hittracker.HitTracker
+import org.openedit.hittracker.ListHitTracker;
 import org.openedit.repository.ContentItem
 
-public void tagAssets(){
+public void addMetadataWithAI(){
 
 	//Create the MediaArchive object
 	WebPageRequest inReq = context;
@@ -41,13 +42,15 @@ public void tagAssets(){
 
 	//Refine this to use a hit tracker?
 	HitTracker assets = searcher.query().exact("previewstatus", "2").exact("taggedbyllm","false").exact("llmerror","false").search();
+
+	HitTracker assetsToTranslate = new ListHitTracker();
 	
 	if(assets.size() < 1)
 	{
 		return;
 	}
 	
-	log.info("AI manager selected: " + type + " Model: "+ model + " - Tagging: " + assets.size() + " assets");
+	log.info("AI manager selected: " + type + " Model: "+ model + " - Adding metadata to: " + assets.size() + " assets");
 	assets.enableBulkOperations();
 	int count = 1;
 	for (hit in assets) {
@@ -130,6 +133,7 @@ public void tagAssets(){
 						asset.setValue("alternatetext", alttext);
 						log.info("Alt Text: "+alttext);
 					}
+					assetsToTranslate.add(hit);
 				}
 				else {
 					log.info("Asset "+asset.getId() +" "+asset.getName()+" - Nothing Detected.");
@@ -146,6 +150,11 @@ public void tagAssets(){
 			continue;
 		}	
 	}
+	if(assetsToTranslate.size() > 0)
+	{
+		archive.firePathEvent("llm/translatefields", inReq.getUser(), assetsToTranslate);
+	}
 }
 
-tagAssets();
+addMetadataWithAI();
+
