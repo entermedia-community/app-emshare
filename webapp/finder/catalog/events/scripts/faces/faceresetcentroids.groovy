@@ -43,6 +43,8 @@ public void init()
 		saved = saved +  tosave.size();
 		log.info("updated: " + saved);
 
+		tosave.clear();
+		
 		hits = archive.query("faceembedding").exact("iscentroid",true).hitsPerPage(500).search();
 		for(Data hit in hits)
 		{
@@ -50,7 +52,7 @@ public void init()
 			tosave.add(hit);
 		}
 		archive.saveData("faceembedding",tosave);
-		log.info("cleared: " + tosave.size() );
+		log.info("cleared centroids: " + tosave.size() );
 		
 	}
 	finally
