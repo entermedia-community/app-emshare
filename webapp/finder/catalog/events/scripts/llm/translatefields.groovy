@@ -12,13 +12,15 @@ import org.openedit.modules.translations.LanguageMap;
 import org.openedit.Data;
 
 
-public void translateFields() {
+
+public void translateMultilingualFields() {
 
 	MediaArchive archive = context.getPageValue("mediaarchive");
 	Searcher searcher = archive.getAssetSearcher();
 	PropertyDetails details = searcher.getPropertyDetails();
 
 	HitTracker assets = context.getPageValue("hits");
+
 	if( assets == null || assets.isEmpty())
 	{
 		assets = searcher.query()
@@ -28,14 +30,14 @@ public void translateFields() {
 		.exact("translaterror","false")
 		.search();
 	}
-	
-	assets.enableBulkOperations();
 
 	if(assets.isEmpty())
 	{
 		log.info("No asset found");
 		return;
 	}
+	
+	assets.enableBulkOperations();
 
 	TranslationManager manager = (TranslationManager) archive.getBean("translationManager");
 	
@@ -113,12 +115,11 @@ public void translateFields() {
 				log.info("Found translation for "+ asset.getId() + ", " + asset.getName());
 			}
 			
-			long duration = (System.currentTimeMillis() - startTime) / 1000L;
-
 			asset.setValue("translatesuccess", true);
 			archive.saveAsset(asset);
-			log.info("Took "+duration +"s");
 
+			long duration = (System.currentTimeMillis() - startTime) / 1000L;
+			log.info("Took "+duration +"s");
 		} 
 		catch(Exception e){
 			log.error("Translation Error", e);
@@ -129,4 +130,4 @@ public void translateFields() {
 	}
 }
 
-translateFields();
+translateMultilingualFields();

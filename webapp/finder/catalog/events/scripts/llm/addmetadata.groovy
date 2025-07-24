@@ -15,12 +15,10 @@ import org.openedit.repository.ContentItem
 
 public void addMetadataWithAI(){
 
-	//Create the MediaArchive object
 	WebPageRequest inReq = context;
-	MediaArchive archive = inReq.getPageValue("mediaarchive");
+	MediaArchive archive = context.getPageValue("mediaarchive");
 	Searcher searcher = archive.getAssetSearcher();
-	//TODO:  get the bean to use programatically from catalog settings or something
-	
+
 	String model = archive.getCatalogSettingValue("llmvisionmodel");
 	if(model == null) {
 		model = "gpt-4o-mini";
@@ -76,7 +74,6 @@ public void addMetadataWithAI(){
 			log.info("Missing " + imagesize + " generated image for:" + asset.getName());
 			continue;
 		}
-		
 
 		InputStream inputStream = item.getInputStream()
 		String base64EncodedString = ''
@@ -88,19 +85,18 @@ public void addMetadataWithAI(){
 		} finally {
 			inputStream.close() // Close the InputStream
 		}
-		
 
 		log.info("Analyzing asset ("+count+"/"+assets.size()+") Id: " + asset.getId() + " " + asset.getName());
-		
+		count++;
 
-		String template = manager.loadInputFromTemplate(inReq, "/" +  archive.getMediaDbId() + "/gpt/systemmessage/analyzeasset.html");
+		
 		try{
 			long startTime = System.currentTimeMillis();
 			
+			String template = manager.loadInputFromTemplate(inReq, "/" +  archive.getMediaDbId() + "/gpt/systemmessage/analyzeasset.html");
 			LLMResponse results = manager.callFunction(inReq, model, "generate_metadata", template, 0, 5000,base64EncodedString );
-			
-			long duration = (System.currentTimeMillis() - startTime) / 1000L;
 
+			boolean wasUpdated = false;
 			if (results != null)
 			{
 				JSONObject arguments = results.getArguments();
@@ -111,38 +107,48 @@ public void addMetadataWithAI(){
 					String caption = (String) metadata.get("caption");
 					if(caption != null) {
 						asset.setValue("headline", caption);
+						wasUpdated = true;
 						log.info("Headline: "+caption);
 					}
 					String description = (String) metadata.get("longcaption");
 					if(description != null) {
 						asset.setValue("longcaption", description);
+						wasUpdated = true;
 						log.info("Long Caption: "+description);
 					}
 					String assettitle = (String) metadata.get("assettitle");
 					if(assettitle != null) {
 						asset.setValue("assettitle", assettitle);
+						wasUpdated = true;
 						log.info("Asset Title: "+assettitle);
 					}
 					String keywords = (String) metadata.get("keywords");
 					if(keywords != null) {
 						Collection<String> keywordlist = Arrays.asList(keywords.split(","));
 						asset.setValue("keywordsai", keywordlist);
+						wasUpdated = true;
 						log.info("Keywords AI: "+keywords);
 					}
 					String alttext = (String) metadata.get("alttext");
 					if(alttext != null) {
 						asset.setValue("alternatetext", alttext);
+						wasUpdated = true;
 						log.info("Alt Text: "+alttext);
 					}
-					assetsToTranslate.add(hit);
 				}
 				else {
 					log.info("Asset "+asset.getId() +" "+asset.getName()+" - Nothing Detected.");
 				}
 			}
-			
+
+			if(wasUpdated) {
+				assetsToTranslate.add(hit);
+			}
+
 			asset.setValue("taggedbyllm", true);
 			archive.saveAsset(asset);
+
+			long duration = (System.currentTimeMillis() - startTime) / 1000L;
 			log.info("Took "+duration +"s");
 		}
 		catch(Exception e){
@@ -159,4 +165,3 @@ public void addMetadataWithAI(){
 }
 
 addMetadataWithAI();
-
