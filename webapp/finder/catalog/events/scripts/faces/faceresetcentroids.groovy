@@ -29,6 +29,7 @@ public void init()
 		for(Data hit in hits)
 		{
 			hit.setValue("nearbycentroidids",null);
+			hit.setValue("iscentroid",false);
 			tosave.add(hit);
 			if( tosave.size() == 1000 )
 			{
@@ -56,7 +57,10 @@ public void init()
 	{
 		archive.getLockManager().release(lock);
 	}	
-	
+	archive.getCacheManager().clear("face");
+	archive.getCacheManager().clear("faceboxes");
+	archive.getCacheManager().clear("facepersonlookuprecord");
+
 }
 
 
