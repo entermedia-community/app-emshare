@@ -256,7 +256,7 @@
         var code = $(".brickvertical", jdata).html();
         grid.append(code);
 		gridResize(grid); //was resize event
-		$(window).trigger("resultsgenerated",grid);
+		$(window).trigger("resultsgenerated",[grid]);
         stopautoscroll = false;
       },
     });
@@ -286,7 +286,7 @@
         }
       });
       grid.removeClass("uninitialized");
-	  $(window).trigger("resultsgenerated",grid);
+	  $(window).trigger("resultsgenerated",[grid]);
     },
     resize: function () {
       var grid = $(this);

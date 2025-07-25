@@ -947,7 +947,7 @@ jQuery(document).ready(function (url, params) {
 
   lQuery(".emgallery").livequery(function () {
 	//TODO: Use width and height instead
-  	$(window).trigger("resultsgenerated",$(this));
+  	$(window).trigger("resultsgenerated",[$(this)]);
   });
 
   $(window).on("hideMediaViewer", function () {

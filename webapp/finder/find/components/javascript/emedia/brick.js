@@ -272,7 +272,7 @@
         var code = $(".masonry-grid", jdata).html();
         grid.append(code);
         gridResize(grid); //was resize event
-		$(window).trigger("resultsgenerated",grid);
+		$(window).trigger("resultsgenerated",[grid]);
 
         stopautoscroll = false;
       },
@@ -296,7 +296,7 @@
       lQuery(".scrollview").livequery("scroll", function () {
         checkScroll(grid);
       });
-	  $(window).trigger("resultsgenerated",grid);
+	  $(window).trigger("resultsgenerated",[grid]);
     },
     render: function () {
       gridResize($(this));

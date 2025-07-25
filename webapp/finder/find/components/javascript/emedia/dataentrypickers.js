@@ -527,7 +527,7 @@ $(document).ready(function () {
         data: options,
         success: function (data) {
           //show toast or reload page or both
-          $(window).trigger("successToast", toastUid);
+          $(window).trigger("successToast", [toastUid]);
           closeemdialog(clicked.closest(".modal"));
         },
       });
