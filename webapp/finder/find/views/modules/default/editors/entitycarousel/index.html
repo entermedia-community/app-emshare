@@ -1,4 +1,4 @@
-
+#set($lightboxid = $context.getRequestParameter("lightboxid"))
 <div id="tabexportcontent" class="editdiv entitytabcolumcontent">
 <div id="publishingcontainer" class="tabpulications" style="height: 100%;">
 	<div class="tabpulications-col overflow-y" style="padding:10px 20px;  flex: 0 0 500px;">
@@ -15,6 +15,59 @@
 		</div>
 
 		<div class="#if($publishing.enabled!="true")disabled-mask#end">
+			<div class="d-flex">
+				<div class="form-group mb-1">
+					<input type="hidden" value="lightboxid" name="field" />
+					<label class="form-select-label	" for="wgSortLabel">[[Lightbox]]</label>
+					<br>
+					
+					#ifnull($lightboxid)
+						#set($lightboxid = $publishing.lightboxid)
+					#end
+					
+					#set($boxes =  $mediaarchive.getEntityManager().loadLightBoxesForModule($module, $entity, $context.getUser()))
+					
+					<select class="form-control form-control-sm form-select form-select-sm wg-autosave" id="wgSortLabel" name="lightboxid.value">
+						<option value="">[[All Files]]</option>
+						#foreach( $box in $boxes)
+							<option value="${box.id}" 
+									#if($lightboxid == $box.id)) 
+										selected="selected" 
+									#end>#text($box)</option>
+							#end
+					</select>
+				</div>
+				<div class="form-group mb-1">
+					<input type="hidden" value="sortby" name="field" />
+					<label class="form-select-label	" for="wgSortLabel">[[Sort By]]</label><br>
+					#set($publishingSortby = $publishing.sortby)
+					#ifnull($publishingSortby)
+						#set($publishingSortby = "orderingDown")
+					#end
+					
+					#set ($alldetails = $mediaarchive.getAssetSearcher().getUserPropertyDetails() )
+					<select data-sortup="$hits.searchQuery.isSortUp()" 
+							class="form-control form-control-sm form-select form-select-sm select2  wg-autosave" 
+							name="sortby.value" 
+							id="$!{moduleid}dialogsortby" 
+							data-allowclear="false">
+						#foreach( $detail in $alldetails)
+							#set($value = "${detail.id}")
+							
+							<option data-detailid="${detail.id}" 
+									value="$value" 
+									#if($publishingSortby== "${detail.id}") 
+										selected="selected" 
+									#end>$detail.getText($context)</option>
+							<option data-detailid="${detail.id}" 
+									value="${value}Down" 
+									#if($publishingSortby== "${detail.id}Down")
+										selected="selected" 
+									#end>$detail.getText($context) ([[Desc]])</option>
+						#end
+					</select>
+				</div>
+			</div>
 			<div class="form-group">
 				<div class="form-check form-check-inline">
 					<input type="hidden" value="title_enabled" name="field" />
@@ -36,13 +89,28 @@
 			</div>
  
 			<div class="form-group">
-			<div class="form-check form-check-inline">
-				<input type="hidden" value="image_caption_enabled" name="field" />
-				<input class="form-check-input wg-autosave" type="checkbox" id="wgImageCaptionLabel" value="true" name="image_caption_enabled.value" #if($publishing.image_caption_enabled=="true")checked#end>
-				<label class="form-check-label" for="wgImageCaptionLabel">[[Image Captions Enabled]]</label>
-			</div>
+				<div class="form-check form-check-inline">
+					<input type="hidden" value="image_caption_enabled" name="field" />
+					<input class="form-check-input wg-autosave" type="checkbox" id="wgImageCaptionLabel" value="true" name="image_caption_enabled.value" #if($publishing.image_caption_enabled=="true")checked#end>
+					<label class="form-check-label" for="wgImageCaptionLabel">[[Show Image Captions]]</label>
+				</div>
 			</div>
 
+			<div class="form-group">
+				<div class="form-check form-check-inline">
+					<input type="hidden" value="image_copyright_enabled" name="field" />
+					<input class="form-check-input wg-autosave" type="checkbox" id="wgImageCopyrightLabel" value="true" name="image_copyright_enabled.value" #if($publishing.image_copyright_enabled=="true")checked#end>
+					<label class="form-check-label" for="wgImageCopyrightLabel">[[Show Copyright/Author]]</label>
+				</div>
+			</div>
+			
+			<div class="form-group">
+				<div class="form-check form-check-inline">
+					<input type="hidden" value="download_enabled" name="field" />
+					<input class="form-check-input wg-autosave" type="checkbox" id="wgDownloadtLabel" value="true" name="download_enabled.value" #if($publishing.download_enabled=="true")checked#end>
+					<label class="form-check-label" for="wgDownloadtLabel">[[Show Download Button]]</label>
+				</div>
+			</div>
 			
 			<div class="form-group">
 				<div class="form-check form-check-inline">

@@ -1,4 +1,3 @@
-
 #set($lightboxid = $context.getRequestParameter("lightboxid"))
 <div id="tabexportcontent" class="editdiv entitytabcolumcontent">
 <div id="publishingcontainer" class="tabpulications" style="height: 100%;">
@@ -20,7 +19,8 @@
 			<div class="d-flex">
 				<div class="form-group mb-1">
 					<input type="hidden" value="lightboxid" name="field" />
-					<label class="form-select-label	" for="wgSortLabel">[[Lightbox]]</label><br>
+					<label class="form-select-label	" for="wgSortLabel">[[Lightbox]]</label>
+					<br>
 					
 					#ifnull($lightboxid)
 						#set($lightboxid = $publishing.lightboxid)
@@ -70,7 +70,80 @@
 					</select>
 				</div>
 			</div>
-	 
+
+			<div class="form-group">
+				<div class="form-check form-check-inline">
+					<input type="hidden" value="title_enabled" name="field" />
+					<input class="form-check-input wg-autosave" type="checkbox" id="wgTitleLabel" value="true" name="title_enabled.value" #if($publishing.title_enabled=="true")checked#end>
+					<label class="form-check-label" for="wgTitleLabel">[[Gallery Title]]</label>
+				</div>
+				<input type="hidden" value="title" name="field" />
+				<input  class="form-control wg-autosave"  placeholder="[[Enter Title here]]" name="title.value" value="$!publishing.title">
+			</div>
+			
+			<div class="form-group">
+				<div class="form-check form-check-inline">
+					<input type="hidden" value="caption_enabled" name="field" />
+					<input class="form-check-input wg-autosave" type="checkbox" id="wgCaptionLabel" value="true" name="caption_enabled.value" #if($publishing.caption_enabled=="true")checked#end>
+					<label class="form-check-label" for="wgCaptionLabel">[[Gallery Subtitle]]</label>
+				</div>
+				<input type="hidden" value="caption" name="field" />
+				<textarea  class="form-control wg-autosave" name="caption.value">$!publishing.caption</textarea>
+			</div>
+
+			<div class="form-group">
+				<div class="form-check form-check-inline">
+					<input type="hidden" value="image_caption_enabled" name="field" />
+					<input class="form-check-input wg-autosave" type="checkbox" id="wgImageCaptionLabel" value="true" name="image_caption_enabled.value" #if($publishing.image_caption_enabled=="true")checked#end>
+					<label class="form-check-label" for="wgImageCaptionLabel">[[Show Image Captions]] [[(visible on popup)]]</label>
+				</div>
+			</div>
+
+			<div class="form-group">
+				<div class="form-check form-check-inline">
+					<input type="hidden" value="image_copyright_enabled" name="field" />
+					<input class="form-check-input wg-autosave" type="checkbox" id="wgImageCopyrightLabel" value="true" name="image_copyright_enabled.value" #if($publishing.image_copyright_enabled=="true")checked#end>
+					<label class="form-check-label" for="wgImageCopyrightLabel">[[Show Copyright/Author]]</label>
+				</div>
+			</div>
+
+			<div class="form-group">
+				<div class="form-check form-check-inline">
+					<input type="hidden" value="download_enabled" name="field" />
+					<input class="form-check-input wg-autosave" type="checkbox" id="wgDownloadtLabel" value="true" name="download_enabled.value" #if($publishing.download_enabled=="true")checked#end>
+					<label class="form-check-label" for="wgDownloadtLabel">[[Show Download Button]]</label>
+				</div>
+			</div>
+
+			<div class="form-group">
+				<div class="form-check form-check-inline">
+					<input type="hidden" value="footer_enabled" name="field" />
+					<input class="form-check-input wg-autosave" type="checkbox" id="wgFooterLabel" value="true" name="footer_enabled.value"  #if($publishing.footer_enabled=="true")checked#end>
+					<label class="form-check-label" for="wgFooterLabel">[[Footer]]</label>
+				</div>
+				<input type="hidden" value="footer" name="field" />
+				<input  class="form-control wg-autosave"  placeholder="[[Enter Footer here]]" name="footer.value" value="$!publishing.footer">
+			</div>
+
+			<div class="form-group">
+				<div class="form-check form-check-inline">
+					<input type="hidden" value="externalcss_enabled" name="field" />
+					<input class="form-check-input wg-autosave" type="checkbox" id="wgExternalCSSLabel" value="true" name="externalcss_enabled.value"  #if($publishing.externalcss_enabled=="true")checked#end>
+					<label class="form-check-label" for="wgExternalCSSLabel">[[External CSS]]</label>
+				</div>
+				<input type="hidden" value="externalcss" name="field" />
+				<input  class="form-control wg-autosave"  placeholder="[[External CSS Link]]" name="externalcss.value" value="$!publishing.externalcss">
+			</div>
+
+			<div class="form-group mb-1">
+				<input type="hidden" value="publishingfeedlayout" name="field" />
+				<label class="form-select-label mr-1" for="wgThemeLabel">[[Theme]]</label>
+				<select class="form-select form-select-sm wg-autosave" id="wgThemeLabel" name="publishingfeedlayout.value">
+					<option value="light" #if($publishing.publishingfeedlayout!="dark") selected #end>Light</option>
+					<option value="dark" #if($publishing.publishingfeedlayout=="dark") selected #end>Dark</option>
+				</select>
+			</div>
+
 			#set($containerwidth = 1000)
 			#if($publishing.containerwidth > 0)
 				#set($containerwidth = $publishing.containerwidth)
@@ -79,6 +152,22 @@
 			#if($publishing.containerheight > 0)
 				#set($containerheight = $publishing.containerheight)
 			#end
+
+			<div class="form-group">
+				<div class="form-check form-check-inline">
+					<input type="hidden" value="containerdimension_enabled" name="field" />
+					<input class="form-check-input wg-autosave" type="checkbox" id="wgCDLabel" value="true" name="containerdimension_enabled.value"  #if($publishing.containerdimension_enabled=="true")checked#end>
+					<label class="form-check-label" for="wgCDLabel">[[Use Fixed Dimension]]</label>
+				</div>
+				<input type="hidden" value="containerwidth" name="field" />
+				<input type="hidden" value="containerheight" name="field" />
+				<div class="d-flex align-items-center">
+					<input  class="form-control wg-autosave"  placeholder="[[Width]]" name="containerwidth.value" value="$containerwidth" type="number" #if($publishing.containerdimension_enabled!="true")disabled#end>
+					<span class="mx-2">&times;</span>
+					<input  class="form-control wg-autosave"  placeholder="[[Height]]" name="containerheight.value" value="$containerheight" type="number" #if($publishing.containerdimension_enabled!="true")disabled#end>
+				</div>
+				<small class="text-muted">[[Uses container width and height if disabled]]</small>
+			</div>
 
 			<input type="hidden" value="entityid" name="field" />
 			<input type="hidden" name="entityid.value" value="$!entity.id" />
