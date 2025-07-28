@@ -19,7 +19,7 @@ public void translateMultilingualFields() {
 	Searcher searcher = archive.getAssetSearcher();
 	PropertyDetails details = searcher.getPropertyDetails();
 
-	HitTracker assets = context.getPageValue("hits");
+	HitTracker assets = context.getPageValue("assetsToTranslate");
 
 	if( assets == null || assets.isEmpty())
 	{
@@ -66,9 +66,9 @@ public void translateMultilingualFields() {
 	}
 
 	int count = 1;
-
+	List tosave = new ArrayList();
 	for (hit in assets) {
-		Asset asset = searcher.loadData(hit);
+		Asset asset = archive.getAsset(hit.id);
 
 		log.info("Translating asset (" + count + "/" + assets.size() + ") Id: " + asset.getId() + ", " + asset.getName());
 		count++;
@@ -116,10 +116,17 @@ public void translateMultilingualFields() {
 			}
 			
 			asset.setValue("translatesuccess", true);
-			archive.saveAsset(asset);
+			tosave.add(asset);
 
 			long duration = (System.currentTimeMillis() - startTime) / 1000L;
 			log.info("Took "+duration +"s");
+			
+			if( tosave.size() == 1000)	{
+				archive.saveAssets(tosave);
+				//searcher.saveAllData(tosave, null);
+				log.info("Saved: " + tosave.size() + " assets - " + searcher.getSearchType());
+				tosave.clear();
+			}
 		} 
 		catch(Exception e){
 			log.error("Translation Error", e);
@@ -127,6 +134,10 @@ public void translateMultilingualFields() {
 			archive.saveAsset(asset);
 			continue;
 		}
+		archive.saveAssets(tosave);
+		//searcher.saveAllData(tosave, null);
+		log.info("Saved: " + tosave.size() + " assets - " + searcher.getSearchType());
+		tosave.clear();
 	}
 }
 

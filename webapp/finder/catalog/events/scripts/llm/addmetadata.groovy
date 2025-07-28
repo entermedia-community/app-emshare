@@ -1,6 +1,5 @@
 package llm
 
-import java.util.Map;
 import org.entermediadb.asset.Asset
 import org.entermediadb.asset.MediaArchive
 import org.entermediadb.llm.LLMManager
@@ -39,20 +38,19 @@ public void addMetadataWithAI(){
 	inReq.putPageValue("category", cat);
 
 	//Refine this to use a hit tracker?
-	HitTracker assets = searcher.query().exact("previewstatus", "2").exact("taggedbyllm","false").exact("llmerror","false").search();
-
-	HitTracker assetsToTranslate = new ListHitTracker();
-	
+	HitTracker assets = archive.query("asset").exact("previewstatus", "2").exact("taggedbyllm","false").exact("llmerror","false").search();
+	log.info("AI manager selected: " + type + " Model: "+ model + " - Adding metadata to: " + assets.size() + " assets");
 	if(assets.size() < 1)
 	{
 		return;
 	}
 	
-	log.info("AI manager selected: " + type + " Model: "+ model + " - Adding metadata to: " + assets.size() + " assets");
+	
 	assets.enableBulkOperations();
 	int count = 1;
+	List tosave = new ArrayList();
 	for (hit in assets) {
-		Asset asset = archive.getAssetSearcher().loadData(hit);
+		Asset asset = archive.getAsset(hit.id);
 		inReq.putPageValue("asset", asset);
 		
 		String mediatype = archive.getMediaRenderType(asset);
@@ -146,10 +144,18 @@ public void addMetadataWithAI(){
 			}
 
 			asset.setValue("taggedbyllm", true);
-			archive.saveAsset(asset);
+			tosave.add(asset);
+			//archive.saveAsset(asset);
 
 			long duration = (System.currentTimeMillis() - startTime) / 1000L;
 			log.info("Took "+duration +"s");
+			
+			if( tosave.size() == 1000)	{
+				archive.saveAssets(tosave);
+				//searcher.saveAllData(tosave, null);
+				log.info("Saved: " + tosave.size() + " assets - " + searcher.getSearchType());
+				tosave.clear();
+			}
 		}
 		catch(Exception e){
 			log.error("LLM Error", e);
@@ -158,10 +164,13 @@ public void addMetadataWithAI(){
 			continue;
 		}	
 	}
-	if(assetsToTranslate.size() > 0)
-	{
-		archive.firePathEvent("llm/translatefields", inReq.getUser(), assetsToTranslate);
-	}
+	archive.saveAssets(tosave);
+	log.info("Saved: " + tosave.size() + " assets - " + searcher.getSearchType());
+	tosave.clear();
+	
+
+	archive.firePathEvent("llm/translatefields", inReq.getUser());
+
 }
 
 addMetadataWithAI();
