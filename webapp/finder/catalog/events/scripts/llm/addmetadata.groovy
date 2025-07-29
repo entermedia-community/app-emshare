@@ -34,11 +34,17 @@ public void addMetadataWithAI(){
 	
 	
 	LLMManager manager = archive.getBean(type);
-	def cat = archive.getCategorySearcher().getRootCategory();
-	inReq.putPageValue("category", cat);
-
+	
+	String categoryid	 = archive.getCatalogSettingValue("llmmetadatastartcategory");
+	
+	if (categoryid == null)
+    {
+        categoryid = "index";
+    }
+	
 	//Refine this to use a hit tracker?
-	HitTracker assets = archive.query("asset").exact("previewstatus", "2").exact("taggedbyllm","false").exact("llmerror","false").search();
+	HitTracker assets = archive.query("asset").exact("previewstatus", "2").exact("category", categoryid).exact("taggedbyllm",false).exact("llmerror",false).search();
+	
 	log.info("AI manager selected: " + type + " Model: "+ model + " - Adding metadata to: " + assets.size() + " assets");
 	if(assets.size() < 1)
 	{
@@ -139,9 +145,7 @@ public void addMetadataWithAI(){
 				}
 			}
 
-			if(wasUpdated) {
-				assetsToTranslate.add(hit);
-			}
+
 
 			asset.setValue("taggedbyllm", true);
 			tosave.add(asset);
