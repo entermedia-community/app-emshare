@@ -49,20 +49,7 @@ $context.putPageValue("assetheight",$assetheight)
 							$context.putPageValue("cdnprefix", $cdnprefix)
 							$context.putPageValue("useoriginal", "true")
 						#end
-						
-						
-						
-						#set($faceprofilegroupid = $context.getRequestParameter("showfaceprofileid"))
-						
-						#ifnotnull($faceprofilegroupid)
-							$context.putPageValue("faceprofilegroupid",$faceprofilegroupid)
-							
-							#if($assetheight && $assetwidth)
-								#set($facemanager = $mediaarchive.getBean("faceProfileManager") )
-								#set($imagebox = $facemanager.getImageBoxById( $faceprofilegroupid, $asset, $assetwidth, $assetheight) )
-								$context.putPageValue("imagebox", $imagebox)
-							#end
-						#end
+					
 					#end 						
 
 	 				$pages.include("$searchhome/thumbnails/${rendertype}.html", $context) 
