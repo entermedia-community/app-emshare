@@ -1,5 +1,9 @@
 /*Color*/
 #macro(checkval $val1 $val2)#ifnull($val1)#set($val1=$val2)#end$val1#end
+#macro(hover $val1 $val2)#ifnull($val1)#set($val1=$val2)#end$cssutils.makeHover($val1)#end
+#macro(gradient $val1 $val2)#ifnull($val1)#set($val1=$val2)#end$cssutils.makeGradient($val1)#end
+#macro(hovergradient $val1 $val2)#ifnull($val1)#set($val1=$val2)#end$cssutils.makeGradientHover($val1)#end
+#macro(contrast $val1 $val2)#ifnull($val1)#set($val1=$val2)#end$cssutils.makeContrast($val1)#end
 
 :root {
 	--themed-logo-width: #checkval($theme.get("logowidth"), "188")px;
@@ -7,48 +11,60 @@
 
 	--themed-sidebar:#checkval($theme.get("sidebar"), "#151515");
 	--themed-sidebar-text:#checkval($theme.get("sidebar-text"), "#FFFFFF");
+
 	--themed-navbar-primary:#checkval($theme.get("navbar-primary"), "#252525");
 	--themed-navbar-primary-text:#checkval($theme.get("navbar-primary-text"), "#FFFFFF");
+
 	--themed-navbar-secondary:#checkval($theme.get("navbar-secondary"), "#444444");
 	--themed-navbar-secondary-text:#checkval($theme.get("navbar-secondary-text"), "#FFFFFF");
-	--themed-nav-btn:#checkval($theme.get("nav-btn"), "#444444");
-	--themed-nav-btn-hover:#checkval($theme.get("nav-btn-hover"), "#5E5E5E");
+
+	--themed-nav-btn:#gradient($theme.get("nav-btn"), "#444444");
+	--themed-nav-btn-hover:#hovergradient($theme.get("nav-btn-hover"), "#5E5E5E");
 	--themed-nav-btn-text:#checkval($theme.get("nav-btn-text"), "#FFFFFF");
+
 	--themed-nav-btn-active:#checkval($theme.get("nav-btn-active"), "#FFFFFF");
-	--themed-nav-btn-active-hover:#checkval($theme.get("nav-btn-active-hover"), "#E6E6E6");
+	--themed-nav-btn-active-hover:#hover($theme.get("nav-btn-active-hover"), "#E6E6E6");
 	--themed-nav-btn-active-text:#checkval($theme.get("nav-btn-active-text"), "#444444");
+
 	--themed-tab-bar:#checkval($theme.get("tab-bar"), "#444444");
 	--themed-tab-bar-hover:#checkval($theme.get("tab-bar-hover"), "#5E5E5E");
-	--themed-tab-btn:#checkval($theme.get("tab-btn"), "#444444");
+
+	--themed-tab-btn:#hover($theme.get("tab-btn"), "#444444");
 	--themed-tab-btn-text:#checkval($theme.get("tab-btn-text"), "#ffffff");
 	--themed-tab-btn-hover:#checkval($theme.get("tab-btn-hover"), "#A1A1A1");
+
 	--themed-tab-btn-active:#checkval($theme.get("tab-btn-active"), "#FFFFFF");
 	--themed-tab-btn-active-text:#checkval($theme.get("tab-btn-active-text"), "#444444");
-	--themed-tab-btn-active-hover:#checkval($theme.get("tab-btn-active-hover"), "#A1A1A1");
-	--themed-btn-cta:#checkval($theme.get("btn-cta"), "#94E594");
-	--themed-btn-cta-hover:#checkval($theme.get("btn-cta-hover"), "#bdefbd");
+	--themed-tab-btn-active-hover:#hover($theme.get("tab-btn-active-hover"), "#A1A1A1");
+
+	--themed-btn-cta:#gradient($theme.get("btn-cta"), "#94E594");
+	--themed-btn-cta-hover:#hovergradient($theme.get("btn-cta-hover"), "#bdefbd");
 	--themed-btn-cta-text:#checkval($theme.get("btn-cta-text"), "#0F3E0F");
-	--themed-btn:#checkval($theme.get("btn"), "#444444");
-	--themed-btn-hover:#checkval($theme.get("btn-hover"), "#666666");
+
+	--themed-btn:#gradient($theme.get("btn"), "#444444");
+	--themed-btn-hover:#hovergradient($theme.get("btn-hover"), "#666666");
 	--themed-btn-text:#checkval($theme.get("btn-text"), "#FFFFFF");
-	--themed-btn-sec:#checkval($theme.get("btn-sec"), "#888888");
-	--themed-btn-sec-hover:#checkval($theme.get("btn-sec-hover"), "#A1A1A1");
+
+	--themed-btn-sec:#gradient($theme.get("btn-sec"), "#888888");
+	--themed-btn-sec-hover:#hovergradient($theme.get("btn-sec-hover"), "#A1A1A1");
 	--themed-btn-sec-text:#checkval($theme.get("btn-sec-text"), "#FFFFFF");
+
 	--themed-btn-acc-active:#checkval($theme.get("btn-acc-active"), "#378637");
-	--themed-btn-acc:#checkval($theme.get("btn-acc"), "#3884FD");
-	--themed-btn-acc-hover:#checkval($theme.get("btn-acc-hover"), "#6DA4FE");
+	--themed-btn-acc:#gradient($theme.get("btn-acc"), "#3884FD");
+	--themed-btn-acc-hover:#hovergradient($theme.get("btn-acc-hover"), "#6DA4FE");
 	--themed-btn-acc-text:#checkval($theme.get("btn-acc-text"), "#FFFFFF");
+
 	--themed-th:#checkval($theme.get("th"), "#FFFFFF");
-	--themed-th-hover:#checkval($theme.get("th-hover"), "#E6E6E6");
+	--themed-th-hover:#hover($theme.get("th-hover"), "#E6E6E6");
 	--themed-th-text:#checkval($theme.get("th-text"), "#444444");
+
 	--themed-td:#checkval($theme.get("td"), "#FFFFFF");
 	--themed-td-stripe:#checkval($theme.get("td-stripe"), "#F2F2F2");
 	--themed-td-text:#checkval($theme.get("td-text"), "#444444");
+	
 	--themed-footer:#checkval($theme.get("footer"), "#151515");
 	--themed-footer-text:#checkval($theme.get("footer-text"), "#888888");
 }
-
-
 
 #set( $apphome = $context.findValue("applicationid") )
 #set( $apphome = "/${apphome}" )

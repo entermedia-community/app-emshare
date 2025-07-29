@@ -80,11 +80,6 @@ function contrastColor(hex) {
     g = parseInt(hex.slice(2, 4), 16),
     b = parseInt(hex.slice(4, 6), 16);
 
-  // r = (255 - r).toString(16);
-  // g = (255 - g).toString(16);
-  // b = (255 - b).toString(16);
-  // return "#" + padZero(r) + padZero(g) + padZero(b);
-
   return r * 0.299 + g * 0.587 + b * 0.114 > 186 ? "#444444" : "#FFFFFF";
 }
 
@@ -257,10 +252,10 @@ $(document).ready(function () {
   window.debugMode = false;
   window.onkeydown = function (event) {
     if (event.ctrlKey) {
-		var selector = document.querySelector("a#oeselector");
-		if (selector == undefined) {
-			return;
-		}
+      var selector = document.querySelector("a#oeselector");
+      if (selector == undefined) {
+        return;
+      }
       var href = selector.href;
       if (event.key == "r") {
         event.preventDefault();
@@ -311,9 +306,9 @@ $(document).ready(function () {
     lQuery(".pickfromiframe").livequery("click", function (e) {
       e.preventDefault();
       e.stopImmediatePropagation();
-	  
-	  var pickerbtn = $(this);
-	  
+
+      var pickerbtn = $(this);
+
       var imageUrl = pickerbtn.data("imageurl");
       var assetinfo = pickerbtn.closest("[data-assetid]");
       var assetid = "";
@@ -321,7 +316,7 @@ $(document).ready(function () {
       if (externalmessage && externalmessage.target) {
         target = externalmessage.target;
       }
-      if (!target) {	
+      if (!target) {
         target = $("#application").data("targetfieldid") || "";
       }
       if (assetinfo.length) {
@@ -332,18 +327,18 @@ $(document).ready(function () {
       if (!type) {
         type = "asset";
       }
-	  
-	  if (type =="entity"){
-		assetid = pickerbtn.data("primarymedia");
-	  }
-		
-	  var entityid = pickerbtn.data("entityid");
-	  
+
+      if (type == "entity") {
+        assetid = pickerbtn.data("primarymedia");
+      }
+
+      var entityid = pickerbtn.data("entityid");
+
       var payload = {
         name: "eMediaPicked",
         assetpicked: imageUrl,
         assetid: assetid,
-		entityid: entityid,
+        entityid: entityid,
         target: target,
         type: type,
       };
@@ -361,7 +356,6 @@ $(document).ready(function () {
           top.postMessage(payload, targetOrigin);
         }
       } else {
-        
         window.parent.postMessage(payload);
       }
     });
