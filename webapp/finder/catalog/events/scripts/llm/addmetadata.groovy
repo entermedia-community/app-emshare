@@ -45,7 +45,7 @@ public void addMetadataWithAI(){
 	//Refine this to use a hit tracker?
 	HitTracker assets = archive.query("asset").exact("previewstatus", "2").exact("category", categoryid).exact("taggedbyllm",false).exact("llmerror",false).search();
 	
-	log.info("AI manager selected: " + type + " Model: "+ model + " - Adding metadata to: " + assets.size() + " assets");
+	log.info("AI manager selected: " + type + " Model: "+ model + " - Adding metadata to: " + assets.size() + " assets in category: " + categoryid);
 	if(assets.size() < 1)
 	{
 		return;
@@ -173,7 +173,7 @@ public void addMetadataWithAI(){
 	tosave.clear();
 	
 
-	archive.firePathEvent("llm/translatefields", inReq.getUser());
+	archive.firePathEvent("llm/translatefields", inReq.getUser(, null));
 
 }
 
