@@ -1,22 +1,24 @@
-## Needs $asset
-<div id="editfaceprofiles" class="asset-data-detail asset-data-preview assetpanel-editor-box edit-panel-generic">
+#set( $reloadface = $context.getRequestParameter("reloadface") )
+
+<div id="editfaceprofiles" class="#ifnull($reloadface) ajaxstatus #end asset-data-detail asset-data-preview assetpanel-editor-box edit-panel-generic"
+data-reloadface="true" data-assetid="$asset.getId()" data-ajaxpath="$page.path" data-runwhenhidden="true" data-oemaxlevel="1"
+>
 	<div class="d-flex align-items-center justify-content-between mr-3">
 		<h4 class="m-0">[[People]]</h4>
 	</div>
-	
-	$context.putPageValue("clearfilters","true")	
+
+#ifnotnull($reloadface)	
+		
 	#set ($viewtype = "faceprofiles")
-	
-	#set($rendertype = $mediaarchive.getMediaRenderType($asset))
-
-	$context.putPageValue("thumbsize",$thumbsize)
-
 	<div class="$detailviewercolumnclass asset-data-detail emdatafield-$!viewtype p-3" id="editfaceprofilesfaces">
+
+		#set($rendertype = $mediaarchive.getMediaRenderType($asset))
+		$context.putPageValue("thumbsize",$thumbsize)
+
 		<div class="emfield-scroll" id="entitypickerentityperson">
 
 			#set( $facemanager = $mediaarchive.getBean("faceProfileManager") )
 			#set($faceboxescollection =  $facemanager.collectFaceBoxesAllPeople($asset) )
-			
 			<ul class="entity-value-list d-flex flex-wrap">
 				#foreach( $row in $faceboxescollection )
 					#set( $rowdata = $row.getEmbeddedData())
@@ -143,4 +145,7 @@
 			
 		</div>
 	</div>
+
+#end	
+	
 </div>
