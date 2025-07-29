@@ -1040,18 +1040,19 @@ $(document).ready(function () {
       selectedLabel = null;
     }
 
-    lQuery(".deploy-organizer-finish").livequery("click", function (e) {
-      e.stopPropagation();
-      e.preventDefault();
-      setTimeout(() => {
-        saveJSON(true);
-        window.location = apphome;
-      });
+    lQuery(".deploy-organizer-finish").livequery("click", function (e) 
+	{
+		e.stopPropagation();
+		e.preventDefault();
+		saveJSON(true);
 
-      var url = $(this).data("url");
-      var id = $("#organizerId").val();
-      $("#deployOrganizer").load(url + "?oemaxlevel=1&id=" + id);
-    });
+      	var url = $(this).data("url");
+     	var id = $("#organizerId").val();
+     	$("#deployOrganizer").load(url + "?oemaxlevel=1&id=" + id, function()
+	 	{
+		 	window.location = apphome;
+ 		});
+	});
 
     function updateModPosition(selectedFolder) {
       if (!selectedFolder) {
