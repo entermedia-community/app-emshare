@@ -31,9 +31,14 @@ public void addMetadataWithAI(){
 		type = modelinfo.get("llmtype") + "Manager";
 	}
 	
-	
-	
 	LLMManager manager = archive.getBean(type);
+	
+	if (!manager.isReady())
+	{
+		log.info("LLM Manager is not ready: " + type + " Model: " + model + ". Verify LLM Server and Key.");
+		return; // Not ready, so we cannot proceed
+	}
+	
 	
 	String categoryid	 = archive.getCatalogSettingValue("llmmetadatastartcategory");
 	
@@ -44,13 +49,12 @@ public void addMetadataWithAI(){
 	
 	//Refine this to use a hit tracker?
 	HitTracker assets = archive.query("asset").exact("previewstatus", "2").exact("category", categoryid).exact("taggedbyllm",false).exact("llmerror",false).search();
-	
-	log.info("AI manager selected: " + type + " Model: "+ model + " - Adding metadata to: " + assets.size() + " assets in category: " + categoryid);
 	if(assets.size() < 1)
 	{
 		return;
 	}
-	
+
+	log.info("AI manager selected: " + type + " Model: "+ model + " - Adding metadata to: " + assets.size() + " assets in category: " + categoryid);
 	
 	assets.enableBulkOperations();
 	int count = 1;
@@ -173,7 +177,7 @@ public void addMetadataWithAI(){
 	tosave.clear();
 	
 
-	archive.firePathEvent("llm/translatefields", inReq.getUser(, null));
+	archive.firePathEvent("llm/translatefields", inReq.getUser(), null);
 
 }
 
