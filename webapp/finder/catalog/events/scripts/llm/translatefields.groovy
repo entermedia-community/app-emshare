@@ -19,29 +19,15 @@ public void translateMultilingualFields() {
 	Searcher searcher = archive.getAssetSearcher();
 	PropertyDetails details = searcher.getPropertyDetails();
 
-	HitTracker assets = context.getPageValue("assetsToTranslate");
-
-	if( assets == null || assets.isEmpty())
-	{
-		assets = searcher.query()
-		.exact("previewstatus", "2")
-		.exact("taggedbyllm", true)
-		.exact("translatesuccess",false)
-		.exact("translaterror",false)
-		.search();
-	}
-
-	if(assets.isEmpty())
-	{
-		log.info("No asset found");
-		return;
-	}
-	
-	assets.enableBulkOperations();
-
 	TranslationManager manager = (TranslationManager) archive.getBean("translationManager");
 	
-	Collection locales = archive.getList("locale");
+	HitTracker locales = archive.query("locale").exact("translatemetadata", true).search();
+	
+	if (locales.size() == 1 && "en".equals(locales.get(0).getId())) 
+    {
+        //log.info("No locales found for translation, defaulting to English");
+        return; // No locales to translate, so we exit
+    }
 
 	Collection<String> availableTargets = Arrays.asList("en,es,fr,de,ar,pt,bn,hi,ur,ru,zh-Hans,zh-Hant".split(","));
 	
@@ -63,6 +49,25 @@ public void translateMultilingualFields() {
 		{
 			targetLangs.add(code);
 		}
+	}
+	
+	HitTracker assets = context.getPageValue("assetsToTranslate");
+	
+	if( assets == null || assets.isEmpty())
+	{
+		assets = searcher.query()
+		.exact("previewstatus", "2")
+		.exact("taggedbyllm", true)
+		.exact("translatesuccess",false)
+		.exact("translaterror",false)
+		.search();
+		assets.enableBulkOperations();
+	}
+
+	if(assets.isEmpty())
+	{
+		//log.info("No asset found for Metadata Translation");
+		return;
 	}
 
 	int count = 1;
@@ -117,28 +122,27 @@ public void translateMultilingualFields() {
 			
 			asset.setValue("translatesuccess", true);
 			tosave.add(asset);
-
 			long duration = (System.currentTimeMillis() - startTime) / 1000L;
-			log.info("Took "+duration +"s");
+			log.info("Asset translation took: "+duration +"s");
 			
-			if( tosave.size() == 1000)	{
-				archive.saveAssets(tosave);
-				//searcher.saveAllData(tosave, null);
-				log.info("Saved: " + tosave.size() + " assets - " + searcher.getSearchType());
-				tosave.clear();
-			}
 		} 
 		catch(Exception e){
 			log.error("Translation Error", e);
 			asset.setValue("translaterror", true);
-			archive.saveAsset(asset);
+			tosave.add(asset);
 			continue;
 		}
-		archive.saveAssets(tosave);
-		//searcher.saveAllData(tosave, null);
-		log.info("Saved: " + tosave.size() + " assets - " + searcher.getSearchType());
-		tosave.clear();
+		if( tosave.size() == 1000)	{
+			archive.saveAssets(tosave);
+			//searcher.saveAllData(tosave, null);
+			log.info("Saved: " + tosave.size() + " assets - " + searcher.getSearchType());
+			tosave.clear();
+		}
+		
 	}
+	archive.saveAssets(tosave);
+	log.info("Saved: " + tosave.size() + " assets - " + searcher.getSearchType());
+	tosave.clear();
 }
 
 translateMultilingualFields();
