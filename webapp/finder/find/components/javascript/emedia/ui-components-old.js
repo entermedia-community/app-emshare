@@ -2422,24 +2422,20 @@ function initializeUI() {
 
   lQuery(".pickemoticon .emoticonmenu span").livequery("click", function () {
     var menuitem = $(this);
-
-    var aparent = $(menuitem.parents(".pickemoticon"));
-    //console.log(aparent.data());
-
-    var saveurl = aparent.data("toggleurl");
-    //Save
-    var options = aparent.data();
-    options.oemaxlevel = 1;
-    options.reactioncharacter = menuitem.data("hex");
-    $.ajax({
-      url: saveurl,
-      async: true,
-      data: options,
-      success: function (data) {
-        $("#chatter-message-" + aparent.data("messageid")).html(data);
-        //reload message
-      },
-    });
+    //var aparent = $(menuitem.parents(".pickemoticon"));
+	var aparent = $(menuitem.closest(".message-menu").find(".pickemoticon"));
+	var saveurl = aparent.data("toggleurl");
+	var messageid =  aparent.data("messageid");
+	var options = aparent.data();
+	options.reactioncharacter = menuitem.data("hex");
+	$.ajax({
+	  url: saveurl,
+	  async: true,
+	  data: options,
+	  success: function (data) {
+	    $("#chatter-message-" + messageid).replaceWith(data);
+	  },
+	});
   });
 
   function posiitionSubmitButtons() {
