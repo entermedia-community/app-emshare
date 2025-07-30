@@ -2,73 +2,89 @@ var openDetail = "";
 var app, home, apphome, themeprefix;
 
 $(document).ready(function () {
-	app = $("#application");
-	home = app.data("home");
-	apphome = app.data("apphome");
-	themeprefix = app.data("themeprefix");
-	if (home !== undefined) {
-		apphome = home + apphome;
-		themeprefix = home + themeprefix;
-	}
+  app = $("#application");
+  home = app.data("home");
+  apphome = app.data("apphome");
+  themeprefix = app.data("themeprefix");
+  if (home !== undefined) {
+    apphome = home + apphome;
+    themeprefix = home + themeprefix;
+  }
 
-	$(document).on("change", ".lenguagepicker", function () {
-		//Makes sure the name matches the new value
-		var select = $(this);
-		var div = $(this).closest(".languagesaddform");
-		var langinput = $(".langvalue", div);
-		var detailid = select.data("detailid");
-		var lang = select.val();
-		langinput.attr("name", detailid + "." + lang + ".value");
-	});
+  $(document).on("change", ".lenguagepicker", function () {
+    //Makes sure the name matches the new value
+    var select = $(this);
+    var div = $(this).closest(".languagesaddform");
+    var langinput = $(".langvalue", div);
+    var detailid = select.data("detailid");
+    var lang = select.val();
+    langinput.attr("name", detailid + "." + lang + ".value");
 
-	lQuery("textarea.keeptab").livequery("keydown", function (e) {
-		var $this, end, start;
-		if (e.keyCode === 9) {
-			start = this.selectionStart;
-			end = this.selectionEnd;
-			$this = $(this);
-			$this.val(
-				$this.val().substring(0, start) + "\t" + $this.val().substring(end)
-			);
-			this.selectionStart = this.selectionEnd = start + 1;
-			return false;
-		}
-	});
+    var trnslationsource = $(".trnslationsource", div);
+    trnslationsource
+      .find("input")
+      .attr("id", detailid + "." + lang)
+      .val(lang);
+    trnslationsource.find("label").attr("for", detailid + "." + lang);
+  });
+  $(document).on("change", ".enabletranslation", function () {
+    var checked = $(this).is(":checked");
+    var div = $(this).closest(".languagesfield");
+    $(".trnslationsource", div).each(function () {
+      var input = $(this).find("input");
+      input.prop("disabled", !checked);
+      $(this).css("opacity", checked ? 1 : 0);
+    });
+  });
 
-	lQuery(".languagesavebtn").livequery("click", function (event) {
-		event.stopPropagation();
-		event.preventDefault();
+  lQuery("textarea.keeptab").livequery("keydown", function (e) {
+    var $this, end, start;
+    if (e.keyCode === 9) {
+      start = this.selectionStart;
+      end = this.selectionEnd;
+      $this = $(this);
+      $this.val(
+        $this.val().substring(0, start) + "\t" + $this.val().substring(end)
+      );
+      this.selectionStart = this.selectionEnd = start + 1;
+      return false;
+    }
+  });
 
-		var btn = $(this);
-		var url = btn.attr("href");
-		var detailid = btn.data("detailid");
+  lQuery(".languagesavebtn").livequery("click", function (event) {
+    event.stopPropagation();
+    event.preventDefault();
 
-		var div = btn.closest(".emdatafieldvalue");
+    var btn = $(this);
+    var url = btn.attr("href");
+    var detailid = btn.data("detailid");
 
-		var count = $("#languagesextra_" + detailid, div).data("count");
-		count = count + 1;
-		var languages = [];
-		var args = {
-			oemaxlevel: 1,
-			detailid: detailid,
-			count: count,
-			usedlanguages: [],
-		};
+    var div = btn.closest(".emdatafieldvalue");
 
-		$(".lenguagepicker", div).each(function () {
-			var value = $(this).val();
-			args.usedlanguages.push(value);
-		});
-		$.get(url, args, function (data) {
-			var selectlist = $(".lenguagepicker option", data);
-			if ($(selectlist).length > 0) {
-				$("#languagesextra_" + detailid, div).append(data);
-				$("#colanguagesextra_" + detailid, div).data("count", count);
-				$(document).trigger("domchanged");
-			}
-		});
-	});
-	/*
+    var count = $("#languagesextra_" + detailid, div).data("count");
+    count = count + 1;
+    var languages = [];
+    var args = {
+      oemaxlevel: 1,
+      detailid: detailid,
+      count: count,
+      usedlanguages: [],
+    };
+
+    $(".lenguagepicker", div).each(function () {
+      var value = $(this).val();
+      args.usedlanguages.push(value);
+    });
+    $.get(url, args, function (data) {
+      var selectlist = $(".lenguagepicker option", data);
+      if ($(selectlist).length > 0) {
+        $("#languagesextra_" + detailid, div).append(data);
+        $("#colanguagesextra_" + detailid, div).data("count", count);
+        $(document).trigger("domchanged");
+      }
+    });
+  });
+  /*
 	lQuery("textarea.htmleditor").livequery(new function() 
 	{
 		//$("textarea.htmleditor").each(function()
@@ -89,108 +105,108 @@ $(document).ready(function () {
 	});
 	*/
 
-	if ($.validator) {
-		lQuery(".force-validate-inputs").livequery(function () {
-			var theform = $(this).closest("form");
+  if ($.validator) {
+    lQuery(".force-validate-inputs").livequery(function () {
+      var theform = $(this).closest("form");
 
-			theform.on("click", function () {
-				theform.valid();
-			});
+      theform.on("click", function () {
+        theform.valid();
+      });
 
-			$.validator.setDefaults({
-				ignore: ".ignore",
-			});
+      $.validator.setDefaults({
+        ignore: ".ignore",
+      });
 
-			theform.validate({
-				ignore: ".ignore",
-			});
-		});
+      theform.validate({
+        ignore: ".ignore",
+      });
+    });
 
-		$.validator.addClassRules("validateNumber", {
-			number: true,
-		});
+    $.validator.addClassRules("validateNumber", {
+      number: true,
+    });
 
-		jQuery.validator.addMethod(
-			"entityrequired",
-			function (value, element) {
-				var picker = $(element).data("entitypicker");
-				var pickerul = picker.find("ul");
-				if ($("#" + pickerul + " li").length > 1) {
-					return true;
-				}
-				return false;
-			},
-			"This field is required."
-		);
+    jQuery.validator.addMethod(
+      "entityrequired",
+      function (value, element) {
+        var picker = $(element).data("entitypicker");
+        var pickerul = picker.find("ul");
+        if ($("#" + pickerul + " li").length > 1) {
+          return true;
+        }
+        return false;
+      },
+      "This field is required."
+    );
 
-		$.validator.addClassRules("entityRequired", {
-			entityrequired: true,
-		});
+    $.validator.addClassRules("entityRequired", {
+      entityrequired: true,
+    });
 
-		$.validator.setDefaults({
-			errorPlacement: function (error, element) {
-				var elementid = element.attr("id");
-				var elementparent = (elementparent = element.closest("div"));
-				if (!elementparent.length) {
-					$("#" + $.escapeSelector(elementid)).closest("div");
-				}
-				if (elementparent.length != 0) {
-					//elementparent = $("#" + $.escapeSelector(elementid));
-					error.insertAfter(elementparent);
-				}
-				if (
-					element.is(".listdropdown, .listtags") &&
-					element.next(".select2-container").length
-				) {
-					element
-						.next(".select2-container")
-						.find(".select2-selection")
-						.addClass("error");
-				} else if (element.hasClass("entityRequired")) {
-					element.prev(".entity-value-list").addClass("error");
-				}
-			},
-		});
-	}
+    $.validator.setDefaults({
+      errorPlacement: function (error, element) {
+        var elementid = element.attr("id");
+        var elementparent = (elementparent = element.closest("div"));
+        if (!elementparent.length) {
+          $("#" + $.escapeSelector(elementid)).closest("div");
+        }
+        if (elementparent.length != 0) {
+          //elementparent = $("#" + $.escapeSelector(elementid));
+          error.insertAfter(elementparent);
+        }
+        if (
+          element.is(".listdropdown, .listtags") &&
+          element.next(".select2-container").length
+        ) {
+          element
+            .next(".select2-container")
+            .find(".select2-selection")
+            .addClass("error");
+        } else if (element.hasClass("entityRequired")) {
+          element.prev(".entity-value-list").addClass("error");
+        }
+      },
+    });
+  }
 
-	lQuery(".inlinesave").livequery("click", function () {
-		var queryString = $(this).closest(".inlinedata").formSerialize();
-		var url =
-			apphome + "/views/settings/lists/datamanager/edit/inlinesave.json";
-		var targetselect = $(this).data("targetselect");
-		var select = $("#" + targetselect);
-		//debugger;
-		$.getJSON(url, queryString, function (data) {
-			var newOption = new Option(data.name, data.id, true, true);
-			$("#" + targetselect)
-				.append(newOption)
-				.trigger("change");
-		});
-		$(this).closest(".modal").modal("hide");
-	});
+  lQuery(".inlinesave").livequery("click", function () {
+    var queryString = $(this).closest(".inlinedata").formSerialize();
+    var url =
+      apphome + "/views/settings/lists/datamanager/edit/inlinesave.json";
+    var targetselect = $(this).data("targetselect");
+    var select = $("#" + targetselect);
+    //debugger;
+    $.getJSON(url, queryString, function (data) {
+      var newOption = new Option(data.name, data.id, true, true);
+      $("#" + targetselect)
+        .append(newOption)
+        .trigger("change");
+    });
+    $(this).closest(".modal").modal("hide");
+  });
 
-	//End of init
+  //End of init
 });
 
 showPicker = function (detailid) {
-	openDetail = detailid;
-	if (!window.name) window.name = "admin_parent";
-	window.open(
-		home +
-			"/system/tools/newpicker/index.html?parentName=" +
-			window.name +
-			"&detailid=" +
-			detailid,
-		"pickerwindow",
-		"alwaysRaised=yes,menubar=no,scrollbars=yes,width=1000,x=100,y=100,height=600,resizable=yes"
-	);
-	return false;
+  openDetail = detailid;
+  if (!window.name) window.name = "admin_parent";
+  window.open(
+    home +
+      "/system/tools/newpicker/index.html?parentName=" +
+      window.name +
+      "&detailid=" +
+      detailid,
+    "pickerwindow",
+    "alwaysRaised=yes,menubar=no,scrollbars=yes,width=1000,x=100,y=100,height=600,resizable=yes"
+  );
+  return false;
 };
 
 //TODO: Does this need to be defined on the page itself?
 SetPath = function (inUrl) {
-	var input = document.getElementById(openDetail + ".value");
-	input.value = inUrl;
+  var input = document.getElementById(openDetail + ".value");
+  input.value = inUrl;
 };
 
 /*
@@ -213,137 +229,137 @@ validate = function(inCatalogId, inDataType, inView , inFieldName)
 var listchangelisteners = []; //list nodes
 
 findOrAddNode = function (inParentId) {
-	//alert("Looking now: " + inParentId + listchangelisteners.length );
-	for (var i = 0; i < listchangelisteners.length; i++) {
-		var node = listchangelisteners[i];
-		if (node.parentid == inParentId) {
-			return node;
-		}
-	}
-	var node = new Object();
-	node.parentid = inParentId;
-	node.children = [];
-	listchangelisteners.push(node);
+  //alert("Looking now: " + inParentId + listchangelisteners.length );
+  for (var i = 0; i < listchangelisteners.length; i++) {
+    var node = listchangelisteners[i];
+    if (node.parentid == inParentId) {
+      return node;
+    }
+  }
+  var node = new Object();
+  node.parentid = inParentId;
+  node.children = [];
+  listchangelisteners.push(node);
 
-	return node;
+  return node;
 };
 
 addListListener = function (inParentFieldName, inFieldName) {
-	//an array of array
-	var node = findOrAddNode(inParentFieldName);
-	node.children.push(inFieldName); //append the child
+  //an array of array
+  var node = findOrAddNode(inParentFieldName);
+  node.children.push(inFieldName); //append the child
 };
 
 //When a field is changed we want to validate it and update any listeners
 //Find all the lists in this form. Update all of them that are marked as a listener
 //parent = businesscategory, child = lob, field = product
 updatelisteners = function (catalogid, searchtype, view, fieldname) {
-	var val = $("#" + fieldname + "value").val();
-	//validate(catalogid, searchtype, view , fieldname);
+  var val = $("#" + fieldname + "value").val();
+  //validate(catalogid, searchtype, view , fieldname);
 
-	var node = findOrAddNode(fieldname);
+  var node = findOrAddNode(fieldname);
 
-	if (node.children) {
-		for (var i = 0; i < node.children.length; i++) {
-			var childfieldname = node.children[i];
-			var element = $("#list-" + childfieldname);
-			var valueselection;
-			if (element.options !== undefined) {
-				valueselection = element.options[element.selectedIndex].value;
-			}
-			var div = "listdetail_" + childfieldname;
-			//we are missing the data element of the children
-			//required: catalogid, searchtype, fieldname, value
-			//optional: query, foreignkeyid and foreignkeyvalue
+  if (node.children) {
+    for (var i = 0; i < node.children.length; i++) {
+      var childfieldname = node.children[i];
+      var element = $("#list-" + childfieldname);
+      var valueselection;
+      if (element.options !== undefined) {
+        valueselection = element.options[element.selectedIndex].value;
+      }
+      var div = "listdetail_" + childfieldname;
+      //we are missing the data element of the children
+      //required: catalogid, searchtype, fieldname, value
+      //optional: query, foreignkeyid and foreignkeyvalue
 
-			var rendertype = $("#" + div).data("rendertype");
-			if (rendertype == "multiselect") {
-				$("#" + div).load(apphome + "/components/xml/types/multiselect.html", {
-					catalogid: catalogid,
-					searchtype: searchtype,
-					view: view,
-					fieldname: childfieldname,
-					foreignkeyid: fieldname,
-					foreignkeyvalue: val,
-					value: valueselection,
-					oemaxlevel: 1,
-				});
-			} else {
-				$("#" + div).load(apphome + "/components/xml/types/list.html", {
-					catalogid: catalogid,
-					searchtype: searchtype,
-					view: view,
-					fieldname: childfieldname,
-					foreignkeyid: fieldname,
-					foreignkeyvalue: val,
-					value: valueselection,
-					oemaxlevel: 1,
-				});
-			}
-		}
-	}
+      var rendertype = $("#" + div).data("rendertype");
+      if (rendertype == "multiselect") {
+        $("#" + div).load(apphome + "/components/xml/types/multiselect.html", {
+          catalogid: catalogid,
+          searchtype: searchtype,
+          view: view,
+          fieldname: childfieldname,
+          foreignkeyid: fieldname,
+          foreignkeyvalue: val,
+          value: valueselection,
+          oemaxlevel: 1,
+        });
+      } else {
+        $("#" + div).load(apphome + "/components/xml/types/list.html", {
+          catalogid: catalogid,
+          searchtype: searchtype,
+          view: view,
+          fieldname: childfieldname,
+          foreignkeyid: fieldname,
+          foreignkeyvalue: val,
+          value: valueselection,
+          oemaxlevel: 1,
+        });
+      }
+    }
+  }
 };
 
 //searchtype parentname
 
 loadlist = function (
-	indiv,
-	catalogid,
-	searchtype,
-	inlabel,
-	childfieldname,
-	foreignkeyid,
-	foreignkeyvalue,
-	value
+  indiv,
+  catalogid,
+  searchtype,
+  inlabel,
+  childfieldname,
+  foreignkeyid,
+  foreignkeyvalue,
+  value
 ) {
-	//what is this?
-	$(indiv).load(apphome + "/components/xml/types/simplelist.html", {
-		catalogid: catalogid,
-		searchtype: searchtype,
-		fieldname: childfieldname,
-		label: inlabel,
-		foreignkeyid: foreignkeyid,
-		foreignkeyvalue: foreignkeyvalue,
-		value: value,
-		oemaxlevel: 1,
-	});
+  //what is this?
+  $(indiv).load(apphome + "/components/xml/types/simplelist.html", {
+    catalogid: catalogid,
+    searchtype: searchtype,
+    fieldname: childfieldname,
+    label: inlabel,
+    foreignkeyid: foreignkeyid,
+    foreignkeyvalue: foreignkeyvalue,
+    value: value,
+    oemaxlevel: 1,
+  });
 };
 //Don't use any form inputs named 'name'!
 postForm = function (inDiv, inFormId) {
-	var form = document.getElementById(inFormId);
-	if ($) {
-		var targetdiv = inDiv.replace(/\//g, "\\/");
-		$(form).ajaxSubmit({
-			target: "#" + targetdiv,
-		});
-	} else {
-		form = Element.extend(form);
-		var oOptions = {
-			method: "post",
-			parameters: form.serialize(true),
-			evalScripts: true,
-			asynchronous: false,
-			onFailure: function (oXHR, oJson) {
-				alert("An error occurred: " + oXHR.status);
-			},
-		};
+  var form = document.getElementById(inFormId);
+  if ($) {
+    var targetdiv = inDiv.replace(/\//g, "\\/");
+    $(form).ajaxSubmit({
+      target: "#" + targetdiv,
+    });
+  } else {
+    form = Element.extend(form);
+    var oOptions = {
+      method: "post",
+      parameters: form.serialize(true),
+      evalScripts: true,
+      asynchronous: false,
+      onFailure: function (oXHR, oJson) {
+        alert("An error occurred: " + oXHR.status);
+      },
+    };
 
-		$("#" + inDiv).load(form.action, oOptions);
-	}
-	return false;
+    $("#" + inDiv).load(form.action, oOptions);
+  }
+  return false;
 };
 
 postPath = function (inCss, inPath, inMaxLevel) {
-	if (inMaxLevel == null) {
-		inMaxLevel = 1;
-	}
-	$("#" + inCss).load(inPath, { oemaxlevel: inMaxLevel });
-	return false;
+  if (inMaxLevel == null) {
+    inMaxLevel = 1;
+  }
+  $("#" + inCss).load(inPath, { oemaxlevel: inMaxLevel });
+  return false;
 };
 
 toggleBox = function (inId, togglePath, inPath) {
-	$("#" + inId).load(home + togglePath, {
-		pluginpath: inPath,
-		propertyid: inId,
-	});
+  $("#" + inId).load(home + togglePath, {
+    pluginpath: inPath,
+    propertyid: inId,
+  });
 };

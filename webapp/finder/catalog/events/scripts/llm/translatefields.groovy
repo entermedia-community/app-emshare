@@ -37,6 +37,10 @@ public void translateMultilingualFields() {
 	{
 		Data locale = (Data) iterator.next();
 		String code = locale.getId();
+		if(code == "en")
+		{
+			continue;
+		}
 		if ("zh".equals(code))
 		{
 			code = "zh-Hans";
@@ -70,6 +74,13 @@ public void translateMultilingualFields() {
 		return;
 	}
 
+	Collection<String> checkfields = Arrays.asList(
+		"headline",
+		"longcaption",
+		"assettitle",
+		"alternatetext"
+	);
+
 	int count = 1;
 	List tosave = new ArrayList();
 	for (hit in assets) {
@@ -80,13 +91,6 @@ public void translateMultilingualFields() {
 
 		try{
 			long startTime = System.currentTimeMillis();
-
-			Collection<String> checkfields = Arrays.asList(
-				"headline",
-				"longcaption",
-				"assettitle",
-				"alternatetext"
-			);
 
 			Map fieldsmap = new HashMap();
 
