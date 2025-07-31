@@ -127,7 +127,6 @@ $(function () {
 			}
 		}
 
-
 		var resultsdiv = tree.closest(".assetresults");
 		if (!resultsdiv) {
 			resultsdiv = $("#resultsdiv");
@@ -140,8 +139,10 @@ $(function () {
 		var options = tree.cleandata();
 
 		//includeeditcontext
-		if (options["includeeditcontext"] === undefined  || 
-			options["includeeditcontext"] === true) {
+		if (
+			options["includeeditcontext"] === undefined ||
+			options["includeeditcontext"] === true
+		) {
 			var editdiv = tree.closest(".editdiv"); //This is used for lightbox tree opening
 			if (editdiv.length > 0) {
 				var otherdata = editdiv.cleandata();
@@ -346,12 +347,12 @@ $(function () {
 
 			//clear other entities on Upload Form
 			var options = [];
-//debugger;
+			//debugger;
 			var customurladdmedia = tree.data("customurladdmedia");
 			if (customurladdmedia) {
 				var url = customurladdmedia;
 				options["oemaxlevel"] = tree.data("uploadmaxlevel");
-				gotopage(tree, node,  url, options);
+				gotopage(tree, node, url, options);
 			} else {
 				var url =
 					tree.data("home") +

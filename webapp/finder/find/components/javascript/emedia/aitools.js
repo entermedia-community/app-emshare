@@ -96,9 +96,6 @@ $(document).ready(function () {
 		}
 		$("#aiInstruction").val(prompt);
 	}
-	
-	
-	
 
 	var mediadb = "/" + $("#application").data("mediadbappid");
 	lQuery("form.contentpickerForm").livequery("submit", function (e) {
@@ -106,24 +103,24 @@ $(document).ready(function () {
 		e.stopImmediatePropagation();
 		e.stopPropagation();
 		var form = $(this);
-		
+
 		if (!form.hasClass("novalidate")) {
-					if (form.validate) {
-						try {
-							form.validate({
-								ignore: ".ignore",
-							});
-							var isvalidate = form.valid();
-							if (!isvalidate) {
-								//e.preventDefault();
-								return this;
-							}
-						} catch (_e) {
-							console.log(_e);
-						}
+			if (form.validate) {
+				try {
+					form.validate({
+						ignore: ".ignore",
+					});
+					var isvalidate = form.valid();
+					if (!isvalidate) {
+						//e.preventDefault();
+						return this;
 					}
+				} catch (_e) {
+					console.log(_e);
 				}
-		
+			}
+		}
+
 		var formData = new FormData(this);
 		jQuery.ajax({
 			type: "POST",

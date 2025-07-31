@@ -71,8 +71,6 @@ $(window).bind("popstate", function change(e) {
 	}
 });
 
-
-
 checkoutrefresh = function (e) {
 	window.location.reload();
 };
@@ -742,9 +740,7 @@ onloadselectors = function () {
 					//Save scroll location?
 					var searchhome = resultsdiv.data("searchhome");
 					$.ajax({
-						url:
-							searchhome +
-							"/orderInsertData.html",
+						url: searchhome + "/orderInsertData.html",
 						data: options,
 						xhrFields: {
 							withCredentials: true,
@@ -755,7 +751,7 @@ onloadselectors = function () {
 							//load
 							var editdiv = resultsdiv.closest(".editdiv");
 							//autoreload(editdiv, null, "editdiv");
-							$(window).trigger("autoreload", [editdiv,null, "editdiv"]);
+							$(window).trigger("autoreload", [editdiv, null, "editdiv"]);
 
 							//$(window).trigger("checkautoreload", [resultsdiv]);
 						},
@@ -777,9 +773,7 @@ onloadselectors = function () {
 			//Save scroll location?
 			var searchhome = resultsdiv.data("searchhome");
 			$.ajax({
-				url:
-					searchhome  +
-					"/orderMoveToTop.html",
+				url: searchhome + "/orderMoveToTop.html",
 				data: options,
 				xhrFields: {
 					withCredentials: true,
@@ -790,7 +784,7 @@ onloadselectors = function () {
 					//load
 					//$(window).trigger("checkautoreload", [resultsdiv]);
 					var editdiv = resultsdiv.closest(".editdiv");
-					$(window).trigger("autoreload", [editdiv,null, "editdiv"]);
+					$(window).trigger("autoreload", [editdiv, null, "editdiv"]);
 				},
 			});
 		});
@@ -827,14 +821,13 @@ autoheight = function (container) {
 $(document).ready(function () {
 	app = $("#application");
 	siteroot = app.data("siteroot");
-	apphome =  app.data("apphome");
+	apphome = app.data("apphome");
 	themeprefix = app.data("siteroot") + app.data("themeprefix");
 	onloadselectors();
 	emcomponents();
 });
 
 emcomponents = function () {
-
 	lQuery("img.assetdragdrop").livequery(function () {
 		var img = $(this);
 
@@ -877,10 +870,6 @@ emcomponents = function () {
 		// this.parentNode.addEventListener('dragstart', handler, false
 		// ); //Deal with A tags?
 	});
-
-	
-
-	
 };
 
 String.prototype.trimEllip = function (length) {
