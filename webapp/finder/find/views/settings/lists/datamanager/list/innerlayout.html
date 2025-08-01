@@ -1,58 +1,59 @@
 <div id="listselector" class="datamanagerworkarea">
-
-#set($currentsearch = $context.getRequestParameter("searchtype"))
+	#set($currentsearch = $context.getRequestParameter("searchtype"))
 	#set( $action = "$siteroot$content.dataroot/list/index.html" )
 	<div class="d-flex align-items-center justify-content-between my-2 ml-1">
 		<h3 class="settings-title">[[Database]]</h3>
-
-		#ifnull($currentsearch)
-			<span class="mr-1">[[Select a table]]:</span>
-		#end
-		<form action="$action" class="ajaxform autosubmitform datamanagerchose" data-targetdiv="listselector" method="get">
-			<input type="hidden" name="catalogid" value="$catalogid"/>
-			<input type="hidden" name="oemaxlevel" value="2"/>
+		<form action="$action" class="ajaxform autosubmitform d-flex align-items-center" data-targetdiv="listselector" method="get">
+			<input type="hidden" name="catalogid" value="$catalogid" style="display: none;" />
+			<input type="hidden" name="oemaxlevel" value="2" style="display: none;" />
+			#ifnull($currentsearch)
+				<span class="mr-1 d-inline-block text-muted">[[Select a Table]]:</span>
+			#end
 			<div style="width: 280px;">
-			<select name="searchtype" class="select2 form-control">
-				<option value="">[[Choose Table]]</option>
-				#foreach( $type in $searchtypes )
-					#if($type != "CVS")
-					<option value="$type" #if($type == $currentsearch) [[selected]] #end>$type</option>
+				<select name="searchtype" class="select2 form-control">
+					<option value="">[[Choose Table]]</option>
+					#foreach( $type in $searchtypes )
+						#if($type != "CVS")
+						<option value="$type" #if($type == $currentsearch) [[selected]] #end>$type</option>
+						#end
 					#end
-				#end
-			</select>
-		</div>
-	<a class="btn btn-primary ajax ml-2" data-targetdiv="datamanagerworkarea" data-oemaxlevel="1" href="$home$apphome/views/settings/lists/datamanager/addtable/index.html">[[New Table]]</a>
+				</select>
+			</div>
+			<a class="btn btn-accent ajax ml-2"
+				data-targetdiv="datamanagerworkarea"
+				data-oemaxlevel="1"
+				href="$home$apphome/views/settings/lists/datamanager/addtable/index.html">
+				<i class="bi bi-plus-lg mr-1"></i>
+				[[New Table]]
+			</a> 
 		</form>
-
-	</div>
-#if($currentsearch)
-
-	<h3 class="settings-title m-0">[[Table]]: <strong style="font-family: 'Courier New', Courier, monospace;">$!currentsearch</strong></h3>
-
-	#set( $datatab = $content.datatab )
-	<div class="tabnav">
-		<a class="#if( $datatab == "data") current #end ajax" data-resize="true" data-targetdiv="datamanagerworkarea" data-updateurl="true" data-oemaxlevel="2" href="$siteroot$apphome/views/settings/lists/datamanager/list/index.html?catalogid=$catalogid&searchtype=$currentsearch&page=1">[[Data]]</a>
-		<a class="#if( $datatab == "properties") current #end ajax" data-resize="true" data-targetdiv="datamanagerworkarea" data-updateurl="true" data-oemaxlevel="2" href="$siteroot$apphome/views/settings/lists/datamanager/properties/index.html?catalogid=$catalogid&searchtype=$currentsearch">[[Customize Fields]]</a>
-		<a class="#if( $datatab == "views") current #end ajax" data-resize="true" data-targetdiv="datamanagerworkarea" data-updateurl="true" data-oemaxlevel="3" href="$siteroot$apphome/views/settings/lists/datamanager/views/index.html?catalogid=$catalogid&searchtype=$currentsearch">[[Customize Views]]</a>
-		<a class="#if( $datatab == "elastic") current #end ajax" data-resize="true" data-targetdiv="datamanagerworkarea" data-updateurl="true" data-oemaxlevel="3" href="$siteroot$apphome/views/settings/lists/datamanager/elastic/index.html?catalogid=$catalogid&searchtype=$currentsearch">[[Elastic System Info]]</a>
 	</div>
 
-	## <a class="btn" href="$siteroot$apphome/views/settings/lists/datamanager/properties/index.html?catalogid=$catalogid&searchtype=$currentsearch">[[Customize Fields]]</a>
+	#if($currentsearch)
+		<h3 class="settings-title m-0">
+			[[Table]]: <strong style="font-family: 'Courier New', Courier, monospace;">$!currentsearch</strong>
+		</h3>
 
-	
+		#set( $datatab = $content.datatab )
+		<div class="tabnav">
+			<a class="#if( $datatab == "data") current #end ajax" data-resize="true" data-targetdiv="datamanagerworkarea" data-updateurl="true" data-oemaxlevel="2" href="$siteroot$apphome/views/settings/lists/datamanager/list/index.html?catalogid=$catalogid&searchtype=$currentsearch&page=1">[[Data]]</a>
+			<a class="#if( $datatab == "properties") current #end ajax" data-resize="true" data-targetdiv="datamanagerworkarea" data-updateurl="true" data-oemaxlevel="2" href="$siteroot$apphome/views/settings/lists/datamanager/properties/index.html?catalogid=$catalogid&searchtype=$currentsearch">[[Customize Fields]]</a>
+			<a class="#if( $datatab == "views") current #end ajax" data-resize="true" data-targetdiv="datamanagerworkarea" data-updateurl="true" data-oemaxlevel="3" href="$siteroot$apphome/views/settings/lists/datamanager/views/index.html?catalogid=$catalogid&searchtype=$currentsearch">[[Customize Views]]</a>
+			<a class="#if( $datatab == "elastic") current #end ajax" data-resize="true" data-targetdiv="datamanagerworkarea" data-updateurl="true" data-oemaxlevel="3" href="$siteroot$apphome/views/settings/lists/datamanager/elastic/index.html?catalogid=$catalogid&searchtype=$currentsearch">[[Elastic System Info]]</a>
+		</div>
 
-	<div id="datamanager-workarea" >
-		
+		## <a class="btn" href="$siteroot$apphome/views/settings/lists/datamanager/properties/index.html?catalogid=$catalogid&searchtype=$currentsearch">[[Customize Fields]]</a>
+
+		<div id="datamanager-workarea" >
 			$pages.streamContent()
-		
-	</div>
+		</div>
 
-	#if($candevelop)
-		<a class="btn " href="$siteroot$content.dataroot/list/makedefault.html?searchtype=$searcher.searchType"  >[[Copy to defaults]]</a>    
-	#end
+		#if($candevelop)
+			<a class="btn " href="$siteroot$content.dataroot/list/makedefault.html?searchtype=$searcher.searchType"  >[[Copy to defaults]]</a>    
+		#end
 
-	#if( $showfields )
-		<a href="$siteroot${content.dataroot}/list/reindex.html?catalogid=$catalogid&searchtype=$currentsearch">[[Reindex]]</a>
+		#if( $showfields )
+			<a href="$siteroot${content.dataroot}/list/reindex.html?catalogid=$catalogid&searchtype=$currentsearch">[[Reindex]]</a>
+		#end
 	#end
-#end
 </div>
