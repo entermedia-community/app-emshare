@@ -7,9 +7,9 @@ import org.entermediadb.llm.LLMResponse
 import org.json.simple.JSONObject
 import org.openedit.Data
 import org.openedit.WebPageRequest
+import org.openedit.data.PropertyDetail
 import org.openedit.data.Searcher
 import org.openedit.hittracker.HitTracker
-import org.openedit.hittracker.ListHitTracker;
 import org.openedit.repository.ContentItem
 
 public void addMetadataWithAI(){
@@ -101,6 +101,9 @@ public void addMetadataWithAI(){
 		try{
 			long startTime = System.currentTimeMillis();
 			
+			Collection aifields = archive.getAssetPropertyDetails().findAiCreationProperties();
+			inReq.putPageValue("aifields", aifields);
+			
 			String template = manager.loadInputFromTemplate(inReq, "/" +  archive.getMediaDbId() + "/gpt/systemmessage/analyzeasset.html");
 			LLMResponse results = manager.callFunction(inReq, model, "generate_metadata", template, 0, 5000,base64EncodedString );
 
@@ -111,45 +114,33 @@ public void addMetadataWithAI(){
 				if (arguments != null) {
 
 					Map metadata =  (Map) arguments.get("metadata");
+					
+					for (Iterator iterator = metadata.keySet().iterator(); iterator.hasNext();)
+					{
+						String inKey = (String) iterator.next();
+						PropertyDetail detail = archive.getAssetPropertyDetails().getDetail(inKey);
+						if (asset.getValue(detail.id) == null)
+						{
+							String value = metadata.get(inKey);
+							if ("tageditor".equals(detail.viewType))
+							{
+								Collection<String> values = Arrays.asList(value.split(","));
+								asset.setValue(detail.id, values);
+							}
+							else 
+							{
+								
+								asset.setValue(detail.id, value);
+							}
+							log.info("AI updated field "+ detail.id + ": "+metadata.get(inKey));
+						}
+					}
 	
-					String caption = (String) metadata.get("caption");
-					if(caption != null) {
-						asset.setValue("headline", caption);
-						wasUpdated = true;
-						log.info("Headline: "+caption);
-					}
-					String description = (String) metadata.get("longcaption");
-					if(description != null) {
-						asset.setValue("longcaption", description);
-						wasUpdated = true;
-						log.info("Long Caption: "+description);
-					}
-					String assettitle = (String) metadata.get("assettitle");
-					if(assettitle != null) {
-						asset.setValue("assettitle", assettitle);
-						wasUpdated = true;
-						log.info("Asset Title: "+assettitle);
-					}
-					String keywords = (String) metadata.get("keywords");
-					if(keywords != null) {
-						Collection<String> keywordlist = Arrays.asList(keywords.split(","));
-						asset.setValue("keywordsai", keywordlist);
-						wasUpdated = true;
-						log.info("Keywords AI: "+keywords);
-					}
-					String alttext = (String) metadata.get("alttext");
-					if(alttext != null) {
-						asset.setValue("alternatetext", alttext);
-						wasUpdated = true;
-						log.info("Alt Text: "+alttext);
-					}
 				}
 				else {
 					log.info("Asset "+asset.getId() +" "+asset.getName()+" - Nothing Detected.");
 				}
 			}
-
-
 
 			asset.setValue("taggedbyllm", true);
 			tosave.add(asset);

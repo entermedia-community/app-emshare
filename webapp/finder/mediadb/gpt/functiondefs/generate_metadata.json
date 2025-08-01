@@ -1,39 +1,39 @@
+## alttext: A description of the image suitable for screen readers or other assistive technologies.
+## assettitle: A concise title suitable for social media or gallery display.
 {
   "name": "generate_metadata",
-  "description": "Generates metadata for an image: caption, description, asset title, keywords, and alt text.",
+  
+  "description": "Generates metadata for an image: 
+  #foreach($field in $aifields)
+  	#if($foreach.count>1)
+	  ,
+	#end
+  	$field.name 
+			
+  #end .",
   "parameters": {
     "type": "object",
     "properties": {
       "metadata": {
         "type": "object",
         "properties": {
-          "caption": {
-            "type": "string",
-            "description": "Short description of the image, capturing its main elements in one sentence."
-          },
-          "longcaption": {
-            "type": "string",
-            "description": "A relevant description specific to the image, elaborating on its content, context, and notable features."
-          },
-          "assettitle": {
-            "type": "string",
-            "description": "A concise title suitable for social media or gallery display."
-          },
-          "keywords": {
-            "type": "string",
-            "description": "A comma separated list of relevant search keywords associated with the image. Avoid using generic keywords like 'human', 'person', 'animal', 'object', etc. Do not use existing keywords given in the query."
-          },
-          "alttext": {
-            "type": "string",
-            "description": "A description of the image suitable for screen readers or other assistive technologies."
-          }
+		  #foreach($field in $aifields)
+			  #if($foreach.count>1)
+			  ,
+			  #end
+			  	"$field.id": {
+			              "type": "string",
+			              "description": "$field.aicreationcommand"
+			    }
+		  #end	  
         },
         "required": [
-          "caption",
-          "longcaption",
-          "assettitle",
-          "keywords",
-          "alttext"
+			#foreach($field in $aifields)
+				#if($foreach.count>1)
+				,
+				#end
+			  	"$field.id" 						
+			#end 
         ]
       }
     },

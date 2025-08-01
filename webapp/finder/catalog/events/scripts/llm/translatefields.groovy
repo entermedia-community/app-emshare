@@ -1,9 +1,12 @@
 package llm
 
 import java.util.Map;
+
+import org.apache.commons.collections.functors.InstanceofPredicate
 import org.entermediadb.asset.Asset
 import org.entermediadb.asset.MediaArchive
 import org.entermediadb.translator.TranslationManager
+import org.hamcrest.core.IsInstanceOf
 import org.json.simple.JSONObject
 import org.openedit.data.Searcher
 import org.openedit.data.*
@@ -119,6 +122,17 @@ public void translateMultilingualFields() {
 				{
 					String key = (String) iterator.next();
 					LanguageMap map = results.get(key);
+					Object value = asset.getValue(key);
+					if (value instanceof LanguageMap) 
+					{
+						LanguageMap existing = (LanguageMap) value;
+						existing.putAll(map);
+						map = existing;
+					}
+					else {
+						map.setText("en", value);
+					}
+					 
 					asset.setValue(key, map);
 				}
 				log.info("Found translation for "+ asset.getId() + ", " + asset.getName());
