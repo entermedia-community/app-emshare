@@ -53,7 +53,6 @@ public void init()
 					double perasset = ((double)change/1000D)/(double)onepage.size();
 					
 					log.info("face scan processed " + onepage.size() + " assets in " + change + " milliseconds " +  perasset + " asset/second");
-					log.info("face scan created: " + count + " faces");
 				}
 			}
 		}
