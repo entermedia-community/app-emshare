@@ -255,7 +255,7 @@
 				var jdata = $(data);
 				var code = $(".brickvertical", jdata).html();
 				grid.append(code);
-				gridResize(grid); //was resize event
+				grid.brickvertical("resize");
 				$(window).trigger("resultsgenerated", [grid]);
 				stopautoscroll = false;
 			},

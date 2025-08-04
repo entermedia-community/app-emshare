@@ -7,7 +7,7 @@ $(function () {
 		}
 	);
 	function toggleExpandNode(selecting = false) {
-		console.log($(this), selecting);
+		//console.log($(this), selecting);
 		var tree = $(this).closest(".emtree");
 		var node = $(this).closest(".noderow");
 		var iscurrent = $(this).hasClass("cat-current");
