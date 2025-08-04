@@ -47,18 +47,25 @@
 				<div class="d-flex align-items-center ml-auto">
 					<input type="hidden" name="dataid" value="$permission.getData().getId()" />
 					<input type="hidden" name="permissiontype" value="$permission.getPermissionType()" />
+					#if($permission.getData().getId() != $entity.get("owner"))
 					<select name="iseditor" class="form-control w-auto rounded py-1 px-2" >
 						<option value="false" #if( !$permission.isEditor() ) selected #end>[[Can View]]</option>
 						<option value="true" #if( $permission.isEditor() ) selected #end>[[Can Edit]]</option>
 					</select>
+					
 					<a class="ajax text-muted"
 						href="${edithome}/permissions/permissionremove.html?id=$!{entity.id}"
 						data-dataid="$permission.getData().getId()"
 						data-targetdiv="$edithomeid"
 						data-oemaxlevel="1"
-					 	data-confirm="[[Are you sure you want to remove this permission?]]" data-removeonsuccess="true" data-removetarget="permission-$permission.id">
+					 	data-confirm="[[Are you sure you want to remove this permission?]]" 
+						data-removeonsuccess="true" 
+						data-removetarget="permission-$permission.getData().getId()">
 						<i class="bi bi-x-circle ns ml-2 mr-1"></i>
 					</a>
+					#else
+					[[Owner]]
+					#end
 				</div>
 			</div>
 			#end
