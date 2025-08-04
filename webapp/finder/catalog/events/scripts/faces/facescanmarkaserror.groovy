@@ -30,7 +30,7 @@ public void init()
 		log.info("Found " + hits.size() + " assets");
 		for(Data hit in hits)
         {
-			hit.setValue("facescanerror", "true");
+			hit.setValue("facescanerror", true);
 			tosave.add(hit);
 			count++;
 			if (tosave.size() >= 1000) 
