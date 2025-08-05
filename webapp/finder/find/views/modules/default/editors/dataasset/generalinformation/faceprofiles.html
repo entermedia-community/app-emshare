@@ -1,7 +1,17 @@
 #set( $reloadface = $context.getRequestParameter("reloadface") )
 
-<div id="editfaceprofiles" class="#ifnull($reloadface) ajaxstatus #end asset-data-detail asset-data-preview assetpanel-editor-box edit-panel-generic"
-data-reloadface="true" data-assetid="$asset.getId()" data-ajaxpath="$page.path" data-runwhenhidden="true" data-oemaxlevel="1"
+#ifnotnull($reloadface)	
+	#set( $facemanager = $mediaarchive.getBean("faceProfileManager") )
+	#set( $faceboxescollection =  $facemanager.collectFaceBoxesAllPeople($asset) )
+#end
+
+<div id="editfaceprofiles" 
+	class="#ifnull($reloadface) ajaxstatus #end asset-data-detail asset-data-preview assetpanel-editor-box edit-panel-generic"
+	data-reloadface="true" 
+	data-assetid="$asset.getId()" 
+	data-ajaxpath="$page.path" 
+	data-runwhenhidden="true" 
+	data-oemaxlevel="1"
 >
 	<div class="d-flex align-items-center justify-content-between mr-3">
 		<h4 class="m-0">[[People]]</h4>
@@ -10,15 +20,12 @@ data-reloadface="true" data-assetid="$asset.getId()" data-ajaxpath="$page.path" 
 #ifnotnull($reloadface)	
 		
 	#set ($viewtype = "faceprofiles")
-	<div class="$detailviewercolumnclass asset-data-detail emdatafield-$!viewtype p-3" id="editfaceprofilesfaces">
+	<div class="$!{detailviewercolumnclass} asset-data-detail emdatafield-$!viewtype p-3" id="editfaceprofilesfaces">
 
 		#set($rendertype = $mediaarchive.getMediaRenderType($asset))
 		$context.putPageValue("thumbsize",$thumbsize)
 
 		<div class="emfield-scroll" id="entitypickerentityperson">
-
-			#set( $facemanager = $mediaarchive.getBean("faceProfileManager") )
-			#set($faceboxescollection =  $facemanager.collectFaceBoxesAllPeople($asset) )
 			<ul class="entity-value-list d-flex flex-wrap">
 				#foreach( $row in $faceboxescollection )
 					#set( $rowdata = $row.getEmbeddedData())
@@ -44,7 +51,7 @@ data-reloadface="true" data-assetid="$asset.getId()" data-ajaxpath="$page.path" 
 							#set( $imageboxsource = $mediaarchive.asLinkToGenerated($asset, "image3000x3000"))
 						#end 
 
-						<a href="$similarfaceslink" 
+						<a href="$!similarfaceslink" 
 							class="emdialog showimagebox d-flex align-items-center justify-content-between facepf-item"
 							data-dialogwidth="1200"
 							data-hidefooter="true"
@@ -125,13 +132,13 @@ data-reloadface="true" data-assetid="$asset.getId()" data-ajaxpath="$page.path" 
 			#end
 			
 			#if($caneditasset && $rendertype == "image")
-				<a href="#" class="manual-fp text-primary bg-white border rounded py-1 px-2 d-inline-block my-2">
+				<a href="#" class="manual-fp btn btn-accent d-inline-block my-3 mr-1">
 					<i class="bi bi-plus-circle mr-1"></i>
 					[[Add a Face]]
 				</a>
 				
 				<a href="$siteroot$apphome/views/modules/asset/editor/faceprofiles/rescanfaces.html?assetid=$asset.id&" 
-					class="text-primary bg-white border rounded py-1 px-2 d-inline-block my-2 ajax"
+					class="btn btn-accent d-inline-block my-3 ajax"
 					data-targetdiv="main-media-container"
 					data-toastmessage="[[Rescaning asset]]"
 					data-toastsuccess="[[Face scan complete]]"

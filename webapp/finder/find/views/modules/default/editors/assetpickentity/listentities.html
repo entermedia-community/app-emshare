@@ -1,89 +1,97 @@
 #set($edithome = "${apphome}/views/modules/asset/editors/assetpickentity")
 
-<div id="assetentityresultsmediaviewer">
-<div class="asset-data-detail assetpanel-editor-box">
-	<h4>[[Entities]]</h4>
-	#set( $entities = $mediaarchive.getEntityManager().getEntitiesForCategories($context, $asset.categories) )
-	
-	
-	#if($entities && $entities.size() > 0)
-	
-			<div class="px-3">
-			#foreach ( $data in $entities)
-				#set($entity = $data)
-				#set($entityid = $data.getId())
-				#set($emoduleid = $data.get("entitysourcetype")) 
-				
-				#set($emodule = $mediaarchive.getCachedData("module", $emoduleid))
-				
-				#set($rendertype = $emodule.modulerendertype)
-				#if (!$rendertype)
-					#set($rendertype = "entity")
-				#end
-				$context.putPageValue("rendertype", $rendertype)
-				$context.putPageValue("rendermoduleid", $emoduleid)
-				
-				#set($moduleicon = "entity")
-				#if ($emodule.moduleicon)
-					#set($moduleicon = $emodule.moduleicon)
-				#end
-					
-				#set($previewurl = "${apphome}/views/modules/${emodule.id}/editors/default/tabs/index.html?entityid=$entity.getId()")
-				
-				$context.putPageValue("hit", $entity)
-				
-				#set($moduleicon = "entity")
-				#if ($module.moduleicon)
-					#set($moduleicon = $module.moduleicon)
-				#end
-				
-					<a href="$previewurl" 
-					class="emdialog emgridresulttitle badge badge-tags mr-1" 
-					data-hidefooter="true" 
-					data-hideheader="true"
-					id="clickid${entityid}"  
-					data-id="${entityid}"
-					data-moduleid="$!emoduleid"
-					title="#text($!entity)">
-					<i class="bi bi-$moduleicon"></i>&nbsp;#text($entity.uploadsourcepath)</a>
-			#end
-			</div>
-	</div>
-	#end
-	<div class="asset-data-detail assetpanel-editor-box" style="padding:12px; margin-bottom: 20px;">
-	<div class="folder-list-actions">
-		<div class="dropdown">
-			<a class="btn btn-dark dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-				<i class="fas fa-plus"></i> [[Add to Entity]]
-			</a>
-			<div class="dropdown-menu dropdown-menu-top" aria-labelledby="dropdownMenuLink">
-				#foreach ( $amodule in $userprofile.getEntities() )
-					#set($amoduleid = $amodule.getId())
-					#if($amodule.getBoolean("enableuploading"))
-						#if($permissions.canModule($amodule, "create") && $amoduleid!="faceprofilegroup" && $amoduleid!="asset" && $amoduleid!="modulesearch")
-							#set($entityrendertype = "entity")
-							#if ($amodule.modulerendertype)
-								#set($entityrendertype = $amodule.modulerendertype)
-							#end
-							
-							#set($addurl = "${apphome}/views/modules/${amodule.id}/editors/assetpickentity/index.html")
+#set($canviewentities = true)
+#set($entities = $mediaarchive.getEntityManager().getEntitiesForCategories($context, $asset.categories) )
 
-							<a class="dropdown-item emdialog"
-								href="$addurl"
-								data-dialogid="addtoentity"
-								data-maxwidth="1400"
-				    			data-hidefooter="true"
-								data-assetid="$!{asset.id}"
-								>#text($amodule)</a>
+#if($entities.isEmpty())
+	#if(!$caneditasset)
+		#set($canviewentities = false)
+	#end
+#end
+
+#if($canviewentities)
+<div id="assetentityresultsmediaviewer">
+	<div class="asset-data-detail assetpanel-editor-box">
+		<h4>[[Entities]]</h4>
+		#if(!$entities.isEmpty())
+			<div class="px-3">
+				#foreach ( $data in $entities)
+					#set($entity = $data)
+					#set($entityid = $data.getId())
+					#set($emoduleid = $data.get("entitysourcetype")) 
+					
+					#set($emodule = $mediaarchive.getCachedData("module", $emoduleid))
+					
+					#set($rendertype = $emodule.modulerendertype)
+					#if (!$rendertype)
+						#set($rendertype = "entity")
 					#end
+					$context.putPageValue("rendertype", $rendertype)
+					$context.putPageValue("rendermoduleid", $emoduleid)
+					
+					#set($moduleicon = "entity")
+					#if ($emodule.moduleicon)
+						#set($moduleicon = $emodule.moduleicon)
+					#end
+						
+					#set($previewurl = "${apphome}/views/modules/${emodule.id}/editors/default/tabs/index.html?entityid=$entity.getId()")
+					
+					$context.putPageValue("hit", $entity)
+					
+					#set($moduleicon = "entity")
+					#if ($module.moduleicon)
+						#set($moduleicon = $module.moduleicon)
+					#end
+					
+						<a href="$previewurl" 
+						class="emdialog emgridresulttitle badge badge-tags mr-1" 
+						data-hidefooter="true" 
+						data-hideheader="true"
+						id="clickid${entityid}"  
+						data-id="${entityid}"
+						data-moduleid="$!emoduleid"
+						title="#text($!entity)">
+						<i class="bi bi-$moduleicon"></i>&nbsp;#text($entity.uploadsourcepath)</a>
 				#end
-			#end
+			</div>
+		#end
+	</div>
+	
+	
+	#if($caneditasset)
+		<div class="asset-data-detail assetpanel-editor-box" style="padding:12px; margin-bottom: 20px;">
+			<div class="folder-list-actions">
+				<div class="dropdown">
+					<a class="btn btn-dark dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						<i class="fas fa-plus"></i> [[Add to Entity]]
+					</a>
+					<div class="dropdown-menu dropdown-menu-top" aria-labelledby="dropdownMenuLink">
+						#foreach ( $amodule in $userprofile.getEntities() )
+							#set($amoduleid = $amodule.getId())
+							#if($amodule.getBoolean("enableuploading"))
+								#if($permissions.canModule($amodule, "create") && $amoduleid!="faceprofilegroup" && $amoduleid!="asset" && $amoduleid!="modulesearch")
+									#set($entityrendertype = "entity")
+									#if ($amodule.modulerendertype)
+										#set($entityrendertype = $amodule.modulerendertype)
+									#end
+									
+									#set($addurl = "${apphome}/views/modules/${amodule.id}/editors/assetpickentity/index.html")
+		
+									<a class="dropdown-item emdialog"
+										href="$addurl"
+										data-dialogid="addtoentity"
+										data-maxwidth="1400"
+						    			data-hidefooter="true"
+										data-assetid="$!{asset.id}"
+										>#text($amodule)</a>
+							#end
+						#end
+					#end
+					</div>
+				</div>
 			</div>
 		</div>
-	</div>
-	
-
-</div>
+	#end
 <div class="clearfix"></div>
-
 </div>
+#end
