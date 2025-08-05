@@ -34,9 +34,9 @@ public void init()
 		//Searcher faceembeddingsearcher = getMediaArchive().getSearcher("faceembedding");
 		
 		
-		HitTracker hits = archive.query("asset").not("editstatus","7").exact("facescanerror", "true").sort("assetaddeddateDown").search();
+		HitTracker hits = archive.query("asset").not("editstatus","7").exact("facescanerror", true).sort("assetaddeddateDown").search();
 		hits.enableBulkOperations();
-		hits.setHitsPerPage(500);
+		hits.setHitsPerPage(400);
 		log.info("Checking: " + hits.size());
 		
 		List tosave = new ArrayList();
@@ -44,41 +44,15 @@ public void init()
 		FaceProfileManager manager = archive.getBean("faceProfileManager");
 		if (!hits.isEmpty()) 
 		{
-			
-			HitTracker allfaces = archive.query("faceembedding").all().sort("locationhUp").search();
+			HitTracker allfaces = archive.query("faceembedding").all().sort("assetid").search();
 			allfaces.enableBulkOperations();
-			Collection assetids = allfaces.collectValues("assetid");
-			log.info("Loaded ${assetids.size()} assetids");  
 			FaceScanInstructions instructions = manager.createInstructions();
-			
-			instructions.setFindParents(false);
-			instructions.setUpdateExistingFace(false); //There will be no new ones anyways
-			
 			for(int i=0;i < hits.getTotalPages();i++)
 			{
 				hits.setPage(i+1);
 				long start = System.currentTimeMillis();
 				Collection<MultiValued> onepage = hits.getPageOfHits();
-				Collection<MultiValued> newpage = new ArrayList();
-				
-				for(MultiValued data in onepage)
-				{
-					if(!assetids.contains(data.getId()))
-					{
-						newpage.add(data);
-					}
-					else
-                    {
-					  data.setValue("facescanerror", false);
-                      tosave.add(data);
-                    }
-				}
-				log.info("Skiped " + tosave.size() + " assets");
-				archive.saveData("asset", tosave);
-				tosave.clear();
-				
-				
-				int saved = manager.extractFaces(instructions, newpage);
+				int saved = manager.extractFaces(instructions, onepage);
 				count = count + saved;
 				if( saved > 0 )
 				{
@@ -86,7 +60,7 @@ public void init()
 					long change = end-start;
 					double perasset = (double)onepage.size()/((double)change/onepage.size());
 					
-					log.info(" face scan processed " + onepage.size() + " assets in " + (change/1000) + " sec. " +  perasset + " asset/second");
+					log.info(" face scan processed page " + hits.getPage() + " assets in " + (change/1000) + " sec. " +  perasset + " asset/second");
 					log.info(" face scan created: " + count + " total faces");
 				}
 			}

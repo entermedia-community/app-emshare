@@ -23,14 +23,14 @@ public void init()
 
 		//Searcher faceembeddingsearcher = getMediaArchive().getSearcher("faceembedding");
 		
-		HitTracker hits = archive.query("asset").not("editstatus","7").exact("facehasprofile", "false").exact("facescanerror", "false").search();
+		HitTracker hits = archive.query("asset").not("editstatus","7").exact("previewstatus","2").exact("facescanerror", "false").search();
 		hits.enableBulkOperations();
 		List tosave = new ArrayList();
 		
 		log.info("Found " + hits.size() + " assets");
 		for(Data hit in hits)
         {
-			hit.setValue("facescanerror", "true");
+			hit.setValue("facescanerror", true);
 			tosave.add(hit);
 			count++;
 			if (tosave.size() >= 1000) 

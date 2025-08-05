@@ -919,7 +919,7 @@ jQuery(document).ready(function (url, params) {
 	}
 
 	$(window).on("resultsgenerated", function (event, resultsarea) {
-		console.log("on(resultsgenerated", resultsarea);
+		//console.log("on(resultsgenerated", resultsarea);
 		setTimeout(function () {
 			$(".renderfaceboxes", resultsarea).each(function () {
 				quickPaintFace.apply(this);
