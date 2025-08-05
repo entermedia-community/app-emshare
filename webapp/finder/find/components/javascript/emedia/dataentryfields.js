@@ -97,10 +97,7 @@ $(document).ready(function () {
 		if (targets.length == 0) {
 			customToast(
 				"No target languages found. Only empty fields will be translated!",
-				{
-					positive: false,
-					log: error,
-				}
+				{ positive: false }
 			);
 			return;
 		}
