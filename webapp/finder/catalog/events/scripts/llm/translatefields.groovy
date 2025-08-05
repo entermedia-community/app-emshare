@@ -2,11 +2,9 @@ package llm
 
 import java.util.Map;
 
-import org.apache.commons.collections.functors.InstanceofPredicate
 import org.entermediadb.asset.Asset
 import org.entermediadb.asset.MediaArchive
 import org.entermediadb.translator.TranslationManager
-import org.hamcrest.core.IsInstanceOf
 import org.json.simple.JSONObject
 import org.openedit.data.Searcher
 import org.openedit.data.*
