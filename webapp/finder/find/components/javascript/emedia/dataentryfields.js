@@ -82,7 +82,7 @@ $(document).ready(function () {
 			if (code == source) {
 				text = $(this).val().trim();
 			} else {
-				if (!$(this).val().trim().length === 0) {
+				if ($(this).val().trim().length === 0) {
 					targets.push(code);
 				}
 			}
@@ -90,17 +90,13 @@ $(document).ready(function () {
 		if (text == "") {
 			customToast("Source language is empty!", {
 				positive: false,
-				log: error,
 			});
 			return;
 		}
 		if (targets.length == 0) {
 			customToast(
 				"No target languages found. Only empty fields will be translated!",
-				{
-					positive: false,
-					log: error,
-				}
+				{ positive: false }
 			);
 			return;
 		}
