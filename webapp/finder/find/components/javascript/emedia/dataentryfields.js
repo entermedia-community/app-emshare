@@ -3,6 +3,7 @@ var app, home, apphome, themeprefix;
 
 $(document).ready(function () {
 	app = $("#application");
+	var mediadb = app.data("mediadbappid");
 	home = app.data("home");
 	apphome = app.data("apphome");
 	themeprefix = app.data("themeprefix");
@@ -27,13 +28,93 @@ $(document).ready(function () {
 			.val(lang);
 		trnslationsource.find("label").attr("for", detailid + "." + lang);
 	});
-	$(document).on("change", ".enabletranslation", function () {
-		var checked = $(this).is(":checked");
-		var div = $(this).closest(".languagesfield");
-		$(".trnslationsource", div).each(function () {
-			var input = $(this).find("input");
-			input.prop("disabled", !checked);
-			$(this).css("opacity", checked ? 1 : 0);
+
+	lQuery(".addlocale-ajax").livequery("click", function (event) {
+		event.stopPropagation();
+		event.preventDefault();
+
+		var btn = $(this);
+		var url = btn.attr("href");
+		var detailid = btn.data("detailid");
+
+		var languagecode = btn.data("languagecode");
+		var langinput = $(`#${detailid}-${languagecode}-value`, div);
+		langinput.attr("name", `${detailid}.${languagecode}.value`);
+
+		var div = btn.closest(".emdatafieldvalue");
+
+		var count = $("#languagesextra_" + detailid, div).data("count");
+		count = count + 1;
+
+		var data = btn.data();
+		var args = {
+			...data,
+			count: count,
+			oemaxlevel: 1,
+			usedlanguages: [],
+		};
+
+		$(".languageselector", div).each(function () {
+			var value = $(this).data("languagecode");
+			args.usedlanguages.push(value);
+		});
+		$.get(url, args, function (data) {
+			$("#languagesextra_" + detailid, div).append(data);
+			$(document).trigger("domchanged");
+			var tr = $(`#translate-dropdown-${detailid} .dropdown-menu`);
+			tr.append(
+				`<li><a tabindex="-1" class="dropdown-item translate-ajax" data-detailid="${detailid}" data-source=${languagecode}>${btn.text()}</a></li>`
+			);
+			btn.remove();
+		});
+	});
+
+	lQuery("a.translate-ajax").livequery("click", function (e) {
+		e.preventDefault();
+		e.stopImmediatePropagation();
+		var source = $(this).data("source");
+		var div = $(this).closest(".emdatafieldvalue");
+		var selectedLangs = div.find("textarea.langvalue");
+		var text = "",
+			targets = [];
+		selectedLangs.each(function () {
+			var code = $(this).data("code");
+			if (code == source) {
+				text = $(this).val().trim();
+			} else {
+				targets.push(code);
+			}
+		});
+		if (text == "" || targets.length == 0) {
+			return;
+		}
+		div.find(".translation-mask").addClass("active");
+		$.ajax({
+			url: `/${mediadb}/services/module/translation/translate.json`,
+			method: "POST",
+			data: JSON.stringify({
+				source: source,
+				targets: targets.join(","),
+				text: text,
+			}),
+			contentType: "application/json",
+			success: function (data) {
+				div.find(".translation-mask").removeClass("active");
+				if (data && data.response.status == "ok") {
+					selectedLangs.each(function () {
+						var code = $(this).data("code");
+						if (data.data[code]) {
+							$(this).val(data.data[code]);
+						}
+					});
+				}
+			},
+			error: function (error) {
+				customToast("Error creating the folder!", {
+					positive: false,
+					log: error,
+				});
+			},
 		});
 	});
 
