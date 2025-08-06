@@ -34,45 +34,104 @@ $(document).ready(function () {
 		event.preventDefault();
 
 		var btn = $(this);
-		var url = btn.attr("href");
-		var detailid = btn.data("detailid");
-
-		var languagecode = btn.data("languagecode");
-		var langinput = $(`#${detailid}-${languagecode}-value`, div);
-		langinput.attr("name", `${detailid}.${languagecode}.value`);
-
-		var div = btn.closest(".emdatafieldvalue");
-
-		var count = $("#languagesextra_" + detailid, div).data("count");
-		count = count + 1;
-
-		var data = btn.data();
-		var args = {
-			...data,
-			count: count,
-			oemaxlevel: 1,
-			usedlanguages: [],
-		};
-
-		$(".languageselector", div).each(function () {
-			var value = $(this).data("languagecode");
-			args.usedlanguages.push(value);
-		});
-		$.get(url, args, function (data) {
-			$("#languagesextra_" + detailid, div).append(data);
-			$(document).trigger("domchanged");
-			var tr = $(`#translate-dropdown-${detailid} .dropdown-menu`);
-			tr.append(
-				`<li><a tabindex="-1" class="dropdown-item translate-ajax" data-detailid="${detailid}" data-source=${languagecode}>${btn.text()}</a></li>`
-			);
-			btn.remove();
-		});
+		addLanguageInput(btn);
 	});
 
-	lQuery("a.translate-ajax").livequery("click", function (e) {
+	function addLanguageInput(btn, val = "") {
+		var detailid = btn.data("detailid");
+		var languagecode = btn.data("languagecode");
+		// if ($(`#languagesextra_${detailid}`).length === 0) {
+		// 	$(`<div id="languagesextra_${detailid}"></div>`).insertBefore(
+		// 		`#languageaction_${detailid}`
+		// 	);
+		// }
+		btn.runAjax(function () {
+			var ul = btn.closest("ul");
+			btn.parent().remove();
+			if (ul.children().length == 0) {
+				ul.closest(".dropdown").remove();
+			}
+			if (val) {
+				$(`#${detailid}-${languagecode}-value`).val(val);
+			}
+		});
+	}
+
+	lQuery(".langvalue").livequery("blur focusout", function () {
+		var detailid = $(this).data("detailid");
+		var code = $(this).data("code");
+		var locale = $(this).data("locale");
+		if ($(this).val().trim().length == 0) {
+			$(`#translate-dropdown-${detailid} option`).each(function () {
+				if ($(this).attr("value") == code) {
+					$(this).remove();
+				}
+			});
+		} else {
+			var missing = true;
+			$(`#translate-dropdown-${detailid} option`).each(function () {
+				if ($(this).attr("value") == code) {
+					missing = false;
+				}
+			});
+			if (missing) {
+				$(`#translate-dropdown-${detailid}`).append(
+					`<option value="${code}">${locale}</option>`
+				);
+			}
+		}
+	});
+
+	lQuery(".langvalue").livequery("focus change", function () {
+		if ($(this).val().trim().length > 0) {
+			var detailid = $(this).data("detailid");
+			var code = $(this).data("code");
+			$(`#translate-dropdown-${detailid}`).val(code);
+		}
+	});
+
+	function parseLangCodes(codes) {
+		var langCodes = [];
+		if (codes && codes.length > 0) {
+			codes.forEach(function (code) {
+				if (code === "zh") {
+					code = "zh-Hans";
+				} else if (code === "zh_TW") {
+					code = "zh-Hant";
+				}
+				langCodes.push(code);
+			});
+		}
+		return langCodes;
+	}
+
+	function parseTranslations(translations) {
+		var langTranslations = {};
+		if (translations && Object.keys(translations).length > 0) {
+			Object.keys(translations).forEach(function (code) {
+				if (code === "zh-Hans") {
+					langTranslations["zh_CN"] = translations[code];
+				} else if (code === "zh-Hant") {
+					langTranslations["zh_TW"] = translations[code];
+				}
+				langTranslations[code] = translations[code];
+			});
+		} else {
+			return null;
+		}
+		return langTranslations;
+	}
+
+	lQuery(".translate-ajax").livequery("click", function (e) {
 		e.preventDefault();
-		e.stopImmediatePropagation();
-		var source = $(this).data("source");
+		var select = $(this).prev();
+		var source = select.val();
+		if (!source) {
+			customToast("Please select a source language!", {
+				positive: false,
+			});
+			return;
+		}
 		var div = $(this).closest(".emdatafieldvalue");
 		var selectedLangs = div.find("textarea.langvalue");
 		var text = "",
@@ -86,6 +145,10 @@ $(document).ready(function () {
 					targets.push(code);
 				}
 			}
+		});
+		$(".lenguageaddpicker li a", div).each(function () {
+			var code = $(this).data("languagecode");
+			targets.push(code);
 		});
 		if (text == "") {
 			customToast("Source language is empty!", {
@@ -106,20 +169,29 @@ $(document).ready(function () {
 			method: "POST",
 			data: JSON.stringify({
 				source: source,
-				targets: targets.join(","),
+				targets: parseLangCodes(targets).join(","),
 				text: text,
 			}),
 			contentType: "application/json",
 			success: function (data) {
-				div.find(".translation-mask").removeClass("active");
 				if (data && data.response.status == "ok") {
-					selectedLangs.each(function () {
-						var code = $(this).data("code");
-						if (data.data[code]) {
-							$(this).val(data.data[code]);
-						}
-					});
+					var translations = parseTranslations(data.data);
+					if (translations) {
+						selectedLangs.each(function () {
+							var code = $(this).data("code");
+							if (translations[code]) {
+								$(this).val(translations[code]);
+							}
+						});
+						$(".lenguageaddpicker .addlocale-ajax", div).each(function () {
+							var code = $(this).data("languagecode");
+							if (translations[code]) {
+								addLanguageInput($(this), translations[code]);
+							}
+						});
+					}
 				}
+				div.find(".translation-mask").removeClass("active");
 			},
 			error: function (error) {
 				customToast("Error creating the folder!", {
