@@ -18,6 +18,21 @@ public void init() {
 		String id = it.id;
 	
 		Data row = searcher.loadData(id);
+		
+		
+		row.setValue("taggedbyllm", true);
+		saveAll.add(row);
+		count ++;
+		if(saveAll.size()> 1000)
+		{
+			searcher.saveAllData(saveAll, null);
+			log.info("Saved " + count);
+			saveAll.clear();
+		}
+		
+		/*
+		// Change Import Status and Preview Status  
+		 
 		String type = archive.getMediaRenderType(row);
 		if(type == "image") 
 		{
@@ -38,14 +53,9 @@ public void init() {
 				}
 		}
 		
-		if(saveAll.size()> 1000)
-		{
-			searcher.saveAllData(saveAll, null);
-			log.info("Saved " + count);
-			saveAll.clear();
-		}
 		
-/*
+		*/
+		/*
 		String keywords = row.get("knowledgebase_tag");
 		if (keywords != null)
 		{
@@ -68,7 +78,7 @@ public void init() {
 		
 	}
 	searcher.saveAllData(saveAll, null);
-	
+	log.info("Saved " + count);
 	archive.fireSharedMediaEvent("importing/assetscreated");
 	
 }
