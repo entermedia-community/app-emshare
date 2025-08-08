@@ -13,6 +13,11 @@ import org.openedit.util.DateStorageUtil
 
 public void init()
 {
+
+	//Disabled, use ntfycollectionchats.groovy instead
+	log.info("notifycollectionupdates.groovy is disabled, use notifycollectionchats.groovy instead");
+	return;
+	
 	MediaArchive mediaArchive = (MediaArchive)context.getPageValue("mediaarchive");
 	
 	
