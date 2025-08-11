@@ -29,7 +29,7 @@ $(document).ready(function () {
 		trnslationsource.find("label").attr("for", detailid + "." + lang);
 	});
 
-	lQuery(".addlocale-ajax").livequery("click", function (event) {
+	lQuery(".addlocale-ajax").livequery("change", function (event) {
 		event.stopPropagation();
 		event.preventDefault();
 
@@ -37,60 +37,89 @@ $(document).ready(function () {
 		addLanguageInput(btn);
 	});
 
-	function addLanguageInput(btn, val = "") {
-		var detailid = btn.data("detailid");
-		var languagecode = btn.data("languagecode");
-		// if ($(`#languagesextra_${detailid}`).length === 0) {
-		// 	$(`<div id="languagesextra_${detailid}"></div>`).insertBefore(
-		// 		`#languageaction_${detailid}`
-		// 	);
-		// }
-		btn.runAjax(function () {
-			var ul = btn.closest("ul");
-			btn.parent().remove();
-			if (ul.children().length == 0) {
-				ul.closest(".dropdown").remove();
-			}
+	function addLanguageInput(select, languagecode = null, val = "") {
+		var detailid = select.data("detailid");
+
+		if (!languagecode) {
+			languagecode = select.val();
+			select.find("option:first-child").prop("disabled", true);
+			$(`#translate-source-${detailid}`).text(ellipses(locale));
+		}
+		if (!languagecode) return;
+
+		var opt = select.find("option[value='" + languagecode + "']");
+		var locale = opt.text();
+
+		select.data("languagecode", languagecode);
+		select.data("locale", locale);
+
+		if ($(`#value-${detailid}-${languagecode}`).length > 0) {
+			return;
+		}
+
+		select.runAjax(function () {
 			if (val) {
-				$(`#${detailid}-${languagecode}-value`).val(val);
+				$(`#value-${detailid}-${languagecode}`).val(val);
 			}
+			var languagesfield = select.closest(".languagesfield");
+			$(".hide-remove-btn", languagesfield).remove();
 		});
 	}
 
-	lQuery(".langvalue").livequery("blur focusout", function () {
-		var detailid = $(this).data("detailid");
-		var code = $(this).data("code");
-		var locale = $(this).data("locale");
-		if ($(this).val().trim().length == 0) {
-			$(`#translate-dropdown-${detailid} option`).each(function () {
-				if ($(this).attr("value") == code) {
-					$(this).remove();
-				}
-			});
+	function ellipses(text, maxLength = 20) {
+		if (!text) return "";
+		text = text.trim();
+		if (text.length <= maxLength) {
+			return text;
 		} else {
-			var missing = true;
-			$(`#translate-dropdown-${detailid} option`).each(function () {
-				if ($(this).attr("value") == code) {
-					missing = false;
-				}
-			});
-			if (missing) {
-				$(`#translate-dropdown-${detailid}`).append(
-					`<option value="${code}">${locale}</option>`
-				);
-			}
+			return text.substring(0, maxLength).trim() + "...";
 		}
-	});
+	}
 
-	lQuery(".langvalue").livequery("focus change", function () {
-		if ($(this).val().trim().length > 0) {
+	$(document).on("focus", ".langvalue", autoSelectTranslationSource);
+	$(document).on("input", ".langvalue", autoSelectTranslationSource);
+
+	function autoSelectTranslationSource(forced = false) {
+		if (forced || $(this).val().trim().length > 0) {
 			var detailid = $(this).data("detailid");
-			var code = $(this).data("code");
+			var code = $(this).data("languagecode");
+			var locale = $(this).data("locale");
 			$(`#translate-dropdown-${detailid}`).val(code);
+			$(`#translate-source-${detailid}`).text(ellipses(locale));
+		}
+	}
+
+	lQuery(".remove-language").livequery("click", function (e) {
+		e.preventDefault();
+		var parent = $(this).parent();
+		var languagesfield = parent.closest(".languagesfield");
+		var hasvalue = parent.find(".langvalue").val().trim().length > 0;
+		var confirmed = true;
+
+		if (hasvalue) {
+			confirmed = confirm("Are you sure you want to remove this language?");
+		}
+		if (confirmed) {
+			parent.remove();
+		}
+
+		var languagecode = $(this).data("languagecode");
+		var dropdown = $(".addlocale-ajax", languagesfield);
+
+		if (dropdown.val() === languagecode) {
+			var langvalue = $(".langvalue", languagesfield);
+			autoSelectTranslationSource.call(langvalue[0], true);
+		}
+
+		if ($(".langvalue", languagesfield).length < 2) {
+			languagesfield.append(`<div class="hide-remove-btn"></div>`);
+		} else {
+			$(".hide-remove-btn", languagesfield).remove();
 		}
 	});
 
-	function parseLangCodes(codes) {
+	function parseLangCodes(targets) {
+		var codes = Array.from(targets);
 		var langCodes = [];
 		if (codes && codes.length > 0) {
 			codes.forEach(function (code) {
@@ -110,6 +139,7 @@ $(document).ready(function () {
 		if (translations && Object.keys(translations).length > 0) {
 			Object.keys(translations).forEach(function (code) {
 				if (code === "zh-Hans") {
+					langTranslations["zh"] = translations[code];
 					langTranslations["zh_CN"] = translations[code];
 				} else if (code === "zh-Hant") {
 					langTranslations["zh_TW"] = translations[code];
@@ -124,7 +154,8 @@ $(document).ready(function () {
 
 	lQuery(".translate-ajax").livequery("click", function (e) {
 		e.preventDefault();
-		var select = $(this).prev();
+		var div = $(this).closest(".emdatafieldvalue");
+		var select = div.find(".addlocale-ajax");
 		var source = select.val();
 		if (!source) {
 			customToast("Please select a source language!", {
@@ -132,23 +163,26 @@ $(document).ready(function () {
 			});
 			return;
 		}
-		var div = $(this).closest(".emdatafieldvalue");
-		var selectedLangs = div.find("textarea.langvalue");
 		var text = "",
-			targets = [];
+			targets = new Set();
+
+		select.find("option").each(function () {
+			var val = $(this).attr("value");
+			if (val) {
+				targets.add(val);
+			}
+		});
+
+		var selectedLangs = div.find("textarea.langvalue");
 		selectedLangs.each(function () {
-			var code = $(this).data("code");
+			var code = $(this).data("languagecode");
 			if (code == source) {
 				text = $(this).val().trim();
 			} else {
-				if ($(this).val().trim().length === 0) {
-					targets.push(code);
+				if ($(this).val().trim().length > 1) {
+					targets.delete(code);
 				}
 			}
-		});
-		$(".lenguageaddpicker li a", div).each(function () {
-			var code = $(this).data("languagecode");
-			targets.push(code);
 		});
 		if (text == "") {
 			customToast("Source language is empty!", {
@@ -156,7 +190,7 @@ $(document).ready(function () {
 			});
 			return;
 		}
-		if (targets.length == 0) {
+		if (targets.size == 0) {
 			customToast(
 				"No target languages found. Only empty fields will be translated!",
 				{ positive: false }
@@ -164,12 +198,13 @@ $(document).ready(function () {
 			return;
 		}
 		div.find(".translation-mask").addClass("active");
+		var parsedTargets = parseLangCodes(targets);
 		$.ajax({
 			url: `/${mediadb}/services/module/translation/translate.json`,
 			method: "POST",
 			data: JSON.stringify({
 				source: source,
-				targets: parseLangCodes(targets).join(","),
+				targets: parsedTargets.join(","),
 				text: text,
 			}),
 			contentType: "application/json",
@@ -178,15 +213,16 @@ $(document).ready(function () {
 					var translations = parseTranslations(data.data);
 					if (translations) {
 						selectedLangs.each(function () {
-							var code = $(this).data("code");
+							var code = $(this).data("languagecode");
 							if (translations[code]) {
 								$(this).val(translations[code]);
 							}
 						});
-						$(".lenguageaddpicker .addlocale-ajax", div).each(function () {
-							var code = $(this).data("languagecode");
-							if (translations[code]) {
-								addLanguageInput($(this), translations[code]);
+
+						select.find("option").each(function () {
+							var code = $(this).attr("value");
+							if (code && translations[code]) {
+								addLanguageInput(select, code, translations[code]);
 							}
 						});
 					}
