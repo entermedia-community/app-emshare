@@ -19,8 +19,30 @@ $context.putPageValue("searcher", $searcher )
 	
 			<div id="edit-${viewdata.getId()}" 
 				 class="asset-data-detail asset-data-preview assetpanel-editor-box edit-panel-generic">
+				<div class="assetpanel-editor-header">
+					<h4>#text($viewdata)</h4>
+					
+					
+					#set($editedsince = $context.getRequestParameter("editedsince"))
+					#set($editedview = $context.getRequestParameter("viewid"))
+					#if($editedsince == "now" && $viewid == $editedview)
+						#set($edituser = $context.getUser())
+					#else
+						#set($asseteditlog = $mediaarchive.query("asseteditLog").exact("assetid", $asset.id).sort("dateDown").exact("viewid", $viewid).named("asseteditLog").searchOne($context) )
+						#ifnotnull($asseteditlog)
+							#set($edituser = $mediaarchive.getUser($asseteditlog.user))	
+							#set($since = $context.getAge($asseteditlog.getDate("date")))
+						#end
+					#end
+					#ifnotnull($edituser)
+	                    <div class="asseteditlog ml-auto text-muted">
+							[[Last edited by]] <strong>$edituser.getScreenName()</strong> 						
+							#ifnotnull($since) $since [[ago]]#end
+							#ifnull($since)[[now]]#end
+						</div>
+					#end
+				</div>
 				
-				<h4>#text($viewdata)</h4>
 				$context.putPageValue("clearfilters","true")	
 				
 				#set ($details = $searcher.getDetailsForView($viewdata, $context.getUserProfile()))
