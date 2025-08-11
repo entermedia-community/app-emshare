@@ -172,6 +172,7 @@ $(document).ready(function () {
 				targets.add(val);
 			}
 		});
+		targets.delete(source);
 
 		var selectedLangs = div.find("textarea.langvalue");
 		selectedLangs.each(function () {
