@@ -13,6 +13,8 @@ import org.openedit.data.Searcher
 import org.openedit.hittracker.HitTracker
 import org.openedit.repository.ContentItem
 import org.openedit.users.User
+import org.openedit.util.Exec
+import org.openedit.util.ExecResult
 
 public void addMetadataWithAI(){
 
@@ -49,10 +51,12 @@ public void addMetadataWithAI(){
         categoryid = "index";
     }
 	
+	
 	//Refine this to use a hit tracker?
 	HitTracker assets = archive.query("asset").exact("previewstatus", "2").exact("category", categoryid).exact("taggedbyllm",false).exact("llmerror",false).search();
 	if(assets.size() < 1)
 	{
+		log.info("No assets to tag in category: " + categoryid);
 		return;
 	}
 
@@ -61,6 +65,9 @@ public void addMetadataWithAI(){
 	assets.enableBulkOperations();
 	int count = 1;
 	List tosave = new ArrayList();
+	
+	Exec exec = archive.getBean("exec");
+	
 	for (hit in assets) {
 		Asset asset = archive.getAsset(hit.id);
 		inReq.putPageValue("asset", asset);
@@ -76,6 +83,7 @@ public void addMetadataWithAI(){
 			imagesize = "image1900x1080.jpg";
 		}
 		else {
+			log.info("Skipping asset " + asset.getName() + " - Not an image or video.");
 			continue;
 		}
 		ContentItem item = archive.getGeneratedContent(asset, imagesize);
@@ -85,16 +93,25 @@ public void addMetadataWithAI(){
 			continue;
 		}
 
-		InputStream inputStream = item.getInputStream()
-		String base64EncodedString = ''
+		ByteArrayOutputStream output = new ByteArrayOutputStream();
+		
+		ArrayList<String> args = new ArrayList<String>();
+		args.add(item.getAbsolutePath());
+		args.add("-resize");
+		args.add("1500x1500");
+		args.add("jpg:-");
+		
+		String base64EncodedString = '';
 		try {
-			byte[] bytes = inputStream.bytes // Read InputStream as bytes
+			ExecResult result = exec.runExecStream("convert", args, output, 3000);
+			byte[] bytes = output.toByteArray();  // Read InputStream as bytes
 			base64EncodedString = Base64.getEncoder().encodeToString(bytes) // Encode to Base64
 		} catch (Exception e) {
-			log.info("Error encoding asset to Base64: ${e}")
-		} finally {
-			inputStream.close() // Close the InputStream
-		}
+			log.info("Error encoding asset to Base64: ${e}");
+			asset.setValue("llmerror", true);
+			tosave.add(asset);
+			continue;
+		} 
 
 		log.info("Analyzing asset ("+count+"/"+assets.size()+") Id: " + asset.getId() + " " + asset.getName());
 		count++;
@@ -107,7 +124,8 @@ public void addMetadataWithAI(){
 			inReq.putPageValue("aifields", aifields);
 			
 			String template = manager.loadInputFromTemplate(inReq, "/" +  archive.getMediaDbId() + "/gpt/systemmessage/analyzeasset.html");
-			LLMResponse results = manager.callFunction(inReq, model, "generate_metadata", template, 0, 5000,base64EncodedString );
+			
+			LLMResponse results = manager.callFunction(inReq, model, "generate_metadata", template, 0, 5000, base64EncodedString );
 
 			boolean wasUpdated = false;
 			if (results != null)
@@ -121,7 +139,7 @@ public void addMetadataWithAI(){
 					{
 						String inKey = (String) iterator.next();
 						PropertyDetail detail = archive.getAssetPropertyDetails().getDetail(inKey);
-						if (detail != null && asset.getValue(detail.id) == null)
+						if (detail != null && (asset.getValue(detail.id) == null || asset.getValue(detail.id) == ""))
 						{
 							String value = metadata.get(inKey);
 							if (detail.isMultiValue())
@@ -142,7 +160,7 @@ public void addMetadataWithAI(){
 					{
 						//thrrow exception
 					}
-					archive.getEventManager().fireDataEditEvent(archive.getAssetSearcher(), agent, null, asset, datachanges);
+					archive.getEventManager().fireDataEditEvent(archive.getAssetSearcher(), agent, "assetgeneral", asset, datachanges);
 					
 					for (Iterator iterator = datachanges.keySet().iterator(); iterator.hasNext();)
 					{
