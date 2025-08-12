@@ -1,5 +1,6 @@
 package llm
 
+import org.apache.commons.collections.map.HashedMap
 import org.entermediadb.asset.Asset
 import org.entermediadb.asset.MediaArchive
 import org.entermediadb.llm.LLMManager
@@ -11,6 +12,7 @@ import org.openedit.data.PropertyDetail
 import org.openedit.data.Searcher
 import org.openedit.hittracker.HitTracker
 import org.openedit.repository.ContentItem
+import org.openedit.users.User
 
 public void addMetadataWithAI(){
 
@@ -114,7 +116,7 @@ public void addMetadataWithAI(){
 				if (arguments != null) {
 
 					Map metadata =  (Map) arguments.get("metadata");
-					Map datachanges = new HashSet();
+					Map datachanges = new HashedMap();
 					for (Iterator iterator = metadata.keySet().iterator(); iterator.hasNext();)
 					{
 						String inKey = (String) iterator.next();
@@ -125,11 +127,11 @@ public void addMetadataWithAI(){
 							if (detail.isMultiValue())
 							{
 								Collection<String> values = Arrays.asList(value.split(","));
-								datachanges.set(detail.id, values);
+								datachanges.put(detail.id, values);
 							}
 							else 
 							{
-								datachanges.set(detail.id, value);
+								datachanges.put(detail.id, value);
 							}
 						}
 					}
@@ -145,7 +147,8 @@ public void addMetadataWithAI(){
 					for (Iterator iterator = datachanges.keySet().iterator(); iterator.hasNext();)
 					{
 						String inKey = (String) iterator.next();
-						Object value = metadata.get(inKey);
+						Object value = datachanges.get(inKey);
+						
 						asset.setValue(inKey, value);
 						log.info("AI updated field "+ inKey + ": "+metadata.get(inKey));
 					}
