@@ -114,28 +114,41 @@ public void addMetadataWithAI(){
 				if (arguments != null) {
 
 					Map metadata =  (Map) arguments.get("metadata");
-					
+					Map datachanges = new HashSet();
 					for (Iterator iterator = metadata.keySet().iterator(); iterator.hasNext();)
 					{
 						String inKey = (String) iterator.next();
 						PropertyDetail detail = archive.getAssetPropertyDetails().getDetail(inKey);
-						if (asset.getValue(detail.id) == null)
+						if (detail != null && asset.getValue(detail.id) == null)
 						{
 							String value = metadata.get(inKey);
-							if ("tageditor".equals(detail.viewType))
+							if (detail.isMultiValue())
 							{
 								Collection<String> values = Arrays.asList(value.split(","));
-								asset.setValue(detail.id, values);
+								datachanges.set(detail.id, values);
 							}
 							else 
 							{
-								
-								asset.setValue(detail.id, value);
+								datachanges.set(detail.id, value);
 							}
-							log.info("AI updated field "+ detail.id + ": "+metadata.get(inKey));
 						}
 					}
-	
+					
+					//Save change event
+					User agent = archive.getUser("agent");
+					if( agent == null)
+					{
+						//thrrow exception
+					}
+					archive.getEventManager().fireDataEditEvent(archive.getAssetSearcher(), agent, null, asset, datachanges);
+					
+					for (Iterator iterator = datachanges.keySet().iterator(); iterator.hasNext();)
+					{
+						String inKey = (String) iterator.next();
+						Object value = metadata.get(inKey);
+						asset.setValue(inKey, value);
+						log.info("AI updated field "+ inKey + ": "+metadata.get(inKey));
+					}
 				}
 				else {
 					log.info("Asset "+asset.getId() +" "+asset.getName()+" - Nothing Detected.");
