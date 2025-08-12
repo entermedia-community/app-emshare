@@ -87,9 +87,10 @@ public void addMetadataWithAI(){
 			continue;
 		}
 		ContentItem item = archive.getGeneratedContent(asset, imagesize);
-		if(!item.exists()) {
+		if(!item.exists()) 
+		{
 			
-			log.info("Missing " + imagesize + " generated image for:" + asset.getName());
+			log.info("Missing " + imagesize + " generated image for asset ("+asset.getId()+") " + asset.getName());
 			continue;
 		}
 
@@ -103,7 +104,7 @@ public void addMetadataWithAI(){
 		
 		String base64EncodedString = '';
 		try {
-			ExecResult result = exec.runExecStream("convert", args, output, 3000);
+			ExecResult result = exec.runExecStream("convert", args, output, 5000);
 			byte[] bytes = output.toByteArray();  // Read InputStream as bytes
 			base64EncodedString = Base64.getEncoder().encodeToString(bytes) // Encode to Base64
 		} catch (Exception e) {
@@ -200,8 +201,6 @@ public void addMetadataWithAI(){
 	archive.saveAssets(tosave);
 	log.info("Saved: " + tosave.size() + " assets - " + searcher.getSearchType());
 	tosave.clear();
-	
-
 	archive.firePathEvent("llm/translatefields", inReq.getUser(), null);
 
 }
