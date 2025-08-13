@@ -177,6 +177,17 @@ public void addMetadataWithAI(){
 				}
 			}
 
+			Collection<String> semantic_topics = manager.getSemanticTopics(inReq, model);
+			if(semantic_topics != null && !semantic_topics.isEmpty())
+			{
+				asset.setValue("semantictopics", semantic_topics);
+				log.info("AI updated semantic topics: " + semantic_topics);
+			}
+			else 
+			{
+				log.info("No semantic topics detected for asset: " + asset.getId() + " " + asset.getName());
+			}
+
 			asset.setValue("taggedbyllm", true);
 			tosave.add(asset);
 			//archive.saveAsset(asset);
@@ -201,6 +212,7 @@ public void addMetadataWithAI(){
 	archive.saveAssets(tosave);
 	log.info("Saved: " + tosave.size() + " assets - " + searcher.getSearchType());
 	tosave.clear();
+
 	archive.firePathEvent("llm/translatefields", inReq.getUser(), null);
 
 }
