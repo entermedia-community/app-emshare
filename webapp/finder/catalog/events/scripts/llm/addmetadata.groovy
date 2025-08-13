@@ -209,10 +209,11 @@ public void addMetadataWithAI(){
 			continue;
 		}	
 	}
-	archive.saveAssets(tosave);
-	log.info("Saved: " + tosave.size() + " assets - " + searcher.getSearchType());
-	tosave.clear();
-
+	if( tosave.size() > 0)	{
+		archive.saveAssets(tosave);
+		log.info("Saved: " + tosave.size() + " assets - " + searcher.getSearchType());
+	}
+	
 	archive.firePathEvent("llm/translatefields", inReq.getUser(), null);
 
 }
