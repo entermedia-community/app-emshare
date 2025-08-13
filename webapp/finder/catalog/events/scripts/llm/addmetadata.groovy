@@ -126,7 +126,7 @@ public void addMetadataWithAI(){
 			
 			String template = manager.loadInputFromTemplate(inReq, "/" +  archive.getMediaDbId() + "/gpt/systemmessage/analyzeasset.html");
 			
-			LLMResponse results = manager.callFunction(inReq, model, "generate_metadata", template, 0, 5000, base64EncodedString );
+			LLMResponse results = manager.callFunction(inReq, model, "generate_metadata", template, 0, 5000, base64EncodedString);
 
 			boolean wasUpdated = false;
 			if (results != null)
