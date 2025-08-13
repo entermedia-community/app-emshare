@@ -126,7 +126,7 @@ public void addMetadataWithAI(){
 			
 			String template = manager.loadInputFromTemplate(inReq, "/" +  archive.getMediaDbId() + "/gpt/systemmessage/analyzeasset.html");
 			
-			LLMResponse results = manager.callFunction(inReq, model, "generate_metadata", template, 0, 5000, base64EncodedString );
+			LLMResponse results = manager.callFunction(inReq, model, "generate_metadata", template, 0, 5000, base64EncodedString);
 
 			boolean wasUpdated = false;
 			if (results != null)
@@ -175,6 +175,17 @@ public void addMetadataWithAI(){
 				else {
 					log.info("Asset "+asset.getId() +" "+asset.getName()+" - Nothing Detected.");
 				}
+			}
+
+			Collection<String> semantic_topics = manager.getSemanticTopics(inReq, model);
+			if(semantic_topics != null && !semantic_topics.isEmpty())
+			{
+				asset.setValue("semantictopics", semantic_topics);
+				log.info("AI updated semantic topics: " + semantic_topics);
+			}
+			else 
+			{
+				log.info("No semantic topics detected for asset: " + asset.getId() + " " + asset.getName());
 			}
 
 			asset.setValue("taggedbyllm", true);
