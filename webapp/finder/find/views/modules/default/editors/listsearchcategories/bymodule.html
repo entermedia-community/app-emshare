@@ -1,6 +1,5 @@
 #if($organizedModules.size() > 1)
 	<div class="searchcategorysidebar auto-active-container overflow-y">
-		#if($organizedModules.size() > 1)
 		<div class="mb-2 auto-active-row #ifnull($selectedmodule) current #end">
 
 			#set($url = "$edithome/index.html?searchcategoryid=$searchcategory.id")
@@ -28,10 +27,16 @@
 					#end
 					<i class="bi bi-$!{moduleicon} module-icon ns"></i>
 				#end
-				<span>#text($searchcategory) ($!{hits.size()})</span>
+				#set( $total = $hits.size() )
+				#ifnotnull($organizedHits)
+					#set($assethits = $organizedHits.get("asset") )
+				#end	
+				#ifnotnull($assethits)
+					#set( $total = $total + $assethits.size())
+				#end
+				<span>#text($searchcategory) ($total)</span>
 			</a>
 		</div>
-		#end
 		
 		#foreach($module in $organizedModules)
 			#set($idhits = $organizedHits.get($module.id))
@@ -49,7 +54,11 @@
 			#set($url = "$edithome/index.html?searchcategoryid=$searchcategory.id&selectedmodule=${module.id}")
 			
 			#set($entitysourcetype = $hits.getActiveFilterValues().get("entitysourcetype")) 
-			#set($count = $entitysourcetype.getCount($module.id))
+			#if($module.id == "asset")
+				#set($count = $assethits.size() )
+			#else	
+				#set($count = $entitysourcetype.getCount($module.id))
+			#end	
 			
 			<div class="mb-2 auto-active-row #if($selectedmodule == $module.id) current #end">
 				<a href="$url" 
