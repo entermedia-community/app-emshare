@@ -207,7 +207,7 @@ public void addMetadataWithAI(){
 			long duration = (System.currentTimeMillis() - startTime) / 1000L;
 			log.info("Took "+duration +"s");
 			
-			if( tosave.size() == 1000)	{
+			if( tosave.size() == 25)	{
 				archive.saveAssets(tosave);
 				//searcher.saveAllData(tosave, null);
 				log.info("Saved: " + tosave.size() + " assets - " + searcher.getSearchType());
