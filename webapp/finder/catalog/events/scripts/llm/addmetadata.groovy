@@ -121,71 +121,83 @@ public void addMetadataWithAI(){
 		try{
 			long startTime = System.currentTimeMillis();
 			
-			Collection aifields = archive.getAssetPropertyDetails().findAiCreationProperties();
-			inReq.putPageValue("aifields", aifields);
-			
-			String template = manager.loadInputFromTemplate(inReq, "/" +  archive.getMediaDbId() + "/gpt/systemmessage/analyzeasset.html");
-			
-			LLMResponse results = manager.callFunction(inReq, model, "generate_metadata", template, 0, 5000, base64EncodedString);
+			Collection allaifields = archive.getAssetPropertyDetails().findAiCreationProperties();
+			Collection aifields = new ArrayList();
+			for(aifield in allaifields) {
+				if(asset.getValue(aifield.id) == null || asset.getValue(aifield.id) == "")
+				{
+					aifields.add(aifield);
+				}
+			}
+			if(!aifields.isEmpty())
+			{	 
+				inReq.putPageValue("aifields", aifields);
+				
+				String template = manager.loadInputFromTemplate(inReq, "/" +  archive.getMediaDbId() + "/gpt/systemmessage/analyzeasset.html");
+				
+				LLMResponse results = manager.callFunction(inReq, model, "generate_metadata", template, 0, 5000, base64EncodedString);
 
-			boolean wasUpdated = false;
-			if (results != null)
-			{
-				JSONObject arguments = results.getArguments();
-				if (arguments != null) {
+				boolean wasUpdated = false;
+				if (results != null)
+				{
+					JSONObject arguments = results.getArguments();
+					if (arguments != null) {
 
-					Map metadata =  (Map) arguments.get("metadata");
-					Map datachanges = new HashedMap();
-					for (Iterator iterator = metadata.keySet().iterator(); iterator.hasNext();)
-					{
-						String inKey = (String) iterator.next();
-						PropertyDetail detail = archive.getAssetPropertyDetails().getDetail(inKey);
-						if (detail != null && (asset.getValue(detail.id) == null || asset.getValue(detail.id) == ""))
+						Map metadata =  (Map) arguments.get("metadata");
+						Map datachanges = new HashedMap();
+						for (Iterator iterator = metadata.keySet().iterator(); iterator.hasNext();)
 						{
-							String value = metadata.get(inKey);
-							if (detail.isMultiValue())
+							String inKey = (String) iterator.next();
+							PropertyDetail detail = archive.getAssetPropertyDetails().getDetail(inKey);
+							if (detail != null)
 							{
-								Collection<String> values = Arrays.asList(value.split(","));
-								datachanges.put(detail.id, values);
-							}
-							else 
-							{
-								datachanges.put(detail.id, value);
+								String value = metadata.get(inKey);
+								if (detail.isMultiValue())
+								{
+									Collection<String> values = Arrays.asList(value.split(","));
+									datachanges.put(detail.id, values);
+								}
+								else 
+								{
+									datachanges.put(detail.id, value);
+								}
 							}
 						}
-					}
-					
-					//Save change event
-					User agent = archive.getUser("agent");
-					if( agent == null)
-					{
-						//thrrow exception
-					}
-					archive.getEventManager().fireDataEditEvent(archive.getAssetSearcher(), agent, "assetgeneral", asset, datachanges);
-					
-					for (Iterator iterator = datachanges.keySet().iterator(); iterator.hasNext();)
-					{
-						String inKey = (String) iterator.next();
-						Object value = datachanges.get(inKey);
 						
-						asset.setValue(inKey, value);
-						log.info("AI updated field "+ inKey + ": "+metadata.get(inKey));
+						//Save change event
+						User agent = archive.getUser("agent");
+						if( agent != null)
+						{
+							archive.getEventManager().fireDataEditEvent(archive.getAssetSearcher(), agent, "assetgeneral", asset, datachanges);
+						}
+						
+						for (Iterator iterator = datachanges.keySet().iterator(); iterator.hasNext();)
+						{
+							String inKey = (String) iterator.next();
+							Object value = datachanges.get(inKey);
+							
+							asset.setValue(inKey, value);
+							log.info("AI updated field "+ inKey + ": "+metadata.get(inKey));
+						}
 					}
-				}
-				else {
-					log.info("Asset "+asset.getId() +" "+asset.getName()+" - Nothing Detected.");
+					else {
+						log.info("Asset "+asset.getId() +" "+asset.getName()+" - Nothing Detected.");
+					}
 				}
 			}
 
-			Collection<String> semantic_topics = manager.getSemanticTopics(inReq, model);
-			if(semantic_topics != null && !semantic_topics.isEmpty())
+			if(asset.getValue("semantictopics") == null || asset.getValues("semantictopics").isEmpty())
 			{
-				asset.setValue("semantictopics", semantic_topics);
-				log.info("AI updated semantic topics: " + semantic_topics);
-			}
-			else 
-			{
-				log.info("No semantic topics detected for asset: " + asset.getId() + " " + asset.getName());
+				Collection<String> semantic_topics = manager.getSemanticTopics(inReq, model);
+				if(semantic_topics != null && !semantic_topics.isEmpty())
+				{
+					asset.setValue("semantictopics", semantic_topics);
+					log.info("AI updated semantic topics: " + semantic_topics);
+				}
+				else 
+				{
+					log.info("No semantic topics detected for asset: " + asset.getId() + " " + asset.getName());
+				}
 			}
 
 			asset.setValue("taggedbyllm", true);
