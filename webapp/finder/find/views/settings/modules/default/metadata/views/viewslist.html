@@ -4,8 +4,11 @@
 	#set($assettype = "default")
 #end
 #set( $viewsearcher = $searcherManager.getSearcher($catalogid, "view"))
-#set ( $systemdefined = "false" )
+
 #set( $systemdefined = $context.findValue("systemdefined") )
+#ifnull($systemdefined)
+	#set ( $systemdefined = "false" )
+#end
 #set( $moduleid = $context.findValue("module") )     
 
 #set( $query = $viewsearcher.createSearchQuery().append("moduleid",$moduleid).append("systemdefined",$systemdefined) )
