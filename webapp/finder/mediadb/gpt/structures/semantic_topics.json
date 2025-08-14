@@ -7,7 +7,16 @@
 		},
 		{
 			"role": "user",
-			"content": "Generates between 1-10 semantic topics based on the following metadata:#foreach($field in $fields)\n\t#if($foreach.count>1), #end${field.name}: ${field.value}#end"
+			#set($content = "Generates between 1-10 semantic topics based on the following metadata:")
+			#foreach($field in $fields)
+				#set($content ="${content} ")
+				#if($foreach.count>1)
+					#set($content ="${content}, ")
+				#end
+				#set($content ="${content}${field.name}: ${field.value}")
+			#end
+			
+			"content": #jesc($content)
 		}
 	],
 	"text": {
