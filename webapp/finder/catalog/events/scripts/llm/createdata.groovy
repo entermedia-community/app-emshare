@@ -19,9 +19,10 @@ public void tagAssets(){
 	MediaArchive archive = inReq.getPageValue("mediaarchive");
 	Searcher searcher = archive.getAssetSearcher();
 	//TODO:  get the bean to use programatically from catalog settings or something
-	GptManager manager = archive.getBean("gptManager");
+	GptManager manager = archive.getBean("openaiConnection");
 	def cat = archive.getCategorySearcher().getRootCategory();
-	inReq.putPageValue("category", cat);
+	Map params = new HashMap();
+	params.put("category", cat);
 
 	//Refine this to use a hit tracker?
 	HitTracker assets = searcher.getAllHits();
@@ -37,7 +38,7 @@ public void tagAssets(){
 
 	for (hit in assets) {
 		Asset asset = archive.getAsset(hit.id);
-		inReq.putPageValue("asset", asset);
+		params.put("asset", asset);
 
 		ContentItem item = archive.getGeneratedContent(asset, "image3000x3000.jpg");
 		if(item.exists()) {
@@ -55,10 +56,10 @@ public void tagAssets(){
 
 
 
-			String template = manager.loadInputFromTemplate(inReq, archive.getCatalogId() + "/gpt/templates/analyzeasset.html");
+			String template = manager.loadInputFromTemplate(archive.getCatalogId() + "/gpt/templates/analyzeasset.html", params);
 			try{
 
-				JsonObject results = manager.callFunction(inReq, model, "generate_metadata", template, 0, 5000,base64EncodedString );
+				JsonObject results = manager.callFunction(params, model, "generate_metadata", template, 0, 5000,base64EncodedString );
 				def jsonSlurper = new JsonSlurper()
 				def result = jsonSlurper.parseText(results.toString());
 				result.metadata.each { key, value ->
