@@ -3,7 +3,7 @@ package llm
 import org.apache.commons.collections.map.HashedMap
 import org.entermediadb.asset.Asset
 import org.entermediadb.asset.MediaArchive
-import org.entermediadb.llm.LLMManager
+import org.entermediadb.llm.LlmConnection
 import org.entermediadb.llm.LLMResponse
 import org.json.simple.JSONObject
 import org.openedit.Data
@@ -26,16 +26,8 @@ public void addMetadataWithAI(){
 	if(model == null) {
 		model = "gpt-4o-mini";
 	}
-	String type = "gptManager";
-	
-	Data modelinfo = archive.query("llmmodel").exact("modelid",model).searchOne();
-	
-	if(modelinfo != null)
-	{
-		type = modelinfo.get("llmtype") + "Manager";
-	}
-	
-	LLMManager manager = archive.getBean(type);
+
+	LlmConnection manager = archive.getLlmConnection(model);
 	
 	if (!manager.isReady())
 	{
