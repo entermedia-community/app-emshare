@@ -1,79 +1,49 @@
-#set($searcher = $mediaarchive.getAssetSearcher())
-$context.putPageValue("searcher", $searcher )
+
 #set($collectionid = $context.getRequestParameter("collectionid"))
+
 <div id="asset-detail-editor" 
 	class="asset-details-editor" 
 	data-assetid="$!asset.getId()"
 	data-ajaxreloadtargets="resultsdiv">
 	
-#set($views = $mediaarchive.query("view").exact("moduleid", $module.id).exact("systemdefined","false").sort("orderingUp").named("view").search($context) )
 	
-#foreach( $viewdata in $views )
-	#set($details = "" )
-	#set($permissionvalue = $permissions.canModule($module,$viewdata.getId() ) )
-    #if($permissionvalue)
-		#if( !$viewdata.rendertable )
-			$context.putPageValue("data",$asset)	
-			#set($viewid = $viewdata.getId())
-			$context.putPageValue("viewid",$viewid)
+	$context.putPageValue("asset",$asset)
 	
-			<div id="edit-${viewdata.getId()}" 
-				 class="asset-data-detail asset-data-preview assetpanel-editor-box edit-panel-generic">
-				<div class="assetpanel-editor-header">
-					<h4>#text($viewdata)</h4>
+	#set($views = $mediaarchive.query("view").exact("moduleid", "asset").exact("systemdefined","false").sort("orderingUp").named("view").search($context) )
+		
+	#foreach( $viewdata in $views )
+		#if ($viewdata.id!="assetfileproperties")
+			#set($permissionvalue = $permissions.canModule($module,$viewdata.getId() ) )
+		    #if($permissionvalue)
+				#if( !$viewdata.rendertable )				
+					$context.putPageValue("viewdata",$viewdata)
+					$pages.include("${edithome}/generalinformation/viewdetails.html", $context)
 					
-					
-					#set($editedsince = $context.getRequestParameter("editedsince"))
-					#set($editedview = $context.getRequestParameter("viewid"))
-					#if($editedsince == "now" && $viewid == $editedview)
-						#set($edituser = $context.getUser())
-					#else
-						#set($asseteditlog = $mediaarchive.query("asseteditLog").exact("assetid", $asset.id).sort("dateDown").exact("viewid", $viewid).named("asseteditLog").searchOne($context) )
-						#ifnotnull($asseteditlog)
-							#set($edituser = $mediaarchive.getUser($asseteditlog.user))	
-							#set($since = $context.getAge($asseteditlog.getDate("date")))
-						#end
-					#end
-					#ifnotnull($edituser)
-	                    <div class="asseteditlog ml-auto text-muted">
-							[[Last edited by]] <strong>$edituser.getScreenName()</strong> 						
-							#ifnotnull($since) $since [[ago]]#end
-							#ifnull($since)[[now]]#end
-						</div>
-					#end
-				</div>
-				
-				$context.putPageValue("clearfilters","true")	
-				
-				#set ($details = $searcher.getDetailsForView($viewdata, $context.getUserProfile()))
-
-				#ifnull($details)
-					<div class="p-3">
-							[[Not view details defined on]]: $viewid
-					</div>
 				#end
-
-				#ifnotnull($details)
-					$context.putPageValue("details", $details)
-					$pages.include("/$applicationid/components/xml/detailviewer.html", $context)
-					#if($caneditasset)
-						<div class="assetpanel-editor-actions">
-							#set( $url = "${edithome}/generalinformation/editform.html?assetid=${asset.id}")
-							<a href="#urlescape($url)" 
-							   class="ajax btn btn-accent"
-							   data-edit="$!caneditasset"
-							   data-viewid="$viewid"
-							   data-assethitssessionid="$!hitssessionid"
-							   data-targetdiv="edit-${viewdata.getId()}"
-							   data-editpath="${edithome}/generalinformation/save.html"
-							   data-oemaxlevel="1"
-							   title="[[Edit]] #text($viewdata)"><i class="bi bi-pencil-square mr-1"></i> [[Edit]] </a>
-						</div>
-					#end
-				#end
-				</div>
+				#set($permissionvalue = "")
 			#end
-			#set($permissionvalue = "")
 		#end
-#end
+	#end
+	
+	#if($canviewfaceprofile)
+		$pages.include("${edithome}/generalinformation/faceprofiles.html", $context)
+	#end
+
+	$pages.include("${apphome}/views/modules/asset/editors/assetpickentity/listentities.html",$context)
+							
+	$pages.include("${apphome}/views/modules/asset/editors/assetlistfolder/index.html",$context)
+	
+	##File Properties View
+	#set($viewdata = $mediaarchive.query("view").exact("moduleid", "asset").exact("id","assetfileproperties").named("view2").searchOne($context) )
+	#ifnotnull($viewdata)
+		#set($permissionvalue = $permissions.canModule($module,$viewdata.getId() ) )
+		#if($permissionvalue)
+	        $context.putPageValue("viewdata",$viewdata)
+	        $pages.include("${edithome}/generalinformation/viewdetails.html", $context)
+		#end
+	#end
+	
+	
 </div>
+
+
