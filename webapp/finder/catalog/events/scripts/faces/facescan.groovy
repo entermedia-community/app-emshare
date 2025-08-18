@@ -6,6 +6,11 @@ import org.entermediadb.asset.facedetect.FaceScanInstructions
 import org.openedit.MultiValued
 import org.openedit.hittracker.HitTracker
 import org.openedit.locks.Lock
+import java.text.DateFormat
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Calendar
+import org.openedit.data.QueryBuilder
 
 public void init()
 {
@@ -30,7 +35,26 @@ public void init()
 
 	try
 	{	
-		HitTracker hits = archive.query("asset").not("editstatus","7").exact("facescancomplete", "false").exact("previewstatus","2").sort("assetaddeddateDown").search();
+		QueryBuilder query = archive.query("asset").not("editstatus","7").exact("facescancomplete", "false").exact("previewstatus","2").sort("assetaddeddateDown");
+		
+		String startdate = archive.getCatalogSettingValue("ai_facescan_startdate");
+		
+		DateFormat format = new SimpleDateFormat("MM/dd/yyyy", Locale.ENGLISH);
+		
+		if (startdate == null || startdate.isEmpty())
+		{
+			Calendar cal = Calendar.getInstance();
+			cal.add(Calendar.DAY_OF_YEAR, -30);
+			Date thirtyDaysAgo = cal.getTime();
+			
+			startdate = format.format(thirtyDaysAgo);
+		}
+		
+		Date date = format.parse(startdate);
+		
+		query.after("assetaddeddate", date);
+		HitTracker hits = query.search();
+		
 		hits.enableBulkOperations();
 		List tosave = new ArrayList();
 		FaceProfileManager manager = archive.getBean("faceProfileManager");
@@ -50,7 +74,7 @@ public void init()
 				{
 					long end = System.currentTimeMillis();
 					long change = end-start;
-					double perasset = ((double)change/1000D)/(double)onepage.size();
+					double perasset = ((double) change/1000D) /(double)onepage.size();
 					
 					log.info("face scan processed " + onepage.size() + " assets in " + change + " milliseconds " +  perasset + " asset/second");
 				}

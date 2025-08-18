@@ -10,7 +10,7 @@ public void addMetadataWithAI(){
 	MediaArchive archive = context.getPageValue("mediaarchive");
 	ClassifyManager classifyManager = archive.getBean("classifyManager");
 	classifyManager.scanMetadataWithAIAsset(log);
-	classifyManager.scanMetadataWithAIEntity();
+	classifyManager.scanMetadataWithAIEntity(log);
 }
 
 addMetadataWithAI();
