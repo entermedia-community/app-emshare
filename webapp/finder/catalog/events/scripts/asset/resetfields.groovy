@@ -27,6 +27,9 @@ public void init() {
 		row.setValue("semantictopics", null);
 		row.setValue("searchcategory", null);
 		
+		row.setValue("headline", null);
+		row.setValue("longcaption", null);
+		
 		saveAll.add(row);
 		count ++;
 		if(saveAll.size()> 1000)
