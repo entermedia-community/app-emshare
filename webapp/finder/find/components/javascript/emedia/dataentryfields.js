@@ -43,7 +43,6 @@ $(document).ready(function () {
 		if (!languagecode) {
 			languagecode = select.val();
 			select.find("option:first-child").prop("disabled", true);
-			$(`#translate-source-${detailid}`).text(ellipses(locale));
 		}
 		if (!languagecode) return;
 
@@ -85,7 +84,6 @@ $(document).ready(function () {
 			var code = $(this).data("languagecode");
 			var locale = $(this).data("locale");
 			$(`#translate-dropdown-${detailid}`).val(code);
-			$(`#translate-source-${detailid}`).text(ellipses(locale));
 		}
 	}
 
