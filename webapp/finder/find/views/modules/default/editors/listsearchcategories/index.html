@@ -1,12 +1,21 @@
 #set($searchcategoryid = $context.getRequestParameter("searchcategoryid"))
-
+#set($selectedmodule = $context.getRequestParameter("selectedmodule"))
 #ifnotnull($searchcategoryid)
 		#set( $searchcategory = $mediaarchive.getCachedData("searchcategory",$searchcategoryid) )
 		$context.putPageValue("searchcategory", $searchcategory)
 #end
 
+
+
 <div id="$edithomeid"  
-	class="editdiv dataeditedreload #ifnull($searchcategoryid)listsearchcategories #end #ifnotnull($searchcategoryid) listofentities #end"
+	class='editdiv dataeditedreload 
+	#ifnull($searchcategoryid)listsearchcategories #end 
+	#ifnotnull($searchcategoryid) 
+		#if($selectedmodule != "asset")
+		listofentities
+		#end 
+	#end
+	'
 	data-autoreloadurl="${edithome}/index.html"
 	data-edithome="${edithome}"
 	
@@ -45,6 +54,8 @@
 		
 		#set( $module = $mediaarchive.getCachedData("module","modulesearch") )
 		$context.putPageValue("module", $module)
+		
+		
 
 		##Since I have not yet searched for modules to build side menu I have to do this in special xconf:		
 		#set($url = "${edithome}/searchalltypes.html?field=searchcategory&operation=exact&searchcategory.value=$!searchcategoryid")

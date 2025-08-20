@@ -39,14 +39,21 @@ $pages.include("${edithome}/categorybreadcrumb.html", $context)
 		#if($selectedmodule)
 		
 			#set($bmodule = $mediaarchive.getCachedData("module",$selectedmodule) )
-			#set($edithome = "$apphome/views/modules/${selectedmodule}/editors/listentities")
-			$context.putPageValue("edithome", $edithome)
+			
 			$context.putPageValue("module", $bmodule)
-			$context.putPageValue("edithomeid", "${selectedmodule}listeintities")
+			
 			$context.putPageValue("viewid", "${selectedmodule}resultstable")
 			#set($idhits = $organizedHits.get($bmodule.id))
 			$context.putPageValue("hits", $idhits)
 			$context.putPageValue("enableactions", true)
+			
+			#if($selectedmodule == "asset")
+				#set($edithome = "$apphome/views/modules/asset/editors/quicksearch")										
+			#else
+				#set($edithome = "$apphome/views/modules/${selectedmodule}/editors/listentities")
+				$context.putPageValue("edithome", $edithome)
+				$context.putPageValue("edithomeid", "${selectedmodule}listeintities")
+			#end
 			$pages.include("${edithome}/index.html",$context)
 
 		#else

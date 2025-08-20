@@ -195,6 +195,8 @@ $(document).ready(function () {
 		row.css("pointer-events", "none");
 
 		var clickableresultlist = row.closest(".clickableresultlist");
+		
+		var moduleid = clickableresultlist.data("moduleid");
 
 		var rowid = row.data("dataid");
 		clickableresultlist.data("id", rowid);
