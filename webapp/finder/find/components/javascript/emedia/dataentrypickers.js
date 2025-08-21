@@ -219,11 +219,15 @@ $(document).ready(function () {
 		row.css("pointer-events", "none");
 
 		var clickableresultlist = row.closest(".clickopenentity");
-
+		if (clickableresultlist.length < 1)
+		{
+			return; //handled by asset picker
+		}
 		var rowid = row.data("dataid");
 		clickableresultlist.data("id", rowid);
 		clickableresultlist.data("entityid", rowid);
 		var entitymoduleid = row.data("entitymoduleid");
+		
 		clickableresultlist.data(
 			"url",
 			`${apphome}/views/modules/${entitymoduleid}/editors/default/tabs/index.html`
