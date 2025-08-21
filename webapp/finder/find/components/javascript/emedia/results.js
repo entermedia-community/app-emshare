@@ -583,6 +583,9 @@ jQuery(document).ready(function (url, params) {
 	$(window).mouseup(function () {
 		isMouseDown = false;
 	});
+	
+	// Click on asset
+		var selectStart = null;
 
 	lQuery(".stackedplayertable tr td").livequery("click", function (e) {
 		var clicked = $(this);
@@ -590,20 +593,18 @@ jQuery(document).ready(function (url, params) {
 			e.stopPropagation();
 			return true;
 		}
-	});
 
-	// Click on asset
-	var selectStart = null;
-	// Table clicking
-	lQuery(".stackedplayertable tr").livequery("click", function (e) {
-		var clicked = $(this);
 		/*	if (clicked.find("td:first").attr("noclick") == "true") {
 			return true;
 		}*/
-		var pickerresults = clicked.closest(".pickerresults");
+		
+		clicked = clicked.closest("tr");
+		var pickerresults = clicked.closest(".clickableresultlist");
 		if (clicked.hasClass("resultsdivdata") && pickerresults.length > 0) {
 			return;
 		}
+		
+		
 		if ($(e.target).is("input") || $(e.target).is("a")) {
 			return true;
 		}
