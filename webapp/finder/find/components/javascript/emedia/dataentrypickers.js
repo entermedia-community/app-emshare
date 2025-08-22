@@ -210,7 +210,7 @@ $(document).ready(function () {
 		});
 	});
 
-	lQuery(".listofentities .resultsdivdata").livequery("click", function (e) {
+	lQuery(".listofentities .resultsentitydata").livequery("click", function (e) {
 		if (!isValidTarget(e)) {
 			return true;
 		}
@@ -218,9 +218,9 @@ $(document).ready(function () {
 		var row = $(this);
 
 		var clickableresultlist = row.closest(".clickopenentity");
-		if (clickableresultlist.length < 1)
+		if (clickableresultlist.length < 1 || row.hasClass("resultsassetcontainer"))
 		{
-			return; //handled by asset picker
+			return true; //handled by asset picker
 		}
 		
 		row.css("pointer-events", "none");
