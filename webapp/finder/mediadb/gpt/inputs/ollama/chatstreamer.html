@@ -32,9 +32,28 @@
 			"function": 
 			{
 				"name": "showHintOrHelpInfo",
-				"description": "Show hints on how to properly use the search function and provide examples. Use this function when people ask questions like: 'What can you do?', 'How can I search using this tool?', 'Give me example of some search queries'."
+				"description": "Shows hints on how to properly use the search function and provides examples. Used for questions like: 'What can you do?', 'How can I search using this tool?', 'Give me example of some search queries'."
 			}
 		},
+    {
+			"name": "parseSentence",
+			"description": "Breaks a sentence into structured parts. Used for understanding user queries and extracting type, keywords, filters, date range, and targets.",
+			"parameters": {
+				"type": "object",
+				"properties": {
+					"sentence_type": {
+						"type": "string", 
+						"enum": ["search", "command", "analyze_image", "analyze_video", "analyze_audio", "create_image"],
+						"description": "The type of sentence"
+					},
+					"action": {"type": "string", "description": "The action to perform"},
+					"keywords": {"type": "array", "items": {"type": "string"}, "description": "The exact keywords to search for"},
+					"filters": {"type": "array", "items": {"type": "string"}, "description": "The filters to apply to the search, such as file type or date range"},
+					"targets": {"type": "array", "items": {"type": "string"}, "description": "The targets to search within"},
+				}
+			}
+    }
+		#*
 		{
 			"type": "function",
 			"function": 
@@ -85,8 +104,8 @@
 				}
 			}
 		}
+		*#
 	],
-	
 	"function_call": "auto"
 	
 }

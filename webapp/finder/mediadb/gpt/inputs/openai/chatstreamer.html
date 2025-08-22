@@ -30,8 +30,46 @@
 	"functions": [
 		{
 			"name": "showHintOrHelpInfo",
-			"description": "Show hints on how to properly use the search function and provide examples. Use this function when people ask questions like: 'What can you do?', 'How can I search using this tool?', 'Give me example of some search queries'."
+			"description": "Shows hints on how to properly use the search function and provides examples. Used for questions like: 'What can you do?', 'How can I search using this tool?', 'Give me example of some search queries'."
 		},
+		{
+			"name": "parseSentence",
+			"description": "Breaks a sentence into structured parts. Used for understanding user queries and extracting sentence type, intended action, keywords, filters, and targets.",
+			"parameters": {
+				"type": "object",
+				"properties": {
+					"sentence_type": {
+						"type": "string", 
+						"enum": ["search", "command", "analyze_image", "analyze_video", "analyze_audio", "create_image"],
+						"description": "The type of sentence"
+					},
+					"action": {
+						"type": "string", 
+						"description": "The action to perform"
+					},
+					"keywords": {
+						"type": "array",
+						"items": {"type": "string"},
+						"description": "The exact keywords to search for, such as name of the person or file, tags, phrase or concept"
+					},
+					"strict": {
+						"type": "boolean",
+						"description": "Whether to apply strict filtering to the search, true means only exact matches will be considered, false means partial matches are allowed."
+					},
+					"filters": {
+						"type": "array",
+						"items": {"type": "string"},
+						"description": "The filters to apply to the search, such as media type, upload date, etc."
+					},
+					"targets": {
+						"type": "array",
+						"items": {"type": "string"},
+						"description": "The targets to search within, such as modules, categories, departments, etc."
+					}
+				}
+			}
+    }
+		#*
 		{
 			"name": "searchByType",
 			"description": "Search with one or more keywords in one or more types. Keywords can be mutually exclusive or inclusive depending on their phrasing. For example: \"search fils containing any of the words 'red' and 'blue'\" is an exclusive search; \"search fils containing all of the words 'red' and 'blue'\" is an inclusive search. If not specified, exclusive search will be used. If types are not specified, all types will be searched. Types may have conjunction too, ignore it.",
@@ -78,6 +116,7 @@
 					]
 			}
 		}
+		*#
 	],
 	"function_call": "auto"
 }
