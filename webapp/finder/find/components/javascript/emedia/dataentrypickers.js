@@ -216,13 +216,14 @@ $(document).ready(function () {
 		}
 
 		var row = $(this);
-		row.css("pointer-events", "none");
 
 		var clickableresultlist = row.closest(".clickopenentity");
 		if (clickableresultlist.length < 1)
 		{
 			return; //handled by asset picker
 		}
+		
+		row.css("pointer-events", "none");
 		var rowid = row.data("dataid");
 		clickableresultlist.data("id", rowid);
 		clickableresultlist.data("entityid", rowid);
