@@ -25,23 +25,54 @@
 					"content": #jesc("$!message.message $!message.functionresponse $!message.arguments")
 			}
 		#end		
-	]
-	,
+	],
 	"functions": [
 		{
 			"name": "showHintOrHelpInfo",
 			"description": "Shows hints on how to properly use the search function and provides examples. Used for questions like: 'What can you do?', 'How can I search using this tool?', 'Give me example of some search queries'."
 		},
 		{
-			"name": "parseSentence",
-			"description": "Breaks a sentence into structured parts. Used for understanding user queries and extracting sentence type, intended action, keywords, filters, and targets.",
+			"name": "parseCreateCommand",
+			"description": "Breaks a create command into structured parts. Used for executing specific instruction.",
 			"parameters": {
 				"type": "object",
 				"properties": {
-					"sentence_type": {
+					"item": {
+						"type": "string",
+						"description": "The exact item to create"
+					},
+					"module": {
+						"type": "string",
+						"description": "The module to create the items in"
+					},
+					"fields": {
+						"type": "object",
+						"properties": {
+							"tags": {
+								"type": "array",
+								"items": {"type": "string"},
+								"description": "The tags to assign to the created items"
+							},
+							"description": {
+								"type": "string",
+								"description": "The description to assign to the created items"
+							}
+						}
+					}
+				},
+				"required": ["items", "module"]
+			}
+		},
+		{
+			"name": "parseSearchQuery",
+			"description": "Breaks a search query into structured parts. Used for understanding user queries and extracting search type, intended action, keywords, filters, and targets.",
+			"parameters": {
+				"type": "object",
+				"properties": {
+					"search_type": {
 						"type": "string", 
-						"enum": ["search", "command", "analyze_image", "analyze_video", "analyze_audio", "create_image"],
-						"description": "The type of sentence"
+						"enum": ["bulk", "one"],
+						"description": "The type of search"
 					},
 					"action": {
 						"type": "string", 
@@ -50,7 +81,7 @@
 					"keywords": {
 						"type": "array",
 						"items": {"type": "string"},
-						"description": "The exact keywords to search for, such as name of the person or file, tags, phrase or concept"
+						"description": "The exact keywords to search/consider, such as name of the person or file, tags, phrase or concept"
 					},
 					"strict": {
 						"type": "boolean",
@@ -68,55 +99,25 @@
 					}
 				}
 			}
-    }
-		#*
+    },
 		{
-			"name": "searchByType",
-			"description": "Search with one or more keywords in one or more types. Keywords can be mutually exclusive or inclusive depending on their phrasing. For example: \"search fils containing any of the words 'red' and 'blue'\" is an exclusive search; \"search fils containing all of the words 'red' and 'blue'\" is an inclusive search. If not specified, exclusive search will be used. If types are not specified, all types will be searched. Types may have conjunction too, ignore it.",
+			"name": "parseAnalysis",
+			"description": "Breaks a analysis instruction into structured parts. Used to understand what the user wants to analyze and how.",
 			"parameters": {
-					"type": "object",
-					"properties": {
-							"keywords": {
-									"type": "array",
-									"description": "The keywords to search for",
-									"items": {
-											"type": "string"
-									}
-							},
-							"conjunction": {
-									"type": "string",
-									"description": "The conjunction to use. Inclusive if user asks to search with all of the keywords. Exclusive if user asks to search with any of the keywords. Default value 'exclusive' if conjunction is not specified.",
-									"enum": [
-											"exclusive",
-											"inclusive"
-									]
-							},
-							"types": {
-									"anyOf": [
-										{
-											"type": "string",
-											"enum": ["all"],
-											"description": "Search all types. Default value if types are not specified."
-										}
-								#foreach($module in $chatprofile.getEntities())
-									#if($module.getBoolean("showonsearch"))
-										,
-										{
-											"type": "string",
-											"enum": ["${module.id}", "${module.name}"],
-											"description": #jesc("This is ${module.name} type.#ifnotnull($module.aisearch_contains) This type includes ${moduleProp.aisearch_contains}#end")
-										}
-									#end
-								#end
-									]
-							}
+				"type": "object",
+				"properties": {
+					"analysis_type": {
+						"type": "string",
+						"enum": ["image", "video", "audio"],
+						"description": "The type of analysis"
 					},
-					"required": [
-						"keywords"
-					]
+					"analysis": {
+						"type": "string",
+						"description": "The analysis instruction to perform on the media"
+					}
+				}
 			}
-		}
-		*#
+    }
 	],
 	"function_call": "auto"
 }
