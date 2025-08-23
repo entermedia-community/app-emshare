@@ -15,7 +15,7 @@ $context.putPageValue("asset",$asset)
 $context.putPageValue("title",$title)
 
 
-<div class="emthumbbox embox$thumbsize resultsassetcontainer #if($isdraggable)assetdroppable sort-droppable #end"	
+<div class="emthumbbox embox$thumbsize #if($isdraggable)assetdroppable sort-droppable #end"	
 	id="cell${catalogid}_${hit.id}"	
 	data-dataid="$hit.id">
 	
@@ -52,7 +52,7 @@ $context.putPageValue("title",$title)
 	</div>
 
 	
-	<a class="resultsdivdata hovering stackedplayer" href="$click"  data-assetid="$hit.id" data-dataid="$hit.id">
+	
 		<div class="emthumbimage em$thumbsize  #if($isdraggable)assetdraggable#end" 
 			data-ordering="$!{hit.ordering}" 
 			data-dataid="${hit.id}"
@@ -88,16 +88,16 @@ $context.putPageValue("title",$title)
 			#end
 			
 			
-			
+			<a class="resultsdivdata resultsassetcontainer  stackedplayer" href="$click"  data-assetid="$hit.id" data-dataid="$hit.id">
 			#if( ($hit.previewstatus != "2" && $hit.previewstatus != "exif" && $hit.previewstatus != "mime"  && $hit.previewstatus != "1" && $hit.previewstatus != "generated") && !$mediaarchive.isCatalogSettingTrue("realtimethumbs"))
 			 	$pages.include("$searchhome/convertqueue/previewstatus.html?assetid=$!{hit.id}",$context)
 			#else
 				$pages.include("${searchhome}/thumbnails/${rendertype}.html", $context)
 			#end
-			
+			</a>
 			
 		</div>
-	</a> 
+	
 	
 	
 	<div style="position: absolute; bottom: 35px;">

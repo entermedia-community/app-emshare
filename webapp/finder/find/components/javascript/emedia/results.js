@@ -600,7 +600,7 @@ jQuery(document).ready(function (url, params) {
 		
 		clicked = clicked.closest("tr");
 		var pickerresults = clicked.closest(".clickableresultlist");
-		if (clicked.hasClass("resultsdivdata") && pickerresults.length > 0) {
+		if (!clicked.hasClass("resultsassetcontainer") && pickerresults.length > 0) {
 			return;
 		}
 		
