@@ -3,12 +3,12 @@
 	"model": "$model",
 	"stream": false,
 	"messages": [
-		$gpt.loadInputFromTemplate($context, "/$mediaarchive.getMediaDbId()/ai/assistant/instructions/context.json"),
-		$gpt.loadInputFromTemplate($context, "/$mediaarchive.getMediaDbId()/ai/assistant/instructions/messagehistory.json")
+		$assitant.loadInputFromTemplate($context, "/$mediaarchive.getMediaDbId()/ai/assistant/instructions/context.json"),
+		$assitant.loadInputFromTemplate($context, "/$mediaarchive.getMediaDbId()/ai/assistant/instructions/messagehistory.json")
 	],
 	"functions": [
-		#for($function in $functions)
-			$gpt.loadInputFromTemplate($context, "/$mediaarchive.getMediaDbId()/ai/assistant/functions/${function.name}.json")
+		#for($function in $currentstatus.getFunctions())		#if($foreach.count != 1) , #end
+			$assitant.loadInputFromTemplate($context, "/$mediaarchive.getMediaDbId()/ai/assistant/functions/${function.id}.json")
 		#end
 	],
 	"function_call": "auto"
