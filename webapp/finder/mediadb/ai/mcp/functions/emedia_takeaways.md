@@ -1,0 +1,1 @@
+${takeaways}#ifnull($takeaways)Couldn't find anything for your query.#end

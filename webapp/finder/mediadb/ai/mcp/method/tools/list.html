@@ -1,0 +1,67 @@
+[
+  {
+    "name": "show_hint",
+    "description": "Show hints on how to properly use the search function and provide examples. Use this function when people ask questions like: 'What can you do?', 'How can I search using this tool?', 'Give me example of some search queries'."
+  },
+  {
+    "name": "emedia_takeaways",
+    "description": "Searches and summarizes the key points from one or more documents",
+    "inputSchema": {
+      "type": "object", 
+      "properties": {
+        "keywords": {
+          "type": "array",
+          "description": "The keywords to search for files",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": ["keywords"]
+    }
+  },
+  {
+    "name": "search_by_type",
+    "description": "Search with one or more keywords in one or more types. Keywords can be mutually exclusive or inclusive depending on their phrasing. For example: 'search fils containing any of the words red or blue' is an exclusive search; 'search fils containing all of the words red and blue' is an inclusive search. If not specified, exclusive search will be used. If types are not specified, all types will be searched.",
+    "inputSchema": {
+      "type": "object", 
+      "properties": {
+        "keywords": {
+          "type": "array",
+          "description": "The keywords to search for",
+          "items": {
+            "type": "string"
+          }
+        },
+        "conjunction": {
+          "type": "string",
+          "description": "The conjunction to use. Inclusive if user asks to search with all of the keywords. Exclusive if user asks to search with any of the keywords. Default value 'exclusive' if conjunction is not specified.",
+          "enum": [
+            "exclusive",
+            "inclusive"
+          ]
+        },
+        "types": {
+          "anyOf": [
+            {
+              "type": "string",
+              "enum": ["all"],
+              "description": "Search all types. Default value if types are not specified."
+            }
+        #foreach($module in $modules)
+          #if($module.getBoolean("showonsearch"))
+            ,
+            {
+              "type": "string",
+              "enum": ["${module.id}", "${module.name}"],
+              "description": #jesc("This is ${module.name} type.#ifnotnull($module.aisearch_contains) This type includes ${moduleProp.aisearch_contains}#end")
+            }
+          #end
+        #end
+          ]
+        }
+      },
+      "required": ["keywords"]
+    }
+  }
+]

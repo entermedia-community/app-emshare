@@ -1,0 +1,121 @@
+#set($systeminfo = $gpt.loadInputFromTemplate($context, "/$mediaarchive.getMediaDbId()/gpt/systemmessage/entermediachat.html"))
+{
+	"model": "$model",
+	"stream": false,
+	"messages": [
+		{
+			"role": "system",
+			"content": #jesc($systeminfo)
+		},
+		#foreach($message in $recent)
+			
+			#if($foreach.count != 1)
+			,
+			#end
+
+			{
+				#if($message.messagetype == "function_call")				
+					"role": "function",	
+					"name" : "$message.function",					
+				#elseif($message.user == "agent")
+					"role": "assistant",
+				#else
+					"role": "user",
+				#end
+					"content": #jesc("$!message.message $!message.functionresponse $!message.arguments")
+			}
+		#end		
+	],
+	"functions": [
+		{
+			"name": "showHintOrHelpInfo",
+			"description": "Shows hints on how to properly use the search function and provides examples. Used for questions like: 'What can you do?', 'How can I search using this tool?', 'Give me example of some search queries'."
+		},
+		{
+			"name": "parseCreateCommand",
+			"description": "Breaks a create command into structured parts. Used for executing specific instruction.",
+			"parameters": {
+				"type": "object",
+				"properties": {
+					"name": {
+						"type": "string",
+						"description": "The exact name of the item to create"
+					},
+					"module": {
+						"type": "string",
+						"description": "The module to create the items in"
+					},
+					"fields": {
+						"type": "object",
+						"properties": {
+							"tags": {
+								"type": "array",
+								"items": {"type": "string"},
+								"description": "The tags to assign to the created items"
+							},
+							"description": {
+								"type": "string",
+								"description": "The description to assign to the created items"
+							}
+						}
+					}
+				},
+				"required": ["name", "module"]
+			}
+		},
+		{
+			"name": "parseSearchQuery",
+			"description": "Breaks a search query into structured parts. Used for understanding user queries and extracting search type, intended action, keywords, filters, and targets.",
+			"parameters": {
+				"type": "object",
+				"properties": {
+					"search_type": {
+						"type": "string", 
+						"enum": ["bulk", "one"],
+						"description": "The type of search"
+					},
+					"keywords": {
+						"type": "array",
+						"items": {"type": "string"},
+						"description": "The exact keywords to search/consider, such as name of the person or file, tags, phrase or concept"
+					},
+					"strict": {
+						"type": "boolean",
+						"description": "Whether all filters must match exactly"
+					},
+					"filters": {
+						"type": "array",
+						"items": {"type": "string"},
+						"description": "The filters to apply to the search, such as media type, upload date, etc."
+					},
+					"targets": {
+						"type": "array",
+						"items": {"type": "string"},
+						"description": "The targets to search within, such as modules, categories, departments, etc."
+					}
+				},
+				"required": ["search_type", "keywords"]
+			}
+    },
+		{
+			"name": "parseAnalysis",
+			"description": "Breaks a analysis instruction into structured parts. Used to understand what the user wants to analyze and how.",
+			"parameters": {
+				"type": "object",
+				"properties": {
+					"analysis_type": {
+						"type": "string",
+						"enum": ["image", "video", "audio"],
+						"description": "The type of analysis"
+					},
+					"analysis_instruction": {
+						"type": "string",
+						"description": "The analysis instruction to perform on the media"
+					}
+				},
+				"required": ["analysis_type", "analysis_instruction"]
+			}
+    }
+	],
+	"function_call": "auto"
+}

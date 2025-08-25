@@ -1,0 +1,43 @@
+#set( $arguments = $data.get("arguments") )
+###set( $results = $jsonUtil.parseString($arguments) )
+$context.putPageValue("apphome","/${channel.chatapplicationid}")
+$airesultshits
+<div>
+	#ifnotnull($results.summary)
+		<p>$results.summary</p>
+	#end
+	<div class="chat-assets">
+		#foreach($row in $airesultshits)
+			#set($searchtype = $row.get("entitysourcetype"))
+			
+			#set( $hit = $mediaarchive.getCachedData($searchtype, $row.id))
+			
+			#ifnotnull($hit)
+
+				#set($title =  $hit.assettitle)
+		
+				#if(!$title)
+					#set($title = $hit.name) 
+				#end
+		
+				$context.putPageValue("hit", $hit) 
+
+				#if($searchtype == "asset")
+					<a class="stackedplayer" id="clickid${hit.id}" data-assetid="$hit.id" href="#" title="#esc($!title)">
+						$context.putPageValue("thumbsize", "thumbnail")
+						$context.putPageValue("asset", $hit)
+
+						#set( $assetrendertype = $mediaarchive.getMediaRenderType($hit.fileformat))
+						
+						$context.putPageValue("searchhome", "/${channel.chatapplicationid}/views/modules/${searchtype}/results/default")
+						$pages.include("/${channel.chatapplicationid}/views/modules/${searchtype}/results/default/thumbnails/${assetrendertype}.html", $context)
+					</a>
+				#else
+					$pages.include("/${channel.chatapplicationid}/views/modules/${searchtype}/results/default/thumbnails/entitysmall.html", $context)
+				#end
+
+			#end
+
+		#end
+	</div>
+</div>
