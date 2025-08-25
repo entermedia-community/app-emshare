@@ -1,0 +1,34 @@
+{
+	"name": "parseSearchQuery",
+	"description": "Breaks a search query into structured parts. Used for understanding user queries and extracting search type, intended action, keywords, filters, and targets.",
+	"parameters": {
+		"type": "object",
+		"properties": {
+			"search_type": {
+				"type": "string",
+				"enum": ["bulk", "one"],
+				"description": "The type of search"
+			},
+			"keywords": {
+				"type": "array",
+				"items": { "type": "string" },
+				"description": "The exact keywords to search/consider, such as name of the person or file, tags, phrase or concept"
+			},
+			"strict": {
+				"type": "boolean",
+				"description": "Whether all filters must match exactly"
+			},
+			"filters": {
+				"type": "array",
+				"items": { "type": "string" },
+				"description": "The filters to apply to the search, such as media type, upload date, etc."
+			},
+			"targets": {
+				"type": "array",
+				"items": { "type": "string" },
+				"description": "The targets to search within, such as modules, categories, departments, etc."
+			}
+		},
+		"required": ["search_type", "keywords"]
+	}
+}

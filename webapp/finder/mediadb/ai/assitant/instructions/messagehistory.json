@@ -1,0 +1,16 @@
+#foreach($message in $recent)
+  #if($foreach.count != 1)
+  ,
+  #end
+  {
+  #if($message.messagetype == "function_call")				
+    "role": "function",	
+    "name" : "$message.function",					
+  #elseif($message.user == "agent")
+    "role": "assistant",
+  #else
+    "role": "user",
+  #end
+    "content": #jesc("$!message.message $!message.functionresponse $!message.arguments")
+  }
+#end	
