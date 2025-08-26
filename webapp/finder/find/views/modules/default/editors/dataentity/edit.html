@@ -68,7 +68,7 @@ $context.putPageValue("viewid", $viewid)
 	data-entitymoduleid="$!entitymodule.id"
 	data-entitymoduleviewid="$entitymoduleviewid"
 	data-viewid="$viewid"
-	data-entitycategoryid="${entitycategoryid}"
+	data-entitycategoryid="$!{entitycategoryid}"
 	>
 
 #set( $isowner = $data.owner == $user.id)
@@ -126,6 +126,12 @@ $context.putPageValue("viewid", $viewid)
 		#end
 		#if($hitssessionid)
 			<input name="hitssessionid" type="hidden" value="$hitssessionid" />
+		#end
+		
+		#ifnull($entitycategoryid)
+			#if($edit=="true")
+			<div class="alert alert-warning">[[Upload Source Path needs to be set in the Entity or Module.]]</div>
+			#end
 		#end
 		
 
