@@ -1,14 +1,13 @@
-
 {
 	"model": "$model",
 	"stream": false,
 	"messages": [
-		$assitant.loadInputFromTemplate($context, "/$mediaarchive.getMediaDbId()/ai/assistant/instructions/context.json"),
-		$assitant.loadInputFromTemplate($context, "/$mediaarchive.getMediaDbId()/ai/assistant/instructions/messagehistory.json")
+		$pages.include("/$mediaarchive.getMediaDbId()/ai/assistant/instructions/context.json", $context)
+		$pages.include("/$mediaarchive.getMediaDbId()/ai/assistant/instructions/messagehistory.json", $context)
 	],
 	"functions": [
-		#for($function in $currentstatus.getFunctions())		#if($foreach.count != 1) , #end
-			$assitant.loadInputFromTemplate($context, "/$mediaarchive.getMediaDbId()/ai/assistant/functions/${function.id}.json")
+		#foreach($function in $assitant.getFunctions()) #if($foreach.count != 1) , #end
+			$pages.include("/$mediaarchive.getMediaDbId()/ai/assistant/functions/${function.id}.json", $context)
 		#end
 	],
 	"function_call": "auto"
