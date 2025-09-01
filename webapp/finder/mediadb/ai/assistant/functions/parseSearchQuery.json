@@ -7,12 +7,12 @@
 			"search_type": {
 				"type": "string",
 				"enum": ["bulk", "one"],
-				"description": "The type of search"
+				"description": "The type of search, defaults to bulk"
 			},
 			"keywords": {
 				"type": "array",
 				"items": { "type": "string" },
-				"description": "The exact keywords to search/consider, such as name of the person or file, tags, phrase or concept"
+				"description": "The exact keywords to search for, such as name of the file, tags, description, phrase or concept"
 			},
 			"strict": {
 				"type": "boolean",
@@ -21,7 +21,24 @@
 			"targets": {
 				"type": "array",
 				"items": { "type": "string" },
-				"description": "The targets to search within, such as modules, categories, departments, etc."
+				"anyOf": [
+			#foreach($module in $modules)
+				#if($module.getBoolean("showonsearch"))
+					,
+					{
+						"type": "string",
+						"enum": ["${module.id}", "${module.name}"]
+					}
+				#end
+			#end
+			#ifnull($modules)
+				{
+					"type": "string",
+					"enum": ["all"]
+				}
+			#end
+				],
+				"description": "The targets to search within, such as modules, categories, departments, etc. If not specified, this should be an empty array and all targets will be searched."
 			}
 		},
 		"required": ["search_type", "keywords"]
