@@ -1,0 +1,64 @@
+[
+  {
+    "name": "show_hint",
+    "description": "Show hints on how to properly use the search function and provide examples. Use this function when people ask questions like: 'What can you do?', 'How can I search using this tool?', 'Give me example of some search queries'."
+  },
+  {
+    "name": "generate_report",
+    "description": "Searches and summarizes the key points from one or more documents",
+    "inputSchema": {
+      "type": "object", 
+      "properties": {
+        "keywords": {
+          "type": "array",
+          "description": "The keywords to search for files to include in the report",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": ["keywords"]
+    }
+  },
+  {
+    "name": "search_emedia",
+    "description": "Breaks a search query into structured parts. Used for understanding user queries and extracting search type, intended action, keywords, filters, and targets.",
+    "inputSchema": {
+      "type": "object", 
+      "properties": {
+        "search_type": {
+          "type": "string",
+          "enum": ["bulk", "one"],
+          "description": "The type of search, defaults to bulk"
+        },
+        "keywords": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "The exact keywords to search for, such as name of the file, tags, description, phrase or concept"
+        },
+        "strict": {
+          "type": "boolean",
+          "description": "Whether all filters must match exactly"
+        },
+        "targets": {
+          "type": "array",
+          "items": {
+            "anyOf": [
+          #foreach($module in $modules)
+            #if($module.getBoolean("showonsearch"))
+              ,
+              {
+                "type": "string",
+                "enum": ["${module.id}", "${module.name}"]
+              }
+            #end
+          #end
+            ]
+          },
+				  "description": "The targets to search within, such as modules, categories, departments, etc. If not specified, this should be an empty array and all targets will be searched."
+        }
+      },
+      "required": ["search_type", "keywords"]
+    }
+  }
+]

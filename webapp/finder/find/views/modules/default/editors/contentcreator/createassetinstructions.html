@@ -1,24 +1,22 @@
 #set( $aitarget = $data.aitarget )
-Create a picture of a $aitarget 
+#ifnotnull($aitarget)
+	Create a picture of $aitarget
 
-#set( $aistyles = $data.getValues("aistyle") )
-that is
-#foreach($aistyle in $aistyles)
-	$aistyle
+	#set( $aistyles = $data.getValues("aistyle") )
+
+	#if($aistyles.size() > 0)
+	In the style of #foreach($aistyle in $aistyles) $aistyle #end.
+	#end
+
+	#set( $aicontents = $data.getValues("aikeywords") )
+
+	#if($aicontents.size() > 0)
+	The scene should feature #foreach($aicontent in $aicontents) ${aicontent} #end
+	#end
+
+	#set( $aiexamples = $data.aiexamples )
+
+	#ifnotnull($aiexamples)
+		Make it similar to $aiexamples
+	#end
 #end
-.	
-#set( $aicontents = $data.getValues("aikeywords") )
-	
-The scene features
-
-#foreach($aicontent in $aicontents)
-
-${aicontent}  
-
-#end
-
-#set( $aiexamples = $data.aiexamples )
-Make it similar: $aiexamples  
-
-
-

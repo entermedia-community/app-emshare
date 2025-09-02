@@ -1,0 +1,22 @@
+#set($messages = $currentstatus.getMessageHistory())
+
+#if($messages.size() > 0) , #end
+
+#foreach($message in $messages)
+  #if($foreach.count != 1)
+  ,
+  #end
+  {
+  #if($message.messagetype == "function_call")				
+    "role": "function",	
+    "name" : "$message.function",				
+    "content": #jesc($message.arguments)	
+  #elseif($message.user == "agent")
+    "role": "assistant",
+    "content": #jesc($message.functionresponse)
+  #else
+    "role": "user",
+  #end
+    "content": #jesc($message.message)
+  }
+#end

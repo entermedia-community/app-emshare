@@ -1,0 +1,23 @@
+<page>
+  <path-action name="MediaArchiveModule.loadApplicationId" />
+  <path-action name="Admin.autoLogin" alltypes="true"/>
+  <path-action name="ProfileModule.loadUserProfile" alltypes="true" />
+  <path-action name="MediaArchiveModule.getMediaArchive" />
+
+  <path-action name="Admin.loadPermissions" alltypes="true"/>
+  <path-action name="Admin.allowCorsHeaders" alltypes="true" />
+
+  <path-action name="Admin.allowViewing" alltypes="true">
+    <login-path>/${applicationid}/services/authentication/noaccess.json</login-path>
+    <exclude>/${applicationid}/services/authentication/getkey.json</exclude>
+  </path-action>
+
+  <!-- used in velocity macro -->
+  <path-action bean="jsonUtil" name="PageValue.loadPageVariable" allowduplicates="true"/>
+
+  <property name="cancelredirect">true</property>
+
+  <property name="alternative_extension">json</property>
+  <generator name="velocityGenerator" mimetypes="text/html"/>
+  <generator name="velocityGenerator" mimetypes="text/json"/>
+</page>
