@@ -8,6 +8,8 @@
     <property name="build" location="./tmp/oe_upgrade"/>
     <property name="wardir" location="${build}/wartmp"/>
     <property name="webinf" location="WEB-INF"/>
+	
+	<property name="remotehome" value="http://dev.entermediasoftware.com/jenkins/job" />
    
   <target name="clean">
   	 <delete dir="${build}" />
@@ -15,7 +17,7 @@
  	
   <target name="update-dependencies" depends="clean">
 		<mkdir dir="${build}"/>
-		<get src="http://dev.entermediasoftware.com/jenkins/job/@BRANCH@app-emshare/lastSuccessfulBuild/artifact/deploy/app-emshare.zip" dest="${build}/app-emshare.zip" />	
+		<get src="${remotehome}/@BRANCH@_app-emshare/lastSuccessfulBuild/artifact/deploy/app-emshare.zip" dest="${build}/app-emshare.zip" />	
   </target>
     
   <target name="unzip" depends="update-dependencies">
