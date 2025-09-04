@@ -48,6 +48,8 @@ $(document).ready(function () {
 		});
 	});
 
+	var semanticLoaderTO = null;
+
 	lQuery(".mainsearch").livequery(function () {
 		mainsearcheinput = $(this);
 		var dropdownParent = mainsearcheinput.data("dropdownparent");
@@ -111,19 +113,23 @@ $(document).ready(function () {
 		}
 
 		var url = mainsearcheinput.data("typeaheadurl");
+		var semanticurl = mainsearcheinput.data("semanticurl");
 
-		var q = "";
+		var searchquery = "";
 		mainsearcheinput.on("keydown", function (e) {
 			if (e.keyCode == 27) {
 				togglemodaldialog("hide");
 			}
 		});
 		mainsearcheinput.on("keyup change", function (e) {
-			if (mainsearcheinput.val() == q) {
+			if (semanticLoaderTO) {
+				clearTimeout(semanticLoaderTO);
+			}
+			if (mainsearcheinput.val() == searchquery) {
 				return;
 			}
-			q = mainsearcheinput.val();
-			if (!q) {
+			searchquery = mainsearcheinput.val();
+			if (!searchquery) {
 				togglemodaldialog("hide");
 				return;
 			}
@@ -131,12 +137,12 @@ $(document).ready(function () {
 			if (e.keyCode == 27) {
 				togglemodaldialog("hide");
 			} else if (
-				(q != "" && e.which == undefined) ||
+				(searchquery != "" && e.which == undefined) ||
 				e.which == 8 ||
 				(e.which != 37 && e.which != 39 && e.which > 32)
 			) {
 				//Real words and backspace
-				if (q && q.length < 2) {
+				if (searchquery && searchquery.length < 2) {
 					togglemodaldialog("hide");
 					return;
 				} else {
@@ -146,7 +152,7 @@ $(document).ready(function () {
 				var terms =
 					"field=description&operation=contains" +
 					"&description.value=" +
-					encodeURIComponent(q);
+					encodeURIComponent(searchquery);
 
 				var mainsearchmodule = mainsearcheinput.data("mainsearchmodule");
 				if (mainsearchmodule != null) {
@@ -171,6 +177,9 @@ $(document).ready(function () {
 							togglemodaldialog("show");
 							jQuery(window).trigger("resize");
 						}
+						semanticLoaderTO = setTimeout(function () {
+							loadSemanticMatches(semanticurl, searchquery);
+						}, 200);
 					},
 					complete: function () {
 						$("#searchLoading").removeClass("show");
@@ -213,18 +222,20 @@ $(document).ready(function () {
 			e.preventDefault();
 			e.stopPropagation();
 			if (searchmodaldialog.length) {
-				var q = mainsearcheinput.val();
+				var searchquery = mainsearcheinput.val();
 				var terms = "";
-				if (q) {
+				if (searchquery) {
 					terms =
 						"field=description&operation=contains" +
 						"&description.value=" +
-						encodeURI(q);
+						encodeURI(searchquery);
 				}
-				q = mainsearcheinput.data("mainsearchmodule");
-				if (q) {
+				searchquery = mainsearcheinput.data("mainsearchmodule");
+				if (searchquery) {
 					terms =
-						(terms.length > 0 ? terms + "&" : "") + "mainsearchmodule=" + q;
+						(terms.length > 0 ? terms + "&" : "") +
+						"mainsearchmodule=" +
+						searchquery;
 				}
 				var url = mainsearcheinput.data("typeaheadurl");
 
@@ -281,7 +292,7 @@ $(document).ready(function () {
 	//Not used?
 	lQuery(".filtertypeahead").livequery(function () {
 		mainsearcheinput = $(this);
-		var q = "";
+		var searchquery = "";
 		var form = mainsearcheinput.closest("#filterform");
 
 		function filtertypeaheadsuccess() {
@@ -296,22 +307,22 @@ $(document).ready(function () {
 			}
 		});
 		mainsearcheinput.on("keyup change", function (e) {
-			if (mainsearcheinput.val() == q) {
+			if (mainsearcheinput.val() == searchquery) {
 				return;
 			}
-			q = mainsearcheinput.val();
-			if (!q) {
+			searchquery = mainsearcheinput.val();
+			if (!searchquery) {
 				return;
 			}
 
 			if (e.keyCode == 27) {
 			} else if (
-				(q != "" && e.which == undefined) ||
+				(searchquery != "" && e.which == undefined) ||
 				e.which == 8 ||
 				(e.which != 37 && e.which != 39 && e.which > 32)
 			) {
 				//Real words and backspace
-				if (q && q.length < 2) {
+				if (searchquery && searchquery.length < 2) {
 					return;
 				} else {
 				}
@@ -319,7 +330,7 @@ $(document).ready(function () {
 				var terms =
 					"field=description&operation=contains" +
 					"&description.value=" +
-					encodeURIComponent(q);
+					encodeURIComponent(searchquery);
 
 				if (lasttypeaheadsummary) {
 					lasttypeaheadsummary.abort();
@@ -331,4 +342,35 @@ $(document).ready(function () {
 			}
 		});
 	});
+
+	function loadSemanticMatches(url, searchquery) {
+		if (!searchquery || searchquery.length < 3) {
+			return;
+		}
+		$.ajax({
+			url: url,
+			async: true,
+			type: "GET",
+			data: "query=" + encodeURIComponent(searchquery),
+			beforeSend: function () {
+				$("#semanticLoading").addClass("show");
+			},
+			success: function (data) {
+				if (data) {
+					$("#semanticMatches").html(data);
+					$("#semanticLoading").removeClass("show");
+					jQuery(window).trigger("resize");
+				} else {
+					$("#semanticMatches").html("");
+				}
+			},
+			error: function () {
+				$("#semanticMatches").html("");
+				$("#semanticLoading").removeClass("show");
+			},
+			complete: function () {
+				$("#semanticLoading").removeClass("show");
+			},
+		});
+	}
 });
