@@ -21,10 +21,40 @@
 			  #if($foreach.count>1)
 			  ,
 			  #end
-				"$field.id": {
-					"type": "string",
-					"description": "$field.aicreationcommand"
-				}
+				#if($field.isList())
+					"$field.id": {
+						"type": "string",
+						"description": "$field.aicreationcommand",
+						"enum": [
+							#foreach( $option in $mediaarchive.getList($field.getListId()) )
+								#if($foreach.count>1)
+								,
+								#end
+								#jesc("$option.id|#text($option)")
+							#end
+						]
+#*
+Slower than enum, useful if list contains mixed data types
+	anyOf: [
+		#foreach( $option in $mediaarchive.getList($field.getListId()) )
+			#if($foreach.count>1)
+			,
+			#end
+			{
+				"type": "string",
+				"const": "$option.id",
+				"description": "#text($option)"
+			}
+		#end
+	]
+*#
+					}
+				#else
+					"$field.id": {
+						"type": "string",
+						"description": "$field.aicreationcommand"
+					}
+				#end
 		  #end
         },
         "required": [
