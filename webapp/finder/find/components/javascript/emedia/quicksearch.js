@@ -177,8 +177,27 @@ $(document).ready(function () {
 							togglemodaldialog("show");
 							jQuery(window).trigger("resize");
 						}
+
+						var entityids = [];
+						$(".emfolder-wrapper", searchmodaldialog).each(function () {
+							var moduleid = $(this).data("id");
+							if (moduleid) {
+								entityids.push(moduleid);
+							}
+						});
+						var assetids = [];
+						$(".masonry-grid-cell", searchmodaldialog).each(function () {
+							var assetid = $(this).data("assetid");
+							if (assetid) {
+								assetids.push(assetid);
+							}
+						});
+
 						semanticLoaderTO = setTimeout(function () {
-							loadSemanticMatches(semanticurl, searchquery);
+							loadSemanticMatches(semanticurl, searchquery, {
+								entityids: entityids,
+								assetids: assetids,
+							});
 						}, 200);
 					},
 					complete: function () {
@@ -343,15 +362,21 @@ $(document).ready(function () {
 		});
 	});
 
-	function loadSemanticMatches(url, searchquery) {
+	function loadSemanticMatches(url, searchquery, excludeids) {
 		if (!searchquery || searchquery.length < 3) {
 			return;
 		}
+		var data = {
+			oemaxlevel: 1,
+			query: searchquery,
+			excludeentityids: excludeids.entityids,
+			excludeassetids: excludeids.assetids,
+		};
 		$.ajax({
 			url: url,
-			async: true,
-			type: "GET",
-			data: "query=" + encodeURIComponent(searchquery),
+			type: "POST",
+			data: JSON.stringify(data),
+			contentType: "application/json",
 			beforeSend: function () {
 				$("#semanticLoading").addClass("show");
 			},
