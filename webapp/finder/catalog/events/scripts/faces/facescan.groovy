@@ -58,9 +58,10 @@ public void init()
 		hits.enableBulkOperations();
 		List tosave = new ArrayList();
 		FaceProfileManager manager = archive.getBean("faceProfileManager");
-		log.info("Checking :" + hits.size());
+		
 		if (!hits.isEmpty()) 
 		{
+			log.info("Checking :" + hits.size());
 			
 			FaceScanInstructions instructions = manager.createInstructions();
 			for(int i=0;i < hits.getTotalPages();i++)
@@ -79,8 +80,9 @@ public void init()
 					log.info("face scan processed " + onepage.size() + " assets in " + change + " milliseconds " +  perasset + " asset/second");
 				}
 			}
+			log.info("face scan created: " + count + " faces");
 		}
-		log.info("face scan created: " + count + " faces");
+		
 	}
 	finally
 	{
