@@ -29,38 +29,37 @@ public void init()
 			String searchtype = module.getId();
 			Searcher searcher = archive.getSearcher(searchtype);
 			if(searcher != null) {
-				//HitTracker hits = archive.getAssetSearcher().query().all().search();
 		
-				HitTracker entities = searcher.query().and().missing("primaryimage").missing("primarymedia").search();
-				
+				HitTracker entities = searcher.query().all().search();
 				entities.enableBulkOperations();
 				List tosave = new ArrayList();
 				entities.each{
 					Data entity = it;		
-						//log.info("Searching images for: "+ module + " / " + entity);
-				
-						if(entity.rootcategory != null) {
-							Data asset = (Data)archive.getAssetSearcher().query().match("category", entity.rootcategory).exact("importstatus","complete").not("editstatus","7").exact("previewstatus", "2").sort("uploadeddate").searchOne();
-							if (asset) {
-								entity.setValue("primaryimage", asset.getId());
-								tosave.add(entity);
-								log.info("Saving: "+ entity + " asset: " + asset.getName());
-								changed = true;
-							}
-							else 
-							{
-                                //log.debug("No image found for: "+ entity);
-                            }
-								
-							if( tosave.size() == 1000)	{
-								searcher.saveAllData(tosave, null);
-								tosave.clear();
-								log.info("Saved: 1000");
-							}
-						}
-						else
+					
+						String assetid  = entity.get("primaryimage");
+						if (assetid == null)
 						{
-							//log.debug("No rootcategory for: "+ entity);
+							assetid = entity.get("primarymedia");
+						}
+						if (assetid != null)
+                        {
+                            Data asset = archive.getAsset(assetid);
+						
+                            if (asset == null)
+                            {
+                                log.info("Removed primary image from Entity: " + entity + ", asset may deleted: " + assetid);
+								entity.setValue("primaryimage", "");
+								entity.setValue("primarymedia", "");
+								tosave.add(entity);
+                            }
+                            
+                        }
+					
+							
+						if( tosave.size() == 1000)	{
+							searcher.saveAllData(tosave, null);
+							tosave.clear();
+							log.info("Saved: 1000");
 						}
 					
 				}
