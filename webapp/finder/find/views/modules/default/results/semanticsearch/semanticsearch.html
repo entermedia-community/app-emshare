@@ -1,36 +1,35 @@
-#if($semanticentityhits.size() > 0 || $semanticassethits.size() > 0)
-<div>
-  <div class="m-0 qsresultsEntity d-flex align-items-center">
+#if( ($semanticentities && $semanticentities.size() > 0) || ($semanticassethits && $semanticassethits.size() > 0) )
+<div class="p-2 bg-light mt-3 shadow-sm border rounded">
+  <div class="mt-2 ml-2 mb-0 qsresultsEntity d-flex align-items-center">
     <i class="bi bi-stars module-icon" style="font-size:0.9em;line-height:1;opacity:0.85;"></i>  
     <span class="qsresultsEntitytext">Related Results</span>
   </div>
+  <hr>
 
-  
   #foreach($module in $semanticentities)
     #set($hits = $semanticentityhits.get($module.id))
     #ifnotnull($hits)
       $context.putPageValue("module", $module)
       $context.putPageValue("moduleid", $module.id)
-    
+
       #set($moduleicon = "grid")
       #if ($module.moduleicon)
         #set($moduleicon = $module.moduleicon)
       #end
-  
+
       <div class="m-0 qsresultsEntity d-flex align-items-center">
         <i class="bi bi-$moduleicon module-icon"></i>
         <span class="qsresultsEntitytext">#text($module)</span>
       </div>
-  
-        
+
       $context.putPageValue("rendermoduleid", $module.id)
-                
+
       $hits.setHitsPerPage(10)
       $context.putPageValue("hits", $hits)
-      
+
       $context.putPageValue("searchresults", true)
       $context.putPageValue("searchhome", "$apphome/views/modules/${module.id}/results/default")
-      
+
       <div class="emgridflex">  	
         <div id="galleryimg-entitiy" 
           class='emgrid #if($section != "favorites")emgridlimited#end entitiescontainer emgridquickresults' 
@@ -47,9 +46,9 @@
             #end
               <div class="emgridcell emgridcellqs emgridcell-$rendertype activelistcontainer 
               #if($selectedid == $hit.getId() || $topselectedid == $hit.getId()) active #end">
-                
+
                 $pages.include("$apphome/views/modules/$!{module.id}/results/default/types/qsresult.html", $context)
-                
+
                 #set($highlight =  $hits.highlight($hit, "description", 20, true))
                 #if($highlight)
                 <div class="gridcellhighlight">$highlight</div>
@@ -60,23 +59,21 @@
       </div>
     #end
   #end
-  
+
   #if($semanticassethits)
     #set($searchhome = "$apphome/views/modules/asset/results/default")
     $context.putPageValue("searchhome", $searchhome)
-    <div class="masonry-grid" 
+    <div class="masonry-grid mt-3" 
       data-maxheight="140" 
       data-cellpadding="10"
       data-makebox="true"
       data-visibleposition="$!semanticassethits.getStartingPosition()">
-  
+
       #foreach( $hit in $semanticassethits.getPageOfHits() )
         $context.putPageValue("hit", $hit)
         $pages.include("${searchhome}/types/media.html", $context)
       #end
-  
     </div>
   #end
-
 </div>
 #end
