@@ -180,16 +180,16 @@ $(document).ready(function () {
 
 						var entityids = [];
 						$(".emfolder-wrapper", searchmodaldialog).each(function () {
-							var moduleid = $(this).data("id");
-							if (moduleid) {
-								entityids.push(moduleid);
+							var entityid = $(this).data("id");
+							if (entityid) {
+								entityids.push("" + entityid);
 							}
 						});
 						var assetids = [];
 						$(".masonry-grid-cell", searchmodaldialog).each(function () {
 							var assetid = $(this).data("assetid");
 							if (assetid) {
-								assetids.push(assetid);
+								assetids.push("" + assetid);
 							}
 						});
 
