@@ -1,0 +1,28 @@
+{
+	"model": "${model}",
+	"messages": [
+		{
+			"role": "system",
+			"content": "You are an AI that analyzes a book or document summary and identifies its target audience and compile them in a list. Some examples of target audiences include children, young adults, adults, professionals, hobbyists, academics, researchers, general public, consumers, employees etc. Focus on the intended readership or viewership based on the content, themes, and style of the summary."
+		},
+		{
+			"role": "user",
+			#set($content = "Generates between 1-5 target audience groups based on the following: ${mainsummary}")
+			"content": #jesc($content)
+		}
+	],
+	"stream": false,
+	"think": false,
+	"format": {
+		"type": "object",
+		"properties": {
+			"audiences": {
+				"type": "array",
+				"items": {
+					"type": "string"
+				}
+			}
+		},
+		"required": ["audiences"]
+	}
+}
