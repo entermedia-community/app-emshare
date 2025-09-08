@@ -236,6 +236,11 @@ $(document).ready(function () {
 				$(".quicksearchexpand").trigger("click");
 			}
 		});
+		mainsearcheinput.bind("mousedown", function () {
+			if (mainsearcheinput.val().length > 0) {
+				$(".quicksearchexpand").trigger("click");
+			}
+		});
 
 		lQuery(".quicksearchexpand").livequery("click", function (e) {
 			e.preventDefault();
