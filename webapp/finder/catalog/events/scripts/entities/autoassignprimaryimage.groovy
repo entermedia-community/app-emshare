@@ -37,9 +37,8 @@ public void init()
 				List tosave = new ArrayList();
 				entities.each{
 					Data entity = it;		
-						
-						//Category entitycategory = archive.getEntityManager().loadDefaultFolder(module, entity, null, false);
-					
+						//log.info("Searching images for: "+ module + " / " + entity);
+				
 						if(entity.rootcategory != null) {
 							Data asset = (Data)archive.getAssetSearcher().query().match("category", entity.rootcategory).exact("importstatus","complete").not("editstatus","7").exact("previewstatus", "2").sort("uploadeddate").searchOne();
 							if (asset) {
@@ -48,12 +47,20 @@ public void init()
 								log.info("Saving: "+ entity + " asset: " + asset.getName());
 								changed = true;
 							}
+							else 
+							{
+                                //log.debug("No image found for: "+ entity);
+                            }
 								
 							if( tosave.size() == 1000)	{
 								searcher.saveAllData(tosave, null);
 								tosave.clear();
 								log.info("Saved: 1000");
 							}
+						}
+						else
+						{
+							//log.debug("No rootcategory for: "+ entity);
 						}
 					
 				}
@@ -69,49 +76,6 @@ public void init()
 	if (changed) {
 		archive.clearCaches();
 	}
-	
-	//entityPerson entity
-	Data module = modulesearcher.query().exact('id', 'entityperson').searchOne();
-	changed = false;
-	if( module == null )
-	{
-		return;
-	}
-	String searchtype = module.getId();
-	
-	Searcher searcher = archive.getSearcher(searchtype);
-	if(searcher != null) {
-		HitTracker entities = searcher.query().and().missing("primaryimage").missing("primarymedia").search();
-		
-		entities.enableBulkOperations();
-		List tosave = new ArrayList();
-		entities.each{
-			Data entity = it;		
-				
-				HitTracker profiles = archive.getSearcher("faceprofilegroup").query().exact("entityperson", entity.getId()).search();
-				if(profiles != null && profiles.size()>0) {
-					Data asset = (Data)archive.getAssetSearcher().query().orgroup("faceprofiles.faceprofilegroup", profiles).sort("uploadeddate").searchOne();
-					if (asset) {
-						entity.setValue("primaryimage", asset.getId());
-						tosave.add(entity);
-						log.info("Saving: "+ entity + " asset: " + asset.getName());
-						changed = true;
-					}
-						
-					if( tosave.size() == 1000)	{
-						searcher.saveAllData(tosave, null);
-						tosave.clear();
-						log.info("Saved: 1000");
-					}
-				}
-			
-		}
-		if (tosave.size() > 0) {
-			searcher.saveAllData(tosave, null);
-			log.info("Saved: "+ tosave.size() + " " + searchtype);
-		}
-	}
-	
 	
 	
 }

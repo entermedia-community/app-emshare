@@ -88,7 +88,7 @@ public void init(){
 			product.setValue("pubstatus",  getline(line, 3));
 			
 			product.setValue("rootcategory",  null);
-			product.setValue("uploadsourcepath",  null);
+			product.setValue("archivesourcepath",  null);
 			product.setValue("primaryimage",  null);
 			
 			if (product.get("rootcategory") == null) {
@@ -99,7 +99,8 @@ public void init(){
 				if (foundcat != null)
 				{
 					product.setValue("rootcategory", foundcat.getId());
-					product.setValue("uploadsourcepath", foundcat.getCategoryPath());
+					product.setValue("archivesourcepath", foundcat.getCategoryPath());
+					product.setValue("sourcepath", foundcat.getCategoryPath());
 					//log.info("Line:"+li+" pubitem: " + pubitem + " category: " + foundcat.getParentCategories());
 					foundcount++;//found
 				}

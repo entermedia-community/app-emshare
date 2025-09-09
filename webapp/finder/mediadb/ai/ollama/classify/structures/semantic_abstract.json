@@ -1,0 +1,25 @@
+{
+	"model": "${model}",
+	"messages": [
+		{
+			"role": "system",
+			"content": "You are an AI that analyzes summary/plot/abstract of a book or a document, and creates a semantic representation of its key themes and ideas. This representation should capture the main ideas and concepts in a concise manner and should be no more than 3 sentences."
+		},
+		{
+			"role": "user",
+			#set($content = "Generate a semantic representation of the following: ${mainsummary}")
+			"content": #jesc($content)
+		}
+	],
+	"stream": false,
+	"think": false,
+	"format": {
+		"type": "object",
+		"properties": {
+			"abstract": {
+				"type": "string"
+			}
+		},
+		"required": ["abstract"]
+	}
+}

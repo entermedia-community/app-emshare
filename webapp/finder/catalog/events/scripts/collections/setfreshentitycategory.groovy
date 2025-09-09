@@ -32,7 +32,7 @@ public void init(){
 				log.error("No rootcategory on" + collection);
 				return;
 			}
-			collection.setValue("uploadsourcepath",cat.getCategoryPath());
+			collection.setValue("sourcepath",cat.getCategoryPath());
 			tosave.add(collection);
 			
 			if( !cat.getName().equals(collection.getName() ) )

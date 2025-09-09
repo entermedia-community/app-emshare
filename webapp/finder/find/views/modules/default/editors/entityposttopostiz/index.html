@@ -11,16 +11,19 @@
 	</div>
 
 	#set($selectedprofile = $userprofile.get("socialmediaprofile"))
+	#set($profiles = $mediaarchive.getList("socialmediaprofile"))
 	<div class="postiz-postform my-3 px-3">
 		<div class="bg-light p-2 rounded" style="max-width: 720px;">
-
+		#if(!$profiles)
+			[[No Social Media Profiles Found. Please create one first in: socialmediaprofile]]
+		#else
 			<div class="d-flex align-items-center justify-content-center pt-1 pb-3">
 				<h5 class="my-0">[[Select Media Profile]]</h5> 
 				<form class="ajaxform autosubmitform ml-3" 
 					action="$edithome/selectmediaprofile.html?oemaxlevel=1" 
 					data-targetdiv="${edithomeid}" 
 					method="post">
-					#set($profiles = $mediaarchive.getList("socialmediaprofile"))
+					
 					<select name="socialmediaprofile" class="custom-select">
 						<option></option>
 						#foreach($profile in $profiles)
@@ -31,6 +34,7 @@
 					</select>
 				</form>
 			</div>
+		#end
 			<div class="collapse #ifnotnull($selectedprofile) show #end">
 				<form class="ajaxform d-flex flex-column bg-white p-2" action="$edithome/post.html?oemaxlevel=1" data-targetdiv="${edithomeid}" method="post">
 	
@@ -72,16 +76,22 @@
 					
 					<div class="form-group">
 						<label for="date" class="fw-bold">Asset (optional):</label>
-						#set($detail = $mediaarchive.getSearcher($entitymodule.id).getDetail("primarymedia") )
+						#set( $value = $entity.get("primarymedia") )
+						#ifnull($value)
+							#set( $value = $entity.get("primaryimage") )
+						#end
+						#set($detail = $mediaarchive.getSearcher($entitymodule.id).getDetail("primarymedia").copy() )
+						 
+						$detail.setId("assetid")
+						
 						$context.putPageValue("data",$entity)
 						$context.putPageValue("detail",$detail)
 						#set( $xmledithome = "$apphome/components/xml")
 						$context.putPageValue("xmledithome",$xmledithome)
-						#set( $value = $entity.get($detail.getId()) )
 						$context.putPageValue("value",$value)
-						$pages.include("$xmledithome/types/asset.html")
+						$pages.include("${xmledithome}/types/asset.html")
 						
-						<input type="text" name="assetid" value="$!primaryasset" class="form-control" />
+						
 					</div>
 	
 					<div class="form-group">

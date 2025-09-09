@@ -22,7 +22,7 @@ public void init()
 	HitTracker modules = mediaArchive.query("module").exact("isentity",true).not("id", "asset").sort("ordering").search();
 	for (Data module in modules)
 	{
-		PropertyDetail detail = mediaArchive.getSearcher(module.getId()).getDetail("uploadsourcepath");
+		PropertyDetail detail = mediaArchive.getSearcher(module.getId()).getDetail("sourcepath");
 		if( detail == null)
 		{
 			continue;
@@ -32,11 +32,11 @@ public void init()
 		Collection tosave = new ArrayList();
 		for (Data hit in hits)
 		{
-			String sourcepath = hit.getValue("uploadsourcepath");
+			String sourcepath = hit.getValue("sourcepath");
 			if( sourcepath == null )
 			{
 				sourcepath = mediaArchive.getEntityManager().loadUploadSourcepath(module, hit, null);
-				hit.setValue("uploadsourcepath",sourcepath);
+				hit.setValue("sourcepath",sourcepath);
 			}
 			Category rootcategory = mediaArchive.getCategorySearcher().createCategoryPath(sourcepath);
 			if (rootcategory != null)

@@ -22,7 +22,7 @@ public void init()
 	HitTracker modules = mediaArchive.query("module").exact("isentity",true).sort("ordering").search();
 	for (Data module in modules)
 	{
-		PropertyDetail detail = mediaArchive.getSearcher(module.getId()).getDetail("uploadsourcepath");
+		PropertyDetail detail = mediaArchive.getSearcher(module.getId()).getDetail("sourcepath");
 		if( detail == null)
 		{
 			continue;
@@ -32,14 +32,15 @@ public void init()
 		Collection tosave = new ArrayList();
 		for (Data hit in hits)
 		{
-			if( hit.getValue("uploadsourcepath") != null || hit.getValue("rootcategory") != null)
+			if( hit.getValue("sourcepath") != null || hit.getValue("rootcategory") != null)
 			{
 				//Reload path 
 				hit.setValue("rootcategory",null); //this will auto correct
-				hit.setValue("uploadsourcepath",null);
+				hit.setValue("sourcepath",null);
+				hit.setValue("archivesourcepath",null);
 				String sourcepath = mediaArchive.getEntityManager().loadUploadSourcepath(module, hit, null, true);
 				//log.info("  	Set:" + module.getId() + " -> " + sourcepath);
-				hit.setValue("uploadsourcepath",sourcepath);
+				hit.setValue("sourcepath",sourcepath);
 				//TODO: Now reload one at a time based on parent child relationships
 				tosave.add(hit);
 				count++;
