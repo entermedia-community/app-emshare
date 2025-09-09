@@ -166,7 +166,7 @@ public void init(){
 					
 					}
 										
-					datarow.setValue("uploadsourcepath", foundcatsourcepath);
+					datarow.setValue("archivesourcepath", foundcatsourcepath);
 					
 					//Clean Old Stuff - Dev
 					datarow.setValue("rootcategory",  null);

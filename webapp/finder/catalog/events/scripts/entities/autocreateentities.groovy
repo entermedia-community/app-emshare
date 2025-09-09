@@ -139,8 +139,9 @@ public void processChildren(MediaArchive mediaArchive, Data inmodule, Category p
 			 	}
 
 				readInSideCart(mediaArchive,category,newchild);			 	
-			 	newchild.setValue("uploadsourcepath",category.getCategoryPath());
-			 	
+			 	newchild.setValue("archivesourcepath",category.getCategoryPath());
+				newchild.setValue("sourcepath",category.getCategoryPath());
+				 
 			 	mediaArchive.saveData(inmodule.getId(),newchild);
 			 	category.setValue(inmodule.getId(), newchild.getId());
 			 	

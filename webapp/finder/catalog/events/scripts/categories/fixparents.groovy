@@ -21,14 +21,15 @@ public void init()
 	mediaarchive.saveData("category", parent.getChildren());
 	
 	
-	HitTracker activities = mediaarchive.query("eduactivity").startsWith("uploadsourcepath", "Activities/0000-2023/Marketing0000").search();
+	HitTracker activities = mediaarchive.query("eduactivity").startsWith("sourcepath", "Activities/0000-2023/Marketing0000").search();
 	log.info("Found " + activities.size() + " activities to update");
 	List tosave = new ArrayList();
 	for (Data activity in activities)
     {
-	    String oldpath = activity.get("uploadsourcepath");
+	    String oldpath = activity.get("sourcepath");
 		String newpath = oldpath.replace("Activities/0000-2023/Marketing0000", "Activities/0000-2023/Marketing");
-		activity.setValue("uploadsourcepath", newpath);
+		activity.setValue("sourcepath", newpath);
+		activity.setValue("archivesourcepath", newpath);
 		activity.setValue("rootcategory", null);
 		tosave.add(activity);
 		log.info("Updating activity " + activity.getId() + " from " + oldpath + " to " + newpath);
