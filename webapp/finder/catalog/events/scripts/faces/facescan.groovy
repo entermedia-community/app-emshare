@@ -59,6 +59,10 @@ public void init()
 		List tosave = new ArrayList();
 		FaceProfileManager manager = archive.getBean("faceProfileManager");
 		
+		if (hits.isEmpty())
+		{
+			log.info("No assets found to scan" + hits);
+		}
 		if (!hits.isEmpty()) 
 		{
 			log.info("Checking :" + hits.size());
