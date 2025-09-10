@@ -575,7 +575,14 @@ jQuery(document).ready(function (url, params) {
 		isMouseDown = false;
 	});
 	
-	lQuery(".mediavieweropener .stackedplayer").livequery("click", function (e) {
+	lQuery(".stackedplayer").livequery("click", function (e) {
+		
+		var clicked = $(this);
+		var pickerresults = clicked.closest(".clickableresultlist");
+		if (pickerresults.length > 0) {
+			return;
+		}
+		
 		e.preventDefault();
 		e.stopPropagation();
 		var link = $(this);
@@ -589,22 +596,12 @@ jQuery(document).ready(function (url, params) {
 
 	lQuery(".mediavieweropener table.emresultstable tr td").livequery("click", function (e) {
 		var clicked = $(this);
-		if (clicked.attr("noclick") == "true") {
-			e.stopPropagation();
-			return true;
-		}
-
-		/*	if (clicked.find("td:first").attr("noclick") == "true") {
-			return true;
-		}*/
-		
-		clicked = clicked.closest("tr");
 		var pickerresults = clicked.closest(".clickableresultlist");
-		if (!clicked.hasClass("resultsassetcontainer") && pickerresults.length > 0) {
+		if (pickerresults.length > 0) {
 			return;
 		}
 		
-		
+		clicked = clicked.closest("tr");
 		if ($(e.target).is("input") || $(e.target).is("a")) {
 			return true;
 		}
