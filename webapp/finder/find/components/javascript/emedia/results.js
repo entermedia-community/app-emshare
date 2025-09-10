@@ -398,15 +398,6 @@ jQuery(document).ready(function (url, params) {
 		}
 	};
 
-	lQuery(".stackedplayer").livequery("click", function (e) {
-		e.preventDefault();
-		e.stopPropagation();
-		var link = $(this);
-		showAsset(link);
-
-		return false;
-	});
-
 	initKeyBindings = function (hidden) {
 		$(document).keydown(function (e) {
 			if (hidden && !hidden.is(":visible")) {
@@ -584,10 +575,19 @@ jQuery(document).ready(function (url, params) {
 		isMouseDown = false;
 	});
 	
-	// Click on asset
-		var selectStart = null;
+	lQuery(".mediavieweropener .stackedplayer").livequery("click", function (e) {
+		e.preventDefault();
+		e.stopPropagation();
+		var link = $(this);
+		showAsset(link);
 
-	lQuery(".stackedplayertable tr td").livequery("click", function (e) {
+		return false;
+	});
+	
+	// Click on asset
+	var selectStart = null;
+
+	lQuery(".mediavieweropener table.emresultstable tr td").livequery("click", function (e) {
 		var clicked = $(this);
 		if (clicked.attr("noclick") == "true") {
 			e.stopPropagation();
@@ -649,11 +649,10 @@ jQuery(document).ready(function (url, params) {
 			}
 			return false;
 		}
+
 		e.preventDefault();
 		e.stopPropagation();
-
 		var assetid = clicked.data("dataid");
-
 		showAsset(clicked, assetid);
 	});
 	// Gallery clicking
