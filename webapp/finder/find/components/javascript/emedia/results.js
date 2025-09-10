@@ -398,15 +398,6 @@ jQuery(document).ready(function (url, params) {
 		}
 	};
 
-	lQuery(".stackedplayer").livequery("click", function (e) {
-		e.preventDefault();
-		e.stopPropagation();
-		var link = $(this);
-		showAsset(link);
-
-		return false;
-	});
-
 	initKeyBindings = function (hidden) {
 		$(document).keydown(function (e) {
 			if (hidden && !hidden.is(":visible")) {
@@ -584,27 +575,33 @@ jQuery(document).ready(function (url, params) {
 		isMouseDown = false;
 	});
 	
-	// Click on asset
-		var selectStart = null;
-
-	lQuery(".stackedplayertable tr td").livequery("click", function (e) {
-		var clicked = $(this);
-		if (clicked.attr("noclick") == "true") {
-			e.stopPropagation();
-			return true;
-		}
-
-		/*	if (clicked.find("td:first").attr("noclick") == "true") {
-			return true;
-		}*/
+	lQuery(".stackedplayer").livequery("click", function (e) {
 		
-		clicked = clicked.closest("tr");
+		var clicked = $(this);
 		var pickerresults = clicked.closest(".clickableresultlist");
-		if (!clicked.hasClass("resultsassetcontainer") && pickerresults.length > 0) {
+		if (pickerresults.length > 0) {
 			return;
 		}
 		
+		e.preventDefault();
+		e.stopPropagation();
+		var link = $(this);
+		showAsset(link);
+
+		return false;
+	});
+	
+	// Click on asset
+	var selectStart = null;
+
+	lQuery(".mediavieweropener table.emresultstable tr td").livequery("click", function (e) {
+		var clicked = $(this);
+		var pickerresults = clicked.closest(".clickableresultlist");
+		if (pickerresults.length > 0) {
+			return;
+		}
 		
+		clicked = clicked.closest("tr");
 		if ($(e.target).is("input") || $(e.target).is("a")) {
 			return true;
 		}
@@ -649,11 +646,10 @@ jQuery(document).ready(function (url, params) {
 			}
 			return false;
 		}
+
 		e.preventDefault();
 		e.stopPropagation();
-
 		var assetid = clicked.data("dataid");
-
 		showAsset(clicked, assetid);
 	});
 	// Gallery clicking
