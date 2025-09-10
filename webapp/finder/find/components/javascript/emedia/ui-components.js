@@ -149,13 +149,16 @@ jQuery(document).ready(function () {
 		});
 		if (currentLinkIdx > 0) {
 			var backLink = history[currentLinkIdx - 1];
-			link.data("entityid", backLink.entityid);
-			link.data("entitymoduleid", backLink.entitymoduleid);
-			link.data("entitymoduleviewid", backLink.entitymoduleviewid);
-			link.data("url", backLink.url);
-			link.attr("href", backLink.url);
-			link.find("#showname").prepend(backLink.parententiylabel);
-			link.show();
+			if (backLink.entityid !== undefined && backLink.entityid != "")
+			{
+				link.data("entityid", backLink.entityid);
+				link.data("entitymoduleid", backLink.entitymoduleid);
+				link.data("entitymoduleviewid", backLink.entitymoduleviewid);
+				link.data("url", backLink.url);
+				link.attr("href", backLink.url);
+				link.find("#showname").prepend(backLink.parententiylabel);
+				link.show();
+			}
 		}
 	});
 
@@ -191,7 +194,7 @@ jQuery(document).ready(function () {
 		if (parentid != "") {
 			//var container = parent.find('.entitydialog');
 			var backbtn = $(".entitydialogback");
-			$(backbtn).show();
+			//$(backbtn).show();
 			$(backbtn).data("parentid", parentid);
 			$(backbtn).data("parentcontainerid", parent.attr("id"));
 			$(backbtn).data("urlbar", parent.data("urlbar"));
