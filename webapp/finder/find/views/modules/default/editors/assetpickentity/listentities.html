@@ -20,6 +20,10 @@
 					#set($entityid = $data.getId())
 					#set($emoduleid = $data.get("entitysourcetype")) 
 					
+					#if($emoduleid == "entitydocument")
+						#set($entitydocumentid = $entityid)
+					#end
+					
 					#set($emodule = $mediaarchive.getCachedData("module", $emoduleid))
 					
 					#set($rendertype = $emodule.modulerendertype)
@@ -54,12 +58,10 @@
 						<i class="bi bi-$moduleicon mr-1"></i>&nbsp;#text($entity.sourcepath)</a>
 				#end
 
-				<div class="d-flex justify-content-end mb-2">
-					<a type="button" class="btn btn-cta mb-2 indexDocPages" data-assetid="$!asset.getId()" href="$apphome/views/modules/asset/editor/documentindexer/index.html">
-						<i class="fas fa-spin fa-spinner"></i>
-						[[Index Document for RAG]]
-					</a>
-				</div>
+				#ifnotnull($entitydocumentid)
+					$context.putPageValue("entitydocumentid", $entitydocumentid)
+					$pages.include("$apphome/views/modules/asset/editor/documentindexer/button.html", $context)
+				#end
 
 			</div>
 		#end
