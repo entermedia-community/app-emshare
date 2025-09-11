@@ -286,7 +286,7 @@ $(document).ready(function () {
 			var row = $(this);
 
 			var searchId = row.data("dataid");
-			var submoduleOpener = row.closest(".clickableresultlist");
+			var submoduleOpener = row.closest(".clickableresultlistinline");
 			submoduleOpener.data("updateurl", true);
 			submoduleOpener.data(
 				"urlbar",
