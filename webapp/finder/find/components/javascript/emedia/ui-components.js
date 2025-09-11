@@ -149,8 +149,7 @@ jQuery(document).ready(function () {
 		});
 		if (currentLinkIdx > 0) {
 			var backLink = history[currentLinkIdx - 1];
-			if (backLink.entityid !== undefined && backLink.entityid != "")
-			{
+			if (backLink.entityid !== undefined && backLink.entityid != "") {
 				link.data("entityid", backLink.entityid);
 				link.data("entitymoduleid", backLink.entitymoduleid);
 				link.data("entitymoduleviewid", backLink.entitymoduleviewid);
@@ -176,6 +175,16 @@ jQuery(document).ready(function () {
 			}
 		}
 	);
+
+	lQuery(".indexDocPages").livequery("click", function (e) {
+		e.preventDefault();
+		e.stopPropagation();
+		var btn = $(this);
+		btn.addClass("loading");
+		btn.runAjax(function () {
+			btn.removeClass("loading");
+		});
+	});
 
 	function formsavebackbutton(form) {
 		var savedcontainer = $(".enablebackbtn");
