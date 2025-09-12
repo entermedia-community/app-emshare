@@ -3,7 +3,12 @@
 	"messages": [
 		{
 			"role": "system",
-			"content": "You are an AI that analyzes a batch of metadata inputs (e.g. title, caption, description, keywords, alt text, document content, audio/video transcript) and identifies high-level semantic topics that describe the underlying concepts, emotions, actions, and themes. Focus on the essence of what is happening — abstract ideas, moods, and relationships — NOT generic object names unless they are essential to the concept."
+			#set($content = "You are an AI that analyzes a batch of metadata inputs (e.g. title, caption, description, keywords, alt text, document content, audio/video transcript) and identifies high-level semantic topics that describe the underlying concepts, emotions, actions, and themes. Focus on the essence of what is happening — abstract ideas, moods, and relationships — NOT generic object names unless they are essential to the concept.")
+			#ifnotnull($docpage)
+				#set($content = "$content You will also provide a short comprehensive synapsis of the content & a title that fits the contents.")
+			#end
+			#set($content = "$content Return as JSON.")
+			"content": #jesc($content)
 		},
 		{
 			"role": "user",
@@ -15,15 +20,24 @@
 				#end
 				#set($content ="${content}${field.name}: ${field.value}")
 			#end
-			
+
 			"content": #jesc($content)
 		}
 	],
 	"stream": false,
 	"think": false,
+	"temperature": 0,
 	"format": {
 		"type": "object",
 		"properties": {
+			#ifnotnull($docpage)
+			"title": {
+				"type": "string"
+			},
+			"synapsis": {
+				"type": "string"
+			},
+			#end
 			"topics": {
 				"type": "array",
 				"items": {
@@ -32,6 +46,9 @@
 			}
 		},
 		"required": [
+			#ifnotnull($docpage)
+			"synapsis",
+			#end
 			"topics"
 		]
 	}

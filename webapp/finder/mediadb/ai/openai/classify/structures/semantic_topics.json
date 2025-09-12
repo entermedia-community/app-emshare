@@ -3,7 +3,12 @@
 	"input": [
 		{
 			"role": "system",
-			"content": "You are an AI that analyzes a batch of metadata inputs (e.g. title, caption, description, keywords, alt text, document content, audio/video transcript) and identifies high-level semantic topics that describe the underlying concepts, emotions, actions, and themes. Focus on the essence of what is happening — abstract ideas, moods, and relationships — NOT generic object names unless they are essential to the concept."
+			#set($content = "You are an AI that analyzes a batch of metadata inputs (e.g. title, caption, description, keywords, alt text, document content, audio/video transcript) and identifies high-level semantic topics that describe the underlying concepts, emotions, actions, and themes. Focus on the essence of what is happening — abstract ideas, moods, and relationships — NOT generic object names unless they are essential to the concept.")
+			#ifnotnull($docpage)
+				#set($content = "$content You will also provide a short comprehensive synapsis of the content & make title that fits the contents.")
+			#end
+			#set($content = "$content Return as JSON.")
+			"content": #jesc($content)
 		},
 		{
 			"role": "user",
@@ -26,6 +31,16 @@
 			"schema": {
 				"type": "object",
 				"properties": {
+					#ifnotnull($docpage)
+					"title": {
+						"type": "string",
+						"additionalProperties": false
+					},
+					"synapsis": {
+						"type": "string",
+						"additionalProperties": false
+					},
+					#end
 					"topics": {
 						"type": "array",
 						"items": {
@@ -34,7 +49,12 @@
 						}
 					}
 				},
-				"required": ["topics"],
+				"required": [
+					#ifnotnull($docpage)
+					"synapsis",
+					#end
+					"topics"
+				],
 				"additionalProperties": false
 			},
 			"strict": true
