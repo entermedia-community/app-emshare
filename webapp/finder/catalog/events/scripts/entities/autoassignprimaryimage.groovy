@@ -40,7 +40,7 @@ public void init()
 						//log.info("Searching images for: "+ module + " / " + entity);
 				
 						if(entity.rootcategory != null) {
-							Data asset = (Data)archive.getAssetSearcher().query().match("category", entity.rootcategory).exact("importstatus","complete").not("editstatus","7").exact("previewstatus", "2").sort("uploadeddate").searchOne();
+							Data asset = (Data)archive.getAssetSearcher().query().match("category", entity.rootcategory).exact("importstatus","complete").not("editstatus","7").sort("uploadeddate").searchOne();
 							if (asset) {
 								entity.setValue("primaryimage", asset.getId());
 								tosave.add(entity);
