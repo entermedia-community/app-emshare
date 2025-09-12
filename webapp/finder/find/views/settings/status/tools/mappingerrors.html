@@ -6,35 +6,47 @@
 
 <div class="well">
 <p>
-<h2>$!error.getDetail()  (Table was: $error.searchType)</h2>
-
+<h2>Inconsistent: $!error.getDetail()</h2>
 #set($map = $mediaarchive.getPropertyDetailsArchive().findSearchersWithDetail($error.getDetail()))
-<table class="main-results-table" style="width: 100%">
-<tr><td>Table</td><td>Field Name</td><td>Data Type</td><td>Index Type</td>
-<td>Indexed</td><td>Analyzer</td><td>Is Analyzed</td>
-##<td>Is Stored</td>
-<td></td>
-<td></td></tr>
-#foreach($key in $map.keySet())
-#set($detail = false)
-#set($detail = $map.get($key))
+<table class="table table-striped main-results-table" style="width: 100%">
 <tr>
-<td>$key:</td><td> $detail.getName()</td><td>$!detail.getDataType()</td>
-<td>$!detail.indextype</td>
-<td>$detail.isIndex()</td>
-<td>$!detail.analyzer</td><td>$detail.isAnalyzed()</td>
-##<td>$detail.store()</td>
-<td><a class="btn emdialog" data-hidefooter="true" data-dialogwidth="300"  href="resetsettings.html?searchtype=$key">Reset Table Def</a></td>
-##<td><a class="btn" target="_blank" href="convertall.html?searchtype=$key&detail=$detail.id">Make all like this</a></td>
-##<td><td><a class="btn" target="_blank" href="legacy.html?searchtype=$key&detail=$detail.id">Reset this field name and reset other lists</a> </td>
-<td><a href="$home$apphome/views/settings/lists/datamanager/properties/edit.html?id=$detail.id&catalogid=${catalogid}&searchtype=$key">View in DM</a>
-
-
+	<thead>
+	<td>Table</td>
+	<td>Is Analyzed</td>
+	<td>Field Settings</td>
+	<td>Reset Table</td>
+	
+	<td>Analyzer</td>
+	<td>Index Type</td>
+	<td>Data Type</td>
+	<td>Indexed</td>
+	</thead>
+	
 </tr>
+#foreach($tablename in $map.keySet())
+	#set($detail = false)
+	#set($detail = $map.get($tablename))
+	<tr>
+		<td>${tablename}.${error.getDetail()}</td>
+		<td>$detail.isAnalyzed()</td>
+		<td><a class="btn btn-light" href="$home$apphome/views/settings/lists/datamanager/properties/edit.html?id=$detail.id&catalogid=${catalogid}&searchtype=$tablename">$detail.getName()</a>
+		<td><a class="btn btn-light emdialog" data-hidefooter="true" data-dialogwidth="300"  href="resetsettings.html?searchtype=$tablename">Reset $tablename</a></td>
+		
+		<td>$!detail.analyzer</td>
+		<td>$!detail.indextype</td>
+		<td>$!detail.getDataType()</td>
+		
+		<td>$detail.isIndex()</td>
+		
+		
+	
+	</tr>
 #end
 </table>
 
+<h3>Error was on: $error.searchType</h3>
 <p>
+
 $error.getError()
 </p>
 
