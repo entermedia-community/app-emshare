@@ -1,6 +1,6 @@
 package asset
 
-import org.entermediadb.ai.semantics.SemanticIndexManager
+import org.entermediadb.ai.semantics.SemanticFieldsManager
 import org.entermediadb.asset.*
 import org.openedit.locks.Lock
 
@@ -18,7 +18,7 @@ public void init()
 	
 	try
 	{
-		SemanticIndexManager manager = archive.getBean("semanticIndexManager");
+		SemanticFieldsManager manager = archive.getBean("semanticFieldsManager");
 		manager.reBalance(log);
 		
 	}
