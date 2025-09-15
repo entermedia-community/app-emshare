@@ -9,7 +9,7 @@ public void addMetadataWithAI(){
 	WebPageRequest inReq = context;
 	MediaArchive archive = context.getPageValue("mediaarchive");
 	ClassifyManager classifyManager = archive.getBean("classifyManager");
-	// classifyManager.scanMetadataWithAIAsset(log);
+	 classifyManager.scanMetadataWithAIAsset(log);
 	
 	// archive.fireSharedMediaEvent("llm/translatefields");
 	

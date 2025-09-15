@@ -1,0 +1,34 @@
+{
+	"model": "${model}",
+	"input": [
+		{
+			"role": "system",
+			"content": #jesc($fieldparams.aicreationdescription)
+		},
+		{
+			"role": "user",
+			"content": #jesc($fieldparams.aicreationcommand)
+		}
+	],
+	"text": {
+		"format": {
+			"type": "json_schema",
+			"name": "semantic_topics",
+			"schema": {
+				"type": "object",
+				"properties": {
+					"$fieldparams.getId()": {
+						"type": "array",
+						"items": {
+							"type": "string",
+							"additionalProperties": false
+						}
+					}
+				},
+				"required": ["$fieldparams.getId()"],
+				"additionalProperties": false
+			},
+			"strict": true
+		}
+	}
+}
