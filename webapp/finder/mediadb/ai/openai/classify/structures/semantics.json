@@ -3,7 +3,11 @@
 	"input": [
 		{
 			"role": "system",
-			"content": #jesc($fieldparams.aicreationdescription)
+			#set($content = $fieldparams.aicreationdescription)
+			#if($fieldparams.isoptional == "true")
+				#set($content = "$content Return empty array if you are unsure.")
+			#end
+			"content": #jesc($content)
 		},
 		{
 			"role": "user",
@@ -25,7 +29,9 @@
 						}
 					}
 				},
+				#if($fieldparams.isoptional == "false")
 				"required": ["$fieldparams.getId()"],
+				#end
 				"additionalProperties": false
 			},
 			"strict": true
