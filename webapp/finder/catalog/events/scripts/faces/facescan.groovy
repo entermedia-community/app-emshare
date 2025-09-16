@@ -35,7 +35,7 @@ public void init()
 
 	try
 	{	
-		QueryBuilder query = archive.query("asset").not("editstatus","7").exact("facescancomplete", "false").exact("previewstatus","2").sort("assetaddeddateDown");
+		QueryBuilder query = archive.localQuery("asset").not("editstatus","7").exact("facescancomplete", "false").exact("previewstatus","2").sort("assetaddeddateDown");
 		
 		String startdate = archive.getCatalogSettingValue("ai_facescan_startdate");
 		
