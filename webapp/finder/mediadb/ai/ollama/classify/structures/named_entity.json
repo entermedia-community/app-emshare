@@ -16,14 +16,25 @@
 	"format": {
 		"type": "object",
 		"properties": {
-			"$fieldparams.fieldname": {
-				"type": "array",
-				"items": {
-					"type": "string",
-					"additionalProperties": false
+			"categories": {
+				"type": "object",
+				"properties": {
+					#foreach($table in $tables)
+						#if($foreach.count>1)
+						,
+						#end
+						"$table.sourcetype": {
+							"type": "array",
+							"description": "Names of $table.label",
+							"items": {
+								"type": "string",
+								"additionalProperties": false
+							}
+						}
+					#end
 				}
 			}
 		},
-		"required": ["$fieldparams.fieldname"]
+		"required": ["categories"]
 	}
 }
