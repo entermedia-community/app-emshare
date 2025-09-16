@@ -1,6 +1,6 @@
 package llm
 
-import org.entermediadb.ai.iInformatics.InformaticsManager
+import org.entermediadb.ai.infomatics.InformaticsManager
 import org.entermediadb.asset.MediaArchive
 import org.openedit.WebPageRequest
 
