@@ -1,6 +1,6 @@
 package asset
 
-import org.entermediadb.ai.semantics.SemanticFieldsManager
+import org.entermediadb.ai.classify.SemanticFieldsManager
 import org.entermediadb.asset.*
 import org.openedit.locks.Lock
 
