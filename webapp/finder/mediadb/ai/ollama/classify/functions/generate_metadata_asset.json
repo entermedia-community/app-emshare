@@ -2,15 +2,11 @@
 ## assettitle: A concise title suitable for social media or gallery display.
 {
   "name": "generate_metadata_asset",
-  
-  "description": "Generates metadata for an image: 
-  #foreach($field in $aifields)
-  	#if($foreach.count>1)
-	  ,
-	#end
-  	$field.name 
-			
-  #end .",
+  "description": "Analyze the image and following metadata to generate appropriate values for the missing fields:
+	#ifnotnull( $asset.name ) Current file name: $asset.name #end 
+	#if( $asset.hasKeywords() )
+	Existing keywords: #foreach($kw in $asset.getKeywords())#if($foreach.count > 1),#end $kw #end
+	#end",
   "parameters": {
     "type": "object",
     "properties": {
@@ -62,8 +58,8 @@ Slower than enum, useful if list contains mixed data types
 				#if($foreach.count>1)
 				,
 				#end
-			  	"$field.id" 						
-			#end 
+			  	"$field.id"
+			#end
         ]
       }
     },

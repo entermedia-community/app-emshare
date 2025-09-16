@@ -1,23 +1,37 @@
-## alttext: A description of the image suitable for screen readers or other assistive technologies.
-## assettitle: A concise title suitable for social media or gallery display.
+#set($description = "Generates metadata for an entity based on the following fields: ")
+#foreach($field in $contextfields)
+	#if($foreach.count>1)
+	#set($description = "$description,")
+#end
+	#if($field.isList())
+		#set($description = "$description \n ${field.name}:")
+		#foreach( $option in $mediaarchive.getValueList($field, $entity) )
+			#if($foreach.count>1),#end
+			#set($description = "$description #text($option)")
+		#end
+	#elseif($field.isBoolean())
+		#set($description = "$description \n ${field.name}:")
+		#if($entity.getBoolean($field.id)) 
+			#set($description = "$description \n ${field.name}: Yes")
+		#else
+			#set($description = "$description \n ${field.name}: No")
+		#end
+	#elseif($field.isDate())
+		## SKIP
+	#else
+		#set($description = "$description \n ${field.name}: ${entity.get($field.id)}")
+	#end
+#end
 {
   "name": "generate_metadata_entity",
-  
-  "description": "Generates metadata for an image: 
-  #foreach($field in $aifields)
-  	#if($foreach.count>1)
-	  ,
-	#end
-  	$field.name 
-			
-  #end .",
+  "description": #jesc($description),
   "parameters": {
     "type": "object",
     "properties": {
       "metadata": {
         "type": "object",
         "properties": {
-		  #foreach($field in $aifields)
+		  #foreach($field in $fieldstofill)
 			  #if($foreach.count>1)
 			  ,
 			  #end
@@ -33,21 +47,6 @@
 								#jesc("$option.id|#text($option)")
 							#end
 						]
-#*
-Slower than enum, useful if list contains mixed data types
-	anyOf: [
-		#foreach( $option in $mediaarchive.getList($field.getListId()) )
-			#if($foreach.count>1)
-			,
-			#end
-			{
-				"type": "string",
-				"const": "$option.id",
-				"description": "#text($option)"
-			}
-		#end
-	]
-*#
 					}
 				#else
 					"$field.id": {
@@ -56,9 +55,9 @@ Slower than enum, useful if list contains mixed data types
 					}
 				#end
 		  #end
-        },
+				},
         "required": [
-			#foreach($field in $aifields)
+			#foreach($field in $fieldstofill)
 				#if($foreach.count>1)
 				,
 				#end
