@@ -6,7 +6,9 @@
 	#if($field.isList())
 		#set($description = "$description \n ${field.name}:")
 		#foreach( $option in $mediaarchive.getValueList($field, $entity) )
-			#if($foreach.count>1),#end
+			#if($foreach.count>1)
+				#set($description = "$description,")
+			#end
 			#set($description = "$description #text($option)")
 		#end
 	#elseif($field.isBoolean())

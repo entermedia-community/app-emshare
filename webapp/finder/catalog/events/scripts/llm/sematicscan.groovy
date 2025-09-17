@@ -8,24 +8,9 @@ public void init()
 {
 	MediaArchive archive = context.getPageValue("mediaarchive");//Search for all files looking for videos
 
-	Lock lock = archive.getLockManager().lockIfPossible("semanticscanning", "admin");
-	
-	if( lock == null)
-	{
-		log.info("Semantic scanning already in progress");
-		return;
-	}
-	
-	try
-	{	
-		SemanticFieldsManager manager = archive.getBean("semanticFieldsManager");
-		manager.indexAll(log);
+	SemanticFieldsManager manager = archive.getBean("semanticFieldsManager");
+	manager.indexAll(log);
 		
-	}
-	finally
-	{
-		archive.getLockManager().release(lock);
-	}
 }
 
 
