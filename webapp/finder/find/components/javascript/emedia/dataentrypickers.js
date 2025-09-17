@@ -1,19 +1,4 @@
-function isValidTarget(clickEvent) {
-	var target = $(clickEvent.target);
-	if (
-		target.attr("noclick") == "true" ||
-		target.is("input") ||
-		target.is("a") ||
-		target.closest(".jp-audio").length
-	) {
-		return false;
-	}
 
-	clickEvent.preventDefault();
-	clickEvent.stopImmediatePropagation();
-
-	return true;
-}
 
 $(document).ready(function () {
 	lQuery(".assetpicker .assetInput").livequery("change", function () {
@@ -117,74 +102,7 @@ $(document).ready(function () {
 		}
 	});
 
-	//OLD select table.
-	lQuery(".emselectable table td").livequery("click", function (e) {
-		if (!isValidTarget(e)) {
-			return true;
-		}
-
-		var clicked = $(this);
-		clicked.css("pointer-events", "none");
-
-		var emselectable = clicked.closest("#emselectable");
-		if (emselectable.length < 1) {
-			emselectable = clicked.closest(".emselectable");
-		}
-		var row = clicked.closest("tr");
-		var rowid = row.attr("rowid");
-
-		emselectable.find("table tr").each(function (index) {
-			clicked.removeClass("emhighlight");
-		});
-		row.addClass("emhighlight");
-		row.removeClass("emborderhover");
-
-		var url = emselectable.data("url");
-
-		var form = emselectable.find("form");
-		if (!form.length) {
-			form = emselectable.data("emselectableform");
-			if (form) {
-				form = $("#" + form);
-			}
-		}
-		var data = row.data();
-
-		if (form && form.length > 0) {
-			data.id = rowid;
-			data.oemaxlevel = form.data("oemaxlevel");
-			form.find("#emselectedrow").val(rowid);
-			form.find(".emneedselection").each(function () {
-				clicked.removeAttr("disabled");
-			});
-			//form.submit();
-			// var targetdiv = form.data("targetdiv");
-			/*if ((typeof targetdiv) != "undefined") {
-					$(form).ajaxSubmit({
-						target : "#" + $.escapeSelector(targetdiv), 
-						data:data
-						
-					});
-				} else {
-					*/
-			$(form).trigger("submit");
-			//}
-			if (form.hasClass("autoclose")) {
-				closeemdialog(form.closest(".modal"));
-			}
-			clicked.css("pointer-events", "auto");
-		} else if (url != undefined && url != "") {
-			if (emselectable.hasClass("showmodal")) {
-				emselectable.data("id", rowid);
-				emselectable.emDialog(null, function () {
-					clicked.css("pointer-events", "auto");
-				});
-				//showmodal(emselectable, url);;
-			} else {
-				parent.document.location.href = url + rowid; //?
-			}
-		}
-	});
+	
 
 	//CB This works. Opens entities
 	lQuery(".topmodules .resultsdivdata").livequery("click", function (e) {
