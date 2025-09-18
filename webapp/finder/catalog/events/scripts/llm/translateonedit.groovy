@@ -121,7 +121,6 @@ public void translateOnFieldsEdit() {
 		} 
 		catch(Exception e){
 			log.error("Translation Error for field: " + field, e);
-			asset.setValue("translaterror", true);
 			continue;
 		}
 
@@ -132,7 +131,6 @@ public void translateOnFieldsEdit() {
 				LanguageMap map = (LanguageMap) translations.get(key);
 				asset.setValue(key, map);
 			}
-			asset.setValue("translatesuccess", true); 
 		}
 	}
 	archive.saveAsset(asset);
