@@ -1,0 +1,57 @@
+<records>
+
+   <data id="classifyManager" bean="classifyManager" enabled="true" fieldsavevector="vectorarray" aicreationdescription="You are an assistant that analyzes a batch of metadata inputs and identifies a list of topics that describe the underlying concepts, emotions, actions, and themes. Focus on the essence of what is happening — abstract ideas, moods, and relationships — NOT generic object names unless they are essential to the concept. This topics are used for clustering, search, filtering, and recommendations." aicreationcommand="Generate up to 4 semantic topics based on the following metadata:" maxnumberofcentroids="4" init_loop_start_distance=".60" init_loop_lower_limit=".50" maxdistancetocentroid=".67" maxdistancetocentroid_one=".78" maxdistancetomatch=".6" aifunctionname="generate_metadata" 
+   	ordering="100">
+      <name>
+         <language id="en"><![CDATA[Text Classifier]]></language>
+      </name>
+   </data>
+
+   <data id="autotranslate" bean="translationManager" enabled="true" notes="Translate fields that have values and are multi language" ordering="200">
+      <name>
+         <language id="en"><![CDATA[Auto Translate]]></language>
+      </name>
+   </data>
+
+   <data id="semantictopics" bean="semanticFieldsManager" fieldname="semantictopics" searchtype="semanticembedding" enabled="true" fieldsavevector="vectorarray" 
+   aicreationdescription="You are an assistant that analyzes a batch of metadata inputs and identifies a list of topics that describe the underlying concepts, emotions, actions, and themes. Focus on the essence of what is happening — abstract ideas, moods, and relationships — NOT generic object names unless they are essential to the concept. This topics are used for clustering, search, filtering, and recommendations." aicreationcommand="Generate up to 4 semantic topics based on the following metadata:" maxnumberofcentroids="4" init_loop_start_distance=".60" init_loop_lower_limit=".50" maxdistancetocentroid=".67" maxdistancetocentroid_one=".78" maxdistancetomatch=".6"
+    aifunctionname="semantics" ordering="300">
+      <name>
+         <language id="en"><![CDATA[Semantic Topics]]></language>
+      </name>
+   </data>
+
+   <data id="documentsplitting" bean="documentSplitterManager"  searchtype="entitydocument"  enabled="true" aifunctionname="semantics" ordering="2">
+      <name>
+         <language id="en"><![CDATA[Document Split]]></language>
+      </name>
+   </data>
+
+   <data id="namedentityrecognition" bean="namedEntityRecognitionManager" enabled="true" notes="(NER: Named Entity Recognition) is most useful when you need to extract concrete facts (companies, people, locations, products) for building indexes, knowledge graphs, or searchable databases" aicreationdescription="You are an assistant that analyzes a batch of metadata inputs and identifies a list of named entities such as people, companies, products, organizations, locations, or brands. Return only the names of the entities without additional context or descriptions. Focus on proper nouns that represent specific, identifiable things. Return empty list if you are unsure."
+    aicreationcommand="Extract a list of named entities from the following metadata:" aifunctionname="named_entity" ordering="400">
+      <name>
+         <language id="en"><![CDATA[Named Entity Recognition]]></language>
+      </name>
+      <tables>
+         <table sourcetype="entityperson" aicreationdescription="Names of People" autocreate="true"></table>
+         <table sourcetype="entitylocation" aicreationdescription="Names of Places" autocreate="true"></table>
+         <table sourcetype="entitycompany" aicreationdescription="Names of Companies" autocreate="true"></table>
+
+         <!--
+          <table sourcetype="entitydocumenttitle" aicreationdescription="Title of Books or Documents" autocreate="true"></table>
+         <table id="products" sourcetype="entityproduct" label="Products"></table>
+         <table id="locations" sourcetype="entitylocation" label="Locations"></table>
+         <table id="brands" sourcetype="entitybrand" label="Brands"></table>
+         -->
+      </tables>
+   </data>
+
+   <data id="facedetect" bean="faceProfileManager" searchtype="faceembedding" enabled="true" fieldsavevector="vectorarray" maxnumberofcentroids="4" init_loop_start_distance=".60" init_loop_lower_limit=".50"
+    maxdistancetocentroid=".795" maxdistancetocentroid_one=".835" maxdistancetomatch=".648" notes="(NER: Named Entity Recognition) is most useful when you need to extract concrete facts (companies, people, locations, products) for building indexes, knowledge graphs, or searchable databases" ordering="500">
+      <name>
+         <language id="en"><![CDATA[Face Detect]]></language>
+      </name>
+   </data>
+
+
+</records>
