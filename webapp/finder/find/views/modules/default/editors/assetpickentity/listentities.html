@@ -54,27 +54,7 @@
 						<i class="bi bi-$moduleicon mr-1"></i>&nbsp;#text($entity.sourcepath)</a>
 				#end
 
-				#set( $rendertype = $mediaarchive.getMediaRenderType($asset.fileformat))
-				#if($rendertype == "document")
-					<br>
-					#set($entitydocument = $mediaarchive.query("entitydocument").exact("parentasset", $asset.id).searchOne())
-					#ifnotnull($entitydocument)
-						#set($docurl = "${apphome}/views/modules/entitydocument/editors/default/tabs/index.html?entityid=${entitydocument.id}")
-						<a href="$docurl"
-							class="emdialog emgridresulttitle btn-accent badge badge-tags mr-1"
-							data-hidefooter="true"
-							data-hideheader="true"
-							id="${entitydocument.id}"
-							data-id="${entitydocument.id}"
-							data-moduleid="entitydocument"
-							title="View: #text($!entitydocument)">
-							<i class="bi bi-file-earmark-text-fill mr-1"></i>&nbsp; #text($entitydocument)
-						</a>
-					#end
-					#ifnull($entitydocument)
-						$pages.include("$apphome/views/modules/asset/editor/documentindexer/button.html", $context)
-					#end
-				#end
+				
 
 			</div>
 		#end
