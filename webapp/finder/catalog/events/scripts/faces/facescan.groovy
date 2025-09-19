@@ -75,6 +75,8 @@ public void init()
 				Collection<MultiValued> onepage = hits.getPageOfHits();
 				int saved = manager.extractFaces(instructions, onepage);
 				count = count + saved;
+				archive.saveData("asset",onepage);  
+				
 				if( saved > 0 )
 				{
 					long end = System.currentTimeMillis();
