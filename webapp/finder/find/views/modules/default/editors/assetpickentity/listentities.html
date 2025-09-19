@@ -18,12 +18,8 @@
 				#foreach ( $data in $entities)
 					#set($entity = $data)
 					#set($entityid = $data.getId())
-					#set($emoduleid = $data.get("entitysourcetype")) 
-					
-					#if($emoduleid == "entitydocument")
-						#set($entitydocumentid = $entityid)
-					#end
-					
+					#set($emoduleid = $data.get("entitysourcetype"))
+
 					#set($emodule = $mediaarchive.getCachedData("module", $emoduleid))
 					
 					#set($rendertype = $emodule.modulerendertype)
@@ -47,20 +43,37 @@
 						#set($moduleicon = $module.moduleicon)
 					#end
 					
-						<a href="$previewurl" 
-						class="emdialog emgridresulttitle badge badge-tags mr-1" 
-						data-hidefooter="true" 
+						<a href="$previewurl"
+						class="emdialog emgridresulttitle badge badge-tags mr-1"
+						data-hidefooter="true"
 						data-hideheader="true"
-						id="clickid${entityid}"  
+						id="clickid${entityid}"
 						data-id="${entityid}"
 						data-moduleid="$!emoduleid"
 						title="#text($!entity)">
 						<i class="bi bi-$moduleicon mr-1"></i>&nbsp;#text($entity.sourcepath)</a>
 				#end
 
-				#ifnotnull($entitydocumentid)
-					$context.putPageValue("entitydocumentid", $entitydocumentid)
-					$pages.include("$apphome/views/modules/asset/editor/documentindexer/button.html", $context)
+				#set( $rendertype = $mediaarchive.getMediaRenderType($asset.fileformat))
+				#if($rendertype == "document")
+					<br>
+					#set($entitydocument = $mediaarchive.query("entitydocument").exact("parentasset", $asset.id).searchOne())
+					#ifnotnull($entitydocument)
+						#set($docurl = "${apphome}/views/modules/entitydocument/editors/default/tabs/index.html?entityid=${entitydocument.id}")
+						<a href="$docurl"
+							class="emdialog emgridresulttitle btn-accent badge badge-tags mr-1"
+							data-hidefooter="true"
+							data-hideheader="true"
+							id="${entitydocument.id}"
+							data-id="${entitydocument.id}"
+							data-moduleid="entitydocument"
+							title="View: #text($!entitydocument)">
+							<i class="bi bi-file-earmark-text-fill mr-1"></i>&nbsp; #text($entitydocument)
+						</a>
+					#end
+					#ifnull($entitydocument)
+						$pages.include("$apphome/views/modules/asset/editor/documentindexer/button.html", $context)
+					#end
 				#end
 
 			</div>
