@@ -222,35 +222,48 @@
 						#end
 					</a>
 					<ul class="dropdown-menu">
-						
-
-							<li>
-						<a class="dropdown-item  selectpage" 
-						href="${searchhome}/togglepage.html"
-						data-targetdiv="resultsheader"
-						data-action="all"
-						data-includesearchcontext="true"
-						data-includeeditcontext="true"
-						title="[[Select All results]]">[[Select All]]</a>
+						<li>
+							<a class="dropdown-item  selectpage" 
+							href="${searchhome}/togglepage.html"
+							data-targetdiv="resultsheader"
+							data-action="all"
+							data-includesearchcontext="true"
+							data-includeeditcontext="true"
+							title="[[Select All results]]">[[Select All]]</a>
 						</li>
 						<li>				
-						<a class="dropdown-item selectpage" 
-						href="${searchhome}/togglepage.html"
-						data-targetdiv="resultsheader"
-						data-action="page"
-						data-includesearchcontext="true"
-						data-includeeditcontext="true"
-						title="[[Select this page of results]]">[[Select Only This Page]]</a>
+							<a class="dropdown-item selectpage" 
+							href="${searchhome}/togglepage.html"
+							data-targetdiv="resultsheader"
+							data-action="page"
+							data-includesearchcontext="true"
+							data-includeeditcontext="true"
+							title="[[Select this page of results]]">[[Select Only This Page]]</a>
 						</li>
 						<li>
-						<a class="dropdown-item  selectpage" 
-						href="${searchhome}/togglepage.html"
-						data-targetdiv="resultsheader"
-						data-action="none"
-						data-includesearchcontext="true"
-						data-includeeditcontext="true"
-						title="[[Deselect all results]]">[[Select None]]</a>
+							<a class="dropdown-item  selectpage" 
+							href="${searchhome}/togglepage.html"
+							data-targetdiv="resultsheader"
+							data-action="none"
+							data-includesearchcontext="true"
+							data-includeeditcontext="true"
+							title="[[Deselect all results]]">[[Select None]]</a>
 						</li>
+						
+						#if($canexportdata && $hits && $hits.getSelectionSize() > 0)
+						<li class="dropdown-submenu">
+							<a class="dropdown-item  dropdown-toggle" href="#" data-bs-toggle="dropdown">[[Export]]</a>
+							<ul class="submenu dropdown-menu">
+								
+								<li><a class="dropdown-item" 
+									href="$siteroot$apphome/views/modules/asset/export/download/export_asset.csv?hitssessionid=$hits.sessionId&friendly=true&searchtype=asset&view=asset/resultstable" 
+									title="[[Export results]]">[[Export Results]]</a></li>
+								<li><a class="dropdown-item" 
+									href="$siteroot$apphome/views/modules/asset/export/download/export_asset.csv?hitssessionid=$hits.sessionId&searchtype=asset" 
+									title="[[Export database records]]">[[Export Database Records]]</a></li>
+							</ul>
+						</li>
+						#end
 
 						
 						#if( $user && ($candownload || $canconvert || $candownloadfpo ) )
