@@ -121,7 +121,7 @@ $(document).ready(function () {
 				togglemodaldialog("hide");
 			}
 		});
-		mainsearcheinput.on("keyup change", function (e) {
+		mainsearcheinput.on("keyup change paste", function (e) {
 			if (semanticLoaderTO) {
 				clearTimeout(semanticLoaderTO);
 			}
