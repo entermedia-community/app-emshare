@@ -147,21 +147,23 @@ $context.putPageValue("apphome", $apphome)
 				data-visibleposition="$!hits.getStartingPosition()">
 				#set($count = 0)
 		
-				#set( $searchhome = "$apphome/views/modules/${assetmodule.id}/results/default" )
+				#set( $searchhome = "$apphome/views/modules/${assetmodule.id}/results" )
 				$context.putPageValue("searchhome", $searchhome)
 				
 				#foreach( $hit in $hits.getPageOfHits() )
 					#if($count < 30)
 						$context.putPageValue("hit", $hit)
-						$pages.include("${searchhome}/types/media.html", $context)
+						$pages.include("${searchhome}/default/types/media.html", $context)
 						#set($count = $count +1)
 					#end
 				#end
 		
 				#if($hit.getPageOfHits().size() == 0)
-					$pages.stream("$!{searchhome}/empty.html", $context)
+					$pages.stream("$!{searchhome}/default/empty.html", $context)
 				#end
 			</div>
 		#end
 	</div>
+
+	$pages.include("./semanticsearch.html", $context)
 </div>
