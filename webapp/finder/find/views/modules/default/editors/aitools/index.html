@@ -31,9 +31,14 @@
 			<input type="hidden" name="onetomanytab" value='$context.getRequestParameter("onetomanytab")'/>
 			<input type="hidden" name="entitymoduleviewid" value='$context.getRequestParameter("entitymoduleviewid")'/>
 			<input type="hidden" name="id" value='$entityid'/>
-			<input type="hidden" name="entityid" value='$entityid'/>
+
 			<input type="hidden" name="save" value='true'/>
-			<input type="hidden" name="llmmodel.value" value='dall-e-3'/>
+
+			<input type="hidden" name="field" value="entityid" />
+			<input type="hidden" name="entityid.value" value='$entityid'/>
+
+			<input type="hidden" name="field" value="entitymoduleid" />
+			<input type="hidden" name="entitymoduleid.value" value="$targetmoduleid" />
 
 			$context.putPageValue("viewid", "${module.id}general")
 			$context.putPageValue("details",null)
@@ -57,6 +62,7 @@
 		
 			<label for="aiInstruction" class="fw-bold mb-1">AI Prompt: </label>
 			$context.putPageValue("entity", $entity)
+			<input type="hidden" name="field" value="llmprompt" />
 			<textarea name="llmprompt.value" id="aiInstruction" class="form-control rounded" rows="8" required autocomplete="off" data-gramm="false">$pages.include("$edithome/aitools/createassetinstructions.html", $context)</textarea>
 
 			<div class="d-flex justify-content-center mt-3">
