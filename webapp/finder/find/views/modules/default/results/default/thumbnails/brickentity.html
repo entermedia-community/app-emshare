@@ -57,14 +57,20 @@
 		data-assetsshown="$!{assetsshown}"
 		data-attachedmediaurl="${edithome}/types/entityfolder.html"
 		data-targetdiv="emgridentity$!moduleid$!entityid">
-		#set( $assetrendertype = $mediaarchive.getMediaRenderType($primarymedia.fileformat))
+		
+		
 		<div class="emcategory-thumb emcategory-thumb-$assetrendertype">
 			#if($primarymedia)
-				$context.putPageValue("thumbsize", "mediumplus" )
-				$context.putPageValue("hit", $primarymedia) 
+				#set( $primarymediadetail = $mediaarchive.getSearcher($moduleid).getDetail("primarymedia") )
+				 
+				$context.putPageValue("data", $entity)
+				$context.putPageValue("value", $primarymedia.getId())
+
+				#set( $xmledithome = "$apphome/views/modules/${moduleid}/components/xml")
 				
-				$context.putPageValue("searchhome", "${apphome}/views/modules/asset/results/default")
-				$pages.include("${apphome}/views/modules/asset/results/default/thumbnails/${assetrendertype}.html", $context)
+				#set($previewurl = "$xmledithome/typesreadonly/${primarymediadetail.viewtype}.html")
+
+				$pages.include($previewurl, $context)
 			#else
 				<i class="bi bi-${moduleicon} module-icon"></i>			
 			#end 
