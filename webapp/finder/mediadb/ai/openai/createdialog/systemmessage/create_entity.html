@@ -1,22 +1,18 @@
 Task: $contentrequest.llmprompt
-
 #set($searcher = $mediaarchive.getSearcher($targetmodule.id))
 #set($viewid = "${targetmodule.id}aifields")
 #set($viewdata = $mediaarchive.getData("view", $viewid))
-
 #ifnull($viewdata)
 	#set($viewdata = $mediaarchive.getData("view", "${targetmodule.id}addnew"))
 #end
-
 #set($details = $searcher.getDetailsForView($viewdata.id))
-
-You're adding data to a  module called $targetmodule.  It is structured like this:
+You're adding data to a module called $targetmodule.
 #set($childsearcher = $mediaarchive.getSearcher($targetmodule.id))
-
 #set($view = "$targetmodule.id/${targetmodule.id}aifields")
-
 #set ($childdetails = $childsearcher.getDetailsForView($view))
-
+#ifnotnull($childdetails)
+#if($childdetails.size() > 0)
+It is structured like this:
 #foreach($detail in $childdetails)
 Field Name: $detail.getText($context)
     Field ID: $detail.id
@@ -36,4 +32,6 @@ Field Name: $detail.getText($context)
         ID: $option.id, Name: $option.name
         #end
     #end
+#end
+#end
 #end
