@@ -20,9 +20,11 @@ $pages.include("${edithome}/categorybreadcrumb.html", $context)
 <div class="d-flex h--36">
 
 	#set($selectedmodule = $context.getRequestParameter("selectedmodule"))
+	
 	#ifnull($selectedmodule)
-		
-		#set($selectedmodule = $organizedModules.iterator().next().getId())
+		#if(!$organizedModules.isEmpty())
+			#set($selectedmodule = $organizedModules.iterator().next().getId())
+		#end
 	#end
 	$context.putPageValue("selectedmodule",$selectedmodule)
 	
