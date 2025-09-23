@@ -17,13 +17,14 @@
 
 		var minwidth = grid.data("minwidth");
 		if (minwidth == null || minwidth.length == 0) {
-			minwidth = 200;
+			minwidth = 180;
 		}
-		var totalavailablew = grid.width();
+		var totalavailablew = grid.width() - 15;
 		
 		var maxcols = totalavailablew / minwidth; //Ideally
 		var eachwidth = 0;
-
+		
+		maxcols = Math.round(maxcols);
 		while (eachwidth < minwidth) { //Divide evenly
 			eachwidth = totalavailablew / maxcols;
 			maxcols--;

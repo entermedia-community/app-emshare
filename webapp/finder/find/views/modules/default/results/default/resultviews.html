@@ -1,4 +1,4 @@
-<div id="$!{moduleid}resultsarea" 
+<div id="$!{module.id}resultsarea" 
 	class="resultsarea d-flex w-100 h-100 overflow-x overflow-y-hidden">
 	#if( !$browser.isNarrow() )
 		<div class="emresultscontainer emresults$!resultview flex-grow-1"   
@@ -34,7 +34,11 @@
 				$context.putPageValue("showcaption", "false")
 				$context.putPageValue("hideheader", "false")
 				$context.putPageValue("pickable", false )
-
+				
+				#set($minbrickwidth = $page.get("${module.id}minbrickwidth"))
+				
+				$context.putPageValue("minbrickwidth", $minbrickwidth )
+				
 				$pages.include("${searchhome}/types/brickvertical.html", $context)
 
 			#elseif ($resultview == "map")
