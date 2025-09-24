@@ -98,9 +98,11 @@ $(document).ready(function () {
 			confirmed = confirm("Are you sure you want to remove this language?");
 		}
 		if (confirmed) {
-			parent.remove();
+			//parent.remove();
+			parent.find(".langvalue").val("");
+			return;
 		}
-
+		/*
 		var languagecode = $(this).data("languagecode");
 		var dropdown = $(".addlocale-ajax", languagesfield);
 
@@ -114,6 +116,7 @@ $(document).ready(function () {
 		} else {
 			$(".hide-remove-btn", languagesfield).remove();
 		}
+		*/
 	});
 
 	function parseLangCodes(targets) {
