@@ -332,9 +332,10 @@ $(document).ready(function () {
 		jQuery.validator.addMethod(
 			"entityrequired",
 			function (value, element) {
-				var picker = $(element).data("entitypicker");
-				var pickerul = picker.find("ul");
-				if ($("#" + pickerul + " li").length > 1) {
+				
+				var entitylistdiv = $(element).closest(".entitylistcontainer");
+				var entitylist = entitylistdiv.find(".entity-value-list")
+				if (entitylist.children("li").length > 0) {
 					return true;
 				}
 				return false;
@@ -344,6 +345,8 @@ $(document).ready(function () {
 
 		$.validator.addClassRules("entityRequired", {
 			entityrequired: true,
+			number: true,
+			min: 1
 		});
 
 		$.validator.setDefaults({
