@@ -373,7 +373,7 @@ $(document).ready(function () {
 		}
 		var data = {
 			oemaxlevel: 1,
-			query: searchquery,
+			semanticquery: searchquery,
 			excludeentityids: excludeids.entityids,
 			excludeassetids: excludeids.assetids,
 		};
