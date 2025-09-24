@@ -12,12 +12,11 @@ $context.putPageValue("apphome", $apphome)
     
     #if( ($asset.previewstatus != "2" && $asset.previewstatus != "mime" && $asset.previewstatus != "1" && $asset.previewstatus != "generated"))
       $pages.include("${searchhome}/convertqueue/previewstatus.html?assetid=$!{asset.id}", $context)
-	  $context.setPageValue("nextfunction","parseImageCreationReRender")
+	  $context.putPageValue("nextfunction","parseImageCreationReRender")
 	  $parameters.put("assetid",$asset.id)
 	  
     #else
       $pages.include("${searchhome}/thumbnails/image.html", $context)
-	  $message.setValue("nextfunction",null)
     #end
 
   </a>
