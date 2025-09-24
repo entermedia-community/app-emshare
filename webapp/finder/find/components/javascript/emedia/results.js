@@ -495,21 +495,29 @@ jQuery(document).ready(function (url, params) {
 		isMouseDown = false;
 	});
 	
-	lQuery(".stackedplayer").livequery("click", function (e) {
-		
-		var clicked = $(this);
-		var pickerresults = clicked.closest(".clickableresultlist");
-		if (pickerresults.length > 0) {
-			return;
-		}
-		
+	lQuery(".mediavieweropener .stackedplayer").livequery("click", function (e) {
 		e.preventDefault();
 		e.stopPropagation();
 		var link = $(this);
 		showAsset(link);
-
 		return false;
 	});
+	lQuery(".stackedplayer").livequery("click", function (e) {
+			var clicked = $(this);
+			var pickerresults = clicked.closest(".clickableresultlist, .clickableresultlistinline");
+			
+			if (pickerresults.length > 0) {
+				return;
+			}
+			
+			e.preventDefault();
+			e.stopPropagation();
+			var link = $(this);
+			showAsset(link);
+
+			return false;
+		});
+
 	
 	// Click on asset
 	var selectStart = null;
