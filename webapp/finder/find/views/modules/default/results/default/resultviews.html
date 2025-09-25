@@ -6,17 +6,16 @@
 			data-resultview="$!resultview" 
 			data-moduleid="$!{module.id}"
 		>
-			<div #if($module.enableuploading == "true")
-					#if($desktop) 
+			<div 
+				#if($desktop && $module.enableuploading == "true") 
 						class="w-100 h-100 desktopdropentity"
 						data-targetlink="$siteroot$apphome/views/modules/${module.id}/editors/entitydesktopdrop/editdialog.html?edit=true&addnew=true&viewid=${module.id}addnew"
 						data-dialogtitle="Add New ${module.name}"
 						data-hidefooter="true"
 						data-dialogid="entitydesktopdropeditdialog"
 					#else
-						class="w-100 h-100 dropentity" 
+						class='w-100 h-100 #if($module.enableuploading == "true")dropentity#end' 
 					#end
-				#end
 				data-moduleid="$!{module.id}"
 			>
 			#if (!$resultview || $resultview == 'table')
