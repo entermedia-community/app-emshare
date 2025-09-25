@@ -1,6 +1,3 @@
-#set($apphome = "/${channel.chatapplicationid}")
-$context.putPageValue("apphome", $apphome)
-
 #ifnull($asset)
   <p class="text-muted">Failed to create image.</p>
 #end
@@ -12,8 +9,10 @@ $context.putPageValue("apphome", $apphome)
     
     #if( ($asset.previewstatus != "2" && $asset.previewstatus != "mime" && $asset.previewstatus != "1" && $asset.previewstatus != "generated"))
       $pages.include("${searchhome}/convertqueue/previewstatus.html?assetid=$!{asset.id}", $context)
-	  $context.putPageValue("nextfunction","parseImageCreationReRender")
-	  $parameters.put("assetid",$asset.id)
+	    
+      $llmrequest.setNextFunctionName("parseCreateImageConverted")
+	    $llmrequest.setParameter("assetid", $asset.id)
+	    $llmrequest.setParameter("wait", 500)
 	  
     #else
       $pages.include("${searchhome}/thumbnails/image.html", $context)
