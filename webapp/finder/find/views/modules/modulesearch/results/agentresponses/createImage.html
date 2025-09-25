@@ -3,13 +3,15 @@
   <p class="text-muted">Failed to create image.</p>
 #end
 #ifnotnull($asset)
-<messageplain>Created image successfully!</messageplain>
 <div class="my-1" style="max-width: 100%;max-height: 400px;">
   <a href="#" class="stackedplayer d-block" data-assetid="${asset.getId()}" title="${asset.name}">
     #set($searchhome = "$apphome/views/modules/asset/results/default")
 	  $!context.putPageValue("searchhome", $searchhome)
     
     #if( ($asset.previewstatus != "2" && $asset.previewstatus != "mime" && $asset.previewstatus != "1" && $asset.previewstatus != "generated"))
+      #ifnull($refreshing)
+      <messageplain>Created image successfully!</messageplain>
+      #end
       $pages.include("${searchhome}/convertqueue/previewstatus.html?assetid=$!{asset.id}", $context)
 	    
       $llmrequest.setNextFunctionName("createImageCreated")
