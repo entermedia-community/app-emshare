@@ -1,18 +1,20 @@
-#set($messages = $currentstatus.getMessageHistory())
+#if($channelchathistory.size() > 0) , #end
 
-#if($messages.size() > 0) , #end
-
-#foreach($message in $messages)
+#foreach($message in $channelchathistory)
   #if($foreach.count != 1)
   ,
   #end
-  {
   #if($message.user == "agent")
-    "role": "assistant",
-    "content": #jesc($message.messageplain)
+    #if($message.messageplain)
+    {
+      "role": "assistant",
+      "content": #jesc($message.messageplain)
+    }
+    #end
   #else
-    "role": "user",
-    "content": #jesc($message.message)
+    {
+      "role": "user",
+      "content": #jesc($message.message)
+    }
   #end
-  }
 #end
