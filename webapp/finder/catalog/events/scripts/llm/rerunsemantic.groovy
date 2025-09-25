@@ -11,6 +11,9 @@ public void init() {
 	for (module in allmodules) {
 		
 		QueryBuilder query = archive.query(module.getId()).exact("taggedbyllm", "true");
+		//QueryBuilder query = archive.query(module.getId()).exact("taggedbyllm", "true").exists("semantictopics");
+		
+		
 		HitTracker rows = query.search();
 		rows.enableBulkOperations();
 	
@@ -23,9 +26,9 @@ public void init() {
 			Data row = searcher.loadData(data);
 			
 			row.setValue("taggedbyllm", false);
-			row.setValue("llmerror", false);
+	//		row.setValue("llmerror", false);
 	//		row.setValue("keywordsai", null);
-			row.setValue("semanticindexed", false);
+			row.setValue("semantictopicsindexed", false);
 			row.setValue("semantictopics", null);
 			row.setValue("searchcategory", null);
 			
