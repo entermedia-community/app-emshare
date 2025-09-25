@@ -7,13 +7,9 @@
   ,
   #end
   {
-  #if($message.messagetype == "function_call")				
-    "role": "function",	
-    "name" : "$message.function",				
-    "content": #jesc($message.arguments)	
-  #elseif($message.user == "agent")
+  #if($message.user == "agent")
     "role": "assistant",
-    "content": #jesc($message.functionresponse)
+    "content": #jesc($message.messageplain)
   #else
     "role": "user",
     "content": #jesc($message.message)
