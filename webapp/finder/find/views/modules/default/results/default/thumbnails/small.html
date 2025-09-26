@@ -30,15 +30,18 @@
 		$pages.include("${searchhome}/convertqueue/previewstatus.html?assetid=$!{hit.id}",$context)
 		
 	#else   
-		#set( $type = $mediaarchive.getMediaRenderType($hit.fileformat))
-		#if( $type == "audio" || $type == "default")
-			$pages.include("${searchhome}/thumbnails/${type}.html", $context)
-		#elseif( $type == "document" )
-			$pages.include("${searchhome}/thumbnails/documentpage.html", $context)
-		#else
 		
-			
-			
+		
+		#set($detail = $mediaarchive.getSearcher($module.id).getDetail("primarymedia"))
+		#if( $viewtype == "documentpage")
+		#end
+		
+		#set( $type = $mediaarchive.getMediaRenderType($hit.fileformat))
+		
+		#if( $type == "audio" || $type == "default" || $type == "document")
+			$pages.include("${searchhome}/thumbnails/${type}.html", $context)
+		
+		#else
 			#set($tabletarget = $mediaarchive.getCatalogSettingValue("tablethumbnail"))
 			#if($tabletarget)
 				#set( $imagepath = $mediaarchive.asLinkToGenerated($hit, $tabletarget))  

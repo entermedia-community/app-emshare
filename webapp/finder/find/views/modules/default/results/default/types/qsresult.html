@@ -7,6 +7,7 @@
 	#set($moduleid = $module.id)
 #end
 
+$context.putPageValue("data", $hit) 
 
 #set($previewurl = "$apphome/views/modules/${moduleid}/editors/default/tabs/index.html?entityid=$entityid")
  <div class="emfolder-wrapper compact emgrid-type-$!moduleid entitycontainer entity$!moduleid$!entityid" 
@@ -55,7 +56,6 @@
 				#end
 			#end
 		#end	
-
 		
 		$context.putPageValue("type", $rendertype)
 	   	#set($link = "$!siteroot$applink/views/modules/$!topmodule.getId()/index.html")
@@ -81,10 +81,6 @@
 					$context.putPageValue("thumbsize", "crop" )
 					$context.putPageValue("hit", $primarymedia) 
 					$context.putPageValue("asset", $primarymedia)
-					
-					#if($module.id == "faceprofilegroup")
-						$context.putPageValue("faceprofilegroups", [$entity]) 
-					#end
 					
 					$!context.putPageValue("searchhome", "$apphome/views/modules/asset/results/default")
 					$pages.include("$apphome/views/modules/asset/results/default/thumbnails/small.html",$context)
