@@ -1396,6 +1396,15 @@ $(document).ready(function () {
 					data.name = "New";
 				}
 
+				function clearChildParentRelation(childId) {
+					var childNode = json.find(
+						(node) =>
+							node.composite === childId && node.cssClass === "folderLabel"
+					);
+					if (childNode) {
+						childNode.userData.parents = [];
+					}
+				}
 				function createChildParentRelation(parentId, childId) {
 					var parentNode = json.find(
 						(node) =>
@@ -1410,12 +1419,9 @@ $(document).ready(function () {
 						//var childNode = json.find((node) => node.composite + "-label" === childId); //Hard to read
 						//groupId + "-label",
 						if (childNode) {
-							let parents = childNode.userData.parent;
-							if (!Array.isArray(parents)) {
-								parents = [];
-							}
+							let parents = childNode.userData.parents;
 							if (parents.indexOf(parentNode.userData.moduleid) === -1) {
-								childNode.userData.parent = [
+								childNode.userData.parents = [
 									...parents,
 									parentNode.userData.moduleid,
 								];
@@ -1425,6 +1431,18 @@ $(document).ready(function () {
 				}
 
 				if (usersaved) {
+					json.forEach((item) => {
+						if (item.type === "draw2d.Connection") {
+							if (item.source.port === "leftPort") {
+								var childId = item.source.node;
+								clearChildParentRelation(childId);
+							}
+							if (item.target.port === "leftPort") {
+								var childId = item.target.node;
+								clearChildParentRelation(childId);
+							}
+						}
+					});
 					json.forEach((item) => {
 						if (item.type === "draw2d.Connection") {
 							if (item.source.port === "leftPort") {
