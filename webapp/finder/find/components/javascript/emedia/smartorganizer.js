@@ -962,7 +962,8 @@ $(document).ready(function () {
 					var moduleid = selectedLabel.getUserData()?.moduleid;
 					if (moduleid === undefined || moduleid == "") {
 						moduleid = selectedLabel.getText().toLowerCase();
-						moduleid = "entity" + moduleid.replace(" ", "-");
+						moduleid = "entity" + moduleid.replace(" ", "");
+						moduleid += "-" + draw2d.util.UUID.create().substring(0, 4);
 						selectedLabel.getUserData().moduleid = moduleid;
 					}
 					$("#folderId").val(moduleid);
@@ -1409,7 +1410,16 @@ $(document).ready(function () {
 						//var childNode = json.find((node) => node.composite + "-label" === childId); //Hard to read
 						//groupId + "-label",
 						if (childNode) {
-							childNode.userData.parent = parentNode.userData.moduleid;
+							let parents = childNode.userData.parent;
+							if (!Array.isArray(parents)) {
+								parents = [];
+							}
+							if (parents.indexOf(parentNode.userData.moduleid) === -1) {
+								childNode.userData.parent = [
+									...parents,
+									parentNode.userData.moduleid,
+								];
+							}
 						}
 					}
 				}
