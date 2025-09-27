@@ -2,10 +2,19 @@
 <messageplain>$error</messageplain>
 #end
 #ifnotnull($entity)
-<messageplain>Created entity successfully!</messageplain>
+<messageplain>Set primary image to entity successfully!</messageplain>
 <messageplain>Entity ID: ${entity.id}</messageplain>
-<messageplain>Entity Name: ${entity.name}</messageplain>
 <messageplain>Entity Module ID: ${module.id}</messageplain>
+#ifnull($newname)
+<messageplain>Entity Name: ${entity.name}</messageplain>
+#end
+#ifnotnull($newname)
+<messageplain>Renamed Entity to: ${newname}</messageplain>
+#end
+#ifnotnull($primaryimage)
+<messageplain>Primary Image ID: ${primaryimage.id}</messageplain>
+<messageplain>Primary Image Name: ${primaryimage.name}</messageplain>
+#end
 $context.putPageValue("rendermoduleid", $module.id)
 $context.putPageValue("searchresults", true)
 $context.putPageValue("searchhome", "$apphome/views/modules/${module.id}/results/default")
@@ -23,12 +32,3 @@ $context.putPageValue("hit", $entity)
   </div>
 </div>
 #end
-
-
-#*
-  style="width:100%"
-  data-fixedwidth="180" 
-  data-cellpadding="10"
-  data-entityrenderurl="$apphome/views/modules/${module.id}/editors/default/tabs/gridcell.html"
-  data-rendertype="$!rendertype"
-*#
