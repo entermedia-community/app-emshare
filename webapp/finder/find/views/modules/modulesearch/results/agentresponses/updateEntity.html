@@ -1,8 +1,16 @@
 #ifnull($entity)
 <messageplain>$error</messageplain>
 #end
+
 #ifnotnull($entity)
-<messageplain>Set primary image to entity successfully!</messageplain>
+
+#if($changemethod == "copy")
+<messageplain>Copied #text($entity) to #text($module) successfully!</messageplain>
+#elseif($changemethod == "move")
+<messageplain>Moved #text($entity) to #text($module) successfully!</messageplain>
+#else
+<messageplain>Updated #text($entity) successfully!</messageplain>
+#end
 <messageplain>Entity ID: ${entity.id}</messageplain>
 #ifnull($newname)
 <messageplain>Entity Name: ${entity.name}</messageplain>
@@ -12,9 +20,10 @@
 #end
 <messageplain>Module ID: ${module.id}</messageplain>
 #ifnotnull($primaryimage)
-<messageplain>Primary Image ID: ${primaryimage.id}</messageplain>
-<messageplain>Primary Image Name: ${primaryimage.name}</messageplain>
+<messageplain>Updated Primary Image ID: ${primaryimage.id}</messageplain>
+<messageplain>Updated Primary Image Name: ${primaryimage.name}</messageplain>
 #end
+
 $context.putPageValue("rendermoduleid", $module.id)
 $context.putPageValue("searchresults", true)
 $context.putPageValue("searchhome", "$apphome/views/modules/${module.id}/results/default")
@@ -31,4 +40,5 @@ $context.putPageValue("hit", $entity)
     </div>
   </div>
 </div>
+
 #end

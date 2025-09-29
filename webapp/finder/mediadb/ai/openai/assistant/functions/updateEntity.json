@@ -1,6 +1,6 @@
 {
 	"name": "updateEntity",
-	"description": "Update an entity's details such as name, primary image, or module location.",
+	"description": "Update an entity's details by accepting input specifying one or more updated attributes—such as name, primary image, or module. If changing the module, specify whether to copy or move the entity.",
 	"parameters": {
 		"type": "object",
 		"properties": {
@@ -20,13 +20,30 @@
 				"type": "string",
 				"description": "Optional new name for the entity."
 			},
+			"newModuleId": {
+				"type": "string",
+				"description": "Optional new module ID to move the entity to a different module.",
+				"enum": [
+				#set($modules = $assistant.loadUserSearchModules($chatprofile))
+				#foreach($module in $modules)
+					#if($foreach.count>1),#end
+					"${module.id}|${module.name}"
+				#end
+				]
+			},
+			"moduleChangeMethod": {
+				"type": "string",
+				"enum": ["copy", "move"],
+				"description": "The method to use when changing the module. 'copy' will duplicate the entity in the new module, while 'move' will transfer it."
+			},
 			"explainer": {
 				"type": "string",
-				"description": "Explain what action is going to be taken in a human readable sentence. Examples: 'Renaming the entity from Sunset to Sunset Beach', 'Setting a new primary image for the entity Sunset Beach'."
+				"description": "Explain what action is going to be taken in a human readable sentence. Examples: 'Renaming the entity from Sunset to Sunset Beach', 'Setting a new primary image for the entity Sunset Beach', 'Moving the entity Sunset Beach to a new module'."
 			}
 		},
+		"strict": true,
+		"additionalProperties": false,
 		"required": ["entityId", "moduleId", "explainer"],
-		"minProperties": 4,
-		"additionalProperties": false
+		"minProperties": 4
 	}
 }
