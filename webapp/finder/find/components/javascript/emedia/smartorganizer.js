@@ -1763,36 +1763,36 @@ $(document).ready(function () {
 			);
 		}
 
-		$("#copySmartNodes").on("click", function () {
-			getSelectedJson(function (json) {
-				var icon = $(this).find("i");
-				icon.removeClass("bi-copy").addClass("bi-check-lg");
-				var copyJson = globalizeJSON(json);
-				if (!navigator.clipboard) {
-					fallbackCopyText(copyJson);
-					setTimeout(function () {
-						icon.removeClass("bi-check-lg").addClass("bi-copy");
-					}, 1000);
-					return;
-				}
-				navigator.clipboard
-					.writeText(copyJson)
-					.then(function () {
-						validateClipboard();
-					})
-					.catch((error) => {
-						customToast("Error copying to clipboard!", {
-							positive: false,
-							log: error,
-						});
-					})
-					.finally(() => {
-						setTimeout(function () {
-							icon.removeClass("bi-check-lg").addClass("bi-copy");
-						}, 1000);
-					});
-			});
-		});
+		// $("#copySmartNodes").on("click", function () {
+		// 	getSelectedJson(function (json) {
+		// 		var icon = $(this).find("i");
+		// 		icon.removeClass("bi-copy").addClass("bi-check-lg");
+		// 		var copyJson = globalizeJSON(json);
+		// 		if (!navigator.clipboard) {
+		// 			fallbackCopyText(copyJson);
+		// 			setTimeout(function () {
+		// 				icon.removeClass("bi-check-lg").addClass("bi-copy");
+		// 			}, 1000);
+		// 			return;
+		// 		}
+		// 		navigator.clipboard
+		// 			.writeText(copyJson)
+		// 			.then(function () {
+		// 				validateClipboard();
+		// 			})
+		// 			.catch((error) => {
+		// 				customToast("Error copying to clipboard!", {
+		// 					positive: false,
+		// 					log: error,
+		// 				});
+		// 			})
+		// 			.finally(() => {
+		// 				setTimeout(function () {
+		// 					icon.removeClass("bi-check-lg").addClass("bi-copy");
+		// 				}, 1000);
+		// 			});
+		// 	});
+		// });
 
 		$("#exportSmartNodes").on("click", function () {
 			getSelectedJson(function (json) {
@@ -1898,58 +1898,58 @@ $(document).ready(function () {
 			}
 		});
 
-		function validateClipboard(callback = null) {
-			var json = null;
-			if (!navigator.clipboard) {
-				customToast("Clipboard API is not supported in http mode!", {
-					positive: false,
-				});
-				return;
-			}
-			navigator.clipboard
-				.readText()
-				.then(function (text) {
-					if (!text) {
-						customToast("Clipboard is empty!", {
-							positive: false,
-						});
-					} else {
-						try {
-							text = localizeJSON(text);
-							json = JSON.parse(text);
-							if (!Array.isArray(json) || json.length == 0) {
-								customToast("Invalid JSON.", {
-									positive: false,
-								});
-							}
-						} catch (error) {
-							customToast("Invalid JSON structure.", {
-								positive: false,
-							});
-						}
-					}
-				})
-				.catch((error) => {
-					json = null;
-					customToast("Error reading clipboard!", {
-						positive: false,
-						log: error,
-					});
-				})
-				.finally(() => {
-					if (callback) {
-						callback(json);
-					}
-				});
-		}
+		// function validateClipboard(callback = null) {
+		// 	var json = null;
+		// 	if (!navigator.clipboard) {
+		// 		customToast("Clipboard API is not supported in http mode!", {
+		// 			positive: false,
+		// 		});
+		// 		return;
+		// 	}
+		// 	navigator.clipboard
+		// 		.readText()
+		// 		.then(function (text) {
+		// 			if (!text) {
+		// 				customToast("Clipboard is empty!", {
+		// 					positive: false,
+		// 				});
+		// 			} else {
+		// 				try {
+		// 					text = localizeJSON(text);
+		// 					json = JSON.parse(text);
+		// 					if (!Array.isArray(json) || json.length == 0) {
+		// 						customToast("Invalid JSON.", {
+		// 							positive: false,
+		// 						});
+		// 					}
+		// 				} catch (error) {
+		// 					customToast("Invalid JSON structure.", {
+		// 						positive: false,
+		// 					});
+		// 				}
+		// 			}
+		// 		})
+		// 		.catch((error) => {
+		// 			json = null;
+		// 			customToast("Error reading clipboard!", {
+		// 				positive: false,
+		// 				log: error,
+		// 			});
+		// 		})
+		// 		.finally(() => {
+		// 			if (callback) {
+		// 				callback(json);
+		// 			}
+		// 		});
+		// }
 
-		$("#pasteSmartNodes").on("click", function () {
-			validateClipboard(function (json) {
-				if (json) {
-					readerUnmarshal(canvas, json);
-				}
-			});
-		});
+		// $("#pasteSmartNodes").on("click", function () {
+		// 	validateClipboard(function (json) {
+		// 		if (json) {
+		// 			readerUnmarshal(canvas, json);
+		// 		}
+		// 	});
+		// });
 
 		$("#closeorgnizer").on("click", function () {
 			var changed = $("#organizer_canvas").data("changed");
