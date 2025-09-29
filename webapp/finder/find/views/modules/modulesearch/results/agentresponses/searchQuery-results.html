@@ -95,6 +95,18 @@
 							#if (!$rendertype)
 								#set($rendertype = "entity")
 							#end
+							<messageplain>Entity Search Result#${foreach.count}</messageplain>
+							<messageplain>Entity ID: ${hit.id}</messageplain>
+							<messageplain>Entity Name: ${hit.name}</messageplain>
+							<messageplain>Module ID: ${$module.id}</messageplain>
+							#ifnotnull($hit.primaryimage)
+							<messageplain>Primary Image ID: ${hit.primaryimage}</messageplain>
+							#end
+							#ifnull($hit.primaryimage)
+								#ifnotnull($hit.primarymedia)
+								<messageplain>Primary Image ID: ${hit.primarymedia}</messageplain>
+								#end
+							#end
 							<div class="emgridcell emgridcellqs emgridcell-$rendertype activelistcontainer 
 								#if($selectedid == $hit.getId() || $topselectedid == $hit.getId()) active #end">
 								$pages.include("$apphome/views/modules/$!{module.id}/results/default/types/qsresult.html", $context)
@@ -151,6 +163,9 @@
 			
 			#foreach( $hit in $hits.getPageOfHits() )
 				#if($count < 30)
+					<messageplain>Asset Search Result#${foreach.count}</messageplain>
+					<messageplain>Asset ID: ${hit.id}</messageplain>
+					<messageplain>Asset Name: ${hit.name}</messageplain>
 					$context.putPageValue("hit", $hit)
 					$pages.include("${searchhome}/default/types/media.html", $context)
 					#set($count = $count +1)

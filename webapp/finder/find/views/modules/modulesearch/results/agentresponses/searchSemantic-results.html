@@ -47,16 +47,28 @@
             #if (!$rendertype)
                 #set($rendertype = "entity")
             #end
-              <div class="emgridcell emgridcellqs emgridcell-$rendertype activelistcontainer 
-              #if($selectedid == $hit.getId() || $topselectedid == $hit.getId()) active #end">
+            <messageplain>Suggested Entity Search Result#${foreach.count}</messageplain>
+            <messageplain>Entity ID: ${hit.id}</messageplain>
+            <messageplain>Entity Name: ${hit.name}</messageplain>
+            <messageplain>Module ID: ${$module.id}</messageplain>
+            #ifnotnull($hit.primaryimage)
+            <messageplain>Primary Image ID: ${hit.primaryimage}</messageplain>
+            #end
+            #ifnull($hit.primaryimage)
+              #ifnotnull($hit.primarymedia)
+              <messageplain>Primary Image ID: ${hit.primarymedia}</messageplain>
+              #end
+            #end
+            <div class="emgridcell emgridcellqs emgridcell-$rendertype activelistcontainer 
+            #if($selectedid == $hit.getId() || $topselectedid == $hit.getId()) active #end">
 
-                $pages.include("$apphome/views/modules/$!{module.id}/results/default/types/qsresult.html", $context)
+              $pages.include("$apphome/views/modules/$!{module.id}/results/default/types/qsresult.html", $context)
 
-                #set($highlight =  $hits.highlight($hit, "description", 20, true))
-                #if($highlight)
-                <div class="gridcellhighlight">$highlight</div>
-                #end
-              </div>
+              #set($highlight =  $hits.highlight($hit, "description", 20, true))
+              #if($highlight)
+              <div class="gridcellhighlight">$highlight</div>
+              #end
+            </div>
           #end
         </div>
       </div>
@@ -73,6 +85,9 @@
       data-visibleposition="$!semanticassethits.getStartingPosition()">
 
       #foreach( $hit in $semanticassethits.getPageOfHits() )
+        <messageplain>Suggested Asset Search Result#${foreach.count}</messageplain>
+        <messageplain>Asset ID: ${hit.id}</messageplain>
+        <messageplain>Asset Name: ${hit.name}</messageplain>
         $context.putPageValue("hit", $hit)
         $pages.include("${searchhome}/types/media.html", $context)
       #end
