@@ -47,7 +47,7 @@ $context.putPageValue("apphome", $apphome)
 			#set($entityurl = "$!siteroot$apphome/views/modules/$!{module.id}/index.html?$!{module.id}page=1&field=description&operation=freeform&description.value=$input")
 				
 			<div class="#if($foreach.count > 1) mt-3 #else mb-3 #end">
-				<div class="m-0 qsresultsEntity d-flex align-items-center">
+				<div class="mt-2 qsresultsEntity d-flex align-items-center">
 					<i class="bi bi-$moduleicon module-icon"></i>
 					<span class="qsresultsEntitytext">#text($module)</span>
 	
@@ -60,17 +60,19 @@ $context.putPageValue("apphome", $apphome)
 					#ifnull($count)
 						#set( $count = $hits.size()) 
 					#end
+					#if($count > 10)
 					<span class="mx-1">&middot;</span> 
 					<a href="$entityurl" 
-						class="ajax qsresultsEntityall" 
+						class="ajax qsresultsEntityall btn btn-sm btn-accent" 
 						data-targetdiv="applicationmaincontent" 
 						data-oemaxlevel="3" 
 						data-updateurl="true" 
 						title="[[View]] $count: #text($module)">
 						<span class="qsresultsEntitytext">
-							[[View All]] ($count)
+							[[View]] $count
 						</span>
 					</a>
+					#end
 				</div>
 
 				$context.putPageValue("rendermoduleid", $module.id)
@@ -124,19 +126,21 @@ $context.putPageValue("apphome", $apphome)
 		#set($entityurl = "${edithome}/index.html?search=$input")
 
 		#set( $count = $assethits.size())
-		<div class="m-0 qsresultsEntity d-flex align-items-center">
+		<div class="mt-2 qsresultsEntity d-flex align-items-center">
 			<i class="bi bi-$!{moduleicon} module-icon" style="font-size:0.9em;line-height:1;opacity:0.85;"></i>  
 			<span class="qsresultsEntitytext">#text($assetmodule)</span>
-		
+			
+			#if($count > 10)
+			<span class="mx-1">&middot;</span>
 			<a href="$entityurl" 
-				class="ajax qsresultsEntityall"
+				class="ajax qsresultsEntityall btn btn-sm btn-accent"
 				data-targetdiv="applicationmaincontent" 
 				data-oemaxlevel="3" 
 				data-updateurl="true" 
 				title="[[View]] $count: #text($assetmodule)">
-				<span class="mx-1">&middot;</span>
-				<span class="qsresultsEntitytext">[[View All]] ($count)</span>
+				<span class="qsresultsEntitytext">[[View]] $count</span>
 			</a>
+			#end
 		</div>
 	
 		<div class="masonry-grid" 
