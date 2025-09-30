@@ -1,40 +1,33 @@
 {
-	"model": "${model}",
-	"input": [
-		{
-			"role": "system",
-			#set($content = $fieldparams.aicreationdescription)
-			#if($fieldparams.isoptional == "true")
-				#set($content = "$content Return empty array if you are unsure.")
-			#end
-			"content": #jesc($content)
-		},
-		{
-			"role": "user",
-			"content": #jesc($fieldparams.aicreationcommand)
-		}
-	],
-	"text": {
-		"format": {
-			"strict": true,
-			"type": "json_schema",
-			"name": "semantic_topics",
-			"schema": {
-				"type": "object",
-				"properties": {
-					"$fieldparams.getId()": {
-						"type": "array",
-						"items": {
-							"type": "string",
-							"additionalProperties": false
-						}
-					}
-				},
-				#if($fieldparams.isoptional == "false")
-				"required": ["$fieldparams.getId()"],
+	"contents": [{
+		"parts":[
+			{
+				#set($content = $fieldparams.aicreationdescription)
+				#if($fieldparams.isoptional == "true")
+					#set($content = "$content Return empty array if you are unsure.")
 				#end
-				"additionalProperties": false
+				"text": #jesc($content)
+			},
+			{
+				"text": #jesc($fieldparams.aicreationcommand)
 			}
+		]
+	}],
+	"generationConfig": {
+		"responseMimeType": "application/json",
+		"responseSchema": {
+			"type": "OBJECT",
+			"properties": {
+				"$fieldparams.getId()": {
+					"type": "ARRAY",
+					"items": {
+						"type": "STRING"
+					}
+				}
+			},
+			#if($fieldparams.isoptional == "false")
+			"required": ["$fieldparams.getId()"]
+			#end
 		}
 	}
 }
