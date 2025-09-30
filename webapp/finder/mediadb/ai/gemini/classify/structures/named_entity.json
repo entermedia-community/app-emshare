@@ -1,0 +1,45 @@
+{
+	"model": "${model}",
+	"input": [
+		{
+			"role": "system",
+			"content": #jesc($fieldparams.aicreationdescription)
+		},
+		{
+			"role": "user",
+			"content": "$fieldparams.aicreationcommand #foreach($field in $contextfields) #if($foreach.count>1),\n#end ${field.label}: ${field.text} #end"
+		}
+	],
+"text": {
+	"format": {
+			"strict": true,
+			"type": "json_schema",
+			"name": "named_entity",
+			"schema": {
+				"type": "object",
+				"properties": {
+					"categories": {
+						"type": "object",
+						"properties": {
+							#foreach($table in $tables)
+								#if($foreach.count>1)
+								,
+								#end
+								"$table.sourcetype": {
+									"type": "array",
+									"description": "$table.aicreationdescription",
+									"items": {
+										"type": "string",
+										"additionalProperties": false
+									}
+								}
+							#end
+						},
+						"required": [#foreach($table in $tables) #if($foreach.count>1), #end "$table.sourcetype" #end]
+					}
+				},
+				"required": ["categories"]
+			}
+		}
+	}
+}
