@@ -1,18 +1,24 @@
 {
-	"contents": [{
-		"parts":[
-			{
-				#set($content = $fieldparams.aicreationdescription)
-				#if($fieldparams.isoptional == "true")
-					#set($content = "$content Return empty array if you are unsure.")
-				#end
-				"text": #jesc($content)
-			},
-			{
+	"contents": [
+		{
+			"role": "system",
+			"parts":[
+				{
+					#set($content = $fieldparams.aicreationdescription)
+					#if($fieldparams.isoptional == "true")
+						#set($content = "$content Return empty array if you are unsure.")
+					#end
+					"text": #jesc($content)
+				}
+			]
+		},
+		{
+			"role": "user",
+			"parts": [{
 				"text": #jesc($fieldparams.aicreationcommand)
-			}
-		]
-	}],
+			}]
+		}
+	],
 	"generationConfig": {
 		"responseMimeType": "application/json",
 		"responseSchema": {

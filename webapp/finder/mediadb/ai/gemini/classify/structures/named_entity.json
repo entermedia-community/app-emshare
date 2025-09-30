@@ -1,9 +1,18 @@
 { 
-	"contents": [{
-		"parts": [{
-			"text": #jesc($fieldparams.aicreationdescription)
-	 	}]
-	}],
+	"contents": [
+		{
+			"role": "system",
+			"parts": [{
+				"text": #jesc($fieldparams.aicreationdescription)
+			}]
+		},
+		{
+			"role": "user",
+			"parts": [{
+				"text": "$fieldparams.aicreationcommand #foreach($field in $contextfields) #if($foreach.count>1),\n#end ${field.label}: ${field.text} #end"
+			}]
+		}
+	],
 	"generationConfig": {
 		"responseMimeType": "application/json",
 		"responseSchema": {
