@@ -19,13 +19,13 @@
 			"categories": {
 				"type": "object",
 				"properties": {
-					#foreach($table in $tables)
+					#foreach($autocreatefield in $autocreatefields)
 						#if($foreach.count>1)
 						,
 						#end
-						"$table.sourcetype": {
+						"$autocreatefield.getId()": {
 							"type": "array",
-							"description": "$table.aicreationdescription",
+							"description": "$autocreatefield.aicreationdescription",
 							"items": {
 								"type": "string",
 								"additionalProperties": false
@@ -33,7 +33,7 @@
 						}
 					#end
 				},
-				"required": [#foreach($table in $tables) #if($foreach.count>1), #end "$table.sourcetype" #end]
+				"required": [#foreach($autocreatefield in $autocreatefields) #if($foreach.count>1), #end "$autocreatefield.getId()" #end]
 			}
 		},
 		"required": ["categories"]
