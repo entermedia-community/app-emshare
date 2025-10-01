@@ -21,23 +21,21 @@
 				"categories": {
 					"type": "OBJECT",
 					"properties": {
-						#foreach($table in $tables)
+						#foreach($autocreatefield in $autocreatefields)
 							#if($foreach.count>1)
 							,
 							#end
-							"$table.sourcetype": {
+							"$autocreatefield.getId()": {
 								"type": "ARRAY",
-								"description": "$table.aicreationdescription",
+								"description": "$autocreatefield.aicreationdescription",
 								"items": {
 									"type": "STRING"
 								}
 							}
 						#end
-					},
-					"required": [#foreach($table in $tables) #if($foreach.count>1), #end "$table.sourcetype" #end]
+					}
 				}
-			},
-			"required": ["categories"]
+			}
 		}
 	}
 }
