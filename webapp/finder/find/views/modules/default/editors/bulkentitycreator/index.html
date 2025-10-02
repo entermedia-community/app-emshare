@@ -2,9 +2,8 @@
 	<input class="upload_field" type="file" style="position:absolute; top:-2000px;" multiple="multiple" data-autostartupload="false" />
 
 	<form id="uploaddata" name="wizard" onsubmit="return false;" data-finishaction="" action="$edithome/finish.html" class="force-validate-inputs autocloseform" data-ajaxreloadtargets="dataeditedreload">
-	
-		<input type="hidden" name="field" value="module" />
-		<input type="hidden" name="module.value" value="$module.id" />
+
+		<input type="hidden" name="moduleid" value="$module.id" />
 		
 		<div class="p-2 p-md-4">
 			<div class="row justify-content-center">
@@ -44,6 +43,20 @@
 							</a>	
 							<a href="#" class="removefile" title="[[Remove from Queue]]"><i class="fas fa-times"></i></a>
 						</li>
+					</div>
+				</div>
+			</div>
+
+			<div class="row justify-content-center">
+				<div class="col-sm-12 col-md-6 col-upload-left overflow-y pr-md-1 mb-4 mb-md-0 justify-content-center">
+					<div class="py-5">
+						#set( $viewdata = $mediaarchive.getCachedData("view", "${module.id}addnew") )
+						$context.put("viewdata", $viewdata)
+	
+						#set ($details = $mediaarchive.getEntityManager().getBulkEntityDetails($module.id) )
+						$context.put("details", $details)
+	
+						$pages.include("/$applicationid/components/xml/detaileditor-entities.html", $context)
 					</div>
 				</div>
 			</div>
