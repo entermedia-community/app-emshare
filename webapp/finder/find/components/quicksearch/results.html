@@ -85,83 +85,89 @@
 #end
 
 #foreach($module in $organizedResults.getModules() )
-	#set($hits = $organizedResults.getByType($module.id,$context))
-	#ifnotnull($hits)
-		$context.putPageValue("module", $module)
-		$context.putPageValue("moduleid", $module.id)
+	#if($module.id != "asset")
+		#set($hits = $organizedResults.getByType($module.id,$context))
+		#ifnotnull($hits)
+			$context.putPageValue("module", $module)
+			$context.putPageValue("moduleid", $module.id)
+		
+			#set($moduleicon = "grid")
+			#if ($module.moduleicon)
+				#set($moduleicon = $module.moduleicon)
+			#end
+			   	
+			#set($entityurl = "$!siteroot$apphome/views/modules/$!{module.id}/index.html?$!{module.id}page=1&field=description&operation=freeform&description.value=$input")
+				
+			<div class="mb-4">
+				
+				<div class="mt-2 qsresultsEntity d-flex align-items-center">
+					<i class="bi bi-$moduleicon module-icon"></i>
+					<span class="qsresultsEntitytext">#text($module)</span>
 	
-		#set($moduleicon = "grid")
-		#if ($module.moduleicon)
-			#set($moduleicon = $module.moduleicon)
-		#end
-		   	
-		#set($entityurl = "$!siteroot$apphome/views/modules/$!{module.id}/index.html?$!{module.id}page=1&field=description&operation=freeform&description.value=$input")
-			
-		<div class="mb-4">
-			
-			<div class="mt-2 qsresultsEntity d-flex align-items-center">
-				<i class="bi bi-$moduleicon module-icon"></i>
-				<span class="qsresultsEntitytext">#text($module)</span>
-
-				#set( $count = $organizedResults.getCount($module)) 
-				#if($count > 10)
-				<span class="mx-1">&middot;</span> 
-				<a href="$entityurl" 
-					class="ajax qsresultsEntityall btn btn-sm btn-accent" 
-					data-targetdiv="applicationmaincontent" 
-					data-oemaxlevel="3" 
-					data-updateurl="true" 
-					title="[[View]] $count: #text($module)">
-					<span class="qsresultsEntitytext">
-						[[View]] $count
-					</span>
-				</a>
-				#end
-			</div>
-
-			
-		   $context.putPageValue("rendermoduleid", $module.id)
-			   			   
-		   $hits.setHitsPerPage(10)
-		   $context.putPageValue("hits", $hits)
-		   
-		   $context.putPageValue("searchresults", true)
-		   $context.putPageValue("searchhome", "$apphome/views/modules/${module.id}/results/default")
-			
-			<div class="emgridflex">  	
-				<div id="galleryimg-entitiy" 
-					class='emgrid #if($section != "favorites")emgridlimited#end entitiescontainer emgridquickresults' 
-					style="width:100%"
-					data-fixedwidth="180" 
-					data-cellpadding="10"
-					data-entityrenderurl="$!{siteroot}$apphome/views/modules/${module.id}/editors/default/tabs/gridcell.html"
-					data-rendertype="$!rendertype">
-					#set($detail = $mediaarchive.getSearcher($module.id).getDetail("primarymedia"))
-					#set($viewtype = "primarymediafolder")
-					$context.putPageValue("viewtype", $viewtype)
-					#foreach( $hit in $hits.getPageOfHits() )
-						$context.putPageValue("hit", $hit)
-						#set($rendertype = $module.modulerendertype)
-						#if (!$rendertype)
-							#set($rendertype = "entity")
-						#end
-						<div class="emgridcell emgridcellqs emgridcell-$rendertype activelistcontainer #if($selectedid == $hit.getId() || $topselectedid == $hit.getId()) active #end">
-							
-							$pages.include("$apphome/views/modules/$!{module.id}/components/xml/detailreadonly.html", $context)
-						
-							#set($highlight =  $hits.highlight($hit, "description", 20, true))
-							#if($highlight)
-							<div class="gridcellhighlight">$highlight</div>
-							#end
-						</div>
+					#set( $count = $organizedResults.getCount($module)) 
+					#if($count > 10)
+					<span class="mx-1">&middot;</span> 
+					<a href="$entityurl" 
+						class="ajax qsresultsEntityall btn btn-sm btn-accent" 
+						data-targetdiv="applicationmaincontent" 
+						data-oemaxlevel="3" 
+						data-updateurl="true" 
+						title="[[View]] $count: #text($module)">
+						<span class="qsresultsEntitytext">
+							[[View]] $count
+						</span>
+					</a>
 					#end
 				</div>
+	
+				
+			   $context.putPageValue("rendermoduleid", $module.id)
+				   			   
+			   $hits.setHitsPerPage(10)
+			   $context.putPageValue("hits", $hits)
+			   
+			   $context.putPageValue("searchresults", true)
+			   $context.putPageValue("searchhome", "$apphome/views/modules/${module.id}/results/default")
+				
+				<div class="emgridflex">  	
+					<div id="galleryimg-entitiy" 
+						class='emgrid #if($section != "favorites")emgridlimited#end entitiescontainer emgridquickresults' 
+						style="width:100%"
+						data-fixedwidth="180" 
+						data-cellpadding="10"
+						data-entityrenderurl="$!{siteroot}$apphome/views/modules/${module.id}/editors/default/tabs/gridcell.html"
+						data-rendertype="$!rendertype">
+						#set($detail = $mediaarchive.getSearcher($module.id).getDetail("primarymedia"))
+						#set($viewtype = "primarymediafolder")
+						$context.putPageValue("viewtype", $viewtype)
+						#foreach( $hit in $hits.getPageOfHits() )
+							$context.putPageValue("hit", $hit)
+							#set($rendertype = $module.modulerendertype)
+							#if (!$rendertype)
+								#set($rendertype = "entity")
+							#end
+							<div class="emgridcell emgridcellqs emgridcell-$rendertype activelistcontainer #if($selectedid == $hit.getId() || $topselectedid == $hit.getId()) active #end">
+								
+								$pages.include("$apphome/views/modules/$!{module.id}/components/xml/detailreadonly.html", $context)
+							
+								#set($highlight =  $hits.highlight($hit, "description", 20, true))
+								#if($highlight)
+								<div class="gridcellhighlight">$highlight</div>
+								#end
+							</div>
+						#end
+					</div>
+				</div>
 			</div>
-		</div>
+		#end
 	#end
 #end
 
-#if($organizedResults.getAssetHits() )
+ 
+
+#if($organizedResults.getAssetResults() )
+	
+	#set($hits = $organizedResults.getAssetResults() )
 
 	#set($assetmodule = $mediaarchive.getCachedData("module","asset"))
 
@@ -169,8 +175,6 @@
 	#if ($assetmodule.moduleicon)
 		#set($moduleicon = $assetmodule.moduleicon)
 	#end
-
-	#set($hits = $organizedResults.getAssetHits() )
 
 	#set($edithome = "$apphome/views/modules/asset/editors/quicksearch")
 	#set($entityurl = "${edithome}/index.html?search=$input")
