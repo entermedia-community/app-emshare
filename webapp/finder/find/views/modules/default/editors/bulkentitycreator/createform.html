@@ -1,0 +1,68 @@
+
+<div class="uploadformarea">
+  <input class="upload_field" type="file" style="position:absolute; top:-2000px;" multiple="multiple" data-autostartupload="false" />
+
+  <form id="uploaddata" name="wizard" onsubmit="return false;" data-finishaction="" action="$edithome/finish.html" class="force-validate-inputs autocloseform" data-ajaxreloadtargets="dataeditedreload">
+
+    <input type="hidden" name="moduleid" value="$module.id" />
+    
+    <div class="p-2 p-md-4 d-flex flex-column">
+      <div class="pb-3">
+        #set( $viewdata = $mediaarchive.getCachedData("view", "${module.id}addnew") )
+        $context.put("viewdata", $viewdata)
+
+        #set ($details = $mediaarchive.getEntityManager().getBulkEntityDetails($module.id) )
+        $context.put("details", $details)
+
+        $pages.include("/$applicationid/components/xml/detaileditor-entities.html", $context)
+      </div>
+
+      <div class="uploadinstructions d-block">	 
+        <div id="drop-area">
+          <div class="drop-over">
+            <div class="uploadinstructions">
+              <div class="pickerHolder">
+                <a class="btn btn-cta btn-lg picker filePicker my-2 ml-2 mr-1" href="#">
+                <i class="fas fa-file-upload"></i> [[Choose Files]]</a>
+              </div>
+            </div>	
+            <div style="min-height: 175px;">
+              <div id="completed-uploads" style="display:none;">
+                <ul id="up-files-list-completed" class="up-files-list">
+                </ul>
+              </div>
+              <ul class="up-files-list up-files-list-pending"></ul>		
+            </div>
+            <div class="dropicon">
+              <i class="fas fa-cloud-upload-alt"></i>
+              <div class="hints">[[Drop files here]]</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- This is not shown -->
+      <div class="progress_report_template" style="display:none;">
+        <li class="uploadprogressrow" data-fileindex="currentupload">
+          <span style="width: 0px;" class="uploadprogress progress_report_barcurrentupload"></span>
+          <a href="#" class="fileinfo">
+            <span  class="progress_report_namecurrentupload name"></span>
+            <span  class="progress_report_sizecurrentupload size"></span>
+            <span class="progress_report_statuscurrentupload uploadstatus"></span>
+          </a>	
+          <a href="#" class="removefile" title="[[Remove from Queue]]"><i class="fas fa-times"></i></a>
+        </li>
+      </div>
+      
+      <div class="uploadinstructionsafter text-center my-3" style="display: none;">
+        <a class="btn btn-cta btn-lg upload-btn startbutton"
+          data-textstartupload="[[Create Folders From Files]]" 
+          data-textuploading="[[Uploading...]]"
+          data-textcomplete="[[Folders Created]]"
+          href="#">
+          <i class="fas fa-cloud-upload-alt mr-1"></i> [[Create Folders From Files]]
+        </a>
+      </div>
+    </div>
+  </form>
+</div>
