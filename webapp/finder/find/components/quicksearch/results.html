@@ -27,7 +27,7 @@
 
 
 #ifnull($hits)
-	#set($hits = $modulehits)
+	#set($hits = $organizedResults.getEntityHits() )
 #end
 
 #set( $input = $hits.getSearchQuery().getMainInput())
@@ -37,7 +37,7 @@
 
 #set( $input = $url_util.decode($input) )
 
-#if($organizedHits.isEmpty() && $hits.isEmpty() && $livesuggestions.isEmpty())
+#if($organizedResults.isEmpty())
 	<div class="text-secondary py-3 text-center">
 		[[No exact match found for]]: <strong>$input</strong>
 	</div>
@@ -84,11 +84,8 @@
 </ul>
 #end
 
-#set($filter = $modulehits.findFilterValue("entitysourcetype") )
-$context.putPageValue("filter", $filter)
-
-#foreach($module in $organizedModules)
-	#set($hits = $organizedHits.get($module.id))
+#foreach($module in $organizedResults.getModules() )
+	#set($hits = $organizedResults.getByType($module.id,$context))
 	#ifnotnull($hits)
 		$context.putPageValue("module", $module)
 		$context.putPageValue("moduleid", $module.id)
@@ -106,14 +103,7 @@ $context.putPageValue("filter", $filter)
 				<i class="bi bi-$moduleicon module-icon"></i>
 				<span class="qsresultsEntitytext">#text($module)</span>
 
-				#if( $module.id == "asset") ##this is safe
-					#set( $count = $hits.size()) 
-				#else
-					#set( $count = $filter.getCount($module.id) ) 
-				#end
-				#ifnull($count)
-					#set( $count = $hits.size()) 
-				#end
+				#set( $count = $organizedResults.getCount($module)) 
 				#if($count > 10)
 				<span class="mx-1">&middot;</span> 
 				<a href="$entityurl" 
@@ -171,7 +161,7 @@ $context.putPageValue("filter", $filter)
 	#end
 #end
 
-#if($assethits)
+#if($organizedResults.getAssetHits() )
 
 	#set($assetmodule = $mediaarchive.getCachedData("module","asset"))
 
@@ -180,12 +170,12 @@ $context.putPageValue("filter", $filter)
 		#set($moduleicon = $assetmodule.moduleicon)
 	#end
 
-	#set($hits = $assethits)
+	#set($hits = $organizedResults.getAssetHits() )
 
 	#set($edithome = "$apphome/views/modules/asset/editors/quicksearch")
 	#set($entityurl = "${edithome}/index.html?search=$input")
 
-	#set( $count = $assethits.size())
+	#set( $count = $hits.size())
 	<div class="mt-2 qsresultsEntity d-flex align-items-center">
 		<i class="bi bi-$!{moduleicon} module-icon" style="font-size:0.9em;line-height:1;opacity:0.85;"></i>  
 		<span class="qsresultsEntitytext">#text($assetmodule)</span>

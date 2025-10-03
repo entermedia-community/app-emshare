@@ -1,14 +1,11 @@
-#if($organizedModules.size() > 1)
 	<div class="searchcategorysidebar auto-active-container overflow-y">
-		#ifnotnull($organizedHits)
-			#set($assethits = $organizedHits.get("asset") )
-		#end	
+		#set($assethits = $organizedResults.getAssetResults() )
 		#ifnotnull($assethits)
 			#set( $total = $total + $assethits.size())
 		#end
 		
-		#foreach($module in $organizedModules)
-			#set($idhits = $organizedHits.get($module.id))
+		#foreach($module in $organizedResults.getModules() )
+			#set($idhits = $organizedResults.getByType($module.id,$context))
 			$context.putPageValue("hits", $idhits)
 			$context.putPageValue("module", $module)
 			$context.putPageValue("moduleid", $module.id)
@@ -22,13 +19,7 @@
 			
 			#set($url = "$edithome/index.html?searchcategoryid=$searchcategory.id&selectedmodule=${module.id}")
 			
-			#set($entitysourcetype = $hits.getActiveFilterValues().get("entitysourcetype")) 
-			#if($module.id == "asset")
-				#set($count = $assethits.size() )
-			#else	
-				#set($count = $entitysourcetype.getCount($module.id))
-			#end	
-			
+			#set($count = $organizedResults.getCount($module))
 			<div class="mb-2 auto-active-row #if($selectedmodule == $module.id) current #end">
 				<a href="$url" 
 					class="ajax btn btn-wide auto-active-link" 
@@ -44,8 +35,3 @@
 			</div>
 		#end
 	</div>
-#else
-	<div class="emnoresults">	
-		[[No modules added in this category]]
-	</div>
-#end

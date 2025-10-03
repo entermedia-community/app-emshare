@@ -13,7 +13,7 @@ $context.putPageValue("topmodule", $parentmodule)
 #set($topentityid = $context.getRequestParameter("topentityid"))
 
 $context.putPageValue("topmoduleid", "searchcategory")
-$context.putPageValue("modulecount", $organizedModules.size())
+$context.putPageValue("modulecount", $organizedResults.getEntityResults().size())
 	
 $pages.include("${edithome}/categorybreadcrumb.html", $context)
 
@@ -22,13 +22,14 @@ $pages.include("${edithome}/categorybreadcrumb.html", $context)
 	#set($selectedmodule = $context.getRequestParameter("selectedmodule"))
 	
 	#ifnull($selectedmodule)
-		#if(!$organizedModules.isEmpty())
-			#set($selectedmodule = $organizedModules.iterator().next().getId())
+		#if(!$organizedResults.isEmpty())
+			#set($selectedmodule = $organizedResults.getModules().iterator().next().getId())
 		#end
 	#end
+	
 	$context.putPageValue("selectedmodule",$selectedmodule)
 	
-	#if( $organizedModules && $organizedModules.size() > 1)
+	#if(!$organizedResults.isEmpty())
 		$pages.include("${edithome}/bymodule.html",$context)
 	#end
 	
@@ -45,11 +46,13 @@ $pages.include("${edithome}/categorybreadcrumb.html", $context)
 			$context.putPageValue("module", $bmodule)
 			
 			$context.putPageValue("viewid", "${selectedmodule}resultstable")
-			#set($idhits = $organizedHits.get($bmodule.id))
+			#set($idhits = $organizedResults.getByType($bmodule.id,$context))
+			
 			$context.putPageValue("hits", $idhits)
 			$context.putPageValue("enableactions", true)
 			
 			#if($selectedmodule == "asset")
+			
 				#set($edithome = "$apphome/views/modules/asset/editors/quicksearch")										
 			#else
 				#set($edithome = "$apphome/views/modules/${selectedmodule}/editors/listentities")

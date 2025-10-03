@@ -18,15 +18,15 @@
 		#end
 	>
 
-	#ifnotnull($organizedModules)
-		#if($organizedModules.isEmpty())
+	#ifnotnull($organizedResults)
+		#if($organizedResults.isEmpty())
 			<div class="emnoresults">[[No modules added in this category]]</div>
 		#end
 
 		#set($selectedmoduleid = $context.getRequestParameter("selectedmoduleid"))
 		#ifnull($selectedmoduleid)
-			#if(!$organizedModules.isEmpty())
-				#set($selectedmodule = $organizedModules.iterator().next())
+			#if(!$organizedResults.isEmpty())
+				#set($selectedmodule = $organizedResults.getModules().iterator().next())
 			#end
 		#end
 
@@ -40,7 +40,7 @@
 			<div class="d-flex h--36">
 				$pages.include("${edithome}/bymodule.html",$context)
 				<div id="searchcategoryresults" class="flex-grow-1">
-					#set($idhits = $organizedHits.get($selectedmodule.id))
+					#set($idhits = $organizedResults.getByType($selectedmodule.id,$context))
 					$context.putPageValue("hits", $idhits)
 					$context.putPageValue("hitssessionid", $idhits.getSessionId())
 					$context.putPageValue("module", $selectedmodule)
