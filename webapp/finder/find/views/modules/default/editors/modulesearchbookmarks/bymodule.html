@@ -1,20 +1,14 @@
 	<div class="searchcategorysidebar auto-active-container overflow-y">
 		
-		#foreach($module in $organizedModules)
-			#set($idhits = $organizedHits.get($module.id))
+		#foreach($module in $organizedResults.getModules() )
+			#set($idhits = $organizedResults.getByType($module.id,$context))
 
 			#set($moduleicon = "grid")
 			#if ($module.moduleicon)
 				#set($moduleicon = $module.moduleicon)
 			#end
 			#set($url = "$edithome/index.html?selectedmoduleid=${module.id}")
-			
-			#if( $module.id == "asset") ##this is safe
-				#set( $count = $idhits.size()) 
-			#else
-				#set($entitysourcetype = $modulehits.getActiveFilterValues().get("entitysourcetype")) 
-				#set($count = $entitysourcetype.getCount($module.id))
-			#end
+			#set($count = $organizedResults.getCount($module.id))
 			
 			<div class="mb-2 auto-active-row #if($selectedmodule.id == $module.id) current #end">
 				<a href="$url" 

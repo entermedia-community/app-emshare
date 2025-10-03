@@ -1,0 +1,52 @@
+
+	#set($moduleicon = "grid")
+	#if ($module.moduleicon)
+		#set($moduleicon = $module.moduleicon)
+	#end
+
+	#set($edithome = "$apphome/views/modules/asset/editors/quicksearch")
+	#set($entityurl = "${edithome}/index.html?search=$input")
+
+	#set( $count = $hits.size())
+	<div class="mt-2 qsresultsEntity d-flex align-items-center">
+		<i class="bi bi-$!{moduleicon} module-icon" style="font-size:0.9em;line-height:1;opacity:0.85;"></i>  
+		<span class="qsresultsEntitytext">#text($module)</span>
+	
+		#if($count > 10)
+		<span class="mx-1">&middot;</span>
+		<a href="$entityurl" 
+			class="ajax qsresultsEntityall btn btn-sm btn-accent"
+			data-targetdiv="applicationmaincontent" 
+			data-oemaxlevel="3" 
+			data-updateurl="true" 
+			title="[[View]] $count: #text($module)">
+			<span class="qsresultsEntitytext">[[View]] $count</span>
+		</a>
+		#end
+	</div>
+
+	<div class="masonry-grid" 
+		data-maxheight="140" 
+		data-cellpadding="10"
+		data-makebox="true"
+		data-visibleposition="$!hits.getStartingPosition()">
+		#set($count = 0)
+
+		#set( $searchhome = "$apphome/views/modules/${module.id}/results" )
+		$context.putPageValue("searchhome", $searchhome)
+		
+		#foreach( $hit in $hits.getPageOfHits() )
+			#if($count < 30)
+				<messageplain>Asset Search Result#${foreach.count}</messageplain>
+				<messageplain>Asset ID: ${hit.id}</messageplain>
+				<messageplain>Asset Name: ${hit.name}</messageplain>
+				$context.putPageValue("hit", $hit)
+				$pages.include("${searchhome}/default/types/media.html", $context)
+				#set($count = $count +1)
+			#end
+		#end
+
+		#if($hit.getPageOfHits().size() == 0)
+			$pages.stream("$!{searchhome}/default/empty.html", $context)
+		#end
+	</div>

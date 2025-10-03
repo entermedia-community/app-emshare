@@ -13,7 +13,6 @@ $context.putPageValue("topmodule", $parentmodule)
 #set($topentityid = $context.getRequestParameter("topentityid"))
 
 $context.putPageValue("topmoduleid", "searchcategory")
-$context.putPageValue("modulecount", $organizedModules.size())
 	
 $pages.include("${edithome}/categorybreadcrumb.html", $context)
 
@@ -25,9 +24,9 @@ $pages.include("${edithome}/categorybreadcrumb.html", $context)
 	
 	<div id="searchcategoryresults" class="flex-grow-1">
 		#if($organizedModules.size() == 1)
-			#set($bmodule = $organizedModules.iterator().next())
+			#set($bmodule = $organizedResults.getModules().iterator().next())
 			
-		 	#set($idhits = $organizedHits.get($bmodule.id))
+		 	#set($idhits = $organizedResults.getByType($bmodule.id,$context))
 			$context.putPageValue("hits", $idhits)
 			$context.putPageValue("module", $bmodule)
 			#set($searchhome = "$apphome/views/modules/${bmodule.id}/results/default")
