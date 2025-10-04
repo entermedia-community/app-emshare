@@ -8,7 +8,7 @@
 #end
 #set($viewdata = $mediaarchive.getCachedData("view",$entitymoduleviewid))
 
-<div class="bg-white">
+<div class="bg-white" id="editentitymetadata">
   <div class="w-100 my-2 px-2">
     <form
 			class="ajaxform autocloseform checkCloseDialog "
@@ -23,6 +23,12 @@
 			
 			<input type="hidden" name="save" value='true'/>
 
+			<input type="hidden" name="field" value="entityid" />
+			<input type="hidden" name="entityid.value" value='$entity.id'/>
+
+			<input type="hidden" name="field" value="entitymoduleid" />
+			<input type="hidden" name="entitymoduleid.value" value="$entitymodule.id" />
+
 			$context.putPageValue("viewid", "contentcreatortoplevel")
 			$context.putPageValue("details",null)
 			$context.putPageValue("searcher",$mediaarchive.getSearcher("contentcreator"))
@@ -35,7 +41,6 @@
 		
 			<label for="aiInstruction" class="mb-1">[[AI Prompt]]</label>
 			<input type="hidden" name="field" value="llmprompt" />
-			
 			<textarea name="llmprompt.value" id="aiInstruction" class="form-control rounded" rows="8" required autocomplete="off" data-gramm="false">$pages.include("$edithome/createentityinstructions.html", $context)</textarea>
 			
 			<div class="d-flex align-items-center mt-3">

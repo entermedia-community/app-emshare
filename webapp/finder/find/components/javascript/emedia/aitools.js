@@ -82,6 +82,7 @@ $(document).ready(function () {
 
 	function updatePrompt() {
 		//updateaiimagetemplate
+		
 		var prompt = `Create a picture of ${
 			promptBuilder.aitarget || "[[TARGET]]"
 		}.`;
@@ -149,6 +150,12 @@ $(document).ready(function () {
 						);
 					}
 				}
+				//reset variable:
+				promptBuilder.aitarget = '';
+				promptBuilder.aicontentlist = '';
+				promptBuilder.aistyle = '';
+				promptBuilder.aiexamples = '';
+				
 				closeemdialog(form.closest(".modal"));
 			},
 		});

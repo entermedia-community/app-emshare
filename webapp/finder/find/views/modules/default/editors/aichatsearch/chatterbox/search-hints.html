@@ -14,28 +14,26 @@
       
       <div class="msg-body">
         <div class="msg-body-content">
-          <div class="ignoreContext">
-            <p>
-              <strong>I can help you search the database using natural language.</strong>
-            </p>
-            <p>
-              Below are some example queries that you can try:
-            </p>
-            <ul class="ai-search-suggestions">
-              #set( $count = 0 )
-              #foreach( $module in $userprofile.getEntities() )
-                #if($module.getBoolean("showonsearch") && $module.id != "asset" && $count < 5)
-                  #set( $entity = $mediaarchive.query($module.id).searchOne() )
-                  #set( $entityname = "#text($entity)" )
-                  #if( $entityname )
-                    #set( $str = $foreach.count % 3 )
-                    <li class="ai-suggest" role="button">#if( $str == 0 ) Search for #else Find #end <u>$entityname</u> in <u>#text($module)</u></li>
-                    #set( $count = $count + 1 )
-                  #end
+          <p>
+            <strong>I can help you search the database using natural language.</strong>
+          </p>
+          <p>
+            Below are some example queries that you can try:
+          </p>
+          <ul class="ai-search-suggestions">
+            #set( $count = 0 )
+            #foreach( $module in $userprofile.getEntities() )
+              #if($module.getBoolean("showonsearch") && $module.id != "asset" && $count < 5)
+                #set( $entity = $mediaarchive.query($module.id).searchOne() )
+                #set( $entityname = "#text($entity)" )
+                #if( $entityname )
+                  #set( $str = $foreach.count % 3 )
+                  <li class="ai-suggest" role="button">#if( $str == 0 ) Search for #else Find #end <u>$entityname</u> in <u>#text($module)</u></li>
+                  #set( $count = $count + 1 )
                 #end
-              #end 
-            </ul>
-          </div>
+              #end
+            #end 
+          </ul>
         </div>
       </div>
     </div> 

@@ -12,6 +12,9 @@ jQuery(document).ready(function () {
 			url: url,
 			success: function (json) {
 				var queue = json.downloadqueue;
+				if (!queue || queue.length == 0) {
+					return;
+				}
 				for (var i = 0; i < queue.length; i++) {
 					var item = queue[i];
 					if (item.orderid) {

@@ -1,0 +1,34 @@
+#ifnull($entity)
+<messageplain>$error</messageplain>
+#end
+#ifnotnull($entity)
+<messageplain>Created entity successfully!</messageplain>
+<messageplain>Entity ID: ${entity.id}</messageplain>
+<messageplain>Entity Name: ${entity.name}</messageplain>
+<messageplain>Module ID: ${module.id}</messageplain>
+$context.putPageValue("rendermoduleid", $module.id)
+$context.putPageValue("searchresults", true)
+$context.putPageValue("searchhome", "$apphome/views/modules/${module.id}/results/default")
+$context.putPageValue("hit", $entity)
+
+<div class="emgridflex">
+  <div id="galleryimg-entitiy" class="emgrid entitiescontainer emgridquickresults">
+    #set($rendertype = $module.modulerendertype)
+    #if (!$rendertype)
+      #set($rendertype = "entity")
+    #end
+    <div class="emgridcell emgridcellqs emgridcell-$rendertype activelistcontainer">
+      $pages.include("$apphome/views/modules/$!{module.id}/results/default/types/qsresult.html", $context)
+    </div>
+  </div>
+</div>
+#end
+
+
+#*
+  style="width:100%"
+  data-fixedwidth="180" 
+  data-cellpadding="10"
+  data-entityrenderurl="$apphome/views/modules/${module.id}/editors/default/tabs/gridcell.html"
+  data-rendertype="$!rendertype"
+*#

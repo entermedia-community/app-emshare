@@ -35,7 +35,7 @@ public void init()
 
 	try
 	{	
-		QueryBuilder query = archive.query("asset").not("editstatus","7").exact("facescancomplete", "false").exact("previewstatus","2").sort("assetaddeddateDown");
+		QueryBuilder query = archive.localQuery("asset").not("editstatus","7").exact("facescancomplete", "false").exact("previewstatus","2").sort("assetaddeddateDown");
 		
 		String startdate = archive.getCatalogSettingValue("ai_facescan_startdate");
 		
@@ -75,6 +75,8 @@ public void init()
 				Collection<MultiValued> onepage = hits.getPageOfHits();
 				int saved = manager.extractFaces(instructions, onepage);
 				count = count + saved;
+				archive.saveData("asset",onepage);  
+				
 				if( saved > 0 )
 				{
 					long end = System.currentTimeMillis();

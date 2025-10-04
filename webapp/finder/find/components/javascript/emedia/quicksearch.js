@@ -121,7 +121,7 @@ $(document).ready(function () {
 				togglemodaldialog("hide");
 			}
 		});
-		mainsearcheinput.on("keyup change", function (e) {
+		mainsearcheinput.on("keyup change paste", function (e) {
 			if (semanticLoaderTO) {
 				clearTimeout(semanticLoaderTO);
 			}
@@ -373,7 +373,7 @@ $(document).ready(function () {
 		}
 		var data = {
 			oemaxlevel: 1,
-			query: searchquery,
+			semanticquery: searchquery,
 			excludeentityids: excludeids.entityids,
 			excludeassetids: excludeids.assetids,
 		};

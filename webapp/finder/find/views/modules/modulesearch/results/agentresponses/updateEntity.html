@@ -1,0 +1,44 @@
+#ifnull($entity)
+<messageplain>$error</messageplain>
+#end
+
+#ifnotnull($entity)
+
+#if($changemethod == "copy")
+<messageplain>Copied #text($entity) to #text($module) successfully!</messageplain>
+#elseif($changemethod == "move")
+<messageplain>Moved #text($entity) to #text($module) successfully!</messageplain>
+#else
+<messageplain>Updated #text($entity) successfully!</messageplain>
+#end
+<messageplain>Entity ID: ${entity.id}</messageplain>
+#ifnull($newname)
+<messageplain>Entity Name: ${entity.name}</messageplain>
+#end
+#ifnotnull($newname)
+<messageplain>Renamed Entity to: ${newname}</messageplain>
+#end
+<messageplain>Module ID: ${module.id}</messageplain>
+#ifnotnull($primaryimage)
+<messageplain>Updated Primary Image ID: ${primaryimage.id}</messageplain>
+<messageplain>Updated Primary Image Name: ${primaryimage.name}</messageplain>
+#end
+
+$context.putPageValue("rendermoduleid", $module.id)
+$context.putPageValue("searchresults", true)
+$context.putPageValue("searchhome", "$apphome/views/modules/${module.id}/results/default")
+$context.putPageValue("hit", $entity)
+
+<div class="emgridflex">
+  <div id="galleryimg-entitiy" class="emgrid entitiescontainer emgridquickresults">
+    #set($rendertype = $module.modulerendertype)
+    #if (!$rendertype)
+      #set($rendertype = "entity")
+    #end
+    <div class="emgridcell emgridcellqs emgridcell-$rendertype activelistcontainer">
+      $pages.include("$apphome/views/modules/$!{module.id}/results/default/types/qsresult.html", $context)
+    </div>
+  </div>
+</div>
+
+#end

@@ -6,8 +6,6 @@
 	#end
 #end
 
-#set ($thumbsize = $context.getPageValue("thumbsize"))
-$context.putPageValue("thumbsize", $thumbsize)
 
 #set( $imagesize = "image200x200")
 
@@ -17,7 +15,7 @@ $context.putPageValue("thumbsize", $thumbsize)
 	#else
 		#set($imagesize = "image3000x3000")
 	#end
-#elseif($thumbsize == "mediumplus")
+#elseif($thumbsize == "mediumplus" || $thumbsize == "medium")
 	#if( $type == "video" )
 		#set($imagesize = "image640x480")
 	#else
@@ -41,7 +39,7 @@ $context.putPageValue("searchhome", $searchhome)
 
 #set( $rendertype = $mediaarchive.getMediaRenderType($hit.fileformat))
 
-<div class="emthumbholder draggholder emthumbholder-${rendertype}" data-assetid="$hit.id">
+<div class="emthumbholder draggholder emthumbholder-${rendertype}" data-assetid="${hit.id}">
 	
 	#if( $hit.previewstatus && $hit.previewstatus == "mime")
 		#set ($mime = $mediaarchive.getMimeTypeIcon($hit.fileformat))
@@ -67,7 +65,7 @@ $context.putPageValue("searchhome", $searchhome)
 
 		#ifnotnull( $boxlookup )
 			#set( $box = $boxlookup.get($hit.id) )
-			<div class="renderfaceboxes h-100" data-facebox="$box.getBoxArea()" data-originalwidth="$box.getOriginalWidth()">
+			<div class="renderfaceboxes h-100" data-facebox="${box.getBoxArea()}" data-originalwidth="${box.getOriginalWidth()}">
 
 			#if($rendertype == "video")
 				#set($imagepath = $mediaarchive.asLinkToGenerateOffset($hit, "image1900x1080", $box.getTimecodeStartSeconds()))
@@ -76,17 +74,17 @@ $context.putPageValue("searchhome", $searchhome)
 			<div class="imagethumbholder">
 				<img class="imagethumb img-fluid  img$!thumbsize"
 						catalogid="$catalogid" 
-						assetid="$hit.id" 
+						assetid="${hit.id}" 
 						alt="#if($title)#esc($title)#else$!{hit.name}#end"
 						draggable="true"  
 						data-name="#if($title)#esc($title)#else$!{hit.name}#end" 		
-						src="$imagepath$!urlparams"
+						src="${imagepath}$!{urlparams}"
 				/>
 				#if($picker.getTargetType() != "entity")
 					#if($content.isPropertyTrue("showassetpicker"))
 						#if( $rendertype == "image")
 							#set($originalLink = "$siteroot/$mediadbappid/services/module/asset/downloads/originals/"+$mediaarchive.asLinkToOriginal($hit))
-							<div class="pickfromiframe asset" data-imageurl="$originalLink">
+							<div class="pickfromiframe asset" data-imageurl="$!{originalLink}">
 								<i class="bi bi-check2-circle"></i>
 							</div>
 						#end

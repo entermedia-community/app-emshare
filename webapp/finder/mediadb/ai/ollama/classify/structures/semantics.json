@@ -1,0 +1,29 @@
+{
+	"model": "${model}",
+	"messages": [
+		{
+			"role": "system",
+			"content": #jesc($fieldparams.aicreationdescription)
+		},
+		{
+			"role": "user",
+			"content": "$fieldparams.aicreationcommand #foreach($field in $contextfields) #if($foreach.count>1),\n#end ${field.label}: ${field.text} #end"
+		}
+	],
+	"stream": false,
+	"think": false,
+	"temperature": 0,
+	"format": {
+		"type": "object",
+		"properties": {
+			"$fieldparams.fieldname": {
+				"type": "array",
+				"items": {
+					"type": "string",
+					"additionalProperties": false
+				}
+			}
+		},
+		"required": ["$fieldparams.fieldname"]
+	}
+}

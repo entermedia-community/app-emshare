@@ -8,9 +8,6 @@
 					data-entityid="$!{entity.id}" 
 					data-oemaxlevel="1" >
 					<i class="fas fa-arrow-left"></i>
-					<h2 id="showname">
-						<i class="bi bi-chevron-right mx-1 bi-small"></i>
-					</h2>
 				</a>
 								
 				<h2 class="d-flex align-items-center">
@@ -89,8 +86,18 @@
 	
 	
 			<div class="d-flex entity-actions-bar align-items-center text-white position-relative mbl-hideexcept">
-				
-				#set( $isowner = $entity.owner == $user.id)
+				#if($addnew=='true')
+				<a class="btn btn-cta ajax"
+					href="$siteroot$applink/views/modules/$!{module.id}/editors/bulkentitycreator/index.html?edit=true&addnew=true" 
+					data-entitymoduleviewid="$!{module.id}addnew"
+					data-entitymoduleid="$!module.id"
+					data-entityedithome="$!edithome"
+					data-targetdiv="editentitymetadata"
+					data-oemaxlevel="1"
+					title="[[Bulk Folders from Files]]">
+					<i class="bi bi-stack mr-1"></i> [[Bulk Folders from Files]]
+				</a>
+				#end
 
 				#if($mediaarchive.isCatalogSettingTrue("ai_create_enabled") && $permissions.canModule($module, "createwithai"))
 
@@ -98,7 +105,7 @@
 					#if($addnew=='true')
 						#set($entityedithome = $context.getRequestParameter("entityedithome"))
 						#if($withai != "true")
-							<a class='btn btn-cta ajax action-lg'
+							<a class="btn btn-cta ajax"
 								href="$siteroot$applink/views/modules/$!{module.id}/editors/contentcreatortoplevel/index.html?edit=true&addnew=true&withai=true" 
 								data-entitymoduleviewid="$!{module.id}addnew"
 								data-entitymoduleid="$!module.id"
@@ -111,7 +118,7 @@
 						#else
 							#set($addurl = "${entityedithome}/tabs/index.html?edit=true&addnew=true&viewid=$!{moduleid}addnew")
 							<a href="$addurl"
-								class='btn btn-accent ajax action-lg'
+								class='btn btn-accent ajax'
 								data-entitymoduleviewid="$!{module.id}addnew"
 								data-entityid="$!entity.getId()" 
 								data-entitymoduleid="$!module.id"

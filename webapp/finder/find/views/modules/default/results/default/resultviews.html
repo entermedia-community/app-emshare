@@ -1,11 +1,23 @@
-<div id="$!{moduleid}resultsarea" 
+<div id="$!{module.id}resultsarea" 
 	class="resultsarea d-flex w-100 h-100 overflow-x overflow-y-hidden">
 	#if( !$browser.isNarrow() )
 		<div class="emresultscontainer emresults$!resultview flex-grow-1"   
 			id="resultsviewcontainer$!module.id"
 			data-resultview="$!resultview" 
-			data-moduleid="$!{module.id}">
-			
+			data-moduleid="$!{module.id}"
+		>
+			<div 
+				#if($desktop && $module.enableuploading == "true") 
+						class="w-100 h-100 desktopdropentity"
+						data-targetlink="$siteroot$apphome/views/modules/${module.id}/editors/entitydesktopdrop/editdialog.html?edit=true&addnew=true&viewid=${module.id}addnew"
+						data-dialogtitle="Add New ${module.name}"
+						data-hidefooter="true"
+						data-dialogid="entitydesktopdropeditdialog"
+					#else
+						class='w-100 h-100 #if($module.enableuploading == "true")dropentity#end' 
+					#end
+				data-moduleid="$!{module.id}"
+			>
 			#if (!$resultview || $resultview == 'table')
 				$context.putPageValue("showhover", "false")
 				$context.putPageValue("thumbsize", "crop")
@@ -34,7 +46,11 @@
 				$context.putPageValue("showcaption", "false")
 				$context.putPageValue("hideheader", "false")
 				$context.putPageValue("pickable", false )
-
+				
+				#set($minbrickwidth = $page.get("${module.id}minbrickwidth"))
+				
+				$context.putPageValue("minbrickwidth", $minbrickwidth )
+				
 				$pages.include("${searchhome}/types/brickvertical.html", $context)
 
 			#elseif ($resultview == "map")
@@ -62,6 +78,7 @@
 				$pages.include("${searchhome}/types/gallery.html", $context)
 
 			#end
+			</div>
 		</div>
 	
 		#set($resultssidebar = $content.isPropertyTrue("showresultssidebar",true))

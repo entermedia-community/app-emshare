@@ -1,0 +1,45 @@
+{ 
+	"contents": [
+		{
+			"role": "system",
+			"parts": [{
+				"text": #jesc($fieldparams.aicreationdescription)
+			}]
+		},
+		{
+			"role": "user",
+			"parts": [{
+				"text": "$fieldparams.aicreationcommand #foreach($field in $contextfields) #if($foreach.count>1),\n#end ${field.label}: ${field.text} #end"
+			}]
+		}
+	],
+	"generationConfig": {
+		"responseMimeType": "application/json",
+		"responseSchema": {
+			"type": "OBJECT",
+			"properties": {
+				"categories": {
+					"type": "OBJECT",
+					"properties": {
+						#foreach($autocreatefield in $autocreatefields)
+							#if($foreach.count>1)
+							,
+							#end
+							"$autocreatefield.getId()": {
+								"type": "ARRAY",
+								"description": "$autocreatefield.aiautocreateddescription",
+								"items": {
+									"type": "STRING"
+								}
+							}
+						#end
+					},
+					"additionalProperties": false,
+					"required": [#foreach($autocreatefield in $autocreatefields) #if($foreach.count>1), #end "$autocreatefield.getId()" #end]
+				}
+			},
+			"additionalProperties": false,
+			"required": ["categories"]
+		}
+	}
+}

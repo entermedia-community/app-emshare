@@ -7,9 +7,12 @@ $context.putPageValue("rendermoduleid", $module.id)
 	$pages.include("${searchhome}/resultheader.html",$context)
 #end 
 
+
 <div class="scrollview" style="overflow-x: hidden;">
 	<div class="brickvertical uninitialized brickverticalsortable" 
-		data-cellpadding="4" 
+		#ifnotnull($minbrickwidth) 
+			data-minwidth="$minbrickwidth"
+		#end
 		data-stackedviewpath="${apphome}/views/modules/${module.id}/results/default/types/brickvertical.html">
 		#foreach( $hit in $hits.getPageOfHits())
 		

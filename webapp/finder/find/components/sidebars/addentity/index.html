@@ -20,16 +20,9 @@
 <ul class="sidebar-list auto-active-container overflow-y" id="sidebar-entities">
 	#set( $urlbase = "$siteroot$applink/views/modules" )
 	
-	#if(1==2 && $canviewupload )
-		<li id="sidebar-list-upload" #if( $module.id == "asset") class="current" #end >
-		<a class="ajax auto-active-link"
-			data-targetdivinner="applicationmaincontent" 
-			data-oemaxlayout="4"
-			data-updateurl="true" 
-			href="$urlbase/editors/assetupload/index.html">[[Upload Media]]</a></li>
-	#end
 	
 	#foreach ( $amodule in $userprofile.getEntities() )
+		#if($module.get("isentity"))
 		<li class="#if($moduleid==$amodule.id) current #end" >
 		<a class=" ajax auto-active-link " 
 			data-targetdiv="applicationcontent" 
@@ -50,7 +43,7 @@
 			 		  title="[[Properties]]"><i class="bi bi-gear-fill"></i></a>
 			 	#end
 			</li>
-			
+			#end
 	#end
 </ul>
 </div>

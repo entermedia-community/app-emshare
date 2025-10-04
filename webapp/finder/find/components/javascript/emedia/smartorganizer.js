@@ -962,7 +962,8 @@ $(document).ready(function () {
 					var moduleid = selectedLabel.getUserData()?.moduleid;
 					if (moduleid === undefined || moduleid == "") {
 						moduleid = selectedLabel.getText().toLowerCase();
-						moduleid = "entity" + moduleid.replace(" ", "-");
+						moduleid = "entity" + moduleid.replace(" ", "");
+						moduleid += "-" + draw2d.util.UUID.create().substring(0, 4);
 						selectedLabel.getUserData().moduleid = moduleid;
 					}
 					$("#folderId").val(moduleid);
@@ -1395,6 +1396,15 @@ $(document).ready(function () {
 					data.name = "New";
 				}
 
+				function clearChildParentRelation(childId) {
+					var childNode = json.find(
+						(node) =>
+							node.composite === childId && node.cssClass === "folderLabel"
+					);
+					if (childNode) {
+						childNode.userData.parents = [];
+					}
+				}
 				function createChildParentRelation(parentId, childId) {
 					var parentNode = json.find(
 						(node) =>
@@ -1409,12 +1419,30 @@ $(document).ready(function () {
 						//var childNode = json.find((node) => node.composite + "-label" === childId); //Hard to read
 						//groupId + "-label",
 						if (childNode) {
-							childNode.userData.parent = parentNode.userData.moduleid;
+							let parents = childNode.userData.parents;
+							if (parents.indexOf(parentNode.userData.moduleid) === -1) {
+								childNode.userData.parents = [
+									...parents,
+									parentNode.userData.moduleid,
+								];
+							}
 						}
 					}
 				}
 
 				if (usersaved) {
+					json.forEach((item) => {
+						if (item.type === "draw2d.Connection") {
+							if (item.source.port === "leftPort") {
+								var childId = item.source.node;
+								clearChildParentRelation(childId);
+							}
+							if (item.target.port === "leftPort") {
+								var childId = item.target.node;
+								clearChildParentRelation(childId);
+							}
+						}
+					});
 					json.forEach((item) => {
 						if (item.type === "draw2d.Connection") {
 							if (item.source.port === "leftPort") {
@@ -1735,37 +1763,6 @@ $(document).ready(function () {
 			);
 		}
 
-		$("#copySmartNodes").on("click", function () {
-			getSelectedJson(function (json) {
-				var icon = $(this).find("i");
-				icon.removeClass("bi-copy").addClass("bi-check-lg");
-				var copyJson = globalizeJSON(json);
-				if (!navigator.clipboard) {
-					fallbackCopyText(copyJson);
-					setTimeout(function () {
-						icon.removeClass("bi-check-lg").addClass("bi-copy");
-					}, 1000);
-					return;
-				}
-				navigator.clipboard
-					.writeText(copyJson)
-					.then(function () {
-						validateClipboard();
-					})
-					.catch((error) => {
-						customToast("Error copying to clipboard!", {
-							positive: false,
-							log: error,
-						});
-					})
-					.finally(() => {
-						setTimeout(function () {
-							icon.removeClass("bi-check-lg").addClass("bi-copy");
-						}, 1000);
-					});
-			});
-		});
-
 		$("#exportSmartNodes").on("click", function () {
 			getSelectedJson(function (json) {
 				if (!Array.isArray(json) || json.length == 0) {
@@ -1868,59 +1865,6 @@ $(document).ready(function () {
 			} else {
 				$("#importSmartNodesFile").val("");
 			}
-		});
-
-		function validateClipboard(callback = null) {
-			var json = null;
-			if (!navigator.clipboard) {
-				customToast("Clipboard API is not supported in http mode!", {
-					positive: false,
-				});
-				return;
-			}
-			navigator.clipboard
-				.readText()
-				.then(function (text) {
-					if (!text) {
-						customToast("Clipboard is empty!", {
-							positive: false,
-						});
-					} else {
-						try {
-							text = localizeJSON(text);
-							json = JSON.parse(text);
-							if (!Array.isArray(json) || json.length == 0) {
-								customToast("Invalid JSON.", {
-									positive: false,
-								});
-							}
-						} catch (error) {
-							customToast("Invalid JSON structure.", {
-								positive: false,
-							});
-						}
-					}
-				})
-				.catch((error) => {
-					json = null;
-					customToast("Error reading clipboard!", {
-						positive: false,
-						log: error,
-					});
-				})
-				.finally(() => {
-					if (callback) {
-						callback(json);
-					}
-				});
-		}
-
-		$("#pasteSmartNodes").on("click", function () {
-			validateClipboard(function (json) {
-				if (json) {
-					readerUnmarshal(canvas, json);
-				}
-			});
 		});
 
 		$("#closeorgnizer").on("click", function () {
@@ -2134,10 +2078,4 @@ $(document).ready(function () {
 		});
 		cancelBtn.click(hideInput);
 	});
-
-	// var zip = new JSZip();
-	// zip.file("Hello.", "hello.txt");
-	// zip.generateAsync({ type: "blob" }).then(function (blob) {
-	// 	saveAs(blob, "hello.zip");
-	// });
 });
