@@ -57,6 +57,8 @@ public void createTasksForUpload() throws Exception
 			log.error(it.id,ex);
 		}
 	}
+	mediaarchive.fireSharedMediaEvent("conversions/runconversions"); 
+	
 
 }
 
