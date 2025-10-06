@@ -1,7 +1,6 @@
 var lasttypeahead;
 var lastsearch;
 var searchmodaldialog;
-var searchmodalmask;
 var mainsearcheinput;
 var lasttypeaheadsummary;
 $(document).ready(function () {
@@ -15,7 +14,6 @@ $(document).ready(function () {
 		mainsearcheinput = $(this);
 
 		searchmodaldialog = $(".modal#mainsearch");
-		searchmodalmask = $("#mainsearch-mask");
 
 		function setSearchModalSize() {
 			var applicationcontentwidth = $("#applicationmaincontent").width();
@@ -151,8 +149,6 @@ $(document).ready(function () {
 			searchmodaldialog.fadeOut(function () {
 				$(this).remove();
 			});
-
-			searchmodalmask.hide();
 			$(".modal-backdrop").remove();
 		}
 	});
