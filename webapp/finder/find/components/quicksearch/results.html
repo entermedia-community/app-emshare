@@ -13,10 +13,6 @@
 
 #set($ajax = $context.getRequestParameter("ajax")) 
 
-<div style="position:absolute;top:4px;right:8px;color:#333;font-size:1rem;z-index:1000;">
-	<span title="[[Esc to Close]]" class="bi bi-x-circle closemainsearch"></span>
-</div>
-
 <div class="quicksearchresults">
 	<div id="searchLoading">
 		<div class="d-flex flex-column align-items-center">
@@ -42,11 +38,11 @@
 		[[No exact match found for]]: <strong>$input</strong>
 	</div>
 #end
-
-#ifnull($hits)
+$featuredfolders
+#if(!$featuredfolders.isEmpty())
 	<div class="startsearch">[[Start typing to search]]</div>
 	<div class="quicksearchmodules">
-  	#foreach ( $amodule in $userprofile.getSearchableEntities() )
+  	#foreach ( $amodule in $featuredfolders )
   		#set($amoduleid = $amodule.getId())
 	  	#if($amoduleid!="modulesearch")
 	  		#set($entityrendertype = "entity")
