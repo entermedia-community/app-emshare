@@ -16,23 +16,14 @@ $context.putPageValue("data",$data)
 
     <input type="hidden" name="moduleid" value="$module.id" />
     
-    <div class="p-2 p-md-4 d-flex flex-column">
-      <div class="pb-3">
-        #set( $viewdata = $mediaarchive.getCachedData("view", "${module.id}addnew") )
-        $context.put("viewdata", $viewdata)
-
-        #set ($details = $mediaarchive.getEntityManager().getBulkEntityDetails($module.id) )
-        $context.put("details", $details)
-
-        $pages.include("/$applicationid/components/xml/detaileditor-entities.html", $context)
-      </div>
+    <div class="p-3 d-flex flex-column">
 
       <div class="uploadinstructions d-block">	 
-        <div id="drop-area">
+        <div id="drop-area" class="rounded">
           <div class="drop-over">
             <div class="uploadinstructions">
               <div class="pickerHolder">
-                <a class="btn btn-cta btn-lg picker filePicker my-2 ml-2 mr-1" href="#">
+                <a class="btn btn-cta btn-lg picker filePicker m-2" href="#">
                 <i class="fas fa-file-upload"></i> [[Choose Files]]</a>
               </div>
             </div>	
@@ -49,6 +40,17 @@ $context.putPageValue("data",$data)
             </div>
           </div>
         </div>
+      </div>
+      <hr style="border-top: 1px solid #ddd;" />
+      <div>
+        <h5 class="mt-0 mb-4 text-center">Folders Details</h5>
+        #set( $viewdata = $mediaarchive.getCachedData("view", "${module.id}addnew") )
+        $context.put("viewdata", $viewdata)
+
+        #set ($details = $mediaarchive.getEntityManager().getBulkEntityDetails($module.id) )
+        $context.put("details", $details)
+
+        $pages.include("/$applicationid/components/xml/detaileditor-entities.html", $context)
       </div>
 
       <!-- This is not shown -->
