@@ -44,6 +44,8 @@
 		eachwidth -= 8;
 		var colwidthpx = totalavailablew / maxcols;
 		var colnum = 0;
+		var gridminheight = 1;
+		grid.css("height", gridminheight + "px");
 		$(grid)
 			.find(".masonry-grid-cell")
 			.each(function () {
@@ -95,8 +97,11 @@
 
 				var colx = colwidthpx * colnum;
 				cell.css("left", colx + "px");
-				grid.css("height", colheight[colnum] + "px");
-
+				if (colheight[colnum]>gridminheight)
+				{
+					grid.css("height", colheight[colnum] + "px");
+					gridminheight = colheight[colnum];
+				}
 				colnum++;
 				if (colnum >= maxcols) {
 					colnum = 0;
@@ -116,7 +121,7 @@
 			}
 		}
 		//	return shortColumn;
-
+		
 		//Only change if its over 50px in diference
 		var defaulttop = colheight[defaultcolumn];
 		var shortesttop = colheight[shortColumn];
