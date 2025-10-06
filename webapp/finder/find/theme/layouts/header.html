@@ -58,18 +58,18 @@
 		</div>
 	</div>
 	
-	#if( !$browser.isNarrow() )
-		#if($canviewquicksearchheader)
-			$pages.include("$apphome/components/quicksearch/header-search.html", $context)
-		#end
-	#end
-	
 	#if($user)
 	<div class="z-n1 nav-btn-row">
 		#set($uploadmodules = 0)
 		#foreach ( $amodule in $userprofile.getEntities() )
 			#if($amodule.getBoolean("enableuploading"))
 				#set($uploadmodules = $uploadmodules  +1)
+			#end
+		#end
+
+		#if( !$browser.isNarrow() )
+			#if($canviewquicksearchheader)
+				$pages.include("$apphome/components/quicksearch/search-btn.html", $context)
 			#end
 		#end
 		
