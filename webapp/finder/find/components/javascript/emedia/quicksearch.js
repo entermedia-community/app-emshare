@@ -141,17 +141,17 @@ $(document).ready(function () {
 		lQuery(".closemainsearch").livequery("click", function () {
 			closeMainSearch();
 		});
-
-		function closeMainSearch() {
-			if (!searchmodaldialog) {
-				searchmodaldialog = $(".modal#mainsearch");
-			}
-			searchmodaldialog.fadeOut(function () {
-				$(this).remove();
-			});
-			$(".modal-backdrop").remove();
-		}
 	});
+
+	function closeMainSearch() {
+		if (!searchmodaldialog) {
+			searchmodaldialog = $(".modal#mainsearch");
+		}
+		searchmodaldialog.fadeOut(function () {
+			$(this).remove();
+		});
+		$(".modal-backdrop").remove();
+	}
 
 	function loadSemanticMatches(url, searchquery, excludeids) {
 		if (!searchquery || searchquery.length < 3) {
