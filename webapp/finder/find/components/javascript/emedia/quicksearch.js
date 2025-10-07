@@ -1,6 +1,14 @@
 $(document).ready(function () {
 	var apphome = $("#application").data("apphome");
 
+	lQuery("#mainsearch").livequery("shown.bs.modal", function (e) {
+		var searchInput = $("#mainsearchinput");
+		searchInput.focus();
+		var val = searchInput.val();
+		searchInput.val("");
+		searchInput.val(val);
+	});
+
 	var lasttypeahead;
 	var previewsearch;
 	var mainsearchresults;
@@ -128,10 +136,7 @@ $(document).ready(function () {
 	});
 
 	function closeMainSearch() {
-		$(".modal#mainsearch").fadeOut(function () {
-			$(this).remove();
-		});
-		$(".modal-backdrop").remove();
+		closeemdialog($(".modal#mainsearch"));
 	}
 
 	function loadSemanticMatches(searchquery, excludeids) {
