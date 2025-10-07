@@ -1,0 +1,29 @@
+#if(!$featuredfolders.isEmpty())
+  <div class="startsearch">[[Start typing to search]]</div>
+  <div class="quicksearchmodules">
+    #foreach ( $featuredfolder in $featuredfolders )
+      #if($featuredfolder.getId() != "modulesearch")
+        #set($entityrendertype = "entity")
+        #if ($featuredfolder.modulerendertype)
+          #set($entityrendertype = $featuredfolder.modulerendertype)
+        #end
+        #set($moduleicon = "grid")
+        #if ($featuredfolder.moduleicon)
+          #set($moduleicon = $featuredfolder.moduleicon)
+        #end
+      
+        #set($entityurl = "$!siteroot$apphome/views/modules/$!{featuredfolder.id}/index.html")
+        <div class="qsmodule">
+          <a class=""
+            title="[[View]] #text($featuredfolder)" 
+            href="$entityurl" >
+            <div class="p-2">
+              <i class="bi bi-$!{moduleicon} module-icon" style="font-size:3em;line-height:1;opacity:0.85;"></i>
+            </div>
+            #text($featuredfolder) ($featuredfolder.getCount())
+          </a>
+        </div>
+      #end
+    #end
+  </div>
+#end

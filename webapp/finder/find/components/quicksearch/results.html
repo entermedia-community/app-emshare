@@ -20,15 +20,6 @@
 
 #set($ajax = $context.getRequestParameter("ajax")) 
 
-<div class="quicksearchresults">
-	<div id="searchLoading">
-		<div class="d-flex flex-column align-items-center">
-			<div class="lds-dual-ring"></div>
-			<div class="loading-text">[[Searching for results]]</div> 
-		</div>
-	</div>
-
-
 #ifnull($hits)
 	#set($hits = $organizedResults.getEntityHits() )
 #end
@@ -37,36 +28,6 @@
 	<div class="text-secondary py-3 text-center">
 		[[No exact match found for]]: <strong>$input</strong>
 	</div>
-#end
-
-#if(!$featuredfolders.isEmpty())
-	<div class="startsearch">[[Start typing to search]]</div>
-	<div class="quicksearchmodules">
-  	#foreach ( $featuredfolder in $featuredfolders )
-	  	#if($featuredfolder.getId() != "modulesearch")
-	  		#set($entityrendertype = "entity")
-				#if ($featuredfolder.modulerendertype)
-					#set($entityrendertype = $featuredfolder.modulerendertype)
-				#end
-				#set($moduleicon = "grid")
-				#if ($featuredfolder.moduleicon)
-		   		#set($moduleicon = $featuredfolder.moduleicon)
-		   	#end
-	   	
-				#set($entityurl = "$!siteroot$apphome/views/modules/$!{featuredfolder.id}/index.html")
-				<div class="qsmodule">
-					<a class=""
-						title="[[View]] #text($featuredfolder)" 
-						href="$entityurl" >
-						<div class="p-2">
-							<i class="bi bi-$!{moduleicon} module-icon" style="font-size:3em;line-height:1;opacity:0.85;"></i>
-						</div>
-						#text($featuredfolder) ($featuredfolder.getCount())
-					</a>
-				</div>
-	    #end
-    #end
-  </div>
 #end
 
 #if(!$livesuggestions.isEmpty())
@@ -93,7 +54,7 @@
 			#if ($module.moduleicon)
 				#set($moduleicon = $module.moduleicon)
 			#end
-			   	
+						
 			#set($entityurl = "$!siteroot$apphome/views/modules/$!{module.id}/index.html?$!{module.id}page=1&field=description&operation=freeform&description.value=$input")
 				
 			<div class="mb-4">
@@ -119,13 +80,13 @@
 				</div>
 	
 				
-			   $context.putPageValue("rendermoduleid", $module.id)
-				   			   
-			   $hits.setHitsPerPage(10)
-			   $context.putPageValue("hits", $hits)
-			   
-			   $context.putPageValue("searchresults", true)
-			   $context.putPageValue("searchhome", "$apphome/views/modules/${module.id}/results/default")
+					$context.putPageValue("rendermoduleid", $module.id)
+										
+					$hits.setHitsPerPage(10)
+					$context.putPageValue("hits", $hits)
+					
+					$context.putPageValue("searchresults", true)
+					$context.putPageValue("searchhome", "$apphome/views/modules/${module.id}/results/default")
 				
 				<div class="emgridflex">  	
 					<div id="galleryimg-entitiy" 
@@ -161,7 +122,7 @@
 	#end
 #end
 
- 
+	
 
 #if($organizedResults.getAssetResults() )
 	
@@ -205,9 +166,9 @@
 		#foreach( $hit in $hits.getPageOfHits() )
 			#if($count < 30)
 				$context.putPageValue("hit", $hit)
-		    $pages.include("${searchhome}/types/media.html", $context)
-		    #set($count = $count +1)
-		  #end
+				$pages.include("${searchhome}/types/media.html", $context)
+				#set($count = $count +1)
+			#end
 		#end
 
 		#if($hit.getPageOfHits().size() == 0)
@@ -216,8 +177,5 @@
 	</div>
 #end
 
-
 <div id="semanticLoading"></div>
 <div id="semanticMatches" class="mt-3 mx-1"></div>
-
-</div>

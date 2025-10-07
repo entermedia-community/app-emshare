@@ -1,10 +1,10 @@
-var lasttypeahead;
-var lastsearch;
-var searchmodaldialog;
-var mainsearcheinput;
-var lasttypeaheadsummary;
 $(document).ready(function () {
 	var apphome = $("#application").data("apphome");
+
+	var lasttypeahead;
+	var previewsearch;
+	var mainsearchresults;
+	var mainsearcheinput;
 
 	lQuery(".quicksearchlinks").livequery("click", function () {
 		closeMainSearch();
@@ -15,13 +15,8 @@ $(document).ready(function () {
 	lQuery("#mainsearchinput").livequery(function () {
 		mainsearcheinput = $(this);
 
-		searchmodaldialog = $(".modal#mainsearch");
-
-		var typeaheadtargetdiv = mainsearcheinput.data("typeaheadtargetdiv");
-
-		if (typeaheadtargetdiv == null) {
-			typeaheadtargetdiv = "applicationmaincontent";
-		}
+		previewsearch = $("#previewsearch");
+		mainsearchresults = $("#mainsearchresults");
 
 		var defaulttext = mainsearcheinput.data("showdefault");
 		if (!defaulttext) {
@@ -32,7 +27,6 @@ $(document).ready(function () {
 			allowClear = true;
 		}
 
-		var searchquery = "";
 		mainsearcheinput.on("keydown", function (e) {
 			if (e.keyCode == 27) {
 				closeMainSearch();
@@ -49,15 +43,19 @@ $(document).ready(function () {
 			if (mainsearcheinput.val() == searchquery) {
 				return;
 			}
-			searchquery = mainsearcheinput.val();
+			var searchquery = mainsearcheinput.val();
 
 			if (e.keyCode == 27) {
 				closeMainSearch();
 				return;
 			}
 
-			if (searchquery && searchquery.length < 2) {
+			if (searchquery.length < 2) {
+				previewsearch.show();
+				mainsearchresults.html("");
 				return;
+			} else {
+				previewsearch.hide();
 			}
 
 			var terms =
@@ -85,20 +83,20 @@ $(document).ready(function () {
 				},
 				success: function (data) {
 					if (data) {
-						// searchmodaldialog.html(data);
+						mainsearchresults.html(data);
 						jQuery(window).trigger("resize");
 						return;
 					}
 
 					var entityids = [];
-					$(".emfolder-wrapper", searchmodaldialog).each(function () {
+					$(".emfolder-wrapper", mainsearchresults).each(function () {
 						var entityid = $(this).data("id");
 						if (entityid) {
 							entityids.push("" + entityid);
 						}
 					});
 					var assetids = [];
-					$(".masonry-grid-cell", searchmodaldialog).each(function () {
+					$(".masonry-grid-cell", mainsearchresults).each(function () {
 						var assetid = $(this).data("assetid");
 						if (assetid) {
 							assetids.push("" + assetid);
@@ -106,7 +104,7 @@ $(document).ready(function () {
 					});
 
 					semanticLoaderTO = setTimeout(function () {
-						loadSemanticMatches(searchquery, {
+						loadSemanticMatches(mainsearcheinput.val(), {
 							entityids: entityids,
 							assetids: assetids,
 						});
@@ -130,10 +128,7 @@ $(document).ready(function () {
 	});
 
 	function closeMainSearch() {
-		if (!searchmodaldialog) {
-			searchmodaldialog = $(".modal#mainsearch");
-		}
-		searchmodaldialog.fadeOut(function () {
+		$(".modal#mainsearch").fadeOut(function () {
 			$(this).remove();
 		});
 		$(".modal-backdrop").remove();

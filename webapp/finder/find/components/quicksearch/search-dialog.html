@@ -1,14 +1,3 @@
-#set($moduleid = $context.getRequestParameter("moduleid"))
-#if(!$moduleid)
-	#set($moduleid = $userprofile.mainsearchmodule)
-#end
-
-#set($resetsearch = $context.getRequestParameter("resetsearch"))
-#if($resetsearch == "true")
-	#set($moduleid = "") 
-#end
-
-
 <div id="mainsearchcontainer">
 	#set( $input = $hits.getSearchQuery().getMainInput())
 	#if (!$input)
@@ -26,4 +15,19 @@
   />
 </div>
 
-$pages.include("./results.html", $context)
+<div class="quicksearchresults">
+	<div id="searchLoading">
+		<div class="d-flex flex-column align-items-center">
+			<div class="lds-dual-ring"></div>
+			<div class="loading-text">[[Searching for results]]</div> 
+		</div>
+	</div>
+
+  <div class="p-3 overflow-y">
+    <div id="previewsearch">
+      $pages.include("./preview.html", $context)
+    </div>
+    <div id="mainsearchresults"></div>
+  </div>
+
+</div>
