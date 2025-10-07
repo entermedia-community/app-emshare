@@ -18,6 +18,12 @@ $(document).ready(function () {
 	lQuery(".quicksearchlinks").livequery("click", function () {
 		closeMainSearch();
 	});
+	lQuery("#mainsearch a.ajax, #mainsearch a.emdialog").livequery(
+		"click",
+		function () {
+			closeMainSearch();
+		}
+	);
 
 	var semanticLoaderTO = null;
 
@@ -118,7 +124,9 @@ $(document).ready(function () {
 			});
 		});
 
-		lQuery(".qssuggestion").livequery("click", function () {
+		lQuery(".qssuggestion").livequery("click", function (e) {
+			e.preventDefault();
+			e.stopPropagation();
 			var suggestion = $(this).data("suggestion");
 			mainSearchInput.val(decodeURI(suggestion));
 			mainSearchInput.trigger("change");
