@@ -1,5 +1,48 @@
 $(document).ready(function () {
 	var apphome = $("#application").data("apphome");
+	var lastTypeAhead;
+	var previewSearch;
+	var mainSearchResults;
+	var mainSearchInput;
+	var searchQuery;
+
+	function checkUrlForSearch() {
+		var queryparam = window.location.search;
+		var params = new URLSearchParams(queryparam);
+		var input = params.get("description.value");
+		if (input) {
+			searchQuery = decodeURIComponent(input);
+		}
+	}
+
+	checkUrlForSearch();
+
+	var urlHash = window.location.hash;
+	if (urlHash && urlHash === "#mainsearch") {
+		$(".mainSearchDialog").trigger("click");
+	}
+
+	lQuery(".mainSearchDialog").livequery("click", function (e) {
+		e.preventDefault();
+		e.stopPropagation();
+
+		if ($("#mainsearch").length > 0) {
+			$("#mainsearch").modal("show");
+		} else {
+			$(this).emDialog();
+		}
+	});
+
+	lQuery("#mainsearch").livequery(function (e) {
+		if ($(this).hasClass("disposed")) {
+			$(this).modal();
+		}
+	});
+
+	lQuery("#mainsearch").livequery("show.bs.modal", function (e) {
+		e.stopPropagation();
+		checkUrlForSearch();
+	});
 
 	lQuery("#mainsearch").livequery("shown.bs.modal", function (e) {
 		var searchInput = $("#mainsearchinput");
@@ -9,21 +52,12 @@ $(document).ready(function () {
 		searchInput.val(val);
 	});
 
-	var lastTypeAhead;
-	var previewSearch;
-	var mainSearchResults;
-	var mainSearchInput;
-	var searchQuery;
-
 	lQuery(".quicksearchlinks").livequery("click", function () {
 		closeMainSearch();
 	});
-	lQuery("#mainsearch a.ajax, #mainsearch a.emdialog").livequery(
-		"click",
-		function () {
-			closeMainSearch();
-		}
-	);
+	lQuery("#mainsearch a.ajax").livequery("click", function () {
+		closeMainSearch();
+	});
 
 	var semanticLoaderTO = null;
 
@@ -39,24 +73,25 @@ $(document).ready(function () {
 			}
 		});
 
-		mainSearchInput.on("keyup change paste", function (e) {
+		mainSearchInput.on("keyup change paste", onMainSearchInput);
+		function onMainSearchInput(e) {
 			e.preventDefault();
 			e.stopPropagation();
-
-			if (semanticLoaderTO) {
-				clearTimeout(semanticLoaderTO);
-			}
-
-			if (mainSearchInput.val() == searchQuery) {
-				return;
-			}
-
-			searchQuery = mainSearchInput.val();
-
 			if (e.keyCode == 27) {
 				closeMainSearch();
 				return;
 			}
+			if (mainSearchInput.val() == searchQuery) {
+				return;
+			}
+			handleSearch();
+		}
+		function handleSearch() {
+			if (semanticLoaderTO) {
+				clearTimeout(semanticLoaderTO);
+			}
+
+			searchQuery = mainSearchInput.val();
 
 			if (searchQuery.length < 2) {
 				previewSearch.show();
@@ -66,15 +101,9 @@ $(document).ready(function () {
 				previewSearch.hide();
 			}
 
-			var terms =
-				"field=description&operation=contains" +
-				"&description.value=" +
-				encodeURIComponent(searchQuery);
-
-			var mainsearchmodule = mainSearchInput.data("mainsearchmodule");
-			if (mainsearchmodule != null) {
-				terms = terms + "&mainsearchmodule=" + mainsearchmodule;
-			}
+			var terms = `field=description&operation=freeform&description.value=${encodeURIComponent(
+				searchQuery
+			)}`;
 
 			if (lastTypeAhead) {
 				lastTypeAhead.abort();
@@ -93,9 +122,7 @@ $(document).ready(function () {
 					if (data) {
 						mainSearchResults.html(data);
 						jQuery(window).trigger("resize");
-						return;
 					}
-
 					var entityIds = [];
 					$(".emfolder-wrapper", mainSearchResults).each(function () {
 						var entityId = $(this).data("id");
@@ -120,9 +147,22 @@ $(document).ready(function () {
 				},
 				complete: function () {
 					$("#searchLoading").removeClass("show");
+					mainSearchInput.attr("value", searchQuery);
+					$("#mainsearch").addClass("disposed");
+					history.pushState(
+						$("#application").html(),
+						"",
+						`${apphome}?${terms}#mainsearch`
+					);
 				},
 			});
-		});
+		}
+
+		if (searchQuery.length > 0 && mainSearchInput.val().length == 0) {
+			mainSearchInput.focus();
+			mainSearchInput.val(searchQuery);
+			handleSearch();
+		}
 
 		lQuery(".qssuggestion").livequery("click", function (e) {
 			e.preventDefault();
@@ -131,15 +171,15 @@ $(document).ready(function () {
 			mainSearchInput.val(decodeURI(suggestion));
 			mainSearchInput.trigger("change");
 		});
+	});
 
-		lQuery(".closemainsearch").livequery("click", function (e) {
-			e.preventDefault();
-			closeMainSearch();
-		});
+	lQuery(".closemainsearch").livequery("click", function (e) {
+		e.preventDefault();
+		closeMainSearch();
 	});
 
 	function closeMainSearch() {
-		closeemdialog($(".modal#mainsearch"));
+		$(".modal#mainsearch").modal("hide");
 	}
 
 	function loadSemanticMatches(searchQuery, excludeIds) {
