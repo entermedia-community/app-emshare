@@ -9,10 +9,11 @@ $(document).ready(function () {
 		searchInput.val(val);
 	});
 
-	var lasttypeahead;
-	var previewsearch;
-	var mainsearchresults;
-	var mainsearcheinput;
+	var lastTypeAhead;
+	var previewSearch;
+	var mainSearchResults;
+	var mainSearchInput;
+	var searchQuery;
 
 	lQuery(".quicksearchlinks").livequery("click", function () {
 		closeMainSearch();
@@ -21,66 +22,59 @@ $(document).ready(function () {
 	var semanticLoaderTO = null;
 
 	lQuery("#mainsearchinput").livequery(function () {
-		mainsearcheinput = $(this);
+		mainSearchInput = $(this);
 
-		previewsearch = $("#previewsearch");
-		mainsearchresults = $("#mainsearchresults");
+		previewSearch = $("#previewsearch");
+		mainSearchResults = $("#mainsearchresults");
 
-		var defaulttext = mainsearcheinput.data("showdefault");
-		if (!defaulttext) {
-			defaulttext = "Search";
-		}
-		var allowClear = mainsearcheinput.data("allowclear");
-		if (allowClear == undefined) {
-			allowClear = true;
-		}
-
-		mainsearcheinput.on("keydown", function (e) {
+		mainSearchInput.on("keydown", function (e) {
 			if (e.keyCode == 27) {
 				closeMainSearch();
 			}
 		});
 
-		mainsearcheinput.on("keyup change paste", function (e) {
+		mainSearchInput.on("keyup change paste", function (e) {
 			e.preventDefault();
 			e.stopPropagation();
 
 			if (semanticLoaderTO) {
 				clearTimeout(semanticLoaderTO);
 			}
-			if (mainsearcheinput.val() == searchquery) {
+
+			if (mainSearchInput.val() == searchQuery) {
 				return;
 			}
-			var searchquery = mainsearcheinput.val();
+
+			searchQuery = mainSearchInput.val();
 
 			if (e.keyCode == 27) {
 				closeMainSearch();
 				return;
 			}
 
-			if (searchquery.length < 2) {
-				previewsearch.show();
-				mainsearchresults.html("");
+			if (searchQuery.length < 2) {
+				previewSearch.show();
+				mainSearchResults.html("");
 				return;
 			} else {
-				previewsearch.hide();
+				previewSearch.hide();
 			}
 
 			var terms =
 				"field=description&operation=contains" +
 				"&description.value=" +
-				encodeURIComponent(searchquery);
+				encodeURIComponent(searchQuery);
 
-			var mainsearchmodule = mainsearcheinput.data("mainsearchmodule");
+			var mainsearchmodule = mainSearchInput.data("mainsearchmodule");
 			if (mainsearchmodule != null) {
 				terms = terms + "&mainsearchmodule=" + mainsearchmodule;
 			}
 
-			if (lasttypeahead) {
-				lasttypeahead.abort();
+			if (lastTypeAhead) {
+				lastTypeAhead.abort();
 			}
 
-			lasttypeahead = $.ajax({
+			lastTypeAhead = $.ajax({
 				url: `${apphome}/components/quicksearch/results.html`,
 				async: true,
 				type: "GET",
@@ -91,30 +85,30 @@ $(document).ready(function () {
 				},
 				success: function (data) {
 					if (data) {
-						mainsearchresults.html(data);
+						mainSearchResults.html(data);
 						jQuery(window).trigger("resize");
 						return;
 					}
 
-					var entityids = [];
-					$(".emfolder-wrapper", mainsearchresults).each(function () {
-						var entityid = $(this).data("id");
-						if (entityid) {
-							entityids.push("" + entityid);
+					var entityIds = [];
+					$(".emfolder-wrapper", mainSearchResults).each(function () {
+						var entityId = $(this).data("id");
+						if (entityId) {
+							entityIds.push("" + entityId);
 						}
 					});
-					var assetids = [];
-					$(".masonry-grid-cell", mainsearchresults).each(function () {
-						var assetid = $(this).data("assetid");
-						if (assetid) {
-							assetids.push("" + assetid);
+					var assetIds = [];
+					$(".masonry-grid-cell", mainSearchResults).each(function () {
+						var assetId = $(this).data("assetid");
+						if (assetId) {
+							assetIds.push("" + assetId);
 						}
 					});
 
 					semanticLoaderTO = setTimeout(function () {
-						loadSemanticMatches(mainsearcheinput.val(), {
-							entityids: entityids,
-							assetids: assetids,
+						loadSemanticMatches(mainSearchInput.val(), {
+							entityIds: entityIds,
+							assetIds: assetIds,
 						});
 					}, 200);
 				},
@@ -126,11 +120,12 @@ $(document).ready(function () {
 
 		lQuery(".qssuggestion").livequery("click", function () {
 			var suggestion = $(this).data("suggestion");
-			mainsearcheinput.val(decodeURI(suggestion));
-			mainsearcheinput.trigger("change");
+			mainSearchInput.val(decodeURI(suggestion));
+			mainSearchInput.trigger("change");
 		});
 
-		lQuery(".closemainsearch").livequery("click", function () {
+		lQuery(".closemainsearch").livequery("click", function (e) {
+			e.preventDefault();
 			closeMainSearch();
 		});
 	});
@@ -139,15 +134,15 @@ $(document).ready(function () {
 		closeemdialog($(".modal#mainsearch"));
 	}
 
-	function loadSemanticMatches(searchquery, excludeids) {
-		if (!searchquery || searchquery.length < 3) {
+	function loadSemanticMatches(searchQuery, excludeIds) {
+		if (!searchQuery || searchQuery.length < 3) {
 			return;
 		}
 		var data = {
 			oemaxlevel: 1,
-			semanticquery: searchquery,
-			excludeentityids: excludeids.entityids,
-			excludeassetids: excludeids.assetids,
+			semanticquery: searchQuery,
+			excludeentityids: excludeIds.entityIds,
+			excludeassetids: excludeIds.assetIds,
 		};
 		$.ajax({
 			url: `${apphome}/views/modules/modulesearch/results/semanticsearch/semanticsearch.html`,
