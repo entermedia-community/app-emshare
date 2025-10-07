@@ -1,18 +1,8 @@
-#set( $input = $hits.getSearchQuery().getMainInput())
-#if (!$input)
+#ifnull($input)
 	#set( $input = "")
 #end
 
 #set( $input = $url_util.decode($input) )
-
-#set($popupheight = 10)
-
-#if($livesuggestions.size())
-	#set($popupheight = $popupheight+50)
-#end
-#if($topichits.size())
-	#set($popupheight = $popupheight+60)
-#end
 
 #set( $moduleid = $context.getRequestParameter("moduleid") )
 
@@ -30,19 +20,7 @@
 	</div>
 #end
 
-#if(!$livesuggestions.isEmpty())
-<ul class="qsrecent">
-#foreach ($suggestion in $livesuggestions)
-	#set($highlighted = $highlighter.highlight($livesearchfor, $suggestion, 20, true))
-	#ifnotnull($highlighted)
-	<li class="lisuggestion">
-		<a href="#" class="qssuggestion" data-suggestion="#esc($suggestion)">$highlighted</a>
-	</li>	 
-	#end
-#end
-</ul>
-#end
-
+$context.putPageValue("placeholder", false)
 $pages.include("./preview.html", $context)
 
 #foreach($module in $organizedResults.getModules() )
@@ -142,8 +120,12 @@ $pages.include("./preview.html", $context)
 
 	#set( $count = $hits.size())
 	<div class="mt-2 qsresultsEntity d-flex align-items-center">
-		<i class="bi bi-$!{moduleicon} module-icon" style="font-size:0.9em;line-height:1;opacity:0.85;"></i>  
+		<i class="bi bi-$!{moduleicon} module-icon" style="font-size:0.9em;line-height:1;opacity:0.85;"></i> 
+		#if($suggestedassets)
+		<span class="qsresultsEntitytext">Recent #text($assetmodule)</span>
+		#else
 		<span class="qsresultsEntitytext">#text($assetmodule)</span>
+		#end
 
 		#if($count > 10)
 		<span class="mx-1">&middot;</span>
