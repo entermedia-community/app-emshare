@@ -4,6 +4,8 @@ var searchmodaldialog;
 var mainsearcheinput;
 var lasttypeaheadsummary;
 $(document).ready(function () {
+	var apphome = $("#application").data("apphome");
+
 	lQuery(".quicksearchlinks").livequery("click", function () {
 		closeMainSearch();
 	});
@@ -14,20 +16,6 @@ $(document).ready(function () {
 		mainsearcheinput = $(this);
 
 		searchmodaldialog = $(".modal#mainsearch");
-
-		function setSearchModalSize() {
-			var applicationcontentwidth = $("#applicationmaincontent").width();
-			if (!applicationcontentwidth) {
-				applicationcontentwidth = $("#header").width();
-			}
-
-			var topposition = $("#header").outerHeight();
-			topposition -= 40;
-			topposition /= 2;
-			topposition += 56;
-		}
-		setSearchModalSize();
-		window.onresize = setSearchModalSize;
 
 		var typeaheadtargetdiv = mainsearcheinput.data("typeaheadtargetdiv");
 
@@ -43,9 +31,6 @@ $(document).ready(function () {
 		if (allowClear == undefined) {
 			allowClear = true;
 		}
-
-		var url = mainsearcheinput.data("typeaheadurl");
-		var semanticurl = mainsearcheinput.data("semanticurl");
 
 		var searchquery = "";
 		mainsearcheinput.on("keydown", function (e) {
@@ -90,7 +75,7 @@ $(document).ready(function () {
 			}
 
 			lasttypeahead = $.ajax({
-				url: url,
+				url: `${apphome}/components/quicksearch/results.html`,
 				async: true,
 				type: "GET",
 				data: terms,
@@ -100,8 +85,9 @@ $(document).ready(function () {
 				},
 				success: function (data) {
 					if (data) {
-						searchmodaldialog.html(data);
+						// searchmodaldialog.html(data);
 						jQuery(window).trigger("resize");
+						return;
 					}
 
 					var entityids = [];
@@ -120,7 +106,7 @@ $(document).ready(function () {
 					});
 
 					semanticLoaderTO = setTimeout(function () {
-						loadSemanticMatches(semanticurl, searchquery, {
+						loadSemanticMatches(searchquery, {
 							entityids: entityids,
 							assetids: assetids,
 						});
@@ -153,7 +139,7 @@ $(document).ready(function () {
 		$(".modal-backdrop").remove();
 	}
 
-	function loadSemanticMatches(url, searchquery, excludeids) {
+	function loadSemanticMatches(searchquery, excludeids) {
 		if (!searchquery || searchquery.length < 3) {
 			return;
 		}
@@ -164,7 +150,7 @@ $(document).ready(function () {
 			excludeassetids: excludeids.assetids,
 		};
 		$.ajax({
-			url: url,
+			url: `${apphome}/views/modules/modulesearch/results/semanticsearch/semanticsearch.html`,
 			type: "POST",
 			data: JSON.stringify(data),
 			contentType: "application/json",

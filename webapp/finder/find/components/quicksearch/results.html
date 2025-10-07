@@ -1,3 +1,10 @@
+#set( $input = $hits.getSearchQuery().getMainInput())
+#if (!$input)
+	#set( $input = "")
+#end
+
+#set( $input = $url_util.decode($input) )
+
 #set($popupheight = 10)
 
 #if($livesuggestions.size())
@@ -26,45 +33,40 @@
 	#set($hits = $organizedResults.getEntityHits() )
 #end
 
-#set( $input = $hits.getSearchQuery().getMainInput())
-#if (!$input)
-	#set( $input = "")
-#end
-
-#set( $input = $url_util.decode($input) )
-
 #if($organizedResults.isEmpty())
 	<div class="text-secondary py-3 text-center">
 		[[No exact match found for]]: <strong>$input</strong>
 	</div>
 #end
-$featuredfolders
+
 #if(!$featuredfolders.isEmpty())
 	<div class="startsearch">[[Start typing to search]]</div>
 	<div class="quicksearchmodules">
-  	#foreach ( $amodule in $featuredfolders )
-  		#set($amoduleid = $amodule.getId())
-	  	#if($amoduleid!="modulesearch")
+  	#foreach ( $featuredfolder in $featuredfolders )
+	  	#if($featuredfolder.getId() != "modulesearch")
 	  		#set($entityrendertype = "entity")
-			#if ($amodule.modulerendertype)
-				#set($entityrendertype = $amodule.modulerendertype)
-			#end
-			#set($moduleicon = "grid")
-			#if ($amodule.moduleicon)
-		   		#set($moduleicon = $amodule.moduleicon)
+				#if ($featuredfolder.modulerendertype)
+					#set($entityrendertype = $featuredfolder.modulerendertype)
+				#end
+				#set($moduleicon = "grid")
+				#if ($featuredfolder.moduleicon)
+		   		#set($moduleicon = $featuredfolder.moduleicon)
 		   	#end
 	   	
-	 		#set($entityurl = "$!siteroot$apphome/views/modules/$!{amodule.id}/index.html")
-	 		<div class="qsmodule">
-	    	<a class=""
-	    		title="[[View]] #text($amodule)" 
-	    		href="$entityurl" >
-	    		<div class="p-2"><i class="bi bi-$!{moduleicon} module-icon" style="font-size:3em;line-height:1;opacity:0.85;"></i> </div>
-	    		#text($amodule)</a>
-	    	</div>
+				#set($entityurl = "$!siteroot$apphome/views/modules/$!{featuredfolder.id}/index.html")
+				<div class="qsmodule">
+					<a class=""
+						title="[[View]] #text($featuredfolder)" 
+						href="$entityurl" >
+						<div class="p-2">
+							<i class="bi bi-$!{moduleicon} module-icon" style="font-size:3em;line-height:1;opacity:0.85;"></i>
+						</div>
+						#text($featuredfolder) ($featuredfolder.getCount())
+					</a>
+				</div>
 	    #end
     #end
-    </div>
+  </div>
 #end
 
 #if(!$livesuggestions.isEmpty())
