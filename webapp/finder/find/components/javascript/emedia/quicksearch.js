@@ -3,7 +3,6 @@ $(document).ready(function () {
 	var lastTypeAhead;
 	var previewSearch;
 	var mainSearchResults;
-	var mainSearchInput;
 	var searchQuery;
 
 	function checkUrlForSearch() {
@@ -62,7 +61,7 @@ $(document).ready(function () {
 	var semanticLoaderTO = null;
 
 	lQuery("#mainsearchinput").livequery(function () {
-		mainSearchInput = $(this);
+		var mainSearchInput = $(this);
 
 		previewSearch = $("#previewsearch");
 		mainSearchResults = $("#mainsearchresults");
@@ -163,14 +162,14 @@ $(document).ready(function () {
 			mainSearchInput.val(searchQuery);
 			handleSearch();
 		}
+	});
 
-		lQuery(".qssuggestion").livequery("click", function (e) {
-			e.preventDefault();
-			e.stopPropagation();
-			var suggestion = $(this).data("suggestion");
-			mainSearchInput.val(decodeURI(suggestion));
-			mainSearchInput.trigger("change");
-		});
+	lQuery(".qssuggestion").livequery("click", function (e) {
+		e.preventDefault();
+		e.stopPropagation();
+		var suggestion = $(this).data("suggestion");
+		$("#mainsearchinput").val(decodeURI(suggestion));
+		$("#mainsearchinput").trigger("change");
 	});
 
 	lQuery(".closemainsearch").livequery("click", function (e) {
