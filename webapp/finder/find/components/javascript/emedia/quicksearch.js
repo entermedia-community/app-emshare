@@ -1,7 +1,7 @@
 $(document).ready(function () {
 	var apphome = $("#application").data("apphome");
 	var lastTypeAhead;
-	var searchQuery;
+	var searchQuery = "";
 
 	function checkUrlForSearch() {
 		var queryparam = window.location.search;
@@ -39,12 +39,26 @@ $(document).ready(function () {
 		e.preventDefault();
 		e.stopPropagation();
 
-		$("#mainsearchinput").val("");
-		$("#mainsearchinput").attr("value", "");
-		$("#mainsearchinput").focus();
+		var searchInput = $("#mainsearchinput");
+		searchInput.val("");
+		searchInput.attr("value", "");
+		searchInput.focus();
 		searchQuery = "";
 		$(window).trigger("autoreload", [$("#mainsearchcontainer")]);
 		history.pushState($("#application").html(), "", `${apphome}#mainsearch`);
+	});
+
+	$(window).on("modalclosed", function (e, dialogid) {
+		if (dialogid !== "mainsearch" && $("#mainsearch").is(":visible")) {
+			$("#mainsearch").trigger("focus");
+			setTimeout(function () {
+				var searchInput = $("#mainsearchinput");
+				searchInput.focus();
+				var val = searchInput.val();
+				searchInput.val("");
+				searchInput.val(val);
+			}, 200);
+		}
 	});
 
 	lQuery("#mainsearch").livequery(function (e) {
@@ -194,13 +208,13 @@ $(document).ready(function () {
 		$(".modal#mainsearch").modal("hide");
 	}
 
-	function loadSemanticMatches(searchQuery, excludeIds) {
-		if (!searchQuery || searchQuery.length < 3) {
+	function loadSemanticMatches(query, excludeIds) {
+		if (!query || query.length < 3) {
 			return;
 		}
 		var data = {
 			oemaxlevel: 1,
-			semanticquery: searchQuery,
+			semanticquery: query,
 			excludeentityids: excludeIds.entityIds,
 			excludeassetids: excludeIds.assetIds,
 		};
