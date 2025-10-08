@@ -1,8 +1,6 @@
 $(document).ready(function () {
 	var apphome = $("#application").data("apphome");
 	var lastTypeAhead;
-	var previewSearch;
-	var mainSearchResults;
 	var searchQuery;
 
 	function checkUrlForSearch() {
@@ -40,11 +38,13 @@ $(document).ready(function () {
 	lQuery("#clearmainsearch").livequery("click", function (e) {
 		e.preventDefault();
 		e.stopPropagation();
+
 		$("#mainsearchinput").val("");
 		$("#mainsearchinput").attr("value", "");
+		$("#mainsearchinput").focus();
 		searchQuery = "";
-		history.pushState($("#application").html(), "", `${apphome}#mainsearch`);
 		$(window).trigger("autoreload", [$("#mainsearchcontainer")]);
+		history.pushState($("#application").html(), "", `${apphome}#mainsearch`);
 	});
 
 	lQuery("#mainsearch").livequery(function (e) {
@@ -79,9 +79,6 @@ $(document).ready(function () {
 	lQuery("#mainsearchinput").livequery(function () {
 		var mainSearchInput = $(this);
 
-		previewSearch = $("#previewsearch");
-		mainSearchResults = $("#mainsearchresults");
-
 		mainSearchInput.on("keydown", function (e) {
 			if (e.keyCode == 27) {
 				closeMainSearch();
@@ -108,12 +105,14 @@ $(document).ready(function () {
 
 			searchQuery = mainSearchInput.val();
 
-			if (searchQuery.length < 2) {
-				previewSearch.show();
-				mainSearchResults.html("");
-				return;
+			if (searchQuery.length === 0) {
+				$("#clearmainsearch").hide();
 			} else {
-				previewSearch.hide();
+				$("#clearmainsearch").show();
+			}
+
+			if (searchQuery.length < 2) {
+				return;
 			}
 
 			var terms = `query=${encodeURIComponent(searchQuery)}`;
@@ -133,18 +132,18 @@ $(document).ready(function () {
 				},
 				success: function (data) {
 					if (data) {
-						mainSearchResults.html(data);
+						$("#mainsearchresults").html(data);
 						jQuery(window).trigger("resize");
 					}
 					var entityIds = [];
-					$(".emfolder-wrapper", mainSearchResults).each(function () {
+					$("#mainsearchresults .emfolder-wrapper").each(function () {
 						var entityId = $(this).data("id");
 						if (entityId) {
 							entityIds.push("" + entityId);
 						}
 					});
 					var assetIds = [];
-					$(".masonry-grid-cell", mainSearchResults).each(function () {
+					$("#mainsearchresults .masonry-grid-cell").each(function () {
 						var assetId = $(this).data("assetid");
 						if (assetId) {
 							assetIds.push("" + assetId);
