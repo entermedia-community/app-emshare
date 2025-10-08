@@ -253,8 +253,6 @@ jQuery(document).ready(function (url, params) {
 		return;
 	});
 
-	
-
 	$.fn.exists = function () {
 		return this.length !== 0;
 	};
@@ -494,7 +492,7 @@ jQuery(document).ready(function (url, params) {
 	$(window).mouseup(function () {
 		isMouseDown = false;
 	});
-	
+
 	lQuery(".mediavieweropener .stackedplayer").livequery("click", function (e) {
 		e.preventDefault();
 		e.stopPropagation();
@@ -503,83 +501,87 @@ jQuery(document).ready(function (url, params) {
 		return false;
 	});
 	lQuery(".stackedplayer").livequery("click", function (e) {
-			var clicked = $(this);
-			var pickerresults = clicked.closest(".clickableresultlist, .clickableresultlistinline");
-			
-			if (pickerresults.length > 0) {
-				return;
-			}
-			
-			e.preventDefault();
-			e.stopPropagation();
-			var link = $(this);
-			showAsset(link);
-
-			return false;
-		});
-
-	
-	// Click on asset
-	var selectStart = null;
-
-	lQuery(".mediavieweropener table.emresultstable tr td").livequery("click", function (e) {
 		var clicked = $(this);
-		var pickerresults = clicked.closest(".clickableresultlist");
+		var pickerresults = clicked.closest(
+			".clickableresultlist, .clickableresultlistinline"
+		);
+
 		if (pickerresults.length > 0) {
 			return;
-		}
-		
-		clicked = clicked.closest("tr");
-		if ($(e.target).is("input") || $(e.target).is("a")) {
-			return true;
-		}
-		// click+ctrl
-		if (e.ctrlKey) {
-			var chkbox = clicked.find(".selectionbox");
-			if (chkbox) {
-				var ischecked = $(chkbox).prop("checked");
-				if (!ischecked || ischecked == "true") {
-					$(chkbox).prop("checked", true);
-				} else {
-					$(chkbox).prop("checked", false);
-				}
-				$(chkbox).trigger("change");
-			}
-			return false;
-		}
-		// click+shift
-		if (e.shiftKey) {
-			if (selectStart == null) {
-				selectStart = clicked;
-			} else {
-				var selectEnd = clicked;
-				if (selectStart) {
-					$(selectStart)
-						.nextUntil($(selectEnd))
-						.each(function () {
-							var chkbox = $(this).find(".selectionbox");
-							if (chkbox) {
-								var ischecked = $(chkbox).prop("checked");
-								if (!ischecked || ischecked == "true") {
-									$(chkbox).prop("checked", true);
-								} else {
-									$(chkbox).prop("checked", false);
-								}
-								$(chkbox).trigger("change");
-							}
-						});
-					selectStart = null;
-					selectEnd = null;
-				}
-			}
-			return false;
 		}
 
 		e.preventDefault();
 		e.stopPropagation();
-		var assetid = clicked.data("dataid");
-		showAsset(clicked, assetid);
+		var link = $(this);
+		showAsset(link);
+
+		return false;
 	});
+
+	// Click on asset
+	var selectStart = null;
+
+	lQuery(".mediavieweropener table.emresultstable tr td").livequery(
+		"click",
+		function (e) {
+			var clicked = $(this);
+			var pickerresults = clicked.closest(".clickableresultlist");
+			if (pickerresults.length > 0) {
+				return;
+			}
+
+			clicked = clicked.closest("tr");
+			if ($(e.target).is("input") || $(e.target).is("a")) {
+				return true;
+			}
+			// click+ctrl
+			if (e.ctrlKey) {
+				var chkbox = clicked.find(".selectionbox");
+				if (chkbox) {
+					var ischecked = $(chkbox).prop("checked");
+					if (!ischecked || ischecked == "true") {
+						$(chkbox).prop("checked", true);
+					} else {
+						$(chkbox).prop("checked", false);
+					}
+					$(chkbox).trigger("change");
+				}
+				return false;
+			}
+			// click+shift
+			if (e.shiftKey) {
+				if (selectStart == null) {
+					selectStart = clicked;
+				} else {
+					var selectEnd = clicked;
+					if (selectStart) {
+						$(selectStart)
+							.nextUntil($(selectEnd))
+							.each(function () {
+								var chkbox = $(this).find(".selectionbox");
+								if (chkbox) {
+									var ischecked = $(chkbox).prop("checked");
+									if (!ischecked || ischecked == "true") {
+										$(chkbox).prop("checked", true);
+									} else {
+										$(chkbox).prop("checked", false);
+									}
+									$(chkbox).trigger("change");
+								}
+							});
+						selectStart = null;
+						selectEnd = null;
+					}
+				}
+				return false;
+			}
+
+			e.preventDefault();
+			e.stopPropagation();
+			var assetid = clicked.data("dataid");
+			showAsset(clicked, assetid);
+		}
+	);
 	// Gallery clicking
 	lQuery(".emgallery .emthumbimage").livequery("click", function (e) {
 		var clicked = $(this);
@@ -676,18 +678,6 @@ jQuery(document).ready(function (url, params) {
 			//$(".assetproperties").trigger("click");
 		}
 	}
-
-	lQuery("div.toggle-selection").livequery("click", function () {
-		var pickerresults = $(this).closest(".pickerresults");
-		if (pickerresults.length) {
-			return;
-		}
-		var checkbox = $(this)
-			.parent()
-			.siblings("input.resultsselection.selectionbox");
-		checkbox.prop("checked", !checkbox.prop("checked"));
-		handRowSelection(checkbox);
-	});
 
 	lQuery("input.resultsselection.selectionbox").livequery(
 		"change",

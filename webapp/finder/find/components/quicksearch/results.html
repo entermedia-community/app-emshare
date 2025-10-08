@@ -1,11 +1,8 @@
-#set($popupheight = 10)
+#ifnull($query)
+	#set( $query = "")
+#end
 
-#if($livesuggestions.size())
-	#set($popupheight = $popupheight+50)
-#end
-#if($topichits.size())
-	#set($popupheight = $popupheight+60)
-#end
+#set( $query = $url_util.decode($query) )
 
 #set( $moduleid = $context.getRequestParameter("moduleid") )
 
@@ -13,76 +10,17 @@
 
 #set($ajax = $context.getRequestParameter("ajax")) 
 
-<div style="position:absolute;top:4px;right:8px;color:#333;font-size:1rem;z-index:1000;">
-	<span title="[[Esc to Close]]" class="bi bi-x-circle closemainsearch"></span>
-</div>
-
-<div class="quicksearchresults">
-	<div id="searchLoading">
-		<div class="d-flex flex-column align-items-center">
-			<div class="lds-dual-ring"></div>
-			<div class="loading-text">[[Searching for results]]</div> 
-		</div>
-	</div>
-
-
 #ifnull($hits)
 	#set($hits = $organizedResults.getEntityHits() )
 #end
 
-#set( $input = $hits.getSearchQuery().getMainInput())
-#if (!$input)
-	#set( $input = "")
-#end
-
-#set( $input = $url_util.decode($input) )
-
 #if($organizedResults.isEmpty())
 	<div class="text-secondary py-3 text-center">
-		[[No exact match found for]]: <strong>$input</strong>
+		[[No exact match found for]]: <strong>$query</strong>
 	</div>
 #end
 
-#ifnull($hits)
-	<div class="startsearch">[[Start typing to search]]</div>
-	<div class="quicksearchmodules">
-  	#foreach ( $amodule in $userprofile.getSearchableEntities() )
-  		#set($amoduleid = $amodule.getId())
-	  	#if($amoduleid!="modulesearch")
-	  		#set($entityrendertype = "entity")
-			#if ($amodule.modulerendertype)
-				#set($entityrendertype = $amodule.modulerendertype)
-			#end
-			#set($moduleicon = "grid")
-			#if ($amodule.moduleicon)
-		   		#set($moduleicon = $amodule.moduleicon)
-		   	#end
-	   	
-	 		#set($entityurl = "$!siteroot$apphome/views/modules/$!{amodule.id}/index.html")
-	 		<div class="qsmodule">
-	    	<a class=""
-	    		title="[[View]] #text($amodule)" 
-	    		href="$entityurl" >
-	    		<div class="p-2"><i class="bi bi-$!{moduleicon} module-icon" style="font-size:3em;line-height:1;opacity:0.85;"></i> </div>
-	    		#text($amodule)</a>
-	    	</div>
-	    #end
-    #end
-    </div>
-#end
-
-#if(!$livesuggestions.isEmpty())
-<ul class="qsrecent">
-#foreach ($suggestion in $livesuggestions)
-	#set($highlighted = $highlighter.highlight($livesearchfor, $suggestion, 20, true))
-	#ifnotnull($highlighted)
-	<li class="lisuggestion">
-		<a href="#" class="qssuggestion" data-suggestion="#esc($suggestion)">$highlighted</a>
-	</li>	 
-	#end
-#end
-</ul>
-#end
+$pages.include("./preview.html", $context)
 
 #foreach($module in $organizedResults.getModules() )
 	#if($module.id != "asset")
@@ -95,8 +33,8 @@
 			#if ($module.moduleicon)
 				#set($moduleicon = $module.moduleicon)
 			#end
-			   	
-			#set($entityurl = "$!siteroot$apphome/views/modules/$!{module.id}/index.html?$!{module.id}page=1&field=description&operation=freeform&description.value=$input")
+						
+			#set($entityurl = "$!siteroot$apphome/views/modules/$!{module.id}/index.html?$!{module.id}page=1&field=description&operation=freeform&description.value=$query")
 				
 			<div class="mb-4">
 				
@@ -121,13 +59,13 @@
 				</div>
 	
 				
-			   $context.putPageValue("rendermoduleid", $module.id)
-				   			   
-			   $hits.setHitsPerPage(10)
-			   $context.putPageValue("hits", $hits)
-			   
-			   $context.putPageValue("searchresults", true)
-			   $context.putPageValue("searchhome", "$apphome/views/modules/${module.id}/results/default")
+					$context.putPageValue("rendermoduleid", $module.id)
+										
+					$hits.setHitsPerPage(10)
+					$context.putPageValue("hits", $hits)
+					
+					$context.putPageValue("searchresults", true)
+					$context.putPageValue("searchhome", "$apphome/views/modules/${module.id}/results/default")
 				
 				<div class="emgridflex">  	
 					<div id="galleryimg-entitiy" 
@@ -163,26 +101,34 @@
 	#end
 #end
 
- 
-
 #if($organizedResults.getAssetResults() )
 	
 	#set($hits = $organizedResults.getAssetResults() )
 
-	#set($assetmodule = $mediaarchive.getCachedData("module","asset"))
+	#set($module = $mediaarchive.getCachedData("module","asset"))
 
 	#set($moduleicon = "grid")
-	#if ($assetmodule.moduleicon)
-		#set($moduleicon = $assetmodule.moduleicon)
+	#if ($module.moduleicon)
+		#set($moduleicon = $module.moduleicon)
 	#end
 
 	#set($edithome = "$apphome/views/modules/asset/editors/quicksearch")
-	#set($entityurl = "${edithome}/index.html?search=$input")
+	
+	#if($query == "")
+		#set( $query = "*")
+	#end
+	#set($entityurl = "${edithome}/index.html?search=$!query")
+	
+
 
 	#set( $count = $hits.size())
 	<div class="mt-2 qsresultsEntity d-flex align-items-center">
-		<i class="bi bi-$!{moduleicon} module-icon" style="font-size:0.9em;line-height:1;opacity:0.85;"></i>  
-		<span class="qsresultsEntitytext">#text($assetmodule)</span>
+		<i class="bi bi-$!{moduleicon} module-icon" style="font-size:0.9em;line-height:1;opacity:0.85;"></i> 
+		#if($suggestedassets)
+		<span class="qsresultsEntitytext">Recent #text($module)</span>
+		#else
+		<span class="qsresultsEntitytext">#text($module)</span>
+		#end
 
 		#if($count > 10)
 		<span class="mx-1">&middot;</span>
@@ -191,7 +137,7 @@
 			data-targetdiv="applicationmaincontent" 
 			data-oemaxlevel="2" 
 			data-updateurl="true" 
-			title="[[View]] $count: #text($assetmodule)">
+			title="[[View]] $count: #text($module)">
 			<span class="qsresultsEntitytext">[[View]] $count</span>
 		</a>
 		#end
@@ -207,9 +153,9 @@
 		#foreach( $hit in $hits.getPageOfHits() )
 			#if($count < 30)
 				$context.putPageValue("hit", $hit)
-		    $pages.include("${searchhome}/types/media.html", $context)
-		    #set($count = $count +1)
-		  #end
+				$pages.include("${searchhome}/types/media.html", $context)
+				#set($count = $count +1)
+			#end
 		#end
 
 		#if($hit.getPageOfHits().size() == 0)
@@ -218,8 +164,5 @@
 	</div>
 #end
 
-
 <div id="semanticLoading"></div>
 <div id="semanticMatches" class="mt-3 mx-1"></div>
-
-</div>

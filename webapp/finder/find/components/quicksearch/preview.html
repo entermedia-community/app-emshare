@@ -1,0 +1,28 @@
+#if(!$featuredfolders.isEmpty())
+  <div class="mb-4">
+    <div class="mt-2 qsresultsEntity d-flex align-items-center">
+      <i class="far fa-folder module-icon"></i>
+      <span class="qsresultsEntitytext">[[Featured Folders]]</span>
+    </div>
+    
+    <div class="quicksearchmodules">
+      #foreach ( $featuredfolder in $featuredfolders )
+        #if($featuredfolder.getId() != "modulesearch")
+          #set($entityrendertype = "entity")
+          #if ($featuredfolder.modulerendertype)
+            #set($entityrendertype = $featuredfolder.modulerendertype)
+          #end
+        
+          #set($entityurl = "$!siteroot$apphome/views/modules/asset/editors/viewfilescategory/${featuredfolder.id}/#dash($featuredfolder.name).html")
+          <a class="qsmodule" title="[[View]] #text($featuredfolder)" 
+            href="$entityurl" >
+            <div class="p-2">
+              <i class="fas fa-folder semilarge-folder"></i>
+            </div>
+            #text($featuredfolder) ($featuredfolder.getCount())
+          </a>
+        #end
+      #end
+    </div>
+  </div>
+#end

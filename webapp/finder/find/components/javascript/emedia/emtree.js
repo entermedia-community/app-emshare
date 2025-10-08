@@ -491,7 +491,7 @@ $(function () {
 
 		link =
 			link +
-			"?oemaxlevel=3&searchtype=librarycollection&field=rootcategory&rootcategory.value=" +
+			"?oemaxlevel=3&field=rootcategory&rootcategory.value=" +
 			catoptions.nodeid +
 			"&field=name&name.value=" +
 			catoptions.categoryname;
@@ -499,15 +499,12 @@ $(function () {
 		var targetdiv = "application";
 
 		$.get(link, function (data) {
-			var cell = jQuery("#" + targetdiv);
-			cell.replaceWith(data);
-
-			//node.append(data);
-			var theinput = node.find("input");
-			theinput.focus({ preventScroll: false });
-			//theinput.select();
-			//theinput.focus();
-			$(document).trigger("domchanged");
+			//var cell = jQuery("#" + targetdiv);
+			//cell.replaceWith(data);
+			
+			customToast("Collection Created");
+			
+			
 		});
 		return false;
 	});
