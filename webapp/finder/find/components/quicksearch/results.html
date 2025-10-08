@@ -1,8 +1,8 @@
-#ifnull($input)
-	#set( $input = "")
+#ifnull($query)
+	#set( $query = "")
 #end
 
-#set( $input = $url_util.decode($input) )
+#set( $query = $url_util.decode($query) )
 
 #set( $moduleid = $context.getRequestParameter("moduleid") )
 
@@ -16,7 +16,7 @@
 
 #if($organizedResults.isEmpty())
 	<div class="text-secondary py-3 text-center">
-		[[No exact match found for]]: <strong>$input</strong>
+		[[No exact match found for]]: <strong>$query</strong>
 	</div>
 #end
 
@@ -34,7 +34,7 @@ $pages.include("./preview.html", $context)
 				#set($moduleicon = $module.moduleicon)
 			#end
 						
-			#set($entityurl = "$!siteroot$apphome/views/modules/$!{module.id}/index.html?$!{module.id}page=1&field=description&operation=freeform&description.value=$input")
+			#set($entityurl = "$!siteroot$apphome/views/modules/$!{module.id}/index.html?$!{module.id}page=1&field=description&operation=freeform&description.value=$query")
 				
 			<div class="mb-4">
 				
@@ -105,23 +105,29 @@ $pages.include("./preview.html", $context)
 	
 	#set($hits = $organizedResults.getAssetResults() )
 
-	#set($assetmodule = $mediaarchive.getCachedData("module","asset"))
+	#set($module = $mediaarchive.getCachedData("module","asset"))
 
 	#set($moduleicon = "grid")
-	#if ($assetmodule.moduleicon)
-		#set($moduleicon = $assetmodule.moduleicon)
+	#if ($module.moduleicon)
+		#set($moduleicon = $module.moduleicon)
 	#end
 
 	#set($edithome = "$apphome/views/modules/asset/editors/quicksearch")
-	#set($entityurl = "${edithome}/index.html?search=$input")
+	
+	#if($query == "")
+		#set( $query = "*")
+	#end
+	#set($entityurl = "${edithome}/index.html?search=$!query")
+	
+
 
 	#set( $count = $hits.size())
 	<div class="mt-2 qsresultsEntity d-flex align-items-center">
 		<i class="bi bi-$!{moduleicon} module-icon" style="font-size:0.9em;line-height:1;opacity:0.85;"></i> 
 		#if($suggestedassets)
-		<span class="qsresultsEntitytext">Recent #text($assetmodule)</span>
+		<span class="qsresultsEntitytext">Recent #text($module)</span>
 		#else
-		<span class="qsresultsEntitytext">#text($assetmodule)</span>
+		<span class="qsresultsEntitytext">#text($module)</span>
 		#end
 
 		#if($count > 10)
@@ -131,7 +137,7 @@ $pages.include("./preview.html", $context)
 			data-targetdiv="applicationmaincontent" 
 			data-oemaxlevel="2" 
 			data-updateurl="true" 
-			title="[[View]] $count: #text($assetmodule)">
+			title="[[View]] $count: #text($module)">
 			<span class="qsresultsEntitytext">[[View]] $count</span>
 		</a>
 		#end

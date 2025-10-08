@@ -8,17 +8,22 @@ $(document).ready(function () {
 	function checkUrlForSearch() {
 		var queryparam = window.location.search;
 		var params = new URLSearchParams(queryparam);
-		var input = params.get("description.value");
-		if (input) {
-			searchQuery = decodeURIComponent(input);
+		var query = params.get("query");
+		if (query) {
+			searchQuery = decodeURIComponent(query);
 		}
 	}
 
 	checkUrlForSearch();
 
 	var urlHash = window.location.hash;
+
 	if (urlHash && urlHash === "#mainsearch") {
-		$(".mainSearchDialog").trigger("click");
+		if ($("#mainsearch").length > 0) {
+			$("#mainsearch").modal("show");
+		} else {
+			$(".mainSearchDialog").emDialog();
+		}
 	}
 
 	lQuery(".mainSearchDialog").livequery("click", function (e) {
@@ -30,6 +35,16 @@ $(document).ready(function () {
 		} else {
 			$(this).emDialog();
 		}
+	});
+
+	lQuery("#clearmainsearch").livequery("click", function (e) {
+		e.preventDefault();
+		e.stopPropagation();
+		$("#mainsearchinput").val("");
+		$("#mainsearchinput").attr("value", "");
+		searchQuery = "";
+		history.pushState($("#application").html(), "", `${apphome}#mainsearch`);
+		$(window).trigger("autoreload", [$("#mainsearchcontainer")]);
 	});
 
 	lQuery("#mainsearch").livequery(function (e) {
@@ -54,6 +69,7 @@ $(document).ready(function () {
 	lQuery(".quicksearchlinks").livequery("click", function () {
 		closeMainSearch();
 	});
+
 	lQuery("#mainsearch a.ajax").livequery("click", function () {
 		closeMainSearch();
 	});
@@ -100,9 +116,7 @@ $(document).ready(function () {
 				previewSearch.hide();
 			}
 
-			var terms = `field=description&operation=freeform&description.value=${encodeURIComponent(
-				searchQuery
-			)}`;
+			var terms = `query=${encodeURIComponent(searchQuery)}`;
 
 			if (lastTypeAhead) {
 				lastTypeAhead.abort();
