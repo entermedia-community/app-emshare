@@ -41,16 +41,7 @@
 	#set( $expanded = $webtree.isExpanded($cat) )
 	#set( $isselected = $render.isNodeSelected($cat))
 	
-	
-	##Collection
-	#set( $collectionid = $categoryCollectionCache.findCollectionId($cat))
-	#set( $isCollectionRoot = $categoryCollectionCache.isCollectionRoot($cat))
-	
-	#if($collectionid)   
-		#set( $iscollection = true )
-	#else
-		#set( $iscollection = false  )
-	#end	
+	#set( $collectionid = $categoryCollectionCache.getCollectionId($cat))
 	
 	<li id="${cat.id}_row" 
 		class="noderow categorydraggable #if(${cat.id}==${rootcategory.getId()}) rootnoderow #end" 
@@ -58,7 +49,9 @@
 		data-depth="$depth" 
 		data-categorynameesc="#dash($cat.name)"
 		data-setpagetitle="#dash($cat.name)"
-		data-collectionid="$!collectionid"> 
+		#ifnotnull($collectionid)
+			data-collectionid="$collectionid"
+		#end> 
 		#set( $checked = $render.isIdSelected($cat.id) )
 		#set ( $padding = (8 * ($depth - 1)) )
 		#if($padding == 0)
@@ -74,7 +67,7 @@
 				<div style="width:18px"></div>
 			#end
 			<div id="${cat.id}_display" 
-				class="cat-name #if($isCollectionRoot) cat-collection #else cat-folder #end #if($haschildren) cat-leaf #end" 
+				class="cat-name #ifnotnull($collectionid) cat-collection #end #ifnull($collectionid) cat-folder #end #if($haschildren) cat-leaf #end" 
 				title="$cat.getCategoryPath()">
 			#if($cat.hasCountData())
 				#if( $cat.getCounts() > 0)
@@ -268,8 +261,9 @@
 				<li><a id="nodeproperties" href="#" data-hidefooter="true">[[Properties]]</a></li>
 			#end
 		
-		#if($canaddnewcollection)  
-				<li><a id="createcollection" tabindex="-1" href="#">[[Create Collection]]</a></li>      		 
+			
+		#if($canaddnewcollection)
+			<li><a id="createcollection" tabindex="-1" href="#"> [[Create Collection]]</a></li>      		 
 		#end 
 
 	    <li class="dropdown dropright">
