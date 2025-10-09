@@ -493,13 +493,6 @@ jQuery(document).ready(function (url, params) {
 		isMouseDown = false;
 	});
 
-	lQuery(".mediavieweropener .stackedplayer").livequery("click", function (e) {
-		e.preventDefault();
-		e.stopPropagation();
-		var link = $(this);
-		showAsset(link);
-		return false;
-	});
 	lQuery(".stackedplayer").livequery("click", function (e) {
 		var clicked = $(this);
 		var pickerresults = clicked.closest(

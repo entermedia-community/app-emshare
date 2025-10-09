@@ -16,24 +16,37 @@
             #foreach($detail in $details)
                 "$detail.id": {
                     "type": 
-                            #if($detail.dataType == "boolean") "boolean"
-                            #elseif($detail.dataType == "list" || $detail.isMultiValue()) "array"
-                            #else "string" #end,
+                        #if($detail.dataType == "boolean") "boolean"
+                        #elseif($detail.isMultiValue()) "array"
+                        #else "string" #end,
                     "description": "$detail.name $!detail.note"
-                    #if($detail.dataType == "list" || $detail.isMultiValue()),
-                    "items": {
-                        "type": "string"
-                        #if($mediaarchive.getList($detail.id).size() > 0),
-                        "enum": [
-                            #foreach($option in $mediaarchive.getList($detail.id))
-                                #if($foreach.count>1)
-                                ,
+                    #if($detail.dataType == "list")
+                        #if($detail.isMultiValue()),
+                        "items": {
+                            "type": "string"
+                            #if($mediaarchive.getList($detail.id).size() > 0),
+                            "enum": [
+                                #foreach($option in $mediaarchive.getList($detail.id))
+                                    #if($foreach.count>1)
+                                    ,
+                                    #end
+                                    "$option.id|#text($option)"
                                 #end
-                                "$option.id|#text($option)"
+                            ]
                             #end
-                        ]
+                        }
+                        #else
+                            #if($mediaarchive.getList($detail.id).size() > 0),
+                            "enum": [
+                                #foreach($option in $mediaarchive.getList($detail.id))
+                                    #if($foreach.count>1)
+                                    ,
+                                    #end
+                                    "$option.id|#text($option)"
+                                #end
+                            ]
+                            #end
                         #end
-                    }
                     #end
                 }#if($foreach.count < $details.size()),#end
             #end
