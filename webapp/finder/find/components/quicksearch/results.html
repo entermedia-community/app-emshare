@@ -132,14 +132,28 @@ $pages.include("./preview.html", $context)
 
 		#if($count > 10)
 		<span class="mx-1">&middot;</span>
-		<a href="$entityurl" 
-			class="ajax qsresultsEntityall btn btn-sm btn-accent"
-			data-targetdiv="applicationmaincontent" 
-			data-oemaxlevel="2" 
-			data-updateurl="true" 
-			title="[[View]] $count: #text($module)">
-			<span class="qsresultsEntitytext">[[View]] $count</span>
-		</a>
+		#ifnotnull($suggestedassets)
+			#set($entityurl = "$apphome/views/modules/asset/editors/viewfilescategory/index/All.html")
+			<a href="$entityurl" 
+					class="ajax btn btn-sm btn-accent"
+					data-targetdiv="applicationmaincontent" 
+					data-oemaxlayout="3"
+					data-assetclearfilters=true
+					data-updateurl="true" 
+					title="[[View]] $count: #text($module)">
+					<span class="qsresultsEntitytext">[[View]] $count</span>
+				</a>
+		#end
+		#ifnull($suggestedassets)
+			<a href="$entityurl" 
+				class="ajax qsresultsEntityall btn btn-sm btn-accent"
+				data-targetdiv="applicationmaincontent" 
+				data-oemaxlayout="3"
+				data-updateurl="true" 
+				title="[[View]] $count: #text($module)">
+				<span class="qsresultsEntitytext">[[View]] $count</span>
+			</a>
+		#end
 		#end
 	</div>
 	
