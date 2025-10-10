@@ -496,7 +496,7 @@ jQuery(document).ready(function (url, params) {
 	lQuery(".stackedplayer").livequery("click", function (e) {
 		var clicked = $(this);
 		var pickerresults = clicked.closest(
-			".clickableresultlist, .clickableresultlistinline"
+			".clickableresultlist, .clickableresultlistinline, .pickerpickasset"
 		);
 
 		if (pickerresults.length > 0) {

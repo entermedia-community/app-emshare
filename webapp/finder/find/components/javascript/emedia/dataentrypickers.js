@@ -330,7 +330,9 @@ $(document).ready(function () {
 				if (pickertarget.length > 0) {
 					var detailid = pickertarget.data("detailid");
 					$("#" + detailid + "-value").attr("value", rowid);
-					$("#" + detailid + "-preview").load(
+					let preview = $("#" + detailid + "-preview"); 
+					
+					preview.load(
 						apphome +
 							"/components/xml/types/assetpicker/preview.html?oemaxlevel=1&assetid=" +
 							rowid,
