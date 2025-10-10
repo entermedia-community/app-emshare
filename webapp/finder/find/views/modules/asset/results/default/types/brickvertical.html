@@ -30,7 +30,7 @@
 #end
 
 
-<div class="scrollview" style="overflow-x: hidden;">
+<div class="scrollview position-relative" style="overflow-x: hidden;">
 	<div class="brickvertical brickverticalsortable" 
 		#ifnotnull($minbrickwidth) 
 			data-minwidth="$minbrickwidth"
@@ -42,17 +42,18 @@
 	#set($stackedfield = $mediaarchive.getCatalogSettingValue("stackedgalleryfield"))
 
 	#set( $rowcount = 0)
-	#set( $cellcount = 0)
-
+	#set( $colcount = 0)
 		
 	#foreach( $brick in $loop.getPageOfHits())
 	 
 	 	#ifnotnull( $hitassetlookup )
 		 	#set( $hit = $hitassetlookup.get($brick.getId()) )
 	 	#end
+
 	 	#ifnull( $hitassetlookup )
 			#set( $hit = $brick)
 	 	#end
+
 		$context.putPageValue("brick", $brick)
 		$context.putPageValue("hit", $hit)
 		$context.putPageValue("asset", $hit)
@@ -80,20 +81,23 @@
 		#set($click = "$siteroot$viewerlink?hitssessionid=${hits.getSessionId()}&assetid=${hit.id}")
 		$context.putPageValue("click", "click" )
 
-		#set( $colcount = $colcount + 1)
 		#if($colcount > 6 )
 			#set( $colcount = 0)
 			#set( $rowcount = $rowcount + 1)
 		#end		
-		       
+		
+		#set($cellleft = ($colcount * 250) + 5)
+		#set($celltop = ($rowcount * 300) + 5)
+
+		#set( $colcount = $colcount + 1)
+
 		<div class="resultsdivdata masonry-grid-cell #if($isdraggable)assetdraggable#end"
-			 
 			id="gallerycell_$!{hit.id}"
 			data-assetid="$!{hit.id}"
 			data-dataid="$!{hit.id}"
 			data-assetlightboxid="$!{brick.id}"
 			data-ordering="$!{brick.ordering}"
-			style="top: left: width:200 height: 200"
+			style="position: absolute; top: ${celltop}px; left: ${cellleft}px;overflow: hidden;width: 250px; height: 300px;margin-right: 5px; margin-bottom: 5px;"
 			
 			#if($rendertype == "audio")
 				data-width="250"
