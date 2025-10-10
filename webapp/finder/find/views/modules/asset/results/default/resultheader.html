@@ -105,8 +105,10 @@
 	<div id="sub-nav" class="emsubnav sub-nav-${module.id}">
 		<ul class="resultsnav mbl-hideexcept">
 			#set ($enabled = false)
-			#if ($hits.getSelectionSize() && $hits.getSelectionSize()>0)
-				#set ($enabled = true)
+			#ifnotnull($hits.getSelectionSize())
+				#if($hits.getSelectionSize()>0)
+					#set ($enabled = true)
+				#end
 			#end
 			
 			#if($page.isPropertyTrue("showsidetree", true))
@@ -186,7 +188,7 @@
 								</div>
 							</li>
 						#end
-						#if ($hits.getSelectionSize() > 0)
+						#if ($hits.getSelectionSize() && $hits.getSelectionSize() > 0)
 							<li>
 								<a class='resultsnavlink emdialog px-3'
 								data-dialogid="downloadeasset"
