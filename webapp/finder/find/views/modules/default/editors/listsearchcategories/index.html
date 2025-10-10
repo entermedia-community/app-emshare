@@ -1,53 +1,19 @@
-#set($searchcategoryid = $context.getRequestParameter("searchcategoryid"))
-#set($selectedmodule = $context.getRequestParameter("selectedmodule"))
-
-
-#ifnotnull($searchcategoryid)
-		#set( $searchcategory = $mediaarchive.getCachedData("searchcategory",$searchcategoryid) )
-		$context.putPageValue("searchcategory", $searchcategory)
-#end
-
 <div id="$edithomeid"  
-	class='editdiv dataeditedreload 
-	#ifnull($searchcategoryid)listsearchcategories #end 
-	#ifnotnull($searchcategoryid) 
-		#if($selectedmodule != "asset")
-		listofentities
-		#end 
-	#end
-	'
-	data-autoreloadurl="${edithome}/index.html"
-	data-edithome="${edithome}"
-	
-	data-edithomeid="${edithomeid}"
-	
-	data-entityid="$!searchcategory.id"
-	data-entitymoduleid="searchcategory"
->
 
+class="editdiv dataeditedreload listsearchcategories" 
+data-autoreloadurl="${edithome}/index.html"
+data-edithome="${edithome}"
+data-edithomeid="${edithomeid}"
+data-entitymoduleid="searchcategory" 
+
+>
 	<div class="clickableresultlistinline heightExcludingHeaderFooter"
 		data-${module.id}hitssessionid="$!hits.getSessionId()"
 		data-includesearchcontext="false"
-		#ifnull($searchcategoryid)
-			#set($previewurl = "$edithome/index.html")
-			data-url= "$previewurl"
-			data-targetdiv="$edithomeid"
-			data-oemaxlevel="1"
-		#end
+		data-targetdiv="$edithomeid"
+		data-edithome=""
+		data-url="$apphome/views/modules/searchcategory/editors/listsearchcategoriesresults/index.html"
 	>
-	#if($searchcategoryid)
-		##Search across modules for this category
-		#set($searchhome = "$apphome/views/modules/modulesearch/results/searchcategory")
-		$context.putPageValue("searchhome", $searchhome)
-		
-		#set( $module = $mediaarchive.getCachedData("module","modulesearch") )
-		$context.putPageValue("module", $module)
-
-		#set($url = "${edithome}/searchalltypes.html?field=searchcategory&operation=exact&searchcategory.value=$!searchcategoryid")
-		$pages.include($url,$context)
-	
-	#else
-
 		##Search for searchcategories 
 		#set($searchhome = "$apphome/views/modules/searchcategory/results/searchcategory")
 
@@ -56,8 +22,6 @@
 		$pages.include("${edithome}/categorybreadcrumb.html", $context)
 		
 		$pages.include("${searchhome}/searchinclude.html",$context)
-
-	#end
 	</div>
 </div>
 

@@ -206,10 +206,8 @@ $(document).ready(function () {
 			var searchId = row.data("dataid");
 			var submoduleOpener = row.closest(".clickableresultlistinline");
 			submoduleOpener.data("updateurl", true);
-			submoduleOpener.data(
-				"urlbar",
-				`${submoduleOpener.data("url")}?searchcategoryid=${searchId}`
-			);
+			var url = `${submoduleOpener.data("url")}?searchcategoryid=${searchId}`;
+			submoduleOpener.data("urlbar",url);
 			submoduleOpener.data("searchcategoryid", searchId);
 			submoduleOpener.runAjax();
 		}

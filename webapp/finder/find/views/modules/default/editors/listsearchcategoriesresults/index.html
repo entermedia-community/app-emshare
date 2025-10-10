@@ -1,0 +1,28 @@
+#set($searchcategoryid = $context.getRequestParameter("searchcategoryid"))
+#set($selectedmodule = $context.getRequestParameter("selectedmodule"))
+
+#set( $searchcategory = $mediaarchive.getCachedData("searchcategory",$searchcategoryid) )
+$context.putPageValue("searchcategory", $searchcategory)
+
+<div id="$edithomeid"  
+	class="editdiv dataeditedreload" 
+	data-autoreloadurl="${edithome}/index.html"
+	data-edithome="${edithome}"
+	data-edithomeid="${edithomeid}"
+	data-searchcategoryid="$searchcategoryid"
+	data-entityid="$!searchcategory.id"
+	data-entitymoduleid="searchcategory"
+>
+
+	##Search across modules for this category
+	#set($searchhome = "$apphome/views/modules/modulesearch/results/searchcategory")
+	$context.putPageValue("searchhome", $searchhome)
+	
+	#set( $module = $mediaarchive.getCachedData("module","modulesearch") )
+	$context.putPageValue("module", $module)
+
+	#set($url = "${edithome}/searchalltypes.html?field=searchcategory&operation=exact&searchcategory.value=$!searchcategoryid")
+	$pages.include($url,$context)
+</div>
+
+
