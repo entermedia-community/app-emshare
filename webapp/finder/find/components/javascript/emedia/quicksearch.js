@@ -101,7 +101,6 @@ $(document).ready(function () {
 
 		mainSearchInput.on("keyup change paste", onMainSearchInput);
 		function onMainSearchInput(e) {
-			e.preventDefault();
 			e.stopPropagation();
 			if (e.keyCode == 27) {
 				closeMainSearch();
