@@ -59,12 +59,13 @@
 		data-targetdiv="emgridentity$!moduleid$!entityid">
 		
 		
-		<div class="emcategory-thumb emcategory-thumb-$assetrendertype">
+		<div class="emcategory-thumb emcategory-thumb-$!{assetrendertype}">
 			#if($primarymedia)
 				#set( $primarymediadetail = $mediaarchive.getSearcher($moduleid).getDetail("primarymedia") )
 				 
 				$context.putPageValue("data", $entity)
 				$context.putPageValue("value", $primarymedia.getId())
+				$context.putPageValue("detail", $primarymediadetail)
 
 				#set( $xmledithome = "$apphome/views/modules/${moduleid}/components/xml")
 				
@@ -72,7 +73,7 @@
 
 				$pages.include($previewurl, $context)
 			#else
-				<i class="bi bi-${moduleicon} module-icon"></i>			
+				<i class="bi bi-$!{moduleicon} module-icon"></i>			
 			#end 
 			<div class="emthumb-mask">
 				<span>
