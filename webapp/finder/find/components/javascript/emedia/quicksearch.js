@@ -209,7 +209,7 @@ $(document).ready(function () {
 	}
 
 	function loadSemanticMatches(query, excludeIds) {
-		if (!query || query.length < 3) {
+		if (!query || query.length < 5) {
 			return;
 		}
 		var data = {
@@ -218,6 +218,7 @@ $(document).ready(function () {
 			excludeentityids: excludeIds.entityIds,
 			excludeassetids: excludeIds.assetIds,
 		};
+
 		$.ajax({
 			url: `${apphome}/views/modules/modulesearch/results/semanticsearch/semanticsearch.html`,
 			type: "POST",
