@@ -40,7 +40,11 @@
 	#set($count = 0)
 	#set($viewerlink = $content.get("assetviewerlink") )
 	#set($stackedfield = $mediaarchive.getCatalogSettingValue("stackedgalleryfield"))
-	
+
+	#set( $rowcount = 0)
+	#set( $cellcount = 0)
+
+		
 	#foreach( $brick in $loop.getPageOfHits())
 	 
 	 	#ifnotnull( $hitassetlookup )
@@ -75,8 +79,12 @@
 		
 		#set($click = "$siteroot$viewerlink?hitssessionid=${hits.getSessionId()}&assetid=${hit.id}")
 		$context.putPageValue("click", "click" )
-		
 
+		#set( $colcount = $colcount + 1)
+		#if($colcount > 6 )
+			#set( $colcount = 0)
+			#set( $rowcount = $rowcount + 1)
+		#end		
 		       
 		<div class="resultsdivdata masonry-grid-cell #if($isdraggable)assetdraggable#end"
 			 
@@ -85,6 +93,7 @@
 			data-dataid="$!{hit.id}"
 			data-assetlightboxid="$!{brick.id}"
 			data-ordering="$!{brick.ordering}"
+			style="top: left: width:200 height: 200"
 			
 			#if($rendertype == "audio")
 				data-width="250"
