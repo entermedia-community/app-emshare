@@ -302,15 +302,15 @@ $(document).ready(function () {
 		});
 	});
 
-	if ($("#application").hasClass("blockfind")) {
-		lQuery(".pickfromiframe").livequery("click", function (e) {
+	lQuery(".pickfromiframe").livequery("click", function (e) {
+		if ($("#application").hasClass("blockfind")) {
 			e.preventDefault();
 			e.stopImmediatePropagation();
 
-			var pickerbtn = $(this);
+			var pickerBtn = $(this);
 
-			var imageUrl = pickerbtn.data("imageurl");
-			var assetinfo = pickerbtn.closest("[data-assetid]");
+			var imageUrl = pickerBtn.data("imageurl");
+			var assetInfo = pickerBtn.closest("[data-assetid]");
 			var assetid = "";
 			var target = "";
 			if (externalmessage && externalmessage.target) {
@@ -319,8 +319,8 @@ $(document).ready(function () {
 			if (!target) {
 				target = $("#application").data("targetfieldid") || "";
 			}
-			if (assetinfo.length) {
-				assetid = assetinfo.data("assetid");
+			if (assetInfo.length) {
+				assetid = assetInfo.data("assetid");
 			}
 
 			var type = $("#application").data("targettype");
@@ -329,10 +329,10 @@ $(document).ready(function () {
 			}
 
 			if (type == "entity") {
-				assetid = pickerbtn.data("primarymedia");
+				assetid = pickerBtn.data("primarymedia");
 			}
 
-			var entityid = pickerbtn.data("entityid");
+			var entityid = pickerBtn.data("entityid");
 
 			var payload = {
 				name: "eMediaPicked",
@@ -358,8 +358,8 @@ $(document).ready(function () {
 			} else {
 				window.parent.postMessage(payload);
 			}
-		});
-	}
+		}
+	});
 
 	lQuery("form").livequery(function () {
 		var modal = $(this).closest(".modal");
