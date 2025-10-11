@@ -217,7 +217,7 @@ $(document).ready(function () {
 			excludeentityids: excludeIds.entityIds,
 			excludeassetids: excludeIds.assetIds,
 		};
-
+		var semanticMatches = $("#semanticMatches");
 		$.ajax({
 			url: `${apphome}/views/modules/modulesearch/results/semanticsearch/semanticsearch.html`,
 			type: "POST",
@@ -228,15 +228,15 @@ $(document).ready(function () {
 			},
 			success: function (data) {
 				if (data) {
-					$("#semanticMatches").html(data);
+					semanticMatches.html(data);
 					$("#semanticLoading").removeClass("show");
 					jQuery(window).trigger("resize");
 				} else {
-					$("#semanticMatches").html("");
+					semanticMatches.html("");
 				}
 			},
 			error: function () {
-				$("#semanticMatches").html("");
+				semanticMatches.html("");
 				$("#semanticLoading").removeClass("show");
 			},
 			complete: function () {
