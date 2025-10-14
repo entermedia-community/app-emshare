@@ -1,12 +1,16 @@
 #ifnull($entitymoduleviewid) 
 	#set($entitymoduleviewid = $context.getRequestParameter("entitymoduleviewid"))
-	
 #end
-#set($entitymoduleviewdata = $mediaarchive.getCachedData("view",$entitymoduleviewid))
 
-<div id="$edithomeid" class="editdiv entitysubmodules dataeditedreload" 
+#set($entitymoduleviewdata = $mediaarchive.getCachedData("view",$entitymoduleviewid))
+#set($submoduleid = $!entitymoduleviewdata.rendertable) ##Sub module
+
+#set($submodule = $mediaarchive.getCachedData("module",$submoduleid))
+
+<div id="$edithomeid" class='editdiv entitysubmodules dataeditedreload #if($submodule.enableuploading == "true") dropentity #end' 
 	data-entityid="$!entity.id"
 	data-entitymoduleid="$!entitymodule.id"
+	data-moduleid="$!submodule.id"
 	data-entitymoduleviewid="$!entitymoduleviewid"
 	data-url= "${apphome}/views/modules/${entitymodule.id}/editors/entitysubmodules/index.html"
 	data-edithome="${edithome}"
@@ -16,7 +20,6 @@
 	#set($entitymodule = $mediaarchive.getCachedData("module",$entitymoduleid))
 	$context.putPageValue("entitymodule", $entitymodule)
 	
-	#set($submoduleid = $!entitymoduleviewdata.rendertable) ##Sub module
 
 <div class="clickableresultlist"
 	data-targetdiv="entitydialog"

@@ -1,5 +1,3 @@
-
-
 $(document).ready(function () {
 	lQuery(".assetpicker .assetInput").livequery("change", function () {
 		var input = $(this);
@@ -102,8 +100,6 @@ $(document).ready(function () {
 		}
 	});
 
-	
-
 	//CB This works. Opens entities
 	lQuery(".topmodules .resultsdivdata").livequery("click", function (e) {
 		if (!isValidTarget(e)) {
@@ -113,7 +109,7 @@ $(document).ready(function () {
 		row.css("pointer-events", "none");
 
 		var clickableresultlist = row.closest(".clickableresultlist");
-		
+
 		var moduleid = clickableresultlist.data("moduleid");
 
 		var rowid = row.data("dataid");
@@ -136,17 +132,19 @@ $(document).ready(function () {
 		var row = $(this);
 
 		var clickableresultlist = row.closest(".clickopenentity");
-		if (clickableresultlist.length < 1 || row.hasClass("resultsassetcontainer"))
-		{
+		if (
+			clickableresultlist.length < 1 ||
+			row.hasClass("resultsassetcontainer")
+		) {
 			return true; //handled by asset picker
 		}
-		
+
 		row.css("pointer-events", "none");
 		var rowid = row.data("dataid");
 		clickableresultlist.data("id", rowid);
 		clickableresultlist.data("entityid", rowid);
 		var entitymoduleid = row.data("entitymoduleid");
-		
+
 		clickableresultlist.data(
 			"url",
 			`${apphome}/views/modules/${entitymoduleid}/editors/default/tabs/index.html`
@@ -207,7 +205,7 @@ $(document).ready(function () {
 			var submoduleOpener = row.closest(".clickableresultlistinline");
 			submoduleOpener.data("updateurl", true);
 			var url = `${submoduleOpener.data("url")}?searchcategoryid=${searchId}`;
-			submoduleOpener.data("urlbar",url);
+			submoduleOpener.data("urlbar", url);
 			submoduleOpener.data("searchcategoryid", searchId);
 			submoduleOpener.runAjax();
 		}
@@ -328,8 +326,8 @@ $(document).ready(function () {
 				if (pickertarget.length > 0) {
 					var detailid = pickertarget.data("detailid");
 					$("#" + detailid + "-value").attr("value", rowid);
-					let preview = $("#" + detailid + "-preview"); 
-					
+					let preview = $("#" + detailid + "-preview");
+
 					preview.load(
 						apphome +
 							"/components/xml/types/assetpicker/preview.html?oemaxlevel=1&assetid=" +
