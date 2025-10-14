@@ -13,7 +13,7 @@
 	#end
 	
 	#if( $hit.previewstatus == "mime" || $alwaysmime)
-	   		#set( $rendertype = "mime" )
+	  #set( $rendertype = "mime" )
 	#end
 		
 	$context.putPageValue("rendertype", $rendertype)
@@ -34,12 +34,13 @@
 		#set($assetheight = $mediaarchive.getRealImageHeight($hit))
 	#end
 	
-<div class="masonry-grid-cell assetdraggable ui-draggable" 
+<div class="stackedplayer masonry-grid-cell assetdraggable ui-draggable" 
 	data-assetid="$!hit.id"
 	data-width="$assetwidth" 
 	data-height="$assetheight" 
 	data-draggholderclone="grid-thumbimage" >
-	<div class="grid-thumbimage " data-assetid="$!hit.id" >
+	<div class="grid-cell-hover"></div>
+	<div class="grid-thumbimage" data-assetid="$!hit.id" >
     	
 	   #set($searchhome = "$apphome/views/modules/asset/results/default")
 	   $!context.putPageValue("searchhome", $searchhome)
@@ -67,36 +68,13 @@
 	     		#set($title = $asset.getText("name",$context) )
 	     	#end
 	     #end
-         <a class="stackedplayer grid-caption-link" 
-	         id="clickid${hit.id}" 
-	         data-assetid="$hit.id" 
-        	 href="#" title="$hit.sourcepath">
-         #if($hit.previewstatus == "2")
-		##	 <div class="grid-caption-title">#esc($title)</div>
-         #end
-		 
-         ##Show entities or something more?
-         #foreach( $asetmodule in $mediaarchive.getList("module") )
-         	#set( $showon = $asetmodule.get("showonsearch") )
-         	#if($showon == "true")
-         	
-         		#set( $values = $hit.getValues($asetmodule.getId()) )
-         		#if( $values)
-         		
-		         	#foreach( $row in $values )
-		         		#set($modulevalue = $!mediaarchive.getCachedData($!asetmodule.getId(), $row))
-		         		#if($modulevalue)
-		         		<div class="badge badge-secondary" data-assetmoduleid="$!asetmodule.getId()">
-		         		#text($!context.getText($modulevalue))
-		         		</div>	
-		         		#end
-		         	#end
-		         
-		        #end	
-         	#end
-         #end
-         
-         </a>
+
+			<div class="grid-caption-link insearch">
+				$context.putPageValue("data",$hit)	
+				$context.putPageValue("searcher",$mediaarchive.getAssetSearcher() )	
+				$context.putPageValue("viewid", "assetstackedgallery")
+				$pages.include("/$applicationid/components/xml/detailviewer-stackedgallery.html", $context)
+			</div>
          
         #foreach($row in $list)
 			#set( $val = false )
@@ -109,43 +87,23 @@
 		#end
       
            
-        <div class="grid-gallery-footer">
-	        ##look for datefields
-			#foreach( $detail in $details )
-				#if($detail.getId() == "assetaddeddate")
-					#set( $assetdate = $hit.getValue($detail.getId()))
-				#end
-			#end
-        	
-      	   	$pages.include("${searchhome}/badges.html", $context)
-			
-	        #ifnotnull ($assetdate)
-	         	$!context.getDate($assetdate)
-	         #end
-	         <div class="float-right">
-			
-	        #if($canquickdownload)
- 	        	#if( $desktop )
-		        	<a href="#" class="emdesktopdownload grid-gallery-download" data-assetid="$hit.id" title="[[Download]] $!title">
-		        	<i class="fas fa-download"> </i>
-		        	</a>
-	        		#else
-					#set($dlink = $mediaarchive.asLinkToOriginal($hit))
-					#set($dlink = "$siteroot/$mediadbappid/services/module/asset/downloads/originals/$dlink?assetid=$!hit.getId()")
-					#if($collectionid)
-						#set($dlink = "$dlink&collectionid=$!{collectionid}")
+    <div class="grid-gallery-footer d-flex align-items-center justify-content-between"> 
+			<div class="d-flex align-items-center"> 
+				<div class="d-flex align-items-center ml-1">
+					#if($canaddtofavorites)
+						<div id="gsassetfavorite-$!{hit.id}" class="media-info-icons mr-1">
+							$pages.include("$apphome/views/modules/asset/editor/favorite/index.html?targetdiv=gsassetfavorite", $context)
+						</div>
 					#end
-		        	<a href="$dlink" class="grid-gallery-download" data-assetid="$hit.id" title="[[Download]] $!title">
-		        	<i class="fas fa-download"> </i>
-		        	</a>
-	        	#end
-        	#end 
-        	#if($canaddtofavorites)
-		        <div id="gsassetfavorite-${hit.id}" class="media-info-icons">
-	        	 $pages.include("$apphome/views/modules/asset/editor/favorite/index.html?targetdiv=gsassetfavorite", $context)
-	   			</div>
-	       	 #end
-        	</div>
-       	</div>
-      </div>
+					#if(($candownload || $canconvert || $candownloadfpo) && $canquickdownload)
+						#set($dlink =  "$applink/views/modules/asset/activity/downloadassets.html")
+						<a href="$dlink" data-dialogid="downloadfromassethover" class="emdialog mr-1" data-assetid="$hit.id" data-hidefooter="true" title="[[Download]] $!title">
+							<i class="bi bi-download ns"></i>
+						</a>
+					#end
+				</div>
+			</div>
+		</div>
+
+	</div>
 </div>

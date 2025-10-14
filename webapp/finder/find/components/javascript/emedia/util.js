@@ -287,6 +287,12 @@ $(document).ready(function () {
 		});
 	});
 
+	lQuery(".favorite-star").livequery("click", function (e) {
+		e.preventDefault();
+		e.stopImmediatePropagation();
+		$(this).runAjax();
+	});
+
 	lQuery(".pickfromiframe").livequery("click", function (e) {
 		if ($("#application").hasClass("blockfind")) {
 			e.preventDefault();
