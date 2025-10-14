@@ -234,21 +234,6 @@ $(document).ready(function () {
 		}, 50);
 	});
 
-	focusInput = function (input) {
-		//console.log(input);
-		if (window.innerWidth < 768) return false;
-		if (input.length > 0) {
-			input.focus();
-			var inputVal = input.val();
-			if (inputVal) {
-				input.val("");
-				input.val(inputVal);
-			}
-			return true;
-		}
-		return false;
-	};
-
 	window.debugMode = false;
 	window.onkeydown = function (event) {
 		if (event.ctrlKey) {
@@ -361,6 +346,23 @@ $(document).ready(function () {
 		}
 	});
 
+	focusInput = function (input) {
+		if (window.innerWidth < 768) return false;
+		if (input.hasClass("datepicker")) {
+			return;
+		}
+		if (input.length > 0) {
+			input.focus();
+			var inputVal = input.val();
+			if (inputVal) {
+				input.val("");
+				input.val(inputVal);
+			}
+			return true;
+		}
+		return false;
+	};
+
 	lQuery("form").livequery(function () {
 		var modal = $(this).closest(".modal");
 		if (modal.length === 0 || $(this).hasClass("noautofocus")) {
@@ -370,6 +372,7 @@ $(document).ready(function () {
 		if (input.length === 0) {
 			input = $(this).find("textarea[autofocus]:visible:first");
 		}
+
 		var focused = focusInput(input);
 		if (!focused) {
 			var $this = $(this);
