@@ -3,7 +3,7 @@ package utils
 import org.entermediadb.asset.Asset
 import org.entermediadb.asset.MediaArchive
 import org.entermediadb.google.GoogleManager
-import org.entermediadb.video.CloudTranscodeManager
+import org.entermediadb.video.GoogleTranscriberManager
 import org.openedit.Data
 import org.openedit.repository.ContentItem
 
@@ -16,7 +16,7 @@ public void runit()
 	GoogleManager manager = mediaArchive.getBean("googleManager");
 	Data auth = mediaArchive.getData("oauthprovider","google");
 	manager.uploadToBucket(auth, "testbench", item, "{\"name\": \"test\"}");
-	CloudTranscodeManager trans = mediaArchive.getBean("cloudTranscodeManager");
+	GoogleTranscriberManager trans = mediaArchive.getBean("googleTranscriberManager");
 	trans.tr
 }
 

@@ -3,7 +3,7 @@ package asset
 import org.entermediadb.asset.Asset
 import org.entermediadb.asset.MediaArchive
 import org.entermediadb.google.GoogleManager
-import org.entermediadb.video.CloudTranscodeManager
+import org.entermediadb.video.GoogleTranscriberManager
 import org.openedit.Data
 import org.openedit.hittracker.HitTracker
 
@@ -18,7 +18,7 @@ public void runit()
 	
 	
 	HitTracker hits = mediaArchive.getAssetSearcher().query().not("editstatus","7").match("googletranscoded", "false").orgroup("assettype", "video audio").match("importstatus", "complete").search();
-	CloudTranscodeManager manager = mediaArchive.getBean( "cloudTranscodeManager");
+	GoogleTranscriberManager manager = mediaArchive.getBean( "googleTranscriberManager");
 	
 	hits.each{
 	
