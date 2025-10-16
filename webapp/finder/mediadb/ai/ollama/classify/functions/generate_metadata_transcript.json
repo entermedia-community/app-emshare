@@ -1,10 +1,8 @@
 {
-  "name": "generate_metadata_asset",
-  "description": "Analyze the image and following metadata to generate appropriate values for the missing fields:
-	#ifnotnull( $asset.name ) Current file name: $asset.name #end 
-	#if( $asset.hasKeywords() )
-	Existing keywords: #foreach($kw in $asset.getKeywords())#if($foreach.count > 1),#end $kw #end
-	#end",
+  "name": "generate_metadata_transcript",
+  "description": "Analyze the following transcript from an audio/video file to generate appropriate values for its missing metadata fields.
+	#ifnotnull( $asset.name )File Name: $asset.name #end
+	Transcript: $textcontent",
   "parameters": {
     "type": "object",
     "properties": {
@@ -27,21 +25,6 @@
 								#jesc("$option.id|#text($option)")
 							#end
 						]
-#*
-Slower than enum, useful if list contains mixed data types
-	anyOf: [
-		#foreach( $option in $mediaarchive.getList($field.getListId()) )
-			#if($foreach.count>1)
-			,
-			#end
-			{
-				"type": "string",
-				"const": "$option.id",
-				"description": "#text($option)"
-			}
-		#end
-	]
-*#
 					}
 				#else
 					"$field.id": {
