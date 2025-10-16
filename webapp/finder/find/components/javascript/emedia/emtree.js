@@ -85,14 +85,12 @@ $(function () {
 		}
 	);
 
-	lQuery(".scrolltocat").livequery(function () {
-		var tree = $(this).closest(".categorytreescrolllable");
-		var scrollTo = $(this);
-		if (tree.length == 0 || scrollTo.length == 0) return;
-		var position =
-			scrollTo.offset().top - tree.offset().top + tree.scrollTop() - 100;
-		//console.log(position);
-		tree.scrollTop(position);
+	lQuery(".treerow.cat-current").livequery(function () {
+		console.log(this);
+		$(this).scrollIntoView({
+			offset: -50,
+			container: ".searchcategories-tree",
+		});
 	});
 
 	gotopage = function (tree, node, prefix, inOptions) {
@@ -501,10 +499,8 @@ $(function () {
 		$.get(link, function (data) {
 			//var cell = jQuery("#" + targetdiv);
 			//cell.replaceWith(data);
-			
+
 			customToast("Collection Created");
-			
-			
 		});
 		return false;
 	});
