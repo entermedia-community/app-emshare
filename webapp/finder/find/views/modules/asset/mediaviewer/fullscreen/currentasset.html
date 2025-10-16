@@ -44,8 +44,10 @@ $context.putPageValue("previewonly", $previewonly)
 	#set( $opentab = "viewpreview")
 #end
 
-#if(($opentab == "viewtimeline" || $opentab == "viewclosedcaptions") && $rendertype != "video")
-	#set( $opentab = "viewpreview")
+#if(($opentab == "viewtimeline" || $opentab == "viewclosedcaptions") )
+	#if( $rendertype != "video" && $rendertype != "audio" )
+		#set( $opentab = "viewpreview")  ##Dont open these unless its a media file
+	#end	
 #end
 
 #if($opentab == "imageeditor" && $rendertype != "image")
