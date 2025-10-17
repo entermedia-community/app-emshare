@@ -51,7 +51,9 @@
 		data-setpagetitle="#dash($cat.name)"
 		#ifnotnull($collectionid)
 			data-collectionid="$collectionid"
-		#end> 
+		#end
+		data-isfeatured="$!cat.isfeatured"
+		> 
 		#set( $checked = $render.isIdSelected($cat.id) )
 		#set ( $padding = (8 * ($depth - 1)) )
 		#if($padding == 0)
@@ -258,13 +260,13 @@
 				<li><a id="createnode" tabindex="-1" href="#">[[Add Sub-Folder]]</a></li>
 				<li><a id="renamenode" tabindex="-1" href="#">[[Rename]]</a></li>
 				<li><a id="deletenode" tabindex="-1" href="#">[[Remove]]</a></li>
-				<li><a id="nodeproperties" href="#" data-hidefooter="true">[[Properties]]</a></li>
-			#end
-		
-			
-		#if($canaddnewcollection)
-			<li><a id="createcollection" tabindex="-1" href="#"> [[Create Collection]]</a></li>      		 
-		#end 
+				#if($canaddnewcollection)
+					<li><a id="createcollection" tabindex="-1" href="#"> [[Create Collection]]</a></li>      		 
+				#end 
+				<li><a id="togglefeatured" tabindex="-1" href="#" 
+						data-removefeatured="[[Remove From Featured]]"
+						data-addfeatured="[[Make it Featured]]"></a></li>
+		#end
 
 	    <li class="dropdown dropright">
 				<a class="dropdown-item dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="navbarAddto$!{moduleid}">[[Copy to]]&nbsp;&nbsp;</a>
@@ -288,7 +290,12 @@
 							#end
 					#end
 					</div>
-			</li>	     
+			</li>	 
+			
+			
+			#if( $editable && $caneditcategorytree  )
+			<li><a id="nodeproperties" href="#" data-hidefooter="true">[[Properties]]</a></li>
+			#end    
 	     
 			##      <li><a tabindex="-1" href="#">[[Copy]]</a></li>
 			##      <li><a tabindex="-1" href="#">[[Cut]]</a></li>      

@@ -504,6 +504,38 @@ $(function () {
 		});
 		return false;
 	});
+	
+	
+	lQuery(".treecontext #togglefeatured").livequery("click", function (event) {
+			event.stopPropagation();
+			var node = getNode(this);
+			var nodeid = node.data("nodeid");
+			var catoptions = node.data();
+			var tree = node.closest(".emtree");
+			var link =
+				tree.data("home") +
+				"/components/emtree/togglefeatured.html";
+
+			link = link + "?categoryid=" + catoptions.nodeid;
+			
+							
+			var targetdiv = "application";
+
+			$.get(link, function (data) {
+				//var cell = jQuery("#" + targetdiv);
+				//cell.replaceWith(data);
+				if (node.data("isfeatured")){
+					node.data("isfeatured", false);
+					customToast("Category Removed from Featured");
+				}
+				else {
+					node.data("isfeatured", true);
+					customToast("Category Marked as Featured");
+				}
+				
+			});
+			return false;
+		});
 
 	lQuery(".treecontext #downloadnode").livequery("click", function (event) {
 		event.stopPropagation();
@@ -566,6 +598,14 @@ $(function () {
 			$("#" + treename + "contextMenu #createcollection").show();
 			if (iscollection != null && iscollection != "") {
 				$("#" + treename + "contextMenu #createcollection").hide();
+			}
+			var isfeatured = noderow.data("isfeatured");
+			var menuitem = $("#" + treename + "contextMenu #togglefeatured");
+			if(isfeatured){
+				menuitem.text(menuitem.data("removefeatured"));
+            }
+			else {
+				menuitem.text(menuitem.data("addfeatured"));
 			}
 
 			contextMenu.css({
