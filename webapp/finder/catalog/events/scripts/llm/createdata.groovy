@@ -28,12 +28,12 @@ public void tagAssets(){
 	HitTracker assets = searcher.getAllHits();
 	String model = inReq.findValue("model.value");
 	if(model == null) {
-		model = archive.getCatalogSettingValue("gpt-model");
+		model = archive.getCatalogSettingValue("llmmetadatamodel");
 	}
 
 	if(model==null) {
 		//model = "gpt-3.5-turbo-16k-0613";
-		model="gpt-4o-mini";
+		model="gpt-5-nano";
 	}
 
 	for (hit in assets) {
