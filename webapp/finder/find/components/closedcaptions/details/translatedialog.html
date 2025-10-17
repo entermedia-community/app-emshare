@@ -1,0 +1,48 @@
+#set( $clientroot = "/${applicationid}/components/closedcaptions" )
+
+<form name="vttupload" id="vttupload" method="post"
+	class="ajaxform autocloseform"
+	action="$clientroot/translate.html"
+	data-oemaxlevel="1"
+	data-targetdiv="closedcaptioneditor"
+	data-toastmessage="[[Translating captions for #text($asset.name)]]"
+	data-toastsuccess="[[Successfully translated #text($asset.name)]]"
+	data-toasterror="[[Failed to translate #text($asset.name)]]"
+>
+
+	<div class="d-flex align-items-center">
+		<p class="mb-0 mr-2">[[Translate from language]]:</p>
+		#set($languages = $mediaarchive.getList("locale"))
+		<select class="form-control form-control-sm" 
+			id="languagestranslate" 
+			name="selectedlang" 
+			data-count="$count" 
+			data-detailid="${detailid}"
+			data-allowclear="false">
+			#foreach($locale in $languages)
+				<option value="$!locale.id" #if("en"==$!locale.id) selected #else disabled #end>$!locale</option>
+			#end
+		</select>
+	</div>
+
+	<input type="hidden" name="assetid" value="$asset.id">
+	<input type="hidden" name="cc_action" value="autotranslate"> 
+	
+	<div class="d-flex align-items-center mt-3">
+		<p class="mb-0 mr-2">[[To what laguage]]:</p>
+		#set($languages = $mediaarchive.getList("locale"))
+		<select class="form-control form-control-sm" 
+			name="targetlang"
+			data-allowclear="false">
+			<option value="all" selected>[[All that are missing]]</option>
+			#foreach($locale in $languages)
+				#if( $selectedlang!=$!locale.id)
+				<option value="$!locale.id" >$!locale</option>
+				#end
+			#end
+		</select>
+	</div>
+	<p class="pt-4 text-secondary"><strong>[[Note]]</strong>: [[This will overwrite existing captions in this language]]</p>
+</form>
+
+	

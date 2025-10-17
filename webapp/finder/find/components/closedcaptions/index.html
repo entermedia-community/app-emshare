@@ -1,11 +1,32 @@
-<div id="closedcaptioneditor" class="bg-white h-100">
-	#set( $sourcepath = $asset.sourcepath )
-	#set( $source = "$siteroot/${applicationid}/views/modules/asset/downloads/converted/cache/${sourcepath}/video.mp4" )
-	#set( $webmsource = "$home/${applicationid}/views/modules/asset/downloads/converted/cache/${sourcepath}/video.webm" )
-	#set( $thumb = "$siteroot/${applicationid}/views/modules/asset/downloads/preview/large/${sourcepath}/thumb.jpg" )
-	#set( $clientroot = "/${applicationid}/components/closedcaptions" )
-	
-	#set( $timecodejump = $context.getRequestParameter("timecodejump"))
+#set( $clientroot = "/${applicationid}/components/closedcaptions" )
+
+<div id="closedcaptioneditor"
+#if($track.transcribestatus == "inprogress" || $track.transcribestatus == "translating")
+	class="disabled bg-light h-100 ajaxstatus"
+	data-ajaxpath="$clientroot/index.html?oemaxlevel=1&assetid=$asset.id"
+#else
+	class="bg-white h-100"
+#end
+>
+
+	#if($track.transcribestatus == "inprogress" || $track.transcribestatus == "translating")
+	<div class="transcribe-progress-mask">
+		<div class="transcribe-progress-message">
+			<i class="fas fa-spinner fa-spin fa-3x"></i>
+			<div class="mt-2">
+				#if($track.transcribestatus == "inprogress")
+					[[Transcribing...]]
+				#elseif($track.transcribestatus == "translating")
+					[[Translating...]]
+				#else
+					[[Processing...]]
+				#end
+				[[Please wait]]
+			</div>
+			<div>[[You can close this window anytime]]</div>
+		</div>
+	</div>
+	#end
 	
 	<div class="row no-gutters">
 		<div class="col-8">
@@ -37,7 +58,7 @@
 										<i class="bi bi-badge-cc mr-1"></i>
 										[[Generate Captions]]
 									</a> 
-									<a href="$clientroot/details/autotranslatedialog.html?assetid=$asset.id&selectedlang=$selectedlang" 
+									<a href="$clientroot/details/translatedialog.html?assetid=$asset.id&selectedlang=$selectedlang" 
 										data-dialogid="ccautotranslate" class="emdialog btn btn-sm btn-cta">
 										<i class="bi bi-translate mr-1"></i>
 										[[Translate Captions]]
