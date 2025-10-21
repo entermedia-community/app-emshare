@@ -1,0 +1,84 @@
+<div id="workarea" class="tab-actions">
+
+	#set($currentrole = $context.getRequestParameter("settingsgroupid")) 
+	#set($permissiontype = $context.getRequestParameter("permissiontype")) 
+	#set ($roleSearcher = $searcherManager.getSearcher($catalogid, "settingsgroup"))
+
+	#set( $moduleid = $module.getId() )
+
+
+	<div class="mt-4">
+		<h3>[[Permissions]]</h3>
+    
+        <strong> [[By Role]]:</strong> 
+        <select id="roles" class="form-control-sm" style="position: relative; top: 2px; margin-left: 5px;">
+            <option value=""></option>
+           #foreach($settingsgroup in $roleSearcher.fieldSearch("id", "*", "textUp"))
+               <option #if($currentrole == $settingsgroup.id) selected #end value="$settingsgroup.id">$settingsgroup</option>
+           #end
+        </select>
+        
+        <script>
+            $("select#roles").change(function () {
+               var val = $(this).val();
+               if ( val == "new" ) {
+                  $("#permissions-div").load("$siteroot$apphome/views/settings/modules/$moduleid/permissions/actionpermissions/edit/addnew.html?oemaxlevel=1&groupname=New", function(){
+                      $(window).trigger( "resize" );
+                  });
+                  $('#module-picker').hide();
+               }
+               else {
+                  $("#permissions-div").load("$siteroot$apphome/views/settings/modules/$moduleid/permissions/actionpermissions/edit/index.html?oemaxlevel=1&permissiontype=$!permissiontype&settingsgroupid=" + val, function(){
+                      $(window).trigger( "resize" );
+                  });
+                  $('#module-picker').show();
+               }
+            });
+    
+            $("#module-picker select").change(function () {
+                var rolesval = $('select#roles').val();
+                var val = $(this).val();
+                if ( val == "all" ) {
+                jQuery(".togglesection").show();
+                }
+                else {
+                    jQuery(".togglesection").hide();
+                    jQuery("."+ val).show();
+                }
+            });
+        </script>   
+    
+    
+    
+    #if( $currentgroup)
+        #set($currentgroup = $context.getRequestParameter("settingsgroupid"))
+        
+        #set ($profilesearcher = $searcherManager.getSearcher($catalogid, "userprofile"))
+        #set($users = $profilesearcher.fieldSearch("settingsgroup", $currentgroup))
+        
+        #if($users.size() > 0)
+        <br>
+        
+        <h3>[[Users in the group]]</h3>
+        
+        
+        <ul class="vlist">
+        #foreach($hit in $users)
+            #set($target = $userManager.getUser($hit.userid))
+            #set($url = "$siteroot$apphome/views/settings/usermanager/user/index.html?userid=${target.id}")
+         <li>
+         <a target="_blank" href="$url">$target</a></li>
+        #end
+        </ul>
+        
+    
+        #end
+    #end
+    
+    <div id="eml-tab-green-container" class="eml-tab-content">
+        <div id="permissions-div">
+        $pages.includeContent()
+        </div>
+    </div>
+	</div>
+</div>
