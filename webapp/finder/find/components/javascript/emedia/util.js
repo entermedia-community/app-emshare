@@ -303,12 +303,12 @@ $(document).ready(function () {
 			var imageUrl = pickerBtn.data("imageurl");
 			var assetInfo = pickerBtn.closest("[data-assetid]");
 			var assetid = "";
-			var target = "";
-			if (externalmessage && externalmessage.target) {
-				target = externalmessage.target;
-			}
-			if (!target) {
-				target = $("#application").data("targetfieldid") || "";
+			var target = $("#application").data("targetfieldid");
+
+			if (!target || target.trim() == "") {
+				if (externalmessage && externalmessage.target) {
+					target = externalmessage.target;
+				}
 			}
 			if (assetInfo.length) {
 				assetid = assetInfo.data("assetid");
@@ -326,7 +326,7 @@ $(document).ready(function () {
 			var entityid = pickerBtn.data("entityid");
 
 			var payload = {
-				name: "eMediaPicked",
+				name: "eMediaAssetPicked",
 				assetpicked: imageUrl,
 				assetid: assetid,
 				entityid: entityid,

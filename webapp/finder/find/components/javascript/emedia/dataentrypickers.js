@@ -514,8 +514,10 @@ $(document).ready(function () {
 		}
 	);
 
-	$(window).on("assetpicked", function (_, input) {
-		var params = JSON.parse(input);
+	$(window).on("assetpicked", function (_, params) {
+		if (typeof params === "string") {
+			var params = JSON.parse(params);
+		}
 		var assetid = params.assetid;
 		var messageid = $("#blockfindpicker").data("messageid");
 
