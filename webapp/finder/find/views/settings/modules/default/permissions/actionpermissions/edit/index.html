@@ -12,7 +12,7 @@
 #end
 <div id="savepermissions">
 <form method="post" 
-	action="$siteroot$apphome/views/settings/modules/$moduleid/permissions/views/save.html"
+	action="$siteroot$apphome/views/settings/modules/$moduleid/permissions/actionpermissions/edit/save.html"
 	class="autosubmit ajaxform"
 	data-oemaxlevel="1"
 	data-targetdiv="savepermissions"
@@ -26,12 +26,9 @@
 	#set($permissionsearcher = $searcherManager.getSearcher($catalogid, "permissionsentity"))
 	
 	<div>
-
-        #if ( !$permissionentitytype )
-           #set ( $permissionentitytype = "*" )
-        #end
-      
-	    #set( $hits = $permissionsearcher.query().match("permissionentitytype", $permissionentitytype).sort("permissionentitytype").sort("ordering").search() )
+		$groupid
+		
+	    #set( $hits = $permissionsearcher.query().all().sort("permissionentitytype").sort("ordering").search() )
     	<table class="table table-striped emdata settings-table">	
 			<thead>
 			<tr class="">
