@@ -7,27 +7,16 @@
 <div id="embed-wrapper" class="mt-4 px-3">
 	<div class="row no-gutters mb-3">
 		<div class="col-12 col-md-4">
-			#if($entitypermissions.isEmpty())
-			<p class="text-muted">
-				[[No permissions have been added yet.]]
-			</p>
-			#end
+
 			<form name="savepermiossions" 
 				class="ajaxform autosubmitform force-validate-inputs mt-3 no-toast" 
 				data-targetdiv="$edithomeid"
 				data-oemaxlevel="1"				
 				method="post"  
 				action="$apphome/views/modules/${module.id}/editors/entityadminsettings/permissions/permissionsave.html">
-
-				<p>
-				<a class="emdialog btn btn-cta" 
-					href="$apphome/views/modules/${module.id}/editors/entityadminsettings/permissions/permissionadd.html?id=$!{entityid}" 
-					data-dialogid="addpermission"
-					data-includeeditcontext="true"
-					data-edithomeid="${edithomeid}"
-					data-hidefooter="true">
-					<i class="bi bi-plus-lg mr-1"></i>[[Add]]
-				</a></p>
+				
+				
+				<h4>[[Custom Permissions]]</h4>
 				<div class="form-check mb-3 h-auto py-2 public-permission rounded" style="padding-left: 1.75rem;">
 					<input class="form-check-input" name="securityalwaysvisible" #if($entity.securityalwaysvisible == true) checked #end type="checkbox" value="true" id="makeEntityPublic">
 					<label class="form-check-label" for="makeEntityPublic">
@@ -70,7 +59,35 @@
 			</div>
 			#end
 			</form>
+			<div>
+				<a class="emdialog btn btn-cta" 
+					href="$apphome/views/modules/${module.id}/editors/entityexport/permissions/permissionadd.html?id=$!{entityid}" 
+					data-dialogid="addpermission"
+					data-includeeditcontext="true"
+					data-edithomeid="${edithomeid}"
+					data-hidefooter="true">
+					<i class="bi bi-plus-lg mr-1"></i>[[Add]]</a>
+			
+				<a class="emdialog btn btn-danger confirm" 
+					href="#?id=$!{entityid}" 
+					data-dialogid="addpermission"
+					data-includeeditcontext="true"
+					data-edithomeid="${edithomeid}"
+					data-hidefooter="true">
+					<i class="bi bi-reset mr-1"></i>[[Reset to Default]]</a>
+			</div>
 		</div>
+		
+	</div>
+	
+	<div class="mt-4">
+	<h4>[[Parent Permissions]]</h4>
+	
+	--Show Parent Permissions--
+	</div>
+	
+	<div class="mt-4">
+	<div class="text-muted">[[Customizations will overwrite parent permissions.]]</div>
 	</div>
 </div>
 
