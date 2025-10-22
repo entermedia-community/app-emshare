@@ -8,7 +8,7 @@ $context.putPageValue("data", $selectedUser)
    
 <div class="row no-gutters">
 <div class="col-5">
-	<div style="margin: 0 20px 0 0;">
+	<div class="pt-3 mb-4">
 	<h3>[[User Profile]]</h3>
 		<div class="">
 		
@@ -25,14 +25,64 @@ $context.putPageValue("data", $selectedUser)
 		                        <input type="hidden" name="oemaxlevel" value="1"/>
 		            <input type="hidden" name="reloadprofile" value="true"/>
 		            
-		            <div class="clearfix">
 		                  
-				<div id="resultslist">
-					<div id="default-fields">
-		 				$pages.include("/${applicationid}/components/xml/detaileditor.html", $context)
-					</div>
-				</div>
-		            </div>
+						<div id="resultslist">
+							<div id="default-fields">
+				 				$pages.include("/${applicationid}/components/xml/detaileditor.html", $context)
+								#set($groups = $user.groups)
+								#if(!$groups.isEmpty())
+								<div class="row no-gutters">
+								<div class="col-md-12 editor-data-detail emdatafield-default">
+									<div class="container-fluid">
+										<div class="row">
+												<div class="col-md-3 col-lg-2 col-emdatafield">
+													<label class="emdatafield">
+															[[Groups]]
+													</label>				
+												</div>
+											<div class="col-md-9 col-lg-10">
+												
+													#foreach($group in $user.groups)
+														$group<br>	
+													#end
+											</div>
+										</div>				
+									</div>
+									</div>
+								</div>
+								#end
+								
+								#set ($userProfileSearcher = $searcherManager.getSearcher($catalogid, "userprofile"))
+								#set ($selectedprofile = $userProfileSearcher.searchByField("id", $user.id))
+								#if($selectedprofile.settingsgroup)
+								<div class="row no-gutters">
+									<div class="col-md-12 editor-data-detail emdatafield-default">
+										<div class="container-fluid">
+											<div class="row">
+													<div class="col-md-3 col-lg-2 col-emdatafield">
+														<label class="emdatafield">
+																[[Role]]
+														</label>				
+													</div>
+												<div class="col-md-9 col-lg-10">
+														#set($role = $mediaarchive.getCachedData("settingsgroup", $selectedprofile.settingsgroup))
+														#text($role)
+												</div>
+											</div>				
+										</div>
+										</div>
+									</div>
+								#end
+							</div>
+						</div>
+						
+						
+						
+					
+						
+					
+					
+					
 		            
 		            #if( $errors)
 		                <div class="common-success">
@@ -51,8 +101,10 @@ $context.putPageValue("data", $selectedUser)
 	</div>
 
 </div>
-<div class="col-7" style="background-color:#f1f1f1; padding:0 15px;">
-$pages.include("/${applicationid}/views/myaccount/preferences/index.html")
+<div class="col-7" style="background-color:#f1f1f1;">
+	<div class="pt-3 px-4 mb-4">
+		$pages.include("/${applicationid}/views/myaccount/preferences/index.html")
+	</div>
 </div>
 
 
