@@ -63,22 +63,88 @@
 							data-targetdiv="entitydialog"
 							data-entityid="$!entity.getId()" 
 							data-entitymoduleid="$!entitymodule.id"
-							data-entitymoduleviewid="${module.id}entityexports"
+							data-entitymoduleviewid="${module.id}entityshare"
 							data-$!{module.id}hitssessionid="$!entityhits.getSessionId()"
 							data-oemaxlevel="1"
 							title="[[Share]]"><i class="bi bi-share"></i></a>
 						#end
 						
 						#if($canviewsettings)
-							<a href="${edithome}/tabs/index.html" 
-							class="ajax btn-accent"
-							data-entityid="$!entity.getId()" 
-							data-entitymoduleid="$!module.id"
-							data-targetdiv="entitydialog"
-							data-oemaxlevel="1"
-							data-$!{module.id}hitssessionid="$!entityhits.getSessionId()"
-							data-entitymoduleviewid="${module.id}entityactivityhistory"
-							title="[[Activity History]]"><i class="bi bi-clock-history"></i></a>
+							<div class="dropdown">
+								<a class="dropdown-toggle btn-accent" href="#" data-toggle="dropdown">
+									<i class="bi bi-gear"></i>
+								</a>
+								<div class="dropdown-menu">
+
+							#if(!$ismulti && $entity)
+
+								#if($module.getBoolean("enableuploading"))
+								#if($permissions.canModule($module, "upload_files") ||
+									$permissions.canModule($module, "upload_folders") ||
+									$permissions.canModule($module, "importurl") ||
+									$permissions.canModule($module, "importassets") ||
+									$permissions.canModule($module, "importfolders") ||
+									($desktop && $permissions.canModule($module, "importpushtoserver")))
+									<a
+										class='dropdown-item ajax tabactionimport #if($entitymoduleviewid=="${module.id}entityimports") active #end '
+										href="$apphome/views/modules/$module.id/editors/entityimports/tabs/index.html" 
+										data-entitymoduleviewid="${module.id}entityimports"
+										data-entityid="$!entity.getId()" 
+										data-entitymoduleid="$!module.id"
+										data-targetdiv="entitydialog"
+										data-oemaxlevel="1"
+										data-tabsection="upload"
+										data-$!{module.id}hitssessionid="$!entityhits.getSessionId()">
+										<i class="bi bi-box-arrow-in-right mr-2"></i> [[Import]]</a>
+								#end	
+								#end
+								#if($permissions.canModule($module, "copyentity") ||
+									$permissions.canModule($module, "moveentity") ||
+									$permissions.canModule($module, "downloadall") ||
+									$permissions.canModule($module, "shareentity") ||
+									($desktop && $permissions.canModule($module, "exportpulltoserver")))	
+									
+									<a 
+										class='dropdown-item ajax tabactionexport #if($entitymoduleviewid=="${module.id}entityexports")active #end '
+										href="${edithome}/tabs/index.html" 
+										data-entitymoduleviewid="${module.id}entityexports"
+										data-entityid="$!entity.getId()" 
+										data-entitymoduleid="$!module.id"
+										data-targetdiv="entitydialog"
+										data-oemaxlevel="1"
+										data-$!{module.id}hitssessionid="$!entityhits.getSessionId()">
+										<i class="bi bi-box-arrow-right mr-2"></i> [[Export]]</a>
+								#end
+								
+							#end
+							
+								#if( $permissions.canModule($module, "viewerpermissions") )
+									<a 
+										class='dropdown-item ajax #if($entitymoduleviewid=="${module.id}entityadminsettings")active #end '
+										href="${edithome}/tabs/index.html" 
+										data-entitymoduleviewid="${module.id}entityadminsettings"
+										data-entityid="$!entity.getId()" 
+										data-entitymoduleid="$!module.id"
+										data-targetdiv="entitydialog"
+										data-oemaxlevel="1"
+										data-$!{module.id}hitssessionid="$!entityhits.getSessionId()">
+										<i class="bi bi-lock mr-2"></i> [[Security]]</a>
+								#end
+
+								#if($canviewsettings)
+									<a class="dropdown-item ajax"
+										data-closealldialogs="true"
+										data-oemaxlayout="3"
+										data-updateurl="true"
+										data-targetdiv="applicationmaincontent"
+										href="$apphome/views/settings/modules/${module.id}/info/module-setup.html">
+										<i class="bi bi-sliders mr-2"></i> #text($module) [[Settings]]
+									</a>
+								#end
+
+								</div>
+							</div>
+							
 						#end
 					</div>
 				#end
@@ -87,22 +153,21 @@
 	
 			<div class="d-flex entity-actions-bar align-items-center text-white position-relative mbl-hideexcept">
 				#if($addnew=='true')
-				<a class="btn btn-cta ajax"
-					href="$siteroot$applink/views/modules/$!{module.id}/editors/bulkentitycreator/index.html?edit=true&addnew=true" 
-					data-entitymoduleviewid="$!{module.id}addnew"
-					data-entitymoduleid="$!module.id"
-					data-entityedithome="$!edithome"
-					data-targetdiv="editentitymetadata"
-					data-oemaxlevel="1"
-					title="[[Bulk Folders from Files]]">
-					<i class="bi bi-stack mr-1"></i> [[Bulk Folders from Files]]
-				</a>
-				#end
+					<a class="btn btn-cta ajax"
+						href="$siteroot$applink/views/modules/$!{module.id}/editors/bulkentitycreator/index.html?edit=true&addnew=true" 
+						data-entitymoduleviewid="$!{module.id}addnew"
+						data-entitymoduleid="$!module.id"
+						data-entityedithome="$!edithome"
+						data-targetdiv="editentitymetadata"
+						data-oemaxlevel="1"
+						title="[[Bulk Folders from Files]]">
+						<i class="bi bi-stack mr-1"></i> [[Bulk Folders from Files]]
+					</a>
 
-				#if($mediaarchive.isCatalogSettingTrue("ai_create_enabled") && $permissions.canModule($module, "createwithai"))
+					#if($mediaarchive.isCatalogSettingTrue("ai_create_enabled") && $permissions.canModule($module, "createwithai"))
 
-					#set($withai = $context.getRequestParameter("withai"))
-					#if($addnew=='true')
+						#set($withai = $context.getRequestParameter("withai"))
+						
 						#set($entityedithome = $context.getRequestParameter("entityedithome"))
 						#if($withai != "true")
 							<a class="btn btn-cta ajax"
@@ -129,51 +194,8 @@
 								<i class="bi bi-plus-lg mr-1"></i> [[Create Manually]]
 							</a>
 						#end
-					#end
-					
-				#end
-
-				#if(!$ismulti && $entity)
-			
-					#if($module.getBoolean("enableuploading"))
-					#if($permissions.canModule($module, "upload_files") ||
-						$permissions.canModule($module, "upload_folders") ||
-						$permissions.canModule($module, "importurl") ||
-						$permissions.canModule($module, "importassets") ||
-						$permissions.canModule($module, "importfolders") ||
-						($desktop && $permissions.canModule($module, "importpushtoserver")))
-						<a
-							class='btn btn-sm btn-accent ajax tabactionimport #if($entitymoduleviewid=="${module.id}entityimports")enabledaction #end '
-							href="$apphome/views/modules/$module.id/editors/entityimports/tabs/index.html" 
-							data-entitymoduleviewid="${module.id}entityimports"
-							data-entityid="$!entity.getId()" 
-							data-entitymoduleid="$!module.id"
-							data-targetdiv="entitydialog"
-							data-oemaxlevel="1"
-							data-tabsection="upload"
-							data-$!{module.id}hitssessionid="$!entityhits.getSessionId()"
-							title="[[Upload to]] #text($module) "><i class="bi bi-box-arrow-in-right mr-1"></i> [[Import]]							
-							</a>
-					#end	
-					#end
-					#if($permissions.canModule($module, "copyentity") ||
-						$permissions.canModule($module, "moveentity") ||
-						$permissions.canModule($module, "downloadall") ||
-						$permissions.canModule($module, "shareentity") ||
-						($desktop && $permissions.canModule($module, "exportpulltoserver")))	
 						
-						<a 
-							class='btn btn-sm btn-accent ajax tabactionexport #if($entitymoduleviewid=="${module.id}entityexports")enabledaction #end '
-							href="${edithome}/tabs/index.html" 
-							data-entitymoduleviewid="${module.id}entityexports"
-							data-entityid="$!entity.getId()" 
-							data-entitymoduleid="$!module.id"
-							data-targetdiv="entitydialog"
-							data-oemaxlevel="1"
-							data-$!{module.id}hitssessionid="$!entityhits.getSessionId()"
-							title="[[Download]] #text($module) ">[[Export]]&nbsp;<i class="bi bi-box-arrow-right ml-1"></i></a>
 					#end
-					
 				#end
 						
 				#if($entityhits && $entityhits.size() > 1)

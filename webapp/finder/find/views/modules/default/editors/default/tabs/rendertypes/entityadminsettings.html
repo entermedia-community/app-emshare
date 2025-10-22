@@ -1,0 +1,59 @@
+
+#ifnull($entitymoduleviewid)
+#set($entitymoduleviewid = $context.getRequestParameter("entitymoduleviewid"))
+#end
+#set($tabid = "tab_$entitymoduleviewid")
+
+#set ( $tabsection = $context.getRequestParameter("tabsection") )
+#ifnull($tabsection)
+#set ( $tabsection = "viewer")
+#end
+
+#set($defaultcategory = $mediaarchive.getEntityManager().createDefaultFolder($entity, $context.getUser()))
+$context.putPageValue("defaultcategory", $defaultcategory)
+$context.putPageValue("defaultcategoryid", $defaultcategory.getId())
+
+#set($tabmode = 1)
+$context.putPageValue("tabmode", $tabmode)
+
+#set($entityadminhome = "$apphome/views/modules/${module.id}/editors/entityadminsettings")
+
+<div id="$!submodulepickerid" class="d-flex align-items-stretch" style="height: 100%;">
+		<div class='entityimport auto-active-container overflow-y'>
+			#if($permissions.canModule($module, "viewerpermissions"))
+				<div class='auto-active-row #if($tabsection=="viewer") current #end'>
+					<a href="$entityadminhome/permissions/index.html?entityid=$!{entity.id}&defaultcategoryid=$defaultcategory.getId()"
+						class='btn btn-lg btn-wide ajax auto-active-link'
+						data-targetdivinner="tabexportcontent"
+						data-tabsection="viewer"
+						data-oemaxlevel="1">
+						<i class="bi bi-lock"></i> <span>[[Permissions]]</span>
+					</a>
+				</div>
+			#end
+
+			<div class='auto-active-row #if($tabsection=="activity") current #end'>
+				<a href="$entityadminhome/activityhistory/index.html?entityid=$!{entity.id}&defaultcategoryid=$defaultcategory.getId()"
+					class='btn btn-lg btn-wide ajax auto-active-link'
+					data-entityid="$!entity.getId()" 
+					data-entitymoduleid="$!module.id"
+					data-entitymoduleviewid="${module.id}entityactivityhistory"
+					data-$!{module.id}hitssessionid="$!entityhits.getSessionId()"
+					data-targetdivinner="tabexportcontent"
+					data-tabsection="activity"
+					data-oemaxlevel="1">
+					<i class="bi bi-clock-history"></i> <span>[[Activity History]]</span>
+				</a>
+			</div>
+
+		</div>
+
+		<div id="tabexportcontent" class="entitytabcolumcontent">
+			#if($tabsection=="viewer")
+				$pages.include("$entityadminhome/permissions/index.html?entityid=$!{entity.id}&defaultcategoryid=$defaultcategory.getId()", $context)
+			#end
+
+
+			
+		</div>
+</div>

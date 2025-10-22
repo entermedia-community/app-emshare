@@ -1,0 +1,106 @@
+
+#if($ismulti)
+	##only show "data" views (rendertype)
+	#set($enttiyviews = $mediaarchive.query("view").exact("moduleid", $module.id).exact("systemdefined","false").exact("rendertype", "data").sort("orderingUp").named("view").search($context) )
+	#set($entitymoduleviewid = $enttiyviews.first().getId())
+#else
+	#ifnotnull($entity)
+		#set($entityid = $entity.id)
+		$context.putPageValue("entityid", $entityid)
+		
+		##Publishing (Gallery)
+		#if($permissions.canModule($module, "publishinggallery"))
+			#set($canpublishinggallery = true)
+		#end
+		#if($permissions.canModule($module, "publishingcarousel"))
+			#set($canpublishingcarousel = true)
+		#end
+	#end
+	
+	#set($enttiyviews = $mediaarchive.query("view").exact("moduleid", $module.id).exact("systemdefined","false").sort("orderingUp").named("view").search($context) )
+	#set($entitymoduleviewid = $context.getRequestParameter("entitymoduleviewid"))
+#end
+
+#ifnull($entitymoduleviewid)
+	#set( $entitymoduleviewid = $userprofile.get("${module.id}_entitytabopen"))
+#end
+#ifnull($entitymoduleviewid)
+	#set($entitymoduleviewid = $enttiyviews.first().getId())
+#end
+
+#set($saveaction = $context.getRequestParameter("saveaction"))
+#set($addnew = $context.getRequestParameter("addnew"))
+
+#if ($addnew =="true")
+	#set($entitymoduleviewid = $enttiyviews.first().getId())
+	#set($enttiyviews = "")
+	$context.putPageValue("addnew", "true")
+#else
+	##check if saveaction
+	#if($saveaction == "upload")
+		#set($entitytabopen = "tabimport")
+	#end
+#end
+
+#ifnotnull($entitymoduleviewid)
+	#set($entityviewdata = $mediaarchive.getCachedData("view", $entitymoduleviewid))
+#end
+$context.putPageValue("entitymoduleviewid", $entitymoduleviewid)
+$context.putPageValue("entityviewdata", $entityviewdata)
+$context.putPageValue("enttiyviews", $enttiyviews)
+
+#set($enablebackbutton = $context.getRequestParameter("enablebackbutton"))
+
+<div data-entityid="$!entity.id"
+	data-entitymoduleid="$!entitymodule.id"
+	data-entitymoduleviewid="$!entitymoduleviewid"
+	data-parententiylabel="#text($entity)" 
+	data-oemaxlevel="1" 
+	data-url="${edithome}/tabs/index.html"
+	class="entityNavHistory"></div>
+
+<div class='entitydialog #if($enablebackbutton != "false" || $addnew) enablebackbtn #end '
+	data-entityid="$!entity.id"
+	data-entitymoduleid="$!entitymodule.id"
+	data-entitymoduleviewid="$!entitymoduleviewid"
+	data-oemaxlevel="1"
+	data-url="${edithome}/tabs/index.html"
+	data-urlbar="$apphome/views/modules/$!{module.getId()}/index.html?entityid=$!entityid"
+	#if($entityhits && $entityhits.size() > 1)  ##remove this and use the editdiv context
+		$context.putPageValue("hitssessionid", $entityhits.getSessionId())
+		data-$!{entityhits.getSearchType()}hitssessionid="$!entityhits.getSessionId()" 
+	#end
+	#if($entity)
+		data-setpagetitle="#text($entity)"
+	#else
+		data-setpagetitle="[[Add New]]"
+	#end
+	>
+
+		$pages.include("${edithome}/tabs/dialogheader.html", $context)
+		
+		$pages.include("${edithome}/tabs/dialogtabbuttons.html", $context)
+		
+		#set($rendertype = $entityviewdata.rendertype)
+		
+		#ifnull($rendertype)
+			#set($rendertype = "data")  
+		#end
+		
+		#if($rendertype == "table")
+			#set($rendertype = "tabsubmodulehome")
+		#end
+		
+		<div class="entity-content tabtype$!rendertype overflow-x">
+		
+			#ifnull($entityviewdata)
+				[[Please select a tab for]] $entitymoduleviewid		
+			#end
+			
+			#ifnotnull($entityviewdata)
+				$context.putPageValue("viewdata", $entityviewdata)
+				$pages.include("${edithome}/tabs/rendertypes/${rendertype}.html", $context)
+			#end
+		</div>
+			
+</div>
