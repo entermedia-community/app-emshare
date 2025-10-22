@@ -1,4 +1,6 @@
 <div id="$edithomeid" class="editdiv" data-entityid="$entity.id">
+<div id="permissionarea" >
+	
 <div class="tabheader">
 	[[Additional Permissions]] <span class="mx-2">&middot;</span> 
 	<span class="hint">[[Others who can view or edit this folder and files]]</span>
@@ -10,7 +12,7 @@
 
 			<form name="savepermiossions" 
 				class="ajaxform autosubmitform force-validate-inputs mt-3 no-toast" 
-				data-targetdiv="$edithomeid"
+				data-targetdiv="permissionarea"
 				data-oemaxlevel="1"				
 				method="post"  
 				action="$apphome/views/modules/${module.id}/editors/entityadminsettings/permissions/permissionsave.html">
@@ -28,7 +30,7 @@
 				<input name="entityid" type="hidden" value="$entity.id" />
 							
 			#foreach($permission in $entitypermissions)
-			<div class="d-flex align-items-center bg-light rounded pl-2 pr-1 py-1 mb-2 border" id="permission-$permission.id">
+			<div class="d-flex align-items-center bg-light rounded pl-2 pr-1 py-1 mb-2 border" id="permission-${permission.getData().getId()}">
 				<span class="mr-2 fw-bold">
 					#text( $permission.getData() )
 				</span>
@@ -45,7 +47,7 @@
 					<a class="ajax text-muted"
 						href="$apphome/views/modules/${module.id}/editors/entityadminsettings/permissions/permissionremove.html?id=$!{entity.id}"
 						data-dataid="$permission.getData().getId()"
-						data-targetdiv="$edithomeid"
+						data-targetdiv="permissionarea"
 						data-oemaxlevel="1"
 					 	data-confirm="[[Are you sure you want to remove this permission?]]" 
 						data-removeonsuccess="true" 
@@ -53,6 +55,7 @@
 						<i class="bi bi-x-circle ns ml-2 mr-1"></i>
 					</a>
 					#else
+					<input type="hidden" name="iseditor" value="true" /> 
 					[[Owner]]
 					#end
 				</div>
@@ -76,6 +79,7 @@
 					data-hidefooter="true">
 					<i class="bi bi-reset mr-1"></i>[[Reset to Default]]</a>
 					**#
+					<br>
 			</div>
 		</div>
 		
@@ -94,8 +98,9 @@
 	</div>
 	
 	<div class="mt-4">
-	<div class="text-muted">[[Customizations will overwrite parent permissions.]]</div>
+	<div class="text-muted">[[Customizations complements parent permissions]]</div>
 	</div>
 </div>
 
+</div>
 </div>
