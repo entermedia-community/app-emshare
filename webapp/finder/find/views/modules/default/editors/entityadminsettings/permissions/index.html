@@ -85,9 +85,14 @@
 		
 	</div>
 	
-	<div class="mt-4">
-	<h4>[[Parent Permissions]]</h4>
-	#if( $parentpermissions.isEmpty() ) [[No view limits set]] #end
+	<div class="mt-4" style="margin-bottom:20px;">
+	<h4 style="margin-bottom:2px;">[[Parent Permissions]]</h4>
+	<div class="text-muted">[[Note: Customizations combine with parent permissions]]</div>
+	</div>
+	#if( $parentpermissions.isEmpty() )<p> [[No view limits set]] </p>
+	#else
+	 <div class="text-muted">	Combined Permissions From Path: <b>$entity.sourcepath</b><br> </div>
+	#end
 	#foreach( $addedPermission in $parentpermissions)
 		<div><span class="bg-secondary text-white px-1 rounded fs-small" style="padding-bottom: 2px;">$addedPermission.getPermissionType()</span>
 		<span class="mr-2 fw-bold">
@@ -97,9 +102,6 @@
 	#end
 	</div>
 	
-	<div class="mt-4">
-	<div class="text-muted">[[Customizations complements parent permissions]]</div>
-	</div>
 </div>
 
 </div>
