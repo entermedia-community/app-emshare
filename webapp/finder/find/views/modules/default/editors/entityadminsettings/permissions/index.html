@@ -61,20 +61,21 @@
 			</form>
 			<div>
 				<a class="emdialog btn btn-cta" 
-					href="$apphome/views/modules/${module.id}/editors/entityexport/permissions/permissionadd.html?id=$!{entityid}" 
+					href="$apphome/views/modules/${module.id}/editors/entityadminsettings/permissions/permissionadd.html?id=$!{entityid}" 
 					data-dialogid="addpermission"
 					data-includeeditcontext="true"
 					data-edithomeid="${edithomeid}"
 					data-hidefooter="true">
 					<i class="bi bi-plus-lg mr-1"></i>[[Add]]</a>
 			
-				<a class="emdialog btn btn-danger confirm" 
+				#** <a class="emdialog btn btn-danger confirm" 
 					href="#?id=$!{entityid}" 
 					data-dialogid="addpermission"
 					data-includeeditcontext="true"
 					data-edithomeid="${edithomeid}"
 					data-hidefooter="true">
 					<i class="bi bi-reset mr-1"></i>[[Reset to Default]]</a>
+					**#
 			</div>
 		</div>
 		
@@ -82,8 +83,14 @@
 	
 	<div class="mt-4">
 	<h4>[[Parent Permissions]]</h4>
-	
-	--Show Parent Permissions--
+	#if( $parentpermissions.isEmpty() ) [[No view limits set]] #end
+	#foreach( $addedPermission in $parentpermissions)
+		<div><span class="bg-secondary text-white px-1 rounded fs-small" style="padding-bottom: 2px;">$addedPermission.getPermissionType()</span>
+		<span class="mr-2 fw-bold">
+			#text( $addedPermission.getData() )
+		</span>
+		</div>
+	#end
 	</div>
 	
 	<div class="mt-4">
