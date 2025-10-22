@@ -16,10 +16,10 @@
 		<h4>[[Folders]]
 	
 		</h4>
-	
+	$asset
 		<div  id="cat-list" class="emlist">
 		#foreach ($category in $asset.categories)
-		#set( $iscollection = $categoryCollectionCache.isPartOfCollection($category))
+			###set( $iscollection = $categoryCollectionCache.isPartOfCollection($category))
 			<div  class="list-row">
 			<div  class="category #if($iscollection) cat-collection #else cat-category #end">						
 			#foreach( $parent in $category.getParentCategoriesFrom(1))
@@ -38,8 +38,11 @@
 			
 			#if( $caneditassetcategories )
 			 	<a class="ajax list-delete"  
-			 		data-targetdiv="assetcategoryresultsmediaviewer" 
-			 		href="$siteroot$apphome/views/modules/asset/editors/assetlistfolder/removeassetcategory.html?assetid=${asset.id}&categoryid=${category.id}"
+			 		data-targetdiv="assetcategoryresultsmediaviewer"
+					data-includeeditcontext="false" 
+					data-assetid="${asset.id}"
+					data-categoryid="${category.id}"
+			 		href="$siteroot$apphome/views/modules/asset/editors/assetlistfolder/removeassetcategory.html"
 			 		data-oemaxlevel="1" >
 			 	<i class="fas fa-times"></i></a>
 		 	#end
