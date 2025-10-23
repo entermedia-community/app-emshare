@@ -10,26 +10,29 @@
 #set( $type = $mediaarchive.getMediaRenderType($asset.fileFormat))
 <div class="tabheader">[[Sharing Links]]</div>
 <div class="mx-3 my-4">
-	<p>[[This link automatically grants users viewing access to this Entity.]]</p>
+	
 	
 	<div id="embed-wrapper" class="mx-3 my-4">
-		<div class="embedlink">
+		<div class="embedlink mb-2">
 			#set($enttiyviews = $mediaarchive.query("view").exact("moduleid", $module.id).exact("systemdefined","false").sort("orderingUp").named("view").search($context) )
 			#set( $sharelink = "$siteroot$apphome/views/modules/${module.id}/userview/${entityid}/#dash($entity).html")
+			<select id="sharetabslinks" class="form-control-sm select2 copy hideremoveselection">
 			#foreach( $targetview in $enttiyviews)
-				<div class="mb-3">	
-				<h5>#text($targetview)</h5>
-					<a href="#" 
-						class="copytoclipboard btn btn-xs btn-primary"
-						data-text="${sharelink}?entitymoduleviewid=${targetview.id}"
-						title="[[Copy to Clipboard]]">
-						<i class="far fa-copy"></i> [[Copy]]
-					</a>						
-				</div>
+				<option value="${sharelink}?entitymoduleviewid=${targetview.id}">#text($targetview) [[Tab]]</option>
 			#end
+			</select>
+			<a href="#" 
+				class="copytoclipboard btn btn-sm btn-cta"
+				data-textsource="sharetabslinks"
+				title="[[Copy to Clipboard]]">
+				<i class="far fa-copy"></i> [[Copy]]
+			</a>
 		</div>
+		<p>[[Share links automatically adds viewing to security]]</p>
 		
-		#if($module.id=="librarycollection")
+		#*
+		## TODO: Create a player type Gallery With Tree and move to Export
+		###if($module.id=="librarycollection")
 			#set( $sharecollectionlink = "$!{siteroot}$!{siteid}/$!{mediadbappid}/services/module/asset/players/collections/display/$!{entityid}.html")
 			<h5 class="pt-4">[[Share Collection]]</h5> 
 			<a href="#" 
@@ -38,6 +41,7 @@
 				title="[[Copy to Clipboard]]">
 				<i class="far fa-copy"></i> [[Copy]]
 			</a>
-		#end
+		###end
+		*#
 	</div>
 </div>

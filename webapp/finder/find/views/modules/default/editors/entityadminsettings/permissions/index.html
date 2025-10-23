@@ -85,20 +85,23 @@
 		
 	</div>
 	
-	<div class="mt-4" style="margin-bottom:20px;">
-	<h4 style="margin-bottom:2px;">[[Default Visibility]]</h4>
-	<div class="text-muted">[[Note: Customizations combine with parent view permissions]]</div>
+	<div class="mt-4 mb-4">
+	<h4>#text($module) [[Visibility]]</h4>
 	</div>
 	#if( $parentpermissions.isEmpty() )<p> [[No view limits set]] </p>
 	#else
-	 <div class="text-muted">	[[Combined view permissions from path:]] <b>$entity.sourcepath</b><br> </div>
+	 <div class="text-muted mb-2">	[[Combined view permissions from path:]] <b>$entity.sourcepath</b></div>
 	#end
 	#foreach( $addedPermission in $parentpermissions)
-		<div><span class="bg-secondary text-white px-1 rounded fs-small" style="padding-bottom: 2px;">$addedPermission.getPermissionType()</span>
-		<span class="mr-2 fw-bold">
-			#text( $addedPermission.getData() )
-		</span>
+		<div class="d-flex my-2">
+			<span class="bg-secondary text-white px-1 rounded fs-small mr-2 px-1 text-center" style="width:38px;">$addedPermission.getPermissionType()</span>
+			<span class="mr-2 fw-bold">#text( $addedPermission.getData() )</span>
 		</div>
+	#end
+	#if($canviewsettings)
+	<a class="btn btn-primary" 
+		href="$apphome/views/settings/${module.id}/permissions/viewers.html">
+		<i class="bi bi-sliders mr-2"></i>[[Viewer Settings]]</a>
 	#end
 	</div>
 	
