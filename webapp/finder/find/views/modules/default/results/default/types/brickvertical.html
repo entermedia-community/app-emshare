@@ -14,16 +14,32 @@ $context.putPageValue("rendermoduleid", $module.id)
 			data-minwidth="$minbrickwidth"
 		#end
 		data-stackedviewpath="${apphome}/views/modules/${module.id}/results/default/types/brickvertical.html">
+
+		#set( $rowcount = 0)
+		#set( $colcount = 0)
+		
 		#foreach( $hit in $hits.getPageOfHits())
 		
 			$context.putPageValue("rendermoduleid", $hit.entitysourcetype)
 			$context.putPageValue("entity", $hit) 
 			$context.putPageValue("hit", $hit)
 
-			<div class="resultsdivdata masonry-grid-cell full-height"
+
+			#if($colcount > 5 )
+				#set( $colcount = 0)
+				#set( $rowcount = $rowcount + 1)
+			#end		
+			
+			#set($cellleft = ($colcount * 190) + ($colcount * 5))
+			#set($celltop = ($rowcount * 190) + ($rowcount * 5))
+
+			#set( $colcount = $colcount + 1)
+
+			<div class="resultsdivdata masonry-grid-cell full-height xxx"
 				id="gallerycell_$!{hit.id}"
 				data-assetid="$!{hit.id}"
 				data-dataid="$hit.id"
+				style="position: absolute; top: ${celltop}px; left: ${cellleft}px;overflow: hidden;width: 190px; height: 190px;"
 			> 
 			$pages.include("${searchhome}/thumbnails/brickentity.html", $context)
 			</div>

@@ -20,12 +20,13 @@
 			minwidth = 180;
 		}
 		var totalavailablew = grid.width() - 15;
-		
+
 		var maxcols = totalavailablew / minwidth; //Ideally
 		var eachwidth = 0;
-		
+
 		maxcols = Math.round(maxcols);
-		while (eachwidth < minwidth) { //Divide evenly
+		while (eachwidth < minwidth) {
+			//Divide evenly
 			eachwidth = totalavailablew / maxcols;
 			maxcols--;
 		}
@@ -97,8 +98,7 @@
 
 				var colx = colwidthpx * colnum;
 				cell.css("left", colx + "px");
-				if (colheight[colnum]>gridminheight)
-				{
+				if (colheight[colnum] > gridminheight) {
 					grid.css("height", colheight[colnum] + "px");
 					gridminheight = colheight[colnum];
 				}
@@ -121,7 +121,7 @@
 			}
 		}
 		//	return shortColumn;
-		
+
 		//Only change if its over 50px in diference
 		var defaulttop = colheight[defaultcolumn];
 		var shortesttop = colheight[shortColumn];
