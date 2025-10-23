@@ -1,8 +1,8 @@
 {
   "name": "generate_metadata_transcript",
   "description": "Analyze the following transcript from an audio/video file to generate appropriate values for its missing metadata fields.
-	#ifnotnull( $asset.name )File Name: $asset.name #end
-	Transcript: $textcontent",
+	#ifnotnull( $asset.name )File Name: #jrender($asset.name) #end
+	Transcript: #jrender($textcontent)",
   "parameters": {
     "type": "object",
     "properties": {
@@ -16,7 +16,7 @@
 				#if($field.isList())
 					"$field.id": {
 						"type": "string",
-						"description": "$field.aicreationcommand",
+						"description": "#jrender($field.aicreationcommand)",
 						"enum": [
 							#foreach( $option in $mediaarchive.getList($field.getListId()) )
 								#if($foreach.count>1)
@@ -29,7 +29,7 @@
 				#else
 					"$field.id": {
 						"type": "string",
-						"description": "$field.aicreationcommand"
+						"description": "#jrender($field.aicreationcommand)"
 					}
 				#end
 		  #end
