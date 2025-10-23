@@ -15,8 +15,10 @@
 						#ifnull($parententitymoduleicon)
 							#set($parententitymoduleicon = "grid")
 						#end
-						<i class="bi bi-${parententitymoduleicon} module-icon"></i> <span>#text($parententitymodule)</span>
+						<span>#text($parententitymodule)</span>
 						<i class="bi bi-chevron-right mx-1 bi-small"></i>
+						<i class="bi bi-${parententitymoduleicon} module-icon"></i> 
+						
 						#set($parententity = $mediaarchive.getCachedData($parententitymoduleid, $parententityid))
 						<a href="#" class="ajax entityNavBack" 
 						style="display: none;"
@@ -24,7 +26,7 @@
 						data-entityid="$!{entity.id}" 
 						data-oemaxlevel="1"
 						title="[[Back to]] #text($parententity)" >
-						#text($parententity)
+						<span class="entityheaderlabel">#text($parententity)</span>
 						</a>
 						<i class="bi bi-chevron-right mx-1 bi-small"></i>
 					</div>
@@ -45,7 +47,7 @@
 					#ifnull($moduleicon)
 						#set($moduleicon = "grid")
 					#end
-					<i class="bi bi-${moduleicon} module-icon"></i> 
+					 
 					 
 					#if($moduleid == "faceprofilegroup")
 						#text($module) <i class="bi bi-chevron-right mx-1 bi-small"></i>
@@ -58,24 +60,33 @@
 					#else
 						
 						<span class="entitymodulelabel">#text($module) <i class="bi bi-chevron-right mx-1 bi-small"></i></span>
+						<i class="bi bi-${moduleicon} module-icon"></i>
 						
 						#if($ismulti)
-							[[Multi Edit]] $!entity.getSelectedResults().size() [[Items]]		
+							<span class="entityheaderlabel" title="">
+							[[Multi Edit]] $!entity.getSelectedResults().size() [[Items]]
+							</span>		
 						#else	
 							#if($addnew=='true')
+								<span class="entityheaderlabel" title="[[Add New]]">
 								#set($label = "[[Add New]]")
 								#text($label)	
+								</span>
 								$context.putPageValue("addnew", $addnew)
 							#elseif($module.getValue("customname"))
 								#set($detail= $mediaarchive.getSearcher($module.id).getDetail("name"))
-								#set($label = $searcherManager.renderMask($entity, $detail ,$module.getValue("customname"), null, $context.getLocale())) 
+								#set($label = $searcherManager.renderMask($entity, $detail ,$module.getValue("customname"), null, $context.getLocale()))
+								<span class="entityheaderlabel" title="#text($label) "> 
 								#text($label) 
+								</span>
 							#else
 								#set($label = $!entity.getName($context))
+								<span class="entityheaderlabel" title="#text($label)">
 								#text($label) 				
+								</span>
 							#end
-							
 						#end
+						
 					#end 
 				</h2>
 				
