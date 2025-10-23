@@ -4,18 +4,21 @@
 								
 				<h2 class="d-flex align-items-center">
 					
+					#set($parententitymodule = $mediaarchive.getCachedData("module", $parententitymoduleid))
+					#if ($parententitymodule.moduleicon)
+						#set($parententitymoduleicon = $parententitymodule.moduleicon)
+					#end
+					#ifnull($parententitymoduleicon)
+						#set($parententitymoduleicon = "grid")
+					#end
 
 					#ifnotnull($parententityid)
 						<div class="parententityheader">
-							#set($parententitymodule = $mediaarchive.getCachedData("module", $parententitymoduleid))
-							#if ($parententitymodule.moduleicon)
-								#set($parententitymoduleicon = $parententitymodule.moduleicon)
-							#end
-							#ifnull($parententitymoduleicon)
-								#set($parententitymoduleicon = "grid")
-							#end
-							<i class="bi bi-${parententitymoduleicon} module-icon"></i> <span>#text($parententitymodule)</span>
+							
+							<i class="bi bi-${parententitymoduleicon} module-icon"></i>
+							<span>#text($parententitymodule)</span>
 							<i class="bi bi-chevron-right mx-1 bi-small"></i>
+
 							#set($parententity = $mediaarchive.getCachedData($parententitymoduleid, $parententityid))
 							<a href="#" class="ajax entityNavBack" 
 							style="display: none;"
@@ -23,9 +26,12 @@
 							data-entityid="$!{entity.id}" 
 							data-oemaxlevel="1"
 							title="[[Back to]] #text($parententity)" >
-							#text($parententity)
+								<i class="bi bi-${parententitymoduleicon} module-icon"></i>
+								#text($parententity)
 							</a>
+
 							<i class="bi bi-chevron-right mx-1 bi-small"></i>
+
 						</div>
 					#end
 					
@@ -38,13 +44,6 @@
 						<i class="fas fa-arrow-left"></i>
 					</a>
 					*#
-					#if ($module.moduleicon)
-						#set($moduleicon = $module.moduleicon)
-					#end
-					#ifnull($moduleicon)
-						#set($moduleicon = "grid")
-					#end
-					<i class="bi bi-${moduleicon} module-icon"></i>
 					 
 					#if($moduleid == "faceprofilegroup")
 						#text($module) <i class="bi bi-chevron-right mx-1 bi-small"></i>
@@ -55,8 +54,17 @@
 							#set($label = "$entity.samplecount")
 						#end
 					#else
-						
-						<span class="entitymodulelabel">#text($module) <i class="bi bi-chevron-right mx-1 bi-small"></i></span>
+						<div class="entitymodulelabel">
+							<i class="bi bi-${parententitymoduleicon} module-icon"></i>
+							<span>#text($module)</span>
+							<i class="bi bi-chevron-right mx-1 bi-small"></i>
+						</div>
+						#if ($module.moduleicon)
+							#set($moduleicon = $module.moduleicon)
+						#end
+						#ifnull($moduleicon)
+							#set($moduleicon = "grid")
+						#end
 						<i class="bi bi-${moduleicon} module-icon"></i>
 						
 						#if($ismulti)
