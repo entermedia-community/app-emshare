@@ -188,6 +188,11 @@ $(document).ready(function () {
 		submoduleOpener.data("updateurl", true);
 		var urlbar = submoduleOpener.data("baseurlbar");
 		submoduleOpener.data("urlbar", urlbar + "?entityid=" + rowid);
+		
+		var editdiv = row.closest(".editdiv");
+		submoduleOpener.data("parententityid", editdiv.data("entityid"));
+		submoduleOpener.data("parententitymoduleid", editdiv.data("entitymoduleid"));
+		
 		submoduleOpener.runAjax();
 	});
 

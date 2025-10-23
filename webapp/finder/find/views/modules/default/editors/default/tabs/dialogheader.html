@@ -1,17 +1,44 @@
 #set($moduleid = $module.id)
 <div class="entity-header d-flex align-items-center justify-content-between">
 			<div class="d-flex align-items-center">
-				
-				<a href="#" class="ajax entityNavBack" 
-					style="display: none;"
-					data-targetdiv="entitydialog" 
-					data-entityid="$!{entity.id}" 
-					data-oemaxlevel="1" >
-					<i class="fas fa-arrow-left"></i>
-				</a>
 								
 				<h2 class="d-flex align-items-center">
 					
+					#set($parententityid = $context.getRequestParameter("parententityid"))
+					#ifnotnull($parententityid)
+					<div class="parententityheader">
+						#set($parententitymoduleid = $context.getRequestParameter("parententitymoduleid"))
+						#set($parententitymodule = $mediaarchive.getCachedData("module", $parententitymoduleid))
+						#if ($parententitymodule.moduleicon)
+							#set($parententitymoduleicon = $parententitymodule.moduleicon)
+						#end
+						#ifnull($parententitymoduleicon)
+							#set($parententitymoduleicon = "grid")
+						#end
+						<i class="bi bi-${parententitymoduleicon} module-icon"></i> <span>#text($parententitymodule)</span>
+						<i class="bi bi-chevron-right mx-1 bi-small"></i>
+						#set($parententity = $mediaarchive.getCachedData($parententitymoduleid, $parententityid))
+						<a href="#" class="ajax entityNavBack" 
+						style="display: none;"
+						data-targetdiv="entitydialog" 
+						data-entityid="$!{entity.id}" 
+						data-oemaxlevel="1"
+						title="[[Back to]] #text($parententity)" >
+						#text($parententity)
+						</a>
+						<i class="bi bi-chevron-right mx-1 bi-small"></i>
+					</div>
+					#end
+					
+					#*
+					<a href="#" class="ajax entityNavBack" 
+										style="display: none;"
+										data-targetdiv="entitydialog" 
+										data-entityid="$!{entity.id}" 
+										data-oemaxlevel="1" >
+										<i class="fas fa-arrow-left"></i>
+									</a>
+					*#
 					#if ($module.moduleicon)
 						#set($moduleicon = $module.moduleicon)
 					#end
@@ -29,7 +56,9 @@
 							#set($label = "$entity.samplecount")
 						#end
 					#else
-						#text($module) <i class="bi bi-chevron-right mx-1 bi-small"></i>
+						
+						<span class="entitymodulelabel">#text($module) <i class="bi bi-chevron-right mx-1 bi-small"></i></span>
+						
 						#if($ismulti)
 							[[Multi Edit]] $!entity.getSelectedResults().size() [[Items]]		
 						#else	
@@ -227,6 +256,8 @@
 							#end
 						</div>
 				#end
+				
+				
 					
 				<div class="entityclose mbl-except">
 					<span title="[[Esc to Close]]" class="bi bi-x-lg ns"></span>
