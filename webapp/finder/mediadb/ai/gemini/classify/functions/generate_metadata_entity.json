@@ -1,32 +1,8 @@
-#set($description = "Generates metadata for an entity based on the following fields: ")
-#foreach($field in $contextfields)
-	#if($foreach.count>1)
-	#set($description = "$description,")
-#end
-	#if($field.isList())
-		#set($description = "$description \n ${field.name}:")
-		#foreach( $option in $mediaarchive.getValueList($field, $entity) )
-			#if($foreach.count>1)
-				#set($description = "$description,")
-			#end
-			#set($description = "$description #text($option)")
-		#end
-	#elseif($field.isBoolean())
-		#set($description = "$description \n ${field.name}:")
-		#if($entity.getBoolean($field.id)) 
-			#set($description = "$description \n ${field.name}: Yes")
-		#else
-			#set($description = "$description \n ${field.name}: No")
-		#end
-	#elseif($field.isDate())
-		## SKIP
-	#else
-		#set($description = "$description \n ${field.name}: ${entity.get($field.id)}")
-	#end
-#end
+$context.putPageValue("aicommandprefix", "Generates metadata for an entity based on the following fields: ")
+
 {
   "name": "generate_metadata_entity",
-  "description": #jesc($description),
+  "description": $pages.include("../function_description.json", $context),
   "parameters": {
     "type": "object",
     "properties": {
@@ -40,7 +16,7 @@
 				#if($field.isList())
 					"$field.id": {
 						"type": "string",
-						"description": "$field.aicreationcommand",
+						"description": "#jrender($field.aicreationcommand)",
 						"enum": [
 							#foreach( $option in $mediaarchive.getList($field.getListId()) )
 								#if($foreach.count>1)
@@ -53,7 +29,7 @@
 				#else
 					"$field.id": {
 						"type": "string",
-						"description": "$field.aicreationcommand"
+						"description": "#jrender($field.aicreationcommand)"
 					}
 				#end
 		  #end

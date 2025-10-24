@@ -1,10 +1,8 @@
+$context.putPageValue("aicommandprefix", "Analyze the following transcript from an audio/video file to generate appropriate values for its missing metadata fields.\n\nTranscript: $textcontent\n\n")
+
 {
-  "name": "generate_metadata_asset",
-  "description": "Analyze the image and following metadata to generate appropriate values for the missing fields:
-	#ifnotnull( $asset.name ) Current file name: $asset.name #end 
-	#if( $asset.hasKeywords() )
-	Existing keywords: #foreach($kw in $asset.getKeywords())#if($foreach.count > 1),#end $kw #end
-	#end",
+  "name": "generate_metadata_transcript",
+  "description": $pages.include("../function_description.json", $context),
   "parameters": {
     "type": "object",
     "properties": {
@@ -18,7 +16,7 @@
 				#if($field.isList())
 					"$field.id": {
 						"type": "string",
-						"description": "$field.aicreationcommand",
+						"description": "#jrender($field.aicreationcommand)",
 						"enum": [
 							#foreach( $option in $mediaarchive.getList($field.getListId()) )
 								#if($foreach.count>1)
@@ -27,26 +25,11 @@
 								#jesc("$option.id|#text($option)")
 							#end
 						]
-#*
-Slower than enum, useful if list contains mixed data types
-	anyOf: [
-		#foreach( $option in $mediaarchive.getList($field.getListId()) )
-			#if($foreach.count>1)
-			,
-			#end
-			{
-				"type": "string",
-				"const": "$option.id",
-				"description": "#text($option)"
-			}
-		#end
-	]
-*#
 					}
 				#else
 					"$field.id": {
 						"type": "string",
-						"description": "$field.aicreationcommand"
+						"description": "#jrender($field.aicreationcommand)"
 					}
 				#end
 		  #end
