@@ -23,7 +23,8 @@ public void init()
 //		q.addOrsGroup("importstatus", "imported reimported");
 		SearchQuery q = assetsearcher.createSearchQuery().append("id", "*");
 		q.addNot("editstatus","7");
-		q.addSortBy("id");
+		//q.addSortBy("id");
+		q.addSortBy("assetaddeddate");
 		HitTracker assets =  assetsearcher.search(q);
 		assets.enableBulkOperations();
 		
