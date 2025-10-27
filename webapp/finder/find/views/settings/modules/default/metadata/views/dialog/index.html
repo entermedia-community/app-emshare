@@ -24,7 +24,14 @@
 #set($details = $searcher.getDetailsForView($viewdata, $userprofile))
 
 
-<div id="viewpicker" class="viewpickereditor" data-viewid="$viewid" data-oemaxlevel="1" data-url="$siteroot$viewsroot/dialog/index.html" >
+#set($ajaxreloadtargetid =  $context.getRequestParameter("ajaxreloadtargetid"))
+
+<div id="viewpicker" 
+	class="viewpickereditor" 
+	data-viewid="$viewid" 
+	data-oemaxlevel="1" 
+	data-url="$siteroot$viewsroot/dialog/index.html" 
+	data-ajaxreloadtargetid="$!{ajaxreloadtargetid}">
 <div class="emsettingslist  pb-3" >
 	
 #if($canviewsettings)
@@ -42,7 +49,9 @@
 
 #end
 
-<ul class="emsettingslist listsort" data-ajaxreloadtargets="dataeditedreload"  data-path="$siteroot$viewsroot/dialog/saveview.html?searchtype=$module.id&assettype=$assettype&viewid=$viewid">
+<ul class="emsettingslist listsort" 
+	data-ajaxreloadtargets="dataeditedreload"  
+	data-path="$siteroot$viewsroot/dialog/saveview.html?searchtype=$module.id&assettype=$!{assettype}&viewid=$!{viewid}&ajaxreloadtargetid=$!{ajaxreloadtargetid}">
 
 	#set( $moduleid = $context.findValue("module") )
 
@@ -63,12 +72,16 @@
 				<span class="type-of-field">#if( $detail.getViewType() ) $mediaarchive.getCachedData("datarendertype" , $detail.getViewType() ) #else Text #end</span>
 				</a>
 			</div>
-			
-			
-
 						
-			<a class="ajax delete-row" data-targetdivinner="viewpicker"  data-ajaxreloadtargets="metadataeditorreload,dataeditedreload"
-			 href="$siteroot$viewsroot/dialog/removefromview.html?searchtype=$moduleid&detailid=$pid&assettype=$assettype&viewid=$viewid&oemaxlevel=1" data-ajaxreloadtargets="resultsdiv">
+			<a class="ajax delete-row" 
+				data-targetdivinner="viewpicker"
+				#if($ajaxreloadtargetid)  
+				data-ajaxreloadtargetid="$!{ajaxreloadtargetid}"
+				#else
+					data-ajaxreloadtargets="dataeditedreload"
+				#end
+			 	href="$siteroot$viewsroot/dialog/removefromview.html?searchtype=$moduleid&detailid=$pid&assettype=$assettype&viewid=$viewid&oemaxlevel=1&ajaxreloadtargetid=$!{ajaxreloadtargetid}" 
+			 >
 			 <i class="bi bi-x"></i>
 			</a>
 		</li>
@@ -77,17 +90,24 @@
 </div>
 
 <div class="emsettingslistd pt-3" >
-		<form name="addtoview" class="ajaxform d-flex flex-grow-1 flex-column" 
+		<form name="addtoview" 
+			class="ajaxform d-flex flex-grow-1 flex-column" 
 			data-targetdiv="viewpicker" 
 			id="addtoview" 
 			action="$siteroot$viewsroot/dialog/addtoview.html"
-		 	data-ajaxreloadtargets="metadataeditorreload,dataeditedreload"
+		 	
+			#if($ajaxreloadtargetid)
+				data-ajaxreloadtargetid="$!ajaxreloadtargetid"
+			#else
+				data-ajaxreloadtargets="dataeditedreload"
+			#end
 			>
 		 	##ToFix: resultsdiv needs one of this classes and the data-url to reload it self
 		 
 			<input type="hidden" name="oemaxlevel" value="1"/>
 			<input type="hidden" name="viewid" value="$viewid"/>
 			<input id="tableid" name="tableid" type="hidden" value="$moduleid">
+			<input type="hidden" name="ajaxreloadtargetid" value="$!ajaxreloadtargetid"
 
 			<div class="d-flex justify-content-between align-items-center mb-2">
 			<select id="fieldnames" name="detailid" class="select2 selectsubmitform" placeholder="[[Add another field]]">
