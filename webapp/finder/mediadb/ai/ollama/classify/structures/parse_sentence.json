@@ -1,0 +1,89 @@
+{
+	"model": "${model}",
+	"messages": [
+		{
+			"role": "system",
+			"content": "You are an expert in semantic role labeling"
+		},
+		{
+			"role": "user",
+			"content": #jesc("Extract semantic roles from: ${query}")
+		}
+	],
+	"stream": false,
+	"think": false,
+	"format": {
+		"type": "object",
+		"required": ["request_type"],
+		"properties": {
+			"request_type": {
+				"type": "string",
+				"enum": [
+					"search",
+					"creation",
+					"how-to",
+					"task",
+					"conversation",
+					"support"
+				],
+				"description": "The "
+			},
+			"targets": {
+				"type": "array",
+				"items": {
+					"type": "string"
+				},
+				"description": "Groups of targets to focus on"
+			},
+			"keywords": {
+				"type": "array",
+				"items": {
+					"type": "string"
+				},
+				"description": "Words to search for. Exclude adjectives, actions, people, companies, department, asset type, regions, and dates."
+			},
+
+			"marketingasset": {
+				"type": "string",
+				"description": "Name of the marketing asset if mentioned"
+			},
+			"content_classification": {
+				"type": "string",
+				"description": "Type of asset if mentioned (e.g. image, audio, video, flyers, etc.)"
+			},
+			"people": {
+				"type": "string",
+				"description": "Names of people mentioned"
+			},
+			"region": {
+				"type": "string",
+				"description": "Geographic region or location mentioned in the query."
+			},
+			"departments": {
+				"type": "string",
+				"description": "List of departments mentioned"
+			},
+			"companies": {
+				"type": "array",
+				"items": {
+					"type": "string"
+				},
+				"description": "List of companies mentioned"
+			},
+			"date_range": {
+				"type": "object",
+				"properties": {
+					"operator": {
+						"type": "string",
+						"enum": ["before", "after", "within_last"],
+						"description": "Type of time filter"
+					},
+					"value": {
+						"type": "string",
+						"description": "Relative or absolute time range, e.g. '1 year', '2023-01-01'"
+					}
+				}
+			}
+		}
+	}
+}
