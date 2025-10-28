@@ -1,28 +1,56 @@
-#set($currentab = $context.getRequestParameter("currentab"))
-#if (!$currentab)
-	#set( $currentab = "crops" )
+#ifnull($rendertype)
+	#set( $rendertype = $mediaarchive.getMediaRenderType($asset.fileformat))
 #end
+
+#set($currentab = $context.getRequestParameter("currentab"))
+
 #set( $assettab = $context.findValue("assettab") ) 
 
 #set ($listid = "assetedit" )
 <div class="asset-panel-settings d-flex pt-0"> 
 	<div class="entityimport auto-active-container overflow-y mbl-hidden" id="assetedittabs">
 			#set( $screens = $searcherManager.query($catalogid,$listid).all().sort("ordering").search() )
-			
+			#set($activetab = false)
+
 			#foreach($screen in $screens)
-				#set($ok = true)
-				#if($screen.id == "converthistory")
-					#if(!$canviewconversions)
-						#set($ok = false)
+				#set($ok = false)
+
+				#if($screen.id == "timeline")
+					#if($rendertype == "video")
+						#set($ok = true)
+						#if (!$currentab)
+							#set( $currentab = "timeline" )
+						#end
+					#end
+				#end
+
+				#if($screen.id == "closedcaptions")
+					#if($rendertype == "video" || $rendertype == "audio")
+						#set($ok = true)
+						#if (!$currentab)
+							#set( $currentab = "closedcaptions" )
+						#end
 					#end
 				#end
 				
-				#if ( $screen.id == "crops")
-					#set($ok = false)
-					#if ($canviewcroppingtool && $canviewconversions)
+				#if ( $screen.id == "adjustments")
+					#if ($rendertype == "image")
 						#set($ok = true)
+						#if (!$currentab)
+							#set( $currentab = "adjustments" )
+						#end
 					#end
 				#end
+
+				#if ( $screen.id == "crops")
+					#if ($rendertype == "image" && $canviewcroppingtool && $canviewconversions)
+						#set($ok = true)
+						#if (!$currentab)
+							#set( $currentab = "crops" )
+						#end
+					#end
+				#end
+
 				#if($ok)
 					<div class="auto-active-row #if( $currentab == $screen.id ) current #end">
 						<a class="btn btn-lg btn-wide ajax auto-active-link" data-targetdiv="asset-editor-container" 
@@ -34,6 +62,6 @@
 			#end
 	</div>
 	<div id="assetedittabs" class="assetedittabs flex-grow-1 h-100">
-		$pages.include("/$applicationid/views/modules/asset/editor/crops/index.html", $context)
+		$pages.include("/$applicationid/views/modules/asset/editor/${currentab}/index.html", $context)
 	</div>
 </div>

@@ -3,9 +3,6 @@ if (!jQuery.fn.videoClosedCaptions) {
 		$.fn.videoClosedCaptions = function (options) {
 			console.log("Closed Caption init");
 
-			var app = $("#application");
-			var apphome = app.data("siteroot") + app.data("apphome");
-
 			var timelineeditor = $(this);
 
 			var video = timelineeditor.find("video")[0]; //videoclip[0];
