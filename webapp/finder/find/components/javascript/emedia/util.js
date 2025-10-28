@@ -287,6 +287,11 @@ $(document).ready(function () {
 		});
 	});
 
+	lQuery("img.hasFallback").livequery("error", function () {
+		var err = $(this).data("error");
+		$(this).replaceWith(`<div class="img-error">${err}</div>`);
+	});
+
 	lQuery(".favorite-star").livequery("click", function (e) {
 		e.preventDefault();
 		e.stopImmediatePropagation();

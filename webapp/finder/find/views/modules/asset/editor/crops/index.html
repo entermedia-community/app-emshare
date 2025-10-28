@@ -5,10 +5,8 @@
 
 $context.putPageValue("asset", $asset)
 
-<div id="asset-editor-container" class="h-100">
-  <div class="d-flex w-100 h-100">
-    #set ($previewlink = $mediaarchive.asLinkToPreview($asset, "image200x200") )
-    
+<div id="asset-editor-container" class="h-100 asset-crop-container">
+  <div id="cropeditor" class="d-flex w-100 h-100">    
     #set( $presets = $conversionUtil.getCroppablePresetList($mediaarchive, $asset) )
       
     #if($presets.size() == 0)
@@ -16,37 +14,34 @@ $context.putPageValue("asset", $asset)
         [[No Crop Presets Available]]
       </div>
     #else
-      <div class="bg-light border-right" style="min-width:200px;max-width: 200px;">
-        <h4 class="mt-2 mb-1 text-center">[[Crop Presets]]</h4>
-        <div class="crop-presets overflow-y px-2 pt-1 pb-3 auto-active-container">
-          #set($presetid = $context.getRequestParameter("presetid.value"))
-          #ifnull($presetid) 
-            #set($presetid = $presets.iterator().next().getId())
-          #end
+      <div class="d-flex flex-column align-items-center flex-grow-1">
+        <h2 class="my-4 text-center">[[Crop Presets]]</h2>
+        <div class="crop-presets overflow-y px-2 pt-1 pb-3">
           #foreach($presetdata in $presets)
-              #set($dimension = $conversionUtil.getConvertPresetDimension($mediaarchive.getCatalogId(),$presetdata.id))
-              #set($height = $mathtool.toInteger($dimension.getHeight()))
-              #set($width = $mathtool.toInteger($dimension.getWidth()))
-              
-              #set($aspectratio = $conversionUtil.getConvertPresetAspectRatio($dimension))
-      
-              #set($name = $presetdata.getName())
-              
-              <a href="${apphome}/views/modules/asset/editor/crops/cropeditor.html" class="btn btn-wide ajax auto-active-link w-100 mb-2 #if($presetid == $presetdata.getId()) current #end" data-targetdiv="cropeditor" data-oemaxlevel="1" data-presetid="$presetdata.getId()">
-                <span>$name</span> 
-                #set($generated = $presetdata.get("generatedoutputfile") )
-                #set ($previewlink = $mediaarchive.asLinkToPreview($asset, null, "${generated}") ) 
-                <strong>$width &times; $height</strong>
-              </a>
-      
+            #set($dimension = $conversionUtil.getConvertPresetDimension($mediaarchive.getCatalogId(),$presetdata.id))
+            #set($height = $mathtool.toInteger($dimension.getHeight()))
+            #set($width = $mathtool.toInteger($dimension.getWidth()))
+            
+            #set($aspectratio = $conversionUtil.getConvertPresetAspectRatio($dimension))
+    
+            #set($name = $presetdata.getName())
+            
+            <a href="${apphome}/views/modules/asset/editor/crops/cropeditor.html"
+              class="ajax crop-preview"
+              data-targetdiv="cropeditor"
+              data-oemaxlevel="1"
+              data-presetid="$presetdata.getId()">
+              <span>$name</span> 
+              #set($generated = $presetdata.get("generatedoutputfile") )
+              #set ($previewlink = $mediaarchive.asLinkToPreview($asset, null, "${generated}") )
+              <div class="d-flex align-items-center justify-content-center flex-grow-1">
+                <img src="$previewlink" style="max-width: ${width}px; max-height: ${height}px;" class="hasFallback" data-error="Preset not set yet" />
+              </div>
+              <strong>$width &times; $height</strong>
+            </a>
           #end
-      
         </div>
       </div>
-
-      $pages.include("./cropeditor.html?presetid=${presetid}", $context)
-
     #end
-    
   </div>
 </div>

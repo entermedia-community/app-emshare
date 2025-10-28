@@ -1,7 +1,7 @@
 #set( $contentitem = $conversionUtil.outPutForPreset($mediaarchive, $asset,"image3000x3000"))
  
 <div id="imageeditorarea" class="w-100 h-100 #if(!$contentitem.exists()) ajaxstatus #end" data-assetid="$asset.id" data-oemaxlevel="1" 
-	data-ajaxpath="$applink/views/modules/asset/editor/imageeditor/editorarea.html">
+	data-ajaxpath="$applink/views/modules/asset/editor/adjustments/editorarea.html">
   #set($url = $mediaarchive.asLinkToPreview($asset, "image3000x3000"))
   #set($filename = $url_util.getPathUtilities().extractPageName($asset.getName()) )
   <div class="d-flex flex-column h-100" id="photo-editor" >
@@ -18,11 +18,11 @@
           #if($canmediaeditsave)
           
           #if( $asset.fileformat == "jpeg" || $asset.fileformat == "jpg" || $asset.fileformat == "png" ) 
-            <a id="imagesave" href="$applink/views/modules/asset/editor/imageeditor/savepresetfile.html?assetid=$asset.id&overwrite=true" title="[[Save / Replace]]">
+            <a id="imagesave" href="$applink/views/modules/asset/editor/adjustments/savepresetfile.html?assetid=$asset.id&overwrite=true" title="[[Save / Replace]]">
               <i class="bi bi-floppy-fill"></i>
               <label>[[Save]]</label>
             </a>
-            <form id="saveform" name="saveform" style="display:none;" action="$applink/views/modules/asset/editor/imageeditor/saveoverwrite.html" data-assetfileformat = "$asset.fileformat">
+            <form id="saveform" name="saveform" style="display:none;" action="$applink/views/modules/asset/editor/adjustments/saveoverwrite.html" data-assetfileformat = "$asset.fileformat">
               <input type="hidden" name="assetid" value="$asset.id" />
             </form>
           #end
@@ -36,7 +36,7 @@
           #end
           <div class="mask" role="button"></div>
           <div class="save-as-menu">
-            <form class="d-flex flex-column" id="saveasform" action="$applink/views/modules/asset/editor/imageeditor/savepresetfile.html"
+            <form class="d-flex flex-column" id="saveasform" action="$applink/views/modules/asset/editor/adjustments/savepresetfile.html"
             	data-assetfileformat = "$asset.fileformat"
             >
               <h4 class="text-center">[[Save As]]</h4>
@@ -99,10 +99,6 @@
           <a href="#" data-action="filter">
             <i class="bi bi-transparency"></i>
             <label>[[filters]]</label>
-          </a>
-          <a href="#" data-action="crop">
-            <i class="bi bi-crop"></i>
-            <label>[[crop]]</label>
           </a>
           <a href="#" data-action="rotate">
             <i class="bi bi-arrow-repeat"></i>
@@ -345,28 +341,6 @@
         <i class="bi bi-hr"></i>
         <span>[[Flip]] Y</span>
       </button>
-    </div>
-  </div>
-
-  <div class="crop-editor panel">
-    <div class="x-close text-white ml-auto pt-1">
-      <i class="bi bi-x-lg"></i>
-    </div> 
-    <label for="aspectRatio" class="mt-1">[[Aspect Ratio]]</label>
-    <select id="aspectRatio">
-      <option value="0">[[Original]]</option>
-      <option value="-1">[[Free Transform]]</option>
-      <option value="1">1:1 ([[square]])</option>
-      <option value="1.78">16:9</option>
-      <option value="0.5625">9:16</option>
-      <option value="1.33">4:3</option>
-      <option value="0.75">3:4</option> 
-      <option value="2">2:1</option>
-      <option value="0.5">1:2</option>
-    </select>
-    <div class="d-flex justify-content-between">
-      <button id="cropBtn">[[Crop]]</button>
-      <button id="resetCrop">[[Reset]]</button>
     </div>
   </div>
 

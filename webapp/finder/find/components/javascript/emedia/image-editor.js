@@ -40,10 +40,10 @@ var convolutionMatrices = {
 
 $(document).ready(function () {
 	function initializeEditor() {
-		$(".photo-editor-container").css("width", window.innerWidth);
+		$(".photo-editor-container").css("width", window.innerWidth - 260);
 		var imgSrc = $(this).attr("src");
 		if (!imgSrc) return;
-		var editorWidth = window.innerWidth - 72;
+		var editorWidth = window.innerWidth - (260 + 72);
 		var editorHeight = window.innerHeight - 100;
 
 		fabric.Object.prototype.transparentCorners = false;
@@ -311,11 +311,7 @@ $(document).ready(function () {
 			var panel = "." + action + "-editor";
 			$(panel).css("top", $(this).offset().top);
 			$(panel).toggleClass("active");
-			if (action === "crop") {
-				createCropSelectionRect();
-			} else if (
-				["flipX", "flipY", "rotateLeft", "rotateRight"].includes(action)
-			) {
+			if (["flipX", "flipY", "rotateLeft", "rotateRight"].includes(action)) {
 				destroySelectionRect();
 			} else {
 				destroySelectionRect();
@@ -395,63 +391,6 @@ $(document).ready(function () {
 			canvas.renderAll();
 			selectionRect = null;
 		}
-
-		$("#resetCrop").click(function () {
-			window.imageRenderWidth = window.__imageRenderWidth;
-			window.imageRenderHeight = window.__imageRenderHeight;
-			window.imageRenderLeft = window.__imageRenderLeft;
-			window.imageRenderTop = window.__imageRenderTop;
-			window.imageRenderAngle = 0;
-			imgInstance.clipPath = null;
-			destroySelectionRect();
-			canvas.setZoom(1);
-			centerViewPort();
-			canvas.discardActiveObject();
-			canvas.renderAll();
-			$(".crop-editor").removeClass("active");
-		});
-
-		function handleCrop() {
-			if (!selectionRect) return;
-			// cdr(selectionRect);
-			var newBounds = selectionRect.getBoundingRect();
-			window.imageRenderWidth = newBounds.width;
-			window.imageRenderHeight = newBounds.height;
-			window.imageRenderLeft = newBounds.left;
-			window.imageRenderTop = newBounds.top;
-
-			var clipPath = new fabric.Rect({
-				left: imageRenderLeft,
-				top: imageRenderTop,
-				width: imageRenderWidth,
-				height: imageRenderHeight,
-				absolutePositioned: true,
-				evented: false,
-			});
-
-			imgInstance.clipPath = clipPath;
-
-			selectionRect.visible = false;
-			canvas.setZoom(1);
-			getFinalImage("png", selectionRect);
-			canvas.setViewportTransform([
-				1,
-				0,
-				0,
-				1,
-				-newBounds.left + canvas.width / 2 - newBounds.width / 2,
-				-newBounds.top + canvas.height / 2 - newBounds.height / 2,
-			]);
-			canvas.discardActiveObject();
-			canvas.renderAll();
-			$(".crop-editor").removeClass("active");
-			// loadPrimaryImage(getFinalImage("png", selectionRect));
-			// $("#editingCandidate").attr("src", getFinalImage());
-		}
-
-		$("#cropBtn").click(function () {
-			handleCrop();
-		});
 
 		function cdr(object) {
 			if (debugRect) {
@@ -841,46 +780,6 @@ $(document).ready(function () {
 			closeSaveAs();
 		});
 
-		$("#aspectRatio").change(function () {
-			var ratio = $(this).val();
-			var newWidth = window.imageRenderWidth;
-			var newHeight = window.imageRenderHeight;
-			if (ratio == -1) {
-				createCropSelectionRect(true);
-			} else {
-				createCropSelectionRect();
-				var minDim = Math.min(imageRenderWidth, imageRenderHeight);
-				if (ratio != 0) {
-					if (ratio == 1) {
-						newWidth = minDim;
-						newHeight = newWidth;
-					} else if (ratio > 1) {
-						if (imageRenderWidth > imageRenderHeight) {
-							newHeight = minDim;
-							newWidth = minDim * ratio;
-						} else {
-							newWidth = minDim / ratio;
-							newHeight = minDim;
-						}
-					} else if (ratio < 1) {
-						if (imageRenderWidth > imageRenderHeight) {
-							newHeight = minDim;
-							newWidth = minDim * ratio;
-						} else {
-							newWidth = minDim;
-							newHeight = minDim * ratio;
-						}
-					}
-				}
-			}
-			selectionRect.set("width", newWidth);
-			selectionRect.set("height", newHeight);
-			selectionRect.set("left", imgInstance.left);
-			selectionRect.set("top", imgInstance.top);
-			selectionRect.set("scaleX", 1);
-			selectionRect.set("scaleY", 1);
-			canvas.renderAll();
-		});
 		$("input[name=replaceall]").click(function () {
 			if ($(this).prop("checked")) {
 				$("#customSizeOptions").hide();
