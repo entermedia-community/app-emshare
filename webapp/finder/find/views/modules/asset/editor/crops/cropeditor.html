@@ -10,13 +10,31 @@
 
 #set($cropuser = $mediaarchive.getUser($cropbox.userid))
 
-<div class="d-flex flex-column align-items-center justify-content-center flex-grow-1 my-3">
-  <div class="mb-3 text-center">
-    <h4 class="p-0 mb-1">$preset.getName()<span class="mx-2">&middot;</span><span class="text-muted">( $aspectratio )</span></h4>
-    #ifnotnull($cropuser)
-      <span class="text-muted">[[Last modified by ]] #text($cropuser)</span>
-    #end
+#set($dlink = $mediaarchive.asLinkToShare($context.getSiteRoot(),$asset,$preset))
+
+<div class="d-flex flex-column align-items-center justify-content-center flex-grow-1">
+  <div class="d-flex align-items-center border-bottom-subtle w-100 px-3 mb-4 py-2">
+    <a href="${apphome}/views/modules/asset/editor/crops/index.html"
+      data-targetdiv="asset-editor-container"
+      data-oemaxlevel="1" class="ajax d-block">
+      <i class="bi bi-arrow-left ns mr-1"></i>
+      <h4 class="m-0 p-0 d-inline">[[Crop Presets]]</h4>
+    </a>
+    <i class="bi bi-chevron-right ns mx-2"></i>
+    <h4 class="p-0 m-0 text-secondary">$preset.getName()<span class="mx-3">&middot;</span><span class="text-muted">( $aspectratio )</span></h4>
+    <span class="mx-3">&middot;</span>
+    <a class="btn btn-sm btn-accent mr-2" href="$dlink?download=true&ondemand=true" title="[[Download]]">
+      <i class="bi bi-download"></i>
+    </a>
+    <a class="btn btn-sm btn-accent copytoclipboard" data-text="$dlink?download=true&ondemand=true" title="[[Copy Share Link]]">
+      <i class="bi bi-share"></i>
+    </a>
   </div>
+  #ifnotnull($cropuser)
+  <div class="mb-3 text-center">
+    <span class="text-muted">[[Last modified by ]] #text($cropuser)</span>
+  </div>
+  #end
 
   #set ($img = $mediaarchive.asLinkToPreview($asset, "image3000x3000") )
   <form class="d-flex align-items-center ajaxform" data-targetdiv="asset-editor-container" action="${apphome}/views/modules/asset/editor/crops/save.html" method="post" id="cropform">
@@ -48,12 +66,6 @@
     <input name="croppreviewh.value" value="" type="hidden" />
     
     <div class="d-flex align-items-center">
-      <a href="${apphome}/views/modules/asset/editor/crops/index.html"
-        data-targetdiv="asset-editor-container"
-        data-oemaxlevel="1" class="btn mr-2 ajax" type="button">
-        <i class="bi bi-arrow-left mr-2"></i> [[Back]]
-      </a>
-
       <button class="btn btn-lg btn-cta m-2" type="submit">
         <i class="bi bi-crop mr-2"></i> [[Crop]]
       </button>
