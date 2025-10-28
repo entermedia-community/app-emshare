@@ -16,14 +16,16 @@
 #set($collectionid = $context.getRequestParameter("collectionid"))
 
 #set( $url = "${edithome}/generalinformation/editform.html")
-#set( $url = "$url?oemaxlevel=1&edit=$!caneditasset&assetid=${asset.id}" )
+#set( $url = "$url?oemaxlevel=1&edit=$!caneditasset&assetid=${asset.id}&viewid=${viewid}" )
 #set( $url = "$url&targetdiv=asset-detail-editor&editpath=${edithome}/generalinformation/save.html" )
-<div id="${edithomeid}" class="editdiv asseteditpanel dataeditedreload edit-panel-generic" 
+<div id="${edithomeid}${viewid}"
+	class="editdiv asseteditpanel dataeditedreload edit-panel-generic" 
 	data-assetid="$!asset.getId()" 
 	data-edithomeid="${edithomeid}"
 	data-url="#urlescape($url)"
 	data-assethitssessionid="$!hitssessionid"
 	data-viewid="${viewid}"
+	data-targetdiv="${edithomeid}${viewid}"
 	data-entitymoduleviewid="$!entitymoduleviewid"
 	
 	>
@@ -138,6 +140,7 @@ $context.putPageValue("searchtype", $searchtype)
 						<a class="emdialog float-right btn btn-secondary"
 							 href="$siteroot$apphome/views/settings/modules/$!{moduleid}/metadata/views/dialog/index.html?viewid=${viewid}" 
 							 data-dialogid="fieldpicker" data-hidefooter="true"
+							 data-ajaxreloadtargetid="${edithomeid}${viewid}"
 							 title="[[Configure View]]"><i class="bi bi-gear-fill mr-1"></i> [[Fields]]</a>
 						#end
 						

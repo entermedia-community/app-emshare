@@ -62,13 +62,14 @@ $context.putPageValue("viewid", $viewid)
 <div id="editentitymetadata"
 	data-url="${edithome}/index.html?oemaxlevel=1" 
 	class='editdiv metadataeditorreload entity-metadata entitymetadatamodal #if($edit=="true") entitymetadataediting #else entitymetadatapreview #end'
-	
 	data-id="$!id"
 	data-entityid="$!{data.id}"
 	data-entitymoduleid="$!entitymodule.id"
 	data-entitymoduleviewid="$entitymoduleviewid"
 	data-viewid="$viewid"
 	data-entitycategoryid="$!{entitycategoryid}"
+	data-targetdiv="editentitymetadata"
+	data-edit="$!edit"
 	>
 
 #set( $isowner = $data.owner == $user.id)
@@ -153,6 +154,7 @@ $context.putPageValue("viewid", $viewid)
 							<a class="btn btn-secondary mr-2 ajax" 
 								data-targetdiv="editentitymetadata"
 								data-oemaxlevel="1" 
+								data-edit="false"
 								href="${edithome}/index.html?entityid=$!id&viewid=$!viewid">[[Cancel]]</a>
 						#end
 					#else
@@ -177,7 +179,10 @@ $context.putPageValue("viewid", $viewid)
 					#if($canviewmodulesettings)
 						<a class="emdialog btn btn-secondary btn-cta-sib mr-2 mbl-hidden" 
 							href="$siteroot$apphome/views/settings/modules/$!{searcher.searchType}/metadata/views/dialog/index.html?viewid=$viewid"
-							title="[[Edit Fields]]" data-dialogid="fieldpicker" data-hidefooter="true">
+							title="[[Edit Fields]]" 
+							data-dialogid="fieldpicker" 
+							data-hidefooter="true"
+							data-ajaxreloadtargetid="editentitymetadata">
 							<i class="bi bi-gear-fill mr-1"></i> [[Fields]]
 						</a>
 					#end
