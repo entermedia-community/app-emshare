@@ -1,12 +1,12 @@
 #set($currentab = $context.getRequestParameter("currentab"))
 #if (!$currentab)
-	#set( $currentab = "versioncontrol" )
+	#set( $currentab = "crops" )
 #end
 #set( $assettab = $context.findValue("assettab") ) 
 
-#set ($listid = "assethistory" )
+#set ($listid = "assetedit" )
 <div class="asset-panel-settings d-flex pt-0"> 
-	<div class="entityimport auto-active-container overflow-y mbl-hidden" id="assethistorytabs">
+	<div class="entityimport auto-active-container overflow-y mbl-hidden" id="assetedittabs">
 			#set( $screens = $searcherManager.query($catalogid,$listid).all().sort("ordering").search() )
 			
 			#foreach($screen in $screens)
@@ -33,7 +33,7 @@
 				#end
 			#end
 	</div>
-	<div id="assethistorytabs" class="assethistorytabs flex-grow-1 h-100">
-		$pages.include("/$applicationid/views/modules/asset/editor/versioncontrol/index.html", $context)
+	<div id="assetedittabs" class="assetedittabs flex-grow-1 h-100">
+		$pages.include("/$applicationid/views/modules/asset/editor/crops/index.html", $context)
 	</div>
 </div>

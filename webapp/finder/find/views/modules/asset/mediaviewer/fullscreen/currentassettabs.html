@@ -58,21 +58,6 @@
 				</li>
 				#end
 			#end
-		
-			#if(!$previewonly && !$ismulti && $canviewmediaedit && $canviewconversions && $rendertype == "image" && $asset.previewstatus=="2")
-			<li class="hidemulti assettabnav #if($opentab == 'imageeditor')tabselected #end">
-				<a class="expandmenu assettab ajax rememberassettab" 
-					href="$siteroot${apphome}/views/modules/asset/mediaviewer/fullscreen/currentasset.html?action=imageeditor"
-					data-opentab="imageeditor"
-					data-targetdiv="main-media-container"
-					data-oemaxlevel="1" 
-					data-propertyfield="assetopentab"
-					data-propertyvalue="imageeditor" 
-					title="[[Image Editor]]">
-					<i class="bi bi-image ns mr-1"></i> [[Image Editor]] 
-				</a>
-			</li>
-			#end
 
 			#if(!$ismulti && ($rendertype == "video"))
 				#if($canviewtimeline)
@@ -114,6 +99,23 @@
 				</li>
 			#end
 
+		#end
+
+		#if( !$ismulti)
+			#if ($canviewconversions || $canconverthistory || $canconverthistory )
+				<li class="assettabnav #if($opentab == 'assetedit')tabselected #end">
+					<a class="expandmenu assettab ajax rememberassettab" 
+						href="$siteroot${apphome}/views/modules/asset/mediaviewer/fullscreen/currentasset.html?action=assetedit" title="[[Edit]]"
+						data-opentab="assetedit"
+						data-targetdiv="main-media-container"
+						data-oemaxlevel="1" 
+						data-propertyfield="assetopentab"
+						data-propertyvalue="assetedit"
+						data-assettabname="[[Edit]]">
+						<i class="bi bi-pen ns mr-1"></i> <span>[[Edit]]</span>
+					</a>
+				</li>
+			#end
 		#end
 
 		#if( !$ismulti)
