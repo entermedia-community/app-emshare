@@ -7,7 +7,7 @@
 		},
 		{
 			"role": "user",
-			"content": #jesc("Extract semantic roles from: ${query}")
+			"content": #jesc("Extract semantic roles from: '${query}'")
 		}
 	],
 	"stream": false,
@@ -28,48 +28,37 @@
 				],
 				"description": "The "
 			},
-			"targets": {
+			"Predicates": {
 				"type": "array",
 				"items": {
 					"type": "string"
 				},
-				"description": "Groups of targets to focus on"
+				"description": "The verb or action that the sentence is about. In \"Mary sold the book to John,\" the predicate is 'sold'"
 			},
-			"keywords": {
+			"Arguments": {
 				"type": "array",
 				"items": {
 					"type": "string"
 				},
-				"description": "Words to search for. Exclude adjectives, actions, people, companies, department, asset type, regions, and dates."
+				"description": "A word or phrase that fulfills a semantic role related to the predicate. Arguments are often noun phrases."
 			},
-
-			"marketingasset": {
-				"type": "string",
-				"description": "Name of the marketing asset if mentioned"
-			},
-			"content_classification": {
-				"type": "string",
-				"description": "Type of asset if mentioned (e.g. image, audio, video, flyers, etc.)"
-			},
-			"people": {
-				"type": "string",
-				"description": "Names of people mentioned"
-			},
-			"region": {
-				"type": "string",
-				"description": "Geographic region or location mentioned in the query."
-			},
-			"departments": {
-				"type": "string",
-				"description": "List of departments mentioned"
-			},
-			"companies": {
+			"Semantic Roles": {
 				"type": "array",
 				"items": {
 					"type": "string"
 				},
-				"description": "List of companies mentioned"
+				"description": "A label that describes the underlying relationship between the predicate and an argument."
 			},
+			#foreach($module in $modules)
+				#if($foreach.count>1)
+				,
+				#end
+				"$module.getName()": {
+					"type": "string",
+					"description": "Name of the $module.getName() if mentioned"
+				}
+			#end
+			,			
 			"date_range": {
 				"type": "object",
 				"properties": {
