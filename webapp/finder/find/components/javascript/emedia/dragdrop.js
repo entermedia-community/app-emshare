@@ -545,9 +545,7 @@ onloadselectors = function () {
 					if (targetcategoryid) {
 						var tree = node.closest(".emtree");
 						var params = tree.data();
-						params["categoryid"] = targetcategoryid; // Remove
-						// from
-						// self
+						params["categoryid"] = targetcategoryid; // Remove from self
 						params["categoryid2"] = categoryid;
 						params["oemaxlevel"] = "1";
 						params["tree-name"] = tree.data("treename");
@@ -559,6 +557,7 @@ onloadselectors = function () {
 								tree.closest("#treeholder").replaceWith(data);
 							}
 						);
+						
 					} else {
 						var assetid = ui.draggable.data("assetid");
 						if (!assetid) {
