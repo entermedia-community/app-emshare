@@ -1,0 +1,82 @@
+{
+	"model": "${model}",
+	"input": [
+		{
+			"role": "system",
+			"content": "You are an expert in semantic role labeling"
+		},
+		{
+			"role": "user",
+			"content": #jesc("Extract semantic roles from: '${message.message}'")
+		}
+	],
+	"text": {
+		"format": {
+			"type": "json_schema",
+			"name": "parse_sentence",
+			"strict": false,
+			"schema": {
+				"type": "object",
+				"properties" : {
+					"request_type": {
+						"type": "string",
+						"enum": [
+							"search",
+							"creation",
+							"how-to",
+							"task",
+							"conversation",
+							"support"
+						],
+						"description": "The "
+					},
+					"Predicates": {
+						"type": "array",
+						"items": {
+							"type": "string"
+						},
+						"description": "The verb or action that the sentence is about. In \"Mary sold the book to John,\" the predicate is 'sold'"
+					},
+					"Arguments": {
+						"type": "array",
+						"items": {
+							"type": "string"
+						},
+						"description": "A word or phrase that fulfills a semantic role related to the predicate. Arguments are often noun phrases."
+					},
+					"Semantic Roles": {
+						"type": "array",
+						"items": {
+							"type": "string"
+						},
+						"description": "A label that describes the underlying relationship between the predicate and an argument."
+					},
+					#foreach($module in $modules)
+						#if($foreach.count>1)
+						,
+						#end
+						"$module.getName()": {
+							"type": "string",
+							"description": "Name of the $module.getName() if mentioned"
+						}
+					#end
+					,			
+					"date_range": {
+						"type": "object",
+						"properties": {
+							"operator": {
+								"type": "string",
+								"enum": ["before", "after", "within_last"],
+								"description": "Type of time filter"
+							},
+							"value": {
+								"type": "string",
+								"description": "Relative or absolute time range, e.g. '1 year', '2023-01-01'"
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
