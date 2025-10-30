@@ -1,7 +1,13 @@
-#if( $module.id == "asset")
-	$pages.include("./renderassetresults.html",$context)
-#else
-	$pages.include("./rendermoduleresults.html",$context)
+#ifnull($hits)
+	We did not find any results for your search.
 #end
-$agentcontext.setNextFunctionName("searchSemantic")
-$agentcontext.setValue("semanticquery", $semanticquery)
+
+#ifnotnull($hits)
+	#if( $module.id == "asset")
+		$pages.include("./renderassetresults.html",$context)
+	#else
+		$pages.include("./rendermoduleresults.html",$context)
+	#end
+	$agentcontext.setNextFunctionName("searchSemantic")
+	$agentcontext.setValue("semanticquery", $semanticquery)
+#end

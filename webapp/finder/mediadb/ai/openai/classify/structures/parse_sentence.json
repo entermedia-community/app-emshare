@@ -3,10 +3,11 @@
     "input": [
         {
             "role": "system",
-            "content": #jesc("You are an AI that maps natural language to a query plan. Use the following hierarchy: 
-							#foreach($module in $modules)
-								#if($foreach.count>1) -> #end		$module.getName()	
-							#end ")
+            "content": #jesc("You are an AI that maps natural language to a query plan. Use the following database table hierarchy:
+- All
+#foreach($module in $modules)
+- $module.getName()
+#end")
         },
         {
             "role": "user",
@@ -39,10 +40,6 @@
                         "items": {
                             "type": "object",
                             "properties": {
-                                "table": {
-                                    "type": "string",
-                                    "description": "Name of the database table."
-                                },
                                 "operation": {
                                     "type": "string",
                                     "enum": [
@@ -53,12 +50,14 @@
                                     ],
                                     "description": "Type of database operation."
                                 },
+                                "table": {
+                                    "type": "string",
+                                    "description": "Name of the database table if specified. Defaults to 'All' if not specified."
+                                },
                                 "filters": {
                                     "type": "object",
                                     "description": "Column-value pairs used as filters.",
-                                    "additionalProperties": {
-                                        "type": "string"
-                                    }
+                                    "additionalProperties": true
                                 },
                                 "join": {
                                     "type": [
@@ -76,7 +75,6 @@
                                 }
                             },
                             "required": [
-                                "table",
                                 "operation",
                                 "filters"
                             ],
