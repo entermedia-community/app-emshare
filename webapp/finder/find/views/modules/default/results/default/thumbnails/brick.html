@@ -14,17 +14,7 @@ $context.putPageValue("assetwidth",$assetwidth)
 #set($assetheight = $mediaarchive.getRealImageHeight($hit)) 
 $context.putPageValue("assetheight",$assetheight)	
 
-#if($assetheight && $assetwidth)
-	#set($facemanager = $mediaarchive.getBean("faceProfileManager") )
-	#if($faceprofilegroups )
-		#set($imagebox = $facemanager.getImageBox( $faceprofilegroups, $hit, $assetwidth, $assetheight) )
-		#set($faceprofilegroupid = $imagebox.groupid)
-	#elseif($faceprofilegroupid)
-		#set($imagebox = $facemanager.getImageBoxById( $faceprofilegroupid, $hit, $assetwidth, $assetheight) )
-	#end
-	$context.putPageValue("imagebox", $imagebox)
-#end
-<div class="embrickcontent" 
+<div class='embrickcontent #if($rendertype=="audio") nothumb #end' 
 	data-rowname="#text($hit)"
 	data-dataid="$!{entityid}"
 	data-entityid="$!{entityid}"
@@ -35,10 +25,10 @@ $context.putPageValue("assetheight",$assetheight)
 	data-imgheight="$!assetheight"
 #elseif($rendertype == "audio")
 	data-imgwidth="250"
-	data-imgheight="110"
+	data-imgheight="140"
 #else 
 	data-imgwidth="250"  ##moduleicon
-	data-imgheight="110"
+	data-imgheight="140"
 #end
 >
 
@@ -64,7 +54,6 @@ $context.putPageValue("assetheight",$assetheight)
 ##Caption
 <div class="stackedplayer draggholder grid-caption grid-caption-${rendertype} #if($rendertype=="default") grid-caption-show #end"
 	data-assetid="$!{hit.id}" 
-	#if($faceprofilegroupid) data-showfaceprofileid="$!faceprofilegroupid" #end 
 	title="$!title">
 	#if($stackedfield)
 		#set($title = $hit.get($stackedfield))
