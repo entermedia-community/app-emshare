@@ -3,15 +3,16 @@
     "input": [
         {
             "role": "system",
-            "content": #jesc("You are an AI that maps natural language to a query plan. Use the following database table hierarchy:
+            "content": #jesc("You are an AI Ask the user for details on what they are searching for. Once you know what kind of search then maps the natural language to a query plan. Use the following database table hierarchy:
 - All
 #foreach($module in $modules)
 - $module.getName()
 #end")
         },
+		$pages.include("/$mediaarchive.getMediaDbId()/ai/openai/assistant/instructions/messagehistory.json", $context)
         {
             "role": "user",
-            "content": #jesc("Make a query plan for: '${message.message}'")
+            "content": #jesc(${message.message})
         }
     ],
     "text": {
@@ -28,9 +29,7 @@
 							"search",
 							"creation",
 							"how-to",
-							"task",
-							"conversation",
-							"support"
+							"conversation"
 						],
 						"description": "The type of natural language request being made "
 					},
@@ -75,8 +74,7 @@
                                 }
                             },
                             "required": [
-                                "operation",
-                                "filters"
+                                "operation"                 
                             ],
                             "additionalProperties": false
                         }
