@@ -3,7 +3,8 @@
     "input": [
         {
             "role": "system",
-            "content": #jesc("You are an AI Ask the user for details on what they are searching for. Once you know what kind of search then maps the natural language to a query plan. Use the following database table hierarchy:
+            "content": #jesc("You are an AI agent that maps natural language requests to a query plan according the given schema.
+Below is a list of searchable database tables (if user does not specify a table, default it to 'All'):
 - All
 #foreach($module in $modules)
 - $module.getName()
@@ -33,9 +34,9 @@
 						],
 						"description": "The type of natural language request being made "
 					},
-                    "steps": {
+                    "search_steps": {
                         "type": "array",
-                        "description": "Ordered list of search or join operations.",
+                        "description": "Ordered list of search operations. Use the minimum number of steps necessary to fulfill the request. Only required if request_type is 'search' or 'how-to'.",
                         "items": {
                             "type": "object",
                             "properties": {
@@ -43,15 +44,13 @@
                                     "type": "string",
                                     "enum": [
                                         "search",
-                                        "filter",
-                                        "join",
-                                        "aggregate"
+                                        "join"
                                     ],
                                     "description": "Type of database operation."
                                 },
                                 "table": {
                                     "type": "string",
-                                    "description": "Name of the database table if specified. Defaults to 'All' if not specified."
+                                    "description": "Name of the table specified. Defaults to 'All' if not specified."
                                 },
                                 "filters": {
                                     "type": "object",
@@ -79,7 +78,44 @@
                             "additionalProperties": false
                         }
                     },
-                   
+                    "creation_details": {
+                        "type": "object",
+                        "description": "Details about the creation request. Only required if request_type is 'creation'.",
+                        "properties": {
+                            "content_type": {
+                                "type": "string",
+                                "description": "Type of content to be created",
+                                "enum": [
+                                    "image",
+                                    "entity"
+                                ]
+                            },
+                            "attributes": {
+                                "type": "object",
+                                "description": "Attributes for the content to be created.",
+                                "properties": {
+                                    "prompt": {
+                                        "type": "string",
+                                        "description": "Prompt for the image creation. Only required if content_type is 'image'."
+                                    },
+                                    "entity_name": {
+                                        "type": "string",
+                                        "description": "Name of the entity to be created. Only required if content_type is 'entity'."
+                                    },
+                                    "module_id": {
+                                        "type": "string",
+                                        "description": "ID of the module where the entity should be saved in. Only required if content_type is 'entity'.",
+                                        "enum": [
+                                        #foreach($module in $modules)
+                                            #if($foreach.count > 1),#end
+                                            "$module.getId()|$module.getName()"
+                                        #end
+                                        ]
+                                    }
+                                }
+                            }
+                        }
+                    },
                     "additionalProperties": false
                 }
             }

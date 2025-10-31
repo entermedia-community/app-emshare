@@ -23,6 +23,7 @@
 			<span class="qsresultsEntitytext">[[View]] $count</span>
 		</a>
 		#end
+		<messageplain>Found ${hits.size()} records in module ${module.name}</messageplain>
 	</div>
 
 	<div class="masonry-grid" 
@@ -37,9 +38,23 @@
 		
 		#foreach( $hit in $hits.getPageOfHits() )
 			#if($count < 30)
+
+				#set( $rendertype = $mediaarchive.getMediaRenderType($hit.fileformat))
+				#if($rendertype == "image")
+					#set($imagepath = $mediaarchive.asLinkToGenerated($hit, "image550x550"))
+				#elseif($rendertype == "video")
+					#set($imagepath = $mediaarchive.asLinkToGenerateOffset($hit, "image1900x1080", $box.getTimecodeStartSeconds()))
+				#end
+
 				<messageplain>Asset Search Result#${foreach.count}</messageplain>
 				<messageplain>Asset ID: ${hit.id}</messageplain>
 				<messageplain>Asset Name: ${hit.name}</messageplain>
+				<messageplain>View Asset Link: $siteroot$apphome?asset=${hit.id}</messageplain>
+				#ifnotnull($imagepath)
+				<messageplain>Asset Image Link: $siteroot$imagepath</messageplain>
+				#end
+				<messageplain>---</messageplain>
+
 				$context.putPageValue("hit", $hit)
 				$pages.include("${searchhome}/default/types/media.html", $context)
 				#set($count = $count +1)
