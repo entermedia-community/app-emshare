@@ -1,13 +1,22 @@
+#set($modules = $schema.getModules())
+
 {
     "model": "gpt-4o-mini",
     "input": [
         {
             "role": "system",
             "content": #jesc("You are an AI agent that maps natural language requests to a query plan according the given schema.
-Below is a list of searchable database tables (if user does not specify a table, default it to 'All'):
-- All
+Below is a list of searchable database tables and their child tables (if user does not specify a table, default it to 'All'):
+1. All
 #foreach($module in $modules)
-- $module.getName()
+#set($count = $foreach.count + 1)
+${count}. $module.getName()
+#if($schema.hasChildren($module.getId()))
+    #set($children = $schema.getChildrenOf($module.getId()))
+    #foreach($child in $children)
+    - $child.getName()
+    #end
+#end
 #end")
         },
 		$pages.include("/$mediaarchive.getMediaDbId()/ai/openai/assistant/instructions/messagehistory.json", $context)
