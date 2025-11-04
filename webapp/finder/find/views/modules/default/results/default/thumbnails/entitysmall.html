@@ -18,6 +18,9 @@
 			id="clickid${entityid}"  
 			href="$!{previewurl}" 
 			class="emdialog entity-dialog"
+			title="#text($!entity)"
+		#else
+			title="[[View]]: #text($!entity)"
 		#end
 		data-updateurl="true"
 		data-urlbar="$!{siteroot}$apphome/views/modules/$!{moduleid}/index.html?entityid=$entityid"
@@ -26,7 +29,7 @@
 		data-categorypath="$!entity.sourcepath"
 		data-id="${entityid}"
 		data-moduleid="$!moduleid" 
-		title="[[View]]: #text($!entity)">
+		>
 	
 		##look for primaryimage
 		#set( $primarymediafield = $entity.primarymedia )
@@ -101,6 +104,7 @@
 			<div class="pickfromiframe entity" 
 				data-entityid="${entityid}" 
 				data-moduleid="${moduleid}"
+				title="[[Pick]]: #text($entity)"
 				#if($primarymedia) data-primarymedia="$primarymedia.getId()" #end
 				>
 				<i class="bi bi-check-lg"></i>
