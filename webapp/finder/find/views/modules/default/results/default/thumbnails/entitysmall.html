@@ -6,7 +6,6 @@
 	#set( $module = $mediaarchive.getCachedData("module",$moduleid) ) 	
 #end
 
-
 #set($previewurl = "$apphome/views/modules/${moduleid}/editors/default/tabs/index.html?entityid=$entityid")
  <div class="emfolder-wrapper compact emgrid-type-$!moduleid entitycontainer entity$!moduleid$!entityid" 
 	id="emgridentity$!moduleid$!entityid"
@@ -15,7 +14,7 @@
   data-rendertype="entity">
 
 	<a 
-		#ifnull($picker.getTargetType())
+		#if($pickerenabled)
 			id="clickid${entityid}"  
 			href="$!{previewurl}" 
 			class="emdialog entity-dialog"
@@ -97,15 +96,17 @@
 				<i class="bi bi-$moduleicon module-icon"></i>
 				<span>#text($!entity)</span>
 			</div>
-			#if($picker.getTargetType() == "entity")
-				<div class="pickfromiframe entity" 
-					data-entityid="${entityid}" 
-					data-moduleid="${moduleid}"
-					#if($primarymedia) data-primarymedia="$primarymedia.getId()" #end
-					>
-					<i class="bi bi-check-lg"></i>
-				</div>
+
+			#if($pickerenabled)
+			<div class="pickfromiframe entity" 
+				data-entityid="${entityid}" 
+				data-moduleid="${moduleid}"
+				#if($primarymedia) data-primarymedia="$primarymedia.getId()" #end
+				>
+				<i class="bi bi-check-lg"></i>
+			</div>
 			#end
+
 		</div>
 	</a>
 </div>
