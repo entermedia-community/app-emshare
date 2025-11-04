@@ -12,69 +12,44 @@
 
 #set($dlink = $mediaarchive.asLinkToShare($context.getSiteRoot(),$asset,$preset))
 
-<div class="d-flex flex-column align-items-center justify-content-center flex-grow-1">
-  <div class="d-flex align-items-center border-bottom-subtle w-100 px-3 mb-4 py-2">
-    <a href="${apphome}/views/modules/asset/editor/crops/index.html"
-      data-targetdiv="asset-editor-container"
-      data-oemaxlevel="1" class="ajax d-block">
-      <i class="bi bi-arrow-left ns mr-1"></i>
-      <h4 class="m-0 p-0 d-inline">[[Crop Presets]]</h4>
-    </a>
+<div class="d-flex flex-column flex-grow-1">
+  <div class="d-flex border-bottom-subtle w-100 px-3 mb-2 py-2">
+	<h4 class="d-flex p-0 m-0">
+	    <a href="${apphome}/views/modules/asset/editor/crops/index.html"
+	      data-targetdiv="asset-editor-container"
+	      data-oemaxlevel="1" class="ajax d-block" title="[[Back to Crops List]]">
+	      <i class="bi bi-arrow-left ns mr-1"></i>
+	      <span class="m-0 p-0 d-inline">[[Crop Presets]]</span>
+	    </a>
     <i class="bi bi-chevron-right ns mx-2"></i>
-    <h4 class="p-0 m-0 text-secondary">$preset.getName()<span class="mx-3">&middot;</span><span class="text-muted">( $aspectratio )</span></h4>
-    <span class="mx-3">&middot;</span>
+    <span class="text-secondary" title="[[Preset Id:]] $preset.getId()">$preset.getName()</span>
+    </h4>
+	<div class="d-flex header-actions ml-4">
     <a class="btn btn-sm btn-accent mr-2" href="$dlink?download=true&ondemand=true" title="[[Download]]">
       <i class="bi bi-download"></i>
     </a>
-    <a class="btn btn-sm btn-accent copytoclipboard" data-text="$dlink?download=true&ondemand=true" title="[[Copy Share Link]]">
+    <a class="btn btn-sm btn-accent copytoclipboard" data-text="$dlink?ondemand=true" title="[[Copy Share Link]]">
       <i class="bi bi-share"></i>
     </a>
+	</div>
   </div>
-  #ifnotnull($cropuser)
-  <div class="mb-3 text-center">
-    <span class="text-muted">[[Last modified by ]] #text($cropuser)</span>
-  </div>
-  #end
+
 
   #set ($img = $mediaarchive.asLinkToPreview($asset, "image3000x3000") )
-  <form class="d-flex align-items-center ajaxform" data-targetdiv="asset-editor-container" action="${apphome}/views/modules/asset/editor/crops/save.html" method="post" id="cropform">
-    
-    <input type="hidden" name="assetid" value='$asset.getId()'>
-
-    <input name="field" value="crop" type="hidden" />
-    <input name="crop.value" value="true" type="hidden" />
-    
-    <input name="field" value="presetid" type="hidden" />
-    <input name="presetid.value" value="${presetid}" type="hidden" />
-    
-    <input name="field" value="x1" type="hidden" />
-    <input name="x1.value" value="" type="hidden" />
-    
-    <input name="field" value="y1" type="hidden" />
-    <input name="y1.value" value="" type="hidden" />
-    
-    <input name="field" value="cropwidth" type="hidden" />
-    <input name="cropwidth.value" value="" type="hidden" />
-    
-    <input name="field" value="cropheight" type="hidden" />
-    <input name="cropheight.value" value="" type="hidden" />
-    
-    <input name="field" value="cropprevieww" type="hidden" />
-    <input name="cropprevieww.value" value="" type="hidden" />
-    
-    <input name="field" value="croppreviewh" type="hidden" />
-    <input name="croppreviewh.value" value="" type="hidden" />
-    
-    <div class="d-flex align-items-center">
-      <button class="btn btn-lg btn-cta m-2" type="submit">
-        <i class="bi bi-crop mr-2"></i> [[Crop]]
-      </button>
-    </div>
-    
-  </form>
-
   #set($cheight = $mathtool.toInteger($dimension.getHeight()))
   #set($cwidth = $mathtool.toInteger($dimension.getWidth()))
+
+  
+  
+  <div class="my-1 mx-3">
+	<div class="text-muted">[[Width]]: ${cwidth}px &middot; [[Height]]: ${cheight}px &middot; [[Aspect Ratio]]: $aspectratio</div>
+	#ifnotnull($cropuser)
+    <div class="text-muted">[[Last modified by:]] #text($cropuser)</div>
+	#end
+  </div>
+  
+  
+
 
   <div id="cropinner"
       data-originalwidth="$asset.getInt('width')"
@@ -90,10 +65,52 @@
     <img src="$img" id="croptarget" />
 
     <div id="preview-pane">
-      <div class="preview-container" style="width: ${cwidth}px; height: ${cheight}px; aspect-ratio: ${cwidth} / ${cheight}">
-        <img src="$img" class="jcrop-preview" alt="Preview" />
-      </div>
+		<div class="preview-pane-inner">
+	      <div class="preview-container" style="width: ${cwidth}px; height: ${cheight}px; aspect-ratio: ${cwidth} / ${cheight}">
+	        <img src="$img" class="jcrop-preview" alt="[[Preview]]" />
+	      </div>
+	  </div>
+	  
+	  <form class="ajaxform" data-targetdiv="asset-editor-container" action="${apphome}/views/modules/asset/editor/crops/save.html" method="post" id="cropform">
+	     
+	     <input type="hidden" name="assetid" value='$asset.getId()'>
+
+	     <input name="field" value="crop" type="hidden" />
+	     <input name="crop.value" value="true" type="hidden" />
+	     
+	     <input name="field" value="presetid" type="hidden" />
+	     <input name="presetid.value" value="${presetid}" type="hidden" />
+	     
+	     <input name="field" value="x1" type="hidden" />
+	     <input name="x1.value" value="" type="hidden" />
+	     
+	     <input name="field" value="y1" type="hidden" />
+	     <input name="y1.value" value="" type="hidden" />
+	     
+	     <input name="field" value="cropwidth" type="hidden" />
+	     <input name="cropwidth.value" value="" type="hidden" />
+	     
+	     <input name="field" value="cropheight" type="hidden" />
+	     <input name="cropheight.value" value="" type="hidden" />
+	     
+	     <input name="field" value="cropprevieww" type="hidden" />
+	     <input name="cropprevieww.value" value="" type="hidden" />
+	     
+	     <input name="field" value="croppreviewh" type="hidden" />
+	     <input name="croppreviewh.value" value="" type="hidden" />
+	     
+	     <div class="d-flex">
+	       <button class="btn btn-lg btn-cta mt-2" type="submit">
+	         <i class="bi bi-floppy-fill mr-1"></i> [[Save Crop]]
+	       </button>
+	     </div>
+	     
+	   </form>
     </div>
+	
+	
+	
+	
   </div>
   
   <script> 
@@ -144,9 +161,9 @@
 
       preview.css({
         top: 0,
-        right: -crop_width + "px",
+        right: -(crop_width + 25) + "px",
         width: crop_width + 14 + "px",
-        height: crop_height + 14 + "px",
+        height: crop_height + 64 + "px",
       });
 
       preview_container.css({
