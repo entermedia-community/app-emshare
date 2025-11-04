@@ -52,17 +52,15 @@
 				 
 			#end
 			
-			
-			
 			$context.putPageValue("imagepath", $imagepath)
 			
-			#if($picker.getTargetType() != "entity")
-				#if($content.isPropertyTrue("showassetpicker"))
+			#if($pickerenabled || $content.isPropertyTrue("showassetpicker"))
 					#set($originalLink = "$siteroot/${mediadbappid}/services/module/asset/downloads/originals/"+$mediaarchive.asLinkToOriginal($hit))
-					<div class="pickfromiframe asset" data-imageurl="$originalLink">
+					<div class="pickfromiframe asset" 
+						data-imageurl="$originalLink"
+						title="[[Pick]]: #if($title)#esc($title)#else$!{hit.name}#end">
 						<i class="bi bi-check-lg"></i>
 					</div>
-				#end
 			#end
 				
 			#if($type =="video")

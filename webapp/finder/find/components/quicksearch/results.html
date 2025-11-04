@@ -14,6 +14,7 @@
 	#set($hits = $organizedResults.getEntityHits() )
 #end
 
+
 #if($organizedResults.isEmpty())
 	<div class="text-secondary py-3 text-center">
 		[[No exact match found for]]: <strong>$query</strong>
@@ -28,6 +29,12 @@ $pages.include("./preview.html", $context)
 		#ifnotnull($hits)
 			$context.putPageValue("module", $module)
 			$context.putPageValue("moduleid", $module.id)
+			
+			##Blockfind picker
+			$context.putPageValue("pickerenabled", false)
+			#if($picker && $picker.isPickerEnabled("entity", $module.id))
+				$context.putPageValue("pickerenabled", true)
+			#end
 		
 			#set($moduleicon = "grid")
 			#if ($module.moduleicon)

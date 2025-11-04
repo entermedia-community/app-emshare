@@ -11,13 +11,13 @@ $context.putPageValue("data", $hit)
 
 #set($previewurl = "$apphome/views/modules/${moduleid}/editors/default/tabs/index.html?entityid=$entityid")
  <div class="emfolder-wrapper compact emgrid-type-$!moduleid entitycontainer entity$!moduleid$!entityid" 
-	id="emgridentity$!moduleid$!entityid"
-	data-id="${entityid}"
-  data-moduleid="$!moduleid"
-  data-rendertype="entity">
+	  id="emgridentity$!moduleid$!entityid"
+	  data-id="${entityid}"
+	  data-moduleid="$!moduleid"
+	  data-rendertype="entity">
 	#if($moduleid != "modulesearch")
 	<a 
-		#ifnull($picker.getTargetType())
+		#if($pickerenabled)
 			id="clickid${entityid}"  
 			href="$!{previewurl}" 
 			class="emdialog entity-dialog disableinpicker"
@@ -93,11 +93,12 @@ $context.putPageValue("data", $hit)
 				<i class="bi bi-$moduleicon module-icon"></i>
 				<span>#text($!entity)</span>
 			</div>
-			#if($picker.getTargetType() == "entity")
+			#if($pickerenabled)
 				<div class="pickfromiframe entity" 
 					data-entityid="${entityid}" 
 					data-moduleid="${moduleid}"
 					#if($primarymedia) data-primarymedia="$primarymedia.getId()" #end
+					title="[[Pick]]: #text($entity)"
 					>
 					<i class="bi bi-check-lg"></i>
 				</div>

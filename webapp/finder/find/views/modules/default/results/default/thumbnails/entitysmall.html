@@ -6,7 +6,6 @@
 	#set( $module = $mediaarchive.getCachedData("module",$moduleid) ) 	
 #end
 
-
 #set($previewurl = "$apphome/views/modules/${moduleid}/editors/default/tabs/index.html?entityid=$entityid")
  <div class="emfolder-wrapper compact emgrid-type-$!moduleid entitycontainer entity$!moduleid$!entityid" 
 	id="emgridentity$!moduleid$!entityid"
@@ -15,10 +14,13 @@
   data-rendertype="entity">
 
 	<a 
-		#ifnull($picker.getTargetType())
+		#if($pickerenabled)
 			id="clickid${entityid}"  
 			href="$!{previewurl}" 
 			class="emdialog entity-dialog"
+			title="#text($!entity)"
+		#else
+			title="[[View]]: #text($!entity)"
 		#end
 		data-updateurl="true"
 		data-urlbar="$!{siteroot}$apphome/views/modules/$!{moduleid}/index.html?entityid=$entityid"
@@ -27,7 +29,7 @@
 		data-categorypath="$!entity.sourcepath"
 		data-id="${entityid}"
 		data-moduleid="$!moduleid" 
-		title="[[View]]: #text($!entity)">
+		>
 	
 		##look for primaryimage
 		#set( $primarymediafield = $entity.primarymedia )
@@ -97,15 +99,18 @@
 				<i class="bi bi-$moduleicon module-icon"></i>
 				<span>#text($!entity)</span>
 			</div>
-			#if($picker.getTargetType() == "entity")
-				<div class="pickfromiframe entity" 
-					data-entityid="${entityid}" 
-					data-moduleid="${moduleid}"
-					#if($primarymedia) data-primarymedia="$primarymedia.getId()" #end
-					>
-					<i class="bi bi-check-lg"></i>
-				</div>
+
+			#if($pickerenabled)
+			<div class="pickfromiframe entity" 
+				data-entityid="${entityid}" 
+				data-moduleid="${moduleid}"
+				title="[[Pick]]: #text($entity)"
+				#if($primarymedia) data-primarymedia="$primarymedia.getId()" #end
+				>
+				<i class="bi bi-check-lg"></i>
+			</div>
 			#end
+
 		</div>
 	</a>
 </div>

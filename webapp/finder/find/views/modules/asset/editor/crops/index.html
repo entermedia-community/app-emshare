@@ -13,11 +13,11 @@ $context.putPageValue("asset", $asset)
         [[No Crop Presets Available]]
       </div>
     #else
-      <div class="d-flex flex-column align-items-center flex-grow-1">
+      <div class="d-flex flex-column  flex-grow-1">
         <div class="d-flex align-items-center border-bottom-subtle w-100 px-3 py-2 mb-4">
-          <h4 class="m-0 p-0">[[Crop Presets]]</h4> <span class="btn btn-sm mx-1">&middot;</span><span class="text-muted">Click one to edit</span>
+          <h4 class="m-0 p-0" >[[Crop Presets]]</h4> <span class="btn btn-sm mx-1">&middot;</span><span class="text-muted">[[Click one to edit]]</span>
         </div>
-        <div class="crop-presets overflow-y px-2 pt-1 pb-3">
+        <div class="crop-presets overflow-y px-4 pt-1 pb-3">
           #foreach($presetdata in $presets)
             #set($dimension = $conversionUtil.getConvertPresetDimension($mediaarchive.getCatalogId(),$presetdata.id))
             #set($height = $mathtool.toInteger($dimension.getHeight()))
@@ -26,20 +26,33 @@ $context.putPageValue("asset", $asset)
             #set($aspectratio = $conversionUtil.getConvertPresetAspectRatio($dimension))
     
             #set($name = $presetdata.getName())
-            
-            <a href="${apphome}/views/modules/asset/editor/crops/cropeditor.html"
-              class="ajax crop-preview"
-              data-targetdiv="cropeditor"
-              data-oemaxlevel="1"
-              data-presetid="$presetdata.getId()">
-              <span>$name</span> 
-              #set($generated = $presetdata.get("generatedoutputfile") )
-              #set ($previewlink = $mediaarchive.asLinkToPreview($asset, null, "${generated}") )
-              <div class="d-flex align-items-center justify-content-center flex-grow-1 py-1">
-                <img src="$previewlink" style="max-width: ${width}px; max-height: ${height}px;" class="hasFallback" data-error="[[Preset not created yet]]" />
-              </div>
-              <strong>$width &times; $height</strong>
-            </a>
+            <div class="crop-preview">
+				#if($width && $height)
+	            <a href="${apphome}/views/modules/asset/editor/crops/cropeditor.html"
+	              class="ajax"
+	              data-targetdiv="cropeditor"
+	              data-oemaxlevel="1"
+	              data-presetid="$presetdata.getId()"
+				  title="[[Crop]] #text($presetdata)">
+				 #end
+	              <span>$name</span> 
+	              #set($generated = $presetdata.get("generatedoutputfile") )
+	              #set ($previewlink = $mediaarchive.asLinkToPreview($asset, null, $generated) )
+	              <div class="d-flex align-items-center justify-content-center flex-grow-1 py-1">
+	                <img src="$previewlink" 
+						style=" #if($width && $height) max-width: ${width}px; max-height: 300px; #else max-width: 300px; max-height: 200px; #end" 
+						class="hasFallback" 
+						data-error="[[Preset not created yet]]" />
+	              </div>
+				  #if($width && $height)
+	              <strong>$width &times; $height</strong>
+				  #else
+				  	[[Preset with Width/Height set]]
+				  #end
+				  #if($width && $height)
+				  </a>
+				  #end
+			  </div>
           #end
         </div>
       </div>

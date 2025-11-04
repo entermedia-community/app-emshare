@@ -79,20 +79,19 @@ $context.putPageValue("searchhome", $searchhome)
 						draggable="true"  
 						data-name="#if($title)#esc($title)#else$!{hit.name}#end" 		
 						src="${imagepath}$!{urlparams}"
-				/>
-				#if($picker.getTargetType() != "entity")
-					#if($content.isPropertyTrue("showassetpicker"))
-						#if( $rendertype == "image")
-							#set($originalLink = "$siteroot/$mediadbappid/services/module/asset/downloads/originals/"+$mediaarchive.asLinkToOriginal($hit))
-							<div class="pickfromiframe asset" data-imageurl="$!{originalLink}">
-								<i class="bi bi-check-lg"></i>
-							</div>
-						#end
-					#end
-				#end
-				
+				/>		
 				#if($rendertype =="video")<div class="videoplay-button"><span class="videoplay-icon"></span></div>#end
 			</div>
+			#if($pickerenabled || $content.isPropertyTrue("showassetpicker"))
+					#if( $rendertype == "image")
+						#set($originalLink = "$siteroot/$mediadbappid/services/module/asset/downloads/originals/"+$mediaarchive.asLinkToOriginal($hit))
+						<div class="pickfromiframe asset" 
+							data-imageurl="$!{originalLink}"
+							title="[[Pick]]: #if($title)#esc($title)#else$!{hit.name}#end">
+							<i class="bi bi-check-lg"></i>
+						</div>
+					#end
+			#end
 		#ifnotnull( $boxlookup ) 
 			</div>  
 		#end
