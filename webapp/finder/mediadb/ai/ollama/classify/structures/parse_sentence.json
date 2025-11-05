@@ -19,53 +19,98 @@
 			"request_type": {
 				"type": "string",
 				"enum": [
+					"conversation",
 					"search",
 					"creation",
 					"how-to"
 				],
-				"description": "The "
+				"description": "The type of natural language request being made "
 			},
-			"Predicates": {
+			"general_response": {
+				"type": "string",
+				"description": "A brief response to the user's request in natural language. Only required if request_type is 'conversation'."
+			},
+			"search_steps": {
 				"type": "array",
+				"description": "Ordered list of search operations. Use the minimum number of steps necessary to fulfill the request. Only required if request_type is 'search' or 'how-to'.",
 				"items": {
-					"type": "string"
-				},
-				"description": "The verb or action that the sentence is about. In \"Mary sold the book to John,\" the predicate is 'sold'"
-			},
-			"Arguments": {
-				"type": "array",
-				"items": {
-					"type": "string"
-				},
-				"description": "A word or phrase that fulfills a semantic role related to the predicate. Arguments are often noun phrases."
-			},
-			"Semantic Roles": {
-				"type": "array",
-				"items": {
-					"type": "string"
-				},
-				"description": "A label that describes the underlying relationship between the predicate and an argument."
-			},
-			#foreach($module in $modules)
-				#if($foreach.count>1)
-				,
-				#end
-				"$module.getName()": {
-					"type": "string",
-					"description": "Name of the $module.getName() if mentioned"
-				}
-			#end
-			"date_range": {
-				"type": "object",
-				"properties": {
-					"operator": {
-						"type": "string",
-						"enum": ["before", "after", "within_last"],
-						"description": "Type of time filter"
+					"type": "object",
+					"properties": {
+						"operation": {
+							"type": "string",
+							"enum": [
+								"search",
+								"join"
+							],
+							"description": "Type of database operation."
+						},
+						"table": {
+							"type": "string",
+							"description": "Name of the table specified. Defaults to 'All' if not specified."
+						},
+						"filters": {
+							"type": "object",
+							"description": "Column-value pairs used as filters."
+						},
+						"join": {
+							"type": [
+								"string",
+								"null"
+							],
+							"description": "Name of the table joined to this step, if any."
+						},
+						"sort": {
+							"type": [
+								"string",
+								"null"
+							],
+							"description": "Sorting field and direction, e.g., 'created_at DESC'."
+						}
 					},
-					"value": {
+					"required": [
+						"operation"
+					]
+				}
+			},
+			"creation_details": {
+				"type": "object",
+				"description": "Details about the creation request. Only required if request_type is 'creation'.",
+				"properties": {
+					"content_type": {
 						"type": "string",
-						"description": "Relative or absolute time range, e.g. '1 year', '2023-01-01'"
+						"description": "Type of content to be created",
+						"enum": [
+							"image",
+							"entity"
+						]
+					},
+					"attributes": {
+						"type": "object",
+						"description": "Attributes for the content to be created.",
+						"properties": {
+							"image_name": {
+								"type": "string",
+								"description": "A short filename without extension of the image to be created. Only required if content_type is 'image'."
+							},
+							"prompt": {
+								"type": "string",
+								"description": "Prompt for the image creation. Only required if content_type is 'image'. Use the exact user prompt, don't add any additional instructions about image size, format, etc."
+							},
+							"entity_name": {
+								"type": "string",
+								"description": "Name of the entity to be created. Only required if content_type is 'entity'."
+							},
+							"module_id": {
+								"type": "string",
+								"description": "ID of the module where the entity should be saved in. Only required if content_type is 'entity'.",
+								"enum": [
+								#foreach($module in $modules)
+									#if($foreach.count > 1),#end
+									"$module.getId()|$module.getName()"
+								#end
+								]
+							}
+						}
 					}
 				}
 			}
