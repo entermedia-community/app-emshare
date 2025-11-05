@@ -1,11 +1,13 @@
 #set($modules = $schema.getModules())
-
 {
-    "model": "gpt-4o-mini",
-    "input": [
-        {
-            "role": "system",
-            "content": #jesc("You are an AI agent that maps natural language requests to a query plan according the given schema.
+    "model": "${model}",
+    "messages": [
+    {
+        "role": "system",
+        "content": [
+            {
+            "type": "text",
+            "text": #jesc("You are an AI agent that maps natural language requests to a query plan according the given schema and respond in JSON format according to the response structure.
 Below is a list of searchable database tables and their child tables (if user does not specify a table, default it to 'All'):
 1. All
 #foreach($module in $modules)
@@ -17,125 +19,22 @@ ${count}. $module.getName()
     - $child.getName()
     #end
 #end
-#end")
-        },
-		$pages.include("/$mediaarchive.getMediaDbId()/ai/openai/assistant/instructions/messagehistory.json", $context)
-        {
-            "role": "user",
-            "content": #jesc(${message.message})
-        }
-    ],
-    "text": {
-        "format": {
-            "type": "json_schema",
-            "name": "parse_sentence",
-            "strict": false,
-            "schema": {
-                "type": "object",
-                "properties": {
-					"request_type": {
-						"type": "string",
-						"enum": [
-							"search",
-							"creation",
-							"how-to",
-							"conversation"
-						],
-						"description": "The type of natural language request being made "
-					},
-                    "general_response": {
-                        "type": "string",
-                        "description": "A brief response to the user's request in natural language. Only required if request_type is 'conversation'."
-                    },
-                    "search_steps": {
-                        "type": "array",
-                        "description": "Ordered list of search operations. Use the minimum number of steps necessary to fulfill the request. Only required if request_type is 'search' or 'how-to'.",
-                        "items": {
-                            "type": "object",
-                            "properties": {
-                                "operation": {
-                                    "type": "string",
-                                    "enum": [
-                                        "search",
-                                        "join"
-                                    ],
-                                    "description": "Type of database operation."
-                                },
-                                "table": {
-                                    "type": "string",
-                                    "description": "Name of the table specified. Defaults to 'All' if not specified."
-                                },
-                                "filters": {
-                                    "type": "object",
-                                    "description": "Column-value pairs used as filters.",
-                                    "additionalProperties": true
-                                },
-                                "join": {
-                                    "type": [
-                                        "string",
-                                        "null"
-                                    ],
-                                    "description": "Name of the table joined to this step, if any."
-                                },
-                                "sort": {
-                                    "type": [
-                                        "string",
-                                        "null"
-                                    ],
-                                    "description": "Sorting field and direction, e.g., 'created_at DESC'."
-                                }
-                            },
-                            "required": [
-                                "operation"                 
-                            ],
-                            "additionalProperties": false
-                        }
-                    },
-                    "creation_details": {
-                        "type": "object",
-                        "description": "Details about the creation request. Only required if request_type is 'creation'.",
-                        "properties": {
-                            "content_type": {
-                                "type": "string",
-                                "description": "Type of content to be created",
-                                "enum": [
-                                    "image",
-                                    "entity"
-                                ]
-                            },
-                            "attributes": {
-                                "type": "object",
-                                "description": "Attributes for the content to be created.",
-                                "properties": {
-                                    "image_name": {
-                                        "type": "string",
-                                        "description": "A short filename without extension of the image to be created. Only required if content_type is 'image'."
-                                    },
-                                    "prompt": {
-                                        "type": "string",
-                                        "description": "Prompt for the image creation. Only required if content_type is 'image'. Use the exact user prompt, don't add any additional instructions about image size, format, etc."
-                                    },
-                                    "entity_name": {
-                                        "type": "string",
-                                        "description": "Name of the entity to be created. Only required if content_type is 'entity'."
-                                    },
-                                    "module_id": {
-                                        "type": "string",
-                                        "description": "ID of the module where the entity should be saved in. Only required if content_type is 'entity'.",
-                                        "enum": [
-                                        #foreach($module in $modules)
-                                            #if($foreach.count > 1),#end
-                                            "$module.getId()|$module.getName()"
-                                        #end
-                                        ]
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "additionalProperties": false
-                }
+#end
+
+Here is the response JSON structure you must follow: 
+$structure
+")
             }
-        }
+        ]
+    },
+	{
+	    "role": "user",
+        "content": [
+            {
+                "type": "text",
+                "text":  #jesc(${message.message})
+            }
+        ]
     }
+]
 }
