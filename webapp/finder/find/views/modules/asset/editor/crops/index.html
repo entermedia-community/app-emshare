@@ -4,7 +4,11 @@
 #end
 
 $context.putPageValue("asset", $asset)
-<div id="asset-editor-container" class="h-100 asset-crop-container">
+<div id="asset-editor-container" 
+	class="h-100 asset-crop-container"
+	data-assetid="$asset.id"
+	data-url="$page.getPath()">
+	
   <div id="cropeditor" class="d-flex w-100 h-100">    
     #set( $presets = $conversionUtil.getCroppablePresetList($mediaarchive, $asset) )
       
@@ -38,11 +42,20 @@ $context.putPageValue("asset", $asset)
 	              <span>$name</span> 
 	              #set($generated = $presetdata.get("generatedoutputfile") )
 	              #set ($previewlink = $mediaarchive.asLinkToPreview($asset, null, $generated) )
+				  
+				  
+				  
 	              <div class="d-flex align-items-center justify-content-center flex-grow-1 py-1">
-	                <img src="$previewlink" 
-						style=" #if($width && $height) max-width: ${width}px; max-height: 300px; #else max-width: 300px; max-height: 200px; #end" 
-						class="hasFallback" 
-						data-error="[[Preset not created yet]]" />
+					#set($exists = $conversionUtil.doesConvertedFileExist($mediaarchive, $asset, $presetdata))
+					
+					#if($exists)
+		                <img src="$previewlink" 
+							style=" #if($width && $height) max-width: ${width}px; max-height: 300px; #else max-width: 300px; max-height: 200px; #end" 
+							class="hasFallback" 
+							data-error="[[Create Manually]]" />
+					#else
+						<a href='$mediaarchive.asLinkToShare("", $asset, $presetdata)' data-targetdiv="notexist" class="ajax btn btn-" data-ajaxreloadtargets="asset-crop-container">[[Create Manually]]</a>
+					#end
 	              </div>
 				  #if($width && $height)
 	              <strong>$width &times; $height</strong>
