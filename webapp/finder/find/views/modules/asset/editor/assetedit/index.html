@@ -62,6 +62,13 @@
 			#end
 	</div>
 	<div id="assetedittabs" class="assetedittabs flex-grow-1 h-100">
-		$pages.include("/$applicationid/views/modules/asset/editor/${currentab}/index.html", $context)
+		#ifnotnull($currentab)
+			$pages.include("/$applicationid/views/modules/asset/editor/${currentab}/index.html", $context)
+		#end
+		#ifnull($currentab)
+			<div class="m-4 p-4">
+			[[Action not allowed for this Asset Type]]
+			</div>
+		#end
 	</div>
 </div>
