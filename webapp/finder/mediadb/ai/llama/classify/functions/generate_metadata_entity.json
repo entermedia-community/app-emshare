@@ -1,0 +1,49 @@
+$context.putPageValue("aicommandprefix", "Generates metadata for an entity based on the following fields:\n\n")
+
+{
+  "name": "generate_metadata_entity",
+  "description": $pages.include("../function_description.json", $context),
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "metadata": {
+        "type": "object",
+        "properties": {
+		  #foreach($field in $fieldstofill)
+			  #if($foreach.count>1)
+			  ,
+			  #end
+				#if($field.isList())
+					"$field.id": {
+						"type": "string",
+						"description": "#jrender($field.aicreationcommand)",
+						"enum": [
+							#foreach( $option in $mediaarchive.getList($field.getListId()) )
+								#if($foreach.count>1)
+								,
+								#end
+								#jesc("$option.id|#text($option)")
+							#end
+						]
+					}
+				#else
+					"$field.id": {
+						"type": "string",
+						"description": "#jrender($field.aicreationcommand)"
+					}
+				#end
+		  #end
+        },
+        "required": [
+			#foreach($field in $fieldstofill)
+				#if($foreach.count>1)
+				,
+				#end
+			  	"$field.id" 						
+			#end 
+        ]
+      }
+    },
+    "required": ["metadata"]
+  }
+}

@@ -1,0 +1,58 @@
+
+#set($searcher = $mediaarchive.getSearcher($targetmodule.id))
+#set($viewid = "${targetmodule.id}aifields")
+#set($viewdata = $mediaarchive.getData("view", $viewid))
+
+#ifnull($viewdata)
+	#set($viewdata = $mediaarchive.getData("view", "${targetmodule.id}addnew"))
+#end
+#set($details = $searcher.getDetailsForView($viewdata.id))
+{
+    "name": "create_entity",
+    "description": "Generates metadata for a new Entity, with various metadata",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            #foreach($detail in $details)
+                "$detail.id": {
+                    "type": #if($detail.dataType == "boolean") "boolean" #elseif($detail.isMultiValue()) "array" #else "string" #end,
+                    "description": "$!{detail.name}$!{detail.note}"
+                    #if($detail.isMultiValue()),
+                        "items": {
+                            "type": "string"
+                            #if($detail.dataType == "list" && $mediaarchive.getList($detail.id).size() > 0),
+                            "enum": [
+                                #foreach($option in $mediaarchive.getList($detail.id))
+                                    #if($foreach.count>1)
+                                    ,
+                                    #end
+                                    "$option.id|#text($option)"
+                                #end
+                            ]
+                            #end
+                        }
+                    #elseif($detail.dataType == "list" && $mediaarchive.getList($detail.id).size() > 0),
+                        "enum": [
+                            #foreach($option in $mediaarchive.getList($detail.id))
+                                #if($foreach.count>1)
+                                ,
+                                #end
+                                "$option.id|#text($option)"
+                            #end
+                        ]
+                    #end
+                    
+                }#if($foreach.count < $details.size()),#end
+            #end
+        },
+        "required": [
+            #set($added = false)
+            #foreach($detail in $details)
+                #if($detail.isRequired())
+                    #if($added), #end"$detail.id"
+                    #set($added = true)
+                #end
+            #end
+        ]
+    }
+}
