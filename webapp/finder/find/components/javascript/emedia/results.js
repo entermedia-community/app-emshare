@@ -316,50 +316,6 @@ jQuery(document).ready(function (url, params) {
 		}
 	};
 
-	initKeyBindings = function (hidden) {
-		$(document).keydown(function (e) {
-			if (hidden && !hidden.is(":visible")) {
-				return;
-			}
-			var target = e.target;
-			if ($(target).is("input") || $(target).is(".form-control")) {
-				return;
-			}
-			switch (e.which) {
-				case 37: // left
-					var div = $("#main-media-viewer");
-					var id = div.data("previous");
-					if (id) {
-						showAsset(div, id);
-					}
-					break;
-
-				case 39: // right
-					var div = $("#main-media-viewer");
-					var id = div.data("next");
-					if (id) {
-						showAsset(div, id);
-					}
-					break;
-
-				case 27000: // esc  MOVED TO UI-COMPONENTS
-					var ismodal = $("#modals, #inlineedit, .modal");
-					if (ismodal.hasClass("show")) {
-						// Close modal only
-						closeemdialog(ismodal);
-						e.stopPropagation();
-						return;
-					}
-					break;
-
-				default:
-					return; // exit this handler for other keys
-			}
-			e.preventDefault(); // prevent the default action (scroll / move
-			// caret)
-		});
-	};
-
 	refreshresults = function () {
 		var resultsdiv = $("#resultsdiv");
 		if (resultsdiv.length) {

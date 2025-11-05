@@ -271,6 +271,33 @@ $(document).ready(function () {
 				}
 			}
 		}
+		else 
+		{
+			if (event.which == "37" || event.which == "39") //left | arrow arrow key
+			{
+				var container;
+				var link;
+				if ($(".entitydialog").length > 0) {
+					container = $(".entitydialog"); 
+				}
+				else if ($("#main-media-container").length > 0) {
+					container = $("#main-media-container"); 				
+				}
+				if (event.which == "37")
+				{
+					link = $(".goleftclick", container);
+				}
+				else{
+					link = $(".gorightclick", container);
+				}
+				if(link)
+				{
+					link.trigger("click");
+				}
+			}
+		
+			
+		}
 	};
 
 	setTimeout(function () {
