@@ -1,27 +1,21 @@
 #set($modules = $schema.getModules())
-{
-	"original_query": "",
-    "request_type": {
-		"description": "The type of natural language request being made ",
-        "type": "string",
-        "enum": [
-            "search",
-            "creation",
-            "conversation"
-        ]
-    },
-	"conversation_structure": {
+
+
+Conversation:
+{	
+    "conversation": {
 		"type": "object",
 		"description": "Details about the request. Only required if request_type is 'conversation'.",
 		"friendly_response": {
 			"type": "string",
 			"description": "A brief response to the user's request in natural language. Only required if request_type is 'conversation'."
 		 },
-		"sentence_structure": {
-			"description": "Ordered list of the parts of the sentence",
+		"sentence_parts": {
 			"type": "array",
-			"properties": {
-				"parts": [ 
+            "description": "Ordered list of the parts of the sentence",
+			"items": {
+				"type": "object",
+				"properties": {
 					"main_action": {
 					    "type": "string",
 					    "description": "verb"
@@ -35,90 +29,92 @@
 				        "description": "what it acts on"
 				    },
 					"filters": {
-		                 "type": "object",
-		                 "description": "Column-value pairs used as filters or adjetives.",
-		                 "additionalProperties": true
-		             }
-				]
+                        "type": "object",
+                        "description": "Column-value pairs used as filters or adjectives."
+                    }
+                }
 			}
 		}
-	},
-	"search_structure": {
-	     "type": "object",
-	     "description": "Ordered list of search operations. Use the minimum number of steps necessary to fulfill the request. Only required if request_type is 'search'.",
-	     "search_steps": {
+	}
+}
+
+
+Search:
+{
+	"search": {
+        "type": "object",
+        "description": "Ordered list of search operations. Use the minimum number of steps necessary to fulfill the request. Only required if request_type is 'search'.",
+        "search_steps": {
 			 "type": "array",
 			 "description": "A structured representation of the user's search request broken down into individual search steps.",
 	         "properties": {	            
 	             "table": {
-	                 "type": "string",
-	                 "description": "Name of the table if mentioned in the request, use 'Not specified' otherwise.",
-					 "enum": [
-					            #foreach($module in $modules)
-					                        #if($foreach.count > 1),#end
-					                        #jesc($module.getName())
-					                #if($schema.hasChildren($module.getId()))
-					                        #set($children = $schema.getChildrenOf($module.getId()))
-					                    #foreach($child in $children)
-					                        #if($foreach.count > 1),#end
-					                        #jesc("$child.getName() in $module.getName()")
-					                    #end
-					                #end
-					            #end
-		                        ,
-		                        "Not specified"
-		                    ]
+                    "type": "string",
+                    "description": "Name of the table if mentioned in the request, use 'Not specified' otherwise.",
+                    "enum": [
+            #foreach($module in $modules)
+                        #if($foreach.count > 1),#end
+                        #jesc($module.getName())
+                #if($schema.hasChildren($module.getId()))
+                    #set($children = $schema.getChildrenOf($module.getId()))
+                    #foreach($child in $children)
+                        ,
+                        #jesc("$child.getName() in $module.getName()")
+                    #end
+                #end
+            #end
+                        ,
+                        "Not specified"
+                    ]
 	             },
 	             "filters": {
-	                 "type": "object",
-	                 "description": "Column-value pairs used as filters.",
-	                 "additionalProperties": true
+                    "type": "object",
+                    "description": "Column-value pairs used as filters."
 	             }	            
-	         },
-	         "required": [
-	             "operation"                 
-	         ]
+	         }
 	     }
-	}, 
-    "creation_structure": {
+	}
+}
+
+
+Create Image:
+{
+    "create_image": {
         "type": "object",
-        "description": "Details about the creation request. Only required if request_type is 'creation'.",
+        "description": "Details about the creation request. Only required if request_type is 'create_image'.",
         "properties": {
-            "content_type": {
+            "image_name": {
                 "type": "string",
-                "description": "Type of content to be created",
-                "enum": [
-                    "image",
-                    "entity"
-                ]
+                "description": "A short filename without extension of the image to be created."
             },
-            "attributes": {
-                "type": "object",
-                "description": "Attributes for the content to be created.",
-                "properties": {
-                    "image_name": {
-                        "type": "string",
-                        "description": "A short filename without extension of the image to be created. Only required if content_type is 'image'."
-                    },
-                    "prompt": {
-                        "type": "string",
-                        "description": "Prompt for the image creation. Only required if content_type is 'image'. Use the exact user prompt, don't add any additional instructions about image size, format, etc."
-                    },
-                    "entity_name": {
-                        "type": "string",
-                        "description": "Name of the entity to be created. Only required if content_type is 'entity'."
-                    },
-                    "module_id": {
-                        "type": "string",
-                        "description": "ID of the module where the entity should be saved in. Only required if content_type is 'entity'.",
-                        "enum": [
-                        #foreach($module in $modules)
-                            #if($foreach.count > 1),#end
-                            #jesc("$module.getId()|$module.getName()")
-                        #end
-                        ]
-                    }
-                }
+            "prompt": {
+                "type": "string",
+                "description": "Prompt for the image creation. Use the exact user prompt, don't add any additional instructions about image size, format, etc."
+            }
+        }
+    }
+}
+
+
+Create Entity:
+{
+    "create_entity": {
+        "type": "object",
+        "description": "Details about the entity creation request. Only required if request_type is 'create_entity'.",
+        "properties": {
+            "entity_name": {
+                "type": "string",
+                "description": "Name of the entity to be created."
+            },
+            "module_id": {
+                "type": "string",
+                "description": "ID of the module where the entity should be saved in.",
+                "enum": [
+                #foreach($module in $modules)
+                    #if($foreach.count > 1),#end 
+                    #jesc("$module.getId()|$module.getName()")
+                #end
+                ]
             }
         }
     }
