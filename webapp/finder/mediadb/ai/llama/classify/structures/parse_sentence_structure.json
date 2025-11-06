@@ -46,7 +46,19 @@ Search:
             "description": "A structured representation of the user's search request broken down into individual search steps.",
             "items" : {
                 "type": "object",
-                "properties": {	            
+                "properties": {
+                    "parameters": {
+                        "type": "object",
+                        "description": "Column-value pairs used as search parameters or filters.",
+                        "keyword": {
+                            "type": "string",
+                            "description": "Keyword or phrase to search for in this step, if applicable."
+                        },
+                        "filters": {
+                            "type": "object",
+                            "description": "Additional column-value pairs used as filters."
+                        }
+                    },      
                     "table": {
                         "type": "string",
                         "description": "Name of the table if mentioned in the request, use 'Not specified' otherwise.",
@@ -59,9 +71,17 @@ Search:
                             "Not specified"
                         ]
                     },
-                    "parameters": {
-                        "type": "object",
-                        "description": "Column-value pairs used as search parameters or filters."
+                    "super_table": {
+                        "type": "string",
+                        "description": "Name of the parent table if applicable, use 'Not specified' otherwise.",
+                        "enum": [
+                        #foreach($module in $modules)
+                            #if($foreach.count > 1),#end
+                            #jesc($module.getName())
+                        #end
+                            ,
+                            "Not specified"
+                        ]
                     }
                 }	            
             }
