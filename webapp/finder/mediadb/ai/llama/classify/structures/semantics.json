@@ -1,40 +1,32 @@
 {
 	"model": "${model}",
-	"input": [
+	"messages": [
 		{
 			"role": "system",
-			#set($content = $fieldparams.aicreationdescription)
-			#if($fieldparams.isoptional == "true")
-				#set($content = "$content Return empty array if you are unsure.")
-			#end
-			"content": #jesc($content)
+			"content": [
+				{
+					"type": "text",
+					"text": #jesc("${fieldparams.aicreationdescription}
+
+Format your response in JSON according to the response structure below:
+$structure
+")
+				}
+			]
 		},
 		{
 			"role": "user",
-			"content": #jesc($fieldparams.aicreationcommand)
+			"content": [
+				{
+					"type": "text",
+					"text": #jesc("$fieldparams.aicreationcommand
+#foreach($field in $contextfields)
+#if($foreach.count>1),\n#end
+${field.label}: ${field.text}
+#end
+")
+				}
+			]
 		}
-	],
-	"text": {
-		"format": {
-			"strict": true,
-			"type": "json_schema",
-			"name": "semantic_topics",
-			"schema": {
-				"type": "object",
-				"properties": {
-					"$fieldparams.getId()": {
-						"type": "array",
-						"items": {
-							"type": "string",
-							"additionalProperties": false
-						}
-					}
-				},
-				#if($fieldparams.isoptional == "false")
-				"required": ["$fieldparams.getId()"],
-				#end
-				"additionalProperties": false
-			}
-		}
-	}
+	]
 }

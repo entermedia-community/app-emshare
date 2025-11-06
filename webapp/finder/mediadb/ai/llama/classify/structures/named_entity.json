@@ -1,46 +1,31 @@
 {
 	"model": "${model}",
-	"input": [
+	"messages": [
 		{
 			"role": "system",
-			"content": #jesc($fieldparams.aicreationdescription)
+			"content": [
+				{
+					"type": "text",
+					"text": #jesc("${fieldparams.aicreationdescription}.
+
+Format your response in JSON according to the response structure below:
+$structure
+")
+				}
+			]
 		},
 		{
 			"role": "user",
-			"content": "$fieldparams.aicreationcommand #foreach($field in $contextfields) #if($foreach.count>1),\n#end ${field.label}: ${field.text} #end"
+			"content": [
+				{
+					"type": "text",
+					"text":  "$fieldparams.aicreationcommand
+#foreach($field in $contextfields)
+#if($foreach.count>1),\n#end
+${field.label}: ${field.text}
+#end"
+				}
+			]
 		}
-	],
-"text": {
-	"format": {
-			"strict": true,
-			"type": "json_schema",
-			"name": "named_entity",
-			"schema": {
-				"type": "object",
-				"properties": {
-					"categories": {
-						"type": "object",
-						"properties": {
-							#foreach($autocreatefield in $autocreatefields)
-								#if($foreach.count>1)
-								,
-								#end
-								"$autocreatefield.getId()": {
-									"type": "array",
-									"description": "$autocreatefield.aiautocreateddescription",
-									"items": {
-										"type": "string"
-									}
-								}
-							#end
-						},
-						"additionalProperties": false,
-						"required": [#foreach($autocreatefield in $autocreatefields) #if($foreach.count>1), #end "$autocreatefield.getId()" #end]
-					}
-				},
-				"additionalProperties": false,
-				"required": ["categories"]
-			}
-		}
-	}
+	]
 }
