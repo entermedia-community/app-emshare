@@ -4,6 +4,27 @@
 #end
 
 #ifnotnull($hits)
+	#set($aisearch = $agentcontext.getAiSearchParams())
+	
+	#set($step1 = $aisearch.getStep1())
+	#set($step2 = $aisearch.getStep2())
+	
+	$step1 && $step2
+	#if($step1 && $step2)
+		#if ($step1.hasMultipleTables())
+			Found $step2.getCount() records in 	
+			#foreach($module1 in $step1.getModules())
+				#text($module1)
+				#if( $foreach.hasNext )
+				    , 
+				 #end
+			#end
+			
+		#else
+			Found $step2.getCount() records in #text($step2.getModule())
+		#end
+	#end
+	
 	#if( $module.id == "asset")
 		$pages.include("./renderassetresults.html",$context)
 	#else
