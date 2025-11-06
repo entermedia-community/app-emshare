@@ -42,35 +42,30 @@ Search:
         "type": "object",
         "description": "Ordered list of search operations. Use the minimum number of steps necessary to fulfill the request. Only required if request_type is 'search'.",
         "search_steps": {
-			 "type": "array",
-			 "description": "A structured representation of the user's search request broken down into individual search steps.",
-	         "properties": {	            
-	             "table": {
-                    "type": "string",
-                    "description": "Name of the table if mentioned in the request, use 'Not specified' otherwise.",
-                    "enum": [
-            #set($modules = $schema.getModules())
-            #foreach($module in $modules)
-                        #if($foreach.count > 1),#end
-                        #jesc($module.getName())
-                #if($schema.hasChildren($module.getId()))
-                    #set($children = $schema.getChildrenOf($module.getId()))
-                    #foreach($child in $children)
-                        ,
-                        #jesc("$child.getName() in $module.getName()")
-                    #end
-                #end
-            #end
-                        ,
-                        "Not specified"
-                    ]
-	             },
-	             "filters": {
-                    "type": "object",
-                    "description": "Column-value pairs used as filters."
-	             }	            
-	         }
-	     }
+            "type": "array",
+            "description": "A structured representation of the user's search request broken down into individual search steps.",
+            "items" : {
+                "type": "object",
+                "properties": {	            
+                    "table": {
+                        "type": "string",
+                        "description": "Name of the table if mentioned in the request, use 'Not specified' otherwise.",
+                        "enum": [
+                        #foreach($module in $modules)
+                            #if($foreach.count > 1),#end
+                            #jesc($module.getName())
+                        #end
+                            ,
+                            "Not specified"
+                        ]
+                    },
+                    "parameters": {
+                        "type": "object",
+                        "description": "Column-value pairs used as search parameters or filters."
+                    }
+                }	            
+            }
+        }
 	}
 }
 
