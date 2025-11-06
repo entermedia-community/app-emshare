@@ -1,101 +1,99 @@
+#set($modules = $schema.getModules())
 {
-  "request_type": {
-      "type": "string",
-      "enum": [
-          "search",
-          "creation",
-          "how-to",
-          "conversation"
-      ],
-      "description": "The type of natural language request being made "
-  },
-  "general_response": {
-      "type": "string",
-      "description": "A brief response to the user's request in natural language. Only required if request_type is 'conversation'."
-  },
-  "search_steps": {
-      "type": "array",
-      "description": "Ordered list of search operations. Use the minimum number of steps necessary to fulfill the request. Only required if request_type is 'search' or 'how-to'.",
-      "items": {
-          "type": "object",
-          "properties": {
-              "operation": {
-                  "type": "string",
-                  "enum": [
-                      "search",
-                      "join"
-                  ],
-                  "description": "Type of database operation."
-              },
-              "table": {
-                  "type": "string",
-                  "description": "Name of the table if mentioned in the request, use 'All' otherwise."
-              },
-              "filters": {
-                  "type": "object",
-                  "description": "Column-value pairs used as filters.",
-                  "additionalProperties": true
-              },
-              "join": {
-                  "type": [
-                      "string",
-                      "null"
-                  ],
-                  "description": "Name of the table joined to this step, if any."
-              },
-              "sort": {
-                  "type": [
-                      "string",
-                      "null"
-                  ],
-                  "description": "Sorting field and direction, e.g., 'created_at DESC'."
-              }
-          },
-          "required": [
-              "operation"                 
-          ]
-      }
-  },
-  "creation_details": {
-      "type": "object",
-      "description": "Details about the creation request. Only required if request_type is 'creation'.",
-      "properties": {
-          "content_type": {
-              "type": "string",
-              "description": "Type of content to be created",
-              "enum": [
-                  "image",
-                  "entity"
-              ]
-          },
-          "attributes": {
-              "type": "object",
-              "description": "Attributes for the content to be created.",
-              "properties": {
-                  "image_name": {
-                      "type": "string",
-                      "description": "A short filename without extension of the image to be created. Only required if content_type is 'image'."
-                  },
-                  "prompt": {
-                      "type": "string",
-                      "description": "Prompt for the image creation. Only required if content_type is 'image'. Use the exact user prompt, don't add any additional instructions about image size, format, etc."
-                  },
-                  "entity_name": {
-                      "type": "string",
-                      "description": "Name of the entity to be created. Only required if content_type is 'entity'."
-                  },
-                  "module_id": {
-                      "type": "string",
-                      "description": "ID of the module where the entity should be saved in. Only required if content_type is 'entity'.",
-                      "enum": [
-                      #foreach($module in $modules)
-                          #if($foreach.count > 1),#end
-                          #jesc("$module.getId()|$module.getName()")
-                      #end
-                      ]
-                  }
-              }
-          }
-      }
-  }
+    "request_type": {
+        "type": "string",
+        "enum": [
+            "search",
+            "creation",
+            "how-to",
+            "conversation"
+        ],
+        "description": "The type of natural language request being made "
+    },
+    "general_response": {
+        "type": "string",
+        "description": "A brief response to the user's request in natural language. Only required if request_type is 'conversation'."
+    },
+    "sentence_structure": {
+        "type": "array",
+        "description": "A structured representation of the user's natural language request broken down into individual search or action steps.",
+        "items": {
+            "type": "object",
+            "properties": {
+                "table_name": {
+                    "type": "string",
+                    "description": "A database table name that the user specified. This is an optional field; do not infer a name if the user did not specify one. For example, if the user says 'Find me images of cats', don't guess the table is 'Images' unless they explicitly said so.",
+                    "enum": [
+            #foreach($module in $modules)
+                        #if($foreach.count > 1),#end
+                        #jesc($module.getName())
+                #if($schema.hasChildren($module.getId()))
+                        #set($children = $schema.getChildrenOf($module.getId()))
+                    #foreach($child in $children)
+                        #if($foreach.count > 1),#end
+                        #jesc("$child.getName() in $module.getName()")
+                    #end
+                #end
+            #end
+                        ,
+                        "No Table Name Provided"
+                    ]
+                },
+                "target": {
+                    "type": "string",
+                    "description": "Target within"
+                },
+                "intent": {
+                    "type": "string",
+                    "description": "Description of the intent of this search step.",
+                },
+                "filters": {
+                    "type": "object",
+                    "description": "Column-value pairs used as filters.",
+                }
+            }
+        }
+    },
+    "creation_details": {
+        "type": "object",
+        "description": "Details about the creation request. Only required if request_type is 'creation'.",
+        "properties": {
+            "content_type": {
+                "type": "string",
+                "description": "Type of content to be created",
+                "enum": [
+                    "image",
+                    "entity"
+                ]
+            },
+            "attributes": {
+                "type": "object",
+                "description": "Attributes for the content to be created.",
+                "properties": {
+                    "image_name": {
+                        "type": "string",
+                        "description": "A short filename without extension of the image to be created. Only required if content_type is 'image'."
+                    },
+                    "prompt": {
+                        "type": "string",
+                        "description": "Prompt for the image creation. Only required if content_type is 'image'. Use the exact user prompt, don't add any additional instructions about image size, format, etc."
+                    },
+                    "entity_name": {
+                        "type": "string",
+                        "description": "Name of the entity to be created. Only required if content_type is 'entity'."
+                    },
+                    "module_id": {
+                        "type": "string",
+                        "description": "ID of the module where the entity should be saved in. Only required if content_type is 'entity'.",
+                        "enum": [
+                        #foreach($module in $modules)
+                            #if($foreach.count > 1),#end
+                            #jesc("$module.getId()|$module.getName()")
+                        #end
+                        ]
+                    }
+                }
+            }
+        }
+    }
 }

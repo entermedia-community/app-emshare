@@ -1,25 +1,13 @@
-#set($modules = $schema.getModules())
 {
     "model": "${model}",
-    "messages": [
+    "messages": 
+[
     {
         "role": "system",
         "content": [
             {
             "type": "text",
             "text": #jesc("You are an AI agent that maps natural language requests to a query plan according the given schema and respond in JSON format according to the response structure.
-Below is a list of searchable database tables and their child tables (if user does not specify a table, default it to 'All'):
-1. All
-#foreach($module in $modules)
-#set($count = $foreach.count + 1)
-${count}. $module.getName()
-#if($schema.hasChildren($module.getId()))
-    #set($children = $schema.getChildrenOf($module.getId()))
-    #foreach($child in $children)
-    - $child.getName()
-    #end
-#end
-#end
 
 Here is the response JSON structure you must follow: 
 $structure
