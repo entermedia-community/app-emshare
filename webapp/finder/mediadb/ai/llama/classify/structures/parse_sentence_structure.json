@@ -1,60 +1,86 @@
 #set($modules = $schema.getModules())
 {
+	"original_query": "",
     "request_type": {
+		"description": "The type of natural language request being made ",
         "type": "string",
         "enum": [
             "search",
             "creation",
-            "how-to",
             "conversation"
-        ],
-        "description": "The type of natural language request being made "
+        ]
     },
-    "general_response": {
-        "type": "string",
-        "description": "A brief response to the user's request in natural language. Only required if request_type is 'conversation'."
-    },
-    "sentence_structure": {
-        "type": "array",
-        "description": "A structured representation of the user's natural language request broken down into individual search or action steps.",
-        "items": {
-            "type": "object",
-            "properties": {
-                "table_name": {
-                    "type": "string",
-                    "description": "A database table name that the user specified. This is an optional field; do not infer a name if the user did not specify one. For example, if the user says 'Find me images of cats', don't guess the table is 'Images' unless they explicitly said so.",
-                    "enum": [
-            #foreach($module in $modules)
-                        #if($foreach.count > 1),#end
-                        #jesc($module.getName())
-                #if($schema.hasChildren($module.getId()))
-                        #set($children = $schema.getChildrenOf($module.getId()))
-                    #foreach($child in $children)
-                        #if($foreach.count > 1),#end
-                        #jesc("$child.getName() in $module.getName()")
-                    #end
-                #end
-            #end
-                        ,
-                        "No Table Name Provided"
-                    ]
-                },
-                "target": {
-                    "type": "string",
-                    "description": "Target within"
-                },
-                "intent": {
-                    "type": "string",
-                    "description": "Description of the intent of this search step.",
-                },
-                "filters": {
-                    "type": "object",
-                    "description": "Column-value pairs used as filters.",
-                }
-            }
-        }
-    },
-    "creation_details": {
+	"conversation_structure": {
+		"type": "object",
+		"description": "Details about the request. Only required if request_type is 'conversation'.",
+		"friendly_response": {
+			"type": "string",
+			"description": "A brief response to the user's request in natural language. Only required if request_type is 'conversation'."
+		 },
+		"sentence_structure": {
+			"description": "Ordered list of the parts of the sentence",
+			"type": "array",
+			"properties": {
+				"parts": [ 
+					"main_action": {
+					    "type": "string",
+					    "description": "verb"
+					},
+					"subject": {
+					    "type": "string",
+					    "description": "who or what performs it"
+					},
+				    "object": {
+				        "type": "string",
+				        "description": "what it acts on"
+				    },
+					"filters": {
+		                 "type": "object",
+		                 "description": "Column-value pairs used as filters or adjetives.",
+		                 "additionalProperties": true
+		             }
+				]
+			}
+		}
+	},
+	"search_structure": {
+	     "type": "object",
+	     "description": "Ordered list of search operations. Use the minimum number of steps necessary to fulfill the request. Only required if request_type is 'search'.",
+	     "search_steps": {
+			 "type": "array",
+			 "description": "A structured representation of the user's search request broken down into individual search steps.",
+	         "properties": {	            
+	             "table": {
+	                 "type": "string",
+	                 "description": "Name of the table if mentioned in the request, use 'Not specified' otherwise.",
+					 "enum": [
+					            #foreach($module in $modules)
+					                        #if($foreach.count > 1),#end
+					                        #jesc($module.getName())
+					                #if($schema.hasChildren($module.getId()))
+					                        #set($children = $schema.getChildrenOf($module.getId()))
+					                    #foreach($child in $children)
+					                        #if($foreach.count > 1),#end
+					                        #jesc("$child.getName() in $module.getName()")
+					                    #end
+					                #end
+					            #end
+		                        ,
+		                        "Not specified"
+		                    ]
+	             },
+	             "filters": {
+	                 "type": "object",
+	                 "description": "Column-value pairs used as filters.",
+	                 "additionalProperties": true
+	             }	            
+	         },
+	         "required": [
+	             "operation"                 
+	         ]
+	     }
+	}, 
+    "creation_structure": {
         "type": "object",
         "description": "Details about the creation request. Only required if request_type is 'creation'.",
         "properties": {
