@@ -11,33 +11,36 @@
 #set($entityurl = "$!siteroot$apphome/views/modules/$!{module.id}/index.html?$!{module.id}page=1&field=description&operation=freeform&description.value=$input")
 	
 <div class="#if($foreach.count > 1) mt-3 #else mb-3 #end">
-	<div class="mt-2 qsresultsEntity d-flex align-items-center">
-		<i class="bi bi-$moduleicon module-icon"></i>
-		<span class="qsresultsEntitytext">#text($module)</span>
+	#if(!$hidemoduleheaders)
+		<div class="mt-2 qsresultsEntity d-flex align-items-center">
+			<i class="bi bi-$moduleicon module-icon"></i>
+			<span class="qsresultsEntitytext">#text($module)</span>
+	
+			#if( $module.id == "asset") ##this is safe
+				#set( $count = $hits.size()) 
+			#else
+				#set( $count = $filter.getCount($module.id) ) 
+			#end
+	
+			#ifnull($count)
+				#set( $count = $hits.size()) 
+			#end
 
-		#if( $module.id == "asset") ##this is safe
-			#set( $count = $hits.size()) 
-		#else
-			#set( $count = $filter.getCount($module.id) ) 
-		#end
-
-		#ifnull($count)
-			#set( $count = $hits.size()) 
-		#end
-		#if($count > 0)
-		<span class="mx-1">&middot;</span> 
-		<a href="$entityurl" 
-			class="ajax btn btn-sm btn-accent"
-			data-targetdiv="applicationmaincontent" 
-			data-oemaxlevel="3" 
-			data-updateurl="true" 
-			title="[[View]] $count: #text($module)">
-			<span class="qsresultsEntitytext">
-				[[View]] $count
-			</span>
-		</a>
-		#end
-	</div>
+			#if($count > 0)
+				<span class="mx-1">&middot;</span> 
+				<a href="$entityurl" 
+					class="ajax btn btn-sm btn-accent" 
+					data-targetdiv="applicationmaincontent" 
+					data-oemaxlevel="3" 
+					data-updateurl="true" 
+					title="[[View]] $count: #text($module)">
+					<span class="qsresultsEntitytext">
+						[[View]] $count
+					</span>
+				</a>
+			#end
+		</div>
+	#end
 
 	$context.putPageValue("rendermoduleid", $module.id)
 	
