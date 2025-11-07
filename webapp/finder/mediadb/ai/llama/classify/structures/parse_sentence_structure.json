@@ -40,30 +40,18 @@ Search:
 {
 	"search": {
         "type": "object",
-        "description": "Ordered list of search operations. Use the minimum number of steps necessary to fulfill the request. Only required if request_type is 'search'.",
-        "search_steps": {
+        "description": "Separate any table in the request and include the keywords and parameters that apply to that table.",
+        "tables": {
             "type": "array",
-            "description": "A structured representation of the user's search request broken down into individual search steps.",
+            "description": "A list tables to be searched with their parameters.",
             "items" : {
                 "type": "object",
                 "properties": {
-                    "parameters": {
-                        "type": "object",
-                        "description": "Column-value pairs used as search parameters or filters.",
-                        "keyword": {
-                            "type": "string",
-                            "description": "Keyword or phrase to search for in this step, if applicable."
-                        },
-                        "filters": {
-                            "type": "object",
-                            "description": "Additional column-value pairs used as filters."
-                        }
-                    },      
-                    "table": {
+                    "name": {
                         "type": "string",
                         "description": "Name of the table if mentioned in the request, use 'Not specified' otherwise.",
                         "enum": [
-                        #foreach($module in $modules)
+                        #foreach($module in $schema.modules)
                             #if($foreach.count > 1),#end
                             #jesc($module.getName())
                         #end
@@ -71,19 +59,18 @@ Search:
                             "Not specified"
                         ]
                     },
-                    "super_table": {
-                        "type": "string",
-                        "description": "Name of the parent table if applicable, use 'Not specified' otherwise.",
-                        "enum": [
-                        #foreach($module in $modules)
-                            #if($foreach.count > 1),#end
-                            #jesc($module.getName())
-                        #end
-                            ,
-                            "Not specified"
-                        ]
-                    }
-                }	            
+                    "keywords": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "description": "The main keyword to search for in the table."
+                    },
+                    "parameters": {
+                        "type": "object",
+                        "description": "All column-value pairs to be searched"
+                    } 
+                }          
             }
         }
 	}
@@ -123,7 +110,7 @@ Create Entity:
                 "type": "string",
                 "description": "ID of the module where the entity should be saved in.",
                 "enum": [
-                #foreach($module in $modules)
+                #foreach($module in $schema.modules)
                     #if($foreach.count > 1),#end 
                     #jesc("$module.getId()|$module.getName()")
                 #end
