@@ -16,7 +16,7 @@
 	#end
 	
 	#set($aisearch = $agentcontext.getAiSearchParams())
-	
+	<div class="mb-3">
 	Searched for 
 	#ifnotnull($aisearch.getStep2())
 		#set($searchstep = $aisearch.getStep2())
@@ -47,7 +47,11 @@
 	#ifnull($aisearch.getStep2())
 		#set($searchstep = $aisearch.getStep1())
 		#foreach($module1 in $searchstep.getModules())
-			#text($module1)
+			#if($module1.id == "modulesearch")
+				[[All Modules]]
+			#else
+				#text($module1)
+			#end
 			#if( $foreach.hasNext )
 				#if($foreach.count == $searchstep.getModules().size() - 1)
 				or 
@@ -73,8 +77,8 @@
 		data-closedialog="true">
 			$searchstep.getCount() records</a>
 		
-	
-	$context.putPageValue("hidemoduleheaders", true)
+	</div>
+	##$context.putPageValue("hidemoduleheaders", true)
 
 	#foreach($module in $organizedResults.getModules() )
 		#set($hits = $organizedResults.getByType($module.id,$context))
