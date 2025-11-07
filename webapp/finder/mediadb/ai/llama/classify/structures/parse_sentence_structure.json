@@ -59,17 +59,38 @@ Search:
                             "Not specified"
                         ]
                     },
-                    "keywords": {
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        },
-                        "description": "The main keyword to search for in the table."
-                    },
                     "parameters": {
                         "type": "object",
-                        "description": "All column-value pairs to be searched"
-                    } 
+                        "description": "The parameters to search for in the table.",
+                        "properties": {
+                            "keyword": {
+                                "type": "string",
+                                "description": "The main keyword to search for in the table."
+                            }
+                        },
+                        "additionalProperties": true
+                    },
+                    "foreign_table": {
+                        "type": "string",
+                        "description": "Name of the foreign table to join with, if applicable."
+                        "enum": [
+                        #foreach($module in $schema.modules)
+                            #if($foreach.count > 1),#end
+                            #jesc($module.getName())
+                        #end
+                        ]
+                    },
+                    "foreign_table_parameters": {
+                        "type": "object",
+                        "description": "The parameters to search for in the foreign table.",
+                        "properties": {
+                            "keyword": {
+                                "type": "string",
+                                "description": "The main keyword to search for in the foreign table."
+                            }
+                        },
+                        "additionalProperties": true
+                    },
                 }          
             }
         }
