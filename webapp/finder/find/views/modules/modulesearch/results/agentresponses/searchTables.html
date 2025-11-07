@@ -14,12 +14,45 @@
 			[[No results found]] #ifnotnull($input) [[for]] <strong>#esc($input)</strong> #end #ifnotnull($modulenamestext) [[in]] <strong>#esc($modulenamestext)</strong> #end
 		</div>
 	#end
+	
+	#set($aisearch = $agentcontext.getAiSearchParams())
+	#set($searchstep = $aisearch.getStep1())
+	#ifnotnull($aisearch.getStep2())
+		#set($searchstep = $aisearch.getStep2())
+	#end
+	
+	#if($searchstep)
+		Searched for 
+			#foreach($module1 in $searchstep.getModules())
+				#text($module1)
+				#if( $foreach.hasNext )
+					#if($foreach.count == $searchstep.getModules().size() - 1)
+					or 
+					#else
+				    , 
+					#end
+				 #end
+			#end
+			found 
+			<a href="$!searchurl" 
+				class="ajax" 
+				data-targetdiv="applicationmaincontent" 
+				data-oemaxlevel="3" 
+				data-updateurl="true" 
+				data-hitsessionid="$hits.getSessionId()"
+				title="[[View]] #text($module)"
+				data-closedialog="true">
+				$searchstep.getCount() records</a>
+		#end
+	
+	$context.putPageValue("hidemoduleheaders", true)
 
 	#foreach($module in $organizedResults.getModules() )
 		#set($hits = $organizedResults.getByType($module.id,$context))
 		$context.putPageValue("module", $module)
 		$context.putPageValue("moduleid", $module.id)
 		$context.putPageValue("hits", $hits)
+		
 		#if( $module.id == "asset")
 			$pages.include("./renderassetresults.html",$context)
 		#else
@@ -27,11 +60,7 @@
 		#end
 				
 	#end
-
-	
 </div>
-
-
 
 #ifnotnull($semanticquery)
   $agentcontext.setNextFunctionName("searchSemantic")
