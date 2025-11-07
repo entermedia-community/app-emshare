@@ -25,20 +25,21 @@
 			#ifnull($count)
 				#set( $count = $hits.size()) 
 			#end
+
 			#if($count > 0)
-			<span class="mx-1">&middot;</span> 
-			<a href="$entityurl" 
-				class="ajax qsresultsEntityall" 
-				data-targetdiv="applicationmaincontent" 
-				data-oemaxlevel="3" 
-				data-updateurl="true" 
-				title="[[View]] $count: #text($module)">
-				<span class="qsresultsEntitytext">
-					[[View]] $count
-				</span>
-			</a>
-		#end
-	</div>
+				<span class="mx-1">&middot;</span> 
+				<a href="$entityurl" 
+					class="ajax btn btn-sm btn-accent" 
+					data-targetdiv="applicationmaincontent" 
+					data-oemaxlevel="3" 
+					data-updateurl="true" 
+					title="[[View]] $count: #text($module)">
+					<span class="qsresultsEntitytext">
+						[[View]] $count
+					</span>
+				</a>
+			#end
+		</div>
 	#end
 
 	$context.putPageValue("rendermoduleid", $module.id)
@@ -69,7 +70,7 @@
 				<messageplain>Entity Search Result#${foreach.count}</messageplain>
 				<messageplain>Entity ID: ${hit.id}</messageplain>
 				<messageplain>Entity Name: ${hit.name}</messageplain>
-				<messageplain>Module ID: ${module.id}</messageplain>
+				<messageplain>Module ID: ${hit.entitysourcetype}</messageplain>
 				#ifnotnull($hit.primaryimage)
 				<messageplain>Primary Image ID: ${hit.primaryimage}</messageplain>
 				#end
