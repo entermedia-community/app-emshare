@@ -16,13 +16,10 @@
 	#end
 	
 	#set($aisearch = $agentcontext.getAiSearchParams())
-	#set($searchstep = $aisearch.getStep1())
+	
+	Searched for 
 	#ifnotnull($aisearch.getStep2())
 		#set($searchstep = $aisearch.getStep2())
-	#end
-	
-	#if($searchstep)
-		Searched for 
 			#foreach($module1 in $searchstep.getModules())
 				#text($module1)
 				#if( $foreach.hasNext )
@@ -33,17 +30,49 @@
 					#end
 				 #end
 			#end
-			found 
-			<a href="$!searchurl" 
-				class="ajax" 
-				data-targetdiv="applicationmaincontent" 
-				data-oemaxlevel="3" 
-				data-updateurl="true" 
-				data-hitsessionid="$hits.getSessionId()"
-				title="[[View]] #text($module)"
-				data-closedialog="true">
-				$searchstep.getCount() records</a>
+			
+			#set($keywords = $aisearch.getStep2().getParameterValues())
+			#ifnotnull($keywords)
+				(keywords: $keywords) 
+			#end
+			
+			within $aisearch.getStep1().getModule() 
+			
+			#set($keywords = $aisearch.getStep1().getParameterValues())
+			#ifnotnull($keywords)
+				filtered by $keywords
+			#end
+			
+	#end
+	#ifnull($aisearch.getStep2())
+		#set($searchstep = $aisearch.getStep1())
+		#foreach($module1 in $searchstep.getModules())
+			#text($module1)
+			#if( $foreach.hasNext )
+				#if($foreach.count == $searchstep.getModules().size() - 1)
+				or 
+				#else
+			    , 
+				#end
+			 #end
 		#end
+		#set($keywords = $aisearch.getStep1().getParameterValues())
+		#ifnotnull($keywords)
+			(keywords: $keywords)
+		#end
+	#end			
+				
+	found:  
+	<a href="$!searchurl" 
+		class="ajax" 
+		data-targetdiv="applicationmaincontent" 
+		data-oemaxlevel="3" 
+		data-updateurl="true" 
+		data-hitsessionid="$hits.getSessionId()"
+		title="[[View]] #text($module)"
+		data-closedialog="true">
+			$searchstep.getCount() records</a>
+		
 	
 	$context.putPageValue("hidemoduleheaders", true)
 
