@@ -9,9 +9,6 @@
 	#set($step1 = $aisearch.getStep1())
 	#set($step2 = $aisearch.getStep2())
 	
-	##$step1 && $step2
-	
-	
 	#if($step1 && $step2)
 		#if ($step1.hasMultipleTables())
 			Found $step2.getCount() records in 	
@@ -22,10 +19,15 @@
 				 #end
 			#end
 			
+			
+			
 		#else
 			Found $step2.getCount() records in #text($step2.getModule())
 		#end
 	#elseif($step1)
+	
+		$context.putPageValue("hidemoduleheaders", true)
+	
 		Found $step1.getCount() records in
 		
 		#if ($step1.hasMultipleTables())
@@ -33,7 +35,18 @@
 				#text($module1) #if( $foreach.hasNext),#end
 			#end
 		#else
-			#text($step1.getModule())
+			#set($fmodule = $step1.getModule())
+			$context.putPageValue("module", $fmodule)
+			#set($entityurl = "$!siteroot$apphome/views/modules/$!{fmodule.id}/index.html")
+			<a href="$entityurl" 
+				class="ajax" 
+				data-targetdiv="applicationmaincontent" 
+				data-oemaxlevel="3" 
+				data-updateurl="true" 
+				title="[[View]] #text($fmodule)"
+				data-closedialog="true">
+				<strong>#text($fmodule)</strong>
+			</a>
 		#end
 	#end
 	
