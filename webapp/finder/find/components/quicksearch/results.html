@@ -25,6 +25,12 @@ $pages.include("./preview.html", $context)
 
 #foreach($module in $organizedResults.getModules() )
 	#if($module.id != "asset")
+		
+		##Blockfind picker
+		#if($picker && $picker.isPickerEnabled("entity", $module.id))
+			$context.putPageValue("pickerenabled", true)
+		#end
+			
 		#set($hits = $organizedResults.getByType($module.id,$context))
 		#ifnotnull($hits)
 			$context.putPageValue("module", $module)
@@ -126,6 +132,11 @@ $pages.include("./preview.html", $context)
 	#end
 	#set($entityurl = "${edithome}/index.html?search=$!query")
 	
+	
+	##Blockfind picker
+	#if($picker && $picker.isPickerEnabled("asset", $module.id))
+		$context.putPageValue("pickerenabled", true)
+	#end
 
 
 	#set( $count = $hits.size())
