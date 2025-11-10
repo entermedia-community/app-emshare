@@ -111,8 +111,13 @@ $context.putPageValue("filteredresults", $filteredresults)
 	data-hitsname="$!hits.getSearchQuery().getHitsName()"
 	>
 	
+	#set($pickertargettype = "entity")
+	#if($moduleid == "asset")
+		#set($pickertargettype = "asset")
+	#end
+	
 	##Blockfind picker
-	#if($picker && $picker.isPickerEnabled("entity", $moduleid))
+	#if($picker && $picker.isPickerEnabled($pickertargettype, $moduleid))
 		$context.putPageValue("pickerenabled", true)
 	#end	
 				
