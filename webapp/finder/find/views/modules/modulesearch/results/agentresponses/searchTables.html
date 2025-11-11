@@ -66,43 +66,45 @@
 		#ifnotnull($keywords)
 			<span class="text-muted">(keywords: <em>$keywords</em>)</span>
 		#end
-	#end			
-				
-	found:  
-	<a href="$!searchurl" 
-		class="ajax" 
-		data-targetdiv="applicationmaincontent" 
-		data-oemaxlevel="3" 
-		data-updateurl="true" 
-		data-hitsessionid="$hits.getSessionId()"
-		title="[[View]] #text($module)"
-		data-closedialog="true">
-			$searchstep.getCount() records</a>
+	#end	
+	
+		#if($hits.size() > 0)		
+			[[found]]:  
+			<a href="$!searchurl" 
+				class="ajax" 
+				data-targetdiv="applicationmaincontent" 
+				data-oemaxlevel="3" 
+				data-updateurl="true" 
+				data-hitsessionid="$hits.getSessionId()"
+				title="[[View]] #text($module)"
+				data-closedialog="true">
+					$searchstep.getCount() [[records]]</a>
+		#end
 		
 	</div>
 	##$context.putPageValue("hidemoduleheaders", true)
-
-	#foreach($module in $organizedResults.getModules() )
-		#set($hits = $organizedResults.getByType($module.id,$context))
-		$context.putPageValue("module", $module)
-		$context.putPageValue("moduleid", $module.id)
-		$context.putPageValue("hits", $hits)
-		
-		
-		
-		#if( $module.id == "asset")
-			##TODO: Blockfind picker, picker is not enabled in the agent context, enable it via Java Script?
-			#if($picker && $picker.isPickerEnabled("asset", $module.id))
-				$context.putPageValue("pickerenabled", true)
-			#end
-			$pages.include("./renderassetresults.html",$context)
-		#else
-			#if($picker && $picker.isPickerEnabled("entity", $module.id))
-				$context.putPageValue("pickerenabled", true)
-			#end
-			$pages.include("./rendermoduleresults.html",$context)
-		#end
+	
+	#if($hits.size() > 0)
+		#foreach($module in $organizedResults.getModules() )
+			#set($hits = $organizedResults.getByType($module.id,$context))
+			$context.putPageValue("module", $module)
+			$context.putPageValue("moduleid", $module.id)
+			$context.putPageValue("hits", $hits)
 				
+			#if( $module.id == "asset")
+				##TODO: Blockfind picker, picker is not enabled in the agent context, enable it via Java Script?
+				#if($picker && $picker.isPickerEnabled("asset", $module.id))
+					$context.putPageValue("pickerenabled", true)
+				#end
+				$pages.include("./renderassetresults.html",$context)
+			#else
+				#if($picker && $picker.isPickerEnabled("entity", $module.id))
+					$context.putPageValue("pickerenabled", true)
+				#end
+				$pages.include("./rendermoduleresults.html",$context)
+			#end
+					
+		#end
 	#end
 </div>
 
