@@ -1,3 +1,5 @@
+
+
 <div class="quicksearchresults">
 	#set( $input = $keywordsstring)
 
@@ -17,14 +19,14 @@
 	
 	#set($aisearch = $agentcontext.getAiSearchParams())
 	<div class="mb-3">
-	Searched for 
+	[[Searched for]] 
 	#ifnotnull($aisearch.getStep2())
 		#set($searchstep = $aisearch.getStep2())
 			#foreach($module1 in $searchstep.getModules())
 				#text($module1)
 				#if( $foreach.hasNext )
 					#if($foreach.count == $searchstep.getModules().size() - 1)
-					or 
+					[[or]] 
 					#else
 				    , 
 					#end
@@ -86,9 +88,18 @@
 		$context.putPageValue("moduleid", $module.id)
 		$context.putPageValue("hits", $hits)
 		
+		
+		
 		#if( $module.id == "asset")
+			##TODO: Blockfind picker, picker is not enabled in the agent context, enable it via Java Script?
+			#if($picker && $picker.isPickerEnabled("asset", $module.id))
+				$context.putPageValue("pickerenabled", true)
+			#end
 			$pages.include("./renderassetresults.html",$context)
 		#else
+			#if($picker && $picker.isPickerEnabled("entity", $module.id))
+				$context.putPageValue("pickerenabled", true)
+			#end
 			$pages.include("./rendermoduleresults.html",$context)
 		#end
 				
