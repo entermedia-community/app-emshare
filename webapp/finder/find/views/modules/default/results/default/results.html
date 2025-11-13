@@ -70,6 +70,17 @@ $context.putPageValue("enableactions", $enableactions)
 $context.putPageValue("filteredresults", $filteredresults)
 #end
 
+#set($pickertargettype = "entity")
+#if($moduleid == "asset")
+	#set($pickertargettype = "asset")
+#end
+
+##Blockfind picker
+#if($picker && $picker.isPickerEnabled($pickertargettype, $moduleid))
+	#set($pickerenabled = true)
+	$context.putPageValue("pickerenabled", $pickerenabled)
+#end
+
 
 <div id="$!{searchhomeid}$!{edithomeid}" 
 	class="tableresults resultsdiv #if($filteredresults) filteredresults #end"
@@ -108,18 +119,13 @@ $context.putPageValue("filteredresults", $filteredresults)
 	#if($mixedentitysourcetypes)
 		data-mixedentitysourcetypes="true"
 	#end
+	#if($pickerenabled)
+		data-pickerenabled="$pickerenabled"
+	#end
 	data-hitsname="$!hits.getSearchQuery().getHitsName()"
 	>
 	
-	#set($pickertargettype = "entity")
-	#if($moduleid == "asset")
-		#set($pickertargettype = "asset")
-	#end
 	
-	##Blockfind picker
-	#if($picker && $picker.isPickerEnabled($pickertargettype, $moduleid))
-		$context.putPageValue("pickerenabled", true)
-	#end	
 				
 	$pages.include("${edithome}/searchheader.html", $context)	
 	
