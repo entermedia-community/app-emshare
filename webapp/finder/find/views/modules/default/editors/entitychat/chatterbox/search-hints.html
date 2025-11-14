@@ -1,0 +1,42 @@
+#if(!$topmenu.isEmpty())
+<div class="msg-bubble ai-suggestions">
+  <div class="chatterbox-chat" role="alert">
+    <div class="chat-icon">
+		
+      <a href="#" title="AI Agent" class="msg-avt">
+        <img src="${edithome}/chatterbox/images/aiagent.svg" class="img-fluid">
+      </a>
+    </div>
+    
+    <div class="chat-msg">
+      <div class="chat-author">
+        <strong>AI Agent</strong>
+      </div>
+      
+      <div class="msg-body">
+        <div class="msg-body-content">
+          <p>
+            <strong>I can help you search #text($module) using natural language.</strong>
+          </p>
+		  	#set($topics = $entity.getValues("semantictopics"))
+			
+			<p>
+				<em>#text($entity)</em> 
+				#ifnotnull ($topics)
+					containing these topics:
+					#foreach( $topic in $topics )
+	                    <em>#esc($topic)</em>#if( $foreach.hasNext ), #else.#end
+					#end
+				#end
+				What would you like to ask?
+			</p>
+			
+		  
+          
+        </div>
+      </div>
+    </div> 
+
+  </div>
+</div>
+#end
