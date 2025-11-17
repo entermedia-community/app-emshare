@@ -273,6 +273,14 @@ $(document).ready(function () {
 		}
 		else 
 		{
+			const targetTagName = event.target.tagName;
+	        if (targetTagName === 'INPUT' || targetTagName === 'TEXTAREA') {
+				if ($(event.target).val() !== '')
+				{
+	            	return;
+				}
+	        }
+			
 			if (event.which == "37" || event.which == "39") //left | arrow arrow key
 			{
 				var container;
