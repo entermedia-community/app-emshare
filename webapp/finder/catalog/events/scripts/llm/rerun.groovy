@@ -10,7 +10,12 @@ public void init() {
 	HitTracker allmodules = archive.query("module").exact("semanticenabled", true).search();
 	for (module in allmodules) {
 		
-		QueryBuilder query = archive.query(module.getId()).exact("taggedbyllm", "true");
+		// Re-run all modules 
+		//QueryBuilder query = archive.query(module.getId()).exact("taggedbyllm", "true");
+		
+		//Re-run Document Ebedded only
+		QueryBuilder query = archive.query(module.getId()).exact("taggedbyllm", "true").exact("documentembedded", "true");
+
 		//QueryBuilder query = archive.query(module.getId()).exact("taggedbyllm", "true").exists("semantictopics");
 		
 		
@@ -26,11 +31,13 @@ public void init() {
 			Data row = searcher.loadData(data);
 			
 			row.setValue("taggedbyllm", false);
+			row.setValue("documentembedded", false);
+			
 	//		row.setValue("llmerror", false);
 	//		row.setValue("keywordsai", null);
-			row.setValue("semantictopicsindexed", false);
-			row.setValue("semantictopics", null);
-			row.setValue("searchcategory", null);
+	//		row.setValue("semantictopicsindexed", false);
+	//		row.setValue("semantictopics", null);
+	//		row.setValue("searchcategory", null);
 			
 			//row.setValue("headline", null);
 			//row.setValue("longcaption", null);
