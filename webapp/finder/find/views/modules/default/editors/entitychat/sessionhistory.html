@@ -27,16 +27,6 @@
 	      data-restorechannel="true"
 	      href="$edithome/sessionrestore.html" 
         title="[[Retrieve this session]]">
-		#ifnotnull($hit.user)
-			#set($chatuser = $mediaarchive.getUser($hit.user) )
-			#set( $userimageurl = $mediaarchive.asLinkToUserProfile($chatuser))
-			#ifnull($userimageurl) #set( $userimageurl = "${edithome}/chatterbox/images/user.svg" ) #end
-			<div class="chat-icon">
-			<a href="#esc($userlink)" title="$chatuser.getAnonNickName()" class="msg-avt">
-				<img src="${userimageurl}" class="img-fluid">
-			</a>
-			</div>
-		#end
         #ifnull($hit.name)
           #if($foreach.count == 1)
             <span class="text-muted">[[Current Session]]</span>
@@ -45,6 +35,10 @@
           #end
         #end
         <small class="text-muted">#datetime($hit.refreshdate)</small>
+		#ifnotnull($hit.user)
+			#set($chatuser = $mediaarchive.getUser($hit.user) )
+			#text($chatuser)
+		#end
       </a>
 
       <a class="ajax del" data-targetdiv="aichatsearch" data-oemaxlevel="1" data-id="$hit.id" data-confirm="[[Sure you want to delete session?]]" href="$edithome/sessiondelete.html" title="[[Delete this session]]"> 
