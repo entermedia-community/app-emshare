@@ -17,28 +17,27 @@ public void init()
 	HitTracker hits = users.getAllHits();
 	List tosave = new ArrayList();
 	hits.each { 
-		if( it.getId() == "admin")
+		if( it.getId() != "admin")
 		{
-			continue;
-		}
-		User user = archive.getUser(it.getId());
-		Data entity = archive.query("entityperson").match("email",user.getEmail()).searchOne();
-		if( entity == null)
-		{
-			entity = archive.getSearcher("entityperson").createNewData();
-			if(user.getFirstName() != null && user.getLastName() != null)
+			User user = archive.getUser(it.getId());
+			Data entity = archive.query("entityperson").match("email",user.getEmail()).searchOne();
+			if( entity == null)
 			{
-				entity.setName(user.getFirstName() + " " + user.getLastName());
+				entity = archive.getSearcher("entityperson").createNewData();
+				if(user.getFirstName() != null && user.getLastName() != null)
+				{
+					entity.setName(user.getFirstName() + " " + user.getLastName());
+				}
+				else
+				{
+					entity.setName(user.getName());
+				}
+				entity.setValue("firstName",user.getFirstName());
+				entity.setValue("lastName",user.getLastName());
+				entity.setValue("contact_email",user.getEmail());
+				//entity.setValue("contact_type","producer");
+				tosave.add(entity);
 			}
-			else
-			{
-				entity.setName(user.getName());
-			}
-			entity.setValue("firstName",user.getFirstName());
-			entity.setValue("lastName",user.getLastName());
-			entity.setValue("contact_email",user.getEmail());
-			//entity.setValue("contact_type","producer");
-			tosave.add(entity);
 		}
 	}
 	log.info("Added " + tosave.size());
