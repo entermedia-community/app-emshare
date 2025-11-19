@@ -32,6 +32,7 @@ public void init() {
 			
 			row.setValue("taggedbyllm", false);
 			row.setValue("documentembedded", false);
+			row.setValue("pagescreatedfor", null);
 			
 	//		row.setValue("llmerror", false);
 	//		row.setValue("keywordsai", null);
