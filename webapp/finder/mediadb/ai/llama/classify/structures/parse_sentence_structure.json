@@ -1,6 +1,3 @@
-#set($modules = $schema.getModules())
-
-
 Conversation:
 {	
     "conversation": {
@@ -8,7 +5,7 @@ Conversation:
 		"description": "Details about the request. Only required if request_type is 'conversation'.",
 		"friendly_response": {
 			"type": "string",
-			"description": "A brief response to the user's request in natural language. Only required if request_type is 'conversation'."
+			"description": "A response to the user's request in natural language. Only required if request_type is 'conversation'."
 		 },
 		"sentence_parts": {
 			"type": "array",
@@ -43,36 +40,60 @@ Search:
 {
 	"search": {
         "type": "object",
-        "description": "Ordered list of search operations. Use the minimum number of steps necessary to fulfill the request. Only required if request_type is 'search'.",
-        "search_steps": {
-			 "type": "array",
-			 "description": "A structured representation of the user's search request broken down into individual search steps.",
-	         "properties": {	            
-	             "table": {
-                    "type": "string",
-                    "description": "Name of the table if mentioned in the request, use 'Not specified' otherwise.",
-                    "enum": [
-            #foreach($module in $modules)
-                        #if($foreach.count > 1),#end
-                        #jesc($module.getName())
-                #if($schema.hasChildren($module.getId()))
-                    #set($children = $schema.getChildrenOf($module.getId()))
-                    #foreach($child in $children)
-                        ,
-                        #jesc("$child.getName() in $module.getName()")
-                    #end
-                #end
-            #end
-                        ,
-                        "Not specified"
-                    ]
-	             },
-	             "filters": {
-                    "type": "object",
-                    "description": "Column-value pairs used as filters."
-	             }	            
-	         }
-	     }
+        "description": "Separate any table in the request and include the keywords and parameters that apply to that table.",
+        "tables": {
+            "type": "array",
+            "description": "A list tables to be searched with their parameters.",
+            "items" : {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "description": "Name of the table if mentioned in the request, use 'Not specified' otherwise.",
+                        "enum": [
+                        #foreach($module in $schema.modules)
+                            #if($foreach.count > 1),#end
+                            #jesc($module.getName())
+                        #end
+                            ,
+                            "Not specified"
+                        ]
+                    },
+                    "parameters": {
+                        "type": "object",
+                        "description": "The parameters to search for in this table.",
+                        "properties": {
+                            "keyword": {
+                                "type": "string",
+                                "description": "The keyword to search for in this table, excluding the table name itself."
+                            }
+                        },
+                        "additionalProperties": true
+                    },
+                    "foreign_table": {
+                        "type": "string",
+                        "description": "Name of the foreign table to join with, if applicable."
+                        "enum": [
+                        #foreach($module in $schema.modules)
+                            #if($foreach.count > 1),#end
+                            #jesc($module.getName())
+                        #end
+                        ]
+                    },
+                    "foreign_table_parameters": {
+                        "type": "object",
+                        "description": "The parameters to search for in the foreign table.",
+                        "properties": {
+                            "keyword": {
+                                "type": "string",
+                                "description": "The keyword to search for in this foreign table, excluding the table name itself."
+                            }
+                        },
+                        "additionalProperties": true
+                    },
+                }          
+            }
+        }
 	}
 }
 
@@ -100,17 +121,17 @@ Create Entity:
 {
     "create_entity": {
         "type": "object",
-        "description": "Details about the entity creation request. Only required if request_type is 'create_entity'.",
+        "description": "Details about the entity creation request. Only required if request_type is 'create_entity'. Always ask for confirmation with 'Are you sure you want to create 'entity_name' in module 'module_id'?' before proceeding.",
         "properties": {
             "entity_name": {
                 "type": "string",
-                "description": "Name of the entity to be created."
+                "description": "Name of the entity to be created. Should be capitalized."
             },
             "module_id": {
                 "type": "string",
                 "description": "ID of the module where the entity should be saved in.",
                 "enum": [
-                #foreach($module in $modules)
+                #foreach($module in $schema.modules)
                     #if($foreach.count > 1),#end 
                     #jesc("$module.getId()|$module.getName()")
                 #end

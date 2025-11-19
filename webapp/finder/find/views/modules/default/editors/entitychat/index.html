@@ -1,13 +1,19 @@
 
+#set($channeltype = "agententitychat")
+$context.putPageValue("channeltype", $channeltype)
 
 <div id="${edithomeid}" 
-	class="editdiv entity-tab-content entity-tab-chatterbox h-100 pl-2 pr-2" 
+	class="editdiv entity-tab-content entity-tab-chatterbox aichatsearch" 
 	data-edithome="${edithome}"
 	data-entityid="$!entity.id"
 	data-moduleid="$!module.getId()"
 	data-currenttab="$!viewid"
 	data-channel="$!{currentchannel.id}"
 	data-url=""
+	data-includeeditcontextX="true"
+	data-channeltype="$!{channeltype}"
 >
-$pages.include("${edithome}/chatterbox/index.html", $context)
+$pages.include("./sessionhistory.html", $context)
+
+$pages.include("./chatterbox/index.html", $context)
 </div>

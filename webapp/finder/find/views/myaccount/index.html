@@ -16,19 +16,23 @@ $context.putPageValue("data", $selectedUser)
 		        	data-targetdivinner="myaccountcontent" 
 		        	name="usereditform"
 		        	data-oemaxlevel="3"
+					enctype="multipart/form-data"  
 		         	action="$home$apphome/views/myaccount/profilesave.html">
 		            <input type="hidden" name="userid" value="$selectedUser.id"/>
 		        
 		            <input type="hidden" name="save" value="true"/>
-		            <input type="hidden" name="username" value="$selectedUser.id"/> ## so the page loads after we save
+		            <input type="hidden" name="username" value="$selectedUser.id"/>
+					<input type="hidden" name="id" value="$selectedUser.id"/> 
 		            <input type="hidden" name="method" value="edituser"/>
-		                        <input type="hidden" name="oemaxlevel" value="1"/>
+		            <input type="hidden" name="oemaxlevel" value="1"/>
 		            <input type="hidden" name="reloadprofile" value="true"/>
 		            
 		                  
 						<div id="resultslist">
 							<div id="default-fields">
+								
 				 				$pages.include("/${applicationid}/components/xml/detaileditor.html", $context)
+								
 								#set($groups = $user.groups)
 								#if(!$groups.isEmpty())
 								<div class="row no-gutters">
@@ -76,13 +80,6 @@ $context.putPageValue("data", $selectedUser)
 							</div>
 						</div>
 						
-						
-						
-					
-						
-					
-					
-					
 		            
 		            #if( $errors)
 		                <div class="common-success">

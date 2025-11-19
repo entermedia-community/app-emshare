@@ -6,8 +6,6 @@
 #ifnull($data)
 	#set($data = $mediaarchive.getSearcher($module.id).createNewData())
 #end
-$context.putPageValue("data",$data)
-$context.putPageValue("newdata${module.id}",$data)
 
 <div class="uploadformarea">
   <input class="upload_field" type="file" style="position:absolute; top:-2000px;" multiple="multiple" data-autostartupload="false" />
@@ -44,6 +42,7 @@ $context.putPageValue("newdata${module.id}",$data)
       <hr style="border-top: 1px solid #ddd;" />
       <div>
         <h5 class="mt-0 mb-4 text-center">[[Folders Details]]</h5>
+		
         #set( $viewdata = $mediaarchive.getCachedData("view", "${module.id}addnew") )
         $context.put("viewdata", $viewdata)
 
@@ -52,8 +51,15 @@ $context.putPageValue("newdata${module.id}",$data)
 
         #set($parentmoduleid = $context.getRequestParameter("parentmoduleid")) 
         #set($parententityid = $context.getRequestParameter("parententityid"))
+		#ifnotnull($parententityid)
+			<input type="hidden" name="field" value="$parentmoduleid" />
+			<input type="hidden" name="${parentmoduleid}.value" value="$parententityid" />
+			$data.setValue($parentmoduleid, $parententityid)
+		#end
+		
+		$context.putPageValue("data",$data)
+		$context.putPageValue("newdata${module.id}",$data)
 
-        $context.putPageValue("${parentmoduleid}.value", $parententityid)
 
         $pages.include("/$applicationid/components/xml/detaileditor-entities.html", $context)
       </div>
