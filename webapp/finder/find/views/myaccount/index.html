@@ -1,9 +1,8 @@
-#set($selectedUser = $user)
 
-#set ($userSearcher = $searcherManager.getSearcher($catalogid, "user"))
-$context.putPageValue("searcher", $userSearcher)     
+#set ($userprofileseasrcher = $searcherManager.getSearcher($catalogid, "userprofile"))
+$context.putPageValue("searcher", $userprofileseasrcher)     
 $context.putPageValue("viewid", "editmyaccount")  
-$context.putPageValue("data", $selectedUser) 
+$context.putPageValue("data", $userprofile) 
 
    
 <div class="row no-gutters">
@@ -18,11 +17,11 @@ $context.putPageValue("data", $selectedUser)
 		        	data-oemaxlevel="3"
 					enctype="multipart/form-data"  
 		         	action="$home$apphome/views/myaccount/profilesave.html">
-		            <input type="hidden" name="userid" value="$selectedUser.id"/>
+		            <input type="hidden" name="userid" value="$userprofile.id"/>
 		        
 		            <input type="hidden" name="save" value="true"/>
-		            <input type="hidden" name="username" value="$selectedUser.id"/>
-					<input type="hidden" name="id" value="$selectedUser.id"/> 
+		            <input type="hidden" name="username" value="$userprofile.id"/>
+					<input type="hidden" name="id" value="$userprofile.id"/> 
 		            <input type="hidden" name="method" value="edituser"/>
 		            <input type="hidden" name="oemaxlevel" value="1"/>
 		            <input type="hidden" name="reloadprofile" value="true"/>
@@ -56,27 +55,7 @@ $context.putPageValue("data", $selectedUser)
 								</div>
 								#end
 								
-								#set ($userProfileSearcher = $searcherManager.getSearcher($catalogid, "userprofile"))
-								#set ($selectedprofile = $userProfileSearcher.searchByField("id", $user.id))
-								#if($selectedprofile.settingsgroup)
-								<div class="row no-gutters">
-									<div class="col-md-12 editor-data-detail emdatafield-default">
-										<div class="container-fluid">
-											<div class="row">
-													<div class="col-md-3 col-lg-2 col-emdatafield">
-														<label class="emdatafield">
-																[[Role]]
-														</label>				
-													</div>
-												<div class="col-md-9 col-lg-10">
-														#set($role = $mediaarchive.getCachedData("settingsgroup", $selectedprofile.settingsgroup))
-														#text($role)
-												</div>
-											</div>				
-										</div>
-										</div>
-									</div>
-								#end
+
 							</div>
 						</div>
 						
