@@ -1,45 +1,62 @@
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap" rel="stylesheet">
+
 <div id="eventeditpage" class="p-2">
-<h3>[[Event Properties]]</h3> 
-<form action="$siteroot$apphome/views/settings/events/triggers/edit/save.html"
-		class="ajaxform"
-		data-targetdiv="eventeditpage"
-		data-oemaxlevel="1">
-<table class="table table-striped settings-table" cellpadding="5">
-<tr><td style="width:180px;">[[Name]]:</td><td><input type="text" class="form-control" size="15" name="eventname" value='$!pathevent.getPage().getProperty("eventname")'/></td></tr>
-<tr><td>[[Period]]:</td><td><input type="text" class="form-control form-control-sm" size="4" name="period" value="$!pathevent.getFormattedPeriod()"/> [[in milliseconds (can use s, h, d or m)]]</td></tr>
-<tr><td>[[Starting]]:</td><td><input type="text" class="form-control  form-control-sm" size="4" name="startingfrommidnight" value="$!pathevent.getStartingFromMidnight()"/> [[time from midnight (can use s, h, d or m)]]</td></tr>
-<tr>
-	<td>[[Enabled]]:</td>
-	<td>
-		<div class="form-check">
-			<input name="enabled" class="form-check-input"  value="true" type="checkbox" #if($pathevent.isEnabled()) checked #end/>
+	<div class="d-flex align-items-center">
+		<h4 class="text-dark m-0">
+			$context.getText($pathevent.getName())
+		</h4>
+		<a class="btn btn-accent btn-sm ml-3" data-toggle="collapse" href="#eventConfig" role="button" aria-expanded="false" aria-controls="eventConfig">
+			<i class="bi bi-gear"></i>
+		</a>
+	</div>
+	<div class="collapse py-2" id="eventConfig">
+		<form action="$siteroot$apphome/views/settings/events/triggers/edit/save.html"
+			class="ajaxform"
+			data-targetdiv="eventeditpage"
+			data-oemaxlevel="1">
+			<table class="table table-striped settings-table" cellpadding="5">
+				<tr><td style="width:180px;">[[Name]]:</td><td><input type="text" class="form-control" size="15" name="eventname" value='$!pathevent.getPage().getProperty("eventname")'/></td></tr>
+				<tr><td>[[Period]]:</td><td><input type="text" class="form-control form-control-sm" size="4" name="period" value="$!pathevent.getFormattedPeriod()"/> [[in milliseconds (can use s, h, d or m)]]</td></tr>
+				<tr><td>[[Starting]]:</td><td><input type="text" class="form-control  form-control-sm" size="4" name="startingfrommidnight" value="$!pathevent.getStartingFromMidnight()"/> [[time from midnight (can use s, h, d or m)]]</td></tr>
+				<tr>
+					<td>[[Enabled]]:</td>
+					<td>
+						<div class="form-check">
+							<input name="enabled" class="form-check-input"  value="true" type="checkbox" #if($pathevent.isEnabled()) checked #end/>
+						</div>
+					</td>
+				</tr>
+				#if( $pathevent)
+				<tr><td>[[Event URL]]:</td><td>$!pathevent.getPage().getPath()</td></tr>
+				<input type="hidden" name="eventpath" value="$pathevent.getPage().getPath()"/>
+				#else
+				<tr><td>[[Event URL]]:</td><td><input name="eventpath"  class="form-control" size="50" value="/${catalogid}/events/FOLDER/NAME.html"/></td></tr>
+				#end
+				#if ( $pathevent.getFormattedLastRun()  )
+				<tr><td>[[Last ran on]]: </td><td> $!pathevent.getFormattedLastRun()</td></tr>
+				#end 
+			</table>
+	
+			<input class="btn btn-cta" type="submit" value="[[Save]]" />
+		</form>
+	</div>
+	
+	<hr>
+
+	<div class="d-flex align-items-center">
+		<a class="btn btn-primary ajax mr-2" data-targetdivinner="eventstatus" href="$siteroot$apphome/views/settings/events/triggers/run.html?forcerun=true&runpath=$pathevent.getPage().getPath()&oemaxlevel=1">[[Run Now]]</a> 
+		<a class="btn btn-secondary emdialog" href="$siteroot$apphome/views/settings/events/triggers/edit/scripts/scripteditor.html?eventpath=$pathevent.getPage().getPath()">[[Edit Script]]</a> &nbsp;&nbsp; 
+		<a class="btn btn-secondary ajax" data-targetdivinner="eventeditpage"  href="$siteroot$apphome/views/settings/events/triggers/edit/clear.html?eventpath=$pathevent.getPage().getPath()">[[Clear Log]]</a>
+	</div>
+	
+	<br>
+	
+	<div class="d-flex flex-column-reverse rounded overflow-y border-subtle" style="max-height: 500px;font-size: 0.85rem;font-family: 'Roboto Mono', monospace;">
+		<div class="edit-permissions position-relative">
+			$pages.include("$apphome/views/settings/events/triggers/edit/log.html")
 		</div>
-	</td>
-</tr>
-#if( $pathevent)
-<tr><td>[[Event URL]]:</td><td>$!pathevent.getPage().getPath()</td></tr>
-<input type="hidden" name="eventpath" value="$pathevent.getPage().getPath()"/>
-#else
-<tr><td>[[Event URL]]:</td><td><input name="eventpath"  class="form-control" size="50" value="/${catalogid}/events/FOLDER/NAME.html"/></td></tr>
-#end
-#if ( $pathevent.getFormattedLastRun()  )
-<tr><td>[[Last ran on]]: </td><td> $!pathevent.getFormattedLastRun()</td></tr>
-#end 
-</table>
+	</div>
 
-<input class="btn btn-cta" type="submit" value="[[Save]]" style="margin-right:10px;"/>
-
- <a class="btn btn-primary ajax" data-targetdivinner="eventstatus" href="$siteroot$apphome/views/settings/events/triggers/run.html?forcerun=true&runpath=$pathevent.getPage().getPath()&oemaxlevel=1">[[Run Now]]</a> 
- <a class="btn btn-secondary emdialog" href="$siteroot$apphome/views/settings/events/triggers/edit/scripts/scripteditor.html?eventpath=$pathevent.getPage().getPath()">[[Edit Script]]</a> &nbsp;&nbsp; 
- <a class="btn btn-secondary ajax" data-targetdivinner="eventeditpage"  href="$siteroot$apphome/views/settings/events/triggers/edit/clear.html?eventpath=$pathevent.getPage().getPath()">[[Clear Log]]</a>
-</form>
-
-
-<div class="edit-permissions" style="padding:10px; margin-top:20px; background-color: #f1f1f1;">
-$pages.include("$apphome/views/settings/events/triggers/edit/log.html")
-</div>
-<hr>
-<p>
-<a class="btn btn-secondary ajax" data-targetdiv="eventeditpage" data-oemaxlevel="1"  href="$home$apphome/views/settings/events/triggers/edit/clear.html?eventpath=$pathevent.getPage().getPath()">[[Clear Log]]</a>
-</p>
 </div>
