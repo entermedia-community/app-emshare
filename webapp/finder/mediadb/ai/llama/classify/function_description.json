@@ -22,9 +22,16 @@
 		## SKIP
 	#else
     #set($value = $data.get($field.id))
-    #ifnotnull($value)
+	#ifnull($value)
+		#ifnotnull($primaryasset)
+			#set($value = $primaryasset.get($field.id))
+		#end
+	#end
+	#ifnotnull($value)
       #set($description = "$description \n ${field.name}: ${value}")
     #end
+	
+	
 	#end
 #end
 #jesc($description)
