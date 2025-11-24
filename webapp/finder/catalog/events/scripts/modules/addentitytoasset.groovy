@@ -27,7 +27,7 @@ public void init(){
 		
 		if (detail == null)
 		{
-			detail = archive.getAssetSearcher().getPropertyDetailsArchive().createDetail(id, name);
+			detail = archive.getAssetSearcher().getPropertyDetailsArchive().createDetail("asset",id, name);
 			detail.setDataType("list");
 			detail.setViewType("entity");
 			archive.getAssetSearcher().getPropertyDetailsArchive().savePropertyDetail(detail, archive.getAssetSearcher().getSearchType(), context.getUser());
