@@ -1,7 +1,3 @@
-<!-- Top Level -->
-
-
-
 #ifnull($entitymoduleviewid) 
 	#set($entitymoduleviewid = $context.getRequestParameter("entitymoduleviewid"))
 	
@@ -18,20 +14,23 @@
 			data-toastmessage="[[Creating]] #text($submodule) [[with AI]]"
 			data-toastsuccess="[[Created]] #text($submodule) [[successfully]]"
 			data-toasterror="[[Failed to create]] #text($submodule)">
+			
+			<input type="hidden" name="functionname" value='createEntity'/>
+			
 			<input type="hidden" name="entitymoduleviewid.value" value='$context.getRequestParameter("entitymoduleviewid")'/>
 			<input type="hidden" name="field" value="entitymoduleviewid" />
 			
 			<input type="hidden" name="save" value='true'/>
 
 			<input type="hidden" name="field" value="entityid" />
-			<input type="hidden" name="entityid.value" value='$entity.id'/>
+			<input type="hidden" name="entityid.value" value='$!entity.id'/>
 
 			<input type="hidden" name="field" value="entitymoduleid" />
-			<input type="hidden" name="entitymoduleid.value" value="$entitymodule.id" />
+			<input type="hidden" name="entitymoduleid.value" value="$!module.id" />
 
-			$context.putPageValue("viewid", "contentcreatortoplevel")
-			$context.putPageValue("details",null)
-			$context.putPageValue("searcher",$mediaarchive.getSearcher("contentcreator"))
+##			$context.putPageValue("viewid", "contentcreatortoplevel")
+##			$context.putPageValue("details",null)
+##			$context.putPageValue("searcher",$mediaarchive.getSearcher("contentcreator"))
 			
 ##			<div class="updateaitemplate #if($customprompt) customized #end"
 ##				data-template="$edithome/aitools/createassetinstructions.html"
